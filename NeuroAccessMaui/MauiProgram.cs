@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace TagIdMaui
+namespace NeuroAccessMaui
 {
     public static class MauiProgram
     {

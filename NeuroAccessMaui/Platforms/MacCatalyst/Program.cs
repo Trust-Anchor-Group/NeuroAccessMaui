@@ -1,7 +1,7 @@
 ﻿using ObjCRuntime;
 using UIKit;
 
-namespace TagIdMaui
+namespace NeuroAccessMaui
 {
     public class Program
     {

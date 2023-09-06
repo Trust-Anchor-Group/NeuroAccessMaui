@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34024.191
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TagIdMaui", "TagIdMaui\TagIdMaui.csproj", "{B7E8FC5E-3AA0-489F-92DE-0D8FC8C66169}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuroAccessMaui", "NeuroAccessMaui\NeuroAccessMaui.csproj", "{B7E8FC5E-3AA0-489F-92DE-0D8FC8C66169}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

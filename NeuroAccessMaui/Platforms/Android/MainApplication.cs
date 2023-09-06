@@ -1,7 +1,7 @@
 ﻿using Android.App;
 using Android.Runtime;
 
-namespace TagIdMaui
+namespace NeuroAccessMaui
 {
     [Application]
     public class MainApplication : MauiApplication

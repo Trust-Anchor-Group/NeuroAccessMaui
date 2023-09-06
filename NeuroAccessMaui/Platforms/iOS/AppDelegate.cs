@@ -1,6 +1,6 @@
 ﻿using Foundation;
 
-namespace TagIdMaui
+namespace NeuroAccessMaui
 {
     [Register("AppDelegate")]
     public class AppDelegate : MauiUIApplicationDelegate

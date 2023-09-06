@@ -1,4 +1,4 @@
-﻿namespace TagIdMaui
+﻿namespace NeuroAccessMaui
 {
     public partial class AppShell : Shell
     {
