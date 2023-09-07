@@ -17,9 +17,10 @@ namespace NeuroAccessMaui
                 });
 
             Builder.Services.AddLocalization();
+			//Builder.Services.AddLogging();
 
 #if DEBUG
-            Builder.Logging.AddDebug();
+			Builder.Logging.AddDebug();
 #endif
 
             return Builder.Build();

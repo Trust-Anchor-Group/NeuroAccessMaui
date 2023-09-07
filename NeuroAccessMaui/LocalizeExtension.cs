@@ -15,7 +15,7 @@ namespace NeuroAccessMaui
 			this.localizer = ServiceHelper.GetService<IStringLocalizer<AppResources>>();
         }
 
-        public object ProvideValue(IServiceProvider ServiceProvider)
+        public object ProvideValue(IServiceProvider _ /*ServiceProvider*/)
         {
             string LocalizedText = this.localizer[this.Key];
             return LocalizedText;
