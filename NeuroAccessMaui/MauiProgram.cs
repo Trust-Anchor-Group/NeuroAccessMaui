@@ -6,8 +6,9 @@ namespace NeuroAccessMaui
     {
         public static MauiApp CreateMauiApp()
         {
-            var builder = MauiApp.CreateBuilder();
-            builder
+			MauiAppBuilder Builder = MauiApp.CreateBuilder();
+
+            Builder
                 .UseMauiApp<App>()
                 .ConfigureFonts(fonts =>
                 {
@@ -15,11 +16,13 @@ namespace NeuroAccessMaui
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
+            Builder.Services.AddLocalization();
+
 #if DEBUG
-		builder.Logging.AddDebug();
+            Builder.Logging.AddDebug();
 #endif
 
-            return builder.Build();
+            return Builder.Build();
         }
     }
 }
