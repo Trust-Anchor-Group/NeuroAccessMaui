@@ -85,3 +85,58 @@ dotnet_naming_style.camel_case.required_prefix =
 dotnet_naming_style.camel_case.required_suffix =
 dotnet_naming_style.camel_case.word_separator =
 dotnet_naming_style.camel_case.capitalization = camel_case
+
+# Organize usings
+dotnet_sort_system_directives_first = true
+
+# IDE0160: Use file scoped namespace
+csharp_style_namespace_declarations = file_scoped:error
+
+# CS4014: Because this call is not awaited, execution of the current method continues before the call is completed
+dotnet_diagnostic.CS4014.severity = error
+
+# CA1063: Implement IDisposable Correctly
+dotnet_diagnostic.CA1063.severity = error
+
+# CA1001: Type owns disposable field(s) but is not disposable
+dotnet_diagnostic.CA1001.severity = error
+
+# Add braces (IDE0011)
+csharp_prefer_braces = true
+dotnet_diagnostic.IDE0011.severity = error
+
+# Pattern matching
+dotnet_style_object_initializer = true:suggestion
+dotnet_style_collection_initializer = true:suggestion
+dotnet_style_coalesce_expression = true:suggestion
+dotnet_style_null_propagation = true:suggestion
+dotnet_style_explicit_tuple_names = true:suggestion
+dotnet_style_prefer_is_null_check_over_reference_equality_method=true:suggestion
+
+csharp_style_pattern_matching_over_is_with_cast_check = true:suggestion
+csharp_style_pattern_matching_over_as_with_null_check = true:suggestion
+csharp_style_inlined_variable_declaration = true:suggestion
+csharp_style_throw_expression = true:suggestion
+csharp_style_conditional_delegate_call = true:suggestions
+
+# Modifier preferences
+csharp_prefer_static_local_function = true:suggestion
+csharp_preferred_modifier_order = public,private,protected,internal,static,extern,new,virtual,abstract,sealed,override,readonly,unsafe,volatile,async:error
+
+# CA1822: Member does not access instance data and can be marked as static
+dotnet_diagnostic.CA1822.severity = suggestion
+
+# CA1050: Declare types in namespaces
+dotnet_diagnostic.CA1050.severity = error
+
+# CA2016: Forward the 'cancellationToken' parameter methods that take one
+dotnet_diagnostic.CA2016.severity = error
+
+# CA2208: Method passes parameter as the paramName argument to a ArgumentNullException constructor. Replace this argument with one of the method's parameter names. Note that the provided parameter name should have the exact casing as declared on the method.
+dotnet_diagnostic.CA2208.severity = error
+
+# CA1834: Use 'StringBuilder.Append(char)' instead of 'StringBuilder.Append(string)' when the input is a constant unit string
+dotnet_diagnostic.CA1834.severity = error
+
+# IDE0220: Add explicit cast
+dotnet_diagnostic.IDE0220.severity = error
