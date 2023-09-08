@@ -1,10 +1,9 @@
-﻿namespace NeuroAccessMaui
+﻿namespace NeuroAccessMaui;
+
+public partial class AppShell : Shell
 {
-    public partial class AppShell : Shell
-    {
-        public AppShell()
-        {
-			this.InitializeComponent();
-        }
-    }
+	public AppShell()
+	{
+		this.InitializeComponent();
+	}
 }
