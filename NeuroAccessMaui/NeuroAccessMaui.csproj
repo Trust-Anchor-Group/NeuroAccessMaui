@@ -15,7 +15,8 @@
 		<ApplicationTitle>NeuroAccessMaui</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>com.trustanchorgroup.NeuroAccess</ApplicationId>
+		<ApplicationId Condition="$(TargetFramework) == 'net8.0-android'">com.tag.NeuroAccess</ApplicationId>
+		<ApplicationId Condition="$(TargetFramework) != 'net8.0-android'">com.trustanchorgroup.NeuroAccess</ApplicationId>
 		<ApplicationIdGuid>2a4dd0f3-35d6-48a3-a76d-1fa94e567eee</ApplicationIdGuid>
 
 		<!-- Versions -->
@@ -32,10 +33,10 @@
 
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
+		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="LightGray" />
 
 		<!-- Splash Screen -->
-		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
+		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="LightGray" BaseSize="128,128" />
 
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
@@ -49,6 +50,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="CommunityToolkit.Maui" Version="5.3.0" />
+		<PackageReference Include="CommunityToolkit.Maui.Markup" Version="3.2.0" />
 		<PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.0-preview.7.23375.9" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0-preview.7.23375.6" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.0-preview.7.8842" />

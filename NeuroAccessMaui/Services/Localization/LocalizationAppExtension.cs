@@ -1,10 +1,10 @@
-﻿namespace NeuroAccessMaui;
+﻿namespace NeuroAccessMaui.Services.Localization;
 
 public static class LocalizationAppExtension
 {
 	public static MauiAppBuilder UseLocalizationManager<TStringResource>(this MauiAppBuilder Builder)
 	{
-		return UseLocalizationManager(Builder, typeof(TStringResource));
+		return Builder.UseLocalizationManager(typeof(TStringResource));
 	}
 
 	public static MauiAppBuilder UseLocalizationManager(this MauiAppBuilder Builder, Type? StringResource = null)

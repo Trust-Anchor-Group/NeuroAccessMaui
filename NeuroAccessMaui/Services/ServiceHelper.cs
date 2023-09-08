@@ -1,4 +1,4 @@
-﻿namespace NeuroAccessMaui;
+﻿namespace NeuroAccessMaui.Services;
 
 public static class ServiceHelper
 {

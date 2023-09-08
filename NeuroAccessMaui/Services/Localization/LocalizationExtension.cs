@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Globalization;
 
-namespace NeuroAccessMaui;
+namespace NeuroAccessMaui.Services.Localization;
 
 [ContentProperty(nameof(Path))]
 public class LocalizeExtension : IMarkupExtension<BindingBase>, INotifyPropertyChanged

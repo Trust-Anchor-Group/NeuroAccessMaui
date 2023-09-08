@@ -1,4 +1,4 @@
-﻿namespace NeuroAccessMaui;
+﻿namespace NeuroAccessMaui.Services.Localization;
 
 [ContentProperty(nameof(Path))]
 public class FlowDirectionExtension : IMarkupExtension<BindingBase>

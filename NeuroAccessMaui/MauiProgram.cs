@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CommunityToolkit.Maui;
+using CommunityToolkit.Maui.Markup;
+using Microsoft.Extensions.Logging;
 
 namespace NeuroAccessMaui;
 
@@ -15,6 +17,10 @@ public static class MauiProgram
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 			});
+
+		// Initialise the toolkit
+		Builder.UseMauiCommunityToolkit();
+		Builder.UseMauiCommunityToolkitMarkup();
 
 		Builder.Services.AddLocalization();
 		//Builder.Services.AddLogging();

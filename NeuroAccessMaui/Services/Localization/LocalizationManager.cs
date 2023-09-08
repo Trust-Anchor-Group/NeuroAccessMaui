@@ -3,7 +3,7 @@ using NeuroAccessMaui.Resources.Languages;
 using System.ComponentModel;
 using System.Globalization;
 
-namespace NeuroAccessMaui;
+namespace NeuroAccessMaui.Services.Localization;
 
 public class LocalizationManager : INotifyPropertyChanged
 {

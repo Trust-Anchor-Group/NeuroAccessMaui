@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Globalization;
 
-namespace NeuroAccessMaui;
+namespace NeuroAccessMaui.Services.Localization;
 
 public class LanguageInfo : CultureInfo, INotifyPropertyChanged
 {
