@@ -2,9 +2,7 @@
 
 public static class ServiceHelper
 {
-#pragma warning disable CS8603 // Possible null reference return.
-	public static TService GetService<TService>() => Current.GetService<TService>();
-#pragma warning restore CS8603 // Possible null reference return.
+	public static TService? GetService<TService>() => Current.GetService<TService>();
 
 	public static object? GetService(Type ServiceType) => Current.GetService(ServiceType);
 

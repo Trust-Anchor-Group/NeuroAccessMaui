@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Localization;
+using NeuroAccessMaui.Resources.Languages;
 using System.ComponentModel;
 using System.Globalization;
 
@@ -7,7 +8,7 @@ namespace NeuroAccessMaui;
 public class LocalizationManager : INotifyPropertyChanged
 {
 #pragma warning disable CA2211 // Non-constant fields should not be visible
-	public static Type? DefaultStringResource;
+	public static Type? DefaultStringResource = null;
 #pragma warning restore CA2211 // Non-constant fields should not be visible
 
 	private static LocalizationManager? current;
@@ -15,16 +16,12 @@ public class LocalizationManager : INotifyPropertyChanged
 
 	public static IStringLocalizer? GetStringLocalizer(Type? StringResource = null)
 	{
-#pragma warning disable CS8601 // Possible null reference assignment.
-		Type[] Type = new Type[] { StringResource ?? DefaultStringResource };
-#pragma warning restore CS8601 // Possible null reference assignment.
-
+		Type[] Type = new Type[] { StringResource ?? DefaultStringResource ?? typeof(AppResources) };
 		Type GenericType = typeof(IStringLocalizer<>).MakeGenericType(Type);
-
 		return (IStringLocalizer?)ServiceHelper.GetService(GenericType);
 	}
 
-	public static IStringLocalizer GetStringLocalizer<TStringResource>()
+	public static IStringLocalizer? GetStringLocalizer<TStringResource>()
 	{
 		return ServiceHelper.GetService<IStringLocalizer<TStringResource>>();
 	}
