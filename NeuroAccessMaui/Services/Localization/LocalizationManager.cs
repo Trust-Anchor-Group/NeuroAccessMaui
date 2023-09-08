@@ -39,26 +39,26 @@ public class LocalizationManager : INotifyPropertyChanged
 		}
 	}
 
-    public CultureInfo CurrentCulture
-    {
-        get => CultureInfo.CurrentUICulture;
+	public CultureInfo CurrentCulture
+	{
+		get => CultureInfo.CurrentUICulture;
 
-        set
-        {
-            if (CultureInfo.CurrentCulture.Name == value.Name)
-            {
-                return;
-            }
+		set
+		{
+			if (CultureInfo.CurrentCulture.Name == value.Name)
+			{
+				return;
+			}
 
-            CultureInfo.CurrentCulture = CultureInfo.CurrentUICulture = value;
+			CultureInfo.CurrentCulture = CultureInfo.CurrentUICulture = value;
 
-            CurrentCultureChanged?.Invoke(null, value);
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.CurrentCulture)));
+			CurrentCultureChanged?.Invoke(null, value);
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.CurrentCulture)));
 
-            FlowDirectionChanged?.Invoke(this, FlowDirection);
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FlowDirection)));
-        }
-    }
+			FlowDirectionChanged?.Invoke(this, FlowDirection);
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FlowDirection)));
+		}
+	}
 
 #pragma warning disable CA2211 // Non-constant fields should not be visible
 	public static EventHandler<CultureInfo>? CurrentCultureChanged;
