@@ -6,8 +6,4 @@ public partial class MainPage : ContentPage
 	{
 		this.InitializeComponent();
 	}
-
-	private void OnCounterClicked(object sender, EventArgs e)
-	{
-	}
 }
