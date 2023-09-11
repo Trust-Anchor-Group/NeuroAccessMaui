@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Markup;
 using Microsoft.Extensions.Logging;
+using NeuroAccessMaui.Pages;
 
 namespace NeuroAccessMaui;
 
@@ -21,6 +22,8 @@ public static class MauiProgram
 		// Initialise the toolkit
 		Builder.UseMauiCommunityToolkit();
 		Builder.UseMauiCommunityToolkitMarkup();
+
+		Builder.RegisterPagesManager();
 
 		Builder.Services.AddLocalization();
 		//Builder.Services.AddLogging();

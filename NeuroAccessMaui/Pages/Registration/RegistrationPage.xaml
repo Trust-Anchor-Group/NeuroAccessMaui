@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+	x:Class="NeuroAccessMaui.Pages.Registration.RegistrationPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:controls="clr-namespace:NeuroAccessMaui.Controls"
+	xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.Pages.Registration"
+	x:Name="ThisPage"
+	x:DataType="viewmodel:RegistrationViewModel">
+
+	<ContentPage.Behaviors>
+		<toolkit:StatusBarBehavior StatusBarColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}" StatusBarStyle="{AppThemeBinding Light='DarkContent', Dark='LightContent'}" />
+	</ContentPage.Behaviors>
+
+	<Grid>
+		<controls:Background />
+
+		<Grid x:Name="GridWithAnimation">
+			<toolkit:StateContainer.StateViews>
+				<Grid toolkit:StateView.StateKey="Loading">
+					<Button
+						Command="{Binding ChangeStateWithFadeAnimationCommand, Source={x:Reference ThisPage}}"
+						HorizontalOptions="Center"
+						Text="Loading"
+						VerticalOptions="Center" />
+				</Grid>
+
+				<Grid toolkit:StateView.StateKey="Loaded">
+					<ScrollView BackgroundColor="Red" />
+					<Button
+						Command="{Binding ChangeStateWithFadeAnimationCommand, Source={x:Reference ThisPage}}"
+						HorizontalOptions="Center"
+						Text="Loaded"
+						VerticalOptions="Center" />
+				</Grid>
+			</toolkit:StateContainer.StateViews>
+		</Grid>
+	</Grid>
+</ContentPage>

@@ -1,4 +1,7 @@
-﻿namespace NeuroAccessMaui;
+﻿using NeuroAccessMaui.Pages.Registration;
+using NeuroAccessMaui.Services;
+
+namespace NeuroAccessMaui;
 
 public partial class App : Application
 {
@@ -6,6 +9,6 @@ public partial class App : Application
 	{
 		this.InitializeComponent();
 
-		this.MainPage = new AppShell();
+		this.MainPage = new RegistrationPage();
 	}
 }
