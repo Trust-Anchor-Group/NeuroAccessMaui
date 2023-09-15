@@ -1,21 +1,16 @@
 using CommunityToolkit.Maui.Layouts;
 using CommunityToolkit.Mvvm.Input;
-using NeuroAccessMaui.Services;
 
 namespace NeuroAccessMaui.Pages.Registration;
 
-public partial class RegistrationPage : ContentPage
+public partial class RegistrationPage
 {
-	private readonly RegistrationViewModel? viewModel;
-
-	public RegistrationPage()
+	public RegistrationPage(RegistrationViewModel ViewModel)
 	{
 		this.InitializeComponent();
+		this.BindingContext = ViewModel;
 
 		StateContainer.SetCurrentState(this.GridWithAnimation, "Loading");
-
-		this.viewModel = ServiceHelper.GetService<RegistrationViewModel>();
-		this.BindingContext = this.viewModel;
 	}
 
 
@@ -27,9 +22,6 @@ public partial class RegistrationPage : ContentPage
 
 		await StateContainer.ChangeStateWithAnimation(this.GridWithAnimation, currentState, CancellationToken.None);
 
-		if (this.viewModel is not null)
-		{
-			this.viewModel.CurrentState = currentState;
-		}
+		this.ViewModel.CurrentState = currentState;
 	}
 }

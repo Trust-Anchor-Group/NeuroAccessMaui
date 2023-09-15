@@ -9,6 +9,6 @@ public partial class App : Application
 	{
 		this.InitializeComponent();
 
-		this.MainPage = new RegistrationPage();
+		this.MainPage = ServiceHelper.GetService<RegistrationPage>();
 	}
 }

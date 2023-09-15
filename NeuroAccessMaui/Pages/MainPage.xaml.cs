@@ -1,9 +1,12 @@
-﻿namespace NeuroAccessMaui;
+﻿using NeuroAccessMaui.Pages;
 
-public partial class MainPage : ContentPage
+namespace NeuroAccessMaui;
+
+public partial class MainPage
 {
-	public MainPage()
+	public MainPage(MainViewModel ViewModel)
 	{
 		this.InitializeComponent();
+		this.BindingContext = ViewModel;
 	}
 }
