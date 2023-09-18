@@ -12,11 +12,11 @@ public class LocalizationManager : INotifyPropertyChanged
 #pragma warning restore CA2211 // Non-constant fields should not be visible
 
 	private static LocalizationManager? current;
-	public static LocalizationManager Current => current ??= new LocalizationManager();
+	public static LocalizationManager Current => current ??= new();
 
 	public static IStringLocalizer? GetStringLocalizer(Type? StringResource = null)
 	{
-		Type[] Type = new Type[] { StringResource ?? DefaultStringResource ?? typeof(AppResources) };
+		Type[] Type = [StringResource ?? DefaultStringResource ?? typeof(AppResources)];
 		Type GenericType = typeof(IStringLocalizer<>).MakeGenericType(Type);
 		return (IStringLocalizer?)ServiceHelper.GetService(GenericType);
 	}
