@@ -1,6 +1,4 @@
-﻿using NeuroAccessMaui.Pages;
-
-namespace NeuroAccessMaui;
+﻿namespace NeuroAccessMaui.Pages;
 
 public partial class MainPage
 {

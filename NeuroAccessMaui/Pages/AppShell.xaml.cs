@@ -1,4 +1,4 @@
-﻿namespace NeuroAccessMaui;
+﻿namespace NeuroAccessMaui.Pages;
 
 public partial class AppShell : Shell
 {

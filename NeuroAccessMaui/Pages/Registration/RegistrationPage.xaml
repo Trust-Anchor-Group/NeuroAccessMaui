@@ -7,14 +7,6 @@
 	xmlns:controls="clr-namespace:NeuroAccessMaui.Controls"
 	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.Pages.Registration">
 
-	<ContentPage.Behaviors>
-		<mct:StatusBarBehavior
-			StatusBarColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight},
-											 Dark={StaticResource PrimaryBackgroundDark}}"
-			StatusBarStyle="{AppThemeBinding Light='DarkContent',
-											 Dark='LightContent'}" />
-	</ContentPage.Behaviors>
-
 	<Grid>
 		<controls:Background />
 
