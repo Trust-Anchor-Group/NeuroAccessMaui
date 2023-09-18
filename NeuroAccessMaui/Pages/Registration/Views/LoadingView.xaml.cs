@@ -10,6 +10,6 @@ public partial class LoadingView
 	public LoadingView(LoadingViewModel ViewModel)
 	{
 		this.InitializeComponent();
-		this.BindingContext = ViewModel;
+		this.InitializeObject(ViewModel);
 	}
 }
