@@ -1,5 +1,4 @@
-﻿using NeuroAccessMaui.Pages;
-using NeuroAccessMaui.Services;
+﻿using NeuroAccessMaui.Services;
 
 namespace NeuroAccessMaui;
 
@@ -9,6 +8,6 @@ public partial class App : Application
 	{
 		this.InitializeComponent();
 
-		this.MainPage = ServiceHelper.GetService<AppShell>();
+		this.MainPage = ServiceHelper.GetService<Pages.AppShell>();
 	}
 }

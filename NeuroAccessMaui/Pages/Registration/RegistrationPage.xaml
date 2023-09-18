@@ -5,22 +5,79 @@
 	xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
 	xmlns:base="clr-namespace:NeuroAccessMaui.Pages"
 	xmlns:controls="clr-namespace:NeuroAccessMaui.Controls"
-	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.Pages.Registration">
+	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.Pages.Registration"
+	xmlns:views="clr-namespace:NeuroAccessMaui.Pages.Registration.Views">
 
 	<Grid>
 		<controls:Background />
 
+
+		<!--  CONTENT  -->
+		<Grid x:Name="GridWithAnimation"
+			HorizontalOptions="FillAndExpand"
+			VerticalOptions="FillAndExpand">
+
+			<mct:StateContainer.StateViews>
+
+				<views:LoadingView x:Name="LoadingView" mct:StateView.StateKey="Loading"
+					HorizontalOptions="FillAndExpand"
+					VerticalOptions="FillAndExpand"
+					x:FactoryMethod="Create" />
+
+				<views:ChoosePurposeView x:Name="ChoosePurposeView" mct:StateView.StateKey="ChoosePurpose"
+					HorizontalOptions="FillAndExpand"
+					VerticalOptions="FillAndExpand"
+					x:FactoryMethod="Create" />
+
+				<views:ValidatePhoneView x:Name="ValidatePhoneView" mct:StateView.StateKey="ValidatePhone"
+					HorizontalOptions="FillAndExpand"
+					VerticalOptions="FillAndExpand"
+					x:FactoryMethod="Create" />
+
+				<views:ValidateEmailView x:Name="ValidateEmailView" mct:StateView.StateKey="ValidateEmail"
+					HorizontalOptions="FillAndExpand"
+					VerticalOptions="FillAndExpand"
+					x:FactoryMethod="Create" />
+
+				<views:ChooseAccountView x:Name="ChooseAccountView" mct:StateView.StateKey="ChooseAccount"
+					HorizontalOptions="FillAndExpand"
+					VerticalOptions="FillAndExpand"
+					x:FactoryMethod="Create" />
+
+				<views:DefinePinView x:Name="DefinePinView" mct:StateView.StateKey="DefinePin"
+					HorizontalOptions="FillAndExpand"
+					VerticalOptions="FillAndExpand"
+					x:FactoryMethod="Create" />
+
+			</mct:StateContainer.StateViews>
+
+			<!--  default state  -->
+			<Label
+				HorizontalTextAlignment="Center"
+				Text="Something went wrong!"
+				VerticalTextAlignment="Center" />
+		</Grid>
+
+		<!--
+
 		<Grid x:Name="GridWithAnimation">
 			<mct:StateContainer.StateViews>
-				<Grid
+				<ScrollView
 					mct:StateView.StateKey="Loading">
-					<Button
-						BackgroundColor="Red"
-						HorizontalOptions="Center"
-						VerticalOptions="Center"
-						Command="{Binding ChangeStateWithFadeAnimationCommand, Source={x:Reference ThisPage}}"
-						Text="Loading" />
-				</Grid>
+					<StackLayout
+						RadioButtonGroup.GroupName="colors">
+						<Label
+							Text="What's your favorite color?" />
+						<RadioButton
+							Content="Red" />
+						<RadioButton
+							Content="Green" />
+						<RadioButton
+							Content="Blue" />
+						<RadioButton
+							Content="Other" />
+					</StackLayout>
+				</ScrollView>
 
 				<Grid
 					mct:StateView.StateKey="Loaded">
@@ -34,5 +91,6 @@
 				</Grid>
 			</mct:StateContainer.StateViews>
 		</Grid>
+		-->
 	</Grid>
 </base:BaseContentPage>

@@ -13,6 +13,7 @@ public static class PageAppExtension
 
 		// Registration pages & views
 		Builder.Services.AddTransient<RegistrationPage, RegistrationViewModel>();
+		Builder.Services.AddTransient<LoadingView, LoadingViewModel>();
 		Builder.Services.AddTransient<ChoosePurposeView, ChoosePurposeViewModel>();
 		Builder.Services.AddTransient<ValidatePhoneView, ValidatePhoneViewModel>();
 		Builder.Services.AddTransient<ValidateEmailView, ValidateEmailViewModel>();
