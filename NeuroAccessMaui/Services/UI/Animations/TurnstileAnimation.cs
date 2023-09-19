@@ -6,7 +6,7 @@ public class TurnstileInAnimation : AnimationBase
 {
 	protected override Task BeginAnimation()
 	{
-		if (Target == null)
+		if (this.Target is null)
 		{
 			throw new NullReferenceException("Null Target property.");
 		}
@@ -15,19 +15,20 @@ public class TurnstileInAnimation : AnimationBase
 		{
 			this.Dispatcher.Dispatch(() =>
 			{
-				Target.Animate("TurnstileIn", TurnstileIn(), 16, Convert.ToUInt32(Duration, CultureInfo.InvariantCulture));
+				this.Target.Animate("TurnstileIn", this.TurnstileIn(), 16,
+					Convert.ToUInt32(this.Duration, CultureInfo.InvariantCulture));
 			});
 		});
 	}
 
 	internal Animation TurnstileIn()
 	{
-		var animation = new Animation();
+		Animation Animation = [];
 
-		animation.WithConcurrent((f) => Target.RotationY = f, 75, 0, Microsoft.Maui.Easing.CubicOut);
-		animation.WithConcurrent((f) => Target.Opacity = f, 0, 1, null, 0, 0.01);
+		Animation.WithConcurrent((f) => this.Target.RotationY = f, 75, 0, Microsoft.Maui.Easing.CubicOut);
+		Animation.WithConcurrent((f) => this.Target.Opacity = f, 0, 1, null, 0, 0.01);
 
-		return animation;
+		return Animation;
 	}
 }
 
@@ -35,7 +36,7 @@ public class TurnstileOutAnimation : AnimationBase
 {
 	protected override Task BeginAnimation()
 	{
-		if (Target == null)
+		if (this.Target is null)
 		{
 			throw new NullReferenceException("Null Target property.");
 		}
@@ -44,18 +45,19 @@ public class TurnstileOutAnimation : AnimationBase
 		{
 			this.Dispatcher.Dispatch(() =>
 			{
-				Target.Animate("TurnstileOut", TurnstileOut(), 16, Convert.ToUInt32(Duration, CultureInfo.InvariantCulture));
+				this.Target.Animate("TurnstileOut", this.TurnstileOut(), 16,
+					Convert.ToUInt32(this.Duration, CultureInfo.InvariantCulture));
 			});
 		});
 	}
 
 	internal Animation TurnstileOut()
 	{
-		var animation = new Animation();
+		Animation Animation = [];
 
-		animation.WithConcurrent((f) => Target.RotationY = f, 0, -75, Microsoft.Maui.Easing.CubicOut);
-		animation.WithConcurrent((f) => Target.Opacity = f, 1, 0, null, 0.9, 1);
+		Animation.WithConcurrent((f) => this.Target.RotationY = f, 0, -75, Microsoft.Maui.Easing.CubicOut);
+		Animation.WithConcurrent((f) => this.Target.Opacity = f, 1, 0, null, 0.9, 1);
 
-		return animation;
+		return Animation;
 	}
 }

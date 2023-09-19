@@ -25,7 +25,7 @@ public class JumpAnimation : AnimationBase
 
 	internal Animation Jump()
 	{
-		Animation Animation = new();
+		Animation Animation = [];
 
 		Animation.WithConcurrent((f) => this.Target.TranslationY = f, this.Target.TranslationY, this.Target.TranslationX, Microsoft.Maui.Easing.Linear, 0, 0.2);
 		Animation.WithConcurrent((f) => this.Target.TranslationY = f, this.Target.TranslationY + movement, this.Target.TranslationX, Microsoft.Maui.Easing.Linear, 0.2, 0.4);

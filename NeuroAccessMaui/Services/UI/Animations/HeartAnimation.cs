@@ -23,7 +23,7 @@ public class HeartAnimation : AnimationBase
 
 	internal Animation Hearth()
 	{
-		Animation Animation = new();
+		Animation Animation = [];
 
 		Animation.WithConcurrent((f) => this.Target.Scale = f, this.Target.Scale, this.Target.Scale, Microsoft.Maui.Easing.Linear, 0, 0.1);
 		Animation.WithConcurrent((f) => this.Target.Scale = f, this.Target.Scale, this.Target.Scale * 1.1, Microsoft.Maui.Easing.Linear, 0.1, 0.4);

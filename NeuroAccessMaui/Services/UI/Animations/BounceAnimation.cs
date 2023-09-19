@@ -23,7 +23,7 @@ public class BounceInAnimation : AnimationBase
 
 	internal Animation BounceIn()
 	{
-		Animation Animation = new();
+		Animation Animation = [];
 
 		Animation.WithConcurrent((f) => this.Target.Scale = f, 0.5, 1, Microsoft.Maui.Easing.Linear, 0, 1);
 		Animation.WithConcurrent((f) => this.Target.Opacity = f, 0, 1, null, 0, 0.25);
@@ -53,7 +53,7 @@ public class BounceOutAnimation : AnimationBase
 
 	internal Animation BounceOut()
 	{
-		Animation animation = new();
+		Animation animation = [];
 
 		this.Target.Opacity = 1;
 

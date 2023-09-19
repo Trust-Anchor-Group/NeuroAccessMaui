@@ -4,11 +4,11 @@ namespace NeuroAccessMaui.Services.UI.Animations;
 
 public class ShakeAnimation : AnimationBase
 {
-	private const int Movement = 5;
+	private const int movement = 5;
 
 	protected override Task BeginAnimation()
 	{
-		if (Target == null)
+		if (this.Target is null)
 		{
 			throw new NullReferenceException("Null Target property.");
 		}
@@ -17,55 +17,28 @@ public class ShakeAnimation : AnimationBase
 		{
 			this.Dispatcher.Dispatch(() =>
 			{
-				Target.Animate("Shake", Shake(), 16, Convert.ToUInt32(Duration, CultureInfo.InvariantCulture));
+				this.Target.Animate("Shake", this.Shake(), 16,
+					Convert.ToUInt32(this.Duration, CultureInfo.InvariantCulture));
 			});
 		});
 	}
 
 	internal Animation Shake()
 	{
-		var animation = new Animation();
+		Animation Animation = [];
 
-		animation.WithConcurrent(
-			(f) => Target.TranslationX = f,
-			Target.TranslationX + Movement, Target.TranslationX,
-			Microsoft.Maui.Easing.Linear, 0, 0.1);
+		double TranslationXPlus = this.Target.TranslationX + movement;
+		double TranslationXMinus = this.Target.TranslationX - movement;
 
-		animation.WithConcurrent(
-			(f) => Target.TranslationX = f,
-			Target.TranslationX - Movement, Target.TranslationX,
-			Microsoft.Maui.Easing.Linear, 0.1, 0.2);
+		Animation.WithConcurrent((f) => this.Target.TranslationX = f, TranslationXPlus, this.Target.TranslationX, Microsoft.Maui.Easing.Linear, 0, 0.1);
+		Animation.WithConcurrent((f) => this.Target.TranslationX = f, TranslationXMinus, this.Target.TranslationX, Microsoft.Maui.Easing.Linear, 0.1, 0.2);
+		Animation.WithConcurrent((f) => this.Target.TranslationX = f, TranslationXPlus, this.Target.TranslationX, Microsoft.Maui.Easing.Linear, 0.2, 0.3);
+		Animation.WithConcurrent((f) => this.Target.TranslationX = f, TranslationXMinus, this.Target.TranslationX, Microsoft.Maui.Easing.Linear, 0.3, 0.4);
+		Animation.WithConcurrent((f) => this.Target.TranslationX = f, TranslationXPlus, this.Target.TranslationX, Microsoft.Maui.Easing.Linear, 0.4, 0.5);
+		Animation.WithConcurrent((f) => this.Target.TranslationX = f, TranslationXMinus, this.Target.TranslationX, Microsoft.Maui.Easing.Linear, 0.5, 0.6);
+		Animation.WithConcurrent((f) => this.Target.TranslationX = f, TranslationXPlus, this.Target.TranslationX, Microsoft.Maui.Easing.Linear, 0.6, 0.7);
+		Animation.WithConcurrent((f) => this.Target.TranslationX = f, TranslationXMinus, this.Target.TranslationX, Microsoft.Maui.Easing.Linear, 0.7, 0.8);
 
-		animation.WithConcurrent(
-			(f) => Target.TranslationX = f,
-			Target.TranslationX + Movement, Target.TranslationX,
-			Microsoft.Maui.Easing.Linear, 0.2, 0.3);
-
-		animation.WithConcurrent(
-			(f) => Target.TranslationX = f,
-			Target.TranslationX - Movement, Target.TranslationX,
-			Microsoft.Maui.Easing.Linear, 0.3, 0.4);
-
-		animation.WithConcurrent(
-			 (f) => Target.TranslationX = f,
-			 Target.TranslationX + Movement, Target.TranslationX,
-			 Microsoft.Maui.Easing.Linear, 0.4, 0.5);
-
-		animation.WithConcurrent(
-			(f) => Target.TranslationX = f,
-			Target.TranslationX - Movement, Target.TranslationX,
-			Microsoft.Maui.Easing.Linear, 0.5, 0.6);
-
-		animation.WithConcurrent(
-			 (f) => Target.TranslationX = f,
-			 Target.TranslationX + Movement, Target.TranslationX,
-			 Microsoft.Maui.Easing.Linear, 0.6, 0.7);
-
-		animation.WithConcurrent(
-			(f) => Target.TranslationX = f,
-			Target.TranslationX - Movement, Target.TranslationX,
-			Microsoft.Maui.Easing.Linear, 0.7, 0.8);
-
-		return animation;
+		return Animation;
 	}
 }

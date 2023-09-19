@@ -19,39 +19,33 @@
 
 			<mct:StateContainer.StateViews>
 
-				<views:LoadingView x:Name="LoadingView" mct:StateView.StateKey="Loading"
+				<views:LoadingView x:Name="LoadingView" x:FactoryMethod="Create" mct:StateView.StateKey="Loading"
 					HorizontalOptions="FillAndExpand"
-					VerticalOptions="FillAndExpand"
-					x:FactoryMethod="Create" />
+					VerticalOptions="FillAndExpand" />
 
-				<views:ChoosePurposeView x:Name="ChoosePurposeView" mct:StateView.StateKey="ChoosePurpose"
+				<views:ChoosePurposeView x:Name="ChoosePurposeView" x:FactoryMethod="Create" mct:StateView.StateKey="ChoosePurpose"
 					HorizontalOptions="FillAndExpand"
-					VerticalOptions="FillAndExpand"
-					x:FactoryMethod="Create" />
+					VerticalOptions="FillAndExpand" />
 
-				<views:ValidatePhoneView x:Name="ValidatePhoneView" mct:StateView.StateKey="ValidatePhone"
+				<views:ValidatePhoneView x:Name="ValidatePhoneView" x:FactoryMethod="Create" mct:StateView.StateKey="ValidatePhone"
 					HorizontalOptions="FillAndExpand"
-					VerticalOptions="FillAndExpand"
-					x:FactoryMethod="Create" />
+					VerticalOptions="FillAndExpand" />
 
-				<views:ValidateEmailView x:Name="ValidateEmailView" mct:StateView.StateKey="ValidateEmail"
+				<views:ValidateEmailView x:Name="ValidateEmailView" x:FactoryMethod="Create" mct:StateView.StateKey="ValidateEmail"
 					HorizontalOptions="FillAndExpand"
-					VerticalOptions="FillAndExpand"
-					x:FactoryMethod="Create" />
+					VerticalOptions="FillAndExpand" />
 
-				<views:ChooseAccountView x:Name="ChooseAccountView" mct:StateView.StateKey="ChooseAccount"
+				<views:ChooseAccountView x:Name="ChooseAccountView" x:FactoryMethod="Create" mct:StateView.StateKey="ChooseAccount"
 					HorizontalOptions="FillAndExpand"
-					VerticalOptions="FillAndExpand"
-					x:FactoryMethod="Create" />
+					VerticalOptions="FillAndExpand" />
 
-				<views:DefinePinView x:Name="DefinePinView" mct:StateView.StateKey="DefinePin"
+				<views:DefinePinView x:Name="DefinePinView" x:FactoryMethod="Create" mct:StateView.StateKey="DefinePin"
 					HorizontalOptions="FillAndExpand"
-					VerticalOptions="FillAndExpand"
-					x:FactoryMethod="Create" />
+					VerticalOptions="FillAndExpand" />
 
 			</mct:StateContainer.StateViews>
 
-			<!--  default state  -->
+			<!--  default state, should not occur  -->
 			<Label
 				HorizontalTextAlignment="Center"
 				Text="Something went wrong!"

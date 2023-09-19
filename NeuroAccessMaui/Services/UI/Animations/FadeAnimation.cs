@@ -66,7 +66,7 @@ public class FadeInAnimation : AnimationBase
 
 	internal Animation FadeIn()
 	{
-		Animation Animation = new();
+		Animation Animation = [];
 
 		Animation.WithConcurrent((f) => this.Target.Opacity = f, 0, 1, Microsoft.Maui.Easing.CubicOut);
 		Animation.WithConcurrent((f) => this.Target.TranslationY = f,
@@ -114,7 +114,7 @@ public class FadeOutAnimation : AnimationBase
 
 	internal Animation FadeOut()
 	{
-		Animation Animation = new();
+		Animation Animation = [];
 
 		Animation.WithConcurrent((f) => this.Target.Opacity = f, 1, 0);
 		Animation.WithConcurrent((f) => this.Target.TranslationY = f, this.Target.TranslationY, this.Target.TranslationY + ((this.Direction == FadeDirection.Up) ? 50 : -50));

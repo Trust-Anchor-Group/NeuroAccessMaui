@@ -39,7 +39,7 @@ public class FlipAnimation : AnimationBase
 
 	internal Animation Flip()
 	{
-		Animation Animation = new();
+		Animation Animation = [];
 
 		Animation.WithConcurrent((f) => this.Target.Opacity = f, 0.5, 1);
 		Animation.WithConcurrent((f) => this.Target.RotationY = f, (this.Direction == FlipDirection.Left) ? 90 : -90, 0, Microsoft.Maui.Easing.Linear);

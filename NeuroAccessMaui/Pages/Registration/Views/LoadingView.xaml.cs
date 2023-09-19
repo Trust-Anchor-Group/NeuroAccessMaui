@@ -12,4 +12,9 @@ public partial class LoadingView
 		this.InitializeComponent();
 		this.InitializeObject(ViewModel);
 	}
+
+	private void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
+	{
+		((RadioButton)((View)sender).Parent).IsChecked = true;
+	}
 }

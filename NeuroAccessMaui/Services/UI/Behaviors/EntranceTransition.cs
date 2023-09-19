@@ -110,7 +110,7 @@ public class EntranceTransition : Behavior<VisualElement>
 		}
 		else
 		{
-			if (!this.HasParentEntranceTransition(this.associatedObject))
+			if (!HasParentEntranceTransition(this.associatedObject))
 			{
 				await this.AnimateItemAsync(this.associatedObject);
 			}
@@ -123,7 +123,7 @@ public class EntranceTransition : Behavior<VisualElement>
 		{
 			await Task.Delay(delay);
 
-			Animation ParentAnimation = new();
+			Animation ParentAnimation = [];
 
 			Animation TranslateXAnimation = new(progress => Element.TranslationX = progress, Element.TranslationX, 0, Easing.SpringIn);
 			Animation TranslateYAnimation = new(progress => Element.TranslationY = progress, Element.TranslationY, 0, Easing.SpringIn);
@@ -138,7 +138,7 @@ public class EntranceTransition : Behavior<VisualElement>
 		}
 	}
 
-	bool HasParentEntranceTransition(VisualElement? Element)
+	private static bool HasParentEntranceTransition(VisualElement? Element)
 	{
 		if (Element is not null)
 		{
@@ -146,8 +146,8 @@ public class EntranceTransition : Behavior<VisualElement>
 
 			if (Parent is not null)
 			{
-				IList<Behavior> behaviors = Parent.Behaviors;
-				return behaviors.OfType<EntranceTransition>().FirstOrDefault() is not null;
+				IList<Behavior> Behaviors = Parent.Behaviors;
+				return Behaviors.OfType<EntranceTransition>().FirstOrDefault() is not null;
 			}
 		}
 

@@ -11,8 +11,8 @@ public class TranslateToAnimation : AnimationBase
 
 	public double TranslateX
 	{
-		get { return (double)GetValue(TranslateXProperty); }
-		set { SetValue(TranslateXProperty, value); }
+		get { return (double)this.GetValue(TranslateXProperty); }
+		set { this.SetValue(TranslateXProperty, value); }
 	}
 
 	public static readonly BindableProperty TranslateYProperty =
@@ -21,17 +21,19 @@ public class TranslateToAnimation : AnimationBase
 
 	public double TranslateY
 	{
-		get { return (double)GetValue(TranslateYProperty); }
-		set { SetValue(TranslateYProperty, value); }
+		get { return (double)this.GetValue(TranslateYProperty); }
+		set { this.SetValue(TranslateYProperty, value); }
 	}
 
 	protected override Task BeginAnimation()
 	{
-		if (Target == null)
+		if (this.Target is null)
 		{
 			throw new NullReferenceException("Null Target property.");
 		}
 
-		return Target.TranslateTo(TranslateX, TranslateY, Convert.ToUInt32(Duration, CultureInfo.InvariantCulture), EasingHelper.GetEasing(Easing));
+		return this.Target.TranslateTo(this.TranslateX, this.TranslateY,
+			Convert.ToUInt32(this.Duration, CultureInfo.InvariantCulture),
+			EasingHelper.GetEasing(this.Easing));
 	}
 }

@@ -5,12 +5,12 @@ public class StoryBoard : AnimationBase
 {
 	public StoryBoard()
 	{
-		Animations = new List<AnimationBase>();
+		this.Animations = [];
 	}
 
-	public StoryBoard(List<AnimationBase> animations)
+	public StoryBoard(List<AnimationBase> Animations)
 	{
-		Animations = animations;
+		this.Animations = Animations;
 	}
 
 	public List<AnimationBase> Animations
@@ -20,14 +20,10 @@ public class StoryBoard : AnimationBase
 
 	protected override async Task BeginAnimation()
 	{
-		foreach (var animation in Animations)
+		foreach (AnimationBase Animation in this.Animations)
 		{
-			if (animation.Target == null)
-			{
-				animation.Target = Target;
-			}
-
-			await animation.Begin();
+			Animation.Target ??= this.Target;
+			await Animation.Begin();
 		}
 	}
 }
