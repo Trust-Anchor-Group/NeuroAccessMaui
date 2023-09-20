@@ -17,12 +17,16 @@ internal sealed class LogService : ILogService
 	public void AddListener(IEventSink eventSink)
 	{
 		if (eventSink is XmppEventSink xmppEventSink)
+		{
 			this.bareJid = xmppEventSink.Client?.BareJID;
+		}
 
 		foreach (IEventSink Sink in Log.Sinks)
 		{
 			if (Sink == eventSink)
+			{
 				return;
+			}
 		}
 
 		Log.Register(eventSink);
@@ -31,7 +35,9 @@ internal sealed class LogService : ILogService
 	public void RemoveListener(IEventSink eventSink)
 	{
 		if (eventSink is not null)
+		{
 			Log.Unregister(eventSink);
+		}
 	}
 
 	public void LogWarning(string Message, params KeyValuePair<string, object>[] Tags)
@@ -77,9 +83,13 @@ internal sealed class LogService : ILogService
 		string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), startupCrashFileName);
 
 		if (File.Exists(fileName))
+		{
 			contents = File.ReadAllText(fileName);
+		}
 		else
+		{
 			contents = string.Empty;
+		}
 
 		File.WriteAllText(fileName, title + Environment.NewLine + stackTrace + Environment.NewLine + contents);
 	}
@@ -90,9 +100,13 @@ internal sealed class LogService : ILogService
 		string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), startupCrashFileName);
 
 		if (File.Exists(fileName))
+		{
 			contents = File.ReadAllText(fileName);
+		}
 		else
+		{
 			contents = string.Empty;
+		}
 
 		return contents;
 	}
@@ -102,7 +116,9 @@ internal sealed class LogService : ILogService
 		string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), startupCrashFileName);
 
 		if (File.Exists(fileName))
+		{
 			File.Delete(fileName);
+		}
 	}
 
 	///<inheritdoc/>
@@ -122,7 +138,9 @@ internal sealed class LogService : ILogService
 		};
 
 		if (Tags is not null)
+		{
 			Result.AddRange(Tags);
+		}
 
 		return Result;
 	}

@@ -61,7 +61,9 @@ public class UiSerializer : IUiSerializer
 			do
 			{
 				if (this.taskQueue.TryDequeue(out UiTask Task))
+				{
 					await Task.Execute();
+				}
 			}
 			while (this.taskQueue.Count > 0);
 		}
@@ -109,10 +111,14 @@ public class UiSerializer : IUiSerializer
 			sb.AppendLine(exception.Message);
 
 			while (!((exception = exception.InnerException) is null))
+			{
 				sb.AppendLine(exception.Message);
+			}
 		}
 		else
+		{
 			sb.AppendLine(LocalizationResourceManager.Current["ErrorTitle"]);
+		}
 
 		return this.DisplayAlert(title ?? LocalizationResourceManager.Current["ErrorTitle"], sb.ToString(), LocalizationResourceManager.Current["Ok"]);
 	}

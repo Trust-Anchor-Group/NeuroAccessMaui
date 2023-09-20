@@ -119,15 +119,23 @@ public class XmlDatabaseExport : IDatabaseExport, IDisposable
 		if (PropertyValue is null)
 		{
 			this.output.WriteStartElement("Null");
+
 			if (PropertyName is not null)
+			{
 				this.output.WriteAttributeString("n", PropertyName);
+			}
+
 			this.output.WriteEndElement();
 		}
 		else if (PropertyValue is Enum)
 		{
 			this.output.WriteStartElement("En");
+
 			if (PropertyName is not null)
+			{
 				this.output.WriteAttributeString("n", PropertyName);
+			}
+
 			this.output.WriteAttributeString("v", string.Empty, PropertyValue.ToString());
 			this.output.WriteEndElement();
 		}
@@ -137,88 +145,132 @@ public class XmlDatabaseExport : IDatabaseExport, IDisposable
 			{
 				case TypeCode.Boolean:
 					this.output.WriteStartElement("Bl");
+
 					if (PropertyName is not null)
+					{
 						this.output.WriteAttributeString("n", PropertyName);
+					}
+
 					this.output.WriteAttributeString("v", string.Empty, CommonTypes.Encode((bool)PropertyValue));
 					this.output.WriteEndElement();
 					break;
 
 				case TypeCode.Byte:
 					this.output.WriteStartElement("B");
+
 					if (PropertyName is not null)
+					{
 						this.output.WriteAttributeString("n", PropertyName);
+					}
+
 					this.output.WriteAttributeString("v", string.Empty, PropertyValue.ToString());
 					this.output.WriteEndElement();
 					break;
 
 				case TypeCode.Char:
 					this.output.WriteStartElement("Ch");
+
 					if (PropertyName is not null)
+					{
 						this.output.WriteAttributeString("n", PropertyName);
+					}
+
 					this.output.WriteAttributeString("v", string.Empty, PropertyValue.ToString());
 					this.output.WriteEndElement();
 					break;
 
 				case TypeCode.DateTime:
 					this.output.WriteStartElement("DT");
+
 					if (PropertyName is not null)
+					{
 						this.output.WriteAttributeString("n", PropertyName);
+					}
+
 					this.output.WriteAttributeString("v", string.Empty, XML.Encode((DateTime)PropertyValue));
 					this.output.WriteEndElement();
 					break;
 
 				case TypeCode.Decimal:
 					this.output.WriteStartElement("Dc");
+
 					if (PropertyName is not null)
+					{
 						this.output.WriteAttributeString("n", PropertyName);
+					}
+
 					this.output.WriteAttributeString("v", string.Empty, CommonTypes.Encode((decimal)PropertyValue));
 					this.output.WriteEndElement();
 					break;
 
 				case TypeCode.Double:
 					this.output.WriteStartElement("Db");
+
 					if (PropertyName is not null)
+					{
 						this.output.WriteAttributeString("n", PropertyName);
+					}
+
 					this.output.WriteAttributeString("v", string.Empty, CommonTypes.Encode((double)PropertyValue));
 					this.output.WriteEndElement();
 					break;
 
 				case TypeCode.Int16:
 					this.output.WriteStartElement("I2");
+
 					if (PropertyName is not null)
+					{
 						this.output.WriteAttributeString("n", PropertyName);
+					}
+
 					this.output.WriteAttributeString("v", string.Empty, PropertyValue.ToString());
 					this.output.WriteEndElement();
 					break;
 
 				case TypeCode.Int32:
 					this.output.WriteStartElement("I4");
+
 					if (PropertyName is not null)
+					{
 						this.output.WriteAttributeString("n", PropertyName);
+					}
+
 					this.output.WriteAttributeString("v", string.Empty, PropertyValue.ToString());
 					this.output.WriteEndElement();
 					break;
 
 				case TypeCode.Int64:
 					this.output.WriteStartElement("I8");
+
 					if (PropertyName is not null)
+					{
 						this.output.WriteAttributeString("n", PropertyName);
+					}
+
 					this.output.WriteAttributeString("v", string.Empty, PropertyValue.ToString());
 					this.output.WriteEndElement();
 					break;
 
 				case TypeCode.SByte:
 					this.output.WriteStartElement("I1");
+
 					if (PropertyName is not null)
+					{
 						this.output.WriteAttributeString("n", PropertyName);
+					}
+
 					this.output.WriteAttributeString("v", string.Empty, PropertyValue.ToString());
 					this.output.WriteEndElement();
 					break;
 
 				case TypeCode.Single:
 					this.output.WriteStartElement("Fl");
+
 					if (PropertyName is not null)
+					{
 						this.output.WriteAttributeString("n", PropertyName);
+					}
+
 					this.output.WriteAttributeString("v", string.Empty, CommonTypes.Encode((float)PropertyValue));
 					this.output.WriteEndElement();
 					break;
@@ -229,8 +281,12 @@ public class XmlDatabaseExport : IDatabaseExport, IDisposable
 					{
 						XmlConvert.VerifyXmlChars(s);
 						this.output.WriteStartElement("S");
+
 						if (PropertyName is not null)
+						{
 							this.output.WriteAttributeString("n", PropertyName);
+						}
+
 						this.output.WriteAttributeString("v", string.Empty, s);
 						this.output.WriteEndElement();
 					}
@@ -239,8 +295,12 @@ public class XmlDatabaseExport : IDatabaseExport, IDisposable
 						byte[] Bin = Encoding.UTF8.GetBytes(s);
 						s = Convert.ToBase64String(Bin);
 						this.output.WriteStartElement("S64");
+
 						if (PropertyName is not null)
+						{
 							this.output.WriteAttributeString("n", PropertyName);
+						}
+
 						this.output.WriteAttributeString("v", string.Empty, s);
 						this.output.WriteEndElement();
 					}
@@ -248,24 +308,36 @@ public class XmlDatabaseExport : IDatabaseExport, IDisposable
 
 				case TypeCode.UInt16:
 					this.output.WriteStartElement("U2");
+
 					if (PropertyName is not null)
+					{
 						this.output.WriteAttributeString("n", PropertyName);
+					}
+
 					this.output.WriteAttributeString("v", string.Empty, PropertyValue.ToString());
 					this.output.WriteEndElement();
 					break;
 
 				case TypeCode.UInt32:
 					this.output.WriteStartElement("U4");
+
 					if (PropertyName is not null)
+					{
 						this.output.WriteAttributeString("n", PropertyName);
+					}
+
 					this.output.WriteAttributeString("v", string.Empty, PropertyValue.ToString());
 					this.output.WriteEndElement();
 					break;
 
 				case TypeCode.UInt64:
 					this.output.WriteStartElement("U8");
+
 					if (PropertyName is not null)
+					{
 						this.output.WriteAttributeString("n", PropertyName);
+					}
+
 					this.output.WriteAttributeString("v", string.Empty, PropertyValue.ToString());
 					this.output.WriteEndElement();
 					break;
@@ -273,8 +345,12 @@ public class XmlDatabaseExport : IDatabaseExport, IDisposable
 				case TypeCode.DBNull:
 				case TypeCode.Empty:
 					this.output.WriteStartElement("Null");
+
 					if (PropertyName is not null)
+					{
 						this.output.WriteAttributeString("n", PropertyName);
+					}
+
 					this.output.WriteEndElement();
 					break;
 
@@ -282,16 +358,24 @@ public class XmlDatabaseExport : IDatabaseExport, IDisposable
 					if (PropertyValue is TimeSpan)
 					{
 						this.output.WriteStartElement("TS");
+
 						if (PropertyName is not null)
+						{
 							this.output.WriteAttributeString("n", PropertyName);
+						}
+
 						this.output.WriteAttributeString("v", string.Empty, PropertyValue.ToString());
 						this.output.WriteEndElement();
 					}
 					else if (PropertyValue is DateTimeOffset DTO)
 					{
 						this.output.WriteStartElement("DTO");
+
 						if (PropertyName is not null)
+						{
 							this.output.WriteAttributeString("n", PropertyName);
+						}
+
 						this.output.WriteAttributeString("v", string.Empty, XML.Encode(DTO));
 						this.output.WriteEndElement();
 					}
@@ -302,8 +386,12 @@ public class XmlDatabaseExport : IDatabaseExport, IDisposable
 						{
 							XmlConvert.VerifyXmlChars(s);
 							this.output.WriteStartElement("CIS");
+
 							if (PropertyName is not null)
+							{
 								this.output.WriteAttributeString("n", PropertyName);
+							}
+
 							this.output.WriteAttributeString("v", string.Empty, s);
 							this.output.WriteEndElement();
 						}
@@ -312,8 +400,12 @@ public class XmlDatabaseExport : IDatabaseExport, IDisposable
 							byte[] Bin = Encoding.UTF8.GetBytes(s);
 							s = Convert.ToBase64String(Bin);
 							this.output.WriteStartElement("CIS64");
+
 							if (PropertyName is not null)
+							{
 								this.output.WriteAttributeString("n", PropertyName);
+							}
+
 							this.output.WriteAttributeString("v", string.Empty, s);
 							this.output.WriteEndElement();
 						}
@@ -321,15 +413,20 @@ public class XmlDatabaseExport : IDatabaseExport, IDisposable
 					else if (PropertyValue is byte[] Bin)
 					{
 						this.output.WriteStartElement("Bin");
+
 						if (PropertyName is not null)
+						{
 							this.output.WriteAttributeString("n", PropertyName);
+						}
 
 						long c = Bin.Length;
 
 						if (c <= this.binaryDataSizeLimit)
 						{
 							if (c <= 1024)
+							{
 								this.output.WriteAttributeString("v", Convert.ToBase64String(Bin));
+							}
 							else
 							{
 								byte[] Buf = null;
@@ -340,21 +437,32 @@ public class XmlDatabaseExport : IDatabaseExport, IDisposable
 								while (i < c)
 								{
 									d = c - i;
+
 									if (d > 49152)
+									{
 										j = 49152;
+									}
 									else
+									{
 										j = (int)d;
+									}
 
 									if (Buf is null)
 									{
 										if (i == 0 && j == c)
+										{
 											Buf = Bin;
+										}
 										else
+										{
 											Buf = new byte[j];
+										}
 									}
 
 									if (Buf != Bin)
+									{
 										Array.Copy(Bin, i, Buf, 0, j);
+									}
 
 									this.output.WriteElementString("Chunk", Convert.ToBase64String(Buf, 0, j, Base64FormattingOptions.None));
 									i += j;
@@ -362,44 +470,64 @@ public class XmlDatabaseExport : IDatabaseExport, IDisposable
 							}
 						}
 						else
+						{
 							this.output.WriteAttributeString("bytes", c.ToString());
+						}
 
 						this.output.WriteEndElement();
 					}
 					else if (PropertyValue is Guid)
 					{
 						this.output.WriteStartElement("ID");
+
 						if (PropertyName is not null)
+						{
 							this.output.WriteAttributeString("n", PropertyName);
+						}
+
 						this.output.WriteAttributeString("v", string.Empty, PropertyValue.ToString());
 						this.output.WriteEndElement();
 					}
 					else if (PropertyValue is Array A)
 					{
 						this.output.WriteStartElement("Array");
+
 						if (PropertyName is not null)
+						{
 							this.output.WriteAttributeString("n", PropertyName);
+						}
+
 						this.output.WriteAttributeString("elementType", string.Empty, PropertyValue.GetType().GetElementType().FullName);
 
 						foreach (object Obj in A)
+						{
 							await this.ReportProperty(null, Obj);
+						}
 
 						this.output.WriteEndElement();
 					}
 					else if (PropertyValue is GenericObject Obj)
 					{
 						this.output.WriteStartElement("Obj");
+
 						if (PropertyName is not null)
+						{
 							this.output.WriteAttributeString("n", PropertyName);
+						}
+
 						this.output.WriteAttributeString("type", string.Empty, Obj.TypeName);
 
 						foreach (KeyValuePair<string, object> P in Obj)
+						{
 							await this.ReportProperty(P.Key, P.Value);
+						}
 
 						this.output.WriteEndElement();
 					}
 					else
+					{
 						throw new Exception("Unhandled property value type: " + PropertyValue.GetType().FullName);
+					}
 					break;
 
 				default:
@@ -432,10 +560,14 @@ public class XmlDatabaseExport : IDatabaseExport, IDisposable
 		if (Exception is AggregateException AggregateException)
 		{
 			foreach (Exception ex in AggregateException.InnerExceptions)
+			{
 				await this.ReportException(ex);
+			}
 		}
 		else if (Exception.InnerException is not null)
+		{
 			await this.ReportException(Exception.InnerException);
+		}
 
 		this.output.WriteEndElement();
 	}

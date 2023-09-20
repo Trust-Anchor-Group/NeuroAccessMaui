@@ -79,7 +79,9 @@ internal sealed partial class NavigationService : LoadableService, INavigationSe
 	public async Task GoToAsync<TArgs>(string Route, TArgs Args, BackMethod BackMethod = BackMethod.Inherited, string UniqueId = null) where TArgs : NavigationArgs, new()
 	{
 		if (!this.CanUseNavigationService)
+		{
 			return;
+		}
 
 		await this.UiSerializer.InvokeOnMainThreadAsync(async () =>
 		{
@@ -120,7 +122,9 @@ internal sealed partial class NavigationService : LoadableService, INavigationSe
 	public async Task GoBackAsync(bool Animate = true)
 	{
 		if (!this.CanUseNavigationService)
+		{
 			return;
+		}
 
 		try
 		{
@@ -177,25 +181,33 @@ internal sealed partial class NavigationService : LoadableService, INavigationSe
 	private void OnApplicationPropertyChanged(object Sender, System.ComponentModel.PropertyChangedEventArgs Args)
 	{
 		if (Args.PropertyName == nameof(Application.MainPage))
+		{
 			this.SubscribeToShellNavigatingIfNecessary((Application)Sender);
+		}
 	}
 
 	private void OnApplicationPropertyChanging(object Sender, PropertyChangingEventArgs Args)
 	{
 		if (Args.PropertyName == nameof(Application.MainPage))
+		{
 			this.UnsubscribeFromShellNavigatingIfNecessary((Application)Sender);
+		}
 	}
 
 	private void SubscribeToShellNavigatingIfNecessary(Application Application)
 	{
 		if (Application.MainPage is Shell Shell)
+		{
 			Shell.Navigating += this.Shell_Navigating;
+		}
 	}
 
 	private void UnsubscribeFromShellNavigatingIfNecessary(Application Application)
 	{
 		if (Application.MainPage is Shell Shell)
+		{
 			Shell.Navigating -= this.Shell_Navigating;
+		}
 	}
 
 	private void Shell_Navigating(object Sender, ShellNavigatingEventArgs e)
@@ -240,19 +252,25 @@ internal sealed partial class NavigationService : LoadableService, INavigationSe
 			{
 				string UniqueId = Args.GetUniqueId();
 				if (!string.IsNullOrEmpty(UniqueId))
+				{
 					PageName += UniqueId;
+				}
 
 				this.navigationArgsMap[PageName] = Args;
 			}
 			else
+			{
 				this.navigationArgsMap.Remove(PageName);
+			}
 		}
 	}
 
 	private NavigationArgs TryGetArgs(string Route, string UniqueId)
 	{
 		if (!string.IsNullOrEmpty(UniqueId))
+		{
 			Route += UniqueId;
+		}
 
 		if (this.TryGetPageName(Route, out string PageName) &&
 			this.navigationArgsMap.TryGetValue(PageName, out NavigationArgs Args))

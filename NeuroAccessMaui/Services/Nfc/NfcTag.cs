@@ -32,6 +32,8 @@ public class NfcTag : INfcTag
 	public void Dispose()
 	{
 		foreach (INfcInterface Interface in this.Interfaces)
+		{
 			Interface.Dispose();
+		}
 	}
 }

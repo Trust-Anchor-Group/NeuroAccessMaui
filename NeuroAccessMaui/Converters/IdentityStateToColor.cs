@@ -12,9 +12,13 @@ public class IdentityStateToColor : IValueConverter, IMarkupExtension
 	public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 	{
 		if (value is IdentityState State)
+		{
 			return ToColor(State);
+		}
 		else
-			return Color.Transparent;
+		{
+			return Colors.Transparent;
+		}
 	}
 
 	/// <summary>
@@ -26,9 +30,9 @@ public class IdentityStateToColor : IValueConverter, IMarkupExtension
 	{
 		return State switch
 		{
-			IdentityState.Approved => Color.LightGreen,
-			IdentityState.Created => Color.LightYellow,
-			_ => Color.LightSalmon,
+			IdentityState.Approved => Colors.LightGreen,
+			IdentityState.Created => Colors.LightYellow,
+			_ => Colors.LightSalmon,
 		};
 	}
 

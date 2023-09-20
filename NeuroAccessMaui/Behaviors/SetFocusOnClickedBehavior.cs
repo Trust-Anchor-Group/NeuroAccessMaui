@@ -41,7 +41,9 @@ public class SetFocusOnClickedBehavior : Behavior<Button>
 			Element.Focus();
 
 			if (Element is Entry Entry && Entry.Text is not null)
+			{
 				Entry.CursorPosition = Entry.Text.Length;
+			}
 		}
 	}
 }

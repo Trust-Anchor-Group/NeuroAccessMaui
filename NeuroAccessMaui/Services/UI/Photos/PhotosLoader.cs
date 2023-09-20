@@ -109,7 +109,9 @@ public class PhotosLoader : BaseViewModel
 			WhenDoneAction?.Invoke();
 
 			foreach (Photo Photo in this.photos)
+			{
 				return Photo;
+			}
 
 			return null;
 		}
@@ -126,7 +128,9 @@ public class PhotosLoader : BaseViewModel
 				WhenDoneAction?.Invoke();
 
 				foreach (Photo Photo in this.photos)
+				{
 					return Photo;
+				}
 
 				return null;
 			}
@@ -134,8 +138,11 @@ public class PhotosLoader : BaseViewModel
 			try
 			{
 				(byte[] Bin, string ContentType, int Rotation) = await this.GetPhoto(attachment, SignWith, Now);
+
 				if (Bin is null)
+				{
 					continue;
+				}
 
 				Photo Photo = new(Bin, Rotation);
 				First ??= Photo;
@@ -167,30 +174,45 @@ public class PhotosLoader : BaseViewModel
 	private async Task<(byte[], string, int)> GetPhoto(Attachment Attachment, SignWith SignWith, DateTime Now)
 	{
 		if (Attachment is null)
+		{
 			return (null, string.Empty, 0);
+		}
 
 		(byte[] Bin, string ContentType) = await this.AttachmentCacheService.TryGet(Attachment.Url);
+
 		if (Bin is not null)
+		{
 			return (Bin, ContentType, GetImageRotation(Bin));
+		}
 
 		if (!this.NetworkService.IsOnline || !this.XmppService.IsOnline)
+		{
 			return (null, string.Empty, 0);
+		}
 
 		KeyValuePair<string, TemporaryFile> pair = await this.XmppService.GetAttachment(Attachment.Url, SignWith, Constants.Timeouts.DownloadFile);
 
 		using TemporaryFile file = pair.Value;
+
 		if (this.loadPhotosTimestamp > Now)     // If download has been cancelled any time _during_ download, stop here.
+		{
 			return (null, string.Empty, 0);
+		}
 
 		if (pair.Value.Length > int.MaxValue)   // Too large
+		{
 			return (null, string.Empty, 0);
+		}
 
 		file.Reset();
 
 		ContentType = pair.Key;
 		Bin = new byte[file.Length];
+
 		if (file.Length != file.Read(Bin, 0, (int)file.Length))
+		{
 			return (null, string.Empty, 0);
+		}
 
 		bool IsContact = await this.XmppService.IsContact(Attachment.LegalId);
 
@@ -208,13 +230,19 @@ public class PhotosLoader : BaseViewModel
 	{
 		//!!! This rotation in xamarin is limited to Android
 		if (Device.RuntimePlatform == Device.iOS)
+		{
 			return 0;
+		}
 
 		if (JpegImage is null)
+		{
 			return 0;
+		}
 
 		if (!EXIF.TryExtractFromJPeg(JpegImage, out ExifTag[] Tags))
+		{
 			return 0;
+		}
 
 		return GetImageRotation(Tags);
 	}
@@ -284,13 +312,19 @@ public class PhotosLoader : BaseViewModel
 				break;
 			}
 			else
+			{
 				Photo ??= Attachment;
+			}
 		}
 
 		if (Photo is null)
+		{
 			return Task.FromResult<(string, int, int)>((null, 0, 0));
+		}
 		else
+		{
 			return LoadPhotoAsTemporaryFile(Photo, MaxWith, MaxHeight);
+		}
 	}
 
 	/// <summary>
@@ -329,7 +363,9 @@ public class PhotosLoader : BaseViewModel
 			return (FileName, Width, Height);
 		}
 		else
+		{
 			return (null, 0, 0);
+		}
 	}
 
 	#region From Waher.Content.Markdown.Model.Multimedia.ImageContent, with permission

@@ -292,10 +292,14 @@ public partial class App : Application, IDisposable
 		DependencyResolver.ResolveUsing(type =>
 		{
 			if (Types.GetType(type.FullName) is null)
+			{
 				return null;    // Type not managed by Runtime.Inventory. Xamarin.Forms resolves this using its default mechanism.
+			}
 
 			if (type.Assembly == DeviceAssembly && Types.GetDefaultConstructor(type) is null)
+			{
 				return null;
+			}
 
 			try
 			{
@@ -331,7 +335,9 @@ public partial class App : Application, IDisposable
 	public static T Instantiate<T>()
 	{
 		if (!defaultInstantiated)
+		{
 			defaultInstantiated = defaultInstantiatedSource.Task.Result;
+		}
 
 		return Types.Instantiate<T>(false);
 	}
@@ -356,7 +362,9 @@ public partial class App : Application, IDisposable
 		}
 
 		if (!this.initCompleted.Wait(60000))
+		{
 			throw new Exception("Initialization did not complete in time.");
+		}
 
 		this.StartupCompleted("StartupProfile.uml", false);
 	}
@@ -372,12 +380,16 @@ public partial class App : Application, IDisposable
 		}
 
 		if (!this.initCompleted.Wait(60000))
+		{
 			throw new Exception("Initialization did not complete in time.");
+		}
 
 		this.StartupCompleted("StartupProfile.uml", false);
 
 		if (!await App.VerifyPin())
+		{
 			await App.Stop();
+		}
 	}
 
 	/// <summary>
@@ -385,7 +397,7 @@ public partial class App : Application, IDisposable
 	/// </summary>
 	public async Task DoResume(bool BackgroundStart)
 	{
-		Instance = this;
+		appInstance = this;
 		this.startupCancellation = new CancellationTokenSource();
 
 		await this.PerformStartup(true, null, BackgroundStart);
@@ -397,7 +409,9 @@ public partial class App : Application, IDisposable
 		await this.DoResume(false);
 
 		if (!await App.VerifyPin())
+		{
 			await App.Stop();
+		}
 	}
 
 	private async Task PerformStartup(bool isResuming, ProfilerThread Thread, bool BackgroundStart)
@@ -498,7 +512,9 @@ public partial class App : Application, IDisposable
 		// and we want to make sure state is persisted and teardown is done correctly to avoid memory leaks.
 
 		if (this.MainPage?.BindingContext is BaseViewModel vm)
+		{
 			await vm.Shutdown();
+		}
 
 		await this.Shutdown(false, false);
 
@@ -547,40 +563,60 @@ public partial class App : Application, IDisposable
 				if (!BackgroundStart)
 				{
 					if (this.services.UiSerializer is not null)
+					{
 						this.services.UiSerializer.IsRunningInTheBackground = !inPanic;
+					}
 				}
 
 				if (inPanic)
 				{
 					if (this.services.XmppService is not null)
+					{
 						await this.services.XmppService.UnloadFast();
+					}
 				}
 				else
 				{
 					if (this.services.NavigationService is not null)
+					{
 						await this.services.NavigationService.Unload();
+					}
 
 					if (this.services.ContractOrchestratorService is not null)
+					{
 						await this.services.ContractOrchestratorService.Unload();
+					}
 
 					if (this.services.XmppService is not null)
+					{
 						await this.services.XmppService.Unload();
+					}
 
 					if (this.services.NetworkService is not null)
+					{
 						await this.services.NetworkService.Unload();
+					}
 
 					if (this.services.AttachmentCacheService is not null)
+					{
 						await this.services.AttachmentCacheService.Unload();
+					}
 
 					if (this.services.NavigationService is not null)
+					{
 						await this.services.NavigationService.Unload();
+					}
 				}
 
 				foreach (IEventSink Sink in Waher.Events.Log.Sinks)
+				{
 					Waher.Events.Log.Unregister(Sink);
+				}
 
 				if (this.services.StorageService is not null)
+				{
 					await this.services.StorageService.Shutdown();
+				}
 			}
 
 			// Causes list of singleton instances to be cleared.
@@ -616,9 +652,13 @@ public partial class App : Application, IDisposable
 				try
 				{
 					if (string.IsNullOrEmpty(tc.ObjectId))
+					{
 						await this.services.StorageService.Insert(tc);
+					}
 					else
+					{
 						await this.services.StorageService.Update(tc);
+					}
 				}
 				catch (KeyNotFoundException)
 				{
@@ -785,8 +825,11 @@ public partial class App : Application, IDisposable
 				};
 
 				KeyValuePair<string, object>[] Tags2 = this.services?.TagProfile?.LegalIdentity?.GetTags();
+
 				if (Tags2 is not null)
+				{
 					Tags.AddRange(Tags2);
+				}
 
 				StringBuilder Msg = new();
 
@@ -843,8 +886,11 @@ public partial class App : Application, IDisposable
 			try
 			{
 				string AppDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+
 				if (!Directory.Exists(AppDataFolder))
+				{
 					Directory.CreateDirectory(AppDataFolder);
+				}
 
 				ProfileFileName = Path.Combine(AppDataFolder, ProfileFileName);
 				File.WriteAllText(ProfileFileName, uml);
@@ -911,7 +957,9 @@ public partial class App : Application, IDisposable
 				case EditOperation.Keep:
 				default:
 					if (!IncludeUnchanged)
+					{
 						continue;
+					}
 
 					Prefix = ">\t";
 					break;
@@ -942,7 +990,9 @@ public partial class App : Application, IDisposable
 		string DiffMsg = Markdown.ToString();
 
 		if (SendAsAlert)
+		{
 			await SendAlert(DiffMsg, "text/markdown");
+		}
 
 		File.WriteAllText(FileName, CurrentState);
 		File.WriteAllText(FileName + ".diff.md", DiffMsg);
@@ -980,8 +1030,11 @@ public partial class App : Application, IDisposable
 	public static async Task<string> InputPin()
 	{
 		ITagProfile Profile = App.Instantiate<ITagProfile>();
+
 		if (!Profile.HasPin)
+		{
 			return string.Empty;
+		}
 
 		return await InputPin(Profile);
 	}
@@ -1001,13 +1054,18 @@ public partial class App : Application, IDisposable
 		if (!IsDebug)
 		{
 			ITagProfile Profile = Instantiate<ITagProfile>();
+
 			if (!Profile.HasPin)
+			{
 				return true;
+			}
 
 			bool NeedToVerifyPin = IsInactivitySafeIntervalPassed();
 
 			if (!displayedPinPopup && (Force || NeedToVerifyPin))
+			{
 				return await InputPin(Profile) is not null;
+			}
 		}
 
 		return true;
@@ -1018,7 +1076,7 @@ public partial class App : Application, IDisposable
 	/// </summary>
 	public static async Task CheckUserBlocking()
 	{
-		DateTime? DateTimeForLogin = await Instance.loginAuditor.GetEarliestLoginOpportunity(Constants.Pin.RemoteEndpoint, Constants.Pin.Protocol);
+		DateTime? DateTimeForLogin = await appInstance.loginAuditor.GetEarliestLoginOpportunity(Constants.Pin.RemoteEndpoint, Constants.Pin.Protocol);
 
 		if (DateTimeForLogin.HasValue)
 		{
@@ -1060,7 +1118,9 @@ public partial class App : Application, IDisposable
 	public static async Task<string> CheckPinAndUnblockUser(string Pin, ITagProfile Profile)
 	{
 		if (Pin is null)
+		{
 			return null;
+		}
 
 		long PinAttemptCounter = await GetCurrentPinCounter();
 
@@ -1068,13 +1128,13 @@ public partial class App : Application, IDisposable
 		{
 			ClearStartInactivityTime();
 			SetCurrentPinCounter(0);
-			await Instance.loginAuditor.UnblockAndReset(Constants.Pin.RemoteEndpoint);
+			await appInstance.loginAuditor.UnblockAndReset(Constants.Pin.RemoteEndpoint);
 			await PopupNavigation.Instance.PopAsync();
 			return Pin;
 		}
 		else
 		{
-			await Instance.loginAuditor.ProcessLoginFailure(Constants.Pin.RemoteEndpoint,
+			await appInstance.loginAuditor.ProcessLoginFailure(Constants.Pin.RemoteEndpoint,
 					Constants.Pin.Protocol, DateTime.Now, Constants.Pin.Reason);
 
 			PinAttemptCounter++;
@@ -1096,7 +1156,9 @@ public partial class App : Application, IDisposable
 		try
 		{
 			if (!Profile.HasPin)
+			{
 				return string.Empty;
+			}
 
 			Popups.Pin.PinPopup.PinPopupPage Page = new();
 			await PopupNavigation.Instance.PushAsync(Page);
@@ -1144,7 +1206,7 @@ public partial class App : Application, IDisposable
 	/// </summary>
 	private static async Task<long> GetCurrentPinCounter()
 	{
-		return await Instance.services.SettingsService.RestoreLongState(Constants.Pin.CurrentPinAttemptCounter);
+		return await appInstance.services.SettingsService.RestoreLongState(Constants.Pin.CurrentPinAttemptCounter);
 	}
 
 	/// <summary>
@@ -1152,7 +1214,7 @@ public partial class App : Application, IDisposable
 	/// </summary>
 	private static async void SetCurrentPinCounter(long CurrentPinAttemptCounter)
 	{
-		await Instance.services.SettingsService.SaveState(Constants.Pin.CurrentPinAttemptCounter, CurrentPinAttemptCounter);
+		await appInstance.services.SettingsService.SaveState(Constants.Pin.CurrentPinAttemptCounter, CurrentPinAttemptCounter);
 	}
 
 	/// <summary>

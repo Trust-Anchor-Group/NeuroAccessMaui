@@ -68,8 +68,7 @@ public static class XmppStateExtensions
 	/// <returns>Textual representation of an XMPP connection state.</returns>
 	public static string ToDisplayText(this XmppState State)
 	{
-		IStringLocalizer? Localizer = LocalizationManager.GetStringLocalizer()
-			?? throw new LocalizationException("There is no localization service");
+		IStringLocalizer? Localizer = LocalizationManager.GetStringLocalizer();
 
 		return State switch
 		{

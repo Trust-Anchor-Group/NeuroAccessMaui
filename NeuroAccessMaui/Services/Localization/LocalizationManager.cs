@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Localization;
+using NeuroAccessMaui.Exceptions;
 using NeuroAccessMaui.Resources.Languages;
 using System.ComponentModel;
 using System.Globalization;
@@ -16,14 +17,15 @@ public class LocalizationManager : INotifyPropertyChanged
 	public static EventHandler<FlowDirection>? FlowDirectionChanged;
 #pragma warning restore CA2211 // Non-constant fields should not be visible
 
-	public static IStringLocalizer? GetStringLocalizer(Type? StringResource = null)
+	public static IStringLocalizer GetStringLocalizer(Type? StringResource = null)
 	{
 		Type[] Arguments = [StringResource ?? DefaultStringResource];
 		Type GenericType = typeof(IStringLocalizer<>).MakeGenericType(Arguments);
-		return (IStringLocalizer?)ServiceHelper.GetService(GenericType);
+		return (IStringLocalizer)(ServiceHelper.GetService(GenericType)
+			?? throw new LocalizationException("There is no localization service"));
 	}
 
-	public static IStringLocalizer? GetStringLocalizer<TStringResource>()
+	public static IStringLocalizer GetStringLocalizer<TStringResource>()
 	{
 		return ServiceHelper.GetService<IStringLocalizer<TStringResource>>();
 	}

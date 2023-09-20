@@ -28,7 +28,9 @@ public class NfcService : ServiceReferences, INfcService
 		try
 		{
 			if (!await App.VerifyPin())
+			{
 				return;
+			}
 
 			string TagId = Hashes.BinaryToString(Tag.ID).ToUpper();
 			NfcTagReference TagReference = await NfcTagReference.FindByTagId(TagId);
@@ -76,7 +78,9 @@ public class NfcService : ServiceReferences, INfcService
 							List<object> Items = new();
 
 							if (LinkableView.EncodeAppLinks)
+							{
 								Items.Add(Title);
+							}
 
 							Items.Add(new Uri(Link));
 
@@ -87,7 +91,9 @@ public class NfcService : ServiceReferences, INfcService
 							}
 
 							if (LinkableView.HasMedia)
+							{
 								Items.Add(new KeyValuePair<byte[], string>(LinkableView.Media, LinkableView.MediaContentType));
+							}
 
 							bool Ok = await Ndef.SetMessage(Items.ToArray());
 
@@ -100,7 +106,9 @@ public class NfcService : ServiceReferences, INfcService
 							if (!Ok)
 							{
 								while (Items.Count > 2)
+								{
 									Items.RemoveAt(2);
+								}
 
 								Ok = await Ndef.SetMessage(Items.ToArray());
 
@@ -136,7 +144,9 @@ public class NfcService : ServiceReferences, INfcService
 								if (!string.IsNullOrEmpty(Constants.UriSchemes.GetScheme(UriRecord.Uri)))
 								{
 									if (await App.OpenUrlAsync(UriRecord.Uri))
+									{
 										return;
+									}
 								}
 							}
 						}

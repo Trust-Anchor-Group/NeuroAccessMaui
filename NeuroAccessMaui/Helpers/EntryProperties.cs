@@ -9,7 +9,7 @@ public class EntryProperties
 	/// Implements the attached property that defines the color of the border around an <see cref="Entry"/>.
 	/// </summary>
 	public static readonly BindableProperty BorderColorProperty
-		= BindableProperty.CreateAttached("BorderColor", typeof(Color), typeof(EntryProperties), Color.Default);
+		= BindableProperty.CreateAttached("BorderColor", typeof(Color), typeof(EntryProperties), default);
 
 	/// <summary>
 	/// Gets the color of the border around an <see cref="Entry"/>.

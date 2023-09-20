@@ -55,7 +55,9 @@ public class DisplayAlert : UiTask
 		bool Result;
 
 		if (!string.IsNullOrWhiteSpace(this.Accept) && !string.IsNullOrWhiteSpace(this.Cancel))
+		{
 			Result = await Application.Current.MainPage.DisplayAlert(this.Title, this.Message, this.Accept, this.Cancel);
+		}
 		else if (!string.IsNullOrWhiteSpace(this.Cancel))
 		{
 			await Application.Current.MainPage.DisplayAlert(this.Title, this.Message, this.Cancel);

@@ -16,10 +16,14 @@ internal sealed class SettingsService : ServiceReferences, ISettingsService
 	private static string FormatKey(string keyPrefix)
 	{
 		if (string.IsNullOrWhiteSpace(keyPrefix))
+		{
 			return wildCard;
+		}
 
 		if (!keyPrefix.EndsWith(wildCard))
+		{
 			keyPrefix += wildCard;
+		}
 
 		return keyPrefix;
 	}
@@ -145,7 +149,9 @@ internal sealed class SettingsService : ServiceReferences, ISettingsService
 			foreach (KeyValuePair<string, object> state in existingStates)
 			{
 				if (state.Value is T typedValue)
+				{
 					matches.Add((state.Key, typedValue));
+				}
 			}
 		}
 		catch (Exception e)
@@ -259,15 +265,19 @@ internal sealed class SettingsService : ServiceReferences, ISettingsService
 	public async Task<T> RestoreState<T>(string key, T defaultValueIfNotFound = default)
 	{
 		if (string.IsNullOrWhiteSpace(key))
+		{
 			return defaultValueIfNotFound;
-
+		}
 
 		try
 		{
 			object existingState = await RuntimeSettings.GetAsync(key, (object)null);
 
 			if (existingState is T typedValue)
+			{
 				return typedValue;
+			}
+
 			return defaultValueIfNotFound;
 		}
 		catch (Exception e)
@@ -281,7 +291,9 @@ internal sealed class SettingsService : ServiceReferences, ISettingsService
 	public async Task RemoveState(string key)
 	{
 		if (string.IsNullOrWhiteSpace(key))
+		{
 			return;
+		}
 
 		try
 		{
@@ -297,7 +309,9 @@ internal sealed class SettingsService : ServiceReferences, ISettingsService
 	public async Task RemoveStateWhereKeyStartsWith(string keyPrefix)
 	{
 		if (string.IsNullOrWhiteSpace(keyPrefix))
+		{
 			return;
+		}
 
 		try
 		{

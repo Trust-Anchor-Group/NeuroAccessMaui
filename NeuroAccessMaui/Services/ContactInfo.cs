@@ -270,11 +270,16 @@ public class ContactInfo
 	public static async Task<string> GetFriendlyName(CaseInsensitiveString RemoteId, IXmppService XmppService, ITagProfile TagProfile)
 	{
 		int i = RemoteId.IndexOf('@');
+
 		if (i < 0)
+		{
 			return RemoteId;
+		}
 
 		if (RemoteId == TagProfile.LegalIdentity?.Id)
+		{
 			return LocalizationResourceManager.Current["Me"];
+		}
 
 		string Account = RemoteId.Substring(0, i);
 		ContactInfo Info;
@@ -283,38 +288,54 @@ public class ContactInfo
 		if (AccountIsGuid = Guid.TryParse(Account, out Guid _))
 		{
 			Info = await FindByLegalId(RemoteId);
+
 			if (!string.IsNullOrEmpty(Info?.FriendlyName))
+			{
 				return Info.FriendlyName;
+			}
 
 			if (Info?.LegalIdentity is not null)
+			{
 				return GetFriendlyName(Info.LegalIdentity);
+			}
 		}
 
 		Info = await FindByBareJid(RemoteId);
 		if (Info is not null)
 		{
 			if (!string.IsNullOrEmpty(Info.FriendlyName))
+			{
 				return Info.FriendlyName;
+			}
 
 			if (Info.LegalIdentity is not null)
+			{
 				return GetFriendlyName(Info.LegalIdentity);
+			}
 
 			if (Info.MetaData is not null)
 			{
 				string s = GetFriendlyName(Info.MetaData);
+
 				if (!string.IsNullOrEmpty(s))
+				{
 					return s;
+				}
 			}
 		}
 
 		lock (identityCache)
 		{
-			if (identityCache.TryGetValue(RemoteId, out LegalIdentity Id))
+			if (identityCache.TryGetValue(RemoteId, out LegalIdentity? Id))
 			{
 				if (Id is not null)
+				{
 					return GetFriendlyName(Id);
+				}
 				else
+				{
 					AccountIsGuid = false;
+				}
 			}
 		}
 
@@ -357,13 +378,17 @@ public class ContactInfo
 	public static async Task<string[]> GetFriendlyName(string[] RemoteId, IServiceReferences Ref)
 	{
 		if (RemoteId is null)
+		{
 			return null;
+		}
 
 		int i, c = RemoteId.Length;
 		string[] Result = new string[c];
 
 		for (i = 0; i < c; i++)
+		{
 			Result[i] = await GetFriendlyName(RemoteId[i], Ref);
+		}
 
 		return Result;
 	}
@@ -570,10 +595,14 @@ public class ContactInfo
 		}
 
 		if (sb is not null)
+		{
 			return sb.ToString();
+		}
 
 		if (!string.IsNullOrEmpty(PersonalNumber))
+		{
 			return PersonalNumber;
+		}
 
 		return Identity.Id;
 	}
@@ -583,9 +612,13 @@ public class ContactInfo
 		if (!string.IsNullOrEmpty(Value))
 		{
 			if (sb is null)
+			{
 				sb = new StringBuilder();
+			}
 			else
+			{
 				sb.Append(' ');
+			}
 
 			sb.Append(Value);
 		}
@@ -604,28 +637,41 @@ public class ContactInfo
 		IServiceReferences Ref)
 	{
 		if (string.IsNullOrEmpty(NodeId) && string.IsNullOrEmpty(PartitionId) && string.IsNullOrEmpty(SourceId))
+		{
 			return await GetFriendlyName(BareJid, Ref);
+		}
 
 		ContactInfo Thing = await ContactInfo.FindByBareJid(BareJid, SourceId, PartitionId, NodeId);
+
 		if (Thing is not null)
+		{
 			return Thing.FriendlyName;
+		}
 
 		string s = NodeId;
 
 		if (!string.IsNullOrEmpty(PartitionId))
 		{
 			if (string.IsNullOrEmpty(s))
+			{
 				s = PartitionId;
+			}
 			else
+			{
 				s = string.Format(LocalizationResourceManager.Current["XInY"], s, PartitionId);
+			}
 		}
 
 		if (!string.IsNullOrEmpty(SourceId))
 		{
 			if (string.IsNullOrEmpty(s))
+			{
 				s = SourceId;
+			}
 			else
+			{
 				s = string.Format(LocalizationResourceManager.Current["XInY"], s, SourceId);
+			}
 		}
 
 		return string.Format(LocalizationResourceManager.Current["XOnY"], s, BareJid);
@@ -645,7 +691,9 @@ public class ContactInfo
 				foreach (Property P in this.metaData)
 				{
 					if (string.Compare(P.Name, PropertyName, true) == 0)
+					{
 						return P.Value;
+					}
 				}
 			}
 

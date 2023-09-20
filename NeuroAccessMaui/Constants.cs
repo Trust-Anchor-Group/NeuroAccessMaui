@@ -80,20 +80,24 @@ public static class Constants
 		public static string GetScheme(string Url)
 		{
 			if (string.IsNullOrWhiteSpace(Url))
+			{
 				return null;
+			}
 
 			int i = Url.IndexOf(':');
+
 			if (i < 0)
+			{
 				return null;
+			}
 
 			Url = Url[..i].ToLowerInvariant();
 
 			return Url switch
 			{
 				IotId or
-					TagSign or
-					Onboarding => Url,
-
+				TagSign or
+				Onboarding => Url,
 				_ => null,
 			};
 		}
@@ -127,8 +131,11 @@ public static class Constants
 		public static string RemoveScheme(string Url)
 		{
 			string Scheme = GetScheme(Url);
+
 			if (string.IsNullOrEmpty(Scheme))
+			{
 				return null;
+			}
 
 			return Url[(Scheme.Length + 1)..];
 		}

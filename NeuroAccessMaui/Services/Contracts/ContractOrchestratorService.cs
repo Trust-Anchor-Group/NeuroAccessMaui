@@ -82,14 +82,19 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 			LegalIdentity Identity;
 
 			if (e.RequestedIdentityId == this.TagProfile.LegalIdentity?.Id)
+			{
 				Identity = this.TagProfile.LegalIdentity;
+			}
 			else
 			{
 				(bool Succeeded, LegalIdentity LegalId) = await this.NetworkService.TryRequest(() => this.XmppService.GetLegalIdentity(e.RequestedIdentityId));
-				if (Succeeded && LegalId is not null)
-					Identity = LegalId;
-				else
+
+				if (!Succeeded || LegalId is null)
+				{
 					return;
+				}
+
+				Identity = LegalId;
 			}
 
 			if (Identity is null)
@@ -134,15 +139,19 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 			LegalIdentity Identity;
 
 			if (e.SignatoryIdentityId == this.TagProfile.LegalIdentity?.Id)
+			{
 				Identity = this.TagProfile.LegalIdentity;
+			}
 			else
 			{
 				(bool Succeeded, LegalIdentity LegalId) = await this.NetworkService.TryRequest(() => this.XmppService.GetLegalIdentity(e.SignatoryIdentityId));
 
-				if (Succeeded && LegalId is not null)
-					Identity = LegalId;
-				else
+				if (!Succeeded || LegalId is null)
+				{
 					return;
+				}
+
+				Identity = LegalId;
 			}
 
 			if (Identity is null)
@@ -186,7 +195,9 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 			LegalIdentity Identity = e.RequestedIdentity;
 
 			if (!e.Response || Identity is null)
+			{
 				await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["Message"], LocalizationResourceManager.Current["SignaturePetitionDenied"], LocalizationResourceManager.Current["Ok"]);
+			}
 			else
 			{
 				await this.NavigationService.GoToAsync(nameof(ViewIdentityPage),
@@ -210,7 +221,9 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 				try
 				{
 					if (!e.Response)
+					{
 						await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["PeerReviewRejected"], LocalizationResourceManager.Current["APeerYouRequestedToReviewHasRejected"], LocalizationResourceManager.Current["Ok"]);
+					}
 					else
 					{
 						StringBuilder Xml = new();
@@ -229,7 +242,9 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 						}
 
 						if (!Result.HasValue || !Result.Value)
+						{
 							await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["PeerReviewRejected"], LocalizationResourceManager.Current["APeerYouRequestedToReviewHasBeenRejectedDueToSignatureError"], LocalizationResourceManager.Current["Ok"]);
+						}
 						else
 						{
 							(bool Succeeded, LegalIdentity LegalIdentity) = await this.NetworkService.TryRequest(
@@ -237,7 +252,9 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 									this.TagProfile.LegalIdentity, Identity, e.Signature));
 
 							if (Succeeded)
+							{
 								await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["PeerReviewAccepted"], LocalizationResourceManager.Current["APeerReviewYouhaveRequestedHasBeenAccepted"], LocalizationResourceManager.Current["Ok"]);
+							}
 						}
 					}
 				}
@@ -297,7 +314,9 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 			this.XmppService.IsOnline;
 
 		if (!isConnected)
+		{
 			return;
+		}
 
 		(bool succeeded, LegalIdentity identity) = await this.NetworkService.TryRequest(() => this.XmppService.GetLegalIdentity(LegalId), displayAlert: false);
 		if (succeeded)
@@ -325,7 +344,9 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 						LocalizationResourceManager.Current["Continue"], LocalizationResourceManager.Current["Repair"]);
 
 					if (Response)
+					{
 						await this.TagProfile.SetLegalIdentity(identity);
+					}
 					else
 					{
 						try
@@ -342,7 +363,9 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 					}
 				}
 				else
+				{
 					await this.TagProfile.SetLegalIdentity(identity);
+				}
 
 				if (gotoRegistrationPage)
 				{
@@ -403,8 +426,11 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 	public async Task TagSignature(string Request)
 	{
 		int i = Request.IndexOf(',');
+
 		if (i < 0)
+		{
 			throw new InvalidOperationException(LocalizationResourceManager.Current["InvalidTagSignatureId"]);
+		}
 
 		string JID = Request[..i];
 		string Key = Request[(i + 1)..];
@@ -413,12 +439,16 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 			?? throw new InvalidOperationException(LocalizationResourceManager.Current["NoLegalIdSelected"]);
 
 		if (ID.State != IdentityState.Approved)
+		{
 			throw new InvalidOperationException(LocalizationResourceManager.Current["LegalIdNotApproved"]);
+		}
 
 		string IdRef = this.TagProfile?.LegalIdentity?.Id ?? string.Empty;
 
 		if (!await App.VerifyPin())
+		{
 			return;
+		}
 
 		StringBuilder Xml = new();
 
@@ -444,9 +474,13 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 			LegalIdentity Identity = e.RequestedIdentity;
 
 			if (!e.Response || Identity is null)
+			{
 				await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["Message"], LocalizationResourceManager.Current["PetitionToViewLegalIdentityWasDenied"], LocalizationResourceManager.Current["Ok"]);
+			}
 			else
+			{
 				await this.NavigationService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Identity));
+			}
 		}
 		catch (Exception ex)
 		{

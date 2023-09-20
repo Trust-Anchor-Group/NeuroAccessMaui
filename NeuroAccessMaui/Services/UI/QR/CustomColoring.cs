@@ -117,7 +117,9 @@ public class CustomColoring
 			}
 
 			if (d2 < 0.015)
+			{
 				return this.codeBg;
+			}
 		}
 
 		switch (Type)
@@ -132,15 +134,25 @@ public class CustomColoring
 				d2 = dx * dx + dy * dy;
 
 				if (d2 <= 0.25f)
+				{
 					return this.codeFg;
+				}
 				else if (d2 <= 0.27f)
+				{
 					return this.codeBgFg75;
+				}
 				else if (d2 <= 0.29f)
+				{
 					return this.codeBgFg50;
+				}
 				else if (d2 <= 0.30f)
+				{
 					return this.codeBgFg25;
+				}
 				else
+				{
 					return this.codeBg;
+				}
 
 			case DotType.FinderMarkerBackground:
 				return this.markerBg;

@@ -25,7 +25,9 @@ internal class NetworkService : LoadableService, INetworkService
 		if (this.BeginLoad(cancellationToken))
 		{
 			if (DeviceInfo.Platform != DevicePlatform.Unknown && !DesignMode.IsDesignModeEnabled) // Need to check this, as Xamarin.Essentials doesn't work in unit tests. It has no effect when running on a real phone.
+			{
 				Connectivity.ConnectivityChanged += this.Connectivity_ConnectivityChanged;
+			}
 
 			this.EndLoad(true);
 		}
@@ -39,7 +41,9 @@ internal class NetworkService : LoadableService, INetworkService
 		if (this.BeginUnload())
 		{
 			if (DeviceInfo.Platform != DevicePlatform.Unknown)
+			{
 				Connectivity.ConnectivityChanged -= this.Connectivity_ConnectivityChanged;
+			}
 
 			this.EndUnload();
 		}
@@ -59,13 +63,18 @@ internal class NetworkService : LoadableService, INetworkService
 	public async Task<(string hostName, int port, bool isIpAddress)> LookupXmppHostnameAndPort(string domainName)
 	{
 		if (IPAddress.TryParse(domainName, out IPAddress _))
+		{
 			return (domainName, defaultXmppPortNumber, true);
+		}
 
 		try
 		{
 			SRV endpoint = await DnsResolver.LookupServiceEndpoint(domainName, "xmpp-client", "tcp");
+
 			if (endpoint is not null && !string.IsNullOrWhiteSpace(endpoint.TargetHost) && endpoint.Port > 0)
+			{
 				return (endpoint.TargetHost, endpoint.Port, false);
+			}
 		}
 		catch (Exception)
 		{
@@ -102,7 +111,9 @@ internal class NetworkService : LoadableService, INetworkService
 				this.LogService.LogException(thrownException, GetParameter(memberName));
 
 				if (displayAlert)
+				{
 					await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], CreateMessage(LocalizationResourceManager.Current["ThereIsNoNetwork"], memberName));
+				}
 			}
 			else
 			{
@@ -119,28 +130,36 @@ internal class NetworkService : LoadableService, INetworkService
 				this.LogService.LogException(te, GetParameter(memberName));
 
 				if (displayAlert)
+				{
 					await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], CreateMessage(LocalizationResourceManager.Current["RequestTimedOut"], memberName));
+				}
 			}
 			else if (ae.InnerException is TaskCanceledException tce)
 			{
 				this.LogService.LogException(tce, GetParameter(memberName));
 
 				if (displayAlert)
+				{
 					await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], CreateMessage(LocalizationResourceManager.Current["RequestWasCancelled"], memberName));
+				}
 			}
 			else if (ae.InnerException is not null)
 			{
 				this.LogService.LogException(ae.InnerException, GetParameter(memberName));
 
 				if (displayAlert)
+				{
 					await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], CreateMessage(ae.InnerException.Message, memberName));
+				}
 			}
 			else
 			{
 				this.LogService.LogException(ae, GetParameter(memberName));
 
 				if (displayAlert)
+				{
 					await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], CreateMessage(ae.Message, memberName));
+				}
 			}
 		}
 		catch (TimeoutException te)
@@ -149,7 +168,9 @@ internal class NetworkService : LoadableService, INetworkService
 			this.LogService.LogException(te, GetParameter(memberName));
 
 			if (displayAlert)
+			{
 				await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], CreateMessage(LocalizationResourceManager.Current["RequestTimedOut"], memberName));
+			}
 		}
 		catch (TaskCanceledException tce)
 		{
@@ -157,7 +178,9 @@ internal class NetworkService : LoadableService, INetworkService
 			this.LogService.LogException(tce, GetParameter(memberName));
 
 			if (displayAlert)
+			{
 				await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], CreateMessage(LocalizationResourceManager.Current["RequestWasCancelled"], memberName));
+			}
 		}
 		catch (Exception e)
 		{
@@ -166,18 +189,26 @@ internal class NetworkService : LoadableService, INetworkService
 			thrownException = e;
 
 			if (e is XmppException xe && xe.Stanza is not null)
+			{
 				message = xe.Stanza.InnerText;
+			}
 			else
+			{
 				message = e.Message;
+			}
 
 			this.LogService.LogException(e, GetParameter(memberName));
 
 			if (displayAlert)
+			{
 				await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], CreateMessage(message, memberName));
+			}
 		}
 
 		if (rethrowException)
+		{
 			ExceptionDispatchInfo.Capture(thrownException).Throw();
+		}
 
 		return (false, default);
 	}
@@ -187,7 +218,9 @@ internal class NetworkService : LoadableService, INetworkService
 	{
 #if DEBUG
 		if (!string.IsNullOrWhiteSpace(memberName))
+		{
 			return message + Environment.NewLine + "Caller: " + memberName;
+		}
 #endif
 		return message;
 	}

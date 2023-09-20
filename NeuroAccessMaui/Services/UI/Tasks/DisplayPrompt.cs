@@ -55,13 +55,21 @@ public class DisplayPrompt : UiTask
 		string Result;
 
 		if (!string.IsNullOrWhiteSpace(this.Accept) && !string.IsNullOrWhiteSpace(this.Cancel))
+		{
 			Result = await Application.Current.MainPage.DisplayPromptAsync(this.Title, this.Message, this.Accept, this.Cancel);
+		}
 		else if (!string.IsNullOrWhiteSpace(this.Cancel))
+		{
 			Result = await Application.Current.MainPage.DisplayPromptAsync(this.Title, this.Message, this.Cancel);
+		}
 		else if (!string.IsNullOrWhiteSpace(this.Accept))
+		{
 			Result = await Application.Current.MainPage.DisplayPromptAsync(this.Title, this.Message, this.Accept);
+		}
 		else
+		{
 			Result = await Application.Current.MainPage.DisplayPromptAsync(this.Title, this.Message, LocalizationResourceManager.Current["Ok"]);
+		}
 
 		this.CompletionSource.TrySetResult(Result);
 	}

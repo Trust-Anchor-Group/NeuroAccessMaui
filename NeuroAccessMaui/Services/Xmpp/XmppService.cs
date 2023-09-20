@@ -64,7 +64,9 @@ internal sealed class XmppService : LoadableService, IXmppService
 	private async Task CreateXmppClient(bool CanCreateKeys, ProfilerThread Thread)
 	{
 		if (this.isCreatingClient)
+		{
 			return;
+		}
 
 		this.xmppThread = this.startupProfiler?.CreateThread("XMPP", ProfilerThreadType.StateMachine);
 		this.xmppThread?.Start();
@@ -103,17 +105,24 @@ internal sealed class XmppService : LoadableService, IXmppService
 					(HostName, PortNumber, IsIpAddress) = await this.NetworkService.LookupXmppHostnameAndPort(this.domainName);
 
 					if (HostName == this.domainName && PortNumber == XmppCredentials.DefaultPort)
+					{
 						await this.TagProfile.SetDomain(this.domainName, true, this.TagProfile.ApiKey, this.TagProfile.ApiSecret);
+					}
 				}
 
 				this.xmppLastStateChange = DateTime.Now;
 				this.xmppConnected = false;
 
 				Thread?.NewState("Client");
+
 				if (string.IsNullOrEmpty(this.passwordHashMethod))
+				{
 					this.xmppClient = new XmppClient(HostName, PortNumber, this.accountName, this.passwordHash, Constants.LanguageCodes.Default, this.appAssembly, this.sniffer);
+				}
 				else
+				{
 					this.xmppClient = new XmppClient(HostName, PortNumber, this.accountName, this.passwordHash, this.passwordHashMethod, Constants.LanguageCodes.Default, this.appAssembly, this.sniffer);
+				}
 
 				this.xmppClient.RequestRosterOnStartup = false;
 				this.xmppClient.TrustServer = !IsIpAddress;
@@ -236,25 +245,39 @@ internal sealed class XmppService : LoadableService, IXmppService
 	private bool XmppParametersCurrent()
 	{
 		if (this.xmppClient is null)
+		{
 			return false;
+		}
 
 		if (this.domainName != this.TagProfile.Domain)
+		{
 			return false;
+		}
 
 		if (this.accountName != this.TagProfile.Account)
+		{
 			return false;
+		}
 
 		if (this.passwordHash != this.TagProfile.PasswordHash)
+		{
 			return false;
+		}
 
 		if (this.passwordHashMethod != this.TagProfile.PasswordHashMethod)
+		{
 			return false;
+		}
 
 		if (this.contractsClient?.ComponentAddress != this.TagProfile.LegalJid)
+		{
 			return false;
+		}
 
 		if (this.fileUploadClient?.FileUploadJid != this.TagProfile.HttpFileUploadJid)
+		{
 			return false;
+		}
 
 		return true;
 	}
@@ -281,19 +304,27 @@ internal sealed class XmppService : LoadableService, IXmppService
 			DateTime Start = DateTime.Now;
 
 			while (this.xmppClient is null && DateTime.Now - Start < Timeout)
+			{
 				await Task.Delay(1000);
+			}
 
 			if (this.xmppClient is null)
+			{
 				return false;
+			}
 
 			Timeout -= DateTime.Now - Start;
 		}
 
 		if (this.xmppClient.State == XmppState.Connected)
+		{
 			return true;
+		}
 
 		if (Timeout < TimeSpan.Zero)
+		{
 			return false;
+		}
 
 		int i = await this.xmppClient.WaitStateAsync((int)Timeout.TotalMilliseconds, XmppState.Connected);
 		return i >= 0;
@@ -411,12 +442,18 @@ internal sealed class XmppService : LoadableService, IXmppService
 	private async Task TagProfile_StepChanged(object Sender, EventArgs e)
 	{
 		if (!this.IsLoaded)
+		{
 			return;
+		}
 
 		if (this.ShouldCreateClient())
+		{
 			await this.CreateXmppClient(this.TagProfile.Step <= RegistrationStep.RegisterIdentity, null);
+		}
 		else if (this.TagProfile.Step <= RegistrationStep.Account)
+		{
 			await this.DestroyXmppClient();
+		}
 	}
 
 	private Task XmppClient_Error(object Sender, Exception e)
@@ -428,9 +465,13 @@ internal sealed class XmppService : LoadableService, IXmppService
 	private Task XmppClient_ConnectionError(object Sender, Exception e)
 	{
 		if (e is ObjectDisposedException)
+		{
 			this.LatestConnectionError = LocalizationResourceManager.Current["UnableToConnect"];
+		}
 		else
+		{
 			this.LatestConnectionError = e.Message;
+		}
 
 		return Task.CompletedTask;
 	}
@@ -457,7 +498,9 @@ internal sealed class XmppService : LoadableService, IXmppService
 				this.RecreateReconnectTimer();
 
 				if (string.IsNullOrEmpty(this.TagProfile.PasswordHashMethod))
+				{
 					await this.TagProfile.SetAccount(this.TagProfile.Account, this.xmppClient.PasswordHash, this.xmppClient.PasswordHashMethod);
+				}
 
 				if (this.TagProfile.NeedsUpdating() && await this.DiscoverServices())
 				{
@@ -474,7 +517,9 @@ internal sealed class XmppService : LoadableService, IXmppService
 					}
 
 					if (this.fileUploadClient is null && !string.IsNullOrWhiteSpace(this.TagProfile.HttpFileUploadJid) && this.TagProfile.HttpFileUploadMaxSize.HasValue)
+					{
 						this.fileUploadClient = new HttpFileUploadClient(this.xmppClient, this.TagProfile.HttpFileUploadJid, this.TagProfile.HttpFileUploadMaxSize);
+					}
 				}
 
 				this.LogService.AddListener(this.xmppEventSink);
@@ -491,7 +536,9 @@ internal sealed class XmppService : LoadableService, IXmppService
 					this.xmppConnected = false;
 
 					if (this.xmppClient is not null && !this.xmppClient.Disposed)
+					{
 						this.xmppClient.Reconnect();
+					}
 				}
 
 				this.xmppThread?.Stop();
@@ -513,8 +560,11 @@ internal sealed class XmppService : LoadableService, IXmppService
 		try
 		{
 			Task T = this.ConnectionStateChanged?.Invoke(this, NewState);
+
 			if (T is not null)
+			{
 				await T;
+			}
 		}
 		catch (Exception ex)
 		{
@@ -586,9 +636,13 @@ internal sealed class XmppService : LoadableService, IXmppService
 		Task OnConnectionError(object _, Exception e)
 		{
 			if (e is ObjectDisposedException)
+			{
 				connectionError = LocalizationResourceManager.Current["UnableToConnect"];
+			}
 			else
+			{
 				connectionError = e.Message;
+			}
 
 			connected.TrySetResult(false);
 			return Task.CompletedTask;
@@ -612,8 +666,12 @@ internal sealed class XmppService : LoadableService, IXmppService
 
 				case XmppState.Authenticating:
 					authenticating = true;
+
 					if (operation == ConnectOperation.Connect)
+					{
 						connected.TrySetResult(true);
+					}
+
 					break;
 
 				case XmppState.Registering:
@@ -641,16 +699,24 @@ internal sealed class XmppService : LoadableService, IXmppService
 		try
 		{
 			if (string.IsNullOrEmpty(passwordMethod))
+			{
 				client = new XmppClient(hostName, portNumber, userName, password, languageCode, applicationAssembly, this.sniffer);
+			}
 			else
+			{
 				client = new XmppClient(hostName, portNumber, userName, password, passwordMethod, languageCode, applicationAssembly, this.sniffer);
+			}
 
 			if (operation == ConnectOperation.ConnectAndCreateAccount)
 			{
 				if (!string.IsNullOrEmpty(ApiKey) && !string.IsNullOrEmpty(ApiSecret))
+				{
 					client.AllowRegistration(ApiKey, ApiSecret);
+				}
 				else
+				{
 					client.AllowRegistration();
+				}
 			}
 
 			client.TrustServer = !isIpAddress;
@@ -679,7 +745,9 @@ internal sealed class XmppService : LoadableService, IXmppService
 			}
 
 			if (succeeded && (connectedFunc is not null))
+			{
 				await connectedFunc(client);
+			}
 
 			client.OnStateChanged -= OnStateChanged;
 			client.OnConnectionError -= OnConnectionError;
@@ -701,26 +769,44 @@ internal sealed class XmppService : LoadableService, IXmppService
 			System.Diagnostics.Debug.WriteLine("Sniffer: ", this.sniffer.SnifferToText());
 
 			if (!streamNegotiation || timeout)
+			{
 				errorMessage = string.Format(LocalizationResourceManager.Current["CantConnectTo"], domain);
+			}
 			else if (!streamOpened)
+			{
 				errorMessage = string.Format(LocalizationResourceManager.Current["DomainIsNotAValidOperator"], domain);
+			}
 			else if (!startingEncryption)
+			{
 				errorMessage = string.Format(LocalizationResourceManager.Current["DomainDoesNotFollowEncryptionPolicy"], domain);
+			}
 			else if (!authenticating)
+			{
 				errorMessage = string.Format(LocalizationResourceManager.Current["UnableToAuthenticateWith"], domain);
+			}
 			else if (!registering)
 			{
 				if (!string.IsNullOrWhiteSpace(connectionError))
+				{
 					errorMessage = connectionError;
+				}
 				else
+				{
 					errorMessage = string.Format(LocalizationResourceManager.Current["OperatorDoesNotSupportRegisteringNewAccounts"], domain);
+				}
 			}
 			else if (operation == ConnectOperation.ConnectAndCreateAccount)
+			{
 				errorMessage = string.Format(LocalizationResourceManager.Current["AccountNameAlreadyTaken"], this.accountName);
+			}
 			else if (operation == ConnectOperation.ConnectToAccount)
+			{
 				errorMessage = string.Format(LocalizationResourceManager.Current["InvalidUsernameOrPassword"], this.accountName);
+			}
 			else
+			{
 				errorMessage = string.Format(LocalizationResourceManager.Current["UnableToConnectTo"], domain);
+			}
 		}
 
 		return (succeeded, errorMessage);
@@ -729,17 +815,23 @@ internal sealed class XmppService : LoadableService, IXmppService
 	private void ReconnectTimer_Tick(object _)
 	{
 		if (this.xmppClient is null)
+		{
 			return;
+		}
 
 		if (!this.NetworkService.IsOnline)
+		{
 			return;
+		}
 
 		if (this.XmppStale())
 		{
 			this.xmppLastStateChange = DateTime.Now;
 
 			if (!this.xmppClient.Disposed)
+			{
 				this.xmppClient.Reconnect();
+			}
 		}
 	}
 
@@ -795,8 +887,11 @@ internal sealed class XmppService : LoadableService, IXmppService
 	public async Task<bool> DiscoverServices(XmppClient Client = null)
 	{
 		Client ??= this.xmppClient;
+
 		if (Client is null)
+		{
 			return false;
+		}
 
 		ServiceItemsDiscoveryEventArgs response;
 
@@ -815,18 +910,26 @@ internal sealed class XmppService : LoadableService, IXmppService
 		object SynchObject = new();
 
 		foreach (Item Item in response.Items)
+		{
 			Tasks.Add(this.CheckComponent(Client, Item, SynchObject));
+		}
 
 		await Task.WhenAll(Tasks.ToArray());
 
 		if (string.IsNullOrWhiteSpace(this.TagProfile.LegalJid))
+		{
 			return false;
+		}
 
 		if (string.IsNullOrWhiteSpace(this.TagProfile.HttpFileUploadJid) || !this.TagProfile.HttpFileUploadMaxSize.HasValue)
+		{
 			return false;
+		}
 
 		if (string.IsNullOrWhiteSpace(this.TagProfile.LogJid))
+		{
 			return false;
+		}
 
 		return true;
 	}
@@ -838,7 +941,9 @@ internal sealed class XmppService : LoadableService, IXmppService
 		lock (SynchObject)
 		{
 			if (itemResponse.HasFeature(ContractsClient.NamespaceLegalIdentities))
+			{
 				this.TagProfile.SetLegalJid(Item.JID);
+			}
 
 			if (itemResponse.HasFeature(HttpFileUploadClient.Namespace))
 			{
@@ -847,7 +952,9 @@ internal sealed class XmppService : LoadableService, IXmppService
 			}
 
 			if (itemResponse.HasFeature(XmppEventSink.NamespaceEventLogging))
+			{
 				this.TagProfile.SetLogJid(Item.JID);
+			}
 		}
 	}
 
@@ -858,19 +965,25 @@ internal sealed class XmppService : LoadableService, IXmppService
 	private async Task TransferIdDelivered(object Sender, MessageEventArgs e)
 	{
 		if (e.From != Constants.Domains.OnboardingDomain)
+		{
 			return;
+		}
 
 		string Code = XML.Attribute(e.Content, "code");
 		bool Deleted = XML.Attribute(e.Content, "deleted", false);
 
 		if (!Deleted)
+		{
 			return;
+		}
 
 		string CodesGenerated = await RuntimeSettings.GetAsync("TransferId.CodesSent", string.Empty);
 		string[] Codes = CodesGenerated.Split(CommonTypes.CRLF, StringSplitOptions.RemoveEmptyEntries);
 
 		if (Array.IndexOf<string>(Codes, Code) < 0)
+		{
 			return;
+		}
 
 		await this.DestroyXmppClient();
 
@@ -896,9 +1009,13 @@ internal sealed class XmppService : LoadableService, IXmppService
 		string CodesGenerated = await RuntimeSettings.GetAsync("TransferId.CodesSent", string.Empty);
 
 		if (string.IsNullOrEmpty(CodesGenerated))
+		{
 			CodesGenerated = Code;
+		}
 		else
+		{
 			CodesGenerated += "\r\n" + Code;
+		}
 
 		await RuntimeSettings.SetAsync("TransferId.CodesSent", CodesGenerated);
 		await Database.Provider.Flush();
@@ -948,7 +1065,9 @@ internal sealed class XmppService : LoadableService, IXmppService
 				string LocalizedMessage = LocalizationResourceManager.Current["ClientMessage" + Code];
 
 				if (!string.IsNullOrEmpty(LocalizedMessage))
+				{
 					Message = LocalizedMessage;
+				}
 			}
 			catch (Exception)
 			{
@@ -995,12 +1114,16 @@ internal sealed class XmppService : LoadableService, IXmppService
 		DateTime Now = DateTime.UtcNow;
 
 		if (!string.IsNullOrEmpty(this.token) && Now.Subtract(this.tokenCreated).TotalSeconds < Seconds - 10)
+		{
 			return this.token;
+		}
 
 		if (!this.IsOnline)
 		{
 			if (!await this.WaitForConnectedState(TimeSpan.FromSeconds(20)))
+			{
 				return this.token;
+			}
 		}
 
 		this.token = await this.httpxClient.GetJwtTokenAsync(Seconds);
@@ -1023,7 +1146,9 @@ internal sealed class XmppService : LoadableService, IXmppService
 		StringBuilder Url = new();
 
 		if (this.IsOnline)
+		{
 			Url.Append("httpx://");
+		}
 		else if (!string.IsNullOrEmpty(this.token))     // Token needs to be retrieved reegularly when connected, if protectedd APIs are to be used when disconnected or during connection.
 		{
 			Url.Append("https://");
@@ -1031,7 +1156,9 @@ internal sealed class XmppService : LoadableService, IXmppService
 			KeyValuePair<string, string> Authorization = new("Authorization", "Bearer " + this.token);
 
 			if (Headers is null)
+			{
 				Headers = new KeyValuePair<string, string>[] { Authorization };
+			}
 			else
 			{
 				int c = Headers.Length;
@@ -1041,7 +1168,9 @@ internal sealed class XmppService : LoadableService, IXmppService
 			}
 		}
 		else
+		{
 			throw new IOException("No connection and no token available for call to protecte API.");
+		}
 
 		Url.Append(this.TagProfile.Domain);
 		Url.Append(LocalResource);
@@ -1062,7 +1191,9 @@ internal sealed class XmppService : LoadableService, IXmppService
 		get
 		{
 			if (this.fileUploadClient is null)
+			{
 				throw new InvalidOperationException(LocalizationResourceManager.Current["FileUploadServiceNotFound"]);
+			}
 
 			return this.fileUploadClient;
 		}
@@ -1129,8 +1260,11 @@ internal sealed class XmppService : LoadableService, IXmppService
 		foreach (LegalIdentityAttachment a in Attachments)
 		{
 			HttpFileUploadEventArgs e2 = await this.XmppService.RequestUploadSlotAsync(Path.GetFileName(a.Filename), a.ContentType, a.ContentLength);
+
 			if (!e2.Ok)
+			{
 				throw e2.StanzaError ?? new Exception(e2.ErrorText);
+			}
 
 			await e2.PUT(a.Data, a.ContentType, (int)Constants.Timeouts.UploadFile.TotalMilliseconds);
 
@@ -1152,7 +1286,9 @@ internal sealed class XmppService : LoadableService, IXmppService
 	public async Task<LegalIdentity[]> GetLegalIdentities(XmppClient client = null)
 	{
 		if (client is null)
+		{
 			return await this.ContractsClient.GetLegalIdentitiesAsync();
+		}
 		else
 		{
 			using ContractsClient cc = new(client, this.TagProfile.LegalJid);  // No need to load keys for this operation.
@@ -1168,8 +1304,11 @@ internal sealed class XmppService : LoadableService, IXmppService
 	public async Task<LegalIdentity> GetLegalIdentity(CaseInsensitiveString legalIdentityId)
 	{
 		ContactInfo Info = await ContactInfo.FindByLegalId(legalIdentityId);
+
 		if (Info is not null && Info.LegalIdentity is not null)
+		{
 			return Info.LegalIdentity;
+		}
 
 		return await this.ContractsClient.GetLegalIdentityAsync(legalIdentityId);
 	}
@@ -1194,13 +1333,17 @@ internal sealed class XmppService : LoadableService, IXmppService
 	public async Task<bool> HasPrivateKey(CaseInsensitiveString legalIdentityId, XmppClient client = null)
 	{
 		if (client is null)
+		{
 			return await this.ContractsClient.HasPrivateKey(legalIdentityId);
+		}
 		else
 		{
 			using ContractsClient cc = new(client, this.TagProfile.LegalJid);
 
 			if (!await cc.LoadKeys(false))
+			{
 				return false;
+			}
 
 			return await cc.HasPrivateKey(legalIdentityId);
 		}
@@ -1370,7 +1513,9 @@ internal sealed class XmppService : LoadableService, IXmppService
 		get
 		{
 			if (this.contractsClient is null)
+			{
 				throw new InvalidOperationException(LocalizationResourceManager.Current["LegalServiceNotFound"]);
+			}
 
 			return this.contractsClient;
 		}

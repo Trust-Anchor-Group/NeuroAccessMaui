@@ -43,10 +43,14 @@ public class OcrService : ServiceReferences, IOcrService
 		Request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", Token);
 
 		if (!string.IsNullOrEmpty(Language))
+		{
 			Request.Headers.Add("X-LANGUAGE", Language);
+		}
 
 		if (PageSegmentationMode.HasValue)
+		{
 			Request.Headers.Add("X-PSM", PageSegmentationMode.Value.ToString());
+		}
 
 		HttpResponseMessage Response = await HttpClient.SendAsync(Request);
 		Response.EnsureSuccessStatusCode();
@@ -56,12 +60,18 @@ public class OcrService : ServiceReferences, IOcrService
 		object Obj = await InternetContent.DecodeAsync(ContentType, Bin, Uri);
 
 		if (Obj is not string Text)
+		{
 			throw new Exception("Unexpected response.");
+		}
 
 		if (string.IsNullOrEmpty(Text))
+		{
 			return new string[0];
+		}
 		else
+		{
 			return Text.Split(CommonTypes.CRLF, StringSplitOptions.RemoveEmptyEntries);
+		}
 	}
 
 }

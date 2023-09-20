@@ -41,7 +41,9 @@ internal sealed class StorageService : ServiceReferences, IStorageService
 		lock (this.tasksWaiting)
 		{
 			if (this.started)
+			{
 				return;
+			}
 
 			this.started = true;
 		}
@@ -52,7 +54,9 @@ internal sealed class StorageService : ServiceReferences, IStorageService
 			Thread?.NewState("Provider");
 
 			if (Database.HasProvider)
+			{
 				this.databaseProvider = Database.Provider as FilesProvider;
+			}
 
 			if (this.databaseProvider is null)
 			{
@@ -141,7 +145,9 @@ internal sealed class StorageService : ServiceReferences, IStorageService
 			this.initialized = Result;
 
 			foreach (TaskCompletionSource<bool> Wait in this.tasksWaiting)
+			{
 				Wait.TrySetResult(Result);
+			}
 
 			this.tasksWaiting.Clear();
 		}
@@ -153,7 +159,9 @@ internal sealed class StorageService : ServiceReferences, IStorageService
 		lock (this.tasksWaiting)
 		{
 			if (this.initialized.HasValue)
+			{
 				return Task.FromResult<bool>(this.initialized.Value);
+			}
 
 			TaskCompletionSource<bool> Wait = new();
 			this.tasksWaiting.AddLast(Wait);
@@ -240,7 +248,9 @@ internal sealed class StorageService : ServiceReferences, IStorageService
 			FileName = Path.Combine(this.dataFolder, FileName);
 
 			if (File.Exists(FileName))
+			{
 				File.Delete(FileName);
+			}
 		}
 		catch (Exception)
 		{

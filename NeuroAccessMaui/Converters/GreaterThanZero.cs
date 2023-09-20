@@ -11,11 +11,17 @@ public class GreaterThanZero : IValueConverter, IMarkupExtension
 	public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 	{
 		if (value is decimal v)
+		{
 			return v > 0;
+		}
 		else if (value is double d)
+		{
 			return d > 0;
+		}
 		else if (value is int i)
+		{
 			return i > 0;
+		}
 
 		return false;
 	}

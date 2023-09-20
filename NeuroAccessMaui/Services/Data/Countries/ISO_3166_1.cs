@@ -257,7 +257,9 @@ public static class ISO_3166_1
 	static ISO_3166_1()
 	{
 		foreach (KeyValuePair<string, string> pair in countryByCode)
+		{
 			codeByCountry[pair.Value] = pair.Key;
+		}
 	}
 
 	/// <summary>
@@ -316,7 +318,9 @@ public static class ISO_3166_1
 	public static string ToName(string CountryCode)
 	{
 		if (TryGetCountry(CountryCode, out string Country))
+		{
 			return Country;
+		}
 
 		return CountryCode;
 	}
@@ -329,7 +333,9 @@ public static class ISO_3166_1
 	public static string ToCode(string Country)
 	{
 		if (TryGetCode(Country, out string CountryCode))
+		{
 			return CountryCode;
+		}
 
 		return Country;
 	}

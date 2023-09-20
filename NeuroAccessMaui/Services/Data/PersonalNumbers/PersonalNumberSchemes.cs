@@ -26,8 +26,11 @@ public static class PersonalNumberSchemes
 			}
 
 			XmlNodeList childNodes = doc.DocumentElement?.ChildNodes;
+
 			if (childNodes is null)
+			{
 				return;
+			}
 
 			foreach (XmlNode n in childNodes)
 			{
@@ -70,7 +73,9 @@ public static class PersonalNumberSchemes
 					}
 
 					if (pattern is null || string.IsNullOrWhiteSpace(variable) || string.IsNullOrWhiteSpace(displayString))
+					{
 						continue;
+					}
 
 					if (!schemesByCode.TryGetValue(country, out LinkedList<PersonalNumberScheme> schemes))
 					{

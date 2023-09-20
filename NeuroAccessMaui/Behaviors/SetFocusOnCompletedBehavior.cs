@@ -49,8 +49,12 @@ public class SetFocusOnCompletedBehavior : Behavior<Entry>
 	private void Entry_Completed(object Sender, EventArgs e)
 	{
 		if (this.UseAlternative && this.SetFocusToAlternative is not null)
+		{
 			SetFocusOnClickedBehavior.FocusOn(this.SetFocusToAlternative);
+		}
 		else
+		{
 			SetFocusOnClickedBehavior.FocusOn(this.SetFocusTo);
+		}
 	}
 }

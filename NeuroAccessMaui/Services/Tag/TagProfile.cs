@@ -124,8 +124,11 @@ public class TagProfile : ITagProfile
 		try
 		{
 			Task T = StepChanged?.Invoke(this, EventArgs.Empty);
+
 			if (T is not null)
+			{
 				await T;
+			}
 		}
 		catch (Exception ex)
 		{
@@ -534,7 +537,9 @@ public class TagProfile : ITagProfile
 		this.IsDirty = true;
 
 		if (!this.suppressPropertyChangedEvents)
+		{
 			this.OnChanged(new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+		}
 	}
 
 	/// <inheritdoc/>
@@ -550,7 +555,9 @@ public class TagProfile : ITagProfile
 	private async Task DecrementConfigurationStep(RegistrationStep? stepToRevertTo = null)
 	{
 		if (stepToRevertTo.HasValue)
+		{
 			await this.SetStep(stepToRevertTo.Value);
+		}
 		else
 		{
 			switch (this.Step)
@@ -581,7 +588,9 @@ public class TagProfile : ITagProfile
 	private async Task IncrementConfigurationStep(RegistrationStep? stepToGoTo = null)
 	{
 		if (stepToGoTo.HasValue)
+		{
 			await this.SetStep(stepToGoTo.Value);
+		}
 		else
 		{
 			switch (this.Step)
@@ -630,7 +639,9 @@ public class TagProfile : ITagProfile
 		this.ApiSecret = Secret;
 
 		if (!string.IsNullOrWhiteSpace(this.Domain) && this.Step == RegistrationStep.ValidateContactInfo)
+		{
 			await this.IncrementConfigurationStep();
+		}
 	}
 
 	/// <inheritdoc/>
@@ -644,7 +655,9 @@ public class TagProfile : ITagProfile
 	public async Task RevalidateContactInfo()
 	{
 		if (!string.IsNullOrWhiteSpace(this.Domain) && this.Step == RegistrationStep.ValidateContactInfo)
+		{
 			await this.IncrementConfigurationStep();
+		}
 	}
 
 	/// <inheritdoc/>
@@ -663,7 +676,9 @@ public class TagProfile : ITagProfile
 		this.ApiSecret = string.Empty;
 
 		if (!string.IsNullOrWhiteSpace(this.Account) && this.Step == RegistrationStep.Account)
+		{
 			await this.IncrementConfigurationStep();
+		}
 	}
 
 	/// <inheritdoc/>
@@ -749,7 +764,9 @@ public class TagProfile : ITagProfile
 	public async Task SetIsValidated()
 	{
 		if (this.Step == RegistrationStep.ValidateIdentity)
+		{
 			await this.IncrementConfigurationStep();
+		}
 	}
 
 	/// <inheritdoc/>
@@ -767,14 +784,18 @@ public class TagProfile : ITagProfile
 		}
 
 		if (this.step == RegistrationStep.Pin)
+		{
 			await this.IncrementConfigurationStep();
+		}
 	}
 
 	/// <inheritdoc/>
 	public async Task RevertPinStep()
 	{
 		if (this.Step == RegistrationStep.Pin)
+		{
 			await this.DecrementConfigurationStep(RegistrationStep.ValidateIdentity); // prev
+		}
 	}
 
 	/// <inheritdoc/>
@@ -864,7 +885,9 @@ public class TagProfile : ITagProfile
 	public PinStrength ValidatePinStrength(string Pin)
 	{
 		if (Pin is null)
+		{
 			return PinStrength.NotEnoughDigitsLettersSigns;
+		}
 
 		Pin = Pin.Normalize();
 
@@ -908,7 +931,10 @@ public class TagProfile : ITagProfile
 			}
 
 			for (int j = 0; j < SlidingWindow.Length - 1; j++)
+			{
 				SlidingWindow[j] = SlidingWindow[j + 1];
+			}
+
 			SlidingWindow[^1] = Symbol;
 
 			int[] SlidingWindowDifferences = new int[SlidingWindow.Length - 1];
@@ -937,13 +963,19 @@ public class TagProfile : ITagProfile
 			const StringComparison Comparison = StringComparison.CurrentCultureIgnoreCase;
 
 			if (LegalIdentity[Constants.XmppProperties.PersonalNumber] is string PersonalNumber && PersonalNumber != "" && Pin.Contains(PersonalNumber, Comparison))
+			{
 				return PinStrength.ContainsPersonalNumber;
+			}
 
 			if (LegalIdentity[Constants.XmppProperties.Phone] is string Phone && !string.IsNullOrEmpty(Phone) && Pin.Contains(Phone, Comparison))
+			{
 				return PinStrength.ContainsPhoneNumber;
+			}
 
 			if (LegalIdentity[Constants.XmppProperties.EMail] is string EMail && !string.IsNullOrEmpty(EMail) && Pin.Contains(EMail, Comparison))
+			{
 				return PinStrength.ContainsEMail;
+			}
 
 			IEnumerable<string> NameWords = new string[]
 			{
@@ -955,7 +987,9 @@ public class TagProfile : ITagProfile
 			.Where(Word => Word?.GetUnicodeLength() > 2);
 
 			if (NameWords.Any(NameWord => Pin.Contains(NameWord, Comparison)))
+			{
 				return PinStrength.ContainsName;
+			}
 
 			IEnumerable<string> AddressWords = new string[]
 			{
@@ -966,7 +1000,9 @@ public class TagProfile : ITagProfile
 			.Where(Word => Word?.GetUnicodeLength() > 2);
 
 			if (AddressWords.Any(AddressWord => Pin.Contains(AddressWord, Comparison)))
+			{
 				return PinStrength.ContainsAddress;
+			}
 		}
 
 		const int MinDigitsCount = Constants.Authentication.MinPinSymbolsFromDifferentClasses;

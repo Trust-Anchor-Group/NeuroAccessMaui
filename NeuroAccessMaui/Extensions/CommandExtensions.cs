@@ -14,6 +14,8 @@ public static class CommandExtensions
 	public static void ChangeCanExecute(this ICommand command)
 	{
 		if (command is Command cmd)
+		{
 			cmd.ChangeCanExecute();
+		}
 	}
 }

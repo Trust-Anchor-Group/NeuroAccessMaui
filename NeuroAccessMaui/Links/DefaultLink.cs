@@ -33,7 +33,9 @@ public class DefaultLink : ILinkOpener
 	public async Task<bool> TryOpenLink(Uri Link)
 	{
 		if (await Launcher.TryOpenAsync(Link.OriginalString))
+		{
 			return true;
+		}
 		else
 		{
 			ServiceReferences Services = new();

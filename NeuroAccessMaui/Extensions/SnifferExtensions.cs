@@ -16,7 +16,9 @@ public static class SnifferExtensions
 	public static async Task<string> SnifferToText(this InMemorySniffer sniffer)
 	{
 		if (sniffer is null)
+		{
 			return string.Empty;
+		}
 
 		StringBuilder sb = new();
 

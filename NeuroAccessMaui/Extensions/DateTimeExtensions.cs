@@ -12,8 +12,6 @@ public static class DateTimeExtensions
 	/// <returns>A DateTime, or null</returns>
 	public static DateTime? GetDateOrNullIfMinValue(this DateTime date)
 	{
-		if (date == DateTime.MinValue)
-			return null;
-		return date;
+		return (date == DateTime.MinValue) ? null : date;
 	}
 }

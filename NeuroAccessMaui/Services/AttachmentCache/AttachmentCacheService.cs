@@ -28,7 +28,9 @@ internal sealed partial class AttachmentCacheService : LoadableService, IAttachm
 				this.CreateCacheFolderIfNeeded();
 
 				if (!isResuming)
+				{
 					await this.EvictOldEntries();
+				}
 
 				this.EndLoad(true);
 			}
@@ -50,18 +52,25 @@ internal sealed partial class AttachmentCacheService : LoadableService, IAttachm
 		try
 		{
 			if (string.IsNullOrWhiteSpace(Url) || !Uri.IsWellFormedUriString(Url, UriKind.RelativeOrAbsolute))
+			{
 				return (null, string.Empty);
+			}
 
 			CacheEntry Entry = await Database.FindFirstDeleteRest<CacheEntry>(new FilterFieldEqualTo("Url", Url));
+
 			if (Entry is null)
+			{
 				return (null, string.Empty);
+			}
 
 			bool Exists = File.Exists(Entry.LocalFileName);
 
 			if (DateTime.UtcNow >= Entry.Expires || !Exists)
 			{
 				if (Exists)
+				{
 					File.Delete(Entry.LocalFileName);
+				}
 
 				await Database.Delete(Entry);
 				await Database.Provider.Flush();
@@ -133,7 +142,9 @@ internal sealed partial class AttachmentCacheService : LoadableService, IAttachm
 		string CacheFolder = GetCacheFolder();
 
 		if (!Directory.Exists(CacheFolder))
+		{
 			Directory.CreateDirectory(CacheFolder);
+		}
 
 		return CacheFolder;
 	}
@@ -152,7 +163,9 @@ internal sealed partial class AttachmentCacheService : LoadableService, IAttachm
 				try
 				{
 					if (File.Exists(Entry.LocalFileName))
+					{
 						File.Delete(Entry.LocalFileName);
+					}
 				}
 				catch (Exception ex)
 				{
