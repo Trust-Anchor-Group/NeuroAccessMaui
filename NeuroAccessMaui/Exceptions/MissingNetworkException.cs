@@ -15,19 +15,19 @@ public class MissingNetworkException : Exception
 	/// <summary>
 	/// Initializes a new instance of the <see cref="MissingNetworkException"/> class with the specified message.
 	/// </summary>
-	/// <param name="message">The message.</param>
-	public MissingNetworkException(string message)
-	: base(message)
+	/// <param name="Message">The message.</param>
+	public MissingNetworkException(string Message)
+	: base(Message)
 	{
 	}
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="MissingNetworkException"/> class with the specified message and inner exception.
 	/// </summary>
-	/// <param name="message">The message.</param>
-	/// <param name="innerException">The inner exception.</param>
-	public MissingNetworkException(string message, Exception innerException)
-	: base(message, innerException)
+	/// <param name="Message">The message.</param>
+	/// <param name="InnerException">The inner exception.</param>
+	public MissingNetworkException(string Message, Exception InnerException)
+	: base(Message, InnerException)
 	{
 	}
 }

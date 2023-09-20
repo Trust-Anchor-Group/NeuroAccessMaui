@@ -59,5 +59,167 @@ namespace NeuroAccessMaui.Resources.Languages {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Approved.
+        /// </summary>
+        internal static string IdentityState_Approved {
+            get {
+                return ResourceManager.GetString("IdentityState_Approved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Compromized.
+        /// </summary>
+        internal static string IdentityState_Compromized {
+            get {
+                return ResourceManager.GetString("IdentityState_Compromized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Created.
+        /// </summary>
+        internal static string IdentityState_Created {
+            get {
+                return ResourceManager.GetString("IdentityState_Created", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Obsoleted.
+        /// </summary>
+        internal static string IdentityState_Obsoleted {
+            get {
+                return ResourceManager.GetString("IdentityState_Obsoleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rejected.
+        /// </summary>
+        internal static string IdentityState_Rejected {
+            get {
+                return ResourceManager.GetString("IdentityState_Rejected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Authenticating network identity.
+        /// </summary>
+        internal static string XmppState_Authenticating {
+            get {
+                return ResourceManager.GetString("XmppState_Authenticating", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Binding connection.
+        /// </summary>
+        internal static string XmppState_Binding {
+            get {
+                return ResourceManager.GetString("XmppState_Binding", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connected.
+        /// </summary>
+        internal static string XmppState_Connected {
+            get {
+                return ResourceManager.GetString("XmppState_Connected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Establishing connection.
+        /// </summary>
+        internal static string XmppState_Connecting {
+            get {
+                return ResourceManager.GetString("XmppState_Connecting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connection error.
+        /// </summary>
+        internal static string XmppState_Error {
+            get {
+                return ResourceManager.GetString("XmppState_Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fetching roster.
+        /// </summary>
+        internal static string XmppState_FetchingRoster {
+            get {
+                return ResourceManager.GetString("XmppState_FetchingRoster", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disconnected.
+        /// </summary>
+        internal static string XmppState_Offline {
+            get {
+                return ResourceManager.GetString("XmppState_Offline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Registering with broker.
+        /// </summary>
+        internal static string XmppState_Registering {
+            get {
+                return ResourceManager.GetString("XmppState_Registering", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Requesting session.
+        /// </summary>
+        internal static string XmppState_RequestingSession {
+            get {
+                return ResourceManager.GetString("XmppState_RequestingSession", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Setting presence.
+        /// </summary>
+        internal static string XmppState_SettingPresence {
+            get {
+                return ResourceManager.GetString("XmppState_SettingPresence", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Encrypting connection.
+        /// </summary>
+        internal static string XmppState_StartingEncryption {
+            get {
+                return ResourceManager.GetString("XmppState_StartingEncryption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Negotiating stream.
+        /// </summary>
+        internal static string XmppState_StreamNegotiation {
+            get {
+                return ResourceManager.GetString("XmppState_StreamNegotiation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stream established.
+        /// </summary>
+        internal static string XmppState_StreamOpened {
+            get {
+                return ResourceManager.GetString("XmppState_StreamOpened", resourceCulture);
+            }
+        }
     }
 }

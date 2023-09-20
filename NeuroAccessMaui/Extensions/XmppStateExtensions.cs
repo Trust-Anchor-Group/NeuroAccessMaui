@@ -1,4 +1,8 @@
-﻿using Waher.Networking.XMPP;
+﻿using Microsoft.Extensions.Localization;
+using NeuroAccessMaui.Exceptions;
+using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services.Localization;
+using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 
 namespace NeuroAccessMaui.Extensions;
@@ -18,23 +22,23 @@ public static class XmppStateExtensions
 		return State switch
 		{
 			XmppState.Error or
-				XmppState.Offline => Color.Red,
+				XmppState.Offline => Colors.Red,
 
 			XmppState.Authenticating or
 				XmppState.Connecting or
 				XmppState.Registering or
 				XmppState.StartingEncryption or
 				XmppState.StreamNegotiation or
-				XmppState.StreamOpened => Color.Yellow,
+				XmppState.StreamOpened => Colors.Yellow,
 
 			XmppState.Binding or
 				XmppState.FetchingRoster or
 				XmppState.RequestingSession or
-				XmppState.SettingPresence => Blend(Color.Yellow, connectedColor, 0.5),
+				XmppState.SettingPresence => Blend(Colors.Yellow, connectedColor, 0.5),
 
 			XmppState.Connected => connectedColor,
 
-			_ => Color.Gray,
+			_ => Colors.Gray,
 		};
 	}
 
@@ -49,10 +53,10 @@ public static class XmppStateExtensions
 	/// <returns>Blended color.</returns>
 	public static Color Blend(Color Color1, Color Color2, double p)
 	{
-		int R = (int)(Color1.R * (1 - p) + Color2.R * p + 0.5);
-		int G = (int)(Color1.G * (1 - p) + Color2.G * p + 0.5);
-		int B = (int)(Color1.B * (1 - p) + Color2.B * p + 0.5);
-		int A = (int)(Color1.A * (1 - p) + Color2.A * p + 0.5);
+		int R = (int)(Color1.Red * (1 - p) + Color2.Red * p + 0.5);
+		int G = (int)(Color1.Green * (1 - p) + Color2.Green * p + 0.5);
+		int B = (int)(Color1.Blue * (1 - p) + Color2.Blue * p + 0.5);
+		int A = (int)(Color1.Alpha * (1 - p) + Color2.Alpha * p + 0.5);
 
 		return new Color(R, G, B, A);
 	}
@@ -64,21 +68,24 @@ public static class XmppStateExtensions
 	/// <returns>Textual representation of an XMPP connection state.</returns>
 	public static string ToDisplayText(this XmppState State)
 	{
+		IStringLocalizer? Localizer = LocalizationManager.GetStringLocalizer()
+			?? throw new LocalizationException("There is no localization service");
+
 		return State switch
 		{
-			XmppState.Authenticating => LocalizationResourceManager.Current["XmppState_Authenticating"],
-			XmppState.Binding => LocalizationResourceManager.Current["XmppState_Binding"],
-			XmppState.Connected => LocalizationResourceManager.Current["XmppState_Connected"],
-			XmppState.Connecting => LocalizationResourceManager.Current["XmppState_Connecting"],
-			XmppState.Error => LocalizationResourceManager.Current["XmppState_Error"],
-			XmppState.FetchingRoster => LocalizationResourceManager.Current["XmppState_FetchingRoster"],
-			XmppState.Registering => LocalizationResourceManager.Current["XmppState_Registering"],
-			XmppState.RequestingSession => LocalizationResourceManager.Current["XmppState_RequestingSession"],
-			XmppState.SettingPresence => LocalizationResourceManager.Current["XmppState_SettingPresence"],
-			XmppState.StartingEncryption => LocalizationResourceManager.Current["XmppState_StartingEncryption"],
-			XmppState.StreamNegotiation => LocalizationResourceManager.Current["XmppState_StreamNegotiation"],
-			XmppState.StreamOpened => LocalizationResourceManager.Current["XmppState_StreamOpened"],
-			_ => LocalizationResourceManager.Current["XmppState_Offline"],
+			XmppState.Authenticating => Localizer[nameof(AppResources.XmppState_Authenticating)],
+			XmppState.Binding => Localizer[nameof(AppResources.XmppState_Binding)],
+			XmppState.Connected => Localizer[nameof(AppResources.XmppState_Connected)],
+			XmppState.Connecting => Localizer[nameof(AppResources.XmppState_Connecting)],
+			XmppState.Error => Localizer[nameof(AppResources.XmppState_Error)],
+			XmppState.FetchingRoster => Localizer[nameof(AppResources.XmppState_FetchingRoster)],
+			XmppState.Registering => Localizer[nameof(AppResources.XmppState_Registering)],
+			XmppState.RequestingSession => Localizer[nameof(AppResources.XmppState_RequestingSession)],
+			XmppState.SettingPresence => Localizer[nameof(AppResources.XmppState_SettingPresence)],
+			XmppState.StartingEncryption => Localizer[nameof(AppResources.XmppState_StartingEncryption)],
+			XmppState.StreamNegotiation => Localizer[nameof(AppResources.XmppState_StreamNegotiation)],
+			XmppState.StreamOpened => Localizer[nameof(AppResources.XmppState_StreamOpened)],
+			_ => Localizer[nameof(AppResources.XmppState_Offline)],
 		};
 	}
 
@@ -89,15 +96,17 @@ public static class XmppStateExtensions
 	/// <returns>String representation</returns>
 	public static string ToDisplayText(this IdentityState State)
 	{
+		IStringLocalizer? Localizer = LocalizationManager.GetStringLocalizer()
+			?? throw new LocalizationException("There is no localization service");
+
 		return State switch
 		{
-			IdentityState.Approved => LocalizationResourceManager.Current["IdentityState_Approved"],
-			IdentityState.Compromised => LocalizationResourceManager.Current["IdentityState_Compromized"],
-			IdentityState.Created => LocalizationResourceManager.Current["IdentityState_Created"],
-			IdentityState.Obsoleted => LocalizationResourceManager.Current["IdentityState_Obsoleted"],
-			IdentityState.Rejected => LocalizationResourceManager.Current["IdentityState_Rejected"],
+			IdentityState.Approved => Localizer[nameof(AppResources.IdentityState_Approved)],
+			IdentityState.Compromised => Localizer[nameof(AppResources.IdentityState_Compromized)],
+			IdentityState.Created => Localizer[nameof(AppResources.IdentityState_Created)],
+			IdentityState.Obsoleted => Localizer[nameof(AppResources.IdentityState_Obsoleted)],
+			IdentityState.Rejected => Localizer[nameof(AppResources.IdentityState_Rejected)],
 			_ => string.Empty,
 		};
 	}
-
 }

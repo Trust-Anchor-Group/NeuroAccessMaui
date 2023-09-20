@@ -2,6 +2,8 @@
 using CommunityToolkit.Maui.Markup;
 using Microsoft.Extensions.Logging;
 using NeuroAccessMaui.Pages;
+using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services.Localization;
 
 namespace NeuroAccessMaui;
 
@@ -13,21 +15,18 @@ public static class MauiProgram
 
 		Builder
 			.UseMauiApp<App>()
+			.UseMauiCommunityToolkit()
+			.UseMauiCommunityToolkitMarkup()
 			.ConfigureFonts(fonts =>
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 			});
 
-		// Initialise the toolkit
-		Builder.UseMauiCommunityToolkit();
-		Builder.UseMauiCommunityToolkitMarkup();
-
+		Builder.UseLocalizationManager<AppResources>();
 		Builder.RegisterPagesManager();
 
-		Builder.Services.AddLocalization();
 		//Builder.Services.AddLogging();
-
 #if DEBUG
 		Builder.Logging.AddDebug();
 #endif

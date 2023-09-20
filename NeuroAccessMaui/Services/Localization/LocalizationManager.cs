@@ -7,17 +7,19 @@ namespace NeuroAccessMaui.Services.Localization;
 
 public class LocalizationManager : INotifyPropertyChanged
 {
-#pragma warning disable CA2211 // Non-constant fields should not be visible
-	public static Type? DefaultStringResource = null;
-#pragma warning restore CA2211 // Non-constant fields should not be visible
-
 	private static LocalizationManager? current;
 	public static LocalizationManager Current => current ??= new();
 
+#pragma warning disable CA2211 // Non-constant fields should not be visible
+	public static Type DefaultStringResource = typeof(AppResources);
+	public static EventHandler<CultureInfo>? CurrentCultureChanged;
+	public static EventHandler<FlowDirection>? FlowDirectionChanged;
+#pragma warning restore CA2211 // Non-constant fields should not be visible
+
 	public static IStringLocalizer? GetStringLocalizer(Type? StringResource = null)
 	{
-		Type[] Type = [StringResource ?? DefaultStringResource ?? typeof(AppResources)];
-		Type GenericType = typeof(IStringLocalizer<>).MakeGenericType(Type);
+		Type[] Arguments = [StringResource ?? DefaultStringResource];
+		Type GenericType = typeof(IStringLocalizer<>).MakeGenericType(Arguments);
 		return (IStringLocalizer?)ServiceHelper.GetService(GenericType);
 	}
 
@@ -56,11 +58,6 @@ public class LocalizationManager : INotifyPropertyChanged
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FlowDirection)));
 		}
 	}
-
-#pragma warning disable CA2211 // Non-constant fields should not be visible
-	public static EventHandler<CultureInfo>? CurrentCultureChanged;
-	public static EventHandler<FlowDirection>? FlowDirectionChanged;
-#pragma warning restore CA2211 // Non-constant fields should not be visible
 
 	public event PropertyChangedEventHandler? PropertyChanged;
 }
