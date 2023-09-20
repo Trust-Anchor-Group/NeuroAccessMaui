@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<Entries>
+	<Entry country="BA" displayString="DDMMYYYRRBBBK">
+		<Pattern variable="UMCN"><![CDATA[UMCN like "(?'D1'\\d{1})(?'D2'\\d{1})(?'D3'\\d{1})(?'D4'\\d{1})(?'D5'\\d{1})(?'D6'\\d{1})(?'D7'\\d{1})(?'D8'\\d{1})(?'D9'\\d{1})(?'D10'\\d{1})(?'D11'\\d{1})(?'D12'\\d{1})(?'D13'\\d{1})"]]></Pattern>
+		<Check>
+			<![CDATA[
+			M := 11 - ((7 * (D1 + D7) + 6 * (D2 + D8) + 5 * (D3 + D9) + 4 * (D4 + D10) + 3 * (D5 + D11) + 2 * (D6 + D12) ) mod 11);
+			R := ((M < 10) and (M = D13)) or ((M >= 10) and (D13 = 0));
+			]]>
+		</Check>
+	</Entry>
+	<Entry country="BR" displayString="NNN.NNN.NNN-NN">
+		<Pattern variable="CPF"><![CDATA[CPF like "(?'N1'\\d{3})[.]?(?'N2'\\d{3})[.]?(?'N3'\\d{3})-?(?'N4'\\d{2})"]]></Pattern>
+		<Normalize><![CDATA[N1_STR+"."+N2_STR+"."+N3_STR+"-"+N4_STR]]></Normalize>
+	</Entry>
+	<Entry country="CL" displayString="NN.NNN.NNN-N">
+		<Pattern variable="RUN"><![CDATA[RUN like "(?'N1'\\d{2})[.]?(?'N2'\\d{3})[.]?(?'N3'\\d{3})-?(?'N4'[\\dK])"]]></Pattern>
+		<Normalize><![CDATA[N1_STR+"."+N2_STR+"."+N3_STR+"-"+N4_STR]]></Normalize>
+	</Entry>
+	<Entry country="HR" displayString="DDMMYYYRRBBBK">
+		<Pattern variable="UMCN"><![CDATA[UMCN like "(?'D1'\\d{1})(?'D2'\\d{1})(?'D3'\\d{1})(?'D4'\\d{1})(?'D5'\\d{1})(?'D6'\\d{1})(?'D7'\\d{1})(?'D8'\\d{1})(?'D9'\\d{1})(?'D10'\\d{1})(?'D11'\\d{1})(?'D12'\\d{1})(?'D13'\\d{1})"]]></Pattern>
+		<Check>
+			<![CDATA[
+			M := 11 - ((7 * (D1 + D7) + 6 * (D2 + D8) + 5 * (D3 + D9) + 4 * (D4 + D10) + 3 * (D5 + D11) + 2 * (D6 + D12) ) mod 11);
+			R := ((M < 10) and (M = D13)) or ((M >= 10) and (D13 = 0));
+			]]>
+		</Check>
+	</Entry>
+	<Entry country="IN" displayString="NNNN NNNN NNNN">
+		<Pattern variable="Aadhaar"><![CDATA[Aadhaar like "(?'N1'\\d{4})\\s*(?'N2'\\d{4})\\s*(?'N3'\\d{4})"]]></Pattern>
+		<Check>
+			<![CDATA[
+			d:=[[0,1,2,3,4,5,6,7,8,9],
+			[1,2,3,4,0,6,7,8,9,5],
+			[2,3,4,0,1,7,8,9,5,6],
+			[3,4,0,1,2,8,9,5,6,7],
+			[4,0,1,2,3,9,5,6,7,8],
+			[5,9,8,7,6,0,4,3,2,1],
+			[6,5,9,8,7,1,0,4,3,2],
+			[7,6,5,9,8,2,1,0,4,3],
+			[8,7,6,5,9,3,2,1,0,4],
+			[9,8,7,6,5,4,3,2,1,0]];
+
+			inv:=[0,4,3,2,1,5,6,7,8,9];
+
+			p:=[[0,1,2,3,4,5,6,7,8,9],
+			[1,5,7,6,2,8,3,0,9,4],
+			[5,8,0,3,7,9,6,1,4,2],
+			[8,9,1,6,0,4,3,5,2,7],
+			[9,4,5,3,1,2,6,8,7,0],
+			[4,2,8,6,5,7,3,9,0,1],
+			[2,7,9,3,8,0,6,4,1,5],
+			[7,0,4,6,9,1,3,2,5,8]];
+
+			Verhoeff(Nr):=
+			(
+				c:=0;
+				i:=0;
+				foreach ch in reverse(Nr) do c:=d[p[num(ch),i++ mod 8],c]
+			);
+
+			AddVerhoeffCheck(Nr):=Nr+str(inv[Verhoeff(Nr+"0")]);
+			CheckVerhoeff(Nr):=Verhoeff(Nr)=0;
+			
+			CheckVerhoeff(N1_STR+N2_STR+N3_STR)
+			]]>
+		</Check>
+		<Normalize><![CDATA[N1_STR+" "+N2_STR+" "+N3_STR]]></Normalize>
+	</Entry>
+	<Entry country="MD" displayString="NNNNNNNNNNNNN">
+		<Pattern variable="IDNP"><![CDATA[IDNP like "\\d{13}"]]></Pattern>
+	</Entry>
+	<Entry country="ME" displayString="DDMMYYYRRBBBK">
+		<Pattern variable="UMCN"><![CDATA[UMCN like "(?'D1'\\d{1})(?'D2'\\d{1})(?'D3'\\d{1})(?'D4'\\d{1})(?'D5'\\d{1})(?'D6'\\d{1})(?'D7'\\d{1})(?'D8'\\d{1})(?'D9'\\d{1})(?'D10'\\d{1})(?'D11'\\d{1})(?'D12'\\d{1})(?'D13'\\d{1})"]]></Pattern>
+		<Check>
+			<![CDATA[
+			M := 11 - ((7 * (D1 + D7) + 6 * (D2 + D8) + 5 * (D3 + D9) + 4 * (D4 + D10) + 3 * (D5 + D11) + 2 * (D6 + D12) ) mod 11);
+			R := ((M < 10) and (M = D13)) or ((M >= 10) and (D13 = 0));
+			]]>
+		</Check>
+	</Entry>
+	<Entry country="MK" displayString="DDMMYYYRRBBBK">
+		<Pattern variable="UMCN"><![CDATA[UMCN like "(?'D1'\\d{1})(?'D2'\\d{1})(?'D3'\\d{1})(?'D4'\\d{1})(?'D5'\\d{1})(?'D6'\\d{1})(?'D7'\\d{1})(?'D8'\\d{1})(?'D9'\\d{1})(?'D10'\\d{1})(?'D11'\\d{1})(?'D12'\\d{1})(?'D13'\\d{1})"]]></Pattern>
+		<Check>
+			<![CDATA[
+			M := 11 - ((7 * (D1 + D7) + 6 * (D2 + D8) + 5 * (D3 + D9) + 4 * (D4 + D10) + 3 * (D5 + D11) + 2 * (D6 + D12) ) mod 11);
+			R := ((M < 10) and (M = D13)) or ((M >= 10) and (D13 = 0));
+			]]>
+		</Check>
+	</Entry>
+	<Entry country="RS" displayString="DDMMYYYRRBBBK">
+		<Pattern variable="UMCN"><![CDATA[UMCN like "(?'D1'\\d{1})(?'D2'\\d{1})(?'D3'\\d{1})(?'D4'\\d{1})(?'D5'\\d{1})(?'D6'\\d{1})(?'D7'\\d{1})(?'D8'\\d{1})(?'D9'\\d{1})(?'D10'\\d{1})(?'D11'\\d{1})(?'D12'\\d{1})(?'D13'\\d{1})"]]></Pattern>
+		<Check>
+			<![CDATA[
+			M := 11 - ((7 * (D1 + D7) + 6 * (D2 + D8) + 5 * (D3 + D9) + 4 * (D4 + D10) + 3 * (D5 + D11) + 2 * (D6 + D12) ) mod 11);
+			R := ((M < 10) and (M = D13)) or ((M >= 10) and (D13 = 0));
+			]]>
+		</Check>
+	</Entry>
+	<Entry country="SE" displayString="YYYYMMDD-NNNN">
+		<Pattern variable="PNR"><![CDATA[PNR like "(?'YYYY'(19|20)?(?'D1'\\d)(?'D2'\\d))(?'MM'(?'D3'\\d)(?'D4'\\d))(?'DD'(?'D5'\\d)(?'D6'\\d))-?(?'NNNN'(?'D7'\\d)(?'D8'\\d)(?'D9'\\d)(?'D10'\\d))"]]></Pattern>
+		<Check><![CDATA[v:=[D1,D2,D3,D4,D5,D6,D7,D8,D9,D10].*[2,1,2,1,2,1,2,1,2,1];(sum(v > 9 ? v-9 : v) MOD 10 = 0)and(MM>=1)and(MM<=12)and(DD>=1)and(DD<=System.DateTime.DaysInMonth((YYYY<30?2000:YYYY<100?1900:0)+YYYY,MM))]]></Check>
+		<Normalize><![CDATA[(YYYY_STR.Length=4?YYYY_STR:(YYYY<30?"20":"19")+YYYY_STR)+MM_STR+DD_STR+"-"+NNNN_STR]]></Normalize>
+	</Entry>
+	<Entry country="SI" displayString="DDMMYYYRRBBBK">
+		<Pattern variable="UMCN"><![CDATA[UMCN like "(?'D1'\\d{1})(?'D2'\\d{1})(?'D3'\\d{1})(?'D4'\\d{1})(?'D5'\\d{1})(?'D6'\\d{1})(?'D7'\\d{1})(?'D8'\\d{1})(?'D9'\\d{1})(?'D10'\\d{1})(?'D11'\\d{1})(?'D12'\\d{1})(?'D13'\\d{1})"]]></Pattern>
+		<Check>
+			<![CDATA[
+			M := 11 - ((7 * (D1 + D7) + 6 * (D2 + D8) + 5 * (D3 + D9) + 4 * (D4 + D10) + 3 * (D5 + D11) + 2 * (D6 + D12) ) mod 11);
+			R := ((M < 10) and (M = D13)) or ((M >= 10) and (D13 = 0));
+			]]>
+		</Check>
+	</Entry>
+	<Entry country="US" displayString="NNNNNNNNN">
+		<Pattern variable="SSN"><![CDATA[SSN like "\\d{9}"]]></Pattern>
+	</Entry>
+</Entries>
