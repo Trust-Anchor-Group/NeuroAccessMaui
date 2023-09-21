@@ -1,13 +1,10 @@
-using NeuroAccessMaui;
 using NeuroAccessMaui.Links;
 using NeuroAccessMaui.Resources.Languages;
-using NeuroAccessMaui.Services;
-using NeuroAccessMaui.Services.Navigation;
 using Waher.Content.QR;
 using Waher.Content.QR.Encoding;
 using Waher.Runtime.Inventory;
 
-namespace IdAppNeuroAccessMaui.Services.UI.QR;
+namespace NeuroAccessMaui.Services.UI.QR;
 
 /// <summary>
 /// Helper class to perform scanning of QR Codes by displaying the UI and handling async results.

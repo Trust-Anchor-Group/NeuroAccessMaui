@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Peter Waher</Authors>
+    <Company>Trust Anchor Group AB</Company>
+    <Product>IdApp</Product>
+    <Description>Computer Vision Layer for the TAG ID App</Description>
+    <Copyright>Copyright © Trust Anchor Group 2022-2023. All rights reserved.</Copyright>
+    <RepositoryUrl>https://github.com/Trust-Anchor-Group/IdApp</RepositoryUrl>
+    <NeutralLanguage>English</NeutralLanguage>
+    <AssemblyVersion>1.0.0</AssemblyVersion>
+    <FileVersion>1.0.0</FileVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>IdApp.Cv.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SkiaSharp" Version="2.88.5" />
+    <PackageReference Include="Waher.Script" Version="2.5.4" />
+  </ItemGroup>
+
+</Project>

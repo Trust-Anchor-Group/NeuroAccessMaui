@@ -1,5 +1,4 @@
-﻿using IdAppNeuroAccessMaui.Services;
-using NeuroAccessMaui.Services;
+﻿using NeuroAccessMaui.Services;
 using Waher.Runtime.Inventory;
 
 namespace NeuroAccessMaui.Links;
