@@ -1,4 +1,6 @@
-﻿namespace NeuroAccessMaui.Services.UI.Tasks;
+﻿using NeuroAccessMaui.Resources.Languages;
+
+namespace NeuroAccessMaui.Services.UI.Tasks;
 
 /// <summary>
 /// Displays an alert message.
@@ -70,7 +72,9 @@ public class DisplayAlert : UiTask
 		}
 		else
 		{
-			await Application.Current.MainPage.DisplayAlert(this.Title, this.Message, LocalizationResourceManager.Current["Ok"]);
+			await Application.Current.MainPage.DisplayAlert(this.Title, this.Message,
+				ServiceRef.Localizer[nameof(AppResources.Ok)]);
+
 			Result = true;
 		}
 

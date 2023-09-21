@@ -1,4 +1,6 @@
-﻿namespace NeuroAccessMaui.Services.UI.Tasks;
+﻿using NeuroAccessMaui.Resources.Languages;
+
+namespace NeuroAccessMaui.Services.UI.Tasks;
 
 /// <summary>
 /// Prompts the user for input.
@@ -68,7 +70,8 @@ public class DisplayPrompt : UiTask
 		}
 		else
 		{
-			Result = await Application.Current.MainPage.DisplayPromptAsync(this.Title, this.Message, LocalizationResourceManager.Current["Ok"]);
+			Result = await Application.Current.MainPage.DisplayPromptAsync(this.Title, this.Message,
+				ServiceRef.Localizer[nameof(AppResources.Ok)]);
 		}
 
 		this.CompletionSource.TrySetResult(Result);

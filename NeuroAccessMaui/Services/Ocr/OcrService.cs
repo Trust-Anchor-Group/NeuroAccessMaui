@@ -8,7 +8,7 @@ namespace NeuroAccessMaui.Services.Ocr;
 /// Optical Character Recognition (OCR) Service.
 /// </summary>
 [Singleton]
-public class OcrService : ServiceReferences, IOcrService
+public class OcrService : IOcrService
 {
 	/// <summary>
 	/// Optical Character Recognition (OCR) Service.
@@ -28,9 +28,9 @@ public class OcrService : ServiceReferences, IOcrService
 	public async Task<string[]> ProcessImage(IMatrix Image, string Language, PageSegmentationMode? PageSegmentationMode)
 	{
 		byte[] Png = Bitmaps.EncodeAsPng(Image);
-		string Token = await this.XmppService.GetApiToken(60);
+		string Token = await ServiceRef.XmppService.GetApiToken(60);
 
-		Uri Uri = new("https://" + this.TagProfile.Domain + "/Tesseract/Api");
+		Uri Uri = new("https://" + ServiceRef.TagProfile.Domain + "/Tesseract/Api");
 		using HttpClient HttpClient = new();
 		using HttpRequestMessage Request = new()
 		{

@@ -1,4 +1,5 @@
-﻿using NeuroAccessMaui.Services;
+﻿using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services;
 using Waher.Runtime.Inventory;
 
 namespace NeuroAccessMaui.Links;
@@ -25,17 +26,12 @@ public class LegalIdentityLink : ILinkOpener
 		return Link.Scheme.ToLower() == Constants.UriSchemes.IotId ? Grade.Ok : Grade.NotAtAll;
 	}
 
-	/// <summary>
-	/// Tries to open a link
-	/// </summary>
-	/// <param name="Link">Link to open</param>
-	/// <returns>If the link was opened.</returns>
+	///<inheritdoc/>
 	public async Task<bool> TryOpenLink(Uri Link)
 	{
-		ServiceReferences Services = new();
-
 		string LegalId = Constants.UriSchemes.RemoveScheme(Link.OriginalString);
-		await Services.ContractOrchestratorService.OpenLegalIdentity(LegalId, LocalizationResourceManager.Current["ScannedQrCode"]);
+		await ServiceRef.ContractOrchestratorService.OpenLegalIdentity(LegalId,
+			ServiceRef.Localizer[nameof(AppResources.ScannedQrCode)]);
 
 		return true;
 	}

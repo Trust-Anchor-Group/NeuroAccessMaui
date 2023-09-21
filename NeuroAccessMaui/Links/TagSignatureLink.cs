@@ -1,4 +1,5 @@
 ﻿using IdAppNeuroAccessMaui.Services;
+using NeuroAccessMaui.Services;
 using Waher.Runtime.Inventory;
 
 namespace NeuroAccessMaui.Links;
@@ -25,17 +26,11 @@ public class TagSignatureLink : ILinkOpener
 		return Link.Scheme.ToLower() == Constants.UriSchemes.TagSign ? Grade.Ok : Grade.NotAtAll;
 	}
 
-	/// <summary>
-	/// Tries to open a link
-	/// </summary>
-	/// <param name="Link">Link to open</param>
-	/// <returns>If the link was opened.</returns>
+	///<inheritdoc/>
 	public async Task<bool> TryOpenLink(Uri Link)
 	{
-		ServiceReferences Services = new();
-
 		string request = Constants.UriSchemes.RemoveScheme(Link.OriginalString);
-		await Services.ContractOrchestratorService.TagSignature(request);
+		await ServiceRef.ContractOrchestratorService.TagSignature(request);
 
 		return true;
 	}

@@ -21,13 +21,14 @@ public class LocalizationManager : INotifyPropertyChanged
 	{
 		Type[] Arguments = [StringResource ?? DefaultStringResource];
 		Type GenericType = typeof(IStringLocalizer<>).MakeGenericType(Arguments);
-		return (IStringLocalizer)(ServiceHelper.GetService(GenericType)
-			?? throw new LocalizationException("There is no localization service"));
+		return (IStringLocalizer?)ServiceHelper.GetService(GenericType)
+			?? throw new LocalizationException("There is no localization service");
 	}
 
 	public static IStringLocalizer GetStringLocalizer<TStringResource>()
 	{
-		return ServiceHelper.GetService<IStringLocalizer<TStringResource>>();
+		return ServiceHelper.GetService<IStringLocalizer<TStringResource>>()
+			?? throw new LocalizationException("There is no localization service");
 	}
 
 	public static FlowDirection FlowDirection

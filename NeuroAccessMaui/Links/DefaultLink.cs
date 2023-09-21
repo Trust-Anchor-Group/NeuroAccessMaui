@@ -1,4 +1,5 @@
-﻿using NeuroAccessMaui.Services;
+﻿using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services;
 using Waher.Runtime.Inventory;
 
 namespace NeuroAccessMaui.Links;
@@ -25,11 +26,7 @@ public class DefaultLink : ILinkOpener
 		return Grade.Barely;
 	}
 
-	/// <summary>
-	/// Tries to open a link
-	/// </summary>
-	/// <param name="Link">Link to open</param>
-	/// <returns>If the link was opened.</returns>
+	///<inheritdoc/>
 	public async Task<bool> TryOpenLink(Uri Link)
 	{
 		if (await Launcher.TryOpenAsync(Link.OriginalString))
@@ -38,11 +35,9 @@ public class DefaultLink : ILinkOpener
 		}
 		else
 		{
-			ServiceReferences Services = new();
-
-			await Services.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"],
-				LocalizationResourceManager.Current["QrCodeNotUnderstood"] + Environment.NewLine +
-				Environment.NewLine + Link.OriginalString);
+			await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+				ServiceRef.Localizer[nameof(AppResources.QrCodeNotUnderstood)] +
+				Environment.NewLine + Environment.NewLine + Link.OriginalString);
 
 			return false;
 		}

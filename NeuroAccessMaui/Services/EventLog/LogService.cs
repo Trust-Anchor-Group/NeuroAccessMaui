@@ -1,5 +1,4 @@
-﻿using NeuroAccessMaui.Services.Storage;
-using NeuroAccessMaui.Services.UI;
+﻿using NeuroAccessMaui.Resources.Languages;
 using Waher.Events;
 using Waher.Events.XMPP;
 using Waher.Persistence.Exceptions;
@@ -65,11 +64,11 @@ internal sealed class LogService : ILogService
 
 	private async Task RestartForRepair()
 	{
-		IStorageService StorageService = App.Instantiate<IStorageService>();
-		StorageService.FlagForRepair();
+		ServiceRef.StorageService.FlagForRepair();
 
-		IUiSerializer UiSerializer = App.Instantiate<IUiSerializer>();
-		await UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], LocalizationResourceManager.Current["RepairRestart"], LocalizationResourceManager.Current["Ok"]);
+		await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+			ServiceRef.Localizer[nameof(AppResources.RepairRestart)],
+			ServiceRef.Localizer[nameof(AppResources.Ok)]);
 
 		ICloseApplication CloseApplication = DependencyService.Get<ICloseApplication>();
 		await CloseApplication.Close();

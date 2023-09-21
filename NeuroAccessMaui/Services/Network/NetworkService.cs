@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
+using NeuroAccessMaui.Resources.Languages;
 using Waher.Networking.DNS;
 using Waher.Networking.DNS.ResourceRecords;
 using Waher.Networking.XMPP;
@@ -107,12 +108,14 @@ internal class NetworkService : LoadableService, INetworkService
 		{
 			if (!this.IsOnline)
 			{
-				thrownException = new MissingNetworkException(LocalizationResourceManager.Current["ThereIsNoNetwork"]);
-				this.LogService.LogException(thrownException, GetParameter(memberName));
+				thrownException = new MissingNetworkException(ServiceRef.Localizer[nameof(AppResources.ThereIsNoNetwork)]);
+				ServiceRef.LogService.LogException(thrownException, GetParameter(memberName));
 
 				if (displayAlert)
 				{
-					await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], CreateMessage(LocalizationResourceManager.Current["ThereIsNoNetwork"], memberName));
+					await ServiceRef.UiSerializer.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						CreateMessage(ServiceRef.Localizer[nameof(AppResources.ThereIsNoNetwork)], memberName));
 				}
 			}
 			else
@@ -127,59 +130,71 @@ internal class NetworkService : LoadableService, INetworkService
 
 			if (ae.InnerException is TimeoutException te)
 			{
-				this.LogService.LogException(te, GetParameter(memberName));
+				ServiceRef.LogService.LogException(te, GetParameter(memberName));
 
 				if (displayAlert)
 				{
-					await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], CreateMessage(LocalizationResourceManager.Current["RequestTimedOut"], memberName));
+					await ServiceRef.UiSerializer.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						CreateMessage(ServiceRef.Localizer[nameof(AppResources.RequestTimedOut)], memberName));
 				}
 			}
 			else if (ae.InnerException is TaskCanceledException tce)
 			{
-				this.LogService.LogException(tce, GetParameter(memberName));
+				ServiceRef.LogService.LogException(tce, GetParameter(memberName));
 
 				if (displayAlert)
 				{
-					await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], CreateMessage(LocalizationResourceManager.Current["RequestWasCancelled"], memberName));
+					await ServiceRef.UiSerializer.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						CreateMessage(ServiceRef.Localizer[nameof(AppResources.RequestWasCancelled)], memberName));
 				}
 			}
 			else if (ae.InnerException is not null)
 			{
-				this.LogService.LogException(ae.InnerException, GetParameter(memberName));
+				ServiceRef.LogService.LogException(ae.InnerException, GetParameter(memberName));
 
 				if (displayAlert)
 				{
-					await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], CreateMessage(ae.InnerException.Message, memberName));
+					await ServiceRef.UiSerializer.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						CreateMessage(ae.InnerException.Message, memberName));
 				}
 			}
 			else
 			{
-				this.LogService.LogException(ae, GetParameter(memberName));
+				ServiceRef.LogService.LogException(ae, GetParameter(memberName));
 
 				if (displayAlert)
 				{
-					await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], CreateMessage(ae.Message, memberName));
+					await ServiceRef.UiSerializer.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						CreateMessage(ae.Message, memberName));
 				}
 			}
 		}
 		catch (TimeoutException te)
 		{
 			thrownException = te;
-			this.LogService.LogException(te, GetParameter(memberName));
+			ServiceRef.LogService.LogException(te, GetParameter(memberName));
 
 			if (displayAlert)
 			{
-				await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], CreateMessage(LocalizationResourceManager.Current["RequestTimedOut"], memberName));
+				await ServiceRef.UiSerializer.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					CreateMessage(ServiceRef.Localizer[nameof(AppResources.RequestTimedOut)], memberName));
 			}
 		}
 		catch (TaskCanceledException tce)
 		{
 			thrownException = tce;
-			this.LogService.LogException(tce, GetParameter(memberName));
+			ServiceRef.LogService.LogException(tce, GetParameter(memberName));
 
 			if (displayAlert)
 			{
-				await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], CreateMessage(LocalizationResourceManager.Current["RequestWasCancelled"], memberName));
+				await ServiceRef.UiSerializer.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					CreateMessage(ServiceRef.Localizer[nameof(AppResources.RequestWasCancelled)], memberName));
 			}
 		}
 		catch (Exception e)
@@ -197,11 +212,13 @@ internal class NetworkService : LoadableService, INetworkService
 				message = e.Message;
 			}
 
-			this.LogService.LogException(e, GetParameter(memberName));
+			ServiceRef.LogService.LogException(e, GetParameter(memberName));
 
 			if (displayAlert)
 			{
-				await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], CreateMessage(message, memberName));
+				await ServiceRef.UiSerializer.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					CreateMessage(message, memberName));
 			}
 		}
 

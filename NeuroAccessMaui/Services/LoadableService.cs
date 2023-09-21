@@ -1,7 +1,7 @@
 ﻿namespace NeuroAccessMaui.Services;
 
 /// <inheritdoc/>
-public class LoadableService : ServiceReferences, ILoadableService
+public class LoadableService : ILoadableService
 {
 	//private SemaphoreSlim worker = new SemaphoreSlim(1, 1);
 
@@ -101,7 +101,7 @@ public class LoadableService : ServiceReferences, ILoadableService
 		return Task.CompletedTask;
 	}
 
-	private event EventHandler<LoadedEventArgs> PrivLoaded;
+	private event EventHandler<LoadedEventArgs>? PrivLoaded;
 
 	/// <inheritdoc/>
 	public event EventHandler<LoadedEventArgs> Loaded

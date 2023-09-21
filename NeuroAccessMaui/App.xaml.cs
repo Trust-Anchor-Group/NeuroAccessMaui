@@ -1,10 +1,13 @@
-﻿using NeuroAccessMaui.DeviceSpecific;
+﻿using Microsoft.Maui.Controls.Internals;
+using NeuroAccessMaui.DeviceSpecific;
 using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.AttachmentCache;
 using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Crypto;
 using NeuroAccessMaui.Services.EventLog;
+using NeuroAccessMaui.Services.Localization;
 using NeuroAccessMaui.Services.Navigation;
 using NeuroAccessMaui.Services.Network;
 using NeuroAccessMaui.Services.Nfc;
@@ -63,7 +66,6 @@ public partial class App : Application, IDisposable
 	private static int startupCounter = 0;
 	private readonly LoginAuditor loginAuditor;
 	private Timer autoSaveTimer;
-	private IServiceReferences services;
 	private Profiler startupProfiler;
 	private readonly Task<bool> initCompleted;
 	private readonly SemaphoreSlim startupWorker = new(1, 1);
@@ -125,7 +127,6 @@ public partial class App : Application, IDisposable
 		{
 			this.loginAuditor = PreviousInstance.loginAuditor;
 			this.autoSaveTimer = PreviousInstance.autoSaveTimer;
-			this.services = PreviousInstance.services;
 			this.startupProfiler = PreviousInstance.startupProfiler;
 			this.initCompleted = PreviousInstance.initCompleted;
 			this.startupWorker = PreviousInstance.startupWorker;
@@ -190,11 +191,11 @@ public partial class App : Application, IDisposable
 	{
 		string Language = SelectedLanguage;
 
-		CultureInfo[] Infos = CultureInfo.GetCultures(CultureTypes.NeutralCultures);
-		CultureInfo SelectedInfo = Infos.First(el => el.Name == Language);
+		CultureInfo[] Cultures = CultureInfo.GetCultures(CultureTypes.NeutralCultures);
+		CultureInfo SelectedInfo = Cultures.First(el => el.Name == Language);
 
-		LocalizationResourceManager.Current.PropertyChanged += (_, _) => AppResources.Culture = LocalizationResourceManager.Current.CurrentCulture;
-		LocalizationResourceManager.Current.Init(AppResources.ResourceManager, SelectedInfo);
+		LocalizationManager.Current.PropertyChanged += (_, _) => AppResources.Culture = LocalizationManager.Current.CurrentCulture;
+		LocalizationManager.Current.CurrentCulture = SelectedInfo;
 	}
 
 	private Task<bool> Init(bool BackgroundStart, Assembly DeviceAssembly)
@@ -282,8 +283,6 @@ public partial class App : Application, IDisposable
 		Types.InstantiateDefault<IContractOrchestratorService>(false);
 		Types.InstantiateDefault<INfcService>(false);
 
-		this.services = new ServiceReferences();
-
 		defaultInstantiatedSource.TrySetResult(true);
 		defaultInstantiated = true;
 
@@ -307,7 +306,7 @@ public partial class App : Application, IDisposable
 			}
 			catch (Exception ex)
 			{
-				this.services.LogService.LogException(ex);
+				ServiceRef.LogService.LogException(ex);
 				return null;
 			}
 		});
@@ -321,7 +320,7 @@ public partial class App : Application, IDisposable
 	{
 		ex = Waher.Events.Log.UnnestException(ex);
 		this.startupProfiler?.Exception(ex);
-		this.services?.LogService?.SaveExceptionDump("StartPage", ex.ToString());
+		ServiceRef.LogService.SaveExceptionDump("StartPage", ex.ToString());
 		this.DisplayBootstrapErrorPage(ex.Message, ex.StackTrace);
 		return;
 	}
@@ -436,7 +435,7 @@ public partial class App : Application, IDisposable
 				await this.SendErrorReportFromPreviousRun();
 
 				Thread?.NewState("Startup");
-				this.services.UiSerializer.IsRunningInTheBackground = false;
+				ServiceRef.UiSerializer.IsRunningInTheBackground = false;
 
 				Token.ThrowIfCancellationRequested();
 			}
@@ -444,7 +443,7 @@ public partial class App : Application, IDisposable
 			Thread?.NewState("DB");
 			ProfilerThread SubThread = Thread?.CreateSubThread("Database", ProfilerThreadType.Sequential);
 
-			await this.services.StorageService.Init(SubThread, Token);
+			await ServiceRef.StorageService.Init(SubThread, Token);
 
 			if (!App.configLoaded)
 			{
@@ -457,12 +456,12 @@ public partial class App : Application, IDisposable
 			Token.ThrowIfCancellationRequested();
 
 			Thread?.NewState("Network");
-			await this.services.NetworkService.Load(isResuming, Token);
+			await ServiceRef.NetworkService.Load(isResuming, Token);
 
 			Token.ThrowIfCancellationRequested();
 
 			Thread?.NewState("XMPP");
-			await this.services.XmppService.Load(isResuming, Token);
+			await ServiceRef.XmppService.Load(isResuming, Token);
 
 			Token.ThrowIfCancellationRequested();
 
@@ -471,13 +470,13 @@ public partial class App : Application, IDisposable
 			this.autoSaveTimer = new Timer(async _ => await this.AutoSave(), null, initialAutoSaveDelay, Constants.Intervals.AutoSave);
 
 			Thread?.NewState("Navigation");
-			await this.services.NavigationService.Load(isResuming, Token);
+			await ServiceRef.NavigationService.Load(isResuming, Token);
 
 			Thread?.NewState("Cache");
-			await this.services.AttachmentCacheService.Load(isResuming, Token);
+			await ServiceRef.AttachmentCacheService.Load(isResuming, Token);
 
 			Thread?.NewState("Orchestrators");
-			await this.services.ContractOrchestratorService.Load(isResuming, Token);
+			await ServiceRef.ContractOrchestratorService.Load(isResuming, Token);
 		}
 		catch (OperationCanceledException)
 		{
@@ -487,7 +486,7 @@ public partial class App : Application, IDisposable
 		{
 			ex = Waher.Events.Log.UnnestException(ex);
 			Thread?.Exception(ex);
-			this.services?.LogService?.SaveExceptionDump(ex.Message, ex.StackTrace);
+			ServiceRef.LogService.SaveExceptionDump(ex.Message, ex.StackTrace);
 			this.DisplayBootstrapErrorPage(ex.Message, ex.StackTrace);
 		}
 		finally
@@ -558,54 +557,51 @@ public partial class App : Application, IDisposable
 
 			this.StopAutoSaveTimer();
 
-			if (this.services is not null)
+			if (!BackgroundStart)
 			{
-				if (!BackgroundStart)
+				if (ServiceRef.UiSerializer is not null)
 				{
-					if (this.services.UiSerializer is not null)
-					{
-						this.services.UiSerializer.IsRunningInTheBackground = !inPanic;
-					}
+					ServiceRef.UiSerializer.IsRunningInTheBackground = !inPanic;
+				}
+			}
+
+			if (inPanic)
+			{
+				if (ServiceRef.XmppService is not null)
+				{
+					await ServiceRef.XmppService.UnloadFast();
+				}
+			}
+			else
+			{
+				if (ServiceRef.NavigationService is not null)
+				{
+					await ServiceRef.NavigationService.Unload();
 				}
 
-				if (inPanic)
+				if (ServiceRef.ContractOrchestratorService is not null)
 				{
-					if (this.services.XmppService is not null)
-					{
-						await this.services.XmppService.UnloadFast();
-					}
+					await ServiceRef.ContractOrchestratorService.Unload();
 				}
-				else
+
+				if (ServiceRef.XmppService is not null)
 				{
-					if (this.services.NavigationService is not null)
-					{
-						await this.services.NavigationService.Unload();
-					}
+					await ServiceRef.XmppService.Unload();
+				}
 
-					if (this.services.ContractOrchestratorService is not null)
-					{
-						await this.services.ContractOrchestratorService.Unload();
-					}
+				if (ServiceRef.NetworkService is not null)
+				{
+					await ServiceRef.NetworkService.Unload();
+				}
 
-					if (this.services.XmppService is not null)
-					{
-						await this.services.XmppService.Unload();
-					}
+				if (ServiceRef.AttachmentCacheService is not null)
+				{
+					await ServiceRef.AttachmentCacheService.Unload();
+				}
 
-					if (this.services.NetworkService is not null)
-					{
-						await this.services.NetworkService.Unload();
-					}
-
-					if (this.services.AttachmentCacheService is not null)
-					{
-						await this.services.AttachmentCacheService.Unload();
-					}
-
-					if (this.services.NavigationService is not null)
-					{
-						await this.services.NavigationService.Unload();
-					}
+				if (ServiceRef.NavigationService is not null)
+				{
+					await ServiceRef.NavigationService.Unload();
 				}
 
 				foreach (IEventSink Sink in Waher.Events.Log.Sinks)
@@ -613,9 +609,9 @@ public partial class App : Application, IDisposable
 					Waher.Events.Log.Unregister(Sink);
 				}
 
-				if (this.services.StorageService is not null)
+				if (ServiceRef.StorageService is not null)
 				{
-					await this.services.StorageService.Shutdown();
+					await ServiceRef.StorageService.Shutdown();
 				}
 			}
 
@@ -642,65 +638,65 @@ public partial class App : Application, IDisposable
 
 	private async Task AutoSave()
 	{
-		if (this.services.TagProfile.IsDirty)
+		if (ServiceRef.TagProfile.IsDirty)
 		{
-			this.services.TagProfile.ResetIsDirty();
+			ServiceRef.TagProfile.ResetIsDirty();
 			try
 			{
-				TagConfiguration tc = this.services.TagProfile.ToConfiguration();
+				TagConfiguration tc = ServiceRef.TagProfile.ToConfiguration();
 
 				try
 				{
 					if (string.IsNullOrEmpty(tc.ObjectId))
 					{
-						await this.services.StorageService.Insert(tc);
+						await ServiceRef.StorageService.Insert(tc);
 					}
 					else
 					{
-						await this.services.StorageService.Update(tc);
+						await ServiceRef.StorageService.Update(tc);
 					}
 				}
 				catch (KeyNotFoundException)
 				{
-					await this.services.StorageService.Insert(tc);
+					await ServiceRef.StorageService.Insert(tc);
 				}
 			}
 			catch (Exception ex)
 			{
-				this.services.LogService.LogException(ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
+				ServiceRef.LogService.LogException(ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
 			}
 		}
 	}
 
 	private async Task CreateOrRestoreConfiguration()
 	{
-		TagConfiguration configuration;
+		TagConfiguration? Configuration;
 
 		try
 		{
-			configuration = await this.services.StorageService.FindFirstDeleteRest<TagConfiguration>();
+			Configuration = await ServiceRef.StorageService.FindFirstDeleteRest<TagConfiguration>();
 		}
 		catch (Exception findException)
 		{
-			this.services.LogService.LogException(findException, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
-			configuration = null;
+			ServiceRef.LogService.LogException(findException, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
+			Configuration = null;
 		}
 
-		if (configuration is null)
+		if (Configuration is null)
 		{
-			configuration = new TagConfiguration();
+			Configuration = new();
 
 			try
 			{
-				await this.services.StorageService.Insert(configuration);
+				await ServiceRef.StorageService.Insert(Configuration);
 			}
-			catch (Exception insertException)
+			catch (Exception ex)
 			{
-				this.services.LogService.LogException(insertException, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
+				ServiceRef.LogService.LogException(ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
 			}
 		}
 
-		await this.services.TagProfile.FromConfiguration(configuration);
+		await ServiceRef.TagProfile.FromConfiguration(Configuration);
 	}
 
 	/// <summary>
@@ -764,12 +760,12 @@ public partial class App : Application, IDisposable
 		this.Handle_UnhandledException(e.ExceptionObject as Exception, nameof(CurrentDomain_UnhandledException), true).Wait();
 	}
 
-	private async Task Handle_UnhandledException(Exception ex, string title, bool shutdown)
+	private async Task Handle_UnhandledException(Exception? ex, string title, bool shutdown)
 	{
 		if (ex is not null)
 		{
-			this.services?.LogService?.SaveExceptionDump(title, ex.ToString());
-			this.services?.LogService?.LogException(ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod(), title));
+			ServiceRef.LogService.SaveExceptionDump(title, ex.ToString());
+			ServiceRef.LogService.LogException(ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod(), title));
 		}
 
 		if (shutdown)
@@ -782,11 +778,13 @@ public partial class App : Application, IDisposable
 		{
 			if (Device.IsInvokeRequired && (this.MainPage is not null))
 			{
-				Device.BeginInvokeOnMainThread(async () => await this.MainPage.DisplayAlert(title, ex?.ToString(), LocalizationResourceManager.Current["Ok"]));
+				Device.BeginInvokeOnMainThread(async () => await this.MainPage.DisplayAlert(title, ex?.ToString(),
+					ServiceRef.Localizer[nameof(AppResources.Ok)]));
 			}
 			else if (this.MainPage is not null)
 			{
-				await this.MainPage.DisplayAlert(title, ex?.ToString(), LocalizationResourceManager.Current["Ok"]);
+				await this.MainPage.DisplayAlert(title, ex?.ToString(),
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
 			}
 		}
 #endif
@@ -799,7 +797,7 @@ public partial class App : Application, IDisposable
 
 	private void DisplayBootstrapErrorPage(string Title, string StackTrace)
 	{
-		this.Dispatcher.BeginInvokeOnMainThread(() =>
+		this.Dispatcher.Dispatch(() =>
 		{
 			this.MainPage = new BootstrapErrorPage
 			{
@@ -814,17 +812,17 @@ public partial class App : Application, IDisposable
 
 	private async Task SendErrorReportFromPreviousRun()
 	{
-		if (this.services?.LogService is not null)
+		if (ServiceRef.LogService is not null)
 		{
-			string StackTrace = this.services.LogService.LoadExceptionDump();
+			string StackTrace = ServiceRef.LogService.LoadExceptionDump();
 			if (!string.IsNullOrWhiteSpace(StackTrace))
 			{
 				List<KeyValuePair<string, object>> Tags = new()
 				{
-					new KeyValuePair<string, object>(Constants.XmppProperties.Jid, this.services?.XmppService?.BareJid)
+					new KeyValuePair<string, object>(Constants.XmppProperties.Jid, ServiceRef.XmppService.BareJid)
 				};
 
-				KeyValuePair<string, object>[] Tags2 = this.services?.TagProfile?.LegalIdentity?.GetTags();
+				KeyValuePair<string, object>[] Tags2 = ServiceRef.TagProfile.LegalIdentity?.GetTags();
 
 				if (Tags2 is not null)
 				{
@@ -848,7 +846,7 @@ public partial class App : Application, IDisposable
 				}
 				finally
 				{
-					this.services.LogService.DeleteExceptionDump();
+					ServiceRef.LogService.DeleteExceptionDump();
 				}
 			}
 		}
@@ -1007,7 +1005,7 @@ public partial class App : Application, IDisposable
 	/// <returns>If URL is processed or not.</returns>
 	public static void OpenUrlSync(string Url)
 	{
-		Current.services.UiSerializer.BeginInvokeOnMainThread(async () =>
+		ServiceRef.UiSerializer.BeginInvokeOnMainThread(async () =>
 		{
 			await QrCode.OpenUrl(Url);
 		});
@@ -1085,7 +1083,7 @@ public partial class App : Application, IDisposable
 
 			if (DateTimeForLogin == DateTime.MaxValue)
 			{
-				MessageAlert = LocalizationResourceManager.Current["PinIsInvalidAplicationBlockedForever"];
+				MessageAlert = ServiceRef.Localizer[nameof(AppResources.PinIsInvalidAplicationBlockedForever)];
 			}
 			else
 			{
@@ -1093,21 +1091,21 @@ public partial class App : Application, IDisposable
 				if (DateTimeForLogin.Value.ToShortDateString() == DateTime.Today.ToShortDateString())
 				{
 					string DateString = LocalDateTime.ToShortTimeString();
-					MessageAlert = string.Format(LocalizationResourceManager.Current["PinIsInvalidAplicationBlocked"], DateString);
+					MessageAlert = string.Format(ServiceRef.Localizer[nameof(AppResources.PinIsInvalidAplicationBlocked)], DateString);
 				}
 				else if (DateTimeForLogin.Value.ToShortDateString() == DateTime.Today.AddDays(1).ToShortDateString())
 				{
 					string DateString = LocalDateTime.ToShortTimeString();
-					MessageAlert = string.Format(LocalizationResourceManager.Current["PinIsInvalidAplicationBlockedTillTomorrow"], DateString);
+					MessageAlert = string.Format(ServiceRef.Localizer[nameof(AppResources.PinIsInvalidAplicationBlockedTillTomorrow)], DateString);
 				}
 				else
 				{
 					string DateString = LocalDateTime.ToString("yyyy-MM-dd, 'at' HH:mm");
-					MessageAlert = string.Format(LocalizationResourceManager.Current["PinIsInvalidAplicationBlocked"], DateString);
+					MessageAlert = string.Format(ServiceRef.Localizer[nameof(AppResources.PinIsInvalidAplicationBlocked)], DateString);
 				}
 			}
 
-			await Ui.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], MessageAlert);
+			await Ui.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], MessageAlert);
 			await Stop();
 		}
 	}
@@ -1144,7 +1142,10 @@ public partial class App : Application, IDisposable
 		long RemainingAttempts = Constants.Pin.MaxPinAttempts - PinAttemptCounter;
 		IUiSerializer Ui = Instantiate<IUiSerializer>();
 
-		await Ui.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], string.Format(LocalizationResourceManager.Current["PinIsInvalid"], RemainingAttempts));
+		await Ui.DisplayAlert(
+			ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+			string.Format(ServiceRef.Localizer[nameof(AppResources.PinIsInvalid)], RemainingAttempts));
+
 		await CheckUserBlocking();
 		return Pin;
 	}
@@ -1206,7 +1207,7 @@ public partial class App : Application, IDisposable
 	/// </summary>
 	private static async Task<long> GetCurrentPinCounter()
 	{
-		return await appInstance.services.SettingsService.RestoreLongState(Constants.Pin.CurrentPinAttemptCounter);
+		return await ServiceRef.SettingsService.RestoreLongState(Constants.Pin.CurrentPinAttemptCounter);
 	}
 
 	/// <summary>
@@ -1214,7 +1215,7 @@ public partial class App : Application, IDisposable
 	/// </summary>
 	private static async void SetCurrentPinCounter(long CurrentPinAttemptCounter)
 	{
-		await appInstance.services.SettingsService.SaveState(Constants.Pin.CurrentPinAttemptCounter, CurrentPinAttemptCounter);
+		await ServiceRef.SettingsService.SaveState(Constants.Pin.CurrentPinAttemptCounter, CurrentPinAttemptCounter);
 	}
 
 	/// <summary>

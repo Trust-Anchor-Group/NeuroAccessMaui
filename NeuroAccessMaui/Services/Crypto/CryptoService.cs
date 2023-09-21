@@ -9,7 +9,7 @@ namespace NeuroAccessMaui.Services.Crypto;
 /// Cryptographic service that helps create passwords and other security related tasks.
 /// </summary>
 [Singleton]
-internal sealed class CryptoService : ServiceReferences, ICryptoService
+internal sealed class CryptoService : ICryptoService
 {
 	private readonly string basePath;
 	private readonly string deviceId;
@@ -52,7 +52,7 @@ internal sealed class CryptoService : ServiceReferences, ICryptoService
 		}
 		catch (TypeInitializationException ex)
 		{
-			this.LogService.LogException(ex);
+			ServiceRef.LogService.LogException(ex);
 			// No secure storage available.
 
 			key = Hashes.ComputeSHA256Hash(Encoding.UTF8.GetBytes(fileName + ".Key"));

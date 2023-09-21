@@ -1,4 +1,5 @@
-﻿using NeuroAccessMaui.Services;
+﻿using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services;
 using Waher.Runtime.Inventory;
 
 namespace NeuroAccessMaui.Links;
@@ -25,15 +26,12 @@ public class OnboardingLink : ILinkOpener
 		return Link.Scheme.ToLower() == Constants.UriSchemes.Onboarding ? Grade.Ok : Grade.NotAtAll;
 	}
 
-	/// <summary>
-	/// Tries to open a link
-	/// </summary>
-	/// <param name="Link">Link to open</param>
-	/// <returns>If the link was opened.</returns>
+	///<inheritdoc/>
 	public async Task<bool> TryOpenLink(Uri Link)
 	{
-		ServiceReferences Services = new();
-		await Services.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], LocalizationResourceManager.Current["ThisCodeCannotBeClaimedAtThisTime"]);
+		await ServiceRef.UiSerializer.DisplayAlert(
+			ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+			ServiceRef.Localizer[nameof(AppResources.ThisCodeCannotBeClaimedAtThisTime)]);
 
 		return false;
 	}

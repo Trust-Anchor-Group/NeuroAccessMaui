@@ -2,6 +2,7 @@
 using NeuroAccessMaui.Pages.Contracts.PetitionSignature;
 using NeuroAccessMaui.Pages.Identity.PetitionIdentity;
 using NeuroAccessMaui.Pages.Identity.ViewIdentity;
+using NeuroAccessMaui.Resources.Languages;
 using System.Reflection;
 using System.Text;
 using Waher.Content.Xml;
@@ -23,13 +24,13 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 	{
 		if (this.BeginLoad(cancellationToken))
 		{
-			this.XmppService.ConnectionStateChanged += this.Contracts_ConnectionStateChanged;
-			this.XmppService.PetitionForPeerReviewIdReceived += this.Contracts_PetitionForPeerReviewIdReceived;
-			this.XmppService.PetitionForIdentityReceived += this.Contracts_PetitionForIdentityReceived;
-			this.XmppService.PetitionForSignatureReceived += this.Contracts_PetitionForSignatureReceived;
-			this.XmppService.PetitionedIdentityResponseReceived += this.Contracts_PetitionedIdentityResponseReceived;
-			this.XmppService.PetitionedPeerReviewIdResponseReceived += this.Contracts_PetitionedPeerReviewResponseReceived;
-			this.XmppService.SignaturePetitionResponseReceived += this.Contracts_SignaturePetitionResponseReceived;
+			ServiceRef.XmppService.ConnectionStateChanged += this.Contracts_ConnectionStateChanged;
+			ServiceRef.XmppService.PetitionForPeerReviewIdReceived += this.Contracts_PetitionForPeerReviewIdReceived;
+			ServiceRef.XmppService.PetitionForIdentityReceived += this.Contracts_PetitionForIdentityReceived;
+			ServiceRef.XmppService.PetitionForSignatureReceived += this.Contracts_PetitionForSignatureReceived;
+			ServiceRef.XmppService.PetitionedIdentityResponseReceived += this.Contracts_PetitionedIdentityResponseReceived;
+			ServiceRef.XmppService.PetitionedPeerReviewIdResponseReceived += this.Contracts_PetitionedPeerReviewResponseReceived;
+			ServiceRef.XmppService.SignaturePetitionResponseReceived += this.Contracts_SignaturePetitionResponseReceived;
 
 			this.EndLoad(true);
 		}
@@ -41,13 +42,13 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 	{
 		if (this.BeginUnload())
 		{
-			this.XmppService.ConnectionStateChanged -= this.Contracts_ConnectionStateChanged;
-			this.XmppService.PetitionForPeerReviewIdReceived -= this.Contracts_PetitionForPeerReviewIdReceived;
-			this.XmppService.PetitionForIdentityReceived -= this.Contracts_PetitionForIdentityReceived;
-			this.XmppService.PetitionForSignatureReceived -= this.Contracts_PetitionForSignatureReceived;
-			this.XmppService.PetitionedIdentityResponseReceived -= this.Contracts_PetitionedIdentityResponseReceived;
-			this.XmppService.PetitionedPeerReviewIdResponseReceived -= this.Contracts_PetitionedPeerReviewResponseReceived;
-			this.XmppService.SignaturePetitionResponseReceived -= this.Contracts_SignaturePetitionResponseReceived;
+			ServiceRef.XmppService.ConnectionStateChanged -= this.Contracts_ConnectionStateChanged;
+			ServiceRef.XmppService.PetitionForPeerReviewIdReceived -= this.Contracts_PetitionForPeerReviewIdReceived;
+			ServiceRef.XmppService.PetitionForIdentityReceived -= this.Contracts_PetitionForIdentityReceived;
+			ServiceRef.XmppService.PetitionForSignatureReceived -= this.Contracts_PetitionForSignatureReceived;
+			ServiceRef.XmppService.PetitionedIdentityResponseReceived -= this.Contracts_PetitionedIdentityResponseReceived;
+			ServiceRef.XmppService.PetitionedPeerReviewIdResponseReceived -= this.Contracts_PetitionedPeerReviewResponseReceived;
+			ServiceRef.XmppService.SignaturePetitionResponseReceived -= this.Contracts_SignaturePetitionResponseReceived;
 
 			this.EndUnload();
 		}
@@ -65,13 +66,13 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 
 			if (Identity is not null)
 			{
-				await this.NavigationService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Identity,
+				await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Identity,
 					e.RequestorFullJid, e.SignatoryIdentityId, e.PetitionId, e.Purpose, e.ContentToSign));
 			}
 		}
 		catch (Exception ex)
 		{
-			this.LogService.LogException(ex);
+			ServiceRef.LogService.LogException(ex);
 		}
 	}
 
@@ -81,13 +82,13 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 		{
 			LegalIdentity Identity;
 
-			if (e.RequestedIdentityId == this.TagProfile.LegalIdentity?.Id)
+			if (e.RequestedIdentityId == ServiceRef.TagProfile.LegalIdentity?.Id)
 			{
-				Identity = this.TagProfile.LegalIdentity;
+				Identity = ServiceRef.TagProfile.LegalIdentity;
 			}
 			else
 			{
-				(bool Succeeded, LegalIdentity LegalId) = await this.NetworkService.TryRequest(() => this.XmppService.GetLegalIdentity(e.RequestedIdentityId));
+				(bool Succeeded, LegalIdentity LegalId) = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.GetLegalIdentity(e.RequestedIdentityId));
 
 				if (!Succeeded || LegalId is null)
 				{
@@ -99,7 +100,7 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 
 			if (Identity is null)
 			{
-				this.LogService.LogWarning("Identity is missing or cannot be retrieved, ignore.",
+				ServiceRef.LogService.LogWarning("Identity is missing or cannot be retrieved, ignore.",
 					new KeyValuePair<string, object>("Type", this.GetType().Name),
 					new KeyValuePair<string, object>("Method", nameof(Contracts_PetitionForIdentityReceived)));
 
@@ -109,9 +110,9 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 			if (Identity.State == IdentityState.Compromised ||
 				Identity.State == IdentityState.Rejected)
 			{
-				await this.NetworkService.TryRequest(() =>
+				await ServiceRef.NetworkService.TryRequest(() =>
 				{
-					return this.XmppService.SendPetitionIdentityResponse(
+					return ServiceRef.XmppService.SendPetitionIdentityResponse(
 						e.RequestedIdentityId, e.PetitionId, e.RequestorFullJid, false);
 				});
 			}
@@ -121,14 +122,14 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 
 				if (Identity is not null)
 				{
-					await this.NavigationService.GoToAsync(nameof(PetitionIdentityPage), new PetitionIdentityNavigationArgs(
+					await ServiceRef.NavigationService.GoToAsync(nameof(PetitionIdentityPage), new PetitionIdentityNavigationArgs(
 						Identity, e.RequestorFullJid, e.RequestedIdentityId, e.PetitionId, e.Purpose));
 				}
 			}
 		}
 		catch (Exception ex)
 		{
-			this.LogService.LogException(ex);
+			ServiceRef.LogService.LogException(ex);
 		}
 	}
 
@@ -138,13 +139,13 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 		{
 			LegalIdentity Identity;
 
-			if (e.SignatoryIdentityId == this.TagProfile.LegalIdentity?.Id)
+			if (e.SignatoryIdentityId == ServiceRef.TagProfile.LegalIdentity?.Id)
 			{
-				Identity = this.TagProfile.LegalIdentity;
+				Identity = ServiceRef.TagProfile.LegalIdentity;
 			}
 			else
 			{
-				(bool Succeeded, LegalIdentity LegalId) = await this.NetworkService.TryRequest(() => this.XmppService.GetLegalIdentity(e.SignatoryIdentityId));
+				(bool Succeeded, LegalIdentity LegalId) = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.GetLegalIdentity(e.SignatoryIdentityId));
 
 				if (!Succeeded || LegalId is null)
 				{
@@ -156,7 +157,7 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 
 			if (Identity is null)
 			{
-				this.LogService.LogWarning("Identity is missing or cannot be retrieved, ignore.",
+				ServiceRef.LogService.LogWarning("Identity is missing or cannot be retrieved, ignore.",
 					new KeyValuePair<string, object>("Type", this.GetType().Name),
 					new KeyValuePair<string, object>("Method", nameof(Contracts_PetitionForSignatureReceived)));
 
@@ -165,9 +166,9 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 
 			if (Identity.State == IdentityState.Compromised || Identity.State == IdentityState.Rejected)
 			{
-				await this.NetworkService.TryRequest(() =>
+				await ServiceRef.NetworkService.TryRequest(() =>
 				{
-					return this.XmppService.SendPetitionSignatureResponse(e.SignatoryIdentityId, e.ContentToSign,
+					return ServiceRef.XmppService.SendPetitionSignatureResponse(e.SignatoryIdentityId, e.ContentToSign,
 						new byte[0], e.PetitionId, e.RequestorFullJid, false);
 				});
 			}
@@ -177,14 +178,14 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 
 				if (Identity is not null)
 				{
-					await this.NavigationService.GoToAsync(nameof(PetitionSignaturePage), new PetitionSignatureNavigationArgs(
+					await ServiceRef.NavigationService.GoToAsync(nameof(PetitionSignaturePage), new PetitionSignatureNavigationArgs(
 						Identity, e.RequestorFullJid, e.SignatoryIdentityId, e.ContentToSign, e.PetitionId, e.Purpose));
 				}
 			}
 		}
 		catch (Exception ex)
 		{
-			this.LogService.LogException(ex);
+			ServiceRef.LogService.LogException(ex);
 		}
 	}
 
@@ -196,17 +197,20 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 
 			if (!e.Response || Identity is null)
 			{
-				await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["Message"], LocalizationResourceManager.Current["SignaturePetitionDenied"], LocalizationResourceManager.Current["Ok"]);
+				await ServiceRef.UiSerializer.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.Message)],
+					ServiceRef.Localizer[nameof(AppResources.SignaturePetitionDenied)],
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
 			}
 			else
 			{
-				await this.NavigationService.GoToAsync(nameof(ViewIdentityPage),
+				await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage),
 					new ViewIdentityNavigationArgs(Identity));
 			}
 		}
 		catch (Exception ex)
 		{
-			this.LogService.LogException(ex);
+			ServiceRef.LogService.LogException(ex);
 		}
 	}
 
@@ -222,52 +226,64 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 				{
 					if (!e.Response)
 					{
-						await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["PeerReviewRejected"], LocalizationResourceManager.Current["APeerYouRequestedToReviewHasRejected"], LocalizationResourceManager.Current["Ok"]);
+						await ServiceRef.UiSerializer.DisplayAlert(
+							ServiceRef.Localizer[nameof(AppResources.PeerReviewRejected)],
+							ServiceRef.Localizer[nameof(AppResources.APeerYouRequestedToReviewHasRejected)],
+							ServiceRef.Localizer[nameof(AppResources.Ok)]);
 					}
 					else
 					{
 						StringBuilder Xml = new();
-						this.TagProfile.LegalIdentity.Serialize(Xml, true, true, true, true, true, true, true);
+						ServiceRef.TagProfile.LegalIdentity.Serialize(Xml, true, true, true, true, true, true, true);
 						byte[] Data = Encoding.UTF8.GetBytes(Xml.ToString());
 						bool? Result;
 
 						try
 						{
-							Result = this.XmppService.ValidateSignature(Identity, Data, e.Signature);
+							Result = ServiceRef.XmppService.ValidateSignature(Identity, Data, e.Signature);
 						}
 						catch (Exception ex)
 						{
-							await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], ex.Message);
+							await ServiceRef.UiSerializer.DisplayAlert(
+								ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message);
 							return;
 						}
 
 						if (!Result.HasValue || !Result.Value)
 						{
-							await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["PeerReviewRejected"], LocalizationResourceManager.Current["APeerYouRequestedToReviewHasBeenRejectedDueToSignatureError"], LocalizationResourceManager.Current["Ok"]);
+							await ServiceRef.UiSerializer.DisplayAlert(
+								ServiceRef.Localizer[nameof(AppResources.PeerReviewRejected)],
+								ServiceRef.Localizer[nameof(AppResources.APeerYouRequestedToReviewHasBeenRejectedDueToSignatureError)],
+								ServiceRef.Localizer[nameof(AppResources.Ok)]);
 						}
 						else
 						{
-							(bool Succeeded, LegalIdentity LegalIdentity) = await this.NetworkService.TryRequest(
-								() => this.XmppService.AddPeerReviewIdAttachment(
-									this.TagProfile.LegalIdentity, Identity, e.Signature));
+							(bool Succeeded, LegalIdentity LegalIdentity) = await ServiceRef.NetworkService.TryRequest(
+								() => ServiceRef.XmppService.AddPeerReviewIdAttachment(
+									ServiceRef.TagProfile.LegalIdentity, Identity, e.Signature));
 
 							if (Succeeded)
 							{
-								await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["PeerReviewAccepted"], LocalizationResourceManager.Current["APeerReviewYouhaveRequestedHasBeenAccepted"], LocalizationResourceManager.Current["Ok"]);
+								await ServiceRef.UiSerializer.DisplayAlert(
+									ServiceRef.Localizer[nameof(AppResources.PeerReviewAccepted)],
+									ServiceRef.Localizer[nameof(AppResources.APeerReviewYouhaveRequestedHasBeenAccepted)],
+									ServiceRef.Localizer[nameof(AppResources.Ok)]);
 							}
 						}
 					}
 				}
 				catch (Exception ex)
 				{
-					this.LogService.LogException(ex);
-					await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], ex.Message, LocalizationResourceManager.Current["Ok"]);
+					ServiceRef.LogService.LogException(ex);
+					await ServiceRef.UiSerializer.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message,
+						ServiceRef.Localizer[nameof(AppResources.Ok)]);
 				}
 			}
 		}
 		catch (Exception ex)
 		{
-			this.LogService.LogException(ex);
+			ServiceRef.LogService.LogException(ex);
 		}
 	}
 
@@ -275,11 +291,11 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 	{
 		try
 		{
-			if (this.XmppService.IsOnline && this.TagProfile.IsCompleteOrWaitingForValidation())
+			if (ServiceRef.XmppService.IsOnline && ServiceRef.TagProfile.IsCompleteOrWaitingForValidation())
 			{
-				if (this.TagProfile.LegalIdentity is not null)
+				if (ServiceRef.TagProfile.LegalIdentity is not null)
 				{
-					string id = this.TagProfile.LegalIdentity.Id;
+					string id = ServiceRef.TagProfile.LegalIdentity.Id;
 					await Task.Delay(Constants.Timeouts.XmppInit);
 					this.DownloadLegalIdentityInternal(id);
 				}
@@ -287,7 +303,7 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 		}
 		catch (Exception ex)
 		{
-			this.LogService.LogException(ex);
+			ServiceRef.LogService.LogException(ex);
 		}
 	}
 
@@ -302,60 +318,63 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 		}
 		catch (Exception ex)
 		{
-			this.LogService.LogException(ex);
+			ServiceRef.LogService.LogException(ex);
 		}
 	}
 
 	protected async Task DownloadLegalIdentity(string LegalId)
 	{
 		bool isConnected =
-			this.XmppService is not null &&
-			await this.XmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect) &&
-			this.XmppService.IsOnline;
+			ServiceRef.XmppService is not null &&
+			await ServiceRef.XmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect) &&
+			ServiceRef.XmppService.IsOnline;
 
 		if (!isConnected)
 		{
 			return;
 		}
 
-		(bool succeeded, LegalIdentity identity) = await this.NetworkService.TryRequest(() => this.XmppService.GetLegalIdentity(LegalId), displayAlert: false);
+		(bool succeeded, LegalIdentity identity) = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.GetLegalIdentity(LegalId), displayAlert: false);
 		if (succeeded)
 		{
-			this.UiSerializer.BeginInvokeOnMainThread(async () =>
+			ServiceRef.UiSerializer.BeginInvokeOnMainThread(async () =>
 			{
 				string userMessage = null;
 				bool gotoRegistrationPage = false;
 
 				if (identity.State == IdentityState.Compromised)
 				{
-					userMessage = LocalizationResourceManager.Current["YourLegalIdentityHasBeenCompromised"];
-					await this.TagProfile.CompromiseLegalIdentity(identity);
+					userMessage = ServiceRef.Localizer[nameof(AppResources.YourLegalIdentityHasBeenCompromised)];
+					await ServiceRef.TagProfile.CompromiseLegalIdentity(identity);
 					gotoRegistrationPage = true;
 				}
 				else if (identity.State == IdentityState.Obsoleted)
 				{
-					userMessage = LocalizationResourceManager.Current["YourLegalIdentityHasBeenObsoleted"];
-					await this.TagProfile.RevokeLegalIdentity(identity);
+					userMessage = ServiceRef.Localizer[nameof(AppResources.YourLegalIdentityHasBeenObsoleted)];
+					await ServiceRef.TagProfile.RevokeLegalIdentity(identity);
 					gotoRegistrationPage = true;
 				}
-				else if (identity.State == IdentityState.Approved && !await this.XmppService.HasPrivateKey(identity.Id))
+				else if (identity.State == IdentityState.Approved && !await ServiceRef.XmppService.HasPrivateKey(identity.Id))
 				{
-					bool Response = await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["WarningTitle"], LocalizationResourceManager.Current["UnableToGetAccessToYourPrivateKeys"],
-						LocalizationResourceManager.Current["Continue"], LocalizationResourceManager.Current["Repair"]);
+					bool Response = await ServiceRef.UiSerializer.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.WarningTitle)],
+						ServiceRef.Localizer[nameof(AppResources.UnableToGetAccessToYourPrivateKeys)],
+						ServiceRef.Localizer[nameof(AppResources.Continue)],
+						ServiceRef.Localizer[nameof(AppResources.Repair)]);
 
 					if (Response)
 					{
-						await this.TagProfile.SetLegalIdentity(identity);
+						await ServiceRef.TagProfile.SetLegalIdentity(identity);
 					}
 					else
 					{
 						try
 						{
-							File.WriteAllText(Path.Combine(this.StorageService.DataFolder, "Start.txt"), DateTime.Now.AddHours(1).Ticks.ToString());
+							File.WriteAllText(Path.Combine(ServiceRef.StorageService.DataFolder, "Start.txt"), DateTime.Now.AddHours(1).Ticks.ToString());
 						}
 						catch (Exception ex)
 						{
-							this.LogService.LogException(ex);
+							ServiceRef.LogService.LogException(ex);
 						}
 
 						await App.Stop();
@@ -364,7 +383,7 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 				}
 				else
 				{
-					await this.TagProfile.SetLegalIdentity(identity);
+					await ServiceRef.TagProfile.SetLegalIdentity(identity);
 				}
 
 				if (gotoRegistrationPage)
@@ -377,9 +396,10 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 						// Do a begin invoke here so the page animation has time to finish,
 						// and the view model loads state et.c. before showing the alert.
 						// This gives a better UX experience.
-						this.UiSerializer.BeginInvokeOnMainThread(async () =>
+						ServiceRef.UiSerializer.BeginInvokeOnMainThread(async () =>
 						{
-							await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["YourLegalIdentity"], userMessage);
+							await ServiceRef.UiSerializer.DisplayAlert(
+								ServiceRef.Localizer[nameof(AppResources.YourLegalIdentity)], userMessage);
 						});
 					}
 				}
@@ -391,10 +411,10 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 	{
 		try
 		{
-			LegalIdentity identity = await this.XmppService.GetLegalIdentity(LegalId);
-			this.UiSerializer.BeginInvokeOnMainThread(async () =>
+			LegalIdentity identity = await ServiceRef.XmppService.GetLegalIdentity(LegalId);
+			ServiceRef.UiSerializer.BeginInvokeOnMainThread(async () =>
 			{
-				await this.NavigationService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(identity));
+				await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(identity));
 			});
 		}
 		catch (ForbiddenException)
@@ -403,19 +423,21 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 			// When this happens, try to send a petition to view it instead.
 			// Normal operation. Should not be logged.
 
-			this.UiSerializer.BeginInvokeOnMainThread(async () =>
+			ServiceRef.UiSerializer.BeginInvokeOnMainThread(async () =>
 			{
-				bool succeeded = await this.NetworkService.TryRequest(() => this.XmppService.PetitionIdentity(LegalId, Guid.NewGuid().ToString(), Purpose));
+				bool succeeded = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.PetitionIdentity(LegalId, Guid.NewGuid().ToString(), Purpose));
 				if (succeeded)
 				{
-					await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["PetitionSent"], LocalizationResourceManager.Current["APetitionHasBeenSentToTheOwner"]);
+					await ServiceRef.UiSerializer.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.PetitionSent)],
+						ServiceRef.Localizer[nameof(AppResources.APetitionHasBeenSentToTheOwner)]);
 				}
 			});
 		}
 		catch (Exception ex)
 		{
-			this.LogService.LogException(ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
-			await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], ex);
+			ServiceRef.LogService.LogException(ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
+			await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex);
 		}
 	}
 
@@ -429,21 +451,21 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 
 		if (i < 0)
 		{
-			throw new InvalidOperationException(LocalizationResourceManager.Current["InvalidTagSignatureId"]);
+			throw new InvalidOperationException(ServiceRef.Localizer[nameof(AppResources.InvalidTagSignatureId)]);
 		}
 
 		string JID = Request[..i];
 		string Key = Request[(i + 1)..];
 
-		LegalIdentity ID = (this.TagProfile?.LegalIdentity)
-			?? throw new InvalidOperationException(LocalizationResourceManager.Current["NoLegalIdSelected"]);
+		LegalIdentity ID = (ServiceRef.TagProfile.LegalIdentity)
+			?? throw new InvalidOperationException(ServiceRef.Localizer[nameof(AppResources.NoLegalIdSelected)]);
 
 		if (ID.State != IdentityState.Approved)
 		{
-			throw new InvalidOperationException(LocalizationResourceManager.Current["LegalIdNotApproved"]);
+			throw new InvalidOperationException(ServiceRef.Localizer[nameof(AppResources.LegalIdNotApproved)]);
 		}
 
-		string IdRef = this.TagProfile?.LegalIdentity?.Id ?? string.Empty;
+		string IdRef = ServiceRef.TagProfile.LegalIdentity?.Id ?? string.Empty;
 
 		if (!await App.VerifyPin())
 		{
@@ -458,13 +480,13 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 		Xml.Append(XML.Encode(IdRef));
 		Xml.Append("'/>");
 
-		if (!this.XmppService.IsOnline &&
-			!await this.XmppService.WaitForConnectedState(TimeSpan.FromSeconds(10)))
+		if (!ServiceRef.XmppService.IsOnline &&
+			!await ServiceRef.XmppService.WaitForConnectedState(TimeSpan.FromSeconds(10)))
 		{
-			throw new InvalidOperationException(LocalizationResourceManager.Current["AppNotConnected"]);
+			throw new InvalidOperationException(ServiceRef.Localizer[nameof(AppResources.AppNotConnected)]);
 		}
 
-		await this.XmppService.IqSetAsync(JID, Xml.ToString());
+		await ServiceRef.XmppService.IqSetAsync(JID, Xml.ToString());
 	}
 
 	private async Task Contracts_SignaturePetitionResponseReceived(object Sender, SignaturePetitionResponseEventArgs e)
@@ -475,17 +497,19 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 
 			if (!e.Response || Identity is null)
 			{
-				await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["Message"], LocalizationResourceManager.Current["PetitionToViewLegalIdentityWasDenied"], LocalizationResourceManager.Current["Ok"]);
+				await ServiceRef.UiSerializer.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.Message)],
+					ServiceRef.Localizer[nameof(AppResources.PetitionToViewLegalIdentityWasDenied)],
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
 			}
 			else
 			{
-				await this.NavigationService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Identity));
+				await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Identity));
 			}
 		}
 		catch (Exception ex)
 		{
-			this.LogService.LogException(ex);
+			ServiceRef.LogService.LogException(ex);
 		}
 	}
-
 }

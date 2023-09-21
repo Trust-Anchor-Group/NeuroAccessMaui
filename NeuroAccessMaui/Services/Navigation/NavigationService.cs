@@ -1,4 +1,5 @@
-﻿using Waher.Events;
+﻿using NeuroAccessMaui.Resources.Languages;
+using Waher.Events;
 using Waher.Runtime.Inventory;
 
 namespace NeuroAccessMaui.Services.Navigation;
@@ -36,7 +37,7 @@ internal sealed partial class NavigationService : LoadableService, INavigationSe
 			}
 			catch (Exception e)
 			{
-				this.LogService.LogException(e);
+				ServiceRef.LogService.LogException(e);
 				this.EndLoad(false);
 			}
 		}
@@ -58,7 +59,7 @@ internal sealed partial class NavigationService : LoadableService, INavigationSe
 			}
 			catch (Exception e)
 			{
-				this.LogService.LogException(e);
+				ServiceRef.LogService.LogException(e);
 			}
 
 			this.EndUnload();
@@ -83,7 +84,7 @@ internal sealed partial class NavigationService : LoadableService, INavigationSe
 			return;
 		}
 
-		await this.UiSerializer.InvokeOnMainThreadAsync(async () =>
+		await ServiceRef.UiSerializer.InvokeOnMainThreadAsync(async () =>
 		{
 			// Get the parent's navigation arguments
 			NavigationArgs ParentArgs = this.GetCurrentNavigationArgs();
@@ -107,9 +108,12 @@ internal sealed partial class NavigationService : LoadableService, INavigationSe
 			catch (Exception e)
 			{
 				e = Log.UnnestException(e);
-				this.LogService.LogException(e);
+				ServiceRef.LogService.LogException(e);
 				string ExtraInfo = Environment.NewLine + e.Message;
-				await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], string.Format(LocalizationResourceManager.Current["FailedToNavigateToPage"], Route, ExtraInfo));
+
+				await ServiceRef.UiSerializer.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					ServiceRef.Localizer[nameof(AppResources.FailedToNavigateToPage)], Route, ExtraInfo);
 			}
 			finally
 			{
@@ -140,8 +144,11 @@ internal sealed partial class NavigationService : LoadableService, INavigationSe
 		}
 		catch (Exception e)
 		{
-			this.LogService.LogException(e);
-			await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], LocalizationResourceManager.Current["FailedToClosePage"]);
+			ServiceRef.LogService.LogException(e);
+
+			await ServiceRef.UiSerializer.DisplayAlert(
+				ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+				ServiceRef.Localizer[nameof(AppResources.FailedToClosePage)]);
 		}
 		finally
 		{
@@ -219,7 +226,7 @@ internal sealed partial class NavigationService : LoadableService, INavigationSe
 			{
 				e.Cancel();
 
-				this.UiSerializer.BeginInvokeOnMainThread(async () =>
+				ServiceRef.UiSerializer.BeginInvokeOnMainThread(async () =>
 				{
 					await this.GoBackAsync();
 				});
@@ -227,7 +234,7 @@ internal sealed partial class NavigationService : LoadableService, INavigationSe
 		}
 		catch (Exception ex)
 		{
-			this.LogService.LogException(ex);
+			ServiceRef.LogService.LogException(ex);
 		}
 	}
 

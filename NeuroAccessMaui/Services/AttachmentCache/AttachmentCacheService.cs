@@ -36,7 +36,7 @@ internal sealed partial class AttachmentCacheService : LoadableService, IAttachm
 			}
 			catch (Exception e)
 			{
-				this.LogService.LogException(e);
+				ServiceRef.LogService.LogException(e);
 				this.EndLoad(false);
 			}
 		}
@@ -82,7 +82,7 @@ internal sealed partial class AttachmentCacheService : LoadableService, IAttachm
 		}
 		catch (Exception e)
 		{
-			this.LogService.LogException(e);
+			ServiceRef.LogService.LogException(e);
 			return (null, string.Empty);
 		}
 	}
@@ -169,13 +169,13 @@ internal sealed partial class AttachmentCacheService : LoadableService, IAttachm
 				}
 				catch (Exception ex)
 				{
-					this.LogService.LogException(ex);
+					ServiceRef.LogService.LogException(ex);
 				}
 			}
 		}
 		catch (Exception ex)
 		{
-			this.LogService.LogException(ex);
+			ServiceRef.LogService.LogException(ex);
 		}
 	}
 }

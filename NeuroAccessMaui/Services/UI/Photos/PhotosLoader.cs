@@ -69,7 +69,7 @@ public class PhotosLoader : BaseViewModel
 		}
 		catch (Exception e)
 		{
-			this.LogService.LogException(e);
+			ServiceRef.LogService.LogException(e);
 		}
 	}
 
@@ -87,7 +87,7 @@ public class PhotosLoader : BaseViewModel
 		}
 		catch (Exception ex)
 		{
-			this.LogService.LogException(ex);
+			ServiceRef.LogService.LogException(ex);
 		}
 
 		return (null, string.Empty, 0);
@@ -151,7 +151,7 @@ public class PhotosLoader : BaseViewModel
 				{
 					TaskCompletionSource<bool> PhotoAddedTaskSource = new();
 
-					this.UiSerializer.BeginInvokeOnMainThread(() =>
+					ServiceRef.UiSerializer.BeginInvokeOnMainThread(() =>
 					{
 						this.photos.Add(Photo);
 						PhotoAddedTaskSource.TrySetResult(true);
@@ -162,7 +162,7 @@ public class PhotosLoader : BaseViewModel
 			}
 			catch (Exception ex)
 			{
-				this.LogService.LogException(ex);
+				ServiceRef.LogService.LogException(ex);
 			}
 		}
 
@@ -178,19 +178,19 @@ public class PhotosLoader : BaseViewModel
 			return (null, string.Empty, 0);
 		}
 
-		(byte[] Bin, string ContentType) = await this.AttachmentCacheService.TryGet(Attachment.Url);
+		(byte[] Bin, string ContentType) = await ServiceRef.AttachmentCacheService.TryGet(Attachment.Url);
 
 		if (Bin is not null)
 		{
 			return (Bin, ContentType, GetImageRotation(Bin));
 		}
 
-		if (!this.NetworkService.IsOnline || !this.XmppService.IsOnline)
+		if (!ServiceRef.NetworkService.IsOnline || !ServiceRef.XmppService.IsOnline)
 		{
 			return (null, string.Empty, 0);
 		}
 
-		KeyValuePair<string, TemporaryFile> pair = await this.XmppService.GetAttachment(Attachment.Url, SignWith, Constants.Timeouts.DownloadFile);
+		KeyValuePair<string, TemporaryFile> pair = await ServiceRef.XmppService.GetAttachment(Attachment.Url, SignWith, Constants.Timeouts.DownloadFile);
 
 		using TemporaryFile file = pair.Value;
 
@@ -214,9 +214,9 @@ public class PhotosLoader : BaseViewModel
 			return (null, string.Empty, 0);
 		}
 
-		bool IsContact = await this.XmppService.IsContact(Attachment.LegalId);
+		bool IsContact = await ServiceRef.XmppService.IsContact(Attachment.LegalId);
 
-		await this.AttachmentCacheService.Add(Attachment.Url, Attachment.LegalId, IsContact, Bin, ContentType);
+		await ServiceRef.AttachmentCacheService.Add(Attachment.Url, Attachment.LegalId, IsContact, Bin, ContentType);
 
 		return (Bin, ContentType, GetImageRotation(Bin));
 	}
@@ -416,7 +416,7 @@ public class PhotosLoader : BaseViewModel
 	}
 
 	private static Dictionary<string, bool> temporaryFiles = null;
-	private readonly static object synchObject = new();
+	private static readonly object synchObject = new();
 
 	private static void CurrentDomain_ProcessExit(object sender, EventArgs e)
 	{

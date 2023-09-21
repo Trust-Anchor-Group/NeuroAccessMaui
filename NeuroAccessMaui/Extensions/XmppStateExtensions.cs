@@ -1,7 +1,5 @@
-﻿using Microsoft.Extensions.Localization;
-using NeuroAccessMaui.Exceptions;
-using NeuroAccessMaui.Resources.Languages;
-using NeuroAccessMaui.Services.Localization;
+﻿using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 
@@ -68,23 +66,21 @@ public static class XmppStateExtensions
 	/// <returns>Textual representation of an XMPP connection state.</returns>
 	public static string ToDisplayText(this XmppState State)
 	{
-		IStringLocalizer? Localizer = LocalizationManager.GetStringLocalizer();
-
 		return State switch
 		{
-			XmppState.Authenticating => Localizer[nameof(AppResources.XmppState_Authenticating)],
-			XmppState.Binding => Localizer[nameof(AppResources.XmppState_Binding)],
-			XmppState.Connected => Localizer[nameof(AppResources.XmppState_Connected)],
-			XmppState.Connecting => Localizer[nameof(AppResources.XmppState_Connecting)],
-			XmppState.Error => Localizer[nameof(AppResources.XmppState_Error)],
-			XmppState.FetchingRoster => Localizer[nameof(AppResources.XmppState_FetchingRoster)],
-			XmppState.Registering => Localizer[nameof(AppResources.XmppState_Registering)],
-			XmppState.RequestingSession => Localizer[nameof(AppResources.XmppState_RequestingSession)],
-			XmppState.SettingPresence => Localizer[nameof(AppResources.XmppState_SettingPresence)],
-			XmppState.StartingEncryption => Localizer[nameof(AppResources.XmppState_StartingEncryption)],
-			XmppState.StreamNegotiation => Localizer[nameof(AppResources.XmppState_StreamNegotiation)],
-			XmppState.StreamOpened => Localizer[nameof(AppResources.XmppState_StreamOpened)],
-			_ => Localizer[nameof(AppResources.XmppState_Offline)],
+			XmppState.Authenticating => ServiceRef.Localizer[nameof(AppResources.XmppState_Authenticating)],
+			XmppState.Binding => ServiceRef.Localizer[nameof(AppResources.XmppState_Binding)],
+			XmppState.Connected => ServiceRef.Localizer[nameof(AppResources.XmppState_Connected)],
+			XmppState.Connecting => ServiceRef.Localizer[nameof(AppResources.XmppState_Connecting)],
+			XmppState.Error => ServiceRef.Localizer[nameof(AppResources.XmppState_Error)],
+			XmppState.FetchingRoster => ServiceRef.Localizer[nameof(AppResources.XmppState_FetchingRoster)],
+			XmppState.Registering => ServiceRef.Localizer[nameof(AppResources.XmppState_Registering)],
+			XmppState.RequestingSession => ServiceRef.Localizer[nameof(AppResources.XmppState_RequestingSession)],
+			XmppState.SettingPresence => ServiceRef.Localizer[nameof(AppResources.XmppState_SettingPresence)],
+			XmppState.StartingEncryption => ServiceRef.Localizer[nameof(AppResources.XmppState_StartingEncryption)],
+			XmppState.StreamNegotiation => ServiceRef.Localizer[nameof(AppResources.XmppState_StreamNegotiation)],
+			XmppState.StreamOpened => ServiceRef.Localizer[nameof(AppResources.XmppState_StreamOpened)],
+			_ => ServiceRef.Localizer[nameof(AppResources.XmppState_Offline)],
 		};
 	}
 
@@ -95,16 +91,13 @@ public static class XmppStateExtensions
 	/// <returns>String representation</returns>
 	public static string ToDisplayText(this IdentityState State)
 	{
-		IStringLocalizer? Localizer = LocalizationManager.GetStringLocalizer()
-			?? throw new LocalizationException("There is no localization service");
-
 		return State switch
 		{
-			IdentityState.Approved => Localizer[nameof(AppResources.IdentityState_Approved)],
-			IdentityState.Compromised => Localizer[nameof(AppResources.IdentityState_Compromized)],
-			IdentityState.Created => Localizer[nameof(AppResources.IdentityState_Created)],
-			IdentityState.Obsoleted => Localizer[nameof(AppResources.IdentityState_Obsoleted)],
-			IdentityState.Rejected => Localizer[nameof(AppResources.IdentityState_Rejected)],
+			IdentityState.Approved => ServiceRef.Localizer[nameof(AppResources.IdentityState_Approved)],
+			IdentityState.Compromised => ServiceRef.Localizer[nameof(AppResources.IdentityState_Compromised)],
+			IdentityState.Created => ServiceRef.Localizer[nameof(AppResources.IdentityState_Created)],
+			IdentityState.Obsoleted => ServiceRef.Localizer[nameof(AppResources.IdentityState_Obsoleted)],
+			IdentityState.Rejected => ServiceRef.Localizer[nameof(AppResources.IdentityState_Rejected)],
 			_ => string.Empty,
 		};
 	}

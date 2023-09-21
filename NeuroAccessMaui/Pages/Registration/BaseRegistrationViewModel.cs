@@ -87,7 +87,7 @@ public virtual Task DoAssignProperties()
 /// <param name="commands">The commands to re-evaluate.</param>
 protected void BeginInvokeSetIsDone(params ICommand[] commands)
     {
-        this.UiSerializer.BeginInvokeOnMainThread(() => this.SetIsDone(commands));
+        ServiceRef.UiSerializer.BeginInvokeOnMainThread(() => this.SetIsDone(commands));
     }
 	*/
 }

@@ -1,4 +1,7 @@
-﻿using NeuroAccessMaui.Services.Tag;
+﻿using Microsoft.Extensions.Localization;
+using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services.Localization;
+using NeuroAccessMaui.Services.Tag;
 using System.Globalization;
 
 namespace NeuroAccessMaui.Converters;
@@ -11,40 +14,40 @@ public class PinStrengthToErrorMessage : IValueConverter, IMarkupExtension<PinSt
 	/// <summary>
 	/// Returns a localized error message for a given <see cref="PinStrength"/>.
 	/// </summary>
-	public object Convert(object Value, Type TargetType, object Parameter, CultureInfo Culture)
+	public object Convert(object? Value, Type TargetType, object? Parameter, CultureInfo Culture)
 	{
-		if (Value is PinStrength PinStrength)
+		if (Value is not PinStrength PinStrength)
 		{
-			return PinStrength switch
-			{
-				PinStrength.NotEnoughDigitsLettersSigns => string.Format(LocalizationResourceManager.Current["PinWithNotEnoughDigitsLettersSigns"], Constants.Authentication.MinPinSymbolsFromDifferentClasses),
-
-				PinStrength.NotEnoughDigitsOrSigns => string.Format(LocalizationResourceManager.Current["PinWithNotEnoughDigitsOrSigns"], Constants.Authentication.MinPinSymbolsFromDifferentClasses),
-				PinStrength.NotEnoughLettersOrDigits => string.Format(LocalizationResourceManager.Current["PinWithNotEnoughLettersOrDigits"], Constants.Authentication.MinPinSymbolsFromDifferentClasses),
-				PinStrength.NotEnoughLettersOrSigns => string.Format(LocalizationResourceManager.Current["PinWithNotEnoughLettersOrSigns"], Constants.Authentication.MinPinSymbolsFromDifferentClasses),
-
-				PinStrength.ContainsAddress => LocalizationResourceManager.Current["PinContainsAddress"],
-				PinStrength.ContainsName => LocalizationResourceManager.Current["PinContainsName"],
-				PinStrength.ContainsPersonalNumber => LocalizationResourceManager.Current["PinContainsPersonalNumber"],
-				PinStrength.ContainsPhoneNumber => LocalizationResourceManager.Current["PinContainsPhoneNumber"],
-				PinStrength.ContainsEMail => LocalizationResourceManager.Current["PinContainsEMail"],
-
-				PinStrength.TooManyIdenticalSymbols => string.Format(LocalizationResourceManager.Current["PinWithTooManyIdenticalSymbols"], Constants.Authentication.MaxPinIdenticalSymbols),
-				PinStrength.TooManySequencedSymbols => string.Format(LocalizationResourceManager.Current["PinWithTooManySequencedSymbols"], Constants.Authentication.MaxPinSequencedSymbols),
-
-				PinStrength.TooShort => string.Format(LocalizationResourceManager.Current["PinTooShort"], Constants.Authentication.MinPinLength),
-
-				_ => "",
-			};
+			throw new ArgumentException($"{nameof(Services.Tag.PinStrength)} expected but received {Value?.GetType().Name ?? "null"}.");
 		}
 
-		throw new ArgumentException($"{nameof(Services.Tag.PinStrength)} expected but received {Value?.GetType().Name ?? "null"}.");
+		IStringLocalizer? Localizer = LocalizationManager.GetStringLocalizer<AppResources>();
+
+		return PinStrength switch
+		{
+			PinStrength.NotEnoughDigitsLettersSigns => string.Format(CultureInfo.CurrentCulture, Localizer[nameof(AppResources.PinWithNotEnoughDigitsLettersSigns)], Constants.Authentication.MinPinSymbolsFromDifferentClasses),
+
+			PinStrength.NotEnoughDigitsOrSigns => string.Format(CultureInfo.CurrentCulture, Localizer[nameof(AppResources.PinWithNotEnoughDigitsOrSigns)], Constants.Authentication.MinPinSymbolsFromDifferentClasses),
+			PinStrength.NotEnoughLettersOrDigits => string.Format(CultureInfo.CurrentCulture, Localizer[nameof(AppResources.PinWithNotEnoughLettersOrDigits)], Constants.Authentication.MinPinSymbolsFromDifferentClasses),
+			PinStrength.NotEnoughLettersOrSigns => string.Format(CultureInfo.CurrentCulture, Localizer[nameof(AppResources.PinWithNotEnoughLettersOrSigns)], Constants.Authentication.MinPinSymbolsFromDifferentClasses),
+			PinStrength.TooManyIdenticalSymbols => string.Format(CultureInfo.CurrentCulture, Localizer[nameof(AppResources.PinWithTooManyIdenticalSymbols)], Constants.Authentication.MaxPinIdenticalSymbols),
+			PinStrength.TooManySequencedSymbols => string.Format(CultureInfo.CurrentCulture, Localizer[nameof(AppResources.PinWithTooManySequencedSymbols)], Constants.Authentication.MaxPinSequencedSymbols),
+			PinStrength.TooShort => string.Format(CultureInfo.CurrentCulture, Localizer[nameof(AppResources.PinTooShort)], Constants.Authentication.MinPinLength),
+
+			PinStrength.ContainsAddress => Localizer[nameof(AppResources.PinContainsAddress)],
+			PinStrength.ContainsName => Localizer[nameof(AppResources.PinContainsName)],
+			PinStrength.ContainsPersonalNumber => Localizer[nameof(AppResources.PinContainsPersonalNumber)],
+			PinStrength.ContainsPhoneNumber => Localizer[nameof(AppResources.PinContainsPhoneNumber)],
+			PinStrength.ContainsEMail => Localizer[nameof(AppResources.PinContainsEMail)],
+
+			_ => "",
+		};
 	}
 
 	/// <summary>
 	/// Always throws a <see cref="NotImplementedException"/>.
 	/// </summary>
-	public object ConvertBack(object Value, Type TargetType, object Parameter, CultureInfo Culture)
+	public object ConvertBack(object? Value, Type TargetType, object? Parameter, CultureInfo Culture)
 	{
 		throw new NotImplementedException();
 	}

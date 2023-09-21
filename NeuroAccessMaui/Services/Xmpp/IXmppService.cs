@@ -14,7 +14,7 @@ namespace NeuroAccessMaui.Services.Xmpp;
 /// Represents an abstraction of a connection to an XMPP Server.
 /// </summary>
 [DefaultImplementation(typeof(XmppService))]
-public interface IXmppService : ILoadableService, IServiceReferences
+public interface IXmppService : ILoadableService
 {
 	#region Lifecycle
 

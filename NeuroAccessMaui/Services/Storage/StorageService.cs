@@ -11,7 +11,7 @@ using Waher.Runtime.Profiling;
 namespace NeuroAccessMaui.Services.Storage;
 
 [Singleton]
-internal sealed class StorageService : ServiceReferences, IStorageService
+internal sealed class StorageService : ServicesReference, IStorageService
 {
 	private readonly LinkedList<TaskCompletionSource<bool>> tasksWaiting = new();
 	private readonly string dataFolder;
@@ -82,14 +82,14 @@ internal sealed class StorageService : ServiceReferences, IStorageService
 		{
 			e1 = Log.UnnestException(e1);
 			Thread?.Exception(e1);
-			this.LogService.LogException(e1);
+			ServiceRef.LogService.LogException(e1);
 		}
 
 		try
 		{
 			/* On iOS the UI is not initialised at this point, need to fuind another solution
 			Thread?.NewState("UI");
-			if (await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["DatabaseIssue"], LocalizationResourceManager.Current["DatabaseCorruptInfoText"], LocalizationResourceManager.Current["RepairAndContinue"], LocalizationResourceManager.Current["ContinueAnyway"]))
+			if (await ServiceRef.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["DatabaseIssue"], LocalizationResourceManager.Current["DatabaseCorruptInfoText"], LocalizationResourceManager.Current["RepairAndContinue"], LocalizationResourceManager.Current["ContinueAnyway"]))
 			*/
 			//TODO: when UI is ready, show an alert that the database was reset due to unrecoverable error
 			//TODO: say to close the application in a controlled manner
@@ -120,12 +120,12 @@ internal sealed class StorageService : ServiceReferences, IStorageService
 				{
 					e3 = Log.UnnestException(e3);
 					Thread?.Exception(e3);
-					this.LogService.LogException(e3);
+					ServiceRef.LogService.LogException(e3);
 
 					await App.Stop();
 					/*
 					Thread?.NewState("UI");
-					await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["DatabaseIssue"], LocalizationResourceManager.Current["DatabaseRepairFailedInfoText"], LocalizationResourceManager.Current["Ok"]);
+					await ServiceRef.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["DatabaseIssue"], LocalizationResourceManager.Current["DatabaseRepairFailedInfoText"], LocalizationResourceManager.Current["Ok"]);
 					*/
 				}
 			}
@@ -191,7 +191,7 @@ internal sealed class StorageService : ServiceReferences, IStorageService
 		}
 		catch (Exception e)
 		{
-			this.LogService.LogException(e);
+			ServiceRef.LogService.LogException(e);
 		}
 	}
 

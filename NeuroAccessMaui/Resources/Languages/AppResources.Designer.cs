@@ -61,6 +61,168 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Account name {0} is already taken. Choose another..
+        /// </summary>
+        internal static string AccountNameAlreadyTaken {
+            get {
+                return ResourceManager.GetString("AccountNameAlreadyTaken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can&apos;t connect to {0}.
+        /// </summary>
+        internal static string CantConnectTo {
+            get {
+                return ResourceManager.GetString("CantConnectTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Response not returned within configured time..
+        /// </summary>
+        internal static string ClientMessageAuthenticationTimeout {
+            get {
+                return ResourceManager.GetString("ClientMessageAuthenticationTimeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Country Code does not match..
+        /// </summary>
+        internal static string ClientMessageCountryCodeMismatch {
+            get {
+                return ResourceManager.GetString("ClientMessageCountryCodeMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Country code not verified..
+        /// </summary>
+        internal static string ClientMessageCountryCodeNotVerified {
+            get {
+                return ResourceManager.GetString("ClientMessageCountryCodeNotVerified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to First name not verified..
+        /// </summary>
+        internal static string ClientMessageFirstNameNotVerified {
+            get {
+                return ResourceManager.GetString("ClientMessageFirstNameNotVerified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last name not verified..
+        /// </summary>
+        internal static string ClientMessageLastNameNotVerified {
+            get {
+                return ResourceManager.GetString("ClientMessageLastNameNotVerified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Identity not valid..
+        /// </summary>
+        internal static string ClientMessageNotValid {
+            get {
+                return ResourceManager.GetString("ClientMessageNotValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Personal Number does not match..
+        /// </summary>
+        internal static string ClientMessagePersonalNumberMismatch {
+            get {
+                return ResourceManager.GetString("ClientMessagePersonalNumberMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Personal number not verified..
+        /// </summary>
+        internal static string ClientMessagePersonalNumberNotVerified {
+            get {
+                return ResourceManager.GetString("ClientMessagePersonalNumberNotVerified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Returned reference did not match request reference..
+        /// </summary>
+        internal static string ClientMessageReferenceMismatch {
+            get {
+                return ResourceManager.GetString("ClientMessageReferenceMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Document information not returned as expected..
+        /// </summary>
+        internal static string ClientMessageUnexpectedDocumentInformation {
+            get {
+                return ResourceManager.GetString("ClientMessageUnexpectedDocumentInformation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event result not returned as expected..
+        /// </summary>
+        internal static string ClientMessageUnexpectedEventResult {
+            get {
+                return ResourceManager.GetString("ClientMessageUnexpectedEventResult", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unexpected response returned..
+        /// </summary>
+        internal static string ClientMessageUnexpectedResult {
+            get {
+                return ResourceManager.GetString("ClientMessageUnexpectedResult", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Continue.
+        /// </summary>
+        internal static string Continue {
+            get {
+                return ResourceManager.GetString("Continue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} does not follow the ubiquitous encryption policy.
+        /// </summary>
+        internal static string DomainDoesNotFollowEncryptionPolicy {
+            get {
+                return ResourceManager.GetString("DomainDoesNotFollowEncryptionPolicy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} is not a valid operator.
+        /// </summary>
+        internal static string DomainIsNotAValidOperator {
+            get {
+                return ResourceManager.GetString("DomainIsNotAValidOperator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error has occurred.
+        /// </summary>
+        internal static string ErrorTitle {
+            get {
+                return ResourceManager.GetString("ErrorTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Approved.
         /// </summary>
         internal static string IdentityState_Approved {
@@ -70,11 +232,11 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Compromized.
+        ///   Looks up a localized string similar to Compromised.
         /// </summary>
-        internal static string IdentityState_Compromized {
+        internal static string IdentityState_Compromised {
             get {
-                return ResourceManager.GetString("IdentityState_Compromized", resourceCulture);
+                return ResourceManager.GetString("IdentityState_Compromised", resourceCulture);
             }
         }
         
@@ -102,6 +264,303 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string IdentityState_Rejected {
             get {
                 return ResourceManager.GetString("IdentityState_Rejected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Information.
+        /// </summary>
+        internal static string Information {
+            get {
+                return ResourceManager.GetString("Information", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid username or password.
+        /// </summary>
+        internal static string InvalidUsernameOrPassword {
+            get {
+                return ResourceManager.GetString("InvalidUsernameOrPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message.
+        /// </summary>
+        internal static string Message {
+            get {
+                return ResourceManager.GetString("Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        internal static string Ok {
+            get {
+                return ResourceManager.GetString("Ok", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The operator {0} does not support registration of new accounts.
+        /// </summary>
+        internal static string OperatorDoesNotSupportRegisteringNewAccounts {
+            get {
+                return ResourceManager.GetString("OperatorDoesNotSupportRegisteringNewAccounts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A PIN must not contain any word from the identity address lines..
+        /// </summary>
+        internal static string PinContainsAddress {
+            get {
+                return ResourceManager.GetString("PinContainsAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A PIN must not contain the identity e-mail address..
+        /// </summary>
+        internal static string PinContainsEMail {
+            get {
+                return ResourceManager.GetString("PinContainsEMail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A PIN must not contain any word from the identity names..
+        /// </summary>
+        internal static string PinContainsName {
+            get {
+                return ResourceManager.GetString("PinContainsName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A PIN must not contain the identity personal number..
+        /// </summary>
+        internal static string PinContainsPersonalNumber {
+            get {
+                return ResourceManager.GetString("PinContainsPersonalNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A PIN must not contain the identity phone number..
+        /// </summary>
+        internal static string PinContainsPhoneNumber {
+            get {
+                return ResourceManager.GetString("PinContainsPhoneNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PIN is invalid. You have {0} remaining attempts..
+        /// </summary>
+        internal static string PinIsInvalid {
+            get {
+                return ResourceManager.GetString("PinIsInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PIN attempts entering is exceded. Your application has been blocked till {0}..
+        /// </summary>
+        internal static string PinIsInvalidAplicationBlocked {
+            get {
+                return ResourceManager.GetString("PinIsInvalidAplicationBlocked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PIN attempts entering is exceded. Your application has been blocked forever.
+        /// </summary>
+        internal static string PinIsInvalidAplicationBlockedForever {
+            get {
+                return ResourceManager.GetString("PinIsInvalidAplicationBlockedForever", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PIN attempts entering is exceded. Your application has been blocked for one week.
+        /// </summary>
+        internal static string PinIsInvalidAplicationBlockedForOneWeek {
+            get {
+                return ResourceManager.GetString("PinIsInvalidAplicationBlockedForOneWeek", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PIN attempts entering is exceded. Your application has been blocked till tomorrow at {0}..
+        /// </summary>
+        internal static string PinIsInvalidAplicationBlockedTillTomorrow {
+            get {
+                return ResourceManager.GetString("PinIsInvalidAplicationBlockedTillTomorrow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PIN length must be at least {0} characters..
+        /// </summary>
+        internal static string PinTooShort {
+            get {
+                return ResourceManager.GetString("PinTooShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to At least {0} letters, digits or symbols must be used..
+        /// </summary>
+        internal static string PinWithNotEnoughDigitsLettersSigns {
+            get {
+                return ResourceManager.GetString("PinWithNotEnoughDigitsLettersSigns", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You must also use at least {0} digits or symbols..
+        /// </summary>
+        internal static string PinWithNotEnoughDigitsOrSigns {
+            get {
+                return ResourceManager.GetString("PinWithNotEnoughDigitsOrSigns", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You must also use at least {0} letters or digits..
+        /// </summary>
+        internal static string PinWithNotEnoughLettersOrDigits {
+            get {
+                return ResourceManager.GetString("PinWithNotEnoughLettersOrDigits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You must also use at least {0} letters or symbols..
+        /// </summary>
+        internal static string PinWithNotEnoughLettersOrSigns {
+            get {
+                return ResourceManager.GetString("PinWithNotEnoughLettersOrSigns", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A PIN must not contain more than {0} identical symbols..
+        /// </summary>
+        internal static string PinWithTooManyIdenticalSymbols {
+            get {
+                return ResourceManager.GetString("PinWithTooManyIdenticalSymbols", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A PIN must not contain more than {0} sequenced symbols, e.g. &quot;12&quot; or &quot;ab&quot;..
+        /// </summary>
+        internal static string PinWithTooManySequencedSymbols {
+            get {
+                return ResourceManager.GetString("PinWithTooManySequencedSymbols", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repair.
+        /// </summary>
+        internal static string Repair {
+            get {
+                return ResourceManager.GetString("Repair", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The request timed out.
+        /// </summary>
+        internal static string RequestTimedOut {
+            get {
+                return ResourceManager.GetString("RequestTimedOut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The request was cancelled.
+        /// </summary>
+        internal static string RequestWasCancelled {
+            get {
+                return ResourceManager.GetString("RequestWasCancelled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Success.
+        /// </summary>
+        internal static string SuccessTitle {
+            get {
+                return ResourceManager.GetString("SuccessTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tag Engraved with link to {0}..
+        /// </summary>
+        internal static string TagEngraved {
+            get {
+                return ResourceManager.GetString("TagEngraved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to engrave tag with link to {0}..
+        /// </summary>
+        internal static string TagNotEngraved {
+            get {
+                return ResourceManager.GetString("TagNotEngraved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is no network.
+        /// </summary>
+        internal static string ThereIsNoNetwork {
+            get {
+                return ResourceManager.GetString("ThereIsNoNetwork", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to authenticate with {0}.
+        /// </summary>
+        internal static string UnableToAuthenticateWith {
+            get {
+                return ResourceManager.GetString("UnableToAuthenticateWith", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to connect..
+        /// </summary>
+        internal static string UnableToConnect {
+            get {
+                return ResourceManager.GetString("UnableToConnect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to connect to {0}.
+        /// </summary>
+        internal static string UnableToConnectTo {
+            get {
+                return ResourceManager.GetString("UnableToConnectTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warning.
+        /// </summary>
+        internal static string WarningTitle {
+            get {
+                return ResourceManager.GetString("WarningTitle", resourceCulture);
             }
         }
         
@@ -219,6 +678,33 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string XmppState_StreamOpened {
             get {
                 return ResourceManager.GetString("XmppState_StreamOpened", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your legal identity.
+        /// </summary>
+        internal static string YourLegalIdentity {
+            get {
+                return ResourceManager.GetString("YourLegalIdentity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your legal identity has been marked as compromised. You have therefore been redirected to create a new account..
+        /// </summary>
+        internal static string YourLegalIdentityHasBeenCompromised {
+            get {
+                return ResourceManager.GetString("YourLegalIdentityHasBeenCompromised", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your legal identity has been marked obsolete. You have therefore been redirected to create a new account..
+        /// </summary>
+        internal static string YourLegalIdentityHasBeenObsoleted {
+            get {
+                return ResourceManager.GetString("YourLegalIdentityHasBeenObsoleted", resourceCulture);
             }
         }
     }

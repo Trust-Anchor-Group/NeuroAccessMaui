@@ -1,4 +1,5 @@
-﻿using NeuroAccessMaui.Services.UI.Tasks;
+﻿using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services.UI.Tasks;
 using System.Collections.Concurrent;
 using System.Text;
 using Waher.Events;
@@ -117,10 +118,12 @@ public class UiSerializer : IUiSerializer
 		}
 		else
 		{
-			sb.AppendLine(LocalizationResourceManager.Current["ErrorTitle"]);
+			sb.AppendLine(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)]);
 		}
 
-		return this.DisplayAlert(title ?? LocalizationResourceManager.Current["ErrorTitle"], sb.ToString(), LocalizationResourceManager.Current["Ok"]);
+		return this.DisplayAlert(
+			title ?? ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], sb.ToString(),
+			ServiceRef.Localizer[nameof(AppResources.Ok)]);
 	}
 
 	/// <inheritdoc/>
@@ -132,7 +135,7 @@ public class UiSerializer : IUiSerializer
 	/// <inheritdoc/>
 	public Task DisplayAlert(Exception exception)
 	{
-		return this.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], null, exception);
+		return this.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], null, exception);
 	}
 
 	#endregion

@@ -1,4 +1,5 @@
-﻿using NeuroAccessMaui.Services.Navigation;
+﻿using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services.Navigation;
 using Waher.Runtime.Inventory;
 using Waher.Runtime.Settings;
 using Waher.Security;
@@ -9,7 +10,7 @@ namespace NeuroAccessMaui.Services.Nfc;
 /// Near-Field Communication (NFC) Service.
 /// </summary>
 [Singleton]
-public class NfcService : ServiceReferences, INfcService
+public class NfcService : INfcService
 {
 	/// <summary>
 	/// Near-Field Communication (NFC) Service.
@@ -121,13 +122,15 @@ public class NfcService : ServiceReferences, INfcService
 
 							if (Ok)
 							{
-								await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["SuccessTitle"],
-									string.Format(LocalizationResourceManager.Current["TagEngraved"], Title));
+								await ServiceRef.UiSerializer.DisplayAlert(
+									ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+									string.Format(ServiceRef.Localizer[nameof(AppResources.TagEngraved)], Title));
 							}
 							else
 							{
-								await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"],
-									string.Format(LocalizationResourceManager.Current["TagNotEngraved"], Title));
+								await ServiceRef.UiSerializer.DisplayAlert(
+									ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+									string.Format(ServiceRef.Localizer[nameof(AppResources.TagNotEngraved)], Title));
 							}
 
 							// TODO: Make read-only if able
@@ -208,7 +211,7 @@ public class NfcService : ServiceReferences, INfcService
 		}
 		catch (Exception ex)
 		{
-			await this.UiSerializer.DisplayAlert(ex);
+			await ServiceRef.UiSerializer.DisplayAlert(ex);
 		}
 	}
 }

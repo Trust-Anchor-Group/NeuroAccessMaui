@@ -5,7 +5,7 @@ using Waher.Runtime.Settings;
 namespace NeuroAccessMaui.Services.Settings;
 
 [Singleton]
-internal sealed class SettingsService : ServiceReferences, ISettingsService
+internal sealed class SettingsService : ServicesReference, ISettingsService
 {
 	private const string wildCard = "*";
 
@@ -37,7 +37,7 @@ internal sealed class SettingsService : ServiceReferences, ISettingsService
 		}
 		catch (Exception e)
 		{
-			this.LogService.LogException(e);
+			ServiceRef.LogService.LogException(e);
 		}
 	}
 
@@ -50,7 +50,7 @@ internal sealed class SettingsService : ServiceReferences, ISettingsService
 		}
 		catch (Exception e)
 		{
-			this.LogService.LogException(e);
+			ServiceRef.LogService.LogException(e);
 		}
 	}
 
@@ -63,7 +63,7 @@ internal sealed class SettingsService : ServiceReferences, ISettingsService
 		}
 		catch (Exception e)
 		{
-			this.LogService.LogException(e);
+			ServiceRef.LogService.LogException(e);
 		}
 	}
 
@@ -76,7 +76,7 @@ internal sealed class SettingsService : ServiceReferences, ISettingsService
 		}
 		catch (Exception e)
 		{
-			this.LogService.LogException(e);
+			ServiceRef.LogService.LogException(e);
 		}
 	}
 
@@ -89,7 +89,7 @@ internal sealed class SettingsService : ServiceReferences, ISettingsService
 		}
 		catch (Exception e)
 		{
-			this.LogService.LogException(e);
+			ServiceRef.LogService.LogException(e);
 		}
 	}
 
@@ -102,7 +102,7 @@ internal sealed class SettingsService : ServiceReferences, ISettingsService
 		}
 		catch (Exception e)
 		{
-			this.LogService.LogException(e);
+			ServiceRef.LogService.LogException(e);
 		}
 	}
 
@@ -115,7 +115,7 @@ internal sealed class SettingsService : ServiceReferences, ISettingsService
 		}
 		catch (Exception e)
 		{
-			this.LogService.LogException(e);
+			ServiceRef.LogService.LogException(e);
 		}
 	}
 
@@ -128,7 +128,7 @@ internal sealed class SettingsService : ServiceReferences, ISettingsService
 		}
 		catch (Exception e)
 		{
-			this.LogService.LogException(e);
+			ServiceRef.LogService.LogException(e);
 		}
 	}
 
@@ -156,7 +156,7 @@ internal sealed class SettingsService : ServiceReferences, ISettingsService
 		}
 		catch (Exception e)
 		{
-			this.LogService.LogException(e);
+			ServiceRef.LogService.LogException(e);
 		}
 
 		return matches;
@@ -172,7 +172,7 @@ internal sealed class SettingsService : ServiceReferences, ISettingsService
 		}
 		catch (Exception e)
 		{
-			this.LogService.LogException(e);
+			ServiceRef.LogService.LogException(e);
 		}
 
 		return defaultValueIfNotFound;
@@ -186,7 +186,7 @@ internal sealed class SettingsService : ServiceReferences, ISettingsService
 		}
 		catch (Exception e)
 		{
-			this.LogService.LogException(e);
+			ServiceRef.LogService.LogException(e);
 		}
 
 		return defaultValueIfNotFound;
@@ -200,7 +200,7 @@ internal sealed class SettingsService : ServiceReferences, ISettingsService
 		}
 		catch (Exception e)
 		{
-			this.LogService.LogException(e);
+			ServiceRef.LogService.LogException(e);
 		}
 
 		return defaultValueIfNotFound;
@@ -214,7 +214,7 @@ internal sealed class SettingsService : ServiceReferences, ISettingsService
 		}
 		catch (Exception e)
 		{
-			this.LogService.LogException(e);
+			ServiceRef.LogService.LogException(e);
 		}
 
 		return defaultValueIfNotFound;
@@ -228,7 +228,7 @@ internal sealed class SettingsService : ServiceReferences, ISettingsService
 		}
 		catch (Exception e)
 		{
-			this.LogService.LogException(e);
+			ServiceRef.LogService.LogException(e);
 		}
 
 		return defaultValueIfNotFound;
@@ -242,7 +242,7 @@ internal sealed class SettingsService : ServiceReferences, ISettingsService
 		}
 		catch (Exception e)
 		{
-			this.LogService.LogException(e);
+			ServiceRef.LogService.LogException(e);
 		}
 
 		return defaultValueIfNotFound;
@@ -256,7 +256,7 @@ internal sealed class SettingsService : ServiceReferences, ISettingsService
 		}
 		catch (Exception e)
 		{
-			this.LogService.LogException(e);
+			ServiceRef.LogService.LogException(e);
 		}
 
 		return defaultValueIfNotFound;
@@ -282,7 +282,7 @@ internal sealed class SettingsService : ServiceReferences, ISettingsService
 		}
 		catch (Exception e)
 		{
-			this.LogService.LogException(e);
+			ServiceRef.LogService.LogException(e);
 		}
 
 		return defaultValueIfNotFound;
@@ -302,7 +302,7 @@ internal sealed class SettingsService : ServiceReferences, ISettingsService
 		}
 		catch (Exception e)
 		{
-			this.LogService.LogException(e);
+			ServiceRef.LogService.LogException(e);
 		}
 	}
 
@@ -321,12 +321,12 @@ internal sealed class SettingsService : ServiceReferences, ISettingsService
 		}
 		catch (Exception e)
 		{
-			this.LogService.LogException(e);
+			ServiceRef.LogService.LogException(e);
 		}
 	}
 
 	public Task<bool> WaitInitDone()
 	{
-		return this.StorageService.WaitInitDone();
+		return ServiceRef.StorageService.WaitInitDone();
 	}
 }

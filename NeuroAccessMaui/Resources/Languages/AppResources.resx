@@ -120,8 +120,8 @@
   <data name="IdentityState_Approved" xml:space="preserve">
     <value>Approved</value>
   </data>
-  <data name="IdentityState_Compromized" xml:space="preserve">
-    <value>Compromized</value>
+  <data name="IdentityState_Compromised" xml:space="preserve">
+    <value>Compromised</value>
   </data>
   <data name="IdentityState_Created" xml:space="preserve">
     <value>Created</value>
@@ -131,6 +131,72 @@
   </data>
   <data name="IdentityState_Rejected" xml:space="preserve">
     <value>Rejected</value>
+  </data>
+  <data name="TagEngraved" xml:space="preserve">
+    <value>Tag Engraved with link to {0}.</value>
+  </data>
+  <data name="TagNotEngraved" xml:space="preserve">
+    <value>Unable to engrave tag with link to {0}.</value>
+  </data>
+  <data name="PinIsInvalid" xml:space="preserve">
+    <value>PIN is invalid. You have {0} remaining attempts.</value>
+  </data>
+  <data name="PinIsInvalidAplicationBlockedForever" xml:space="preserve">
+    <value>PIN attempts entering is exceded. Your application has been blocked forever</value>
+  </data>
+  <data name="PinIsInvalidAplicationBlocked" xml:space="preserve">
+    <value>PIN attempts entering is exceded. Your application has been blocked till {0}.</value>
+  </data>
+  <data name="PinIsInvalidAplicationBlockedTillTomorrow" xml:space="preserve">
+    <value>PIN attempts entering is exceded. Your application has been blocked till tomorrow at {0}.</value>
+  </data>
+  <data name="PinIsInvalidAplicationBlockedForOneWeek" xml:space="preserve">
+    <value>PIN attempts entering is exceded. Your application has been blocked for one week</value>
+  </data>
+  <data name="PinTooShort" xml:space="preserve">
+    <value>PIN length must be at least {0} characters.</value>
+  </data>
+  <data name="PinContainsName" xml:space="preserve">
+    <value>A PIN must not contain any word from the identity names.</value>
+  </data>
+  <data name="PinContainsPersonalNumber" xml:space="preserve">
+    <value>A PIN must not contain the identity personal number.</value>
+  </data>
+  <data name="PinContainsAddress" xml:space="preserve">
+    <value>A PIN must not contain any word from the identity address lines.</value>
+  </data>
+  <data name="PinContainsEMail" xml:space="preserve">
+    <value>A PIN must not contain the identity e-mail address.</value>
+  </data>
+  <data name="PinContainsPhoneNumber" xml:space="preserve">
+    <value>A PIN must not contain the identity phone number.</value>
+  </data>
+  <data name="PinWithNotEnoughDigitsLettersSigns" xml:space="preserve">
+    <value>At least {0} letters, digits or symbols must be used.</value>
+  </data>
+  <data name="PinWithNotEnoughDigitsOrSigns" xml:space="preserve">
+    <value>You must also use at least {0} digits or symbols.</value>
+  </data>
+  <data name="PinWithNotEnoughLettersOrDigits" xml:space="preserve">
+    <value>You must also use at least {0} letters or digits.</value>
+  </data>
+  <data name="PinWithNotEnoughLettersOrSigns" xml:space="preserve">
+    <value>You must also use at least {0} letters or symbols.</value>
+  </data>
+  <data name="PinWithTooManyIdenticalSymbols" xml:space="preserve">
+    <value>A PIN must not contain more than {0} identical symbols.</value>
+  </data>
+  <data name="PinWithTooManySequencedSymbols" xml:space="preserve">
+    <value>A PIN must not contain more than {0} sequenced symbols, e.g. "12" or "ab".</value>
+  </data>
+  <data name="ThereIsNoNetwork" xml:space="preserve">
+    <value>There is no network</value>
+  </data>
+  <data name="RequestTimedOut" xml:space="preserve">
+    <value>The request timed out</value>
+  </data>
+  <data name="RequestWasCancelled" xml:space="preserve">
+    <value>The request was cancelled</value>
   </data>
   <data name="XmppState_Authenticating" xml:space="preserve">
     <value>Authenticating network identity</value>
@@ -170,5 +236,101 @@
   </data>
   <data name="XmppState_StreamOpened" xml:space="preserve">
     <value>Stream established</value>
+  </data>
+  <data name="YourLegalIdentity" xml:space="preserve">
+    <value>Your legal identity</value>
+  </data>
+  <data name="YourLegalIdentityHasBeenCompromised" xml:space="preserve">
+    <value>Your legal identity has been marked as compromised. You have therefore been redirected to create a new account.</value>
+  </data>
+  <data name="YourLegalIdentityHasBeenObsoleted" xml:space="preserve">
+    <value>Your legal identity has been marked obsolete. You have therefore been redirected to create a new account.</value>
+  </data>
+  <data name="ClientMessageAuthenticationTimeout" xml:space="preserve">
+    <value>Response not returned within configured time.</value>
+  </data>
+  <data name="ClientMessageCountryCodeMismatch" xml:space="preserve">
+    <value>Country Code does not match.</value>
+  </data>
+  <data name="ClientMessageCountryCodeNotVerified" xml:space="preserve">
+    <value>Country code not verified.</value>
+  </data>
+  <data name="ClientMessageFirstNameNotVerified" xml:space="preserve">
+    <value>First name not verified.</value>
+  </data>
+  <data name="ClientMessageLastNameNotVerified" xml:space="preserve">
+    <value>Last name not verified.</value>
+  </data>
+  <data name="ClientMessageNotValid" xml:space="preserve">
+    <value>Identity not valid.</value>
+  </data>
+  <data name="ClientMessagePersonalNumberMismatch" xml:space="preserve">
+    <value>Personal Number does not match.</value>
+  </data>
+  <data name="ClientMessagePersonalNumberNotVerified" xml:space="preserve">
+    <value>Personal number not verified.</value>
+  </data>
+  <data name="ClientMessageReferenceMismatch" xml:space="preserve">
+    <value>Returned reference did not match request reference.</value>
+  </data>
+  <data name="ClientMessageUnexpectedDocumentInformation" xml:space="preserve">
+    <value>Document information not returned as expected.</value>
+  </data>
+  <data name="ClientMessageUnexpectedEventResult" xml:space="preserve">
+    <value>Event result not returned as expected.</value>
+  </data>
+  <data name="ClientMessageUnexpectedResult" xml:space="preserve">
+    <value>Unexpected response returned.</value>
+  </data>
+  <data name="ErrorTitle" xml:space="preserve">
+    <value>An error has occurred</value>
+  </data>
+  <data name="WarningTitle" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="SuccessTitle" xml:space="preserve">
+    <value>Success</value>
+  </data>
+  <data name="Information" xml:space="preserve">
+    <value>Information</value>
+  </data>
+  <data name="Message" xml:space="preserve">
+    <value>Message</value>
+  </data>
+  <data name="Ok" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Continue" xml:space="preserve">
+    <value>Continue</value>
+  </data>
+  <data name="Repair" xml:space="preserve">
+    <value>Repair</value>
+  </data>
+  <data name="CantConnectTo" xml:space="preserve">
+    <value>Can't connect to {0}</value>
+  </data>
+  <data name="DomainDoesNotFollowEncryptionPolicy" xml:space="preserve">
+    <value>{0} does not follow the ubiquitous encryption policy</value>
+  </data>
+  <data name="DomainIsNotAValidOperator" xml:space="preserve">
+    <value>{0} is not a valid operator</value>
+  </data>
+  <data name="UnableToAuthenticateWith" xml:space="preserve">
+    <value>Unable to authenticate with {0}</value>
+  </data>
+  <data name="OperatorDoesNotSupportRegisteringNewAccounts" xml:space="preserve">
+    <value>The operator {0} does not support registration of new accounts</value>
+  </data>
+  <data name="AccountNameAlreadyTaken" xml:space="preserve">
+    <value>Account name {0} is already taken. Choose another.</value>
+  </data>
+  <data name="InvalidUsernameOrPassword" xml:space="preserve">
+    <value>Invalid username or password</value>
+  </data>
+  <data name="UnableToConnectTo" xml:space="preserve">
+    <value>Unable to connect to {0}</value>
+  </data>
+  <data name="UnableToConnect" xml:space="preserve">
+    <value>Unable to connect.</value>
   </data>
 </root>

@@ -1,4 +1,5 @@
 ﻿using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Tag;
 using System.Reflection;
 using System.Text;
@@ -84,16 +85,16 @@ internal sealed class XmppService : LoadableService, IXmppService
 					await this.DestroyXmppClient();
 				}
 
-				this.domainName = this.TagProfile.Domain;
-				this.accountName = this.TagProfile.Account;
-				this.passwordHash = this.TagProfile.PasswordHash;
-				this.passwordHashMethod = this.TagProfile.PasswordHashMethod;
+				this.domainName = ServiceRef.TagProfile.Domain;
+				this.accountName = ServiceRef.TagProfile.Account;
+				this.passwordHash = ServiceRef.TagProfile.PasswordHash;
+				this.passwordHashMethod = ServiceRef.TagProfile.PasswordHashMethod;
 
 				string HostName;
 				int PortNumber;
 				bool IsIpAddress;
 
-				if (this.TagProfile.DefaultXmppConnectivity)
+				if (ServiceRef.TagProfile.DefaultXmppConnectivity)
 				{
 					HostName = this.domainName;
 					PortNumber = XmppCredentials.DefaultPort;
@@ -102,11 +103,11 @@ internal sealed class XmppService : LoadableService, IXmppService
 				else
 				{
 					Thread?.NewState("DNS");
-					(HostName, PortNumber, IsIpAddress) = await this.NetworkService.LookupXmppHostnameAndPort(this.domainName);
+					(HostName, PortNumber, IsIpAddress) = await ServiceRef.NetworkService.LookupXmppHostnameAndPort(this.domainName);
 
 					if (HostName == this.domainName && PortNumber == XmppCredentials.DefaultPort)
 					{
-						await this.TagProfile.SetDomain(this.domainName, true, this.TagProfile.ApiKey, this.TagProfile.ApiSecret);
+						await ServiceRef.TagProfile.SetDomain(this.domainName, true, ServiceRef.TagProfile.ApiKey, ServiceRef.TagProfile.ApiSecret);
 					}
 				}
 
@@ -144,16 +145,16 @@ internal sealed class XmppService : LoadableService, IXmppService
 				this.xmppClient.RegisterMessageHandler("clientMessage", ContractsClient.NamespaceLegalIdentities, this.ClientMessage, true);
 
 				Thread?.NewState("Sink");
-				this.xmppEventSink = new XmppEventSink("XMPP Event Sink", this.xmppClient, this.TagProfile.LogJid, false);
+				this.xmppEventSink = new XmppEventSink("XMPP Event Sink", this.xmppClient, ServiceRef.TagProfile.LogJid, false);
 
 				// Add extensions before connecting
 
 				this.abuseClient = new AbuseClient(this.xmppClient);
 
-				if (!string.IsNullOrWhiteSpace(this.TagProfile.LegalJid))
+				if (!string.IsNullOrWhiteSpace(ServiceRef.TagProfile.LegalJid))
 				{
 					Thread?.NewState("Legal");
-					this.contractsClient = new ContractsClient(this.xmppClient, this.TagProfile.LegalJid);
+					this.contractsClient = new ContractsClient(this.xmppClient, ServiceRef.TagProfile.LegalJid);
 					this.RegisterContractsEventHandlers();
 
 					Thread?.NewState("Keys");
@@ -172,10 +173,10 @@ internal sealed class XmppService : LoadableService, IXmppService
 					}
 				}
 
-				if (!string.IsNullOrWhiteSpace(this.TagProfile.HttpFileUploadJid) && this.TagProfile.HttpFileUploadMaxSize.HasValue)
+				if (!string.IsNullOrWhiteSpace(ServiceRef.TagProfile.HttpFileUploadJid) && ServiceRef.TagProfile.HttpFileUploadMaxSize.HasValue)
 				{
 					Thread?.NewState("Upload");
-					this.fileUploadClient = new HttpFileUploadClient(this.xmppClient, this.TagProfile.HttpFileUploadJid, this.TagProfile.HttpFileUploadMaxSize);
+					this.fileUploadClient = new HttpFileUploadClient(this.xmppClient, ServiceRef.TagProfile.HttpFileUploadJid, ServiceRef.TagProfile.HttpFileUploadMaxSize);
 				}
 
 				Thread?.NewState("HTTPX");
@@ -188,12 +189,12 @@ internal sealed class XmppService : LoadableService, IXmppService
 				this.RecreateReconnectTimer();
 
 				// Await connected state during registration or user initiated log in, but not otherwise.
-				if (!this.TagProfile.IsCompleteOrWaitingForValidation())
+				if (!ServiceRef.TagProfile.IsCompleteOrWaitingForValidation())
 				{
 					Thread?.NewState("Wait");
 					if (!await this.WaitForConnectedState(Constants.Timeouts.XmppConnect))
 					{
-						this.LogService.LogWarning("Connection to XMPP server failed.",
+						ServiceRef.LogService.LogWarning("Connection to XMPP server failed.",
 							new KeyValuePair<string, object>("Domain", this.domainName),
 							new KeyValuePair<string, object>("Account", this.accountName),
 							new KeyValuePair<string, object>("Timeout", Constants.Timeouts.XmppConnect));
@@ -216,7 +217,7 @@ internal sealed class XmppService : LoadableService, IXmppService
 
 		if (this.xmppEventSink is not null)
 		{
-			this.LogService.RemoveListener(this.xmppEventSink);
+			ServiceRef.LogService.RemoveListener(this.xmppEventSink);
 			this.xmppEventSink.Dispose();
 			this.xmppEventSink = null;
 		}
@@ -249,32 +250,32 @@ internal sealed class XmppService : LoadableService, IXmppService
 			return false;
 		}
 
-		if (this.domainName != this.TagProfile.Domain)
+		if (this.domainName != ServiceRef.TagProfile.Domain)
 		{
 			return false;
 		}
 
-		if (this.accountName != this.TagProfile.Account)
+		if (this.accountName != ServiceRef.TagProfile.Account)
 		{
 			return false;
 		}
 
-		if (this.passwordHash != this.TagProfile.PasswordHash)
+		if (this.passwordHash != ServiceRef.TagProfile.PasswordHash)
 		{
 			return false;
 		}
 
-		if (this.passwordHashMethod != this.TagProfile.PasswordHashMethod)
+		if (this.passwordHashMethod != ServiceRef.TagProfile.PasswordHashMethod)
 		{
 			return false;
 		}
 
-		if (this.contractsClient?.ComponentAddress != this.TagProfile.LegalJid)
+		if (this.contractsClient?.ComponentAddress != ServiceRef.TagProfile.LegalJid)
 		{
 			return false;
 		}
 
-		if (this.fileUploadClient?.FileUploadJid != this.TagProfile.HttpFileUploadJid)
+		if (this.fileUploadClient?.FileUploadJid != ServiceRef.TagProfile.HttpFileUploadJid)
 		{
 			return false;
 		}
@@ -284,7 +285,7 @@ internal sealed class XmppService : LoadableService, IXmppService
 
 	private bool ShouldCreateClient()
 	{
-		return this.TagProfile.Step > RegistrationStep.Account && !this.XmppParametersCurrent();
+		return ServiceRef.TagProfile.Step > RegistrationStep.Account && !this.XmppParametersCurrent();
 	}
 
 	private void RecreateReconnectTimer()
@@ -341,7 +342,7 @@ internal sealed class XmppService : LoadableService, IXmppService
 				Thread?.NewState("Load");
 				try
 				{
-					this.TagProfile.StepChanged += this.TagProfile_StepChanged;
+					ServiceRef.TagProfile.StepChanged += this.TagProfile_StepChanged;
 
 					if (this.ShouldCreateClient())
 					{
@@ -351,7 +352,7 @@ internal sealed class XmppService : LoadableService, IXmppService
 						ClientsThread?.Start();
 						try
 						{
-							await this.CreateXmppClient(this.TagProfile.Step <= RegistrationStep.RegisterIdentity, ClientsThread);
+							await this.CreateXmppClient(ServiceRef.TagProfile.Step <= RegistrationStep.RegisterIdentity, ClientsThread);
 						}
 						finally
 						{
@@ -361,7 +362,7 @@ internal sealed class XmppService : LoadableService, IXmppService
 
 					if ((this.xmppClient is not null) &&
 						this.xmppClient.State == XmppState.Connected &&
-						this.TagProfile.IsCompleteOrWaitingForValidation())
+						ServiceRef.TagProfile.IsCompleteOrWaitingForValidation())
 					{
 						Thread?.NewState("Presence");
 						// Don't await this one, just fire and forget, to improve startup time.
@@ -375,7 +376,7 @@ internal sealed class XmppService : LoadableService, IXmppService
 				{
 					ex = Log.UnnestException(ex);
 					Thread?.Exception(ex);
-					this.LogService.LogException(ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
+					ServiceRef.LogService.LogException(ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
 					this.EndLoad(false);
 				}
 			}
@@ -402,7 +403,7 @@ internal sealed class XmppService : LoadableService, IXmppService
 		{
 			try
 			{
-				this.TagProfile.StepChanged -= this.TagProfile_StepChanged;
+				ServiceRef.TagProfile.StepChanged -= this.TagProfile_StepChanged;
 
 				this.reconnectTimer?.Dispose();
 				this.reconnectTimer = null;
@@ -432,7 +433,7 @@ internal sealed class XmppService : LoadableService, IXmppService
 			}
 			catch (Exception ex)
 			{
-				this.LogService.LogException(ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
+				ServiceRef.LogService.LogException(ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
 			}
 
 			this.EndUnload();
@@ -448,9 +449,9 @@ internal sealed class XmppService : LoadableService, IXmppService
 
 		if (this.ShouldCreateClient())
 		{
-			await this.CreateXmppClient(this.TagProfile.Step <= RegistrationStep.RegisterIdentity, null);
+			await this.CreateXmppClient(ServiceRef.TagProfile.Step <= RegistrationStep.RegisterIdentity, null);
 		}
-		else if (this.TagProfile.Step <= RegistrationStep.Account)
+		else if (ServiceRef.TagProfile.Step <= RegistrationStep.Account)
 		{
 			await this.DestroyXmppClient();
 		}
@@ -466,7 +467,7 @@ internal sealed class XmppService : LoadableService, IXmppService
 	{
 		if (e is ObjectDisposedException)
 		{
-			this.LatestConnectionError = LocalizationResourceManager.Current["UnableToConnect"];
+			this.LatestConnectionError = ServiceRef.Localizer[nameof(AppResources.UnableToConnect)];
 		}
 		else
 		{
@@ -497,16 +498,16 @@ internal sealed class XmppService : LoadableService, IXmppService
 
 				this.RecreateReconnectTimer();
 
-				if (string.IsNullOrEmpty(this.TagProfile.PasswordHashMethod))
+				if (string.IsNullOrEmpty(ServiceRef.TagProfile.PasswordHashMethod))
 				{
-					await this.TagProfile.SetAccount(this.TagProfile.Account, this.xmppClient.PasswordHash, this.xmppClient.PasswordHashMethod);
+					await ServiceRef.TagProfile.SetAccount(ServiceRef.TagProfile.Account, this.xmppClient.PasswordHash, this.xmppClient.PasswordHashMethod);
 				}
 
-				if (this.TagProfile.NeedsUpdating() && await this.DiscoverServices())
+				if (ServiceRef.TagProfile.NeedsUpdating() && await this.DiscoverServices())
 				{
-					if (this.contractsClient is null && !string.IsNullOrWhiteSpace(this.TagProfile.LegalJid))
+					if (this.contractsClient is null && !string.IsNullOrWhiteSpace(ServiceRef.TagProfile.LegalJid))
 					{
-						this.contractsClient = new ContractsClient(this.xmppClient, this.TagProfile.LegalJid);
+						this.contractsClient = new ContractsClient(this.xmppClient, ServiceRef.TagProfile.LegalJid);
 						this.RegisterContractsEventHandlers();
 
 						if (!await this.contractsClient.LoadKeys(false))
@@ -516,13 +517,13 @@ internal sealed class XmppService : LoadableService, IXmppService
 						}
 					}
 
-					if (this.fileUploadClient is null && !string.IsNullOrWhiteSpace(this.TagProfile.HttpFileUploadJid) && this.TagProfile.HttpFileUploadMaxSize.HasValue)
+					if (this.fileUploadClient is null && !string.IsNullOrWhiteSpace(ServiceRef.TagProfile.HttpFileUploadJid) && ServiceRef.TagProfile.HttpFileUploadMaxSize.HasValue)
 					{
-						this.fileUploadClient = new HttpFileUploadClient(this.xmppClient, this.TagProfile.HttpFileUploadJid, this.TagProfile.HttpFileUploadMaxSize);
+						this.fileUploadClient = new HttpFileUploadClient(this.xmppClient, ServiceRef.TagProfile.HttpFileUploadJid, ServiceRef.TagProfile.HttpFileUploadMaxSize);
 					}
 				}
 
-				this.LogService.AddListener(this.xmppEventSink);
+				ServiceRef.LogService.AddListener(this.xmppEventSink);
 
 				this.xmppThread?.Stop();
 				this.xmppThread = null;
@@ -568,7 +569,7 @@ internal sealed class XmppService : LoadableService, IXmppService
 		}
 		catch (Exception ex)
 		{
-			this.LogService.LogException(ex);
+			ServiceRef.LogService.LogException(ex);
 		}
 	}
 
@@ -637,7 +638,7 @@ internal sealed class XmppService : LoadableService, IXmppService
 		{
 			if (e is ObjectDisposedException)
 			{
-				connectionError = LocalizationResourceManager.Current["UnableToConnect"];
+				connectionError = ServiceRef.Localizer[nameof(AppResources.UnableToConnect)];
 			}
 			else
 			{
@@ -754,9 +755,9 @@ internal sealed class XmppService : LoadableService, IXmppService
 		}
 		catch (Exception ex)
 		{
-			this.LogService.LogException(ex, new KeyValuePair<string, object>(nameof(ConnectOperation), operation.ToString()));
+			ServiceRef.LogService.LogException(ex, new KeyValuePair<string, object>(nameof(ConnectOperation), operation.ToString()));
 			succeeded = false;
-			errorMessage = string.Format(LocalizationResourceManager.Current["UnableToConnectTo"], domain);
+			errorMessage = string.Format(ServiceRef.Localizer[nameof(AppResources.UnableToConnectTo)], domain);
 		}
 		finally
 		{
@@ -770,19 +771,19 @@ internal sealed class XmppService : LoadableService, IXmppService
 
 			if (!streamNegotiation || timeout)
 			{
-				errorMessage = string.Format(LocalizationResourceManager.Current["CantConnectTo"], domain);
+				errorMessage = string.Format(ServiceRef.Localizer[nameof(AppResources.CantConnectTo)], domain);
 			}
 			else if (!streamOpened)
 			{
-				errorMessage = string.Format(LocalizationResourceManager.Current["DomainIsNotAValidOperator"], domain);
+				errorMessage = string.Format(ServiceRef.Localizer[nameof(AppResources.DomainIsNotAValidOperator)], domain);
 			}
 			else if (!startingEncryption)
 			{
-				errorMessage = string.Format(LocalizationResourceManager.Current["DomainDoesNotFollowEncryptionPolicy"], domain);
+				errorMessage = string.Format(ServiceRef.Localizer[nameof(AppResources.DomainDoesNotFollowEncryptionPolicy)], domain);
 			}
 			else if (!authenticating)
 			{
-				errorMessage = string.Format(LocalizationResourceManager.Current["UnableToAuthenticateWith"], domain);
+				errorMessage = string.Format(ServiceRef.Localizer[nameof(AppResources.UnableToAuthenticateWith)], domain);
 			}
 			else if (!registering)
 			{
@@ -792,20 +793,20 @@ internal sealed class XmppService : LoadableService, IXmppService
 				}
 				else
 				{
-					errorMessage = string.Format(LocalizationResourceManager.Current["OperatorDoesNotSupportRegisteringNewAccounts"], domain);
+					errorMessage = string.Format(ServiceRef.Localizer[nameof(AppResources.OperatorDoesNotSupportRegisteringNewAccounts)], domain);
 				}
 			}
 			else if (operation == ConnectOperation.ConnectAndCreateAccount)
 			{
-				errorMessage = string.Format(LocalizationResourceManager.Current["AccountNameAlreadyTaken"], this.accountName);
+				errorMessage = string.Format(ServiceRef.Localizer[nameof(AppResources.AccountNameAlreadyTaken)], this.accountName);
 			}
 			else if (operation == ConnectOperation.ConnectToAccount)
 			{
-				errorMessage = string.Format(LocalizationResourceManager.Current["InvalidUsernameOrPassword"], this.accountName);
+				errorMessage = string.Format(ServiceRef.Localizer[nameof(AppResources.InvalidUsernameOrPassword)], this.accountName);
 			}
 			else
 			{
-				errorMessage = string.Format(LocalizationResourceManager.Current["UnableToConnectTo"], domain);
+				errorMessage = string.Format(ServiceRef.Localizer[nameof(AppResources.UnableToConnectTo)], domain);
 			}
 		}
 
@@ -819,7 +820,7 @@ internal sealed class XmppService : LoadableService, IXmppService
 			return;
 		}
 
-		if (!this.NetworkService.IsOnline)
+		if (!ServiceRef.NetworkService.IsOnline)
 		{
 			return;
 		}
@@ -902,7 +903,7 @@ internal sealed class XmppService : LoadableService, IXmppService
 		catch (Exception ex)
 		{
 			string commsDump = await this.sniffer.SnifferToText();
-			this.LogService.LogException(ex, new KeyValuePair<string, object>("Sniffer", commsDump));
+			ServiceRef.LogService.LogException(ex, new KeyValuePair<string, object>("Sniffer", commsDump));
 			return false;
 		}
 
@@ -916,17 +917,17 @@ internal sealed class XmppService : LoadableService, IXmppService
 
 		await Task.WhenAll(Tasks.ToArray());
 
-		if (string.IsNullOrWhiteSpace(this.TagProfile.LegalJid))
+		if (string.IsNullOrWhiteSpace(ServiceRef.TagProfile.LegalJid))
 		{
 			return false;
 		}
 
-		if (string.IsNullOrWhiteSpace(this.TagProfile.HttpFileUploadJid) || !this.TagProfile.HttpFileUploadMaxSize.HasValue)
+		if (string.IsNullOrWhiteSpace(ServiceRef.TagProfile.HttpFileUploadJid) || !ServiceRef.TagProfile.HttpFileUploadMaxSize.HasValue)
 		{
 			return false;
 		}
 
-		if (string.IsNullOrWhiteSpace(this.TagProfile.LogJid))
+		if (string.IsNullOrWhiteSpace(ServiceRef.TagProfile.LogJid))
 		{
 			return false;
 		}
@@ -942,18 +943,18 @@ internal sealed class XmppService : LoadableService, IXmppService
 		{
 			if (itemResponse.HasFeature(ContractsClient.NamespaceLegalIdentities))
 			{
-				this.TagProfile.SetLegalJid(Item.JID);
+				ServiceRef.TagProfile.SetLegalJid(Item.JID);
 			}
 
 			if (itemResponse.HasFeature(HttpFileUploadClient.Namespace))
 			{
 				long? maxSize = HttpFileUploadClient.FindMaxFileSize(Client, itemResponse);
-				this.TagProfile.SetFileUploadParameters(Item.JID, maxSize);
+				ServiceRef.TagProfile.SetFileUploadParameters(Item.JID, maxSize);
 			}
 
 			if (itemResponse.HasFeature(XmppEventSink.NamespaceEventLogging))
 			{
-				this.TagProfile.SetLogJid(Item.JID);
+				ServiceRef.TagProfile.SetLogJid(Item.JID);
 			}
 		}
 	}
@@ -993,11 +994,11 @@ internal sealed class XmppService : LoadableService, IXmppService
 		this.passwordHashMethod = string.Empty;
 		this.xmppConnected = false;
 
-		this.TagProfile.ClearAll();
+		ServiceRef.TagProfile.ClearAll();
 		await RuntimeSettings.SetAsync("TransferId.CodesSent", string.Empty);
 		await Database.Provider.Flush();
 
-		this.UiSerializer.BeginInvokeOnMainThread(async () => await App.Current.SetRegistrationPageAsync());
+		ServiceRef.UiSerializer.BeginInvokeOnMainThread(async () => await App.Current.SetRegistrationPageAsync());
 	}
 
 	/// <summary>
@@ -1062,7 +1063,7 @@ internal sealed class XmppService : LoadableService, IXmppService
 		{
 			try
 			{
-				string LocalizedMessage = LocalizationResourceManager.Current["ClientMessage" + Code];
+				string LocalizedMessage = ServiceRef.Localizer[nameof(AppResources.ClientMessage) + Code];
 
 				if (!string.IsNullOrEmpty(LocalizedMessage))
 				{
@@ -1075,21 +1076,23 @@ internal sealed class XmppService : LoadableService, IXmppService
 			}
 		}
 
-		this.UiSerializer.BeginInvokeOnMainThread(async () =>
+		ServiceRef.UiSerializer.BeginInvokeOnMainThread(async () =>
 		{
 			switch (Type.ToUpper())
 			{
 				case "NONE":
 				default:
-					await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["Information"], Message,
-						LocalizationResourceManager.Current["Ok"]);
+					await ServiceRef.UiSerializer.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.Information)], Message,
+						ServiceRef.Localizer[nameof(AppResources.Ok)]);
 					break;
 
 				case "CLIENT":
 				case "SERVER":
 				case "SERVICE":
-					await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], Message,
-						LocalizationResourceManager.Current["Ok"]);
+					await ServiceRef.UiSerializer.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], Message,
+						ServiceRef.Localizer[nameof(AppResources.Ok)]);
 					break;
 
 			}
@@ -1172,7 +1175,7 @@ internal sealed class XmppService : LoadableService, IXmppService
 			throw new IOException("No connection and no token available for call to protecte API.");
 		}
 
-		Url.Append(this.TagProfile.Domain);
+		Url.Append(ServiceRef.TagProfile.Domain);
 		Url.Append(LocalResource);
 
 		return await InternetContent.PostAsync(new Uri(Url.ToString()), Data, Headers);
@@ -1192,7 +1195,7 @@ internal sealed class XmppService : LoadableService, IXmppService
 		{
 			if (this.fileUploadClient is null)
 			{
-				throw new InvalidOperationException(LocalizationResourceManager.Current["FileUploadServiceNotFound"]);
+				throw new InvalidOperationException(ServiceRef.Localizer[nameof(AppResources.FileUploadServiceNotFound)]);
 			}
 
 			return this.fileUploadClient;
@@ -1208,13 +1211,13 @@ internal sealed class XmppService : LoadableService, IXmppService
 		{
 			try
 			{
-				return this.TagProfile.FileUploadIsSupported &&
+				return ServiceRef.TagProfile.FileUploadIsSupported &&
 					this.fileUploadClient is not null &&
 					this.fileUploadClient.HasSupport;
 			}
 			catch (Exception ex)
 			{
-				this.LogService?.LogException(ex);
+				ServiceRef.LogService.LogException(ex);
 				return false;
 			}
 		}
@@ -1255,11 +1258,11 @@ internal sealed class XmppService : LoadableService, IXmppService
 	{
 		await this.ContractsClient.GenerateNewKeys();
 
-		LegalIdentity identity = await this.ContractsClient.ApplyAsync(Model.ToProperties(this.XmppService));
+		LegalIdentity identity = await this.ContractsClient.ApplyAsync(Model.ToProperties(ServiceRef.XmppService));
 
 		foreach (LegalIdentityAttachment a in Attachments)
 		{
-			HttpFileUploadEventArgs e2 = await this.XmppService.RequestUploadSlotAsync(Path.GetFileName(a.Filename), a.ContentType, a.ContentLength);
+			HttpFileUploadEventArgs e2 = await ServiceRef.XmppService.RequestUploadSlotAsync(Path.GetFileName(a.Filename), a.ContentType, a.ContentLength);
 
 			if (!e2.Ok)
 			{
@@ -1291,7 +1294,7 @@ internal sealed class XmppService : LoadableService, IXmppService
 		}
 		else
 		{
-			using ContractsClient cc = new(client, this.TagProfile.LegalJid);  // No need to load keys for this operation.
+			using ContractsClient cc = new(client, ServiceRef.TagProfile.LegalJid);  // No need to load keys for this operation.
 			return await cc.GetLegalIdentitiesAsync();
 		}
 	}
@@ -1338,7 +1341,7 @@ internal sealed class XmppService : LoadableService, IXmppService
 		}
 		else
 		{
-			using ContractsClient cc = new(client, this.TagProfile.LegalJid);
+			using ContractsClient cc = new(client, ServiceRef.TagProfile.LegalJid);
 
 			if (!await cc.LoadKeys(false))
 			{
@@ -1377,7 +1380,7 @@ internal sealed class XmppService : LoadableService, IXmppService
 	/// <param name="Purpose">The purpose of the petitioning.</param>
 	public async Task PetitionIdentity(CaseInsensitiveString LegalId, string PetitionId, string Purpose)
 	{
-		await this.ContractsClient.AuthorizeAccessToIdAsync(this.TagProfile.LegalIdentity.Id, LegalId, true);
+		await this.ContractsClient.AuthorizeAccessToIdAsync(ServiceRef.TagProfile.LegalIdentity.Id, LegalId, true);
 
 		this.StartPetition(PetitionId);
 		await this.ContractsClient.PetitionIdentityAsync(LegalId, PetitionId, Purpose);
@@ -1418,9 +1421,9 @@ internal sealed class XmppService : LoadableService, IXmppService
 
 	private async Task ContractsClient_IdentityUpdated(object Sender, LegalIdentityEventArgs e)
 	{
-		if (this.TagProfile.LegalIdentity is null ||
-			this.TagProfile.LegalIdentity.Id == e.Identity.Id ||
-			this.TagProfile.LegalIdentity.Created < e.Identity.Created)
+		if (ServiceRef.TagProfile.LegalIdentity is null ||
+			ServiceRef.TagProfile.LegalIdentity.Id == e.Identity.Id ||
+			ServiceRef.TagProfile.LegalIdentity.Created < e.Identity.Created)
 		{
 			try
 			{
@@ -1428,8 +1431,8 @@ internal sealed class XmppService : LoadableService, IXmppService
 			}
 			catch (Exception ex)
 			{
-				this.LogService.LogException(ex);
-				await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], ex.Message);
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message);
 			}
 		}
 	}
@@ -1447,8 +1450,8 @@ internal sealed class XmppService : LoadableService, IXmppService
 		}
 		catch (Exception ex)
 		{
-			this.LogService.LogException(ex);
-			await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], ex.Message);
+			ServiceRef.LogService.LogException(ex);
+			await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message);
 		}
 	}
 
@@ -1466,8 +1469,8 @@ internal sealed class XmppService : LoadableService, IXmppService
 		}
 		catch (Exception ex)
 		{
-			this.LogService.LogException(ex);
-			await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], ex.Message);
+			ServiceRef.LogService.LogException(ex);
+			await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message);
 		}
 	}
 
@@ -1514,7 +1517,7 @@ internal sealed class XmppService : LoadableService, IXmppService
 		{
 			if (this.contractsClient is null)
 			{
-				throw new InvalidOperationException(LocalizationResourceManager.Current["LegalServiceNotFound"]);
+				throw new InvalidOperationException(ServiceRef.Localizer[nameof(AppResources.LegalServiceNotFound)]);
 			}
 
 			return this.contractsClient;
@@ -1592,8 +1595,8 @@ internal sealed class XmppService : LoadableService, IXmppService
 		}
 		catch (Exception ex)
 		{
-			this.LogService.LogException(ex);
-			await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], ex.Message);
+			ServiceRef.LogService.LogException(ex);
+			await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message);
 		}
 	}
 
@@ -1611,8 +1614,8 @@ internal sealed class XmppService : LoadableService, IXmppService
 		}
 		catch (Exception ex)
 		{
-			this.LogService.LogException(ex);
-			await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], ex.Message);
+			ServiceRef.LogService.LogException(ex);
+			await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message);
 		}
 	}
 
@@ -1644,7 +1647,7 @@ internal sealed class XmppService : LoadableService, IXmppService
 		{
 			if (!this.currentPetitions.ContainsKey(e.PetitionId))
 			{
-				this.LogService.LogWarning("Client URL message for a petition is ignored. Petition ID not recognized.",
+				ServiceRef.LogService.LogWarning("Client URL message for a petition is ignored. Petition ID not recognized.",
 					new KeyValuePair<string, object>("PetitionId", e.PetitionId),
 					new KeyValuePair<string, object>("ClientUrl", e.ClientUrl));
 				return;
@@ -1711,8 +1714,8 @@ internal sealed class XmppService : LoadableService, IXmppService
 		}
 		catch (Exception ex)
 		{
-			this.LogService.LogException(ex);
-			await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], ex.Message);
+			ServiceRef.LogService.LogException(ex);
+			await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message);
 		}
 	}
 
@@ -1730,8 +1733,8 @@ internal sealed class XmppService : LoadableService, IXmppService
 		}
 		catch (Exception ex)
 		{
-			this.LogService.LogException(ex);
-			await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], ex.Message);
+			ServiceRef.LogService.LogException(ex);
+			await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message);
 		}
 	}
 

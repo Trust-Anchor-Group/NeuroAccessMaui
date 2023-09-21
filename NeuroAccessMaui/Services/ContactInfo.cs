@@ -1,7 +1,5 @@
-﻿using NeuroAccessMaui.Services.Tag;
-using NeuroAccessMaui.Services.Xmpp;
+﻿using NeuroAccessMaui.Resources.Languages;
 using System.Text;
-using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;
 using Waher.Persistence.Attributes;
@@ -253,21 +251,8 @@ public class ContactInfo
 	/// Gets the friendly name of a remote identity (Legal ID or Bare JID).
 	/// </summary>
 	/// <param name="RemoteId">Remote Identity</param>
-	/// <param name="Ref">Service references</param>
 	/// <returns>Friendly name.</returns>
-	public static Task<string> GetFriendlyName(CaseInsensitiveString RemoteId, IServiceReferences Ref)
-	{
-		return GetFriendlyName(RemoteId, Ref.XmppService, Ref.TagProfile);
-	}
-
-	/// <summary>
-	/// Gets the friendly name of a remote identity (Legal ID or Bare JID).
-	/// </summary>
-	/// <param name="RemoteId">Remote Identity</param>
-	/// <param name="XmppService">XMPP Service</param>
-	/// <param name="TagProfile">TAG Profile</param>
-	/// <returns>Friendly name.</returns>
-	public static async Task<string> GetFriendlyName(CaseInsensitiveString RemoteId, IXmppService XmppService, ITagProfile TagProfile)
+	public static async Task<string> GetFriendlyName(CaseInsensitiveString RemoteId)
 	{
 		int i = RemoteId.IndexOf('@');
 
@@ -276,9 +261,9 @@ public class ContactInfo
 			return RemoteId;
 		}
 
-		if (RemoteId == TagProfile.LegalIdentity?.Id)
+		if (RemoteId == ServiceRef.TagProfile.LegalIdentity?.Id)
 		{
-			return LocalizationResourceManager.Current["Me"];
+			return ServiceRef.Localizer[nameof(AppResources.Me)];
 		}
 
 		string Account = RemoteId.Substring(0, i);
@@ -350,7 +335,7 @@ public class ContactInfo
 			{
 				try
 				{
-					LegalIdentity Id = await XmppService.GetLegalIdentity(RemoteId);
+					LegalIdentity Id = await ServiceRef.XmppService.GetLegalIdentity(RemoteId);
 
 					lock (identityCache)
 					{
@@ -373,9 +358,8 @@ public class ContactInfo
 	/// Gets the friendly name of a remote identity (Legal ID or Bare JID).
 	/// </summary>
 	/// <param name="RemoteId">Remote Identity</param>
-	/// <param name="Ref">Service references</param>
 	/// <returns>Friendly name.</returns>
-	public static async Task<string[]> GetFriendlyName(string[] RemoteId, IServiceReferences Ref)
+	public static async Task<string[]> GetFriendlyName(string[] RemoteId)
 	{
 		if (RemoteId is null)
 		{
@@ -387,7 +371,7 @@ public class ContactInfo
 
 		for (i = 0; i < c; i++)
 		{
-			Result[i] = await GetFriendlyName(RemoteId[i], Ref);
+			Result[i] = await GetFriendlyName(RemoteId[i]);
 		}
 
 		return Result;
@@ -631,14 +615,12 @@ public class ContactInfo
 	/// <param name="SourceId">Source ID of device.</param>
 	/// <param name="PartitionId">Partition of device.</param>
 	/// <param name="NodeId">Node ID of device.</param>
-	/// <param name="Ref">Service References.</param>
 	/// <returns>Friendly name.</returns>
-	public static async Task<string> GetFriendlyName(CaseInsensitiveString BareJid, string SourceId, string PartitionId, string NodeId,
-		IServiceReferences Ref)
+	public static async Task<string> GetFriendlyName(CaseInsensitiveString BareJid, string SourceId, string PartitionId, string NodeId)
 	{
 		if (string.IsNullOrEmpty(NodeId) && string.IsNullOrEmpty(PartitionId) && string.IsNullOrEmpty(SourceId))
 		{
-			return await GetFriendlyName(BareJid, Ref);
+			return await GetFriendlyName(BareJid);
 		}
 
 		ContactInfo Thing = await ContactInfo.FindByBareJid(BareJid, SourceId, PartitionId, NodeId);
@@ -658,7 +640,7 @@ public class ContactInfo
 			}
 			else
 			{
-				s = string.Format(LocalizationResourceManager.Current["XInY"], s, PartitionId);
+				s = string.Format(ServiceRef.Localizer[nameof(AppResources.XInY)], s, PartitionId);
 			}
 		}
 
@@ -670,11 +652,11 @@ public class ContactInfo
 			}
 			else
 			{
-				s = string.Format(LocalizationResourceManager.Current["XInY"], s, SourceId);
+				s = string.Format(ServiceRef.Localizer[nameof(AppResources.XInY)], s, SourceId);
 			}
 		}
 
-		return string.Format(LocalizationResourceManager.Current["XOnY"], s, BareJid);
+		return string.Format(ServiceRef.Localizer[nameof(AppResources.XOnY)], s, BareJid);
 	}
 
 	/// <summary>
@@ -734,5 +716,4 @@ public class ContactInfo
 
 		return sb.ToString();
 	}
-
 }
