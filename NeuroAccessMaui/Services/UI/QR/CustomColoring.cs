@@ -1,4 +1,5 @@
-﻿using Waher.Content.Images;
+﻿using SkiaSharp;
+using Waher.Content.Images;
 using Waher.Content.QR;
 using Waher.Script.Graphs.Functions.Colors;
 

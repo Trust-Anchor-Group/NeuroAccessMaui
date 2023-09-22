@@ -1,4 +1,6 @@
-﻿namespace NeuroAccessMaui.Services.Nfc;
+﻿using IdApp.Nfc;
+
+namespace NeuroAccessMaui.Services.Nfc;
 
 /// <summary>
 /// Class defining interaction with an NFC Tag.

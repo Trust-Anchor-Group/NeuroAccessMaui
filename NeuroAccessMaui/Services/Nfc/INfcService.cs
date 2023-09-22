@@ -1,4 +1,5 @@
-﻿using Waher.Runtime.Inventory;
+﻿using IdApp.Nfc;
+using Waher.Runtime.Inventory;
 
 namespace NeuroAccessMaui.Services.Nfc;
 

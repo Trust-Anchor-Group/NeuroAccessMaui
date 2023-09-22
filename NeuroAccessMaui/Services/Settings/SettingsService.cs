@@ -5,7 +5,7 @@ using Waher.Runtime.Settings;
 namespace NeuroAccessMaui.Services.Settings;
 
 [Singleton]
-internal sealed class SettingsService : ServicesReference, ISettingsService
+internal sealed class SettingsService : ISettingsService
 {
 	private const string wildCard = "*";
 

@@ -1,4 +1,7 @@
-﻿using NeuroAccessMaui.Resources.Languages;
+﻿using IdApp.Nfc;
+using IdApp.Nfc.Extensions;
+using IdApp.Nfc.Records;
+using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Navigation;
 using Waher.Runtime.Inventory;
 using Waher.Runtime.Settings;

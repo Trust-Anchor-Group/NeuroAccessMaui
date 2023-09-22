@@ -1,4 +1,5 @@
-﻿using Waher.Runtime.Inventory;
+﻿using IdApp.Cv;
+using Waher.Runtime.Inventory;
 
 namespace NeuroAccessMaui.Services.Ocr;
 

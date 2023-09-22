@@ -1,4 +1,6 @@
-﻿namespace NeuroAccessMaui.Behaviors;
+﻿using System.ComponentModel;
+
+namespace NeuroAccessMaui.Behaviors;
 
 /// <summary>
 /// Used for moving focus to the next UI component when the Enter/Return key has been hit.

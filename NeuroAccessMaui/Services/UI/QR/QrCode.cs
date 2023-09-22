@@ -1,5 +1,6 @@
 using NeuroAccessMaui.Links;
 using NeuroAccessMaui.Resources.Languages;
+using SkiaSharp;
 using Waher.Content.QR;
 using Waher.Content.QR.Encoding;
 using Waher.Runtime.Inventory;

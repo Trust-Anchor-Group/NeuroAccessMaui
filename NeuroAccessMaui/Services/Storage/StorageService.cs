@@ -11,7 +11,7 @@ using Waher.Runtime.Profiling;
 namespace NeuroAccessMaui.Services.Storage;
 
 [Singleton]
-internal sealed class StorageService : ServicesReference, IStorageService
+internal sealed class StorageService : IStorageService
 {
 	private readonly LinkedList<TaskCompletionSource<bool>> tasksWaiting = new();
 	private readonly string dataFolder;
@@ -200,7 +200,7 @@ internal sealed class StorageService : ServicesReference, IStorageService
 		FilesProvider.AsyncFileIo = false;  // Asynchronous file I/O induces a long delay during startup on mobile platforms. Why??
 
 		return FilesProvider.CreateAsync(this.dataFolder, "Default", 8192, 10000, 8192, Encoding.UTF8,
-			(int)Constants.Timeouts.Database.TotalMilliseconds, this.CryptoService.GetCustomKey, Thread);
+			(int)Constants.Timeouts.Database.TotalMilliseconds, ServiceRef.CryptoService.GetCustomKey, Thread);
 	}
 
 	#endregion
