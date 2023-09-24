@@ -333,4 +333,61 @@
   <data name="UnableToConnect" xml:space="preserve">
     <value>Unable to connect.</value>
   </data>
+  <data name="AppNotConnected" xml:space="preserve">
+    <value>App is not connected to the network.</value>
+  </data>
+  <data name="InvalidTagSignatureId" xml:space="preserve">
+    <value>Invalid TAG Signature URI.</value>
+  </data>
+  <data name="LegalIdNotApproved" xml:space="preserve">
+    <value>Legal ID not approved.</value>
+  </data>
+  <data name="NoLegalIdSelected" xml:space="preserve">
+    <value>No Legal ID selected.</value>
+  </data>
+  <data name="PeerReviewAccepted" xml:space="preserve">
+    <value>Peer review accepted</value>
+  </data>
+  <data name="PeerReviewRejected" xml:space="preserve">
+    <value>Peer review rejected</value>
+  </data>
+  <data name="SignaturePetitionDenied" xml:space="preserve">
+    <value>The signature petition was denied.</value>
+  </data>
+  <data name="PetitionSent" xml:space="preserve">
+    <value>Petition sent</value>
+  </data>
+  <data name="PetitionToViewContractWasDenied" xml:space="preserve">
+    <value>Petition to view contract was denied.</value>
+  </data>
+  <data name="PetitionToViewLegalIdentityWasDenied" xml:space="preserve">
+    <value>Petition to view legal identity was denied.</value>
+  </data>
+  <data name="APetitionHasBeenSentToTheContract" xml:space="preserve">
+    <value>A petition has been sent to the parts of the contract. If any of the parts accepts the petition, the contract information will be displayed on the screen.</value>
+  </data>
+  <data name="APetitionHasBeenSentToTheOwner" xml:space="preserve">
+    <value>A petition has been sent to the owner of the identity. If the owner accepts the petition, the identity information will be displayed on the screen.</value>
+  </data>
+  <data name="APetitionHasBeenSentToYourPeer" xml:space="preserve">
+    <value>A petition has been sent to your peer</value>
+  </data>
+  <data name="APeerReviewYouhaveRequestedHasBeenAccepted" xml:space="preserve">
+    <value>A peer review you requested has been accepted.</value>
+  </data>
+  <data name="APeerYouRequestedToReviewHasBeenRejectedDueToSignatureError" xml:space="preserve">
+    <value>A peer review you requested has been rejected, due to a signature error.</value>
+  </data>
+  <data name="APeerYouRequestedToReviewHasRejected" xml:space="preserve">
+    <value>A peer you requested to review your application, has rejected to approve it.</value>
+  </data>
+  <data name="UnableToGetAccessToYourPrivateKeys" xml:space="preserve">
+    <value>The application was unable to get access to the private keys of the identity. This typically means the identity has been changed outside of the scope of the app. It can also be a result of a corruption of data. You can try one of two things. Press the Continue button, to continue, without the private keys. You get access to the app, but cannot sign anything. You can then choose to reapply for a new identity from the main menu, with new private keys. You can also try to repair the database, by pressing the Repair button. In the latter case, the app is closed, and the next time the app is opened, a repair-procedure is first attempted.</value>
+  </data>
+  <data name="FailedToClosePage" xml:space="preserve">
+    <value>Failed to close page</value>
+  </data>
+  <data name="FailedToNavigateToPage" xml:space="preserve">
+    <value>Failed to navigate to page {0}  {1}</value>
+  </data>
 </root>

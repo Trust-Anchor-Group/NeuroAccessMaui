@@ -14,7 +14,7 @@ public class DisplayAlert : UiTask
 	/// <param name="Message">Message string</param>
 	/// <param name="Accept">Accept string</param>
 	/// <param name="Cancel">Cancel string</param>
-	public DisplayAlert(string Title, string Message, string Accept, string Cancel)
+	public DisplayAlert(string Title, string Message, string? Accept, string? Cancel)
 	{
 		this.Title = Title;
 		this.Message = Message;
@@ -37,12 +37,12 @@ public class DisplayAlert : UiTask
 	/// <summary>
 	/// Accept string
 	/// </summary>
-	public string Accept { get; }
+	public string? Accept { get; }
 
 	/// <summary>
 	/// Cancel string
 	/// </summary>
-	public string Cancel { get; }
+	public string? Cancel { get; }
 
 	/// <summary>
 	/// Completion source indicating when task has been completed.

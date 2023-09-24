@@ -998,7 +998,7 @@ internal sealed class XmppService : LoadableService, IXmppService
 		await RuntimeSettings.SetAsync("TransferId.CodesSent", string.Empty);
 		await Database.Provider.Flush();
 
-		ServiceRef.UiSerializer.BeginInvokeOnMainThread(async () => await App.Current.SetRegistrationPageAsync());
+		await App.SetRegistrationPageAsync();
 	}
 
 	/// <summary>
@@ -1076,9 +1076,9 @@ internal sealed class XmppService : LoadableService, IXmppService
 			}
 		}
 
-		ServiceRef.UiSerializer.BeginInvokeOnMainThread(async () =>
+		MainThread.BeginInvokeOnMainThread(async () =>
 		{
-			switch (Type.ToUpper())
+			switch (Type.ToUpperInvariant())
 			{
 				case "NONE":
 				default:

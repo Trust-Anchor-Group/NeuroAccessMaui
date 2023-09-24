@@ -70,6 +70,69 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A peer review you requested has been accepted..
+        /// </summary>
+        internal static string APeerReviewYouhaveRequestedHasBeenAccepted {
+            get {
+                return ResourceManager.GetString("APeerReviewYouhaveRequestedHasBeenAccepted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A peer review you requested has been rejected, due to a signature error..
+        /// </summary>
+        internal static string APeerYouRequestedToReviewHasBeenRejectedDueToSignatureError {
+            get {
+                return ResourceManager.GetString("APeerYouRequestedToReviewHasBeenRejectedDueToSignatureError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A peer you requested to review your application, has rejected to approve it..
+        /// </summary>
+        internal static string APeerYouRequestedToReviewHasRejected {
+            get {
+                return ResourceManager.GetString("APeerYouRequestedToReviewHasRejected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A petition has been sent to the parts of the contract. If any of the parts accepts the petition, the contract information will be displayed on the screen..
+        /// </summary>
+        internal static string APetitionHasBeenSentToTheContract {
+            get {
+                return ResourceManager.GetString("APetitionHasBeenSentToTheContract", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A petition has been sent to the owner of the identity. If the owner accepts the petition, the identity information will be displayed on the screen..
+        /// </summary>
+        internal static string APetitionHasBeenSentToTheOwner {
+            get {
+                return ResourceManager.GetString("APetitionHasBeenSentToTheOwner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A petition has been sent to your peer.
+        /// </summary>
+        internal static string APetitionHasBeenSentToYourPeer {
+            get {
+                return ResourceManager.GetString("APetitionHasBeenSentToYourPeer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to App is not connected to the network..
+        /// </summary>
+        internal static string AppNotConnected {
+            get {
+                return ResourceManager.GetString("AppNotConnected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can&apos;t connect to {0}.
         /// </summary>
         internal static string CantConnectTo {
@@ -223,6 +286,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to close page.
+        /// </summary>
+        internal static string FailedToClosePage {
+            get {
+                return ResourceManager.GetString("FailedToClosePage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to navigate to page {0}  {1}.
+        /// </summary>
+        internal static string FailedToNavigateToPage {
+            get {
+                return ResourceManager.GetString("FailedToNavigateToPage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Approved.
         /// </summary>
         internal static string IdentityState_Approved {
@@ -277,6 +358,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid TAG Signature URI..
+        /// </summary>
+        internal static string InvalidTagSignatureId {
+            get {
+                return ResourceManager.GetString("InvalidTagSignatureId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid username or password.
         /// </summary>
         internal static string InvalidUsernameOrPassword {
@@ -286,11 +376,29 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Legal ID not approved..
+        /// </summary>
+        internal static string LegalIdNotApproved {
+            get {
+                return ResourceManager.GetString("LegalIdNotApproved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Message.
         /// </summary>
         internal static string Message {
             get {
                 return ResourceManager.GetString("Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No Legal ID selected..
+        /// </summary>
+        internal static string NoLegalIdSelected {
+            get {
+                return ResourceManager.GetString("NoLegalIdSelected", resourceCulture);
             }
         }
         
@@ -309,6 +417,51 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string OperatorDoesNotSupportRegisteringNewAccounts {
             get {
                 return ResourceManager.GetString("OperatorDoesNotSupportRegisteringNewAccounts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Peer review accepted.
+        /// </summary>
+        internal static string PeerReviewAccepted {
+            get {
+                return ResourceManager.GetString("PeerReviewAccepted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Peer review rejected.
+        /// </summary>
+        internal static string PeerReviewRejected {
+            get {
+                return ResourceManager.GetString("PeerReviewRejected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Petition sent.
+        /// </summary>
+        internal static string PetitionSent {
+            get {
+                return ResourceManager.GetString("PetitionSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Petition to view contract was denied..
+        /// </summary>
+        internal static string PetitionToViewContractWasDenied {
+            get {
+                return ResourceManager.GetString("PetitionToViewContractWasDenied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Petition to view legal identity was denied..
+        /// </summary>
+        internal static string PetitionToViewLegalIdentityWasDenied {
+            get {
+                return ResourceManager.GetString("PetitionToViewLegalIdentityWasDenied", resourceCulture);
             }
         }
         
@@ -493,6 +646,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The signature petition was denied..
+        /// </summary>
+        internal static string SignaturePetitionDenied {
+            get {
+                return ResourceManager.GetString("SignaturePetitionDenied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Success.
         /// </summary>
         internal static string SuccessTitle {
@@ -552,6 +714,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string UnableToConnectTo {
             get {
                 return ResourceManager.GetString("UnableToConnectTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The application was unable to get access to the private keys of the identity. This typically means the identity has been changed outside of the scope of the app. It can also be a result of a corruption of data. You can try one of two things. Press the Continue button, to continue, without the private keys. You get access to the app, but cannot sign anything. You can then choose to reapply for a new identity from the main menu, with new private keys. You can also try to repair the database, by pressing the R [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string UnableToGetAccessToYourPrivateKeys {
+            get {
+                return ResourceManager.GetString("UnableToGetAccessToYourPrivateKeys", resourceCulture);
             }
         }
         

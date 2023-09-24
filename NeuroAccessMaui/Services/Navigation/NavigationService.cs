@@ -84,7 +84,7 @@ internal sealed partial class NavigationService : LoadableService, INavigationSe
 			return;
 		}
 
-		await ServiceRef.UiSerializer.InvokeOnMainThreadAsync(async () =>
+		await MainThread.InvokeOnMainThreadAsync(async () =>
 		{
 			// Get the parent's navigation arguments
 			NavigationArgs ParentArgs = this.GetCurrentNavigationArgs();
@@ -226,7 +226,7 @@ internal sealed partial class NavigationService : LoadableService, INavigationSe
 			{
 				e.Cancel();
 
-				ServiceRef.UiSerializer.BeginInvokeOnMainThread(async () =>
+				MainThread.BeginInvokeOnMainThread(async () =>
 				{
 					await this.GoBackAsync();
 				});

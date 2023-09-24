@@ -1,4 +1,5 @@
-﻿using IdApp.Nfc;
+﻿using System.Runtime.InteropServices;
+using IdApp.Nfc;
 
 namespace NeuroAccessMaui.Services.Nfc;
 
@@ -7,6 +8,8 @@ namespace NeuroAccessMaui.Services.Nfc;
 /// </summary>
 public class NfcTag : INfcTag
 {
+	private bool isDisposed;
+
 	/// <summary>
 	/// Class defining interaction with an NFC Tag.
 	/// </summary>
@@ -28,14 +31,33 @@ public class NfcTag : INfcTag
 	/// </summary>
 	public INfcInterface[] Interfaces { get; private set; }
 
+	///<inheritdoc/>
+	public void Dispose()
+	{
+		this.Dispose(true);
+		GC.SuppressFinalize(this);
+	}
+
 	/// <summary>
 	/// <see cref="IDisposable.Dispose"/>
 	/// </summary>
-	public void Dispose()
+	protected virtual void Dispose(bool disposing)
 	{
-		foreach (INfcInterface Interface in this.Interfaces)
+		if (this.isDisposed)
 		{
-			Interface.Dispose();
+			return;
 		}
+
+		if (disposing)
+		{
+			foreach (INfcInterface Interface in this.Interfaces)
+			{
+				Interface.Dispose();
+			}
+
+			this.Interfaces = [];
+		}
+
+		this.isDisposed = true;
 	}
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Maui.Controls.Internals;
+﻿using IdApp.Nfc;
+using Microsoft.Maui.Controls.Internals;
 using NeuroAccessMaui.DeviceSpecific;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
@@ -21,6 +22,7 @@ using NeuroAccessMaui.Services.Xmpp;
 using System.Globalization;
 using System.Net.Http.Headers;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Text;
 using Waher.Content;
@@ -70,6 +72,7 @@ public partial class App : Application, IDisposable
 	private readonly Task<bool> initCompleted;
 	private readonly SemaphoreSlim startupWorker = new(1, 1);
 	private CancellationTokenSource startupCancellation;
+	private bool isDisposed;
 
 	// The App class is not actually a singleton. Each time Android MainActivity is destroyed and then created again, a new instance
 	// of the App class will be created, its OnStart method will be called and its OnResume method will not be called. This happens,
@@ -432,10 +435,10 @@ public partial class App : Application, IDisposable
 			if (!BackgroundStart)
 			{
 				Thread?.NewState("Report");
+
 				await this.SendErrorReportFromPreviousRun();
 
 				Thread?.NewState("Startup");
-				ServiceRef.UiSerializer.IsRunningInTheBackground = false;
 
 				Token.ThrowIfCancellationRequested();
 			}
@@ -556,14 +559,6 @@ public partial class App : Application, IDisposable
 			}
 
 			this.StopAutoSaveTimer();
-
-			if (!BackgroundStart)
-			{
-				if (ServiceRef.UiSerializer is not null)
-				{
-					ServiceRef.UiSerializer.IsRunningInTheBackground = !inPanic;
-				}
-			}
 
 			if (inPanic)
 			{
@@ -704,7 +699,10 @@ public partial class App : Application, IDisposable
 	/// </summary>
 	public static Task SetRegistrationPageAsync()
 	{
-		return Shell.Current.GoToAsync("//Registration");
+		return MainThread.InvokeOnMainThreadAsync(() =>
+		{
+			Shell.Current.GoToAsync("//Registration");
+		});
 	}
 
 	/// <summary>
@@ -712,12 +710,15 @@ public partial class App : Application, IDisposable
 	/// </summary>
 	public static Task SetMainPageAsync()
 	{
-		if (CanProhibitScreenCapture)
+		return MainThread.InvokeOnMainThreadAsync(() =>
 		{
-			ProhibitScreenCapture = true;
-		}
+			if (CanProhibitScreenCapture)
+			{
+				ProhibitScreenCapture = true;
+			}
 
-		return Shell.Current.GoToAsync("//MainPage");
+			return Shell.Current.GoToAsync("//MainPage");
+		});
 	}
 
 	//!!!
@@ -776,15 +777,21 @@ public partial class App : Application, IDisposable
 #if DEBUG
 		if (!shutdown)
 		{
-			if (Device.IsInvokeRequired && (this.MainPage is not null))
+			if (this.MainPage is not null)
 			{
-				Device.BeginInvokeOnMainThread(async () => await this.MainPage.DisplayAlert(title, ex?.ToString(),
-					ServiceRef.Localizer[nameof(AppResources.Ok)]));
-			}
-			else if (this.MainPage is not null)
-			{
-				await this.MainPage.DisplayAlert(title, ex?.ToString(),
-					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				if (this.Dispatcher.IsDispatchRequired)
+				{
+					this.Dispatcher.Dispatch(async () =>
+					{
+						await this.MainPage.DisplayAlert(title, ex?.ToString(),
+							ServiceRef.Localizer[nameof(AppResources.Ok)]);
+					});
+				}
+				else
+				{
+					await this.MainPage.DisplayAlert(title, ex?.ToString(),
+						ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				}
 			}
 		}
 #endif
@@ -822,7 +829,7 @@ public partial class App : Application, IDisposable
 					new KeyValuePair<string, object>(Constants.XmppProperties.Jid, ServiceRef.XmppService.BareJid)
 				};
 
-				KeyValuePair<string, object>[] Tags2 = ServiceRef.TagProfile.LegalIdentity?.GetTags();
+				KeyValuePair<string, object>[] Tags2 = ServiceRef.TagProfile.LegalIdentity.GetTags();
 
 				if (Tags2 is not null)
 				{
@@ -1005,7 +1012,7 @@ public partial class App : Application, IDisposable
 	/// <returns>If URL is processed or not.</returns>
 	public static void OpenUrlSync(string Url)
 	{
-		ServiceRef.UiSerializer.BeginInvokeOnMainThread(async () =>
+		MainThread.BeginInvokeOnMainThread(async () =>
 		{
 			await QrCode.OpenUrl(Url);
 		});
@@ -1238,8 +1245,33 @@ public partial class App : Application, IDisposable
 		}
 	}
 
+
+	///<inheritdoc/>
 	public void Dispose()
 	{
-		throw new NotImplementedException();
+		this.Dispose(true);
+		GC.SuppressFinalize(this);
+	}
+
+	/// <summary>
+	/// <see cref="IDisposable.Dispose"/>
+	/// </summary>
+	protected virtual void Dispose(bool disposing)
+	{
+		if (this.isDisposed)
+		{
+			return;
+		}
+
+		if (disposing)
+		{
+			this.loginAuditor.Dispose();
+			this.autoSaveTimer.Dispose();
+			this.initCompleted.Dispose();
+			this.startupWorker.Dispose();
+			this.startupCancellation.Dispose();
+		}
+
+		this.isDisposed = true;
 	}
 }

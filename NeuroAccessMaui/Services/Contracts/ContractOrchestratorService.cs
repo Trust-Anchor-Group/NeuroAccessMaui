@@ -337,7 +337,7 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 		(bool succeeded, LegalIdentity identity) = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.GetLegalIdentity(LegalId), displayAlert: false);
 		if (succeeded)
 		{
-			ServiceRef.UiSerializer.BeginInvokeOnMainThread(async () =>
+			MainThread.BeginInvokeOnMainThread(async () =>
 			{
 				string userMessage = null;
 				bool gotoRegistrationPage = false;
@@ -388,7 +388,7 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 
 				if (gotoRegistrationPage)
 				{
-					await App.Current.SetRegistrationPageAsync();
+					await App.SetRegistrationPageAsync();
 
 					// After navigating to the registration page, show the user why this happened.
 					if (!string.IsNullOrWhiteSpace(userMessage))
@@ -396,7 +396,7 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 						// Do a begin invoke here so the page animation has time to finish,
 						// and the view model loads state et.c. before showing the alert.
 						// This gives a better UX experience.
-						ServiceRef.UiSerializer.BeginInvokeOnMainThread(async () =>
+						MainThread.BeginInvokeOnMainThread(async () =>
 						{
 							await ServiceRef.UiSerializer.DisplayAlert(
 								ServiceRef.Localizer[nameof(AppResources.YourLegalIdentity)], userMessage);
@@ -412,7 +412,7 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 		try
 		{
 			LegalIdentity identity = await ServiceRef.XmppService.GetLegalIdentity(LegalId);
-			ServiceRef.UiSerializer.BeginInvokeOnMainThread(async () =>
+			MainThread.BeginInvokeOnMainThread(async () =>
 			{
 				await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(identity));
 			});
@@ -423,7 +423,7 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 			// When this happens, try to send a petition to view it instead.
 			// Normal operation. Should not be logged.
 
-			ServiceRef.UiSerializer.BeginInvokeOnMainThread(async () =>
+			MainThread.BeginInvokeOnMainThread(async () =>
 			{
 				bool succeeded = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.PetitionIdentity(LegalId, Guid.NewGuid().ToString(), Purpose));
 				if (succeeded)
@@ -437,7 +437,7 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 		catch (Exception ex)
 		{
 			ServiceRef.LogService.LogException(ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
-			await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex);
+			await ServiceRef.UiSerializer.DisplayException(ex);
 		}
 	}
 
