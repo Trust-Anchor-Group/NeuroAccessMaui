@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.Xml;
+using NeuroAccessMaui.Pages.Registration;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.HttpFileUpload;
@@ -187,7 +188,7 @@ public interface IXmppService : ILoadableService
 
 	/// <summary>
 	/// Performs an HTTP POST to a protected API on the server, over the current XMPP connection,
-	/// authenticating the client using the credentials alreaedy provided over XMPP.
+	/// authenticating the client using the credentials already provided over XMPP.
 	/// </summary>
 	/// <param name="LocalResource">Local Resource on the server to POST to.</param>
 	/// <param name="Data">Data to post. This will be encoded using encoders in the type inventory.</param>

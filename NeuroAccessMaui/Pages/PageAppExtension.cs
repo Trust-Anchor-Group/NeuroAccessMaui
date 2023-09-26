@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Maui;
+using NeuroAccessMaui.Pages.Identity;
 using NeuroAccessMaui.Pages.Registration;
 using NeuroAccessMaui.Pages.Registration.Views;
 
@@ -19,6 +20,10 @@ public static class PageAppExtension
 		Builder.Services.AddTransient<ValidateEmailView, ValidateEmailViewModel>();
 		Builder.Services.AddTransient<ChooseAccountView, ChooseAccountViewModel>();
 		Builder.Services.AddTransient<DefinePinView, DefinePinViewModel>();
+
+		// Identity pages & views
+		Builder.Services.AddTransient<ViewIdentityPage, ViewIdentityViewModel>();
+
 
 		return Builder;
 	}

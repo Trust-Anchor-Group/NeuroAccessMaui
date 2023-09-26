@@ -1,12 +1,9 @@
 ﻿using System.Text;
-using Waher.Content;
-using Waher.Content.Xml;
 using Waher.Events;
 using Waher.Persistence;
 using Waher.Persistence.Files;
 using Waher.Persistence.Serialization;
 using Waher.Runtime.Inventory;
-using Waher.Runtime.Profiling;
 
 namespace NeuroAccessMaui.Services.Storage;
 
@@ -36,7 +33,7 @@ internal sealed class StorageService : IStorageService
 	#region LifeCycle management
 
 	/// <inheritdoc />
-	public async Task Init(ProfilerThread Thread, CancellationToken? cancellationToken)
+	public async Task Init(CancellationToken? cancellationToken)
 	{
 		lock (this.tasksWaiting)
 		{
@@ -48,11 +45,8 @@ internal sealed class StorageService : IStorageService
 			this.started = true;
 		}
 
-		Thread?.Start();
 		try
 		{
-			Thread?.NewState("Provider");
-
 			if (Database.HasProvider)
 			{
 				this.databaseProvider = Database.Provider as FilesProvider;
@@ -60,82 +54,64 @@ internal sealed class StorageService : IStorageService
 
 			if (this.databaseProvider is null)
 			{
-				this.databaseProvider = await this.CreateDatabaseFile(Thread);
+				this.databaseProvider = await this.CreateDatabaseFile();
 
-				Thread?.NewState("CheckDB");
 				await this.databaseProvider.RepairIfInproperShutdown(string.Empty);
 
 				await this.databaseProvider.Start();
 			}
 
-			Thread?.NewState("Register");
-
 			if (this.databaseProvider is not null)
 			{
 				Database.Register(this.databaseProvider, false);
 				this.InitDone(true);
-				Thread?.Stop();
 				return;
 			}
 		}
 		catch (Exception e1)
 		{
 			e1 = Log.UnnestException(e1);
-			Thread?.Exception(e1);
 			ServiceRef.LogService.LogException(e1);
 		}
 
-		try
+		//!!! test to uncomment it
+		/* On iOS the UI is not initialized at this point, need to find another solution
+		if (await ServiceRef.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["DatabaseIssue"], LocalizationResourceManager.Current["DatabaseCorruptInfoText"], LocalizationResourceManager.Current["RepairAndContinue"], LocalizationResourceManager.Current["ContinueAnyway"]))
+		*/
+		//TODO: when UI is ready, show an alert that the database was reset due to unrecoverable error
+		//TODO: say to close the application in a controlled manner
 		{
-			/* On iOS the UI is not initialised at this point, need to fuind another solution
-			Thread?.NewState("UI");
-			if (await ServiceRef.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["DatabaseIssue"], LocalizationResourceManager.Current["DatabaseCorruptInfoText"], LocalizationResourceManager.Current["RepairAndContinue"], LocalizationResourceManager.Current["ContinueAnyway"]))
-			*/
-			//TODO: when UI is ready, show an alert that the database was reset due to unrecoverable error
-			//TODO: say to close the application in a controlled manner
+			try
 			{
-				try
+				Directory.Delete(this.dataFolder, true);
+
+				this.databaseProvider = await this.CreateDatabaseFile();
+
+				await this.databaseProvider.RepairIfInproperShutdown(string.Empty);
+
+				await this.databaseProvider.Start();
+
+				if (!Database.HasProvider)
 				{
-					Thread?.NewState("Delete");
-					Directory.Delete(this.dataFolder, true);
-
-					Thread?.NewState("Recreate");
-					this.databaseProvider = await this.CreateDatabaseFile(Thread);
-
-					Thread?.NewState("Repair");
-					await this.databaseProvider.RepairIfInproperShutdown(string.Empty);
-
-					await this.databaseProvider.Start();
-
-					if (!Database.HasProvider)
-					{
-						Thread?.NewState("Register");
-						Database.Register(this.databaseProvider, false);
-						this.InitDone(true);
-						Thread?.Stop();
-						return;
-					}
-				}
-				catch (Exception e3)
-				{
-					e3 = Log.UnnestException(e3);
-					Thread?.Exception(e3);
-					ServiceRef.LogService.LogException(e3);
-
-					await App.Stop();
-					/*
-					Thread?.NewState("UI");
-					await ServiceRef.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["DatabaseIssue"], LocalizationResourceManager.Current["DatabaseRepairFailedInfoText"], LocalizationResourceManager.Current["Ok"]);
-					*/
+					Database.Register(this.databaseProvider, false);
+					this.InitDone(true);
+					return;
 				}
 			}
+			catch (Exception e3)
+			{
+				e3 = Log.UnnestException(e3);
+				ServiceRef.LogService.LogException(e3);
 
-			this.InitDone(false);
+				await App.Stop();
+				/*
+				Thread?.NewState("UI");
+				await ServiceRef.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["DatabaseIssue"], LocalizationResourceManager.Current["DatabaseRepairFailedInfoText"], LocalizationResourceManager.Current["Ok"]);
+				*/
+			}
 		}
-		finally
-		{
-			Thread?.Stop();
-		}
+
+		this.InitDone(false);
 	}
 
 	private void InitDone(bool Result)
@@ -195,12 +171,12 @@ internal sealed class StorageService : IStorageService
 		}
 	}
 
-	private Task<FilesProvider> CreateDatabaseFile(ProfilerThread Thread)
+	private Task<FilesProvider> CreateDatabaseFile()
 	{
 		FilesProvider.AsyncFileIo = false;  // Asynchronous file I/O induces a long delay during startup on mobile platforms. Why??
 
 		return FilesProvider.CreateAsync(this.dataFolder, "Default", 8192, 10000, 8192, Encoding.UTF8,
-			(int)Constants.Timeouts.Database.TotalMilliseconds, ServiceRef.CryptoService.GetCustomKey, Thread);
+			(int)Constants.Timeouts.Database.TotalMilliseconds, ServiceRef.CryptoService.GetCustomKey);
 	}
 
 	#endregion

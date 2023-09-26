@@ -10,6 +10,6 @@ public partial class ValidatePhoneView
 	public ValidatePhoneView(ValidatePhoneViewModel ViewModel)
 	{
 		this.InitializeComponent();
-		this.InitializeObject(ViewModel);
+		this.BindingContext = ViewModel;
 	}
 }

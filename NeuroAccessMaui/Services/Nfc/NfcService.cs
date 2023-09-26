@@ -1,6 +1,7 @@
 ﻿using IdApp.Nfc;
 using IdApp.Nfc.Extensions;
 using IdApp.Nfc.Records;
+using NeuroAccessMaui.Pages;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Navigation;
 using Waher.Runtime.Inventory;
@@ -71,8 +72,8 @@ public class NfcService : INfcService
 					if (Records.Length == 0)
 					{
 						INavigationService Nav = App.Instantiate<INavigationService>();
-						if (Nav.CurrentPage is ContentBasePage ContentPage &&
-							ContentPage.ViewModel is ILinkableView LinkableView &&
+						if (Nav.CurrentPage is BaseContentPage ContentPage &&
+							ContentPage.ViewModel<BaseViewModel>() is ILinkableView LinkableView &&
 							LinkableView.IsLinkable &&
 							IsWritable)
 						{
@@ -214,7 +215,7 @@ public class NfcService : INfcService
 		}
 		catch (Exception ex)
 		{
-			await ServiceRef.UiSerializer.DisplayAlert(ex);
+			await ServiceRef.UiSerializer.DisplayException(ex);
 		}
 	}
 }

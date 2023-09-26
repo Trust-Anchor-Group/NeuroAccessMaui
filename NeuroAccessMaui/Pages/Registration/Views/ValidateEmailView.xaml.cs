@@ -10,6 +10,6 @@ public partial class ValidateEmailView
 	public ValidateEmailView(ValidateEmailViewModel ViewModel)
 	{
 		this.InitializeComponent();
-		this.InitializeObject(ViewModel);
+		this.BindingContext = ViewModel;
 	}
 }

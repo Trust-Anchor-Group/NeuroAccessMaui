@@ -1,0 +1,784 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseContentPage x:Name="ThisPage" x:Class="NeuroAccessMaui.Pages.Identity.ViewIdentityPage" x:DataType="viewmodel:ViewIdentityViewModel"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+	xmlns:base="clr-namespace:NeuroAccessMaui.Pages"
+	xmlns:controls="clr-namespace:NeuroAccessMaui.Controls"
+	xmlns:converters="clr-namespace:NeuroAccessMaui.Converters"
+	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.Pages.Identity">
+
+	<Grid>
+		<ScrollView>
+			<StackLayout
+				Margin="{StaticResource DefaultMargin}"
+				VerticalOptions="Start">
+				<Label
+					IsVisible="{Binding Path=IsNotForReview}"
+					Style="{StaticResource Heading}"
+					Text="{x:Static resx:AppResources.IdentityInformation}" />
+				<Label
+					Margin="{StaticResource DefaultBottomOnlyMargin}"
+					IsVisible="{Binding Path=IsNotForReview}"
+					Style="{StaticResource InfoText}"
+					Text="{x:Static resx:AppResources.ViewIdentityInformationText}" />
+				<Label
+					IsVisible="{Binding Path=IsForReview}"
+					Style="{StaticResource Heading}"
+					Text="{x:Static resx:AppResources.PeerReview}" />
+				<Label
+					Margin="{StaticResource DefaultBottomOnlyMargin}"
+					IsVisible="{Binding Path=IsForReview}"
+					Style="{StaticResource InfoText}"
+					Text="{x:Static resx:AppResources.ReviewIdentityInformationText}" />
+				<Frame
+					Margin="50,10,50,10"
+					BorderColor="{StaticResource ForegroundColor}"
+					CornerRadius="10">
+					<Image
+						HorizontalOptions="Center"
+						VerticalOptions="Start"
+						Rotation="{Binding FirstPhotoRotation}"
+						Source="{Binding FirstPhotoSource}" />
+				</Frame>
+				<Grid
+					VerticalOptions="StartAndExpand"
+					RowSpacing="0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition
+							Width="Auto" />
+						<ColumnDefinition
+							Width="Auto" />
+						<ColumnDefinition
+							Width="*" />
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition
+							Height="Auto" />
+						<!--  0  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  1  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  2  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  3  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  4  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  5  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  6  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  7  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  8  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  9  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  10  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  11  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  12  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  13  -->
+						<RowDefinition
+							Height="{Binding OrgRowHeight}" />
+						<!--  14  -->
+						<RowDefinition
+							Height="{Binding OrgRowHeight}" />
+						<!--  15  -->
+						<RowDefinition
+							Height="{Binding OrgRowHeight}" />
+						<!--  16  -->
+						<RowDefinition
+							Height="{Binding OrgRowHeight}" />
+						<!--  17  -->
+						<RowDefinition
+							Height="{Binding OrgRowHeight}" />
+						<!--  18  -->
+						<RowDefinition
+							Height="{Binding OrgRowHeight}" />
+						<!--  19  -->
+						<RowDefinition
+							Height="{Binding OrgRowHeight}" />
+						<!--  20  -->
+						<RowDefinition
+							Height="{Binding OrgRowHeight}" />
+						<!--  21  -->
+						<RowDefinition
+							Height="{Binding OrgRowHeight}" />
+						<!--  22  -->
+						<RowDefinition
+							Height="{Binding OrgRowHeight}" />
+						<!--  23  -->
+						<RowDefinition
+							Height="{Binding OrgRowHeight}" />
+						<!--  24  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  25  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  26  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  27  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  28  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  29  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  30  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  31  -->
+					</Grid.RowDefinitions>
+					<!--  -  -->
+					<Label
+						Grid.Row="0"
+						Grid.Column="1"
+						Style="{StaticResource KeyLabel}"
+						Text="{x:Static resx:AppResources.Created}" />
+					<Label
+						Grid.Row="0"
+						Grid.Column="2"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=Created}" />
+					<!--  -  -->
+					<Label
+						Grid.Row="1"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						Style="{StaticResource KeyLabel}"
+						Text="{x:Static resx:AppResources.Updated}" />
+					<Label
+						Grid.Row="1"
+						Grid.Column="2"
+						Margin="0,6,0,0"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=Updated}" />
+					<!--  -  -->
+					<Label
+						Grid.Row="2"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						Style="{StaticResource KeyLabel}"
+						Text="{x:Static resx:AppResources.State}" />
+					<Label
+						Grid.Row="2"
+						Grid.Column="2"
+						BackgroundColor="{Binding Path=State, Converter={converters:IdentityStateToColor}}"
+						Margin="0,6,0,0"
+						Style="{StaticResource ValueLabelWithBackground}"
+						Text="{Binding Path=State}" />
+					<!--  -  -->
+					<CheckBox
+						Grid.Row="3"
+						Grid.Column="0"
+						IsChecked="{Binding Path=FirstNameIsChecked, Mode=TwoWay}"
+						IsVisible="{Binding Path=IsForReviewFirstName}" />
+					<Label
+						Grid.Row="3"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						Style="{StaticResource KeyLabel}"
+						Text="{x:Static resx:AppResources.FirstName}" />
+					<Label
+						Grid.Row="3"
+						Grid.Column="2"
+						Margin="0,6,0,0"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=FirstName}" />
+					<!--  -  -->
+					<CheckBox
+						Grid.Row="4"
+						Grid.Column="0"
+						IsChecked="{Binding Path=MiddleNamesIsChecked, Mode=TwoWay}"
+						IsVisible="{Binding Path=IsForReviewMiddleNames}" />
+					<Label
+						Grid.Row="4"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						Style="{StaticResource KeyLabel}"
+						Text="{x:Static resx:AppResources.MiddleNames}" />
+					<Label
+						Grid.Row="4"
+						Grid.Column="2"
+						Margin="0,6,0,0"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=MiddleNames}" />
+					<!--  -  -->
+					<CheckBox
+						Grid.Row="5"
+						Grid.Column="0"
+						IsChecked="{Binding Path=LastNamesIsChecked, Mode=TwoWay}"
+						IsVisible="{Binding Path=IsForReviewLastNames}" />
+					<Label
+						Grid.Row="5"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						Style="{StaticResource KeyLabel}"
+						Text="{x:Static resx:AppResources.LastNames}" />
+					<Label
+						Grid.Row="5"
+						Grid.Column="2"
+						Margin="0,6,0,0"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=LastNames}" />
+					<!--  -  -->
+					<CheckBox
+						Grid.Row="6"
+						Grid.Column="0"
+						IsChecked="{Binding Path=PersonalNumberIsChecked, Mode=TwoWay}"
+						IsVisible="{Binding Path=IsForReviewPersonalNumber}" />
+					<Label
+						Grid.Row="6"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						Style="{StaticResource KeyLabel}"
+						Text="{x:Static resx:AppResources.PersonalNumber}" />
+					<Label
+						Grid.Row="6"
+						Grid.Column="2"
+						Margin="0,6,0,0"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=PersonalNumber}" />
+					<!--  -  -->
+					<CheckBox
+						Grid.Row="7"
+						Grid.Column="0"
+						IsChecked="{Binding Path=AddressIsChecked, Mode=TwoWay}"
+						IsVisible="{Binding Path=IsForReviewAddress}" />
+					<Label
+						Grid.Row="7"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						Style="{StaticResource KeyLabel}"
+						Text="{x:Static resx:AppResources.Address}" />
+					<Label
+						Grid.Row="7"
+						Grid.Column="2"
+						Margin="0,6,0,0"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=Address}" />
+					<!--  -  -->
+					<CheckBox
+						Grid.Row="8"
+						Grid.Column="0"
+						IsChecked="{Binding Path=Address2IsChecked, Mode=TwoWay}"
+						IsVisible="{Binding Path=IsForReviewAddress2}" />
+					<Label
+						Grid.Row="8"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						Style="{StaticResource KeyLabel}"
+						Text="{x:Static resx:AppResources.Address2}" />
+					<Label
+						Grid.Row="8"
+						Grid.Column="2"
+						Margin="0,6,0,0"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=Address2}" />
+					<!--  -  -->
+					<CheckBox
+						Grid.Row="9"
+						Grid.Column="0"
+						IsChecked="{Binding Path=ZipCodeIsChecked, Mode=TwoWay}"
+						IsVisible="{Binding Path=IsForReviewZipCode}" />
+					<Label
+						Grid.Row="9"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						Style="{StaticResource KeyLabel}"
+						Text="{x:Static resx:AppResources.ZipCode}" />
+					<Label
+						Grid.Row="9"
+						Grid.Column="2"
+						Margin="0,6,0,0"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=ZipCode}" />
+					<!--  -  -->
+					<CheckBox
+						Grid.Row="10"
+						Grid.Column="0"
+						IsChecked="{Binding Path=AreaIsChecked, Mode=TwoWay}"
+						IsVisible="{Binding Path=IsForReviewArea}" />
+					<Label
+						Grid.Row="10"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						Style="{StaticResource KeyLabel}"
+						Text="{x:Static resx:AppResources.Area}" />
+					<Label
+						Grid.Row="10"
+						Grid.Column="2"
+						Margin="0,6,0,0"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=Area}" />
+					<!--  -  -->
+					<CheckBox
+						Grid.Row="11"
+						Grid.Column="0"
+						IsChecked="{Binding Path=CityIsChecked, Mode=TwoWay}"
+						IsVisible="{Binding Path=IsForReviewCity}" />
+					<Label
+						Grid.Row="11"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						Style="{StaticResource KeyLabel}"
+						Text="{x:Static resx:AppResources.City}" />
+					<Label
+						Grid.Row="11"
+						Grid.Column="2"
+						Margin="0,6,0,0"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=City}" />
+					<!--  -  -->
+					<CheckBox
+						Grid.Row="12"
+						Grid.Column="0"
+						IsChecked="{Binding Path=RegionIsChecked, Mode=TwoWay}"
+						IsVisible="{Binding Path=IsForReviewRegion}" />
+					<Label
+						Grid.Row="12"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						Style="{StaticResource KeyLabel}"
+						Text="{x:Static resx:AppResources.Region}" />
+					<Label
+						Grid.Row="12"
+						Grid.Column="2"
+						Margin="0,6,0,0"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=Region}" />
+					<!--  -  -->
+					<CheckBox
+						Grid.Row="13"
+						Grid.Column="0"
+						IsChecked="{Binding Path=CountryCodeIsChecked, Mode=TwoWay}"
+						IsVisible="{Binding Path=IsForReviewCountry}" />
+					<Label
+						Grid.Row="13"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						Style="{StaticResource KeyLabel}"
+						Text="{x:Static resx:AppResources.Country}" />
+					<Label
+						Grid.Row="13"
+						Grid.Column="2"
+						Margin="0,6,0,0"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=Country}" />
+					<!--    -->
+					<CheckBox
+						Grid.Row="14"
+						Grid.Column="0"
+						IsChecked="{Binding Path=OrgNameIsChecked, Mode=TwoWay}"
+						IsVisible="{Binding Path=IsForReviewOrgName}" />
+					<Label
+						Grid.Row="14"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource KeyLabel}"
+						Text="{x:Static resx:AppResources.OrgName}" />
+					<Label
+						Grid.Row="14"
+						Grid.Column="2"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=OrgName}" />
+					<!--    -->
+					<CheckBox
+						Grid.Row="15"
+						Grid.Column="0"
+						IsChecked="{Binding Path=OrgNumberIsChecked, Mode=TwoWay}"
+						IsVisible="{Binding Path=IsForReviewOrgNumber}" />
+					<Label
+						Grid.Row="15"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource KeyLabel}"
+						Text="{x:Static resx:AppResources.OrgNumber}" />
+					<Label
+						Grid.Row="15"
+						Grid.Column="2"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=OrgNumber}" />
+					<!--    -->
+					<CheckBox
+						Grid.Row="16"
+						Grid.Column="0"
+						IsChecked="{Binding Path=OrgRoleIsChecked, Mode=TwoWay}"
+						IsVisible="{Binding Path=IsForReviewOrgRole}" />
+					<Label
+						Grid.Row="16"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource KeyLabel}"
+						Text="{x:Static resx:AppResources.OrgRole}" />
+					<Label
+						Grid.Row="16"
+						Grid.Column="2"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=OrgRole}" />
+					<!--    -->
+					<CheckBox
+						Grid.Row="17"
+						Grid.Column="0"
+						IsChecked="{Binding Path=OrgDepartmentIsChecked, Mode=TwoWay}"
+						IsVisible="{Binding Path=IsForReviewOrgDepartment}" />
+					<Label
+						Grid.Row="17"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource KeyLabel}"
+						Text="{x:Static resx:AppResources.OrgDepartment}" />
+					<Label
+						Grid.Row="17"
+						Grid.Column="2"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=OrgDepartment}" />
+					<!--    -->
+					<CheckBox
+						Grid.Row="18"
+						Grid.Column="0"
+						IsChecked="{Binding Path=OrgAddressIsChecked, Mode=TwoWay}"
+						IsVisible="{Binding Path=IsForReviewOrgAddress}" />
+					<Label
+						Grid.Row="18"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource KeyLabel}"
+						Text="{x:Static resx:AppResources.OrgAddress}" />
+					<Label
+						Grid.Row="18"
+						Grid.Column="2"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=OrgAddress}" />
+					<!--    -->
+					<CheckBox
+						Grid.Row="19"
+						Grid.Column="0"
+						IsChecked="{Binding Path=OrgAddress2IsChecked, Mode=TwoWay}"
+						IsVisible="{Binding Path=IsForReviewOrgAddress2}" />
+					<Label
+						Grid.Row="19"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource KeyLabel}"
+						Text="{x:Static resx:AppResources.OrgAddress2}" />
+					<Label
+						Grid.Row="19"
+						Grid.Column="2"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=OrgAddress2}" />
+					<!--    -->
+					<CheckBox
+						Grid.Row="20"
+						Grid.Column="0"
+						IsChecked="{Binding Path=OrgZipCodeIsChecked, Mode=TwoWay}"
+						IsVisible="{Binding Path=IsForReviewOrgZipCode}" />
+					<Label
+						Grid.Row="20"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource KeyLabel}"
+						Text="{x:Static resx:AppResources.OrgZipCode}" />
+					<Label
+						Grid.Row="20"
+						Grid.Column="2"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=OrgZipCode}" />
+					<!--    -->
+					<CheckBox
+						Grid.Row="21"
+						Grid.Column="0"
+						IsChecked="{Binding Path=OrgAreaIsChecked, Mode=TwoWay}"
+						IsVisible="{Binding Path=IsForReviewOrgArea}" />
+					<Label
+						Grid.Row="21"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource KeyLabel}"
+						Text="{x:Static resx:AppResources.OrgArea}" />
+					<Label
+						Grid.Row="21"
+						Grid.Column="2"
+						Margin="0,6,0,0"
+						FontAttributes="Bold"
+						IsVisible="{Binding HasOrg}"
+						Text="{Binding Path=OrgArea}" />
+					<!--    -->
+					<CheckBox
+						Grid.Row="22"
+						Grid.Column="0"
+						IsChecked="{Binding Path=OrgCityIsChecked, Mode=TwoWay}"
+						IsVisible="{Binding Path=IsForReviewOrgCity}" />
+					<Label
+						Grid.Row="22"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource KeyLabel}"
+						Text="{x:Static resx:AppResources.OrgCity}" />
+					<Label
+						Grid.Row="22"
+						Grid.Column="2"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=OrgCity}" />
+					<!--    -->
+					<CheckBox
+						Grid.Row="23"
+						Grid.Column="0"
+						IsChecked="{Binding Path=OrgRegionIsChecked, Mode=TwoWay}"
+						IsVisible="{Binding Path=IsForReviewOrgRegion}" />
+					<Label
+						Grid.Row="23"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource KeyLabel}"
+						Text="{x:Static resx:AppResources.OrgRegion}" />
+					<Label
+						Grid.Row="23"
+						Grid.Column="2"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=OrgRegion}" />
+					<!--    -->
+					<CheckBox
+						Grid.Row="24"
+						Grid.Column="0"
+						IsChecked="{Binding Path=OrgCountryCodeIsChecked, Mode=TwoWay}"
+						IsVisible="{Binding Path=IsForReviewOrgCountry}" />
+					<Label
+						Grid.Row="24"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource KeyLabel}"
+						Text="{x:Static resx:AppResources.OrgCountry}" />
+					<Label
+						Grid.Row="24"
+						Grid.Column="2"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=OrgCountry}" />
+					<!--  -  -->
+					<Label
+						Grid.Row="25"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						Style="{StaticResource KeyLabel}"
+						Text="{x:Static resx:AppResources.ID}" />
+					<Label
+						Grid.Row="25"
+						Grid.Column="2"
+						Margin="0,6,0,0"
+						Style="{StaticResource ClickableValueLabel}"
+						Text="{Binding Path=LegalId}">
+						<Label.GestureRecognizers>
+							<TapGestureRecognizer
+								Command="{Binding CopyCommand}"
+								CommandParameter="{Binding LegalId}" />
+						</Label.GestureRecognizers>
+					</Label>
+					<!--  -  -->
+					<Label
+						Grid.Row="26"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						Style="{StaticResource KeyLabel}"
+						Text="{x:Static resx:AppResources.Network}" />
+					<Label
+						Grid.Row="26"
+						Grid.Column="2"
+						Margin="0,6,0,0"
+						Style="{StaticResource ClickableValueLabel}"
+						Text="{Binding Path=BareJid}">
+						<Label.GestureRecognizers>
+							<TapGestureRecognizer
+								Command="{Binding CopyToClipboardCommand}"
+								CommandParameter="{Binding BareJid}" />
+						</Label.GestureRecognizers>
+					</Label>
+					<!--  -  -->
+					<Label
+						Grid.Row="27"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						Style="{StaticResource KeyLabel}"
+						Text="{x:Static resx:AppResources.PublicKey}" />
+					<Label
+						Grid.Row="27"
+						Grid.Column="2"
+						Margin="0,6,0,0"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=PublicKey}" />
+					<!--  -  -->
+					<Label
+						Grid.Row="28"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						HorizontalOptions="StartAndExpand"
+						Text="{x:Static resx:AppResources.Photos}" />
+					<ScrollView
+						Grid.Row="28"
+						Grid.Column="2"
+						Margin="0,6,0,0"
+						HeightRequest="68"
+						Orientation="Horizontal">
+						<!-- //!!!
+						<FlexLayout x:Name="PhotosLayout"
+							AlignContent="Center"
+							AlignItems="Center"
+							BindableLayout.ItemsSource="{Binding Path=Photos}"
+							Direction="Row"
+							JustifyContent="Start">
+							<BindableLayout.ItemTemplate>
+								<DataTemplate x:DataType="photos:Photo">
+									<Image
+										Margin="2"
+										Aspect="AspectFill"
+										HeightRequest="64"
+										Rotation="{Binding Path=Rotation}"
+										Source="{Binding Path=Source}"
+										WidthRequest="64">
+										<Image.GestureRecognizers>
+											<TapGestureRecognizer
+												Tapped="Image_Tapped" />
+										</Image.GestureRecognizers>
+									</Image>
+								</DataTemplate>
+							</BindableLayout.ItemTemplate>
+						</FlexLayout>
+						-->
+					</ScrollView>
+					<!--  -  -->
+					<Image x:Name="QrCode"
+						Grid.Row="29"
+						Grid.Column="0"
+						Grid.ColumnSpan="3"
+						Margin="0,6,0,0"
+						HorizontalOptions="CenterAndExpand"
+						HeightRequest="{Binding Path=QrCodeHeight, Mode=OneTime}"
+						IsVisible="{Binding Path=HasQrCode}"
+						Source="{Binding Path=QrCode}"
+						WidthRequest="{Binding Path=QrCodeWidth, Mode=OneTime}" />
+					<!--  -  -->
+					<CheckBox x:Name="CarefulReviewCheck"
+						Grid.Row="30"
+						Grid.Column="0"
+						IsChecked="{Binding Path=CarefulReviewIsChecked, Mode=TwoWay}"
+						IsVisible="{Binding Path=IsForReview}" />
+					<Label
+						Grid.Row="30"
+						Grid.Column="1"
+						Grid.ColumnSpan="2"
+						Margin="0,6,0,12"
+						VerticalOptions="FillAndExpand"
+						IsVisible="{Binding Path=IsForReview}"
+						Text="{x:Static resx:AppResources.IHaveCarefullyReviewedAllInformationAbove}" />
+					<!--  -  -->
+					<CheckBox x:Name="ApprovePiiCheck"
+						Grid.Row="31"
+						Grid.Column="0"
+						IsChecked="{Binding Path=ApprovePiiIsChecked, Mode=TwoWay}"
+						IsVisible="{Binding Path=IsForReview}" />
+					<Label
+						Grid.Row="31"
+						Grid.Column="1"
+						Grid.ColumnSpan="2"
+						Margin="0,6,0,12"
+						VerticalOptions="FillAndExpand"
+						IsVisible="{Binding Path=IsForReview}"
+						Text="{x:Static resx:AppResources.IApproveOfMyPersonalInformationToBeAssociated}" />
+				</Grid>
+				<Label x:Name="ConnectionState"
+					HorizontalOptions="CenterAndExpand"
+					IsVisible="{Binding Path=IsConnected, Converter={converters:LogicalNot}}"
+					Text="{Binding Path=ConnectionStateText}" />
+				<Button
+					Margin="{StaticResource DefaultBottomOnlyMargin}"
+					Command="{Binding Path=ApproveCommand}"
+					IsEnabled="{Binding Path=IsBusy, Converter={converters:LogicalNot}}"
+					IsVisible="{Binding Path=IsForReview}"
+					Text="{x:Static resx:AppResources.ApproveInformation}" />
+				<Button
+					Margin="{StaticResource DefaultBottomOnlyMargin}"
+					Command="{Binding Path=RejectCommand}"
+					IsEnabled="{Binding Path=IsBusy, Converter={converters:LogicalNot}}"
+					IsVisible="{Binding Path=IsForReview}"
+					Text="{x:Static resx:AppResources.RejectInformation}" />
+				<Button
+					Margin="{StaticResource DefaultBottomOnlyMargin}"
+					Command="{Binding Path=ChangePinCommand}"
+					IsEnabled="{Binding Path=IsBusy, Converter={converters:LogicalNot}}"
+					IsVisible="{Binding Path=IsPersonal}"
+					Text="{x:Static resx:AppResources.ChangePin}" />
+				<Button
+					Margin="{StaticResource DefaultBottomOnlyMargin}"
+					Command="{Binding Path=CompromiseCommand}"
+					IsEnabled="{Binding Path=IsBusy, Converter={converters:LogicalNot}}"
+					IsVisible="{Binding Path=IsPersonal}"
+					Text="{x:Static resx:AppResources.ReportAsCompromized}" />
+				<Button
+					Margin="{StaticResource DefaultBottomOnlyMargin}"
+					Command="{Binding Path=RevokeCommand}"
+					IsEnabled="{Binding Path=IsBusy, Converter={converters:LogicalNot}}"
+					IsVisible="{Binding Path=IsPersonal}"
+					Text="{x:Static resx:AppResources.RevokeInformation}" />
+				<Button
+					Margin="{StaticResource DefaultBottomOnlyMargin}"
+					Command="{Binding Path=TransferCommand}"
+					IsEnabled="{Binding Path=IsBusy, Converter={converters:LogicalNot}}"
+					IsVisible="{Binding Path=IsPersonal}"
+					Text="{x:Static resx:AppResources.TransferId}" />
+			</StackLayout>
+		</ScrollView>
+		<!-- //!!! <image:ImageView x:Name="PhotoViewer" IsVisible="False"/> -->
+	</Grid>
+
+</base:BaseContentPage>

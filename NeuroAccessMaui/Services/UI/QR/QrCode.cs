@@ -77,7 +77,7 @@ public static class QrCode
 		catch (Exception ex)
 		{
 			ServiceRef.LogService.LogException(ex);
-			await ServiceRef.UiSerializer.DisplayAlert(ex);
+			await ServiceRef.UiSerializer.DisplayException(ex);
 			return false;
 		}
 	}

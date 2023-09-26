@@ -1,4 +1,5 @@
 ﻿using NeuroAccessMaui.Resources.Languages;
+using System.Globalization;
 using System.Text;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;
@@ -27,7 +28,7 @@ public class ContactInfo
 	private string partition = string.Empty;
 	private string nodeId = string.Empty;
 	private CaseInsensitiveString registryJid = string.Empty;
-	private bool? subcribeTo = null;
+	private bool? subscribeTo = null;
 	private bool? allowSubscriptionFrom = null;
 	private bool? isThing = null;
 	private bool? isSensor = null;
@@ -130,10 +131,10 @@ public class ContactInfo
 	/// <summary>
 	/// Subscribe to this contact
 	/// </summary>
-	public bool? SubcribeTo
+	public bool? SubscribeTo
 	{
-		get => this.subcribeTo;
-		set => this.subcribeTo = value;
+		get => this.subscribeTo;
+		set => this.subscribeTo = value;
 	}
 
 	/// <summary>
@@ -640,7 +641,8 @@ public class ContactInfo
 			}
 			else
 			{
-				s = string.Format(ServiceRef.Localizer[nameof(AppResources.XInY)], s, PartitionId);
+				s = string.Format(CultureInfo.CurrentCulture,
+					ServiceRef.Localizer[nameof(AppResources.XInY)], s, PartitionId);
 			}
 		}
 
@@ -652,11 +654,13 @@ public class ContactInfo
 			}
 			else
 			{
-				s = string.Format(ServiceRef.Localizer[nameof(AppResources.XInY)], s, SourceId);
+				s = string.Format(CultureInfo.CurrentCulture,
+					ServiceRef.Localizer[nameof(AppResources.XInY)], s, SourceId);
 			}
 		}
 
-		return string.Format(ServiceRef.Localizer[nameof(AppResources.XOnY)], s, BareJid);
+		return string.Format(CultureInfo.CurrentCulture,
+			ServiceRef.Localizer[nameof(AppResources.XOnY)], s, BareJid);
 	}
 
 	/// <summary>

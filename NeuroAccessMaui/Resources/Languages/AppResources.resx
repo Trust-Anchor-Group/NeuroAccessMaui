@@ -282,6 +282,15 @@
   <data name="ClientMessageUnexpectedResult" xml:space="preserve">
     <value>Unexpected response returned.</value>
   </data>
+  <data name="RepairRestart" xml:space="preserve">
+    <value>An inconsistency in the internal database has been detected. This can happen if the app is not closed properly. The app will therefore close. The next time you start the app, the database will be repaired.</value>
+  </data>
+  <data name="Incomplete" xml:space="preserve">
+    <value>Incomplete</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>Confirm</value>
+  </data>
   <data name="ErrorTitle" xml:space="preserve">
     <value>An error has occurred</value>
   </data>
@@ -300,14 +309,47 @@
   <data name="Ok" xml:space="preserve">
     <value>OK</value>
   </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="Me" xml:space="preserve">
+    <value>(me)</value>
+  </data>
   <data name="Continue" xml:space="preserve">
     <value>Continue</value>
   </data>
   <data name="Repair" xml:space="preserve">
     <value>Repair</value>
   </data>
+  <data name="Open" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="XInY" xml:space="preserve">
+    <value>{0} in {1}</value>
+  </data>
+  <data name="XOnY" xml:space="preserve">
+    <value>{0} on {1}</value>
+  </data>
   <data name="CantConnectTo" xml:space="preserve">
     <value>Can't connect to {0}</value>
+  </data>
+  <data name="ScannedQrCode" xml:space="preserve">
+    <value>Scanned QR Code</value>
+  </data>
+  <data name="QrCodeNotUnderstood" xml:space="preserve">
+    <value>Code not understood</value>
+  </data>
+  <data name="CodeNotRecognized" xml:space="preserve">
+    <value>Code not recognized.</value>
+  </data>
+  <data name="UnableToOpenLink" xml:space="preserve">
+    <value>Unable to open link:</value>
+  </data>
+  <data name="ThisCodeCannotBeClaimedAtThisTime" xml:space="preserve">
+    <value>This code represents a Tag ID invitation, and cannot be claimed at this time.</value>
   </data>
   <data name="DomainDoesNotFollowEncryptionPolicy" xml:space="preserve">
     <value>{0} does not follow the ubiquitous encryption policy</value>
@@ -389,5 +431,53 @@
   </data>
   <data name="FailedToNavigateToPage" xml:space="preserve">
     <value>Failed to navigate to page {0}  {1}</value>
+  </data>
+  <data name="IdCopiedSuccessfully" xml:space="preserve">
+    <value>A link to the ID was copied to the clipboard.</value>
+  </data>
+  <data name="TagValueCopiedToClipboard" xml:space="preserve">
+    <value>Tag value copied to clipboard</value>
+  </data>
+  <data name="PleaseReviewAndCheckAllCheckboxes" xml:space="preserve">
+    <value>Please review all information above, and check the corresponding check boxes if the information is correct. This must be done before you can approve the information.</value>
+  </data>
+  <data name="YouNeedToCheckCarefullyReviewed" xml:space="preserve">
+    <value>You need to check the box you have carefully reviewed all corresponding information above.</value>
+  </data>
+  <data name="YouNeedToApproveToAssociate" xml:space="preserve">
+    <value>You need to approve to associate your personal information with the identity you review. When third parties review the information in the identity, they will have access to the identity of the reviewers, for transparency.</value>
+  </data>
+  <data name="AreYouSureYouWantToRemoveContact" xml:space="preserve">
+    <value>Are you sure you want to remove this contact from your list of contacts?</value>
+  </data>
+  <data name="AreYouSureYouWantToReportYourLegalIdentityAsCompromized" xml:space="preserve">
+    <value>Are you sure you want to report your legal identity as compromised, stolen or hacked?</value>
+  </data>
+  <data name="AreYouSureYouWantToRevokeYourLegalIdentity" xml:space="preserve">
+    <value>Are you sure you want to revoke your legal identity from the application?</value>
+  </data>
+  <data name="AreYouSureYouWantToTransferYourLegalIdentity" xml:space="preserve">
+    <value>Are you sure you want to transfer your legal identity from the application to another? The identity will be removed from this device once completed. Also make sure no-one else can see your screen during the process.</value>
+  </data>
+  <data name="UnexpectedResponse" xml:space="preserve">
+    <value>An unexpected response was received.</value>
+  </data>
+  <data name="FileUploadServiceNotFound" xml:space="preserve">
+    <value>No file upload service found on broker.</value>
+  </data>
+  <data name="LegalServiceNotFound" xml:space="preserve">
+    <value>No legal service found on broker.</value>
+  </data>
+  <data name="FailedToBindViewModelForPage" xml:space="preserve">
+    <value>Failed to bind viewmodel {0} for page {1}</value>
+  </data>
+  <data name="FailedToRestoreViewModelStateForPage" xml:space="preserve">
+    <value>Failed to restore state for viewmodel {0} for page {1}</value>
+  </data>
+  <data name="FailedToSaveViewModelStateForPage" xml:space="preserve">
+    <value>Failed to save state for viewmodel {0} for page {1}</value>
+  </data>
+  <data name="FailedToUnbindViewModelForPage" xml:space="preserve">
+    <value>Failed to unbind viewmodel {0} for page {1}</value>
   </data>
 </root>

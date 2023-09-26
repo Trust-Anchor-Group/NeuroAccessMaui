@@ -2,6 +2,7 @@
 using Microsoft.Maui.Controls.Internals;
 using NeuroAccessMaui.DeviceSpecific;
 using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Pages;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.AttachmentCache;
@@ -22,8 +23,6 @@ using NeuroAccessMaui.Services.Xmpp;
 using System.Globalization;
 using System.Net.Http.Headers;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.ExceptionServices;
 using System.Text;
 using Waher.Content;
 using Waher.Content.Images;
@@ -39,17 +38,12 @@ using Waher.Persistence;
 using Waher.Persistence.Files;
 using Waher.Persistence.Serialization;
 using Waher.Runtime.Inventory;
-using Waher.Runtime.Profiling;
 using Waher.Runtime.Settings;
 using Waher.Runtime.Text;
 using Waher.Script;
 using Waher.Script.Content;
 using Waher.Script.Graphs;
 using Waher.Security.LoginMonitor;
-//!!! using Xamarin.CommunityToolkit.Helpers;
-//!!! using Xamarin.Essentials;
-//!!! using Xamarin.Forms;
-//!!! using Xamarin.Forms.Internals;
 
 namespace NeuroAccessMaui;
 
@@ -68,7 +62,6 @@ public partial class App : Application, IDisposable
 	private static int startupCounter = 0;
 	private readonly LoginAuditor loginAuditor;
 	private Timer autoSaveTimer;
-	private Profiler startupProfiler;
 	private readonly Task<bool> initCompleted;
 	private readonly SemaphoreSlim startupWorker = new(1, 1);
 	private CancellationTokenSource startupCancellation;
@@ -107,20 +100,22 @@ public partial class App : Application, IDisposable
 		// If the previous instance is null, create the app state from scratch. If not, just copy the state from the previous instance.
 		if (PreviousInstance is null)
 		{
+
+/* Unmerged change from project 'NeuroAccessMaui (net8.0-ios)'
+Before:
 			this.InitLocalizationResource();
+After:
+			InitLocalizationResource();
+*/
+			App.InitLocalizationResource();
 
-			this.startupProfiler = new Profiler("App.ctor", ProfilerThreadType.Sequential);  // Comment out to remove startup profiling.
-			this.startupProfiler?.Start();
-			this.startupProfiler?.NewState("Init");
-
-			AppDomain.CurrentDomain.FirstChanceException += this.CurrentDomain_FirstChanceException;
 			AppDomain.CurrentDomain.UnhandledException += this.CurrentDomain_UnhandledException;
 			TaskScheduler.UnobservedTaskException += this.TaskScheduler_UnobservedTaskException;
 
-			LoginInterval[] LoginIntervals = new[] {
+			LoginInterval[] LoginIntervals = [
 				new LoginInterval(Constants.Pin.MaxPinAttempts, TimeSpan.FromHours(Constants.Pin.FirstBlockInHours)),
 				new LoginInterval(Constants.Pin.MaxPinAttempts, TimeSpan.FromHours(Constants.Pin.SecondBlockInHours)),
-				new LoginInterval(Constants.Pin.MaxPinAttempts, TimeSpan.FromHours(Constants.Pin.ThirdBlockInHours))};
+				new LoginInterval(Constants.Pin.MaxPinAttempts, TimeSpan.FromHours(Constants.Pin.ThirdBlockInHours))];
 
 			this.loginAuditor = new LoginAuditor(Constants.Pin.LogAuditorObjectID, LoginIntervals);
 			this.startupCancellation = new CancellationTokenSource();
@@ -130,7 +125,6 @@ public partial class App : Application, IDisposable
 		{
 			this.loginAuditor = PreviousInstance.loginAuditor;
 			this.autoSaveTimer = PreviousInstance.autoSaveTimer;
-			this.startupProfiler = PreviousInstance.startupProfiler;
 			this.initCompleted = PreviousInstance.initCompleted;
 			this.startupWorker = PreviousInstance.startupWorker;
 			this.startupCancellation = PreviousInstance.startupCancellation;
@@ -139,13 +133,11 @@ public partial class App : Application, IDisposable
 		if (!BackgroundStart)
 		{
 			this.InitializeComponent();
-			Current.UserAppTheme = OSAppTheme.Unspecified;
+			Current.UserAppTheme = AppTheme.Unspecified;
 
 			// Start page
 			try
 			{
-				this.startupProfiler?.NewState("MainPage");
-
 				this.MainPage = ServiceHelper.GetService<Pages.AppShell>();
 			}
 			catch (Exception ex)
@@ -153,8 +145,6 @@ public partial class App : Application, IDisposable
 				this.HandleStartupException(ex);
 			}
 		}
-
-		this.startupProfiler?.MainThread?.Idle();
 	}
 
 	/// <summary>
@@ -178,7 +168,7 @@ public partial class App : Application, IDisposable
 
 			if (Language is null)
 			{
-				List<string> SupportedLanguages = new() { "en", "sv", "es", "fr", "de", "da", "no", "fi", "sr", "pt", "ro", "ru" };
+				List<string> SupportedLanguages = ["en", "sv", "es", "fr", "de", "da", "no", "fi", "sr", "pt", "ro", "ru"];
 				string LanguageName = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
 				string SupportedLanguage = SupportedLanguages.FirstOrDefault(el => el == LanguageName);
 				Language = string.IsNullOrEmpty(SupportedLanguage) ? "en" : LanguageName;
@@ -190,7 +180,7 @@ public partial class App : Application, IDisposable
 		}
 	}
 
-	private void InitLocalizationResource()
+	private static void InitLocalizationResource()
 	{
 		string Language = SelectedLanguage;
 
@@ -203,42 +193,34 @@ public partial class App : Application, IDisposable
 
 	private Task<bool> Init(bool BackgroundStart, Assembly DeviceAssembly)
 	{
-		ProfilerThread Thread = this.startupProfiler?.CreateThread("Init", ProfilerThreadType.Sequential);
-		Thread?.Start();
-
 		TaskCompletionSource<bool> Result = new();
-		Task.Run(async () => await this.InitInParallel(Thread, Result, BackgroundStart, DeviceAssembly));
+		Task.Run(async () => await this.InitInParallel(Result, BackgroundStart, DeviceAssembly));
 		return Result.Task;
 	}
 
-	private async Task InitInParallel(ProfilerThread Thread, TaskCompletionSource<bool> Result, bool BackgroundStart,
+	private async Task InitInParallel(TaskCompletionSource<bool> Result, bool BackgroundStart,
 		Assembly DeviceAssembly)
 	{
 		try
 		{
-			this.InitInstances(Thread, DeviceAssembly);
+			this.InitInstances(DeviceAssembly);
 
-			await this.PerformStartup(false, Thread, BackgroundStart);
+			await this.PerformStartup(false, BackgroundStart);
 
 			Result.TrySetResult(true);
 		}
 		catch (Exception ex)
 		{
 			ex = Waher.Events.Log.UnnestException(ex);
-			Thread?.Exception(ex);
 			this.HandleStartupException(ex);
 
 			servicesSetup.TrySetResult(false);
 			Result.TrySetResult(false);
 		}
-
-		Thread?.Stop();
 	}
 
-	private void InitInstances(ProfilerThread Thread, Assembly DeviceAssembly)
+	private void InitInstances(Assembly DeviceAssembly)
 	{
-		Thread?.NewState("Types");
-
 		Assembly appAssembly = this.GetType().Assembly;
 
 		if (!Types.IsInitialized)
@@ -261,15 +243,13 @@ public partial class App : Application, IDisposable
 				typeof(Graph).Assembly,                     // Indexes graph script functions
 				typeof(GraphEncoder).Assembly,              // Indexes content script functions
 				typeof(XmppServerlessMessaging).Assembly,   // Indexes End-to-End encryption mechanisms
-				typeof(HttpxClient).Assembly);              // Support for HTTP over XMPP (httpx) URI Schme.
+				typeof(HttpxClient).Assembly);              // Support for HTTP over XMPP (HTTPX) URI Scheme.
 		}
 
 		EndpointSecurity.SetCiphers(new Type[]
 		{
 			typeof(Edwards448Endpoint)
 		}, false);
-
-		Thread?.NewState("SDK");
 
 		// Create Services
 
@@ -281,13 +261,12 @@ public partial class App : Application, IDisposable
 		Types.InstantiateDefault<IStorageService>(false);
 		Types.InstantiateDefault<ISettingsService>(false);
 		Types.InstantiateDefault<INavigationService>(false);
-		Types.InstantiateDefault<IXmppService>(false, appAssembly, this.startupProfiler);
+		Types.InstantiateDefault<IXmppService>(false);
 		Types.InstantiateDefault<IAttachmentCacheService>(false);
 		Types.InstantiateDefault<IContractOrchestratorService>(false);
 		Types.InstantiateDefault<INfcService>(false);
 
 		defaultInstantiatedSource.TrySetResult(true);
-		defaultInstantiated = true;
 
 		// Set resolver
 
@@ -322,7 +301,6 @@ public partial class App : Application, IDisposable
 	private void HandleStartupException(Exception ex)
 	{
 		ex = Waher.Events.Log.UnnestException(ex);
-		this.startupProfiler?.Exception(ex);
 		ServiceRef.LogService.SaveExceptionDump("StartPage", ex.ToString());
 		this.DisplayBootstrapErrorPage(ex.Message, ex.StackTrace);
 		return;
@@ -367,8 +345,6 @@ public partial class App : Application, IDisposable
 		{
 			throw new Exception("Initialization did not complete in time.");
 		}
-
-		this.StartupCompleted("StartupProfile.uml", false);
 	}
 
 	///<inheritdoc/>
@@ -386,8 +362,6 @@ public partial class App : Application, IDisposable
 			throw new Exception("Initialization did not complete in time.");
 		}
 
-		this.StartupCompleted("StartupProfile.uml", false);
-
 		if (!await App.VerifyPin())
 		{
 			await App.Stop();
@@ -402,7 +376,7 @@ public partial class App : Application, IDisposable
 		appInstance = this;
 		this.startupCancellation = new CancellationTokenSource();
 
-		await this.PerformStartup(true, null, BackgroundStart);
+		await this.PerformStartup(true, BackgroundStart);
 	}
 
 	///<inheritdoc/>
@@ -416,7 +390,7 @@ public partial class App : Application, IDisposable
 		}
 	}
 
-	private async Task PerformStartup(bool isResuming, ProfilerThread Thread, bool BackgroundStart)
+	private async Task PerformStartup(bool isResuming, bool BackgroundStart)
 	{
 		await this.startupWorker.WaitAsync();
 
@@ -434,23 +408,15 @@ public partial class App : Application, IDisposable
 
 			if (!BackgroundStart)
 			{
-				Thread?.NewState("Report");
-
 				await this.SendErrorReportFromPreviousRun();
-
-				Thread?.NewState("Startup");
 
 				Token.ThrowIfCancellationRequested();
 			}
 
-			Thread?.NewState("DB");
-			ProfilerThread SubThread = Thread?.CreateSubThread("Database", ProfilerThreadType.Sequential);
-
-			await ServiceRef.StorageService.Init(SubThread, Token);
+			await ServiceRef.StorageService.Init(Token);
 
 			if (!App.configLoaded)
 			{
-				Thread?.NewState("Config");
 				await this.CreateOrRestoreConfiguration();
 
 				App.configLoaded = true;
@@ -458,27 +424,19 @@ public partial class App : Application, IDisposable
 
 			Token.ThrowIfCancellationRequested();
 
-			Thread?.NewState("Network");
 			await ServiceRef.NetworkService.Load(isResuming, Token);
 
 			Token.ThrowIfCancellationRequested();
 
-			Thread?.NewState("XMPP");
 			await ServiceRef.XmppService.Load(isResuming, Token);
 
 			Token.ThrowIfCancellationRequested();
 
-			Thread?.NewState("Timer");
 			TimeSpan initialAutoSaveDelay = Constants.Intervals.AutoSave.Multiply(4);
 			this.autoSaveTimer = new Timer(async _ => await this.AutoSave(), null, initialAutoSaveDelay, Constants.Intervals.AutoSave);
 
-			Thread?.NewState("Navigation");
 			await ServiceRef.NavigationService.Load(isResuming, Token);
-
-			Thread?.NewState("Cache");
 			await ServiceRef.AttachmentCacheService.Load(isResuming, Token);
-
-			Thread?.NewState("Orchestrators");
 			await ServiceRef.ContractOrchestratorService.Load(isResuming, Token);
 		}
 		catch (OperationCanceledException)
@@ -488,13 +446,11 @@ public partial class App : Application, IDisposable
 		catch (Exception ex)
 		{
 			ex = Waher.Events.Log.UnnestException(ex);
-			Thread?.Exception(ex);
 			ServiceRef.LogService.SaveExceptionDump(ex.Message, ex.StackTrace);
 			this.DisplayBootstrapErrorPage(ex.Message, ex.StackTrace);
 		}
 		finally
 		{
-			Thread?.Stop();
 			this.startupWorker.Release();
 		}
 	}
@@ -504,7 +460,7 @@ public partial class App : Application, IDisposable
 	/// </summary>
 	public async Task OnBackgroundSleep()
 	{
-		await this.Shutdown(false, true);
+		await this.Shutdown(false);
 	}
 
 	///<inheritdoc/>
@@ -518,16 +474,23 @@ public partial class App : Application, IDisposable
 			await vm.Shutdown();
 		}
 
-		await this.Shutdown(false, false);
+		await this.Shutdown(false);
 
+
+/* Unmerged change from project 'NeuroAccessMaui (net8.0-ios)'
+Before:
 		this.SetStartInactivityTime();
+After:
+		SetStartInactivityTime();
+*/
+		App.SetStartInactivityTime();
 	}
 
 	internal static async Task Stop()
 	{
 		if (appInstance is not null)
 		{
-			await appInstance.Shutdown(false, false);
+			await appInstance.Shutdown(false);
 			appInstance = null;
 		}
 
@@ -543,7 +506,7 @@ public partial class App : Application, IDisposable
 		}
 	}
 
-	private async Task Shutdown(bool inPanic, bool BackgroundStart)
+	private async Task Shutdown(bool inPanic)
 	{
 		// if the PerformStartup is not finished, cancel it first
 		this.startupCancellation.Cancel();
@@ -771,7 +734,7 @@ public partial class App : Application, IDisposable
 
 		if (shutdown)
 		{
-			await this.Shutdown(false, false);
+			await this.Shutdown(false);
 		}
 
 #if DEBUG
@@ -797,11 +760,6 @@ public partial class App : Application, IDisposable
 #endif
 	}
 
-	private void CurrentDomain_FirstChanceException(object Sender, FirstChanceExceptionEventArgs e)
-	{
-		this.startupProfiler?.Exception(e.Exception);
-	}
-
 	private void DisplayBootstrapErrorPage(string Title, string StackTrace)
 	{
 		this.Dispatcher.Dispatch(() =>
@@ -824,10 +782,10 @@ public partial class App : Application, IDisposable
 			string StackTrace = ServiceRef.LogService.LoadExceptionDump();
 			if (!string.IsNullOrWhiteSpace(StackTrace))
 			{
-				List<KeyValuePair<string, object>> Tags = new()
-				{
+				List<KeyValuePair<string, object>> Tags =
+				[
 					new KeyValuePair<string, object>(Constants.XmppProperties.Jid, ServiceRef.XmppService.BareJid)
-				};
+				];
 
 				KeyValuePair<string, object>[] Tags2 = ServiceRef.TagProfile.LegalIdentity.GetTags();
 
@@ -875,52 +833,6 @@ public partial class App : Application, IDisposable
 		catch (Exception ex)
 		{
 			Waher.Events.Log.Critical(ex);
-		}
-	}
-
-	private void StartupCompleted(string ProfileFileName, bool SendProfilingAsAlert)
-	{
-		AppDomain.CurrentDomain.FirstChanceException -= this.CurrentDomain_FirstChanceException;
-
-		if (this.startupProfiler is not null)
-		{
-			this.startupProfiler.Stop();
-
-			string uml = this.startupProfiler.ExportPlantUml(TimeUnit.MilliSeconds);
-
-			try
-			{
-				string AppDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-
-				if (!Directory.Exists(AppDataFolder))
-				{
-					Directory.CreateDirectory(AppDataFolder);
-				}
-
-				ProfileFileName = Path.Combine(AppDataFolder, ProfileFileName);
-				File.WriteAllText(ProfileFileName, uml);
-			}
-			catch (Exception)
-			{
-				// Ignore, if not able to save file.
-			}
-
-			if (SendProfilingAsAlert)
-			{
-				Task.Run(async () =>
-				{
-					try
-					{
-						await SendAlert("```uml\r\n" + uml + "```", "text/markdown");
-					}
-					catch (Exception ex)
-					{
-						Waher.Events.Log.Critical(ex);
-					}
-				});
-			}
-
-			this.startupProfiler = null;
 		}
 	}
 
@@ -1077,7 +989,7 @@ public partial class App : Application, IDisposable
 	}
 
 	/// <summary>
-	/// Verify if the user is blocked and show an allert
+	/// Verify if the user is blocked and show an alert
 	/// </summary>
 	public static async Task CheckUserBlocking()
 	{
@@ -1186,7 +1098,7 @@ public partial class App : Application, IDisposable
 	/// <summary>
 	/// Set start time of inactivity
 	/// </summary>
-	private void SetStartInactivityTime()
+	private static void SetStartInactivityTime()
 	{
 		savedStartTime = DateTime.Now;
 	}

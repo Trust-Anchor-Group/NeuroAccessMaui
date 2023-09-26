@@ -1,6 +1,8 @@
 ﻿using System.Net;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
+using NeuroAccessMaui.Exceptions;
+using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using Waher.Networking.DNS;
 using Waher.Networking.DNS.ResourceRecords;
@@ -246,12 +248,12 @@ internal class NetworkService : LoadableService, INetworkService
 	{
 		if (!string.IsNullOrWhiteSpace(memberName))
 		{
-			return new[]
-			{
+			return
+			[
 				new KeyValuePair<string, object>("Caller", memberName)
-			};
+			];
 		}
 
-		return new KeyValuePair<string, object>[0];
+		return [];
 	}
 }

@@ -1,4 +1,6 @@
-﻿using NeuroAccessMaui.Resources.Languages;
+﻿using System.Diagnostics.CodeAnalysis;
+using NeuroAccessMaui.Pages;
+using NeuroAccessMaui.Resources.Languages;
 using Waher.Events;
 using Waher.Runtime.Inventory;
 
@@ -70,14 +72,14 @@ internal sealed partial class NavigationService : LoadableService, INavigationSe
 
 
 	/// <inheritdoc/>
-	public Task GoToAsync(string Route, BackMethod BackMethod = BackMethod.Inherited, string UniqueId = null)
+	public Task GoToAsync(string Route, BackMethod BackMethod = BackMethod.Inherited, string? UniqueId = null)
 	{
-		// No args navigation will create a defaul navigation arguments
+		// No args navigation will create a default navigation arguments
 		return this.GoToAsync<NavigationArgs>(Route, null, BackMethod, UniqueId);
 	}
 
 	/// <inheritdoc/>
-	public async Task GoToAsync<TArgs>(string Route, TArgs Args, BackMethod BackMethod = BackMethod.Inherited, string UniqueId = null) where TArgs : NavigationArgs, new()
+	public async Task GoToAsync<TArgs>(string Route, TArgs? Args, BackMethod BackMethod = BackMethod.Inherited, string? UniqueId = null) where TArgs : NavigationArgs, new()
 	{
 		if (!this.CanUseNavigationService)
 		{
@@ -92,7 +94,7 @@ internal sealed partial class NavigationService : LoadableService, INavigationSe
 			// Create a default navigation arguments if Args are null
 			NavigationArgs NavigationArgs = Args ?? new();
 
-			NavigationArgs.SetBackArguments(BackMethod, ParentArgs, UniqueId);
+			NavigationArgs.SetBackArguments(ParentArgs, BackMethod, UniqueId);
 			this.PushArgs(Route, NavigationArgs);
 
 			if (!string.IsNullOrEmpty(UniqueId))
@@ -157,9 +159,9 @@ internal sealed partial class NavigationService : LoadableService, INavigationSe
 	}
 
 	///<inheritdoc/>
-	public bool TryGetArgs<TArgs>(out TArgs Args, string UniqueId = null) where TArgs : NavigationArgs
+	public bool TryGetArgs<TArgs>([NotNullWhen(true)] out TArgs? Args, string? UniqueId = null) where TArgs : NavigationArgs, new()
 	{
-		NavigationArgs NavigationArgs = null;
+		NavigationArgs? NavigationArgs = null;
 
 		if (this.CanUseNavigationService && (this.CurrentPage is Page Page))
 		{
@@ -168,13 +170,20 @@ internal sealed partial class NavigationService : LoadableService, INavigationSe
 			NavigationArgs ??= this.TryGetArgs(Route, UniqueId);
 
 			if ((NavigationArgs is null) && (UniqueId is null) &&
-				(Page is ContentBasePage BasePage) && (BasePage.UniqueId is not null))
+				(Page is BaseContentPage BasePage) && (BasePage.UniqueId is not null))
 			{
 				return this.TryGetArgs(out Args, BasePage.UniqueId);
 			}
 		}
 
-		Args = NavigationArgs as TArgs;
+		if (NavigationArgs is TArgs TArgsArgs)
+		{
+			Args = TArgsArgs;
+		}
+		else
+		{
+			Args = null;
+		}
 
 		return (Args is not null);
 	}
@@ -238,7 +247,7 @@ internal sealed partial class NavigationService : LoadableService, INavigationSe
 		}
 	}
 
-	private bool TryGetPageName(string Route, out string PageName)
+	private static bool TryGetPageName(string Route, [NotNullWhen(true)] out string? PageName)
 	{
 		PageName = null;
 
@@ -253,11 +262,12 @@ internal sealed partial class NavigationService : LoadableService, INavigationSe
 
 	private void PushArgs(string Route, NavigationArgs Args)
 	{
-		if (this.TryGetPageName(Route, out string PageName))
+		if (TryGetPageName(Route, out string? PageName))
 		{
 			if (Args is not null)
 			{
-				string UniqueId = Args.GetUniqueId();
+				string? UniqueId = Args.GetUniqueId();
+
 				if (!string.IsNullOrEmpty(UniqueId))
 				{
 					PageName += UniqueId;
@@ -272,15 +282,15 @@ internal sealed partial class NavigationService : LoadableService, INavigationSe
 		}
 	}
 
-	private NavigationArgs TryGetArgs(string Route, string UniqueId)
+	private NavigationArgs? TryGetArgs(string Route, string? UniqueId)
 	{
 		if (!string.IsNullOrEmpty(UniqueId))
 		{
 			Route += UniqueId;
 		}
 
-		if (this.TryGetPageName(Route, out string PageName) &&
-			this.navigationArgsMap.TryGetValue(PageName, out NavigationArgs Args))
+		if (TryGetPageName(Route, out string? PageName) &&
+			this.navigationArgsMap.TryGetValue(PageName, out NavigationArgs? Args))
 		{
 			return Args;
 		}

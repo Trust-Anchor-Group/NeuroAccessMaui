@@ -9,20 +9,20 @@ public abstract class BaseContentView : ContentView
 		return ServiceHelper.GetService<T>();
 	}
 
-	private Type? viewModelType;
-
 	/// <summary>
-	/// Convenience property for accessing the <see cref="BindableObject.BindingContext"/> property as a view model.
+	/// Convenience for accessing the <see cref="BindableObject.BindingContext"/> property as a view model.
 	/// </summary>
-	public BaseViewModel ViewModel => (BaseViewModel)this.BindingContext;
+	public T ViewModel<T>() where T : BaseViewModel
+	{
+		if (this.BindingContext is T ViewModel)
+		{
+			return ViewModel;
+		}
+
+		throw new ArgumentException("Wrong view model type: " + nameof(T));
+	}
 
 	public BaseContentView()
 	{
-	}
-
-	protected void InitializeObject(BaseViewModel ViewModel)
-	{
-		this.BindingContext = ViewModel;
-		this.viewModelType = ViewModel.GetType();
 	}
 }

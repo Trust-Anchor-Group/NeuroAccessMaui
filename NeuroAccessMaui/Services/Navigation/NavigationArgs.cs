@@ -7,7 +7,7 @@ public enum BackMethod
 {
 	/// <summary>
 	/// Takes in consideration the parent's navigation arguments
-	/// By fedault it will be considered a <see cref="Pop"/>
+	/// By default it will be considered a <see cref="Pop"/>
 	/// </summary>
 	Inherited = 0,
 
@@ -39,14 +39,14 @@ public enum BackMethod
 /// </summary>
 public class NavigationArgs
 {
-	private NavigationArgs parentArgs = null;
+	private NavigationArgs? parentArgs = null;
 	private BackMethod backMethod = BackMethod.Inherited;
-	private string uniqueId = null;
+	private string? uniqueId = null;
 
 	/// <summary>
 	/// Sets the reference to the main parent's <see cref="NavigationArgs"/>.
 	/// </summary>
-	public void SetBackArguments(BackMethod BackMethod, NavigationArgs ParentArgs, string UniqueId)
+	public void SetBackArguments(NavigationArgs ParentArgs, BackMethod BackMethod = BackMethod.Inherited, string? UniqueId = null)
 	{
 		this.backMethod = BackMethod;
 		this.parentArgs = ParentArgs;
@@ -63,7 +63,7 @@ public class NavigationArgs
 		if (BackMethod == BackMethod.Inherited)
 		{
 			string BackRoute = "..";
-			NavigationArgs ParentArgs = this.parentArgs;
+			NavigationArgs? ParentArgs = this.parentArgs;
 
 			while ((ParentArgs is not null) && (ParentArgs.backMethod == BackMethod.Inherited))
 			{
@@ -124,7 +124,7 @@ public class NavigationArgs
 	}
 
 	/// <summary>
-	/// An untique view identificator used to search the args of similar view types.
+	/// An unique view identifier used to search the args of similar view types.
 	/// </summary>
-	public string GetUniqueId() => this.uniqueId;
+	public string? GetUniqueId() => this.uniqueId;
 }

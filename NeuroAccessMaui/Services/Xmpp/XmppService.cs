@@ -1,6 +1,8 @@
 ﻿using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Pages.Registration;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Tag;
+using System.Globalization;
 using System.Reflection;
 using System.Text;
 using System.Xml;
@@ -17,7 +19,6 @@ using Waher.Networking.XMPP.HTTPX;
 using Waher.Networking.XMPP.ServiceDiscovery;
 using Waher.Persistence;
 using Waher.Runtime.Inventory;
-using Waher.Runtime.Profiling;
 using Waher.Runtime.Settings;
 using Waher.Runtime.Temporary;
 
@@ -32,9 +33,6 @@ namespace NeuroAccessMaui.Services.Xmpp;
 [Singleton]
 internal sealed class XmppService : LoadableService, IXmppService
 {
-	private readonly Assembly appAssembly;
-	private Profiler startupProfiler;
-	private ProfilerThread xmppThread;
 	private XmppClient xmppClient;
 	private ContractsClient contractsClient;
 	private HttpFileUploadClient fileUploadClient;
@@ -47,7 +45,7 @@ internal sealed class XmppService : LoadableService, IXmppService
 	private string passwordHashMethod;
 	private bool xmppConnected = false;
 	private DateTime xmppLastStateChange = DateTime.MinValue;
-	private readonly InMemorySniffer sniffer;
+	private readonly InMemorySniffer sniffer = new(250);
 	private bool isCreatingClient;
 	private XmppEventSink xmppEventSink;
 	private string token = null;
@@ -55,23 +53,16 @@ internal sealed class XmppService : LoadableService, IXmppService
 
 	#region Creation / Destruction
 
-	public XmppService(Assembly AppAssembly, Profiler StartupProfiler)
+	public XmppService()
 	{
-		this.appAssembly = AppAssembly;
-		this.sniffer = new(250);
-		this.startupProfiler = StartupProfiler;
 	}
 
-	private async Task CreateXmppClient(bool CanCreateKeys, ProfilerThread Thread)
+	private async Task CreateXmppClient(bool CanCreateKeys)
 	{
 		if (this.isCreatingClient)
 		{
 			return;
 		}
-
-		this.xmppThread = this.startupProfiler?.CreateThread("XMPP", ProfilerThreadType.StateMachine);
-		this.xmppThread?.Start();
-		this.xmppThread?.Idle();
 
 		try
 		{
@@ -81,7 +72,6 @@ internal sealed class XmppService : LoadableService, IXmppService
 			{
 				if (this.xmppClient is not null)
 				{
-					Thread?.NewState("Destroy");
 					await this.DestroyXmppClient();
 				}
 
@@ -102,7 +92,6 @@ internal sealed class XmppService : LoadableService, IXmppService
 				}
 				else
 				{
-					Thread?.NewState("DNS");
 					(HostName, PortNumber, IsIpAddress) = await ServiceRef.NetworkService.LookupXmppHostnameAndPort(this.domainName);
 
 					if (HostName == this.domainName && PortNumber == XmppCredentials.DefaultPort)
@@ -114,15 +103,17 @@ internal sealed class XmppService : LoadableService, IXmppService
 				this.xmppLastStateChange = DateTime.Now;
 				this.xmppConnected = false;
 
-				Thread?.NewState("Client");
+				Assembly AppAssembly = App.Current!.GetType().Assembly;
 
 				if (string.IsNullOrEmpty(this.passwordHashMethod))
 				{
-					this.xmppClient = new XmppClient(HostName, PortNumber, this.accountName, this.passwordHash, Constants.LanguageCodes.Default, this.appAssembly, this.sniffer);
+					this.xmppClient = new XmppClient(HostName, PortNumber, this.accountName, this.passwordHash,
+						Constants.LanguageCodes.Default, AppAssembly, this.sniffer);
 				}
 				else
 				{
-					this.xmppClient = new XmppClient(HostName, PortNumber, this.accountName, this.passwordHash, this.passwordHashMethod, Constants.LanguageCodes.Default, this.appAssembly, this.sniffer);
+					this.xmppClient = new XmppClient(HostName, PortNumber, this.accountName, this.passwordHash, this.passwordHashMethod,
+						Constants.LanguageCodes.Default, AppAssembly, this.sniffer);
 				}
 
 				this.xmppClient.RequestRosterOnStartup = false;
@@ -144,7 +135,6 @@ internal sealed class XmppService : LoadableService, IXmppService
 				this.xmppClient.RegisterMessageHandler("Delivered", ContractsClient.NamespaceOnboarding, this.TransferIdDelivered, true);
 				this.xmppClient.RegisterMessageHandler("clientMessage", ContractsClient.NamespaceLegalIdentities, this.ClientMessage, true);
 
-				Thread?.NewState("Sink");
 				this.xmppEventSink = new XmppEventSink("XMPP Event Sink", this.xmppClient, ServiceRef.TagProfile.LogJid, false);
 
 				// Add extensions before connecting
@@ -153,11 +143,9 @@ internal sealed class XmppService : LoadableService, IXmppService
 
 				if (!string.IsNullOrWhiteSpace(ServiceRef.TagProfile.LegalJid))
 				{
-					Thread?.NewState("Legal");
 					this.contractsClient = new ContractsClient(this.xmppClient, ServiceRef.TagProfile.LegalJid);
 					this.RegisterContractsEventHandlers();
 
-					Thread?.NewState("Keys");
 					if (!await this.contractsClient.LoadKeys(false))
 					{
 						if (!CanCreateKeys)
@@ -168,22 +156,18 @@ internal sealed class XmppService : LoadableService, IXmppService
 							throw new Exception("Regeneration of keys not permitted at this time.");
 						}
 
-						Thread?.NewState("Gen");
 						await this.contractsClient.GenerateNewKeys();
 					}
 				}
 
 				if (!string.IsNullOrWhiteSpace(ServiceRef.TagProfile.HttpFileUploadJid) && ServiceRef.TagProfile.HttpFileUploadMaxSize.HasValue)
 				{
-					Thread?.NewState("Upload");
 					this.fileUploadClient = new HttpFileUploadClient(this.xmppClient, ServiceRef.TagProfile.HttpFileUploadJid, ServiceRef.TagProfile.HttpFileUploadMaxSize);
 				}
 
-				Thread?.NewState("HTTPX");
 				this.httpxClient = new HttpxClient(this.xmppClient, 8192);
 				Types.SetModuleParameter("XMPP", this.xmppClient);      // Makes the XMPP Client the default XMPP client, when resolving HTTP over XMPP requests.
 
-				Thread?.NewState("Connect");
 				this.IsLoggedOut = false;
 				this.xmppClient.Connect(IsIpAddress ? string.Empty : this.domainName);
 				this.RecreateReconnectTimer();
@@ -191,7 +175,6 @@ internal sealed class XmppService : LoadableService, IXmppService
 				// Await connected state during registration or user initiated log in, but not otherwise.
 				if (!ServiceRef.TagProfile.IsCompleteOrWaitingForValidation())
 				{
-					Thread?.NewState("Wait");
 					if (!await this.WaitForConnectedState(Constants.Timeouts.XmppConnect))
 					{
 						ServiceRef.LogService.LogWarning("Connection to XMPP server failed.",
@@ -333,57 +316,33 @@ internal sealed class XmppService : LoadableService, IXmppService
 
 	public override async Task Load(bool isResuming, CancellationToken cancellationToken)
 	{
-		ProfilerThread Thread = this.startupProfiler?.CreateThread("XMPP", ProfilerThreadType.Sequential);
-		Thread?.Start();
-		try
+		if (this.BeginLoad(cancellationToken))
 		{
-			if (this.BeginLoad(cancellationToken))
+			try
 			{
-				Thread?.NewState("Load");
-				try
+				ServiceRef.TagProfile.StepChanged += this.TagProfile_StepChanged;
+
+				if (this.ShouldCreateClient())
 				{
-					ServiceRef.TagProfile.StepChanged += this.TagProfile_StepChanged;
-
-					if (this.ShouldCreateClient())
-					{
-						Thread?.NewState("XMPP");
-
-						ProfilerThread ClientsThread = Thread?.CreateSubThread("Clients", ProfilerThreadType.Sequential);
-						ClientsThread?.Start();
-						try
-						{
-							await this.CreateXmppClient(ServiceRef.TagProfile.Step <= RegistrationStep.RegisterIdentity, ClientsThread);
-						}
-						finally
-						{
-							ClientsThread?.Stop();
-						}
-					}
-
-					if ((this.xmppClient is not null) &&
-						this.xmppClient.State == XmppState.Connected &&
-						ServiceRef.TagProfile.IsCompleteOrWaitingForValidation())
-					{
-						Thread?.NewState("Presence");
-						// Don't await this one, just fire and forget, to improve startup time.
-						_ = this.xmppClient.SetPresenceAsync(Availability.Online);
-					}
-
-					Thread?.NewState("End");
-					this.EndLoad(true);
+					await this.CreateXmppClient(ServiceRef.TagProfile.Step <= RegistrationStep.RegisterIdentity);
 				}
-				catch (Exception ex)
+
+				if ((this.xmppClient is not null) &&
+					this.xmppClient.State == XmppState.Connected &&
+					ServiceRef.TagProfile.IsCompleteOrWaitingForValidation())
 				{
-					ex = Log.UnnestException(ex);
-					Thread?.Exception(ex);
-					ServiceRef.LogService.LogException(ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
-					this.EndLoad(false);
+					// Don't await this one, just fire and forget, to improve startup time.
+					_ = this.xmppClient.SetPresenceAsync(Availability.Online);
 				}
+
+				this.EndLoad(true);
 			}
-		}
-		finally
-		{
-			Thread?.Stop();
+			catch (Exception ex)
+			{
+				ex = Log.UnnestException(ex);
+				ServiceRef.LogService.LogException(ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
+				this.EndLoad(false);
+			}
 		}
 	}
 
@@ -416,11 +375,10 @@ internal sealed class XmppService : LoadableService, IXmppService
 					{
 						try
 						{
-							await Task.WhenAny(new Task[]
-							{
+							await Task.WhenAny(
 								this.xmppClient.SetPresenceAsync(Availability.Offline),
 								Task.Delay(1000)    // Wait at most 1000 ms.
-							});
+							);
 						}
 						catch (Exception)
 						{
@@ -449,7 +407,7 @@ internal sealed class XmppService : LoadableService, IXmppService
 
 		if (this.ShouldCreateClient())
 		{
-			await this.CreateXmppClient(ServiceRef.TagProfile.Step <= RegistrationStep.RegisterIdentity, null);
+			await this.CreateXmppClient(ServiceRef.TagProfile.Step <= RegistrationStep.RegisterIdentity);
 		}
 		else if (ServiceRef.TagProfile.Step <= RegistrationStep.Account)
 		{
@@ -480,8 +438,6 @@ internal sealed class XmppService : LoadableService, IXmppService
 	private async Task XmppClient_StateChanged(object Sender, XmppState NewState)
 	{
 		this.xmppLastStateChange = DateTime.Now;
-
-		this.xmppThread?.NewState(NewState.ToString());
 
 		switch (NewState)
 		{
@@ -524,10 +480,6 @@ internal sealed class XmppService : LoadableService, IXmppService
 				}
 
 				ServiceRef.LogService.AddListener(this.xmppEventSink);
-
-				this.xmppThread?.Stop();
-				this.xmppThread = null;
-				this.startupProfiler = null;
 				break;
 
 			case XmppState.Offline:
@@ -541,10 +493,6 @@ internal sealed class XmppService : LoadableService, IXmppService
 						this.xmppClient.Reconnect();
 					}
 				}
-
-				this.xmppThread?.Stop();
-				this.xmppThread = null;
-				this.startupProfiler = null;
 				break;
 		}
 
@@ -757,7 +705,8 @@ internal sealed class XmppService : LoadableService, IXmppService
 		{
 			ServiceRef.LogService.LogException(ex, new KeyValuePair<string, object>(nameof(ConnectOperation), operation.ToString()));
 			succeeded = false;
-			errorMessage = string.Format(ServiceRef.Localizer[nameof(AppResources.UnableToConnectTo)], domain);
+			errorMessage = string.Format(CultureInfo.CurrentCulture,
+				ServiceRef.Localizer[nameof(AppResources.UnableToConnectTo)], domain);
 		}
 		finally
 		{
@@ -767,23 +716,27 @@ internal sealed class XmppService : LoadableService, IXmppService
 
 		if (!succeeded && string.IsNullOrEmpty(errorMessage))
 		{
-			System.Diagnostics.Debug.WriteLine("Sniffer: ", this.sniffer.SnifferToText());
+			System.Diagnostics.Debug.WriteLine("Sniffer: ", await this.sniffer.SnifferToText());
 
 			if (!streamNegotiation || timeout)
 			{
-				errorMessage = string.Format(ServiceRef.Localizer[nameof(AppResources.CantConnectTo)], domain);
+				errorMessage = string.Format(CultureInfo.CurrentCulture,
+					ServiceRef.Localizer[nameof(AppResources.CantConnectTo)], domain);
 			}
 			else if (!streamOpened)
 			{
-				errorMessage = string.Format(ServiceRef.Localizer[nameof(AppResources.DomainIsNotAValidOperator)], domain);
+				errorMessage = string.Format(CultureInfo.CurrentCulture,
+					ServiceRef.Localizer[nameof(AppResources.DomainIsNotAValidOperator)], domain);
 			}
 			else if (!startingEncryption)
 			{
-				errorMessage = string.Format(ServiceRef.Localizer[nameof(AppResources.DomainDoesNotFollowEncryptionPolicy)], domain);
+				errorMessage = string.Format(CultureInfo.CurrentCulture,
+					ServiceRef.Localizer[nameof(AppResources.DomainDoesNotFollowEncryptionPolicy)], domain);
 			}
 			else if (!authenticating)
 			{
-				errorMessage = string.Format(ServiceRef.Localizer[nameof(AppResources.UnableToAuthenticateWith)], domain);
+				errorMessage = string.Format(CultureInfo.CurrentCulture,
+					ServiceRef.Localizer[nameof(AppResources.UnableToAuthenticateWith)], domain);
 			}
 			else if (!registering)
 			{
@@ -793,20 +746,24 @@ internal sealed class XmppService : LoadableService, IXmppService
 				}
 				else
 				{
-					errorMessage = string.Format(ServiceRef.Localizer[nameof(AppResources.OperatorDoesNotSupportRegisteringNewAccounts)], domain);
+					errorMessage = string.Format(CultureInfo.CurrentCulture,
+						ServiceRef.Localizer[nameof(AppResources.OperatorDoesNotSupportRegisteringNewAccounts)], domain);
 				}
 			}
 			else if (operation == ConnectOperation.ConnectAndCreateAccount)
 			{
-				errorMessage = string.Format(ServiceRef.Localizer[nameof(AppResources.AccountNameAlreadyTaken)], this.accountName);
+				errorMessage = string.Format(CultureInfo.CurrentCulture,
+					ServiceRef.Localizer[nameof(AppResources.AccountNameAlreadyTaken)], this.accountName);
 			}
 			else if (operation == ConnectOperation.ConnectToAccount)
 			{
-				errorMessage = string.Format(ServiceRef.Localizer[nameof(AppResources.InvalidUsernameOrPassword)], this.accountName);
+				errorMessage = string.Format(CultureInfo.CurrentCulture,
+					ServiceRef.Localizer[nameof(AppResources.InvalidUsernameOrPassword)], this.accountName);
 			}
 			else
 			{
-				errorMessage = string.Format(ServiceRef.Localizer[nameof(AppResources.UnableToConnectTo)], domain);
+				errorMessage = string.Format(CultureInfo.CurrentCulture,
+					ServiceRef.Localizer[nameof(AppResources.UnableToConnectTo)], domain);
 			}
 		}
 
@@ -907,7 +864,7 @@ internal sealed class XmppService : LoadableService, IXmppService
 			return false;
 		}
 
-		List<Task> Tasks = new();
+		List<Task> Tasks = [];
 		object SynchObject = new();
 
 		foreach (Item Item in response.Items)
@@ -915,7 +872,7 @@ internal sealed class XmppService : LoadableService, IXmppService
 			Tasks.Add(this.CheckComponent(Client, Item, SynchObject));
 		}
 
-		await Task.WhenAll(Tasks.ToArray());
+		await Task.WhenAll([.. Tasks]);
 
 		if (string.IsNullOrWhiteSpace(ServiceRef.TagProfile.LegalJid))
 		{
@@ -1063,7 +1020,8 @@ internal sealed class XmppService : LoadableService, IXmppService
 		{
 			try
 			{
-				string LocalizedMessage = ServiceRef.Localizer[nameof(AppResources.ClientMessage) + Code];
+				//!!! can it throw an exception?
+				string LocalizedMessage = ServiceRef.Localizer["ClientMessage" + Code];
 
 				if (!string.IsNullOrEmpty(LocalizedMessage))
 				{
@@ -1137,7 +1095,7 @@ internal sealed class XmppService : LoadableService, IXmppService
 
 	/// <summary>
 	/// Performs an HTTP POST to a protected API on the server, over the current XMPP connection,
-	/// authenticating the client using the credentials alreaedy provided over XMPP.
+	/// authenticating the client using the credentials already provided over XMPP.
 	/// </summary>
 	/// <param name="LocalResource">Local Resource on the server to POST to.</param>
 	/// <param name="Data">Data to post. This will be encoded using encoders in the type inventory.</param>
@@ -1152,7 +1110,7 @@ internal sealed class XmppService : LoadableService, IXmppService
 		{
 			Url.Append("httpx://");
 		}
-		else if (!string.IsNullOrEmpty(this.token))     // Token needs to be retrieved reegularly when connected, if protectedd APIs are to be used when disconnected or during connection.
+		else if (!string.IsNullOrEmpty(this.token))     // Token needs to be retrieved regularly when connected, if protected APIs are to be used when disconnected or during connection.
 		{
 			Url.Append("https://");
 
@@ -1160,7 +1118,7 @@ internal sealed class XmppService : LoadableService, IXmppService
 
 			if (Headers is null)
 			{
-				Headers = new KeyValuePair<string, string>[] { Authorization };
+				Headers = [Authorization];
 			}
 			else
 			{
@@ -1172,7 +1130,7 @@ internal sealed class XmppService : LoadableService, IXmppService
 		}
 		else
 		{
-			throw new IOException("No connection and no token available for call to protecte API.");
+			throw new IOException("No connection and no token available for call to protect API.");
 		}
 
 		Url.Append(ServiceRef.TagProfile.Domain);

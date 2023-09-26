@@ -1,5 +1,7 @@
 ﻿using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Pages;
 using NeuroAccessMaui.Services.AttachmentCache;
+using SkiaSharp;
 using System.Collections.ObjectModel;
 using System.Security.Cryptography;
 using Waher.Content;
@@ -17,30 +19,18 @@ namespace NeuroAccessMaui.Services.UI.Photos;
 /// digital identity. When the photos are loaded, they are added to an <see cref="ObservableCollection{T}"/> on the main thread.
 /// This class also handles errors when trying to load photos, and internally it uses a <see cref="IAttachmentCacheService"/>.
 /// </summary>
-public class PhotosLoader : BaseViewModel
+public class PhotosLoader(ObservableCollection<Photo> Photos) : BaseViewModel
 {
-	private readonly ObservableCollection<Photo> photos;
-	private readonly List<string> attachmentIds;
+	private readonly ObservableCollection<Photo> photos = Photos;
+	private readonly List<string> attachmentIds = [];
 	private DateTime loadPhotosTimestamp;
 
 	/// <summary>
 	/// Creates a new instance of the <see cref="PhotosLoader"/> class.
 	/// Use this constructor for when you want to load a a <b>single photo</b>.
 	/// </summary>
-	public PhotosLoader()
-		: this(new ObservableCollection<Photo>())
+	public PhotosLoader() : this(new ObservableCollection<Photo>())
 	{
-	}
-
-	/// <summary>
-	/// Creates a new instance of the <see cref="PhotosLoader"/> class.
-	/// Use this constructor for when you want to load a <b>list of photos</b>.
-	/// </summary>
-	/// <param name="Photos">The collection the photos should be added to when downloaded.</param>
-	public PhotosLoader(ObservableCollection<Photo> Photos)
-	{
-		this.photos = Photos;
-		this.attachmentIds = new List<string>();
 	}
 
 	/// <summary>
@@ -151,7 +141,7 @@ public class PhotosLoader : BaseViewModel
 				{
 					TaskCompletionSource<bool> PhotoAddedTaskSource = new();
 
-					ServiceRef.UiSerializer.BeginInvokeOnMainThread(() =>
+					MainThread.BeginInvokeOnMainThread(() =>
 					{
 						this.photos.Add(Photo);
 						PhotoAddedTaskSource.TrySetResult(true);
@@ -228,7 +218,7 @@ public class PhotosLoader : BaseViewModel
 	/// <returns>Rotation angle (degrees).</returns>
 	public static int GetImageRotation(byte[] JpegImage)
 	{
-		//!!! This rotation in xamarin is limited to Android
+		//!!! This rotation in Xamarin is limited to Android
 		if (Device.RuntimePlatform == Device.iOS)
 		{
 			return 0;
@@ -388,23 +378,18 @@ public class PhotosLoader : BaseViewModel
 	/// <returns>Temporary file name.</returns>
 	public static async Task<string> GetTemporaryFile(byte[] BinaryImage, string FileExtension)
 	{
-		string FileName;
-
-		using (SHA256 H = SHA256.Create())
-		{
-			byte[] Digest = H.ComputeHash(BinaryImage);
-			FileName = Path.Combine(Path.GetTempPath(), "tmp" + Base64Url.Encode(Digest) + "." + FileExtension);
-		}
+		byte[] Digest = SHA256.HashData(BinaryImage);
+		string FileName = Path.Combine(Path.GetTempPath(), "tmp" + Base64Url.Encode(Digest) + "." + FileExtension);
 
 		if (!File.Exists(FileName))
 		{
-			await Resources.WriteAllBytesAsync(FileName, BinaryImage);
+			await Waher.Content.Resources.WriteAllBytesAsync(FileName, BinaryImage);
 
 			lock (synchObject)
 			{
 				if (temporaryFiles is null)
 				{
-					temporaryFiles = new Dictionary<string, bool>();
+					temporaryFiles = [];
 					Log.Terminating += CurrentDomain_ProcessExit;
 				}
 

@@ -1,4 +1,5 @@
-﻿using Waher.Runtime.Inventory;
+﻿using System.Diagnostics.CodeAnalysis;
+using Waher.Runtime.Inventory;
 
 namespace NeuroAccessMaui.Services.Navigation;
 
@@ -16,16 +17,16 @@ public interface INavigationService : ILoadableService
 	/// <param name="Route">The route whose matching page to navigate to.</param>
 	/// <param name="BackMethod">How to handle the back button.</param>
 	/// <param name="UniqueId">Views unique ID.</param>
-	Task GoToAsync(string Route, BackMethod BackMethod = BackMethod.Inherited, string UniqueId = null);
+	Task GoToAsync(string Route, BackMethod BackMethod = BackMethod.Inherited, string? UniqueId = null);
 
 	/// <summary>
 	/// Navigates the AppShell to the specified route, with page arguments to match.
 	/// </summary>
-	/// <param name="Route">The route whose matching page to navigate to.</param>
 	/// <param name="Args">The specific args to pass to the page.</param>
+	/// <param name="Route">The route whose matching page to navigate to.</param>
 	/// <param name="BackMethod">How to handle the back button.</param>
 	/// <param name="UniqueId">Views unique ID.</param>
-	Task GoToAsync<TArgs>(string Route, TArgs Args, BackMethod BackMethod = BackMethod.Inherited, string UniqueId = null) where TArgs : NavigationArgs, new();
+	Task GoToAsync<TArgs>(string Route, TArgs? Args, BackMethod BackMethod = BackMethod.Inherited, string? UniqueId = null) where TArgs : NavigationArgs, new();
 
 	/// <summary>
 	/// Returns to the previous page/route.
@@ -38,7 +39,7 @@ public interface INavigationService : ILoadableService
 	/// </summary>
 	/// <param name="Args">View's navigation arguments.</param>
 	/// <param name="UniqueId">View's unique ID.</param>
-	bool TryGetArgs<TArgs>(out TArgs Args, string UniqueId = null) where TArgs : NavigationArgs;
+	bool TryGetArgs<TArgs>([NotNullWhen(true)] out TArgs? Args, string? UniqueId = null) where TArgs : NavigationArgs, new();
 
 	/// <summary>
 	/// Current page

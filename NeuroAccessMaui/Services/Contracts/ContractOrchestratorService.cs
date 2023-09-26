@@ -1,7 +1,5 @@
 ﻿using NeuroAccessMaui.Extensions;
-using NeuroAccessMaui.Pages.Contracts.PetitionSignature;
-using NeuroAccessMaui.Pages.Identity.PetitionIdentity;
-using NeuroAccessMaui.Pages.Identity.ViewIdentity;
+using NeuroAccessMaui.Pages.Identity;
 using NeuroAccessMaui.Resources.Languages;
 using System.Reflection;
 using System.Text;
@@ -66,8 +64,11 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 
 			if (Identity is not null)
 			{
-				await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Identity,
-					e.RequestorFullJid, e.SignatoryIdentityId, e.PetitionId, e.Purpose, e.ContentToSign));
+				ViewIdentityNavigationArgs Args = new(
+					Identity, e.RequestorFullJid, e.SignatoryIdentityId,
+					e.PetitionId, e.Purpose, e.ContentToSign);
+
+				await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), Args);
 			}
 		}
 		catch (Exception ex)

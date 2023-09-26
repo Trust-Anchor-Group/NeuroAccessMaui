@@ -1,7 +1,6 @@
 ﻿using Waher.Persistence;
 using Waher.Persistence.Serialization;
 using Waher.Runtime.Inventory;
-using Waher.Runtime.Profiling;
 
 namespace NeuroAccessMaui.Services.Storage;
 
@@ -23,7 +22,7 @@ public interface IStorageService
 	/// </summary>
 	/// <param name="Thread"></param>
 	/// <param name="cancellationToken">Will stop the service load if the token is set.</param>
-	Task Init(ProfilerThread Thread, CancellationToken? cancellationToken);
+	Task Init(CancellationToken? cancellationToken);
 
 	/// <summary>
 	/// Waits for initialization of the storage service to be completed.

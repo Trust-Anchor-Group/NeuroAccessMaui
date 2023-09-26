@@ -10,6 +10,6 @@ public partial class DefinePinView
 	public DefinePinView(DefinePinViewModel ViewModel)
 	{
 		this.InitializeComponent();
-		this.InitializeObject(ViewModel);
+		this.BindingContext = ViewModel;
 	}
 }

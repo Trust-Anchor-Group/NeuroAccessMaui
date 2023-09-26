@@ -1,4 +1,5 @@
-﻿using NeuroAccessMaui.Resources.Languages;
+﻿using NeuroAccessMaui.DeviceSpecific;
+using NeuroAccessMaui.Resources.Languages;
 using Waher.Events;
 using Waher.Events.XMPP;
 using Waher.Persistence.Exceptions;
@@ -70,7 +71,7 @@ internal sealed class LogService : ILogService
 			ServiceRef.Localizer[nameof(AppResources.RepairRestart)],
 			ServiceRef.Localizer[nameof(AppResources.Ok)]);
 
-		ICloseApplication CloseApplication = DependencyService.Get<ICloseApplication>();
+		ICloseApplication CloseApplication = ServiceHelper.GetService<ICloseApplication>()!;
 		await CloseApplication.Close();
 	}
 

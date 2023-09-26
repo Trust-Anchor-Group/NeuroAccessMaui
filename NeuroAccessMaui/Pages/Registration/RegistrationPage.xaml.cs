@@ -13,7 +13,6 @@ public partial class RegistrationPage
 		StateContainer.SetCurrentState(this.GridWithAnimation, "Loading");
 	}
 
-
 	[RelayCommand]
 	async Task ChangeStateWithFadeAnimation()
 	{
@@ -22,6 +21,7 @@ public partial class RegistrationPage
 
 		await StateContainer.ChangeStateWithAnimation(this.GridWithAnimation, currentState, CancellationToken.None);
 
-		this.ViewModel.CurrentState = currentState;
+		RegistrationViewModel ViewModel = this.ViewModel<RegistrationViewModel>();
+		ViewModel.CurrentState = currentState;
 	}
 }

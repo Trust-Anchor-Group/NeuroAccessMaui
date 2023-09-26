@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Markup;
 using Microsoft.Extensions.Logging;
+using NeuroAccessMaui.DeviceSpecific;
 using NeuroAccessMaui.Pages;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Localization;
@@ -24,6 +25,11 @@ public static class MauiProgram
 			});
 
 		Builder.UseLocalizationManager<AppResources>();
+
+		// Apps services
+		Builder.Services.AddSingleton<ICloseApplication>();
+
+		// Apps pages & models
 		Builder.RegisterPagesManager();
 
 		//Builder.Services.AddLogging();
