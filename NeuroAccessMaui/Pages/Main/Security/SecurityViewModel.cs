@@ -51,8 +51,7 @@ public partial class SecurityViewModel : XmppViewModel
 
 	#region Commands
 
-	[RelayCommand]
-	private async Task ChangePin()
+	internal static async Task ChangePinAsync()
 	{
 		try
 		{
@@ -102,6 +101,12 @@ public partial class SecurityViewModel : XmppViewModel
 			ServiceRef.LogService.LogException(ex);
 			await ServiceRef.UiSerializer.DisplayException(ex);
 		}
+	}
+
+	[RelayCommand]
+	private Task ChangePin()
+	{
+		return ChangePinAsync();
 	}
 
 	[RelayCommand]

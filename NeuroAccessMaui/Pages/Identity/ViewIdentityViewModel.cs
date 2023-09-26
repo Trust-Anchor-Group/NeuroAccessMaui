@@ -6,6 +6,7 @@ using System.Xml;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Pages.Main.Security;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Data.Countries;
@@ -1241,14 +1242,14 @@ public partial class ViewIdentityViewModel : QrXmppViewModel
 
 	//!!! needs is connected?
 	[RelayCommand(CanExecute = nameof(CanExecuteCommands))]
-	private async Task ChangePin()
+	private Task ChangePin()
 	{
-		if (!this.IsPersonal)
+		if (this.IsPersonal)
 		{
-			return;
+			return SecurityViewModel.ChangePinAsync();
 		}
 
-		await SecurityViewModel.ChangePin(this);
+		return Task.CompletedTask;
 	}
 
 	#region ILinkableView
