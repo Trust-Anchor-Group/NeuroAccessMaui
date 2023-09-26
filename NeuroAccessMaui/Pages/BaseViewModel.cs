@@ -91,7 +91,7 @@ public abstract partial class BaseViewModel : ObservableObject, ILifeCycleView
 	public async Task Shutdown()
 	{
 		await this.SaveState();
-		await this.Disappearing();
+		await this.DoDisappearing();
 	}
 
 	/// <summary>
@@ -169,7 +169,7 @@ public abstract partial class BaseViewModel : ObservableObject, ILifeCycleView
 	/// Method called when view is initialized for the first time. Use this method to implement registration
 	/// of event handlers, processing navigation arguments, etc.
 	/// </summary>
-	public Task Initialize()
+	public Task DoInitialize()
 	{
 		if (!this.IsInitialized)
 		{
@@ -194,11 +194,11 @@ public abstract partial class BaseViewModel : ObservableObject, ILifeCycleView
 	/// Method called when the view is disposed, and will not be used more. Use this method to unregister
 	/// event handlers, etc.
 	/// </summary>
-	public async Task Dispose()
+	public async Task DoDispose()
 	{
 		if (this.IsAppearing)
 		{
-			await this.Disappearing();
+			await this.DoDisappearing();
 		}
 
 		if (this.IsInitialized)
@@ -221,11 +221,11 @@ public abstract partial class BaseViewModel : ObservableObject, ILifeCycleView
 	/// <summary>
 	/// Method called when view is appearing on the screen.
 	/// </summary>
-	public async Task Appearing()
+	public async Task DoAppearing()
 	{
 		if (!this.IsInitialized)
 		{
-			await this.Initialize();
+			await this.DoInitialize();
 		}
 
 		if (!this.IsAppearing)
@@ -236,7 +236,7 @@ public abstract partial class BaseViewModel : ObservableObject, ILifeCycleView
 
 			foreach (BaseViewModel ChildViewModel in this.childViewModels)
 			{
-				await ChildViewModel.Appearing();
+				await ChildViewModel.DoAppearing();
 			}
 
 			this.IsAppearing = true;
@@ -254,13 +254,13 @@ public abstract partial class BaseViewModel : ObservableObject, ILifeCycleView
 	/// <summary>
 	/// Method called when view is disappearing from the screen.
 	/// </summary>
-	public async Task Disappearing()
+	public async Task DoDisappearing()
 	{
 		if (this.IsAppearing)
 		{
 			foreach (BaseViewModel ChildViewModel in this.childViewModels)
 			{
-				await ChildViewModel.Disappearing();
+				await ChildViewModel.DoDisappearing();
 			}
 
 			await this.OnDisappearing();

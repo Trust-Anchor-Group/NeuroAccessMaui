@@ -10,7 +10,7 @@ public abstract partial class QrXmppViewModel : XmppViewModel, ILinkableView
 	/// <summary>
 	/// Creates an instance of a <see cref="XmppViewModel"/>.
 	/// </summary>
-	protected QrXmppViewModel() : base()
+	protected QrXmppViewModel()
 	{
 	}
 

@@ -19,7 +19,7 @@ public static class PersonalNumberSchemes
 		{
 			XmlDocument doc = new();
 
-			using (MemoryStream ms = new(Resources.LoadResource(
+			using (MemoryStream ms = new(Waher.Content.Resources.LoadResource(
 				typeof(PersonalNumberSchemes).Namespace + "." + typeof(PersonalNumberSchemes).Name + ".xml")))
 			{
 				doc.Load(ms);

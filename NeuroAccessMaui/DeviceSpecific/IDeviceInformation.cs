@@ -8,5 +8,5 @@ public interface IDeviceInformation
 	/// <summary>
 	/// Gets the ID of the device.
 	/// </summary>
-	string GetDeviceId();
+	string? GetDeviceId();
 }

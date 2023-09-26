@@ -1,5 +1,6 @@
 ﻿using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Pages.Identity;
+using NeuroAccessMaui.Pages.Petitions;
 using NeuroAccessMaui.Resources.Languages;
 using System.Reflection;
 using System.Text;
@@ -169,8 +170,8 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 			{
 				await ServiceRef.NetworkService.TryRequest(() =>
 				{
-					return ServiceRef.XmppService.SendPetitionSignatureResponse(e.SignatoryIdentityId, e.ContentToSign,
-						new byte[0], e.PetitionId, e.RequestorFullJid, false);
+					return ServiceRef.XmppService.SendPetitionSignatureResponse(
+						e.SignatoryIdentityId, e.ContentToSign, [], e.PetitionId, e.RequestorFullJid, false);
 				});
 			}
 			else

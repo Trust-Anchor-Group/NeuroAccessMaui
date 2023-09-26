@@ -1,29 +1,20 @@
-﻿using IdApp.Services.Navigation;
+﻿using NeuroAccessMaui.Services.Navigation;
 
-namespace IdApp.Pages.Identity.TransferIdentity
+namespace NeuroAccessMaui.Pages.Identity;
+
+/// <summary>
+/// Holds navigation parameters specific to views displaying an identity transfer code.
+/// </summary>
+/// <param name="Uri">Transfer URI</param>
+public class TransferIdentityNavigationArgs(string? Uri) : NavigationArgs
 {
-    /// <summary>
-    /// Holds navigation parameters specific to views displaying an identity transfer code.
-    /// </summary>
-    public class TransferIdentityNavigationArgs : NavigationArgs
-    {
-        /// <summary>
-        /// Creates a new instance of the <see cref="TransferIdentityNavigationArgs"/> class.
-        /// </summary>
-        public TransferIdentityNavigationArgs() { }
+	/// <summary>
+	/// Creates a new instance of the <see cref="TransferIdentityNavigationArgs"/> class.
+	/// </summary>
+	public TransferIdentityNavigationArgs() : this(null) { }
 
-        /// <summary>
-        /// Creates a new instance of the <see cref="TransferIdentityNavigationArgs"/> class.
-        /// </summary>
-        /// <param name="Uri">Transfer URI</param>
-        public TransferIdentityNavigationArgs(string Uri)
-        {
-            this.Uri = Uri;
-        }
-
-        /// <summary>
-        /// Transfer URI
-        /// </summary>
-        public string Uri { get; }
-    }
+	/// <summary>
+	/// Transfer URI
+	/// </summary>
+	public string? Uri { get; } = Uri;
 }

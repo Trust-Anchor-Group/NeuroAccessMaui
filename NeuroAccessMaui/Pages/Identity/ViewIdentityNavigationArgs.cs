@@ -19,9 +19,7 @@ public class ViewIdentityNavigationArgs(LegalIdentity? Identity,
 	/// <summary>
 	/// Creates a default instance.
 	/// </summary>
-	public ViewIdentityNavigationArgs() : this(null)
-	{
-	}
+	public ViewIdentityNavigationArgs() : this(null) { }
 
 	/// <summary>
 	/// The identity to display.

@@ -66,7 +66,7 @@ public abstract class BaseContentPage : ContentPage
 		{
 			try
 			{
-				await ViewModel.Appearing();
+				await ViewModel.DoAppearing();
 			}
 			catch (Exception e)
 			{
@@ -152,7 +152,7 @@ public abstract class BaseContentPage : ContentPage
 
 		try
 		{
-			await ViewModel.Disappearing();
+			await ViewModel.DoDisappearing();
 		}
 		catch (Exception e)
 		{
@@ -232,14 +232,14 @@ public abstract class BaseContentPage : ContentPage
 			{
 				if (ViewModel is ILifeCycleView LifeCycleView)
 				{
-					await LifeCycleView.Dispose();
+					await LifeCycleView.DoDispose();
 				}
 			}
 			else
 			{
 				if (ViewModel is ILifeCycleView LifeCycleView)
 				{
-					await LifeCycleView.Initialize();
+					await LifeCycleView.DoInitialize();
 				}
 			}
 		}

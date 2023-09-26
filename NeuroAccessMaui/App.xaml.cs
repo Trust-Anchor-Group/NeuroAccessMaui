@@ -1,8 +1,8 @@
-﻿using IdApp.Nfc;
-using Microsoft.Maui.Controls.Internals;
+﻿using Microsoft.Maui.Controls.Internals;
 using NeuroAccessMaui.DeviceSpecific;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Pages;
+using NeuroAccessMaui.Pages.Main;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.AttachmentCache;
@@ -19,7 +19,6 @@ using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.QR;
 using NeuroAccessMaui.Services.Xmpp;
-//!!! using Rg.Plugins.Popup.Services;
 using System.Globalization;
 using System.Net.Http.Headers;
 using System.Reflection;
@@ -138,7 +137,7 @@ After:
 			// Start page
 			try
 			{
-				this.MainPage = ServiceHelper.GetService<Pages.AppShell>();
+				this.MainPage = ServiceHelper.GetService<AppShell>();
 			}
 			catch (Exception ex)
 			{
@@ -494,11 +493,11 @@ After:
 			appInstance = null;
 		}
 
-		ICloseApplication closeApp = DependencyService.Get<ICloseApplication>();
+		ICloseApplication? CloseApplication = ServiceHelper.GetService<ICloseApplication>();
 
-		if (closeApp is not null)
+		if (CloseApplication is not null)
 		{
-			await closeApp.Close();
+			await CloseApplication.Close();
 		}
 		else
 		{

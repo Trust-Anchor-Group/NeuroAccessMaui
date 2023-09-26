@@ -9,21 +9,21 @@ public interface ILifeCycleView
 	/// Method called when view is initialized for the first time. Use this method to implement registration
 	/// of event handlers, processing navigation arguments, etc.
 	/// </summary>
-	Task Initialize();
+	Task DoInitialize();
 
 	/// <summary>
 	/// Method called when the view is disposed, and will not be used more. Use this method to unregister
 	/// event handlers, etc.
 	/// </summary>
-	Task Dispose();
+	Task DoDispose();
 
 	/// <summary>
 	/// Method called when view is appearing on the screen.
 	/// </summary>
-	Task Appearing();
+	Task DoAppearing();
 
 	/// <summary>
 	/// Method called when view is disappearing from the screen.
 	/// </summary>
-	Task Disappearing();
+	Task DoDisappearing();
 }

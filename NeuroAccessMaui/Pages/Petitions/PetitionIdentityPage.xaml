@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<base:BaseContentPage x:Name="ThisPage" x:Class="NeuroAccessMaui.Pages.Identity.TransferIdentityPage" x:DataType="viewmodel:TransferIdentityViewModel"
+<base:BaseContentPage x:Name="ThisPage" x:Class="NeuroAccessMaui.Pages.Petitions.PetitionIdentityPage" x:DataType="viewmodel:PetitionIdentityViewModel"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
 	xmlns:base="clr-namespace:NeuroAccessMaui.Pages"
 	xmlns:controls="clr-namespace:NeuroAccessMaui.Controls"
 	xmlns:converters="clr-namespace:NeuroAccessMaui.Converters"
-	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.Pages.Identity">
+	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.Pages.Petitions">
 
 	<Grid />
 </base:BaseContentPage>

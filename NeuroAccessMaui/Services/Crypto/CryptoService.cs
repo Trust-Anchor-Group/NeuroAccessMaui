@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using NeuroAccessMaui.DeviceSpecific;
 using Waher.Runtime.Inventory;
 using Waher.Security;
 
@@ -25,11 +26,19 @@ internal sealed class CryptoService : ICryptoService
 	/// </summary>
 	public CryptoService()
 	{
-		IDeviceInformation deviceInfo = DependencyService.Get<IDeviceInformation>();
-
 		this.basePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-		this.deviceId = deviceInfo?.GetDeviceId() + "_";
 		this.rnd = RandomNumberGenerator.Create();
+
+		IDeviceInformation? DeviceInfo = ServiceHelper.GetService<IDeviceInformation>();
+
+		if (DeviceInfo is not null)
+		{
+			this.deviceId = DeviceInfo.GetDeviceId() + "_";
+		}
+		else
+		{
+			this.deviceId = "UNKNOWN_";
+		}
 	}
 
 	/// <summary>

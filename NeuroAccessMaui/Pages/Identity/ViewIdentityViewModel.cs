@@ -2,7 +2,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Security.Cryptography;
 using System.Text;
-using System.Windows.Input;
 using System.Xml;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -35,7 +34,6 @@ public partial class ViewIdentityViewModel : QrXmppViewModel
 	/// Creates an instance of the <see cref="ViewIdentityViewModel"/> class.
 	/// </summary>
 	public ViewIdentityViewModel()
-		: base()
 	{
 		this.photosLoader = new PhotosLoader(this.Photos);
 	}
@@ -45,15 +43,15 @@ public partial class ViewIdentityViewModel : QrXmppViewModel
 	{
 		await base.OnInitialize();
 
-		if (ServiceRef.NavigationService.TryGetArgs(out ViewIdentityNavigationArgs args))
+		if (ServiceRef.NavigationService.TryGetArgs(out ViewIdentityNavigationArgs? Args))
 		{
-			this.LegalIdentity = args.Identity ?? ServiceRef.TagProfile.LegalIdentity;
-			this.requestorIdentity = args.RequestorIdentity;
-			this.requestorFullJid = args.RequestorFullJid;
-			this.signatoryIdentityId = args.SignatoryIdentityId;
-			this.petitionId = args.PetitionId;
-			this.purpose = args.Purpose;
-			this.contentToSign = args.ContentToSign;
+			this.LegalIdentity = Args.Identity ?? ServiceRef.TagProfile.LegalIdentity;
+			this.requestorIdentity = Args.RequestorIdentity;
+			this.requestorFullJid = Args.RequestorFullJid;
+			this.signatoryIdentityId = Args.SignatoryIdentityId;
+			this.petitionId = Args.PetitionId;
+			this.purpose = Args.Purpose;
+			this.contentToSign = Args.ContentToSign;
 		}
 
 		if (this.LegalIdentity is null)

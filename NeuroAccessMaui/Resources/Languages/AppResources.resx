@@ -138,6 +138,12 @@
   <data name="TagNotEngraved" xml:space="preserve">
     <value>Unable to engrave tag with link to {0}.</value>
   </data>
+  <data name="PinChanged" xml:space="preserve">
+    <value>PIN has been successfully changed.</value>
+  </data>
+  <data name="UnableToChangePassword" xml:space="preserve">
+    <value>Unable to change network password.</value>
+  </data>
   <data name="PinIsInvalid" xml:space="preserve">
     <value>PIN is invalid. You have {0} remaining attempts.</value>
   </data>

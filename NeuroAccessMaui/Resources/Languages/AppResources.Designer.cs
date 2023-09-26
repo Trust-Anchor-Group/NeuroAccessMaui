@@ -619,6 +619,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to PIN has been successfully changed..
+        /// </summary>
+        internal static string PinChanged {
+            get {
+                return ResourceManager.GetString("PinChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A PIN must not contain any word from the identity address lines..
         /// </summary>
         internal static string PinContainsAddress {
@@ -903,6 +912,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string UnableToAuthenticateWith {
             get {
                 return ResourceManager.GetString("UnableToAuthenticateWith", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to change network password..
+        /// </summary>
+        internal static string UnableToChangePassword {
+            get {
+                return ResourceManager.GetString("UnableToChangePassword", resourceCulture);
             }
         }
         

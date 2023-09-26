@@ -17,7 +17,7 @@ public partial class ViewIdentityPage
 	/// <inheritdoc/>
 	protected override Task OnDisappearingAsync()
 	{
-		this.PhotoViewer.HidePhotos();
+		//!!! this.PhotoViewer.HidePhotos();
 		return base.OnDisappearingAsync();
 	}
 
@@ -25,7 +25,7 @@ public partial class ViewIdentityPage
 	{
 		ViewIdentityViewModel ViewModel = this.ViewModel<ViewIdentityViewModel>();
 
-		Attachment[] Attachments = ViewModel.LegalIdentity?.Attachments;
-		this.PhotoViewer.ShowPhotos(Attachments);
+		//!!! Attachment[] Attachments = ViewModel.LegalIdentity?.Attachments;
+		//!!! this.PhotoViewer.ShowPhotos(Attachments);
 	}
 }

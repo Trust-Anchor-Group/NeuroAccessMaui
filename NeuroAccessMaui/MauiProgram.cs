@@ -28,6 +28,7 @@ public static class MauiProgram
 
 		// Apps services
 		Builder.Services.AddSingleton<ICloseApplication>();
+		Builder.Services.AddSingleton<IDeviceInformation>();
 
 		// Apps pages & models
 		Builder.RegisterPagesManager();

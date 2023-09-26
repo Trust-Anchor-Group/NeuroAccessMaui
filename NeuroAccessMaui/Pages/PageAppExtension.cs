@@ -1,5 +1,8 @@
 ﻿using CommunityToolkit.Maui;
 using NeuroAccessMaui.Pages.Identity;
+using NeuroAccessMaui.Pages.Main;
+using NeuroAccessMaui.Pages.Main.Security;
+using NeuroAccessMaui.Pages.Petitions;
 using NeuroAccessMaui.Pages.Registration;
 using NeuroAccessMaui.Pages.Registration.Views;
 
@@ -9,8 +12,10 @@ public static class PageAppExtension
 {
 	public static MauiAppBuilder RegisterPagesManager(this MauiAppBuilder Builder)
 	{
+		// Main pages
 		Builder.Services.AddTransient<AppShell>();
 		Builder.Services.AddTransient<MainPage, MainViewModel>();
+		Builder.Services.AddTransient<SecurityPage, SecurityViewModel>();
 
 		// Registration pages & views
 		Builder.Services.AddTransient<RegistrationPage, RegistrationViewModel>();
@@ -23,7 +28,11 @@ public static class PageAppExtension
 
 		// Identity pages & views
 		Builder.Services.AddTransient<ViewIdentityPage, ViewIdentityViewModel>();
+		Builder.Services.AddTransient<TransferIdentityPage, TransferIdentityViewModel>();
 
+		// Petitions
+		Builder.Services.AddTransient<PetitionIdentityPage, PetitionIdentityViewModel>();
+		Builder.Services.AddTransient<PetitionSignaturePage, PetitionSignatureViewModel>();
 
 		return Builder;
 	}
