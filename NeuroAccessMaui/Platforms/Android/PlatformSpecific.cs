@@ -1,4 +1,5 @@
-﻿using Android.Views;
+﻿using Android.OS;
+using Android.Views;
 using Waher.Events;
 
 namespace NeuroAccessMaui.Services;
@@ -9,15 +10,8 @@ public class PlatformSpecific : IPlatformSpecific
 	{
 	}
 
-	private static Android.Views.Window? mainWindow;
-	private static bool screenProtected = true;     // App started with screen protected.
+	private static bool screenProtected = true; // App started with screen protected.
 	private static Timer? protectionTimer = null;
-
-	internal static void SetMainWindow(Android.Views.Window? MainWindow, bool ScreenProtected)
-	{
-		mainWindow = MainWindow;
-		screenProtected = ScreenProtected;
-	}
 
 	/// <inheritdoc/>
 	public bool CanProhibitScreenCapture => true;
@@ -34,18 +28,9 @@ public class PlatformSpecific : IPlatformSpecific
 				protectionTimer?.Dispose();
 				protectionTimer = null;
 
-				if (mainWindow is not null && screenProtected != value)
+				if (screenProtected != value)
 				{
-					if (value)
-					{
-						mainWindow.AddFlags(WindowManagerFlags.Secure);
-						protectionTimer = new Timer(this.ProtectionTimerElapsed, null, 1000 * 60 * 60, Timeout.Infinite);
-					}
-					else
-					{
-						mainWindow.ClearFlags(WindowManagerFlags.Secure);
-					}
-
+					this.SetScreenSecurityProtection(value);
 					screenProtected = value;
 				}
 			}
@@ -56,7 +41,41 @@ public class PlatformSpecific : IPlatformSpecific
 		}
 	}
 
-	private void ProtectionTimerElapsed(object P)
+	private void SetScreenSecurityProtection(bool enabled)
+	{
+		MainThread.BeginInvokeOnMainThread(() =>
+		{
+			try
+			{
+				Android.App.Activity? activity = Platform.CurrentActivity;
+
+				if (activity is not null)
+				{
+					if (Build.VERSION.SdkInt >= BuildVersionCodes.Tiramisu)
+					{
+#pragma warning disable CA1416
+						activity.SetRecentsScreenshotEnabled(!enabled);
+#pragma warning restore CA1416
+					}
+
+					if (enabled)
+					{
+						activity.Window?.SetFlags(WindowManagerFlags.Secure, WindowManagerFlags.Secure);
+						protectionTimer = new Timer(this.ProtectionTimerElapsed, null, 1000 * 60 * 60, Timeout.Infinite);
+					}
+					else
+					{
+						activity.Window?.ClearFlags(WindowManagerFlags.Secure);
+					}
+				}
+			}
+			catch (Exception)
+			{
+			}
+		});
+	}
+
+	private void ProtectionTimerElapsed(object? P)
 	{
 		MainThread.BeginInvokeOnMainThread(() => this.ProhibitScreenCapture = false);
 	}
