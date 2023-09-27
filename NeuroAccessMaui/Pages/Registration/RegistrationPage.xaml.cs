@@ -8,7 +8,7 @@ public partial class RegistrationPage
 	public RegistrationPage(RegistrationViewModel ViewModel)
 	{
 		this.InitializeComponent();
-		this.BindingContext = ViewModel;
+		this.ContentPageModel = ViewModel;
 
 		StateContainer.SetCurrentState(this.GridWithAnimation, "Loading");
 	}

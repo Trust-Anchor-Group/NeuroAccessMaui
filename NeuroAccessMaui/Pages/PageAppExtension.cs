@@ -5,6 +5,8 @@ using NeuroAccessMaui.Pages.Main.Security;
 using NeuroAccessMaui.Pages.Petitions;
 using NeuroAccessMaui.Pages.Registration;
 using NeuroAccessMaui.Pages.Registration.Views;
+using NeuroAccessMaui.Popups;
+using NeuroAccessMaui.Popups.Pin;
 
 namespace NeuroAccessMaui.Pages;
 
@@ -33,6 +35,13 @@ public static class PageAppExtension
 		// Petitions
 		Builder.Services.AddTransient<PetitionIdentityPage, PetitionIdentityViewModel>();
 		Builder.Services.AddTransient<PetitionSignaturePage, PetitionSignatureViewModel>();
+
+		// Popups
+
+		Builder.Services.AddTransient<ChangePinPage, ChangePinViewModel>();
+		Builder.Services.AddTransient<ViewImagePage, ViewImageViewModel>();
+		Builder.Services.AddTransient<CheckPinPage>();
+		Builder.Services.AddTransient<VerifyCodePage>();
 
 		return Builder;
 	}

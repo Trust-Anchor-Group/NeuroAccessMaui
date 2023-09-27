@@ -14,7 +14,16 @@ public abstract class BaseContentPage : ContentPage
 	private bool CanUseNavigationService => App.IsOnboarded;
 
 	/// <summary>
-	/// Convenience for accessing the <see cref="BindableObject.BindingContext"/> property as a view model.
+	/// Convenience property for accessing the <see cref="BindableObject.BindingContext"/> property as a view model.
+	/// </summary>
+	protected BaseViewModel ContentPageModel
+	{
+		set => this.BindingContext = value;
+		get => this.ViewModel<BaseViewModel>();
+	}
+
+	/// <summary>
+	/// Convenience function for accessing the <see cref="BindableObject.BindingContext"/> property as a view model.
 	/// </summary>
 	public T ViewModel<T>() where T : BaseViewModel
 	{

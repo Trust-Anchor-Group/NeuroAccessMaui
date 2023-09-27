@@ -11,7 +11,7 @@ public partial class ViewIdentityPage
 	public ViewIdentityPage(ViewIdentityViewModel ViewModel)
 	{
 		this.InitializeComponent();
-		this.BindingContext = ViewModel;
+		this.ContentPageModel = ViewModel;
 	}
 
 	/// <inheritdoc/>

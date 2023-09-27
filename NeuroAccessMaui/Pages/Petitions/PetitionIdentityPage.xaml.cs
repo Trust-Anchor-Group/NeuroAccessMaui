@@ -11,7 +11,7 @@ public partial class PetitionIdentityPage
 	public PetitionIdentityPage(PetitionIdentityViewModel ViewModel)
 	{
 		this.InitializeComponent();
-		this.BindingContext = ViewModel;
+		this.ContentPageModel = ViewModel;
 	}
 
 	/// <inheritdoc/>

@@ -11,6 +11,6 @@ public partial class SecurityPage
 	public SecurityPage(SecurityViewModel ViewModel)
 	{
 		this.InitializeComponent();
-		this.BindingContext = ViewModel;
+		this.ContentPageModel = ViewModel;
 	}
 }

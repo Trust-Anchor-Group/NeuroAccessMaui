@@ -11,6 +11,6 @@ public partial class TransferIdentityPage
 	public TransferIdentityPage(TransferIdentityViewModel ViewModel)
 	{
 		this.InitializeComponent();
-		this.BindingContext = ViewModel;
+		this.ContentPageModel = ViewModel;
 	}
 }

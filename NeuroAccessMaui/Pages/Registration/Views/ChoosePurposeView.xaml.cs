@@ -10,6 +10,6 @@ public partial class ChoosePurposeView
 	public ChoosePurposeView(ChoosePurposeViewModel ViewModel)
 	{
 		this.InitializeComponent();
-		this.BindingContext = ViewModel;
+		this.ContentViewModel = ViewModel;
 	}
 }

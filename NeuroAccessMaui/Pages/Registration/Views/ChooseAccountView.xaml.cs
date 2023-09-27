@@ -10,6 +10,6 @@ public partial class ChooseAccountView
 	public ChooseAccountView(ChooseAccountViewModel ViewModel)
 	{
 		this.InitializeComponent();
-		this.BindingContext = ViewModel;
+		this.ContentViewModel = ViewModel;
 	}
 }

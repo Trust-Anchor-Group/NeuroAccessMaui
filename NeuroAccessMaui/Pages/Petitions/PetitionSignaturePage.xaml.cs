@@ -11,7 +11,7 @@ public partial class PetitionSignaturePage
 	public PetitionSignaturePage(PetitionSignatureViewModel ViewModel)
 	{
 		this.InitializeComponent();
-		this.BindingContext = ViewModel;
+		this.ContentPageModel = ViewModel;
 	}
 
 	/// <inheritdoc/>

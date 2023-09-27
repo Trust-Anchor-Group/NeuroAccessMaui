@@ -10,7 +10,7 @@ public partial class LoadingView
 	public LoadingView(LoadingViewModel ViewModel)
 	{
 		this.InitializeComponent();
-		this.BindingContext = ViewModel;
+		this.ContentViewModel = ViewModel;
 	}
 
 	private void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
