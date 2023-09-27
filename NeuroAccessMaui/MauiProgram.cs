@@ -2,9 +2,9 @@
 using CommunityToolkit.Maui.Markup;
 using Microsoft.Extensions.Logging;
 using Mopups.Hosting;
-using NeuroAccessMaui.DeviceSpecific;
 using NeuroAccessMaui.Pages;
 using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
 
 namespace NeuroAccessMaui;
@@ -30,8 +30,7 @@ public static class MauiProgram
 		Builder.UseLocalizationManager<AppResources>();
 
 		// Singleton app's services
-		Builder.Services.AddSingleton<ICloseApplication>();
-		Builder.Services.AddSingleton<IDeviceInformation>();
+		Builder.Services.AddSingleton<IPlatformSpecific, PlatformSpecific>();
 
 		// Apps pages & models
 		Builder.RegisterPagesManager();

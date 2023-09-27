@@ -23,7 +23,7 @@ internal sealed partial class NavigationService : LoadableService, INavigationSe
 	/// <inheritdoc/>
 	public Page CurrentPage => Shell.Current?.CurrentPage;
 
-	///<inheritdoc/>
+	/// <inheritdoc/>
 	public override Task Load(bool isResuming, CancellationToken cancellationToken)
 	{
 		if (this.BeginLoad(cancellationToken))
@@ -47,7 +47,7 @@ internal sealed partial class NavigationService : LoadableService, INavigationSe
 		return Task.CompletedTask;
 	}
 
-	///<inheritdoc/>
+	/// <inheritdoc/>
 	public override Task Unload()
 	{
 		if (this.BeginUnload())
@@ -124,7 +124,7 @@ internal sealed partial class NavigationService : LoadableService, INavigationSe
 		});
 	}
 
-	///<inheritdoc/>
+	/// <inheritdoc/>
 	public async Task GoBackAsync(bool Animate = true)
 	{
 		if (!this.CanUseNavigationService)
@@ -158,7 +158,7 @@ internal sealed partial class NavigationService : LoadableService, INavigationSe
 		}
 	}
 
-	///<inheritdoc/>
+	/// <inheritdoc/>
 	public bool TryGetArgs<TArgs>([NotNullWhen(true)] out TArgs? Args, string? UniqueId = null) where TArgs : NavigationArgs, new()
 	{
 		NavigationArgs? NavigationArgs = null;

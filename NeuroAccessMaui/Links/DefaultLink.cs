@@ -26,7 +26,7 @@ public class DefaultLink : ILinkOpener
 		return Grade.Barely;
 	}
 
-	///<inheritdoc/>
+	/// <inheritdoc/>
 	public async Task<bool> TryOpenLink(Uri Link)
 	{
 		if (await Launcher.TryOpenAsync(Link.OriginalString))

@@ -56,7 +56,6 @@ public partial class App : Application, IDisposable
 	private static readonly TaskCompletionSource<bool> servicesSetup = new();
 	private static readonly TaskCompletionSource<bool> defaultInstantiatedSource = new();
 	private static bool configLoaded = false;
-	private static ISecureDisplay secureDisplay;
 	private static bool defaultInstantiated = false;
 	private static DateTime savedStartTime = DateTime.MinValue;
 	private static bool displayedPinPopup = false;
@@ -85,13 +84,13 @@ public partial class App : Application, IDisposable
 	/// </summary>
 	public static new App? Current => (App?)Application.Current;
 
-	///<inheritdoc/>
-	public App(Assembly DeviceAssembly) : this(false, DeviceAssembly)
+	/// <inheritdoc/>
+	public App() : this(false)
 	{
 	}
 
-	///<inheritdoc/>
-	public App(bool BackgroundStart, Assembly DeviceAssembly)
+	/// <inheritdoc/>
+	public App(bool BackgroundStart)
 	{
 		App? PreviousInstance = appInstance;
 		appInstance = this;
@@ -120,7 +119,7 @@ After:
 
 			this.loginAuditor = new LoginAuditor(Constants.Pin.LogAuditorObjectID, LoginIntervals);
 			this.startupCancellation = new CancellationTokenSource();
-			this.initCompleted = this.Init(BackgroundStart, DeviceAssembly);
+			this.initCompleted = this.Init(BackgroundStart);
 		}
 		else
 		{
@@ -192,19 +191,18 @@ After:
 		LocalizationManager.Current.CurrentCulture = SelectedInfo;
 	}
 
-	private Task<bool> Init(bool BackgroundStart, Assembly DeviceAssembly)
+	private Task<bool> Init(bool BackgroundStart)
 	{
 		TaskCompletionSource<bool> Result = new();
-		Task.Run(async () => await this.InitInParallel(Result, BackgroundStart, DeviceAssembly));
+		Task.Run(async () => await this.InitInParallel(Result, BackgroundStart));
 		return Result.Task;
 	}
 
-	private async Task InitInParallel(TaskCompletionSource<bool> Result, bool BackgroundStart,
-		Assembly DeviceAssembly)
+	private async Task InitInParallel(TaskCompletionSource<bool> Result, bool BackgroundStart)
 	{
 		try
 		{
-			this.InitInstances(DeviceAssembly);
+			this.InitInstances();
 
 			await this.PerformStartup(false, BackgroundStart);
 
@@ -220,16 +218,15 @@ After:
 		}
 	}
 
-	private void InitInstances(Assembly DeviceAssembly)
+	private void InitInstances()
 	{
-		Assembly appAssembly = this.GetType().Assembly;
+		Assembly AppAssembly = this.GetType().Assembly;
 
 		if (!Types.IsInitialized)
 		{
 			// Define the scope and reach of Runtime.Inventory (Script, Serialization, Persistence, IoC, etc.):
 			Types.Initialize(
-				appAssembly,                                // Allows for objects defined in this assembly, to be instantiated and persisted.
-				DeviceAssembly,                             // Device-specific assembly.
+				AppAssembly,                                // Allows for objects defined in this assembly, to be instantiated and persisted.
 				typeof(Database).Assembly,                  // Indexes default attributes
 				typeof(ObjectSerializer).Assembly,          // Indexes general serializers
 				typeof(FilesProvider).Assembly,             // Indexes special serializers
@@ -278,11 +275,6 @@ After:
 				return null;    // Type not managed by Runtime.Inventory. Xamarin.Forms resolves this using its default mechanism.
 			}
 
-			if (type.Assembly == DeviceAssembly && Types.GetDefaultConstructor(type) is null)
-			{
-				return null;
-			}
-
 			try
 			{
 				return Types.Instantiate(true, type);
@@ -293,8 +285,6 @@ After:
 				return null;
 			}
 		});
-
-		secureDisplay = DependencyService.Get<ISecureDisplay>();
 
 		servicesSetup.TrySetResult(true);
 	}
@@ -348,7 +338,7 @@ After:
 		}
 	}
 
-	///<inheritdoc/>
+	/// <inheritdoc/>
 	protected override async void OnStart()
 	{
 		if (this.onStartResumesApplication)
@@ -380,7 +370,7 @@ After:
 		await this.PerformStartup(true, BackgroundStart);
 	}
 
-	///<inheritdoc/>
+	/// <inheritdoc/>
 	protected override async void OnResume()
 	{
 		await this.DoResume(false);
@@ -464,7 +454,7 @@ After:
 		await this.Shutdown(false);
 	}
 
-	///<inheritdoc/>
+	/// <inheritdoc/>
 	protected override async void OnSleep()
 	{
 		// Done manually here, as the Disappearing event won't trigger when exiting the app,
@@ -497,8 +487,7 @@ After:
 
 		try
 		{
-			ICloseApplication CloseApplication = ServiceHelper.GetService<ICloseApplication>();
-			await CloseApplication.Close();
+			await ServiceRef.PlatformSpecific.CloseApplication();
 		}
 		catch (Exception)
 		{
@@ -675,9 +664,9 @@ After:
 	{
 		return MainThread.InvokeOnMainThreadAsync(() =>
 		{
-			if (CanProhibitScreenCapture)
+			if (ServiceRef.PlatformSpecific.CanProhibitScreenCapture)
 			{
-				ProhibitScreenCapture = true;
+				ServiceRef.PlatformSpecific.ProhibitScreenCapture = true;
 			}
 
 			return Shell.Current.GoToAsync("//MainPage");
@@ -1130,28 +1119,7 @@ After:
 		await ServiceRef.SettingsService.SaveState(Constants.Pin.CurrentPinAttemptCounter, CurrentPinAttemptCounter);
 	}
 
-	/// <summary>
-	/// If Screen Capture can be prohibited.
-	/// </summary>
-	public static bool CanProhibitScreenCapture => secureDisplay is not null;
-
-	/// <summary>
-	/// Controls of screen-capture is prohibited.
-	/// </summary>
-	public static bool ProhibitScreenCapture
-	{
-		get => secureDisplay?.ProhibitScreenCapture ?? false;
-		set
-		{
-			if (secureDisplay is not null)
-			{
-				secureDisplay.ProhibitScreenCapture = value;
-			}
-		}
-	}
-
-
-	///<inheritdoc/>
+	/// <inheritdoc/>
 	public void Dispose()
 	{
 		this.Dispose(true);

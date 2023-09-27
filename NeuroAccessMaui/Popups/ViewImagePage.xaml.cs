@@ -72,4 +72,9 @@ public partial class ViewImagePage
 		//!!! return this.PhotoViewer.Opacity > 0 && this.IsVisible;
 		return this.IsVisible;
 	}
+
+	private void PopupPage_BackgroundClicked(object sender, EventArgs e)
+	{
+
+    }
 }

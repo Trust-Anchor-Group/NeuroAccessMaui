@@ -22,7 +22,7 @@ internal class NetworkService : LoadableService, INetworkService
 	{
 	}
 
-	///<inheritdoc/>
+	/// <inheritdoc/>
 	public override Task Load(bool isResuming, CancellationToken cancellationToken)
 	{
 		if (this.BeginLoad(cancellationToken))
@@ -38,7 +38,7 @@ internal class NetworkService : LoadableService, INetworkService
 		return Task.CompletedTask;
 	}
 
-	///<inheritdoc/>
+	/// <inheritdoc/>
 	public override Task Unload()
 	{
 		if (this.BeginUnload())

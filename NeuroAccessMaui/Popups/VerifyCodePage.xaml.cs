@@ -59,4 +59,9 @@ public partial class VerifyCodePage : PopupPage
 		//!!! await PopupNavigation.Instance.PopAsync();
 		this.result.TrySetResult(null);
 	}
+
+	private void PopupPage_BackgroundClicked(object sender, EventArgs e)
+	{
+
+    }
 }

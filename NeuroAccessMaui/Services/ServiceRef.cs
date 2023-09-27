@@ -34,6 +34,7 @@ public static class ServiceRef
 	private static IStorageService? storageService;
 	private static INfcService? nfcService;
 	private static IStringLocalizer? localizer;
+	private static IPlatformSpecific? platformSpecific;
 
 	/// <summary>
 	/// The dispatcher to use for alerts and accessing the main thread.
@@ -188,6 +189,18 @@ public static class ServiceRef
 		{
 			localizer ??= LocalizationManager.GetStringLocalizer<AppResources>();
 			return localizer;
+		}
+	}
+
+	/// <summary>
+	/// Localization service
+	/// </summary>
+	public static IPlatformSpecific PlatformSpecific
+	{
+		get
+		{
+			platformSpecific ??= ServiceHelper.GetService<IPlatformSpecific>();
+			return platformSpecific;
 		}
 	}
 }

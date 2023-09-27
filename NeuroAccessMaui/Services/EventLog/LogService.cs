@@ -73,8 +73,7 @@ internal sealed class LogService : ILogService
 
 		try
 		{
-			ICloseApplication CloseApplication = ServiceHelper.GetService<ICloseApplication>();
-			await CloseApplication.Close();
+			await ServiceRef.PlatformSpecific.CloseApplication();
 		}
 		catch (Exception)
 		{
@@ -128,7 +127,7 @@ internal sealed class LogService : ILogService
 		}
 	}
 
-	///<inheritdoc/>
+	/// <inheritdoc/>
 	public IList<KeyValuePair<string, object>> GetParameters(params KeyValuePair<string, object>[] Tags)
 	{
 		List<KeyValuePair<string, object>> Result = new()

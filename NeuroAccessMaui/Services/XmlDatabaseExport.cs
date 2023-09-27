@@ -41,17 +41,6 @@ public class XmlDatabaseExport : IDatabaseExport, IDisposable
 	}
 
 	/// <inheritdoc/>
-	public void Dispose()
-	{
-		if (this.disposeWriter)
-		{
-			this.output.Flush();
-			this.output.Dispose();
-			this.disposeWriter = false;
-		}
-	}
-
-	/// <inheritdoc/>
 	public Task StartDatabase()
 	{
 		this.output.WriteStartElement("Database");
@@ -572,4 +561,29 @@ public class XmlDatabaseExport : IDatabaseExport, IDisposable
 		this.output.WriteEndElement();
 	}
 
+	/// <inheritdoc/>
+	public void Dispose()
+	{
+		this.Dispose(true);
+		GC.SuppressFinalize(this);
+	}
+
+	/// <summary>
+	/// <see cref="IDisposable.Dispose"/>
+	/// </summary>
+	protected virtual void Dispose(bool disposing)
+	{
+		if (!this.disposeWriter)
+		{
+			return;
+		}
+
+		if (disposing)
+		{
+			this.output.Flush();
+			this.output.Dispose();
+		}
+
+		this.disposeWriter = false;
+	}
 }

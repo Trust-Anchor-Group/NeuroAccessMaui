@@ -18,7 +18,7 @@ internal sealed partial class AttachmentCacheService : LoadableService, IAttachm
 	{
 	}
 
-	///<inheritdoc/>
+	/// <inheritdoc/>
 	public override async Task Load(bool isResuming, CancellationToken cancellationToken)
 	{
 		if (this.BeginLoad(cancellationToken))

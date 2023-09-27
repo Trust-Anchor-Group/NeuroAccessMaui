@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.Controls.PlatformConfiguration;
 using Mopups.Services;
 using NeuroAccessMaui.Popups.Pin;
 using NeuroAccessMaui.Resources.Languages;
@@ -24,9 +25,9 @@ public partial class SecurityViewModel : XmppViewModel
 	{
 		await base.OnInitialize();
 
-		this.CanProhibitScreenCapture = App.CanProhibitScreenCapture;
-		this.CanEnableScreenCapture = App.CanProhibitScreenCapture && App.ProhibitScreenCapture;
-		this.CanDisableScreenCapture = App.CanProhibitScreenCapture && !App.ProhibitScreenCapture;
+		this.CanProhibitScreenCapture = ServiceRef.PlatformSpecific.CanProhibitScreenCapture;
+		this.CanEnableScreenCapture = ServiceRef.PlatformSpecific.ProhibitScreenCapture;
+		this.CanDisableScreenCapture = !this.CanEnableScreenCapture;
 	}
 
 	#region Properties
@@ -114,7 +115,7 @@ public partial class SecurityViewModel : XmppViewModel
 	[RelayCommand]
 	private async Task PermitScreenCapture()
 	{
-		if (!App.CanProhibitScreenCapture)
+		if (!ServiceRef.PlatformSpecific.CanProhibitScreenCapture)
 		{
 			return;
 		}
@@ -124,7 +125,7 @@ public partial class SecurityViewModel : XmppViewModel
 			return;
 		}
 
-		App.ProhibitScreenCapture = false;
+		ServiceRef.PlatformSpecific.ProhibitScreenCapture = false;
 		this.CanEnableScreenCapture = false;
 		this.CanDisableScreenCapture = true;
 	}
@@ -132,7 +133,7 @@ public partial class SecurityViewModel : XmppViewModel
 	[RelayCommand]
 	private async Task ProhibitScreenCapture()
 	{
-		if (!App.CanProhibitScreenCapture)
+		if (!ServiceRef.PlatformSpecific.CanProhibitScreenCapture)
 		{
 			return;
 		}
@@ -142,7 +143,7 @@ public partial class SecurityViewModel : XmppViewModel
 			return;
 		}
 
-		App.ProhibitScreenCapture = true;
+		ServiceRef.PlatformSpecific.ProhibitScreenCapture = true;
 		this.CanEnableScreenCapture = true;
 		this.CanDisableScreenCapture = false;
 	}

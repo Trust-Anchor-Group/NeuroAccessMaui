@@ -31,8 +31,7 @@ internal sealed class CryptoService : ICryptoService
 
 		try
 		{
-			IDeviceInformation DeviceInfo = ServiceHelper.GetService<IDeviceInformation>();
-			this.deviceId = DeviceInfo.GetDeviceId() + "_";
+			this.deviceId = ServiceRef.PlatformSpecific.GetDeviceId() + "_";
 		}
 		catch (Exception ex)
 		{

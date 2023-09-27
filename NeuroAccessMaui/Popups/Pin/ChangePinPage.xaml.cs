@@ -76,4 +76,9 @@ public partial class ChangePinPage : PopupPage
 	{
 		//!!! this.MainFrame.WidthRequest = 0.75 * DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density;
 	}
+
+	private void PopupPage_BackgroundClicked(object sender, EventArgs e)
+	{
+
+    }
 }

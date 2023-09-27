@@ -31,24 +31,25 @@ namespace NeuroAccessMaui.Services.Xmpp;
 /// goes to sleep, and new clients are created when awoken again.
 /// </summary>
 [Singleton]
-internal sealed class XmppService : LoadableService, IXmppService
+internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 {
-	private XmppClient xmppClient;
-	private ContractsClient contractsClient;
-	private HttpFileUploadClient fileUploadClient;
-	private AbuseClient abuseClient;
-	private HttpxClient httpxClient;
-	private Timer reconnectTimer;
+	private bool isDisposed;
+	private XmppClient? xmppClient;
+	private ContractsClient? contractsClient;
+	private HttpFileUploadClient? fileUploadClient;
+	private AbuseClient? abuseClient;
+	private HttpxClient? httpxClient;
+	private Timer? reconnectTimer;
 	private string domainName;
 	private string accountName;
 	private string passwordHash;
 	private string passwordHashMethod;
 	private bool xmppConnected = false;
 	private DateTime xmppLastStateChange = DateTime.MinValue;
-	private readonly InMemorySniffer sniffer = new(250);
+	private InMemorySniffer? sniffer = new(250);
 	private bool isCreatingClient;
-	private XmppEventSink xmppEventSink;
-	private string token = null;
+	private XmppEventSink? xmppEventSink;
+	private string? token = null;
 	private DateTime tokenCreated = DateTime.MinValue;
 
 	#region Creation / Destruction
@@ -1749,9 +1750,62 @@ internal sealed class XmppService : LoadableService, IXmppService
 		Xml.Append(" xmlns='");
 		Xml.Append(XML.Encode(Namespace));
 		Xml.Append("'/>");
-
 		return this.SavePrivateXml(Xml.ToString());
 	}
 
 	#endregion
+
+	/// <inheritdoc/>
+	public void Dispose()
+	{
+		this.sniffer?.Dispose();
+		this.abuseClient?.Dispose();
+		this.contractsClient?.Dispose();
+		this.fileUploadClient?.Dispose();
+		this.httpxClient?.Dispose();
+		this.reconnectTimer?.Dispose();
+		this.xmppClient?.Dispose();
+		this.xmppEventSink?.Dispose();
+
+		this.sniffer = null;
+		this.abuseClient = null;
+		this.contractsClient = null;
+		this.fileUploadClient = null;
+		this.httpxClient = null;
+		this.reconnectTimer = null;
+		this.xmppClient = null;
+		this.xmppEventSink = null;
+
+		/*
+		this.Dispose(true);
+		GC.SuppressFinalize(this);
+		*/
+	}
+
+	/*
+	/// <summary>
+	/// <see cref="IDisposable.Dispose"/>
+	/// </summary>
+	protected virtual void Dispose(bool disposing)
+	{
+		if (this.isDisposed)
+		{
+			return;
+		}
+
+		if (disposing)
+		{
+			this.abuseClient.Dispose();
+			this.contractsClient.Dispose();
+			this.fileUploadClient.Dispose();
+			this.httpxClient.Dispose();
+			this.reconnectTimer.Dispose();
+			this.sniffer.Dispose();
+			this.xmppClient.Dispose();
+			this.xmppEventSink.Dispose();
+		}
+
+		this.isDisposed = true;
+	}
+	*/
 }

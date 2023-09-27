@@ -26,7 +26,7 @@ public class OnboardingLink : ILinkOpener
 		return Link.Scheme.ToLower() == Constants.UriSchemes.Onboarding ? Grade.Ok : Grade.NotAtAll;
 	}
 
-	///<inheritdoc/>
+	/// <inheritdoc/>
 	public async Task<bool> TryOpenLink(Uri Link)
 	{
 		await ServiceRef.UiSerializer.DisplayAlert(

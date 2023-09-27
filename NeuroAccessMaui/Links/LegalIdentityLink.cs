@@ -26,7 +26,7 @@ public class LegalIdentityLink : ILinkOpener
 		return Link.Scheme.ToLower() == Constants.UriSchemes.IotId ? Grade.Ok : Grade.NotAtAll;
 	}
 
-	///<inheritdoc/>
+	/// <inheritdoc/>
 	public async Task<bool> TryOpenLink(Uri Link)
 	{
 		string LegalId = Constants.UriSchemes.RemoveScheme(Link.OriginalString);

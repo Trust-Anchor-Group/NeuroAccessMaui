@@ -53,4 +53,9 @@ public partial class CheckPinPage : PopupPage
 	{
 		//!!! this.EnterButton.IsEnabled = !string.IsNullOrEmpty(this.Pin.Text);
 	}
+
+	private void PopupPage_BackgroundClicked(object sender, EventArgs e)
+	{
+
+    }
 }

@@ -25,7 +25,7 @@ public class TagSignatureLink : ILinkOpener
 		return Link.Scheme.ToLower() == Constants.UriSchemes.TagSign ? Grade.Ok : Grade.NotAtAll;
 	}
 
-	///<inheritdoc/>
+	/// <inheritdoc/>
 	public async Task<bool> TryOpenLink(Uri Link)
 	{
 		string request = Constants.UriSchemes.RemoveScheme(Link.OriginalString);

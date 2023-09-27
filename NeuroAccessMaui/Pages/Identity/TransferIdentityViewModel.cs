@@ -89,7 +89,7 @@ public partial class TransferIdentityViewModel : QrXmppViewModel, IDisposable
 
 	#endregion
 
-	///<inheritdoc/>
+	/// <inheritdoc/>
 	public void Dispose()
 	{
 		this.Dispose(true);

@@ -31,7 +31,7 @@ public class NfcTag : INfcTag
 	/// </summary>
 	public INfcInterface[] Interfaces { get; private set; }
 
-	///<inheritdoc/>
+	/// <inheritdoc/>
 	public void Dispose()
 	{
 		this.Dispose(true);
