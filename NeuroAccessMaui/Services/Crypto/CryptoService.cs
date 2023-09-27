@@ -29,14 +29,14 @@ internal sealed class CryptoService : ICryptoService
 		this.basePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 		this.rnd = RandomNumberGenerator.Create();
 
-		IDeviceInformation? DeviceInfo = ServiceHelper.GetService<IDeviceInformation>();
-
-		if (DeviceInfo is not null)
+		try
 		{
+			IDeviceInformation DeviceInfo = ServiceHelper.GetService<IDeviceInformation>();
 			this.deviceId = DeviceInfo.GetDeviceId() + "_";
 		}
-		else
+		catch (Exception ex)
 		{
+			ServiceRef.LogService.LogException(ex);
 			this.deviceId = "UNKNOWN_";
 		}
 	}

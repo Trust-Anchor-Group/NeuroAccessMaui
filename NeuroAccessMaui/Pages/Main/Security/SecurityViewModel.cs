@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Mopups.Services;
+using NeuroAccessMaui.Popups.Pin;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 
@@ -57,9 +59,9 @@ public partial class SecurityViewModel : XmppViewModel
 		{
 			while (true)
 			{
-				ChangePinPopupPage Page = new();
+				ChangePinPage Page = ServiceHelper.GetService<ChangePinPage>();
+				await MopupService.Instance.PushAsync(Page);
 
-				await Rg.Plugins.Popup.Services.PopupNavigation.Instance.PushAsync(Page);
 				(string OldPin, string NewPin) = await Page.Result;
 
 				if (OldPin is null || OldPin == NewPin)

@@ -4,7 +4,7 @@ namespace NeuroAccessMaui.Pages;
 
 public abstract class BaseContentView : ContentView
 {
-	public static T? Create<T>() where T : BaseContentView
+	public static T Create<T>() where T : BaseContentView
 	{
 		return ServiceHelper.GetService<T>();
 	}

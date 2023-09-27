@@ -102,6 +102,8 @@ public static class QrCode
 	/// <returns>Decoded string</returns>
 	public static Task<string> ScanQrCode(string CommandName, bool UseShellNavigationService = true)
 	{
+		//!!!
+		/*
 		ScanQrCodeNavigationArgs NavigationArgs = new(CommandName);
 
 		if (UseShellNavigationService)
@@ -114,6 +116,8 @@ public static class QrCode
 		}
 
 		return NavigationArgs.QrCodeScanned.Task;
+		*/
+		return Task.FromResult("");
 	}
 
 	/// <summary>

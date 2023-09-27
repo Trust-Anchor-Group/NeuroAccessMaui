@@ -1,8 +1,10 @@
 ﻿using Microsoft.Maui.Controls.Internals;
+using Mopups.Services;
 using NeuroAccessMaui.DeviceSpecific;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Pages;
 using NeuroAccessMaui.Pages.Main;
+using NeuroAccessMaui.Popups.Pin;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.AttachmentCache;
@@ -493,13 +495,12 @@ After:
 			appInstance = null;
 		}
 
-		ICloseApplication? CloseApplication = ServiceHelper.GetService<ICloseApplication>();
-
-		if (CloseApplication is not null)
+		try
 		{
+			ICloseApplication CloseApplication = ServiceHelper.GetService<ICloseApplication>();
 			await CloseApplication.Close();
 		}
-		else
+		catch (Exception)
 		{
 			Environment.Exit(0);
 		}
@@ -763,14 +764,7 @@ After:
 	{
 		this.Dispatcher.Dispatch(() =>
 		{
-			this.MainPage = new BootstrapErrorPage
-			{
-				BindingContext = new BootstrapErrorViewModel
-				{
-					Title = Title,
-					StackTrace = StackTrace,
-				},
-			};
+			this.MainPage = new BootstrapErrorPage(Title, StackTrace);
 		});
 	}
 
@@ -1031,7 +1025,7 @@ After:
 	/// <summary>
 	/// Check the PIN and reset the blocking counters if it matches
 	/// </summary>
-	public static async Task<string> CheckPinAndUnblockUser(string Pin, ITagProfile Profile)
+	public static async Task<string> CheckPinAndUnblockUser(string Pin)
 	{
 		if (Pin is null)
 		{
@@ -1040,12 +1034,12 @@ After:
 
 		long PinAttemptCounter = await GetCurrentPinCounter();
 
-		if (Profile.ComputePinHash(Pin) == Profile.PinHash)
+		if (ServiceRef.TagProfile.ComputePinHash(Pin) == ServiceRef.TagProfile.PinHash)
 		{
 			ClearStartInactivityTime();
 			SetCurrentPinCounter(0);
 			await appInstance.loginAuditor.UnblockAndReset(Constants.Pin.RemoteEndpoint);
-			await PopupNavigation.Instance.PopAsync();
+			await MopupService.Instance.PopAsync();
 			return Pin;
 		}
 		else
@@ -1079,8 +1073,8 @@ After:
 				return string.Empty;
 			}
 
-			Popups.Pin.PinPopup.PinPopupPage Page = new();
-			await PopupNavigation.Instance.PushAsync(Page);
+			CheckPinPage Page = new();
+			await MopupService.Instance.PushAsync(Page);
 			await CheckUserBlocking();
 			return await Page.Result;
 		}

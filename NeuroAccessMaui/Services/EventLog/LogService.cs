@@ -71,13 +71,12 @@ internal sealed class LogService : ILogService
 			ServiceRef.Localizer[nameof(AppResources.RepairRestart)],
 			ServiceRef.Localizer[nameof(AppResources.Ok)]);
 
-		ICloseApplication? CloseApplication = ServiceHelper.GetService<ICloseApplication>();
-
-		if (CloseApplication is not null)
+		try
 		{
+			ICloseApplication CloseApplication = ServiceHelper.GetService<ICloseApplication>();
 			await CloseApplication.Close();
 		}
-		else
+		catch (Exception)
 		{
 			Environment.Exit(0);
 		}
