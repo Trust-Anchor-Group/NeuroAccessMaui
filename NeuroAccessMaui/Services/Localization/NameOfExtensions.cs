@@ -1,4 +1,4 @@
-﻿namespace NeuroAccessMaui.Extensions;
+﻿namespace NeuroAccessMaui.Services.Localization;
 
 [ContentProperty(nameof(Member))]
 public class NameOfExtensions : IMarkupExtension<string>

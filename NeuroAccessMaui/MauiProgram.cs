@@ -15,16 +15,18 @@ public static class MauiProgram
 	{
 		MauiAppBuilder Builder = MauiApp.CreateBuilder();
 
-		Builder
-			.UseMauiApp<App>()
-			.ConfigureFonts(fonts =>
-			{
-				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-			})
-			.ConfigureMopups()
-			.UseMauiCommunityToolkit()
-			.UseMauiCommunityToolkitMarkup();
+		Builder.UseMauiApp<App>();
+
+		Builder.ConfigureFonts(fonts =>
+		{
+			fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+			fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+		});
+
+		// NuGets
+		Builder.ConfigureMopups();
+		Builder.UseMauiCommunityToolkit();
+		Builder.UseMauiCommunityToolkitMarkup();
 
 		// Localization service
 		Builder.UseLocalizationManager<AppResources>();

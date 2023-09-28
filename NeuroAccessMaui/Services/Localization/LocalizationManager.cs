@@ -34,7 +34,6 @@ public class LocalizationManager : INotifyPropertyChanged
 
 	public static IStringLocalizer GetStringLocalizer<TStringResource>()
 	{
-
 		try
 		{
 			return ServiceHelper.GetService<IStringLocalizer<TStringResource>>();

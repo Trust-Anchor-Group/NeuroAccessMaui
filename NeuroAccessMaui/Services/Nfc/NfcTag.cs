@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using IdApp.Nfc;
+﻿using IdApp.Nfc;
 
 namespace NeuroAccessMaui.Services.Nfc;
 

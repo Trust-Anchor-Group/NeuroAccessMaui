@@ -77,7 +77,7 @@ public static class Constants
 		/// </summary>
 		/// <param name="Url">The URL to parse.</param>
 		/// <returns>URI Scheme</returns>
-		public static string GetScheme(string Url)
+		public static string? GetScheme(string Url)
 		{
 			if (string.IsNullOrWhiteSpace(Url))
 			{
@@ -128,9 +128,9 @@ public static class Constants
 		/// </summary>
 		/// <param name="Url">The URL to parse and extract the URI schema from.</param>
 		/// <returns>URI, without schema</returns>
-		public static string RemoveScheme(string Url)
+		public static string? RemoveScheme(string Url)
 		{
-			string Scheme = GetScheme(Url);
+			string? Scheme = GetScheme(Url);
 
 			if (string.IsNullOrEmpty(Scheme))
 			{

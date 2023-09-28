@@ -1,4 +1,6 @@
-﻿namespace NeuroAccessMaui.Services.Localization;
+﻿using System.Globalization;
+
+namespace NeuroAccessMaui.Services.Localization;
 
 public static class LocalizationAppExtension
 {
@@ -9,8 +11,13 @@ public static class LocalizationAppExtension
 
 	public static MauiAppBuilder UseLocalizationManager(this MauiAppBuilder Builder, Type? StringResource = null)
 	{
-		LocalizationManager.DefaultStringResource = StringResource;
+		if (StringResource is not null)
+		{
+			LocalizationManager.DefaultStringResource = StringResource;
+		}
+
 		Builder.Services.AddLocalization();
+
 		return Builder;
 	}
 }
