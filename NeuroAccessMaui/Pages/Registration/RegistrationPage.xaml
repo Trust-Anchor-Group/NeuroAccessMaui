@@ -11,7 +11,6 @@
 	<Grid>
 		<controls:Background />
 
-
 		<!--  CONTENT  -->
 		<Grid x:Name="GridWithAnimation"
 			HorizontalOptions="FillAndExpand"
@@ -50,6 +49,47 @@
 				HorizontalTextAlignment="Center"
 				Text="Something went wrong!"
 				VerticalTextAlignment="Center" />
+		</Grid>
+
+		<Grid x:Name="LanguageGrid"
+			HorizontalOptions="End"
+			VerticalOptions="Start"
+			ColumnDefinitions="auto"
+			RowDefinitions="auto,auto">
+			<Grid.GestureRecognizers>
+				<TapGestureRecognizer
+					Tapped="TapGestureRecognizer_Tapped" />
+			</Grid.GestureRecognizers>
+			<Image
+				Grid.Row="0"
+				Source="language_select_button.svg">
+				<Image.Behaviors>
+					<mct:IconTintColorBehavior
+						TintColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
+													Dark={StaticResource PrimaryForegroundDark}}" />
+				</Image.Behaviors>
+			</Image>
+			<Label
+				Grid.Row="1"
+				Text="{Binding SelectedLanguage.NativeName}"
+				TextColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
+											Dark={StaticResource PrimaryForegroundDark}}" />
+			<VisualStateManager.VisualStateGroups>
+				<VisualStateGroupList>
+					<VisualStateGroup x:Name="CommonStates">
+						<VisualState x:Name="Normal">
+							<VisualState.Setters>
+								<Setter Property="Opacity" Value="1" />
+							</VisualState.Setters>
+						</VisualState>
+						<VisualState x:Name="Focused">
+							<VisualState.Setters>
+								<Setter Property="Opacity" Value="0" />
+							</VisualState.Setters>
+						</VisualState>
+					</VisualStateGroup>
+				</VisualStateGroupList>
+			</VisualStateManager.VisualStateGroups>
 		</Grid>
 
 		<!--

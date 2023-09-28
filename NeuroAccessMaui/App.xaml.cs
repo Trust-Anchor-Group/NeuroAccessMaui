@@ -1,6 +1,5 @@
 ﻿using Microsoft.Maui.Controls.Internals;
 using Mopups.Services;
-using NeuroAccessMaui.DeviceSpecific;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Pages;
 using NeuroAccessMaui.Pages.Main;
@@ -21,7 +20,6 @@ using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.QR;
 using NeuroAccessMaui.Services.Xmpp;
-using System.Globalization;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
@@ -100,14 +98,7 @@ public partial class App : Application, IDisposable
 		// If the previous instance is null, create the app state from scratch. If not, just copy the state from the previous instance.
 		if (PreviousInstance is null)
 		{
-
-/* Unmerged change from project 'NeuroAccessMaui (net8.0-ios)'
-Before:
-			this.InitLocalizationResource();
-After:
 			InitLocalizationResource();
-*/
-			App.InitLocalizationResource();
 
 			AppDomain.CurrentDomain.UnhandledException += this.CurrentDomain_UnhandledException;
 			TaskScheduler.UnobservedTaskException += this.TaskScheduler_UnobservedTaskException;
@@ -158,37 +149,44 @@ After:
 	public static bool IsOnboarded => Shell.Current is not null;
 
 	/// <summary>
+	/// Supported languages.
+	/// </summary>
+	public static readonly LanguageInfo[] SupportedLanguages =
+		[
+			new("en"), new("sv"), new("es"), new("fr"), new("de"), new("da"),
+			new("no"), new("fi"), new("sr"), new("pt"), new("ro"), new("ru"),
+		];
+
+	/// <summary>
 	/// Selected language.
 	/// </summary>
-	public static string SelectedLanguage
+	public static LanguageInfo SelectedLanguage
 	{
 		get
 		{
-			string Language = Preferences.Get("user_selected_language", null);
+			string? LanguageName = Preferences.Get("user_selected_language", null);
+			LanguageInfo SelectedLanguage = SupportedLanguages[0];
 
-			if (Language is null)
+			if (LanguageName is not null)
 			{
-				List<string> SupportedLanguages = ["en", "sv", "es", "fr", "de", "da", "no", "fi", "sr", "pt", "ro", "ru"];
-				string LanguageName = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
-				string SupportedLanguage = SupportedLanguages.FirstOrDefault(el => el == LanguageName);
-				Language = string.IsNullOrEmpty(SupportedLanguage) ? "en" : LanguageName;
-
-				Preferences.Set("user_selected_language", Language);
+				SelectedLanguage = SupportedLanguages.FirstOrDefault(
+					el => el.TwoLetterISOLanguageName.Equals(LanguageName, StringComparison.OrdinalIgnoreCase), SelectedLanguage);
 			}
 
-			return Language;
+			if ((LanguageName is null) ||
+				!SelectedLanguage.TwoLetterISOLanguageName.Equals(LanguageName, StringComparison.OrdinalIgnoreCase))
+			{
+				Preferences.Set("user_selected_language", SelectedLanguage.TwoLetterISOLanguageName);
+			}
+
+			return SelectedLanguage;
 		}
 	}
 
 	private static void InitLocalizationResource()
 	{
-		string Language = SelectedLanguage;
-
-		CultureInfo[] Cultures = CultureInfo.GetCultures(CultureTypes.NeutralCultures);
-		CultureInfo SelectedInfo = Cultures.First(el => el.Name == Language);
-
 		LocalizationManager.Current.PropertyChanged += (_, _) => AppResources.Culture = LocalizationManager.Current.CurrentCulture;
-		LocalizationManager.Current.CurrentCulture = SelectedInfo;
+		LocalizationManager.Current.CurrentCulture = SelectedLanguage;
 	}
 
 	private Task<bool> Init(bool BackgroundStart)
@@ -467,14 +465,7 @@ After:
 
 		await this.Shutdown(false);
 
-
-/* Unmerged change from project 'NeuroAccessMaui (net8.0-ios)'
-Before:
-		this.SetStartInactivityTime();
-After:
 		SetStartInactivityTime();
-*/
-		App.SetStartInactivityTime();
 	}
 
 	internal static async Task Stop()
