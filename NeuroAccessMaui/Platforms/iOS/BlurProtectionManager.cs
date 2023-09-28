@@ -1,7 +1,7 @@
 ﻿using Plugin.Maui.ScreenSecurity.Handlers;
 using UIKit;
 
-namespace Plugin.Maui.ScreenSecurity.Platforms.iOS;
+namespace NeuroAccessMaui;
 
 internal class BlurProtectionManager
 {
@@ -77,7 +77,7 @@ internal class BlurProtectionManager
             {
                 Frame = window.Frame
             };
-        
+
             window.AddSubview(_blurBackground);
         }
     }

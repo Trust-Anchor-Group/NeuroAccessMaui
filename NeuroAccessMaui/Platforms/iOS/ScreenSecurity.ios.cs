@@ -33,45 +33,12 @@ partial class ScreenSecurityImplementation : IScreenSecurity
     /// </remarks>
     public void ActivateScreenSecurityProtection(bool blurScreenProtection = true, bool preventScreenshot = true, bool preventScreenRecording = true)
     {
-        if (blurScreenProtection)
-            BlurProtectionManager.HandleBlurProtection(true, IOSHelpers.GetCurrentTheme(), _window.Value);
+		if (blurScreenProtection)
+		{
+			BlurProtectionManager.HandleBlurProtection(true, IOSHelpers.GetCurrentTheme(), _window.Value);
+		}
 
         HandleScreenCaptureProtection(preventScreenshot, preventScreenRecording);
-    }
-
-    /// <summary>
-    /// Activates the screen security protection when the app is sent
-    /// to <b>Recents screen</b> or the <b>App Switcher</b>.
-    /// Also prevents app <b>screenshots</b> or <b>recording</b> to be taken.
-    /// The specified parameters are for using a <u>Color</u> or an <u>Image</u> as protection on iOS only.
-    /// </summary>
-    /// <param name="screenProtectionOptions">
-    /// ScreenProtectionOptions contains extra options for screen security protection,
-    /// in order to customize the screen protection by specifying either a <b>Color</b> or an <b>Image</b> for iOS devices.
-    /// </param>
-    /// <remarks>
-    /// These parameters have <u><b>no effect</b></u> on <b>Android</b> and <b>Windows</b> platforms.
-    /// </remarks>
-    public void ActivateScreenSecurityProtection(ScreenProtectionOptions screenProtectionOptions)
-    {
-        if (!string.IsNullOrEmpty(screenProtectionOptions.HexColor)
-            && string.IsNullOrEmpty(screenProtectionOptions.Image))
-        {
-            if (screenProtectionOptions.HexColor.IsHexColor())
-                ColorProtectionManager.HandleColorProtection(true, screenProtectionOptions.HexColor, _window.Value);
-            else
-                throw new ArgumentException($"{screenProtectionOptions.HexColor} is not a valid hexadecimal color.");
-        }
-        else if (!string.IsNullOrEmpty(screenProtectionOptions.Image)
-            && string.IsNullOrEmpty(screenProtectionOptions.HexColor))
-        {
-            if (screenProtectionOptions.Image.IsValidImage())
-                ImageProtectionManager.HandleImageProtection(true, screenProtectionOptions.Image, _window.Value);
-            else
-                throw new ArgumentException($"{screenProtectionOptions.Image} is not a valid image format.");
-        }
-
-        HandleScreenCaptureProtection(screenProtectionOptions.PreventScreenshot, screenProtectionOptions.PreventScreenRecording);
     }
 
     /// <summary>
@@ -81,17 +48,13 @@ partial class ScreenSecurityImplementation : IScreenSecurity
     {
         BlurProtectionManager.HandleBlurProtection(false);
 
-        ColorProtectionManager.HandleColorProtection(false);
-
-        ImageProtectionManager.HandleImageProtection(false);
-
         ScreenRecordingProtectionManager.HandleScreenRecordingProtection(false);
 
         ScreenshotProtectionManager.HandleScreenshotProtection(false);
     }
 
     /// <summary>
-    /// Prevent screen content from being exposed by using a <b>Blur layer</b> when the app 
+    /// Prevent screen content from being exposed by using a <b>Blur layer</b> when the app
     /// is sent to <b>Background</b> or the <b>App Switcher</b>.
     /// </summary>
     /// <param name="style">
@@ -115,7 +78,7 @@ partial class ScreenSecurityImplementation : IScreenSecurity
     /// Prevent screen content from being exposed by using a <b>Color layer</b> when the app is sent to
     /// <b>Background</b> or the <b>App Switcher</b>.
     /// </summary>
-    /// <param name="hexColor">Hexadecimal color as <b><c>string</c></b> in the form of 
+    /// <param name="hexColor">Hexadecimal color as <b><c>string</c></b> in the form of
     /// <b><c>#RGB</c></b>, <b><c>#RGBA</c></b>, <b><c>#RRGGBB</c></b> or <b><c>#RRGGBBAA</c></b>.
     /// <b>#FFFFFF</b> by default.</param>
     public void EnableColorScreenProtection(string hexColor = "#FFFFFF")
@@ -153,10 +116,10 @@ partial class ScreenSecurityImplementation : IScreenSecurity
     /// Prevent screen content from <b>being recorded</b> by the system or external app.
     /// <b>It uses the Blur layer by default.</b>
     /// </summary>
-    /// <param name="withColor">Hexadecimal color as <b><c>string</c></b> in the form of 
-    /// <b><c>#RGB</c></b>, <b><c>#RGBA</c></b>, <b><c>#RRGGBB</c></b> or <b><c>#RRGGBBAA</c></b>. 
+    /// <param name="withColor">Hexadecimal color as <b><c>string</c></b> in the form of
+    /// <b><c>#RGB</c></b>, <b><c>#RGBA</c></b>, <b><c>#RRGGBB</c></b> or <b><c>#RRGGBBAA</c></b>.
     /// It can be mixed with <paramref name="withBlur"/>.</param>
-    /// <param name="withBlur">Set it to <b><c>false</c></b> to deactivate screen protection with Blur. 
+    /// <param name="withBlur">Set it to <b><c>false</c></b> to deactivate screen protection with Blur.
     /// It can be mixed with <paramref name="withColor"/>. <b><c>True</c> by default.</b></param>
     public void EnableScreenRecordingProtection(string withColor = "", bool withBlur = true)
     {

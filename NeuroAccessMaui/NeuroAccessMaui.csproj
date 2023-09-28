@@ -51,6 +51,22 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Platforms\iOS\BlurProtectionManager.cs" />
+	  <Compile Remove="Platforms\iOS\IOSHelpers.cs" />
+	  <Compile Remove="Platforms\iOS\ScreenRecordingProtectionManager.cs" />
+	  <Compile Remove="Platforms\iOS\ScreenSecurity.ios.cs" />
+	  <Compile Remove="Platforms\iOS\ScreenshotProtectionManager.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="Platforms\iOS\BlurProtectionManager.cs" />
+	  <None Include="Platforms\iOS\IOSHelpers.cs" />
+	  <None Include="Platforms\iOS\ScreenRecordingProtectionManager.cs" />
+	  <None Include="Platforms\iOS\ScreenSecurity.ios.cs" />
+	  <None Include="Platforms\iOS\ScreenshotProtectionManager.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Common" Version="8.2.1" />
 		<PackageReference Include="CommunityToolkit.Maui" Version="5.3.0" />
 		<PackageReference Include="CommunityToolkit.Maui.Markup" Version="3.2.0" />
