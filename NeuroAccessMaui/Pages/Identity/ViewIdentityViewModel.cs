@@ -1066,7 +1066,7 @@ public partial class ViewIdentityViewModel : QrXmppViewModel
 			if (succeeded)
 			{
 				this.LegalIdentity = revokedIdentity;
-				await ServiceRef.TagProfile.RevokeLegalIdentity(revokedIdentity);
+				ServiceRef.TagProfile.RevokeLegalIdentity(revokedIdentity);
 
 				await App.SetRegistrationPageAsync();
 			}
@@ -1111,7 +1111,7 @@ public partial class ViewIdentityViewModel : QrXmppViewModel
 			if (succeeded)
 			{
 				this.LegalIdentity = compromisedIdentity;
-				await ServiceRef.TagProfile.RevokeLegalIdentity(compromisedIdentity);
+				ServiceRef.TagProfile.RevokeLegalIdentity(compromisedIdentity);
 
 				await App.SetRegistrationPageAsync();
 			}

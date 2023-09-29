@@ -97,7 +97,7 @@ internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 
 					if (HostName == this.domainName && PortNumber == XmppCredentials.DefaultPort)
 					{
-						await ServiceRef.TagProfile.SetDomain(this.domainName, true, ServiceRef.TagProfile.ApiKey, ServiceRef.TagProfile.ApiSecret);
+						ServiceRef.TagProfile.SetDomain(this.domainName, true, ServiceRef.TagProfile.ApiKey, ServiceRef.TagProfile.ApiSecret);
 					}
 				}
 
@@ -399,21 +399,31 @@ internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 		}
 	}
 
-	private async Task TagProfile_StepChanged(object Sender, EventArgs e)
+	private void TagProfile_StepChanged(object? Sender, EventArgs e)
 	{
 		if (!this.IsLoaded)
 		{
 			return;
 		}
 
-		if (this.ShouldCreateClient())
+		Task.Run(async () =>
 		{
-			await this.CreateXmppClient(ServiceRef.TagProfile.Step <= RegistrationStep.RegisterIdentity);
-		}
-		else if (ServiceRef.TagProfile.Step <= RegistrationStep.Account)
-		{
-			await this.DestroyXmppClient();
-		}
+			try
+			{
+				if (this.ShouldCreateClient())
+				{
+					await this.CreateXmppClient(ServiceRef.TagProfile.Step <= RegistrationStep.RegisterIdentity);
+				}
+				else if (ServiceRef.TagProfile.Step <= RegistrationStep.Account)
+				{
+					await this.DestroyXmppClient();
+				}
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
+		});
 	}
 
 	private Task XmppClient_Error(object Sender, Exception e)
@@ -457,7 +467,7 @@ internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 
 				if (string.IsNullOrEmpty(ServiceRef.TagProfile.PasswordHashMethod))
 				{
-					await ServiceRef.TagProfile.SetAccount(ServiceRef.TagProfile.Account, this.xmppClient.PasswordHash, this.xmppClient.PasswordHashMethod);
+					ServiceRef.TagProfile.SetAccount(ServiceRef.TagProfile.Account, this.xmppClient.PasswordHash, this.xmppClient.PasswordHashMethod);
 				}
 
 				if (ServiceRef.TagProfile.NeedsUpdating() && await this.DiscoverServices())
@@ -503,13 +513,13 @@ internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 	/// <summary>
 	/// An event that triggers whenever the connection state to the XMPP server changes.
 	/// </summary>
-	public event StateChangedEventHandler ConnectionStateChanged;
+	public event StateChangedEventHandler? ConnectionStateChanged;
 
 	private async Task OnConnectionStateChanged(XmppState NewState)
 	{
 		try
 		{
-			Task T = this.ConnectionStateChanged?.Invoke(this, NewState);
+			Task? T = this.ConnectionStateChanged?.Invoke(this, NewState);
 
 			if (T is not null)
 			{

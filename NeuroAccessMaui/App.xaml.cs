@@ -170,11 +170,11 @@ public partial class App : Application, IDisposable
 			if (LanguageName is not null)
 			{
 				SelectedLanguage = SupportedLanguages.FirstOrDefault(
-					el => el.TwoLetterISOLanguageName.Equals(LanguageName, StringComparison.OrdinalIgnoreCase), SelectedLanguage);
+					el => string.Equals(el.TwoLetterISOLanguageName, LanguageName, StringComparison.OrdinalIgnoreCase), SelectedLanguage);
 			}
 
 			if ((LanguageName is null) ||
-				!SelectedLanguage.TwoLetterISOLanguageName.Equals(LanguageName, StringComparison.OrdinalIgnoreCase))
+				!string.Equals(SelectedLanguage.TwoLetterISOLanguageName, LanguageName, StringComparison.OrdinalIgnoreCase))
 			{
 				Preferences.Set("user_selected_language", SelectedLanguage.TwoLetterISOLanguageName);
 			}
@@ -634,7 +634,7 @@ public partial class App : Application, IDisposable
 			}
 		}
 
-		await ServiceRef.TagProfile.FromConfiguration(Configuration);
+		ServiceRef.TagProfile.FromConfiguration(Configuration);
 	}
 
 	/// <summary>

@@ -77,7 +77,7 @@ public partial class ChangePinViewModel : ObservableObject
 
 	public PinStrength NewPinStrength => ServiceRef.TagProfile.ValidatePinStrength(this.NewPin);
 
-	public bool NewPinMatchesRetypedNewPin => string.IsNullOrEmpty(this.NewPin) ? string.IsNullOrEmpty(this.RetypedNewPin) : this.NewPin.Equals(this.RetypedNewPin, StringComparison.Ordinal);
+	public bool NewPinMatchesRetypedNewPin => string.IsNullOrEmpty(this.NewPin) ? string.IsNullOrEmpty(this.RetypedNewPin) : string.Equals(this.NewPin, this.RetypedNewPin, StringComparison.Ordinal);
 
 	//!!!
 	/*

@@ -1,6 +1,5 @@
 ﻿using NeuroAccessMaui.Services.Storage;
 using System.ComponentModel;
-using Waher.Networking;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Runtime.Inventory;
 
@@ -18,12 +17,12 @@ public interface ITagProfile
 	/// <summary>
 	/// An event that triggers during the registration/profile build process, as the profile becomes more/less complete.
 	/// </summary>
-	event EventHandlerAsync StepChanged;
+	event EventHandler? StepChanged;
 
 	/// <summary>
 	/// An event that fires whenever any property on the <see cref="ITagProfile"/> changes.
 	/// </summary>
-	event PropertyChangedEventHandler Changed;
+	event PropertyChangedEventHandler? Changed;
 
 	/// <summary>
 	/// The domain this profile is connected to.
@@ -150,7 +149,7 @@ public interface ITagProfile
 	/// Copies values from the <see cref="TagConfiguration"/> to this instance.
 	/// </summary>
 	/// <param name="configuration"></param>
-	Task FromConfiguration(TagConfiguration configuration);
+	void FromConfiguration(TagConfiguration configuration);
 
 	/// <summary>
 	/// Returns <c>true</c> if the current <see cref="ITagProfile"/> needs to have its values updated, <c>false</c> otherwise.
@@ -200,22 +199,22 @@ public interface ITagProfile
 	/// <param name="defaultXmppConnectivity">If connecting to the domain can be done using default parameters (host=domain, default c2s port).</param>
 	/// <param name="Key">Key to use, if an account is to be created.</param>
 	/// <param name="Secret">Secret to use, if an account is to be created.</param>
-	Task SetDomain(string domainName, bool defaultXmppConnectivity, string Key, string Secret);
+	void SetDomain(string domainName, bool defaultXmppConnectivity, string Key, string Secret);
 
 	/// <summary>
 	/// Revert Step 1.
 	/// </summary>
-	Task ClearDomain();
+	void ClearDomain();
 
 	/// <summary>
 	/// An alternative Step 1, used for accounts with an obsoleted identity, - validate contact info (the same or updated) without changing account data.
 	/// </summary>
-	Task RevalidateContactInfo();
+	void RevalidateContactInfo();
 
 	/// <summary>
 	/// Revert an alternative Step 1, used for accounts with an obsoleted identity, - invalidate contact info without erasing the legal identity or otherwise changing the account.
 	/// </summary>
-	Task InvalidateContactInfo();
+	void InvalidateContactInfo();
 
 	/// <summary>
 	/// Step 2 - set the account name and password for a <em>new</em> account.
@@ -223,7 +222,7 @@ public interface ITagProfile
 	/// <param name="accountName">The account/user name.</param>
 	/// <param name="clientPasswordHash">The password hash (never send the real password).</param>
 	/// <param name="clientPasswordHashMethod">The hash method used when hashing the password.</param>
-	Task SetAccount(string accountName, string clientPasswordHash, string clientPasswordHashMethod);
+	void SetAccount(string accountName, string clientPasswordHash, string clientPasswordHashMethod);
 
 	/// <summary>
 	/// Step 2 and 3 - set the account name and password for an <em>existing</em> account.
@@ -232,33 +231,33 @@ public interface ITagProfile
 	/// <param name="clientPasswordHash">The password hash (never send the real password).</param>
 	/// <param name="clientPasswordHashMethod">The hash method used when hashing the password.</param>
 	/// <param name="identity">The new identity.</param>
-	Task SetAccountAndLegalIdentity(string accountName, string clientPasswordHash, string clientPasswordHashMethod, LegalIdentity identity);
+	void SetAccountAndLegalIdentity(string accountName, string clientPasswordHash, string clientPasswordHashMethod, LegalIdentity identity);
 
 	/// <summary>
 	/// Revert Step 2.
 	/// </summary>
-	Task ClearAccount(bool GoToPrevStep = true);
+	void ClearAccount(bool GoToPrevStep = true);
 
 	/// <summary>
 	/// Step 3 - set the legal identity of a newly created account.
 	/// </summary>
 	/// <param name="legalIdentity">The legal identity to use.</param>
-	Task SetLegalIdentity(LegalIdentity legalIdentity);
+	void SetLegalIdentity(LegalIdentity legalIdentity);
 
 	/// <summary>
 	/// Revert Step 3.
 	/// </summary>
-	Task ClearLegalIdentity();
+	void ClearLegalIdentity();
 
 	/// <summary>
 	/// Step 4 - set the current legal identity as validated.
 	/// </summary>
-	Task SetIsValidated();
+	void SetIsValidated();
 
 	/// <summary>
 	/// Revert Step 4.
 	/// </summary>
-	Task ClearIsValidated();
+	void ClearIsValidated();
 
 	/// <summary>
 	///  Step 5 - Set a pin to use for protecting the account.
@@ -267,12 +266,12 @@ public interface ITagProfile
 	/// <param name="AddOrUpdatePin">
 	/// If we should use <paramref name="Pin"/> to set or clear pin or we should ignore <paramref name="Pin"/> and just complete th step.
 	/// </param>
-	Task CompletePinStep(string Pin, bool AddOrUpdatePin = true);
+	void CompletePinStep(string Pin, bool AddOrUpdatePin = true);
 
 	/// <summary>
 	/// Revert Step 5.
 	/// </summary>
-	Task RevertPinStep();
+	void RevertPinStep();
 
 	/// <summary>
 	/// Step 1 - Set if the user choose the educational or experimental purpose.
@@ -290,13 +289,13 @@ public interface ITagProfile
 	/// Sets the current <see cref="LegalIdentity"/> to the revoked identity, and reverses the <see cref="Step"/> property.
 	/// </summary>
 	/// <param name="revokedIdentity">The revoked identity to use.</param>
-	Task RevokeLegalIdentity(LegalIdentity revokedIdentity);
+	void RevokeLegalIdentity(LegalIdentity revokedIdentity);
 
 	/// <summary>
 	/// Sets the current <see cref="LegalIdentity"/> to the compromised identity, and reverses the <see cref="Step"/> property.
 	/// </summary>
 	/// <param name="compromisedIdentity">The compromised identity to use.</param>
-	Task CompromiseLegalIdentity(LegalIdentity compromisedIdentity);
+	void CompromiseLegalIdentity(LegalIdentity compromisedIdentity);
 
 	/// <summary>
 	/// Used during XMPP service discovery. Sets the legal id.

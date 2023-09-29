@@ -1,8 +1,6 @@
 ﻿using NeuroAccessMaui.Extensions;
-using NeuroAccessMaui.Services.EventLog;
 using System.Text;
 using System.Text.RegularExpressions;
-using Waher.Networking;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Runtime.Inventory;
 using Waher.Security;
@@ -75,17 +73,28 @@ public enum PurposeUse
 [Singleton]
 public class TagProfile : ITagProfile
 {
+	private readonly WeakEventManager onStepChangedEventManager = new();
+	private readonly WeakEventManager onChangedEventManager = new();
+
 	/// <summary>
 	/// An event that fires every time the <see cref="Step"/> property changes.
 	/// </summary>
-	public event EventHandlerAsync StepChanged;
+	public event EventHandler? StepChanged
+	{
+		add => this.onStepChangedEventManager.AddEventHandler(value);
+		remove => this.onStepChangedEventManager.RemoveEventHandler(value);
+	}
 
 	/// <summary>
 	/// An event that fires every time any property changes.
 	/// </summary>
-	public event System.ComponentModel.PropertyChangedEventHandler Changed;
+	public event System.ComponentModel.PropertyChangedEventHandler? Changed
+	{
+		add => this.onChangedEventManager.AddEventHandler(value);
+		remove => this.onChangedEventManager.RemoveEventHandler(value);
+	}
 
-	private LegalIdentity legalIdentity;
+	private LegalIdentity? legalIdentity;
 	private string objectId;
 	private string domain;
 	private string apiKey;
@@ -119,22 +128,9 @@ public class TagProfile : ITagProfile
 	/// Invoked whenever the current <see cref="Step"/> changes, to fire the <see cref="StepChanged"/> event.
 	/// </summary>
 	/// <param name="e"></param>
-	protected virtual async Task OnStepChanged(EventArgs e)
+	protected virtual void OnStepChanged(EventArgs e)
 	{
-		try
-		{
-			Task T = StepChanged?.Invoke(this, EventArgs.Empty);
-
-			if (T is not null)
-			{
-				await T;
-			}
-		}
-		catch (Exception ex)
-		{
-			ILogService LogService = App.Instantiate<ILogService>();
-			LogService.LogException(ex);
-		}
+		this.onChangedEventManager.HandleEvent(this, EventArgs.Empty, nameof(StepChanged));
 	}
 
 	/// <summary>
@@ -143,7 +139,7 @@ public class TagProfile : ITagProfile
 	/// <param name="e"></param>
 	protected virtual void OnChanged(System.ComponentModel.PropertyChangedEventArgs e)
 	{
-		Changed?.Invoke(this, e);
+		this.onChangedEventManager.HandleEvent(this, e, nameof(Changed));
 	}
 
 	/// <summary>
@@ -183,7 +179,7 @@ public class TagProfile : ITagProfile
 	/// Parses an instance of a <see cref="TagConfiguration"/> object to update this instance's properties.
 	/// </summary>
 	/// <param name="configuration"></param>
-	public async Task FromConfiguration(TagConfiguration configuration)
+	public void FromConfiguration(TagConfiguration configuration)
 	{
 		try
 		{
@@ -210,7 +206,7 @@ public class TagProfile : ITagProfile
 			this.LegalIdentity = configuration.LegalIdentity;
 
 			// Do this last, as listeners will read the other properties when the event is fired.
-			await this.SetStep(configuration.Step);
+			this.SetStep(configuration.Step);
 		}
 		finally
 		{
@@ -267,7 +263,7 @@ public class TagProfile : ITagProfile
 		get => this.domain;
 		private set
 		{
-			if (!string.Equals(this.domain, value))
+			if (!string.Equals(this.domain, value, StringComparison.Ordinal))
 			{
 				this.domain = value;
 				this.FlagAsDirty(nameof(this.Domain));
@@ -281,7 +277,7 @@ public class TagProfile : ITagProfile
 		get => this.apiKey;
 		private set
 		{
-			if (!string.Equals(this.apiKey, value))
+			if (!string.Equals(this.apiKey, value, StringComparison.Ordinal))
 			{
 				this.apiKey = value;
 				this.FlagAsDirty(nameof(this.ApiKey));
@@ -295,7 +291,7 @@ public class TagProfile : ITagProfile
 		get => this.apiSecret;
 		private set
 		{
-			if (!string.Equals(this.apiSecret, value))
+			if (!string.Equals(this.apiSecret, value, StringComparison.Ordinal))
 			{
 				this.apiSecret = value;
 				this.FlagAsDirty(nameof(this.ApiSecret));
@@ -309,7 +305,7 @@ public class TagProfile : ITagProfile
 		get => this.phoneNumber;
 		private set
 		{
-			if (!string.Equals(this.phoneNumber, value))
+			if (!string.Equals(this.phoneNumber, value, StringComparison.Ordinal))
 			{
 				this.phoneNumber = value;
 				this.FlagAsDirty(nameof(this.PhoneNumber));
@@ -323,7 +319,7 @@ public class TagProfile : ITagProfile
 		get => this.eMail;
 		private set
 		{
-			if (!string.Equals(this.eMail, value))
+			if (!string.Equals(this.eMail, value, StringComparison.Ordinal))
 			{
 				this.eMail = value;
 				this.FlagAsDirty(nameof(this.EMail));
@@ -337,7 +333,7 @@ public class TagProfile : ITagProfile
 		get => this.account;
 		private set
 		{
-			if (!string.Equals(this.account, value))
+			if (!string.Equals(this.account, value, StringComparison.Ordinal))
 			{
 				this.account = value;
 				this.FlagAsDirty(nameof(this.Account));
@@ -351,7 +347,7 @@ public class TagProfile : ITagProfile
 		get => this.passwordHash;
 		private set
 		{
-			if (!string.Equals(this.passwordHash, value))
+			if (!string.Equals(this.passwordHash, value, StringComparison.Ordinal))
 			{
 				this.passwordHash = value;
 				this.FlagAsDirty(nameof(this.PasswordHash));
@@ -365,7 +361,7 @@ public class TagProfile : ITagProfile
 		get => this.passwordHashMethod;
 		private set
 		{
-			if (!string.Equals(this.passwordHashMethod, value))
+			if (!string.Equals(this.passwordHashMethod, value, StringComparison.Ordinal))
 			{
 				this.passwordHashMethod = value;
 				this.FlagAsDirty(nameof(this.PasswordHashMethod));
@@ -379,7 +375,7 @@ public class TagProfile : ITagProfile
 		get => this.legalJid;
 		private set
 		{
-			if (!string.Equals(this.legalJid, value))
+			if (!string.Equals(this.legalJid, value, StringComparison.Ordinal))
 			{
 				this.legalJid = value;
 				this.FlagAsDirty(nameof(this.LegalJid));
@@ -393,7 +389,7 @@ public class TagProfile : ITagProfile
 		get => this.httpFileUploadJid;
 		private set
 		{
-			if (!string.Equals(this.httpFileUploadJid, value))
+			if (!string.Equals(this.httpFileUploadJid, value, StringComparison.Ordinal))
 			{
 				this.httpFileUploadJid = value;
 				this.FlagAsDirty(nameof(this.HttpFileUploadJid));
@@ -421,7 +417,7 @@ public class TagProfile : ITagProfile
 		get => this.logJid;
 		private set
 		{
-			if (!string.Equals(this.logJid, value))
+			if (!string.Equals(this.logJid, value, StringComparison.Ordinal))
 			{
 				this.logJid = value;
 				this.FlagAsDirty(nameof(this.LogJid));
@@ -432,13 +428,13 @@ public class TagProfile : ITagProfile
 	/// <inheritdoc/>
 	public RegistrationStep Step => this.step;
 
-	private async Task SetStep(RegistrationStep NewStep)
+	private void SetStep(RegistrationStep NewStep)
 	{
 		if (this.step != NewStep)
 		{
 			this.step = NewStep;
 			this.FlagAsDirty(nameof(this.Step));
-			await this.OnStepChanged(EventArgs.Empty);
+			this.OnStepChanged(EventArgs.Empty);
 		}
 	}
 
@@ -457,7 +453,7 @@ public class TagProfile : ITagProfile
 		get => this.pinHash;
 		private set
 		{
-			if (!string.Equals(this.pinHash, value))
+			if (!string.Equals(this.pinHash, value, StringComparison.Ordinal))
 			{
 				this.pinHash = value;
 				this.FlagAsDirty(nameof(this.PinHash));
@@ -516,7 +512,7 @@ public class TagProfile : ITagProfile
 	}
 
 	/// <inheritdoc/>
-	public LegalIdentity LegalIdentity
+	public LegalIdentity? LegalIdentity
 	{
 		get => this.legalIdentity;
 		private set
@@ -552,11 +548,11 @@ public class TagProfile : ITagProfile
 
 	#region Build Steps
 
-	private async Task DecrementConfigurationStep(RegistrationStep? stepToRevertTo = null)
+	private void DecrementConfigurationStep(RegistrationStep? stepToRevertTo = null)
 	{
 		if (stepToRevertTo.HasValue)
 		{
-			await this.SetStep(stepToRevertTo.Value);
+			this.SetStep(stepToRevertTo.Value);
 		}
 		else
 		{
@@ -567,52 +563,52 @@ public class TagProfile : ITagProfile
 					break;
 
 				case RegistrationStep.Account:
-					await this.SetStep(RegistrationStep.ValidateContactInfo);
+					this.SetStep(RegistrationStep.ValidateContactInfo);
 					break;
 
 				case RegistrationStep.RegisterIdentity:
-					await this.SetStep(RegistrationStep.ValidateContactInfo);
+					this.SetStep(RegistrationStep.ValidateContactInfo);
 					break;
 
 				case RegistrationStep.ValidateIdentity:
-					await this.SetStep(RegistrationStep.RegisterIdentity);
+					this.SetStep(RegistrationStep.RegisterIdentity);
 					break;
 
 				case RegistrationStep.Pin:
-					await this.SetStep(RegistrationStep.ValidateIdentity);
+					this.SetStep(RegistrationStep.ValidateIdentity);
 					break;
 			}
 		}
 	}
 
-	private async Task IncrementConfigurationStep(RegistrationStep? stepToGoTo = null)
+	private void IncrementConfigurationStep(RegistrationStep? stepToGoTo = null)
 	{
 		if (stepToGoTo.HasValue)
 		{
-			await this.SetStep(stepToGoTo.Value);
+			this.SetStep(stepToGoTo.Value);
 		}
 		else
 		{
 			switch (this.Step)
 			{
 				case RegistrationStep.ValidateContactInfo:
-					await this.SetStep(this.LegalIdentity is null ? RegistrationStep.Account : RegistrationStep.RegisterIdentity);
+					this.SetStep(this.LegalIdentity is null ? RegistrationStep.Account : RegistrationStep.RegisterIdentity);
 					break;
 
 				case RegistrationStep.Account:
-					await this.SetStep(RegistrationStep.RegisterIdentity);
+					this.SetStep(RegistrationStep.RegisterIdentity);
 					break;
 
 				case RegistrationStep.RegisterIdentity:
-					await this.SetStep(RegistrationStep.ValidateIdentity);
+					this.SetStep(RegistrationStep.ValidateIdentity);
 					break;
 
 				case RegistrationStep.ValidateIdentity:
-					await this.SetStep(RegistrationStep.Pin);
+					this.SetStep(RegistrationStep.Pin);
 					break;
 
 				case RegistrationStep.Pin:
-					await this.SetStep(RegistrationStep.Complete);
+					this.SetStep(RegistrationStep.Complete);
 					break;
 			}
 		}
@@ -631,7 +627,7 @@ public class TagProfile : ITagProfile
 	}
 
 	/// <inheritdoc/>
-	public async Task SetDomain(string domainName, bool defaultXmppConnectivity, string Key, string Secret)
+	public void SetDomain(string domainName, bool defaultXmppConnectivity, string Key, string Secret)
 	{
 		this.Domain = domainName;
 		this.DefaultXmppConnectivity = defaultXmppConnectivity;
@@ -640,34 +636,34 @@ public class TagProfile : ITagProfile
 
 		if (!string.IsNullOrWhiteSpace(this.Domain) && this.Step == RegistrationStep.ValidateContactInfo)
 		{
-			await this.IncrementConfigurationStep();
+			this.IncrementConfigurationStep();
 		}
 	}
 
 	/// <inheritdoc/>
-	public async Task ClearDomain()
+	public void ClearDomain()
 	{
 		this.Domain = string.Empty;
-		await this.DecrementConfigurationStep(RegistrationStep.ValidateContactInfo);
+		this.DecrementConfigurationStep(RegistrationStep.ValidateContactInfo);
 	}
 
 	/// <inheritdoc/>
-	public async Task RevalidateContactInfo()
+	public void RevalidateContactInfo()
 	{
 		if (!string.IsNullOrWhiteSpace(this.Domain) && this.Step == RegistrationStep.ValidateContactInfo)
 		{
-			await this.IncrementConfigurationStep();
+			this.IncrementConfigurationStep();
 		}
 	}
 
 	/// <inheritdoc/>
-	public async Task InvalidateContactInfo()
+	public void InvalidateContactInfo()
 	{
-		await this.DecrementConfigurationStep();
+		this.DecrementConfigurationStep();
 	}
 
 	/// <inheritdoc/>
-	public async Task SetAccount(string accountName, string clientPasswordHash, string clientPasswordHashMethod)
+	public void SetAccount(string accountName, string clientPasswordHash, string clientPasswordHashMethod)
 	{
 		this.Account = accountName;
 		this.PasswordHash = clientPasswordHash;
@@ -677,12 +673,12 @@ public class TagProfile : ITagProfile
 
 		if (!string.IsNullOrWhiteSpace(this.Account) && this.Step == RegistrationStep.Account)
 		{
-			await this.IncrementConfigurationStep();
+			this.IncrementConfigurationStep();
 		}
 	}
 
 	/// <inheritdoc/>
-	public async Task SetAccountAndLegalIdentity(string accountName, string clientPasswordHash, string clientPasswordHashMethod, LegalIdentity identity)
+	public void SetAccountAndLegalIdentity(string accountName, string clientPasswordHash, string clientPasswordHashMethod, LegalIdentity identity)
 	{
 		this.Account = accountName;
 		this.PasswordHash = clientPasswordHash;
@@ -696,23 +692,22 @@ public class TagProfile : ITagProfile
 			switch (this.LegalIdentity.State)
 			{
 				case IdentityState.Created:
-					await this.IncrementConfigurationStep(RegistrationStep.ValidateIdentity);
+					this.IncrementConfigurationStep(RegistrationStep.ValidateIdentity);
 					break;
 
 				case IdentityState.Approved:
-					await this.IncrementConfigurationStep(
-						this.HasPin ? RegistrationStep.Complete : RegistrationStep.Pin);
+					this.IncrementConfigurationStep(this.HasPin ? RegistrationStep.Complete : RegistrationStep.Pin);
 					break;
 
 				default:
-					await this.IncrementConfigurationStep();
+					this.IncrementConfigurationStep();
 					break;
 			}
 		}
 	}
 
 	/// <inheritdoc/>
-	public async Task ClearAccount(bool GoToPrevStep = true)
+	public void ClearAccount(bool GoToPrevStep = true)
 	{
 		this.Account = string.Empty;
 		this.PasswordHash = string.Empty;
@@ -721,62 +716,60 @@ public class TagProfile : ITagProfile
 
 		if (GoToPrevStep)
 		{
-			await this.DecrementConfigurationStep(RegistrationStep.ValidateContactInfo);
+			this.DecrementConfigurationStep(RegistrationStep.ValidateContactInfo);
 		}
 	}
 
 	/// <inheritdoc/>
-	public async Task SetLegalIdentity(LegalIdentity Identity)
+	public void SetLegalIdentity(LegalIdentity Identity)
 	{
 		this.LegalIdentity = Identity;
 
 		if (this.Step == RegistrationStep.RegisterIdentity && Identity is not null &&
 			(Identity.State == IdentityState.Created || Identity.State == IdentityState.Approved))
 		{
-			await this.IncrementConfigurationStep();
+			this.IncrementConfigurationStep();
 		}
 	}
 
 	/// <inheritdoc/>
-	public Task ClearLegalIdentity()
+	public void ClearLegalIdentity()
 	{
 		this.LegalIdentity = null;
 		this.LegalJid = null;
-
-		return Task.CompletedTask;
 	}
 
 	/// <inheritdoc/>
-	public async Task RevokeLegalIdentity(LegalIdentity revokedIdentity)
+	public void RevokeLegalIdentity(LegalIdentity revokedIdentity)
 	{
 		this.LegalIdentity = revokedIdentity;
-		await this.DecrementConfigurationStep(RegistrationStep.ValidateContactInfo);
+		this.DecrementConfigurationStep(RegistrationStep.ValidateContactInfo);
 	}
 
 	/// <inheritdoc/>
-	public async Task CompromiseLegalIdentity(LegalIdentity compromisedIdentity)
+	public void CompromiseLegalIdentity(LegalIdentity compromisedIdentity)
 	{
 		this.LegalIdentity = compromisedIdentity;
-		await this.DecrementConfigurationStep(RegistrationStep.ValidateContactInfo);
+		this.DecrementConfigurationStep(RegistrationStep.ValidateContactInfo);
 	}
 
 	/// <inheritdoc/>
-	public async Task SetIsValidated()
+	public void SetIsValidated()
 	{
 		if (this.Step == RegistrationStep.ValidateIdentity)
 		{
-			await this.IncrementConfigurationStep();
+			this.IncrementConfigurationStep();
 		}
 	}
 
 	/// <inheritdoc/>
-	public async Task ClearIsValidated()
+	public void ClearIsValidated()
 	{
-		await this.DecrementConfigurationStep(RegistrationStep.RegisterIdentity);
+		this.DecrementConfigurationStep(RegistrationStep.RegisterIdentity);
 	}
 
 	/// <inheritdoc/>
-	public async Task CompletePinStep(string Pin, bool AddOrUpdatePin = true)
+	public void CompletePinStep(string Pin, bool AddOrUpdatePin = true)
 	{
 		if (AddOrUpdatePin)
 		{
@@ -785,16 +778,16 @@ public class TagProfile : ITagProfile
 
 		if (this.step == RegistrationStep.Pin)
 		{
-			await this.IncrementConfigurationStep();
+			this.IncrementConfigurationStep();
 		}
 	}
 
 	/// <inheritdoc/>
-	public async Task RevertPinStep()
+	public void RevertPinStep()
 	{
 		if (this.Step == RegistrationStep.Pin)
 		{
-			await this.DecrementConfigurationStep(RegistrationStep.ValidateIdentity); // prev
+			this.DecrementConfigurationStep(RegistrationStep.ValidateIdentity); // prev
 		}
 	}
 

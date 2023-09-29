@@ -347,13 +347,13 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 				if (identity.State == IdentityState.Compromised)
 				{
 					userMessage = ServiceRef.Localizer[nameof(AppResources.YourLegalIdentityHasBeenCompromised)];
-					await ServiceRef.TagProfile.CompromiseLegalIdentity(identity);
+					ServiceRef.TagProfile.CompromiseLegalIdentity(identity);
 					gotoRegistrationPage = true;
 				}
 				else if (identity.State == IdentityState.Obsoleted)
 				{
 					userMessage = ServiceRef.Localizer[nameof(AppResources.YourLegalIdentityHasBeenObsoleted)];
-					await ServiceRef.TagProfile.RevokeLegalIdentity(identity);
+					ServiceRef.TagProfile.RevokeLegalIdentity(identity);
 					gotoRegistrationPage = true;
 				}
 				else if (identity.State == IdentityState.Approved && !await ServiceRef.XmppService.HasPrivateKey(identity.Id))
@@ -366,7 +366,7 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 
 					if (Response)
 					{
-						await ServiceRef.TagProfile.SetLegalIdentity(identity);
+						ServiceRef.TagProfile.SetLegalIdentity(identity);
 					}
 					else
 					{
@@ -385,7 +385,7 @@ internal class ContractOrchestratorService : LoadableService, IContractOrchestra
 				}
 				else
 				{
-					await ServiceRef.TagProfile.SetLegalIdentity(identity);
+					ServiceRef.TagProfile.SetLegalIdentity(identity);
 				}
 
 				if (gotoRegistrationPage)
