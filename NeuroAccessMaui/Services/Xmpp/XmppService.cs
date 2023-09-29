@@ -161,7 +161,7 @@ internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 					}
 				}
 
-				if (!string.IsNullOrWhiteSpace(ServiceRef.TagProfile.HttpFileUploadJid) && ServiceRef.TagProfile.HttpFileUploadMaxSize.HasValue)
+				if (!string.IsNullOrWhiteSpace(ServiceRef.TagProfile.HttpFileUploadJid) && (ServiceRef.TagProfile.HttpFileUploadMaxSize > 0))
 				{
 					this.fileUploadClient = new HttpFileUploadClient(this.xmppClient, ServiceRef.TagProfile.HttpFileUploadJid, ServiceRef.TagProfile.HttpFileUploadMaxSize);
 				}
@@ -406,7 +406,7 @@ internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 			return;
 		}
 
-		Task.Run(async () =>
+		Task ExecutionTask = Task.Run(async () =>
 		{
 			try
 			{
@@ -484,7 +484,7 @@ internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 						}
 					}
 
-					if (this.fileUploadClient is null && !string.IsNullOrWhiteSpace(ServiceRef.TagProfile.HttpFileUploadJid) && ServiceRef.TagProfile.HttpFileUploadMaxSize.HasValue)
+					if (this.fileUploadClient is null && !string.IsNullOrWhiteSpace(ServiceRef.TagProfile.HttpFileUploadJid) && (ServiceRef.TagProfile.HttpFileUploadMaxSize > 0))
 					{
 						this.fileUploadClient = new HttpFileUploadClient(this.xmppClient, ServiceRef.TagProfile.HttpFileUploadJid, ServiceRef.TagProfile.HttpFileUploadMaxSize);
 					}
@@ -890,7 +890,7 @@ internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 			return false;
 		}
 
-		if (string.IsNullOrWhiteSpace(ServiceRef.TagProfile.HttpFileUploadJid) || !ServiceRef.TagProfile.HttpFileUploadMaxSize.HasValue)
+		if (string.IsNullOrWhiteSpace(ServiceRef.TagProfile.HttpFileUploadJid) || (ServiceRef.TagProfile.HttpFileUploadMaxSize <= 0))
 		{
 			return false;
 		}
@@ -916,7 +916,7 @@ internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 
 			if (itemResponse.HasFeature(HttpFileUploadClient.Namespace))
 			{
-				long? maxSize = HttpFileUploadClient.FindMaxFileSize(Client, itemResponse);
+				long maxSize = HttpFileUploadClient.FindMaxFileSize(Client, itemResponse) ?? 0;
 				ServiceRef.TagProfile.SetFileUploadParameters(Item.JID, maxSize);
 			}
 

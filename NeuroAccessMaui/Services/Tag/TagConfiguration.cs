@@ -1,8 +1,7 @@
-﻿using NeuroAccessMaui.Services.Tag;
-using Waher.Networking.XMPP.Contracts;
+﻿using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence.Attributes;
 
-// !!! keep the namespace as is. It's impotant for the database
+// !!! keep the namespace as is. It's important for the database
 namespace NeuroAccessMaui.Services;
 
 /// <summary>
@@ -15,37 +14,37 @@ public sealed class TagConfiguration
 	/// The primary key in persistent storage.
 	/// </summary>
 	[ObjectId]
-	public string ObjectId { get; set; }
+	public string? ObjectId { get; set; }
 
 	/// <summary>
 	/// Current domain
 	/// </summary>
-	[DefaultValueStringEmpty]
-	public string Domain { get; set; }
+	[DefaultValueNull]
+	public string? Domain { get; set; }
 
 	/// <summary>
 	/// API Key
 	/// </summary>
-	[DefaultValueStringEmpty]
-	public string ApiKey { get; set; }
+	[DefaultValueNull]
+	public string? ApiKey { get; set; }
 
 	/// <summary>
 	/// API Secret
 	/// </summary>
-	[DefaultValueStringEmpty]
-	public string ApiSecret { get; set; }
+	[DefaultValueNull]
+	public string? ApiSecret { get; set; }
 
 	/// <summary>
 	/// Verified Phone Number
 	/// </summary>
-	[DefaultValueStringEmpty]
-	public string PhoneNumber { get; set; }
+	[DefaultValueNull]
+	public string? PhoneNumber { get; set; }
 
 	/// <summary>
 	/// Verified e-mail address
 	/// </summary>
-	[DefaultValueStringEmpty]
-	public string EMail { get; set; }
+	[DefaultValueNull]
+	public string? EMail { get; set; }
 
 	/// <summary>
 	/// If connecting to the domain can be done using default parameters (host=domain, default c2s port).
@@ -56,50 +55,50 @@ public sealed class TagConfiguration
 	/// <summary>
 	/// Account name
 	/// </summary>
-	[DefaultValueStringEmpty]
-	public string Account { get; set; }
+	[DefaultValueNull]
+	public string? Account { get; set; }
 
 	/// <summary>
 	/// Password hash
 	/// </summary>
-	[DefaultValueStringEmpty]
-	public string PasswordHash { get; set; }
+	[DefaultValueNull]
+	public string? PasswordHash { get; set; }
 
 	/// <summary>
 	/// Password hash method
 	/// </summary>
-	[DefaultValueStringEmpty]
-	public string PasswordHashMethod { get; set; }
+	[DefaultValueNull]
+	public string? PasswordHashMethod { get; set; }
 
 	/// <summary>
 	/// Legal Jabber Id
 	/// </summary>
-	[DefaultValueStringEmpty]
-	public string LegalJid { get; set; }
+	[DefaultValueNull]
+	public string? LegalJid { get; set; }
 
 	/// <summary>
 	/// Http File Upload Jabber Id
 	/// </summary>
-	[DefaultValueStringEmpty]
-	public string HttpFileUploadJid { get; set; }
+	[DefaultValueNull]
+	public string? HttpFileUploadJid { get; set; }
 
 	/// <summary>
 	/// Http File Upload max file size
 	/// </summary>
-	[DefaultValueNull]
-	public long? HttpFileUploadMaxSize { get; set; }
+	[DefaultValue(0)]
+	public long HttpFileUploadMaxSize { get; set; }
 
 	/// <summary>
 	/// Log Jabber JID
 	/// </summary>
-	[DefaultValueStringEmpty]
-	public string LogJid { get; set; }
+	[DefaultValueNull]
+	public string? LogJid { get; set; }
 
 	/// <summary>
 	/// The hash of the user's pin.
 	/// </summary>
-	[DefaultValueStringEmpty]
-	public string PinHash { get; set; }
+	[DefaultValueNull]
+	public string? PinHash { get; set; }
 
 	/// <summary>
 	/// Set to true if the PIN should be used.
@@ -116,8 +115,8 @@ public sealed class TagConfiguration
 	/// <summary>
 	/// Purpose for using the app
 	/// </summary>
-	[DefaultValue(PurposeUse.Personal)]
-	public PurposeUse Purpose { get; set; }
+	[DefaultValue(Tag.PurposeUse.Personal)]
+	public Tag.PurposeUse Purpose { get; set; }
 
 	/// <summary>
 	/// Set to current timestamp if the user used a Test OTP Code.
@@ -129,11 +128,11 @@ public sealed class TagConfiguration
 	/// User's current legal identity.
 	/// </summary>
 	[DefaultValueNull]
-	public LegalIdentity LegalIdentity { get; set; }
+	public LegalIdentity? LegalIdentity { get; set; }
 
 	/// <summary>
 	/// Current step in the registration process.
 	/// </summary>
-	[DefaultValue(Tag.RegistrationStep.ValidateContactInfo)]
+	[DefaultValue(Tag.RegistrationStep.RequestPurpose)]
 	public Tag.RegistrationStep Step { get; set; }
 }

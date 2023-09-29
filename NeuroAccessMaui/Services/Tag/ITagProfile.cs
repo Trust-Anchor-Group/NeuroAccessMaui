@@ -82,7 +82,7 @@ public interface ITagProfile
 	/// <summary>
 	/// The XMPP server's max size for file uploads.
 	/// </summary>
-	long? HttpFileUploadMaxSize { get; }
+	long HttpFileUploadMaxSize { get; }
 
 	/// <summary>
 	/// The XMPP server's log Jid.
@@ -132,7 +132,7 @@ public interface ITagProfile
 	/// <summary>
 	/// The legal identity of the curren user/profile.
 	/// </summary>
-	LegalIdentity LegalIdentity { get; }
+	LegalIdentity? LegalIdentity { get; }
 
 	/// <summary>
 	/// Returns <c>true</c> if the current <see cref="ITagProfile"/> has changed values and need saving, <c>false</c> otherwise.
@@ -308,7 +308,7 @@ public interface ITagProfile
 	/// </summary>
 	/// <param name="httpFileUploadJid">The http file upload id.</param>
 	/// <param name="maxSize">The max size allowed.</param>
-	void SetFileUploadParameters(string httpFileUploadJid, long? maxSize);
+	void SetFileUploadParameters(string httpFileUploadJid, long maxSize);
 
 	/// <summary>
 	/// Used during XMPP service discovery. Sets the log id.

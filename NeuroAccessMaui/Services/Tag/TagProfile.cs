@@ -15,32 +15,37 @@ public enum RegistrationStep
 	/// <summary>
 	/// Validate Phone Number and e-mail address
 	/// </summary>
-	ValidateContactInfo = 0,
+	RequestPurpose = 0,
+
+	/// <summary>
+	/// Validate Phone Number and e-mail address
+	/// </summary>
+	ValidatePhone = 1,
+
+	/// <summary>
+	/// Validate Phone Number and e-mail address
+	/// </summary>
+	ValidateEmail = 2,
 
 	/// <summary>
 	/// Create or connect to an account
 	/// </summary>
-	Account = 1,
+	Account = 3,
 
 	/// <summary>
 	/// Register an identity
 	/// </summary>
-	RegisterIdentity = 2,
-
-	/// <summary>
-	/// Have the identity validated.
-	/// </summary>
-	ValidateIdentity = 3,
+	RegisterIdentity = 4,
 
 	/// <summary>
 	/// Create a PIN code
 	/// </summary>
-	Pin = 4,
+	Pin = 5,
 
 	/// <summary>
 	/// Profile is completed.
 	/// </summary>
-	Complete = 5
+	Complete = 6
 }
 
 /// <summary>
@@ -95,25 +100,25 @@ public class TagProfile : ITagProfile
 	}
 
 	private LegalIdentity? legalIdentity;
-	private string objectId;
-	private string domain;
-	private string apiKey;
-	private string apiSecret;
-	private string phoneNumber;
-	private string eMail;
-	private string account;
-	private string passwordHash;
-	private string passwordHashMethod;
-	private string legalJid;
-	private string httpFileUploadJid;
-	private string logJid;
-	private string mucJid;
-	private string pinHash;
-	private long? httpFileUploadMaxSize;
+	private string? objectId;
+	private string? domain;
+	private string? apiKey;
+	private string? apiSecret;
+	private string? phoneNumber;
+	private string? eMail;
+	private string? account;
+	private string? passwordHash;
+	private string? passwordHashMethod;
+	private string? legalJid;
+	private string? httpFileUploadJid;
+	private string? logJid;
+	private string? mucJid;
+	private string? pinHash;
+	private long httpFileUploadMaxSize;
 	private bool isTest;
 	private PurposeUse purpose;
 	private DateTime? testOtpTimestamp;
-	private RegistrationStep step = RegistrationStep.ValidateContactInfo;
+	private RegistrationStep step = RegistrationStep.ValidatePhone;
 	private bool suppressPropertyChangedEvents;
 	private bool defaultXmppConnectivity;
 
@@ -206,7 +211,7 @@ public class TagProfile : ITagProfile
 			this.LegalIdentity = configuration.LegalIdentity;
 
 			// Do this last, as listeners will read the other properties when the event is fired.
-			this.SetStep(configuration.Step);
+			this.GoToStep(configuration.Step);
 		}
 		finally
 		{
@@ -226,13 +231,13 @@ public class TagProfile : ITagProfile
 	/// <inheritdoc/>
 	public virtual bool LegalIdentityNeedsUpdating()
 	{
-		return this.legalIdentity.NeedsUpdating();
+		return this.legalIdentity?.NeedsUpdating() ?? true;
 	}
 
 	/// <inheritdoc/>
 	public virtual bool IsCompleteOrWaitingForValidation()
 	{
-		return this.Step >= RegistrationStep.ValidateIdentity;
+		return this.Step > RegistrationStep.RegisterIdentity;
 	}
 
 	/// <inheritdoc/>
@@ -398,7 +403,7 @@ public class TagProfile : ITagProfile
 	}
 
 	/// <inheritdoc/>
-	public long? HttpFileUploadMaxSize
+	public long HttpFileUploadMaxSize
 	{
 		get => this.httpFileUploadMaxSize;
 		private set
@@ -428,7 +433,7 @@ public class TagProfile : ITagProfile
 	/// <inheritdoc/>
 	public RegistrationStep Step => this.step;
 
-	private void SetStep(RegistrationStep NewStep)
+	public void GoToStep(RegistrationStep NewStep)
 	{
 		if (this.step != NewStep)
 		{
@@ -436,10 +441,23 @@ public class TagProfile : ITagProfile
 			this.FlagAsDirty(nameof(this.Step));
 			this.OnStepChanged(EventArgs.Empty);
 		}
+
+		//!!! On increment
+		/*
+			switch (this.Step)
+			{
+				case RegistrationStep.ValidateContactInfo:
+					this.SetStep(this.LegalIdentity is null ? RegistrationStep.Account : RegistrationStep.RegisterIdentity);
+					break;
+			}
+		 */
 	}
 
 	/// <inheritdoc/>
-	public bool FileUploadIsSupported => !string.IsNullOrWhiteSpace(this.HttpFileUploadJid) && this.HttpFileUploadMaxSize.HasValue;
+	public bool FileUploadIsSupported
+	{
+		get => !string.IsNullOrWhiteSpace(this.HttpFileUploadJid) && this.HttpFileUploadMaxSize > 0;
+	}
 
 	/// <inheritdoc/>
 	public string Pin
@@ -548,72 +566,6 @@ public class TagProfile : ITagProfile
 
 	#region Build Steps
 
-	private void DecrementConfigurationStep(RegistrationStep? stepToRevertTo = null)
-	{
-		if (stepToRevertTo.HasValue)
-		{
-			this.SetStep(stepToRevertTo.Value);
-		}
-		else
-		{
-			switch (this.Step)
-			{
-				case RegistrationStep.ValidateContactInfo:
-					// Do nothing
-					break;
-
-				case RegistrationStep.Account:
-					this.SetStep(RegistrationStep.ValidateContactInfo);
-					break;
-
-				case RegistrationStep.RegisterIdentity:
-					this.SetStep(RegistrationStep.ValidateContactInfo);
-					break;
-
-				case RegistrationStep.ValidateIdentity:
-					this.SetStep(RegistrationStep.RegisterIdentity);
-					break;
-
-				case RegistrationStep.Pin:
-					this.SetStep(RegistrationStep.ValidateIdentity);
-					break;
-			}
-		}
-	}
-
-	private void IncrementConfigurationStep(RegistrationStep? stepToGoTo = null)
-	{
-		if (stepToGoTo.HasValue)
-		{
-			this.SetStep(stepToGoTo.Value);
-		}
-		else
-		{
-			switch (this.Step)
-			{
-				case RegistrationStep.ValidateContactInfo:
-					this.SetStep(this.LegalIdentity is null ? RegistrationStep.Account : RegistrationStep.RegisterIdentity);
-					break;
-
-				case RegistrationStep.Account:
-					this.SetStep(RegistrationStep.RegisterIdentity);
-					break;
-
-				case RegistrationStep.RegisterIdentity:
-					this.SetStep(RegistrationStep.ValidateIdentity);
-					break;
-
-				case RegistrationStep.ValidateIdentity:
-					this.SetStep(RegistrationStep.Pin);
-					break;
-
-				case RegistrationStep.Pin:
-					this.SetStep(RegistrationStep.Complete);
-					break;
-			}
-		}
-	}
-
 	/// <inheritdoc/>
 	public void SetPhone(string PhoneNumber)
 	{
@@ -634,32 +586,38 @@ public class TagProfile : ITagProfile
 		this.ApiKey = Key;
 		this.ApiSecret = Secret;
 
+		//!!!
+		/*
 		if (!string.IsNullOrWhiteSpace(this.Domain) && this.Step == RegistrationStep.ValidateContactInfo)
 		{
 			this.IncrementConfigurationStep();
 		}
+		*/
 	}
 
 	/// <inheritdoc/>
 	public void ClearDomain()
 	{
 		this.Domain = string.Empty;
-		this.DecrementConfigurationStep(RegistrationStep.ValidateContactInfo);
+		//!!! this.DecrementConfigurationStep(RegistrationStep.ValidateContactInfo);
 	}
 
 	/// <inheritdoc/>
 	public void RevalidateContactInfo()
 	{
+		//!!!
+		/*
 		if (!string.IsNullOrWhiteSpace(this.Domain) && this.Step == RegistrationStep.ValidateContactInfo)
 		{
 			this.IncrementConfigurationStep();
 		}
+		*/
 	}
 
 	/// <inheritdoc/>
 	public void InvalidateContactInfo()
 	{
-		this.DecrementConfigurationStep();
+		//!!! this.DecrementConfigurationStep();
 	}
 
 	/// <inheritdoc/>
@@ -671,10 +629,13 @@ public class TagProfile : ITagProfile
 		this.ApiKey = string.Empty;
 		this.ApiSecret = string.Empty;
 
+		//!!!
+		/*
 		if (!string.IsNullOrWhiteSpace(this.Account) && this.Step == RegistrationStep.Account)
 		{
 			this.IncrementConfigurationStep();
 		}
+		*/
 	}
 
 	/// <inheritdoc/>
@@ -687,6 +648,8 @@ public class TagProfile : ITagProfile
 		this.ApiKey = string.Empty;
 		this.ApiSecret = string.Empty;
 
+		//!!!
+		/*
 		if (!string.IsNullOrWhiteSpace(this.Account) && this.Step == RegistrationStep.Account && this.LegalIdentity is not null)
 		{
 			switch (this.LegalIdentity.State)
@@ -704,6 +667,7 @@ public class TagProfile : ITagProfile
 					break;
 			}
 		}
+		*/
 	}
 
 	/// <inheritdoc/>
@@ -712,12 +676,15 @@ public class TagProfile : ITagProfile
 		this.Account = string.Empty;
 		this.PasswordHash = string.Empty;
 		this.PasswordHashMethod = string.Empty;
-		this.LegalJid = null;
+		this.LegalJid = string.Empty;
 
+		//!!!
+		/*
 		if (GoToPrevStep)
 		{
 			this.DecrementConfigurationStep(RegistrationStep.ValidateContactInfo);
 		}
+		*/
 	}
 
 	/// <inheritdoc/>
@@ -725,47 +692,53 @@ public class TagProfile : ITagProfile
 	{
 		this.LegalIdentity = Identity;
 
+		//!!!
+		/*
 		if (this.Step == RegistrationStep.RegisterIdentity && Identity is not null &&
 			(Identity.State == IdentityState.Created || Identity.State == IdentityState.Approved))
 		{
 			this.IncrementConfigurationStep();
 		}
+		*/
 	}
 
 	/// <inheritdoc/>
 	public void ClearLegalIdentity()
 	{
 		this.LegalIdentity = null;
-		this.LegalJid = null;
+		this.LegalJid = string.Empty;
 	}
 
 	/// <inheritdoc/>
 	public void RevokeLegalIdentity(LegalIdentity revokedIdentity)
 	{
 		this.LegalIdentity = revokedIdentity;
-		this.DecrementConfigurationStep(RegistrationStep.ValidateContactInfo);
+		//!!! this.DecrementConfigurationStep(RegistrationStep.ValidateContactInfo);
 	}
 
 	/// <inheritdoc/>
 	public void CompromiseLegalIdentity(LegalIdentity compromisedIdentity)
 	{
 		this.LegalIdentity = compromisedIdentity;
-		this.DecrementConfigurationStep(RegistrationStep.ValidateContactInfo);
+		//!!! this.DecrementConfigurationStep(RegistrationStep.ValidateContactInfo);
 	}
 
 	/// <inheritdoc/>
 	public void SetIsValidated()
 	{
+		//!!!
+		/*
 		if (this.Step == RegistrationStep.ValidateIdentity)
 		{
 			this.IncrementConfigurationStep();
 		}
+		*/
 	}
 
 	/// <inheritdoc/>
 	public void ClearIsValidated()
 	{
-		this.DecrementConfigurationStep(RegistrationStep.RegisterIdentity);
+		//!!! this.DecrementConfigurationStep(RegistrationStep.RegisterIdentity);
 	}
 
 	/// <inheritdoc/>
@@ -776,19 +749,25 @@ public class TagProfile : ITagProfile
 			this.Pin = Pin;
 		}
 
+		//!!!
+		/*
 		if (this.step == RegistrationStep.Pin)
 		{
 			this.IncrementConfigurationStep();
 		}
+		*/
 	}
 
 	/// <inheritdoc/>
 	public void RevertPinStep()
 	{
+		//!!!
+		/*
 		if (this.Step == RegistrationStep.Pin)
 		{
 			this.DecrementConfigurationStep(RegistrationStep.ValidateIdentity); // prev
 		}
+		*/
 	}
 
 	/// <inheritdoc/>
@@ -796,6 +775,9 @@ public class TagProfile : ITagProfile
 	{
 		this.IsTest = IsTest;
 		this.Purpose = Purpose;
+
+		//!!! Do the increment
+
 	}
 
 	/// <inheritdoc/>
@@ -811,7 +793,7 @@ public class TagProfile : ITagProfile
 	}
 
 	/// <inheritdoc/>
-	public void SetFileUploadParameters(string httpFileUploadJid, long? maxSize)
+	public void SetFileUploadParameters(string httpFileUploadJid, long maxSize)
 	{
 		this.HttpFileUploadJid = httpFileUploadJid;
 		this.HttpFileUploadMaxSize = maxSize;
@@ -865,10 +847,10 @@ public class TagProfile : ITagProfile
 		this.logJid = string.Empty;
 		this.mucJid = string.Empty;
 		this.pinHash = string.Empty;
-		this.httpFileUploadMaxSize = null;
+		this.httpFileUploadMaxSize = 0;
 		this.isTest = false;
 		this.TestOtpTimestamp = null;
-		this.step = RegistrationStep.ValidateContactInfo;
+		this.step = RegistrationStep.RequestPurpose;
 		this.defaultXmppConnectivity = false;
 
 		this.IsDirty = true;
