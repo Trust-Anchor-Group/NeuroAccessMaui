@@ -9,6 +9,7 @@
 	BackgroundInputTransparent="False"
 	CloseWhenBackgroundIsClicked="True"
 	HasSystemPadding="False">
+	
 	<mopups:PopupPage.Animation>
 		<animations:ScaleAnimation
 			PositionIn="Center"

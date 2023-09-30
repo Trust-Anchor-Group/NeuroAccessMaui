@@ -11,15 +11,14 @@
 
 	<ListView x:Name="InnerListView"
 		Margin="0"
-		HorizontalOptions="StartAndExpand"
-		HeightRequest="100"
-		IsVisible="false"
+		HorizontalOptions="FillAndExpand"
+		VerticalOptions="FillAndExpand"
 		ItemSelected="InnerListView_ItemSelected"
 		SelectedItem="{Binding SelectedItem, Source=ThisPage}" />
 
 	<BoxView
-		Margin="0"
 		HeightRequest="1"
+		Margin="0"
 		IsVisible="{Binding IsVisile, Source=InnerListView}"
 		Color="Black" />
 

@@ -174,12 +174,12 @@ public partial class ComboBox
 
 	private void InnerEntry_Focused(object sender, FocusEventArgs e)
 	{
-		this.InnerListView.IsVisible = true;
+		//this.InnerListView.IsVisible = true;
 	}
 
 	private void InnerEntry_Unfocused(object sender, FocusEventArgs e)
 	{
-		this.InnerListView.IsVisible = false;
+		//this.InnerListView.IsVisible = false;
 	}
 
 	private void InnerEntry_TextChanged(object sender, TextChangedEventArgs e)
@@ -189,14 +189,14 @@ public partial class ComboBox
 			return;
 		}
 
-		if (string.IsNullOrEmpty(e.NewTextValue))
+	if (string.IsNullOrEmpty(e.NewTextValue))
 		{
 			this.suppressSelectedItemFiltering = true;
 			this.InnerListView.SelectedItem = null;
 			this.suppressSelectedItemFiltering = false;
 		}
 
-		this.InnerListView.IsVisible = true;
+		//this.InnerListView.IsVisible = true;
 
 		this.OnTextChanged(e);
 	}
@@ -223,7 +223,7 @@ public partial class ComboBox
 		}
 
 		this.suppressFiltering = false;
-		this.InnerListView.IsVisible = false;
+		//this.InnerListView.IsVisible = false;
 
 		this.OnSelectedItemChanged(e);
 

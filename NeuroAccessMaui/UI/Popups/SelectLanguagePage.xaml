@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<mopups:PopupPage x:Name="ThisPage" x:Class="NeuroAccessMaui.Popups.SelectLanguagePage" x:DataType="viewmodel:SelectLanguageViewModel"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
+	xmlns:controls="clr-namespace:NeuroAccessMaui.Controls"
+	xmlns:converters="clr-namespace:NeuroAccessMaui.Converters"
+	xmlns:data="clr-namespace:NeuroAccessMaui.Services.Localization"
+	xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups"
+	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.Popups"
+	BackgroundColor="Transparent"
+	BackgroundClicked="PopupPage_BackgroundClicked"
+	BackgroundInputTransparent="False"
+	CloseWhenBackgroundIsClicked="True"
+	HasSystemPadding="False">
+
+	<mopups:PopupPage.Animation>
+		<animations:ScaleAnimation
+			EasingIn="SinOut"
+			EasingOut="SinOut"
+			HasBackgroundAnimation="True"
+			PositionIn="Center"
+			PositionOut="Center" />
+	</mopups:PopupPage.Animation>
+
+	<Grid
+		BackgroundColor="Transparent"
+		Padding="8"
+		HorizontalOptions="FillAndExpand"
+		VerticalOptions="FillAndExpand"
+		ColumnDefinitions="*,4*,*"
+		RowDefinitions="*,2*,*">
+
+		<Border
+			Grid.Row="1"
+			Grid.Column="1"
+			BackgroundColor="{AppThemeBinding Light={StaticResource SecondaryBackgroundLight},
+											  Dark={StaticResource SecondaryBackgroundDark}}"
+			Padding="24"
+			HorizontalOptions="FillAndExpand"
+			VerticalOptions="FillAndExpand">
+			<Border.StrokeShape>
+				<RoundRectangle
+					CornerRadius="8" />
+			</Border.StrokeShape>
+			<Border.Shadow>
+				<Shadow
+					Brush="{StaticResource PrimaryBackgroundDark}"
+					Opacity="0.8"
+					Radius="16"
+					Offset="0,0" />
+			</Border.Shadow>
+
+			<CollectionView x:Name="InnerListView"
+				Margin="0"
+				HorizontalOptions="FillAndExpand"
+				VerticalOptions="FillAndExpand"
+				ItemSizingStrategy="MeasureFirstItem"
+				ItemTemplate="{StaticResource SelectLanguageDataTemplate}"
+							SelectionChanged="InnerListView_SelectionChanged"
+				ItemsSource="{Binding ItemsSource}"
+				SelectedItem="{Binding SelectedItem}"
+				SelectionMode="Single"
+				VerticalScrollBarVisibility="Always" />
+		</Border>
+	</Grid>
+
+</mopups:PopupPage>

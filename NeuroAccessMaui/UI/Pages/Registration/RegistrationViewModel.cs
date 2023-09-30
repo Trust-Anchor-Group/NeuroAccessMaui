@@ -2,6 +2,9 @@
 using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Mopups.Services;
+using NeuroAccessMaui.Popups;
+using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
 
 namespace NeuroAccessMaui.Pages.Registration;
@@ -25,7 +28,8 @@ public partial class RegistrationViewModel : BaseViewModel
 	[RelayCommand]
 	private async Task ChangeLanguage()
 	{
-			 //LocalizationManager.Current.CurrentCulture = language;
-		await Task.CompletedTask;
+		await MopupService.Instance.PushAsync(ServiceHelper.GetService<SelectLanguagePage>());
+
+		//LocalizationManager.Current.CurrentCulture = language;
 	}
 }
