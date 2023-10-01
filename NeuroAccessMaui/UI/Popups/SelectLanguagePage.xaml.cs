@@ -4,6 +4,9 @@ public partial class SelectLanguagePage
 {
 	private SelectLanguageViewModel viewModel;
 
+	public double ViewWidth => (DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density) * (3.0 / 4.0);
+	public double ViewHeight => (DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density) * (1.0 / 2.0);
+
 	public SelectLanguagePage(SelectLanguageViewModel ViewModel)
 	{
 		this.InitializeComponent();
@@ -20,10 +23,6 @@ public partial class SelectLanguagePage
 		{
 			this.InnerListView.ItemTemplate = (DataTemplate)DataTemplate;
 		}
-	}
-
-	private void PopupPage_BackgroundClicked(object sender, EventArgs e)
-	{
 	}
 
 	private void InnerListView_SelectionChanged(object sender, SelectionChangedEventArgs e)

@@ -5,6 +5,7 @@
 	xmlns:base="clr-namespace:NeuroAccessMaui.Pages.Registration"
 	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.Pages.Registration.Views">
 
+	<!--
 	<VisualElement.Resources>
 		<ControlTemplate
 			x:Key="FrameRadioTemplate">
@@ -52,7 +53,9 @@
 			</Frame>
 		</ControlTemplate>
 	</VisualElement.Resources>
+		-->
 
+	<!--
 	<ScrollView>
 		<Grid
 			HorizontalOptions="FillAndExpand"
@@ -101,4 +104,5 @@
 			</RadioButton>
 		</Grid>
 	</ScrollView>
+				-->
 </base:BaseRegistrationView>

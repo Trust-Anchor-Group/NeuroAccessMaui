@@ -87,7 +87,16 @@ internal sealed class CryptoService : ICryptoService
 			}
 
 			s = Hashes.BinaryToString(key) + "," + Hashes.BinaryToString(iv);
-			await SecureStorage.SetAsync(FileNameHash, s);
+
+			try
+			{
+				await SecureStorage.SetAsync(FileNameHash, s);
+			}
+			catch(Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
+			}
 		}
 
 		return new KeyValuePair<byte[], byte[]>(key, iv);

@@ -8,35 +8,31 @@
 	xmlns:data="clr-namespace:NeuroAccessMaui.Services.Localization"
 	xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups"
 	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.Popups"
-	BackgroundColor="Transparent"
-	BackgroundClicked="PopupPage_BackgroundClicked"
-	BackgroundInputTransparent="False"
-	CloseWhenBackgroundIsClicked="True"
-	HasSystemPadding="False">
+	BackgroundColor="#20000000">
 
 	<mopups:PopupPage.Animation>
 		<animations:ScaleAnimation
-			EasingIn="SinOut"
-			EasingOut="SinOut"
+			DurationIn="500"
+			DurationOut="500"
+			EasingIn="CubicIn"
+			EasingOut="CubicOut"
 			HasBackgroundAnimation="True"
 			PositionIn="Center"
 			PositionOut="Center" />
 	</mopups:PopupPage.Animation>
 
 	<Grid
+		HeightRequest="{Binding Source={x:Reference ThisPage}, Path=ViewHeight}"
+		WidthRequest="{Binding Source={x:Reference ThisPage}, Path=ViewWidth}"
 		BackgroundColor="Transparent"
 		Padding="8"
-		HorizontalOptions="FillAndExpand"
-		VerticalOptions="FillAndExpand"
-		ColumnDefinitions="*,4*,*"
-		RowDefinitions="*,2*,*">
+		HorizontalOptions="Fill"
+		VerticalOptions="Fill">
 
 		<Border
-			Grid.Row="1"
-			Grid.Column="1"
 			BackgroundColor="{AppThemeBinding Light={StaticResource SecondaryBackgroundLight},
 											  Dark={StaticResource SecondaryBackgroundDark}}"
-			Padding="24"
+			Padding="0,24,0,24"
 			HorizontalOptions="FillAndExpand"
 			VerticalOptions="FillAndExpand">
 			<Border.StrokeShape>
@@ -57,12 +53,11 @@
 				VerticalOptions="FillAndExpand"
 				ItemSizingStrategy="MeasureFirstItem"
 				ItemTemplate="{StaticResource SelectLanguageDataTemplate}"
-							SelectionChanged="InnerListView_SelectionChanged"
 				ItemsSource="{Binding ItemsSource}"
 				SelectedItem="{Binding SelectedItem}"
+				SelectionChanged="InnerListView_SelectionChanged"
 				SelectionMode="Single"
-				VerticalScrollBarVisibility="Always" />
+				VerticalScrollBarVisibility="Never" />
 		</Border>
 	</Grid>
-
 </mopups:PopupPage>

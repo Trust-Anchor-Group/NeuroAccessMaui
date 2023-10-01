@@ -10,12 +10,13 @@ public partial class RegistrationPage
 		this.InitializeComponent();
 		this.ContentPageModel = ViewModel;
 
-		StateContainer.SetCurrentState(this.GridWithAnimation, "Loading");
+		// StateContainer.SetCurrentState(this.GridWithAnimation, "Loading");
 	}
 
 	[RelayCommand]
 	async Task ChangeStateWithFadeAnimation()
 	{
+		/*
 		string currentState = StateContainer.GetCurrentState(this.GridWithAnimation);
 		currentState = (currentState is "Loaded") ? "Loading" : "Loaded";
 
@@ -23,5 +24,6 @@ public partial class RegistrationPage
 
 		RegistrationViewModel ViewModel = this.ViewModel<RegistrationViewModel>();
 		ViewModel.CurrentState = currentState;
+		*/
 	}
 }

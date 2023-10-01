@@ -43,6 +43,8 @@ public static class PageAppExtension
 		Builder.Services.AddTransient<CheckPinPage>();
 		Builder.Services.AddTransient<VerifyCodePage>();
 
+		// Controls
+
 		return Builder;
 	}
 }

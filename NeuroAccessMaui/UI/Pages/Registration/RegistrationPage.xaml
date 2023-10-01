@@ -12,6 +12,7 @@
 		<controls:Background />
 
 		<!--  CONTENT  -->
+		<!--
 		<Grid x:Name="GridWithAnimation"
 			HorizontalOptions="FillAndExpand"
 			VerticalOptions="FillAndExpand">
@@ -43,13 +44,15 @@
 					VerticalOptions="FillAndExpand" />
 
 			</mct:StateContainer.StateViews>
-
+-->
 			<!--  default state, should not occur  -->
+		<!--
 			<Label
 				HorizontalTextAlignment="Center"
 				Text="Something went wrong!"
 				VerticalTextAlignment="Center" />
 		</Grid>
+-->
 
 		<controls:TemplatedButton x:Name="LanguageButton"
 			HorizontalOptions="End"

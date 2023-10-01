@@ -451,25 +451,30 @@
 
 	<DataTemplate x:Key="SelectLanguageDataTemplate" x:DataType="localization:LanguageInfo">
 
+		<!--  https://github.com/dotnet/maui/issues/8494  -->
 		<Border
-			BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight},
-											  Dark={StaticResource PrimaryBackgroundDark}}"
-			Margin="0,4"
-			Padding="8">
-			<Border.StrokeShape>
-				<RoundRectangle
-					CornerRadius="4" />
-			</Border.StrokeShape>
-			<Grid
-				BackgroundColor="Transparent"
+			BackgroundColor="Transparent"
+			Padding="24,4">
+			<Border
+				BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight},
+												  Dark={StaticResource PrimaryBackgroundDark}}"
+				Padding="8"
 				HorizontalOptions="FillAndExpand">
+				<Border.StrokeShape>
+					<RoundRectangle
+						CornerRadius="4" />
+				</Border.StrokeShape>
+				<Grid
+					BackgroundColor="Transparent"
+					HorizontalOptions="FillAndExpand">
 
-				<Label
-					HorizontalTextAlignment="Center"
-					Text="{Binding NativeName}"
-					TextColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
-												Dark={StaticResource PrimaryForegroundDark}}" />
-			</Grid>
+					<Label
+						HorizontalTextAlignment="Center"
+						Text="{Binding NativeName}"
+						TextColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
+													Dark={StaticResource PrimaryForegroundDark}}" />
+				</Grid>
+			</Border>
 		</Border>
 	</DataTemplate>
 </ResourceDictionary>
