@@ -21,4 +21,9 @@ public interface IPlatformSpecific
 	/// Closes the application
 	/// </summary>
 	Task CloseApplication();
+
+	/// <summary>
+	/// Make a blurred screenshot
+	/// </summary>
+	Task<Stream> CaptureScreen(int blurRadius);
 }
