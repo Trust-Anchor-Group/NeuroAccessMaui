@@ -1,7 +1,9 @@
 ﻿using Android.Graphics;
 using Android.OS;
+using Android.Renderscripts;
 using Android.Views;
 using Waher.Events;
+using Android.App;
 
 namespace NeuroAccessMaui.Services;
 
@@ -105,11 +107,11 @@ public class PlatformSpecific : IPlatformSpecific
 		return Task.CompletedTask;
 	}
 
-	public async Task<Stream> CaptureScreen(int blurRadius)
+	public async Task<byte[]> CaptureScreen(int blurRadius)
 	{
 		blurRadius = Math.Min(25, Math.Max(blurRadius, 0));
 
-		Android.App.Activity? activity = Platform.CurrentActivity;
+		Activity? activity = Platform.CurrentActivity;
 		var rootView = activity.Window.DecorView.RootView;
 
 		using (var screenshot = Bitmap.CreateBitmap(
@@ -120,46 +122,67 @@ public class PlatformSpecific : IPlatformSpecific
 			var canvas = new Canvas(screenshot);
 			rootView.Draw(canvas);
 
-			Bitmap blurred = null;
+			Bitmap Blurred = null;
 
-			//if (activity != null && (int)Android.OS.Build.VERSION.SdkInt >= 17)
-			//{
-			//!!! blurred = ToBlurred(screenshot, activity, blurRadius);
-			//}
-			//else
-			//{
-			blurred = ToLegacyBlurred(screenshot, blurRadius);
-			//}
+			if (activity != null && (int)Android.OS.Build.VERSION.SdkInt >= 17)
+			{
+				Blurred = ToBlurred(screenshot, activity, blurRadius);
+			}
+			else
+			{
+				Blurred = ToLegacyBlurred(screenshot, blurRadius);
+			}
 
 			{
-				Stream stream = new MemoryStream();
-				blurred.Compress(Bitmap.CompressFormat.Jpeg, 40, stream);
-				stream.Seek(0, SeekOrigin.Begin);
-				return stream;
+				MemoryStream Stream = new MemoryStream();
+				Blurred.Compress(Bitmap.CompressFormat.Jpeg, 80, Stream);
+				Stream.Seek(0, SeekOrigin.Begin);
+
+				return Stream.ToArray();
 			}
 		}
 	}
 
-	//!!!
-	/*
-	private Bitmap ToBlurred(Bitmap originalBitmap, Context context, int radius)
+	private Bitmap ToBlurred(Bitmap originalBitmap, Activity? Activity, int radius)
 	{
+		// Create another bitmap that will hold the results of the filter.
 		Bitmap blurredBitmap = Bitmap.CreateBitmap(originalBitmap);
+		RenderScript renderScript = RenderScript.Create(Activity);
 
-		using (RenderScript renderScript = RenderScript.Create(context))
-		using (ScriptIntrinsicBlur script = ScriptIntrinsicBlur.Create(renderScript, Android.Renderscripts.Element.U8_4(renderScript)))
-		using (Allocation inAlloc = Allocation.CreateFromBitmap(renderScript, originalBitmap, Allocation.MipmapControl.MipmapNone, AllocationUsage.Script))
-		using (Allocation outAlloc = Allocation.CreateFromBitmap(renderScript, blurredBitmap))
-		{
-			script.SetRadius(radius);
-			script.SetInput(inAlloc);
-			script.ForEach(outAlloc);
-			outAlloc.CopyTo(blurredBitmap);
+		// Load up an instance of the specific script that we want to use.
+		// An Element is similar to a C type. The second parameter, Element.U8_4,
+		// tells the Allocation is made up of 4 fields of 8 unsigned bits.
+		ScriptIntrinsicBlur script = ScriptIntrinsicBlur.Create(renderScript, Android.Renderscripts.Element.U8_4(renderScript));
 
-			return blurredBitmap;
-		}
+		// Create an Allocation for the kernel inputs.
+		Allocation input = Allocation.CreateFromBitmap(renderScript, originalBitmap,
+													   Allocation.MipmapControl.MipmapFull,
+													   AllocationUsage.Script);
+
+		// Assign the input Allocation to the script.
+		script.SetInput(input);
+
+		// Set the blur radius
+		script.SetRadius(radius);
+
+		// Finally we need to create an output allocation to hold the output of the Renderscript.
+		Allocation output = Allocation.CreateTyped(renderScript, input.Type);
+
+		// Next, run the script. This will run the script over each Element in the Allocation, and copy it's
+		// output to the allocation we just created for this purpose.
+		script.ForEach(output);
+
+		// Copy the output to the blurred bitmap
+		output.CopyTo(blurredBitmap);
+
+		// Cleanup.
+		output.Destroy();
+		input.Destroy();
+		script.Destroy();
+		renderScript.Destroy();
+
+		return blurredBitmap;
 	}
-	*/
 
 	// Source: http://incubator.quasimondo.com/processing/superfast_blur.php
 	public static Bitmap ToLegacyBlurred(Bitmap source, int radius)

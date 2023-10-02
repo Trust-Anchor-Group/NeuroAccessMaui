@@ -31,7 +31,7 @@ public class PlatformSpecific : IPlatformSpecific
 		return Task.CompletedTask;
 	}
 
-	public Task<Stream> CaptureScreen(int blurRadius = 25)
+	public Task<byte[]> CaptureScreen(int blurRadius = 25)
 	{
 		blurRadius = Math.Min(25, Math.Max(blurRadius, 0));
 		UIImage capture;
@@ -51,7 +51,8 @@ public class PlatformSpecific : IPlatformSpecific
 				blurWindow.RemoveFromSuperview();
 				subview.Dispose();
 
-				return Task.FromResult(capture.AsJPEG(.6f).AsStream());
+				//!!! capture.AsJPEG(.8f).AsStream();
+				return Task.FromResult(new byte[0]);
 			}
 		}
 	}

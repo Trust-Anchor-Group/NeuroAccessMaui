@@ -1,32 +1,38 @@
-﻿using NeuroAccessMaui.Services;
-
-namespace NeuroAccessMaui.Popups;
+﻿namespace NeuroAccessMaui.Popups;
 
 public partial class SelectLanguagePage
 {
 	/// <summary>
 	/// Popup factory
 	/// </summary>
-	public static async Task<SelectLanguagePage> Create()
+	public static async Task<SelectLanguagePage?> Create()
 	{
-		SelectLanguageViewModel ViewModel = new();
-		return new SelectLanguagePage(ViewModel, null);
-/*
-		try
-		{
-			Stream ScreenStream = await ServiceRef.PlatformSpecific.CaptureScreen(10);
-			ImageSource Background = ImageSource.FromStream(() => ScreenStream);
+		SelectLanguagePage? Page = null;
 
-			return new SelectLanguagePage(ViewModel, Background);
-		}
-		catch (Exception ex)
+		return await MainThread.InvokeOnMainThreadAsync(async () =>
 		{
-			ServiceRef.LogService.LogException(ex);
-			await ServiceRef.UiSerializer.DisplayException(ex);
+			SelectLanguageViewModel ViewModel = new();
+			Page = await Task.FromResult(new SelectLanguagePage(ViewModel, null));
 
-			return new SelectLanguagePage(ViewModel, null);
-		}
-*/
+			/*
+			try
+			{
+				byte[] ScreenBitmap = await ServiceRef.PlatformSpecific.CaptureScreen(10);
+
+				ImageSource Background = ImageSource.FromStream(() => new MemoryStream(ScreenBitmap));
+				Page = new SelectLanguagePage(ViewModel, Background);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
+
+				Page = new SelectLanguagePage(ViewModel, null);
+			}
+			*/
+
+			return Page;
+		});
 	}
 
 	private SelectLanguageViewModel viewModel;

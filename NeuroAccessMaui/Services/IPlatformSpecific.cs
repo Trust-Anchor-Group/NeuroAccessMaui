@@ -25,5 +25,5 @@ public interface IPlatformSpecific
 	/// <summary>
 	/// Make a blurred screenshot
 	/// </summary>
-	Task<Stream> CaptureScreen(int blurRadius);
+	Task<byte[]> CaptureScreen(int blurRadius);
 }
