@@ -1,4 +1,3 @@
-using CommunityToolkit.Maui.Layouts;
 using CommunityToolkit.Mvvm.Input;
 
 namespace NeuroAccessMaui.Pages.Registration;

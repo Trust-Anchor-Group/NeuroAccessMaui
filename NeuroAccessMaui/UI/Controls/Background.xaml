@@ -5,7 +5,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	BackgroundColor="Transparent">
 
-	<Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+	<AbsoluteLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
 		<Path
 			Data="M-475.991 759.984C-475.991 759.984 -652.77 348.961 -281.049 373.456C90.6695 397.951 -163.291 -204.647 309.288 76.6778C781.869 358.006 536.859 -174.054 879.665 106.678"
 			Stroke="{AppThemeBinding Light={StaticResource CurvedLinesLight},
@@ -318,5 +318,5 @@
 									 Dark={StaticResource CurvedLinesDark}}"
 			StrokeMiterLimit="10"
 			StrokeThickness="2" />
-	</Grid>
+	</AbsoluteLayout>
 </ContentView>

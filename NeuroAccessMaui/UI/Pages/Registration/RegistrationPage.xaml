@@ -11,77 +11,89 @@
 	<Grid>
 		<controls:Background />
 
-		<!--  CONTENT  -->
-		<!--
-		<Grid x:Name="GridWithAnimation"
+		<Grid
 			HorizontalOptions="FillAndExpand"
-			VerticalOptions="FillAndExpand">
+			VerticalOptions="FillAndExpand"
+			ColumnDefinitions="*"
+			RowDefinitions="auto,auto,*">
 
-			<mct:StateContainer.StateViews>
+			<controls:TemplatedButton x:Name="LanguageButton"
+				Grid.Row="0"
+				HorizontalOptions="End"
+				VerticalOptions="Start"
+				Command="{Binding ChangeLanguageCommand}">
 
-				<views:LoadingView x:Name="LoadingView" x:FactoryMethod="Create" mct:StateView.StateKey="Loading"
-					HorizontalOptions="FillAndExpand"
-					VerticalOptions="FillAndExpand" />
+				<Grid
+					ColumnDefinitions="auto"
+					RowDefinitions="auto,auto">
 
-				<views:ChoosePurposeView x:Name="ChoosePurposeView" x:FactoryMethod="Create" mct:StateView.StateKey="ChoosePurpose"
-					HorizontalOptions="FillAndExpand"
-					VerticalOptions="FillAndExpand" />
+					<Image
+						Grid.Row="0"
+						Source="language_select_button.svg">
+						<Image.Behaviors>
+							<mct:IconTintColorBehavior
+								TintColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
+															Dark={StaticResource PrimaryForegroundDark}}" />
+						</Image.Behaviors>
+					</Image>
 
-				<views:ValidatePhoneView x:Name="ValidatePhoneView" x:FactoryMethod="Create" mct:StateView.StateKey="ValidatePhone"
-					HorizontalOptions="FillAndExpand"
-					VerticalOptions="FillAndExpand" />
+					<Label
+						Grid.Row="1"
+						Text="{Binding SelectedLanguage.NativeName}"
+						TextColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
+													Dark={StaticResource PrimaryForegroundDark}}" />
+				</Grid>
+			</controls:TemplatedButton>
 
-				<views:ValidateEmailView x:Name="ValidateEmailView" x:FactoryMethod="Create" mct:StateView.StateKey="ValidateEmail"
-					HorizontalOptions="FillAndExpand"
-					VerticalOptions="FillAndExpand" />
+			<Image
+				Grid.Row="1"
+				HeightRequest="110"
+				WidthRequest="233"
+				HorizontalOptions="Center"
+				Source="{AppThemeBinding Dark=neuro_access_logo_dark.svg,
+										 Light=neuro_access_logo_light.svg}" />
 
-				<views:ChooseAccountView x:Name="ChooseAccountView" x:FactoryMethod="Create" mct:StateView.StateKey="ChooseAccount"
-					HorizontalOptions="FillAndExpand"
-					VerticalOptions="FillAndExpand" />
+			<!--  CONTENT  -->
+			<Grid x:Name="GridWithAnimation"
+				Grid.Row="2"
+				HorizontalOptions="FillAndExpand"
+				VerticalOptions="FillAndExpand">
 
-				<views:DefinePinView x:Name="DefinePinView" x:FactoryMethod="Create" mct:StateView.StateKey="DefinePin"
-					HorizontalOptions="FillAndExpand"
-					VerticalOptions="FillAndExpand" />
+				<mct:StateContainer.StateViews>
+					<views:LoadingView x:Name="LoadingView" x:FactoryMethod="Create" mct:StateView.StateKey="Loading"
+						HorizontalOptions="FillAndExpand"
+						VerticalOptions="FillAndExpand" />
 
-			</mct:StateContainer.StateViews>
--->
-			<!--  default state, should not occur  -->
-		<!--
-			<Label
-				HorizontalTextAlignment="Center"
-				Text="Something went wrong!"
-				VerticalTextAlignment="Center" />
-		</Grid>
--->
+					<views:ChoosePurposeView x:Name="ChoosePurposeView" x:FactoryMethod="Create" mct:StateView.StateKey="ChoosePurpose"
+						HorizontalOptions="FillAndExpand"
+						VerticalOptions="FillAndExpand" />
 
-		<controls:TemplatedButton x:Name="LanguageButton"
-			HorizontalOptions="End"
-			VerticalOptions="Start"
-			Command="{Binding ChangeLanguageCommand}">
+					<views:ValidatePhoneView x:Name="ValidatePhoneView" x:FactoryMethod="Create" mct:StateView.StateKey="ValidatePhone"
+						HorizontalOptions="FillAndExpand"
+						VerticalOptions="FillAndExpand" />
 
-			<Grid
-				ColumnDefinitions="auto"
-				RowDefinitions="auto,auto">
+					<views:ValidateEmailView x:Name="ValidateEmailView" x:FactoryMethod="Create" mct:StateView.StateKey="ValidateEmail"
+						HorizontalOptions="FillAndExpand"
+						VerticalOptions="FillAndExpand" />
 
-				<Image
-					Grid.Row="0"
-					Source="language_select_button.svg">
-					<Image.Behaviors>
-						<mct:IconTintColorBehavior
-							TintColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
-														Dark={StaticResource PrimaryForegroundDark}}" />
-					</Image.Behaviors>
-				</Image>
+					<views:ChooseAccountView x:Name="ChooseAccountView" x:FactoryMethod="Create" mct:StateView.StateKey="ChooseAccount"
+						HorizontalOptions="FillAndExpand"
+						VerticalOptions="FillAndExpand" />
 
+					<views:DefinePinView x:Name="DefinePinView" x:FactoryMethod="Create" mct:StateView.StateKey="DefinePin"
+						HorizontalOptions="FillAndExpand"
+						VerticalOptions="FillAndExpand" />
+				</mct:StateContainer.StateViews>
+
+				<!--  default state, should not occur  -->
 				<Label
-					Grid.Row="1"
-					Text="{Binding SelectedLanguage.NativeName}"
-					TextColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
-												Dark={StaticResource PrimaryForegroundDark}}" />
+					HorizontalTextAlignment="Center"
+					Text="Something went wrong!"
+					VerticalTextAlignment="Center" />
 			</Grid>
-		</controls:TemplatedButton>
 
-		<!--
+
+			<!--
 
 		<Grid x:Name="GridWithAnimation">
 			<mct:StateContainer.StateViews>
@@ -115,5 +127,6 @@
 			</mct:StateContainer.StateViews>
 		</Grid>
 		-->
+		</Grid>
 	</Grid>
 </base:BaseContentPage>
