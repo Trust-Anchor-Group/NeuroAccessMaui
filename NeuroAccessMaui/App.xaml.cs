@@ -153,8 +153,8 @@ public partial class App : Application, IDisposable
 	/// </summary>
 	public static readonly LanguageInfo[] SupportedLanguages =
 		[
-			new("en"), new("sv"), new("es"), new("fr"), new("de"), new("da"),
-			new("no"), new("fi"), new("sr"), new("pt"), new("ro"), new("ru"),
+			new("en", "English"), new("sv", "svenska"), new("es", "español"), new("fr", "français"), new("de", "Deutsch"), new("da", "dansk"),
+			new("no", "norsk"), new("fi", "suomi"), new("sr", "српски"), new("pt", "português"), new("ro", "română"), new("ru", "русский"),
 		];
 
 	/// <summary>

@@ -5,8 +5,11 @@ namespace NeuroAccessMaui.Services.Localization;
 
 public class LanguageInfo : CultureInfo, INotifyPropertyChanged
 {
-	public LanguageInfo(string Language) : base(Language)
+	public string MyNativeName { get; private set; }
+
+	public LanguageInfo(string Language, string ShownName) : base(Language)
 	{
+		this.MyNativeName = ShownName;
 		LocalizationManager.CurrentCultureChanged += this.OnCurrentCultureChanged;
 	}
 

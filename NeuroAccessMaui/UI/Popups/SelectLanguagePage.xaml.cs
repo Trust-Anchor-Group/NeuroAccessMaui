@@ -43,7 +43,7 @@ public partial class SelectLanguagePage
 	private SelectLanguagePage(SelectLanguageViewModel ViewModel, ImageSource? Background) : base(Background)
 	{
 		this.InitializeComponent();
-		this.BindingContext = this;
+		this.BindingContext = ViewModel;
 		this.viewModel = ViewModel;
 
 		this.InnerListView.SetBinding(CollectionView.ItemsSourceProperty,
