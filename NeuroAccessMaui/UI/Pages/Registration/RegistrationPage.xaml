@@ -32,7 +32,8 @@
 
 						<Image
 							Grid.Row="0"
-							Source="language_select_button.svg">
+							HorizontalOptions="Center"
+							Source="language_select_button.png">
 							<Image.Behaviors>
 								<mct:IconTintColorBehavior
 									TintColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
@@ -42,16 +43,14 @@
 
 						<Label
 							Grid.Row="1"
-							Text="{Binding SelectedLanguage.NativeName}" />
+							Text="{Binding SelectedLanguage.MyNativeName}" />
 					</VerticalStackLayout>
 				</controls:TemplatedButton>
 
 				<Image
-					HeightRequest="110"
-					WidthRequest="233"
 					HorizontalOptions="Center"
-					Source="{AppThemeBinding Light=neuro_access_logo_light.svg,
-											 Dark=neuro_access_logo_dark.svg}" />
+					Source="{AppThemeBinding Light=neuro_access_logo_light.png,
+											 Dark=neuro_access_logo_dark.png}" />
 			</VerticalStackLayout>
 
 			<!--  CONTENT  -->
