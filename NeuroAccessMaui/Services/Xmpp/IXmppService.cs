@@ -58,12 +58,12 @@ public interface IXmppService : ILoadableService
 	/// <summary>
 	/// The latest generic xmpp error, if any.
 	/// </summary>
-	string LatestError { get; }
+	string? LatestError { get; }
 
 	/// <summary>
 	/// The latest generic xmpp connection error, if any.
 	/// </summary>
-	string LatestConnectionError { get; }
+	string? LatestConnectionError { get; }
 
 	#endregion
 

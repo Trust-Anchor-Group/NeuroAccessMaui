@@ -6,26 +6,28 @@
 	xmlns:localization="clr-namespace:NeuroAccessMaui.Services.Localization">
 
 	<!--
-    <Style TargetType="ActivityIndicator">
+    <Style
+		ApplyToDerivedTypes="True"
+	TargetType="ActivityIndicator">
         <Setter Property="Color" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
     </Style>
 
-    <Style TargetType="IndicatorView">
+    <Style
+		ApplyToDerivedTypes="True"
+	TargetType="IndicatorView">
         <Setter Property="IndicatorColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}"/>
         <Setter Property="SelectedIndicatorColor" Value="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource Gray100}}"/>
     </Style>
 
-    <Style TargetType="Border">
-        <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}" />
-        <Setter Property="StrokeShape" Value="Rectangle"/>
-        <Setter Property="StrokeThickness" Value="1"/>
-    </Style>
-
-    <Style TargetType="BoxView">
+    <Style
+		ApplyToDerivedTypes="True"
+	TargetType="BoxView">
         <Setter Property="Color" Value="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource Gray200}}" />
     </Style>
 
-    <Style TargetType="Button">
+    <Style
+		ApplyToDerivedTypes="True"
+	TargetType="Button">
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Primary}}" />
         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
         <Setter Property="FontFamily" Value="OpenSansRegular"/>
@@ -49,7 +51,9 @@
         </Setter>
     </Style>
 
-    <Style TargetType="CheckBox">
+    <Style
+		ApplyToDerivedTypes="True"
+	TargetType="CheckBox">
         <Setter Property="Color" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
         <Setter Property="MinimumHeightRequest" Value="44"/>
         <Setter Property="MinimumWidthRequest" Value="44"/>
@@ -67,7 +71,9 @@
         </Setter>
     </Style>
 
-    <Style TargetType="DatePicker">
+    <Style
+		ApplyToDerivedTypes="True"
+	TargetType="DatePicker">
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
         <Setter Property="BackgroundColor" Value="Transparent" />
         <Setter Property="FontFamily" Value="OpenSansRegular"/>
@@ -88,7 +94,9 @@
         </Setter>
     </Style>
 
-    <Style TargetType="Editor">
+    <Style
+		ApplyToDerivedTypes="True"
+	TargetType="Editor">
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
         <Setter Property="BackgroundColor" Value="Transparent" />
         <Setter Property="FontFamily" Value="OpenSansRegular"/>
@@ -110,7 +118,9 @@
         </Setter>
     </Style>
 
-    <Style TargetType="Entry">
+    <Style
+		ApplyToDerivedTypes="True"
+	TargetType="Entry">
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
         <Setter Property="BackgroundColor" Value="Transparent" />
         <Setter Property="FontFamily" Value="OpenSansRegular"/>
@@ -132,13 +142,17 @@
         </Setter>
     </Style>
 
-    <Style TargetType="Frame">
+    <Style
+		ApplyToDerivedTypes="True"
+	TargetType="Frame">
         <Setter Property="HasShadow" Value="False" />
         <Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray950}}" />
         <Setter Property="CornerRadius" Value="8" />
     </Style>
 
-    <Style TargetType="ImageButton">
+    <Style
+		ApplyToDerivedTypes="True"
+	TargetType="ImageButton">
         <Setter Property="Opacity" Value="1" />
         <Setter Property="BorderColor" Value="Transparent"/>
         <Setter Property="BorderWidth" Value="0"/>
@@ -159,31 +173,16 @@
         </Setter>
     </Style>
 
-    <Style TargetType="Label">
-        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
-        <Setter Property="BackgroundColor" Value="Transparent" />
-        <Setter Property="FontFamily" Value="OpenSansRegular" />
-        <Setter Property="FontSize" Value="14" />
-        <Setter Property="VisualStateManager.VisualStateGroups">
-            <VisualStateGroupList>
-                <VisualStateGroup x:Name="CommonStates">
-                    <VisualState x:Name="Normal" />
-                    <VisualState x:Name="Disabled">
-                        <VisualState.Setters>
-                            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}" />
-                        </VisualState.Setters>
-                    </VisualState>
-                </VisualStateGroup>
-            </VisualStateGroupList>
-        </Setter>
-    </Style>
-
-    <Style TargetType="ListView">
+	<Style
+		ApplyToDerivedTypes="True"
+	TargetType="ListView">
         <Setter Property="SeparatorColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}" />
         <Setter Property="RefreshControlColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray200}}" />
     </Style>
 
-    <Style TargetType="Picker">
+    <Style
+		ApplyToDerivedTypes="True"
+	TargetType="Picker">
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
         <Setter Property="TitleColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray200}}" />
         <Setter Property="BackgroundColor" Value="Transparent" />
@@ -206,7 +205,9 @@
         </Setter>
     </Style>
 
-    <Style TargetType="ProgressBar">
+    <Style
+		ApplyToDerivedTypes="True"
+	TargetType="ProgressBar">
         <Setter Property="ProgressColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
         <Setter Property="VisualStateManager.VisualStateGroups">
             <VisualStateGroupList>
@@ -222,7 +223,9 @@
         </Setter>
     </Style>
 
-    <Style TargetType="RadioButton">
+    <Style
+		ApplyToDerivedTypes="True"
+	TargetType="RadioButton">
         <Setter Property="BackgroundColor" Value="Transparent"/>
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
         <Setter Property="FontFamily" Value="OpenSansRegular"/>
@@ -243,11 +246,15 @@
         </Setter>
     </Style>
 
-    <Style TargetType="RefreshView">
+    <Style
+		ApplyToDerivedTypes="True"
+	TargetType="RefreshView">
         <Setter Property="RefreshColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray200}}" />
     </Style>
 
-    <Style TargetType="SearchBar">
+    <Style
+		ApplyToDerivedTypes="True"
+	TargetType="SearchBar">
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
         <Setter Property="PlaceholderColor" Value="{StaticResource Gray500}" />
         <Setter Property="CancelButtonColor" Value="{StaticResource Gray500}" />
@@ -271,7 +278,9 @@
         </Setter>
     </Style>
 
-    <Style TargetType="SearchHandler">
+    <Style
+		ApplyToDerivedTypes="True"
+	TargetType="SearchHandler">
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
         <Setter Property="PlaceholderColor" Value="{StaticResource Gray500}" />
         <Setter Property="BackgroundColor" Value="Transparent" />
@@ -292,14 +301,9 @@
         </Setter>
     </Style>
 
-    <Style TargetType="Shadow">
-        <Setter Property="Radius" Value="15" />
-        <Setter Property="Opacity" Value="0.5" />
-        <Setter Property="Brush" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource White}}" />
-        <Setter Property="Offset" Value="10,10" />
-    </Style>
-
-    <Style TargetType="Slider">
+    <Style
+		ApplyToDerivedTypes="True"
+	TargetType="Slider">
         <Setter Property="MinimumTrackColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
         <Setter Property="MaximumTrackColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}" />
         <Setter Property="ThumbColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
@@ -319,11 +323,15 @@
         </Setter>
     </Style>
 
-    <Style TargetType="SwipeItem">
+    <Style
+		ApplyToDerivedTypes="True"
+	TargetType="SwipeItem">
         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}" />
     </Style>
 
-    <Style TargetType="Switch">
+    <Style
+		ApplyToDerivedTypes="True"
+	TargetType="Switch">
         <Setter Property="OnColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
         <Setter Property="ThumbColor" Value="{StaticResource White}" />
         <Setter Property="VisualStateManager.VisualStateGroups">
@@ -352,7 +360,9 @@
         </Setter>
     </Style>
 
-    <Style TargetType="TimePicker">
+    <Style
+		ApplyToDerivedTypes="True"
+	TargetType="TimePicker">
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
         <Setter Property="BackgroundColor" Value="Transparent"/>
         <Setter Property="FontFamily" Value="OpenSansRegular"/>
@@ -375,9 +385,80 @@
 
 	<Style
 		ApplyToDerivedTypes="True"
+		TargetType="Label">
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
+		<Setter Property="BackgroundColor" Value="Transparent" />
+		<Setter Property="FontFamily" Value="HaasGroteskRegular" />
+		<Setter Property="FontSize" Value="18" />
+	</Style>
+
+	<Style
+		ApplyToDerivedTypes="True"
 		TargetType="Page">
 		<Setter Property="Padding" Value="0" />
 		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}" />
+	</Style>
+
+	<Style
+		ApplyToDerivedTypes="True"
+		TargetType="ContentView">
+		<Setter Property="Padding" Value="0" />
+		<Setter Property="Margin" Value="0" />
+		<Setter Property="VerticalOptions" Value="FillAndExpand" />
+		<Setter Property="HorizontalOptions" Value="FillAndExpand" />
+		<Setter Property="BackgroundColor" Value="Transparent" />
+	</Style>
+
+	<Style
+		ApplyToDerivedTypes="True"
+		TargetType="AbsoluteLayout">
+		<Setter Property="VerticalOptions" Value="FillAndExpand" />
+		<Setter Property="HorizontalOptions" Value="FillAndExpand" />
+		<Setter Property="BackgroundColor" Value="Transparent" />
+	</Style>
+
+	<Style
+		ApplyToDerivedTypes="True"
+		TargetType="Grid">
+		<Setter Property="Padding" Value="0" />
+		<Setter Property="Margin" Value="0" />
+		<Setter Property="RowSpacing" Value="16" />
+		<Setter Property="ColumnSpacing" Value="16" />
+		<Setter Property="VerticalOptions" Value="FillAndExpand" />
+		<Setter Property="HorizontalOptions" Value="FillAndExpand" />
+		<Setter Property="BackgroundColor" Value="Transparent" />
+	</Style>
+
+	<Style
+		ApplyToDerivedTypes="True"
+		TargetType="StackLayout">
+		<Setter Property="Padding" Value="8" />
+		<Setter Property="Margin" Value="0" />
+		<Setter Property="Spacing" Value="16" />
+		<Setter Property="VerticalOptions" Value="FillAndExpand" />
+		<Setter Property="HorizontalOptions" Value="FillAndExpand" />
+		<Setter Property="BackgroundColor" Value="Transparent" />
+	</Style>
+
+	<Style
+		ApplyToDerivedTypes="True"
+		TargetType="VerticalStackLayout">
+		<Setter Property="Padding" Value="8" />
+		<Setter Property="Margin" Value="0" />
+		<Setter Property="Spacing" Value="16" />
+		<Setter Property="VerticalOptions" Value="FillAndExpand" />
+		<Setter Property="HorizontalOptions" Value="FillAndExpand" />
+		<Setter Property="BackgroundColor" Value="Transparent" />
+	</Style>
+
+	<Style
+		ApplyToDerivedTypes="True"
+		TargetType="HorizontalStackLayout">
+		<Setter Property="Padding" Value="8" />
+		<Setter Property="Margin" Value="0" />
+		<Setter Property="VerticalOptions" Value="FillAndExpand" />
+		<Setter Property="HorizontalOptions" Value="FillAndExpand" />
+		<Setter Property="BackgroundColor" Value="Transparent" />
 	</Style>
 
 	<Style
@@ -400,6 +481,7 @@
 	</Style>
 
 	<Style
+		ApplyToDerivedTypes="True"
 		TargetType="NavigationPage">
 		<Setter Property="BarBackgroundColor" Value="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}" />
 		<Setter Property="BarTextColor" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
@@ -407,6 +489,7 @@
 	</Style>
 
 	<Style
+		ApplyToDerivedTypes="True"
 		TargetType="TabbedPage">
 		<Setter Property="BarBackgroundColor" Value="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}" />
 		<Setter Property="BarTextColor" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
@@ -449,30 +532,51 @@
 </Style>
 	-->
 
+	<Style
+		ApplyToDerivedTypes="True"
+		TargetType="Border">
+		<Setter Property="VerticalOptions" Value="FillAndExpand" />
+		<Setter Property="HorizontalOptions" Value="FillAndExpand" />
+		<Setter Property="BackgroundColor" Value="Transparent" />
+	</Style>
+
+	<Style
+		ApplyToDerivedTypes="True"
+		TargetType="Shadow">
+		<Setter Property="Radius" Value="16" />
+		<Setter Property="Opacity" Value="0.8" />
+		<Setter Property="Brush" Value="{StaticResource PrimaryBackgroundDark}" />
+		<Setter Property="Offset" Value="0,0" />
+	</Style>
+
+	<Style x:Key="CurvedLinesStyle"
+		ApplyToDerivedTypes="False"
+		TargetType="Path">
+		<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource CurvedLinesLight}, Dark={StaticResource CurvedLinesDark}}" />
+		<Setter Property="StrokeMiterLimit" Value="10" />
+		<Setter Property="StrokeThickness" Value="2" />
+	</Style>
+
 	<DataTemplate x:Key="SelectLanguageDataTemplate" x:DataType="localization:LanguageInfo">
 
 		<!--  https://github.com/dotnet/maui/issues/8494  -->
 		<Border
-			BackgroundColor="Transparent"
 			Padding="24,4">
+
 			<Border
 				BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight},
 												  Dark={StaticResource PrimaryBackgroundDark}}"
-				Padding="8"
-				HorizontalOptions="FillAndExpand">
+				Padding="8">
+
 				<Border.StrokeShape>
 					<RoundRectangle
 						CornerRadius="4" />
 				</Border.StrokeShape>
-				<Grid
-					BackgroundColor="Transparent"
-					HorizontalOptions="FillAndExpand">
 
+				<Grid>
 					<Label
 						HorizontalTextAlignment="Center"
-						Text="{Binding NativeName}"
-						TextColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
-													Dark={StaticResource PrimaryForegroundDark}}" />
+						Text="{Binding NativeName}" />
 				</Grid>
 			</Border>
 		</Border>

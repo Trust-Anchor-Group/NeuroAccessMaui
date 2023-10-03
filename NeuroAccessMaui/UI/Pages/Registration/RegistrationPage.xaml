@@ -12,77 +12,60 @@
 		<controls:Background />
 
 		<Grid
-			HorizontalOptions="FillAndExpand"
-			VerticalOptions="FillAndExpand"
 			ColumnDefinitions="*"
-			RowDefinitions="auto,auto,*">
+			ColumnSpacing="0"
+			RowDefinitions="auto,*"
+			RowSpacing="24">
 
-			<controls:TemplatedButton x:Name="LanguageButton"
+			<VerticalStackLayout
 				Grid.Row="0"
-				HorizontalOptions="End"
-				VerticalOptions="Start"
-				Command="{Binding ChangeLanguageCommand}">
+				Padding="24"
+				Spacing="24">
+				<controls:TemplatedButton x:Name="LanguageButton"
+					HorizontalOptions="End"
+					VerticalOptions="Start"
+					Command="{Binding ChangeLanguageCommand}">
 
-				<Grid
-					ColumnDefinitions="auto"
-					RowDefinitions="auto,auto">
+					<VerticalStackLayout
+						Padding="0"
+						Spacing="0">
 
-					<Image
-						Grid.Row="0"
-						Source="language_select_button.svg">
-						<Image.Behaviors>
-							<mct:IconTintColorBehavior
-								TintColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
-															Dark={StaticResource PrimaryForegroundDark}}" />
-						</Image.Behaviors>
-					</Image>
+						<Image
+							Grid.Row="0"
+							Source="language_select_button.svg">
+							<Image.Behaviors>
+								<mct:IconTintColorBehavior
+									TintColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
+																Dark={StaticResource PrimaryForegroundDark}}" />
+							</Image.Behaviors>
+						</Image>
 
-					<Label
-						Grid.Row="1"
-						Text="{Binding SelectedLanguage.NativeName}"
-						TextColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
-													Dark={StaticResource PrimaryForegroundDark}}" />
-				</Grid>
-			</controls:TemplatedButton>
+						<Label
+							Grid.Row="1"
+							Text="{Binding SelectedLanguage.NativeName}" />
+					</VerticalStackLayout>
+				</controls:TemplatedButton>
 
-			<Image
-				Grid.Row="1"
-				HeightRequest="110"
-				WidthRequest="233"
-				HorizontalOptions="Center"
-				Source="{AppThemeBinding Dark=neuro_access_logo_dark.svg,
-										 Light=neuro_access_logo_light.svg}" />
+				<Image
+					HeightRequest="110"
+					WidthRequest="233"
+					HorizontalOptions="Center"
+					Source="{AppThemeBinding Light=neuro_access_logo_light.svg,
+											 Dark=neuro_access_logo_dark.svg}" />
+			</VerticalStackLayout>
 
 			<!--  CONTENT  -->
 			<Grid x:Name="GridWithAnimation"
-				Grid.Row="2"
-				HorizontalOptions="FillAndExpand"
-				VerticalOptions="FillAndExpand">
+				Grid.Row="1">
 
 				<mct:StateContainer.StateViews>
-					<views:LoadingView x:Name="LoadingView" x:FactoryMethod="Create" mct:StateView.StateKey="Loading"
-						HorizontalOptions="FillAndExpand"
-						VerticalOptions="FillAndExpand" />
-
-					<views:ChoosePurposeView x:Name="ChoosePurposeView" x:FactoryMethod="Create" mct:StateView.StateKey="ChoosePurpose"
-						HorizontalOptions="FillAndExpand"
-						VerticalOptions="FillAndExpand" />
-
-					<views:ValidatePhoneView x:Name="ValidatePhoneView" x:FactoryMethod="Create" mct:StateView.StateKey="ValidatePhone"
-						HorizontalOptions="FillAndExpand"
-						VerticalOptions="FillAndExpand" />
-
-					<views:ValidateEmailView x:Name="ValidateEmailView" x:FactoryMethod="Create" mct:StateView.StateKey="ValidateEmail"
-						HorizontalOptions="FillAndExpand"
-						VerticalOptions="FillAndExpand" />
-
-					<views:ChooseAccountView x:Name="ChooseAccountView" x:FactoryMethod="Create" mct:StateView.StateKey="ChooseAccount"
-						HorizontalOptions="FillAndExpand"
-						VerticalOptions="FillAndExpand" />
-
-					<views:DefinePinView x:Name="DefinePinView" x:FactoryMethod="Create" mct:StateView.StateKey="DefinePin"
-						HorizontalOptions="FillAndExpand"
-						VerticalOptions="FillAndExpand" />
+					<views:LoadingView x:Name="LoadingView" x:FactoryMethod="Create" mct:StateView.StateKey="Loading" />
+					<views:ChoosePurposeView x:Name="ChoosePurposeView" x:FactoryMethod="Create" mct:StateView.StateKey="ChoosePurpose" />
+					<views:ValidatePhoneView x:Name="ValidatePhoneView" x:FactoryMethod="Create" mct:StateView.StateKey="ValidatePhone" />
+					<views:ValidateEmailView x:Name="ValidateEmailView" x:FactoryMethod="Create" mct:StateView.StateKey="ValidateEmail" />
+					<views:ChooseProviderView x:Name="ChooseProviderView" x:FactoryMethod="Create" mct:StateView.StateKey="ChooseProvider" />
+					<views:CreateAccountView x:Name="CreateAccountView" x:FactoryMethod="Create" mct:StateView.StateKey="ChooseAccount" />
+					<views:DefinePinView x:Name="DefinePinView" x:FactoryMethod="Create" mct:StateView.StateKey="DefinePin" />
 				</mct:StateContainer.StateViews>
 
 				<!--  default state, should not occur  -->

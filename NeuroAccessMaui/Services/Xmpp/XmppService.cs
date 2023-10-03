@@ -33,17 +33,17 @@ namespace NeuroAccessMaui.Services.Xmpp;
 [Singleton]
 internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 {
-	private bool isDisposed;
+	//private bool isDisposed;
 	private XmppClient? xmppClient;
 	private ContractsClient? contractsClient;
 	private HttpFileUploadClient? fileUploadClient;
 	private AbuseClient? abuseClient;
 	private HttpxClient? httpxClient;
 	private Timer? reconnectTimer;
-	private string domainName;
-	private string accountName;
-	private string passwordHash;
-	private string passwordHashMethod;
+	private string? domainName;
+	private string? accountName;
+	private string? passwordHash;
+	private string? passwordHashMethod;
 	private bool xmppConnected = false;
 	private DateTime xmppLastStateChange = DateTime.MinValue;
 	private InMemorySniffer? sniffer = new(250);
@@ -269,7 +269,7 @@ internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 
 	private bool ShouldCreateClient()
 	{
-		return ServiceRef.TagProfile.Step > RegistrationStep.Account && !this.XmppParametersCurrent();
+		return ServiceRef.TagProfile.Step > RegistrationStep.CreateAccount && !this.XmppParametersCurrent();
 	}
 
 	private void RecreateReconnectTimer()
@@ -414,7 +414,7 @@ internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 				{
 					await this.CreateXmppClient(ServiceRef.TagProfile.Step <= RegistrationStep.RegisterIdentity);
 				}
-				else if (ServiceRef.TagProfile.Step <= RegistrationStep.Account)
+				else if (ServiceRef.TagProfile.Step <= RegistrationStep.CreateAccount)
 				{
 					await this.DestroyXmppClient();
 				}
@@ -541,8 +541,8 @@ internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 	public XmppState State => this.xmppClient?.State ?? XmppState.Offline;
 	public string BareJid => this.xmppClient?.BareJID ?? string.Empty;
 
-	public string LatestError { get; private set; }
-	public string LatestConnectionError { get; private set; }
+	public string? LatestError { get; private set; }
+	public string? LatestConnectionError { get; private set; }
 
 	#endregion
 

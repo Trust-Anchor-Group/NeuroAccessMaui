@@ -25,7 +25,8 @@ public static class PageAppExtension
 		Builder.Services.AddTransient<ChoosePurposeView, ChoosePurposeViewModel>();
 		Builder.Services.AddTransient<ValidatePhoneView, ValidatePhoneViewModel>();
 		Builder.Services.AddTransient<ValidateEmailView, ValidateEmailViewModel>();
-		Builder.Services.AddTransient<ChooseAccountView, ChooseAccountViewModel>();
+		Builder.Services.AddTransient<ChooseProviderView, ChooseProviderViewModel>();
+		Builder.Services.AddTransient<CreateAccountView, CreateAccountViewModel>();
 		Builder.Services.AddTransient<DefinePinView, DefinePinViewModel>();
 
 		// Identity pages & views

@@ -10,7 +10,6 @@
 	<Grid
 		HeightRequest="{Binding Source={x:Reference ThisPage}, Path=ViewHeight}"
 		WidthRequest="{Binding Source={x:Reference ThisPage}, Path=ViewWidth}"
-		BackgroundColor="Transparent"
 		Padding="8"
 		HorizontalOptions="Fill"
 		VerticalOptions="Fill">
@@ -26,11 +25,7 @@
 					CornerRadius="8" />
 			</Border.StrokeShape>
 			<Border.Shadow>
-				<Shadow
-					Brush="{StaticResource PrimaryBackgroundDark}"
-					Opacity="0.8"
-					Radius="16"
-					Offset="0,0" />
+				<Shadow />
 			</Border.Shadow>
 
 			<CollectionView x:Name="InnerListView"

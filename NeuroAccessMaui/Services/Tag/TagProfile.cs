@@ -28,24 +28,29 @@ public enum RegistrationStep
 	ValidateEmail = 2,
 
 	/// <summary>
+	/// Choose the provider to create an account on
+	/// </summary>
+	ChooseProvider = 3,
+
+	/// <summary>
 	/// Create or connect to an account
 	/// </summary>
-	Account = 3,
+	CreateAccount = 4,
 
 	/// <summary>
 	/// Register an identity
 	/// </summary>
-	RegisterIdentity = 4,
+	RegisterIdentity = 5,
 
 	/// <summary>
 	/// Create a PIN code
 	/// </summary>
-	Pin = 5,
+	DefinePin = 6,
 
 	/// <summary>
 	/// Profile is completed.
 	/// </summary>
-	Complete = 6
+	Complete = 7
 }
 
 /// <summary>
@@ -76,7 +81,7 @@ public enum PurposeUse
 
 /// <inheritdoc/>
 [Singleton]
-public class TagProfile : ITagProfile
+public partial class TagProfile : ITagProfile
 {
 	private readonly WeakEventManager onStepChangedEventManager = new();
 	private readonly WeakEventManager onChangedEventManager = new();
@@ -870,7 +875,7 @@ public class TagProfile : ITagProfile
 		int LettersCount = 0;
 		int SignsCount = 0;
 
-		Dictionary<int, int> DistinctSymbolsCount = new();
+		Dictionary<int, int> DistinctSymbolsCount = [];
 
 		int[] SlidingWindow = new int[Constants.Authentication.MaxPinSequencedSymbols + 1];
 		SlidingWindow.Initialize();
@@ -958,7 +963,7 @@ public class TagProfile : ITagProfile
 				Constants.XmppProperties.MiddleName,
 				Constants.XmppProperties.LastName,
 			}
-			.SelectMany(PropertyKey => LegalIdentity[PropertyKey] is string PropertyValue ? Regex.Split(PropertyValue, @"\p{Zs}+") : Enumerable.Empty<string>())
+			.SelectMany(PropertyKey => LegalIdentity[PropertyKey] is string PropertyValue ? PropertyValueSplitRegex().Split(PropertyValue) : Enumerable.Empty<string>())
 			.Where(Word => Word?.GetUnicodeLength() > 2);
 
 			if (NameWords.Any(NameWord => Pin.Contains(NameWord, Comparison)))
@@ -971,7 +976,7 @@ public class TagProfile : ITagProfile
 				Constants.XmppProperties.Address,
 				Constants.XmppProperties.Address2,
 			}
-			.SelectMany(PropertyKey => LegalIdentity[PropertyKey] is string PropertyValue ? Regex.Split(PropertyValue, @"\p{Zs}+") : Enumerable.Empty<string>())
+			.SelectMany(PropertyKey => LegalIdentity[PropertyKey] is string PropertyValue ? PropertyValueSplitRegex().Split(PropertyValue) : Enumerable.Empty<string>())
 			.Where(Word => Word?.GetUnicodeLength() > 2);
 
 			if (AddressWords.Any(AddressWord => Pin.Contains(AddressWord, Comparison)))
@@ -1011,4 +1016,7 @@ public class TagProfile : ITagProfile
 
 		return PinStrength.Strong;
 	}
+
+	[GeneratedRegex(@"\p{Zs}+")]
+	private static partial Regex PropertyValueSplitRegex();
 }

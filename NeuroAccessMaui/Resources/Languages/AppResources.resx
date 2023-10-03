@@ -486,4 +486,34 @@
   <data name="FailedToUnbindViewModelForPage" xml:space="preserve">
     <value>Failed to unbind viewmodel {0} for page {1}</value>
   </data>
+  <data name="OnboardingPurposePageTitle" xml:space="preserve">
+    <value>Welcome to Neuro-Access</value>
+  </data>
+  <data name="OnboardingPurposePageDetails" xml:space="preserve">
+    <value>Choose in what context you intend to use the Neuro-Access</value>
+  </data>
+  <data name="OnboardingPhonePageTitle" xml:space="preserve">
+    <value>Let's get started</value>
+  </data>
+  <data name="OnboardingPhonePageDetails" xml:space="preserve">
+    <value>To get verified, you need to enter your phone number</value>
+  </data>
+  <data name="OnboardingEmailPageTitle" xml:space="preserve">
+    <value>Please verify email</value>
+  </data>
+  <data name="OnboardingEmailPageDetails" xml:space="preserve">
+    <value>We’ll send you a verification code</value>
+  </data>
+  <data name="OnboardingProviderPageTitle" xml:space="preserve">
+    <value>Selected provider</value>
+  </data>
+  <data name="OnboardingProviderPageDetails" xml:space="preserve">
+    <value>UNDEFINED</value>
+  </data>
+  <data name="OnboardingAccountPageTitle" xml:space="preserve">
+    <value>Create account</value>
+  </data>
+  <data name="OnboardingAccountPageDetails" xml:space="preserve">
+    <value>Enter the name you want to use for your account</value>
+  </data>
 </root>
