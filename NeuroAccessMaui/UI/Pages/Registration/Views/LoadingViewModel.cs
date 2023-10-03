@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Tag;
@@ -104,26 +105,12 @@ public partial class LoadingViewModel : BaseRegistrationViewModel
 			{
 				this.IsBusy = false;
 
-				// XmppService_Loaded method might be called from OnAppearing method.
-				// We cannot update the main page while some OnAppearing is still running (well, we can technically but there will be chaos).
+				// XmppService_Loaded method might be called from OnInitialize method.
+				// We cannot update the main page while some initialization is still running (well, we can technically but there will be chaos).
 				// Therefore, do not await this method and do not call it synchronously, even if we are already on the main thread.
-				Task ExecutionTask = Task.Run(async () =>
+				Task ExecutionTask = Task.Run(() =>
 				{
-					try
-					{
-						if (ServiceRef.TagProfile.IsComplete())
-						{
-							await App.SetMainPageAsync();
-						}
-						else
-						{
-							await App.SetRegistrationPageAsync();
-						}
-					}
-					catch (Exception Exception)
-					{
-						ServiceRef.LogService.LogException(Exception);
-					}
+					WeakReferenceMessenger.Default.Send(new RegistrationPageMessage(ServiceRef.TagProfile.Step));
 				});
 			}
 		}

@@ -64,7 +64,7 @@
 					<views:ValidatePhoneView x:Name="ValidatePhoneView" x:FactoryMethod="Create" mct:StateView.StateKey="ValidatePhone" />
 					<views:ValidateEmailView x:Name="ValidateEmailView" x:FactoryMethod="Create" mct:StateView.StateKey="ValidateEmail" />
 					<views:ChooseProviderView x:Name="ChooseProviderView" x:FactoryMethod="Create" mct:StateView.StateKey="ChooseProvider" />
-					<views:CreateAccountView x:Name="CreateAccountView" x:FactoryMethod="Create" mct:StateView.StateKey="ChooseAccount" />
+					<views:CreateAccountView x:Name="CreateAccountView" x:FactoryMethod="Create" mct:StateView.StateKey="CreateAccount" />
 					<views:DefinePinView x:Name="DefinePinView" x:FactoryMethod="Create" mct:StateView.StateKey="DefinePin" />
 				</mct:StateContainer.StateViews>
 

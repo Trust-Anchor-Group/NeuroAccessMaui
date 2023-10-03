@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Mopups.Services;
@@ -24,15 +23,14 @@ public partial class RegistrationViewModel : BaseViewModel
 	/// </summary>
 	public void SetPagesContainer(List<BaseRegistrationView> Items)
 	{
-		this.RegistrationSteps = new Collection<BaseRegistrationViewModel>();
-
 		foreach (BaseRegistrationView Item in Items)
 		{
-			this.RegistrationSteps.Add(this.AddChildViewModel((BaseRegistrationViewModel)Item.BindingContext));
+			this.registrationSteps.Add(this.AddChildViewModel((BaseRegistrationViewModel)Item.BindingContext));
 		};
 
 		this.CurrentStep = (int)ServiceRef.TagProfile.Step;
 	}
+
 
 	//!!!
 	/*
@@ -62,8 +60,7 @@ public partial class RegistrationViewModel : BaseViewModel
 	/// <summary>
 	/// The list of steps needed to register a digital identity.
 	/// </summary>
-	[ObservableProperty]
-	private Collection<BaseRegistrationViewModel> registrationSteps;
+	private readonly Collection<BaseRegistrationViewModel> registrationSteps = new();
 
 	[ObservableProperty]
 	private ObservableCollection<LanguageInfo> languages = new(App.SupportedLanguages);
