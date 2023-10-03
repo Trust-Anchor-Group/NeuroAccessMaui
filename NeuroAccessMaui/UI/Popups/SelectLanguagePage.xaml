@@ -10,35 +10,16 @@
 	<Grid
 		HeightRequest="{Binding Source={x:Reference ThisPage}, Path=ViewHeight}"
 		WidthRequest="{Binding Source={x:Reference ThisPage}, Path=ViewWidth}"
-		Padding="8"
-		HorizontalOptions="Fill"
-		VerticalOptions="Fill">
+		Padding="8">
 
 		<Border
-			BackgroundColor="{AppThemeBinding Light={StaticResource SecondaryBackgroundLight},
-											  Dark={StaticResource SecondaryBackgroundDark}}"
-			Padding="0,24,0,24"
-			HorizontalOptions="FillAndExpand"
-			VerticalOptions="FillAndExpand">
-			<Border.StrokeShape>
-				<RoundRectangle
-					CornerRadius="8" />
-			</Border.StrokeShape>
-			<Border.Shadow>
-				<Shadow />
-			</Border.Shadow>
+			Style="{StaticResource PopupBorderStyle}">
 
 			<CollectionView x:Name="InnerListView"
-				Margin="0"
-				HorizontalOptions="FillAndExpand"
-				VerticalOptions="FillAndExpand"
-				ItemSizingStrategy="MeasureFirstItem"
 				ItemTemplate="{StaticResource SelectLanguageDataTemplate}"
 				ItemsSource="{Binding ItemsSource}"
 				SelectedItem="{Binding SelectedItem}"
-				SelectionChanged="InnerListView_SelectionChanged"
-				SelectionMode="Single"
-				VerticalScrollBarVisibility="Never" />
+				SelectionChanged="InnerListView_SelectionChanged" />
 		</Border>
 	</Grid>
 </viewmodel:BlurryPopup>

@@ -4,7 +4,16 @@ public static class ServiceHelper
 {
 	public static T GetService<T>()
 	{
-		T? Service = Current.GetService<T>();
+		T? Service;
+
+		try
+		{
+			Service = Current.GetService<T>();
+		}
+		catch(Exception ex)
+		{
+			throw new ArgumentException("Service not found: " + nameof(T));
+		}
 
 		if (Service is not null)
 		{

@@ -19,6 +19,52 @@ public partial class RegistrationViewModel : BaseViewModel
 
 	}
 
+	/// <summary>
+	/// Creates a new instance of the <see cref="RegistrationViewModel"/> class.
+	/// </summary>
+	public void SetPagesContainer(List<BaseRegistrationView> Items)
+	{
+		this.RegistrationSteps = new Collection<BaseRegistrationViewModel>();
+
+		foreach (BaseRegistrationView Item in Items)
+		{
+			this.RegistrationSteps.Add(this.AddChildViewModel((BaseRegistrationViewModel)Item.BindingContext));
+		};
+
+		this.CurrentStep = (int)ServiceRef.TagProfile.Step;
+	}
+
+	//!!!
+	/*
+	/// <summary>
+	/// See <see cref="CurrentStep"/>
+	/// </summary>
+	public static readonly BindableProperty CurrentStepProperty =
+		BindableProperty.Create(nameof(CurrentStep), typeof(int), typeof(RegistrationViewModel), -1, propertyChanged: OnCurrentStepPropertyChanged);
+
+	static void OnCurrentStepPropertyChanged(BindableObject bindable, object oldValue, object newValue)
+		=> ((RegistrationViewModel)bindable).OnCurrentStepPropertyChanged();
+
+	async void OnCurrentStepPropertyChanged()
+	{
+		this.UpdateStepVariables();
+
+		await this.RegistrationSteps[this.CurrentStep].DoAssignProperties();
+	}
+	*/
+
+	/// <summary>
+	/// Gets or sets the current step from the list of <see cref="registrationSteps"/>.
+	/// </summary>
+	[ObservableProperty]
+	int currentStep;
+
+	/// <summary>
+	/// The list of steps needed to register a digital identity.
+	/// </summary>
+	[ObservableProperty]
+	private Collection<BaseRegistrationViewModel> registrationSteps;
+
 	[ObservableProperty]
 	private ObservableCollection<LanguageInfo> languages = new(App.SupportedLanguages);
 

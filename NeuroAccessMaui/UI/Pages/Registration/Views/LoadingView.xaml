@@ -5,104 +5,49 @@
 	xmlns:base="clr-namespace:NeuroAccessMaui.Pages.Registration"
 	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.Pages.Registration.Views">
 
-	<!--
-	<VisualElement.Resources>
-		<ControlTemplate
-			x:Key="FrameRadioTemplate">
-			<Frame
-				Padding="5"
-				BorderColor="#2B79E1"
-				CornerRadius="15"
-				HeightRequest="120"
-				WidthRequest="120">
-				<ContentPresenter>
-					<ContentPresenter.Resources>
-						<Style
-							TargetType="Label">
-							<Setter Property="HorizontalOptions" Value="Center" />
-							<Setter Property="VerticalOptions" Value="Center" />
+	<Grid
+		RowDefinitions="*,auto,3*,auto">
 
-							<Style.Triggers>
-								<DataTrigger
-									Binding="{Binding Path=IsChecked, Source={x:RelativeSource AncestorType={x:Type RadioButton}}}"
-									TargetType="Label"
-									Value="True">
-									<Setter Property="TextColor" Value="White" />
-									<Setter Property="FontAttributes" Value="Bold" />
-								</DataTrigger>
-							</Style.Triggers>
-						</Style>
-					</ContentPresenter.Resources>
-				</ContentPresenter>
+		<HorizontalStackLayout x:Name="LabelLayout"
+			Grid.Row="1"
+			HorizontalOptions="Center"
+			VerticalOptions="Center"
+			Opacity="0"
+			Spacing="8">
+			<Label
+				FontSize="16"
+				Text="NEW"
+				VerticalTextAlignment="Center" />
+			<Label
+				FontSize="22"
+				Text="WAYS"
+				VerticalTextAlignment="Center" />
+			<Label
+				FontSize="16"
+				Text="OF"
+				VerticalTextAlignment="Center" />
+			<Label
+				FontSize="22"
+				Text="WORLDMAKING"
+				VerticalTextAlignment="Center" />
+		</HorizontalStackLayout>
 
-				<VisualStateManager.VisualStateGroups>
-					<VisualStateGroup x:Name="CheckedStates">
-						<VisualState x:Name="Checked">
-							<VisualState.Setters>
-								<Setter Property="BackgroundColor" Value="#2B79E1" />
-							</VisualState.Setters>
-						</VisualState>
-
-						<VisualState x:Name="Unchecked">
-							<VisualState.Setters>
-								<Setter Property="BackgroundColor" Value="#f3f2f1" />
-							</VisualState.Setters>
-						</VisualState>
-					</VisualStateGroup>
-				</VisualStateManager.VisualStateGroups>
-			</Frame>
-		</ControlTemplate>
-	</VisualElement.Resources>
-		-->
-
-	<!--
-	<ScrollView>
-		<Grid
-			HorizontalOptions="FillAndExpand"
-			VerticalOptions="CenterAndExpand"
-			ColumnDefinitions="*,auto,*"
-			RowDefinitions="auto,auto">
-			<RadioButton
-				Grid.Row="0"
-				Grid.Column="1"
-				ControlTemplate="{StaticResource FrameRadioTemplate}"
-				IsChecked="True">
-				<RadioButton.Content>
-					<HorizontalStackLayout
-						HorizontalOptions="Center">
-						<View.GestureRecognizers>
-							<TapGestureRecognizer
-								NumberOfTapsRequired="1"
-								Tapped="TapGestureRecognizer_Tapped" />
-						</View.GestureRecognizers>
-
-						<Label
-							Text="RadioButton 1"
-							TextColor="Black" />
-					</HorizontalStackLayout>
-				</RadioButton.Content>
-			</RadioButton>
-
-			<RadioButton
-				Grid.Row="1"
-				Grid.Column="1"
-				ControlTemplate="{StaticResource FrameRadioTemplate}">
-				<RadioButton.Content>
-					<HorizontalStackLayout
-						HorizontalOptions="Center">
-						<View.GestureRecognizers>
-							<TapGestureRecognizer
-								NumberOfTapsRequired="1"
-								Tapped="TapGestureRecognizer_Tapped" />
-						</View.GestureRecognizers>
-
-						<Label
-							Text="RadioButton 2"
-							TextColor="Black" />
-					</HorizontalStackLayout>
-				</RadioButton.Content>
-			</RadioButton>
-		</Grid>
-	</ScrollView>
-				-->
+		<ActivityIndicator
+			Grid.Row="2"
+			VerticalOptions="Center"
+			IsRunning="true"
+			IsVisible="true" />
+		<Frame
+			Grid.Row="3"
+			BackgroundColor="#99ffffff"
+			CornerRadius="5"
+			IsVisible="{Binding Path=DisplayConnectionText}">
+			<Label
+				HorizontalOptions="CenterAndExpand"
+				FontSize="Medium"
+				LineBreakMode="WordWrap"
+				Text="{Binding Path=ConnectionStateText}"
+				TextColor="Black" />
+		</Frame>
+	</Grid>
 </base:BaseRegistrationView>

@@ -1,8 +1,135 @@
-﻿namespace NeuroAccessMaui.Pages.Registration.Views;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Tag;
+using Waher.Networking.XMPP;
+
+namespace NeuroAccessMaui.Pages.Registration.Views;
 
 public partial class LoadingViewModel : BaseRegistrationViewModel
 {
-	public LoadingViewModel()
+	public LoadingViewModel() : base()
 	{
+	}
+
+	/// <inheritdoc />
+	protected override async Task OnInitialize()
+	{
+		await base.OnInitialize();
+
+		this.IsBusy = true;
+		this.DisplayConnectionText = ServiceRef.TagProfile.Step > RegistrationStep.CreateAccount;
+		ServiceRef.XmppService.ConnectionStateChanged += this.XmppService_ConnectionStateChanged;
+		ServiceRef.XmppService.Loaded += this.XmppService_Loaded;
+	}
+
+	/// <inheritdoc />
+	protected override async Task OnDispose()
+	{
+		ServiceRef.XmppService.Loaded -= this.XmppService_Loaded;
+		ServiceRef.XmppService.ConnectionStateChanged -= this.XmppService_ConnectionStateChanged;
+
+		await base.OnDispose();
+	}
+
+	#region Properties
+
+	/// <summary>
+	/// Gets or sets whether the user friendly connection text should be visible on screen or not.
+	/// </summary>
+	[ObservableProperty]
+	private bool displayConnectionText;
+
+	/// <summary>
+	/// Gets the current connection state as a user friendly localized string.
+	/// </summary>
+	[ObservableProperty]
+	private string? connectionStateText;
+
+	/// <summary>
+	/// Gets the current connection state as a color.
+	/// </summary>
+	[ObservableProperty]
+	private Brush? connectionStateColor;
+
+	/// <summary>
+	/// Gets the current state summary as a user friendly localized string.
+	/// </summary>
+	[ObservableProperty]
+	private string? stateSummaryText;
+
+	/// <summary>
+	/// Gets whether the view model is connected to an XMPP server.
+	/// </summary>
+	[ObservableProperty]
+	private bool isConnected;
+
+	#endregion
+
+	/// <summary>
+	/// Listens to connection state changes from the XMPP server.
+	/// </summary>
+	/// <param name="_">The XMPP service instance.</param>
+	/// <param name="NewState">New XMPP State.</param>
+	protected virtual Task XmppService_ConnectionStateChanged(object _, XmppState NewState)
+	{
+		if (MainThread.IsMainThread)
+		{
+			this.SetConnectionStateAndText(NewState);
+			return Task.CompletedTask;
+		}
+		else
+		{
+			return MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				this.SetConnectionStateAndText(NewState);
+			});
+		}
+	}
+
+	/// <inheritdoc/>
+	protected void SetConnectionStateAndText(XmppState state)
+	{
+		this.ConnectionStateText = state.ToDisplayText();
+		this.ConnectionStateColor = new SolidColorBrush(state.ToColor());
+		this.IsConnected = state == XmppState.Connected;
+		this.StateSummaryText = (ServiceRef.TagProfile.LegalIdentity?.State)?.ToString() + " - " + this.ConnectionStateText;
+	}
+
+	private void XmppService_Loaded(object? Sender, LoadedEventArgs e)
+	{
+		try
+		{
+			if (e.IsLoaded)
+			{
+				this.IsBusy = false;
+
+				// XmppService_Loaded method might be called from OnAppearing method.
+				// We cannot update the main page while some OnAppearing is still running (well, we can technically but there will be chaos).
+				// Therefore, do not await this method and do not call it synchronously, even if we are already on the main thread.
+				Task ExecutionTask = Task.Run(async () =>
+				{
+					try
+					{
+						if (ServiceRef.TagProfile.IsComplete())
+						{
+							await App.SetMainPageAsync();
+						}
+						else
+						{
+							await App.SetRegistrationPageAsync();
+						}
+					}
+					catch (Exception Exception)
+					{
+						ServiceRef.LogService.LogException(Exception);
+					}
+				});
+			}
+		}
+		catch (Exception Exception)
+		{
+			ServiceRef.LogService?.LogException(Exception);
+		}
 	}
 }

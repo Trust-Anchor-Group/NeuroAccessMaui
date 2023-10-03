@@ -1,3 +1,4 @@
+using CommunityToolkit.Maui.Layouts;
 using CommunityToolkit.Mvvm.Input;
 
 namespace NeuroAccessMaui.Pages.Registration;
@@ -9,7 +10,17 @@ public partial class RegistrationPage
 		this.InitializeComponent();
 		this.ContentPageModel = ViewModel;
 
-		// StateContainer.SetCurrentState(this.GridWithAnimation, "Loading");
+		ViewModel.SetPagesContainer([
+			this.LoadingView,
+			this.ChoosePurposeView,
+			this.ValidatePhoneView,
+			this.ValidateEmailView,
+			this.ChooseProviderView,
+			this.CreateAccountView,
+			this.DefinePinView,
+		]);
+
+		StateContainer.SetCurrentState(this.GridWithAnimation, "Loading");
 	}
 
 	[RelayCommand]

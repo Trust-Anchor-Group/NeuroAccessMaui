@@ -13,8 +13,10 @@ public partial class LoadingView
 		this.ContentViewModel = ViewModel;
 	}
 
-	private void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
+	/// <inheritdoc/>
+	protected override async void OnParentSet()
 	{
-		((RadioButton)((View)sender).Parent).IsChecked = true;
+		base.OnParentSet();
+		await this.LabelLayout.FadeTo(1.0, 2000, Easing.CubicInOut);
 	}
 }

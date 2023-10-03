@@ -173,13 +173,6 @@
         </Setter>
     </Style>
 
-	<Style
-		ApplyToDerivedTypes="True"
-	TargetType="ListView">
-        <Setter Property="SeparatorColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}" />
-        <Setter Property="RefreshControlColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray200}}" />
-    </Style>
-
     <Style
 		ApplyToDerivedTypes="True"
 	TargetType="Picker">
@@ -534,10 +527,47 @@
 
 	<Style
 		ApplyToDerivedTypes="True"
+		TargetType="ListView">
+		<Setter Property="Margin" Value="0" />
+		<Setter Property="SelectionMode" Value="Single" />
+		<Setter Property="VerticalScrollBarVisibility" Value="Never" />
+		<Setter Property="HorizontalScrollBarVisibility" Value="Never" />
+		<Setter Property="VerticalOptions" Value="FillAndExpand" />
+		<Setter Property="HorizontalOptions" Value="FillAndExpand" />
+		<Setter Property="BackgroundColor" Value="Transparent" />
+	</Style>
+
+	<Style
+		ApplyToDerivedTypes="True"
+		TargetType="CollectionView">
+		<Setter Property="Margin" Value="0" />
+		<Setter Property="ItemSizingStrategy" Value="MeasureFirstItem" />
+		<Setter Property="SelectionMode" Value="Single" />
+		<Setter Property="VerticalScrollBarVisibility" Value="Never" />
+		<Setter Property="HorizontalScrollBarVisibility" Value="Never" />
+		<Setter Property="VerticalOptions" Value="FillAndExpand" />
+		<Setter Property="HorizontalOptions" Value="FillAndExpand" />
+		<Setter Property="BackgroundColor" Value="Transparent" />
+	</Style>
+
+
+	<Style
+		ApplyToDerivedTypes="True"
 		TargetType="Border">
 		<Setter Property="VerticalOptions" Value="FillAndExpand" />
 		<Setter Property="HorizontalOptions" Value="FillAndExpand" />
 		<Setter Property="BackgroundColor" Value="Transparent" />
+	</Style>
+
+	<Style x:Key="PopupBorderStyle"
+		ApplyToDerivedTypes="False"
+		TargetType="Border">
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SecondaryBackgroundLight}, Dark={StaticResource SecondaryBackgroundDark}}" />
+		<Setter Property="Padding" Value="0,24,0,24" />
+		<Setter Property="StrokeShape" Value="RoundRectangle 8" />
+		<Setter Property="Shadow">
+			<Shadow />
+		</Setter>
 	</Style>
 
 	<Style
@@ -558,7 +588,6 @@
 	</Style>
 
 	<DataTemplate x:Key="SelectLanguageDataTemplate" x:DataType="localization:LanguageInfo">
-
 		<!--  https://github.com/dotnet/maui/issues/8494  -->
 		<Border
 			Padding="24,4">
