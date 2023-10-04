@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Mopups.Services;
@@ -16,6 +17,22 @@ public partial class RegistrationViewModel : BaseViewModel
 	public RegistrationViewModel()
 	{
 
+	}
+
+	/// <inheritdoc/>
+	protected override Task OnInitialize()
+	{
+		LocalizationManager.Current.PropertyChanged += this.PropertyChangedEventHandler;
+
+		return base.OnInitialize();
+	}
+
+	/// <inheritdoc/>
+	protected override Task OnDispose()
+	{
+		LocalizationManager.Current.PropertyChanged -= this.PropertyChangedEventHandler;
+
+		return base.OnDispose();
 	}
 
 	/// <summary>
@@ -67,6 +84,11 @@ public partial class RegistrationViewModel : BaseViewModel
 
 	[ObservableProperty]
 	private LanguageInfo selectedLanguage = App.SelectedLanguage;
+
+	public void PropertyChangedEventHandler(object? sender, PropertyChangedEventArgs e)
+	{
+		this.SelectedLanguage = App.SelectedLanguage;
+	}
 
 	[RelayCommand]
 	private async Task ChangeLanguage()

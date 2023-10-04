@@ -52,20 +52,6 @@ public partial class SelectLanguagePage
 	{
 		this.InitializeComponent();
 		this.BindingContext = this;
-		//this.viewModel = ViewModel;
-
-		/*
-		this.InnerListView.SetBinding(CollectionView.ItemsSourceProperty,
-			new Binding(nameof(ViewModel.ItemsSource), source: ViewModel));
-
-		this.InnerListView.SetBinding(CollectionView.SelectedItemProperty,
-			new Binding(nameof(ViewModel.SelectedItem), source: ViewModel, mode: BindingMode.TwoWay));
-
-		if (Application.Current?.Resources.TryGetValue("SelectLanguageDataTemplate", out object DataTemplate) ?? false)
-		{
-			this.InnerListView.ItemTemplate = (DataTemplate)DataTemplate;
-		}
-		*/
 	}
 
 	private void InnerListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -74,6 +60,8 @@ public partial class SelectLanguagePage
 		{
 			return;
 		}
+
+		Task ExecutionTask = this.Dispatcher.DispatchAsync(() => this.InnerListView.ScrollTo(this.SelectedItem));
 
 		Preferences.Set("user_selected_language", this.SelectedItem.TwoLetterISOLanguageName);
 		LocalizationManager.Current.CurrentCulture = this.SelectedItem;
