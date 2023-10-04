@@ -2,7 +2,59 @@
 <base:BaseRegistrationView x:Name="ThisPage" x:Class="NeuroAccessMaui.Pages.Registration.Views.ChoosePurposeView" x:DataType="viewmodel:ChoosePurposeViewModel"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
 	xmlns:base="clr-namespace:NeuroAccessMaui.Pages.Registration"
 	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.Pages.Registration.Views">
+
+	<!--
+	<VisualElement.Resources>
+		<DataTemplate x:Key="SelectPurposeDataTemplate" x:DataType="localization:PurposeInfo">
+			<Border
+				BackgroundColor="{AppThemeBinding Light={StaticResource NormalBackgroundLight},
+												  Dark={StaticResource NormalBackgroundDark}}"
+				Margin="0,8"
+				Padding="16"
+				Stroke="{AppThemeBinding Light={StaticResource NormalForegroundLight},
+										 Dark={StaticResource NormalBackgroundDark}}"
+				StrokeShape="RoundRectangle 2">
+				<Grid
+					ColumnDefinitions="*,auto"
+					RowDefinitions="auto">
+					<Label x:Name="InnerLabel"
+						Grid.Column="0"
+						FontFamily="HaasGroteskBold"
+						HorizontalTextAlignment="Center"
+						Text="{Binding MyNativeName}"
+						TextColor="{AppThemeBinding Light={StaticResource NormalForegroundLight},
+													Dark={StaticResource NormalForegroundDark}}" />
+					<ImageButton x:Name="InnerButton"
+						Source="info_circle_button.png">
+						<ImageButton.Behaviors>
+							<mct:IconTintColorBehavior x:Name="InnerTintColor"
+								TintColor="{AppThemeBinding Light={StaticResource NormalInfoForegroundLight},
+															Dark={StaticResource NormalInfoForegroundDark}}" />
+						</ImageButton.Behaviors>
+					</ImageButton>
+				</Grid>
+				<VisualStateManager.VisualStateGroups>
+					<VisualStateGroup
+						Name="CommonStates">
+						<VisualState
+							Name="Normal" />
+						<VisualState
+							Name="Selected">
+							<VisualState.Setters>
+								<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SelectedBackgroundLight}, Dark={StaticResource SelectedBackgroundDark}}" />
+								<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource SelectedBackgroundLight}, Dark={StaticResource SelectedBackgroundDark}}" />
+								<Setter TargetName="InnerLabel" Property="Label.TextColor" Value="{AppThemeBinding Light={StaticResource SelectedForegroundLight}, Dark={StaticResource SelectedForegroundDark}}" />
+							</VisualState.Setters>
+						</VisualState>
+					</VisualStateGroup>
+				</VisualStateManager.VisualStateGroups>
+			</Border>
+		</DataTemplate>
+	</VisualElement.Resources>
+	-->
+
 	<ScrollView />
 </base:BaseRegistrationView>

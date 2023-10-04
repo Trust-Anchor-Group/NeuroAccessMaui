@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Globalization;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
 
@@ -69,5 +70,12 @@ public partial class SelectLanguagePage
 
 	private void InnerListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
 	{
+		if (this.SelectedItem.IsCurrent)
+		{
+			return;
+		}
+
+		Preferences.Set("user_selected_language", this.SelectedItem.TwoLetterISOLanguageName);
+		LocalizationManager.Current.CurrentCulture = this.SelectedItem;
 	}
 }

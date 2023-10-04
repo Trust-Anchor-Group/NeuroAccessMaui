@@ -7,6 +7,42 @@
 	xmlns:data="clr-namespace:NeuroAccessMaui.Services.Localization"
 	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.Popups">
 
+	<VisualElement.Resources>
+		<DataTemplate x:Key="SelectLanguageDataTemplate" x:DataType="data:LanguageInfo">
+			<Border
+				BackgroundColor="{AppThemeBinding Light={StaticResource NormalBackgroundLight},
+												  Dark={StaticResource NormalBackgroundDark}}"
+				Margin="0,8"
+				Padding="16"
+				Stroke="{AppThemeBinding Light={StaticResource NormalForegroundLight},
+										 Dark={StaticResource NormalBackgroundDark}}"
+				StrokeShape="RoundRectangle 2">
+				<Label x:Name="InnerLabel"
+					FontFamily="HaasGroteskBold"
+					HorizontalTextAlignment="Center"
+					Text="{Binding MyNativeName}"
+					TextColor="{AppThemeBinding Light={StaticResource NormalForegroundLight},
+												Dark={StaticResource NormalForegroundDark}}" />
+
+				<VisualStateManager.VisualStateGroups>
+					<VisualStateGroup
+						Name="CommonStates">
+						<VisualState
+							Name="Normal" />
+						<VisualState
+							Name="Selected">
+							<VisualState.Setters>
+								<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SelectedBackgroundLight}, Dark={StaticResource SelectedBackgroundDark}}" />
+								<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource SelectedBackgroundLight}, Dark={StaticResource SelectedBackgroundDark}}" />
+								<Setter TargetName="InnerLabel" Property="Label.TextColor" Value="{AppThemeBinding Light={StaticResource SelectedForegroundLight}, Dark={StaticResource SelectedForegroundDark}}" />
+							</VisualState.Setters>
+						</VisualState>
+					</VisualStateGroup>
+				</VisualStateManager.VisualStateGroups>
+			</Border>
+		</DataTemplate>
+	</VisualElement.Resources>
+
 	<Grid
 		HeightRequest="{Binding ViewHeight}"
 		WidthRequest="{Binding ViewWidth}"
