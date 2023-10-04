@@ -554,6 +554,7 @@
 	<Style
 		ApplyToDerivedTypes="True"
 		TargetType="Border">
+		<Setter Property="Stroke" Value="Transparent" />
 		<Setter Property="VerticalOptions" Value="FillAndExpand" />
 		<Setter Property="HorizontalOptions" Value="FillAndExpand" />
 		<Setter Property="BackgroundColor" Value="Transparent" />
@@ -563,7 +564,7 @@
 		ApplyToDerivedTypes="False"
 		TargetType="Border">
 		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SecondaryBackgroundLight}, Dark={StaticResource SecondaryBackgroundDark}}" />
-		<Setter Property="Padding" Value="0,24,0,24" />
+		<Setter Property="Padding" Value="24" />
 		<Setter Property="StrokeShape" Value="RoundRectangle 8" />
 		<Setter Property="Shadow">
 			<Shadow />
@@ -588,26 +589,36 @@
 	</Style>
 
 	<DataTemplate x:Key="SelectLanguageDataTemplate" x:DataType="localization:LanguageInfo">
-		<!--  https://github.com/dotnet/maui/issues/8494  -->
 		<Border
-			Padding="24,4">
+			BackgroundColor="{AppThemeBinding Light={StaticResource NormalBackgroundLight},
+											  Dark={StaticResource NormalBackgroundDark}}"
+			Margin="0,8"
+			Padding="16"
+			Stroke="{AppThemeBinding Light={StaticResource NormalForegroundLight},
+									 Dark={StaticResource NormalBackgroundDark}}"
+			StrokeShape="RoundRectangle 2">
+			<Label x:Name="InnerLabel"
+				FontFamily="HaasGroteskBold"
+				HorizontalTextAlignment="Center"
+				Text="{Binding MyNativeName}"
+				TextColor="{AppThemeBinding Light={StaticResource NormalForegroundLight},
+											Dark={StaticResource NormalForegroundDark}}" />
 
-			<Border
-				BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight},
-												  Dark={StaticResource PrimaryBackgroundDark}}"
-				Padding="8">
-
-				<Border.StrokeShape>
-					<RoundRectangle
-						CornerRadius="4" />
-				</Border.StrokeShape>
-
-				<Grid>
-					<Label
-						HorizontalTextAlignment="Center"
-						Text="{Binding MyNativeName}" />
-				</Grid>
-			</Border>
+			<VisualStateManager.VisualStateGroups>
+				<VisualStateGroup
+					Name="CommonStates">
+					<VisualState
+						Name="Normal" />
+					<VisualState
+						Name="Selected">
+						<VisualState.Setters>
+							<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SelectedBackgroundLight}, Dark={StaticResource SelectedBackgroundDark}}" />
+							<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource SelectedBackgroundLight}, Dark={StaticResource SelectedBackgroundDark}}" />
+							<Setter TargetName="InnerLabel" Property="Label.TextColor" Value="{AppThemeBinding Light={StaticResource SelectedForegroundLight}, Dark={StaticResource SelectedForegroundDark}}" />
+						</VisualState.Setters>
+					</VisualState>
+				</VisualStateGroup>
+			</VisualStateManager.VisualStateGroups>
 		</Border>
 	</DataTemplate>
 </ResourceDictionary>

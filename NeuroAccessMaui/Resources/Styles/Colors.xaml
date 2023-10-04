@@ -8,10 +8,25 @@
 	<Color x:Key="SecondaryBackgroundDark">#3E3E40</Color>
 
 	<Color x:Key="PrimaryForegroundLight">#181F25</Color>
-	<Color x:Key="SecondaryForegroundLight">#181F25</Color>
 	<Color x:Key="PrimaryForegroundDark">#E7E7E7</Color>
+	<Color x:Key="SecondaryForegroundLight">#181F25</Color>
 	<Color x:Key="SecondaryForegroundDark">#EBEBEC</Color>
 
+	<Color x:Key="NormalBackgroundLight">#F5F6F7</Color>
+	<Color x:Key="NormalForegroundLight">#181F25</Color>
+	<Color x:Key="SelectedBackgroundLight">#181F25</Color>
+	<Color x:Key="SelectedForegroundLight">#F5F6F7</Color>
+	<Color x:Key="NormalInfoForegroundLight">#878A8E</Color>
+	<Color x:Key="SelectedInfoForegroundLight">#F5F6F7</Color>
+
+	<Color x:Key="NormalBackgroundDark">#3E3E40</Color>
+	<Color x:Key="NormalForegroundDark">#EBEBEC</Color>
+	<Color x:Key="SelectedBackgroundDark">#E0E4E7</Color>
+	<Color x:Key="SelectedForegroundDark">#161617</Color>
+	<Color x:Key="NormalInfoForegroundDark">#787879</Color>
+	<Color x:Key="SelectedInfoForegroundDark">#161617</Color>
+
 	<Color x:Key="CurvedLinesLight">#FCFCFD</Color>
-	<Color x:Key="CurvedLinesDark">#0f0f10</Color>
+	<Color x:Key="CurvedLinesDark">#0F0F10</Color>
+
 </ResourceDictionary>

@@ -38,9 +38,6 @@ public static class PageAppExtension
 		Builder.Services.AddTransient<PetitionSignaturePage, PetitionSignatureViewModel>();
 
 		// Popups
-		//!!! Builder.Services.AddTransient<SelectLanguagePage>();
-		Builder.Services.AddTransient<SelectLanguageViewModel>();
-
 		Builder.Services.AddTransient<ChangePinPage, ChangePinViewModel>();
 		Builder.Services.AddTransient<ViewImagePage, ViewImageViewModel>();
 		Builder.Services.AddTransient<CheckPinPage>();

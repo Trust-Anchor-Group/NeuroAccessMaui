@@ -1,4 +1,6 @@
-﻿using NeuroAccessMaui.Services;
+﻿using System.Collections.ObjectModel;
+using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Localization;
 
 namespace NeuroAccessMaui.Popups;
 
@@ -7,10 +9,10 @@ public partial class SelectLanguagePage
 	/// <summary>
 	/// Popup factory
 	/// </summary>
-	public static Task<SelectLanguagePage> Create()
-	{
-		SelectLanguageViewModel ViewModel = ServiceHelper.GetService<SelectLanguageViewModel>();
-		return Task.FromResult(new SelectLanguagePage(ViewModel));
+	//public static Task<SelectLanguagePage> Create()
+	//{
+		//SelectLanguageViewModel ViewModel = ServiceHelper.GetService<SelectLanguageViewModel>();
+		//return Task.FromResult(new SelectLanguagePage(ViewModel));
 
 		/*
 		return await MainThread.InvokeOnMainThreadAsync(async () => await
@@ -35,19 +37,23 @@ public partial class SelectLanguagePage
 			return Page;
 		})
 		*/
-	}
+	//}
 
-	private SelectLanguageViewModel viewModel;
+	//private SelectLanguageViewModel viewModel;
 
 	public double ViewWidth => (DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density) * (3.0 / 4.0);
 	public double ViewHeight => (DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density) * (1.0 / 2.0);
 
-	private SelectLanguagePage(SelectLanguageViewModel ViewModel, ImageSource? Background = null) : base(Background)
+	public Collection<LanguageInfo> ItemsSource { get; set; } = new(App.SupportedLanguages);
+	public LanguageInfo SelectedItem { get; set; } = App.SelectedLanguage;
+
+	public SelectLanguagePage(ImageSource? Background = null) : base(Background)
 	{
 		this.InitializeComponent();
-		this.BindingContext = ViewModel;
-		this.viewModel = ViewModel;
+		this.BindingContext = this;
+		//this.viewModel = ViewModel;
 
+		/*
 		this.InnerListView.SetBinding(CollectionView.ItemsSourceProperty,
 			new Binding(nameof(ViewModel.ItemsSource), source: ViewModel));
 
@@ -58,6 +64,7 @@ public partial class SelectLanguagePage
 		{
 			this.InnerListView.ItemTemplate = (DataTemplate)DataTemplate;
 		}
+		*/
 	}
 
 	private void InnerListView_SelectionChanged(object sender, SelectionChangedEventArgs e)

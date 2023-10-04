@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
-<viewmodel:BlurryPopup x:Name="ThisPage" x:Class="NeuroAccessMaui.Popups.SelectLanguagePage" x:DataType="viewmodel:SelectLanguageViewModel"
+<viewmodel:BlurryPopup x:Name="ThisPage" x:Class="NeuroAccessMaui.Popups.SelectLanguagePage" x:DataType="viewmodel:SelectLanguagePage"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:controls="clr-namespace:NeuroAccessMaui.Controls"
@@ -8,8 +8,8 @@
 	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.Popups">
 
 	<Grid
-		HeightRequest="{Binding Source={x:Reference ThisPage}, Path=ViewHeight}"
-		WidthRequest="{Binding Source={x:Reference ThisPage}, Path=ViewWidth}"
+		HeightRequest="{Binding ViewHeight}"
+		WidthRequest="{Binding ViewWidth}"
 		Padding="8">
 
 		<Border
