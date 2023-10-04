@@ -1,20 +1,22 @@
-﻿namespace NeuroAccessMaui.Popups;
+﻿using NeuroAccessMaui.Services;
+
+namespace NeuroAccessMaui.Popups;
 
 public partial class SelectLanguagePage
 {
 	/// <summary>
 	/// Popup factory
 	/// </summary>
-	public static async Task<SelectLanguagePage?> Create()
+	public static Task<SelectLanguagePage> Create()
 	{
-		SelectLanguagePage? Page = null;
+		SelectLanguageViewModel ViewModel = ServiceHelper.GetService<SelectLanguageViewModel>();
+		return Task.FromResult(new SelectLanguagePage(ViewModel));
 
-		return await MainThread.InvokeOnMainThreadAsync(async () =>
+		/*
+		return await MainThread.InvokeOnMainThreadAsync(async () => await
 		{
 			SelectLanguageViewModel ViewModel = new();
-			Page = await Task.FromResult(new SelectLanguagePage(ViewModel, null));
 
-			/*
 			try
 			{
 				byte[] ScreenBitmap = await ServiceRef.PlatformSpecific.CaptureScreen(10);
@@ -29,10 +31,10 @@ public partial class SelectLanguagePage
 
 				Page = new SelectLanguagePage(ViewModel, null);
 			}
-			*/
 
 			return Page;
-		});
+		})
+		*/
 	}
 
 	private SelectLanguageViewModel viewModel;
@@ -40,7 +42,7 @@ public partial class SelectLanguagePage
 	public double ViewWidth => (DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density) * (3.0 / 4.0);
 	public double ViewHeight => (DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density) * (1.0 / 2.0);
 
-	private SelectLanguagePage(SelectLanguageViewModel ViewModel, ImageSource? Background) : base(Background)
+	private SelectLanguagePage(SelectLanguageViewModel ViewModel, ImageSource? Background = null) : base(Background)
 	{
 		this.InitializeComponent();
 		this.BindingContext = ViewModel;

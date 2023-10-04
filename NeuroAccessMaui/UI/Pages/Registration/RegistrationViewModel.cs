@@ -72,7 +72,6 @@ public partial class RegistrationViewModel : BaseViewModel
 	private async Task ChangeLanguage()
 	{
 		//await MopupService.Instance.PushAsync(ServiceHelper.GetService<SelectLanguagePage>());
-
 		await MopupService.Instance.PushAsync(await SelectLanguagePage.Create());
 
 		//LocalizationManager.Current.CurrentCulture = language;
