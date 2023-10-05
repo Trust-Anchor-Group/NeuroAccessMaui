@@ -123,7 +123,7 @@ public partial class TagProfile : ITagProfile
 	private bool isTest;
 	private PurposeUse purpose;
 	private DateTime? testOtpTimestamp;
-	private RegistrationStep step = RegistrationStep.ValidatePhone;
+	private RegistrationStep step = RegistrationStep.RequestPurpose;
 	private bool suppressPropertyChangedEvents;
 	private bool defaultXmppConnectivity;
 

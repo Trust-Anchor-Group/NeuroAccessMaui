@@ -169,16 +169,14 @@ public abstract partial class BaseViewModel : ObservableObject, ILifeCycleView
 	/// Method called when view is initialized for the first time. Use this method to implement registration
 	/// of event handlers, processing navigation arguments, etc.
 	/// </summary>
-	public Task DoInitialize()
+	public async Task DoInitialize()
 	{
 		if (!this.IsInitialized)
 		{
 			this.IsInitialized = true;
 
-			return this.OnInitialize();
+			await this.OnInitialize();
 		}
-
-		return Task.CompletedTask;
 	}
 
 	/// <summary>

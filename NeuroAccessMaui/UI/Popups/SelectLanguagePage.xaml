@@ -53,8 +53,8 @@
 
 			<CollectionView x:Name="InnerListView"
 				ItemTemplate="{StaticResource SelectLanguageDataTemplate}"
-				ItemsSource="{Binding ItemsSource}"
-				SelectedItem="{Binding SelectedItem}"
+				ItemsSource="{Binding Languages}"
+				SelectedItem="{Binding SelectedLanguage}"
 				SelectionChanged="InnerListView_SelectionChanged" />
 		</Border>
 	</Grid>

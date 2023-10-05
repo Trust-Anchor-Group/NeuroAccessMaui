@@ -2,7 +2,7 @@ namespace NeuroAccessMaui.Pages.Registration.Views;
 
 public partial class CreateAccountView
 {
-	public static CreateAccountView? Create()
+	public static CreateAccountView Create()
 	{
 		return Create<CreateAccountView>();
 	}

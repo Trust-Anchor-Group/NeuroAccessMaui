@@ -2,7 +2,7 @@ namespace NeuroAccessMaui.Pages.Registration.Views;
 
 public partial class LoadingView
 {
-	public static LoadingView? Create()
+	public static LoadingView Create()
 	{
 		return Create<LoadingView>();
 	}

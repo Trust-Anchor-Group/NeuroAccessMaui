@@ -152,6 +152,11 @@ public interface ITagProfile
 	void FromConfiguration(TagConfiguration configuration);
 
 	/// <summary>
+	/// Changes the current onboarding step.
+	/// </summary>
+	void GoToStep(RegistrationStep NewStep);
+
+	/// <summary>
 	/// Returns <c>true</c> if the current <see cref="ITagProfile"/> needs to have its values updated, <c>false</c> otherwise.
 	/// </summary>
 	/// <returns>If values need updating</returns>

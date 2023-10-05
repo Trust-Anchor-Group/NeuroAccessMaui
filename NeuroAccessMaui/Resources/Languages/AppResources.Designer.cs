@@ -556,6 +556,96 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enter the name you want to use for your account.
+        /// </summary>
+        internal static string OnboardingAccountPageDetails {
+            get {
+                return ResourceManager.GetString("OnboardingAccountPageDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create account.
+        /// </summary>
+        internal static string OnboardingAccountPageTitle {
+            get {
+                return ResourceManager.GetString("OnboardingAccountPageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to We’ll send you a verification code.
+        /// </summary>
+        internal static string OnboardingEmailPageDetails {
+            get {
+                return ResourceManager.GetString("OnboardingEmailPageDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please verify email.
+        /// </summary>
+        internal static string OnboardingEmailPageTitle {
+            get {
+                return ResourceManager.GetString("OnboardingEmailPageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To get verified, you need to enter your phone number.
+        /// </summary>
+        internal static string OnboardingPhonePageDetails {
+            get {
+                return ResourceManager.GetString("OnboardingPhonePageDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Let&apos;s get started.
+        /// </summary>
+        internal static string OnboardingPhonePageTitle {
+            get {
+                return ResourceManager.GetString("OnboardingPhonePageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UNDEFINED.
+        /// </summary>
+        internal static string OnboardingProviderPageDetails {
+            get {
+                return ResourceManager.GetString("OnboardingProviderPageDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selected provider.
+        /// </summary>
+        internal static string OnboardingProviderPageTitle {
+            get {
+                return ResourceManager.GetString("OnboardingProviderPageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose in what context you intend to use the Neuro-Access.
+        /// </summary>
+        internal static string OnboardingPurposePageDetails {
+            get {
+                return ResourceManager.GetString("OnboardingPurposePageDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Welcome to Neuro-Access.
+        /// </summary>
+        internal static string OnboardingPurposePageTitle {
+            get {
+                return ResourceManager.GetString("OnboardingPurposePageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open.
         /// </summary>
         internal static string Open {
@@ -786,6 +876,78 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string PleaseReviewAndCheckAllCheckboxes {
             get {
                 return ResourceManager.GetString("PleaseReviewAndCheckAllCheckboxes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Educational use.
+        /// </summary>
+        internal static string PurposeEducational {
+            get {
+                return ResourceManager.GetString("PurposeEducational", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This option allows you to use Tag ID for educational purposes. You can use the app to sign or access resources as a private person, either as an educator, or as a student. The account may be limited in time. The account may also be removed when no longer used. Check with the service provider for more information..
+        /// </summary>
+        internal static string PurposeEducationalDescription {
+            get {
+                return ResourceManager.GetString("PurposeEducationalDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Experimental use.
+        /// </summary>
+        internal static string PurposeExperimental {
+            get {
+                return ResourceManager.GetString("PurposeExperimental", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This option allows you to use Tag ID for experimental purposes. You can use the app to sign or access resources as a private person, with the goal of learning the technology and for what purposes it can be used. The account may be limited in time. The account may also be removed when no longer used. Check with the service provider for more information..
+        /// </summary>
+        internal static string PurposeExperimentalDescription {
+            get {
+                return ResourceManager.GetString("PurposeExperimentalDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Personal use.
+        /// </summary>
+        internal static string PurposePersonal {
+            get {
+                return ResourceManager.GetString("PurposePersonal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This option allows you to use Tag ID for personal purposes. You can use the app to sign or access resources as a private person. Certain operations may incur costs, depending on the service provider you choose. Check with the service provider for more information..
+        /// </summary>
+        internal static string PurposePersonalDescription {
+            get {
+                return ResourceManager.GetString("PurposePersonalDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Work use.
+        /// </summary>
+        internal static string PurposeWork {
+            get {
+                return ResourceManager.GetString("PurposeWork", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This option allows you to use Tag ID for work purposes. This includes work not for profit in organizations. You can use the app to sign or access resources as a representative of an organization. Certain operations may incur costs, depending on the service provider you choose. Check with the service provider for more information..
+        /// </summary>
+        internal static string PurposeWorkDescription {
+            get {
+                return ResourceManager.GetString("PurposeWorkDescription", resourceCulture);
             }
         }
         

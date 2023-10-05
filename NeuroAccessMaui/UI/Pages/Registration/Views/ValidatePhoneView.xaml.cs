@@ -2,7 +2,7 @@ namespace NeuroAccessMaui.Pages.Registration.Views;
 
 public partial class ValidatePhoneView
 {
-	public static ValidatePhoneView? Create()
+	public static ValidatePhoneView Create()
 	{
 		return Create<ValidatePhoneView>();
 	}

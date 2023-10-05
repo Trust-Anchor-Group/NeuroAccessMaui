@@ -2,7 +2,7 @@ namespace NeuroAccessMaui.Pages.Registration.Views;
 
 public partial class DefinePinView
 {
-	public static DefinePinView? Create()
+	public static DefinePinView Create()
 	{
 		return Create<DefinePinView>();
 	}

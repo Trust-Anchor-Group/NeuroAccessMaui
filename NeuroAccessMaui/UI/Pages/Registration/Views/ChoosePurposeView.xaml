@@ -4,11 +4,12 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
 	xmlns:base="clr-namespace:NeuroAccessMaui.Pages.Registration"
+	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+	xmlns:r="clr-namespace:NeuroAccessMaui.Resources.Languages"
 	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.Pages.Registration.Views">
 
-	<!--
 	<VisualElement.Resources>
-		<DataTemplate x:Key="SelectPurposeDataTemplate" x:DataType="localization:PurposeInfo">
+		<DataTemplate x:Key="SelectPurposeDataTemplate" x:DataType="viewmodel:PurposeInfo">
 			<Border
 				BackgroundColor="{AppThemeBinding Light={StaticResource NormalBackgroundLight},
 												  Dark={StaticResource NormalBackgroundDark}}"
@@ -24,13 +25,14 @@
 						Grid.Column="0"
 						FontFamily="HaasGroteskBold"
 						HorizontalTextAlignment="Center"
-						Text="{Binding MyNativeName}"
+						Text="{Binding LocalizedName}"
 						TextColor="{AppThemeBinding Light={StaticResource NormalForegroundLight},
 													Dark={StaticResource NormalForegroundDark}}" />
 					<ImageButton x:Name="InnerButton"
+						Grid.Column="1"
 						Source="info_circle_button.png">
 						<ImageButton.Behaviors>
-							<mct:IconTintColorBehavior x:Name="InnerTintColor"
+							<mct:IconTintColorBehavior
 								TintColor="{AppThemeBinding Light={StaticResource NormalInfoForegroundLight},
 															Dark={StaticResource NormalInfoForegroundDark}}" />
 						</ImageButton.Behaviors>
@@ -47,6 +49,14 @@
 								<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SelectedBackgroundLight}, Dark={StaticResource SelectedBackgroundDark}}" />
 								<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource SelectedBackgroundLight}, Dark={StaticResource SelectedBackgroundDark}}" />
 								<Setter TargetName="InnerLabel" Property="Label.TextColor" Value="{AppThemeBinding Light={StaticResource SelectedForegroundLight}, Dark={StaticResource SelectedForegroundDark}}" />
+								<!--
+								<Setter TargetName="InnerButton" Property="ImageButton.Behaviors">
+									<Setter.Value>
+										<mct:IconTintColorBehavior
+											TintColor="{AppThemeBinding Light={StaticResource SelectedForegroundLight},
+																		Dark={StaticResource SelectedForegroundDark}}" />
+									</Setter.Value>
+								</Setter>								-->
 							</VisualState.Setters>
 						</VisualState>
 					</VisualStateGroup>
@@ -54,7 +64,28 @@
 			</Border>
 		</DataTemplate>
 	</VisualElement.Resources>
-	-->
 
-	<ScrollView />
+	<VerticalStackLayout>
+
+		<Label
+			Grid.Row="0"
+			LineBreakMode="WordWrap"
+			Text="{l:Localize OnboardingPurposePageTitle}" />
+
+		<Label
+			Grid.Row="1"
+			LineBreakMode="WordWrap"
+			Text="{l:Localize OnboardingPurposePageDetails}" />
+
+		<CollectionView x:Name="InnerListView"
+			Grid.Row="2"
+			ItemTemplate="{StaticResource SelectPurposeDataTemplate}"
+			ItemsSource="{Binding Purposes}"
+			SelectedItem="{Binding SelectedPurpose}" />
+
+		<Button
+			Command="{Binding ContinueCommand}"
+			Text="Continue" />
+	</VerticalStackLayout>
+
 </base:BaseRegistrationView>

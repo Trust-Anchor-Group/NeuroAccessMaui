@@ -2,7 +2,7 @@ namespace NeuroAccessMaui.Pages.Registration.Views;
 
 public partial class ChooseProviderView
 {
-	public static ChooseProviderView? Create()
+	public static ChooseProviderView Create()
 	{
 		return Create<ChooseProviderView>();
 	}

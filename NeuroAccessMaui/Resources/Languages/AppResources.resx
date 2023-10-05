@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="STRINGNOTDEFINED" xml:space="preserve">
+    <value>STRING NOT DEFINED</value>
+  </data>
   <data name="IdentityState_Approved" xml:space="preserve">
     <value>Approved</value>
   </data>
@@ -515,5 +518,29 @@
   </data>
   <data name="OnboardingAccountPageDetails" xml:space="preserve">
     <value>Enter the name you want to use for your account</value>
+  </data>
+  <data name="PurposeEducational" xml:space="preserve">
+    <value>Educational use</value>
+  </data>
+  <data name="PurposeEducationalDescription" xml:space="preserve">
+    <value>This option allows you to use Tag ID for educational purposes. You can use the app to sign or access resources as a private person, either as an educator, or as a student. The account may be limited in time. The account may also be removed when no longer used. Check with the service provider for more information.</value>
+  </data>
+  <data name="PurposeExperimental" xml:space="preserve">
+    <value>Experimental use</value>
+  </data>
+  <data name="PurposeExperimentalDescription" xml:space="preserve">
+    <value>This option allows you to use Tag ID for experimental purposes. You can use the app to sign or access resources as a private person, with the goal of learning the technology and for what purposes it can be used. The account may be limited in time. The account may also be removed when no longer used. Check with the service provider for more information.</value>
+  </data>
+  <data name="PurposePersonal" xml:space="preserve">
+    <value>Personal use</value>
+  </data>
+  <data name="PurposePersonalDescription" xml:space="preserve">
+    <value>This option allows you to use Tag ID for personal purposes. You can use the app to sign or access resources as a private person. Certain operations may incur costs, depending on the service provider you choose. Check with the service provider for more information.</value>
+  </data>
+  <data name="PurposeWork" xml:space="preserve">
+    <value>Work use</value>
+  </data>
+  <data name="PurposeWorkDescription" xml:space="preserve">
+    <value>This option allows you to use Tag ID for work purposes. This includes work not for profit in organizations. You can use the app to sign or access resources as a representative of an organization. Certain operations may incur costs, depending on the service provider you choose. Check with the service provider for more information.</value>
   </data>
 </root>

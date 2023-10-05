@@ -46,46 +46,27 @@ public partial class RegistrationPage
 
 	private async void HandleRegistrationPageMessage(object Recipient, RegistrationPageMessage Message)
 	{
-		switch (Message.Step)
+		if (Message.Step == RegistrationStep.Complete)
 		{
-			case RegistrationStep.RequestPurpose:
-				StateContainer.SetCurrentState(this.GridWithAnimation, "ChoosePurpose");
-				break;
-			case RegistrationStep.ValidatePhone:
-				StateContainer.SetCurrentState(this.GridWithAnimation, "ValidatePhone");
-				break;
-			case RegistrationStep.ValidateEmail:
-				StateContainer.SetCurrentState(this.GridWithAnimation, "ValidateEmail");
-				break;
-			case RegistrationStep.ChooseProvider:
-				StateContainer.SetCurrentState(this.GridWithAnimation, "ChooseProvider");
-				break;
-			case RegistrationStep.CreateAccount:
-				StateContainer.SetCurrentState(this.GridWithAnimation, "CreateAccount");
-				break;
-//			case RegistrationStep.RegisterIdentity:
-//				StateContainer.SetCurrentState(this.GridWithAnimation, "RegisterIdentity");
-//				break;
-			case RegistrationStep.DefinePin:
-				StateContainer.SetCurrentState(this.GridWithAnimation, "DefinePin");
-				break;
-			case RegistrationStep.Complete:
-				await App.SetMainPageAsync();
-				break;
+			await App.SetMainPageAsync();
+			return;
 		}
-	}
 
-	[RelayCommand]
-	async Task ChangeStateWithFadeAnimation()
-	{
-		/*
-		string currentState = StateContainer.GetCurrentState(this.GridWithAnimation);
-		currentState = (currentState is "Loaded") ? "Loading" : "Loaded";
+		string NewState = Message.Step switch
+		{
+			RegistrationStep.RequestPurpose => "ChoosePurpose",
+			RegistrationStep.ValidatePhone => "ValidatePhone",
+			RegistrationStep.ValidateEmail => "ValidateEmail",
+			RegistrationStep.ChooseProvider => "ChooseProvider",
+			RegistrationStep.CreateAccount => "CreateAccount",
+			//!!! RegistrationStep.RegisterIdentity => "RegisterIdentity",
+			RegistrationStep.DefinePin => "DefinePin",
+			_ => throw new NotImplementedException(),
+		};
 
-		await StateContainer.ChangeStateWithAnimation(this.GridWithAnimation, currentState, CancellationToken.None);
-
-		RegistrationViewModel ViewModel = this.ViewModel<RegistrationViewModel>();
-		ViewModel.CurrentState = currentState;
-		*/
+		await this.Dispatcher.DispatchAsync(() =>
+		{
+			StateContainer.ChangeStateWithAnimation(this.GridWithAnimation, NewState, CancellationToken.None);
+		});
 	}
 }

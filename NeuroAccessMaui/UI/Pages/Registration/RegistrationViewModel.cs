@@ -20,19 +20,19 @@ public partial class RegistrationViewModel : BaseViewModel
 	}
 
 	/// <inheritdoc/>
-	protected override Task OnInitialize()
+	protected override async Task OnInitialize()
 	{
-		LocalizationManager.Current.PropertyChanged += this.PropertyChangedEventHandler;
+		await base.OnInitialize();
 
-		return base.OnInitialize();
+		LocalizationManager.Current.PropertyChanged += this.PropertyChangedEventHandler;
 	}
 
 	/// <inheritdoc/>
-	protected override Task OnDispose()
+	protected override async Task OnDispose()
 	{
 		LocalizationManager.Current.PropertyChanged -= this.PropertyChangedEventHandler;
 
-		return base.OnDispose();
+		await base.OnDispose();
 	}
 
 	/// <summary>
