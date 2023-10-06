@@ -11,70 +11,66 @@
 	<Grid>
 		<controls:Background />
 
-		<Grid
-			Padding="24"
-			ColumnDefinitions="*"
-			ColumnSpacing="0"
-			RowDefinitions="auto,*"
-			RowSpacing="24">
+		<ScrollView>
+			<Grid
+				Padding="{StaticResource LargeMargins}"
+				RowDefinitions="auto,*"
+				RowSpacing="{StaticResource LargeSpacing}">
 
-			<VerticalStackLayout
-				Grid.Row="0"
-				Padding="0"
-				Spacing="24">
+				<VerticalStackLayout
+					Grid.Row="0"
+					Spacing="{StaticResource LargeSpacing}">
 
-				<controls:TemplatedButton x:Name="LanguageButton"
-					HorizontalOptions="End"
-					VerticalOptions="Start"
-					Command="{Binding ChangeLanguageCommand}">
+					<controls:TemplatedButton x:Name="LanguageButton"
+						HorizontalOptions="End"
+						VerticalOptions="Start"
+						Command="{Binding ChangeLanguageCommand}">
 
-					<VerticalStackLayout
-						Padding="0"
-						Spacing="0">
+						<VerticalStackLayout>
+							<Image
+								Grid.Row="0"
+								HorizontalOptions="Center"
+								Source="language_select_button.png">
+								<Image.Behaviors>
+									<mct:IconTintColorBehavior
+										TintColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
+																	Dark={StaticResource PrimaryForegroundDark}}" />
+								</Image.Behaviors>
+							</Image>
 
-						<Image
-							Grid.Row="0"
-							HorizontalOptions="Center"
-							Source="language_select_button.png">
-							<Image.Behaviors>
-								<mct:IconTintColorBehavior
-									TintColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
-																Dark={StaticResource PrimaryForegroundDark}}" />
-							</Image.Behaviors>
-						</Image>
+							<Label
+								Grid.Row="1"
+								Text="{Binding SelectedLanguage.MyNativeName}" />
+						</VerticalStackLayout>
+					</controls:TemplatedButton>
 
-						<Label
-							Grid.Row="1"
-							Text="{Binding SelectedLanguage.MyNativeName}" />
-					</VerticalStackLayout>
-				</controls:TemplatedButton>
+					<Image
+						HorizontalOptions="Center"
+						Source="{AppThemeBinding Light=neuro_access_logo_light.png,
+												 Dark=neuro_access_logo_dark.png}" />
+				</VerticalStackLayout>
 
-				<Image
-					HorizontalOptions="Center"
-					Source="{AppThemeBinding Light=neuro_access_logo_light.png,
-											 Dark=neuro_access_logo_dark.png}" />
-			</VerticalStackLayout>
+				<!--  CONTENT  -->
+				<Grid x:Name="GridWithAnimation"
+					Grid.Row="1">
 
-			<!--  CONTENT  -->
-			<Grid x:Name="GridWithAnimation"
-				Grid.Row="1">
+					<mct:StateContainer.StateViews>
+						<views:LoadingView x:Name="LoadingView" x:FactoryMethod="Create" mct:StateView.StateKey="Loading" />
+						<views:ChoosePurposeView x:Name="ChoosePurposeView" x:FactoryMethod="Create" mct:StateView.StateKey="ChoosePurpose" />
+						<views:ValidatePhoneView x:Name="ValidatePhoneView" x:FactoryMethod="Create" mct:StateView.StateKey="ValidatePhone" />
+						<views:ValidateEmailView x:Name="ValidateEmailView" x:FactoryMethod="Create" mct:StateView.StateKey="ValidateEmail" />
+						<views:ChooseProviderView x:Name="ChooseProviderView" x:FactoryMethod="Create" mct:StateView.StateKey="ChooseProvider" />
+						<views:CreateAccountView x:Name="CreateAccountView" x:FactoryMethod="Create" mct:StateView.StateKey="CreateAccount" />
+						<views:DefinePinView x:Name="DefinePinView" x:FactoryMethod="Create" mct:StateView.StateKey="DefinePin" />
+					</mct:StateContainer.StateViews>
 
-				<mct:StateContainer.StateViews>
-					<views:LoadingView x:Name="LoadingView" x:FactoryMethod="Create" mct:StateView.StateKey="Loading" />
-					<views:ChoosePurposeView x:Name="ChoosePurposeView" x:FactoryMethod="Create" mct:StateView.StateKey="ChoosePurpose" />
-					<views:ValidatePhoneView x:Name="ValidatePhoneView" x:FactoryMethod="Create" mct:StateView.StateKey="ValidatePhone" />
-					<views:ValidateEmailView x:Name="ValidateEmailView" x:FactoryMethod="Create" mct:StateView.StateKey="ValidateEmail" />
-					<views:ChooseProviderView x:Name="ChooseProviderView" x:FactoryMethod="Create" mct:StateView.StateKey="ChooseProvider" />
-					<views:CreateAccountView x:Name="CreateAccountView" x:FactoryMethod="Create" mct:StateView.StateKey="CreateAccount" />
-					<views:DefinePinView x:Name="DefinePinView" x:FactoryMethod="Create" mct:StateView.StateKey="DefinePin" />
-				</mct:StateContainer.StateViews>
-
-				<!--  default state, should not occur  -->
-				<Label
-					HorizontalTextAlignment="Center"
-					Text="Something went wrong!"
-					VerticalTextAlignment="Center" />
+					<!--  default state, should not occur  -->
+					<Label
+						HorizontalTextAlignment="Center"
+						Text="Something went wrong!"
+						VerticalTextAlignment="Center" />
+				</Grid>
 			</Grid>
-		</Grid>
+		</ScrollView>
 	</Grid>
 </base:BaseContentPage>

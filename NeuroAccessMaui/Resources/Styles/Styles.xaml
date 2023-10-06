@@ -2,7 +2,32 @@
 <?xaml-comp compile="true" ?>
 <ResourceDictionary
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:s="clr-namespace:System;assembly=mscorlib">
+
+	<s:Double x:Key="SmallSpacing">
+		8
+	</s:Double>
+
+	<s:Double x:Key="MediumSpacing">
+		16
+	</s:Double>
+
+	<s:Double x:Key="LargeSpacing">
+		24
+	</s:Double>
+
+	<Thickness x:Key="SmallMargins">
+		8
+	</Thickness>
+
+	<Thickness x:Key="MediumMargins">
+		16
+	</Thickness>
+
+	<Thickness x:Key="LargeMargins">
+		24
+	</Thickness>
 
 	<!--
     <Style
@@ -428,8 +453,8 @@
 		TargetType="Grid">
 		<Setter Property="Padding" Value="0" />
 		<Setter Property="Margin" Value="0" />
-		<Setter Property="RowSpacing" Value="16" />
-		<Setter Property="ColumnSpacing" Value="16" />
+		<Setter Property="RowSpacing" Value="0" />
+		<Setter Property="ColumnSpacing" Value="0" />
 		<Setter Property="VerticalOptions" Value="FillAndExpand" />
 		<Setter Property="HorizontalOptions" Value="FillAndExpand" />
 		<Setter Property="BackgroundColor" Value="Transparent" />
@@ -438,9 +463,9 @@
 	<Style
 		ApplyToDerivedTypes="True"
 		TargetType="StackLayout">
-		<Setter Property="Padding" Value="8" />
+		<Setter Property="Padding" Value="0" />
 		<Setter Property="Margin" Value="0" />
-		<Setter Property="Spacing" Value="16" />
+		<Setter Property="Spacing" Value="0" />
 		<Setter Property="VerticalOptions" Value="FillAndExpand" />
 		<Setter Property="HorizontalOptions" Value="FillAndExpand" />
 		<Setter Property="BackgroundColor" Value="Transparent" />
@@ -449,9 +474,9 @@
 	<Style
 		ApplyToDerivedTypes="True"
 		TargetType="VerticalStackLayout">
-		<Setter Property="Padding" Value="8" />
+		<Setter Property="Padding" Value="0" />
 		<Setter Property="Margin" Value="0" />
-		<Setter Property="Spacing" Value="16" />
+		<Setter Property="Spacing" Value="0" />
 		<Setter Property="VerticalOptions" Value="FillAndExpand" />
 		<Setter Property="HorizontalOptions" Value="FillAndExpand" />
 		<Setter Property="BackgroundColor" Value="Transparent" />
@@ -460,7 +485,7 @@
 	<Style
 		ApplyToDerivedTypes="True"
 		TargetType="HorizontalStackLayout">
-		<Setter Property="Padding" Value="8" />
+		<Setter Property="Padding" Value="0" />
 		<Setter Property="Margin" Value="0" />
 		<Setter Property="VerticalOptions" Value="FillAndExpand" />
 		<Setter Property="HorizontalOptions" Value="FillAndExpand" />
@@ -563,6 +588,16 @@
 		<Setter Property="BackgroundColor" Value="Transparent" />
 	</Style>
 
+	<Style
+		ApplyToDerivedTypes="True"
+		TargetType="ScrollView">
+		<Setter Property="Margin" Value="0" />
+		<Setter Property="VerticalScrollBarVisibility" Value="Never" />
+		<Setter Property="HorizontalScrollBarVisibility" Value="Never" />
+		<Setter Property="VerticalOptions" Value="FillAndExpand" />
+		<Setter Property="HorizontalOptions" Value="FillAndExpand" />
+		<Setter Property="BackgroundColor" Value="Transparent" />
+	</Style>
 
 	<Style
 		ApplyToDerivedTypes="True"

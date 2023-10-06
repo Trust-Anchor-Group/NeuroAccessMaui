@@ -66,41 +66,34 @@
 		</DataTemplate>
 	</VisualElement.Resources>
 
-	<Grid
-		RowDefinitions="auto,auto,*,auto">
+	<VerticalStackLayout
+		Spacing="{StaticResource MediumSpacing}">
 
 		<Label
-			Grid.Row="0"
 			LineBreakMode="WordWrap"
 			Style="{StaticResource PageTitleLabelStyle}"
 			Text="{l:Localize OnboardingPurposePageTitle}" />
 
 		<Label
-			Grid.Row="1"
 			LineBreakMode="WordWrap"
 			Text="{l:Localize OnboardingPurposePageDetails}" />
 
-		<Grid
-			Grid.Row="2"
-			RowDefinitions="auto,*"
-			RowSpacing="8">
+		<VerticalStackLayout
+			Spacing="{StaticResource SmallSpacing}">
 			<Label
-				Grid.Row="0"
 				LineBreakMode="WordWrap"
 				Style="{StaticResource SectionTitleLabelStyle}"
 				Text="{l:Localize PurposesSectionTitle}" />
 
 			<CollectionView x:Name="InnerListView"
-				Grid.Row="1"
 				ItemTemplate="{StaticResource SelectPurposeDataTemplate}"
 				ItemsSource="{Binding Purposes}"
 				SelectedItem="{Binding SelectedPurpose}" />
-		</Grid>
+		</VerticalStackLayout>
 
 		<controls:FilledButton
-			Grid.Row="3"
 			Command="{Binding ContinueCommand}"
 			Text="{l:Localize Continue}" />
-	</Grid>
+	</VerticalStackLayout>
 
 </base:BaseRegistrationView>

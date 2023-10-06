@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Markup;
 using Microsoft.Extensions.Logging;
+using Microsoft.Maui.Controls.Handlers.Items;
+using Microsoft.Maui.Handlers;
 using Mopups.Hosting;
 using NeuroAccessMaui.Pages;
 using NeuroAccessMaui.Resources.Languages;
@@ -13,6 +15,8 @@ public static class MauiProgram
 {
 	public static MauiApp CreateMauiApp()
 	{
+		InitMauiControlsHandlers();
+
 		MauiAppBuilder Builder = MauiApp.CreateBuilder();
 
 		Builder.UseMauiApp<App>();
@@ -49,5 +53,30 @@ public static class MauiProgram
 #endif
 
 		return Builder.Build();
+	}
+
+	private static void InitMauiControlsHandlers()
+	{
+#if IOS
+		ScrollViewHandler.Mapper.AppendToMapping("ScrollViewHandler", (handler, view) =>
+		{
+			handler.PlatformView.Bounces = false;
+		});
+
+		CollectionViewHandler.Mapper.AppendToMapping("CollectionViewHandler", (handler, view) =>
+		{
+			//!!! handler.PlatformView.CollectionView.Bounces = false;
+		});
+#elif ANDROID
+		ScrollViewHandler.Mapper.AppendToMapping("ScrollViewHandler", (handler, view) =>
+		{
+			handler.PlatformView.OverScrollMode = Android.Views.OverScrollMode.Never;
+		});
+
+		CollectionViewHandler.Mapper.AppendToMapping("CollectionViewHandler", (handler, view) =>
+		{
+			handler.PlatformView.OverScrollMode = Android.Views.OverScrollMode.Never;
+		});
+#endif
 	}
 }
