@@ -637,7 +637,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Welcome to Neuro-Access.
+        ///   Looks up a localized string similar to Welcome!.
         /// </summary>
         internal static string OnboardingPurposePageTitle {
             get {

@@ -20,6 +20,7 @@
 
 			<VerticalStackLayout
 				Grid.Row="0"
+				Padding="0"
 				Spacing="24">
 
 				<controls:TemplatedButton x:Name="LanguageButton"

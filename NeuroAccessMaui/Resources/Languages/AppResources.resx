@@ -490,7 +490,7 @@
     <value>Failed to unbind viewmodel {0} for page {1}</value>
   </data>
   <data name="OnboardingPurposePageTitle" xml:space="preserve">
-    <value>Welcome to Neuro-Access</value>
+    <value>Welcome!</value>
   </data>
   <data name="OnboardingPurposePageDetails" xml:space="preserve">
     <value>Choose in what context you intend to use the Neuro-Access</value>
