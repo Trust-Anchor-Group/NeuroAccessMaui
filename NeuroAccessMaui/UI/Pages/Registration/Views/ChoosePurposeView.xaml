@@ -11,11 +11,9 @@
 
 	<VisualElement.Resources>
 		<DataTemplate x:Key="SelectPurposeDataTemplate" x:DataType="viewmodel:PurposeInfo">
-			<Border
+			<Border x:Name="InnerBorder"
 				BackgroundColor="{AppThemeBinding Light={StaticResource NormalBackgroundLight},
 												  Dark={StaticResource NormalBackgroundDark}}"
-				Margin="0,0,0,16"
-				Padding="16"
 				Stroke="{AppThemeBinding Light={StaticResource NormalForegroundLight},
 										 Dark={StaticResource NormalBackgroundDark}}"
 				StrokeShape="RoundRectangle 2">
@@ -24,21 +22,42 @@
 					RowDefinitions="auto">
 					<Label x:Name="InnerLabel"
 						Grid.Column="0"
+						Padding="{StaticResource MediumMargins}"
+						HorizontalOptions="FillAndExpand"
+						VerticalOptions="FillAndExpand"
 						FontFamily="HaasGroteskBold"
-						HorizontalTextAlignment="Center"
 						Text="{Binding LocalizedName}"
 						TextColor="{AppThemeBinding Light={StaticResource NormalForegroundLight},
-													Dark={StaticResource NormalForegroundDark}}" />
-					<ImageButton x:Name="InnerButton"
+													Dark={StaticResource NormalForegroundDark}}"
+						VerticalTextAlignment="Center">
+						<Label.GestureRecognizers>
+							<TapGestureRecognizer
+								Command="{Binding SelectPurposeCommand, Source={x:Reference ThisPage}}"
+								CommandParameter="{Binding Purpose}" />
+						</Label.GestureRecognizers>
+
+					</Label>
+
+					<Border
 						Grid.Column="1"
-						Source="info_circle_button.png">
-						<ImageButton.Behaviors>
-							<mct:IconTintColorBehavior
-								TintColor="{AppThemeBinding Light={StaticResource NormalInfoForegroundLight},
-															Dark={StaticResource NormalInfoForegroundDark}}" />
-						</ImageButton.Behaviors>
-					</ImageButton>
+						Padding="{StaticResource MediumMargins}"
+						VerticalOptions="Center">
+						<Border.GestureRecognizers>
+							<TapGestureRecognizer
+								Command="{Binding ShowPurposeInfoCommand, Source={x:Reference ThisPage}}"
+								CommandParameter="{Binding Purpose}" />
+						</Border.GestureRecognizers>
+						<Image x:Name="InnerButton"
+							Source="info_circle_button.png">
+							<Image.Behaviors>
+								<mct:IconTintColorBehavior
+									TintColor="{AppThemeBinding Light={StaticResource NormalInfoForegroundLight},
+																Dark={StaticResource NormalInfoForegroundDark}}" />
+							</Image.Behaviors>
+						</Image>
+					</Border>
 				</Grid>
+
 				<VisualStateManager.VisualStateGroups>
 					<VisualStateGroup
 						Name="CommonStates">
@@ -67,28 +86,31 @@
 	</VisualElement.Resources>
 
 	<VerticalStackLayout
-		Spacing="{StaticResource MediumSpacing}">
-
-		<Label
-			LineBreakMode="WordWrap"
-			Style="{StaticResource PageTitleLabelStyle}"
-			Text="{l:Localize OnboardingPurposePageTitle}" />
-
-		<Label
-			LineBreakMode="WordWrap"
-			Text="{l:Localize OnboardingPurposePageDetails}" />
-
+		Spacing="{StaticResource LargeSpacing}">
 		<VerticalStackLayout
-			Spacing="{StaticResource SmallSpacing}">
+			Spacing="{StaticResource MediumSpacing}">
+
 			<Label
 				LineBreakMode="WordWrap"
-				Style="{StaticResource SectionTitleLabelStyle}"
-				Text="{l:Localize PurposesSectionTitle}" />
+				Style="{StaticResource PageTitleLabelStyle}"
+				Text="{l:Localize OnboardingPurposePageTitle}" />
 
-			<CollectionView x:Name="InnerListView"
-				ItemTemplate="{StaticResource SelectPurposeDataTemplate}"
-				ItemsSource="{Binding Purposes}"
-				SelectedItem="{Binding SelectedPurpose}" />
+			<Label
+				LineBreakMode="WordWrap"
+				Text="{l:Localize OnboardingPurposePageDetails}" />
+
+			<VerticalStackLayout
+				Spacing="{StaticResource SmallSpacing}">
+				<Label
+					LineBreakMode="WordWrap"
+					Style="{StaticResource SectionTitleLabelStyle}"
+					Text="{l:Localize PurposesSectionTitle}" />
+
+				<VerticalStackLayout x:Name="PurposesContainer"
+					BindableLayout.ItemTemplate="{StaticResource SelectPurposeDataTemplate}"
+					BindableLayout.ItemsSource="{Binding Purposes}"
+					Spacing="{StaticResource MediumSpacing}" />
+			</VerticalStackLayout>
 		</VerticalStackLayout>
 
 		<controls:FilledButton
