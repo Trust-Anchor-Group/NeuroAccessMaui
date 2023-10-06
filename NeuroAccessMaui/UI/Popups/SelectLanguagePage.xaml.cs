@@ -1,4 +1,6 @@
 ﻿using System.Collections.ObjectModel;
+using System.Globalization;
+using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services.Localization;
 
 namespace NeuroAccessMaui.Popups;
@@ -42,24 +44,53 @@ public partial class SelectLanguagePage
 	public double ViewHeight => (DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density) * (1.0 / 2.0);
 
 	public Collection<LanguageInfo> Languages { get; set; } = new(App.SupportedLanguages);
-	public LanguageInfo SelectedLanguage { get; set; } = App.SelectedLanguage;
 
 	public SelectLanguagePage(ImageSource? Background = null) : base(Background)
 	{
 		this.InitializeComponent();
 		this.BindingContext = this;
+
+		this.SelectLanguage(App.SelectedLanguage.Name);
 	}
 
-	private void InnerListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+	[RelayCommand]
+	public void SelectLanguage(object o)
 	{
-		if (this.SelectedLanguage.IsCurrent)
+		if (o is not string Name)
 		{
 			return;
 		}
 
-		Task ExecutionTask = this.Dispatcher.DispatchAsync(() => this.InnerListView.ScrollTo(this.SelectedLanguage));
+		LanguageInfo? SelectedLanguage = null;
 
-		Preferences.Set("user_selected_language", this.SelectedLanguage.TwoLetterISOLanguageName);
-		LocalizationManager.Current.CurrentCulture = this.SelectedLanguage;
+		foreach (object Item in this.LanguagesContainer)
+		{
+			if ((Item is VisualElement Element) &&
+				(Element.BindingContext is LanguageInfo LanguageInfo))
+			{
+				if (Name == LanguageInfo.Name)
+				{
+					VisualStateManager.GoToState(Element, VisualStateManager.CommonStates.Selected);
+					SelectedLanguage = LanguageInfo;
+
+					Task ExecutionTask = this.Dispatcher.DispatchAsync(() => this.InnerListView.ScrollToAsync(Element, ScrollToPosition.MakeVisible, true));
+				}
+				else
+				{
+					VisualStateManager.GoToState(Element, VisualStateManager.CommonStates.Normal);
+				}
+			}
+		}
+
+		if ((SelectedLanguage is not null) && (Name != CultureInfo.CurrentUICulture.Name))
+		{
+
+			Preferences.Set("user_selected_language", SelectedLanguage.TwoLetterISOLanguageName);
+			LocalizationManager.Current.CurrentCulture = SelectedLanguage;
+		}
+	}
+
+	private void InnerListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+	{
 	}
 }

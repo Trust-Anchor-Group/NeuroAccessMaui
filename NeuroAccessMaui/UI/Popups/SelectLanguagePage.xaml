@@ -12,11 +12,16 @@
 			<Border
 				BackgroundColor="{AppThemeBinding Light={StaticResource NormalBackgroundLight},
 												  Dark={StaticResource NormalBackgroundDark}}"
-				Margin="0,8"
-				Padding="16"
+				Padding="{StaticResource MediumMargins}"
 				Stroke="{AppThemeBinding Light={StaticResource NormalForegroundLight},
 										 Dark={StaticResource NormalBackgroundDark}}"
 				StrokeShape="RoundRectangle 2">
+				<Border.GestureRecognizers>
+					<TapGestureRecognizer
+						Command="{Binding SelectLanguageCommand, Source={x:Reference ThisPage}}"
+						CommandParameter="{Binding Name}" />
+				</Border.GestureRecognizers>
+
 				<Label x:Name="InnerLabel"
 					FontFamily="HaasGroteskBold"
 					HorizontalTextAlignment="Center"
@@ -51,11 +56,12 @@
 		<Border
 			Style="{StaticResource PopupBorderStyle}">
 
-			<CollectionView x:Name="InnerListView"
-				ItemTemplate="{StaticResource SelectLanguageDataTemplate}"
-				ItemsSource="{Binding Languages}"
-				SelectedItem="{Binding SelectedLanguage}"
-				SelectionChanged="InnerListView_SelectionChanged" />
+			<ScrollView x:Name="InnerListView">
+				<VerticalStackLayout x:Name="LanguagesContainer"
+					BindableLayout.ItemTemplate="{StaticResource SelectLanguageDataTemplate}"
+					BindableLayout.ItemsSource="{Binding Languages}"
+					Spacing="{StaticResource MediumSpacing}" />
+			</ScrollView>
 		</Border>
 	</Grid>
 </viewmodel:BlurryPopup>
