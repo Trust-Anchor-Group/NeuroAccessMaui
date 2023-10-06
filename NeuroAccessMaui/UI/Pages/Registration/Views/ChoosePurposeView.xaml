@@ -84,7 +84,7 @@
 			ItemsSource="{Binding Purposes}"
 			SelectedItem="{Binding SelectedPurpose}" />
 
-		<Button
+		<controls:FilledButton
 			Command="{Binding ContinueCommand}"
 			Text="Continue" />
 	</VerticalStackLayout>

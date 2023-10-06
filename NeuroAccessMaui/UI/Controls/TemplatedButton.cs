@@ -9,6 +9,16 @@ namespace NeuroAccessMaui.UI.Controls;
 /// </summary>
 public class TemplatedButton : ContentView, IButtonElement
 {
+	/// <summary>
+	/// Initializes a new instance of <see cref="TemplatedButton"/> class.
+	/// </summary>
+	public TemplatedButton() : base()
+	{
+		TapGestureRecognizer TapRecognizer = new();
+		TapRecognizer.Tapped += this.OnTapped;
+		this.GestureRecognizers.Add(TapRecognizer);
+	}
+
 	readonly WeakEventManager onClickedEventManager = new();
 
 	/// <summary>
@@ -25,9 +35,9 @@ public class TemplatedButton : ContentView, IButtonElement
 	/// Gets or sets the command to invoke when the button is activated. This is a bindable property.
 	/// </summary>
 	/// <remarks>This property is used to associate a command with an instance of a button. This property is most often set in the MVVM pattern to bind callbacks back into the ViewModel. <see cref="VisualElement.IsEnabled" /> is controlled by the <see cref="Command.CanExecute(object)"/> if set.</remarks>
-	public ICommand Command
+	public ICommand? Command
 	{
-		get => (ICommand)this.GetValue(CommandProperty);
+		get => (ICommand?)this.GetValue(CommandProperty);
 		set => this.SetValue(CommandProperty, value);
 	}
 
@@ -35,10 +45,25 @@ public class TemplatedButton : ContentView, IButtonElement
 	/// Gets or sets the parameter to pass to the <see cref="Command"/> property.
 	/// The default value is <see langword="null"/>. This is a bindable property.
 	/// </summary>
-	public object CommandParameter
+	public object? CommandParameter
 	{
 		get => this.GetValue(CommandParameterProperty);
 		set => this.SetValue(CommandParameterProperty, value);
+	}
+
+	/// <summary>
+	/// The backing store for the <see cref="Text" /> bindable property.
+	/// </summary>
+	public static readonly BindableProperty TextProperty = BindableProperty.Create(nameof(Text), typeof(string), typeof(TemplatedButton), null);
+
+	/// <summary>
+	/// Gets or sets the text displayed as the content of the button.
+	/// The default value is <see langword="null"/>. This is a bindable property.
+	/// </summary>
+	public string? Text
+	{
+		get => (string?)this.GetValue(TextProperty);
+		set => this.SetValue(TextProperty, value);
 	}
 
 	void ICommandElement.CanExecuteChanged(object? sender, EventArgs e) => this.RefreshIsEnabledProperty();
@@ -56,16 +81,6 @@ public class TemplatedButton : ContentView, IButtonElement
 		remove => this.onClickedEventManager.RemoveEventHandler(value);
 	}
 
-	/// <summary>
-	/// Initializes a new instance of <see cref="TemplatedButton"/> class.
-	/// </summary>
-	public TemplatedButton()
-	{
-		TapGestureRecognizer TapRecognizer = new();
-		TapRecognizer.Tapped += this.OnTapped;
-		this.GestureRecognizers.Add(TapRecognizer);
-	}
-
 	private void OnTapped(object? Sender, EventArgs e)
 	{
 		this.Animate("Blink", new Animation()
@@ -73,8 +88,6 @@ public class TemplatedButton : ContentView, IButtonElement
 			{ 0, 0.5, new((value) => this.Scale = value, 1, 0.95, Easing.CubicOut) },
 			{ 0.5, 1, new((value) => this.Scale = value, 0.95, 1, Easing.CubicOut) },
 		});
-
-
 
 		ButtonElement.ElementClicked(this, this);
 	}

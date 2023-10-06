@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<controls:TemplatedButton x:Name="ThisPage" x:Class="NeuroAccessMaui.UI.Controls.FilledButton"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+	xmlns:base="clr-namespace:NeuroAccessMaui.Pages"
+	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
+
+	<VisualElement.Resources>
+		<Style x:Key="FilledButtonBorderStyle"
+			ApplyToDerivedTypes="False"
+			TargetType="Border">
+			<Setter Property="Padding" Value="12,24" />
+			<Setter Property="StrokeShape" Value="RoundRectangle 4" />
+			<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource EnabledBackgroundLight}, Dark={StaticResource EnabledBackgroundLight}}" />
+			<Setter Property="VisualStateManager.VisualStateGroups">
+				<VisualStateGroupList>
+					<VisualStateGroup x:Name="CommonStates">
+						<VisualState x:Name="Normal" />
+						<VisualState x:Name="Disabled">
+							<VisualState.Setters>
+								<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource DisabledBackgroundLight}, Dark={StaticResource DisabledBackgroundDark}}" />
+							</VisualState.Setters>
+						</VisualState>
+					</VisualStateGroup>
+				</VisualStateGroupList>
+			</Setter>
+		</Style>
+		<Style x:Key="FilledButtonLabelStyle"
+			ApplyToDerivedTypes="False"
+			TargetType="Label">
+			<Setter Property="HorizontalOptions" Value="Center" />
+			<Setter Property="VerticalOptions" Value="Center" />
+			<Setter Property="FontFamily" Value="HaasGroteskBold" />
+			<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource EnabledForegroundLight}, Dark={StaticResource EnabledForegroundDark}}" />
+			<Setter Property="VisualStateManager.VisualStateGroups">
+				<VisualStateGroupList>
+					<VisualStateGroup x:Name="CommonStates">
+						<VisualState x:Name="Normal" />
+						<VisualState x:Name="Disabled">
+							<VisualState.Setters>
+								<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource DisabledForegroundLight}, Dark={StaticResource DisabledForegroundDark}}" />
+							</VisualState.Setters>
+						</VisualState>
+					</VisualStateGroup>
+				</VisualStateGroupList>
+			</Setter>
+		</Style>
+	</VisualElement.Resources>
+
+	<Border
+		Style="{StaticResource FilledButtonBorderStyle}">
+
+		<Label
+			Style="{StaticResource FilledButtonLabelStyle}"
+			Text="{Binding Text, Source={x:Reference ThisPage}}" />
+	</Border>
+</controls:TemplatedButton>
