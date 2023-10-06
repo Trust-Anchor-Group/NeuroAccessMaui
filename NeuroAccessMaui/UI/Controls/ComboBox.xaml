@@ -14,12 +14,12 @@
 		HorizontalOptions="FillAndExpand"
 		VerticalOptions="FillAndExpand"
 		ItemSelected="InnerListView_ItemSelected"
-		SelectedItem="{Binding SelectedItem, Source=ThisPage}" />
+		SelectedItem="{Binding SelectedItem, Source={x:Reference ThisPage}}" />
 
 	<BoxView
 		HeightRequest="1"
 		Margin="0"
-		IsVisible="{Binding IsVisile, Source=InnerListView}"
+		IsVisible="{Binding IsVisible, Source={x:Reference InnerListView}}"
 		Color="Black" />
 
 </StackLayout>

@@ -11,7 +11,6 @@ public partial class ComboBox
 	public ComboBox()
 	{
 		this.InitializeComponent();
-		this.BindingContext = this;
 
 		this.InnerEntry.Keyboard = Keyboard.Create(KeyboardFlags.None);
 
