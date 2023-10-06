@@ -11,7 +11,7 @@
 
 	<VisualElement.Resources>
 		<DataTemplate x:Key="SelectPurposeDataTemplate" x:DataType="viewmodel:PurposeInfo">
-			<Border x:Name="InnerBorder"
+			<Border
 				BackgroundColor="{AppThemeBinding Light={StaticResource NormalBackgroundLight},
 												  Dark={StaticResource NormalBackgroundDark}}"
 				Stroke="{AppThemeBinding Light={StaticResource NormalForegroundLight},
@@ -20,6 +20,7 @@
 				<Grid
 					ColumnDefinitions="*,auto"
 					RowDefinitions="auto">
+
 					<Label x:Name="InnerLabel"
 						Grid.Column="0"
 						Padding="{StaticResource MediumMargins}"
@@ -35,7 +36,6 @@
 								Command="{Binding SelectPurposeCommand, Source={x:Reference ThisPage}}"
 								CommandParameter="{Binding Purpose}" />
 						</Label.GestureRecognizers>
-
 					</Label>
 
 					<Border
