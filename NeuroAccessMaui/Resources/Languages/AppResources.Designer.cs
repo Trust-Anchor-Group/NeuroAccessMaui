@@ -934,6 +934,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Choose access purpose .
+        /// </summary>
+        internal static string PurposesSectionTitle {
+            get {
+                return ResourceManager.GetString("PurposesSectionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Work use.
         /// </summary>
         internal static string PurposeWork {
@@ -1011,6 +1020,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string SignaturePetitionDenied {
             get {
                 return ResourceManager.GetString("SignaturePetitionDenied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to STRING NOT DEFINED.
+        /// </summary>
+        internal static string STRINGNOTDEFINED {
+            get {
+                return ResourceManager.GetString("STRINGNOTDEFINED", resourceCulture);
             }
         }
         

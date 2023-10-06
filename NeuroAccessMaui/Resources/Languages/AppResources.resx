@@ -519,6 +519,9 @@
   <data name="OnboardingAccountPageDetails" xml:space="preserve">
     <value>Enter the name you want to use for your account</value>
   </data>
+  <data name="PurposesSectionTitle" xml:space="preserve">
+    <value>Choose access purpose </value>
+  </data>
   <data name="PurposeEducational" xml:space="preserve">
     <value>Educational use</value>
   </data>

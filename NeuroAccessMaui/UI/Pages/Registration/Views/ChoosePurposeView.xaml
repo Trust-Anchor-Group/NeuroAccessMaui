@@ -14,7 +14,7 @@
 			<Border
 				BackgroundColor="{AppThemeBinding Light={StaticResource NormalBackgroundLight},
 												  Dark={StaticResource NormalBackgroundDark}}"
-				Margin="0,8"
+				Margin="0,0,0,16"
 				Padding="16"
 				Stroke="{AppThemeBinding Light={StaticResource NormalForegroundLight},
 										 Dark={StaticResource NormalBackgroundDark}}"
@@ -66,11 +66,13 @@
 		</DataTemplate>
 	</VisualElement.Resources>
 
-	<VerticalStackLayout>
+	<Grid
+		RowDefinitions="auto,auto,*,auto">
 
 		<Label
 			Grid.Row="0"
 			LineBreakMode="WordWrap"
+			Style="{StaticResource PageTitleLabelStyle}"
 			Text="{l:Localize OnboardingPurposePageTitle}" />
 
 		<Label
@@ -78,15 +80,27 @@
 			LineBreakMode="WordWrap"
 			Text="{l:Localize OnboardingPurposePageDetails}" />
 
-		<CollectionView x:Name="InnerListView"
+		<Grid
 			Grid.Row="2"
-			ItemTemplate="{StaticResource SelectPurposeDataTemplate}"
-			ItemsSource="{Binding Purposes}"
-			SelectedItem="{Binding SelectedPurpose}" />
+			RowDefinitions="auto,*"
+			RowSpacing="8">
+			<Label
+				Grid.Row="0"
+				LineBreakMode="WordWrap"
+				Style="{StaticResource SectionTitleLabelStyle}"
+				Text="{l:Localize PurposesSectionTitle}" />
+
+			<CollectionView x:Name="InnerListView"
+				Grid.Row="1"
+				ItemTemplate="{StaticResource SelectPurposeDataTemplate}"
+				ItemsSource="{Binding Purposes}"
+				SelectedItem="{Binding SelectedPurpose}" />
+		</Grid>
 
 		<controls:FilledButton
+			Grid.Row="3"
 			Command="{Binding ContinueCommand}"
-			Text="Continue" />
-	</VerticalStackLayout>
+			Text="{l:Localize Continue}" />
+	</Grid>
 
 </base:BaseRegistrationView>
