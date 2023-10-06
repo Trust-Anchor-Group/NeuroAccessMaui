@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using System.Collections;
 
-namespace NeuroAccessMaui.Controls;
+namespace NeuroAccessMaui.UI.Controls;
 
 public partial class ComboBox
 {

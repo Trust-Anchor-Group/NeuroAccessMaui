@@ -1,4 +1,4 @@
-namespace NeuroAccessMaui.Controls;
+namespace NeuroAccessMaui.UI.Controls;
 
 public partial class Background : ContentView
 {

@@ -1,4 +1,4 @@
-﻿namespace NeuroAccessMaui.Controls;
+﻿namespace NeuroAccessMaui.UI.Controls;
 
 /// <summary>
 /// TemplatedSwitch represents a generalization of <see cref="Switch"/> whose appearance is defined by a <see cref="ControlTemplate"/>.

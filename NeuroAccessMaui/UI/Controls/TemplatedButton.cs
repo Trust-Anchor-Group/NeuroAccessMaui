@@ -2,7 +2,7 @@
 using NeuroAccessMaui.Core;
 using Waher.Content.Html.Elements;
 
-namespace NeuroAccessMaui.Controls;
+namespace NeuroAccessMaui.UI.Controls;
 
 /// <summary>
 /// TemplatedSwitch represents a generalization of <see cref="Button"/> whose appearance is defined by a <see cref="ControlTemplate"/>.
