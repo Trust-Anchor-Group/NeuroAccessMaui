@@ -101,6 +101,7 @@
 
 			<VerticalStackLayout
 				Spacing="{StaticResource SmallSpacing}">
+
 				<Label
 					LineBreakMode="WordWrap"
 					Style="{StaticResource SectionTitleLabelStyle}"

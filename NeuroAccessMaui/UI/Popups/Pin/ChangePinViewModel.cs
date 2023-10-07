@@ -5,7 +5,7 @@ using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Tag;
 
-namespace NeuroAccessMaui.Popups.Pin;
+namespace NeuroAccessMaui.UI.Popups.Pin;
 
 public partial class ChangePinViewModel : ObservableObject
 {

@@ -1,4 +1,4 @@
-﻿namespace NeuroAccessMaui.Popups;
+﻿namespace NeuroAccessMaui.UI.Popups;
 
 /// <summary>
 /// Creates Popup with blurred background

@@ -1,6 +1,6 @@
 using Mopups.Pages;
 
-namespace NeuroAccessMaui.Popups.Pin;
+namespace NeuroAccessMaui.UI.Popups.Pin;
 
 /// <summary>
 /// Prompts the user for its PIN

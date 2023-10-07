@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
-<mopups:PopupPage x:Name="ThisPage" x:Class="NeuroAccessMaui.Popups.BlurryPopup"
+<mopups:PopupPage x:Name="ThisPage" x:Class="NeuroAccessMaui.UI.Popups.BlurryPopup"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"

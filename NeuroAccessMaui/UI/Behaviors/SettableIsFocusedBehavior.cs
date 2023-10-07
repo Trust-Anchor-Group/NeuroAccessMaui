@@ -1,4 +1,4 @@
-﻿namespace NeuroAccessMaui.Behaviors;
+﻿namespace NeuroAccessMaui.UI.Behaviors;
 
 /// <summary>
 /// SettableIsFocusedBehavior synchronizes the value of <see cref="IsFocusedProperty"/> with the value of <see cref="VisualElement.IsFocusedProperty"/>

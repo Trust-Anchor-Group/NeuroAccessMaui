@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
-<viewmodel:BlurryPopup x:Name="ThisPage" x:Class="NeuroAccessMaui.Popups.SelectLanguagePage" x:DataType="viewmodel:SelectLanguagePage"
+<viewmodel:BlurryPopup x:Name="ThisPage" x:Class="NeuroAccessMaui.UI.Popups.SelectLanguagePage" x:DataType="viewmodel:SelectLanguagePage"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-	xmlns:converters="clr-namespace:NeuroAccessMaui.Converters"
+	xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 	xmlns:data="clr-namespace:NeuroAccessMaui.Services.Localization"
-	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.Popups">
+	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups">
 
 	<VisualElement.Resources>
 		<DataTemplate x:Key="SelectLanguageDataTemplate" x:DataType="data:LanguageInfo">

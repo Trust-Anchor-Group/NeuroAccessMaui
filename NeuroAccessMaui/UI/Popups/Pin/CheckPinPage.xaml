@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
-<mopups:PopupPage x:Class="NeuroAccessMaui.Popups.Pin.CheckPinPage" x:DataType="viewmodel:CheckPinPage"
+<mopups:PopupPage x:Class="NeuroAccessMaui.UI.Popups.Pin.CheckPinPage" x:DataType="viewmodel:CheckPinPage"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
 	xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups"
-	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.Popups.Pin"
+	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Pin"
 	BackgroundClicked="PopupPage_BackgroundClicked"
 	BackgroundInputTransparent="False"
 	CloseWhenBackgroundIsClicked="True"

@@ -1,5 +1,5 @@
 ﻿using System.Windows.Input;
-using NeuroAccessMaui.Core;
+using NeuroAccessMaui.UI.Core;
 using Waher.Content.Html.Elements;
 
 namespace NeuroAccessMaui.UI.Controls;

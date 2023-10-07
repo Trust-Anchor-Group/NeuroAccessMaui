@@ -3,7 +3,7 @@ using Mopups.Services;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Pages;
 using NeuroAccessMaui.Pages.Main;
-using NeuroAccessMaui.Popups.Pin;
+using NeuroAccessMaui.UI.Popups.Pin;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.AttachmentCache;

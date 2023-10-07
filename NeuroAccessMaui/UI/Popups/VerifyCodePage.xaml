@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
-<mopups:PopupPage x:Class="NeuroAccessMaui.Popups.VerifyCodePage" x:DataType="viewmodel:VerifyCodePage"
+<mopups:PopupPage x:Class="NeuroAccessMaui.UI.Popups.VerifyCodePage" x:DataType="viewmodel:VerifyCodePage"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
 	xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups"
-	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.Popups"
+	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups"
 	BackgroundClicked="PopupPage_BackgroundClicked"
 	BackgroundInputTransparent="False"
 	CloseWhenBackgroundIsClicked="True"

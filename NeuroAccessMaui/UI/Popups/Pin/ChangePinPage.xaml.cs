@@ -2,7 +2,7 @@ using System.ComponentModel;
 using Mopups.Pages;
 using Mopups.Services;
 
-namespace NeuroAccessMaui.Popups.Pin;
+namespace NeuroAccessMaui.UI.Popups.Pin;
 
 /// <summary>
 /// ChangePinPopupPage defines a popup which prompts the user for their PIN.

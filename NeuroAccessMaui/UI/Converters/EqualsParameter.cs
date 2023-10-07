@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace NeuroAccessMaui.Converters;
+namespace NeuroAccessMaui.UI.Converters;
 
 /// <summary>
 /// EqualsParameter is an <see cref="IValueConverter"/> which converts a given value to a boolean indicating if the value

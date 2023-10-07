@@ -3,7 +3,7 @@ using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Mopups.Services;
-using NeuroAccessMaui.Popups;
+using NeuroAccessMaui.UI.Popups;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
 

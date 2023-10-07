@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using NeuroAccessMaui.Services.UI.Photos;
 using Waher.Networking.XMPP.Contracts;
 
-namespace NeuroAccessMaui.Popups;
+namespace NeuroAccessMaui.UI.Popups;
 
 /// <summary>
 ///  The class to use as binding context for displaying images.

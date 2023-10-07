@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace NeuroAccessMaui.Converters;
+namespace NeuroAccessMaui.UI.Converters;
 
 /// <summary>
 /// Is true if a property is greater than zero.

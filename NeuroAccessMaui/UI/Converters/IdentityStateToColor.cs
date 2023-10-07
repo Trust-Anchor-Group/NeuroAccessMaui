@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using Waher.Networking.XMPP.Contracts;
 
-namespace NeuroAccessMaui.Converters;
+namespace NeuroAccessMaui.UI.Converters;
 
 /// <summary>
 /// Converts an identity state to a color.

@@ -5,10 +5,10 @@ using NeuroAccessMaui.Pages.Main.Security;
 using NeuroAccessMaui.Pages.Petitions;
 using NeuroAccessMaui.Pages.Registration;
 using NeuroAccessMaui.Pages.Registration.Views;
-using NeuroAccessMaui.Popups;
-using NeuroAccessMaui.Popups.Pin;
+using NeuroAccessMaui.UI.Popups;
+using NeuroAccessMaui.UI.Popups.Pin;
 
-namespace NeuroAccessMaui.Pages;
+namespace NeuroAccessMaui.UI;
 
 public static class PageAppExtension
 {

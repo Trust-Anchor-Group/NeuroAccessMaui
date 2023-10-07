@@ -1,7 +1,7 @@
 ﻿using NeuroAccessMaui.Extensions;
 using Waher.Networking.XMPP.Contracts;
 
-namespace NeuroAccessMaui.Popups;
+namespace NeuroAccessMaui.UI.Popups;
 
 /// <summary>
 /// A generic UI component to display images.

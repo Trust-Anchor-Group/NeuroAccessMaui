@@ -1,6 +1,6 @@
 using System.Windows.Input;
 
-namespace NeuroAccessMaui.Core;
+namespace NeuroAccessMaui.UI.Core;
 
 static class ButtonElement
 {

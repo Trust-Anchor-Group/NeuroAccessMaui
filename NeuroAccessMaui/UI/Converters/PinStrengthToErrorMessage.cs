@@ -4,7 +4,7 @@ using NeuroAccessMaui.Services.Localization;
 using NeuroAccessMaui.Services.Tag;
 using System.Globalization;
 
-namespace NeuroAccessMaui.Converters;
+namespace NeuroAccessMaui.UI.Converters;
 
 /// <summary>
 /// PinStrengthToErrorMessage is an <see cref="IValueConverter"/> which converts <see cref="PinStrength"/> to an error message to display.

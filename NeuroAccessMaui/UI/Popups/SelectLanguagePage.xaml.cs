@@ -3,7 +3,7 @@ using System.Globalization;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services.Localization;
 
-namespace NeuroAccessMaui.Popups;
+namespace NeuroAccessMaui.UI.Popups;
 
 public partial class SelectLanguagePage
 {

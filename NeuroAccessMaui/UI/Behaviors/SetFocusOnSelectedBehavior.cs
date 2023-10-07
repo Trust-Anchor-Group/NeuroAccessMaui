@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace NeuroAccessMaui.Behaviors;
+namespace NeuroAccessMaui.UI.Behaviors;
 
 /// <summary>
 /// Used for moving focus to the next UI component when an item has been selected.

@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Maui.Controls.Handlers.Items;
 using Microsoft.Maui.Handlers;
 using Mopups.Hosting;
-using NeuroAccessMaui.Pages;
+using NeuroAccessMaui.UI;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;

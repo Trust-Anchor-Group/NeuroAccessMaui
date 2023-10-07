@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace NeuroAccessMaui.Converters;
+namespace NeuroAccessMaui.UI.Converters;
 
 /// <summary>
 /// Converts, or flips, a boolean value to it's inverse value. I.e. turns <c>true</c> to <c>false</c>, or the other way around.

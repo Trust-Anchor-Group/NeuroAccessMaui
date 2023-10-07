@@ -1,4 +1,4 @@
-namespace NeuroAccessMaui.Core;
+namespace NeuroAccessMaui.UI.Core;
 
 interface IButtonElement : ICommandElement
 {

@@ -1,8 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Maui.Controls.PlatformConfiguration;
 using Mopups.Services;
-using NeuroAccessMaui.Popups.Pin;
+using NeuroAccessMaui.UI.Popups.Pin;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 
