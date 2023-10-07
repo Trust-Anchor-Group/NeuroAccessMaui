@@ -405,6 +405,7 @@
 		TargetType="Label">
 		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
 		<Setter Property="BackgroundColor" Value="Transparent" />
+		<Setter Property="LineBreakMode" Value="WordWrap" />
 		<Setter Property="FontFamily" Value="HaasGroteskRegular" />
 		<Setter Property="FontSize" Value="18" />
 	</Style>

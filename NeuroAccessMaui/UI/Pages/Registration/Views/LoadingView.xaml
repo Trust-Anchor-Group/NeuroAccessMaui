@@ -45,7 +45,6 @@
 			<Label
 				HorizontalOptions="CenterAndExpand"
 				FontSize="Medium"
-				LineBreakMode="WordWrap"
 				Text="{Binding Path=ConnectionStateText}"
 				TextColor="Black" />
 		</Frame>

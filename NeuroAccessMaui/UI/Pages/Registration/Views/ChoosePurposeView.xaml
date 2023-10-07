@@ -6,7 +6,6 @@
 	xmlns:base="clr-namespace:NeuroAccessMaui.Pages.Registration"
 	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-	xmlns:r="clr-namespace:NeuroAccessMaui.Resources.Languages"
 	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.Pages.Registration.Views">
 
 	<VisualElement.Resources>
@@ -91,19 +90,16 @@
 			Spacing="{StaticResource MediumSpacing}">
 
 			<Label
-				LineBreakMode="WordWrap"
 				Style="{StaticResource PageTitleLabelStyle}"
 				Text="{l:Localize OnboardingPurposePageTitle}" />
 
 			<Label
-				LineBreakMode="WordWrap"
 				Text="{l:Localize OnboardingPurposePageDetails}" />
 
 			<VerticalStackLayout
 				Spacing="{StaticResource SmallSpacing}">
 
 				<Label
-					LineBreakMode="WordWrap"
 					Style="{StaticResource SectionTitleLabelStyle}"
 					Text="{l:Localize PurposesSectionTitle}" />
 

@@ -2,6 +2,7 @@
 <?xaml-comp compile="true" ?>
 <ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
+	<!-- Pages -->
 	<Color x:Key="PrimaryBackgroundLight">#F5F6F7</Color>
 	<Color x:Key="PrimaryForegroundLight">#181F25</Color>
 	<Color x:Key="SecondaryBackgroundLight">#FCFCFC</Color>
@@ -12,30 +13,50 @@
 	<Color x:Key="SecondaryBackgroundDark">#3E3E40</Color>
 	<Color x:Key="SecondaryForegroundDark">#EBEBEC</Color>
 
+	<!-- List Items -->
 	<Color x:Key="NormalBackgroundLight">#F5F6F7</Color>
 	<Color x:Key="NormalForegroundLight">#181F25</Color>
 	<Color x:Key="SelectedBackgroundLight">#181F25</Color>
 	<Color x:Key="SelectedForegroundLight">#F5F6F7</Color>
-	<Color x:Key="NormalInfoForegroundLight">#878A8E</Color>
-	<Color x:Key="SelectedInfoForegroundLight">#F5F6F7</Color>
 
 	<Color x:Key="NormalBackgroundDark">#3E3E40</Color>
 	<Color x:Key="NormalForegroundDark">#EBEBEC</Color>
 	<Color x:Key="SelectedBackgroundDark">#E0E4E7</Color>
 	<Color x:Key="SelectedForegroundDark">#161617</Color>
+
+	<Color x:Key="NormalInfoForegroundLight">#878A8E</Color>
+	<Color x:Key="SelectedInfoForegroundLight">#F5F6F7</Color>
+
 	<Color x:Key="NormalInfoForegroundDark">#787879</Color>
 	<Color x:Key="SelectedInfoForegroundDark">#161617</Color>
 
-	<Color x:Key="EnabledBackgroundLight">#3E776D</Color>
-	<Color x:Key="EnabledForegroundLight">#F5F6F7</Color>
-	<Color x:Key="DisabledBackgroundLight">#DEE0E2</Color>
-	<Color x:Key="DisabledForegroundLight">#7B7F83</Color>
+	<!-- Buttons -->
+	<Color x:Key="EnabledButtonBackgroundLight">#3E776D</Color>
+	<Color x:Key="EnabledButtonForegroundLight">#F5F6F7</Color>
+	<Color x:Key="DisabledButtonBackgroundLight">#DEE0E2</Color>
+	<Color x:Key="DisabledButtonForegroundLight">#7B7F83</Color>
 
-	<Color x:Key="EnabledBackgroundDark">#50998C</Color>
-	<Color x:Key="EnabledForegroundDark">#161617</Color>
-	<Color x:Key="DisabledBackgroundDark">#252526</Color>
-	<Color x:Key="DisabledForegroundDark">#666667</Color>
+	<Color x:Key="EnabledButtonBackgroundDark">#50998C</Color>
+	<Color x:Key="EnabledButtonForegroundDark">#161617</Color>
+	<Color x:Key="DisabledButtonBackgroundDark">#252526</Color>
+	<Color x:Key="DisabledButtonForegroundDark">#666667</Color>
 
+	<!-- Edits -->
+	<Color x:Key="NormalEditBackgroundLight">#F5F6F7</Color>
+	<Color x:Key="NormalEditForegroundLight">#181F25</Color>
+	<Color x:Key="NormalEditPlaceholderLight">#878A8E</Color>
+
+	<Color x:Key="NormalEditBackgroundDark">#3E3E40</Color>
+	<Color x:Key="NormalEditForegroundDark">#EBEBEC</Color>
+	<Color x:Key="NormalEditPlaceholderDark">#787879</Color>
+
+	<Color x:Key="ValidatedEditLight">#3E776D</Color>
+	<Color x:Key="ValidatedEditDark">#50998C</Color>
+
+	<Color x:Key="InvalidatedEditLight">#F2495C</Color>
+	<Color x:Key="InvalidatedEditDark">#FF7585</Color>
+
+	<!-- Paths -->
 	<Color x:Key="CurvedLinesLight">#FCFCFD</Color>
 	<Color x:Key="CurvedLinesDark">#0F0F10</Color>
 
