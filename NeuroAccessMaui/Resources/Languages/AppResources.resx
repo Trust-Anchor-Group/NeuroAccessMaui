@@ -297,6 +297,9 @@
   <data name="Incomplete" xml:space="preserve">
     <value>Incomplete</value>
   </data>
+  <data name="Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
   <data name="Confirm" xml:space="preserve">
     <value>Confirm</value>
   </data>

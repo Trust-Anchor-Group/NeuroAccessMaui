@@ -1,5 +1,7 @@
 using CommunityToolkit.Mvvm.Input;
+using Mopups.Services;
 using NeuroAccessMaui.Services.Tag;
+using NeuroAccessMaui.UI.Popups;
 
 namespace NeuroAccessMaui.Pages.Registration.Views;
 
@@ -46,7 +48,7 @@ public partial class ChoosePurposeView
 	}
 
 	[RelayCommand]
-	public void ShowPurposeInfo(object o)
+	public async Task ShowPurposeInfo(object o)
 	{
 		if (o is not PurposeUse Purpose)
 		{
@@ -59,6 +61,8 @@ public partial class ChoosePurposeView
 				(Element.BindingContext is PurposeInfo PurposeInfo) &&
 				(Purpose == PurposeInfo.Purpose))
 			{
+				ShowInfoPage Page = new(PurposeInfo.LocalizedName, PurposeInfo.LocalizedDescription);
+				await MopupService.Instance.PushAsync(Page);
 				break;
 			}
 		}

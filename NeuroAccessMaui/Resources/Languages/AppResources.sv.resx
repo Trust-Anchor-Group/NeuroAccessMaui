@@ -120,6 +120,9 @@
   <data name="Continue" xml:space="preserve">
     <value>Fortsätt</value>
   </data>
+  <data name="Close" xml:space="preserve">
+    <value>Stänga</value>
+  </data>
   <data name="OnboardingPurposePageTitle" xml:space="preserve">
     <value>Välkommen!</value>
   </data>
@@ -130,25 +133,25 @@
     <value>Välj åtkomstsyfte </value>
   </data>
   <data name="PurposeEducational" xml:space="preserve">
-    <value>Anvädning inom utbildning.</value>
+    <value>Pedagogisk användning</value>
   </data>
   <data name="PurposeEducationalDescription" xml:space="preserve">
     <value>Detta val låter dig använda Tag ID för utbildningsändamål. Du kan använda appen för att signera eller komma åt resurser som en privatperson, antingen som en lärare eller student. Konton kan vara begränsat i tiden. Kontot kan också tas bort när den inte längre används. Kontrollera med tjänsteleverantören för mer information.</value>
   </data>
   <data name="PurposeExperimental" xml:space="preserve">
-    <value>Experimentell användning.</value>
+    <value>Experimentell användning</value>
   </data>
   <data name="PurposeExperimentalDescription" xml:space="preserve">
     <value>Detta val låter dig använda Tag ID för experimentella ändamål. Du kan använda appen för att signera eller komma åt resurser som en privatperson, med målet att lära dig om teknologin och för vilka ändamål den kan användas. The account may be limited in time. Konton kan vara begränsat i tiden. Kontot kan också tas bort när den inte längre används. Kontrollera med tjänsteleverantören för mer information.</value>
   </data>
   <data name="PurposePersonal" xml:space="preserve">
-    <value>Personlig användning.</value>
+    <value>Personlig användning</value>
   </data>
   <data name="PurposePersonalDescription" xml:space="preserve">
     <value>Detta val låter dig använda Tag ID för personligt bruk. Du kan använda appen för att signera eller komma åt resurser som en privatperson. Vissa funktioner kan medföra kostnader, beroende på vilken tjänsteleverantör du väljer. Kontrollera med tjänsteleverantören för mer information.</value>
   </data>
   <data name="PurposeWork" xml:space="preserve">
-    <value>Användning inom arbete.</value>
+    <value>Användning inom arbete</value>
   </data>
   <data name="PurposeWorkDescription" xml:space="preserve">
     <value>Detta val låter dig använda Tag ID för användning inom arbete. Detta inkluderar arbete för icke vinstdrivande organisationer. Du kan använda appen för att signera eller komma åt resurser som en representant för en organisation. Vissa funktioner kan medföra kostnader, beroende på vilken tjänsteleverantör du väljer. Kontrollera med tjänsteleverantören för mer information.</value>

@@ -56,7 +56,7 @@
 		<Border
 			Style="{StaticResource PopupBorderStyle}">
 
-			<ScrollView x:Name="InnerListView">
+			<ScrollView x:Name="InnerScrollView">
 				<VerticalStackLayout x:Name="LanguagesContainer"
 					BindableLayout.ItemTemplate="{StaticResource SelectLanguageDataTemplate}"
 					BindableLayout.ItemsSource="{Binding Languages}"

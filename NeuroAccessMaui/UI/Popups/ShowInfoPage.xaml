@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<viewmodel:BlurryPopup x:Name="ThisPage" x:Class="NeuroAccessMaui.UI.Popups.ShowInfoPage" x:DataType="viewmodel:ShowInfoPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+	xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+	xmlns:data="clr-namespace:NeuroAccessMaui.Services.Localization"
+	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups">
+
+	<Grid
+		WidthRequest="{Binding ViewWidth}"
+		Padding="8"
+		VerticalOptions="Center"
+		RowDefinitions="auto">
+
+		<Border
+			Style="{StaticResource PopupBorderStyle}">
+
+			<ScrollView>
+				<VerticalStackLayout
+					Spacing="{StaticResource MediumSpacing}">
+
+					<Label
+						HorizontalOptions="FillAndExpand"
+						HorizontalTextAlignment="Center"
+						Style="{StaticResource PageTitleLabelStyle}"
+						Text="{Binding InfoTitle}" />
+					
+					<Label
+						Text="{Binding InfoText}" />
+
+					<controls:FilledButton
+						Command="{Binding CloseCommand}"
+						Text="{l:Localize Close}" />
+				</VerticalStackLayout>
+			</ScrollView>
+		</Border>
+	</Grid>
+</viewmodel:BlurryPopup>

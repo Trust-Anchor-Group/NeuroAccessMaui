@@ -73,7 +73,7 @@ public partial class SelectLanguagePage
 					VisualStateManager.GoToState(Element, VisualStateManager.CommonStates.Selected);
 					SelectedLanguage = LanguageInfo;
 
-					Task ExecutionTask = this.Dispatcher.DispatchAsync(() => this.InnerListView.ScrollToAsync(Element, ScrollToPosition.MakeVisible, true));
+					Task ExecutionTask = this.Dispatcher.DispatchAsync(() => this.InnerScrollView.ScrollToAsync(Element, ScrollToPosition.MakeVisible, true));
 				}
 				else
 				{
@@ -88,9 +88,5 @@ public partial class SelectLanguagePage
 			Preferences.Set("user_selected_language", SelectedLanguage.TwoLetterISOLanguageName);
 			LocalizationManager.Current.CurrentCulture = SelectedLanguage;
 		}
-	}
-
-	private void InnerListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-	{
 	}
 }
