@@ -718,6 +718,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enter phone number.
+        /// </summary>
+        internal static string PhoneSectionTitle {
+            get {
+                return ResourceManager.GetString("PhoneSectionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to PIN has been successfully changed..
         /// </summary>
         internal static string PinChanged {
@@ -1015,11 +1024,29 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Resend Code.
+        /// </summary>
+        internal static string ResendCode {
+            get {
+                return ResourceManager.GetString("ResendCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Scanned QR Code.
         /// </summary>
         internal static string ScannedQrCode {
             get {
                 return ResourceManager.GetString("ScannedQrCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send Code.
+        /// </summary>
+        internal static string SendCode {
+            get {
+                return ResourceManager.GetString("SendCode", resourceCulture);
             }
         }
         
@@ -1155,6 +1182,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string UnexpectedResponse {
             get {
                 return ResourceManager.GetString("UnexpectedResponse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Verify.
+        /// </summary>
+        internal static string Verify {
+            get {
+                return ResourceManager.GetString("Verify", resourceCulture);
             }
         }
         

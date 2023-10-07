@@ -333,6 +333,15 @@
   <data name="Continue" xml:space="preserve">
     <value>Continue</value>
   </data>
+  <data name="SendCode" xml:space="preserve">
+    <value>Send Code</value>
+  </data>
+  <data name="ResendCode" xml:space="preserve">
+    <value>Resend Code</value>
+  </data>
+  <data name="Verify" xml:space="preserve">
+    <value>Verify</value>
+  </data>
   <data name="Repair" xml:space="preserve">
     <value>Repair</value>
   </data>
@@ -548,5 +557,8 @@
   </data>
   <data name="PurposeWorkDescription" xml:space="preserve">
     <value>This option allows you to use Tag ID for work purposes. This includes work not for profit in organizations. You can use the app to sign or access resources as a representative of an organization. Certain operations may incur costs, depending on the service provider you choose. Check with the service provider for more information.</value>
+  </data>
+  <data name="PhoneSectionTitle" xml:space="preserve">
+    <value>Enter phone number</value>
   </data>
 </root>
