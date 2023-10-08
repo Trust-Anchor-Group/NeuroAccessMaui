@@ -760,7 +760,7 @@ public partial class App : Application, IDisposable
 					new KeyValuePair<string, object>(Constants.XmppProperties.Jid, ServiceRef.XmppService.BareJid)
 				];
 
-				KeyValuePair<string, object>[] Tags2 = ServiceRef.TagProfile.LegalIdentity.GetTags();
+				KeyValuePair<string, object>[]? Tags2 = ServiceRef.TagProfile.LegalIdentity?.GetTags();
 
 				if (Tags2 is not null)
 				{
@@ -795,6 +795,7 @@ public partial class App : Application, IDisposable
 		try
 		{
 			HttpClient client = new();
+			client.Timeout = TimeSpan.FromSeconds(30);
 			client.DefaultRequestHeaders.Accept.Clear();
 			client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
