@@ -1,47 +1,32 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<base:BaseContentPage x:Class="NeuroAccessMaui.Pages.Main.BootstrapErrorPage" x:DataType="viewmodel:BootstrapErrorPage"
+<base:BaseContentPage x:Name="ThisPage" x:Class="NeuroAccessMaui.Pages.Main.BootstrapErrorPage" x:DataType="viewmodel:BootstrapErrorPage"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:base="clr-namespace:NeuroAccessMaui.Pages"
+	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.Pages.Main">
 
-	<!--
-	<ContentPage.Resources>
-		<ResourceDictionary>
-			<Style TargetType="StackLayout" x:Key="RootStackLayout">
-				<Setter Property="Spacing" Value="0" />
-				<Setter Property="BackgroundColor" Value="{StaticResource PageBackgroundColor}" />
-			</Style>
-			<Style TargetType="Label" x:Key="TitleLabel">
-				<Setter Property="FontSize" Value="24" />
-				<Setter Property="Margin" Value="12,0,12,8" />
-			</Style>
-			<Style TargetType="ScrollView" x:Key="StackTraceScrollView">
-				<Setter Property="Margin" Value="12,0,12,0" />
-			</Style>
-			<Style TargetType="Button" x:Key="CopyToClipboardButton">
-				<Setter Property="Margin" Value="12" />
-			</Style>
-		</ResourceDictionary>
-	</ContentPage.Resources>
+	<Grid
+		Padding="{StaticResource LargeMargins}"
+		RowSpacing="{StaticResource LargeSpacing}">
+		<ScrollView>
+			<VerticalStackLayout
+				Spacing="{StaticResource MediumSpacing}">
+				<Label
+					VerticalOptions="Start"
+					FontFamily="HaasGroteskBold"
+					Text="{Binding TraceTitle}" />
 
-	<StackLayout Style="{StaticResource RootStackLayout}">
-		<Label
-			Style="{StaticResource TitleLabel}"
-			VerticalOptions="Start"
-			Text="{Binding Title}" />
-
-		<ScrollView
-			Style="{StaticResource StackTraceScrollView}"
-			VerticalOptions="FillAndExpand">
-			<Label Text="{Binding StackTrace}" />
+				<Label
+					FontSize="14"
+					Text="{Binding TraceText}" />
+			</VerticalStackLayout>
 		</ScrollView>
 
-		<Button
-			Style="{StaticResource CopyToClipboardButton}"
+		<controls:FilledButton
 			VerticalOptions="End"
-			Text="{Static resx:AppResources.CopyToClipboard}"
-			Command="{Binding CopyToClipboardCommand}" />
-	</StackLayout>	-->
-	<Grid />
+			Command="{Binding CopyToClipboardCommand}"
+			Text="{l:Localize CopyToClipboard}" />
+	</Grid>
 </base:BaseContentPage>

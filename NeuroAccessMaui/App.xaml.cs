@@ -208,7 +208,7 @@ public partial class App : Application, IDisposable
 		}
 		catch (Exception ex)
 		{
-			ex = Waher.Events.Log.UnnestException(ex);
+			ex = Log.UnnestException(ex);
 			this.HandleStartupException(ex);
 
 			servicesSetup.TrySetResult(false);
@@ -289,7 +289,7 @@ public partial class App : Application, IDisposable
 
 	private void HandleStartupException(Exception ex)
 	{
-		ex = Waher.Events.Log.UnnestException(ex);
+		ex = Log.UnnestException(ex);
 		ServiceRef.LogService.SaveExceptionDump("StartPage", ex.ToString());
 		this.DisplayBootstrapErrorPage(ex.Message, ex.StackTrace);
 		return;
@@ -430,11 +430,11 @@ public partial class App : Application, IDisposable
 		}
 		catch (OperationCanceledException)
 		{
-			Waher.Events.Log.Notice($"{(isResuming ? "OnResume " : "Initial app ")} startup was canceled.");
+			Log.Notice($"{(isResuming ? "OnResume " : "Initial app ")} startup was canceled.");
 		}
 		catch (Exception ex)
 		{
-			ex = Waher.Events.Log.UnnestException(ex);
+			ex = Log.UnnestException(ex);
 			ServiceRef.LogService.SaveExceptionDump(ex.Message, ex.StackTrace);
 			this.DisplayBootstrapErrorPage(ex.Message, ex.StackTrace);
 		}
@@ -542,9 +542,9 @@ public partial class App : Application, IDisposable
 					await ServiceRef.NavigationService.Unload();
 				}
 
-				foreach (IEventSink Sink in Waher.Events.Log.Sinks)
+				foreach (IEventSink Sink in Log.Sinks)
 				{
-					Waher.Events.Log.Unregister(Sink);
+					Log.Unregister(Sink);
 				}
 
 				if (ServiceRef.StorageService is not null)
@@ -554,7 +554,7 @@ public partial class App : Application, IDisposable
 			}
 
 			// Causes list of singleton instances to be cleared.
-			Waher.Events.Log.Terminate();
+			Log.Terminate();
 		}
 		finally
 		{
@@ -694,7 +694,7 @@ public partial class App : Application, IDisposable
 		Exception ex = e.Exception;
 		e.SetObserved();
 
-		ex = Waher.Events.Log.UnnestException(ex);
+		ex = Log.UnnestException(ex);
 
 		this.Handle_UnhandledException(ex, nameof(TaskScheduler_UnobservedTaskException), false).Wait();
 	}
@@ -776,7 +776,7 @@ public partial class App : Application, IDisposable
 				Msg.AppendLine(StackTrace);
 				Msg.AppendLine("```");
 
-				Waher.Events.Log.Alert(Msg.ToString(), Tags.ToArray());
+				Log.Alert(Msg.ToString(), Tags.ToArray());
 
 				try
 				{
@@ -805,7 +805,7 @@ public partial class App : Application, IDisposable
 		}
 		catch (Exception ex)
 		{
-			Waher.Events.Log.Critical(ex);
+			Log.Critical(ex);
 		}
 	}
 

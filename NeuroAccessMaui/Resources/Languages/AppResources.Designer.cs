@@ -322,6 +322,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copy to clipboard.
+        /// </summary>
+        internal static string CopyToClipboard {
+            get {
+                return ResourceManager.GetString("CopyToClipboard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} does not follow the ubiquitous encryption policy.
         /// </summary>
         internal static string DomainDoesNotFollowEncryptionPolicy {
