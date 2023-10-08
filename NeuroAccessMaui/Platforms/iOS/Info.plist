@@ -16,17 +16,42 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/appicon.appiconset</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>sv</string>
+		<string>es</string>
+		<string>fr</string>
+		<string>de</string>
+		<string>da</string>
+		<string>no</string>
+		<string>fi</string>
+		<string>sr</string>
+		<string>pt</string>
+		<string>ro</string>
+		<string>ru</string>
+	</array>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>Neuro-Access</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>iotid</string>
+				<string>tagsign</string>
+				<string>obinfo</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>
