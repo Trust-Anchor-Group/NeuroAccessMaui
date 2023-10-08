@@ -26,7 +26,33 @@
 					Style="{StaticResource SectionTitleLabelStyle}"
 					Text="{l:Localize PhoneSectionTitle}" />
 
-				<Border />
+				<Border
+					BackgroundColor="{AppThemeBinding Light={StaticResource NormalEditBackgroundLight},
+													  Dark={StaticResource NormalEditBackgroundDark}}"
+					Padding="{StaticResource MediumMargins}"
+					Stroke="{AppThemeBinding Light={StaticResource NormalEditForegroundLight},
+											 Dark={StaticResource NormalEditForegroundDark}}"
+					StrokeShape="RoundRectangle 4"
+					StrokeThickness="1">
+					<Grid
+						ColumnDefinitions="auto,*"
+						ColumnSpacing="{StaticResource SmallSpacing}"
+						RowDefinitions="auto">
+						<HorizontalStackLayout
+							Grid.Column="0"
+							VerticalOptions="Center">
+							<Label
+								Margin="0"
+								Text="+373" />
+							<Image
+								Margin="0" />
+						</HorizontalStackLayout>
+						<Entry
+							Grid.Column="1"
+							VerticalOptions="Center"
+							Keyboard="Telephone" />
+					</Grid>
+				</Border>
 			</VerticalStackLayout>
 		</VerticalStackLayout>
 

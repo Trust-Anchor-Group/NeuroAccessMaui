@@ -9,6 +9,10 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
 
+#if ANDROID
+using Microsoft.Maui.Controls.Compatibility.Platform.Android;
+#endif
+
 namespace NeuroAccessMaui;
 
 public static class MauiProgram
@@ -58,24 +62,34 @@ public static class MauiProgram
 	private static void InitMauiControlsHandlers()
 	{
 #if IOS
-		ScrollViewHandler.Mapper.AppendToMapping("ScrollViewHandler", (handler, view) =>
+		ScrollViewHandler.Mapper.AppendToMapping("BouncesScrollViewHandler", (handler, view) =>
 		{
 			handler.PlatformView.Bounces = false;
 		});
 
-		CollectionViewHandler.Mapper.AppendToMapping("CollectionViewHandler", (handler, view) =>
+		CollectionViewHandler.Mapper.AppendToMapping("BouncesCollectionViewHandler", (handler, view) =>
 		{
-			//!!! handler.PlatformView.CollectionView.Bounces = false;
+			//!!! handler.ViewController.PlatformView.Bounces = false;
+		});
+
+		Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("BorderStyleEntryHandler", (handler, view) =>
+		{
+				handler.PlatformView.BorderStyle = UIKit.UITextBorderStyle.None;
 		});
 #elif ANDROID
-		ScrollViewHandler.Mapper.AppendToMapping("ScrollViewHandler", (handler, view) =>
+		ScrollViewHandler.Mapper.AppendToMapping("OverScrollModeScrollViewHandler", (handler, view) =>
 		{
 			handler.PlatformView.OverScrollMode = Android.Views.OverScrollMode.Never;
 		});
 
-		CollectionViewHandler.Mapper.AppendToMapping("CollectionViewHandler", (handler, view) =>
+		CollectionViewHandler.Mapper.AppendToMapping("OverScrollModeCollectionViewHandler", (handler, view) =>
 		{
 			handler.PlatformView.OverScrollMode = Android.Views.OverScrollMode.Never;
+		});
+
+		EntryHandler.Mapper.AppendToMapping("NoUnderlineEntryHandler", (handler, view) =>
+		{
+			handler.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Colors.Transparent.ToAndroid());
 		});
 #endif
 	}

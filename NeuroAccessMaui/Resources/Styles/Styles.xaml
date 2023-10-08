@@ -22,7 +22,7 @@
 	</Thickness>
 
 	<Thickness x:Key="MediumMargins">
-		16
+		12
 	</Thickness>
 
 	<Thickness x:Key="LargeMargins">
