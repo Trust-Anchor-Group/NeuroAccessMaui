@@ -39,9 +39,7 @@ public partial class SelectLanguagePage
 		});
 	}
 	*/
-
-	public double ViewWidth => (DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density) * (3.0 / 4.0);
-	public double ViewHeight => (DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density) * (1.0 / 2.0);
+	public override double ViewWidthRequest => (DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density) * (3.0 / 4.0);
 
 	public Collection<LanguageInfo> Languages { get; set; } = new(App.SupportedLanguages);
 

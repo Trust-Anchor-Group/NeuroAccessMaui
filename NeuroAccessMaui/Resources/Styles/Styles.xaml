@@ -609,6 +609,15 @@
 		<Setter Property="BackgroundColor" Value="Transparent" />
 	</Style>
 
+	<Style x:Key="PopupGridStyle"
+		ApplyToDerivedTypes="False"
+		TargetType="Grid">
+		<Setter Property="Padding" Value="{StaticResource SmallMargins}" />
+		<Setter Property="HorizontalOptions" Value="Center" />
+		<Setter Property="VerticalOptions" Value="Center" />
+		<Setter Property="RowDefinitions" Value="auto" />
+	</Style>
+
 	<Style x:Key="PopupBorderStyle"
 		ApplyToDerivedTypes="False"
 		TargetType="Border">

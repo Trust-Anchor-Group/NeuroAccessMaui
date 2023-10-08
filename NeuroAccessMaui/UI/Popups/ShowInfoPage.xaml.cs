@@ -5,9 +5,6 @@ namespace NeuroAccessMaui.UI.Popups;
 
 public partial class ShowInfoPage
 {
-	public double ViewWidth => (DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density) * (7.0 / 8.0);
-	//public double ViewHeight => (DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density) * (1.0 / 2.0);
-
 	public string InfoTitle { get; set; }
 	public string InfoText { get; set; }
 

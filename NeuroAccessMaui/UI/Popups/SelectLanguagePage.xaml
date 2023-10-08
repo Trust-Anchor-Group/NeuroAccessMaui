@@ -49,14 +49,16 @@
 	</VisualElement.Resources>
 
 	<Grid
-		HeightRequest="{Binding ViewHeight}"
-		WidthRequest="{Binding ViewWidth}"
-		Padding="8">
+		Style="{StaticResource PopupGridStyle}">
 
 		<Border
+			WidthRequest="{Binding ViewWidthRequest}"
+			MaximumHeightRequest="{Binding MaximumViewHeightRequest}"
 			Style="{StaticResource PopupBorderStyle}">
 
-			<ScrollView x:Name="InnerScrollView">
+			<ScrollView x:Name="InnerScrollView"
+				VerticalOptions="Center">
+
 				<VerticalStackLayout x:Name="LanguagesContainer"
 					BindableLayout.ItemTemplate="{StaticResource SelectLanguageDataTemplate}"
 					BindableLayout.ItemsSource="{Binding Languages}"

@@ -9,24 +9,23 @@
 	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups">
 
 	<Grid
-		WidthRequest="{Binding ViewWidth}"
-		Padding="8"
-		VerticalOptions="Center"
-		RowDefinitions="auto">
+		Style="{StaticResource PopupGridStyle}">
 
 		<Border
+			WidthRequest="{Binding ViewWidthRequest}"
+			MaximumHeightRequest="{Binding MaximumViewHeightRequest}"
 			Style="{StaticResource PopupBorderStyle}">
 
-			<ScrollView>
+			<ScrollView
+				VerticalOptions="Center">
 				<VerticalStackLayout
 					Spacing="{StaticResource MediumSpacing}">
 
 					<Label
-						HorizontalOptions="FillAndExpand"
 						HorizontalTextAlignment="Center"
 						Style="{StaticResource PageTitleLabelStyle}"
 						Text="{Binding InfoTitle}" />
-					
+
 					<Label
 						Text="{Binding InfoText}" />
 
