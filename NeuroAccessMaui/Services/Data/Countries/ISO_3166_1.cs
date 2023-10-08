@@ -5,22 +5,13 @@ namespace NeuroAccessMaui.Services.Data.Countries;
 /// <summary>
 /// Representation of an ISO3166-1 Country
 /// </summary>
-public class ISO3166Country
+public class ISO3166Country(string name, string alpha2, string alpha3, int numericCode, string[]? dialCodes = null)
 {
-	public ISO3166Country(string name, string alpha2, string alpha3, int numericCode, string[]? dialCodes = null)
-	{
-		this.Name = name;
-		this.Alpha2 = alpha2;
-		this.Alpha3 = alpha3;
-		this.NumericCode = numericCode;
-		this.DialCodes = dialCodes;
-	}
-
-	public string Name { get; private set; }
-	public string Alpha2 { get; private set; }
-	public string Alpha3 { get; private set; }
-	public int NumericCode { get; private set; }
-	public string[]? DialCodes { get; private set; }
+	public string Name { get; private set; } = name;
+	public string Alpha2 { get; private set; } = alpha2;
+	public string Alpha3 { get; private set; } = alpha3;
+	public int NumericCode { get; private set; } = numericCode;
+	public string[]? DialCodes { get; private set; } = dialCodes;
 }
 
 /// <summary>
@@ -100,7 +91,7 @@ public static class ISO_3166_1
 	}
 
 	#region Build Collection
-	private static List<ISO3166Country> countries = [
+	private static readonly List<ISO3166Country> countries = [
 		new ISO3166Country("Afghanistan", "AF", "AFG", 4, ["93"]),
 		new ISO3166Country("Åland Islands", "AX", "ALA", 248, ["358"]),
 		new ISO3166Country("Albania", "AL", "ALB", 8, ["355"]),

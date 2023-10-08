@@ -794,8 +794,11 @@ public partial class App : Application, IDisposable
 	{
 		try
 		{
-			HttpClient client = new();
-			client.Timeout = TimeSpan.FromSeconds(30);
+			HttpClient client = new()
+			{
+				Timeout = TimeSpan.FromSeconds(30)
+			};
+
 			client.DefaultRequestHeaders.Accept.Clear();
 			client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
