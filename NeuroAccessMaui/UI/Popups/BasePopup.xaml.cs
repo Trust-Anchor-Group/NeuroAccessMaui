@@ -1,14 +1,14 @@
 ﻿namespace NeuroAccessMaui.UI.Popups;
 
 /// <summary>
-/// Creates Popup with blurred background
+/// Creates a base popup 
 /// </summary>
-public partial class BlurryPopup
+public partial class BasePopup
 {
 	public virtual double ViewWidthRequest => (DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density) * (7.0 / 8.0);
 	public virtual double MaximumViewHeightRequest => (DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density) * (3.0 / 4.0);
 
-	protected BlurryPopup(ImageSource? Background)
+	protected BasePopup(ImageSource? Background)
 	{
 		this.InitializeComponent();
 
