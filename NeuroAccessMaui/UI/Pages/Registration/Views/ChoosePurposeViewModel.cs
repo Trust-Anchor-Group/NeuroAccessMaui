@@ -17,6 +17,15 @@ public partial class ChoosePurposeViewModel : BaseRegistrationViewModel
 	{
 	}
 
+	/// <inheritdoc/>
+	protected override async Task OnInitialize()
+	{
+		await base.OnInitialize();
+
+		//!!! this.SynchronizeIsRevalidatingWithTagProfile();
+	}
+
+
 	/// <summary>
 	/// Holds the list of purposes to display.
 	/// </summary>

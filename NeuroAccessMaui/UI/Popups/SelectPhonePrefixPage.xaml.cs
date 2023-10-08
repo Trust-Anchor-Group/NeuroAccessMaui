@@ -1,64 +1,34 @@
 ﻿using System.Collections.ObjectModel;
 using System.Globalization;
 using CommunityToolkit.Mvvm.Input;
+using NeuroAccessMaui.Services.Data.Countries;
 using NeuroAccessMaui.Services.Localization;
 
 namespace NeuroAccessMaui.UI.Popups;
 
-public partial class SelectLanguagePage
+public partial class SelectPhonePrefixPage
 {
-	/*
-	/// <summary>
-	/// Popup factory
-	/// </summary>
-	public static Task<SelectLanguagePage> Create()
-	{
-		//SelectLanguageViewModel ViewModel = ServiceHelper.GetService<SelectLanguageViewModel>();
-		//return Task.FromResult(new SelectLanguagePage(ViewModel));
-
-		return await MainThread.InvokeOnMainThreadAsync(async () => await
-		{
-			SelectLanguageViewModel ViewModel = new();
-
-			try
-			{
-				byte[] ScreenBitmap = await ServiceRef.PlatformSpecific.CaptureScreen(10);
-
-				ImageSource Background = ImageSource.FromStream(() => new MemoryStream(ScreenBitmap));
-				Page = new SelectLanguagePage(ViewModel, Background);
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
-
-				Page = new SelectLanguagePage(ViewModel, null);
-			}
-
-			return Page;
-		});
-	}
-	*/
 	public override double ViewWidthRequest => (DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density) * (3.0 / 4.0);
 
-	public List<LanguageInfo> Languages { get; } = new(App.SupportedLanguages);
+	public List<ISO3166Country> Countries { get; } = new(ISO_3166_1.Countries);
 
-	public SelectLanguagePage(ImageSource? Background = null) : base(Background)
+	public SelectPhonePrefixPage(ImageSource? Background = null) : base(Background)
 	{
 		this.InitializeComponent();
 		this.BindingContext = this;
 
-		this.SelectLanguage(App.SelectedLanguage.Name);
+		//!!! this.SelectPhonePrefix(App.SelectedLanguage.Name);
 	}
 
 	[RelayCommand]
-	public void SelectLanguage(object o)
+	public void SelectPhonePrefix(object o)
 	{
-		if (o is not string Name)
+		if (o is not string Prefix)
 		{
 			return;
 		}
 
+		/*
 		LanguageInfo? SelectedLanguage = null;
 
 		foreach (object Item in this.LanguagesContainer)
@@ -86,5 +56,6 @@ public partial class SelectLanguagePage
 			Preferences.Set("user_selected_language", SelectedLanguage.TwoLetterISOLanguageName);
 			LocalizationManager.Current.CurrentCulture = SelectedLanguage;
 		}
+		*/
 	}
 }
