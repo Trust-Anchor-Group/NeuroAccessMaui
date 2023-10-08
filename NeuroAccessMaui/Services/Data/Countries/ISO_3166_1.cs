@@ -34,7 +34,7 @@ public static class ISO_3166_1
 
 	static ISO_3166_1()
 	{
-		foreach (ISO3166Country Country in GetCollection())
+		foreach (ISO3166Country Country in Countries())
 		{
 			codeByCountry[Country.Name] = Country;
 			countryByCode2[Country.Alpha2] = Country;
@@ -45,7 +45,7 @@ public static class ISO_3166_1
 	/// <summary>
 	/// Available country codes, ordered alphabetically
 	/// </summary>
-	public static string[] Codes
+	public static string[] CountryCodes
 	{
 		get
 		{
@@ -58,7 +58,7 @@ public static class ISO_3166_1
 	/// <summary>
 	/// Available counties, ordered alphabetically
 	/// </summary>
-	public static string[] Countries
+	public static string[] CountryNames
 	{
 		get
 		{
@@ -121,7 +121,7 @@ public static class ISO_3166_1
 	}
 
 	#region Build Collection
-	public static IEnumerable<ISO3166Country> GetCollection()
+	public static IEnumerable<ISO3166Country> Countries()
 	{
 		// This collection built from Wikipedia entry on ISO3166-1 on 9th Feb 2016
 		return new[] {
