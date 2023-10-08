@@ -30,10 +30,15 @@ public partial class BootstrapErrorPage
 	{
 		try
 		{
+			string CopyText = (this.TraceTitle is not null) ? this.TraceTitle : string.Empty;
+
 			if (this.TraceText is not null)
 			{
-				await Clipboard.SetTextAsync(this.TraceText);
+				CopyText += "\n\n";
+				CopyText += this.TraceText;
 			}
+
+			await Clipboard.SetTextAsync(CopyText);
 		}
 		catch (Exception ex)
 		{
