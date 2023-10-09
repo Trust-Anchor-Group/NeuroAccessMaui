@@ -30,7 +30,15 @@
 	</s:Double>
 
 	<s:Double x:Key="ThinStrokeThickness">
+		1
+	</s:Double>
+
+	<s:Double x:Key="MediumStrokeThickness">
 		2
+	</s:Double>
+
+	<s:Double x:Key="BoldStrokeThickness">
+		4
 	</s:Double>
 
 	<Thickness x:Key="SmallMargins">
@@ -49,7 +57,7 @@
 		16,8
 	</Thickness>
 
-	<Thickness x:Key="ButtonNormalMargins">
+	<Thickness x:Key="ButtonMediumMargins">
 		24,12
 	</Thickness>
 
@@ -628,7 +636,7 @@
 		ApplyToDerivedTypes="True"
 		TargetType="Border">
 		<Setter Property="Stroke" Value="Transparent" />
-		<Setter Property="StrokeThickness" Value="{StaticResource ThinStrokeThickness}" />
+		<Setter Property="StrokeThickness" Value="{StaticResource MediumStrokeThickness}" />
 		<Setter Property="VerticalOptions" Value="FillAndExpand" />
 		<Setter Property="HorizontalOptions" Value="FillAndExpand" />
 		<Setter Property="BackgroundColor" Value="Transparent" />
@@ -671,7 +679,7 @@
 		TargetType="Path">
 		<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource CurvedLinesLight}, Dark={StaticResource CurvedLinesDark}}" />
 		<Setter Property="StrokeMiterLimit" Value="10" />
-		<Setter Property="StrokeThickness" Value="{StaticResource ThinStrokeThickness}" />
+		<Setter Property="StrokeThickness" Value="{StaticResource MediumStrokeThickness}" />
 	</Style>
 
 </ResourceDictionary>

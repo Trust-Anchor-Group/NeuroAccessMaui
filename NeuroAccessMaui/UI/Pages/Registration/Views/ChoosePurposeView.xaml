@@ -26,7 +26,6 @@
 
 					<Label x:Name="InnerLabel"
 						Grid.Column="0"
-						BackgroundColor="Red"
 						Padding="{StaticResource MediumMargins}"
 						HorizontalOptions="FillAndExpand"
 						VerticalOptions="Center"

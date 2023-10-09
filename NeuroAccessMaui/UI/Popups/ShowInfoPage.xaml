@@ -19,15 +19,19 @@
 			<ScrollView
 				VerticalOptions="Center">
 				<VerticalStackLayout
-					Spacing="{StaticResource MediumSpacing}">
+					Spacing="{StaticResource LargeSpacing}">
 
-					<Label
-						HorizontalTextAlignment="Center"
-						Style="{StaticResource PageTitleLabelStyle}"
-						Text="{Binding InfoTitle}" />
+					<VerticalStackLayout
+						Spacing="{StaticResource SmallSpacing}">
 
-					<Label
-						Text="{Binding InfoText}" />
+						<Label
+							HorizontalTextAlignment="Center"
+							Style="{StaticResource PageTitleLabelStyle}"
+							Text="{Binding InfoTitle}" />
+
+						<Label
+							Text="{Binding InfoText}" />
+					</VerticalStackLayout>
 
 					<controls:FilledButton
 						Command="{Binding CloseCommand}"

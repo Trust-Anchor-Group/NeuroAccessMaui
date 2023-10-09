@@ -9,7 +9,7 @@
 	<Border
 		BackgroundColor="{AppThemeBinding Light={StaticResource EnabledButtonBackgroundLight},
 										  Dark={StaticResource EnabledButtonBackgroundDark}}"
-		Padding="{StaticResource MediumMargins}">
+		Padding="{StaticResource ButtonMediumMargins}">
 		<Border.StrokeShape>
 			<RoundRectangle
 				CornerRadius="{StaticResource SmallCornerRadius}" />
