@@ -14,8 +14,12 @@
 												  Dark={StaticResource NormalBackgroundDark}}"
 				Padding="{StaticResource MediumMargins}"
 				Stroke="{AppThemeBinding Light={StaticResource NormalForegroundLight},
-										 Dark={StaticResource NormalBackgroundDark}}"
-				StrokeShape="RoundRectangle 2">
+										 Dark={StaticResource NormalBackgroundDark}}">
+				<Border.StrokeShape>
+					<RoundRectangle
+						CornerRadius="{StaticResource SmallCornerRadius}" />
+				</Border.StrokeShape>
+
 				<Border.GestureRecognizers>
 					<TapGestureRecognizer
 						Command="{Binding SelectLanguageCommand, Source={x:Reference ThisPage}}"

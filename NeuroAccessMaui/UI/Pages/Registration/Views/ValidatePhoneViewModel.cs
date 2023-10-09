@@ -32,14 +32,9 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel
 				{
 					this.PhoneNumber = PhoneCode;
 				}
-				else
-				{
-					this.PhoneNumber = "+";
-				}
 			}
 			catch (Exception ex)
 			{
-				this.PhoneNumber = "+";
 				ServiceRef.LogService.LogException(ex);
 			}
 		}
@@ -54,7 +49,7 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel
 	/// </summary>
 	[ObservableProperty]
 	[NotifyCanExecuteChangedFor(nameof(SendCodeCommand))]
-	private string phoneNumber;
+	private string phoneNumber = "+";
 
 	public bool CanSendCode => false;
 

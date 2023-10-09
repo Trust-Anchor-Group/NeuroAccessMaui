@@ -31,9 +31,12 @@
 													  Dark={StaticResource NormalEditBackgroundDark}}"
 					Padding="{StaticResource MediumMargins}"
 					Stroke="{AppThemeBinding Light={StaticResource NormalEditForegroundLight},
-											 Dark={StaticResource NormalEditForegroundDark}}"
-					StrokeShape="RoundRectangle 4"
-					StrokeThickness="1">
+											 Dark={StaticResource NormalEditForegroundDark}}">
+					<Border.StrokeShape>
+						<RoundRectangle
+							CornerRadius="{StaticResource SmallCornerRadius}" />
+					</Border.StrokeShape>
+
 					<Grid
 						ColumnDefinitions="auto,*"
 						ColumnSpacing="{StaticResource SmallSpacing}"

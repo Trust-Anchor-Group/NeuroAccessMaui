@@ -14,17 +14,22 @@
 				BackgroundColor="{AppThemeBinding Light={StaticResource NormalBackgroundLight},
 												  Dark={StaticResource NormalBackgroundDark}}"
 				Stroke="{AppThemeBinding Light={StaticResource NormalForegroundLight},
-										 Dark={StaticResource NormalBackgroundDark}}"
-				StrokeShape="RoundRectangle 2">
+										 Dark={StaticResource NormalBackgroundDark}}">
+				<Border.StrokeShape>
+					<RoundRectangle
+						CornerRadius="{StaticResource SmallCornerRadius}" />
+				</Border.StrokeShape>
+
 				<Grid
 					ColumnDefinitions="*,auto"
 					RowDefinitions="auto">
 
 					<Label x:Name="InnerLabel"
 						Grid.Column="0"
+						BackgroundColor="Red"
 						Padding="{StaticResource MediumMargins}"
 						HorizontalOptions="FillAndExpand"
-						VerticalOptions="FillAndExpand"
+						VerticalOptions="Center"
 						FontFamily="HaasGroteskBold"
 						Text="{Binding LocalizedName}"
 						TextColor="{AppThemeBinding Light={StaticResource NormalForegroundLight},
@@ -86,6 +91,7 @@
 
 	<VerticalStackLayout
 		Spacing="{StaticResource LargeSpacing}">
+
 		<VerticalStackLayout
 			Spacing="{StaticResource MediumSpacing}">
 
@@ -95,19 +101,19 @@
 
 			<Label
 				Text="{l:Localize OnboardingPurposePageDetails}" />
+		</VerticalStackLayout>
 
-			<VerticalStackLayout
-				Spacing="{StaticResource SmallSpacing}">
+		<VerticalStackLayout
+			Spacing="{StaticResource SmallSpacing}">
 
-				<Label
-					Style="{StaticResource SectionTitleLabelStyle}"
-					Text="{l:Localize PurposesSectionTitle}" />
+			<Label
+				Style="{StaticResource SectionTitleLabelStyle}"
+				Text="{l:Localize PurposesSectionTitle}" />
 
-				<VerticalStackLayout x:Name="PurposesContainer"
-					BindableLayout.ItemTemplate="{StaticResource SelectPurposeDataTemplate}"
-					BindableLayout.ItemsSource="{Binding Purposes}"
-					Spacing="{StaticResource MediumSpacing}" />
-			</VerticalStackLayout>
+			<VerticalStackLayout x:Name="PurposesContainer"
+				BindableLayout.ItemTemplate="{StaticResource SelectPurposeDataTemplate}"
+				BindableLayout.ItemsSource="{Binding Purposes}"
+				Spacing="{StaticResource MediumSpacing}" />
 		</VerticalStackLayout>
 
 		<controls:FilledButton
