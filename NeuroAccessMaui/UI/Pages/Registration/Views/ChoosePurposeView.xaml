@@ -13,12 +13,15 @@
 			<Border
 				BackgroundColor="{AppThemeBinding Light={StaticResource NormalBackgroundLight},
 												  Dark={StaticResource NormalBackgroundDark}}"
+				Padding="0"
 				Stroke="{AppThemeBinding Light={StaticResource NormalForegroundLight},
-										 Dark={StaticResource NormalBackgroundDark}}">
-				<Border.StrokeShape>
-					<RoundRectangle
-						CornerRadius="{StaticResource SmallCornerRadius}" />
-				</Border.StrokeShape>
+										 Dark={StaticResource NormalBackgroundDark}}"
+				Style="{StaticResource ItemOuterBorderStyle}">
+				<Border.GestureRecognizers>
+					<TapGestureRecognizer
+						Command="{Binding SelectPurposeCommand, Source={x:Reference ThisPage}}"
+						CommandParameter="{Binding Purpose}" />
+				</Border.GestureRecognizers>
 
 				<Grid
 					ColumnDefinitions="*,auto"
@@ -26,7 +29,6 @@
 
 					<Label x:Name="InnerLabel"
 						Grid.Column="0"
-						HorizontalOptions="FillAndExpand"
 						Style="{StaticResource ItemTitleLabelStyle}"
 						Text="{Binding LocalizedName}"
 						TextColor="{AppThemeBinding Light={StaticResource NormalForegroundLight},
@@ -38,12 +40,6 @@
 								Top="{StaticResource MediumSpacing}"
 								Bottom="{StaticResource MediumSpacing}" />
 						</Label.Padding>
-
-						<Label.GestureRecognizers>
-							<TapGestureRecognizer
-								Command="{Binding SelectPurposeCommand, Source={x:Reference ThisPage}}"
-								CommandParameter="{Binding Purpose}" />
-						</Label.GestureRecognizers>
 					</Label>
 
 					<Border

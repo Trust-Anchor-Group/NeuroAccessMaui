@@ -29,13 +29,10 @@
 				<Border
 					BackgroundColor="{AppThemeBinding Light={StaticResource NormalEditBackgroundLight},
 													  Dark={StaticResource NormalEditBackgroundDark}}"
-					Padding="{StaticResource MediumMargins}"
+					Padding="0"
 					Stroke="{AppThemeBinding Light={StaticResource NormalEditForegroundLight},
-											 Dark={StaticResource NormalEditForegroundDark}}">
-					<Border.StrokeShape>
-						<RoundRectangle
-							CornerRadius="{StaticResource SmallCornerRadius}" />
-					</Border.StrokeShape>
+											 Dark={StaticResource NormalEditForegroundDark}}"
+					Style="{StaticResource ItemOuterBorderStyle}">
 
 					<Grid
 						ColumnDefinitions="auto,*"

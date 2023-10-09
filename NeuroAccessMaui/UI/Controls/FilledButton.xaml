@@ -12,6 +12,7 @@
 		Style="{StaticResource MediumButtonBorderStyle}">
 		<Label x:Name="InnerLabel"
 			HorizontalOptions="Center"
+			VerticalOptions="FillAndExpand"
 			Style="{StaticResource ItemTitleLabelStyle}"
 			Text="{Binding Text, Source={x:Reference ThisPage}}"
 			TextColor="{AppThemeBinding Light={StaticResource EnabledButtonForegroundLight},
