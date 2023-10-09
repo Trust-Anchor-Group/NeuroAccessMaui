@@ -440,7 +440,7 @@
 		<Setter Property="LineBreakMode" Value="WordWrap" />
 		<Setter Property="FontFamily" Value="HaasGroteskRegular" />
 		<Setter Property="FontSize" Value="18" />
-		<Setter Property="LineHeight" Value="1.4" />
+		<Setter Property="LineHeight" Value="1" />
 	</Style>
 
 	<Style x:Key="PageTitleLabelStyle"
@@ -448,7 +448,6 @@
 		TargetType="Label">
 		<Setter Property="FontFamily" Value="SpaceGroteskBold" />
 		<Setter Property="FontSize" Value="32" />
-		<Setter Property="LineHeight" Value="1.2" />
 	</Style>
 
 	<Style x:Key="SectionTitleLabelStyle"
@@ -682,7 +681,6 @@
 		ApplyToDerivedTypes="False"
 		TargetType="Border">
 		<Setter Property="Padding" Value="{StaticResource ButtonMediumMargins}" />
-		<Setter Property="HeightRequest" Value="50" />
 		<Setter Property="StrokeShape">
 			<RoundRectangle
 				CornerRadius="{StaticResource SmallCornerRadius}" />
