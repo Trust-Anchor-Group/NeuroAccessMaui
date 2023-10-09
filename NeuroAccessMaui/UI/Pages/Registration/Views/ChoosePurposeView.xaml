@@ -26,14 +26,19 @@
 
 					<Label x:Name="InnerLabel"
 						Grid.Column="0"
-						Padding="{StaticResource MediumMargins}"
 						HorizontalOptions="FillAndExpand"
-						VerticalOptions="Center"
-						FontFamily="HaasGroteskBold"
+						Style="{StaticResource ItemTitleLabelStyle}"
 						Text="{Binding LocalizedName}"
 						TextColor="{AppThemeBinding Light={StaticResource NormalForegroundLight},
-													Dark={StaticResource NormalForegroundDark}}"
-						VerticalTextAlignment="Center">
+													Dark={StaticResource NormalForegroundDark}}">
+
+						<Label.Padding>
+							<Thickness
+								Left="{StaticResource MediumSpacing}"
+								Top="{StaticResource MediumSpacing}"
+								Bottom="{StaticResource MediumSpacing}" />
+						</Label.Padding>
+
 						<Label.GestureRecognizers>
 							<TapGestureRecognizer
 								Command="{Binding SelectPurposeCommand, Source={x:Reference ThisPage}}"
@@ -43,13 +48,21 @@
 
 					<Border
 						Grid.Column="1"
-						Padding="{StaticResource MediumMargins}"
-						VerticalOptions="Center">
+						VerticalOptions="FillAndExpand"
+						Style="{StaticResource InnerFrameBorderStyle}">
+
+						<Border.Padding>
+							<Thickness
+								Left="{StaticResource MediumSpacing}"
+								Right="{StaticResource MediumSpacing}" />
+						</Border.Padding>
+
 						<Border.GestureRecognizers>
 							<TapGestureRecognizer
 								Command="{Binding ShowPurposeInfoCommand, Source={x:Reference ThisPage}}"
 								CommandParameter="{Binding Purpose}" />
 						</Border.GestureRecognizers>
+
 						<Image x:Name="InnerButton"
 							Source="info_circle_button.png">
 							<Image.Behaviors>

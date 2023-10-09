@@ -440,13 +440,15 @@
 		<Setter Property="LineBreakMode" Value="WordWrap" />
 		<Setter Property="FontFamily" Value="HaasGroteskRegular" />
 		<Setter Property="FontSize" Value="18" />
+		<Setter Property="LineHeight" Value="1.4" />
 	</Style>
 
 	<Style x:Key="PageTitleLabelStyle"
 		ApplyToDerivedTypes="False"
 		TargetType="Label">
-		<Setter Property="FontFamily" Value="HaasGroteskBold" />
+		<Setter Property="FontFamily" Value="SpaceGroteskBold" />
 		<Setter Property="FontSize" Value="32" />
+		<Setter Property="LineHeight" Value="1.2" />
 	</Style>
 
 	<Style x:Key="SectionTitleLabelStyle"
@@ -454,6 +456,13 @@
 		TargetType="Label">
 		<Setter Property="FontFamily" Value="HaasGroteskBold" />
 		<Setter Property="FontSize" Value="14" />
+	</Style>
+
+	<Style x:Key="ItemTitleLabelStyle"
+		ApplyToDerivedTypes="False"
+		TargetType="Label">
+		<Setter Property="FontFamily" Value="HaasGroteskBold" />
+		<Setter Property="VerticalOptions" Value="Center" />
 	</Style>
 
 	<Style
@@ -662,6 +671,27 @@
 		</Setter>
 		<Setter Property="Shadow">
 			<Shadow />
+		</Setter>
+	</Style>
+
+	<Style x:Key="MediumButtonBorderStyle"
+		ApplyToDerivedTypes="False"
+		TargetType="Border">
+		<Setter Property="Padding" Value="{StaticResource ButtonMediumMargins}" />
+		<Setter Property="HeightRequest" Value="50" />
+		<Setter Property="StrokeShape">
+			<RoundRectangle
+				CornerRadius="{StaticResource SmallCornerRadius}" />
+		</Setter>
+	</Style>
+
+	<Style x:Key="InnerFrameBorderStyle"
+		ApplyToDerivedTypes="False"
+		TargetType="Border">
+		<Setter Property="VerticalOptions" Value="Center" />
+		<Setter Property="StrokeThickness" Value="0" />
+		<Setter Property="StrokeShape">
+			<Rectangle />
 		</Setter>
 	</Style>
 

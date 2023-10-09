@@ -9,16 +9,10 @@
 	<Border
 		BackgroundColor="{AppThemeBinding Light={StaticResource EnabledButtonBackgroundLight},
 										  Dark={StaticResource EnabledButtonBackgroundDark}}"
-		Padding="{StaticResource ButtonMediumMargins}">
-		<Border.StrokeShape>
-			<RoundRectangle
-				CornerRadius="{StaticResource SmallCornerRadius}" />
-		</Border.StrokeShape>
-
+		Style="{StaticResource MediumButtonBorderStyle}">
 		<Label x:Name="InnerLabel"
 			HorizontalOptions="Center"
-			VerticalOptions="Center"
-			FontFamily="HaasGroteskBold"
+			Style="{StaticResource ItemTitleLabelStyle}"
 			Text="{Binding Text, Source={x:Reference ThisPage}}"
 			TextColor="{AppThemeBinding Light={StaticResource EnabledButtonForegroundLight},
 										Dark={StaticResource EnabledButtonForegroundDark}}" />
