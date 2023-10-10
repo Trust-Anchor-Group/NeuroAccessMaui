@@ -49,7 +49,7 @@ public partial class SelectPhoneCodePage : IDisposable
 				bool Result = el.Name.Contains(e.NewTextValue, StringComparison.OrdinalIgnoreCase) ||
 				string.Equals(el.Alpha2, e.NewTextValue, StringComparison.OrdinalIgnoreCase) ||
 				string.Equals(el.Alpha3, e.NewTextValue, StringComparison.OrdinalIgnoreCase) ||
-				el.PhoneCode!.Replace(" ", "").Contains(e.NewTextValue, StringComparison.OrdinalIgnoreCase);
+				el.DialCode.Contains(e.NewTextValue, StringComparison.OrdinalIgnoreCase);
 
 				return Result;
 			});

@@ -15,16 +15,17 @@
 				BackgroundColor="{AppThemeBinding Light={StaticResource SecondaryBackgroundLight},
 												  Dark={StaticResource SecondaryBackgroundDark}}"
 				Padding="{StaticResource SmallMargins}"
-				ColumnDefinitions="50,auto,*"
+				ColumnDefinitions="30,auto,*"
 				ColumnSpacing="{StaticResource SmallSpacing}"
 				RowDefinitions="auto">
 				<Label x:Name="InnerLabel1"
 					Grid.Column="0"
-					HorizontalOptions="End"
+					HorizontalOptions="FillAndExpand"
+					HorizontalTextAlignment="End"
 					FontAutoScalingEnabled="False"
 					LineBreakMode="NoWrap"
 					Style="{StaticResource RegularItemTitleLabelStyle}"
-					Text="{Binding PhoneCode}"
+					Text="{Binding DialCode}"
 					TextColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
 												Dark={StaticResource PrimaryForegroundDark}}" />
 
@@ -37,6 +38,8 @@
 
 				<Label x:Name="InnerLabel3"
 					Grid.Column="2"
+					HorizontalOptions="FillAndExpand"
+					HorizontalTextAlignment="Start"
 					LineBreakMode="NoWrap"
 					Style="{StaticResource RegularItemTitleLabelStyle}"
 					Text="{Binding Name}"
