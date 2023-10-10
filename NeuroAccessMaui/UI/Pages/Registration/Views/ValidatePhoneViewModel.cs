@@ -2,6 +2,8 @@
 using CommunityToolkit.Mvvm.Input;
 using Mopups.Services;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Data;
+using NeuroAccessMaui.UI.Popups;
 using Waher.Content;
 
 namespace NeuroAccessMaui.Pages.Registration.Views;
@@ -27,10 +29,14 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel
 					new KeyValuePair<string, string>("Accept", "application/json"));
 
 				if ((Result is Dictionary<string, object> Response) &&
-					Response.TryGetValue("PhoneCode", out object? o) &&
-					(o is string PhoneCode))
+					Response.TryGetValue("CountryCode", out object? cc) &&
+					Response.TryGetValue("PhoneCode", out object? pc) &&
+					(cc is string CountryCode) && (pc is string PhoneCode))
 				{
-					this.PhoneNumber = PhoneCode;
+					if (ISO_3166_1.TryGetCountryByPhone(CountryCode, PhoneCode, out ISO3166Country? Country))
+					{
+						this.SelectedCountry = Country;
+					}
 				}
 			}
 			catch (Exception ex)
@@ -44,12 +50,25 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel
 		}
 	}
 
+	[ObservableProperty]
+	ISO3166Country selectedCountry = ISO_3166_1.DefaultCountry;
+
 	/// <summary>
 	/// Phone number
 	/// </summary>
 	[ObservableProperty]
 	[NotifyCanExecuteChangedFor(nameof(SendCodeCommand))]
-	private string phoneNumber = "+";
+	private string phoneNumber = string.Empty;
+
+	[RelayCommand]
+	private async Task SelectPhoneCode()
+	{
+		SelectPhoneCodePage Page = new();
+		await MopupService.Instance.PushAsync(Page);
+
+		ISO3166Country? Result = await Page.Result;
+		return;
+	}
 
 	public bool CanSendCode => false;
 

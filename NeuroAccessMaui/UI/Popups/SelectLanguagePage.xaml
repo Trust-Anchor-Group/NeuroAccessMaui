@@ -22,8 +22,8 @@
 				</Border.GestureRecognizers>
 
 				<Label x:Name="InnerLabel"
-					FontFamily="HaasGroteskBold"
-					HorizontalTextAlignment="Center"
+					HorizontalOptions="Center"
+					Style="{StaticResource BoldItemTitleLabelStyle}"
 					Text="{Binding MyNativeName}"
 					TextColor="{AppThemeBinding Light={StaticResource NormalForegroundLight},
 												Dark={StaticResource NormalForegroundDark}}" />

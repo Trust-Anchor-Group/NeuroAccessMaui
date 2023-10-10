@@ -1,17 +1,29 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Waher.Content.Emoji;
 
-namespace NeuroAccessMaui.Services.Data.Countries;
+namespace NeuroAccessMaui.Services.Data;
 
 /// <summary>
 /// Representation of an ISO3166-1 Country
 /// </summary>
-public class ISO3166Country(string name, string alpha2, string alpha3, int numericCode, string[]? dialCodes = null)
+public class ISO3166Country(string name, string alpha2, string alpha3,
+	int numericCode, string[] dialCodes,
+	string? PhoneCode = null, EmojiInfo? EmojiInfo = null)
 {
+	public ISO3166Country(ISO3166Country Country, string PhoneCode)
+		: this(Country.Name, Country.Alpha2, Country.Alpha3,
+			  Country.NumericCode, Country.DialCodes,
+			  PhoneCode, Country.EmojiInfo)
+	{
+	}
+
 	public string Name { get; private set; } = name;
 	public string Alpha2 { get; private set; } = alpha2;
 	public string Alpha3 { get; private set; } = alpha3;
 	public int NumericCode { get; private set; } = numericCode;
-	public string[]? DialCodes { get; private set; } = dialCodes;
+	public string[] DialCodes { get; private set; } = dialCodes;
+	public string? PhoneCode { get; private set; } = PhoneCode;
+	public EmojiInfo EmojiInfo { get; set; } = EmojiInfo ?? EmojiUtilities.Emoji_waving_white_flag;
 }
 
 /// <summary>
@@ -19,19 +31,40 @@ public class ISO3166Country(string name, string alpha2, string alpha3, int numer
 /// </summary>
 public static class ISO_3166_1
 {
-	private static readonly SortedDictionary<string, ISO3166Country> codeByCountry = new(StringComparer.InvariantCultureIgnoreCase);
+	private static ISO3166Country defaultCountry = new("United States of America", "US", "USA", 840, ["1"], "1", EmojiUtilities.Emoji_flag_us);
+	private static readonly SortedDictionary<string, ISO3166Country> code2ByCountry = new(StringComparer.InvariantCultureIgnoreCase);
 	private static readonly SortedDictionary<string, ISO3166Country> countryByCode2 = new(StringComparer.InvariantCultureIgnoreCase);
-	private static readonly SortedDictionary<string, ISO3166Country> countryByCode3 = new(StringComparer.InvariantCultureIgnoreCase);
+	private static readonly SortedDictionary<string, ISO3166Country> countryByPhone = new(StringComparer.InvariantCultureIgnoreCase);
 
 	static ISO_3166_1()
 	{
 		foreach (ISO3166Country Country in Countries)
 		{
-			codeByCountry[Country.Name] = Country;
+			if (EmojiUtilities.TryGetEmoji($"flag-{Country.Alpha2}".ToLowerInvariant(), out EmojiInfo EmojiInfo))
+			{
+				Country.EmojiInfo = EmojiInfo;
+			}
+
+			code2ByCountry[Country.Name] = Country;
 			countryByCode2[Country.Alpha2] = Country;
-			countryByCode3[Country.Alpha3] = Country;
+
+			foreach (string DialCode in Country.DialCodes)
+			{
+				countryByPhone[$"{Country.Alpha2}+{DialCode}"] = new(Country, DialCode);
+			}
 		}
 	}
+
+	/// <summary>
+	/// This collection built from Wikipedia entry on ISO3166-1 on 9th Feb 2016
+	/// </summary>
+	public static ISO3166Country DefaultCountry => defaultCountry;
+
+	/// <summary>
+	/// This collection built from Wikipedia entry on ISO3166-1 on 9th Feb 2016
+	/// </summary>
+	public static SortedDictionary<string, ISO3166Country> DialCodes => countryByPhone;
+
 
 	/// <summary>
 	/// This collection built from Wikipedia entry on ISO3166-1 on 9th Feb 2016
@@ -39,7 +72,20 @@ public static class ISO_3166_1
 	public static List<ISO3166Country> Countries => countries;
 
 	/// <summary>
-	/// Tries to get the country name, given its country code.
+	/// Tries to get the country, given its country & phone codes.
+	/// </summary>
+	/// <param name="CountryCode">ISO-3166-1 Country code (case insensitive).</param>
+	/// <param name="PhoneCode">Phone code.</param>
+	/// <param name="Country">ISO-3166-1 Country, if found.</param>
+	/// <returns>If a country was found matching the country code.</returns>
+	public static bool TryGetCountryByPhone(string CountryCode, string PhoneCode, [NotNullWhen(true)] out ISO3166Country? Country)
+	{
+		string CountryKey = CountryCode + PhoneCode;
+		return countryByPhone.TryGetValue(CountryKey, out Country);
+	}
+
+	/// <summary>
+	/// Tries to get the country, given its country code.
 	/// </summary>
 	/// <param name="CountryCode">ISO-3166-1 Country code (case insensitive).</param>
 	/// <param name="Country">ISO-3166-1 Country, if found.</param>
@@ -57,7 +103,7 @@ public static class ISO_3166_1
 	/// <returns>If a country code was found matching the country name.</returns>
 	public static bool TryGetCountryByName(string CountryName, [NotNullWhen(true)] out ISO3166Country? Country)
 	{
-		return codeByCountry.TryGetValue(CountryName, out Country);
+		return code2ByCountry.TryGetValue(CountryName, out Country);
 	}
 
 	/// <summary>
@@ -122,7 +168,7 @@ public static class ISO_3166_1
 		new ISO3166Country("Bonaire, Sint Eustatius and Saba", "BQ", "BES", 535, ["599"]),
 		new ISO3166Country("Bosnia and Herzegovina", "BA", "BIH", 70, ["387"]),
 		new ISO3166Country("Botswana", "BW", "BWA", 72, ["267"]),
-		new ISO3166Country("Bouvet Island", "BV", "BVT", 74),
+		new ISO3166Country("Bouvet Island", "BV", "BVT", 74, []),
 		new ISO3166Country("Brazil", "BR", "BRA", 76, ["55"]),
 		new ISO3166Country("British Indian Ocean Territory", "IO", "IOT", 86, ["246"]),
 		new ISO3166Country("Brunei Darussalam", "BN", "BRN", 96, ["673"]),
@@ -188,7 +234,7 @@ public static class ISO_3166_1
 		new ISO3166Country("Guinea-Bissau", "GW", "GNB", 624, ["245"]),
 		new ISO3166Country("Guyana", "GY", "GUY", 328, ["592"]),
 		new ISO3166Country("Haiti", "HT", "HTI", 332, ["509"]),
-		new ISO3166Country("Heard Island and McDonald Islands", "HM", "HMD", 334),
+		new ISO3166Country("Heard Island and McDonald Islands", "HM", "HMD", 334, []),
 		new ISO3166Country("Holy See", "VA", "VAT", 336, ["379"]),
 		new ISO3166Country("Honduras", "HN", "HND", 340, ["504"]),
 		new ISO3166Country("Hong Kong", "HK", "HKG", 344, ["852"]),
@@ -284,7 +330,7 @@ public static class ISO_3166_1
 		new ISO3166Country("Saint Pierre and Miquelon", "PM", "SPM", 666, ["508"]),
 		new ISO3166Country("Saint Vincent and the Grenadines", "VC", "VCT", 670, ["1 784"]),
 		new ISO3166Country("Samoa", "WS", "WSM", 882, ["685"]),
-		new ISO3166Country("San Marino", "SP", "SMR", 674),
+		new ISO3166Country("San Marino", "SP", "SMR", 674, []),
 		new ISO3166Country("Sao Tome and Principe", "ST", "STP", 678, ["239"]),
 		new ISO3166Country("Saudi Arabia", "SA", "SAU", 682, ["966"]),
 		new ISO3166Country("Senegal", "SN", "SEN", 686, ["221"]),
@@ -327,8 +373,8 @@ public static class ISO_3166_1
 		new ISO3166Country("Ukraine", "UA", "UKR", 804, ["380"]),
 		new ISO3166Country("United Arab Emirates", "AE", "ARE", 784, ["971"]),
 		new ISO3166Country("United Kingdom of Great Britain and Northern Ireland", "GB", "GBR", 826, ["44"]),
-		new ISO3166Country("United States of America", "US", "USA", 840, ["1"]),
-		new ISO3166Country("United States Minor Outlying Islands", "UM", "UMI", 581),
+		defaultCountry,
+		new ISO3166Country("United States Minor Outlying Islands", "UM", "UMI", 581, []),
 		new ISO3166Country("Uruguay", "UY", "URY", 858, ["598"]),
 		new ISO3166Country("Uzbekistan", "UZ", "UZB", 860, ["998"]),
 		new ISO3166Country("Vanuatu", "VU", "VUT", 548, ["678"]),

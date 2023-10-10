@@ -29,7 +29,7 @@
 
 					<Label x:Name="InnerLabel"
 						Grid.Column="0"
-						Style="{StaticResource ItemTitleLabelStyle}"
+						Style="{StaticResource BoldItemTitleLabelStyle}"
 						Text="{Binding LocalizedName}"
 						TextColor="{AppThemeBinding Light={StaticResource NormalForegroundLight},
 													Dark={StaticResource NormalForegroundDark}}">

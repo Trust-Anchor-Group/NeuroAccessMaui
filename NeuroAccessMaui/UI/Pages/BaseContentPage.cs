@@ -1,4 +1,6 @@
 using System.Globalization;
+using Microsoft.Maui.Controls.PlatformConfiguration;
+using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 using NeuroAccessMaui.Pages.Registration;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
@@ -46,7 +48,7 @@ public abstract class BaseContentPage : ContentPage
 	/// </summary>
 	protected internal BaseContentPage()
 	{
-		//!!! this.On<iOS>().SetUseSafeArea(true);
+		this.On<iOS>().SetUseSafeArea(true);
 	}
 
 	/// <inheritdoc />

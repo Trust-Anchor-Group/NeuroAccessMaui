@@ -61,6 +61,10 @@
 		24,12
 	</Thickness>
 
+	<Thickness x:Key="EditMediumMargins">
+		16,0
+	</Thickness>
+
 	<!--
     <Style
 		ApplyToDerivedTypes="True"
@@ -153,30 +157,6 @@
     <Style
 		ApplyToDerivedTypes="True"
 	TargetType="Editor">
-        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
-        <Setter Property="BackgroundColor" Value="Transparent" />
-        <Setter Property="FontFamily" Value="OpenSansRegular"/>
-        <Setter Property="FontSize" Value="14" />
-        <Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}" />
-        <Setter Property="MinimumHeightRequest" Value="44"/>
-        <Setter Property="MinimumWidthRequest" Value="44"/>
-        <Setter Property="VisualStateManager.VisualStateGroups">
-            <VisualStateGroupList>
-                <VisualStateGroup x:Name="CommonStates">
-                    <VisualState x:Name="Normal" />
-                    <VisualState x:Name="Disabled">
-                        <VisualState.Setters>
-                            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}" />
-                        </VisualState.Setters>
-                    </VisualState>
-                </VisualStateGroup>
-            </VisualStateGroupList>
-        </Setter>
-    </Style>
-
-    <Style
-		ApplyToDerivedTypes="True"
-	TargetType="Entry">
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
         <Setter Property="BackgroundColor" Value="Transparent" />
         <Setter Property="FontFamily" Value="OpenSansRegular"/>
@@ -432,6 +412,93 @@
         </Setter>
     </Style>	-->
 
+
+	<Style
+		ApplyToDerivedTypes="True"
+		TargetType="SearchBar">
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource NormalEditForegroundLight}, Dark={StaticResource NormalEditForegroundDark}}" />
+		<Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource NormalEditPlaceholderLight}, Dark={StaticResource NormalEditPlaceholderDark}}" />
+		<Setter Property="CancelButtonColor" Value="{AppThemeBinding Light={StaticResource EnabledButtonBackgroundLight}, Dark={StaticResource EnabledButtonBackgroundDark}}" />
+		<Setter Property="BackgroundColor" Value="Transparent" />
+		<Setter Property="FontFamily" Value="HaasGroteskRegular" />
+		<Setter Property="FontSize" Value="18" />
+		<!--
+	<Setter Property="MinimumHeightRequest" Value="44"/>
+	<Setter Property="MinimumWidthRequest" Value="44"/>
+	<Setter Property="VisualStateManager.VisualStateGroups">
+		<VisualStateGroupList>
+			<VisualStateGroup x:Name="CommonStates">
+				<VisualState x:Name="Normal" />
+				<VisualState x:Name="Disabled">
+					<VisualState.Setters>
+						<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}" />
+						<Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}" />
+					</VisualState.Setters>
+				</VisualState>
+			</VisualStateGroup>
+		</VisualStateGroupList>
+	</Setter>
+	-->
+	</Style>
+
+	<Style
+		ApplyToDerivedTypes="True"
+		TargetType="Entry">
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource NormalEditForegroundLight}, Dark={StaticResource NormalEditForegroundDark}}" />
+		<Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource NormalEditPlaceholderLight}, Dark={StaticResource NormalEditPlaceholderDark}}" />
+		<Setter Property="FontFamily" Value="HaasGroteskRegular" />
+		<Setter Property="FontSize" Value="18" />
+		<Setter Property="BackgroundColor" Value="Red" />
+		<!--
+		<Setter Property="VisualStateManager.VisualStateGroups">
+			<VisualStateGroupList>
+				<VisualStateGroup x:Name="CommonStates">
+					<VisualState x:Name="Normal" />
+					<VisualState x:Name="Disabled">
+						<VisualState.Setters>
+							<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}" />
+						</VisualState.Setters>
+					</VisualState>
+				</VisualStateGroup>
+			</VisualStateGroupList>
+		</Setter>
+		-->
+	</Style>
+
+
+	<!--
+<Style TargetType="Entry">
+    <Setter Property="FontSize" Value="18" />
+    <Setter Property="VisualStateManager.VisualStateGroups">
+        <VisualStateGroupList>
+            <VisualStateGroup x:Name="CommonStates">
+                <VisualState x:Name="Normal">
+                    <VisualState.Setters>
+                        <Setter Property="BackgroundColor" Value="Lime" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Focused">
+                    <VisualState.Setters>
+                        <Setter Property="FontSize" Value="36" />
+                        <Setter Property="BackgroundColor" Value="Lime" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Disabled">
+                    <VisualState.Setters>
+                        <Setter Property="BackgroundColor" Value="Pink" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="PointerOver">
+                    <VisualState.Setters>
+                        <Setter Property="BackgroundColor" Value="LightBlue" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateGroupList>
+    </Setter>
+</Style>
+	-->
+
 	<Style
 		ApplyToDerivedTypes="True"
 		TargetType="Label">
@@ -457,15 +524,21 @@
 		<Setter Property="FontSize" Value="14" />
 	</Style>
 
-	<Style x:Key="ItemTitleLabelStyle"
+
+	<Style x:Key="RegularItemTitleLabelStyle"
 		ApplyToDerivedTypes="False"
 		TargetType="Label">
-		<Setter Property="FontFamily" Value="HaasGroteskBold" />
 		<Setter Property="HorizontalOptions" Value="Start" />
 		<Setter Property="VerticalOptions" Value="Center" />
 		<Setter Property="VerticalTextAlignment" Value="Center" />
 		<Setter Property="HorizontalTextAlignment" Value="Center" />
 		<Setter Property="LineBreakMode" Value="TailTruncation" />
+	</Style>
+
+	<Style x:Key="BoldItemTitleLabelStyle" BasedOn="{StaticResource RegularItemTitleLabelStyle}"
+		ApplyToDerivedTypes="False"
+		TargetType="Label">
+		<Setter Property="FontFamily" Value="HaasGroteskBold" />
 	</Style>
 
 	<Style
@@ -574,39 +647,6 @@
 		<Setter Property="SelectedTabColor" Value="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource Gray200}}" />
 		-->
 	</Style>
-
-	<!--
-<Style TargetType="Entry">
-    <Setter Property="FontSize" Value="18" />
-    <Setter Property="VisualStateManager.VisualStateGroups">
-        <VisualStateGroupList>
-            <VisualStateGroup x:Name="CommonStates">
-                <VisualState x:Name="Normal">
-                    <VisualState.Setters>
-                        <Setter Property="BackgroundColor" Value="Lime" />
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="Focused">
-                    <VisualState.Setters>
-                        <Setter Property="FontSize" Value="36" />
-                        <Setter Property="BackgroundColor" Value="Lime" />
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="Disabled">
-                    <VisualState.Setters>
-                        <Setter Property="BackgroundColor" Value="Pink" />
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="PointerOver">
-                    <VisualState.Setters>
-                        <Setter Property="BackgroundColor" Value="LightBlue" />
-                    </VisualState.Setters>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateGroupList>
-    </Setter>
-</Style>
-	-->
 
 	<Style
 		ApplyToDerivedTypes="True"

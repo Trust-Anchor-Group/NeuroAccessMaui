@@ -13,7 +13,7 @@
 		<Label x:Name="InnerLabel"
 			HorizontalOptions="Center"
 			VerticalOptions="FillAndExpand"
-			Style="{StaticResource ItemTitleLabelStyle}"
+			Style="{StaticResource BoldItemTitleLabelStyle}"
 			Text="{Binding Text, Source={x:Reference ThisPage}}"
 			TextColor="{AppThemeBinding Light={StaticResource EnabledButtonForegroundLight},
 										Dark={StaticResource EnabledButtonForegroundDark}}" />

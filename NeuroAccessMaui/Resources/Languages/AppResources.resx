@@ -564,4 +564,7 @@
   <data name="PhoneSectionTitle" xml:space="preserve">
     <value>Enter phone number</value>
   </data>
+  <data name="SearchByCountry" xml:space="preserve">
+    <value>Search by country...</value>
+  </data>
 </root>

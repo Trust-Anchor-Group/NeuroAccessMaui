@@ -1051,6 +1051,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Search by country....
+        /// </summary>
+        internal static string SearchByCountry {
+            get {
+                return ResourceManager.GetString("SearchByCountry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Send Code.
         /// </summary>
         internal static string SendCode {
