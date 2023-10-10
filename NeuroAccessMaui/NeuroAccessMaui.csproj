@@ -76,10 +76,13 @@
 		<PackageReference Include="CommunityToolkit.Maui" Version="6.0.0" />
 		<PackageReference Include="CommunityToolkit.Maui.Markup" Version="3.3.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
-		<PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.0-rc.1.23421.29" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0-rc.1.23419.4" />
-		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.0-rc.1.9171" />
-		<PackageReference Include="Mopups" Version="1.1.1" />
+		<PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.0-rc.2.23480.2" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0-rc.2.23479.6" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.0-rc.2.9373" />
+		<PackageReference Include="Mopups" Version="1.2.0" />
+		<PackageReference Include="SkiaSharp" Version="2.88.6" />
+		<PackageReference Include="System.Net.Http" Version="4.3.4" />
+		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
 		<PackageReference Include="Waher.Content" Version="2.6.5" />
 		<PackageReference Include="Waher.Content.Images" Version="2.1.5" />
 		<PackageReference Include="Waher.Content.QR" Version="2.1.0" />
