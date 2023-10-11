@@ -25,19 +25,33 @@
 						HorizontalOptions="End"
 						VerticalOptions="Start"
 						Command="{Binding ChangeLanguageCommand}">
-
 						<VerticalStackLayout>
-							<controls:TintedImage
+							<controls:TintedImage x:Name="InnerImage"
 								Grid.Row="0"
 								HorizontalOptions="Center"
 								Source="language_select_button.png"
 								TintColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
 															Dark={StaticResource PrimaryForegroundDark}}" />
 
-							<Label
+							<Label x:Name="InnerLabel"
 								Grid.Row="1"
 								Text="{Binding SelectedLanguage.MyNativeName}" />
 						</VerticalStackLayout>
+
+						<VisualStateManager.VisualStateGroups>
+							<VisualStateGroup
+								Name="CommonStates">
+								<VisualState
+									Name="Normal" />
+								<VisualState
+									Name="Disabled">
+									<VisualState.Setters>
+										<Setter TargetName="InnerLabel" Property="Label.TextColor" Value="{AppThemeBinding Light={StaticResource DisabledButtonForegroundLight}, Dark={StaticResource DisabledButtonForegroundDark}}" />
+										<Setter TargetName="InnerImage" Property="controls:TintedImage.TintColor" Value="{AppThemeBinding Light={StaticResource DisabledButtonForegroundLight}, Dark={StaticResource DisabledButtonForegroundDark}}" />
+									</VisualState.Setters>
+								</VisualState>
+							</VisualStateGroup>
+						</VisualStateManager.VisualStateGroups>
 					</controls:TemplatedButton>
 
 					<Image

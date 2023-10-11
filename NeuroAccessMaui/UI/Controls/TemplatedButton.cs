@@ -5,7 +5,7 @@ using Waher.Content.Html.Elements;
 namespace NeuroAccessMaui.UI.Controls;
 
 /// <summary>
-/// TemplatedSwitch represents a generalization of <see cref="Button"/> whose appearance is defined by a <see cref="ControlTemplate"/>.
+/// TemplatedButton represents a generalization of a Button whose appearance is defined by a <see cref="ControlTemplate"/>.
 /// </summary>
 public class TemplatedButton : ContentView, IButtonElement
 {
