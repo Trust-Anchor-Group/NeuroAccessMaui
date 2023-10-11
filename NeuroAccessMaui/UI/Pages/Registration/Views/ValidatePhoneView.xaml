@@ -29,7 +29,7 @@
 
 				<Border
 					BackgroundColor="{AppThemeBinding Light={StaticResource NormalEditBackgroundLight},
-											 Dark={StaticResource NormalEditBackgroundDark}}"
+													  Dark={StaticResource NormalEditBackgroundDark}}"
 					Padding="{StaticResource EditMediumMargins}"
 					Stroke="{AppThemeBinding Light={StaticResource NormalEditForegroundLight},
 											 Dark={StaticResource NormalEditForegroundDark}}"
@@ -51,15 +51,12 @@
 							<Label
 								VerticalOptions="Center"
 								Text="+373" />
-							<Image
+
+							<controls:TintedImage
 								VerticalOptions="Center"
-								Source="drop_down_button">
-								<Image.Behaviors>
-									<mct:IconTintColorBehavior
-										TintColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
-																	Dark={StaticResource PrimaryForegroundDark}}" />
-								</Image.Behaviors>
-							</Image>
+								Source="drop_down_button"
+								TintColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
+															Dark={StaticResource PrimaryForegroundDark}}" />
 						</HorizontalStackLayout>
 						<Entry
 							Grid.Column="1"

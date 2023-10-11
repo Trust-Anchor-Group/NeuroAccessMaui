@@ -59,14 +59,10 @@
 								CommandParameter="{Binding Purpose}" />
 						</Border.GestureRecognizers>
 
-						<Image x:Name="InnerButton"
-							Source="info_circle_button.png">
-							<Image.Behaviors>
-								<mct:IconTintColorBehavior
-									TintColor="{AppThemeBinding Light={StaticResource NormalInfoForegroundLight},
-																Dark={StaticResource NormalInfoForegroundDark}}" />
-							</Image.Behaviors>
-						</Image>
+						<controls:TintedImage x:Name="InnerButton"
+							Source="info_circle_button.png"
+							TintColor="{AppThemeBinding Light={StaticResource NormalInfoForegroundLight},
+														Dark={StaticResource NormalInfoForegroundDark}}" />
 					</Border>
 				</Grid>
 
@@ -81,14 +77,7 @@
 								<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SelectedBackgroundLight}, Dark={StaticResource SelectedBackgroundDark}}" />
 								<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource SelectedBackgroundLight}, Dark={StaticResource SelectedBackgroundDark}}" />
 								<Setter TargetName="InnerLabel" Property="Label.TextColor" Value="{AppThemeBinding Light={StaticResource SelectedForegroundLight}, Dark={StaticResource SelectedForegroundDark}}" />
-								<!--
-								<Setter TargetName="InnerButton" Property="ImageButton.Behaviors">
-									<Setter.Value>
-										<mct:IconTintColorBehavior
-											TintColor="{AppThemeBinding Light={StaticResource SelectedForegroundLight},
-																		Dark={StaticResource SelectedForegroundDark}}" />
-									</Setter.Value>
-								</Setter>								-->
+								<Setter TargetName="InnerButton" Property="TintedImage.TintColor"Value="{AppThemeBinding Light={StaticResource SelectedForegroundLight}, Dark={StaticResource SelectedForegroundDark}}" />
 							</VisualState.Setters>
 						</VisualState>
 					</VisualStateGroup>

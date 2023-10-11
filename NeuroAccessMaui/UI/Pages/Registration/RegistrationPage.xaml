@@ -27,16 +27,12 @@
 						Command="{Binding ChangeLanguageCommand}">
 
 						<VerticalStackLayout>
-							<Image
+							<controls:TintedImage
 								Grid.Row="0"
 								HorizontalOptions="Center"
-								Source="language_select_button.png">
-								<Image.Behaviors>
-									<mct:IconTintColorBehavior
-										TintColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
-																	Dark={StaticResource PrimaryForegroundDark}}" />
-								</Image.Behaviors>
-							</Image>
+								Source="language_select_button.png"
+								TintColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
+															Dark={StaticResource PrimaryForegroundDark}}" />
 
 							<Label
 								Grid.Row="1"
