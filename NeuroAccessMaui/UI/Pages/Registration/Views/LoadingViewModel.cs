@@ -9,7 +9,7 @@ namespace NeuroAccessMaui.Pages.Registration.Views;
 
 public partial class LoadingViewModel : BaseRegistrationViewModel
 {
-	public LoadingViewModel() : base()
+	public LoadingViewModel() : base(RegistrationStep.Complete)
 	{
 	}
 
@@ -110,6 +110,7 @@ public partial class LoadingViewModel : BaseRegistrationViewModel
 				// Therefore, do not await this method and do not call it synchronously, even if we are already on the main thread.
 				Task ExecutionTask = Task.Run(() =>
 				{
+					// Don't set the step. The right step will be loaded by TagProfile service
 					WeakReferenceMessenger.Default.Send(new RegistrationPageMessage(ServiceRef.TagProfile.Step));
 				});
 			}

@@ -1,8 +1,14 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.ComponentModel;
+using System.Globalization;
+using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using Mopups.Services;
+using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Data;
+using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.UI.Popups;
 using Waher.Content;
 
@@ -10,10 +16,9 @@ namespace NeuroAccessMaui.Pages.Registration.Views;
 
 public partial class ValidatePhoneViewModel : BaseRegistrationViewModel
 {
-	public ValidatePhoneViewModel()
+	public ValidatePhoneViewModel() : base(RegistrationStep.ValidatePhone)
 	{
 	}
-
 
 	/// <inheritdoc/>
 	protected override async Task OnInitialize() //!!! this should be reworked to use the StateView.StateKey specific
@@ -30,10 +35,39 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel
 
 				if ((Result is Dictionary<string, object> Response) &&
 					Response.TryGetValue("CountryCode", out object? cc) &&
-					Response.TryGetValue("PhoneCode", out object? pc) &&
-					(cc is string CountryCode) && (pc is string PhoneCode))
+					(cc is string CountryCode))
 				{
-					if (ISO_3166_1.TryGetCountryByPhone(CountryCode, PhoneCode, out ISO3166Country? Country))
+					if (ISO_3166_1.TryGetCountryByCode(CountryCode, out ISO3166Country? Country))
+					{
+						this.SelectedCountry = Country;
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
+		}
+	}
+
+	/// <inheritdoc />
+	public override async Task DoAssignProperties()
+	{
+		await base.DoAssignProperties();
+
+		if (string.IsNullOrEmpty(ServiceRef.TagProfile.PhoneNumber))
+		{
+			try
+			{
+				object Result = await InternetContent.PostAsync(
+					new Uri("https://" + Constants.Domains.IdDomain + "/ID/CountryCode.ws"), string.Empty,
+					new KeyValuePair<string, string>("Accept", "application/json"));
+
+				if ((Result is Dictionary<string, object> Response) &&
+					Response.TryGetValue("CountryCode", out object? cc) &&
+					(cc is string CountryCode))
+				{
+					if (ISO_3166_1.TryGetCountryByCode(CountryCode, out ISO3166Country? Country))
 					{
 						this.SelectedCountry = Country;
 					}
@@ -47,18 +81,64 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel
 		else
 		{
 			this.PhoneNumber = ServiceRef.TagProfile.PhoneNumber;
+
+			if (ISO_3166_1.TryGetCountryByPhone(this.PhoneNumber, out ISO3166Country? Country))
+			{
+				this.SelectedCountry = Country;
+			}
+		}
+	}
+
+	protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+	{
+		base.OnPropertyChanged(e);
+
+		if (e.PropertyName == nameof(this.IsBusy))
+		{
+			this.SendCodeCommand.NotifyCanExecuteChanged();
 		}
 	}
 
 	[ObservableProperty]
 	ISO3166Country selectedCountry = ISO_3166_1.DefaultCountry;
 
+	[ObservableProperty]
+	[NotifyCanExecuteChangedFor(nameof(SendCodeCommand))]
+	bool numberIsValid;
+
+	[ObservableProperty]
+	[NotifyPropertyChangedFor(nameof(LocalizedValidationError))]
+	bool typeIsValid;
+
+	[ObservableProperty]
+	[NotifyPropertyChangedFor(nameof(LocalizedValidationError))]
+	bool lengthIsValid;
+
+	public string LocalizedValidationError
+	{
+		get
+		{
+			if (!this.TypeIsValid)
+			{
+				return ServiceRef.Localizer[nameof(AppResources.PhoneValidationDigits)];
+			}
+
+			if (!this.LengthIsValid)
+			{
+				return ServiceRef.Localizer[nameof(AppResources.PhoneValidationLength)];
+			}
+
+			return string.Empty;
+		}
+	}
+
 	/// <summary>
 	/// Phone number
 	/// </summary>
 	[ObservableProperty]
-	[NotifyCanExecuteChangedFor(nameof(SendCodeCommand))]
 	private string phoneNumber = string.Empty;
+
+	public bool CanSendCode => this.NumberIsValid && !this.IsBusy && (this.PhoneNumber.Length > 0);
 
 	[RelayCommand]
 	private async Task SelectPhoneCode()
@@ -67,48 +147,56 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel
 		await MopupService.Instance.PushAsync(Page);
 
 		ISO3166Country? Result = await Page.Result;
+
+		if (Result is not null)
+		{
+			this.SelectedCountry = Result;
+		}
+
 		return;
 	}
 
-	public bool CanSendCode => false;
-
 	[RelayCommand(CanExecute = nameof(CanSendCode))]
-	private void SendCode()
+	private async Task SendCode()
 	{
-		/*
-		if (!this.NetworkService.IsOnline)
-		{
-			await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], LocalizationResourceManager.Current["NetworkSeemsToBeMissing"]);
-			return;
-		}
-
-		this.PhoneNrValidated = false;
-		this.SetIsBusy(this.SendAndVerifyPhoneNrCodeCommand, this.SendPhoneNrCodeCommand, this.VerifyPhoneNrCodeCommand);
+		this.IsBusy = true;
 
 		try
 		{
-			string TrimmedNumber = this.TrimPhoneNumber(this.PhoneNumber);
+			if (!ServiceRef.NetworkService.IsOnline)
+			{
+				await ServiceRef.UiSerializer.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					ServiceRef.Localizer[nameof(AppResources.NetworkSeemsToBeMissing)]);
+				return;
+			}
+
+			string FullPhoneNumber = $"+{this.SelectedCountry.DialCode}{this.PhoneNumber}";
 
 			object SendResult = await InternetContent.PostAsync(
 				new Uri("https://" + Constants.Domains.IdDomain + "/ID/SendVerificationMessage.ws"),
 				new Dictionary<string, object>()
 				{
-						{ "Nr", TrimmedNumber }
+						{ "Nr", FullPhoneNumber }
 				}, new KeyValuePair<string, string>("Accept", "application/json"));
 
 			if (SendResult is Dictionary<string, object> SendResponse &&
-				SendResponse.TryGetValue("Status", out object SendObj) && SendObj is bool SendStatus && SendStatus
-				&& SendResponse.TryGetValue("IsTemporary", out SendObj) && SendObj is bool SentIsTemporary)
+				SendResponse.TryGetValue("Status", out object? Obj) && Obj is bool SendStatus && SendStatus &&
+				SendResponse.TryGetValue("IsTemporary", out Obj) && Obj is bool SendIsTemporary)
 			{
-				if (!string.IsNullOrEmpty(this.TagProfile.PhoneNumber) && !this.TagProfile.TestOtpTimestamp.HasValue && SentIsTemporary)
+				if (!string.IsNullOrEmpty(ServiceRef.TagProfile.PhoneNumber) && (ServiceRef.TagProfile.TestOtpTimestamp is null) && SendIsTemporary)
 				{
-					await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], LocalizationResourceManager.Current["SwitchingToTestPhoneNumberNotAllowed"]);
+					await ServiceRef.UiSerializer.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					ServiceRef.Localizer[nameof(AppResources.SwitchingToTestPhoneNumberNotAllowed)]);
 				}
 				else
 				{
+					/*
 					this.StartTimer("phone");
 
-					Popups.VerifyCode.VerifyCodePage Page = new(LocalizationResourceManager.Current["SendPhoneNumberWarning"]);
+					Popups.VerifyCode.VerifyCodePage Page = new(ServiceRef.Localizer[nameof(AppResources.SendPhoneNumberWarning)]);
+
 					await PopupNavigation.Instance.PushAsync(Page);
 					string Code = await Page.Result;
 
@@ -121,34 +209,35 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel
 							new Uri("https://" + Constants.Domains.IdDomain + "/ID/VerifyNumber.ws"),
 							new Dictionary<string, object>()
 							{
-									{ "Nr", TrimmedNumber },
-									{ "Code", int.Parse(Code) },
-									{ "Test", IsTest }
+								{ "Nr", FullPhoneNumber },
+								{ "Code", int.Parse(Code, NumberStyles.None, CultureInfo.InvariantCulture) },
+								{ "Test", IsTest }
 							}, new KeyValuePair<string, string>("Accept", "application/json"));
 
-						this.PhoneNrVerificationCode = string.Empty;
 
 						if (VerifyResult is Dictionary<string, object> VerifyResponse &&
-							VerifyResponse.TryGetValue("Status", out object VerifyObj) && VerifyObj is bool VerifyStatus && VerifyStatus &&
-							VerifyResponse.TryGetValue("Domain", out VerifyObj) && VerifyObj is string VerifyDomain &&
-							VerifyResponse.TryGetValue("Key", out VerifyObj) && VerifyObj is string VerifyKey &&
-							VerifyResponse.TryGetValue("Secret", out VerifyObj) && VerifyObj is string VerifySecret &&
-							VerifyResponse.TryGetValue("Temporary", out VerifyObj) && VerifyObj is bool VerifyIsTemporary)
+							VerifyResponse.TryGetValue("Status", out Obj) && Obj is bool VerifyStatus && VerifyStatus &&
+							VerifyResponse.TryGetValue("Domain", out Obj) && Obj is string VerifyDomain &&
+							VerifyResponse.TryGetValue("Key", out Obj) && Obj is string VerifyKey &&
+							VerifyResponse.TryGetValue("Secret", out Obj) && Obj is string VerifySecret &&
+							VerifyResponse.TryGetValue("Temporary", out Obj) && Obj is bool VerifyIsTemporary)
 						{
-							this.PhoneNrValidated = true;
+							ServiceRef.TagProfile.SetPhone(FullPhoneNumber);
+							ServiceRef.TagProfile.SetPurpose(IsTest, Purpose);
+							ServiceRef.TagProfile.SetTestOtpTimestamp(VerifyIsTemporary ? DateTime.Now : null);
 
-							this.TagProfile.SetPhone(TrimmedNumber);
-							this.TagProfile.SetPurpose(IsTest, Purpose);
-							this.TagProfile.SetTestOtpTimestamp(VerifyIsTemporary ? DateTime.Now : null);
-
-							if (this.IsRevalidating)
-								await this.TagProfile.RevalidateContactInfo();
+							//!!! if (this.IsRevalidating)
+							if (false)
+							{
+								ServiceRef.TagProfile.RevalidateContactInfo();
+							}
 							else
 							{
 								bool DefaultConnectivity;
+
 								try
 								{
-									(string HostName, int PortNumber, bool IsIpAddress) = await this.NetworkService.LookupXmppHostnameAndPort(VerifyDomain);
+									(string HostName, int PortNumber, bool IsIpAddress) = await ServiceRef.NetworkService.LookupXmppHostnameAndPort(VerifyDomain);
 									DefaultConnectivity = HostName == VerifyDomain && PortNumber == Waher.Networking.XMPP.XmppCredentials.DefaultPort;
 								}
 								catch (Exception)
@@ -156,39 +245,41 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel
 									DefaultConnectivity = false;
 								}
 
-								await this.TagProfile.SetDomain(VerifyDomain, DefaultConnectivity, VerifyKey, VerifySecret);
+								ServiceRef.TagProfile.SetDomain(VerifyDomain, DefaultConnectivity, VerifyKey, VerifySecret);
 							}
 
-							this.OnStepCompleted(EventArgs.Empty);
+							ServiceRef.TagProfile.GoToStep(RegistrationStep.ValidateEmail);
+							WeakReferenceMessenger.Default.Send(new RegistrationPageMessage(ServiceRef.TagProfile.Step));
 						}
 						else
 						{
-							this.PhoneNrValidated = false;
-
-							await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"],
-								LocalizationResourceManager.Current["UnableToVerifyCode"], LocalizationResourceManager.Current["Ok"]);
+							await ServiceRef.UiSerializer.DisplayAlert(
+								ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+								ServiceRef.Localizer[nameof(AppResources.UnableToVerifyCode)],
+								ServiceRef.Localizer[nameof(AppResources.Ok)]);
 						}
 					}
+					*/
 				}
 			}
 			else
 			{
-				this.PhoneNrValidated = false;
-
-				await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], LocalizationResourceManager.Current["SomethingWentWrongWhenSendingPhoneCode"]);
+				await ServiceRef.UiSerializer.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					ServiceRef.Localizer[nameof(AppResources.SomethingWentWrongWhenSendingPhoneCode)]);
 			}
 		}
 		catch (Exception ex)
 		{
-			this.PhoneNrValidated = false;
+			ServiceRef.LogService.LogException(ex);
 
-			this.LogService.LogException(ex);
-			await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], ex.Message, LocalizationResourceManager.Current["Ok"]);
+			await ServiceRef.UiSerializer.DisplayAlert(
+				ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message,
+				ServiceRef.Localizer[nameof(AppResources.Ok)]);
 		}
 		finally
 		{
-			this.BeginInvokeSetIsDone(this.SendAndVerifyPhoneNrCodeCommand, this.SendPhoneNrCodeCommand, this.VerifyPhoneNrCodeCommand);
+			this.IsBusy = false;
 		}
-		*/
 	}
 }

@@ -1,8 +1,10 @@
-﻿namespace NeuroAccessMaui.Pages.Registration.Views;
+﻿using NeuroAccessMaui.Services.Tag;
+
+namespace NeuroAccessMaui.Pages.Registration.Views;
 
 public partial class ValidateEmailViewModel : BaseRegistrationViewModel
 {
-	public ValidateEmailViewModel()
+	public ValidateEmailViewModel() : base(RegistrationStep.ValidateEmail)
 	{
 	}
 }

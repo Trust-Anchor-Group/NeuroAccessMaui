@@ -14,7 +14,7 @@ public partial class SelectPhoneCodePage : IDisposable
 	/// </summary>
 	public Task<ISO3166Country?> Result => this.result.Task;
 
-	public List<ISO3166Country> DialCodes { get; } = new(ISO_3166_1.DialCodes.Values);
+	public List<ISO3166Country> Countries { get; } = new(ISO_3166_1.Countries);
 
 	public SelectPhoneCodePage(ImageSource? Background = null) : base(Background)
 	{
@@ -28,7 +28,7 @@ public partial class SelectPhoneCodePage : IDisposable
 	{
 		if (e.NewTextValue.Length == 0)
 		{
-			this.InnerListView.ItemsSource = this.DialCodes;
+			this.InnerListView.ItemsSource = this.Countries;
 
 			return;
 		}
@@ -44,7 +44,7 @@ public partial class SelectPhoneCodePage : IDisposable
 
 		Task.Run(() =>
 		{
-			IEnumerable<ISO3166Country> DialCodesFiltered = this.DialCodes.Where(el =>
+			IEnumerable<ISO3166Country> CountriesFiltered = this.Countries.Where(el =>
 			{
 				bool Result = el.Name.Contains(e.NewTextValue, StringComparison.OrdinalIgnoreCase) ||
 				string.Equals(el.Alpha2, e.NewTextValue, StringComparison.OrdinalIgnoreCase) ||
@@ -58,7 +58,7 @@ public partial class SelectPhoneCodePage : IDisposable
 			{
 				if (!Token.IsCancellationRequested)
 				{
-					this.InnerListView.ItemsSource = DialCodesFiltered;
+					this.InnerListView.ItemsSource = CountriesFiltered;
 				}
 			});
 		}, Token);
@@ -86,7 +86,7 @@ public partial class SelectPhoneCodePage : IDisposable
 				this.cancellationTokenSource = null;
 			}
 
-			this.DialCodes.Clear();
+			this.Countries.Clear();
 
 			this.isDisposed = true;
 		}

@@ -567,4 +567,31 @@
   <data name="SearchByCountry" xml:space="preserve">
     <value>Search by country...</value>
   </data>
+  <data name="PhoneValidationDigits" xml:space="preserve">
+    <value>Only digits are allowed</value>
+  </data>
+  <data name="PhoneValidationLength" xml:space="preserve">
+    <value>Minimum length 4 is required</value>
+  </data>
+  <data name="NetworkSeemsToBeMissing" xml:space="preserve">
+    <value>Network seems to be missing. Please check your configuration and coverage and try again.</value>
+  </data>
+  <data name="SendEmailWarning" xml:space="preserve">
+    <value>A code has been sent in an e-mail message to your e-mail adderss. If you don't receive it, please also check your spam folder.</value>
+  </data>
+  <data name="SendPhoneNumberWarning" xml:space="preserve">
+    <value>A code has been sent as a text message to your phone.</value>
+  </data>
+  <data name="SwitchingToTestPhoneNumberNotAllowed" xml:space="preserve">
+    <value>Changing the phone number to a test one is not allowed.</value>
+  </data>
+  <data name="UnableToVerifyCode" xml:space="preserve">
+    <value>The code was not correct.</value>
+  </data>
+  <data name="SomethingWentWrongWhenSendingEmailCode" xml:space="preserve">
+    <value>Something went wrong when sending a verification code to this email.</value>
+  </data>
+  <data name="SomethingWentWrongWhenSendingPhoneCode" xml:space="preserve">
+    <value>Something went wrong when sending a verification code to this phone number.</value>
+  </data>
 </root>

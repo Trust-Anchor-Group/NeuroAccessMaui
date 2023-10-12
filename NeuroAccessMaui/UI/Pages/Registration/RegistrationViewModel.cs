@@ -6,6 +6,7 @@ using Mopups.Services;
 using NeuroAccessMaui.UI.Popups;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
+using NeuroAccessMaui.Services.Tag;
 
 namespace NeuroAccessMaui.Pages.Registration;
 
@@ -42,42 +43,29 @@ public partial class RegistrationViewModel : BaseViewModel
 	{
 		foreach (BaseRegistrationView Item in Items)
 		{
-			this.registrationSteps.Add(this.AddChildViewModel((BaseRegistrationViewModel)Item.BindingContext));
+			BaseRegistrationViewModel ViewModel = (BaseRegistrationViewModel)Item.BindingContext;
+			this.registrationSteps[ViewModel.Step] = this.AddChildViewModel(ViewModel);
 		};
-
-		this.CurrentStep = (int)ServiceRef.TagProfile.Step;
 	}
 
-
-	//!!!
-	/*
-	/// <summary>
-	/// See <see cref="CurrentStep"/>
-	/// </summary>
-	public static readonly BindableProperty CurrentStepProperty =
-		BindableProperty.Create(nameof(CurrentStep), typeof(int), typeof(RegistrationViewModel), -1, propertyChanged: OnCurrentStepPropertyChanged);
-
-	static void OnCurrentStepPropertyChanged(BindableObject bindable, object oldValue, object newValue)
-		=> ((RegistrationViewModel)bindable).OnCurrentStepPropertyChanged();
-
-	async void OnCurrentStepPropertyChanged()
+	public Task DoAssignProperties(RegistrationStep Step)
 	{
-		this.UpdateStepVariables();
-
-		await this.RegistrationSteps[this.CurrentStep].DoAssignProperties();
+		this.CurrentStep = Step;
+		return this.registrationSteps[Step].DoAssignProperties();
 	}
-	*/
 
 	/// <summary>
 	/// Gets or sets the current step from the list of <see cref="registrationSteps"/>.
 	/// </summary>
 	[ObservableProperty]
-	int currentStep;
+	[NotifyPropertyChangedFor(nameof(CanGoToPrev))]
+	[NotifyCanExecuteChangedFor(nameof(GoToPrevCommand))]
+	RegistrationStep currentStep = RegistrationStep.Complete;
 
 	/// <summary>
 	/// The list of steps needed to register a digital identity.
 	/// </summary>
-	private readonly Collection<BaseRegistrationViewModel> registrationSteps = new();
+	private readonly SortedDictionary<RegistrationStep, BaseRegistrationViewModel> registrationSteps = new();
 
 	[ObservableProperty]
 	private ObservableCollection<LanguageInfo> languages = new(App.SupportedLanguages);
@@ -88,6 +76,59 @@ public partial class RegistrationViewModel : BaseViewModel
 	public void PropertyChangedEventHandler(object? sender, PropertyChangedEventArgs e)
 	{
 		this.SelectedLanguage = App.SelectedLanguage;
+	}
+
+	public bool CanGoToPrev => (ServiceRef.TagProfile.Step > RegistrationStep.RequestPurpose) && (ServiceRef.TagProfile.Step < RegistrationStep.Complete);
+
+	/// <summary>
+	/// The command to bind to for moving backwards to the previous step in the registration process.
+	/// </summary>
+	[RelayCommand(CanExecute = nameof(CanGoToPrev))]
+	private async Task GoToPrev()
+	{
+		try
+		{
+			//!!!
+			/*
+				switch ((RegistrationStep)this.CurrentStep)
+				{
+					case RegistrationStep.Account:
+						this.RegistrationSteps[this.CurrentStep].ClearStepState();
+						await this.TagProfile.ClearAccount();
+						break;
+
+					case RegistrationStep.RegisterIdentity:
+						this.RegistrationSteps[(int)RegistrationStep.Account].ClearStepState();
+						await this.TagProfile.ClearAccount(false);
+						this.RegistrationSteps[(int)RegistrationStep.RegisterIdentity].ClearStepState();
+						await this.TagProfile.ClearLegalIdentity();
+						await this.TagProfile.InvalidateContactInfo();
+						break;
+
+					case RegistrationStep.ValidateIdentity:
+						RegisterIdentity.RegisterIdentityViewModel vm = (RegisterIdentity.RegisterIdentityViewModel)this.RegistrationSteps[(int)RegistrationStep.RegisterIdentity];
+						vm.PopulateFromTagProfile();
+						this.RegistrationSteps[this.CurrentStep].ClearStepState();
+						await this.TagProfile.ClearIsValidated();
+						break;
+
+					case RegistrationStep.Pin:
+						this.RegistrationSteps[this.CurrentStep].ClearStepState();
+						await this.TagProfile.RevertPinStep();
+						break;
+
+					default: // RegistrationStep.Operator
+						await this.TagProfile.ClearDomain();
+						break;
+				}
+
+				await this.SyncTagProfileStep();
+			*/
+		}
+		catch (Exception ex)
+		{
+			await ServiceRef.UiSerializer.DisplayException(ex);
+		}
 	}
 
 	[RelayCommand]

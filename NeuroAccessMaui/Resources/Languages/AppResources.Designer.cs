@@ -547,6 +547,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Network seems to be missing. Please check your configuration and coverage and try again..
+        /// </summary>
+        internal static string NetworkSeemsToBeMissing {
+            get {
+                return ResourceManager.GetString("NetworkSeemsToBeMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No.
         /// </summary>
         internal static string No {
@@ -732,6 +741,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string PhoneSectionTitle {
             get {
                 return ResourceManager.GetString("PhoneSectionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only digits are allowed.
+        /// </summary>
+        internal static string PhoneValidationDigits {
+            get {
+                return ResourceManager.GetString("PhoneValidationDigits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minimum length 4 is required.
+        /// </summary>
+        internal static string PhoneValidationLength {
+            get {
+                return ResourceManager.GetString("PhoneValidationLength", resourceCulture);
             }
         }
         
@@ -1069,11 +1096,47 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A code has been sent in an e-mail message to your e-mail adderss. If you don&apos;t receive it, please also check your spam folder..
+        /// </summary>
+        internal static string SendEmailWarning {
+            get {
+                return ResourceManager.GetString("SendEmailWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A code has been sent as a text message to your phone..
+        /// </summary>
+        internal static string SendPhoneNumberWarning {
+            get {
+                return ResourceManager.GetString("SendPhoneNumberWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The signature petition was denied..
         /// </summary>
         internal static string SignaturePetitionDenied {
             get {
                 return ResourceManager.GetString("SignaturePetitionDenied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Something went wrong when sending a verification code to this email..
+        /// </summary>
+        internal static string SomethingWentWrongWhenSendingEmailCode {
+            get {
+                return ResourceManager.GetString("SomethingWentWrongWhenSendingEmailCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Something went wrong when sending a verification code to this phone number..
+        /// </summary>
+        internal static string SomethingWentWrongWhenSendingPhoneCode {
+            get {
+                return ResourceManager.GetString("SomethingWentWrongWhenSendingPhoneCode", resourceCulture);
             }
         }
         
@@ -1092,6 +1155,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string SuccessTitle {
             get {
                 return ResourceManager.GetString("SuccessTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Changing the phone number to a test one is not allowed..
+        /// </summary>
+        internal static string SwitchingToTestPhoneNumberNotAllowed {
+            get {
+                return ResourceManager.GetString("SwitchingToTestPhoneNumberNotAllowed", resourceCulture);
             }
         }
         
@@ -1191,6 +1263,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string UnableToOpenLink {
             get {
                 return ResourceManager.GetString("UnableToOpenLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The code was not correct..
+        /// </summary>
+        internal static string UnableToVerifyCode {
+            get {
+                return ResourceManager.GetString("UnableToVerifyCode", resourceCulture);
             }
         }
         

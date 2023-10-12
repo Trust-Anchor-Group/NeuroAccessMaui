@@ -50,20 +50,55 @@
 
 							<Label
 								VerticalOptions="Center"
-								Text="+373" />
+								Text="{Binding SelectedCountry.DialCode}" />
 
 							<controls:TintedImage
 								VerticalOptions="Center"
-								Source="drop_down_button"
+								Source="drop_down_button.png"
 								TintColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
 															Dark={StaticResource PrimaryForegroundDark}}" />
 						</HorizontalStackLayout>
 						<Entry
 							Grid.Column="1"
 							VerticalOptions="Center"
-							Keyboard="Telephone" />
+							Keyboard="Telephone"
+							Text="{Binding PhoneNumber}">
+							<Entry.Behaviors>
+								<mct:MultiValidationBehavior x:Name="PhoneValidator"
+									Flags="ValidateOnValueChanged"
+									IsValid="{Binding NumberIsValid}">
+									<mct:CharactersValidationBehavior
+										IsValid="{Binding TypeIsValid}"
+										RegexPattern="^\d*$" />
+									<mct:TextValidationBehavior
+										IsValid="{Binding LengthIsValid}"
+										RegexPattern="^$|^\d{4,}$" />
+								</mct:MultiValidationBehavior>
+							</Entry.Behaviors>
+						</Entry>
 					</Grid>
 				</Border>
+
+				<Grid
+					HorizontalOptions="Center"
+					ColumnDefinitions="auto,auto"
+					ColumnSpacing="{StaticResource SmallSpacing}"
+					IsVisible="{Binding IsNotValid, Source={x:Reference PhoneValidator}}"
+					RowDefinitions="auto">
+					<controls:TintedImage
+						Grid.Column="0"
+						VerticalOptions="Center"
+						Source="info_circle_error.png"
+						TintColor="{AppThemeBinding Light={StaticResource InvalidatedEditLight},
+													Dark={StaticResource InvalidatedEditDark}}" />
+					<Label
+						Grid.Column="1"
+						VerticalOptions="Center"
+						Text="{Binding LocalizedValidationError}"
+						TextColor="{AppThemeBinding Light={StaticResource InvalidatedEditLight},
+													Dark={StaticResource InvalidatedEditDark}}" />
+				</Grid>
+
 			</VerticalStackLayout>
 		</VerticalStackLayout>
 

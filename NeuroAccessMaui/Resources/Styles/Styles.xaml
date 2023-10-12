@@ -535,8 +535,9 @@
 		<Setter Property="LineBreakMode" Value="TailTruncation" />
 	</Style>
 
-	<Style x:Key="BoldItemTitleLabelStyle" BasedOn="{StaticResource RegularItemTitleLabelStyle}"
+	<Style x:Key="BoldItemTitleLabelStyle"
 		ApplyToDerivedTypes="False"
+		BasedOn="{StaticResource RegularItemTitleLabelStyle}"
 		TargetType="Label">
 		<Setter Property="FontFamily" Value="HaasGroteskBold" />
 	</Style>

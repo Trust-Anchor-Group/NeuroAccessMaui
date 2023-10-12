@@ -590,14 +590,6 @@ public partial class TagProfile : ITagProfile
 		this.DefaultXmppConnectivity = defaultXmppConnectivity;
 		this.ApiKey = Key;
 		this.ApiSecret = Secret;
-
-		//!!!
-		/*
-		if (!string.IsNullOrWhiteSpace(this.Domain) && this.Step == RegistrationStep.ValidateContactInfo)
-		{
-			this.IncrementConfigurationStep();
-		}
-		*/
 	}
 
 	/// <inheritdoc/>
@@ -715,16 +707,16 @@ public partial class TagProfile : ITagProfile
 	}
 
 	/// <inheritdoc/>
-	public void RevokeLegalIdentity(LegalIdentity revokedIdentity)
+	public void RevokeLegalIdentity(LegalIdentity RevokedIdentity)
 	{
-		this.LegalIdentity = revokedIdentity;
+		this.LegalIdentity = RevokedIdentity;
 		//!!! this.DecrementConfigurationStep(RegistrationStep.ValidateContactInfo);
 	}
 
 	/// <inheritdoc/>
-	public void CompromiseLegalIdentity(LegalIdentity compromisedIdentity)
+	public void CompromiseLegalIdentity(LegalIdentity CompromisedIdentity)
 	{
-		this.LegalIdentity = compromisedIdentity;
+		this.LegalIdentity = CompromisedIdentity;
 		//!!! this.DecrementConfigurationStep(RegistrationStep.ValidateContactInfo);
 	}
 
@@ -780,40 +772,37 @@ public partial class TagProfile : ITagProfile
 	{
 		this.IsTest = IsTest;
 		this.Purpose = Purpose;
-
-		//!!! Do the increment
-
 	}
 
 	/// <inheritdoc/>
-	public void SetTestOtpTimestamp(DateTime? timestamp)
+	public void SetTestOtpTimestamp(DateTime? Timestamp)
 	{
-		this.TestOtpTimestamp = timestamp;
+		this.TestOtpTimestamp = Timestamp;
 	}
 
 	/// <inheritdoc/>
-	public void SetLegalJid(string legalJid)
+	public void SetLegalJid(string LegalJid)
 	{
-		this.LegalJid = legalJid;
+		this.LegalJid = LegalJid;
 	}
 
 	/// <inheritdoc/>
-	public void SetFileUploadParameters(string httpFileUploadJid, long maxSize)
+	public void SetFileUploadParameters(string HttpFileUploadJid, long MaxSize)
 	{
-		this.HttpFileUploadJid = httpFileUploadJid;
-		this.HttpFileUploadMaxSize = maxSize;
+		this.HttpFileUploadJid = HttpFileUploadJid;
+		this.HttpFileUploadMaxSize = MaxSize;
 	}
 
 	/// <inheritdoc/>
-	public void SetLogJid(string logJid)
+	public void SetLogJid(string LogJid)
 	{
-		this.LogJid = logJid;
+		this.LogJid = LogJid;
 	}
 
 	#endregion
 
 	/// <inheritdoc/>
-	public string ComputePinHash(string pin)
+	public string ComputePinHash(string Pin)
 	{
 		StringBuilder sb = new();
 
@@ -825,12 +814,12 @@ public partial class TagProfile : ITagProfile
 		sb.Append(':');
 		sb.Append(this.legalJid);
 		sb.Append(':');
-		sb.Append(pin);
+		sb.Append(Pin);
 
 		string s = sb.ToString();
-		byte[] data = Encoding.UTF8.GetBytes(s);
+		byte[] Data = Encoding.UTF8.GetBytes(s);
 
-		return Hashes.ComputeSHA384HashString(data);
+		return Hashes.ComputeSHA384HashString(Data);
 	}
 
 	/// <summary>

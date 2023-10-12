@@ -38,11 +38,7 @@ public static class ISO_3166_1
 
 			code2ByCountry[Country.Name] = Country;
 			countryByCode2[Country.Alpha2] = Country;
-
-			if (Country.DialCode is not null)
-			{
-				countryByPhone[$"{Country.Name}+{Country.DialCode}"] = Country;
-			}
+			countryByPhone[Country.DialCode] = Country;
 		}
 	}
 
@@ -50,12 +46,6 @@ public static class ISO_3166_1
 	/// This collection built from Wikipedia entry on ISO3166-1 on 9th Feb 2016
 	/// </summary>
 	public static ISO3166Country DefaultCountry => defaultCountry;
-
-	/// <summary>
-	/// This collection built from Wikipedia entry on ISO3166-1 on 9th Feb 2016
-	/// </summary>
-	public static SortedDictionary<string, ISO3166Country> DialCodes => countryByPhone;
-
 
 	/// <summary>
 	/// This collection built from Wikipedia entry on ISO3166-1 on 9th Feb 2016
@@ -69,10 +59,10 @@ public static class ISO_3166_1
 	/// <param name="PhoneCode">Phone code.</param>
 	/// <param name="Country">ISO-3166-1 Country, if found.</param>
 	/// <returns>If a country was found matching the country code.</returns>
-	public static bool TryGetCountryByPhone(string CountryCode, string PhoneCode, [NotNullWhen(true)] out ISO3166Country? Country)
+	public static bool TryGetCountryByPhone(string PhoneNumber, [NotNullWhen(true)] out ISO3166Country? Country)
 	{
-		string CountryKey = CountryCode + PhoneCode;
-		return countryByPhone.TryGetValue(CountryKey, out Country);
+		string PhoneCode = string.Empty; //!!! PhoneNumber
+		return countryByPhone.TryGetValue(PhoneCode, out Country);
 	}
 
 	/// <summary>
@@ -119,7 +109,7 @@ public static class ISO_3166_1
 	/// <returns>Country code, or if not found, the original name.</returns>
 	public static string ToCode(string CountryName)
 	{
-		if (TryGetCountryByCode(CountryName, out ISO3166Country? Country))
+		if (TryGetCountryByName(CountryName, out ISO3166Country? Country))
 		{
 			return Country.Alpha2;
 		}

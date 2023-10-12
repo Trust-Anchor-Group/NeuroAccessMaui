@@ -1,8 +1,10 @@
-﻿namespace NeuroAccessMaui.Pages.Registration.Views;
+﻿using NeuroAccessMaui.Services.Tag;
+
+namespace NeuroAccessMaui.Pages.Registration.Views;
 
 public partial class DefinePinViewModel : BaseRegistrationViewModel
 {
-	public DefinePinViewModel()
+	public DefinePinViewModel() : base(RegistrationStep.DefinePin)
 	{
 	}
 }

@@ -1,5 +1,4 @@
 using CommunityToolkit.Maui.Layouts;
-using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using NeuroAccessMaui.Services.Tag;
 
@@ -46,13 +45,15 @@ public partial class RegistrationPage
 
 	private async void HandleRegistrationPageMessage(object Recipient, RegistrationPageMessage Message)
 	{
-		if (Message.Step == RegistrationStep.Complete)
+		RegistrationStep NewStep = Message.Step;
+
+		if (NewStep == RegistrationStep.Complete)
 		{
 			await App.SetMainPageAsync();
 			return;
 		}
 
-		string NewState = Message.Step switch
+		string NewState = NewStep switch
 		{
 			RegistrationStep.RequestPurpose => "ChoosePurpose",
 			RegistrationStep.ValidatePhone => "ValidatePhone",
@@ -64,9 +65,15 @@ public partial class RegistrationPage
 			_ => throw new NotImplementedException(),
 		};
 
-		await this.Dispatcher.DispatchAsync(() =>
+		await this.Dispatcher.DispatchAsync(async () =>
 		{
-			StateContainer.ChangeStateWithAnimation(this.GridWithAnimation, NewState, CancellationToken.None);
+			await StateContainer.ChangeStateWithAnimation(this.GridWithAnimation, NewState, CancellationToken.None);
+
+			if (Recipient is RegistrationPage RegistrationPage)
+			{
+				RegistrationViewModel ViewModel = RegistrationPage.ViewModel<RegistrationViewModel>();
+				await ViewModel.DoAssignProperties(NewStep);
+			}
 		});
 	}
 }
