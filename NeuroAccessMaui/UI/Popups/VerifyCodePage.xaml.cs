@@ -1,4 +1,3 @@
-using Mopups.Pages;
 using Mopups.Services;
 
 namespace NeuroAccessMaui.UI.Popups;
@@ -6,7 +5,7 @@ namespace NeuroAccessMaui.UI.Popups;
 /// <summary>
 /// Prompts the user for its PIN
 /// </summary>
-public partial class VerifyCodePage : PopupPage
+public partial class VerifyCodePage
 {
 	private readonly TaskCompletionSource<string?> result = new();
 
@@ -18,7 +17,7 @@ public partial class VerifyCodePage : PopupPage
 	/// <summary>
 	/// Prompts the user for its CODE
 	/// </summary>
-	public VerifyCodePage(string Text)
+	public VerifyCodePage(string Text, ImageSource? Background = null) : base(Background)
 	{
 		this.InitializeComponent();
 		this.BindingContext = this;

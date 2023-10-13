@@ -1,7 +1,7 @@
 ﻿namespace NeuroAccessMaui.UI.Popups;
 
 /// <summary>
-/// Creates a base popup 
+/// Creates a base popup
 /// </summary>
 public partial class BasePopup
 {
