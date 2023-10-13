@@ -15,7 +15,7 @@
 				BackgroundColor="{AppThemeBinding Light={StaticResource SecondaryBackgroundLight},
 												  Dark={StaticResource SecondaryBackgroundDark}}"
 				Padding="{StaticResource SmallMargins}"
-				ColumnDefinitions="30,auto,*"
+				ColumnDefinitions="35,auto,*"
 				ColumnSpacing="{StaticResource SmallSpacing}"
 				RowDefinitions="auto">
 				<Label x:Name="InnerLabel1"
