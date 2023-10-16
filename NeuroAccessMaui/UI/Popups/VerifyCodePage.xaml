@@ -6,6 +6,66 @@
 	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups">
 
+	<VisualElement.Resources>
+		<ResourceDictionary>
+			<Style x:Key="PopupTitleLabelStyle"
+				ApplyToDerivedTypes="False"
+				BasedOn="{StaticResource PageTitleLabelStyle}"
+				TargetType="Label">
+				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SecondaryForegroundLight}, Dark={StaticResource SecondaryForegroundDark}}" />
+				<Setter Property="FontFamily" Value="SpaceGroteskBold" />
+				<Setter Property="FontSize" Value="32" />
+			</Style>
+
+			<Style x:Key="PopupDetailsLabelStyle"
+				ApplyToDerivedTypes="False"
+				TargetType="Label">
+				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SecondaryForegroundLight}, Dark={StaticResource SecondaryForegroundDark}}" />
+			</Style>
+
+			<Style x:Key="PopupSectionTitleLabelStyle"
+				ApplyToDerivedTypes="False"
+				BasedOn="{StaticResource SectionTitleLabelStyle}"
+				TargetType="Label">
+				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SecondaryForegroundLight}, Dark={StaticResource SecondaryForegroundDark}}" />
+			</Style>
+
+			<Style x:Key="PopupOutlinedBorderStyle"
+				ApplyToDerivedTypes="False"
+				TargetType="Border">
+				<Setter Property="Padding" Value="{StaticResource SmallMargins}" />
+				<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource SecondaryForegroundLight}, Dark={StaticResource SecondaryForegroundDark}}" />
+				<Setter Property="StrokeShape">
+					<RoundRectangle
+						CornerRadius="{StaticResource SmallCornerRadius}" />
+				</Setter>
+			</Style>
+
+			<Style x:Key="PopupOutlinedLabelStyle"
+				ApplyToDerivedTypes="False"
+				TargetType="Label">
+				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SecondaryForegroundLight}, Dark={StaticResource SecondaryForegroundDark}}" />
+				<Setter Property="HorizontalOptions" Value="Center" />
+				<Setter Property="HorizontalTextAlignment" Value="Center" />
+				<Setter Property="FontFamily" Value="SpaceGroteskMedium" />
+				<Setter Property="FontSize" Value="24" />
+				<Setter Property="WidthRequest" Value="16" />
+				<Setter Property="VisualStateManager.VisualStateGroups">
+					<VisualStateGroupList>
+						<VisualStateGroup x:Name="CommonStates">
+							<VisualState x:Name="Normal" />
+							<VisualState x:Name="Disabled">
+								<VisualState.Setters>
+									<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource NormalInfoForegroundLight}, Dark={StaticResource NormalInfoForegroundDark}}" />
+								</VisualState.Setters>
+							</VisualState>
+						</VisualStateGroup>
+					</VisualStateGroupList>
+				</Setter>
+			</Style>
+		</ResourceDictionary>
+	</VisualElement.Resources>
+
 	<Grid
 		Style="{StaticResource PopupGridStyle}">
 
@@ -23,17 +83,18 @@
 						Spacing="{StaticResource MediumSpacing}">
 
 						<Label
-							Style="{StaticResource PageTitleLabelStyle}"
+							Style="{StaticResource PopupTitleLabelStyle}"
 							Text="{l:Localize OnboardingVerifyCodePageTitle}" />
 
 						<Label
+							Style="{StaticResource PopupDetailsLabelStyle}"
 							Text="{Binding LocalizedVerifyCodePageDetails}" />
 
 						<VerticalStackLayout
 							Spacing="{StaticResource SmallSpacing}">
 
 							<Label
-								Style="{StaticResource SectionTitleLabelStyle}"
+								Style="{StaticResource PopupSectionTitleLabelStyle}"
 								Text="{l:Localize VerifyCodeSectionTitle}" />
 							<Grid
 								ColumnDefinitions="auto,*,auto,*,auto,*,auto,*,auto,*,auto"
@@ -56,123 +117,50 @@
 
 								<Border
 									Grid.Column="0"
-									Padding="{StaticResource SmallMargins}"
-									Stroke="{AppThemeBinding Light={StaticResource SecondaryForegroundLight},
-															 Dark={StaticResource SecondaryForegroundDark}}">
-									<Border.StrokeShape>
-										<RoundRectangle
-											CornerRadius="{StaticResource SmallCornerRadius}" />
-									</Border.StrokeShape>
+									Style="{StaticResource PopupOutlinedBorderStyle}">
 
 									<Label x:Name="InnerCode1"
-										WidthRequest="16"
-										HorizontalOptions="Center"
-										FontFamily="SpaceGroteskMedium"
-										FontSize="24"
-										HorizontalTextAlignment="Center"
-										Text="0"
-										TextColor="{AppThemeBinding Light={StaticResource SecondaryForegroundLight},
-																	Dark={StaticResource SecondaryForegroundDark}}" />
+										Style="{StaticResource PopupOutlinedLabelStyle}" />
 								</Border>
+
 								<Border
 									Grid.Column="2"
-									Padding="{StaticResource SmallMargins}"
-									Stroke="{AppThemeBinding Light={StaticResource SecondaryForegroundLight},
-															 Dark={StaticResource SecondaryForegroundDark}}">
-									<Border.StrokeShape>
-										<RoundRectangle
-											CornerRadius="{StaticResource SmallCornerRadius}" />
-									</Border.StrokeShape>
+									Style="{StaticResource PopupOutlinedBorderStyle}">
 
 									<Label x:Name="InnerCode2"
-										WidthRequest="16"
-										HorizontalOptions="Center"
-										FontFamily="SpaceGroteskMedium"
-										FontSize="24"
-										HorizontalTextAlignment="Center"
-										Text="0"
-										TextColor="{AppThemeBinding Light={StaticResource SecondaryForegroundLight},
-																	Dark={StaticResource SecondaryForegroundDark}}" />
+										Style="{StaticResource PopupOutlinedLabelStyle}" />
 								</Border>
+
 								<Border
 									Grid.Column="4"
-									Padding="{StaticResource SmallMargins}"
-									Stroke="{AppThemeBinding Light={StaticResource SecondaryForegroundLight},
-															 Dark={StaticResource SecondaryForegroundDark}}">
-									<Border.StrokeShape>
-										<RoundRectangle
-											CornerRadius="{StaticResource SmallCornerRadius}" />
-									</Border.StrokeShape>
+									Style="{StaticResource PopupOutlinedBorderStyle}">
 
 									<Label x:Name="InnerCode3"
-										WidthRequest="16"
-										HorizontalOptions="Center"
-										FontFamily="SpaceGroteskMedium"
-										FontSize="24"
-										HorizontalTextAlignment="Center"
-										Text="0"
-										TextColor="{AppThemeBinding Light={StaticResource SecondaryForegroundLight},
-																	Dark={StaticResource SecondaryForegroundDark}}" />
+										Style="{StaticResource PopupOutlinedLabelStyle}" />
 								</Border>
+
 								<Border
 									Grid.Column="6"
-									Padding="{StaticResource SmallMargins}"
-									Stroke="{AppThemeBinding Light={StaticResource SecondaryForegroundLight},
-															 Dark={StaticResource SecondaryForegroundDark}}">
-									<Border.StrokeShape>
-										<RoundRectangle
-											CornerRadius="{StaticResource SmallCornerRadius}" />
-									</Border.StrokeShape>
+									Style="{StaticResource PopupOutlinedBorderStyle}">
 
 									<Label x:Name="InnerCode4"
-										WidthRequest="16"
-										HorizontalOptions="Center"
-										FontFamily="SpaceGroteskMedium"
-										FontSize="24"
-										HorizontalTextAlignment="Center"
-										Text="0"
-										TextColor="{AppThemeBinding Light={StaticResource SecondaryForegroundLight},
-																	Dark={StaticResource SecondaryForegroundDark}}" />
+										Style="{StaticResource PopupOutlinedLabelStyle}" />
 								</Border>
+
 								<Border
 									Grid.Column="8"
-									Padding="{StaticResource SmallMargins}"
-									Stroke="{AppThemeBinding Light={StaticResource SecondaryForegroundLight},
-															 Dark={StaticResource SecondaryForegroundDark}}">
-									<Border.StrokeShape>
-										<RoundRectangle
-											CornerRadius="{StaticResource SmallCornerRadius}" />
-									</Border.StrokeShape>
+									Style="{StaticResource PopupOutlinedBorderStyle}">
 
 									<Label x:Name="InnerCode5"
-										WidthRequest="16"
-										HorizontalOptions="Center"
-										FontFamily="SpaceGroteskMedium"
-										FontSize="24"
-										HorizontalTextAlignment="Center"
-										Text="0"
-										TextColor="{AppThemeBinding Light={StaticResource SecondaryForegroundLight},
-																	Dark={StaticResource SecondaryForegroundDark}}" />
+										Style="{StaticResource PopupOutlinedLabelStyle}" />
 								</Border>
+
 								<Border
 									Grid.Column="10"
-									Padding="{StaticResource SmallMargins}"
-									Stroke="{AppThemeBinding Light={StaticResource SecondaryForegroundLight},
-															 Dark={StaticResource SecondaryForegroundDark}}">
-									<Border.StrokeShape>
-										<RoundRectangle
-											CornerRadius="{StaticResource SmallCornerRadius}" />
-									</Border.StrokeShape>
+									Style="{StaticResource PopupOutlinedBorderStyle}">
 
 									<Label x:Name="InnerCode6"
-										WidthRequest="16"
-										HorizontalOptions="Center"
-										FontFamily="SpaceGroteskMedium"
-										FontSize="24"
-										HorizontalTextAlignment="Center"
-										Text="0"
-										TextColor="{AppThemeBinding Light={StaticResource SecondaryForegroundLight},
-																	Dark={StaticResource SecondaryForegroundDark}}" />
+										Style="{StaticResource PopupOutlinedLabelStyle}" />
 								</Border>
 							</Grid>
 						</VerticalStackLayout>
@@ -182,7 +170,7 @@
 						ColumnDefinitions="*,auto"
 						ColumnSpacing="{StaticResource MediumSpacing}"
 						RowDefinitions="auto">
-						<controls:FilledButton
+						<controls:OutlinedButton
 							Grid.Column="0"
 							HorizontalOptions="FillAndExpand"
 							Command="{Binding CodeVerification.ResendCodeCommand}"

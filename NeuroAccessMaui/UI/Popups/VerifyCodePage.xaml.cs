@@ -119,7 +119,18 @@ public partial class VerifyCodePage
 
 		for (int i = 0; i < this.innerLabels.Count; i++)
 		{
-			this.innerLabels[i].Text = (NewLength > i) ? NewText[i..(i+1)] : "0";
+			//Label Label = this.innerLabels[i];
+
+			if (NewLength > i)
+			{
+				this.innerLabels[i].Text = NewText[i..(i + 1)];
+				VisualStateManager.GoToState(this.innerLabels[i], VisualStateManager.CommonStates.Normal);
+			}
+			else
+			{
+				this.innerLabels[i].Text = "0\u2060"; // Added a "zero width no-break space" to make the disabled state to work right :)
+				VisualStateManager.GoToState(this.innerLabels[i], VisualStateManager.CommonStates.Disabled);
+			}
 		}
 
 		this.VerifyCommand.NotifyCanExecuteChanged();
