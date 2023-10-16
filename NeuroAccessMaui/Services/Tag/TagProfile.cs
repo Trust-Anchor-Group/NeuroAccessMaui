@@ -584,10 +584,10 @@ public partial class TagProfile : ITagProfile
 	}
 
 	/// <inheritdoc/>
-	public void SetDomain(string domainName, bool defaultXmppConnectivity, string Key, string Secret)
+	public void SetDomain(string DomainName, bool DefaultXmppConnectivity, string Key, string Secret)
 	{
-		this.Domain = domainName;
-		this.DefaultXmppConnectivity = defaultXmppConnectivity;
+		this.Domain = DomainName;
+		this.DefaultXmppConnectivity = DefaultXmppConnectivity;
 		this.ApiKey = Key;
 		this.ApiSecret = Secret;
 	}
@@ -618,21 +618,13 @@ public partial class TagProfile : ITagProfile
 	}
 
 	/// <inheritdoc/>
-	public void SetAccount(string accountName, string clientPasswordHash, string clientPasswordHashMethod)
+	public void SetAccount(string AccountName, string ClientPasswordHash, string ClientPasswordHashMethod)
 	{
-		this.Account = accountName;
-		this.PasswordHash = clientPasswordHash;
-		this.PasswordHashMethod = clientPasswordHashMethod;
+		this.Account = AccountName;
+		this.PasswordHash = ClientPasswordHash;
+		this.PasswordHashMethod = ClientPasswordHashMethod;
 		this.ApiKey = string.Empty;
 		this.ApiSecret = string.Empty;
-
-		//!!!
-		/*
-		if (!string.IsNullOrWhiteSpace(this.Account) && this.Step == RegistrationStep.Account)
-		{
-			this.IncrementConfigurationStep();
-		}
-		*/
 	}
 
 	/// <inheritdoc/>
