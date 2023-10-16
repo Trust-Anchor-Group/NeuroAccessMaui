@@ -606,4 +606,10 @@
   <data name="VerifyCodeSectionTitle" xml:space="preserve">
     <value>Enter verification code</value>
   </data>
+  <data name="EmailSectionTitle" xml:space="preserve">
+    <value>Enter email</value>
+  </data>
+  <data name="EmailValidationFormat" xml:space="preserve">
+    <value>Please enter a valid email</value>
+  </data>
 </root>

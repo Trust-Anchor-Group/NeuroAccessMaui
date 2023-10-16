@@ -2,7 +2,94 @@
 <base:BaseRegistrationView x:Name="ThisPage" x:Class="NeuroAccessMaui.Pages.Registration.Views.ValidateEmailView" x:DataType="viewmodel:ValidateEmailViewModel"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
 	xmlns:base="clr-namespace:NeuroAccessMaui.Pages.Registration"
+	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.Pages.Registration.Views">
-	<ScrollView />
+
+	<VerticalStackLayout
+		Spacing="{StaticResource LargeSpacing}">
+		<VerticalStackLayout
+			Spacing="{StaticResource MediumSpacing}">
+
+			<Label
+				Style="{StaticResource PageTitleLabelStyle}"
+				Text="{l:Localize OnboardingEmailPageTitle}" />
+
+			<Label
+				Text="{l:Localize OnboardingEmailPageDetails}" />
+
+			<VerticalStackLayout
+				Spacing="{StaticResource SmallSpacing}">
+
+				<Label
+					Style="{StaticResource SectionTitleLabelStyle}"
+					Text="{l:Localize EmailSectionTitle}" />
+
+				<Border
+					BackgroundColor="{AppThemeBinding Light={StaticResource NormalEditBackgroundLight},
+													  Dark={StaticResource NormalEditBackgroundDark}}"
+					Padding="{StaticResource EditMediumMargins}"
+					Stroke="{AppThemeBinding Light={StaticResource NormalEditForegroundLight},
+											 Dark={StaticResource NormalEditForegroundDark}}"
+					Style="{StaticResource ItemOuterBorderStyle}">
+
+					<Grid
+						ColumnDefinitions="auto,*"
+						ColumnSpacing="{StaticResource MediumSpacing}"
+						RowDefinitions="auto">
+						<HorizontalStackLayout
+							Grid.Column="0"
+							VerticalOptions="FillAndExpand"
+							Spacing="{StaticResource SmallSpacing}">
+
+							<controls:TintedImage
+								VerticalOptions="Center"
+								Source="email_entry.png"
+								TintColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
+															Dark={StaticResource PrimaryForegroundDark}}" />
+						</HorizontalStackLayout>
+						<Entry
+							Grid.Column="1"
+							VerticalOptions="Center"
+							Keyboard="Email"
+							Text="{Binding EmailText}">
+							<Entry.Behaviors>
+								<mct:TextValidationBehavior x:Name="EmailValidator"
+									Flags="ValidateOnValueChanged"
+									IsValid="{Binding EmailIsValid}"
+									RegexPattern="^$|^[\w\d](\w|\d|[_\.-][\w\d])*@(\w|\d|[\.-][\w\d]+)+$" />
+							</Entry.Behaviors>
+						</Entry>
+					</Grid>
+				</Border>
+
+				<Grid
+					HorizontalOptions="Center"
+					ColumnDefinitions="auto,auto"
+					ColumnSpacing="{StaticResource SmallSpacing}"
+					IsVisible="{Binding IsNotValid, Source={x:Reference EmailValidator}}"
+					RowDefinitions="auto">
+					<controls:TintedImage
+						Grid.Column="0"
+						VerticalOptions="Center"
+						Source="info_circle_error.png"
+						TintColor="{AppThemeBinding Light={StaticResource InvalidatedEditLight},
+													Dark={StaticResource InvalidatedEditDark}}" />
+					<Label
+						Grid.Column="1"
+						VerticalOptions="Center"
+						Text="{Binding LocalizedValidationError}"
+						TextColor="{AppThemeBinding Light={StaticResource InvalidatedEditLight},
+													Dark={StaticResource InvalidatedEditDark}}" />
+				</Grid>
+
+			</VerticalStackLayout>
+		</VerticalStackLayout>
+
+		<controls:FilledButton
+			Command="{Binding SendCodeCommand}"
+			Text="{Binding LocalizedSendCodeText}" />
+	</VerticalStackLayout>
 </base:BaseRegistrationView>

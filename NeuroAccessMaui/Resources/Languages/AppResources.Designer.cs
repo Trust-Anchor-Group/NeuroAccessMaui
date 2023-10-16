@@ -349,6 +349,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enter email.
+        /// </summary>
+        internal static string EmailSectionTitle {
+            get {
+                return ResourceManager.GetString("EmailSectionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a valid email.
+        /// </summary>
+        internal static string EmailValidationFormat {
+            get {
+                return ResourceManager.GetString("EmailValidationFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An error has occurred.
         /// </summary>
         internal static string ErrorTitle {
@@ -1137,15 +1155,6 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string SendEmailWarning {
             get {
                 return ResourceManager.GetString("SendEmailWarning", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A code has been sent as a text message to your phone..
-        /// </summary>
-        internal static string SendPhoneNumberWarning {
-            get {
-                return ResourceManager.GetString("SendPhoneNumberWarning", resourceCulture);
             }
         }
         

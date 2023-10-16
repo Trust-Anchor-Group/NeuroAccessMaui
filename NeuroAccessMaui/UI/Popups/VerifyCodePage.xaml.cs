@@ -7,7 +7,9 @@ namespace NeuroAccessMaui.UI.Popups;
 
 public interface ICodeVerification
 {
-
+	int CountDownSeconds { get; set; }
+	IDispatcherTimer CountDownTimer { get; }
+	IAsyncRelayCommand ResendCodeCommand { get; }
 }
 
 /// <summary>
@@ -15,22 +17,22 @@ public interface ICodeVerification
 /// </summary>
 public partial class VerifyCodePage
 {
-	private readonly ICodeVerification codeVerification;
 	private readonly TaskCompletionSource<string?> result = new();
 	private readonly List<Label> innerLabels;
+	private readonly string phoneOrEmail;
 
 	/// <summary>
 	/// Task waiting for result. null means dialog was closed without providing a CODE.
 	/// </summary>
 	public Task<string?> Result => this.result.Task;
 
-	public string PhoneOrEmail { get; set; }
+	public ICodeVerification CodeVerification { get; }
 
 	public string LocalizedVerifyCodePageDetails
 	{
 		get
 		{
-			return ServiceRef.Localizer[nameof(AppResources.OnboardingVerifyCodePageDetails), this.PhoneOrEmail];
+			return ServiceRef.Localizer[nameof(AppResources.OnboardingVerifyCodePageDetails), this.phoneOrEmail];
 		}
 	}
 
@@ -39,8 +41,8 @@ public partial class VerifyCodePage
 	/// </summary>
 	public VerifyCodePage(ICodeVerification CodeVerification, string PhoneOrEmail, ImageSource? Background = null) : base(Background)
 	{
-		this.codeVerification = CodeVerification;
-		this.PhoneOrEmail = PhoneOrEmail;
+		this.phoneOrEmail = PhoneOrEmail;
+		this.CodeVerification = CodeVerification;
 
 		this.InitializeComponent();
 		this.BindingContext = this;
@@ -68,12 +70,15 @@ public partial class VerifyCodePage
 	{
 		base.OnAppearing();
 
+		this.CodeVerification.CountDownTimer.Tick += this.CountDownEventHandler;
 		this.InnerCodeEntry.Focus();
 	}
 
 	protected override void OnDisappearing()
 	{
+		this.CodeVerification.CountDownTimer.Tick -= this.CountDownEventHandler;
 		this.result.TrySetResult(null);
+
 		base.OnDisappearing();
 	}
 
@@ -86,11 +91,17 @@ public partial class VerifyCodePage
 		await MopupService.Instance.PopAsync();
 	}
 
-	[RelayCommand]
-	public async Task Resend()
+	public string LocalizedResendCodeText
 	{
-		//!!! this.result.TrySetResult(Code);
-		await MopupService.Instance.PopAsync();
+		get
+		{
+			if (this.CodeVerification.CountDownSeconds > 0)
+			{
+				return ServiceRef.Localizer[nameof(AppResources.ResendCodeSeconds), this.CodeVerification.CountDownSeconds];
+			}
+
+			return ServiceRef.Localizer[nameof(AppResources.ResendCode)];
+		}
 	}
 
 	private void InnerCodeEntry_TextChanged(object Sender, TextChangedEventArgs e)
@@ -117,5 +128,10 @@ public partial class VerifyCodePage
 	private void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
 	{
 		this.InnerCodeEntry.Focus();
+	}
+
+	private void CountDownEventHandler(object? sender, EventArgs e)
+	{
+		this.OnPropertyChanged(nameof(this.LocalizedResendCodeText));
 	}
 }

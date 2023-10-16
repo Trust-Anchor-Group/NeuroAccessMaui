@@ -29,9 +29,9 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel, ICodeVe
 
 		if (App.Current is not null)
 		{
-			this.countDownTimer = App.Current.Dispatcher.CreateTimer();
-			this.countDownTimer.Interval = TimeSpan.FromMilliseconds(1000);
-			this.countDownTimer.Tick += this.CountDownEventHandler;
+			this.CountDownTimer = App.Current.Dispatcher.CreateTimer();
+			this.CountDownTimer.Interval = TimeSpan.FromMilliseconds(1000);
+			this.CountDownTimer.Tick += this.CountDownEventHandler;
 		}
 
 		if (string.IsNullOrEmpty(ServiceRef.TagProfile.PhoneNumber))
@@ -64,11 +64,11 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel, ICodeVe
 	{
 		LocalizationManager.Current.PropertyChanged -= this.PropertyChangedEventHandler;
 
-		if (this.countDownTimer is not null)
+		if (this.CountDownTimer is not null)
 		{
-			this.countDownTimer.Stop();
-			this.countDownTimer.Tick -= this.CountDownEventHandler;
-			this.countDownTimer = null;
+			this.CountDownTimer.Stop();
+			this.CountDownTimer.Tick -= this.CountDownEventHandler;
+			this.CountDownTimer = null;
 		}
 
 		await base.OnDispose();
@@ -147,8 +147,10 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel, ICodeVe
 	[ObservableProperty]
 	[NotifyPropertyChangedFor(nameof(LocalizedSendCodeText))]
 	[NotifyCanExecuteChangedFor(nameof(SendCodeCommand))]
+	[NotifyCanExecuteChangedFor(nameof(ResendCodeCommand))]
 	private int countDownSeconds;
 
+	[ObservableProperty]
 	private IDispatcherTimer? countDownTimer;
 
 	public string LocalizedSendCodeText
@@ -191,6 +193,8 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel, ICodeVe
 	public bool CanSendCode => this.NumberIsValid && !this.IsBusy &&
 		(this.PhoneNumber.Length > 0) && (this.CountDownSeconds <= 0);
 
+	public bool CanResendCode => this.CountDownSeconds <= 0;
+
 	[RelayCommand]
 	private async Task SelectPhoneCode()
 	{
@@ -211,6 +215,7 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel, ICodeVe
 	private async Task SendCode()
 	{
 		/*
+		this.StartTimer();
 		VerifyCodePage Page1 = new(this, "+15551234567");
 		await MopupService.Instance.PushAsync(Page1);
 
@@ -343,22 +348,67 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel, ICodeVe
 		}
 	}
 
+	[RelayCommand(CanExecute = nameof(CanResendCode))]
+	private async Task ResendCode()
+	{
+		try
+		{
+			if (!ServiceRef.NetworkService.IsOnline)
+			{
+				await ServiceRef.UiSerializer.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					ServiceRef.Localizer[nameof(AppResources.NetworkSeemsToBeMissing)]);
+				return;
+			}
+
+			//!!! string FullPhoneNumber = $"+{this.SelectedCountry.DialCode}{this.PhoneNumber}";
+			string FullPhoneNumber = "+15551234567";
+
+			object SendResult = await InternetContent.PostAsync(
+				new Uri("https://" + Constants.Domains.IdDomain + "/ID/SendVerificationMessage.ws"),
+				new Dictionary<string, object>()
+				{
+						{ "Nr", FullPhoneNumber }
+				}, new KeyValuePair<string, string>("Accept", "application/json"));
+
+			if (SendResult is Dictionary<string, object> SendResponse &&
+				SendResponse.TryGetValue("Status", out object? Obj) && Obj is bool SendStatus && SendStatus)
+			{
+				this.StartTimer();
+			}
+			else
+			{
+				await ServiceRef.UiSerializer.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					ServiceRef.Localizer[nameof(AppResources.SomethingWentWrongWhenSendingPhoneCode)]);
+			}
+		}
+		catch (Exception ex)
+		{
+			ServiceRef.LogService.LogException(ex);
+
+			await ServiceRef.UiSerializer.DisplayAlert(
+				ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message,
+				ServiceRef.Localizer[nameof(AppResources.Ok)]);
+		}
+	}
+
 	private void StartTimer()
 	{
-		if (this.countDownTimer is not null)
+		if (this.CountDownTimer is not null)
 		{
-			this.CountDownSeconds = 30;
+			this.CountDownSeconds = 5;
 
-			if (!this.countDownTimer.IsRunning)
+			if (!this.CountDownTimer.IsRunning)
 			{
-				this.countDownTimer.Start();
+				this.CountDownTimer.Start();
 			}
 		}
 	}
 
 	private void CountDownEventHandler(object? sender, EventArgs e)
 	{
-		if (this.countDownTimer is not null)
+		if (this.CountDownTimer is not null)
 		{
 			if (this.CountDownSeconds > 0)
 			{
@@ -366,7 +416,7 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel, ICodeVe
 			}
 			else
 			{
-				this.countDownTimer.Stop();
+				this.CountDownTimer.Stop();
 			}
 		}
 	}

@@ -179,14 +179,14 @@
 					</VerticalStackLayout>
 
 					<Grid
-						ColumnDefinitions="*,*"
-						ColumnSpacing="{StaticResource LargeSpacing}"
+						ColumnDefinitions="*,auto"
+						ColumnSpacing="{StaticResource MediumSpacing}"
 						RowDefinitions="auto">
 						<controls:FilledButton
 							Grid.Column="0"
 							HorizontalOptions="FillAndExpand"
-							Command="{Binding ResendCommand}"
-							Text="{l:Localize ResendCode}" />
+							Command="{Binding CodeVerification.ResendCodeCommand}"
+							Text="{Binding LocalizedResendCodeText}" />
 
 						<controls:FilledButton
 							Grid.Column="1"
