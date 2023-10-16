@@ -65,7 +65,7 @@ public partial class RegistrationViewModel : BaseViewModel
 	/// <summary>
 	/// The list of steps needed to register a digital identity.
 	/// </summary>
-	private readonly SortedDictionary<RegistrationStep, BaseRegistrationViewModel> registrationSteps = new();
+	private readonly SortedDictionary<RegistrationStep, BaseRegistrationViewModel> registrationSteps = [];
 
 	[ObservableProperty]
 	private ObservableCollection<LanguageInfo> languages = new(App.SupportedLanguages);

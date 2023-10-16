@@ -22,7 +22,7 @@ public class ISO3166Country(string Name, string Alpha2, string Alpha3,
 /// </summary>
 public static class ISO_3166_1
 {
-	private static ISO3166Country defaultCountry = new("United States of America", "US", "USA", 840, "1", EmojiUtilities.Emoji_flag_us);
+	private static readonly ISO3166Country defaultCountry = new("United States of America", "US", "USA", 840, "1", EmojiUtilities.Emoji_flag_us);
 	private static readonly SortedDictionary<string, ISO3166Country> code2ByCountry = new(StringComparer.InvariantCultureIgnoreCase);
 	private static readonly SortedDictionary<string, ISO3166Country> countryByCode2 = new(StringComparer.InvariantCultureIgnoreCase);
 	private static readonly SortedDictionary<string, ISO3166Country> countryByPhone = new(StringComparer.InvariantCultureIgnoreCase);

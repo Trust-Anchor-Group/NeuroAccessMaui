@@ -12,7 +12,7 @@ public partial class ChoosePurposeView
 		return Create<ChoosePurposeView>();
 	}
 
-	private ChoosePurposeViewModel viewModel;
+	private readonly ChoosePurposeViewModel viewModel;
 
 	public ChoosePurposeView(ChoosePurposeViewModel ViewModel)
 	{
