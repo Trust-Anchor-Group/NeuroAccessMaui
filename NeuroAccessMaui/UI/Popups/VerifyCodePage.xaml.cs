@@ -1,27 +1,60 @@
+using CommunityToolkit.Mvvm.Input;
 using Mopups.Services;
+using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services;
 
 namespace NeuroAccessMaui.UI.Popups;
+
+public interface ICodeVerification
+{
+
+}
 
 /// <summary>
 /// Prompts the user for its PIN
 /// </summary>
 public partial class VerifyCodePage
 {
+	private readonly ICodeVerification codeVerification;
 	private readonly TaskCompletionSource<string?> result = new();
+	private readonly List<Label> innerLabels;
 
 	/// <summary>
 	/// Task waiting for result. null means dialog was closed without providing a CODE.
 	/// </summary>
 	public Task<string?> Result => this.result.Task;
 
+	public string PhoneOrEmail { get; set; }
+
+	public string LocalizedVerifyCodePageDetails
+	{
+		get
+		{
+			return ServiceRef.Localizer[nameof(AppResources.OnboardingVerifyCodePageDetails), this.PhoneOrEmail];
+		}
+	}
+
 	/// <summary>
 	/// Prompts the user for its CODE
 	/// </summary>
-	public VerifyCodePage(string Text, ImageSource? Background = null) : base(Background)
+	public VerifyCodePage(ICodeVerification CodeVerification, string PhoneOrEmail, ImageSource? Background = null) : base(Background)
 	{
+		this.codeVerification = CodeVerification;
+		this.PhoneOrEmail = PhoneOrEmail;
+
 		this.InitializeComponent();
 		this.BindingContext = this;
-		//this.TextLabel.Text = Text;
+
+		this.innerLabels = [
+			this.InnerCode1,
+			this.InnerCode2,
+			this.InnerCode3,
+			this.InnerCode4,
+			this.InnerCode5,
+			this.InnerCode6
+			];
+
+		this.InnerCodeEntry.Text = string.Empty;
 	}
 
 	/// <inheritdoc/>
@@ -34,33 +67,55 @@ public partial class VerifyCodePage
 	protected override void OnAppearing()
 	{
 		base.OnAppearing();
-		//!!! this.Code.Focus();
+
+		this.InnerCodeEntry.Focus();
 	}
 
-	private async void OnEnter(object Sender, EventArgs e)
+	protected override void OnDisappearing()
 	{
-		//!!! await PopupNavigation.Instance.PopAsync();
-		//!!! this.result.TrySetResult(this.Code.Text);
-	}
-
-	private void Code_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-	{
-		//!!! this.EnterButton.IsEnabled = !string.IsNullOrEmpty(this.Code.Text);
-	}
-
-	private void OnCloseButtonTapped(object Sender, EventArgs e)
-	{
-		this.Close();
-	}
-
-	private async void Close()
-	{
-		//!!! await PopupNavigation.Instance.PopAsync();
 		this.result.TrySetResult(null);
+		base.OnDisappearing();
 	}
 
-	private void PopupPage_BackgroundClicked(object sender, EventArgs e)
-	{
+	public bool CanVerify => !string.IsNullOrEmpty(this.InnerCodeEntry.Text) && (this.InnerCodeEntry.Text.Length == this.innerLabels.Count);
 
-    }
+	[RelayCommand(CanExecute = nameof(CanVerify))]
+	public async Task Verify()
+	{
+		this.result.TrySetResult(this.InnerCodeEntry.Text);
+		await MopupService.Instance.PopAsync();
+	}
+
+	[RelayCommand]
+	public async Task Resend()
+	{
+		//!!! this.result.TrySetResult(Code);
+		await MopupService.Instance.PopAsync();
+	}
+
+	private void InnerCodeEntry_TextChanged(object Sender, TextChangedEventArgs e)
+	{
+		string NewText = e.NewTextValue;
+		int NewLength = NewText.Length;
+
+		bool IsValid = (NewLength <= this.innerLabels.Count) || NewText.ToCharArray().All(ch => !"0123456789".Contains(ch));
+
+		if (!IsValid)
+		{
+			this.InnerCodeEntry.Text = e.OldTextValue;
+			return;
+		}
+
+		for (int i = 0; i < this.innerLabels.Count; i++)
+		{
+			this.innerLabels[i].Text = (NewLength > i) ? NewText[i..(i+1)] : "0";
+		}
+
+		this.VerifyCommand.NotifyCanExecuteChanged();
+	}
+
+	private void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
+	{
+		this.InnerCodeEntry.Focus();
+	}
 }

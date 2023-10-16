@@ -673,6 +673,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please enter verification code sent to {0}.
+        /// </summary>
+        internal static string OnboardingVerifyCodePageDetails {
+            get {
+                return ResourceManager.GetString("OnboardingVerifyCodePageDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter code.
+        /// </summary>
+        internal static string OnboardingVerifyCodePageTitle {
+            get {
+                return ResourceManager.GetString("OnboardingVerifyCodePageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open.
         /// </summary>
         internal static string Open {
@@ -1060,11 +1078,20 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Resend Code.
+        ///   Looks up a localized string similar to Resend.
         /// </summary>
         internal static string ResendCode {
             get {
                 return ResourceManager.GetString("ResendCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resend ({0}).
+        /// </summary>
+        internal static string ResendCodeSeconds {
+            get {
+                return ResourceManager.GetString("ResendCodeSeconds", resourceCulture);
             }
         }
         
@@ -1092,6 +1119,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string SendCode {
             get {
                 return ResourceManager.GetString("SendCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send Code ({0}).
+        /// </summary>
+        internal static string SendCodeSeconds {
+            get {
+                return ResourceManager.GetString("SendCodeSeconds", resourceCulture);
             }
         }
         
@@ -1290,6 +1326,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string Verify {
             get {
                 return ResourceManager.GetString("Verify", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter verification code.
+        /// </summary>
+        internal static string VerifyCodeSectionTitle {
+            get {
+                return ResourceManager.GetString("VerifyCodeSectionTitle", resourceCulture);
             }
         }
         

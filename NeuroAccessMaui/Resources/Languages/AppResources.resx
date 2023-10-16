@@ -339,8 +339,14 @@
   <data name="SendCode" xml:space="preserve">
     <value>Send Code</value>
   </data>
+  <data name="SendCodeSeconds" xml:space="preserve">
+    <value>Send Code ({0})</value>
+  </data>
   <data name="ResendCode" xml:space="preserve">
-    <value>Resend Code</value>
+    <value>Resend</value>
+  </data>
+  <data name="ResendCodeSeconds" xml:space="preserve">
+    <value>Resend ({0})</value>
   </data>
   <data name="Verify" xml:space="preserve">
     <value>Verify</value>
@@ -522,6 +528,12 @@
   <data name="OnboardingEmailPageDetails" xml:space="preserve">
     <value>We’ll send you a verification code</value>
   </data>
+  <data name="OnboardingVerifyCodePageTitle" xml:space="preserve">
+    <value>Enter code</value>
+  </data>
+  <data name="OnboardingVerifyCodePageDetails" xml:space="preserve">
+    <value>Please enter verification code sent to {0}</value>
+  </data>
   <data name="OnboardingProviderPageTitle" xml:space="preserve">
     <value>Selected provider</value>
   </data>
@@ -579,9 +591,6 @@
   <data name="SendEmailWarning" xml:space="preserve">
     <value>A code has been sent in an e-mail message to your e-mail adderss. If you don't receive it, please also check your spam folder.</value>
   </data>
-  <data name="SendPhoneNumberWarning" xml:space="preserve">
-    <value>A code has been sent as a text message to your phone.</value>
-  </data>
   <data name="SwitchingToTestPhoneNumberNotAllowed" xml:space="preserve">
     <value>Changing the phone number to a test one is not allowed.</value>
   </data>
@@ -593,5 +602,8 @@
   </data>
   <data name="SomethingWentWrongWhenSendingPhoneCode" xml:space="preserve">
     <value>Something went wrong when sending a verification code to this phone number.</value>
+  </data>
+  <data name="VerifyCodeSectionTitle" xml:space="preserve">
+    <value>Enter verification code</value>
   </data>
 </root>

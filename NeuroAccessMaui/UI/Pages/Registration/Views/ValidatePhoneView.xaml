@@ -104,6 +104,6 @@
 
 		<controls:FilledButton
 			Command="{Binding SendCodeCommand}"
-			Text="{l:Localize SendCode}" />
+			Text="{Binding LocalizedSendCodeText}" />
 	</VerticalStackLayout>
 </base:BaseRegistrationView>

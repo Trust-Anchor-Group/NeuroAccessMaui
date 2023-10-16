@@ -2,9 +2,204 @@
 <viewmodel:BasePopup x:Class="NeuroAccessMaui.UI.Popups.VerifyCodePage" x:DataType="viewmodel:VerifyCodePage"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups">
 
+	<Grid
+		Style="{StaticResource PopupGridStyle}">
+
+		<Border
+			WidthRequest="{Binding ViewWidthRequest}"
+			MaximumHeightRequest="{Binding MaximumViewHeightRequest}"
+			Style="{StaticResource PopupBorderStyle}">
+
+			<ScrollView
+				VerticalOptions="Center">
+				<VerticalStackLayout
+					Spacing="{StaticResource LargeSpacing}">
+
+					<VerticalStackLayout
+						Spacing="{StaticResource MediumSpacing}">
+
+						<Label
+							Style="{StaticResource PageTitleLabelStyle}"
+							Text="{l:Localize OnboardingVerifyCodePageTitle}" />
+
+						<Label
+							Text="{Binding LocalizedVerifyCodePageDetails}" />
+
+						<VerticalStackLayout
+							Spacing="{StaticResource SmallSpacing}">
+
+							<Label
+								Style="{StaticResource SectionTitleLabelStyle}"
+								Text="{l:Localize VerifyCodeSectionTitle}" />
+							<Grid
+								ColumnDefinitions="auto,*,auto,*,auto,*,auto,*,auto,*,auto"
+								ColumnSpacing="0"
+								RowDefinitions="auto">
+								<Grid.GestureRecognizers>
+									<TapGestureRecognizer
+										Tapped="TapGestureRecognizer_Tapped" />
+								</Grid.GestureRecognizers>
+
+								<Entry x:Name="InnerCodeEntry"
+									Grid.ColumnSpan="11"
+									ClearButtonVisibility="Never"
+									InputTransparent="True"
+									IsSpellCheckEnabled="False"
+									IsTextPredictionEnabled="False"
+									Keyboard="Numeric"
+									Opacity="0"
+									TextChanged="InnerCodeEntry_TextChanged" />
+
+								<Border
+									Grid.Column="0"
+									Padding="{StaticResource SmallMargins}"
+									Stroke="{AppThemeBinding Light={StaticResource SecondaryForegroundLight},
+															 Dark={StaticResource SecondaryForegroundDark}}">
+									<Border.StrokeShape>
+										<RoundRectangle
+											CornerRadius="{StaticResource SmallCornerRadius}" />
+									</Border.StrokeShape>
+
+									<Label x:Name="InnerCode1"
+										WidthRequest="16"
+										HorizontalOptions="Center"
+										FontFamily="SpaceGroteskMedium"
+										FontSize="24"
+										HorizontalTextAlignment="Center"
+										Text="0"
+										TextColor="{AppThemeBinding Light={StaticResource SecondaryForegroundLight},
+																	Dark={StaticResource SecondaryForegroundDark}}" />
+								</Border>
+								<Border
+									Grid.Column="2"
+									Padding="{StaticResource SmallMargins}"
+									Stroke="{AppThemeBinding Light={StaticResource SecondaryForegroundLight},
+															 Dark={StaticResource SecondaryForegroundDark}}">
+									<Border.StrokeShape>
+										<RoundRectangle
+											CornerRadius="{StaticResource SmallCornerRadius}" />
+									</Border.StrokeShape>
+
+									<Label x:Name="InnerCode2"
+										WidthRequest="16"
+										HorizontalOptions="Center"
+										FontFamily="SpaceGroteskMedium"
+										FontSize="24"
+										HorizontalTextAlignment="Center"
+										Text="0"
+										TextColor="{AppThemeBinding Light={StaticResource SecondaryForegroundLight},
+																	Dark={StaticResource SecondaryForegroundDark}}" />
+								</Border>
+								<Border
+									Grid.Column="4"
+									Padding="{StaticResource SmallMargins}"
+									Stroke="{AppThemeBinding Light={StaticResource SecondaryForegroundLight},
+															 Dark={StaticResource SecondaryForegroundDark}}">
+									<Border.StrokeShape>
+										<RoundRectangle
+											CornerRadius="{StaticResource SmallCornerRadius}" />
+									</Border.StrokeShape>
+
+									<Label x:Name="InnerCode3"
+										WidthRequest="16"
+										HorizontalOptions="Center"
+										FontFamily="SpaceGroteskMedium"
+										FontSize="24"
+										HorizontalTextAlignment="Center"
+										Text="0"
+										TextColor="{AppThemeBinding Light={StaticResource SecondaryForegroundLight},
+																	Dark={StaticResource SecondaryForegroundDark}}" />
+								</Border>
+								<Border
+									Grid.Column="6"
+									Padding="{StaticResource SmallMargins}"
+									Stroke="{AppThemeBinding Light={StaticResource SecondaryForegroundLight},
+															 Dark={StaticResource SecondaryForegroundDark}}">
+									<Border.StrokeShape>
+										<RoundRectangle
+											CornerRadius="{StaticResource SmallCornerRadius}" />
+									</Border.StrokeShape>
+
+									<Label x:Name="InnerCode4"
+										WidthRequest="16"
+										HorizontalOptions="Center"
+										FontFamily="SpaceGroteskMedium"
+										FontSize="24"
+										HorizontalTextAlignment="Center"
+										Text="0"
+										TextColor="{AppThemeBinding Light={StaticResource SecondaryForegroundLight},
+																	Dark={StaticResource SecondaryForegroundDark}}" />
+								</Border>
+								<Border
+									Grid.Column="8"
+									Padding="{StaticResource SmallMargins}"
+									Stroke="{AppThemeBinding Light={StaticResource SecondaryForegroundLight},
+															 Dark={StaticResource SecondaryForegroundDark}}">
+									<Border.StrokeShape>
+										<RoundRectangle
+											CornerRadius="{StaticResource SmallCornerRadius}" />
+									</Border.StrokeShape>
+
+									<Label x:Name="InnerCode5"
+										WidthRequest="16"
+										HorizontalOptions="Center"
+										FontFamily="SpaceGroteskMedium"
+										FontSize="24"
+										HorizontalTextAlignment="Center"
+										Text="0"
+										TextColor="{AppThemeBinding Light={StaticResource SecondaryForegroundLight},
+																	Dark={StaticResource SecondaryForegroundDark}}" />
+								</Border>
+								<Border
+									Grid.Column="10"
+									Padding="{StaticResource SmallMargins}"
+									Stroke="{AppThemeBinding Light={StaticResource SecondaryForegroundLight},
+															 Dark={StaticResource SecondaryForegroundDark}}">
+									<Border.StrokeShape>
+										<RoundRectangle
+											CornerRadius="{StaticResource SmallCornerRadius}" />
+									</Border.StrokeShape>
+
+									<Label x:Name="InnerCode6"
+										WidthRequest="16"
+										HorizontalOptions="Center"
+										FontFamily="SpaceGroteskMedium"
+										FontSize="24"
+										HorizontalTextAlignment="Center"
+										Text="0"
+										TextColor="{AppThemeBinding Light={StaticResource SecondaryForegroundLight},
+																	Dark={StaticResource SecondaryForegroundDark}}" />
+								</Border>
+							</Grid>
+						</VerticalStackLayout>
+					</VerticalStackLayout>
+
+					<Grid
+						ColumnDefinitions="*,*"
+						ColumnSpacing="{StaticResource LargeSpacing}"
+						RowDefinitions="auto">
+						<controls:FilledButton
+							Grid.Column="0"
+							HorizontalOptions="FillAndExpand"
+							Command="{Binding ResendCommand}"
+							Text="{l:Localize ResendCode}" />
+
+						<controls:FilledButton
+							Grid.Column="1"
+							HorizontalOptions="FillAndExpand"
+							Command="{Binding VerifyCommand}"
+							Text="{l:Localize Verify}" />
+					</Grid>
+				</VerticalStackLayout>
+			</ScrollView>
+		</Border>
+	</Grid>
+
+	<!--
 	<AbsoluteLayout
 		HorizontalOptions="Center"
 		VerticalOptions="Center">
@@ -32,4 +227,5 @@
 			</StackLayout>
 		</Frame>
 	</AbsoluteLayout>
+	-->
 </viewmodel:BasePopup>

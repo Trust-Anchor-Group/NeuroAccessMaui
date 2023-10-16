@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Globalization;
-using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -8,13 +7,14 @@ using Mopups.Services;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Data;
+using NeuroAccessMaui.Services.Localization;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.UI.Popups;
 using Waher.Content;
 
 namespace NeuroAccessMaui.Pages.Registration.Views;
 
-public partial class ValidatePhoneViewModel : BaseRegistrationViewModel
+public partial class ValidatePhoneViewModel : BaseRegistrationViewModel, ICodeVerification
 {
 	public ValidatePhoneViewModel() : base(RegistrationStep.ValidatePhone)
 	{
@@ -24,6 +24,15 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel
 	protected override async Task OnInitialize() //!!! this should be reworked to use the StateView.StateKey specific
 	{
 		await base.OnInitialize();
+
+		LocalizationManager.Current.PropertyChanged += this.PropertyChangedEventHandler;
+
+		if (App.Current is not null)
+		{
+			this.countDownTimer = App.Current.Dispatcher.CreateTimer();
+			this.countDownTimer.Interval = TimeSpan.FromMilliseconds(1000);
+			this.countDownTimer.Tick += this.CountDownEventHandler;
+		}
 
 		if (string.IsNullOrEmpty(ServiceRef.TagProfile.PhoneNumber))
 		{
@@ -48,6 +57,21 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel
 				ServiceRef.LogService.LogException(ex);
 			}
 		}
+	}
+
+	/// <inheritdoc/>
+	protected override async Task OnDispose()
+	{
+		LocalizationManager.Current.PropertyChanged -= this.PropertyChangedEventHandler;
+
+		if (this.countDownTimer is not null)
+		{
+			this.countDownTimer.Stop();
+			this.countDownTimer.Tick -= this.CountDownEventHandler;
+			this.countDownTimer = null;
+		}
+
+		await base.OnDispose();
 	}
 
 	/// <inheritdoc />
@@ -99,6 +123,12 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel
 		}
 	}
 
+	public void PropertyChangedEventHandler(object? sender, PropertyChangedEventArgs e)
+	{
+		this.OnPropertyChanged(nameof(this.LocalizedSendCodeText));
+		this.OnPropertyChanged(nameof(this.LocalizedValidationError));
+	}
+
 	[ObservableProperty]
 	ISO3166Country selectedCountry = ISO_3166_1.DefaultCountry;
 
@@ -113,6 +143,26 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel
 	[ObservableProperty]
 	[NotifyPropertyChangedFor(nameof(LocalizedValidationError))]
 	bool lengthIsValid;
+
+	[ObservableProperty]
+	[NotifyPropertyChangedFor(nameof(LocalizedSendCodeText))]
+	[NotifyCanExecuteChangedFor(nameof(SendCodeCommand))]
+	private int countDownSeconds;
+
+	private IDispatcherTimer? countDownTimer;
+
+	public string LocalizedSendCodeText
+	{
+		get
+		{
+			if (this.CountDownSeconds > 0)
+			{
+				return ServiceRef.Localizer[nameof(AppResources.SendCodeSeconds), this.CountDownSeconds];
+			}
+
+			return ServiceRef.Localizer[nameof(AppResources.SendCode)];
+		}
+	}
 
 	public string LocalizedValidationError
 	{
@@ -138,7 +188,8 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel
 	[ObservableProperty]
 	private string phoneNumber = string.Empty;
 
-	public bool CanSendCode => this.NumberIsValid && !this.IsBusy && (this.PhoneNumber.Length > 0);
+	public bool CanSendCode => this.NumberIsValid && !this.IsBusy &&
+		(this.PhoneNumber.Length > 0) && (this.CountDownSeconds <= 0);
 
 	[RelayCommand]
 	private async Task SelectPhoneCode()
@@ -159,6 +210,12 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel
 	[RelayCommand(CanExecute = nameof(CanSendCode))]
 	private async Task SendCode()
 	{
+		VerifyCodePage Page1 = new(this, "+15551234567");
+		await MopupService.Instance.PushAsync(Page1);
+
+		string? Code1 = await Page1.Result;
+		return;
+
 		this.IsBusy = true;
 
 		try
@@ -171,7 +228,8 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel
 				return;
 			}
 
-			string FullPhoneNumber = $"+{this.SelectedCountry.DialCode}{this.PhoneNumber}";
+			//!!! string FullPhoneNumber = $"+{this.SelectedCountry.DialCode}{this.PhoneNumber}";
+			string FullPhoneNumber = "+15551234567";
 
 			object SendResult = await InternetContent.PostAsync(
 				new Uri("https://" + Constants.Domains.IdDomain + "/ID/SendVerificationMessage.ws"),
@@ -192,18 +250,20 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel
 				}
 				else
 				{
-					/*
-					this.StartTimer("phone");
+					this.StartTimer();
 
-					Popups.VerifyCode.VerifyCodePage Page = new(ServiceRef.Localizer[nameof(AppResources.SendPhoneNumberWarning)]);
+					VerifyCodePage Page = new(this, FullPhoneNumber);
+					await MopupService.Instance.PushAsync(Page);
 
-					await PopupNavigation.Instance.PushAsync(Page);
-					string Code = await Page.Result;
+					string? Code = await Page.Result;
 
 					if (!string.IsNullOrEmpty(Code))
 					{
-						bool IsTest = this.PurposeRequired ? this.IsEducationalPurpose || this.IsExperimentalPurpose : this.TagProfile.IsTest;
-						PurposeUse Purpose = this.PurposeRequired ? (PurposeUse)this.PurposeNr : this.TagProfile.Purpose;
+						//!!! bool IsTest = this.PurposeRequired ? this.IsEducationalPurpose || this.IsExperimentalPurpose : this.TagProfile.IsTest;
+						//!!! PurposeUse Purpose = this.PurposeRequired ? (PurposeUse)this.PurposeNr : this.TagProfile.Purpose;
+
+						PurposeUse Purpose = ServiceRef.TagProfile.Purpose;
+						bool IsTest = (Purpose == PurposeUse.Educational) || (Purpose == PurposeUse.Experimental);
 
 						object VerifyResult = await InternetContent.PostAsync(
 							new Uri("https://" + Constants.Domains.IdDomain + "/ID/VerifyNumber.ws"),
@@ -259,7 +319,6 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel
 								ServiceRef.Localizer[nameof(AppResources.Ok)]);
 						}
 					}
-					*/
 				}
 			}
 			else
@@ -280,6 +339,34 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel
 		finally
 		{
 			this.IsBusy = false;
+		}
+	}
+
+	private void StartTimer()
+	{
+		if (this.countDownTimer is not null)
+		{
+			this.CountDownSeconds = 30;
+
+			if (!this.countDownTimer.IsRunning)
+			{
+				this.countDownTimer.Start();
+			}
+		}
+	}
+
+	private void CountDownEventHandler(object? sender, EventArgs e)
+	{
+		if (this.countDownTimer is not null)
+		{
+			if (this.CountDownSeconds > 0)
+			{
+				this.CountDownSeconds--;
+			}
+			else
+			{
+				this.countDownTimer.Stop();
+			}
 		}
 	}
 }
