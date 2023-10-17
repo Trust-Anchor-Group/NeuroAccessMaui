@@ -46,8 +46,8 @@
 								<VisualState
 									Name="Disabled">
 									<VisualState.Setters>
-										<Setter TargetName="InnerLabel" Property="Label.TextColor" Value="{AppThemeBinding Light={StaticResource DisabledButtonForegroundLight}, Dark={StaticResource DisabledButtonForegroundDark}}" />
-										<Setter TargetName="InnerImage" Property="controls:TintedImage.TintColor" Value="{AppThemeBinding Light={StaticResource DisabledButtonForegroundLight}, Dark={StaticResource DisabledButtonForegroundDark}}" />
+										<Setter TargetName="InnerLabel" Property="Label.TextColor" Value="{AppThemeBinding Light={StaticResource DisabledFilledButtonForegroundLight}, Dark={StaticResource DisabledFilledButtonForegroundDark}}" />
+										<Setter TargetName="InnerImage" Property="controls:TintedImage.TintColor" Value="{AppThemeBinding Light={StaticResource DisabledFilledButtonForegroundLight}, Dark={StaticResource DisabledFilledButtonForegroundDark}}" />
 									</VisualState.Setters>
 								</VisualState>
 							</VisualStateGroup>

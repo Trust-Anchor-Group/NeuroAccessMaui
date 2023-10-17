@@ -7,16 +7,16 @@
 	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
 
 	<Border
-		BackgroundColor="{AppThemeBinding Light={StaticResource EnabledButtonBackgroundLight},
-										  Dark={StaticResource EnabledButtonBackgroundDark}}"
+		BackgroundColor="{AppThemeBinding Light={StaticResource EnabledFilledButtonBackgroundLight},
+										  Dark={StaticResource EnabledFilledButtonBackgroundDark}}"
 		Style="{StaticResource MediumButtonBorderStyle}">
 		<Label x:Name="InnerLabel"
 			HorizontalOptions="Center"
 			VerticalOptions="FillAndExpand"
 			Style="{StaticResource BoldItemTitleLabelStyle}"
 			Text="{Binding Text, Source={x:Reference ThisPage}}"
-			TextColor="{AppThemeBinding Light={StaticResource EnabledButtonForegroundLight},
-										Dark={StaticResource EnabledButtonForegroundDark}}" />
+			TextColor="{AppThemeBinding Light={StaticResource EnabledFilledButtonForegroundLight},
+										Dark={StaticResource EnabledFilledButtonForegroundDark}}" />
 
 		<VisualStateManager.VisualStateGroups>
 			<VisualStateGroupList>
@@ -24,8 +24,8 @@
 					<VisualState x:Name="Normal" />
 					<VisualState x:Name="Disabled">
 						<VisualState.Setters>
-							<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource DisabledButtonBackgroundLight}, Dark={StaticResource DisabledButtonBackgroundDark}}" />
-							<Setter TargetName="InnerLabel" Property="Label.TextColor" Value="{AppThemeBinding Light={StaticResource DisabledButtonForegroundLight}, Dark={StaticResource DisabledButtonForegroundDark}}" />
+							<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource DisabledFilledButtonBackgroundLight}, Dark={StaticResource DisabledFilledButtonBackgroundDark}}" />
+							<Setter TargetName="InnerLabel" Property="Label.TextColor" Value="{AppThemeBinding Light={StaticResource DisabledFilledButtonForegroundLight}, Dark={StaticResource DisabledFilledButtonForegroundDark}}" />
 						</VisualState.Setters>
 					</VisualState>
 				</VisualStateGroup>
