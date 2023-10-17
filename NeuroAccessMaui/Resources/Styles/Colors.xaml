@@ -42,15 +42,15 @@
 	<Color x:Key="DisabledFilledButtonForegroundDark">#666667</Color>
 
 	<!-- Outlined Buttons -->
-	<Color x:Key="EnabledOutlinedButtonBackgroundLight">#F5F6F7</Color>
+	<Color x:Key="EnabledOutlinedButtonBackgroundLight">Transparent</Color>
 	<Color x:Key="EnabledOutlinedButtonForegroundLight">#181F25</Color>
-	<Color x:Key="DisabledOutlinedButtonBackgroundLight">#F5F6F7</Color>
+	<Color x:Key="DisabledOutlinedButtonBackgroundLight">Transparent</Color>
 	<Color x:Key="DisabledOutlinedButtonForegroundLight">#878A8E</Color>
 
-	<Color x:Key="EnabledOutlinedButtonBackgroundDark">#3E3E40</Color>
-	<Color x:Key="EnabledOutlinedButtonForegroundDark">#EBEBEC</Color>
-	<Color x:Key="DisabledOutlinedButtonBackgroundDark">#3E3E40</Color>
-	<Color x:Key="DisabledOutlinedButtonForegroundDark">#878A8E</Color>
+	<Color x:Key="EnabledOutlinedButtonBackgroundDark">Transparent</Color>
+	<Color x:Key="EnabledOutlinedButtonForegroundDark">#E7E7E7</Color>
+	<Color x:Key="DisabledOutlinedButtonBackgroundDark">Transparent</Color>
+	<Color x:Key="DisabledOutlinedButtonForegroundDark">#5B5B5C</Color>
 
 	<!-- Edits -->
 	<Color x:Key="NormalEditBackgroundLight">#F5F6F7</Color>
