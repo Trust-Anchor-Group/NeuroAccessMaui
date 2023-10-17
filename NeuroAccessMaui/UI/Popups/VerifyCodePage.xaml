@@ -76,10 +76,28 @@
 
 			<ScrollView
 				VerticalOptions="Center">
-				<VerticalStackLayout
-					Spacing="{StaticResource LargeSpacing}">
+				<Grid
+					ColumnDefinitions="*"
+					RowDefinitions="auto,auto"
+					RowSpacing="{StaticResource LargeSpacing}">
+
+					<Entry x:Name="InnerCodeEntry"
+						Grid.Row="0"
+						Grid.RowSpan="2"
+						HorizontalOptions="FillAndExpand"
+						VerticalOptions="FillAndExpand"
+						ClearButtonVisibility="Never"
+						HorizontalTextAlignment="Center"
+						InputTransparent="True"
+						IsSpellCheckEnabled="False"
+						IsTextPredictionEnabled="False"
+						Keyboard="Numeric"
+						Opacity="0"
+						TextChanged="InnerCodeEntry_TextChanged"
+						VerticalTextAlignment="End" />
 
 					<VerticalStackLayout
+						Grid.Row="0"
 						Spacing="{StaticResource MediumSpacing}">
 
 						<Label
@@ -104,16 +122,6 @@
 									<TapGestureRecognizer
 										Tapped="TapGestureRecognizer_Tapped" />
 								</Grid.GestureRecognizers>
-
-								<Entry x:Name="InnerCodeEntry"
-									Grid.ColumnSpan="11"
-									ClearButtonVisibility="Never"
-									InputTransparent="True"
-									IsSpellCheckEnabled="False"
-									IsTextPredictionEnabled="False"
-									Keyboard="Numeric"
-									Opacity="0"
-									TextChanged="InnerCodeEntry_TextChanged" />
 
 								<Border
 									Grid.Column="0"
@@ -167,6 +175,7 @@
 					</VerticalStackLayout>
 
 					<Grid
+						Grid.Row="1"
 						ColumnDefinitions="*,auto"
 						ColumnSpacing="{StaticResource MediumSpacing}"
 						RowDefinitions="auto">
@@ -182,7 +191,7 @@
 							Command="{Binding VerifyCommand}"
 							Text="{l:Localize Verify}" />
 					</Grid>
-				</VerticalStackLayout>
+				</Grid>
 			</ScrollView>
 		</Border>
 	</Grid>
