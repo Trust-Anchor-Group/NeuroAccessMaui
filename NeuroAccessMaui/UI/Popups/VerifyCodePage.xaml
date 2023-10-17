@@ -76,28 +76,10 @@
 
 			<ScrollView
 				VerticalOptions="Center">
-				<Grid
-					ColumnDefinitions="*"
-					RowDefinitions="auto,auto"
-					RowSpacing="{StaticResource LargeSpacing}">
-
-					<Entry x:Name="InnerCodeEntry"
-						Grid.Row="0"
-						Grid.RowSpan="2"
-						HorizontalOptions="FillAndExpand"
-						VerticalOptions="FillAndExpand"
-						ClearButtonVisibility="Never"
-						HorizontalTextAlignment="Center"
-						InputTransparent="True"
-						IsSpellCheckEnabled="False"
-						IsTextPredictionEnabled="False"
-						Keyboard="Numeric"
-						Opacity="0"
-						TextChanged="InnerCodeEntry_TextChanged"
-						VerticalTextAlignment="End" />
+				<VerticalStackLayout
+					Spacing="{StaticResource LargeSpacing}">
 
 					<VerticalStackLayout
-						Grid.Row="0"
 						Spacing="{StaticResource MediumSpacing}">
 
 						<Label
@@ -175,10 +157,26 @@
 					</VerticalStackLayout>
 
 					<Grid
-						Grid.Row="1"
 						ColumnDefinitions="*,auto"
 						ColumnSpacing="{StaticResource MediumSpacing}"
 						RowDefinitions="auto">
+
+						<!--  The entry is sized over the buttons below so they will be shown on a small device when the entry is focused  -->
+						<!--  The entry is hidden and input transparent, the grid abbove will respond to the tap gesture  -->
+						<Entry x:Name="InnerCodeEntry"
+							Grid.ColumnSpan="2"
+							HorizontalOptions="Fill"
+							VerticalOptions="Fill"
+							ClearButtonVisibility="Never"
+							HorizontalTextAlignment="Center"
+							InputTransparent="True"
+							IsSpellCheckEnabled="False"
+							IsTextPredictionEnabled="False"
+							Keyboard="Numeric"
+							Opacity="0"
+							TextChanged="InnerCodeEntry_TextChanged"
+							VerticalTextAlignment="End" />
+
 						<controls:OutlinedButton
 							Grid.Column="0"
 							HorizontalOptions="FillAndExpand"
@@ -191,7 +189,7 @@
 							Command="{Binding VerifyCommand}"
 							Text="{l:Localize Verify}" />
 					</Grid>
-				</Grid>
+				</VerticalStackLayout>
 			</ScrollView>
 		</Border>
 	</Grid>
