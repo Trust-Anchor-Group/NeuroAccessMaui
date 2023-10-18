@@ -182,7 +182,7 @@ public partial class ValidateEmailViewModel : BaseRegistrationViewModel, ICodeVe
 						VerifyResponse.TryGetValue("Status", out Obj) && Obj is bool VerifyStatus && VerifyStatus)
 					{
 						ServiceRef.TagProfile.SetEMail(this.EmailText);
-						ServiceRef.TagProfile.GoToStep(RegistrationStep.CreateAccount);
+						ServiceRef.TagProfile.GoToStep(RegistrationStep.ChooseProvider);
 
 						WeakReferenceMessenger.Default.Send(new RegistrationPageMessage(ServiceRef.TagProfile.Step));
 					}

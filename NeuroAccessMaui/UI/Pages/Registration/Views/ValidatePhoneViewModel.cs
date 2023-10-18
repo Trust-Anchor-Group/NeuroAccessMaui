@@ -214,14 +214,14 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel, ICodeVe
 	[RelayCommand(CanExecute = nameof(CanSendCode))]
 	private async Task SendCode()
 	{
-		/*
+/*
 		this.StartTimer();
 		VerifyCodePage Page1 = new(this, "+15551234567");
 		await MopupService.Instance.PushAsync(Page1);
 
 		string? Code1 = await Page1.Result;
 		return;
-		*/
+*/
 		this.IsBusy = true;
 
 		try
@@ -397,7 +397,7 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel, ICodeVe
 	{
 		if (this.CountDownTimer is not null)
 		{
-			this.CountDownSeconds = 5;
+			this.CountDownSeconds = 30;
 
 			if (!this.CountDownTimer.IsRunning)
 			{
