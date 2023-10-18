@@ -1,4 +1,4 @@
-﻿namespace NeuroAccessMaui.Pages.Main.Security;
+﻿namespace NeuroAccessMaui.UI.Pages.Main.Security;
 
 /// <summary>
 /// A page ...

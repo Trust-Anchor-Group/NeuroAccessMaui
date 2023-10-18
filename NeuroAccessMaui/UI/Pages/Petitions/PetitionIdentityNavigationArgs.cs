@@ -1,7 +1,7 @@
 ﻿using NeuroAccessMaui.Services.Navigation;
 using Waher.Networking.XMPP.Contracts;
 
-namespace NeuroAccessMaui.Pages.Petitions;
+namespace NeuroAccessMaui.UI.Pages.Petitions;
 
 /// <summary>
 /// Holds navigation parameters specific to views displaying a petition of a legal identity.

@@ -2,7 +2,7 @@
 using NeuroAccessMaui.Services.Xmpp;
 using Waher.Networking.XMPP.Contracts;
 
-namespace NeuroAccessMaui.Pages.Registration;
+namespace NeuroAccessMaui.UI.Pages.Registration;
 
 /// <summary>
 /// The data model for registering an identity.

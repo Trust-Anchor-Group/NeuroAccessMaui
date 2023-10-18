@@ -1,4 +1,4 @@
-﻿namespace NeuroAccessMaui.Pages.Registration;
+﻿namespace NeuroAccessMaui.UI.Pages.Registration;
 
 /// <summary>
 /// A base class view for all registration steps views.

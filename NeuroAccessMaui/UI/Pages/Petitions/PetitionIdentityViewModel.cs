@@ -9,7 +9,7 @@ using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;
 
-namespace NeuroAccessMaui.Pages.Petitions;
+namespace NeuroAccessMaui.UI.Pages.Petitions;
 
 /// <summary>
 /// The view model to bind to when displaying petitioning of an identity in a view or page.

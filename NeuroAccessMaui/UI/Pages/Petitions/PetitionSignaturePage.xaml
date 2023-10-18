@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<base:BaseContentPage x:Name="ThisPage" x:Class="NeuroAccessMaui.Pages.Petitions.PetitionSignaturePage" x:DataType="viewmodel:PetitionSignatureViewModel"
+<base:BaseContentPage x:Name="ThisPage" x:Class="NeuroAccessMaui.UI.Pages.Petitions.PetitionSignaturePage" x:DataType="viewmodel:PetitionSignatureViewModel"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-	xmlns:base="clr-namespace:NeuroAccessMaui.Pages"
+	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
 	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 	xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
-	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.Pages.Petitions">
+	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Petitions">
 
 	<Grid />
 </base:BaseContentPage>

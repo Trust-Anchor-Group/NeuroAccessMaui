@@ -2,7 +2,7 @@ using CommunityToolkit.Maui.Layouts;
 using CommunityToolkit.Mvvm.Messaging;
 using NeuroAccessMaui.Services.Tag;
 
-namespace NeuroAccessMaui.Pages.Registration;
+namespace NeuroAccessMaui.UI.Pages.Registration;
 
 public class RegistrationPageMessage(RegistrationStep Step)
 {

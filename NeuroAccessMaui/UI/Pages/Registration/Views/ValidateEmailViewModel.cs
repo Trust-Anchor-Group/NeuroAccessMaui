@@ -11,7 +11,7 @@ using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.UI.Popups;
 using Waher.Content;
 
-namespace NeuroAccessMaui.Pages.Registration.Views;
+namespace NeuroAccessMaui.UI.Pages.Registration.Views;
 
 public partial class ValidateEmailViewModel : BaseRegistrationViewModel, ICodeVerification
 {

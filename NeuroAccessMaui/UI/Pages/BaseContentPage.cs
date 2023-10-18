@@ -1,12 +1,12 @@
 using System.Globalization;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
-using NeuroAccessMaui.Pages.Registration;
+using NeuroAccessMaui.UI.Pages.Registration;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using Waher.Events;
 
-namespace NeuroAccessMaui.Pages;
+namespace NeuroAccessMaui.UI.Pages;
 
 public abstract class BaseContentPage : ContentPage
 {

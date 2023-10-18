@@ -7,7 +7,7 @@ using NeuroAccessMaui.Services.Data;
 using NeuroAccessMaui.Services.UI.Photos;
 using Waher.Networking.XMPP.Contracts;
 
-namespace NeuroAccessMaui.Pages.Petitions;
+namespace NeuroAccessMaui.UI.Pages.Petitions;
 
 /// <summary>
 /// The view model to bind to when displaying petitioning of a signature in a view or page.

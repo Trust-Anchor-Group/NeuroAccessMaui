@@ -1,6 +1,6 @@
 using NeuroAccessMaui.Services;
 
-namespace NeuroAccessMaui.Pages;
+namespace NeuroAccessMaui.UI.Pages;
 
 public abstract class BaseContentView : ContentView
 {

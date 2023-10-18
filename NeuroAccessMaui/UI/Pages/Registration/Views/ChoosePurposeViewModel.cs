@@ -9,7 +9,7 @@ using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
 using NeuroAccessMaui.Services.Tag;
 
-namespace NeuroAccessMaui.Pages.Registration.Views;
+namespace NeuroAccessMaui.UI.Pages.Registration.Views;
 
 public partial class ChoosePurposeViewModel : BaseRegistrationViewModel
 {

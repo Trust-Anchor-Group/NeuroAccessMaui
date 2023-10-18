@@ -1,10 +1,10 @@
 ﻿using CommunityToolkit.Maui;
-using NeuroAccessMaui.Pages.Identity;
-using NeuroAccessMaui.Pages.Main;
-using NeuroAccessMaui.Pages.Main.Security;
-using NeuroAccessMaui.Pages.Petitions;
-using NeuroAccessMaui.Pages.Registration;
-using NeuroAccessMaui.Pages.Registration.Views;
+using NeuroAccessMaui.UI.Pages.Identity;
+using NeuroAccessMaui.UI.Pages.Main;
+using NeuroAccessMaui.UI.Pages.Main.Security;
+using NeuroAccessMaui.UI.Pages.Petitions;
+using NeuroAccessMaui.UI.Pages.Registration;
+using NeuroAccessMaui.UI.Pages.Registration.Views;
 using NeuroAccessMaui.UI.Popups;
 using NeuroAccessMaui.UI.Popups.Pin;
 

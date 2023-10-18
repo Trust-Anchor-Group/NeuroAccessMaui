@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace NeuroAccessMaui.Pages;
+namespace NeuroAccessMaui.UI.Pages;
 
 /// <summary>
 /// A base class for all view models, inheriting from the <see cref="BindableObject"/>.

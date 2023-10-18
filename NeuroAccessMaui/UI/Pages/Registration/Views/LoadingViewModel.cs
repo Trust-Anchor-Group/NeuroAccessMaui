@@ -5,7 +5,7 @@ using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Tag;
 using Waher.Networking.XMPP;
 
-namespace NeuroAccessMaui.Pages.Registration.Views;
+namespace NeuroAccessMaui.UI.Pages.Registration.Views;
 
 public partial class LoadingViewModel : BaseRegistrationViewModel
 {

@@ -1,4 +1,4 @@
-﻿namespace NeuroAccessMaui.Pages.Petitions;
+﻿namespace NeuroAccessMaui.UI.Pages.Petitions;
 
 /// <summary>
 /// A page to display when the user is asked to petition a signature.

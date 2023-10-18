@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 using System.Xml;
-using NeuroAccessMaui.Pages.Registration;
+using NeuroAccessMaui.UI.Pages.Registration;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.HttpFileUpload;

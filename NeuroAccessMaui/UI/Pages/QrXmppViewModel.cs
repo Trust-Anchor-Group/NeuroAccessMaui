@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace NeuroAccessMaui.Pages;
+namespace NeuroAccessMaui.UI.Pages;
 
 /// <summary>
 /// A view model that holds the XMPP state.

@@ -1,7 +1,7 @@
 ﻿using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Tag;
 
-namespace NeuroAccessMaui.Pages.Registration;
+namespace NeuroAccessMaui.UI.Pages.Registration;
 
 /// <summary>
 /// A base class for all view models that handle any part of the registration flow.

@@ -1,8 +1,8 @@
 ﻿using Microsoft.Maui.Controls.Internals;
 using Mopups.Services;
 using NeuroAccessMaui.Extensions;
-using NeuroAccessMaui.Pages;
-using NeuroAccessMaui.Pages.Main;
+using NeuroAccessMaui.UI.Pages;
+using NeuroAccessMaui.UI.Pages.Main;
 using NeuroAccessMaui.UI.Popups.Pin;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;

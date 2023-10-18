@@ -1,5 +1,5 @@
 ﻿using NeuroAccessMaui.Extensions;
-using NeuroAccessMaui.Pages;
+using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.Services.AttachmentCache;
 using SkiaSharp;
 using System.Collections.ObjectModel;

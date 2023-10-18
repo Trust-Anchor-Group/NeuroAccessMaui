@@ -1,4 +1,4 @@
-﻿namespace NeuroAccessMaui.Pages;
+﻿namespace NeuroAccessMaui.UI.Pages;
 
 /// <summary>
 /// Interface for linkable views.

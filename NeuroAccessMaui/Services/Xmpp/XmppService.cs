@@ -1,5 +1,5 @@
 ﻿using NeuroAccessMaui.Extensions;
-using NeuroAccessMaui.Pages.Registration;
+using NeuroAccessMaui.UI.Pages.Registration;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Tag;
 using System.Globalization;

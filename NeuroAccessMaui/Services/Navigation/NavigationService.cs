@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using NeuroAccessMaui.Pages;
+using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.Resources.Languages;
 using Waher.Events;
 using Waher.Runtime.Inventory;

@@ -8,7 +8,7 @@ using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
 using NeuroAccessMaui.Services.Tag;
 
-namespace NeuroAccessMaui.Pages.Registration;
+namespace NeuroAccessMaui.UI.Pages.Registration;
 
 public partial class RegistrationViewModel : BaseViewModel
 {

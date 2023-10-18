@@ -2,7 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services;
 
-namespace NeuroAccessMaui.Pages.Main;
+namespace NeuroAccessMaui.UI.Pages.Main;
 
 /// <summary>
 /// A page which is displayed when an unexpected exception is encountered during the application startup.

@@ -3,7 +3,7 @@ using Mopups.Services;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.UI.Popups;
 
-namespace NeuroAccessMaui.Pages.Registration.Views;
+namespace NeuroAccessMaui.UI.Pages.Registration.Views;
 
 public partial class ChoosePurposeView
 {

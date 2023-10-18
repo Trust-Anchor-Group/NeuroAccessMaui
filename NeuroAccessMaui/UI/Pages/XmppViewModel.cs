@@ -4,7 +4,7 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using Waher.Networking.XMPP;
 
-namespace NeuroAccessMaui.Pages;
+namespace NeuroAccessMaui.UI.Pages;
 
 /// <summary>
 /// A view model that holds the XMPP state.

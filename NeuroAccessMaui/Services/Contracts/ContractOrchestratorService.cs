@@ -1,6 +1,6 @@
 ﻿using NeuroAccessMaui.Extensions;
-using NeuroAccessMaui.Pages.Identity;
-using NeuroAccessMaui.Pages.Petitions;
+using NeuroAccessMaui.UI.Pages.Identity;
+using NeuroAccessMaui.UI.Pages.Petitions;
 using NeuroAccessMaui.Resources.Languages;
 using System.Reflection;
 using System.Text;

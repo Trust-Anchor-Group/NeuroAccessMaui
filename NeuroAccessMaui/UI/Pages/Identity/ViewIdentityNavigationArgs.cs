@@ -1,7 +1,7 @@
 ﻿using NeuroAccessMaui.Services.Navigation;
 using Waher.Networking.XMPP.Contracts;
 
-namespace NeuroAccessMaui.Pages.Identity;
+namespace NeuroAccessMaui.UI.Pages.Identity;
 
 /// <summary>
 /// Holds navigation parameters specific to views displaying a legal identity.

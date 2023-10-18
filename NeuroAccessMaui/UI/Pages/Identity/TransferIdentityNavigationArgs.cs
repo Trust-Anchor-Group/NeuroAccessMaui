@@ -1,6 +1,6 @@
 ﻿using NeuroAccessMaui.Services.Navigation;
 
-namespace NeuroAccessMaui.Pages.Identity;
+namespace NeuroAccessMaui.UI.Pages.Identity;
 
 /// <summary>
 /// Holds navigation parameters specific to views displaying an identity transfer code.

@@ -1,4 +1,4 @@
-﻿namespace NeuroAccessMaui.Pages;
+﻿namespace NeuroAccessMaui.UI.Pages;
 
 /// <summary>
 /// Interface for views who need to react to life-cycle events.

@@ -5,7 +5,7 @@ using NeuroAccessMaui.UI.Popups.Pin;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 
-namespace NeuroAccessMaui.Pages.Main.Security;
+namespace NeuroAccessMaui.UI.Pages.Main.Security;
 
 /// <summary>
 /// The view model to bind to for when displaying security options.

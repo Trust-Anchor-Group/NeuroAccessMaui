@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 
-namespace NeuroAccessMaui.Pages.Identity;
+namespace NeuroAccessMaui.UI.Pages.Identity;
 
 /// <summary>
 /// The view model to bind to for when displaying identities.

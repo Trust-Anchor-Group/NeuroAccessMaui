@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<base:BaseRegistrationView x:Name="ThisPage" x:Class="NeuroAccessMaui.Pages.Registration.Views.ValidatePhoneView" x:DataType="viewmodel:ValidatePhoneViewModel"
+<base:BaseRegistrationView x:Name="ThisPage" x:Class="NeuroAccessMaui.UI.Pages.Registration.Views.ValidatePhoneView" x:DataType="viewmodel:ValidatePhoneViewModel"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-	xmlns:base="clr-namespace:NeuroAccessMaui.Pages.Registration"
+	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Registration"
 	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.Pages.Registration.Views">
+	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views">
 
 	<VerticalStackLayout
 		Spacing="{StaticResource LargeSpacing}">
