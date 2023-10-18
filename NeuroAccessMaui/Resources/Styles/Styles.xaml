@@ -448,7 +448,6 @@
 		<Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource NormalEditPlaceholderLight}, Dark={StaticResource NormalEditPlaceholderDark}}" />
 		<Setter Property="FontFamily" Value="HaasGroteskRegular" />
 		<Setter Property="FontSize" Value="18" />
-		<Setter Property="BackgroundColor" Value="Red" />
 		<!--
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>

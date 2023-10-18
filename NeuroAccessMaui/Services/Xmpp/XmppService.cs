@@ -17,6 +17,7 @@ using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.HttpFileUpload;
 using Waher.Networking.XMPP.HTTPX;
 using Waher.Networking.XMPP.ServiceDiscovery;
+using Waher.Networking.XMPP.StanzaErrors;
 using Waher.Persistence;
 using Waher.Runtime.Inventory;
 using Waher.Runtime.Settings;
@@ -598,6 +599,10 @@ internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 			if (e is ObjectDisposedException)
 			{
 				connectionError = ServiceRef.Localizer[nameof(AppResources.UnableToConnect)];
+			}
+			else if (e is ConflictException ConflictInfo)
+			{
+				//!!! account names
 			}
 			else
 			{
