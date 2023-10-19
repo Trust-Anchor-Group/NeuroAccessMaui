@@ -8,6 +8,7 @@ using NeuroAccessMaui.UI;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
+using Camera.MAUI;
 
 #if ANDROID
 using Microsoft.Maui.Controls.Compatibility.Platform.Android;
@@ -41,6 +42,7 @@ public static class MauiProgram
 		Builder.ConfigureMopups();
 		Builder.UseMauiCommunityToolkit();
 		Builder.UseMauiCommunityToolkitMarkup();
+		Builder.UseMauiCameraView();
 
 		// Localization service
 		Builder.UseLocalizationManager<AppResources>();
