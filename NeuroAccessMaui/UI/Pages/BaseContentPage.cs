@@ -187,18 +187,8 @@ public abstract class BaseContentPage : ContentPage
 
 			if (ViewModel is RegistrationViewModel RegistrationViewModel)
 			{
-				//!!! This should be changed!!!
-				/*
-				if (RegistrationViewModel.CanGoBack)
-				{
-					RegistrationViewModel.GoToPrevCommand.Execute(null);
-					return true;
-				}
-				else
-				*/
-				{
-					return base.OnBackButtonPressed();
-				}
+				RegistrationViewModel.GoToPrevCommand.Execute(null);
+				return true;
 			}
 			else
 			{

@@ -40,8 +40,7 @@
 
 						<controls:TintedImage x:Name="InnerImage"
 							Source="{Binding ImageName}"
-							TintColor="{AppThemeBinding Light={StaticResource NormalInfoForegroundLight},
-														Dark={StaticResource NormalInfoForegroundDark}}" />
+							TintColor="{Binding TextColor, Source={x:Reference InnerLabel}}" />
 					</Border>
 
 					<Label x:Name="InnerLabel"
