@@ -38,7 +38,7 @@ public partial class ChoosePurposeViewModel : BaseRegistrationViewModel
 		];
 
 	/// <summary>
-	/// Purpose number (zero-based)
+	/// The selected Purpose
 	/// </summary>
 	[ObservableProperty]
 	[NotifyCanExecuteChangedFor(nameof(ContinueCommand))]

@@ -16,10 +16,6 @@ internal sealed partial class NavigationService : LoadableService, INavigationSe
 	{
 	}
 
-	// Navigation service uses Shell and its routing system, which are only available after the application reached the main page.
-	// Before that (during on-boarding and the loading page), we need to use the usual Xamarin Forms navigation.
-	private bool CanUseNavigationService => App.IsOnboarded;
-
 	/// <inheritdoc/>
 	public Page CurrentPage => Shell.Current?.CurrentPage;
 
@@ -81,11 +77,6 @@ internal sealed partial class NavigationService : LoadableService, INavigationSe
 	/// <inheritdoc/>
 	public async Task GoToAsync<TArgs>(string Route, TArgs? Args, BackMethod BackMethod = BackMethod.Inherited, string? UniqueId = null) where TArgs : NavigationArgs, new()
 	{
-		if (!this.CanUseNavigationService)
-		{
-			return;
-		}
-
 		await MainThread.InvokeOnMainThreadAsync(async () =>
 		{
 			// Get the parent's navigation arguments
@@ -127,11 +118,6 @@ internal sealed partial class NavigationService : LoadableService, INavigationSe
 	/// <inheritdoc/>
 	public async Task GoBackAsync(bool Animate = true)
 	{
-		if (!this.CanUseNavigationService)
-		{
-			return;
-		}
-
 		try
 		{
 			NavigationArgs NavigationArgs = this.GetCurrentNavigationArgs();
@@ -163,7 +149,7 @@ internal sealed partial class NavigationService : LoadableService, INavigationSe
 	{
 		NavigationArgs? NavigationArgs = null;
 
-		if (this.CanUseNavigationService && (this.CurrentPage is Page Page))
+		if (this.CurrentPage is Page Page)
 		{
 			NavigationArgs = this.TryGetArgs(Page.GetType().Name, UniqueId);
 			string Route = Routing.GetRoute(Page);
@@ -188,9 +174,9 @@ internal sealed partial class NavigationService : LoadableService, INavigationSe
 		return (Args is not null);
 	}
 
-	private NavigationArgs GetCurrentNavigationArgs()
+	private NavigationArgs? GetCurrentNavigationArgs()
 	{
-		this.TryGetArgs(out NavigationArgs Args);
+		this.TryGetArgs(out NavigationArgs? Args);
 		return Args;
 	}
 

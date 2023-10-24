@@ -655,7 +655,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to UNDEFINED.
+        ///   Looks up a localized string similar to Domain:.
         /// </summary>
         internal static string OnboardingProviderPageDetails {
             get {
@@ -966,6 +966,33 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string PleaseReviewAndCheckAllCheckboxes {
             get {
                 return ResourceManager.GetString("PleaseReviewAndCheckAllCheckboxes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Approve service provider.
+        /// </summary>
+        internal static string ProviderSectionApproveOption {
+            get {
+                return ResourceManager.GetString("ProviderSectionApproveOption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change service provider.
+        /// </summary>
+        internal static string ProviderSectionChangeOption {
+            get {
+                return ResourceManager.GetString("ProviderSectionChangeOption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose one option.
+        /// </summary>
+        internal static string ProviderSectionTitle {
+            get {
+                return ResourceManager.GetString("ProviderSectionTitle", resourceCulture);
             }
         }
         

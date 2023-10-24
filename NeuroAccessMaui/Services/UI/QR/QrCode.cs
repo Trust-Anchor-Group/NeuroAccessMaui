@@ -1,6 +1,7 @@
 using NeuroAccessMaui.Links;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Navigation;
+using NeuroAccessMaui.UI.Pages.Main.QR;
 using SkiaSharp;
 using Waher.Content.QR;
 using Waher.Content.QR.Encoding;
@@ -19,11 +20,10 @@ public static class QrCode
 	/// Scans a QR Code, and depending on the actual result, takes different actions.
 	/// This typically means navigating to an appropriate page.
 	/// </summary>
-	public static async Task ScanQrCodeAndHandleResult(bool UseShellNavigationService = true)
+	public static async Task ScanQrCodeAndHandleResult()
 	{
-		string Url = await QrCode.ScanQrCode(
-			ServiceRef.Localizer[nameof(AppResources.Open)],
-			UseShellNavigationService: UseShellNavigationService);
+		string? Url = await QrCode.ScanQrCode(
+			ServiceRef.Localizer[nameof(AppResources.Open)]);
 
 		if (string.IsNullOrWhiteSpace(Url))
 		{
@@ -43,7 +43,7 @@ public static class QrCode
 	{
 		try
 		{
-			if (!System.Uri.TryCreate(Url, UriKind.Absolute, out Uri Uri))
+			if (!System.Uri.TryCreate(Url, UriKind.Absolute, out Uri? Uri))
 			{
 				await ServiceRef.UiSerializer.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
@@ -98,26 +98,14 @@ public static class QrCode
 	/// </list>
 	/// </summary>
 	/// <param name="CommandName">The localized name of the command to display when scanning.</param>
-	/// <param name="UseShellNavigationService">A Boolean flag indicating if Shell navigation should be used or a simple <c>PushAsync</c>.</param>
 	/// <returns>Decoded string</returns>
-	public static Task<string> ScanQrCode(string CommandName, bool UseShellNavigationService = true)
+	public static Task<string?> ScanQrCode(string CommandName)
 	{
-		//!!!
-		/*
 		ScanQrCodeNavigationArgs NavigationArgs = new(CommandName);
 
-		if (UseShellNavigationService)
-		{
-			_ = ServiceRef.NavigationService.GoToAsync(nameof(ScanQrCodePage), NavigationArgs, BackMethod.Pop);
-		}
-		else
-		{
-			_ = App.Current.MainPage.Navigation.PushAsync(new ScanQrCodePage(NavigationArgs));
-		}
+		ServiceRef.NavigationService.GoToAsync(nameof(ScanQrCodePage), NavigationArgs, BackMethod.Pop);
 
 		return NavigationArgs.QrCodeScanned.Task;
-		*/
-		return Task.FromResult("");
 	}
 
 	/// <summary>

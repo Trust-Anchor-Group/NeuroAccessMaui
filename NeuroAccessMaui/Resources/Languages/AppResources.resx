@@ -538,7 +538,7 @@
     <value>Selected provider</value>
   </data>
   <data name="OnboardingProviderPageDetails" xml:space="preserve">
-    <value>UNDEFINED</value>
+    <value>Domain:</value>
   </data>
   <data name="OnboardingAccountPageTitle" xml:space="preserve">
     <value>Create account</value>
@@ -611,5 +611,14 @@
   </data>
   <data name="EmailValidationFormat" xml:space="preserve">
     <value>Please enter a valid email</value>
+  </data>
+  <data name="ProviderSectionTitle" xml:space="preserve">
+    <value>Choose one option</value>
+  </data>
+  <data name="ProviderSectionApproveOption" xml:space="preserve">
+    <value>Approve service provider</value>
+  </data>
+  <data name="ProviderSectionChangeOption" xml:space="preserve">
+    <value>Change service provider</value>
   </data>
 </root>

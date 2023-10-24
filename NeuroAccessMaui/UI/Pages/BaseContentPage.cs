@@ -10,11 +10,6 @@ namespace NeuroAccessMaui.UI.Pages;
 
 public abstract class BaseContentPage : ContentPage
 {
-	// Navigation service uses Shell and its routing system, which are only available after the application reached the main page.
-	// Before that (during on-boarding and the loading page), we need to use the usual Xamarin Forms navigation.
-	//!!! This should be changed!!!
-	private bool CanUseNavigationService => App.IsOnboarded;
-
 	/// <summary>
 	/// Convenience property for accessing the <see cref="BindableObject.BindingContext"/> property as a view model.
 	/// </summary>
@@ -186,29 +181,32 @@ public abstract class BaseContentPage : ContentPage
 	/// <returns>Whether or not the back navigation was handled</returns>
 	protected sealed override bool OnBackButtonPressed()
 	{
-		BaseViewModel ViewModel = this.ViewModel<BaseViewModel>();
-
-		if (ViewModel is BaseRegistrationViewModel RegistrationViewModel)
+		try
 		{
-			//!!! This should be changed!!!
-			/*
-			if (RegistrationViewModel.CanGoBack)
+			BaseViewModel ViewModel = this.ViewModel<BaseViewModel>();
+
+			if (ViewModel is RegistrationViewModel RegistrationViewModel)
 			{
-				RegistrationViewModel.GoToPrevCommand.Execute(null);
-				return true;
+				//!!! This should be changed!!!
+				/*
+				if (RegistrationViewModel.CanGoBack)
+				{
+					RegistrationViewModel.GoToPrevCommand.Execute(null);
+					return true;
+				}
+				else
+				*/
+				{
+					return base.OnBackButtonPressed();
+				}
 			}
 			else
-			*/
 			{
-				return base.OnBackButtonPressed();
+				ServiceRef.NavigationService.GoBackAsync();
+				return true;
 			}
 		}
-		else if (this.CanUseNavigationService)
-		{
-			ServiceRef.NavigationService.GoBackAsync();
-			return true;
-		}
-		else
+		catch
 		{
 			return base.OnBackButtonPressed();
 		}
@@ -229,7 +227,7 @@ public abstract class BaseContentPage : ContentPage
 	}
 
 	/// <summary>
-	/// Called when the <see cref="Xamarin.Forms.Page"/>'s <see cref="Xamarin.Forms.Element.Parent"/> property has changed.
+	/// Called when the Page's <see cref="Element.Parent"/> property has changed.
 	/// </summary>
 	protected sealed override async void OnParentSet()
 	{

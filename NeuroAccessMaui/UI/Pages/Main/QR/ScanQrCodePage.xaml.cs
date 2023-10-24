@@ -16,8 +16,8 @@ public partial class ScanQrCodePage
 	/// </param>
 	public ScanQrCodePage(ScanQrCodeNavigationArgs? NavigationArgs)
 	{
-		//!!! this.ViewModel = new ScanQrCodeViewModel(NavigationArgs);
 		this.InitializeComponent();
+		this.ContentPageModel = new ScanQrCodeViewModel(NavigationArgs);
 
 		//!!!
 		/*

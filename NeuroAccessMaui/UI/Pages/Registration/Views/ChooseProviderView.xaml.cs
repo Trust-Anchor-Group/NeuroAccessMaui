@@ -1,3 +1,5 @@
+using CommunityToolkit.Mvvm.Input;
+
 namespace NeuroAccessMaui.UI.Pages.Registration.Views;
 
 public partial class ChooseProviderView
@@ -7,9 +9,48 @@ public partial class ChooseProviderView
 		return Create<ChooseProviderView>();
 	}
 
+	private readonly ChooseProviderViewModel viewModel;
+
 	public ChooseProviderView(ChooseProviderViewModel ViewModel)
 	{
 		this.InitializeComponent();
 		this.ContentViewModel = ViewModel;
+		this.viewModel = ViewModel;
 	}
+
+	[RelayCommand]
+	public void SelectButton(object o)
+	{
+		if (o is not ButtonType Button)
+		{
+			return;
+		}
+
+		foreach (object Item in this.PurposesContainer)
+		{
+			if ((Item is VisualElement Element) &&
+				(Element.BindingContext is ButtonInfo ButtonInfo))
+			{
+				if (Button == ButtonInfo.Button)
+				{
+					VisualStateManager.GoToState(Element, VisualStateManager.CommonStates.Selected);
+					this.viewModel.SelectedButton = ButtonInfo;
+
+					if (ButtonInfo.Button == ButtonType.Change)
+					{
+						// unselect it after the QR scan is open
+						this.Dispatcher.DispatchDelayed(TimeSpan.FromMilliseconds(100), () =>
+						{
+							VisualStateManager.GoToState(Element, VisualStateManager.CommonStates.Normal);
+						});
+					}
+				}
+				else
+				{
+					VisualStateManager.GoToState(Element, VisualStateManager.CommonStates.Normal);
+				}
+			}
+		}
+	}
+
 }
