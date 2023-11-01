@@ -1,4 +1,9 @@
-﻿namespace NeuroAccessMaui.UI.Pages.Main.QR;
+﻿using CommunityToolkit.Maui.Layouts;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using Waher.Runtime.Profiling.Events;
+
+namespace NeuroAccessMaui.UI.Pages.Main.QR;
 
 /// <summary>
 /// A page to display for scanning of a QR code, either automatically via the camera, or by entering the code manually.
@@ -19,9 +24,11 @@ public partial class ScanQrCodePage
 		this.InitializeComponent();
 		this.ContentPageModel = new ScanQrCodeViewModel(NavigationArgs);
 
+		StateContainer.SetCurrentState(this.GridWithAnimation, "AutomaticScan");
+
 		//!!!
 		/*
-		this.Scanner.Options = new MobileBarcodeScanningOptions
+		this.innerCameraView.Options = new MobileBarcodeScanningOptions
 		{
 			PossibleFormats = new List<BarcodeFormat> { BarcodeFormat.QR_CODE },
 			TryHarder = true
@@ -208,4 +215,16 @@ public partial class ScanQrCodePage
 		return Result;
 	}
 	*/
+
+	[RelayCommand]
+	private async Task SwitchMode()
+	{
+		await this.Dispatcher.DispatchAsync(async () =>
+		{
+			string CurrentState = StateContainer.GetCurrentState(this.GridWithAnimation);
+			string NewState = string.Equals(CurrentState, "ManualScan", StringComparison.OrdinalIgnoreCase) ? "AutomaticScan" : "ManualScan";
+
+			await StateContainer.ChangeStateWithAnimation(this.GridWithAnimation, NewState, CancellationToken.None);
+		});
+	}
 }

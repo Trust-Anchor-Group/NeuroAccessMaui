@@ -6,17 +6,59 @@
 	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
 	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 	xmlns:cv="clr-namespace:Camera.MAUI;assembly=Camera.MAUI"
-	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.QR">
+	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.QR"
+	Shell.FlyoutBehavior="Disabled">
 	<!--
 		Title="{x:Static resx:AppResources.ScanQRCode}"
 		Style="{StaticResource BaseBackgroundPage}"
-		Shell.FlyoutBehavior="Disabled">
+		>
 	-->
 
-	<Grid>
-		<cv:CameraView x:Name="innerCameraView"
-			HorizontalOptions="FillAndExpand"
-			VerticalOptions="FillAndExpand" />
+	<Grid
+		BackgroundColor="BlanchedAlmond"
+		RowDefinitions="*,auto"
+		RowSpacing="{StaticResource LargeSpacing}">
+
+		<Grid x:Name="GridWithAnimation"
+			Grid.Row="0"
+			BackgroundColor="Green">
+
+			<mct:StateContainer.StateViews>
+				<cv:CameraView x:Name="innerCameraView" mct:StateView.StateKey="AutomaticScan"
+					BackgroundColor="Red"
+					HorizontalOptions="FillAndExpand"
+					VerticalOptions="FillAndExpand" />
+
+				<StackLayout x:Name="ManualScanGrid" mct:StateView.StateKey="ManualScan"
+					BackgroundColor="Yellow"
+					HorizontalOptions="FillAndExpand"
+					VerticalOptions="CenterAndExpand">
+					<Label
+						HorizontalOptions="FillAndExpand"
+						Text="scan" />
+					<!--  Text="{x:Static resx:AppResources.QrScanUri}" />  -->
+					<Entry x:Name="LinkEntry"
+						HorizontalOptions="Fill"
+						Keyboard="Url"
+						ReturnType="Done"
+						Text="{Binding Path=LinkText, Mode=TwoWay}" />
+					<Button x:Name="OpenButton"
+						Clicked="OpenButton_Click"
+						IsEnabled="{Binding Path=OpenIsEnabled}"
+						Text="{Binding Path=OpenCommandText}" />
+				</StackLayout>
+			</mct:StateContainer.StateViews>
+
+			<!--  default state, should not occur  -->
+			<Label
+				HorizontalTextAlignment="Center"
+				Text="Something went wrong!"
+				VerticalTextAlignment="Center" />
+		</Grid>
+		<controls:FilledButton x:Name="ModeButton"
+			Grid.Row="1"
+			Command="{Binding Path=SwitchModeCommand, Source={x:Reference ThisPage}}"
+			Text="{Binding Path=ModeText}" />
 	</Grid>
 	<!--
 	<StackLayout Spacing="12" Orientation="Vertical" Margin="{StaticResource DefaultMargin}">
@@ -26,19 +68,10 @@
                 <forms:ZXingScannerView x:Name="Scanner"
                                         OnScanResult="Scanner_OnScanResult"
 										IsScanning="False" IsAnalyzing="False"
-										SizeChanged="ZXingScannerView_SizeChanged"
-                                        VerticalOptions="FillAndExpand"
-                                        HorizontalOptions="FillAndExpand"/>
+										SizeChanged="ZXingScannerView_SizeChanged"/>
                 <forms:ZXingDefaultOverlay TopText="{x:Static resx:AppResources.QrScanOverlay}"/>
             </Grid>
-            <StackLayout x:Name="ManualScanGrid"
-                         VerticalOptions="CenterAndExpand" HorizontalOptions="FillAndExpand"
-                         IsVisible="{Binding Path=ScanIsManual, Mode=OneWay}">
-                <Label Text="{x:Static resx:AppResources.QrScanUri}" HorizontalOptions="FillAndExpand"/>
-                <Entry x:Name="LinkEntry" Text="{Binding Path=LinkText, Mode=TwoWay}" HorizontalOptions="Fill"
-                       Keyboard="Url" ReturnType="Done"/>
-                <Button x:Name="OpenButton" Clicked="OpenButton_Click" IsEnabled="{Binding Path=OpenIsEnabled}" Text="{Binding Path=OpenCommandText}"/>
-            </StackLayout>
-            <Button x:Name="ModeButton" Text="{Binding Path=ModeText}" Command="{Binding Path=SwitchModeCommand}"/>
+
+
         </StackLayout>	-->
 </base:BaseContentPage>
