@@ -13,7 +13,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 
 		<!-- Display name -->
-		<ApplicationTitle>NeuroAccessMaui</ApplicationTitle>
+		<ApplicationTitle>Neuro-Access</ApplicationTitle>
 
 		<!-- App Identifier -->
 		<ApplicationId Condition="$(TargetFramework) == 'net8.0-android'">com.tag.NeuroAccess</ApplicationId>
