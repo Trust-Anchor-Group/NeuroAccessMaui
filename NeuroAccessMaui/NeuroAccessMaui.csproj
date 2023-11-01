@@ -55,6 +55,10 @@
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
 
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+		<AndroidResource Include="Resources\xml\file_paths.xml" />
+	</ItemGroup>
+
 	<ItemGroup>
 	  <Compile Remove="Platforms\iOS\IOSHelpers.cs" />
 	  <Compile Remove="Platforms\iOS\Security\BlurProtectionManager.cs" />
@@ -73,13 +77,13 @@
 
 	<ItemGroup>
 		<PackageReference Include="Camera.MAUI" Version="1.4.4" />
-		<PackageReference Include="CommunityToolkit.Common" Version="8.2.1" />
+		<PackageReference Include="CommunityToolkit.Common" Version="8.2.2" />
 		<PackageReference Include="CommunityToolkit.Maui" Version="6.0.0" />
 		<PackageReference Include="CommunityToolkit.Maui.Markup" Version="3.3.0" />
-		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
 		<PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.0-rc.2.23480.2" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0-rc.2.23479.6" />
-		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.0-rc.2.9373" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.0-rc.2.9511" />
 		<PackageReference Include="Mopups" Version="1.2.0" />
 		<PackageReference Include="SkiaSharp" Version="2.88.6" />
 		<PackageReference Include="System.Net.Http" Version="4.3.4" />
@@ -94,7 +98,7 @@
 		<PackageReference Include="Waher.Networking.PeerToPeer" Version="2.0.1" />
 		<PackageReference Include="Waher.Networking.UPnP" Version="2.0.2" />
 		<PackageReference Include="Waher.Networking.XMPP" Version="2.1.4" />
-		<PackageReference Include="Waher.Networking.XMPP.Contracts" Version="2.8.1" />
+		<PackageReference Include="Waher.Networking.XMPP.Contracts" Version="2.8.3" />
 		<PackageReference Include="Waher.Networking.XMPP.HTTPX" Version="2.2.4" />
 		<PackageReference Include="Waher.Networking.XMPP.P2P" Version="2.0.5" />
 		<PackageReference Include="Waher.Persistence" Version="1.10.1" />
