@@ -24,7 +24,9 @@
 			BackgroundColor="Green">
 
 			<mct:StateContainer.StateViews>
-				<cv:CameraView x:Name="innerCameraView" mct:StateView.StateKey="AutomaticScan"
+				<cv:CameraView x:Name="InnerCameraView" mct:StateView.StateKey="AutomaticScan"
+					CamerasLoaded="InnerCameraView_CamerasLoaded"
+					BarcodeDetected="InnerCameraView_BarcodeDetected"
 					BackgroundColor="Red"
 					HorizontalOptions="FillAndExpand"
 					VerticalOptions="FillAndExpand" />

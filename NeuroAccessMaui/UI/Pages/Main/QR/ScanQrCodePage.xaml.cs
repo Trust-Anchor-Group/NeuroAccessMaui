@@ -1,6 +1,8 @@
-﻿using CommunityToolkit.Maui.Layouts;
+﻿using Camera.MAUI;
+using CommunityToolkit.Maui.Layouts;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Waher.Networking.XMPP.Authentication;
 using Waher.Runtime.Profiling.Events;
 
 namespace NeuroAccessMaui.UI.Pages.Main.QR;
@@ -26,14 +28,18 @@ public partial class ScanQrCodePage
 
 		StateContainer.SetCurrentState(this.GridWithAnimation, "AutomaticScan");
 
-		//!!!
-		/*
-		this.innerCameraView.Options = new MobileBarcodeScanningOptions
+		this.InnerCameraView.BarCodeOptions = new Camera.MAUI.ZXingHelper.BarcodeDecodeOptions
 		{
-			PossibleFormats = new List<BarcodeFormat> { BarcodeFormat.QR_CODE },
-			TryHarder = true
+			AutoRotate = false,
+			PossibleFormats = { ZXing.BarcodeFormat.QR_CODE },
+			ReadMultipleCodes = false,
+			TryHarder = true,
+			TryInverted = true
 		};
-		*/
+
+		this.InnerCameraView.BarCodeDetectionFrameRate = 10;
+		this.InnerCameraView.BarCodeDetectionMaxThreads = 5;
+		this.InnerCameraView.ControlBarcodeResultDuplicate = true;
 	}
 
 	/// <summary>
@@ -226,5 +232,29 @@ public partial class ScanQrCodePage
 
 			await StateContainer.ChangeStateWithAnimation(this.GridWithAnimation, NewState, CancellationToken.None);
 		});
+	}
+
+	private void InnerCameraView_CamerasLoaded(object sender, EventArgs e)
+	{
+		if (this.InnerCameraView.NumCamerasDetected > 0)
+		{
+			this.InnerCameraView.Camera = this.InnerCameraView.Cameras.First();
+
+			MainThread.BeginInvokeOnMainThread(async () =>
+			{
+				if (await this.InnerCameraView.StartCameraAsync() == CameraResult.Success)
+				{
+					this.InnerCameraView.BarCodeDetectionEnabled = true;
+					//						controlButton.Text = "Stop";
+					//						playing = true;
+				}
+			});
+		}
+	}
+
+	private void InnerCameraView_BarcodeDetected(object sender, Camera.MAUI.ZXingHelper.BarcodeEventArgs args)
+	{
+		string Result = args.Result[0].Text;
+
 	}
 }
