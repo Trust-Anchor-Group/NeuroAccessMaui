@@ -101,7 +101,7 @@ public static class QrCode
 	/// <returns>Decoded string</returns>
 	public static Task<string?> ScanQrCode(string CommandName)
 	{
-		ScanQrCodeNavigationArgs NavigationArgs = new(CommandName);
+		ScanQrCodeNavigationArgs NavigationArgs = new(CommandName) { Animated = false };
 
 		ServiceRef.NavigationService.GoToAsync(nameof(ScanQrCodePage), NavigationArgs, BackMethod.Pop);
 

@@ -76,7 +76,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Camera.MAUI" Version="1.4.4" />
 		<PackageReference Include="CommunityToolkit.Common" Version="8.2.2" />
 		<PackageReference Include="CommunityToolkit.Maui" Version="6.0.0" />
 		<PackageReference Include="CommunityToolkit.Maui.Markup" Version="3.3.0" />
@@ -111,6 +110,7 @@
 		<PackageReference Include="Waher.Script" Version="2.6.1" />
 		<PackageReference Include="Waher.Script.Content" Version="2.1.2" />
 		<PackageReference Include="Waher.Security" Version="1.0.8" />
+		<PackageReference Include="ZXing.Net" Version="0.16.9" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -5,7 +5,7 @@
 	xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
 	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
 	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-	xmlns:cv="clr-namespace:Camera.MAUI;assembly=Camera.MAUI"
+	xmlns:cv="clr-namespace:Camera.MAUI"
 	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.QR"
 	Shell.FlyoutBehavior="Disabled">
 	<!--
@@ -14,53 +14,52 @@
 		>
 	-->
 
-	<Grid
-		BackgroundColor="BlanchedAlmond"
-		RowDefinitions="*,auto"
-		RowSpacing="{StaticResource LargeSpacing}">
+	<Grid x:Name="GridWithAnimation"
+		HorizontalOptions="FillAndExpand"
+		VerticalOptions="FillAndExpand">
 
-		<Grid x:Name="GridWithAnimation"
-			Grid.Row="0"
-			BackgroundColor="Green">
-
-			<mct:StateContainer.StateViews>
-				<cv:CameraView x:Name="InnerCameraView" mct:StateView.StateKey="AutomaticScan"
-					CamerasLoaded="InnerCameraView_CamerasLoaded"
+		<mct:StateContainer.StateViews>
+			<Grid mct:StateView.StateKey="AutomaticScan">
+				<cv:CameraView x:Name="InnerCameraView"
+					HorizontalOptions="FillAndExpand"
+					VerticalOptions="FillAndExpand"
+					BarCodeResults="{Binding BarCodeResults, Source={x:Reference ThisPage}}"
 					BarcodeDetected="InnerCameraView_BarcodeDetected"
-					BackgroundColor="Red"
-					HorizontalOptions="FillAndExpand"
-					VerticalOptions="FillAndExpand" />
+					CamerasLoaded="InnerCameraView_CamerasLoaded" />
 
-				<StackLayout x:Name="ManualScanGrid" mct:StateView.StateKey="ManualScan"
-					BackgroundColor="Yellow"
-					HorizontalOptions="FillAndExpand"
-					VerticalOptions="CenterAndExpand">
-					<Label
-						HorizontalOptions="FillAndExpand"
-						Text="scan" />
-					<!--  Text="{x:Static resx:AppResources.QrScanUri}" />  -->
-					<Entry x:Name="LinkEntry"
-						HorizontalOptions="Fill"
-						Keyboard="Url"
-						ReturnType="Done"
-						Text="{Binding Path=LinkText, Mode=TwoWay}" />
-					<Button x:Name="OpenButton"
-						Clicked="OpenButton_Click"
-						IsEnabled="{Binding Path=OpenIsEnabled}"
-						Text="{Binding Path=OpenCommandText}" />
-				</StackLayout>
-			</mct:StateContainer.StateViews>
+				<controls:FilledButton x:Name="ModeButton"
+					Grid.Row="1"
+					VerticalOptions="End"
+					Command="{Binding Path=SwitchModeCommand, Source={x:Reference ThisPage}}"
+					Text="{Binding Path=ModeText}" />
 
-			<!--  default state, should not occur  -->
-			<Label
-				HorizontalTextAlignment="Center"
-				Text="Something went wrong!"
-				VerticalTextAlignment="Center" />
-		</Grid>
-		<controls:FilledButton x:Name="ModeButton"
-			Grid.Row="1"
-			Command="{Binding Path=SwitchModeCommand, Source={x:Reference ThisPage}}"
-			Text="{Binding Path=ModeText}" />
+			</Grid>
+
+			<StackLayout x:Name="ManualScanGrid" mct:StateView.StateKey="ManualScan"
+				BackgroundColor="Yellow"
+				HorizontalOptions="FillAndExpand"
+				VerticalOptions="CenterAndExpand">
+				<Label
+					HorizontalOptions="FillAndExpand"
+					Text="scan" />
+				<!--  Text="{x:Static resx:AppResources.QrScanUri}" />  -->
+				<Entry x:Name="LinkEntry"
+					HorizontalOptions="Fill"
+					Keyboard="Url"
+					ReturnType="Done"
+					Text="{Binding Path=LinkText, Mode=TwoWay}" />
+				<Button x:Name="OpenButton"
+					Clicked="OpenButton_Click"
+					IsEnabled="{Binding Path=OpenIsEnabled}"
+					Text="{Binding Path=OpenCommandText}" />
+			</StackLayout>
+		</mct:StateContainer.StateViews>
+
+		<!--  default state, should not occur  -->
+		<Label
+			HorizontalTextAlignment="Center"
+			Text="Something went wrong!"
+			VerticalTextAlignment="Center" />
 	</Grid>
 	<!--
 	<StackLayout Spacing="12" Orientation="Vertical" Margin="{StaticResource DefaultMargin}">

@@ -96,7 +96,7 @@ internal sealed partial class NavigationService : LoadableService, INavigationSe
 			try
 			{
 				this.isNavigating = true;
-				await Shell.Current.GoToAsync(Route, true);
+				await Shell.Current.GoToAsync(Route, NavigationArgs.Animated);
 			}
 			catch (Exception e)
 			{

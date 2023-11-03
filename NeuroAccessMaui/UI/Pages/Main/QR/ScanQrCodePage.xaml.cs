@@ -1,9 +1,6 @@
 ﻿using Camera.MAUI;
 using CommunityToolkit.Maui.Layouts;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
-using Waher.Networking.XMPP.Authentication;
-using Waher.Runtime.Profiling.Events;
 
 namespace NeuroAccessMaui.UI.Pages.Main.QR;
 
@@ -30,16 +27,16 @@ public partial class ScanQrCodePage
 
 		this.InnerCameraView.BarCodeOptions = new Camera.MAUI.ZXingHelper.BarcodeDecodeOptions
 		{
-			AutoRotate = false,
+			AutoRotate = true,
 			PossibleFormats = { ZXing.BarcodeFormat.QR_CODE },
 			ReadMultipleCodes = false,
 			TryHarder = true,
 			TryInverted = true
 		};
 
-		this.InnerCameraView.BarCodeDetectionFrameRate = 10;
+		this.InnerCameraView.BarCodeDetectionFrameRate = 5;
 		this.InnerCameraView.BarCodeDetectionMaxThreads = 5;
-		this.InnerCameraView.ControlBarcodeResultDuplicate = true;
+		this.InnerCameraView.ControlBarcodeResultDuplicate = false;
 	}
 
 	/// <summary>
@@ -234,19 +231,63 @@ public partial class ScanQrCodePage
 		});
 	}
 
+	private ZXing.Result[] barCodeResults;
+	public ZXing.Result[] BarCodeResults
+	{
+		get => this.barCodeResults;
+		set
+		{
+			this.barCodeResults = value;
+		}
+	}
 	private void InnerCameraView_CamerasLoaded(object sender, EventArgs e)
 	{
 		if (this.InnerCameraView.NumCamerasDetected > 0)
 		{
 			this.InnerCameraView.Camera = this.InnerCameraView.Cameras.First();
 
-			MainThread.BeginInvokeOnMainThread(async () =>
+			double Width = DeviceDisplay.MainDisplayInfo.Width;
+			double Height = DeviceDisplay.MainDisplayInfo.Height;
+			double Pixels = 10000000000000f;
+			double Ratio = Width / Height;
+
+			List<Size> Resolutions = this.InnerCameraView.Camera.AvailableResolutions;
+			Size? SelectedResolution = null;
+
+			foreach (Size Resolution in Resolutions)
 			{
-				if (await this.InnerCameraView.StartCameraAsync() == CameraResult.Success)
+				if (((Ratio == Resolution.Width / Resolution.Height) || (Ratio == Resolution.Height / Resolution.Width)) &&
+					(Pixels > Resolution.Width * Resolution.Height))
 				{
-					this.InnerCameraView.BarCodeDetectionEnabled = true;
-					//						controlButton.Text = "Stop";
-					//						playing = true;
+					SelectedResolution = Resolution;
+					Pixels = Resolution.Width * Resolution.Height;
+				}
+			}
+
+			if (SelectedResolution is null)
+			{
+				foreach (Size Resolution in Resolutions)
+				{
+					if (Pixels < Resolution.Width * Resolution.Height)
+					{
+						SelectedResolution = Resolution;
+						Pixels = Resolution.Width * Resolution.Height;
+					}
+				}
+			}
+
+			this.Dispatcher.DispatchAsync(async () =>
+			{
+				if (SelectedResolution is not null)
+				{
+					await Task.Delay(100);
+
+					if (await this.InnerCameraView.StartCameraAsync((Size)SelectedResolution) == CameraResult.Success)
+					{
+						this.InnerCameraView.BarCodeDetectionEnabled = true;
+						//						controlButton.Text = "Stop";
+						//						playing = true;
+					}
 				}
 			});
 		}

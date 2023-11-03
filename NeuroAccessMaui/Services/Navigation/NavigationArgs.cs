@@ -127,4 +127,9 @@ public class NavigationArgs
 	/// An unique view identifier used to search the args of similar view types.
 	/// </summary>
 	public string? GetUniqueId() => this.uniqueId;
+
+	/// <summary>
+	/// Is the navigation animated
+	/// </summary>
+	public bool Animated { get; set; } = true;
 }
