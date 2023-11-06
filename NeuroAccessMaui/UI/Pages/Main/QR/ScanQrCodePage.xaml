@@ -5,8 +5,8 @@
 	xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
 	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
 	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-	xmlns:cv="clr-namespace:Camera.MAUI"
 	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.QR"
+	xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
 	Shell.FlyoutBehavior="Disabled">
 	<!--
 		Title="{x:Static resx:AppResources.ScanQRCode}"
@@ -20,12 +20,10 @@
 
 		<mct:StateContainer.StateViews>
 			<Grid mct:StateView.StateKey="AutomaticScan">
-				<cv:CameraView x:Name="InnerCameraView"
+				<zxing:CameraBarcodeReaderView x:Name="CameraBarcodeReaderView"
 					HorizontalOptions="FillAndExpand"
 					VerticalOptions="FillAndExpand"
-					BarCodeResults="{Binding BarCodeResults, Source={x:Reference ThisPage}}"
-					BarcodeDetected="InnerCameraView_BarcodeDetected"
-					CamerasLoaded="InnerCameraView_CamerasLoaded" />
+					BarcodesDetected="CameraBarcodeReaderView_BarcodesDetected" />
 
 				<controls:FilledButton x:Name="ModeButton"
 					Grid.Row="1"
