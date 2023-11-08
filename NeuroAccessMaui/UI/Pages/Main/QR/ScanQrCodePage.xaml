@@ -2,9 +2,11 @@
 <base:BaseContentPage x:Name="ThisPage" x:Class="NeuroAccessMaui.UI.Pages.Main.QR.ScanQrCodePage" x:DataType="viewmodel:ScanQrCodeViewModel"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 	xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
 	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
 	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+	xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.QR"
 	xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
 	Shell.FlyoutBehavior="Disabled">
@@ -25,12 +27,40 @@
 					VerticalOptions="FillAndExpand"
 					BarcodesDetected="CameraBarcodeReaderView_BarcodesDetected" />
 
-				<controls:FilledButton x:Name="ModeButton"
+				<VerticalStackLayout
 					Grid.Row="1"
 					VerticalOptions="End"
-					Command="{Binding Path=SwitchModeCommand, Source={x:Reference ThisPage}}"
-					Text="{Binding Path=ModeText}" />
+					Spacing="{StaticResource LargeSpacing}">
 
+					<VerticalStackLayout
+						Spacing="{StaticResource SmallSpacing}">
+						<Path
+							HeightRequest="66"
+							WidthRequest="66"
+							HorizontalOptions="Center"
+							Aspect="Uniform"
+							Data="{x:Static ui:Geometries.OnboardingIconPath}"
+							BackgroundColor="White"
+							Fill="#008000" />
+						<Label
+							Text="{l:Localize QrSectionTitle}" />
+					</VerticalStackLayout>
+
+					<HorizontalStackLayout
+						HorizontalOptions="Center"
+						Spacing="{StaticResource LargeSpacing}">
+						<controls:ImageButton
+							Data="{x:Static ui:Geometries.CameraImageButtonPath}" />
+						<controls:ImageButton
+							Data="{x:Static ui:Geometries.CameraTorchButtonPath}" />
+						<controls:ImageButton
+							Data="{x:Static ui:Geometries.CameraSwitchButtonPath}" />
+					</HorizontalStackLayout>
+
+					<controls:FilledButton x:Name="ModeButton"
+						Command="{Binding Path=SwitchModeCommand, Source={x:Reference ThisPage}}"
+						Text="{Binding Path=ModeText}" />
+				</VerticalStackLayout>
 			</Grid>
 
 			<StackLayout x:Name="ManualScanGrid" mct:StateView.StateKey="ManualScan"

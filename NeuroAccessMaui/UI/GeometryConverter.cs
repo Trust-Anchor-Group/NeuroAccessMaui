@@ -6,8 +6,17 @@ public class GeometryConverter
 {
 	private static readonly PathGeometryConverter defaultPathGeometryConverter = new PathGeometryConverter();
 
-	public static PathGeometry ParseStringToPathGeometry(string? PathString)
+	public static PathGeometry ParseStringToPathGeometry(string? PathString, FillRule? FillRule = null)
 	{
-		return defaultPathGeometryConverter.ConvertFrom(null, null, PathString) as PathGeometry ?? new();
+		if (defaultPathGeometryConverter.ConvertFrom(null, null, PathString) is PathGeometry Result)
+		{
+			if (FillRule is not null)
+			{
+				Result.FillRule = (FillRule)FillRule;
+			}
+
+			return Result;
+		}
+		return new();
 	}
 }

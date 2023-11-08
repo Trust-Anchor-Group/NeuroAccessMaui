@@ -621,4 +621,7 @@
   <data name="ProviderSectionChangeOption" xml:space="preserve">
     <value>Change service provider</value>
   </data>
+  <data name="QrSectionTitle" xml:space="preserve">
+    <value>Point the camera at the QR-code with the following symbol</value>
+  </data>
 </root>

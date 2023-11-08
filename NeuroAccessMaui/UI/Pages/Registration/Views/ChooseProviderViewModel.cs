@@ -44,7 +44,7 @@ public partial class ChooseProviderViewModel : BaseRegistrationViewModel
 			{
 				MainThread.BeginInvokeOnMainThread(async () => {
 					this.SelectedButton = null;
-					await Services.UI.QR.QrCode.ScanQrCodeAndHandleResult();
+					await Services.UI.QR.QrCode.ScanQrCodeAndHandleResult(Constants.UriSchemes.Onboarding);
 				});
 			}
 		}

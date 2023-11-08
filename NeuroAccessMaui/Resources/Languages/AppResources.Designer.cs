@@ -1087,6 +1087,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Point the camera at the QR-code with the following symbol.
+        /// </summary>
+        internal static string QrSectionTitle {
+            get {
+                return ResourceManager.GetString("QrSectionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Repair.
         /// </summary>
         internal static string Repair {
