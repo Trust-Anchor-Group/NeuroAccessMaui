@@ -5,22 +5,22 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR;
 /// <summary>
 /// Holds navigation parameters specific to views scanning a QR code.
 /// </summary>
-public class ScanQrCodeNavigationArgs(string? CommandName = null, string? AllowedIcon = null) : NavigationArgs
+public class ScanQrCodeNavigationArgs(string? QrTitle = null, string? AllowedSchema = null) : NavigationArgs
 {
 	/// <summary>
 	/// Creates an instance of the <see cref="ScanQrCodeNavigationArgs"/> class.
 	/// </summary>
-	public ScanQrCodeNavigationArgs() : this(null, null) { }
+	public ScanQrCodeNavigationArgs() : this(null) { }
 
 	/// <summary>
-	/// The allowed icon to display.
+	/// The page title.
 	/// </summary>
-	public string? AllowedIcon { get; } = AllowedIcon;
+	public string? QrTitle { get; } = QrTitle;
 
 	/// <summary>
-	/// The command name (localized) to display.
+	/// The allowed schema to display.
 	/// </summary>
-	public string? CommandName { get; } = CommandName;
+	public string? AllowedSchema { get; } = AllowedSchema;
 
 	/// <summary>
 	/// Task completion source; can be used to wait for a result.

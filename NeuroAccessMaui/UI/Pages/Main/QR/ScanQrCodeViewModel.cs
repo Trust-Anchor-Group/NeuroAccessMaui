@@ -1,6 +1,9 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Localization;
 
 namespace NeuroAccessMaui.UI.Pages.Main.QR;
 
@@ -12,17 +15,11 @@ public partial class ScanQrCodeViewModel : BaseViewModel
 	private ScanQrCodeNavigationArgs? navigationArgs;
 
 	/// <summary>
-	/// An event that is fired when the scanning mode changes from automatic scan to manual entry.
-	/// </summary>
-	public event EventHandler ModeChanged;
-
-	/// <summary>
 	/// Creates a new instance of the <see cref="ScanQrCodeViewModel"/> class.
 	/// </summary>
 	public ScanQrCodeViewModel(ScanQrCodeNavigationArgs? NavigationArgs)
 	{
 		this.navigationArgs = NavigationArgs;
-		//!!! this.SetModeText();
 	}
 
 	/// <inheritdoc />
@@ -30,10 +27,37 @@ public partial class ScanQrCodeViewModel : BaseViewModel
 	{
 		await base.OnInitialize();
 
+		LocalizationManager.Current.PropertyChanged += this.PropertyChangedEventHandler;
+
 		if ((this.navigationArgs is null) && ServiceRef.NavigationService.TryGetArgs(out ScanQrCodeNavigationArgs? Args))
 		{
 			this.navigationArgs = Args;
+			this.OnPropertyChanged(nameof(this.LocalizedQrPageTitle));
 		}
+	}
+
+	/// <inheritdoc/>
+	protected override async Task OnDispose()
+	{
+		LocalizationManager.Current.PropertyChanged -= this.PropertyChangedEventHandler;
+
+		if (this.navigationArgs?.QrCodeScanned is TaskCompletionSource<string> TaskSource)
+		{
+			TaskSource.TrySetResult(string.Empty);
+		}
+
+		await base.OnDispose();
+	}
+
+	public void PropertyChangedEventHandler(object? sender, PropertyChangedEventArgs e)
+	{
+		this.OnPropertyChanged(nameof(this.LocalizedQrPageTitle));
+	}
+
+	public Task DoSwitchMode(bool IsAutomaticScan)
+	{
+		this.IsAutomaticScan = IsAutomaticScan;
+		return Task.CompletedTask;
 	}
 
 	/// <summary>
@@ -91,97 +115,50 @@ public partial class ScanQrCodeViewModel : BaseViewModel
 		}
 	}
 
-	/// <inheritdoc />
-	protected override async Task OnDispose()
-	{
-		if (this.navigationArgs?.QrCodeScanned is TaskCompletionSource<string> TaskSource)
-		{
-			TaskSource.TrySetResult(string.Empty);
-		}
-
-		await base.OnDispose();
-	}
-
 	#region Properties
 
 	/// <summary>
-	/// The link text, i.e. the full qr code including scheme.
+	/// The manually typed QR text
 	/// </summary>
 	[ObservableProperty]
-	private string linkText;
+	[NotifyCanExecuteChangedFor(nameof(OpenUrlCommand))]
+	private string? urlText;
 
 	/// <summary>
-	/// Gets or sets whether the open command is enabled or not.
+	/// The scanned QR text
 	/// </summary>
 	[ObservableProperty]
-	private bool openIsEnabled; //!!! !string.IsNullOrWhiteSpace((string)LinkText);
+	private string? qrText;
 
 	/// <summary>
-	/// The raw QR code URL.
+	/// Gets or sets whether the QR scanning is automatic or manual.
 	/// </summary>
 	[ObservableProperty]
-	private string url;
+	private bool isAutomaticScan = true;
 
 	/// <summary>
-	/// The localized, user friendly command name to display in the UI for scanning a QR Code. Typically "Add" or "Open".
+	/// The localized page title text to display.
 	/// </summary>
-	public string OpenCommandText
+	public string LocalizedQrPageTitle
 	{
 		get
 		{
-			//!!!
-			/*
-						this.OpenCommandText = LocalizationResourceManager.Current["Open"];
-						this.OpenCommandText = !string.IsNullOrWhiteSpace(this.navigationArgs?.CommandName)
-							? this.navigationArgs.CommandName
-							: LocalizationResourceManager.Current["Open"];
-			*/
+			if (this.navigationArgs?.QrTitle is not null)
+			{
+				return ServiceRef.Localizer[this.navigationArgs.QrTitle];
+			}
+
 			return string.Empty;
 		}
 	}
 
-	/// <summary>
-	/// Gets or sets whether the QR scanning is automatic or manual. <seealso cref="ScanIsManual"/>.
-	/// </summary>
-	[ObservableProperty]
-	private bool scanIsAutomatic;
-
-	/// <summary>
-	/// Gets or sets whether the QR scanning is automatic or manual. <seealso cref="ScanIsAutomatic"/>.
-	/// </summary>
-	[ObservableProperty]
-	private bool scanIsManual;
-
-	/// <summary>
-	/// The localized mode text to display to the user.
-	/// </summary>
-	public string ModeText
-	{
-		get
-		{
-			//!!! this.ModeText = this.ScanIsAutomatic ? LocalizationResourceManager.Current["QrEnterManually"] : LocalizationResourceManager.Current["QrScanCode"];
-			return string.Empty;
-		}
-	}
+	public bool CanOpenUrl => false;
 
 	#endregion
 
-	/// <summary>
-	/// Action to bind to for switching scan mode from manual to automatic.
-	/// </summary>
-	[RelayCommand]
-	private void SwitchMode()
+	[RelayCommand(CanExecute = nameof(CanOpenUrl))]
+	private async Task OpenUrl()
 	{
-		this.ScanIsAutomatic = !this.ScanIsAutomatic;
-		this.OnModeChanged(EventArgs.Empty);
-	}
-
-	/// <summary>
-	/// Invoke this method to fire the <see cref="ModeChanged"/> event.
-	/// </summary>
-	/// <param name="e"></param>
-	protected virtual void OnModeChanged(EventArgs e)
-	{
-		this.ModeChanged?.Invoke(this, e);
+		await Task.CompletedTask;
 	}
 }

@@ -27,60 +27,88 @@
 					VerticalOptions="FillAndExpand"
 					BarcodesDetected="CameraBarcodeReaderView_BarcodesDetected" />
 
-				<VerticalStackLayout
-					Grid.Row="1"
-					VerticalOptions="End"
-					Spacing="{StaticResource LargeSpacing}">
-
+				<Grid
+					Padding="{StaticResource LargeMargins}">
 					<VerticalStackLayout
-						Spacing="{StaticResource SmallSpacing}">
-						<Path
-							HeightRequest="66"
-							WidthRequest="66"
-							HorizontalOptions="Center"
-							Aspect="Uniform"
-							Data="{x:Static ui:Geometries.OnboardingIconPath}"
-							BackgroundColor="White"
-							Fill="#008000" />
+						VerticalOptions="Start">
 						<Label
-							Text="{l:Localize QrSectionTitle}" />
+							Text="{Binding LocalizedQrPageTitle}" />
 					</VerticalStackLayout>
 
-					<HorizontalStackLayout
-						HorizontalOptions="Center"
+					<VerticalStackLayout
+						VerticalOptions="End"
 						Spacing="{StaticResource LargeSpacing}">
-						<controls:ImageButton
-							Data="{x:Static ui:Geometries.CameraImageButtonPath}" />
-						<controls:ImageButton
-							Data="{x:Static ui:Geometries.CameraTorchButtonPath}" />
-						<controls:ImageButton
-							Data="{x:Static ui:Geometries.CameraSwitchButtonPath}" />
-					</HorizontalStackLayout>
 
-					<controls:FilledButton x:Name="ModeButton"
-						Command="{Binding Path=SwitchModeCommand, Source={x:Reference ThisPage}}"
-						Text="{Binding Path=ModeText}" />
-				</VerticalStackLayout>
+						<VerticalStackLayout
+							IsVisible="{Binding HasAllowedSchema}"
+							Spacing="{StaticResource SmallSpacing}">
+							<Border
+								HeightRequest="66"
+								WidthRequest="66"
+								BackgroundColor="White"
+								Stroke="#008000"
+								StrokeShape="RoundRectangle 33"
+								StrokeThickness="3">
+								<Path
+									HeightRequest="40"
+									WidthRequest="40"
+									HorizontalOptions="Center"
+									Aspect="Uniform"
+									Data="{x:Static ui:Geometries.OnboardingIconPath}"
+									Fill="#008000" />
+							</Border>
+							<Label
+								Text="{l:Localize QrSectionTitle}" />
+						</VerticalStackLayout>
+
+						<HorizontalStackLayout
+							HorizontalOptions="Center"
+							Spacing="{StaticResource LargeSpacing}">
+							<controls:ImageButton
+								Data="{x:Static ui:Geometries.CameraImageButtonPath}" />
+							<controls:ImageButton
+								Command="{Binding SwitchTorchCommand, Source={x:Reference ThisPage}}"
+								Data="{x:Static ui:Geometries.CameraTorchButtonPath}" />
+							<controls:ImageButton
+								Command="{Binding SwitchCameraCommand, Source={x:Reference ThisPage}}"
+								Data="{x:Static ui:Geometries.CameraSwitchButtonPath}" />
+						</HorizontalStackLayout>
+
+						<controls:OutlinedButton
+							Command="{Binding Path=SwitchModeCommand, Source={x:Reference ThisPage}}"
+							Text="{l:Localize QrEnterManually}" />
+					</VerticalStackLayout>
+				</Grid>
 			</Grid>
 
-			<StackLayout x:Name="ManualScanGrid" mct:StateView.StateKey="ManualScan"
-				BackgroundColor="Yellow"
-				HorizontalOptions="FillAndExpand"
-				VerticalOptions="CenterAndExpand">
-				<Label
+			<Grid x:Name="ManualScanGrid" mct:StateView.StateKey="ManualScan"
+				Padding="{StaticResource LargeMargins}">
+				<VerticalStackLayout
 					HorizontalOptions="FillAndExpand"
-					Text="scan" />
-				<!--  Text="{x:Static resx:AppResources.QrScanUri}" />  -->
-				<Entry x:Name="LinkEntry"
-					HorizontalOptions="Fill"
-					Keyboard="Url"
-					ReturnType="Done"
-					Text="{Binding Path=LinkText, Mode=TwoWay}" />
-				<Button x:Name="OpenButton"
-					Clicked="OpenButton_Click"
-					IsEnabled="{Binding Path=OpenIsEnabled}"
-					Text="{Binding Path=OpenCommandText}" />
-			</StackLayout>
+					VerticalOptions="CenterAndExpand"
+					Spacing="{StaticResource LargeSpacing}">
+					<VerticalStackLayout
+						Spacing="{StaticResource SmallSpacing}">
+						<Label
+							HorizontalOptions="FillAndExpand"
+							Text="{l:Localize QrScanUri}" />
+						<Entry x:Name="LinkEntry"
+							HorizontalOptions="Fill"
+							Keyboard="Url"
+							ReturnType="Done"
+							Text="{Binding Path=UrlText}" />
+					</VerticalStackLayout>
+					<controls:FilledButton x:Name="OpenButton"
+						Command="{Binding OpenUrlCommand}"
+						Text="{l:Localize Open}" />
+				</VerticalStackLayout>
+
+				<controls:OutlinedButton
+					VerticalOptions="End"
+					Command="{Binding Path=SwitchModeCommand, Source={x:Reference ThisPage}}"
+					Text="{l:Localize QrScanCode}" />
+
+			</Grid>
 		</mct:StateContainer.StateViews>
 
 		<!--  default state, should not occur  -->
@@ -89,18 +117,4 @@
 			Text="Something went wrong!"
 			VerticalTextAlignment="Center" />
 	</Grid>
-	<!--
-	<StackLayout Spacing="12" Orientation="Vertical" Margin="{StaticResource DefaultMargin}">
-            <Grid x:Name="AutomaticScanGrid"
-                  VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"
-                  IsVisible="{Binding Path=ScanIsAutomatic, Mode=OneWay}">
-                <forms:ZXingScannerView x:Name="Scanner"
-                                        OnScanResult="Scanner_OnScanResult"
-										IsScanning="False" IsAnalyzing="False"
-										SizeChanged="ZXingScannerView_SizeChanged"/>
-                <forms:ZXingDefaultOverlay TopText="{x:Static resx:AppResources.QrScanOverlay}"/>
-            </Grid>
-
-
-        </StackLayout>	-->
 </base:BaseContentPage>

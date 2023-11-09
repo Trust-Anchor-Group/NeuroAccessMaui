@@ -621,7 +621,16 @@
   <data name="ProviderSectionChangeOption" xml:space="preserve">
     <value>Change service provider</value>
   </data>
+  <data name="QrPageTitleScanInvitation" xml:space="preserve">
+    <value>Scan invitation</value>
+  </data>
   <data name="QrSectionTitle" xml:space="preserve">
     <value>Point the camera at the QR-code with the following symbol</value>
+  </data>
+  <data name="QrEnterManually" xml:space="preserve">
+    <value>Enter QR manually</value>
+  </data>
+  <data name="QrScanCode" xml:space="preserve">
+    <value>Scan QR code</value>
   </data>
 </root>

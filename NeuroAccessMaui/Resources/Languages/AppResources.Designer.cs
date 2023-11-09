@@ -1087,6 +1087,33 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enter QR manually.
+        /// </summary>
+        internal static string QrEnterManually {
+            get {
+                return ResourceManager.GetString("QrEnterManually", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scan invitation.
+        /// </summary>
+        internal static string QrPageTitleScanInvitation {
+            get {
+                return ResourceManager.GetString("QrPageTitleScanInvitation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scan QR code.
+        /// </summary>
+        internal static string QrScanCode {
+            get {
+                return ResourceManager.GetString("QrScanCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Point the camera at the QR-code with the following symbol.
         /// </summary>
         internal static string QrSectionTitle {

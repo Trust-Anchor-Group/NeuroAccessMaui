@@ -20,11 +20,9 @@ public static class QrCode
 	/// Scans a QR Code, and depending on the actual result, takes different actions.
 	/// This typically means navigating to an appropriate page.
 	/// </summary>
-	public static async Task ScanQrCodeAndHandleResult(string? AllowedIcon = null)
+	public static async Task ScanQrCodeAndHandleResult(string? QrTitle = null, string? AllowedSchema = null)
 	{
-		string? Url = await QrCode.ScanQrCode(
-			ServiceRef.Localizer[nameof(AppResources.Open)],
-			AllowedIcon);
+		string? Url = await QrCode.ScanQrCode(QrTitle, AllowedSchema);
 
 		if (string.IsNullOrWhiteSpace(Url))
 		{
@@ -98,11 +96,12 @@ public static class QrCode
 	/// </item>
 	/// </list>
 	/// </summary>
-	/// <param name="CommandName">The localized name of the command to display when scanning.</param>
+	/// <param name="QrTitle">The QR page title</param>
+	/// <param name="AllowedSchema">The allowed schema</param>
 	/// <returns>Decoded string</returns>
-	public static Task<string?> ScanQrCode(string CommandName, string? AllowedIcon = null)
+	public static Task<string?> ScanQrCode(string? QrTitle = null, string? AllowedSchema = null)
 	{
-		ScanQrCodeNavigationArgs NavigationArgs = new(CommandName, AllowedIcon) { Animated = false };
+		ScanQrCodeNavigationArgs NavigationArgs = new(QrTitle, AllowedSchema) { Animated = false };
 
 		ServiceRef.NavigationService.GoToAsync(nameof(ScanQrCodePage), NavigationArgs, BackMethod.Pop);
 

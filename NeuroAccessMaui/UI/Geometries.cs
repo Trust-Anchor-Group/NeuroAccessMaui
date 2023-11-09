@@ -1,5 +1,4 @@
 ﻿using Microsoft.Maui.Controls.Shapes;
-using NeuroAccessMaui.Services.UI.QR;
 
 namespace NeuroAccessMaui.UI;
 
