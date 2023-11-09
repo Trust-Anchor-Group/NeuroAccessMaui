@@ -59,6 +59,18 @@ public partial class ScanQrCodeViewModel : BaseViewModel
 		return Task.CompletedTask;
 	}
 
+	public Task SetQrText(string? qrText)
+	{
+		this.QrText = qrText;
+
+		if (this.CanOpenQr)
+		{
+			return this.TrySetResultAndClosePage(this.QrText!.Trim());
+		}
+
+		return Task.CompletedTask;
+	}
+
 	/// <summary>
 	/// Tries to set the Scan QR Code result and close the scan page.
 	/// </summary>
@@ -82,17 +94,6 @@ public partial class ScanQrCodeViewModel : BaseViewModel
 					ServiceRef.LogService.LogException(ex);
 				}
 			});
-		}
-		else
-		{
-			try
-			{
-				await ServiceRef.NavigationService.GoBackAsync();
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-			}
 		}
 	}
 
@@ -133,28 +134,29 @@ public partial class ScanQrCodeViewModel : BaseViewModel
 		}
 	}
 
-	public bool CanOpenUrl
+	private bool CanOpen(string? Text)
 	{
-		get
+		if (Text is null)
 		{
-			if (this.UrlText is null)
-			{
-				return false;
-			}
+			return false;
+		}
 
-			string Url = this.UrlText.Trim();
+		string Url = Text.Trim();
 
-			if (this.navigationArgs?.AllowedSchema is not null)
-			{
-				return System.Uri.TryCreate(Url, UriKind.Absolute, out Uri? Uri) &&
-					string.Equals(Uri.Scheme, this.navigationArgs?.AllowedSchema, StringComparison.OrdinalIgnoreCase);
-			}
-			else
-			{
-				return Url.Length > 0;
-			}
+		if (this.navigationArgs?.AllowedSchema is not null)
+		{
+			return System.Uri.TryCreate(Url, UriKind.Absolute, out Uri? Uri) &&
+				string.Equals(Uri.Scheme, this.navigationArgs?.AllowedSchema, StringComparison.OrdinalIgnoreCase);
+		}
+		else
+		{
+			return Url.Length > 0;
 		}
 	}
+
+	public bool CanOpenQr => this.CanOpen(this.QrText);
+
+	public bool CanOpenUrl => this.CanOpen(this.UrlText);
 
 	#endregion
 

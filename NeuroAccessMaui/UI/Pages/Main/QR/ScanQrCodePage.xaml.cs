@@ -143,15 +143,12 @@ public partial class ScanQrCodePage
 
 	private async void CameraBarcodeReaderView_BarcodesDetected(object sender, BarcodeDetectionEventArgs e)
 	{
-		string Result = e.Results[0].Value;
+		string? Result = (e.Results.Length > 0) ? e.Results[0].Value : null;
 
-		if (!string.IsNullOrWhiteSpace(Result))
+		await this.Dispatcher.DispatchAsync(async () =>
 		{
-			await this.Dispatcher.DispatchAsync(() =>
-			{
-				ScanQrCodeViewModel ViewModel = this.ViewModel<ScanQrCodeViewModel>();
-				ViewModel.QrText = Result.Trim();
-			});
-		}
+			ScanQrCodeViewModel ViewModel = this.ViewModel<ScanQrCodeViewModel>();
+			await ViewModel.SetQrText(Result);
+		});
 	}
 }
