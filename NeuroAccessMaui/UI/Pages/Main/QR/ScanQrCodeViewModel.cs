@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
 
@@ -64,54 +63,36 @@ public partial class ScanQrCodeViewModel : BaseViewModel
 	/// Tries to set the Scan QR Code result and close the scan page.
 	/// </summary>
 	/// <param name="Url">The URL to set.</param>
-	internal async void TrySetResultAndClosePage(string Url)
+	private async Task TrySetResultAndClosePage(string Url)
 	{
-		if (this.navigationArgs is null)
+		if (this.navigationArgs?.QrCodeScanned is not null)
 		{
-			try
-			{
-				//!!!
-				/*
-				if (this.useShellNavigationService)
-					await this.NavigationService.GoBackAsync();
-				else
-					await App.Current.MainPage.Navigation.PopAsync();
-				*/
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-			}
-		}
-		else
-		{
-			TaskCompletionSource<string> TaskSource = this.navigationArgs.QrCodeScanned;
+			TaskCompletionSource<string?> TaskSource = this.navigationArgs.QrCodeScanned;
 			this.navigationArgs.QrCodeScanned = null;
 
-			MainThread.BeginInvokeOnMainThread(async () =>
+			await MainThread.InvokeOnMainThreadAsync(async () =>
 			{
 				try
 				{
-					//!!!
-					/*
-					Url = Url?.Trim();
-
-					if (this.useShellNavigationService)
-						await this.NavigationService.GoBackAsync();
-					else
-						await App.Current.MainPage.Navigation.PopAsync();
-
-					if (TaskSource is not null)
-					{
-						TaskSource?.TrySetResult(Url);
-					}
-					*/
+					await ServiceRef.NavigationService.GoBackAsync();
+					TaskSource.TrySetResult(Url);
 				}
 				catch (Exception ex)
 				{
 					ServiceRef.LogService.LogException(ex);
 				}
 			});
+		}
+		else
+		{
+			try
+			{
+				await ServiceRef.NavigationService.GoBackAsync();
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
 		}
 	}
 
@@ -152,13 +133,34 @@ public partial class ScanQrCodeViewModel : BaseViewModel
 		}
 	}
 
-	public bool CanOpenUrl => false;
+	public bool CanOpenUrl
+	{
+		get
+		{
+			if (this.UrlText is null)
+			{
+				return false;
+			}
+
+			string Url = this.UrlText.Trim();
+
+			if (this.navigationArgs?.AllowedSchema is not null)
+			{
+				return System.Uri.TryCreate(Url, UriKind.Absolute, out Uri? Uri) &&
+					string.Equals(Uri.Scheme, this.navigationArgs?.AllowedSchema, StringComparison.OrdinalIgnoreCase);
+			}
+			else
+			{
+				return Url.Length > 0;
+			}
+		}
+	}
 
 	#endregion
 
 	[RelayCommand(CanExecute = nameof(CanOpenUrl))]
-	private async Task OpenUrl()
+	private Task OpenUrl()
 	{
-		await Task.CompletedTask;
+		return this.TrySetResultAndClosePage(this.UrlText!.Trim());
 	}
 }

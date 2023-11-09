@@ -25,5 +25,5 @@ public class ScanQrCodeNavigationArgs(string? QrTitle = null, string? AllowedSch
 	/// <summary>
 	/// Task completion source; can be used to wait for a result.
 	/// </summary>
-	public TaskCompletionSource<string?> QrCodeScanned { get; internal set; } = new();
+	public TaskCompletionSource<string?>? QrCodeScanned { get; internal set; } = new();
 }

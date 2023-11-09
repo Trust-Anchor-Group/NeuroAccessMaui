@@ -101,11 +101,11 @@ public static class QrCode
 	/// <returns>Decoded string</returns>
 	public static Task<string?> ScanQrCode(string? QrTitle = null, string? AllowedSchema = null)
 	{
-		ScanQrCodeNavigationArgs NavigationArgs = new(QrTitle, AllowedSchema) { Animated = false };
+		ScanQrCodeNavigationArgs NavigationArgs = new(QrTitle, AllowedSchema);
 
 		ServiceRef.NavigationService.GoToAsync(nameof(ScanQrCodePage), NavigationArgs, BackMethod.Pop);
 
-		return NavigationArgs.QrCodeScanned.Task;
+		return NavigationArgs.QrCodeScanned!.Task;
 	}
 
 	/// <summary>
