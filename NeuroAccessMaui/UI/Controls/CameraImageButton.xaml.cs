@@ -1,15 +1,13 @@
 using Microsoft.Maui.Controls.Shapes;
-using Waher.Content.Html.Elements;
 
 namespace NeuroAccessMaui.UI.Controls;
 
-public partial class ImageButton
+public partial class CameraImageButton
 {
-
 	/// <summary>
 	/// The backing store for the <see cref="Data" /> bindable property.
 	/// </summary>
-	public static readonly BindableProperty DataProperty = BindableProperty.Create(nameof(Data), typeof(Geometry), typeof(ImageButton), null);
+	public static readonly BindableProperty DataProperty = BindableProperty.Create(nameof(Data), typeof(Geometry), typeof(CameraImageButton), null);
 
 	/// <summary>
 	/// Gets or sets the geometry data displayed as the content of the button.
@@ -21,7 +19,7 @@ public partial class ImageButton
 		set => this.SetValue(DataProperty, value);
 	}
 
-	public ImageButton() : base()
+	public CameraImageButton() : base()
 	{
 		this.InitializeComponent();
 	}

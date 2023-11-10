@@ -32,7 +32,11 @@
 					<VerticalStackLayout
 						VerticalOptions="Start">
 						<Label
-							Text="{Binding LocalizedQrPageTitle}" />
+							HorizontalOptions="Center"
+							HorizontalTextAlignment="Center"
+							Style="{StaticResource PageTitleLabelStyle}"
+							Text="{Binding LocalizedQrPageTitle}"
+							TextColor="{StaticResource PrimaryBackgroundLight}" />
 					</VerticalStackLayout>
 
 					<VerticalStackLayout
@@ -58,23 +62,27 @@
 									Fill="#008000" />
 							</Border>
 							<Label
-								Text="{l:Localize QrSectionTitle}" />
+								HorizontalOptions="Center"
+								HorizontalTextAlignment="Center"
+								Style="{StaticResource SectionTitleLabelStyle}"
+								Text="{l:Localize QrSectionTitle}"
+								TextColor="{StaticResource PrimaryBackgroundLight}" />
 						</VerticalStackLayout>
 
 						<HorizontalStackLayout
 							HorizontalOptions="Center"
 							Spacing="{StaticResource LargeSpacing}">
-							<controls:ImageButton
+							<controls:CameraImageButton
 								Data="{x:Static ui:Geometries.CameraImageButtonPath}" />
-							<controls:ImageButton
+							<controls:CameraImageButton
 								Command="{Binding SwitchTorchCommand, Source={x:Reference ThisPage}}"
 								Data="{x:Static ui:Geometries.CameraTorchButtonPath}" />
-							<controls:ImageButton
+							<controls:CameraImageButton
 								Command="{Binding SwitchCameraCommand, Source={x:Reference ThisPage}}"
 								Data="{x:Static ui:Geometries.CameraSwitchButtonPath}" />
 						</HorizontalStackLayout>
 
-						<controls:OutlinedButton
+						<controls:CameraTextButton
 							Command="{Binding Path=SwitchModeCommand, Source={x:Reference ThisPage}}"
 							Text="{l:Localize QrEnterManually}" />
 					</VerticalStackLayout>
@@ -87,6 +95,7 @@
 					HorizontalOptions="FillAndExpand"
 					VerticalOptions="CenterAndExpand"
 					Spacing="{StaticResource LargeSpacing}">
+
 					<VerticalStackLayout
 						Spacing="{StaticResource SmallSpacing}">
 						<Label
@@ -98,6 +107,7 @@
 							ReturnType="Done"
 							Text="{Binding Path=UrlText}" />
 					</VerticalStackLayout>
+
 					<controls:FilledButton x:Name="OpenButton"
 						Command="{Binding OpenUrlCommand}"
 						Text="{l:Localize Open}" />

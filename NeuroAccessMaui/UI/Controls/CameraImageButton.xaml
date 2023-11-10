@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<controls:TemplatedButton x:Name="ThisPage" x:Class="NeuroAccessMaui.UI.Controls.ImageButton"
+<controls:TemplatedButton x:Name="ThisPage" x:Class="NeuroAccessMaui.UI.Controls.CameraImageButton"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
@@ -7,15 +7,18 @@
 	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
 
 	<Border
-		BackgroundColor="{AppThemeBinding Light={StaticResource EnabledFilledButtonBackgroundLight},
-										  Dark={StaticResource EnabledFilledButtonBackgroundDark}}"
-		Style="{StaticResource MediumButtonBorderStyle}">
+		BackgroundColor="#33F5F6F7"
+		Padding="{StaticResource MediumMargins}">
+		<Border.StrokeShape>
+			<RoundRectangle
+				CornerRadius="{StaticResource MediumCornerRadius}" />
+		</Border.StrokeShape>
+
 		<Path x:Name="InnerPath"
 			HorizontalOptions="FillAndExpand"
 			VerticalOptions="FillAndExpand"
 			Data="{Binding Data, Source={x:Reference ThisPage}}"
-			Stroke="{AppThemeBinding Light={StaticResource EnabledFilledButtonForegroundLight},
-									 Dark={StaticResource EnabledFilledButtonForegroundDark}}" />
+			Stroke="{StaticResource PrimaryBackgroundLight}" />
 
 		<VisualStateManager.VisualStateGroups>
 			<VisualStateGroupList>
@@ -23,8 +26,8 @@
 					<VisualState x:Name="Normal" />
 					<VisualState x:Name="Disabled">
 						<VisualState.Setters>
-							<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource DisabledFilledButtonBackgroundLight}, Dark={StaticResource DisabledFilledButtonBackgroundDark}}" />
-							<Setter TargetName="InnerPath" Property="Path.Stroke" Value="{AppThemeBinding Light={StaticResource DisabledFilledButtonForegroundLight}, Dark={StaticResource DisabledFilledButtonForegroundDark}}" />
+							<Setter Property="BackgroundColor" Value="#33F5F6F7" />
+							<Setter TargetName="InnerPath" Property="Path.Stroke" Value="{StaticResource PrimaryBackgroundLight}" />
 						</VisualState.Setters>
 					</VisualState>
 				</VisualStateGroup>
