@@ -76,7 +76,7 @@ public partial class ScanQrCodeViewModel : BaseViewModel
 	/// Tries to set the Scan QR Code result and close the scan page.
 	/// </summary>
 	/// <param name="Url">The URL to set.</param>
-	private async Task TrySetResultAndClosePage(string Url)
+	private async Task TrySetResultAndClosePage(string? Url)
 	{
 		if (this.navigationArgs?.QrCodeScanned is not null)
 		{
@@ -189,5 +189,11 @@ public partial class ScanQrCodeViewModel : BaseViewModel
 	private Task OpenUrl()
 	{
 		return this.TrySetResultAndClosePage(this.UrlText!.Trim());
+	}
+
+	[RelayCommand]
+	private Task GoBack()
+	{
+		return this.TrySetResultAndClosePage(null);
 	}
 }
