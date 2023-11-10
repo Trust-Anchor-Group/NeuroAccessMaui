@@ -45,7 +45,7 @@
 							<Border
 								HeightRequest="66"
 								WidthRequest="66"
-								BackgroundColor="White"
+								BackgroundColor="{Binding BackgroundIcon}"
 								Stroke="#008000"
 								StrokeShape="RoundRectangle 33"
 								StrokeThickness="3">

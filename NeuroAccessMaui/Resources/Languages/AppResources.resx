@@ -633,4 +633,7 @@
   <data name="QrScanCode" xml:space="preserve">
     <value>Scan QR code</value>
   </data>
+  <data name="QrScanUri" xml:space="preserve">
+    <value>URI:</value>
+  </data>
 </root>

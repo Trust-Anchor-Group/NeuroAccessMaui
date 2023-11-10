@@ -31,6 +31,7 @@ public partial class ScanQrCodeViewModel : BaseViewModel
 		if ((this.navigationArgs is null) && ServiceRef.NavigationService.TryGetArgs(out ScanQrCodeNavigationArgs? Args))
 		{
 			this.navigationArgs = Args;
+			this.OnPropertyChanged(nameof(this.HasAllowedSchema));
 			this.OnPropertyChanged(nameof(this.LocalizedQrPageTitle));
 		}
 	}
@@ -110,6 +111,7 @@ public partial class ScanQrCodeViewModel : BaseViewModel
 	/// The scanned QR text
 	/// </summary>
 	[ObservableProperty]
+	[NotifyPropertyChangedFor(nameof(BackgroundIcon))]
 	private string? qrText;
 
 	/// <summary>
@@ -117,6 +119,31 @@ public partial class ScanQrCodeViewModel : BaseViewModel
 	/// </summary>
 	[ObservableProperty]
 	private bool isAutomaticScan = true;
+
+	public bool HasAllowedSchema => this.navigationArgs?.AllowedSchema is not null;
+
+	public Color BackgroundIcon
+	{
+		get
+		{
+			if (this.QrText is null)
+			{
+				return Colors.White;
+			}
+
+			string Url = this.QrText.Trim();
+
+			if (this.navigationArgs?.AllowedSchema is not null)
+			{
+				bool IsValid = System.Uri.TryCreate(Url, UriKind.Absolute, out Uri? Uri) &&
+					string.Equals(Uri.Scheme, this.navigationArgs?.AllowedSchema, StringComparison.OrdinalIgnoreCase);
+
+				return IsValid ? Colors.White : Color.FromUint(0xFFFF7585);
+			}
+
+			return Colors.White;
+		}
+	}
 
 	/// <summary>
 	/// The localized page title text to display.
@@ -148,10 +175,8 @@ public partial class ScanQrCodeViewModel : BaseViewModel
 			return System.Uri.TryCreate(Url, UriKind.Absolute, out Uri? Uri) &&
 				string.Equals(Uri.Scheme, this.navigationArgs?.AllowedSchema, StringComparison.OrdinalIgnoreCase);
 		}
-		else
-		{
-			return Url.Length > 0;
-		}
+
+		return Url.Length > 0;
 	}
 
 	public bool CanOpenQr => this.CanOpen(this.QrText);
