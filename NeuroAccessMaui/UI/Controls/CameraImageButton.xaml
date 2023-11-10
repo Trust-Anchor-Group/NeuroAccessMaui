@@ -15,18 +15,12 @@
 				CornerRadius="{StaticResource MediumCornerRadius}" />
 		</Border.StrokeShape>
 
-		<Border
+		<Path x:Name="InnerPath"
 			HeightRequest="24"
 			WidthRequest="24"
-			StrokeThickness="0">
-
-			<Path x:Name="InnerPath"
-				HorizontalOptions="Center"
-				VerticalOptions="Center"
-				Aspect="Uniform"
-				Data="{Binding Data, Source={x:Reference ThisPage}}"
-				Fill="{StaticResource PrimaryBackgroundLight}" />
-		</Border>
+			Aspect="Uniform"
+			Data="{Binding Data, Source={x:Reference ThisPage}}"
+			Fill="{StaticResource PrimaryBackgroundLight}" />
 
 		<VisualStateManager.VisualStateGroups>
 			<VisualStateGroupList>
