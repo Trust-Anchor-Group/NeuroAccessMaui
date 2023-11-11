@@ -75,6 +75,11 @@ public class Geometries
 		M9 5H11V7H9V5ZM9 9H11V15H9V9ZM10 0C4.48 0 0 4.48 0 10C0 15.52 4.48 20 10 20C15.52 20 20 15.52 20 10C20 4.48 15.52 0 10 0ZM10 18C5.59 18 2 14.41 2 10C2 5.59 5.59 2 10 2C14.41 2 18 5.59 18 10C18 14.41 14.41 18 10 18Z
 		""");
 
+	public static readonly Geometry DropDownArrowPath = GeometryConverter.ParseStringToPathGeometry(
+		"""
+		M0.333496 0.5L5.3335 5.5L10.3335 0.5H0.333496Z
+		""");
+
 	public static readonly Geometry CameraImageButtonPath = GeometryConverter.ParseStringToPathGeometry(
 		"""
 		M16 2V16H2V2H16ZM16 0H2C0.9 0 0 0.9 0 2V16C0 17.1 0.9 18 2 18H16C17.1 18 18 17.1 18 16V2C18 0.9 17.1 0 16 0ZM11.14 8.86L8.14 12.73L6 10.14L3 14H15L11.14 8.86Z

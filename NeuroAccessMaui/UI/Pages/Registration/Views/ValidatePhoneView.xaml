@@ -2,10 +2,11 @@
 <base:BaseRegistrationView x:Name="ThisPage" x:Class="NeuroAccessMaui.UI.Pages.Registration.Views.ValidatePhoneView" x:DataType="viewmodel:ValidatePhoneViewModel"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 	xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
 	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Registration"
 	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+	xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views">
 
 	<VerticalStackLayout
@@ -52,11 +53,14 @@
 								VerticalOptions="Center"
 								Text="{Binding SelectedCountry.DialCode}" />
 
-							<controls:TintedImage
+							<Path x:Name="InnerPath"
+								HeightRequest="5"
+								WidthRequest="10"
 								VerticalOptions="Center"
-								Source="drop_down_button.png"
-								TintColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
-															Dark={StaticResource PrimaryForegroundDark}}" />
+								Aspect="Uniform"
+								Data="{x:Static ui:Geometries.DropDownArrowPath}"
+								Fill="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
+													   Dark={StaticResource PrimaryForegroundDark}}" />
 						</HorizontalStackLayout>
 						<Entry
 							Grid.Column="1"
