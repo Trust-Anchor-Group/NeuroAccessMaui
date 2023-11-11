@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.Controls.Shapes;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
@@ -203,14 +204,14 @@ public partial class ButtonInfo : ObservableObject
 		}
 	}
 
-	public string ImageName
+	public Geometry ImageData
 	{
 		get
 		{
 			return this.Button switch
 			{
-				ButtonType.Approve => "approve_provider_button.png",
-				ButtonType.Change => "change_provider_button.png",
+				ButtonType.Approve => Geometries.ApproveProviderIconPath,
+				ButtonType.Change => Geometries.ChangeProviderIconPath,
 				_ => throw new NotImplementedException(),
 			};
 		}

@@ -38,9 +38,13 @@
 								Right="{StaticResource MediumSpacing}" />
 						</Border.Padding>
 
-						<controls:TintedImage x:Name="InnerImage"
-							Source="{Binding ImageName}"
-							TintColor="{Binding TextColor, Source={x:Reference InnerLabel}}" />
+						<Path x:Name="InnerPath"
+							HeightRequest="24"
+							WidthRequest="24"
+							VerticalOptions="Center"
+							Aspect="Uniform"
+							Data="{Binding ImageData}"
+							Fill="{Binding TextColor, Source={x:Reference InnerLabel}}" />
 					</Border>
 
 					<Label x:Name="InnerLabel"
@@ -71,7 +75,7 @@
 								<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SelectedBackgroundLight}, Dark={StaticResource SelectedBackgroundDark}}" />
 								<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource SelectedBackgroundLight}, Dark={StaticResource SelectedBackgroundDark}}" />
 								<Setter TargetName="InnerLabel" Property="Label.TextColor" Value="{AppThemeBinding Light={StaticResource SelectedForegroundLight}, Dark={StaticResource SelectedForegroundDark}}" />
-								<Setter TargetName="InnerImage" Property="controls:TintedImage.TintColor" Value="{AppThemeBinding Light={StaticResource SelectedForegroundLight}, Dark={StaticResource SelectedForegroundDark}}" />
+								<Setter TargetName="InnerPath" Property="Path.Fill" Value="{AppThemeBinding Light={StaticResource SelectedForegroundLight}, Dark={StaticResource SelectedForegroundDark}}" />
 							</VisualState.Setters>
 						</VisualState>
 					</VisualStateGroup>
