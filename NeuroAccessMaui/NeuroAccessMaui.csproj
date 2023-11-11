@@ -69,6 +69,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiFont Remove="Resources\Fonts\NHaasGroteskTXPro-65Md.ttf" />
+	  <MauiFont Remove="Resources\Fonts\SpaceGrotesk-Light.ttf" />
+	  <MauiFont Remove="Resources\Fonts\SpaceGrotesk-SemiBold.ttf" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Include="Platforms\iOS\IOSHelpers.cs" />
 	  <None Include="Platforms\iOS\Security\BlurProtectionManager.cs" />
 	  <None Include="Platforms\iOS\Security\ScreenRecordingProtectionManager.cs" />

@@ -29,12 +29,12 @@ public static class MauiProgram
 		Builder.ConfigureFonts(fonts =>
 		{
 			fonts.AddFont("SpaceGrotesk-Bold.ttf", "SpaceGroteskBold");
-			fonts.AddFont("SpaceGrotesk-SemiBold.ttf", "SpaceGroteskSemiBold");
+			//fonts.AddFont("SpaceGrotesk-SemiBold.ttf", "SpaceGroteskSemiBold");
 			fonts.AddFont("SpaceGrotesk-Medium.ttf", "SpaceGroteskMedium");
 			fonts.AddFont("SpaceGrotesk-Regular.ttf", "SpaceGroteskRegular");
-			fonts.AddFont("SpaceGrotesk-Light.ttf", "SpaceGroteskLight");
+			//fonts.AddFont("SpaceGrotesk-Light.ttf", "SpaceGroteskLight");
 			fonts.AddFont("NHaasGroteskTXPro-75Bd.ttf", "HaasGroteskBold");
-			fonts.AddFont("NHaasGroteskTXPro-65Md.ttf", "HaasGroteskMedium");
+			//fonts.AddFont("NHaasGroteskTXPro-65Md.ttf", "HaasGroteskMedium");
 			fonts.AddFont("NHaasGroteskTXPro-55Rg.ttf", "HaasGroteskRegular");
 		});
 
