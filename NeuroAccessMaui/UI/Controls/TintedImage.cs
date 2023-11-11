@@ -2,6 +2,7 @@ using CommunityToolkit.Maui.Behaviors;
 
 namespace NeuroAccessMaui.UI.Controls;
 
+[Obsolete("Use the Geometries and Paths instead")]
 public class TintedImage : Image
 {
 	public TintedImage()
