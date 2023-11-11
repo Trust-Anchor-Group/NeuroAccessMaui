@@ -61,8 +61,8 @@
 						</Border.GestureRecognizers>
 
 						<Path x:Name="InnerPath"
-							HeightRequest="24"
-							WidthRequest="24"
+							HeightRequest="20"
+							WidthRequest="20"
 							Aspect="Uniform"
 							Data="{x:Static ui:Geometries.InfoCirclePath}"
 							Fill="{AppThemeBinding Light={StaticResource NormalInfoForegroundLight},

@@ -80,6 +80,11 @@ public class Geometries
 		M0.333496 0.5L5.3335 5.5L10.3335 0.5H0.333496Z
 		""");
 
+	public static readonly Geometry EmailIconPath = GeometryConverter.ParseStringToPathGeometry(
+		"""
+		M20 2C20 0.9 19.1 0 18 0H2C0.9 0 0 0.9 0 2V14C0 15.1 0.9 16 2 16H18C19.1 16 20 15.1 20 14V2ZM18 2L10 7L2 2H18ZM18 14H2V4L10 9L18 4V14Z
+		""");
+
 	public static readonly Geometry CameraImageButtonPath = GeometryConverter.ParseStringToPathGeometry(
 		"""
 		M16 2V16H2V2H16ZM16 0H2C0.9 0 0 0.9 0 2V16C0 17.1 0.9 18 2 18H16C17.1 18 18 17.1 18 16V2C18 0.9 17.1 0 16 0ZM11.14 8.86L8.14 12.73L6 10.14L3 14H15L11.14 8.86Z

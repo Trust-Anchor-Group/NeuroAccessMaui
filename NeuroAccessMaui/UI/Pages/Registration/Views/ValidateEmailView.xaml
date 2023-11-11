@@ -2,10 +2,11 @@
 <base:BaseRegistrationView x:Name="ThisPage" x:Class="NeuroAccessMaui.UI.Pages.Registration.Views.ValidateEmailView" x:DataType="viewmodel:ValidateEmailViewModel"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 	xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
 	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Registration"
 	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+	xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views">
 
 	<VerticalStackLayout
@@ -39,20 +40,21 @@
 						ColumnDefinitions="auto,*"
 						ColumnSpacing="{StaticResource MediumSpacing}"
 						RowDefinitions="auto">
-						<HorizontalStackLayout
-							Grid.Column="0"
-							VerticalOptions="FillAndExpand"
-							Spacing="{StaticResource SmallSpacing}">
 
-							<controls:TintedImage
-								VerticalOptions="Center"
-								Source="email_entry.png"
-								TintColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
-															Dark={StaticResource PrimaryForegroundDark}}" />
-						</HorizontalStackLayout>
+						<Path
+							Grid.Column="0"
+							HeightRequest="24"
+							WidthRequest="24"
+							VerticalOptions="Center"
+							Aspect="Uniform"
+							Data="{x:Static ui:Geometries.EmailIconPath}"
+							Fill="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
+												   Dark={StaticResource PrimaryForegroundDark}}" />
+
 						<Entry
 							Grid.Column="1"
 							VerticalOptions="Center"
+							IsSpellCheckEnabled="False"
 							Keyboard="Email"
 							Text="{Binding EmailText}">
 							<Entry.Behaviors>
@@ -71,12 +73,16 @@
 					ColumnSpacing="{StaticResource SmallSpacing}"
 					IsVisible="{Binding IsNotValid, Source={x:Reference EmailValidator}}"
 					RowDefinitions="auto">
-					<controls:TintedImage
+
+					<Path
 						Grid.Column="0"
+						HeightRequest="20"
+						WidthRequest="20"
 						VerticalOptions="Center"
-						Source="info_circle_error.png"
-						TintColor="{AppThemeBinding Light={StaticResource InvalidatedEditLight},
-													Dark={StaticResource InvalidatedEditDark}}" />
+						Aspect="Uniform"
+						Data="{x:Static ui:Geometries.InfoCirclePath}"
+						Fill="{AppThemeBinding Light={StaticResource InvalidatedEditLight},
+											   Dark={StaticResource InvalidatedEditDark}}" />
 					<Label
 						Grid.Column="1"
 						VerticalOptions="Center"

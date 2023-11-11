@@ -53,7 +53,7 @@
 								VerticalOptions="Center"
 								Text="{Binding SelectedCountry.DialCode}" />
 
-							<Path x:Name="InnerPath"
+							<Path
 								HeightRequest="5"
 								WidthRequest="10"
 								VerticalOptions="Center"
@@ -65,6 +65,7 @@
 						<Entry
 							Grid.Column="1"
 							VerticalOptions="Center"
+							IsSpellCheckEnabled="False"
 							Keyboard="Telephone"
 							Text="{Binding PhoneNumber}">
 							<Entry.Behaviors>
@@ -89,12 +90,17 @@
 					ColumnSpacing="{StaticResource SmallSpacing}"
 					IsVisible="{Binding IsNotValid, Source={x:Reference PhoneValidator}}"
 					RowDefinitions="auto">
-					<controls:TintedImage
+
+					<Path
 						Grid.Column="0"
+						HeightRequest="20"
+						WidthRequest="20"
 						VerticalOptions="Center"
-						Source="info_circle_error.png"
-						TintColor="{AppThemeBinding Light={StaticResource InvalidatedEditLight},
-													Dark={StaticResource InvalidatedEditDark}}" />
+						Aspect="Uniform"
+						Data="{x:Static ui:Geometries.InfoCirclePath}"
+						Fill="{AppThemeBinding Light={StaticResource InvalidatedEditLight},
+											   Dark={StaticResource InvalidatedEditDark}}" />
+
 					<Label
 						Grid.Column="1"
 						VerticalOptions="Center"
