@@ -25,6 +25,15 @@ public class TextButton : TemplatedButton, IBorderDataElement, ILabelDataElement
 	/// <summary>Bindable property for <see cref="LabelStyle"/>.</summary>
 	public static readonly BindableProperty LabelStyleProperty = LabelDataElement.LabelStyleProperty;
 
+	/// <summary>Bindable property for <see cref="LabelTextColor"/>.</summary>
+	public static readonly BindableProperty LabelTextColorProperty = LabelDataElement.LabelTextColorProperty;
+
+	/// <summary>Bindable property for <see cref="LabelHorizontalOptions"/>.</summary>
+	public static readonly BindableProperty LabelHorizontalOptionsProperty = LabelDataElement.LabelHorizontalOptionsProperty;
+
+	/// <summary>Bindable property for <see cref="LabelVerticalOptions"/>.</summary>
+	public static readonly BindableProperty LabelVerticalOptionsProperty = LabelDataElement.LabelVerticalOptionsProperty;
+
 	public void OnBorderStylePropertyChanged(Style OldValue, Style NewValue)
 	{
 		this.innerBorder.Style = NewValue;
@@ -53,6 +62,21 @@ public class TextButton : TemplatedButton, IBorderDataElement, ILabelDataElement
 	public void OnLabelStylePropertyChanged(Style OldValue, Style NewValue)
 	{
 		this.innerLabel.Style = NewValue;
+	}
+
+	public void OnLabelTextColorPropertyChanged(Color OldValue, Color NewValue)
+	{
+		this.innerLabel.TextColor = NewValue;
+	}
+
+	public void OnLabelHorizontalOptionsPropertyChanged(LayoutOptions OldValue, LayoutOptions NewValue)
+	{
+		this.innerLabel.HorizontalOptions = NewValue;
+	}
+
+	public void OnLabelVerticalOptionsPropertyChanged(LayoutOptions OldValue, LayoutOptions NewValue)
+	{
+		this.innerLabel.VerticalOptions = NewValue;
 	}
 
 	public Thickness BorderPaddingDefaultValueCreator() => Thickness.Zero;
@@ -91,6 +115,24 @@ public class TextButton : TemplatedButton, IBorderDataElement, ILabelDataElement
 	{
 		get => (Style)this.GetValue(LabelDataElement.LabelStyleProperty);
 		set => this.SetValue(LabelDataElement.LabelStyleProperty, value);
+	}
+
+	public Color LabelTextColor
+	{
+		get => (Color)this.GetValue(LabelDataElement.LabelTextColorProperty);
+		set => this.SetValue(LabelDataElement.LabelTextColorProperty, value);
+	}
+
+	public LayoutOptions LabelHorizontalOptions
+	{
+		get => (LayoutOptions)this.GetValue(LabelDataElement.LabelHorizontalOptionsProperty);
+		set => this.SetValue(LabelDataElement.LabelHorizontalOptionsProperty, value);
+	}
+
+	public LayoutOptions LabelVerticalOptions
+	{
+		get => (LayoutOptions)this.GetValue(LabelDataElement.LabelVerticalOptionsProperty);
+		set => this.SetValue(LabelDataElement.LabelVerticalOptionsProperty, value);
 	}
 
 	public TextButton() : base()
