@@ -15,7 +15,8 @@
 		Style="{StaticResource BaseBackgroundPage}"
 		>
 	-->
-	<base:BaseContentPage.Resources>
+
+	<VisualElement.Resources>
 		<ResourceDictionary>
 			<Style x:Key="CameraImageButtonBorderStyle"
 				ApplyToDerivedTypes="False"
@@ -82,7 +83,7 @@
 				<Setter Property="LabelStyle" Value="{StaticResource CameraTextButtonLabelStyle}" />
 			</Style>
 		</ResourceDictionary>
-	</base:BaseContentPage.Resources>
+	</VisualElement.Resources>
 
 	<Grid x:Name="GridWithAnimation"
 		HorizontalOptions="FillAndExpand"

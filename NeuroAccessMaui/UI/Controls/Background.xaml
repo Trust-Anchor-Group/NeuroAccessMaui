@@ -4,7 +4,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:ui="clr-namespace:NeuroAccessMaui.UI">
 
-	<ContentView.Resources>
+	<VisualElement.Resources>
 		<ResourceDictionary>
 			<Style x:Key="CurvedLinesStyle"
 				ApplyToDerivedTypes="False"
@@ -14,7 +14,7 @@
 				<Setter Property="StrokeThickness" Value="{StaticResource MediumStrokeThickness}" />
 			</Style>
 		</ResourceDictionary>
-	</ContentView.Resources>
+	</VisualElement.Resources>
 
 	<AbsoluteLayout>
 		<Path
