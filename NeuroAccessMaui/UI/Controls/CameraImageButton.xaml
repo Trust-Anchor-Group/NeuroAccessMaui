@@ -29,7 +29,7 @@
 					<VisualState x:Name="Disabled">
 						<VisualState.Setters>
 							<Setter Property="BackgroundColor" Value="#33F5F6F7" />
-							<Setter TargetName="InnerPath" Property="Path.Stroke" Value="{StaticResource PrimaryBackgroundLight}" />
+							<Setter TargetName="InnerPath" Property="Path.Fill" Value="{StaticResource PrimaryBackgroundLight}" />
 						</VisualState.Setters>
 					</VisualState>
 				</VisualStateGroup>

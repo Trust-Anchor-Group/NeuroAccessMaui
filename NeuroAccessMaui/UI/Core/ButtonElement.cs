@@ -27,11 +27,11 @@ static class ButtonElement
 	/// A method to signal that this element was clicked/tapped.
 	/// By calling this, the <see cref="ICommandElement.Command"/> and clicked events are triggered.
 	/// </summary>
-	/// <param name="visualElement">The element that was interacted with.</param>
+	/// <param name="VisualElement">The element that was interacted with.</param>
 	/// <param name="ButtonElementManager">The button element implementation to trigger the commands and events on.</param>
-	public static void ElementClicked(VisualElement visualElement, IButtonElement ButtonElementManager)
+	public static void ElementClicked(VisualElement VisualElement, IButtonElement ButtonElementManager)
 	{
-		if (visualElement.IsEnabled == true)
+		if (VisualElement.IsEnabled == true)
 		{
 			ButtonElementManager.Command?.Execute(ButtonElementManager.CommandParameter);
 			ButtonElementManager.PropagateUpClicked();
