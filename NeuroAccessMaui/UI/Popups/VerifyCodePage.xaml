@@ -2,8 +2,8 @@
 <viewmodel:BasePopup x:Class="NeuroAccessMaui.UI.Popups.VerifyCodePage" x:DataType="viewmodel:VerifyCodePage"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups">
 
 	<VisualElement.Resources>
@@ -183,11 +183,12 @@
 							Command="{Binding CodeVerification.ResendCodeCommand}"
 							Text="{Binding LocalizedResendCodeText}" />
 
-						<controls:FilledButton
+						<controls:TextButton
 							Grid.Column="1"
 							HorizontalOptions="FillAndExpand"
 							Command="{Binding VerifyCommand}"
-							Text="{l:Localize Verify}" />
+							LabelData="{l:Localize Verify}"
+							Style="{StaticResource FilledTextButtonStyle}" />
 					</Grid>
 				</VerticalStackLayout>
 			</ScrollView>

@@ -94,8 +94,9 @@
 			</VerticalStackLayout>
 		</VerticalStackLayout>
 
-		<controls:FilledButton
+		<controls:TextButton
 			Command="{Binding SendCodeCommand}"
-			Text="{Binding LocalizedSendCodeText}" />
+			LabelData="{Binding LocalizedSendCodeText}"
+			Style="{StaticResource FilledTextButtonStyle}" />
 	</VerticalStackLayout>
 </base:BaseRegistrationView>

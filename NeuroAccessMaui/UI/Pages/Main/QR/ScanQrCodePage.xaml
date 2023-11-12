@@ -192,9 +192,9 @@
 							Text="{Binding Path=UrlText}" />
 					</VerticalStackLayout>
 
-					<controls:FilledButton x:Name="OpenButton"
+					<controls:TextButton
 						Command="{Binding OpenUrlCommand}"
-						Text="{l:Localize Open}" />
+						LabelData="{l:Localize Open}" />
 				</VerticalStackLayout>
 
 				<controls:OutlinedButton

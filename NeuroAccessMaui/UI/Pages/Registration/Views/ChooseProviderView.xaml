@@ -111,9 +111,10 @@
 				Spacing="{StaticResource MediumSpacing}" />
 		</VerticalStackLayout>
 
-		<controls:FilledButton
+		<controls:TextButton
 			Command="{Binding ContinueCommand}"
-			Text="{l:Localize Continue}" />
+			LabelData="{l:Localize Continue}"
+			Style="{StaticResource FilledTextButtonStyle}" />
 	</VerticalStackLayout>
 
 	<!--

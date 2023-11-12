@@ -11,6 +11,8 @@
 					Source="Resources/Styles/Colors.xaml" />
 				<ResourceDictionary
 					Source="Resources/Styles/Styles.xaml" />
+				<ResourceDictionary
+					Source="Resources/Styles/ButtonStyles.xaml" />
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</Application.Resources>
