@@ -15,6 +15,53 @@
 		Style="{StaticResource BaseBackgroundPage}"
 		>
 	-->
+	<base:BaseContentPage.Resources>
+		<ResourceDictionary>
+			<Style x:Key="CameraImageButtonStyle"
+				ApplyToDerivedTypes="False"
+				TargetType="controls:ImageButton">
+
+				<Setter Property="BorderBackgroundColor" Value="#33F5F6F7" />
+				<Setter Property="BorderPadding" Value="{StaticResource MediumMargins}" />
+				<Setter Property="BorderStrokeShape">
+					<RoundRectangle
+						CornerRadius="{StaticResource MediumCornerRadius}" />
+				</Setter>
+
+				<Setter Property="PathFill" Value="{StaticResource PrimaryBackgroundLight}" />
+				<!--
+				<Setter Property="VisualStateManager.VisualStateGroups">
+					<VisualStateGroupList>
+						<VisualStateGroup x:Name="CommonStates">
+							<VisualState x:Name="Normal" />
+							<VisualState x:Name="Disabled">
+								<VisualState.Setters>
+								</VisualState.Setters>
+							</VisualState>
+						</VisualStateGroup>
+					</VisualStateGroupList>
+				</Setter>
+				-->
+			</Style>
+
+			<Style x:Key="CameraTextButtonStyle"
+				ApplyToDerivedTypes="False"
+				TargetType="controls:TextButton">
+
+				<Setter Property="BorderBackgroundColor" Value="#33F5F6F7" />
+				<Setter Property="BorderPadding" Value="{StaticResource ButtonMediumMargins}" />
+				<Setter Property="BorderStrokeShape">
+					<RoundRectangle
+						CornerRadius="{StaticResource SmallCornerRadius}" />
+				</Setter>
+
+				<Setter Property="LabelHorizontalOptions" Value="Center" />
+				<Setter Property="LabelVerticalOptions" Value="FillAndExpand" />
+				<Setter Property="LabelStyle" Value="{StaticResource BoldItemTitleLabelStyle}" />
+				<Setter Property="LabelTextColor" Value="{StaticResource PrimaryBackgroundLight}" />
+			</Style>
+		</ResourceDictionary>
+	</base:BaseContentPage.Resources>
 
 	<Grid x:Name="GridWithAnimation"
 		HorizontalOptions="FillAndExpand"
@@ -33,10 +80,11 @@
 						VerticalOptions="Start"
 						Spacing="{StaticResource LargeSpacing}">
 
-						<controls:CameraImageButton
+						<controls:ImageButton
 							HorizontalOptions="Start"
 							Command="{Binding GoBackCommand}"
-							Data="{x:Static ui:Geometries.BackButtonPath}" />
+							GeometryData="{x:Static ui:Geometries.BackButtonPath}"
+							Style="{StaticResource CameraImageButtonStyle}" />
 
 						<Label
 							HorizontalOptions="Center"
@@ -80,19 +128,26 @@
 						<HorizontalStackLayout
 							HorizontalOptions="Center"
 							Spacing="{StaticResource LargeSpacing}">
-							<controls:CameraImageButton
-								Data="{x:Static ui:Geometries.CameraImageButtonPath}" />
-							<controls:CameraImageButton
+
+							<controls:ImageButton
+								GeometryData="{x:Static ui:Geometries.CameraImageButtonPath}"
+								Style="{StaticResource CameraImageButtonStyle}" />
+
+							<controls:ImageButton
 								Command="{Binding SwitchTorchCommand, Source={x:Reference ThisPage}}"
-								Data="{x:Static ui:Geometries.CameraTorchButtonPath}" />
-							<controls:CameraImageButton
+								GeometryData="{x:Static ui:Geometries.CameraTorchButtonPath}"
+								Style="{StaticResource CameraImageButtonStyle}" />
+
+							<controls:ImageButton
 								Command="{Binding SwitchCameraCommand, Source={x:Reference ThisPage}}"
-								Data="{x:Static ui:Geometries.CameraSwitchButtonPath}" />
+								GeometryData="{x:Static ui:Geometries.CameraSwitchButtonPath}"
+								Style="{StaticResource CameraImageButtonStyle}" />
 						</HorizontalStackLayout>
 
-						<controls:CameraTextButton
+						<controls:TextButton
 							Command="{Binding Path=SwitchModeCommand, Source={x:Reference ThisPage}}"
-							Text="{l:Localize QrEnterManually}" />
+							LabelData="{l:Localize QrEnterManually}"
+							Style="{StaticResource CameraTextButtonStyle}" />
 					</VerticalStackLayout>
 				</Grid>
 			</Grid>
