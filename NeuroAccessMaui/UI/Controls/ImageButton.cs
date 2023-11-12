@@ -4,13 +4,13 @@ using PathShape = Microsoft.Maui.Controls.Shapes.Path;
 
 namespace NeuroAccessMaui.UI.Controls;
 
-public class ImageButton : TemplatedButton, IGeometryDataElement, IBorderDataElement, IPathDataElement
+public class ImageButton : TemplatedButton, IBorderDataElement, IPathDataElement
 {
 	private readonly Border innerBorder;
 	private readonly PathShape innerPath;
 
-	/// <summary>Bindable property for <see cref="GeometryData"/>.</summary>
-	public static readonly BindableProperty GeometryDataProperty = GeometryDataElement.GeometryDataProperty;
+	/// <summary>Bindable property for <see cref="BorderStyle"/>.</summary>
+	public static readonly BindableProperty BorderStyleProperty = BorderDataElement.BorderStyleProperty;
 
 	/// <summary>Bindable property for <see cref="BorderStrokeShape"/>.</summary>
 	public static readonly BindableProperty BorderStrokeShapeProperty = BorderDataElement.BorderStrokeShapeProperty;
@@ -21,15 +21,21 @@ public class ImageButton : TemplatedButton, IGeometryDataElement, IBorderDataEle
 	/// <summary>Bindable property for <see cref="BorderPadding"/>.</summary>
 	public static readonly BindableProperty BorderPaddingProperty = BorderDataElement.BorderPaddingProperty;
 
+	/// <summary>Bindable property for <see cref="GeometryData"/>.</summary>
+	public static readonly BindableProperty GeometryDataProperty = PathDataElement.GeometryDataProperty;
+
+	/// <summary>Bindable property for <see cref="PathStyle"/>.</summary>
+	public static readonly BindableProperty PathStyleProperty = PathDataElement.PathStyleProperty;
+
 	/// <summary>Bindable property for <see cref="PathFill"/>.</summary>
 	public static readonly BindableProperty PathFillProperty = PathDataElement.PathFillProperty;
 
 	/// <summary>Bindable property for <see cref="PathStroke"/>.</summary>
 	public static readonly BindableProperty PathStrokeProperty = PathDataElement.PathStrokeProperty;
 
-	public void OnGeometryDataPropertyChanged(Geometry OldValue, Geometry NewValue)
+	public void OnBorderStylePropertyChanged(Style OldValue, Style NewValue)
 	{
-		this.innerPath.Data = NewValue;
+		this.innerBorder.Style = NewValue;
 	}
 
 	public void OnBorderStrokeShapePropertyChanged(IShape OldValue, IShape NewValue)
@@ -47,6 +53,16 @@ public class ImageButton : TemplatedButton, IGeometryDataElement, IBorderDataEle
 		this.innerBorder.Padding = NewValue;
 	}
 
+	public void OnGeometryDataPropertyChanged(Geometry OldValue, Geometry NewValue)
+	{
+		this.innerPath.Data = NewValue;
+	}
+
+	public void OnPathStylePropertyChanged(Style OldValue, Style NewValue)
+	{
+		this.innerPath.Style = NewValue;
+	}
+
 	public void OnPathFillPropertyChanged(Brush OldValue, Brush NewValue)
 	{
 		this.innerPath.Fill = NewValue;
@@ -61,8 +77,14 @@ public class ImageButton : TemplatedButton, IGeometryDataElement, IBorderDataEle
 
 	public Geometry GeometryData
 	{
-		get => (Geometry)this.GetValue(GeometryDataElement.GeometryDataProperty);
-		set => this.SetValue(GeometryDataElement.GeometryDataProperty, value);
+		get => (Geometry)this.GetValue(PathDataElement.GeometryDataProperty);
+		set => this.SetValue(PathDataElement.GeometryDataProperty, value);
+	}
+
+	public Style BorderStyle
+	{
+		get => (Style)this.GetValue(BorderDataElement.BorderStyleProperty);
+		set => this.SetValue(BorderDataElement.BorderStyleProperty, value);
 	}
 
 	public IShape BorderStrokeShape
@@ -81,6 +103,12 @@ public class ImageButton : TemplatedButton, IGeometryDataElement, IBorderDataEle
 	{
 		get => (Thickness)this.GetValue(BorderDataElement.BorderPaddingProperty);
 		set => this.SetValue(BorderDataElement.BorderPaddingProperty, value);
+	}
+
+	public Style PathStyle
+	{
+		get => (Style)this.GetValue(PathDataElement.PathStyleProperty);
+		set => this.SetValue(PathDataElement.PathStyleProperty, value);
 	}
 
 	public Brush PathFill
