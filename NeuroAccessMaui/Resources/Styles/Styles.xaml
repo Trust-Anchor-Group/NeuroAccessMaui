@@ -756,12 +756,4 @@
 		<Setter Property="Offset" Value="0,0" />
 	</Style>
 
-	<Style x:Key="CurvedLinesStyle"
-		ApplyToDerivedTypes="False"
-		TargetType="Path">
-		<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource CurvedLinesLight}, Dark={StaticResource CurvedLinesDark}}" />
-		<Setter Property="StrokeMiterLimit" Value="10" />
-		<Setter Property="StrokeThickness" Value="{StaticResource MediumStrokeThickness}" />
-	</Style>
-
 </ResourceDictionary>

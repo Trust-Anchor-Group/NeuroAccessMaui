@@ -4,6 +4,18 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:ui="clr-namespace:NeuroAccessMaui.UI">
 
+	<ContentView.Resources>
+		<ResourceDictionary>
+			<Style x:Key="CurvedLinesStyle"
+				ApplyToDerivedTypes="False"
+				TargetType="Path">
+				<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource CurvedLinesLight}, Dark={StaticResource CurvedLinesDark}}" />
+				<Setter Property="StrokeMiterLimit" Value="10" />
+				<Setter Property="StrokeThickness" Value="{StaticResource MediumStrokeThickness}" />
+			</Style>
+		</ResourceDictionary>
+	</ContentView.Resources>
+
 	<AbsoluteLayout>
 		<Path
 			Data="{x:Static ui:Geometries.CurvedLinesPath}"
