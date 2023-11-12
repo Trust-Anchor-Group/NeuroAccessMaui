@@ -48,8 +48,6 @@
 			<Style x:Key="CameraTextButtonLabelStyle"
 				ApplyToDerivedTypes="False"
 				TargetType="Label">
-				<Setter Property="HorizontalOptions" Value="Center" />
-				<Setter Property="VerticalOptions" Value="Center" />
 				<Setter Property="TextColor" Value="{StaticResource PrimaryBackgroundLight}" />
 				<Setter Property="Style" Value="{StaticResource BoldItemTitleLabelStyle}" />
 			</Style>

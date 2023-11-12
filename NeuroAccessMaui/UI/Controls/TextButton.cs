@@ -55,6 +55,7 @@ public class TextButton : TemplatedButton, IBorderDataElement, ILabelDataElement
 	{
 		this.innerLabel = new()
 		{
+			HorizontalOptions = LayoutOptions.Center,
 		};
 
 		this.innerBorder = new()
