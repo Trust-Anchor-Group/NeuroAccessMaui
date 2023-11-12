@@ -17,18 +17,50 @@
 	-->
 	<base:BaseContentPage.Resources>
 		<ResourceDictionary>
+			<Style x:Key="CameraImageButtonBorderStyle"
+				ApplyToDerivedTypes="False"
+				TargetType="Border">
+				<Setter Property="BackgroundColor" Value="#33F5F6F7" />
+				<Setter Property="Padding" Value="{StaticResource MediumMargins}" />
+				<Setter Property="StrokeShape">
+					<RoundRectangle
+						CornerRadius="{StaticResource MediumCornerRadius}" />
+				</Setter>
+			</Style>
+
+			<Style x:Key="CameraTextButtonBorderStyle"
+				ApplyToDerivedTypes="False"
+				TargetType="Border">
+				<Setter Property="BackgroundColor" Value="#33F5F6F7" />
+				<Setter Property="Padding" Value="{StaticResource ButtonMediumMargins}" />
+				<Setter Property="StrokeShape">
+					<RoundRectangle
+						CornerRadius="{StaticResource SmallCornerRadius}" />
+				</Setter>
+			</Style>
+
+			<Style x:Key="CameraImageButtonPathStyle"
+				ApplyToDerivedTypes="False"
+				TargetType="Path">
+				<Setter Property="Fill" Value="{StaticResource PrimaryBackgroundLight}" />
+			</Style>
+
+			<Style x:Key="CameraTextButtonLabelStyle"
+				ApplyToDerivedTypes="False"
+				TargetType="Label">
+				<Setter Property="HorizontalOptions" Value="Center" />
+				<Setter Property="VerticalOptions" Value="Center" />
+				<Setter Property="TextColor" Value="{StaticResource PrimaryBackgroundLight}" />
+				<Setter Property="Style" Value="{StaticResource BoldItemTitleLabelStyle}" />
+			</Style>
+
 			<Style x:Key="CameraImageButtonStyle"
 				ApplyToDerivedTypes="False"
 				TargetType="controls:ImageButton">
 
-				<Setter Property="BorderBackgroundColor" Value="#33F5F6F7" />
-				<Setter Property="BorderPadding" Value="{StaticResource MediumMargins}" />
-				<Setter Property="BorderStrokeShape">
-					<RoundRectangle
-						CornerRadius="{StaticResource MediumCornerRadius}" />
-				</Setter>
+				<Setter Property="BorderStyle" Value="{StaticResource CameraImageButtonBorderStyle}" />
+				<Setter Property="PathStyle" Value="{StaticResource CameraImageButtonPathStyle}" />
 
-				<Setter Property="PathFill" Value="{StaticResource PrimaryBackgroundLight}" />
 				<!--
 				<Setter Property="VisualStateManager.VisualStateGroups">
 					<VisualStateGroupList>
@@ -48,17 +80,8 @@
 				ApplyToDerivedTypes="False"
 				TargetType="controls:TextButton">
 
-				<Setter Property="BorderBackgroundColor" Value="#33F5F6F7" />
-				<Setter Property="BorderPadding" Value="{StaticResource ButtonMediumMargins}" />
-				<Setter Property="BorderStrokeShape">
-					<RoundRectangle
-						CornerRadius="{StaticResource SmallCornerRadius}" />
-				</Setter>
-
-				<Setter Property="LabelHorizontalOptions" Value="Center" />
-				<Setter Property="LabelVerticalOptions" Value="FillAndExpand" />
-				<Setter Property="LabelStyle" Value="{StaticResource BoldItemTitleLabelStyle}" />
-				<Setter Property="LabelTextColor" Value="{StaticResource PrimaryBackgroundLight}" />
+				<Setter Property="BorderStyle" Value="{StaticResource CameraTextButtonBorderStyle}" />
+				<Setter Property="LabelStyle" Value="{StaticResource CameraTextButtonLabelStyle}" />
 			</Style>
 		</ResourceDictionary>
 	</base:BaseContentPage.Resources>
