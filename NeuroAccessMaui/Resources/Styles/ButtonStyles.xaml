@@ -55,4 +55,56 @@
 		<Setter Property="LabelStyle" Value="{StaticResource FilledTextButtonLabelStyle}" />
 	</Style>
 
+	<Style x:Key="OutlinedTextButtonBorderStyle"
+		ApplyToDerivedTypes="False"
+		BasedOn="{StaticResource MediumButtonBorderStyle}"
+		TargetType="Border">
+
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource EnabledOutlinedButtonBackgroundLight}, Dark={StaticResource EnabledOutlinedButtonBackgroundDark}}" />
+		<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource EnabledOutlinedButtonForegroundLight}, Dark={StaticResource EnabledOutlinedButtonForegroundDark}}" />
+
+		<Setter Property="VisualStateManager.VisualStateGroups">
+			<VisualStateGroupList>
+				<VisualStateGroup x:Name="CommonStates">
+					<VisualState x:Name="Normal" />
+					<VisualState x:Name="Disabled">
+						<VisualState.Setters>
+							<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource DisabledOutlinedButtonBackgroundLight}, Dark={StaticResource DisabledOutlinedButtonBackgroundDark}}" />
+							<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource DisabledOutlinedButtonForegroundLight}, Dark={StaticResource DisabledOutlinedButtonForegroundDark}}" />
+						</VisualState.Setters>
+					</VisualState>
+				</VisualStateGroup>
+			</VisualStateGroupList>
+		</Setter>
+	</Style>
+
+	<Style x:Key="OutlinedTextButtonLabelStyle"
+		ApplyToDerivedTypes="False"
+		BasedOn="{StaticResource BoldItemTitleLabelStyle}"
+		TargetType="Label">
+
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource EnabledOutlinedButtonForegroundLight}, Dark={StaticResource EnabledOutlinedButtonForegroundDark}}" />
+
+		<Setter Property="VisualStateManager.VisualStateGroups">
+			<VisualStateGroupList>
+				<VisualStateGroup x:Name="CommonStates">
+					<VisualState x:Name="Normal" />
+					<VisualState x:Name="Disabled">
+						<VisualState.Setters>
+							<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource DisabledOutlinedButtonForegroundLight}, Dark={StaticResource DisabledOutlinedButtonForegroundDark}}" />
+						</VisualState.Setters>
+					</VisualState>
+				</VisualStateGroup>
+			</VisualStateGroupList>
+		</Setter>
+	</Style>
+
+	<Style x:Key="OutlinedTextButtonStyle"
+		ApplyToDerivedTypes="False"
+		TargetType="controls:TextButton">
+
+		<Setter Property="BorderStyle" Value="{StaticResource OutlinedTextButtonBorderStyle}" />
+		<Setter Property="LabelStyle" Value="{StaticResource OutlinedTextButtonLabelStyle}" />
+	</Style>
+
 </ResourceDictionary>

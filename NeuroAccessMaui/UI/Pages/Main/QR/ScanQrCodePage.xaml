@@ -197,11 +197,11 @@
 						LabelData="{l:Localize Open}" />
 				</VerticalStackLayout>
 
-				<controls:OutlinedButton
+				<controls:TextButton
 					VerticalOptions="End"
 					Command="{Binding Path=SwitchModeCommand, Source={x:Reference ThisPage}}"
-					Text="{l:Localize QrScanCode}" />
-
+					LabelData="{l:Localize QrScanCode}"
+					Style="{StaticResource OutlinedTextButtonStyle}" />
 			</Grid>
 		</mct:StateContainer.StateViews>
 

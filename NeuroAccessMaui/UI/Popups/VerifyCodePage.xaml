@@ -177,11 +177,12 @@
 							TextChanged="InnerCodeEntry_TextChanged"
 							VerticalTextAlignment="End" />
 
-						<controls:OutlinedButton
+						<controls:TextButton
 							Grid.Column="0"
 							HorizontalOptions="FillAndExpand"
 							Command="{Binding CodeVerification.ResendCodeCommand}"
-							Text="{Binding LocalizedResendCodeText}" />
+							LabelData="{Binding LocalizedResendCodeText}"
+							Style="{StaticResource OutlinedTextButtonStyle}" />
 
 						<controls:TextButton
 							Grid.Column="1"

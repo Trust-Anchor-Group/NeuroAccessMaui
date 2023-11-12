@@ -62,7 +62,7 @@ public class ImageButton : TemplatedButton, IBorderDataElement, IPathDataElement
 
 		this.innerBorder = new()
 		{
-			StrokeThickness = 0,
+			StrokeThickness = 1,
 			Content = this.innerPath
 		};
 

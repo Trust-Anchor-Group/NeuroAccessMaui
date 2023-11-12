@@ -60,7 +60,7 @@ public class TextButton : TemplatedButton, IBorderDataElement, ILabelDataElement
 
 		this.innerBorder = new()
 		{
-			StrokeThickness = 0,
+			StrokeThickness = 1,
 			Content = this.innerLabel
 		};
 
