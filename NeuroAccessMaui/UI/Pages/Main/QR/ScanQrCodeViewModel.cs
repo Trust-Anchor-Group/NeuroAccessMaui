@@ -11,6 +11,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR;
 /// </summary>
 public partial class ScanQrCodeViewModel : BaseViewModel
 {
+	private IDispatcherTimer? countDownTimer;
 	private ScanQrCodeNavigationArgs? navigationArgs;
 
 	/// <summary>
@@ -28,6 +29,13 @@ public partial class ScanQrCodeViewModel : BaseViewModel
 
 		LocalizationManager.Current.PropertyChanged += this.PropertyChangedEventHandler;
 
+		if (App.Current is not null)
+		{
+			this.countDownTimer = App.Current.Dispatcher.CreateTimer();
+			this.countDownTimer.Interval = TimeSpan.FromMilliseconds(500);
+			this.countDownTimer.Tick += this.CountDownEventHandler;
+		}
+
 		if ((this.navigationArgs is null) && ServiceRef.NavigationService.TryGetArgs(out ScanQrCodeNavigationArgs? Args))
 		{
 			this.navigationArgs = Args;
@@ -41,12 +49,25 @@ public partial class ScanQrCodeViewModel : BaseViewModel
 	{
 		LocalizationManager.Current.PropertyChanged -= this.PropertyChangedEventHandler;
 
+		if (this.countDownTimer is not null)
+		{
+			this.countDownTimer.Stop();
+			this.countDownTimer.Tick -= this.CountDownEventHandler;
+			this.countDownTimer = null;
+		}
+
 		if (this.navigationArgs?.QrCodeScanned is TaskCompletionSource<string> TaskSource)
 		{
 			TaskSource.TrySetResult(string.Empty);
 		}
 
 		await base.OnDispose();
+	}
+
+	private void CountDownEventHandler(object? sender, EventArgs e)
+	{
+		this.countDownTimer?.Stop();
+		this.OnPropertyChanged(nameof(this.BackgroundIcon));
 	}
 
 	public void PropertyChangedEventHandler(object? sender, PropertyChangedEventArgs e)
@@ -63,11 +84,16 @@ public partial class ScanQrCodeViewModel : BaseViewModel
 	public Task SetQrText(string? qrText)
 	{
 		this.QrText = qrText;
+		this.countDownTimer?.Stop();
+		this.OnPropertyChanged(nameof(this.BackgroundIcon));
 
 		if (this.CanOpenQr)
 		{
 			return this.TrySetResultAndClosePage(this.QrText!.Trim());
 		}
+
+		this.countDownTimer?.Start();
+		this.OnPropertyChanged(nameof(this.BackgroundIcon));
 
 		return Task.CompletedTask;
 	}
@@ -111,7 +137,6 @@ public partial class ScanQrCodeViewModel : BaseViewModel
 	/// The scanned QR text
 	/// </summary>
 	[ObservableProperty]
-	[NotifyPropertyChangedFor(nameof(BackgroundIcon))]
 	private string? qrText;
 
 	/// <summary>
@@ -133,7 +158,7 @@ public partial class ScanQrCodeViewModel : BaseViewModel
 
 			string Url = this.QrText.Trim();
 
-			if (this.navigationArgs?.AllowedSchema is not null)
+			if ((this.countDownTimer?.IsRunning ?? false) && (this.navigationArgs?.AllowedSchema is not null))
 			{
 				bool IsValid = System.Uri.TryCreate(Url, UriKind.Absolute, out Uri? Uri) &&
 					string.Equals(Uri.Scheme, this.navigationArgs?.AllowedSchema, StringComparison.OrdinalIgnoreCase);
