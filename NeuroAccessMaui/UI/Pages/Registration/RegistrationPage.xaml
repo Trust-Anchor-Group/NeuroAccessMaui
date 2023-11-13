@@ -22,42 +22,50 @@
 					Grid.Row="0"
 					Spacing="{StaticResource LargeSpacing}">
 
-					<controls:TemplatedButton x:Name="LanguageButton"
-						HorizontalOptions="End"
-						VerticalOptions="Start"
-						Command="{Binding ChangeLanguageCommand}">
-						<VerticalStackLayout>
+					<Grid
+						ColumnDefinitions="*"
+						RowDefinitions="auto">
+						<controls:ImageButton
+							Command="{Binding GoToPrevCommand}"
+							Style="{StaticResource BackImageButtonStyle}" />
 
-							<Path x:Name="InnerPath"
-								Grid.Row="0"
-								HeightRequest="24"
-								WidthRequest="24"
-								HorizontalOptions="Center"
-								Aspect="Uniform"
-								Data="{x:Static ui:Geometries.LanguageSelectButtonPath}"
-								Fill="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
-													   Dark={StaticResource PrimaryForegroundDark}}" />
+						<controls:TemplatedButton x:Name="LanguageButton"
+							HorizontalOptions="End"
+							VerticalOptions="Start"
+							Command="{Binding ChangeLanguageCommand}">
+							<VerticalStackLayout>
 
-							<Label x:Name="InnerLabel"
-								Grid.Row="1"
-								Text="{Binding SelectedLanguage.MyNativeName}" />
-						</VerticalStackLayout>
+								<Path x:Name="InnerPath"
+									Grid.Row="0"
+									HeightRequest="24"
+									WidthRequest="24"
+									HorizontalOptions="Center"
+									Aspect="Uniform"
+									Data="{x:Static ui:Geometries.LanguageSelectButtonPath}"
+									Fill="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
+														   Dark={StaticResource PrimaryForegroundDark}}" />
 
-						<VisualStateManager.VisualStateGroups>
-							<VisualStateGroup
-								Name="CommonStates">
-								<VisualState
-									Name="Normal" />
-								<VisualState
-									Name="Disabled">
-									<VisualState.Setters>
-										<Setter TargetName="InnerLabel" Property="Label.TextColor" Value="{AppThemeBinding Light={StaticResource DisabledFilledButtonForegroundLight}, Dark={StaticResource DisabledFilledButtonForegroundDark}}" />
-										<Setter TargetName="InnerPath" Property="Path.Fill" Value="{AppThemeBinding Light={StaticResource DisabledFilledButtonForegroundLight}, Dark={StaticResource DisabledFilledButtonForegroundDark}}" />
-									</VisualState.Setters>
-								</VisualState>
-							</VisualStateGroup>
-						</VisualStateManager.VisualStateGroups>
-					</controls:TemplatedButton>
+								<Label x:Name="InnerLabel"
+									Grid.Row="1"
+									Text="{Binding SelectedLanguage.MyNativeName}" />
+							</VerticalStackLayout>
+
+							<VisualStateManager.VisualStateGroups>
+								<VisualStateGroup
+									Name="CommonStates">
+									<VisualState
+										Name="Normal" />
+									<VisualState
+										Name="Disabled">
+										<VisualState.Setters>
+											<Setter TargetName="InnerLabel" Property="Label.TextColor" Value="{AppThemeBinding Light={StaticResource DisabledFilledButtonForegroundLight}, Dark={StaticResource DisabledFilledButtonForegroundDark}}" />
+											<Setter TargetName="InnerPath" Property="Path.Fill" Value="{AppThemeBinding Light={StaticResource DisabledFilledButtonForegroundLight}, Dark={StaticResource DisabledFilledButtonForegroundDark}}" />
+										</VisualState.Setters>
+									</VisualState>
+								</VisualStateGroup>
+							</VisualStateManager.VisualStateGroups>
+						</controls:TemplatedButton>
+					</Grid>
 
 					<Image
 						HorizontalOptions="Center"

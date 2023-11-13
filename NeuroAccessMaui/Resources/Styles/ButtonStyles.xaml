@@ -3,7 +3,38 @@
 <ResourceDictionary
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
+	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+	xmlns:ui="clr-namespace:NeuroAccessMaui.UI">
+
+	<Style x:Key="BackImageButtonBorderStyle"
+		ApplyToDerivedTypes="False"
+		TargetType="Border">
+		<Setter Property="BackgroundColor" Value="Transparent" />
+		<Setter Property="Padding">
+			<Thickness
+				Right="{StaticResource MediumSpacing}"
+				Bottom="{StaticResource MediumSpacing}" />
+		</Setter>
+	</Style>
+
+	<Style x:Key="BackImageButtonPathStyle"
+		ApplyToDerivedTypes="False"
+		TargetType="Path">
+		<Setter Property="WidthRequest" Value="24" />
+		<Setter Property="HeightRequest" Value="24" />
+		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
+	</Style>
+
+	<Style x:Key="BackImageButtonStyle"
+		ApplyToDerivedTypes="False"
+		TargetType="controls:ImageButton">
+
+		<Setter Property="HorizontalOptions" Value="Start" />
+		<Setter Property="VerticalOptions" Value="Start" />
+		<Setter Property="BorderStyle" Value="{StaticResource BackImageButtonBorderStyle}" />
+		<Setter Property="PathStyle" Value="{StaticResource BackImageButtonPathStyle}" />
+		<Setter Property="PathData" Value="{x:Static ui:Geometries.BackButtonPath}" />
+	</Style>
 
 	<Style x:Key="FilledTextButtonBorderStyle"
 		ApplyToDerivedTypes="False"

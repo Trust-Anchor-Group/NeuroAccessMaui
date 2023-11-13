@@ -176,6 +176,10 @@
 
 			<Grid x:Name="ManualScanGrid" mct:StateView.StateKey="ManualScan"
 				Padding="{StaticResource LargeMargins}">
+				<controls:ImageButton
+					Command="{Binding GoBackCommand}"
+					Style="{StaticResource BackImageButtonStyle}" />
+
 				<VerticalStackLayout
 					HorizontalOptions="FillAndExpand"
 					VerticalOptions="CenterAndExpand"
