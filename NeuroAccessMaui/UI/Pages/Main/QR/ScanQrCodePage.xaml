@@ -190,11 +190,17 @@
 						<Label
 							HorizontalOptions="FillAndExpand"
 							Text="{l:Localize QrScanUri}" />
+
+						<controls:CompositeEntry x:Name="LinkEntry" BackgroundColor="Red">
+							
+						</controls:CompositeEntry>
+						<!--
 						<Entry x:Name="LinkEntry"
 							HorizontalOptions="Fill"
 							Keyboard="Url"
 							ReturnType="Done"
 							Text="{Binding Path=UrlText}" />
+						-->
 					</VerticalStackLayout>
 
 					<controls:TextButton
