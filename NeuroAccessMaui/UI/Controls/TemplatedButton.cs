@@ -51,21 +51,6 @@ public class TemplatedButton : ContentView, IButtonElement
 		set => this.SetValue(CommandParameterProperty, value);
 	}
 
-	/// <summary>
-	/// The backing store for the <see cref="Text" /> bindable property.
-	/// </summary>
-	public static readonly BindableProperty TextProperty = BindableProperty.Create(nameof(Text), typeof(string), typeof(TemplatedButton), null);
-
-	/// <summary>
-	/// Gets or sets the text displayed as the content of the button.
-	/// The default value is <see langword="null"/>. This is a bindable property.
-	/// </summary>
-	public string? Text
-	{
-		get => (string?)this.GetValue(TextProperty);
-		set => this.SetValue(TextProperty, value);
-	}
-
 	void ICommandElement.CanExecuteChanged(object? sender, EventArgs e) => this.RefreshIsEnabledProperty();
 
 	void IButtonElement.PropagateUpClicked() => this.onClickedEventManager.HandleEvent(this, EventArgs.Empty, nameof(Clicked));

@@ -12,8 +12,8 @@ public class ImageButton : TemplatedButton, IBorderDataElement, IPathDataElement
 	/// <summary>Bindable property for <see cref="BorderStyle"/>.</summary>
 	public static readonly BindableProperty BorderStyleProperty = BorderDataElement.BorderStyleProperty;
 
-	/// <summary>Bindable property for <see cref="GeometryData"/>.</summary>
-	public static readonly BindableProperty GeometryDataProperty = PathDataElement.GeometryDataProperty;
+	/// <summary>Bindable property for <see cref="PathData"/>.</summary>
+	public static readonly BindableProperty PathDataProperty = PathDataElement.PathDataProperty;
 
 	/// <summary>Bindable property for <see cref="PathStyle"/>.</summary>
 	public static readonly BindableProperty PathStyleProperty = PathDataElement.PathStyleProperty;
@@ -23,7 +23,7 @@ public class ImageButton : TemplatedButton, IBorderDataElement, IPathDataElement
 		this.innerBorder.Style = NewValue;
 	}
 
-	public void OnGeometryDataPropertyChanged(Geometry OldValue, Geometry NewValue)
+	public void OnPathDataPropertyChanged(Geometry OldValue, Geometry NewValue)
 	{
 		this.innerPath.Data = NewValue;
 	}
@@ -33,10 +33,10 @@ public class ImageButton : TemplatedButton, IBorderDataElement, IPathDataElement
 		this.innerPath.Style = NewValue;
 	}
 
-	public Geometry GeometryData
+	public Geometry PathData
 	{
-		get => (Geometry)this.GetValue(PathDataElement.GeometryDataProperty);
-		set => this.SetValue(PathDataElement.GeometryDataProperty, value);
+		get => (Geometry)this.GetValue(PathDataElement.PathDataProperty);
+		set => this.SetValue(PathDataElement.PathDataProperty, value);
 	}
 
 	public Style BorderStyle

@@ -4,14 +4,14 @@ namespace NeuroAccessMaui.UI.Core;
 
 static class PathDataElement
 {
-	/// <summary>Bindable property for <see cref="IPathDataElement.GeometryData"/>.</summary>
-	public static readonly BindableProperty GeometryDataProperty =
-		BindableProperty.Create(nameof(IPathDataElement.GeometryData), typeof(Geometry), typeof(IPathDataElement), default(Geometry),
-								propertyChanged: OnGeometryDataPropertyChanged);
+	/// <summary>Bindable property for <see cref="IPathDataElement.PathData"/>.</summary>
+	public static readonly BindableProperty PathDataProperty =
+		BindableProperty.Create(nameof(IPathDataElement.PathData), typeof(Geometry), typeof(IPathDataElement), default(Geometry),
+								propertyChanged: OnPathDataPropertyChanged);
 
-	static void OnGeometryDataPropertyChanged(BindableObject Bindable, object OldValue, object NewValue)
+	static void OnPathDataPropertyChanged(BindableObject Bindable, object OldValue, object NewValue)
 	{
-		((IPathDataElement)Bindable).OnGeometryDataPropertyChanged((Geometry)OldValue, (Geometry)NewValue);
+		((IPathDataElement)Bindable).OnPathDataPropertyChanged((Geometry)OldValue, (Geometry)NewValue);
 	}
 
 	/// <summary>Bindable property for <see cref="IPathDataElement.PathStyle"/>.</summary>
