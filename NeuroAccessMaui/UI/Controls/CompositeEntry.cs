@@ -55,7 +55,7 @@ class CompositeEntry : ContentView, IBorderDataElement, IStackElement, IPathData
 
 	public void OnEntryDataPropertyChanged(string OldValue, string NewValue)
 	{
-		this.innerEntry.Text = NewValue;
+		//!!! this.innerEntry.Text = NewValue;
 	}
 
 	public void OnEntryHintPropertyChanged(string OldValue, string NewValue)
@@ -110,6 +110,8 @@ class CompositeEntry : ContentView, IBorderDataElement, IStackElement, IPathData
 		set => this.SetValue(EntryDataElement.EntryStyleProperty, value);
 	}
 
+	public Entry Entry => this.innerEntry;
+
 	public CompositeEntry() : base()
 	{
 		this.innerPath = new()
@@ -135,6 +137,6 @@ class CompositeEntry : ContentView, IBorderDataElement, IStackElement, IPathData
 
 		this.Content = this.innerBorder;
 
-		// this.innerEntry.SetBinding(Entry.TextProperty, new Binding(EntryTextProperty.PropertyName, source: this, mode: BindingMode.TwoWay));
+		this.innerEntry.SetBinding(Entry.TextProperty, new Binding(EntryDataProperty.PropertyName, source: this, mode: BindingMode.TwoWay));
 	}
 }

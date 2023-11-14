@@ -35,7 +35,8 @@ public class DefaultLink : ILinkOpener
 		}
 		else
 		{
-			await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+			await ServiceRef.UiSerializer.DisplayAlert(
+				ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 				ServiceRef.Localizer[nameof(AppResources.QrCodeNotUnderstood)] +
 				Environment.NewLine + Environment.NewLine + Link.OriginalString);
 

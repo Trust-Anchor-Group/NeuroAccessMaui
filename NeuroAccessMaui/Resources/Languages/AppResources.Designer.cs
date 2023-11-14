@@ -511,6 +511,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid invitation code..
+        /// </summary>
+        internal static string InvalidInvitationCode {
+            get {
+                return ResourceManager.GetString("InvalidInvitationCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid TAG Signature URI..
         /// </summary>
         internal static string InvalidTagSignatureId {

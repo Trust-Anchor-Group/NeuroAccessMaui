@@ -80,7 +80,7 @@ public interface IXmppService : ILoadableService
 	/// <param name="appAssembly">The current app's main assembly.</param>
 	/// <param name="connectedFunc">A callback to use if and when connected.</param>
 	/// <returns>If connected. If not, any error message.</returns>
-	Task<(bool succeeded, string errorMessage)> TryConnect(string domain, bool isIpAddress, string hostName, int portNumber,
+	Task<(bool succeeded, string? errorMessage)> TryConnect(string domain, bool isIpAddress, string hostName, int portNumber,
 			string languageCode, Assembly appAssembly, Func<XmppClient, Task> connectedFunc);
 
 	/// <summary>
@@ -98,7 +98,7 @@ public interface IXmppService : ILoadableService
 	/// <param name="appAssembly">The current app's main assembly.</param>
 	/// <param name="connectedFunc">A callback to use if and when connected.</param>
 	/// <returns>If connected. If not, any error message.</returns>
-	Task<(bool succeeded, string errorMessage)> TryConnectAndCreateAccount(string domain, bool isIpAddress, string hostName,
+	Task<(bool succeeded, string? errorMessage)> TryConnectAndCreateAccount(string domain, bool isIpAddress, string hostName,
 		int portNumber, string userName, string password, string languageCode, string ApiKey, string ApiSecret,
 		Assembly appAssembly, Func<XmppClient, Task> connectedFunc);
 
@@ -116,7 +116,7 @@ public interface IXmppService : ILoadableService
 	/// <param name="appAssembly">The current app's main assembly.</param>
 	/// <param name="connectedFunc">A callback to use if and when connected.</param>
 	/// <returns>If connected. If not, any error message.</returns>
-	Task<(bool succeeded, string errorMessage)> TryConnectAndConnectToAccount(string domain, bool isIpAddress, string hostName,
+	Task<(bool succeeded, string? errorMessage)> TryConnectAndConnectToAccount(string domain, bool isIpAddress, string hostName,
 		int portNumber, string userName, string password, string passwordMethod, string languageCode, Assembly appAssembly,
 		Func<XmppClient, Task> connectedFunc);
 

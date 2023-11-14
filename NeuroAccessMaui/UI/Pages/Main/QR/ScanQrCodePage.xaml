@@ -191,9 +191,9 @@
 							HorizontalOptions="FillAndExpand"
 							Text="{l:Localize QrScanUri}" />
 
-						<controls:CompositeEntry x:Name="LinkEntry" BackgroundColor="Red">
-							
-						</controls:CompositeEntry>
+						<controls:CompositeEntry x:Name="LinkEntry"
+							BackgroundColor="Red"
+							EntryData="{Binding Path=UrlText}" />
 						<!--
 						<Entry x:Name="LinkEntry"
 							HorizontalOptions="Fill"
@@ -205,7 +205,8 @@
 
 					<controls:TextButton
 						Command="{Binding OpenUrlCommand}"
-						LabelData="{l:Localize Open}" />
+						LabelData="{l:Localize Open}"
+						Style="{StaticResource FilledTextButtonStyle}" />
 				</VerticalStackLayout>
 
 				<controls:TextButton

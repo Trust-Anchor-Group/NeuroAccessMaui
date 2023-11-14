@@ -556,14 +556,14 @@ internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 		ConnectToAccount
 	}
 
-	public Task<(bool succeeded, string errorMessage)> TryConnect(string domain, bool isIpAddress, string hostName, int portNumber,
+	public Task<(bool succeeded, string? errorMessage)> TryConnect(string domain, bool isIpAddress, string hostName, int portNumber,
 		string languageCode, Assembly applicationAssembly, Func<XmppClient, Task> connectedFunc)
 	{
 		return this.TryConnectInner(domain, isIpAddress, hostName, portNumber, string.Empty, string.Empty, string.Empty, languageCode,
 			string.Empty, string.Empty, applicationAssembly, connectedFunc, ConnectOperation.Connect);
 	}
 
-	public Task<(bool succeeded, string errorMessage)> TryConnectAndCreateAccount(string domain, bool isIpAddress, string hostName,
+	public Task<(bool succeeded, string? errorMessage)> TryConnectAndCreateAccount(string domain, bool isIpAddress, string hostName,
 		int portNumber, string userName, string password, string languageCode, string ApiKey, string ApiSecret,
 		Assembly applicationAssembly, Func<XmppClient, Task> connectedFunc)
 	{
@@ -571,7 +571,7 @@ internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 			ApiKey, ApiSecret, applicationAssembly, connectedFunc, ConnectOperation.ConnectAndCreateAccount);
 	}
 
-	public Task<(bool succeeded, string errorMessage)> TryConnectAndConnectToAccount(string domain, bool isIpAddress, string hostName,
+	public Task<(bool succeeded, string? errorMessage)> TryConnectAndConnectToAccount(string domain, bool isIpAddress, string hostName,
 		int portNumber, string userName, string password, string passwordMethod, string languageCode, Assembly applicationAssembly,
 		Func<XmppClient, Task> connectedFunc)
 	{
@@ -579,20 +579,20 @@ internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 			string.Empty, string.Empty, applicationAssembly, connectedFunc, ConnectOperation.ConnectToAccount);
 	}
 
-	private async Task<(bool succeeded, string errorMessage)> TryConnectInner(string domain, bool isIpAddress, string hostName,
+	private async Task<(bool succeeded, string? errorMessage)> TryConnectInner(string domain, bool isIpAddress, string hostName,
 		int portNumber, string userName, string password, string passwordMethod, string languageCode, string ApiKey, string ApiSecret,
 		Assembly applicationAssembly, Func<XmppClient, Task> connectedFunc, ConnectOperation operation)
 	{
 		TaskCompletionSource<bool> connected = new();
 		bool succeeded;
-		string errorMessage = null;
+		string? errorMessage = null;
 		bool streamNegotiation = false;
 		bool streamOpened = false;
 		bool startingEncryption = false;
 		bool authenticating = false;
 		bool registering = false;
 		bool timeout = false;
-		string connectionError = null;
+		string? connectionError = null;
 
 		Task OnConnectionError(object _, Exception e)
 		{

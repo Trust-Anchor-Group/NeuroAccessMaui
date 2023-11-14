@@ -5,7 +5,7 @@ static class EntryDataElement
 	/// <summary>Bindable property for <see cref="IEntryDataElement.EntryData"/>.</summary>
 	public static readonly BindableProperty EntryDataProperty =
 		BindableProperty.Create(nameof(IEntryDataElement.EntryData), typeof(string), typeof(IEntryDataElement), default(string),
-								propertyChanged: OnEntryDataPropertyChanged);
+								defaultBindingMode: BindingMode.TwoWay, propertyChanged: OnEntryDataPropertyChanged);
 
 	static void OnEntryDataPropertyChanged(BindableObject Bindable, object OldValue, object NewValue)
 	{

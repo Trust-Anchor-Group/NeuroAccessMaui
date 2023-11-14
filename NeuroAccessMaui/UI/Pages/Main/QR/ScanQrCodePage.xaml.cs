@@ -76,7 +76,7 @@ public partial class ScanQrCodePage
 
 			if (!IsAutomaticScan)
 			{
-				this.LinkEntry.Unfocus();
+				this.LinkEntry.Entry.Unfocus();
 			}
 			else
 			{
@@ -92,7 +92,7 @@ public partial class ScanQrCodePage
 
 			if (IsAutomaticScan)
 			{
-				this.LinkEntry.Focus();
+				this.LinkEntry.Entry.Focus();
 			}
 			else
 			{

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -377,6 +377,9 @@
   </data>
   <data name="UnableToOpenLink" xml:space="preserve">
     <value>Unable to open link:</value>
+  </data>
+  <data name="InvalidInvitationCode" xml:space="preserve">
+    <value>Invalid invitation code.</value>
   </data>
   <data name="ThisCodeCannotBeClaimedAtThisTime" xml:space="preserve">
     <value>This code represents a Tag ID invitation, and cannot be claimed at this time.</value>
