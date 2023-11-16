@@ -2,7 +2,7 @@ using Microsoft.Maui.Controls.Shapes;
 
 namespace NeuroAccessMaui.UI.Core;
 
-static class PathDataElement
+internal static class PathDataElement
 {
 	/// <summary>Bindable property for <see cref="IPathDataElement.PathData"/>.</summary>
 	public static readonly BindableProperty PathDataProperty =

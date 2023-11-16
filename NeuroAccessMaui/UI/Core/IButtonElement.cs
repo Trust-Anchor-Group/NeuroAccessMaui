@@ -1,6 +1,6 @@
 namespace NeuroAccessMaui.UI.Core;
 
-interface IButtonElement : ICommandElement
+internal interface IButtonElement : ICommandElement
 {
 	//note to implementor: implement this property publicly
 	//!!!	bool IsPressed { get; }

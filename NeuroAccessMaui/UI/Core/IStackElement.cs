@@ -1,6 +1,6 @@
 ﻿namespace NeuroAccessMaui.UI.Core;
 
-public interface IStackElement
+internal interface IStackElement
 {
 	//note to implementor: implement this property publicly
 	double StackSpacing { get; }

@@ -1,6 +1,6 @@
 ﻿namespace NeuroAccessMaui.UI.Core;
 
-public interface IEntryDataElement
+internal interface IEntryDataElement
 {
 	//note to implementor: implement this property publicly
 	string EntryData { get; }

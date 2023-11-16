@@ -1,6 +1,6 @@
 namespace NeuroAccessMaui.UI.Core;
 
-public interface ILabelDataElement
+internal interface ILabelDataElement
 {
 	//note to implementor: implement this property publicly
 	string LabelData { get; }

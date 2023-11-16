@@ -2,7 +2,7 @@ using System.Windows.Input;
 
 namespace NeuroAccessMaui.UI.Core;
 
-static class ButtonElement
+internal static class ButtonElement
 {
 	/// <summary>
 	/// The backing store for the <see cref="ICommandElement.Command" /> bindable property.

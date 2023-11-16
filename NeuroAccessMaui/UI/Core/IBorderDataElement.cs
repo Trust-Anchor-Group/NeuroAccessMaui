@@ -1,6 +1,6 @@
 namespace NeuroAccessMaui.UI.Core;
 
-public interface IBorderDataElement
+internal interface IBorderDataElement
 {
 	//note to implementor: implement this property publicly
 	Style BorderStyle { get; }

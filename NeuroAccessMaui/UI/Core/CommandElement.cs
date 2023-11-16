@@ -2,7 +2,7 @@
 
 namespace NeuroAccessMaui.UI.Core;
 
-static class CommandElement
+internal static class CommandElement
 {
 	public static void OnCommandChanging(BindableObject bo, object o, object n)
 	{

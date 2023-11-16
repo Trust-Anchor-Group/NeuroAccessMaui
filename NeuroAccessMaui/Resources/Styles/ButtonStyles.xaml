@@ -38,10 +38,15 @@
 
 	<Style x:Key="FilledTextButtonBorderStyle"
 		ApplyToDerivedTypes="False"
-		BasedOn="{StaticResource MediumButtonBorderStyle}"
 		TargetType="Border">
 
 		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource EnabledFilledButtonBackgroundLight}, Dark={StaticResource EnabledFilledButtonBackgroundDark}}" />
+		<Setter Property="Stroke" Value="Transparent" />
+		<Setter Property="Padding" Value="{StaticResource ButtonMediumMargins}" />
+		<Setter Property="StrokeShape">
+			<RoundRectangle
+				CornerRadius="{StaticResource SmallCornerRadius}" />
+		</Setter>
 
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>
@@ -88,11 +93,15 @@
 
 	<Style x:Key="OutlinedTextButtonBorderStyle"
 		ApplyToDerivedTypes="False"
-		BasedOn="{StaticResource MediumButtonBorderStyle}"
 		TargetType="Border">
 
 		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource EnabledOutlinedButtonBackgroundLight}, Dark={StaticResource EnabledOutlinedButtonBackgroundDark}}" />
 		<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource EnabledOutlinedButtonForegroundLight}, Dark={StaticResource EnabledOutlinedButtonForegroundDark}}" />
+		<Setter Property="Padding" Value="{StaticResource ButtonMediumMargins}" />
+		<Setter Property="StrokeShape">
+			<RoundRectangle
+				CornerRadius="{StaticResource SmallCornerRadius}" />
+		</Setter>
 
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>

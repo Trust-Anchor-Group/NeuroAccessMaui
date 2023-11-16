@@ -1,6 +1,6 @@
 ﻿namespace NeuroAccessMaui.UI.Core;
 
-static class EntryDataElement
+internal static class EntryDataElement
 {
 	/// <summary>Bindable property for <see cref="IEntryDataElement.EntryData"/>.</summary>
 	public static readonly BindableProperty EntryDataProperty =

@@ -267,7 +267,7 @@ public partial class ViewIdentityViewModel : QrXmppViewModel
 		{
 			await base.XmppService_ConnectionStateChanged(Sender, NewState);
 
-			this.OnPropertyChanged(nameof(this.CanExecuteCommands));
+			this.NotifyCommandsCanExecuteChanged();
 
 			if (this.IsConnected)
 			{
@@ -889,7 +889,17 @@ public partial class ViewIdentityViewModel : QrXmppViewModel
 	private void SetIsBusy(bool IsBusy)
 	{
 		this.IsBusy = IsBusy;
-		this.OnPropertyChanged(nameof(this.CanExecuteCommands));
+		this.NotifyCommandsCanExecuteChanged();
+	}
+
+	private void NotifyCommandsCanExecuteChanged()
+	{
+		this.ApproveCommand.NotifyCanExecuteChanged();
+		this.RejectCommand.NotifyCanExecuteChanged();
+		this.RevokeCommand.NotifyCanExecuteChanged();
+		this.CompromiseCommand.NotifyCanExecuteChanged();
+		this.TransferCommand.NotifyCanExecuteChanged();
+		this.ChangePinCommand.NotifyCanExecuteChanged();
 	}
 
 	/// <summary>

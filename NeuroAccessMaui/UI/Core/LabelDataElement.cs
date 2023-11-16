@@ -1,6 +1,6 @@
 namespace NeuroAccessMaui.UI.Core;
 
-static class LabelDataElement
+internal static class LabelDataElement
 {
 	/// <summary>Bindable property for <see cref="ILabelDataElement.LabelData"/>.</summary>
 	public static readonly BindableProperty LabelDataProperty =

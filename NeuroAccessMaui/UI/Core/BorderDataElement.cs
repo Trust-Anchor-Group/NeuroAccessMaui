@@ -1,6 +1,6 @@
 namespace NeuroAccessMaui.UI.Core;
 
-static class BorderDataElement
+internal static class BorderDataElement
 {
 	/// <summary>Bindable property for <see cref="IBorderDataElement.BorderStyle"/>.</summary>
 	public static readonly BindableProperty BorderStyleProperty =

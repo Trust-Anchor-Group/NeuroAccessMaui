@@ -2,7 +2,7 @@
 
 namespace NeuroAccessMaui.UI.Core;
 
-interface ICommandElement
+internal interface ICommandElement
 {
 	// note to implementor: implement these properties publicly
 	ICommand? Command { get; }

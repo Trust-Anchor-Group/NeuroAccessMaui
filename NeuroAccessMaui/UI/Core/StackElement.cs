@@ -1,6 +1,6 @@
 ﻿namespace NeuroAccessMaui.UI.Core;
 
-static class StackElement
+internal static class StackElement
 {
 	/// <summary>Bindable property for <see cref="IStackElement.StackSpacing"/>.</summary>
 	public static readonly BindableProperty StackSpacingProperty =
