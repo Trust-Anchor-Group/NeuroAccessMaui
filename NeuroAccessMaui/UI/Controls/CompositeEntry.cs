@@ -1,4 +1,5 @@
-﻿using Microsoft.Maui.Controls.Shapes;
+﻿using Microsoft.Maui.Controls;
+using Microsoft.Maui.Controls.Shapes;
 using NeuroAccessMaui.UI.Core;
 using PathShape = Microsoft.Maui.Controls.Shapes.Path;
 
@@ -7,7 +8,7 @@ namespace NeuroAccessMaui.UI.Controls;
 class CompositeEntry : ContentView, IBorderDataElement, IStackElement, IPathDataElement, IEntryDataElement
 {
 	private readonly Border innerBorder;
-	private readonly HorizontalStackLayout innerStack;
+	private readonly Grid innerGrid;
 	private readonly PathShape innerPath;
 	private readonly Entry innerEntry;
 
@@ -39,13 +40,23 @@ class CompositeEntry : ContentView, IBorderDataElement, IStackElement, IPathData
 
 	public void OnStackSpacingPropertyChanged(double OldValue, double NewValue)
 	{
-		this.innerStack.Spacing = NewValue;
+		this.innerGrid.ColumnSpacing = this.innerPath.IsVisible? NewValue : 0;
 	}
 
 	public void OnPathDataPropertyChanged(Geometry OldValue, Geometry NewValue)
 	{
 		this.innerPath.Data = NewValue;
-		this.innerPath.IsVisible = NewValue is not null;
+
+		if (NewValue is null)
+		{
+			this.innerPath.IsVisible = false;
+			this.innerGrid.ColumnSpacing = 0;
+		}
+		else
+		{
+			this.innerPath.IsVisible = true;
+			this.innerGrid.ColumnSpacing = this.StackSpacing;
+		}
 	}
 
 	public void OnPathStylePropertyChanged(Style OldValue, Style NewValue)
@@ -112,10 +123,17 @@ class CompositeEntry : ContentView, IBorderDataElement, IStackElement, IPathData
 
 	public Entry Entry => this.innerEntry;
 
+	public override string? ToString()
+	{
+		string? Result = this.innerEntry.Text;
+		return Result;
+	}
+
 	public CompositeEntry() : base()
 	{
 		this.innerPath = new()
 		{
+			VerticalOptions = LayoutOptions.Center,
 			IsVisible = this.PathData is not null,
 			HeightRequest = 24,
 			WidthRequest = 24,
@@ -124,15 +142,31 @@ class CompositeEntry : ContentView, IBorderDataElement, IStackElement, IPathData
 
 		this.innerEntry = new()
 		{
+			VerticalOptions = LayoutOptions.Center,
 			HorizontalOptions = LayoutOptions.Fill,
 		};
 
-		this.innerStack = [this.innerPath, this.innerEntry];
+		this.innerGrid = new()
+		{
+			HorizontalOptions = LayoutOptions.Fill,
+			ColumnDefinitions = new()
+			{
+				new() { Width = GridLength.Auto },
+				new() { Width = GridLength.Star },
+			},
+			RowDefinitions = new()
+			{
+				new() { Height = GridLength.Auto },
+			}
+		};
+
+		this.innerGrid.Add(this.innerPath, 0);
+		this.innerGrid.Add(this.innerEntry, 1);
 
 		this.innerBorder = new()
 		{
-			StrokeThickness = 1,
-			Content = this.innerStack
+			StrokeThickness = 2,
+			Content = this.innerGrid
 		};
 
 		this.Content = this.innerBorder;

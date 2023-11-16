@@ -28,44 +28,18 @@
 					Style="{StaticResource SectionTitleLabelStyle}"
 					Text="{l:Localize EmailSectionTitle}" />
 
-				<Border
-					BackgroundColor="{AppThemeBinding Light={StaticResource NormalEditBackgroundLight},
-													  Dark={StaticResource NormalEditBackgroundDark}}"
-					Padding="{StaticResource EditMediumMargins}"
-					Stroke="{AppThemeBinding Light={StaticResource NormalEditForegroundLight},
-											 Dark={StaticResource NormalEditForegroundDark}}"
-					Style="{StaticResource ItemOuterBorderStyle}">
-
-					<Grid
-						ColumnDefinitions="auto,*"
-						ColumnSpacing="{StaticResource MediumSpacing}"
-						RowDefinitions="auto">
-
-						<Path
-							Grid.Column="0"
-							HeightRequest="24"
-							WidthRequest="24"
-							VerticalOptions="Center"
-							Aspect="Uniform"
-							Data="{x:Static ui:Geometries.EmailIconPath}"
-							Fill="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
-												   Dark={StaticResource PrimaryForegroundDark}}" />
-
-						<Entry
-							Grid.Column="1"
-							VerticalOptions="Center"
-							IsSpellCheckEnabled="False"
-							Keyboard="Email"
-							Text="{Binding EmailText}">
-							<Entry.Behaviors>
-								<mct:TextValidationBehavior x:Name="EmailValidator"
-									Flags="ValidateOnValueChanged"
-									IsValid="{Binding EmailIsValid}"
-									RegexPattern="^$|^[\w\d](\w|\d|[_\.-][\w\d])*@(\w|\d|[\.-][\w\d]+)+$" />
-							</Entry.Behaviors>
-						</Entry>
-					</Grid>
-				</Border>
+				<controls:CompositeEntry x:Name="EmailEntry"
+					EntryData="{Binding EmailText}"
+					PathData="{x:Static ui:Geometries.EmailIconPath}"
+					Style="{StaticResource RegularCompositeEntryStyle}">
+					<controls:CompositeEntry.Behaviors>
+						<mct:TextValidationBehavior x:Name="EmailValidator"
+							Flags="ValidateOnValueChanged"
+							IsValid="{Binding EmailIsValid}"
+							ValuePropertyName="EntryData"													
+							RegexPattern="^$|^[\w\d](\w|\d|[_\.-][\w\d])*@(\w|\d|[\.-][\w\d]+)+$" />
+					</controls:CompositeEntry.Behaviors>
+				</controls:CompositeEntry>
 
 				<Grid
 					HorizontalOptions="Center"

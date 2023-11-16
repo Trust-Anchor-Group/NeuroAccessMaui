@@ -63,5 +63,38 @@
 	</Style>
 	-->
 
+	<Style x:Key="RegularCompositeEntryBorderStyle"
+		ApplyToDerivedTypes="False"
+		TargetType="Border">
+
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource NormalEditBackgroundLight}, Dark={StaticResource NormalEditBackgroundDark}}" />
+		<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource NormalEditForegroundLight}, Dark={StaticResource NormalEditForegroundDark}}" />
+		<Setter Property="Padding" Value="{StaticResource EditMediumMargins}" />
+		<Setter Property="StrokeShape">
+			<RoundRectangle
+				CornerRadius="{StaticResource SmallCornerRadius}" />
+		</Setter>
+	</Style>
+
+	<Style x:Key="RegularCompositeEntryPathStyle"
+		ApplyToDerivedTypes="False"
+		TargetType="Path">
+		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
+	</Style>
+
+	<Style x:Key="RegularCompositeEntryEntryStyle"
+		ApplyToDerivedTypes="False"
+		TargetType="Entry">
+	</Style>
+
+	<Style x:Key="RegularCompositeEntryStyle"
+		ApplyToDerivedTypes="False"
+		TargetType="controls:CompositeEntry">
+
+		<Setter Property="StackSpacing" Value="{StaticResource SmallSpacing}" />
+		<Setter Property="BorderStyle" Value="{StaticResource RegularCompositeEntryBorderStyle}" />
+		<Setter Property="PathStyle" Value="{StaticResource RegularCompositeEntryPathStyle}" />
+		<Setter Property="EntryStyle" Value="{StaticResource RegularCompositeEntryEntryStyle}" />
+	</Style>
 
 </ResourceDictionary>

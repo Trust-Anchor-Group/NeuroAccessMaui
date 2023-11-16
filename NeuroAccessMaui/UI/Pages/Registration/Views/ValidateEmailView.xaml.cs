@@ -11,5 +11,9 @@ public partial class ValidateEmailView
 	{
 		this.InitializeComponent();
 		this.ContentViewModel = ViewModel;
+
+		this.EmailEntry.Entry.Keyboard = Keyboard.Email;
+		this.EmailEntry.Entry.IsSpellCheckEnabled = false;
+		this.EmailEntry.Entry.IsTextPredictionEnabled = false;
 	}
 }
