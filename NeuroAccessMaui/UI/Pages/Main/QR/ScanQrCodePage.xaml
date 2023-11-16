@@ -192,15 +192,8 @@
 							Text="{l:Localize QrScanUri}" />
 
 						<controls:CompositeEntry x:Name="LinkEntry"
-							BackgroundColor="Red"
+							Style="{StaticResource RegularCompositeEntryStyle}"
 							EntryData="{Binding Path=UrlText}" />
-						<!--
-						<Entry x:Name="LinkEntry"
-							HorizontalOptions="Fill"
-							Keyboard="Url"
-							ReturnType="Done"
-							Text="{Binding Path=UrlText}" />
-						-->
 					</VerticalStackLayout>
 
 					<controls:TextButton

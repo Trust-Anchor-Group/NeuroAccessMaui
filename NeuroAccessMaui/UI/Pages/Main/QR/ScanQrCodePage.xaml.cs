@@ -22,6 +22,8 @@ public partial class ScanQrCodePage
 		ScanQrCodeViewModel ViewModel = new(NavigationArgs);
 		this.ContentPageModel = ViewModel;
 
+		this.LinkEntry.Entry.Keyboard = Keyboard.Url;
+
 		StateContainer.SetCurrentState(this.GridWithAnimation, "AutomaticScan");
 
 		this.CameraBarcodeReaderView.Options = new BarcodeReaderOptions
