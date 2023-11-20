@@ -152,6 +152,7 @@
 							Spacing="{StaticResource LargeSpacing}">
 
 							<controls:ImageButton
+								Command="{Binding PickPhotoCommand, Source={x:Reference ThisPage}}"
 								PathData="{x:Static ui:Geometries.CameraImageButtonPath}"
 								Style="{StaticResource CameraImageButtonStyle}" />
 

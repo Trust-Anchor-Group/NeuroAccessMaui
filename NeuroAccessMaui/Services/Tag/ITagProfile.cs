@@ -24,30 +24,15 @@ public interface ITagProfile
 	/// </summary>
 	event PropertyChangedEventHandler? Changed;
 
+	string? InitialDomain { get; }
+	bool InitialDefaultXmppConnectivity { get; }
+	string? InitialApiKey { get; }
+	string? InitialApiSecret { get; }
+
 	/// <summary>
 	/// The domain this profile is connected to.
 	/// </summary>
-	string Domain { get; }
-
-	/// <summary>
-	/// API Key, for creating new account.
-	/// </summary>
-	string ApiKey { get; }
-
-	/// <summary>
-	/// API Secret, for creating new account.
-	/// </summary>
-	string ApiSecret { get; }
-
-	/// <summary>
-	/// Verified phone number.
-	/// </summary>
-	string PhoneNumber { get; }
-
-	/// <summary>
-	/// Verified e-mail address.
-	/// </summary>
-	string EMail { get; }
+	string? Domain { get; }
 
 	/// <summary>
 	/// If connecting to the domain can be done using default parameters (host=domain, default c2s port).
@@ -55,29 +40,49 @@ public interface ITagProfile
 	bool DefaultXmppConnectivity { get; }
 
 	/// <summary>
+	/// API Key, for creating new account.
+	/// </summary>
+	string? ApiKey { get; }
+
+	/// <summary>
+	/// API Secret, for creating new account.
+	/// </summary>
+	string? ApiSecret { get; }
+
+	/// <summary>
+	/// Verified phone number.
+	/// </summary>
+	string? PhoneNumber { get; }
+
+	/// <summary>
+	/// Verified e-mail address.
+	/// </summary>
+	string? EMail { get; }
+
+	/// <summary>
 	/// The account name for this profile
 	/// </summary>
-	string Account { get; }
+	string? Account { get; }
 
 	/// <summary>
 	/// A hash of the current password.
 	/// </summary>
-	string PasswordHash { get; }
+	string? PasswordHash { get; }
 
 	/// <summary>
 	/// The hash method used for hashing the password.
 	/// </summary>
-	string PasswordHashMethod { get; }
+	string? PasswordHashMethod { get; }
 
 	/// <summary>
 	/// The Jabber Legal JID for this user/profile.
 	/// </summary>
-	string LegalJid { get; }
+	string? LegalJid { get; }
 
 	/// <summary>
 	/// The XMPP server's file upload Jid.
 	/// </summary>
-	string HttpFileUploadJid { get; }
+	string? HttpFileUploadJid { get; }
 
 	/// <summary>
 	/// The XMPP server's max size for file uploads.
@@ -87,7 +92,7 @@ public interface ITagProfile
 	/// <summary>
 	/// The XMPP server's log Jid.
 	/// </summary>
-	string LogJid { get; }
+	string? LogJid { get; }
 
 	/// <summary>
 	/// This profile's current registration step.
@@ -107,7 +112,7 @@ public interface ITagProfile
 	/// <summary>
 	/// A hashed version of the user's <see cref="Pin"/>.
 	/// </summary>
-	string PinHash { get; }
+	string? PinHash { get; }
 
 	/// <summary>
 	/// Indicates if the user has a <see cref="Pin"/>.

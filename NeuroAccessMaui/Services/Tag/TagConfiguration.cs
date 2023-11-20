@@ -16,6 +16,18 @@ public sealed class TagConfiguration
 	[ObjectId]
 	public string? ObjectId { get; set; }
 
+	[DefaultValue(false)]
+	public bool InitialDefaultXmppConnectivity { get; set; }
+
+	[DefaultValueNull]
+	public string? InitialDomain { get; set; }
+
+	[DefaultValueNull]
+	public string? InitialApiKey { get; set; }
+
+	[DefaultValueNull]
+	public string? InitialApiSecret { get; set; }
+
 	/// <summary>
 	/// Current domain
 	/// </summary>

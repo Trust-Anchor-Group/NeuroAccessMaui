@@ -106,6 +106,9 @@ public partial class TagProfile : ITagProfile
 
 	private LegalIdentity? legalIdentity;
 	private string? objectId;
+	private string? initialDomain;
+	private string? initialApiKey;
+	private string? initialApiSecret;
 	private string? domain;
 	private string? apiKey;
 	private string? apiSecret;
@@ -125,6 +128,7 @@ public partial class TagProfile : ITagProfile
 	private DateTime? testOtpTimestamp;
 	private RegistrationStep step = RegistrationStep.RequestPurpose;
 	private bool suppressPropertyChangedEvents;
+	private bool initialDefaultXmppConnectivity;
 	private bool defaultXmppConnectivity;
 
 	/// <summary>
@@ -161,6 +165,10 @@ public partial class TagProfile : ITagProfile
 		TagConfiguration Clone = new()
 		{
 			ObjectId = this.objectId,
+			InitialDefaultXmppConnectivity = this.InitialDefaultXmppConnectivity,
+			InitialDomain = this.InitialDomain,
+			InitialApiKey = this.InitialApiKey,
+			InitialApiSecret = this.InitialApiSecret,
 			Domain = this.Domain,
 			ApiKey = this.ApiKey,
 			ApiSecret = this.ApiSecret,
@@ -196,11 +204,15 @@ public partial class TagProfile : ITagProfile
 			this.suppressPropertyChangedEvents = true;
 
 			this.objectId = configuration.ObjectId;
+			this.InitialDomain = configuration.InitialDomain;
+			this.InitialApiKey = configuration.InitialApiKey;
+			this.InitialApiSecret = configuration.InitialApiSecret;
 			this.Domain = configuration.Domain;
 			this.ApiKey = configuration.ApiKey;
 			this.ApiSecret = configuration.ApiSecret;
 			this.PhoneNumber = configuration.PhoneNumber;
 			this.EMail = configuration.EMail;
+			this.InitialDefaultXmppConnectivity = configuration.InitialDefaultXmppConnectivity;
 			this.DefaultXmppConnectivity = configuration.DefaultXmppConnectivity;
 			this.Account = configuration.Account;
 			this.PasswordHash = configuration.PasswordHash;
@@ -254,6 +266,62 @@ public partial class TagProfile : ITagProfile
 	#region Properties
 
 	/// <inheritdoc/>
+	public bool InitialDefaultXmppConnectivity
+	{
+		get => this.initialDefaultXmppConnectivity;
+		private set
+		{
+			if (this.initialDefaultXmppConnectivity != value)
+			{
+				this.initialDefaultXmppConnectivity = value;
+				this.FlagAsDirty(nameof(this.InitialDefaultXmppConnectivity));
+			}
+		}
+	}
+
+	/// <inheritdoc/>
+	public string? InitialDomain
+	{
+		get => this.initialDomain;
+		private set
+		{
+			if (!string.Equals(this.initialDomain, value, StringComparison.Ordinal))
+			{
+				this.initialDomain = value;
+				this.FlagAsDirty(nameof(this.InitialDomain));
+			}
+		}
+	}
+
+	/// <inheritdoc/>
+	public string? InitialApiKey
+	{
+		get => this.initialApiKey;
+		private set
+		{
+			if (!string.Equals(this.initialApiKey, value, StringComparison.Ordinal))
+			{
+				this.initialApiKey = value;
+				this.FlagAsDirty(nameof(this.InitialApiKey));
+			}
+		}
+	}
+
+	/// <inheritdoc/>
+	public string? InitialApiSecret
+	{
+		get => this.initialApiSecret;
+		private set
+		{
+			if (!string.Equals(this.initialApiSecret, value, StringComparison.Ordinal))
+			{
+				this.initialApiSecret = value;
+				this.FlagAsDirty(nameof(this.InitialApiSecret));
+			}
+		}
+	}
+
+	/// <inheritdoc/>
 	public bool DefaultXmppConnectivity
 	{
 		get => this.defaultXmppConnectivity;
@@ -268,7 +336,7 @@ public partial class TagProfile : ITagProfile
 	}
 
 	/// <inheritdoc/>
-	public string Domain
+	public string? Domain
 	{
 		get => this.domain;
 		private set
@@ -282,7 +350,7 @@ public partial class TagProfile : ITagProfile
 	}
 
 	/// <inheritdoc/>
-	public string ApiKey
+	public string? ApiKey
 	{
 		get => this.apiKey;
 		private set
@@ -296,7 +364,7 @@ public partial class TagProfile : ITagProfile
 	}
 
 	/// <inheritdoc/>
-	public string ApiSecret
+	public string? ApiSecret
 	{
 		get => this.apiSecret;
 		private set
@@ -310,7 +378,7 @@ public partial class TagProfile : ITagProfile
 	}
 
 	/// <inheritdoc/>
-	public string PhoneNumber
+	public string? PhoneNumber
 	{
 		get => this.phoneNumber;
 		private set
@@ -324,7 +392,7 @@ public partial class TagProfile : ITagProfile
 	}
 
 	/// <inheritdoc/>
-	public string EMail
+	public string? EMail
 	{
 		get => this.eMail;
 		private set
@@ -338,7 +406,7 @@ public partial class TagProfile : ITagProfile
 	}
 
 	/// <inheritdoc/>
-	public string Account
+	public string? Account
 	{
 		get => this.account;
 		private set
@@ -352,7 +420,7 @@ public partial class TagProfile : ITagProfile
 	}
 
 	/// <inheritdoc/>
-	public string PasswordHash
+	public string? PasswordHash
 	{
 		get => this.passwordHash;
 		private set
@@ -366,7 +434,7 @@ public partial class TagProfile : ITagProfile
 	}
 
 	/// <inheritdoc/>
-	public string PasswordHashMethod
+	public string? PasswordHashMethod
 	{
 		get => this.passwordHashMethod;
 		private set
@@ -380,7 +448,7 @@ public partial class TagProfile : ITagProfile
 	}
 
 	/// <inheritdoc/>
-	public string LegalJid
+	public string? LegalJid
 	{
 		get => this.legalJid;
 		private set
@@ -394,7 +462,7 @@ public partial class TagProfile : ITagProfile
 	}
 
 	/// <inheritdoc/>
-	public string HttpFileUploadJid
+	public string? HttpFileUploadJid
 	{
 		get => this.httpFileUploadJid;
 		private set
@@ -422,7 +490,7 @@ public partial class TagProfile : ITagProfile
 	}
 
 	/// <inheritdoc/>
-	public string LogJid
+	public string? LogJid
 	{
 		get => this.logJid;
 		private set
@@ -471,7 +539,7 @@ public partial class TagProfile : ITagProfile
 	}
 
 	/// <inheritdoc/>
-	public string PinHash
+	public string? PinHash
 	{
 		get => this.pinHash;
 		private set
@@ -586,8 +654,24 @@ public partial class TagProfile : ITagProfile
 	/// <inheritdoc/>
 	public void SetDomain(string DomainName, bool DefaultXmppConnectivity, string Key, string Secret)
 	{
-		this.Domain = DomainName;
+		if (this.InitialDomain is null)
+		{
+			this.InitialDefaultXmppConnectivity = this.DefaultXmppConnectivity;
+			this.InitialDomain = this.Domain;
+			this.InitialApiKey = this.ApiKey;
+			this.InitialApiSecret = this.ApiSecret;
+		}
+
+		if (this.InitialDomain is null)
+		{
+			this.InitialDefaultXmppConnectivity = DefaultXmppConnectivity;
+			this.InitialDomain = DomainName;
+			this.InitialApiKey = Key;
+			this.InitialApiSecret = Secret;
+		}
+
 		this.DefaultXmppConnectivity = DefaultXmppConnectivity;
+		this.Domain = DomainName;
 		this.ApiKey = Key;
 		this.ApiSecret = Secret;
 	}

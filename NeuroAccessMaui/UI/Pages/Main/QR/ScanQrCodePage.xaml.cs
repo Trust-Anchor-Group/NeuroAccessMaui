@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Maui.Layouts;
 using CommunityToolkit.Mvvm.Input;
+using NeuroAccessMaui.Services;
 using ZXing.Net.Maui;
+using ZXing.Net.Maui.Readers;
 
 namespace NeuroAccessMaui.UI.Pages.Main.QR;
 
@@ -141,6 +143,34 @@ public partial class ScanQrCodePage
 		{
 			this.CameraBarcodeReaderView.IsTorchOn = true;
 		}
+	}
+
+	[RelayCommand]
+	private async Task PickPhoto()
+	{
+		FileResult Result = await MediaPicker.PickPhotoAsync();
+
+		if (Result is null)
+		{
+			return;
+		}
+
+		byte[] Bin = File.ReadAllBytes(Result.FullPath);
+
+		PixelBufferHolder Data = new()
+		{
+			//!!! system dependent code
+#if ANDROID
+#else
+#endif
+		};
+
+		if (ServiceRef.BarcodeReader is not ZXingBarcodeReader BarcodeReader)
+		{
+			return;
+		}
+
+		BarcodeReader.Decode(Data);
 	}
 
 	private async void CameraBarcodeReaderView_BarcodesDetected(object sender, BarcodeDetectionEventArgs e)

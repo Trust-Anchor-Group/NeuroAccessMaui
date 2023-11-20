@@ -13,6 +13,7 @@ using NeuroAccessMaui.Services.Storage;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.Xmpp;
+using ZXing;
 
 namespace NeuroAccessMaui.Services;
 
@@ -35,6 +36,7 @@ public static class ServiceRef
 	private static INfcService? nfcService;
 	private static IStringLocalizer? localizer;
 	private static IPlatformSpecific? platformSpecific;
+	private static IBarcodeReader? barcodeReader;
 
 	/// <summary>
 	/// The dispatcher to use for alerts and accessing the main thread.
@@ -201,6 +203,19 @@ public static class ServiceRef
 		{
 			platformSpecific ??= ServiceHelper.GetService<IPlatformSpecific>();
 			return platformSpecific;
+		}
+	}
+
+
+	/// <summary>
+	/// Localization service
+	/// </summary>
+	public static IBarcodeReader BarcodeReader
+	{
+		get
+		{
+			barcodeReader ??= ServiceHelper.GetService<IBarcodeReader>();
+			return barcodeReader;
 		}
 	}
 }
