@@ -27,20 +27,21 @@
 			</Grid.Padding>
 
 			<controls:ImageButton
+				IsVisible="{Binding CanGoToPrev}"
 				Command="{Binding GoToPrevCommand}"
 				Style="{StaticResource BackImageButtonStyle}" />
 
 			<controls:TemplatedButton x:Name="LanguageButton"
-				HorizontalOptions="End"
 				VerticalOptions="Start"
+				HorizontalOptions="End"
 				Command="{Binding ChangeLanguageCommand}">
 				<VerticalStackLayout>
 
 					<Path x:Name="InnerPath"
 						Grid.Row="0"
 						HorizontalOptions="Center"
-						WidthRequest="24"
 						HeightRequest="24"
+						WidthRequest="24"
 						Aspect="Uniform"
 						Data="{x:Static ui:Geometries.LanguageSelectButtonPath}"
 						Fill="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},

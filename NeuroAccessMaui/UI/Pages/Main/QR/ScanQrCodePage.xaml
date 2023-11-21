@@ -4,10 +4,10 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 	xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
-	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 	xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
 	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.QR"
+	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 	xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
 	Shell.FlyoutBehavior="Disabled">
 	<!--
@@ -24,8 +24,7 @@
 				<Setter Property="BackgroundColor" Value="#33F5F6F7" />
 				<Setter Property="Padding" Value="{StaticResource MediumMargins}" />
 				<Setter Property="StrokeShape">
-					<RoundRectangle
-						CornerRadius="{StaticResource MediumCornerRadius}" />
+					<RoundRectangle CornerRadius="{StaticResource MediumCornerRadius}" />
 				</Setter>
 			</Style>
 
@@ -35,8 +34,7 @@
 				<Setter Property="BackgroundColor" Value="#33F5F6F7" />
 				<Setter Property="Padding" Value="{StaticResource ButtonMediumMargins}" />
 				<Setter Property="StrokeShape">
-					<RoundRectangle
-						CornerRadius="{StaticResource SmallCornerRadius}" />
+					<RoundRectangle CornerRadius="{StaticResource SmallCornerRadius}" />
 				</Setter>
 			</Style>
 
@@ -86,18 +84,17 @@
 	</VisualElement.Resources>
 
 	<Grid x:Name="GridWithAnimation"
-		HorizontalOptions="FillAndExpand"
-		VerticalOptions="FillAndExpand">
+		VerticalOptions="FillAndExpand"
+		HorizontalOptions="FillAndExpand">
 
 		<mct:StateContainer.StateViews>
 			<Grid mct:StateView.StateKey="AutomaticScan">
 				<zxing:CameraBarcodeReaderView x:Name="CameraBarcodeReaderView"
-					HorizontalOptions="FillAndExpand"
 					VerticalOptions="FillAndExpand"
+					HorizontalOptions="FillAndExpand"
 					BarcodesDetected="CameraBarcodeReaderView_BarcodesDetected" />
 
-				<Grid
-					Padding="{StaticResource LargeMargins}">
+				<Grid Padding="{StaticResource LargeMargins}">
 					<VerticalStackLayout
 						VerticalOptions="Start"
 						Spacing="{StaticResource LargeSpacing}">
@@ -105,8 +102,8 @@
 						<controls:ImageButton
 							HorizontalOptions="Start"
 							Command="{Binding GoBackCommand}"
-							PathData="{x:Static ui:Geometries.BackButtonPath}"
-							Style="{StaticResource CameraImageButtonStyle}" />
+							Style="{StaticResource CameraImageButtonStyle}"
+							PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
 						<Label
 							HorizontalOptions="Center"
@@ -121,8 +118,8 @@
 						Spacing="{StaticResource LargeSpacing}">
 
 						<VerticalStackLayout
-							IsVisible="{Binding HasAllowedSchema}"
-							Spacing="{StaticResource SmallSpacing}">
+							Spacing="{StaticResource SmallSpacing}"
+							IsVisible="{Binding HasAllowedSchema}">
 							<Border
 								HeightRequest="66"
 								WidthRequest="66"
@@ -131,10 +128,10 @@
 								StrokeShape="RoundRectangle 33"
 								StrokeThickness="3">
 								<Path
+									VerticalOptions="Center"
+									HorizontalOptions="Center"
 									HeightRequest="40"
 									WidthRequest="40"
-									HorizontalOptions="Center"
-									VerticalOptions="Center"
 									Aspect="Uniform"
 									Data="{x:Static ui:Geometries.OnboardingIconPath}"
 									Fill="#008000" />
@@ -153,68 +150,78 @@
 
 							<controls:ImageButton
 								Command="{Binding PickPhotoCommand, Source={x:Reference ThisPage}}"
-								PathData="{x:Static ui:Geometries.CameraImageButtonPath}"
-								Style="{StaticResource CameraImageButtonStyle}" />
+								Style="{StaticResource CameraImageButtonStyle}"
+								PathData="{x:Static ui:Geometries.CameraImageButtonPath}" />
 
 							<controls:ImageButton
 								Command="{Binding SwitchTorchCommand, Source={x:Reference ThisPage}}"
-								PathData="{x:Static ui:Geometries.CameraTorchButtonPath}"
-								Style="{StaticResource CameraImageButtonStyle}" />
+								Style="{StaticResource CameraImageButtonStyle}"
+								PathData="{x:Static ui:Geometries.CameraTorchButtonPath}" />
 
 							<controls:ImageButton
 								Command="{Binding SwitchCameraCommand, Source={x:Reference ThisPage}}"
-								PathData="{x:Static ui:Geometries.CameraSwitchButtonPath}"
-								Style="{StaticResource CameraImageButtonStyle}" />
+								Style="{StaticResource CameraImageButtonStyle}"
+								PathData="{x:Static ui:Geometries.CameraSwitchButtonPath}" />
 						</HorizontalStackLayout>
 
 						<controls:TextButton
 							Command="{Binding Path=SwitchModeCommand, Source={x:Reference ThisPage}}"
-							LabelData="{l:Localize QrEnterManually}"
-							Style="{StaticResource CameraTextButtonStyle}" />
+							Style="{StaticResource CameraTextButtonStyle}"
+							LabelData="{l:Localize QrEnterManually}" />
 					</VerticalStackLayout>
 				</Grid>
 			</Grid>
 
 			<Grid x:Name="ManualScanGrid" mct:StateView.StateKey="ManualScan"
+				RowDefinitions="auto,*"
 				Padding="{StaticResource LargeMargins}">
+
 				<controls:ImageButton
+					Grid.Row="0"
 					Command="{Binding GoBackCommand}"
 					Style="{StaticResource BackImageButtonStyle}" />
 
-				<VerticalStackLayout
-					HorizontalOptions="FillAndExpand"
-					VerticalOptions="CenterAndExpand"
-					Spacing="{StaticResource LargeSpacing}">
+				<ScrollView Grid.Row="1">
+					<Grid
+						Grid.Row="0"
+						RowDefinitions="*,auto"
+						RowSpacing="{StaticResource LargeSpacing}">
 
-					<VerticalStackLayout
-						Spacing="{StaticResource SmallSpacing}">
-						<Label
-							HorizontalOptions="FillAndExpand"
-							Text="{l:Localize QrScanUri}" />
+						<VerticalStackLayout
+							Grid.Row="0"
+							VerticalOptions="Center"
+							Spacing="{StaticResource LargeSpacing}">
 
-						<controls:CompositeEntry x:Name="LinkEntry"
-							Style="{StaticResource RegularCompositeEntryStyle}"
-							EntryData="{Binding Path=UrlText}" />
-					</VerticalStackLayout>
+							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+								<Label
+									HorizontalOptions="FillAndExpand"
+									Text="{l:Localize QrScanUri}" />
 
-					<controls:TextButton
-						Command="{Binding OpenUrlCommand}"
-						LabelData="{l:Localize Open}"
-						Style="{StaticResource FilledTextButtonStyle}" />
-				</VerticalStackLayout>
+								<controls:CompositeEntry x:Name="LinkEntry"
+									Style="{StaticResource RegularCompositeEntryStyle}"
+									EntryData="{Binding Path=UrlText}" />
+							</VerticalStackLayout>
 
-				<controls:TextButton
-					VerticalOptions="End"
-					Command="{Binding Path=SwitchModeCommand, Source={x:Reference ThisPage}}"
-					LabelData="{l:Localize QrScanCode}"
-					Style="{StaticResource OutlinedTextButtonStyle}" />
+							<controls:TextButton
+								Command="{Binding OpenUrlCommand}"
+								Style="{StaticResource FilledTextButtonStyle}"
+								LabelData="{l:Localize Open}" />
+						</VerticalStackLayout>
+
+						<controls:TextButton
+							Grid.Row="1"
+							Command="{Binding Path=SwitchModeCommand, Source={x:Reference ThisPage}}"
+							Style="{StaticResource OutlinedTextButtonStyle}"
+							LabelData="{l:Localize QrScanCode}" />
+					</Grid>
+				</ScrollView>
 			</Grid>
 		</mct:StateContainer.StateViews>
 
 		<!--  default state, should not occur  -->
 		<Label
+			VerticalTextAlignment="Center"
 			HorizontalTextAlignment="Center"
-			Text="Something went wrong!"
-			VerticalTextAlignment="Center" />
+			Text="Something went wrong!" />
 	</Grid>
 </base:BaseContentPage>
