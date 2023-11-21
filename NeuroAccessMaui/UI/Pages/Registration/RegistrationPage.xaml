@@ -3,69 +3,78 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
-	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 	xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
 	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration"
+	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 	xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views">
 
-	<Grid>
-		<controls:Background />
+	<Grid
+		RowDefinitions="auto,*"
+		ColumnDefinitions="*">
 
-		<ScrollView>
+		<controls:Background Grid.RowSpan="2" />
+
+		<Grid
+			Grid.Row="0"
+			RowDefinitions="auto"
+			ColumnDefinitions="*">
+			<Grid.Padding>
+				<Thickness
+					Left="{StaticResource LargeSpacing}"
+					Top="{StaticResource LargeSpacing}"
+					Right="{StaticResource LargeSpacing}" />
+			</Grid.Padding>
+
+			<controls:ImageButton
+				Command="{Binding GoToPrevCommand}"
+				Style="{StaticResource BackImageButtonStyle}" />
+
+			<controls:TemplatedButton x:Name="LanguageButton"
+				HorizontalOptions="End"
+				VerticalOptions="Start"
+				Command="{Binding ChangeLanguageCommand}">
+				<VerticalStackLayout>
+
+					<Path x:Name="InnerPath"
+						Grid.Row="0"
+						HorizontalOptions="Center"
+						WidthRequest="24"
+						HeightRequest="24"
+						Aspect="Uniform"
+						Data="{x:Static ui:Geometries.LanguageSelectButtonPath}"
+						Fill="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
+											   Dark={StaticResource PrimaryForegroundDark}}" />
+
+					<Label x:Name="InnerLabel"
+						Grid.Row="1"
+						Text="{Binding SelectedLanguage.MyNativeName}" />
+				</VerticalStackLayout>
+
+				<VisualStateManager.VisualStateGroups>
+					<VisualStateGroup Name="CommonStates">
+						<VisualState Name="Normal" />
+						<VisualState Name="Disabled">
+							<VisualState.Setters>
+								<Setter Property="Label.TextColor" TargetName="InnerLabel" Value="{AppThemeBinding Light={StaticResource DisabledFilledButtonForegroundLight}, Dark={StaticResource DisabledFilledButtonForegroundDark}}" />
+								<Setter Property="Path.Fill" TargetName="InnerPath" Value="{AppThemeBinding Light={StaticResource DisabledFilledButtonForegroundLight}, Dark={StaticResource DisabledFilledButtonForegroundDark}}" />
+							</VisualState.Setters>
+						</VisualState>
+					</VisualStateGroup>
+				</VisualStateManager.VisualStateGroups>
+			</controls:TemplatedButton>
+		</Grid>
+
+		<ScrollView Grid.Row="1">
 			<Grid
-				Padding="{StaticResource LargeMargins}"
 				RowDefinitions="auto,*"
+				Padding="{StaticResource LargeMargins}"
 				RowSpacing="{StaticResource LargeSpacing}">
 
 				<VerticalStackLayout
 					Grid.Row="0"
 					Spacing="{StaticResource LargeSpacing}">
 
-					<Grid
-						ColumnDefinitions="*"
-						RowDefinitions="auto">
-						<controls:ImageButton
-							Command="{Binding GoToPrevCommand}"
-							Style="{StaticResource BackImageButtonStyle}" />
-
-						<controls:TemplatedButton x:Name="LanguageButton"
-							HorizontalOptions="End"
-							VerticalOptions="Start"
-							Command="{Binding ChangeLanguageCommand}">
-							<VerticalStackLayout>
-
-								<Path x:Name="InnerPath"
-									Grid.Row="0"
-									HeightRequest="24"
-									WidthRequest="24"
-									HorizontalOptions="Center"
-									Aspect="Uniform"
-									Data="{x:Static ui:Geometries.LanguageSelectButtonPath}"
-									Fill="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
-														   Dark={StaticResource PrimaryForegroundDark}}" />
-
-								<Label x:Name="InnerLabel"
-									Grid.Row="1"
-									Text="{Binding SelectedLanguage.MyNativeName}" />
-							</VerticalStackLayout>
-
-							<VisualStateManager.VisualStateGroups>
-								<VisualStateGroup
-									Name="CommonStates">
-									<VisualState
-										Name="Normal" />
-									<VisualState
-										Name="Disabled">
-										<VisualState.Setters>
-											<Setter TargetName="InnerLabel" Property="Label.TextColor" Value="{AppThemeBinding Light={StaticResource DisabledFilledButtonForegroundLight}, Dark={StaticResource DisabledFilledButtonForegroundDark}}" />
-											<Setter TargetName="InnerPath" Property="Path.Fill" Value="{AppThemeBinding Light={StaticResource DisabledFilledButtonForegroundLight}, Dark={StaticResource DisabledFilledButtonForegroundDark}}" />
-										</VisualState.Setters>
-									</VisualState>
-								</VisualStateGroup>
-							</VisualStateManager.VisualStateGroups>
-						</controls:TemplatedButton>
-					</Grid>
 
 					<Image
 						HorizontalOptions="Center"
@@ -89,9 +98,9 @@
 
 					<!--  default state, should not occur  -->
 					<Label
+						VerticalTextAlignment="Center"
 						HorizontalTextAlignment="Center"
-						Text="Something went wrong!"
-						VerticalTextAlignment="Center" />
+						Text="Something went wrong!" />
 				</Grid>
 			</Grid>
 		</ScrollView>
