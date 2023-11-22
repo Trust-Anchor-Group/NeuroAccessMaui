@@ -174,7 +174,21 @@ public partial class ChooseProviderViewModel : BaseRegistrationViewModel
 	[RelayCommand(CanExecute = nameof(CanContinue))]
 	private void Continue()
 	{
+		ServiceRef.TagProfile.GoToStep(RegistrationStep.CreateAccount);
 
+		WeakReferenceMessenger.Default.Send(new RegistrationPageMessage(ServiceRef.TagProfile.Step));
+	}
+
+	[RelayCommand]
+	private void ServiceProviderInfo()
+	{
+
+	}
+
+	[RelayCommand]
+	private void UndoSelection()
+	{
+		ServiceRef.TagProfile.UndoDomainSelection();
 	}
 
 	[RelayCommand(CanExecute = nameof(CanScanQrCode))]
@@ -246,12 +260,10 @@ public partial class ChooseProviderViewModel : BaseRegistrationViewModel
 			{
 				ServiceRef.LogService.LogException(ex);
 
-				/*
 				await ServiceRef.UiSerializer.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 					ServiceRef.Localizer[nameof(AppResources.UnableToAccessInvitation)],
 					ServiceRef.Localizer[nameof(AppResources.Ok)]);
-				*/
 				return;
 			}
 
@@ -303,15 +315,16 @@ public partial class ChooseProviderViewModel : BaseRegistrationViewModel
 							Domain = XML.Attribute(E, "domain");
 
 							await this.SelectDomain(Domain, KeyStr, Secret);
-							/*
+
 							await ServiceRef.UiSerializer.DisplayAlert(
 								ServiceRef.Localizer[nameof(AppResources.InvitationAccepted)],
-								ServiceRef.Localizer[nameof(AppResources.InvitedToCreateAccountOnDomain)],
+								ServiceRef.Localizer[nameof(AppResources.InvitedToCreateAccountOnDomain), Domain],
 								ServiceRef.Localizer[nameof(AppResources.Ok)]);
-							*/
 							break;
 
 						case "Account":
+							//!!! not implemented yet
+							/*
 							string UserName = XML.Attribute(E, "userName");
 							string Password = XML.Attribute(E, "password");
 							string PasswordMethod = XML.Attribute(E, "passwordMethod");
@@ -330,7 +343,6 @@ public partial class ChooseProviderViewModel : BaseRegistrationViewModel
 								throw new Exception("Invalid account.");
 							}
 
-							/*
 							LegalIdDefinition = null;
 							this.AccountName = UserName;
 							AccountDone = true;
@@ -338,14 +350,18 @@ public partial class ChooseProviderViewModel : BaseRegistrationViewModel
 							break;
 
 						case "LegalId":
-							LegalIdDefinition = E;
+							//!!! not implemented yet
+							//!!! LegalIdDefinition = E;
 							break;
 
 						case "Pin":
-							Pin = XML.Attribute(E, "pin");
+							//!!! not implemented yet
+							//!!! Pin = XML.Attribute(E, "pin");
 							break;
 
 						case "Transfer":
+							//!!! not implemented yet
+							/*
 							foreach (XmlNode N in E.ChildNodes)
 							{
 								if (N is XmlElement E2)
@@ -353,6 +369,7 @@ public partial class ChooseProviderViewModel : BaseRegistrationViewModel
 									ToProcess.AddLast(E2);
 								}
 							}
+							*/
 							break;
 
 						default:
@@ -406,12 +423,12 @@ public partial class ChooseProviderViewModel : BaseRegistrationViewModel
 		ServiceRef.TagProfile.SetDomain(Domain, DefaultConnectivity, Key, Secret);
 	}
 
-	private async Task<bool> ConnectToAccount(string AccountName, string Password, string PasswordMethod, string LegalIdentityJid,
-		XmlElement LegalIdDefinition, string Pin)
+	//!!! not implemented yet
+	/*
+	private async Task<bool> ConnectToAccount(string AccountName, string Password, string PasswordMethod, string LegalIdentityJid, XmlElement LegalIdDefinition, string Pin)
 	{
 		try
 		{
-			/*
 			async Task OnConnected(XmppClient client)
 			{
 				DateTime now = DateTime.Now;
@@ -524,24 +541,21 @@ public partial class ChooseProviderViewModel : BaseRegistrationViewModel
 				await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], errorMessage, LocalizationResourceManager.Current["Ok"]);
 
 			return succeeded;
-			*/
 		}
 		catch (Exception ex)
 		{
 			ServiceRef.LogService.LogException(ex);
 
-			/*
 			await ServiceRef.UiSerializer.DisplayAlert(
 				LocalizationResourceManager.Current["ErrorTitle"],
 				string.Format(LocalizationResourceManager.Current["UnableToConnectTo"], this.TagProfile.Domain),
 				LocalizationResourceManager.Current["Ok"]);
-			*/
 		}
 
 		return false;
 	}
+	*/
 }
-
 
 public enum ButtonType
 {

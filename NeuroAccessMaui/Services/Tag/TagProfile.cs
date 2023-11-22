@@ -677,6 +677,18 @@ public partial class TagProfile : ITagProfile
 	}
 
 	/// <inheritdoc/>
+	public void UndoDomainSelection()
+	{
+		if (this.InitialDomain is not null)
+		{
+			this.DefaultXmppConnectivity = this.InitialDefaultXmppConnectivity;
+			this.Domain = this.InitialDomain;
+			this.ApiKey = this.InitialApiKey;
+			this.ApiSecret = this.InitialApiSecret;
+		}
+	}
+
+	/// <inheritdoc/>
 	public void ClearDomain()
 	{
 		this.Domain = string.Empty;

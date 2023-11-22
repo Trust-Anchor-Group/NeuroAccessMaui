@@ -381,6 +381,15 @@
   <data name="InvalidInvitationCode" xml:space="preserve">
     <value>Invalid invitation code.</value>
   </data>
+  <data name="InvitationAccepted" xml:space="preserve">
+    <value>Invitation accepted</value>
+  </data>
+  <data name="UnableToAccessInvitation" xml:space="preserve">
+    <value>Unable to access invitation information.</value>
+  </data>
+  <data name="InvitedToCreateAccountOnDomain" xml:space="preserve">
+    <value>You have been invited to create an account on {0}. Press OK, and enter the name of the account you wish to create.</value>
+  </data>
   <data name="ThisCodeCannotBeClaimedAtThisTime" xml:space="preserve">
     <value>This code represents a Tag ID invitation, and cannot be claimed at this time.</value>
   </data>
@@ -623,6 +632,12 @@
   </data>
   <data name="ProviderSectionChangeOption" xml:space="preserve">
     <value>Change service provider</value>
+  </data>
+  <data name="UndoSelection" xml:space="preserve">
+    <value>Undo selection</value>
+  </data>
+  <data name="ServiceProviderInfo" xml:space="preserve">
+    <value>What is a service provider?</value>
   </data>
   <data name="QrPageTitleScanInvitation" xml:space="preserve">
     <value>Scan invitation</value>

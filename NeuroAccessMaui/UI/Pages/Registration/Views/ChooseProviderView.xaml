@@ -4,6 +4,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 	xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+	xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Registration"
 	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
 	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
@@ -83,17 +84,58 @@
 
 	<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
 
-		<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
+		<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+				<Label
+					HorizontalOptions="Center"
+					Style="{StaticResource PageTitleLabelStyle}"
+					Text="{l:Localize OnboardingProviderPageTitle}" />
+
+				<HorizontalStackLayout
+					HorizontalOptions="Center"
+					Spacing="{StaticResource SmallSpacing}"
+					IsVisible="{x:Binding HasLocalizedName}">
+
+					<Label
+						VerticalOptions="Center"
+						FontFamily="SpaceGroteskMedium"
+						FontSize="24"
+						Text="{x:Binding LocalizedName}"
+						TextColor="{AppThemeBinding Light={StaticResource AccentForegroundLight},
+													Dark={StaticResource AccentForegroundDark}}" />
+
+					<Path
+						VerticalOptions="Center"
+						HeightRequest="20"
+						WidthRequest="20"
+						Aspect="Uniform"
+						Data="{x:Static ui:Geometries.InfoCirclePath}"
+						Fill="{AppThemeBinding Light={StaticResource NormalInfoForegroundLight},
+											   Dark={StaticResource NormalInfoForegroundDark}}" />
+
+				</HorizontalStackLayout>
+			</VerticalStackLayout>
+
+
+			<VerticalStackLayout Spacing="0">
+				<Label
+					HorizontalOptions="Center"
+					Text="{l:Localize OnboardingProviderPageDetails}" />
+
+				<Label
+					HorizontalOptions="Center"
+					Text="{x:Binding DomainName}"
+					TextColor="{AppThemeBinding Light={StaticResource AccentForegroundLight},
+												Dark={StaticResource AccentForegroundDark}}" />
+			</VerticalStackLayout>
 
 			<Label
-				Style="{StaticResource PageTitleLabelStyle}"
-				Text="{l:Localize OnboardingProviderPageTitle}" />
-
-			<Label Text="{l:Localize OnboardingProviderPageDetails}" />
+				HorizontalTextAlignment="Center"
+				IsVisible="{x:Binding HasLocalizedDescription}"
+				Text="{x:Binding LocalizedDescription}" />
 		</VerticalStackLayout>
 
 		<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-
 			<Label
 				Style="{StaticResource SectionTitleLabelStyle}"
 				Text="{l:Localize ProviderSectionTitle}" />
@@ -102,7 +144,44 @@
 				Spacing="{StaticResource MediumSpacing}"
 				BindableLayout.ItemTemplate="{StaticResource SelectButtonDataTemplate}"
 				BindableLayout.ItemsSource="{Binding Buttons}" />
+
+			<controls:TemplatedButton
+				HorizontalOptions="Center"
+				Command="{x:Binding ServiceProviderInfoCommand}">
+				<HorizontalStackLayout Spacing="{StaticResource SmallSpacing}">
+					<Path
+						VerticalOptions="Center"
+						HeightRequest="20"
+						WidthRequest="20"
+						Aspect="Uniform"
+						Data="{x:Static ui:Geometries.InfoCirclePath}"
+						Fill="{AppThemeBinding Light={StaticResource NormalInfoForegroundLight},
+											   Dark={StaticResource NormalInfoForegroundDark}}" />
+
+					<Label
+						VerticalOptions="Center"
+						FontFamily="HaasGroteskRegular"
+						FontSize="14"
+						Text="{l:Localize ServiceProviderInfo}"
+						TextColor="{AppThemeBinding Light={StaticResource NormalInfoForegroundLight},
+													Dark={StaticResource NormalInfoForegroundDark}}" />
+				</HorizontalStackLayout>
+			</controls:TemplatedButton>
 		</VerticalStackLayout>
+
+		<controls:TemplatedButton
+			HorizontalOptions="Center"
+			Command="{x:Binding UndoSelectionCommand}">
+			<HorizontalStackLayout Spacing="{StaticResource SmallSpacing}">
+				<Label
+					VerticalOptions="Center"
+					FontFamily="HaasGroteskRegular"
+					FontSize="18"
+					Text="{l:Localize UndoSelection}"
+					TextColor="{AppThemeBinding Light={StaticResource AccentForegroundLight},
+												Dark={StaticResource AccentForegroundDark}}" />
+			</HorizontalStackLayout>
+		</controls:TemplatedButton>
 
 		<controls:TextButton
 			Command="{Binding ContinueCommand}"

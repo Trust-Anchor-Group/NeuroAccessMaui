@@ -212,6 +212,11 @@ public interface ITagProfile
 	void SetDomain(string domainName, bool defaultXmppConnectivity, string Key, string Secret);
 
 	/// <summary>
+	/// Reverses the SetDomain to the Initial* values.
+	/// </summary>
+	void UndoDomainSelection();
+
+	/// <summary>
 	/// Revert Step 1.
 	/// </summary>
 	void ClearDomain();

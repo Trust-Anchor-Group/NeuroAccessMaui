@@ -538,6 +538,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invitation accepted.
+        /// </summary>
+        internal static string InvitationAccepted {
+            get {
+                return ResourceManager.GetString("InvitationAccepted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have been invited to create an account on {0}. Press OK, and enter the name of the account you wish to create..
+        /// </summary>
+        internal static string InvitedToCreateAccountOnDomain {
+            get {
+                return ResourceManager.GetString("InvitedToCreateAccountOnDomain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Legal ID not approved..
         /// </summary>
         internal static string LegalIdNotApproved {
@@ -1240,6 +1258,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to What is a service provider?.
+        /// </summary>
+        internal static string ServiceProviderInfo {
+            get {
+                return ResourceManager.GetString("ServiceProviderInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The signature petition was denied..
         /// </summary>
         internal static string SignaturePetitionDenied {
@@ -1339,6 +1366,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to access invitation information..
+        /// </summary>
+        internal static string UnableToAccessInvitation {
+            get {
+                return ResourceManager.GetString("UnableToAccessInvitation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to authenticate with {0}.
         /// </summary>
         internal static string UnableToAuthenticateWith {
@@ -1398,6 +1434,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string UnableToVerifyCode {
             get {
                 return ResourceManager.GetString("UnableToVerifyCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Undo selection.
+        /// </summary>
+        internal static string UndoSelection {
+            get {
+                return ResourceManager.GetString("UndoSelection", resourceCulture);
             }
         }
         
