@@ -555,14 +555,14 @@
   <data name="OnboardingAccountPageTitle" xml:space="preserve">
     <value>Create account</value>
   </data>
+  <data name="OnboardingAccountPageDetails" xml:space="preserve">
+    <value>Enter the name you want to use for your account</value>
+  </data>
   <data name="AccountSectionTitle" xml:space="preserve">
     <value>Enter the account name</value>
   </data>
   <data name="Create" xml:space="preserve">
     <value>Create</value>
-  </data>
-  <data name="OnboardingAccountPageDetails" xml:space="preserve">
-    <value>Enter the name you want to use for your account</value>
   </data>
   <data name="PurposesSectionTitle" xml:space="preserve">
     <value>Choose access purpose </value>
