@@ -23,7 +23,7 @@ public class OnboardingLink : ILinkOpener
 	/// <returns>Support grade of opener for the given link.</returns>
 	public Grade Supports(Uri Link)
 	{
-		return Link.Scheme.ToLower() == Constants.UriSchemes.Onboarding ? Grade.Ok : Grade.NotAtAll;
+		return string.Equals(Link.Scheme, Constants.UriSchemes.Onboarding, StringComparison.OrdinalIgnoreCase) ? Grade.Ok : Grade.NotAtAll;
 	}
 
 	/// <inheritdoc/>

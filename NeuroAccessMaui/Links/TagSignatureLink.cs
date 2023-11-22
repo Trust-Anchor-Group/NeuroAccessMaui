@@ -22,13 +22,19 @@ public class TagSignatureLink : ILinkOpener
 	/// <returns>Support grade of opener for the given link.</returns>
 	public Grade Supports(Uri Link)
 	{
-		return Link.Scheme.ToLower() == Constants.UriSchemes.TagSign ? Grade.Ok : Grade.NotAtAll;
+		return string.Equals(Link.Scheme, Constants.UriSchemes.TagSign, StringComparison.OrdinalIgnoreCase) ? Grade.Ok : Grade.NotAtAll;
 	}
 
 	/// <inheritdoc/>
 	public async Task<bool> TryOpenLink(Uri Link)
 	{
-		string request = Constants.UriSchemes.RemoveScheme(Link.OriginalString);
+		string? request = Constants.UriSchemes.RemoveScheme(Link.OriginalString);
+
+		if (request is null)
+		{
+			return false;
+		}
+
 		await ServiceRef.ContractOrchestratorService.TagSignature(request);
 
 		return true;
