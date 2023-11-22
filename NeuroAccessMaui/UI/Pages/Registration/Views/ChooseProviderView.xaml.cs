@@ -39,9 +39,10 @@ public partial class ChooseProviderView
 					if (ButtonInfo.Button == ButtonType.Change)
 					{
 						// unselect it after the QR scan is open
-						this.Dispatcher.DispatchDelayed(TimeSpan.FromMilliseconds(100), () =>
+						this.Dispatcher.DispatchDelayed(TimeSpan.FromMilliseconds(200), () =>
 						{
 							VisualStateManager.GoToState(Element, VisualStateManager.CommonStates.Normal);
+							this.viewModel.SelectedButton = null;
 						});
 					}
 				}
