@@ -4,15 +4,14 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
-	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main">
+	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main"
+	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
 
 	<Grid
 		Padding="{StaticResource LargeMargins}"
 		RowSpacing="{StaticResource LargeSpacing}">
 		<ScrollView>
-			<VerticalStackLayout
-				Spacing="{StaticResource MediumSpacing}">
+			<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
 				<Label
 					VerticalOptions="Start"
 					FontFamily="HaasGroteskBold"
@@ -27,7 +26,7 @@
 		<controls:TextButton
 			VerticalOptions="End"
 			Command="{Binding CopyToClipboardCommand}"
-			LabelData="{l:Localize CopyToClipboard}"
-			Style="{StaticResource FilledTextButtonStyle}" />
+			Style="{StaticResource FilledTextButtonStyle}"
+			LabelData="{l:Localize CopyToClipboard}" />
 	</Grid>
 </base:BaseContentPage>

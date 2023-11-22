@@ -76,14 +76,13 @@
 					Grid.Row="0"
 					Spacing="{StaticResource LargeSpacing}">
 
-
 					<Image
 						HorizontalOptions="Center"
 						Source="{AppThemeBinding Light=neuro_access_logo_light.png,
 												 Dark=neuro_access_logo_dark.png}" />
 				</VerticalStackLayout>
 
-				<!--  CONTENT  -->
+				<!-- CONTENT -->
 				<Grid x:Name="GridWithAnimation"
 					Grid.Row="1">
 
@@ -97,7 +96,7 @@
 						<views:DefinePinView x:Name="DefinePinView" x:FactoryMethod="Create" mct:StateView.StateKey="DefinePin" />
 					</mct:StateContainer.StateViews>
 
-					<!--  default state, should not occur  -->
+					<!-- default state, should not occur -->
 					<Label
 						VerticalTextAlignment="Center"
 						HorizontalTextAlignment="Center"

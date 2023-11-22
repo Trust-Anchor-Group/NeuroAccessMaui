@@ -15,6 +15,9 @@
 	<Color x:Key="SecondaryBackgroundDark">#3E3E40</Color>
 	<Color x:Key="SecondaryForegroundDark">#EBEBEC</Color>
 
+	<Color x:Key="AccentForegroundLight">#4F7EAC</Color>
+	<Color x:Key="AccentForegroundDark">#4F7EAC</Color>
+
 	<!-- List Items -->
 	<Color x:Key="NormalBackgroundLight">#F5F6F7</Color>
 	<Color x:Key="NormalForegroundLight">#181F25</Color>

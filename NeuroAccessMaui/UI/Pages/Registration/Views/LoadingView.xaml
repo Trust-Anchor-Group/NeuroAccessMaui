@@ -5,43 +5,42 @@
 	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Registration"
 	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views">
 
-	<Grid
-		RowDefinitions="*,auto,3*,auto">
+	<Grid RowDefinitions="*,auto,3*,auto">
 
 		<HorizontalStackLayout x:Name="LabelLayout"
 			Grid.Row="1"
-			HorizontalOptions="Center"
 			VerticalOptions="Center"
-			Opacity="0"
-			Spacing="8">
+			HorizontalOptions="Center"
+			Spacing="8"
+			Opacity="0">
 			<Label
+				VerticalTextAlignment="Center"
 				FontSize="16"
-				Text="NEW"
-				VerticalTextAlignment="Center" />
+				Text="NEW" />
 			<Label
+				VerticalTextAlignment="Center"
 				FontSize="22"
-				Text="WAYS"
-				VerticalTextAlignment="Center" />
+				Text="WAYS" />
 			<Label
+				VerticalTextAlignment="Center"
 				FontSize="16"
-				Text="OF"
-				VerticalTextAlignment="Center" />
+				Text="OF" />
 			<Label
+				VerticalTextAlignment="Center"
 				FontSize="22"
-				Text="WORLDMAKING"
-				VerticalTextAlignment="Center" />
+				Text="WORLDMAKING" />
 		</HorizontalStackLayout>
 
 		<ActivityIndicator
 			Grid.Row="2"
 			VerticalOptions="Center"
-			IsRunning="true"
-			IsVisible="true" />
+			IsVisible="true"
+			IsRunning="true" />
 		<Frame
 			Grid.Row="3"
+			IsVisible="{Binding Path=DisplayConnectionText}"
 			BackgroundColor="#99ffffff"
-			CornerRadius="5"
-			IsVisible="{Binding Path=DisplayConnectionText}">
+			CornerRadius="5">
 			<Label
 				HorizontalOptions="CenterAndExpand"
 				FontSize="Medium"

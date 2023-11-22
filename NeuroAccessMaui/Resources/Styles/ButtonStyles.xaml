@@ -3,8 +3,8 @@
 <ResourceDictionary
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-	xmlns:ui="clr-namespace:NeuroAccessMaui.UI">
+	xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
 
 	<Style x:Key="BackImageButtonBorderStyle"
 		ApplyToDerivedTypes="False"
@@ -44,8 +44,7 @@
 		<Setter Property="Stroke" Value="Transparent" />
 		<Setter Property="Padding" Value="{StaticResource ButtonMediumMargins}" />
 		<Setter Property="StrokeShape">
-			<RoundRectangle
-				CornerRadius="{StaticResource SmallCornerRadius}" />
+			<RoundRectangle CornerRadius="{StaticResource SmallCornerRadius}" />
 		</Setter>
 
 		<Setter Property="VisualStateManager.VisualStateGroups">
@@ -99,8 +98,7 @@
 		<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource EnabledOutlinedButtonForegroundLight}, Dark={StaticResource EnabledOutlinedButtonForegroundDark}}" />
 		<Setter Property="Padding" Value="{StaticResource ButtonMediumMargins}" />
 		<Setter Property="StrokeShape">
-			<RoundRectangle
-				CornerRadius="{StaticResource SmallCornerRadius}" />
+			<RoundRectangle CornerRadius="{StaticResource SmallCornerRadius}" />
 		</Setter>
 
 		<Setter Property="VisualStateManager.VisualStateGroups">

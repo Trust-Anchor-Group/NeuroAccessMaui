@@ -652,8 +652,7 @@
 		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SecondaryBackgroundLight}, Dark={StaticResource SecondaryBackgroundDark}}" />
 		<Setter Property="Padding" Value="{StaticResource LargeMargins}" />
 		<Setter Property="StrokeShape">
-			<RoundRectangle
-				CornerRadius="{StaticResource MediumCornerRadius}" />
+			<RoundRectangle CornerRadius="{StaticResource MediumCornerRadius}" />
 		</Setter>
 		<Setter Property="Shadow">
 			<Shadow />
@@ -675,8 +674,7 @@
 		TargetType="Border">
 		<Setter Property="Padding" Value="{StaticResource MediumMargins}" />
 		<Setter Property="StrokeShape">
-			<RoundRectangle
-				CornerRadius="{StaticResource SmallCornerRadius}" />
+			<RoundRectangle CornerRadius="{StaticResource SmallCornerRadius}" />
 		</Setter>
 	</Style>
 

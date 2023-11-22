@@ -4,20 +4,20 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 	xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Registration"
-	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 	xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views">
+	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Registration"
+	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
+	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
 
 	<VisualElement.Resources>
 		<DataTemplate x:Key="SelectPurposeDataTemplate" x:DataType="viewmodel:PurposeInfo">
 			<Border
+				Padding="0"
+				Style="{StaticResource ItemOuterBorderStyle}"
 				BackgroundColor="{AppThemeBinding Light={StaticResource NormalBackgroundLight},
 												  Dark={StaticResource NormalBackgroundDark}}"
-				Padding="0"
 				Stroke="{AppThemeBinding Light={StaticResource NormalForegroundLight},
-										 Dark={StaticResource NormalBackgroundDark}}"
-				Style="{StaticResource ItemOuterBorderStyle}">
+										 Dark={StaticResource NormalBackgroundDark}}">
 				<Border.GestureRecognizers>
 					<TapGestureRecognizer
 						Command="{Binding SelectPurposeCommand, Source={x:Reference ThisPage}}"
@@ -25,8 +25,8 @@
 				</Border.GestureRecognizers>
 
 				<Grid
-					ColumnDefinitions="*,auto"
-					RowDefinitions="auto">
+					RowDefinitions="auto"
+					ColumnDefinitions="*,auto">
 
 					<Label x:Name="InnerLabel"
 						Grid.Column="0"
@@ -71,17 +71,14 @@
 				</Grid>
 
 				<VisualStateManager.VisualStateGroups>
-					<VisualStateGroup
-						Name="CommonStates">
-						<VisualState
-							Name="Normal" />
-						<VisualState
-							Name="Selected">
+					<VisualStateGroup Name="CommonStates">
+						<VisualState Name="Normal" />
+						<VisualState Name="Selected">
 							<VisualState.Setters>
 								<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SelectedBackgroundLight}, Dark={StaticResource SelectedBackgroundDark}}" />
 								<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource SelectedBackgroundLight}, Dark={StaticResource SelectedBackgroundDark}}" />
-								<Setter TargetName="InnerLabel" Property="Label.TextColor" Value="{AppThemeBinding Light={StaticResource SelectedForegroundLight}, Dark={StaticResource SelectedForegroundDark}}" />
-								<Setter TargetName="InnerPath" Property="Path.Fill" Value="{AppThemeBinding Light={StaticResource SelectedInfoForegroundLight}, Dark={StaticResource SelectedInfoForegroundDark}}" />
+								<Setter Property="Label.TextColor" TargetName="InnerLabel" Value="{AppThemeBinding Light={StaticResource SelectedForegroundLight}, Dark={StaticResource SelectedForegroundDark}}" />
+								<Setter Property="Path.Fill" TargetName="InnerPath" Value="{AppThemeBinding Light={StaticResource SelectedInfoForegroundLight}, Dark={StaticResource SelectedInfoForegroundDark}}" />
 							</VisualState.Setters>
 						</VisualState>
 					</VisualStateGroup>
@@ -90,37 +87,33 @@
 		</DataTemplate>
 	</VisualElement.Resources>
 
-	<VerticalStackLayout
-		Spacing="{StaticResource LargeSpacing}">
+	<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
 
-		<VerticalStackLayout
-			Spacing="{StaticResource MediumSpacing}">
+		<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
 
 			<Label
 				Style="{StaticResource PageTitleLabelStyle}"
 				Text="{l:Localize OnboardingPurposePageTitle}" />
 
-			<Label
-				Text="{l:Localize OnboardingPurposePageDetails}" />
+			<Label Text="{l:Localize OnboardingPurposePageDetails}" />
 		</VerticalStackLayout>
 
-		<VerticalStackLayout
-			Spacing="{StaticResource SmallSpacing}">
+		<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 
 			<Label
 				Style="{StaticResource SectionTitleLabelStyle}"
 				Text="{l:Localize PurposesSectionTitle}" />
 
 			<VerticalStackLayout x:Name="PurposesContainer"
+				Spacing="{StaticResource MediumSpacing}"
 				BindableLayout.ItemTemplate="{StaticResource SelectPurposeDataTemplate}"
-				BindableLayout.ItemsSource="{Binding Purposes}"
-				Spacing="{StaticResource MediumSpacing}" />
+				BindableLayout.ItemsSource="{Binding Purposes}" />
 		</VerticalStackLayout>
 
 		<controls:TextButton
 			Command="{Binding ContinueCommand}"
-			LabelData="{l:Localize Continue}"
-			Style="{StaticResource FilledTextButtonStyle}" />
+			Style="{StaticResource FilledTextButtonStyle}"
+			LabelData="{l:Localize Continue}" />
 	</VerticalStackLayout>
 
 </base:BaseRegistrationView>

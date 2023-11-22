@@ -4,49 +4,44 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 	xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Registration"
-	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 	xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views">
+	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Registration"
+	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
+	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
 
-	<VerticalStackLayout
-		Spacing="{StaticResource LargeSpacing}">
-		<VerticalStackLayout
-			Spacing="{StaticResource MediumSpacing}">
+	<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+		<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
 
 			<Label
 				Style="{StaticResource PageTitleLabelStyle}"
 				Text="{l:Localize OnboardingPhonePageTitle}" />
 
-			<Label
-				Text="{l:Localize OnboardingPhonePageDetails}" />
+			<Label Text="{l:Localize OnboardingPhonePageDetails}" />
 
-			<VerticalStackLayout
-				Spacing="{StaticResource SmallSpacing}">
+			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 
 				<Label
 					Style="{StaticResource SectionTitleLabelStyle}"
 					Text="{l:Localize PhoneSectionTitle}" />
 
 				<Border
+					Padding="{StaticResource EditMediumMargins}"
+					Style="{StaticResource ItemOuterBorderStyle}"
 					BackgroundColor="{AppThemeBinding Light={StaticResource NormalEditBackgroundLight},
 													  Dark={StaticResource NormalEditBackgroundDark}}"
-					Padding="{StaticResource EditMediumMargins}"
 					Stroke="{AppThemeBinding Light={StaticResource NormalEditForegroundLight},
-											 Dark={StaticResource NormalEditForegroundDark}}"
-					Style="{StaticResource ItemOuterBorderStyle}">
+											 Dark={StaticResource NormalEditForegroundDark}}">
 
 					<Grid
+						RowDefinitions="auto"
 						ColumnDefinitions="auto,*"
-						ColumnSpacing="{StaticResource MediumSpacing}"
-						RowDefinitions="auto">
+						ColumnSpacing="{StaticResource MediumSpacing}">
 						<HorizontalStackLayout
 							Grid.Column="0"
 							VerticalOptions="FillAndExpand"
 							Spacing="{StaticResource SmallSpacing}">
 							<HorizontalStackLayout.GestureRecognizers>
-								<TapGestureRecognizer
-									Command="{Binding SelectPhoneCodeCommand}" />
+								<TapGestureRecognizer Command="{Binding SelectPhoneCodeCommand}" />
 							</HorizontalStackLayout.GestureRecognizers>
 
 							<Label
@@ -54,9 +49,9 @@
 								Text="{Binding SelectedCountry.DialCode}" />
 
 							<Path
+								VerticalOptions="Center"
 								HeightRequest="5"
 								WidthRequest="10"
-								VerticalOptions="Center"
 								Aspect="Uniform"
 								Data="{x:Static ui:Geometries.DropDownArrowPath}"
 								Fill="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
@@ -85,17 +80,17 @@
 				</Border>
 
 				<Grid
-					HorizontalOptions="Center"
+					RowDefinitions="auto"
 					ColumnDefinitions="auto,auto"
+					HorizontalOptions="Center"
 					ColumnSpacing="{StaticResource SmallSpacing}"
-					IsVisible="{Binding IsNotValid, Source={x:Reference PhoneValidator}}"
-					RowDefinitions="auto">
+					IsVisible="{Binding IsNotValid, Source={x:Reference PhoneValidator}}">
 
 					<Path
 						Grid.Column="0"
+						VerticalOptions="Center"
 						HeightRequest="20"
 						WidthRequest="20"
-						VerticalOptions="Center"
 						Aspect="Uniform"
 						Data="{x:Static ui:Geometries.InfoCirclePath}"
 						Fill="{AppThemeBinding Light={StaticResource InvalidatedEditLight},
@@ -114,7 +109,7 @@
 
 		<controls:TextButton
 			Command="{Binding SendCodeCommand}"
-			LabelData="{Binding LocalizedSendCodeText}"
-			Style="{StaticResource FilledTextButtonStyle}" />
+			Style="{StaticResource FilledTextButtonStyle}"
+			LabelData="{Binding LocalizedSendCodeText}" />
 	</VerticalStackLayout>
 </base:BaseRegistrationView>
