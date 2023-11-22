@@ -205,11 +205,11 @@ public interface ITagProfile
 	/// <summary>
 	/// Step 1 - set the domain name to connect to.
 	/// </summary>
-	/// <param name="domainName">The domain name.</param>
-	/// <param name="defaultXmppConnectivity">If connecting to the domain can be done using default parameters (host=domain, default c2s port).</param>
+	/// <param name="DomainName">The domain name.</param>
+	/// <param name="DefaultXmppConnectivity">If connecting to the domain can be done using default parameters (host=domain, default c2s port).</param>
 	/// <param name="Key">Key to use, if an account is to be created.</param>
 	/// <param name="Secret">Secret to use, if an account is to be created.</param>
-	void SetDomain(string domainName, bool defaultXmppConnectivity, string Key, string Secret);
+	void SetDomain(string DomainName, bool DefaultXmppConnectivity, string Key, string Secret);
 
 	/// <summary>
 	/// Reverses the SetDomain to the Initial* values.
@@ -222,31 +222,21 @@ public interface ITagProfile
 	void ClearDomain();
 
 	/// <summary>
-	/// An alternative Step 1, used for accounts with an obsoleted identity, - validate contact info (the same or updated) without changing account data.
-	/// </summary>
-	void RevalidateContactInfo();
-
-	/// <summary>
-	/// Revert an alternative Step 1, used for accounts with an obsoleted identity, - invalidate contact info without erasing the legal identity or otherwise changing the account.
-	/// </summary>
-	void InvalidateContactInfo();
-
-	/// <summary>
 	/// Step 2 - set the account name and password for a <em>new</em> account.
 	/// </summary>
-	/// <param name="accountName">The account/user name.</param>
-	/// <param name="clientPasswordHash">The password hash (never send the real password).</param>
-	/// <param name="clientPasswordHashMethod">The hash method used when hashing the password.</param>
-	void SetAccount(string accountName, string clientPasswordHash, string clientPasswordHashMethod);
+	/// <param name="AccountName">The account/user name.</param>
+	/// <param name="ClientPasswordHash">The password hash (never send the real password).</param>
+	/// <param name="ClientPasswordHashMethod">The hash method used when hashing the password.</param>
+	void SetAccount(string AccountName, string ClientPasswordHash, string ClientPasswordHashMethod);
 
 	/// <summary>
 	/// Step 2 and 3 - set the account name and password for an <em>existing</em> account.
 	/// </summary>
-	/// <param name="accountName">The account/user name.</param>
-	/// <param name="clientPasswordHash">The password hash (never send the real password).</param>
-	/// <param name="clientPasswordHashMethod">The hash method used when hashing the password.</param>
-	/// <param name="identity">The new identity.</param>
-	void SetAccountAndLegalIdentity(string accountName, string clientPasswordHash, string clientPasswordHashMethod, LegalIdentity identity);
+	/// <param name="AccountName">The account/user name.</param>
+	/// <param name="ClientPasswordHash">The password hash (never send the real password).</param>
+	/// <param name="ClientPasswordHashMethod">The hash method used when hashing the password.</param>
+	/// <param name="Identity">The new identity.</param>
+	void SetAccountAndLegalIdentity(string AccountName, string ClientPasswordHash, string ClientPasswordHashMethod, LegalIdentity Identity);
 
 	/// <summary>
 	/// Revert Step 2.
@@ -256,23 +246,13 @@ public interface ITagProfile
 	/// <summary>
 	/// Step 3 - set the legal identity of a newly created account.
 	/// </summary>
-	/// <param name="legalIdentity">The legal identity to use.</param>
-	void SetLegalIdentity(LegalIdentity legalIdentity);
+	/// <param name="LegalIdentity">The legal identity to use.</param>
+	void SetLegalIdentity(LegalIdentity LegalIdentity);
 
 	/// <summary>
 	/// Revert Step 3.
 	/// </summary>
 	void ClearLegalIdentity();
-
-	/// <summary>
-	/// Step 4 - set the current legal identity as validated.
-	/// </summary>
-	void SetIsValidated();
-
-	/// <summary>
-	/// Revert Step 4.
-	/// </summary>
-	void ClearIsValidated();
 
 	/// <summary>
 	///  Step 5 - Set a pin to use for protecting the account.
@@ -282,11 +262,6 @@ public interface ITagProfile
 	/// If we should use <paramref name="Pin"/> to set or clear pin or we should ignore <paramref name="Pin"/> and just complete th step.
 	/// </param>
 	void CompletePinStep(string Pin, bool AddOrUpdatePin = true);
-
-	/// <summary>
-	/// Revert Step 5.
-	/// </summary>
-	void RevertPinStep();
 
 	/// <summary>
 	/// Step 1 - Set if the user choose the educational or experimental purpose.

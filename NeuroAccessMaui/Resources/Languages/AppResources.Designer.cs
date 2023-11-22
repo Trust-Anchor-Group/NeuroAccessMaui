@@ -70,6 +70,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enter the account name.
+        /// </summary>
+        internal static string AccountSectionTitle {
+            get {
+                return ResourceManager.GetString("AccountSectionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A peer review you requested has been accepted..
         /// </summary>
         internal static string APeerReviewYouhaveRequestedHasBeenAccepted {
@@ -327,6 +336,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string CopyToClipboard {
             get {
                 return ResourceManager.GetString("CopyToClipboard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create.
+        /// </summary>
+        internal static string Create {
+            get {
+                return ResourceManager.GetString("Create", resourceCulture);
             }
         }
         

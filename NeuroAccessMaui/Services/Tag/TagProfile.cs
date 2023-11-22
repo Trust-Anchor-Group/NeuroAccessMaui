@@ -13,27 +13,27 @@ namespace NeuroAccessMaui.Services.Tag;
 public enum RegistrationStep
 {
 	/// <summary>
-	/// Validate Phone Number and e-mail address
+	/// Request one of <see cref="PurposeUse" />
 	/// </summary>
 	RequestPurpose = 0,
 
 	/// <summary>
-	/// Validate Phone Number and e-mail address
+	/// Validate the phone number 
 	/// </summary>
 	ValidatePhone = 1,
 
 	/// <summary>
-	/// Validate Phone Number and e-mail address
+	/// Validate the email address
 	/// </summary>
 	ValidateEmail = 2,
 
 	/// <summary>
-	/// Choose the provider to create an account on
+	/// Choose the provider on which to create an account
 	/// </summary>
 	ChooseProvider = 3,
 
 	/// <summary>
-	/// Create or connect to an account
+	/// Create a new account
 	/// </summary>
 	CreateAccount = 4,
 
@@ -514,16 +514,6 @@ public partial class TagProfile : ITagProfile
 			this.FlagAsDirty(nameof(this.Step));
 			this.OnStepChanged(EventArgs.Empty);
 		}
-
-		//!!! On increment
-		/*
-			switch (this.Step)
-			{
-				case RegistrationStep.ValidateContactInfo:
-					this.SetStep(this.LegalIdentity is null ? RegistrationStep.Account : RegistrationStep.RegisterIdentity);
-					break;
-			}
-		 */
 	}
 
 	/// <inheritdoc/>
@@ -692,25 +682,6 @@ public partial class TagProfile : ITagProfile
 	public void ClearDomain()
 	{
 		this.Domain = string.Empty;
-		//!!! this.DecrementConfigurationStep(RegistrationStep.ValidateContactInfo);
-	}
-
-	/// <inheritdoc/>
-	public void RevalidateContactInfo()
-	{
-		//!!!
-		/*
-		if (!string.IsNullOrWhiteSpace(this.Domain) && this.Step == RegistrationStep.ValidateContactInfo)
-		{
-			this.IncrementConfigurationStep();
-		}
-		*/
-	}
-
-	/// <inheritdoc/>
-	public void InvalidateContactInfo()
-	{
-		//!!! this.DecrementConfigurationStep();
 	}
 
 	/// <inheritdoc/>
@@ -724,16 +695,16 @@ public partial class TagProfile : ITagProfile
 	}
 
 	/// <inheritdoc/>
-	public void SetAccountAndLegalIdentity(string accountName, string clientPasswordHash, string clientPasswordHashMethod, LegalIdentity identity)
+	public void SetAccountAndLegalIdentity(string AccountName, string ClientPasswordHash, string ClientPasswordHashMethod, LegalIdentity Identity)
 	{
-		this.Account = accountName;
-		this.PasswordHash = clientPasswordHash;
-		this.PasswordHashMethod = clientPasswordHashMethod;
-		this.LegalIdentity = identity;
+		this.Account = AccountName;
+		this.PasswordHash = ClientPasswordHash;
+		this.PasswordHashMethod = ClientPasswordHashMethod;
+		this.LegalIdentity = Identity;
 		this.ApiKey = string.Empty;
 		this.ApiSecret = string.Empty;
 
-		//!!!
+		//!!! this logic mist be made in the registration views
 		/*
 		if (!string.IsNullOrWhiteSpace(this.Account) && this.Step == RegistrationStep.Account && this.LegalIdentity is not null)
 		{
@@ -745,10 +716,6 @@ public partial class TagProfile : ITagProfile
 
 				case IdentityState.Approved:
 					this.IncrementConfigurationStep(this.HasPin ? RegistrationStep.Complete : RegistrationStep.Pin);
-					break;
-
-				default:
-					this.IncrementConfigurationStep();
 					break;
 			}
 		}
@@ -762,29 +729,12 @@ public partial class TagProfile : ITagProfile
 		this.PasswordHash = string.Empty;
 		this.PasswordHashMethod = string.Empty;
 		this.LegalJid = string.Empty;
-
-		//!!!
-		/*
-		if (GoToPrevStep)
-		{
-			this.DecrementConfigurationStep(RegistrationStep.ValidateContactInfo);
-		}
-		*/
 	}
 
 	/// <inheritdoc/>
 	public void SetLegalIdentity(LegalIdentity Identity)
 	{
 		this.LegalIdentity = Identity;
-
-		//!!!
-		/*
-		if (this.Step == RegistrationStep.RegisterIdentity && Identity is not null &&
-			(Identity.State == IdentityState.Created || Identity.State == IdentityState.Approved))
-		{
-			this.IncrementConfigurationStep();
-		}
-		*/
 	}
 
 	/// <inheritdoc/>
@@ -798,32 +748,12 @@ public partial class TagProfile : ITagProfile
 	public void RevokeLegalIdentity(LegalIdentity RevokedIdentity)
 	{
 		this.LegalIdentity = RevokedIdentity;
-		//!!! this.DecrementConfigurationStep(RegistrationStep.ValidateContactInfo);
 	}
 
 	/// <inheritdoc/>
 	public void CompromiseLegalIdentity(LegalIdentity CompromisedIdentity)
 	{
 		this.LegalIdentity = CompromisedIdentity;
-		//!!! this.DecrementConfigurationStep(RegistrationStep.ValidateContactInfo);
-	}
-
-	/// <inheritdoc/>
-	public void SetIsValidated()
-	{
-		//!!!
-		/*
-		if (this.Step == RegistrationStep.ValidateIdentity)
-		{
-			this.IncrementConfigurationStep();
-		}
-		*/
-	}
-
-	/// <inheritdoc/>
-	public void ClearIsValidated()
-	{
-		//!!! this.DecrementConfigurationStep(RegistrationStep.RegisterIdentity);
 	}
 
 	/// <inheritdoc/>
@@ -833,26 +763,6 @@ public partial class TagProfile : ITagProfile
 		{
 			this.Pin = Pin;
 		}
-
-		//!!!
-		/*
-		if (this.step == RegistrationStep.Pin)
-		{
-			this.IncrementConfigurationStep();
-		}
-		*/
-	}
-
-	/// <inheritdoc/>
-	public void RevertPinStep()
-	{
-		//!!!
-		/*
-		if (this.Step == RegistrationStep.Pin)
-		{
-			this.DecrementConfigurationStep(RegistrationStep.ValidateIdentity); // prev
-		}
-		*/
 	}
 
 	/// <inheritdoc/>

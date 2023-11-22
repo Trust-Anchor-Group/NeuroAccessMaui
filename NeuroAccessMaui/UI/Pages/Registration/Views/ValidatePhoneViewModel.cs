@@ -295,7 +295,6 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel, ICodeVe
 							//!!! if (this.IsRevalidating)
 							if (false)
 							{
-								ServiceRef.TagProfile.RevalidateContactInfo();
 							}
 							else
 							{

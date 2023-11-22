@@ -2,7 +2,38 @@
 <base:BaseRegistrationView x:Name="ThisPage" x:Class="NeuroAccessMaui.UI.Pages.Registration.Views.CreateAccountView" x:DataType="viewmodel:CreateAccountViewModel"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+	xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+	xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Registration"
-	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views">
-	<ScrollView />
+	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
+	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
+
+	<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+		<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
+
+			<Label
+				Style="{StaticResource PageTitleLabelStyle}"
+				Text="{l:Localize OnboardingAccountPageTitle}" />
+
+			<Label Text="{l:Localize OnboardingAccountPageDetails}" />
+
+			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+
+				<Label
+					Style="{StaticResource SectionTitleLabelStyle}"
+					Text="{l:Localize AccountSectionTitle}" />
+
+				<controls:CompositeEntry x:Name="AccountEntry"
+					Style="{StaticResource RegularCompositeEntryStyle}"
+					EntryData="{Binding AccountText}"
+					PathData="{x:Static ui:Geometries.AccountIconPath}" />
+			</VerticalStackLayout>
+		</VerticalStackLayout>
+
+		<controls:TextButton
+			Command="{Binding CreateAccountCommand}"
+			Style="{StaticResource FilledTextButtonStyle}"
+			LabelData="{l:Localize Create}" />
+	</VerticalStackLayout>
 </base:BaseRegistrationView>
