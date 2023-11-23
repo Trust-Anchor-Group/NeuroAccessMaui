@@ -1,4 +1,6 @@
+using CommunityToolkit.Maui.Core.Platform;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using Mopups.Services;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
@@ -104,7 +106,7 @@ public partial class VerifyCodePage
 		}
 	}
 
-	private void InnerCodeEntry_TextChanged(object Sender, TextChangedEventArgs e)
+	private async void InnerCodeEntry_TextChanged(object Sender, TextChangedEventArgs e)
 	{
 		string NewText = e.NewTextValue;
 		int NewLength = NewText.Length;
@@ -133,7 +135,17 @@ public partial class VerifyCodePage
 			}
 		}
 
+		if (NewLength == this.innerLabels.Count)
+		{
+			await this.InnerCodeEntry.HideKeyboardAsync();
+		}
+
 		this.VerifyCommand.NotifyCanExecuteChanged();
+	}
+
+	private void CountDownEventHandler(object? sender, EventArgs e)
+	{
+		this.OnPropertyChanged(nameof(this.LocalizedResendCodeText));
 	}
 
 	private void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
@@ -141,8 +153,8 @@ public partial class VerifyCodePage
 		this.InnerCodeEntry.Focus();
 	}
 
-	private void CountDownEventHandler(object? sender, EventArgs e)
+	private async void TheMainGridTapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
 	{
-		this.OnPropertyChanged(nameof(this.LocalizedResendCodeText));
+		await MopupService.Instance.PopAsync();
 	}
 }
