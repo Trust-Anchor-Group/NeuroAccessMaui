@@ -1,5 +1,4 @@
-﻿using NeuroAccessMaui.DeviceSpecific;
-using NeuroAccessMaui.Resources.Languages;
+﻿using NeuroAccessMaui.Resources.Languages;
 using Waher.Events;
 using Waher.Events.XMPP;
 using Waher.Persistence.Exceptions;
