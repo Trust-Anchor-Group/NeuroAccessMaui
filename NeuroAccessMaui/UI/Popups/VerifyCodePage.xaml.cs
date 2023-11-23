@@ -73,7 +73,6 @@ public partial class VerifyCodePage
 		base.OnAppearing();
 
 		this.CodeVerification.CountDownTimer.Tick += this.CountDownEventHandler;
-		this.InnerCodeEntry.Focus();
 	}
 
 	protected override void OnDisappearing()
