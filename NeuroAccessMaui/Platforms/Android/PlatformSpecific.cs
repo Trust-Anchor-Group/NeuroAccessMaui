@@ -4,6 +4,7 @@ using Android.Renderscripts;
 using Android.Views;
 using Waher.Events;
 using Android.App;
+using Android.Content;
 
 namespace NeuroAccessMaui.Services;
 
@@ -94,6 +95,43 @@ public class PlatformSpecific : IPlatformSpecific
 		}
 
 		return null;
+	}
+
+	/// <inheritdoc/>
+	public void ShareImage(byte[] PngFile, string Message, string Title, string FileName)
+	{
+		Context Context = Android.App.Application.Context;
+		Java.IO.File? ExternalFilesDir = Context.GetExternalFilesDir("");
+
+		if (ExternalFilesDir is null)
+		{
+			return;
+		}
+
+		if (!Directory.Exists(ExternalFilesDir.Path))
+		{
+			Directory.CreateDirectory(ExternalFilesDir.Path);
+		}
+
+		Java.IO.File fileDir = new(ExternalFilesDir.AbsolutePath + (Java.IO.File.Separator + FileName));
+
+		File.WriteAllBytes(fileDir.Path, PngFile);
+
+		Intent Intent = new(Intent.ActionSend);
+		Intent.PutExtra(Intent.ExtraText, Message);
+		Intent.SetType(Constants.MimeTypes.Png);
+
+		Intent.AddFlags(ActivityFlags.GrantReadUriPermission);
+		Intent.AddFlags(ActivityFlags.GrantWriteUriPermission);
+		Intent.PutExtra(Intent.ExtraStream, FileProvider.GetUriForFile(Context, "com.tag.IdApp.fileprovider", fileDir));
+
+		Intent? MyIntent = Intent.CreateChooser(Intent, Title);
+
+		if (MyIntent is not null)
+		{
+			MyIntent.AddFlags(ActivityFlags.NewTask);
+			Context.StartActivity(MyIntent);
+		}
 	}
 
 	/// <inheritdoc/>
