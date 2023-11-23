@@ -9,7 +9,7 @@
 	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 	xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views">
 
-	<Grid
+	<Grid x:Name="TheMainGrid"
 		RowDefinitions="auto,*"
 		ColumnDefinitions="*">
 

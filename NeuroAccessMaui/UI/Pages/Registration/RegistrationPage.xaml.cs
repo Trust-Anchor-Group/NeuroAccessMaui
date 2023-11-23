@@ -1,13 +1,10 @@
 using CommunityToolkit.Maui.Layouts;
 using CommunityToolkit.Mvvm.Messaging;
 using NeuroAccessMaui.Services.Tag;
+using Waher.Content.Html.Elements;
+using Waher.Runtime.Profiling.Events;
 
 namespace NeuroAccessMaui.UI.Pages.Registration;
-
-public class RegistrationPageMessage(RegistrationStep Step)
-{
-	public RegistrationStep Step { get; } = Step;
-}
 
 public partial class RegistrationPage
 {
@@ -33,6 +30,7 @@ public partial class RegistrationPage
 	protected override Task OnAppearingAsync()
 	{
 		WeakReferenceMessenger.Default.Register<RegistrationPageMessage>(this, this.HandleRegistrationPageMessage);
+		WeakReferenceMessenger.Default.Register<KeyboardSizeMessage>(this, this.HandleKeyboardSizeMessage);
 		return base.OnAppearingAsync();
 	}
 
@@ -40,6 +38,7 @@ public partial class RegistrationPage
 	protected override Task OnDisappearingAsync()
 	{
 		WeakReferenceMessenger.Default.Unregister<RegistrationPageMessage>(this);
+		WeakReferenceMessenger.Default.Unregister<KeyboardSizeMessage>(this);
 		return base.OnDisappearingAsync();
 	}
 
@@ -74,6 +73,15 @@ public partial class RegistrationPage
 				RegistrationViewModel ViewModel = RegistrationPage.ViewModel<RegistrationViewModel>();
 				await ViewModel.DoAssignProperties(NewStep);
 			}
+		});
+	}
+
+	private async void HandleKeyboardSizeMessage(object Recipient, KeyboardSizeMessage Message)
+	{
+		await this.Dispatcher.DispatchAsync(() =>
+		{
+			Thickness Margin = new(0, 0, 0, Message.KeyboardSize);
+			this.TheMainGrid.Margin = Margin;
 		});
 	}
 }

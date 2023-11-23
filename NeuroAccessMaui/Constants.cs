@@ -472,22 +472,6 @@ public static class Constants
 	}
 
 	/// <summary>
-	/// MessagingCenter events
-	/// </summary>
-	public static class MessagingCenter
-	{
-		/// <summary>
-		/// Keyboard appears event
-		/// </summary>
-		public const string KeyboardAppears = "KeyboardAppears";
-
-		/// <summary>
-		/// Keyboard disappears event
-		/// </summary>
-		public const string KeyboardDisappears = "KeyboardDisappears";
-	}
-
-	/// <summary>
 	/// Names of Effects.
 	/// </summary>
 	public static class Effects
