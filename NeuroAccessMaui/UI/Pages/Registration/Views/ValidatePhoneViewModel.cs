@@ -8,7 +8,10 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Data;
 using NeuroAccessMaui.Services.Localization;
+using NeuroAccessMaui.Services.Navigation;
 using NeuroAccessMaui.Services.Tag;
+using NeuroAccessMaui.UI.Pages.Main;
+using NeuroAccessMaui.UI.Pages.Main.VerifyCode;
 using NeuroAccessMaui.UI.Popups;
 using Waher.Content;
 
@@ -214,14 +217,12 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel, ICodeVe
 	[RelayCommand(CanExecute = nameof(CanSendCode))]
 	private async Task SendCode()
 	{
-/*
-		this.StartTimer();
-		VerifyCodePage Page1 = new(this, "+15551234567");
-		await MopupService.Instance.PushAsync(Page1);
-
-		string? Code1 = await Page1.Result;
+		//!!! for VerifyCodePage tests
+		VerifyCodeNavigationArgs NavigationArgs1 = new(this, "+15551234567");
+		await ServiceRef.NavigationService.GoToAsync(nameof(VerifyCodePage), NavigationArgs1, BackMethod.Pop);
+		string? Code1 = await NavigationArgs1.VarifyCode!.Task;
 		return;
-*/
+
 		this.IsBusy = true;
 
 		try
@@ -258,10 +259,9 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel, ICodeVe
 				{
 					this.StartTimer();
 
-					VerifyCodePage Page = new(this, FullPhoneNumber);
-					await MopupService.Instance.PushAsync(Page);
-
-					string? Code = await Page.Result;
+					VerifyCodeNavigationArgs NavigationArgs = new(this, FullPhoneNumber);
+					await ServiceRef.NavigationService.GoToAsync(nameof(VerifyCodePage), NavigationArgs, BackMethod.Pop);
+					string? Code = await NavigationArgs.VarifyCode!.Task;
 
 					if (!string.IsNullOrEmpty(Code))
 					{

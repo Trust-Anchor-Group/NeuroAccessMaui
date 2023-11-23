@@ -41,7 +41,6 @@ public static class PageAppExtension
 		Builder.Services.AddTransient<ChangePinPage, ChangePinViewModel>();
 		Builder.Services.AddTransient<ViewImagePage, ViewImageViewModel>();
 		Builder.Services.AddTransient<CheckPinPage>();
-		Builder.Services.AddTransient<VerifyCodePage>();
 
 		// Controls
 

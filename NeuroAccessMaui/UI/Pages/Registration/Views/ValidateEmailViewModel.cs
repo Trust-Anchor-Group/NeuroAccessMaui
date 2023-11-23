@@ -3,12 +3,13 @@ using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using Mopups.Services;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
+using NeuroAccessMaui.Services.Navigation;
 using NeuroAccessMaui.Services.Tag;
-using NeuroAccessMaui.UI.Popups;
+using NeuroAccessMaui.UI.Pages.Main;
+using NeuroAccessMaui.UI.Pages.Main.VerifyCode;
 using Waher.Content;
 
 namespace NeuroAccessMaui.UI.Pages.Registration.Views;
@@ -130,13 +131,14 @@ public partial class ValidateEmailViewModel : BaseRegistrationViewModel, ICodeVe
 	[RelayCommand(CanExecute = nameof(CanSendCode))]
 	private async Task SendCode()
 	{
+		//!!! for VerifyCodePage tests
 		/*
-		VerifyCodePage Page1 = new(this, "ssianky@gmail.com");
-		await MopupService.Instance.PushAsync(Page1);
-
-		string? Code1 = await Page1.Result;
+		VerifyCodeNavigationArgs NavigationArgs1 = new(this, "ssianky@gmail.com");
+		await ServiceRef.NavigationService.GoToAsync(nameof(VerifyCodePage), NavigationArgs1, BackMethod.Pop);
+		string? Code1 = await NavigationArgs1.VarifyCode!.Task;
 		return;
 		*/
+
 		this.IsBusy = true;
 
 		try
@@ -162,10 +164,9 @@ public partial class ValidateEmailViewModel : BaseRegistrationViewModel, ICodeVe
 			{
 				this.StartTimer();
 
-				VerifyCodePage Page = new(this, this.EmailText);
-				await MopupService.Instance.PushAsync(Page);
-
-				string? Code = await Page.Result;
+				VerifyCodeNavigationArgs NavigationArgs = new(this, this.EmailText);
+				await ServiceRef.NavigationService.GoToAsync(nameof(VerifyCodePage), NavigationArgs, BackMethod.Pop);
+				string? Code = await NavigationArgs.VarifyCode!.Task;
 
 				if (!string.IsNullOrEmpty(Code))
 				{

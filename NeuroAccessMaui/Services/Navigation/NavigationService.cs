@@ -106,7 +106,7 @@ internal sealed partial class NavigationService : LoadableService, INavigationSe
 
 				await ServiceRef.UiSerializer.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-					ServiceRef.Localizer[nameof(AppResources.FailedToNavigateToPage)], Route, ExtraInfo);
+					ServiceRef.Localizer[nameof(AppResources.FailedToNavigateToPage), Route, ExtraInfo]);
 			}
 			finally
 			{

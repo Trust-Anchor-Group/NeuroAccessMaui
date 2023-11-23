@@ -50,9 +50,7 @@ public partial class ScanQrCodePage
 	{
 	}
 
-	/// <summary>
-	/// Asynchronous OnAppearing-method.
-	/// </summary>
+	/// <inheritdoc/>
 	protected override async Task OnAppearingAsync()
 	{
 		await base.OnAppearingAsync();
@@ -60,9 +58,7 @@ public partial class ScanQrCodePage
 		this.CameraBarcodeReaderView.IsDetecting = true;
 	}
 
-	/// <summary>
-	/// Asynchronous OnAppearing-method.
-	/// </summary>
+	/// <inheritdoc/>
 	protected override async Task OnDisappearingAsync()
 	{
 		this.CameraBarcodeReaderView.IsDetecting = false;

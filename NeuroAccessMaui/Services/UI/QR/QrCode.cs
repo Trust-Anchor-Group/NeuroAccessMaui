@@ -99,13 +99,13 @@ public static class QrCode
 	/// <param name="QrTitle">The QR page title</param>
 	/// <param name="AllowedSchema">The allowed schema</param>
 	/// <returns>Decoded string</returns>
-	public static Task<string?> ScanQrCode(string? QrTitle = null, string? AllowedSchema = null)
+	public static async Task<string?> ScanQrCode(string? QrTitle = null, string? AllowedSchema = null)
 	{
 		ScanQrCodeNavigationArgs NavigationArgs = new(QrTitle, AllowedSchema);
 
-		ServiceRef.NavigationService.GoToAsync(nameof(ScanQrCodePage), NavigationArgs, BackMethod.Pop);
+		await ServiceRef.NavigationService.GoToAsync(nameof(ScanQrCodePage), NavigationArgs, BackMethod.Pop);
 
-		return NavigationArgs.QrCodeScanned!.Task;
+		return await NavigationArgs.QrCodeScanned!.Task;
 	}
 
 	/// <summary>
