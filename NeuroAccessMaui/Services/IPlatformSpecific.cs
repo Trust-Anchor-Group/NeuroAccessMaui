@@ -35,4 +35,9 @@ public interface IPlatformSpecific
 	/// <param name="Title">Title for operation.</param>
 	/// <param name="FileName">Filename of image file.</param>
 	void ShareImage(byte[] PngFile, string Message, string Title, string FileName);
+
+	/// <summary>
+	/// Force hide the keyboard
+	/// </summary>
+	void HideKeyboard();
 }

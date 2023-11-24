@@ -5,6 +5,7 @@ using Android.Views;
 using Waher.Events;
 using Android.App;
 using Android.Content;
+using Android.Views.InputMethods;
 
 namespace NeuroAccessMaui.Services;
 
@@ -51,25 +52,25 @@ public class PlatformSpecific : IPlatformSpecific
 		{
 			try
 			{
-				Android.App.Activity? activity = Platform.CurrentActivity;
+				Activity? Activity = Platform.CurrentActivity;
 
-				if (activity is not null)
+				if (Activity is not null)
 				{
 					if (Build.VERSION.SdkInt >= BuildVersionCodes.Tiramisu)
 					{
 #pragma warning disable CA1416
-						activity.SetRecentsScreenshotEnabled(!enabled);
+						Activity.SetRecentsScreenshotEnabled(!enabled);
 #pragma warning restore CA1416
 					}
 
 					if (enabled)
 					{
-						activity.Window?.SetFlags(WindowManagerFlags.Secure, WindowManagerFlags.Secure);
+						Activity.Window?.SetFlags(WindowManagerFlags.Secure, WindowManagerFlags.Secure);
 						protectionTimer = new Timer(this.ProtectionTimerElapsed, null, 1000 * 60 * 60, Timeout.Infinite);
 					}
 					else
 					{
-						activity.Window?.ClearFlags(WindowManagerFlags.Secure);
+						Activity.Window?.ClearFlags(WindowManagerFlags.Secure);
 					}
 				}
 			}
@@ -87,7 +88,7 @@ public class PlatformSpecific : IPlatformSpecific
 	/// <inheritdoc/>
 	public string? GetDeviceId()
 	{
-		Android.Content.ContentResolver? ContentResolver = Android.App.Application.Context.ContentResolver;
+		ContentResolver? ContentResolver = Android.App.Application.Context.ContentResolver;
 
 		if (ContentResolver is not null)
 		{
@@ -137,12 +138,30 @@ public class PlatformSpecific : IPlatformSpecific
 	/// <inheritdoc/>
 	public Task CloseApplication()
 	{
-		Android.App.Activity? Activity = Android.App.Application.Context as Android.App.Activity;    // TODO: returns null. Context points to Application instance.
+		Activity? Activity = Android.App.Application.Context as Activity;    // TODO: returns null. Context points to Application instance.
 		Activity?.FinishAffinity();
 
 		Java.Lang.JavaSystem.Exit(0);
 
 		return Task.CompletedTask;
+	}
+
+	public void HideKeyboard()
+	{
+		Context Context = Platform.AppContext;
+		InputMethodManager? InputMethodManager = Context.GetSystemService(Context.InputMethodService) as InputMethodManager;
+
+		if (InputMethodManager is not null)
+		{
+			Activity? Activity = Platform.CurrentActivity;
+
+			if (Activity is not null)
+			{
+				IBinder? Token = Activity.CurrentFocus?.WindowToken;
+				InputMethodManager.HideSoftInputFromWindow(Token, HideSoftInputFlags.None);
+				Activity.Window?.DecorView.ClearFocus();
+			}
+		}
 	}
 
 	public async Task<byte[]> CaptureScreen(int blurRadius)

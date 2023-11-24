@@ -3,6 +3,7 @@ using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.Resources.Languages;
 using Waher.Events;
 using Waher.Runtime.Inventory;
+using CommunityToolkit.Maui.Core.Platform;
 
 namespace NeuroAccessMaui.Services.Navigation;
 
@@ -79,6 +80,8 @@ internal sealed partial class NavigationService : LoadableService, INavigationSe
 	{
 		await MainThread.InvokeOnMainThreadAsync(async () =>
 		{
+			ServiceRef.PlatformSpecific.HideKeyboard();
+
 			// Get the parent's navigation arguments
 			NavigationArgs ParentArgs = this.GetCurrentNavigationArgs();
 

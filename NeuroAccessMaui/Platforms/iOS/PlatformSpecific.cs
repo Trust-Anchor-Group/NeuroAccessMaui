@@ -60,6 +60,13 @@ public class PlatformSpecific : IPlatformSpecific
 		}
 	}
 
+	/// <summary>
+	/// Shares an image in PNG format.
+	/// </summary>
+	public void HideKeyboard()
+	{
+	}
+
 	public Task<byte[]> CaptureScreen(int blurRadius = 25)
 	{
 		blurRadius = Math.Min(25, Math.Max(blurRadius, 0));
