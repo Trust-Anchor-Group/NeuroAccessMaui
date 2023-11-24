@@ -132,6 +132,7 @@ public partial class ValidateEmailViewModel : BaseRegistrationViewModel, ICodeVe
 	{
 		//!!! for VerifyCodePage tests
 		/*
+		this.StartTimer();
 		VerifyCodeNavigationArgs NavigationArgs1 = new(this, "ssianky@gmail.com");
 		await ServiceRef.NavigationService.GoToAsync(nameof(VerifyCodePage), NavigationArgs1, BackMethod.Pop);
 		string? Code1 = await NavigationArgs1.VarifyCode!.Task;

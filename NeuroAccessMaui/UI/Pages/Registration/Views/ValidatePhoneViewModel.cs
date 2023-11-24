@@ -10,7 +10,6 @@ using NeuroAccessMaui.Services.Data;
 using NeuroAccessMaui.Services.Localization;
 using NeuroAccessMaui.Services.Navigation;
 using NeuroAccessMaui.Services.Tag;
-using NeuroAccessMaui.UI.Pages.Main;
 using NeuroAccessMaui.UI.Pages.Main.VerifyCode;
 using NeuroAccessMaui.UI.Popups;
 using Waher.Content;
@@ -218,11 +217,13 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel, ICodeVe
 	private async Task SendCode()
 	{
 		//!!! for VerifyCodePage tests
+		/*
+		this.StartTimer();
 		VerifyCodeNavigationArgs NavigationArgs1 = new(this, "+15551234567");
 		await ServiceRef.NavigationService.GoToAsync(nameof(VerifyCodePage), NavigationArgs1, BackMethod.Pop);
 		string? Code1 = await NavigationArgs1.VarifyCode!.Task;
 		return;
-
+		*/
 		this.IsBusy = true;
 
 		try

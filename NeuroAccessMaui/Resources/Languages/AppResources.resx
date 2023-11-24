@@ -343,7 +343,7 @@
     <value>Send Code ({0})</value>
   </data>
   <data name="ResendCode" xml:space="preserve">
-    <value>Resend</value>
+    <value>Resend Code</value>
   </data>
   <data name="ResendCodeSeconds" xml:space="preserve">
     <value>Resend ({0})</value>
