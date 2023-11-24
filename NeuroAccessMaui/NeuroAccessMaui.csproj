@@ -61,6 +61,33 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<None Include="Resources\Resx\PListResources.resx" />
+		<None Include="Resources\Resx\PListResources.pt.resx" />
+		<None Include="Resources\Resx\PListResources.es.resx" />
+		<None Include="Resources\Resx\PListResources.de.resx" />
+		<None Include="Resources\Resx\PListResources.fr.resx" />
+		<None Include="Resources\Resx\PListResources.da.resx" />
+		<None Include="Resources\Resx\PListResources.no.resx">
+			<SubType>Designer</SubType>
+		</None>
+		<None Include="Resources\Resx\PListResources.fi.resx" />
+		<None Include="Resources\Resx\PListResources.sr.resx" />
+		<None Include="Resources\Resx\PListResources.sv.resx" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+		<BundleResource Include="Resources\da.lproj\InfoPlist.strings" />
+		<BundleResource Include="Resources\de.lproj\InfoPlist.strings" />
+		<BundleResource Include="Resources\es.lproj\InfoPlist.strings" />
+		<BundleResource Include="Resources\fi.lproj\InfoPlist.strings" />
+		<BundleResource Include="Resources\fr.lproj\InfoPlist.strings" />
+		<BundleResource Include="Resources\no.lproj\InfoPlist.strings" />
+		<BundleResource Include="Resources\pt.lproj\InfoPlist.strings" />
+		<BundleResource Include="Resources\sr.lproj\InfoPlist.strings" />
+		<BundleResource Include="Resources\sv.lproj\InfoPlist.strings" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <Compile Remove="Platforms\iOS\IOSHelpers.cs" />
 	  <Compile Remove="Platforms\iOS\Security\BlurProtectionManager.cs" />
 	  <Compile Remove="Platforms\iOS\Security\ScreenRecordingProtectionManager.cs" />

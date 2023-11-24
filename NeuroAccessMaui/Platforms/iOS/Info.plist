@@ -9,6 +9,8 @@
 		<integer>1</integer>
 		<integer>2</integer>
 	</array>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>arm64</string>
@@ -23,6 +25,14 @@
 	</array>
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/appicon.appiconset</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Neuro-Access needs access to the camera to take photos for your digital ID, and when you want it to scan QR codes.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Neuro-Access needs access to the photo gallery for you to be able to select a profile photo for your ID, get QR codes from other apps, or share images with contacts in chats.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Neuro-Access needs to be able to add photos to your galleries, if you want to save photos you take for later use.</string>
+	<key>NFCReaderUsageDescription</key>
+	<string>Neuro-Access needs access to the NFC tag to read NDEF messages into the application.</string>
 	<key>CFBundleLocalizations</key>
 	<array>
 		<string>en</string>
@@ -52,6 +62,10 @@
 				<string>obinfo</string>
 			</array>
 		</dict>
+	</array>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>https</string>
 	</array>
 </dict>
 </plist>

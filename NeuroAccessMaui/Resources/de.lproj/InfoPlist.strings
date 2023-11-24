@@ -1,0 +1,3 @@
+﻿"NSCameraUsageDescription"="Tag ID benötigt Zugriff auf die Kamera, um Fotos für Ihre digitale ID aufzunehmen und wenn Sie QR-Codes scannen möchten.";
+"NSPhotoLibraryUsageDescription"="Tag ID benötigt Zugriff auf die Fotogalerie, damit Sie ein Profilfoto für Ihren Ausweis auswählen, QR-Codes von anderen Apps erhalten oder Bilder mit Kontakten in Chats teilen können.";
+"NSPhotoLibraryAddUsageDescription"="Tag ID muss in der Lage sein, Fotos zu Ihren Galerien hinzuzufügen, wenn Sie Fotos speichern möchten, die Sie für die spätere Verwendung aufnehmen.";

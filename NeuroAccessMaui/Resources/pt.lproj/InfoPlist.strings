@@ -1,0 +1,3 @@
+﻿"NSCameraUsageDescription"="O ID tag precisa de acesso à câmera para tirar fotos para o seu ID digital, e quando você quiser que ele digitalize códigos QR.";
+"NSPhotoLibraryUsageDescription"="O ID tag precisa de acesso à galeria de fotos para que você possa selecionar uma foto de perfil para o seu ID, obter códigos QR de outros aplicativos ou compartilhar imagens com contatos em chats.";
+"NSPhotoLibraryAddUsageDescription"="O ID tag precisa ser capaz de adicionar fotos às suas galerias, se você quiser salvar fotos que você tirar para uso posterior.";

@@ -1,0 +1,3 @@
+﻿"NSCameraUsageDescription"="Neuro-Access tarvitsee pääsyn kameraan valokuvien ottamiseen digitaaliseen tunnukseesi ja milloin haluat sen skannaavan QR-koodeja.";
+"NSPhotoLibraryUsageDescription"="Neuro-Access tarvitsee pääsyn valokuvagalleriaan, jotta voit valita profiilikuvan henkilötodistuksellesi, saada QR-koodeja muista sovelluksista tai jakaa kuvia yhteystietojen kanssa keskusteluissa.";
+"NSPhotoLibraryAddUsageDescription"="Neuro-Access:n on voitava lisätä valokuvia gallerioihin, jos haluat tallentaa ottamiasi valokuvia myöhempää käyttöä varten.";

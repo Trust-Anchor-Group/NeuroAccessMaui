@@ -1,0 +1,3 @@
+﻿"NSCameraUsageDescription"="Neuro-Access trenger tilgang til kameraet for å ta bilder for din digitale ID, og når du vil at den skal skanne QR-koder.";
+"NSPhotoLibraryUsageDescription"="Neuro-Access trenger tilgang til fotogalleriet for at du skal kunne velge et profilbilde for ID-en din, få QR-koder fra andre apper eller dele bilder med kontakter i chatter.";
+"NSPhotoLibraryAddUsageDescription"="Neuro-Access må kunne legge til bilder i galleriene dine hvis du vil lagre bilder du tar for senere bruk.";
