@@ -499,6 +499,13 @@
 
 	<Style
 		ApplyToDerivedTypes="True"
+		TargetType="ContentPage">
+		<Setter Property="Shell.FlyoutBehavior" Value="Disabled" />
+		<Setter Property="Shell.NavBarIsVisible" Value="False" />
+	</Style>
+
+	<Style
+		ApplyToDerivedTypes="True"
 		TargetType="ContentView">
 		<Setter Property="Padding" Value="0" />
 		<Setter Property="Margin" Value="0" />

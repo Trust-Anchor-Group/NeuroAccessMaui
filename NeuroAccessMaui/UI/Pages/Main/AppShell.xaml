@@ -18,10 +18,10 @@
 	<ShellContent
 		ContentTemplate="{DataTemplate registration:RegistrationPage}"
 		FlyoutItemIsVisible="False"
-		Route="Registration"
-		Shell.FlyoutBehavior="Disabled" />
+		Route="Registration" />
 
 	<ShellContent
 		ContentTemplate="{DataTemplate main:MainPage}"
+		FlyoutItemIsVisible="True"
 		Route="MainPage" />
 </Shell>

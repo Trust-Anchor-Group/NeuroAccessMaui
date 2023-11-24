@@ -8,8 +8,7 @@
 	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
 	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.VerifyCode"
 	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-	xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
-	Shell.FlyoutBehavior="Disabled">
+	xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls">
 
 	<VisualElement.Resources>
 		<ResourceDictionary>
@@ -118,7 +117,6 @@
 						Spacing="{StaticResource LargeSpacing}">
 
 						<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
-
 							<Label
 								Style="{StaticResource PopupTitleLabelStyle}"
 								Text="{l:Localize OnboardingVerifyCodePageTitle}" />
@@ -127,70 +125,72 @@
 								Style="{StaticResource PopupDetailsLabelStyle}"
 								Text="{Binding LocalizedVerifyCodePageDetails}" />
 
-							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-								<Label
-									Style="{StaticResource PopupSectionTitleLabelStyle}"
-									Text="{l:Localize VerifyCodeSectionTitle}" />
-								<Grid
-									RowDefinitions="auto"
-									ColumnDefinitions="auto,*,auto,*,auto,*,auto,*,auto,*,auto"
-									ColumnSpacing="0">
-									<Grid.GestureRecognizers>
-										<TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
-									</Grid.GestureRecognizers>
+							<Grid>
+								<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+									<Label
+										Style="{StaticResource PopupSectionTitleLabelStyle}"
+										Text="{l:Localize VerifyCodeSectionTitle}" />
+									<Grid
+										RowDefinitions="auto"
+										ColumnDefinitions="auto,*,auto,*,auto,*,auto,*,auto,*,auto"
+										ColumnSpacing="0">
+										<Grid.GestureRecognizers>
+											<TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+										</Grid.GestureRecognizers>
 
-									<Border
-										Grid.Column="0"
-										Style="{StaticResource PopupOutlinedBorderStyle}">
+										<Border
+											Grid.Column="0"
+											Style="{StaticResource PopupOutlinedBorderStyle}">
 
-										<Label x:Name="InnerCode1"
-											Style="{StaticResource PopupOutlinedLabelStyle}" />
-									</Border>
+											<Label x:Name="InnerCode1"
+												Style="{StaticResource PopupOutlinedLabelStyle}" />
+										</Border>
 
-									<Border
-										Grid.Column="2"
-										Style="{StaticResource PopupOutlinedBorderStyle}">
+										<Border
+											Grid.Column="2"
+											Style="{StaticResource PopupOutlinedBorderStyle}">
 
-										<Label x:Name="InnerCode2"
-											Style="{StaticResource PopupOutlinedLabelStyle}" />
-									</Border>
+											<Label x:Name="InnerCode2"
+												Style="{StaticResource PopupOutlinedLabelStyle}" />
+										</Border>
 
-									<Border
-										Grid.Column="4"
-										Style="{StaticResource PopupOutlinedBorderStyle}">
+										<Border
+											Grid.Column="4"
+											Style="{StaticResource PopupOutlinedBorderStyle}">
 
-										<Label x:Name="InnerCode3"
-											Style="{StaticResource PopupOutlinedLabelStyle}" />
-									</Border>
+											<Label x:Name="InnerCode3"
+												Style="{StaticResource PopupOutlinedLabelStyle}" />
+										</Border>
 
-									<Border
-										Grid.Column="6"
-										Style="{StaticResource PopupOutlinedBorderStyle}">
+										<Border
+											Grid.Column="6"
+											Style="{StaticResource PopupOutlinedBorderStyle}">
 
-										<Label x:Name="InnerCode4"
-											Style="{StaticResource PopupOutlinedLabelStyle}" />
-									</Border>
+											<Label x:Name="InnerCode4"
+												Style="{StaticResource PopupOutlinedLabelStyle}" />
+										</Border>
 
-									<Border
-										Grid.Column="8"
-										Style="{StaticResource PopupOutlinedBorderStyle}">
+										<Border
+											Grid.Column="8"
+											Style="{StaticResource PopupOutlinedBorderStyle}">
 
-										<Label x:Name="InnerCode5"
-											Style="{StaticResource PopupOutlinedLabelStyle}" />
-									</Border>
+											<Label x:Name="InnerCode5"
+												Style="{StaticResource PopupOutlinedLabelStyle}" />
+										</Border>
 
-									<Border
-										Grid.Column="10"
-										Style="{StaticResource PopupOutlinedBorderStyle}">
+										<Border
+											Grid.Column="10"
+											Style="{StaticResource PopupOutlinedBorderStyle}">
 
-										<Label x:Name="InnerCode6"
-											Style="{StaticResource PopupOutlinedLabelStyle}" />
-									</Border>
-								</Grid>
+											<Label x:Name="InnerCode6"
+												Style="{StaticResource PopupOutlinedLabelStyle}" />
+										</Border>
+									</Grid>
+								</VerticalStackLayout>
 
 								<Entry x:Name="InnerCodeEntry"
+									VerticalOptions="End"
 									HeightRequest="{StaticResource SmallSpacing}"
-									VerticalTextAlignment="End"
 									ClearButtonVisibility="Never"
 									IsSpellCheckEnabled="False"
 									IsTextPredictionEnabled="False"
@@ -198,30 +198,26 @@
 									Opacity="0"
 									Text="{Binding VerifyCodeText}"
 									TextChanged="InnerCodeEntry_TextChanged" />
-
-							</VerticalStackLayout>
+							</Grid>
 						</VerticalStackLayout>
 					</VerticalStackLayout>
 
-					<Grid
+					<VerticalStackLayout
 						Grid.Row="1"
-						RowDefinitions="auto,auto"
-						RowSpacing="{StaticResource MediumSpacing}">
+						Spacing="{StaticResource MediumSpacing}">
 
 						<controls:TextButton
-							Grid.Row="0"
 							HorizontalOptions="FillAndExpand"
 							Command="{Binding VerifyCommand}"
 							Style="{StaticResource FilledTextButtonStyle}"
 							LabelData="{l:Localize Verify}" />
 
 						<controls:TextButton
-							Grid.Row="1"
 							HorizontalOptions="FillAndExpand"
 							Command="{Binding CodeVerification.ResendCodeCommand}"
 							Style="{StaticResource OutlinedTextButtonStyle}"
 							LabelData="{Binding LocalizedResendCodeText}" />
-					</Grid>
+					</VerticalStackLayout>
 				</Grid>
 			</Grid>
 		</ScrollView>

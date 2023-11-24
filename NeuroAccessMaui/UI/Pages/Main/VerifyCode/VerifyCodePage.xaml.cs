@@ -1,5 +1,7 @@
 using CommunityToolkit.Maui.Core.Platform;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Maui.Controls.PlatformConfiguration;
+using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 
 namespace NeuroAccessMaui.UI.Pages.Main.VerifyCode;
 
@@ -57,7 +59,14 @@ public partial class VerifyCodePage
 	{
 		await this.Dispatcher.DispatchAsync(() =>
 		{
-			Thickness Margin = new(0, 0, 0, Message.KeyboardSize);
+			double Bottom = 0;
+			if (DeviceInfo.Platform == DevicePlatform.iOS)
+			{
+				Thickness SafeInsets = this.On<iOS>().SafeAreaInsets();
+				Bottom = SafeInsets.Bottom;
+			}
+
+			Thickness Margin = new(0, 0, 0, Message.KeyboardSize - Bottom);
 			this.TheMainGrid.Margin = Margin;
 		});
 	}

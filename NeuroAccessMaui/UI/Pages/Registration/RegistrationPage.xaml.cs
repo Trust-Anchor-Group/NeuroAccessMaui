@@ -1,8 +1,8 @@
 using CommunityToolkit.Maui.Layouts;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Maui.Controls.PlatformConfiguration;
+using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 using NeuroAccessMaui.Services.Tag;
-using Waher.Content.Html.Elements;
-using Waher.Runtime.Profiling.Events;
 
 namespace NeuroAccessMaui.UI.Pages.Registration;
 
@@ -80,7 +80,14 @@ public partial class RegistrationPage
 	{
 		await this.Dispatcher.DispatchAsync(() =>
 		{
-			Thickness Margin = new(0, 0, 0, Message.KeyboardSize);
+			double Bottom = 0;
+			if (DeviceInfo.Platform == DevicePlatform.iOS)
+			{
+				Thickness SafeInsets = this.On<iOS>().SafeAreaInsets();
+				Bottom = SafeInsets.Bottom;
+			}
+
+			Thickness Margin = new(0, 0, 0, Message.KeyboardSize - Bottom);
 			this.TheMainGrid.Margin = Margin;
 		});
 	}
