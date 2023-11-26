@@ -28,6 +28,8 @@ public partial class ScanQrCodePage
 		this.ContentPageModel = ViewModel;
 
 		this.LinkEntry.Entry.Keyboard = Keyboard.Url;
+		this.LinkEntry.Entry.IsSpellCheckEnabled = false;
+		this.LinkEntry.Entry.IsTextPredictionEnabled = false;
 
 		StateContainer.SetCurrentState(this.GridWithAnimation, "AutomaticScan");
 
