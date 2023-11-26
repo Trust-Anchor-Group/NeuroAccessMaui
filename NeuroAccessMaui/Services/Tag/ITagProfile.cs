@@ -191,19 +191,19 @@ public interface ITagProfile
 	void ResetIsDirty();
 
 	/// <summary>
-	/// Step 1 - sets the phone number used for contacting the user.
+	/// Sets the phone number used for contacting the user.
 	/// </summary>
 	/// <param name="PhoneNumber">Verified phone number.</param>
 	void SetPhone(string PhoneNumber);
 
 	/// <summary>
-	/// Step 1 - sets the e-mail address used for contacting the user.
+	/// Sets the e-mail address used for contacting the user.
 	/// </summary>
 	/// <param name="EMail">Verified e-mail address.</param>
 	void SetEMail(string EMail);
 
 	/// <summary>
-	/// Step 1 - set the domain name to connect to.
+	/// Set the domain name to connect to.
 	/// </summary>
 	/// <param name="DomainName">The domain name.</param>
 	/// <param name="DefaultXmppConnectivity">If connecting to the domain can be done using default parameters (host=domain, default c2s port).</param>
@@ -217,12 +217,12 @@ public interface ITagProfile
 	void UndoDomainSelection();
 
 	/// <summary>
-	/// Revert Step 1.
+	/// Revert the SetDomain
 	/// </summary>
 	void ClearDomain();
 
 	/// <summary>
-	/// Step 2 - set the account name and password for a <em>new</em> account.
+	/// Set the account name and password for a <em>new</em> account.
 	/// </summary>
 	/// <param name="AccountName">The account/user name.</param>
 	/// <param name="ClientPasswordHash">The password hash (never send the real password).</param>
@@ -230,7 +230,7 @@ public interface ITagProfile
 	void SetAccount(string AccountName, string ClientPasswordHash, string ClientPasswordHashMethod);
 
 	/// <summary>
-	/// Step 2 and 3 - set the account name and password for an <em>existing</em> account.
+	/// Set the account name and password for an <em>existing</em> account.
 	/// </summary>
 	/// <param name="AccountName">The account/user name.</param>
 	/// <param name="ClientPasswordHash">The password hash (never send the real password).</param>
@@ -239,39 +239,36 @@ public interface ITagProfile
 	void SetAccountAndLegalIdentity(string AccountName, string ClientPasswordHash, string ClientPasswordHashMethod, LegalIdentity Identity);
 
 	/// <summary>
-	/// Revert Step 2.
-	/// </summary>
-	void ClearAccount(bool GoToPrevStep = true);
-
-	/// <summary>
-	/// Step 3 - set the legal identity of a newly created account.
+	/// Set the legal identity of a newly created account.
 	/// </summary>
 	/// <param name="LegalIdentity">The legal identity to use.</param>
 	void SetLegalIdentity(LegalIdentity LegalIdentity);
 
 	/// <summary>
-	/// Revert Step 3.
+	/// Revert the Set Account
+	/// </summary>
+	void ClearAccount();
+
+	/// <summary>
+	/// Revert the Set LegalIdentity
 	/// </summary>
 	void ClearLegalIdentity();
 
 	/// <summary>
-	///  Step 5 - Set a pin to use for protecting the account.
+	/// Set a pin to use for protecting the account.
 	/// </summary>
 	/// <param name="Pin">The pin to use.</param>
-	/// <param name="AddOrUpdatePin">
-	/// If we should use <paramref name="Pin"/> to set or clear pin or we should ignore <paramref name="Pin"/> and just complete th step.
-	/// </param>
-	void CompletePinStep(string Pin, bool AddOrUpdatePin = true);
+	void SetPin(string Pin);
 
 	/// <summary>
-	/// Step 1 - Set if the user choose the educational or experimental purpose.
+	/// Set if the user choose the educational or experimental purpose.
 	/// </summary>
 	/// <param name="IsTest">If app is in test mode.</param>
 	/// <param name="Purpose">Purpose for using the app</param>
 	void SetPurpose(bool IsTest, PurposeUse Purpose);
 
 	/// <summary>
-	/// Step 1 - Set if the user used a Test OTP Code.
+	/// Set if the user used a Test OTP Code.
 	/// </summary>
 	void SetTestOtpTimestamp(DateTime? timestamp);
 

@@ -7,6 +7,7 @@ using NeuroAccessMaui.UI.Popups;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
 using NeuroAccessMaui.Services.Tag;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace NeuroAccessMaui.UI.Pages.Registration;
 
@@ -78,7 +79,9 @@ public partial class RegistrationViewModel : BaseViewModel
 		this.SelectedLanguage = App.SelectedLanguage;
 	}
 
-	public bool CanGoToPrev => (ServiceRef.TagProfile.Step > RegistrationStep.RequestPurpose) && (ServiceRef.TagProfile.Step < RegistrationStep.Complete);
+	public bool CanGoToPrev => (ServiceRef.TagProfile.Step > RegistrationStep.RequestPurpose)
+		// The PIN definition isn't really a part of the registration prosess, so disable the back button.
+		&& (ServiceRef.TagProfile.Step < RegistrationStep.DefinePin);
 
 	/// <summary>
 	/// The command to bind to for moving backwards to the previous step in the registration process.
@@ -88,42 +91,36 @@ public partial class RegistrationViewModel : BaseViewModel
 	{
 		try
 		{
-			//!!!
-			/*
-				switch ((RegistrationStep)this.CurrentStep)
-				{
-					case RegistrationStep.Account:
-						this.RegistrationSteps[this.CurrentStep].ClearStepState();
-						await this.TagProfile.ClearAccount();
-						break;
+			switch (this.CurrentStep)
+			{
+				case RegistrationStep.CreateAccount:
+					//!!! this.registrationSteps[this.CurrentStep].ClearStepState();
+					ServiceRef.TagProfile.ClearAccount();
+					ServiceRef.TagProfile.GoToStep(RegistrationStep.ChooseProvider);
+					break;
 
-					case RegistrationStep.RegisterIdentity:
-						this.RegistrationSteps[(int)RegistrationStep.Account].ClearStepState();
-						await this.TagProfile.ClearAccount(false);
-						this.RegistrationSteps[(int)RegistrationStep.RegisterIdentity].ClearStepState();
-						await this.TagProfile.ClearLegalIdentity();
-						await this.TagProfile.InvalidateContactInfo();
-						break;
+				case RegistrationStep.ChooseProvider:
+					//!!! this.registrationSteps[this.CurrentStep].ClearStepState();
+					ServiceRef.TagProfile.GoToStep(RegistrationStep.ValidateEmail);
+					break;
 
-					case RegistrationStep.ValidateIdentity:
-						RegisterIdentity.RegisterIdentityViewModel vm = (RegisterIdentity.RegisterIdentityViewModel)this.RegistrationSteps[(int)RegistrationStep.RegisterIdentity];
-						vm.PopulateFromTagProfile();
-						this.RegistrationSteps[this.CurrentStep].ClearStepState();
-						await this.TagProfile.ClearIsValidated();
-						break;
+				case RegistrationStep.ValidateEmail:
+					//!!! this.registrationSteps[this.CurrentStep].ClearStepState();
+					ServiceRef.TagProfile.GoToStep(RegistrationStep.ValidatePhone);
+					break;
 
-					case RegistrationStep.Pin:
-						this.RegistrationSteps[this.CurrentStep].ClearStepState();
-						await this.TagProfile.RevertPinStep();
-						break;
+				case RegistrationStep.ValidatePhone:
+					//!!! this.registrationSteps[this.CurrentStep].ClearStepState();
+					ServiceRef.TagProfile.GoToStep(RegistrationStep.RequestPurpose);
+					break;
 
-					default: // RegistrationStep.Operator
-						await this.TagProfile.ClearDomain();
-						break;
-				}
+				default: // something forgotten?
+					throw new NotImplementedException();
+			}
 
-				await this.SyncTagProfileStep();
-			*/
+			//!!! await this.SyncTagProfileStep();
+
+			WeakReferenceMessenger.Default.Send(new RegistrationPageMessage(ServiceRef.TagProfile.Step));
 		}
 		catch (Exception ex)
 		{

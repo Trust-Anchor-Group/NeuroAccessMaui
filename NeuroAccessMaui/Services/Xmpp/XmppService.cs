@@ -326,7 +326,7 @@ internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 
 				if (this.ShouldCreateClient())
 				{
-					await this.CreateXmppClient(ServiceRef.TagProfile.Step <= RegistrationStep.RegisterIdentity);
+					await this.CreateXmppClient(ServiceRef.TagProfile.Step <= RegistrationStep.CreateAccount);
 				}
 
 				if ((this.xmppClient is not null) &&
@@ -413,7 +413,7 @@ internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 			{
 				if (this.ShouldCreateClient())
 				{
-					await this.CreateXmppClient(ServiceRef.TagProfile.Step <= RegistrationStep.RegisterIdentity);
+					await this.CreateXmppClient(ServiceRef.TagProfile.Step <= RegistrationStep.CreateAccount);
 				}
 				else if (ServiceRef.TagProfile.Step <= RegistrationStep.CreateAccount)
 				{

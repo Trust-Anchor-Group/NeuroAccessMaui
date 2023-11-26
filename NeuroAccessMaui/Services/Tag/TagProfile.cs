@@ -38,19 +38,14 @@ public enum RegistrationStep
 	CreateAccount = 4,
 
 	/// <summary>
-	/// Register an identity
-	/// </summary>
-	RegisterIdentity = 5,
-
-	/// <summary>
 	/// Create a PIN code
 	/// </summary>
-	DefinePin = 6,
+	DefinePin = 5,
 
 	/// <summary>
 	/// Profile is completed.
 	/// </summary>
-	Complete = 7
+	Complete = 6
 }
 
 /// <summary>
@@ -254,7 +249,7 @@ public partial class TagProfile : ITagProfile
 	/// <inheritdoc/>
 	public virtual bool IsCompleteOrWaitingForValidation()
 	{
-		return this.Step > RegistrationStep.RegisterIdentity;
+		return this.Step > RegistrationStep.CreateAccount;
 	}
 
 	/// <inheritdoc/>
@@ -723,7 +718,7 @@ public partial class TagProfile : ITagProfile
 	}
 
 	/// <inheritdoc/>
-	public void ClearAccount(bool GoToPrevStep = true)
+	public void ClearAccount()
 	{
 		this.Account = string.Empty;
 		this.PasswordHash = string.Empty;
@@ -757,12 +752,9 @@ public partial class TagProfile : ITagProfile
 	}
 
 	/// <inheritdoc/>
-	public void CompletePinStep(string Pin, bool AddOrUpdatePin = true)
+	public void SetPin(string Pin)
 	{
-		if (AddOrUpdatePin)
-		{
-			this.Pin = Pin;
-		}
+		this.Pin = Pin;
 	}
 
 	/// <inheritdoc/>
