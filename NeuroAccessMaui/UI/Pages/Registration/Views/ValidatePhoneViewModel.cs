@@ -237,8 +237,9 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel, ICodeVe
 				return;
 			}
 
-			//!!! string FullPhoneNumber = $"+{this.SelectedCountry.DialCode}{this.PhoneNumber}";
-			string FullPhoneNumber = "+15551234567";
+			//!!! for tests
+			// string FullPhoneNumber = "+15551234567";
+			string FullPhoneNumber = $"+{this.SelectedCountry.DialCode}{this.PhoneNumber}";
 
 			object SendResult = await InternetContent.PostAsync(
 				new Uri("https://" + Constants.Domains.IdDomain + "/ID/SendVerificationMessage.ws"),
@@ -362,8 +363,9 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel, ICodeVe
 				return;
 			}
 
-			//!!! string FullPhoneNumber = $"+{this.SelectedCountry.DialCode}{this.PhoneNumber}";
-			string FullPhoneNumber = "+15551234567";
+			//!!! for VerifyCodePage tests
+			// string FullPhoneNumber = "+15551234567";
+			string FullPhoneNumber = $"+{this.SelectedCountry.DialCode}{this.PhoneNumber}";
 
 			object SendResult = await InternetContent.PostAsync(
 				new Uri("https://" + Constants.Domains.IdDomain + "/ID/SendVerificationMessage.ws"),
