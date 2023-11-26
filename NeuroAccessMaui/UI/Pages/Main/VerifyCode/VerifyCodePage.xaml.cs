@@ -42,17 +42,19 @@ public partial class VerifyCodePage
 	}
 
 	/// <inheritdoc/>
-	protected override Task OnAppearingAsync()
+	protected override async Task OnAppearingAsync()
 	{
-		WeakReferenceMessenger.Default.Register<KeyboardSizeMessage>(this, this.HandleKeyboardSizeMessage);
-		return base.OnAppearingAsync();
+		await base.OnAppearingAsync();
+
+		WeakReferenceMessenger.Default.Register<KeyboardSizeMessage>(this, this.HandleKeyboardSizeMessage);		
 	}
 
 	/// <inheritdoc/>
-	protected override Task OnDisappearingAsync()
+	protected override async Task OnDisappearingAsync()
 	{
 		WeakReferenceMessenger.Default.Unregister<KeyboardSizeMessage>(this);
-		return base.OnDisappearingAsync();
+
+		await base.OnDisappearingAsync();
 	}
 
 	private async void HandleKeyboardSizeMessage(object Recipient, KeyboardSizeMessage Message)

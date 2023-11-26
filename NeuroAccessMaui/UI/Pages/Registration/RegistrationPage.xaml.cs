@@ -23,23 +23,31 @@ public partial class RegistrationPage
 			this.DefinePinView,
 		]);
 
+		// We need to register this handlere before the LoadingView is initialised
+		WeakReferenceMessenger.Default.Register<RegistrationPageMessage>(this, this.HandleRegistrationPageMessage);
+
 		StateContainer.SetCurrentState(this.GridWithAnimation, "Loading");
 	}
 
-	/// <inheritdoc/>
-	protected override Task OnAppearingAsync()
+	~RegistrationPage()
 	{
-		WeakReferenceMessenger.Default.Register<RegistrationPageMessage>(this, this.HandleRegistrationPageMessage);
-		WeakReferenceMessenger.Default.Register<KeyboardSizeMessage>(this, this.HandleKeyboardSizeMessage);
-		return base.OnAppearingAsync();
+		WeakReferenceMessenger.Default.Unregister<RegistrationPageMessage>(this);
 	}
 
 	/// <inheritdoc/>
-	protected override Task OnDisappearingAsync()
+	protected override async Task OnAppearingAsync()
 	{
-		WeakReferenceMessenger.Default.Unregister<RegistrationPageMessage>(this);
+		await base.OnAppearingAsync();
+
+		WeakReferenceMessenger.Default.Register<KeyboardSizeMessage>(this, this.HandleKeyboardSizeMessage);
+	}
+
+	/// <inheritdoc/>
+	protected override async Task OnDisappearingAsync()
+	{
 		WeakReferenceMessenger.Default.Unregister<KeyboardSizeMessage>(this);
-		return base.OnDisappearingAsync();
+
+		await base.OnDisappearingAsync();
 	}
 
 	private async void HandleRegistrationPageMessage(object Recipient, RegistrationPageMessage Message)
