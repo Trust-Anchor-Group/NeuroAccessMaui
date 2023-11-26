@@ -1,5 +1,8 @@
 ﻿using CommunityToolkit.Maui.Layouts;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Maui.Controls.PlatformConfiguration;
+using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 using NeuroAccessMaui.Services;
 using ZXing.Net.Maui;
 using ZXing.Net.Maui.Readers;
@@ -56,14 +59,33 @@ public partial class ScanQrCodePage
 		await base.OnAppearingAsync();
 
 		this.CameraBarcodeReaderView.IsDetecting = true;
+		WeakReferenceMessenger.Default.Register<KeyboardSizeMessage>(this, this.HandleKeyboardSizeMessage);
+
 	}
 
 	/// <inheritdoc/>
 	protected override async Task OnDisappearingAsync()
 	{
 		this.CameraBarcodeReaderView.IsDetecting = false;
+		WeakReferenceMessenger.Default.Unregister<KeyboardSizeMessage>(this);
 
 		await base.OnDisappearingAsync();
+	}
+
+	private async void HandleKeyboardSizeMessage(object Recipient, KeyboardSizeMessage Message)
+	{
+		await this.Dispatcher.DispatchAsync(() =>
+		{
+			double Bottom = 0;
+			if (DeviceInfo.Platform == DevicePlatform.iOS)
+			{
+				Thickness SafeInsets = this.On<iOS>().SafeAreaInsets();
+				Bottom = SafeInsets.Bottom;
+			}
+
+			Thickness Margin = new(0, 0, 0, Message.KeyboardSize - Bottom);
+			this.ManualScanGrid.Margin = Margin;
+		});
 	}
 
 	[RelayCommand]

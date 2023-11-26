@@ -83,9 +83,7 @@
 		</ResourceDictionary>
 	</VisualElement.Resources>
 
-	<Grid x:Name="GridWithAnimation"
-		VerticalOptions="FillAndExpand"
-		HorizontalOptions="FillAndExpand">
+	<Grid x:Name="GridWithAnimation">
 
 		<mct:StateContainer.StateViews>
 			<Grid mct:StateView.StateKey="AutomaticScan">
@@ -173,46 +171,58 @@
 			</Grid>
 
 			<Grid x:Name="ManualScanGrid" mct:StateView.StateKey="ManualScan"
-				RowDefinitions="auto,*"
-				Padding="{StaticResource LargeMargins}">
+				RowDefinitions="auto,*">
 
-				<controls:ImageButton
+				<controls:Background Grid.RowSpan="2" />
+
+				<Grid
 					Grid.Row="0"
-					Command="{Binding GoBackCommand}"
-					Style="{StaticResource BackImageButtonStyle}" />
+					RowDefinitions="auto"
+					ColumnDefinitions="*">
+					<Grid.Padding>
+						<Thickness
+							Left="{StaticResource LargeSpacing}"
+							Top="{StaticResource LargeSpacing}"
+							Right="{StaticResource LargeSpacing}" />
+					</Grid.Padding>
+
+					<controls:ImageButton
+						Command="{Binding GoBackCommand}"
+						Style="{StaticResource BackImageButtonStyle}" />
+				</Grid>
 
 				<ScrollView Grid.Row="1">
 					<Grid
-						Grid.Row="0"
-						RowDefinitions="*,auto"
+						RowDefinitions="auto,auto"
+						Padding="{StaticResource LargeMargins}"
 						RowSpacing="{StaticResource LargeSpacing}">
 
 						<VerticalStackLayout
 							Grid.Row="0"
-							VerticalOptions="Center"
-							Spacing="{StaticResource LargeSpacing}">
+							Spacing="{StaticResource SmallSpacing}">
+							<Label
+								HorizontalOptions="FillAndExpand"
+								Text="{l:Localize QrScanUri}" />
 
-							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-								<Label
-									HorizontalOptions="FillAndExpand"
-									Text="{l:Localize QrScanUri}" />
+							<controls:CompositeEntry x:Name="LinkEntry"
+								Style="{StaticResource RegularCompositeEntryStyle}"
+								EntryData="{Binding Path=UrlText}" />
+						</VerticalStackLayout>
 
-								<controls:CompositeEntry x:Name="LinkEntry"
-									Style="{StaticResource RegularCompositeEntryStyle}"
-									EntryData="{Binding Path=UrlText}" />
-							</VerticalStackLayout>
-
+						<VerticalStackLayout
+							Grid.Row="1"
+							Spacing="{StaticResource MediumSpacing}">
 							<controls:TextButton
 								Command="{Binding OpenUrlCommand}"
 								Style="{StaticResource FilledTextButtonStyle}"
 								LabelData="{l:Localize Open}" />
-						</VerticalStackLayout>
 
-						<controls:TextButton
-							Grid.Row="1"
-							Command="{Binding Path=SwitchModeCommand, Source={x:Reference ThisPage}}"
-							Style="{StaticResource OutlinedTextButtonStyle}"
-							LabelData="{l:Localize QrScanCode}" />
+							<controls:TextButton
+								Grid.Row="1"
+								Command="{Binding Path=SwitchModeCommand, Source={x:Reference ThisPage}}"
+								Style="{StaticResource OutlinedTextButtonStyle}"
+								LabelData="{l:Localize QrScanCode}" />
+						</VerticalStackLayout>
 					</Grid>
 				</ScrollView>
 			</Grid>
