@@ -106,11 +106,12 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel, ICodeVe
 		}
 		else
 		{
-			this.PhoneNumber = ServiceRef.TagProfile.PhoneNumber;
+			string PhoneNumber = ServiceRef.TagProfile.PhoneNumber;
 
-			if (ISO_3166_1.TryGetCountryByPhone(this.PhoneNumber, out ISO3166Country? Country))
+			if (ISO_3166_1.TryGetCountryByPhone(PhoneNumber, out ISO3166Country? Country))
 			{
 				this.SelectedCountry = Country;
+				this.PhoneNumber = PhoneNumber[(Country.DialCode.Length+1)..];
 			}
 		}
 	}

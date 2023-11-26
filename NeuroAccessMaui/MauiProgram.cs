@@ -71,6 +71,7 @@ public static class MauiProgram
 
 		CollectionViewHandler.Mapper.AppendToMapping("BouncesCollectionViewHandler", (handler, view) =>
 		{
+			//!!! not sure how this is done here yet
 			//!!! handler.ViewController.PlatformView.Bounces = false;
 		});
 

@@ -55,14 +55,27 @@ public static class ISO_3166_1
 	/// <summary>
 	/// Tries to get the country, given its country and phone codes.
 	/// </summary>
-	/// <param name="CountryCode">ISO-3166-1 Country code (case insensitive).</param>
-	/// <param name="PhoneCode">Phone code.</param>
+	/// <param name="PhoneNumber">ISO-3166-1 phone number (case insensitive).</param>
 	/// <param name="Country">ISO-3166-1 Country, if found.</param>
 	/// <returns>If a country was found matching the country code.</returns>
 	public static bool TryGetCountryByPhone(string PhoneNumber, [NotNullWhen(true)] out ISO3166Country? Country)
 	{
-		string PhoneCode = string.Empty; //!!! PhoneNumber
-		return countryByPhone.TryGetValue(PhoneCode, out Country);
+		ISO3166Country? Result = null;
+
+		foreach (ISO3166Country Item in Countries)
+		{
+			if (PhoneNumber.StartsWith($"+{Item.DialCode}", StringComparison.OrdinalIgnoreCase))
+			{
+				if ((Result is null) ||
+					(Result.DialCode.Length < Item.DialCode.Length))
+				{
+					Result = Item;
+				}
+			}
+		}
+
+		Country = Result;
+		return Country is not null;
 	}
 
 	/// <summary>
