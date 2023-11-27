@@ -112,6 +112,7 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel, ICodeVe
 			{
 				this.SelectedCountry = Country;
 				this.PhoneNumber = PhoneNumber[(Country.DialCode.Length+1)..];
+				this.SendCodeCommand.NotifyCanExecuteChanged();
 			}
 		}
 	}
@@ -296,6 +297,7 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel, ICodeVe
 							ServiceRef.TagProfile.SetPurpose(IsTest, Purpose);
 							ServiceRef.TagProfile.SetTestOtpTimestamp(VerifyIsTemporary ? DateTime.Now : null);
 
+							//!!! The old code for existing accounts. Should be implemented somehow else
 							//!!! if (this.IsRevalidating)
 							if (false)
 							{

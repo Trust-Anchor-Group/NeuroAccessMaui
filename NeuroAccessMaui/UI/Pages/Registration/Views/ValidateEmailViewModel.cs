@@ -57,6 +57,7 @@ public partial class ValidateEmailViewModel : BaseRegistrationViewModel, ICodeVe
 		if (!string.IsNullOrEmpty(ServiceRef.TagProfile.EMail))
 		{
 			this.EmailText = ServiceRef.TagProfile.EMail;
+			this.SendCodeCommand.NotifyCanExecuteChanged();
 		}
 	}
 
