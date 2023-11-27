@@ -556,14 +556,14 @@ internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 		ConnectToAccount
 	}
 
-	public Task<(bool succeeded, string? errorMessage)> TryConnect(string domain, bool isIpAddress, string hostName, int portNumber,
+	public Task<(bool Succeeded, string? ErrorMessage, string[]? Alternatives)> TryConnect(string domain, bool isIpAddress, string hostName, int portNumber,
 		string languageCode, Assembly applicationAssembly, Func<XmppClient, Task> connectedFunc)
 	{
 		return this.TryConnectInner(domain, isIpAddress, hostName, portNumber, string.Empty, string.Empty, string.Empty, languageCode,
 			string.Empty, string.Empty, applicationAssembly, connectedFunc, ConnectOperation.Connect);
 	}
 
-	public Task<(bool succeeded, string? errorMessage)> TryConnectAndCreateAccount(string domain, bool isIpAddress, string hostName,
+	public Task<(bool Succeeded, string? ErrorMessage, string[]? Alternatives)> TryConnectAndCreateAccount(string domain, bool isIpAddress, string hostName,
 		int portNumber, string userName, string password, string languageCode, string ApiKey, string ApiSecret,
 		Assembly applicationAssembly, Func<XmppClient, Task> connectedFunc)
 	{
@@ -571,7 +571,7 @@ internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 			ApiKey, ApiSecret, applicationAssembly, connectedFunc, ConnectOperation.ConnectAndCreateAccount);
 	}
 
-	public Task<(bool succeeded, string? errorMessage)> TryConnectAndConnectToAccount(string domain, bool isIpAddress, string hostName,
+	public Task<(bool Succeeded, string? ErrorMessage, string[]? Alternatives)> TryConnectAndConnectToAccount(string domain, bool isIpAddress, string hostName,
 		int portNumber, string userName, string password, string passwordMethod, string languageCode, Assembly applicationAssembly,
 		Func<XmppClient, Task> connectedFunc)
 	{
@@ -579,37 +579,38 @@ internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 			string.Empty, string.Empty, applicationAssembly, connectedFunc, ConnectOperation.ConnectToAccount);
 	}
 
-	private async Task<(bool succeeded, string? errorMessage)> TryConnectInner(string domain, bool isIpAddress, string hostName,
-		int portNumber, string userName, string password, string passwordMethod, string languageCode, string ApiKey, string ApiSecret,
-		Assembly applicationAssembly, Func<XmppClient, Task> connectedFunc, ConnectOperation operation)
+	private async Task<(bool Succeeded, string? ErrorMessage, string[]? Alternatives)> TryConnectInner(string Domain, bool IsIpAddress, string HostName,
+		int PortNumber, string UserName, string Password, string PasswordMethod, string LanguageCode, string ApiKey, string ApiSecret,
+		Assembly ApplicationAssembly, Func<XmppClient, Task> ConnectedFunc, ConnectOperation Operation)
 	{
-		TaskCompletionSource<bool> connected = new();
-		bool succeeded;
-		string? errorMessage = null;
-		bool streamNegotiation = false;
-		bool streamOpened = false;
-		bool startingEncryption = false;
-		bool authenticating = false;
-		bool registering = false;
-		bool timeout = false;
-		string? connectionError = null;
+		TaskCompletionSource<bool> Connected = new();
+		bool Succeeded;
+		string? ErrorMessage = null;
+		bool StreamNegotiation = false;
+		bool StreamOpened = false;
+		bool StartingEncryption = false;
+		bool Authenticating = false;
+		bool Registering = false;
+		bool IsTimeout = false;
+		string? ConnectionError = null;
+		string[]? Alternatives = null;
 
 		Task OnConnectionError(object _, Exception e)
 		{
 			if (e is ObjectDisposedException)
 			{
-				connectionError = ServiceRef.Localizer[nameof(AppResources.UnableToConnect)];
+				ConnectionError = ServiceRef.Localizer[nameof(AppResources.UnableToConnect)];
 			}
 			else if (e is ConflictException ConflictInfo)
 			{
-				//!!! account names
+				Alternatives = ConflictInfo.Alternatives;
 			}
 			else
 			{
-				connectionError = e.Message;
+				ConnectionError = e.Message;
 			}
 
-			connected.TrySetResult(false);
+			Connected.TrySetResult(false);
 			return Task.CompletedTask;
 		}
 
@@ -618,172 +619,172 @@ internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 			switch (newState)
 			{
 				case XmppState.StreamNegotiation:
-					streamNegotiation = true;
+					StreamNegotiation = true;
 					break;
 
 				case XmppState.StreamOpened:
-					streamOpened = true;
+					StreamOpened = true;
 					break;
 
 				case XmppState.StartingEncryption:
-					startingEncryption = true;
+					StartingEncryption = true;
 					break;
 
 				case XmppState.Authenticating:
-					authenticating = true;
+					Authenticating = true;
 
-					if (operation == ConnectOperation.Connect)
+					if (Operation == ConnectOperation.Connect)
 					{
-						connected.TrySetResult(true);
+						Connected.TrySetResult(true);
 					}
 
 					break;
 
 				case XmppState.Registering:
-					registering = true;
+					Registering = true;
 					break;
 
 				case XmppState.Connected:
-					connected.TrySetResult(true);
+					Connected.TrySetResult(true);
 					break;
 
 				case XmppState.Offline:
-					connected.TrySetResult(false);
+					Connected.TrySetResult(false);
 					break;
 
 				case XmppState.Error:
 					// When State = Error, wait for the OnConnectionError event to arrive also, as it holds more/direct information.
 					// Just in case it never would - set state error and result.
 					await Task.Delay(Constants.Timeouts.XmppConnect);
-					connected.TrySetResult(false);
+					Connected.TrySetResult(false);
 					break;
 			}
 		}
 
-		XmppClient client = null;
+		XmppClient? Client = null;
 		try
 		{
-			if (string.IsNullOrEmpty(passwordMethod))
+			if (string.IsNullOrEmpty(PasswordMethod))
 			{
-				client = new XmppClient(hostName, portNumber, userName, password, languageCode, applicationAssembly, this.sniffer);
+				Client = new XmppClient(HostName, PortNumber, UserName, Password, LanguageCode, ApplicationAssembly, this.sniffer);
 			}
 			else
 			{
-				client = new XmppClient(hostName, portNumber, userName, password, passwordMethod, languageCode, applicationAssembly, this.sniffer);
+				Client = new XmppClient(HostName, PortNumber, UserName, Password, PasswordMethod, LanguageCode, ApplicationAssembly, this.sniffer);
 			}
 
-			if (operation == ConnectOperation.ConnectAndCreateAccount)
+			if (Operation == ConnectOperation.ConnectAndCreateAccount)
 			{
 				if (!string.IsNullOrEmpty(ApiKey) && !string.IsNullOrEmpty(ApiSecret))
 				{
-					client.AllowRegistration(ApiKey, ApiSecret);
+					Client.AllowRegistration(ApiKey, ApiSecret);
 				}
 				else
 				{
-					client.AllowRegistration();
+					Client.AllowRegistration();
 				}
 			}
 
-			client.TrustServer = !isIpAddress;
-			client.AllowCramMD5 = false;
-			client.AllowDigestMD5 = false;
-			client.AllowPlain = false;
-			client.AllowEncryption = true;
-			client.AllowScramSHA1 = true;
-			client.AllowScramSHA256 = true;
-			client.AllowQuickLogin = true;
+			Client.TrustServer = !IsIpAddress;
+			Client.AllowCramMD5 = false;
+			Client.AllowDigestMD5 = false;
+			Client.AllowPlain = false;
+			Client.AllowEncryption = true;
+			Client.AllowScramSHA1 = true;
+			Client.AllowScramSHA256 = true;
+			Client.AllowQuickLogin = true;
 
-			client.OnConnectionError += OnConnectionError;
-			client.OnStateChanged += OnStateChanged;
+			Client.OnConnectionError += OnConnectionError;
+			Client.OnStateChanged += OnStateChanged;
 
-			client.Connect(isIpAddress ? string.Empty : domain);
+			Client.Connect(IsIpAddress ? string.Empty : Domain);
 
-			void TimerCallback(object _)
+			void TimerCallback(object? _)
 			{
-				timeout = true;
-				connected.TrySetResult(false);
+				IsTimeout = true;
+				Connected.TrySetResult(false);
 			}
 
 			using (Timer _ = new(TimerCallback, null, (int)Constants.Timeouts.XmppConnect.TotalMilliseconds, Timeout.Infinite))
 			{
-				succeeded = await connected.Task;
+				Succeeded = await Connected.Task;
 			}
 
-			if (succeeded && (connectedFunc is not null))
+			if (Succeeded && (ConnectedFunc is not null))
 			{
-				await connectedFunc(client);
+				await ConnectedFunc(Client);
 			}
 
-			client.OnStateChanged -= OnStateChanged;
-			client.OnConnectionError -= OnConnectionError;
+			Client.OnStateChanged -= OnStateChanged;
+			Client.OnConnectionError -= OnConnectionError;
 		}
 		catch (Exception ex)
 		{
-			ServiceRef.LogService.LogException(ex, new KeyValuePair<string, object>(nameof(ConnectOperation), operation.ToString()));
-			succeeded = false;
-			errorMessage = string.Format(CultureInfo.CurrentCulture,
-				ServiceRef.Localizer[nameof(AppResources.UnableToConnectTo)], domain);
+			ServiceRef.LogService.LogException(ex, new KeyValuePair<string, object>(nameof(ConnectOperation), Operation.ToString()));
+			Succeeded = false;
+			ErrorMessage = string.Format(CultureInfo.CurrentCulture,
+				ServiceRef.Localizer[nameof(AppResources.UnableToConnectTo)], Domain);
 		}
 		finally
 		{
-			client?.Dispose();
-			client = null;
+			Client?.Dispose();
+			Client = null;
 		}
 
-		if (!succeeded && string.IsNullOrEmpty(errorMessage))
+		if (!Succeeded && string.IsNullOrEmpty(ErrorMessage))
 		{
 			System.Diagnostics.Debug.WriteLine("Sniffer: ", await this.sniffer.SnifferToText());
 
-			if (!streamNegotiation || timeout)
+			if (!StreamNegotiation || IsTimeout)
 			{
-				errorMessage = string.Format(CultureInfo.CurrentCulture,
-					ServiceRef.Localizer[nameof(AppResources.CantConnectTo)], domain);
+				ErrorMessage = string.Format(CultureInfo.CurrentCulture,
+					ServiceRef.Localizer[nameof(AppResources.CantConnectTo)], Domain);
 			}
-			else if (!streamOpened)
+			else if (!StreamOpened)
 			{
-				errorMessage = string.Format(CultureInfo.CurrentCulture,
-					ServiceRef.Localizer[nameof(AppResources.DomainIsNotAValidOperator)], domain);
+				ErrorMessage = string.Format(CultureInfo.CurrentCulture,
+					ServiceRef.Localizer[nameof(AppResources.DomainIsNotAValidOperator)], Domain);
 			}
-			else if (!startingEncryption)
+			else if (!StartingEncryption)
 			{
-				errorMessage = string.Format(CultureInfo.CurrentCulture,
-					ServiceRef.Localizer[nameof(AppResources.DomainDoesNotFollowEncryptionPolicy)], domain);
+				ErrorMessage = string.Format(CultureInfo.CurrentCulture,
+					ServiceRef.Localizer[nameof(AppResources.DomainDoesNotFollowEncryptionPolicy)], Domain);
 			}
-			else if (!authenticating)
+			else if (!Authenticating)
 			{
-				errorMessage = string.Format(CultureInfo.CurrentCulture,
-					ServiceRef.Localizer[nameof(AppResources.UnableToAuthenticateWith)], domain);
+				ErrorMessage = string.Format(CultureInfo.CurrentCulture,
+					ServiceRef.Localizer[nameof(AppResources.UnableToAuthenticateWith)], Domain);
 			}
-			else if (!registering)
+			else if (!Registering)
 			{
-				if (!string.IsNullOrWhiteSpace(connectionError))
+				if (!string.IsNullOrWhiteSpace(ConnectionError))
 				{
-					errorMessage = connectionError;
+					ErrorMessage = ConnectionError;
 				}
 				else
 				{
-					errorMessage = string.Format(CultureInfo.CurrentCulture,
-						ServiceRef.Localizer[nameof(AppResources.OperatorDoesNotSupportRegisteringNewAccounts)], domain);
+					ErrorMessage = string.Format(CultureInfo.CurrentCulture,
+						ServiceRef.Localizer[nameof(AppResources.OperatorDoesNotSupportRegisteringNewAccounts)], Domain);
 				}
 			}
-			else if (operation == ConnectOperation.ConnectAndCreateAccount)
+			else if (Operation == ConnectOperation.ConnectAndCreateAccount)
 			{
-				errorMessage = string.Format(CultureInfo.CurrentCulture,
+				ErrorMessage = string.Format(CultureInfo.CurrentCulture,
 					ServiceRef.Localizer[nameof(AppResources.AccountNameAlreadyTaken)], this.accountName);
 			}
-			else if (operation == ConnectOperation.ConnectToAccount)
+			else if (Operation == ConnectOperation.ConnectToAccount)
 			{
-				errorMessage = string.Format(CultureInfo.CurrentCulture,
+				ErrorMessage = string.Format(CultureInfo.CurrentCulture,
 					ServiceRef.Localizer[nameof(AppResources.InvalidUsernameOrPassword)], this.accountName);
 			}
 			else
 			{
-				errorMessage = string.Format(CultureInfo.CurrentCulture,
-					ServiceRef.Localizer[nameof(AppResources.UnableToConnectTo)], domain);
+				ErrorMessage = string.Format(CultureInfo.CurrentCulture,
+					ServiceRef.Localizer[nameof(AppResources.UnableToConnectTo)], Domain);
 			}
 		}
 
-		return (succeeded, errorMessage);
+		return (Succeeded, ErrorMessage, Alternatives);
 	}
 
 	private void ReconnectTimer_Tick(object _)

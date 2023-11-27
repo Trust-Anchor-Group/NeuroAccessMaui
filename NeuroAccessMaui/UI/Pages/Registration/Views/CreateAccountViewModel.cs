@@ -61,7 +61,7 @@ public partial class CreateAccountViewModel : BaseRegistrationViewModel
 				ServiceRef.TagProfile.SetAccount(this.AccountText, Client.PasswordHash, Client.PasswordHashMethod);
 			}
 
-			(bool Succeeded, string? ErrorMessage) = await ServiceRef.XmppService.TryConnectAndCreateAccount(ServiceRef.TagProfile.Domain!,
+			(bool Succeeded, string? ErrorMessage, string[]? Alternatives) = await ServiceRef.XmppService.TryConnectAndCreateAccount(ServiceRef.TagProfile.Domain!,
 				IsIpAddress, HostName, PortNumber, this.AccountText, PasswordToUse, Constants.LanguageCodes.Default,
 				ServiceRef.TagProfile.ApiKey!, ServiceRef.TagProfile.ApiSecret!, typeof(App).Assembly, OnConnected);
 
@@ -70,6 +70,10 @@ public partial class CreateAccountViewModel : BaseRegistrationViewModel
 				ServiceRef.TagProfile.GoToStep(RegistrationStep.DefinePin);
 
 				WeakReferenceMessenger.Default.Send(new RegistrationPageMessage(ServiceRef.TagProfile.Step));
+			}
+			else if (Alternatives is not null)
+			{
+
 			}
 			else if (ErrorMessage is not null)
 			{
