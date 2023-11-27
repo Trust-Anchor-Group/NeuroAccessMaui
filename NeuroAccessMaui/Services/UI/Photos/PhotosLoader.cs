@@ -40,7 +40,7 @@ public class PhotosLoader(ObservableCollection<Photo> Photos) : BaseViewModel
 	/// <param name="SignWith">How the requests are signed. For identity attachments, especially for attachments to an identity being created, <see cref="SignWith.CurrentKeys"/> should be used. For requesting attachments relating to a contract, <see cref="SignWith.LatestApprovedId"/> should be used.</param>
 	/// <param name="WhenDoneAction">A callback that is called when the photo load operation is done.</param>
 	/// <returns>Returns the first photo, if available, null if no photos available.</returns>
-	public Task<Photo> LoadPhotos(Attachment[] Attachments, SignWith SignWith, Action WhenDoneAction = null)
+	public Task<Photo?> LoadPhotos(Attachment[] Attachments, SignWith SignWith, Action? WhenDoneAction = null)
 	{
 		return this.LoadPhotos(Attachments, SignWith, DateTime.UtcNow, WhenDoneAction);
 	}
@@ -69,7 +69,7 @@ public class PhotosLoader(ObservableCollection<Photo> Photos) : BaseViewModel
 	/// <param name="Attachment">The attachment to download.</param>
 	/// <param name="SignWith">How the requests are signed. For identity attachments, especially for attachments to an identity being created, <see cref="SignWith.CurrentKeys"/> should be used. For requesting attachments relating to a contract, <see cref="SignWith.LatestApprovedId"/> should be used.</param>
 	/// <returns>Binary content (or null), Content-Type, Rotation</returns>
-	public async Task<(byte[], string, int)> LoadOnePhoto(Attachment Attachment, SignWith SignWith)
+	public async Task<(byte[]?, string, int)> LoadOnePhoto(Attachment Attachment, SignWith SignWith)
 	{
 		try
 		{
@@ -83,7 +83,7 @@ public class PhotosLoader(ObservableCollection<Photo> Photos) : BaseViewModel
 		return (null, string.Empty, 0);
 	}
 
-	private async Task<Photo> LoadPhotos(Attachment[] Attachments, SignWith SignWith, DateTime Now, Action WhenDoneAction)
+	private async Task<Photo?> LoadPhotos(Attachment[] Attachments, SignWith SignWith, DateTime Now, Action? WhenDoneAction)
 	{
 		if (Attachments is null || Attachments.Length <= 0)
 		{
@@ -109,7 +109,7 @@ public class PhotosLoader(ObservableCollection<Photo> Photos) : BaseViewModel
 		this.attachmentIds.Clear();
 		this.attachmentIds.AddRange(newAttachmentIds);
 
-		Photo First = null;
+		Photo? First = null;
 
 		foreach (Attachment attachment in attachmentsList)
 		{
@@ -127,7 +127,7 @@ public class PhotosLoader(ObservableCollection<Photo> Photos) : BaseViewModel
 
 			try
 			{
-				(byte[] Bin, string ContentType, int Rotation) = await this.GetPhoto(attachment, SignWith, Now);
+				(byte[]? Bin, string ContentType, int Rotation) = await this.GetPhoto(attachment, SignWith, Now);
 
 				if (Bin is null)
 				{
@@ -161,7 +161,7 @@ public class PhotosLoader(ObservableCollection<Photo> Photos) : BaseViewModel
 		return First;
 	}
 
-	private async Task<(byte[], string, int)> GetPhoto(Attachment Attachment, SignWith SignWith, DateTime Now)
+	private async Task<(byte[]?, string, int)> GetPhoto(Attachment Attachment, SignWith SignWith, DateTime Now)
 	{
 		if (Attachment is null)
 		{
@@ -219,7 +219,7 @@ public class PhotosLoader(ObservableCollection<Photo> Photos) : BaseViewModel
 	public static int GetImageRotation(byte[] JpegImage)
 	{
 		//!!! This rotation in Xamarin is limited to Android
-		if (Device.RuntimePlatform == Device.iOS)
+		if (DeviceInfo.Platform == DevicePlatform.iOS)
 		{
 			return 0;
 		}
@@ -274,11 +274,11 @@ public class PhotosLoader(ObservableCollection<Photo> Photos) : BaseViewModel
 	/// </summary>
 	/// <param name="Attachment">Attachment containing photo.</param>
 	/// <returns>Photo, Content-Type, Rotation</returns>
-	public static async Task<(byte[], string, int)> LoadPhoto(Attachment Attachment)
+	public static async Task<(byte[]?, string, int)> LoadPhoto(Attachment Attachment)
 	{
 		PhotosLoader Loader = new();
 
-		(byte[], string, int) Image = await Loader.LoadOnePhoto(Attachment, SignWith.LatestApprovedIdOrCurrentKeys);
+		(byte[]?, string, int) Image = await Loader.LoadOnePhoto(Attachment, SignWith.LatestApprovedIdOrCurrentKeys);
 
 		return Image;
 	}
@@ -290,9 +290,9 @@ public class PhotosLoader(ObservableCollection<Photo> Photos) : BaseViewModel
 	/// <param name="MaxWith">Maximum width when displaying photo.</param>
 	/// <param name="MaxHeight">Maximum height when displaying photo.</param>
 	/// <returns>Filename, Width, Height, if loaded, (null,0,0) if not.</returns>
-	public static Task<(string, int, int)> LoadPhotoAsTemporaryFile(Attachment[] Attachments, int MaxWith, int MaxHeight)
+	public static Task<(string?, int, int)> LoadPhotoAsTemporaryFile(Attachment[] Attachments, int MaxWith, int MaxHeight)
 	{
-		Attachment Photo = null;
+		Attachment? Photo = null;
 
 		foreach (Attachment Attachment in Attachments.GetImageAttachments())
 		{
@@ -309,7 +309,7 @@ public class PhotosLoader(ObservableCollection<Photo> Photos) : BaseViewModel
 
 		if (Photo is null)
 		{
-			return Task.FromResult<(string, int, int)>((null, 0, 0));
+			return Task.FromResult<(string?, int, int)>((null, 0, 0));
 		}
 		else
 		{
@@ -324,9 +324,9 @@ public class PhotosLoader(ObservableCollection<Photo> Photos) : BaseViewModel
 	/// <param name="MaxWith">Maximum width when displaying photo.</param>
 	/// <param name="MaxHeight">Maximum height when displaying photo.</param>
 	/// <returns>Filename, Width, Height, if loaded, (null,0,0) if not.</returns>
-	public static async Task<(string, int, int)> LoadPhotoAsTemporaryFile(Attachment Attachment, int MaxWith, int MaxHeight)
+	public static async Task<(string?, int, int)> LoadPhotoAsTemporaryFile(Attachment Attachment, int MaxWith, int MaxHeight)
 	{
-		(byte[] Data, string _, int _) = await LoadPhoto(Attachment);
+		(byte[]? Data, string _, int _) = await LoadPhoto(Attachment);
 
 		if (Data is not null)
 		{
@@ -400,10 +400,10 @@ public class PhotosLoader(ObservableCollection<Photo> Photos) : BaseViewModel
 		return FileName;
 	}
 
-	private static Dictionary<string, bool> temporaryFiles = null;
+	private static Dictionary<string, bool>? temporaryFiles = null;
 	private static readonly object synchObject = new();
 
-	private static void CurrentDomain_ProcessExit(object sender, EventArgs e)
+	private static void CurrentDomain_ProcessExit(object? sender, EventArgs e)
 	{
 		lock (synchObject)
 		{

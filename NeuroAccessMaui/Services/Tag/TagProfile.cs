@@ -698,23 +698,6 @@ public partial class TagProfile : ITagProfile
 		this.LegalIdentity = Identity;
 		this.ApiKey = string.Empty;
 		this.ApiSecret = string.Empty;
-
-		//!!! this logic mist be made in the registration views
-		/*
-		if (!string.IsNullOrWhiteSpace(this.Account) && this.Step == RegistrationStep.Account && this.LegalIdentity is not null)
-		{
-			switch (this.LegalIdentity.State)
-			{
-				case IdentityState.Created:
-					this.IncrementConfigurationStep(RegistrationStep.ValidateIdentity);
-					break;
-
-				case IdentityState.Approved:
-					this.IncrementConfigurationStep(this.HasPin ? RegistrationStep.Complete : RegistrationStep.Pin);
-					break;
-			}
-		}
-		*/
 	}
 
 	/// <inheritdoc/>
