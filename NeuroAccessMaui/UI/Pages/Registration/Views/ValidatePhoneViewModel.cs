@@ -23,7 +23,7 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel, ICodeVe
 	}
 
 	/// <inheritdoc/>
-	protected override async Task OnInitialize() //!!! this should be reworked to use the StateView.StateKey specific
+	protected override async Task OnInitialize()
 	{
 		await base.OnInitialize();
 
@@ -217,7 +217,7 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel, ICodeVe
 	[RelayCommand(CanExecute = nameof(CanSendCode))]
 	private async Task SendCode()
 	{
-		//!!! for VerifyCodePage tests
+		//!!! for VerifyCodePage tests. Remove if not needed to test it anymore
 		/*
 		this.StartTimer();
 		VerifyCodeNavigationArgs NavigationArgs1 = new(this, "+15551234567");
@@ -237,7 +237,7 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel, ICodeVe
 				return;
 			}
 
-			//!!! for tests
+			//!!! for tests. Remove if not needed to test it anymore
 			// string FullPhoneNumber = "+15551234567";
 			string FullPhoneNumber = $"+{this.SelectedCountry.DialCode}{this.PhoneNumber}";
 
@@ -268,8 +268,9 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel, ICodeVe
 
 					if (!string.IsNullOrEmpty(Code))
 					{
-						//!!! bool IsTest = this.PurposeRequired ? this.IsEducationalPurpose || this.IsExperimentalPurpose : this.TagProfile.IsTest;
-						//!!! PurposeUse Purpose = this.PurposeRequired ? (PurposeUse)this.PurposeNr : this.TagProfile.Purpose;
+						//!!! The old code for existing accounts. Should be implemented somehow else
+						// bool IsTest = this.PurposeRequired ? this.IsEducationalPurpose || this.IsExperimentalPurpose : this.TagProfile.IsTest;
+						// PurposeUse Purpose = this.PurposeRequired ? (PurposeUse)this.PurposeNr : this.TagProfile.Purpose;
 
 						PurposeUse Purpose = ServiceRef.TagProfile.Purpose;
 						bool IsTest = (Purpose == PurposeUse.Educational) || (Purpose == PurposeUse.Experimental);

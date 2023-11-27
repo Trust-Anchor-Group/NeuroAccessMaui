@@ -27,7 +27,7 @@ public partial class CreateAccountViewModel : BaseRegistrationViewModel
 
 	[ObservableProperty]
 	[NotifyCanExecuteChangedFor(nameof(CreateAccountCommand))]
-	//!!! bool accountIsValid = true;
+	//!!! not implemented yet. See XmmpService.TryConnectInner comment
 	bool accountIsValid = true;
 
 	/// <summary>

@@ -179,7 +179,7 @@ public partial class ScanQrCodePage
 
 		PixelBufferHolder Data = new()
 		{
-			//!!! system dependent code
+			//!!! System dependent code. Not implemented yet
 #if ANDROID
 #else
 #endif

@@ -20,7 +20,7 @@ public partial class ValidateEmailViewModel : BaseRegistrationViewModel, ICodeVe
 	}
 
 	/// <inheritdoc/>
-	protected override async Task OnInitialize() //!!! this should be reworked to use the StateView.StateKey specific
+	protected override async Task OnInitialize()
 	{
 		await base.OnInitialize();
 
@@ -130,7 +130,7 @@ public partial class ValidateEmailViewModel : BaseRegistrationViewModel, ICodeVe
 	[RelayCommand(CanExecute = nameof(CanSendCode))]
 	private async Task SendCode()
 	{
-		//!!! for VerifyCodePage tests
+		//!!! for VerifyCodePage tests. Remove if not needed to test it anymore
 		/*
 		this.StartTimer();
 		VerifyCodeNavigationArgs NavigationArgs1 = new(this, "ssianky@gmail.com");

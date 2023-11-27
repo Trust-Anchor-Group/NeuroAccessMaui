@@ -67,7 +67,6 @@ public partial class RegistrationPage
 			RegistrationStep.ValidateEmail => "ValidateEmail",
 			RegistrationStep.ChooseProvider => "ChooseProvider",
 			RegistrationStep.CreateAccount => "CreateAccount",
-			//!!! RegistrationStep.RegisterIdentity => "RegisterIdentity",
 			RegistrationStep.DefinePin => "DefinePin",
 			_ => throw new NotImplementedException(),
 		};

@@ -66,6 +66,7 @@ class CompositeEntry : ContentView, IBorderDataElement, IStackElement, IPathData
 
 	public void OnEntryDataPropertyChanged(string OldValue, string NewValue)
 	{
+		//!!! The Text is already the NewValue.
 		//!!! this.innerEntry.Text = NewValue;
 	}
 

@@ -16,15 +16,6 @@ public partial class ChoosePurposeViewModel : BaseRegistrationViewModel
 	{
 	}
 
-	/// <inheritdoc/>
-	protected override async Task OnInitialize()
-	{
-		await base.OnInitialize();
-
-		//!!! this.SynchronizeIsRevalidatingWithTagProfile();
-	}
-
-
 	/// <summary>
 	/// Holds the list of purposes to display.
 	/// </summary>
@@ -48,8 +39,9 @@ public partial class ChoosePurposeViewModel : BaseRegistrationViewModel
 	[RelayCommand(CanExecute = nameof(CanContinue))]
 	private void Continue()
 	{
-		//!!! bool IsTest = this.PurposeRequired ? this.IsEducationalPurpose || this.IsExperimentalPurpose : this.TagProfile.IsTest;
-		//!!! PurposeUse Purpose = this.PurposeRequired ? (PurposeUse)this.PurposeNr : this.TagProfile.Purpose;
+		//!!! The old code for existing accounts. Should be implemented somehow else
+		// bool IsTest = this.PurposeRequired ? this.IsEducationalPurpose || this.IsExperimentalPurpose : this.TagProfile.IsTest;
+		// PurposeUse Purpose = this.PurposeRequired ? (PurposeUse)this.PurposeNr : this.TagProfile.Purpose;
 
 		PurposeUse Purpose = this.SelectedPurpose!.Purpose;
 		bool IsTest = Purpose == PurposeUse.Educational || Purpose == PurposeUse.Experimental;

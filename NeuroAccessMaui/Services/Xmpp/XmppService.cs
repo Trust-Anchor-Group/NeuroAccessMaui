@@ -1036,7 +1036,6 @@ internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 		{
 			try
 			{
-				//!!! can it throw an exception?
 				string LocalizedMessage = ServiceRef.Localizer["ClientMessage" + Code];
 
 				if (!string.IsNullOrEmpty(LocalizedMessage))

@@ -664,29 +664,6 @@ public partial class App : Application, IDisposable
 		});
 	}
 
-	//!!!
-	/*
-	private async Task SetMainPageAsync(Page Page)
-	{
-		Page CurrentPage = this.MainPage is Shell Shell ? Shell.CurrentPage : this.MainPage;
-		if (CurrentPage is NavigationPage NavigationPage)
-			CurrentPage = NavigationPage.CurrentPage;
-
-		if (CurrentPage is not Pages.Main.Loading.LoadingPage)
-		{
-			await CurrentPage.Navigation.PushModalAsync(new BetweenMainPage(), animated: false);
-		}
-
-		if (CurrentPage is ContentBasePage ContentBasePage)
-		{
-			await ContentBasePage.ViewModel.Disappearing();
-			await ContentBasePage.ViewModel.Dispose();
-		}
-
-		this.MainPage = Page;
-	}
-	*/
-
 	#region Error Handling
 
 	private void TaskScheduler_UnobservedTaskException(object Sender, UnobservedTaskExceptionEventArgs e)

@@ -351,12 +351,12 @@ public partial class ChooseProviderViewModel : BaseRegistrationViewModel
 
 						case "LegalId":
 							//!!! not implemented yet
-							//!!! LegalIdDefinition = E;
+							// LegalIdDefinition = E;
 							break;
 
 						case "Pin":
 							//!!! not implemented yet
-							//!!! Pin = XML.Attribute(E, "pin");
+							// Pin = XML.Attribute(E, "pin");
 							break;
 
 						case "Transfer":
@@ -580,7 +580,8 @@ public partial class ButtonInfo : ObservableObject
 	private void OnCurrentCultureChanged(object? Sender, CultureInfo Culture)
 	{
 		this.OnPropertyChanged(nameof(this.LocalizedName));
-		//!!! this.OnPropertyChanged(nameof(this.LocalizedDescription));
+		//!!! not implemented yet
+		// this.OnPropertyChanged(nameof(this.LocalizedDescription));
 	}
 
 	public ButtonType Button { get; set; }

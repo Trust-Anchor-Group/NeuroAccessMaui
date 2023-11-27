@@ -116,8 +116,6 @@ public partial class RegistrationViewModel : BaseViewModel
 					throw new NotImplementedException();
 			}
 
-			//!!! await this.SyncTagProfileStep();
-
 			WeakReferenceMessenger.Default.Send(new RegistrationPageMessage(ServiceRef.TagProfile.Step));
 		}
 		catch (Exception ex)
