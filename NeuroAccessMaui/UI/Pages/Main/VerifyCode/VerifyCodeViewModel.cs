@@ -40,11 +40,13 @@ public partial class VerifyCodeViewModel : BaseViewModel
 			}
 		}
 
-
 		if (this.CodeVerification is not null)
 		{
 			this.CodeVerification.CountDownTimer.Tick += this.CountDownEventHandler;
 		}
+
+		this.OnPropertyChanged(nameof(this.LocalizedVerifyCodePageDetails));
+		this.OnPropertyChanged(nameof(this.LocalizedResendCodeText));
 	}
 
 	/// <inheritdoc/>
