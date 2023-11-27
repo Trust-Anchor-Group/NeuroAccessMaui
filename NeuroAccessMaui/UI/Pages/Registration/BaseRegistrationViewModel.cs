@@ -68,4 +68,13 @@ protected virtual void OnStepCompleted(EventArgs e)
 	{
 		return Task.CompletedTask;
 	}
+
+
+	/// <summary>
+	/// Override this method to do view model specific of clearing properties which was previously filled.
+	/// </summary>
+	public virtual Task DoClearProperties()
+	{
+		return Task.CompletedTask;
+	}
 }

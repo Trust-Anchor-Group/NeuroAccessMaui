@@ -91,26 +91,24 @@ public partial class RegistrationViewModel : BaseViewModel
 	{
 		try
 		{
+			await this.registrationSteps[this.CurrentStep].DoClearProperties();
+
 			switch (this.CurrentStep)
 			{
 				case RegistrationStep.CreateAccount:
-					//!!! this.registrationSteps[this.CurrentStep].ClearStepState();
 					ServiceRef.TagProfile.ClearAccount();
 					ServiceRef.TagProfile.GoToStep(RegistrationStep.ChooseProvider);
 					break;
 
 				case RegistrationStep.ChooseProvider:
-					//!!! this.registrationSteps[this.CurrentStep].ClearStepState();
 					ServiceRef.TagProfile.GoToStep(RegistrationStep.ValidateEmail);
 					break;
 
 				case RegistrationStep.ValidateEmail:
-					//!!! this.registrationSteps[this.CurrentStep].ClearStepState();
 					ServiceRef.TagProfile.GoToStep(RegistrationStep.ValidatePhone);
 					break;
 
 				case RegistrationStep.ValidatePhone:
-					//!!! this.registrationSteps[this.CurrentStep].ClearStepState();
 					ServiceRef.TagProfile.GoToStep(RegistrationStep.RequestPurpose);
 					break;
 
