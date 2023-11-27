@@ -660,4 +660,10 @@
   <data name="QrScanUri" xml:space="preserve">
     <value>URI:</value>
   </data>
+  <data name="AccountValidationAlreadyExists" xml:space="preserve">
+    <value>This account name already exists</value>
+  </data>
+  <data name="AccountAvailableAlternatives" xml:space="preserve">
+    <value>The following names are still available:</value>
+  </data>
 </root>

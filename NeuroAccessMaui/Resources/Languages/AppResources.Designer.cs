@@ -61,6 +61,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The following names are still available:.
+        /// </summary>
+        internal static string AccountAvailableAlternatives {
+            get {
+                return ResourceManager.GetString("AccountAvailableAlternatives", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Account name {0} is already taken. Choose another..
         /// </summary>
         internal static string AccountNameAlreadyTaken {
@@ -75,6 +84,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string AccountSectionTitle {
             get {
                 return ResourceManager.GetString("AccountSectionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This account name already exists.
+        /// </summary>
+        internal static string AccountValidationAlreadyExists {
+            get {
+                return ResourceManager.GetString("AccountValidationAlreadyExists", resourceCulture);
             }
         }
         
@@ -1213,7 +1231,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Resend.
+        ///   Looks up a localized string similar to Resend Code.
         /// </summary>
         internal static string ResendCode {
             get {

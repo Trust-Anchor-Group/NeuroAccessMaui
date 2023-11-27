@@ -23,22 +23,30 @@ public partial class CreateAccountViewModel : BaseRegistrationViewModel
 		{
 			this.CreateAccountCommand.NotifyCanExecuteChanged();
 		}
+		else if (e.PropertyName == nameof(this.AccountText))
+		{
+			this.AccountIsNotValid = false;
+			this.AlternativeNames = [];
+		}
 	}
 
 	[ObservableProperty]
 	[NotifyCanExecuteChangedFor(nameof(CreateAccountCommand))]
-	//!!! not implemented yet. See XmmpService.TryConnectInner comment
-	bool accountIsValid = true;
+	bool accountIsNotValid;
 
 	/// <summary>
-	/// Email
+	/// Account name
 	/// </summary>
 	[ObservableProperty]
 	[NotifyCanExecuteChangedFor(nameof(CreateAccountCommand))]
 	private string accountText = string.Empty;
 
-	public bool CanCreateAccount => this.AccountIsValid && !this.IsBusy &&
-		(this.AccountText.Length > 0);
+	[ObservableProperty]
+	[NotifyPropertyChangedFor(nameof(HasAlternativeNames))]
+	private List<string> alternativeNames = [];
+
+	public bool HasAlternativeNames => this.AlternativeNames.Count > 0;
+	public bool CanCreateAccount => !this.AccountIsNotValid && !this.IsBusy && (this.AccountText.Length > 0);
 
 	[RelayCommand(CanExecute = nameof(CanCreateAccount))]
 	private async Task CreateAccount()
@@ -73,7 +81,8 @@ public partial class CreateAccountViewModel : BaseRegistrationViewModel
 			}
 			else if (Alternatives is not null)
 			{
-
+				this.AccountIsNotValid = true;
+				this.AlternativeNames = new(Alternatives);
 			}
 			else if (ErrorMessage is not null)
 			{
@@ -93,6 +102,15 @@ public partial class CreateAccountViewModel : BaseRegistrationViewModel
 		finally
 		{
 			this.IsBusy = false;
+		}
+	}
+
+	[RelayCommand]
+	private void SelectName(object o)
+	{
+		if (o is string AccountText)
+		{
+			this.AccountText = AccountText;
 		}
 	}
 }
