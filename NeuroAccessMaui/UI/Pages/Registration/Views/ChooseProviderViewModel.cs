@@ -437,19 +437,23 @@ public partial class ChooseProviderViewModel : BaseRegistrationViewModel
 
 				bool serviceDiscoverySucceeded;
 
-				if (this.TagProfile.NeedsUpdating())
-					serviceDiscoverySucceeded = await this.XmppService.DiscoverServices(client);
+				if (ServiceRef.TagProfile.NeedsUpdating())
+				{
+					serviceDiscoverySucceeded = await ServiceRef.XmppService.DiscoverServices(client);
+				}
 				else
+				{
 					serviceDiscoverySucceeded = true;
+				}
 
-				if (serviceDiscoverySucceeded && !string.IsNullOrEmpty(this.TagProfile.LegalJid))
+				if (serviceDiscoverySucceeded && !string.IsNullOrEmpty(ServiceRef.TagProfile.LegalJid))
 				{
 					bool DestroyContractsClient = false;
 
 					if (!client.TryGetExtension(typeof(ContractsClient), out IXmppExtension Extension) ||
 						Extension is not ContractsClient ContractsClient)
 					{
-						ContractsClient = new ContractsClient(client, this.TagProfile.LegalJid);
+						ContractsClient = new ContractsClient(client, ServiceRef.TagProfile.LegalJid);
 						DestroyContractsClient = true;
 					}
 
@@ -489,30 +493,38 @@ public partial class ChooseProviderViewModel : BaseRegistrationViewModel
 						}
 
 						if (approvedIdentity is not null)
+						{
 							this.LegalIdentity = approvedIdentity;
+						}
 						else if (createdIdentity is not null)
+						{
 							this.LegalIdentity = createdIdentity;
+						}
 
 						string SelectedId;
 
 						if (this.LegalIdentity is not null)
 						{
-							await this.TagProfile.SetAccountAndLegalIdentity(AccountName, client.PasswordHash, client.PasswordHashMethod, this.LegalIdentity);
+							ServiceRef.TagProfile.SetAccountAndLegalIdentity(AccountName, client.PasswordHash, client.PasswordHashMethod, this.LegalIdentity);
 							SelectedId = this.LegalIdentity.Id;
 						}
 						else
 						{
-							await this.TagProfile.SetAccount(AccountName, client.PasswordHash, client.PasswordHashMethod);
+							ServiceRef.TagProfile.SetAccount(AccountName, client.PasswordHash, client.PasswordHashMethod);
 							SelectedId = string.Empty;
 						}
 
 						if (!string.IsNullOrEmpty(Pin))
-							await this.TagProfile.CompletePinStep(Pin);
+						{
+							ServiceRef.TagProfile.SetPin(Pin);
+						}
 
 						foreach (LegalIdentity Identity in Identities)
 						{
 							if (Identity.Id == SelectedId)
+							{
 								continue;
+							}
 
 							switch (Identity.State)
 							{
@@ -526,19 +538,26 @@ public partial class ChooseProviderViewModel : BaseRegistrationViewModel
 					finally
 					{
 						if (DestroyContractsClient)
+						{
 							ContractsClient.Dispose();
+						}
 					}
 				}
 			}
 
-			(string hostName, int portNumber, bool isIpAddress) = await this.NetworkService.LookupXmppHostnameAndPort(this.TagProfile.Domain);
+			(string hostName, int portNumber, bool isIpAddress) = await ServiceRef.NetworkService.LookupXmppHostnameAndPort(ServiceRef.TagProfile.Domain);
 
-			(bool succeeded, string errorMessage) = await this.XmppService.TryConnectAndConnectToAccount(this.TagProfile.Domain,
+			(bool succeeded, string errorMessage) = await ServiceRef.XmppService.TryConnectAndConnectToAccount(ServiceRef.TagProfile.Domain,
 				isIpAddress, hostName, portNumber, AccountName, Password, PasswordMethod, Constants.LanguageCodes.Default,
 				typeof(App).Assembly, OnConnected);
 
 			if (!succeeded)
-				await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], errorMessage, LocalizationResourceManager.Current["Ok"]);
+			{
+				await ServiceRef.UiSerializer.DisplayAlert(
+				ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					errorMessage,
+				ServiceRef.Localizer[nameof(AppResources.Ok)]);
+			}
 
 			return succeeded;
 		}
@@ -547,9 +566,9 @@ public partial class ChooseProviderViewModel : BaseRegistrationViewModel
 			ServiceRef.LogService.LogException(ex);
 
 			await ServiceRef.UiSerializer.DisplayAlert(
-				LocalizationResourceManager.Current["ErrorTitle"],
-				string.Format(LocalizationResourceManager.Current["UnableToConnectTo"], this.TagProfile.Domain),
-				LocalizationResourceManager.Current["Ok"]);
+				ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+				ServiceRef.Localizer[nameof(AppResources.UnableToConnectTo), ServiceRef.TagProfile.Domain],
+				ServiceRef.Localizer[nameof(AppResources.Ok)]);
 		}
 
 		return false;

@@ -9,18 +9,10 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR;
 /// <summary>
 /// The view model to bind to when scanning a QR code.
 /// </summary>
-public partial class ScanQrCodeViewModel : BaseViewModel
+public partial class ScanQrCodeViewModel(ScanQrCodeNavigationArgs? NavigationArgs) : BaseViewModel
 {
 	private IDispatcherTimer? countDownTimer;
-	private ScanQrCodeNavigationArgs? navigationArgs;
-
-	/// <summary>
-	/// Creates a new instance of the <see cref="ScanQrCodeViewModel"/> class.
-	/// </summary>
-	public ScanQrCodeViewModel(ScanQrCodeNavigationArgs? NavigationArgs)
-	{
-		this.navigationArgs = NavigationArgs;
-	}
+	private ScanQrCodeNavigationArgs? navigationArgs = NavigationArgs;
 
 	/// <inheritdoc />
 	protected override async Task OnInitialize()

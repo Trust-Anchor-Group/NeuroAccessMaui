@@ -131,7 +131,7 @@ internal sealed class LogService : ILogService
 	{
 		List<KeyValuePair<string, object>> Result = new()
 		{
-			new KeyValuePair<string, object>("Platform", Device.RuntimePlatform),
+			new KeyValuePair<string, object>("Platform", DeviceInfo.Platform),
 			new KeyValuePair<string, object>("RuntimeVersion", typeof(LogService).Assembly.ImageRuntimeVersion),
 			new KeyValuePair<string, object>("AppVersion", AppInfo.VersionString),
 			new KeyValuePair<string, object>("Manufacturer", DeviceInfo.Manufacturer),

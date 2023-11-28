@@ -641,8 +641,7 @@ public class ContactInfo
 			}
 			else
 			{
-				s = string.Format(CultureInfo.CurrentCulture,
-					ServiceRef.Localizer[nameof(AppResources.XInY)], s, PartitionId);
+				s = ServiceRef.Localizer[nameof(AppResources.XInY), s, PartitionId];
 			}
 		}
 
@@ -654,13 +653,11 @@ public class ContactInfo
 			}
 			else
 			{
-				s = string.Format(CultureInfo.CurrentCulture,
-					ServiceRef.Localizer[nameof(AppResources.XInY)], s, SourceId);
+				s = ServiceRef.Localizer[nameof(AppResources.XInY), s, SourceId];
 			}
 		}
 
-		return string.Format(CultureInfo.CurrentCulture,
-			ServiceRef.Localizer[nameof(AppResources.XOnY)], s, BareJid);
+		return ServiceRef.Localizer[nameof(AppResources.XOnY), s, BareJid];
 	}
 
 	/// <summary>

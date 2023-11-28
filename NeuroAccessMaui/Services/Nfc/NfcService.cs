@@ -128,13 +128,13 @@ public class NfcService : INfcService
 							{
 								await ServiceRef.UiSerializer.DisplayAlert(
 									ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
-									string.Format(ServiceRef.Localizer[nameof(AppResources.TagEngraved)], Title));
+									ServiceRef.Localizer[nameof(AppResources.TagEngraved), Title]);
 							}
 							else
 							{
 								await ServiceRef.UiSerializer.DisplayAlert(
 									ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-									string.Format(ServiceRef.Localizer[nameof(AppResources.TagNotEngraved)], Title));
+									ServiceRef.Localizer[nameof(AppResources.TagNotEngraved), Title]);
 							}
 
 							// TODO: Make read-only if able

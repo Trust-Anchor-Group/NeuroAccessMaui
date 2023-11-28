@@ -1,9 +1,10 @@
-﻿using Microsoft.Maui.Controls.Internals;
+﻿using System.Globalization;
+using System.Net.Http.Headers;
+using System.Reflection;
+using System.Text;
+using Microsoft.Maui.Controls.Internals;
 using Mopups.Services;
 using NeuroAccessMaui.Extensions;
-using NeuroAccessMaui.UI.Pages;
-using NeuroAccessMaui.UI.Pages.Main;
-using NeuroAccessMaui.UI.Popups.Pin;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.AttachmentCache;
@@ -20,9 +21,9 @@ using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.QR;
 using NeuroAccessMaui.Services.Xmpp;
-using System.Net.Http.Headers;
-using System.Reflection;
-using System.Text;
+using NeuroAccessMaui.UI.Pages;
+using NeuroAccessMaui.UI.Pages.Main;
+using NeuroAccessMaui.UI.Popups.Pin;
 using Waher.Content;
 using Waher.Content.Images;
 using Waher.Content.Xml;
@@ -59,7 +60,7 @@ public partial class App : Application, IDisposable
 	private static bool displayedPinPopup = false;
 	private static int startupCounter = 0;
 	private readonly LoginAuditor loginAuditor;
-	private Timer autoSaveTimer;
+	private Timer? autoSaveTimer;
 	private readonly Task<bool> initCompleted;
 	private readonly SemaphoreSlim startupWorker = new(1, 1);
 	private CancellationTokenSource startupCancellation;
@@ -96,6 +97,7 @@ public partial class App : Application, IDisposable
 		this.onStartResumesApplication = PreviousInstance is not null;
 
 		// If the previous instance is null, create the app state from scratch. If not, just copy the state from the previous instance.
+		//!!! replace this logic with static variables
 		if (PreviousInstance is null)
 		{
 			InitLocalizationResource();
@@ -153,8 +155,18 @@ public partial class App : Application, IDisposable
 	/// </summary>
 	public static readonly LanguageInfo[] SupportedLanguages =
 		[
-			new("en", "English"), new("sv", "svenska"), new("es", "español"), new("fr", "français"), new("de", "Deutsch"), new("da", "dansk"),
-			new("no", "norsk"), new("fi", "suomi"), new("sr", "српски"), new("pt", "português"), new("ro", "română"), new("ru", "русский"),
+			new("en", "English"),
+			new("sv", "svenska"),
+			new("es", "español"),
+			new("fr", "français"),
+			new("de", "Deutsch"),
+			new("da", "dansk"),
+			new("no", "norsk"),
+			new("fi", "suomi"),
+			new("sr", "српски"),
+			new("pt", "português"),
+			new("ro", "română"),
+			new("ru", "русский"),
 		];
 
 	/// <summary>
@@ -291,7 +303,7 @@ public partial class App : Application, IDisposable
 	{
 		ex = Log.UnnestException(ex);
 		ServiceRef.LogService.SaveExceptionDump("StartPage", ex.ToString());
-		this.DisplayBootstrapErrorPage(ex.Message, ex.StackTrace);
+		this.DisplayBootstrapErrorPage(ex.Message, ex.StackTrace ?? string.Empty);
 		return;
 	}
 
@@ -435,8 +447,8 @@ public partial class App : Application, IDisposable
 		catch (Exception ex)
 		{
 			ex = Log.UnnestException(ex);
-			ServiceRef.LogService.SaveExceptionDump(ex.Message, ex.StackTrace);
-			this.DisplayBootstrapErrorPage(ex.Message, ex.StackTrace);
+			ServiceRef.LogService.SaveExceptionDump(ex.Message, ex.StackTrace ?? string.Empty);
+			this.DisplayBootstrapErrorPage(ex.Message, ex.StackTrace ?? string.Empty);
 		}
 		finally
 		{
@@ -666,7 +678,7 @@ public partial class App : Application, IDisposable
 
 	#region Error Handling
 
-	private void TaskScheduler_UnobservedTaskException(object Sender, UnobservedTaskExceptionEventArgs e)
+	private void TaskScheduler_UnobservedTaskException(object? Sender, UnobservedTaskExceptionEventArgs e)
 	{
 		Exception ex = e.Exception;
 		e.SetObserved();
@@ -964,17 +976,17 @@ public partial class App : Application, IDisposable
 				if (DateTimeForLogin.Value.ToShortDateString() == DateTime.Today.ToShortDateString())
 				{
 					string DateString = LocalDateTime.ToShortTimeString();
-					MessageAlert = string.Format(ServiceRef.Localizer[nameof(AppResources.PinIsInvalidAplicationBlocked)], DateString);
+					MessageAlert = ServiceRef.Localizer[nameof(AppResources.PinIsInvalidAplicationBlocked), DateString];
 				}
 				else if (DateTimeForLogin.Value.ToShortDateString() == DateTime.Today.AddDays(1).ToShortDateString())
 				{
 					string DateString = LocalDateTime.ToShortTimeString();
-					MessageAlert = string.Format(ServiceRef.Localizer[nameof(AppResources.PinIsInvalidAplicationBlockedTillTomorrow)], DateString);
+					MessageAlert = ServiceRef.Localizer[nameof(AppResources.PinIsInvalidAplicationBlockedTillTomorrow), DateString];
 				}
 				else
 				{
-					string DateString = LocalDateTime.ToString("yyyy-MM-dd, 'at' HH:mm");
-					MessageAlert = string.Format(ServiceRef.Localizer[nameof(AppResources.PinIsInvalidAplicationBlocked)], DateString);
+					string DateString = LocalDateTime.ToString("yyyy-MM-dd, 'at' HH:mm", CultureInfo.InvariantCulture);
+					MessageAlert = ServiceRef.Localizer[nameof(AppResources.PinIsInvalidAplicationBlocked), DateString];
 				}
 			}
 
@@ -986,7 +998,7 @@ public partial class App : Application, IDisposable
 	/// <summary>
 	/// Check the PIN and reset the blocking counters if it matches
 	/// </summary>
-	public static async Task<string> CheckPinAndUnblockUser(string Pin)
+	public static async Task<string?> CheckPinAndUnblockUser(string Pin)
 	{
 		if (Pin is null)
 		{
@@ -1017,13 +1029,13 @@ public partial class App : Application, IDisposable
 
 		await Ui.DisplayAlert(
 			ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-			string.Format(ServiceRef.Localizer[nameof(AppResources.PinIsInvalid)], RemainingAttempts));
+			ServiceRef.Localizer[nameof(AppResources.PinIsInvalid), RemainingAttempts]);
 
 		await CheckUserBlocking();
 		return Pin;
 	}
 
-	private static async Task<string> InputPin(ITagProfile Profile)
+	private static async Task<string?> InputPin(ITagProfile Profile)
 	{
 		displayedPinPopup = true;
 
@@ -1111,7 +1123,7 @@ public partial class App : Application, IDisposable
 		if (disposing)
 		{
 			this.loginAuditor.Dispose();
-			this.autoSaveTimer.Dispose();
+			this.autoSaveTimer?.Dispose();
 			this.initCompleted.Dispose();
 			this.startupWorker.Dispose();
 			this.startupCancellation.Dispose();

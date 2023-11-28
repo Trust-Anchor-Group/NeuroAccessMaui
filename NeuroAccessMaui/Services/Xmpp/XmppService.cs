@@ -722,8 +722,7 @@ internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 		{
 			ServiceRef.LogService.LogException(ex, new KeyValuePair<string, object>(nameof(ConnectOperation), Operation.ToString()));
 			Succeeded = false;
-			ErrorMessage = string.Format(CultureInfo.CurrentCulture,
-				ServiceRef.Localizer[nameof(AppResources.UnableToConnectTo)], Domain);
+			ErrorMessage = ServiceRef.Localizer[nameof(AppResources.UnableToConnectTo), Domain];
 		}
 		finally
 		{
@@ -737,23 +736,19 @@ internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 
 			if (!StreamNegotiation || IsTimeout)
 			{
-				ErrorMessage = string.Format(CultureInfo.CurrentCulture,
-					ServiceRef.Localizer[nameof(AppResources.CantConnectTo)], Domain);
+				ErrorMessage = ServiceRef.Localizer[nameof(AppResources.CantConnectTo), Domain];
 			}
 			else if (!StreamOpened)
 			{
-				ErrorMessage = string.Format(CultureInfo.CurrentCulture,
-					ServiceRef.Localizer[nameof(AppResources.DomainIsNotAValidOperator)], Domain);
+				ErrorMessage = ServiceRef.Localizer[nameof(AppResources.DomainIsNotAValidOperator), Domain];
 			}
 			else if (!StartingEncryption)
 			{
-				ErrorMessage = string.Format(CultureInfo.CurrentCulture,
-					ServiceRef.Localizer[nameof(AppResources.DomainDoesNotFollowEncryptionPolicy)], Domain);
+				ErrorMessage = ServiceRef.Localizer[nameof(AppResources.DomainDoesNotFollowEncryptionPolicy), Domain];
 			}
 			else if (!Authenticating)
 			{
-				ErrorMessage = string.Format(CultureInfo.CurrentCulture,
-					ServiceRef.Localizer[nameof(AppResources.UnableToAuthenticateWith)], Domain);
+				ErrorMessage = ServiceRef.Localizer[nameof(AppResources.UnableToAuthenticateWith), Domain];
 			}
 			else if (!Registering)
 			{
@@ -763,24 +758,20 @@ internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 				}
 				else
 				{
-					ErrorMessage = string.Format(CultureInfo.CurrentCulture,
-						ServiceRef.Localizer[nameof(AppResources.OperatorDoesNotSupportRegisteringNewAccounts)], Domain);
+					ErrorMessage = ServiceRef.Localizer[nameof(AppResources.OperatorDoesNotSupportRegisteringNewAccounts), Domain];
 				}
 			}
 			else if (Operation == ConnectOperation.ConnectAndCreateAccount)
 			{
-				ErrorMessage = string.Format(CultureInfo.CurrentCulture,
-					ServiceRef.Localizer[nameof(AppResources.AccountNameAlreadyTaken)], this.accountName);
+				ErrorMessage = ServiceRef.Localizer[nameof(AppResources.AccountNameAlreadyTaken), this.accountName ?? string.Empty];
 			}
 			else if (Operation == ConnectOperation.ConnectToAccount)
 			{
-				ErrorMessage = string.Format(CultureInfo.CurrentCulture,
-					ServiceRef.Localizer[nameof(AppResources.InvalidUsernameOrPassword)], this.accountName);
+				ErrorMessage = ServiceRef.Localizer[nameof(AppResources.InvalidUsernameOrPassword), this.accountName ?? string.Empty];
 			}
 			else
 			{
-				ErrorMessage = string.Format(CultureInfo.CurrentCulture,
-					ServiceRef.Localizer[nameof(AppResources.UnableToConnectTo)], Domain);
+				ErrorMessage = ServiceRef.Localizer[nameof(AppResources.UnableToConnectTo), Domain];
 			}
 		}
 

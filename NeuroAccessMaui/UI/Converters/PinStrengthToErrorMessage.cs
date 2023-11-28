@@ -25,14 +25,14 @@ public class PinStrengthToErrorMessage : IValueConverter, IMarkupExtension<PinSt
 
 		return PinStrength switch
 		{
-			PinStrength.NotEnoughDigitsLettersSigns => string.Format(CultureInfo.CurrentCulture, Localizer[nameof(AppResources.PinWithNotEnoughDigitsLettersSigns)], Constants.Authentication.MinPinSymbolsFromDifferentClasses),
+			PinStrength.NotEnoughDigitsLettersSigns => Localizer[nameof(AppResources.PinWithNotEnoughDigitsLettersSigns), Constants.Authentication.MinPinSymbolsFromDifferentClasses],
 
-			PinStrength.NotEnoughDigitsOrSigns => string.Format(CultureInfo.CurrentCulture, Localizer[nameof(AppResources.PinWithNotEnoughDigitsOrSigns)], Constants.Authentication.MinPinSymbolsFromDifferentClasses),
-			PinStrength.NotEnoughLettersOrDigits => string.Format(CultureInfo.CurrentCulture, Localizer[nameof(AppResources.PinWithNotEnoughLettersOrDigits)], Constants.Authentication.MinPinSymbolsFromDifferentClasses),
-			PinStrength.NotEnoughLettersOrSigns => string.Format(CultureInfo.CurrentCulture, Localizer[nameof(AppResources.PinWithNotEnoughLettersOrSigns)], Constants.Authentication.MinPinSymbolsFromDifferentClasses),
-			PinStrength.TooManyIdenticalSymbols => string.Format(CultureInfo.CurrentCulture, Localizer[nameof(AppResources.PinWithTooManyIdenticalSymbols)], Constants.Authentication.MaxPinIdenticalSymbols),
-			PinStrength.TooManySequencedSymbols => string.Format(CultureInfo.CurrentCulture, Localizer[nameof(AppResources.PinWithTooManySequencedSymbols)], Constants.Authentication.MaxPinSequencedSymbols),
-			PinStrength.TooShort => string.Format(CultureInfo.CurrentCulture, Localizer[nameof(AppResources.PinTooShort)], Constants.Authentication.MinPinLength),
+			PinStrength.NotEnoughDigitsOrSigns => Localizer[nameof(AppResources.PinWithNotEnoughDigitsOrSigns), Constants.Authentication.MinPinSymbolsFromDifferentClasses],
+			PinStrength.NotEnoughLettersOrDigits => Localizer[nameof(AppResources.PinWithNotEnoughLettersOrDigits), Constants.Authentication.MinPinSymbolsFromDifferentClasses],
+			PinStrength.NotEnoughLettersOrSigns => Localizer[nameof(AppResources.PinWithNotEnoughLettersOrSigns), Constants.Authentication.MinPinSymbolsFromDifferentClasses],
+			PinStrength.TooManyIdenticalSymbols => Localizer[nameof(AppResources.PinWithTooManyIdenticalSymbols), Constants.Authentication.MaxPinIdenticalSymbols],
+			PinStrength.TooManySequencedSymbols => Localizer[nameof(AppResources.PinWithTooManySequencedSymbols), Constants.Authentication.MaxPinSequencedSymbols],
+			PinStrength.TooShort => Localizer[nameof(AppResources.PinTooShort), Constants.Authentication.MinPinLength],
 
 			PinStrength.ContainsAddress => Localizer[nameof(AppResources.PinContainsAddress)],
 			PinStrength.ContainsName => Localizer[nameof(AppResources.PinContainsName)],

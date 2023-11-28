@@ -79,9 +79,8 @@ public abstract class BaseContentPage : ContentPage
 				e = Log.UnnestException(e);
 				ServiceRef.LogService.LogException(e);
 
-				string msg = string.Format(CultureInfo.CurrentCulture,
-					ServiceRef.Localizer[nameof(AppResources.FailedToBindViewModelForPage)],
-					ViewModel.GetType().FullName, this.GetType().FullName);
+				string msg = ServiceRef.Localizer[nameof(AppResources.FailedToBindViewModelForPage),
+					ViewModel.GetType().FullName ?? string.Empty, this.GetType().FullName ?? string.Empty];
 
 				await ServiceRef.UiSerializer.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
@@ -101,9 +100,8 @@ public abstract class BaseContentPage : ContentPage
 			e = Log.UnnestException(e);
 			ServiceRef.LogService.LogException(e);
 
-			string msg = string.Format(CultureInfo.CurrentCulture,
-				ServiceRef.Localizer[nameof(AppResources.FailedToRestoreViewModelStateForPage)],
-				ViewModel.GetType().FullName, this.GetType().FullName);
+			string msg = ServiceRef.Localizer[nameof(AppResources.FailedToRestoreViewModelStateForPage),
+				ViewModel.GetType().FullName ?? string.Empty, this.GetType().FullName ?? string.Empty];
 
 			await ServiceRef.UiSerializer.DisplayAlert(
 				ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
@@ -146,9 +144,8 @@ public abstract class BaseContentPage : ContentPage
 				e = Log.UnnestException(e);
 				ServiceRef.LogService.LogException(e);
 
-				string msg = string.Format(CultureInfo.CurrentCulture,
-					ServiceRef.Localizer[nameof(AppResources.FailedToSaveViewModelStateForPage)],
-					ViewModel.GetType().FullName, this.GetType().FullName);
+				string msg = ServiceRef.Localizer[nameof(AppResources.FailedToSaveViewModelStateForPage),
+					ViewModel.GetType().FullName ?? string.Empty, this.GetType().FullName ?? string.Empty];
 
 				await ServiceRef.UiSerializer.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
@@ -165,9 +162,8 @@ public abstract class BaseContentPage : ContentPage
 			e = Log.UnnestException(e);
 			ServiceRef.LogService.LogException(e);
 
-			string msg = string.Format(CultureInfo.CurrentCulture,
-				ServiceRef.Localizer[nameof(AppResources.FailedToUnbindViewModelForPage)],
-				ViewModel.GetType().FullName, this.GetType().FullName);
+			string msg = ServiceRef.Localizer[nameof(AppResources.FailedToUnbindViewModelForPage),
+				ViewModel.GetType().FullName ?? string.Empty, this.GetType().FullName ?? string.Empty];
 
 			await ServiceRef.UiSerializer.DisplayAlert(
 				ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
