@@ -26,13 +26,13 @@ public partial class RegistrationViewModel : BaseViewModel
 	{
 		await base.OnInitialize();
 
-		LocalizationManager.Current.PropertyChanged += this.PropertyChangedEventHandler;
+		LocalizationManager.Current.PropertyChanged += this.LocalizationManagerEventHandler;
 	}
 
 	/// <inheritdoc/>
 	protected override async Task OnDispose()
 	{
-		LocalizationManager.Current.PropertyChanged -= this.PropertyChangedEventHandler;
+		LocalizationManager.Current.PropertyChanged -= this.LocalizationManagerEventHandler;
 
 		await base.OnDispose();
 	}
@@ -74,7 +74,7 @@ public partial class RegistrationViewModel : BaseViewModel
 	[ObservableProperty]
 	private LanguageInfo selectedLanguage = App.SelectedLanguage;
 
-	public void PropertyChangedEventHandler(object? sender, PropertyChangedEventArgs e)
+	public void LocalizationManagerEventHandler(object? sender, PropertyChangedEventArgs e)
 	{
 		this.SelectedLanguage = App.SelectedLanguage;
 	}

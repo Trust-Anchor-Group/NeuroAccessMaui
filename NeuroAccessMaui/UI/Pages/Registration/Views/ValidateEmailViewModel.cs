@@ -24,7 +24,7 @@ public partial class ValidateEmailViewModel : BaseRegistrationViewModel, ICodeVe
 	{
 		await base.OnInitialize();
 
-		LocalizationManager.Current.PropertyChanged += this.PropertyChangedEventHandler;
+		LocalizationManager.Current.PropertyChanged += this.LocalizationManagerEventHandler;
 
 		if (App.Current is not null)
 		{
@@ -37,7 +37,7 @@ public partial class ValidateEmailViewModel : BaseRegistrationViewModel, ICodeVe
 	/// <inheritdoc/>
 	protected override async Task OnDispose()
 	{
-		LocalizationManager.Current.PropertyChanged -= this.PropertyChangedEventHandler;
+		LocalizationManager.Current.PropertyChanged -= this.LocalizationManagerEventHandler;
 
 		if (this.CountDownTimer is not null)
 		{
@@ -71,7 +71,7 @@ public partial class ValidateEmailViewModel : BaseRegistrationViewModel, ICodeVe
 		}
 	}
 
-	public void PropertyChangedEventHandler(object? sender, PropertyChangedEventArgs e)
+	public void LocalizationManagerEventHandler(object? sender, PropertyChangedEventArgs e)
 	{
 		this.OnPropertyChanged(nameof(this.LocalizedSendCodeText));
 		this.OnPropertyChanged(nameof(this.LocalizedValidationError));

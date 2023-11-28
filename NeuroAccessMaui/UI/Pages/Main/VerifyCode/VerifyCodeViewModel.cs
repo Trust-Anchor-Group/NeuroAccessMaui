@@ -1,7 +1,9 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Localization;
 
 namespace NeuroAccessMaui.UI.Pages.Main.VerifyCode;
 
@@ -30,6 +32,8 @@ public partial class VerifyCodeViewModel : BaseViewModel
 	{
 		await base.OnInitialize();
 
+		LocalizationManager.Current.PropertyChanged += this.LocalizationManagerEventHandler;
+
 		if ((this.navigationArgs is null) && ServiceRef.NavigationService.TryGetArgs(out VerifyCodeNavigationArgs? Args))
 		{
 			this.navigationArgs = Args;
@@ -45,13 +49,14 @@ public partial class VerifyCodeViewModel : BaseViewModel
 			this.CodeVerification.CountDownTimer.Tick += this.CountDownEventHandler;
 		}
 
-		this.OnPropertyChanged(nameof(this.LocalizedVerifyCodePageDetails));
-		this.OnPropertyChanged(nameof(this.LocalizedResendCodeText));
+		this.LocalizationManagerEventHandler(null, new(null));
 	}
 
 	/// <inheritdoc/>
 	protected override async Task OnDispose()
 	{
+		LocalizationManager.Current.PropertyChanged -= this.LocalizationManagerEventHandler;
+
 		if (this.CodeVerification is not null)
 		{
 			this.CodeVerification.CountDownTimer.Tick -= this.CountDownEventHandler;
@@ -63,6 +68,12 @@ public partial class VerifyCodeViewModel : BaseViewModel
 		}
 
 		await base.OnDispose();
+	}
+
+	public void LocalizationManagerEventHandler(object? sender, PropertyChangedEventArgs e)
+	{
+		this.OnPropertyChanged(nameof(this.LocalizedVerifyCodePageDetails));
+		this.OnPropertyChanged(nameof(this.LocalizedResendCodeText));
 	}
 
 	private void CountDownEventHandler(object? sender, EventArgs e)

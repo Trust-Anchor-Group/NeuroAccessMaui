@@ -27,7 +27,7 @@ public partial class ScanQrCodeViewModel : BaseViewModel
 	{
 		await base.OnInitialize();
 
-		LocalizationManager.Current.PropertyChanged += this.PropertyChangedEventHandler;
+		LocalizationManager.Current.PropertyChanged += this.LocalizationManagerEventHandler;
 
 		if (App.Current is not null)
 		{
@@ -47,7 +47,7 @@ public partial class ScanQrCodeViewModel : BaseViewModel
 	/// <inheritdoc/>
 	protected override async Task OnDispose()
 	{
-		LocalizationManager.Current.PropertyChanged -= this.PropertyChangedEventHandler;
+		LocalizationManager.Current.PropertyChanged -= this.LocalizationManagerEventHandler;
 
 		if (this.countDownTimer is not null)
 		{
@@ -70,7 +70,7 @@ public partial class ScanQrCodeViewModel : BaseViewModel
 		this.OnPropertyChanged(nameof(this.BackgroundIcon));
 	}
 
-	public void PropertyChangedEventHandler(object? sender, PropertyChangedEventArgs e)
+	public void LocalizationManagerEventHandler(object? sender, PropertyChangedEventArgs e)
 	{
 		this.OnPropertyChanged(nameof(this.LocalizedQrPageTitle));
 	}
