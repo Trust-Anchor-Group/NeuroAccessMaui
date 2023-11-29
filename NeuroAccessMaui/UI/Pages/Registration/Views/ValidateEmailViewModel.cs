@@ -131,15 +131,6 @@ public partial class ValidateEmailViewModel : BaseRegistrationViewModel, ICodeVe
 	[RelayCommand(CanExecute = nameof(CanSendCode))]
 	private async Task SendCode()
 	{
-		//!!! for VerifyCodePage tests. Remove if not needed to test it anymore
-		/*
-		this.StartTimer();
-		VerifyCodeNavigationArgs NavigationArgs1 = new(this, "ssianky@gmail.com");
-		await ServiceRef.NavigationService.GoToAsync(nameof(VerifyCodePage), NavigationArgs1, BackMethod.Pop);
-		string? Code1 = await NavigationArgs1.VarifyCode!.Task;
-		return;
-		*/
-
 		this.IsBusy = true;
 
 		try

@@ -367,6 +367,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enter new pin.
+        /// </summary>
+        internal static string DefinePinSectionTitle1 {
+            get {
+                return ResourceManager.GetString("DefinePinSectionTitle1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirm pin.
+        /// </summary>
+        internal static string DefinePinSectionTitle2 {
+            get {
+                return ResourceManager.GetString("DefinePinSectionTitle2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} does not follow the ubiquitous encryption policy.
         /// </summary>
         internal static string DomainDoesNotFollowEncryptionPolicy {
@@ -678,6 +696,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string OnboardingAccountPageTitle {
             get {
                 return ResourceManager.GetString("OnboardingAccountPageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To enhance the security of your Neuro-Identity and sensitive information, we recommend adding an extra layer of protection by creating a PIN or password.
+        /// </summary>
+        internal static string OnboardingDefinePinPageDetails {
+            get {
+                return ResourceManager.GetString("OnboardingDefinePinPageDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create a PIN code.
+        /// </summary>
+        internal static string OnboardingDefinePinPageTitle {
+            get {
+                return ResourceManager.GetString("OnboardingDefinePinPageTitle", resourceCulture);
             }
         }
         

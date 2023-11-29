@@ -558,6 +558,12 @@
   <data name="OnboardingAccountPageDetails" xml:space="preserve">
     <value>Enter the name you want to use for your account</value>
   </data>
+  <data name="OnboardingDefinePinPageTitle" xml:space="preserve">
+    <value>Create a PIN code</value>
+  </data>
+  <data name="OnboardingDefinePinPageDetails" xml:space="preserve">
+    <value>To enhance the security of your Neuro-Identity and sensitive information, we recommend adding an extra layer of protection by creating a PIN or password</value>
+  </data>
   <data name="AccountSectionTitle" xml:space="preserve">
     <value>Enter the account name</value>
   </data>
@@ -665,5 +671,11 @@
   </data>
   <data name="AccountAvailableAlternatives" xml:space="preserve">
     <value>The following names are still available:</value>
+  </data>
+  <data name="DefinePinSectionTitle1" xml:space="preserve">
+    <value>Enter new pin</value>
+  </data>
+  <data name="DefinePinSectionTitle2" xml:space="preserve">
+    <value>Confirm pin</value>
   </data>
 </root>

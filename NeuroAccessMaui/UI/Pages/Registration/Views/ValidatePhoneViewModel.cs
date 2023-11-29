@@ -218,14 +218,6 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel, ICodeVe
 	[RelayCommand(CanExecute = nameof(CanSendCode))]
 	private async Task SendCode()
 	{
-		//!!! for VerifyCodePage tests. Remove if not needed to test it anymore
-		/*
-		this.StartTimer();
-		VerifyCodeNavigationArgs NavigationArgs1 = new(this, "+15551234567");
-		await ServiceRef.NavigationService.GoToAsync(nameof(VerifyCodePage), NavigationArgs1, BackMethod.Pop);
-		string? Code1 = await NavigationArgs1.VarifyCode!.Task;
-		return;
-		*/
 		this.IsBusy = true;
 
 		try
@@ -238,8 +230,6 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel, ICodeVe
 				return;
 			}
 
-			//!!! for tests. Remove if not needed to test it anymore
-			// string FullPhoneNumber = "+15551234567";
 			string FullPhoneNumber = $"+{this.SelectedCountry.DialCode}{this.PhoneNumber}";
 
 			object SendResult = await InternetContent.PostAsync(
@@ -366,8 +356,6 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel, ICodeVe
 				return;
 			}
 
-			//!!! for VerifyCodePage tests
-			// string FullPhoneNumber = "+15551234567";
 			string FullPhoneNumber = $"+{this.SelectedCountry.DialCode}{this.PhoneNumber}";
 
 			object SendResult = await InternetContent.PostAsync(
