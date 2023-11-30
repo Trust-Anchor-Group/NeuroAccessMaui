@@ -8,8 +8,11 @@
 	<Application.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
+				<!-- The order of the inclusion do matter -->
 				<ResourceDictionary Source="Resources/Styles/Colors.xaml" />
+				<ResourceDictionary Source="Resources/Styles/Converters.xaml" />
 				<ResourceDictionary Source="Resources/Styles/Styles.xaml" />
+				<ResourceDictionary Source="Resources/Styles/LabelStyles.xaml" />
 				<ResourceDictionary Source="Resources/Styles/ButtonStyles.xaml" />
 				<ResourceDictionary Source="Resources/Styles/EntryStyles.xaml" />
 			</ResourceDictionary.MergedDictionaries>
