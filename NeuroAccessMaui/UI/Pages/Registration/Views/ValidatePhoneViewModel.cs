@@ -81,7 +81,9 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel, ICodeVe
 	{
 		await base.DoAssignProperties();
 
-		if (string.IsNullOrEmpty(ServiceRef.TagProfile.PhoneNumber))
+		string? PhoneNumber = ServiceRef.TagProfile.PhoneNumber;
+
+		if (string.IsNullOrEmpty(PhoneNumber))
 		{
 			try
 			{
@@ -106,12 +108,12 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel, ICodeVe
 		}
 		else
 		{
-			string PhoneNumber = ServiceRef.TagProfile.PhoneNumber;
+			string SelectedCountry = ServiceRef.TagProfile.SelectedCountry!;
 
-			if (ISO_3166_1.TryGetCountryByPhone(PhoneNumber, out ISO3166Country? Country))
+			if (ISO_3166_1.TryGetCountryByCode(SelectedCountry, out ISO3166Country? Country))
 			{
 				this.SelectedCountry = Country;
-				this.PhoneNumber = PhoneNumber[(Country.DialCode.Length+1)..];
+				this.PhoneNumber = PhoneNumber[(Country.DialCode.Length + 1)..];
 				this.SendCodeCommand.NotifyCanExecuteChanged();
 			}
 		}
@@ -283,7 +285,7 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel, ICodeVe
 							VerifyResponse.TryGetValue("Secret", out Obj) && Obj is string VerifySecret &&
 							VerifyResponse.TryGetValue("Temporary", out Obj) && Obj is bool VerifyIsTemporary)
 						{
-							ServiceRef.TagProfile.SetPhone(FullPhoneNumber);
+							ServiceRef.TagProfile.SetPhone(this.SelectedCountry.Alpha2, FullPhoneNumber);
 							ServiceRef.TagProfile.SetPurpose(IsTest, Purpose);
 							ServiceRef.TagProfile.SetTestOtpTimestamp(VerifyIsTemporary ? DateTime.Now : null);
 

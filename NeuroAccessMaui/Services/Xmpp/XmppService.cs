@@ -317,7 +317,7 @@ internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 			{
 				ServiceRef.TagProfile.StepChanged += this.TagProfile_StepChanged;
 
-				if (ServiceRef.TagProfile.IsCompleteOrWaitingForValidation() && !this.XmppParametersCurrent())
+				if (ServiceRef.TagProfile.ShouldCreateClient() && !this.XmppParametersCurrent())
 				{
 					await this.CreateXmppClient();
 				}
@@ -404,7 +404,7 @@ internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 		{
 			try
 			{
-				bool CreateXmppClient = ServiceRef.TagProfile.IsCompleteOrWaitingForValidation();
+				bool CreateXmppClient = ServiceRef.TagProfile.ShouldCreateClient();
 
 				if (CreateXmppClient && !this.XmppParametersCurrent())
 				{

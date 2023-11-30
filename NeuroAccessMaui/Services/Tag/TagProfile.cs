@@ -250,9 +250,15 @@ public partial class TagProfile : ITagProfile
 	}
 
 	/// <inheritdoc/>
+	public virtual bool ShouldCreateClient()
+	{
+		return this.Step >= RegistrationStep.CreateAccount && !string.IsNullOrEmpty(this.Account);
+	}
+
+	/// <inheritdoc/>
 	public virtual bool IsCompleteOrWaitingForValidation()
 	{
-		return this.Step > RegistrationStep.CreateAccount;
+		return this.Step >= RegistrationStep.CreateAccount && (this.LegalIdentity is not null);
 	}
 
 	/// <inheritdoc/>

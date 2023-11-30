@@ -179,6 +179,12 @@ public interface ITagProfile
 	bool LegalIdentityNeedsUpdating();
 
 	/// <summary>
+	/// Returns <c>true</c> if the registration process for this <see cref="ITagProfile"/> has an account but not a legal id, <c>false</c> otherwise.
+	/// </summary>
+	/// <returns><c>true</c> if the registration process for this <see cref="ITagProfile"/> has an account but not a legal id, <c>false</c> otherwise.
+	bool ShouldCreateClient();
+
+	/// <summary>
 	/// Returns <c>true</c> if the registration process for this <see cref="ITagProfile"/> is either fully complete or is just awaiting validation, <c>false</c> otherwise.
 	/// </summary>
 	/// <returns><c>true</c> if the registration process for this <see cref="ITagProfile"/> is either fully complete or is just awaiting validation, <c>false</c> otherwise.</returns>

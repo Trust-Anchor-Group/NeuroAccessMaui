@@ -4,8 +4,10 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Data;
 using NeuroAccessMaui.Services.Tag;
 using Waher.Networking.XMPP;
+using Waher.Networking.XMPP.Contracts;
 
 namespace NeuroAccessMaui.UI.Pages.Registration.Views;
 
@@ -13,6 +15,31 @@ public partial class CreateAccountViewModel : BaseRegistrationViewModel
 {
 	public CreateAccountViewModel() : base(RegistrationStep.CreateAccount)
 	{
+	}
+
+	public override async Task DoAssignProperties()
+	{
+		await base.DoAssignProperties();
+
+		if (string.IsNullOrEmpty(ServiceRef.TagProfile.Account))
+		{
+			return;
+		}
+
+		LegalIdentity? LegalIdentity = ServiceRef.TagProfile.LegalIdentity;
+
+		if (LegalIdentity is null)
+		{
+			this.CreateIdentityCommand.Execute(null);
+		}
+		else if (LegalIdentity.State == IdentityState.Created)
+		{
+			this.ValidateIdentityCommand.Execute(null);
+		}
+		else //!!! if (LegalIdentity.State == IdentityState.???)
+		{
+			//!!! We should not have any other state here. Assume the legal id is obsoleted. What we should do in that case?
+		}
 	}
 
 	protected override void OnPropertyChanged(PropertyChangedEventArgs e)
@@ -45,7 +72,10 @@ public partial class CreateAccountViewModel : BaseRegistrationViewModel
 	[NotifyPropertyChangedFor(nameof(HasAlternativeNames))]
 	private List<string> alternativeNames = [];
 
+	public bool IsAccountCreated => !string.IsNullOrEmpty(ServiceRef.TagProfile.Account);
+
 	public bool HasAlternativeNames => this.AlternativeNames.Count > 0;
+
 	public bool CanCreateAccount => !this.AccountIsNotValid && !this.IsBusy && (this.AccountText.Length > 0);
 
 	[RelayCommand(CanExecute = nameof(CanCreateAccount))]
@@ -67,6 +97,8 @@ public partial class CreateAccountViewModel : BaseRegistrationViewModel
 				}
 
 				ServiceRef.TagProfile.SetAccount(this.AccountText, Client.PasswordHash, Client.PasswordHashMethod);
+
+				this.OnPropertyChanged(nameof(this.IsAccountCreated));
 			}
 
 			(bool Succeeded, string? ErrorMessage, string[]? Alternatives) = await ServiceRef.XmppService.TryConnectAndCreateAccount(ServiceRef.TagProfile.Domain!,
@@ -75,9 +107,10 @@ public partial class CreateAccountViewModel : BaseRegistrationViewModel
 
 			if (Succeeded)
 			{
-				ServiceRef.TagProfile.GoToStep(RegistrationStep.DefinePin);
-
-				WeakReferenceMessenger.Default.Send(new RegistrationPageMessage(ServiceRef.TagProfile.Step));
+				if (this.CreateIdentityCommand.CanExecute(null))
+				{
+					await this.CreateIdentityCommand.ExecuteAsync(null);
+				}
 			}
 			else if (Alternatives is not null)
 			{
@@ -112,5 +145,97 @@ public partial class CreateAccountViewModel : BaseRegistrationViewModel
 		{
 			this.AccountText = AccountText;
 		}
+	}
+
+	[RelayCommand]
+	private async Task CreateIdentity()
+	{
+		try
+		{
+			RegisterIdentityModel IdentityModel = this.CreateRegisterModel();
+			LegalIdentityAttachment[] Photos = { /* Photos are left empty */ };
+
+			(bool Succeeded, LegalIdentity AddedIdentity) = await ServiceRef.NetworkService.TryRequest(() =>
+				ServiceRef.XmppService.AddLegalIdentity(IdentityModel, Photos));
+
+			if (Succeeded)
+			{
+				ServiceRef.TagProfile.SetLegalIdentity(AddedIdentity);
+
+				if (this.ValidateIdentityCommand.CanExecute(null))
+				{
+					await this.ValidateIdentityCommand.ExecuteAsync(null);
+				}
+			}
+		}
+		catch (Exception ex)
+		{
+			ServiceRef.LogService.LogException(ex);
+			await ServiceRef.UiSerializer.DisplayException(ex);
+		}
+	}
+
+
+	[RelayCommand]
+	private async Task ValidateIdentity()
+	{
+		await Task.CompletedTask;
+
+		if (true)
+		{
+			ServiceRef.TagProfile.GoToStep(RegistrationStep.DefinePin);
+			WeakReferenceMessenger.Default.Send(new RegistrationPageMessage(ServiceRef.TagProfile.Step));
+		}
+	}
+
+
+	private RegisterIdentityModel CreateRegisterModel()
+	{
+		RegisterIdentityModel IdentityModel = new();
+		string s;
+
+		if (!string.IsNullOrWhiteSpace(s = ServiceRef.TagProfile?.PhoneNumber?.Trim() ?? string.Empty))
+		{
+			if (string.IsNullOrWhiteSpace(s) && (ServiceRef.TagProfile?.LegalIdentity is LegalIdentity LegalIdentity))
+			{
+				s = LegalIdentity[Constants.XmppProperties.Phone];
+			}
+
+			IdentityModel.PhoneNr = s;
+		}
+
+		if (!string.IsNullOrWhiteSpace(s = ServiceRef.TagProfile?.EMail?.Trim() ?? string.Empty))
+		{
+			if (string.IsNullOrWhiteSpace(s) && (ServiceRef.TagProfile?.LegalIdentity is LegalIdentity LegalIdentity))
+			{
+				s = LegalIdentity[Constants.XmppProperties.EMail];
+			}
+
+			IdentityModel.EMail = s;
+		}
+
+		if (!string.IsNullOrWhiteSpace(s = ServiceRef.TagProfile?.SelectedCountry?.Trim() ?? string.Empty))
+		{
+			if (string.IsNullOrWhiteSpace(s) && (ServiceRef.TagProfile?.LegalIdentity is LegalIdentity LegalIdentity))
+			{
+				s = LegalIdentity[Constants.XmppProperties.Country];
+			}
+
+			IdentityModel.EMail = s;
+		}
+
+		// Other fields are left empty
+		IdentityModel.FirstName = "N/A";
+		//!!! IdentityModel.MiddleNames = "N/A";
+		IdentityModel.LastNames = "N/A";
+		IdentityModel.PersonalNumber = "N/A";
+		IdentityModel.Address = "N/A";
+		IdentityModel.Address2 = "N/A";
+		IdentityModel.ZipCode = "N/A";
+		//!!! IdentityModel.Area = "N/A";
+		IdentityModel.City = "N/A";
+		//!!! IdentityModel.Region = "N/A";
+		
+		return IdentityModel;
 	}
 }
