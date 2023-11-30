@@ -1,8 +1,6 @@
 ﻿using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.UI.Pages.Registration;
 using NeuroAccessMaui.Resources.Languages;
-using NeuroAccessMaui.Services.Tag;
-using System.Globalization;
 using System.Reflection;
 using System.Text;
 using System.Xml;
@@ -59,7 +57,7 @@ internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 	{
 	}
 
-	private async Task CreateXmppClient(bool CanCreateKeys)
+	private async Task CreateXmppClient()
 	{
 		if (this.isCreatingClient)
 		{
@@ -150,7 +148,7 @@ internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 
 					if (!await this.contractsClient.LoadKeys(false))
 					{
-						if (!CanCreateKeys)
+						if (ServiceRef.TagProfile.IsCompleteOrWaitingForValidation())
 						{
 							Log.Alert("Regeneration of keys not permitted at this time.",
 								string.Empty, string.Empty, string.Empty, EventLevel.Major, string.Empty, string.Empty, Environment.StackTrace);
@@ -268,11 +266,6 @@ internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 		return true;
 	}
 
-	private bool ShouldCreateClient()
-	{
-		return ServiceRef.TagProfile.Step > RegistrationStep.CreateAccount && !this.XmppParametersCurrent();
-	}
-
 	private void RecreateReconnectTimer()
 	{
 		this.reconnectTimer?.Dispose();
@@ -324,9 +317,9 @@ internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 			{
 				ServiceRef.TagProfile.StepChanged += this.TagProfile_StepChanged;
 
-				if (this.ShouldCreateClient())
+				if (ServiceRef.TagProfile.IsCompleteOrWaitingForValidation() && !this.XmppParametersCurrent())
 				{
-					await this.CreateXmppClient(ServiceRef.TagProfile.Step <= RegistrationStep.CreateAccount);
+					await this.CreateXmppClient();
 				}
 
 				if ((this.xmppClient is not null) &&
@@ -411,11 +404,13 @@ internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 		{
 			try
 			{
-				if (this.ShouldCreateClient())
+				bool CreateXmppClient = ServiceRef.TagProfile.IsCompleteOrWaitingForValidation();
+
+				if (CreateXmppClient && !this.XmppParametersCurrent())
 				{
-					await this.CreateXmppClient(ServiceRef.TagProfile.Step <= RegistrationStep.CreateAccount);
+					await this.CreateXmppClient();
 				}
-				else if (ServiceRef.TagProfile.Step <= RegistrationStep.CreateAccount)
+				else if (!CreateXmppClient)
 				{
 					await this.DestroyXmppClient();
 				}
