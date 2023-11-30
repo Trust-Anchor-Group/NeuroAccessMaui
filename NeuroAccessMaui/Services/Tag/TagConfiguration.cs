@@ -47,6 +47,12 @@ public sealed class TagConfiguration
 	public string? ApiSecret { get; set; }
 
 	/// <summary>
+	/// Selected Country
+	/// </summary>
+	[DefaultValueNull]
+	public string? SelectedCountry { get; set; }
+
+	/// <summary>
 	/// Verified Phone Number
 	/// </summary>
 	[DefaultValueNull]

@@ -107,6 +107,7 @@ public partial class TagProfile : ITagProfile
 	private string? domain;
 	private string? apiKey;
 	private string? apiSecret;
+	private string? selectedCountry;
 	private string? phoneNumber;
 	private string? eMail;
 	private string? account;
@@ -167,6 +168,7 @@ public partial class TagProfile : ITagProfile
 			Domain = this.Domain,
 			ApiKey = this.ApiKey,
 			ApiSecret = this.ApiSecret,
+			SelectedCountry = this.SelectedCountry,
 			PhoneNumber = this.PhoneNumber,
 			EMail = this.EMail,
 			DefaultXmppConnectivity = this.DefaultXmppConnectivity,
@@ -205,6 +207,7 @@ public partial class TagProfile : ITagProfile
 			this.Domain = configuration.Domain;
 			this.ApiKey = configuration.ApiKey;
 			this.ApiSecret = configuration.ApiSecret;
+			this.SelectedCountry = configuration.SelectedCountry;
 			this.PhoneNumber = configuration.PhoneNumber;
 			this.EMail = configuration.EMail;
 			this.InitialDefaultXmppConnectivity = configuration.InitialDefaultXmppConnectivity;
@@ -368,6 +371,20 @@ public partial class TagProfile : ITagProfile
 			{
 				this.apiSecret = value;
 				this.FlagAsDirty(nameof(this.ApiSecret));
+			}
+		}
+	}
+
+	/// <inheritdoc/>
+	public string? SelectedCountry
+	{
+		get => this.selectedCountry;
+		private set
+		{
+			if (!string.Equals(this.selectedCountry, value, StringComparison.Ordinal))
+			{
+				this.selectedCountry = value;
+				this.FlagAsDirty(nameof(this.SelectedCountry));
 			}
 		}
 	}
@@ -625,8 +642,9 @@ public partial class TagProfile : ITagProfile
 	#region Build Steps
 
 	/// <inheritdoc/>
-	public void SetPhone(string PhoneNumber)
+	public void SetPhone(string Country, string PhoneNumber)
 	{
+		this.SelectedCountry = Country;
 		this.PhoneNumber = PhoneNumber;
 	}
 

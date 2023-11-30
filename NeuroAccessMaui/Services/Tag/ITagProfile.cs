@@ -50,6 +50,11 @@ public interface ITagProfile
 	string? ApiSecret { get; }
 
 	/// <summary>
+	/// Selected country. Some countries have the same phone code, so we want to save the selected country
+	/// </summary>
+	string? SelectedCountry { get; }
+
+	/// <summary>
 	/// Verified phone number.
 	/// </summary>
 	string? PhoneNumber { get; }
@@ -193,8 +198,9 @@ public interface ITagProfile
 	/// <summary>
 	/// Sets the phone number used for contacting the user.
 	/// </summary>
+	/// <param name="Country">Country of the phone number.</param>
 	/// <param name="PhoneNumber">Verified phone number.</param>
-	void SetPhone(string PhoneNumber);
+	void SetPhone(string Country, string PhoneNumber);
 
 	/// <summary>
 	/// Sets the e-mail address used for contacting the user.
