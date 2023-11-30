@@ -73,12 +73,17 @@ public partial class RegistrationPage
 
 		await this.Dispatcher.DispatchAsync(async () =>
 		{
-			await StateContainer.ChangeStateWithAnimation(this.GridWithAnimation, NewState, CancellationToken.None);
+			string OldState = StateContainer.GetCurrentState(this.GridWithAnimation);
 
-			if (Recipient is RegistrationPage RegistrationPage)
+			if (!string.Equals(OldState, NewState, StringComparison.OrdinalIgnoreCase))
 			{
-				RegistrationViewModel ViewModel = RegistrationPage.ViewModel<RegistrationViewModel>();
-				await ViewModel.DoAssignProperties(NewStep);
+				await StateContainer.ChangeStateWithAnimation(this.GridWithAnimation, NewState, CancellationToken.None);
+
+				if (Recipient is RegistrationPage RegistrationPage)
+				{
+					RegistrationViewModel ViewModel = RegistrationPage.ViewModel<RegistrationViewModel>();
+					await ViewModel.DoAssignProperties(NewStep);
+				}
 			}
 		});
 	}

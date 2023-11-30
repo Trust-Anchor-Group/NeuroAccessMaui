@@ -1,4 +1,3 @@
-using System.Globalization;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 using NeuroAccessMaui.UI.Pages.Registration;
@@ -183,7 +182,11 @@ public abstract class BaseContentPage : ContentPage
 
 			if (ViewModel is RegistrationViewModel RegistrationViewModel)
 			{
-				RegistrationViewModel.GoToPrevCommand.Execute(null);
+				if (RegistrationViewModel.GoToPrevCommand.CanExecute(null))
+				{
+					RegistrationViewModel.GoToPrevCommand.Execute(null);
+				}
+
 				return true;
 			}
 			else

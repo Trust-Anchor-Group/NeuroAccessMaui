@@ -112,7 +112,7 @@ public partial class RegistrationViewModel : BaseViewModel
 					ServiceRef.TagProfile.GoToStep(RegistrationStep.RequestPurpose);
 					break;
 
-				default: // something forgotten?
+				default: // Should not happen. Something forgotten? 
 					throw new NotImplementedException();
 			}
 
