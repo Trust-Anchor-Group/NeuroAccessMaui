@@ -6,7 +6,6 @@ using System.Text;
 using System.Xml;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Maui.Controls.Shapes;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
@@ -174,9 +173,7 @@ public partial class ChooseProviderViewModel : BaseRegistrationViewModel
 	[RelayCommand(CanExecute = nameof(CanContinue))]
 	private void Continue()
 	{
-		ServiceRef.TagProfile.GoToStep(RegistrationStep.CreateAccount);
-
-		WeakReferenceMessenger.Default.Send(new RegistrationPageMessage(ServiceRef.TagProfile.Step));
+		this.GoToRegistrationStep(RegistrationStep.CreateAccount);
 	}
 
 	[RelayCommand]
@@ -384,7 +381,7 @@ public partial class ChooseProviderViewModel : BaseRegistrationViewModel
 
 				if (AccountDone)
 				{
-					WeakReferenceMessenger.Default.Send(new RegistrationPageMessage(ServiceRef.TagProfile.Step));
+					this.GoToRegistrationStep(RegistrationStep.CreateAccount);
 				}
 			}
 			catch (Exception ex)

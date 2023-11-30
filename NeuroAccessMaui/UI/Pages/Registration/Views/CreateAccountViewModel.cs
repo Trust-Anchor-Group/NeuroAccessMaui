@@ -1,10 +1,8 @@
 ﻿using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
-using NeuroAccessMaui.Services.Data;
 using NeuroAccessMaui.Services.Tag;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
@@ -183,8 +181,7 @@ public partial class CreateAccountViewModel : BaseRegistrationViewModel
 
 		if (true)
 		{
-			ServiceRef.TagProfile.GoToStep(RegistrationStep.DefinePin);
-			WeakReferenceMessenger.Default.Send(new RegistrationPageMessage(ServiceRef.TagProfile.Step));
+			//this.GoToRegistrationStep(RegistrationStep.DefinePin)
 		}
 	}
 

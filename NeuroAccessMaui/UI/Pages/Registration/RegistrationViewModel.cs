@@ -3,11 +3,10 @@ using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Mopups.Services;
-using NeuroAccessMaui.UI.Popups;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
 using NeuroAccessMaui.Services.Tag;
-using CommunityToolkit.Mvvm.Messaging;
+using NeuroAccessMaui.UI.Popups;
 
 namespace NeuroAccessMaui.UI.Pages.Registration;
 
@@ -27,12 +26,14 @@ public partial class RegistrationViewModel : BaseViewModel
 		await base.OnInitialize();
 
 		LocalizationManager.Current.PropertyChanged += this.LocalizationManagerEventHandler;
+		ServiceRef.TagProfile.StepChanged += this.TagProfile_StepChanged;
 	}
 
 	/// <inheritdoc/>
 	protected override async Task OnDispose()
 	{
 		LocalizationManager.Current.PropertyChanged -= this.LocalizationManagerEventHandler;
+		ServiceRef.TagProfile.StepChanged -= this.TagProfile_StepChanged;
 
 		await base.OnDispose();
 	}
@@ -79,9 +80,15 @@ public partial class RegistrationViewModel : BaseViewModel
 		this.SelectedLanguage = App.SelectedLanguage;
 	}
 
-	public bool CanGoToPrev => (ServiceRef.TagProfile.Step > RegistrationStep.RequestPurpose)
-		// The PIN definition isn't really a part of the registration prosess, so disable the back button.
-		&& (ServiceRef.TagProfile.Step < RegistrationStep.DefinePin);
+	private void TagProfile_StepChanged(object? Sender, EventArgs e)
+	{
+		this.GoToPrevCommand.NotifyCanExecuteChanged();
+	}
+
+	public bool CanGoToPrev => (ServiceRef.TagProfile.Step > RegistrationStep.RequestPurpose) &&
+		// Disable the back button after the accpunt was created
+		string.IsNullOrEmpty(ServiceRef.TagProfile?.Account ?? string.Empty)
+		&& (ServiceRef.TagProfile?.Step < RegistrationStep.DefinePin);
 
 	/// <summary>
 	/// The command to bind to for moving backwards to the previous step in the registration process.
@@ -93,30 +100,32 @@ public partial class RegistrationViewModel : BaseViewModel
 		{
 			await this.registrationSteps[this.CurrentStep].DoClearProperties();
 
+			RegistrationStep NewStep = ServiceRef.TagProfile.Step;
+
 			switch (this.CurrentStep)
 			{
 				case RegistrationStep.CreateAccount:
 					ServiceRef.TagProfile.ClearAccount();
-					ServiceRef.TagProfile.GoToStep(RegistrationStep.ChooseProvider);
+					NewStep = RegistrationStep.ChooseProvider;
 					break;
 
 				case RegistrationStep.ChooseProvider:
-					ServiceRef.TagProfile.GoToStep(RegistrationStep.ValidateEmail);
+					NewStep = RegistrationStep.ValidateEmail;
 					break;
 
 				case RegistrationStep.ValidateEmail:
-					ServiceRef.TagProfile.GoToStep(RegistrationStep.ValidatePhone);
+					NewStep = RegistrationStep.ValidatePhone;
 					break;
 
 				case RegistrationStep.ValidatePhone:
-					ServiceRef.TagProfile.GoToStep(RegistrationStep.RequestPurpose);
+					NewStep = RegistrationStep.RequestPurpose;
 					break;
 
 				default: // Should not happen. Something forgotten? 
 					throw new NotImplementedException();
 			}
 
-			WeakReferenceMessenger.Default.Send(new RegistrationPageMessage(ServiceRef.TagProfile.Step));
+			this.GoToRegistrationStep(NewStep);
 		}
 		catch (Exception ex)
 		{

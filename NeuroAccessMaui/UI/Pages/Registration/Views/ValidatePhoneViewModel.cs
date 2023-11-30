@@ -2,7 +2,6 @@
 using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
 using Mopups.Services;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
@@ -311,8 +310,7 @@ public partial class ValidatePhoneViewModel : BaseRegistrationViewModel, ICodeVe
 								ServiceRef.TagProfile.SetDomain(VerifyDomain, DefaultConnectivity, VerifyKey, VerifySecret);
 							}
 
-							ServiceRef.TagProfile.GoToStep(RegistrationStep.ValidateEmail);
-							WeakReferenceMessenger.Default.Send(new RegistrationPageMessage(ServiceRef.TagProfile.Step));
+							this.GoToRegistrationStep(RegistrationStep.ValidateEmail);
 						}
 						else
 						{

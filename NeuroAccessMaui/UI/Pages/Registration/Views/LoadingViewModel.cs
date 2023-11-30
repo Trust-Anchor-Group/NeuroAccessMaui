@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Messaging;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Tag;
@@ -107,11 +106,10 @@ public partial class LoadingViewModel : BaseRegistrationViewModel
 				Task ExecutionTask = Task.Run(() =>
 				{
 					// The right step will be loaded by TagProfile service,
-					// but we can choose to change it here if necessary
+					// but we may choose to change it here if necessary
 
-					// ServiceRef.TagProfile.GoToStep(RegistrationStep.<TheOtherState>);
-
-					WeakReferenceMessenger.Default.Send(new RegistrationPageMessage(ServiceRef.TagProfile.Step));
+					// this.GoToRegistrationStep(RegistrationStep.<TheOtherState>);
+					this.GoToRegistrationStep(ServiceRef.TagProfile.Step);
 				});
 			}
 		}

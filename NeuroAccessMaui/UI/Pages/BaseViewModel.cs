@@ -1,4 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
+using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Tag;
 
 namespace NeuroAccessMaui.UI.Pages;
 
@@ -34,6 +37,15 @@ public abstract partial class BaseViewModel : ObservableObject, ILifeCycleView
 	/// Gets the child view models.
 	/// </summary>
 	public IEnumerable<BaseViewModel> Children => this.childViewModels;
+
+	/// <summary>
+	/// Set a new registration step
+	/// </summary>
+	public void GoToRegistrationStep(RegistrationStep NewStep)
+	{
+		ServiceRef.TagProfile.GoToStep(NewStep);
+		WeakReferenceMessenger.Default.Send(new RegistrationPageMessage(ServiceRef.TagProfile.Step));
+	}
 
 	/// <summary>
 	/// Use this method when nesting view models. This is the view model equivalent of master/detail pages.

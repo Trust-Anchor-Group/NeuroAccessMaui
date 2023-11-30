@@ -2,7 +2,6 @@
 using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
@@ -175,9 +174,8 @@ public partial class ValidateEmailViewModel : BaseRegistrationViewModel, ICodeVe
 						VerifyResponse.TryGetValue("Status", out Obj) && Obj is bool VerifyStatus && VerifyStatus)
 					{
 						ServiceRef.TagProfile.SetEMail(this.EmailText);
-						ServiceRef.TagProfile.GoToStep(RegistrationStep.ChooseProvider);
 
-						WeakReferenceMessenger.Default.Send(new RegistrationPageMessage(ServiceRef.TagProfile.Step));
+						this.GoToRegistrationStep(RegistrationStep.ChooseProvider);
 					}
 					else
 					{

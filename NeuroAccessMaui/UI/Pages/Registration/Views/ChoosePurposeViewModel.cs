@@ -2,7 +2,6 @@
 using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
@@ -47,9 +46,8 @@ public partial class ChoosePurposeViewModel : BaseRegistrationViewModel
 		bool IsTest = Purpose == PurposeUse.Educational || Purpose == PurposeUse.Experimental;
 
 		ServiceRef.TagProfile.SetPurpose(IsTest, Purpose);
-		ServiceRef.TagProfile.GoToStep(RegistrationStep.ValidatePhone);
 
-		WeakReferenceMessenger.Default.Send(new RegistrationPageMessage(ServiceRef.TagProfile.Step));
+		this.GoToRegistrationStep(RegistrationStep.ValidatePhone);
 	}
 }
 
