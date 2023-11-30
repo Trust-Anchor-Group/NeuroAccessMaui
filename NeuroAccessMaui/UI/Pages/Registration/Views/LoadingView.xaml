@@ -36,16 +36,23 @@
 			VerticalOptions="Center"
 			IsVisible="true"
 			IsRunning="true" />
-		<Frame
+
+		<Border
 			Grid.Row="3"
-			IsVisible="{Binding Path=DisplayConnectionText}"
-			BackgroundColor="#99ffffff"
-			CornerRadius="5">
+			Padding="0"
+			IsVisible="{Binding DisplayConnectionText}"
+			Style="{StaticResource ItemOuterBorderStyle}"
+			BackgroundColor="{AppThemeBinding Light={StaticResource NormalBackgroundLight},
+											  Dark={StaticResource NormalBackgroundDark}}">
+			<Border.StrokeShape>
+				<RoundRectangle CornerRadius="{StaticResource SmallCornerRadius}" />
+			</Border.StrokeShape>
+
 			<Label
-				HorizontalOptions="CenterAndExpand"
-				FontSize="Medium"
-				Text="{Binding Path=ConnectionStateText}"
-				TextColor="Black" />
-		</Frame>
+				HorizontalOptions="Center"
+				Text="{Binding ConnectionStateText}"
+				TextColor="{AppThemeBinding Light={StaticResource AccentForegroundLight},
+											Dark={StaticResource AccentForegroundDark}}" />
+		</Border>
 	</Grid>
 </base:BaseRegistrationView>
