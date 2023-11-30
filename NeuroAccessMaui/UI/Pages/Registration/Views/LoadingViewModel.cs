@@ -43,8 +43,8 @@ public partial class LoadingViewModel : BaseRegistrationViewModel
 	/// <summary>
 	/// Gets the current connection state as a color.
 	/// </summary>
-	[ObservableProperty]
-	private Brush? connectionStateColor;
+	//[ObservableProperty]
+	//private Brush? connectionStateColor;
 
 	/// <summary>
 	/// Gets the current state summary as a user friendly localized string.
@@ -56,11 +56,10 @@ public partial class LoadingViewModel : BaseRegistrationViewModel
 	/// <summary>
 	/// Gets whether the view model is connected to an XMPP server.
 	/// </summary>
-	[ObservableProperty]
-	private bool isConnected;
+	//[ObservableProperty]
+	//private bool isConnected;
 
-	public bool DisplayConnectionText => (ServiceRef.TagProfile.Step > RegistrationStep.CreateAccount) &&
-		(this.ConnectionStateText is not null);
+	public bool DisplayConnectionText => ServiceRef.TagProfile.IsCompleteOrWaitingForValidation() && !string.IsNullOrEmpty(this.ConnectionStateText);
 
 	#endregion
 
@@ -89,8 +88,8 @@ public partial class LoadingViewModel : BaseRegistrationViewModel
 	protected void SetConnectionStateAndText(XmppState state)
 	{
 		this.ConnectionStateText = state.ToDisplayText();
-		this.ConnectionStateColor = new SolidColorBrush(state.ToColor());
-		this.IsConnected = state == XmppState.Connected;
+		//this.ConnectionStateColor = new SolidColorBrush(state.ToColor());
+		//this.IsConnected = state == XmppState.Connected;
 		this.StateSummaryText = (ServiceRef.TagProfile.LegalIdentity?.State)?.ToString() + " - " + this.ConnectionStateText;
 	}
 
@@ -107,7 +106,11 @@ public partial class LoadingViewModel : BaseRegistrationViewModel
 				// Therefore, do not await this method and do not call it synchronously, even if we are already on the main thread.
 				Task ExecutionTask = Task.Run(() =>
 				{
-					// Don't set the step. The right step will be loaded by TagProfile service
+					// The right step will be loaded by TagProfile service,
+					// but we can choose to change it here if necessary
+
+					// ServiceRef.TagProfile.GoToStep(RegistrationStep.<TheOtherState>);
+
 					WeakReferenceMessenger.Default.Send(new RegistrationPageMessage(ServiceRef.TagProfile.Step));
 				});
 			}
