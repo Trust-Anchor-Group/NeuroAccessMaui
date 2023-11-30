@@ -74,12 +74,6 @@
 	<!--
     <Style
 		ApplyToDerivedTypes="True"
-	TargetType="ActivityIndicator">
-        <Setter Property="Color" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
-    </Style>
-
-    <Style
-		ApplyToDerivedTypes="True"
 	TargetType="IndicatorView">
         <Setter Property="IndicatorColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}"/>
         <Setter Property="SelectedIndicatorColor" Value="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource Gray100}}"/>
@@ -418,6 +412,11 @@
         </Setter>
     </Style>	-->
 
+	<Style
+		ApplyToDerivedTypes="True"
+		TargetType="ActivityIndicator">
+		<Setter Property="Color" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
+	</Style>
 
 	<Style
 		ApplyToDerivedTypes="True"
