@@ -19,7 +19,6 @@ public partial class LoadingViewModel : BaseRegistrationViewModel
 		await base.OnInitialize();
 
 		this.IsBusy = true;
-		this.DisplayConnectionText = ServiceRef.TagProfile.Step > RegistrationStep.CreateAccount;
 		ServiceRef.XmppService.ConnectionStateChanged += this.XmppService_ConnectionStateChanged;
 		ServiceRef.XmppService.Loaded += this.XmppService_Loaded;
 	}
@@ -34,12 +33,6 @@ public partial class LoadingViewModel : BaseRegistrationViewModel
 	}
 
 	#region Properties
-
-	/// <summary>
-	/// Gets or sets whether the user friendly connection text should be visible on screen or not.
-	/// </summary>
-	[ObservableProperty]
-	private bool displayConnectionText;
 
 	/// <summary>
 	/// Gets the current connection state as a user friendly localized string.
@@ -57,6 +50,7 @@ public partial class LoadingViewModel : BaseRegistrationViewModel
 	/// Gets the current state summary as a user friendly localized string.
 	/// </summary>
 	[ObservableProperty]
+	[NotifyPropertyChangedFor(nameof(DisplayConnectionText))]
 	private string? stateSummaryText;
 
 	/// <summary>
@@ -64,6 +58,9 @@ public partial class LoadingViewModel : BaseRegistrationViewModel
 	/// </summary>
 	[ObservableProperty]
 	private bool isConnected;
+
+	public bool DisplayConnectionText => (ServiceRef.TagProfile.Step > RegistrationStep.CreateAccount) &&
+		(this.ConnectionStateText is not null);
 
 	#endregion
 
