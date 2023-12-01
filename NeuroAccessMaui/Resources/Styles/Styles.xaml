@@ -424,7 +424,7 @@
 		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource NormalEditForegroundLight}, Dark={StaticResource NormalEditForegroundDark}}" />
 		<Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource NormalEditPlaceholderLight}, Dark={StaticResource NormalEditPlaceholderDark}}" />
 		<Setter Property="CancelButtonColor" Value="{AppThemeBinding Light={StaticResource EnabledFilledButtonBackgroundLight}, Dark={StaticResource EnabledFilledButtonBackgroundDark}}" />
-		<Setter Property="BackgroundColor" Value="Transparent" />
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}" />
 		<Setter Property="FontFamily" Value="HaasGroteskRegular" />
 		<Setter Property="FontSize" Value="18" />
 		<!--
