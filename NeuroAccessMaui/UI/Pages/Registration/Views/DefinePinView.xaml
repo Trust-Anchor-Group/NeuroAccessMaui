@@ -26,25 +26,14 @@
 
 				<controls:CompositeEntry x:Name="PinEntry1"
 					Style="{StaticResource RegularCompositeEntryStyle}"
-					EntryData="Text"
-					PathData="{x:Static ui:Geometries.EmailIconPath}">
-					<!--
-					<controls:CompositeEntry.Behaviors>
-						<mct:TextValidationBehavior x:Name="EmailValidator"
-							Flags="ValidateOnValueChanged"
-							IsValid="{Binding EmailIsValid}"
-							RegexPattern="^$|^[\w\d](\w|\d|[_\.-][\w\d])*@(\w|\d|[\.-][\w\d]+)+$"
-							ValuePropertyName="EntryData" />
-					</controls:CompositeEntry.Behaviors>
-					-->
-				</controls:CompositeEntry>
+					EntryData="{Binding PinText1}" />
 
 				<Grid
 					RowDefinitions="auto"
 					ColumnDefinitions="auto,auto"
 					HorizontalOptions="Center"
 					ColumnSpacing="{StaticResource SmallSpacing}"
-					IsVisible="{Binding IsNotValid, Source={x:Reference EmailValidator}}">
+					IsVisible="{Binding IsPin1NotValid}">
 
 					<Path
 						Grid.Column="0"
@@ -58,7 +47,8 @@
 					<Label
 						Grid.Column="1"
 						VerticalOptions="Center"
-						Text="{Binding LocalizedValidationError1}"
+						LineBreakMode="WordWrap"
+						Text="{Binding LocalizedValidationError}"
 						TextColor="{AppThemeBinding Light={StaticResource InvalidatedEditLight},
 													Dark={StaticResource InvalidatedEditDark}}" />
 				</Grid>
@@ -66,32 +56,20 @@
 			</VerticalStackLayout>
 
 			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-
 				<Label
 					Style="{StaticResource SectionTitleLabelStyle}"
 					Text="{l:Localize DefinePinSectionTitle2}" />
 
 				<controls:CompositeEntry x:Name="PinEntry2"
 					Style="{StaticResource RegularCompositeEntryStyle}"
-					EntryData="Text"
-					PathData="{x:Static ui:Geometries.EmailIconPath}">
-					<!--
-					<controls:CompositeEntry.Behaviors>
-						<mct:TextValidationBehavior x:Name="EmailValidator"
-							Flags="ValidateOnValueChanged"
-							IsValid="{Binding EmailIsValid}"
-							RegexPattern="^$|^[\w\d](\w|\d|[_\.-][\w\d])*@(\w|\d|[\.-][\w\d]+)+$"
-							ValuePropertyName="EntryData" />
-					</controls:CompositeEntry.Behaviors>
-					-->
-				</controls:CompositeEntry>
+					EntryData="{Binding PinText2}" />
 
 				<Grid
 					RowDefinitions="auto"
 					ColumnDefinitions="auto,auto"
 					HorizontalOptions="Center"
 					ColumnSpacing="{StaticResource SmallSpacing}"
-					IsVisible="{Binding IsNotValid, Source={x:Reference EmailValidator}}">
+					IsVisible="{Binding IsPin2NotValid}">
 
 					<Path
 						Grid.Column="0"
@@ -105,7 +83,8 @@
 					<Label
 						Grid.Column="1"
 						VerticalOptions="Center"
-						Text="{Binding LocalizedValidationError2}"
+						LineBreakMode="WordWrap"
+						Text="{l:Localize PinsDoNotMatch}"
 						TextColor="{AppThemeBinding Light={StaticResource InvalidatedEditLight},
 													Dark={StaticResource InvalidatedEditDark}}" />
 				</Grid>
@@ -115,6 +94,7 @@
 
 		<controls:TextButton
 			Style="{StaticResource FilledTextButtonStyle}"
-			LabelData="Set Code" />
+			Command="{Binding ContinueCommand}"
+			LabelData="{l:Localize CreatePin}" />
 	</VerticalStackLayout>
 </base:BaseRegistrationView>

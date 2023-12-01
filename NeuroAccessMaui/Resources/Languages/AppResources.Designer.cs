@@ -367,6 +367,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create Pin.
+        /// </summary>
+        internal static string CreatePin {
+            get {
+                return ResourceManager.GetString("CreatePin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enter new pin.
         /// </summary>
         internal static string DefinePinSectionTitle1 {
@@ -997,6 +1006,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to PINs do not match.
+        /// </summary>
+        internal static string PinsDoNotMatch {
+            get {
+                return ResourceManager.GetString("PinsDoNotMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to PIN length must be at least {0} characters..
         /// </summary>
         internal static string PinTooShort {
@@ -1416,6 +1434,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string TagValueCopiedToClipboard {
             get {
                 return ResourceManager.GetString("TagValueCopiedToClipboard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A temporary OTP code has been used. The application will stop working in about a week. You&apos;ll have to reinstall the application to use it again..
+        /// </summary>
+        internal static string TestOtpUsed {
+            get {
+                return ResourceManager.GetString("TestOtpUsed", resourceCulture);
             }
         }
         

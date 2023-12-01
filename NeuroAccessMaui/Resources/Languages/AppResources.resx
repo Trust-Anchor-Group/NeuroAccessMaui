@@ -150,6 +150,9 @@
   <data name="PinIsInvalid" xml:space="preserve">
     <value>PIN is invalid. You have {0} remaining attempts.</value>
   </data>
+  <data name="PinsDoNotMatch" xml:space="preserve">
+    <value>PINs do not match</value>
+  </data>
   <data name="PinIsInvalidAplicationBlockedForever" xml:space="preserve">
     <value>PIN attempts entering is exceded. Your application has been blocked forever</value>
   </data>
@@ -672,10 +675,16 @@
   <data name="AccountAvailableAlternatives" xml:space="preserve">
     <value>The following names are still available:</value>
   </data>
+  <data name="TestOtpUsed" xml:space="preserve">
+    <value>A temporary OTP code has been used. The application will stop working in about a week. You'll have to reinstall the application to use it again.</value>
+  </data>
   <data name="DefinePinSectionTitle1" xml:space="preserve">
     <value>Enter new pin</value>
   </data>
   <data name="DefinePinSectionTitle2" xml:space="preserve">
     <value>Confirm pin</value>
+  </data>
+  <data name="CreatePin" xml:space="preserve">
+    <value>Create Pin</value>
   </data>
 </root>
