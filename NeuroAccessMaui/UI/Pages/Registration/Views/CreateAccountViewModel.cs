@@ -15,6 +15,23 @@ public partial class CreateAccountViewModel : BaseRegistrationViewModel
 	{
 	}
 
+	/// <inheritdoc />
+	protected override async Task OnInitialize()
+	{
+		await base.OnInitialize();
+
+		ServiceRef.XmppService.LegalIdentityChanged += this.XmppContracts_LegalIdentityChanged;
+	}
+
+	/// <inheritdoc />
+	protected override async Task OnDispose()
+	{
+		ServiceRef.XmppService.LegalIdentityChanged -= this.XmppContracts_LegalIdentityChanged;
+
+		await base.OnDispose();
+	}
+
+	/// <inheritdoc />
 	public override async Task DoAssignProperties()
 	{
 		await base.DoAssignProperties();
@@ -34,10 +51,24 @@ public partial class CreateAccountViewModel : BaseRegistrationViewModel
 		{
 			this.ValidateIdentityCommand.Execute(null);
 		}
+		else if (LegalIdentity.State == IdentityState.Approved)
+		{
+			this.GoToRegistrationStep(RegistrationStep.DefinePin);
+		}
 		else //!!! if (LegalIdentity.State == IdentityState.???)
 		{
-			//!!! We should not have any other state here. Assume the legal id is obsoleted. What we should do in that case?
+			//!!! We should not have any other state here.
+			//!!! Assume that might happen if the legal id is obsoleted.
+			//!!! What should we do in that case?
 		}
+	}
+
+	private async Task XmppContracts_LegalIdentityChanged(object Sender, LegalIdentityEventArgs e)
+	{
+		var LegalIdentity = ServiceRef.TagProfile.LegalIdentity;
+		ServiceRef.TagProfile.SetLegalIdentity(e.Identity);
+
+		await this.DoAssignProperties();
 	}
 
 	protected override void OnPropertyChanged(PropertyChangedEventArgs e)
