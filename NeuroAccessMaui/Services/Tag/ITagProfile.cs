@@ -318,9 +318,9 @@ public interface ITagProfile
 	/// <summary>
 	/// Computes a hash of the specified PIN.
 	/// </summary>
-	/// <param name="pin">The PIN whose hash to compute.</param>
+	/// <param name="Pin">The PIN whose hash to compute.</param>
 	/// <returns>Hash Digest</returns>
-	string ComputePinHash(string pin);
+	string ComputePinHash(string Pin);
 
 	/// <summary>
 	/// Clears the entire profile.
@@ -332,5 +332,5 @@ public interface ITagProfile
 	/// </summary>
 	/// <param name="Pin">PIN to validate.</param>
 	/// <returns>A <see cref="PinStrength"/> value indicating if the <paramref name="Pin"/> is strong enough.</returns>
-	PinStrength ValidatePinStrength(string Pin);
+	PinStrength ValidatePinStrength(string? Pin);
 }

@@ -1,4 +1,5 @@
 ﻿using NeuroAccessMaui.Extensions;
+using System.ComponentModel;
 using System.Text;
 using System.Text.RegularExpressions;
 using Waher.Networking.XMPP.Contracts;
@@ -93,7 +94,7 @@ public partial class TagProfile : ITagProfile
 	/// <summary>
 	/// An event that fires every time any property changes.
 	/// </summary>
-	public event System.ComponentModel.PropertyChangedEventHandler? Changed
+	public event PropertyChangedEventHandler? Changed
 	{
 		add => this.onChangedEventManager.AddEventHandler(value);
 		remove => this.onChangedEventManager.RemoveEventHandler(value);
@@ -140,7 +141,7 @@ public partial class TagProfile : ITagProfile
 	/// <param name="e"></param>
 	protected virtual void OnStepChanged(EventArgs e)
 	{
-		this.onChangedEventManager.HandleEvent(this, EventArgs.Empty, nameof(StepChanged));
+		this.onStepChangedEventManager.HandleEvent(this, EventArgs.Empty, nameof(StepChanged));
 	}
 
 	/// <summary>
@@ -828,6 +829,7 @@ public partial class TagProfile : ITagProfile
 		this.domain = string.Empty;
 		this.apiKey = string.Empty;
 		this.apiSecret = string.Empty;
+		this.selectedCountry = string.Empty;
 		this.phoneNumber = string.Empty;
 		this.eMail = string.Empty;
 		this.account = string.Empty;
@@ -848,7 +850,7 @@ public partial class TagProfile : ITagProfile
 	}
 
 	/// <inheritdoc/>
-	public PinStrength ValidatePinStrength(string Pin)
+	public PinStrength ValidatePinStrength(string? Pin)
 	{
 		if (Pin is null)
 		{
