@@ -20,12 +20,14 @@ public partial class CreateAccountViewModel : BaseRegistrationViewModel
 	{
 		await base.OnInitialize();
 
+		ServiceRef.XmppService.ConnectionStateChanged += this.XmppService_ConnectionStateChanged;
 		ServiceRef.XmppService.LegalIdentityChanged += this.XmppContracts_LegalIdentityChanged;
 	}
 
 	/// <inheritdoc />
 	protected override async Task OnDispose()
 	{
+		ServiceRef.XmppService.ConnectionStateChanged -= this.XmppService_ConnectionStateChanged;
 		ServiceRef.XmppService.LegalIdentityChanged -= this.XmppContracts_LegalIdentityChanged;
 
 		await base.OnDispose();
@@ -41,31 +43,33 @@ public partial class CreateAccountViewModel : BaseRegistrationViewModel
 			return;
 		}
 
-		LegalIdentity? LegalIdentity = ServiceRef.TagProfile.LegalIdentity;
+		this.OnPropertyChanged(nameof(this.IsAccountCreated));
 
-		if (LegalIdentity is null)
+		if (ServiceRef.TagProfile.LegalIdentity is LegalIdentity LegalIdentity)
 		{
-			this.CreateIdentityCommand.Execute(null);
-		}
-		else if (LegalIdentity.State == IdentityState.Created)
-		{
-			this.ValidateIdentityCommand.Execute(null);
-		}
-		else if (LegalIdentity.State == IdentityState.Approved)
-		{
-			this.GoToRegistrationStep(RegistrationStep.DefinePin);
-		}
-		else //!!! if (LegalIdentity.State == IdentityState.???)
-		{
-			//!!! We should not have any other state here.
-			//!!! Assume that might happen if the legal id is obsoleted.
-			//!!! What should we do in that case?
+			if (LegalIdentity.State == IdentityState.Approved)
+			{
+				this.GoToRegistrationStep(RegistrationStep.DefinePin);
+			}
+			else //!!! if (LegalIdentity.State == IdentityState.???)
+			{
+				//!!! We should not have any other state here.
+				//!!! Assume that might happen if the legal id is obsoleted.
+				//!!! What should we do in that case?
+			}
 		}
 	}
 
-	private async Task XmppContracts_LegalIdentityChanged(object Sender, LegalIdentityEventArgs e)
+	private async Task XmppService_ConnectionStateChanged(object _, XmppState NewState)
 	{
-		var LegalIdentity = ServiceRef.TagProfile.LegalIdentity;
+		if (this.CreateIdentityCommand.CanExecute(null))
+		{
+			await this.CreateIdentityCommand.ExecuteAsync(null);
+		}
+	}
+
+	private async Task XmppContracts_LegalIdentityChanged(object _, LegalIdentityEventArgs e)
+	{
 		ServiceRef.TagProfile.SetLegalIdentity(e.Identity);
 
 		await this.DoAssignProperties();
@@ -78,6 +82,7 @@ public partial class CreateAccountViewModel : BaseRegistrationViewModel
 		if (e.PropertyName == nameof(this.IsBusy))
 		{
 			this.CreateAccountCommand.NotifyCanExecuteChanged();
+			this.CreateIdentityCommand.NotifyCanExecuteChanged();
 		}
 		else if (e.PropertyName == nameof(this.AccountText))
 		{
@@ -101,11 +106,17 @@ public partial class CreateAccountViewModel : BaseRegistrationViewModel
 	[NotifyPropertyChangedFor(nameof(HasAlternativeNames))]
 	private List<string> alternativeNames = [];
 
+	public bool IsXmppConnected => ServiceRef.XmppService.State == XmppState.Connected;
+
 	public bool IsAccountCreated => !string.IsNullOrEmpty(ServiceRef.TagProfile.Account);
+
+	public bool IsLegalIdentityCreated => ServiceRef.TagProfile.LegalIdentity is not null;
 
 	public bool HasAlternativeNames => this.AlternativeNames.Count > 0;
 
-	public bool CanCreateAccount => !this.AccountIsNotValid && !this.IsBusy && (this.AccountText.Length > 0);
+	public bool CanCreateAccount => !this.IsBusy && !this.AccountIsNotValid && (this.AccountText.Length > 0);
+
+	public bool CanCreateIdentity => !this.IsBusy && this.IsAccountCreated && !this.IsLegalIdentityCreated && this.IsXmppConnected;
 
 	[RelayCommand(CanExecute = nameof(CanCreateAccount))]
 	private async Task CreateAccount()
@@ -176,9 +187,11 @@ public partial class CreateAccountViewModel : BaseRegistrationViewModel
 		}
 	}
 
-	[RelayCommand]
+	[RelayCommand(CanExecute = nameof(CanCreateIdentity))]
 	private async Task CreateIdentity()
 	{
+		this.IsBusy = true;
+
 		try
 		{
 			RegisterIdentityModel IdentityModel = this.CreateRegisterModel();
@@ -190,11 +203,6 @@ public partial class CreateAccountViewModel : BaseRegistrationViewModel
 			if (Succeeded)
 			{
 				ServiceRef.TagProfile.SetLegalIdentity(AddedIdentity);
-
-				if (this.ValidateIdentityCommand.CanExecute(null))
-				{
-					await this.ValidateIdentityCommand.ExecuteAsync(null);
-				}
 			}
 		}
 		catch (Exception ex)
@@ -202,20 +210,17 @@ public partial class CreateAccountViewModel : BaseRegistrationViewModel
 			ServiceRef.LogService.LogException(ex);
 			await ServiceRef.UiSerializer.DisplayException(ex);
 		}
+		finally
+		{
+			this.IsBusy = false;
+		}
 	}
-
 
 	[RelayCommand]
 	private async Task ValidateIdentity()
 	{
 		await Task.CompletedTask;
-
-		if (true)
-		{
-			//this.GoToRegistrationStep(RegistrationStep.DefinePin)
-		}
 	}
-
 
 	private RegisterIdentityModel CreateRegisterModel()
 	{
