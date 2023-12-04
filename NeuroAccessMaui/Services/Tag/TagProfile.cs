@@ -148,7 +148,7 @@ public partial class TagProfile : ITagProfile
 	/// Invoked whenever any property changes, to fire the <see cref="Changed"/> event.
 	/// </summary>
 	/// <param name="e"></param>
-	protected virtual void OnChanged(System.ComponentModel.PropertyChangedEventArgs e)
+	protected virtual void OnChanged(PropertyChangedEventArgs e)
 	{
 		this.onChangedEventManager.HandleEvent(this, e, nameof(Changed));
 	}
@@ -634,7 +634,7 @@ public partial class TagProfile : ITagProfile
 
 		if (!this.suppressPropertyChangedEvents)
 		{
-			this.OnChanged(new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+			this.OnChanged(new PropertyChangedEventArgs(propertyName));
 		}
 	}
 
@@ -707,31 +707,37 @@ public partial class TagProfile : ITagProfile
 	/// <inheritdoc/>
 	public void SetAccount(string AccountName, string ClientPasswordHash, string ClientPasswordHashMethod)
 	{
-		this.Account = AccountName;
 		this.PasswordHash = ClientPasswordHash;
 		this.PasswordHashMethod = ClientPasswordHashMethod;
 		this.ApiKey = string.Empty;
 		this.ApiSecret = string.Empty;
+
+		// It's important for this to be the last, since it will fire the account change notification.
+		this.Account = AccountName;
 	}
 
 	/// <inheritdoc/>
 	public void SetAccountAndLegalIdentity(string AccountName, string ClientPasswordHash, string ClientPasswordHashMethod, LegalIdentity Identity)
 	{
-		this.Account = AccountName;
 		this.PasswordHash = ClientPasswordHash;
 		this.PasswordHashMethod = ClientPasswordHashMethod;
-		this.LegalIdentity = Identity;
 		this.ApiKey = string.Empty;
 		this.ApiSecret = string.Empty;
+		this.LegalIdentity = Identity;
+
+		// It's important for this to be the last, since it will fire the account change notification.
+		this.Account = AccountName;
 	}
 
 	/// <inheritdoc/>
 	public void ClearAccount()
 	{
-		this.Account = string.Empty;
 		this.PasswordHash = string.Empty;
 		this.PasswordHashMethod = string.Empty;
 		this.LegalJid = string.Empty;
+
+		// It's important for this to be the last, since it will fire the account change notification.
+		this.Account = string.Empty;
 	}
 
 	/// <inheritdoc/>

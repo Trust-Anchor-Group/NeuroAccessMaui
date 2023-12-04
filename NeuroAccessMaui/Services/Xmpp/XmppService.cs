@@ -20,6 +20,8 @@ using Waher.Persistence;
 using Waher.Runtime.Inventory;
 using Waher.Runtime.Settings;
 using Waher.Runtime.Temporary;
+using System.ComponentModel;
+using NeuroAccessMaui.Services.Tag;
 
 namespace NeuroAccessMaui.Services.Xmpp;
 
@@ -316,6 +318,7 @@ internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 			try
 			{
 				ServiceRef.TagProfile.StepChanged += this.TagProfile_StepChanged;
+				ServiceRef.TagProfile.Changed += this.TagProfile_Changed;
 
 				if (ServiceRef.TagProfile.ShouldCreateClient() && !this.XmppParametersCurrent())
 				{
@@ -358,6 +361,7 @@ internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 			try
 			{
 				ServiceRef.TagProfile.StepChanged -= this.TagProfile_StepChanged;
+				ServiceRef.TagProfile.Changed -= this.TagProfile_Changed;
 
 				this.reconnectTimer?.Dispose();
 				this.reconnectTimer = null;
@@ -420,6 +424,14 @@ internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 				ServiceRef.LogService.LogException(ex);
 			}
 		});
+	}
+
+	private void TagProfile_Changed(object? Sender, PropertyChangedEventArgs e)
+	{
+		if (e.PropertyName == nameof(ITagProfile.Account))
+		{
+			this.TagProfile_StepChanged(Sender, new EventArgs());
+		}
 	}
 
 	private Task XmppClient_Error(object Sender, Exception e)
