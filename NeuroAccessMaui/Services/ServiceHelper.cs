@@ -10,19 +10,15 @@ public static class ServiceHelper
 		{
 			Service = Current.GetService<T>();
 		}
-		catch(Exception ex)
+		catch (Exception)
 		{
 			throw new ArgumentException("Service not found: " + nameof(T));
 		}
 
 		if (Service is not null)
-		{
 			return Service;
-		}
 		else
-		{
 			throw new ArgumentException("Service not found: " + nameof(T));
-		}
 	}
 
 	public static object GetService(Type ServiceType)
@@ -30,13 +26,9 @@ public static class ServiceHelper
 		object? Service = Current.GetService(ServiceType);
 
 		if (Service is not null)
-		{
 			return Service;
-		}
 		else
-		{
 			throw new ArgumentException("Service not found: " + ServiceType);
-		}
 	}
 
 	public static IServiceProvider Current =>

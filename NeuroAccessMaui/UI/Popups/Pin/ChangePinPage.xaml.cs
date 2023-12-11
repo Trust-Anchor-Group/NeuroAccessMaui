@@ -13,7 +13,7 @@ public partial class ChangePinPage : PopupPage
 	private readonly TaskCompletionSource<(string, string)> result = new();
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="ChangePinPopupPage"/> class.
+	/// Initializes a new instance of the <see cref="ChangePinPage"/> class.
 	/// </summary>
 	public ChangePinPage(ChangePinViewModel ViewModel)
 	{
@@ -46,7 +46,7 @@ public partial class ChangePinPage : PopupPage
 		return false;
 	}
 
-	private async void OnViewModelPropertyChanged(object Sender, PropertyChangedEventArgs EventArgs)
+	private /*async*/ void OnViewModelPropertyChanged(object? Sender, PropertyChangedEventArgs EventArgs)
 	{
 		//!!!
 		/*
@@ -67,7 +67,7 @@ public partial class ChangePinPage : PopupPage
 		*/
 	}
 
-	private void OnMainDisplayInfoChanged(object Sender, DisplayInfoChangedEventArgs EventArgs)
+	private void OnMainDisplayInfoChanged(object? Sender, DisplayInfoChangedEventArgs EventArgs)
 	{
 		this.UpdateMainFrameWidth();
 	}
@@ -77,7 +77,7 @@ public partial class ChangePinPage : PopupPage
 		//!!! this.MainFrame.WidthRequest = 0.75 * DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density;
 	}
 
-	private void PopupPage_BackgroundClicked(object sender, EventArgs e)
+	private void PopupPage_BackgroundClicked(object? sender, EventArgs e)
 	{
 
     }

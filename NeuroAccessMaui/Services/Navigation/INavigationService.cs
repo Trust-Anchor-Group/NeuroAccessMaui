@@ -12,7 +12,6 @@ namespace NeuroAccessMaui.Services.Navigation;
 public interface INavigationService : ILoadableService
 {
 	/// <summary>
-	/// <summary>
 	/// Navigates the AppShell to the specified route, with page arguments to match.
 	/// </summary>
 	/// <param name="Route">The route whose matching page to navigate to.</param>

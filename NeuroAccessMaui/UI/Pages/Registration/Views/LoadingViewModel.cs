@@ -42,8 +42,8 @@ public partial class LoadingViewModel : BaseRegistrationViewModel
 	/// <summary>
 	/// Gets the current connection state as a color.
 	/// </summary>
-	//[ObservableProperty]
-	//private Brush? connectionStateColor;
+	[ObservableProperty]
+	private Brush? connectionStateColor;
 
 	/// <summary>
 	/// Gets the current state summary as a user friendly localized string.

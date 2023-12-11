@@ -8,7 +8,7 @@ namespace NeuroAccessMaui.UI.Pages;
 /// <summary>
 /// A base class for all view models, inheriting from the <see cref="BindableObject"/>.
 /// <br/>
-/// NOTE: using this class requires your page/view to inherit from <see cref="BaseContentPage" or <see cref="BaseContentView"/>.
+/// NOTE: using this class requires your page/view to inherit from <see cref="BaseContentPage"/> or <see cref="BaseContentView"/>.
 /// </summary>
 public abstract partial class BaseViewModel : ObservableObject, ILifeCycleView
 {
@@ -51,7 +51,7 @@ public abstract partial class BaseViewModel : ObservableObject, ILifeCycleView
 	/// Use this method when nesting view models. This is the view model equivalent of master/detail pages.
 	/// </summary>
 	/// <typeparam name="T">The view model type.</typeparam>
-	/// <param name="childViewModel">The child view model to add.</param>
+	/// <param name="ChildViewModel">The child view model to add.</param>
 	/// <returns>Child view model</returns>
 	protected T AddChildViewModel<T>(T ChildViewModel) where T : BaseViewModel
 	{
@@ -63,7 +63,7 @@ public abstract partial class BaseViewModel : ObservableObject, ILifeCycleView
 	/// Use this method when nesting view models. This is the view model equivalent of master/detail pages.
 	/// </summary>
 	/// <typeparam name="T">The view model type.</typeparam>
-	/// <param name="childViewModel">The child view model to remove.</param>
+	/// <param name="ChildViewModel">The child view model to remove.</param>
 	/// <returns>Child view model</returns>
 	protected T RemoveChildViewModel<T>(T ChildViewModel) where T : BaseViewModel
 	{
@@ -72,33 +72,29 @@ public abstract partial class BaseViewModel : ObservableObject, ILifeCycleView
 	}
 
 	/// <summary>
-	/// Called by the parent page when it appears on screen, <em>after</em> the <see cref="Appearing"/> method is called.
+	/// Called by the parent page when it appears on screen, <em>after</em> the <see cref="DoAppearing"/> method is called.
 	/// </summary>
 	public async Task RestoreState()
 	{
 		foreach (BaseViewModel ChildViewModel in this.childViewModels)
-		{
 			await ChildViewModel.DoRestoreState();
-		}
 
 		await this.DoRestoreState();
 	}
 
 	/// <summary>
-	/// Called by the parent page when it disappears on screen, <em>before</em> the <see cref="Disappearing"/> method is called.
+	/// Called by the parent page when it disappears on screen, <em>before</em> the <see cref="DoDisappearing"/> method is called.
 	/// </summary>
 	public async Task SaveState()
 	{
 		foreach (BaseViewModel ChildViewModel in this.childViewModels)
-		{
 			await ChildViewModel.DoSaveState();
-		}
 
 		await this.DoSaveState();
 	}
 
 	/// <summary>
-	/// Convenience method that calls <see cref="SaveState"/> and then <see cref="Disappearing"/>.
+	/// Convenience method that calls <see cref="SaveState"/> and then <see cref="DoDisappearing"/>.
 	/// </summary>
 	public async Task Shutdown()
 	{
@@ -125,7 +121,7 @@ public abstract partial class BaseViewModel : ObservableObject, ILifeCycleView
 	/// <summary>
 	/// Helper method for getting a unique settings key for a given property.
 	/// </summary>
-	/// <param name="propertyName">The property name to convert into a settings key.</param>
+	/// <param name="PropertyName">The property name to convert into a settings key.</param>
 	/// <returns>Key name</returns>
 	protected string GetSettingsKey(string PropertyName)
 	{

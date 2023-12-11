@@ -13,7 +13,7 @@ public partial class ViewImageViewModel : ObservableObject
 	private readonly PhotosLoader photosLoader;
 
 	/// <summary>
-	/// Creates a new instance of the <see cref="ViewImageModel"/> class.
+	/// Creates a new instance of the <see cref="ViewImageViewModel"/> class.
 	/// </summary>
 	public ViewImageViewModel()
 	{

@@ -80,7 +80,7 @@ public class NfcTagReference
 			{
 				foreach (Property P in this.metaData)
 				{
-					if (string.Compare(P.Name, PropertyName, true) == 0)
+					if (string.Compare(P.Name, PropertyName, StringComparison.OrdinalIgnoreCase) == 0)
 					{
 						return P.Value;
 					}

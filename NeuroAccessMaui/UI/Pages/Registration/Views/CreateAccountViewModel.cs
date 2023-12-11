@@ -202,7 +202,7 @@ public partial class CreateAccountViewModel : BaseRegistrationViewModel
 		try
 		{
 			RegisterIdentityModel IdentityModel = this.CreateRegisterModel();
-			LegalIdentityAttachment[] Photos = { /* Photos are left empty */ };
+			LegalIdentityAttachment[] Photos = Array.Empty<LegalIdentityAttachment>(); // Photos are left empty
 
 			(bool Succeeded, LegalIdentity AddedIdentity) = await ServiceRef.NetworkService.TryRequest(() =>
 				ServiceRef.XmppService.AddLegalIdentity(IdentityModel, Photos));

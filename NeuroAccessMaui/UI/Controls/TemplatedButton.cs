@@ -34,7 +34,9 @@ public class TemplatedButton : ContentView, IButtonElement
 	/// <summary>
 	/// Gets or sets the command to invoke when the button is activated. This is a bindable property.
 	/// </summary>
-	/// <remarks>This property is used to associate a command with an instance of a button. This property is most often set in the MVVM pattern to bind callbacks back into the ViewModel. <see cref="VisualElement.IsEnabled" /> is controlled by the <see cref="Command.CanExecute(object)"/> if set.</remarks>
+	/// <remarks>This property is used to associate a command with an instance of a button. This property is most often set in
+	/// the MVVM pattern to bind callbacks back into the ViewModel. <see cref="VisualElement.IsEnabled" /> is controlled by the
+	/// <see cref="ICommand.CanExecute(object)"/> if set.</remarks>
 	public ICommand? Command
 	{
 		get => (ICommand?)this.GetValue(CommandProperty);

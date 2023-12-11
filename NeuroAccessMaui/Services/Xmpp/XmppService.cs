@@ -672,24 +672,16 @@ internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 		try
 		{
 			if (string.IsNullOrEmpty(PasswordMethod))
-			{
 				Client = new XmppClient(HostName, PortNumber, UserName, Password, LanguageCode, ApplicationAssembly, this.sniffer);
-			}
 			else
-			{
 				Client = new XmppClient(HostName, PortNumber, UserName, Password, PasswordMethod, LanguageCode, ApplicationAssembly, this.sniffer);
-			}
 
 			if (Operation == ConnectOperation.ConnectAndCreateAccount)
 			{
 				if (!string.IsNullOrEmpty(ApiKey) && !string.IsNullOrEmpty(ApiSecret))
-				{
 					Client.AllowRegistration(ApiKey, ApiSecret);
-				}
 				else
-				{
 					Client.AllowRegistration();
-				}
 			}
 
 			Client.TrustServer = !IsIpAddress;
@@ -742,44 +734,26 @@ internal sealed class XmppService : LoadableService, IXmppService, IDisposable
 			System.Diagnostics.Debug.WriteLine("Sniffer: ", await this.sniffer.SnifferToText());
 
 			if (!StreamNegotiation || IsTimeout)
-			{
 				ErrorMessage = ServiceRef.Localizer[nameof(AppResources.CantConnectTo), Domain];
-			}
 			else if (!StreamOpened)
-			{
 				ErrorMessage = ServiceRef.Localizer[nameof(AppResources.DomainIsNotAValidOperator), Domain];
-			}
 			else if (!StartingEncryption)
-			{
 				ErrorMessage = ServiceRef.Localizer[nameof(AppResources.DomainDoesNotFollowEncryptionPolicy), Domain];
-			}
 			else if (!Authenticating)
-			{
 				ErrorMessage = ServiceRef.Localizer[nameof(AppResources.UnableToAuthenticateWith), Domain];
-			}
 			else if (!Registering)
 			{
 				if (!string.IsNullOrWhiteSpace(ConnectionError))
-				{
 					ErrorMessage = ConnectionError;
-				}
 				else
-				{
 					ErrorMessage = ServiceRef.Localizer[nameof(AppResources.OperatorDoesNotSupportRegisteringNewAccounts), Domain];
-				}
 			}
 			else if (Operation == ConnectOperation.ConnectAndCreateAccount)
-			{
 				ErrorMessage = ServiceRef.Localizer[nameof(AppResources.AccountNameAlreadyTaken), this.accountName ?? string.Empty];
-			}
 			else if (Operation == ConnectOperation.ConnectToAccount)
-			{
 				ErrorMessage = ServiceRef.Localizer[nameof(AppResources.InvalidUsernameOrPassword), this.accountName ?? string.Empty];
-			}
 			else
-			{
 				ErrorMessage = ServiceRef.Localizer[nameof(AppResources.UnableToConnectTo), Domain];
-			}
 		}
 
 		return (Succeeded, ErrorMessage, Alternatives);

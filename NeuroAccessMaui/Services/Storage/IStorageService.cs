@@ -20,7 +20,6 @@ public interface IStorageService
 	/// <summary>
 	/// Initializes the persistent storage on a background task. This call is asynchronous.
 	/// </summary>
-	/// <param name="Thread"></param>
 	/// <param name="cancellationToken">Will stop the service load if the token is set.</param>
 	Task Init(CancellationToken? cancellationToken);
 
