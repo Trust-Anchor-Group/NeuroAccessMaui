@@ -254,7 +254,7 @@ public partial class CreateAccountViewModel : BaseRegistrationViewModel
 				s = LegalIdentity[Constants.XmppProperties.Country];
 			}
 
-			IdentityModel.EMail = s;
+			IdentityModel.Country = s;
 		}
 
 		// Other fields are left empty
