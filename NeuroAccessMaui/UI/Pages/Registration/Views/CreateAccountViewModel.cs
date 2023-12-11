@@ -141,16 +141,23 @@ public partial class CreateAccountViewModel : BaseRegistrationViewModel
 				this.OnPropertyChanged(nameof(this.IsAccountCreated));
 			}
 
+			string? ApiKey = ServiceRef.TagProfile.ApiKey;
+			string? ApiSecret = ServiceRef.TagProfile.ApiSecret;
+
+			if (string.IsNullOrEmpty(ApiKey) && string.IsNullOrEmpty(ApiSecret))
+			{
+				ApiKey = ServiceRef.TagProfile.InitialApiKey;
+				ApiSecret = ServiceRef.TagProfile.InitialApiSecret;
+			}
+
 			(bool Succeeded, string? ErrorMessage, string[]? Alternatives) = await ServiceRef.XmppService.TryConnectAndCreateAccount(ServiceRef.TagProfile.Domain!,
 				IsIpAddress, HostName, PortNumber, this.AccountText, PasswordToUse, Constants.LanguageCodes.Default,
-				ServiceRef.TagProfile.ApiKey!, ServiceRef.TagProfile.ApiSecret!, typeof(App).Assembly, OnConnected);
+				ApiKey ?? string.Empty, ApiSecret ?? string.Empty, typeof(App).Assembly, OnConnected);
 
 			if (Succeeded)
 			{
 				if (this.CreateIdentityCommand.CanExecute(null))
-				{
 					await this.CreateIdentityCommand.ExecuteAsync(null);
-				}
 			}
 			else if (Alternatives is not null)
 			{
@@ -257,18 +264,6 @@ public partial class CreateAccountViewModel : BaseRegistrationViewModel
 			IdentityModel.Country = s;
 		}
 
-		// Other fields are left empty
-		IdentityModel.FirstName = "N/A";
-		//!!! IdentityModel.MiddleNames = "N/A";
-		IdentityModel.LastNames = "N/A";
-		IdentityModel.PersonalNumber = "N/A";
-		IdentityModel.Address = "N/A";
-		IdentityModel.Address2 = "N/A";
-		IdentityModel.ZipCode = "N/A";
-		//!!! IdentityModel.Area = "N/A";
-		IdentityModel.City = "N/A";
-		//!!! IdentityModel.Region = "N/A";
-		
 		return IdentityModel;
 	}
 }
