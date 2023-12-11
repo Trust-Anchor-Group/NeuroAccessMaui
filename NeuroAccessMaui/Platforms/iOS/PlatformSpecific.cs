@@ -1,95 +1,93 @@
 ﻿using Foundation;
 using UIKit;
 
-namespace NeuroAccessMaui.Services;
-
-public class PlatformSpecific : IPlatformSpecific
+namespace NeuroAccessMaui.Services
 {
-	public PlatformSpecific()
+	public class PlatformSpecific : IPlatformSpecific
 	{
-	}
-
-	/// <inheritdoc/>
-	public bool CanProhibitScreenCapture => false;
-
-	/// <inheritdoc/>
-	public bool ProhibitScreenCapture // iOS doesn't support screen protection
-	{
-		get => false;
-		set => _ = value; // ignore the value
-	}
-
-	/// <inheritdoc/>
-	public string? GetDeviceId()
-	{
-		return UIDevice.CurrentDevice.IdentifierForVendor.ToString();
-	}
-
-	/// <inheritdoc/>
-	public Task CloseApplication()
-	{
-		Environment.Exit(0);
-		return Task.CompletedTask;
-	}
-
-	/// <inheritdoc/>
-	public void ShareImage(byte[] PngFile, string Message, string Title, string FileName)
-	{
-		UIImage? ImageObject = UIImage.LoadFromData(NSData.FromArray(PngFile));
-		UIWindow? KeyWindow = UIApplication.SharedApplication.KeyWindow;
-
-		if ((ImageObject is null) || (KeyWindow is null))
+		public PlatformSpecific()
 		{
-			return;
 		}
 
-		NSString MessageObject = new(Message);
-		NSObject[] Items = [MessageObject, ImageObject];
-		UIActivityViewController activityController = new(Items, null);
+		/// <inheritdoc/>
+		public bool CanProhibitScreenCapture => false;
 
-		UIViewController? topController = KeyWindow.RootViewController;
-
-		if (topController is not null)
+		/// <inheritdoc/>
+		public bool ProhibitScreenCapture // iOS doesn't support screen protection
 		{
-			while (topController.PresentedViewController is not null)
-			{
-				topController = topController.PresentedViewController;
-			}
-
-			topController.PresentViewController(activityController, true, () => { });
+			get => false;
+			set => _ = value; // ignore the value
 		}
-	}
 
-	/// <summary>
-	/// Shares an image in PNG format.
-	/// </summary>
-	public void HideKeyboard()
-	{
-	}
-
-	public Task<byte[]> CaptureScreen(int blurRadius = 25)
-	{
-		blurRadius = Math.Min(25, Math.Max(blurRadius, 0));
-		UIImage capture;
-
-		using (var blurEffect = UIBlurEffect.FromStyle(UIBlurEffectStyle.Regular))
+		/// <inheritdoc/>
+		public string? GetDeviceId()
 		{
-			using (var blurWindow = new UIVisualEffectView(blurEffect))
+			return UIDevice.CurrentDevice.IdentifierForVendor.ToString();
+		}
+
+		/// <inheritdoc/>
+		public Task CloseApplication()
+		{
+			Environment.Exit(0);
+			return Task.CompletedTask;
+		}
+
+		/// <inheritdoc/>
+		public void ShareImage(byte[] PngFile, string Message, string Title, string FileName)
+		{
+			UIImage? ImageObject = UIImage.LoadFromData(NSData.FromArray(PngFile));
+			UIWindow? KeyWindow = UIApplication.SharedApplication.KeyWindow;
+
+			if ((ImageObject is null) || (KeyWindow is null))
 			{
-				blurWindow.Frame = UIScreen.MainScreen.Bounds;
-				blurWindow.Alpha = Math.Min(1.0f, (1.0f / 25.0f) * blurRadius);
-
-				var subview = UIScreen.MainScreen.SnapshotView(true);
-				//capture = UIScreen.MainScreen.Capture();
-				//var subview = new UIImageView(capture);
-				subview.AddSubview(blurWindow);
-				capture = subview.Capture(true);
-				blurWindow.RemoveFromSuperview();
-				subview.Dispose();
-
-				//!!! capture.AsJPEG(.8f).AsStream();
-				return Task.FromResult(new byte[0]);
+				return;
 			}
+
+			NSString MessageObject = new(Message);
+			NSObject[] Items = [MessageObject, ImageObject];
+			UIActivityViewController activityController = new(Items, null);
+
+			UIViewController? topController = KeyWindow.RootViewController;
+
+			if (topController is not null)
+			{
+				while (topController.PresentedViewController is not null)
+				{
+					topController = topController.PresentedViewController;
+				}
+
+				topController.PresentViewController(activityController, true, () => { });
+			}
+		}
+
+		/// <summary>
+		/// Shares an image in PNG format.
+		/// </summary>
+		public void HideKeyboard()
+		{
+		}
+
+		public Task<byte[]> CaptureScreen(int blurRadius = 25)
+		{
+			blurRadius = Math.Min(25, Math.Max(blurRadius, 0));
+			UIImage capture;
+
+			using UIBlurEffect blurEffect = UIBlurEffect.FromStyle(UIBlurEffectStyle.Regular);
+			using UIVisualEffectView blurWindow = new(blurEffect);
+
+			blurWindow.Frame = UIScreen.MainScreen.Bounds;
+			blurWindow.Alpha = Math.Min(1.0f, (1.0f / 25.0f) * blurRadius);
+
+			UIView? subview = UIScreen.MainScreen.SnapshotView(true);
+			//capture = UIScreen.MainScreen.Capture();
+			//var subview = new UIImageView(capture);
+			subview.AddSubview(blurWindow);
+			capture = subview.Capture(true);
+			blurWindow.RemoveFromSuperview();
+			subview.Dispose();
+
+			//!!! capture.AsJPEG(.8f).AsStream();
+			return Task.FromResult(Array.Empty<byte>());
 		}
 	}
 }

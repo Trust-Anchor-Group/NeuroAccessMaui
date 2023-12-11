@@ -5,105 +5,106 @@ using System.Text;
 using Waher.Events;
 using Waher.Runtime.Inventory;
 
-namespace NeuroAccessMaui.Services.UI;
-
-/// <inheritdoc/>
-[Singleton]
-public class UiSerializer : IUiSerializer
+namespace NeuroAccessMaui.Services.UI
 {
-	private readonly ConcurrentQueue<UiTask> taskQueue = new();
-	private bool isExecutingUiTasks = false;
-
-	/// <summary>
-	/// Creates a new instance of the <see cref="UiSerializer"/> class.
-	/// </summary>
-	public UiSerializer()
+	/// <inheritdoc/>
+	[Singleton]
+	public class UiSerializer : IUiSerializer
 	{
-	}
+		private readonly ConcurrentQueue<UiTask> taskQueue = new();
+		private bool isExecutingUiTasks = false;
 
-	private void AddTask(UiTask Task)
-	{
-		this.taskQueue.Enqueue(Task);
-
-		if (!this.isExecutingUiTasks)
+		/// <summary>
+		/// Creates a new instance of the <see cref="UiSerializer"/> class.
+		/// </summary>
+		public UiSerializer()
 		{
-			this.isExecutingUiTasks = true;
-
-			MainThread.BeginInvokeOnMainThread(async () =>
-			{
-				await this.ProcessAllTasks();
-			});
 		}
-	}
 
-	private async Task ProcessAllTasks()
-	{
-		try
+		private void AddTask(UiTask Task)
 		{
-			do
+			this.taskQueue.Enqueue(Task);
+
+			if (!this.isExecutingUiTasks)
 			{
-				if (this.taskQueue.TryDequeue(out UiTask? Task))
+				this.isExecutingUiTasks = true;
+
+				MainThread.BeginInvokeOnMainThread(async () =>
 				{
-					await Task.Execute();
+					await this.ProcessAllTasks();
+				});
+			}
+		}
+
+		private async Task ProcessAllTasks()
+		{
+			try
+			{
+				do
+				{
+					if (this.taskQueue.TryDequeue(out UiTask? Task))
+					{
+						await Task.Execute();
+					}
+				}
+				while (!this.taskQueue.IsEmpty);
+			}
+			finally
+			{
+				this.isExecutingUiTasks = false;
+			}
+		}
+
+		#region DisplayAlert
+
+		/// <inheritdoc/>
+		public Task<bool> DisplayAlert(string title, string message, string? accept = null, string? cancel = null)
+		{
+			DisplayAlert Task = new(title, message, accept, cancel);
+			this.AddTask(Task);
+			return Task.CompletionSource.Task;
+		}
+
+		/// <inheritdoc/>
+		public Task DisplayException(Exception exception, string? title = null)
+		{
+			exception = Log.UnnestException(exception);
+
+			StringBuilder sb = new();
+
+			if (exception is not null)
+			{
+				sb.AppendLine(exception.Message);
+
+				while (exception.InnerException is not null)
+				{
+					exception = exception.InnerException;
+					sb.AppendLine(exception.Message);
 				}
 			}
-			while (!this.taskQueue.IsEmpty);
-		}
-		finally
-		{
-			this.isExecutingUiTasks = false;
-		}
-	}
-
-	#region DisplayAlert
-
-	/// <inheritdoc/>
-	public Task<bool> DisplayAlert(string title, string message, string? accept = null, string? cancel = null)
-	{
-		DisplayAlert Task = new(title, message, accept, cancel);
-		this.AddTask(Task);
-		return Task.CompletionSource.Task;
-	}
-
-	/// <inheritdoc/>
-	public Task DisplayException(Exception exception, string? title = null)
-	{
-		exception = Log.UnnestException(exception);
-
-		StringBuilder sb = new();
-
-		if (exception is not null)
-		{
-			sb.AppendLine(exception.Message);
-
-			while (exception.InnerException is not null)
+			else
 			{
-				exception = exception.InnerException;
-				sb.AppendLine(exception.Message);
+				sb.AppendLine(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)]);
 			}
+
+			return this.DisplayAlert(
+				title ?? ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], sb.ToString(),
+				ServiceRef.Localizer[nameof(AppResources.Ok)]);
 		}
-		else
+
+		#endregion
+
+		#region DisplayPrompt
+
+		/// <inheritdoc/>
+		public Task<string> DisplayPrompt(string title, string message, string? accept = null, string? cancel = null)
 		{
-			sb.AppendLine(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)]);
+			DisplayPrompt Task = new(title, message, accept, cancel);
+			this.AddTask(Task);
+			return Task.CompletionSource.Task;
 		}
 
-		return this.DisplayAlert(
-			title ?? ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], sb.ToString(),
-			ServiceRef.Localizer[nameof(AppResources.Ok)]);
+		#endregion
+
 	}
-
-	#endregion
-
-	#region DisplayPrompt
-
-	/// <inheritdoc/>
-	public Task<string> DisplayPrompt(string title, string message, string? accept = null, string? cancel = null)
-	{
-		DisplayPrompt Task = new(title, message, accept, cancel);
-		this.AddTask(Task);
-		return Task.CompletionSource.Task;
-	}
-
-	#endregion
-
 }

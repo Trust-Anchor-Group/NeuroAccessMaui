@@ -15,207 +15,208 @@ using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.Xmpp;
 using ZXing;
 
-namespace NeuroAccessMaui.Services;
-
-/// <summary>
-/// Base class that references services in the app.
-/// </summary>
-public static class ServiceRef
+namespace NeuroAccessMaui.Services
 {
-	private static IXmppService? xmppService;
-	private static IUiSerializer? uiSerializer;
-	private static ITagProfile? tagProfile;
-	private static INavigationService? navigationService;
-	private static ILogService? logService;
-	private static INetworkService? networkService;
-	private static IContractOrchestratorService? contractOrchestratorService;
-	private static IAttachmentCacheService? attachmentCacheService;
-	private static ICryptoService? cryptoService;
-	private static ISettingsService? settingsService;
-	private static IStorageService? storageService;
-	private static INfcService? nfcService;
-	private static IStringLocalizer? localizer;
-	private static IPlatformSpecific? platformSpecific;
-	private static IBarcodeReader? barcodeReader;
-
 	/// <summary>
-	/// The dispatcher to use for alerts and accessing the main thread.
+	/// Base class that references services in the app.
 	/// </summary>
-	public static IUiSerializer UiSerializer
+	public static class ServiceRef
 	{
-		get
+		private static IXmppService? xmppService;
+		private static IUiSerializer? uiSerializer;
+		private static ITagProfile? tagProfile;
+		private static INavigationService? navigationService;
+		private static ILogService? logService;
+		private static INetworkService? networkService;
+		private static IContractOrchestratorService? contractOrchestratorService;
+		private static IAttachmentCacheService? attachmentCacheService;
+		private static ICryptoService? cryptoService;
+		private static ISettingsService? settingsService;
+		private static IStorageService? storageService;
+		private static INfcService? nfcService;
+		private static IStringLocalizer? localizer;
+		private static IPlatformSpecific? platformSpecific;
+		private static IBarcodeReader? barcodeReader;
+
+		/// <summary>
+		/// The dispatcher to use for alerts and accessing the main thread.
+		/// </summary>
+		public static IUiSerializer UiSerializer
 		{
-			uiSerializer ??= App.Instantiate<IUiSerializer>();
-			return uiSerializer;
+			get
+			{
+				uiSerializer ??= App.Instantiate<IUiSerializer>();
+				return uiSerializer;
+			}
 		}
-	}
 
-	/// <summary>
-	/// The XMPP service for XMPP communication.
-	/// </summary>
-	public static IXmppService XmppService
-	{
-		get
+		/// <summary>
+		/// The XMPP service for XMPP communication.
+		/// </summary>
+		public static IXmppService XmppService
 		{
-			xmppService ??= App.Instantiate<IXmppService>();
-			return xmppService;
+			get
+			{
+				xmppService ??= App.Instantiate<IXmppService>();
+				return xmppService;
+			}
 		}
-	}
 
-	/// <summary>
-	/// TAG Profile service.
-	/// </summary>
-	public static ITagProfile TagProfile
-	{
-		get
+		/// <summary>
+		/// TAG Profile service.
+		/// </summary>
+		public static ITagProfile TagProfile
 		{
-			tagProfile ??= App.Instantiate<ITagProfile>();
-			return tagProfile;
+			get
+			{
+				tagProfile ??= App.Instantiate<ITagProfile>();
+				return tagProfile;
+			}
 		}
-	}
 
-	/// <summary>
-	/// Navigation service.
-	/// </summary>
-	public static INavigationService NavigationService
-	{
-		get
+		/// <summary>
+		/// Navigation service.
+		/// </summary>
+		public static INavigationService NavigationService
 		{
-			navigationService ??= App.Instantiate<INavigationService>();
-			return navigationService;
+			get
+			{
+				navigationService ??= App.Instantiate<INavigationService>();
+				return navigationService;
+			}
 		}
-	}
 
-	/// <summary>
-	/// Log service.
-	/// </summary>
-	public static ILogService LogService
-	{
-		get
+		/// <summary>
+		/// Log service.
+		/// </summary>
+		public static ILogService LogService
 		{
-			logService ??= App.Instantiate<ILogService>();
-			return logService;
+			get
+			{
+				logService ??= App.Instantiate<ILogService>();
+				return logService;
+			}
 		}
-	}
 
-	/// <summary>
-	/// Network service.
-	/// </summary>
-	public static INetworkService NetworkService
-	{
-		get
+		/// <summary>
+		/// Network service.
+		/// </summary>
+		public static INetworkService NetworkService
 		{
-			networkService ??= App.Instantiate<INetworkService>();
-			return networkService;
+			get
+			{
+				networkService ??= App.Instantiate<INetworkService>();
+				return networkService;
+			}
 		}
-	}
 
-	/// <summary>
-	/// Contract orchestrator service.
-	/// </summary>
-	public static IContractOrchestratorService ContractOrchestratorService
-	{
-		get
+		/// <summary>
+		/// Contract orchestrator service.
+		/// </summary>
+		public static IContractOrchestratorService ContractOrchestratorService
 		{
-			contractOrchestratorService ??= App.Instantiate<IContractOrchestratorService>();
-			return contractOrchestratorService;
+			get
+			{
+				contractOrchestratorService ??= App.Instantiate<IContractOrchestratorService>();
+				return contractOrchestratorService;
+			}
 		}
-	}
 
-	/// <summary>
-	/// AttachmentCache service.
-	/// </summary>
-	public static IAttachmentCacheService AttachmentCacheService
-	{
-		get
+		/// <summary>
+		/// AttachmentCache service.
+		/// </summary>
+		public static IAttachmentCacheService AttachmentCacheService
 		{
-			attachmentCacheService ??= App.Instantiate<IAttachmentCacheService>();
-			return attachmentCacheService;
+			get
+			{
+				attachmentCacheService ??= App.Instantiate<IAttachmentCacheService>();
+				return attachmentCacheService;
+			}
 		}
-	}
 
-	/// <summary>
-	/// Crypto service.
-	/// </summary>
-	public static ICryptoService CryptoService
-	{
-		get
+		/// <summary>
+		/// Crypto service.
+		/// </summary>
+		public static ICryptoService CryptoService
 		{
-			cryptoService ??= App.Instantiate<ICryptoService>();
-			return cryptoService;
+			get
+			{
+				cryptoService ??= App.Instantiate<ICryptoService>();
+				return cryptoService;
+			}
 		}
-	}
 
-	/// <summary>
-	/// Settings service.
-	/// </summary>
-	public static ISettingsService SettingsService
-	{
-		get
+		/// <summary>
+		/// Settings service.
+		/// </summary>
+		public static ISettingsService SettingsService
 		{
-			settingsService ??= App.Instantiate<ISettingsService>();
-			return settingsService;
+			get
+			{
+				settingsService ??= App.Instantiate<ISettingsService>();
+				return settingsService;
+			}
 		}
-	}
 
-	/// <summary>
-	/// Storage service.
-	/// </summary>
-	public static IStorageService StorageService
-	{
-		get
+		/// <summary>
+		/// Storage service.
+		/// </summary>
+		public static IStorageService StorageService
 		{
-			storageService ??= App.Instantiate<IStorageService>();
-			return storageService;
+			get
+			{
+				storageService ??= App.Instantiate<IStorageService>();
+				return storageService;
+			}
 		}
-	}
 
-	/// <summary>
-	/// Near-Field Communication (NFC) service.
-	/// </summary>
-	public static INfcService NfcService
-	{
-		get
+		/// <summary>
+		/// Near-Field Communication (NFC) service.
+		/// </summary>
+		public static INfcService NfcService
 		{
-			nfcService ??= App.Instantiate<INfcService>();
-			return nfcService;
+			get
+			{
+				nfcService ??= App.Instantiate<INfcService>();
+				return nfcService;
+			}
 		}
-	}
 
-	/// <summary>
-	/// Localization service
-	/// </summary>
-	public static IStringLocalizer Localizer
-	{
-		get
+		/// <summary>
+		/// Localization service
+		/// </summary>
+		public static IStringLocalizer Localizer
 		{
-			localizer ??= LocalizationManager.GetStringLocalizer<AppResources>();
-			return localizer;
+			get
+			{
+				localizer ??= LocalizationManager.GetStringLocalizer<AppResources>();
+				return localizer;
+			}
 		}
-	}
 
-	/// <summary>
-	/// Localization service
-	/// </summary>
-	public static IPlatformSpecific PlatformSpecific
-	{
-		get
+		/// <summary>
+		/// Localization service
+		/// </summary>
+		public static IPlatformSpecific PlatformSpecific
 		{
-			platformSpecific ??= ServiceHelper.GetService<IPlatformSpecific>();
-			return platformSpecific;
+			get
+			{
+				platformSpecific ??= ServiceHelper.GetService<IPlatformSpecific>();
+				return platformSpecific;
+			}
 		}
-	}
 
 
-	/// <summary>
-	/// Localization service
-	/// </summary>
-	public static IBarcodeReader BarcodeReader
-	{
-		get
+		/// <summary>
+		/// Localization service
+		/// </summary>
+		public static IBarcodeReader BarcodeReader
 		{
-			barcodeReader ??= ServiceHelper.GetService<IBarcodeReader>();
-			return barcodeReader;
+			get
+			{
+				barcodeReader ??= ServiceHelper.GetService<IBarcodeReader>();
+				return barcodeReader;
+			}
 		}
 	}
 }

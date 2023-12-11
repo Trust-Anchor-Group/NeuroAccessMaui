@@ -1,16 +1,17 @@
-namespace NeuroAccessMaui.UI.Core;
-
-internal interface IButtonElement : ICommandElement
+namespace NeuroAccessMaui.UI.Core
 {
-	//note to implementor: implement this property publicly
-	//!!! not implemented yet
-	// bool IsPressed { get; }
+	internal interface IButtonElement : ICommandElement
+	{
+		//note to implementor: implement this property publicly
+		//!!! not implemented yet
+		// bool IsPressed { get; }
 
 
-	//note to implementor: but implement these methods explicitly
-	void PropagateUpClicked();
-	//!!! not implemented yet
-	// void PropagateUpPressed();
-	// void PropagateUpReleased();
-	// void SetIsPressed(bool isPressed);
+		//note to implementor: but implement these methods explicitly
+		void PropagateUpClicked();
+		//!!! not implemented yet
+		// void PropagateUpPressed();
+		// void PropagateUpReleased();
+		// void SetIsPressed(bool isPressed);
+	}
 }

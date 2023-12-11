@@ -35,7 +35,7 @@ namespace IdApp.Cv.Utilities
 
 			Array.Sort(Objects, (o1, o2) => o1.MinY - o2.MinY);
 
-			List<ushort> Found = new List<ushort>();
+			List<ushort> Found = [];
 
 			foreach (ObjectInformation Object in Objects)
 			{
@@ -60,7 +60,7 @@ namespace IdApp.Cv.Utilities
 				return null;
 
 			Matrix<float> SubRegion = ForOcr.Region((ForOcr.Width - G.Width) / 2, (ForOcr.Height - G.Height) / 2, G.Width, G.Height);
-			return ObjectMap.Extract(Found.ToArray(), SubRegion);
+			return ObjectMap.Extract([.. Found], SubRegion);
 		}
 
 		/// <summary>
@@ -83,7 +83,7 @@ namespace IdApp.Cv.Utilities
 
 			Array.Sort(Objects, (o1, o2) => o1.MinY - o2.MinY);
 
-			List<ushort> Found = new List<ushort>();
+			List<ushort> Found = [];
 
 			foreach (ObjectInformation Object in Objects)
 			{
@@ -108,7 +108,7 @@ namespace IdApp.Cv.Utilities
 				return null;
 
 			Matrix<int> SubRegion = ForOcr.Region((ForOcr.Width - G.Width) / 2, (ForOcr.Height - G.Height) / 2, G.Width, G.Height);
-			return ObjectMap.Extract(Found.ToArray(), SubRegion);
+			return ObjectMap.Extract([.. Found], SubRegion);
 		}
 	}
 }

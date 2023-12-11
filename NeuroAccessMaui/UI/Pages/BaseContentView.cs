@@ -1,37 +1,38 @@
 using NeuroAccessMaui.Services;
 
-namespace NeuroAccessMaui.UI.Pages;
-
-public abstract class BaseContentView : ContentView
+namespace NeuroAccessMaui.UI.Pages
 {
-	public static T Create<T>() where T : BaseContentView
+	public abstract class BaseContentView : ContentView
 	{
-		return ServiceHelper.GetService<T>();
-	}
-
-	/// <summary>
-	/// Convenience property for accessing the <see cref="BindableObject.BindingContext"/> property as a view model.
-	/// </summary>
-	protected BaseViewModel ContentViewModel
-	{
-		set => this.BindingContext = value;
-		get => this.ViewModel<BaseViewModel>();
-	}
-
-	/// <summary>
-	/// Convenience function for accessing the <see cref="BindableObject.BindingContext"/> property as a view model.
-	/// </summary>
-	public T ViewModel<T>() where T : BaseViewModel
-	{
-		if (this.BindingContext is T ViewModel)
+		public static T Create<T>() where T : BaseContentView
 		{
-			return ViewModel;
+			return ServiceHelper.GetService<T>();
 		}
 
-		throw new ArgumentException("Wrong view model type: " + nameof(T));
-	}
+		/// <summary>
+		/// Convenience property for accessing the <see cref="BindableObject.BindingContext"/> property as a view model.
+		/// </summary>
+		protected BaseViewModel ContentViewModel
+		{
+			set => this.BindingContext = value;
+			get => this.ViewModel<BaseViewModel>();
+		}
 
-	public BaseContentView()
-	{
+		/// <summary>
+		/// Convenience function for accessing the <see cref="BindableObject.BindingContext"/> property as a view model.
+		/// </summary>
+		public T ViewModel<T>() where T : BaseViewModel
+		{
+			if (this.BindingContext is T ViewModel)
+			{
+				return ViewModel;
+			}
+
+			throw new ArgumentException("Wrong view model type: " + nameof(T));
+		}
+
+		public BaseContentView()
+		{
+		}
 	}
 }

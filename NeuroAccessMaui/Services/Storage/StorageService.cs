@@ -5,232 +5,233 @@ using Waher.Persistence.Files;
 using Waher.Persistence.Serialization;
 using Waher.Runtime.Inventory;
 
-namespace NeuroAccessMaui.Services.Storage;
-
-[Singleton]
-internal sealed class StorageService : IStorageService
+namespace NeuroAccessMaui.Services.Storage
 {
-	private readonly LinkedList<TaskCompletionSource<bool>> tasksWaiting = new();
-	private readonly string dataFolder;
-	private FilesProvider databaseProvider;
-	private bool? initialized = null;
-	private bool started = false;
-
-	/// <summary>
-	/// Creates a new instance of the <see cref="StorageService"/> class.
-	/// </summary>
-	public StorageService()
+	[Singleton]
+	internal sealed class StorageService : IStorageService
 	{
-		string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-		this.dataFolder = Path.Combine(appDataFolder, "Data");
-	}
+		private readonly LinkedList<TaskCompletionSource<bool>> tasksWaiting = new();
+		private readonly string dataFolder;
+		private FilesProvider databaseProvider;
+		private bool? initialized = null;
+		private bool started = false;
 
-	/// <summary>
-	/// Folder for database.
-	/// </summary>
-	public string DataFolder => this.dataFolder;
-
-	#region LifeCycle management
-
-	/// <inheritdoc />
-	public async Task Init(CancellationToken? cancellationToken)
-	{
-		lock (this.tasksWaiting)
+		/// <summary>
+		/// Creates a new instance of the <see cref="StorageService"/> class.
+		/// </summary>
+		public StorageService()
 		{
-			if (this.started)
-			{
-				return;
-			}
-
-			this.started = true;
+			string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+			this.dataFolder = Path.Combine(appDataFolder, "Data");
 		}
 
-		try
+		/// <summary>
+		/// Folder for database.
+		/// </summary>
+		public string DataFolder => this.dataFolder;
+
+		#region LifeCycle management
+
+		/// <inheritdoc />
+		public async Task Init(CancellationToken? cancellationToken)
 		{
-			if (Database.HasProvider)
+			lock (this.tasksWaiting)
 			{
-				this.databaseProvider = Database.Provider as FilesProvider;
+				if (this.started)
+				{
+					return;
+				}
+
+				this.started = true;
 			}
 
-			if (this.databaseProvider is null)
-			{
-				this.databaseProvider = await this.CreateDatabaseFile();
-
-				await this.databaseProvider.RepairIfInproperShutdown(string.Empty);
-
-				await this.databaseProvider.Start();
-			}
-
-			if (this.databaseProvider is not null)
-			{
-				Database.Register(this.databaseProvider, false);
-				this.InitDone(true);
-				return;
-			}
-		}
-		catch (Exception e1)
-		{
-			e1 = Log.UnnestException(e1);
-			ServiceRef.LogService.LogException(e1);
-		}
-
-		//!!! test to uncomment it
-		/* On iOS the UI is not initialized at this point, need to find another solution
-		if (await ServiceRef.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["DatabaseIssue"], LocalizationResourceManager.Current["DatabaseCorruptInfoText"], LocalizationResourceManager.Current["RepairAndContinue"], LocalizationResourceManager.Current["ContinueAnyway"]))
-		*/
-		//TODO: when UI is ready, show an alert that the database was reset due to unrecoverable error
-		//TODO: say to close the application in a controlled manner
-		{
 			try
 			{
-				Directory.Delete(this.dataFolder, true);
+				if (Database.HasProvider)
+				{
+					this.databaseProvider = Database.Provider as FilesProvider;
+				}
 
-				this.databaseProvider = await this.CreateDatabaseFile();
+				if (this.databaseProvider is null)
+				{
+					this.databaseProvider = await this.CreateDatabaseFile();
 
-				await this.databaseProvider.RepairIfInproperShutdown(string.Empty);
+					await this.databaseProvider.RepairIfInproperShutdown(string.Empty);
 
-				await this.databaseProvider.Start();
+					await this.databaseProvider.Start();
+				}
 
-				if (!Database.HasProvider)
+				if (this.databaseProvider is not null)
 				{
 					Database.Register(this.databaseProvider, false);
 					this.InitDone(true);
 					return;
 				}
 			}
-			catch (Exception e3)
+			catch (Exception e1)
 			{
-				e3 = Log.UnnestException(e3);
-				ServiceRef.LogService.LogException(e3);
+				e1 = Log.UnnestException(e1);
+				ServiceRef.LogService.LogException(e1);
+			}
 
-				await App.Stop();
-				/*
-				Thread?.NewState("UI");
-				await ServiceRef.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["DatabaseIssue"], LocalizationResourceManager.Current["DatabaseRepairFailedInfoText"], LocalizationResourceManager.Current["Ok"]);
-				*/
+			//!!! test to uncomment it
+			/* On iOS the UI is not initialized at this point, need to find another solution
+			if (await ServiceRef.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["DatabaseIssue"], LocalizationResourceManager.Current["DatabaseCorruptInfoText"], LocalizationResourceManager.Current["RepairAndContinue"], LocalizationResourceManager.Current["ContinueAnyway"]))
+			*/
+			//TODO: when UI is ready, show an alert that the database was reset due to unrecoverable error
+			//TODO: say to close the application in a controlled manner
+			{
+				try
+				{
+					Directory.Delete(this.dataFolder, true);
+
+					this.databaseProvider = await this.CreateDatabaseFile();
+
+					await this.databaseProvider.RepairIfInproperShutdown(string.Empty);
+
+					await this.databaseProvider.Start();
+
+					if (!Database.HasProvider)
+					{
+						Database.Register(this.databaseProvider, false);
+						this.InitDone(true);
+						return;
+					}
+				}
+				catch (Exception e3)
+				{
+					e3 = Log.UnnestException(e3);
+					ServiceRef.LogService.LogException(e3);
+
+					await App.Stop();
+					/*
+					Thread?.NewState("UI");
+					await ServiceRef.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["DatabaseIssue"], LocalizationResourceManager.Current["DatabaseRepairFailedInfoText"], LocalizationResourceManager.Current["Ok"]);
+					*/
+				}
+			}
+
+			this.InitDone(false);
+		}
+
+		private void InitDone(bool Result)
+		{
+			lock (this.tasksWaiting)
+			{
+				this.initialized = Result;
+
+				foreach (TaskCompletionSource<bool> Wait in this.tasksWaiting)
+				{
+					Wait.TrySetResult(Result);
+				}
+
+				this.tasksWaiting.Clear();
 			}
 		}
 
-		this.InitDone(false);
-	}
-
-	private void InitDone(bool Result)
-	{
-		lock (this.tasksWaiting)
+		/// <inheritdoc />
+		public Task<bool> WaitInitDone()
 		{
-			this.initialized = Result;
-
-			foreach (TaskCompletionSource<bool> Wait in this.tasksWaiting)
+			lock (this.tasksWaiting)
 			{
-				Wait.TrySetResult(Result);
-			}
+				if (this.initialized.HasValue)
+				{
+					return Task.FromResult<bool>(this.initialized.Value);
+				}
 
-			this.tasksWaiting.Clear();
-		}
-	}
+				TaskCompletionSource<bool> Wait = new();
+				this.tasksWaiting.AddLast(Wait);
 
-	/// <inheritdoc />
-	public Task<bool> WaitInitDone()
-	{
-		lock (this.tasksWaiting)
-		{
-			if (this.initialized.HasValue)
-			{
-				return Task.FromResult<bool>(this.initialized.Value);
-			}
-
-			TaskCompletionSource<bool> Wait = new();
-			this.tasksWaiting.AddLast(Wait);
-
-			return Wait.Task;
-		}
-	}
-
-	/// <inheritdoc />
-	public async Task Shutdown()
-	{
-		lock (this.tasksWaiting)
-		{
-			this.initialized = null;
-			this.started = false;
-		}
-
-		try
-		{
-			if (this.databaseProvider is not null)
-			{
-				Database.Register(new NullDatabaseProvider(), false);
-				await this.databaseProvider.Flush();
-				await this.databaseProvider.Stop();
-				this.databaseProvider = null;
+				return Wait.Task;
 			}
 		}
-		catch (Exception e)
+
+		/// <inheritdoc />
+		public async Task Shutdown()
 		{
-			ServiceRef.LogService.LogException(e);
-		}
-	}
-
-	private Task<FilesProvider> CreateDatabaseFile()
-	{
-		FilesProvider.AsyncFileIo = false;  // Asynchronous file I/O induces a long delay during startup on mobile platforms. Why??
-
-		return FilesProvider.CreateAsync(this.dataFolder, "Default", 8192, 10000, 8192, Encoding.UTF8,
-			(int)Constants.Timeouts.Database.TotalMilliseconds, ServiceRef.CryptoService.GetCustomKey);
-	}
-
-	#endregion
-
-	public async Task Insert(object obj)
-	{
-		await Database.Insert(obj);
-		await Database.Provider.Flush();
-	}
-
-	public async Task Update(object obj)
-	{
-		await Database.Update(obj);
-		await Database.Provider.Flush();
-	}
-
-	public Task<T> FindFirstDeleteRest<T>() where T : class
-	{
-		return Database.FindFirstDeleteRest<T>();
-	}
-
-	public Task<T> FindFirstIgnoreRest<T>() where T : class
-	{
-		return Database.FindFirstIgnoreRest<T>();
-	}
-
-	public Task Export(IDatabaseExport exportOutput)
-	{
-		return Database.Export(exportOutput);
-	}
-
-	/// <summary>
-	/// Flags the database for repair, so that the next time the app is opened, the database will be repaired.
-	/// </summary>
-	public void FlagForRepair()
-	{
-		this.DeleteFile("Start.txt");
-		this.DeleteFile("Stop.txt");
-	}
-
-	private void DeleteFile(string FileName)
-	{
-		try
-		{
-			FileName = Path.Combine(this.dataFolder, FileName);
-
-			if (File.Exists(FileName))
+			lock (this.tasksWaiting)
 			{
-				File.Delete(FileName);
+				this.initialized = null;
+				this.started = false;
+			}
+
+			try
+			{
+				if (this.databaseProvider is not null)
+				{
+					Database.Register(new NullDatabaseProvider(), false);
+					await this.databaseProvider.Flush();
+					await this.databaseProvider.Stop();
+					this.databaseProvider = null;
+				}
+			}
+			catch (Exception e)
+			{
+				ServiceRef.LogService.LogException(e);
 			}
 		}
-		catch (Exception)
+
+		private Task<FilesProvider> CreateDatabaseFile()
 		{
-			// Ignore, to avoid infinite loops if event log has an inconsistency.
+			FilesProvider.AsyncFileIo = false;  // Asynchronous file I/O induces a long delay during startup on mobile platforms. Why??
+
+			return FilesProvider.CreateAsync(this.dataFolder, "Default", 8192, 10000, 8192, Encoding.UTF8,
+				(int)Constants.Timeouts.Database.TotalMilliseconds, ServiceRef.CryptoService.GetCustomKey);
+		}
+
+		#endregion
+
+		public async Task Insert(object obj)
+		{
+			await Database.Insert(obj);
+			await Database.Provider.Flush();
+		}
+
+		public async Task Update(object obj)
+		{
+			await Database.Update(obj);
+			await Database.Provider.Flush();
+		}
+
+		public Task<T> FindFirstDeleteRest<T>() where T : class
+		{
+			return Database.FindFirstDeleteRest<T>();
+		}
+
+		public Task<T> FindFirstIgnoreRest<T>() where T : class
+		{
+			return Database.FindFirstIgnoreRest<T>();
+		}
+
+		public Task Export(IDatabaseExport exportOutput)
+		{
+			return Database.Export(exportOutput);
+		}
+
+		/// <summary>
+		/// Flags the database for repair, so that the next time the app is opened, the database will be repaired.
+		/// </summary>
+		public void FlagForRepair()
+		{
+			this.DeleteFile("Start.txt");
+			this.DeleteFile("Stop.txt");
+		}
+
+		private void DeleteFile(string FileName)
+		{
+			try
+			{
+				FileName = Path.Combine(this.dataFolder, FileName);
+
+				if (File.Exists(FileName))
+				{
+					File.Delete(FileName);
+				}
+			}
+			catch (Exception)
+			{
+				// Ignore, to avoid infinite loops if event log has an inconsistency.
+			}
 		}
 	}
 }

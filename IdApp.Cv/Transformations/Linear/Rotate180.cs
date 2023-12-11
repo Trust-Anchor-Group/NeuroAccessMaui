@@ -1,6 +1,4 @@
 ﻿using System;
-using Waher.Script.Objects;
-using Waher.Script.Objects.Matrices;
 
 namespace IdApp.Cv.Transformations.Linear
 {
@@ -19,7 +17,7 @@ namespace IdApp.Cv.Transformations.Linear
 		{
 			int w = M.Width;
 			int h = M.Height;
-			Matrix<T> Result = new Matrix<T>(w, h);
+			Matrix<T> Result = new(w, h);
 			T[] Src = M.Data;
 			int SrcIndex;
 			T[] Dest = Result.Data;

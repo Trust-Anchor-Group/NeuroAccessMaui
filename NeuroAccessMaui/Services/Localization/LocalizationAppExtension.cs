@@ -1,23 +1,20 @@
-﻿using System.Globalization;
-
-namespace NeuroAccessMaui.Services.Localization;
-
-public static class LocalizationAppExtension
+﻿namespace NeuroAccessMaui.Services.Localization
 {
-	public static MauiAppBuilder UseLocalizationManager<TStringResource>(this MauiAppBuilder Builder)
+	public static class LocalizationAppExtension
 	{
-		return Builder.UseLocalizationManager(typeof(TStringResource));
-	}
-
-	public static MauiAppBuilder UseLocalizationManager(this MauiAppBuilder Builder, Type? StringResource = null)
-	{
-		if (StringResource is not null)
+		public static MauiAppBuilder UseLocalizationManager<TStringResource>(this MauiAppBuilder Builder)
 		{
-			LocalizationManager.DefaultStringResource = StringResource;
+			return Builder.UseLocalizationManager(typeof(TStringResource));
 		}
 
-		Builder.Services.AddLocalization();
+		public static MauiAppBuilder UseLocalizationManager(this MauiAppBuilder Builder, Type? StringResource = null)
+		{
+			if (StringResource is not null)
+				LocalizationManager.DefaultStringResource = StringResource;
 
-		return Builder;
+			Builder.Services.AddLocalization();
+
+			return Builder;
+		}
 	}
 }

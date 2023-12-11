@@ -8,42 +8,43 @@ using NeuroAccessMaui.UI.Pages.Registration.Views;
 using NeuroAccessMaui.UI.Popups;
 using NeuroAccessMaui.UI.Popups.Pin;
 
-namespace NeuroAccessMaui.UI;
-
-public static class PageAppExtension
+namespace NeuroAccessMaui.UI
 {
-	public static MauiAppBuilder RegisterPagesManager(this MauiAppBuilder Builder)
+	public static class PageAppExtension
 	{
-		// Main pages
-		Builder.Services.AddTransient<AppShell>();
-		Builder.Services.AddTransient<MainPage, MainViewModel>();
-		Builder.Services.AddTransient<SecurityPage, SecurityViewModel>();
+		public static MauiAppBuilder RegisterPagesManager(this MauiAppBuilder Builder)
+		{
+			// Main pages
+			Builder.Services.AddTransient<AppShell>();
+			Builder.Services.AddTransient<MainPage, MainViewModel>();
+			Builder.Services.AddTransient<SecurityPage, SecurityViewModel>();
 
-		// Registration pages & views
-		Builder.Services.AddTransient<RegistrationPage, RegistrationViewModel>();
-		Builder.Services.AddTransient<LoadingView, LoadingViewModel>();
-		Builder.Services.AddTransient<ChoosePurposeView, ChoosePurposeViewModel>();
-		Builder.Services.AddTransient<ValidatePhoneView, ValidatePhoneViewModel>();
-		Builder.Services.AddTransient<ValidateEmailView, ValidateEmailViewModel>();
-		Builder.Services.AddTransient<ChooseProviderView, ChooseProviderViewModel>();
-		Builder.Services.AddTransient<CreateAccountView, CreateAccountViewModel>();
-		Builder.Services.AddTransient<DefinePinView, DefinePinViewModel>();
+			// Registration pages & views
+			Builder.Services.AddTransient<RegistrationPage, RegistrationViewModel>();
+			Builder.Services.AddTransient<LoadingView, LoadingViewModel>();
+			Builder.Services.AddTransient<ChoosePurposeView, ChoosePurposeViewModel>();
+			Builder.Services.AddTransient<ValidatePhoneView, ValidatePhoneViewModel>();
+			Builder.Services.AddTransient<ValidateEmailView, ValidateEmailViewModel>();
+			Builder.Services.AddTransient<ChooseProviderView, ChooseProviderViewModel>();
+			Builder.Services.AddTransient<CreateAccountView, CreateAccountViewModel>();
+			Builder.Services.AddTransient<DefinePinView, DefinePinViewModel>();
 
-		// Identity pages & views
-		Builder.Services.AddTransient<ViewIdentityPage, ViewIdentityViewModel>();
-		Builder.Services.AddTransient<TransferIdentityPage, TransferIdentityViewModel>();
+			// Identity pages & views
+			Builder.Services.AddTransient<ViewIdentityPage, ViewIdentityViewModel>();
+			Builder.Services.AddTransient<TransferIdentityPage, TransferIdentityViewModel>();
 
-		// Petitions
-		Builder.Services.AddTransient<PetitionIdentityPage, PetitionIdentityViewModel>();
-		Builder.Services.AddTransient<PetitionSignaturePage, PetitionSignatureViewModel>();
+			// Petitions
+			Builder.Services.AddTransient<PetitionIdentityPage, PetitionIdentityViewModel>();
+			Builder.Services.AddTransient<PetitionSignaturePage, PetitionSignatureViewModel>();
 
-		// Popups
-		Builder.Services.AddTransient<ChangePinPage, ChangePinViewModel>();
-		Builder.Services.AddTransient<ViewImagePage, ViewImageViewModel>();
-		Builder.Services.AddTransient<CheckPinPage>();
+			// Popups
+			Builder.Services.AddTransient<ChangePinPage, ChangePinViewModel>();
+			Builder.Services.AddTransient<ViewImagePage, ViewImageViewModel>();
+			Builder.Services.AddTransient<CheckPinPage>();
 
-		// Controls
+			// Controls
 
-		return Builder;
+			return Builder;
+		}
 	}
 }

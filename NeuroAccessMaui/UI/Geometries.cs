@@ -1,11 +1,11 @@
 ﻿using Microsoft.Maui.Controls.Shapes;
 
-namespace NeuroAccessMaui.UI;
-
-public class Geometries
+namespace NeuroAccessMaui.UI
 {
-	public static readonly Geometry CurvedLinesPath = GeometryConverter.ParseStringToPathGeometry(
-		"""
+	public class Geometries
+	{
+		public static readonly Geometry CurvedLinesPath = GeometryConverter.ParseStringToPathGeometry(
+			"""
 		M-475.991 759.984C-475.991 759.984 -652.77 348.961 -281.049 373.456C90.6695 397.951 -163.291 -204.647 309.288 76.6778C781.869 358.006 536.859 -174.054 879.665 106.678
 		M-472.751 763.121C-472.751 763.121 -645.218 350.512 -275.418 377.794C94.3821 405.079 -153.548 -195.063 312.145 88.6345C778.004 372.895 541.702 -166.441 880.998 115.073
 		M-469.509 766.252C-469.509 766.252 -637.664 352.059 -269.788 382.127C98.0902 412.198 -143.803 -185.488 314.997 100.579C774.137 387.771 546.553 -158.837 882.331 123.465
@@ -60,70 +60,71 @@ public class Geometries
 		M-310.672 919.893C-310.672 919.893 -267.557 427.994 6.15899 594.625C279.872 761.253 333.642 283.927 454.909 686.198C584.815 1117.12 784.063 213.963 947.642 534.714
 		""");
 
-	public static readonly Geometry BackButtonPath = GeometryConverter.ParseStringToPathGeometry(
-		"""
+		public static readonly Geometry BackButtonPath = GeometryConverter.ParseStringToPathGeometry(
+			"""
 		M16 7H3.83L9.42 1.41L8 0L0 8L8 16L9.41 14.59L3.83 9H16V7Z
 		""");
 
-	public static readonly Geometry LanguageSelectButtonPath = GeometryConverter.ParseStringToPathGeometry(
-		"""
+		public static readonly Geometry LanguageSelectButtonPath = GeometryConverter.ParseStringToPathGeometry(
+			"""
 		M10.49 0C4.97 0 0.5 4.48 0.5 10C0.5 15.52 4.97 20 10.49 20C16.02 20 20.5 15.52 20.5 10C20.5 4.48 16.02 0 10.49 0ZM17.42 6H14.47C14.15 4.75 13.69 3.55 13.09 2.44C14.93 3.07 16.46 4.35 17.42 6ZM10.5 2.04C11.33 3.24 11.98 4.57 12.41 6H8.59C9.02 4.57 9.67 3.24 10.5 2.04ZM2.76 12C2.6 11.36 2.5 10.69 2.5 10C2.5 9.31 2.6 8.64 2.76 8H6.14C6.06 8.66 6 9.32 6 10C6 10.68 6.06 11.34 6.14 12H2.76ZM3.58 14H6.53C6.85 15.25 7.31 16.45 7.91 17.56C6.07 16.93 4.54 15.66 3.58 14ZM6.53 6H3.58C4.54 4.34 6.07 3.07 7.91 2.44C7.31 3.55 6.85 4.75 6.53 6ZM10.5 17.96C9.67 16.76 9.02 15.43 8.59 14H12.41C11.98 15.43 11.33 16.76 10.5 17.96ZM12.84 12H8.16C8.07 11.34 8 10.68 8 10C8 9.32 8.07 8.65 8.16 8H12.84C12.93 8.65 13 9.32 13 10C13 10.68 12.93 11.34 12.84 12ZM13.09 17.56C13.69 16.45 14.15 15.25 14.47 14H17.42C16.46 15.65 14.93 16.93 13.09 17.56ZM14.86 12C14.94 11.34 15 10.68 15 10C15 9.32 14.94 8.66 14.86 8H18.24C18.4 8.64 18.5 9.31 18.5 10C18.5 10.69 18.4 11.36 18.24 12H14.86Z
 		""");
 
-	public static readonly Geometry InfoCirclePath = GeometryConverter.ParseStringToPathGeometry(
-		"""
+		public static readonly Geometry InfoCirclePath = GeometryConverter.ParseStringToPathGeometry(
+			"""
 		M9 5H11V7H9V5ZM9 9H11V15H9V9ZM10 0C4.48 0 0 4.48 0 10C0 15.52 4.48 20 10 20C15.52 20 20 15.52 20 10C20 4.48 15.52 0 10 0ZM10 18C5.59 18 2 14.41 2 10C2 5.59 5.59 2 10 2C14.41 2 18 5.59 18 10C18 14.41 14.41 18 10 18Z
 		""");
 
-	public static readonly Geometry DropDownArrowPath = GeometryConverter.ParseStringToPathGeometry(
-		"""
+		public static readonly Geometry DropDownArrowPath = GeometryConverter.ParseStringToPathGeometry(
+			"""
 		M0.333496 0.5L5.3335 5.5L10.3335 0.5H0.333496Z
 		""");
 
-	public static readonly Geometry EmailIconPath = GeometryConverter.ParseStringToPathGeometry(
-		"""
+		public static readonly Geometry EmailIconPath = GeometryConverter.ParseStringToPathGeometry(
+			"""
 		M20 2C20 0.9 19.1 0 18 0H2C0.9 0 0 0.9 0 2V14C0 15.1 0.9 16 2 16H18C19.1 16 20 15.1 20 14V2ZM18 2L10 7L2 2H18ZM18 14H2V4L10 9L18 4V14Z
 		""");
 
-	public static readonly Geometry AccountIconPath = GeometryConverter.ParseStringToPathGeometry(
-		"""
+		public static readonly Geometry AccountIconPath = GeometryConverter.ParseStringToPathGeometry(
+			"""
 		M8 2C9.1 2 10 2.9 10 4C10 5.1 9.1 6 8 6C6.9 6 6 5.1 6 4C6 2.9 6.9 2 8 2ZM8 12C10.7 12 13.8 13.29 14 14H2C2.23 13.28 5.31 12 8 12ZM8 0C5.79 0 4 1.79 4 4C4 6.21 5.79 8 8 8C10.21 8 12 6.21 12 4C12 1.79 10.21 0 8 0ZM8 10C5.33 10 0 11.34 0 14V16H16V14C16 11.34 10.67 10 8 10Z
 		""");
 
-	public static readonly Geometry CameraImageButtonPath = GeometryConverter.ParseStringToPathGeometry(
-		"""
+		public static readonly Geometry CameraImageButtonPath = GeometryConverter.ParseStringToPathGeometry(
+			"""
 		M16 2V16H2V2H16ZM16 0H2C0.9 0 0 0.9 0 2V16C0 17.1 0.9 18 2 18H16C17.1 18 18 17.1 18 16V2C18 0.9 17.1 0 16 0ZM11.14 8.86L8.14 12.73L6 10.14L3 14H15L11.14 8.86Z
 		""");
 
-	public static readonly Geometry CameraTorchButtonPath = GeometryConverter.ParseStringToPathGeometry(
-		"""
+		public static readonly Geometry CameraTorchButtonPath = GeometryConverter.ParseStringToPathGeometry(
+			"""
 		M12 0H0V6L2 9V20H10V9L12 6V0ZM10 2V3H2V2H10ZM8 8.4V18H4V8.39L2 5.39V5H10V5.39L8 8.4Z
 		M6 13.5C6.82843 13.5 7.5 12.8284 7.5 12C7.5 11.1716 6.82843 10.5 6 10.5C5.17157 10.5 4.5 11.1716 4.5 12C4.5 12.8284 5.17157 13.5 6 13.5Z
 		""");
 
-	public static readonly Geometry CameraSwitchButtonPath = GeometryConverter.ParseStringToPathGeometry(
-		"""
+		public static readonly Geometry CameraSwitchButtonPath = GeometryConverter.ParseStringToPathGeometry(
+			"""
 		M7 10C7 11.66 8.34 13 10 13C11.66 13 13 11.66 13 10C13 8.34 11.66 7 10 7C8.34 7 7 8.34 7 10Z
 		M6 8V6H3.09C4.47 3.61 7.05 2 10 2C13.72 2 16.85 4.56 17.74 8H19.8C18.87 3.44 14.84 0 10 0C6.73 0 3.82 1.58 2 4.01V2H0V8H6Z
 		M14 12V14H16.91C15.53 16.39 12.95 18 10 18C6.28 18 3.15 15.44 2.26 12H0.2C1.13 16.56 5.16 20 10 20C13.27 20 16.18 18.42 18 15.99V18H20V12H14Z
 		""");
 
-	public static readonly Geometry OnboardingIconPath = GeometryConverter.ParseStringToPathGeometry(
-		"""
+		public static readonly Geometry OnboardingIconPath = GeometryConverter.ParseStringToPathGeometry(
+			"""
 		M181.523 136.57H76.6327C68.3914 136.57 61.6484 143.313 61.6484 151.554V181.523C61.6484 189.764 68.3914 196.507 76.6327 196.507H181.523C189.764 196.507 196.507 189.764 196.507 181.523V151.554C196.507 143.313 189.764 136.57 181.523 136.57Z
 		M91.617 181.523C83.3756 181.523 76.6327 174.78 76.6327 166.538C76.6327 158.297 83.3756 151.554 91.617 151.554C99.8583 151.554 106.601 158.297 106.601 166.538C106.601 174.78 99.8583 181.523 91.617 181.523Z
 		M181.523 61.6484H76.6327C68.3914 61.6484 61.6484 68.3914 61.6484 76.6327V106.601C61.6484 114.843 68.3914 121.586 76.6327 121.586H181.523C189.764 121.586 196.507 114.843 196.507 106.601V76.6327C196.507 68.3914 189.764 61.6484 181.523 61.6484Z
 		M91.617 106.601C83.3756 106.601 76.6327 99.8583 76.6327 91.617C76.6327 83.3756 83.3756 76.6327 91.617 76.6327C99.8583 76.6327 106.601 83.3756 106.601 91.617C106.601 99.8583 99.8583 106.601 91.617 106.601Z
 		""");
 
-	public static readonly Geometry ApproveProviderIconPath = GeometryConverter.ParseStringToPathGeometry(
-		"""
+		public static readonly Geometry ApproveProviderIconPath = GeometryConverter.ParseStringToPathGeometry(
+			"""
 		M19 5V2H17V5H14V7H17V10H19V7H22V5H19ZM8 8C10.21 8 12 6.21 12 4C12 1.79 10.21 0 8 0C5.79 0 4 1.79 4 4C4 6.21 5.79 8 8 8ZM8 2C9.1 2 10 2.9 10 4C10 5.1 9.1 6 8 6C6.9 6 6 5.1 6 4C6 2.9 6.9 2 8 2ZM14.39 10.56C12.71 9.7 10.53 9 8 9C5.47 9 3.29 9.7 1.61 10.56C0.61 11.07 0 12.1 0 13.22V16H16V13.22C16 12.1 15.39 11.07 14.39 10.56ZM14 14H2V13.22C2 12.84 2.2 12.5 2.52 12.34C3.71 11.73 5.63 11 8 11C10.37 11 12.29 11.73 13.48 12.34C13.8 12.5 14 12.84 14 13.22V14Z
 		""");
 
-	public static readonly Geometry ChangeProviderIconPath = GeometryConverter.ParseStringToPathGeometry(
-		"""
+		public static readonly Geometry ChangeProviderIconPath = GeometryConverter.ParseStringToPathGeometry(
+			"""
 		M24 6.5H21.6V2.9H18V0.5H24V6.5ZM24 24.5V18.5H21.6V22.1H18V24.5H24ZM0 24.5H6V22.1H2.4V18.5H0V24.5ZM0 0.5V6.5H2.4V2.9H6V0.5H0Z
 		M18.4615 13.4231H5.53846C4.52308 13.4231 3.69231 14.2538 3.69231 15.2692V18.9615C3.69231 19.9769 4.52308 20.8077 5.53846 20.8077H18.4615C19.4769 20.8077 20.3077 19.9769 20.3077 18.9615V15.2692C20.3077 14.2538 19.4769 13.4231 18.4615 13.4231ZM7.38462 18.9615C6.36923 18.9615 5.53846 18.1308 5.53846 17.1154C5.53846 16.1 6.36923 15.2692 7.38462 15.2692C8.4 15.2692 9.23077 16.1 9.23077 17.1154C9.23077 18.1308 8.4 18.9615 7.38462 18.9615ZM18.4615 4.19231H5.53846C4.52308 4.19231 3.69231 5.02308 3.69231 6.03846V9.73077C3.69231 10.7462 4.52308 11.5769 5.53846 11.5769H18.4615C19.4769 11.5769 20.3077 10.7462 20.3077 9.73077V6.03846C20.3077 5.02308 19.4769 4.19231 18.4615 4.19231ZM7.38462 9.73077C6.36923 9.73077 5.53846 8.9 5.53846 7.88462C5.53846 6.86923 6.36923 6.03846 7.38462 6.03846C8.4 6.03846 9.23077 6.86923 9.23077 7.88462C9.23077 8.9 8.4 9.73077 7.38462 9.73077Z
 		""");
+	}
 }

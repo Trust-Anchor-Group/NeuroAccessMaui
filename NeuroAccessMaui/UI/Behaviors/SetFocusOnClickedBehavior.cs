@@ -1,50 +1,51 @@
 ﻿using System.ComponentModel;
 
-namespace NeuroAccessMaui.UI.Behaviors;
-
-/// <summary>
-/// Used for moving focus to the next UI component when a button has been clicked.
-/// </summary>
-public class SetFocusOnClickedBehavior : Behavior<Button>
+namespace NeuroAccessMaui.UI.Behaviors
 {
 	/// <summary>
-	/// The view to move focus to.
+	/// Used for moving focus to the next UI component when a button has been clicked.
 	/// </summary>
-	[TypeConverter(typeof(ReferenceTypeConverter))]
-	public View SetFocusTo { get; set; }
-
-	/// <inheritdoc/>
-	protected override void OnAttachedTo(Button Button)
+	public class SetFocusOnClickedBehavior : Behavior<Button>
 	{
-		Button.Clicked += this.Button_Clicked;
-		base.OnAttachedTo(Button);
-	}
+		/// <summary>
+		/// The view to move focus to.
+		/// </summary>
+		[TypeConverter(typeof(ReferenceTypeConverter))]
+		public View SetFocusTo { get; set; }
 
-	/// <inheritdoc/>
-	protected override void OnDetachingFrom(Button Button)
-	{
-		Button.Clicked -= this.Button_Clicked;
-		base.OnDetachingFrom(Button);
-	}
-
-	private void Button_Clicked(object Sender, EventArgs e)
-	{
-		FocusOn(this.SetFocusTo);
-	}
-
-	/// <summary>
-	/// Sets focus on an element.
-	/// </summary>
-	/// <param name="Element">Element to focus on.</param>
-	public static void FocusOn(View Element)
-	{
-		if (Element is not null && Element.IsVisible)
+		/// <inheritdoc/>
+		protected override void OnAttachedTo(Button Button)
 		{
-			Element.Focus();
+			Button.Clicked += this.Button_Clicked;
+			base.OnAttachedTo(Button);
+		}
 
-			if (Element is Entry Entry && Entry.Text is not null)
+		/// <inheritdoc/>
+		protected override void OnDetachingFrom(Button Button)
+		{
+			Button.Clicked -= this.Button_Clicked;
+			base.OnDetachingFrom(Button);
+		}
+
+		private void Button_Clicked(object Sender, EventArgs e)
+		{
+			FocusOn(this.SetFocusTo);
+		}
+
+		/// <summary>
+		/// Sets focus on an element.
+		/// </summary>
+		/// <param name="Element">Element to focus on.</param>
+		public static void FocusOn(View Element)
+		{
+			if (Element is not null && Element.IsVisible)
 			{
-				Entry.CursorPosition = Entry.Text.Length;
+				Element.Focus();
+
+				if (Element is Entry Entry && Entry.Text is not null)
+				{
+					Entry.CursorPosition = Entry.Text.Length;
+				}
 			}
 		}
 	}

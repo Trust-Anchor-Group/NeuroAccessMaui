@@ -1,155 +1,155 @@
 ﻿using System.Xml;
-using Waher.Content;
 using Waher.Content.Xml;
 using Waher.Events;
 using Waher.Script;
 
-namespace NeuroAccessMaui.Services.Data.PersonalNumbers;
-
-/// <summary>
-/// Personal Number Schemes available in different countries.
-/// </summary>
-public static class PersonalNumberSchemes
+namespace NeuroAccessMaui.Services.Data.PersonalNumbers
 {
-	private static readonly Dictionary<string, LinkedList<PersonalNumberScheme>> schemesByCode = new();
-
-	private static void LazyLoad()
+	/// <summary>
+	/// Personal Number Schemes available in different countries.
+	/// </summary>
+	public static class PersonalNumberSchemes
 	{
-		try
+		private static readonly Dictionary<string, LinkedList<PersonalNumberScheme>> schemesByCode = [];
+
+		private static void LazyLoad()
 		{
-			XmlDocument doc = new();
-
-			using (MemoryStream ms = new(Waher.Content.Resources.LoadResource(
-				typeof(PersonalNumberSchemes).Namespace + "." + typeof(PersonalNumberSchemes).Name + ".xml")))
+			try
 			{
-				doc.Load(ms);
-			}
+				XmlDocument doc = new();
 
-			XmlNodeList childNodes = doc.DocumentElement?.ChildNodes;
-
-			if (childNodes is null)
-			{
-				return;
-			}
-
-			foreach (XmlNode n in childNodes)
-			{
-				if (n is XmlElement e && e.LocalName == "Entry")
+				using (MemoryStream ms = new(Waher.Content.Resources.LoadResource(
+					typeof(PersonalNumberSchemes).Namespace + "." + typeof(PersonalNumberSchemes).Name + ".xml")))
 				{
-					string country = XML.Attribute(e, "country");
-					string displayString = XML.Attribute(e, "displayString");
-					string variable = null;
-					Expression pattern = null;
-					Expression check = null;
-					Expression normalize = null;
+					doc.Load(ms);
+				}
 
-					try
+				XmlNodeList childNodes = doc.DocumentElement?.ChildNodes;
+
+				if (childNodes is null)
+				{
+					return;
+				}
+
+				foreach (XmlNode n in childNodes)
+				{
+					if (n is XmlElement e && e.LocalName == "Entry")
 					{
-						foreach (XmlNode n2 in e.ChildNodes)
+						string country = XML.Attribute(e, "country");
+						string displayString = XML.Attribute(e, "displayString");
+						string variable = null;
+						Expression pattern = null;
+						Expression check = null;
+						Expression normalize = null;
+
+						try
 						{
-							if (n2 is XmlElement e2)
+							foreach (XmlNode n2 in e.ChildNodes)
 							{
-								switch (e2.LocalName)
+								if (n2 is XmlElement e2)
 								{
-									case "Pattern":
-										pattern = new Expression(e2.InnerText);
-										variable = XML.Attribute(e2, "variable");
-										break;
+									switch (e2.LocalName)
+									{
+										case "Pattern":
+											pattern = new Expression(e2.InnerText);
+											variable = XML.Attribute(e2, "variable");
+											break;
 
-									case "Check":
-										check = new Expression(e2.InnerText);
-										break;
+										case "Check":
+											check = new Expression(e2.InnerText);
+											break;
 
-									case "Normalize":
-										normalize = new Expression(e2.InnerText);
-										break;
+										case "Normalize":
+											normalize = new Expression(e2.InnerText);
+											break;
+									}
 								}
 							}
 						}
-					}
-					catch (Exception)
-					{
-						continue;
-					}
+						catch (Exception)
+						{
+							continue;
+						}
 
-					if (pattern is null || string.IsNullOrWhiteSpace(variable) || string.IsNullOrWhiteSpace(displayString))
-					{
-						continue;
-					}
+						if (pattern is null || string.IsNullOrWhiteSpace(variable) || string.IsNullOrWhiteSpace(displayString))
+						{
+							continue;
+						}
 
-					if (!schemesByCode.TryGetValue(country, out LinkedList<PersonalNumberScheme> schemes))
-					{
-						schemes = new LinkedList<PersonalNumberScheme>();
-						schemesByCode[country] = schemes;
-					}
+						if (!schemesByCode.TryGetValue(country, out LinkedList<PersonalNumberScheme> schemes))
+						{
+							schemes = new LinkedList<PersonalNumberScheme>();
+							schemesByCode[country] = schemes;
+						}
 
-					schemes.AddLast(new PersonalNumberScheme(variable, displayString, pattern, check, normalize));
+						schemes.AddLast(new PersonalNumberScheme(variable, displayString, pattern, check, normalize));
+					}
 				}
 			}
-		}
-		catch (Exception ex)
-		{
-			Log.Critical(ex);
-		}
-	}
-
-	/// <summary>
-	/// Checks if a personal number is valid, in accordance with registered personal number schemes.
-	/// </summary>
-	/// <param name="CountryCode">ISO 3166-1 Country Codes.</param>
-	/// <param name="PersonalNumber">Personal Number</param>
-	/// <returns>Validation information about the number.</returns>
-	public static async Task<NumberInformation> Validate(string CountryCode, string PersonalNumber)
-	{
-		LazyLoad();
-
-		if (schemesByCode.TryGetValue(CountryCode, out LinkedList<PersonalNumberScheme> Schemes))
-		{
-			foreach (PersonalNumberScheme Scheme in Schemes)
+			catch (Exception ex)
 			{
-				NumberInformation Info = await Scheme.Validate(PersonalNumber);
-				if (Info.IsValid.HasValue)
+				Log.Critical(ex);
+			}
+		}
+
+		/// <summary>
+		/// Checks if a personal number is valid, in accordance with registered personal number schemes.
+		/// </summary>
+		/// <param name="CountryCode">ISO 3166-1 Country Codes.</param>
+		/// <param name="PersonalNumber">Personal Number</param>
+		/// <returns>Validation information about the number.</returns>
+		public static async Task<NumberInformation> Validate(string CountryCode, string PersonalNumber)
+		{
+			LazyLoad();
+
+			if (schemesByCode.TryGetValue(CountryCode, out LinkedList<PersonalNumberScheme> Schemes))
+			{
+				foreach (PersonalNumberScheme Scheme in Schemes)
 				{
-					Info.DisplayString = Scheme.DisplayString;
-					return Info;
+					NumberInformation Info = await Scheme.Validate(PersonalNumber);
+					if (Info.IsValid.HasValue)
+					{
+						Info.DisplayString = Scheme.DisplayString;
+						return Info;
+					}
+				}
+
+				return new NumberInformation()
+				{
+					PersonalNumber = PersonalNumber,
+					DisplayString = string.Empty,
+					IsValid = false
+				};
+			}
+			else
+			{
+				return new NumberInformation()
+				{
+					PersonalNumber = PersonalNumber,
+					DisplayString = string.Empty,
+					IsValid = null
+				};
+			}
+		}
+
+		/// <summary>
+		/// Gets the expected personal number format for the given country.
+		/// </summary>
+		/// <param name="countryCode">ISO 3166-1 Country Codes.</param>
+		/// <returns>A string that can be displayed to a user, informing the user about the approximate format expected.</returns>
+		public static string DisplayStringForCountry(string countryCode)
+		{
+			LazyLoad();
+
+			if (!string.IsNullOrWhiteSpace(countryCode))
+			{
+				if (schemesByCode.TryGetValue(countryCode, out LinkedList<PersonalNumberScheme> schemes))
+				{
+					return schemes.First?.Value?.DisplayString;
 				}
 			}
 
-			return new NumberInformation()
-			{
-				PersonalNumber = PersonalNumber,
-				DisplayString = string.Empty,
-				IsValid = false
-			};
+			return null;
 		}
-		else
-		{
-			return new NumberInformation()
-			{
-				PersonalNumber = PersonalNumber,
-				DisplayString = string.Empty,
-				IsValid = null
-			};
-		}
-	}
-
-	/// <summary>
-	/// Gets the expected personal number format for the given country.
-	/// </summary>
-	/// <param name="countryCode">ISO 3166-1 Country Codes.</param>
-	/// <returns>A string that can be displayed to a user, informing the user about the approximate format expected.</returns>
-	public static string DisplayStringForCountry(string countryCode)
-	{
-		LazyLoad();
-
-		if (!string.IsNullOrWhiteSpace(countryCode))
-		{
-			if (schemesByCode.TryGetValue(countryCode, out LinkedList<PersonalNumberScheme> schemes))
-			{
-				return schemes.First?.Value?.DisplayString;
-			}
-		}
-
-		return null;
 	}
 }

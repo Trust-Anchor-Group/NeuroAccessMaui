@@ -1,22 +1,22 @@
 using Microsoft.Maui.Controls.Shapes;
 
-namespace NeuroAccessMaui.UI;
-
-public class GeometryConverter
+namespace NeuroAccessMaui.UI
 {
-	private static readonly PathGeometryConverter defaultPathGeometryConverter = new PathGeometryConverter();
-
-	public static PathGeometry ParseStringToPathGeometry(string? PathString, FillRule? FillRule = null)
+	public class GeometryConverter
 	{
-		if (defaultPathGeometryConverter.ConvertFrom(null, null, PathString) is PathGeometry Result)
+		private static readonly PathGeometryConverter defaultPathGeometryConverter = new();
+
+		public static PathGeometry ParseStringToPathGeometry(string? PathString, FillRule? FillRule = null)
 		{
-			if (FillRule is not null)
+			if (defaultPathGeometryConverter.ConvertFrom(null, null, PathString) is PathGeometry Result)
 			{
-				Result.FillRule = (FillRule)FillRule;
+				if (FillRule is not null)
+					Result.FillRule = (FillRule)FillRule;
+
+				return Result;
 			}
 
-			return Result;
+			return new();
 		}
-		return new();
 	}
 }

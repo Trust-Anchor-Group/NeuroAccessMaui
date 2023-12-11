@@ -1,45 +1,40 @@
 ﻿using System.Windows.Input;
 
-namespace NeuroAccessMaui.UI.Core;
-
-internal static class CommandElement
+namespace NeuroAccessMaui.UI.Core
 {
-	public static void OnCommandChanging(BindableObject bo, object o, object n)
+	internal static class CommandElement
 	{
-		ICommandElement CommandElement = (ICommandElement)bo;
-
-		if (o is ICommand OldCommand)
+		public static void OnCommandChanging(BindableObject bo, object o, object _)
 		{
-			OldCommand.CanExecuteChanged -= CommandElement.CanExecuteChanged;
-		}
-	}
+			ICommandElement CommandElement = (ICommandElement)bo;
 
-	public static void OnCommandChanged(BindableObject bo, object o, object n)
-	{
-		ICommandElement CommandElement = (ICommandElement)bo;
-
-		if (n is ICommand NewCommand)
-		{
-			NewCommand.CanExecuteChanged += CommandElement.CanExecuteChanged;
+			if (o is ICommand OldCommand)
+				OldCommand.CanExecuteChanged -= CommandElement.CanExecuteChanged;
 		}
 
-		CommandElement.CanExecuteChanged(bo, EventArgs.Empty);
-	}
-
-	public static void OnCommandParameterChanged(BindableObject bo, object o, object n)
-	{
-		ICommandElement CommandElement = (ICommandElement)bo;
-
-		CommandElement.CanExecuteChanged(bo, EventArgs.Empty);
-	}
-
-	public static bool GetCanExecute(ICommandElement CommandElement)
-	{
-		if (CommandElement.Command == null)
+		public static void OnCommandChanged(BindableObject bo, object _, object n)
 		{
-			return true;
+			ICommandElement CommandElement = (ICommandElement)bo;
+
+			if (n is ICommand NewCommand)
+				NewCommand.CanExecuteChanged += CommandElement.CanExecuteChanged;
+
+			CommandElement.CanExecuteChanged(bo, EventArgs.Empty);
 		}
 
-		return CommandElement.Command.CanExecute(CommandElement.CommandParameter);
+		public static void OnCommandParameterChanged(BindableObject bo, object _, object __)
+		{
+			ICommandElement CommandElement = (ICommandElement)bo;
+
+			CommandElement.CanExecuteChanged(bo, EventArgs.Empty);
+		}
+
+		public static bool GetCanExecute(ICommandElement CommandElement)
+		{
+			if (CommandElement.Command == null)
+				return true;
+
+			return CommandElement.Command.CanExecute(CommandElement.CommandParameter);
+		}
 	}
 }

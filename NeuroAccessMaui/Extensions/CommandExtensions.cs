@@ -1,21 +1,22 @@
 ﻿using System.Windows.Input;
 
-namespace NeuroAccessMaui.Extensions;
-
-/// <summary>
-/// Helper/convenience methods for the <see cref="ICommand"/>.
-/// </summary>
-public static class CommandExtensions
+namespace NeuroAccessMaui.Extensions
 {
 	/// <summary>
-	/// Calls the <see cref="Command.ChangeCanExecute"/> method on the given <see cref="ICommand"/>, given that it <b>is</b> a <see cref="Command"/>.
+	/// Helper/convenience methods for the <see cref="ICommand"/>.
 	/// </summary>
-	/// <param name="command"></param>
-	public static void ChangeCanExecute(this ICommand command)
+	public static class CommandExtensions
 	{
-		if (command is Command cmd)
+		/// <summary>
+		/// Calls the <see cref="Command.ChangeCanExecute"/> method on the given <see cref="ICommand"/>, given that it <b>is</b> a <see cref="Command"/>.
+		/// </summary>
+		/// <param name="command"></param>
+		public static void ChangeCanExecute(this ICommand command)
 		{
-			cmd.ChangeCanExecute();
+			if (command is Command cmd)
+			{
+				cmd.ChangeCanExecute();
+			}
 		}
 	}
 }

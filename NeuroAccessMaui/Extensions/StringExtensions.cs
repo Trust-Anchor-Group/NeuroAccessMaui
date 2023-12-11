@@ -1,34 +1,32 @@
-﻿namespace NeuroAccessMaui.Extensions;
-
-/// <summary>
-/// An extensions class for the <see cref="string"/> class.
-/// </summary>
-public static class StringExtensions
+﻿namespace NeuroAccessMaui.Extensions
 {
 	/// <summary>
-	/// Returns the number of Unicode symbols, which may be represented by one or two chars, in a string.
+	/// An extensions class for the <see cref="string"/> class.
 	/// </summary>
-	public static int GetUnicodeLength(this string Str)
+	public static class StringExtensions
 	{
-		if (Str is null)
+		/// <summary>
+		/// Returns the number of Unicode symbols, which may be represented by one or two chars, in a string.
+		/// </summary>
+		public static int GetUnicodeLength(this string Str)
 		{
-			throw new ArgumentNullException(nameof(Str));
-		}
+			ArgumentNullException.ThrowIfNull(Str);
 
-		Str = Str.Normalize();
+			Str = Str.Normalize();
 
-		int UnicodeCount = 0;
-		for (int i = 0; i < Str.Length; i++)
-		{
-			UnicodeCount++;
-
-			// Jump over the second surrogate char.
-			if (char.IsSurrogate(Str, i))
+			int UnicodeCount = 0;
+			for (int i = 0; i < Str.Length; i++)
 			{
-				i++;
-			}
-		}
+				UnicodeCount++;
 
-		return UnicodeCount;
+				// Jump over the second surrogate char.
+				if (char.IsSurrogate(Str, i))
+				{
+					i++;
+				}
+			}
+
+			return UnicodeCount;
+		}
 	}
 }

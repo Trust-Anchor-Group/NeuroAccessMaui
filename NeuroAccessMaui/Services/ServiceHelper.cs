@@ -1,44 +1,45 @@
-﻿namespace NeuroAccessMaui.Services;
-
-public static class ServiceHelper
+﻿namespace NeuroAccessMaui.Services
 {
-	public static T GetService<T>()
+	public static class ServiceHelper
 	{
-		T? Service;
-
-		try
+		public static T GetService<T>()
 		{
-			Service = Current.GetService<T>();
+			T? Service;
+
+			try
+			{
+				Service = Current.GetService<T>();
+			}
+			catch (Exception)
+			{
+				throw new ArgumentException("Service not found: " + nameof(T));
+			}
+
+			if (Service is not null)
+				return Service;
+			else
+				throw new ArgumentException("Service not found: " + nameof(T));
 		}
-		catch (Exception)
+
+		public static object GetService(Type ServiceType)
 		{
-			throw new ArgumentException("Service not found: " + nameof(T));
+			object? Service = Current.GetService(ServiceType);
+
+			if (Service is not null)
+				return Service;
+			else
+				throw new ArgumentException("Service not found: " + ServiceType);
 		}
 
-		if (Service is not null)
-			return Service;
-		else
-			throw new ArgumentException("Service not found: " + nameof(T));
-	}
-
-	public static object GetService(Type ServiceType)
-	{
-		object? Service = Current.GetService(ServiceType);
-
-		if (Service is not null)
-			return Service;
-		else
-			throw new ArgumentException("Service not found: " + ServiceType);
-	}
-
-	public static IServiceProvider Current =>
+		public static IServiceProvider Current =>
 #if WINDOWS
-		MauiWinUIApplication.Current.Services;
+			MauiWinUIApplication.Current.Services;
 #elif ANDROID
-		MauiApplication.Current.Services;
+			MauiApplication.Current.Services;
 #elif IOS || MACCATALYST
-		MauiUIApplicationDelegate.Current.Services;
+			MauiUIApplicationDelegate.Current.Services;
 #else
-		null;
+			null;
 #endif
+	}
 }

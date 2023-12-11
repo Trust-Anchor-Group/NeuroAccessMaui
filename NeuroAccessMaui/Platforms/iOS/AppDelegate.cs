@@ -3,42 +3,43 @@ using CoreGraphics;
 using Foundation;
 using UIKit;
 
-namespace NeuroAccessMaui;
-
-[Register("AppDelegate")]
-public class AppDelegate : MauiUIApplicationDelegate
+namespace NeuroAccessMaui
 {
-	private NSObject? onKeyboardShowObserver;
-	private NSObject? onKeyboardHideObserver;
-
-	protected override MauiApp CreateMauiApp()
+	[Register("AppDelegate")]
+	public class AppDelegate : MauiUIApplicationDelegate
 	{
+		private NSObject? onKeyboardShowObserver;
+		private NSObject? onKeyboardHideObserver;
 
-		this.RegisterKeyBoardObserver();
-
-		return MauiProgram.CreateMauiApp();
-	}
-
-	private void RegisterKeyBoardObserver()
-	{
-		this.onKeyboardShowObserver ??= UIKeyboard.Notifications.ObserveWillShow((object? Sender, UIKeyboardEventArgs Args) =>
+		protected override MauiApp CreateMauiApp()
 		{
-			NSDictionary? UserInfo = Args.Notification.UserInfo;
 
-			if (UserInfo is null)
+			this.RegisterKeyBoardObserver();
+
+			return MauiProgram.CreateMauiApp();
+		}
+
+		private void RegisterKeyBoardObserver()
+		{
+			this.onKeyboardShowObserver ??= UIKeyboard.Notifications.ObserveWillShow((object? Sender, UIKeyboardEventArgs Args) =>
 			{
-				return;
-			}
+				NSDictionary? UserInfo = Args.Notification.UserInfo;
 
-			NSValue Result = (NSValue)UserInfo.ObjectForKey(new NSString(UIKeyboard.FrameEndUserInfoKey));
-			CGSize keyboardSize = Result.RectangleFValue.Size;
+				if (UserInfo is null)
+				{
+					return;
+				}
 
-			WeakReferenceMessenger.Default.Send(new KeyboardSizeMessage((float)keyboardSize.Height));
-		});
+				NSValue Result = (NSValue)UserInfo.ObjectForKey(new NSString(UIKeyboard.FrameEndUserInfoKey));
+				CGSize keyboardSize = Result.RectangleFValue.Size;
 
-		this.onKeyboardHideObserver ??= UIKeyboard.Notifications.ObserveWillHide((object? Sender, UIKeyboardEventArgs Args) =>
-		{
-			WeakReferenceMessenger.Default.Send(new KeyboardSizeMessage(0));
-		});
+				WeakReferenceMessenger.Default.Send(new KeyboardSizeMessage((float)keyboardSize.Height));
+			});
+
+			this.onKeyboardHideObserver ??= UIKeyboard.Notifications.ObserveWillHide((object? Sender, UIKeyboardEventArgs Args) =>
+			{
+				WeakReferenceMessenger.Default.Send(new KeyboardSizeMessage(0));
+			});
+		}
 	}
 }

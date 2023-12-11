@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace IdApp.Cv.Basic
+﻿namespace IdApp.Cv.Basic
 {
 	/// <summary>
 	/// Static class for Basic Operations, implemented as extensions.

@@ -1,69 +1,70 @@
 using NeuroAccessMaui.UI.Core;
 
-namespace NeuroAccessMaui.UI.Controls;
-
-public class TextButton : TemplatedButton, IBorderDataElement, ILabelDataElement
+namespace NeuroAccessMaui.UI.Controls
 {
-	private readonly Border innerBorder;
-	private readonly Label innerLabel;
-
-	/// <summary>Bindable property for <see cref="BorderStyle"/>.</summary>
-	public static readonly BindableProperty BorderStyleProperty = BorderDataElement.BorderStyleProperty;
-
-	/// <summary>Bindable property for <see cref="LabelData"/>.</summary>
-	public static readonly BindableProperty LabelDataProperty = LabelDataElement.LabelDataProperty;
-
-	/// <summary>Bindable property for <see cref="LabelStyle"/>.</summary>
-	public static readonly BindableProperty LabelStyleProperty = LabelDataElement.LabelStyleProperty;
-
-	public void OnBorderStylePropertyChanged(Style OldValue, Style NewValue)
+	public class TextButton : TemplatedButton, IBorderDataElement, ILabelDataElement
 	{
-		this.innerBorder.Style = NewValue;
-	}
+		private readonly Border innerBorder;
+		private readonly Label innerLabel;
 
-	public void OnLabelDataPropertyChanged(string OldValue, string NewValue)
-	{
-		this.innerLabel.Text = NewValue;
-	}
+		/// <summary>Bindable property for <see cref="BorderStyle"/>.</summary>
+		public static readonly BindableProperty BorderStyleProperty = BorderDataElement.BorderStyleProperty;
 
-	public void OnLabelStylePropertyChanged(Style OldValue, Style NewValue)
-	{
-		this.innerLabel.Style = NewValue;
-	}
+		/// <summary>Bindable property for <see cref="LabelData"/>.</summary>
+		public static readonly BindableProperty LabelDataProperty = LabelDataElement.LabelDataProperty;
 
-	public Thickness BorderPaddingDefaultValueCreator() => Thickness.Zero;
+		/// <summary>Bindable property for <see cref="LabelStyle"/>.</summary>
+		public static readonly BindableProperty LabelStyleProperty = LabelDataElement.LabelStyleProperty;
 
-	public Style BorderStyle
-	{
-		get => (Style)this.GetValue(BorderDataElement.BorderStyleProperty);
-		set => this.SetValue(BorderDataElement.BorderStyleProperty, value);
-	}
-
-	public string LabelData
-	{
-		get => (string)this.GetValue(LabelDataElement.LabelDataProperty);
-		set => this.SetValue(LabelDataElement.LabelDataProperty, value);
-	}
-
-	public Style LabelStyle
-	{
-		get => (Style)this.GetValue(LabelDataElement.LabelStyleProperty);
-		set => this.SetValue(LabelDataElement.LabelStyleProperty, value);
-	}
-
-	public TextButton() : base()
-	{
-		this.innerLabel = new()
+		public void OnBorderStylePropertyChanged(Style OldValue, Style NewValue)
 		{
-			HorizontalOptions = LayoutOptions.Center,
-		};
+			this.innerBorder.Style = NewValue;
+		}
 
-		this.innerBorder = new()
+		public void OnLabelDataPropertyChanged(string OldValue, string NewValue)
 		{
-			StrokeThickness = 1,
-			Content = this.innerLabel
-		};
+			this.innerLabel.Text = NewValue;
+		}
 
-		this.Content = this.innerBorder;
+		public void OnLabelStylePropertyChanged(Style OldValue, Style NewValue)
+		{
+			this.innerLabel.Style = NewValue;
+		}
+
+		public Thickness BorderPaddingDefaultValueCreator() => Thickness.Zero;
+
+		public Style BorderStyle
+		{
+			get => (Style)this.GetValue(BorderDataElement.BorderStyleProperty);
+			set => this.SetValue(BorderDataElement.BorderStyleProperty, value);
+		}
+
+		public string LabelData
+		{
+			get => (string)this.GetValue(LabelDataElement.LabelDataProperty);
+			set => this.SetValue(LabelDataElement.LabelDataProperty, value);
+		}
+
+		public Style LabelStyle
+		{
+			get => (Style)this.GetValue(LabelDataElement.LabelStyleProperty);
+			set => this.SetValue(LabelDataElement.LabelStyleProperty, value);
+		}
+
+		public TextButton() : base()
+		{
+			this.innerLabel = new()
+			{
+				HorizontalOptions = LayoutOptions.Center,
+			};
+
+			this.innerBorder = new()
+			{
+				StrokeThickness = 1,
+				Content = this.innerLabel
+			};
+
+			this.Content = this.innerBorder;
+		}
 	}
 }

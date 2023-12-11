@@ -79,30 +79,30 @@ namespace IdApp.Cv.Basic
 		/// <summary>
 		/// Cross shape
 		/// </summary>
-		public static readonly Shape Cross_3x3 = new Shape(3, 3, new bool[]
-		{
+		public static readonly Shape Cross_3x3 = new(3, 3,
+		[
 			_, X, _,
 			X, X, X,
 			_, X, _,
-		}, 1, 1);
+		], 1, 1);
 
 		/// <summary>
 		/// Cross shape
 		/// </summary>
-		public static readonly Shape Cross_5x5 = new Shape(5, 5, new bool[]
-		{
+		public static readonly Shape Cross_5x5 = new(5, 5,
+		[
 			_, _, X, _, _,
 			_, _, X, _, _,
 			X, X, X, X, X,
 			_, _, X, _, _,
 			_, _, X, _, _,
-		}, 2, 2);
+		], 2, 2);
 
 		/// <summary>
 		/// Cross shape
 		/// </summary>
-		public static readonly Shape Cross_7x7 = new Shape(7, 7, new bool[]
-		{
+		public static readonly Shape Cross_7x7 = new(7, 7,
+		[
 			_, _, _, X, _, _, _,
 			_, _, _, X, _, _, _,
 			_, _, _, X, _, _, _,
@@ -110,35 +110,35 @@ namespace IdApp.Cv.Basic
 			_, _, _, X, _, _, _,
 			_, _, _, X, _, _, _,
 			_, _, _, X, _, _, _,
-		}, 3, 3);
+		], 3, 3);
 
 		/// <summary>
 		/// X shape
 		/// </summary>
-		public static readonly Shape X_3x3 = new Shape(3, 3, new bool[]
-		{
+		public static readonly Shape X_3x3 = new(3, 3,
+		[
 			X, _, X,
 			_, X, _,
 			X, _, X,
-		}, 1, 1);
+		], 1, 1);
 
 		/// <summary>
 		/// X shape
 		/// </summary>
-		public static readonly Shape X_5x5 = new Shape(5, 5, new bool[]
-		{
+		public static readonly Shape X_5x5 = new(5, 5,
+		[
 			X, _, _, _, X,
 			_, X, _, X, _,
 			_, _, X, _, _,
 			_, X, _, X, _,
 			X, _, _, _, X,
-		}, 2, 2);
+		], 2, 2);
 
 		/// <summary>
 		/// X shape
 		/// </summary>
-		public static readonly Shape X_7x7 = new Shape(7, 7, new bool[]
-		{
+		public static readonly Shape X_7x7 = new(7, 7,
+		[
 			X, _, _, _, _, _, X,
 			_, X, _, _, _, X, _,
 			_, _, X, _, X, _, _,
@@ -146,7 +146,7 @@ namespace IdApp.Cv.Basic
 			_, _, X, _, X, _, _,
 			_, X, _, _, _, X, _,
 			X, _, _, _, _, _, X,
-		}, 3, 3);
+		], 3, 3);
 
 		/// <summary>
 		/// Diamond shape
@@ -156,20 +156,20 @@ namespace IdApp.Cv.Basic
 		/// <summary>
 		/// Diamond shape
 		/// </summary>
-		public static readonly Shape Diamond_5x5 = new Shape(5, 5, new bool[]
-		{
+		public static readonly Shape Diamond_5x5 = new(5, 5,
+		[
 			_, _, X, _, _,
 			_, X, X, X, _,
 			X, X, X, X, X,
 			_, X, X, X, _,
 			_, _, X, _, _,
-		}, 2, 2);
+		], 2, 2);
 
 		/// <summary>
 		/// Diamond shape
 		/// </summary>
-		public static readonly Shape Diamond_7x7 = new Shape(7, 7, new bool[]
-		{
+		public static readonly Shape Diamond_7x7 = new(7, 7,
+		[
 			_, _, _, X, _, _, _,
 			_, _, X, X, X, _, _,
 			_, X, X, X, X, X, _,
@@ -177,6 +177,6 @@ namespace IdApp.Cv.Basic
 			_, X, X, X, X, X, _,
 			_, _, X, X, X, _, _,
 			_, _, _, X, _, _, _,
-		}, 3, 3);
+		], 3, 3);
 	}
 }

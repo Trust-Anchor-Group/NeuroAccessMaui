@@ -4,149 +4,150 @@ using Waher.Events.XMPP;
 using Waher.Persistence.Exceptions;
 using Waher.Runtime.Inventory;
 
-namespace NeuroAccessMaui.Services.EventLog;
-
-[Singleton]
-internal sealed class LogService : ILogService
+namespace NeuroAccessMaui.Services.EventLog
 {
-	private const string startupCrashFileName = "CrashDump.txt";
-	private string bareJid = string.Empty;
-	private bool repairRequested = false;
-
-	public void AddListener(IEventSink eventSink)
+	[Singleton]
+	internal sealed class LogService : ILogService
 	{
-		if (eventSink is XmppEventSink xmppEventSink)
+		private const string startupCrashFileName = "CrashDump.txt";
+		private string bareJid = string.Empty;
+		private bool repairRequested = false;
+
+		public void AddListener(IEventSink eventSink)
 		{
-			this.bareJid = xmppEventSink.Client?.BareJID;
+			if (eventSink is XmppEventSink xmppEventSink)
+			{
+				this.bareJid = xmppEventSink.Client?.BareJID;
+			}
+
+			foreach (IEventSink Sink in Log.Sinks)
+			{
+				if (Sink == eventSink)
+				{
+					return;
+				}
+			}
+
+			Log.Register(eventSink);
 		}
 
-		foreach (IEventSink Sink in Log.Sinks)
+		public void RemoveListener(IEventSink eventSink)
 		{
-			if (Sink == eventSink)
+			if (eventSink is not null)
 			{
-				return;
+				Log.Unregister(eventSink);
 			}
 		}
 
-		Log.Register(eventSink);
-	}
-
-	public void RemoveListener(IEventSink eventSink)
-	{
-		if (eventSink is not null)
+		public void LogWarning(string Message, params KeyValuePair<string, object>[] Tags)
 		{
-			Log.Unregister(eventSink);
-		}
-	}
-
-	public void LogWarning(string Message, params KeyValuePair<string, object>[] Tags)
-	{
-		Log.Warning(Message, string.Empty, this.bareJid, this.GetParameters(Tags).ToArray());
-	}
-
-	public void LogException(Exception ex)
-	{
-		this.LogException(ex, null);
-	}
-
-	public void LogException(Exception ex, params KeyValuePair<string, object>[] extraParameters)
-	{
-		ex = Log.UnnestException(ex);
-
-		Log.Critical(ex, string.Empty, this.bareJid, this.GetParameters(extraParameters).ToArray());
-
-		if (ex is InconsistencyException && !this.repairRequested)
-		{
-			this.repairRequested = true;
-			Task.Run(() => this.RestartForRepair());
-		}
-	}
-
-	private async Task RestartForRepair()
-	{
-		ServiceRef.StorageService.FlagForRepair();
-
-		await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-			ServiceRef.Localizer[nameof(AppResources.RepairRestart)],
-			ServiceRef.Localizer[nameof(AppResources.Ok)]);
-
-		try
-		{
-			await ServiceRef.PlatformSpecific.CloseApplication();
-		}
-		catch (Exception)
-		{
-			Environment.Exit(0);
-		}
-	}
-
-	public void SaveExceptionDump(string title, string stackTrace)
-	{
-		stackTrace = Log.CleanStackTrace(stackTrace);
-
-		string contents;
-		string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), startupCrashFileName);
-
-		if (File.Exists(fileName))
-		{
-			contents = File.ReadAllText(fileName);
-		}
-		else
-		{
-			contents = string.Empty;
+			Log.Warning(Message, string.Empty, this.bareJid, this.GetParameters(Tags).ToArray());
 		}
 
-		File.WriteAllText(fileName, title + Environment.NewLine + stackTrace + Environment.NewLine + contents);
-	}
-
-	public string LoadExceptionDump()
-	{
-		string contents;
-		string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), startupCrashFileName);
-
-		if (File.Exists(fileName))
+		public void LogException(Exception ex)
 		{
-			contents = File.ReadAllText(fileName);
-		}
-		else
-		{
-			contents = string.Empty;
+			this.LogException(ex, null);
 		}
 
-		return contents;
-	}
-
-	public void DeleteExceptionDump()
-	{
-		string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), startupCrashFileName);
-
-		if (File.Exists(fileName))
+		public void LogException(Exception ex, params KeyValuePair<string, object>[] extraParameters)
 		{
-			File.Delete(fileName);
-		}
-	}
+			ex = Log.UnnestException(ex);
 
-	/// <inheritdoc/>
-	public IList<KeyValuePair<string, object>> GetParameters(params KeyValuePair<string, object>[] Tags)
-	{
-		List<KeyValuePair<string, object>> Result = new()
-		{
-			new KeyValuePair<string, object>("Platform", DeviceInfo.Platform),
-			new KeyValuePair<string, object>("RuntimeVersion", typeof(LogService).Assembly.ImageRuntimeVersion),
-			new KeyValuePair<string, object>("AppVersion", AppInfo.VersionString),
-			new KeyValuePair<string, object>("Manufacturer", DeviceInfo.Manufacturer),
-			new KeyValuePair<string, object>("Device Model", DeviceInfo.Model),
-			new KeyValuePair<string, object>("Device Name", DeviceInfo.Name),
-			new KeyValuePair<string, object>("OS", DeviceInfo.VersionString),
-			new KeyValuePair<string, object>("Platform", DeviceInfo.Platform.ToString()),
-			new KeyValuePair<string, object>("Device Type", DeviceInfo.DeviceType.ToString()),
-		};
+			Log.Critical(ex, string.Empty, this.bareJid, this.GetParameters(extraParameters).ToArray());
 
-		if (Tags is not null)
-		{
-			Result.AddRange(Tags);
+			if (ex is InconsistencyException && !this.repairRequested)
+			{
+				this.repairRequested = true;
+				Task.Run(() => RestartForRepair());
+			}
 		}
 
-		return Result;
+		private static async Task RestartForRepair()
+		{
+			ServiceRef.StorageService.FlagForRepair();
+
+			await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+				ServiceRef.Localizer[nameof(AppResources.RepairRestart)],
+				ServiceRef.Localizer[nameof(AppResources.Ok)]);
+
+			try
+			{
+				await ServiceRef.PlatformSpecific.CloseApplication();
+			}
+			catch (Exception)
+			{
+				Environment.Exit(0);
+			}
+		}
+
+		public void SaveExceptionDump(string title, string stackTrace)
+		{
+			stackTrace = Log.CleanStackTrace(stackTrace);
+
+			string contents;
+			string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), startupCrashFileName);
+
+			if (File.Exists(fileName))
+			{
+				contents = File.ReadAllText(fileName);
+			}
+			else
+			{
+				contents = string.Empty;
+			}
+
+			File.WriteAllText(fileName, title + Environment.NewLine + stackTrace + Environment.NewLine + contents);
+		}
+
+		public string LoadExceptionDump()
+		{
+			string contents;
+			string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), startupCrashFileName);
+
+			if (File.Exists(fileName))
+			{
+				contents = File.ReadAllText(fileName);
+			}
+			else
+			{
+				contents = string.Empty;
+			}
+
+			return contents;
+		}
+
+		public void DeleteExceptionDump()
+		{
+			string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), startupCrashFileName);
+
+			if (File.Exists(fileName))
+			{
+				File.Delete(fileName);
+			}
+		}
+
+		/// <inheritdoc/>
+		public IList<KeyValuePair<string, object>> GetParameters(params KeyValuePair<string, object>[] Tags)
+		{
+			List<KeyValuePair<string, object>> Result =
+			[
+				new KeyValuePair<string, object>("Platform", DeviceInfo.Platform),
+				new KeyValuePair<string, object>("RuntimeVersion", typeof(LogService).Assembly.ImageRuntimeVersion),
+				new KeyValuePair<string, object>("AppVersion", AppInfo.VersionString),
+				new KeyValuePair<string, object>("Manufacturer", DeviceInfo.Manufacturer),
+				new KeyValuePair<string, object>("Device Model", DeviceInfo.Model),
+				new KeyValuePair<string, object>("Device Name", DeviceInfo.Name),
+				new KeyValuePair<string, object>("OS", DeviceInfo.VersionString),
+				new KeyValuePair<string, object>("Platform", DeviceInfo.Platform.ToString()),
+				new KeyValuePair<string, object>("Device Type", DeviceInfo.DeviceType.ToString()),
+			];
+
+			if (Tags is not null)
+			{
+				Result.AddRange(Tags);
+			}
+
+			return Result;
+		}
 	}
 }

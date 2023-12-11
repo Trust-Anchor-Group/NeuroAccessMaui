@@ -5,151 +5,152 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
 
-namespace NeuroAccessMaui.UI.Pages.Main.VerifyCode;
-
-/// <summary>
-/// The view model to bind to when verifying a code.
-/// </summary>
-public partial class VerifyCodeViewModel : BaseViewModel
+namespace NeuroAccessMaui.UI.Pages.Main.VerifyCode
 {
-	private VerifyCodeNavigationArgs? navigationArgs;
-
 	/// <summary>
-	/// Creates a new instance of the <see cref="VerifyCodeViewModel"/> class.
+	/// The view model to bind to when verifying a code.
 	/// </summary>
-	public VerifyCodeViewModel(VerifyCodeNavigationArgs? NavigationArgs)
+	public partial class VerifyCodeViewModel : BaseViewModel
 	{
-		this.navigationArgs = NavigationArgs;
+		private VerifyCodeNavigationArgs? navigationArgs;
 
-		if (NavigationArgs is not null)
+		/// <summary>
+		/// Creates a new instance of the <see cref="VerifyCodeViewModel"/> class.
+		/// </summary>
+		public VerifyCodeViewModel(VerifyCodeNavigationArgs? NavigationArgs)
 		{
-			this.CodeVerification = NavigationArgs.CodeVerification;
-		}
-	}
+			this.navigationArgs = NavigationArgs;
 
-	/// <inheritdoc />
-	protected override async Task OnInitialize()
-	{
-		await base.OnInitialize();
-
-		LocalizationManager.Current.PropertyChanged += this.LocalizationManagerEventHandler;
-
-		if ((this.navigationArgs is null) && ServiceRef.NavigationService.TryGetArgs(out VerifyCodeNavigationArgs? Args))
-		{
-			this.navigationArgs = Args;
-
-			if (Args is not null)
+			if (NavigationArgs is not null)
 			{
-				this.CodeVerification = Args.CodeVerification;
+				this.CodeVerification = NavigationArgs.CodeVerification;
 			}
 		}
 
-		if (this.CodeVerification is not null)
+		/// <inheritdoc />
+		protected override async Task OnInitialize()
 		{
-			this.CodeVerification.CountDownTimer.Tick += this.CountDownEventHandler;
-		}
+			await base.OnInitialize();
 
-		this.LocalizationManagerEventHandler(null, new(null));
-	}
+			LocalizationManager.Current.PropertyChanged += this.LocalizationManagerEventHandler;
 
-	/// <inheritdoc/>
-	protected override async Task OnDispose()
-	{
-		LocalizationManager.Current.PropertyChanged -= this.LocalizationManagerEventHandler;
-
-		if (this.CodeVerification is not null)
-		{
-			this.CodeVerification.CountDownTimer.Tick -= this.CountDownEventHandler;
-		}
-
-		if (this.navigationArgs?.VarifyCode is TaskCompletionSource<string> TaskSource)
-		{
-			TaskSource.TrySetResult(string.Empty);
-		}
-
-		await base.OnDispose();
-	}
-
-	public void LocalizationManagerEventHandler(object? sender, PropertyChangedEventArgs e)
-	{
-		this.OnPropertyChanged(nameof(this.LocalizedVerifyCodePageDetails));
-		this.OnPropertyChanged(nameof(this.LocalizedResendCodeText));
-	}
-
-	private void CountDownEventHandler(object? sender, EventArgs e)
-	{
-		this.OnPropertyChanged(nameof(this.LocalizedResendCodeText));
-	}
-
-	/// <summary>
-	/// Tries to set the Scan QR Code result and close the scan page.
-	/// </summary>
-	/// <param name="Url">The URL to set.</param>
-	private async Task TrySetResultAndClosePage(string? Url)
-	{
-		if (this.navigationArgs?.VarifyCode is not null)
-		{
-			TaskCompletionSource<string?> TaskSource = this.navigationArgs.VarifyCode;
-			this.navigationArgs.VarifyCode = null;
-
-			await MainThread.InvokeOnMainThreadAsync(async () =>
+			if ((this.navigationArgs is null) && ServiceRef.NavigationService.TryGetArgs(out VerifyCodeNavigationArgs? Args))
 			{
-				try
+				this.navigationArgs = Args;
+
+				if (Args is not null)
 				{
-					await ServiceRef.NavigationService.GoBackAsync();
-					TaskSource.TrySetResult(Url);
+					this.CodeVerification = Args.CodeVerification;
 				}
-				catch (Exception ex)
-				{
-					ServiceRef.LogService.LogException(ex);
-				}
-			});
-		}
-	}
-
-	#region Properties
-
-	[ObservableProperty]
-	private ICodeVerification? codeVerification;
-
-	[ObservableProperty]
-	[NotifyCanExecuteChangedFor(nameof(VerifyCommand))]
-	private string? verifyCodeText;
-
-	public string LocalizedVerifyCodePageDetails
-	{
-		get
-		{
-			return ServiceRef.Localizer[nameof(AppResources.OnboardingVerifyCodePageDetails), this.navigationArgs?.PhoneOrEmail ?? string.Empty];
-		}
-	}
-
-	public string LocalizedResendCodeText
-	{
-		get
-		{
-			if ((this.CodeVerification is not null) && (this.CodeVerification.CountDownSeconds > 0))
-			{
-				return ServiceRef.Localizer[nameof(AppResources.ResendCodeSeconds), this.CodeVerification.CountDownSeconds];
 			}
 
-			return ServiceRef.Localizer[nameof(AppResources.ResendCode)];
+			if (this.CodeVerification is not null)
+			{
+				this.CodeVerification.CountDownTimer.Tick += this.CountDownEventHandler;
+			}
+
+			this.LocalizationManagerEventHandler(null, new(null));
 		}
-	}
 
-	#endregion
+		/// <inheritdoc/>
+		protected override async Task OnDispose()
+		{
+			LocalizationManager.Current.PropertyChanged -= this.LocalizationManagerEventHandler;
 
-	public bool CanVerify => !string.IsNullOrEmpty(this.VerifyCodeText) && (this.VerifyCodeText.Length == 6);
+			if (this.CodeVerification is not null)
+			{
+				this.CodeVerification.CountDownTimer.Tick -= this.CountDownEventHandler;
+			}
 
-	[RelayCommand(CanExecute = nameof(CanVerify))]
-	public Task Verify()
-	{
-		return this.TrySetResultAndClosePage(this.VerifyCodeText);
-	}
+			if (this.navigationArgs?.VarifyCode is TaskCompletionSource<string> TaskSource)
+			{
+				TaskSource.TrySetResult(string.Empty);
+			}
 
-	[RelayCommand]
-	private Task GoBack()
-	{
-		return this.TrySetResultAndClosePage(string.Empty);
+			await base.OnDispose();
+		}
+
+		public void LocalizationManagerEventHandler(object? sender, PropertyChangedEventArgs e)
+		{
+			this.OnPropertyChanged(nameof(this.LocalizedVerifyCodePageDetails));
+			this.OnPropertyChanged(nameof(this.LocalizedResendCodeText));
+		}
+
+		private void CountDownEventHandler(object? sender, EventArgs e)
+		{
+			this.OnPropertyChanged(nameof(this.LocalizedResendCodeText));
+		}
+
+		/// <summary>
+		/// Tries to set the Scan QR Code result and close the scan page.
+		/// </summary>
+		/// <param name="Url">The URL to set.</param>
+		private async Task TrySetResultAndClosePage(string? Url)
+		{
+			if (this.navigationArgs?.VarifyCode is not null)
+			{
+				TaskCompletionSource<string?> TaskSource = this.navigationArgs.VarifyCode;
+				this.navigationArgs.VarifyCode = null;
+
+				await MainThread.InvokeOnMainThreadAsync(async () =>
+				{
+					try
+					{
+						await ServiceRef.NavigationService.GoBackAsync();
+						TaskSource.TrySetResult(Url);
+					}
+					catch (Exception ex)
+					{
+						ServiceRef.LogService.LogException(ex);
+					}
+				});
+			}
+		}
+
+		#region Properties
+
+		[ObservableProperty]
+		private ICodeVerification? codeVerification;
+
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(VerifyCommand))]
+		private string? verifyCodeText;
+
+		public string LocalizedVerifyCodePageDetails
+		{
+			get
+			{
+				return ServiceRef.Localizer[nameof(AppResources.OnboardingVerifyCodePageDetails), this.navigationArgs?.PhoneOrEmail ?? string.Empty];
+			}
+		}
+
+		public string LocalizedResendCodeText
+		{
+			get
+			{
+				if ((this.CodeVerification is not null) && (this.CodeVerification.CountDownSeconds > 0))
+				{
+					return ServiceRef.Localizer[nameof(AppResources.ResendCodeSeconds), this.CodeVerification.CountDownSeconds];
+				}
+
+				return ServiceRef.Localizer[nameof(AppResources.ResendCode)];
+			}
+		}
+
+		#endregion
+
+		public bool CanVerify => !string.IsNullOrEmpty(this.VerifyCodeText) && (this.VerifyCodeText.Length == 6);
+
+		[RelayCommand(CanExecute = nameof(CanVerify))]
+		public Task Verify()
+		{
+			return this.TrySetResultAndClosePage(this.VerifyCodeText);
+		}
+
+		[RelayCommand]
+		private Task GoBack()
+		{
+			return this.TrySetResultAndClosePage(string.Empty);
+		}
 	}
 }

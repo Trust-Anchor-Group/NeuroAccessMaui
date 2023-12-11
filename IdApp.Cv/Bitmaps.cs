@@ -1,5 +1,6 @@
 ﻿using SkiaSharp;
 using System;
+using System.Globalization;
 using System.IO;
 
 namespace IdApp.Cv
@@ -30,10 +31,8 @@ namespace IdApp.Cv
 		/// <returns>Matrix</returns>
 		public static IMatrix FromBitmapFile(string FileName, int MaxWidth, int MaxHeight)
 		{
-			using (SKBitmap Bmp = SKBitmap.Decode(FileName))
-			{
-				return FromBitmap(Bmp, MaxWidth, MaxHeight);
-			}
+			using SKBitmap Bmp = SKBitmap.Decode(FileName);
+			return FromBitmap(Bmp, MaxWidth, MaxHeight);
 		}
 
 		/// <summary>
@@ -55,10 +54,8 @@ namespace IdApp.Cv
 		/// <returns>Matrix</returns>
 		public static IMatrix FromBitmapFile(byte[] Data, int MaxWidth, int MaxHeight)
 		{
-			using (SKBitmap Bmp = SKBitmap.Decode(Data))
-			{
-				return FromBitmap(Bmp, MaxWidth, MaxHeight);
-			}
+			using SKBitmap Bmp = SKBitmap.Decode(Data);
+			return FromBitmap(Bmp, MaxWidth, MaxHeight);
 		}
 
 		/// <summary>
@@ -91,25 +88,20 @@ namespace IdApp.Cv
 				int Width = (int)(Bmp.Width * Scale + 0.5);
 				int Height = (int)(Bmp.Height * Scale + 0.5);
 
-				using (SKSurface Surface = SKSurface.Create(new SKImageInfo(Width, Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul)))
-				{
-					SKCanvas Canvas = Surface.Canvas;
-					Canvas.DrawBitmap(Bmp, new SKRect(0, 0, Bmp.Width, Bmp.Height),
-						new SKRect(0, 0, Width, Height), new SKPaint()
-						{
-							IsAntialias = true,
-							FilterQuality = SKFilterQuality.High
-						});
-
-
-					using (SKImage ScaledIamge = Surface.Snapshot())
+				using SKSurface Surface = SKSurface.Create(new SKImageInfo(Width, Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul));
+				SKCanvas Canvas = Surface.Canvas;
+				Canvas.DrawBitmap(Bmp, new SKRect(0, 0, Bmp.Width, Bmp.Height),
+					new SKRect(0, 0, Width, Height), new SKPaint()
 					{
-						using (SKBitmap ScaledBitmap = SKBitmap.FromImage(ScaledIamge))
-						{
-							return FromBitmap(ScaledBitmap, int.MaxValue, int.MaxValue);
-						}
-					}
-				}
+						IsAntialias = true,
+						FilterQuality = SKFilterQuality.High
+					});
+
+
+				using SKImage ScaledIamge = Surface.Snapshot();
+				using SKBitmap ScaledBitmap = SKBitmap.FromImage(ScaledIamge);
+
+				return FromBitmap(ScaledBitmap, int.MaxValue, int.MaxValue);
 			}
 			else
 			{
@@ -167,10 +159,9 @@ namespace IdApp.Cv
 		/// <param name="FileName">Filename</param>
 		public static void ToImageFile(IMatrix M, string FileName)
 		{
-			using (SKImage Image = ToBitmap(M))
-			{
-				ToImageFile(Image, FileName);
-			}
+			using SKImage Image = ToBitmap(M);
+
+			ToImageFile(Image, FileName);
 		}
 
 		/// <summary>
@@ -198,7 +189,7 @@ namespace IdApp.Cv
 			if (string.IsNullOrEmpty(Extension))
 				throw new ArgumentException("Missing file extension", nameof(FileName));
 
-			Extension = Extension.Substring(0, 1).ToUpper() + Extension.Substring(1).ToLower();
+			Extension = Extension.Substring(0, 1).ToUpper(CultureInfo.InvariantCulture) + Extension.Substring(1).ToLower();
 			if (!Enum.TryParse<SKEncodedImageFormat>(Extension, out SKEncodedImageFormat Format))
 				throw new ArgumentException("Unsupported image type/extension: " + Extension, nameof(FileName));
 
@@ -206,13 +197,10 @@ namespace IdApp.Cv
 			if (!(Directory.Exists(Folder)))
 				Directory.CreateDirectory(Folder);
 
-			using (SKData Data = Image.Encode(Format, Quality))
-			{
-				using (FileStream fs = File.Create(FileName))
-				{
-					Data.SaveTo(fs);
-				}
-			}
+			using SKData Data = Image.Encode(Format, Quality);
+			using FileStream fs = File.Create(FileName);
+
+			Data.SaveTo(fs);
 		}
 
 		/// <summary>
@@ -315,13 +303,10 @@ namespace IdApp.Cv
 			else
 				throw new ArgumentException("Matrix type not supported: " + M.GetType().FullName);
 
-			using (MemoryStream ms = new MemoryStream(Dest))
-			{
-				using (SKData Data = SKData.Create(ms))
-				{
-					return SKImage.FromPixels(new SKImageInfo(w, h, ColorType), Data, RowBytes);
-				}
-			}
+			using MemoryStream ms = new(Dest);
+			using SKData Data = SKData.Create(ms);
+
+			return SKImage.FromPixels(new SKImageInfo(w, h, ColorType), Data, RowBytes);
 		}
 
 
@@ -332,13 +317,10 @@ namespace IdApp.Cv
 		/// <returns>Binary PNG representation of image.</returns>
 		public static byte[] EncodeAsPng(IMatrix M)
 		{
-			using (SKImage Image = ToBitmap(M))
-			{
-				using (SKData Data = Image.Encode(SKEncodedImageFormat.Png, 100))
-				{
-					return Data.ToArray();
-				}
-			}
+			using SKImage Image = ToBitmap(M);
+			using SKData Data = Image.Encode(SKEncodedImageFormat.Png, 100);
+
+			return Data.ToArray();
 		}
 	}
 }

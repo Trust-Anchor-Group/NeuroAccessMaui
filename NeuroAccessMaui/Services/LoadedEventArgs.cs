@@ -1,21 +1,22 @@
-﻿namespace NeuroAccessMaui.Services;
-
-/// <summary>
-/// Represents the current 'is loaded' changed state.
-/// </summary>
-public sealed class LoadedEventArgs : EventArgs
+﻿namespace NeuroAccessMaui.Services
 {
 	/// <summary>
-	/// Creates an instance of <see cref="LoadedEventArgs"/>.
+	/// Represents the current 'is loaded' changed state.
 	/// </summary>
-	/// <param name="isLoaded">The current loaded state.</param>
-	public LoadedEventArgs(bool isLoaded)
+	public sealed class LoadedEventArgs : EventArgs
 	{
-		this.IsLoaded = isLoaded;
-	}
+		/// <summary>
+		/// Creates an instance of <see cref="LoadedEventArgs"/>.
+		/// </summary>
+		/// <param name="isLoaded">The current loaded state.</param>
+		public LoadedEventArgs(bool isLoaded)
+		{
+			this.IsLoaded = isLoaded;
+		}
 
-	/// <summary>
-	/// The current loaded state.
-	/// </summary>
-	public bool IsLoaded { get; }
+		/// <summary>
+		/// The current loaded state.
+		/// </summary>
+		public bool IsLoaded { get; }
+	}
 }

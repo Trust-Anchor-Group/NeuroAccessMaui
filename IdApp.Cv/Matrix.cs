@@ -121,7 +121,7 @@ namespace IdApp.Cv
 			set
 			{
 				if (value <= 0 || value >= this.rowSize - this.left)
-					throw new ArgumentOutOfRangeException(nameof(Width));
+					throw new ArgumentOutOfRangeException(nameof(this.Width));
 
 				this.width = value;
 				this.skip = this.rowSize - this.width;
@@ -137,7 +137,7 @@ namespace IdApp.Cv
 			set
 			{
 				if (value <= 0 || (this.top + value) * this.width >= this.dataSize)
-					throw new ArgumentOutOfRangeException(nameof(Height));
+					throw new ArgumentOutOfRangeException(nameof(this.Height));
 
 				this.height = value;
 			}
@@ -152,7 +152,7 @@ namespace IdApp.Cv
 			set
 			{
 				if (value < 0 || value >= this.rowSize - this.width)
-					throw new ArgumentOutOfRangeException(nameof(Left));
+					throw new ArgumentOutOfRangeException(nameof(this.Left));
 
 				this.left = value;
 				this.start = this.left + this.top * this.rowSize;
@@ -168,7 +168,7 @@ namespace IdApp.Cv
 			set
 			{
 				if (value < 0 || (value + this.height) * this.width >= this.dataSize)
-					throw new ArgumentOutOfRangeException(nameof(Top));
+					throw new ArgumentOutOfRangeException(nameof(this.Top));
 
 				this.top = value;
 				this.start = this.left + this.top * this.rowSize;
@@ -345,71 +345,69 @@ namespace IdApp.Cv
 		/// <returns>Matrix iamge.</returns>
 		public static IMatrix LoadFromFile(string FileName)
 		{
-			using (SKBitmap Bmp = SKBitmap.Decode(FileName))
+			using SKBitmap Bmp = SKBitmap.Decode(FileName);
+			byte[] Data = Bmp.Bytes;
+
+			switch (Bmp.BytesPerPixel)
 			{
-				byte[] Data = Bmp.Bytes;
+				case 1:
+					return new Matrix<byte>(Bmp.Width, Bmp.Height, Data);
 
-				switch (Bmp.BytesPerPixel)
-				{
-					case 1:
-						return new Matrix<byte>(Bmp.Width, Bmp.Height, Data);
+				case 2:
+					int i, j, c = Data.Length;
+					ushort[] Bin16 = new ushort[c / 2];
+					ushort u;
 
-					case 2:
-						int i, j, c = Data.Length;
-						ushort[] Bin16 = new ushort[c / 2];
-						ushort u;
+					i = j = 0;
+					while (i < c)
+					{
+						u = Data[i++];
+						u <<= 8;
+						u |= Data[i++];
+						Bin16[j++] = u;
+					}
 
-						i = j = 0;
-						while (i < c)
-						{
-							u = Data[i++];
-							u <<= 8;
-							u |= Data[i++];
-							Bin16[j++] = u;
-						}
+					return new Matrix<ushort>(Bmp.Width, Bmp.Height, Bin16);
 
-						return new Matrix<ushort>(Bmp.Width, Bmp.Height, Bin16);
+				case 3:
+					c = Data.Length;
+					uint[] Bin32 = new uint[c / 3];
+					uint v;
 
-					case 3:
-						c = Data.Length;
-						uint[] Bin32 = new uint[c / 3];
-						uint v;
+					i = j = 0;
+					while (i < c)
+					{
+						v = Data[i++];
+						v <<= 8;
+						v |= Data[i++];
+						v <<= 8;
+						v |= Data[i++];
+						Bin32[j++] = v;
+					}
 
-						i = j = 0;
-						while (i < c)
-						{
-							v = Data[i++];
-							v <<= 8;
-							v |= Data[i++];
-							v <<= 8;
-							v |= Data[i++];
-							Bin32[j++] = v;
-						}
+					return new Matrix<uint>(Bmp.Width, Bmp.Height, Bin32);
 
-						return new Matrix<uint>(Bmp.Width, Bmp.Height, Bin32);
+				case 4:
+					c = Data.Length;
+					Bin32 = new uint[c / 4];
 
-					case 4:
-						c = Data.Length;
-						Bin32 = new uint[c / 4];
+					i = j = 0;
+					while (i < c)
+					{
+						v = Data[i++];
+						v <<= 8;
+						v |= Data[i++];
+						v <<= 8;
+						v |= Data[i++];
+						v <<= 8;
+						v |= Data[i++];
+						Bin32[j++] = v;
+					}
 
-						i = j = 0;
-						while (i < c)
-						{
-							v = Data[i++];
-							v <<= 8;
-							v |= Data[i++];
-							v <<= 8;
-							v |= Data[i++];
-							v <<= 8;
-							v |= Data[i++];
-							Bin32[j++] = v;
-						}
+					return new Matrix<uint>(Bmp.Width, Bmp.Height, Bin32);
 
-						return new Matrix<uint>(Bmp.Width, Bmp.Height, Bin32);
-
-					default:
-						throw new ArgumentException("Color type not supported.", nameof(FileName));
-				}
+				default:
+					throw new ArgumentException("Color type not supported.", nameof(FileName));
 			}
 		}
 

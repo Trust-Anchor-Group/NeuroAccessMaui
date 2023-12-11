@@ -1,62 +1,63 @@
 ﻿using System.ComponentModel;
 
-namespace NeuroAccessMaui.UI.Behaviors;
-
-/// <summary>
-/// Used for moving focus to the next UI component when the Enter/Return key has been hit.
-/// </summary>
-public class SetFocusOnCompletedBehavior : Behavior<Entry>
+namespace NeuroAccessMaui.UI.Behaviors
 {
 	/// <summary>
-	/// The view to move focus to.
+	/// Used for moving focus to the next UI component when the Enter/Return key has been hit.
 	/// </summary>
-	[TypeConverter(typeof(ReferenceTypeConverter))]
-	public View SetFocusTo { get; set; }
-
-	/// <summary>
-	/// Alternative view to move focus to.
-	/// </summary>
-	[TypeConverter(typeof(ReferenceTypeConverter))]
-	public View SetFocusToAlternative { get; set; }
-
-	/// <summary>
-	/// Makes <see cref="UseAlternative"/> bindable.
-	/// </summary>
-	public static readonly BindableProperty UseAlternativeProperty =
-		BindableProperty.Create(nameof(UseAlternative), typeof(bool), typeof(SetFocusOnCompletedBehavior), default);
-
-	/// <summary>
-	/// If alternative control should be used.
-	/// </summary>
-	public bool UseAlternative
+	public class SetFocusOnCompletedBehavior : Behavior<Entry>
 	{
-		get => (bool)this.GetValue(UseAlternativeProperty);
-		set => this.SetValue(UseAlternativeProperty, value);
-	}
+		/// <summary>
+		/// The view to move focus to.
+		/// </summary>
+		[TypeConverter(typeof(ReferenceTypeConverter))]
+		public View SetFocusTo { get; set; }
 
-	/// <inheritdoc/>
-	protected override void OnAttachedTo(Entry entry)
-	{
-		entry.Completed += this.Entry_Completed;
-		base.OnAttachedTo(entry);
-	}
+		/// <summary>
+		/// Alternative view to move focus to.
+		/// </summary>
+		[TypeConverter(typeof(ReferenceTypeConverter))]
+		public View SetFocusToAlternative { get; set; }
 
-	/// <inheritdoc/>
-	protected override void OnDetachingFrom(Entry entry)
-	{
-		entry.TextChanged -= this.Entry_Completed;
-		base.OnDetachingFrom(entry);
-	}
+		/// <summary>
+		/// Makes <see cref="UseAlternative"/> bindable.
+		/// </summary>
+		public static readonly BindableProperty UseAlternativeProperty =
+			BindableProperty.Create(nameof(UseAlternative), typeof(bool), typeof(SetFocusOnCompletedBehavior), default);
 
-	private void Entry_Completed(object Sender, EventArgs e)
-	{
-		if (this.UseAlternative && this.SetFocusToAlternative is not null)
+		/// <summary>
+		/// If alternative control should be used.
+		/// </summary>
+		public bool UseAlternative
 		{
-			SetFocusOnClickedBehavior.FocusOn(this.SetFocusToAlternative);
+			get => (bool)this.GetValue(UseAlternativeProperty);
+			set => this.SetValue(UseAlternativeProperty, value);
 		}
-		else
+
+		/// <inheritdoc/>
+		protected override void OnAttachedTo(Entry entry)
 		{
-			SetFocusOnClickedBehavior.FocusOn(this.SetFocusTo);
+			entry.Completed += this.Entry_Completed;
+			base.OnAttachedTo(entry);
+		}
+
+		/// <inheritdoc/>
+		protected override void OnDetachingFrom(Entry entry)
+		{
+			entry.TextChanged -= this.Entry_Completed;
+			base.OnDetachingFrom(entry);
+		}
+
+		private void Entry_Completed(object Sender, EventArgs e)
+		{
+			if (this.UseAlternative && this.SetFocusToAlternative is not null)
+			{
+				SetFocusOnClickedBehavior.FocusOn(this.SetFocusToAlternative);
+			}
+			else
+			{
+				SetFocusOnClickedBehavior.FocusOn(this.SetFocusTo);
+			}
 		}
 	}
 }

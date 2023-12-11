@@ -16,373 +16,217 @@ using Waher.Content.Xml;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 
-namespace NeuroAccessMaui.UI.Pages.Registration.Views;
-
-public partial class ChooseProviderViewModel : BaseRegistrationViewModel
+namespace NeuroAccessMaui.UI.Pages.Registration.Views
 {
-	public ChooseProviderViewModel() : base(RegistrationStep.ChooseProvider)
+	public partial class ChooseProviderViewModel : BaseRegistrationViewModel
 	{
-	}
-
-	/// <inheritdoc />
-	protected override async Task OnInitialize()
-	{
-		await base.OnInitialize();
-		await this.SetDomainName();
-
-		ServiceRef.TagProfile.Changed += this.TagProfile_Changed;
-	}
-
-	/// <inheritdoc />
-	protected override async Task OnDispose()
-	{
-		ServiceRef.TagProfile.Changed -= this.TagProfile_Changed;
-
-		await base.OnDispose();
-	}
-
-	protected override void OnPropertyChanged(PropertyChangedEventArgs e)
-	{
-		base.OnPropertyChanged(e);
-
-		if (e.PropertyName == nameof(this.SelectedButton))
+		public ChooseProviderViewModel() : base(RegistrationStep.ChooseProvider)
 		{
-			if ((this.SelectedButton is not null) && (this.SelectedButton.Button == ButtonType.Change))
-			{
-				MainThread.BeginInvokeOnMainThread(() =>
-				{
-					if (this.ScanQrCodeCommand.CanExecute(null))
-					{
-						this.ScanQrCodeCommand.Execute(null);
-					}
-				});
-			}
 		}
-		else if (e.PropertyName == nameof(this.IsBusy))
+
+		/// <inheritdoc />
+		protected override async Task OnInitialize()
 		{
-			this.ContinueCommand.NotifyCanExecuteChanged();
-			this.ScanQrCodeCommand.NotifyCanExecuteChanged();
-		}
-	}
-
-	/// <summary>
-	/// The localized intro text to display to the user for explaining what 'choose account' is for.
-	/// </summary>
-	[ObservableProperty]
-	private string domainName = string.Empty;
-
-	/// <summary>
-	/// The localized intro text to display to the user for explaining what 'choose account' is for.
-	/// </summary>
-	[ObservableProperty]
-	[NotifyPropertyChangedFor(nameof(HasLocalizedName))]
-	private string localizedName = string.Empty;
-
-	/// <summary>
-	/// The localized intro text to display to the user for explaining what 'choose account' is for.
-	/// </summary>
-	[ObservableProperty]
-	[NotifyPropertyChangedFor(nameof(HasLocalizedDescription))]
-	private string localizedDescription = string.Empty;
-
-	/// <summary>
-	/// The localized intro text to display to the user for explaining what 'choose account' is for.
-	/// </summary>
-	public bool HasLocalizedName => this.LocalizedName.Length > 0;
-
-	/// <summary>
-	/// The localized intro text to display to the user for explaining what 'choose account' is for.
-	/// </summary>
-	public bool HasLocalizedDescription => this.LocalizedDescription.Length > 0;
-
-
-	/// <summary>
-	/// Holds the list of buttons to display.
-	/// </summary>
-	public Collection<ButtonInfo> Buttons { get; } =
-		[
-			new(ButtonType.Approve),
-			new(ButtonType.Change),
-		];
-
-
-	/// <summary>
-	/// The selected Button
-	/// </summary>
-	[ObservableProperty]
-	[NotifyCanExecuteChangedFor(nameof(ContinueCommand))]
-	private ButtonInfo? selectedButton;
-
-	private async void TagProfile_Changed(object? Sender, PropertyChangedEventArgs e)
-	{
-		if (this.DomainName != ServiceRef.TagProfile.Domain)
-		{
+			await base.OnInitialize();
 			await this.SetDomainName();
-		}
-	}
 
-	private async Task SetDomainName()
-	{
-		if (string.IsNullOrEmpty(ServiceRef.TagProfile.Domain))
-		{
-			this.DomainName = string.Empty;
-			this.LocalizedName = string.Empty;
-			this.LocalizedDescription = string.Empty;
-			return;
+			ServiceRef.TagProfile.Changed += this.TagProfile_Changed;
 		}
 
-		this.DomainName = ServiceRef.TagProfile.Domain;
-
-		try
+		/// <inheritdoc />
+		protected override async Task OnDispose()
 		{
-			Uri DomainInfo = new("https://" + this.DomainName + "/Agent/Account/DomainInfo");
-			string AcceptLanguage = App.SelectedLanguage.TwoLetterISOLanguageName;
+			ServiceRef.TagProfile.Changed -= this.TagProfile_Changed;
 
-			if (AcceptLanguage != "en")
+			await base.OnDispose();
+		}
+
+		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+		{
+			base.OnPropertyChanged(e);
+
+			if (e.PropertyName == nameof(this.SelectedButton))
 			{
-				AcceptLanguage += ";q=1,en;q=0.9";
-			}
-
-			object Result = await InternetContent.GetAsync(DomainInfo,
-				new KeyValuePair<string, string>("Accept", "application/json"),
-				new KeyValuePair<string, string>("Accept-Language", AcceptLanguage));
-
-			if (Result is Dictionary<string, object> Response)
-			{
-				if (Response.TryGetValue("humanReadableName", out object? Obj) && Obj is string LocalizedName)
+				if ((this.SelectedButton is not null) && (this.SelectedButton.Button == ButtonType.Change))
 				{
-					this.LocalizedName = LocalizedName;
-				}
-
-				if (Response.TryGetValue("humanReadableDescription", out Obj) && Obj is string LocalizedDescription)
-				{
-					this.LocalizedDescription = LocalizedDescription;
+					MainThread.BeginInvokeOnMainThread(() =>
+					{
+						if (this.ScanQrCodeCommand.CanExecute(null))
+						{
+							this.ScanQrCodeCommand.Execute(null);
+						}
+					});
 				}
 			}
-		}
-		catch (Exception ex)
-		{
-			ServiceRef.LogService.LogException(ex);
-		}
-	}
-
-	public bool CanScanQrCode => !this.IsBusy;
-
-	public bool CanContinue => !this.IsBusy && (this.SelectedButton is not null) && (this.SelectedButton.Button == ButtonType.Approve);
-
-	[RelayCommand(CanExecute = nameof(CanContinue))]
-	private void Continue()
-	{
-		this.GoToRegistrationStep(RegistrationStep.CreateAccount);
-	}
-
-	[RelayCommand]
-	private void ServiceProviderInfo()
-	{
-
-	}
-
-	[RelayCommand]
-	private void UndoSelection()
-	{
-		ServiceRef.TagProfile.UndoDomainSelection();
-	}
-
-	[RelayCommand(CanExecute = nameof(CanScanQrCode))]
-	private async Task ScanQrCode()
-	{
-		string? Url = await Services.UI.QR.QrCode.ScanQrCode(nameof(AppResources.QrPageTitleScanInvitation), Constants.UriSchemes.Onboarding);
-
-		if (string.IsNullOrEmpty(Url))
-		{
-			return;
+			else if (e.PropertyName == nameof(this.IsBusy))
+			{
+				this.ContinueCommand.NotifyCanExecuteChanged();
+				this.ScanQrCodeCommand.NotifyCanExecuteChanged();
+			}
 		}
 
-		string Scheme = Constants.UriSchemes.GetScheme(Url) ?? string.Empty;
+		/// <summary>
+		/// The localized intro text to display to the user for explaining what 'choose account' is for.
+		/// </summary>
+		[ObservableProperty]
+		private string domainName = string.Empty;
 
-		if (!string.Equals(Scheme, Constants.UriSchemes.Onboarding, StringComparison.OrdinalIgnoreCase))
+		/// <summary>
+		/// The localized intro text to display to the user for explaining what 'choose account' is for.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(HasLocalizedName))]
+		private string localizedName = string.Empty;
+
+		/// <summary>
+		/// The localized intro text to display to the user for explaining what 'choose account' is for.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(HasLocalizedDescription))]
+		private string localizedDescription = string.Empty;
+
+		/// <summary>
+		/// The localized intro text to display to the user for explaining what 'choose account' is for.
+		/// </summary>
+		public bool HasLocalizedName => this.LocalizedName.Length > 0;
+
+		/// <summary>
+		/// The localized intro text to display to the user for explaining what 'choose account' is for.
+		/// </summary>
+		public bool HasLocalizedDescription => this.LocalizedDescription.Length > 0;
+
+
+		/// <summary>
+		/// Holds the list of buttons to display.
+		/// </summary>
+		public Collection<ButtonInfo> Buttons { get; } =
+			[
+				new(ButtonType.Approve),
+				new(ButtonType.Change),
+			];
+
+
+		/// <summary>
+		/// The selected Button
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ContinueCommand))]
+		private ButtonInfo? selectedButton;
+
+		private async void TagProfile_Changed(object? Sender, PropertyChangedEventArgs e)
 		{
-			return;
+			if (this.DomainName != ServiceRef.TagProfile.Domain)
+			{
+				await this.SetDomainName();
+			}
 		}
 
-		string[] Parts = Url.Split(':');
-
-		if (Parts.Length != 5)
+		private async Task SetDomainName()
 		{
-			await ServiceRef.UiSerializer.DisplayAlert(
-				ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-				ServiceRef.Localizer[nameof(AppResources.InvalidInvitationCode)],
-				ServiceRef.Localizer[nameof(AppResources.Ok)]);
+			if (string.IsNullOrEmpty(ServiceRef.TagProfile.Domain))
+			{
+				this.DomainName = string.Empty;
+				this.LocalizedName = string.Empty;
+				this.LocalizedDescription = string.Empty;
+				return;
+			}
 
-			return;
-		}
+			this.DomainName = ServiceRef.TagProfile.Domain;
 
-		string Domain = Parts[1];
-		string Code = Parts[2];
-		string KeyStr = Parts[3];
-		string IVStr = Parts[4];
-		string EncryptedStr;
-		Uri Uri;
-
-		try
-		{
-			Uri = new Uri("https://" + Domain + "/Onboarding/GetInfo");
-		}
-		catch (Exception ex)
-		{
-			ServiceRef.LogService.LogException(ex);
-
-			await ServiceRef.UiSerializer.DisplayAlert(
-				ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-				ServiceRef.Localizer[nameof(AppResources.InvalidInvitationCode)],
-				ServiceRef.Localizer[nameof(AppResources.Ok)]);
-
-			return;
-		}
-
-		this.IsBusy = true;
-
-		try
-		{
 			try
 			{
-				KeyValuePair<byte[], string> P = await InternetContent.PostAsync(Uri, Encoding.ASCII.GetBytes(Code), "text/plain",
-					new KeyValuePair<string, string>("Accept", "text/plain"));
+				Uri DomainInfo = new("https://" + this.DomainName + "/Agent/Account/DomainInfo");
+				string AcceptLanguage = App.SelectedLanguage.TwoLetterISOLanguageName;
 
-				object Decoded = await InternetContent.DecodeAsync(P.Value, P.Key, Uri);
+				if (AcceptLanguage != "en")
+				{
+					AcceptLanguage += ";q=1,en;q=0.9";
+				}
 
-				EncryptedStr = (string)Decoded;
+				object Result = await InternetContent.GetAsync(DomainInfo,
+					new KeyValuePair<string, string>("Accept", "application/json"),
+					new KeyValuePair<string, string>("Accept-Language", AcceptLanguage));
+
+				if (Result is Dictionary<string, object> Response)
+				{
+					if (Response.TryGetValue("humanReadableName", out object? Obj) && Obj is string LocalizedName)
+					{
+						this.LocalizedName = LocalizedName;
+					}
+
+					if (Response.TryGetValue("humanReadableDescription", out Obj) && Obj is string LocalizedDescription)
+					{
+						this.LocalizedDescription = LocalizedDescription;
+					}
+				}
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
+			}
+		}
 
-				await ServiceRef.UiSerializer.DisplayAlert(
-					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-					ServiceRef.Localizer[nameof(AppResources.UnableToAccessInvitation)],
-					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+		public bool CanScanQrCode => !this.IsBusy;
+
+		public bool CanContinue => !this.IsBusy && (this.SelectedButton is not null) && (this.SelectedButton.Button == ButtonType.Approve);
+
+		[RelayCommand(CanExecute = nameof(CanContinue))]
+		private void Continue()
+		{
+			GoToRegistrationStep(RegistrationStep.CreateAccount);
+		}
+
+		[RelayCommand]
+		private void ServiceProviderInfo()
+		{
+
+		}
+
+		[RelayCommand]
+		private void UndoSelection()
+		{
+			ServiceRef.TagProfile.UndoDomainSelection();
+		}
+
+		[RelayCommand(CanExecute = nameof(CanScanQrCode))]
+		private async Task ScanQrCode()
+		{
+			string? Url = await Services.UI.QR.QrCode.ScanQrCode(nameof(AppResources.QrPageTitleScanInvitation), Constants.UriSchemes.Onboarding);
+
+			if (string.IsNullOrEmpty(Url))
+			{
 				return;
 			}
 
+			string Scheme = Constants.UriSchemes.GetScheme(Url) ?? string.Empty;
+
+			if (!string.Equals(Scheme, Constants.UriSchemes.Onboarding, StringComparison.OrdinalIgnoreCase))
+			{
+				return;
+			}
+
+			string[] Parts = Url.Split(':');
+
+			if (Parts.Length != 5)
+			{
+				await ServiceRef.UiSerializer.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					ServiceRef.Localizer[nameof(AppResources.InvalidInvitationCode)],
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+
+				return;
+			}
+
+			string Domain = Parts[1];
+			string Code = Parts[2];
+			string KeyStr = Parts[3];
+			string IVStr = Parts[4];
+			string EncryptedStr;
+			Uri Uri;
+
 			try
 			{
-				byte[] Key = Convert.FromBase64String(KeyStr);
-				byte[] IV = Convert.FromBase64String(IVStr);
-				byte[] Encrypted = Convert.FromBase64String(EncryptedStr);
-
-				using Aes Aes = Aes.Create();
-				Aes.BlockSize = 128;
-				Aes.KeySize = 256;
-				Aes.Mode = CipherMode.CBC;
-				Aes.Padding = PaddingMode.PKCS7;
-
-				using ICryptoTransform Decryptor = Aes.CreateDecryptor(Key, IV);
-				byte[] Decrypted = Decryptor.TransformFinalBlock(Encrypted, 0, Encrypted.Length);
-				string Xml = Encoding.UTF8.GetString(Decrypted);
-
-				XmlDocument Doc = new()
-				{
-					PreserveWhitespace = true
-				};
-
-				Doc.LoadXml(Xml);
-
-				if ((Doc.DocumentElement is null) || (Doc.DocumentElement.NamespaceURI != ContractsClient.NamespaceOnboarding))
-				{
-					throw new Exception("Invalid Invitation XML");
-				}
-
-				LinkedList<XmlElement> ToProcess = new();
-				ToProcess.AddLast(Doc.DocumentElement);
-
-				bool AccountDone = false;
-				XmlElement? LegalIdDefinition = null;
-				string? Pin = null;
-
-				while (ToProcess.First is not null)
-				{
-					XmlElement E = ToProcess.First.Value;
-					ToProcess.RemoveFirst();
-
-					switch (E.LocalName)
-					{
-						case "ApiKey":
-							KeyStr = XML.Attribute(E, "key");
-							string Secret = XML.Attribute(E, "secret");
-							Domain = XML.Attribute(E, "domain");
-
-							await this.SelectDomain(Domain, KeyStr, Secret);
-
-							await ServiceRef.UiSerializer.DisplayAlert(
-								ServiceRef.Localizer[nameof(AppResources.InvitationAccepted)],
-								ServiceRef.Localizer[nameof(AppResources.InvitedToCreateAccountOnDomain), Domain],
-								ServiceRef.Localizer[nameof(AppResources.Ok)]);
-							break;
-
-						case "Account":
-							//!!! not implemented yet
-							/*
-							string UserName = XML.Attribute(E, "userName");
-							string Password = XML.Attribute(E, "password");
-							string PasswordMethod = XML.Attribute(E, "passwordMethod");
-							Domain = XML.Attribute(E, "domain");
-
-							string DomainBak = ServiceRef.TagProfile.Domain;
-							bool DefaultConnectivityBak = ServiceRef.TagProfile.DefaultXmppConnectivity;
-							string ApiKeyBak = ServiceRef.TagProfile.ApiKey;
-							string ApiSecretBak = ServiceRef.TagProfile.ApiSecret;
-
-							await this.SelectDomain(Domain, string.Empty, string.Empty);
-
-							if (!await this.ConnectToAccount(UserName, Password, PasswordMethod, string.Empty, LegalIdDefinition, Pin))
-							{
-								ServiceRef.TagProfile.SetDomain(DomainBak, DefaultConnectivityBak, ApiKeyBak, ApiSecretBak);
-								throw new Exception("Invalid account.");
-							}
-
-							LegalIdDefinition = null;
-							this.AccountName = UserName;
-							AccountDone = true;
-							*/
-							break;
-
-						case "LegalId":
-							//!!! not implemented yet
-							// LegalIdDefinition = E;
-							break;
-
-						case "Pin":
-							//!!! not implemented yet
-							// Pin = XML.Attribute(E, "pin");
-							break;
-
-						case "Transfer":
-							//!!! not implemented yet
-							/*
-							foreach (XmlNode N in E.ChildNodes)
-							{
-								if (N is XmlElement E2)
-								{
-									ToProcess.AddLast(E2);
-								}
-							}
-							*/
-							break;
-
-						default:
-							throw new Exception("Invalid Invitation XML");
-					}
-				}
-
-				if (LegalIdDefinition is not null)
-				{
-					await ServiceRef.XmppService.ImportSigningKeys(LegalIdDefinition);
-				}
-
-				if (AccountDone)
-				{
-					this.GoToRegistrationStep(RegistrationStep.CreateAccount);
-				}
+				Uri = new Uri("https://" + Domain + "/Onboarding/GetInfo");
 			}
 			catch (Exception ex)
 			{
@@ -395,236 +239,389 @@ public partial class ChooseProviderViewModel : BaseRegistrationViewModel
 
 				return;
 			}
-		}
-		finally
-		{
-			this.IsBusy = false;
-		}
-	}
 
-	private async Task SelectDomain(string Domain, string Key, string Secret)
-	{
-		bool DefaultConnectivity;
+			this.IsBusy = true;
 
-		try
-		{
-			(string HostName, int PortNumber, bool IsIpAddress) = await ServiceRef.NetworkService.LookupXmppHostnameAndPort(Domain);
-			DefaultConnectivity = HostName == Domain && PortNumber == XmppCredentials.DefaultPort;
-		}
-		catch (Exception ex)
-		{
-			ServiceRef.LogService.LogException(ex);
-			DefaultConnectivity = false;
-		}
-
-		ServiceRef.TagProfile.SetDomain(Domain, DefaultConnectivity, Key, Secret);
-	}
-
-	//!!! not implemented yet
-	/*
-	private async Task<bool> ConnectToAccount(string AccountName, string Password, string PasswordMethod, string LegalIdentityJid, XmlElement LegalIdDefinition, string Pin)
-	{
-		try
-		{
-			async Task OnConnected(XmppClient client)
+			try
 			{
-				DateTime now = DateTime.Now;
-				LegalIdentity createdIdentity = null;
-				LegalIdentity approvedIdentity = null;
-
-				bool serviceDiscoverySucceeded;
-
-				if (ServiceRef.TagProfile.NeedsUpdating())
+				try
 				{
-					serviceDiscoverySucceeded = await ServiceRef.XmppService.DiscoverServices(client);
+					KeyValuePair<byte[], string> P = await InternetContent.PostAsync(Uri, Encoding.ASCII.GetBytes(Code), "text/plain",
+						new KeyValuePair<string, string>("Accept", "text/plain"));
+
+					object Decoded = await InternetContent.DecodeAsync(P.Value, P.Key, Uri);
+
+					EncryptedStr = (string)Decoded;
 				}
-				else
+				catch (Exception ex)
 				{
-					serviceDiscoverySucceeded = true;
+					ServiceRef.LogService.LogException(ex);
+
+					await ServiceRef.UiSerializer.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						ServiceRef.Localizer[nameof(AppResources.UnableToAccessInvitation)],
+						ServiceRef.Localizer[nameof(AppResources.Ok)]);
+					return;
 				}
 
-				if (serviceDiscoverySucceeded && !string.IsNullOrEmpty(ServiceRef.TagProfile.LegalJid))
+				try
 				{
-					bool DestroyContractsClient = false;
+					byte[] Key = Convert.FromBase64String(KeyStr);
+					byte[] IV = Convert.FromBase64String(IVStr);
+					byte[] Encrypted = Convert.FromBase64String(EncryptedStr);
 
-					if (!client.TryGetExtension(typeof(ContractsClient), out IXmppExtension Extension) ||
-						Extension is not ContractsClient ContractsClient)
+					using Aes Aes = Aes.Create();
+					Aes.BlockSize = 128;
+					Aes.KeySize = 256;
+					Aes.Mode = CipherMode.CBC;
+					Aes.Padding = PaddingMode.PKCS7;
+
+					using ICryptoTransform Decryptor = Aes.CreateDecryptor(Key, IV);
+					byte[] Decrypted = Decryptor.TransformFinalBlock(Encrypted, 0, Encrypted.Length);
+					string Xml = Encoding.UTF8.GetString(Decrypted);
+
+					XmlDocument Doc = new()
 					{
-						ContractsClient = new ContractsClient(client, ServiceRef.TagProfile.LegalJid);
-						DestroyContractsClient = true;
+						PreserveWhitespace = true
+					};
+
+					Doc.LoadXml(Xml);
+
+					if ((Doc.DocumentElement is null) || (Doc.DocumentElement.NamespaceURI != ContractsClient.NamespaceOnboarding))
+					{
+						throw new Exception("Invalid Invitation XML");
 					}
 
-					try
+					LinkedList<XmlElement> ToProcess = new();
+					ToProcess.AddLast(Doc.DocumentElement);
+
+					bool AccountDone = false;
+					XmlElement? LegalIdDefinition = null;
+					string? Pin = null;
+
+					while (ToProcess.First is not null)
 					{
-						if (LegalIdDefinition is not null)
-							await ContractsClient.ImportKeys(LegalIdDefinition);
+						XmlElement E = ToProcess.First.Value;
+						ToProcess.RemoveFirst();
 
-						LegalIdentity[] Identities = await ContractsClient.GetLegalIdentitiesAsync();
-
-						foreach (LegalIdentity Identity in Identities)
+						switch (E.LocalName)
 						{
-							try
-							{
-								if ((string.IsNullOrEmpty(LegalIdentityJid) || string.Compare(LegalIdentityJid, Identity.Id, true) == 0) &&
-									Identity.HasClientSignature &&
-									Identity.HasClientPublicKey &&
-									Identity.From <= now &&
-									Identity.To >= now &&
-									(Identity.State == IdentityState.Approved || Identity.State == IdentityState.Created) &&
-									Identity.ValidateClientSignature() &&
-									await ContractsClient.HasPrivateKey(Identity))
-								{
-									if (Identity.State == IdentityState.Approved)
-									{
-										approvedIdentity = Identity;
-										break;
-									}
+							case "ApiKey":
+								KeyStr = XML.Attribute(E, "key");
+								string Secret = XML.Attribute(E, "secret");
+								Domain = XML.Attribute(E, "domain");
 
-									createdIdentity ??= Identity;
+								await SelectDomain(Domain, KeyStr, Secret);
+
+								await ServiceRef.UiSerializer.DisplayAlert(
+									ServiceRef.Localizer[nameof(AppResources.InvitationAccepted)],
+									ServiceRef.Localizer[nameof(AppResources.InvitedToCreateAccountOnDomain), Domain],
+									ServiceRef.Localizer[nameof(AppResources.Ok)]);
+								break;
+
+							case "Account":
+								//!!! not implemented yet
+								/*
+								string UserName = XML.Attribute(E, "userName");
+								string Password = XML.Attribute(E, "password");
+								string PasswordMethod = XML.Attribute(E, "passwordMethod");
+								Domain = XML.Attribute(E, "domain");
+
+								string DomainBak = ServiceRef.TagProfile.Domain;
+								bool DefaultConnectivityBak = ServiceRef.TagProfile.DefaultXmppConnectivity;
+								string ApiKeyBak = ServiceRef.TagProfile.ApiKey;
+								string ApiSecretBak = ServiceRef.TagProfile.ApiSecret;
+
+								await this.SelectDomain(Domain, string.Empty, string.Empty);
+
+								if (!await this.ConnectToAccount(UserName, Password, PasswordMethod, string.Empty, LegalIdDefinition, Pin))
+								{
+									ServiceRef.TagProfile.SetDomain(DomainBak, DefaultConnectivityBak, ApiKeyBak, ApiSecretBak);
+									throw new Exception("Invalid account.");
+								}
+
+								LegalIdDefinition = null;
+								this.AccountName = UserName;
+								AccountDone = true;
+								*/
+								break;
+
+							case "LegalId":
+								//!!! not implemented yet
+								// LegalIdDefinition = E;
+								break;
+
+							case "Pin":
+								//!!! not implemented yet
+								// Pin = XML.Attribute(E, "pin");
+								break;
+
+							case "Transfer":
+								//!!! not implemented yet
+								/*
+								foreach (XmlNode N in E.ChildNodes)
+								{
+									if (N is XmlElement E2)
+									{
+										ToProcess.AddLast(E2);
+									}
+								}
+								*/
+								break;
+
+							default:
+								throw new Exception("Invalid Invitation XML");
+						}
+					}
+
+					if (LegalIdDefinition is not null)
+						await ServiceRef.XmppService.ImportSigningKeys(LegalIdDefinition);
+
+					if (AccountDone)
+						GoToRegistrationStep(RegistrationStep.CreateAccount);
+				}
+				catch (Exception ex)
+				{
+					ServiceRef.LogService.LogException(ex);
+
+					await ServiceRef.UiSerializer.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						ServiceRef.Localizer[nameof(AppResources.InvalidInvitationCode)],
+						ServiceRef.Localizer[nameof(AppResources.Ok)]);
+
+					return;
+				}
+			}
+			finally
+			{
+				this.IsBusy = false;
+			}
+		}
+
+		private static async Task SelectDomain(string Domain, string Key, string Secret)
+		{
+			bool DefaultConnectivity;
+
+			try
+			{
+				(string HostName, int PortNumber, bool IsIpAddress) = await ServiceRef.NetworkService.LookupXmppHostnameAndPort(Domain);
+				DefaultConnectivity = HostName == Domain && PortNumber == XmppCredentials.DefaultPort;
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				DefaultConnectivity = false;
+			}
+
+			ServiceRef.TagProfile.SetDomain(Domain, DefaultConnectivity, Key, Secret);
+		}
+
+		//!!! not implemented yet
+		/*
+		private async Task<bool> ConnectToAccount(string AccountName, string Password, string PasswordMethod, string LegalIdentityJid, XmlElement LegalIdDefinition, string Pin)
+		{
+			try
+			{
+				async Task OnConnected(XmppClient client)
+				{
+					DateTime now = DateTime.Now;
+					LegalIdentity createdIdentity = null;
+					LegalIdentity approvedIdentity = null;
+
+					bool serviceDiscoverySucceeded;
+
+					if (ServiceRef.TagProfile.NeedsUpdating())
+					{
+						serviceDiscoverySucceeded = await ServiceRef.XmppService.DiscoverServices(client);
+					}
+					else
+					{
+						serviceDiscoverySucceeded = true;
+					}
+
+					if (serviceDiscoverySucceeded && !string.IsNullOrEmpty(ServiceRef.TagProfile.LegalJid))
+					{
+						bool DestroyContractsClient = false;
+
+						if (!client.TryGetExtension(typeof(ContractsClient), out IXmppExtension Extension) ||
+							Extension is not ContractsClient ContractsClient)
+						{
+							ContractsClient = new ContractsClient(client, ServiceRef.TagProfile.LegalJid);
+							DestroyContractsClient = true;
+						}
+
+						try
+						{
+							if (LegalIdDefinition is not null)
+								await ContractsClient.ImportKeys(LegalIdDefinition);
+
+							LegalIdentity[] Identities = await ContractsClient.GetLegalIdentitiesAsync();
+
+							foreach (LegalIdentity Identity in Identities)
+							{
+								try
+								{
+									if ((string.IsNullOrEmpty(LegalIdentityJid) || string.Compare(LegalIdentityJid, Identity.Id, true) == 0) &&
+										Identity.HasClientSignature &&
+										Identity.HasClientPublicKey &&
+										Identity.From <= now &&
+										Identity.To >= now &&
+										(Identity.State == IdentityState.Approved || Identity.State == IdentityState.Created) &&
+										Identity.ValidateClientSignature() &&
+										await ContractsClient.HasPrivateKey(Identity))
+									{
+										if (Identity.State == IdentityState.Approved)
+										{
+											approvedIdentity = Identity;
+											break;
+										}
+
+										createdIdentity ??= Identity;
+									}
+								}
+								catch (Exception)
+								{
+									// Keys might not be available. Ignore at this point. Keys will be generated later.
 								}
 							}
-							catch (Exception)
+
+							if (approvedIdentity is not null)
 							{
-								// Keys might not be available. Ignore at this point. Keys will be generated later.
+								this.LegalIdentity = approvedIdentity;
 							}
-						}
-
-						if (approvedIdentity is not null)
-						{
-							this.LegalIdentity = approvedIdentity;
-						}
-						else if (createdIdentity is not null)
-						{
-							this.LegalIdentity = createdIdentity;
-						}
-
-						string SelectedId;
-
-						if (this.LegalIdentity is not null)
-						{
-							ServiceRef.TagProfile.SetAccountAndLegalIdentity(AccountName, client.PasswordHash, client.PasswordHashMethod, this.LegalIdentity);
-							SelectedId = this.LegalIdentity.Id;
-						}
-						else
-						{
-							ServiceRef.TagProfile.SetAccount(AccountName, client.PasswordHash, client.PasswordHashMethod);
-							SelectedId = string.Empty;
-						}
-
-						if (!string.IsNullOrEmpty(Pin))
-						{
-							ServiceRef.TagProfile.SetPin(Pin);
-						}
-
-						foreach (LegalIdentity Identity in Identities)
-						{
-							if (Identity.Id == SelectedId)
+							else if (createdIdentity is not null)
 							{
-								continue;
+								this.LegalIdentity = createdIdentity;
 							}
 
-							switch (Identity.State)
+							string SelectedId;
+
+							if (this.LegalIdentity is not null)
 							{
-								case IdentityState.Approved:
-								case IdentityState.Created:
-									await ContractsClient.ObsoleteLegalIdentityAsync(Identity.Id);
-									break;
+								ServiceRef.TagProfile.SetAccountAndLegalIdentity(AccountName, client.PasswordHash, client.PasswordHashMethod, this.LegalIdentity);
+								SelectedId = this.LegalIdentity.Id;
+							}
+							else
+							{
+								ServiceRef.TagProfile.SetAccount(AccountName, client.PasswordHash, client.PasswordHashMethod);
+								SelectedId = string.Empty;
+							}
+
+							if (!string.IsNullOrEmpty(Pin))
+							{
+								ServiceRef.TagProfile.SetPin(Pin);
+							}
+
+							foreach (LegalIdentity Identity in Identities)
+							{
+								if (Identity.Id == SelectedId)
+								{
+									continue;
+								}
+
+								switch (Identity.State)
+								{
+									case IdentityState.Approved:
+									case IdentityState.Created:
+										await ContractsClient.ObsoleteLegalIdentityAsync(Identity.Id);
+										break;
+								}
 							}
 						}
-					}
-					finally
-					{
-						if (DestroyContractsClient)
+						finally
 						{
-							ContractsClient.Dispose();
+							if (DestroyContractsClient)
+							{
+								ContractsClient.Dispose();
+							}
 						}
 					}
 				}
+
+				(string hostName, int portNumber, bool isIpAddress) = await ServiceRef.NetworkService.LookupXmppHostnameAndPort(ServiceRef.TagProfile.Domain);
+
+				(bool succeeded, string errorMessage) = await ServiceRef.XmppService.TryConnectAndConnectToAccount(ServiceRef.TagProfile.Domain,
+					isIpAddress, hostName, portNumber, AccountName, Password, PasswordMethod, Constants.LanguageCodes.Default,
+					typeof(App).Assembly, OnConnected);
+
+				if (!succeeded)
+				{
+					await ServiceRef.UiSerializer.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						errorMessage,
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				}
+
+				return succeeded;
 			}
-
-			(string hostName, int portNumber, bool isIpAddress) = await ServiceRef.NetworkService.LookupXmppHostnameAndPort(ServiceRef.TagProfile.Domain);
-
-			(bool succeeded, string errorMessage) = await ServiceRef.XmppService.TryConnectAndConnectToAccount(ServiceRef.TagProfile.Domain,
-				isIpAddress, hostName, portNumber, AccountName, Password, PasswordMethod, Constants.LanguageCodes.Default,
-				typeof(App).Assembly, OnConnected);
-
-			if (!succeeded)
+			catch (Exception ex)
 			{
+				ServiceRef.LogService.LogException(ex);
+
 				await ServiceRef.UiSerializer.DisplayAlert(
-				ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-					errorMessage,
-				ServiceRef.Localizer[nameof(AppResources.Ok)]);
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					ServiceRef.Localizer[nameof(AppResources.UnableToConnectTo), ServiceRef.TagProfile.Domain],
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
 			}
 
-			return succeeded;
+			return false;
 		}
-		catch (Exception ex)
-		{
-			ServiceRef.LogService.LogException(ex);
+		*/
+	}
 
-			await ServiceRef.UiSerializer.DisplayAlert(
-				ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-				ServiceRef.Localizer[nameof(AppResources.UnableToConnectTo), ServiceRef.TagProfile.Domain],
-				ServiceRef.Localizer[nameof(AppResources.Ok)]);
+	public enum ButtonType
+	{
+		Approve = 0,
+		Change = 1,
+	}
+
+	public partial class ButtonInfo : ObservableObject
+	{
+		public ButtonInfo(ButtonType Button)
+		{
+			this.Button = Button;
+
+			LocalizationManager.CurrentCultureChanged += this.OnCurrentCultureChanged;
 		}
 
-		return false;
-	}
-	*/
-}
-
-public enum ButtonType
-{
-	Approve = 0,
-	Change = 1,
-}
-
-public partial class ButtonInfo : ObservableObject
-{
-	public ButtonInfo(ButtonType Button)
-	{
-		this.Button = Button;
-
-		LocalizationManager.CurrentCultureChanged += this.OnCurrentCultureChanged;
-	}
-
-	~ButtonInfo()
-	{
-		LocalizationManager.CurrentCultureChanged -= this.OnCurrentCultureChanged;
-	}
-
-	private void OnCurrentCultureChanged(object? Sender, CultureInfo Culture)
-	{
-		this.OnPropertyChanged(nameof(this.LocalizedName));
-		//!!! not implemented yet
-		// this.OnPropertyChanged(nameof(this.LocalizedDescription));
-	}
-
-	public ButtonType Button { get; set; }
-
-	public string LocalizedName
-	{
-		get
+		~ButtonInfo()
 		{
-			return this.Button switch
+			LocalizationManager.CurrentCultureChanged -= this.OnCurrentCultureChanged;
+		}
+
+		private void OnCurrentCultureChanged(object? Sender, CultureInfo Culture)
+		{
+			this.OnPropertyChanged(nameof(this.LocalizedName));
+			//!!! not implemented yet
+			// this.OnPropertyChanged(nameof(this.LocalizedDescription));
+		}
+
+		public ButtonType Button { get; set; }
+
+		public string LocalizedName
+		{
+			get
 			{
-				ButtonType.Approve => ServiceRef.Localizer[nameof(AppResources.ProviderSectionApproveOption)],
-				ButtonType.Change => ServiceRef.Localizer[nameof(AppResources.ProviderSectionChangeOption)],
-				_ => throw new NotImplementedException(),
-			};
+				return this.Button switch
+				{
+					ButtonType.Approve => ServiceRef.Localizer[nameof(AppResources.ProviderSectionApproveOption)],
+					ButtonType.Change => ServiceRef.Localizer[nameof(AppResources.ProviderSectionChangeOption)],
+					_ => throw new NotImplementedException(),
+				};
+			}
 		}
-	}
 
-	public Geometry ImageData
-	{
-		get
+		public Geometry ImageData
 		{
-			return this.Button switch
+			get
 			{
-				ButtonType.Approve => Geometries.ApproveProviderIconPath,
-				ButtonType.Change => Geometries.ChangeProviderIconPath,
-				_ => throw new NotImplementedException(),
-			};
+				return this.Button switch
+				{
+					ButtonType.Approve => Geometries.ApproveProviderIconPath,
+					ButtonType.Change => Geometries.ChangeProviderIconPath,
+					_ => throw new NotImplementedException(),
+				};
+			}
 		}
 	}
 }

@@ -14,86 +14,87 @@ using ZXing.Net.Maui.Controls;
 using Microsoft.Maui.Controls.Compatibility.Platform.Android;
 #endif
 
-namespace NeuroAccessMaui;
-
-public static class MauiProgram
+namespace NeuroAccessMaui
 {
-	public static MauiApp CreateMauiApp()
+	public static class MauiProgram
 	{
-		InitMauiControlsHandlers();
-
-		MauiAppBuilder Builder = MauiApp.CreateBuilder();
-
-		Builder.UseMauiApp<App>();
-
-		Builder.ConfigureFonts(fonts =>
+		public static MauiApp CreateMauiApp()
 		{
-			fonts.AddFont("SpaceGrotesk-Bold.ttf", "SpaceGroteskBold");
-			//fonts.AddFont("SpaceGrotesk-SemiBold.ttf", "SpaceGroteskSemiBold");
-			fonts.AddFont("SpaceGrotesk-Medium.ttf", "SpaceGroteskMedium");
-			fonts.AddFont("SpaceGrotesk-Regular.ttf", "SpaceGroteskRegular");
-			//fonts.AddFont("SpaceGrotesk-Light.ttf", "SpaceGroteskLight");
-			fonts.AddFont("NHaasGroteskTXPro-75Bd.ttf", "HaasGroteskBold");
-			//fonts.AddFont("NHaasGroteskTXPro-65Md.ttf", "HaasGroteskMedium");
-			fonts.AddFont("NHaasGroteskTXPro-55Rg.ttf", "HaasGroteskRegular");
-		});
+			InitMauiControlsHandlers();
 
-		// NuGets
-		Builder.ConfigureMopups();
-		Builder.UseMauiCommunityToolkit();
-		Builder.UseMauiCommunityToolkitMarkup();
-		Builder.UseBarcodeReader();
+			MauiAppBuilder Builder = MauiApp.CreateBuilder();
 
-		// Localization service
-		Builder.UseLocalizationManager<AppResources>();
+			Builder.UseMauiApp<App>();
 
-		// Singleton app's services
-		Builder.Services.AddSingleton<IPlatformSpecific, PlatformSpecific>();
+			Builder.ConfigureFonts(fonts =>
+			{
+				fonts.AddFont("SpaceGrotesk-Bold.ttf", "SpaceGroteskBold");
+				//fonts.AddFont("SpaceGrotesk-SemiBold.ttf", "SpaceGroteskSemiBold");
+				fonts.AddFont("SpaceGrotesk-Medium.ttf", "SpaceGroteskMedium");
+				fonts.AddFont("SpaceGrotesk-Regular.ttf", "SpaceGroteskRegular");
+				//fonts.AddFont("SpaceGrotesk-Light.ttf", "SpaceGroteskLight");
+				fonts.AddFont("NHaasGroteskTXPro-75Bd.ttf", "HaasGroteskBold");
+				//fonts.AddFont("NHaasGroteskTXPro-65Md.ttf", "HaasGroteskMedium");
+				fonts.AddFont("NHaasGroteskTXPro-55Rg.ttf", "HaasGroteskRegular");
+			});
 
-		// Apps pages & models
-		Builder.RegisterPagesManager();
+			// NuGets
+			Builder.ConfigureMopups();
+			Builder.UseMauiCommunityToolkit();
+			Builder.UseMauiCommunityToolkitMarkup();
+			Builder.UseBarcodeReader();
 
-		//Builder.Services.AddLogging();
+			// Localization service
+			Builder.UseLocalizationManager<AppResources>();
+
+			// Singleton app's services
+			Builder.Services.AddSingleton<IPlatformSpecific, PlatformSpecific>();
+
+			// Apps pages & models
+			Builder.RegisterPagesManager();
+
+			//Builder.Services.AddLogging();
 #if DEBUG
-		Builder.Logging.AddDebug();
+			Builder.Logging.AddDebug();
 #endif
 
-		return Builder.Build();
-	}
+			return Builder.Build();
+		}
 
-	private static void InitMauiControlsHandlers()
-	{
+		private static void InitMauiControlsHandlers()
+		{
 #if IOS
-		ScrollViewHandler.Mapper.AppendToMapping("BouncesScrollViewHandler", (handler, view) =>
-		{
-			handler.PlatformView.Bounces = false;
-		});
+			ScrollViewHandler.Mapper.AppendToMapping("BouncesScrollViewHandler", (handler, view) =>
+			{
+				handler.PlatformView.Bounces = false;
+			});
 
-		CollectionViewHandler.Mapper.AppendToMapping("BouncesCollectionViewHandler", (handler, view) =>
-		{
-			//!!! not sure how this is done here yet
-			//!!! handler.ViewController.PlatformView.Bounces = false;
-		});
+			CollectionViewHandler.Mapper.AppendToMapping("BouncesCollectionViewHandler", (handler, view) =>
+			{
+				//!!! not sure how this is done here yet
+				//!!! handler.ViewController.PlatformView.Bounces = false;
+			});
 
-		Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("BorderStyleEntryHandler", (handler, view) =>
-		{
-				handler.PlatformView.BorderStyle = UIKit.UITextBorderStyle.None;
-		});
+			Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("BorderStyleEntryHandler", (handler, view) =>
+			{
+					handler.PlatformView.BorderStyle = UIKit.UITextBorderStyle.None;
+			});
 #elif ANDROID
-		ScrollViewHandler.Mapper.AppendToMapping("OverScrollModeScrollViewHandler", (handler, view) =>
-		{
-			handler.PlatformView.OverScrollMode = Android.Views.OverScrollMode.Never;
-		});
+			ScrollViewHandler.Mapper.AppendToMapping("OverScrollModeScrollViewHandler", (handler, view) =>
+			{
+				handler.PlatformView.OverScrollMode = Android.Views.OverScrollMode.Never;
+			});
 
-		CollectionViewHandler.Mapper.AppendToMapping("OverScrollModeCollectionViewHandler", (handler, view) =>
-		{
-			handler.PlatformView.OverScrollMode = Android.Views.OverScrollMode.Never;
-		});
+			CollectionViewHandler.Mapper.AppendToMapping("OverScrollModeCollectionViewHandler", (handler, view) =>
+			{
+				handler.PlatformView.OverScrollMode = Android.Views.OverScrollMode.Never;
+			});
 
-		EntryHandler.Mapper.AppendToMapping("NoUnderlineEntryHandler", (handler, view) =>
-		{
-			handler.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Colors.Transparent.ToAndroid());
-		});
+			EntryHandler.Mapper.AppendToMapping("NoUnderlineEntryHandler", (handler, view) =>
+			{
+				handler.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Colors.Transparent.ToAndroid());
+			});
 #endif
+		}
 	}
 }
