@@ -28,7 +28,7 @@ namespace NeuroAccessMaui.UI.Pages
 				return ViewModel;
 			}
 
-			throw new ArgumentException("Wrong view model type: " + nameof(T));
+			throw new ArgumentException("Wrong view model type: " + typeof(T).FullName);
 		}
 
 		/// <summary>

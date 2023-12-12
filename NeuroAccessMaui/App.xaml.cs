@@ -81,7 +81,7 @@ namespace NeuroAccessMaui
 		/// <summary>
 		/// Gets the current application, type casted to <see cref="App"/>.
 		/// </summary>
-		public static new App? Current => (App?)Application.Current;
+		public static new App? Current => appInstance;
 
 		/// <inheritdoc/>
 		public App() : this(false)

@@ -13,7 +13,6 @@ namespace NeuroAccessMaui
 
 		protected override MauiApp CreateMauiApp()
 		{
-
 			this.RegisterKeyBoardObserver();
 
 			return MauiProgram.CreateMauiApp();

@@ -9,29 +9,27 @@
 
 			try
 			{
-				Service = CurrentServiceProvider?.GetService<T>();
+				Service = MauiProgram.Current?.Services?.GetService<T>();
 			}
 			catch (Exception)
 			{
-				throw new ArgumentException("Service not found: " + nameof(T));
+				throw new ArgumentException("Service not found: " + typeof(T).FullName);
 			}
 
 			if (Service is not null)
 				return Service;
 			else
-				throw new ArgumentException("Service not found: " + nameof(T));
+				throw new ArgumentException("Service not found: " + typeof(T).FullName);
 		}
 
 		public static object GetService(Type ServiceType)
 		{
-			object? Service = CurrentServiceProvider?.GetService(ServiceType);
+			object? Service = MauiProgram.Current?.Services?.GetService(ServiceType);
 
 			if (Service is not null)
 				return Service;
 			else
 				throw new ArgumentException("Service not found: " + ServiceType);
 		}
-
-		public static IServiceProvider? CurrentServiceProvider => (AppInfo.Current as IPlatformApplication)?.Services;
 	}
 }

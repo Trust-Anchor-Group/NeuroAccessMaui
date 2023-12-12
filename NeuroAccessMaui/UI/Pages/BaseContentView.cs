@@ -24,11 +24,9 @@ namespace NeuroAccessMaui.UI.Pages
 		public T ViewModel<T>() where T : BaseViewModel
 		{
 			if (this.BindingContext is T ViewModel)
-			{
 				return ViewModel;
-			}
 
-			throw new ArgumentException("Wrong view model type: " + nameof(T));
+			throw new ArgumentException("Wrong view model type: " + typeof(T).FullName);
 		}
 
 		public BaseContentView()

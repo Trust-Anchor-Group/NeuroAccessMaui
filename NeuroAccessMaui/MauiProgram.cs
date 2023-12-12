@@ -18,6 +18,8 @@ namespace NeuroAccessMaui
 {
 	public static class MauiProgram
 	{
+		private static MauiApp? instance;
+
 		public static MauiApp CreateMauiApp()
 		{
 			InitMauiControlsHandlers();
@@ -58,8 +60,15 @@ namespace NeuroAccessMaui
 			Builder.Logging.AddDebug();
 #endif
 
-			return Builder.Build();
+			instance = Builder.Build();
+
+			return instance;
 		}
+
+		/// <summary>
+		/// Current MAUI app instance.
+		/// </summary>
+		public static MauiApp? Current => instance;
 
 		private static void InitMauiControlsHandlers()
 		{
@@ -77,7 +86,7 @@ namespace NeuroAccessMaui
 
 			Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("BorderStyleEntryHandler", (handler, view) =>
 			{
-					handler.PlatformView.BorderStyle = UIKit.UITextBorderStyle.None;
+				handler.PlatformView.BorderStyle = UIKit.UITextBorderStyle.None;
 			});
 #elif ANDROID
 			ScrollViewHandler.Mapper.AppendToMapping("OverScrollModeScrollViewHandler", (handler, view) =>
