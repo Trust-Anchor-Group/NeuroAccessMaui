@@ -53,7 +53,6 @@ namespace NeuroAccessMaui.Services.Storage
 					this.databaseProvider = await this.CreateDatabaseFile();
 
 					await this.databaseProvider.RepairIfInproperShutdown(string.Empty);
-
 					await this.databaseProvider.Start();
 				}
 
