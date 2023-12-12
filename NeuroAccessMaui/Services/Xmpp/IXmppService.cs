@@ -34,7 +34,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// An event that triggers whenever the connection state to the XMPP server changes.
 		/// </summary>
-		event StateChangedEventHandler ConnectionStateChanged;
+		event StateChangedEventHandler? ConnectionStateChanged;
 
 		#endregion
 
@@ -295,17 +295,17 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// An event that fires when a legal identity changes.
 		/// </summary>
-		event LegalIdentityEventHandler LegalIdentityChanged;
+		event LegalIdentityEventHandler? LegalIdentityChanged;
 
 		/// <summary>
 		/// An event that fires when a petition for an identity is received.
 		/// </summary>
-		event LegalIdentityPetitionEventHandler PetitionForIdentityReceived;
+		event LegalIdentityPetitionEventHandler? PetitionForIdentityReceived;
 
 		/// <summary>
 		/// An event that fires when a petitioned identity response is received.
 		/// </summary>
-		event LegalIdentityPetitionResponseEventHandler PetitionedIdentityResponseReceived;
+		event LegalIdentityPetitionResponseEventHandler? PetitionedIdentityResponseReceived;
 
 		/// <summary>
 		/// Exports Keys to XML.
@@ -365,12 +365,12 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// An event that fires when a petition for peer review is received.
 		/// </summary>
-		event SignaturePetitionEventHandler PetitionForPeerReviewIdReceived;
+		event SignaturePetitionEventHandler? PetitionForPeerReviewIdReceived;
 
 		/// <summary>
 		/// An event that fires when a petitioned peer review response is received.
 		/// </summary>
-		event SignaturePetitionResponseEventHandler PetitionedPeerReviewIdResponseReceived;
+		event SignaturePetitionResponseEventHandler? PetitionedPeerReviewIdResponseReceived;
 
 		/// <summary>
 		/// Gets available service providers for buying eDaler.
@@ -424,12 +424,12 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// An event that fires when a petition for a signature is received.
 		/// </summary>
-		event SignaturePetitionEventHandler PetitionForSignatureReceived;
+		event SignaturePetitionEventHandler? PetitionForSignatureReceived;
 
 		/// <summary>
 		/// Event raised when a response to a signature petition has been received.
 		/// </summary>
-		event SignaturePetitionResponseEventHandler SignaturePetitionResponseReceived;
+		event SignaturePetitionResponseEventHandler? SignaturePetitionResponseReceived;
 
 		#endregion
 

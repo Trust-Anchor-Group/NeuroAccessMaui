@@ -164,7 +164,10 @@ namespace NeuroAccessMaui.Services
 			Activity? activity = Platform.CurrentActivity;
 			Android.Views.View? rootView = activity?.Window?.DecorView.RootView;
 
-			using Bitmap screenshot = Bitmap.CreateBitmap(rootView.Width, rootView.Height, Bitmap.Config.Argb8888);
+			if (rootView is null)
+				return Task.FromResult<byte[]>([]);
+
+			using Bitmap screenshot = Bitmap.CreateBitmap(rootView.Width, rootView.Height, Bitmap.Config.Argb8888!);
 			Canvas canvas = new(screenshot);
 			rootView.Draw(canvas);
 
@@ -176,7 +179,7 @@ namespace NeuroAccessMaui.Services
 				Blurred = ToLegacyBlurred(screenshot, blurRadius);
 
 			MemoryStream Stream = new();
-			Blurred.Compress(Bitmap.CompressFormat.Jpeg, 80, Stream);
+			Blurred.Compress(Bitmap.CompressFormat.Jpeg!, 80, Stream);
 			Stream.Seek(0, SeekOrigin.Begin);
 
 			return Task.FromResult(Stream.ToArray());
@@ -208,16 +211,16 @@ namespace NeuroAccessMaui.Services
 
 			// Next, run the script. This will run the script over each Element in the Allocation, and copy it's
 			// output to the allocation we just created for this purpose.
-			script.ForEach(output);
+			script?.ForEach(output);
 
 			// Copy the output to the blurred bitmap
-			output.CopyTo(blurredBitmap);
+			output?.CopyTo(blurredBitmap);
 
 			// Cleanup.
-			output.Destroy();
-			input.Destroy();
-			script.Destroy();
-			renderScript.Destroy();
+			output?.Destroy();
+			input?.Destroy();
+			script?.Destroy();
+			renderScript?.Destroy();
 
 			return blurredBitmap;
 		}
@@ -228,9 +231,9 @@ namespace NeuroAccessMaui.Services
 			Bitmap.Config? config = source.GetConfig();
 			config ??= Bitmap.Config.Argb8888;    // This will support transparency
 
-			Bitmap? img = source.Copy(config, true);
+			Bitmap? img = source.Copy(config!, true);
 
-			int w = img.Width;
+			int w = img!.Width;
 			int h = img.Height;
 			int wm = w - 1;
 			int hm = h - 1;

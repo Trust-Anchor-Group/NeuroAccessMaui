@@ -298,13 +298,13 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 		/// PhoneNr of the identity
 		/// </summary>
 		[ObservableProperty]
-		private string phoneNr;
+		private string? phoneNr;
 
 		/// <summary>
 		/// EMail of the identity
 		/// </summary>
 		[ObservableProperty]
-		private string eMail;
+		private string? eMail;
 
 		/// <summary>
 		/// Is the contract approved?
@@ -316,7 +316,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 		/// What's the purpose of the petition?
 		/// </summary>
 		[ObservableProperty]
-		private string purpose;
+		private string? purpose;
 
 		#endregion
 

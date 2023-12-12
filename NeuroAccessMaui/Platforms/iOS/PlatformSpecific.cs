@@ -70,7 +70,7 @@ namespace NeuroAccessMaui.Services
 		public Task<byte[]> CaptureScreen(int blurRadius = 25)
 		{
 			blurRadius = Math.Min(25, Math.Max(blurRadius, 0));
-			UIImage capture;
+			UIImage? capture;
 
 			using UIBlurEffect blurEffect = UIBlurEffect.FromStyle(UIBlurEffectStyle.Regular);
 			using UIVisualEffectView blurWindow = new(blurEffect);
@@ -81,10 +81,10 @@ namespace NeuroAccessMaui.Services
 			UIView? subview = UIScreen.MainScreen.SnapshotView(true);
 			//capture = UIScreen.MainScreen.Capture();
 			//var subview = new UIImageView(capture);
-			subview.AddSubview(blurWindow);
-			capture = subview.Capture(true);
+			subview?.AddSubview(blurWindow);
+			capture = subview?.Capture(true);
 			blurWindow.RemoveFromSuperview();
-			subview.Dispose();
+			subview?.Dispose();
 
 			//!!! capture.AsJPEG(.8f).AsStream();
 			return Task.FromResult(Array.Empty<byte>());

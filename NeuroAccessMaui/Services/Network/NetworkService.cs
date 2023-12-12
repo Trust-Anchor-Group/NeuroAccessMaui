@@ -16,7 +16,7 @@ namespace NeuroAccessMaui.Services.Network
 	{
 		private const int defaultXmppPortNumber = 5222;
 
-		public event EventHandler<ConnectivityChangedEventArgs> ConnectivityChanged;
+		public event EventHandler<ConnectivityChangedEventArgs>? ConnectivityChanged;
 
 		public NetworkService()
 		{

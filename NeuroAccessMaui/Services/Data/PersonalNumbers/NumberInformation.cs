@@ -8,7 +8,7 @@
 		/// <summary>
 		/// String representation of the personal number.
 		/// </summary>
-		public string PersonalNumber;
+		public string? PersonalNumber;
 
 		/// <summary>
 		/// true = valid: PersonalNumber may be normalized.
@@ -20,6 +20,6 @@
 		/// <summary>
 		/// A string that can be displayed to a user, informing the user about the approximate format expected.
 		/// </summary>
-		public string DisplayString;
+		public string? DisplayString;
 	}
 }

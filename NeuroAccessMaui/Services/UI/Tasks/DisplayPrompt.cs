@@ -21,7 +21,7 @@ namespace NeuroAccessMaui.Services.UI.Tasks
 			this.Accept = Accept;
 			this.Cancel = Cancel;
 
-			this.CompletionSource = new TaskCompletionSource<string>();
+			this.CompletionSource = new TaskCompletionSource<string?>();
 		}
 
 		/// <summary>
@@ -47,27 +47,23 @@ namespace NeuroAccessMaui.Services.UI.Tasks
 		/// <summary>
 		/// Completion source indicating when task has been completed.
 		/// </summary>
-		public TaskCompletionSource<string> CompletionSource { get; }
+		public TaskCompletionSource<string?> CompletionSource { get; }
 
 		/// <summary>
 		/// Executes the task.
 		/// </summary>
 		public override async Task Execute()
 		{
-			string Result;
+			string? Result;
 
-			if (!string.IsNullOrWhiteSpace(this.Accept) && !string.IsNullOrWhiteSpace(this.Cancel))
-			{
+			if (Application.Current?.MainPage is null)
+				Result = null;
+			else if (!string.IsNullOrWhiteSpace(this.Accept) && !string.IsNullOrWhiteSpace(this.Cancel))
 				Result = await Application.Current.MainPage.DisplayPromptAsync(this.Title, this.Message, this.Accept, this.Cancel);
-			}
 			else if (!string.IsNullOrWhiteSpace(this.Cancel))
-			{
 				Result = await Application.Current.MainPage.DisplayPromptAsync(this.Title, this.Message, this.Cancel);
-			}
 			else if (!string.IsNullOrWhiteSpace(this.Accept))
-			{
 				Result = await Application.Current.MainPage.DisplayPromptAsync(this.Title, this.Message, this.Accept);
-			}
 			else
 			{
 				Result = await Application.Current.MainPage.DisplayPromptAsync(this.Title, this.Message,

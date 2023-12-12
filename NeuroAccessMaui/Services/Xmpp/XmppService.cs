@@ -1271,7 +1271,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// An event that fires when a legal identity changes.
 		/// </summary>
-		public event LegalIdentityEventHandler LegalIdentityChanged;
+		public event LegalIdentityEventHandler? LegalIdentityChanged;
 
 		private async Task ContractsClient_IdentityUpdated(object? Sender, LegalIdentityEventArgs e)
 		{
@@ -1294,7 +1294,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// An event that fires when a petition for an identity is received.
 		/// </summary>
-		public event LegalIdentityPetitionEventHandler PetitionForIdentityReceived;
+		public event LegalIdentityPetitionEventHandler? PetitionForIdentityReceived;
 
 		private async Task ContractsClient_PetitionForIdentityReceived(object? Sender, LegalIdentityPetitionEventArgs e)
 		{
@@ -1312,7 +1312,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// An event that fires when a petitioned identity response is received.
 		/// </summary>
-		public event LegalIdentityPetitionResponseEventHandler PetitionedIdentityResponseReceived;
+		public event LegalIdentityPetitionResponseEventHandler? PetitionedIdentityResponseReceived;
 
 		private async Task ContractsClient_PetitionedIdentityResponseReceived(object? Sender, LegalIdentityPetitionResponseEventArgs e)
 		{
@@ -1437,7 +1437,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// An event that fires when a petition for peer review is received.
 		/// </summary>
-		public event SignaturePetitionEventHandler PetitionForPeerReviewIdReceived;
+		public event SignaturePetitionEventHandler? PetitionForPeerReviewIdReceived;
 
 		private async Task ContractsClient_PetitionForPeerReviewIdReceived(object? Sender, SignaturePetitionEventArgs e)
 		{
@@ -1455,7 +1455,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// An event that fires when a petitioned peer review response is received.
 		/// </summary>
-		public event SignaturePetitionResponseEventHandler PetitionedPeerReviewIdResponseReceived;
+		public event SignaturePetitionResponseEventHandler? PetitionedPeerReviewIdResponseReceived;
 
 		private async Task ContractsClient_PetitionedPeerReviewIdResponseReceived(object? Sender, SignaturePetitionResponseEventArgs e)
 		{
@@ -1556,7 +1556,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// An event that fires when a petition for a signature is received.
 		/// </summary>
-		public event SignaturePetitionEventHandler PetitionForSignatureReceived;
+		public event SignaturePetitionEventHandler? PetitionForSignatureReceived;
 
 		private async Task ContractsClient_PetitionForSignatureReceived(object? Sender, SignaturePetitionEventArgs e)
 		{
@@ -1574,7 +1574,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// Event raised when a response to a signature petition has been received.
 		/// </summary>
-		public event SignaturePetitionResponseEventHandler SignaturePetitionResponseReceived;
+		public event SignaturePetitionResponseEventHandler? SignaturePetitionResponseReceived;
 
 		private async Task ContractsClient_PetitionedSignatureResponseReceived(object? Sender, SignaturePetitionResponseEventArgs e)
 		{

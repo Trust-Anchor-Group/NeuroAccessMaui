@@ -56,9 +56,12 @@ namespace NeuroAccessMaui.Services.Navigation
 				try
 				{
 					Application? Application = Application.Current;
-					this.UnsubscribeFromShellNavigatingIfNecessary(Application);
-					Application.PropertyChanged -= this.OnApplicationPropertyChanged;
-					Application.PropertyChanging -= this.OnApplicationPropertyChanging;
+					if (Application is not null)
+					{
+						this.UnsubscribeFromShellNavigatingIfNecessary(Application);
+						Application.PropertyChanged -= this.OnApplicationPropertyChanged;
+						Application.PropertyChanging -= this.OnApplicationPropertyChanging;
+					}
 				}
 				catch (Exception e)
 				{

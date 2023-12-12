@@ -14,7 +14,7 @@ namespace NeuroAccessMaui.Services.Network
 		/// <summary>
 		/// Triggers whenever network connectivity changes.
 		/// </summary>
-		event EventHandler<ConnectivityChangedEventArgs> ConnectivityChanged;
+		event EventHandler<ConnectivityChangedEventArgs>? ConnectivityChanged;
 
 		/// <summary>
 		/// Performs a DNS lookup for the specified domain name.

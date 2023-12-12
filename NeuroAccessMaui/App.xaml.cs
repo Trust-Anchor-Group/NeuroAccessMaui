@@ -126,7 +126,7 @@ namespace NeuroAccessMaui
 			if (!BackgroundStart)
 			{
 				this.InitializeComponent();
-				Current.UserAppTheme = AppTheme.Unspecified;
+				Current!.UserAppTheme = AppTheme.Unspecified;
 
 				// Start page
 				try
@@ -959,7 +959,7 @@ namespace NeuroAccessMaui
 		/// </summary>
 		public static async Task CheckUserBlocking()
 		{
-			DateTime? DateTimeForLogin = await appInstance.loginAuditor.GetEarliestLoginOpportunity(Constants.Pin.RemoteEndpoint, Constants.Pin.Protocol);
+			DateTime? DateTimeForLogin = await appInstance!.loginAuditor.GetEarliestLoginOpportunity(Constants.Pin.RemoteEndpoint, Constants.Pin.Protocol);
 
 			if (DateTimeForLogin.HasValue)
 			{
@@ -1011,13 +1011,13 @@ namespace NeuroAccessMaui
 			{
 				ClearStartInactivityTime();
 				SetCurrentPinCounter(0);
-				await appInstance.loginAuditor.UnblockAndReset(Constants.Pin.RemoteEndpoint);
+				await appInstance!.loginAuditor.UnblockAndReset(Constants.Pin.RemoteEndpoint);
 				await MopupService.Instance.PopAsync();
 				return Pin;
 			}
 			else
 			{
-				await appInstance.loginAuditor.ProcessLoginFailure(Constants.Pin.RemoteEndpoint,
+				await appInstance!.loginAuditor.ProcessLoginFailure(Constants.Pin.RemoteEndpoint,
 						Constants.Pin.Protocol, DateTime.Now, Constants.Pin.Reason);
 
 				PinAttemptCounter++;

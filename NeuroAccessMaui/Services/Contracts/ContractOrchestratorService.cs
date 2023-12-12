@@ -229,7 +229,7 @@ namespace NeuroAccessMaui.Services.Contracts
 						else
 						{
 							StringBuilder Xml = new();
-							ServiceRef.TagProfile.LegalIdentity.Serialize(Xml, true, true, true, true, true, true, true);
+							ServiceRef.TagProfile.LegalIdentity!.Serialize(Xml, true, true, true, true, true, true, true);
 							byte[] Data = Encoding.UTF8.GetBytes(Xml.ToString());
 							bool? Result;
 
@@ -327,29 +327,29 @@ namespace NeuroAccessMaui.Services.Contracts
 			if (!isConnected)
 				return;
 
-			(bool succeeded, LegalIdentity? identity) = await ServiceRef.NetworkService.TryRequest(
-				() => ServiceRef.XmppService.GetLegalIdentity(LegalId), displayAlert: false);
+			(bool succeeded, LegalIdentity? Identity) = await ServiceRef.NetworkService.TryRequest(
+				() => ServiceRef.XmppService!.GetLegalIdentity(LegalId), displayAlert: false);
 
-			if (succeeded)
+			if (succeeded && Identity is not null)
 			{
 				MainThread.BeginInvokeOnMainThread(async () =>
 				{
 					string? userMessage = null;
 					bool gotoRegistrationPage = false;
 
-					if (identity.State == IdentityState.Compromised)
+					if (Identity.State == IdentityState.Compromised)
 					{
 						userMessage = ServiceRef.Localizer[nameof(AppResources.YourLegalIdentityHasBeenCompromised)];
-						ServiceRef.TagProfile.CompromiseLegalIdentity(identity);
+						ServiceRef.TagProfile.CompromiseLegalIdentity(Identity);
 						gotoRegistrationPage = true;
 					}
-					else if (identity.State == IdentityState.Obsoleted)
+					else if (Identity.State == IdentityState.Obsoleted)
 					{
 						userMessage = ServiceRef.Localizer[nameof(AppResources.YourLegalIdentityHasBeenObsoleted)];
-						ServiceRef.TagProfile.RevokeLegalIdentity(identity);
+						ServiceRef.TagProfile.RevokeLegalIdentity(Identity);
 						gotoRegistrationPage = true;
 					}
-					else if (identity.State == IdentityState.Approved && !await ServiceRef.XmppService.HasPrivateKey(identity.Id))
+					else if (Identity.State == IdentityState.Approved && !await ServiceRef.XmppService!.HasPrivateKey(Identity.Id))
 					{
 						bool Response = await ServiceRef.UiSerializer.DisplayAlert(
 							ServiceRef.Localizer[nameof(AppResources.WarningTitle)],
@@ -358,7 +358,7 @@ namespace NeuroAccessMaui.Services.Contracts
 							ServiceRef.Localizer[nameof(AppResources.Repair)]);
 
 						if (Response)
-							ServiceRef.TagProfile.SetLegalIdentity(identity);
+							ServiceRef.TagProfile.SetLegalIdentity(Identity);
 						else
 						{
 							try
@@ -376,7 +376,7 @@ namespace NeuroAccessMaui.Services.Contracts
 						}
 					}
 					else
-						ServiceRef.TagProfile.SetLegalIdentity(identity);
+						ServiceRef.TagProfile.SetLegalIdentity(Identity);
 
 					if (gotoRegistrationPage)
 					{
