@@ -11,7 +11,7 @@ namespace NeuroAccessMaui.UI.Behaviors
 		/// The view to move focus to.
 		/// </summary>
 		[TypeConverter(typeof(ReferenceTypeConverter))]
-		public View SetFocusTo { get; set; }
+		public View? SetFocusTo { get; set; }
 
 		/// <inheritdoc/>
 		protected override void OnAttachedTo(Button Button)
@@ -29,7 +29,7 @@ namespace NeuroAccessMaui.UI.Behaviors
 
 		private void Button_Clicked(object? Sender, EventArgs e)
 		{
-			FocusOn(this.SetFocusTo);
+			FocusOn(this.SetFocusTo!);
 		}
 
 		/// <summary>

@@ -3,12 +3,13 @@
 	public static class ServiceHelper
 	{
 		public static T GetService<T>()
+			where T : class
 		{
 			T? Service;
 
 			try
 			{
-				Service = Current.GetService<T>();
+				Service = CurrentServiceProvider?.GetService<T>();
 			}
 			catch (Exception)
 			{
@@ -23,7 +24,7 @@
 
 		public static object GetService(Type ServiceType)
 		{
-			object? Service = Current.GetService(ServiceType);
+			object? Service = CurrentServiceProvider?.GetService(ServiceType);
 
 			if (Service is not null)
 				return Service;
@@ -31,15 +32,6 @@
 				throw new ArgumentException("Service not found: " + ServiceType);
 		}
 
-		public static IServiceProvider Current =>
-#if WINDOWS
-			MauiWinUIApplication.Current.Services;
-#elif ANDROID
-			MauiApplication.Current.Services;
-#elif IOS || MACCATALYST
-			MauiUIApplicationDelegate.Current.Services;
-#else
-			null;
-#endif
+		public static IServiceProvider? CurrentServiceProvider => (AppInfo.Current as IPlatformApplication)?.Services;
 	}
 }

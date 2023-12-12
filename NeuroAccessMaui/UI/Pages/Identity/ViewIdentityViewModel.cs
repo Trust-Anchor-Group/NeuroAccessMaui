@@ -976,7 +976,8 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 				if (!await App.VerifyPin())
 					return;
 
-				(bool Succeeded1, byte[]? Signature) = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.Sign(this.contentToSign, SignWith.LatestApprovedId));
+				(bool Succeeded1, byte[]? Signature) = await ServiceRef.NetworkService.TryRequest(
+					() => ServiceRef.XmppService.Sign(this.contentToSign!, SignWith.LatestApprovedId));
 
 				if (!Succeeded1)
 					return;
@@ -984,8 +985,8 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 				bool Succeeded2 = await ServiceRef.NetworkService.TryRequest(() =>
 				{
 					return ServiceRef.XmppService.SendPetitionSignatureResponse(
-						this.signatoryIdentityId, this.contentToSign, Signature,
-						this.petitionId, this.requestorFullJid, true);
+						this.signatoryIdentityId, this.contentToSign!, Signature!,
+						this.petitionId!, this.requestorFullJid!, true);
 				});
 
 				if (Succeeded2)
@@ -1011,8 +1012,8 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 				bool Succeeded = await ServiceRef.NetworkService.TryRequest(() =>
 				{
 					return ServiceRef.XmppService.SendPetitionSignatureResponse(
-						this.signatoryIdentityId, this.contentToSign, [],
-						this.petitionId, this.requestorFullJid, false);
+						this.signatoryIdentityId, this.contentToSign!, [],
+						this.petitionId!, this.requestorFullJid!, false);
 				});
 
 				if (Succeeded)
@@ -1222,7 +1223,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 		/// <summary>
 		/// Title of the current view
 		/// </summary>
-		public override Task<string> Title => Task.FromResult<string>(ContactInfo.GetFriendlyName(this.LegalIdentity));
+		public override Task<string> Title => Task.FromResult<string>(ContactInfo.GetFriendlyName(this.LegalIdentity!));
 
 		#endregion
 

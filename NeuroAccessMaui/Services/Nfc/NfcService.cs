@@ -84,11 +84,10 @@ namespace NeuroAccessMaui.Services.Nfc
 								List<object> Items = [];
 
 								if (LinkableView.EncodeAppLinks)
-								{
 									Items.Add(Title);
-								}
 
-								Items.Add(new Uri(Link));
+								if (!string.IsNullOrEmpty(Link))
+									Items.Add(new Uri(Link));
 
 								if (LinkableView.EncodeAppLinks)
 								{
@@ -97,9 +96,7 @@ namespace NeuroAccessMaui.Services.Nfc
 								}
 
 								if (LinkableView.HasMedia)
-								{
-									Items.Add(new KeyValuePair<byte[], string>(LinkableView.Media, LinkableView.MediaContentType));
-								}
+									Items.Add(new KeyValuePair<byte[], string>(LinkableView.Media!, LinkableView.MediaContentType!));
 
 								bool Ok = await Ndef.SetMessage([.. Items]);
 

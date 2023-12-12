@@ -184,7 +184,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// </summary>
 		/// <param name="Seconds">Number of seconds for which the token should be valid.</param>
 		/// <returns>Token, if able to get a token, or null otherwise.</returns>
-		Task<string> GetApiToken(int Seconds);
+		Task<string?> GetApiToken(int Seconds);
 
 		/// <summary>
 		/// Performs an HTTP POST to a protected API on the server, over the current XMPP connection,

@@ -11,7 +11,7 @@ namespace NeuroAccessMaui.UI.Behaviors
 		/// The view to move focus to.
 		/// </summary>
 		[TypeConverter(typeof(ReferenceTypeConverter))]
-		public View ScrollTo { get; set; }
+		public View? ScrollTo { get; set; }
 
 		/// <summary>
 		/// A BindableProperty for <see cref="IsEnabled"/> property.
@@ -45,9 +45,7 @@ namespace NeuroAccessMaui.UI.Behaviors
 		private void Button_Clicked(object? Sender, EventArgs e)
 		{
 			if (this.IsEnabled)
-			{
-				MakeVisible(this.ScrollTo);
-			}
+				MakeVisible(this.ScrollTo!);
 		}
 
 		/// <summary>

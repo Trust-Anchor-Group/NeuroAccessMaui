@@ -11,7 +11,9 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 		/// <summary>
 		/// Creates an instance of the <see cref="PetitionSignatureNavigationArgs"/> class.
 		/// </summary>
-		public PetitionSignatureNavigationArgs() { }
+		public PetitionSignatureNavigationArgs()
+		{
+		}
 
 		/// <summary>
 		/// Creates an instance of the <see cref="PetitionSignatureNavigationArgs"/> class.
@@ -41,31 +43,31 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 		/// <summary>
 		/// The identity of the requestor.
 		/// </summary>
-		public LegalIdentity RequestorIdentity { get; }
+		public LegalIdentity? RequestorIdentity { get; }
 
 		/// <summary>
 		/// The full Jid of the requestor.
 		/// </summary>
-		public string RequestorFullJid { get; }
+		public string? RequestorFullJid { get; }
 
 		/// <summary>
 		/// Legal ID requested to sign <see cref="ContentToSign"/>.
 		/// </summary>
-		public string SignatoryIdentityId { get; }
+		public string? SignatoryIdentityId { get; }
 
 		/// <summary>
 		/// Digital content to sign.
 		/// </summary>
-		public byte[] ContentToSign { get; }
+		public byte[]? ContentToSign { get; }
 
 		/// <summary>
 		/// The petition id.
 		/// </summary>
-		public string PetitionId { get; }
+		public string? PetitionId { get; }
 
 		/// <summary>
 		/// The purpose of the petition.
 		/// </summary>
-		public string Purpose { get; }
+		public string? Purpose { get; }
 	}
 }

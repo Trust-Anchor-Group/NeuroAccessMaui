@@ -205,10 +205,8 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				(bool Succeeded, LegalIdentity? AddedIdentity) = await ServiceRef.NetworkService.TryRequest(() =>
 					ServiceRef.XmppService.AddLegalIdentity(IdentityModel, Photos));
 
-				if (Succeeded)
-				{
+				if (Succeeded && AddedIdentity is not null)
 					ServiceRef.TagProfile.SetLegalIdentity(AddedIdentity);
-				}
 			}
 			catch (Exception ex)
 			{

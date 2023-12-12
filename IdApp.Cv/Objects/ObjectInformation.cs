@@ -111,9 +111,7 @@ namespace IdApp.Cv.Objects
 		{
 			get
 			{
-				if (this.contour is null)
-					this.contour = this.map.FindContour(this.x0, this.y0, this.nr);
-
+				this.contour ??= this.map.FindContour(this.x0, this.y0, this.nr);
 				return this.contour;
 			}
 		}

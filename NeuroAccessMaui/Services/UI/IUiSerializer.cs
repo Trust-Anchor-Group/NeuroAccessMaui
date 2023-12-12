@@ -14,19 +14,19 @@ namespace NeuroAccessMaui.Services.UI
 		/// <summary>
 		/// Displays an alert/message box to the user.
 		/// </summary>
-		/// <param name="title">The title to display.</param>
-		/// <param name="message">The message to display.</param>
-		/// <param name="accept">The accept/ok button text.</param>
-		/// <param name="cancel">The cancel button text.</param>
+		/// <param name="Title">The title to display.</param>
+		/// <param name="Message">The message to display.</param>
+		/// <param name="Accept">The accept/ok button text.</param>
+		/// <param name="Cancel">The cancel button text.</param>
 		/// <returns>If Accept or Cancel was pressed</returns>
-		Task<bool> DisplayAlert(string title, string message, string? accept = null, string? cancel = null);
+		Task<bool> DisplayAlert(string Title, string Message, string? Accept = null, string? Cancel = null);
 
 		/// <summary>
 		/// Displays an alert/message box to the user.
 		/// </summary>
-		/// <param name="exception">The exception to display.</param>
-		/// <param name="title">The title to display.</param>
-		Task DisplayException(Exception exception, string? title = null);
+		/// <param name="Exception">The exception to display.</param>
+		/// <param name="Title">The title to display.</param>
+		Task DisplayException(Exception Exception, string? Title = null);
 
 		#endregion
 
@@ -35,12 +35,12 @@ namespace NeuroAccessMaui.Services.UI
 		/// <summary>
 		/// Prompts the user for some input.
 		/// </summary>
-		/// <param name="title">The title to display.</param>
-		/// <param name="message">The message to display.</param>
-		/// <param name="accept">The accept/ok button text.</param>
-		/// <param name="cancel">The cancel button text.</param>
+		/// <param name="Title">The title to display.</param>
+		/// <param name="Message">The message to display.</param>
+		/// <param name="Accept">The accept/ok button text.</param>
+		/// <param name="Cancel">The cancel button text.</param>
 		/// <returns>User input</returns>
-		Task<string> DisplayPrompt(string title, string message, string? accept, string? cancel);
+		Task<string?> DisplayPrompt(string Title, string Message, string? Accept, string? Cancel);
 
 		#endregion
 	}

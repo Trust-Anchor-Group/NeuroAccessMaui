@@ -11,13 +11,13 @@ namespace NeuroAccessMaui.UI.Behaviors
 		/// The view to move focus to.
 		/// </summary>
 		[TypeConverter(typeof(ReferenceTypeConverter))]
-		public View SetFocusTo { get; set; }
+		public View? SetFocusTo { get; set; }
 
 		/// <summary>
 		/// Alternative view to move focus to.
 		/// </summary>
 		[TypeConverter(typeof(ReferenceTypeConverter))]
-		public View SetFocusToAlternative { get; set; }
+		public View? SetFocusToAlternative { get; set; }
 
 		/// <summary>
 		/// Makes <see cref="UseAlternative"/> bindable.
@@ -51,13 +51,9 @@ namespace NeuroAccessMaui.UI.Behaviors
 		private void Entry_Completed(object? Sender, EventArgs e)
 		{
 			if (this.UseAlternative && this.SetFocusToAlternative is not null)
-			{
 				SetFocusOnClickedBehavior.FocusOn(this.SetFocusToAlternative);
-			}
 			else
-			{
-				SetFocusOnClickedBehavior.FocusOn(this.SetFocusTo);
-			}
+				SetFocusOnClickedBehavior.FocusOn(this.SetFocusTo!);
 		}
 	}
 }

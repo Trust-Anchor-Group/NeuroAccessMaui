@@ -11,7 +11,7 @@ namespace NeuroAccessMaui.UI.Behaviors
 		/// The view to move focus to.
 		/// </summary>
 		[TypeConverter(typeof(ReferenceTypeConverter))]
-		public View SetFocusTo { get; set; }
+		public View? SetFocusTo { get; set; }
 
 		/// <inheritdoc/>
 		protected override void OnAttachedTo(Picker Picker)
@@ -29,7 +29,7 @@ namespace NeuroAccessMaui.UI.Behaviors
 
 		private void Picker_SelectedIndexChanged(object? Sender, EventArgs e)
 		{
-			SetFocusOnClickedBehavior.FocusOn(this.SetFocusTo);
+			SetFocusOnClickedBehavior.FocusOn(this.SetFocusTo!);
 		}
 	}
 }

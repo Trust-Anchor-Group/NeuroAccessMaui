@@ -83,7 +83,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Security
 						}
 
 						ServiceRef.TagProfile.Pin = NewPin;
-						ServiceRef.TagProfile.SetAccount(ServiceRef.TagProfile.Account, NewPassword, string.Empty);
+						ServiceRef.TagProfile.SetAccount(ServiceRef.TagProfile.Account!, NewPassword, string.Empty);
 
 						await ServiceRef.UiSerializer.DisplayAlert(
 							ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],

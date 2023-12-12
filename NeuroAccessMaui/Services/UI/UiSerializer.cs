@@ -43,9 +43,7 @@ namespace NeuroAccessMaui.Services.UI
 				do
 				{
 					if (this.taskQueue.TryDequeue(out UiTask? Task))
-					{
 						await Task.Execute();
-					}
 				}
 				while (!this.taskQueue.IsEmpty);
 			}
@@ -58,37 +56,35 @@ namespace NeuroAccessMaui.Services.UI
 		#region DisplayAlert
 
 		/// <inheritdoc/>
-		public Task<bool> DisplayAlert(string title, string message, string? accept = null, string? cancel = null)
+		public Task<bool> DisplayAlert(string Title, string Message, string? Accept = null, string? Cancel = null)
 		{
-			DisplayAlert Task = new(title, message, accept, cancel);
+			DisplayAlert Task = new(Title, Message, Accept, Cancel);
 			this.AddTask(Task);
 			return Task.CompletionSource.Task;
 		}
 
 		/// <inheritdoc/>
-		public Task DisplayException(Exception exception, string? title = null)
+		public Task DisplayException(Exception Exception, string? Title = null)
 		{
-			exception = Log.UnnestException(exception);
+			Exception = Log.UnnestException(Exception);
 
 			StringBuilder sb = new();
 
-			if (exception is not null)
+			if (Exception is not null)
 			{
-				sb.AppendLine(exception.Message);
+				sb.AppendLine(Exception.Message);
 
-				while (exception.InnerException is not null)
+				while (Exception.InnerException is not null)
 				{
-					exception = exception.InnerException;
-					sb.AppendLine(exception.Message);
+					Exception = Exception.InnerException;
+					sb.AppendLine(Exception.Message);
 				}
 			}
 			else
-			{
 				sb.AppendLine(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)]);
-			}
 
 			return this.DisplayAlert(
-				title ?? ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], sb.ToString(),
+				Title ?? ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], sb.ToString(),
 				ServiceRef.Localizer[nameof(AppResources.Ok)]);
 		}
 
@@ -97,9 +93,9 @@ namespace NeuroAccessMaui.Services.UI
 		#region DisplayPrompt
 
 		/// <inheritdoc/>
-		public Task<string> DisplayPrompt(string title, string message, string? accept = null, string? cancel = null)
+		public Task<string?> DisplayPrompt(string Title, string Message, string? Accept = null, string? Cancel = null)
 		{
-			DisplayPrompt Task = new(title, message, accept, cancel);
+			DisplayPrompt Task = new(Title, Message, Accept, Cancel);
 			this.AddTask(Task);
 			return Task.CompletionSource.Task;
 		}

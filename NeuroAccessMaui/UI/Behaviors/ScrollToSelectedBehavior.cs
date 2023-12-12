@@ -11,7 +11,7 @@ namespace NeuroAccessMaui.UI.Behaviors
 		/// The view to move focus to.
 		/// </summary>
 		[TypeConverter(typeof(ReferenceTypeConverter))]
-		public View ScrollTo { get; set; }
+		public View? ScrollTo { get; set; }
 
 		/// <inheritdoc/>
 		protected override void OnAttachedTo(Picker Picker)
@@ -29,7 +29,7 @@ namespace NeuroAccessMaui.UI.Behaviors
 
 		private void Picker_SelectedIndexChanged(object? Sender, EventArgs e)
 		{
-			ScrollToClickedBehavior.MakeVisible(this.ScrollTo);
+			ScrollToClickedBehavior.MakeVisible(this.ScrollTo!);
 		}
 	}
 }

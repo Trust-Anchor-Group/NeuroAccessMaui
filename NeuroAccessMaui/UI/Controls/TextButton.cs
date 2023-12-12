@@ -31,7 +31,7 @@ namespace NeuroAccessMaui.UI.Controls
 			this.innerLabel.Style = NewValue;
 		}
 
-		public Thickness BorderPaddingDefaultValueCreator() => Thickness.Zero;
+		public static Thickness BorderPaddingDefaultValueCreator() => Thickness.Zero;
 
 		public Style BorderStyle
 		{

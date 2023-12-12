@@ -22,21 +22,21 @@ namespace NeuroAccessMaui.Services.Data.PersonalNumbers
 				XmlDocument Doc = new();
 				Doc.Load(ms);
 
-				XmlNodeList? childNodes = Doc.DocumentElement?.ChildNodes;
+				XmlNodeList? ChildNodes = Doc.DocumentElement?.ChildNodes;
 
-				if (childNodes is null)
+				if (ChildNodes is null)
 					return;
 
-				foreach (XmlNode N in childNodes)
+				foreach (XmlNode N in ChildNodes)
 				{
 					if (N is XmlElement E && E.LocalName == "Entry")
 					{
-						string country = XML.Attribute(E, "country");
-						string displayString = XML.Attribute(E, "displayString");
-						string? variable = null;
-						Expression? pattern = null;
-						Expression? check = null;
-						Expression? normalize = null;
+						string Country = XML.Attribute(E, "country");
+						string DisplayString = XML.Attribute(E, "displayString");
+						string? Variable = null;
+						Expression? Pattern = null;
+						Expression? Check = null;
+						Expression? Normalize = null;
 
 						try
 						{
@@ -47,16 +47,16 @@ namespace NeuroAccessMaui.Services.Data.PersonalNumbers
 									switch (E2.LocalName)
 									{
 										case "Pattern":
-											pattern = new Expression(E2.InnerText);
-											variable = XML.Attribute(E2, "variable");
+											Pattern = new Expression(E2.InnerText);
+											Variable = XML.Attribute(E2, "variable");
 											break;
 
 										case "Check":
-											check = new Expression(E2.InnerText);
+											Check = new Expression(E2.InnerText);
 											break;
 
 										case "Normalize":
-											normalize = new Expression(E2.InnerText);
+											Normalize = new Expression(E2.InnerText);
 											break;
 									}
 								}
@@ -67,16 +67,16 @@ namespace NeuroAccessMaui.Services.Data.PersonalNumbers
 							continue;
 						}
 
-						if (pattern is null || string.IsNullOrWhiteSpace(variable) || string.IsNullOrWhiteSpace(displayString))
+						if (Pattern is null || string.IsNullOrWhiteSpace(Variable) || string.IsNullOrWhiteSpace(DisplayString))
 							continue;
 
-						if (!schemesByCode.TryGetValue(country, out LinkedList<PersonalNumberScheme>? Schemes))
+						if (!schemesByCode.TryGetValue(Country, out LinkedList<PersonalNumberScheme>? Schemes))
 						{
 							Schemes = new LinkedList<PersonalNumberScheme>();
-							schemesByCode[country] = Schemes;
+							schemesByCode[Country] = Schemes;
 						}
 
-						Schemes.AddLast(new PersonalNumberScheme(variable, displayString, pattern, check, normalize));
+						Schemes.AddLast(new PersonalNumberScheme(Variable, DisplayString, Pattern, Check, Normalize));
 					}
 				}
 			}

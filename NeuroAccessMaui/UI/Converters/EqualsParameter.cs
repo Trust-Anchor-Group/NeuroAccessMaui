@@ -11,7 +11,7 @@ namespace NeuroAccessMaui.UI.Converters
 		/// <summary>
 		/// Returns <c>true</c> if <paramref name="Value"/> equals to <paramref name="Parameter"/> and <c>false</c> otherwise.
 		/// </summary>
-		public object Convert(object Value, Type TargetType, object Parameter, CultureInfo Culture)
+		public object Convert(object? Value, Type TargetType, object? Parameter, CultureInfo Culture)
 		{
 			return Value is null ? Parameter is null : Value.Equals(Parameter);
 		}
@@ -19,7 +19,7 @@ namespace NeuroAccessMaui.UI.Converters
 		/// <summary>
 		/// Always throws a <see cref="NotImplementedException"/>.
 		/// </summary>
-		public object ConvertBack(object Value, Type TargetType, object Parameter, CultureInfo Culture)
+		public object ConvertBack(object? Value, Type TargetType, object? Parameter, CultureInfo Culture)
 		{
 			throw new NotImplementedException();
 		}

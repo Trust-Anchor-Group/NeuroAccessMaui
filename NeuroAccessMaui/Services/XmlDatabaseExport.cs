@@ -240,7 +240,7 @@ namespace NeuroAccessMaui.Services
 						break;
 
 					case TypeCode.String:
-						string? s = PropertyValue?.ToString();
+						string s = PropertyValue?.ToString() ?? string.Empty;
 						try
 						{
 							XmlConvert.VerifyXmlChars(s);

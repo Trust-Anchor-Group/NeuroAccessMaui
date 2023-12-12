@@ -90,10 +90,10 @@ namespace NeuroAccessMaui.Services.Xmpp
 					}
 					else
 					{
-						(HostName, PortNumber, IsIpAddress) = await ServiceRef.NetworkService.LookupXmppHostnameAndPort(this.domainName);
+						(HostName, PortNumber, IsIpAddress) = await ServiceRef.NetworkService.LookupXmppHostnameAndPort(this.domainName!);
 
 						if (HostName == this.domainName && PortNumber == XmppCredentials.DefaultPort)
-							ServiceRef.TagProfile.SetDomain(this.domainName, true, ServiceRef.TagProfile.ApiKey, ServiceRef.TagProfile.ApiSecret);
+							ServiceRef.TagProfile.SetDomain(this.domainName, true, ServiceRef.TagProfile.ApiKey!, ServiceRef.TagProfile.ApiSecret!);
 					}
 
 					this.xmppLastStateChange = DateTime.Now;
@@ -172,8 +172,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 						if (!await this.WaitForConnectedState(Constants.Timeouts.XmppConnect))
 						{
 							ServiceRef.LogService.LogWarning("Connection to XMPP server failed.",
-								new KeyValuePair<string, object>("Domain", this.domainName),
-								new KeyValuePair<string, object>("Account", this.accountName),
+								new KeyValuePair<string, object>("Domain", this.domainName ?? string.Empty),
+								new KeyValuePair<string, object>("Account", this.accountName ?? string.Empty),
 								new KeyValuePair<string, object>("Timeout", Constants.Timeouts.XmppConnect));
 						}
 					}
@@ -454,7 +454,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 							this.fileUploadClient = new HttpFileUploadClient(this.xmppClient, ServiceRef.TagProfile.HttpFileUploadJid, ServiceRef.TagProfile.HttpFileUploadMaxSize);
 					}
 
-					ServiceRef.LogService.AddListener(this.xmppEventSink);
+					ServiceRef.LogService.AddListener(this.xmppEventSink!);
 					break;
 
 				case XmppState.Offline:
@@ -671,7 +671,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 			if (!Succeeded && string.IsNullOrEmpty(ErrorMessage))
 			{
-				System.Diagnostics.Debug.WriteLine("Sniffer: ", await this.sniffer.SnifferToText());
+				if (this.sniffer is not null)
+					System.Diagnostics.Debug.WriteLine("Sniffer: ", await this.sniffer.SnifferToText());
 
 				if (!StreamNegotiation || IsTimeout)
 					ErrorMessage = ServiceRef.Localizer[nameof(AppResources.CantConnectTo), Domain];
@@ -699,7 +700,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			return (Succeeded, ErrorMessage, Alternatives);
 		}
 
-		private void ReconnectTimer_Tick(object _)
+		private void ReconnectTimer_Tick(object? _)
 		{
 			if (this.xmppClient is null)
 				return;
@@ -780,8 +781,12 @@ namespace NeuroAccessMaui.Services.Xmpp
 			}
 			catch (Exception ex)
 			{
-				string commsDump = await this.sniffer.SnifferToText();
-				ServiceRef.LogService.LogException(ex, new KeyValuePair<string, object>("Sniffer", commsDump));
+				if (this.sniffer is not null)
+				{
+					string commsDump = await this.sniffer.SnifferToText();
+					ServiceRef.LogService.LogException(ex, new KeyValuePair<string, object>("Sniffer", commsDump));
+				}
+
 				return false;
 			}
 
@@ -789,7 +794,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			object SynchObject = new();
 
 			foreach (Item Item in response.Items)
-				Tasks.Add(this.CheckComponent(Client, Item, SynchObject));
+				Tasks.Add(CheckComponent(Client, Item, SynchObject));
 
 			await Task.WhenAll([.. Tasks]);
 
@@ -805,7 +810,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			return true;
 		}
 
-		private async Task CheckComponent(XmppClient Client, Item Item, object SynchObject)
+		private static async Task CheckComponent(XmppClient Client, Item Item, object SynchObject)
 		{
 			ServiceDiscoveryEventArgs itemResponse = await Client.ServiceDiscoveryAsync(null, Item.JID, Item.Node);
 
@@ -1121,16 +1126,17 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 			LegalIdentity identity = await this.ContractsClient.ApplyAsync(Model.ToProperties(ServiceRef.XmppService));
 
-			foreach (LegalIdentityAttachment a in Attachments)
+			foreach (LegalIdentityAttachment Attachment in Attachments)
 			{
-				HttpFileUploadEventArgs e2 = await ServiceRef.XmppService.RequestUploadSlotAsync(Path.GetFileName(a.Filename), a.ContentType, a.ContentLength);
+				HttpFileUploadEventArgs e2 = await ServiceRef.XmppService.RequestUploadSlotAsync(
+					Path.GetFileName(Attachment.FileName!)!, Attachment.ContentType!, Attachment.ContentLength);
 
 				if (!e2.Ok)
 					throw e2.StanzaError ?? new Exception(e2.ErrorText);
 
-				await e2.PUT(a.Data, a.ContentType, (int)Constants.Timeouts.UploadFile.TotalMilliseconds);
+				await e2.PUT(Attachment.Data, Attachment.ContentType, (int)Constants.Timeouts.UploadFile.TotalMilliseconds);
 
-				byte[] signature = await this.ContractsClient.SignAsync(a.Data, SignWith.CurrentKeys);
+				byte[] signature = await this.ContractsClient.SignAsync(Attachment.Data, SignWith.CurrentKeys);
 
 				identity = await this.ContractsClient.AddLegalIdAttachmentAsync(identity.Id, e2.GetUrl, signature);
 			}

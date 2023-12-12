@@ -65,7 +65,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 		/// <summary>
 		/// The identity of the requestor.
 		/// </summary>
-		public LegalIdentity RequestorIdentity { get; private set; }
+		public LegalIdentity? RequestorIdentity { get; private set; }
 
 		[RelayCommand]
 		private async Task Accept()
@@ -73,24 +73,28 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 			if (!await App.VerifyPin())
 				return;
 
-			bool succeeded = await ServiceRef.NetworkService.TryRequest(async () =>
+			bool Succeeded = await ServiceRef.NetworkService.TryRequest(async () =>
 			{
-				byte[] signature = await ServiceRef.XmppService.Sign(this.contentToSign, SignWith.LatestApprovedId);
-				await ServiceRef.XmppService.SendPetitionSignatureResponse(this.signatoryIdentityId, this.contentToSign, signature,
-					this.petitionId, this.requestorFullJid, true);
+				byte[] Signature = await ServiceRef.XmppService.Sign(this.contentToSign!, SignWith.LatestApprovedId);
+
+				await ServiceRef.XmppService.SendPetitionSignatureResponse(this.signatoryIdentityId, this.contentToSign!, Signature,
+					this.petitionId!, this.requestorFullJid!, true);
 			});
 
-			if (succeeded)
+			if (Succeeded)
 				await ServiceRef.NavigationService.GoBackAsync();
 		}
 
 		[RelayCommand]
 		private async Task Decline()
 		{
-			bool succeeded = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.SendPetitionSignatureResponse(
-				this.signatoryIdentityId, this.contentToSign, [], this.petitionId, this.requestorFullJid, false));
+			bool Succeeded = await ServiceRef.NetworkService.TryRequest(() =>
+			{
+				return ServiceRef.XmppService.SendPetitionSignatureResponse(this.signatoryIdentityId,
+					this.contentToSign!, [], this.petitionId!, this.requestorFullJid!, false);
+			});
 
-			if (succeeded)
+			if (Succeeded)
 				await ServiceRef.NavigationService.GoBackAsync();
 		}
 

@@ -66,7 +66,7 @@ namespace NeuroAccessMaui.Services
 		/// <summary>
 		/// Legal ID of contact.
 		/// </summary>
-		public CaseInsensitiveString? LegalId
+		public CaseInsensitiveString LegalId
 		{
 			get => this.legalId;
 			set => this.legalId = value;

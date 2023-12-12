@@ -9,24 +9,25 @@ namespace NeuroAccessMaui.Services.Data.PersonalNumbers
 	{
 		private readonly string variableName;
 		private readonly Expression pattern;
-		private readonly Expression check;
-		private readonly Expression normalize;
+		private readonly Expression? check;
+		private readonly Expression? normalize;
 
 		/// <summary>
 		/// Checks personal numbers against a personal number scheme.
 		/// </summary>
-		/// <param name="variableName">Name of variable to use in script for the personal number.</param>
-		/// <param name="displayString">A string that can be displayed to a user, informing the user about the approximate format expected.</param>
-		/// <param name="pattern">Expression checking if the scheme applies to a personal number.</param>
-		/// <param name="check">Optional expression, checking if the contents of the personal number is valid.</param>
-		/// <param name="normalize">Optional normalization expression.</param>
-		public PersonalNumberScheme(string variableName, string displayString, Expression pattern, Expression check, Expression normalize)
+		/// <param name="VariableName">Name of variable to use in script for the personal number.</param>
+		/// <param name="DisplayString">A string that can be displayed to a user, informing the user about the approximate format expected.</param>
+		/// <param name="Pattern">Expression checking if the scheme applies to a personal number.</param>
+		/// <param name="Check">Optional expression, checking if the contents of the personal number is valid.</param>
+		/// <param name="Normalize">Optional normalization expression.</param>
+		public PersonalNumberScheme(string VariableName, string DisplayString, Expression Pattern, Expression? Check,
+			Expression? Normalize)
 		{
-			this.variableName = variableName;
-			this.DisplayString = displayString;
-			this.pattern = pattern;
-			this.check = check;
-			this.normalize = normalize;
+			this.variableName = VariableName;
+			this.DisplayString = DisplayString;
+			this.pattern = Pattern;
+			this.check = Check;
+			this.normalize = Normalize;
 		}
 
 		/// <summary>

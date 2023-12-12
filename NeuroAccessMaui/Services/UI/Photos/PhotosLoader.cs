@@ -99,9 +99,7 @@ namespace NeuroAccessMaui.Services.UI.Photos
 				WhenDoneAction?.Invoke();
 
 				foreach (Photo Photo in this.photos)
-				{
 					return Photo;
-				}
 
 				return null;
 			}
@@ -118,9 +116,7 @@ namespace NeuroAccessMaui.Services.UI.Photos
 					WhenDoneAction?.Invoke();
 
 					foreach (Photo Photo in this.photos)
-					{
 						return Photo;
-					}
 
 					return null;
 				}
@@ -130,9 +126,7 @@ namespace NeuroAccessMaui.Services.UI.Photos
 					(byte[]? Bin, string ContentType, int Rotation) = await this.GetPhoto(attachment, SignWith, Now);
 
 					if (Bin is null)
-					{
 						continue;
-					}
 
 					Photo Photo = new(Bin, Rotation);
 					First ??= Photo;
@@ -164,35 +158,25 @@ namespace NeuroAccessMaui.Services.UI.Photos
 		private async Task<(byte[]?, string, int)> GetPhoto(Attachment Attachment, SignWith SignWith, DateTime Now)
 		{
 			if (Attachment is null)
-			{
 				return (null, string.Empty, 0);
-			}
 
-			(byte[] Bin, string ContentType) = await ServiceRef.AttachmentCacheService.TryGet(Attachment.Url);
+			(byte[]? Bin, string ContentType) = await ServiceRef.AttachmentCacheService.TryGet(Attachment.Url);
 
 			if (Bin is not null)
-			{
 				return (Bin, ContentType, GetImageRotation(Bin));
-			}
 
 			if (!ServiceRef.NetworkService.IsOnline || !ServiceRef.XmppService.IsOnline)
-			{
 				return (null, string.Empty, 0);
-			}
 
 			KeyValuePair<string, TemporaryFile> pair = await ServiceRef.XmppService.GetAttachment(Attachment.Url, SignWith, Constants.Timeouts.DownloadFile);
 
 			using TemporaryFile file = pair.Value;
 
 			if (this.loadPhotosTimestamp > Now)     // If download has been cancelled any time _during_ download, stop here.
-			{
 				return (null, string.Empty, 0);
-			}
 
 			if (pair.Value.Length > int.MaxValue)   // Too large
-			{
 				return (null, string.Empty, 0);
-			}
 
 			file.Reset();
 
@@ -200,9 +184,7 @@ namespace NeuroAccessMaui.Services.UI.Photos
 			Bin = new byte[file.Length];
 
 			if (file.Length != file.Read(Bin, 0, (int)file.Length))
-			{
 				return (null, string.Empty, 0);
-			}
 
 			bool IsContact = await ServiceRef.XmppService.IsContact(Attachment.LegalId);
 
@@ -220,19 +202,13 @@ namespace NeuroAccessMaui.Services.UI.Photos
 		{
 			//!!! This rotation in Xamarin is limited to Android
 			if (DeviceInfo.Platform == DevicePlatform.iOS)
-			{
 				return 0;
-			}
 
 			if (JpegImage is null)
-			{
 				return 0;
-			}
 
 			if (!EXIF.TryExtractFromJPeg(JpegImage, out ExifTag[] Tags))
-			{
 				return 0;
-			}
 
 			return GetImageRotation(Tags);
 		}
@@ -302,19 +278,13 @@ namespace NeuroAccessMaui.Services.UI.Photos
 					break;
 				}
 				else
-				{
 					Photo ??= Attachment;
-				}
 			}
 
 			if (Photo is null)
-			{
 				return Task.FromResult<(string?, int, int)>((null, 0, 0));
-			}
 			else
-			{
 				return LoadPhotoAsTemporaryFile(Photo, MaxWith, MaxHeight);
-			}
 		}
 
 		/// <summary>
@@ -353,9 +323,7 @@ namespace NeuroAccessMaui.Services.UI.Photos
 				return (FileName, Width, Height);
 			}
 			else
-			{
 				return (null, 0, 0);
-			}
 		}
 
 		#region From Waher.Content.Markdown.Model.Multimedia.ImageContent, with permission

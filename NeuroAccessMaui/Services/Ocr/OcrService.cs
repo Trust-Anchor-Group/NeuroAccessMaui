@@ -29,7 +29,7 @@ namespace NeuroAccessMaui.Services.Ocr
 		public async Task<string[]> ProcessImage(IMatrix Image, string Language, PageSegmentationMode? PageSegmentationMode)
 		{
 			byte[] Png = Bitmaps.EncodeAsPng(Image);
-			string Token = await ServiceRef.XmppService.GetApiToken(60);
+			string? Token = await ServiceRef.XmppService.GetApiToken(60);
 
 			Uri Uri = new("https://" + ServiceRef.TagProfile.Domain + "/Tesseract/Api");
 			using HttpClient HttpClient = new();

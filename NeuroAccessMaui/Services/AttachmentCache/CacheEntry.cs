@@ -31,7 +31,7 @@ namespace NeuroAccessMaui.Services.AttachmentCache
 		/// Object ID
 		/// </summary>
 		[ObjectId]
-		public string ObjectId
+		public string? ObjectId
 		{
 			get => this.objectId;
 			set => this.objectId = value;

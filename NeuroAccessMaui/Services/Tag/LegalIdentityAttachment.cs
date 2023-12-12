@@ -11,7 +11,9 @@ namespace NeuroAccessMaui.Services
 		/// <summary>
 		/// Creates an instance of a <see cref="LegalIdentityAttachment"/>.
 		/// </summary>
-		public LegalIdentityAttachment() { }
+		public LegalIdentityAttachment()
+		{
+		}
 
 		/// <summary>
 		/// Creates an instance of a <see cref="LegalIdentityAttachment"/>.
@@ -21,7 +23,7 @@ namespace NeuroAccessMaui.Services
 		/// <param name="data">The raw file data.</param>
 		public LegalIdentityAttachment(string fileName, string contentType, byte[] data)
 		{
-			this.Filename = fileName;
+			this.FileName = fileName;
 			this.ContentType = contentType;
 			this.Data = data;
 			this.ContentLength = data?.Length ?? 0;
@@ -30,17 +32,17 @@ namespace NeuroAccessMaui.Services
 		/// <summary>
 		/// The raw filename.
 		/// </summary>
-		public string Filename { get; set; }
+		public string? FileName { get; set; }
 
 		/// <summary>
 		/// Content type (mime) of the attachment.
 		/// </summary>
-		public string ContentType { get; set; }
+		public string? ContentType { get; set; }
 
 		/// <summary>
 		/// The raw file data.
 		/// </summary>
-		public byte[] Data { get; set; }
+		public byte[]? Data { get; set; }
 
 		/// <summary>
 		/// Attachment content length.

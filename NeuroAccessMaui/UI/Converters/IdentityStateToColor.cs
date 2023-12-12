@@ -9,16 +9,12 @@ namespace NeuroAccessMaui.UI.Converters
 	public class IdentityStateToColor : IValueConverter, IMarkupExtension
 	{
 		/// <inheritdoc/>
-		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
 		{
 			if (value is IdentityState State)
-			{
 				return ToColor(State);
-			}
 			else
-			{
 				return Colors.Transparent;
-			}
 		}
 
 		/// <summary>
@@ -37,7 +33,7 @@ namespace NeuroAccessMaui.UI.Converters
 		}
 
 		/// <inheritdoc/>
-		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
 		{
 			return value;
 		}

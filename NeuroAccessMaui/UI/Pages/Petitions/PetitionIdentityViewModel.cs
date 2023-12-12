@@ -128,18 +128,26 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 			if (!await App.VerifyPin())
 				return;
 
-			bool succeeded = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.SendPetitionIdentityResponse(this.requestedIdentityId, this.petitionId, this.requestorFullJid, true));
+			bool Succeeded = await ServiceRef.NetworkService.TryRequest(() =>
+			{
+				return ServiceRef.XmppService.SendPetitionIdentityResponse(this.requestedIdentityId, this.petitionId!,
+					this.requestorFullJid!, true);
+			});
 
-			if (succeeded)
+			if (Succeeded)
 				await ServiceRef.NavigationService.GoBackAsync();
 		}
 
 		[RelayCommand]
 		private async Task Decline()
 		{
-			bool succeeded = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.SendPetitionIdentityResponse(this.requestedIdentityId, this.petitionId, this.requestorFullJid, false));
+			bool Succeeded = await ServiceRef.NetworkService.TryRequest(() =>
+			{
+				return ServiceRef.XmppService.SendPetitionIdentityResponse(this.requestedIdentityId, this.petitionId!,
+					this.requestorFullJid!, false);
+			});
 
-			if (succeeded)
+			if (Succeeded)
 				await ServiceRef.NavigationService.GoBackAsync();
 		}
 

@@ -309,7 +309,7 @@ namespace NeuroAccessMaui.Services.Contracts
 			// Run asynchronously so we're not blocking startup UI.
 			try
 			{
-				await this.DownloadLegalIdentity(LegalId);
+				await DownloadLegalIdentity(LegalId);
 			}
 			catch (Exception ex)
 			{
@@ -317,7 +317,7 @@ namespace NeuroAccessMaui.Services.Contracts
 			}
 		}
 
-		protected async Task DownloadLegalIdentity(string LegalId)
+		protected static async Task DownloadLegalIdentity(string LegalId)
 		{
 			bool isConnected =
 				ServiceRef.XmppService is not null &&

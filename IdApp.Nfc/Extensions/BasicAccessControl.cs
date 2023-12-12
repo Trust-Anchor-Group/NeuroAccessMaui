@@ -76,6 +76,9 @@ namespace IdApp.Nfc.Extensions
 
 		private static bool CalcMrzInfo(DocumentInformation Info, Match M)
 		{
+			if (Info.DocumentNumber is null || Info.DateOfBirth is null || Info.ExpiryDate is null)
+				return false;
+
 			string NrCheck = M.Groups["NrCheck"].Value;
 			if (NrCheck != CalcCheckDigit(Info.DocumentNumber))
 				return false;
@@ -88,16 +91,19 @@ namespace IdApp.Nfc.Extensions
 			if (ExpiryCheck != CalcCheckDigit(Info.ExpiryDate))
 				return false;
 
-			string s = Info.OptionalData.Replace("<", string.Empty);
-
-			if (!string.IsNullOrEmpty(s))
+			if (!string.IsNullOrEmpty(Info.OptionalData))
 			{
-				string OptionalCheck = M.Groups["OptionalCheck"].Value;
-				if (OptionalCheck != CalcCheckDigit(Info.OptionalData))
-					return false;
-			}
+				string s = Info.OptionalData!.Replace("<", string.Empty);
 
-			Info.OptionalData = s;
+				if (!string.IsNullOrEmpty(s))
+				{
+					string OptionalCheck = M.Groups["OptionalCheck"].Value;
+					if (OptionalCheck != CalcCheckDigit(Info.OptionalData))
+						return false;
+				}
+
+				Info.OptionalData = s;
+			}
 
 			// TODO: Check OverallCheck
 
@@ -405,10 +411,10 @@ namespace IdApp.Nfc.Extensions
 				0x00,	// P1
 				0x00,	// P2
 				Lc
-			}.CONCAT(ChallengeResponse, new byte[]
-			{
+			}.CONCAT(ChallengeResponse,
+			[
 				0x28	// Le
-			});
+			]);
 
 			byte[] Response = await TagInterface.ExecuteCommand(Command);
 			if (Response.Length != 10 || Response[8] != 0x90 || Response[9] != 0x00)

@@ -25,12 +25,10 @@ namespace NeuroAccessMaui.Services.AttachmentCache
 			{
 				try
 				{
-					this.CreateCacheFolderIfNeeded();
+					CreateCacheFolderIfNeeded();
 
 					if (!isResuming)
-					{
-						await this.EvictOldEntries();
-					}
+						await EvictOldEntries();
 
 					this.EndLoad(true);
 				}
@@ -47,30 +45,24 @@ namespace NeuroAccessMaui.Services.AttachmentCache
 		/// </summary>
 		/// <param name="Url">The url of the image to get.</param>
 		/// <returns>If entry was found in the cache, the binary data of the image together with the Content-Type of the data.</returns>
-		public async Task<(byte[], string)> TryGet(string Url)
+		public async Task<(byte[]?, string)> TryGet(string Url)
 		{
 			try
 			{
 				if (string.IsNullOrWhiteSpace(Url) || !Uri.IsWellFormedUriString(Url, UriKind.RelativeOrAbsolute))
-				{
 					return (null, string.Empty);
-				}
 
 				CacheEntry Entry = await Database.FindFirstDeleteRest<CacheEntry>(new FilterFieldEqualTo("Url", Url));
 
 				if (Entry is null)
-				{
 					return (null, string.Empty);
-				}
 
 				bool Exists = File.Exists(Entry.LocalFileName);
 
 				if (DateTime.UtcNow >= Entry.Expires || !Exists)
 				{
 					if (Exists)
-					{
 						File.Delete(Entry.LocalFileName);
-					}
 
 					await Database.Delete(Entry);
 					await Database.Provider.Flush();
@@ -105,7 +97,7 @@ namespace NeuroAccessMaui.Services.AttachmentCache
 				return;
 			}
 
-			string CacheFolder = this.CreateCacheFolderIfNeeded();
+			string CacheFolder = CreateCacheFolderIfNeeded();
 
 			CacheEntry Entry = await Database.FindFirstDeleteRest<CacheEntry>(new FilterFieldEqualTo("Url", Url));
 			DateTime Expires = Permanent ? DateTime.MaxValue : (DateTime.UtcNow + expiryTemporary);
@@ -137,14 +129,12 @@ namespace NeuroAccessMaui.Services.AttachmentCache
 			await Database.Provider.Flush();
 		}
 
-		private string CreateCacheFolderIfNeeded()
+		private static string CreateCacheFolderIfNeeded()
 		{
 			string CacheFolder = GetCacheFolder();
 
 			if (!Directory.Exists(CacheFolder))
-			{
 				Directory.CreateDirectory(CacheFolder);
-			}
 
 			return CacheFolder;
 		}
@@ -154,18 +144,17 @@ namespace NeuroAccessMaui.Services.AttachmentCache
 			return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), cacheFolderName);
 		}
 
-		private async Task EvictOldEntries()
+		private static async Task EvictOldEntries()
 		{
 			try
 			{
-				foreach (CacheEntry Entry in await Database.FindDelete<CacheEntry>(new FilterFieldLesserOrEqualTo("Expires", DateTime.UtcNow)))
+				foreach (CacheEntry Entry in await Database.FindDelete<CacheEntry>(
+					new FilterFieldLesserOrEqualTo("Expires", DateTime.UtcNow)))
 				{
 					try
 					{
 						if (File.Exists(Entry.LocalFileName))
-						{
 							File.Delete(Entry.LocalFileName);
-						}
 					}
 					catch (Exception ex)
 					{

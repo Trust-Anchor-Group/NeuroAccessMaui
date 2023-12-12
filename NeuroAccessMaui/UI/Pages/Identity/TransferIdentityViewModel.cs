@@ -85,7 +85,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 		/// <summary>
 		/// Title of the current view
 		/// </summary>
-		public override Task<string> Title => Task.FromResult<string>(ContactInfo.GetFriendlyName(ServiceRef.TagProfile.LegalIdentity));
+		public override Task<string> Title => Task.FromResult(ContactInfo.GetFriendlyName(ServiceRef.TagProfile.LegalIdentity!));
 
 		#endregion
 

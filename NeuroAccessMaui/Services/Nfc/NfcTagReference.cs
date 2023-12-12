@@ -22,7 +22,7 @@ namespace NeuroAccessMaui.Services.Nfc
 		/// Object ID
 		/// </summary>
 		[ObjectId]
-		public string ObjectId
+		public string? ObjectId
 		{
 			get => this.objectId;
 			set => this.objectId = value;
@@ -51,7 +51,7 @@ namespace NeuroAccessMaui.Services.Nfc
 		/// Meta-data related to a thing.
 		/// </summary>
 		[DefaultValueNull]
-		public Property[] MetaData
+		public Property[]? MetaData
 		{
 			get => this.metaData;
 			set => this.metaData = value;

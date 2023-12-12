@@ -11,56 +11,56 @@
 		/// <summary>
 		/// Document Type
 		/// </summary>
-		public string DocumentType;
+		public string? DocumentType;
 
 		/// <summary>
 		/// 3-letter country code of issuing state.
 		/// </summary>
-		public string IssuingState;
+		public string? IssuingState;
 
 		/// <summary>
 		/// 3-letter country code of nationality.
 		/// </summary>
-		public string Nationality;
+		public string? Nationality;
 
 		/// <summary>
 		/// Primary Identifier (Last names)
 		/// </summary>
-		public string[] PrimaryIdentifier;
+		public string[]? PrimaryIdentifier;
 
 		/// <summary>
 		/// Secondary Identifier (First names)
 		/// </summary>
-		public string[] SecondaryIdentifier;
+		public string[]? SecondaryIdentifier;
 
 		/// <summary>
 		/// Gender
 		/// </summary>
-		public string Gender;
+		public string? Gender;
 
 		/// <summary>
 		/// Document number
 		/// </summary>
-		public string DocumentNumber;
+		public string? DocumentNumber;
 
 		/// <summary>
 		/// Date-of-birth (YYMMDD)
 		/// </summary>
-		public string DateOfBirth;
+		public string? DateOfBirth;
 
 		/// <summary>
 		/// Expiry Dte (YYMMDD)
 		/// </summary>
-		public string ExpiryDate;
+		public string? ExpiryDate;
 
 		/// <summary>
 		/// Optional Data
 		/// </summary>
-		public string OptionalData;
+		public string? OptionalData;
 
 		/// <summary>
 		/// MRZ-information for use with Basic Access Control (BAC).
 		/// </summary>
-		public string MRZ_Information;
+		public string? MRZ_Information;
 	}
 }

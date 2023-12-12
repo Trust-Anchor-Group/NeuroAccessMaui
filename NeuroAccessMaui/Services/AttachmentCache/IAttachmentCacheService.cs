@@ -14,7 +14,7 @@ namespace NeuroAccessMaui.Services.AttachmentCache
 		/// </summary>
 		/// <param name="Url">The url of the image to get.</param>
 		/// <returns>If entry was found in the cache, the binary data of the image together with the Content-Type of the data.</returns>
-		Task<(byte[], string)> TryGet(string Url);
+		Task<(byte[]?, string)> TryGet(string Url);
 
 		/// <summary>
 		/// Adds an image to the cache.
