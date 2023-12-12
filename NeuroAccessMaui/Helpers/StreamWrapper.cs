@@ -1,20 +1,14 @@
 ﻿namespace NeuroAccessMaui.Helpers
 {
-	public sealed class StreamWrapper : Stream
+	public sealed class StreamWrapper(Stream Wrapped, IDisposable? AdditionalDisposable) : Stream
 	{
-		private readonly Stream wrapped;
-		private IDisposable? additionalDisposable;
+		private readonly Stream wrapped = Wrapped;
+		private IDisposable? additionalDisposable = AdditionalDisposable;
 
 		public event EventHandler? Disposed;
 
 		public StreamWrapper(Stream Wrapped) : this(Wrapped, null)
 		{
-		}
-
-		public StreamWrapper(Stream Wrapped, IDisposable? AdditionalDisposable)
-		{
-			this.wrapped = Wrapped;
-			this.additionalDisposable = AdditionalDisposable;
 		}
 
 		public override long Position

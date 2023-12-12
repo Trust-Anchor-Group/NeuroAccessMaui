@@ -3,20 +3,12 @@
 	/// <summary>
 	/// Represents the current 'is loaded' changed state.
 	/// </summary>
-	public sealed class LoadedEventArgs : EventArgs
+	/// <param name="isLoaded">The current loaded state.</param>
+	public sealed class LoadedEventArgs(bool isLoaded) : EventArgs
 	{
-		/// <summary>
-		/// Creates an instance of <see cref="LoadedEventArgs"/>.
-		/// </summary>
-		/// <param name="isLoaded">The current loaded state.</param>
-		public LoadedEventArgs(bool isLoaded)
-		{
-			this.IsLoaded = isLoaded;
-		}
-
 		/// <summary>
 		/// The current loaded state.
 		/// </summary>
-		public bool IsLoaded { get; }
+		public bool IsLoaded { get; } = isLoaded;
 	}
 }

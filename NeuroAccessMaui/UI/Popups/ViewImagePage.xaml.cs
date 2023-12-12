@@ -28,16 +28,12 @@ namespace NeuroAccessMaui.UI.Popups
 		public void ShowPhotos(Attachment[] Attachments)
 		{
 			if (Attachments is null || Attachments.Length <= 0)
-			{
 				return;
-			}
 
 			Attachment[] ImageAttachments = Attachments.GetImageAttachments().ToArray();
 
 			if (ImageAttachments.Length <= 0)
-			{
 				return;
-			}
 
 			this.IsVisible = true;
 			this.viewModel.LoadPhotos(Attachments);
@@ -76,6 +72,6 @@ namespace NeuroAccessMaui.UI.Popups
 		private void PopupPage_BackgroundClicked(object sender, EventArgs e)
 		{
 
-	    }
+		}
 	}
 }

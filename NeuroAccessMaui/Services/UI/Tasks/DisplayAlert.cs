@@ -5,49 +5,36 @@ namespace NeuroAccessMaui.Services.UI.Tasks
 	/// <summary>
 	/// Displays an alert message.
 	/// </summary>
-	public class DisplayAlert : UiTask
+	/// <param name="Title">Title string</param>
+	/// <param name="Message">Message string</param>
+	/// <param name="Accept">Accept string</param>
+	/// <param name="Cancel">Cancel string</param>
+	public class DisplayAlert(string Title, string Message, string? Accept, string? Cancel) : UiTask
 	{
-		/// <summary>
-		/// Displays an alert message.
-		/// </summary>
-		/// <param name="Title">Title string</param>
-		/// <param name="Message">Message string</param>
-		/// <param name="Accept">Accept string</param>
-		/// <param name="Cancel">Cancel string</param>
-		public DisplayAlert(string Title, string Message, string? Accept, string? Cancel)
-		{
-			this.Title = Title;
-			this.Message = Message;
-			this.Accept = Accept;
-			this.Cancel = Cancel;
-
-			this.CompletionSource = new TaskCompletionSource<bool>();
-		}
-
 		/// <summary>
 		/// Title string
 		/// </summary>
-		public string Title { get; }
+		public string Title { get; } = Title;
 
 		/// <summary>
 		/// Message string
 		/// </summary>
-		public string Message { get; }
+		public string Message { get; } = Message;
 
 		/// <summary>
 		/// Accept string
 		/// </summary>
-		public string? Accept { get; }
+		public string? Accept { get; } = Accept;
 
 		/// <summary>
 		/// Cancel string
 		/// </summary>
-		public string? Cancel { get; }
+		public string? Cancel { get; } = Cancel;
 
 		/// <summary>
 		/// Completion source indicating when task has been completed.
 		/// </summary>
-		public TaskCompletionSource<bool> CompletionSource { get; }
+		public TaskCompletionSource<bool> CompletionSource { get; } = new TaskCompletionSource<bool>();
 
 		/// <summary>
 		/// Executes the task.

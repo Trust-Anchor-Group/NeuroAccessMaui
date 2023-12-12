@@ -12,10 +12,12 @@ namespace NeuroAccessMaui.Services
 	/// <summary>
 	/// Exports database contents to XML.
 	/// </summary>
-	public class XmlDatabaseExport : IDatabaseExport, IDisposable
+	/// <param name="Output">XML output is directed to this XML writer.</param>
+	/// <param name="BinaryDataSizeLimit">Size limit of binary data fields. If larger, only a byte count will be presented.</param>
+	public class XmlDatabaseExport(XmlWriter Output, int BinaryDataSizeLimit) : IDatabaseExport, IDisposable
 	{
-		private readonly XmlWriter output;
-		private readonly int binaryDataSizeLimit;
+		private readonly XmlWriter output = Output;
+		private readonly int binaryDataSizeLimit = BinaryDataSizeLimit;
 		private bool disposeWriter;
 
 		/// <summary>
@@ -28,17 +30,6 @@ namespace NeuroAccessMaui.Services
 			: this(XmlWriter.Create(Output, XML.WriterSettings(Indent, true)), BinaryDataSizeLimit)
 		{
 			this.disposeWriter = true;
-		}
-
-		/// <summary>
-		/// Exports database contents to XML.
-		/// </summary>
-		/// <param name="Output">XML output is directed to this XML writer.</param>
-		/// <param name="BinaryDataSizeLimit">Size limit of binary data fields. If larger, only a byte count will be presented.</param>
-		public XmlDatabaseExport(XmlWriter Output, int BinaryDataSizeLimit)
-		{
-			this.output = Output;
-			this.binaryDataSizeLimit = BinaryDataSizeLimit;
 		}
 
 		/// <inheritdoc/>

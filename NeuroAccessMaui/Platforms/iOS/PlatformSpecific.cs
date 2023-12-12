@@ -36,12 +36,10 @@ namespace NeuroAccessMaui.Services
 		public void ShareImage(byte[] PngFile, string Message, string Title, string FileName)
 		{
 			UIImage? ImageObject = UIImage.LoadFromData(NSData.FromArray(PngFile));
-			UIWindow? KeyWindow = UIApplication.SharedApplication.KeyWindow;
+			UIWindow? KeyWindow = UIApplication.SharedApplication?.KeyWindow;
 
 			if ((ImageObject is null) || (KeyWindow is null))
-			{
 				return;
-			}
 
 			NSString MessageObject = new(Message);
 			NSObject[] Items = [MessageObject, ImageObject];
@@ -52,9 +50,7 @@ namespace NeuroAccessMaui.Services
 			if (topController is not null)
 			{
 				while (topController.PresentedViewController is not null)
-				{
 					topController = topController.PresentedViewController;
-				}
 
 				topController.PresentViewController(activityController, true, () => { });
 			}
