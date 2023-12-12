@@ -28,13 +28,12 @@ namespace NeuroAccessMaui.Extensions
 		/// <returns>Gets the JID property of an identity object.</returns>
 		public static string GetJid(this LegalIdentity legalIdentity, string defaultValueIfNotFound = "")
 		{
-			string jid = null;
-			if (legalIdentity is not null && legalIdentity.Properties?.Length > 0)
-			{
-				jid = legalIdentity.Properties.FirstOrDefault(x => x.Name == Constants.XmppProperties.Jid)?.Value;
-			}
+			string? Jid = null;
 
-			return !string.IsNullOrWhiteSpace(jid) ? jid : defaultValueIfNotFound;
+			if (legalIdentity is not null && legalIdentity.Properties?.Length > 0)
+				Jid = legalIdentity.Properties.FirstOrDefault(x => x.Name == Constants.XmppProperties.Jid)?.Value;
+
+			return !string.IsNullOrWhiteSpace(Jid) ? Jid : defaultValueIfNotFound;
 		}
 	}
 }

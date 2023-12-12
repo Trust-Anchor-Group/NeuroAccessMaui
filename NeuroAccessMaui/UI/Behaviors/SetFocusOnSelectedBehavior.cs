@@ -27,7 +27,7 @@ namespace NeuroAccessMaui.UI.Behaviors
 			base.OnDetachingFrom(Picker);
 		}
 
-		private void Picker_SelectedIndexChanged(object Sender, EventArgs e)
+		private void Picker_SelectedIndexChanged(object? Sender, EventArgs e)
 		{
 			SetFocusOnClickedBehavior.FocusOn(this.SetFocusTo);
 		}

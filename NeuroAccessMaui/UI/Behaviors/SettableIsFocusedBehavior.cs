@@ -31,9 +31,9 @@
 		/// Tries to set focus on the element if <paramref name="Value"/> is <c>true</c> or clears focus if <paramref name="Value"/>
 		/// is <c>false</c>. Setting focus might fail, in which case <see cref="IsFocusedProperty"/> will be reset to <c> false</c>.
 		/// </summary>
-		public static void SetIsFocused(BindableObject Bindable, bool Value)
+		public static void SetIsFocused(BindableObject? Bindable, bool Value)
 		{
-			Bindable.SetValue(IsFocusedProperty, Value);
+			Bindable?.SetValue(IsFocusedProperty, Value);
 		}
 
 		private static void OnSettableIsFocusedChanged(BindableObject Bindable, bool IsFocused)
@@ -70,14 +70,14 @@
 			base.OnDetachingFrom(VisualElement);
 		}
 
-		private void OnElementFocused(object Sender, FocusEventArgs EventArgs)
+		private void OnElementFocused(object? Sender, FocusEventArgs EventArgs)
 		{
-			SetIsFocused((BindableObject)Sender, EventArgs.IsFocused);
+			SetIsFocused((BindableObject?)Sender, EventArgs.IsFocused);
 		}
 
-		private void OnElementUnfocused(object Sender, FocusEventArgs EventArgs)
+		private void OnElementUnfocused(object? Sender, FocusEventArgs EventArgs)
 		{
-			SetIsFocused((BindableObject)Sender, EventArgs.IsFocused);
+			SetIsFocused((BindableObject?)Sender, EventArgs.IsFocused);
 		}
 	}
 }

@@ -21,7 +21,7 @@ public partial class PetitionSignaturePage
 		return base.OnDisappearingAsync();
 	}
 
-	private void Image_Tapped(object Sender, EventArgs e)
+	private void Image_Tapped(object? Sender, EventArgs e)
 	{
 		PetitionSignatureViewModel ViewModel = this.ViewModel<PetitionSignatureViewModel>();
 

@@ -13,7 +13,7 @@ namespace NeuroAccessMaui.Services.AttachmentCache
 	[Index("ParentId")]
 	public class CacheEntry
 	{
-		private string objectId = null;
+		private string? objectId = null;
 		private CaseInsensitiveString parentId = string.Empty;
 		private CaseInsensitiveString localFileName = string.Empty;
 		private CaseInsensitiveString url = string.Empty;

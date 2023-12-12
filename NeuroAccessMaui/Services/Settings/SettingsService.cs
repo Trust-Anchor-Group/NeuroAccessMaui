@@ -158,11 +158,11 @@ namespace NeuroAccessMaui.Services.Settings
 			return matches;
 		}
 
-		public async Task<string> RestoreStringState(string key, string defaultValueIfNotFound = default)
+		public async Task<string?> RestoreStringState(string key, string? defaultValueIfNotFound = default)
 		{
 			try
 			{
-				string str = await RuntimeSettings.GetAsync(key, defaultValueIfNotFound);
+				string? str = await RuntimeSettings.GetAsync(key, defaultValueIfNotFound);
 				str = str?.Trim('"');
 				return str;
 			}
@@ -244,7 +244,7 @@ namespace NeuroAccessMaui.Services.Settings
 			return defaultValueIfNotFound;
 		}
 
-		public async Task<Enum> RestoreEnumState(string key, Enum defaultValueIfNotFound = default)
+		public async Task<Enum?> RestoreEnumState(string key, Enum? defaultValueIfNotFound = default)
 		{
 			try
 			{
@@ -258,21 +258,17 @@ namespace NeuroAccessMaui.Services.Settings
 			return defaultValueIfNotFound;
 		}
 
-		public async Task<T> RestoreState<T>(string key, T defaultValueIfNotFound = default)
+		public async Task<T?> RestoreState<T>(string key, T? defaultValueIfNotFound = default)
 		{
 			if (string.IsNullOrWhiteSpace(key))
-			{
 				return defaultValueIfNotFound;
-			}
 
 			try
 			{
-				object existingState = await RuntimeSettings.GetAsync(key, (object)null);
+				object existingState = await RuntimeSettings.GetAsync(key, (object?)null);
 
 				if (existingState is T typedValue)
-				{
 					return typedValue;
-				}
 
 				return defaultValueIfNotFound;
 			}

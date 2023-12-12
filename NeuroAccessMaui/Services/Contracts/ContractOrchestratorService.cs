@@ -9,6 +9,7 @@ using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.StanzaErrors;
 using Waher.Runtime.Inventory;
+using System.Globalization;
 
 namespace NeuroAccessMaui.Services.Contracts
 {
@@ -57,7 +58,7 @@ namespace NeuroAccessMaui.Services.Contracts
 
 		#region Event Handlers
 
-		private async Task Contracts_PetitionForPeerReviewIdReceived(object Sender, SignaturePetitionEventArgs e)
+		private async Task Contracts_PetitionForPeerReviewIdReceived(object? Sender, SignaturePetitionEventArgs e)
 		{
 			try
 			{
@@ -78,24 +79,20 @@ namespace NeuroAccessMaui.Services.Contracts
 			}
 		}
 
-		private async Task Contracts_PetitionForIdentityReceived(object Sender, LegalIdentityPetitionEventArgs e)
+		private async Task Contracts_PetitionForIdentityReceived(object? Sender, LegalIdentityPetitionEventArgs e)
 		{
 			try
 			{
 				LegalIdentity Identity;
 
 				if (e.RequestedIdentityId == ServiceRef.TagProfile.LegalIdentity?.Id)
-				{
 					Identity = ServiceRef.TagProfile.LegalIdentity;
-				}
 				else
 				{
-					(bool Succeeded, LegalIdentity LegalId) = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.GetLegalIdentity(e.RequestedIdentityId));
+					(bool Succeeded, LegalIdentity? LegalId) = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.GetLegalIdentity(e.RequestedIdentityId));
 
 					if (!Succeeded || LegalId is null)
-					{
 						return;
-					}
 
 					Identity = LegalId;
 				}
@@ -135,24 +132,20 @@ namespace NeuroAccessMaui.Services.Contracts
 			}
 		}
 
-		private async Task Contracts_PetitionForSignatureReceived(object Sender, SignaturePetitionEventArgs e)
+		private async Task Contracts_PetitionForSignatureReceived(object? Sender, SignaturePetitionEventArgs e)
 		{
 			try
 			{
 				LegalIdentity Identity;
 
 				if (e.SignatoryIdentityId == ServiceRef.TagProfile.LegalIdentity?.Id)
-				{
 					Identity = ServiceRef.TagProfile.LegalIdentity;
-				}
 				else
 				{
-					(bool Succeeded, LegalIdentity LegalId) = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.GetLegalIdentity(e.SignatoryIdentityId));
+					(bool Succeeded, LegalIdentity? LegalId) = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.GetLegalIdentity(e.SignatoryIdentityId));
 
 					if (!Succeeded || LegalId is null)
-					{
 						return;
-					}
 
 					Identity = LegalId;
 				}
@@ -191,7 +184,7 @@ namespace NeuroAccessMaui.Services.Contracts
 			}
 		}
 
-		private async Task Contracts_PetitionedIdentityResponseReceived(object Sender, LegalIdentityPetitionResponseEventArgs e)
+		private async Task Contracts_PetitionedIdentityResponseReceived(object? Sender, LegalIdentityPetitionResponseEventArgs e)
 		{
 			try
 			{
@@ -216,7 +209,7 @@ namespace NeuroAccessMaui.Services.Contracts
 			}
 		}
 
-		private async Task Contracts_PetitionedPeerReviewResponseReceived(object Sender, SignaturePetitionResponseEventArgs e)
+		private async Task Contracts_PetitionedPeerReviewResponseReceived(object? Sender, SignaturePetitionResponseEventArgs e)
 		{
 			try
 			{
@@ -260,7 +253,7 @@ namespace NeuroAccessMaui.Services.Contracts
 							}
 							else
 							{
-								(bool Succeeded, LegalIdentity LegalIdentity) = await ServiceRef.NetworkService.TryRequest(
+								(bool Succeeded, LegalIdentity? LegalIdentity) = await ServiceRef.NetworkService.TryRequest(
 									() => ServiceRef.XmppService.AddPeerReviewIdAttachment(
 										ServiceRef.TagProfile.LegalIdentity, Identity, e.Signature));
 
@@ -332,16 +325,16 @@ namespace NeuroAccessMaui.Services.Contracts
 				ServiceRef.XmppService.IsOnline;
 
 			if (!isConnected)
-			{
 				return;
-			}
 
-			(bool succeeded, LegalIdentity identity) = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.GetLegalIdentity(LegalId), displayAlert: false);
+			(bool succeeded, LegalIdentity? identity) = await ServiceRef.NetworkService.TryRequest(
+				() => ServiceRef.XmppService.GetLegalIdentity(LegalId), displayAlert: false);
+
 			if (succeeded)
 			{
 				MainThread.BeginInvokeOnMainThread(async () =>
 				{
-					string userMessage = null;
+					string? userMessage = null;
 					bool gotoRegistrationPage = false;
 
 					if (identity.State == IdentityState.Compromised)
@@ -365,14 +358,13 @@ namespace NeuroAccessMaui.Services.Contracts
 							ServiceRef.Localizer[nameof(AppResources.Repair)]);
 
 						if (Response)
-						{
 							ServiceRef.TagProfile.SetLegalIdentity(identity);
-						}
 						else
 						{
 							try
 							{
-								File.WriteAllText(Path.Combine(ServiceRef.StorageService.DataFolder, "Start.txt"), DateTime.Now.AddHours(1).Ticks.ToString());
+								File.WriteAllText(Path.Combine(ServiceRef.StorageService.DataFolder, "Start.txt"),
+									DateTime.Now.AddHours(1).Ticks.ToString(CultureInfo.InvariantCulture));
 							}
 							catch (Exception ex)
 							{
@@ -384,9 +376,7 @@ namespace NeuroAccessMaui.Services.Contracts
 						}
 					}
 					else
-					{
 						ServiceRef.TagProfile.SetLegalIdentity(identity);
-					}
 
 					if (gotoRegistrationPage)
 					{
@@ -452,9 +442,7 @@ namespace NeuroAccessMaui.Services.Contracts
 			int i = Request.IndexOf(',');
 
 			if (i < 0)
-			{
 				throw new InvalidOperationException(ServiceRef.Localizer[nameof(AppResources.InvalidTagSignatureId)]);
-			}
 
 			string JID = Request[..i];
 			string Key = Request[(i + 1)..];
@@ -463,16 +451,12 @@ namespace NeuroAccessMaui.Services.Contracts
 				?? throw new InvalidOperationException(ServiceRef.Localizer[nameof(AppResources.NoLegalIdSelected)]);
 
 			if (ID.State != IdentityState.Approved)
-			{
 				throw new InvalidOperationException(ServiceRef.Localizer[nameof(AppResources.LegalIdNotApproved)]);
-			}
 
 			string IdRef = ServiceRef.TagProfile.LegalIdentity?.Id ?? string.Empty;
 
 			if (!await App.VerifyPin())
-			{
 				return;
-			}
 
 			StringBuilder Xml = new();
 
@@ -491,7 +475,7 @@ namespace NeuroAccessMaui.Services.Contracts
 			await ServiceRef.XmppService.IqSetAsync(JID, Xml.ToString());
 		}
 
-		private async Task Contracts_SignaturePetitionResponseReceived(object Sender, SignaturePetitionResponseEventArgs e)
+		private async Task Contracts_SignaturePetitionResponseReceived(object? Sender, SignaturePetitionResponseEventArgs e)
 		{
 			try
 			{
@@ -505,9 +489,7 @@ namespace NeuroAccessMaui.Services.Contracts
 						ServiceRef.Localizer[nameof(AppResources.Ok)]);
 				}
 				else
-				{
 					await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Identity));
-				}
 			}
 			catch (Exception ex)
 			{

@@ -17,9 +17,9 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 	public partial class PetitionIdentityViewModel : BaseViewModel
 	{
 		private readonly PhotosLoader photosLoader;
-		private string requestorFullJid;
-		private string requestedIdentityId;
-		private string petitionId;
+		private string? requestorFullJid;
+		private string? requestedIdentityId;
+		private string? petitionId;
 
 		/// <summary>
 		/// Creates a new instance of the <see cref="PetitionIdentityViewModel"/> class.
@@ -45,25 +45,20 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 				string BareJid;
 
 				if (!string.IsNullOrEmpty(this.requestorFullJid))
-				{
 					BareJid = XmppClient.GetBareJID(this.requestorFullJid);
-				}
 				else if (Args.RequestorIdentity is not null)
-				{
 					BareJid = Args.RequestorIdentity.GetJid();
-				}
 				else
-				{
 					BareJid = string.Empty;
-				}
 
 				ContactInfo Info = await ContactInfo.FindByBareJid(BareJid);
 
-				if (Info is not null &&
+				if (this.RequestorIdentity is not null &&
+					Info is not null &&
 					(Info.LegalIdentity is null || (
-					Info.LegalId != this.RequestorIdentity.Id &&
+					Info.LegalId != this.RequestorIdentity?.Id &&
 					Info.LegalIdentity is not null &&
-					Info.LegalIdentity.Created < this.RequestorIdentity.Created &&
+					Info.LegalIdentity.Created < this.RequestorIdentity!.Created &&
 					this.RequestorIdentity.State == IdentityState.Approved)))
 				{
 					Info.LegalId = this.LegalId;
@@ -89,11 +84,11 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 			{
 				this.photosLoader.CancelLoadPhotos();
 
-				Attachment[] Attachments = this.RequestorIdentity?.Attachments;
+				Attachment[]? Attachments = this.RequestorIdentity?.Attachments;
 
 				if (Attachments is not null)
 				{
-					Photo First = await this.photosLoader.LoadPhotos(Attachments, SignWith.LatestApprovedId);
+					Photo? First = await this.photosLoader.LoadPhotos(Attachments, SignWith.LatestApprovedId);
 
 					this.FirstPhotoSource = First?.Source;
 					this.FirstPhotoRotation = First?.Rotation ?? 0;
@@ -125,22 +120,18 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 		/// <summary>
 		/// The identity of the requestor.
 		/// </summary>
-		public LegalIdentity RequestorIdentity { get; private set; }
+		public LegalIdentity? RequestorIdentity { get; private set; }
 
 		[RelayCommand]
 		private async Task Accept()
 		{
 			if (!await App.VerifyPin())
-			{
 				return;
-			}
 
 			bool succeeded = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.SendPetitionIdentityResponse(this.requestedIdentityId, this.petitionId, this.requestorFullJid, true));
 
 			if (succeeded)
-			{
 				await ServiceRef.NavigationService.GoBackAsync();
-			}
 		}
 
 		[RelayCommand]
@@ -149,9 +140,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 			bool succeeded = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.SendPetitionIdentityResponse(this.requestedIdentityId, this.petitionId, this.requestorFullJid, false));
 
 			if (succeeded)
-			{
 				await ServiceRef.NavigationService.GoBackAsync();
-			}
 		}
 
 		[RelayCommand]
@@ -376,7 +365,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 		/// What's the purpose of the petition?
 		/// </summary>
 		[ObservableProperty]
-		private string purpose;
+		private string? purpose;
 
 		/// <summary>
 		/// Gets or sets whether the identity is in the contact list or not.
@@ -388,7 +377,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 		/// Image source of the first photo in the identity of the requestor.
 		/// </summary>
 		[ObservableProperty]
-		private ImageSource firstPhotoSource;
+		private ImageSource? firstPhotoSource;
 
 		/// <summary>
 		/// Rotation of the first photo in the identity of the requestor.

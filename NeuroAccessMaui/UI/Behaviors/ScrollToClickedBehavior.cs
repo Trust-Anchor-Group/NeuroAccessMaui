@@ -42,7 +42,7 @@ namespace NeuroAccessMaui.UI.Behaviors
 			base.OnDetachingFrom(Button);
 		}
 
-		private void Button_Clicked(object Sender, EventArgs e)
+		private void Button_Clicked(object? Sender, EventArgs e)
 		{
 			if (this.IsEnabled)
 			{

@@ -139,13 +139,13 @@ namespace NeuroAccessMaui.UI.Popups.Pin
 			// reset EnteringNewPinStarted and EnteringRetypedNewPinStarted as well, error messages might appear or change, which leads
 			// to a visual distortion. Resetting everything leads to a nice visual "reset and close" effect.
 
-			this.OldPin = null;
+			this.OldPin = string.Empty;
 
 			this.EnteringNewPinStarted = false;
-			this.NewPin = null;
+			this.NewPin = string.Empty;
 
 			this.EnteringRetypedNewPinStarted = false;
-			this.RetypedNewPin = null;
+			this.RetypedNewPin = string.Empty;
 
 			this.PopupOpened = false;
 		}

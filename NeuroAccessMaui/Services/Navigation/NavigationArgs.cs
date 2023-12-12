@@ -46,7 +46,7 @@
 		/// <summary>
 		/// Sets the reference to the main parent's <see cref="NavigationArgs"/>.
 		/// </summary>
-		public void SetBackArguments(NavigationArgs ParentArgs, BackMethod BackMethod = BackMethod.Inherited, string? UniqueId = null)
+		public void SetBackArguments(NavigationArgs? ParentArgs, BackMethod BackMethod = BackMethod.Inherited, string? UniqueId = null)
 		{
 			this.backMethod = BackMethod;
 			this.parentArgs = ParentArgs;

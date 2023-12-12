@@ -73,7 +73,7 @@ public partial class VerifyCodePage
 		});
 	}
 
-	private async void InnerCodeEntry_TextChanged(object Sender, TextChangedEventArgs e)
+	private async void InnerCodeEntry_TextChanged(object? Sender, TextChangedEventArgs e)
 	{
 		string NewText = e.NewTextValue;
 		int NewLength = NewText.Length;

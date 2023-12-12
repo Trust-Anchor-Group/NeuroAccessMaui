@@ -12,7 +12,7 @@ namespace IdApp.Cv.Objects
 		private readonly int x0;
 		private readonly int y0;
 		private int nrPixels = 0;
-		private Point[] contour = null;
+		private Point[]? contour = null;
 		private int minX;
 		private int maxX;
 		private int minY;

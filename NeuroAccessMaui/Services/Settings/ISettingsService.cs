@@ -70,7 +70,7 @@ namespace NeuroAccessMaui.Services.Settings
 		/// <param name="key">The state id.</param>
 		/// <param name="defaultValueIfNotFound">The default value to use if the state isn't found.</param>
 		/// <returns>Value corresponding to the key.</returns>
-		Task<string> RestoreStringState(string key, string defaultValueIfNotFound = default);
+		Task<string?> RestoreStringState(string key, string? defaultValueIfNotFound = default);
 
 		/// <summary>
 		/// Restores state for the specified key.
@@ -118,7 +118,7 @@ namespace NeuroAccessMaui.Services.Settings
 		/// <param name="key">The state id.</param>
 		/// <param name="defaultValueIfNotFound">The default value to use if the state isn't found.</param>
 		/// <returns>Value corresponding to the key.</returns>
-		Task<Enum> RestoreEnumState(string key, Enum defaultValueIfNotFound = default);
+		Task<Enum?> RestoreEnumState(string key, Enum? defaultValueIfNotFound = default);
 
 		/// <summary>
 		/// Restores state for the specified key.
@@ -127,7 +127,7 @@ namespace NeuroAccessMaui.Services.Settings
 		/// <param name="key">The state id.</param>
 		/// <param name="defaultValueIfNotFound">The default value to use if the state isn't found.</param>
 		/// <returns>Value corresponding to the key.</returns>
-		Task<T> RestoreState<T>(string key, T defaultValueIfNotFound = default);
+		Task<T?> RestoreState<T>(string key, T? defaultValueIfNotFound = default);
 
 		/// <summary>
 		/// Returns any states whose key matches the specified predicate.

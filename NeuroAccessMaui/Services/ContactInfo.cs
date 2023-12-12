@@ -18,11 +18,11 @@ namespace NeuroAccessMaui.Services
 	[Index("LegalId")]
 	public class ContactInfo
 	{
-		private string objectId = null;
+		private string? objectId = null;
 		private CaseInsensitiveString bareJid = CaseInsensitiveString.Empty;
 		private CaseInsensitiveString legalId = CaseInsensitiveString.Empty;
-		private LegalIdentity legalIdentity = null;
-		private Property[] metaData = null;
+		private LegalIdentity? legalIdentity = null;
+		private Property[]? metaData = null;
 		private string friendlyName = string.Empty;
 		private string sourceId = string.Empty;
 		private string partition = string.Empty;
@@ -48,7 +48,7 @@ namespace NeuroAccessMaui.Services
 		/// Object ID
 		/// </summary>
 		[ObjectId]
-		public string ObjectId
+		public string? ObjectId
 		{
 			get => this.objectId;
 			set => this.objectId = value;
@@ -66,7 +66,7 @@ namespace NeuroAccessMaui.Services
 		/// <summary>
 		/// Legal ID of contact.
 		/// </summary>
-		public CaseInsensitiveString LegalId
+		public CaseInsensitiveString? LegalId
 		{
 			get => this.legalId;
 			set => this.legalId = value;
@@ -76,7 +76,7 @@ namespace NeuroAccessMaui.Services
 		/// Legal Identity object.
 		/// </summary>
 		[DefaultValueNull]
-		public LegalIdentity LegalIdentity
+		public LegalIdentity? LegalIdentity
 		{
 			get => this.legalIdentity;
 			set => this.legalIdentity = value;
@@ -205,7 +205,7 @@ namespace NeuroAccessMaui.Services
 		/// Meta-data related to a thing.
 		/// </summary>
 		[DefaultValueNull]
-		public Property[] MetaData
+		public Property[]? MetaData
 		{
 			get => this.metaData;
 			set => this.metaData = value;
@@ -258,14 +258,10 @@ namespace NeuroAccessMaui.Services
 			int i = RemoteId.IndexOf('@');
 
 			if (i < 0)
-			{
 				return RemoteId;
-			}
 
 			if (RemoteId == ServiceRef.TagProfile.LegalIdentity?.Id)
-			{
 				return ServiceRef.Localizer[nameof(AppResources.Me)];
-			}
 
 			string Account = RemoteId.Substring(0, i);
 			ContactInfo Info;
@@ -276,37 +272,27 @@ namespace NeuroAccessMaui.Services
 				Info = await FindByLegalId(RemoteId);
 
 				if (!string.IsNullOrEmpty(Info?.FriendlyName))
-				{
 					return Info.FriendlyName;
-				}
 
 				if (Info?.LegalIdentity is not null)
-				{
 					return GetFriendlyName(Info.LegalIdentity);
-				}
 			}
 
 			Info = await FindByBareJid(RemoteId);
 			if (Info is not null)
 			{
 				if (!string.IsNullOrEmpty(Info.FriendlyName))
-				{
 					return Info.FriendlyName;
-				}
 
 				if (Info.LegalIdentity is not null)
-				{
 					return GetFriendlyName(Info.LegalIdentity);
-				}
 
 				if (Info.MetaData is not null)
 				{
-					string s = GetFriendlyName(Info.MetaData);
+					string? s = GetFriendlyName(Info.MetaData);
 
 					if (!string.IsNullOrEmpty(s))
-					{
 						return s;
-					}
 				}
 			}
 
@@ -315,13 +301,9 @@ namespace NeuroAccessMaui.Services
 				if (identityCache.TryGetValue(RemoteId, out LegalIdentity? Id))
 				{
 					if (Id is not null)
-					{
 						return GetFriendlyName(Id);
-					}
 					else
-					{
 						AccountIsGuid = false;
-					}
 				}
 			}
 
@@ -353,27 +335,23 @@ namespace NeuroAccessMaui.Services
 			return RemoteId;
 		}
 
-		private static readonly Dictionary<CaseInsensitiveString, LegalIdentity> identityCache = [];
+		private static readonly Dictionary<CaseInsensitiveString, LegalIdentity?> identityCache = [];
 
 		/// <summary>
 		/// Gets the friendly name of a remote identity (Legal ID or Bare JID).
 		/// </summary>
 		/// <param name="RemoteId">Remote Identity</param>
 		/// <returns>Friendly name.</returns>
-		public static async Task<string[]> GetFriendlyName(string[] RemoteId)
+		public static async Task<string[]?> GetFriendlyName(string[] RemoteId)
 		{
 			if (RemoteId is null)
-			{
 				return null;
-			}
 
 			int i, c = RemoteId.Length;
 			string[] Result = new string[c];
 
 			for (i = 0; i < c; i++)
-			{
 				Result[i] = await GetFriendlyName(RemoteId[i]);
-			}
 
 			return Result;
 		}
@@ -383,26 +361,26 @@ namespace NeuroAccessMaui.Services
 		/// </summary>
 		/// <param name="MetaData">Meta-data tags.</param>
 		/// <returns>Friendly name</returns>
-		public static string GetFriendlyName(IEnumerable<Property> MetaData)
+		public static string? GetFriendlyName(IEnumerable<Property> MetaData)
 		{
-			string Apartment = null;
-			string Area = null;
-			string Building = null;
-			string City = null;
-			string Class = null;
-			string Country = null;
-			string Manufacturer = null;
-			string MeterLocation = null;
-			string MeterNumber = null;
-			string Model = null;
-			string Name = null;
-			string Region = null;
-			string Room = null;
-			string SerialNumber = null;
-			string Street = null;
-			string StreetNumber = null;
-			string Version = null;
-			string Phone = null;
+			string? Apartment = null;
+			string? Area = null;
+			string? Building = null;
+			string? City = null;
+			string? Class = null;
+			string? Country = null;
+			string? Manufacturer = null;
+			string? MeterLocation = null;
+			string? MeterNumber = null;
+			string? Model = null;
+			string? Name = null;
+			string? Region = null;
+			string? Room = null;
+			string? SerialNumber = null;
+			string? Street = null;
+			string? StreetNumber = null;
+			string? Version = null;
+			string? Phone = null;
 
 			foreach (Property P in MetaData)
 			{
@@ -482,7 +460,7 @@ namespace NeuroAccessMaui.Services
 				}
 			}
 
-			StringBuilder sb = null;
+			StringBuilder? sb = null;
 
 			AppendName(ref sb, Class);
 			AppendName(ref sb, Model);
@@ -513,13 +491,13 @@ namespace NeuroAccessMaui.Services
 		/// <returns>Friendly name</returns>
 		public static string GetFriendlyName(LegalIdentity Identity)
 		{
-			string FirstName = null;
-			string MiddleName = null;
-			string LastName = null;
-			string PersonalNumber = null;
-			string OrgDepartment = null;
-			string OrgRole = null;
-			string OrgName = null;
+			string? FirstName = null;
+			string? MiddleName = null;
+			string? LastName = null;
+			string? PersonalNumber = null;
+			string? OrgDepartment = null;
+			string? OrgRole = null;
+			string? OrgName = null;
 			bool HasName = false;
 			bool HasOrg = false;
 
@@ -563,7 +541,7 @@ namespace NeuroAccessMaui.Services
 				}
 			}
 
-			StringBuilder sb = null;
+			StringBuilder? sb = null;
 
 			if (HasName)
 			{
@@ -580,30 +558,22 @@ namespace NeuroAccessMaui.Services
 			}
 
 			if (sb is not null)
-			{
 				return sb.ToString();
-			}
 
 			if (!string.IsNullOrEmpty(PersonalNumber))
-			{
 				return PersonalNumber;
-			}
 
 			return Identity.Id;
 		}
 
-		private static void AppendName(ref StringBuilder sb, string Value)
+		private static void AppendName(ref StringBuilder? sb, string? Value)
 		{
 			if (!string.IsNullOrEmpty(Value))
 			{
 				if (sb is null)
-				{
 					sb = new StringBuilder();
-				}
 				else
-				{
 					sb.Append(' ');
-				}
 
 				sb.Append(Value);
 			}
@@ -620,41 +590,29 @@ namespace NeuroAccessMaui.Services
 		public static async Task<string> GetFriendlyName(CaseInsensitiveString BareJid, string SourceId, string PartitionId, string NodeId)
 		{
 			if (string.IsNullOrEmpty(NodeId) && string.IsNullOrEmpty(PartitionId) && string.IsNullOrEmpty(SourceId))
-			{
 				return await GetFriendlyName(BareJid);
-			}
 
 			ContactInfo Thing = await ContactInfo.FindByBareJid(BareJid, SourceId, PartitionId, NodeId);
 
 			if (Thing is not null)
-			{
 				return Thing.FriendlyName;
-			}
 
 			string s = NodeId;
 
 			if (!string.IsNullOrEmpty(PartitionId))
 			{
 				if (string.IsNullOrEmpty(s))
-				{
 					s = PartitionId;
-				}
 				else
-				{
 					s = ServiceRef.Localizer[nameof(AppResources.XInY), s, PartitionId];
-				}
 			}
 
 			if (!string.IsNullOrEmpty(SourceId))
 			{
 				if (string.IsNullOrEmpty(s))
-				{
 					s = SourceId;
-				}
 				else
-				{
 					s = ServiceRef.Localizer[nameof(AppResources.XInY), s, SourceId];
-				}
 			}
 
 			return ServiceRef.Localizer[nameof(AppResources.XOnY), s, BareJid];
@@ -674,9 +632,7 @@ namespace NeuroAccessMaui.Services
 					foreach (Property P in this.metaData)
 					{
 						if (string.Compare(P.Name, PropertyName, StringComparison.OrdinalIgnoreCase) == 0)
-						{
 							return P.Value;
-						}
 					}
 				}
 

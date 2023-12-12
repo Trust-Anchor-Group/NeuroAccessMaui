@@ -58,22 +58,23 @@ namespace NeuroAccessMaui.Services.UI.Tasks
 
 			if (!string.IsNullOrWhiteSpace(this.Accept) && !string.IsNullOrWhiteSpace(this.Cancel))
 			{
-				Result = await Application.Current.MainPage.DisplayAlert(this.Title, this.Message, this.Accept, this.Cancel);
+				Result = await (Application.Current?.MainPage?.DisplayAlert(this.Title, this.Message, this.Accept, this.Cancel) ??
+					Task.FromResult(false));
 			}
 			else if (!string.IsNullOrWhiteSpace(this.Cancel))
 			{
-				await Application.Current.MainPage.DisplayAlert(this.Title, this.Message, this.Cancel);
+				await (Application.Current?.MainPage?.DisplayAlert(this.Title, this.Message, this.Cancel) ?? Task.CompletedTask);
 				Result = true;
 			}
 			else if (!string.IsNullOrWhiteSpace(this.Accept))
 			{
-				await Application.Current.MainPage.DisplayAlert(this.Title, this.Message, this.Accept);
+				await (Application.Current?.MainPage?.DisplayAlert(this.Title, this.Message, this.Accept) ?? Task.CompletedTask);
 				Result = true;
 			}
 			else
 			{
-				await Application.Current.MainPage.DisplayAlert(this.Title, this.Message,
-					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				await (Application.Current?.MainPage?.DisplayAlert(this.Title, this.Message,
+					ServiceRef.Localizer[nameof(AppResources.Ok)]) ?? Task.CompletedTask);
 
 				Result = true;
 			}

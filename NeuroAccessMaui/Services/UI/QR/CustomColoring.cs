@@ -10,7 +10,7 @@ namespace NeuroAccessMaui.Services.UI.QR
 	/// </summary>
 	public class CustomColoring
 	{
-		private readonly SKBitmap icon;
+		private readonly SKBitmap? icon;
 		private readonly uint codeFg;
 		private readonly uint codeBg;
 		private readonly uint codeBgFg25;
@@ -105,7 +105,7 @@ namespace NeuroAccessMaui.Services.UI.QR
 				dy = (CodeY - 0.5f);
 				d2 = dx * dx + dy * dy;
 
-				if (d2 < 0.01)
+				if (d2 < 0.01 && this.icon is not null)
 				{
 					int IconX = (int)(128 + 1024 * dx + 0.5f);
 					int IconY = (int)(128 + 1024 * dy + 0.5f);
@@ -118,9 +118,7 @@ namespace NeuroAccessMaui.Services.UI.QR
 				}
 
 				if (d2 < 0.015)
-				{
 					return this.codeBg;
-				}
 			}
 
 			switch (Type)
@@ -135,25 +133,15 @@ namespace NeuroAccessMaui.Services.UI.QR
 					d2 = dx * dx + dy * dy;
 
 					if (d2 <= 0.25f)
-					{
 						return this.codeFg;
-					}
 					else if (d2 <= 0.27f)
-					{
 						return this.codeBgFg75;
-					}
 					else if (d2 <= 0.29f)
-					{
 						return this.codeBgFg50;
-					}
 					else if (d2 <= 0.30f)
-					{
 						return this.codeBgFg25;
-					}
 					else
-					{
 						return this.codeBg;
-					}
 
 				case DotType.FinderMarkerBackground:
 					return this.markerBg;

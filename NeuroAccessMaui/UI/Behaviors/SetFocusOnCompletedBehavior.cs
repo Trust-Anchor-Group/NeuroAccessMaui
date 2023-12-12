@@ -48,7 +48,7 @@ namespace NeuroAccessMaui.UI.Behaviors
 			base.OnDetachingFrom(entry);
 		}
 
-		private void Entry_Completed(object Sender, EventArgs e)
+		private void Entry_Completed(object? Sender, EventArgs e)
 		{
 			if (this.UseAlternative && this.SetFocusToAlternative is not null)
 			{

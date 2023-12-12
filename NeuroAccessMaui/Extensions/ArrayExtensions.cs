@@ -26,7 +26,7 @@ namespace NeuroAccessMaui.Extensions
 		/// </summary>
 		/// <param name="attachments">The attachments to iterate.</param>
 		/// <returns>The first image attachment, or <c>null</c>.</returns>
-		public static Attachment GetFirstImageAttachment(this Attachment[] attachments)
+		public static Attachment? GetFirstImageAttachment(this Attachment[] attachments)
 		{
 			return attachments?.FirstOrDefault(x => x.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase));
 		}

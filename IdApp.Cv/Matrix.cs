@@ -22,6 +22,7 @@ namespace IdApp.Cv
 
 		private Matrix()
 		{
+			this.data = [];
 		}
 
 		/// <summary>

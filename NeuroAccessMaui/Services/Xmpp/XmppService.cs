@@ -1,6 +1,8 @@
 ﻿using NeuroAccessMaui.Extensions;
-using NeuroAccessMaui.UI.Pages.Registration;
 using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services.Tag;
+using NeuroAccessMaui.UI.Pages.Registration;
+using System.ComponentModel;
 using System.Reflection;
 using System.Text;
 using System.Xml;
@@ -20,8 +22,6 @@ using Waher.Persistence;
 using Waher.Runtime.Inventory;
 using Waher.Runtime.Settings;
 using Waher.Runtime.Temporary;
-using System.ComponentModel;
-using NeuroAccessMaui.Services.Tag;
 
 namespace NeuroAccessMaui.Services.Xmpp
 {
@@ -62,9 +62,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private async Task CreateXmppClient()
 		{
 			if (this.isCreatingClient)
-			{
 				return;
-			}
 
 			try
 			{
@@ -73,16 +71,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 				if (!this.XmppParametersCurrent() || this.XmppStale())
 				{
 					if (this.xmppClient is not null)
-					{
 						await this.DestroyXmppClient();
-					}
 
 					this.domainName = ServiceRef.TagProfile.Domain;
 					this.accountName = ServiceRef.TagProfile.Account;
 					this.passwordHash = ServiceRef.TagProfile.PasswordHash;
 					this.passwordHashMethod = ServiceRef.TagProfile.PasswordHashMethod;
 
-					string HostName;
+					string? HostName;
 					int PortNumber;
 					bool IsIpAddress;
 
@@ -97,9 +93,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 						(HostName, PortNumber, IsIpAddress) = await ServiceRef.NetworkService.LookupXmppHostnameAndPort(this.domainName);
 
 						if (HostName == this.domainName && PortNumber == XmppCredentials.DefaultPort)
-						{
 							ServiceRef.TagProfile.SetDomain(this.domainName, true, ServiceRef.TagProfile.ApiKey, ServiceRef.TagProfile.ApiSecret);
-						}
 					}
 
 					this.xmppLastStateChange = DateTime.Now;
@@ -163,9 +157,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 					}
 
 					if (!string.IsNullOrWhiteSpace(ServiceRef.TagProfile.HttpFileUploadJid) && (ServiceRef.TagProfile.HttpFileUploadMaxSize > 0))
-					{
 						this.fileUploadClient = new HttpFileUploadClient(this.xmppClient, ServiceRef.TagProfile.HttpFileUploadJid, ServiceRef.TagProfile.HttpFileUploadMaxSize);
-					}
 
 					this.httpxClient = new HttpxClient(this.xmppClient, 8192);
 					Types.SetModuleParameter("XMPP", this.xmppClient);      // Makes the XMPP Client the default XMPP client, when resolving HTTP over XMPP requests.
@@ -231,39 +223,25 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private bool XmppParametersCurrent()
 		{
 			if (this.xmppClient is null)
-			{
 				return false;
-			}
 
 			if (this.domainName != ServiceRef.TagProfile.Domain)
-			{
 				return false;
-			}
 
 			if (this.accountName != ServiceRef.TagProfile.Account)
-			{
 				return false;
-			}
 
 			if (this.passwordHash != ServiceRef.TagProfile.PasswordHash)
-			{
 				return false;
-			}
 
 			if (this.passwordHashMethod != ServiceRef.TagProfile.PasswordHashMethod)
-			{
 				return false;
-			}
 
 			if (this.contractsClient?.ComponentAddress != ServiceRef.TagProfile.LegalJid)
-			{
 				return false;
-			}
 
 			if (this.fileUploadClient?.FileUploadJid != ServiceRef.TagProfile.HttpFileUploadJid)
-			{
 				return false;
-			}
 
 			return true;
 		}
@@ -285,27 +263,19 @@ namespace NeuroAccessMaui.Services.Xmpp
 				DateTime Start = DateTime.Now;
 
 				while (this.xmppClient is null && DateTime.Now - Start < Timeout)
-				{
 					await Task.Delay(1000);
-				}
 
 				if (this.xmppClient is null)
-				{
 					return false;
-				}
 
 				Timeout -= DateTime.Now - Start;
 			}
 
 			if (this.xmppClient.State == XmppState.Connected)
-			{
 				return true;
-			}
 
 			if (Timeout < TimeSpan.Zero)
-			{
 				return false;
-			}
 
 			int i = await this.xmppClient.WaitStateAsync((int)Timeout.TotalMilliseconds, XmppState.Connected);
 			return i >= 0;
@@ -321,9 +291,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 					ServiceRef.TagProfile.Changed += this.TagProfile_Changed;
 
 					if (ServiceRef.TagProfile.ShouldCreateClient() && !this.XmppParametersCurrent())
-					{
 						await this.CreateXmppClient();
-					}
 
 					if ((this.xmppClient is not null) &&
 						this.xmppClient.State == XmppState.Connected &&
@@ -400,9 +368,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private void TagProfile_StepChanged(object? Sender, EventArgs e)
 		{
 			if (!this.IsLoaded)
-			{
 				return;
-			}
 
 			Task ExecutionTask = Task.Run(async () =>
 			{
@@ -411,13 +377,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 					bool CreateXmppClient = ServiceRef.TagProfile.ShouldCreateClient();
 
 					if (CreateXmppClient && !this.XmppParametersCurrent())
-					{
 						await this.CreateXmppClient();
-					}
 					else if (!CreateXmppClient)
-					{
 						await this.DestroyXmppClient();
-					}
 				}
 				catch (Exception ex)
 				{
@@ -429,32 +391,26 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private void TagProfile_Changed(object? Sender, PropertyChangedEventArgs e)
 		{
 			if (e.PropertyName == nameof(ITagProfile.Account))
-			{
 				this.TagProfile_StepChanged(Sender, new EventArgs());
-			}
 		}
 
-		private Task XmppClient_Error(object Sender, Exception e)
+		private Task XmppClient_Error(object? Sender, Exception e)
 		{
 			this.LatestError = e.Message;
 			return Task.CompletedTask;
 		}
 
-		private Task XmppClient_ConnectionError(object Sender, Exception e)
+		private Task XmppClient_ConnectionError(object? Sender, Exception e)
 		{
 			if (e is ObjectDisposedException)
-			{
 				this.LatestConnectionError = ServiceRef.Localizer[nameof(AppResources.UnableToConnect)];
-			}
 			else
-			{
 				this.LatestConnectionError = e.Message;
-			}
 
 			return Task.CompletedTask;
 		}
 
-		private async Task XmppClient_StateChanged(object Sender, XmppState NewState)
+		private async Task XmppClient_StateChanged(object? Sender, XmppState NewState)
 		{
 			this.xmppLastStateChange = DateTime.Now;
 
@@ -475,7 +431,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 					if (string.IsNullOrEmpty(ServiceRef.TagProfile.PasswordHashMethod))
 					{
-						ServiceRef.TagProfile.SetAccount(ServiceRef.TagProfile.Account, this.xmppClient.PasswordHash, this.xmppClient.PasswordHashMethod);
+						ServiceRef.TagProfile.SetAccount(ServiceRef.TagProfile.Account ?? string.Empty,
+							this.xmppClient?.PasswordHash ?? string.Empty,
+							this.xmppClient?.PasswordHashMethod ?? string.Empty);
 					}
 
 					if (ServiceRef.TagProfile.NeedsUpdating() && await this.DiscoverServices())
@@ -493,9 +451,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 						}
 
 						if (this.fileUploadClient is null && !string.IsNullOrWhiteSpace(ServiceRef.TagProfile.HttpFileUploadJid) && (ServiceRef.TagProfile.HttpFileUploadMaxSize > 0))
-						{
 							this.fileUploadClient = new HttpFileUploadClient(this.xmppClient, ServiceRef.TagProfile.HttpFileUploadJid, ServiceRef.TagProfile.HttpFileUploadMaxSize);
-						}
 					}
 
 					ServiceRef.LogService.AddListener(this.xmppEventSink);
@@ -508,9 +464,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 						this.xmppConnected = false;
 
 						if (this.xmppClient is not null && !this.xmppClient.Disposed)
-						{
 							this.xmppClient.Reconnect();
-						}
 					}
 					break;
 			}
@@ -530,9 +484,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				Task? T = this.ConnectionStateChanged?.Invoke(this, NewState);
 
 				if (T is not null)
-				{
 					await T;
-				}
 			}
 			catch (Exception ex)
 			{
@@ -605,17 +557,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 			Task OnConnectionError(object _, Exception e)
 			{
 				if (e is ObjectDisposedException)
-				{
 					ConnectionError = ServiceRef.Localizer[nameof(AppResources.UnableToConnect)];
-				}
 				else if (e is ConflictException ConflictInfo)
-				{
 					Alternatives = ConflictInfo.Alternatives;
-				}
 				else
-				{
 					ConnectionError = e.Message;
-				}
 
 				Connected.TrySetResult(false);
 				return Task.CompletedTask;
@@ -641,9 +587,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 						Authenticating = true;
 
 						if (Operation == ConnectOperation.Connect)
-						{
 							Connected.TrySetResult(true);
-						}
 
 						break;
 
@@ -704,15 +648,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 					Connected.TrySetResult(false);
 				}
 
-				using (Timer _ = new(TimerCallback, null, (int)Constants.Timeouts.XmppConnect.TotalMilliseconds, Timeout.Infinite))
-				{
-					Succeeded = await Connected.Task;
-				}
+				using Timer _ = new(TimerCallback, null, (int)Constants.Timeouts.XmppConnect.TotalMilliseconds, Timeout.Infinite);
+				Succeeded = await Connected.Task;
 
 				if (Succeeded && (ConnectedFunc is not null))
-				{
 					await ConnectedFunc(Client);
-				}
 
 				Client.OnStateChanged -= OnStateChanged;
 				Client.OnConnectionError -= OnConnectionError;
@@ -762,23 +702,17 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private void ReconnectTimer_Tick(object _)
 		{
 			if (this.xmppClient is null)
-			{
 				return;
-			}
 
 			if (!ServiceRef.NetworkService.IsOnline)
-			{
 				return;
-			}
 
 			if (this.XmppStale())
 			{
 				this.xmppLastStateChange = DateTime.Now;
 
 				if (!this.xmppClient.Disposed)
-				{
 					this.xmppClient.Reconnect();
-				}
 			}
 		}
 
@@ -795,7 +729,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		{
 			TaskCompletionSource<bool> PasswordChanged = new();
 
-			this.xmppClient.ChangePassword(NewPassword, (sender, e) =>
+			this.XmppClient.ChangePassword(NewPassword, (sender, e) =>
 			{
 				PasswordChanged.TrySetResult(e.Ok);
 				return Task.CompletedTask;
@@ -817,7 +751,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		{
 			TaskCompletionSource<ServiceDiscoveryEventArgs> Result = new();
 
-			this.xmppClient.SendServiceDiscoveryRequest(FullJid, (_, e) =>
+			this.XmppClient.SendServiceDiscoveryRequest(FullJid, (_, e) =>
 			{
 				Result.TrySetResult(e);
 				return Task.CompletedTask;
@@ -831,14 +765,12 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// </summary>
 		/// <param name="Client">The client to use. Can be <c>null</c>, in which case the default is used.</param>
 		/// <returns>If TAG services were found.</returns>
-		public async Task<bool> DiscoverServices(XmppClient Client = null)
+		public async Task<bool> DiscoverServices(XmppClient? Client = null)
 		{
 			Client ??= this.xmppClient;
 
 			if (Client is null)
-			{
 				return false;
-			}
 
 			ServiceItemsDiscoveryEventArgs response;
 
@@ -857,26 +789,18 @@ namespace NeuroAccessMaui.Services.Xmpp
 			object SynchObject = new();
 
 			foreach (Item Item in response.Items)
-			{
 				Tasks.Add(this.CheckComponent(Client, Item, SynchObject));
-			}
 
 			await Task.WhenAll([.. Tasks]);
 
 			if (string.IsNullOrWhiteSpace(ServiceRef.TagProfile.LegalJid))
-			{
 				return false;
-			}
 
 			if (string.IsNullOrWhiteSpace(ServiceRef.TagProfile.HttpFileUploadJid) || (ServiceRef.TagProfile.HttpFileUploadMaxSize <= 0))
-			{
 				return false;
-			}
 
 			if (string.IsNullOrWhiteSpace(ServiceRef.TagProfile.LogJid))
-			{
 				return false;
-			}
 
 			return true;
 		}
@@ -888,9 +812,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			lock (SynchObject)
 			{
 				if (itemResponse.HasFeature(ContractsClient.NamespaceLegalIdentities))
-				{
 					ServiceRef.TagProfile.SetLegalJid(Item.JID);
-				}
 
 				if (itemResponse.HasFeature(HttpFileUploadClient.Namespace))
 				{
@@ -899,9 +821,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				}
 
 				if (itemResponse.HasFeature(XmppEventSink.NamespaceEventLogging))
-				{
 					ServiceRef.TagProfile.SetLogJid(Item.JID);
-				}
 			}
 		}
 
@@ -909,7 +829,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		#region Transfer
 
-		private async Task TransferIdDelivered(object Sender, MessageEventArgs e)
+		private async Task TransferIdDelivered(object? Sender, MessageEventArgs e)
 		{
 			if (e.From != Constants.Domains.OnboardingDomain)
 			{
@@ -920,17 +840,13 @@ namespace NeuroAccessMaui.Services.Xmpp
 			bool Deleted = XML.Attribute(e.Content, "deleted", false);
 
 			if (!Deleted)
-			{
 				return;
-			}
 
 			string CodesGenerated = await RuntimeSettings.GetAsync("TransferId.CodesSent", string.Empty);
 			string[] Codes = CodesGenerated.Split(CommonTypes.CRLF, StringSplitOptions.RemoveEmptyEntries);
 
 			if (Array.IndexOf<string>(Codes, Code) < 0)
-			{
 				return;
-			}
 
 			await this.DestroyXmppClient();
 
@@ -956,13 +872,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 			string CodesGenerated = await RuntimeSettings.GetAsync("TransferId.CodesSent", string.Empty);
 
 			if (string.IsNullOrEmpty(CodesGenerated))
-			{
 				CodesGenerated = Code;
-			}
 			else
-			{
 				CodesGenerated += "\r\n" + Code;
-			}
 
 			await RuntimeSettings.SetAsync("TransferId.CodesSent", CodesGenerated);
 			await Database.Provider.Flush();
@@ -972,7 +884,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		#region Presence Subscriptions
 
-		private Task XmppClient_OnPresenceSubscribe(object Sender, PresenceEventArgs e)
+		private Task XmppClient_OnPresenceSubscribe(object? Sender, PresenceEventArgs e)
 		{
 			e.Decline();
 			return Task.CompletedTask;
@@ -992,14 +904,28 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <exception cref="XmppException">If an IQ error is returned.</exception>
 		public Task<XmlElement> IqSetAsync(string To, string Xml)
 		{
-			return this.xmppClient.IqSetAsync(To, Xml);
+			return this.XmppClient.IqSetAsync(To, Xml);
+		}
+
+		/// <summary>
+		/// Reference to XMPP Client. If no such client is available, an exception is thrown.
+		/// </summary>
+		private XmppClient XmppClient
+		{
+			get
+			{
+				if (this.xmppClient is null)
+					throw new Exception("Not connected to XMPP network.");
+
+				return this.xmppClient;
+			}
 		}
 
 		#endregion
 
 		#region Messages
 
-		private Task ClientMessage(object Sender, MessageEventArgs e)
+		private Task ClientMessage(object? Sender, MessageEventArgs e)
 		{
 			string Code = XML.Attribute(e.Content, "code");
 			string Type = XML.Attribute(e.Content, "type");
@@ -1012,9 +938,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 					string LocalizedMessage = ServiceRef.Localizer["ClientMessage" + Code];
 
 					if (!string.IsNullOrEmpty(LocalizedMessage))
-					{
 						Message = LocalizedMessage;
-					}
 				}
 				catch (Exception)
 				{
@@ -1058,22 +982,21 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// </summary>
 		/// <param name="Seconds">Number of seconds for which the token should be valid.</param>
 		/// <returns>Token, if able to get a token, or null otherwise.</returns>
-		public async Task<string> GetApiToken(int Seconds)
+		public async Task<string?> GetApiToken(int Seconds)
 		{
 			DateTime Now = DateTime.UtcNow;
 
 			if (!string.IsNullOrEmpty(this.token) && Now.Subtract(this.tokenCreated).TotalSeconds < Seconds - 10)
-			{
 				return this.token;
-			}
 
 			if (!this.IsOnline)
 			{
 				if (!await this.WaitForConnectedState(TimeSpan.FromSeconds(20)))
-				{
 					return this.token;
-				}
 			}
+
+			if (this.httpxClient is null)
+				throw new Exception("Not connected to XMPP network.");
 
 			this.token = await this.httpxClient.GetJwtTokenAsync(Seconds);
 			this.tokenCreated = Now;
@@ -1095,9 +1018,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			StringBuilder Url = new();
 
 			if (this.IsOnline)
-			{
 				Url.Append("httpx://");
-			}
 			else if (!string.IsNullOrEmpty(this.token))     // Token needs to be retrieved regularly when connected, if protected APIs are to be used when disconnected or during connection.
 			{
 				Url.Append("https://");
@@ -1105,9 +1026,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				KeyValuePair<string, string> Authorization = new("Authorization", "Bearer " + this.token);
 
 				if (Headers is null)
-				{
 					Headers = [Authorization];
-				}
 				else
 				{
 					int c = Headers.Length;
@@ -1117,9 +1036,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				}
 			}
 			else
-			{
 				throw new IOException("No connection and no token available for call to protect API.");
-			}
 
 			Url.Append(ServiceRef.TagProfile.Domain);
 			Url.Append(LocalResource);
@@ -1140,9 +1057,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			get
 			{
 				if (this.fileUploadClient is null)
-				{
 					throw new InvalidOperationException(ServiceRef.Localizer[nameof(AppResources.FileUploadServiceNotFound)]);
-				}
 
 				return this.fileUploadClient;
 			}
@@ -1211,9 +1126,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				HttpFileUploadEventArgs e2 = await ServiceRef.XmppService.RequestUploadSlotAsync(Path.GetFileName(a.Filename), a.ContentType, a.ContentLength);
 
 				if (!e2.Ok)
-				{
 					throw e2.StanzaError ?? new Exception(e2.ErrorText);
-				}
 
 				await e2.PUT(a.Data, a.ContentType, (int)Constants.Timeouts.UploadFile.TotalMilliseconds);
 
@@ -1232,7 +1145,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// </summary>
 		/// <param name="client">The Xmpp client instance. Can be null, in that case the default one is used.</param>
 		/// <returns>Legal Identities</returns>
-		public async Task<LegalIdentity[]> GetLegalIdentities(XmppClient client = null)
+		public async Task<LegalIdentity[]> GetLegalIdentities(XmppClient? client = null)
 		{
 			if (client is null)
 				return await this.ContractsClient.GetLegalIdentitiesAsync();
@@ -1275,20 +1188,16 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="legalIdentityId">The id of the legal identity.</param>
 		/// <param name="client">The Xmpp client instance. Can be null, in that case the default one is used.</param>
 		/// <returns>If private keys are available.</returns>
-		public async Task<bool> HasPrivateKey(CaseInsensitiveString legalIdentityId, XmppClient client = null)
+		public async Task<bool> HasPrivateKey(CaseInsensitiveString legalIdentityId, XmppClient? client = null)
 		{
 			if (client is null)
-			{
 				return await this.ContractsClient.HasPrivateKey(legalIdentityId);
-			}
 			else
 			{
 				using ContractsClient cc = new(client, ServiceRef.TagProfile.LegalJid);
 
 				if (!await cc.LoadKeys(false))
-				{
 					return false;
-				}
 
 				return await cc.HasPrivateKey(legalIdentityId);
 			}
@@ -1322,6 +1231,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Purpose">The purpose of the petitioning.</param>
 		public async Task PetitionIdentity(CaseInsensitiveString LegalId, string PetitionId, string Purpose)
 		{
+			if (ServiceRef.TagProfile.LegalIdentity is null)
+				throw new Exception("No Legal Identity registered.");
+
 			await this.ContractsClient.AuthorizeAccessToIdAsync(ServiceRef.TagProfile.LegalIdentity.Id, LegalId, true);
 
 			this.StartPetition(PetitionId);
@@ -1361,7 +1273,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// </summary>
 		public event LegalIdentityEventHandler LegalIdentityChanged;
 
-		private async Task ContractsClient_IdentityUpdated(object Sender, LegalIdentityEventArgs e)
+		private async Task ContractsClient_IdentityUpdated(object? Sender, LegalIdentityEventArgs e)
 		{
 			if (ServiceRef.TagProfile.LegalIdentity is null ||
 				ServiceRef.TagProfile.LegalIdentity.Id == e.Identity.Id ||
@@ -1384,7 +1296,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// </summary>
 		public event LegalIdentityPetitionEventHandler PetitionForIdentityReceived;
 
-		private async Task ContractsClient_PetitionForIdentityReceived(object Sender, LegalIdentityPetitionEventArgs e)
+		private async Task ContractsClient_PetitionForIdentityReceived(object? Sender, LegalIdentityPetitionEventArgs e)
 		{
 			try
 			{
@@ -1402,7 +1314,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// </summary>
 		public event LegalIdentityPetitionResponseEventHandler PetitionedIdentityResponseReceived;
 
-		private async Task ContractsClient_PetitionedIdentityResponseReceived(object Sender, LegalIdentityPetitionResponseEventArgs e)
+		private async Task ContractsClient_PetitionedIdentityResponseReceived(object? Sender, LegalIdentityPetitionResponseEventArgs e)
 		{
 			try
 			{
@@ -1458,9 +1370,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			get
 			{
 				if (this.contractsClient is null)
-				{
 					throw new InvalidOperationException(ServiceRef.Localizer[nameof(AppResources.LegalServiceNotFound)]);
-				}
 
 				return this.contractsClient;
 			}
@@ -1529,7 +1439,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// </summary>
 		public event SignaturePetitionEventHandler PetitionForPeerReviewIdReceived;
 
-		private async Task ContractsClient_PetitionForPeerReviewIdReceived(object Sender, SignaturePetitionEventArgs e)
+		private async Task ContractsClient_PetitionForPeerReviewIdReceived(object? Sender, SignaturePetitionEventArgs e)
 		{
 			try
 			{
@@ -1547,7 +1457,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// </summary>
 		public event SignaturePetitionResponseEventHandler PetitionedPeerReviewIdResponseReceived;
 
-		private async Task ContractsClient_PetitionedPeerReviewIdResponseReceived(object Sender, SignaturePetitionResponseEventArgs e)
+		private async Task ContractsClient_PetitionedPeerReviewIdResponseReceived(object? Sender, SignaturePetitionResponseEventArgs e)
 		{
 			try
 			{
@@ -1583,7 +1493,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private readonly Dictionary<string, bool> currentPetitions = [];
 
-		private async Task ContractsClient_PetitionClientUrlReceived(object Sender, PetitionClientUrlEventArgs e)
+		private async Task ContractsClient_PetitionClientUrlReceived(object? Sender, PetitionClientUrlEventArgs e)
 		{
 			lock (this.currentPetitions)
 			{
@@ -1648,7 +1558,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// </summary>
 		public event SignaturePetitionEventHandler PetitionForSignatureReceived;
 
-		private async Task ContractsClient_PetitionForSignatureReceived(object Sender, SignaturePetitionEventArgs e)
+		private async Task ContractsClient_PetitionForSignatureReceived(object? Sender, SignaturePetitionEventArgs e)
 		{
 			try
 			{
@@ -1666,7 +1576,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// </summary>
 		public event SignaturePetitionResponseEventHandler SignaturePetitionResponseReceived;
 
-		private async Task ContractsClient_PetitionedSignatureResponseReceived(object Sender, SignaturePetitionResponseEventArgs e)
+		private async Task ContractsClient_PetitionedSignatureResponseReceived(object? Sender, SignaturePetitionResponseEventArgs e)
 		{
 			try
 			{
@@ -1693,7 +1603,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Xml">XML to save.</param>
 		public Task SavePrivateXml(string Xml)
 		{
-			return this.xmppClient.SetPrivateXmlElementAsync(Xml);
+			return this.xmppClient?.SetPrivateXmlElementAsync(Xml)
+				?? throw new Exception("Not connected to XMPP network.");
 		}
 
 		/// <summary>
@@ -1705,7 +1616,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Xml">XML to save.</param>
 		public Task SavePrivateXml(XmlElement Xml)
 		{
-			return this.xmppClient.SetPrivateXmlElementAsync(Xml);
+			return this.xmppClient?.SetPrivateXmlElementAsync(Xml)
+				?? throw new Exception("Not connected to XMPP network.");
 		}
 
 		/// <summary>
@@ -1714,9 +1626,10 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// </summary>
 		/// <param name="LocalName">Local Name</param>
 		/// <param name="Namespace">Namespace</param>
-		public Task<XmlElement> LoadPrivateXml(string LocalName, string Namespace)
+		/// <returns>XML Element, if found.</returns>
+		public async Task<XmlElement?> LoadPrivateXml(string LocalName, string Namespace)
 		{
-			return this.xmppClient.GetPrivateXmlElementAsync(LocalName, Namespace);
+			return await this.XmppClient.GetPrivateXmlElementAsync(LocalName, Namespace);
 		}
 
 		/// <summary>

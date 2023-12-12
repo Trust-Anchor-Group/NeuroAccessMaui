@@ -147,7 +147,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// </summary>
 		/// <param name="Client">The client to use. Can be <c>null</c>, in which case the default is used.</param>
 		/// <returns>If TAG services were found.</returns>
-		Task<bool> DiscoverServices(XmppClient Client = null);
+		Task<bool> DiscoverServices(XmppClient? Client = null);
 
 		#endregion
 
@@ -237,7 +237,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// </summary>
 		/// <param name="client">The Xmpp client instance. Can be null, in that case the default one is used.</param>
 		/// <returns>Legal Identities</returns>
-		Task<LegalIdentity[]> GetLegalIdentities(XmppClient client = null);
+		Task<LegalIdentity[]> GetLegalIdentities(XmppClient? client = null);
 
 		/// <summary>
 		/// Gets a specific legal identity.
@@ -259,7 +259,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="legalIdentityId">The id of the legal identity.</param>
 		/// <param name="client">The Xmpp client instance. Can be null, in that case the default one is used.</param>
 		/// <returns>If private keys are available.</returns>
-		Task<bool> HasPrivateKey(CaseInsensitiveString legalIdentityId, XmppClient client = null);
+		Task<bool> HasPrivateKey(CaseInsensitiveString legalIdentityId, XmppClient? client = null);
 
 		/// <summary>
 		/// Marks the legal identity as obsolete.
@@ -459,7 +459,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// </summary>
 		/// <param name="LocalName">Local Name</param>
 		/// <param name="Namespace">Namespace</param>
-		Task<XmlElement> LoadPrivateXml(string LocalName, string Namespace);
+		/// <returns>XML Element, if found.</returns>
+		Task<XmlElement?> LoadPrivateXml(string LocalName, string Namespace);
 
 		/// <summary>
 		/// Deletes private XML previously saved to the account.

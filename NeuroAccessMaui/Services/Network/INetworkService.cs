@@ -47,6 +47,6 @@ namespace NeuroAccessMaui.Services.Network
 		/// <param name="displayAlert">Set to <c>true</c> if an alert should be displayed to the user, <c>false</c> otherwise.</param>
 		/// <param name="memberName">(Optional) a method name to use.</param>
 		/// <returns>If request was successful, and if so, the return value.</returns>
-		Task<(bool Succeeded, TReturn ReturnValue)> TryRequest<TReturn>(Func<Task<TReturn>> func, bool rethrowException = false, bool displayAlert = true, [CallerMemberName] string memberName = "");
+		Task<(bool Succeeded, TReturn? ReturnValue)> TryRequest<TReturn>(Func<Task<TReturn>> func, bool rethrowException = false, bool displayAlert = true, [CallerMemberName] string memberName = "");
 	}
 }

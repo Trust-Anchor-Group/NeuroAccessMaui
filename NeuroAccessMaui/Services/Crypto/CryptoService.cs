@@ -48,7 +48,7 @@ namespace NeuroAccessMaui.Services.Crypto
 		{
 			byte[] key;
 			byte[] iv;
-			string s;
+			string? s;
 			int i;
 
 			string FileNameHash = this.deviceId + Path.GetRelativePath(this.basePath, fileName);

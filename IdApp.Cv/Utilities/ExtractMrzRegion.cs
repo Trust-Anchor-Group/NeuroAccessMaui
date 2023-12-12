@@ -20,7 +20,7 @@ namespace IdApp.Cv.Utilities
 		/// </summary>
 		/// <param name="M">Matrix of pixel values</param>
 		/// <returns>MRZ region if found, null if not found.</returns>
-		public static Matrix<float> ExtractMrzRegion(this Matrix<float> M)
+		public static Matrix<float>? ExtractMrzRegion(this Matrix<float> M)
 		{
 			Matrix<float> G = M.GaussianBlur(3);
 			Matrix<float> ForOcr = G = G.BlackHat((13 * M.Width + 208) / 415, (5 * M.Height + 300) / 600);
@@ -68,7 +68,7 @@ namespace IdApp.Cv.Utilities
 		/// </summary>
 		/// <param name="M">Matrix of pixel values</param>
 		/// <returns>MRZ region if found, null if not found.</returns>
-		public static Matrix<int> ExtractMrzRegion(this Matrix<int> M)
+		public static Matrix<int>? ExtractMrzRegion(this Matrix<int> M)
 		{
 			Matrix<int> G = M.GaussianBlur(3);
 			Matrix<int> ForOcr = G = G.BlackHat((13 * M.Width + 208) / 415, (5 * M.Height + 300) / 600);

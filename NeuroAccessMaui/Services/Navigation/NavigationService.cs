@@ -17,7 +17,7 @@ namespace NeuroAccessMaui.Services.Navigation
 		}
 
 		/// <inheritdoc/>
-		public Page CurrentPage => Shell.Current?.CurrentPage;
+		public Page CurrentPage => Shell.Current.CurrentPage;
 
 		/// <inheritdoc/>
 		public override Task Load(bool isResuming, CancellationToken cancellationToken)
@@ -26,9 +26,14 @@ namespace NeuroAccessMaui.Services.Navigation
 			{
 				try
 				{
-					Application Application = Application.Current;
-					Application.PropertyChanging += this.OnApplicationPropertyChanging;
-					Application.PropertyChanged += this.OnApplicationPropertyChanged;
+					Application? Application = Application.Current;
+
+					if (Application is not null)
+					{
+						Application.PropertyChanging += this.OnApplicationPropertyChanging;
+						Application.PropertyChanged += this.OnApplicationPropertyChanged;
+					}
+
 					this.SubscribeToShellNavigatingIfNecessary(Application);
 
 					this.EndLoad(true);
@@ -50,7 +55,7 @@ namespace NeuroAccessMaui.Services.Navigation
 			{
 				try
 				{
-					Application Application = Application.Current;
+					Application? Application = Application.Current;
 					this.UnsubscribeFromShellNavigatingIfNecessary(Application);
 					Application.PropertyChanged -= this.OnApplicationPropertyChanged;
 					Application.PropertyChanging -= this.OnApplicationPropertyChanging;
@@ -82,7 +87,7 @@ namespace NeuroAccessMaui.Services.Navigation
 				ServiceRef.PlatformSpecific.HideKeyboard();
 
 				// Get the parent's navigation arguments
-				NavigationArgs ParentArgs = this.GetCurrentNavigationArgs();
+				NavigationArgs? ParentArgs = this.GetCurrentNavigationArgs();
 
 				// Create a default navigation arguments if Args are null
 				NavigationArgs NavigationArgs = Args ?? new();
@@ -91,9 +96,7 @@ namespace NeuroAccessMaui.Services.Navigation
 				this.PushArgs(Route, NavigationArgs);
 
 				if (!string.IsNullOrEmpty(UniqueId))
-				{
 					Route += "?UniqueId=" + UniqueId;
-				}
 
 				try
 				{
@@ -122,7 +125,7 @@ namespace NeuroAccessMaui.Services.Navigation
 		{
 			try
 			{
-				NavigationArgs NavigationArgs = this.GetCurrentNavigationArgs();
+				NavigationArgs? NavigationArgs = this.GetCurrentNavigationArgs();
 
 				if (NavigationArgs is not null) // the main view?
 				{
@@ -165,13 +168,9 @@ namespace NeuroAccessMaui.Services.Navigation
 			}
 
 			if (NavigationArgs is TArgs TArgsArgs)
-			{
 				Args = TArgsArgs;
-			}
 			else
-			{
 				Args = null;
-			}
 
 			return (Args is not null);
 		}
@@ -182,39 +181,31 @@ namespace NeuroAccessMaui.Services.Navigation
 			return Args;
 		}
 
-		private void OnApplicationPropertyChanged(object Sender, System.ComponentModel.PropertyChangedEventArgs Args)
+		private void OnApplicationPropertyChanged(object? Sender, System.ComponentModel.PropertyChangedEventArgs Args)
 		{
 			if (Args.PropertyName == nameof(Application.MainPage))
-			{
-				this.SubscribeToShellNavigatingIfNecessary((Application)Sender);
-			}
+				this.SubscribeToShellNavigatingIfNecessary((Application?)Sender);
 		}
 
-		private void OnApplicationPropertyChanging(object Sender, PropertyChangingEventArgs Args)
+		private void OnApplicationPropertyChanging(object? Sender, PropertyChangingEventArgs Args)
 		{
 			if (Args.PropertyName == nameof(Application.MainPage))
-			{
-				this.UnsubscribeFromShellNavigatingIfNecessary((Application)Sender);
-			}
+				this.UnsubscribeFromShellNavigatingIfNecessary((Application?)Sender);
 		}
 
-		private void SubscribeToShellNavigatingIfNecessary(Application Application)
+		private void SubscribeToShellNavigatingIfNecessary(Application? Application)
 		{
-			if (Application.MainPage is Shell Shell)
-			{
+			if (Application?.MainPage is Shell Shell)
 				Shell.Navigating += this.Shell_Navigating;
-			}
 		}
 
-		private void UnsubscribeFromShellNavigatingIfNecessary(Application Application)
+		private void UnsubscribeFromShellNavigatingIfNecessary(Application? Application)
 		{
-			if (Application.MainPage is Shell Shell)
-			{
+			if (Application?.MainPage is Shell Shell)
 				Shell.Navigating -= this.Shell_Navigating;
-			}
 		}
 
-		private void Shell_Navigating(object Sender, ShellNavigatingEventArgs e)
+		private void Shell_Navigating(object? Sender, ShellNavigatingEventArgs e)
 		{
 			try
 			{
@@ -257,9 +248,7 @@ namespace NeuroAccessMaui.Services.Navigation
 					string? UniqueId = Args.GetUniqueId();
 
 					if (!string.IsNullOrEmpty(UniqueId))
-					{
 						PageName += UniqueId;
-					}
 
 					this.navigationArgsMap[PageName] = Args;
 				}
@@ -273,9 +262,7 @@ namespace NeuroAccessMaui.Services.Navigation
 		private NavigationArgs? TryGetArgs(string Route, string? UniqueId)
 		{
 			if (!string.IsNullOrEmpty(UniqueId))
-			{
 				Route += UniqueId;
-			}
 
 			if (TryGetPageName(Route, out string? PageName) &&
 				this.navigationArgsMap.TryGetValue(PageName, out NavigationArgs? Args))

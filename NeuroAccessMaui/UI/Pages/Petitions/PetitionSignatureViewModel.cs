@@ -15,10 +15,10 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 	public partial class PetitionSignatureViewModel : BaseViewModel
 	{
 		private readonly PhotosLoader photosLoader;
-		private string requestorFullJid;
-		private string signatoryIdentityId;
-		private string petitionId;
-		private byte[] contentToSign;
+		private string? requestorFullJid;
+		private string? signatoryIdentityId;
+		private string? petitionId;
+		private byte[]? contentToSign;
 
 		/// <summary>
 		/// Creates a new instance of the <see cref="PetitionSignatureViewModel"/> class.
@@ -46,9 +46,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 			this.AssignProperties();
 
 			if (this.RequestorIdentity?.Attachments is not null)
-			{
 				_ = this.photosLoader.LoadPhotos(this.RequestorIdentity.Attachments, SignWith.LatestApprovedId);
-			}
 		}
 
 		/// <inheritdoc/>
@@ -73,9 +71,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 		private async Task Accept()
 		{
 			if (!await App.VerifyPin())
-			{
 				return;
-			}
 
 			bool succeeded = await ServiceRef.NetworkService.TryRequest(async () =>
 			{
@@ -85,9 +81,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 			});
 
 			if (succeeded)
-			{
 				await ServiceRef.NavigationService.GoBackAsync();
-			}
 		}
 
 		[RelayCommand]
@@ -97,9 +91,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 				this.signatoryIdentityId, this.contentToSign, [], this.petitionId, this.requestorFullJid, false));
 
 			if (succeeded)
-			{
 				await ServiceRef.NavigationService.GoBackAsync();
-			}
 		}
 
 		[RelayCommand]
@@ -114,7 +106,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 		/// Created date of the identity
 		/// </summary>
 		[ObservableProperty]
-		private DateTime created;
+		private DateTime? created;
 
 		/// <summary>
 		/// Updated date of the identity
@@ -126,13 +118,13 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 		/// Legal id of the identity
 		/// </summary>
 		[ObservableProperty]
-		private string legalId;
+		private string? legalId;
 
 		/// <summary>
 		/// Current state of the identity
 		/// </summary>
 		[ObservableProperty]
-		private IdentityState state;
+		private IdentityState? state;
 
 		/// <summary>
 		/// From date (validity range) of the identity
@@ -150,145 +142,145 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 		/// First name of the identity
 		/// </summary>
 		[ObservableProperty]
-		private string firstName;
+		private string? firstName;
 
 		/// <summary>
 		/// Middle name(s) of the identity
 		/// </summary>
 		[ObservableProperty]
-		private string middleNames;
+		private string? middleNames;
 
 		/// <summary>
 		/// Last name(s) of the identity
 		/// </summary>
 		[ObservableProperty]
-		private string lastNames;
+		private string? lastNames;
 
 		/// <summary>
 		/// Personal number of the identity
 		/// </summary>
 		[ObservableProperty]
-		private string personalNumber;
+		private string? personalNumber;
 
 		/// <summary>
 		/// Address of the identity
 		/// </summary>
 		[ObservableProperty]
-		private string address;
+		private string? address;
 
 		/// <summary>
 		/// Address (line 2) of the identity
 		/// </summary>
 		[ObservableProperty]
-		private string address2;
+		private string? address2;
 
 		/// <summary>
 		/// Zip code of the identity
 		/// </summary>
 		[ObservableProperty]
-		private string zipCode;
+		private string? zipCode;
 
 		/// <summary>
 		/// Area of the identity
 		/// </summary>
 		[ObservableProperty]
-		private string area;
+		private string? area;
 
 		/// <summary>
 		/// City of the identity
 		/// </summary>
 		[ObservableProperty]
-		private string city;
+		private string? city;
 
 		/// <summary>
 		/// Region of the identity
 		/// </summary>
 		[ObservableProperty]
-		private string region;
+		private string? region;
 
 		/// <summary>
 		/// Country code of the identity
 		/// </summary>
 		[ObservableProperty]
-		private string countryCode;
+		private string? countryCode;
 
 		/// <summary>
 		/// Country of the identity
 		/// </summary>
 		[ObservableProperty]
-		private string country;
+		private string? country;
 
 		/// <summary>
 		/// The legal identity's organization name property
 		/// </summary>
 		[ObservableProperty]
-		private string orgName;
+		private string? orgName;
 
 		/// <summary>
 		/// The legal identity's organization number property
 		/// </summary>
 		[ObservableProperty]
-		private string orgNumber;
+		private string? orgNumber;
 
 		/// <summary>
 		/// The legal identity's organization department property
 		/// </summary>
 		[ObservableProperty]
-		private string orgDepartment;
+		private string? orgDepartment;
 
 		/// <summary>
 		/// The legal identity's organization role property
 		/// </summary>
 		[ObservableProperty]
-		private string orgRole;
+		private string? orgRole;
 
 		/// <summary>
 		/// The legal identity's organization address property
 		/// </summary>
 		[ObservableProperty]
-		private string orgAddress;
+		private string? orgAddress;
 
 		/// <summary>
 		/// The legal identity's organization address line 2 property
 		/// </summary>
 		[ObservableProperty]
-		private string orgAddress2;
+		private string? orgAddress2;
 
 		/// <summary>
 		/// The legal identity's organization zip code property
 		/// </summary>
 		[ObservableProperty]
-		private string orgZipCode;
+		private string? orgZipCode;
 
 		/// <summary>
 		/// The legal identity's organization area property
 		/// </summary>
 		[ObservableProperty]
-		private string orgArea;
+		private string? orgArea;
 
 		/// <summary>
 		/// The legal identity's organization city property
 		/// </summary>
 		[ObservableProperty]
-		private string orgCity;
+		private string? orgCity;
 
 		/// <summary>
 		/// The legal identity's organization region property
 		/// </summary>
 		[ObservableProperty]
-		private string orgRegion;
+		private string? orgRegion;
 
 		/// <summary>
 		/// The legal identity's organization country code property
 		/// </summary>
 		[ObservableProperty]
-		private string orgCountryCode;
+		private string? orgCountryCode;
 
 		/// <summary>
 		/// The legal identity's organization country property
 		/// </summary>
 		[ObservableProperty]
-		private string orgCountry;
+		private string? orgCountry;
 
 		/// <summary>
 		/// If organization information is available.

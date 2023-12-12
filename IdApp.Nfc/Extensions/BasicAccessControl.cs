@@ -22,7 +22,7 @@ namespace IdApp.Nfc.Extensions
 		/// <param name="MRZ">Machine-Readable text.</param>
 		/// <param name="Info">Parsed Document Information.</param>
 		/// <returns>If the string could be parsed.</returns>
-		public static bool ParseMrz(string MRZ, out DocumentInformation Info)
+		public static bool ParseMrz(string MRZ, out DocumentInformation? Info)
 		{
 			Match M = td2_mrz_nr9charsplus.Match(MRZ);
 			if (M.Success)
@@ -58,7 +58,7 @@ namespace IdApp.Nfc.Extensions
 			return false;
 		}
 
-		private static DocumentInformation AssembleInfo2(Match M)
+		private static DocumentInformation? AssembleInfo2(Match M)
 		{
 			DocumentInformation Result = AssembleInfo(M);
 			Result.DocumentNumber = M.Groups["Nr1"].Value + M.Groups["Nr2"].Value;
@@ -66,7 +66,7 @@ namespace IdApp.Nfc.Extensions
 			return CalcMrzInfo(Result, M) ? Result : null;
 		}
 
-		private static DocumentInformation AssembleInfo1(Match M)
+		private static DocumentInformation? AssembleInfo1(Match M)
 		{
 			DocumentInformation Result = AssembleInfo(M);
 			Result.DocumentNumber = M.Groups["Nr"].Value;
@@ -138,7 +138,7 @@ namespace IdApp.Nfc.Extensions
 			return new string((char)('0' + Sum % 10), 1);
 		}
 
-		private static readonly int[] weights = new int[] { 7, 3, 1 };
+		private static readonly int[] weights = [7, 3, 1];
 
 		private static DocumentInformation AssembleInfo(Match M)
 		{
@@ -309,7 +309,7 @@ namespace IdApp.Nfc.Extensions
 				Array.Copy(KMac, 8, Kb, 0, 8);
 
 				byte[] Block = new byte[8];
-				byte[] H = null;
+				byte[]? H = null;
 
 				c += 8;
 				using (ICryptoTransform Encryptor2 = Cipher.CreateEncryptor(Ka, new byte[8]))
@@ -367,16 +367,16 @@ namespace IdApp.Nfc.Extensions
 		/// </summary>
 		/// <param name="TagInterface">NFC interface to tag.</param>
 		/// <returns>Challenge</returns>
-		public static async Task<byte[]> GetChallenge(this IIsoDepInterface TagInterface)
+		public static async Task<byte[]?> GetChallenge(this IIsoDepInterface TagInterface)
 		{
-			byte[] Command = new byte[]
-			{
+			byte[] Command =
+			[
 				0x00,	// CLA
 				0x84,	// INS
 				0x00,	// P1
 				0x00,	// P2
 				0x08	// Le
-			};
+			];
 
 			byte[] Response = await TagInterface.ExecuteCommand(Command);
 			if (Response.Length != 10 || Response[8] != 0x90 || Response[9] != 0x00)
@@ -394,7 +394,7 @@ namespace IdApp.Nfc.Extensions
 		/// <param name="TagInterface">NFC interface to tag.</param>
 		/// <param name="ChallengeResponse">ChallengeResponse.</param>
 		/// <returns>Challenge</returns>
-		public static async Task<byte[]> ExternalAuthenticate(this IIsoDepInterface TagInterface,
+		public static async Task<byte[]?> ExternalAuthenticate(this IIsoDepInterface TagInterface,
 			byte[] ChallengeResponse)
 		{
 			byte Lc = (byte)ChallengeResponse.Length;

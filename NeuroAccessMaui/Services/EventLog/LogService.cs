@@ -16,16 +16,12 @@ namespace NeuroAccessMaui.Services.EventLog
 		public void AddListener(IEventSink eventSink)
 		{
 			if (eventSink is XmppEventSink xmppEventSink)
-			{
-				this.bareJid = xmppEventSink.Client?.BareJID;
-			}
+				this.bareJid = xmppEventSink.Client?.BareJID ?? string.Empty;
 
 			foreach (IEventSink Sink in Log.Sinks)
 			{
 				if (Sink == eventSink)
-				{
 					return;
-				}
 			}
 
 			Log.Register(eventSink);
@@ -34,9 +30,7 @@ namespace NeuroAccessMaui.Services.EventLog
 		public void RemoveListener(IEventSink eventSink)
 		{
 			if (eventSink is not null)
-			{
 				Log.Unregister(eventSink);
-			}
 		}
 
 		public void LogWarning(string Message, params KeyValuePair<string, object>[] Tags)
@@ -46,7 +40,7 @@ namespace NeuroAccessMaui.Services.EventLog
 
 		public void LogException(Exception ex)
 		{
-			this.LogException(ex, null);
+			this.LogException(ex);
 		}
 
 		public void LogException(Exception ex, params KeyValuePair<string, object>[] extraParameters)
@@ -88,13 +82,9 @@ namespace NeuroAccessMaui.Services.EventLog
 			string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), startupCrashFileName);
 
 			if (File.Exists(fileName))
-			{
 				contents = File.ReadAllText(fileName);
-			}
 			else
-			{
 				contents = string.Empty;
-			}
 
 			File.WriteAllText(fileName, title + Environment.NewLine + stackTrace + Environment.NewLine + contents);
 		}
@@ -105,13 +95,9 @@ namespace NeuroAccessMaui.Services.EventLog
 			string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), startupCrashFileName);
 
 			if (File.Exists(fileName))
-			{
 				contents = File.ReadAllText(fileName);
-			}
 			else
-			{
 				contents = string.Empty;
-			}
 
 			return contents;
 		}
@@ -121,9 +107,7 @@ namespace NeuroAccessMaui.Services.EventLog
 			string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), startupCrashFileName);
 
 			if (File.Exists(fileName))
-			{
 				File.Delete(fileName);
-			}
 		}
 
 		/// <inheritdoc/>
@@ -143,9 +127,7 @@ namespace NeuroAccessMaui.Services.EventLog
 			];
 
 			if (Tags is not null)
-			{
 				Result.AddRange(Tags);
-			}
 
 			return Result;
 		}

@@ -73,7 +73,7 @@ namespace IdApp.Cv.Basic
 				this.RowSize, this.Start, this.Skip, this.pixelX, this.pixelY);
 		}
 
-		private const bool X = true;
+		private const bool x = true;
 		private const bool _ = false;
 
 		/// <summary>
@@ -81,9 +81,9 @@ namespace IdApp.Cv.Basic
 		/// </summary>
 		public static readonly Shape Cross_3x3 = new(3, 3,
 		[
-			_, X, _,
-			X, X, X,
-			_, X, _,
+			_, x, _,
+			x, x, x,
+			_, x, _,
 		], 1, 1);
 
 		/// <summary>
@@ -91,11 +91,11 @@ namespace IdApp.Cv.Basic
 		/// </summary>
 		public static readonly Shape Cross_5x5 = new(5, 5,
 		[
-			_, _, X, _, _,
-			_, _, X, _, _,
-			X, X, X, X, X,
-			_, _, X, _, _,
-			_, _, X, _, _,
+			_, _, x, _, _,
+			_, _, x, _, _,
+			x, x, x, x, x,
+			_, _, x, _, _,
+			_, _, x, _, _,
 		], 2, 2);
 
 		/// <summary>
@@ -103,13 +103,13 @@ namespace IdApp.Cv.Basic
 		/// </summary>
 		public static readonly Shape Cross_7x7 = new(7, 7,
 		[
-			_, _, _, X, _, _, _,
-			_, _, _, X, _, _, _,
-			_, _, _, X, _, _, _,
-			X, X, X, X, X, X, X,
-			_, _, _, X, _, _, _,
-			_, _, _, X, _, _, _,
-			_, _, _, X, _, _, _,
+			_, _, _, x, _, _, _,
+			_, _, _, x, _, _, _,
+			_, _, _, x, _, _, _,
+			x, x, x, x, x, x, x,
+			_, _, _, x, _, _, _,
+			_, _, _, x, _, _, _,
+			_, _, _, x, _, _, _,
 		], 3, 3);
 
 		/// <summary>
@@ -117,9 +117,9 @@ namespace IdApp.Cv.Basic
 		/// </summary>
 		public static readonly Shape X_3x3 = new(3, 3,
 		[
-			X, _, X,
-			_, X, _,
-			X, _, X,
+			x, _, x,
+			_, x, _,
+			x, _, x,
 		], 1, 1);
 
 		/// <summary>
@@ -127,11 +127,11 @@ namespace IdApp.Cv.Basic
 		/// </summary>
 		public static readonly Shape X_5x5 = new(5, 5,
 		[
-			X, _, _, _, X,
-			_, X, _, X, _,
-			_, _, X, _, _,
-			_, X, _, X, _,
-			X, _, _, _, X,
+			x, _, _, _, x,
+			_, x, _, x, _,
+			_, _, x, _, _,
+			_, x, _, x, _,
+			x, _, _, _, x,
 		], 2, 2);
 
 		/// <summary>
@@ -139,13 +139,13 @@ namespace IdApp.Cv.Basic
 		/// </summary>
 		public static readonly Shape X_7x7 = new(7, 7,
 		[
-			X, _, _, _, _, _, X,
-			_, X, _, _, _, X, _,
-			_, _, X, _, X, _, _,
-			_, _, _, X, _, _, _,
-			_, _, X, _, X, _, _,
-			_, X, _, _, _, X, _,
-			X, _, _, _, _, _, X,
+			x, _, _, _, _, _, x,
+			_, x, _, _, _, x, _,
+			_, _, x, _, x, _, _,
+			_, _, _, x, _, _, _,
+			_, _, x, _, x, _, _,
+			_, x, _, _, _, x, _,
+			x, _, _, _, _, _, x,
 		], 3, 3);
 
 		/// <summary>
@@ -158,11 +158,11 @@ namespace IdApp.Cv.Basic
 		/// </summary>
 		public static readonly Shape Diamond_5x5 = new(5, 5,
 		[
-			_, _, X, _, _,
-			_, X, X, X, _,
-			X, X, X, X, X,
-			_, X, X, X, _,
-			_, _, X, _, _,
+			_, _, x, _, _,
+			_, x, x, x, _,
+			x, x, x, x, x,
+			_, x, x, x, _,
+			_, _, x, _, _,
 		], 2, 2);
 
 		/// <summary>
@@ -170,13 +170,13 @@ namespace IdApp.Cv.Basic
 		/// </summary>
 		public static readonly Shape Diamond_7x7 = new(7, 7,
 		[
-			_, _, _, X, _, _, _,
-			_, _, X, X, X, _, _,
-			_, X, X, X, X, X, _,
-			X, X, X, X, X, X, X,
-			_, X, X, X, X, X, _,
-			_, _, X, X, X, _, _,
-			_, _, _, X, _, _, _,
+			_, _, _, x, _, _, _,
+			_, _, x, x, x, _, _,
+			_, x, x, x, x, x, _,
+			x, x, x, x, x, x, x,
+			_, x, x, x, x, x, _,
+			_, _, x, x, x, _, _,
+			_, _, _, x, _, _, _,
 		], 3, 3);
 	}
 }

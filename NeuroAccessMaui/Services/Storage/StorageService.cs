@@ -12,7 +12,7 @@ namespace NeuroAccessMaui.Services.Storage
 	{
 		private readonly LinkedList<TaskCompletionSource<bool>> tasksWaiting = new();
 		private readonly string dataFolder;
-		private FilesProvider databaseProvider;
+		private FilesProvider? databaseProvider;
 		private bool? initialized = null;
 		private bool started = false;
 
@@ -38,9 +38,7 @@ namespace NeuroAccessMaui.Services.Storage
 			lock (this.tasksWaiting)
 			{
 				if (this.started)
-				{
 					return;
-				}
 
 				this.started = true;
 			}
@@ -48,9 +46,7 @@ namespace NeuroAccessMaui.Services.Storage
 			try
 			{
 				if (Database.HasProvider)
-				{
 					this.databaseProvider = Database.Provider as FilesProvider;
-				}
 
 				if (this.databaseProvider is null)
 				{
@@ -121,9 +117,7 @@ namespace NeuroAccessMaui.Services.Storage
 				this.initialized = Result;
 
 				foreach (TaskCompletionSource<bool> Wait in this.tasksWaiting)
-				{
 					Wait.TrySetResult(Result);
-				}
 
 				this.tasksWaiting.Clear();
 			}
@@ -135,9 +129,7 @@ namespace NeuroAccessMaui.Services.Storage
 			lock (this.tasksWaiting)
 			{
 				if (this.initialized.HasValue)
-				{
 					return Task.FromResult<bool>(this.initialized.Value);
-				}
 
 				TaskCompletionSource<bool> Wait = new();
 				this.tasksWaiting.AddLast(Wait);
@@ -224,9 +216,7 @@ namespace NeuroAccessMaui.Services.Storage
 				FileName = Path.Combine(this.dataFolder, FileName);
 
 				if (File.Exists(FileName))
-				{
 					File.Delete(FileName);
-				}
 			}
 			catch (Exception)
 			{

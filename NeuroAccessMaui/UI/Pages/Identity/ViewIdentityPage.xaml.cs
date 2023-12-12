@@ -21,7 +21,7 @@ public partial class ViewIdentityPage
 		return base.OnDisappearingAsync();
 	}
 
-	private void Image_Tapped(object Sender, EventArgs e)
+	private void Image_Tapped(object? Sender, EventArgs e)
 	{
 		ViewIdentityViewModel ViewModel = this.ViewModel<ViewIdentityViewModel>();
 

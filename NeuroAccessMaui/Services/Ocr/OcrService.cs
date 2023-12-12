@@ -53,7 +53,7 @@ namespace NeuroAccessMaui.Services.Ocr
 			Response.EnsureSuccessStatusCode();
 
 			byte[] Bin = await Response.Content.ReadAsByteArrayAsync();
-			string ContentType = Response.Content.Headers.ContentType.ToString();
+			string? ContentType = Response.Content.Headers.ContentType?.ToString();
 			object Obj = await InternetContent.DecodeAsync(ContentType, Bin, Uri);
 
 			if (Obj is not string Text)

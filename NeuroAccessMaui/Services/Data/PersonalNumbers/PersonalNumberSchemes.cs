@@ -16,51 +16,47 @@ namespace NeuroAccessMaui.Services.Data.PersonalNumbers
 		{
 			try
 			{
-				XmlDocument doc = new();
+				using MemoryStream ms = new(Waher.Content.Resources.LoadResource(
+					typeof(PersonalNumberSchemes).Namespace + "." + typeof(PersonalNumberSchemes).Name + ".xml"));
 
-				using (MemoryStream ms = new(Waher.Content.Resources.LoadResource(
-					typeof(PersonalNumberSchemes).Namespace + "." + typeof(PersonalNumberSchemes).Name + ".xml")))
-				{
-					doc.Load(ms);
-				}
+				XmlDocument Doc = new();
+				Doc.Load(ms);
 
-				XmlNodeList childNodes = doc.DocumentElement?.ChildNodes;
+				XmlNodeList? childNodes = Doc.DocumentElement?.ChildNodes;
 
 				if (childNodes is null)
-				{
 					return;
-				}
 
-				foreach (XmlNode n in childNodes)
+				foreach (XmlNode N in childNodes)
 				{
-					if (n is XmlElement e && e.LocalName == "Entry")
+					if (N is XmlElement E && E.LocalName == "Entry")
 					{
-						string country = XML.Attribute(e, "country");
-						string displayString = XML.Attribute(e, "displayString");
-						string variable = null;
-						Expression pattern = null;
-						Expression check = null;
-						Expression normalize = null;
+						string country = XML.Attribute(E, "country");
+						string displayString = XML.Attribute(E, "displayString");
+						string? variable = null;
+						Expression? pattern = null;
+						Expression? check = null;
+						Expression? normalize = null;
 
 						try
 						{
-							foreach (XmlNode n2 in e.ChildNodes)
+							foreach (XmlNode N2 in E.ChildNodes)
 							{
-								if (n2 is XmlElement e2)
+								if (N2 is XmlElement E2)
 								{
-									switch (e2.LocalName)
+									switch (E2.LocalName)
 									{
 										case "Pattern":
-											pattern = new Expression(e2.InnerText);
-											variable = XML.Attribute(e2, "variable");
+											pattern = new Expression(E2.InnerText);
+											variable = XML.Attribute(E2, "variable");
 											break;
 
 										case "Check":
-											check = new Expression(e2.InnerText);
+											check = new Expression(E2.InnerText);
 											break;
 
 										case "Normalize":
-											normalize = new Expression(e2.InnerText);
+											normalize = new Expression(E2.InnerText);
 											break;
 									}
 								}
@@ -72,17 +68,15 @@ namespace NeuroAccessMaui.Services.Data.PersonalNumbers
 						}
 
 						if (pattern is null || string.IsNullOrWhiteSpace(variable) || string.IsNullOrWhiteSpace(displayString))
-						{
 							continue;
-						}
 
-						if (!schemesByCode.TryGetValue(country, out LinkedList<PersonalNumberScheme> schemes))
+						if (!schemesByCode.TryGetValue(country, out LinkedList<PersonalNumberScheme>? Schemes))
 						{
-							schemes = new LinkedList<PersonalNumberScheme>();
-							schemesByCode[country] = schemes;
+							Schemes = new LinkedList<PersonalNumberScheme>();
+							schemesByCode[country] = Schemes;
 						}
 
-						schemes.AddLast(new PersonalNumberScheme(variable, displayString, pattern, check, normalize));
+						Schemes.AddLast(new PersonalNumberScheme(variable, displayString, pattern, check, normalize));
 					}
 				}
 			}
@@ -102,7 +96,7 @@ namespace NeuroAccessMaui.Services.Data.PersonalNumbers
 		{
 			LazyLoad();
 
-			if (schemesByCode.TryGetValue(CountryCode, out LinkedList<PersonalNumberScheme> Schemes))
+			if (schemesByCode.TryGetValue(CountryCode, out LinkedList<PersonalNumberScheme>? Schemes))
 			{
 				foreach (PersonalNumberScheme Scheme in Schemes)
 				{
@@ -137,16 +131,14 @@ namespace NeuroAccessMaui.Services.Data.PersonalNumbers
 		/// </summary>
 		/// <param name="countryCode">ISO 3166-1 Country Codes.</param>
 		/// <returns>A string that can be displayed to a user, informing the user about the approximate format expected.</returns>
-		public static string DisplayStringForCountry(string countryCode)
+		public static string? DisplayStringForCountry(string countryCode)
 		{
 			LazyLoad();
 
 			if (!string.IsNullOrWhiteSpace(countryCode))
 			{
-				if (schemesByCode.TryGetValue(countryCode, out LinkedList<PersonalNumberScheme> schemes))
-				{
-					return schemes.First?.Value?.DisplayString;
-				}
+				if (schemesByCode.TryGetValue(countryCode, out LinkedList<PersonalNumberScheme>? Schemes))
+					return Schemes?.First?.Value?.DisplayString;
 			}
 
 			return null;

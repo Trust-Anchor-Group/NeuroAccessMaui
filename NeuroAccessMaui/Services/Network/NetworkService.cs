@@ -28,9 +28,7 @@ namespace NeuroAccessMaui.Services.Network
 			if (this.BeginLoad(cancellationToken))
 			{
 				if (DeviceInfo.Platform != DevicePlatform.Unknown && !DesignMode.IsDesignModeEnabled) // Need to check this, as Xamarin.Essentials doesn't work in unit tests. It has no effect when running on a real phone.
-				{
 					Connectivity.ConnectivityChanged += this.Connectivity_ConnectivityChanged;
-				}
 
 				this.EndLoad(true);
 			}
@@ -44,9 +42,7 @@ namespace NeuroAccessMaui.Services.Network
 			if (this.BeginUnload())
 			{
 				if (DeviceInfo.Platform != DevicePlatform.Unknown)
-				{
 					Connectivity.ConnectivityChanged -= this.Connectivity_ConnectivityChanged;
-				}
 
 				this.EndUnload();
 			}
@@ -54,7 +50,7 @@ namespace NeuroAccessMaui.Services.Network
 			return Task.CompletedTask;
 		}
 
-		private void Connectivity_ConnectivityChanged(object Sender, ConnectivityChangedEventArgs e)
+		private void Connectivity_ConnectivityChanged(object? Sender, ConnectivityChangedEventArgs e)
 		{
 			this.ConnectivityChanged?.Invoke(this, e);
 		}
@@ -65,19 +61,15 @@ namespace NeuroAccessMaui.Services.Network
 
 		public async Task<(string hostName, int port, bool isIpAddress)> LookupXmppHostnameAndPort(string domainName)
 		{
-			if (IPAddress.TryParse(domainName, out IPAddress _))
-			{
+			if (IPAddress.TryParse(domainName, out IPAddress? _))
 				return (domainName, defaultXmppPortNumber, true);
-			}
 
 			try
 			{
 				SRV endpoint = await DnsResolver.LookupServiceEndpoint(domainName, "xmpp-client", "tcp");
 
 				if (endpoint is not null && !string.IsNullOrWhiteSpace(endpoint.TargetHost) && endpoint.Port > 0)
-				{
 					return (endpoint.TargetHost, endpoint.Port, false);
-				}
 			}
 			catch (Exception)
 			{
@@ -98,12 +90,12 @@ namespace NeuroAccessMaui.Services.Network
 			return succeeded;
 		}
 
-		public Task<(bool Succeeded, TReturn ReturnValue)> TryRequest<TReturn>(Func<Task<TReturn>> func, bool rethrowException = false, bool displayAlert = true, [CallerMemberName] string memberName = "")
+		public Task<(bool Succeeded, TReturn? ReturnValue)> TryRequest<TReturn>(Func<Task<TReturn>> func, bool rethrowException = false, bool displayAlert = true, [CallerMemberName] string memberName = "")
 		{
 			return this.PerformRequestInner(async () => await func(), memberName, rethrowException, displayAlert);
 		}
 
-		private async Task<(bool Succeeded, TReturn ReturnValue)> PerformRequestInner<TReturn>(Func<Task<TReturn>> func, string memberName, bool rethrowException = false, bool displayAlert = true)
+		private async Task<(bool Succeeded, TReturn? ReturnValue)> PerformRequestInner<TReturn>(Func<Task<TReturn>> func, string memberName, bool rethrowException = false, bool displayAlert = true)
 		{
 			Exception thrownException;
 			try
@@ -206,13 +198,9 @@ namespace NeuroAccessMaui.Services.Network
 				thrownException = e;
 
 				if (e is XmppException xe && xe.Stanza is not null)
-				{
 					message = xe.Stanza.InnerText;
-				}
 				else
-				{
 					message = e.Message;
-				}
 
 				ServiceRef.LogService.LogException(e, GetParameter(memberName));
 
@@ -225,9 +213,7 @@ namespace NeuroAccessMaui.Services.Network
 			}
 
 			if (rethrowException)
-			{
 				ExceptionDispatchInfo.Capture(thrownException).Throw();
-			}
 
 			return (false, default);
 		}
@@ -237,9 +223,7 @@ namespace NeuroAccessMaui.Services.Network
 		{
 #if DEBUG
 			if (!string.IsNullOrWhiteSpace(memberName))
-			{
 				return message + Environment.NewLine + "Caller: " + memberName;
-			}
 #endif
 			return message;
 		}

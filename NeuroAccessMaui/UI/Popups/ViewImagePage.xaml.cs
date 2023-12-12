@@ -58,7 +58,7 @@ namespace NeuroAccessMaui.UI.Popups
 			this.IsVisible = false;
 		}
 
-		private void CloseIcon_Tapped(object Sender, EventArgs e)
+		private void CloseIcon_Tapped(object? Sender, EventArgs e)
 		{
 			this.HidePhotos();
 		}

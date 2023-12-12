@@ -67,17 +67,16 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 				this.IsPersonal = true;
 			}
 			else
-			{
 				this.IsPersonal = false;
-			}
 
 			this.AssignProperties();
 
 			if (this.ThirdParty)
 			{
-				ContactInfo Info = await ContactInfo.FindByBareJid(this.BareJid);
+				ContactInfo? Info = this.BareJid is null ? null : await ContactInfo.FindByBareJid(this.BareJid);
 
-				if ((Info is not null) &&
+				if (Info is not null &&
+					this.LegalIdentity is not null &&
 					(Info.LegalIdentity is null ||
 					(Info.LegalId != this.LegalId &&
 					Info.LegalIdentity.Created < this.LegalIdentity.Created &&
@@ -116,26 +115,16 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 			this.LegalId = this.LegalIdentity?.Id;
 
 			if (this.requestorIdentity is not null)
-			{
 				this.BareJid = this.requestorIdentity.GetJid(Constants.NotAvailableValue);
-			}
 			else if (this.LegalIdentity is not null)
-			{
 				this.BareJid = this.LegalIdentity.GetJid(Constants.NotAvailableValue);
-			}
 			else
-			{
 				this.BareJid = Constants.NotAvailableValue;
-			}
 
 			if (this.LegalIdentity?.ClientPubKey is not null)
-			{
 				this.PublicKey = Convert.ToBase64String(this.LegalIdentity.ClientPubKey);
-			}
 			else
-			{
 				this.PublicKey = string.Empty;
-			}
 
 			this.State = this.LegalIdentity?.State ?? IdentityState.Rejected;
 			this.From = this.LegalIdentity?.From.GetDateOrNullIfMinValue();
@@ -246,22 +235,16 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 
 			// QR
 			if (this.LegalIdentity is null)
-			{
 				this.RemoveQrCode();
-			}
 			else
-			{
 				this.GenerateQrCode(Constants.UriSchemes.CreateIdUri(this.LegalIdentity.Id));
-			}
 
 			if (this.IsConnected)
-			{
 				this.ReloadPhotos();
-			}
 		}
 
 		/// <inheritdoc/>
-		protected override Task XmppService_ConnectionStateChanged(object Sender, XmppState NewState)
+		protected override Task XmppService_ConnectionStateChanged(object? Sender, XmppState NewState)
 		{
 			return MainThread.InvokeOnMainThreadAsync(async () =>
 			{
@@ -283,20 +266,16 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 			{
 				this.photosLoader.CancelLoadPhotos();
 
-				Attachment[] Attachments;
+				Attachment[]? Attachments;
 
 				if (this.requestorIdentity?.Attachments is not null)
-				{
 					Attachments = this.requestorIdentity.Attachments;
-				}
 				else
-				{
 					Attachments = this.LegalIdentity?.Attachments;
-				}
 
 				if (Attachments is not null)
 				{
-					Photo First = await this.photosLoader.LoadPhotos(Attachments, SignWith.LatestApprovedIdOrCurrentKeys);
+					Photo? First = await this.photosLoader.LoadPhotos(Attachments, SignWith.LatestApprovedIdOrCurrentKeys);
 
 					this.FirstPhotoSource = First?.Source;
 					this.FirstPhotoRotation = First?.Rotation ?? 0;
@@ -313,7 +292,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 			MainThread.BeginInvokeOnMainThread(this.AssignProperties);
 		}
 
-		private Task SmartContracts_LegalIdentityChanged(object Sender, LegalIdentityEventArgs e)
+		private Task SmartContracts_LegalIdentityChanged(object? Sender, LegalIdentityEventArgs e)
 		{
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
@@ -337,7 +316,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 		/// <summary>
 		/// The full legal identity of the identity
 		/// </summary>
-		public LegalIdentity LegalIdentity { get; private set; }
+		public LegalIdentity? LegalIdentity { get; private set; }
 
 		/// <summary>
 		/// Created time stamp of the identity
@@ -355,25 +334,25 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 		/// Legal id of the identity
 		/// </summary>
 		[ObservableProperty]
-		private string legalId;
+		private string? legalId;
 
 		/// <summary>
 		/// Bare Jid of the identity
 		/// </summary>
 		[ObservableProperty]
-		private string bareJid;
+		private string? bareJid;
 
 		/// <summary>
 		/// Public key of the identity's signature.
 		/// </summary>
 		[ObservableProperty]
-		private string publicKey;
+		private string? publicKey;
 
 		/// <summary>
 		/// Current state of the identity
 		/// </summary>
 		[ObservableProperty]
-		private IdentityState state;
+		private IdentityState? state;
 
 		/// <summary>
 		/// From date (validity range) of the identity
@@ -391,145 +370,145 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 		/// First name of the identity
 		/// </summary>
 		[ObservableProperty]
-		private string firstName;
+		private string? firstName;
 
 		/// <summary>
 		/// Middle name(s) of the identity
 		/// </summary>
 		[ObservableProperty]
-		private string middleNames;
+		private string? middleNames;
 
 		/// <summary>
 		/// Last name(s) of the identity
 		/// </summary>
 		[ObservableProperty]
-		private string lastNames;
+		private string? lastNames;
 
 		/// <summary>
 		/// Personal number of the identity
 		/// </summary>
 		[ObservableProperty]
-		private string personalNumber;
+		private string? personalNumber;
 
 		/// <summary>
 		/// Address of the identity
 		/// </summary>
 		[ObservableProperty]
-		private string address;
+		private string? address;
 
 		/// <summary>
 		/// Address (line 2) of the identity
 		/// </summary>
 		[ObservableProperty]
-		private string address2;
+		private string? address2;
 
 		/// <summary>
 		/// Zip code of the identity
 		/// </summary>
 		[ObservableProperty]
-		private string zipCode;
+		private string? zipCode;
 
 		/// <summary>
 		/// Area of the identity
 		/// </summary>
 		[ObservableProperty]
-		private string area;
+		private string? area;
 
 		/// <summary>
 		/// City of the identity
 		/// </summary>
 		[ObservableProperty]
-		private string city;
+		private string? city;
 
 		/// <summary>
 		/// Region of the identity
 		/// </summary>
 		[ObservableProperty]
-		private string region;
+		private string? region;
 
 		/// <summary>
 		/// Country of the identity
 		/// </summary>
 		[ObservableProperty]
-		private string country;
+		private string? country;
 
 		/// <summary>
 		/// Country code of the identity
 		/// </summary>
 		[ObservableProperty]
-		private string countryCode;
+		private string? countryCode;
 
 		/// <summary>
 		/// The legal identity's organization name property
 		/// </summary>
 		[ObservableProperty]
-		private string orgName;
+		private string? orgName;
 
 		/// <summary>
 		/// The legal identity's organization number property
 		/// </summary>
 		[ObservableProperty]
-		private string orgNumber;
+		private string? orgNumber;
 
 		/// <summary>
 		/// The legal identity's organization department property
 		/// </summary>
 		[ObservableProperty]
-		private string orgDepartment;
+		private string? orgDepartment;
 
 		/// <summary>
 		/// The legal identity's organization role property
 		/// </summary>
 		[ObservableProperty]
-		private string orgRole;
+		private string? orgRole;
 
 		/// <summary>
 		/// The legal identity's organization address property
 		/// </summary>
 		[ObservableProperty]
-		private string orgAddress;
+		private string? orgAddress;
 
 		/// <summary>
 		/// The legal identity's organization address line 2 property
 		/// </summary>
 		[ObservableProperty]
-		private string orgAddress2;
+		private string? orgAddress2;
 
 		/// <summary>
 		/// The legal identity's organization zip code property
 		/// </summary>
 		[ObservableProperty]
-		private string orgZipCode;
+		private string? orgZipCode;
 
 		/// <summary>
 		/// The legal identity's organization area property
 		/// </summary>
 		[ObservableProperty]
-		private string orgArea;
+		private string? orgArea;
 
 		/// <summary>
 		/// The legal identity's organization city property
 		/// </summary>
 		[ObservableProperty]
-		private string orgCity;
+		private string? orgCity;
 
 		/// <summary>
 		/// The legal identity's organization region property
 		/// </summary>
 		[ObservableProperty]
-		private string orgRegion;
+		private string? orgRegion;
 
 		/// <summary>
 		/// The legal identity's organization country code property
 		/// </summary>
 		[ObservableProperty]
-		private string orgCountryCode;
+		private string? orgCountryCode;
 
 		/// <summary>
 		/// The legal identity's organization country property
 		/// </summary>
 		[ObservableProperty]
-		private string orgCountry;
+		private string? orgCountry;
 
 		/// <summary>
 		/// If organization information is available.
@@ -547,13 +526,13 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 		/// Country code of the identity
 		/// </summary>
 		[ObservableProperty]
-		private string phoneNr;
+		private string? phoneNr;
 
 		/// <summary>
 		/// Country code of the identity
 		/// </summary>
 		[ObservableProperty]
-		private string eMail;
+		private string? eMail;
 
 		/// <summary>
 		/// Gets or sets whether the identity is approved or not.
@@ -871,7 +850,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 		/// Image source of the first photo in the identity.
 		/// </summary>
 		[ObservableProperty]
-		private ImageSource firstPhotoSource;
+		private ImageSource? firstPhotoSource;
 
 		/// <summary>
 		/// Rotation of the first photo in the identity.
@@ -945,9 +924,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 		private async Task Approve()
 		{
 			if (this.requestorIdentity is null)
-			{
 				return;
-			}
 
 			try
 			{
@@ -997,16 +974,12 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 				}
 
 				if (!await App.VerifyPin())
-				{
 					return;
-				}
 
-				(bool Succeeded1, byte[] Signature) = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.Sign(this.contentToSign, SignWith.LatestApprovedId));
+				(bool Succeeded1, byte[]? Signature) = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.Sign(this.contentToSign, SignWith.LatestApprovedId));
 
 				if (!Succeeded1)
-				{
 					return;
-				}
 
 				bool Succeeded2 = await ServiceRef.NetworkService.TryRequest(() =>
 				{
@@ -1031,9 +1004,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 		private async Task Reject()
 		{
 			if (this.requestorIdentity is null)
-			{
 				return;
-			}
 
 			try
 			{
@@ -1045,9 +1016,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 				});
 
 				if (Succeeded)
-				{
 					await ServiceRef.NavigationService.GoBackAsync();
-				}
 			}
 			catch (Exception ex)
 			{
@@ -1059,24 +1028,21 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 		[RelayCommand(CanExecute = nameof(CanExecuteCommands))]
 		private async Task Revoke()
 		{
-			if (!this.IsPersonal)
-			{
+			if (!this.IsPersonal || this.LegalIdentity is null)
 				return;
-			}
 
 			try
 			{
 				if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToRevokeYourLegalIdentity)]))
-				{
 					return;
-				}
 
-				(bool succeeded, LegalIdentity revokedIdentity) = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.ObsoleteLegalIdentity(this.LegalIdentity.Id));
+				(bool succeeded, LegalIdentity? RevokedIdentity) = await ServiceRef.NetworkService.TryRequest(
+					() => ServiceRef.XmppService.ObsoleteLegalIdentity(this.LegalIdentity.Id));
 
-				if (succeeded)
+				if (succeeded && RevokedIdentity is not null)
 				{
-					this.LegalIdentity = revokedIdentity;
-					ServiceRef.TagProfile.RevokeLegalIdentity(revokedIdentity);
+					this.LegalIdentity = RevokedIdentity;
+					ServiceRef.TagProfile.RevokeLegalIdentity(RevokedIdentity);
 
 					await App.SetRegistrationPageAsync();
 				}
@@ -1102,7 +1068,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 		[RelayCommand(CanExecute = nameof(CanExecuteCommands))]
 		private async Task Compromise()
 		{
-			if (!this.IsPersonal)
+			if (!this.IsPersonal || this.LegalIdentity is null)
 				return;
 
 			try
@@ -1110,12 +1076,13 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 				if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToReportYourLegalIdentityAsCompromized)]))
 					return;
 
-				(bool succeeded, LegalIdentity compromisedIdentity) = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.CompromiseLegalIdentity(this.LegalIdentity.Id));
+				(bool succeeded, LegalIdentity? CompromisedIdentity) = await ServiceRef.NetworkService.TryRequest(
+					() => ServiceRef.XmppService.CompromiseLegalIdentity(this.LegalIdentity.Id));
 
-				if (succeeded)
+				if (succeeded && CompromisedIdentity is not null)
 				{
-					this.LegalIdentity = compromisedIdentity;
-					ServiceRef.TagProfile.RevokeLegalIdentity(compromisedIdentity);
+					this.LegalIdentity = CompromisedIdentity;
+					ServiceRef.TagProfile.RevokeLegalIdentity(CompromisedIdentity);
 
 					await App.SetRegistrationPageAsync();
 				}
@@ -1131,18 +1098,14 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 		private async Task Transfer()
 		{
 			if (!this.IsPersonal)
-			{
 				return;
-			}
 
 			try
 			{
-				string Pin = await App.InputPin();
+				string? Pin = await App.InputPin();
 
 				if (Pin is null)
-				{
 					return;
-				}
 
 				if (!await ServiceRef.UiSerializer.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.Confirm)],
@@ -1249,9 +1212,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 		private Task ChangePin()
 		{
 			if (this.IsPersonal)
-			{
 				return SecurityViewModel.ChangePinAsync();
-			}
 
 			return Task.CompletedTask;
 		}

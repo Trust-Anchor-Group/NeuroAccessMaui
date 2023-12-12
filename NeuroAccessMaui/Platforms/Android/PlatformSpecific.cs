@@ -69,13 +69,12 @@ namespace NeuroAccessMaui.Services
 							protectionTimer = new Timer(this.ProtectionTimerElapsed, null, 1000 * 60 * 60, Timeout.Infinite);
 						}
 						else
-						{
 							Activity.Window?.ClearFlags(WindowManagerFlags.Secure);
-						}
 					}
 				}
-				catch (Exception)
+				catch (Exception ex)
 				{
+					Log.Critical(ex);
 				}
 			});
 		}
@@ -91,9 +90,7 @@ namespace NeuroAccessMaui.Services
 			ContentResolver? ContentResolver = Android.App.Application.Context.ContentResolver;
 
 			if (ContentResolver is not null)
-			{
 				return Android.Provider.Settings.Secure.GetString(ContentResolver, Android.Provider.Settings.Secure.AndroidId);
-			}
 
 			return null;
 		}
@@ -105,14 +102,10 @@ namespace NeuroAccessMaui.Services
 			Java.IO.File? ExternalFilesDir = Context.GetExternalFilesDir("");
 
 			if (ExternalFilesDir is null)
-			{
 				return;
-			}
 
 			if (!Directory.Exists(ExternalFilesDir.Path))
-			{
 				Directory.CreateDirectory(ExternalFilesDir.Path);
-			}
 
 			Java.IO.File fileDir = new(ExternalFilesDir.AbsolutePath + (Java.IO.File.Separator + FileName));
 
@@ -169,56 +162,49 @@ namespace NeuroAccessMaui.Services
 			blurRadius = Math.Min(25, Math.Max(blurRadius, 0));
 
 			Activity? activity = Platform.CurrentActivity;
-			Android.Views.View? rootView = activity.Window.DecorView.RootView;
+			Android.Views.View? rootView = activity?.Window?.DecorView.RootView;
 
 			using Bitmap screenshot = Bitmap.CreateBitmap(rootView.Width, rootView.Height, Bitmap.Config.Argb8888);
 			Canvas canvas = new(screenshot);
 			rootView.Draw(canvas);
 
-			Bitmap Blurred = null;
+			Bitmap? Blurred = null;
 
 			if (activity != null && (int)Android.OS.Build.VERSION.SdkInt >= 17)
-			{
 				Blurred = ToBlurred(screenshot, activity, blurRadius);
-			}
 			else
-			{
 				Blurred = ToLegacyBlurred(screenshot, blurRadius);
-			}
 
-			{
-				MemoryStream Stream = new();
-				Blurred.Compress(Bitmap.CompressFormat.Jpeg, 80, Stream);
-				Stream.Seek(0, SeekOrigin.Begin);
+			MemoryStream Stream = new();
+			Blurred.Compress(Bitmap.CompressFormat.Jpeg, 80, Stream);
+			Stream.Seek(0, SeekOrigin.Begin);
 
-				return Task.FromResult(Stream.ToArray());
-			}
+			return Task.FromResult(Stream.ToArray());
 		}
 
 		private static Bitmap ToBlurred(Bitmap originalBitmap, Activity? Activity, int radius)
 		{
 			// Create another bitmap that will hold the results of the filter.
 			Bitmap blurredBitmap = Bitmap.CreateBitmap(originalBitmap);
-			RenderScript renderScript = RenderScript.Create(Activity);
+			RenderScript? renderScript = RenderScript.Create(Activity);
 
 			// Load up an instance of the specific script that we want to use.
 			// An Element is similar to a C type. The second parameter, Element.U8_4,
 			// tells the Allocation is made up of 4 fields of 8 unsigned bits.
-			ScriptIntrinsicBlur script = ScriptIntrinsicBlur.Create(renderScript, Android.Renderscripts.Element.U8_4(renderScript));
+			ScriptIntrinsicBlur? script = ScriptIntrinsicBlur.Create(renderScript, Android.Renderscripts.Element.U8_4(renderScript));
 
 			// Create an Allocation for the kernel inputs.
-			Allocation input = Allocation.CreateFromBitmap(renderScript, originalBitmap,
-															Allocation.MipmapControl.MipmapFull,
-															AllocationUsage.Script);
+			Allocation? input = Allocation.CreateFromBitmap(renderScript, originalBitmap, Allocation.MipmapControl.MipmapFull,
+				AllocationUsage.Script);
 
 			// Assign the input Allocation to the script.
-			script.SetInput(input);
+			script?.SetInput(input);
 
 			// Set the blur radius
-			script.SetRadius(radius);
+			script?.SetRadius(radius);
 
 			// Finally we need to create an output allocation to hold the output of the Renderscript.
-			Allocation output = Allocation.CreateTyped(renderScript, input.Type);
+			Allocation? output = Allocation.CreateTyped(renderScript, input?.Type);
 
 			// Next, run the script. This will run the script over each Element in the Allocation, and copy it's
 			// output to the allocation we just created for this purpose.
@@ -242,7 +228,7 @@ namespace NeuroAccessMaui.Services
 			Bitmap.Config? config = source.GetConfig();
 			config ??= Bitmap.Config.Argb8888;    // This will support transparency
 
-			Bitmap img = source.Copy(config, true);
+			Bitmap? img = source.Copy(config, true);
 
 			int w = img.Width;
 			int h = img.Height;
@@ -262,9 +248,7 @@ namespace NeuroAccessMaui.Services
 
 			int[] dv = new int[256 * div];
 			for (i = 0; i < 256 * div; i++)
-			{
 				dv[i] = (i / div);
-			}
 
 			yw = yi = 0;
 
@@ -290,6 +274,7 @@ namespace NeuroAccessMaui.Services
 						vmin[x] = Math.Min(x + radius + 1, wm);
 						vmax[x] = Math.Max(x - radius, 0);
 					}
+
 					p1 = pix[yw + vmin[x]];
 					p2 = pix[yw + vmax[x]];
 

@@ -43,7 +43,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				return;
 			}
 
-			this.OnPropertyChanged(nameof(this.IsAccountCreated));
+			this.OnPropertyChanged(nameof(IsAccountCreated));
 
 			if (ServiceRef.TagProfile.LegalIdentity is LegalIdentity LegalIdentity)
 			{
@@ -136,7 +136,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 					ServiceRef.TagProfile.SetAccount(this.AccountText, Client.PasswordHash, Client.PasswordHashMethod);
 
-					this.OnPropertyChanged(nameof(this.IsAccountCreated));
+					this.OnPropertyChanged(nameof(IsAccountCreated));
 				}
 
 				string? ApiKey = ServiceRef.TagProfile.ApiKey;
@@ -202,7 +202,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				RegisterIdentityModel IdentityModel = CreateRegisterModel();
 				LegalIdentityAttachment[] Photos = []; // Photos are left empty
 
-				(bool Succeeded, LegalIdentity AddedIdentity) = await ServiceRef.NetworkService.TryRequest(() =>
+				(bool Succeeded, LegalIdentity? AddedIdentity) = await ServiceRef.NetworkService.TryRequest(() =>
 					ServiceRef.XmppService.AddLegalIdentity(IdentityModel, Photos));
 
 				if (Succeeded)

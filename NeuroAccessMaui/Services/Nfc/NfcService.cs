@@ -50,15 +50,15 @@ namespace NeuroAccessMaui.Services.Nfc
 						string Mrz = await RuntimeSettings.GetAsync("NFC.LastMrz", string.Empty);
 
 						if (!string.IsNullOrEmpty(Mrz) &&
-							BasicAccessControl.ParseMrz(Mrz, out DocumentInformation DocInfo))
+							BasicAccessControl.ParseMrz(Mrz, out DocumentInformation? DocInfo))
 						{
 							// §4.3, §D.3, https://www.icao.int/publications/Documents/9303_p11_cons_en.pdf
 
-							byte[] Challenge = await IsoDep.GetChallenge();
-							if (Challenge is not null)
+							byte[]? Challenge = await IsoDep.GetChallenge();
+							if (Challenge is not null && DocInfo is not null)
 							{
 								byte[] ChallengeResponse = DocInfo.CalcChallengeResponse(Challenge);
-								byte[] Response = await IsoDep.ExternalAuthenticate(ChallengeResponse);
+								byte[]? Response = await IsoDep.ExternalAuthenticate(ChallengeResponse);
 
 								// TODO
 							}
@@ -78,7 +78,7 @@ namespace NeuroAccessMaui.Services.Nfc
 								LinkableView.IsLinkable &&
 								IsWritable)
 							{
-								string Link = LinkableView.Link;
+								string? Link = LinkableView.Link;
 								string Title = await LinkableView.Title;
 
 								List<object> Items = [];

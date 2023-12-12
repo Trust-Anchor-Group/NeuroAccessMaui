@@ -42,7 +42,7 @@ namespace NeuroAccessMaui.UI.Popups.Pin
 			return true;
 		}
 
-		private /*async*/ void OnEnter(object Sender, EventArgs e)
+		private /*async*/ void OnEnter(object? Sender, EventArgs e)
 		{
 			//!!! string Pin = await App.CheckPinAndUnblockUser(this.Pin.Text);
 			//!!! this.Pin.Text = "";

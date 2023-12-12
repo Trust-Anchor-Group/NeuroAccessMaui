@@ -21,7 +21,7 @@ public partial class PetitionIdentityPage
 		return base.OnDisappearingAsync();
 	}
 
-	private void Image_Tapped(object Sender, EventArgs e)
+	private void Image_Tapped(object? Sender, EventArgs e)
 	{
 		PetitionIdentityViewModel ViewModel = this.ViewModel<PetitionIdentityViewModel>();
 

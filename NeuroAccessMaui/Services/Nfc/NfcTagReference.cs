@@ -13,9 +13,9 @@ namespace NeuroAccessMaui.Services.Nfc
 	[Index("TagId")]
 	public class NfcTagReference
 	{
-		private string objectId = null;
+		private string? objectId = null;
 		private CaseInsensitiveString tagId = CaseInsensitiveString.Empty;
-		private Property[] metaData = null;
+		private Property[]? metaData = null;
 		private string friendlyName = string.Empty;
 
 		/// <summary>
