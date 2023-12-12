@@ -1,31 +1,32 @@
-﻿namespace NeuroAccessMaui.UI.Pages.Petitions;
-
-/// <summary>
-/// A page to display when the user is asked to petition an identity.
-/// </summary>
-public partial class PetitionIdentityPage
+﻿namespace NeuroAccessMaui.UI.Pages.Petitions
 {
 	/// <summary>
-	/// Creates a new instance of the <see cref="PetitionIdentityPage"/> class.
+	/// A page to display when the user is asked to petition an identity.
 	/// </summary>
-	public PetitionIdentityPage(PetitionIdentityViewModel ViewModel)
+	public partial class PetitionIdentityPage
 	{
-		this.InitializeComponent();
-		this.ContentPageModel = ViewModel;
-	}
+		/// <summary>
+		/// Creates a new instance of the <see cref="PetitionIdentityPage"/> class.
+		/// </summary>
+		public PetitionIdentityPage(PetitionIdentityViewModel ViewModel)
+		{
+			this.InitializeComponent();
+			this.ContentPageModel = ViewModel;
+		}
 
-	/// <inheritdoc/>
-	protected override Task OnDisappearingAsync()
-	{
-		//!!! this.PhotoViewer.HidePhotos();
-		return base.OnDisappearingAsync();
-	}
+		/// <inheritdoc/>
+		protected override Task OnDisappearingAsync()
+		{
+			//!!! this.PhotoViewer.HidePhotos();
+			return base.OnDisappearingAsync();
+		}
 
-	private void Image_Tapped(object? Sender, EventArgs e)
-	{
-		PetitionIdentityViewModel ViewModel = this.ViewModel<PetitionIdentityViewModel>();
+		private void Image_Tapped(object? Sender, EventArgs e)
+		{
+			PetitionIdentityViewModel ViewModel = this.ViewModel<PetitionIdentityViewModel>();
 
-		//!!! Attachment[] Attachments = ViewModel.RequestorIdentity?.Attachments;
-		//!!! this.PhotoViewer.ShowPhotos(Attachments);
+			//!!! Attachment[] Attachments = ViewModel.RequestorIdentity?.Attachments;
+			//!!! this.PhotoViewer.ShowPhotos(Attachments);
+		}
 	}
 }

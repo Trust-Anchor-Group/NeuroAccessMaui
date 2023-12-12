@@ -1,16 +1,17 @@
-﻿namespace NeuroAccessMaui.UI.Pages.Identity;
-
-/// <summary>
-/// A page to display when the user wants to transfer an identity.
-/// </summary>
-public partial class TransferIdentityPage
+﻿namespace NeuroAccessMaui.UI.Pages.Identity
 {
 	/// <summary>
-	/// Creates a new instance of the <see cref="TransferIdentityPage"/> class.
+	/// A page to display when the user wants to transfer an identity.
 	/// </summary>
-	public TransferIdentityPage(TransferIdentityViewModel ViewModel)
+	public partial class TransferIdentityPage
 	{
-		this.InitializeComponent();
-		this.ContentPageModel = ViewModel;
+		/// <summary>
+		/// Creates a new instance of the <see cref="TransferIdentityPage"/> class.
+		/// </summary>
+		public TransferIdentityPage(TransferIdentityViewModel ViewModel)
+		{
+			this.InitializeComponent();
+			this.ContentPageModel = ViewModel;
+		}
 	}
 }

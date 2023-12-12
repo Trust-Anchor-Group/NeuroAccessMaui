@@ -1,15 +1,16 @@
-namespace NeuroAccessMaui.UI.Pages.Registration.Views;
-
-public partial class ValidatePhoneView
+namespace NeuroAccessMaui.UI.Pages.Registration.Views
 {
-	public static ValidatePhoneView Create()
+	public partial class ValidatePhoneView
 	{
-		return Create<ValidatePhoneView>();
-	}
+		public static ValidatePhoneView Create()
+		{
+			return Create<ValidatePhoneView>();
+		}
 
-	public ValidatePhoneView(ValidatePhoneViewModel ViewModel)
-	{
-		this.InitializeComponent();
-		this.ContentViewModel = ViewModel;
+		public ValidatePhoneView(ValidatePhoneViewModel ViewModel)
+		{
+			this.InitializeComponent();
+			this.ContentViewModel = ViewModel;
+		}
 	}
 }

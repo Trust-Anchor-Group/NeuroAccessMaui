@@ -1,19 +1,20 @@
-namespace NeuroAccessMaui.UI.Pages.Registration.Views;
-
-public partial class ValidateEmailView
+namespace NeuroAccessMaui.UI.Pages.Registration.Views
 {
-	public static ValidateEmailView Create()
+	public partial class ValidateEmailView
 	{
-		return Create<ValidateEmailView>();
-	}
+		public static ValidateEmailView Create()
+		{
+			return Create<ValidateEmailView>();
+		}
 
-	public ValidateEmailView(ValidateEmailViewModel ViewModel)
-	{
-		this.InitializeComponent();
-		this.ContentViewModel = ViewModel;
+		public ValidateEmailView(ValidateEmailViewModel ViewModel)
+		{
+			this.InitializeComponent();
+			this.ContentViewModel = ViewModel;
 
-		this.EmailEntry.Entry.Keyboard = Keyboard.Email;
-		this.EmailEntry.Entry.IsSpellCheckEnabled = false;
-		this.EmailEntry.Entry.IsTextPredictionEnabled = false;
+			this.EmailEntry.Entry.Keyboard = Keyboard.Email;
+			this.EmailEntry.Entry.IsSpellCheckEnabled = false;
+			this.EmailEntry.Entry.IsTextPredictionEnabled = false;
+		}
 	}
 }

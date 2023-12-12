@@ -13,14 +13,14 @@
 		<VerticalStackLayout
 			VerticalOptions="Center"
 			IsVisible="{Binding IsAccountCreated}">
-
+			  
 			<ActivityIndicator
 				VerticalOptions="Center"
 				IsVisible="true"
 				IsRunning="true" />
-
+			  
 		</VerticalStackLayout>
-
+		 
 		<VerticalStackLayout
 			Spacing="{StaticResource LargeSpacing}"
 			IsVisible="{Binding IsAccountCreated, Converter={StaticResource InvertedBoolConverter}}">
@@ -68,11 +68,10 @@
 					</Grid>
 				</VerticalStackLayout>
 
-				<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+				<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" IsVisible="{Binding HasAlternativeNames}">
 					<Label Text="{l:Localize AccountAvailableAlternatives}" />
 					<VerticalStackLayout
 						Spacing="{StaticResource SmallSpacing}"
-						IsVisible="{Binding HasAlternativeNames}"
 						BindableLayout.ItemsSource="{Binding AlternativeNames}">
 						<BindableLayout.ItemTemplate>
 							<DataTemplate>

@@ -1,9 +1,10 @@
-namespace NeuroAccessMaui.UI.Controls;
-
-public partial class Background : ContentView
+namespace NeuroAccessMaui.UI.Controls
 {
-	public Background()
+	public partial class Background : ContentView
 	{
-		this.InitializeComponent();
+		public Background()
+		{
+			this.InitializeComponent();
+		}
 	}
 }

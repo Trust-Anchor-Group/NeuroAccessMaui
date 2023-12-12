@@ -1,31 +1,32 @@
-namespace NeuroAccessMaui.UI.Pages.Identity;
-
-/// <summary>
-/// A page to display when the user wants to view an identity.
-/// </summary>
-public partial class ViewIdentityPage
+namespace NeuroAccessMaui.UI.Pages.Identity
 {
 	/// <summary>
-	/// Creates a new instance of the <see cref="ViewIdentityPage"/> class.
+	/// A page to display when the user wants to view an identity.
 	/// </summary>
-	public ViewIdentityPage(ViewIdentityViewModel ViewModel)
+	public partial class ViewIdentityPage
 	{
-		this.InitializeComponent();
-		this.ContentPageModel = ViewModel;
-	}
+		/// <summary>
+		/// Creates a new instance of the <see cref="ViewIdentityPage"/> class.
+		/// </summary>
+		public ViewIdentityPage(ViewIdentityViewModel ViewModel)
+		{
+			this.InitializeComponent();
+			this.ContentPageModel = ViewModel;
+		}
 
-	/// <inheritdoc/>
-	protected override Task OnDisappearingAsync()
-	{
-		//!!! this.PhotoViewer.HidePhotos();
-		return base.OnDisappearingAsync();
-	}
+		/// <inheritdoc/>
+		protected override Task OnDisappearingAsync()
+		{
+			//!!! this.PhotoViewer.HidePhotos();
+			return base.OnDisappearingAsync();
+		}
 
-	private void Image_Tapped(object? Sender, EventArgs e)
-	{
-		ViewIdentityViewModel ViewModel = this.ViewModel<ViewIdentityViewModel>();
+		private void Image_Tapped(object? Sender, EventArgs e)
+		{
+			ViewIdentityViewModel ViewModel = this.ViewModel<ViewIdentityViewModel>();
 
-		//!!! Attachment[] Attachments = ViewModel.LegalIdentity?.Attachments;
-		//!!! this.PhotoViewer.ShowPhotos(Attachments);
+			//!!! Attachment[] Attachments = ViewModel.LegalIdentity?.Attachments;
+			//!!! this.PhotoViewer.ShowPhotos(Attachments);
+		}
 	}
 }

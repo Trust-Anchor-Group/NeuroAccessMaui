@@ -1,15 +1,16 @@
-namespace NeuroAccessMaui.UI.Pages.Registration.Views;
-
-public partial class DefinePinView
+namespace NeuroAccessMaui.UI.Pages.Registration.Views
 {
-	public static DefinePinView Create()
+	public partial class DefinePinView
 	{
-		return Create<DefinePinView>();
-	}
+		public static DefinePinView Create()
+		{
+			return Create<DefinePinView>();
+		}
 
-	public DefinePinView(DefinePinViewModel ViewModel)
-	{
-		this.InitializeComponent();
-		this.ContentViewModel = ViewModel;
+		public DefinePinView(DefinePinViewModel ViewModel)
+		{
+			this.InitializeComponent();
+			this.ContentViewModel = ViewModel;
+		}
 	}
 }

@@ -1,10 +1,11 @@
-﻿namespace NeuroAccessMaui.UI.Pages.Main;
-
-public partial class MainPage
+﻿namespace NeuroAccessMaui.UI.Pages.Main
 {
-	public MainPage(MainViewModel ViewModel)
+	public partial class MainPage
 	{
-		this.InitializeComponent();
-		this.ContentPageModel = ViewModel;
+		public MainPage(MainViewModel ViewModel)
+		{
+			this.InitializeComponent();
+			this.ContentPageModel = ViewModel;
+		}
 	}
 }

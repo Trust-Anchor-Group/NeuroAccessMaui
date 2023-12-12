@@ -1,15 +1,16 @@
-namespace NeuroAccessMaui.UI.Pages.Registration.Views;
-
-public partial class CreateAccountView
+namespace NeuroAccessMaui.UI.Pages.Registration.Views
 {
-	public static CreateAccountView Create()
+	public partial class CreateAccountView
 	{
-		return Create<CreateAccountView>();
-	}
+		public static CreateAccountView Create()
+		{
+			return Create<CreateAccountView>();
+		}
 
-	public CreateAccountView(CreateAccountViewModel ViewModel)
-	{
-		this.InitializeComponent();
-		this.ContentViewModel = ViewModel;
+		public CreateAccountView(CreateAccountViewModel ViewModel)
+		{
+			this.InitializeComponent();
+			this.ContentViewModel = ViewModel;
+		}
 	}
 }

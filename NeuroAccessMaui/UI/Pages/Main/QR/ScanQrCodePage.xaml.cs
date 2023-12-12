@@ -7,200 +7,185 @@ using NeuroAccessMaui.Services;
 using ZXing.Net.Maui;
 using ZXing.Net.Maui.Readers;
 
-namespace NeuroAccessMaui.UI.Pages.Main.QR;
-
-/// <summary>
-/// A page to display for scanning of a QR code, either automatically via the camera, or by entering the code manually.
-/// </summary>
-public partial class ScanQrCodePage
+namespace NeuroAccessMaui.UI.Pages.Main.QR
 {
 	/// <summary>
-	/// Creates a new instance of the <see cref="ScanQrCodePage"/> class.
+	/// A page to display for scanning of a QR code, either automatically via the camera, or by entering the code manually.
 	/// </summary>
-	/// <param name="NavigationArgs">
-	/// Navigation arguments, which are manually passed to the constructor when Shell navigation is not available, namely during on-boarding.
-	/// </param>
-	public ScanQrCodePage(ScanQrCodeNavigationArgs? NavigationArgs)
+	public partial class ScanQrCodePage
 	{
-		this.InitializeComponent();
-
-		ScanQrCodeViewModel ViewModel = new(NavigationArgs);
-		this.ContentPageModel = ViewModel;
-
-		this.LinkEntry.Entry.Keyboard = Keyboard.Url;
-		this.LinkEntry.Entry.IsSpellCheckEnabled = false;
-		this.LinkEntry.Entry.IsTextPredictionEnabled = false;
-
-		StateContainer.SetCurrentState(this.GridWithAnimation, "AutomaticScan");
-
-		this.CameraBarcodeReaderView.Options = new BarcodeReaderOptions
+		/// <summary>
+		/// Creates a new instance of the <see cref="ScanQrCodePage"/> class.
+		/// </summary>
+		/// <param name="NavigationArgs">
+		/// Navigation arguments, which are manually passed to the constructor when Shell navigation is not available, namely during on-boarding.
+		/// </param>
+		public ScanQrCodePage(ScanQrCodeNavigationArgs? NavigationArgs)
 		{
-			Formats = BarcodeFormats.TwoDimensional,
-			AutoRotate = true,
-			TryHarder = true,
-			TryInverted = true,
-			Multiple = false
-		};
+			this.InitializeComponent();
 
-		ViewModel.DoSwitchMode(true);
-	}
+			ScanQrCodeViewModel ViewModel = new(NavigationArgs);
+			this.ContentPageModel = ViewModel;
 
-	/// <summary>
-	/// Creates a new instance of the <see cref="ScanQrCodePage"/> class.
-	/// </summary>
-	/// <remarks>
-	/// A parameterless constructor is required for shell routing system (it uses <c>Activator.CreateInstance</c>).
-	/// </remarks>
-	public ScanQrCodePage() : this(null)
-	{
-	}
+			this.LinkEntry.Entry.Keyboard = Keyboard.Url;
+			this.LinkEntry.Entry.IsSpellCheckEnabled = false;
+			this.LinkEntry.Entry.IsTextPredictionEnabled = false;
 
-	/// <inheritdoc/>
-	protected override async Task OnAppearingAsync()
-	{
-		await base.OnAppearingAsync();
+			StateContainer.SetCurrentState(this.GridWithAnimation, "AutomaticScan");
 
-		this.CameraBarcodeReaderView.IsDetecting = true;
-		WeakReferenceMessenger.Default.Register<KeyboardSizeMessage>(this, this.HandleKeyboardSizeMessage);
+			this.CameraBarcodeReaderView.Options = new BarcodeReaderOptions
+			{
+				Formats = BarcodeFormats.TwoDimensional,
+				AutoRotate = true,
+				TryHarder = true,
+				TryInverted = true,
+				Multiple = false
+			};
 
-	}
+			ViewModel.DoSwitchMode(true);
+		}
 
-	/// <inheritdoc/>
-	protected override async Task OnDisappearingAsync()
-	{
-		this.CameraBarcodeReaderView.IsDetecting = false;
-		WeakReferenceMessenger.Default.Unregister<KeyboardSizeMessage>(this);
-
-		await base.OnDisappearingAsync();
-	}
-
-	private async void HandleKeyboardSizeMessage(object Recipient, KeyboardSizeMessage Message)
-	{
-		await this.Dispatcher.DispatchAsync(() =>
+		/// <summary>
+		/// Creates a new instance of the <see cref="ScanQrCodePage"/> class.
+		/// </summary>
+		/// <remarks>
+		/// A parameterless constructor is required for shell routing system (it uses <c>Activator.CreateInstance</c>).
+		/// </remarks>
+		public ScanQrCodePage() : this(null)
 		{
-			double Bottom = 0;
-			if (DeviceInfo.Platform == DevicePlatform.iOS)
-			{
-				Thickness SafeInsets = this.On<iOS>().SafeAreaInsets();
-				Bottom = SafeInsets.Bottom;
-			}
+		}
 
-			Thickness Margin = new(0, 0, 0, Message.KeyboardSize - Bottom);
-			this.ManualScanGrid.Margin = Margin;
-		});
-	}
-
-	[RelayCommand]
-	private async Task SwitchMode()
-	{
-		await this.Dispatcher.DispatchAsync(async () =>
+		/// <inheritdoc/>
+		protected override async Task OnAppearingAsync()
 		{
-			string CurrentState = StateContainer.GetCurrentState(this.GridWithAnimation);
-			bool IsAutomaticScan = string.Equals(CurrentState, "AutomaticScan", StringComparison.OrdinalIgnoreCase);
+			await base.OnAppearingAsync();
 
-			if (!IsAutomaticScan)
-			{
-				this.LinkEntry.Entry.Unfocus();
-			}
-			else
-			{
-				this.CameraBarcodeReaderView.IsTorchOn = false;
-				this.CameraBarcodeReaderView.IsDetecting = false;
-			}
+			this.CameraBarcodeReaderView.IsDetecting = true;
+			WeakReferenceMessenger.Default.Register<KeyboardSizeMessage>(this, this.HandleKeyboardSizeMessage);
 
-			await StateContainer.ChangeStateWithAnimation(this.GridWithAnimation,
-				IsAutomaticScan ? "ManualScan" : "AutomaticScan", CancellationToken.None);
+		}
 
-			ScanQrCodeViewModel ViewModel = this.ViewModel<ScanQrCodeViewModel>();
-			await ViewModel.DoSwitchMode(IsAutomaticScan);
+		/// <inheritdoc/>
+		protected override async Task OnDisappearingAsync()
+		{
+			this.CameraBarcodeReaderView.IsDetecting = false;
+			WeakReferenceMessenger.Default.Unregister<KeyboardSizeMessage>(this);
 
-			if (IsAutomaticScan)
+			await base.OnDisappearingAsync();
+		}
+
+		private async void HandleKeyboardSizeMessage(object Recipient, KeyboardSizeMessage Message)
+		{
+			await this.Dispatcher.DispatchAsync(() =>
 			{
-				this.LinkEntry.Entry.Focus();
-			}
-			else
-			{
-				// reinitialize the camera by switching it
-				if (this.CameraBarcodeReaderView.CameraLocation == CameraLocation.Rear)
+				double Bottom = 0;
+				if (DeviceInfo.Platform == DevicePlatform.iOS)
 				{
-					this.CameraBarcodeReaderView.CameraLocation = CameraLocation.Front;
-					this.CameraBarcodeReaderView.CameraLocation = CameraLocation.Rear;
+					Thickness SafeInsets = this.On<iOS>().SafeAreaInsets();
+					Bottom = SafeInsets.Bottom;
 				}
+
+				Thickness Margin = new(0, 0, 0, Message.KeyboardSize - Bottom);
+				this.ManualScanGrid.Margin = Margin;
+			});
+		}
+
+		[RelayCommand]
+		private async Task SwitchMode()
+		{
+			await this.Dispatcher.DispatchAsync(async () =>
+			{
+				string CurrentState = StateContainer.GetCurrentState(this.GridWithAnimation);
+				bool IsAutomaticScan = string.Equals(CurrentState, "AutomaticScan", StringComparison.OrdinalIgnoreCase);
+
+				if (!IsAutomaticScan)
+					this.LinkEntry.Entry.Unfocus();
 				else
 				{
-					this.CameraBarcodeReaderView.CameraLocation = CameraLocation.Rear;
-					this.CameraBarcodeReaderView.CameraLocation = CameraLocation.Front;
+					this.CameraBarcodeReaderView.IsTorchOn = false;
+					this.CameraBarcodeReaderView.IsDetecting = false;
 				}
 
-				this.CameraBarcodeReaderView.IsDetecting = true;
-			}
-		});
-	}
+				await StateContainer.ChangeStateWithAnimation(this.GridWithAnimation,
+					IsAutomaticScan ? "ManualScan" : "AutomaticScan", CancellationToken.None);
 
-	[RelayCommand]
-	private void SwitchCamera()
-	{
-		this.CameraBarcodeReaderView.IsTorchOn = false;
+				ScanQrCodeViewModel ViewModel = this.ViewModel<ScanQrCodeViewModel>();
+				await ViewModel.DoSwitchMode(IsAutomaticScan);
 
-		if (this.CameraBarcodeReaderView.CameraLocation == CameraLocation.Rear)
-		{
-			this.CameraBarcodeReaderView.CameraLocation = CameraLocation.Front;
+				if (IsAutomaticScan)
+					this.LinkEntry.Entry.Focus();
+				else
+				{
+					// reinitialize the camera by switching it
+					if (this.CameraBarcodeReaderView.CameraLocation == CameraLocation.Rear)
+					{
+						this.CameraBarcodeReaderView.CameraLocation = CameraLocation.Front;
+						this.CameraBarcodeReaderView.CameraLocation = CameraLocation.Rear;
+					}
+					else
+					{
+						this.CameraBarcodeReaderView.CameraLocation = CameraLocation.Rear;
+						this.CameraBarcodeReaderView.CameraLocation = CameraLocation.Front;
+					}
+
+					this.CameraBarcodeReaderView.IsDetecting = true;
+				}
+			});
 		}
-		else
-		{
-			this.CameraBarcodeReaderView.CameraLocation = CameraLocation.Rear;
-		}
-	}
 
-	[RelayCommand]
-	private void SwitchTorch()
-	{
-		if (this.CameraBarcodeReaderView.IsTorchOn)
+		[RelayCommand]
+		private void SwitchCamera()
 		{
 			this.CameraBarcodeReaderView.IsTorchOn = false;
-		}
-		else
-		{
-			this.CameraBarcodeReaderView.IsTorchOn = true;
-		}
-	}
 
-	[RelayCommand]
-	private async Task PickPhoto()
-	{
-		FileResult Result = await MediaPicker.PickPhotoAsync();
-
-		if (Result is null)
-		{
-			return;
+			if (this.CameraBarcodeReaderView.CameraLocation == CameraLocation.Rear)
+				this.CameraBarcodeReaderView.CameraLocation = CameraLocation.Front;
+			else
+				this.CameraBarcodeReaderView.CameraLocation = CameraLocation.Rear;
 		}
 
-		byte[] Bin = File.ReadAllBytes(Result.FullPath);
-
-		PixelBufferHolder Data = new()
+		[RelayCommand]
+		private void SwitchTorch()
 		{
-			//!!! System dependent code. Not implemented yet
+			if (this.CameraBarcodeReaderView.IsTorchOn)
+				this.CameraBarcodeReaderView.IsTorchOn = false;
+			else
+				this.CameraBarcodeReaderView.IsTorchOn = true;
+		}
+
+		[RelayCommand]
+		private async Task PickPhoto()
+		{
+			FileResult Result = await MediaPicker.PickPhotoAsync();
+
+			if (Result is null)
+				return;
+
+			byte[] Bin = File.ReadAllBytes(Result.FullPath);
+
+			PixelBufferHolder Data = new()
+			{
+				//!!! System dependent code. Not implemented yet
 #if ANDROID
 #else
 #endif
-		};
+			};
 
-		if (ServiceRef.BarcodeReader is not ZXingBarcodeReader BarcodeReader)
-		{
-			return;
+			if (ServiceRef.BarcodeReader is not ZXingBarcodeReader BarcodeReader)
+				return;
+
+			BarcodeReader.Decode(Data);
 		}
 
-		BarcodeReader.Decode(Data);
-	}
-
-	private async void CameraBarcodeReaderView_BarcodesDetected(object sender, BarcodeDetectionEventArgs e)
-	{
-		string? Result = (e.Results.Length > 0) ? e.Results[0].Value : null;
-
-		await this.Dispatcher.DispatchAsync(async () =>
+		private async void CameraBarcodeReaderView_BarcodesDetected(object sender, BarcodeDetectionEventArgs e)
 		{
-			ScanQrCodeViewModel ViewModel = this.ViewModel<ScanQrCodeViewModel>();
-			await ViewModel.SetQrText(Result);
-		});
+			string? Result = (e.Results.Length > 0) ? e.Results[0].Value : null;
+
+			await this.Dispatcher.DispatchAsync(async () =>
+			{
+				ScanQrCodeViewModel ViewModel = this.ViewModel<ScanQrCodeViewModel>();
+				await ViewModel.SetQrText(Result);
+			});
+		}
 	}
 }

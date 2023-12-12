@@ -3,111 +3,110 @@ using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 
-namespace NeuroAccessMaui.UI.Pages.Main.VerifyCode;
-
-public partial class VerifyCodePage
+namespace NeuroAccessMaui.UI.Pages.Main.VerifyCode
 {
-	private readonly List<Label> innerLabels;
-
-	/// <summary>
-	/// Creates a new instance of the <see cref="VerifyCodePage"/> class.
-	/// </summary>
-	public VerifyCodePage(VerifyCodeNavigationArgs? NavigationArgs)
+	public partial class VerifyCodePage
 	{
-		this.InitializeComponent();
+		private readonly List<Label> innerLabels;
 
-		VerifyCodeViewModel ViewModel = new(NavigationArgs);
-		this.ContentPageModel = ViewModel;
-
-		this.innerLabels = [
-			this.InnerCode1,
-			this.InnerCode2,
-			this.InnerCode3,
-			this.InnerCode4,
-			this.InnerCode5,
-			this.InnerCode6
-			];
-
-		this.InnerCodeEntry.Text = string.Empty;
-	}
-
-	/// <summary>
-	/// Creates a new instance of the <see cref="VerifyCodePage"/> class.
-	/// </summary>
-	/// <remarks>
-	/// A parameterless constructor is required for shell routing system (it uses <c>Activator.CreateInstance</c>).
-	/// </remarks>
-	public VerifyCodePage() : this(null)
-	{
-	}
-
-	/// <inheritdoc/>
-	protected override async Task OnAppearingAsync()
-	{
-		await base.OnAppearingAsync();
-
-		WeakReferenceMessenger.Default.Register<KeyboardSizeMessage>(this, this.HandleKeyboardSizeMessage);		
-	}
-
-	/// <inheritdoc/>
-	protected override async Task OnDisappearingAsync()
-	{
-		WeakReferenceMessenger.Default.Unregister<KeyboardSizeMessage>(this);
-
-		await base.OnDisappearingAsync();
-	}
-
-	private async void HandleKeyboardSizeMessage(object Recipient, KeyboardSizeMessage Message)
-	{
-		await this.Dispatcher.DispatchAsync(() =>
+		/// <summary>
+		/// Creates a new instance of the <see cref="VerifyCodePage"/> class.
+		/// </summary>
+		public VerifyCodePage(VerifyCodeNavigationArgs? NavigationArgs)
 		{
-			double Bottom = 0;
-			if (DeviceInfo.Platform == DevicePlatform.iOS)
-			{
-				Thickness SafeInsets = this.On<iOS>().SafeAreaInsets();
-				Bottom = SafeInsets.Bottom;
-			}
+			this.InitializeComponent();
 
-			Thickness Margin = new(0, 0, 0, Message.KeyboardSize - Bottom);
-			this.TheMainGrid.Margin = Margin;
-		});
-	}
+			VerifyCodeViewModel ViewModel = new(NavigationArgs);
+			this.ContentPageModel = ViewModel;
 
-	private async void InnerCodeEntry_TextChanged(object? Sender, TextChangedEventArgs e)
-	{
-		string NewText = e.NewTextValue;
-		int NewLength = NewText.Length;
+			this.innerLabels = [
+				this.InnerCode1,
+				this.InnerCode2,
+				this.InnerCode3,
+				this.InnerCode4,
+				this.InnerCode5,
+				this.InnerCode6
+				];
 
-		bool IsValid = (NewLength <= this.innerLabels.Count) || NewText.ToCharArray().All(ch => !"0123456789".Contains(ch));
-
-		if (!IsValid)
-		{
-			this.InnerCodeEntry.Text = e.OldTextValue;
-			return;
+			this.InnerCodeEntry.Text = string.Empty;
 		}
 
-		for (int i = 0; i < this.innerLabels.Count; i++)
+		/// <summary>
+		/// Creates a new instance of the <see cref="VerifyCodePage"/> class.
+		/// </summary>
+		/// <remarks>
+		/// A parameterless constructor is required for shell routing system (it uses <c>Activator.CreateInstance</c>).
+		/// </remarks>
+		public VerifyCodePage() : this(null)
 		{
-			if (NewLength > i)
-			{
-				this.innerLabels[i].Text = NewText[i..(i + 1)];
-				VisualStateManager.GoToState(this.innerLabels[i], VisualStateManager.CommonStates.Normal);
-			}
-			else
-			{
-				this.innerLabels[i].Text = "0\u2060"; // Added a "zero width no-break space" to make the disabled state to work right :)
-				VisualStateManager.GoToState(this.innerLabels[i], VisualStateManager.CommonStates.Disabled);
-			}
 		}
 
-		if (NewLength == this.innerLabels.Count)
+		/// <inheritdoc/>
+		protected override async Task OnAppearingAsync()
 		{
-			await this.InnerCodeEntry.HideKeyboardAsync();
-		}
-	}
+			await base.OnAppearingAsync();
 
-	private void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
-	{
-		this.InnerCodeEntry.Focus();
+			WeakReferenceMessenger.Default.Register<KeyboardSizeMessage>(this, this.HandleKeyboardSizeMessage);		
+		}
+
+		/// <inheritdoc/>
+		protected override async Task OnDisappearingAsync()
+		{
+			WeakReferenceMessenger.Default.Unregister<KeyboardSizeMessage>(this);
+
+			await base.OnDisappearingAsync();
+		}
+
+		private async void HandleKeyboardSizeMessage(object Recipient, KeyboardSizeMessage Message)
+		{
+			await this.Dispatcher.DispatchAsync(() =>
+			{
+				double Bottom = 0;
+				if (DeviceInfo.Platform == DevicePlatform.iOS)
+				{
+					Thickness SafeInsets = this.On<iOS>().SafeAreaInsets();
+					Bottom = SafeInsets.Bottom;
+				}
+
+				Thickness Margin = new(0, 0, 0, Message.KeyboardSize - Bottom);
+				this.TheMainGrid.Margin = Margin;
+			});
+		}
+
+		private async void InnerCodeEntry_TextChanged(object? Sender, TextChangedEventArgs e)
+		{
+			string NewText = e.NewTextValue;
+			int NewLength = NewText.Length;
+
+			bool IsValid = (NewLength <= this.innerLabels.Count) || NewText.ToCharArray().All(ch => !"0123456789".Contains(ch));
+
+			if (!IsValid)
+			{
+				this.InnerCodeEntry.Text = e.OldTextValue;
+				return;
+			}
+
+			for (int i = 0; i < this.innerLabels.Count; i++)
+			{
+				if (NewLength > i)
+				{
+					this.innerLabels[i].Text = NewText[i..(i + 1)];
+					VisualStateManager.GoToState(this.innerLabels[i], VisualStateManager.CommonStates.Normal);
+				}
+				else
+				{
+					this.innerLabels[i].Text = "0\u2060"; // Added a "zero width no-break space" to make the disabled state to work right :)
+					VisualStateManager.GoToState(this.innerLabels[i], VisualStateManager.CommonStates.Disabled);
+				}
+			}
+
+			if (NewLength == this.innerLabels.Count)
+				await this.InnerCodeEntry.HideKeyboardAsync();
+		}
+
+		private void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
+		{
+			this.InnerCodeEntry.Focus();
+		}
 	}
 }

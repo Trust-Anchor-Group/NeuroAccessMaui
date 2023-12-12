@@ -41,7 +41,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			if (string.IsNullOrEmpty(ServiceRef.TagProfile.Account))
 				return;
 
-			this.OnPropertyChanged(nameof(IsAccountCreated));
+			this.OnPropertyChanged(nameof(this.IsAccountCreated));
 
 			if (ServiceRef.TagProfile.LegalIdentity is LegalIdentity LegalIdentity)
 			{
@@ -102,7 +102,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 		public static bool IsXmppConnected => ServiceRef.XmppService.State == XmppState.Connected;
 
-		public static bool IsAccountCreated => !string.IsNullOrEmpty(ServiceRef.TagProfile.Account);
+		public bool IsAccountCreated => !string.IsNullOrEmpty(ServiceRef.TagProfile.Account);
 
 		public static bool IsLegalIdentityCreated => ServiceRef.TagProfile.LegalIdentity is not null;
 
@@ -130,7 +130,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 					ServiceRef.TagProfile.SetAccount(this.AccountText, Client.PasswordHash, Client.PasswordHashMethod);
 
-					this.OnPropertyChanged(nameof(IsAccountCreated));
+					this.OnPropertyChanged(nameof(this.IsAccountCreated));
 				}
 
 				(bool Succeeded, string? ErrorMessage, string[]? Alternatives) = await ServiceRef.XmppService.TryConnectAndCreateAccount(ServiceRef.TagProfile.Domain!,

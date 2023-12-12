@@ -1,24 +1,21 @@
-﻿namespace NeuroAccessMaui.UI.Popups;
-
-/// <summary>
-/// Creates a base popup
-/// </summary>
-public partial class BasePopup
+﻿namespace NeuroAccessMaui.UI.Popups
 {
-	public virtual double ViewWidthRequest => (DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density) * (7.0 / 8.0);
-	public virtual double MaximumViewHeightRequest => (DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density) * (3.0 / 4.0);
-
-	protected BasePopup(ImageSource? Background)
+	/// <summary>
+	/// Creates a base popup
+	/// </summary>
+	public partial class BasePopup
 	{
-		this.InitializeComponent();
+		public virtual double ViewWidthRequest => (DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density) * (7.0 / 8.0);
+		public virtual double MaximumViewHeightRequest => (DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density) * (3.0 / 4.0);
 
-		if (Background is not null)
+		protected BasePopup(ImageSource? Background)
 		{
-			this.BackgroundImageSource = Background;
-		}
-		else
-		{
-			this.BackgroundColor = Color.FromInt(0x20000000);
+			this.InitializeComponent();
+
+			if (Background is not null)
+				this.BackgroundImageSource = Background;
+			else
+				this.BackgroundColor = Color.FromInt(0x20000000);
 		}
 	}
 }
