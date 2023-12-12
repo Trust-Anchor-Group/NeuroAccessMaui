@@ -628,14 +628,12 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <inheritdoc/>
 		public bool IsDirty { get; private set; }
 
-		private void FlagAsDirty(string propertyName)
+		private void FlagAsDirty(string PropertyName)
 		{
 			this.IsDirty = true;
 
 			if (!this.suppressPropertyChangedEvents)
-			{
-				this.OnChanged(new PropertyChangedEventArgs(propertyName));
-			}
+				this.OnChanged(new PropertyChangedEventArgs(PropertyName));
 		}
 
 		/// <inheritdoc/>
@@ -664,7 +662,7 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <inheritdoc/>
 		public void SetDomain(string DomainName, bool DefaultXmppConnectivity, string Key, string Secret)
 		{
-			if (this.InitialDomain is null)
+			if (string.IsNullOrEmpty(this.InitialDomain))
 			{
 				this.InitialDefaultXmppConnectivity = this.DefaultXmppConnectivity;
 				this.InitialDomain = this.Domain;
@@ -672,7 +670,7 @@ namespace NeuroAccessMaui.Services.Tag
 				this.InitialApiSecret = this.ApiSecret;
 			}
 
-			if (this.InitialDomain is null)
+			if (string.IsNullOrEmpty(this.InitialDomain))
 			{
 				this.InitialDefaultXmppConnectivity = DefaultXmppConnectivity;
 				this.InitialDomain = DomainName;
@@ -701,7 +699,10 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <inheritdoc/>
 		public void ClearDomain()
 		{
+			this.DefaultXmppConnectivity = false;
 			this.Domain = string.Empty;
+			this.ApiKey = string.Empty;
+			this.ApiSecret = string.Empty;
 		}
 
 		/// <inheritdoc/>
@@ -877,17 +878,11 @@ namespace NeuroAccessMaui.Services.Tag
 			for (int i = 0; i < Pin.Length;)
 			{
 				if (char.IsDigit(Pin, i))
-				{
 					DigitsCount++;
-				}
 				else if (char.IsLetter(Pin, i))
-				{
 					LettersCount++;
-				}
 				else
-				{
 					SignsCount++;
-				}
 
 				int Symbol = char.ConvertToUtf32(Pin, i);
 
@@ -895,41 +890,27 @@ namespace NeuroAccessMaui.Services.Tag
 				{
 					DistinctSymbolsCount[Symbol] = ++SymbolCount;
 					if (SymbolCount > Constants.Authentication.MaxPinIdenticalSymbols)
-					{
 						return PinStrength.TooManyIdenticalSymbols;
-					}
 				}
 				else
-				{
 					DistinctSymbolsCount.Add(Symbol, 1);
-				}
 
 				for (int j = 0; j < SlidingWindow.Length - 1; j++)
-				{
 					SlidingWindow[j] = SlidingWindow[j + 1];
-				}
 
 				SlidingWindow[^1] = Symbol;
 
 				int[] SlidingWindowDifferences = new int[SlidingWindow.Length - 1];
 				for (int j = 0; j < SlidingWindow.Length - 1; j++)
-				{
 					SlidingWindowDifferences[j] = SlidingWindow[j + 1] - SlidingWindow[j];
-				}
 
 				if (SlidingWindowDifferences.All(difference => difference == 1))
-				{
 					return PinStrength.TooManySequencedSymbols;
-				}
 
 				if (char.IsSurrogate(Pin, i))
-				{
 					i += 2;
-				}
 				else
-				{
 					i += 1;
-				}
 			}
 
 			if (this.LegalIdentity is LegalIdentity LegalIdentity)
@@ -937,19 +918,13 @@ namespace NeuroAccessMaui.Services.Tag
 				const StringComparison Comparison = StringComparison.CurrentCultureIgnoreCase;
 
 				if (LegalIdentity[Constants.XmppProperties.PersonalNumber] is string PersonalNumber && PersonalNumber != "" && Pin.Contains(PersonalNumber, Comparison))
-				{
 					return PinStrength.ContainsPersonalNumber;
-				}
 
 				if (LegalIdentity[Constants.XmppProperties.Phone] is string Phone && !string.IsNullOrEmpty(Phone) && Pin.Contains(Phone, Comparison))
-				{
 					return PinStrength.ContainsPhoneNumber;
-				}
 
 				if (LegalIdentity[Constants.XmppProperties.EMail] is string EMail && !string.IsNullOrEmpty(EMail) && Pin.Contains(EMail, Comparison))
-				{
 					return PinStrength.ContainsEMail;
-				}
 
 				IEnumerable<string> NameWords = new string[]
 				{
@@ -961,9 +936,7 @@ namespace NeuroAccessMaui.Services.Tag
 				.Where(Word => Word?.GetUnicodeLength() > 2);
 
 				if (NameWords.Any(NameWord => Pin.Contains(NameWord, Comparison)))
-				{
 					return PinStrength.ContainsName;
-				}
 
 				IEnumerable<string> AddressWords = new string[]
 				{
@@ -974,9 +947,7 @@ namespace NeuroAccessMaui.Services.Tag
 				.Where(Word => Word?.GetUnicodeLength() > 2);
 
 				if (AddressWords.Any(AddressWord => Pin.Contains(AddressWord, Comparison)))
-				{
 					return PinStrength.ContainsAddress;
-				}
 			}
 
 			const int MinDigitsCount = Constants.Authentication.MinPinSymbolsFromDifferentClasses;
@@ -984,29 +955,19 @@ namespace NeuroAccessMaui.Services.Tag
 			const int MinSignsCount = Constants.Authentication.MinPinSymbolsFromDifferentClasses;
 
 			if (DigitsCount < MinDigitsCount && LettersCount < MinLettersCount && SignsCount < MinSignsCount)
-			{
 				return PinStrength.NotEnoughDigitsLettersSigns;
-			}
 
 			if (DigitsCount >= MinDigitsCount && LettersCount < MinLettersCount && SignsCount < MinSignsCount)
-			{
 				return PinStrength.NotEnoughLettersOrSigns;
-			}
 
 			if (DigitsCount < MinDigitsCount && LettersCount >= MinLettersCount && SignsCount < MinSignsCount)
-			{
 				return PinStrength.NotEnoughDigitsOrSigns;
-			}
 
 			if (DigitsCount < MinDigitsCount && LettersCount < MinLettersCount && SignsCount >= MinSignsCount)
-			{
 				return PinStrength.NotEnoughLettersOrDigits;
-			}
 
 			if (DigitsCount + LettersCount + SignsCount < Constants.Authentication.MinPinLength)
-			{
 				return PinStrength.TooShort;
-			}
 
 			return PinStrength.Strong;
 		}

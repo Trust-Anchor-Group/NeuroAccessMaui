@@ -1,90 +1,85 @@
-﻿using System.Collections.ObjectModel;
-using System.Globalization;
-using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services.Localization;
+using System.Globalization;
 
-namespace NeuroAccessMaui.UI.Popups;
-
-public partial class SelectLanguagePage
+namespace NeuroAccessMaui.UI.Popups
 {
-	/*
-	/// <summary>
-	/// Popup factory
-	/// </summary>
-	public static Task<SelectLanguagePage> Create()
+	public partial class SelectLanguagePage
 	{
-		//SelectLanguageViewModel ViewModel = ServiceHelper.GetService<SelectLanguageViewModel>();
-		//return Task.FromResult(new SelectLanguagePage(ViewModel));
-
-		return await MainThread.InvokeOnMainThreadAsync(async () => await
+		/*
+		/// <summary>
+		/// Popup factory
+		/// </summary>
+		public static Task<SelectLanguagePage> Create()
 		{
-			SelectLanguageViewModel ViewModel = new();
+			//SelectLanguageViewModel ViewModel = ServiceHelper.GetService<SelectLanguageViewModel>();
+			//return Task.FromResult(new SelectLanguagePage(ViewModel));
 
-			try
+			return await MainThread.InvokeOnMainThreadAsync(async () => await
 			{
-				byte[] ScreenBitmap = await ServiceRef.PlatformSpecific.CaptureScreen(10);
+				SelectLanguageViewModel ViewModel = new();
 
-				ImageSource Background = ImageSource.FromStream(() => new MemoryStream(ScreenBitmap));
-				Page = new SelectLanguagePage(ViewModel, Background);
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				try
+				{
+					byte[] ScreenBitmap = await ServiceRef.PlatformSpecific.CaptureScreen(10);
 
-				Page = new SelectLanguagePage(ViewModel, null);
-			}
+					ImageSource Background = ImageSource.FromStream(() => new MemoryStream(ScreenBitmap));
+					Page = new SelectLanguagePage(ViewModel, Background);
+				}
+				catch (Exception ex)
+				{
+					ServiceRef.LogService.LogException(ex);
+					await ServiceRef.UiSerializer.DisplayException(ex);
 
-			return Page;
-		});
-	}
-	*/
-	public override double ViewWidthRequest => (DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density) * (3.0 / 4.0);
+					Page = new SelectLanguagePage(ViewModel, null);
+				}
 
-	public List<LanguageInfo> Languages { get; } = new(App.SupportedLanguages);
+				return Page;
+			});
+		}
+		*/
+		public override double ViewWidthRequest => (DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density) * (3.0 / 4.0);
 
-	public SelectLanguagePage(ImageSource? Background = null) : base(Background)
-	{
-		this.InitializeComponent();
-		this.BindingContext = this;
+		public List<LanguageInfo> Languages { get; } = new(App.SupportedLanguages);
 
-		this.SelectLanguage(App.SelectedLanguage.Name);
-	}
-
-	[RelayCommand]
-	public void SelectLanguage(object o)
-	{
-		if (o is not string Name)
+		public SelectLanguagePage(ImageSource? Background = null) : base(Background)
 		{
-			return;
+			this.InitializeComponent();
+			this.BindingContext = this;
+
+			this.SelectLanguage(App.SelectedLanguage.Name);
 		}
 
-		LanguageInfo? SelectedLanguage = null;
-
-		foreach (object Item in this.LanguagesContainer)
+		[RelayCommand]
+		public void SelectLanguage(object Option)
 		{
-			if ((Item is VisualElement Element) &&
-				(Element.BindingContext is LanguageInfo LanguageInfo))
-			{
-				if (Name == LanguageInfo.Name)
-				{
-					VisualStateManager.GoToState(Element, VisualStateManager.CommonStates.Selected);
-					SelectedLanguage = LanguageInfo;
+			if (Option is not string Name)
+				return;
 
-					Task ExecutionTask = this.Dispatcher.DispatchAsync(() => this.InnerScrollView.ScrollToAsync(Element, ScrollToPosition.MakeVisible, true));
-				}
-				else
+			LanguageInfo? SelectedLanguage = null;
+
+			foreach (object Item in this.LanguagesContainer)
+			{
+				if ((Item is VisualElement Element) &&
+					(Element.BindingContext is LanguageInfo LanguageInfo))
 				{
-					VisualStateManager.GoToState(Element, VisualStateManager.CommonStates.Normal);
+					if (Name == LanguageInfo.Name)
+					{
+						VisualStateManager.GoToState(Element, VisualStateManager.CommonStates.Selected);
+						SelectedLanguage = LanguageInfo;
+
+						Task ExecutionTask = this.Dispatcher.DispatchAsync(() => this.InnerScrollView.ScrollToAsync(Element, ScrollToPosition.MakeVisible, true));
+					}
+					else
+						VisualStateManager.GoToState(Element, VisualStateManager.CommonStates.Normal);
 				}
 			}
-		}
 
-		if ((SelectedLanguage is not null) && (Name != CultureInfo.CurrentUICulture.Name))
-		{
-
-			Preferences.Set("user_selected_language", SelectedLanguage.TwoLetterISOLanguageName);
-			LocalizationManager.Current.CurrentCulture = SelectedLanguage;
+			if ((SelectedLanguage is not null) && (Name != CultureInfo.CurrentUICulture.Name))
+			{
+				Preferences.Set("user_selected_language", SelectedLanguage.TwoLetterISOLanguageName);
+				LocalizationManager.Current.CurrentCulture = SelectedLanguage;
+			}
 		}
 	}
 }

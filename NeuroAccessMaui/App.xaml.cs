@@ -281,9 +281,7 @@ namespace NeuroAccessMaui
 			DependencyResolver.ResolveUsing(type =>
 			{
 				if (Types.GetType(type.FullName) is null)
-				{
-					return null;    // Type not managed by Runtime.Inventory. Xamarin.Forms resolves this using its default mechanism.
-				}
+					return null;    // Type not managed by Runtime.Inventory. MAUI resolves this using its default mechanism.
 
 				try
 				{
@@ -316,9 +314,7 @@ namespace NeuroAccessMaui
 		public static T Instantiate<T>()
 		{
 			if (!defaultInstantiated)
-			{
 				defaultInstantiated = defaultInstantiatedSource.Task.Result;
-			}
 
 			return Types.Instantiate<T>(false);
 		}
@@ -343,9 +339,7 @@ namespace NeuroAccessMaui
 			}
 
 			if (!this.initCompleted.Wait(60000))
-			{
 				throw new Exception("Initialization did not complete in time.");
-			}
 		}
 
 		/// <inheritdoc/>
@@ -359,14 +353,10 @@ namespace NeuroAccessMaui
 			}
 
 			if (!this.initCompleted.Wait(60000))
-			{
 				throw new Exception("Initialization did not complete in time.");
-			}
 
-			if (!await App.VerifyPin())
-			{
-				await App.Stop();
-			}
+			if (!await VerifyPin())
+				await Stop();
 		}
 
 		/// <summary>
@@ -385,10 +375,8 @@ namespace NeuroAccessMaui
 		{
 			await this.DoResume(false);
 
-			if (!await App.VerifyPin())
-			{
-				await App.Stop();
-			}
+			if (!await VerifyPin())
+				await Stop();
 		}
 
 		private async Task PerformStartup(bool isResuming, bool BackgroundStart)
@@ -399,9 +387,7 @@ namespace NeuroAccessMaui
 			{
 				// do nothing if the services are already started
 				if (++App.startupCounter > 1)
-				{
 					return;
-				}
 
 				// cancel the startup if the application is closed
 				CancellationToken Token = this.startupCancellation.Token;
@@ -410,27 +396,23 @@ namespace NeuroAccessMaui
 				if (!BackgroundStart)
 				{
 					await this.SendErrorReportFromPreviousRun();
-
 					Token.ThrowIfCancellationRequested();
 				}
 
 				await ServiceRef.StorageService.Init(Token);
 
-				if (!App.configLoaded)
+				if (!configLoaded)
 				{
 					await this.CreateOrRestoreConfiguration();
-
-					App.configLoaded = true;
+					configLoaded = true;
 				}
 
 				Token.ThrowIfCancellationRequested();
 
 				await ServiceRef.NetworkService.Load(isResuming, Token);
-
 				Token.ThrowIfCancellationRequested();
 
 				await ServiceRef.XmppService.Load(isResuming, Token);
-
 				Token.ThrowIfCancellationRequested();
 
 				TimeSpan initialAutoSaveDelay = Constants.Intervals.AutoSave.Multiply(4);
@@ -471,9 +453,7 @@ namespace NeuroAccessMaui
 			// and we want to make sure state is persisted and teardown is done correctly to avoid memory leaks.
 
 			if (this.MainPage?.BindingContext is BaseViewModel vm)
-			{
 				await vm.Shutdown();
-			}
 
 			await this.Shutdown(false);
 
@@ -509,60 +489,40 @@ namespace NeuroAccessMaui
 				// do nothing if the services are already stopped
 				// or if the startup counter is greater than one
 				if ((App.startupCounter < 1) || (--App.startupCounter > 0))
-				{
 					return;
-				}
 
 				this.StopAutoSaveTimer();
 
 				if (inPanic)
 				{
 					if (ServiceRef.XmppService is not null)
-					{
 						await ServiceRef.XmppService.UnloadFast();
-					}
 				}
 				else
 				{
 					if (ServiceRef.NavigationService is not null)
-					{
 						await ServiceRef.NavigationService.Unload();
-					}
 
 					if (ServiceRef.ContractOrchestratorService is not null)
-					{
 						await ServiceRef.ContractOrchestratorService.Unload();
-					}
 
 					if (ServiceRef.XmppService is not null)
-					{
 						await ServiceRef.XmppService.Unload();
-					}
 
 					if (ServiceRef.NetworkService is not null)
-					{
 						await ServiceRef.NetworkService.Unload();
-					}
 
 					if (ServiceRef.AttachmentCacheService is not null)
-					{
 						await ServiceRef.AttachmentCacheService.Unload();
-					}
 
 					if (ServiceRef.NavigationService is not null)
-					{
 						await ServiceRef.NavigationService.Unload();
-					}
 
 					foreach (IEventSink Sink in Log.Sinks)
-					{
 						Log.Unregister(Sink);
-					}
 
 					if (ServiceRef.StorageService is not null)
-					{
 						await ServiceRef.StorageService.Shutdown();
-					}
 				}
 
 				// Causes list of singleton instances to be cleared.
@@ -598,13 +558,9 @@ namespace NeuroAccessMaui
 					try
 					{
 						if (string.IsNullOrEmpty(tc.ObjectId))
-						{
 							await ServiceRef.StorageService.Insert(tc);
-						}
 						else
-						{
 							await ServiceRef.StorageService.Update(tc);
-						}
 					}
 					catch (KeyNotFoundException)
 					{
@@ -668,9 +624,7 @@ namespace NeuroAccessMaui
 			return MainThread.InvokeOnMainThreadAsync(() =>
 			{
 				if (ServiceRef.PlatformSpecific.CanProhibitScreenCapture)
-				{
 					ServiceRef.PlatformSpecific.ProhibitScreenCapture = true;
-				}
 
 				return Shell.Current.GoToAsync("//MainPage");
 			});
@@ -702,9 +656,7 @@ namespace NeuroAccessMaui
 			}
 
 			if (shutdown)
-			{
 				await this.Shutdown(false);
-			}
 
 #if DEBUG
 			if (!shutdown)
@@ -752,9 +704,7 @@ namespace NeuroAccessMaui
 					KeyValuePair<string, object>[]? Tags2 = ServiceRef.TagProfile.LegalIdentity?.GetTags();
 
 					if (Tags2 is not null)
-					{
 						Tags.AddRange(Tags2);
-					}
 
 					StringBuilder Msg = new();
 
@@ -812,10 +762,8 @@ namespace NeuroAccessMaui
 		{
 			StringBuilder Xml = new();
 
-			using (XmlDatabaseExport Output = new(Xml, true, 256))
-			{
-				await Database.Export(Output);
-			}
+			using XmlDatabaseExport Output = new(Xml, true, 256);
+			await Database.Export(Output);
 
 			string AppDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 			FileName = Path.Combine(AppDataFolder, FileName);
@@ -915,9 +863,7 @@ namespace NeuroAccessMaui
 			ITagProfile Profile = App.Instantiate<ITagProfile>();
 
 			if (!Profile.HasPin)
-			{
 				return string.Empty;
-			}
 
 			return await InputPin(Profile);
 		}
@@ -939,16 +885,12 @@ namespace NeuroAccessMaui
 				ITagProfile Profile = Instantiate<ITagProfile>();
 
 				if (!Profile.HasPin)
-				{
 					return true;
-				}
 
 				bool NeedToVerifyPin = IsInactivitySafeIntervalPassed();
 
 				if (!displayedPinPopup && (Force || NeedToVerifyPin))
-				{
 					return await InputPin(Profile) is not null;
-				}
 			}
 
 			return true;
@@ -967,9 +909,7 @@ namespace NeuroAccessMaui
 				string MessageAlert;
 
 				if (DateTimeForLogin == DateTime.MaxValue)
-				{
 					MessageAlert = ServiceRef.Localizer[nameof(AppResources.PinIsInvalidAplicationBlockedForever)];
-				}
 				else
 				{
 					DateTime LocalDateTime = DateTimeForLogin.Value.ToLocalTime();
@@ -1001,9 +941,7 @@ namespace NeuroAccessMaui
 		public static async Task<string?> CheckPinAndUnblockUser(string Pin)
 		{
 			if (Pin is null)
-			{
 				return null;
-			}
 
 			long PinAttemptCounter = await GetCurrentPinCounter();
 
@@ -1042,9 +980,7 @@ namespace NeuroAccessMaui
 			try
 			{
 				if (!Profile.HasPin)
-				{
 					return string.Empty;
-				}
 
 				CheckPinPage Page = new();
 				await MopupService.Instance.PushAsync(Page);
@@ -1083,8 +1019,7 @@ namespace NeuroAccessMaui
 		/// <returns>True if 5 minutes has been passed and False if has not been passed</returns>
 		private static bool IsInactivitySafeIntervalPassed()
 		{
-			return DateTime.Now.Subtract(savedStartTime).TotalMinutes
-				> Constants.Pin.PossibleInactivityInMinutes;
+			return DateTime.Now.Subtract(savedStartTime).TotalMinutes > Constants.Pin.PossibleInactivityInMinutes;
 		}
 
 		/// <summary>
@@ -1116,9 +1051,7 @@ namespace NeuroAccessMaui
 		protected virtual void Dispose(bool disposing)
 		{
 			if (this.isDisposed)
-			{
 				return;
-			}
 
 			if (disposing)
 			{

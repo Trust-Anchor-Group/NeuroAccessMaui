@@ -93,7 +93,10 @@ namespace NeuroAccessMaui.Services.Xmpp
 						(HostName, PortNumber, IsIpAddress) = await ServiceRef.NetworkService.LookupXmppHostnameAndPort(this.domainName!);
 
 						if (HostName == this.domainName && PortNumber == XmppCredentials.DefaultPort)
-							ServiceRef.TagProfile.SetDomain(this.domainName, true, ServiceRef.TagProfile.ApiKey!, ServiceRef.TagProfile.ApiSecret!);
+						{
+							ServiceRef.TagProfile.SetDomain(this.domainName, true, ServiceRef.TagProfile.ApiKey ?? string.Empty,
+								ServiceRef.TagProfile.ApiSecret ?? string.Empty);
+						}
 					}
 
 					this.xmppLastStateChange = DateTime.Now;

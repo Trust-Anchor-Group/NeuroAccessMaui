@@ -3,67 +3,62 @@ using Mopups.Services;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.UI.Popups;
 
-namespace NeuroAccessMaui.UI.Pages.Registration.Views;
-
-public partial class ChoosePurposeView
+namespace NeuroAccessMaui.UI.Pages.Registration.Views
 {
-	public static ChoosePurposeView Create()
+	public partial class ChoosePurposeView
 	{
-		return Create<ChoosePurposeView>();
-	}
-
-	private readonly ChoosePurposeViewModel viewModel;
-
-	public ChoosePurposeView(ChoosePurposeViewModel ViewModel)
-	{
-		this.InitializeComponent();
-		this.ContentViewModel = ViewModel;
-		this.viewModel = ViewModel;
-	}
-
-	[RelayCommand]
-	public void SelectPurpose(object o)
-	{
-		if (o is not PurposeUse Purpose)
+		public static ChoosePurposeView Create()
 		{
-			return;
+			return Create<ChoosePurposeView>();
 		}
 
-		foreach (object Item in this.PurposesContainer)
+		private readonly ChoosePurposeViewModel viewModel;
+
+		public ChoosePurposeView(ChoosePurposeViewModel ViewModel)
 		{
-			if ((Item is VisualElement Element) &&
-				(Element.BindingContext is PurposeInfo PurposeInfo))
+			this.InitializeComponent();
+			this.ContentViewModel = ViewModel;
+			this.viewModel = ViewModel;
+		}
+
+		[RelayCommand]
+		public void SelectPurpose(object Control)
+		{
+			if (Control is not PurposeUse Purpose)
+				return;
+
+			foreach (object Item in this.PurposesContainer)
 			{
-				if (Purpose == PurposeInfo.Purpose)
+				if ((Item is VisualElement Element) &&
+					(Element.BindingContext is PurposeInfo PurposeInfo))
 				{
-					VisualStateManager.GoToState(Element, VisualStateManager.CommonStates.Selected);
-					this.viewModel.SelectedPurpose = PurposeInfo;
-				}
-				else
-				{
-					VisualStateManager.GoToState(Element, VisualStateManager.CommonStates.Normal);
+					if (Purpose == PurposeInfo.Purpose)
+					{
+						VisualStateManager.GoToState(Element, VisualStateManager.CommonStates.Selected);
+						this.viewModel.SelectedPurpose = PurposeInfo;
+					}
+					else
+						VisualStateManager.GoToState(Element, VisualStateManager.CommonStates.Normal);
 				}
 			}
 		}
-	}
 
-	[RelayCommand]
-	public async Task ShowPurposeInfo(object o)
-	{
-		if (o is not PurposeUse Purpose)
+		[RelayCommand]
+		public async Task ShowPurposeInfo(object Control)
 		{
-			return;
-		}
+			if (Control is not PurposeUse Purpose)
+				return;
 
-		foreach (object Item in this.PurposesContainer)
-		{
-			if ((Item is VisualElement Element) &&
-				(Element.BindingContext is PurposeInfo PurposeInfo) &&
-				(Purpose == PurposeInfo.Purpose))
+			foreach (object Item in this.PurposesContainer)
 			{
-				ShowInfoPage Page = new(PurposeInfo.LocalizedName, PurposeInfo.LocalizedDescription);
-				await MopupService.Instance.PushAsync(Page);
-				break;
+				if ((Item is VisualElement Element) &&
+					(Element.BindingContext is PurposeInfo PurposeInfo) &&
+					(Purpose == PurposeInfo.Purpose))
+				{
+					ShowInfoPage Page = new(PurposeInfo.LocalizedName, PurposeInfo.LocalizedDescription);
+					await MopupService.Instance.PushAsync(Page);
+					break;
+				}
 			}
 		}
 	}

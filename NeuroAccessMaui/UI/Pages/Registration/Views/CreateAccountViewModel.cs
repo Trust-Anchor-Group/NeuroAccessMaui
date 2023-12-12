@@ -39,9 +39,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			await base.DoAssignProperties();
 
 			if (string.IsNullOrEmpty(ServiceRef.TagProfile.Account))
-			{
 				return;
-			}
 
 			this.OnPropertyChanged(nameof(IsAccountCreated));
 
@@ -61,9 +59,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		private async Task XmppService_ConnectionStateChanged(object _, XmppState NewState)
 		{
 			if (this.CreateIdentityCommand.CanExecute(null))
-			{
 				await this.CreateIdentityCommand.ExecuteAsync(null);
-			}
 		}
 
 		private async Task XmppContracts_LegalIdentityChanged(object _, LegalIdentityEventArgs e)
@@ -130,27 +126,17 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				async Task OnConnected(XmppClient Client)
 				{
 					if (ServiceRef.TagProfile.NeedsUpdating())
-					{
 						await ServiceRef.XmppService.DiscoverServices(Client);
-					}
 
 					ServiceRef.TagProfile.SetAccount(this.AccountText, Client.PasswordHash, Client.PasswordHashMethod);
 
 					this.OnPropertyChanged(nameof(IsAccountCreated));
 				}
 
-				string? ApiKey = ServiceRef.TagProfile.ApiKey;
-				string? ApiSecret = ServiceRef.TagProfile.ApiSecret;
-
-				if (string.IsNullOrEmpty(ApiKey) && string.IsNullOrEmpty(ApiSecret))
-				{
-					ApiKey = ServiceRef.TagProfile.InitialApiKey;
-					ApiSecret = ServiceRef.TagProfile.InitialApiSecret;
-				}
-
 				(bool Succeeded, string? ErrorMessage, string[]? Alternatives) = await ServiceRef.XmppService.TryConnectAndCreateAccount(ServiceRef.TagProfile.Domain!,
 					IsIpAddress, HostName, PortNumber, this.AccountText, PasswordToUse, Constants.LanguageCodes.Default,
-					ApiKey ?? string.Empty, ApiSecret ?? string.Empty, typeof(App).Assembly, OnConnected);
+					ServiceRef.TagProfile.ApiKey ?? string.Empty, ServiceRef.TagProfile.ApiSecret ?? string.Empty,
+					typeof(App).Assembly, OnConnected);
 
 				if (Succeeded)
 				{
@@ -184,12 +170,10 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		}
 
 		[RelayCommand]
-		private void SelectName(object o)
+		private void SelectName(object Control)
 		{
-			if (o is string AccountText)
-			{
+			if (Control is string AccountText)
 				this.AccountText = AccountText;
-			}
 		}
 
 		[RelayCommand(CanExecute = nameof(CanCreateIdentity))]
