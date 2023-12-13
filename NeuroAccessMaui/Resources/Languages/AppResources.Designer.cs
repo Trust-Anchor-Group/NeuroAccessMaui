@@ -1312,6 +1312,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Scan QR-code with your camera..
+        /// </summary>
+        internal static string ScanQrCodeLabel {
+            get {
+                return ResourceManager.GetString("ScanQrCodeLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Search by country....
         /// </summary>
         internal static string SearchByCountry {

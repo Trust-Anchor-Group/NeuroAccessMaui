@@ -687,4 +687,7 @@
   <data name="CreatePin" xml:space="preserve">
     <value>Create Pin</value>
   </data>
+  <data name="ScanQrCodeLabel" xml:space="preserve">
+    <value>Scan QR-code with your camera.</value>
+  </data>
 </root>

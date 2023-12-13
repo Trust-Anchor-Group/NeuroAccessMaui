@@ -52,9 +52,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 					MainThread.BeginInvokeOnMainThread(() =>
 					{
 						if (this.ScanQrCodeCommand.CanExecute(null))
-						{
 							this.ScanQrCodeCommand.Execute(null);
-						}
 					});
 				}
 			}
@@ -116,9 +114,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		private async void TagProfile_Changed(object? Sender, PropertyChangedEventArgs e)
 		{
 			if (this.DomainName != ServiceRef.TagProfile.Domain)
-			{
 				await this.SetDomainName();
-			}
 		}
 
 		private async Task SetDomainName()
@@ -139,9 +135,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				string AcceptLanguage = App.SelectedLanguage.TwoLetterISOLanguageName;
 
 				if (AcceptLanguage != "en")
-				{
 					AcceptLanguage += ";q=1,en;q=0.9";
-				}
 
 				object Result = await InternetContent.GetAsync(DomainInfo,
 					new KeyValuePair<string, string>("Accept", "application/json"),
@@ -150,14 +144,10 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				if (Result is Dictionary<string, object> Response)
 				{
 					if (Response.TryGetValue("humanReadableName", out object? Obj) && Obj is string LocalizedName)
-					{
 						this.LocalizedName = LocalizedName;
-					}
 
 					if (Response.TryGetValue("humanReadableDescription", out Obj) && Obj is string LocalizedDescription)
-					{
 						this.LocalizedDescription = LocalizedDescription;
-					}
 				}
 			}
 			catch (Exception ex)
@@ -194,16 +184,12 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			string? Url = await Services.UI.QR.QrCode.ScanQrCode(nameof(AppResources.QrPageTitleScanInvitation), Constants.UriSchemes.Onboarding);
 
 			if (string.IsNullOrEmpty(Url))
-			{
 				return;
-			}
 
 			string Scheme = Constants.UriSchemes.GetScheme(Url) ?? string.Empty;
 
 			if (!string.Equals(Scheme, Constants.UriSchemes.Onboarding, StringComparison.OrdinalIgnoreCase))
-			{
 				return;
-			}
 
 			string[] Parts = Url.Split(':');
 
