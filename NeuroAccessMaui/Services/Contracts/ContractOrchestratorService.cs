@@ -290,9 +290,18 @@ namespace NeuroAccessMaui.Services.Contracts
 				{
 					if (ServiceRef.TagProfile.LegalIdentity is not null)
 					{
-						string id = ServiceRef.TagProfile.LegalIdentity.Id;
-						await Task.Delay(Constants.Timeouts.XmppInit);
-						this.DownloadLegalIdentityInternal(id);
+						Task _2 = Task.Run(async () =>
+						{
+							try
+							{
+								await Task.Delay(Constants.Timeouts.XmppInit);
+								await ReDownloadLegalIdentity();
+							}
+							catch (Exception ex)
+							{
+								ServiceRef.LogService.LogException(ex);
+							}
+						});
 					}
 				}
 			}
@@ -304,33 +313,35 @@ namespace NeuroAccessMaui.Services.Contracts
 
 		#endregion
 
-		protected virtual async void DownloadLegalIdentityInternal(string LegalId)
+		protected static async Task ReDownloadLegalIdentity()
 		{
-			// Run asynchronously so we're not blocking startup UI.
+			if (ServiceRef.XmppService is null ||
+				!await ServiceRef.XmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect) ||
+				!ServiceRef.XmppService.IsOnline  ||
+				ServiceRef.TagProfile.LegalIdentity is null)
+			{
+				return;
+			}
+
+			LegalIdentity? Identity;
+
 			try
 			{
-				await DownloadLegalIdentity(LegalId);
+				Identity = await ServiceRef.XmppService!.GetLegalIdentity(ServiceRef.TagProfile.LegalIdentity.Id);
+			}
+			catch (ForbiddenException)		// Old ID belonging to a previous account, for example. Simply discard.
+			{
+				ServiceRef.TagProfile.ClearLegalIdentity();
+				await App.SetRegistrationPageAsync();
+				return;
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-			}
-		}
-
-		protected static async Task DownloadLegalIdentity(string LegalId)
-		{
-			bool isConnected =
-				ServiceRef.XmppService is not null &&
-				await ServiceRef.XmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect) &&
-				ServiceRef.XmppService.IsOnline;
-
-			if (!isConnected)
 				return;
+			}
 
-			(bool succeeded, LegalIdentity? Identity) = await ServiceRef.NetworkService.TryRequest(
-				() => ServiceRef.XmppService!.GetLegalIdentity(LegalId), displayAlert: false);
-
-			if (succeeded && Identity is not null)
+			if (Identity is not null)
 			{
 				MainThread.BeginInvokeOnMainThread(async () =>
 				{

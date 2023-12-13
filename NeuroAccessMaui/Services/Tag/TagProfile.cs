@@ -751,7 +751,6 @@ namespace NeuroAccessMaui.Services.Tag
 		public void ClearLegalIdentity()
 		{
 			this.LegalIdentity = null;
-			this.LegalJid = string.Empty;
 		}
 
 		/// <inheritdoc/>
