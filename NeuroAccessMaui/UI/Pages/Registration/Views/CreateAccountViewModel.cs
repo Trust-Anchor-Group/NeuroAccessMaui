@@ -51,6 +51,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 					LegalIdentity.State == IdentityState.Compromised ||
 					LegalIdentity.State == IdentityState.Obsoleted)
 				{
+					ServiceRef.TagProfile.ClearLegalIdentity();
 					GoToRegistrationStep(RegistrationStep.ValidatePhone);
 				}
 			}
