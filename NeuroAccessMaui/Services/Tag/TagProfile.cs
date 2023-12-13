@@ -259,7 +259,9 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <inheritdoc/>
 		public virtual bool IsCompleteOrWaitingForValidation()
 		{
-			return this.Step >= RegistrationStep.CreateAccount && (this.LegalIdentity is not null);
+			return this.Step >= RegistrationStep.CreateAccount &&
+				this.LegalIdentity is not null &&
+				this.LegalIdentity.State == IdentityState.Created;
 		}
 
 		/// <inheritdoc/>

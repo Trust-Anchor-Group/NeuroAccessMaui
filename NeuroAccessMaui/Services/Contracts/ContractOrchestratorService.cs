@@ -282,7 +282,7 @@ namespace NeuroAccessMaui.Services.Contracts
 			}
 		}
 
-		private async Task Contracts_ConnectionStateChanged(object _, XmppState NewState)
+		private Task Contracts_ConnectionStateChanged(object _, XmppState NewState)
 		{
 			try
 			{
@@ -309,6 +309,8 @@ namespace NeuroAccessMaui.Services.Contracts
 			{
 				ServiceRef.LogService.LogException(ex);
 			}
+
+			return Task.CompletedTask;
 		}
 
 		#endregion
