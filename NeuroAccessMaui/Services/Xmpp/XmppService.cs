@@ -1127,7 +1127,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		{
 			await this.ContractsClient.GenerateNewKeys();
 
-			LegalIdentity identity = await this.ContractsClient.ApplyAsync(Model.ToProperties(ServiceRef.XmppService));
+			LegalIdentity Identity = await this.ContractsClient.ApplyAsync(Model.ToProperties(ServiceRef.XmppService));
 
 			foreach (LegalIdentityAttachment Attachment in Attachments)
 			{
@@ -1138,15 +1138,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 					throw e2.StanzaError ?? new Exception(e2.ErrorText);
 
 				await e2.PUT(Attachment.Data, Attachment.ContentType, (int)Constants.Timeouts.UploadFile.TotalMilliseconds);
+				byte[] Signature = await this.ContractsClient.SignAsync(Attachment.Data, SignWith.CurrentKeys);
 
-				byte[] signature = await this.ContractsClient.SignAsync(Attachment.Data, SignWith.CurrentKeys);
-
-				identity = await this.ContractsClient.AddLegalIdAttachmentAsync(identity.Id, e2.GetUrl, signature);
+				Identity = await this.ContractsClient.AddLegalIdAttachmentAsync(Identity.Id, e2.GetUrl, Signature);
 			}
 
-			await this.ContractsClient.ReadyForApprovalAsync(identity.Id);
+			await this.ContractsClient.ReadyForApprovalAsync(Identity.Id);
 
-			return identity;
+			return Identity;
 		}
 
 		/// <summary>

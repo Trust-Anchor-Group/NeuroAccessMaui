@@ -40,7 +40,7 @@ namespace NeuroAccessMaui.Services.EventLog
 
 		public void LogException(Exception ex)
 		{
-			this.LogException(ex);
+			this.LogException(ex, []);
 		}
 
 		public void LogException(Exception ex, params KeyValuePair<string, object>[] extraParameters)

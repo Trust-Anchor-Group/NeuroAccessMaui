@@ -47,18 +47,18 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			{
 				if (LegalIdentity.State == IdentityState.Approved)
 					GoToRegistrationStep(RegistrationStep.DefinePin);
-				else //!!! if (LegalIdentity.State == IdentityState.???)
+				else if (LegalIdentity.State == IdentityState.Rejected ||
+					LegalIdentity.State == IdentityState.Compromised ||
+					LegalIdentity.State == IdentityState.Obsoleted)
 				{
-					//!!! We should not have any other state here.
-					//!!! Assume that might happen if the legal id is obsoleted.
-					//!!! What should we do in that case?
+					GoToRegistrationStep(RegistrationStep.ValidatePhone);
 				}
 			}
 		}
 
 		private async Task XmppService_ConnectionStateChanged(object _, XmppState NewState)
 		{
-			if (this.CreateIdentityCommand.CanExecute(null))
+			if (NewState == XmppState.Connected && this.CreateIdentityCommand.CanExecute(null))
 				await this.CreateIdentityCommand.ExecuteAsync(null);
 		}
 
@@ -104,13 +104,21 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 		public bool IsAccountCreated => !string.IsNullOrEmpty(ServiceRef.TagProfile.Account);
 
-		public static bool IsLegalIdentityCreated => ServiceRef.TagProfile.LegalIdentity is not null;
+		public static bool IsLegalIdentityCreated
+		{
+			get
+			{
+				return ServiceRef.TagProfile.LegalIdentity is not null &&
+					(ServiceRef.TagProfile.LegalIdentity.State == IdentityState.Approved ||
+					ServiceRef.TagProfile.LegalIdentity.State == IdentityState.Created);
+			}
+		}
 
 		public bool HasAlternativeNames => this.AlternativeNames.Count > 0;
 
 		public bool CanCreateAccount => !this.IsBusy && !this.AccountIsNotValid && (this.AccountText.Length > 0);
 
-		public bool CanCreateIdentity => !this.IsBusy && IsAccountCreated && !IsLegalIdentityCreated && IsXmppConnected;
+		public bool CanCreateIdentity => !this.IsBusy && this.IsAccountCreated && !IsLegalIdentityCreated && IsXmppConnected;
 
 		[RelayCommand(CanExecute = nameof(CanCreateAccount))]
 		private async Task CreateAccount()
