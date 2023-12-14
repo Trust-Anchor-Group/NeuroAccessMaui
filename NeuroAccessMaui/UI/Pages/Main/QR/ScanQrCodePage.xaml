@@ -117,7 +117,7 @@
 
 						<VerticalStackLayout
 							Spacing="{StaticResource SmallSpacing}"
-							IsVisible="{Binding HasAllowedSchema}">
+							IsVisible="{Binding HasAllowedSchemas}">
 							<Border
 								HeightRequest="66"
 								WidthRequest="66"
@@ -206,7 +206,7 @@
 
 							<controls:CompositeEntry x:Name="LinkEntry"
 								Style="{StaticResource RegularCompositeEntryStyle}"
-								EntryData="{Binding Path=UrlText}" />
+								EntryData="{Binding Path=ManualText}" />
 						</VerticalStackLayout>
 
 						<VerticalStackLayout

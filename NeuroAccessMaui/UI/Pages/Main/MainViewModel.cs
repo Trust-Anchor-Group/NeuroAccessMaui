@@ -30,7 +30,11 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		[RelayCommand(CanExecute = nameof(CanScanQrCode))]
 		private async Task ScanQrCode()
 		{
-			string? Url = await Services.UI.QR.QrCode.ScanQrCode(nameof(AppResources.QrPageTitleScanInvitation));
+			string? Url = await Services.UI.QR.QrCode.ScanQrCode(nameof(AppResources.QrPageTitleScanInvitation),
+				[
+					Constants.UriSchemes.TagSign		// TODO: Add other schemas, as user unlocks features.
+				]);
+
 			if (string.IsNullOrEmpty(Url))
 				return;
 

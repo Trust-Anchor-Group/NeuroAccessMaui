@@ -5,12 +5,14 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 	/// <summary>
 	/// Holds navigation parameters specific to views scanning a QR code.
 	/// </summary>
-	public class ScanQrCodeNavigationArgs(string? QrTitle = null, string? AllowedSchema = null) : NavigationArgs
+	/// <param name="QrTitle">Title to present</param>
+	/// <param name="AllowedSchemas">Schemas permitted.</param>
+	public class ScanQrCodeNavigationArgs(string? QrTitle, string[] AllowedSchemas) : NavigationArgs
 	{
 		/// <summary>
 		/// Creates an instance of the <see cref="ScanQrCodeNavigationArgs"/> class.
 		/// </summary>
-		public ScanQrCodeNavigationArgs() : this(null) { }
+		public ScanQrCodeNavigationArgs() : this(string.Empty, []) { }
 
 		/// <summary>
 		/// The page title.
@@ -20,7 +22,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		/// <summary>
 		/// The allowed schema to display.
 		/// </summary>
-		public string? AllowedSchema { get; } = AllowedSchema;
+		public string[] AllowedSchemas { get; } = AllowedSchemas;
 
 		/// <summary>
 		/// Task completion source; can be used to wait for a result.

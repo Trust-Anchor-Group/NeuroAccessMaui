@@ -31,7 +31,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 			if ((this.navigationArgs is null) && ServiceRef.NavigationService.TryGetArgs(out ScanQrCodeNavigationArgs? Args))
 			{
 				this.navigationArgs = Args;
-				this.OnPropertyChanged(nameof(this.HasAllowedSchema));
+				this.OnPropertyChanged(nameof(this.HasAllowedSchemas));
 				this.OnPropertyChanged(nameof(this.LocalizedQrPageTitle));
 			}
 		}
@@ -49,9 +49,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 			}
 
 			if (this.navigationArgs?.QrCodeScanned is TaskCompletionSource<string> TaskSource)
-			{
 				TaskSource.TrySetResult(string.Empty);
-			}
 
 			await base.OnDispose();
 		}
@@ -73,16 +71,14 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 			return Task.CompletedTask;
 		}
 
-		public Task SetQrText(string? qrText)
+		public Task SetScannedText(string? ScannedText)
 		{
-			this.QrText = qrText;
+			this.ScannedText = ScannedText ?? string.Empty;
 			this.countDownTimer?.Stop();
 			this.OnPropertyChanged(nameof(this.BackgroundIcon));
 
-			if (this.CanOpenQr)
-			{
-				return this.TrySetResultAndClosePage(this.QrText!.Trim());
-			}
+			if (this.CanOpenScanned)
+				return this.TrySetResultAndClosePage(this.ScannedText!.Trim());
 
 			this.countDownTimer?.Start();
 			this.OnPropertyChanged(nameof(this.BackgroundIcon));
@@ -123,13 +119,13 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		/// </summary>
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(OpenUrlCommand))]
-		private string? urlText;
+		private string? manualText;
 
 		/// <summary>
 		/// The scanned QR text
 		/// </summary>
 		[ObservableProperty]
-		private string? qrText;
+		private string? scannedText;
 
 		/// <summary>
 		/// Gets or sets whether the QR scanning is automatic or manual.
@@ -137,29 +133,47 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		[ObservableProperty]
 		private bool isAutomaticScan = true;
 
-		public bool HasAllowedSchema => this.navigationArgs?.AllowedSchema is not null;
+		/// <summary>
+		/// If scanning of codes is restricted to a set of allowed schemas.
+		/// </summary>
+		public bool HasAllowedSchemas => this.navigationArgs?.AllowedSchemas is not null && this.navigationArgs.AllowedSchemas.Length > 0;
 
+		/// <summary>
+		/// Background color of displayed icon.
+		/// </summary>
 		public Color BackgroundIcon
 		{
 			get
 			{
-				if (this.QrText is null)
-				{
+				if (string.IsNullOrEmpty(this.ScannedText))
 					return Colors.White;
-				}
 
-				string Url = this.QrText.Trim();
+				string Url = this.ScannedText.Trim();
 
-				if ((this.countDownTimer?.IsRunning ?? false) && (this.navigationArgs?.AllowedSchema is not null))
+				if ((this.countDownTimer?.IsRunning ?? false) &&
+					(this.navigationArgs?.AllowedSchemas is not null) &&
+					this.navigationArgs.AllowedSchemas.Length > 0)
 				{
-					bool IsValid = System.Uri.TryCreate(Url, UriKind.Absolute, out Uri? Uri) &&
-						string.Equals(Uri.Scheme, this.navigationArgs?.AllowedSchema, StringComparison.OrdinalIgnoreCase);
-
-					return IsValid ? Colors.White : Color.FromUint(0xFFFF7585);
+					return this.IsPermittedUrl(Url) ? Colors.White : Color.FromUint(0xFFFF7585);
 				}
 
 				return Colors.White;
 			}
+		}
+
+		private bool IsPermittedUrl(string Url)
+		{
+			if (this.navigationArgs?.AllowedSchemas is not null &&
+				System.Uri.TryCreate(Url, UriKind.Absolute, out Uri? Uri))
+			{
+				foreach (string Schema in this.navigationArgs.AllowedSchemas)
+				{
+					if (string.Equals(Uri.Scheme, Schema, StringComparison.OrdinalIgnoreCase))
+						return true;
+				}
+			}
+
+			return false;
 		}
 
 		/// <summary>
@@ -170,9 +184,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 			get
 			{
 				if (this.navigationArgs?.QrTitle is not null)
-				{
 					return ServiceRef.Localizer[this.navigationArgs.QrTitle];
-				}
 
 				return string.Empty;
 			}
@@ -180,32 +192,32 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 
 		private bool CanOpen(string? Text)
 		{
-			if (Text is null)
-			{
+			string? Url = Text?.Trim();
+			if (string.IsNullOrEmpty(Url))
 				return false;
-			}
 
-			string Url = Text.Trim();
-
-			if (this.navigationArgs?.AllowedSchema is not null)
-			{
-				return System.Uri.TryCreate(Url, UriKind.Absolute, out Uri? Uri) &&
-					string.Equals(Uri.Scheme, this.navigationArgs?.AllowedSchema, StringComparison.OrdinalIgnoreCase);
-			}
-
-			return Url.Length > 0;
+			if (this.navigationArgs?.AllowedSchemas is not null && this.navigationArgs.AllowedSchemas.Length > 0)
+				return this.IsPermittedUrl(Url);
+			else
+				return Url.Length > 0;
 		}
 
-		public bool CanOpenQr => this.CanOpen(this.QrText);
+		/// <summary>
+		/// If the scanned code can be opened
+		/// </summary>
+		public bool CanOpenScanned => this.CanOpen(this.ScannedText);
 
-		public bool CanOpenUrl => this.CanOpen(this.UrlText);
+		/// <summary>
+		/// If the manual code can be opened
+		/// </summary>
+		public bool CanOpenManual => this.CanOpen(this.ManualText);
 
 		#endregion
 
-		[RelayCommand(CanExecute = nameof(CanOpenUrl))]
+		[RelayCommand(CanExecute = nameof(CanOpenManual))]
 		private Task OpenUrl()
 		{
-			return this.TrySetResultAndClosePage(this.UrlText!.Trim());
+			return this.TrySetResultAndClosePage(this.ManualText!.Trim());
 		}
 
 		[RelayCommand]

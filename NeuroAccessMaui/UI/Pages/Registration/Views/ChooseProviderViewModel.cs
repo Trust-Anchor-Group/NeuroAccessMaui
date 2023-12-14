@@ -181,7 +181,8 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		[RelayCommand(CanExecute = nameof(CanScanQrCode))]
 		private async Task ScanQrCode()
 		{
-			string? Url = await Services.UI.QR.QrCode.ScanQrCode(nameof(AppResources.QrPageTitleScanInvitation), Constants.UriSchemes.Onboarding);
+			string? Url = await Services.UI.QR.QrCode.ScanQrCode(nameof(AppResources.QrPageTitleScanInvitation),
+				[ Constants.UriSchemes.Onboarding ]);
 
 			if (string.IsNullOrEmpty(Url))
 				return;

@@ -184,7 +184,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 			await this.Dispatcher.DispatchAsync(async () =>
 			{
 				ScanQrCodeViewModel ViewModel = this.ViewModel<ScanQrCodeViewModel>();
-				await ViewModel.SetQrText(Result);
+				await ViewModel.SetScannedText(Result);
 			});
 		}
 	}

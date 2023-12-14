@@ -20,14 +20,13 @@ namespace NeuroAccessMaui.Services.UI.QR
 		/// Scans a QR Code, and depending on the actual result, takes different actions.
 		/// This typically means navigating to an appropriate page.
 		/// </summary>
-		public static async Task ScanQrCodeAndHandleResult(string? QrTitle = null, string? AllowedSchema = null)
+		/// <param name="QrTitle">Title to present</param>
+		/// <param name="AllowedSchemas">Schemas permitted.</param>
+		public static async Task ScanQrCodeAndHandleResult(string QrTitle, string[] AllowedSchemas)
 		{
-			string? Url = await QrCode.ScanQrCode(QrTitle, AllowedSchema);
-
+			string? Url = await QrCode.ScanQrCode(QrTitle, AllowedSchemas);
 			if (string.IsNullOrWhiteSpace(Url))
-			{
 				return;
-			}
 
 			await OpenUrl(Url);
 		}
@@ -97,11 +96,11 @@ namespace NeuroAccessMaui.Services.UI.QR
 		/// </list>
 		/// </summary>
 		/// <param name="QrTitle">The QR page title</param>
-		/// <param name="AllowedSchema">The allowed schema</param>
+		/// <param name="AllowedSchemas">Permitted schemas</param>
 		/// <returns>Decoded string</returns>
-		public static async Task<string?> ScanQrCode(string? QrTitle = null, string? AllowedSchema = null)
+		public static async Task<string?> ScanQrCode(string? QrTitle, string[] AllowedSchemas)
 		{
-			ScanQrCodeNavigationArgs NavigationArgs = new(QrTitle, AllowedSchema);
+			ScanQrCodeNavigationArgs NavigationArgs = new(QrTitle, AllowedSchemas);
 
 			await ServiceRef.NavigationService.GoToAsync(nameof(ScanQrCodePage), NavigationArgs, BackMethod.Pop);
 
