@@ -690,4 +690,112 @@
   <data name="ScanQrCodeLabel" xml:space="preserve">
     <value>Scan QR-code with your camera.</value>
   </data>
+  <data name="Accept" xml:space="preserve">
+    <value>Accept</value>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>Address</value>
+  </data>
+  <data name="Address2" xml:space="preserve">
+    <value>Address (row 2)</value>
+  </data>
+  <data name="Area" xml:space="preserve">
+    <value>Area</value>
+  </data>
+  <data name="City" xml:space="preserve">
+    <value>City</value>
+  </data>
+  <data name="Country" xml:space="preserve">
+    <value>Country</value>
+  </data>
+  <data name="Created" xml:space="preserve">
+    <value>Created</value>
+  </data>
+  <data name="Decline" xml:space="preserve">
+    <value>Decline</value>
+  </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>First name</value>
+  </data>
+  <data name="Ignore" xml:space="preserve">
+    <value>Ignore</value>
+  </data>
+  <data name="LastNames" xml:space="preserve">
+    <value>Last name(s)</value>
+  </data>
+  <data name="LegalId" xml:space="preserve">
+    <value>Legal Id</value>
+  </data>
+  <data name="MiddleNames" xml:space="preserve">
+    <value>Middle name(s)</value>
+  </data>
+  <data name="Options" xml:space="preserve">
+    <value>Options</value>
+  </data>
+  <data name="OrgAddress" xml:space="preserve">
+    <value>Organization Address</value>
+  </data>
+  <data name="OrgAddress2" xml:space="preserve">
+    <value>Organization Address (row 2)</value>
+  </data>
+  <data name="OrganizationInformation" xml:space="preserve">
+    <value>Organization Information</value>
+  </data>
+  <data name="OrgArea" xml:space="preserve">
+    <value>Organization Area</value>
+  </data>
+  <data name="OrgCity" xml:space="preserve">
+    <value>Organization City</value>
+  </data>
+  <data name="OrgCountry" xml:space="preserve">
+    <value>Organization Country</value>
+  </data>
+  <data name="OrgDepartment" xml:space="preserve">
+    <value>Department</value>
+  </data>
+  <data name="OrgName" xml:space="preserve">
+    <value>Organization Name</value>
+  </data>
+  <data name="OrgNumber" xml:space="preserve">
+    <value>Organization Number</value>
+  </data>
+  <data name="OrgRegion" xml:space="preserve">
+    <value>Organization Region</value>
+  </data>
+  <data name="OrgRole" xml:space="preserve">
+    <value>Role</value>
+  </data>
+  <data name="OrgZipCode" xml:space="preserve">
+    <value>Organization Zip or Postal Code</value>
+  </data>
+  <data name="PersonalNumber" xml:space="preserve">
+    <value>Personal number</value>
+  </data>
+  <data name="Petition" xml:space="preserve">
+    <value>Request</value>
+  </data>
+  <data name="PetitionSignatureInformationText" xml:space="preserve">
+    <value>A request for your signature has been received. Review the reason below, and the information about who sent the request, and then choose how you wish to respond.</value>
+  </data>
+  <data name="Photos" xml:space="preserve">
+    <value>Photos</value>
+  </data>
+  <data name="Purpose" xml:space="preserve">
+    <value>Purpose</value>
+  </data>
+  <data name="Region" xml:space="preserve">
+    <value>Region or State</value>
+  </data>
+  <data name="RequestingEntity" xml:space="preserve">
+    <value>Requesting entity</value>
+  </data>
+  <data name="State" xml:space="preserve">
+    <value>State</value>
+  </data>
+  <data name="Updated" xml:space="preserve">
+    <value>Updated</value>
+  </data>
+  <data name="ZipCode" xml:space="preserve">
+    <value>Zip or Postal Code</value>
+  </data>
 </root>

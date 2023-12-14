@@ -2,11 +2,604 @@
 <base:BaseContentPage x:Name="ThisPage" x:Class="NeuroAccessMaui.UI.Pages.Petitions.PetitionSignaturePage" x:DataType="viewmodel:PetitionSignatureViewModel"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 	xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
 	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
 	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 	xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
-	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Petitions">
+	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Petitions"
+	xmlns:photos="clr-namespace:NeuroAccessMaui.Services.UI.Photos">
 
-	<Grid />
+	<Grid>
+		<ScrollView>
+			<StackLayout
+				Margin="{StaticResource DefaultMargin}"
+				VerticalOptions="Start">
+				<Label
+					HorizontalOptions="Center"
+					VerticalOptions="CenterAndExpand"
+					Style="{StaticResource Heading}"
+					Text="{l:Localize Petition}" />
+				<Label
+					HorizontalOptions="Center"
+					VerticalOptions="CenterAndExpand"
+					Text="{l:Localize PetitionSignatureInformationText}" />
+				<Grid
+					VerticalOptions="StartAndExpand"
+					RowSpacing="0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition
+							Width="Auto" />
+						<ColumnDefinition
+							Width="*" />
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition
+							Height="Auto" />
+						<!--  0  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  1  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  2  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  3  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  4  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  5  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  6  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  7  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  8  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  9  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  10  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  11  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  12  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  13  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  14  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  15  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  16  -->
+						<RowDefinition
+							Height="{Binding OrgRowHeight}" />
+						<!--  17  -->
+						<RowDefinition
+							Height="{Binding OrgRowHeight}" />
+						<!--  18  -->
+						<RowDefinition
+							Height="{Binding OrgRowHeight}" />
+						<!--  19  -->
+						<RowDefinition
+							Height="{Binding OrgRowHeight}" />
+						<!--  20  -->
+						<RowDefinition
+							Height="{Binding OrgRowHeight}" />
+						<!--  21  -->
+						<RowDefinition
+							Height="{Binding OrgRowHeight}" />
+						<!--  22  -->
+						<RowDefinition
+							Height="{Binding OrgRowHeight}" />
+						<!--  23  -->
+						<RowDefinition
+							Height="{Binding OrgRowHeight}" />
+						<!--  24  -->
+						<RowDefinition
+							Height="{Binding OrgRowHeight}" />
+						<!--  25  -->
+						<RowDefinition
+							Height="{Binding OrgRowHeight}" />
+						<!--  26  -->
+						<RowDefinition
+							Height="{Binding OrgRowHeight}" />
+						<!--  27  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  28  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  29  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  30  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  31  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  32  -->
+						<RowDefinition
+							Height="Auto" />
+						<!--  33  -->
+					</Grid.RowDefinitions>
+					<!--    -->
+					<Label
+						Grid.Row="0"
+						Grid.Column="0"
+						Grid.ColumnSpan="2"
+						HorizontalOptions="Center"
+						VerticalOptions="CenterAndExpand"
+						FontSize="Large"
+						Text="{l:Localize Purpose}" />
+					<!--    -->
+					<Label
+						Grid.Row="1"
+						Grid.Column="0"
+						Grid.ColumnSpan="2"
+						Margin="0,6,0,0"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=Purpose}" />
+					<!--    -->
+					<Label
+						Grid.Row="2"
+						Grid.Column="0"
+						Grid.ColumnSpan="2"
+						Margin="0,6,0,0"
+						HorizontalOptions="Center"
+						VerticalOptions="CenterAndExpand"
+						FontSize="Large"
+						Text="{l:Localize RequestingEntity}" />
+					<!--    -->
+					<Label
+						Grid.Row="3"
+						Grid.Column="0"
+						Margin="0,6,0,0"
+						Style="{StaticResource KeyLabel}"
+						Text="{l:Localize Created}" />
+					<Label
+						Grid.Row="3"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=Created}" />
+					<!--    -->
+					<Label
+						Grid.Row="4"
+						Grid.Column="0"
+						Margin="0,6,0,0"
+						Style="{StaticResource KeyLabel}"
+						Text="{l:Localize Updated}" />
+					<Label
+						Grid.Row="4"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=Updated}" />
+					<!--    -->
+					<Label
+						Grid.Row="5"
+						Grid.Column="0"
+						Margin="0,6,0,0"
+						Style="{StaticResource KeyLabel}"
+						Text="{l:Localize State}" />
+					<Label
+						Grid.Row="5"
+						Grid.Column="1"
+						BackgroundColor="{Binding Path=State, Converter={converters:IdentityStateToColor}}"
+						Margin="0,6,0,0"
+						Style="{StaticResource ValueLabelWithBackground}"
+						Text="{Binding Path=State}" />
+					<!--    -->
+					<Label
+						Grid.Row="6"
+						Grid.Column="0"
+						Margin="0,6,0,0"
+						Style="{StaticResource KeyLabel}"
+						Text="{l:Localize FirstName}" />
+					<Label
+						Grid.Row="6"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=FirstName}" />
+					<!--    -->
+					<Label
+						Grid.Row="7"
+						Grid.Column="0"
+						Margin="0,6,0,0"
+						Style="{StaticResource KeyLabel}"
+						Text="{l:Localize MiddleNames}" />
+					<Label
+						Grid.Row="7"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=MiddleNames}" />
+					<!--    -->
+					<Label
+						Grid.Row="8"
+						Grid.Column="0"
+						Margin="0,6,0,0"
+						Style="{StaticResource KeyLabel}"
+						Text="{l:Localize LastNames}" />
+					<Label
+						Grid.Row="8"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=LastNames}" />
+					<!--    -->
+					<Label
+						Grid.Row="9"
+						Grid.Column="0"
+						Margin="0,6,0,0"
+						Style="{StaticResource KeyLabel}"
+						Text="{l:Localize PersonalNumber}" />
+					<Label
+						Grid.Row="9"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=PersonalNumber}" />
+					<!--    -->
+					<Label
+						Grid.Row="10"
+						Grid.Column="0"
+						Margin="0,6,0,0"
+						Style="{StaticResource KeyLabel}"
+						Text="{l:Localize Address}" />
+					<Label
+						Grid.Row="10"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=Address}" />
+					<!--    -->
+					<Label
+						Grid.Row="11"
+						Grid.Column="0"
+						Margin="0,6,0,0"
+						Style="{StaticResource KeyLabel}"
+						Text="{l:Localize Address2}" />
+					<Label
+						Grid.Row="11"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=Address2}" />
+					<!--    -->
+					<Label
+						Grid.Row="12"
+						Grid.Column="0"
+						Margin="0,6,0,0"
+						Style="{StaticResource KeyLabel}"
+						Text="{l:Localize ZipCode}" />
+					<Label
+						Grid.Row="12"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=ZipCode}" />
+					<!--    -->
+					<Label
+						Grid.Row="13"
+						Grid.Column="0"
+						Margin="0,6,0,0"
+						Style="{StaticResource KeyLabel}"
+						Text="{l:Localize Area}" />
+					<Label
+						Grid.Row="13"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						FontAttributes="Bold"
+						Text="{Binding Path=Area}" />
+					<!--    -->
+					<Label
+						Grid.Row="14"
+						Grid.Column="0"
+						Margin="0,6,0,0"
+						Style="{StaticResource KeyLabel}"
+						Text="{l:Localize City}" />
+					<Label
+						Grid.Row="14"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=City}" />
+					<!--    -->
+					<Label
+						Grid.Row="15"
+						Grid.Column="0"
+						Margin="0,6,0,0"
+						Style="{StaticResource KeyLabel}"
+						Text="{l:Localize Region}" />
+					<Label
+						Grid.Row="15"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=Region}" />
+					<!--    -->
+					<Label
+						Grid.Row="16"
+						Grid.Column="0"
+						Margin="0,6,0,0"
+						Style="{StaticResource KeyLabel}"
+						Text="{l:Localize Country}" />
+					<Label
+						Grid.Row="16"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=Country}" />
+					<!--    -->
+					<Label
+						Grid.Row="17"
+						Grid.Column="0"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource KeyLabel}"
+						Text="{l:Localize OrgName}" />
+					<Label
+						Grid.Row="17"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=OrgName}" />
+					<!--    -->
+					<Label
+						Grid.Row="18"
+						Grid.Column="0"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource KeyLabel}"
+						Text="{l:Localize OrgNumber}" />
+					<Label
+						Grid.Row="18"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=OrgNumber}" />
+					<!--    -->
+					<Label
+						Grid.Row="19"
+						Grid.Column="0"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource KeyLabel}"
+						Text="{l:Localize OrgRole}" />
+					<Label
+						Grid.Row="19"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=OrgRole}" />
+					<!--    -->
+					<Label
+						Grid.Row="20"
+						Grid.Column="0"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource KeyLabel}"
+						Text="{l:Localize OrgDepartment}" />
+					<Label
+						Grid.Row="20"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=OrgDepartment}" />
+					<!--    -->
+					<Label
+						Grid.Row="21"
+						Grid.Column="0"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource KeyLabel}"
+						Text="{l:Localize OrgAddress}" />
+					<Label
+						Grid.Row="21"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=OrgAddress}" />
+					<!--    -->
+					<Label
+						Grid.Row="22"
+						Grid.Column="0"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource KeyLabel}"
+						Text="{l:Localize OrgAddress2}" />
+					<Label
+						Grid.Row="22"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=OrgAddress2}" />
+					<!--    -->
+					<Label
+						Grid.Row="23"
+						Grid.Column="0"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource KeyLabel}"
+						Text="{l:Localize OrgZipCode}" />
+					<Label
+						Grid.Row="23"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=OrgZipCode}" />
+					<!--    -->
+					<Label
+						Grid.Row="24"
+						Grid.Column="0"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource KeyLabel}"
+						Text="{l:Localize OrgArea}" />
+					<Label
+						Grid.Row="24"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						FontAttributes="Bold"
+						IsVisible="{Binding HasOrg}"
+						Text="{Binding Path=OrgArea}" />
+					<!--    -->
+					<Label
+						Grid.Row="25"
+						Grid.Column="0"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource KeyLabel}"
+						Text="{l:Localize OrgCity}" />
+					<Label
+						Grid.Row="25"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=OrgCity}" />
+					<!--    -->
+					<Label
+						Grid.Row="26"
+						Grid.Column="0"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource KeyLabel}"
+						Text="{l:Localize OrgRegion}" />
+					<Label
+						Grid.Row="26"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=OrgRegion}" />
+					<!--    -->
+					<Label
+						Grid.Row="27"
+						Grid.Column="0"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource KeyLabel}"
+						Text="{l:Localize OrgCountry}" />
+					<Label
+						Grid.Row="27"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						IsVisible="{Binding HasOrg}"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=OrgCountry}" />
+					<!--    -->
+					<Label
+						Grid.Row="28"
+						Grid.Column="0"
+						Margin="0,6,0,0"
+						Style="{StaticResource KeyLabel}"
+						Text="{l:Localize LegalId}" />
+					<Label
+						Grid.Row="28"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						Style="{StaticResource ValueLabel}"
+						Text="{Binding Path=LegalId}" />
+					<!--    -->
+					<Label
+						Grid.Row="29"
+						Grid.Column="0"
+						Margin="0,6,0,0"
+						HorizontalOptions="StartAndExpand"
+						Text="{l:Localize Photos}" />
+					<ScrollView
+						Grid.Row="29"
+						Grid.Column="1"
+						Margin="0,6,0,0"
+						HeightRequest="68"
+						Orientation="Horizontal">
+						<FlexLayout x:Name="PhotosLayout"
+							AlignContent="Center"
+							AlignItems="Center"
+							BindableLayout.ItemsSource="{Binding Path=Photos}"
+							Direction="Row"
+							JustifyContent="Start">
+							<BindableLayout.ItemTemplate>
+								<DataTemplate x:DataType="photos:Photo">
+									<Image
+										Margin="2"
+										Aspect="AspectFill"
+										HeightRequest="64"
+										Rotation="{Binding Path=Rotation}"
+										Source="{Binding Path=Source}"
+										WidthRequest="64">
+										<Image.GestureRecognizers>
+											<TapGestureRecognizer
+												Tapped="Image_Tapped" />
+										</Image.GestureRecognizers>
+									</Image>
+								</DataTemplate>
+							</BindableLayout.ItemTemplate>
+						</FlexLayout>
+					</ScrollView>
+					<!--    -->
+					<Label
+						Grid.Row="30"
+						Grid.Column="0"
+						Grid.ColumnSpan="2"
+						Margin="0,6,0,12"
+						HorizontalOptions="Center"
+						VerticalOptions="CenterAndExpand"
+						FontSize="Large"
+						Text="{l:Localize Options}" />
+					<!--    -->
+					<Button x:Name="AcceptButton"
+						Grid.Row="31"
+						Grid.Column="0"
+						Grid.ColumnSpan="2"
+						Margin="0,6,0,0"
+						Command="{Binding Path=AcceptCommand}"
+						Text="{l:Localize Accept}" />
+					<!--    -->
+					<Button x:Name="DeclineButton"
+						Grid.Row="32"
+						Grid.Column="0"
+						Grid.ColumnSpan="2"
+						Margin="0,6,0,0"
+						Command="{Binding Path=DeclineCommand}"
+						Text="{l:Localize Decline}" />
+					<!--    -->
+					<Button x:Name="IgnoreButton"
+						Grid.Row="33"
+						Grid.Column="0"
+						Grid.ColumnSpan="2"
+						Margin="0,6,0,0"
+						Command="{Binding Path=IgnoreCommand}"
+						Text="{l:Localize Ignore}" />
+				</Grid>
+			</StackLayout>
+		</ScrollView>
+		<!--<image:ImageView x:Name="PhotoViewer"
+			IsVisible="False" />-->
+	</Grid>
 </base:BaseContentPage>

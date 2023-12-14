@@ -61,6 +61,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Accept.
+        /// </summary>
+        internal static string Accept {
+            get {
+                return ResourceManager.GetString("Accept", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The following names are still available:.
         /// </summary>
         internal static string AccountAvailableAlternatives {
@@ -93,6 +102,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string AccountValidationAlreadyExists {
             get {
                 return ResourceManager.GetString("AccountValidationAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Address.
+        /// </summary>
+        internal static string Address {
+            get {
+                return ResourceManager.GetString("Address", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Address (row 2).
+        /// </summary>
+        internal static string Address2 {
+            get {
+                return ResourceManager.GetString("Address2", resourceCulture);
             }
         }
         
@@ -160,6 +187,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Area.
+        /// </summary>
+        internal static string Area {
+            get {
+                return ResourceManager.GetString("Area", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to remove this contact from your list of contacts?.
         /// </summary>
         internal static string AreYouSureYouWantToRemoveContact {
@@ -201,6 +237,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string CantConnectTo {
             get {
                 return ResourceManager.GetString("CantConnectTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to City.
+        /// </summary>
+        internal static string City {
+            get {
+                return ResourceManager.GetString("City", resourceCulture);
             }
         }
         
@@ -358,6 +403,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Country.
+        /// </summary>
+        internal static string Country {
+            get {
+                return ResourceManager.GetString("Country", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create.
         /// </summary>
         internal static string Create {
@@ -367,11 +421,29 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Created.
+        /// </summary>
+        internal static string Created {
+            get {
+                return ResourceManager.GetString("Created", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create Pin.
         /// </summary>
         internal static string CreatePin {
             get {
                 return ResourceManager.GetString("CreatePin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Decline.
+        /// </summary>
+        internal static string Decline {
+            get {
+                return ResourceManager.GetString("Decline", resourceCulture);
             }
         }
         
@@ -502,6 +574,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to First name.
+        /// </summary>
+        internal static string FirstName {
+            get {
+                return ResourceManager.GetString("FirstName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A link to the ID was copied to the clipboard..
         /// </summary>
         internal static string IdCopiedSuccessfully {
@@ -552,6 +633,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string IdentityState_Rejected {
             get {
                 return ResourceManager.GetString("IdentityState_Rejected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ignore.
+        /// </summary>
+        internal static string Ignore {
+            get {
+                return ResourceManager.GetString("Ignore", resourceCulture);
             }
         }
         
@@ -619,6 +709,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Last name(s).
+        /// </summary>
+        internal static string LastNames {
+            get {
+                return ResourceManager.GetString("LastNames", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Legal Id.
+        /// </summary>
+        internal static string LegalId {
+            get {
+                return ResourceManager.GetString("LegalId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Legal ID not approved..
         /// </summary>
         internal static string LegalIdNotApproved {
@@ -651,6 +759,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string Message {
             get {
                 return ResourceManager.GetString("Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Middle name(s).
+        /// </summary>
+        internal static string MiddleNames {
+            get {
+                return ResourceManager.GetString("MiddleNames", resourceCulture);
             }
         }
         
@@ -835,6 +952,123 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Options.
+        /// </summary>
+        internal static string Options {
+            get {
+                return ResourceManager.GetString("Options", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Organization Address.
+        /// </summary>
+        internal static string OrgAddress {
+            get {
+                return ResourceManager.GetString("OrgAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Organization Address (row 2).
+        /// </summary>
+        internal static string OrgAddress2 {
+            get {
+                return ResourceManager.GetString("OrgAddress2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Organization Information.
+        /// </summary>
+        internal static string OrganizationInformation {
+            get {
+                return ResourceManager.GetString("OrganizationInformation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Organization Area.
+        /// </summary>
+        internal static string OrgArea {
+            get {
+                return ResourceManager.GetString("OrgArea", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Organization City.
+        /// </summary>
+        internal static string OrgCity {
+            get {
+                return ResourceManager.GetString("OrgCity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Organization Country.
+        /// </summary>
+        internal static string OrgCountry {
+            get {
+                return ResourceManager.GetString("OrgCountry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Department.
+        /// </summary>
+        internal static string OrgDepartment {
+            get {
+                return ResourceManager.GetString("OrgDepartment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Organization Name.
+        /// </summary>
+        internal static string OrgName {
+            get {
+                return ResourceManager.GetString("OrgName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Organization Number.
+        /// </summary>
+        internal static string OrgNumber {
+            get {
+                return ResourceManager.GetString("OrgNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Organization Region.
+        /// </summary>
+        internal static string OrgRegion {
+            get {
+                return ResourceManager.GetString("OrgRegion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Role.
+        /// </summary>
+        internal static string OrgRole {
+            get {
+                return ResourceManager.GetString("OrgRole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Organization Zip or Postal Code.
+        /// </summary>
+        internal static string OrgZipCode {
+            get {
+                return ResourceManager.GetString("OrgZipCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Peer review accepted.
         /// </summary>
         internal static string PeerReviewAccepted {
@@ -853,11 +1087,38 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Personal number.
+        /// </summary>
+        internal static string PersonalNumber {
+            get {
+                return ResourceManager.GetString("PersonalNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Request.
+        /// </summary>
+        internal static string Petition {
+            get {
+                return ResourceManager.GetString("Petition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Petition sent.
         /// </summary>
         internal static string PetitionSent {
             get {
                 return ResourceManager.GetString("PetitionSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A request for your signature has been received. Review the reason below, and the information about who sent the request, and then choose how you wish to respond..
+        /// </summary>
+        internal static string PetitionSignatureInformationText {
+            get {
+                return ResourceManager.GetString("PetitionSignatureInformationText", resourceCulture);
             }
         }
         
@@ -903,6 +1164,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string PhoneValidationLength {
             get {
                 return ResourceManager.GetString("PhoneValidationLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Photos.
+        /// </summary>
+        internal static string Photos {
+            get {
+                return ResourceManager.GetString("Photos", resourceCulture);
             }
         }
         
@@ -1114,6 +1384,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Purpose.
+        /// </summary>
+        internal static string Purpose {
+            get {
+                return ResourceManager.GetString("Purpose", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Educational use.
         /// </summary>
         internal static string PurposeEducational {
@@ -1249,6 +1528,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Region or State.
+        /// </summary>
+        internal static string Region {
+            get {
+                return ResourceManager.GetString("Region", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Repair.
         /// </summary>
         internal static string Repair {
@@ -1263,6 +1551,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string RepairRestart {
             get {
                 return ResourceManager.GetString("RepairRestart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Requesting entity.
+        /// </summary>
+        internal static string RequestingEntity {
+            get {
+                return ResourceManager.GetString("RequestingEntity", resourceCulture);
             }
         }
         
@@ -1389,6 +1686,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string SomethingWentWrongWhenSendingPhoneCode {
             get {
                 return ResourceManager.GetString("SomethingWentWrongWhenSendingPhoneCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to State.
+        /// </summary>
+        internal static string State {
+            get {
+                return ResourceManager.GetString("State", resourceCulture);
             }
         }
         
@@ -1560,6 +1866,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string UnexpectedResponse {
             get {
                 return ResourceManager.GetString("UnexpectedResponse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updated.
+        /// </summary>
+        internal static string Updated {
+            get {
+                return ResourceManager.GetString("Updated", resourceCulture);
             }
         }
         
@@ -1776,6 +2091,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string YourLegalIdentityHasBeenObsoleted {
             get {
                 return ResourceManager.GetString("YourLegalIdentityHasBeenObsoleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zip or Postal Code.
+        /// </summary>
+        internal static string ZipCode {
+            get {
+                return ResourceManager.GetString("ZipCode", resourceCulture);
             }
         }
     }
