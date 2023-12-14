@@ -153,6 +153,12 @@
 	    <AutoGen>True</AutoGen>
 	    <DependentUpon>AppResources.resx</DependentUpon>
 	  </Compile>
+	  <Compile Update="UI\Popups\Pin\BasePopup.xaml.cs">
+	    <DependentUpon>%(Filename)</DependentUpon>
+	  </Compile>
+	  <Compile Update="UI\Popups\Pin\CheckPinPage.xaml.cs">
+	    <DependentUpon>CheckPinPage.xaml</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -165,5 +171,14 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\IdApp.Cv\IdApp.Cv.csproj" />
 	  <ProjectReference Include="..\IdApp.Nfc\IdApp.Nfc.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="UI\Popups\Pin\BasePopup.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Popups\Pin\CheckPinPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	</ItemGroup>
 </Project>

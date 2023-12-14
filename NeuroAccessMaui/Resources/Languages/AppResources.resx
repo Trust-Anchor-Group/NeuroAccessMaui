@@ -714,6 +714,12 @@
   <data name="Decline" xml:space="preserve">
     <value>Decline</value>
   </data>
+  <data name="Enter" xml:space="preserve">
+    <value>Enter</value>
+  </data>
+  <data name="EnterPin" xml:space="preserve">
+    <value>Enter PIN</value>
+  </data>
   <data name="FirstName" xml:space="preserve">
     <value>First name</value>
   </data>

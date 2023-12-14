@@ -47,21 +47,19 @@
 		</DataTemplate>
 	</VisualElement.Resources>
 
-	<Grid
-		Style="{StaticResource PopupGridStyle}">
+	<Grid Style="{StaticResource PopupGridStyle}">
 
-		<Border
-			WidthRequest="{Binding ViewWidthRequest}"
-			MaximumHeightRequest="{Binding MaximumViewHeightRequest}"
-			Style="{StaticResource PopupBorderStyle}">
+		<Border WidthRequest="{Binding ViewWidthRequest}"
+				  MaximumHeightRequest="{Binding MaximumViewHeightRequest}"
+				  Style="{StaticResource PopupBorderStyle}">
 
 			<ScrollView x:Name="InnerScrollView"
-				VerticalOptions="Center">
+							VerticalOptions="Center">
 
 				<VerticalStackLayout x:Name="LanguagesContainer"
-					BindableLayout.ItemTemplate="{StaticResource SelectLanguageDataTemplate}"
-					BindableLayout.ItemsSource="{Binding Languages}"
-					Spacing="{StaticResource MediumSpacing}" />
+											BindableLayout.ItemTemplate="{StaticResource SelectLanguageDataTemplate}"
+											BindableLayout.ItemsSource="{Binding Languages}"
+											Spacing="{StaticResource MediumSpacing}" />
 			</ScrollView>
 		</Border>
 	</Grid>

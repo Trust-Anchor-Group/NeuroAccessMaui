@@ -1,62 +1,53 @@
-using Mopups.Pages;
+﻿using CommunityToolkit.Mvvm.Input;
+using NeuroAccessMaui.Services.Localization;
+using System.Globalization;
 
 namespace NeuroAccessMaui.UI.Popups.Pin
 {
-	/// <summary>
-	/// Prompts the user for its PIN
-	/// </summary>
-	public partial class CheckPinPage : PopupPage
+	public partial class CheckPinPage
 	{
-		private readonly TaskCompletionSource<string> result = new();
+		private TaskCompletionSource<string?> result = new();
 
-		/// <summary>
-		/// Task waiting for result. null means dialog was closed without providing a PIN.
-		/// </summary>
-		public Task<string> Result => this.result.Task;
-
-		/// <summary>
-		/// Prompts the user for its PIN
-		/// </summary>
-		public CheckPinPage()
+		public CheckPinPage(ImageSource? Background = null) : base(Background)
 		{
 			this.InitializeComponent();
 			this.BindingContext = this;
+
+			this.CheckPin(App.SelectedLanguage.Name);
 		}
 
-		/// <inheritdoc/>
-		protected override void LayoutChildren(double x, double y, double width, double height)
+		public Task<string?> Result => this.result.Task;
+
+		[RelayCommand]
+		public void CheckPin(object Option)
 		{
-			base.LayoutChildren(x, y, width, height + 1);
+			if (Option is not string Name)
+				return;
+
+			LanguageInfo? SelectedLanguage = null;
+
+			foreach (object Item in this.LanguagesContainer)
+			{
+				if ((Item is VisualElement Element) &&
+					(Element.BindingContext is LanguageInfo LanguageInfo))
+				{
+					if (Name == LanguageInfo.Name)
+					{
+						VisualStateManager.GoToState(Element, VisualStateManager.CommonStates.Selected);
+						SelectedLanguage = LanguageInfo;
+
+						Task ExecutionTask = this.Dispatcher.DispatchAsync(() => this.InnerScrollView.ScrollToAsync(Element, ScrollToPosition.MakeVisible, true));
+					}
+					else
+						VisualStateManager.GoToState(Element, VisualStateManager.CommonStates.Normal);
+				}
+			}
+
+			if ((SelectedLanguage is not null) && (Name != CultureInfo.CurrentUICulture.Name))
+			{
+				Preferences.Set("user_selected_language", SelectedLanguage.TwoLetterISOLanguageName);
+				LocalizationManager.Current.CurrentCulture = SelectedLanguage;
+			}
 		}
-
-		/// <inheritdoc/>
-		protected override void OnAppearing()
-		{
-			base.OnAppearing();
-			//!!! this.Pin.Focus();
-		}
-
-		/// <inheritdoc/>
-		protected override bool OnBackButtonPressed()
-		{
-			return true;
-		}
-
-		private /*async*/ void OnEnter(object? Sender, EventArgs e)
-		{
-			//!!! string Pin = await App.CheckPinAndUnblockUser(this.Pin.Text);
-			//!!! this.Pin.Text = "";
-			//!!! this.result.TrySetResult(Pin);
-		}
-
-		private void Pin_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-		{
-			//!!! this.EnterButton.IsEnabled = !string.IsNullOrEmpty(this.Pin.Text);
-		}
-
-		private void PopupPage_BackgroundClicked(object sender, EventArgs e)
-		{
-
-	    }
 	}
 }

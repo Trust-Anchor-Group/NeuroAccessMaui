@@ -882,7 +882,7 @@ namespace NeuroAccessMaui
 #else
 			bool IsDebug = false;
 #endif
-			if (!IsDebug)
+			if (!IsDebug || Force)
 			{
 				ITagProfile Profile = Instantiate<ITagProfile>();
 
@@ -892,7 +892,28 @@ namespace NeuroAccessMaui
 				bool NeedToVerifyPin = IsInactivitySafeIntervalPassed();
 
 				if (!displayedPinPopup && (Force || NeedToVerifyPin))
-					return await InputPin(Profile) is not null;
+				{
+					if (MainThread.IsMainThread)
+						return await InputPin(Profile) is not null;
+					else
+					{
+						TaskCompletionSource<bool> T = new();
+
+						await MainThread.InvokeOnMainThreadAsync(async () =>
+						{
+							try
+							{
+								T.SetResult(await InputPin(Profile) is not null);
+							}
+							catch (Exception ex)
+							{
+								T.SetException(ex);
+							}
+						});
+
+						return await T.Task;
+					}
+				}
 			}
 
 			return true;
