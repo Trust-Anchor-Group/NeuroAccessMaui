@@ -48,9 +48,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 						(cc is string CountryCode))
 					{
 						if (ISO_3166_1.TryGetCountryByCode(CountryCode, out ISO3166Country? Country))
-						{
 							this.SelectedCountry = Country;
-						}
 					}
 				}
 				catch (Exception ex)
@@ -95,9 +93,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 						(cc is string CountryCode))
 					{
 						if (ISO_3166_1.TryGetCountryByCode(CountryCode, out ISO3166Country? Country))
-						{
 							this.SelectedCountry = Country;
-						}
 					}
 				}
 				catch (Exception ex)
@@ -123,9 +119,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			base.OnPropertyChanged(e);
 
 			if (e.PropertyName == nameof(this.IsBusy))
-			{
 				this.SendCodeCommand.NotifyCanExecuteChanged();
-			}
 		}
 
 		public void LocalizationManagerEventHandler(object? sender, PropertyChangedEventArgs e)
@@ -163,9 +157,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			get
 			{
 				if (this.CountDownSeconds > 0)
-				{
 					return ServiceRef.Localizer[nameof(AppResources.SendCodeSeconds), this.CountDownSeconds];
-				}
 
 				return ServiceRef.Localizer[nameof(AppResources.SendCode)];
 			}
@@ -176,14 +168,10 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			get
 			{
 				if (!this.TypeIsValid)
-				{
 					return ServiceRef.Localizer[nameof(AppResources.PhoneValidationDigits)];
-				}
 
 				if (!this.LengthIsValid)
-				{
 					return ServiceRef.Localizer[nameof(AppResources.PhoneValidationLength)];
-				}
 
 				return string.Empty;
 			}
@@ -209,9 +197,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			ISO3166Country? Result = await Page.Result;
 
 			if (Result is not null)
-			{
 				this.SelectedCountry = Result;
-			}
 
 			return;
 		}
@@ -394,9 +380,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				this.CountDownSeconds = 30;
 
 				if (!this.CountDownTimer.IsRunning)
-				{
 					this.CountDownTimer.Start();
-				}
 			}
 		}
 
@@ -405,13 +389,9 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			if (this.CountDownTimer is not null)
 			{
 				if (this.CountDownSeconds > 0)
-				{
 					this.CountDownSeconds--;
-				}
 				else
-				{
 					this.CountDownTimer.Stop();
-				}
 			}
 		}
 	}

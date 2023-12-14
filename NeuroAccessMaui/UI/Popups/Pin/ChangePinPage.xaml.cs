@@ -14,6 +14,7 @@ namespace NeuroAccessMaui.UI.Popups.Pin
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ChangePinPage"/> class.
 		/// </summary>
+		/// <param name="ViewModel">View model.</param>
 		public ChangePinPage(ChangePinViewModel ViewModel)
 		{
 			this.InitializeComponent();

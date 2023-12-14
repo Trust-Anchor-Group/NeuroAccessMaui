@@ -34,9 +34,7 @@ namespace NeuroAccessMaui.Services.Nfc
 			try
 			{
 				if (!await App.VerifyPin())
-				{
 					return;
-				}
 
 				string TagId = Hashes.BinaryToString(Tag.ID).ToUpper(CultureInfo.InvariantCulture);
 				NfcTagReference TagReference = await NfcTagReference.FindByTagId(TagId);
@@ -109,9 +107,7 @@ namespace NeuroAccessMaui.Services.Nfc
 								if (!Ok)
 								{
 									while (Items.Count > 2)
-									{
 										Items.RemoveAt(2);
-									}
 
 									Ok = await Ndef.SetMessage([.. Items]);
 
@@ -149,9 +145,7 @@ namespace NeuroAccessMaui.Services.Nfc
 									if (!string.IsNullOrEmpty(Constants.UriSchemes.GetScheme(UriRecord.Uri)))
 									{
 										if (await App.OpenUrlAsync(UriRecord.Uri))
-										{
 											return;
-										}
 									}
 								}
 							}

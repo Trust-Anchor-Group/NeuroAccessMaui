@@ -65,9 +65,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Security
 					(string OldPin, string NewPin) = await Page.Result;
 
 					if (OldPin is null || OldPin == NewPin)
-					{
 						return;
-					}
 
 					if (!ServiceRef.TagProfile.HasPin ||
 						ServiceRef.TagProfile.ComputePinHash(OldPin) == ServiceRef.TagProfile.PinHash)
@@ -115,14 +113,10 @@ namespace NeuroAccessMaui.UI.Pages.Main.Security
 		private async Task PermitScreenCapture()
 		{
 			if (!ServiceRef.PlatformSpecific.CanProhibitScreenCapture)
-			{
 				return;
-			}
 
 			if (!await App.VerifyPin())
-			{
 				return;
-			}
 
 			ServiceRef.PlatformSpecific.ProhibitScreenCapture = false;
 			this.CanEnableScreenCapture = false;
@@ -133,14 +127,10 @@ namespace NeuroAccessMaui.UI.Pages.Main.Security
 		private async Task ProhibitScreenCapture()
 		{
 			if (!ServiceRef.PlatformSpecific.CanProhibitScreenCapture)
-			{
 				return;
-			}
 
 			if (!await App.VerifyPin())
-			{
 				return;
-			}
 
 			ServiceRef.PlatformSpecific.ProhibitScreenCapture = true;
 			this.CanEnableScreenCapture = true;
