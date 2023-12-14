@@ -122,7 +122,7 @@
 								HeightRequest="66"
 								WidthRequest="66"
 								BackgroundColor="{Binding BackgroundIcon}"
-								Stroke="#008000"
+								Stroke="{Binding IconColor}"
 								StrokeShape="RoundRectangle 33"
 								StrokeThickness="3">
 								<Path
@@ -131,8 +131,8 @@
 									HeightRequest="40"
 									WidthRequest="40"
 									Aspect="Uniform"
-									Data="{x:Static ui:Geometries.OnboardingIconPath}"
-									Fill="#008000" />
+									Data="{Binding IconGeometry}"
+									Fill="{Binding IconColor}" />
 							</Border>
 							<Label
 								HorizontalOptions="Center"

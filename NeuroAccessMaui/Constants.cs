@@ -63,14 +63,44 @@
 			public const string IotId = "iotid";
 
 			/// <summary>
+			/// The IoT Discovery URI Scheme (iotdisco)
+			/// </summary>
+			public const string IotDisco = "iotdisco";
+
+			/// <summary>
+			/// The IoT Smart Contract URI Scheme (iotsc)
+			/// </summary>
+			public const string IotSc = "iotsc";
+
+			/// <summary>
 			/// TAG Signature (Quick-Login) URI Scheme (tagsign)
 			/// </summary>
 			public const string TagSign = "tagsign";
 
 			/// <summary>
+			/// eDaler URI Scheme (edaler)
+			/// </summary>
+			public const string EDaler = "edaler";
+
+			/// <summary>
+			/// eDaler URI Scheme (edaler)
+			/// </summary>
+			public const string NeuroFeature = "nfeat";
+
+			/// <summary>
 			/// Onboarding URI Scheme (obinfo)
 			/// </summary>
 			public const string Onboarding = "obinfo";
+
+			/// <summary>
+			/// XMPP URI Scheme (xmpp)
+			/// </summary>
+			public const string Xmpp = "xmpp";
+
+			/// <summary>
+			/// AES-256-encrypted data.
+			/// </summary>
+			public const string Aes256 = "aes256";
 
 			/// <summary>
 			/// Gets the predefined scheme from an IoT Code

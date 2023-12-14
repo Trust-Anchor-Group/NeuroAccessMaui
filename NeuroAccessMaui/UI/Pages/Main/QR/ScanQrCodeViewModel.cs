@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.Controls.Shapes;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
 
@@ -137,6 +138,98 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		/// If scanning of codes is restricted to a set of allowed schemas.
 		/// </summary>
 		public bool HasAllowedSchemas => this.navigationArgs?.AllowedSchemas is not null && this.navigationArgs.AllowedSchemas.Length > 0;
+
+		/// <summary>
+		/// Geometry of the icon to display.
+		/// </summary>
+		public Geometry IconGeometry
+		{
+			get
+			{
+				if (this.navigationArgs?.AllowedSchemas is not null &&
+					this.navigationArgs.AllowedSchemas.Length > 0)		// TODO: If multiple allowed schemas: Generic QR-code
+				{
+					switch (this.navigationArgs.AllowedSchemas[0])
+					{
+						case Constants.UriSchemes.IotId:
+							return Geometries.UserIconPath;
+
+						case Constants.UriSchemes.IotDisco:
+							return Geometries.ThingsIconPath;
+
+						case Constants.UriSchemes.IotSc:
+							return Geometries.ContractIconPath;
+
+						case Constants.UriSchemes.TagSign:
+							return Geometries.SignatureIconPath;
+
+						case Constants.UriSchemes.EDaler:
+							return Geometries.EDalerIconPath;
+
+						case Constants.UriSchemes.NeuroFeature:
+							return Geometries.TokenIconPath;
+
+						case Constants.UriSchemes.Onboarding:
+							return Geometries.OnboardingIconPath;
+
+						case Constants.UriSchemes.Aes256:
+							return Geometries.Aes256IconPath;
+
+						case Constants.UriSchemes.Xmpp:
+						default:
+							break;
+					}
+				}
+
+				return Geometries.SignatureIconPath;   // TODO: Generic QR-code
+			}
+		}
+
+		/// <summary>
+		/// Color of the icon to display.
+		/// </summary>
+		public Color IconColor
+		{
+			get
+			{
+				if (this.navigationArgs?.AllowedSchemas is not null &&
+					this.navigationArgs.AllowedSchemas.Length > 0)     // TODO: If multiple allowed schemas: Generic QR-code
+				{
+					switch (this.navigationArgs.AllowedSchemas[0])
+					{
+						case Constants.UriSchemes.IotId:
+							return Geometries.UserColor;
+
+						case Constants.UriSchemes.IotDisco:
+							return Geometries.ThingsColor;
+
+						case Constants.UriSchemes.IotSc:
+							return Geometries.ContractColor;
+
+						case Constants.UriSchemes.TagSign:
+							return Geometries.SignatureColor;
+
+						case Constants.UriSchemes.EDaler:
+							return Geometries.EDalerColor;
+
+						case Constants.UriSchemes.NeuroFeature:
+							return Geometries.TokenColor;
+
+						case Constants.UriSchemes.Onboarding:
+							return Geometries.OnboardingColor;
+
+						case Constants.UriSchemes.Aes256:
+							return Geometries.Aes256Color;
+
+						case Constants.UriSchemes.Xmpp:
+						default:
+							break;
+					}
+				}
+
+				return Geometries.SignatureColor;   // TODO: Generic QR-code
+			}
+		}
 
 		/// <summary>
 		/// Background color of displayed icon.
