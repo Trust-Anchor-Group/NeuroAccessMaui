@@ -29,11 +29,8 @@ namespace NeuroAccessMaui.Links
 		public async Task<bool> TryOpenLink(Uri Link)
 		{
 			string? request = Constants.UriSchemes.RemoveScheme(Link.OriginalString);
-
 			if (request is null)
-			{
 				return false;
-			}
 
 			await ServiceRef.ContractOrchestratorService.TagSignature(request);
 
