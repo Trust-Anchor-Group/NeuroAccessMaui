@@ -31,9 +31,10 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		private async Task ScanQrCode()
 		{
 			string? Url = await Services.UI.QR.QrCode.ScanQrCode(nameof(AppResources.QrPageTitleScanInvitation));
-
 			if (string.IsNullOrEmpty(Url))
 				return;
+
+			await App.OpenUrlAsync(Url);
 		}
 	}
 }
