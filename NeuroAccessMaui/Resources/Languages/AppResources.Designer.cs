@@ -745,7 +745,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Legal Id.
+        ///   Looks up a localized string similar to Legal ID.
         /// </summary>
         internal static string LegalId {
             get {
@@ -1006,6 +1006,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Organizational Information.
+        /// </summary>
+        internal static string OrganizationalInformation {
+            get {
+                return ResourceManager.GetString("OrganizationalInformation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Organization Information.
         /// </summary>
         internal static string OrganizationInformation {
@@ -1110,6 +1119,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string PeerReviewRejected {
             get {
                 return ResourceManager.GetString("PeerReviewRejected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Personal Information.
+        /// </summary>
+        internal static string PersonalInformation {
+            get {
+                return ResourceManager.GetString("PersonalInformation", resourceCulture);
             }
         }
         

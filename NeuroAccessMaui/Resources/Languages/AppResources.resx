@@ -733,7 +733,7 @@
     <value>Last name(s)</value>
   </data>
   <data name="LegalId" xml:space="preserve">
-    <value>Legal Id</value>
+    <value>Legal ID</value>
   </data>
   <data name="MiddleNames" xml:space="preserve">
     <value>Middle name(s)</value>
@@ -806,5 +806,11 @@
   </data>
   <data name="ZipCode" xml:space="preserve">
     <value>Zip or Postal Code</value>
+  </data>
+  <data name="OrganizationalInformation" xml:space="preserve">
+    <value>Organizational Information</value>
+  </data>
+  <data name="PersonalInformation" xml:space="preserve">
+    <value>Personal Information</value>
   </data>
 </root>
