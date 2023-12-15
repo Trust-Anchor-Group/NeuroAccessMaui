@@ -390,8 +390,8 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 				this.EMail = this.RequestorIdentity[Constants.XmppProperties.EMail];
 				this.IsApproved = this.RequestorIdentity.State == IdentityState.Approved;
 
-				this.QrCodeWidth = 300;
-				this.QrCodeHeight = 300;
+				this.QrCodeWidth = 250;
+				this.QrCodeHeight = 250;
 				this.GenerateQrCode(Constants.UriSchemes.CreateIdUri(this.LegalId));
 			}
 			else
