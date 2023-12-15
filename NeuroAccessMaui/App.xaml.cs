@@ -970,7 +970,7 @@ namespace NeuroAccessMaui
 
 			if (ServiceRef.TagProfile.ComputePinHash(Pin) == ServiceRef.TagProfile.PinHash)
 			{
-				ClearStartInactivityTime();
+				SetStartInactivityTime();
 				SetCurrentPinCounter(0);
 				await appInstance!.loginAuditor.UnblockAndReset(Constants.Pin.RemoteEndpoint);
 				await MopupService.Instance.PopAsync();
@@ -1026,14 +1026,6 @@ namespace NeuroAccessMaui
 		private static void SetStartInactivityTime()
 		{
 			savedStartTime = DateTime.Now;
-		}
-
-		/// <summary>
-		/// Clears the conditions of checking inactivity
-		/// </summary>
-		private static void ClearStartInactivityTime()
-		{
-			savedStartTime = DateTime.MaxValue;
 		}
 
 		/// <summary>
