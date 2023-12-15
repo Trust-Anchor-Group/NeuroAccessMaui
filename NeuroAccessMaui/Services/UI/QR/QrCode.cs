@@ -151,9 +151,34 @@ namespace NeuroAccessMaui.Services.UI.QR
 					Rgba = M.ToRGBA(Width, Height, userCode.ColorFunction, true);
 					break;
 
+				case Constants.UriSchemes.IotSc:
+					M = encoder.GenerateMatrix(CorrectionLevel.H, Text);
+					Rgba = M.ToRGBA(Width, Height, contractCode.ColorFunction, true);
+					break;
+
+				case Constants.UriSchemes.IotDisco:
+					M = encoder.GenerateMatrix(CorrectionLevel.H, Text);
+					Rgba = M.ToRGBA(Width, Height, thingsCode.ColorFunction, true);
+					break;
+
+				case Constants.UriSchemes.EDaler:
+					M = encoder.GenerateMatrix(CorrectionLevel.H, Text);
+					Rgba = M.ToRGBA(Width, Height, eDalerCode.ColorFunction, true);
+					break;
+
+				case Constants.UriSchemes.NeuroFeature:
+					M = encoder.GenerateMatrix(CorrectionLevel.H, Text);
+					Rgba = M.ToRGBA(Width, Height, tokenCode.ColorFunction, true);
+					break;
+
 				case Constants.UriSchemes.Onboarding:
 					M = encoder.GenerateMatrix(CorrectionLevel.H, Text);
 					Rgba = M.ToRGBA(Width, Height, onboardingCode.ColorFunction, true);
+					break;
+
+				case Constants.UriSchemes.Aes256:
+					M = encoder.GenerateMatrix(CorrectionLevel.H, Text);
+					Rgba = M.ToRGBA(Width, Height, aes256Code.ColorFunction, true);
 					break;
 
 				default:

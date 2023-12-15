@@ -12,7 +12,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 	/// <summary>
 	/// The view model to bind to when displaying petitioning of a signature in a view or page.
 	/// </summary>
-	public partial class PetitionSignatureViewModel : BaseViewModel
+	public partial class PetitionSignatureViewModel : QrXmppViewModel
 	{
 		private readonly PhotosLoader photosLoader;
 		private string? requestorFullJid;
@@ -104,6 +104,14 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 			await ServiceRef.NavigationService.GoBackAsync();
 		}
 
+		/// <summary>
+		/// Title of the current view
+		/// </summary>
+		public override Task<string> Title => Task.FromResult(this.FullName);
+
+		// Full name of requesting entity.
+		public string FullName => ContactInfo.GetFullName(this.FirstName, this.MiddleNames, this.LastNames);
+
 		#region Properties
 
 		/// <summary>
@@ -117,6 +125,12 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 		/// </summary>
 		[ObservableProperty]
 		private DateTime? updated;
+
+		/// <summary>
+		/// When the identity expires
+		/// </summary>
+		[ObservableProperty]
+		private DateTime? expires;
 
 		/// <summary>
 		/// Legal id of the identity
@@ -330,6 +344,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 			{
 				this.Created = this.RequestorIdentity.Created;
 				this.Updated = this.RequestorIdentity.Updated.GetDateOrNullIfMinValue();
+				this.Expires = this.RequestorIdentity.To.GetDateOrNullIfMinValue();
 				this.LegalId = this.RequestorIdentity.Id;
 				this.State = this.RequestorIdentity.State;
 				this.From = this.RequestorIdentity.From.GetDateOrNullIfMinValue();
@@ -374,6 +389,10 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 				this.PhoneNr = this.RequestorIdentity[Constants.XmppProperties.Phone];
 				this.EMail = this.RequestorIdentity[Constants.XmppProperties.EMail];
 				this.IsApproved = this.RequestorIdentity.State == IdentityState.Approved;
+
+				this.QrCodeWidth = 300;
+				this.QrCodeHeight = 300;
+				this.GenerateQrCode(Constants.UriSchemes.CreateIdUri(this.LegalId));
 			}
 			else
 			{

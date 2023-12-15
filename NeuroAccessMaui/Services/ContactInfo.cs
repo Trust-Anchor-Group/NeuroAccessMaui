@@ -566,6 +566,23 @@ namespace NeuroAccessMaui.Services
 			return Identity.Id;
 		}
 
+		/// <summary>
+		/// Gets the full name of a person.
+		/// </summary>
+		/// <param name="FirstName">First name</param>
+		/// <param name="MiddleNames">Middle name(s)</param>
+		/// <param name="LastNames">Last name(s)</param>
+		public static string GetFullName(string? FirstName, string? MiddleNames, string? LastNames)
+		{
+			StringBuilder? sb = null;
+
+			AppendName(ref sb, FirstName);
+			AppendName(ref sb, MiddleNames);
+			AppendName(ref sb, LastNames);
+
+			return sb.ToString();
+		}
+
 		private static void AppendName(ref StringBuilder? sb, string? Value)
 		{
 			if (!string.IsNullOrEmpty(Value))

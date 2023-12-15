@@ -100,14 +100,15 @@
 						<Label Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,20,0,0" HorizontalOptions="Center" VerticalOptions="CenterAndExpand"
 								 FontSize="Large" Text="{l:Localize LegalId}" Style="{StaticResource SectionTitleLabelStyle}" />
 						<!--    -->
-						<Label Grid.Row="3" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize LegalId}" />
-						<Label Grid.Row="3" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding Path=LegalId}" />
+						<Image Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" x:Name="QrCode" Source="{Binding Path=QrCode}"
+								 IsVisible="{Binding Path=HasQrCode}" WidthRequest="{Binding Path=QrCodeWidth}"
+								 HeightRequest="{Binding Path=QrCodeHeight}" HorizontalOptions="Center"/>
 						<!--    -->
 						<Label Grid.Row="4" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize Created}" />
-						<Label Grid.Row="4" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding Path=Created}" />
+						<Label Grid.Row="4" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding Path=Created, Converter={converters:DateToString}}" />
 						<!--    -->
-						<Label Grid.Row="5" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize Updated}" />
-						<Label Grid.Row="5" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding Path=Updated}" />
+						<Label Grid.Row="5" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize Expires}" />
+						<Label Grid.Row="5" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding Path=Expires, Converter={converters:DateToString}}" />
 						<!--    -->
 						<Label Grid.Row="6" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize State}" />
 						<Label Grid.Row="6" Grid.Column="1" BackgroundColor="{Binding Path=State, Converter={converters:IdentityStateToColor}}"
