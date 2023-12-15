@@ -36,6 +36,9 @@ namespace NeuroAccessMaui.UI.Controls
 		/// <summary>Bindable property for <see cref="ReturnCommand"/>.</summary>
 		public static readonly BindableProperty ReturnCommandProperty = EntryDataElement.ReturnCommandProperty;
 
+		/// <summary>Bindable property for <see cref="IsPassword"/>.</summary>
+		public static readonly BindableProperty IsPasswordProperty = EntryDataElement.IsPasswordProperty;
+
 		public void OnBorderStylePropertyChanged(Style OldValue, Style NewValue)
 		{
 			this.innerBorder.Style = NewValue;
@@ -88,6 +91,11 @@ namespace NeuroAccessMaui.UI.Controls
 			this.innerEntry.ReturnCommand = NewValue;
 		}
 
+		public void OnIsPasswordPropertyChanged(bool OldValue, bool NewValue)
+		{
+			this.innerEntry.IsPassword = NewValue;
+		}
+
 		public Style BorderStyle
 		{
 			get => (Style)this.GetValue(BorderDataElement.BorderStyleProperty);
@@ -136,6 +144,12 @@ namespace NeuroAccessMaui.UI.Controls
 			set => this.SetValue(EntryDataElement.ReturnCommandProperty, value);
 		}
 
+		public bool IsPassword
+		{
+			get => (bool)this.GetValue(EntryDataElement.IsPasswordProperty);
+			set => this.SetValue(EntryDataElement.IsPasswordProperty, value);
+		}
+
 		public Entry Entry => this.innerEntry;
 
 		public override string? ToString()
@@ -160,7 +174,7 @@ namespace NeuroAccessMaui.UI.Controls
 				VerticalOptions = LayoutOptions.Center,
 				HorizontalOptions = LayoutOptions.Fill
 			};
-
+			
 			this.innerGrid = new()
 			{
 				HorizontalOptions = LayoutOptions.Fill,

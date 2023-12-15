@@ -43,5 +43,15 @@ namespace NeuroAccessMaui.UI.Core
 		{
 			((IEntryDataElement)Bindable).OnReturnCommandPropertyChanged((ICommand)OldValue, (ICommand)NewValue);
 		}
+
+		/// <summary>Bindable property for <see cref="IEntryDataElement.IsPassword"/>.</summary>
+		public static readonly BindableProperty IsPasswordProperty =
+			BindableProperty.Create(nameof(IEntryDataElement.IsPassword), typeof(bool), typeof(IEntryDataElement), default(bool),
+									propertyChanged: OnIsPasswordPropertyChanged);
+
+		static void OnIsPasswordPropertyChanged(BindableObject Bindable, object OldValue, object NewValue)
+		{
+			((IEntryDataElement)Bindable).OnIsPasswordPropertyChanged((bool)OldValue, (bool)NewValue);
+		}
 	}
 }

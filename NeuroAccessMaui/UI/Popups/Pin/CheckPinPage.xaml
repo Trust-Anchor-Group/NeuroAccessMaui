@@ -27,6 +27,7 @@
 					<controls:CompositeEntry x:Name="PinEntry"
 													 Style="{StaticResource RegularCompositeEntryStyle}"
 													 EntryData="{Binding PinText}"
+													 IsPassword="True"
 													 ReturnCommand="{Binding EnterPinCommand}"/>
 
 					<controls:TextButton Command="{Binding EnterPinCommand}"
