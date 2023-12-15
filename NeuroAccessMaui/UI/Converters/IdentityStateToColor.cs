@@ -26,9 +26,9 @@ namespace NeuroAccessMaui.UI.Converters
 		{
 			return State switch
 			{
-				IdentityState.Approved => Colors.LightGreen,
-				IdentityState.Created => Colors.LightYellow,
-				_ => Colors.LightSalmon,
+				IdentityState.Approved => Colors.Green,
+				IdentityState.Created => Colors.Yellow,
+				_ => Colors.Salmon,
 			};
 		}
 

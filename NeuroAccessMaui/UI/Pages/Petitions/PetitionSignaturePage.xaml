@@ -3,6 +3,7 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+	xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 	xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
 	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
 	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
@@ -95,7 +96,7 @@
 						<!--    -->
 						<Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,6,0,0" Style="{StaticResource InfoLabelStyle}"
 								 Text="{Binding Path=Purpose}" />
-							  
+
 						<!--    -->
 						<Label Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,20,0,0" HorizontalOptions="Center" VerticalOptions="CenterAndExpand"
 								 FontSize="Large" Text="{l:Localize LegalId}" Style="{StaticResource SectionTitleLabelStyle}" />
@@ -110,9 +111,14 @@
 						<Label Grid.Row="5" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize Expires}" />
 						<Label Grid.Row="5" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding Path=Expires, Converter={converters:DateToString}}" />
 						<!--    -->
-						<Label Grid.Row="6" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize State}" />
-						<Label Grid.Row="6" Grid.Column="1" BackgroundColor="{Binding Path=State, Converter={converters:IdentityStateToColor}}"
-								 Margin="0,6,0,0" Style="{StaticResource ValueLabelWithBackground}" Text="{Binding Path=State}" />
+						<HorizontalStackLayout Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" HorizontalOptions="Center"
+													  Spacing="{StaticResource SmallSpacing}">
+							<Path VerticalOptions="Center" HeightRequest="20" WidthRequest="20" Aspect="Uniform"
+									Data="{x:Static ui:Geometries.InfoCirclePath}"
+									Fill="{Binding Path=State, Converter={converters:IdentityStateToColor}}" />
+
+							<Label Style="{StaticResource ValueLabelWithBackground}" Text="{Binding Path=State}" />
+						</HorizontalStackLayout>
 
 						<!--    -->
 						<Label Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,20,0,0" HorizontalOptions="Center" VerticalOptions="CenterAndExpand"
