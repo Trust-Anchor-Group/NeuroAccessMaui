@@ -123,13 +123,9 @@ namespace NeuroAccessMaui.UI.Popups.Pin
 			ITagProfile TagProfile = ServiceRef.TagProfile;
 
 			if (TagProfile.HasPin && (TagProfile.ComputePinHash(this.OldPin) != TagProfile.PinHash))
-			{
 				this.IncorrectPinAlertShown = true;
-			}
 			else
-			{
 				this.PopupOpened = false;
-			}
 		}
 
 		[RelayCommand]

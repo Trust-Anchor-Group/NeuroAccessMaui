@@ -1008,10 +1008,11 @@ namespace NeuroAccessMaui
 				if (!Profile.HasPin)
 					return string.Empty;
 
-				CheckPinPage Page = new();
+				CheckPinViewModel ViewModel = new();
+				CheckPinPage Page = new(ViewModel);
 				await MopupService.Instance.PushAsync(Page);
 				await CheckUserBlocking();
-				return await Page.Result;
+				return await ViewModel.Result;
 			}
 			catch (Exception)
 			{

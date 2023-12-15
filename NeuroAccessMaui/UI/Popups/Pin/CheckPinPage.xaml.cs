@@ -1,53 +1,34 @@
-﻿using CommunityToolkit.Mvvm.Input;
-using NeuroAccessMaui.Services.Localization;
-using System.Globalization;
-
-namespace NeuroAccessMaui.UI.Popups.Pin
+﻿namespace NeuroAccessMaui.UI.Popups.Pin
 {
+	/// <summary>
+	/// Page letting the user enter a PIN to be verified with the PIN defined by the user earlier.
+	/// </summary>
 	public partial class CheckPinPage
 	{
-		private TaskCompletionSource<string?> result = new();
+		private readonly CheckPinViewModel viewModel;
 
-		public CheckPinPage(ImageSource? Background = null) : base(Background)
+		/// <summary>
+		/// Page letting the user enter a PIN to be verified with the PIN defined by the user earlier.
+		/// </summary>
+		/// <param name="ViewModel">View model.</param>
+		/// <param name="Background">Optional background.</param>
+		public CheckPinPage(CheckPinViewModel ViewModel, ImageSource? Background = null) : base(Background)
 		{
 			this.InitializeComponent();
-			this.BindingContext = this;
-
-			this.CheckPin(App.SelectedLanguage.Name);
+			this.BindingContext = this.viewModel = ViewModel;
 		}
 
-		public Task<string?> Result => this.result.Task;
-
-		[RelayCommand]
-		public void CheckPin(object Option)
+		protected override void OnAppearing()
 		{
-			if (Option is not string Name)
-				return;
+			this.PinEntry.Focus();
+			base.OnAppearing();
+		}
 
-			LanguageInfo? SelectedLanguage = null;
-
-			foreach (object Item in this.LanguagesContainer)
-			{
-				if ((Item is VisualElement Element) &&
-					(Element.BindingContext is LanguageInfo LanguageInfo))
-				{
-					if (Name == LanguageInfo.Name)
-					{
-						VisualStateManager.GoToState(Element, VisualStateManager.CommonStates.Selected);
-						SelectedLanguage = LanguageInfo;
-
-						Task ExecutionTask = this.Dispatcher.DispatchAsync(() => this.InnerScrollView.ScrollToAsync(Element, ScrollToPosition.MakeVisible, true));
-					}
-					else
-						VisualStateManager.GoToState(Element, VisualStateManager.CommonStates.Normal);
-				}
-			}
-
-			if ((SelectedLanguage is not null) && (Name != CultureInfo.CurrentUICulture.Name))
-			{
-				Preferences.Set("user_selected_language", SelectedLanguage.TwoLetterISOLanguageName);
-				LocalizationManager.Current.CurrentCulture = SelectedLanguage;
-			}
+		/// <inheritdoc/>
+		protected override void OnDisappearing()
+		{
+			this.viewModel.Close();
+			base.OnDisappearing();
 		}
 	}
 }

@@ -702,6 +702,9 @@
   <data name="Area" xml:space="preserve">
     <value>Area</value>
   </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
   <data name="City" xml:space="preserve">
     <value>City</value>
   </data>

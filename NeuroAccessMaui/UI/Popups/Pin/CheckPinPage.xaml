@@ -1,51 +1,12 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
-<viewmodel:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Pin.CheckPinPage" x:DataType="viewmodel:CheckPinPage"
+<viewmodel:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Pin.CheckPinPage" x:DataType="viewmodel:CheckPinViewModel"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 	xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+	xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Pin">
-
-	<VisualElement.Resources>
-		<DataTemplate x:Key="CheckPinDataTemplate" x:DataType="l:LanguageInfo">
-			<Border
-				BackgroundColor="{AppThemeBinding Light={StaticResource NormalBackgroundLight},
-												  Dark={StaticResource NormalBackgroundDark}}"
-				Stroke="{AppThemeBinding Light={StaticResource NormalForegroundLight},
-										 Dark={StaticResource NormalBackgroundDark}}"
-				Style="{StaticResource ItemOuterBorderStyle}">
-				<Border.GestureRecognizers>
-					<TapGestureRecognizer
-						Command="{Binding CheckPinCommand, Source={x:Reference ThisPage}}"
-						CommandParameter="{Binding Name}" />
-				</Border.GestureRecognizers>
-
-				<Label x:Name="InnerLabel"
-					HorizontalOptions="Center"
-					Style="{StaticResource BoldItemTitleLabelStyle}"
-					Text="{Binding MyNativeName}"
-					TextColor="{AppThemeBinding Light={StaticResource NormalForegroundLight},
-												Dark={StaticResource NormalForegroundDark}}" />
-
-				<VisualStateManager.VisualStateGroups>
-					<VisualStateGroup
-						Name="CommonStates">
-						<VisualState
-							Name="Normal" />
-						<VisualState
-							Name="Selected">
-							<VisualState.Setters>
-								<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SelectedBackgroundLight}, Dark={StaticResource SelectedBackgroundDark}}" />
-								<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource SelectedBackgroundLight}, Dark={StaticResource SelectedBackgroundDark}}" />
-								<Setter TargetName="InnerLabel" Property="Label.TextColor" Value="{AppThemeBinding Light={StaticResource SelectedForegroundLight}, Dark={StaticResource SelectedForegroundDark}}" />
-							</VisualState.Setters>
-						</VisualState>
-					</VisualStateGroup>
-				</VisualStateManager.VisualStateGroups>
-			</Border>
-		</DataTemplate>
-	</VisualElement.Resources>
 
 	<Grid Style="{StaticResource PopupGridStyle}">
 
@@ -58,7 +19,25 @@
 
 				<VerticalStackLayout x:Name="LanguagesContainer"
 											BindableLayout.ItemTemplate="{StaticResource CheckPinDataTemplate}"
-											Spacing="{StaticResource MediumSpacing}" />
+											Spacing="{StaticResource MediumSpacing}">
+
+					<Label Style="{StaticResource SectionTitleLabelStyle}"
+							 Text="{l:Localize EnterPin}" />
+
+					<controls:CompositeEntry x:Name="PinEntry"
+													 Style="{StaticResource RegularCompositeEntryStyle}"
+													 EntryData="{Binding PinText}"
+													 PathData="{x:Static ui:Geometries.AccountIconPath}" />
+
+					<controls:TextButton Command="{Binding EnterPinCommand}"
+												Style="{StaticResource FilledTextButtonStyle}"
+												LabelData="{l:Localize Enter}" />
+
+					<controls:TextButton Command="{Binding CancelCommand}"
+												Style="{StaticResource OutlinedTextButtonStyle}"
+												LabelData="{l:Localize Cancel}" />
+
+				</VerticalStackLayout>
 			</ScrollView>
 		</Border>
 	</Grid>

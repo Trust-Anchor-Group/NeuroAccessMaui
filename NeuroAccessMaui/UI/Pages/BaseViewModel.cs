@@ -38,6 +38,9 @@ namespace NeuroAccessMaui.UI.Pages
 		/// </summary>
 		public IEnumerable<BaseViewModel> Children => this.childViewModels;
 
+		public virtual double ViewWidthRequest => (DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density) * (7.0 / 8.0);
+		public virtual double MaximumViewHeightRequest => (DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density) * (3.0 / 4.0);
+
 		/// <summary>
 		/// Set a new registration step
 		/// </summary>
