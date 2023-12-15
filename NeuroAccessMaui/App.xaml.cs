@@ -891,7 +891,10 @@ namespace NeuroAccessMaui
 
 				bool NeedToVerifyPin = IsInactivitySafeIntervalPassed();
 
-				if (!displayedPinPopup && (Force || NeedToVerifyPin))
+				if (displayedPinPopup)
+					return false;
+
+				if (Force || NeedToVerifyPin)
 				{
 					if (MainThread.IsMainThread)
 						return await InputPin(Profile) is not null;
