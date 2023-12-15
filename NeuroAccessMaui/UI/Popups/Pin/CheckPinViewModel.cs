@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Mopups.Services;
+using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Pages;
 
 namespace NeuroAccessMaui.UI.Popups.Pin
@@ -9,7 +11,7 @@ namespace NeuroAccessMaui.UI.Popups.Pin
 	/// View model for page letting the user enter a PIN to be verified with the PIN defined by the user earlier.
 	/// </summary>
 	public partial class CheckPinViewModel : BaseViewModel
-    {
+	{
 		private readonly TaskCompletionSource<string?> result = new();
 
 		/// <summary>
@@ -43,8 +45,29 @@ namespace NeuroAccessMaui.UI.Popups.Pin
 		[RelayCommand(CanExecute = nameof(CanEnterPin))]
 		private async Task EnterPin()
 		{
-			this.result.TrySetResult(this.PinText);
-			await MopupService.Instance.PopAsync();
+			if (!string.IsNullOrEmpty(this.PinText))
+			{
+				string Pin = this.PinText;
+
+				if (await App.CheckPinAndUnblockUser(Pin))
+				{
+					this.result.TrySetResult(Pin);
+					await MopupService.Instance.PopAsync();
+				}
+				else
+				{
+					this.PinText = string.Empty;
+
+					long PinAttemptCounter = await App.GetCurrentPinCounter();
+					long RemainingAttempts = Math.Max(0, Constants.Pin.FirstMaxPinAttempts - PinAttemptCounter);
+
+					await ServiceRef.UiSerializer.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						ServiceRef.Localizer[nameof(AppResources.PinIsInvalid), RemainingAttempts]);
+
+					await App.CheckUserBlocking();
+				}
+			}
 		}
 
 		/// <summary>

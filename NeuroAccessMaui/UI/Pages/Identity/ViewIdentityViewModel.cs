@@ -1104,7 +1104,6 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 			try
 			{
 				string? Pin = await App.InputPin();
-
 				if (Pin is null)
 					return;
 

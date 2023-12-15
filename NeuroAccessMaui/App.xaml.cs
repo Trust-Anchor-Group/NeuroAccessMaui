@@ -107,9 +107,9 @@ namespace NeuroAccessMaui
 
 				LoginInterval[] LoginIntervals =
 					[
-						new LoginInterval(Constants.Pin.MaxPinAttempts, TimeSpan.FromHours(Constants.Pin.FirstBlockInHours)),
-						new LoginInterval(Constants.Pin.MaxPinAttempts, TimeSpan.FromHours(Constants.Pin.SecondBlockInHours)),
-						new LoginInterval(Constants.Pin.MaxPinAttempts, TimeSpan.FromHours(Constants.Pin.ThirdBlockInHours))
+						new LoginInterval(Constants.Pin.FirstMaxPinAttempts, TimeSpan.FromHours(Constants.Pin.FirstBlockInHours)),
+						new LoginInterval(Constants.Pin.SecondMaxPinAttempts, TimeSpan.FromHours(Constants.Pin.SecondBlockInHours)),
+						new LoginInterval(Constants.Pin.ThirdMaxPinAttempts, TimeSpan.FromHours(Constants.Pin.ThirdBlockInHours))
 					];
 
 				this.loginAuditor = new LoginAuditor(Constants.Pin.LogAuditorObjectID, LoginIntervals);
@@ -863,7 +863,6 @@ namespace NeuroAccessMaui
 		public static async Task<string?> InputPin()
 		{
 			ITagProfile Profile = App.Instantiate<ITagProfile>();
-
 			if (!Profile.HasPin)
 				return string.Empty;
 
@@ -964,10 +963,10 @@ namespace NeuroAccessMaui
 		/// <summary>
 		/// Check the PIN and reset the blocking counters if it matches
 		/// </summary>
-		public static async Task<string?> CheckPinAndUnblockUser(string Pin)
+		public static async Task<bool> CheckPinAndUnblockUser(string Pin)
 		{
 			if (Pin is null)
-				return null;
+				return false;
 
 			long PinAttemptCounter = await GetCurrentPinCounter();
 
@@ -976,8 +975,8 @@ namespace NeuroAccessMaui
 				SetStartInactivityTime();
 				SetCurrentPinCounter(0);
 				await appInstance!.loginAuditor.UnblockAndReset(Constants.Pin.RemoteEndpoint);
-				await MopupService.Instance.PopAsync();
-				return Pin;
+
+				return true;
 			}
 			else
 			{
@@ -986,17 +985,9 @@ namespace NeuroAccessMaui
 
 				PinAttemptCounter++;
 				SetCurrentPinCounter(PinAttemptCounter);
+
+				return false;
 			}
-
-			long RemainingAttempts = Constants.Pin.MaxPinAttempts - PinAttemptCounter;
-			IUiSerializer Ui = Instantiate<IUiSerializer>();
-
-			await Ui.DisplayAlert(
-				ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-				ServiceRef.Localizer[nameof(AppResources.PinIsInvalid), RemainingAttempts]);
-
-			await CheckUserBlocking();
-			return Pin;
 		}
 
 		private static async Task<string?> InputPin(ITagProfile Profile)
@@ -1044,7 +1035,7 @@ namespace NeuroAccessMaui
 		/// <summary>
 		/// Obtains the value for CurrentPinCounter
 		/// </summary>
-		private static async Task<long> GetCurrentPinCounter()
+		internal static async Task<long> GetCurrentPinCounter()
 		{
 			return await ServiceRef.SettingsService.RestoreLongState(Constants.Pin.CurrentPinAttemptCounter);
 		}

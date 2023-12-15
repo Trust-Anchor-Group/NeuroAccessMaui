@@ -529,19 +529,29 @@
 			public const int PossibleInactivityInMinutes = 5;
 
 			/// <summary>
-			/// Maximum pin enetring attempts
+			/// Maximum pin enetring attempts, first interval
 			/// </summary>
-			public const int MaxPinAttempts = 3;
+			public const int FirstMaxPinAttempts = 5;
 
 			/// <summary>
-			/// First Block in hours after 3 attempts
+			/// First Block in hours after <see cref="FirstMaxPinAttempts"/> attempts
 			/// </summary>
 			public const int FirstBlockInHours = 1;
+
+			/// <summary>
+			/// Maximum pin enetring attempts, second interval
+			/// </summary>
+			public const int SecondMaxPinAttempts = 2;
 
 			/// <summary>
 			/// Second Block in hours after 3 attempts
 			/// </summary>
 			public const int SecondBlockInHours = 24;
+
+			/// <summary>
+			/// Maximum pin enetring attempts, third interval
+			/// </summary>
+			public const int ThirdMaxPinAttempts = 2;
 
 			/// <summary>
 			/// Third Block in hours after 3 attempts
