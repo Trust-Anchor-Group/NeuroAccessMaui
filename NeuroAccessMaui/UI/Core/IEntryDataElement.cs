@@ -1,4 +1,6 @@
-﻿namespace NeuroAccessMaui.UI.Core
+﻿using System.Windows.Input;
+
+namespace NeuroAccessMaui.UI.Core
 {
 	internal interface IEntryDataElement
 	{
@@ -6,10 +8,12 @@
 		string EntryData { get; }
 		string EntryHint { get; }
 		Style EntryStyle { get; }
+		ICommand ReturnCommand { get; }
 
 		//note to implementor: but implement this method explicitly
 		void OnEntryDataPropertyChanged(string OldValue, string NewValue);
 		void OnEntryHintPropertyChanged(string OldValue, string NewValue);
 		void OnEntryStylePropertyChanged(Style OldValue, Style NewValue);
+		void OnReturnCommandPropertyChanged(ICommand OldValue, ICommand NewValue);
 	}
 }

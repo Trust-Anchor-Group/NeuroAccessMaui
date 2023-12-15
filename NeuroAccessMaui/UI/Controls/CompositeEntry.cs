@@ -1,4 +1,5 @@
-﻿using Microsoft.Maui.Controls.Shapes;
+﻿using System.Windows.Input;
+using Microsoft.Maui.Controls.Shapes;
 using NeuroAccessMaui.UI.Core;
 using PathShape = Microsoft.Maui.Controls.Shapes.Path;
 
@@ -32,6 +33,9 @@ namespace NeuroAccessMaui.UI.Controls
 		/// <summary>Bindable property for <see cref="EntryStyle"/>.</summary>
 		public static readonly BindableProperty EntryStyleProperty = EntryDataElement.EntryStyleProperty;
 
+		/// <summary>Bindable property for <see cref="ReturnCommand"/>.</summary>
+		public static readonly BindableProperty ReturnCommandProperty = EntryDataElement.ReturnCommandProperty;
+
 		public void OnBorderStylePropertyChanged(Style OldValue, Style NewValue)
 		{
 			this.innerBorder.Style = NewValue;
@@ -39,7 +43,7 @@ namespace NeuroAccessMaui.UI.Controls
 
 		public void OnStackSpacingPropertyChanged(double OldValue, double NewValue)
 		{
-			this.innerGrid.ColumnSpacing = this.innerPath.IsVisible? NewValue : 0;
+			this.innerGrid.ColumnSpacing = this.innerPath.IsVisible ? NewValue : 0;
 		}
 
 		public void OnPathDataPropertyChanged(Geometry OldValue, Geometry NewValue)
@@ -77,6 +81,11 @@ namespace NeuroAccessMaui.UI.Controls
 		public void OnEntryStylePropertyChanged(Style OldValue, Style NewValue)
 		{
 			this.innerEntry.Style = NewValue;
+		}
+
+		public void OnReturnCommandPropertyChanged(ICommand OldValue, ICommand NewValue)
+		{
+			this.innerEntry.ReturnCommand = NewValue;
 		}
 
 		public Style BorderStyle
@@ -121,6 +130,12 @@ namespace NeuroAccessMaui.UI.Controls
 			set => this.SetValue(EntryDataElement.EntryStyleProperty, value);
 		}
 
+		public ICommand ReturnCommand
+		{
+			get => (ICommand)this.GetValue(EntryDataElement.ReturnCommandProperty);
+			set => this.SetValue(EntryDataElement.ReturnCommandProperty, value);
+		}
+
 		public Entry Entry => this.innerEntry;
 
 		public override string? ToString()
@@ -143,7 +158,7 @@ namespace NeuroAccessMaui.UI.Controls
 			this.innerEntry = new()
 			{
 				VerticalOptions = LayoutOptions.Center,
-				HorizontalOptions = LayoutOptions.Fill,
+				HorizontalOptions = LayoutOptions.Fill
 			};
 
 			this.innerGrid = new()

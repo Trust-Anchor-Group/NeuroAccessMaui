@@ -27,7 +27,7 @@
 					<controls:CompositeEntry x:Name="PinEntry"
 													 Style="{StaticResource RegularCompositeEntryStyle}"
 													 EntryData="{Binding PinText}"
-													 PathData="{x:Static ui:Geometries.AccountIconPath}" />
+													 ReturnCommand="{Binding EnterPinCommand}"/>
 
 					<controls:TextButton Command="{Binding EnterPinCommand}"
 												Style="{StaticResource FilledTextButtonStyle}"

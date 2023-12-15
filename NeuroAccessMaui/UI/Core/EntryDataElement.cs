@@ -1,4 +1,6 @@
-﻿namespace NeuroAccessMaui.UI.Core
+﻿using System.Windows.Input;
+
+namespace NeuroAccessMaui.UI.Core
 {
 	internal static class EntryDataElement
 	{
@@ -30,6 +32,16 @@
 		static void OnEntryStylePropertyChanged(BindableObject Bindable, object OldValue, object NewValue)
 		{
 			((IEntryDataElement)Bindable).OnEntryStylePropertyChanged((Style)OldValue, (Style)NewValue);
+		}
+
+		/// <summary>Bindable property for <see cref="IEntryDataElement.ReturnCommand"/>.</summary>
+		public static readonly BindableProperty ReturnCommandProperty =
+			BindableProperty.Create(nameof(IEntryDataElement.ReturnCommand), typeof(ICommand), typeof(IEntryDataElement), default(ICommand),
+									propertyChanged: OnReturnCommandPropertyChanged);
+
+		static void OnReturnCommandPropertyChanged(BindableObject Bindable, object OldValue, object NewValue)
+		{
+			((IEntryDataElement)Bindable).OnReturnCommandPropertyChanged((ICommand)OldValue, (ICommand)NewValue);
 		}
 	}
 }
