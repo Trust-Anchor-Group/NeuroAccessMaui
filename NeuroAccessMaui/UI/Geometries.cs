@@ -87,6 +87,11 @@ namespace NeuroAccessMaui.UI
 		M10 18C5.59 18 2 14.41 2 10C2 5.59 5.59 2 10 2C14.41 2 18 5.59 18 10C18 14.41 14.41 18 10 18Z
 		""");
 
+		public static readonly Geometry CirclePath = GeometryConverter.ParseStringToPathGeometry(
+			"""
+		M10 18C5.59 18 2 14.41 2 10C2 5.59 5.59 2 10 2C14.41 2 18 5.59 18 10C18 14.41 14.41 18 10 18Z
+		""");
+
 		public static readonly Geometry DropDownArrowPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 		M0.333496 0.5L5.3335 5.5L10.3335 0.5H0.333496Z

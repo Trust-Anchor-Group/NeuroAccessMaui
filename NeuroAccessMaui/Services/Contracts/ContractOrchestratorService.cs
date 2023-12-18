@@ -143,7 +143,6 @@ namespace NeuroAccessMaui.Services.Contracts
 				else
 				{
 					(bool Succeeded, LegalIdentity? LegalId) = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.GetLegalIdentity(e.SignatoryIdentityId));
-
 					if (!Succeeded || LegalId is null)
 						return;
 

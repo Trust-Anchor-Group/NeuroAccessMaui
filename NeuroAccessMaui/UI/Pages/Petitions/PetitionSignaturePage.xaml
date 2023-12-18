@@ -105,20 +105,20 @@
 								 IsVisible="{Binding Path=HasQrCode}" WidthRequest="{Binding Path=QrCodeWidth}"
 								 HeightRequest="{Binding Path=QrCodeHeight}" HorizontalOptions="Center"/>
 						<!--    -->
-						<Label Grid.Row="4" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize Created}" />
-						<Label Grid.Row="4" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding Path=Created, Converter={converters:DateToString}}" />
-						<!--    -->
-						<Label Grid.Row="5" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize Expires}" />
-						<Label Grid.Row="5" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding Path=Expires, Converter={converters:DateToString}}" />
-						<!--    -->
-						<HorizontalStackLayout Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" HorizontalOptions="Center"
-													  Spacing="{StaticResource SmallSpacing}">
+						<HorizontalStackLayout Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" HorizontalOptions="Center"
+													  Spacing="{StaticResource SmallSpacing}" Margin="0,0,0,12">
 							<Path VerticalOptions="Center" HeightRequest="20" WidthRequest="20" Aspect="Uniform"
-									Data="{x:Static ui:Geometries.InfoCirclePath}"
+									Data="{x:Static ui:Geometries.CirclePath}"
 									Fill="{Binding Path=State, Converter={converters:IdentityStateToColor}}" />
 
 							<Label Style="{StaticResource ValueLabelWithBackground}" Text="{Binding Path=State}" />
 						</HorizontalStackLayout>
+						<!--    -->
+						<Label Grid.Row="5" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize Created}" />
+						<Label Grid.Row="5" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding Path=Created, Converter={converters:DateToString}}" />
+						<!--    -->
+						<Label Grid.Row="6" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize Expires}" />
+						<Label Grid.Row="6" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding Path=Expires, Converter={converters:DateToString}}" />
 
 						<!--    -->
 						<Label Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,20,0,0" HorizontalOptions="Center" VerticalOptions="CenterAndExpand"
