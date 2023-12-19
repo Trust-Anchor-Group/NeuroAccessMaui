@@ -59,7 +59,7 @@
 							<!--  15  -->
 							<RowDefinition Height="Auto" />
 							<!--  16  -->
-							<RowDefinition Height="Auto" />
+							<RowDefinition Height="{Binding PhotosRowHeight}" />
 							<!--  17  -->
 							<RowDefinition Height="{Binding OrgRowHeight}" />
 							<!--  18  -->
@@ -154,8 +154,10 @@
 						<Label Grid.Row="16" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding Path=Country}" />
 
 						<!--    -->
-						<Label Grid.Row="17" Grid.Column="0" Margin="0,6,6,0" HorizontalOptions="StartAndExpand" Text="{l:Localize Photos}" Style="{StaticResource KeyLabel}"/>
-						<ScrollView Grid.Row="17" Grid.Column="1" Margin="0,6,0,0" HeightRequest="68" Orientation="Horizontal">
+						<Label Grid.Row="17" Grid.Column="0" Margin="0,6,6,0" HorizontalOptions="StartAndExpand" Text="{l:Localize Photos}"
+								 Style="{StaticResource KeyLabel}" IsVisible="{Binding HasPhotos}"/>
+						<ScrollView Grid.Row="17" Grid.Column="1" Margin="0,6,0,0" HeightRequest="68" Orientation="Horizontal"
+										IsVisible="{Binding HasPhotos}">
 							<FlexLayout x:Name="PhotosLayout" AlignContent="Center" AlignItems="Center" BindableLayout.ItemsSource="{Binding Path=Photos}"
 											Direction="Row" JustifyContent="Start">
 								<BindableLayout.ItemTemplate>

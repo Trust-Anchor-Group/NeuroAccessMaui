@@ -308,9 +308,21 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 		private bool hasOrg;
 
 		/// <summary>
-		/// If organization information is available.
+		/// Height of row containing organization information.
 		/// </summary>
 		public GridLength OrgRowHeight => this.HasOrg ? GridLength.Auto : new GridLength(0, GridUnitType.Absolute);
+
+		/// <summary>
+		/// If photos are available.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(PhotosRowHeight))]
+		private bool hasPhotos;
+
+		/// <summary>
+		/// Height of row containing photos.
+		/// </summary>
+		public GridLength PhotosRowHeight => this.HasPhotos ? GridLength.Auto : new GridLength(0, GridUnitType.Absolute);
 
 		/// <summary>
 		/// PhoneNr of the identity
@@ -386,6 +398,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 					!string.IsNullOrEmpty(this.OrgRegion) ||
 					!string.IsNullOrEmpty(this.OrgCountryCode) ||
 					!string.IsNullOrEmpty(this.OrgCountry);
+				this.HasPhotos = this.Photos.Count > 0;
 				this.PhoneNr = this.RequestorIdentity[Constants.XmppProperties.Phone];
 				this.EMail = this.RequestorIdentity[Constants.XmppProperties.EMail];
 				this.IsApproved = this.RequestorIdentity.State == IdentityState.Approved;
@@ -427,6 +440,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 				this.OrgCountryCode = Constants.NotAvailableValue;
 				this.OrgCountry = Constants.NotAvailableValue;
 				this.HasOrg = false;
+				this.HasPhotos = false;
 				this.PhoneNr = Constants.NotAvailableValue;
 				this.EMail = Constants.NotAvailableValue;
 				this.IsApproved = false;
