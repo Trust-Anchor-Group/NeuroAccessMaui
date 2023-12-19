@@ -1807,6 +1807,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Technical.
+        /// </summary>
+        internal static string Technical {
+            get {
+                return ResourceManager.GetString("Technical", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A temporary OTP code has been used. The application will stop working in about a week. You&apos;ll have to reinstall the application to use it again..
         /// </summary>
         internal static string TestOtpUsed {

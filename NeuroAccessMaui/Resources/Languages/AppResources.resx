@@ -816,4 +816,7 @@
   <data name="Expires" xml:space="preserve">
     <value>Expires</value>
   </data>
+  <data name="Technical" xml:space="preserve">
+    <value>Technical</value>
+  </data>
 </root>
