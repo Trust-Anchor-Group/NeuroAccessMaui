@@ -1,10 +1,12 @@
-﻿using System.Collections.ObjectModel;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Data;
 using NeuroAccessMaui.Services.UI.Photos;
+using System.Collections.ObjectModel;
+using System.Windows.Input;
 using Waher.Networking.XMPP.Contracts;
 
 namespace NeuroAccessMaui.UI.Pages.Petitions
@@ -25,6 +27,8 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 		/// </summary>
 		public PetitionSignatureViewModel()
 		{
+			this.CopyCommand = new Command(async (Item) => await this.CopyToClipboard(Item));
+
 			this.photosLoader = new PhotosLoader(this.Photos);
 		}
 
@@ -56,6 +60,11 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 
 			await base.OnDispose();
 		}
+
+		/// <summary>
+		/// The command for copying data to clipboard.
+		/// </summary>
+		public ICommand CopyCommand { get; }
 
 		/// <summary>
 		/// The list of photos related to the identity being petitioned.
@@ -133,10 +142,28 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 		private DateTime? expires;
 
 		/// <summary>
-		/// Legal id of the identity
+		/// Identifier of Legal ID
 		/// </summary>
 		[ObservableProperty]
 		private string? legalId;
+
+		/// <summary>
+		/// Network ID
+		/// </summary>
+		[ObservableProperty]
+		private string? networkId;
+
+		/// <summary>
+		/// If network ID is available.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(NetworkIdRowHeight))]
+		private bool hasNetworkId;
+
+		/// <summary>
+		/// Height of row containing network ID.
+		/// </summary>
+		public GridLength NetworkIdRowHeight => this.HasNetworkId ? GridLength.Auto : new GridLength(0, GridUnitType.Absolute);
 
 		/// <summary>
 		/// Current state of the identity
@@ -358,6 +385,8 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 				this.Updated = this.RequestorIdentity.Updated.GetDateOrNullIfMinValue();
 				this.Expires = this.RequestorIdentity.To.GetDateOrNullIfMinValue();
 				this.LegalId = this.RequestorIdentity.Id;
+				this.NetworkId = this.RequestorIdentity.GetJid();
+				this.HasNetworkId = !string.IsNullOrEmpty(this.NetworkId);
 				this.State = this.RequestorIdentity.State;
 				this.From = this.RequestorIdentity.From.GetDateOrNullIfMinValue();
 				this.To = this.RequestorIdentity.To.GetDateOrNullIfMinValue();
@@ -412,6 +441,8 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 				this.Created = DateTime.MinValue;
 				this.Updated = null;
 				this.LegalId = Constants.NotAvailableValue;
+				this.NetworkId = Constants.NotAvailableValue;
+				this.HasNetworkId = false;
 				this.State = IdentityState.Compromised;
 				this.From = null;
 				this.To = null;
@@ -446,5 +477,39 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 				this.IsApproved = false;
 			}
 		}
+
+		/// <summary>
+		/// Copies Item to clipboard
+		/// </summary>
+		[RelayCommand]
+		private async Task CopyToClipboard(object Item)
+		{
+			try
+			{
+				if (Item is string Label)
+				{
+					if (Label == this.LegalId)
+					{
+						await Clipboard.SetTextAsync(Constants.UriSchemes.IotId + ":" + this.LegalId);
+						await ServiceRef.UiSerializer.DisplayAlert(
+							ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+							ServiceRef.Localizer[nameof(AppResources.IdCopiedSuccessfully)]);
+					}
+					else
+					{
+						await Clipboard.SetTextAsync(Label);
+						await ServiceRef.UiSerializer.DisplayAlert(
+							ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+							ServiceRef.Localizer[nameof(AppResources.TagValueCopiedToClipboard)]);
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
+			}
+		}
+
 	}
 }

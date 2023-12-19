@@ -4,6 +4,9 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
+	<Color x:Key="ClickableColor">Blue</Color>
+	<Color x:Key="ClickableColorDarkTheme">#0a84ff</Color>
+
 	<Style ApplyToDerivedTypes="True" TargetType="Label">
 		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
 		<Setter Property="BackgroundColor" Value="Transparent" />
@@ -37,6 +40,13 @@
 		<Setter Property="FontSize" Value="14" />
 		<Setter Property="Margin" Value="10" />
 		<Setter Property="FontAttributes" Value="Bold" />
+	</Style>
+
+	<Style x:Key="ClickableValueLabel" ApplyToDerivedTypes="False" TargetType="Label">
+		<Setter Property="FontSize" Value="14" />
+		<Setter Property="Margin" Value="10" />
+		<Setter Property="FontAttributes" Value="Bold" />
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ClickableColor}, Dark={StaticResource ClickableColorDarkTheme}}"/>
 	</Style>
 
 	<Style x:Key="RegularItemTitleLabelStyle" ApplyToDerivedTypes="False" TargetType="Label">

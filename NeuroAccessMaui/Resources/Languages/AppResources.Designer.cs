@@ -808,11 +808,29 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Network ID.
+        /// </summary>
+        internal static string NetworkID {
+            get {
+                return ResourceManager.GetString("NetworkID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Network seems to be missing. Please check your configuration and coverage and try again..
         /// </summary>
         internal static string NetworkSeemsToBeMissing {
             get {
                 return ResourceManager.GetString("NetworkSeemsToBeMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Neuro-ID.
+        /// </summary>
+        internal static string NeuroID {
+            get {
+                return ResourceManager.GetString("NeuroID", resourceCulture);
             }
         }
         

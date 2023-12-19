@@ -91,6 +91,10 @@
 							<!--  31  -->
 							<RowDefinition Height="Auto" />
 							<!--  32  -->
+							<RowDefinition Height="Auto" />
+							<!--  33  -->
+							<RowDefinition Height="{Binding NetworkIdRowHeight}" />
+							<!--  34  -->
 						</Grid.RowDefinitions>
 						<!--    -->
 						<Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" HorizontalOptions="Center" VerticalOptions="CenterAndExpand"
@@ -220,11 +224,28 @@
 						<!--    -->
 						<Label Grid.Row="32" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize Expires}" />
 						<Label Grid.Row="32" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding Path=Expires, Converter={converters:DateToString}}" />
+						<!--    -->
+						<Label Grid.Row="33" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize NeuroID}" />
+						<Label Grid.Row="33" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ClickableValueLabel}" Text="{Binding Path=LegalId}">
+							<Label.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding LegalId}" />
+							</Label.GestureRecognizers>
+						</Label>
+						<!--    -->
+						<Label Grid.Row="34" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}"
+								 Text="{l:Localize NetworkID}" IsVisible="{Binding HasNetworkId}"/>
+						<Label Grid.Row="34" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ClickableValueLabel}"
+								 Text="{Binding Path=NetworkId}" IsVisible="{Binding HasNetworkId}">
+							<Label.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding NetworkId}" />
+							</Label.GestureRecognizers>
+						</Label>
 					</Grid>
 				</VerticalStackLayout>
 
 				<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource SmallSpacing}">
-					<Label HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="Large" Text="{l:Localize Options}" />
+					<Label HorizontalOptions="Center" VerticalOptions="CenterAndExpand" Text="{l:Localize Options}"
+							 FontSize="Large" Style="{StaticResource SectionTitleLabelStyle}"/>
 
 					<controls:TextButton x:Name="AcceptButton" LabelData="{l:Localize Accept}" Command="{Binding AcceptCommand}"
 												Style="{StaticResource FilledTextButtonStyle}" />
