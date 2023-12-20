@@ -580,7 +580,7 @@ namespace NeuroAccessMaui.Services
 			AppendName(ref sb, MiddleNames);
 			AppendName(ref sb, LastNames);
 
-			return sb.ToString();
+			return sb?.ToString() ?? string.Empty;
 		}
 
 		private static void AppendName(ref StringBuilder? sb, string? Value)
