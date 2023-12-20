@@ -104,6 +104,7 @@
 	<ItemGroup>
 	  <None Remove="Resources\Images\close.svg" />
 	  <None Remove="Resources\Images\flyout_header.svg" />
+	  <None Remove="Resources\Images\view_id.svg" />
 	</ItemGroup>
 
 	<ItemGroup>

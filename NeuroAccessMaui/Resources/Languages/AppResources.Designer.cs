@@ -1996,6 +1996,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to View ID.
+        /// </summary>
+        internal static string ViewId {
+            get {
+                return ResourceManager.GetString("ViewId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Warning.
         /// </summary>
         internal static string WarningTitle {

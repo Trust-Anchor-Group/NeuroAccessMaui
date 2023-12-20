@@ -831,4 +831,7 @@
   <data name="ID" xml:space="preserve">
     <value>ID</value>
   </data>
+  <data name="ViewId" xml:space="preserve">
+    <value>View ID</value>
+  </data>
 </root>
