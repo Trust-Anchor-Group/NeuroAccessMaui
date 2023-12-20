@@ -7,6 +7,7 @@
 		 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main"
 		 xmlns:main="clr-namespace:NeuroAccessMaui.UI.Pages.Main"
 		 xmlns:registration="clr-namespace:NeuroAccessMaui.UI.Pages.Registration"
+		 xmlns:identity="clr-namespace:NeuroAccessMaui.UI.Pages.Identity"
 		 FlyoutBehavior="Flyout"
 		 FlyoutHeaderBehavior="Scroll">
 
@@ -18,12 +19,15 @@
 					  FlyoutItemIsVisible="false"
 					  Route="MainPage" />
 
-	<FlyoutItem Title="{l:Localize Home}">
+	<FlyoutItem Title="{l:Localize ID}">
 		<Tab>
+			<ShellContent ContentTemplate="{DataTemplate identity:ViewIdentityPage}"
+							  FlyoutItemIsVisible="false"
+							  Route="ViewIdentityPage" />
 		</Tab>
 	</FlyoutItem>
 
-	<MenuItem Text="{l:Localize Close}" Clicked="Close_Clicked"/>
+	<MenuItem Text="{l:Localize Close}" IconImageSource="close.svg" Clicked="Close_Clicked"/>
 
 	<VisualElement.Behaviors>
 		<mct:StatusBarBehavior StatusBarColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}"

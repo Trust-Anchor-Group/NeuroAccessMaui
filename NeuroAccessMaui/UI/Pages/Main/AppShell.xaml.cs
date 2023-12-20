@@ -1,4 +1,5 @@
-﻿using NeuroAccessMaui.UI.Pages.Main.QR;
+﻿using NeuroAccessMaui.UI.Pages.Identity;
+using NeuroAccessMaui.UI.Pages.Main.QR;
 using NeuroAccessMaui.UI.Pages.Main.VerifyCode;
 using NeuroAccessMaui.UI.Pages.Petitions;
 
@@ -18,6 +19,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			Routing.RegisterRoute(nameof(ScanQrCodePage), typeof(ScanQrCodePage));
 			Routing.RegisterRoute(nameof(VerifyCodePage), typeof(VerifyCodePage));
 			Routing.RegisterRoute(nameof(PetitionSignaturePage), typeof(PetitionSignaturePage));
+			Routing.RegisterRoute(nameof(ViewIdentityPage), typeof(ViewIdentityPage));
 		}
 
 		private void Close_Clicked(object sender, EventArgs e)
