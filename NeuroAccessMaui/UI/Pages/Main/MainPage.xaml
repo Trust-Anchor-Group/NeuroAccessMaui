@@ -10,7 +10,9 @@
 							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main"
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-							 xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views">
+							 xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
+							 Shell.FlyoutBehavior="Flyout"
+							 Shell.NavBarIsVisible="True">
 
 	<Grid x:Name="TheMainGrid"
 			RowDefinitions="auto,*"
