@@ -4,6 +4,7 @@ using NeuroAccessMaui.UI.Pages.Registration;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using Waher.Events;
+using NeuroAccessMaui.UI.Pages.Main;
 
 namespace NeuroAccessMaui.UI.Pages
 {
@@ -24,9 +25,7 @@ namespace NeuroAccessMaui.UI.Pages
 		public T ViewModel<T>() where T : BaseViewModel
 		{
 			if (this.BindingContext is T ViewModel)
-			{
 				return ViewModel;
-			}
 
 			throw new ArgumentException("Wrong view model type: " + typeof(T).FullName);
 		}
@@ -90,9 +89,7 @@ namespace NeuroAccessMaui.UI.Pages
 			try
 			{
 				if (await ServiceRef.SettingsService.WaitInitDone())
-				{
 					await ViewModel.RestoreState();
-				}
 			}
 			catch (Exception e)
 			{
@@ -134,9 +131,7 @@ namespace NeuroAccessMaui.UI.Pages
 				try
 				{
 					if (await ServiceRef.SettingsService.WaitInitDone())
-					{
 						await ViewModel.SaveState();
-					}
 				}
 				catch (Exception e)
 				{
@@ -183,15 +178,17 @@ namespace NeuroAccessMaui.UI.Pages
 				if (ViewModel is RegistrationViewModel RegistrationViewModel)
 				{
 					if (RegistrationViewModel.GoToPrevCommand.CanExecute(null))
-					{
 						RegistrationViewModel.GoToPrevCommand.Execute(null);
-					}
 
 					return true;
 				}
 				else
 				{
-					ServiceRef.NavigationService.GoBackAsync();
+					MainThread.BeginInvokeOnMainThread(async () =>
+					{
+						await ServiceRef.NavigationService.GoBackAsync();
+					});
+
 					return true;
 				}
 			}
@@ -229,16 +226,12 @@ namespace NeuroAccessMaui.UI.Pages
 				if (this.Parent is null)
 				{
 					if (ViewModel is ILifeCycleView LifeCycleView)
-					{
 						await LifeCycleView.DoDispose();
-					}
 				}
 				else
 				{
 					if (ViewModel is ILifeCycleView LifeCycleView)
-					{
 						await LifeCycleView.DoInitialize();
-					}
 				}
 			}
 			catch (Exception ex)
@@ -246,8 +239,5 @@ namespace NeuroAccessMaui.UI.Pages
 				Log.Critical(ex);
 			}
 		}
-
 	}
-
-
 }

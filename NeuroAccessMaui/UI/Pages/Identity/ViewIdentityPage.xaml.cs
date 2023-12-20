@@ -23,7 +23,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 
 		private void Image_Tapped(object? Sender, EventArgs e)
 		{
-			ViewIdentityViewModel ViewModel = this.ViewModel<ViewIdentityViewModel>();
+			//ViewIdentityViewModel ViewModel = this.ViewModel<ViewIdentityViewModel>();
 
 			//!!! Attachment[] Attachments = ViewModel.LegalIdentity?.Attachments;
 			//!!! this.PhotoViewer.ShowPhotos(Attachments);

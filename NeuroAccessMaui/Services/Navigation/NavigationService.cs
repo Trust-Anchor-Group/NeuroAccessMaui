@@ -3,6 +3,8 @@ using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.Resources.Languages;
 using Waher.Events;
 using Waher.Runtime.Inventory;
+using NeuroAccessMaui.UI.Pages.Main;
+using Waher.Networking.XMPP.StreamErrors;
 
 namespace NeuroAccessMaui.Services.Navigation
 {
@@ -136,6 +138,14 @@ namespace NeuroAccessMaui.Services.Navigation
 
 					this.isNavigating = true;
 					await Shell.Current.GoToAsync(BackRoute, Animate);
+				}
+				else
+				{
+					ShellNavigationState State = Shell.Current.CurrentState;
+					if (Uri.TryCreate(State.Location, "..", out Uri? BackLocation))
+						await Shell.Current.GoToAsync(BackLocation);
+					else
+						await Shell.Current.GoToAsync("//MainPage");
 				}
 			}
 			catch (Exception e)

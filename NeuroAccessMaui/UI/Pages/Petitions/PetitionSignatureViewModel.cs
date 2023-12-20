@@ -108,7 +108,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 		}
 
 		[RelayCommand]
-		private async Task Ignore()
+		private static async Task Ignore()
 		{
 			await ServiceRef.NavigationService.GoBackAsync();
 		}

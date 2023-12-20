@@ -72,50 +72,32 @@
 				}
 
 				if (ParentArgs is null)
-				{
 					return ".."; // Pop is inherited by default
-				}
 
 				BackMethod ParentBackMethod = ParentArgs.backMethod;
 
 				if (ParentBackMethod == BackMethod.Pop)
-				{
 					return "..";
-				}
 				else if (ParentBackMethod == BackMethod.ToThisPage)
-				{
 					return BackRoute + "/..";
-				}
 				/*
 				else if (ParentBackMethod == BackMethod.ToParentPage)
-				{
 					return BackRoute + "/../..";
-				}
 				else if (ParentBackMethod == BackMethod.ToMainPage)
-				{
 					return "///" + nameof(MainPage);
-				}
 				*/
 			}
 			else
 			{
 				if (BackMethod == BackMethod.Pop)
-				{
 					return "..";
-				}
 				else if (BackMethod == BackMethod.ToThisPage)
-				{
 					return "..";
-				}
 				/*
 				else if (BackMethod == BackMethod.ToParentPage)
-				{
 					return "../..";
-				}
 				if (this.backMethod == BackMethod.ToMainPage)
-				{
 					return "///" + nameof(MainPage);
-				}
 				*/
 			}
 

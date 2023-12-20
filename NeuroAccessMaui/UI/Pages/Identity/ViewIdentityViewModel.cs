@@ -15,6 +15,7 @@ using Waher.Content.Xml;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;
+using System.Windows.Input;
 
 namespace NeuroAccessMaui.UI.Pages.Identity
 {
@@ -36,6 +37,8 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 		/// </summary>
 		public ViewIdentityViewModel()
 		{
+			this.CopyCommand = new Command(async (Item) => await this.CopyToClipboard(Item));
+
 			this.photosLoader = new PhotosLoader(this.Photos);
 		}
 
@@ -112,7 +115,10 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 		{
 			this.Created = this.LegalIdentity?.Created ?? DateTime.MinValue;
 			this.Updated = this.LegalIdentity?.Updated.GetDateOrNullIfMinValue();
+			this.Expires = this.LegalIdentity?.To.GetDateOrNullIfMinValue();
 			this.LegalId = this.LegalIdentity?.Id;
+			this.NetworkId = this.LegalIdentity?.GetJid();
+			this.HasNetworkId = !string.IsNullOrEmpty(this.NetworkId);
 
 			if (this.requestorIdentity is not null)
 				this.BareJid = this.requestorIdentity.GetJid(Constants.NotAvailableValue);
@@ -169,8 +175,13 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 					!string.IsNullOrEmpty(this.OrgRegion) ||
 					!string.IsNullOrEmpty(this.OrgCountryCode) ||
 					!string.IsNullOrEmpty(this.OrgCountry);
+				this.HasPhotos = this.Photos.Count > 0;
 				this.PhoneNr = this.LegalIdentity[Constants.XmppProperties.Phone];
 				this.EMail = this.LegalIdentity[Constants.XmppProperties.EMail];
+
+				this.QrCodeWidth = 250;
+				this.QrCodeHeight = 250;
+				this.GenerateQrCode(Constants.UriSchemes.CreateIdUri(this.LegalId!));
 			}
 			else
 			{
@@ -199,8 +210,11 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 				this.OrgCountryCode = Constants.NotAvailableValue;
 				this.OrgCountry = Constants.NotAvailableValue;
 				this.HasOrg = false;
+				this.HasPhotos = false;
 				this.PhoneNr = string.Empty;
 				this.EMail = string.Empty;
+				this.NetworkId = Constants.NotAvailableValue;
+				this.HasNetworkId = false;
 			}
 
 			this.IsApproved = this.LegalIdentity?.State == IdentityState.Approved;
@@ -309,6 +323,11 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 		#region Properties
 
 		/// <summary>
+		/// The command for copying data to clipboard.
+		/// </summary>
+		public ICommand CopyCommand { get; }
+
+		/// <summary>
 		/// Holds a list of photos associated with this identity.
 		/// </summary>
 		public ObservableCollection<Photo> Photos { get; } = [];
@@ -331,10 +350,34 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 		private DateTime? updated;
 
 		/// <summary>
+		/// When the identity expires
+		/// </summary>
+		[ObservableProperty]
+		private DateTime? expires;
+
+		/// <summary>
 		/// Legal id of the identity
 		/// </summary>
 		[ObservableProperty]
 		private string? legalId;
+
+		/// <summary>
+		/// Network ID
+		/// </summary>
+		[ObservableProperty]
+		private string? networkId;
+
+		/// <summary>
+		/// If network ID is available.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(NetworkIdRowHeight))]
+		private bool hasNetworkId;
+
+		/// <summary>
+		/// Height of row containing network ID.
+		/// </summary>
+		public GridLength NetworkIdRowHeight => this.HasNetworkId ? GridLength.Auto : new GridLength(0, GridUnitType.Absolute);
 
 		/// <summary>
 		/// Bare Jid of the identity
@@ -521,6 +564,18 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 		/// If organization information is available.
 		/// </summary>
 		public GridLength OrgRowHeight => this.HasOrg ? GridLength.Auto : new GridLength(0, GridUnitType.Absolute);
+
+		/// <summary>
+		/// If photos are available.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(PhotosRowHeight))]
+		private bool hasPhotos;
+
+		/// <summary>
+		/// Height of row containing photos.
+		/// </summary>
+		public GridLength PhotosRowHeight => this.HasPhotos ? GridLength.Auto : new GridLength(0, GridUnitType.Absolute);
 
 		/// <summary>
 		/// Country code of the identity
