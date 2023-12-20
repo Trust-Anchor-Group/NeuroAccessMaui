@@ -12,12 +12,5 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			this.InitializeComponent();
 			this.ContentViewModel = ViewModel;
 		}
-
-		/// <inheritdoc/>
-		protected override async void OnParentSet()
-		{
-			base.OnParentSet();
-			await this.LabelLayout.FadeTo(1.0, 2000, Easing.CubicInOut);
-		}
 	}
 }

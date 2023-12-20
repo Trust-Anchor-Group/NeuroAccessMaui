@@ -5,54 +5,9 @@
 	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Registration"
 	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views">
 
-	<Grid RowDefinitions="*,auto,3*,auto">
-
-		<HorizontalStackLayout x:Name="LabelLayout"
-			Grid.Row="1"
-			VerticalOptions="Center"
-			HorizontalOptions="Center"
-			Spacing="8"
-			Opacity="0">
-			<Label
-				VerticalTextAlignment="Center"
-				FontSize="16"
-				Text="NEW" />
-			<Label
-				VerticalTextAlignment="Center"
-				FontSize="22"
-				Text="WAYS" />
-			<Label
-				VerticalTextAlignment="Center"
-				FontSize="16"
-				Text="OF" />
-			<Label
-				VerticalTextAlignment="Center"
-				FontSize="22"
-				Text="WORLDMAKING" />
-		</HorizontalStackLayout>
-
-		<ActivityIndicator
-			Grid.Row="2"
-			VerticalOptions="Center"
-			IsVisible="true"
-			IsRunning="true" />
-
-		<Border
-			Grid.Row="3"
-			Padding="0"
-			IsVisible="{Binding DisplayConnectionText}"
-			Style="{StaticResource ItemOuterBorderStyle}"
-			BackgroundColor="{AppThemeBinding Light={StaticResource NormalBackgroundLight},
-											  Dark={StaticResource NormalBackgroundDark}}">
-			<Border.StrokeShape>
-				<RoundRectangle CornerRadius="{StaticResource SmallCornerRadius}" />
-			</Border.StrokeShape>
-
-			<Label
-				HorizontalOptions="Center"
-				Text="{Binding ConnectionStateText}"
-				TextColor="{AppThemeBinding Light={StaticResource AccentForegroundLight},
-											Dark={StaticResource AccentForegroundDark}}" />
-		</Border>
-	</Grid>
+	<ActivityIndicator VerticalOptions="Center"
+							 HorizontalOptions="Center"
+							 IsVisible="true"
+							 IsRunning="true" />
+	
 </base:BaseRegistrationView>
