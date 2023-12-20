@@ -1,74 +1,27 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <?xaml-comp compile="true" ?>
-<ResourceDictionary
-	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-	xmlns:s="clr-namespace:System;assembly=mscorlib">
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+						  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+						  xmlns:s="clr-namespace:System;assembly=mscorlib">
 
-	<s:Double x:Key="SmallSpacing">
-		8
-	</s:Double>
+	<s:Double x:Key="SmallSpacing">8</s:Double>
+	<s:Double x:Key="MediumSpacing">16</s:Double>
+	<s:Double x:Key="LargeSpacing">24</s:Double>
+	<s:Double x:Key="SmallCornerRadius">4</s:Double>
+	<s:Double x:Key="MediumCornerRadius">8</s:Double>
+	<s:Double x:Key="LargeCornerRadius">16</s:Double>
+	<s:Double x:Key="ThinStrokeThickness">1</s:Double>
+	<s:Double x:Key="MediumStrokeThickness">2</s:Double>
+	<s:Double x:Key="BoldStrokeThickness">4</s:Double>
+	<Thickness x:Key="SmallMargins">8</Thickness>
+	<Thickness x:Key="MediumMargins">16</Thickness>
+	<Thickness x:Key="LargeMargins">24</Thickness>
+	<Thickness x:Key="ButtonThinMargins">16,8</Thickness>
+	<Thickness x:Key="ButtonMediumMargins">24,12</Thickness>
 
-	<s:Double x:Key="MediumSpacing">
-		16
-	</s:Double>
-
-	<s:Double x:Key="LargeSpacing">
-		24
-	</s:Double>
-
-	<s:Double x:Key="SmallCornerRadius">
-		4
-	</s:Double>
-
-	<s:Double x:Key="MediumCornerRadius">
-		8
-	</s:Double>
-
-	<s:Double x:Key="LargeCornerRadius">
-		16
-	</s:Double>
-
-	<s:Double x:Key="ThinStrokeThickness">
-		1
-	</s:Double>
-
-	<s:Double x:Key="MediumStrokeThickness">
-		2
-	</s:Double>
-
-	<s:Double x:Key="BoldStrokeThickness">
-		4
-	</s:Double>
-
-	<Thickness x:Key="SmallMargins">
-		8
-	</Thickness>
-
-	<Thickness x:Key="MediumMargins">
-		16
-	</Thickness>
-
-	<Thickness x:Key="LargeMargins">
-		24
-	</Thickness>
-
-	<Thickness x:Key="ButtonThinMargins">
-		16,8
-	</Thickness>
-
-	<Thickness x:Key="ButtonMediumMargins">
-		24,12
-	</Thickness>
-
-	<OnPlatform x:Key="EditMediumMargins"
-		x:TypeArguments="Thickness">
-		<On
-			Platform="Android"
-			Value="16,0" />
-		<On
-			Platform="iOS"
-			Value="16,12" />
+	<OnPlatform x:Key="EditMediumMargins" x:TypeArguments="Thickness">
+		<On Platform="Android" Value="16,0" />
+		<On Platform="iOS" Value="16,12" />
 	</OnPlatform>
 
 	<!--
@@ -412,15 +365,11 @@
         </Setter>
     </Style>	-->
 
-	<Style
-		ApplyToDerivedTypes="True"
-		TargetType="ActivityIndicator">
+	<Style ApplyToDerivedTypes="True" TargetType="ActivityIndicator">
 		<Setter Property="Color" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
 	</Style>
 
-	<Style
-		ApplyToDerivedTypes="True"
-		TargetType="SearchBar">
+	<Style ApplyToDerivedTypes="True" TargetType="SearchBar">
 		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource NormalEditForegroundLight}, Dark={StaticResource NormalEditForegroundDark}}" />
 		<Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource NormalEditPlaceholderLight}, Dark={StaticResource NormalEditPlaceholderDark}}" />
 		<Setter Property="CancelButtonColor" Value="{AppThemeBinding Light={StaticResource EnabledFilledButtonBackgroundLight}, Dark={StaticResource EnabledFilledButtonBackgroundDark}}" />
@@ -446,23 +395,17 @@
 	-->
 	</Style>
 
-	<Style
-		ApplyToDerivedTypes="True"
-		TargetType="Page">
+	<Style ApplyToDerivedTypes="True" TargetType="Page">
 		<Setter Property="Padding" Value="0" />
 		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}" />
 	</Style>
 
-	<Style
-		ApplyToDerivedTypes="True"
-		TargetType="ContentPage">
+	<Style ApplyToDerivedTypes="True" TargetType="ContentPage">
 		<Setter Property="Shell.FlyoutBehavior" Value="Disabled" />
 		<Setter Property="Shell.NavBarIsVisible" Value="False" />
 	</Style>
 
-	<Style
-		ApplyToDerivedTypes="True"
-		TargetType="ContentView">
+	<Style ApplyToDerivedTypes="True" TargetType="ContentView">
 		<Setter Property="Padding" Value="0" />
 		<Setter Property="Margin" Value="0" />
 		<Setter Property="VerticalOptions" Value="FillAndExpand" />
@@ -470,17 +413,13 @@
 		<Setter Property="BackgroundColor" Value="Transparent" />
 	</Style>
 
-	<Style
-		ApplyToDerivedTypes="True"
-		TargetType="AbsoluteLayout">
+	<Style ApplyToDerivedTypes="True" TargetType="AbsoluteLayout">
 		<Setter Property="VerticalOptions" Value="FillAndExpand" />
 		<Setter Property="HorizontalOptions" Value="FillAndExpand" />
 		<Setter Property="BackgroundColor" Value="Transparent" />
 	</Style>
 
-	<Style
-		ApplyToDerivedTypes="True"
-		TargetType="Grid">
+	<Style ApplyToDerivedTypes="True" TargetType="Grid">
 		<Setter Property="Padding" Value="0" />
 		<Setter Property="Margin" Value="0" />
 		<Setter Property="RowSpacing" Value="0" />
@@ -490,9 +429,7 @@
 		<Setter Property="BackgroundColor" Value="Transparent" />
 	</Style>
 
-	<Style
-		ApplyToDerivedTypes="True"
-		TargetType="StackLayout">
+	<Style ApplyToDerivedTypes="True" TargetType="StackLayout">
 		<Setter Property="Padding" Value="0" />
 		<Setter Property="Margin" Value="0" />
 		<Setter Property="Spacing" Value="0" />
@@ -501,9 +438,7 @@
 		<Setter Property="BackgroundColor" Value="Transparent" />
 	</Style>
 
-	<Style
-		ApplyToDerivedTypes="True"
-		TargetType="VerticalStackLayout">
+	<Style ApplyToDerivedTypes="True" TargetType="VerticalStackLayout">
 		<Setter Property="Padding" Value="0" />
 		<Setter Property="Margin" Value="0" />
 		<Setter Property="Spacing" Value="0" />
@@ -512,9 +447,7 @@
 		<Setter Property="BackgroundColor" Value="Transparent" />
 	</Style>
 
-	<Style
-		ApplyToDerivedTypes="True"
-		TargetType="HorizontalStackLayout">
+	<Style 		ApplyToDerivedTypes="True" TargetType="HorizontalStackLayout">
 		<Setter Property="Padding" Value="0" />
 		<Setter Property="Margin" Value="0" />
 		<Setter Property="VerticalOptions" Value="FillAndExpand" />
@@ -522,16 +455,14 @@
 		<Setter Property="BackgroundColor" Value="Transparent" />
 	</Style>
 
-	<Style
-		ApplyToDerivedTypes="True"
-		TargetType="Shell">
+	<Style ApplyToDerivedTypes="True" TargetType="Shell">
 		<Setter Property="Shell.FlyoutBehavior" Value="Disabled" />
 		<Setter Property="Shell.NavBarIsVisible" Value="False" />
 		<Setter Property="Shell.NavBarHasShadow" Value="False" />
 		<Setter Property="Shell.BackgroundColor" Value="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}" />
+		<Setter Property="Shell.ForegroundColor" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
 		<Setter Property="Shell.TitleColor" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
 		<!--
-		<Setter Property="Shell.ForegroundColor" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
 		<Setter Property="Shell.DisabledColor" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
 		<Setter Property="Shell.UnselectedColor" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
 		<Setter Property="Shell.TabBarBackgroundColor" Value="{AppThemeBinding Light={StaticResource SecondaryBackgroundLight}, Dark={StaticResource SecondaryBackgroundDark}}" />
@@ -541,17 +472,13 @@
 		-->
 	</Style>
 
-	<Style
-		ApplyToDerivedTypes="True"
-		TargetType="NavigationPage">
+	<Style ApplyToDerivedTypes="True" TargetType="NavigationPage">
 		<Setter Property="BarBackgroundColor" Value="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}" />
 		<Setter Property="BarTextColor" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
 		<Setter Property="IconColor" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
 	</Style>
 
-	<Style
-		ApplyToDerivedTypes="True"
-		TargetType="TabbedPage">
+	<Style ApplyToDerivedTypes="True" TargetType="TabbedPage">
 		<Setter Property="BarBackgroundColor" Value="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}" />
 		<Setter Property="BarTextColor" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
 		<!--
@@ -560,9 +487,7 @@
 		-->
 	</Style>
 
-	<Style
-		ApplyToDerivedTypes="True"
-		TargetType="ListView">
+	<Style ApplyToDerivedTypes="True" TargetType="ListView">
 		<Setter Property="Margin" Value="0" />
 		<Setter Property="SelectionMode" Value="Single" />
 		<Setter Property="VerticalScrollBarVisibility" Value="Never" />
@@ -572,9 +497,7 @@
 		<Setter Property="BackgroundColor" Value="Transparent" />
 	</Style>
 
-	<Style
-		ApplyToDerivedTypes="True"
-		TargetType="CollectionView">
+	<Style ApplyToDerivedTypes="True" TargetType="CollectionView">
 		<Setter Property="Margin" Value="0" />
 		<Setter Property="ItemSizingStrategy" Value="MeasureFirstItem" />
 		<Setter Property="SelectionMode" Value="Single" />
@@ -585,9 +508,7 @@
 		<Setter Property="BackgroundColor" Value="Transparent" />
 	</Style>
 
-	<Style
-		ApplyToDerivedTypes="True"
-		TargetType="ScrollView">
+	<Style ApplyToDerivedTypes="True" TargetType="ScrollView">
 		<Setter Property="Margin" Value="0" />
 		<Setter Property="VerticalScrollBarVisibility" Value="Never" />
 		<Setter Property="HorizontalScrollBarVisibility" Value="Never" />
@@ -596,9 +517,7 @@
 		<Setter Property="BackgroundColor" Value="Transparent" />
 	</Style>
 
-	<Style
-		ApplyToDerivedTypes="True"
-		TargetType="Border">
+	<Style ApplyToDerivedTypes="True" TargetType="Border">
 		<Setter Property="Stroke" Value="Transparent" />
 		<Setter Property="StrokeThickness" Value="{StaticResource MediumStrokeThickness}" />
 		<Setter Property="VerticalOptions" Value="FillAndExpand" />
@@ -606,18 +525,14 @@
 		<Setter Property="BackgroundColor" Value="Transparent" />
 	</Style>
 
-	<Style x:Key="PopupGridStyle"
-		ApplyToDerivedTypes="False"
-		TargetType="Grid">
+	<Style x:Key="PopupGridStyle" ApplyToDerivedTypes="False" TargetType="Grid">
 		<Setter Property="Padding" Value="{StaticResource SmallMargins}" />
 		<Setter Property="HorizontalOptions" Value="Center" />
 		<Setter Property="VerticalOptions" Value="Center" />
 		<Setter Property="RowDefinitions" Value="auto" />
 	</Style>
 
-	<Style x:Key="PopupBorderStyle"
-		ApplyToDerivedTypes="False"
-		TargetType="Border">
+	<Style x:Key="PopupBorderStyle" ApplyToDerivedTypes="False" TargetType="Border">
 		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SecondaryBackgroundLight}, Dark={StaticResource SecondaryBackgroundDark}}" />
 		<Setter Property="Padding" Value="{StaticResource LargeMargins}" />
 		<Setter Property="StrokeShape">
@@ -628,9 +543,7 @@
 		</Setter>
 	</Style>
 
-	<Style x:Key="InnerFrameBorderStyle"
-		ApplyToDerivedTypes="False"
-		TargetType="Border">
+	<Style x:Key="InnerFrameBorderStyle" ApplyToDerivedTypes="False" TargetType="Border">
 		<Setter Property="VerticalOptions" Value="Center" />
 		<Setter Property="StrokeThickness" Value="0" />
 		<Setter Property="StrokeShape">
@@ -638,18 +551,14 @@
 		</Setter>
 	</Style>
 
-	<Style x:Key="ItemOuterBorderStyle"
-		ApplyToDerivedTypes="False"
-		TargetType="Border">
+	<Style x:Key="ItemOuterBorderStyle" ApplyToDerivedTypes="False" TargetType="Border">
 		<Setter Property="Padding" Value="{StaticResource MediumMargins}" />
 		<Setter Property="StrokeShape">
 			<RoundRectangle CornerRadius="{StaticResource SmallCornerRadius}" />
 		</Setter>
 	</Style>
 
-	<Style
-		ApplyToDerivedTypes="True"
-		TargetType="Shadow">
+	<Style ApplyToDerivedTypes="True" TargetType="Shadow">
 		<Setter Property="Radius" Value="16" />
 		<Setter Property="Opacity" Value="0.8" />
 		<Setter Property="Brush" Value="{StaticResource PrimaryBackgroundDark}" />
