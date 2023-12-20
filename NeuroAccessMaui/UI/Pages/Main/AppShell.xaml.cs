@@ -19,5 +19,15 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			Routing.RegisterRoute(nameof(VerifyCodePage), typeof(VerifyCodePage));
 			Routing.RegisterRoute(nameof(PetitionSignaturePage), typeof(PetitionSignaturePage));
 		}
+
+		private void Close_Clicked(object sender, EventArgs e)
+		{
+			Current.FlyoutIsPresented = false;
+
+			MainThread.BeginInvokeOnMainThread(async () =>
+			{
+				await App.Stop();
+			});
+		}
 	}
 }
