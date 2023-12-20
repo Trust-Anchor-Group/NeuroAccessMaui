@@ -275,9 +275,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 					Doc.LoadXml(Xml);
 
 					if ((Doc.DocumentElement is null) || (Doc.DocumentElement.NamespaceURI != ContractsClient.NamespaceOnboarding))
-					{
 						throw new Exception("Invalid Invitation XML");
-					}
 
 					LinkedList<XmlElement> ToProcess = new();
 					ToProcess.AddLast(Doc.DocumentElement);
