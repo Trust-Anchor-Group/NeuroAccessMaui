@@ -72,8 +72,7 @@
 	<Shell.FlyoutHeader>
 		<Frame Style="{StaticResource ShellFrame}" Padding="1" CornerRadius="0">
 			<Grid HeightRequest="200">
-				<Image Aspect="AspectFill" WidthRequest="233" HeightRequest="110"
-						 Source="{AppThemeBinding Light=neuro_access_logo_light.svg, Dark=neuro_access_logo_dark.svg}" />
+				<Image Aspect="AspectFill" WidthRequest="144" HeightRequest="144" Source="flyout_header.svg" />
 			</Grid>
 		</Frame>
 	</Shell.FlyoutHeader>

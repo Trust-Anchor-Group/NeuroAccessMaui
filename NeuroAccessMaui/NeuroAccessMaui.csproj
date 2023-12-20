@@ -102,6 +102,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Images\flyout_header.svg" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Include="Platforms\iOS\IOSHelpers.cs" />
 	  <None Include="Platforms\iOS\Security\BlurProtectionManager.cs" />
 	  <None Include="Platforms\iOS\Security\ScreenRecordingProtectionManager.cs" />
