@@ -825,4 +825,7 @@
   <data name="Technical" xml:space="preserve">
     <value>Technical</value>
   </data>
+  <data name="Home" xml:space="preserve">
+    <value>Home</value>
+  </data>
 </root>
