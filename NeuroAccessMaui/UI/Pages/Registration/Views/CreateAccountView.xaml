@@ -43,28 +43,22 @@
 						EntryData="{Binding AccountText}"
 						PathData="{x:Static ui:Geometries.AccountIconPath}" />
 
-					<Grid
-						RowDefinitions="auto"
-						ColumnDefinitions="auto,auto"
-						HorizontalOptions="Center"
-						ColumnSpacing="{StaticResource SmallSpacing}"
-						IsVisible="{Binding AccountIsNotValid}">
+					<Grid RowDefinitions="auto"
+							ColumnDefinitions="auto,*"
+							HorizontalOptions="Center"
+							ColumnSpacing="{StaticResource SmallSpacing}"
+							IsVisible="{Binding AccountIsNotValid}">
 
-						<Path
-							Grid.Column="0"
-							VerticalOptions="Center"
-							HeightRequest="20"
-							WidthRequest="20"
-							Aspect="Uniform"
-							Data="{x:Static ui:Geometries.InfoCirclePath}"
-							Fill="{AppThemeBinding Light={StaticResource InvalidatedEditLight},
-												   Dark={StaticResource InvalidatedEditDark}}" />
-						<Label
-							Grid.Column="1"
-							VerticalOptions="Center"
-							Text="{l:Localize AccountValidationAlreadyExists}"
-							TextColor="{AppThemeBinding Light={StaticResource InvalidatedEditLight},
-														Dark={StaticResource InvalidatedEditDark}}" />
+						<Path Grid.Column="0"
+								VerticalOptions="Center"
+								HeightRequest="20"
+								WidthRequest="20"
+								Aspect="Uniform"
+								Data="{x:Static ui:Geometries.InfoCirclePath}"
+								Fill="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
+
+						<Label Grid.Column="1" VerticalOptions="Center" Text="{l:Localize AccountValidationAlreadyExists}"
+								 TextColor="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
 					</Grid>
 				</VerticalStackLayout>
 

@@ -39,26 +39,21 @@
 
 				<Grid
 					RowDefinitions="auto"
-					ColumnDefinitions="auto,auto"
+					ColumnDefinitions="auto,*"
 					HorizontalOptions="Center"
 					ColumnSpacing="{StaticResource SmallSpacing}"
 					IsVisible="{Binding IsNotValid, Source={x:Reference EmailValidator}}">
 
-					<Path
-						Grid.Column="0"
-						VerticalOptions="Center"
-						HeightRequest="20"
-						WidthRequest="20"
-						Aspect="Uniform"
-						Data="{x:Static ui:Geometries.InfoCirclePath}"
-						Fill="{AppThemeBinding Light={StaticResource InvalidatedEditLight},
-											   Dark={StaticResource InvalidatedEditDark}}" />
-					<Label
-						Grid.Column="1"
-						VerticalOptions="Center"
-						Text="{Binding LocalizedValidationError}"
-						TextColor="{AppThemeBinding Light={StaticResource InvalidatedEditLight},
-													Dark={StaticResource InvalidatedEditDark}}" />
+					<Path Grid.Column="0"
+							VerticalOptions="Center"
+							HeightRequest="20"
+							WidthRequest="20"
+							Aspect="Uniform"
+							Data="{x:Static ui:Geometries.InfoCirclePath}"
+							Fill="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
+
+					<Label Grid.Column="1" VerticalOptions="Center" Text="{Binding LocalizedValidationError}"
+							 TextColor="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
 				</Grid>
 
 			</VerticalStackLayout>

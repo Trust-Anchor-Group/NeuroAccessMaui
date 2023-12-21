@@ -25,7 +25,7 @@
 												 IsPassword="True"/>
 
 				<Grid RowDefinitions="auto"
-						ColumnDefinitions="auto,auto"
+						ColumnDefinitions="auto,*"
 						HorizontalOptions="Center"
 						ColumnSpacing="{StaticResource SmallSpacing}"
 						IsVisible="{Binding IsPin1NotValid}">
