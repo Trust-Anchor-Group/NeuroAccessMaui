@@ -20,6 +20,7 @@
 					  Route="MainPage" />
 
 	<MenuItem Text="{l:Localize ViewId}" IconImageSource="view_id.svg" Clicked="ViewId_Clicked"/>
+	<MenuItem Text="{l:Localize Settings}" IconImageSource="settings.svg" Clicked="Settings_Clicked"/>
 	<MenuItem Text="{l:Localize Close}" IconImageSource="close.svg" Clicked="Close_Clicked"/>
 
 	<VisualElement.Behaviors>

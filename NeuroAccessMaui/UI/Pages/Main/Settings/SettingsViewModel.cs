@@ -5,17 +5,17 @@ using NeuroAccessMaui.UI.Popups.Pin;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 
-namespace NeuroAccessMaui.UI.Pages.Main.Security
+namespace NeuroAccessMaui.UI.Pages.Main.Settings
 {
 	/// <summary>
 	/// The view model to bind to for when displaying security options.
 	/// </summary>
-	public partial class SecurityViewModel : XmppViewModel
+	public partial class SettingsViewModel : XmppViewModel
 	{
 		/// <summary>
-		/// Creates an instance of the <see cref="SecurityViewModel"/> class.
+		/// Creates an instance of the <see cref="SettingsViewModel"/> class.
 		/// </summary>
-		public SecurityViewModel()
+		public SettingsViewModel()
 		{
 		}
 

@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Maui;
 using NeuroAccessMaui.UI.Pages.Identity;
 using NeuroAccessMaui.UI.Pages.Main;
-using NeuroAccessMaui.UI.Pages.Main.Security;
+using NeuroAccessMaui.UI.Pages.Main.Settings;
 using NeuroAccessMaui.UI.Pages.Petitions;
 using NeuroAccessMaui.UI.Pages.Registration;
 using NeuroAccessMaui.UI.Pages.Registration.Views;
@@ -17,7 +17,7 @@ namespace NeuroAccessMaui.UI
 			// Main pages
 			Builder.Services.AddTransient<AppShell>();
 			Builder.Services.AddTransient<MainPage, MainViewModel>();
-			Builder.Services.AddTransient<SecurityPage, SecurityViewModel>();
+			Builder.Services.AddTransient<SettingsPage, SettingsViewModel>();
 
 			// Registration pages & views
 			Builder.Services.AddTransient<RegistrationPage, RegistrationViewModel>();

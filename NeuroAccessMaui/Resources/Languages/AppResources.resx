@@ -846,6 +846,9 @@
   <data name="RevokeInformation" xml:space="preserve">
     <value>Revoke</value>
   </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
   <data name="ViewId" xml:space="preserve">
     <value>View ID</value>
   </data>

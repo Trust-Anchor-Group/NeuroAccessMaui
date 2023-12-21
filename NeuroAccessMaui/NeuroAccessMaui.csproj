@@ -104,6 +104,7 @@
 	<ItemGroup>
 	  <None Remove="Resources\Images\close.svg" />
 	  <None Remove="Resources\Images\flyout_header.svg" />
+	  <None Remove="Resources\Images\settings.svg" />
 	  <None Remove="Resources\Images\view_id.svg" />
 	</ItemGroup>
 
@@ -159,6 +160,9 @@
 	    <AutoGen>True</AutoGen>
 	    <DependentUpon>AppResources.resx</DependentUpon>
 	  </Compile>
+	  <Compile Update="UI\Pages\Main\Settings\SettingsPage.xaml.cs">
+	    <DependentUpon>SettingsPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="UI\Popups\Pin\BasePopup.xaml.cs">
 	    <DependentUpon>%(Filename)</DependentUpon>
 	  </Compile>
@@ -180,6 +184,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="UI\Pages\Main\Settings\SettingsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="UI\Popups\Pin\BasePopup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
