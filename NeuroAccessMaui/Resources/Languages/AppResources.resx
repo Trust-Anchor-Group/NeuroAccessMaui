@@ -831,6 +831,21 @@
   <data name="ID" xml:space="preserve">
     <value>ID</value>
   </data>
+  <data name="AreYouSureYouWantToReportYourLegalIdentityAsCompromized1" xml:space="preserve">
+    <value>Are you sure you want to report your legal identity as compromised, stolen or hacked?</value>
+  </data>
+  <data name="AreYouSureYouWantToRevokeYourLegalIdentity1" xml:space="preserve">
+    <value>Are you sure you want to revoke your legal identity from the application?</value>
+  </data>
+  <data name="AreYouSureYouWantToTransferYourLegalIdentity1" xml:space="preserve">
+    <value>Are you sure you want to transfer your legal identity from the application to another? The identity will be removed from this device once completed. Also make sure no-one else can see your screen during the process.</value>
+  </data>
+  <data name="ReportAsCompromized" xml:space="preserve">
+    <value>Report as Compromised</value>
+  </data>
+  <data name="RevokeInformation" xml:space="preserve">
+    <value>Revoke</value>
+  </data>
   <data name="ViewId" xml:space="preserve">
     <value>View ID</value>
   </data>

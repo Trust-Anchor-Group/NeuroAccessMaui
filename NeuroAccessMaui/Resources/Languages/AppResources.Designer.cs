@@ -214,6 +214,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to report your legal identity as compromised, stolen or hacked?.
+        /// </summary>
+        internal static string AreYouSureYouWantToReportYourLegalIdentityAsCompromized1 {
+            get {
+                return ResourceManager.GetString("AreYouSureYouWantToReportYourLegalIdentityAsCompromized1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to revoke your legal identity from the application?.
         /// </summary>
         internal static string AreYouSureYouWantToRevokeYourLegalIdentity {
@@ -223,11 +232,29 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to revoke your legal identity from the application?.
+        /// </summary>
+        internal static string AreYouSureYouWantToRevokeYourLegalIdentity1 {
+            get {
+                return ResourceManager.GetString("AreYouSureYouWantToRevokeYourLegalIdentity1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to transfer your legal identity from the application to another? The identity will be removed from this device once completed. Also make sure no-one else can see your screen during the process..
         /// </summary>
         internal static string AreYouSureYouWantToTransferYourLegalIdentity {
             get {
                 return ResourceManager.GetString("AreYouSureYouWantToTransferYourLegalIdentity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to transfer your legal identity from the application to another? The identity will be removed from this device once completed. Also make sure no-one else can see your screen during the process..
+        /// </summary>
+        internal static string AreYouSureYouWantToTransferYourLegalIdentity1 {
+            get {
+                return ResourceManager.GetString("AreYouSureYouWantToTransferYourLegalIdentity1", resourceCulture);
             }
         }
         
@@ -1645,6 +1672,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Report as Compromised.
+        /// </summary>
+        internal static string ReportAsCompromized {
+            get {
+                return ResourceManager.GetString("ReportAsCompromized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Requesting entity.
         /// </summary>
         internal static string RequestingEntity {
@@ -1686,6 +1722,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string ResendCodeSeconds {
             get {
                 return ResourceManager.GetString("ResendCodeSeconds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Revoke.
+        /// </summary>
+        internal static string RevokeInformation {
+            get {
+                return ResourceManager.GetString("RevokeInformation", resourceCulture);
             }
         }
         

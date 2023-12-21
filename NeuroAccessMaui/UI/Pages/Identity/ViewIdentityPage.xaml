@@ -235,21 +235,16 @@
 					</Grid>
 				</VerticalStackLayout>
 
-					<!--
-				<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource SmallSpacing}">
+				<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource SmallSpacing}" IsVisible="{Binding IsPersonal}">
 					<Label HorizontalOptions="Center" VerticalOptions="CenterAndExpand" Text="{l:Localize Options}"
 							 FontSize="Large" Style="{StaticResource SectionTitleLabelStyle}"/>
 
-					<controls:TextButton x:Name="AcceptButton" LabelData="{l:Localize Accept}" Command="{Binding AcceptCommand}"
+					<controls:TextButton x:Name="RevokeButton" LabelData="{l:Localize RevokeInformation}" Command="{Binding RevokeCommand}"
 												Style="{StaticResource FilledTextButtonStyle}" />
 
-					<controls:TextButton x:Name="DeclineButton" LabelData="{l:Localize Decline}" Command="{Binding DeclineCommand}"
-												Style="{StaticResource FilledTextButtonStyle}" />
-
-					<controls:TextButton x:Name="IgnoreButton" LabelData="{l:Localize Ignore}" Command="{Binding IgnoreCommand}"
+					<controls:TextButton x:Name="CompromizeButton" LabelData="{l:Localize ReportAsCompromized}" Command="{Binding CompromiseCommand}"
 												Style="{StaticResource FilledTextButtonStyle}" />
 				</VerticalStackLayout>
-					-->
 			</VerticalStackLayout>
 		</ScrollView>
 		<!--<image:ImageView x:Name="PhotoViewer"

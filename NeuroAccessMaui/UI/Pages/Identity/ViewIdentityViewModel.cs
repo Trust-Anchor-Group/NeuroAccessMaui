@@ -1112,7 +1112,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 				if (succeeded && CompromisedIdentity is not null)
 				{
 					this.LegalIdentity = CompromisedIdentity;
-					ServiceRef.TagProfile.RevokeLegalIdentity(CompromisedIdentity);
+					ServiceRef.TagProfile.CompromiseLegalIdentity(CompromisedIdentity);
 
 					await App.SetRegistrationPageAsync();
 				}
@@ -1236,7 +1236,6 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 			}
 		}
 
-		//!!! needs is connected?
 		[RelayCommand(CanExecute = nameof(CanExecuteCommands))]
 		private Task ChangePin()
 		{

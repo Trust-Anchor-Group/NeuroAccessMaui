@@ -23,7 +23,7 @@
 
 		private void Image_Tapped(object? Sender, EventArgs e)
 		{
-			PetitionSignatureViewModel ViewModel = this.ViewModel<PetitionSignatureViewModel>();
+			//PetitionSignatureViewModel ViewModel = this.ViewModel<PetitionSignatureViewModel>();
 
 			//!!! Attachment[] Attachments = ViewModel.RequestorIdentity?.Attachments;
 			//!!! this.PhotoViewer.ShowPhotos(Attachments);
