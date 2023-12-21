@@ -12,89 +12,74 @@
 	<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
 		<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
 
-			<Label
-				Style="{StaticResource PageTitleLabelStyle}"
-				Text="{l:Localize OnboardingDefinePinPageTitle}" />
-
+			<Label Style="{StaticResource PageTitleLabelStyle}" Text="{l:Localize OnboardingDefinePinPageTitle}" />
 			<Label Text="{l:Localize OnboardingDefinePinPageDetails}" />
 
 			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 
-				<Label
-					Style="{StaticResource SectionTitleLabelStyle}"
-					Text="{l:Localize DefinePinSectionTitle1}" />
+				<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize DefinePinSectionTitle1}" />
 
 				<controls:CompositeEntry x:Name="PinEntry1"
-					Style="{StaticResource RegularCompositeEntryStyle}"
-					EntryData="{Binding PinText1}" />
+												 Style="{StaticResource RegularCompositeEntryStyle}"
+												 EntryData="{Binding PinText1}"
+												 IsPassword="True"/>
 
-				<Grid
-					RowDefinitions="auto"
-					ColumnDefinitions="auto,auto"
-					HorizontalOptions="Center"
-					ColumnSpacing="{StaticResource SmallSpacing}"
-					IsVisible="{Binding IsPin1NotValid}">
+				<Grid RowDefinitions="auto"
+						ColumnDefinitions="auto,auto"
+						HorizontalOptions="Center"
+						ColumnSpacing="{StaticResource SmallSpacing}"
+						IsVisible="{Binding IsPin1NotValid}">
 
-					<Path
-						Grid.Column="0"
-						VerticalOptions="Center"
-						HeightRequest="20"
-						WidthRequest="20"
-						Aspect="Uniform"
-						Data="{x:Static ui:Geometries.InfoCirclePath}"
-						Fill="{AppThemeBinding Light={StaticResource InvalidatedEditLight},
-											   Dark={StaticResource InvalidatedEditDark}}" />
-					<Label
-						Grid.Column="1"
-						VerticalOptions="Center"
-						LineBreakMode="WordWrap"
-						Text="{Binding LocalizedValidationError}"
-						TextColor="{AppThemeBinding Light={StaticResource InvalidatedEditLight},
-													Dark={StaticResource InvalidatedEditDark}}" />
+					<Path Grid.Column="0"
+							VerticalOptions="Center"
+							HeightRequest="20"
+							WidthRequest="20"
+							Aspect="Uniform"
+							Data="{x:Static ui:Geometries.InfoCirclePath}"
+							Fill="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
+						 
+					<Label Grid.Column="1"
+							 VerticalOptions="Center"
+							 LineBreakMode="WordWrap"
+							 Text="{Binding LocalizedValidationError}"
+							 TextColor="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
 				</Grid>
 
 			</VerticalStackLayout>
 
 			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-				<Label
-					Style="{StaticResource SectionTitleLabelStyle}"
-					Text="{l:Localize DefinePinSectionTitle2}" />
+					
+				<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize DefinePinSectionTitle2}" />
 
 				<controls:CompositeEntry x:Name="PinEntry2"
-					Style="{StaticResource RegularCompositeEntryStyle}"
-					EntryData="{Binding PinText2}" />
+												 Style="{StaticResource RegularCompositeEntryStyle}"
+												 EntryData="{Binding PinText2}"
+												 IsPassword="True"/>
 
-				<Grid
-					RowDefinitions="auto"
-					ColumnDefinitions="auto,auto"
-					HorizontalOptions="Center"
-					ColumnSpacing="{StaticResource SmallSpacing}"
-					IsVisible="{Binding IsPin2NotValid}">
+				<Grid RowDefinitions="auto"
+						ColumnDefinitions="auto,auto"
+						HorizontalOptions="Center"
+						ColumnSpacing="{StaticResource SmallSpacing}"
+						IsVisible="{Binding IsPin2NotValid}">
 
-					<Path
-						Grid.Column="0"
-						VerticalOptions="Center"
-						HeightRequest="20"
-						WidthRequest="20"
-						Aspect="Uniform"
-						Data="{x:Static ui:Geometries.InfoCirclePath}"
-						Fill="{AppThemeBinding Light={StaticResource InvalidatedEditLight},
-											   Dark={StaticResource InvalidatedEditDark}}" />
-					<Label
-						Grid.Column="1"
-						VerticalOptions="Center"
-						LineBreakMode="WordWrap"
-						Text="{l:Localize PinsDoNotMatch}"
-						TextColor="{AppThemeBinding Light={StaticResource InvalidatedEditLight},
-													Dark={StaticResource InvalidatedEditDark}}" />
+					<Path Grid.Column="0"
+							VerticalOptions="Center"
+							HeightRequest="20"
+							WidthRequest="20"
+							Aspect="Uniform"
+							Data="{x:Static ui:Geometries.InfoCirclePath}"
+							Fill="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
+
+					<Label Grid.Column="1" VerticalOptions="Center" LineBreakMode="WordWrap" Text="{l:Localize PinsDoNotMatch}"
+							 TextColor="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
 				</Grid>
 
 			</VerticalStackLayout>
 		</VerticalStackLayout>
 
-		<controls:TextButton
-			Style="{StaticResource FilledTextButtonStyle}"
-			Command="{Binding ContinueCommand}"
-			LabelData="{l:Localize CreatePin}" />
+		<controls:TextButton Style="{StaticResource FilledTextButtonStyle}"
+									Command="{Binding ContinueCommand}"
+									LabelData="{l:Localize CreatePin}" />
+		 
 	</VerticalStackLayout>
 </base:BaseRegistrationView>
