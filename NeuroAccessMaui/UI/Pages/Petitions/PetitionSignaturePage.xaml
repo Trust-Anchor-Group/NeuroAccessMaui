@@ -39,53 +39,53 @@
 							<!--  4  -->
 							<RowDefinition Height="Auto" />
 							<!--  5  -->
-							<RowDefinition Height="Auto" />
+							<RowDefinition Height="{Binding FirstName, Converter={converters:AutoIfNonEmpty}}" />
 							<!--  6  -->
-							<RowDefinition Height="Auto" />
+							<RowDefinition Height="{Binding MiddleNames, Converter={converters:AutoIfNonEmpty}}" />
 							<!--  7  -->
-							<RowDefinition Height="Auto" />
+							<RowDefinition Height="{Binding LastNames, Converter={converters:AutoIfNonEmpty}}" />
 							<!--  8  -->
-							<RowDefinition Height="Auto" />
+							<RowDefinition Height="{Binding PersonalNumber, Converter={converters:AutoIfNonEmpty}}" />
 							<!--  9  -->
-							<RowDefinition Height="Auto" />
+							<RowDefinition Height="{Binding Address, Converter={converters:AutoIfNonEmpty}}" />
 							<!--  10  -->
-							<RowDefinition Height="Auto" />
+							<RowDefinition Height="{Binding Address2, Converter={converters:AutoIfNonEmpty}}" />
 							<!--  11  -->
-							<RowDefinition Height="Auto" />
+							<RowDefinition Height="{Binding ZipCode, Converter={converters:AutoIfNonEmpty}}" />
 							<!--  12  -->
-							<RowDefinition Height="Auto" />
+							<RowDefinition Height="{Binding Area, Converter={converters:AutoIfNonEmpty}}" />
 							<!--  13  -->
-							<RowDefinition Height="Auto" />
+							<RowDefinition Height="{Binding City, Converter={converters:AutoIfNonEmpty}}" />
 							<!--  14  -->
-							<RowDefinition Height="Auto" />
+							<RowDefinition Height="{Binding Region, Converter={converters:AutoIfNonEmpty}}" />
 							<!--  15  -->
-							<RowDefinition Height="Auto" />
+							<RowDefinition Height="{Binding Country, Converter={converters:AutoIfNonEmpty}}" />
 							<!--  16  -->
-							<RowDefinition Height="{Binding PhotosRowHeight}" />
+							<RowDefinition Height="{Binding HasPhotos, Converter={converters:AutoIfNonEmpty}}" />
 							<!--  17  -->
-							<RowDefinition Height="{Binding OrgRowHeight}" />
+							<RowDefinition Height="{Binding HasOrg, Converter={converters:AutoIfNonEmpty}}" />
 							<!--  18  -->
-							<RowDefinition Height="{Binding OrgRowHeight}" />
+							<RowDefinition Height="{Binding OrgName, Converter={converters:AutoIfNonEmpty}}" />
 							<!--  19  -->
-							<RowDefinition Height="{Binding OrgRowHeight}" />
+							<RowDefinition Height="{Binding OrgNumber, Converter={converters:AutoIfNonEmpty}}" />
 							<!--  20  -->
-							<RowDefinition Height="{Binding OrgRowHeight}" />
+							<RowDefinition Height="{Binding OrgRole, Converter={converters:AutoIfNonEmpty}}" />
 							<!--  21  -->
-							<RowDefinition Height="{Binding OrgRowHeight}" />
+							<RowDefinition Height="{Binding OrgDepartment, Converter={converters:AutoIfNonEmpty}}" />
 							<!--  22  -->
-							<RowDefinition Height="{Binding OrgRowHeight}" />
+							<RowDefinition Height="{Binding OrgAddress, Converter={converters:AutoIfNonEmpty}}" />
 							<!--  23  -->
-							<RowDefinition Height="{Binding OrgRowHeight}" />
+							<RowDefinition Height="{Binding OrgAddress2, Converter={converters:AutoIfNonEmpty}}" />
 							<!--  24  -->
-							<RowDefinition Height="{Binding OrgRowHeight}" />
+							<RowDefinition Height="{Binding OrgZipCode, Converter={converters:AutoIfNonEmpty}}" />
 							<!--  25  -->
-							<RowDefinition Height="{Binding OrgRowHeight}" />
+							<RowDefinition Height="{Binding OrgArea, Converter={converters:AutoIfNonEmpty}}" />
 							<!--  26  -->
-							<RowDefinition Height="{Binding OrgRowHeight}" />
+							<RowDefinition Height="{Binding OrgCity, Converter={converters:AutoIfNonEmpty}}" />
 							<!--  27  -->
-							<RowDefinition Height="{Binding OrgRowHeight}" />
+							<RowDefinition Height="{Binding OrgRegion, Converter={converters:AutoIfNonEmpty}}" />
 							<!--  28  -->
-							<RowDefinition Height="{Binding OrgRowHeight}" />
+							<RowDefinition Height="{Binding OrgCountry, Converter={converters:AutoIfNonEmpty}}" />
 							<!--  29  -->
 							<RowDefinition Height="Auto" />
 							<!--  30  -->

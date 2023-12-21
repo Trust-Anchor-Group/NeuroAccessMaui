@@ -14,7 +14,9 @@ namespace NeuroAccessMaui.UI.Converters
 		{
 			if (value is string s)
 				return !string.IsNullOrEmpty(s) ? GridLength.Auto : zeroLength;
-			else 
+			else if (value is bool b)
+				return b ? GridLength.Auto : zeroLength;
+			else
 				return value is not null ? GridLength.Auto : zeroLength;
 		}
 

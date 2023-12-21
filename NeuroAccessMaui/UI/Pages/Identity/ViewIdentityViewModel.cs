@@ -543,25 +543,13 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 		/// If organization information is available.
 		/// </summary>
 		[ObservableProperty]
-		[NotifyPropertyChangedFor(nameof(OrgRowHeight))]
 		private bool hasOrg;
-
-		/// <summary>
-		/// If organization information is available.
-		/// </summary>
-		public GridLength OrgRowHeight => this.HasOrg ? GridLength.Auto : new GridLength(0, GridUnitType.Absolute);
 
 		/// <summary>
 		/// If photos are available.
 		/// </summary>
 		[ObservableProperty]
-		[NotifyPropertyChangedFor(nameof(PhotosRowHeight))]
 		private bool hasPhotos;
-
-		/// <summary>
-		/// Height of row containing photos.
-		/// </summary>
-		public GridLength PhotosRowHeight => this.HasPhotos ? GridLength.Auto : new GridLength(0, GridUnitType.Absolute);
 
 		/// <summary>
 		/// Country code of the identity
@@ -1259,7 +1247,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 		}
 
 		[RelayCommand]
-		private Task GoBack()
+		private static Task GoBack()
 		{
 			return ServiceRef.NavigationService.GoBackAsync();
 		}

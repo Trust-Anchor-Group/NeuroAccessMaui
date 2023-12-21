@@ -319,25 +319,13 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 		/// If organization information is available.
 		/// </summary>
 		[ObservableProperty]
-		[NotifyPropertyChangedFor(nameof(OrgRowHeight))]
 		private bool hasOrg;
-
-		/// <summary>
-		/// Height of row containing organization information.
-		/// </summary>
-		public GridLength OrgRowHeight => this.HasOrg ? GridLength.Auto : new GridLength(0, GridUnitType.Absolute);
 
 		/// <summary>
 		/// If photos are available.
 		/// </summary>
 		[ObservableProperty]
-		[NotifyPropertyChangedFor(nameof(PhotosRowHeight))]
 		private bool hasPhotos;
-
-		/// <summary>
-		/// Height of row containing photos.
-		/// </summary>
-		public GridLength PhotosRowHeight => this.HasPhotos ? GridLength.Auto : new GridLength(0, GridUnitType.Absolute);
 
 		/// <summary>
 		/// PhoneNr of the identity
