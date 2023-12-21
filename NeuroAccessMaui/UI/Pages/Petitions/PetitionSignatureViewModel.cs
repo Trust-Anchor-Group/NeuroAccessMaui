@@ -154,18 +154,6 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 		private string? networkId;
 
 		/// <summary>
-		/// If network ID is available.
-		/// </summary>
-		[ObservableProperty]
-		[NotifyPropertyChangedFor(nameof(NetworkIdRowHeight))]
-		private bool hasNetworkId;
-
-		/// <summary>
-		/// Height of row containing network ID.
-		/// </summary>
-		public GridLength NetworkIdRowHeight => this.HasNetworkId ? GridLength.Auto : new GridLength(0, GridUnitType.Absolute);
-
-		/// <summary>
 		/// Current state of the identity
 		/// </summary>
 		[ObservableProperty]
@@ -386,7 +374,6 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 				this.Expires = this.RequestorIdentity.To.GetDateOrNullIfMinValue();
 				this.LegalId = this.RequestorIdentity.Id;
 				this.NetworkId = this.RequestorIdentity.GetJid();
-				this.HasNetworkId = !string.IsNullOrEmpty(this.NetworkId);
 				this.State = this.RequestorIdentity.State;
 				this.From = this.RequestorIdentity.From.GetDateOrNullIfMinValue();
 				this.To = this.RequestorIdentity.To.GetDateOrNullIfMinValue();
@@ -442,7 +429,6 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 				this.Updated = null;
 				this.LegalId = Constants.NotAvailableValue;
 				this.NetworkId = Constants.NotAvailableValue;
-				this.HasNetworkId = false;
 				this.State = IdentityState.Compromised;
 				this.From = null;
 				this.To = null;

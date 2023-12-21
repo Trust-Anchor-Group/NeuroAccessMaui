@@ -118,7 +118,6 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 			this.Expires = this.LegalIdentity?.To.GetDateOrNullIfMinValue();
 			this.LegalId = this.LegalIdentity?.Id;
 			this.NetworkId = this.LegalIdentity?.GetJid();
-			this.HasNetworkId = !string.IsNullOrEmpty(this.NetworkId);
 
 			if (this.requestorIdentity is not null)
 				this.BareJid = this.requestorIdentity.GetJid(Constants.NotAvailableValue);
@@ -214,7 +213,6 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 				this.PhoneNr = string.Empty;
 				this.EMail = string.Empty;
 				this.NetworkId = Constants.NotAvailableValue;
-				this.HasNetworkId = false;
 			}
 
 			this.IsApproved = this.LegalIdentity?.State == IdentityState.Approved;
@@ -366,18 +364,6 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 		/// </summary>
 		[ObservableProperty]
 		private string? networkId;
-
-		/// <summary>
-		/// If network ID is available.
-		/// </summary>
-		[ObservableProperty]
-		[NotifyPropertyChangedFor(nameof(NetworkIdRowHeight))]
-		private bool hasNetworkId;
-
-		/// <summary>
-		/// Height of row containing network ID.
-		/// </summary>
-		public GridLength NetworkIdRowHeight => this.HasNetworkId ? GridLength.Auto : new GridLength(0, GridUnitType.Absolute);
 
 		/// <summary>
 		/// Bare Jid of the identity

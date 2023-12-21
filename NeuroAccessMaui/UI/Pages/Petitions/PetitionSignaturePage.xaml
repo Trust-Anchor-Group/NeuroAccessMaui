@@ -95,7 +95,7 @@
 							<!--  32  -->
 							<RowDefinition Height="Auto" />
 							<!--  33  -->
-							<RowDefinition Height="{Binding NetworkIdRowHeight}" />
+							<RowDefinition Height="{Binding NetworkId, Converter={converters:AutoIfNonEmpty}}" />
 							<!--  34  -->
 						</Grid.RowDefinitions>
 						<!--    -->
@@ -235,9 +235,9 @@
 						</Label>
 						<!--    -->
 						<Label Grid.Row="34" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}"
-								 Text="{l:Localize NetworkID}" IsVisible="{Binding HasNetworkId}"/>
+								 Text="{l:Localize NetworkID}" IsVisible="{Binding NetworkId, Converter={converters:OnlyShowNonEmpty}}"/>
 						<Label Grid.Row="34" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ClickableValueLabel}"
-								 Text="{Binding Path=NetworkId}" IsVisible="{Binding HasNetworkId}">
+								 Text="{Binding Path=NetworkId}" IsVisible="{Binding NetworkId, Converter={converters:OnlyShowNonEmpty}}">
 							<Label.GestureRecognizers>
 								<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding NetworkId}" />
 							</Label.GestureRecognizers>
