@@ -377,7 +377,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		{
 			if (this.CountDownTimer is not null)
 			{
-				this.CountDownSeconds = 30;
+				this.CountDownSeconds = 300;
 
 				if (!this.CountDownTimer.IsRunning)
 					this.CountDownTimer.Start();
