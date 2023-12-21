@@ -65,9 +65,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			base.OnPropertyChanged(e);
 
 			if (e.PropertyName == nameof(this.IsBusy))
-			{
 				this.SendCodeCommand.NotifyCanExecuteChanged();
-			}
 		}
 
 		public void LocalizationManagerEventHandler(object? sender, PropertyChangedEventArgs e)
@@ -95,9 +93,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			get
 			{
 				if (this.CountDownSeconds > 0)
-				{
 					return ServiceRef.Localizer[nameof(AppResources.SendCodeSeconds), this.CountDownSeconds];
-				}
 
 				return ServiceRef.Localizer[nameof(AppResources.SendCode)];
 			}
@@ -108,9 +104,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			get
 			{
 				if (!this.EmailIsValid)
-				{
 					return ServiceRef.Localizer[nameof(AppResources.EmailValidationFormat)];
-				}
 
 				return string.Empty;
 			}
@@ -256,9 +250,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				this.CountDownSeconds = 30;
 
 				if (!this.CountDownTimer.IsRunning)
-				{
 					this.CountDownTimer.Start();
-				}
 			}
 		}
 
@@ -267,13 +259,9 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			if (this.CountDownTimer is not null)
 			{
 				if (this.CountDownSeconds > 0)
-				{
 					this.CountDownSeconds--;
-				}
 				else
-				{
 					this.CountDownTimer.Stop();
-				}
 			}
 		}
 	}
