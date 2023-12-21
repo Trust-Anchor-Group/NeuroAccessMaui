@@ -843,6 +843,12 @@
   <data name="AreYouSureYouWantToTransferYourLegalIdentity1" xml:space="preserve">
     <value>Are you sure you want to transfer your legal identity from the application to another? The identity will be removed from this device once completed. Also make sure no-one else can see your screen during the process.</value>
   </data>
+  <data name="DarkMode" xml:space="preserve">
+    <value>Dark mode</value>
+  </data>
+  <data name="LightMode" xml:space="preserve">
+    <value>Light mode</value>
+  </data>
   <data name="ReportAsCompromized" xml:space="preserve">
     <value>Report as Compromised</value>
   </data>

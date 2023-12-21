@@ -103,7 +103,9 @@
 
 	<ItemGroup>
 	  <None Remove="Resources\Images\close.svg" />
+	  <None Remove="Resources\Images\dark_mode.svg" />
 	  <None Remove="Resources\Images\flyout_header.svg" />
+	  <None Remove="Resources\Images\light_mode.svg" />
 	  <None Remove="Resources\Images\settings.svg" />
 	  <None Remove="Resources\Images\view_id.svg" />
 	</ItemGroup>

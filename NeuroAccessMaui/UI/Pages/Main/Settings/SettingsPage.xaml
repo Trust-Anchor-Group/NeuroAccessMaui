@@ -29,7 +29,18 @@
 						<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize ScreenSettings}"/>
 
 						<Frame Style="{StaticResource FrameSubSet}">
-							<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize SelectDisplayMode}"/>
+							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+								<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize SelectDisplayMode}"/>
+								<Grid RowDefinitions="auto,auto" ColumnDefinitions="auto,*,auto">
+									<Image Grid.Column="0" Grid.Row="0" Source="light_mode.svg"/>
+									<Label Grid.Column="1" Grid.Row="0" Style="{StaticResource KeyLabel}" Text="{l:Localize LightMode}"/>
+									<RadioButton Grid.Column="2" Grid.Row="0" x:Name="LightMode" GroupName="DisplayMode" Value="LightMode"/>
+
+									<Image Grid.Column="0" Grid.Row="1" Source="dark_mode.svg"/>
+									<Label Grid.Column="1" Grid.Row="1" Style="{StaticResource KeyLabel}" Text="{l:Localize DarkMode}"/>
+									<RadioButton Grid.Column="2" Grid.Row="1" x:Name="DarkMode" GroupName="DisplayMode" Value="DarkMode"/>
+								</Grid>
+							</VerticalStackLayout>
 						</Frame>
 					</VerticalStackLayout>
 				</Frame>

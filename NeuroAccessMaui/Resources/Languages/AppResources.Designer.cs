@@ -484,6 +484,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dark mode.
+        /// </summary>
+        internal static string DarkMode {
+            get {
+                return ResourceManager.GetString("DarkMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Decline.
         /// </summary>
         internal static string Decline {
@@ -831,6 +840,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string LegalServiceNotFound {
             get {
                 return ResourceManager.GetString("LegalServiceNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Light mode.
+        /// </summary>
+        internal static string LightMode {
+            get {
+                return ResourceManager.GetString("LightMode", resourceCulture);
             }
         }
         
