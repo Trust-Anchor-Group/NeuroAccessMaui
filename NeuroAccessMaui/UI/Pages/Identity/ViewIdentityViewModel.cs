@@ -6,7 +6,7 @@ using System.Xml;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
-using NeuroAccessMaui.UI.Pages.Main.Security;
+using NeuroAccessMaui.UI.Pages.Main.Settings;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Data;
@@ -1066,6 +1066,9 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 				if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToRevokeYourLegalIdentity)]))
 					return;
 
+				if (!await App.VerifyPin(true))
+					return;
+
 				(bool succeeded, LegalIdentity? RevokedIdentity) = await ServiceRef.NetworkService.TryRequest(
 					() => ServiceRef.XmppService.ObsoleteLegalIdentity(this.LegalIdentity.Id));
 
@@ -1104,6 +1107,9 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 			try
 			{
 				if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToReportYourLegalIdentityAsCompromized)]))
+					return;
+
+				if (!await App.VerifyPin(true))
 					return;
 
 				(bool succeeded, LegalIdentity? CompromisedIdentity) = await ServiceRef.NetworkService.TryRequest(
@@ -1240,7 +1246,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 		private Task ChangePin()
 		{
 			if (this.IsPersonal)
-				return SecurityViewModel.ChangePinAsync();
+				return SettingsViewModel.ChangePinAsync();
 
 			return Task.CompletedTask;
 		}
