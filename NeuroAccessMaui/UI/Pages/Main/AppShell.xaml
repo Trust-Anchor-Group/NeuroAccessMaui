@@ -19,14 +19,7 @@
 					  FlyoutItemIsVisible="false"
 					  Route="MainPage" />
 
-	<FlyoutItem Title="{l:Localize ViewId}" FlyoutIcon="view_id.svg">
-		<Tab>
-			<ShellContent ContentTemplate="{DataTemplate identity:ViewIdentityPage}"
-							  FlyoutItemIsVisible="false"
-							  Route="ViewIdentityPage" />
-		</Tab>
-	</FlyoutItem>
-
+	<MenuItem Text="{l:Localize ViewId}" IconImageSource="view_id.svg" Clicked="ViewId_Clicked"/>
 	<MenuItem Text="{l:Localize Close}" IconImageSource="close.svg" Clicked="Close_Clicked"/>
 
 	<VisualElement.Behaviors>

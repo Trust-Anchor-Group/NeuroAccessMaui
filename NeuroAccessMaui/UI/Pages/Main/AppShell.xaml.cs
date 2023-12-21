@@ -1,4 +1,5 @@
-﻿using NeuroAccessMaui.UI.Pages.Identity;
+﻿using NeuroAccessMaui.Services;
+using NeuroAccessMaui.UI.Pages.Identity;
 using NeuroAccessMaui.UI.Pages.Main.QR;
 using NeuroAccessMaui.UI.Pages.Main.VerifyCode;
 using NeuroAccessMaui.UI.Pages.Petitions;
@@ -22,14 +23,30 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			Routing.RegisterRoute(nameof(ViewIdentityPage), typeof(ViewIdentityPage));
 		}
 
-		private void Close_Clicked(object sender, EventArgs e)
+		private async void Close_Clicked(object sender, EventArgs e)
 		{
-			Current.FlyoutIsPresented = false;
-
-			MainThread.BeginInvokeOnMainThread(async () =>
+			try
 			{
+				Current.FlyoutIsPresented = false;
 				await App.Stop();
-			});
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
+		}
+
+		private async void ViewId_Clicked(object sender, EventArgs e)
+		{
+			// Note: Implementing as FlyoutItem only instantiates view one time. Implementing
+			try
+			{
+				await ServiceRef.NavigationService.GoToAsync("ViewIdentityPage");
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
 		}
 	}
 }
