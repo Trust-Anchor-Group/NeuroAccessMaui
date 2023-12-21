@@ -831,6 +831,9 @@
   <data name="ID" xml:space="preserve">
     <value>ID</value>
   </data>
+  <data name="AccountSettings" xml:space="preserve">
+    <value>Account Settings</value>
+  </data>
   <data name="AreYouSureYouWantToReportYourLegalIdentityAsCompromized1" xml:space="preserve">
     <value>Are you sure you want to report your legal identity as compromised, stolen or hacked?</value>
   </data>
@@ -845,6 +848,12 @@
   </data>
   <data name="RevokeInformation" xml:space="preserve">
     <value>Revoke</value>
+  </data>
+  <data name="ScreenSettings" xml:space="preserve">
+    <value>Screen Settings</value>
+  </data>
+  <data name="SelectDisplayMode" xml:space="preserve">
+    <value>Select Display Mode</value>
   </data>
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>

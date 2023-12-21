@@ -97,6 +97,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Account Settings.
+        /// </summary>
+        internal static string AccountSettings {
+            get {
+                return ResourceManager.GetString("AccountSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This account name already exists.
         /// </summary>
         internal static string AccountValidationAlreadyExists {
@@ -1753,11 +1762,29 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Screen Settings.
+        /// </summary>
+        internal static string ScreenSettings {
+            get {
+                return ResourceManager.GetString("ScreenSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Search by country....
         /// </summary>
         internal static string SearchByCountry {
             get {
                 return ResourceManager.GetString("SearchByCountry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select Display Mode.
+        /// </summary>
+        internal static string SelectDisplayMode {
+            get {
+                return ResourceManager.GetString("SelectDisplayMode", resourceCulture);
             }
         }
         

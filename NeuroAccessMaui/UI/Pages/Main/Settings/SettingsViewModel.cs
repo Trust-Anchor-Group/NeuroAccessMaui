@@ -137,6 +137,12 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			this.CanDisableScreenCapture = false;
 		}
 
+		[RelayCommand]
+		private static Task GoBack()
+		{
+			return ServiceRef.NavigationService.GoBackAsync();
+		}
+
 		#endregion
 	}
 }

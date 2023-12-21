@@ -1,11 +1,45 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<base:BaseContentPage x:Name="ThisPage" x:Class="NeuroAccessMaui.UI.Pages.Main.Settings.SettingsPage" x:DataType="viewmodel:SettingsViewModel"
-	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-	xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
-	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-	xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
-	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.Settings">
-	<ScrollView />
+<base:BaseContentPage x:Name="ThisPage"
+							 x:Class="NeuroAccessMaui.UI.Pages.Main.Settings.SettingsPage"
+							 x:DataType="viewmodel:SettingsViewModel"
+							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.Settings">
+
+	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+
+		<controls:Background Grid.RowSpan="2" />
+
+		<ScrollView Grid.Row="1">
+			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+
+				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
+										 Style="{StaticResource BackImageButtonStyle}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+
+				<Label Style="{StaticResource PageTitleLabelStyle}" Text="{l:Localize Settings}"/>
+
+				<Frame Style="{StaticResource FrameSet}">
+					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+						<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize ScreenSettings}"/>
+
+						<Frame Style="{StaticResource FrameSubSet}">
+							<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize SelectDisplayMode}"/>
+						</Frame>
+					</VerticalStackLayout>
+				</Frame>
+
+				<Frame Style="{StaticResource FrameSet}">
+					<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize AccountSettings}"/>
+
+				</Frame>
+
+			</VerticalStackLayout>
+		</ScrollView>
+	</Grid>
 </base:BaseContentPage>
