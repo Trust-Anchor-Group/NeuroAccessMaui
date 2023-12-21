@@ -17,9 +17,7 @@
 			<ScrollView x:Name="InnerScrollView"
 							VerticalOptions="Center">
 
-				<VerticalStackLayout x:Name="LanguagesContainer"
-											BindableLayout.ItemTemplate="{StaticResource CheckPinDataTemplate}"
-											Spacing="{StaticResource MediumSpacing}">
+				<VerticalStackLayout x:Name="LanguagesContainer" Spacing="{StaticResource MediumSpacing}">
 
 					<Label Style="{StaticResource SectionTitleLabelStyle}"
 							 Text="{l:Localize EnterPin}" />
