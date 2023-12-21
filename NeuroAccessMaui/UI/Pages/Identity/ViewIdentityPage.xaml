@@ -108,7 +108,7 @@
 									Data="{x:Static ui:Geometries.CirclePath}"
 									Fill="{Binding Path=State, Converter={converters:IdentityStateToColor}}" />
 
-							<Label Style="{StaticResource ValueLabelWithBackground}" Text="{Binding Path=State}" />
+							<Label Style="{StaticResource ValueLabel}" Text="{Binding Path=State}" />
 						</HorizontalStackLayout>
 
 						<!--    -->
