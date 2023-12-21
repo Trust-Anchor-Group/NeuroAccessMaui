@@ -164,7 +164,9 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <summary>
 		/// Changes the current onboarding step.
 		/// </summary>
-		void GoToStep(RegistrationStep NewStep);
+		/// <param name="NewStep">New step</param>
+		/// <param name="SupressEvent">If registration step event should be supressed (default=false).</param>
+		void GoToStep(RegistrationStep NewStep, bool SupressEvent = false);
 
 		/// <summary>
 		/// Returns <c>true</c> if the current <see cref="ITagProfile"/> needs to have its values updated, <c>false</c> otherwise.

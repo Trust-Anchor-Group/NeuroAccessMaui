@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Tag;
@@ -47,9 +48,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			{
 				if (LegalIdentity.State == IdentityState.Approved)
 					GoToRegistrationStep(RegistrationStep.DefinePin);
-				else if (LegalIdentity.State == IdentityState.Rejected ||
-					LegalIdentity.State == IdentityState.Compromised ||
-					LegalIdentity.State == IdentityState.Obsoleted)
+				else if (LegalIdentity.Discarded())
 				{
 					ServiceRef.TagProfile.ClearLegalIdentity();
 					GoToRegistrationStep(RegistrationStep.ValidatePhone);
@@ -101,8 +100,14 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		[NotifyPropertyChangedFor(nameof(HasAlternativeNames))]
 		private List<string> alternativeNames = [];
 
+		/// <summary>
+		/// If App is connected to the XMPP network.
+		/// </summary>
 		public static bool IsXmppConnected => ServiceRef.XmppService.State == XmppState.Connected;
 
+		/// <summary>
+		/// If App has an XMPP account defined.
+		/// </summary>
 		public bool IsAccountCreated => !string.IsNullOrEmpty(ServiceRef.TagProfile.Account);
 
 		public static bool IsLegalIdentityCreated

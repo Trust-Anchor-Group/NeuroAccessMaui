@@ -247,7 +247,7 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <inheritdoc/>
 		public virtual bool LegalIdentityNeedsUpdating()
 		{
-			return this.legalIdentity?.NeedsUpdating() ?? true;
+			return this.legalIdentity?.Discarded() ?? true;
 		}
 
 		/// <inheritdoc/>
@@ -527,13 +527,15 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <inheritdoc/>
 		public RegistrationStep Step => this.step;
 
-		public void GoToStep(RegistrationStep NewStep)
+		public void GoToStep(RegistrationStep NewStep, bool SupressEvent = false)
 		{
 			if (this.step != NewStep)
 			{
 				this.step = NewStep;
 				this.FlagAsDirty(nameof(this.Step));
-				this.OnStepChanged(EventArgs.Empty);
+
+				if (!SupressEvent)
+					this.OnStepChanged(EventArgs.Empty);
 			}
 		}
 

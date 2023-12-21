@@ -1,6 +1,7 @@
 ﻿using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Tag;
+using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.UI.Pages.Registration;
 using System.ComponentModel;
 using System.Reflection;
@@ -1290,6 +1291,24 @@ namespace NeuroAccessMaui.Services.Xmpp
 				try
 				{
 					this.LegalIdentityChanged?.Invoke(this, e);
+
+					if (e.Identity.Discarded() && Shell.Current.CurrentState.Location.OriginalString != "//Registration")
+					{
+						MainThread.BeginInvokeOnMainThread(async () =>
+						{
+							try
+							{
+								ServiceRef.TagProfile.ClearLegalIdentity();
+								ServiceRef.TagProfile.GoToStep(RegistrationStep.ValidatePhone, true);
+								await Shell.Current.GoToAsync("//Registration");
+							}
+							catch (Exception ex)
+							{
+								ServiceRef.LogService.LogException(ex);
+								await App.Stop();
+							}
+						});
+					}
 				}
 				catch (Exception ex)
 				{

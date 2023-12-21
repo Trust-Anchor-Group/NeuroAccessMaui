@@ -41,6 +41,15 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			await base.OnDispose();
 		}
 
+		/// <inheritdoc />
+		public override async Task DoAssignProperties()
+		{
+			await base.DoAssignProperties();
+
+			if (IsAccountCreated)
+				GoToRegistrationStep(RegistrationStep.CreateAccount);
+		}
+
 		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
 		{
 			base.OnPropertyChanged(e);
@@ -93,6 +102,10 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		/// </summary>
 		public bool HasLocalizedDescription => this.LocalizedDescription.Length > 0;
 
+		/// <summary>
+		/// If App has an XMPP account defined.
+		/// </summary>
+		public static bool IsAccountCreated => !string.IsNullOrEmpty(ServiceRef.TagProfile.Account);
 
 		/// <summary>
 		/// Holds the list of buttons to display.

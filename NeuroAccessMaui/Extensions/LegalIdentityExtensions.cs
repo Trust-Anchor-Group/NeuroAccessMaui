@@ -12,7 +12,7 @@ namespace NeuroAccessMaui.Extensions
 		/// </summary>
 		/// <param name="legalIdentity">The legal identity whose state to check.</param>
 		/// <returns>If ID needs to be updated</returns>
-		public static bool NeedsUpdating(this LegalIdentity legalIdentity)
+		public static bool Discarded(this LegalIdentity legalIdentity)
 		{
 			return legalIdentity is null ||
 				legalIdentity.State == IdentityState.Compromised ||
