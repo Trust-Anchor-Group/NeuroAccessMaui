@@ -485,5 +485,11 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 			}
 		}
 
+		[RelayCommand]
+		private static Task GoBack()
+		{
+			return ServiceRef.NavigationService.GoBackAsync();
+		}
+
 	}
 }
