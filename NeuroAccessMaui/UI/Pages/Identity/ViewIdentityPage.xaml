@@ -90,6 +90,10 @@
 							<RowDefinition Height="{Binding NetworkId, Converter={converters:AutoIfNonEmpty}}" />
 							<!--  32  -->
 						</Grid.RowDefinitions>
+
+						<controls:ImageButton Grid.Row="0" Grid.Column="0" HorizontalOptions="Start" Command="{Binding GoBackCommand}"
+													 Style="{StaticResource BackImageButtonStyle}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+
 						<!--    -->
 						<Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,20,0,0" HorizontalOptions="Center" VerticalOptions="CenterAndExpand"
 								 FontSize="Large" Text="{l:Localize LegalId}" Style="{StaticResource SectionTitleLabelStyle}" />

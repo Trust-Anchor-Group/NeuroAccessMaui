@@ -1258,6 +1258,12 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 			return Task.CompletedTask;
 		}
 
+		[RelayCommand]
+		private Task GoBack()
+		{
+			return ServiceRef.NavigationService.GoBackAsync();
+		}
+
 		#region ILinkableView
 
 		/// <summary>
