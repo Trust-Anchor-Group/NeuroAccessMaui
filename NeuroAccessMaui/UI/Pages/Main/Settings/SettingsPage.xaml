@@ -32,11 +32,11 @@
 							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 								<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize SelectDisplayMode}"/>
 								<Grid RowDefinitions="auto,auto" ColumnDefinitions="auto,*,auto">
-									<Image Grid.Column="0" Grid.Row="0" Source="light_mode.svg"/>
+									<Image Grid.Column="0" Grid.Row="0" Source="{AppThemeBinding Light=light_mode_light.svg, Dark=light_mode_dark.svg}"/>
 									<Label Grid.Column="1" Grid.Row="0" Style="{StaticResource KeyLabel}" Text="{l:Localize LightMode}"/>
 									<RadioButton Grid.Column="2" Grid.Row="0" x:Name="LightMode" GroupName="DisplayMode" IsChecked="{Binding IsLightMode, Mode=TwoWay}"/>
 
-									<Image Grid.Column="0" Grid.Row="1" Source="dark_mode.svg"/>
+									<Image Grid.Column="0" Grid.Row="1" Source="{AppThemeBinding Light=dark_mode_light.svg, Dark=dark_mode_dark.svg}"/>
 									<Label Grid.Column="1" Grid.Row="1" Style="{StaticResource KeyLabel}" Text="{l:Localize DarkMode}"/>
 									<RadioButton Grid.Column="2" Grid.Row="1" x:Name="DarkMode" GroupName="DisplayMode" IsChecked="{Binding IsDarkMode, Mode=TwoWay}"/>
 								</Grid>

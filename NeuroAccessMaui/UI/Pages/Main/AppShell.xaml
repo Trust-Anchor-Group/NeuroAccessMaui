@@ -19,9 +19,9 @@
 					  FlyoutItemIsVisible="false"
 					  Route="MainPage" />
 
-	<MenuItem Text="{l:Localize ViewId}" IconImageSource="view_id.svg" Clicked="ViewId_Clicked"/>
-	<MenuItem Text="{l:Localize Settings}" IconImageSource="settings.svg" Clicked="Settings_Clicked"/>
-	<MenuItem Text="{l:Localize Close}" IconImageSource="close.svg" Clicked="Close_Clicked"/>
+	<MenuItem Text="{l:Localize ViewId}" Clicked="ViewId_Clicked" IconImageSource="{AppThemeBinding Light=view_id_light.svg, Dark=view_id_dark.svg}"/>
+	<MenuItem Text="{l:Localize Settings}" Clicked="Settings_Clicked" IconImageSource="{AppThemeBinding Light=settings_light.svg, Dark=settings_dark.svg}"/>
+	<MenuItem Text="{l:Localize Close}" Clicked="Close_Clicked" IconImageSource="{AppThemeBinding Light=close_light.svg, Dark=close_dark.svg}}" />
 
 	<VisualElement.Behaviors>
 		<mct:StatusBarBehavior StatusBarColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}"
