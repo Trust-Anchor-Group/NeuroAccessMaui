@@ -138,6 +138,15 @@ namespace NeuroAccessMaui.UI.Pages
 		private bool isBusy;
 
 		/// <summary>
+		/// Sets the <see cref="IsBusy"/> property.
+		/// </summary>
+		/// <param name="IsBusy">New value.</param>
+		public virtual void SetIsBusy(bool IsBusy)
+		{
+			this.IsBusy = IsBusy;
+		}
+
+		/// <summary>
 		/// Gets or sets a value which indicates if the protective overlay with a spinner is visible.
 		/// </summary>
 		public bool IsOverlayVisible

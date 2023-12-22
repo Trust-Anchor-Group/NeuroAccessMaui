@@ -852,11 +852,17 @@
   <data name="ReportAsCompromized" xml:space="preserve">
     <value>Report as Compromised</value>
   </data>
+  <data name="ReportAsCompromizedDescription" xml:space="preserve">
+    <value>Report if App, PIN or phone has been compromised, hacked or stolen.</value>
+  </data>
   <data name="RestartNeededDueToThemeChange" xml:space="preserve">
     <value>A restart of the App is needed, for the new theme to be properly displayed. When closing the dialog, the App will automatically close. When restarting the App, the new theme will be selected.</value>
   </data>
-  <data name="RevokeInformation" xml:space="preserve">
-    <value>Revoke</value>
+  <data name="RevokeIdentity" xml:space="preserve">
+    <value>Revoke Identity</value>
+  </data>
+  <data name="RevokeIdentityDescription" xml:space="preserve">
+    <value>Revoke the current identity from the App, and apply for a new one.</value>
   </data>
   <data name="ScreenSettings" xml:space="preserve">
     <value>Screen Settings</value>

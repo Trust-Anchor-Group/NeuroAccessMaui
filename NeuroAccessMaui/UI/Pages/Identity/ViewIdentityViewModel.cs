@@ -1,17 +1,12 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Security.Cryptography;
-using System.Text;
-using System.Xml;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
-using NeuroAccessMaui.UI.Pages.Main.Settings;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Data;
 using NeuroAccessMaui.Services.UI.Photos;
-using Waher.Content.Xml;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;
@@ -894,20 +889,17 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 
 		#endregion
 
-		private void SetIsBusy(bool IsBusy)
-		{
-			this.IsBusy = IsBusy;
-			this.NotifyCommandsCanExecuteChanged();
-		}
-
 		private void NotifyCommandsCanExecuteChanged()
 		{
 			this.ApproveCommand.NotifyCanExecuteChanged();
 			this.RejectCommand.NotifyCanExecuteChanged();
-			this.RevokeCommand.NotifyCanExecuteChanged();
-			this.CompromiseCommand.NotifyCanExecuteChanged();
-			this.TransferCommand.NotifyCanExecuteChanged();
-			this.ChangePinCommand.NotifyCanExecuteChanged();
+		}
+
+		/// <inheritdoc/>
+		public override void SetIsBusy(bool IsBusy)
+		{
+			base.SetIsBusy(IsBusy);
+			this.NotifyCommandsCanExecuteChanged();
 		}
 
 		/// <summary>
@@ -1053,202 +1045,6 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 				ServiceRef.LogService.LogException(ex);
 				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
-		}
-
-		[RelayCommand(CanExecute = nameof(CanExecuteCommands))]
-		private async Task Revoke()
-		{
-			if (!this.IsPersonal || this.LegalIdentity is null)
-				return;
-
-			try
-			{
-				if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToRevokeYourLegalIdentity)]))
-					return;
-
-				if (!await App.VerifyPin(true))
-					return;
-
-				(bool succeeded, LegalIdentity? RevokedIdentity) = await ServiceRef.NetworkService.TryRequest(
-					() => ServiceRef.XmppService.ObsoleteLegalIdentity(this.LegalIdentity.Id));
-
-				if (succeeded && RevokedIdentity is not null)
-				{
-					this.LegalIdentity = RevokedIdentity;
-					ServiceRef.TagProfile.RevokeLegalIdentity(RevokedIdentity);
-
-					await App.SetRegistrationPageAsync();
-				}
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
-			}
-		}
-
-		private static async Task<bool> AreYouSure(string Message)
-		{
-			if (!await App.VerifyPin())
-				return false;
-
-			return await ServiceRef.UiSerializer.DisplayAlert(
-				ServiceRef.Localizer[nameof(AppResources.Confirm)], Message,
-				ServiceRef.Localizer[nameof(AppResources.Yes)],
-				ServiceRef.Localizer[nameof(AppResources.No)]);
-		}
-
-		[RelayCommand(CanExecute = nameof(CanExecuteCommands))]
-		private async Task Compromise()
-		{
-			if (!this.IsPersonal || this.LegalIdentity is null)
-				return;
-
-			try
-			{
-				if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToReportYourLegalIdentityAsCompromized)]))
-					return;
-
-				if (!await App.VerifyPin(true))
-					return;
-
-				(bool succeeded, LegalIdentity? CompromisedIdentity) = await ServiceRef.NetworkService.TryRequest(
-					() => ServiceRef.XmppService.CompromiseLegalIdentity(this.LegalIdentity.Id));
-
-				if (succeeded && CompromisedIdentity is not null)
-				{
-					this.LegalIdentity = CompromisedIdentity;
-					ServiceRef.TagProfile.CompromiseLegalIdentity(CompromisedIdentity);
-
-					await App.SetRegistrationPageAsync();
-				}
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
-			}
-		}
-
-		[RelayCommand(CanExecute = nameof(CanExecuteCommands))]
-		private async Task Transfer()
-		{
-			if (!this.IsPersonal)
-				return;
-
-			try
-			{
-				string? Pin = await App.InputPin();
-				if (Pin is null)
-					return;
-
-				if (!await ServiceRef.UiSerializer.DisplayAlert(
-					ServiceRef.Localizer[nameof(AppResources.Confirm)],
-					ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToTransferYourLegalIdentity)],
-					ServiceRef.Localizer[nameof(AppResources.Yes)],
-					ServiceRef.Localizer[nameof(AppResources.No)]))
-				{
-					return;
-				}
-
-				this.SetIsBusy(true);
-
-				try
-				{
-					StringBuilder Xml = new();
-					XmlWriterSettings Settings = XML.WriterSettings(false, true);
-
-					using (XmlWriter Output = XmlWriter.Create(Xml, Settings))
-					{
-						Output.WriteStartElement("Transfer", ContractsClient.NamespaceOnboarding);
-
-						await ServiceRef.XmppService.ExportSigningKeys(Output);
-
-						Output.WriteStartElement("Pin");
-						Output.WriteAttributeString("pin", Pin);
-						Output.WriteEndElement();
-
-						Output.WriteStartElement("Account", ContractsClient.NamespaceOnboarding);
-						Output.WriteAttributeString("domain", ServiceRef.TagProfile.Domain);
-						Output.WriteAttributeString("userName", ServiceRef.TagProfile.Account);
-						Output.WriteAttributeString("password", ServiceRef.TagProfile.PasswordHash);
-
-						if (!string.IsNullOrEmpty(ServiceRef.TagProfile.PasswordHashMethod))
-						{
-							Output.WriteAttributeString("passwordMethod", ServiceRef.TagProfile.PasswordHashMethod);
-						}
-
-						Output.WriteEndElement();
-						Output.WriteEndElement();
-					}
-
-					using RandomNumberGenerator Rnd = RandomNumberGenerator.Create();
-					byte[] Data = Encoding.UTF8.GetBytes(Xml.ToString());
-					byte[] Key = new byte[16];
-					byte[] IV = new byte[16];
-
-					Rnd.GetBytes(Key);
-					Rnd.GetBytes(IV);
-
-					using Aes Aes = Aes.Create();
-					Aes.BlockSize = 128;
-					Aes.KeySize = 256;
-					Aes.Mode = CipherMode.CBC;
-					Aes.Padding = PaddingMode.PKCS7;
-
-					using ICryptoTransform Transform = Aes.CreateEncryptor(Key, IV);
-					byte[] Encrypted = Transform.TransformFinalBlock(Data, 0, Data.Length);
-
-					Xml.Clear();
-
-					using (XmlWriter Output = XmlWriter.Create(Xml, Settings))
-					{
-						Output.WriteStartElement("Info", ContractsClient.NamespaceOnboarding);
-						Output.WriteAttributeString("base64", Convert.ToBase64String(Encrypted));
-						Output.WriteAttributeString("once", "true");
-						Output.WriteAttributeString("expires", XML.Encode(DateTime.UtcNow.AddMinutes(1)));
-						Output.WriteEndElement();
-					}
-
-					XmlElement Response = await ServiceRef.XmppService.IqSetAsync(Constants.Domains.OnboardingDomain, Xml.ToString());
-
-					foreach (XmlNode N in Response.ChildNodes)
-					{
-						if (N is XmlElement Info && Info.LocalName == "Code" && Info.NamespaceURI == ContractsClient.NamespaceOnboarding)
-						{
-							string Code = XML.Attribute(Info, "code");
-							string Url = "obinfo:" + Constants.Domains.IdDomain + ":" + Code + ":" +
-								Convert.ToBase64String(Key) + ":" + Convert.ToBase64String(IV);
-
-							await ServiceRef.XmppService.AddTransferCode(Code);
-							await ServiceRef.NavigationService.GoToAsync(nameof(TransferIdentityPage), new TransferIdentityNavigationArgs(Url));
-							return;
-						}
-					}
-
-					await ServiceRef.UiSerializer.DisplayAlert(
-						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-						ServiceRef.Localizer[nameof(AppResources.UnexpectedResponse)]);
-				}
-				finally
-				{
-					this.SetIsBusy(false);
-				}
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
-			}
-		}
-
-		[RelayCommand(CanExecute = nameof(CanExecuteCommands))]
-		private Task ChangePin()
-		{
-			if (this.IsPersonal)
-				return SettingsViewModel.ChangePin();
-
-			return Task.CompletedTask;
 		}
 
 		[RelayCommand]

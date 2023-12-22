@@ -22,9 +22,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.VerifyCode
 			this.navigationArgs = NavigationArgs;
 
 			if (NavigationArgs is not null)
-			{
 				this.CodeVerification = NavigationArgs.CodeVerification;
-			}
 		}
 
 		/// <inheritdoc />
@@ -39,15 +37,11 @@ namespace NeuroAccessMaui.UI.Pages.Main.VerifyCode
 				this.navigationArgs = Args;
 
 				if (Args is not null)
-				{
 					this.CodeVerification = Args.CodeVerification;
-				}
 			}
 
 			if (this.CodeVerification is not null)
-			{
 				this.CodeVerification.CountDownTimer.Tick += this.CountDownEventHandler;
-			}
 
 			this.LocalizationManagerEventHandler(null, new(null));
 		}
@@ -58,14 +52,10 @@ namespace NeuroAccessMaui.UI.Pages.Main.VerifyCode
 			LocalizationManager.Current.PropertyChanged -= this.LocalizationManagerEventHandler;
 
 			if (this.CodeVerification is not null)
-			{
 				this.CodeVerification.CountDownTimer.Tick -= this.CountDownEventHandler;
-			}
 
 			if (this.navigationArgs?.VarifyCode is TaskCompletionSource<string> TaskSource)
-			{
 				TaskSource.TrySetResult(string.Empty);
-			}
 
 			await base.OnDispose();
 		}
@@ -129,9 +119,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.VerifyCode
 			get
 			{
 				if ((this.CodeVerification is not null) && (this.CodeVerification.CountDownSeconds > 0))
-				{
 					return ServiceRef.Localizer[nameof(AppResources.ResendCodeSeconds), this.CodeVerification.CountDownSeconds];
-				}
 
 				return ServiceRef.Localizer[nameof(AppResources.ResendCode)];
 			}

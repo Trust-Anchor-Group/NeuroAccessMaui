@@ -1708,6 +1708,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Report if App, PIN or phone has been compromised, hacked or stolen..
+        /// </summary>
+        internal static string ReportAsCompromizedDescription {
+            get {
+                return ResourceManager.GetString("ReportAsCompromizedDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Requesting entity.
         /// </summary>
         internal static string RequestingEntity {
@@ -1762,11 +1771,20 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Revoke.
+        ///   Looks up a localized string similar to Revoke Identity.
         /// </summary>
-        internal static string RevokeInformation {
+        internal static string RevokeIdentity {
             get {
-                return ResourceManager.GetString("RevokeInformation", resourceCulture);
+                return ResourceManager.GetString("RevokeIdentity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Revoke the current identity from the App, and apply for a new one..
+        /// </summary>
+        internal static string RevokeIdentityDescription {
+            get {
+                return ResourceManager.GetString("RevokeIdentityDescription", resourceCulture);
             }
         }
         

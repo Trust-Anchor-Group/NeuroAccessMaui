@@ -234,17 +234,6 @@
 						</Label>
 					</Grid>
 				</VerticalStackLayout>
-
-				<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource SmallSpacing}" IsVisible="{Binding IsPersonal}">
-					<Label HorizontalOptions="Center" VerticalOptions="CenterAndExpand" Text="{l:Localize Options}"
-							 FontSize="Large" Style="{StaticResource SectionTitleLabelStyle}"/>
-
-					<controls:TextButton x:Name="RevokeButton" LabelData="{l:Localize RevokeInformation}" Command="{Binding RevokeCommand}"
-												Style="{StaticResource FilledTextButtonStyle}" />
-
-					<controls:TextButton x:Name="CompromizeButton" LabelData="{l:Localize ReportAsCompromized}" Command="{Binding CompromiseCommand}"
-												Style="{StaticResource FilledTextButtonStyle}" />
-				</VerticalStackLayout>
 			</VerticalStackLayout>
 		</ScrollView>
 		<!--<image:ImageView x:Name="PhotoViewer"

@@ -20,14 +20,13 @@ namespace NeuroAccessMaui.UI.Pages
 			this.ConnectionStateText = ServiceRef.Localizer[nameof(AppResources.XmppState_Offline)];
 			this.ConnectionStateColor = new SolidColorBrush(Colors.Red);
 			this.StateSummaryText = string.Empty;
+			this.SetConnectionStateAndText(ServiceRef.XmppService.State);
 		}
-
 		/// <inheritdoc/>
 		protected override async Task OnInitialize()
 		{
 			await base.OnInitialize();
 
-			this.SetConnectionStateAndText(ServiceRef.XmppService.State);
 			ServiceRef.XmppService.ConnectionStateChanged += this.XmppService_ConnectionStateChanged;
 		}
 
@@ -69,12 +68,12 @@ namespace NeuroAccessMaui.UI.Pages
 		/// <summary>
 		/// Sets both the connection state and connection text to the appropriate value.
 		/// </summary>
-		/// <param name="state">The current state.</param>
-		protected virtual void SetConnectionStateAndText(XmppState state)
+		/// <param name="State">The current state.</param>
+		protected virtual void SetConnectionStateAndText(XmppState State)
 		{
-			this.ConnectionStateText = state.ToDisplayText();
-			this.ConnectionStateColor = new SolidColorBrush(state.ToColor());
-			this.IsConnected = state == XmppState.Connected;
+			this.ConnectionStateText = State.ToDisplayText();
+			this.ConnectionStateColor = new SolidColorBrush(State.ToColor());
+			this.IsConnected = State == XmppState.Connected;
 			this.StateSummaryText = (ServiceRef.TagProfile.LegalIdentity?.State)?.ToString() + " - " + this.ConnectionStateText;
 		}
 

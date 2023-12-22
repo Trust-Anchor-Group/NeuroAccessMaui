@@ -26,9 +26,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 			await base.OnInitialize();
 
 			if (ServiceRef.NavigationService.TryGetArgs(out TransferIdentityNavigationArgs? Args))
-			{
 				this.Uri = Args.Uri;
-			}
 
 			if (this.Uri is not null)
 			{

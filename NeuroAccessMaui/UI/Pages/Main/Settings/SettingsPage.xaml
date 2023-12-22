@@ -46,8 +46,28 @@
 				</Frame>
 
 				<Frame Style="{StaticResource FrameSet}">
-					<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize AccountSettings}"/>
+					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+						<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize AccountSettings}"/>
 
+						<controls:TemplatedButton HorizontalOptions="Center" Command="{x:Binding CompromiseCommand}">
+							<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True">
+								<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
+									<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize ReportAsCompromized}" InputTransparent="True"/>
+									<Label Style="{StaticResource KeyLabel}" Text="{l:Localize ReportAsCompromizedDescription}" InputTransparent="True"/>
+								</VerticalStackLayout>
+							</Frame>
+						</controls:TemplatedButton>
+
+						<controls:TemplatedButton HorizontalOptions="Center" Command="{x:Binding RevokeCommand}">
+							<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True">
+								<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
+									<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize RevokeIdentity}" InputTransparent="True"/>
+									<Label Style="{StaticResource KeyLabel}" Text="{l:Localize RevokeIdentityDescription}" InputTransparent="True"/>
+								</VerticalStackLayout>
+							</Frame>
+						</controls:TemplatedButton>
+
+					</VerticalStackLayout>
 				</Frame>
 
 			</VerticalStackLayout>
