@@ -4,6 +4,7 @@ using Mopups.Services;
 using NeuroAccessMaui.UI.Popups.Pin;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using System.ComponentModel;
 
 namespace NeuroAccessMaui.UI.Pages.Main.Settings
 {
@@ -27,6 +28,9 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			this.CanProhibitScreenCapture = ServiceRef.PlatformSpecific.CanProhibitScreenCapture;
 			this.CanEnableScreenCapture = ServiceRef.PlatformSpecific.ProhibitScreenCapture;
 			this.CanDisableScreenCapture = !this.CanEnableScreenCapture;
+
+			this.IsLightMode = Application.Current?.UserAppTheme == AppTheme.Light;
+			this.IsDarkMode = Application.Current?.UserAppTheme == AppTheme.Dark;
 		}
 
 		#region Properties
@@ -48,6 +52,51 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		/// </summary>
 		[ObservableProperty]
 		private bool canDisableScreenCapture;
+
+		/// <summary>
+		/// Gets or sets whether the current display mode is Light Mode.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(DisplayMode))]
+		private bool isLightMode;
+
+		/// <summary>
+		/// Gets or sets whether the current display mode is Dark Mode.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(DisplayMode))]
+		private bool isDarkMode;
+
+		/// <summary>
+		/// Current display mode
+		/// </summary>
+		public static AppTheme DisplayMode
+		{
+			get
+			{
+				AppTheme Result = Application.Current?.UserAppTheme ?? AppTheme.Unspecified;
+
+				if (Result == AppTheme.Unspecified)
+					Result = Application.Current?.PlatformAppTheme ?? AppTheme.Unspecified;
+
+				return Result;
+			}
+		}
+
+		/// <summary>
+		/// <inheritdoc/>
+		/// </summary>
+		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+		{
+			switch (e.PropertyName)
+			{
+				case nameof(DisplayMode):
+					AppTheme NewMode = this.IsDarkMode ? AppTheme.Dark : AppTheme.Light;
+					if (Application.Current is not null && Application.Current.UserAppTheme != NewMode)
+						Application.Current.UserAppTheme = NewMode;
+					break;
+			}
+		}
 
 		#endregion
 
