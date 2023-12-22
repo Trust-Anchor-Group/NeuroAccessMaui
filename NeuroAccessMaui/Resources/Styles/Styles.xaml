@@ -496,8 +496,30 @@
 		<Setter Property="Margin" Value="{StaticResource SmallMargins}" />
 	</Style>
 
+	<ControlTemplate x:Key="RadioButtonTemplate">
+		<Image>
+			<VisualStateManager.VisualStateGroups>
+				<VisualStateGroupList>
+					<VisualStateGroup x:Name="CheckedStates">
+						<VisualState x:Name="Checked">
+							<VisualState.Setters>
+								<Setter Property="Source" Value="{AppThemeBinding Light=radiobutton_checked_light.svg, Dark=radiobutton_checked_dark.svg}" />
+							</VisualState.Setters>
+						</VisualState>
+						<VisualState x:Name="Unchecked">
+							<VisualState.Setters>
+								<Setter Property="Source" Value="{AppThemeBinding Light=radiobutton_unchecked_light.svg, Dark=radiobutton_unchecked_dark.svg}" />
+							</VisualState.Setters>
+						</VisualState>
+					</VisualStateGroup>
+				</VisualStateGroupList>
+			</VisualStateManager.VisualStateGroups>
+		</Image>
+	</ControlTemplate>
+
 	<Style ApplyToDerivedTypes="True" TargetType="RadioButton">
 		<Setter Property="BackgroundColor" Value="Transparent"/>
+		<Setter Property="ControlTemplate" Value="{StaticResource RadioButtonTemplate}" />
 	</Style>
 
 </ResourceDictionary>

@@ -1246,7 +1246,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 		private Task ChangePin()
 		{
 			if (this.IsPersonal)
-				return SettingsViewModel.ChangePinAsync();
+				return SettingsViewModel.ChangePin();
 
 			return Task.CompletedTask;
 		}

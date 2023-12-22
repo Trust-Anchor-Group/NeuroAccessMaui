@@ -13,6 +13,8 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 	/// </summary>
 	public partial class SettingsViewModel : XmppViewModel
 	{
+		private bool initializing = false;
+
 		/// <summary>
 		/// Creates an instance of the <see cref="SettingsViewModel"/> class.
 		/// </summary>
@@ -29,8 +31,24 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			this.CanEnableScreenCapture = ServiceRef.PlatformSpecific.ProhibitScreenCapture;
 			this.CanDisableScreenCapture = !this.CanEnableScreenCapture;
 
-			this.IsLightMode = Application.Current?.UserAppTheme == AppTheme.Light;
-			this.IsDarkMode = Application.Current?.UserAppTheme == AppTheme.Dark;
+			this.initializing = true;
+			try
+			{
+				switch (DisplayMode)
+				{
+					case AppTheme.Light:
+						this.IsLightMode = true;
+						break;
+
+					case AppTheme.Dark:
+						this.IsDarkMode = true;
+						break;
+				}
+			}
+			finally
+			{
+				this.initializing = false;
+			}
 		}
 
 		#region Properties
@@ -57,14 +75,12 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		/// Gets or sets whether the current display mode is Light Mode.
 		/// </summary>
 		[ObservableProperty]
-		[NotifyPropertyChangedFor(nameof(DisplayMode))]
 		private bool isLightMode;
 
 		/// <summary>
 		/// Gets or sets whether the current display mode is Dark Mode.
 		/// </summary>
 		[ObservableProperty]
-		[NotifyPropertyChangedFor(nameof(DisplayMode))]
 		private bool isDarkMode;
 
 		/// <summary>
@@ -74,12 +90,12 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		{
 			get
 			{
-				AppTheme Result = Application.Current?.UserAppTheme ?? AppTheme.Unspecified;
+				AppTheme? Result = Application.Current?.UserAppTheme;
 
-				if (Result == AppTheme.Unspecified)
-					Result = Application.Current?.PlatformAppTheme ?? AppTheme.Unspecified;
+				if (!Result.HasValue || Result.Value == AppTheme.Unspecified)
+					Result = Application.Current?.PlatformAppTheme;
 
-				return Result;
+				return Result ?? AppTheme.Unspecified;
 			}
 		}
 
@@ -90,10 +106,14 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		{
 			switch (e.PropertyName)
 			{
-				case nameof(DisplayMode):
-					AppTheme NewMode = this.IsDarkMode ? AppTheme.Dark : AppTheme.Light;
-					if (Application.Current is not null && Application.Current.UserAppTheme != NewMode)
-						Application.Current.UserAppTheme = NewMode;
+				case nameof(this.IsLightMode):
+					if (!this.initializing && Application.Current is not null)
+						Application.Current.UserAppTheme = this.IsLightMode ? AppTheme.Light : AppTheme.Dark;
+					break;
+
+				case nameof(this.IsDarkMode):
+					if (!this.initializing && Application.Current is not null)
+						Application.Current.UserAppTheme = this.IsDarkMode ? AppTheme.Dark : AppTheme.Light;
 					break;
 			}
 		}
@@ -102,7 +122,8 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 
 		#region Commands
 
-		internal static async Task ChangePinAsync()
+		[RelayCommand]
+		internal static async Task ChangePin()
 		{
 			try
 			{
@@ -150,12 +171,6 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 				ServiceRef.LogService.LogException(ex);
 				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
-		}
-
-		[RelayCommand]
-		private Task ChangePin()
-		{
-			return ChangePinAsync();
 		}
 
 		[RelayCommand]

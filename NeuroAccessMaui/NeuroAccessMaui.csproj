@@ -109,6 +109,10 @@
 	  <None Remove="Resources\Images\flyout_header.svg" />
 	  <None Remove="Resources\Images\light_mode_dark.svg" />
 	  <None Remove="Resources\Images\light_mode_light.svg" />
+	  <None Remove="Resources\Images\radiobutton_checked_dark.svg" />
+	  <None Remove="Resources\Images\radiobutton_checked_light.svg" />
+	  <None Remove="Resources\Images\radiobutton_unchecked_dark.svg" />
+	  <None Remove="Resources\Images\radiobutton_unchecked_light.svg" />
 	  <None Remove="Resources\Images\settings_dark.svg" />
 	  <None Remove="Resources\Images\settings_light.svg" />
 	  <None Remove="Resources\Images\view_id_dark.svg" />

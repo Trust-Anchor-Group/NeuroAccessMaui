@@ -16,6 +16,10 @@
 		<Setter Property="LineHeight" Value="1" />
 	</Style>
 
+	<Style x:Key="MenuItemLabel" TargetType="Label">
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
+	</Style>
+
 	<Style x:Key="PageTitleLabelStyle" ApplyToDerivedTypes="False" TargetType="Label">
 		<Setter Property="FontFamily" Value="SpaceGroteskBold" />
 		<Setter Property="FontSize" Value="32" />
