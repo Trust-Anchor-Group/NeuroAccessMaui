@@ -1753,6 +1753,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A restart of the App is needed, for the new theme to be properly displayed. When closing the dialog, the App will automatically close..
+        /// </summary>
+        internal static string RestartNeededDueToThemeChange {
+            get {
+                return ResourceManager.GetString("RestartNeededDueToThemeChange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Revoke.
         /// </summary>
         internal static string RevokeInformation {

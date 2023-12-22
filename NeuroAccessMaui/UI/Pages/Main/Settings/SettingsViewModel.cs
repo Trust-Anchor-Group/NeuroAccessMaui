@@ -5,6 +5,7 @@ using NeuroAccessMaui.UI.Popups.Pin;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace NeuroAccessMaui.UI.Pages.Main.Settings
 {
@@ -77,6 +78,12 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		private bool isDarkMode;
 
 		/// <summary>
+		/// If a restart is needed.
+		/// </summary>
+		[ObservableProperty]
+		private bool restartNeeded;
+
+		/// <summary>
 		/// Current display mode
 		/// </summary>
 		public static AppTheme DisplayMode
@@ -101,19 +108,32 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			{
 				case nameof(this.IsLightMode):
 					if (!this.initializing)
-						SetTheme(this.IsLightMode ? AppTheme.Light : AppTheme.Dark);
+						this.SetTheme(this.IsLightMode ? AppTheme.Light : AppTheme.Dark);
 					break;
 
 				case nameof(this.IsDarkMode):
 					if (!this.initializing)
-						SetTheme(this.IsDarkMode ? AppTheme.Dark : AppTheme.Light);
+						this.SetTheme(this.IsDarkMode ? AppTheme.Dark : AppTheme.Light);
 					break;
 			}
 		}
 
-		private static void SetTheme(AppTheme Theme)
+		private void SetTheme(AppTheme Theme)
 		{
 			ServiceRef.TagProfile.SetTheme(Theme);
+
+			if (!this.RestartNeeded)
+			{
+				// TODO: When changing Theme, menu items in the flyout menu are not styled correctly. The foreground color
+				// is not updated. According to info currently available, a future version of Maui allows you to fix this
+				// with a stylable FlyoutForegroundColor, which does not exist in the currently used version.
+
+				this.RestartNeeded = true;
+				ServiceRef.UiSerializer.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.Message)],
+					ServiceRef.Localizer[nameof(AppResources.RestartNeededDueToThemeChange)],
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+			}
 		}
 
 		#endregion
@@ -200,9 +220,12 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		}
 
 		[RelayCommand]
-		private static Task GoBack()
+		private async Task GoBack()
 		{
-			return ServiceRef.NavigationService.GoBackAsync();
+			if (this.RestartNeeded)
+				await App.Stop();
+			else
+				await ServiceRef.NavigationService.GoBackAsync();
 		}
 
 		#endregion
