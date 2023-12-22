@@ -129,7 +129,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Common" Version="8.2.2" />
-		<PackageReference Include="CommunityToolkit.Maui" Version="7.0.0" />
+		<PackageReference Include="CommunityToolkit.Maui" Version="7.0.1" />
 		<PackageReference Include="CommunityToolkit.Maui.Markup" Version="4.0.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
 		<PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.0" />
