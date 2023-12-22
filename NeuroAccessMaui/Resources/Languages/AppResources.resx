@@ -853,7 +853,7 @@
     <value>Report as Compromised</value>
   </data>
   <data name="RestartNeededDueToThemeChange" xml:space="preserve">
-    <value>A restart of the App is needed, for the new theme to be properly displayed. When closing the dialog, the App will automatically close.</value>
+    <value>A restart of the App is needed, for the new theme to be properly displayed. When closing the dialog, the App will automatically close. When restarting the App, the new theme will be selected.</value>
   </data>
   <data name="RevokeInformation" xml:space="preserve">
     <value>Revoke</value>
