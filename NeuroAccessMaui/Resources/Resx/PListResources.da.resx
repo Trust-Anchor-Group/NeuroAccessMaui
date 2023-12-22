@@ -118,15 +118,15 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="NSCameraUsageDescription" xml:space="preserve">
-    <value>Neuro-Access skal have adgang til kameraet for at tage billeder til dit digitale id, og når du vil have det til at scanne QR-koder.</value>
+    <value>Neuro-Access har brug for adgang til kameraet for at tage billeder til dit digitale id, og når du vil have det til at scanne QR-koder.</value>
   </data>
   <data name="NSPhotoLibraryAddUsageDescription" xml:space="preserve">
-    <value>Neuro-Access skal kunne føje billeder til dine gallerier, hvis du vil gemme billeder, du tager, til senere brug.</value>
+    <value>Neuro-Access skal kunne tilføje billeder til dine gallerier, hvis du vil gemme billeder, du tager, til senere brug.</value>
   </data>
   <data name="NSPhotoLibraryUsageDescription" xml:space="preserve">
-    <value>Neuro-Access skal have adgang til fotogalleriet, for at du kan vælge et profilbillede til dit id, få QR-koder fra andre apps eller dele billeder med kontakter i chats.</value>
+    <value>Neuro-Access skal have adgang til fotogalleriet, for at du kan vælge et profilbillede til dit id, hente QR-koder fra andre apps eller dele billeder med kontakter i chats.</value>
   </data>
-  <data name="NSMicrophoneUsageDescription" xml:space="preserve">
-    <value>TAG ID har brug for adgang til mikrofonen for at optage og sende lydbeskeder til dine kontakter.</value>
+  <data name="NFCReaderUsageDescription" xml:space="preserve">
+    <value>Neuro-Access skal have adgang til NFC-tagget for at læse NDEF-meddelelser i applikationen.</value>
   </data>
 </root>

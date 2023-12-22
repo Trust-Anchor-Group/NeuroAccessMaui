@@ -118,15 +118,15 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="NSCameraUsageDescription" xml:space="preserve">
-    <value>TAG ID-ul are nevoie de acces la aparatul de fotografiat pentru a face fotografii pentru ID-ul digital, și atunci când doriți să scanați coduri QR.</value>
+    <value>Neuro-Access are nevoie de acces la cameră pentru a face fotografii pentru ID-ul dvs. digital și atunci când doriți să scaneze coduri QR.</value>
   </data>
   <data name="NSPhotoLibraryAddUsageDescription" xml:space="preserve">
-    <value>TAG ID-ul trebuie să poată adăuga fotografii în galeriile dvs., dacă doriți să salvați fotografiile pe care le faceți pentru o utilizare ulterioară.</value>
+    <value>Neuro-Access trebuie să poată adăuga fotografii în galeriile dvs., dacă doriți să salvați fotografiile pe care le faceți pentru utilizare ulterioară.</value>
   </data>
   <data name="NSPhotoLibraryUsageDescription" xml:space="preserve">
-    <value>TAG ID are nevoie de acces la galeria foto pentru a putea selecta o fotografie de profil pentru id-ul dvs., pentru a obține coduri QR din alte aplicații sau pentru a partaja imagini cu persoanele de contact din chaturi.</value>
+    <value>Neuro-Access are nevoie de acces la galeria foto pentru a putea selecta o fotografie de profil pentru ID-ul dvs., pentru a obține coduri QR din alte aplicații sau pentru a partaja imagini cu contactele din chat-uri.</value>
   </data>
-  <data name="NSMicrophoneUsageDescription" xml:space="preserve">
-    <value>ID-ul TAG are nevoie de acces la microfon pentru a înregistra și a trimite mesaje audio persoanelor de contact.</value>
+  <data name="NFCReaderUsageDescription" xml:space="preserve">
+    <value>Neuro-Access are nevoie de acces la eticheta NFC pentru a citi mesajele NDEF în aplicație.</value>
   </data>
 </root>

@@ -118,15 +118,15 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="NSCameraUsageDescription" xml:space="preserve">
-    <value>TAG ID требуется доступ к камере, чтобы делать фотографии для вашего цифрового удостоверения, и когда вы хотите, чтобы он сканировал QR-коды.</value>
+    <value>Neuro-Access требуется доступ к камере, чтобы делать фотографии для вашего цифрового удостоверения личности, а также сканировать QR-коды.</value>
   </data>
   <data name="NSPhotoLibraryAddUsageDescription" xml:space="preserve">
-    <value>TAG ID должен иметь возможность добавлять фотографии в свои галереи, если вы хотите сохранить фотографии, которые вы делаете, для последующего использования.</value>
+    <value>Neuro-Access должен иметь возможность добавлять фотографии в ваши галереи, если вы хотите сохранить сделанные фотографии для последующего использования.</value>
   </data>
   <data name="NSPhotoLibraryUsageDescription" xml:space="preserve">
-    <value>TAG ID требуется доступ к фотогалерее, чтобы вы могли выбрать фотографию профиля для своего удостоверения личности, получить QR-коды из других приложений или поделиться изображениями с контактами в чатах.</value>
+    <value>Neuro-Access нужен доступ к фотогалерее, чтобы вы могли выбрать фотографию профиля для своего удостоверения личности, получить QR-коды из других приложений или поделиться изображениями с контактами в чатах.</value>
   </data>
-  <data name="NSMicrophoneUsageDescription" xml:space="preserve">
-    <value>TAG ID требуется доступ к микрофону для записи и отправки аудиосообщений вашим контактам.</value>
+  <data name="NFCReaderUsageDescription" xml:space="preserve">
+    <value>Neuro-Access требуется доступ к NFC-метке для считывания сообщений NDEF в приложение.</value>
   </data>
 </root>

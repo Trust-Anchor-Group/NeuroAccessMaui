@@ -118,15 +118,15 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="NSCameraUsageDescription" xml:space="preserve">
-    <value>Neuro-Access-u je potreban pristup fotoaparatu da bi se snimile fotografije za vaš digitalni ID, kao i kada želite da skenira QR kodove.</value>
+    <value>Neuro-Accessu je potreban pristup kameri da bi napravio fotografije za vaš digitalni ID, a kada želite da skenira QR kodove.</value>
   </data>
   <data name="NSPhotoLibraryAddUsageDescription" xml:space="preserve">
-    <value>ID OZNAKE treba da bude u mogućnosti da dodaje fotografije u galerije, ako želite da sačuvate fotografije koje napravite za kasniju upotrebu.</value>
+    <value>Neuro-Access mora da bude u mogućnosti da dodaje fotografije u vaše galerije, ako želite da sačuvate fotografije koje napravite za kasniju upotrebu.</value>
   </data>
   <data name="NSPhotoLibraryUsageDescription" xml:space="preserve">
-    <value>Neuro-Access-u je potreban pristup foto-galeriji da biste mogli da izaberete fotografiju profila za svoj ID, nabavite QR kodove iz drugih aplikacija ili da delite slike sa kontaktima u ćaskanjima.</value>
+    <value>Neuro-Accessu je potreban pristup galeriji fotografija da biste mogli da izaberete fotografiju profila za svoj ID, nabavite QR kodove iz drugih aplikacija ili delite slike sa kontaktima u ćaskanjima.</value>
   </data>
-  <data name="NSMicrophoneUsageDescription" xml:space="preserve">
-    <value>TAG ID-u je potreban pristup mikrofonu da bi snimio i poslao audio poruke vašim kontaktima.</value>
+  <data name="NFCReaderUsageDescription" xml:space="preserve">
+    <value>Neuro-Accessu je potreban pristup NFC oznaki da bi pročitao NDEF poruke u aplikaciji.</value>
   </data>
 </root>

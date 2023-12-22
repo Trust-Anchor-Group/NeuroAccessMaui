@@ -117,4 +117,763 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="STRINGNOTDEFINED" xml:space="preserve">
+    <value>ȘIR NEDEFINIT</value>
+  </data>
+  <data name="IdentityState_Approved" xml:space="preserve">
+    <value>Aprobat</value>
+  </data>
+  <data name="IdentityState_Compromised" xml:space="preserve">
+    <value>Compromisă</value>
+  </data>
+  <data name="IdentityState_Created" xml:space="preserve">
+    <value>Creat</value>
+  </data>
+  <data name="IdentityState_Obsoleted" xml:space="preserve">
+    <value>Învechit</value>
+  </data>
+  <data name="IdentityState_Rejected" xml:space="preserve">
+    <value>Respins</value>
+  </data>
+  <data name="TagEngraved" xml:space="preserve">
+    <value>Etichetă gravată cu link către {0}.</value>
+  </data>
+  <data name="TagNotEngraved" xml:space="preserve">
+    <value>Nu se poate grava eticheta cu link către {0}.</value>
+  </data>
+  <data name="PinChanged" xml:space="preserve">
+    <value>Codul PIN a fost modificat cu succes.</value>
+  </data>
+  <data name="UnableToChangePassword" xml:space="preserve">
+    <value>Imposibil de schimbat parola de rețea.</value>
+  </data>
+  <data name="PinIsInvalid" xml:space="preserve">
+    <value>Codul PIN nu este valid. Aveți {0} încercări rămase.</value>
+  </data>
+  <data name="PinsDoNotMatch" xml:space="preserve">
+    <value>PIN-urile nu se potrivesc</value>
+  </data>
+  <data name="PinIsInvalidAplicationBlockedForever" xml:space="preserve">
+    <value>Încercările de introducere a codului PIN sunt eliminate. Aplicația dvs. a fost blocată pentru totdeauna</value>
+  </data>
+  <data name="PinIsInvalidAplicationBlocked" xml:space="preserve">
+    <value>Încercările de introducere a codului PIN sunt eliminate. Aplicația dvs. a fost blocată până {0}.</value>
+  </data>
+  <data name="PinIsInvalidAplicationBlockedTillTomorrow" xml:space="preserve">
+    <value>Încercările de introducere a codului PIN sunt eliminate. Cererea dumneavoastră a fost blocată până mâine la ora {0}.</value>
+  </data>
+  <data name="PinIsInvalidAplicationBlockedForOneWeek" xml:space="preserve">
+    <value>Încercările de introducere a codului PIN sunt eliminate. Aplicația dvs. a fost blocată timp de o săptămână</value>
+  </data>
+  <data name="PinTooShort" xml:space="preserve">
+    <value>Lungimea codului PIN trebuie să fie de cel puțin {0} caractere.</value>
+  </data>
+  <data name="PinContainsName" xml:space="preserve">
+    <value>Un cod PIN nu trebuie să conțină niciun cuvânt din numele de identitate.</value>
+  </data>
+  <data name="PinContainsPersonalNumber" xml:space="preserve">
+    <value>Un cod PIN nu trebuie să conțină codul numeric personal.</value>
+  </data>
+  <data name="PinContainsAddress" xml:space="preserve">
+    <value>Un cod PIN nu trebuie să conțină niciun cuvânt din rândurile adresei de identitate.</value>
+  </data>
+  <data name="PinContainsEMail" xml:space="preserve">
+    <value>Un cod PIN nu trebuie să conțină adresa de e-mail de identitate.</value>
+  </data>
+  <data name="PinContainsPhoneNumber" xml:space="preserve">
+    <value>Un cod PIN nu trebuie să conțină numărul de telefon de identitate.</value>
+  </data>
+  <data name="PinWithNotEnoughDigitsLettersSigns" xml:space="preserve">
+    <value>Trebuie utilizate cel puțin {0} litere, cifre sau simboluri.</value>
+  </data>
+  <data name="PinWithNotEnoughDigitsOrSigns" xml:space="preserve">
+    <value>De asemenea, trebuie să utilizați cel puțin {0} cifre sau simboluri.</value>
+  </data>
+  <data name="PinWithNotEnoughLettersOrDigits" xml:space="preserve">
+    <value>De asemenea, trebuie să utilizați cel puțin {0} litere sau cifre.</value>
+  </data>
+  <data name="PinWithNotEnoughLettersOrSigns" xml:space="preserve">
+    <value>De asemenea, trebuie să utilizați cel puțin {0} litere sau simboluri.</value>
+  </data>
+  <data name="PinWithTooManyIdenticalSymbols" xml:space="preserve">
+    <value>Un cod PIN nu trebuie să conțină mai mult de {0} de simboluri identice.</value>
+  </data>
+  <data name="PinWithTooManySequencedSymbols" xml:space="preserve">
+    <value>Un cod PIN nu trebuie să conțină mai mult de {0} simboluri secvențiale, de exemplu "12" sau "ab".</value>
+  </data>
+  <data name="ThereIsNoNetwork" xml:space="preserve">
+    <value>Nu există rețea</value>
+  </data>
+  <data name="RequestTimedOut" xml:space="preserve">
+    <value>Cererea a expirat</value>
+  </data>
+  <data name="RequestWasCancelled" xml:space="preserve">
+    <value>Cererea a fost anulată</value>
+  </data>
+  <data name="XmppState_Authenticating" xml:space="preserve">
+    <value>Autentificarea identității rețelei</value>
+  </data>
+  <data name="XmppState_Binding" xml:space="preserve">
+    <value>Conexiune de legare</value>
+  </data>
+  <data name="XmppState_Connected" xml:space="preserve">
+    <value>Conectat</value>
+  </data>
+  <data name="XmppState_Connecting" xml:space="preserve">
+    <value>Stabilirea conexiunii</value>
+  </data>
+  <data name="XmppState_Error" xml:space="preserve">
+    <value>Eroare de conexiune</value>
+  </data>
+  <data name="XmppState_FetchingRoster" xml:space="preserve">
+    <value>Preluarea listei</value>
+  </data>
+  <data name="XmppState_Offline" xml:space="preserve">
+    <value>Deconectat</value>
+  </data>
+  <data name="XmppState_Registering" xml:space="preserve">
+    <value>Înregistrarea la broker</value>
+  </data>
+  <data name="XmppState_RequestingSession" xml:space="preserve">
+    <value>Solicitarea sesiunii</value>
+  </data>
+  <data name="XmppState_SettingPresence" xml:space="preserve">
+    <value>Setarea prezenței</value>
+  </data>
+  <data name="XmppState_StartingEncryption" xml:space="preserve">
+    <value>Criptarea conexiunii</value>
+  </data>
+  <data name="XmppState_StreamNegotiation" xml:space="preserve">
+    <value>Fluxul de negociere</value>
+  </data>
+  <data name="XmppState_StreamOpened" xml:space="preserve">
+    <value>Flux stabilit</value>
+  </data>
+  <data name="YourLegalIdentity" xml:space="preserve">
+    <value>Identitatea dvs. juridică</value>
+  </data>
+  <data name="YourLegalIdentityHasBeenCompromised" xml:space="preserve">
+    <value>Identitatea ta juridică a fost marcată ca fiind compromisă. Prin urmare, ați fost redirecționat pentru a crea un cont nou.</value>
+  </data>
+  <data name="YourLegalIdentityHasBeenObsoleted" xml:space="preserve">
+    <value>Identitatea dumneavoastră juridică a fost marcată ca fiind depășită. Prin urmare, ați fost redirecționat pentru a crea un cont nou.</value>
+  </data>
+  <data name="ClientMessageAuthenticationTimeout" xml:space="preserve">
+    <value>Răspunsul nu a fost returnat în timpul configurat.</value>
+  </data>
+  <data name="ClientMessageCountryCodeMismatch" xml:space="preserve">
+    <value>Codul de țară nu corespunde.</value>
+  </data>
+  <data name="ClientMessageCountryCodeNotVerified" xml:space="preserve">
+    <value>Codul țării nu este verificat.</value>
+  </data>
+  <data name="ClientMessageFirstNameNotVerified" xml:space="preserve">
+    <value>Prenumele nu a fost verificat.</value>
+  </data>
+  <data name="ClientMessageLastNameNotVerified" xml:space="preserve">
+    <value>Numele de familie nu a fost verificat.</value>
+  </data>
+  <data name="ClientMessageNotValid" xml:space="preserve">
+    <value>Identitatea nu este validă.</value>
+  </data>
+  <data name="ClientMessagePersonalNumberMismatch" xml:space="preserve">
+    <value>Numărul personal nu se potrivește.</value>
+  </data>
+  <data name="ClientMessagePersonalNumberNotVerified" xml:space="preserve">
+    <value>Numărul personal nu a fost verificat.</value>
+  </data>
+  <data name="ClientMessageReferenceMismatch" xml:space="preserve">
+    <value>Referința returnată nu se potrivea cu referința solicitării.</value>
+  </data>
+  <data name="ClientMessageUnexpectedDocumentInformation" xml:space="preserve">
+    <value>Informațiile despre document nu au fost returnate așa cum vă așteptați.</value>
+  </data>
+  <data name="ClientMessageUnexpectedEventResult" xml:space="preserve">
+    <value>Rezultatul evenimentului nu a fost returnat conform așteptărilor.</value>
+  </data>
+  <data name="ClientMessageUnexpectedResult" xml:space="preserve">
+    <value>Răspunsul neașteptat a revenit.</value>
+  </data>
+  <data name="RepairRestart" xml:space="preserve">
+    <value>A fost detectată o inconsecvență în baza de date internă. Acest lucru se poate întâmpla dacă aplicația nu este închisă corect. Prin urmare, aplicația se va închide. Data viitoare când porniți aplicația, baza de date va fi reparată.</value>
+  </data>
+  <data name="Incomplete" xml:space="preserve">
+    <value>Incomplet</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Închide</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>Confirma</value>
+  </data>
+  <data name="ErrorTitle" xml:space="preserve">
+    <value>A survenit o eroare</value>
+  </data>
+  <data name="WarningTitle" xml:space="preserve">
+    <value>Avertisment</value>
+  </data>
+  <data name="SuccessTitle" xml:space="preserve">
+    <value>Succes</value>
+  </data>
+  <data name="Information" xml:space="preserve">
+    <value>Informație</value>
+  </data>
+  <data name="Message" xml:space="preserve">
+    <value>Mesaj</value>
+  </data>
+  <data name="Ok" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Da</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Nu</value>
+  </data>
+  <data name="Me" xml:space="preserve">
+    <value>(Eu)</value>
+  </data>
+  <data name="CopyToClipboard" xml:space="preserve">
+    <value>Copierea în clipboard</value>
+  </data>
+  <data name="Continue" xml:space="preserve">
+    <value>Continua</value>
+  </data>
+  <data name="SendCode" xml:space="preserve">
+    <value>Trimite codul</value>
+  </data>
+  <data name="SendCodeSeconds" xml:space="preserve">
+    <value>Trimite cod ({0})</value>
+  </data>
+  <data name="ResendCode" xml:space="preserve">
+    <value>Retrimite codul</value>
+  </data>
+  <data name="ResendCodeSeconds" xml:space="preserve">
+    <value>Retrimitere ({0})</value>
+  </data>
+  <data name="Verify" xml:space="preserve">
+    <value>Verifica</value>
+  </data>
+  <data name="Repair" xml:space="preserve">
+    <value>Repara</value>
+  </data>
+  <data name="Open" xml:space="preserve">
+    <value>Deschide</value>
+  </data>
+  <data name="XInY" xml:space="preserve">
+    <value>{0} în {1}</value>
+  </data>
+  <data name="XOnY" xml:space="preserve">
+    <value>{0} pe {1}</value>
+  </data>
+  <data name="CantConnectTo" xml:space="preserve">
+    <value>Nu se poate conecta la {0}</value>
+  </data>
+  <data name="ScannedQrCode" xml:space="preserve">
+    <value>Cod QR scanat</value>
+  </data>
+  <data name="QrCodeNotUnderstood" xml:space="preserve">
+    <value>Codul nu a fost înțeles</value>
+  </data>
+  <data name="CodeNotRecognized" xml:space="preserve">
+    <value>Codul nu este recunoscut.</value>
+  </data>
+  <data name="UnableToOpenLink" xml:space="preserve">
+    <value>Imposibil de deschis linkul:</value>
+  </data>
+  <data name="InvalidInvitationCode" xml:space="preserve">
+    <value>Cod de invitație nevalid.</value>
+  </data>
+  <data name="InvitationAccepted" xml:space="preserve">
+    <value>Invitație acceptată</value>
+  </data>
+  <data name="UnableToAccessInvitation" xml:space="preserve">
+    <value>Nu se pot accesa informațiile despre invitație.</value>
+  </data>
+  <data name="InvitedToCreateAccountOnDomain" xml:space="preserve">
+    <value>Ați fost invitat să creați un cont pe {0}. Apăsați OK și introduceți numele contului pe care doriți să îl creați.</value>
+  </data>
+  <data name="ThisCodeCannotBeClaimedAtThisTime" xml:space="preserve">
+    <value>Acest cod reprezintă o invitație ID etichetă și nu poate fi revendicat momentan.</value>
+  </data>
+  <data name="DomainDoesNotFollowEncryptionPolicy" xml:space="preserve">
+    <value>{0} nu respectă politica de criptare omniprezentă</value>
+  </data>
+  <data name="DomainIsNotAValidOperator" xml:space="preserve">
+    <value>{0} nu este un operator valid</value>
+  </data>
+  <data name="UnableToAuthenticateWith" xml:space="preserve">
+    <value>Nu se poate autentifica cu {0}</value>
+  </data>
+  <data name="OperatorDoesNotSupportRegisteringNewAccounts" xml:space="preserve">
+    <value>Operatorul {0} nu acceptă înregistrarea de conturi noi</value>
+  </data>
+  <data name="AccountNameAlreadyTaken" xml:space="preserve">
+    <value>Numele contului {0} este deja luat. Alegeți altul.</value>
+  </data>
+  <data name="InvalidUsernameOrPassword" xml:space="preserve">
+    <value>Nume de utilizator sau parolă nevalide</value>
+  </data>
+  <data name="UnableToConnectTo" xml:space="preserve">
+    <value>Imposibil de conectat la {0}</value>
+  </data>
+  <data name="UnableToConnect" xml:space="preserve">
+    <value>Imposibil de conectat.</value>
+  </data>
+  <data name="AppNotConnected" xml:space="preserve">
+    <value>Aplicația nu este conectată la rețea.</value>
+  </data>
+  <data name="InvalidTagSignatureId" xml:space="preserve">
+    <value>URI de semnătură etichetă nevalid.</value>
+  </data>
+  <data name="LegalIdNotApproved" xml:space="preserve">
+    <value>ID-ul legal nu este aprobat.</value>
+  </data>
+  <data name="NoLegalIdSelected" xml:space="preserve">
+    <value>Nu este selectat niciun ID legal.</value>
+  </data>
+  <data name="PeerReviewAccepted" xml:space="preserve">
+    <value>Evaluarea inter pares acceptată</value>
+  </data>
+  <data name="PeerReviewRejected" xml:space="preserve">
+    <value>Evaluarea inter pares a fost respinsă</value>
+  </data>
+  <data name="SignaturePetitionDenied" xml:space="preserve">
+    <value>Petiția semnată a fost respinsă.</value>
+  </data>
+  <data name="PetitionSent" xml:space="preserve">
+    <value>Petiție trimisă</value>
+  </data>
+  <data name="PetitionToViewContractWasDenied" xml:space="preserve">
+    <value>Petiția de a vedea contractul a fost respinsă.</value>
+  </data>
+  <data name="PetitionToViewLegalIdentityWasDenied" xml:space="preserve">
+    <value>Petiția pentru vizualizarea identității juridice a fost respinsă.</value>
+  </data>
+  <data name="APetitionHasBeenSentToTheContract" xml:space="preserve">
+    <value>O petiție a fost trimisă părților contractului. Dacă oricare dintre părți acceptă petiția, informațiile contractuale vor fi afișate pe ecran.</value>
+  </data>
+  <data name="APetitionHasBeenSentToTheOwner" xml:space="preserve">
+    <value>O petiție a fost trimisă proprietarului identității. Dacă proprietarul acceptă petiția, informațiile de identitate vor fi afișate pe ecran.</value>
+  </data>
+  <data name="APetitionHasBeenSentToYourPeer" xml:space="preserve">
+    <value>O petiție a fost trimisă colegilor dvs.</value>
+  </data>
+  <data name="APeerReviewYouhaveRequestedHasBeenAccepted" xml:space="preserve">
+    <value>O evaluare inter pares pe care ați solicitat-o a fost acceptată.</value>
+  </data>
+  <data name="APeerYouRequestedToReviewHasBeenRejectedDueToSignatureError" xml:space="preserve">
+    <value>O evaluare inter pares pe care ați solicitat-o a fost respinsă, din cauza unei erori de semnătură.</value>
+  </data>
+  <data name="APeerYouRequestedToReviewHasRejected" xml:space="preserve">
+    <value>Un coleg pe care l-ați solicitat să vă examineze cererea, a respins să o aprobe.</value>
+  </data>
+  <data name="UnableToGetAccessToYourPrivateKeys" xml:space="preserve">
+    <value>Aplicația nu a putut avea acces la cheile private ale identității. Aceasta înseamnă, de obicei, că identitatea a fost modificată în afara domeniului de aplicare al aplicației. Poate fi, de asemenea, rezultatul unei coruperi a datelor. Puteți încerca unul dintre cele două lucruri. Apăsați butonul Continuare, pentru a continua, fără tastele private. Aveți acces la aplicație, dar nu puteți semna nimic. Apoi puteți alege să aplicați din nou pentru o nouă identitate din meniul principal, cu noi chei private. De asemenea, puteți încerca să reparați baza de date, apăsând butonul Reparare. În acest din urmă caz, aplicația este închisă, iar data viitoare când aplicația este deschisă, se încearcă mai întâi o procedură de reparare.</value>
+  </data>
+  <data name="FailedToClosePage" xml:space="preserve">
+    <value>Nu s-a reușit închiderea paginii</value>
+  </data>
+  <data name="FailedToNavigateToPage" xml:space="preserve">
+    <value>Nu s-a reușit navigarea la pagina {0} {1}</value>
+  </data>
+  <data name="IdCopiedSuccessfully" xml:space="preserve">
+    <value>Un link către ID a fost copiat în clipboard.</value>
+  </data>
+  <data name="TagValueCopiedToClipboard" xml:space="preserve">
+    <value>Valoarea etichetei copiată în clipboard</value>
+  </data>
+  <data name="PleaseReviewAndCheckAllCheckboxes" xml:space="preserve">
+    <value>Vă rugăm să consultați toate informațiile de mai sus și să bifați casetele de selectare corespunzătoare dacă informațiile sunt corecte. Acest lucru trebuie făcut înainte de a putea aproba informațiile.</value>
+  </data>
+  <data name="YouNeedToCheckCarefullyReviewed" xml:space="preserve">
+    <value>Trebuie să bifați caseta pe care ați revizuit-o cu atenție toate informațiile corespunzătoare de mai sus.</value>
+  </data>
+  <data name="YouNeedToApproveToAssociate" xml:space="preserve">
+    <value>Trebuie să aprobați asocierea informațiilor dvs. personale cu identitatea pe care o revizuiți. Atunci când terții revizuiesc informațiile în identitate, vor avea acces la identitatea recenzenților, pentru transparență.</value>
+  </data>
+  <data name="AreYouSureYouWantToRemoveContact" xml:space="preserve">
+    <value>Sigur doriți să eliminați această persoană de contact din lista de persoane de contact?</value>
+  </data>
+  <data name="AreYouSureYouWantToReportYourLegalIdentityAsCompromized" xml:space="preserve">
+    <value>Sunteți sigur că doriți să vă raportați identitatea juridică ca fiind compromisă, furată sau spartă?</value>
+  </data>
+  <data name="AreYouSureYouWantToRevokeYourLegalIdentity" xml:space="preserve">
+    <value>Sunteți sigur că doriți să vă revocați identitatea juridică din aplicație?</value>
+  </data>
+  <data name="AreYouSureYouWantToTransferYourLegalIdentity" xml:space="preserve">
+    <value>Sunteți sigur că doriți să vă transferați identitatea juridică din aplicație în alta? Identitatea va fi eliminată de pe acest dispozitiv odată finalizată. De asemenea, asigurați-vă că nimeni altcineva nu vă poate vedea ecranul în timpul procesului.</value>
+  </data>
+  <data name="UnexpectedResponse" xml:space="preserve">
+    <value>S-a primit un răspuns neașteptat.</value>
+  </data>
+  <data name="FileUploadServiceNotFound" xml:space="preserve">
+    <value>Nici un serviciu de încărcare a fișierelor găsit pe broker.</value>
+  </data>
+  <data name="LegalServiceNotFound" xml:space="preserve">
+    <value>Nici un serviciu juridic găsit pe broker.</value>
+  </data>
+  <data name="FailedToBindViewModelForPage" xml:space="preserve">
+    <value>Nu s-a reușit legarea {0} viewmodel pentru pagina {1}</value>
+  </data>
+  <data name="FailedToRestoreViewModelStateForPage" xml:space="preserve">
+    <value>Nu s-a reușit restabilirea stării pentru modelul de vizualizare {0} pentru pagina {1}</value>
+  </data>
+  <data name="FailedToSaveViewModelStateForPage" xml:space="preserve">
+    <value>Nu s-a reușit salvarea stării pentru modelul de vizualizare {0} pentru pagina {1}</value>
+  </data>
+  <data name="FailedToUnbindViewModelForPage" xml:space="preserve">
+    <value>Nu s-a reușit dezlegarea {0} modelului de vizualizare pentru pagina {1}</value>
+  </data>
+  <data name="OnboardingPurposePageTitle" xml:space="preserve">
+    <value>Bun venit!</value>
+  </data>
+  <data name="OnboardingPurposePageDetails" xml:space="preserve">
+    <value>Alegeți în ce context intenționați să utilizați Neuro-Access</value>
+  </data>
+  <data name="OnboardingPhonePageTitle" xml:space="preserve">
+    <value>Să începem</value>
+  </data>
+  <data name="OnboardingPhonePageDetails" xml:space="preserve">
+    <value>Pentru a fi confirmat, trebuie să introduceți numărul de telefon</value>
+  </data>
+  <data name="OnboardingEmailPageTitle" xml:space="preserve">
+    <value>Vă rugăm să verificați e-mailul</value>
+  </data>
+  <data name="OnboardingEmailPageDetails" xml:space="preserve">
+    <value>Vă vom trimite un cod de verificare</value>
+  </data>
+  <data name="OnboardingVerifyCodePageTitle" xml:space="preserve">
+    <value>Introdu codul</value>
+  </data>
+  <data name="OnboardingVerifyCodePageDetails" xml:space="preserve">
+    <value>Vă rugăm să introduceți codul de verificare trimis către {0}</value>
+  </data>
+  <data name="OnboardingProviderPageTitle" xml:space="preserve">
+    <value>Furnizor selectat</value>
+  </data>
+  <data name="OnboardingProviderPageDetails" xml:space="preserve">
+    <value>Domeniu:</value>
+  </data>
+  <data name="OnboardingAccountPageTitle" xml:space="preserve">
+    <value>Creează cont</value>
+  </data>
+  <data name="OnboardingAccountPageDetails" xml:space="preserve">
+    <value>Introduceți numele pe care doriți să îl utilizați pentru contul dvs.</value>
+  </data>
+  <data name="OnboardingDefinePinPageTitle" xml:space="preserve">
+    <value>Crearea unui cod PIN</value>
+  </data>
+  <data name="OnboardingDefinePinPageDetails" xml:space="preserve">
+    <value>Pentru a îmbunătăți securitatea neuro-identității și a informațiilor sensibile, vă recomandăm să adăugați un strat suplimentar de protecție prin crearea unui cod PIN sau a unei parole</value>
+  </data>
+  <data name="AccountSectionTitle" xml:space="preserve">
+    <value>Introduceți numele contului</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>Crea</value>
+  </data>
+  <data name="PurposesSectionTitle" xml:space="preserve">
+    <value>Alegeți scopul accesului </value>
+  </data>
+  <data name="PurposeEducational" xml:space="preserve">
+    <value>Utilizare educațională</value>
+  </data>
+  <data name="PurposeEducationalDescription" xml:space="preserve">
+    <value>Această opțiune vă permite să folosiți ID-ul etichetei în scopuri educaționale. Puteți utiliza aplicația pentru a semna sau accesa resurse ca persoană privată, fie ca educator, fie ca student. Contul poate fi limitat în timp. Contul poate fi, de asemenea, eliminat atunci când nu mai este utilizat. Consultați furnizorul de servicii pentru mai multe informații.</value>
+  </data>
+  <data name="PurposeExperimental" xml:space="preserve">
+    <value>Utilizare experimentală</value>
+  </data>
+  <data name="PurposeExperimentalDescription" xml:space="preserve">
+    <value>Această opțiune vă permite să folosiți ID-ul etichetei în scopuri experimentale. Puteți utiliza aplicația pentru a semna sau accesa resurse ca persoană privată, cu scopul de a învăța tehnologia și în ce scopuri poate fi utilizată. Contul poate fi limitat în timp. Contul poate fi, de asemenea, eliminat atunci când nu mai este utilizat. Consultați furnizorul de servicii pentru mai multe informații.</value>
+  </data>
+  <data name="PurposePersonal" xml:space="preserve">
+    <value>Uz personal</value>
+  </data>
+  <data name="PurposePersonalDescription" xml:space="preserve">
+    <value>Această opțiune vă permite să folosiți ID-ul etichetei în scopuri personale. Puteți utiliza aplicația pentru a semna sau accesa resurse ca persoană privată. Anumite operațiuni pot implica costuri, în funcție de furnizorul de servicii pe care îl alegeți. Consultați furnizorul de servicii pentru mai multe informații.</value>
+  </data>
+  <data name="PurposeWork" xml:space="preserve">
+    <value>Utilizarea muncii</value>
+  </data>
+  <data name="PurposeWorkDescription" xml:space="preserve">
+    <value>Această opțiune vă permite să folosiți ID-ul etichetei în scopuri profesionale. Aceasta include munca non-profit în organizații. Puteți utiliza aplicația pentru a semna sau accesa resurse ca reprezentant al unei organizații. Anumite operațiuni pot implica costuri, în funcție de furnizorul de servicii pe care îl alegeți. Consultați furnizorul de servicii pentru mai multe informații.</value>
+  </data>
+  <data name="PhoneSectionTitle" xml:space="preserve">
+    <value>Introdu numărul de telefon</value>
+  </data>
+  <data name="SearchByCountry" xml:space="preserve">
+    <value>Căutare după țară...</value>
+  </data>
+  <data name="PhoneValidationDigits" xml:space="preserve">
+    <value>Sunt permise numai cifrele</value>
+  </data>
+  <data name="PhoneValidationLength" xml:space="preserve">
+    <value>Este necesară lungimea minimă 4</value>
+  </data>
+  <data name="NetworkSeemsToBeMissing" xml:space="preserve">
+    <value>Rețeaua pare să lipsească. Verificați configurația și acoperirea și încercați din nou.</value>
+  </data>
+  <data name="SendEmailWarning" xml:space="preserve">
+    <value>Un cod a fost trimis într-un mesaj de poștă electronică către utilizatorii de poștă electronică. Dacă nu îl primiți, vă rugăm să verificați și folderul de spam.</value>
+  </data>
+  <data name="SwitchingToTestPhoneNumberNotAllowed" xml:space="preserve">
+    <value>Schimbarea numărului de telefon într-unul de test nu este permisă.</value>
+  </data>
+  <data name="UnableToVerifyCode" xml:space="preserve">
+    <value>Codul nu era corect.</value>
+  </data>
+  <data name="SomethingWentWrongWhenSendingEmailCode" xml:space="preserve">
+    <value>Ceva nu a mers bine la trimiterea unui cod de verificare la acest e-mail.</value>
+  </data>
+  <data name="SomethingWentWrongWhenSendingPhoneCode" xml:space="preserve">
+    <value>Ceva nu a mers bine la trimiterea unui cod de verificare la acest număr de telefon.</value>
+  </data>
+  <data name="VerifyCodeSectionTitle" xml:space="preserve">
+    <value>Introduceți codul de verificare</value>
+  </data>
+  <data name="EmailSectionTitle" xml:space="preserve">
+    <value>Introduceți adresa de e-mail</value>
+  </data>
+  <data name="EmailValidationFormat" xml:space="preserve">
+    <value>Vă rugăm să introduceți un e-mail valid</value>
+  </data>
+  <data name="ProviderSectionTitle" xml:space="preserve">
+    <value>Alegeți o opțiune</value>
+  </data>
+  <data name="ProviderSectionApproveOption" xml:space="preserve">
+    <value>Aprobați furnizorul de servicii</value>
+  </data>
+  <data name="ProviderSectionChangeOption" xml:space="preserve">
+    <value>Schimbați furnizorul de servicii</value>
+  </data>
+  <data name="UndoSelection" xml:space="preserve">
+    <value>Anularea selecției</value>
+  </data>
+  <data name="ServiceProviderInfo" xml:space="preserve">
+    <value>Ce este un furnizor de servicii?</value>
+  </data>
+  <data name="QrPageTitleScanInvitation" xml:space="preserve">
+    <value>Invitație la scanare</value>
+  </data>
+  <data name="QrSectionTitle" xml:space="preserve">
+    <value>Îndreptați camera spre codul QR cu următorul simbol</value>
+  </data>
+  <data name="QrEnterManually" xml:space="preserve">
+    <value>Introduceți QR manual</value>
+  </data>
+  <data name="QrScanCode" xml:space="preserve">
+    <value>Scanați codul QR</value>
+  </data>
+  <data name="QrScanUri" xml:space="preserve">
+    <value>URI:</value>
+  </data>
+  <data name="AccountValidationAlreadyExists" xml:space="preserve">
+    <value>Acest nume de cont există deja</value>
+  </data>
+  <data name="AccountAvailableAlternatives" xml:space="preserve">
+    <value>Următoarele nume sunt încă disponibile:</value>
+  </data>
+  <data name="TestOtpUsed" xml:space="preserve">
+    <value>A fost utilizat un cod OTP temporar. Aplicația nu va mai funcționa în aproximativ o săptămână. Va trebui să reinstalați aplicația pentru a o utiliza din nou.</value>
+  </data>
+  <data name="DefinePinSectionTitle1" xml:space="preserve">
+    <value>Introduceți codul PIN nou</value>
+  </data>
+  <data name="DefinePinSectionTitle2" xml:space="preserve">
+    <value>Confirmați pinul</value>
+  </data>
+  <data name="CreatePin" xml:space="preserve">
+    <value>Creează un Pin</value>
+  </data>
+  <data name="ScanQrCodeLabel" xml:space="preserve">
+    <value>Scanați codul QR cu camera dvs.</value>
+  </data>
+  <data name="Accept" xml:space="preserve">
+    <value>Accepta</value>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>Adresă</value>
+  </data>
+  <data name="Address2" xml:space="preserve">
+    <value>Adresa (rândul 2)</value>
+  </data>
+  <data name="Area" xml:space="preserve">
+    <value>Zonă</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Anula</value>
+  </data>
+  <data name="City" xml:space="preserve">
+    <value>Oraș</value>
+  </data>
+  <data name="Country" xml:space="preserve">
+    <value>Țară</value>
+  </data>
+  <data name="Created" xml:space="preserve">
+    <value>Creat</value>
+  </data>
+  <data name="Decline" xml:space="preserve">
+    <value>Declin</value>
+  </data>
+  <data name="Enter" xml:space="preserve">
+    <value>Intra</value>
+  </data>
+  <data name="EnterPin" xml:space="preserve">
+    <value>Introduceți codul PIN</value>
+  </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>Prenume</value>
+  </data>
+  <data name="Ignore" xml:space="preserve">
+    <value>Ignora</value>
+  </data>
+  <data name="LastNames" xml:space="preserve">
+    <value>Numele de familie</value>
+  </data>
+  <data name="LegalId" xml:space="preserve">
+    <value>Legal ID</value>
+  </data>
+  <data name="MiddleNames" xml:space="preserve">
+    <value>Al doilea nume</value>
+  </data>
+  <data name="Options" xml:space="preserve">
+    <value>Opțiuni</value>
+  </data>
+  <data name="OrgAddress" xml:space="preserve">
+    <value>Adresa organizației</value>
+  </data>
+  <data name="OrgAddress2" xml:space="preserve">
+    <value>Adresa organizației (rândul 2)</value>
+  </data>
+  <data name="OrganizationInformation" xml:space="preserve">
+    <value>Informații despre organizație</value>
+  </data>
+  <data name="OrgArea" xml:space="preserve">
+    <value>Zona de organizare</value>
+  </data>
+  <data name="OrgCity" xml:space="preserve">
+    <value>Oraș de organizare</value>
+  </data>
+  <data name="OrgCountry" xml:space="preserve">
+    <value>Țara organizației</value>
+  </data>
+  <data name="OrgDepartment" xml:space="preserve">
+    <value>Departament</value>
+  </data>
+  <data name="OrgName" xml:space="preserve">
+    <value>Numele organizației</value>
+  </data>
+  <data name="OrgNumber" xml:space="preserve">
+    <value>Număr organizație</value>
+  </data>
+  <data name="OrgRegion" xml:space="preserve">
+    <value>Regiunea organizației</value>
+  </data>
+  <data name="OrgRole" xml:space="preserve">
+    <value>Rol</value>
+  </data>
+  <data name="OrgZipCode" xml:space="preserve">
+    <value>Organizație Cod poștal sau poștal</value>
+  </data>
+  <data name="PersonalNumber" xml:space="preserve">
+    <value>Număr personal</value>
+  </data>
+  <data name="Petition" xml:space="preserve">
+    <value>Cerere</value>
+  </data>
+  <data name="PetitionSignatureInformationText" xml:space="preserve">
+    <value>A fost primită o solicitare de semnătură. Revizuiți motivul de mai jos și informațiile despre cine a trimis solicitarea, apoi alegeți cum doriți să răspundeți.</value>
+  </data>
+  <data name="Photos" xml:space="preserve">
+    <value>Fotografii</value>
+  </data>
+  <data name="Purpose" xml:space="preserve">
+    <value>Scop</value>
+  </data>
+  <data name="Region" xml:space="preserve">
+    <value>Regiune sau stat</value>
+  </data>
+  <data name="RequestingEntity" xml:space="preserve">
+    <value>Entitatea solicitantă</value>
+  </data>
+  <data name="State" xml:space="preserve">
+    <value>Stat</value>
+  </data>
+  <data name="Updated" xml:space="preserve">
+    <value>Actualizat</value>
+  </data>
+  <data name="ZipCode" xml:space="preserve">
+    <value>Cod poștal sau poștal</value>
+  </data>
+  <data name="OrganizationalInformation" xml:space="preserve">
+    <value>Informații organizaționale</value>
+  </data>
+  <data name="PersonalInformation" xml:space="preserve">
+    <value>Informații personale</value>
+  </data>
+  <data name="Expires" xml:space="preserve">
+    <value>Expiră</value>
+  </data>
+  <data name="NetworkID" xml:space="preserve">
+    <value>ID-ul rețelei</value>
+  </data>
+  <data name="NeuroID" xml:space="preserve">
+    <value>Neuro-ID</value>
+  </data>
+  <data name="Technical" xml:space="preserve">
+    <value>Tehnic</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Domiciliu</value>
+  </data>
+  <data name="ID" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="AccountSettings" xml:space="preserve">
+    <value>Setările contului</value>
+  </data>
+  <data name="AreYouSureYouWantToReportYourLegalIdentityAsCompromized1" xml:space="preserve">
+    <value>Sunteți sigur că doriți să vă raportați identitatea juridică ca fiind compromisă, furată sau spartă?</value>
+  </data>
+  <data name="AreYouSureYouWantToRevokeYourLegalIdentity1" xml:space="preserve">
+    <value>Sunteți sigur că doriți să vă revocați identitatea juridică din aplicație?</value>
+  </data>
+  <data name="AreYouSureYouWantToTransferYourLegalIdentity1" xml:space="preserve">
+    <value>Sunteți sigur că doriți să vă transferați identitatea juridică din aplicație în alta? Identitatea va fi eliminată de pe acest dispozitiv odată finalizată. De asemenea, asigurați-vă că nimeni altcineva nu vă poate vedea ecranul în timpul procesului.</value>
+  </data>
+  <data name="DarkMode" xml:space="preserve">
+    <value>Modul întunecat</value>
+  </data>
+  <data name="LightMode" xml:space="preserve">
+    <value>Modul luminos</value>
+  </data>
+  <data name="ReportAsCompromized" xml:space="preserve">
+    <value>Raportați ca fiind compromis</value>
+  </data>
+  <data name="ReportAsCompromizedDescription" xml:space="preserve">
+    <value>Raportați dacă aplicația, codul PIN sau telefonul au fost compromise, sparte sau furate.</value>
+  </data>
+  <data name="RestartNeededDueToThemeChange" xml:space="preserve">
+    <value>Este necesară o repornire a aplicației, pentru ca noua temă să fie afișată corect. La închiderea dialogului, aplicația se va închide automat. La repornirea aplicației, va fi selectată noua temă.</value>
+  </data>
+  <data name="RevokeIdentity" xml:space="preserve">
+    <value>Revocarea identității</value>
+  </data>
+  <data name="RevokeIdentityDescription" xml:space="preserve">
+    <value>Revocați identitatea curentă din aplicație și solicitați una nouă.</value>
+  </data>
+  <data name="ScreenSettings" xml:space="preserve">
+    <value>Setări ecran</value>
+  </data>
+  <data name="SelectDisplayMode" xml:space="preserve">
+    <value>Selectați modul de afișare</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Setări</value>
+  </data>
+  <data name="ViewId" xml:space="preserve">
+    <value>Vizualizare ID</value>
+  </data>
 </root>

@@ -20,6 +20,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdApp.Nfc", "IdApp.Nfc\IdAp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdApp.Cv", "IdApp.Cv\IdApp.Cv.csproj", "{CC5170E4-DF0B-4A2E-9976-79878DB18BD8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Translation", "Translation", "{3F42E97E-89CE-4E13-8AED-CE22F0E58F7F}"
+	ProjectSection(SolutionItems) = preProject
+		Translation\TranslateResources.bat = Translation\TranslateResources.bat
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +48,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3F42E97E-89CE-4E13-8AED-CE22F0E58F7F} = {5DA6AEA9-D7C0-48B6-BB8E-A968392A4AB0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CED2E309-3333-417B-92B8-7E7188269EC2}

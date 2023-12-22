@@ -121,12 +121,12 @@
     <value>Neuro-Access trenger tilgang til kameraet for å ta bilder for din digitale ID, og når du vil at den skal skanne QR-koder.</value>
   </data>
   <data name="NSPhotoLibraryAddUsageDescription" xml:space="preserve">
-    <value>Neuro-Access må kunne legge til bilder i galleriene dine hvis du vil lagre bilder du tar for senere bruk.</value>
+    <value>Neuro-Access må kunne legge til bilder i galleriene dine, hvis du vil lagre bilder du tar for senere bruk.</value>
   </data>
   <data name="NSPhotoLibraryUsageDescription" xml:space="preserve">
     <value>Neuro-Access trenger tilgang til fotogalleriet for at du skal kunne velge et profilbilde for ID-en din, få QR-koder fra andre apper eller dele bilder med kontakter i chatter.</value>
   </data>
-  <data name="NSMicrophoneUsageDescription" xml:space="preserve">
-    <value>TAG ID trenger tilgang til mikrofonen for å ta opp og sende lydmeldinger til kontaktene dine.</value>
+  <data name="NFCReaderUsageDescription" xml:space="preserve">
+    <value>Neuro-Access trenger tilgang til NFC-taggen for å lese NDEF-meldinger i applikasjonen.</value>
   </data>
 </root>

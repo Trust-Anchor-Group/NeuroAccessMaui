@@ -117,4 +117,763 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="STRINGNOTDEFINED" xml:space="preserve">
+    <value>NISKA NIJE DEFINISANA</value>
+  </data>
+  <data name="IdentityState_Approved" xml:space="preserve">
+    <value>Odobrio</value>
+  </data>
+  <data name="IdentityState_Compromised" xml:space="preserve">
+    <value>Kompromitovan</value>
+  </data>
+  <data name="IdentityState_Created" xml:space="preserve">
+    <value>Kreirali</value>
+  </data>
+  <data name="IdentityState_Obsoleted" xml:space="preserve">
+    <value>Zastarelo</value>
+  </data>
+  <data name="IdentityState_Rejected" xml:space="preserve">
+    <value>Odbio</value>
+  </data>
+  <data name="TagEngraved" xml:space="preserve">
+    <value>Oznaka ugravirana sa linkom ka {0}.</value>
+  </data>
+  <data name="TagNotEngraved" xml:space="preserve">
+    <value>Nije moguće ugravirati oznaku sa vezom do {0}.</value>
+  </data>
+  <data name="PinChanged" xml:space="preserve">
+    <value>PIN je uspešno promenjen.</value>
+  </data>
+  <data name="UnableToChangePassword" xml:space="preserve">
+    <value>Nije moguće promeniti mrežnu lozinku.</value>
+  </data>
+  <data name="PinIsInvalid" xml:space="preserve">
+    <value>PIN je nevažeći. Imate {0} pokušaja.</value>
+  </data>
+  <data name="PinsDoNotMatch" xml:space="preserve">
+    <value>PIN-ovi se ne podudaraju</value>
+  </data>
+  <data name="PinIsInvalidAplicationBlockedForever" xml:space="preserve">
+    <value>Pokušaji unošenja PIN-a su izusti. Vaša prijava je zauvek blokirana</value>
+  </data>
+  <data name="PinIsInvalidAplicationBlocked" xml:space="preserve">
+    <value>Pokušaji unošenja PIN-a su izusti. Vaša prijava je blokirana do {0}.</value>
+  </data>
+  <data name="PinIsInvalidAplicationBlockedTillTomorrow" xml:space="preserve">
+    <value>Pokušaji unošenja PIN-a su izusti. Vaša prijava je blokirana do sutra u {0}.</value>
+  </data>
+  <data name="PinIsInvalidAplicationBlockedForOneWeek" xml:space="preserve">
+    <value>Pokušaji unošenja PIN-a su izusti. Vaša prijava je blokirana već nedelju dana</value>
+  </data>
+  <data name="PinTooShort" xml:space="preserve">
+    <value>Dužina PIN-a mora biti {0} znakova.</value>
+  </data>
+  <data name="PinContainsName" xml:space="preserve">
+    <value>PIN ne sme da sadrži nijednu reč iz imena identiteta.</value>
+  </data>
+  <data name="PinContainsPersonalNumber" xml:space="preserve">
+    <value>PIN ne sme da sadrži lični broj identiteta.</value>
+  </data>
+  <data name="PinContainsAddress" xml:space="preserve">
+    <value>PIN ne sme da sadrži nijednu reč iz redova adrese identiteta.</value>
+  </data>
+  <data name="PinContainsEMail" xml:space="preserve">
+    <value>PIN ne sme da sadrži e-adresu identiteta.</value>
+  </data>
+  <data name="PinContainsPhoneNumber" xml:space="preserve">
+    <value>PIN ne sme da sadrži broj telefona identiteta.</value>
+  </data>
+  <data name="PinWithNotEnoughDigitsLettersSigns" xml:space="preserve">
+    <value>Najmanje se {0} moraju koristiti pojedinačna slova, cifre ili simboli.</value>
+  </data>
+  <data name="PinWithNotEnoughDigitsOrSigns" xml:space="preserve">
+    <value>Takođe morate da koristite najmanje {0} cifre ili simbole.</value>
+  </data>
+  <data name="PinWithNotEnoughLettersOrDigits" xml:space="preserve">
+    <value>Takođe morate da koristite najmanje {0} ili cifara.</value>
+  </data>
+  <data name="PinWithNotEnoughLettersOrSigns" xml:space="preserve">
+    <value>Takođe morate da koristite najmanje {0} ili simbola.</value>
+  </data>
+  <data name="PinWithTooManyIdenticalSymbols" xml:space="preserve">
+    <value>PIN ne sme da sadrži više {0} identiиnih simbola.</value>
+  </data>
+  <data name="PinWithTooManySequencedSymbols" xml:space="preserve">
+    <value>PIN ne sme da sadrži više {0} za sekvence, npr.</value>
+  </data>
+  <data name="ThereIsNoNetwork" xml:space="preserve">
+    <value>Ne postoji mreža</value>
+  </data>
+  <data name="RequestTimedOut" xml:space="preserve">
+    <value>Vreme zahteva je isteglo</value>
+  </data>
+  <data name="RequestWasCancelled" xml:space="preserve">
+    <value>Zahtev je otkazan</value>
+  </data>
+  <data name="XmppState_Authenticating" xml:space="preserve">
+    <value>Potvrda identiteta mreže</value>
+  </data>
+  <data name="XmppState_Binding" xml:space="preserve">
+    <value>Povezivanje povezivanja</value>
+  </data>
+  <data name="XmppState_Connected" xml:space="preserve">
+    <value>Povezan sa</value>
+  </data>
+  <data name="XmppState_Connecting" xml:space="preserve">
+    <value>Uspostavljanje veze</value>
+  </data>
+  <data name="XmppState_Error" xml:space="preserve">
+    <value>Greška u vezi</value>
+  </data>
+  <data name="XmppState_FetchingRoster" xml:space="preserve">
+    <value>Prenošenje spiska</value>
+  </data>
+  <data name="XmppState_Offline" xml:space="preserve">
+    <value>Prekinuta</value>
+  </data>
+  <data name="XmppState_Registering" xml:space="preserve">
+    <value>Registracija kod brokera</value>
+  </data>
+  <data name="XmppState_RequestingSession" xml:space="preserve">
+    <value>Zahtevanje sesije</value>
+  </data>
+  <data name="XmppState_SettingPresence" xml:space="preserve">
+    <value>Postavljanje prisustva</value>
+  </data>
+  <data name="XmppState_StartingEncryption" xml:space="preserve">
+    <value>Veza šifrovanja</value>
+  </data>
+  <data name="XmppState_StreamNegotiation" xml:space="preserve">
+    <value>Pregovarački tok</value>
+  </data>
+  <data name="XmppState_StreamOpened" xml:space="preserve">
+    <value>Uspostavljen tok</value>
+  </data>
+  <data name="YourLegalIdentity" xml:space="preserve">
+    <value>Vaš pravni identitet</value>
+  </data>
+  <data name="YourLegalIdentityHasBeenCompromised" xml:space="preserve">
+    <value>Vaš pravni identitet je označen kao kompromitovan. Zbog toga ste preusmereni da kreirate novi nalog.</value>
+  </data>
+  <data name="YourLegalIdentityHasBeenObsoleted" xml:space="preserve">
+    <value>Vaš pravni identitet je označen kao zastareo. Zbog toga ste preusmereni da kreirate novi nalog.</value>
+  </data>
+  <data name="ClientMessageAuthenticationTimeout" xml:space="preserve">
+    <value>Odgovor nije vraćen u okviru konfigurisanog vremena.</value>
+  </data>
+  <data name="ClientMessageCountryCodeMismatch" xml:space="preserve">
+    <value>Pozivni broj zemlje se ne podudara.</value>
+  </data>
+  <data name="ClientMessageCountryCodeNotVerified" xml:space="preserve">
+    <value>Pozivni broj zemlje nije verifikovan.</value>
+  </data>
+  <data name="ClientMessageFirstNameNotVerified" xml:space="preserve">
+    <value>Ime nije provereno.</value>
+  </data>
+  <data name="ClientMessageLastNameNotVerified" xml:space="preserve">
+    <value>Prezime nije provereno.</value>
+  </data>
+  <data name="ClientMessageNotValid" xml:space="preserve">
+    <value>Identitet nije važeći.</value>
+  </data>
+  <data name="ClientMessagePersonalNumberMismatch" xml:space="preserve">
+    <value>Lični broj se ne podudara.</value>
+  </data>
+  <data name="ClientMessagePersonalNumberNotVerified" xml:space="preserve">
+    <value>Lični broj nije verifikovan.</value>
+  </data>
+  <data name="ClientMessageReferenceMismatch" xml:space="preserve">
+    <value>Vraćena referenca se ne podudara sa referencom zahteva.</value>
+  </data>
+  <data name="ClientMessageUnexpectedDocumentInformation" xml:space="preserve">
+    <value>Informacije o dokumentu nisu vraćene na očekivani način.</value>
+  </data>
+  <data name="ClientMessageUnexpectedEventResult" xml:space="preserve">
+    <value>Rezultat događaja se nije vratio na očekivani način.</value>
+  </data>
+  <data name="ClientMessageUnexpectedResult" xml:space="preserve">
+    <value>Neočekivani odgovor je vraćen.</value>
+  </data>
+  <data name="RepairRestart" xml:space="preserve">
+    <value>Otkrivena je nedoslednost u internoj bazi podataka. To se može dogoditi ako aplikacija nije ispravno zatvorena. Aplikacija će se stoga zatvoriti. Kada sledeći put pokrenete aplikaciju, baza podataka će biti popravljena.</value>
+  </data>
+  <data name="Incomplete" xml:space="preserve">
+    <value>Nepotpuna</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Zatvorite</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>Potvrdite</value>
+  </data>
+  <data name="ErrorTitle" xml:space="preserve">
+    <value>Došlo je do greške</value>
+  </data>
+  <data name="WarningTitle" xml:space="preserve">
+    <value>Upozorenje</value>
+  </data>
+  <data name="SuccessTitle" xml:space="preserve">
+    <value>Uspeh</value>
+  </data>
+  <data name="Information" xml:space="preserve">
+    <value>Informacija</value>
+  </data>
+  <data name="Message" xml:space="preserve">
+    <value>Poruku</value>
+  </data>
+  <data name="Ok" xml:space="preserve">
+    <value>U redu</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Da</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Ne</value>
+  </data>
+  <data name="Me" xml:space="preserve">
+    <value>(ja)</value>
+  </data>
+  <data name="CopyToClipboard" xml:space="preserve">
+    <value>Kopiraj u ostavu</value>
+  </data>
+  <data name="Continue" xml:space="preserve">
+    <value>Nastavite</value>
+  </data>
+  <data name="SendCode" xml:space="preserve">
+    <value>Pošalji kôd</value>
+  </data>
+  <data name="SendCodeSeconds" xml:space="preserve">
+    <value>Pošalji kôd ({0})</value>
+  </data>
+  <data name="ResendCode" xml:space="preserve">
+    <value>Šifra ponovnog slanje</value>
+  </data>
+  <data name="ResendCodeSeconds" xml:space="preserve">
+    <value>Ponovo pošalji ({0})</value>
+  </data>
+  <data name="Verify" xml:space="preserve">
+    <value>Proverite</value>
+  </data>
+  <data name="Repair" xml:space="preserve">
+    <value>Popravi</value>
+  </data>
+  <data name="Open" xml:space="preserve">
+    <value>Otvorite</value>
+  </data>
+  <data name="XInY" xml:space="preserve">
+    <value>{0} u {1}</value>
+  </data>
+  <data name="XOnY" xml:space="preserve">
+    <value>{0} na {1}</value>
+  </data>
+  <data name="CantConnectTo" xml:space="preserve">
+    <value>Nije u nisam mogao da se povežem sa {0}</value>
+  </data>
+  <data name="ScannedQrCode" xml:space="preserve">
+    <value>Skenirani QR kôd</value>
+  </data>
+  <data name="QrCodeNotUnderstood" xml:space="preserve">
+    <value>Šifra nije shvaćena</value>
+  </data>
+  <data name="CodeNotRecognized" xml:space="preserve">
+    <value>Kôd nije prepoznat.</value>
+  </data>
+  <data name="UnableToOpenLink" xml:space="preserve">
+    <value>Nije moguće otvoriti vezu:</value>
+  </data>
+  <data name="InvalidInvitationCode" xml:space="preserve">
+    <value>Nevažeći pozivni kôd.</value>
+  </data>
+  <data name="InvitationAccepted" xml:space="preserve">
+    <value>Pozivnica prihvaćena</value>
+  </data>
+  <data name="UnableToAccessInvitation" xml:space="preserve">
+    <value>Nije moguće pristupiti informacijama o pozivu.</value>
+  </data>
+  <data name="InvitedToCreateAccountOnDomain" xml:space="preserve">
+    <value>Pozvani ste da kreirate nalog na {0}. Kliknite na dugme "U redu" i unesite ime naloga koji želite da kreirate.</value>
+  </data>
+  <data name="ThisCodeCannotBeClaimedAtThisTime" xml:space="preserve">
+    <value>Ovaj kôd predstavlja poziv za ID oznake i trenutno se ne može tražiti.</value>
+  </data>
+  <data name="DomainDoesNotFollowEncryptionPolicy" xml:space="preserve">
+    <value>{0} ne sledi sveprisutne smernice šifrovanja</value>
+  </data>
+  <data name="DomainIsNotAValidOperator" xml:space="preserve">
+    <value>{0} nije važeći operator</value>
+  </data>
+  <data name="UnableToAuthenticateWith" xml:space="preserve">
+    <value>Nije moguće potvrditi verodostojnost pomoću {0}</value>
+  </data>
+  <data name="OperatorDoesNotSupportRegisteringNewAccounts" xml:space="preserve">
+    <value>Operater {0} ne podržava registraciju novih računa</value>
+  </data>
+  <data name="AccountNameAlreadyTaken" xml:space="preserve">
+    <value>Ime naloga {0} je već zauzeto. Odaberite drugu.</value>
+  </data>
+  <data name="InvalidUsernameOrPassword" xml:space="preserve">
+    <value>Nevažeće korisničko ime ili lozinka</value>
+  </data>
+  <data name="UnableToConnectTo" xml:space="preserve">
+    <value>Nije moguće povezati se sa {0}</value>
+  </data>
+  <data name="UnableToConnect" xml:space="preserve">
+    <value>Nije moguće povezati se.</value>
+  </data>
+  <data name="AppNotConnected" xml:space="preserve">
+    <value>Aplikacija nije povezana sa mrežom.</value>
+  </data>
+  <data name="InvalidTagSignatureId" xml:space="preserve">
+    <value>Nevažeći URI potpisa TAG.</value>
+  </data>
+  <data name="LegalIdNotApproved" xml:space="preserve">
+    <value>Pravna ID nije odobrena.</value>
+  </data>
+  <data name="NoLegalIdSelected" xml:space="preserve">
+    <value>Nije izabran pravni ID.</value>
+  </data>
+  <data name="PeerReviewAccepted" xml:space="preserve">
+    <value>Vršnjačka recenzija je prihvaćena</value>
+  </data>
+  <data name="PeerReviewRejected" xml:space="preserve">
+    <value>Odbijena je redigovanje ravnopravnog uređaja</value>
+  </data>
+  <data name="SignaturePetitionDenied" xml:space="preserve">
+    <value>Peticija za potpis je odbijena.</value>
+  </data>
+  <data name="PetitionSent" xml:space="preserve">
+    <value>Peticija poslata</value>
+  </data>
+  <data name="PetitionToViewContractWasDenied" xml:space="preserve">
+    <value>Peticija za viđenje ugovora je odbijena.</value>
+  </data>
+  <data name="PetitionToViewLegalIdentityWasDenied" xml:space="preserve">
+    <value>Peticija za viđenje pravnog identiteta je odbijena.</value>
+  </data>
+  <data name="APetitionHasBeenSentToTheContract" xml:space="preserve">
+    <value>Delovima ugovora poslata je peticija. Ako bilo koji deo prihvati peticiju, informacije o ugovoru će biti prikazane na ekranu.</value>
+  </data>
+  <data name="APetitionHasBeenSentToTheOwner" xml:space="preserve">
+    <value>Vlasniku identiteta poslata je peticija. Ako vlasnik prihvati peticiju, informacije o identitetu će biti prikazane na ekranu.</value>
+  </data>
+  <data name="APetitionHasBeenSentToYourPeer" xml:space="preserve">
+    <value>Vaša vršnjakinja je poslata peticija</value>
+  </data>
+  <data name="APeerReviewYouhaveRequestedHasBeenAccepted" xml:space="preserve">
+    <value>Vršnjačka recenzija koju ste tražili je prihvaćena.</value>
+  </data>
+  <data name="APeerYouRequestedToReviewHasBeenRejectedDueToSignatureError" xml:space="preserve">
+    <value>Vršnjačka recenzija koju ste tražili je odbijena zbog greške u potpisu.</value>
+  </data>
+  <data name="APeerYouRequestedToReviewHasRejected" xml:space="preserve">
+    <value>Vršnjak kojeg ste tražili da pregleda vašu aplikaciju, odbio je da je odobri.</value>
+  </data>
+  <data name="UnableToGetAccessToYourPrivateKeys" xml:space="preserve">
+    <value>Aplikacija nije mogla da dobije pristup privatnim ključevima identiteta. To obično znači da je identitet promenjen izvan opsega aplikacije. To takođe može biti rezultat oštećenja podataka. Možeš da probaš jednu od dve stvari. Pritisnite dugme Nastavi, da biste nastavili bez privatnih tastera. Dobijate pristup aplikaciji, ali ne možete ništa da potpišete. Zatim možete odabrati da ponovo primenite novi identitet iz glavnog menija, sa novim privatnim ključevima. Bazu podataka možete da pokušate i tako što ćete pritisnuti dugme "Popravi". U ovom drugom slučaju, aplikacija je zatvorena, a sledeći put kada se aplikacija otvori, prvo se pokuša procedura popravke.</value>
+  </data>
+  <data name="FailedToClosePage" xml:space="preserve">
+    <value>Zatvaranje stranice nije uspelo</value>
+  </data>
+  <data name="FailedToNavigateToPage" xml:space="preserve">
+    <value>Kretanje do stranice nije uspelo {0} {1}</value>
+  </data>
+  <data name="IdCopiedSuccessfully" xml:space="preserve">
+    <value>Veza sa ID-om je kopirana u ostavu.</value>
+  </data>
+  <data name="TagValueCopiedToClipboard" xml:space="preserve">
+    <value>Vrednost oznake kopirana u ostavu</value>
+  </data>
+  <data name="PleaseReviewAndCheckAllCheckboxes" xml:space="preserve">
+    <value>Pregledajte sve gorenavedene informacije i proverite odgovarajuća polja za potvrdu ako su informacije tačne. Ovo morate da uradite da biste mogli da odobrite informacije.</value>
+  </data>
+  <data name="YouNeedToCheckCarefullyReviewed" xml:space="preserve">
+    <value>Potrebno je da proverite polje koje ste pažljivo pregledali sve gorenavedene odgovarajuće informacije.</value>
+  </data>
+  <data name="YouNeedToApproveToAssociate" xml:space="preserve">
+    <value>Potrebno je da odobrite povezivanje ličnih informacija sa identitetom koji pregledate. Kada treća lica pregledaju informacije u identitetu, imaće pristup identitetu redaktora, radi transparentnosti.</value>
+  </data>
+  <data name="AreYouSureYouWantToRemoveContact" xml:space="preserve">
+    <value>Želite li zaista da uklonite ovaj kontakt sa liste kontakata?</value>
+  </data>
+  <data name="AreYouSureYouWantToReportYourLegalIdentityAsCompromized" xml:space="preserve">
+    <value>Želite li zaista da prijavite svoj pravni identitet kao kompromitovan, ukraden ili hakovan?</value>
+  </data>
+  <data name="AreYouSureYouWantToRevokeYourLegalIdentity" xml:space="preserve">
+    <value>Želite li zaista da opozovete svoj pravni identitet iz aplikacije?</value>
+  </data>
+  <data name="AreYouSureYouWantToTransferYourLegalIdentity" xml:space="preserve">
+    <value>Želite li zaista da prenesete svoj pravni identitet iz aplikacije u drugi? Identitet će biti uklonjen sa ovog uređaja kada se dovrši. Takođe se uverite da niko drugi ne može da vidi ekran tokom procesa.</value>
+  </data>
+  <data name="UnexpectedResponse" xml:space="preserve">
+    <value>Primljen je neočekivani odgovor.</value>
+  </data>
+  <data name="FileUploadServiceNotFound" xml:space="preserve">
+    <value>Nije pronađena nijedna usluga otpremanja datoteka na brokeru.</value>
+  </data>
+  <data name="LegalServiceNotFound" xml:space="preserve">
+    <value>Nije pronađena pravna usluga na brokeru.</value>
+  </data>
+  <data name="FailedToBindViewModelForPage" xml:space="preserve">
+    <value>Povezivanje viewmodel {0} za {1}</value>
+  </data>
+  <data name="FailedToRestoreViewModelStateForPage" xml:space="preserve">
+    <value>Vraćanje stanja u prethodno stanje za viewmodel {0} za stranicu {1}</value>
+  </data>
+  <data name="FailedToSaveViewModelStateForPage" xml:space="preserve">
+    <value>Čuvanje stanja za viewmodel za {0} stranice nije uspelo {1}</value>
+  </data>
+  <data name="FailedToUnbindViewModelForPage" xml:space="preserve">
+    <value>Nije uspelo otpojaиanje viewmodel {0} za stranicu {1}</value>
+  </data>
+  <data name="OnboardingPurposePageTitle" xml:space="preserve">
+    <value>Dobrodošli!</value>
+  </data>
+  <data name="OnboardingPurposePageDetails" xml:space="preserve">
+    <value>Odaberite u kom kontekstu nameravate da koristite Neuro-Access</value>
+  </data>
+  <data name="OnboardingPhonePageTitle" xml:space="preserve">
+    <value>Da počnemo</value>
+  </data>
+  <data name="OnboardingPhonePageDetails" xml:space="preserve">
+    <value>Da biste se proverili, potrebno je da unesete svoj broj telefona</value>
+  </data>
+  <data name="OnboardingEmailPageTitle" xml:space="preserve">
+    <value>Proverite e-poštu</value>
+  </data>
+  <data name="OnboardingEmailPageDetails" xml:space="preserve">
+    <value>Poslaćemo vam verifikacioni kod.</value>
+  </data>
+  <data name="OnboardingVerifyCodePageTitle" xml:space="preserve">
+    <value>Unesite kôd</value>
+  </data>
+  <data name="OnboardingVerifyCodePageDetails" xml:space="preserve">
+    <value>Unesite verifikacioni kôd poslat {0}</value>
+  </data>
+  <data name="OnboardingProviderPageTitle" xml:space="preserve">
+    <value>Izabrani dobavljač</value>
+  </data>
+  <data name="OnboardingProviderPageDetails" xml:space="preserve">
+    <value>Domena:</value>
+  </data>
+  <data name="OnboardingAccountPageTitle" xml:space="preserve">
+    <value>Kreiraj nalog</value>
+  </data>
+  <data name="OnboardingAccountPageDetails" xml:space="preserve">
+    <value>Unesite ime koje želite da koristite za svoj nalog</value>
+  </data>
+  <data name="OnboardingDefinePinPageTitle" xml:space="preserve">
+    <value>Kreiranje PIN koda</value>
+  </data>
+  <data name="OnboardingDefinePinPageDetails" xml:space="preserve">
+    <value>Da biste poboljšali bezbednost svog Neuro-Identiteta i osetljivih informacija, preporučujemo dodavanje dodatnog sloja zaštite kreiranjem PIN-a ili lozinke</value>
+  </data>
+  <data name="AccountSectionTitle" xml:space="preserve">
+    <value>Unesite ime naloga</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>Kreirate</value>
+  </data>
+  <data name="PurposesSectionTitle" xml:space="preserve">
+    <value>Odaberite svrhu pristupa </value>
+  </data>
+  <data name="PurposeEducational" xml:space="preserve">
+    <value>Edukativna upotreba</value>
+  </data>
+  <data name="PurposeEducationalDescription" xml:space="preserve">
+    <value>Ova opcija vam omogućava da koristite ID oznake u edukativne svrhe. Aplikaciju možete da koristite za potpisivanje ili pristup resursima kao privatno lice, bilo kao edukator ili kao student. Nalog je možda ograničen na vreme. Nalog se takođe može ukloniti kada se više ne koristi. Za više informacija obratite se dobavljaču usluga.</value>
+  </data>
+  <data name="PurposeExperimental" xml:space="preserve">
+    <value>Eksperimentalna upotreba</value>
+  </data>
+  <data name="PurposeExperimentalDescription" xml:space="preserve">
+    <value>Ova opcija vam omogućava da koristite ID oznake u eksperimentalne svrhe. Aplikaciju možete da koristite za potpisivanje ili pristup resursima kao privatno lice, sa ciljem da naučite tehnologiju i u koje svrhe može da se koristi. Nalog je možda ograničen na vreme. Nalog se takođe može ukloniti kada se više ne koristi. Za više informacija obratite se dobavljaču usluga.</value>
+  </data>
+  <data name="PurposePersonal" xml:space="preserve">
+    <value>Lična upotreba</value>
+  </data>
+  <data name="PurposePersonalDescription" xml:space="preserve">
+    <value>Ova opcija vam omogućava da koristite ID oznake u lične svrhe. Aplikaciju možete da koristite za potpisivanje ili pristup resursima kao privatno lice. Određene operacije mogu naneti troškove, u zavisnosti od dobavljača usluga kojeg odaberete. Za više informacija obratite se dobavljaču usluga.</value>
+  </data>
+  <data name="PurposeWork" xml:space="preserve">
+    <value>Upotreba na poslu</value>
+  </data>
+  <data name="PurposeWorkDescription" xml:space="preserve">
+    <value>Ova opcija vam omogućava da koristite ID oznake u radne svrhe. To uključuje rad ne za profit u organizacijama. Aplikaciju možete da koristite za potpisivanje ili pristup resursima kao predstavnik organizacije. Određene operacije mogu naneti troškove, u zavisnosti od dobavljača usluga kojeg odaberete. Za više informacija obratite se dobavljaču usluga.</value>
+  </data>
+  <data name="PhoneSectionTitle" xml:space="preserve">
+    <value>Unesite broj telefona</value>
+  </data>
+  <data name="SearchByCountry" xml:space="preserve">
+    <value>Pretraži po zemlji...</value>
+  </data>
+  <data name="PhoneValidationDigits" xml:space="preserve">
+    <value>Dozvoljene su samo cifre</value>
+  </data>
+  <data name="PhoneValidationLength" xml:space="preserve">
+    <value>Potrebna je minimalna dužina 4</value>
+  </data>
+  <data name="NetworkSeemsToBeMissing" xml:space="preserve">
+    <value>Izgleda da nedostaje mreža. Proverite konfiguraciju i pokrivenost i pokušajte ponovo.</value>
+  </data>
+  <data name="SendEmailWarning" xml:space="preserve">
+    <value>Šifra je poslata u e-poruci dodavačima e-pošte. Ako je ne primite, proverite i fasciklu za bezvrednu pošte.</value>
+  </data>
+  <data name="SwitchingToTestPhoneNumberNotAllowed" xml:space="preserve">
+    <value>Promena broja telefona u test jedan nije dozvoljena.</value>
+  </data>
+  <data name="UnableToVerifyCode" xml:space="preserve">
+    <value>Šifra nije bila tačna.</value>
+  </data>
+  <data name="SomethingWentWrongWhenSendingEmailCode" xml:space="preserve">
+    <value>Nešto je pošlo naopako prilikom slanja verifikacionog koda na ovu e-poruku.</value>
+  </data>
+  <data name="SomethingWentWrongWhenSendingPhoneCode" xml:space="preserve">
+    <value>Nešto je pošlo naopako prilikom slanja verifikacionog koda na ovaj broj telefona.</value>
+  </data>
+  <data name="VerifyCodeSectionTitle" xml:space="preserve">
+    <value>Unesite verifikacioni kôd</value>
+  </data>
+  <data name="EmailSectionTitle" xml:space="preserve">
+    <value>Unesite e-poštu</value>
+  </data>
+  <data name="EmailValidationFormat" xml:space="preserve">
+    <value>Unesite važeću e-poruku</value>
+  </data>
+  <data name="ProviderSectionTitle" xml:space="preserve">
+    <value>Odaberite jednu opciju</value>
+  </data>
+  <data name="ProviderSectionApproveOption" xml:space="preserve">
+    <value>Odobravanje dobavljača usluga</value>
+  </data>
+  <data name="ProviderSectionChangeOption" xml:space="preserve">
+    <value>Promena dobavljača usluga</value>
+  </data>
+  <data name="UndoSelection" xml:space="preserve">
+    <value>Opozovi izbor</value>
+  </data>
+  <data name="ServiceProviderInfo" xml:space="preserve">
+    <value>Šta je dobavljač usluga?</value>
+  </data>
+  <data name="QrPageTitleScanInvitation" xml:space="preserve">
+    <value>Pozivnica za skeniranje</value>
+  </data>
+  <data name="QrSectionTitle" xml:space="preserve">
+    <value>Usmeri kameru na QR kod sa sledećim simbolom</value>
+  </data>
+  <data name="QrEnterManually" xml:space="preserve">
+    <value>Ručno unesite QR</value>
+  </data>
+  <data name="QrScanCode" xml:space="preserve">
+    <value>Skeniraj QR kôd</value>
+  </data>
+  <data name="QrScanUri" xml:space="preserve">
+    <value>URI:</value>
+  </data>
+  <data name="AccountValidationAlreadyExists" xml:space="preserve">
+    <value>Ime ovog naloga već postoji</value>
+  </data>
+  <data name="AccountAvailableAlternatives" xml:space="preserve">
+    <value>Sledeća imena su još uvek dostupna:</value>
+  </data>
+  <data name="TestOtpUsed" xml:space="preserve">
+    <value>Korišćena je privremena OTP šifra. Aplikacija će prestati da radi za oko nedelju dana. Moraćete ponovo da instalirate aplikaciju da biste je ponovo koristili.</value>
+  </data>
+  <data name="DefinePinSectionTitle1" xml:space="preserve">
+    <value>Unesite novi pin</value>
+  </data>
+  <data name="DefinePinSectionTitle2" xml:space="preserve">
+    <value>Potvrda pin-a</value>
+  </data>
+  <data name="CreatePin" xml:space="preserve">
+    <value>Kreiraj pin</value>
+  </data>
+  <data name="ScanQrCodeLabel" xml:space="preserve">
+    <value>Skenirajte QR-kod kamerom.</value>
+  </data>
+  <data name="Accept" xml:space="preserve">
+    <value>Prihvati</value>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>Adresa</value>
+  </data>
+  <data name="Address2" xml:space="preserve">
+    <value>Adresa (red 2)</value>
+  </data>
+  <data name="Area" xml:space="preserve">
+    <value>Oblast</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Otkaži</value>
+  </data>
+  <data name="City" xml:space="preserve">
+    <value>Grad</value>
+  </data>
+  <data name="Country" xml:space="preserve">
+    <value>Zemlja</value>
+  </data>
+  <data name="Created" xml:space="preserve">
+    <value>Kreirali</value>
+  </data>
+  <data name="Decline" xml:space="preserve">
+    <value>Odbijete</value>
+  </data>
+  <data name="Enter" xml:space="preserve">
+    <value>Ući</value>
+  </data>
+  <data name="EnterPin" xml:space="preserve">
+    <value>Unesite PIN</value>
+  </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>Ime</value>
+  </data>
+  <data name="Ignore" xml:space="preserve">
+    <value>Ignorisati</value>
+  </data>
+  <data name="LastNames" xml:space="preserve">
+    <value>Prezimena</value>
+  </data>
+  <data name="LegalId" xml:space="preserve">
+    <value>Pravni ID</value>
+  </data>
+  <data name="MiddleNames" xml:space="preserve">
+    <value>Srednja imena</value>
+  </data>
+  <data name="Options" xml:space="preserve">
+    <value>Opcije</value>
+  </data>
+  <data name="OrgAddress" xml:space="preserve">
+    <value>Adresa organizacije</value>
+  </data>
+  <data name="OrgAddress2" xml:space="preserve">
+    <value>Adresa organizacije (red 2)</value>
+  </data>
+  <data name="OrganizationInformation" xml:space="preserve">
+    <value>Informacije o organizaciji</value>
+  </data>
+  <data name="OrgArea" xml:space="preserve">
+    <value>Oblast organizacije</value>
+  </data>
+  <data name="OrgCity" xml:space="preserve">
+    <value>Grad organizacije</value>
+  </data>
+  <data name="OrgCountry" xml:space="preserve">
+    <value>Zemlja organizacije</value>
+  </data>
+  <data name="OrgDepartment" xml:space="preserve">
+    <value>Odeljenje</value>
+  </data>
+  <data name="OrgName" xml:space="preserve">
+    <value>Ime organizacije</value>
+  </data>
+  <data name="OrgNumber" xml:space="preserve">
+    <value>Broj organizacije</value>
+  </data>
+  <data name="OrgRegion" xml:space="preserve">
+    <value>Region organizacije</value>
+  </data>
+  <data name="OrgRole" xml:space="preserve">
+    <value>Ulogu</value>
+  </data>
+  <data name="OrgZipCode" xml:space="preserve">
+    <value>Poštanski broj organizacije</value>
+  </data>
+  <data name="PersonalNumber" xml:space="preserve">
+    <value>Lični broj</value>
+  </data>
+  <data name="Petition" xml:space="preserve">
+    <value>Zahtev</value>
+  </data>
+  <data name="PetitionSignatureInformationText" xml:space="preserve">
+    <value>Primljen je zahtev za vaš potpis. Pregledajte dole navedeni razlog i informacije o tome ko je poslao zahtev, a zatim odaberite način na koji želite da odgovorite.</value>
+  </data>
+  <data name="Photos" xml:space="preserve">
+    <value>Fotografije</value>
+  </data>
+  <data name="Purpose" xml:space="preserve">
+    <value>Svrhu</value>
+  </data>
+  <data name="Region" xml:space="preserve">
+    <value>Region ili država</value>
+  </data>
+  <data name="RequestingEntity" xml:space="preserve">
+    <value>Zahtevanje entiteta</value>
+  </data>
+  <data name="State" xml:space="preserve">
+    <value>Država</value>
+  </data>
+  <data name="Updated" xml:space="preserve">
+    <value>Ažurira</value>
+  </data>
+  <data name="ZipCode" xml:space="preserve">
+    <value>Poštanski broj ili poštanski broj</value>
+  </data>
+  <data name="OrganizationalInformation" xml:space="preserve">
+    <value>Organizacione informacije</value>
+  </data>
+  <data name="PersonalInformation" xml:space="preserve">
+    <value>Lične informacije</value>
+  </data>
+  <data name="Expires" xml:space="preserve">
+    <value>Ističe</value>
+  </data>
+  <data name="NetworkID" xml:space="preserve">
+    <value>ID mreže</value>
+  </data>
+  <data name="NeuroID" xml:space="preserve">
+    <value>Neuro-ID</value>
+  </data>
+  <data name="Technical" xml:space="preserve">
+    <value>Tehničke</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Kuжi</value>
+  </data>
+  <data name="ID" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="AccountSettings" xml:space="preserve">
+    <value>Postavke naloga</value>
+  </data>
+  <data name="AreYouSureYouWantToReportYourLegalIdentityAsCompromized1" xml:space="preserve">
+    <value>Želite li zaista da prijavite svoj pravni identitet kao kompromitovan, ukraden ili hakovan?</value>
+  </data>
+  <data name="AreYouSureYouWantToRevokeYourLegalIdentity1" xml:space="preserve">
+    <value>Želite li zaista da opozovete svoj pravni identitet iz aplikacije?</value>
+  </data>
+  <data name="AreYouSureYouWantToTransferYourLegalIdentity1" xml:space="preserve">
+    <value>Želite li zaista da prenesete svoj pravni identitet iz aplikacije u drugi? Identitet će biti uklonjen sa ovog uređaja kada se dovrši. Takođe se uverite da niko drugi ne može da vidi ekran tokom procesa.</value>
+  </data>
+  <data name="DarkMode" xml:space="preserve">
+    <value>Tamni režim</value>
+  </data>
+  <data name="LightMode" xml:space="preserve">
+    <value>Režim osvetljenja</value>
+  </data>
+  <data name="ReportAsCompromized" xml:space="preserve">
+    <value>Izveštaj kao kompromitovan</value>
+  </data>
+  <data name="ReportAsCompromizedDescription" xml:space="preserve">
+    <value>Prijavite da li su aplikacija, PIN ili telefon kompromitovani, hakovani ili ukradeni.</value>
+  </data>
+  <data name="RestartNeededDueToThemeChange" xml:space="preserve">
+    <value>Potrebno je ponovno pokretanje aplikacije da bi nova tema bila ispravno prikazana. Kada zatvorite dijalog, aplikacija će se automatski zatvoriti. Kada ponovo pokrenete aplikaciju, nova tema će biti izabrana.</value>
+  </data>
+  <data name="RevokeIdentity" xml:space="preserve">
+    <value>Opoziv identiteta</value>
+  </data>
+  <data name="RevokeIdentityDescription" xml:space="preserve">
+    <value>Opozovete trenutni identitet iz aplikacije i prijavite se za novi.</value>
+  </data>
+  <data name="ScreenSettings" xml:space="preserve">
+    <value>Postavke ekrana</value>
+  </data>
+  <data name="SelectDisplayMode" xml:space="preserve">
+    <value>Izbor režima prikaza</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Postavke</value>
+  </data>
+  <data name="ViewId" xml:space="preserve">
+    <value>ID prikaza</value>
+  </data>
 </root>

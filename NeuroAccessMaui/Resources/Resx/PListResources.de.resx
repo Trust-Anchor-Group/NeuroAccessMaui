@@ -121,12 +121,12 @@
     <value>Neuro-Access benötigt Zugriff auf die Kamera, um Fotos für Ihre digitale ID aufzunehmen und QR-Codes zu scannen.</value>
   </data>
   <data name="NSPhotoLibraryAddUsageDescription" xml:space="preserve">
-    <value>Neuro-Access muss in der Lage sein, Fotos zu Ihren Galerien hinzuzufügen, wenn Sie Fotos, die Sie für die spätere Verwendung speichern, speichern möchten.</value>
+    <value>Neuro-Access muss in der Lage sein, Fotos zu Ihren Galerien hinzuzufügen, wenn Sie Fotos, die Sie aufgenommen haben, für die spätere Verwendung speichern möchten.</value>
   </data>
   <data name="NSPhotoLibraryUsageDescription" xml:space="preserve">
-    <value>Neuro-Access benötigt Zugriff auf die Fotogalerie, damit Sie ein Profilfoto für Ihren Ausweis auswählen, QR-Codes von anderen Apps erhalten oder Bilder mit Kontakten in Chats teilen können.</value>
+    <value>Neuro-Access benötigt Zugriff auf die Fotogalerie, damit Sie ein Profilfoto für Ihren Ausweis auswählen, QR-Codes aus anderen Apps abrufen oder Bilder mit Kontakten in Chats teilen können.</value>
   </data>
-  <data name="NSMicrophoneUsageDescription" xml:space="preserve">
-    <value>TAG ID benötigt Zugriff auf das Mikrofon, um Audionachrichten aufzuzeichnen und an Ihre Kontakte zu senden.</value>
+  <data name="NFCReaderUsageDescription" xml:space="preserve">
+    <value>Neuro-Access benötigt Zugriff auf den NFC-Tag, um NDEF-Nachrichten in die Anwendung einzulesen.</value>
   </data>
 </root>

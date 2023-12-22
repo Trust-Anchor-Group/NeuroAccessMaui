@@ -118,15 +118,15 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="NSCameraUsageDescription" xml:space="preserve">
-    <value>Neuro-Access tarvitsee pääsyn kameraan, jotta voit ottaa valokuvia digitaalista tunnustasi varten, ja kun haluat sen skannaavan QR-koodeja.</value>
+    <value>Neuro-Access tarvitsee pääsyn kameraan, jotta se voi ottaa valokuvia digitaalista tunnustasi varten ja milloin haluat sen skannaavan QR-koodeja.</value>
   </data>
   <data name="NSPhotoLibraryAddUsageDescription" xml:space="preserve">
-    <value>Neuro-Access:n on voitava lisätä valokuvia gallerioihin, jos haluat tallentaa ottamiasi valokuvia myöhempää käyttöä varten.</value>
+    <value>Neuro-Accessin on voitava lisätä valokuvia gallerioihisi, jos haluat tallentaa ottamasi valokuvat myöhempää käyttöä varten.</value>
   </data>
   <data name="NSPhotoLibraryUsageDescription" xml:space="preserve">
-    <value>Neuro-Access tarvitsee pääsyn valokuvagalleriaan, jotta voit valita profiilikuvan tunnuksellesi, saada QR-koodeja muista sovelluksista tai jakaa kuvia yhteystietojen kanssa keskusteluissa.</value>
+    <value>Neuro-Access tarvitsee pääsyn valokuvagalleriaan, jotta voit valita profiilikuvan henkilötodistuksellesi, saada QR-koodeja muista sovelluksista tai jakaa kuvia yhteystietojen kanssa keskusteluissa.</value>
   </data>
-  <data name="NSMicrophoneUsageDescription" xml:space="preserve">
-    <value>TAG ID tarvitsee pääsyn mikrofoniin, jotta se voi tallentaa ja lähettää ääniviestejä yhteystiedoillesi.</value>
+  <data name="NFCReaderUsageDescription" xml:space="preserve">
+    <value>Neuro-Access tarvitsee pääsyn NFC -tunnisteeseen lukeakseen NDEF -viestejä sovellukseen.</value>
   </data>
 </root>
