@@ -13,20 +13,13 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 	/// </summary>
 	public partial class SettingsViewModel : XmppViewModel
 	{
-		private bool initializing = false;
+		private readonly bool initializing = false;
 
 		/// <summary>
 		/// Creates an instance of the <see cref="SettingsViewModel"/> class.
 		/// </summary>
 		public SettingsViewModel()
 		{
-		}
-
-		/// <inheritdoc/>
-		protected override async Task OnInitialize()
-		{
-			await base.OnInitialize();
-
 			this.CanProhibitScreenCapture = ServiceRef.PlatformSpecific.CanProhibitScreenCapture;
 			this.CanEnableScreenCapture = ServiceRef.PlatformSpecific.ProhibitScreenCapture;
 			this.CanDisableScreenCapture = !this.CanEnableScreenCapture;
@@ -107,15 +100,20 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			switch (e.PropertyName)
 			{
 				case nameof(this.IsLightMode):
-					if (!this.initializing && Application.Current is not null)
-						Application.Current.UserAppTheme = this.IsLightMode ? AppTheme.Light : AppTheme.Dark;
+					if (!this.initializing)
+						SetTheme(this.IsLightMode ? AppTheme.Light : AppTheme.Dark);
 					break;
 
 				case nameof(this.IsDarkMode):
-					if (!this.initializing && Application.Current is not null)
-						Application.Current.UserAppTheme = this.IsDarkMode ? AppTheme.Dark : AppTheme.Light;
+					if (!this.initializing)
+						SetTheme(this.IsDarkMode ? AppTheme.Dark : AppTheme.Light);
 					break;
 			}
+		}
+
+		private static void SetTheme(AppTheme Theme)
+		{
+			ServiceRef.TagProfile.SetTheme(Theme);
 		}
 
 		#endregion

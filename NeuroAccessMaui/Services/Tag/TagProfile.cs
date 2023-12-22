@@ -124,6 +124,7 @@ namespace NeuroAccessMaui.Services.Tag
 		private PurposeUse purpose;
 		private DateTime? testOtpTimestamp;
 		private RegistrationStep step = RegistrationStep.RequestPurpose;
+		private AppTheme? theme;
 		private bool suppressPropertyChangedEvents;
 		private bool initialDefaultXmppConnectivity;
 		private bool defaultXmppConnectivity;
@@ -185,7 +186,8 @@ namespace NeuroAccessMaui.Services.Tag
 				Purpose = this.Purpose,
 				TestOtpTimestamp = this.TestOtpTimestamp,
 				LegalIdentity = this.LegalIdentity,
-				Step = this.Step
+				Step = this.Step,
+				Theme = this.Theme
 			};
 
 			return Clone;
@@ -225,6 +227,7 @@ namespace NeuroAccessMaui.Services.Tag
 				this.Purpose = configuration.Purpose;
 				this.TestOtpTimestamp = configuration.TestOtpTimestamp;
 				this.LegalIdentity = configuration.LegalIdentity;
+				this.Theme = configuration.Theme;
 
 				// Do this last, as listeners will read the other properties when the event is fired.
 				this.GoToStep(configuration.Step);
@@ -629,6 +632,22 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 		}
 
+		/// <summary>
+		/// Currently selected theme.
+		/// </summary>
+		public AppTheme? Theme
+		{
+			get => this.theme;
+			private set
+			{
+				if (!Equals(this.theme, value))
+				{
+					this.theme = value;
+					this.FlagAsDirty(nameof(this.Theme));
+				}
+			}
+		}
+
 		/// <inheritdoc/>
 		public bool IsDirty { get; private set; }
 
@@ -805,6 +824,25 @@ namespace NeuroAccessMaui.Services.Tag
 		public void SetLogJid(string LogJid)
 		{
 			this.LogJid = LogJid;
+		}
+
+		/// <summary>
+		/// Sets the preferred theme.
+		/// </summary>
+		/// <param name="Theme">Theme</param>
+		public void SetTheme(AppTheme Theme)
+		{
+			this.Theme = Theme;
+			this.SetTheme();
+		}
+
+		/// <summary>
+		/// Sets the preferred theme.
+		/// </summary>
+		public void SetTheme()
+		{
+			if (Application.Current is not null && this.Theme.HasValue)
+				Application.Current.UserAppTheme = this.Theme.Value;
 		}
 
 		#endregion

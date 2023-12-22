@@ -369,19 +369,19 @@
 	</Style>
 
 	<Style ApplyToDerivedTypes="True" TargetType="Shell">
-		<Setter Property="Shell.FlyoutBehavior" Value="Disabled" />
-		<Setter Property="Shell.NavBarIsVisible" Value="False" />
-		<Setter Property="Shell.NavBarHasShadow" Value="False" />
-		<Setter Property="Shell.BackgroundColor" Value="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}" />
-		<Setter Property="Shell.ForegroundColor" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
-		<Setter Property="Shell.TitleColor" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
+		<Setter Property="FlyoutBehavior" Value="Disabled" />
+		<Setter Property="NavBarIsVisible" Value="False" />
+		<Setter Property="NavBarHasShadow" Value="False" />
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}" />
+		<Setter Property="ForegroundColor" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
+		<Setter Property="TitleColor" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
 		<!--
-		<Setter Property="Shell.DisabledColor" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
-		<Setter Property="Shell.UnselectedColor" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
-		<Setter Property="Shell.TabBarBackgroundColor" Value="{AppThemeBinding Light={StaticResource SecondaryBackgroundLight}, Dark={StaticResource SecondaryBackgroundDark}}" />
-		<Setter Property="Shell.TabBarForegroundColor" Value="{AppThemeBinding Light={StaticResource SecondaryForegroundLight}, Dark={StaticResource SecondaryForegroundDark}}" />
-		<Setter Property="Shell.TabBarTitleColor" Value="{AppThemeBinding Light={StaticResource SecondaryForegroundLight}, Dark={StaticResource SecondaryForegroundDark}}" />
-		<Setter Property="Shell.TabBarUnselectedColor" Value="{AppThemeBinding Light={StaticResource SecondaryForegroundLight}, Dark={StaticResource SecondaryForegroundDark}}" />
+		<Setter Property="DisabledColor" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
+		<Setter Property="UnselectedColor" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
+		<Setter Property="TabBarBackgroundColor" Value="{AppThemeBinding Light={StaticResource SecondaryBackgroundLight}, Dark={StaticResource SecondaryBackgroundDark}}" />
+		<Setter Property="TabBarForegroundColor" Value="{AppThemeBinding Light={StaticResource SecondaryForegroundLight}, Dark={StaticResource SecondaryForegroundDark}}" />
+		<Setter Property="TabBarTitleColor" Value="{AppThemeBinding Light={StaticResource SecondaryForegroundLight}, Dark={StaticResource SecondaryForegroundDark}}" />
+		<Setter Property="TabBarUnselectedColor" Value="{AppThemeBinding Light={StaticResource SecondaryForegroundLight}, Dark={StaticResource SecondaryForegroundDark}}" />
 		-->
 	</Style>
 

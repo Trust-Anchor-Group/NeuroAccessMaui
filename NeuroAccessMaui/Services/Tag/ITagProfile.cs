@@ -145,6 +145,11 @@ namespace NeuroAccessMaui.Services.Tag
 		LegalIdentity? LegalIdentity { get; }
 
 		/// <summary>
+		/// Currently selected theme.
+		/// </summary>
+		AppTheme? Theme { get; }
+
+		/// <summary>
 		/// Returns <c>true</c> if the current <see cref="ITagProfile"/> has changed values and need saving, <c>false</c> otherwise.
 		/// </summary>
 		bool IsDirty { get; }
@@ -337,5 +342,16 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <param name="Pin">PIN to validate.</param>
 		/// <returns>A <see cref="PinStrength"/> value indicating if the <paramref name="Pin"/> is strong enough.</returns>
 		PinStrength ValidatePinStrength(string? Pin);
+
+		/// <summary>
+		/// Sets the preferred theme.
+		/// </summary>
+		/// <param name="Theme">Theme</param>
+		void SetTheme(AppTheme Theme);
+
+		/// <summary>
+		/// Sets the preferred theme.
+		/// </summary>
+		void SetTheme();
 	}
 }

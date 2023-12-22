@@ -153,5 +153,11 @@ namespace NeuroAccessMaui.Services
 		/// </summary>
 		[DefaultValue(Tag.RegistrationStep.RequestPurpose)]
 		public Tag.RegistrationStep Step { get; set; }
+
+		/// <summary>
+		/// Currently selected theme.
+		/// </summary>
+		[DefaultValueNull]
+		public AppTheme? Theme { get; set; }
 	}
 }

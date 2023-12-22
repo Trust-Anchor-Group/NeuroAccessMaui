@@ -13,6 +13,8 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		{
 			this.InitializeComponent();
 			this.RegisterRoutes();
+
+			ServiceRef.TagProfile.SetTheme();
 		}
 
 		private void RegisterRoutes()
