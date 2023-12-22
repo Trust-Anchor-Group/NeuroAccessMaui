@@ -286,6 +286,33 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Change.
+        /// </summary>
+        internal static string Change {
+            get {
+                return ResourceManager.GetString("Change", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change PIN-code.
+        /// </summary>
+        internal static string ChangePin {
+            get {
+                return ResourceManager.GetString("ChangePin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose another PIN-code to identify yourself. Changing your PIN-code will also create a new random password for the underlying communication network..
+        /// </summary>
+        internal static string ChangePinDescription {
+            get {
+                return ResourceManager.GetString("ChangePinDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to City.
         /// </summary>
         internal static string City {
@@ -430,6 +457,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Confirm new PIN:.
+        /// </summary>
+        internal static string ConfirmNewPin {
+            get {
+                return ResourceManager.GetString("ConfirmNewPin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Continue.
         /// </summary>
         internal static string Continue {
@@ -561,6 +597,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string Enter {
             get {
                 return ResourceManager.GetString("Enter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter current PIN:.
+        /// </summary>
+        internal static string EnterCurrentPin {
+            get {
+                return ResourceManager.GetString("EnterCurrentPin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter new PIN:.
+        /// </summary>
+        internal static string EnterNewPin {
+            get {
+                return ResourceManager.GetString("EnterNewPin", resourceCulture);
             }
         }
         
@@ -1821,6 +1875,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string SearchByCountry {
             get {
                 return ResourceManager.GetString("SearchByCountry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Security Settings.
+        /// </summary>
+        internal static string SecuritySettings {
+            get {
+                return ResourceManager.GetString("SecuritySettings", resourceCulture);
             }
         }
         

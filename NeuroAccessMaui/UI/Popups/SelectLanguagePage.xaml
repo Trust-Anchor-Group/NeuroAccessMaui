@@ -1,11 +1,19 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
-<viewmodel:BasePopup x:Class="NeuroAccessMaui.UI.Popups.SelectLanguagePage" x:DataType="viewmodel:SelectLanguagePage"
-	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-	xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
-	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups">
+<viewmodel:BasePopup x:Class="NeuroAccessMaui.UI.Popups.SelectLanguagePage"
+							x:DataType="viewmodel:SelectLanguagePage"
+							xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+							xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+							xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+							xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups"
+							xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
+							xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups">
+
+	<mopups:PopupPage.Animation>
+		<animations:ScaleAnimation DurationIn="500" DurationOut="500" EasingIn="CubicIn" EasingOut="CubicOut" HasBackgroundAnimation="True"
+											PositionIn="Center" PositionOut="Center" />
+	</mopups:PopupPage.Animation>
 
 	<VisualElement.Resources>
 		<DataTemplate x:Key="SelectLanguageDataTemplate" x:DataType="l:LanguageInfo">

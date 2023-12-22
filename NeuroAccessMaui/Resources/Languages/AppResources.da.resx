@@ -843,8 +843,26 @@
   <data name="AreYouSureYouWantToTransferYourLegalIdentity1" xml:space="preserve">
     <value>Er du sikker på, at du vil overføre din juridiske identitet fra applikationen til en anden? Identiteten fjernes fra denne enhed, når den er fuldført. Sørg også for, at ingen andre kan se din skærm under processen.</value>
   </data>
+  <data name="Change" xml:space="preserve">
+    <value>Forandre</value>
+  </data>
+  <data name="ChangePin" xml:space="preserve">
+    <value>Skift PIN-kode</value>
+  </data>
+  <data name="ChangePinDescription" xml:space="preserve">
+    <value>Vælg en anden pinkode for at identificere dig selv. Ændring af din PIN-kode vil også oprette en ny tilfældig adgangskode til det underliggende kommunikationsnetværk.</value>
+  </data>
+  <data name="ConfirmNewPin" xml:space="preserve">
+    <value>Bekræft ny pinkode:</value>
+  </data>
   <data name="DarkMode" xml:space="preserve">
     <value>Mørk tilstand</value>
+  </data>
+  <data name="EnterCurrentPin" xml:space="preserve">
+    <value>Indtast den aktuelle pinkode:</value>
+  </data>
+  <data name="EnterNewPin" xml:space="preserve">
+    <value>Indtast ny pinkode:</value>
   </data>
   <data name="LightMode" xml:space="preserve">
     <value>Lys tilstand</value>
@@ -866,6 +884,9 @@
   </data>
   <data name="ScreenSettings" xml:space="preserve">
     <value>Skærmindstillinger</value>
+  </data>
+  <data name="SecuritySettings" xml:space="preserve">
+    <value>Sikkerhedsindstillinger</value>
   </data>
   <data name="SelectDisplayMode" xml:space="preserve">
     <value>Vælg visningstilstand</value>

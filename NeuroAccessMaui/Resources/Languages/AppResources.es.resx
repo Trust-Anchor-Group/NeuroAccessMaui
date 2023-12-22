@@ -843,8 +843,26 @@
   <data name="AreYouSureYouWantToTransferYourLegalIdentity1" xml:space="preserve">
     <value>¿Está seguro de que desea transferir su identidad legal de la aplicación a otra? La identidad se eliminará de este dispositivo una vez completada. También asegúrese de que nadie más pueda ver su pantalla durante el proceso.</value>
   </data>
+  <data name="Change" xml:space="preserve">
+    <value>Cambio</value>
+  </data>
+  <data name="ChangePin" xml:space="preserve">
+    <value>Cambiar el código PIN</value>
+  </data>
+  <data name="ChangePinDescription" xml:space="preserve">
+    <value>Elija otro código PIN para identificarse. Al cambiar su código PIN, también se creará una nueva contraseña aleatoria para la red de comunicación subyacente.</value>
+  </data>
+  <data name="ConfirmNewPin" xml:space="preserve">
+    <value>Confirme el nuevo PIN:</value>
+  </data>
   <data name="DarkMode" xml:space="preserve">
     <value>Modo oscuro</value>
+  </data>
+  <data name="EnterCurrentPin" xml:space="preserve">
+    <value>Introduzca el PIN actual:</value>
+  </data>
+  <data name="EnterNewPin" xml:space="preserve">
+    <value>Introduzca el nuevo PIN:</value>
   </data>
   <data name="LightMode" xml:space="preserve">
     <value>Modo de luz</value>
@@ -866,6 +884,9 @@
   </data>
   <data name="ScreenSettings" xml:space="preserve">
     <value>Ajustes de pantalla</value>
+  </data>
+  <data name="SecuritySettings" xml:space="preserve">
+    <value>Configuración de seguridad</value>
   </data>
   <data name="SelectDisplayMode" xml:space="preserve">
     <value>Seleccione el modo de visualización</value>

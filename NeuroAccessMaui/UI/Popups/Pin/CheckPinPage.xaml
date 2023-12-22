@@ -1,26 +1,28 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
-<viewmodel:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Pin.CheckPinPage" x:DataType="viewmodel:CheckPinViewModel"
-	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-	xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
-	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-	xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Pin">
+<viewmodel:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Pin.CheckPinPage"
+							x:DataType="viewmodel:CheckPinViewModel"
+							xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+							xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+							xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+							xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+							xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Pin"
+							xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
+							xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups">
+
+	<mopups:PopupPage.Animation>
+		<animations:ScaleAnimation DurationIn="500" DurationOut="500" EasingIn="CubicIn" EasingOut="CubicOut" HasBackgroundAnimation="True"
+											PositionIn="Center" PositionOut="Center" />
+	</mopups:PopupPage.Animation>
 
 	<Grid Style="{StaticResource PopupGridStyle}">
 
-		<Border WidthRequest="{Binding ViewWidthRequest}"
-				  MaximumHeightRequest="{Binding MaximumViewHeightRequest}"
-				  Style="{StaticResource PopupBorderStyle}">
+		<Border WidthRequest="{Binding ViewWidthRequest}" MaximumHeightRequest="{Binding MaximumViewHeightRequest}" Style="{StaticResource PopupBorderStyle}">
+			<ScrollView x:Name="InnerScrollView" VerticalOptions="Center">
+				<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
 
-			<ScrollView x:Name="InnerScrollView"
-							VerticalOptions="Center">
-
-				<VerticalStackLayout x:Name="LanguagesContainer" Spacing="{StaticResource MediumSpacing}">
-
-					<Label Style="{StaticResource SectionTitleLabelStyle}"
-							 Text="{l:Localize EnterPin}" />
+					<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize EnterPin}" />
 
 					<controls:CompositeEntry x:Name="PinEntry"
 													 Style="{StaticResource RegularCompositeEntryStyle}"

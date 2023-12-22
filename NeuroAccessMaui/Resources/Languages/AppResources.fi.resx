@@ -843,8 +843,26 @@
   <data name="AreYouSureYouWantToTransferYourLegalIdentity1" xml:space="preserve">
     <value>Haluatko varmasti siirtää oikeudellisen henkilöllisyytesi sovelluksesta toiseen? Henkilöllisyys poistetaan tästä laitteesta, kun se on valmis. Varmista myös, että kukaan muu ei näe näyttöäsi prosessin aikana.</value>
   </data>
+  <data name="Change" xml:space="preserve">
+    <value>Muuttaa</value>
+  </data>
+  <data name="ChangePin" xml:space="preserve">
+    <value>PIN-koodin vaihtaminen</value>
+  </data>
+  <data name="ChangePinDescription" xml:space="preserve">
+    <value>Valitse toinen PIN-koodi tunnistautuaksesi. PIN-koodin vaihtaminen luo myös uuden satunnaisen salasanan taustalla olevalle viestintäverkolle.</value>
+  </data>
+  <data name="ConfirmNewPin" xml:space="preserve">
+    <value>Vahvista uusi PIN-koodi:</value>
+  </data>
   <data name="DarkMode" xml:space="preserve">
     <value>Tumma tila</value>
+  </data>
+  <data name="EnterCurrentPin" xml:space="preserve">
+    <value>Anna nykyinen PIN-koodi:</value>
+  </data>
+  <data name="EnterNewPin" xml:space="preserve">
+    <value>Anna uusi PIN-koodi:</value>
   </data>
   <data name="LightMode" xml:space="preserve">
     <value>Kevyt tila</value>
@@ -866,6 +884,9 @@
   </data>
   <data name="ScreenSettings" xml:space="preserve">
     <value>Näytön asetukset</value>
+  </data>
+  <data name="SecuritySettings" xml:space="preserve">
+    <value>Suojausasetukset</value>
   </data>
   <data name="SelectDisplayMode" xml:space="preserve">
     <value>Valitse näyttötila</value>

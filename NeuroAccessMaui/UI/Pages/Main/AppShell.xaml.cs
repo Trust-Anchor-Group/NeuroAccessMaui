@@ -22,6 +22,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			// General:
 			Routing.RegisterRoute(nameof(ScanQrCodePage), typeof(ScanQrCodePage));
 			Routing.RegisterRoute(nameof(SettingsPage), typeof(SettingsPage));
+			Routing.RegisterRoute(nameof(ChangePinPage), typeof(ChangePinPage));
 			Routing.RegisterRoute(nameof(VerifyCodePage), typeof(VerifyCodePage));
 			Routing.RegisterRoute(nameof(PetitionSignaturePage), typeof(PetitionSignaturePage));
 			Routing.RegisterRoute(nameof(ViewIdentityPage), typeof(ViewIdentityPage));

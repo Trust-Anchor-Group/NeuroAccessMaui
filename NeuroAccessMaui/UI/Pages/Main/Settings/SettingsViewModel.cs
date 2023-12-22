@@ -189,44 +189,8 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		{
 			try
 			{
-				while (true)
-				{
-					ChangePinPage Page = ServiceHelper.GetService<ChangePinPage>();
-					await MopupService.Instance.PushAsync(Page);
-
-					(string OldPin, string NewPin) = await Page.Result;
-
-					if (OldPin is null || OldPin == NewPin)
-						return;
-
-					if (!ServiceRef.TagProfile.HasPin ||
-						ServiceRef.TagProfile.ComputePinHash(OldPin) == ServiceRef.TagProfile.PinHash)
-					{
-						string NewPassword = ServiceRef.CryptoService.CreateRandomPassword();
-
-						if (!await ServiceRef.XmppService.ChangePassword(NewPassword))
-						{
-							await ServiceRef.UiSerializer.DisplayAlert(
-								ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-								ServiceRef.Localizer[nameof(AppResources.UnableToChangePassword)]);
-							return;
-						}
-
-						ServiceRef.TagProfile.Pin = NewPin;
-						ServiceRef.TagProfile.SetAccount(ServiceRef.TagProfile.Account!, NewPassword, string.Empty);
-
-						await ServiceRef.UiSerializer.DisplayAlert(
-							ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
-							ServiceRef.Localizer[nameof(AppResources.PinChanged)]);
-						return;
-					}
-
-					await ServiceRef.UiSerializer.DisplayAlert(
-						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-						ServiceRef.Localizer[nameof(AppResources.PinIsInvalid)]);
-
-					// TODO: Limit number of attempts.
-				}
+				await App.CheckUserBlocking();
+				await ServiceRef.NavigationService.GoToAsync(nameof(ChangePinPage));
 			}
 			catch (Exception ex)
 			{

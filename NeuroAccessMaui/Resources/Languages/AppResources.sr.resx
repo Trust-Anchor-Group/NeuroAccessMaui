@@ -843,8 +843,26 @@
   <data name="AreYouSureYouWantToTransferYourLegalIdentity1" xml:space="preserve">
     <value>Želite li zaista da prenesete svoj pravni identitet iz aplikacije u drugi? Identitet će biti uklonjen sa ovog uređaja kada se dovrši. Takođe se uverite da niko drugi ne može da vidi ekran tokom procesa.</value>
   </data>
+  <data name="Change" xml:space="preserve">
+    <value>Promenite</value>
+  </data>
+  <data name="ChangePin" xml:space="preserve">
+    <value>Promeni PIN kôd</value>
+  </data>
+  <data name="ChangePinDescription" xml:space="preserve">
+    <value>Odaberite drugi PIN-kôd da biste se identifikovali. Promena PIN koda će takođe kreirati novu nasumičnu lozinku za osnovnu komunikacionu mrežu.</value>
+  </data>
+  <data name="ConfirmNewPin" xml:space="preserve">
+    <value>Potvrdi novi PIN:</value>
+  </data>
   <data name="DarkMode" xml:space="preserve">
     <value>Tamni režim</value>
+  </data>
+  <data name="EnterCurrentPin" xml:space="preserve">
+    <value>Unesite trenutni PIN:</value>
+  </data>
+  <data name="EnterNewPin" xml:space="preserve">
+    <value>Unesite novi PIN:</value>
   </data>
   <data name="LightMode" xml:space="preserve">
     <value>Režim osvetljenja</value>
@@ -866,6 +884,9 @@
   </data>
   <data name="ScreenSettings" xml:space="preserve">
     <value>Postavke ekrana</value>
+  </data>
+  <data name="SecuritySettings" xml:space="preserve">
+    <value>Bezbednosne postavke</value>
   </data>
   <data name="SelectDisplayMode" xml:space="preserve">
     <value>Izbor režima prikaza</value>

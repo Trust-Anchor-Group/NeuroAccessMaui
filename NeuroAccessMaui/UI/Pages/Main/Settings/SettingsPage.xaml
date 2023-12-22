@@ -14,13 +14,13 @@
 
 	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
 
-		<controls:Background Grid.RowSpan="2" />
+		<controls:Background/>
 
-		<ScrollView Grid.Row="1">
+		<ScrollView>
 			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
 
 				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-										 Style="{StaticResource BackImageButtonStyle}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+											 Style="{StaticResource BackImageButtonStyle}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
 				<Label Style="{StaticResource PageTitleLabelStyle}" Text="{l:Localize Settings}"/>
 
@@ -63,6 +63,22 @@
 								<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
 									<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize RevokeIdentity}" InputTransparent="True"/>
 									<Label Style="{StaticResource KeyLabel}" Text="{l:Localize RevokeIdentityDescription}" InputTransparent="True"/>
+								</VerticalStackLayout>
+							</Frame>
+						</controls:TemplatedButton>
+
+					</VerticalStackLayout>
+				</Frame>
+
+				<Frame Style="{StaticResource FrameSet}">
+					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+						<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize SecuritySettings}"/>
+
+						<controls:TemplatedButton HorizontalOptions="Center" Command="{x:Binding ChangePinCommand}">
+							<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True">
+								<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
+									<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize ChangePin}" InputTransparent="True"/>
+									<Label Style="{StaticResource KeyLabel}" Text="{l:Localize ChangePinDescription}" InputTransparent="True"/>
 								</VerticalStackLayout>
 							</Frame>
 						</controls:TemplatedButton>

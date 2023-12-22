@@ -843,8 +843,26 @@
   <data name="AreYouSureYouWantToTransferYourLegalIdentity1" xml:space="preserve">
     <value>Вы уверены, что хотите перенести свою юридическую личность из приложения в другое? После завершения идентификация будет удалена с этого устройства. Также убедитесь, что никто другой не может видеть ваш экран во время процесса.</value>
   </data>
+  <data name="Change" xml:space="preserve">
+    <value>Менять</value>
+  </data>
+  <data name="ChangePin" xml:space="preserve">
+    <value>Изменить PIN-код</value>
+  </data>
+  <data name="ChangePinDescription" xml:space="preserve">
+    <value>Выберите другой PIN-код для идентификации. Изменение PIN-кода также приведет к созданию нового случайного пароля для базовой сети связи.</value>
+  </data>
+  <data name="ConfirmNewPin" xml:space="preserve">
+    <value>Подтвердите новый PIN-код:</value>
+  </data>
   <data name="DarkMode" xml:space="preserve">
     <value>Тёмная версия</value>
+  </data>
+  <data name="EnterCurrentPin" xml:space="preserve">
+    <value>Введите текущий PIN-код:</value>
+  </data>
+  <data name="EnterNewPin" xml:space="preserve">
+    <value>Введите новый PIN-код:</value>
   </data>
   <data name="LightMode" xml:space="preserve">
     <value>Светлый режим</value>
@@ -866,6 +884,9 @@
   </data>
   <data name="ScreenSettings" xml:space="preserve">
     <value>Настройки экрана</value>
+  </data>
+  <data name="SecuritySettings" xml:space="preserve">
+    <value>Настройки безопасности</value>
   </data>
   <data name="SelectDisplayMode" xml:space="preserve">
     <value>Выберите режим отображения</value>

@@ -843,8 +843,26 @@
   <data name="AreYouSureYouWantToTransferYourLegalIdentity1" xml:space="preserve">
     <value>Sunteți sigur că doriți să vă transferați identitatea juridică din aplicație în alta? Identitatea va fi eliminată de pe acest dispozitiv odată finalizată. De asemenea, asigurați-vă că nimeni altcineva nu vă poate vedea ecranul în timpul procesului.</value>
   </data>
+  <data name="Change" xml:space="preserve">
+    <value>Schimbare</value>
+  </data>
+  <data name="ChangePin" xml:space="preserve">
+    <value>Schimbați codul PIN</value>
+  </data>
+  <data name="ChangePinDescription" xml:space="preserve">
+    <value>Alegeți un alt cod PIN pentru a vă identifica. Schimbarea codului PIN va crea, de asemenea, o nouă parolă aleatorie pentru rețeaua de comunicații subiacentă.</value>
+  </data>
+  <data name="ConfirmNewPin" xml:space="preserve">
+    <value>Confirmați noul cod PIN:</value>
+  </data>
   <data name="DarkMode" xml:space="preserve">
     <value>Modul întunecat</value>
+  </data>
+  <data name="EnterCurrentPin" xml:space="preserve">
+    <value>Introduceți codul PIN curent:</value>
+  </data>
+  <data name="EnterNewPin" xml:space="preserve">
+    <value>Introduceți noul cod PIN:</value>
   </data>
   <data name="LightMode" xml:space="preserve">
     <value>Modul luminos</value>
@@ -866,6 +884,9 @@
   </data>
   <data name="ScreenSettings" xml:space="preserve">
     <value>Setări ecran</value>
+  </data>
+  <data name="SecuritySettings" xml:space="preserve">
+    <value>Setări de securitate</value>
   </data>
   <data name="SelectDisplayMode" xml:space="preserve">
     <value>Selectați modul de afișare</value>

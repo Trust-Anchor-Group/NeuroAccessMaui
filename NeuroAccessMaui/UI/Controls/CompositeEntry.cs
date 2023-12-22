@@ -1,11 +1,12 @@
 ﻿using System.Windows.Input;
 using Microsoft.Maui.Controls.Shapes;
+using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Core;
 using PathShape = Microsoft.Maui.Controls.Shapes.Path;
 
 namespace NeuroAccessMaui.UI.Controls
 {
-	class CompositeEntry : ContentView, IBorderDataElement, IStackElement, IPathDataElement, IEntryDataElement
+	public class CompositeEntry : ContentView, IBorderDataElement, IStackElement, IPathDataElement, IEntryDataElement
 	{
 		private readonly Border innerBorder;
 		private readonly Grid innerGrid;
@@ -152,13 +153,19 @@ namespace NeuroAccessMaui.UI.Controls
 
 		public Entry Entry => this.innerEntry;
 
+		/// <summary>
+		/// Occurs when the user finalizes the text in an entry with the return key.
+		/// </summary>
+		public event EventHandler? Completed;
+
 		public override string? ToString()
 		{
 			string? Result = this.innerEntry.Text;
 			return Result;
 		}
 
-		public CompositeEntry() : base()
+		public CompositeEntry()
+			: base()
 		{
 			this.innerPath = new()
 			{
@@ -174,6 +181,8 @@ namespace NeuroAccessMaui.UI.Controls
 				VerticalOptions = LayoutOptions.Center,
 				HorizontalOptions = LayoutOptions.Fill
 			};
+
+			this.innerEntry.Completed += this.InnerEntry_Completed;
 			
 			this.innerGrid = new()
 			{
@@ -201,6 +210,18 @@ namespace NeuroAccessMaui.UI.Controls
 			this.Content = this.innerBorder;
 
 			this.innerEntry.SetBinding(Entry.TextProperty, new Binding(EntryDataProperty.PropertyName, source: this, mode: BindingMode.TwoWay));
+		}
+
+		private void InnerEntry_Completed(object? sender, EventArgs e)
+		{
+			try
+			{
+				this.Completed?.Invoke(sender, e);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
 		}
 	}
 }

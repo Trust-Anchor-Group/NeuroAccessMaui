@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel;
+using NeuroAccessMaui.UI.Controls;
 
 namespace NeuroAccessMaui.UI.Behaviors
 {
 	/// <summary>
 	/// Used for moving focus to the next UI component when the Enter/Return key has been hit.
 	/// </summary>
-	public class SetFocusOnCompletedBehavior : Behavior<Entry>
+	public class SetFocusOnCompletedBehavior : Behavior<CompositeEntry>
 	{
 		/// <summary>
 		/// The view to move focus to.
@@ -35,16 +36,16 @@ namespace NeuroAccessMaui.UI.Behaviors
 		}
 
 		/// <inheritdoc/>
-		protected override void OnAttachedTo(Entry entry)
+		protected override void OnAttachedTo(CompositeEntry entry)
 		{
 			entry.Completed += this.Entry_Completed;
 			base.OnAttachedTo(entry);
 		}
 
 		/// <inheritdoc/>
-		protected override void OnDetachingFrom(Entry entry)
+		protected override void OnDetachingFrom(CompositeEntry entry)
 		{
-			entry.TextChanged -= this.Entry_Completed;
+			entry.Completed -= this.Entry_Completed;
 			base.OnDetachingFrom(entry);
 		}
 

@@ -18,6 +18,7 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<AppShell>();
 			Builder.Services.AddTransient<MainPage, MainViewModel>();
 			Builder.Services.AddTransient<SettingsPage, SettingsViewModel>();
+			Builder.Services.AddTransient<ChangePinPage, ChangePinViewModel>();
 
 			// Registration pages & views
 			Builder.Services.AddTransient<RegistrationPage, RegistrationViewModel>();
@@ -38,7 +39,6 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<PetitionSignaturePage, PetitionSignatureViewModel>();
 
 			// Popups
-			Builder.Services.AddTransient<ChangePinPage, ChangePinViewModel>();
 			Builder.Services.AddTransient<ViewImagePage, ViewImageViewModel>();
 			Builder.Services.AddTransient<CheckPinPage>();
 
