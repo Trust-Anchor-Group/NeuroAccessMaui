@@ -4,7 +4,6 @@ using NeuroAccessMaui.UI.Pages.Registration;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using Waher.Events;
-using NeuroAccessMaui.UI.Pages.Main;
 
 namespace NeuroAccessMaui.UI.Pages
 {
@@ -39,9 +38,31 @@ namespace NeuroAccessMaui.UI.Pages
 		/// <summary>
 		/// Creates an instance of the <see cref="BaseContentPage"/> class.
 		/// </summary>
-		protected internal BaseContentPage()
+		public BaseContentPage()
+			: base()
 		{
 			this.On<iOS>().SetUseSafeArea(true);
+
+			this.Loaded += this.BaseContentPage_Loaded;
+		}
+
+		private void BaseContentPage_Loaded(object? sender, EventArgs e)
+		{
+			try
+			{
+				this.OnLoaded();
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
+		}
+
+		/// <summary>
+		/// Method called when page has been loaded.
+		/// </summary>
+		protected virtual void OnLoaded()
+		{
 		}
 
 		/// <inheritdoc />
