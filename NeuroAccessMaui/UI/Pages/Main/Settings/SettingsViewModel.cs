@@ -1,7 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Mopups.Services;
-using NeuroAccessMaui.UI.Popups.Pin;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using System.ComponentModel;
