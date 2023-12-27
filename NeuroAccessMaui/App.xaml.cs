@@ -875,46 +875,37 @@ namespace NeuroAccessMaui
 		/// <returns>If the user has provided the correct PIN</returns>
 		public static async Task<bool> VerifyPin(bool Force = false)
 		{
-#if DEBUG
-			// Skip the PIN verification during the debug. Set the IsDebug to false to work normal
-			bool IsDebug = true;
-#else
-			bool IsDebug = false;
-#endif
-			if (!IsDebug || Force)
+			ITagProfile Profile = Instantiate<ITagProfile>();
+
+			if (!Profile.HasPin)
+				return true;
+
+			bool NeedToVerifyPin = IsInactivitySafeIntervalPassed();
+
+			if (displayedPinPopup)
+				return false;
+
+			if (Force || NeedToVerifyPin)
 			{
-				ITagProfile Profile = Instantiate<ITagProfile>();
-
-				if (!Profile.HasPin)
-					return true;
-
-				bool NeedToVerifyPin = IsInactivitySafeIntervalPassed();
-
-				if (displayedPinPopup)
-					return false;
-
-				if (Force || NeedToVerifyPin)
+				if (MainThread.IsMainThread)
+					return await InputPin(Profile) is not null;
+				else
 				{
-					if (MainThread.IsMainThread)
-						return await InputPin(Profile) is not null;
-					else
+					TaskCompletionSource<bool> T = new();
+
+					await MainThread.InvokeOnMainThreadAsync(async () =>
 					{
-						TaskCompletionSource<bool> T = new();
-
-						await MainThread.InvokeOnMainThreadAsync(async () =>
+						try
 						{
-							try
-							{
-								T.SetResult(await InputPin(Profile) is not null);
-							}
-							catch (Exception ex)
-							{
-								T.SetException(ex);
-							}
-						});
+							T.SetResult(await InputPin(Profile) is not null);
+						}
+						catch (Exception ex)
+						{
+							T.SetException(ex);
+						}
+					});
 
-						return await T.Task;
-					}
+					return await T.Task;
 				}
 			}
 
