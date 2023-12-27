@@ -870,6 +870,12 @@
   <data name="IdentitySettings" xml:space="preserve">
     <value>Postavke identiteta</value>
   </data>
+  <data name="LanguageOptions" xml:space="preserve">
+    <value>Jezičke opcije</value>
+  </data>
+  <data name="LanguageOptionsDescription" xml:space="preserve">
+    <value>Odaberite željeni jezik.</value>
+  </data>
   <data name="LightMode" xml:space="preserve">
     <value>Režim osvetljenja</value>
   </data>

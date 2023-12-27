@@ -880,6 +880,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Language options.
+        /// </summary>
+        internal static string LanguageOptions {
+            get {
+                return ResourceManager.GetString("LanguageOptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose your preferred language..
+        /// </summary>
+        internal static string LanguageOptionsDescription {
+            get {
+                return ResourceManager.GetString("LanguageOptionsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Last name(s).
         /// </summary>
         internal static string LastNames {

@@ -24,10 +24,12 @@
 
 				<Label Style="{StaticResource PageTitleLabelStyle}" Text="{l:Localize Settings}"/>
 
+				<!-- Display Settings -->
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 						<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize DisplaySettings}"/>
 
+						<!-- Display Mode -->
 						<Frame Style="{StaticResource FrameSubSet}">
 							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 								<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize SelectDisplayMode}"/>
@@ -42,14 +44,26 @@
 								</Grid>
 							</VerticalStackLayout>
 						</Frame>
+
+						<!-- Language options -->
+						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding ChangeLanguageCommand}">
+							<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True">
+								<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
+									<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize LanguageOptions}" InputTransparent="True"/>
+									<Label Style="{StaticResource KeyLabel}" Text="{l:Localize LanguageOptionsDescription}" InputTransparent="True"/>
+								</VerticalStackLayout>
+							</Frame>
+						</controls:TemplatedButton>
 					</VerticalStackLayout>
 				</Frame>
 
+				<!-- Identity Settings -->
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 						<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize IdentitySettings}"/>
 
-						<controls:TemplatedButton HorizontalOptions="Center" Command="{x:Binding CompromiseCommand}">
+						<!-- Compromized -->
+						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding CompromiseCommand}">
 							<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True">
 								<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
 									<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize ReportAsCompromized}" InputTransparent="True"/>
@@ -58,7 +72,8 @@
 							</Frame>
 						</controls:TemplatedButton>
 
-						<controls:TemplatedButton HorizontalOptions="Center" Command="{x:Binding RevokeCommand}">
+						<!-- Revoke -->
+						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding RevokeCommand}">
 							<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True">
 								<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
 									<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize RevokeIdentity}" InputTransparent="True"/>
@@ -70,11 +85,13 @@
 					</VerticalStackLayout>
 				</Frame>
 
+				<!-- Security Settings -->
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 						<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize SecuritySettings}"/>
 
-						<controls:TemplatedButton HorizontalOptions="Center" Command="{x:Binding ChangePinCommand}">
+						<!-- Change PIN -->
+						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding ChangePinCommand}">
 							<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True">
 								<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
 									<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize ChangePin}" InputTransparent="True"/>
@@ -83,6 +100,7 @@
 							</Frame>
 						</controls:TemplatedButton>
 
+						<!-- Screen Capture -->
 						<Frame Style="{StaticResource FrameSubSet}" IsVisible="{Binding CanProhibitScreenCapture}">
 							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 								<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize ScreenRecording}"/>

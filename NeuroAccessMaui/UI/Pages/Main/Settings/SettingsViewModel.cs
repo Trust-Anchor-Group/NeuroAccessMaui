@@ -10,6 +10,8 @@ using Waher.Content.Xml;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using NeuroAccessMaui.UI.Pages.Identity;
+using Mopups.Services;
+using NeuroAccessMaui.UI.Popups;
 
 namespace NeuroAccessMaui.UI.Pages.Main.Settings
 {
@@ -426,6 +428,13 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 				ServiceRef.LogService.LogException(ex);
 				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
+		}
+
+		[RelayCommand]
+		private static async Task ChangeLanguage()
+		{
+			SelectLanguagePage Page = new();
+			await MopupService.Instance.PushAsync(Page);
 		}
 
 		#endregion

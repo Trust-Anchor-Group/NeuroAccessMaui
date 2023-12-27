@@ -870,6 +870,12 @@
   <data name="IdentitySettings" xml:space="preserve">
     <value>Identiteetin asetukset</value>
   </data>
+  <data name="LanguageOptions" xml:space="preserve">
+    <value>Kieliasetukset</value>
+  </data>
+  <data name="LanguageOptionsDescription" xml:space="preserve">
+    <value>Valitse haluamasi kieli.</value>
+  </data>
   <data name="LightMode" xml:space="preserve">
     <value>Kevyt tila</value>
   </data>
