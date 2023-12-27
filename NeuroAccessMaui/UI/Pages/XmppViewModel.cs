@@ -15,6 +15,7 @@ namespace NeuroAccessMaui.UI.Pages
 		/// Creates an instance of a <see cref="XmppViewModel"/>.
 		/// </summary>
 		protected XmppViewModel()
+			: base()
 		{
 			this.StateSummaryText = ServiceRef.Localizer[nameof(AppResources.XmppState_Offline)];
 			this.ConnectionStateText = ServiceRef.Localizer[nameof(AppResources.XmppState_Offline)];

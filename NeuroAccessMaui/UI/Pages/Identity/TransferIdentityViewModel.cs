@@ -17,6 +17,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 		/// Creates an instance of the <see cref="TransferIdentityViewModel"/> class.
 		/// </summary>
 		public TransferIdentityViewModel()
+			: base()
 		{
 		}
 

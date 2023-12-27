@@ -11,6 +11,7 @@ namespace NeuroAccessMaui.UI.Pages
 		/// Creates an instance of a <see cref="XmppViewModel"/>.
 		/// </summary>
 		protected QrXmppViewModel()
+			: base()
 		{
 		}
 

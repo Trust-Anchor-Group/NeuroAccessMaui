@@ -26,6 +26,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 		/// Creates a new instance of the <see cref="PetitionSignatureViewModel"/> class.
 		/// </summary>
 		public PetitionSignatureViewModel()
+			: base()
 		{
 			this.CopyCommand = new Command(async (Item) => await this.CopyToClipboard(Item));
 

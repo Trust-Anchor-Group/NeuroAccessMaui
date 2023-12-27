@@ -31,6 +31,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 		/// Creates an instance of the <see cref="ViewIdentityViewModel"/> class.
 		/// </summary>
 		public ViewIdentityViewModel()
+			: base()
 		{
 			this.CopyCommand = new Command(async (Item) => await this.CopyToClipboard(Item));
 
