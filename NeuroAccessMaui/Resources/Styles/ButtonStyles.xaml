@@ -36,17 +36,31 @@
 		<Setter Property="PathData" Value="{x:Static ui:Geometries.BackButtonPath}" />
 	</Style>
 
-	<Style x:Key="FilledTextButtonBorderStyle"
-		ApplyToDerivedTypes="False"
-		TargetType="Border">
-
+	<Style x:Key="FilledTextButtonBorderStyle" ApplyToDerivedTypes="False" TargetType="Border">
 		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource EnabledFilledButtonBackgroundLight}, Dark={StaticResource EnabledFilledButtonBackgroundDark}}" />
 		<Setter Property="Stroke" Value="Transparent" />
 		<Setter Property="Padding" Value="{StaticResource ButtonMediumMargins}" />
 		<Setter Property="StrokeShape">
 			<RoundRectangle CornerRadius="{StaticResource SmallCornerRadius}" />
 		</Setter>
+		<Setter Property="VisualStateManager.VisualStateGroups">
+			<VisualStateGroupList>
+				<VisualStateGroup x:Name="CommonStates">
+					<VisualState x:Name="Normal" />
+					<VisualState x:Name="Disabled">
+						<VisualState.Setters>
+							<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource DisabledFilledButtonBackgroundLight}, Dark={StaticResource DisabledFilledButtonBackgroundDark}}" />
+						</VisualState.Setters>
+					</VisualState>
+				</VisualStateGroup>
+			</VisualStateGroupList>
+		</Setter>
+	</Style>
 
+	<Style x:Key="FilledTextButtonBorderStyleNoRoundedCorners" ApplyToDerivedTypes="False" TargetType="Border">
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource EnabledFilledButtonBackgroundLight}, Dark={StaticResource EnabledFilledButtonBackgroundDark}}" />
+		<Setter Property="Stroke" Value="Transparent" />
+		<Setter Property="Padding" Value="{StaticResource ButtonMediumMargins}" />
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>
 				<VisualStateGroup x:Name="CommonStates">
@@ -82,25 +96,42 @@
 		</Setter>
 	</Style>
 
-	<Style x:Key="FilledTextButtonStyle"
-		ApplyToDerivedTypes="False"
-		TargetType="controls:TextButton">
-
+	<Style x:Key="FilledTextButtonStyle" ApplyToDerivedTypes="False" TargetType="controls:TextButton">
 		<Setter Property="BorderStyle" Value="{StaticResource FilledTextButtonBorderStyle}" />
 		<Setter Property="LabelStyle" Value="{StaticResource FilledTextButtonLabelStyle}" />
 	</Style>
 
-	<Style x:Key="OutlinedTextButtonBorderStyle"
-		ApplyToDerivedTypes="False"
-		TargetType="Border">
+	<Style x:Key="FilledTextButtonStyleNoRoundedCorners" ApplyToDerivedTypes="False" TargetType="controls:TextButton">
+		<Setter Property="BorderStyle" Value="{StaticResource FilledTextButtonBorderStyleNoRoundedCorners}" />
+		<Setter Property="LabelStyle" Value="{StaticResource FilledTextButtonLabelStyle}" />
+	</Style>
 
+	<Style x:Key="OutlinedTextButtonBorderStyle" ApplyToDerivedTypes="False" TargetType="Border">
 		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource EnabledOutlinedButtonBackgroundLight}, Dark={StaticResource EnabledOutlinedButtonBackgroundDark}}" />
 		<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource EnabledOutlinedButtonForegroundLight}, Dark={StaticResource EnabledOutlinedButtonForegroundDark}}" />
 		<Setter Property="Padding" Value="{StaticResource ButtonMediumMargins}" />
 		<Setter Property="StrokeShape">
 			<RoundRectangle CornerRadius="{StaticResource SmallCornerRadius}" />
 		</Setter>
+		<Setter Property="VisualStateManager.VisualStateGroups">
+			<VisualStateGroupList>
+				<VisualStateGroup x:Name="CommonStates">
+					<VisualState x:Name="Normal" />
+					<VisualState x:Name="Disabled">
+						<VisualState.Setters>
+							<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource DisabledOutlinedButtonBackgroundLight}, Dark={StaticResource DisabledOutlinedButtonBackgroundDark}}" />
+							<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource DisabledOutlinedButtonForegroundLight}, Dark={StaticResource DisabledOutlinedButtonForegroundDark}}" />
+						</VisualState.Setters>
+					</VisualState>
+				</VisualStateGroup>
+			</VisualStateGroupList>
+		</Setter>
+	</Style>
 
+	<Style x:Key="OutlinedTextButtonBorderStyleNoRoundedCorners" ApplyToDerivedTypes="False" TargetType="Border">
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource EnabledOutlinedButtonBackgroundLight}, Dark={StaticResource EnabledOutlinedButtonBackgroundDark}}" />
+		<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource EnabledOutlinedButtonForegroundLight}, Dark={StaticResource EnabledOutlinedButtonForegroundDark}}" />
+		<Setter Property="Padding" Value="{StaticResource ButtonMediumMargins}" />
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>
 				<VisualStateGroup x:Name="CommonStates">
@@ -142,6 +173,12 @@
 		TargetType="controls:TextButton">
 
 		<Setter Property="BorderStyle" Value="{StaticResource OutlinedTextButtonBorderStyle}" />
+		<Setter Property="LabelStyle" Value="{StaticResource OutlinedTextButtonLabelStyle}" />
+	</Style>
+
+	<Style x:Key="OutlinedTextButtonStyleNoRoundedCorners" ApplyToDerivedTypes="False" TargetType="controls:TextButton">
+
+		<Setter Property="BorderStyle" Value="{StaticResource OutlinedTextButtonBorderStyleNoRoundedCorners}" />
 		<Setter Property="LabelStyle" Value="{StaticResource OutlinedTextButtonLabelStyle}" />
 	</Style>
 
