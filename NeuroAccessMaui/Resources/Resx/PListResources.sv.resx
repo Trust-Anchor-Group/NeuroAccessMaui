@@ -118,12 +118,15 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="NSCameraUsageDescription" xml:space="preserve">
-    <value>Neuro-Access behöver åtkomst till kameran för att kunna ta foton till ditt digitala ID, och när du vill skanna QR-koder.</value>
+    <value>Neuro-Access behöver tillgång till kameran för att ta bilder för ditt digitala ID och när du vill att den ska skanna QR-koder.</value>
   </data>
   <data name="NSPhotoLibraryAddUsageDescription" xml:space="preserve">
-    <value>Neuro-Access behöver kunna lägga till foton till ditt fotogalleri, om du vill spara foton du tar till senare.</value>
+    <value>Neuro-Access måste kunna lägga till foton i dina gallerier om du vill spara foton du tar för senare användning.</value>
   </data>
   <data name="NSPhotoLibraryUsageDescription" xml:space="preserve">
-    <value>Neuro-Access behöver åtkomst till fotogalleriet för att du ska kunna välja foton till ditt ID, hämta QR-koder från andra appar, eller dela bilder med kontakter i chattar.</value>
+    <value>Neuro-Access behöver tillgång till fotogalleriet för att du ska kunna välja en profilbild för ditt ID, få QR-koder från andra appar eller dela bilder med kontakter i chattar.</value>
+  </data>
+  <data name="NFCReaderUsageDescription" xml:space="preserve">
+    <value>Neuro-Access behöver åtkomst till NFC-taggen för att läsa NDEF-meddelanden i applikationen.</value>
   </data>
 </root>

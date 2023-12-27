@@ -117,17 +117,461 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Continue" xml:space="preserve">
-    <value>Fortsätt</value>
+  <data name="STRINGNOTDEFINED" xml:space="preserve">
+    <value>STRÄNG HAR INTE DEFINIERATS</value>
+  </data>
+  <data name="IdentityState_Approved" xml:space="preserve">
+    <value>Godkänd</value>
+  </data>
+  <data name="IdentityState_Compromised" xml:space="preserve">
+    <value>Äventyras</value>
+  </data>
+  <data name="IdentityState_Created" xml:space="preserve">
+    <value>Skapad</value>
+  </data>
+  <data name="IdentityState_Obsoleted" xml:space="preserve">
+    <value>Föråldrad</value>
+  </data>
+  <data name="IdentityState_Rejected" xml:space="preserve">
+    <value>Avvisad</value>
+  </data>
+  <data name="TagEngraved" xml:space="preserve">
+    <value>Tagg Graverad med länk till {0}.</value>
+  </data>
+  <data name="TagNotEngraved" xml:space="preserve">
+    <value>Det går inte att gravera taggen med länk till {0}.</value>
+  </data>
+  <data name="PinChanged" xml:space="preserve">
+    <value>PIN-koden har ändrats.</value>
+  </data>
+  <data name="UnableToChangePassword" xml:space="preserve">
+    <value>Det går inte att ändra nätverkslösenordet.</value>
+  </data>
+  <data name="PinIsInvalid" xml:space="preserve">
+    <value>PIN-koden är ogiltig. Du har {0} återstående försök.</value>
+  </data>
+  <data name="PinsDoNotMatch" xml:space="preserve">
+    <value>PIN-koder matchar inte</value>
+  </data>
+  <data name="PinIsInvalidAplicationBlockedForever" xml:space="preserve">
+    <value>Försök att ange PIN-kod överskrids. Ditt program har blockerats för alltid</value>
+  </data>
+  <data name="PinIsInvalidAplicationBlocked" xml:space="preserve">
+    <value>Försök att ange PIN-kod överskrids. Din ansökan har varit blockerad till {0}.</value>
+  </data>
+  <data name="PinIsInvalidAplicationBlockedTillTomorrow" xml:space="preserve">
+    <value>Försök att ange PIN-kod överskrids. Din ansökan har blockerats till i morgon kl. {0}.</value>
+  </data>
+  <data name="PinIsInvalidAplicationBlockedForOneWeek" xml:space="preserve">
+    <value>Försök att ange PIN-kod överskrids. Din ansökan har varit blockerad i en vecka</value>
+  </data>
+  <data name="PinTooShort" xml:space="preserve">
+    <value>PIN-kodens längd måste vara minst {0} tecken.</value>
+  </data>
+  <data name="PinContainsName" xml:space="preserve">
+    <value>En PIN-kod får inte innehålla något ord från identitetsnamnen.</value>
+  </data>
+  <data name="PinContainsPersonalNumber" xml:space="preserve">
+    <value>En PIN-kod får inte innehålla identitetens personnummer.</value>
+  </data>
+  <data name="PinContainsAddress" xml:space="preserve">
+    <value>En PIN-kod får inte innehålla något ord från identitetsadressraderna.</value>
+  </data>
+  <data name="PinContainsEMail" xml:space="preserve">
+    <value>En PIN-kod får inte innehålla e-postadressen för identitet.</value>
+  </data>
+  <data name="PinContainsPhoneNumber" xml:space="preserve">
+    <value>En PIN-kod får inte innehålla identitetsnumret.</value>
+  </data>
+  <data name="PinWithNotEnoughDigitsLettersSigns" xml:space="preserve">
+    <value>Minst {0} bokstäver, siffror eller symboler ska användas.</value>
+  </data>
+  <data name="PinWithNotEnoughDigitsOrSigns" xml:space="preserve">
+    <value>Du måste också använda minst {0} siffror eller symboler.</value>
+  </data>
+  <data name="PinWithNotEnoughLettersOrDigits" xml:space="preserve">
+    <value>Du måste också använda minst {0} bokstäver eller siffror.</value>
+  </data>
+  <data name="PinWithNotEnoughLettersOrSigns" xml:space="preserve">
+    <value>Du måste också använda minst {0} bokstäver eller symboler.</value>
+  </data>
+  <data name="PinWithTooManyIdenticalSymbols" xml:space="preserve">
+    <value>En PIN-kod får inte innehålla mer än {0} identiska symboler.</value>
+  </data>
+  <data name="PinWithTooManySequencedSymbols" xml:space="preserve">
+    <value>En PIN-kod får inte innehålla mer än {0} sekvenserade symboler, t.ex. "12" eller "ab".</value>
+  </data>
+  <data name="ThereIsNoNetwork" xml:space="preserve">
+    <value>Det finns inget nätverk</value>
+  </data>
+  <data name="RequestTimedOut" xml:space="preserve">
+    <value>Tidsgränsen för begäran överskreds</value>
+  </data>
+  <data name="RequestWasCancelled" xml:space="preserve">
+    <value>Begäran avbröts</value>
+  </data>
+  <data name="XmppState_Authenticating" xml:space="preserve">
+    <value>Autentisera nätverksidentitet</value>
+  </data>
+  <data name="XmppState_Binding" xml:space="preserve">
+    <value>Bindande anslutning</value>
+  </data>
+  <data name="XmppState_Connected" xml:space="preserve">
+    <value>Ansluten</value>
+  </data>
+  <data name="XmppState_Connecting" xml:space="preserve">
+    <value>Upprätta anslutning</value>
+  </data>
+  <data name="XmppState_Error" xml:space="preserve">
+    <value>Fel vid anslutning</value>
+  </data>
+  <data name="XmppState_FetchingRoster" xml:space="preserve">
+    <value>Hämtar laguppställning</value>
+  </data>
+  <data name="XmppState_Offline" xml:space="preserve">
+    <value>Bortkopplad</value>
+  </data>
+  <data name="XmppState_Registering" xml:space="preserve">
+    <value>Registrera dig hos mäklare</value>
+  </data>
+  <data name="XmppState_RequestingSession" xml:space="preserve">
+    <value>Begär session</value>
+  </data>
+  <data name="XmppState_SettingPresence" xml:space="preserve">
+    <value>Ställa in närvaro</value>
+  </data>
+  <data name="XmppState_StartingEncryption" xml:space="preserve">
+    <value>Kryptera anslutning</value>
+  </data>
+  <data name="XmppState_StreamNegotiation" xml:space="preserve">
+    <value>Förhandlingskanal</value>
+  </data>
+  <data name="XmppState_StreamOpened" xml:space="preserve">
+    <value>Ström upprättad</value>
+  </data>
+  <data name="YourLegalIdentity" xml:space="preserve">
+    <value>Din juridiska identitet</value>
+  </data>
+  <data name="YourLegalIdentityHasBeenCompromised" xml:space="preserve">
+    <value>Din juridiska identitet har markerats som komprometterad. Du har därför omdirigerats för att skapa ett nytt konto.</value>
+  </data>
+  <data name="YourLegalIdentityHasBeenObsoleted" xml:space="preserve">
+    <value>Din juridiska identitet har markerats som föråldrad. Du har därför omdirigerats för att skapa ett nytt konto.</value>
+  </data>
+  <data name="ClientMessageAuthenticationTimeout" xml:space="preserve">
+    <value>Svaret returnerades inte inom konfigurerad tid.</value>
+  </data>
+  <data name="ClientMessageCountryCodeMismatch" xml:space="preserve">
+    <value>Landskoden stämmer inte.</value>
+  </data>
+  <data name="ClientMessageCountryCodeNotVerified" xml:space="preserve">
+    <value>Landskoden är inte verifierad.</value>
+  </data>
+  <data name="ClientMessageFirstNameNotVerified" xml:space="preserve">
+    <value>Förnamn ej verifierat.</value>
+  </data>
+  <data name="ClientMessageLastNameNotVerified" xml:space="preserve">
+    <value>Efternamnet är inte verifierat.</value>
+  </data>
+  <data name="ClientMessageNotValid" xml:space="preserve">
+    <value>Identiteten är inte giltig.</value>
+  </data>
+  <data name="ClientMessagePersonalNumberMismatch" xml:space="preserve">
+    <value>Personnummer stämmer inte överens.</value>
+  </data>
+  <data name="ClientMessagePersonalNumberNotVerified" xml:space="preserve">
+    <value>Personnummer ej verifierat.</value>
+  </data>
+  <data name="ClientMessageReferenceMismatch" xml:space="preserve">
+    <value>Den returnerade referensen matchade inte referensen för begäran.</value>
+  </data>
+  <data name="ClientMessageUnexpectedDocumentInformation" xml:space="preserve">
+    <value>Dokumentinformationen returnerades inte som förväntat.</value>
+  </data>
+  <data name="ClientMessageUnexpectedEventResult" xml:space="preserve">
+    <value>Händelseresultatet returnerades inte som förväntat.</value>
+  </data>
+  <data name="ClientMessageUnexpectedResult" xml:space="preserve">
+    <value>Oväntat svar returnerades.</value>
+  </data>
+  <data name="RepairRestart" xml:space="preserve">
+    <value>En inkonsekvens i den interna databasen har upptäckts. Detta kan hända om appen inte är ordentligt stängd. Appen kommer därför att stängas. Nästa gång du startar appen kommer databasen att repareras.</value>
+  </data>
+  <data name="Incomplete" xml:space="preserve">
+    <value>Ofullständig</value>
   </data>
   <data name="Close" xml:space="preserve">
     <value>Stänga</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>Bekräfta</value>
+  </data>
+  <data name="ErrorTitle" xml:space="preserve">
+    <value>Ett fel har inträffat</value>
+  </data>
+  <data name="WarningTitle" xml:space="preserve">
+    <value>Varning</value>
+  </data>
+  <data name="SuccessTitle" xml:space="preserve">
+    <value>Framgång</value>
+  </data>
+  <data name="Information" xml:space="preserve">
+    <value>Information</value>
+  </data>
+  <data name="Message" xml:space="preserve">
+    <value>Meddelande</value>
+  </data>
+  <data name="Ok" xml:space="preserve">
+    <value>OKEJ</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Ja</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Nej</value>
+  </data>
+  <data name="Me" xml:space="preserve">
+    <value>(jag)</value>
+  </data>
+  <data name="CopyToClipboard" xml:space="preserve">
+    <value>Kopiera till Urklipp</value>
+  </data>
+  <data name="Continue" xml:space="preserve">
+    <value>Fortsätta</value>
+  </data>
+  <data name="SendCode" xml:space="preserve">
+    <value>Skicka kod</value>
+  </data>
+  <data name="SendCodeSeconds" xml:space="preserve">
+    <value>Skicka kod ({0})</value>
+  </data>
+  <data name="ResendCode" xml:space="preserve">
+    <value>Skicka kod igen</value>
+  </data>
+  <data name="ResendCodeSeconds" xml:space="preserve">
+    <value>Skicka igen ({0})</value>
+  </data>
+  <data name="Verify" xml:space="preserve">
+    <value>Kontrollera</value>
+  </data>
+  <data name="Repair" xml:space="preserve">
+    <value>Reparera</value>
+  </data>
+  <data name="Open" xml:space="preserve">
+    <value>Öppna</value>
+  </data>
+  <data name="XInY" xml:space="preserve">
+    <value>{0} i {1}</value>
+  </data>
+  <data name="XOnY" xml:space="preserve">
+    <value>{0} på {1}</value>
+  </data>
+  <data name="CantConnectTo" xml:space="preserve">
+    <value>Det går inte att ansluta till {0}</value>
+  </data>
+  <data name="ScannedQrCode" xml:space="preserve">
+    <value>Skannad QR-kod</value>
+  </data>
+  <data name="QrCodeNotUnderstood" xml:space="preserve">
+    <value>Koden förstås inte</value>
+  </data>
+  <data name="CodeNotRecognized" xml:space="preserve">
+    <value>Koden känns inte igen.</value>
+  </data>
+  <data name="UnableToOpenLink" xml:space="preserve">
+    <value>Det går inte att öppna länken:</value>
+  </data>
+  <data name="InvalidInvitationCode" xml:space="preserve">
+    <value>Ogiltig inbjudningskod.</value>
+  </data>
+  <data name="InvitationAccepted" xml:space="preserve">
+    <value>Inbjudan accepterad</value>
+  </data>
+  <data name="UnableToAccessInvitation" xml:space="preserve">
+    <value>Det går inte att komma åt inbjudningsinformationen.</value>
+  </data>
+  <data name="InvitedToCreateAccountOnDomain" xml:space="preserve">
+    <value>Du har blivit inbjuden att skapa ett konto på {0}. Tryck på OK och ange namnet på det konto du vill skapa.</value>
+  </data>
+  <data name="ThisCodeCannotBeClaimedAtThisTime" xml:space="preserve">
+    <value>Den här koden representerar en tagg-ID-inbjudan och kan inte begäras just nu.</value>
+  </data>
+  <data name="DomainDoesNotFollowEncryptionPolicy" xml:space="preserve">
+    <value>{0} följer inte den allestädes närvarande krypteringspolicyn</value>
+  </data>
+  <data name="DomainIsNotAValidOperator" xml:space="preserve">
+    <value>{0} är inte en giltig operator</value>
+  </data>
+  <data name="UnableToAuthenticateWith" xml:space="preserve">
+    <value>Det går inte att autentisera med {0}</value>
+  </data>
+  <data name="OperatorDoesNotSupportRegisteringNewAccounts" xml:space="preserve">
+    <value>Operatören {0} stöder inte registrering av nya konton</value>
+  </data>
+  <data name="AccountNameAlreadyTaken" xml:space="preserve">
+    <value>Kontonamnet {0} redan är upptaget. Välj en annan.</value>
+  </data>
+  <data name="InvalidUsernameOrPassword" xml:space="preserve">
+    <value>Ogiltigt användarnamn eller lösenord</value>
+  </data>
+  <data name="UnableToConnectTo" xml:space="preserve">
+    <value>Det går inte att ansluta till {0}</value>
+  </data>
+  <data name="UnableToConnect" xml:space="preserve">
+    <value>Det går inte att ansluta.</value>
+  </data>
+  <data name="AppNotConnected" xml:space="preserve">
+    <value>Appen är inte ansluten till nätverket.</value>
+  </data>
+  <data name="InvalidTagSignatureId" xml:space="preserve">
+    <value>Ogiltig URI för taggsignatur.</value>
+  </data>
+  <data name="LegalIdNotApproved" xml:space="preserve">
+    <value>Juridiskt ID godkänns inte.</value>
+  </data>
+  <data name="NoLegalIdSelected" xml:space="preserve">
+    <value>Inget juridiskt ID har valts.</value>
+  </data>
+  <data name="PeerReviewAccepted" xml:space="preserve">
+    <value>Peer review accepteras</value>
+  </data>
+  <data name="PeerReviewRejected" xml:space="preserve">
+    <value>Peer review avvisades</value>
+  </data>
+  <data name="SignaturePetitionDenied" xml:space="preserve">
+    <value>Underskriftsansökan avslogs.</value>
+  </data>
+  <data name="PetitionSent" xml:space="preserve">
+    <value>Framställning skickad</value>
+  </data>
+  <data name="PetitionToViewContractWasDenied" xml:space="preserve">
+    <value>Begäran om att få se kontraktet avslogs.</value>
+  </data>
+  <data name="PetitionToViewLegalIdentityWasDenied" xml:space="preserve">
+    <value>Begäran om att få se den juridiska identiteten avslogs.</value>
+  </data>
+  <data name="APetitionHasBeenSentToTheContract" xml:space="preserve">
+    <value>En petition har skickats till de delar av kontraktet som gäller. Om någon av parterna godkänner framställningen kommer avtalsinformationen att visas på skärmen.</value>
+  </data>
+  <data name="APetitionHasBeenSentToTheOwner" xml:space="preserve">
+    <value>En petition har skickats till ägaren av identiteten. Om ägaren godkänner framställningen kommer identitetsinformationen att visas på skärmen.</value>
+  </data>
+  <data name="APetitionHasBeenSentToYourPeer" xml:space="preserve">
+    <value>En petition har skickats till din kamrat</value>
+  </data>
+  <data name="APeerReviewYouhaveRequestedHasBeenAccepted" xml:space="preserve">
+    <value>En peer review som du begärde har godkänts.</value>
+  </data>
+  <data name="APeerYouRequestedToReviewHasBeenRejectedDueToSignatureError" xml:space="preserve">
+    <value>En peer review som du begärde har avvisats på grund av ett signaturfel.</value>
+  </data>
+  <data name="APeerYouRequestedToReviewHasRejected" xml:space="preserve">
+    <value>En peer som du bad om att få granska din ansökan har avslagit ansökan om att godkänna den.</value>
+  </data>
+  <data name="UnableToGetAccessToYourPrivateKeys" xml:space="preserve">
+    <value>Programmet kunde inte få åtkomst till identitetens privata nycklar. Det innebär vanligtvis att identiteten har ändrats utanför appens omfång. Det kan också vara ett resultat av en skada på data. Du kan prova en av två saker. Tryck på Fortsätt-knappen för att fortsätta, utan de privata nycklarna. Du får tillgång till appen, men kan inte signera något. Du kan sedan välja att ansöka om en ny identitet från huvudmenyn, med nya privata nycklar. Du kan också försöka reparera databasen genom att trycka på knappen Reparera. I det senare fallet stängs appen, och nästa gång appen öppnas görs först ett reparationsförsök.</value>
+  </data>
+  <data name="FailedToClosePage" xml:space="preserve">
+    <value>Det gick inte att stänga sidan</value>
+  </data>
+  <data name="FailedToNavigateToPage" xml:space="preserve">
+    <value>Det gick inte att navigera till sidan {0} {1}</value>
+  </data>
+  <data name="IdCopiedSuccessfully" xml:space="preserve">
+    <value>En länk till ID:t kopierades till Urklipp.</value>
+  </data>
+  <data name="TagValueCopiedToClipboard" xml:space="preserve">
+    <value>Taggvärde kopierat till Urklipp</value>
+  </data>
+  <data name="PleaseReviewAndCheckAllCheckboxes" xml:space="preserve">
+    <value>Läs igenom all information ovan och markera motsvarande kryssrutor om informationen är korrekt. Detta måste göras innan du kan godkänna informationen.</value>
+  </data>
+  <data name="YouNeedToCheckCarefullyReviewed" xml:space="preserve">
+    <value>Du måste kryssa i rutan du noggrant har granskat all motsvarande information ovan.</value>
+  </data>
+  <data name="YouNeedToApproveToAssociate" xml:space="preserve">
+    <value>Du måste godkänna att dina personuppgifter kopplas till den identitet du granskar. När tredje part granskar informationen i identiteten kommer de att ha tillgång till granskarnas identitet, för transparens.</value>
+  </data>
+  <data name="AreYouSureYouWantToRemoveContact" xml:space="preserve">
+    <value>Är du säker på att du vill ta bort den här kontakten från din kontaktlista?</value>
+  </data>
+  <data name="AreYouSureYouWantToReportYourLegalIdentityAsCompromized" xml:space="preserve">
+    <value>Är du säker på att du vill rapportera din juridiska identitet som komprometterad, stulen eller hackad?</value>
+  </data>
+  <data name="AreYouSureYouWantToRevokeYourLegalIdentity" xml:space="preserve">
+    <value>Är du säker på att du vill återkalla din juridiska identitet från programmet?</value>
+  </data>
+  <data name="AreYouSureYouWantToTransferYourLegalIdentity" xml:space="preserve">
+    <value>Är du säker på att du vill överföra din juridiska identitet från ansökan till en annan? Identiteten kommer att tas bort från den här enheten när den är klar. Se också till att ingen annan kan se din skärm under processen.</value>
+  </data>
+  <data name="UnexpectedResponse" xml:space="preserve">
+    <value>Ett oväntat svar inkom.</value>
+  </data>
+  <data name="FileUploadServiceNotFound" xml:space="preserve">
+    <value>Ingen filuppladdningstjänst hittades på mäklare.</value>
+  </data>
+  <data name="LegalServiceNotFound" xml:space="preserve">
+    <value>Ingen juridisk tjänst hittades på mäklaren.</value>
+  </data>
+  <data name="FailedToBindViewModelForPage" xml:space="preserve">
+    <value>Det gick inte att binda viewmodel-{0} för sida {1}</value>
+  </data>
+  <data name="FailedToRestoreViewModelStateForPage" xml:space="preserve">
+    <value>Det gick inte att återställa tillståndet för viewmodel {0} för sida {1}</value>
+  </data>
+  <data name="FailedToSaveViewModelStateForPage" xml:space="preserve">
+    <value>Det gick inte att spara tillståndet för viewmodel {0} för sidan {1}</value>
+  </data>
+  <data name="FailedToUnbindViewModelForPage" xml:space="preserve">
+    <value>Det gick inte att koppla bort viewmodel-{0} för sida {1}</value>
   </data>
   <data name="OnboardingPurposePageTitle" xml:space="preserve">
     <value>Välkommen!</value>
   </data>
   <data name="OnboardingPurposePageDetails" xml:space="preserve">
     <value>Välj i vilket sammanhang du tänker använda Neuro-Access</value>
+  </data>
+  <data name="OnboardingPhonePageTitle" xml:space="preserve">
+    <value>Nu sätter vi igång</value>
+  </data>
+  <data name="OnboardingPhonePageDetails" xml:space="preserve">
+    <value>För att bli verifierad måste du ange ditt telefonnummer</value>
+  </data>
+  <data name="OnboardingEmailPageTitle" xml:space="preserve">
+    <value>Verifiera e-postadressen</value>
+  </data>
+  <data name="OnboardingEmailPageDetails" xml:space="preserve">
+    <value>Vi skickar en verifieringskod till dig</value>
+  </data>
+  <data name="OnboardingVerifyCodePageTitle" xml:space="preserve">
+    <value>Ange kod</value>
+  </data>
+  <data name="OnboardingVerifyCodePageDetails" xml:space="preserve">
+    <value>Ange verifieringskoden som skickats till {0}</value>
+  </data>
+  <data name="OnboardingProviderPageTitle" xml:space="preserve">
+    <value>Vald leverantör</value>
+  </data>
+  <data name="OnboardingProviderPageDetails" xml:space="preserve">
+    <value>Domän:</value>
+  </data>
+  <data name="OnboardingAccountPageTitle" xml:space="preserve">
+    <value>Skapa konto</value>
+  </data>
+  <data name="OnboardingAccountPageDetails" xml:space="preserve">
+    <value>Ange det namn du vill använda för ditt konto</value>
+  </data>
+  <data name="OnboardingDefinePinPageTitle" xml:space="preserve">
+    <value>Skapa en PIN-kod</value>
+  </data>
+  <data name="OnboardingDefinePinPageDetails" xml:space="preserve">
+    <value>För att förbättra säkerheten för din neuroidentitet och känslig information rekommenderar vi att du lägger till ett extra skyddslager genom att skapa en PIN-kod eller ett lösenord</value>
+  </data>
+  <data name="AccountSectionTitle" xml:space="preserve">
+    <value>Ange kontonamnet</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>Skapa</value>
   </data>
   <data name="PurposesSectionTitle" xml:space="preserve">
     <value>Välj åtkomstsyfte </value>
@@ -136,24 +580,336 @@
     <value>Pedagogisk användning</value>
   </data>
   <data name="PurposeEducationalDescription" xml:space="preserve">
-    <value>Detta val låter dig använda Tag ID för utbildningsändamål. Du kan använda appen för att signera eller komma åt resurser som en privatperson, antingen som en lärare eller student. Konton kan vara begränsat i tiden. Kontot kan också tas bort när den inte längre används. Kontrollera med tjänsteleverantören för mer information.</value>
+    <value>Med det här alternativet kan du använda tagg-ID i utbildningssyfte. Du kan använda appen för att signera eller komma åt resurser som privatperson, antingen som lärare eller som elev. Kontot kan vara tidsbegränsat. Kontot kan också tas bort när det inte längre används. Kontakta tjänsteleverantören för mer information.</value>
   </data>
   <data name="PurposeExperimental" xml:space="preserve">
     <value>Experimentell användning</value>
   </data>
   <data name="PurposeExperimentalDescription" xml:space="preserve">
-    <value>Detta val låter dig använda Tag ID för experimentella ändamål. Du kan använda appen för att signera eller komma åt resurser som en privatperson, med målet att lära dig om teknologin och för vilka ändamål den kan användas. The account may be limited in time. Konton kan vara begränsat i tiden. Kontot kan också tas bort när den inte längre används. Kontrollera med tjänsteleverantören för mer information.</value>
+    <value>Med det här alternativet kan du använda tagg-ID i experimentellt syfte. Du kan använda appen för att signera eller komma åt resurser som privatperson, med målet att lära dig tekniken och för vilka ändamål den kan användas. Kontot kan vara tidsbegränsat. Kontot kan också tas bort när det inte längre används. Kontakta tjänsteleverantören för mer information.</value>
   </data>
   <data name="PurposePersonal" xml:space="preserve">
-    <value>Personlig användning</value>
+    <value>Personligt bruk</value>
   </data>
   <data name="PurposePersonalDescription" xml:space="preserve">
-    <value>Detta val låter dig använda Tag ID för personligt bruk. Du kan använda appen för att signera eller komma åt resurser som en privatperson. Vissa funktioner kan medföra kostnader, beroende på vilken tjänsteleverantör du väljer. Kontrollera med tjänsteleverantören för mer information.</value>
+    <value>Med det här alternativet kan du använda tagg-ID för personliga ändamål. Du kan använda appen för att signera eller komma åt resurser som privatperson. Vissa åtgärder kan medföra kostnader, beroende på vilken tjänsteleverantör du väljer. Kontakta tjänsteleverantören för mer information.</value>
   </data>
   <data name="PurposeWork" xml:space="preserve">
-    <value>Användning inom arbete</value>
+    <value>Användning i arbetet</value>
   </data>
   <data name="PurposeWorkDescription" xml:space="preserve">
-    <value>Detta val låter dig använda Tag ID för användning inom arbete. Detta inkluderar arbete för icke vinstdrivande organisationer. Du kan använda appen för att signera eller komma åt resurser som en representant för en organisation. Vissa funktioner kan medföra kostnader, beroende på vilken tjänsteleverantör du väljer. Kontrollera med tjänsteleverantören för mer information.</value>
+    <value>Med det här alternativet kan du använda tagg-ID i arbetssyfte. Detta inkluderar arbete som inte är vinstdrivande i organisationer. Du kan använda appen för att signera eller komma åt resurser som representant för en organisation. Vissa åtgärder kan medföra kostnader, beroende på vilken tjänsteleverantör du väljer. Kontakta tjänsteleverantören för mer information.</value>
+  </data>
+  <data name="PhoneSectionTitle" xml:space="preserve">
+    <value>Ange telefonnummer</value>
+  </data>
+  <data name="SearchByCountry" xml:space="preserve">
+    <value>Sök efter land...</value>
+  </data>
+  <data name="PhoneValidationDigits" xml:space="preserve">
+    <value>Endast siffror är tillåtna.</value>
+  </data>
+  <data name="PhoneValidationLength" xml:space="preserve">
+    <value>Minsta längd 4 krävs</value>
+  </data>
+  <data name="NetworkSeemsToBeMissing" xml:space="preserve">
+    <value>Nätverk verkar saknas. Kontrollera din konfiguration och täckning och försök igen.</value>
+  </data>
+  <data name="SendEmailWarning" xml:space="preserve">
+    <value>En kod har skickats i ett e-postmeddelande till din e-postadderare. Om du inte får det, kontrollera även din skräppostmapp.</value>
+  </data>
+  <data name="SwitchingToTestPhoneNumberNotAllowed" xml:space="preserve">
+    <value>Det är inte tillåtet att ändra telefonnumret till ett testnummer.</value>
+  </data>
+  <data name="UnableToVerifyCode" xml:space="preserve">
+    <value>Koden var inte korrekt.</value>
+  </data>
+  <data name="SomethingWentWrongWhenSendingEmailCode" xml:space="preserve">
+    <value>Något gick fel när en verifieringskod skickades till det här e-postmeddelandet.</value>
+  </data>
+  <data name="SomethingWentWrongWhenSendingPhoneCode" xml:space="preserve">
+    <value>Något gick fel när en verifieringskod skickades till det här telefonnumret.</value>
+  </data>
+  <data name="VerifyCodeSectionTitle" xml:space="preserve">
+    <value>Ange verifieringskod</value>
+  </data>
+  <data name="EmailSectionTitle" xml:space="preserve">
+    <value>Ange e-postadress</value>
+  </data>
+  <data name="EmailValidationFormat" xml:space="preserve">
+    <value>Ange en giltig e-postadress</value>
+  </data>
+  <data name="ProviderSectionTitle" xml:space="preserve">
+    <value>Välj ett alternativ</value>
+  </data>
+  <data name="ProviderSectionApproveOption" xml:space="preserve">
+    <value>Godkänn tjänsteleverantör</value>
+  </data>
+  <data name="ProviderSectionChangeOption" xml:space="preserve">
+    <value>Byt tjänsteleverantör</value>
+  </data>
+  <data name="UndoSelection" xml:space="preserve">
+    <value>Ångra markering</value>
+  </data>
+  <data name="ServiceProviderInfo" xml:space="preserve">
+    <value>Vad är en tjänsteleverantör?</value>
+  </data>
+  <data name="QrPageTitleScanInvitation" xml:space="preserve">
+    <value>Skanna inbjudan</value>
+  </data>
+  <data name="QrSectionTitle" xml:space="preserve">
+    <value>Rikta kameran mot QR-koden med följande symbol</value>
+  </data>
+  <data name="QrEnterManually" xml:space="preserve">
+    <value>Ange QR-kod manuellt</value>
+  </data>
+  <data name="QrScanCode" xml:space="preserve">
+    <value>Skanna QR-kod</value>
+  </data>
+  <data name="QrScanUri" xml:space="preserve">
+    <value>URI:</value>
+  </data>
+  <data name="AccountValidationAlreadyExists" xml:space="preserve">
+    <value>Det här kontonamnet finns redan</value>
+  </data>
+  <data name="AccountAvailableAlternatives" xml:space="preserve">
+    <value>Följande namn är fortfarande tillgängliga:</value>
+  </data>
+  <data name="TestOtpUsed" xml:space="preserve">
+    <value>En tillfällig OTP-kod har använts. Applikationen slutar fungera om ungefär en vecka. Du måste installera om programmet för att kunna använda det igen.</value>
+  </data>
+  <data name="DefinePinSectionTitle1" xml:space="preserve">
+    <value>Ange ny pinkod</value>
+  </data>
+  <data name="DefinePinSectionTitle2" xml:space="preserve">
+    <value>Bekräfta PIN-kod</value>
+  </data>
+  <data name="CreatePin" xml:space="preserve">
+    <value>Skapa pin</value>
+  </data>
+  <data name="ScanQrCodeLabel" xml:space="preserve">
+    <value>Skanna QR-koden med din kamera.</value>
+  </data>
+  <data name="Accept" xml:space="preserve">
+    <value>Acceptera</value>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>Adress</value>
+  </data>
+  <data name="Address2" xml:space="preserve">
+    <value>Adress (rad 2)</value>
+  </data>
+  <data name="Area" xml:space="preserve">
+    <value>Område</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Annullera</value>
+  </data>
+  <data name="City" xml:space="preserve">
+    <value>Stad</value>
+  </data>
+  <data name="Country" xml:space="preserve">
+    <value>Land</value>
+  </data>
+  <data name="Created" xml:space="preserve">
+    <value>Skapad</value>
+  </data>
+  <data name="Decline" xml:space="preserve">
+    <value>Tillbakagång</value>
+  </data>
+  <data name="Enter" xml:space="preserve">
+    <value>Inträda</value>
+  </data>
+  <data name="EnterPin" xml:space="preserve">
+    <value>Ange PIN-kod</value>
+  </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>Förnamn</value>
+  </data>
+  <data name="Ignore" xml:space="preserve">
+    <value>Bortse från</value>
+  </data>
+  <data name="LastNames" xml:space="preserve">
+    <value>Efternamn</value>
+  </data>
+  <data name="LegalId" xml:space="preserve">
+    <value>Juridiskt ID</value>
+  </data>
+  <data name="MiddleNames" xml:space="preserve">
+    <value>Mellannamn</value>
+  </data>
+  <data name="Options" xml:space="preserve">
+    <value>Alternativ</value>
+  </data>
+  <data name="OrgAddress" xml:space="preserve">
+    <value>Organisationens adress</value>
+  </data>
+  <data name="OrgAddress2" xml:space="preserve">
+    <value>Organisationsadress (rad 2)</value>
+  </data>
+  <data name="OrganizationInformation" xml:space="preserve">
+    <value>Information om organisationen</value>
+  </data>
+  <data name="OrgArea" xml:space="preserve">
+    <value>Område för organisation</value>
+  </data>
+  <data name="OrgCity" xml:space="preserve">
+    <value>Organisation Stad</value>
+  </data>
+  <data name="OrgCountry" xml:space="preserve">
+    <value>Organisationsland</value>
+  </data>
+  <data name="OrgDepartment" xml:space="preserve">
+    <value>Avdelning</value>
+  </data>
+  <data name="OrgName" xml:space="preserve">
+    <value>Organisationens namn</value>
+  </data>
+  <data name="OrgNumber" xml:space="preserve">
+    <value>Organisationsnummer</value>
+  </data>
+  <data name="OrgRegion" xml:space="preserve">
+    <value>Organisation Region</value>
+  </data>
+  <data name="OrgRole" xml:space="preserve">
+    <value>Roll</value>
+  </data>
+  <data name="OrgZipCode" xml:space="preserve">
+    <value>Organisation Postnummer</value>
+  </data>
+  <data name="PersonalNumber" xml:space="preserve">
+    <value>Personnummer</value>
+  </data>
+  <data name="Petition" xml:space="preserve">
+    <value>Begäran</value>
+  </data>
+  <data name="PetitionSignatureInformationText" xml:space="preserve">
+    <value>En begäran om din underskrift har mottagits. Granska orsaken nedan och informationen om vem som skickade begäran och välj sedan hur du vill svara.</value>
+  </data>
+  <data name="Photos" xml:space="preserve">
+    <value>Foton</value>
+  </data>
+  <data name="Purpose" xml:space="preserve">
+    <value>Avsikt</value>
+  </data>
+  <data name="Region" xml:space="preserve">
+    <value>Region eller delstat</value>
+  </data>
+  <data name="RequestingEntity" xml:space="preserve">
+    <value>Begärande enhet</value>
+  </data>
+  <data name="State" xml:space="preserve">
+    <value>Stat</value>
+  </data>
+  <data name="Updated" xml:space="preserve">
+    <value>Uppdaterad</value>
+  </data>
+  <data name="ZipCode" xml:space="preserve">
+    <value>Postnummer</value>
+  </data>
+  <data name="OrganizationalInformation" xml:space="preserve">
+    <value>Information om organisationen</value>
+  </data>
+  <data name="PersonalInformation" xml:space="preserve">
+    <value>Personuppgift</value>
+  </data>
+  <data name="Expires" xml:space="preserve">
+    <value>Upphör</value>
+  </data>
+  <data name="NetworkID" xml:space="preserve">
+    <value>Nätverks-ID</value>
+  </data>
+  <data name="NeuroID" xml:space="preserve">
+    <value>Neuro-ID</value>
+  </data>
+  <data name="Technical" xml:space="preserve">
+    <value>Teknisk</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Hem</value>
+  </data>
+  <data name="ID" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="AllowRecording" xml:space="preserve">
+    <value>Tillåt inspelning (max 1 timme)</value>
+  </data>
+  <data name="AreYouSureYouWantToReportYourLegalIdentityAsCompromized1" xml:space="preserve">
+    <value>Är du säker på att du vill rapportera din juridiska identitet som komprometterad, stulen eller hackad?</value>
+  </data>
+  <data name="AreYouSureYouWantToRevokeYourLegalIdentity1" xml:space="preserve">
+    <value>Är du säker på att du vill återkalla din juridiska identitet från programmet?</value>
+  </data>
+  <data name="AreYouSureYouWantToTransferYourLegalIdentity1" xml:space="preserve">
+    <value>Är du säker på att du vill överföra din juridiska identitet från ansökan till en annan? Identiteten kommer att tas bort från den här enheten när den är klar. Se också till att ingen annan kan se din skärm under processen.</value>
+  </data>
+  <data name="Change" xml:space="preserve">
+    <value>Förändring</value>
+  </data>
+  <data name="ChangePin" xml:space="preserve">
+    <value>Ändra PIN-kod</value>
+  </data>
+  <data name="ChangePinDescription" xml:space="preserve">
+    <value>Välj en annan PIN-kod för att identifiera dig. Om du ändrar din PIN-kod skapas också ett nytt slumpmässigt lösenord för det underliggande kommunikationsnätverket.</value>
+  </data>
+  <data name="ConfirmNewPin" xml:space="preserve">
+    <value>Bekräfta ny PIN-kod:</value>
+  </data>
+  <data name="DarkMode" xml:space="preserve">
+    <value>Mörkt läge</value>
+  </data>
+  <data name="DisplaySettings" xml:space="preserve">
+    <value>Display-inställningar</value>
+  </data>
+  <data name="EnterCurrentPin" xml:space="preserve">
+    <value>Ange aktuell PIN-kod:</value>
+  </data>
+  <data name="EnterNewPin" xml:space="preserve">
+    <value>Ange ny PIN-kod:</value>
+  </data>
+  <data name="IdentitySettings" xml:space="preserve">
+    <value>Inställningar för identitet</value>
+  </data>
+  <data name="LanguageOptions" xml:space="preserve">
+    <value>Språkliga alternativ</value>
+  </data>
+  <data name="LanguageOptionsDescription" xml:space="preserve">
+    <value>Välj önskat språk.</value>
+  </data>
+  <data name="LightMode" xml:space="preserve">
+    <value>Ljust läge</value>
+  </data>
+  <data name="ProhibitRecording" xml:space="preserve">
+    <value>Förhindra inspelning</value>
+  </data>
+  <data name="ReportAsCompromized" xml:space="preserve">
+    <value>Rapportera som komprometterad</value>
+  </data>
+  <data name="ReportAsCompromizedDescription" xml:space="preserve">
+    <value>Rapportera om appen, PIN-koden eller telefonen har utsatts för intrång, hackats eller stulits.</value>
+  </data>
+  <data name="RestartNeededDueToThemeChange" xml:space="preserve">
+    <value>En omstart av appen krävs för att det nya temat ska visas korrekt. När du stänger dialogrutan stängs appen automatiskt. När du startar om appen kommer det nya temat att väljas.</value>
+  </data>
+  <data name="RevokeIdentity" xml:space="preserve">
+    <value>Återkalla identitet</value>
+  </data>
+  <data name="RevokeIdentityDescription" xml:space="preserve">
+    <value>Återkalla den aktuella identiteten från appen och ansök om en ny.</value>
+  </data>
+  <data name="ScreenRecording" xml:space="preserve">
+    <value>Skärminspelning</value>
+  </data>
+  <data name="SecuritySettings" xml:space="preserve">
+    <value>Säkerhetsinställningar</value>
+  </data>
+  <data name="SelectDisplayMode" xml:space="preserve">
+    <value>Välj visningsläge</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Inställningar</value>
+  </data>
+  <data name="ViewId" xml:space="preserve">
+    <value>Visa ID</value>
   </data>
 </root>
