@@ -183,7 +183,7 @@ namespace NeuroAccessMaui.UI.Controls
 			};
 
 			this.innerEntry.Completed += this.InnerEntry_Completed;
-			
+
 			this.innerGrid = new()
 			{
 				HorizontalOptions = LayoutOptions.Fill,
@@ -198,13 +198,13 @@ namespace NeuroAccessMaui.UI.Controls
 				]
 			};
 
-			this.innerGrid.Add(this.innerPath, 0);
-			this.innerGrid.Add(this.innerEntry, 1);
+			this.innerGrid.Add(this.innerPath, 0, 0);
+			this.innerGrid.Add(this.innerEntry, 1, 0);
 
 			this.innerBorder = new()
 			{
 				StrokeThickness = 2,
-				Content = this.innerGrid
+				Content = this.PathData is null ? this.innerEntry : this.innerGrid
 			};
 
 			this.Content = this.innerBorder;
