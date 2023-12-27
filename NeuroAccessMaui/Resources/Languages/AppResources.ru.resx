@@ -834,6 +834,9 @@
   <data name="AccountSettings" xml:space="preserve">
     <value>Настройки учетной записи</value>
   </data>
+  <data name="AllowRecording" xml:space="preserve">
+    <value>Разрешить запись (макс. 1 час)</value>
+  </data>
   <data name="AreYouSureYouWantToReportYourLegalIdentityAsCompromized1" xml:space="preserve">
     <value>Вы уверены, что хотите сообщить о том, что ваша личность скомпрометирована, украдена или взломана?</value>
   </data>
@@ -867,6 +870,9 @@
   <data name="LightMode" xml:space="preserve">
     <value>Светлый режим</value>
   </data>
+  <data name="ProhibitRecording" xml:space="preserve">
+    <value>Запретить запись</value>
+  </data>
   <data name="ReportAsCompromized" xml:space="preserve">
     <value>Сообщить о компрометации</value>
   </data>
@@ -881,6 +887,9 @@
   </data>
   <data name="RevokeIdentityDescription" xml:space="preserve">
     <value>Отзовите текущее удостоверение из Приложения и подайте заявку на получение нового.</value>
+  </data>
+  <data name="ScreenRecording" xml:space="preserve">
+    <value>Запись экрана</value>
   </data>
   <data name="ScreenSettings" xml:space="preserve">
     <value>Настройки экрана</value>

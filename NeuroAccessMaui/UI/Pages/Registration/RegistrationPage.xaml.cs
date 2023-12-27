@@ -2,6 +2,7 @@ using CommunityToolkit.Maui.Layouts;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
+using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Tag;
 
 namespace NeuroAccessMaui.UI.Pages.Registration
@@ -56,6 +57,9 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 
 			if (NewStep == RegistrationStep.Complete)
 			{
+				if (ServiceRef.PlatformSpecific.CanProhibitScreenCapture)
+					ServiceRef.PlatformSpecific.ProhibitScreenCapture = true;	// Prohibut screen capture in normal operation.
+
 				await App.SetMainPageAsync();
 				return;
 			}
@@ -70,6 +74,9 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 				RegistrationStep.DefinePin => "DefinePin",
 				_ => throw new NotImplementedException(),
 			};
+
+			if (ServiceRef.PlatformSpecific.CanProhibitScreenCapture)
+				ServiceRef.PlatformSpecific.ProhibitScreenCapture = true;	// Allows user to record onboarding process, for troubleshooting purposes
 
 			await this.Dispatcher.DispatchAsync(async () =>
 			{

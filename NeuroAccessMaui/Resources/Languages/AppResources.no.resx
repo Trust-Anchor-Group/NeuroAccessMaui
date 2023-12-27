@@ -834,6 +834,9 @@
   <data name="AccountSettings" xml:space="preserve">
     <value>Kontoinnstillinger</value>
   </data>
+  <data name="AllowRecording" xml:space="preserve">
+    <value>Tillat opptak (maks 1 time)</value>
+  </data>
   <data name="AreYouSureYouWantToReportYourLegalIdentityAsCompromized1" xml:space="preserve">
     <value>Er du sikker på at du vil rapportere den juridiske identiteten din som kompromittert, stjålet eller hacket?</value>
   </data>
@@ -867,6 +870,9 @@
   <data name="LightMode" xml:space="preserve">
     <value>Lys, modus</value>
   </data>
+  <data name="ProhibitRecording" xml:space="preserve">
+    <value>Forby opptak</value>
+  </data>
   <data name="ReportAsCompromized" xml:space="preserve">
     <value>Rapport som kompromittert</value>
   </data>
@@ -881,6 +887,9 @@
   </data>
   <data name="RevokeIdentityDescription" xml:space="preserve">
     <value>Tilbakekall den nåværende identiteten fra appen, og søk om en ny.</value>
+  </data>
+  <data name="ScreenRecording" xml:space="preserve">
+    <value>Skjermopptak</value>
   </data>
   <data name="ScreenSettings" xml:space="preserve">
     <value>Skjerminnstillinger</value>

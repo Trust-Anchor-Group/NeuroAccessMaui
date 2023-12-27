@@ -42,6 +42,19 @@
 								</Grid>
 							</VerticalStackLayout>
 						</Frame>
+
+						<Frame Style="{StaticResource FrameSubSet}" IsVisible="{Binding CanProhibitScreenCapture}">
+							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+								<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize ScreenRecording}"/>
+								<Grid RowDefinitions="auto,auto" ColumnDefinitions="*,auto">
+									<Label Grid.Column="0" Grid.Row="0" Style="{StaticResource KeyLabel}" Text="{l:Localize AllowRecording}"/>
+									<RadioButton Grid.Column="1" Grid.Row="0" x:Name="AllowRecording" GroupName="ScreenRecording" IsChecked="{Binding ScreenCaptureAllowed, Mode=TwoWay}"/>
+
+									<Label Grid.Column="0" Grid.Row="1" Style="{StaticResource KeyLabel}" Text="{l:Localize ProhibitRecording}"/>
+									<RadioButton Grid.Column="1" Grid.Row="1" x:Name="ProhibitRecording" GroupName="ScreenRecording" IsChecked="{Binding ScreenCaptureProhibited, Mode=TwoWay}"/>
+								</Grid>
+							</VerticalStackLayout>
+						</Frame>
 					</VerticalStackLayout>
 				</Frame>
 

@@ -18,7 +18,7 @@
 		/// <summary>
 		/// Authentication constants
 		/// </summary>
-		public static class Authentication
+		public static class Security
 		{
 			/// <summary>
 			/// Minimum length for PIN Code
@@ -39,6 +39,11 @@
 			/// Maximum number of sequenced symbols in a PIN.
 			/// </summary>
 			public const int MaxPinSequencedSymbols = 2;
+
+			/// <summary>
+			/// Maximum number of seconds screen recording is allowed.
+			/// </summary>
+			public const int MaxScreenRecordingTimeSeconds = 60 * 60;
 		}
 
 		/// <summary>

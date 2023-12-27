@@ -26,13 +26,13 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		public SettingsViewModel()
 			: base()
 		{
-			this.CanProhibitScreenCapture = ServiceRef.PlatformSpecific.CanProhibitScreenCapture;
-			this.CanEnableScreenCapture = ServiceRef.PlatformSpecific.ProhibitScreenCapture;
-			this.CanDisableScreenCapture = !this.CanEnableScreenCapture;
-
 			this.initializing = true;
 			try
 			{
+				this.CanProhibitScreenCapture = ServiceRef.PlatformSpecific.CanProhibitScreenCapture;
+				this.ScreenCaptureProhibited = ServiceRef.PlatformSpecific.ProhibitScreenCapture;
+				this.ScreenCaptureAllowed = !this.ScreenCaptureProhibited;
+
 				switch (DisplayMode)
 				{
 					case AppTheme.Light:
@@ -91,16 +91,16 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		private bool canProhibitScreenCapture;
 
 		/// <summary>
-		/// Gets or sets whether the identity is approved or not.
+		/// If screen capture is allowed.
 		/// </summary>
 		[ObservableProperty]
-		private bool canEnableScreenCapture;
+		private bool screenCaptureAllowed;
 
 		/// <summary>
-		/// Gets or sets whether the identity is approved or not.
+		/// If screen capture is prohibited.
 		/// </summary>
 		[ObservableProperty]
-		private bool canDisableScreenCapture;
+		private bool screenCaptureProhibited;
 
 		/// <summary>
 		/// Gets or sets whether the current display mode is Light Mode.
@@ -144,19 +144,36 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		/// <summary>
 		/// <inheritdoc/>
 		/// </summary>
-		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+		protected override async void OnPropertyChanged(PropertyChangedEventArgs e)
 		{
-			switch (e.PropertyName)
+			try
 			{
-				case nameof(this.IsLightMode):
-					if (!this.initializing)
-						this.SetTheme(this.IsLightMode ? AppTheme.Light : AppTheme.Dark);
-					break;
+				switch (e.PropertyName)
+				{
+					case nameof(this.IsLightMode):
+						if (!this.initializing)
+							this.SetTheme(this.IsLightMode ? AppTheme.Light : AppTheme.Dark);
+						break;
 
-				case nameof(this.IsDarkMode):
-					if (!this.initializing)
-						this.SetTheme(this.IsDarkMode ? AppTheme.Dark : AppTheme.Light);
-					break;
+					case nameof(this.IsDarkMode):
+						if (!this.initializing)
+							this.SetTheme(this.IsDarkMode ? AppTheme.Dark : AppTheme.Light);
+						break;
+
+					case nameof(this.ScreenCaptureAllowed):
+						if (!this.initializing && this.ScreenCaptureAllowed)
+							await PermitScreenCapture();
+						break;
+
+					case nameof(this.ScreenCaptureProhibited):
+						if (!this.initializing && this.ScreenCaptureProhibited)
+							await ProhibitScreenCapture();
+						break;
+				}
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
 			}
 		}
 
@@ -197,8 +214,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			}
 		}
 
-		[RelayCommand]
-		private async Task PermitScreenCapture()
+		private static async Task PermitScreenCapture()
 		{
 			if (!ServiceRef.PlatformSpecific.CanProhibitScreenCapture)
 				return;
@@ -207,12 +223,9 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 				return;
 
 			ServiceRef.PlatformSpecific.ProhibitScreenCapture = false;
-			this.CanEnableScreenCapture = false;
-			this.CanDisableScreenCapture = true;
 		}
 
-		[RelayCommand]
-		private async Task ProhibitScreenCapture()
+		private static async Task ProhibitScreenCapture()
 		{
 			if (!ServiceRef.PlatformSpecific.CanProhibitScreenCapture)
 				return;
@@ -221,8 +234,6 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 				return;
 
 			ServiceRef.PlatformSpecific.ProhibitScreenCapture = true;
-			this.CanEnableScreenCapture = true;
-			this.CanDisableScreenCapture = false;
 		}
 
 		[RelayCommand]

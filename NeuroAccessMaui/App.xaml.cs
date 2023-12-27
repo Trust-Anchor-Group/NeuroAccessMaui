@@ -625,9 +625,6 @@ namespace NeuroAccessMaui
 		{
 			return MainThread.InvokeOnMainThreadAsync(() =>
 			{
-				if (ServiceRef.PlatformSpecific.CanProhibitScreenCapture)
-					ServiceRef.PlatformSpecific.ProhibitScreenCapture = true;
-
 				return Shell.Current.GoToAsync("//MainPage");
 			});
 		}

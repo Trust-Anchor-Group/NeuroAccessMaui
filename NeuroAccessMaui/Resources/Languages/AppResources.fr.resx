@@ -834,6 +834,9 @@
   <data name="AccountSettings" xml:space="preserve">
     <value>Paramètres du compte</value>
   </data>
+  <data name="AllowRecording" xml:space="preserve">
+    <value>Autoriser l’enregistrement (max 1 heure)</value>
+  </data>
   <data name="AreYouSureYouWantToReportYourLegalIdentityAsCompromized1" xml:space="preserve">
     <value>Êtes-vous sûr de vouloir signaler que votre identité légale a été compromise, volée ou piratée ?</value>
   </data>
@@ -867,6 +870,9 @@
   <data name="LightMode" xml:space="preserve">
     <value>Mode d’éclairage</value>
   </data>
+  <data name="ProhibitRecording" xml:space="preserve">
+    <value>Interdire l’enregistrement</value>
+  </data>
   <data name="ReportAsCompromized" xml:space="preserve">
     <value>Signaler comme compromis</value>
   </data>
@@ -881,6 +887,9 @@
   </data>
   <data name="RevokeIdentityDescription" xml:space="preserve">
     <value>Révoquez l’identité actuelle de l’application et demandez-en une nouvelle.</value>
+  </data>
+  <data name="ScreenRecording" xml:space="preserve">
+    <value>Enregistrement d’écran</value>
   </data>
   <data name="ScreenSettings" xml:space="preserve">
     <value>Paramètres de l’écran</value>

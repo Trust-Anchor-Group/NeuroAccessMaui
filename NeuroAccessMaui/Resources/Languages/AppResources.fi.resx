@@ -834,6 +834,9 @@
   <data name="AccountSettings" xml:space="preserve">
     <value>Tilin asetukset</value>
   </data>
+  <data name="AllowRecording" xml:space="preserve">
+    <value>Salli tallennus (enintään 1 tunti)</value>
+  </data>
   <data name="AreYouSureYouWantToReportYourLegalIdentityAsCompromized1" xml:space="preserve">
     <value>Haluatko varmasti ilmoittaa laillisen henkilöllisyytesi vaarantuneeksi, varastetuksi tai hakkeroiduksi?</value>
   </data>
@@ -867,6 +870,9 @@
   <data name="LightMode" xml:space="preserve">
     <value>Kevyt tila</value>
   </data>
+  <data name="ProhibitRecording" xml:space="preserve">
+    <value>Estä tallennus</value>
+  </data>
   <data name="ReportAsCompromized" xml:space="preserve">
     <value>Ilmoita vaarantuneeksi</value>
   </data>
@@ -881,6 +887,9 @@
   </data>
   <data name="RevokeIdentityDescription" xml:space="preserve">
     <value>Peruuta nykyinen identiteetti sovelluksesta ja hae uutta.</value>
+  </data>
+  <data name="ScreenRecording" xml:space="preserve">
+    <value>Näytön tallennus</value>
   </data>
   <data name="ScreenSettings" xml:space="preserve">
     <value>Näytön asetukset</value>

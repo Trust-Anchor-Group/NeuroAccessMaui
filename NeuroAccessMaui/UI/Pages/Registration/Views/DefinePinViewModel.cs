@@ -83,14 +83,14 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		{
 			return PinStrength switch
 			{
-				PinStrength.NotEnoughDigitsLettersSigns => ServiceRef.Localizer[nameof(AppResources.PinWithNotEnoughDigitsLettersSigns), Constants.Authentication.MinPinSymbolsFromDifferentClasses],
+				PinStrength.NotEnoughDigitsLettersSigns => ServiceRef.Localizer[nameof(AppResources.PinWithNotEnoughDigitsLettersSigns), Constants.Security.MinPinSymbolsFromDifferentClasses],
 
-				PinStrength.NotEnoughDigitsOrSigns => ServiceRef.Localizer[nameof(AppResources.PinWithNotEnoughDigitsOrSigns), Constants.Authentication.MinPinSymbolsFromDifferentClasses],
-				PinStrength.NotEnoughLettersOrDigits => ServiceRef.Localizer[nameof(AppResources.PinWithNotEnoughLettersOrDigits), Constants.Authentication.MinPinSymbolsFromDifferentClasses],
-				PinStrength.NotEnoughLettersOrSigns => ServiceRef.Localizer[nameof(AppResources.PinWithNotEnoughLettersOrSigns), Constants.Authentication.MinPinSymbolsFromDifferentClasses],
-				PinStrength.TooManyIdenticalSymbols => ServiceRef.Localizer[nameof(AppResources.PinWithTooManyIdenticalSymbols), Constants.Authentication.MaxPinIdenticalSymbols],
-				PinStrength.TooManySequencedSymbols => ServiceRef.Localizer[nameof(AppResources.PinWithTooManySequencedSymbols), Constants.Authentication.MaxPinSequencedSymbols],
-				PinStrength.TooShort => ServiceRef.Localizer[nameof(AppResources.PinTooShort), Constants.Authentication.MinPinLength],
+				PinStrength.NotEnoughDigitsOrSigns => ServiceRef.Localizer[nameof(AppResources.PinWithNotEnoughDigitsOrSigns), Constants.Security.MinPinSymbolsFromDifferentClasses],
+				PinStrength.NotEnoughLettersOrDigits => ServiceRef.Localizer[nameof(AppResources.PinWithNotEnoughLettersOrDigits), Constants.Security.MinPinSymbolsFromDifferentClasses],
+				PinStrength.NotEnoughLettersOrSigns => ServiceRef.Localizer[nameof(AppResources.PinWithNotEnoughLettersOrSigns), Constants.Security.MinPinSymbolsFromDifferentClasses],
+				PinStrength.TooManyIdenticalSymbols => ServiceRef.Localizer[nameof(AppResources.PinWithTooManyIdenticalSymbols), Constants.Security.MaxPinIdenticalSymbols],
+				PinStrength.TooManySequencedSymbols => ServiceRef.Localizer[nameof(AppResources.PinWithTooManySequencedSymbols), Constants.Security.MaxPinSequencedSymbols],
+				PinStrength.TooShort => ServiceRef.Localizer[nameof(AppResources.PinTooShort), Constants.Security.MinPinLength],
 
 				PinStrength.ContainsAddress => ServiceRef.Localizer[nameof(AppResources.PinContainsAddress)],
 				PinStrength.ContainsName => ServiceRef.Localizer[nameof(AppResources.PinContainsName)],

@@ -133,6 +133,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Allow recording (max 1 hour).
+        /// </summary>
+        internal static string AllowRecording {
+            get {
+                return ResourceManager.GetString("AllowRecording", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A peer review you requested has been accepted..
         /// </summary>
         internal static string APeerReviewYouhaveRequestedHasBeenAccepted {
@@ -1555,6 +1564,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Prohibit recording.
+        /// </summary>
+        internal static string ProhibitRecording {
+            get {
+                return ResourceManager.GetString("ProhibitRecording", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Approve service provider.
         /// </summary>
         internal static string ProviderSectionApproveOption {
@@ -1857,6 +1875,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string ScanQrCodeLabel {
             get {
                 return ResourceManager.GetString("ScanQrCodeLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Screen recording.
+        /// </summary>
+        internal static string ScreenRecording {
+            get {
+                return ResourceManager.GetString("ScreenRecording", resourceCulture);
             }
         }
         

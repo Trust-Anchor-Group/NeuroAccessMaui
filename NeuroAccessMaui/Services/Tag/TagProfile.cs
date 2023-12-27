@@ -913,7 +913,7 @@ namespace NeuroAccessMaui.Services.Tag
 
 			Dictionary<int, int> DistinctSymbolsCount = [];
 
-			int[] SlidingWindow = new int[Constants.Authentication.MaxPinSequencedSymbols + 1];
+			int[] SlidingWindow = new int[Constants.Security.MaxPinSequencedSymbols + 1];
 			SlidingWindow.Initialize();
 
 			for (int i = 0; i < Pin.Length;)
@@ -930,7 +930,7 @@ namespace NeuroAccessMaui.Services.Tag
 				if (DistinctSymbolsCount.TryGetValue(Symbol, out int SymbolCount))
 				{
 					DistinctSymbolsCount[Symbol] = ++SymbolCount;
-					if (SymbolCount > Constants.Authentication.MaxPinIdenticalSymbols)
+					if (SymbolCount > Constants.Security.MaxPinIdenticalSymbols)
 						return PinStrength.TooManyIdenticalSymbols;
 				}
 				else
@@ -991,9 +991,9 @@ namespace NeuroAccessMaui.Services.Tag
 					return PinStrength.ContainsAddress;
 			}
 
-			const int MinDigitsCount = Constants.Authentication.MinPinSymbolsFromDifferentClasses;
-			const int MinLettersCount = Constants.Authentication.MinPinSymbolsFromDifferentClasses;
-			const int MinSignsCount = Constants.Authentication.MinPinSymbolsFromDifferentClasses;
+			const int MinDigitsCount = Constants.Security.MinPinSymbolsFromDifferentClasses;
+			const int MinLettersCount = Constants.Security.MinPinSymbolsFromDifferentClasses;
+			const int MinSignsCount = Constants.Security.MinPinSymbolsFromDifferentClasses;
 
 			if (DigitsCount < MinDigitsCount && LettersCount < MinLettersCount && SignsCount < MinSignsCount)
 				return PinStrength.NotEnoughDigitsLettersSigns;
@@ -1007,7 +1007,7 @@ namespace NeuroAccessMaui.Services.Tag
 			if (DigitsCount < MinDigitsCount && LettersCount < MinLettersCount && SignsCount >= MinSignsCount)
 				return PinStrength.NotEnoughLettersOrDigits;
 
-			if (DigitsCount + LettersCount + SignsCount < Constants.Authentication.MinPinLength)
+			if (DigitsCount + LettersCount + SignsCount < Constants.Security.MinPinLength)
 				return PinStrength.TooShort;
 
 			return PinStrength.Strong;

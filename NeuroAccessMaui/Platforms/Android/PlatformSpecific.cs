@@ -66,7 +66,8 @@ namespace NeuroAccessMaui.Services
 						if (enabled)
 						{
 							Activity.Window?.SetFlags(WindowManagerFlags.Secure, WindowManagerFlags.Secure);
-							protectionTimer = new Timer(this.ProtectionTimerElapsed, null, 1000 * 60 * 60, Timeout.Infinite);
+							protectionTimer = new Timer(this.ProtectionTimerElapsed, null,
+								Constants.Security.MaxScreenRecordingTimeSeconds * 1000, Timeout.Infinite);
 						}
 						else
 							Activity.Window?.ClearFlags(WindowManagerFlags.Secure);

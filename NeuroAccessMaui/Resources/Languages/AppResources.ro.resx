@@ -834,6 +834,9 @@
   <data name="AccountSettings" xml:space="preserve">
     <value>Setările contului</value>
   </data>
+  <data name="AllowRecording" xml:space="preserve">
+    <value>Permite înregistrarea (maxim 1 oră)</value>
+  </data>
   <data name="AreYouSureYouWantToReportYourLegalIdentityAsCompromized1" xml:space="preserve">
     <value>Sunteți sigur că doriți să vă raportați identitatea juridică ca fiind compromisă, furată sau spartă?</value>
   </data>
@@ -867,6 +870,9 @@
   <data name="LightMode" xml:space="preserve">
     <value>Modul luminos</value>
   </data>
+  <data name="ProhibitRecording" xml:space="preserve">
+    <value>Interzicerea înregistrării</value>
+  </data>
   <data name="ReportAsCompromized" xml:space="preserve">
     <value>Raportați ca fiind compromis</value>
   </data>
@@ -881,6 +887,9 @@
   </data>
   <data name="RevokeIdentityDescription" xml:space="preserve">
     <value>Revocați identitatea curentă din aplicație și solicitați una nouă.</value>
+  </data>
+  <data name="ScreenRecording" xml:space="preserve">
+    <value>Înregistrare ecran</value>
   </data>
   <data name="ScreenSettings" xml:space="preserve">
     <value>Setări ecran</value>
