@@ -97,15 +97,6 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Account Settings.
-        /// </summary>
-        internal static string AccountSettings {
-            get {
-                return ResourceManager.GetString("AccountSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to This account name already exists.
         /// </summary>
         internal static string AccountValidationAlreadyExists {
@@ -750,6 +741,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string IdCopiedSuccessfully {
             get {
                 return ResourceManager.GetString("IdCopiedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Identity Settings.
+        /// </summary>
+        internal static string IdentitySettings {
+            get {
+                return ResourceManager.GetString("IdentitySettings", resourceCulture);
             }
         }
         

@@ -831,9 +831,6 @@
   <data name="ID" xml:space="preserve">
     <value>HENKILÖLLISYYSTODISTUS</value>
   </data>
-  <data name="AccountSettings" xml:space="preserve">
-    <value>Tilin asetukset</value>
-  </data>
   <data name="AllowRecording" xml:space="preserve">
     <value>Salli tallennus (enintään 1 tunti)</value>
   </data>
@@ -866,6 +863,9 @@
   </data>
   <data name="EnterNewPin" xml:space="preserve">
     <value>Anna uusi PIN-koodi:</value>
+  </data>
+  <data name="IdentitySettings" xml:space="preserve">
+    <value>Identiteetin asetukset</value>
   </data>
   <data name="LightMode" xml:space="preserve">
     <value>Kevyt tila</value>

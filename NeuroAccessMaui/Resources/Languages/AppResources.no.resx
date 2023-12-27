@@ -831,9 +831,6 @@
   <data name="ID" xml:space="preserve">
     <value>ID</value>
   </data>
-  <data name="AccountSettings" xml:space="preserve">
-    <value>Kontoinnstillinger</value>
-  </data>
   <data name="AllowRecording" xml:space="preserve">
     <value>Tillat opptak (maks 1 time)</value>
   </data>
@@ -866,6 +863,9 @@
   </data>
   <data name="EnterNewPin" xml:space="preserve">
     <value>Angi ny PIN-kode:</value>
+  </data>
+  <data name="IdentitySettings" xml:space="preserve">
+    <value>Identitetsinnstillinger</value>
   </data>
   <data name="LightMode" xml:space="preserve">
     <value>Lys, modus</value>

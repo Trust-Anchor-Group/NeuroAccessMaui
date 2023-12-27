@@ -831,9 +831,6 @@
   <data name="ID" xml:space="preserve">
     <value>ID</value>
   </data>
-  <data name="AccountSettings" xml:space="preserve">
-    <value>Kontoeinstellungen</value>
-  </data>
   <data name="AllowRecording" xml:space="preserve">
     <value>Aufnahme zulassen (max. 1 Stunde)</value>
   </data>
@@ -866,6 +863,9 @@
   </data>
   <data name="EnterNewPin" xml:space="preserve">
     <value>Geben Sie die neue PIN ein:</value>
+  </data>
+  <data name="IdentitySettings" xml:space="preserve">
+    <value>Identitäts-Einstellungen</value>
   </data>
   <data name="LightMode" xml:space="preserve">
     <value>Light-Modus</value>

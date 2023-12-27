@@ -831,9 +831,6 @@
   <data name="ID" xml:space="preserve">
     <value>ID</value>
   </data>
-  <data name="AccountSettings" xml:space="preserve">
-    <value>Postavke naloga</value>
-  </data>
   <data name="AllowRecording" xml:space="preserve">
     <value>Dozvoli snimanje (maksimalno 1 sat)</value>
   </data>
@@ -866,6 +863,9 @@
   </data>
   <data name="EnterNewPin" xml:space="preserve">
     <value>Unesite novi PIN:</value>
+  </data>
+  <data name="IdentitySettings" xml:space="preserve">
+    <value>Postavke identiteta</value>
   </data>
   <data name="LightMode" xml:space="preserve">
     <value>Režim osvetljenja</value>

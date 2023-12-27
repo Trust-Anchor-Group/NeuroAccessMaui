@@ -831,9 +831,6 @@
   <data name="ID" xml:space="preserve">
     <value>ИДЕНТИФИКАТОР</value>
   </data>
-  <data name="AccountSettings" xml:space="preserve">
-    <value>Настройки учетной записи</value>
-  </data>
   <data name="AllowRecording" xml:space="preserve">
     <value>Разрешить запись (макс. 1 час)</value>
   </data>
@@ -866,6 +863,9 @@
   </data>
   <data name="EnterNewPin" xml:space="preserve">
     <value>Введите новый PIN-код:</value>
+  </data>
+  <data name="IdentitySettings" xml:space="preserve">
+    <value>Настройки удостоверения</value>
   </data>
   <data name="LightMode" xml:space="preserve">
     <value>Светлый режим</value>

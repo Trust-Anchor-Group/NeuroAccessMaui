@@ -831,9 +831,6 @@
   <data name="ID" xml:space="preserve">
     <value>ID</value>
   </data>
-  <data name="AccountSettings" xml:space="preserve">
-    <value>Setările contului</value>
-  </data>
   <data name="AllowRecording" xml:space="preserve">
     <value>Permite înregistrarea (maxim 1 oră)</value>
   </data>
@@ -866,6 +863,9 @@
   </data>
   <data name="EnterNewPin" xml:space="preserve">
     <value>Introduceți noul cod PIN:</value>
+  </data>
+  <data name="IdentitySettings" xml:space="preserve">
+    <value>Setări de identitate</value>
   </data>
   <data name="LightMode" xml:space="preserve">
     <value>Modul luminos</value>
