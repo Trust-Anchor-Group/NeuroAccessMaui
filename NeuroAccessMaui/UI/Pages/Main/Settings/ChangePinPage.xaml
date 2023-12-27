@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <base:BaseContentPage x:Name="ThisPage"
 							 x:Class="NeuroAccessMaui.UI.Pages.Main.Settings.ChangePinPage"
 							 x:DataType="viewmodel:ChangePinViewModel"
@@ -12,7 +12,7 @@
 							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.Settings">
 
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+	<Grid x:Name="TheMainGrid" BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
 
 		<controls:Background/>
 
@@ -25,14 +25,18 @@
 				<Label Style="{StaticResource PageTitleLabelStyle}" Text="{l:Localize SecuritySettings}" />
 
 				<Frame Style="{StaticResource FrameSet}">
-					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+
+					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 
 						<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize ChangePin}" />
 
 						<VerticalStackLayout>
 							<Label Style="{StaticResource KeyLabel}" Text="{l:Localize EnterCurrentPin}"/>
+
+							<!-- TODO: For some reason, using Rounded Corners fails, and the entire sub-view is invisible. -->
+
 							<controls:CompositeEntry x:Name="OldPinEntry"
-															 Style="{StaticResource RegularCompositeEntryStyle}"
+															 Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}"
 															 EntryData="{Binding OldPin}"
 															 IsPassword="True">
 								<controls:CompositeEntry.Behaviors>
@@ -43,35 +47,86 @@
 
 						<VerticalStackLayout>
 							<Label Style="{StaticResource KeyLabel}" Text="{l:Localize EnterNewPin}"/>
+
+							<!-- TODO: For some reason, using Rounded Corners fails, and the entire sub-view is invisible. -->
+
 							<controls:CompositeEntry x:Name="NewPinEntry"
-															 Style="{StaticResource RegularCompositeEntryStyle}"
+															 Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}"
 															 EntryData="{Binding NewPin}"
 															 IsPassword="True">
 								<controls:CompositeEntry.Behaviors>
 									<behaviors:SetFocusOnCompletedBehavior SetFocusTo="NewPinEntry2" BindingContext="{Binding BindingContext, Source={x:Reference ThisPage}}"/>
 								</controls:CompositeEntry.Behaviors>
 							</controls:CompositeEntry>
+
+							<Grid RowDefinitions="auto" ColumnDefinitions="auto,*" HorizontalOptions="Center"
+									ColumnSpacing="{StaticResource SmallSpacing}" IsVisible="{Binding IsPin1NotValid}">
+								<Grid.Padding>
+									<Thickness Top="{StaticResource SmallSpacing}" />
+								</Grid.Padding>
+
+								<Path Grid.Column="0" VerticalOptions="Center" HeightRequest="20" WidthRequest="20" Aspect="Uniform"
+										Data="{x:Static ui:Geometries.InfoCirclePath}"
+										Fill="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
+
+								<Label Grid.Column="1" VerticalOptions="Center" LineBreakMode="WordWrap" Text="{Binding LocalizedValidationError}"
+										 TextColor="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
+							</Grid>
 						</VerticalStackLayout>
 
 						<VerticalStackLayout>
 							<Label Style="{StaticResource KeyLabel}" Text="{l:Localize ConfirmNewPin}"/>
+
+							<!-- TODO: For some reason, using Rounded Corners fails, and the entire sub-view is invisible. -->
+
 							<controls:CompositeEntry x:Name="NewPinEntry2"
-															 Style="{StaticResource RegularCompositeEntryStyle}"
+															 Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}"
 															 EntryData="{Binding NewPin2}"
 															 IsPassword="True"
-															 ReturnCommand="{Binding ChangePinCommand}"/>
+															 ReturnCommand="{Binding ChangePinCommand}">
+								<controls:CompositeEntry.Behaviors>
+									<behaviors:SetFocusOnCompletedBehavior SetFocusTo="ChangePinButton" BindingContext="{Binding BindingContext, Source={x:Reference ThisPage}}"/>
+								</controls:CompositeEntry.Behaviors>
+							</controls:CompositeEntry>
+
+							<Grid RowDefinitions="auto" ColumnDefinitions="auto,auto" HorizontalOptions="Center"
+									ColumnSpacing="{StaticResource SmallSpacing}" IsVisible="{Binding IsPin2NotValid}">
+								<Grid.Padding>
+									<Thickness Top="{StaticResource SmallSpacing}" />
+								</Grid.Padding>
+
+								<Path Grid.Column="0" VerticalOptions="Center" HeightRequest="20" WidthRequest="20" Aspect="Uniform"
+										Data="{x:Static ui:Geometries.InfoCirclePath}"
+										Fill="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
+
+								<Label Grid.Column="1" VerticalOptions="Center" LineBreakMode="WordWrap" Text="{l:Localize PinsDoNotMatch}"
+										 TextColor="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
+							</Grid>
 						</VerticalStackLayout>
 
-						<controls:TextButton Command="{Binding ChangePinCommand}"
-													Style="{StaticResource FilledTextButtonStyle}"
+						<Grid RowDefinitions="auto" ColumnDefinitions="*">
+							<Grid.Padding>
+								<Thickness Top="{StaticResource SmallSpacing}"/>
+							</Grid.Padding>
+						</Grid>
+
+						<!-- TODO: For some reason, using Rounded Corners fails, and the entire sub-view is invisible. -->
+
+						<controls:TextButton x:Name="ChangePinButton" Command="{Binding ChangePinCommand}"
+													Style="{StaticResource FilledTextButtonStyleNoRoundedCorners}"
 													LabelData="{l:Localize Change}" />
 
+						<!-- TODO: For some reason, using Rounded Corners fails, and the entire sub-view is invisible. -->
+
 						<controls:TextButton Command="{Binding GoBackCommand}"
-													Style="{StaticResource OutlinedTextButtonStyle}"
+													Style="{StaticResource OutlinedTextButtonStyleNoRoundedCorners}"
 													LabelData="{l:Localize Cancel}" />
+
 					</VerticalStackLayout>
 				</Frame>
+
 			</VerticalStackLayout>
+
 		</ScrollView>
 	</Grid>
 

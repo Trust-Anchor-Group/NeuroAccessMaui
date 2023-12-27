@@ -1,9 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Mopups.Services;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Tag;
+using NeuroAccessMaui.UI.Pages.Registration.Views;
+using Waher.Networking.XMPP;
 
 namespace NeuroAccessMaui.UI.Pages.Main.Settings
 {
@@ -16,6 +17,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		/// View model for the <see cref="ChangePinPage"/> page.
 		/// </summary>
 		public ChangePinViewModel()
+			: base()
 		{
 		}
 
@@ -30,6 +32,9 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		/// New PIN text entry
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(IsPin1NotValid))]
+		[NotifyPropertyChangedFor(nameof(IsPin2NotValid))]
+		[NotifyPropertyChangedFor(nameof(LocalizedValidationError))]
 		[NotifyCanExecuteChangedFor(nameof(ChangePinCommand))]
 		private string newPin = string.Empty;
 
@@ -37,6 +42,8 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		/// New PIN text entry, retyped
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(IsPin2NotValid))]
+		[NotifyPropertyChangedFor(nameof(NewPinsMatch))]
 		[NotifyCanExecuteChangedFor(nameof(ChangePinCommand))]
 		private string newPin2 = string.Empty;
 
@@ -44,13 +51,14 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		/// If new PIN is OK
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(NewPinsMatch))]
 		[NotifyCanExecuteChangedFor(nameof(ChangePinCommand))]
 		private bool incorrectPinAlertShown = false;
 
 		/// <summary>
 		/// If new PIN can be used.
 		/// </summary>
-		public bool CanChangePin => this.NewPinStrength == PinStrength.Strong && this.NewPinMatchesRetypedNewPin;
+		public bool CanChangePin => this.NewPinStrength == PinStrength.Strong && this.NewPinMatchesRetypedNewPin && this.IsConnected && !this.IsBusy;
 
 		/// <summary>
 		/// Strength of new PIN
@@ -58,9 +66,58 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		public PinStrength NewPinStrength => ServiceRef.TagProfile.ValidatePinStrength(this.NewPin);
 
 		/// <summary>
+		/// Gets the value indicating whether the entered <see cref="NewPin"/> is the same as the entered <see cref="NewPin2"/>.
+		/// </summary>
+		public bool NewPinsMatch => string.IsNullOrEmpty(this.NewPin) ? string.IsNullOrEmpty(this.NewPin2) : string.Equals(this.NewPin, this.NewPin2, StringComparison.Ordinal);
+
+		/// <summary>
+		/// If First New PIN entry is not valid.
+		/// </summary>
+		public bool IsPin1NotValid => !string.IsNullOrEmpty(this.NewPin) && this.NewPinStrength != PinStrength.Strong;
+
+		/// <summary>
+		/// If Second New PIN entry is not valid.
+		/// </summary>
+		public bool IsPin2NotValid => !string.IsNullOrEmpty(this.NewPin2) && !this.NewPinsMatch;
+
+		/// <summary>
 		/// If both new PINs match.
 		/// </summary>
 		public bool NewPinMatchesRetypedNewPin => string.IsNullOrEmpty(this.NewPin) ? string.IsNullOrEmpty(this.NewPin2) : string.Equals(this.NewPin, this.NewPin2, StringComparison.Ordinal);
+
+		/// <summary>
+		/// Localized validation error message.
+		/// </summary>
+		public string LocalizedValidationError => DefinePinViewModel.GetLocalizedValidationError(this.NewPinStrength);
+
+		protected override async Task OnInitialize()
+		{
+			await base.OnInitialize();
+			this.NotifyCommandsCanExecuteChanged();
+		}
+
+		/// <inheritdoc/>
+		protected override Task XmppService_ConnectionStateChanged(object? Sender, XmppState NewState)
+		{
+			return MainThread.InvokeOnMainThreadAsync(async () =>
+			{
+				await base.XmppService_ConnectionStateChanged(Sender, NewState);
+
+				this.NotifyCommandsCanExecuteChanged();
+			});
+		}
+
+		/// <inheritdoc/>
+		public override void SetIsBusy(bool IsBusy)
+		{
+			base.SetIsBusy(IsBusy);
+			this.NotifyCommandsCanExecuteChanged();
+		}
+
+		private void NotifyCommandsCanExecuteChanged()
+		{
+			this.ChangePinCommand.NotifyCanExecuteChanged();
+		}
 
 		/// <summary>
 		/// Tries to change the PIN
