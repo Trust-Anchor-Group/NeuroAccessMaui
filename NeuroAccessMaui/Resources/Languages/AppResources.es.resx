@@ -858,6 +858,9 @@
   <data name="DarkMode" xml:space="preserve">
     <value>Modo oscuro</value>
   </data>
+  <data name="DisplaySettings" xml:space="preserve">
+    <value>Configuración de pantalla</value>
+  </data>
   <data name="EnterCurrentPin" xml:space="preserve">
     <value>Introduzca el PIN actual:</value>
   </data>
@@ -890,9 +893,6 @@
   </data>
   <data name="ScreenRecording" xml:space="preserve">
     <value>Grabación de pantalla</value>
-  </data>
-  <data name="ScreenSettings" xml:space="preserve">
-    <value>Ajustes de pantalla</value>
   </data>
   <data name="SecuritySettings" xml:space="preserve">
     <value>Configuración de seguridad</value>

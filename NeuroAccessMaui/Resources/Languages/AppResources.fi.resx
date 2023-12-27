@@ -858,6 +858,9 @@
   <data name="DarkMode" xml:space="preserve">
     <value>Tumma tila</value>
   </data>
+  <data name="DisplaySettings" xml:space="preserve">
+    <value>Näytön asetukset</value>
+  </data>
   <data name="EnterCurrentPin" xml:space="preserve">
     <value>Anna nykyinen PIN-koodi:</value>
   </data>
@@ -890,9 +893,6 @@
   </data>
   <data name="ScreenRecording" xml:space="preserve">
     <value>Näytön tallennus</value>
-  </data>
-  <data name="ScreenSettings" xml:space="preserve">
-    <value>Näytön asetukset</value>
   </data>
   <data name="SecuritySettings" xml:space="preserve">
     <value>Suojausasetukset</value>

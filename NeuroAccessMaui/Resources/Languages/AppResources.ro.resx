@@ -858,6 +858,9 @@
   <data name="DarkMode" xml:space="preserve">
     <value>Modul întunecat</value>
   </data>
+  <data name="DisplaySettings" xml:space="preserve">
+    <value>Setări de afișare</value>
+  </data>
   <data name="EnterCurrentPin" xml:space="preserve">
     <value>Introduceți codul PIN curent:</value>
   </data>
@@ -890,9 +893,6 @@
   </data>
   <data name="ScreenRecording" xml:space="preserve">
     <value>Înregistrare ecran</value>
-  </data>
-  <data name="ScreenSettings" xml:space="preserve">
-    <value>Setări ecran</value>
   </data>
   <data name="SecuritySettings" xml:space="preserve">
     <value>Setări de securitate</value>

@@ -26,7 +26,7 @@
 
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-						<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize ScreenSettings}"/>
+						<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize DisplaySettings}"/>
 
 						<Frame Style="{StaticResource FrameSubSet}">
 							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">

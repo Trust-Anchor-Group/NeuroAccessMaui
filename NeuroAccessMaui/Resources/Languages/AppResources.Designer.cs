@@ -556,6 +556,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Display Settings.
+        /// </summary>
+        internal static string DisplaySettings {
+            get {
+                return ResourceManager.GetString("DisplaySettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} does not follow the ubiquitous encryption policy.
         /// </summary>
         internal static string DomainDoesNotFollowEncryptionPolicy {
@@ -1884,15 +1893,6 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string ScreenRecording {
             get {
                 return ResourceManager.GetString("ScreenRecording", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Screen Settings.
-        /// </summary>
-        internal static string ScreenSettings {
-            get {
-                return ResourceManager.GetString("ScreenSettings", resourceCulture);
             }
         }
         

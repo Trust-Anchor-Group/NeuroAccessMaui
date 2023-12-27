@@ -858,6 +858,9 @@
   <data name="DarkMode" xml:space="preserve">
     <value>Mørk tilstand</value>
   </data>
+  <data name="DisplaySettings" xml:space="preserve">
+    <value>Skærmindstillinger</value>
+  </data>
   <data name="EnterCurrentPin" xml:space="preserve">
     <value>Indtast den aktuelle pinkode:</value>
   </data>
@@ -890,9 +893,6 @@
   </data>
   <data name="ScreenRecording" xml:space="preserve">
     <value>Skærmoptagelse</value>
-  </data>
-  <data name="ScreenSettings" xml:space="preserve">
-    <value>Skærmindstillinger</value>
   </data>
   <data name="SecuritySettings" xml:space="preserve">
     <value>Sikkerhedsindstillinger</value>

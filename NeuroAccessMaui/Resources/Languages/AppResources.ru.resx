@@ -858,6 +858,9 @@
   <data name="DarkMode" xml:space="preserve">
     <value>Тёмная версия</value>
   </data>
+  <data name="DisplaySettings" xml:space="preserve">
+    <value>Настройки дисплея</value>
+  </data>
   <data name="EnterCurrentPin" xml:space="preserve">
     <value>Введите текущий PIN-код:</value>
   </data>
@@ -890,9 +893,6 @@
   </data>
   <data name="ScreenRecording" xml:space="preserve">
     <value>Запись экрана</value>
-  </data>
-  <data name="ScreenSettings" xml:space="preserve">
-    <value>Настройки экрана</value>
   </data>
   <data name="SecuritySettings" xml:space="preserve">
     <value>Настройки безопасности</value>
