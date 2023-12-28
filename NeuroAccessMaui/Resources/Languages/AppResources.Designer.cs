@@ -268,6 +268,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Authentication method.
+        /// </summary>
+        internal static string AuthenticationMethod {
+            get {
+                return ResourceManager.GetString("AuthenticationMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         internal static string Cancel {
@@ -714,6 +723,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string FileUploadServiceNotFound {
             get {
                 return ResourceManager.GetString("FileUploadServiceNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fingerprint.
+        /// </summary>
+        internal static string Fingerprint {
+            get {
+                return ResourceManager.GetString("Fingerprint", resourceCulture);
             }
         }
         
@@ -1416,6 +1434,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string PinChanged {
             get {
                 return ResourceManager.GetString("PinChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PIN code.
+        /// </summary>
+        internal static string PinCode {
+            get {
+                return ResourceManager.GetString("PinCode", resourceCulture);
             }
         }
         

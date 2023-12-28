@@ -100,6 +100,26 @@
 							</Frame>
 						</controls:TemplatedButton>
 
+						<!-- Local Authentication -->
+						<Frame Style="{StaticResource FrameSubSet}" IsVisible="{Binding CanUseAlternativeAuthenticationMethods}">
+							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+								<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize AuthenticationMethod}"/>
+								<Grid RowDefinitions="auto,auto" ColumnDefinitions="auto,*,auto">
+									<Image Grid.Column="0" Grid.Row="0" Source="{AppThemeBinding Light=pin_code_light.svg, Dark=pin_code_dark.svg}"/>
+									<Label Grid.Column="1" Grid.Row="0" Style="{StaticResource KeyLabel}" Text="{l:Localize PinCode}"/>
+									<RadioButton Grid.Column="2" Grid.Row="0" x:Name="UsePinCode" GroupName="AuthenticationMethod"
+													 IsChecked="{Binding UsePinCode, Mode=TwoWay}"/>
+
+									<Image Grid.Column="0" Grid.Row="1" Source="{AppThemeBinding Light=fingerprint_light.svg, Dark=fingerprint_dark.svg}"
+											 IsVisible="{Binding CanUseFingerprint}"/>
+									<Label Grid.Column="1" Grid.Row="1" Style="{StaticResource KeyLabel}" Text="{l:Localize Fingerprint}"
+											 IsVisible="{Binding CanUseFingerprint}"/>
+									<RadioButton Grid.Column="2" Grid.Row="1" x:Name="Fingerprint" GroupName="AuthenticationMethod"
+													 IsChecked="{Binding UseFingerprint, Mode=TwoWay}" IsVisible="{Binding CanUseFingerprint}"/>
+								</Grid>
+							</VerticalStackLayout>
+						</Frame>
+
 						<!-- Screen Capture -->
 						<Frame Style="{StaticResource FrameSubSet}" IsVisible="{Binding CanProhibitScreenCapture}">
 							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">

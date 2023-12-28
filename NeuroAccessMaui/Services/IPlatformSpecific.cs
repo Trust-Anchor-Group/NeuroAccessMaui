@@ -5,12 +5,12 @@
 		/// <summary>
 		/// If screen capture prohibition is supported
 		/// </summary>
-		public bool CanProhibitScreenCapture { get; }
+		bool CanProhibitScreenCapture { get; }
 
 		/// <summary>
 		/// If screen capture is prohibited or not.
 		/// </summary>
-		public bool ProhibitScreenCapture { get; set; }
+		bool ProhibitScreenCapture { get; set; }
 
 		/// <summary>
 		/// Gets the ID of the device
@@ -21,11 +21,6 @@
 		/// Closes the application
 		/// </summary>
 		Task CloseApplication();
-
-		/// <summary>
-		/// Make a blurred screenshot
-		/// </summary>
-		Task<byte[]> CaptureScreen(int blurRadius);
 
 		/// <summary>
 		/// Shares an image in PNG format.
@@ -40,5 +35,16 @@
 		/// Force hide the keyboard
 		/// </summary>
 		void HideKeyboard();
+
+		/// <summary>
+		/// Make a blurred screenshot
+		/// TODO: Just make a screen shot. Use the portable CV library to blur it.
+		/// </summary>
+		Task<byte[]> CaptureScreen(int blurRadius);
+
+		/// <summary>
+		/// If the device supports authenticating the user using fingerprints.
+		/// </summary>
+		bool SupportsFingerprintAuthentication { get; }
 	}
 }

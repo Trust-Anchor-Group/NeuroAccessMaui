@@ -34,6 +34,8 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 				this.CanProhibitScreenCapture = ServiceRef.PlatformSpecific.CanProhibitScreenCapture;
 				this.ScreenCaptureProhibited = ServiceRef.PlatformSpecific.ProhibitScreenCapture;
 				this.ScreenCaptureAllowed = !this.ScreenCaptureProhibited;
+				this.CanUseFingerprint = ServiceRef.PlatformSpecific.SupportsFingerprintAuthentication;
+				this.CanUseAlternativeAuthenticationMethods = this.CanUseFingerprint;
 
 				switch (DisplayMode)
 				{
@@ -121,6 +123,30 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		/// </summary>
 		[ObservableProperty]
 		private bool restartNeeded;
+
+		/// <summary>
+		/// If fingerprint authentication is permitted on device.
+		/// </summary>
+		[ObservableProperty]
+		private bool canUseFingerprint;
+
+		/// <summary>
+		/// If alternative authentication methods are availasble on device.
+		/// </summary>
+		[ObservableProperty]
+		private bool canUseAlternativeAuthenticationMethods;
+
+		/// <summary>
+		/// If PIN code should be used to authenticate user.
+		/// </summary>
+		[ObservableProperty]
+		private bool usePinCode;
+
+		/// <summary>
+		/// If fingerprint should be used to authenticate user.
+		/// </summary>
+		[ObservableProperty]
+		private bool useFingerprint;
 
 		/// <summary>
 		/// Current display mode

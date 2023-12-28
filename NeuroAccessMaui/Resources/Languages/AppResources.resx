@@ -912,4 +912,13 @@
   <data name="ViewId" xml:space="preserve">
     <value>View ID</value>
   </data>
+  <data name="AuthenticationMethod" xml:space="preserve">
+    <value>Authentication method</value>
+  </data>
+  <data name="Fingerprint" xml:space="preserve">
+    <value>Fingerprint</value>
+  </data>
+  <data name="PinCode" xml:space="preserve">
+    <value>PIN code</value>
+  </data>
 </root>

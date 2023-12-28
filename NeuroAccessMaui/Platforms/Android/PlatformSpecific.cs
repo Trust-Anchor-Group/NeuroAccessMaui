@@ -1,16 +1,25 @@
-﻿using Android.Graphics;
+﻿using Android;
+using Android.App;
+using Android.Content;
+using Android.Content.PM;
+using Android.Graphics;
 using Android.OS;
 using Android.Renderscripts;
 using Android.Views;
-using Waher.Events;
-using Android.App;
-using Android.Content;
 using Android.Views.InputMethods;
+//using AndroidX.Biometric;
+using Waher.Events;
 
 namespace NeuroAccessMaui.Services
 {
+	/// <summary>
+	/// Android implementation of platform-specific features.
+	/// </summary>
 	public class PlatformSpecific : IPlatformSpecific
 	{
+		/// <summary>
+		/// Android implementation of platform-specific features.
+		/// </summary>
 		public PlatformSpecific()
 		{
 		}
@@ -18,14 +27,17 @@ namespace NeuroAccessMaui.Services
 		private static bool screenProtected = true; // App started with screen protected.
 		private static Timer? protectionTimer = null;
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// If screen capture prohibition is supported
+		/// </summary>
 		public bool CanProhibitScreenCapture => true;
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// If screen capture is prohibited or not.
+		/// </summary>
 		public bool ProhibitScreenCapture
 		{
 			get => screenProtected;
-
 			set
 			{
 				try
@@ -46,7 +58,7 @@ namespace NeuroAccessMaui.Services
 			}
 		}
 
-		private void SetScreenSecurityProtection(bool enabled)
+		private void SetScreenSecurityProtection(bool Enabled)
 		{
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
@@ -59,11 +71,11 @@ namespace NeuroAccessMaui.Services
 						if (Build.VERSION.SdkInt >= BuildVersionCodes.Tiramisu)
 						{
 #pragma warning disable CA1416
-							Activity.SetRecentsScreenshotEnabled(!enabled);
+							Activity.SetRecentsScreenshotEnabled(!Enabled);
 #pragma warning restore CA1416
 						}
 
-						if (enabled)
+						if (Enabled)
 						{
 							Activity.Window?.SetFlags(WindowManagerFlags.Secure, WindowManagerFlags.Secure);
 							protectionTimer = new Timer(this.ProtectionTimerElapsed, null,
@@ -85,7 +97,9 @@ namespace NeuroAccessMaui.Services
 			MainThread.BeginInvokeOnMainThread(() => this.ProhibitScreenCapture = false);
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Gets the ID of the device
+		/// </summary>
 		public string? GetDeviceId()
 		{
 			ContentResolver? ContentResolver = Android.App.Application.Context.ContentResolver;
@@ -96,7 +110,26 @@ namespace NeuroAccessMaui.Services
 			return null;
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Closes the application
+		/// </summary>
+		public Task CloseApplication()
+		{
+			Activity? Activity = Android.App.Application.Context as Activity;    // TODO: returns null. Context points to Application instance.
+			Activity?.FinishAffinity();
+
+			Java.Lang.JavaSystem.Exit(0);
+
+			return Task.CompletedTask;
+		}
+
+		/// <summary>
+		/// Shares an image in PNG format.
+		/// </summary>
+		/// <param name="PngFile">Binary representation (PNG format) of image.</param>
+		/// <param name="Message">Message to send with image.</param>
+		/// <param name="Title">Title for operation.</param>
+		/// <param name="FileName">Filename of image file.</param>
 		public void ShareImage(byte[] PngFile, string Message, string Title, string FileName)
 		{
 			Context Context = Android.App.Application.Context;
@@ -129,17 +162,9 @@ namespace NeuroAccessMaui.Services
 			}
 		}
 
-		/// <inheritdoc/>
-		public Task CloseApplication()
-		{
-			Activity? Activity = Android.App.Application.Context as Activity;    // TODO: returns null. Context points to Application instance.
-			Activity?.FinishAffinity();
-
-			Java.Lang.JavaSystem.Exit(0);
-
-			return Task.CompletedTask;
-		}
-
+		/// <summary>
+		/// Force hide the keyboard
+		/// </summary>
 		public void HideKeyboard()
 		{
 			Context Context = Platform.AppContext;
@@ -158,6 +183,10 @@ namespace NeuroAccessMaui.Services
 			}
 		}
 
+		/// <summary>
+		/// Make a blurred screenshot
+		/// TODO: Just make a screen shot. Use the portable CV library to blur it.
+		/// </summary>
 		public Task<byte[]> CaptureScreen(int blurRadius)
 		{
 			blurRadius = Math.Min(25, Math.Max(blurRadius, 0));
@@ -327,5 +356,68 @@ namespace NeuroAccessMaui.Services
 			img.SetPixels(pix, 0, w, 0, 0, w, h);
 			return img;
 		}
+
+		/// <summary>
+		/// If the device supports authenticating the user using fingerprints.
+		/// </summary>
+		public bool SupportsFingerprintAuthentication
+		{
+			get
+			{
+				try
+				{
+					if (Build.VERSION.SdkInt < BuildVersionCodes.M)
+						return false;
+
+					Context Context = Android.App.Application.Context;
+
+					if (Context.CheckCallingOrSelfPermission(Manifest.Permission.UseBiometric) != Permission.Granted &&
+						Context.CheckCallingOrSelfPermission(Manifest.Permission.UseFingerprint) != Permission.Granted)
+					{
+						return false;
+					}
+
+					return false;
+
+					//BiometricManager Manager = BiometricManager.From(Android.App.Application.Context);
+					//int Level = BiometricManager.Authenticators.BiometricWeak;
+					//
+					//return Manager.CanAuthenticate(Level) == BiometricManager.BiometricSuccess;
+
+					// TODO: Consider alternative levels:
+					//
+					//			public interface Authenticators {
+					//			        /**
+					//			         * Any biometric (e.g. fingerprint, iris, or face) on the device that meets or exceeds the
+					//			         * requirements for <strong>Class 3</strong> (formerly <strong>Strong</strong>), as defined
+					//			         * by the Android CDD.
+					//			         */
+					//			        int BIOMETRIC_STRONG = 0x000F;
+					//			
+					//			        /**
+					//			         * Any biometric (e.g. fingerprint, iris, or face) on the device that meets or exceeds the
+					//			         * requirements for <strong>Class 2</strong> (formerly <strong>Weak</strong>), as defined by
+					//			         * the Android CDD.
+					//			         *
+					//			         * <p>Note that this is a superset of {@link #BIOMETRIC_STRONG} and is defined such that
+					//			         * {@code BIOMETRIC_STRONG | BIOMETRIC_WEAK == BIOMETRIC_WEAK}.
+					//			         */
+					//			        int BIOMETRIC_WEAK = 0x00FF;
+					//			
+					//			        /**
+					//			         * The non-biometric credential used to secure the device (i.e. PIN, pattern, or password).
+					//			         * This should typically only be used in combination with a biometric auth type, such as
+					//			         * {@link #BIOMETRIC_WEAK}.
+					//			         */
+					//			        int DEVICE_CREDENTIAL = 1 << 15;
+					//			    }
+				}
+				catch (Exception)
+				{
+					return false;
+				}
+			}
+		}
+
 	}
 }

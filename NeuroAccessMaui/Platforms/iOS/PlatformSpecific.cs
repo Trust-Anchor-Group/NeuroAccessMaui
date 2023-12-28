@@ -3,36 +3,56 @@ using UIKit;
 
 namespace NeuroAccessMaui.Services
 {
+	/// <summary>
+	/// iOS implementation of platform-specific features.
+	/// </summary>
 	public class PlatformSpecific : IPlatformSpecific
 	{
+		/// <summary>
+		/// iOS implementation of platform-specific features.
+		/// </summary>
 		public PlatformSpecific()
 		{
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// If screen capture prohibition is supported
+		/// </summary>
 		public bool CanProhibitScreenCapture => false;
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// If screen capture is prohibited or not.
+		/// </summary>
 		public bool ProhibitScreenCapture // iOS doesn't support screen protection
 		{
 			get => false;
 			set => _ = value; // ignore the value
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Gets the ID of the device
+		/// </summary>
 		public string? GetDeviceId()
 		{
 			return UIDevice.CurrentDevice.IdentifierForVendor.ToString();
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Closes the application
+		/// </summary>
 		public Task CloseApplication()
 		{
 			Environment.Exit(0);
 			return Task.CompletedTask;
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Shares an image in PNG format.
+		/// </summary>
+		/// <param name="PngFile">Binary representation (PNG format) of image.</param>
+		/// <param name="Message">Message to send with image.</param>
+		/// <param name="Title">Title for operation.</param>
+		/// <param name="FileName">Filename of image file.</param>
 		public void ShareImage(byte[] PngFile, string Message, string Title, string FileName)
 		{
 			UIImage? ImageObject = UIImage.LoadFromData(NSData.FromArray(PngFile));
@@ -57,12 +77,16 @@ namespace NeuroAccessMaui.Services
 		}
 
 		/// <summary>
-		/// Shares an image in PNG format.
+		/// Force hide the keyboard
 		/// </summary>
 		public void HideKeyboard()
 		{
 		}
 
+		/// <summary>
+		/// Make a blurred screenshot
+		/// TODO: Just make a screen shot. Use the portable CV library to blur it.
+		/// </summary>
 		public Task<byte[]> CaptureScreen(int blurRadius = 25)
 		{
 			blurRadius = Math.Min(25, Math.Max(blurRadius, 0));
@@ -85,5 +109,17 @@ namespace NeuroAccessMaui.Services
 			//!!! capture.AsJPEG(.8f).AsStream();
 			return Task.FromResult(Array.Empty<byte>());
 		}
+
+		/// <summary>
+		/// If the device supports authenticating the user using fingerprints.
+		/// </summary>
+		public bool SupportsFingerprintAuthentication
+		{
+			get
+			{
+				return false;	// TODO
+			}
+		}
+
 	}
 }
