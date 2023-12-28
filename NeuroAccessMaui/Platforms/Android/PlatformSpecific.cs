@@ -7,7 +7,7 @@ using Android.OS;
 using Android.Renderscripts;
 using Android.Views;
 using Android.Views.InputMethods;
-//using AndroidX.Biometric;
+using AndroidX.Biometric;
 using Waher.Events;
 
 namespace NeuroAccessMaui.Services
@@ -377,12 +377,14 @@ namespace NeuroAccessMaui.Services
 						return false;
 					}
 
-					return false;
+					BiometricManager Manager = BiometricManager.From(Android.App.Application.Context);
+					int Level = BiometricManager.Authenticators.BiometricWeak;
+					
+					return Manager.CanAuthenticate(Level) == BiometricManager.BiometricSuccess;
 
-					//BiometricManager Manager = BiometricManager.From(Android.App.Application.Context);
-					//int Level = BiometricManager.Authenticators.BiometricWeak;
-					//
-					//return Manager.CanAuthenticate(Level) == BiometricManager.BiometricSuccess;
+					// TODO: AndroidX package conflicts arose between Maui & Xamarin.AndroidX.Biometrics package, that the
+					//       Plugin.Fingerprint seems to have resolved. Using this library while Maui fixes the problem, even
+					//       though the library is not used in code.
 
 					// TODO: Consider alternative levels:
 					//
