@@ -42,7 +42,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			if (string.IsNullOrEmpty(ServiceRef.TagProfile.Account))
 				return;
 
-			this.OnPropertyChanged(nameof(this.IsAccountCreated));
+			this.OnPropertyChanged(nameof(IsAccountCreated));
 
 			if (ServiceRef.TagProfile.LegalIdentity is LegalIdentity LegalIdentity)
 			{
@@ -64,7 +64,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 		private async Task XmppContracts_LegalIdentityChanged(object _, LegalIdentityEventArgs e)
 		{
-			ServiceRef.TagProfile.SetLegalIdentity(e.Identity);
+			ServiceRef.TagProfile.LegalIdentity = e.Identity;
 
 			await this.DoAssignProperties();
 		}
@@ -108,7 +108,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		/// <summary>
 		/// If App has an XMPP account defined.
 		/// </summary>
-		public bool IsAccountCreated => !string.IsNullOrEmpty(ServiceRef.TagProfile.Account);
+		public static bool IsAccountCreated => !string.IsNullOrEmpty(ServiceRef.TagProfile.Account);
 
 		public static bool IsLegalIdentityCreated
 		{
@@ -124,7 +124,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 		public bool CanCreateAccount => !this.IsBusy && !this.AccountIsNotValid && (this.AccountText.Length > 0);
 
-		public bool CanCreateIdentity => !this.IsBusy && this.IsAccountCreated && !IsLegalIdentityCreated && IsXmppConnected;
+		public bool CanCreateIdentity => !this.IsBusy && IsAccountCreated && !IsLegalIdentityCreated && IsXmppConnected;
 
 		[RelayCommand(CanExecute = nameof(CanCreateAccount))]
 		private async Task CreateAccount()
@@ -144,7 +144,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 					ServiceRef.TagProfile.SetAccount(this.AccountText, Client.PasswordHash, Client.PasswordHashMethod);
 
-					this.OnPropertyChanged(nameof(this.IsAccountCreated));
+					this.OnPropertyChanged(nameof(IsAccountCreated));
 				}
 
 				(bool Succeeded, string? ErrorMessage, string[]? Alternatives) = await ServiceRef.XmppService.TryConnectAndCreateAccount(ServiceRef.TagProfile.Domain!,
@@ -204,7 +204,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 					ServiceRef.XmppService.AddLegalIdentity(IdentityModel, Photos));
 
 				if (Succeeded && AddedIdentity is not null)
-					ServiceRef.TagProfile.SetLegalIdentity(AddedIdentity);
+					ServiceRef.TagProfile.LegalIdentity = AddedIdentity;
 			}
 			catch (Exception ex)
 			{
@@ -218,7 +218,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		}
 
 		[RelayCommand]
-		private async Task ValidateIdentity()
+		private static async Task ValidateIdentity()
 		{
 			await Task.CompletedTask;
 		}

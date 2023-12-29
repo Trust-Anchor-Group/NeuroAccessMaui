@@ -395,7 +395,7 @@ namespace NeuroAccessMaui.Services.Tag
 		public string? EMail
 		{
 			get => this.eMail;
-			private set
+			set
 			{
 				if (!string.Equals(this.eMail, value, StringComparison.Ordinal))
 				{
@@ -459,7 +459,7 @@ namespace NeuroAccessMaui.Services.Tag
 		public string? LegalJid
 		{
 			get => this.legalJid;
-			private set
+			set
 			{
 				if (!string.Equals(this.legalJid, value, StringComparison.Ordinal))
 				{
@@ -507,7 +507,7 @@ namespace NeuroAccessMaui.Services.Tag
 		public string? LogJid
 		{
 			get => this.logJid;
-			private set
+			set
 			{
 				if (!string.Equals(this.logJid, value, StringComparison.Ordinal))
 				{
@@ -585,7 +585,7 @@ namespace NeuroAccessMaui.Services.Tag
 		public AuthenticationMethod AuthenticationMethod
 		{
 			get => this.authenticationMethod;
-			private set
+			set
 			{
 				if (this.authenticationMethod != value)
 				{
@@ -633,7 +633,7 @@ namespace NeuroAccessMaui.Services.Tag
 		public DateTime? TestOtpTimestamp
 		{
 			get => this.testOtpTimestamp;
-			private set
+			set
 			{
 				if (this.testOtpTimestamp != value)
 				{
@@ -649,7 +649,7 @@ namespace NeuroAccessMaui.Services.Tag
 		public LegalIdentity? LegalIdentity
 		{
 			get => this.legalIdentity;
-			private set
+			set
 			{
 				if (!Equals(this.legalIdentity, value))
 				{
@@ -709,15 +709,6 @@ namespace NeuroAccessMaui.Services.Tag
 		{
 			this.SelectedCountry = Country;
 			this.PhoneNumber = PhoneNumber;
-		}
-
-		/// <summary>
-		/// Sets the e-mail address used for contacting the user.
-		/// </summary>
-		/// <param name="EMail">Verified e-mail address.</param>
-		public void SetEMail(string EMail)
-		{
-			this.EMail = EMail;
 		}
 
 		/// <summary>
@@ -813,15 +804,6 @@ namespace NeuroAccessMaui.Services.Tag
 		}
 
 		/// <summary>
-		/// Set the legal identity of a newly created account.
-		/// </summary>
-		/// <param name="Identity">The legal identity to use.</param>
-		public void SetLegalIdentity(LegalIdentity Identity)
-		{
-			this.LegalIdentity = Identity;
-		}
-
-		/// <summary>
 		/// Revert the Set Account
 		/// </summary>
 		public void ClearAccount()
@@ -861,15 +843,6 @@ namespace NeuroAccessMaui.Services.Tag
 		}
 
 		/// <summary>
-		/// Set a pin to use for protecting the account.
-		/// </summary>
-		/// <param name="Pin">The pin to use.</param>
-		public void SetPin(string Pin)
-		{
-			this.Pin = Pin;
-		}
-
-		/// <summary>
 		/// Set if the user choose the educational or experimental purpose.
 		/// </summary>
 		/// <param name="IsTest">If app is in test mode.</param>
@@ -878,21 +851,6 @@ namespace NeuroAccessMaui.Services.Tag
 		{
 			this.IsTest = IsTest;
 			this.Purpose = Purpose;
-		}
-
-		/// <inheritdoc/>
-		public void SetTestOtpTimestamp(DateTime? Timestamp)
-		{
-			this.TestOtpTimestamp = Timestamp;
-		}
-
-		/// <summary>
-		/// Used during XMPP service discovery. Sets the legal id.
-		/// </summary>
-		/// <param name="LegalJid">The legal id.</param>
-		public void SetLegalJid(string LegalJid)
-		{
-			this.LegalJid = LegalJid;
 		}
 
 		/// <summary>
@@ -904,15 +862,6 @@ namespace NeuroAccessMaui.Services.Tag
 		{
 			this.HttpFileUploadJid = HttpFileUploadJid;
 			this.HttpFileUploadMaxSize = MaxSize;
-		}
-
-		/// <summary>
-		/// Used during XMPP service discovery. Sets the Log ID.
-		/// </summary>
-		/// <param name="LogJid">The log id.</param>
-		public void SetLogJid(string LogJid)
-		{
-			this.LogJid = LogJid;
 		}
 
 		/// <summary>
@@ -932,15 +881,6 @@ namespace NeuroAccessMaui.Services.Tag
 		{
 			if (Application.Current is not null && this.Theme.HasValue)
 				Application.Current.UserAppTheme = this.Theme.Value;
-		}
-
-		/// <summary>
-		/// Sets the authentication method.
-		/// </summary>
-		/// <param name="AuthenticationMethod">Authentication method.</param>
-		public void SetAuthenticationMethod(AuthenticationMethod AuthenticationMethod)
-		{
-			this.authenticationMethod = AuthenticationMethod;
 		}
 
 		#endregion

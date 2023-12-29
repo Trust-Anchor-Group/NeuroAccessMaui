@@ -272,7 +272,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 							{
 								ServiceRef.TagProfile.SetPhone(this.SelectedCountry.Alpha2, FullPhoneNumber);
 								ServiceRef.TagProfile.SetPurpose(IsTest, Purpose);
-								ServiceRef.TagProfile.SetTestOtpTimestamp(VerifyIsTemporary ? DateTime.Now : null);
+								ServiceRef.TagProfile.TestOtpTimestamp = VerifyIsTemporary ? DateTime.Now : null;
 
 								//!!! The old code for existing accounts. Should be implemented somehow else
 								//!!! if (this.IsRevalidating)

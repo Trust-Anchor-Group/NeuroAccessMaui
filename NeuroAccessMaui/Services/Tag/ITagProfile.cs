@@ -77,7 +77,7 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <summary>
 		/// Verified e-mail address.
 		/// </summary>
-		string? EMail { get; }
+		string? EMail { get; set; }
 
 		/// <summary>
 		/// The account name for this profile
@@ -97,7 +97,7 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <summary>
 		/// The Jabber Legal JID for this user/profile.
 		/// </summary>
-		string? LegalJid { get; }
+		string? LegalJid { get; set; }
 
 		/// <summary>
 		/// The XMPP server's file upload Jid.
@@ -112,7 +112,7 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <summary>
 		/// The XMPP server's log Jid.
 		/// </summary>
-		string? LogJid { get; }
+		string? LogJid { get; set; }
 
 		/// <summary>
 		/// This profile's current registration step.
@@ -142,7 +142,7 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <summary>
 		/// How the user authenticates itself with the App.
 		/// </summary>
-		AuthenticationMethod AuthenticationMethod { get; }
+		AuthenticationMethod AuthenticationMethod { get; set; }
 
 		/// <summary>
 		/// Returns <c>true</c> if the user choose the educational or experimental purpose.
@@ -157,12 +157,12 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <summary>
 		/// Returns a timestamp if the user used a Test OTP Code.
 		/// </summary>
-		DateTime? TestOtpTimestamp { get; }
+		DateTime? TestOtpTimestamp { get; set; }
 
 		/// <summary>
 		/// The legal identity of the curren user/profile.
 		/// </summary>
-		LegalIdentity? LegalIdentity { get; }
+		LegalIdentity? LegalIdentity { get; set; }
 
 		/// <summary>
 		/// Currently selected theme.
@@ -238,12 +238,6 @@ namespace NeuroAccessMaui.Services.Tag
 		void SetPhone(string Country, string PhoneNumber);
 
 		/// <summary>
-		/// Sets the e-mail address used for contacting the user.
-		/// </summary>
-		/// <param name="EMail">Verified e-mail address.</param>
-		void SetEMail(string EMail);
-
-		/// <summary>
 		/// Set the domain name to connect to.
 		/// </summary>
 		/// <param name="DomainName">The domain name.</param>
@@ -280,12 +274,6 @@ namespace NeuroAccessMaui.Services.Tag
 		void SetAccountAndLegalIdentity(string AccountName, string ClientPasswordHash, string ClientPasswordHashMethod, LegalIdentity Identity);
 
 		/// <summary>
-		/// Set the legal identity of a newly created account.
-		/// </summary>
-		/// <param name="LegalIdentity">The legal identity to use.</param>
-		void SetLegalIdentity(LegalIdentity LegalIdentity);
-
-		/// <summary>
 		/// Revert the Set Account
 		/// </summary>
 		void ClearAccount();
@@ -296,22 +284,11 @@ namespace NeuroAccessMaui.Services.Tag
 		void ClearLegalIdentity();
 
 		/// <summary>
-		/// Set a pin to use for protecting the account.
-		/// </summary>
-		/// <param name="Pin">The pin to use.</param>
-		void SetPin(string Pin);
-
-		/// <summary>
 		/// Set if the user choose the educational or experimental purpose.
 		/// </summary>
 		/// <param name="IsTest">If app is in test mode.</param>
 		/// <param name="Purpose">Purpose for using the app</param>
 		void SetPurpose(bool IsTest, PurposeUse Purpose);
-
-		/// <summary>
-		/// Set if the user used a Test OTP Code.
-		/// </summary>
-		void SetTestOtpTimestamp(DateTime? timestamp);
 
 		/// <summary>
 		/// Sets the current <see cref="LegalIdentity"/> to the revoked identity, and reverses the <see cref="Step"/> property.
@@ -326,23 +303,11 @@ namespace NeuroAccessMaui.Services.Tag
 		void CompromiseLegalIdentity(LegalIdentity compromisedIdentity);
 
 		/// <summary>
-		/// Used during XMPP service discovery. Sets the legal id.
-		/// </summary>
-		/// <param name="legalJid">The legal id.</param>
-		void SetLegalJid(string legalJid);
-
-		/// <summary>
 		/// Used during XMPP service discovery. Sets the file upload parameters.
 		/// </summary>
 		/// <param name="httpFileUploadJid">The http file upload id.</param>
 		/// <param name="maxSize">The max size allowed.</param>
 		void SetFileUploadParameters(string httpFileUploadJid, long maxSize);
-
-		/// <summary>
-		/// Used during XMPP service discovery. Sets the Log ID.
-		/// </summary>
-		/// <param name="logJid">The log id.</param>
-		void SetLogJid(string logJid);
 
 		/// <summary>
 		/// Computes a hash of the specified PIN.
@@ -373,11 +338,5 @@ namespace NeuroAccessMaui.Services.Tag
 		/// Sets the preferred theme.
 		/// </summary>
 		void SetTheme();
-
-		/// <summary>
-		/// Sets the authentication method.
-		/// </summary>
-		/// <param name="AuthenticationMethod">Authentication method.</param>
-		void SetAuthenticationMethod(AuthenticationMethod AuthenticationMethod);
 	}
 }

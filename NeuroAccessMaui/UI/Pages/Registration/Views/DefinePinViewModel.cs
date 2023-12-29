@@ -107,7 +107,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		[RelayCommand(CanExecute = nameof(CanContinue))]
 		private void Continue()
 		{
-			ServiceRef.TagProfile.SetPin(this.PinText1!);
+			ServiceRef.TagProfile.Pin = this.PinText1!;
 
 			GoToRegistrationStep(RegistrationStep.Complete);
 

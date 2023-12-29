@@ -180,13 +180,13 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		}
 
 		[RelayCommand]
-		private void ServiceProviderInfo()
+		private static void ServiceProviderInfo()
 		{
 
 		}
 
 		[RelayCommand]
-		private void UndoSelection()
+		private static void UndoSelection()
 		{
 			ServiceRef.TagProfile.UndoDomainSelection();
 		}

@@ -373,7 +373,7 @@ namespace NeuroAccessMaui.Services.Contracts
 							ServiceRef.Localizer[nameof(AppResources.Repair)]);
 
 						if (Response)
-							ServiceRef.TagProfile.SetLegalIdentity(Identity);
+							ServiceRef.TagProfile.LegalIdentity = Identity;
 						else
 						{
 							try
@@ -391,7 +391,7 @@ namespace NeuroAccessMaui.Services.Contracts
 						}
 					}
 					else
-						ServiceRef.TagProfile.SetLegalIdentity(Identity);
+						ServiceRef.TagProfile.LegalIdentity = Identity;
 
 					if (gotoRegistrationPage)
 					{

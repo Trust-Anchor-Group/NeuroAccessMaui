@@ -167,8 +167,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 						if (VerifyResult is Dictionary<string, object> VerifyResponse &&
 							VerifyResponse.TryGetValue("Status", out Obj) && Obj is bool VerifyStatus && VerifyStatus)
 						{
-							ServiceRef.TagProfile.SetEMail(this.EmailText);
-
+							ServiceRef.TagProfile.EMail = this.EmailText;
 							GoToRegistrationStep(RegistrationStep.ChooseProvider);
 						}
 						else

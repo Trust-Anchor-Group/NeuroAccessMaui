@@ -214,7 +214,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 						{
 							if (await App.AuthenticateUser(true))
 							{
-								ServiceRef.TagProfile.SetAuthenticationMethod(AuthenticationMethod);
+								ServiceRef.TagProfile.AuthenticationMethod = AuthenticationMethod;
 								this.ApprovedAuthenticationMethod = this.AuthenticationMethod;
 							}
 							else
@@ -223,10 +223,10 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 
 								if (this.Page is not null)
 								{
-									/// Needed to propagate radio-button states, as the current version of Maui does not
-									/// handle these properly (at the time of writing).
-									///
-									/// TODO: Check if this has been fixed after updating Maui and related components.
+									// Needed to propagate radio-button states, as the current version of Maui does not
+									// handle these properly (at the time of writing).
+									//
+									// TODO: Check if this has been fixed after updating Maui and related components.
 
 									switch (Enum.Parse<AuthenticationMethod>(this.AuthenticationMethod))
 									{

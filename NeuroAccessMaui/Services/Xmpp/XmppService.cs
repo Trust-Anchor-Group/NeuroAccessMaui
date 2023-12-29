@@ -821,7 +821,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			lock (SynchObject)
 			{
 				if (itemResponse.HasFeature(ContractsClient.NamespaceLegalIdentities))
-					ServiceRef.TagProfile.SetLegalJid(Item.JID);
+					ServiceRef.TagProfile.LegalJid = Item.JID;
 
 				if (itemResponse.HasFeature(HttpFileUploadClient.Namespace))
 				{
@@ -830,7 +830,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				}
 
 				if (itemResponse.HasFeature(XmppEventSink.NamespaceEventLogging))
-					ServiceRef.TagProfile.SetLogJid(Item.JID);
+					ServiceRef.TagProfile.LogJid = Item.JID;
 			}
 		}
 
