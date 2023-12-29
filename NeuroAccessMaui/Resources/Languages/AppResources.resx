@@ -921,4 +921,10 @@
   <data name="PinCode" xml:space="preserve">
     <value>PIN code</value>
   </data>
+  <data name="FingerprintDescription" xml:space="preserve">
+    <value>Scan your finger print.</value>
+  </data>
+  <data name="FingerprintTitle" xml:space="preserve">
+    <value>Authentication Required</value>
+  </data>
 </root>

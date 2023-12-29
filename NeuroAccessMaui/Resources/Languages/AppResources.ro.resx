@@ -912,4 +912,19 @@
   <data name="ViewId" xml:space="preserve">
     <value>Vizualizare ID</value>
   </data>
+  <data name="AuthenticationMethod" xml:space="preserve">
+    <value>Metoda de autentificare</value>
+  </data>
+  <data name="Fingerprint" xml:space="preserve">
+    <value>Amprentă digitală</value>
+  </data>
+  <data name="PinCode" xml:space="preserve">
+    <value>Codul PIN</value>
+  </data>
+  <data name="FingerprintDescription" xml:space="preserve">
+    <value>Scanați amprenta.</value>
+  </data>
+  <data name="FingerprintTitle" xml:space="preserve">
+    <value>Este necesară autentificarea</value>
+  </data>
 </root>

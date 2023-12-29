@@ -912,4 +912,19 @@
   <data name="ViewId" xml:space="preserve">
     <value>ID prikaza</value>
   </data>
+  <data name="AuthenticationMethod" xml:space="preserve">
+    <value>Metod potvrde identiteta</value>
+  </data>
+  <data name="Fingerprint" xml:space="preserve">
+    <value>Otisaka prstiju</value>
+  </data>
+  <data name="PinCode" xml:space="preserve">
+    <value>PIN kôd</value>
+  </data>
+  <data name="FingerprintDescription" xml:space="preserve">
+    <value>Skeniraj otisak prsta.</value>
+  </data>
+  <data name="FingerprintTitle" xml:space="preserve">
+    <value>Potrebna je potvrda identiteta</value>
+  </data>
 </root>

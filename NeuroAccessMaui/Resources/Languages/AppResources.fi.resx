@@ -912,4 +912,19 @@
   <data name="ViewId" xml:space="preserve">
     <value>Näytä tunnus</value>
   </data>
+  <data name="AuthenticationMethod" xml:space="preserve">
+    <value>Todentamismenetelmä</value>
+  </data>
+  <data name="Fingerprint" xml:space="preserve">
+    <value>Sormenjälki</value>
+  </data>
+  <data name="PinCode" xml:space="preserve">
+    <value>PIN-koodi</value>
+  </data>
+  <data name="FingerprintDescription" xml:space="preserve">
+    <value>Skannaa sormenjälkesi.</value>
+  </data>
+  <data name="FingerprintTitle" xml:space="preserve">
+    <value>Todennus vaaditaan</value>
+  </data>
 </root>

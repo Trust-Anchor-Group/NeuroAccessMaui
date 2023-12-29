@@ -912,4 +912,19 @@
   <data name="ViewId" xml:space="preserve">
     <value>ID anzeigen</value>
   </data>
+  <data name="AuthenticationMethod" xml:space="preserve">
+    <value>Authentifizierungsmethode</value>
+  </data>
+  <data name="Fingerprint" xml:space="preserve">
+    <value>Fingerabdruck</value>
+  </data>
+  <data name="PinCode" xml:space="preserve">
+    <value>PIN-Code</value>
+  </data>
+  <data name="FingerprintDescription" xml:space="preserve">
+    <value>Scannen Sie Ihren Fingerabdruck.</value>
+  </data>
+  <data name="FingerprintTitle" xml:space="preserve">
+    <value>Authentifizierung erforderlich</value>
+  </data>
 </root>

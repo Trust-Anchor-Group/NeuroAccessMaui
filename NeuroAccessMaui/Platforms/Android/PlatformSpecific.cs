@@ -5,9 +5,13 @@ using Android.Content.PM;
 using Android.Graphics;
 using Android.OS;
 using Android.Renderscripts;
+using Android.Runtime;
 using Android.Views;
 using Android.Views.InputMethods;
 using AndroidX.Biometric;
+using AndroidX.Fragment.App;
+using AndroidX.Lifecycle;
+using Java.Util.Concurrent;
 using Waher.Events;
 
 namespace NeuroAccessMaui.Services
@@ -115,7 +119,7 @@ namespace NeuroAccessMaui.Services
 		/// </summary>
 		public Task CloseApplication()
 		{
-			Activity? Activity = Android.App.Application.Context as Activity;    // TODO: returns null. Context points to Application instance.
+			Activity? Activity = Platform.CurrentActivity;
 			Activity?.FinishAffinity();
 
 			Java.Lang.JavaSystem.Exit(0);
@@ -379,7 +383,7 @@ namespace NeuroAccessMaui.Services
 
 					BiometricManager Manager = BiometricManager.From(Android.App.Application.Context);
 					int Level = BiometricManager.Authenticators.BiometricWeak;
-					
+
 					return Manager.CanAuthenticate(Level) == BiometricManager.BiometricSuccess;
 
 					// TODO: AndroidX package conflicts arose between Maui & Xamarin.AndroidX.Biometrics package, that the
@@ -418,6 +422,114 @@ namespace NeuroAccessMaui.Services
 				{
 					return false;
 				}
+			}
+		}
+
+		/// <summary>
+		/// Authenticates the user using the fingerprint sensor.
+		/// </summary>
+		/// <param name="Title">Title of authentication dialog.</param>
+		/// <param name="Subtitle">Optional Subtitle.</param>
+		/// <param name="Description">Description texst to display to user in authentication dialog.</param>
+		/// <param name="Cancel">Label for Cancel button.</param>
+		/// <param name="RequireConfirmation">If user confirmation is required.</param>
+		/// <param name="CancellationToken">Optional cancellation token, to cancel process.</param>
+		/// <returns>If the user has been successfully authenticated.</returns>
+		public async Task<bool> AuthenticateUserFingerprint(string Title, string? Subtitle, string Description, string Cancel, bool RequireConfirmation,
+			CancellationToken? CancellationToken)
+		{
+			if (!this.SupportsFingerprintAuthentication)
+				return false;
+
+			if (string.IsNullOrWhiteSpace(Title))
+				throw new ArgumentException("Title cannot be empty.", nameof(Title));
+
+			if (Platform.CurrentActivity is not FragmentActivity Activity)
+				return false;
+
+			try
+			{
+				BiometricPrompt.PromptInfo.Builder Builder = new();
+
+				Builder.SetDeviceCredentialAllowed(false);
+				Builder.SetAllowedAuthenticators((int)Android.Hardware.Biometrics.BiometricManagerAuthenticators.BiometricWeak);
+				Builder.SetConfirmationRequired(RequireConfirmation);
+				Builder.SetTitle(Title);
+				Builder.SetDescription(Description);
+				Builder.SetNegativeButtonText(Cancel);
+
+				if (!string.IsNullOrEmpty(Subtitle))
+					Builder.SetSubtitle(Subtitle);
+
+				BiometricPrompt.PromptInfo Prompt = Builder.Build();
+				IExecutorService? Executor = Executors.NewSingleThreadExecutor();
+				CallbackHandler Handler = new();
+
+				BiometricPrompt Dialog = new(Activity, Executor, Handler);
+				try
+				{
+					CancellationToken?.Register(Dialog.CancelAuthentication);
+					Dialog.Authenticate(Prompt);
+
+					return await Handler.Result;
+				}
+				finally
+				{
+					// Remove the lifecycle observer that is set by the BiometricPrompt.
+					// Reference: https://stackoverflow.com/a/59637670/1489968
+					// Review after referenced nugets (or Maui) has been updated.
+
+					Java.Lang.Class Class = Java.Lang.Class.FromType(Dialog.GetType());
+					Java.Lang.Reflect.Field[] Fields = Class.GetDeclaredFields();
+					Java.Lang.Reflect.Field? LifecycleObserver = Fields?.FirstOrDefault(f => f.Name == "mLifecycleObserver");
+
+					if (LifecycleObserver is not null)
+					{
+						LifecycleObserver.Accessible = true;
+						ILifecycleObserver? LastLifecycleObserver = LifecycleObserver.Get(Dialog).JavaCast<ILifecycleObserver>();
+						Lifecycle? Lifecycle = Activity.Lifecycle;
+
+						if (LastLifecycleObserver is not null && Lifecycle is not null)
+							Lifecycle.RemoveObserver(LastLifecycleObserver);
+					}
+
+					Dialog?.Dispose();
+				}
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				return false;
+			}
+		}
+
+		private class CallbackHandler : BiometricPrompt.AuthenticationCallback, IDialogInterfaceOnClickListener
+		{
+			private readonly TaskCompletionSource<bool> result = new();
+
+			public Task<bool> Result => this.result.Task;
+
+			public override void OnAuthenticationSucceeded(BiometricPrompt.AuthenticationResult Result)
+			{
+				base.OnAuthenticationSucceeded(Result);
+				this.result.TrySetResult(true);
+			}
+
+			public override void OnAuthenticationError(int ErrorCode, Java.Lang.ICharSequence ErrorString)
+			{
+				base.OnAuthenticationError(ErrorCode, ErrorString);
+				this.result.TrySetResult(false);
+			}
+
+			public override void OnAuthenticationFailed()
+			{
+				base.OnAuthenticationFailed();
+				this.result.TrySetResult(false);
+			}
+
+			public void OnClick(IDialogInterface? Dialog, int Which)
+			{
+				this.result.TrySetResult(false);
 			}
 		}
 

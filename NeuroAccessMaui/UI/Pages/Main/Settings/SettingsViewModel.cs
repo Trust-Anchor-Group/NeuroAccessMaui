@@ -21,7 +21,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 	/// </summary>
 	public partial class SettingsViewModel : XmppViewModel
 	{
-		private readonly bool initializing = false;
+		private bool initializing = false;
 
 		/// <summary>
 		/// Creates an instance of the <see cref="SettingsViewModel"/> class.
@@ -207,7 +207,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 							if (await App.AuthenticateUser(true))
 								ServiceRef.TagProfile.SetAuthenticationMethod(AuthenticationMethod.Pin);
 							else
-								this.ResetAuthenticationMode();
+								await Task.Delay(100).ContinueWith((_) => MainThread.InvokeOnMainThreadAsync(this.ResetAuthenticationMode));
 						}
 						break;
 
@@ -217,7 +217,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 							if (await App.AuthenticateUser(true))
 								ServiceRef.TagProfile.SetAuthenticationMethod(AuthenticationMethod.Fingerprint);
 							else
-								this.ResetAuthenticationMode();
+								await Task.Delay(100).ContinueWith((_) => MainThread.InvokeOnMainThreadAsync(this.ResetAuthenticationMode));
 						}
 						break;
 				}
@@ -230,8 +230,18 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 
 		private void ResetAuthenticationMode()
 		{
-			this.UsePinCode = ServiceRef.TagProfile.AuthenticationMethod == AuthenticationMethod.Pin;
-			this.UseFingerprint = ServiceRef.TagProfile.AuthenticationMethod == AuthenticationMethod.Fingerprint;
+			bool Bak = this.initializing;
+
+			this.initializing = true;
+			try
+			{
+				this.UsePinCode = ServiceRef.TagProfile.AuthenticationMethod == AuthenticationMethod.Pin;
+				this.UseFingerprint = ServiceRef.TagProfile.AuthenticationMethod == AuthenticationMethod.Fingerprint;
+			}
+			finally
+			{
+				this.initializing = Bak;
+			}
 		}
 
 		private void SetTheme(AppTheme Theme)

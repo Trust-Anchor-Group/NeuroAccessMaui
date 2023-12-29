@@ -736,6 +736,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Scan your finger print..
+        /// </summary>
+        internal static string FingerprintDescription {
+            get {
+                return ResourceManager.GetString("FingerprintDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Authentication Required.
+        /// </summary>
+        internal static string FingerprintTitle {
+            get {
+                return ResourceManager.GetString("FingerprintTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to First name.
         /// </summary>
         internal static string FirstName {

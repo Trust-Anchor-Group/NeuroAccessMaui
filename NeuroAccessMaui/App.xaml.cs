@@ -872,41 +872,58 @@ namespace NeuroAccessMaui
 		/// <returns>If the user has been successfully authenticated.</returns>
 		public static async Task<bool> AuthenticateUser(bool Force = false)
 		{
-			ITagProfile Profile = Instantiate<ITagProfile>();
-
-			if (!Profile.HasPin)
-				return true;
-
-			bool NeedToVerifyPin = IsInactivitySafeIntervalPassed();
-
-			if (displayedPinPopup)
-				return false;
-
-			if (Force || NeedToVerifyPin)
+			switch (ServiceRef.TagProfile.AuthenticationMethod)
 			{
-				if (MainThread.IsMainThread)
-					return await InputPin(Profile) is not null;
-				else
-				{
-					TaskCompletionSource<bool> T = new();
+				case AuthenticationMethod.Pin:
+					if (!ServiceRef.TagProfile.HasPin)
+						return true;
 
-					await MainThread.InvokeOnMainThreadAsync(async () =>
+					bool NeedToVerifyPin = IsInactivitySafeIntervalPassed();
+
+					if (displayedPinPopup)
+						return false;
+
+					if (Force || NeedToVerifyPin)
 					{
-						try
+						if (MainThread.IsMainThread)
+							return await InputPin(ServiceRef.TagProfile) is not null;
+						else
 						{
-							T.SetResult(await InputPin(Profile) is not null);
-						}
-						catch (Exception ex)
-						{
-							T.SetException(ex);
-						}
-					});
+							TaskCompletionSource<bool> T = new();
 
-					return await T.Task;
-				}
+							await MainThread.InvokeOnMainThreadAsync(async () =>
+							{
+								try
+								{
+									T.SetResult(await InputPin(ServiceRef.TagProfile) is not null);
+								}
+								catch (Exception ex)
+								{
+									T.SetException(ex);
+								}
+							});
+
+							return await T.Task;
+						}
+					}
+
+					return true;
+
+				case AuthenticationMethod.Fingerprint:
+					if (!ServiceRef.PlatformSpecific.SupportsFingerprintAuthentication)
+						return false;
+
+					return await ServiceRef.PlatformSpecific.AuthenticateUserFingerprint(
+						ServiceRef.Localizer["FingerprintTitle"],
+						null,
+						ServiceRef.Localizer["FingerprintDescription"],
+						ServiceRef.Localizer["Cancel"],
+						false,
+						null);
+
+				default:
+					return false;
 			}
-
-			return true;
 		}
 
 		/// <summary>

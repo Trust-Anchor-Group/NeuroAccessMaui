@@ -912,4 +912,19 @@
   <data name="ViewId" xml:space="preserve">
     <value>Visa ID</value>
   </data>
+  <data name="AuthenticationMethod" xml:space="preserve">
+    <value>Autentiseringsmetod</value>
+  </data>
+  <data name="Fingerprint" xml:space="preserve">
+    <value>Fingeravtryck</value>
+  </data>
+  <data name="PinCode" xml:space="preserve">
+    <value>PIN-kod</value>
+  </data>
+  <data name="FingerprintDescription" xml:space="preserve">
+    <value>Skanna ditt fingeravtryck.</value>
+  </data>
+  <data name="FingerprintTitle" xml:space="preserve">
+    <value>Autentisering krävs</value>
+  </data>
 </root>
