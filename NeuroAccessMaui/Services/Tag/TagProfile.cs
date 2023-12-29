@@ -1,4 +1,5 @@
 ﻿using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Services.Storage;
 using System.ComponentModel;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -814,7 +815,7 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <summary>
 		/// Set the legal identity of a newly created account.
 		/// </summary>
-		/// <param name="LegalIdentity">The legal identity to use.</param>
+		/// <param name="Identity">The legal identity to use.</param>
 		public void SetLegalIdentity(LegalIdentity Identity)
 		{
 			this.LegalIdentity = Identity;
@@ -844,7 +845,7 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <summary>
 		/// Sets the current <see cref="LegalIdentity"/> to the revoked identity, and reverses the <see cref="Step"/> property.
 		/// </summary>
-		/// <param name="revokedIdentity">The revoked identity to use.</param>
+		/// <param name="RevokedIdentity">The revoked identity to use.</param>
 		public void RevokeLegalIdentity(LegalIdentity RevokedIdentity)
 		{
 			this.LegalIdentity = RevokedIdentity;
@@ -853,7 +854,7 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <summary>
 		/// Sets the current <see cref="LegalIdentity"/> to the compromised identity, and reverses the <see cref="Step"/> property.
 		/// </summary>
-		/// <param name="compromisedIdentity">The compromised identity to use.</param>
+		/// <param name="CompromisedIdentity">The compromised identity to use.</param>
 		public void CompromiseLegalIdentity(LegalIdentity CompromisedIdentity)
 		{
 			this.LegalIdentity = CompromisedIdentity;
@@ -888,7 +889,7 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <summary>
 		/// Used during XMPP service discovery. Sets the legal id.
 		/// </summary>
-		/// <param name="legalJid">The legal id.</param>
+		/// <param name="LegalJid">The legal id.</param>
 		public void SetLegalJid(string LegalJid)
 		{
 			this.LegalJid = LegalJid;
@@ -897,8 +898,8 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <summary>
 		/// Used during XMPP service discovery. Sets the file upload parameters.
 		/// </summary>
-		/// <param name="httpFileUploadJid">The http file upload id.</param>
-		/// <param name="maxSize">The max size allowed.</param>
+		/// <param name="HttpFileUploadJid">The http file upload id.</param>
+		/// <param name="MaxSize">The max size allowed.</param>
 		public void SetFileUploadParameters(string HttpFileUploadJid, long MaxSize)
 		{
 			this.HttpFileUploadJid = HttpFileUploadJid;
@@ -908,7 +909,7 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <summary>
 		/// Used during XMPP service discovery. Sets the Log ID.
 		/// </summary>
-		/// <param name="logJid">The log id.</param>
+		/// <param name="LogJid">The log id.</param>
 		public void SetLogJid(string LogJid)
 		{
 			this.LogJid = LogJid;
