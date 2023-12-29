@@ -914,54 +914,41 @@ namespace NeuroAccessMaui
 
 		private static async Task<bool> AuthenticateUserMainThread(bool Force = false)
 		{
+			bool NeedToVerifyPin = IsInactivitySafeIntervalPassed();
+			if (!Force && !NeedToVerifyPin)
+				return true;
+
 			switch (ServiceRef.TagProfile.AuthenticationMethod)
 			{
 				case AuthenticationMethod.Pin:
 					if (!ServiceRef.TagProfile.HasPin)
 						return true;
 
-					bool NeedToVerifyPin = IsInactivitySafeIntervalPassed();
-
 					if (displayedPinPopup)
 						return false;
 
-					if (Force || NeedToVerifyPin)
-					{
-						if (MainThread.IsMainThread)
-							return await InputPin(ServiceRef.TagProfile) is not null;
-						else
-						{
-							TaskCompletionSource<bool> T = new();
-
-							await MainThread.InvokeOnMainThreadAsync(async () =>
-							{
-								try
-								{
-									T.SetResult(await InputPin(ServiceRef.TagProfile) is not null);
-								}
-								catch (Exception ex)
-								{
-									T.SetException(ex);
-								}
-							});
-
-							return await T.Task;
-						}
-					}
-
-					return true;
+					return await InputPin(ServiceRef.TagProfile) is not null;
 
 				case AuthenticationMethod.Fingerprint:
 					if (!ServiceRef.PlatformSpecific.SupportsFingerprintAuthentication)
 						return false;
 
-					return await ServiceRef.PlatformSpecific.AuthenticateUserFingerprint(
+					if (await ServiceRef.PlatformSpecific.AuthenticateUserFingerprint(
 						ServiceRef.Localizer["FingerprintTitle"],
 						null,
 						ServiceRef.Localizer["FingerprintDescription"],
 						ServiceRef.Localizer["Cancel"],
 						false,
-						null);
+						null))
+					{
+						await UserAuthenticationSuccessful();
+						return true;
+					}
+					else
+					{
+						await UserAuthenticationFailed();
+						return false;
+					}
 
 				default:
 					return false;
@@ -1015,26 +1002,34 @@ namespace NeuroAccessMaui
 			if (Pin is null)
 				return false;
 
-			long PinAttemptCounter = await GetCurrentPinCounter();
-
 			if (ServiceRef.TagProfile.ComputePinHash(Pin) == ServiceRef.TagProfile.PinHash)
 			{
-				SetStartInactivityTime();
-				SetCurrentPinCounter(0);
-				await appInstance!.loginAuditor.UnblockAndReset(Constants.Pin.RemoteEndpoint);
-
+				await UserAuthenticationSuccessful();
 				return true;
 			}
 			else
 			{
-				await appInstance!.loginAuditor.ProcessLoginFailure(Constants.Pin.RemoteEndpoint,
-						Constants.Pin.Protocol, DateTime.Now, Constants.Pin.Reason);
-
-				PinAttemptCounter++;
-				SetCurrentPinCounter(PinAttemptCounter);
-
+				await UserAuthenticationFailed();
 				return false;
 			}
+		}
+
+		private static async Task UserAuthenticationSuccessful()
+		{
+			SetStartInactivityTime();
+			SetCurrentPinCounter(0);
+			await appInstance!.loginAuditor.UnblockAndReset(Constants.Pin.RemoteEndpoint);
+		}
+
+		private static async Task UserAuthenticationFailed()
+		{
+			await appInstance!.loginAuditor.ProcessLoginFailure(Constants.Pin.RemoteEndpoint,
+				Constants.Pin.Protocol, DateTime.Now, Constants.Pin.Reason);
+
+			long PinAttemptCounter = await GetCurrentPinCounter();
+
+			PinAttemptCounter++;
+			SetCurrentPinCounter(PinAttemptCounter);
 		}
 
 		/// <summary>
