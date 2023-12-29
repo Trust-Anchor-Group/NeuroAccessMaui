@@ -21,7 +21,10 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 	/// </summary>
 	public partial class SettingsViewModel : XmppViewModel
 	{
-		private bool initializing = false;
+		private const string allowed = "Allowed";
+		private const string prohibited = "Prohibited";
+
+		private readonly bool initializing = false;
 
 		/// <summary>
 		/// Creates an instance of the <see cref="SettingsViewModel"/> class.
@@ -33,23 +36,14 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			try
 			{
 				this.CanProhibitScreenCapture = ServiceRef.PlatformSpecific.CanProhibitScreenCapture;
-				this.ScreenCaptureProhibited = ServiceRef.PlatformSpecific.ProhibitScreenCapture;
-				this.ScreenCaptureAllowed = !this.ScreenCaptureProhibited;
+				this.ScreenCaptureMode = ServiceRef.PlatformSpecific.ProhibitScreenCapture ? prohibited : allowed;
+
 				this.CanUseFingerprint = ServiceRef.PlatformSpecific.SupportsFingerprintAuthentication;
 				this.CanUseAlternativeAuthenticationMethods = this.CanUseFingerprint;
+				this.AuthenticationMethod = ServiceRef.TagProfile.AuthenticationMethod.ToString();
+				this.ApprovedAuthenticationMethod = this.AuthenticationMethod;
 
-				switch (DisplayMode)
-				{
-					case AppTheme.Light:
-						this.IsLightMode = true;
-						break;
-
-					case AppTheme.Dark:
-						this.IsDarkMode = true;
-						break;
-				}
-
-				this.ResetAuthenticationMode();
+				this.DisplayMode = CurrentDisplayMode.ToString();
 			}
 			finally
 			{
@@ -98,28 +92,16 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		private bool canProhibitScreenCapture;
 
 		/// <summary>
-		/// If screen capture is allowed.
+		/// Screen capture mode.
 		/// </summary>
 		[ObservableProperty]
-		private bool screenCaptureAllowed;
+		private string screenCaptureMode;
 
 		/// <summary>
-		/// If screen capture is prohibited.
+		/// Selected display mode.
 		/// </summary>
 		[ObservableProperty]
-		private bool screenCaptureProhibited;
-
-		/// <summary>
-		/// Gets or sets whether the current display mode is Light Mode.
-		/// </summary>
-		[ObservableProperty]
-		private bool isLightMode;
-
-		/// <summary>
-		/// Gets or sets whether the current display mode is Dark Mode.
-		/// </summary>
-		[ObservableProperty]
-		private bool isDarkMode;
+		private string displayMode;
 
 		/// <summary>
 		/// If a restart is needed.
@@ -140,21 +122,21 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		private bool canUseAlternativeAuthenticationMethods;
 
 		/// <summary>
-		/// If PIN code should be used to authenticate user.
+		/// User Authentication method to use.
 		/// </summary>
 		[ObservableProperty]
-		private bool usePinCode;
+		private string authenticationMethod;
 
 		/// <summary>
-		/// If fingerprint should be used to authenticate user.
+		/// Approved User Authentication method to use.
 		/// </summary>
 		[ObservableProperty]
-		private bool useFingerprint;
+		private string approvedAuthenticationMethod;
 
 		/// <summary>
 		/// Current display mode
 		/// </summary>
-		public static AppTheme DisplayMode
+		public static AppTheme CurrentDisplayMode
 		{
 			get
 			{
@@ -181,43 +163,52 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			{
 				switch (e.PropertyName)
 				{
-					case nameof(this.IsLightMode):
-						if (!this.initializing)
-							this.SetTheme(this.IsLightMode ? AppTheme.Light : AppTheme.Dark);
-						break;
-
-					case nameof(this.IsDarkMode):
-						if (!this.initializing)
-							this.SetTheme(this.IsDarkMode ? AppTheme.Dark : AppTheme.Light);
-						break;
-
-					case nameof(this.ScreenCaptureAllowed):
-						if (!this.initializing && this.ScreenCaptureAllowed)
-							await PermitScreenCapture();
-						break;
-
-					case nameof(this.ScreenCaptureProhibited):
-						if (!this.initializing && this.ScreenCaptureProhibited)
-							await ProhibitScreenCapture();
-						break;
-
-					case nameof(this.UsePinCode):
-						if (!this.initializing && this.UsePinCode)
+					case nameof(this.DisplayMode):
+						if (!this.initializing && Enum.TryParse(this.DisplayMode, out AppTheme Theme) && Theme != CurrentDisplayMode)
 						{
-							if (await App.AuthenticateUser(true))
-								ServiceRef.TagProfile.SetAuthenticationMethod(AuthenticationMethod.Pin);
-							else
-								await Task.Delay(100).ContinueWith((_) => MainThread.InvokeOnMainThreadAsync(this.ResetAuthenticationMode));
+							ServiceRef.TagProfile.SetTheme(Theme);
+
+							if (!this.RestartNeeded)
+							{
+								// TODO: When changing Theme, menu items in the flyout menu are not styled correctly. The foreground color
+								// is not updated. According to info currently available, a future version of Maui allows you to fix this
+								// with a stylable FlyoutForegroundColor, which does not exist in the currently used version.
+
+								this.RestartNeeded = true;
+								await ServiceRef.UiSerializer.DisplayAlert(
+									ServiceRef.Localizer[nameof(AppResources.Message)],
+									ServiceRef.Localizer[nameof(AppResources.RestartNeededDueToThemeChange)],
+									ServiceRef.Localizer[nameof(AppResources.Ok)]);
+							}
 						}
 						break;
 
-					case nameof(this.UseFingerprint):
-						if (!this.initializing && this.UseFingerprint)
+					case nameof(this.ScreenCaptureMode):
+						if (!this.initializing)
 						{
-							if (await App.AuthenticateUser(true))
-								ServiceRef.TagProfile.SetAuthenticationMethod(AuthenticationMethod.Fingerprint);
+							switch (this.ScreenCaptureMode)
+							{
+								case allowed:
+									await PermitScreenCapture();
+									break;
+
+								case prohibited:
+									await ProhibitScreenCapture();
+									break;
+							}
+						}
+						break;
+
+					case nameof(this.AuthenticationMethod):
+						if (!this.initializing && this.AuthenticationMethod != this.ApprovedAuthenticationMethod)
+						{
+							if (await App.AuthenticateUser(true) && Enum.TryParse(this.AuthenticationMethod, out AuthenticationMethod AuthenticationMethod))
+							{
+								ServiceRef.TagProfile.SetAuthenticationMethod(AuthenticationMethod);
+								this.ApprovedAuthenticationMethod = this.AuthenticationMethod;
+							}
 							else
-								await Task.Delay(100).ContinueWith((_) => MainThread.InvokeOnMainThreadAsync(this.ResetAuthenticationMode));
+								this.AuthenticationMethod = this.ApprovedAuthenticationMethod;
 						}
 						break;
 				}
@@ -225,40 +216,6 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-			}
-		}
-
-		private void ResetAuthenticationMode()
-		{
-			bool Bak = this.initializing;
-
-			this.initializing = true;
-			try
-			{
-				this.UsePinCode = ServiceRef.TagProfile.AuthenticationMethod == AuthenticationMethod.Pin;
-				this.UseFingerprint = ServiceRef.TagProfile.AuthenticationMethod == AuthenticationMethod.Fingerprint;
-			}
-			finally
-			{
-				this.initializing = Bak;
-			}
-		}
-
-		private void SetTheme(AppTheme Theme)
-		{
-			ServiceRef.TagProfile.SetTheme(Theme);
-
-			if (!this.RestartNeeded)
-			{
-				// TODO: When changing Theme, menu items in the flyout menu are not styled correctly. The foreground color
-				// is not updated. According to info currently available, a future version of Maui allows you to fix this
-				// with a stylable FlyoutForegroundColor, which does not exist in the currently used version.
-
-				this.RestartNeeded = true;
-				ServiceRef.UiSerializer.DisplayAlert(
-					ServiceRef.Localizer[nameof(AppResources.Message)],
-					ServiceRef.Localizer[nameof(AppResources.RestartNeededDueToThemeChange)],
-					ServiceRef.Localizer[nameof(AppResources.Ok)]);
 			}
 		}
 

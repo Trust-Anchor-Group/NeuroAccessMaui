@@ -33,14 +33,16 @@
 						<Frame Style="{StaticResource FrameSubSet}">
 							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 								<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize SelectDisplayMode}"/>
-								<Grid RowDefinitions="auto,auto" ColumnDefinitions="auto,*,auto">
+								<Grid RowDefinitions="auto,auto" ColumnDefinitions="auto,*,auto"
+										RadioButtonGroup.GroupName="DisplayMode"
+										RadioButtonGroup.SelectedValue="{Binding DisplayMode}">
 									<Image Grid.Column="0" Grid.Row="0" Source="{AppThemeBinding Light=light_mode_light.svg, Dark=light_mode_dark.svg}"/>
 									<Label Grid.Column="1" Grid.Row="0" Style="{StaticResource KeyLabel}" Text="{l:Localize LightMode}"/>
-									<RadioButton Grid.Column="2" Grid.Row="0" x:Name="LightMode" GroupName="DisplayMode" IsChecked="{Binding IsLightMode, Mode=TwoWay}"/>
+									<RadioButton Grid.Column="2" Grid.Row="0" x:Name="LightMode" Value="Light"/>
 
 									<Image Grid.Column="0" Grid.Row="1" Source="{AppThemeBinding Light=dark_mode_light.svg, Dark=dark_mode_dark.svg}"/>
 									<Label Grid.Column="1" Grid.Row="1" Style="{StaticResource KeyLabel}" Text="{l:Localize DarkMode}"/>
-									<RadioButton Grid.Column="2" Grid.Row="1" x:Name="DarkMode" GroupName="DisplayMode" IsChecked="{Binding IsDarkMode, Mode=TwoWay}"/>
+									<RadioButton Grid.Column="2" Grid.Row="1" x:Name="DarkMode" Value="Dark"/>
 								</Grid>
 							</VerticalStackLayout>
 						</Frame>
@@ -104,18 +106,18 @@
 						<Frame Style="{StaticResource FrameSubSet}" IsVisible="{Binding CanUseAlternativeAuthenticationMethods}">
 							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 								<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize AuthenticationMethod}"/>
-								<Grid RowDefinitions="auto,auto" ColumnDefinitions="auto,*,auto">
+								<Grid RowDefinitions="auto,auto" ColumnDefinitions="auto,*,auto"
+										RadioButtonGroup.GroupName="AuthenticationMethod"
+										RadioButtonGroup.SelectedValue="{Binding AuthenticationMethod}">
 									<Image Grid.Column="0" Grid.Row="0" Source="{AppThemeBinding Light=pin_code_light.svg, Dark=pin_code_dark.svg}"/>
 									<Label Grid.Column="1" Grid.Row="0" Style="{StaticResource KeyLabel}" Text="{l:Localize PinCode}"/>
-									<RadioButton Grid.Column="2" Grid.Row="0" x:Name="UsePinCode" GroupName="AuthenticationMethod"
-													 IsChecked="{Binding UsePinCode, Mode=TwoWay}"/>
+									<RadioButton Grid.Column="2" Grid.Row="0" x:Name="UsePinCode" Value="Pin"/>
 
 									<Image Grid.Column="0" Grid.Row="1" Source="{AppThemeBinding Light=fingerprint_light.svg, Dark=fingerprint_dark.svg}"
 											 IsVisible="{Binding CanUseFingerprint}"/>
 									<Label Grid.Column="1" Grid.Row="1" Style="{StaticResource KeyLabel}" Text="{l:Localize Fingerprint}"
 											 IsVisible="{Binding CanUseFingerprint}"/>
-									<RadioButton Grid.Column="2" Grid.Row="1" x:Name="Fingerprint" GroupName="AuthenticationMethod"
-													 IsChecked="{Binding UseFingerprint, Mode=TwoWay}" IsVisible="{Binding CanUseFingerprint}"/>
+									<RadioButton Grid.Column="2" Grid.Row="1" x:Name="Fingerprint" Value="Fingerprint" IsVisible="{Binding CanUseFingerprint}"/>
 								</Grid>
 							</VerticalStackLayout>
 						</Frame>
@@ -124,12 +126,14 @@
 						<Frame Style="{StaticResource FrameSubSet}" IsVisible="{Binding CanProhibitScreenCapture}">
 							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 								<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize ScreenRecording}"/>
-								<Grid RowDefinitions="auto,auto" ColumnDefinitions="*,auto">
+								<Grid RowDefinitions="auto,auto" ColumnDefinitions="*,auto"
+										RadioButtonGroup.GroupName="ScreenRecording"
+										RadioButtonGroup.SelectedValue="{Binding ScreenCaptureMode}">
 									<Label Grid.Column="0" Grid.Row="0" Style="{StaticResource KeyLabel}" Text="{l:Localize AllowRecording}"/>
-									<RadioButton Grid.Column="1" Grid.Row="0" x:Name="AllowRecording" GroupName="ScreenRecording" IsChecked="{Binding ScreenCaptureAllowed, Mode=TwoWay}"/>
+									<RadioButton Grid.Column="1" Grid.Row="0" x:Name="AllowRecording" Value="Allowed"/>
 
 									<Label Grid.Column="0" Grid.Row="1" Style="{StaticResource KeyLabel}" Text="{l:Localize ProhibitRecording}"/>
-									<RadioButton Grid.Column="1" Grid.Row="1" x:Name="ProhibitRecording" GroupName="ScreenRecording" IsChecked="{Binding ScreenCaptureProhibited, Mode=TwoWay}"/>
+									<RadioButton Grid.Column="1" Grid.Row="1" x:Name="ProhibitRecording" Value="Prohibited"/>
 								</Grid>
 							</VerticalStackLayout>
 						</Frame>
