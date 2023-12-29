@@ -388,7 +388,7 @@ namespace NeuroAccessMaui
 			try
 			{
 				// do nothing if the services are already started
-				if (++App.startupCounter > 1)
+				if (++startupCounter > 1)
 					return;
 
 				// cancel the startup if the application is closed
@@ -490,7 +490,7 @@ namespace NeuroAccessMaui
 			{
 				// do nothing if the services are already stopped
 				// or if the startup counter is greater than one
-				if ((App.startupCounter < 1) || (--App.startupCounter > 0))
+				if ((startupCounter < 1) || (--startupCounter > 0))
 					return;
 
 				this.StopAutoSaveTimer();
@@ -859,18 +859,60 @@ namespace NeuroAccessMaui
 		/// <returns>PIN, if the user has provided the correct PIN. Empty string, if PIN is not configured, null if operation is cancelled.</returns>
 		public static async Task<string?> InputPin()
 		{
-			ITagProfile Profile = App.Instantiate<ITagProfile>();
+			ITagProfile Profile = ServiceRef.TagProfile;
 			if (!Profile.HasPin)
 				return string.Empty;
 
 			return await InputPin(Profile);
 		}
 
+		private static async Task<string?> InputPin(ITagProfile Profile)
+		{
+			displayedPinPopup = true;
+
+			try
+			{
+				if (!Profile.HasPin)
+					return string.Empty;
+
+				CheckPinViewModel ViewModel = new();
+				CheckPinPage Page = new(ViewModel);
+				await MopupService.Instance.PushAsync(Page);
+				await CheckUserBlocking();
+				return await ViewModel.Result;
+			}
+			catch (Exception)
+			{
+				return null;
+			}
+			finally
+			{
+				displayedPinPopup = false;
+			}
+		}
+
 		/// <summary>
 		/// Authenticates the user using the configured authentication method.
 		/// </summary>
 		/// <returns>If the user has been successfully authenticated.</returns>
-		public static async Task<bool> AuthenticateUser(bool Force = false)
+		public static Task<bool> AuthenticateUser(bool Force = false)
+		{
+			if (MainThread.IsMainThread)
+				return AuthenticateUserMainThread(Force);
+			else
+			{
+				TaskCompletionSource<bool> Result = new();
+
+				MainThread.BeginInvokeOnMainThread(async () =>
+				{
+					Result.TrySetResult(await AuthenticateUserMainThread(Force));
+				});
+
+				return Result.Task;
+			}
+		}
+
+		private static async Task<bool> AuthenticateUserMainThread(bool Force = false)
 		{
 			switch (ServiceRef.TagProfile.AuthenticationMethod)
 			{
@@ -935,7 +977,7 @@ namespace NeuroAccessMaui
 
 			if (DateTimeForLogin.HasValue)
 			{
-				IUiSerializer Ui = Instantiate<IUiSerializer>();
+				IUiSerializer Ui = ServiceRef.UiSerializer;
 				string MessageAlert;
 
 				if (DateTimeForLogin == DateTime.MaxValue)
@@ -992,31 +1034,6 @@ namespace NeuroAccessMaui
 				SetCurrentPinCounter(PinAttemptCounter);
 
 				return false;
-			}
-		}
-
-		private static async Task<string?> InputPin(ITagProfile Profile)
-		{
-			displayedPinPopup = true;
-
-			try
-			{
-				if (!Profile.HasPin)
-					return string.Empty;
-
-				CheckPinViewModel ViewModel = new();
-				CheckPinPage Page = new(ViewModel);
-				await MopupService.Instance.PushAsync(Page);
-				await CheckUserBlocking();
-				return await ViewModel.Result;
-			}
-			catch (Exception)
-			{
-				return null;
-			}
-			finally
-			{
-				displayedPinPopup = false;
 			}
 		}
 
