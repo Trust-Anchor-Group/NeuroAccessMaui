@@ -33,7 +33,7 @@ namespace NeuroAccessMaui.Services.Nfc
 		{
 			try
 			{
-				if (!await App.VerifyPin())
+				if (!await App.AuthenticateUser())
 					return;
 
 				string TagId = Hashes.BinaryToString(Tag.ID).ToUpper(CultureInfo.InvariantCulture);

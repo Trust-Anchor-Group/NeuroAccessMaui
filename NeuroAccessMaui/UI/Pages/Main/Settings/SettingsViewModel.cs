@@ -204,7 +204,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 					case nameof(this.UsePinCode):
 						if (!this.initializing && this.UsePinCode)
 						{
-							if (await App.VerifyPin(true))
+							if (await App.AuthenticateUser(true))
 								ServiceRef.TagProfile.SetAuthenticationMethod(AuthenticationMethod.Pin);
 							else
 								this.ResetAuthenticationMode();
@@ -214,7 +214,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 					case nameof(this.UseFingerprint):
 						if (!this.initializing && this.UseFingerprint)
 						{
-							if (await App.VerifyPin(true))
+							if (await App.AuthenticateUser(true))
 								ServiceRef.TagProfile.SetAuthenticationMethod(AuthenticationMethod.Fingerprint);
 							else
 								this.ResetAuthenticationMode();
@@ -276,7 +276,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			if (!ServiceRef.PlatformSpecific.CanProhibitScreenCapture)
 				return;
 
-			if (!await App.VerifyPin())
+			if (!await App.AuthenticateUser())
 				return;
 
 			ServiceRef.PlatformSpecific.ProhibitScreenCapture = false;
@@ -287,7 +287,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			if (!ServiceRef.PlatformSpecific.CanProhibitScreenCapture)
 				return;
 
-			if (!await App.VerifyPin())
+			if (!await App.AuthenticateUser())
 				return;
 
 			ServiceRef.PlatformSpecific.ProhibitScreenCapture = true;
@@ -313,7 +313,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 				if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToRevokeYourLegalIdentity)]))
 					return;
 
-				if (!await App.VerifyPin(true))
+				if (!await App.AuthenticateUser(true))
 					return;
 
 				(bool succeeded, LegalIdentity? RevokedIdentity) = await ServiceRef.NetworkService.TryRequest(
@@ -334,7 +334,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 
 		private static async Task<bool> AreYouSure(string Message)
 		{
-			if (!await App.VerifyPin())
+			if (!await App.AuthenticateUser())
 				return false;
 
 			return await ServiceRef.UiSerializer.DisplayAlert(
@@ -354,7 +354,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 				if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToReportYourLegalIdentityAsCompromized)]))
 					return;
 
-				if (!await App.VerifyPin(true))
+				if (!await App.AuthenticateUser(true))
 					return;
 
 				(bool succeeded, LegalIdentity? CompromisedIdentity) = await ServiceRef.NetworkService.TryRequest(

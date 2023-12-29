@@ -357,7 +357,7 @@ namespace NeuroAccessMaui
 			if (!this.initCompleted.Wait(60000))
 				throw new Exception("Initialization did not complete in time.");
 
-			if (!await VerifyPin())
+			if (!await AuthenticateUser())
 				await Stop();
 		}
 
@@ -377,7 +377,7 @@ namespace NeuroAccessMaui
 		{
 			await this.DoResume(false);
 
-			if (!await VerifyPin())
+			if (!await AuthenticateUser())
 				await Stop();
 		}
 
@@ -867,10 +867,10 @@ namespace NeuroAccessMaui
 		}
 
 		/// <summary>
-		/// Asks the user to verify with its PIN.
+		/// Authenticates the user using the configured authentication method.
 		/// </summary>
-		/// <returns>If the user has provided the correct PIN</returns>
-		public static async Task<bool> VerifyPin(bool Force = false)
+		/// <returns>If the user has been successfully authenticated.</returns>
+		public static async Task<bool> AuthenticateUser(bool Force = false)
 		{
 			ITagProfile Profile = Instantiate<ITagProfile>();
 

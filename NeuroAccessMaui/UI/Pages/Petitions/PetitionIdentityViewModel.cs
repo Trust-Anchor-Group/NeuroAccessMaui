@@ -125,7 +125,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 		[RelayCommand]
 		private async Task Accept()
 		{
-			if (!await App.VerifyPin())
+			if (!await App.AuthenticateUser())
 				return;
 
 			bool Succeeded = await ServiceRef.NetworkService.TryRequest(() =>

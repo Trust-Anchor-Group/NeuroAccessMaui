@@ -995,7 +995,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 					return;
 				}
 
-				if (!await App.VerifyPin())
+				if (!await App.AuthenticateUser())
 					return;
 
 				(bool Succeeded1, byte[]? Signature) = await ServiceRef.NetworkService.TryRequest(
