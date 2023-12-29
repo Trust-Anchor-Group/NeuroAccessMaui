@@ -24,9 +24,24 @@ namespace NeuroAccessMaui.Services.Tag
 		/// </summary>
 		event PropertyChangedEventHandler? Changed;
 
+		/// <summary>
+		/// Initial domain.
+		/// </summary>
 		string? InitialDomain { get; }
+
+		/// <summary>
+		/// If the <see cref="InitialDomain"/> employs default XMPP connectivity.
+		/// </summary>
 		bool InitialDefaultXmppConnectivity { get; }
+
+		/// <summary>
+		/// API Key for the <see cref="InitialDomain"/>
+		/// </summary>
 		string? InitialApiKey { get; }
+
+		/// <summary>
+		/// Secret for the <see cref="InitialApiKey"/>
+		/// </summary>
 		string? InitialApiSecret { get; }
 
 		/// <summary>
@@ -123,6 +138,11 @@ namespace NeuroAccessMaui.Services.Tag
 		/// Indicates if the user has a <see cref="Pin"/>.
 		/// </summary>
 		bool HasPin { get; }
+
+		/// <summary>
+		/// How the user authenticates itself with the App.
+		/// </summary>
+		AuthenticationMethod AuthenticationMethod { get; }
 
 		/// <summary>
 		/// Returns <c>true</c> if the user choose the educational or experimental purpose.
@@ -319,7 +339,7 @@ namespace NeuroAccessMaui.Services.Tag
 		void SetFileUploadParameters(string httpFileUploadJid, long maxSize);
 
 		/// <summary>
-		/// Used during XMPP service discovery. Sets the log id.
+		/// Used during XMPP service discovery. Sets the Log ID.
 		/// </summary>
 		/// <param name="logJid">The log id.</param>
 		void SetLogJid(string logJid);
@@ -353,5 +373,11 @@ namespace NeuroAccessMaui.Services.Tag
 		/// Sets the preferred theme.
 		/// </summary>
 		void SetTheme();
+
+		/// <summary>
+		/// Sets the authentication method.
+		/// </summary>
+		/// <param name="AuthenticationMethod">Authentication method.</param>
+		void SetAuthenticationMethod(AuthenticationMethod AuthenticationMethod);
 	}
 }

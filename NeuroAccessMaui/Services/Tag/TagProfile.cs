@@ -121,7 +121,8 @@ namespace NeuroAccessMaui.Services.Tag
 				TestOtpTimestamp = this.TestOtpTimestamp,
 				LegalIdentity = this.LegalIdentity,
 				Step = this.Step,
-				Theme = this.Theme
+				Theme = this.Theme,
+				AuthenticationMethod = this.AuthenticationMethod
 			};
 
 			return Clone;
@@ -162,6 +163,7 @@ namespace NeuroAccessMaui.Services.Tag
 				this.TestOtpTimestamp = configuration.TestOtpTimestamp;
 				this.LegalIdentity = configuration.LegalIdentity;
 				this.Theme = configuration.Theme;
+				this.AuthenticationMethod = configuration.AuthenticationMethod;
 
 				// Do this last, as listeners will read the other properties when the event is fired.
 				this.GoToStep(configuration.Step);

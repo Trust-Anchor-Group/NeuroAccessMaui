@@ -12,6 +12,7 @@ using Waher.Networking.XMPP.Contracts;
 using NeuroAccessMaui.UI.Pages.Identity;
 using Mopups.Services;
 using NeuroAccessMaui.UI.Popups;
+using NeuroAccessMaui.Services.Tag;
 
 namespace NeuroAccessMaui.UI.Pages.Main.Settings
 {
@@ -47,6 +48,8 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 						this.IsDarkMode = true;
 						break;
 				}
+
+				this.ResetAuthenticationMode();
 			}
 			finally
 			{
@@ -197,12 +200,38 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 						if (!this.initializing && this.ScreenCaptureProhibited)
 							await ProhibitScreenCapture();
 						break;
+
+					case nameof(this.UsePinCode):
+						if (!this.initializing && this.UsePinCode)
+						{
+							if (await App.VerifyPin(true))
+								ServiceRef.TagProfile.SetAuthenticationMethod(AuthenticationMethod.Pin);
+							else
+								this.ResetAuthenticationMode();
+						}
+						break;
+
+					case nameof(this.UseFingerprint):
+						if (!this.initializing && this.UseFingerprint)
+						{
+							if (await App.VerifyPin(true))
+								ServiceRef.TagProfile.SetAuthenticationMethod(AuthenticationMethod.Fingerprint);
+							else
+								this.ResetAuthenticationMode();
+						}
+						break;
 				}
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
 			}
+		}
+
+		private void ResetAuthenticationMode()
+		{
+			this.UsePinCode = ServiceRef.TagProfile.AuthenticationMethod == AuthenticationMethod.Pin;
+			this.UseFingerprint = ServiceRef.TagProfile.AuthenticationMethod == AuthenticationMethod.Fingerprint;
 		}
 
 		private void SetTheme(AppTheme Theme)

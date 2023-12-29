@@ -1,4 +1,5 @@
-﻿using Waher.Networking.XMPP.Contracts;
+﻿using NeuroAccessMaui.Services.Tag;
+using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence.Attributes;
 
 // !!! keep the namespace as is. It's important for the database
@@ -133,8 +134,8 @@ namespace NeuroAccessMaui.Services
 		/// <summary>
 		/// Purpose for using the app
 		/// </summary>
-		[DefaultValue(Tag.PurposeUse.Personal)]
-		public Tag.PurposeUse Purpose { get; set; }
+		[DefaultValue(PurposeUse.Personal)]
+		public PurposeUse Purpose { get; set; } = PurposeUse.Personal;
 
 		/// <summary>
 		/// Set to current timestamp if the user used a Test OTP Code.
@@ -151,13 +152,19 @@ namespace NeuroAccessMaui.Services
 		/// <summary>
 		/// Current step in the registration process.
 		/// </summary>
-		[DefaultValue(Tag.RegistrationStep.RequestPurpose)]
-		public Tag.RegistrationStep Step { get; set; }
+		[DefaultValue(RegistrationStep.RequestPurpose)]
+		public RegistrationStep Step { get; set; } = RegistrationStep.RequestPurpose;
 
 		/// <summary>
 		/// Currently selected theme.
 		/// </summary>
 		[DefaultValueNull]
 		public AppTheme? Theme { get; set; }
+
+		/// <summary>
+		/// How the user authenticates itself with the App.
+		/// </summary>
+		[DefaultValue(AuthenticationMethod.Pin)]
+		public AuthenticationMethod AuthenticationMethod { get; set; } = AuthenticationMethod.Pin;
 	}
 }
