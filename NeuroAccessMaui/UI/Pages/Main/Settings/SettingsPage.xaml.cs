@@ -13,6 +13,7 @@
 		{
 			this.InitializeComponent();
 			this.ContentPageModel = ViewModel;
+			ViewModel.Page = this;
 		}
 	}
 }

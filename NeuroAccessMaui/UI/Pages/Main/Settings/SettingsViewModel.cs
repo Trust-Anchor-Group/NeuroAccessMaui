@@ -51,6 +51,14 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			}
 		}
 
+		/// <summary>
+		/// Reference to current page. Needed to propagate radio-button states, as the current version of Maui does not
+		/// handle these properly (at the time of writing).
+		///
+		/// TODO: Check if this has been fixed after updating Maui and related components.
+		/// </summary>
+		internal SettingsPage? Page { get; set; }
+
 		protected override async Task OnInitialize()
 		{
 			await base.OnInitialize();
@@ -200,15 +208,40 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 						break;
 
 					case nameof(this.AuthenticationMethod):
-						if (!this.initializing && this.AuthenticationMethod != this.ApprovedAuthenticationMethod)
+						if (!this.initializing &&
+							this.AuthenticationMethod != this.ApprovedAuthenticationMethod &&
+							Enum.TryParse(this.AuthenticationMethod, out AuthenticationMethod AuthenticationMethod))
 						{
-							if (await App.AuthenticateUser(true) && Enum.TryParse(this.AuthenticationMethod, out AuthenticationMethod AuthenticationMethod))
+							if (await App.AuthenticateUser(true))
 							{
 								ServiceRef.TagProfile.SetAuthenticationMethod(AuthenticationMethod);
 								this.ApprovedAuthenticationMethod = this.AuthenticationMethod;
 							}
 							else
+							{
 								this.AuthenticationMethod = this.ApprovedAuthenticationMethod;
+
+								if (this.Page is not null)
+								{
+									/// Needed to propagate radio-button states, as the current version of Maui does not
+									/// handle these properly (at the time of writing).
+									///
+									/// TODO: Check if this has been fixed after updating Maui and related components.
+
+									switch (Enum.Parse<AuthenticationMethod>(this.AuthenticationMethod))
+									{
+										case AuthenticationMethod.Pin:
+											this.Page.Fingerprint.IsChecked = false;
+											this.Page.UsePinCode.IsChecked = true;
+											break;
+
+										case AuthenticationMethod.Fingerprint:
+											this.Page.UsePinCode.IsChecked = false;
+											this.Page.Fingerprint.IsChecked = true;
+											break;
+									}
+								}
+							}
 						}
 						break;
 				}
