@@ -8,73 +8,6 @@ using Waher.Security;
 
 namespace NeuroAccessMaui.Services.Tag
 {
-	/// <summary>
-	/// The different steps of a TAG Profile registration journey.
-	/// </summary>
-	public enum RegistrationStep
-	{
-		/// <summary>
-		/// Request one of <see cref="PurposeUse" />
-		/// </summary>
-		RequestPurpose = 0,
-
-		/// <summary>
-		/// Validate the phone number 
-		/// </summary>
-		ValidatePhone = 1,
-
-		/// <summary>
-		/// Validate the email address
-		/// </summary>
-		ValidateEmail = 2,
-
-		/// <summary>
-		/// Choose the provider on which to create an account
-		/// </summary>
-		ChooseProvider = 3,
-
-		/// <summary>
-		/// Create a new account
-		/// </summary>
-		CreateAccount = 4,
-
-		/// <summary>
-		/// Create a PIN code
-		/// </summary>
-		DefinePin = 5,
-
-		/// <summary>
-		/// Profile is completed.
-		/// </summary>
-		Complete = 6
-	}
-
-	/// <summary>
-	/// For what purpose the app will be used
-	/// </summary>
-	public enum PurposeUse
-	{
-		/// <summary>
-		/// For personal use
-		/// </summary>
-		Personal = 0,
-
-		/// <summary>
-		/// For use at work
-		/// </summary>
-		Work = 1,
-
-		/// <summary>
-		/// For educational use
-		/// </summary>
-		Educational = 2,
-
-		/// <summary>
-		/// For experimental use
-		/// </summary>
-		Experimental = 3
-	}
-
 	/// <inheritdoc/>
 	[Singleton]
 	public partial class TagProfile : ITagProfile
@@ -125,6 +58,7 @@ namespace NeuroAccessMaui.Services.Tag
 		private DateTime? testOtpTimestamp;
 		private RegistrationStep step = RegistrationStep.RequestPurpose;
 		private AppTheme? theme;
+		private AuthenticationMethod authenticationMethod;
 		private bool suppressPropertyChangedEvents;
 		private bool initialDefaultXmppConnectivity;
 		private bool defaultXmppConnectivity;
@@ -238,7 +172,10 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Returns <c>true</c> if the current <see cref="ITagProfile"/> needs to have its values updated, <c>false</c> otherwise.
+		/// </summary>
+		/// <returns>If values need updating</returns>
 		public virtual bool NeedsUpdating()
 		{
 			return string.IsNullOrWhiteSpace(this.legalJid) ||
@@ -247,19 +184,30 @@ namespace NeuroAccessMaui.Services.Tag
 				   string.IsNullOrWhiteSpace(this.mucJid);
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Returns <c>true</c> if the current <see cref="ITagProfile"/> needs to have its legal identity updated, <c>false</c> otherwise.
+		/// </summary>
+		/// <returns>If legal identity need updating</returns>
 		public virtual bool LegalIdentityNeedsUpdating()
 		{
 			return this.legalIdentity?.Discarded() ?? true;
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Returns <c>true</c> if the registration process for this <see cref="ITagProfile"/> has an account but not a legal id,
+		/// <c>false</c> otherwise.
+		/// </summary>
+		/// <returns><c>true</c> if the registration process for this <see cref="ITagProfile"/> has an account but not a legal id,
+		/// <c>false</c> otherwise.</returns>
 		public virtual bool ShouldCreateClient()
 		{
 			return this.Step >= RegistrationStep.CreateAccount && !string.IsNullOrEmpty(this.Account);
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Returns <c>true</c> if the registration process for this <see cref="ITagProfile"/> is either fully complete or is just awaiting validation, <c>false</c> otherwise.
+		/// </summary>
+		/// <returns><c>true</c> if the registration process for this <see cref="ITagProfile"/> is either fully complete or is just awaiting validation, <c>false</c> otherwise.</returns>
 		public virtual bool IsCompleteOrWaitingForValidation()
 		{
 			return this.Step >= RegistrationStep.CreateAccount &&
@@ -267,7 +215,10 @@ namespace NeuroAccessMaui.Services.Tag
 				this.LegalIdentity.State == IdentityState.Created;
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Returns <c>true</c> if the registration process for this <see cref="ITagProfile"/> is either fully complete, <c>false</c> otherwise.
+		/// </summary>
+		/// <returns><c>true</c> if the registration process for this <see cref="ITagProfile"/> is either fully complete, <c>false</c> otherwise.</returns>
 		public virtual bool IsComplete()
 		{
 			return this.Step == RegistrationStep.Complete;
@@ -275,21 +226,9 @@ namespace NeuroAccessMaui.Services.Tag
 
 		#region Properties
 
-		/// <inheritdoc/>
-		public bool InitialDefaultXmppConnectivity
-		{
-			get => this.initialDefaultXmppConnectivity;
-			private set
-			{
-				if (this.initialDefaultXmppConnectivity != value)
-				{
-					this.initialDefaultXmppConnectivity = value;
-					this.FlagAsDirty(nameof(this.InitialDefaultXmppConnectivity));
-				}
-			}
-		}
-
-		/// <inheritdoc/>
+		/// <summary>
+		/// Initial domain.
+		/// </summary>
 		public string? InitialDomain
 		{
 			get => this.initialDomain;
@@ -303,7 +242,25 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// If the <see cref="InitialDomain"/> employs default XMPP connectivity.
+		/// </summary>
+		public bool InitialDefaultXmppConnectivity
+		{
+			get => this.initialDefaultXmppConnectivity;
+			private set
+			{
+				if (this.initialDefaultXmppConnectivity != value)
+				{
+					this.initialDefaultXmppConnectivity = value;
+					this.FlagAsDirty(nameof(this.InitialDefaultXmppConnectivity));
+				}
+			}
+		}
+
+		/// <summary>
+		/// API Key for the <see cref="InitialDomain"/>
+		/// </summary>
 		public string? InitialApiKey
 		{
 			get => this.initialApiKey;
@@ -317,7 +274,9 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Secret for the <see cref="InitialApiKey"/>
+		/// </summary>
 		public string? InitialApiSecret
 		{
 			get => this.initialApiSecret;
@@ -331,21 +290,9 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 		}
 
-		/// <inheritdoc/>
-		public bool DefaultXmppConnectivity
-		{
-			get => this.defaultXmppConnectivity;
-			private set
-			{
-				if (this.defaultXmppConnectivity != value)
-				{
-					this.defaultXmppConnectivity = value;
-					this.FlagAsDirty(nameof(this.DefaultXmppConnectivity));
-				}
-			}
-		}
-
-		/// <inheritdoc/>
+		/// <summary>
+		/// The domain this profile is connected to.
+		/// </summary>
 		public string? Domain
 		{
 			get => this.domain;
@@ -359,7 +306,25 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// If connecting to the domain can be done using default parameters (host=domain, default c2s port).
+		/// </summary>
+		public bool DefaultXmppConnectivity
+		{
+			get => this.defaultXmppConnectivity;
+			private set
+			{
+				if (this.defaultXmppConnectivity != value)
+				{
+					this.defaultXmppConnectivity = value;
+					this.FlagAsDirty(nameof(this.DefaultXmppConnectivity));
+				}
+			}
+		}
+
+		/// <summary>
+		/// API Key, for creating new account.
+		/// </summary>
 		public string? ApiKey
 		{
 			get => this.apiKey;
@@ -373,7 +338,9 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// API Secret, for creating new account.
+		/// </summary>
 		public string? ApiSecret
 		{
 			get => this.apiSecret;
@@ -387,7 +354,9 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Selected country. Some countries have the same phone code, so we want to save the selected country
+		/// </summary>
 		public string? SelectedCountry
 		{
 			get => this.selectedCountry;
@@ -401,7 +370,9 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Verified phone number.
+		/// </summary>
 		public string? PhoneNumber
 		{
 			get => this.phoneNumber;
@@ -415,7 +386,9 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Verified e-mail address.
+		/// </summary>
 		public string? EMail
 		{
 			get => this.eMail;
@@ -429,7 +402,9 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// The account name for this profile
+		/// </summary>
 		public string? Account
 		{
 			get => this.account;
@@ -443,7 +418,9 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// A hash of the current password.
+		/// </summary>
 		public string? PasswordHash
 		{
 			get => this.passwordHash;
@@ -457,7 +434,9 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// The hash method used for hashing the password.
+		/// </summary>
 		public string? PasswordHashMethod
 		{
 			get => this.passwordHashMethod;
@@ -471,7 +450,9 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// The Jabber Legal JID for this user/profile.
+		/// </summary>
 		public string? LegalJid
 		{
 			get => this.legalJid;
@@ -485,7 +466,9 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// The XMPP server's file upload Jid.
+		/// </summary>
 		public string? HttpFileUploadJid
 		{
 			get => this.httpFileUploadJid;
@@ -499,7 +482,9 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// The XMPP server's max size for file uploads.
+		/// </summary>
 		public long HttpFileUploadMaxSize
 		{
 			get => this.httpFileUploadMaxSize;
@@ -513,7 +498,9 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// The XMPP server's log Jid.
+		/// </summary>
 		public string? LogJid
 		{
 			get => this.logJid;
@@ -527,9 +514,16 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// This profile's current registration step.
+		/// </summary>
 		public RegistrationStep Step => this.step;
 
+		/// <summary>
+		/// Changes the current onboarding step.
+		/// </summary>
+		/// <param name="NewStep">New step</param>
+		/// <param name="SupressEvent">If registration step event should be supressed (default=false).</param>
 		public void GoToStep(RegistrationStep NewStep, bool SupressEvent = false)
 		{
 			if (this.step != NewStep)
@@ -542,19 +536,25 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Returns <c>true</c> if file upload is supported for the specified XMPP server, <c>false</c> otherwise.
+		/// </summary>
 		public bool FileUploadIsSupported
 		{
 			get => !string.IsNullOrWhiteSpace(this.HttpFileUploadJid) && this.HttpFileUploadMaxSize > 0;
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// The user's PIN value.
+		/// </summary>
 		public string Pin
 		{
 			set => this.PinHash = this.ComputePinHash(value);
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// A hashed version of the user's <see cref="Pin"/>.
+		/// </summary>
 		public string? PinHash
 		{
 			get => this.pinHash;
@@ -568,13 +568,33 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Indicates if the user has a <see cref="Pin"/>.
+		/// </summary>
 		public bool HasPin
 		{
 			get => !string.IsNullOrEmpty(this.PinHash);
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// How the user authenticates itself with the App.
+		/// </summary>
+		public AuthenticationMethod AuthenticationMethod
+		{
+			get => this.authenticationMethod;
+			private set
+			{
+				if (this.authenticationMethod != value)
+				{
+					this.authenticationMethod = value;
+					this.FlagAsDirty(nameof(this.AuthenticationMethod));
+				}
+			}
+		}
+
+		/// <summary>
+		/// Returns <c>true</c> if the user choose the educational or experimental purpose.
+		/// </summary>
 		public bool IsTest
 		{
 			get => this.isTest;
@@ -604,7 +624,9 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Returns a timestamp if the user used a Test OTP Code.
+		/// </summary>
 		public DateTime? TestOtpTimestamp
 		{
 			get => this.testOtpTimestamp;
@@ -618,7 +640,9 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// The legal identity of the curren user/profile.
+		/// </summary>
 		public LegalIdentity? LegalIdentity
 		{
 			get => this.legalIdentity;
@@ -648,7 +672,9 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Returns <c>true</c> if the current <see cref="ITagProfile"/> has changed values and need saving, <c>false</c> otherwise.
+		/// </summary>
 		public bool IsDirty { get; private set; }
 
 		private void FlagAsDirty(string PropertyName)
@@ -659,7 +685,9 @@ namespace NeuroAccessMaui.Services.Tag
 				this.OnChanged(new PropertyChangedEventArgs(PropertyName));
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Resets the <see cref="IsDirty"/> flag, can be used after persisting values to <see cref="IStorageService"/>.
+		/// </summary>
 		public void ResetIsDirty()
 		{
 			this.IsDirty = false;
@@ -669,20 +697,33 @@ namespace NeuroAccessMaui.Services.Tag
 
 		#region Build Steps
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Sets the phone number used for contacting the user.
+		/// </summary>
+		/// <param name="Country">Country of the phone number.</param>
+		/// <param name="PhoneNumber">Verified phone number.</param>
 		public void SetPhone(string Country, string PhoneNumber)
 		{
 			this.SelectedCountry = Country;
 			this.PhoneNumber = PhoneNumber;
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Sets the e-mail address used for contacting the user.
+		/// </summary>
+		/// <param name="EMail">Verified e-mail address.</param>
 		public void SetEMail(string EMail)
 		{
 			this.EMail = EMail;
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Set the domain name to connect to.
+		/// </summary>
+		/// <param name="DomainName">The domain name.</param>
+		/// <param name="DefaultXmppConnectivity">If connecting to the domain can be done using default parameters (host=domain, default c2s port).</param>
+		/// <param name="Key">Key to use, if an account is to be created.</param>
+		/// <param name="Secret">Secret to use, if an account is to be created.</param>
 		public void SetDomain(string DomainName, bool DefaultXmppConnectivity, string Key, string Secret)
 		{
 			if (string.IsNullOrEmpty(this.InitialDomain))
@@ -707,7 +748,9 @@ namespace NeuroAccessMaui.Services.Tag
 			this.ApiSecret = Secret;
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Reverses the SetDomain to the Initial* values.
+		/// </summary>
 		public void UndoDomainSelection()
 		{
 			if (this.InitialDomain is not null)
@@ -719,7 +762,9 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Revert the SetDomain
+		/// </summary>
 		public void ClearDomain()
 		{
 			this.DefaultXmppConnectivity = false;
@@ -728,7 +773,12 @@ namespace NeuroAccessMaui.Services.Tag
 			this.ApiSecret = string.Empty;
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Set the account name and password for a <em>new</em> account.
+		/// </summary>
+		/// <param name="AccountName">The account/user name.</param>
+		/// <param name="ClientPasswordHash">The password hash (never send the real password).</param>
+		/// <param name="ClientPasswordHashMethod">The hash method used when hashing the password.</param>
 		public void SetAccount(string AccountName, string ClientPasswordHash, string ClientPasswordHashMethod)
 		{
 			this.PasswordHash = ClientPasswordHash;
@@ -740,7 +790,13 @@ namespace NeuroAccessMaui.Services.Tag
 			this.Account = AccountName;
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Set the account name and password for an <em>existing</em> account.
+		/// </summary>
+		/// <param name="AccountName">The account/user name.</param>
+		/// <param name="ClientPasswordHash">The password hash (never send the real password).</param>
+		/// <param name="ClientPasswordHashMethod">The hash method used when hashing the password.</param>
+		/// <param name="Identity">The new identity.</param>
 		public void SetAccountAndLegalIdentity(string AccountName, string ClientPasswordHash, string ClientPasswordHashMethod, LegalIdentity Identity)
 		{
 			this.PasswordHash = ClientPasswordHash;
@@ -753,7 +809,18 @@ namespace NeuroAccessMaui.Services.Tag
 			this.Account = AccountName;
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Set the legal identity of a newly created account.
+		/// </summary>
+		/// <param name="LegalIdentity">The legal identity to use.</param>
+		public void SetLegalIdentity(LegalIdentity Identity)
+		{
+			this.LegalIdentity = Identity;
+		}
+
+		/// <summary>
+		/// Revert the Set Account
+		/// </summary>
 		public void ClearAccount()
 		{
 			this.PasswordHash = string.Empty;
@@ -764,37 +831,46 @@ namespace NeuroAccessMaui.Services.Tag
 			this.Account = string.Empty;
 		}
 
-		/// <inheritdoc/>
-		public void SetLegalIdentity(LegalIdentity Identity)
-		{
-			this.LegalIdentity = Identity;
-		}
-
-		/// <inheritdoc/>
+		/// <summary>
+		/// Revert the Set LegalIdentity
+		/// </summary>
 		public void ClearLegalIdentity()
 		{
 			this.LegalIdentity = null;
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Sets the current <see cref="LegalIdentity"/> to the revoked identity, and reverses the <see cref="Step"/> property.
+		/// </summary>
+		/// <param name="revokedIdentity">The revoked identity to use.</param>
 		public void RevokeLegalIdentity(LegalIdentity RevokedIdentity)
 		{
 			this.LegalIdentity = RevokedIdentity;
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Sets the current <see cref="LegalIdentity"/> to the compromised identity, and reverses the <see cref="Step"/> property.
+		/// </summary>
+		/// <param name="compromisedIdentity">The compromised identity to use.</param>
 		public void CompromiseLegalIdentity(LegalIdentity CompromisedIdentity)
 		{
 			this.LegalIdentity = CompromisedIdentity;
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Set a pin to use for protecting the account.
+		/// </summary>
+		/// <param name="Pin">The pin to use.</param>
 		public void SetPin(string Pin)
 		{
 			this.Pin = Pin;
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Set if the user choose the educational or experimental purpose.
+		/// </summary>
+		/// <param name="IsTest">If app is in test mode.</param>
+		/// <param name="Purpose">Purpose for using the app</param>
 		public void SetPurpose(bool IsTest, PurposeUse Purpose)
 		{
 			this.IsTest = IsTest;
@@ -807,20 +883,30 @@ namespace NeuroAccessMaui.Services.Tag
 			this.TestOtpTimestamp = Timestamp;
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Used during XMPP service discovery. Sets the legal id.
+		/// </summary>
+		/// <param name="legalJid">The legal id.</param>
 		public void SetLegalJid(string LegalJid)
 		{
 			this.LegalJid = LegalJid;
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Used during XMPP service discovery. Sets the file upload parameters.
+		/// </summary>
+		/// <param name="httpFileUploadJid">The http file upload id.</param>
+		/// <param name="maxSize">The max size allowed.</param>
 		public void SetFileUploadParameters(string HttpFileUploadJid, long MaxSize)
 		{
 			this.HttpFileUploadJid = HttpFileUploadJid;
 			this.HttpFileUploadMaxSize = MaxSize;
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Used during XMPP service discovery. Sets the Log ID.
+		/// </summary>
+		/// <param name="logJid">The log id.</param>
 		public void SetLogJid(string LogJid)
 		{
 			this.LogJid = LogJid;
@@ -843,6 +929,15 @@ namespace NeuroAccessMaui.Services.Tag
 		{
 			if (Application.Current is not null && this.Theme.HasValue)
 				Application.Current.UserAppTheme = this.Theme.Value;
+		}
+
+		/// <summary>
+		/// Sets the authentication method.
+		/// </summary>
+		/// <param name="AuthenticationMethod">Authentication method.</param>
+		public void SetAuthenticationMethod(AuthenticationMethod AuthenticationMethod)
+		{
+			this.authenticationMethod = AuthenticationMethod;
 		}
 
 		#endregion
