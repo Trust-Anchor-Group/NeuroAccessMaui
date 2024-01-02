@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Maui;
+using NeuroAccessMaui.UI.Pages.Applications;
 using NeuroAccessMaui.UI.Pages.Identity;
 using NeuroAccessMaui.UI.Pages.Main;
-using NeuroAccessMaui.UI.Pages.Main.Applications;
 using NeuroAccessMaui.UI.Pages.Main.Settings;
 using NeuroAccessMaui.UI.Pages.Petitions;
 using NeuroAccessMaui.UI.Pages.Registration;
@@ -20,7 +20,6 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<MainPage, MainViewModel>();
 			Builder.Services.AddTransient<SettingsPage, SettingsViewModel>();
 			Builder.Services.AddTransient<ChangePinPage, ChangePinViewModel>();
-			Builder.Services.AddTransient<ApplicationsPage, ApplicationsViewModel>();
 
 			// Registration pages & views
 			Builder.Services.AddTransient<RegistrationPage, RegistrationViewModel>();
@@ -39,6 +38,9 @@ namespace NeuroAccessMaui.UI
 			// Petitions
 			Builder.Services.AddTransient<PetitionIdentityPage, PetitionIdentityViewModel>();
 			Builder.Services.AddTransient<PetitionSignaturePage, PetitionSignatureViewModel>();
+
+			// Applications
+			Builder.Services.AddTransient<ApplicationsPage, ApplicationsViewModel>();
 
 			// Popups
 			Builder.Services.AddTransient<ViewImagePage, ViewImageViewModel>();

@@ -179,7 +179,7 @@
 	    <AutoGen>True</AutoGen>
 	    <DependentUpon>AppResources.resx</DependentUpon>
 	  </Compile>
-	  <Compile Update="UI\Pages\Main\Applications\ApplicationsPage.xaml.cs">
+	  <Compile Update="UI\Pages\Applications\ApplicationsPage.xaml.cs">
 	    <DependentUpon>ApplicationsPage.xaml</DependentUpon>
 	  </Compile>
 	  <Compile Update="UI\Pages\Main\Settings\SettingsPage.xaml.cs">
@@ -206,7 +206,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="UI\Pages\Main\Applications\ApplicationsPage.xaml">
+	  <MauiXaml Update="UI\Pages\Applications\ApplicationsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="UI\Pages\Main\Settings\SettingsPage.xaml">
@@ -218,5 +218,9 @@
 	  <MauiXaml Update="UI\Popups\Pin\CheckPinPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="UI\Pages\Main\Applications\" />
 	</ItemGroup>
 </Project>

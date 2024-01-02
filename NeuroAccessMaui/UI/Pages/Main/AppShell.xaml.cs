@@ -1,6 +1,6 @@
 ﻿using NeuroAccessMaui.Services;
+using NeuroAccessMaui.UI.Pages.Applications;
 using NeuroAccessMaui.UI.Pages.Identity;
-using NeuroAccessMaui.UI.Pages.Main.Applications;
 using NeuroAccessMaui.UI.Pages.Main.QR;
 using NeuroAccessMaui.UI.Pages.Main.Settings;
 using NeuroAccessMaui.UI.Pages.Main.VerifyCode;
@@ -24,10 +24,10 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			Routing.RegisterRoute(nameof(ScanQrCodePage), typeof(ScanQrCodePage));
 			Routing.RegisterRoute(nameof(SettingsPage), typeof(SettingsPage));
 			Routing.RegisterRoute(nameof(ChangePinPage), typeof(ChangePinPage));
-			Routing.RegisterRoute(nameof(ApplicationsPage), typeof(ApplicationsPage));
 			Routing.RegisterRoute(nameof(VerifyCodePage), typeof(VerifyCodePage));
 			Routing.RegisterRoute(nameof(PetitionSignaturePage), typeof(PetitionSignaturePage));
 			Routing.RegisterRoute(nameof(ViewIdentityPage), typeof(ViewIdentityPage));
+			Routing.RegisterRoute(nameof(ApplicationsPage), typeof(ApplicationsPage));
 		}
 
 		private async void Close_Clicked(object sender, EventArgs e)

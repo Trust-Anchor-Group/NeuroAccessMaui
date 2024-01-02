@@ -1,20 +1,8 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using NeuroAccessMaui.Resources.Languages;
+﻿using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services;
-using System.ComponentModel;
-using System.Security.Cryptography;
-using System.Text;
-using System.Xml;
-using Waher.Content.Xml;
 using Waher.Networking.XMPP;
-using Waher.Networking.XMPP.Contracts;
-using NeuroAccessMaui.UI.Pages.Identity;
-using Mopups.Services;
-using NeuroAccessMaui.UI.Popups;
-using NeuroAccessMaui.Services.Tag;
 
-namespace NeuroAccessMaui.UI.Pages.Main.Applications
+namespace NeuroAccessMaui.UI.Pages.Applications
 {
 	/// <summary>
 	/// The view model to bind to for when displaying the applications page.

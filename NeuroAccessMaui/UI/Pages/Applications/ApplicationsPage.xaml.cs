@@ -1,4 +1,4 @@
-﻿namespace NeuroAccessMaui.UI.Pages.Main.Applications
+﻿namespace NeuroAccessMaui.UI.Pages.Applications
 {
 	/// <summary>
 	/// Main page for App settings.
