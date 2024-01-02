@@ -98,6 +98,9 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		[NotifyCanExecuteChangedFor(nameof(CreateAccountCommand))]
 		private string accountText = string.Empty;
 
+		/// <summary>
+		/// List of alternative account names.
+		/// </summary>
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(HasAlternativeNames))]
 		private List<string> alternativeNames = [];
@@ -112,6 +115,9 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		/// </summary>
 		public static bool IsAccountCreated => !string.IsNullOrEmpty(ServiceRef.TagProfile.Account);
 
+		/// <summary>
+		/// If Legal ID has been created.
+		/// </summary>
 		public static bool IsLegalIdentityCreated
 		{
 			get
@@ -122,6 +128,9 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			}
 		}
 
+		/// <summary>
+		/// If alternative names are available.
+		/// </summary>
 		public bool HasAlternativeNames => this.AlternativeNames.Count > 0;
 
 		public bool CanCreateAccount => !this.IsBusy && !this.AccountIsNotValid && (this.AccountText.Length > 0);

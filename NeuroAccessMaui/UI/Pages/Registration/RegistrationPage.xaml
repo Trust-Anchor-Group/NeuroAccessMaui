@@ -94,6 +94,7 @@
 						<views:ChooseProviderView x:Name="ChooseProviderView" x:FactoryMethod="Create" mct:StateView.StateKey="ChooseProvider" />
 						<views:CreateAccountView x:Name="CreateAccountView" x:FactoryMethod="Create" mct:StateView.StateKey="CreateAccount" />
 						<views:DefinePinView x:Name="DefinePinView" x:FactoryMethod="Create" mct:StateView.StateKey="DefinePin" />
+						<views:IdApplicationView x:Name="IdApplicationView" x:FactoryMethod="Create" mct:StateView.StateKey="IdApplication" />
 					</mct:StateContainer.StateViews>
 
 					<!-- default state, should not occur -->

@@ -2,6 +2,7 @@
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Data;
+using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.UI.Pages.Main.Settings;
 using NeuroAccessMaui.UI.Pages.Registration;
 using Waher.Networking.XMPP.Contracts;
@@ -247,24 +248,40 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		/// </summary>
 		protected override async Task Apply()
 		{
+			if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToSendThisIdApplication)]))
+				return;
+
+			if (!await App.AuthenticateUser(true))
+				return;
+
 			try
 			{
-				if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToSendThisIdApplication)]))
-					return;
-
-				if (!await App.AuthenticateUser(true))
-					return;
+				await GoToRegistrationSte(RegistrationStep.IdApplication);
 
 				(bool Succeeded, LegalIdentity? AddedIdentity) = await ServiceRef.NetworkService.TryRequest(() =>
 					ServiceRef.XmppService.AddLegalIdentity(this));
 
 				if (Succeeded && AddedIdentity is not null)
 					ServiceRef.TagProfile.LegalIdentity = AddedIdentity;
+				else
+					await GoToRegistrationSte(RegistrationStep.ValidatePhone);
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
 				await ServiceRef.UiSerializer.DisplayException(ex);
+				await GoToRegistrationSte(RegistrationStep.ValidatePhone);
+			}
+		}
+
+		private static async Task GoToRegistrationSte(RegistrationStep Step)
+		{
+			if (Shell.Current.CurrentState.Location.OriginalString == Constants.Pages.RegistrationPage)
+				ServiceRef.TagProfile.GoToStep(Step);
+			else
+			{
+				ServiceRef.TagProfile.GoToStep(Step, true);
+				await Shell.Current.GoToAsync(Constants.Pages.RegistrationPage);
 			}
 		}
 

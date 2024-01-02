@@ -30,6 +30,7 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<ChooseProviderView, ChooseProviderViewModel>();
 			Builder.Services.AddTransient<CreateAccountView, CreateAccountViewModel>();
 			Builder.Services.AddTransient<DefinePinView, DefinePinViewModel>();
+			Builder.Services.AddTransient<IdApplicationView, IdApplicationViewModel>();
 
 			// Identity pages & views
 			Builder.Services.AddTransient<ViewIdentityPage, ViewIdentityViewModel>();
