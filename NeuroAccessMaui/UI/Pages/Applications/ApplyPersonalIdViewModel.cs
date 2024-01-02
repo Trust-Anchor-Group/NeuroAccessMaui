@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Data;
 using NeuroAccessMaui.UI.Pages.Registration;
-using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 
 namespace NeuroAccessMaui.UI.Pages.Applications
@@ -23,42 +22,23 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 
 		protected override async Task OnInitialize()
 		{
-			await base.OnInitialize();
-
 			LegalIdentity? CurrentId = ServiceRef.TagProfile.LegalIdentity;
 			if (CurrentId is not null)
 				this.SetProperties(CurrentId.Properties, true);
 
-			this.NotifyCommandsCanExecuteChanged();
+			await base.OnInitialize();
 
 			if (!this.HasApplicationAttributes && this.IsConnected)
 				await Task.Run(this.LoadApplicationAttributes);
 		}
 
 		/// <inheritdoc/>
-		protected override Task XmppService_ConnectionStateChanged(object? Sender, XmppState NewState)
+		protected override async Task OnConnected()
 		{
-			return MainThread.InvokeOnMainThreadAsync(async () =>
-			{
-				await base.XmppService_ConnectionStateChanged(Sender, NewState);
+			await base.OnConnected();
 
-				this.NotifyCommandsCanExecuteChanged();
-
-				if (!this.HasApplicationAttributes && this.IsConnected)
-					await Task.Run(this.LoadApplicationAttributes);
-			});
-		}
-
-		/// <inheritdoc/>
-		public override void SetIsBusy(bool IsBusy)
-		{
-			base.SetIsBusy(IsBusy);
-			this.NotifyCommandsCanExecuteChanged();
-		}
-
-		private void NotifyCommandsCanExecuteChanged()
-		{
-			this.ApplyCommand.NotifyCanExecuteChanged();
+			if (!this.HasApplicationAttributes && this.IsConnected)
+				await Task.Run(this.LoadApplicationAttributes);
 		}
 
 		private async Task LoadApplicationAttributes()
@@ -285,15 +265,14 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		private bool requiresCountryIso3166;
 
-		/// <summary>
-		/// Used to find out if an ICommand can execute
-		/// </summary>
-		public bool CanExecuteCommands => !this.IsBusy && this.IsConnected;
+		#endregion
+
+		#region Commands
 
 		/// <summary>
 		/// Used to find out if an ICommand can execute
 		/// </summary>
-		public bool CanApply
+		public override bool CanApply
 		{
 			get
 			{
@@ -346,18 +325,10 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 			}
 		}
 
-		#endregion
-
-		#region Commands
-
-		[RelayCommand]
-		private static async Task GoBack()
-		{
-			await ServiceRef.NavigationService.GoBackAsync();
-		}
-
-		[RelayCommand(CanExecute = nameof(CanApply))]
-		private async Task Apply()
+		/// <summary>
+		/// Executes the application command.
+		/// </summary>
+		protected override async Task Apply()
 		{
 			try
 			{

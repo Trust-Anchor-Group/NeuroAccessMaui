@@ -1,9 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Data;
 using NeuroAccessMaui.Services.Xmpp;
+using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
-using Waher.Script.Units.BaseQuantities;
 
 namespace NeuroAccessMaui.UI.Pages.Registration
 {
@@ -20,172 +21,242 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		{
 		}
 
+		/// <inheritdoc/>
+		protected override async Task OnInitialize()
+		{
+			await base.OnInitialize();
+
+			this.NotifyCommandsCanExecuteChanged();
+		}
+
+		/// <inheritdoc/>
+		protected override Task XmppService_ConnectionStateChanged(object? Sender, XmppState NewState)
+		{
+			return MainThread.InvokeOnMainThreadAsync(async () =>
+			{
+				await base.XmppService_ConnectionStateChanged(Sender, NewState);
+				await this.OnConnected();
+			});
+		}
+
+		/// <summary>
+		/// Gets called when the app gets connected.
+		/// </summary>
+		protected virtual Task OnConnected()
+		{
+			this.NotifyCommandsCanExecuteChanged();
+			return Task.CompletedTask;
+		}
+
+		/// <inheritdoc/>
+		public override void SetIsBusy(bool IsBusy)
+		{
+			base.SetIsBusy(IsBusy);
+			this.NotifyCommandsCanExecuteChanged();
+		}
+
+		/// <summary>
+		/// Updates status of commands.
+		/// </summary>
+		protected virtual void NotifyCommandsCanExecuteChanged()
+		{
+			this.ApplyCommand.NotifyCanExecuteChanged();
+		}
+
 		/// <summary>
 		/// First name
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		private string? firstName;
 
 		/// <summary>
 		/// Middle name(s) as one string
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		private string? middleNames;
 
 		/// <summary>
 		/// Last name(s) as one string
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		private string? lastNames;
 
 		/// <summary>
 		/// Personal number
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		private string? personalNumber;
 
 		/// <summary>
 		/// Address, line 1
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		private string? address;
 
 		/// <summary>
 		/// Address, line 2
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		private string? address2;
 
 		/// <summary>
 		/// Zip code (postal code)
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		private string? zipCode;
 
 		/// <summary>
 		/// Area
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		private string? area;
 
 		/// <summary>
 		/// City
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		private string? city;
 
 		/// <summary>
 		/// Region
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		private string? region;
 
 		/// <summary>
 		/// Country (ISO code)
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		private string? countryCode;
 
 		/// <summary>
 		/// Country Name
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		private string? countryName;
 
 		/// <summary>
 		/// Organization name
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		private string? orgName;
 
 		/// <summary>
 		/// Organization number
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		private string? orgNumber;
 
 		/// <summary>
 		/// Organization Address, line 1
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		private string? orgAddress;
 
 		/// <summary>
 		/// Organization Address, line 2
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		private string? orgAddress2;
 
 		/// <summary>
 		/// Organization Zip code (postal code)
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		private string? orgZipCode;
 
 		/// <summary>
 		/// Organization Area
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		private string? orgArea;
 
 		/// <summary>
 		/// Organization City
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		private string? orgCity;
 
 		/// <summary>
 		/// Organization Region
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		private string? orgRegion;
 
 		/// <summary>
 		/// Organization Country (ISO Code)
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		private string? orgCountryCode;
 
 		/// <summary>
 		/// Organization Country Name
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		private string? orgCountryName;
 
 		/// <summary>
 		/// Organization Department
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		private string? orgDepartment;
 
 		/// <summary>
 		/// Organization Role
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		private string? orgRole;
 
 		/// <summary>
 		/// Phone Number
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		private string? phoneNr;
 
 		/// <summary>
 		/// EMail
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		private string? eMail;
 
 		/// <summary>
 		/// Device Id
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		private string? deviceId;
 
 		/// <summary>
 		/// Jabber Id
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		private string? jid;
 
 		/// <summary>
@@ -374,5 +445,35 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 			this.PhoneNr = ServiceRef.TagProfile.PhoneNumber;
 			this.EMail = ServiceRef.TagProfile.EMail;
 		}
+
+		/// <summary>
+		/// Command for closing current view and go back to previous view.
+		/// </summary>
+		[RelayCommand]
+		protected virtual async Task GoBack()
+		{
+			await ServiceRef.NavigationService.GoBackAsync();
+		}
+
+
+		/// <summary>
+		/// Used to find out if an ICommand can execute
+		/// </summary>
+		public virtual bool CanExecuteCommands => !this.IsBusy && this.IsConnected;
+
+		/// <summary>
+		/// Used to find out if an ICommand can execute
+		/// </summary>
+		public virtual bool CanApply => false;
+
+		/// <summary>
+		/// Executes the application command.
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(CanApply))]
+		protected virtual Task Apply()
+		{
+			return Task.CompletedTask;	// Do nothing by default.
+		}
+
 	}
 }

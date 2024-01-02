@@ -67,7 +67,7 @@
 
 	<Style x:Key="RequiredFieldMarker" ApplyToDerivedTypes="False" TargetType="Label">
 		<Setter Property="TextColor" Value="Red"/>
-		<Setter Property="Text" Value=" *"/>
+		<Setter Property="Text" Value="*"/>
 	</Style>
 
 </ResourceDictionary>
