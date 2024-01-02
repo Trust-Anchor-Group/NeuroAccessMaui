@@ -147,136 +147,43 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		public Property[] ToProperties(IXmppService XmppService)
 		{
 			List<Property> Properties = [];
-			string? Value;
 
-			if (!string.IsNullOrWhiteSpace(Value = this.FirstName?.Trim()))
-			{
-				Properties.Add(new Property(Constants.XmppProperties.FirstName, Value));
-			}
-
-			if (!string.IsNullOrWhiteSpace(Value = this.MiddleNames?.Trim()))
-			{
-				Properties.Add(new Property(Constants.XmppProperties.MiddleName, Value));
-			}
-
-			if (!string.IsNullOrWhiteSpace(Value = this.LastNames?.Trim()))
-			{
-				Properties.Add(new Property(Constants.XmppProperties.LastName, Value));
-			}
-
-			if (!string.IsNullOrWhiteSpace(Value = this.PersonalNumber?.Trim()))
-			{
-				Properties.Add(new Property(Constants.XmppProperties.PersonalNumber, Value));
-			}
-
-			if (!string.IsNullOrWhiteSpace(Value = this.Address?.Trim()))
-			{
-				Properties.Add(new Property(Constants.XmppProperties.Address, Value));
-			}
-
-			if (!string.IsNullOrWhiteSpace(Value = this.Address2?.Trim()))
-			{
-				Properties.Add(new Property(Constants.XmppProperties.Address2, Value));
-			}
-
-			if (!string.IsNullOrWhiteSpace(Value = this.ZipCode?.Trim()))
-			{
-				Properties.Add(new Property(Constants.XmppProperties.ZipCode, Value));
-			}
-
-			if (!string.IsNullOrWhiteSpace(Value = this.Area?.Trim()))
-			{
-				Properties.Add(new Property(Constants.XmppProperties.Area, Value));
-			}
-
-			if (!string.IsNullOrWhiteSpace(Value = this.City?.Trim()))
-			{
-				Properties.Add(new Property(Constants.XmppProperties.City, Value));
-			}
-
-			if (!string.IsNullOrWhiteSpace(Value = this.Region?.Trim()))
-			{
-				Properties.Add(new Property(Constants.XmppProperties.Region, Value));
-			}
-
-			if (!string.IsNullOrWhiteSpace(Value = this.Country?.Trim()))
-			{
-				Properties.Add(new Property(Constants.XmppProperties.Country, ISO_3166_1.ToCode(Value)));
-			}
-
-			if (!string.IsNullOrWhiteSpace(Value = this.OrgName?.Trim()))
-			{
-				Properties.Add(new Property(Constants.XmppProperties.OrgName, Value));
-			}
-
-			if (!string.IsNullOrWhiteSpace(Value = this.OrgNumber?.Trim()))
-			{
-				Properties.Add(new Property(Constants.XmppProperties.OrgNumber, Value));
-			}
-
-			if (!string.IsNullOrWhiteSpace(Value = this.OrgDepartment?.Trim()))
-			{
-				Properties.Add(new Property(Constants.XmppProperties.OrgDepartment, Value));
-			}
-
-			if (!string.IsNullOrWhiteSpace(Value = this.OrgRole?.Trim()))
-			{
-				Properties.Add(new Property(Constants.XmppProperties.OrgRole, Value));
-			}
-
-			if (!string.IsNullOrWhiteSpace(Value = this.OrgAddress?.Trim()))
-			{
-				Properties.Add(new Property(Constants.XmppProperties.OrgAddress, Value));
-			}
-
-			if (!string.IsNullOrWhiteSpace(Value = this.OrgAddress2?.Trim()))
-			{
-				Properties.Add(new Property(Constants.XmppProperties.OrgAddress2, Value));
-			}
-
-			if (!string.IsNullOrWhiteSpace(Value = this.OrgZipCode?.Trim()))
-			{
-				Properties.Add(new Property(Constants.XmppProperties.OrgZipCode, Value));
-			}
-
-			if (!string.IsNullOrWhiteSpace(Value = this.OrgArea?.Trim()))
-			{
-				Properties.Add(new Property(Constants.XmppProperties.OrgArea, Value));
-			}
-
-			if (!string.IsNullOrWhiteSpace(Value = this.OrgCity?.Trim()))
-			{
-				Properties.Add(new Property(Constants.XmppProperties.OrgCity, Value));
-			}
-
-			if (!string.IsNullOrWhiteSpace(Value = this.OrgRegion?.Trim()))
-			{
-				Properties.Add(new Property(Constants.XmppProperties.OrgRegion, Value));
-			}
-
-			if (!string.IsNullOrWhiteSpace(Value = this.OrgCountry?.Trim()))
-			{
-				Properties.Add(new Property(Constants.XmppProperties.OrgCountry, ISO_3166_1.ToCode(Value)));
-			}
-
-			if (!string.IsNullOrWhiteSpace(Value = this.PhoneNr?.Trim()))
-			{
-				Properties.Add(new Property(Constants.XmppProperties.Phone, Value));
-			}
-
-			if (!string.IsNullOrWhiteSpace(Value = this.EMail?.Trim()))
-			{
-				Properties.Add(new Property(Constants.XmppProperties.EMail, Value));
-			}
-
-			if (!string.IsNullOrWhiteSpace(Value = this.DeviceId?.Trim()))
-			{
-				Properties.Add(new Property(Constants.XmppProperties.DeviceId, Value));
-			}
-
-			Properties.Add(new Property(Constants.XmppProperties.Jid, XmppService.BareJid));
+			AddProperty(Properties, Constants.XmppProperties.FirstName, this.FirstName);
+			AddProperty(Properties, Constants.XmppProperties.MiddleName, this.MiddleNames);
+			AddProperty(Properties, Constants.XmppProperties.LastName, this.LastNames);
+			AddProperty(Properties, Constants.XmppProperties.PersonalNumber, this.PersonalNumber);
+			AddProperty(Properties, Constants.XmppProperties.Address, this.Address);
+			AddProperty(Properties, Constants.XmppProperties.Address2, this.Address2);
+			AddProperty(Properties, Constants.XmppProperties.ZipCode, this.ZipCode);
+			AddProperty(Properties, Constants.XmppProperties.Area, this.Area);
+			AddProperty(Properties, Constants.XmppProperties.City, this.City);
+			AddProperty(Properties, Constants.XmppProperties.Region, this.Region);
+			AddProperty(Properties, Constants.XmppProperties.Country, ISO_3166_1.ToCode(this.Country));
+			AddProperty(Properties, Constants.XmppProperties.OrgName, this.OrgName);
+			AddProperty(Properties, Constants.XmppProperties.OrgNumber, this.OrgNumber);
+			AddProperty(Properties, Constants.XmppProperties.OrgDepartment, this.OrgDepartment);
+			AddProperty(Properties, Constants.XmppProperties.OrgRole, this.OrgRole);
+			AddProperty(Properties, Constants.XmppProperties.OrgAddress, this.OrgAddress);
+			AddProperty(Properties, Constants.XmppProperties.OrgAddress2, this.OrgAddress2);
+			AddProperty(Properties, Constants.XmppProperties.OrgZipCode, this.OrgZipCode);
+			AddProperty(Properties, Constants.XmppProperties.OrgArea, this.OrgArea);
+			AddProperty(Properties, Constants.XmppProperties.OrgCity, this.OrgCity);
+			AddProperty(Properties, Constants.XmppProperties.OrgRegion, this.OrgRegion);
+			AddProperty(Properties, Constants.XmppProperties.OrgCountry, ISO_3166_1.ToCode(this.OrgCountry));
+			AddProperty(Properties, Constants.XmppProperties.Phone, this.PhoneNr);
+			AddProperty(Properties, Constants.XmppProperties.EMail, this.EMail);
+			AddProperty(Properties, Constants.XmppProperties.DeviceId, this.DeviceId);
+			AddProperty(Properties, Constants.XmppProperties.Jid, XmppService.BareJid);
 
 			return [.. Properties];
+		}
+
+		private static void AddProperty(List<Property> Properties, string PropertyName, string? PropertyValue)
+		{
+			string? s = PropertyValue?.Trim();
+
+			if (!string.IsNullOrWhiteSpace(s))
+				Properties.Add(new Property(PropertyName, s));
 		}
 	}
 }

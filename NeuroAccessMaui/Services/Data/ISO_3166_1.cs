@@ -105,14 +105,14 @@ namespace NeuroAccessMaui.Services.Data
 		/// </summary>
 		/// <param name="CountryCode">Country code.</param>
 		/// <returns>Country name, or if not found, the original code.</returns>
-		public static string ToName(string CountryCode)
+		public static string? ToName(string? CountryCode)
 		{
-			if (TryGetCountryByCode(CountryCode, out ISO3166Country? Country))
-			{
+			if (CountryCode is null)
+				return null;
+			else if (TryGetCountryByCode(CountryCode, out ISO3166Country? Country))
 				return Country.Name;
-			}
-
-			return CountryCode;
+			else
+				return CountryCode;
 		}
 
 		/// <summary>
@@ -120,14 +120,14 @@ namespace NeuroAccessMaui.Services.Data
 		/// </summary>
 		/// <param name="CountryName">Country name.</param>
 		/// <returns>Country code, or if not found, the original name.</returns>
-		public static string ToCode(string CountryName)
+		public static string? ToCode(string? CountryName)
 		{
-			if (TryGetCountryByName(CountryName, out ISO3166Country? Country))
-			{
+			if (CountryName is null)
+				return null;
+			else if (TryGetCountryByName(CountryName, out ISO3166Country? Country))
 				return Country.Alpha2;
-			}
-
-			return CountryName;
+			else
+				return CountryName;
 		}
 
 		#region Build Collection
