@@ -84,9 +84,15 @@ namespace NeuroAccessMaui.Services.Data
 		/// <param name="CountryCode">ISO-3166-1 Country code (case insensitive).</param>
 		/// <param name="Country">ISO-3166-1 Country, if found.</param>
 		/// <returns>If a country was found matching the country code.</returns>
-		public static bool TryGetCountryByCode(string CountryCode, [NotNullWhen(true)] out ISO3166Country? Country)
+		public static bool TryGetCountryByCode(string? CountryCode, [NotNullWhen(true)] out ISO3166Country? Country)
 		{
-			return countryByCode2.TryGetValue(CountryCode, out Country);
+			if (string.IsNullOrEmpty(CountryCode))
+			{
+				Country = null;
+				return false;
+			}
+			else
+				return countryByCode2.TryGetValue(CountryCode, out Country);
 		}
 
 		/// <summary>
