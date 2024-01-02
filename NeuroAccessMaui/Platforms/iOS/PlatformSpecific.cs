@@ -1,4 +1,7 @@
-﻿using Foundation;
+﻿using System.Diagnostics.CodeAnalysis;
+using Foundation;
+using LocalAuthentication;
+using ObjCRuntime;
 using UIKit;
 
 namespace NeuroAccessMaui.Services
@@ -8,12 +11,37 @@ namespace NeuroAccessMaui.Services
 	/// </summary>
 	public class PlatformSpecific : IPlatformSpecific
 	{
+		private LAContext? localAuthenticationContext;
+		private bool isDisposed;
+
 		/// <summary>
 		/// iOS implementation of platform-specific features.
 		/// </summary>
 		public PlatformSpecific()
 		{
 		}
+
+		/// <inheritdoc/>
+		public void Dispose()
+		{
+			this.Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		/// <summary>
+		/// <see cref="IDisposable.Dispose"/>
+		/// </summary>
+		protected virtual void Dispose(bool Disposing)
+		{
+			if (this.isDisposed)
+				return;
+
+			if (Disposing)
+				this.DisposeLocalAuthenticationContext();
+
+			this.isDisposed = true;
+		}
+
 
 		/// <summary>
 		/// If screen capture prohibition is supported
@@ -42,6 +70,15 @@ namespace NeuroAccessMaui.Services
 		/// </summary>
 		public Task CloseApplication()
 		{
+			if (this.localAuthenticationContext is not null)
+			{
+				if (this.localAuthenticationContext.RespondsToSelector(new Selector("invalidate")))
+					this.localAuthenticationContext.Invalidate();
+
+				this.localAuthenticationContext.Dispose();
+				this.localAuthenticationContext = null;
+			}
+
 			Environment.Exit(0);
 			return Task.CompletedTask;
 		}
@@ -117,7 +154,112 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				return false;	// TODO
+				if (!this.HasLocalAuthenticationContext)
+					return false;
+
+				try
+				{
+					if (!this.localAuthenticationContext.CanEvaluatePolicy(LAPolicy.DeviceOwnerAuthenticationWithBiometrics, out _))
+						return false;
+
+					return true;
+				}
+				catch (Exception ex)
+				{
+					ServiceRef.LogService.LogException(ex);
+					return false;
+				}
+			}
+		}
+
+		[MemberNotNullWhen(true, nameof(localAuthenticationContext))]
+		private bool HasLocalAuthenticationContext
+		{
+			get
+			{
+				try
+				{
+					if (this.localAuthenticationContext is null)
+					{
+						NSProcessInfo ProcessInfo = new();
+						NSOperatingSystemVersion MinVersion = new(10, 12, 0);
+						if (!ProcessInfo.IsOperatingSystemAtLeastVersion(MinVersion))
+							return false;
+
+						if (!UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
+							return false;
+
+						if (Class.GetHandle(typeof(LAContext)) == IntPtr.Zero)
+							return false;
+
+						this.localAuthenticationContext = new LAContext();
+					}
+
+					return true;
+				}
+				catch (Exception ex)
+				{
+					ServiceRef.LogService.LogException(ex);
+					return false;
+				}
+			}
+		}
+
+		private void DisposeLocalAuthenticationContext()
+		{
+			if (this.localAuthenticationContext is not null)
+			{
+				if (this.localAuthenticationContext.RespondsToSelector(new Selector("invalidate")))
+					this.localAuthenticationContext.Invalidate();
+
+				this.localAuthenticationContext.Dispose();
+				this.localAuthenticationContext = null;
+			}
+		}
+
+		/// <summary>
+		/// Authenticates the user using the fingerprint sensor.
+		/// </summary>
+		/// <param name="Title">Title of authentication dialog.</param>
+		/// <param name="Subtitle">Optional Subtitle.</param>
+		/// <param name="Description">Description texst to display to user in authentication dialog.</param>
+		/// <param name="Cancel">Label for Cancel button.</param>
+		/// <param name="RequireConfirmation">If user confirmation is required.</param>
+		/// <param name="CancellationToken">Optional cancellation token, to cancel process.</param>
+		/// <returns>If the user has been successfully authenticated.</returns>
+		public async Task<bool> AuthenticateUserFingerprint(string Title, string? Subtitle, string Description, string Cancel,
+			CancellationToken? CancellationToken)
+		{
+			if (!this.HasLocalAuthenticationContext)
+				return false;
+
+			CancellationTokenRegistration? Registration = null;
+
+			try
+			{
+				if (this.localAuthenticationContext.RespondsToSelector(new Selector("localizedFallbackTitle")))
+					this.localAuthenticationContext.LocalizedFallbackTitle = Title;
+
+				if (this.localAuthenticationContext.RespondsToSelector(new Selector("localizedCancelTitle")))
+					this.localAuthenticationContext.LocalizedCancelTitle = Cancel;
+
+				Registration = CancellationToken?.Register(this.DisposeLocalAuthenticationContext);
+
+				(bool Success, NSError _) = await this.localAuthenticationContext.EvaluatePolicyAsync(LAPolicy.DeviceOwnerAuthenticationWithBiometrics, Description);
+
+				this.DisposeLocalAuthenticationContext();
+
+				return Success;
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				return false;
+			}
+			finally
+			{
+				if (Registration.HasValue)
+					Registration.Value.Dispose();
 			}
 		}
 

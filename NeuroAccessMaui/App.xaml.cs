@@ -938,7 +938,6 @@ namespace NeuroAccessMaui
 						null,
 						ServiceRef.Localizer["FingerprintDescription"],
 						ServiceRef.Localizer["Cancel"],
-						false,
 						null))
 					{
 						await UserAuthenticationSuccessful();

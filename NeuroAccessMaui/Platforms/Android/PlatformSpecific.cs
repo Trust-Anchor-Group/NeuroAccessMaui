@@ -21,11 +21,37 @@ namespace NeuroAccessMaui.Services
 	/// </summary>
 	public class PlatformSpecific : IPlatformSpecific
 	{
+		private bool isDisposed;
+
 		/// <summary>
 		/// Android implementation of platform-specific features.
 		/// </summary>
 		public PlatformSpecific()
 		{
+		}
+
+		/// <inheritdoc/>
+		public void Dispose()
+		{
+			this.Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		/// <summary>
+		/// <see cref="IDisposable.Dispose"/>
+		/// </summary>
+		protected virtual void Dispose(bool Disposing)
+		{
+			if (this.isDisposed)
+				return;
+
+			if (Disposing)
+			{
+				protectionTimer?.Dispose();
+				protectionTimer = null;
+			}
+
+			this.isDisposed = true;
 		}
 
 		private static bool screenProtected = true; // App started with screen protected.
@@ -432,10 +458,9 @@ namespace NeuroAccessMaui.Services
 		/// <param name="Subtitle">Optional Subtitle.</param>
 		/// <param name="Description">Description texst to display to user in authentication dialog.</param>
 		/// <param name="Cancel">Label for Cancel button.</param>
-		/// <param name="RequireConfirmation">If user confirmation is required.</param>
 		/// <param name="CancellationToken">Optional cancellation token, to cancel process.</param>
 		/// <returns>If the user has been successfully authenticated.</returns>
-		public async Task<bool> AuthenticateUserFingerprint(string Title, string? Subtitle, string Description, string Cancel, bool RequireConfirmation,
+		public async Task<bool> AuthenticateUserFingerprint(string Title, string? Subtitle, string Description, string Cancel,
 			CancellationToken? CancellationToken)
 		{
 			if (!this.SupportsFingerprintAuthentication)
@@ -453,7 +478,7 @@ namespace NeuroAccessMaui.Services
 
 				Builder.SetDeviceCredentialAllowed(false);
 				Builder.SetAllowedAuthenticators((int)Android.Hardware.Biometrics.BiometricManagerAuthenticators.BiometricWeak);
-				Builder.SetConfirmationRequired(RequireConfirmation);
+				Builder.SetConfirmationRequired(false);
 				Builder.SetTitle(Title);
 				Builder.SetDescription(Description);
 				Builder.SetNegativeButtonText(Cancel);
@@ -464,17 +489,21 @@ namespace NeuroAccessMaui.Services
 				BiometricPrompt.PromptInfo Prompt = Builder.Build();
 				IExecutorService? Executor = Executors.NewSingleThreadExecutor();
 				CallbackHandler Handler = new();
+				CancellationTokenRegistration? Registration = null;
 
 				BiometricPrompt Dialog = new(Activity, Executor, Handler);
 				try
 				{
-					CancellationToken?.Register(Dialog.CancelAuthentication);
+					Registration = CancellationToken?.Register(Dialog.CancelAuthentication);
 					Dialog.Authenticate(Prompt);
 
 					return await Handler.Result;
 				}
 				finally
 				{
+					if (Registration.HasValue)
+						Registration.Value.Dispose();
+
 					// Remove the lifecycle observer that is set by the BiometricPrompt.
 					// Reference: https://stackoverflow.com/a/59637670/1489968
 					// Review after referenced nugets (or Maui) has been updated.
