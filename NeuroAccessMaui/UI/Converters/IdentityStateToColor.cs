@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using NeuroAccessMaui.Services;
 using Waher.Networking.XMPP.Contracts;
 
 namespace NeuroAccessMaui.UI.Converters
@@ -26,9 +27,9 @@ namespace NeuroAccessMaui.UI.Converters
 		{
 			return State switch
 			{
-				IdentityState.Approved => Colors.Green,
-				IdentityState.Created => Colors.Yellow,
-				_ => Colors.Salmon,
+				IdentityState.Approved => ServiceRef.TagProfile.Theme == AppTheme.Light	? Colors.Green : Colors.LightGreen,
+				IdentityState.Created => ServiceRef.TagProfile.Theme == AppTheme.Light ? Colors.Yellow : Colors.LightYellow,
+				_ => ServiceRef.TagProfile.Theme == AppTheme.Light ? Colors.Salmon : Colors.LightSalmon,
 			};
 		}
 
