@@ -218,7 +218,8 @@ namespace NeuroAccessMaui.UI.Controls
 			this.innerBorder = new()
 			{
 				StrokeThickness = 2,
-				Content = this.PathData is null ? this.innerEntry : this.innerGrid
+				Content = this.PathData is null ? this.innerEntry : this.innerGrid,
+				BackgroundColor = Colors.Transparent
 			};
 
 			this.Content = this.innerBorder;
