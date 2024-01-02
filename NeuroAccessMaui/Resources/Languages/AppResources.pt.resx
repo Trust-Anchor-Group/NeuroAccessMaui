@@ -927,11 +927,17 @@
   <data name="Applications" xml:space="preserve">
     <value>Aplicativos</value>
   </data>
+  <data name="ConsentDescription" xml:space="preserve">
+    <value>Autorizo o processamento das informações pessoais fornecidas neste aplicativo, para fins de validação e aprovação do aplicativo.</value>
+  </data>
   <data name="ContactInformation" xml:space="preserve">
     <value>Informações de contato</value>
   </data>
   <data name="ContactInformationDescription" xml:space="preserve">
     <value>As seguintes informações de contato serão incluídas no aplicativo. Essas informações são retiradas do processo de integração.</value>
+  </data>
+  <data name="CorrectDescription" xml:space="preserve">
+    <value>Afirmo que as informações fornecidas acima são atuais e corretas.</value>
   </data>
   <data name="EMail" xml:space="preserve">
     <value>E-mail</value>
@@ -941,6 +947,9 @@
   </data>
   <data name="FingerprintTitle" xml:space="preserve">
     <value>Autenticação necessária</value>
+  </data>
+  <data name="IdApplicationDescription" xml:space="preserve">
+    <value>Ao enviar um novo pedido de identificação, confirmo que todas as informações fornecidas estão corretas e atualizadas. O aplicativo obsoleta qualquer identidade atual registrada com o aplicativo.</value>
   </data>
   <data name="IdentityApplications" xml:space="preserve">
     <value>Aplicativos de identidade</value>
@@ -965,5 +974,8 @@
   </data>
   <data name="PhoneNr" xml:space="preserve">
     <value>Número de telefone</value>
+  </data>
+  <data name="SendApplication" xml:space="preserve">
+    <value>Enviar Candidatura</value>
   </data>
 </root>

@@ -927,11 +927,17 @@
   <data name="Applications" xml:space="preserve">
     <value>Aplikacije</value>
   </data>
+  <data name="ConsentDescription" xml:space="preserve">
+    <value>Pristajem na obradu ličnih podataka navedenih u ovoj aplikaciji, u svrhu provere valjanosti i odobravanja aplikacije.</value>
+  </data>
   <data name="ContactInformation" xml:space="preserve">
     <value>Kontakt informacije</value>
   </data>
   <data name="ContactInformationDescription" xml:space="preserve">
     <value>Sledeće kontakt informacije će biti uključene u aplikaciju. Ove informacije su preuzete iz procesa ukrcavanja.</value>
+  </data>
+  <data name="CorrectDescription" xml:space="preserve">
+    <value>Potvrđujem da su gore navedene informacije i aktuelne i tačne.</value>
   </data>
   <data name="EMail" xml:space="preserve">
     <value>E-pošta</value>
@@ -941,6 +947,9 @@
   </data>
   <data name="FingerprintTitle" xml:space="preserve">
     <value>Potrebna je potvrda identiteta</value>
+  </data>
+  <data name="IdApplicationDescription" xml:space="preserve">
+    <value>Slanjem nove ID aplikacije potvrđujem da su sve navedene informacije tačne i aktuelne. Aplikacija će zastareti svaki trenutni identitet registrovan u aplikaciji.</value>
   </data>
   <data name="IdentityApplications" xml:space="preserve">
     <value>Aplikacije identiteta</value>
@@ -965,5 +974,8 @@
   </data>
   <data name="PhoneNr" xml:space="preserve">
     <value>Telefonski broj</value>
+  </data>
+  <data name="SendApplication" xml:space="preserve">
+    <value>Pošalji aplikaciju</value>
   </data>
 </root>

@@ -927,11 +927,17 @@
   <data name="Applications" xml:space="preserve">
     <value>Aplicaţii</value>
   </data>
+  <data name="ConsentDescription" xml:space="preserve">
+    <value>Sunt de acord cu prelucrarea informațiilor personale furnizate în această aplicație, în scopul validării și aprobării cererii.</value>
+  </data>
   <data name="ContactInformation" xml:space="preserve">
     <value>Informații de contact</value>
   </data>
   <data name="ContactInformationDescription" xml:space="preserve">
     <value>Următoarele informații de contact vor fi incluse în cerere. Aceste informații sunt preluate din procesul de integrare.</value>
+  </data>
+  <data name="CorrectDescription" xml:space="preserve">
+    <value>Afirm că informațiile furnizate mai sus sunt atât actuale, cât și corecte.</value>
   </data>
   <data name="EMail" xml:space="preserve">
     <value>E-mail</value>
@@ -941,6 +947,9 @@
   </data>
   <data name="FingerprintTitle" xml:space="preserve">
     <value>Este necesară autentificarea</value>
+  </data>
+  <data name="IdApplicationDescription" xml:space="preserve">
+    <value>Prin trimiterea unei noi cereri de identificare, confirm că toate informațiile furnizate sunt corecte și actuale. Aplicația va depăși orice identitate actuală înregistrată în aplicație.</value>
   </data>
   <data name="IdentityApplications" xml:space="preserve">
     <value>Cereri de identitate</value>
@@ -965,5 +974,8 @@
   </data>
   <data name="PhoneNr" xml:space="preserve">
     <value>Număr de telefon</value>
+  </data>
+  <data name="SendApplication" xml:space="preserve">
+    <value>Trimite cerere</value>
   </data>
 </root>

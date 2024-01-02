@@ -927,11 +927,17 @@
   <data name="Applications" xml:space="preserve">
     <value>Applications</value>
   </data>
+  <data name="ConsentDescription" xml:space="preserve">
+    <value>I consent to the processing of the personal information provided in this application, for the purposes of validating and approving the application.</value>
+  </data>
   <data name="ContactInformation" xml:space="preserve">
     <value>Contact information</value>
   </data>
   <data name="ContactInformationDescription" xml:space="preserve">
     <value>The following contact information will be included in the application. This information is taken from the onboarding process.</value>
+  </data>
+  <data name="CorrectDescription" xml:space="preserve">
+    <value>I affirm the information provided above is both current and correct.</value>
   </data>
   <data name="EMail" xml:space="preserve">
     <value>E-Mail</value>
@@ -941,6 +947,9 @@
   </data>
   <data name="FingerprintTitle" xml:space="preserve">
     <value>Authentication Required</value>
+  </data>
+  <data name="IdApplicationDescription" xml:space="preserve">
+    <value>By sending in a new ID application, I hereby confirm all information provided is correct and current. The application will obsolete any current identity registered with the App.</value>
   </data>
   <data name="IdentityApplications" xml:space="preserve">
     <value>Identity applications</value>
@@ -965,5 +974,8 @@
   </data>
   <data name="PhoneNr" xml:space="preserve">
     <value>Phone number</value>
+  </data>
+  <data name="SendApplication" xml:space="preserve">
+    <value>Send Application</value>
   </data>
 </root>

@@ -927,11 +927,17 @@
   <data name="Applications" xml:space="preserve">
     <value>Applications</value>
   </data>
+  <data name="ConsentDescription" xml:space="preserve">
+    <value>Je consens au traitement des renseignements personnels fournis dans cette demande, aux fins de validation et d’approbation de la demande.</value>
+  </data>
   <data name="ContactInformation" xml:space="preserve">
     <value>Coordonnées</value>
   </data>
   <data name="ContactInformationDescription" xml:space="preserve">
     <value>Les coordonnées suivantes seront incluses dans la demande. Ces informations sont issues du processus d’intégration.</value>
+  </data>
+  <data name="CorrectDescription" xml:space="preserve">
+    <value>J’affirme que les renseignements fournis ci-dessus sont à la fois actuels et exacts.</value>
   </data>
   <data name="EMail" xml:space="preserve">
     <value>Courriel</value>
@@ -941,6 +947,9 @@
   </data>
   <data name="FingerprintTitle" xml:space="preserve">
     <value>Authentification requise</value>
+  </data>
+  <data name="IdApplicationDescription" xml:space="preserve">
+    <value>En envoyant une nouvelle demande d’identification, je confirme par la présente que toutes les informations fournies sont correctes et à jour. L’application rendra obsolète toute identité actuelle enregistrée auprès de l’application.</value>
   </data>
   <data name="IdentityApplications" xml:space="preserve">
     <value>Applications d’identité</value>
@@ -965,5 +974,8 @@
   </data>
   <data name="PhoneNr" xml:space="preserve">
     <value>Numéro de téléphone</value>
+  </data>
+  <data name="SendApplication" xml:space="preserve">
+    <value>Envoyer la candidature</value>
   </data>
 </root>

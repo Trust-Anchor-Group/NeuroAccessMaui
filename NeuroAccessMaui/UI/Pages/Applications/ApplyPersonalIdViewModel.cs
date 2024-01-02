@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Pages.Registration;
 using Waher.Networking.XMPP;
@@ -56,9 +57,28 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		#region Properties
 
 		/// <summary>
+		/// If the user consents to the processing of the information.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		private bool consent;
+
+		/// <summary>
+		/// If the user affirms information provided is correct.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		private bool correct;
+
+		/// <summary>
 		/// Used to find out if an ICommand can execute
 		/// </summary>
 		public bool CanExecuteCommands => !this.IsBusy && this.IsConnected;
+
+		/// <summary>
+		/// Used to find out if an ICommand can execute
+		/// </summary>
+		public bool CanApply => this.CanExecuteCommands && this.Consent && this.Correct;
 
 		#endregion
 
@@ -70,7 +90,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 			await ServiceRef.NavigationService.GoBackAsync();
 		}
 
-		[RelayCommand(CanExecute = nameof(CanExecuteCommands))]
+		[RelayCommand(CanExecute = nameof(CanApply))]
 		private async Task Apply()
 		{
 			try

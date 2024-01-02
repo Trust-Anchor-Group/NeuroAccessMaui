@@ -493,6 +493,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to I consent to the processing of the personal information provided in this application, for the purposes of validating and approving the application..
+        /// </summary>
+        internal static string ConsentDescription {
+            get {
+                return ResourceManager.GetString("ConsentDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Contact information.
         /// </summary>
         internal static string ContactInformation {
@@ -525,6 +534,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string CopyToClipboard {
             get {
                 return ResourceManager.GetString("CopyToClipboard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I affirm the information provided above is both current and correct..
+        /// </summary>
+        internal static string CorrectDescription {
+            get {
+                return ResourceManager.GetString("CorrectDescription", resourceCulture);
             }
         }
         
@@ -822,6 +840,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string ID {
             get {
                 return ResourceManager.GetString("ID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to By sending in a new ID application, I hereby confirm all information provided is correct and current. The application will obsolete any current identity registered with the App..
+        /// </summary>
+        internal static string IdApplicationDescription {
+            get {
+                return ResourceManager.GetString("IdApplicationDescription", resourceCulture);
             }
         }
         
@@ -2100,6 +2127,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string SelectDisplayMode {
             get {
                 return ResourceManager.GetString("SelectDisplayMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send Application.
+        /// </summary>
+        internal static string SendApplication {
+            get {
+                return ResourceManager.GetString("SendApplication", resourceCulture);
             }
         }
         

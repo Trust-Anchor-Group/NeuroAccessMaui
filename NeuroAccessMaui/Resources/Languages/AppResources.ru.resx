@@ -927,11 +927,17 @@
   <data name="Applications" xml:space="preserve">
     <value>Приложений</value>
   </data>
+  <data name="ConsentDescription" xml:space="preserve">
+    <value>Я даю согласие на обработку персональных данных, предоставленных в этом заявлении, в целях проверки и одобрения заявки.</value>
+  </data>
   <data name="ContactInformation" xml:space="preserve">
     <value>Контактная информация</value>
   </data>
   <data name="ContactInformationDescription" xml:space="preserve">
     <value>В заявке будет указана следующая контактная информация. Эта информация берется из процесса адаптации.</value>
+  </data>
+  <data name="CorrectDescription" xml:space="preserve">
+    <value>Я подтверждаю, что информация, представленная выше, является актуальной и правильной.</value>
   </data>
   <data name="EMail" xml:space="preserve">
     <value>Электронная почта</value>
@@ -941,6 +947,9 @@
   </data>
   <data name="FingerprintTitle" xml:space="preserve">
     <value>Требуется аутентификация</value>
+  </data>
+  <data name="IdApplicationDescription" xml:space="preserve">
+    <value>Отправляя новое заявление на получение удостоверения личности, я подтверждаю, что вся предоставленная информация верна и актуальна. Приложение устареет во всех текущих удостоверениях, зарегистрированных в Приложении.</value>
   </data>
   <data name="IdentityApplications" xml:space="preserve">
     <value>Приложения для идентификации</value>
@@ -965,5 +974,8 @@
   </data>
   <data name="PhoneNr" xml:space="preserve">
     <value>Номер телефона</value>
+  </data>
+  <data name="SendApplication" xml:space="preserve">
+    <value>Отправить заявку</value>
   </data>
 </root>

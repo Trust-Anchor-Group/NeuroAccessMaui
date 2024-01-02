@@ -927,11 +927,17 @@
   <data name="Applications" xml:space="preserve">
     <value>Sovelluksia</value>
   </data>
+  <data name="ConsentDescription" xml:space="preserve">
+    <value>Suostun tässä hakemuksessa annettujen henkilötietojen käsittelyyn hakemuksen validoimiseksi ja hyväksymiseksi.</value>
+  </data>
   <data name="ContactInformation" xml:space="preserve">
     <value>Yhteystieto</value>
   </data>
   <data name="ContactInformationDescription" xml:space="preserve">
     <value>Hakemukseen sisällytetään seuraavat yhteystiedot. Nämä tiedot otetaan perehdytysprosessista.</value>
+  </data>
+  <data name="CorrectDescription" xml:space="preserve">
+    <value>Vakuutan, että edellä annetut tiedot ovat sekä ajankohtaisia että oikeita.</value>
   </data>
   <data name="EMail" xml:space="preserve">
     <value>Sähköposti</value>
@@ -941,6 +947,9 @@
   </data>
   <data name="FingerprintTitle" xml:space="preserve">
     <value>Todennus vaaditaan</value>
+  </data>
+  <data name="IdApplicationDescription" xml:space="preserve">
+    <value>Lähettämällä uuden henkilöllisyystodistuksen vahvistan täten, että kaikki annetut tiedot ovat oikeita ja ajantasaisia. Sovellus vanhentaa kaikki sovellukseen rekisteröidyt nykyiset henkilöllisyydet.</value>
   </data>
   <data name="IdentityApplications" xml:space="preserve">
     <value>Henkilöllisyyttä koskevat hakemukset</value>
@@ -965,5 +974,8 @@
   </data>
   <data name="PhoneNr" xml:space="preserve">
     <value>Puhelinnumero</value>
+  </data>
+  <data name="SendApplication" xml:space="preserve">
+    <value>Lähetä hakemus</value>
   </data>
 </root>

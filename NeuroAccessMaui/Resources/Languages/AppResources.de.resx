@@ -927,11 +927,17 @@
   <data name="Applications" xml:space="preserve">
     <value>Anträge</value>
   </data>
+  <data name="ConsentDescription" xml:space="preserve">
+    <value>Ich stimme der Verarbeitung der in diesem Antrag angegebenen personenbezogenen Daten zum Zwecke der Validierung und Genehmigung des Antrags zu.</value>
+  </data>
   <data name="ContactInformation" xml:space="preserve">
     <value>Kontaktinformationen</value>
   </data>
   <data name="ContactInformationDescription" xml:space="preserve">
     <value>Die folgenden Kontaktinformationen werden in den Antrag aufgenommen. Diese Informationen stammen aus dem Onboarding-Prozess.</value>
+  </data>
+  <data name="CorrectDescription" xml:space="preserve">
+    <value>Ich bestätige, dass die oben genannten Informationen sowohl aktuell als auch korrekt sind.</value>
   </data>
   <data name="EMail" xml:space="preserve">
     <value>E-Mail</value>
@@ -941,6 +947,9 @@
   </data>
   <data name="FingerprintTitle" xml:space="preserve">
     <value>Authentifizierung erforderlich</value>
+  </data>
+  <data name="IdApplicationDescription" xml:space="preserve">
+    <value>Mit dem Einsenden eines neuen ID-Antrags bestätige ich hiermit, dass alle angegebenen Informationen korrekt und aktuell sind. Die Anwendung überholt alle aktuellen Identitäten, die in der App registriert sind.</value>
   </data>
   <data name="IdentityApplications" xml:space="preserve">
     <value>Identitäts-Anwendungen</value>
@@ -965,5 +974,8 @@
   </data>
   <data name="PhoneNr" xml:space="preserve">
     <value>Telefonnummer</value>
+  </data>
+  <data name="SendApplication" xml:space="preserve">
+    <value>Bewerbung absenden</value>
   </data>
 </root>

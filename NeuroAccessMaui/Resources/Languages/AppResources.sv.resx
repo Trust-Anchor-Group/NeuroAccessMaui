@@ -927,11 +927,17 @@
   <data name="Applications" xml:space="preserve">
     <value>Program</value>
   </data>
+  <data name="ConsentDescription" xml:space="preserve">
+    <value>Jag samtycker till behandlingen av de personuppgifter som lämnas i denna ansökan, i syfte att validera och godkänna ansökan.</value>
+  </data>
   <data name="ContactInformation" xml:space="preserve">
     <value>Kontaktuppgifter</value>
   </data>
   <data name="ContactInformationDescription" xml:space="preserve">
     <value>Följande kontaktuppgifter kommer att finnas med i ansökan. Den här informationen hämtas från registreringsprocessen.</value>
+  </data>
+  <data name="CorrectDescription" xml:space="preserve">
+    <value>Jag bekräftar att informationen ovan är både aktuell och korrekt.</value>
   </data>
   <data name="EMail" xml:space="preserve">
     <value>E-post</value>
@@ -941,6 +947,9 @@
   </data>
   <data name="FingerprintTitle" xml:space="preserve">
     <value>Autentisering krävs</value>
+  </data>
+  <data name="IdApplicationDescription" xml:space="preserve">
+    <value>Genom att skicka in en ny ID-ansökan bekräftar jag härmed att alla uppgifter som lämnats är korrekta och aktuella. Applikationen kommer att föråldra alla aktuella identiteter som är registrerade i appen.</value>
   </data>
   <data name="IdentityApplications" xml:space="preserve">
     <value>Identitets program</value>
@@ -965,5 +974,8 @@
   </data>
   <data name="PhoneNr" xml:space="preserve">
     <value>Telefonnummer</value>
+  </data>
+  <data name="SendApplication" xml:space="preserve">
+    <value>Skicka ansökan</value>
   </data>
 </root>

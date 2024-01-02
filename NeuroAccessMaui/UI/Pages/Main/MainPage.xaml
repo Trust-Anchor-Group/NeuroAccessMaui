@@ -45,16 +45,8 @@
 				</VerticalStackLayout>
 
 				<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Grid.Row="1" VerticalOptions="Center">
-
-					<controls:TextButton Command="{Binding ScanQrCodeCommand}"
-												Style="{StaticResource FilledTextButtonStyle}"
-												LabelData="{l:Localize QrScanCode}" />
-
-					<Label Text="{l:Localize ScanQrCodeLabel}"
-							 HorizontalTextAlignment="Center"
-							 LineBreakMode="WordWrap"
-							 Style="{StaticResource InfoLabelStyle}" />
-
+					<controls:TextButton Command="{Binding ScanQrCodeCommand}" Style="{StaticResource FilledTextButtonStyle}" LabelData="{l:Localize QrScanCode}" />
+					<Label Text="{l:Localize ScanQrCodeLabel}" HorizontalTextAlignment="Center" LineBreakMode="WordWrap" Style="{StaticResource InfoLabelStyle}" />
 				</VerticalStackLayout>
 
 			</Grid>
