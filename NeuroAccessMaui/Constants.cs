@@ -604,5 +604,21 @@
 			/// </summary>
 			public const string IPhoneApp = "https://apps.apple.com/se/app/trust-anchor-access/id1580610247";
 		}
+
+		/// <summary>
+		/// Absolute paths to important pages.
+		/// </summary>
+		public static class Pages
+		{
+			/// <summary>
+			/// Path to main page.
+			/// </summary>
+			public const string MainPage = "//MainPage";
+
+			/// <summary>
+			/// Path to registration page.
+			/// </summary>
+			public const string RegistrationPage = "//Registration";
+		}
 	}
 }

@@ -145,7 +145,7 @@ namespace NeuroAccessMaui.Services.Navigation
 					if (Uri.TryCreate(State.Location, "..", out Uri? BackLocation))
 						await Shell.Current.GoToAsync(BackLocation);
 					else
-						await Shell.Current.GoToAsync("//MainPage");
+						await Shell.Current.GoToAsync(Constants.Pages.MainPage);
 				}
 			}
 			catch (Exception e)

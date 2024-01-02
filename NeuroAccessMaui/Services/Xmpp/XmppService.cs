@@ -1292,7 +1292,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				{
 					this.LegalIdentityChanged?.Invoke(this, e);
 
-					if (e.Identity.Discarded() && Shell.Current.CurrentState.Location.OriginalString != "//Registration")
+					if (e.Identity.Discarded() && Shell.Current.CurrentState.Location.OriginalString != Constants.Pages.RegistrationPage)
 					{
 						MainThread.BeginInvokeOnMainThread(async () =>
 						{
@@ -1300,7 +1300,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 							{
 								ServiceRef.TagProfile.ClearLegalIdentity();
 								ServiceRef.TagProfile.GoToStep(RegistrationStep.ValidatePhone, true);
-								await Shell.Current.GoToAsync("//Registration");
+								await Shell.Current.GoToAsync(Constants.Pages.RegistrationPage);
 							}
 							catch (Exception ex)
 							{

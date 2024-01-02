@@ -614,7 +614,7 @@ namespace NeuroAccessMaui
 		{
 			return MainThread.InvokeOnMainThreadAsync(() =>
 			{
-				Shell.Current.GoToAsync("//Registration");
+				Shell.Current.GoToAsync(Constants.Pages.RegistrationPage);
 			});
 		}
 
@@ -625,7 +625,7 @@ namespace NeuroAccessMaui
 		{
 			return MainThread.InvokeOnMainThreadAsync(() =>
 			{
-				return Shell.Current.GoToAsync("//MainPage");
+				return Shell.Current.GoToAsync(Constants.Pages.MainPage);
 			});
 		}
 
