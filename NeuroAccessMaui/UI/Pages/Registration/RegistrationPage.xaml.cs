@@ -9,6 +9,9 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 {
 	public partial class RegistrationPage
 	{
+		private bool registeredRegistrationPageMessage = false;
+		private bool registeredKeyboardSizeMessage = false;
+
 		public RegistrationPage(RegistrationViewModel ViewModel)
 		{
 			this.InitializeComponent();
@@ -26,13 +29,18 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 
 			// We need to register this handlere before the LoadingView is initialised
 			WeakReferenceMessenger.Default.Register<RegistrationPageMessage>(this, this.HandleRegistrationPageMessage);
+			this.registeredRegistrationPageMessage = true;
 
 			StateContainer.SetCurrentState(this.GridWithAnimation, "Loading");
 		}
 
 		~RegistrationPage()
 		{
-			WeakReferenceMessenger.Default.Unregister<RegistrationPageMessage>(this);
+			if (this.registeredRegistrationPageMessage)
+			{
+				WeakReferenceMessenger.Default.Unregister<RegistrationPageMessage>(this);
+				this.registeredRegistrationPageMessage = false;
+			}
 		}
 
 		/// <inheritdoc/>
@@ -40,13 +48,21 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		{
 			await base.OnAppearingAsync();
 
-			WeakReferenceMessenger.Default.Register<KeyboardSizeMessage>(this, this.HandleKeyboardSizeMessage);
+			if (!this.registeredKeyboardSizeMessage)
+			{
+				WeakReferenceMessenger.Default.Register<KeyboardSizeMessage>(this, this.HandleKeyboardSizeMessage);
+				this.registeredKeyboardSizeMessage = true;
+			}
 		}
 
 		/// <inheritdoc/>
 		protected override async Task OnDisappearingAsync()
 		{
-			WeakReferenceMessenger.Default.Unregister<KeyboardSizeMessage>(this);
+			if (this.registeredKeyboardSizeMessage)
+			{
+				WeakReferenceMessenger.Default.Unregister<KeyboardSizeMessage>(this);
+				this.registeredKeyboardSizeMessage = false;
+			}
 
 			await base.OnDisappearingAsync();
 		}

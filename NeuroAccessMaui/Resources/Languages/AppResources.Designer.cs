@@ -268,6 +268,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to send this ID Application? Sending an ID application will obsolete your current ID..
+        /// </summary>
+        internal static string AreYouSureYouWantToSendThisIdApplication {
+            get {
+                return ResourceManager.GetString("AreYouSureYouWantToSendThisIdApplication", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to transfer your legal identity from the application to another? The identity will be removed from this device once completed. Also make sure no-one else can see your screen during the process..
         /// </summary>
         internal static string AreYouSureYouWantToTransferYourLegalIdentity {

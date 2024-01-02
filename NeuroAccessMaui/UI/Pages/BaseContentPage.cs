@@ -98,12 +98,10 @@ namespace NeuroAccessMaui.UI.Pages
 					e = Log.UnnestException(e);
 					ServiceRef.LogService.LogException(e);
 
-					string msg = ServiceRef.Localizer[nameof(AppResources.FailedToBindViewModelForPage),
+					string Message = ServiceRef.Localizer[nameof(AppResources.FailedToBindViewModelForPage),
 						ViewModel.GetType().FullName ?? string.Empty, this.GetType().FullName ?? string.Empty];
 
-					await ServiceRef.UiSerializer.DisplayAlert(
-						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-						msg + Environment.NewLine + e.Message);
+					await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], Message + Environment.NewLine + e.Message);
 				}
 			}
 
@@ -117,12 +115,10 @@ namespace NeuroAccessMaui.UI.Pages
 				e = Log.UnnestException(e);
 				ServiceRef.LogService.LogException(e);
 
-				string msg = ServiceRef.Localizer[nameof(AppResources.FailedToRestoreViewModelStateForPage),
+				string Message = ServiceRef.Localizer[nameof(AppResources.FailedToRestoreViewModelStateForPage),
 					ViewModel.GetType().FullName ?? string.Empty, this.GetType().FullName ?? string.Empty];
 
-				await ServiceRef.UiSerializer.DisplayAlert(
-					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-					msg + Environment.NewLine + e.Message);
+				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], Message + Environment.NewLine + e.Message);
 			}
 		}
 

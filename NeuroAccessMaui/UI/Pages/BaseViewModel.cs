@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
+using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Tag;
 
@@ -155,9 +156,7 @@ namespace NeuroAccessMaui.UI.Pages
 			set
 			{
 				if (this.isOverlayVisible == value)
-				{
 					return;
-				}
 
 				if (value)
 				{
@@ -215,9 +214,7 @@ namespace NeuroAccessMaui.UI.Pages
 		public async Task DoDispose()
 		{
 			if (this.IsAppearing)
-			{
 				await this.DoDisappearing();
-			}
 
 			if (this.IsInitialized)
 			{
@@ -242,9 +239,7 @@ namespace NeuroAccessMaui.UI.Pages
 		public async Task DoAppearing()
 		{
 			if (!this.IsInitialized)
-			{
 				await this.DoInitialize();
-			}
 
 			if (!this.IsAppearing)
 			{
@@ -253,9 +248,7 @@ namespace NeuroAccessMaui.UI.Pages
 				await this.OnAppearing();
 
 				foreach (BaseViewModel ChildViewModel in this.childViewModels)
-				{
 					await ChildViewModel.DoAppearing();
-				}
 
 				this.IsAppearing = true;
 			}
@@ -277,9 +270,7 @@ namespace NeuroAccessMaui.UI.Pages
 			if (this.IsAppearing)
 			{
 				foreach (BaseViewModel ChildViewModel in this.childViewModels)
-				{
 					await ChildViewModel.DoDisappearing();
-				}
 
 				await this.OnDisappearing();
 
@@ -294,5 +285,19 @@ namespace NeuroAccessMaui.UI.Pages
 		{
 			return Task.CompletedTask;  // Do nothing by default.
 		}
+
+		/// <summary>
+		/// Asks the user to confirm an action.
+		/// </summary>
+		/// <param name="Message">Message to display to the user.</param>
+		/// <returns>If the user confirms the action.</returns>
+		public static async Task<bool> AreYouSure(string Message)
+		{
+			return await ServiceRef.UiSerializer.DisplayAlert(
+				ServiceRef.Localizer[nameof(AppResources.Confirm)], Message,
+				ServiceRef.Localizer[nameof(AppResources.Yes)],
+				ServiceRef.Localizer[nameof(AppResources.No)]);
+		}
+
 	}
 }

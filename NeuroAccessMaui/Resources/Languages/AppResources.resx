@@ -927,6 +927,9 @@
   <data name="Applications" xml:space="preserve">
     <value>Applications</value>
   </data>
+  <data name="AreYouSureYouWantToSendThisIdApplication" xml:space="preserve">
+    <value>Are you sure you want to send this ID Application? Sending an ID application will obsolete your current ID.</value>
+  </data>
   <data name="ConsentDescription" xml:space="preserve">
     <value>I consent to the processing of the personal information provided in this application, for the purposes of validating and approving the application.</value>
   </data>

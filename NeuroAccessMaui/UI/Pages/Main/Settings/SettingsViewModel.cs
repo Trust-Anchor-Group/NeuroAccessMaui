@@ -332,17 +332,6 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			}
 		}
 
-		private static async Task<bool> AreYouSure(string Message)
-		{
-			if (!await App.AuthenticateUser())
-				return false;
-
-			return await ServiceRef.UiSerializer.DisplayAlert(
-				ServiceRef.Localizer[nameof(AppResources.Confirm)], Message,
-				ServiceRef.Localizer[nameof(AppResources.Yes)],
-				ServiceRef.Localizer[nameof(AppResources.No)]);
-		}
-
 		[RelayCommand(CanExecute = nameof(CanExecuteCommands))]
 		private async Task Compromise()
 		{

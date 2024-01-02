@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Data;
+using NeuroAccessMaui.UI.Pages.Main.Settings;
 using NeuroAccessMaui.UI.Pages.Registration;
 using Waher.Networking.XMPP.Contracts;
 
@@ -196,40 +198,40 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 
 				if (this.HasApplicationAttributes)
 				{
-					if (this.NrPhotos > 0)
-						return false;     // TODO
+					//if (this.NrPhotos > 0)
+					//	return false;     // TODO
 
-					if (this.FirstNameOk)
+					if (!this.FirstNameOk)
 						return false;
 
-					if (this.MiddleNamesOk)
+					if (!this.MiddleNamesOk)
 						return false;
 
-					if (this.LastNamesOk)
+					if (!this.LastNamesOk)
 						return false;
 
-					if (this.PersonalNumberOk)
+					if (!this.PersonalNumberOk)
 						return false;
 
-					if (this.AddressOk)
+					if (!this.AddressOk)
 						return false;
 
-					if (this.Address2Ok)
+					if (!this.Address2Ok)
 						return false;
 
-					if (this.ZipCodeOk)
+					if (!this.ZipCodeOk)
 						return false;
 
-					if (this.AreaOk)
+					if (!this.AreaOk)
 						return false;
 
-					if (this.CityOk)
+					if (!this.CityOk)
 						return false;
 
-					if (this.RegionOk)
+					if (!this.RegionOk)
 						return false;
 
-					if (this.CountryOk)
+					if (!this.CountryOk)
 						return false;
 
 					if (this.RequiresCountryIso3166 && !ISO_3166_1.TryGetCountryByCode(this.CountryCode, out _))
@@ -247,6 +249,9 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		{
 			try
 			{
+				if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToSendThisIdApplication)]))
+					return;
+
 				if (!await App.AuthenticateUser(true))
 					return;
 

@@ -132,7 +132,21 @@ namespace NeuroAccessMaui.UI.Controls
 		public string EntryData
 		{
 			get => (string)this.GetValue(EntryDataElement.EntryDataProperty);
-			set => this.SetValue(EntryDataElement.EntryDataProperty, value);
+			set
+			{
+				if (!this.IsReadOnly)
+					this.SetValue(EntryDataElement.EntryDataProperty, value);
+				else
+				{
+					string OldValue = this.EntryData;
+
+					if (OldValue != value)
+					{
+						this.OnPropertyChanged(nameof(this.EntryData));
+						this.innerEntry.IsReadOnly = false;
+					}
+				}
+			}
 		}
 
 		public string EntryHint
@@ -156,13 +170,25 @@ namespace NeuroAccessMaui.UI.Controls
 		public bool IsPassword
 		{
 			get => (bool)this.GetValue(EntryDataElement.IsPasswordProperty);
-			set => this.SetValue(EntryDataElement.IsPasswordProperty, value);
+			set
+			{
+				this.SetValue(EntryDataElement.IsPasswordProperty, value);
+
+				if (this.innerEntry is not null)
+					this.innerEntry.IsPassword = value;
+			}
 		}
 
 		public bool IsReadOnly
 		{
 			get => (bool)this.GetValue(InputView.IsReadOnlyProperty);
-			set => this.SetValue(InputView.IsReadOnlyProperty, value);
+			set
+			{
+				this.SetValue(InputView.IsReadOnlyProperty, value);
+
+				if (this.innerEntry is not null)
+					this.innerEntry.IsReadOnly = value;
+			}
 		}
 
 		public Entry Entry => this.innerEntry;
@@ -193,7 +219,9 @@ namespace NeuroAccessMaui.UI.Controls
 			this.innerEntry = new()
 			{
 				VerticalOptions = LayoutOptions.Center,
-				HorizontalOptions = LayoutOptions.Fill
+				HorizontalOptions = LayoutOptions.Fill,
+				IsReadOnly = this.IsReadOnly,
+				IsPassword = this.IsPassword
 			};
 
 			this.innerEntry.Completed += this.InnerEntry_Completed;
