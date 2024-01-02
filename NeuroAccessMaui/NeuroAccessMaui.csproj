@@ -124,6 +124,11 @@
 	  <None Remove="Resources\Images\settings_light.svg" />
 	  <None Remove="Resources\Images\view_id_dark.svg" />
 	  <None Remove="Resources\Images\view_id_light.svg" />
+	  <None Remove="Services\Data\PersonalNumbers\PersonalNumberSchemes.xml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="Services\Data\PersonalNumbers\PersonalNumberSchemes.xml" />
 	</ItemGroup>
 
 	<ItemGroup>
