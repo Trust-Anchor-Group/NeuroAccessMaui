@@ -65,4 +65,9 @@
 		<Setter Property="FontFamily" Value="HaasGroteskBold" />
 	</Style>
 
+	<Style x:Key="RequiredFieldMarker" ApplyToDerivedTypes="False" TargetType="Label">
+		<Setter Property="TextColor" Value="Red"/>
+		<Setter Property="Text" Value=" *"/>
+	</Style>
+
 </ResourceDictionary>
