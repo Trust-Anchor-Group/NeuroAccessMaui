@@ -42,7 +42,8 @@ namespace NeuroAccessMaui.UI.Popups
 
 		public List<LanguageInfo> Languages { get; } = new(App.SupportedLanguages);
 
-		public SelectLanguagePage(ImageSource? Background = null) : base(Background)
+		public SelectLanguagePage(ImageSource? Background = null)
+			: base(Background)
 		{
 			this.InitializeComponent();
 			this.BindingContext = this;

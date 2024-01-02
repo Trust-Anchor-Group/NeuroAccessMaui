@@ -13,7 +13,8 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 {
 	public partial class CreateAccountViewModel : BaseRegistrationViewModel
 	{
-		public CreateAccountViewModel() : base(RegistrationStep.CreateAccount)
+		public CreateAccountViewModel()
+			: base(RegistrationStep.CreateAccount)
 		{
 		}
 

@@ -51,7 +51,8 @@ namespace NeuroAccessMaui.UI.Controls
 			set => this.SetValue(PathDataElement.PathStyleProperty, value);
 		}
 
-		public ImageButton() : base()
+		public ImageButton()
+			: base()
 		{
 			this.innerPath = new()
 			{

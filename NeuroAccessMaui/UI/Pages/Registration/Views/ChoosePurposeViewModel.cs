@@ -11,7 +11,8 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 {
 	public partial class ChoosePurposeViewModel : BaseRegistrationViewModel
 	{
-		public ChoosePurposeViewModel() : base(RegistrationStep.RequestPurpose)
+		public ChoosePurposeViewModel()
+			: base(RegistrationStep.RequestPurpose)
 		{
 		}
 

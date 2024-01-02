@@ -12,7 +12,8 @@
 		/// </summary>
 		/// <param name="ViewModel">View model.</param>
 		/// <param name="Background">Optional background.</param>
-		public CheckPinPage(CheckPinViewModel ViewModel, ImageSource? Background = null) : base(Background)
+		public CheckPinPage(CheckPinViewModel ViewModel, ImageSource? Background = null)
+			: base(Background)
 		{
 			this.InitializeComponent();
 			this.BindingContext = this.viewModel = ViewModel;

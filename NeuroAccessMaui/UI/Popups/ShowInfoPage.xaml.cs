@@ -8,7 +8,8 @@ namespace NeuroAccessMaui.UI.Popups
 		public string InfoTitle { get; set; }
 		public string InfoText { get; set; }
 
-		public ShowInfoPage(string InfoTitle, string InfoText, ImageSource? Background = null) : base(Background)
+		public ShowInfoPage(string InfoTitle, string InfoText, ImageSource? Background = null)
+			: base(Background)
 		{
 			this.InfoTitle = InfoTitle;
 			this.InfoText = InfoText;

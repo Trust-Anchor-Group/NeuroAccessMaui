@@ -17,7 +17,8 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 {
 	public partial class ValidatePhoneViewModel : BaseRegistrationViewModel, ICodeVerification
 	{
-		public ValidatePhoneViewModel() : base(RegistrationStep.ValidatePhone)
+		public ValidatePhoneViewModel()
+			: base(RegistrationStep.ValidatePhone)
 		{
 		}
 

@@ -51,7 +51,8 @@ namespace NeuroAccessMaui.UI.Controls
 			set => this.SetValue(LabelDataElement.LabelStyleProperty, value);
 		}
 
-		public TextButton() : base()
+		public TextButton()
+			: base()
 		{
 			this.innerLabel = new()
 			{

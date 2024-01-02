@@ -11,7 +11,8 @@ namespace NeuroAccessMaui.UI.Controls
 		/// <summary>
 		/// Initializes a new instance of <see cref="TemplatedButton"/> class.
 		/// </summary>
-		public TemplatedButton() : base()
+		public TemplatedButton() :
+			base()
 		{
 			TapGestureRecognizer TapRecognizer = new();
 			TapRecognizer.Tapped += this.OnTapped;

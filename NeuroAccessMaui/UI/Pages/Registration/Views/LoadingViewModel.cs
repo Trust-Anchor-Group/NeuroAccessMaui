@@ -8,7 +8,8 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 {
 	public partial class LoadingViewModel : BaseRegistrationViewModel
 	{
-		public LoadingViewModel() : base(RegistrationStep.Complete)
+		public LoadingViewModel()
+			: base(RegistrationStep.Complete)
 		{
 		}
 

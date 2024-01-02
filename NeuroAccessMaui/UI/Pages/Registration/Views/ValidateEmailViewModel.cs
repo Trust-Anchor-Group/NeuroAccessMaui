@@ -14,7 +14,8 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 {
 	public partial class ValidateEmailViewModel : BaseRegistrationViewModel, ICodeVerification
 	{
-		public ValidateEmailViewModel() : base(RegistrationStep.ValidateEmail)
+		public ValidateEmailViewModel()
+			: base(RegistrationStep.ValidateEmail)
 		{
 		}
 
