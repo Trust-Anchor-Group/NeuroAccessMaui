@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseContentPage x:Name="ThisPage"
+							 x:Class="NeuroAccessMaui.UI.Pages.Applications.ApplyPersonalIdPage"
+							 x:DataType="viewmodel:ApplyPersonalIdViewModel"
+							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Applications">
+
+	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+
+		<controls:Background/>
+
+		<ScrollView>
+			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+
+				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
+											 Style="{StaticResource BackImageButtonStyle}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+
+				<Label Style="{StaticResource PageTitleLabelStyle}" Text="{l:Localize PersonalId}"/>
+
+				<!-- Personal Information -->
+				<Frame Style="{StaticResource FrameSet}">
+					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+						<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize PersonalInformation}"/>
+						<Label Style="{StaticResource InfoLabelStyle}" Text="{l:Localize PersonalInformationDescription}"/>
+
+						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+							<Label Text="{l:Localize FirstName}" HorizontalOptions="FillAndExpand"/>
+							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=FirstName}" />
+						</VerticalStackLayout>
+
+						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+							<Label Text="{l:Localize MiddleNames}" HorizontalOptions="FillAndExpand"/>
+							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=MiddleNames}" />
+						</VerticalStackLayout>
+
+						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+							<Label Text="{l:Localize LastNames}" HorizontalOptions="FillAndExpand"/>
+							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=LastNames}" />
+						</VerticalStackLayout>
+
+						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+							<Label Text="{l:Localize PersonalNumber}" HorizontalOptions="FillAndExpand"/>
+							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=PersonalNumber}" />
+						</VerticalStackLayout>
+
+						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+							<Label Text="{l:Localize Address}" HorizontalOptions="FillAndExpand"/>
+							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=Address}" />
+						</VerticalStackLayout>
+
+						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+							<Label Text="{l:Localize Address2}" HorizontalOptions="FillAndExpand"/>
+							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=Address2}" />
+						</VerticalStackLayout>
+
+						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+							<Label Text="{l:Localize ZipCode}" HorizontalOptions="FillAndExpand"/>
+							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=ZipCode}" />
+						</VerticalStackLayout>
+
+						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+							<Label Text="{l:Localize Area}" HorizontalOptions="FillAndExpand"/>
+							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=Area}" />
+						</VerticalStackLayout>
+
+						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+							<Label Text="{l:Localize City}" HorizontalOptions="FillAndExpand"/>
+							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=City}" />
+						</VerticalStackLayout>
+
+						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+							<Label Text="{l:Localize Region}" HorizontalOptions="FillAndExpand"/>
+							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=Region}" />
+						</VerticalStackLayout>
+
+						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+							<Label Text="{l:Localize Country}" HorizontalOptions="FillAndExpand"/>
+							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}"
+															 EntryData="{Binding Path=CountryName}" IsReadOnly="True" />
+						</VerticalStackLayout>
+					</VerticalStackLayout>
+				</Frame>
+
+				<!-- Contact Information -->
+				<Frame Style="{StaticResource FrameSet}">
+					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+						<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize ContactInformation}"/>
+						<Label Style="{StaticResource InfoLabelStyle}" Text="{l:Localize ContactInformationDescription}"/>
+
+						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+							<Label Text="{l:Localize EMail}" HorizontalOptions="FillAndExpand"/>
+							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}"
+															 EntryData="{Binding Path=EMail}" IsReadOnly="True" />
+						</VerticalStackLayout>
+
+						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+							<Label Text="{l:Localize PhoneNr}" HorizontalOptions="FillAndExpand"/>
+							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}"
+															 EntryData="{Binding Path=PhoneNr}" IsReadOnly="True" />
+						</VerticalStackLayout>
+
+						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+							<Label Text="{l:Localize NeuroAccessAccount}" HorizontalOptions="FillAndExpand"/>
+							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}"
+															 EntryData="{Binding Path=Jid}" IsReadOnly="True" />
+						</VerticalStackLayout>
+					</VerticalStackLayout>
+				</Frame>
+
+			</VerticalStackLayout>
+		</ScrollView>
+	</Grid>
+</base:BaseContentPage>

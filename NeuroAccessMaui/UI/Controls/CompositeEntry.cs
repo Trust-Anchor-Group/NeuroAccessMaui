@@ -40,6 +40,9 @@ namespace NeuroAccessMaui.UI.Controls
 		/// <summary>Bindable property for <see cref="IsPassword"/>.</summary>
 		public static readonly BindableProperty IsPasswordProperty = EntryDataElement.IsPasswordProperty;
 
+		/// <summary>Bindable property for <see cref="IsReadOnly"/>.</summary>
+		public static readonly BindableProperty IsReadOnlyProperty = InputView.IsReadOnlyProperty;
+
 		public void OnBorderStylePropertyChanged(Style OldValue, Style NewValue)
 		{
 			this.innerBorder.Style = NewValue;
@@ -92,9 +95,14 @@ namespace NeuroAccessMaui.UI.Controls
 			this.innerEntry.ReturnCommand = NewValue;
 		}
 
-		public void OnIsPasswordPropertyChanged(bool OldValue, bool NewValue)
+		public void OnIsPasswordPropertyChanged(bool _, bool NewValue)
 		{
 			this.innerEntry.IsPassword = NewValue;
+		}
+
+		public void OnIsReadOnlyPropertyChanged(bool _, bool NewValue)
+		{
+			this.innerEntry.IsReadOnly = NewValue;
 		}
 
 		public Style BorderStyle
@@ -149,6 +157,12 @@ namespace NeuroAccessMaui.UI.Controls
 		{
 			get => (bool)this.GetValue(EntryDataElement.IsPasswordProperty);
 			set => this.SetValue(EntryDataElement.IsPasswordProperty, value);
+		}
+
+		public bool IsReadOnly
+		{
+			get => (bool)this.GetValue(InputView.IsReadOnlyProperty);
+			set => this.SetValue(InputView.IsReadOnlyProperty, value);
 		}
 
 		public Entry Entry => this.innerEntry;

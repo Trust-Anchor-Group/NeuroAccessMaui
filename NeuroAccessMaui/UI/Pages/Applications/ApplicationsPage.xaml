@@ -24,7 +24,7 @@
 
 				<Label Style="{StaticResource PageTitleLabelStyle}" Text="{l:Localize Applications}"/>
 
-				<!-- IDentity Applications -->
+				<!-- Identity Applications -->
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 						<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize IdentityApplications}"/>

@@ -1,18 +1,20 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.UI.Pages.Registration;
 using Waher.Networking.XMPP;
+using Waher.Networking.XMPP.Contracts;
 
 namespace NeuroAccessMaui.UI.Pages.Applications
 {
 	/// <summary>
-	/// The view model to bind to for when displaying the applications page.
+	/// The view model to bind to for when displaying the an application for a Personal ID.
 	/// </summary>
-	public partial class ApplicationsViewModel : XmppViewModel
+	public partial class ApplyPersonalIdViewModel : RegisterIdentityModel
 	{
 		/// <summary>
-		/// Creates an instance of the <see cref="ApplicationsViewModel"/> class.
+		/// Creates an instance of the <see cref="ApplyPersonalIdViewModel"/> class.
 		/// </summary>
-		public ApplicationsViewModel()
+		public ApplyPersonalIdViewModel()
 			: base()
 		{
 		}
@@ -20,6 +22,11 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		protected override async Task OnInitialize()
 		{
 			await base.OnInitialize();
+
+			LegalIdentity? CurrentId = ServiceRef.TagProfile.LegalIdentity;
+			if (CurrentId is not null)
+				this.SetProperties(CurrentId.Properties, true);
+
 			this.NotifyCommandsCanExecuteChanged();
 		}
 
@@ -43,8 +50,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 
 		private void NotifyCommandsCanExecuteChanged()
 		{
-			this.ApplyPersonalIdCommand.NotifyCanExecuteChanged();
-			this.ApplyOrganizationalIdCommand.NotifyCanExecuteChanged();
+			this.ApplyCommand.NotifyCanExecuteChanged();
 		}
 
 		#region Properties
@@ -65,31 +71,14 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		}
 
 		[RelayCommand(CanExecute = nameof(CanExecuteCommands))]
-		private async Task ApplyPersonalId()
+		private async Task Apply()
 		{
 			try
 			{
-				if (!await App.AuthenticateUser())
+				if (!await App.AuthenticateUser(true))
 					return;
 
-				await ServiceRef.NavigationService.GoToAsync(nameof(ApplyPersonalIdPage));
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
-			}
-		}
-
-		[RelayCommand(CanExecute = nameof(CanExecuteCommands))]
-		private async Task ApplyOrganizationalId()
-		{
-			try
-			{
-				if (!await App.AuthenticateUser())
-					return;
-
-				//await ServiceRef.NavigationService.GoToAsync(nameof(ApplyOrganizationalIdPage));
+				// TODO
 			}
 			catch (Exception ex)
 			{

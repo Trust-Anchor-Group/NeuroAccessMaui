@@ -921,8 +921,20 @@
   <data name="PinCode" xml:space="preserve">
     <value>PIN-kod</value>
   </data>
+  <data name="Application" xml:space="preserve">
+    <value>Tillämpning</value>
+  </data>
   <data name="Applications" xml:space="preserve">
     <value>Program</value>
+  </data>
+  <data name="ContactInformation" xml:space="preserve">
+    <value>Kontaktuppgifter</value>
+  </data>
+  <data name="ContactInformationDescription" xml:space="preserve">
+    <value>Följande kontaktuppgifter kommer att finnas med i ansökan. Den här informationen hämtas från registreringsprocessen.</value>
+  </data>
+  <data name="EMail" xml:space="preserve">
+    <value>E-post</value>
   </data>
   <data name="FingerprintDescription" xml:space="preserve">
     <value>Skanna ditt fingeravtryck.</value>
@@ -932,6 +944,9 @@
   </data>
   <data name="IdentityApplications" xml:space="preserve">
     <value>Identitets program</value>
+  </data>
+  <data name="NeuroAccessAccount" xml:space="preserve">
+    <value>Neuro-Access-konto</value>
   </data>
   <data name="OrganizationalId" xml:space="preserve">
     <value>Organisations-ID</value>
@@ -944,5 +959,11 @@
   </data>
   <data name="PersonalIdDescription" xml:space="preserve">
     <value>Ansök om ett nytt digitalt personnummer. ID:t kommer att innehålla din personliga information och kan användas för att validera din personliga identitet, samt få tillgång till tjänster som kräver en verifierad personlig identitet.</value>
+  </data>
+  <data name="PersonalInformationDescription" xml:space="preserve">
+    <value>Följande personuppgifter kommer att ingå i ansökan om personbeteckning.</value>
+  </data>
+  <data name="PhoneNr" xml:space="preserve">
+    <value>Telefonnummer</value>
   </data>
 </root>

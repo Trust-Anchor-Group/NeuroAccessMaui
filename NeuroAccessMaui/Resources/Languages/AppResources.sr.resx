@@ -921,8 +921,20 @@
   <data name="PinCode" xml:space="preserve">
     <value>PIN kôd</value>
   </data>
+  <data name="Application" xml:space="preserve">
+    <value>Aplikacije</value>
+  </data>
   <data name="Applications" xml:space="preserve">
     <value>Aplikacije</value>
+  </data>
+  <data name="ContactInformation" xml:space="preserve">
+    <value>Kontakt informacije</value>
+  </data>
+  <data name="ContactInformationDescription" xml:space="preserve">
+    <value>Sledeće kontakt informacije će biti uključene u aplikaciju. Ove informacije su preuzete iz procesa ukrcavanja.</value>
+  </data>
+  <data name="EMail" xml:space="preserve">
+    <value>E-pošta</value>
   </data>
   <data name="FingerprintDescription" xml:space="preserve">
     <value>Skeniraj otisak prsta.</value>
@@ -932,6 +944,9 @@
   </data>
   <data name="IdentityApplications" xml:space="preserve">
     <value>Aplikacije identiteta</value>
+  </data>
+  <data name="NeuroAccessAccount" xml:space="preserve">
+    <value>Neuro-pristupni nalog</value>
   </data>
   <data name="OrganizationalId" xml:space="preserve">
     <value>Organizacioni ID</value>
@@ -944,5 +959,11 @@
   </data>
   <data name="PersonalIdDescription" xml:space="preserve">
     <value>Prijavite se za novi digitalni lični ID. ID će sadržati vaše lične podatke i može se koristiti za proveru vašeg ličnog identiteta, kao i za dobijanje pristupa uslugama koje zahtevaju provereni lični identitet.</value>
+  </data>
+  <data name="PersonalInformationDescription" xml:space="preserve">
+    <value>Sledeće lične informacije biće uključene u aplikaciju za lični ID.</value>
+  </data>
+  <data name="PhoneNr" xml:space="preserve">
+    <value>Telefonski broj</value>
   </data>
 </root>

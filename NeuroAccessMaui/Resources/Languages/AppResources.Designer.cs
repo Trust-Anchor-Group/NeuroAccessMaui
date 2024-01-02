@@ -187,6 +187,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Application.
+        /// </summary>
+        internal static string Application {
+            get {
+                return ResourceManager.GetString("Application", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Applications.
         /// </summary>
         internal static string Applications {
@@ -484,6 +493,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Contact information.
+        /// </summary>
+        internal static string ContactInformation {
+            get {
+                return ResourceManager.GetString("ContactInformation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The following contact information will be included in the application. This information is taken from the onboarding process..
+        /// </summary>
+        internal static string ContactInformationDescription {
+            get {
+                return ResourceManager.GetString("ContactInformationDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Continue.
         /// </summary>
         internal static string Continue {
@@ -597,6 +624,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string DomainIsNotAValidOperator {
             get {
                 return ResourceManager.GetString("DomainIsNotAValidOperator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to E-Mail.
+        /// </summary>
+        internal static string EMail {
+            get {
+                return ResourceManager.GetString("EMail", resourceCulture);
             }
         }
         
@@ -1042,6 +1078,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Neuro-Access Account.
+        /// </summary>
+        internal static string NeuroAccessAccount {
+            get {
+                return ResourceManager.GetString("NeuroAccessAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Neuro-ID.
         /// </summary>
         internal static string NeuroID {
@@ -1411,6 +1456,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The following personal information will be included in the application for a Personal ID..
+        /// </summary>
+        internal static string PersonalInformationDescription {
+            get {
+                return ResourceManager.GetString("PersonalInformationDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Personal number.
         /// </summary>
         internal static string PersonalNumber {
@@ -1461,6 +1515,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string PetitionToViewLegalIdentityWasDenied {
             get {
                 return ResourceManager.GetString("PetitionToViewLegalIdentityWasDenied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Phone number.
+        /// </summary>
+        internal static string PhoneNr {
+            get {
+                return ResourceManager.GetString("PhoneNr", resourceCulture);
             }
         }
         

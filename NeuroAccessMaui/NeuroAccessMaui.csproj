@@ -179,6 +179,9 @@
 	    <AutoGen>True</AutoGen>
 	    <DependentUpon>AppResources.resx</DependentUpon>
 	  </Compile>
+	  <Compile Update="UI\Pages\Applications\ApplyPersonalIdPage.xaml.cs">
+	    <DependentUpon>ApplyPersonalIdPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="UI\Pages\Applications\ApplicationsPage.xaml.cs">
 	    <DependentUpon>ApplicationsPage.xaml</DependentUpon>
 	  </Compile>
@@ -206,6 +209,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="UI\Pages\Applications\ApplyPersonalIdPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="UI\Pages\Applications\ApplicationsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

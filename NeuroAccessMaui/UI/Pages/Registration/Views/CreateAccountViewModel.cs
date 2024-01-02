@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Data;
 using NeuroAccessMaui.Services.Tag;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
@@ -249,7 +250,8 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				if (string.IsNullOrWhiteSpace(s) && (ServiceRef.TagProfile?.LegalIdentity is LegalIdentity LegalIdentity))
 					s = LegalIdentity[Constants.XmppProperties.Country];
 
-				IdentityModel.Country = s;
+				IdentityModel.CountryCode = s;
+				IdentityModel.CountryName = ISO_3166_1.ToName(s);
 			}
 
 			return IdentityModel;

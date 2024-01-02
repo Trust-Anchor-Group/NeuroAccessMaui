@@ -921,8 +921,20 @@
   <data name="PinCode" xml:space="preserve">
     <value>Código PIN</value>
   </data>
+  <data name="Application" xml:space="preserve">
+    <value>Aplicação</value>
+  </data>
   <data name="Applications" xml:space="preserve">
     <value>Aplicativos</value>
+  </data>
+  <data name="ContactInformation" xml:space="preserve">
+    <value>Informações de contato</value>
+  </data>
+  <data name="ContactInformationDescription" xml:space="preserve">
+    <value>As seguintes informações de contato serão incluídas no aplicativo. Essas informações são retiradas do processo de integração.</value>
+  </data>
+  <data name="EMail" xml:space="preserve">
+    <value>E-mail</value>
   </data>
   <data name="FingerprintDescription" xml:space="preserve">
     <value>Digitalize sua impressão digital.</value>
@@ -932,6 +944,9 @@
   </data>
   <data name="IdentityApplications" xml:space="preserve">
     <value>Aplicativos de identidade</value>
+  </data>
+  <data name="NeuroAccessAccount" xml:space="preserve">
+    <value>Conta Neuro-Access</value>
   </data>
   <data name="OrganizationalId" xml:space="preserve">
     <value>ID organizacional</value>
@@ -944,5 +959,11 @@
   </data>
   <data name="PersonalIdDescription" xml:space="preserve">
     <value>Solicite uma nova ID pessoal digital. O ID conterá suas informações pessoais e poderá ser usado para validar sua identidade pessoal, bem como obter acesso a serviços que exijam uma identidade pessoal verificada.</value>
+  </data>
+  <data name="PersonalInformationDescription" xml:space="preserve">
+    <value>As seguintes informações pessoais serão incluídas no pedido de uma ID Pessoal.</value>
+  </data>
+  <data name="PhoneNr" xml:space="preserve">
+    <value>Número de telefone</value>
   </data>
 </root>

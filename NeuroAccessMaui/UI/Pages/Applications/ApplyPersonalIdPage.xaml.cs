@@ -1,15 +1,15 @@
 ﻿namespace NeuroAccessMaui.UI.Pages.Applications
 {
 	/// <summary>
-	/// Main applications page.
+	/// Page allowing the user to apply for a Personal ID.
 	/// </summary>
-	public partial class ApplicationsPage
+	public partial class ApplyPersonalIdPage
 	{
 		/// <summary>
-		/// Creates a new instance of the <see cref="ApplicationsPage"/> class.
+		/// Creates a new instance of the <see cref="ApplyPersonalIdPage"/> class.
 		/// </summary>
 		/// <param name="ViewModel">View model.</param>
-		public ApplicationsPage(ApplicationsViewModel ViewModel)
+		public ApplyPersonalIdPage(ApplyPersonalIdViewModel ViewModel)
 		{
 			this.InitializeComponent();
 			this.ContentPageModel = ViewModel;

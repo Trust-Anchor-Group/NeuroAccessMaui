@@ -921,8 +921,20 @@
   <data name="PinCode" xml:space="preserve">
     <value>Code PIN</value>
   </data>
+  <data name="Application" xml:space="preserve">
+    <value>Application</value>
+  </data>
   <data name="Applications" xml:space="preserve">
     <value>Applications</value>
+  </data>
+  <data name="ContactInformation" xml:space="preserve">
+    <value>Coordonnées</value>
+  </data>
+  <data name="ContactInformationDescription" xml:space="preserve">
+    <value>Les coordonnées suivantes seront incluses dans la demande. Ces informations sont issues du processus d’intégration.</value>
+  </data>
+  <data name="EMail" xml:space="preserve">
+    <value>Courriel</value>
   </data>
   <data name="FingerprintDescription" xml:space="preserve">
     <value>Scannez votre empreinte digitale.</value>
@@ -932,6 +944,9 @@
   </data>
   <data name="IdentityApplications" xml:space="preserve">
     <value>Applications d’identité</value>
+  </data>
+  <data name="NeuroAccessAccount" xml:space="preserve">
+    <value>Compte Neuro-Access</value>
   </data>
   <data name="OrganizationalId" xml:space="preserve">
     <value>ID de l’organisation</value>
@@ -944,5 +959,11 @@
   </data>
   <data name="PersonalIdDescription" xml:space="preserve">
     <value>Demandez une nouvelle carte d’identité numérique. La pièce d’identité contiendra vos informations personnelles et pourra être utilisée pour valider votre identité personnelle, ainsi que pour accéder à des services nécessitant une identité personnelle vérifiée.</value>
+  </data>
+  <data name="PersonalInformationDescription" xml:space="preserve">
+    <value>Les renseignements personnels suivants seront inclus dans la demande d’identification personnelle.</value>
+  </data>
+  <data name="PhoneNr" xml:space="preserve">
+    <value>Numéro de téléphone</value>
   </data>
 </root>

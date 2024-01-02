@@ -1008,8 +1008,8 @@ namespace NeuroAccessMaui.Services.Tag
 				IEnumerable<string> NameWords = new string[]
 				{
 					Constants.XmppProperties.FirstName,
-					Constants.XmppProperties.MiddleName,
-					Constants.XmppProperties.LastName,
+					Constants.XmppProperties.MiddleNames,
+					Constants.XmppProperties.LastNames,
 				}
 				.SelectMany(PropertyKey => LegalIdentity[PropertyKey] is string PropertyValue ? PropertyValueSplitRegex().Split(PropertyValue) : Enumerable.Empty<string>())
 				.Where(Word => Word?.GetUnicodeLength() > 2);

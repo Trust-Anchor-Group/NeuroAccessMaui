@@ -510,12 +510,12 @@ namespace NeuroAccessMaui.Services
 						HasName = true;
 						break;
 
-					case Constants.XmppProperties.MiddleName:
+					case Constants.XmppProperties.MiddleNames:
 						MiddleName = P.Value;
 						HasName = true;
 						break;
 
-					case Constants.XmppProperties.LastName:
+					case Constants.XmppProperties.LastNames:
 						LastName = P.Value;
 						HasName = true;
 						break;

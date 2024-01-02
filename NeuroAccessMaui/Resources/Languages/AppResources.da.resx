@@ -921,8 +921,20 @@
   <data name="PinCode" xml:space="preserve">
     <value>PIN-kode</value>
   </data>
+  <data name="Application" xml:space="preserve">
+    <value>Ansøgning</value>
+  </data>
   <data name="Applications" xml:space="preserve">
     <value>Programmer</value>
+  </data>
+  <data name="ContactInformation" xml:space="preserve">
+    <value>Kontaktoplysninger</value>
+  </data>
+  <data name="ContactInformationDescription" xml:space="preserve">
+    <value>Følgende kontaktoplysninger vil blive inkluderet i ansøgningen. Disse oplysninger hentes fra onboarding-processen.</value>
+  </data>
+  <data name="EMail" xml:space="preserve">
+    <value>E-mail</value>
   </data>
   <data name="FingerprintDescription" xml:space="preserve">
     <value>Scan dit fingeraftryk.</value>
@@ -932,6 +944,9 @@
   </data>
   <data name="IdentityApplications" xml:space="preserve">
     <value>Identitetsansøgninger</value>
+  </data>
+  <data name="NeuroAccessAccount" xml:space="preserve">
+    <value>Neuro-Access-konto</value>
   </data>
   <data name="OrganizationalId" xml:space="preserve">
     <value>Organisations-id</value>
@@ -944,5 +959,11 @@
   </data>
   <data name="PersonalIdDescription" xml:space="preserve">
     <value>Ansøg om nyt digitalt person-id. ID'et indeholder dine personlige oplysninger og kan bruges til at validere din personlige identitet samt få adgang til tjenester, der kræver en verificeret personlig identitet.</value>
+  </data>
+  <data name="PersonalInformationDescription" xml:space="preserve">
+    <value>Følgende personlige oplysninger vil blive inkluderet i ansøgningen om et personligt ID.</value>
+  </data>
+  <data name="PhoneNr" xml:space="preserve">
+    <value>Telefonnummer</value>
   </data>
 </root>

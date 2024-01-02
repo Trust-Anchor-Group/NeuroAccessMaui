@@ -921,8 +921,20 @@
   <data name="PinCode" xml:space="preserve">
     <value>Codul PIN</value>
   </data>
+  <data name="Application" xml:space="preserve">
+    <value>Aplicație</value>
+  </data>
   <data name="Applications" xml:space="preserve">
     <value>Aplicaţii</value>
+  </data>
+  <data name="ContactInformation" xml:space="preserve">
+    <value>Informații de contact</value>
+  </data>
+  <data name="ContactInformationDescription" xml:space="preserve">
+    <value>Următoarele informații de contact vor fi incluse în cerere. Aceste informații sunt preluate din procesul de integrare.</value>
+  </data>
+  <data name="EMail" xml:space="preserve">
+    <value>E-mail</value>
   </data>
   <data name="FingerprintDescription" xml:space="preserve">
     <value>Scanați amprenta.</value>
@@ -932,6 +944,9 @@
   </data>
   <data name="IdentityApplications" xml:space="preserve">
     <value>Cereri de identitate</value>
+  </data>
+  <data name="NeuroAccessAccount" xml:space="preserve">
+    <value>Cont Neuro-Access</value>
   </data>
   <data name="OrganizationalId" xml:space="preserve">
     <value>ID organizație</value>
@@ -944,5 +959,11 @@
   </data>
   <data name="PersonalIdDescription" xml:space="preserve">
     <value>Solicitați un nou ID personal digital. ID-ul va conține informațiile dvs. personale și poate fi utilizat pentru a vă valida identitatea personală, precum și pentru a avea acces la servicii care necesită o identitate personală verificată.</value>
+  </data>
+  <data name="PersonalInformationDescription" xml:space="preserve">
+    <value>Următoarele informații personale vor fi incluse în cererea pentru un ID personal.</value>
+  </data>
+  <data name="PhoneNr" xml:space="preserve">
+    <value>Număr de telefon</value>
   </data>
 </root>

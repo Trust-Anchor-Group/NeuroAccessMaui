@@ -921,8 +921,20 @@
   <data name="PinCode" xml:space="preserve">
     <value>PIN-код</value>
   </data>
+  <data name="Application" xml:space="preserve">
+    <value>Приложение</value>
+  </data>
   <data name="Applications" xml:space="preserve">
     <value>Приложений</value>
+  </data>
+  <data name="ContactInformation" xml:space="preserve">
+    <value>Контактная информация</value>
+  </data>
+  <data name="ContactInformationDescription" xml:space="preserve">
+    <value>В заявке будет указана следующая контактная информация. Эта информация берется из процесса адаптации.</value>
+  </data>
+  <data name="EMail" xml:space="preserve">
+    <value>Электронная почта</value>
   </data>
   <data name="FingerprintDescription" xml:space="preserve">
     <value>Отсканируйте отпечаток пальца.</value>
@@ -932,6 +944,9 @@
   </data>
   <data name="IdentityApplications" xml:space="preserve">
     <value>Приложения для идентификации</value>
+  </data>
+  <data name="NeuroAccessAccount" xml:space="preserve">
+    <value>Учетная запись Neuro-Access</value>
   </data>
   <data name="OrganizationalId" xml:space="preserve">
     <value>Идентификатор организации</value>
@@ -944,5 +959,11 @@
   </data>
   <data name="PersonalIdDescription" xml:space="preserve">
     <value>Подайте заявку на получение нового цифрового удостоверения личности. Идентификатор будет содержать вашу личную информацию и может быть использован для подтверждения вашей личности, а также для получения доступа к услугам, требующим подтвержденной личности.</value>
+  </data>
+  <data name="PersonalInformationDescription" xml:space="preserve">
+    <value>Следующая личная информация будет включена в заявление на получение удостоверения личности.</value>
+  </data>
+  <data name="PhoneNr" xml:space="preserve">
+    <value>Номер телефона</value>
   </data>
 </root>

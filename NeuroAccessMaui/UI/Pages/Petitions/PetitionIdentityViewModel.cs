@@ -406,8 +406,8 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 				this.From = this.RequestorIdentity.From.GetDateOrNullIfMinValue();
 				this.To = this.RequestorIdentity.To.GetDateOrNullIfMinValue();
 				this.FirstName = this.RequestorIdentity[Constants.XmppProperties.FirstName];
-				this.MiddleNames = this.RequestorIdentity[Constants.XmppProperties.MiddleName];
-				this.LastNames = this.RequestorIdentity[Constants.XmppProperties.LastName];
+				this.MiddleNames = this.RequestorIdentity[Constants.XmppProperties.MiddleNames];
+				this.LastNames = this.RequestorIdentity[Constants.XmppProperties.LastNames];
 				this.PersonalNumber = this.RequestorIdentity[Constants.XmppProperties.PersonalNumber];
 				this.Address = this.RequestorIdentity[Constants.XmppProperties.Address];
 				this.Address2 = this.RequestorIdentity[Constants.XmppProperties.Address2];

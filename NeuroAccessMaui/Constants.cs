@@ -219,14 +219,14 @@
 			public const string FirstName = "FIRST";
 
 			/// <summary>
-			/// Middle name
+			/// Middle names
 			/// </summary>
-			public const string MiddleName = "MIDDLE";
+			public const string MiddleNames = "MIDDLE";
 
 			/// <summary>
-			/// Last name
+			/// Last names
 			/// </summary>
-			public const string LastName = "LAST";
+			public const string LastNames = "LAST";
 
 			/// <summary>
 			/// Personal number

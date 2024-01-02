@@ -921,8 +921,20 @@
   <data name="PinCode" xml:space="preserve">
     <value>PIN code</value>
   </data>
+  <data name="Application" xml:space="preserve">
+    <value>Application</value>
+  </data>
   <data name="Applications" xml:space="preserve">
     <value>Applications</value>
+  </data>
+  <data name="ContactInformation" xml:space="preserve">
+    <value>Contact information</value>
+  </data>
+  <data name="ContactInformationDescription" xml:space="preserve">
+    <value>The following contact information will be included in the application. This information is taken from the onboarding process.</value>
+  </data>
+  <data name="EMail" xml:space="preserve">
+    <value>E-Mail</value>
   </data>
   <data name="FingerprintDescription" xml:space="preserve">
     <value>Scan your finger print.</value>
@@ -932,6 +944,9 @@
   </data>
   <data name="IdentityApplications" xml:space="preserve">
     <value>Identity applications</value>
+  </data>
+  <data name="NeuroAccessAccount" xml:space="preserve">
+    <value>Neuro-Access Account</value>
   </data>
   <data name="OrganizationalId" xml:space="preserve">
     <value>Organizational ID</value>
@@ -944,5 +959,11 @@
   </data>
   <data name="PersonalIdDescription" xml:space="preserve">
     <value>Apply for a new digital Personal ID. The ID will contain your personal information and can be used to to validate your personal identity, as well as gain access to services requiring a verified personal identity.</value>
+  </data>
+  <data name="PersonalInformationDescription" xml:space="preserve">
+    <value>The following personal information will be included in the application for a Personal ID.</value>
+  </data>
+  <data name="PhoneNr" xml:space="preserve">
+    <value>Phone number</value>
   </data>
 </root>

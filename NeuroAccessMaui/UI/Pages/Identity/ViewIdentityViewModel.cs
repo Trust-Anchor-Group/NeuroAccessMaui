@@ -134,8 +134,8 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 			if (this.LegalIdentity is not null)
 			{
 				this.FirstName = this.LegalIdentity[Constants.XmppProperties.FirstName];
-				this.MiddleNames = this.LegalIdentity[Constants.XmppProperties.MiddleName];
-				this.LastNames = this.LegalIdentity[Constants.XmppProperties.LastName];
+				this.MiddleNames = this.LegalIdentity[Constants.XmppProperties.MiddleNames];
+				this.LastNames = this.LegalIdentity[Constants.XmppProperties.LastNames];
 				this.PersonalNumber = this.LegalIdentity[Constants.XmppProperties.PersonalNumber];
 				this.Address = this.LegalIdentity[Constants.XmppProperties.Address];
 				this.Address2 = this.LegalIdentity[Constants.XmppProperties.Address2];
