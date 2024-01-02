@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Data;
+using NeuroAccessMaui.Services.Data.PersonalNumbers;
 using NeuroAccessMaui.Services.Xmpp;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
@@ -68,6 +69,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		/// </summary>
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(FirstNameOk))]
 		private string? firstName;
 
 		/// <summary>
@@ -75,6 +77,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		/// </summary>
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(MiddleNamesOk))]
 		private string? middleNames;
 
 		/// <summary>
@@ -82,6 +85,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		/// </summary>
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(LastNamesOk))]
 		private string? lastNames;
 
 		/// <summary>
@@ -89,6 +93,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		/// </summary>
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(PersonalNumberOk))]
 		private string? personalNumber;
 
 		/// <summary>
@@ -96,6 +101,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		/// </summary>
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(AddressOk))]
 		private string? address;
 
 		/// <summary>
@@ -103,6 +109,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		/// </summary>
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(Address2Ok))]
 		private string? address2;
 
 		/// <summary>
@@ -110,6 +117,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		/// </summary>
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(ZipCodeOk))]
 		private string? zipCode;
 
 		/// <summary>
@@ -117,6 +125,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		/// </summary>
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(AreaOk))]
 		private string? area;
 
 		/// <summary>
@@ -124,6 +133,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		/// </summary>
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(CityOk))]
 		private string? city;
 
 		/// <summary>
@@ -131,6 +141,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		/// </summary>
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(RegionOk))]
 		private string? region;
 
 		/// <summary>
@@ -138,6 +149,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		/// </summary>
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(CountryOk))]
 		private string? countryCode;
 
 		/// <summary>
@@ -145,6 +157,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		/// </summary>
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(CountryOk))]
 		private string? countryName;
 
 		/// <summary>
@@ -258,6 +271,183 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		private string? jid;
+
+		/// <summary>
+		/// If first name is required.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(FirstNameOk))]
+		private bool requiresFirstName;
+
+		/// <summary>
+		/// If middle names are required.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(MiddleNamesOk))]
+		private bool requiresMiddleNames;
+
+		/// <summary>
+		/// If last names are required.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(LastNamesOk))]
+		private bool requiresLastNames;
+
+		/// <summary>
+		/// If personal number is required.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(PersonalNumberOk))]
+		private bool requiresPersonalNumber;
+
+		/// <summary>
+		/// If address is required.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(AddressOk))]
+		private bool requiresAddress;
+
+		/// <summary>
+		/// If address (2nd row) is required.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(Address2Ok))]
+		private bool requiresAddress2;
+
+		/// <summary>
+		/// If ZIP code is required.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(ZipCodeOk))]
+		private bool requiresZipCode;
+
+		/// <summary>
+		/// If Area is required.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(AreaOk))]
+		private bool requiresArea;
+
+		/// <summary>
+		/// If City is required.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(CityOk))]
+		private bool requiresCity;
+
+		/// <summary>
+		/// If region is required.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(RegionOk))]
+		private bool requiresRegion;
+
+		/// <summary>
+		/// If Country is required.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(CountryOk))]
+		private bool requiresCountry;
+
+		/// <summary>
+		/// If Country is required to be an ISO 3166 code.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(CountryOk))]
+		private bool requiresCountryIso3166;
+
+		/// <summary>
+		/// If <see cref="FirstName"/> is OK.
+		/// </summary>
+		public bool FirstNameOk => !this.RequiresFirstName || !string.IsNullOrWhiteSpace(this.FirstName);
+
+		/// <summary>
+		/// If <see cref="MiddleNames"/> is OK.
+		/// </summary>
+		public bool MiddleNamesOk => !this.RequiresMiddleNames || !string.IsNullOrWhiteSpace(this.MiddleNames);
+
+		/// <summary>
+		/// If <see cref="LastNames"/> is OK.
+		/// </summary>
+		public bool LastNamesOk => !this.RequiresLastNames || !string.IsNullOrWhiteSpace(this.LastNames);
+
+		/// <summary>
+		/// If <see cref="PersonalNumber"/> is OK.
+		/// </summary>
+		public bool PersonalNumberOk
+		{
+			get
+			{
+				if (string.IsNullOrWhiteSpace(this.PersonalNumber))
+					return !this.RequiresPersonalNumber;
+
+				if (string.IsNullOrWhiteSpace(this.CountryCode))
+					return false;
+
+				NumberInformation Info = PersonalNumberSchemes.Validate(this.CountryCode, this.PersonalNumber).Result;
+
+				return !Info.IsValid.HasValue || Info.IsValid.Value;
+			}
+		}
+
+		/// <summary>
+		/// If <see cref="Address"/> is OK.
+		/// </summary>
+		public bool AddressOk => !this.RequiresAddress || !string.IsNullOrWhiteSpace(this.Address);
+
+		/// <summary>
+		/// If <see cref="Address2"/> is OK.
+		/// </summary>
+		public bool Address2Ok => !this.RequiresAddress2 || !string.IsNullOrWhiteSpace(this.Address2);
+
+		/// <summary>
+		/// If <see cref="ZipCode"/> is OK.
+		/// </summary>
+		public bool ZipCodeOk => !this.RequiresZipCode || !string.IsNullOrWhiteSpace(this.ZipCode);
+
+		/// <summary>
+		/// If <see cref="Area"/> is OK.
+		/// </summary>
+		public bool AreaOk => !this.RequiresArea || !string.IsNullOrWhiteSpace(this.Area);
+
+		/// <summary>
+		/// If <see cref="City"/> is OK.
+		/// </summary>
+		public bool CityOk => !this.RequiresCity || !string.IsNullOrWhiteSpace(this.City);
+
+		/// <summary>
+		/// If <see cref="Region"/> is OK.
+		/// </summary>
+		public bool RegionOk => !this.RequiresRegion || !string.IsNullOrWhiteSpace(this.Region);
+
+		/// <summary>
+		/// If <see cref="CountryCode"/> is OK.
+		/// </summary>
+		public bool CountryOk
+		{
+			get
+			{
+				if (string.IsNullOrWhiteSpace(this.CountryCode))
+					return !this.RequiresCountry;
+
+				if (this.RequiresCountryIso3166 && !ISO_3166_1.TryGetCountryByCode(this.CountryCode, out _))
+					return false;
+
+				return true;
+			}
+		}
 
 		/// <summary>
 		/// Converts the <see cref="RegisterIdentityModel"/> to an array of <inheritdoc cref="Property"/>.
@@ -472,7 +662,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		[RelayCommand(CanExecute = nameof(CanApply))]
 		protected virtual Task Apply()
 		{
-			return Task.CompletedTask;	// Do nothing by default.
+			return Task.CompletedTask; // Do nothing by default.
 		}
 
 	}

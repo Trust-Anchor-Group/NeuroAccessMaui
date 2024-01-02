@@ -35,7 +35,8 @@
 								<Label Text="{l:Localize FirstName}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresFirstName}"/>
 							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=FirstName}" />
+							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=FirstName}"
+															 BackgroundColor="{Binding FirstNameOk, Converter={converters:ControlBgColor}}" />
 						</VerticalStackLayout>
 
 						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
@@ -43,7 +44,8 @@
 								<Label Text="{l:Localize MiddleNames}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresMiddleNames}"/>
 							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=MiddleNames}" />
+							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=MiddleNames}" 
+															 BackgroundColor="{Binding MiddleNamesOk, Converter={converters:ControlBgColor}}" />
 						</VerticalStackLayout>
 
 						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
@@ -51,7 +53,8 @@
 								<Label Text="{l:Localize LastNames}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresLastNames}"/>
 							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=LastNames}" />
+							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=LastNames}" 
+															 BackgroundColor="{Binding LastNamesOk, Converter={converters:ControlBgColor}}" />
 						</VerticalStackLayout>
 
 						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
@@ -59,7 +62,8 @@
 								<Label Text="{l:Localize PersonalNumber}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresPersonalNumber}"/>
 							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=PersonalNumber}" />
+							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=PersonalNumber}" 
+															 BackgroundColor="{Binding PersonalNumberOk, Converter={converters:ControlBgColor}}" />
 						</VerticalStackLayout>
 
 						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
@@ -67,7 +71,8 @@
 								<Label Text="{l:Localize Address}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresAddress}"/>
 							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=Address}" />
+							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=Address}" 
+															 BackgroundColor="{Binding AddressOk, Converter={converters:ControlBgColor}}" />
 						</VerticalStackLayout>
 
 						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
@@ -75,7 +80,8 @@
 								<Label Text="{l:Localize Address2}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresAddress2}"/>
 							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=Address2}" />
+							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=Address2}" 
+															 BackgroundColor="{Binding Address2Ok, Converter={converters:ControlBgColor}}" />
 						</VerticalStackLayout>
 
 						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
@@ -83,7 +89,8 @@
 								<Label Text="{l:Localize ZipCode}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresZipCode}"/>
 							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=ZipCode}" />
+							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=ZipCode}" 
+															 BackgroundColor="{Binding ZipCodeOk, Converter={converters:ControlBgColor}}" />
 						</VerticalStackLayout>
 
 						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
@@ -91,7 +98,8 @@
 								<Label Text="{l:Localize Area}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresArea}"/>
 							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=Area}" />
+							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=Area}" 
+															 BackgroundColor="{Binding AreaOk, Converter={converters:ControlBgColor}}" />
 						</VerticalStackLayout>
 
 						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
@@ -99,7 +107,8 @@
 								<Label Text="{l:Localize City}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresCity}"/>
 							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=City}" />
+							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=City}" 
+															 BackgroundColor="{Binding CityOk, Converter={converters:ControlBgColor}}" />
 						</VerticalStackLayout>
 
 						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
@@ -107,7 +116,8 @@
 								<Label Text="{l:Localize Region}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresRegion}"/>
 							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=Region}" />
+							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=Region}" 
+															 BackgroundColor="{Binding RegionOk, Converter={converters:ControlBgColor}}" />
 						</VerticalStackLayout>
 
 						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
@@ -116,7 +126,8 @@
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresCountry}"/>
 							</HorizontalStackLayout>
 							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}"
-															 EntryData="{Binding Path=CountryName}" IsReadOnly="True" />
+															 EntryData="{Binding Path=CountryName}" IsReadOnly="True" 
+															 BackgroundColor="{Binding CountryOk, Converter={converters:ControlBgColor}}" />
 						</VerticalStackLayout>
 					</VerticalStackLayout>
 				</Frame>

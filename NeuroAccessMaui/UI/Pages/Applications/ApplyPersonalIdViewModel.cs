@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Data;
 using NeuroAccessMaui.UI.Pages.Registration;
@@ -181,90 +180,6 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		private bool peerReview;
 
-		/// <summary>
-		/// If first name is required.
-		/// </summary>
-		[ObservableProperty]
-		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
-		private bool requiresFirstName;
-
-		/// <summary>
-		/// If middle names are required.
-		/// </summary>
-		[ObservableProperty]
-		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
-		private bool requiresMiddleNames;
-
-		/// <summary>
-		/// If last names are required.
-		/// </summary>
-		[ObservableProperty]
-		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
-		private bool requiresLastNames;
-
-		/// <summary>
-		/// If personal number is required.
-		/// </summary>
-		[ObservableProperty]
-		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
-		private bool requiresPersonalNumber;
-
-		/// <summary>
-		/// If address is required.
-		/// </summary>
-		[ObservableProperty]
-		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
-		private bool requiresAddress;
-
-		/// <summary>
-		/// If address (2nd row) is required.
-		/// </summary>
-		[ObservableProperty]
-		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
-		private bool requiresAddress2;
-
-		/// <summary>
-		/// If ZIP code is required.
-		/// </summary>
-		[ObservableProperty]
-		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
-		private bool requiresZipCode;
-
-		/// <summary>
-		/// If Area is required.
-		/// </summary>
-		[ObservableProperty]
-		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
-		private bool requiresArea;
-
-		/// <summary>
-		/// If City is required.
-		/// </summary>
-		[ObservableProperty]
-		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
-		private bool requiresCity;
-
-		/// <summary>
-		/// If region is required.
-		/// </summary>
-		[ObservableProperty]
-		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
-		private bool requiresRegion;
-
-		/// <summary>
-		/// If Country is required.
-		/// </summary>
-		[ObservableProperty]
-		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
-		private bool requiresCountry;
-
-		/// <summary>
-		/// If Country is required to be an ISO 3166 code.
-		/// </summary>
-		[ObservableProperty]
-		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
-		private bool requiresCountryIso3166;
-
 		#endregion
 
 		#region Commands
@@ -284,37 +199,37 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 					if (this.NrPhotos > 0)
 						return false;     // TODO
 
-					if (this.RequiresFirstName && string.IsNullOrWhiteSpace(this.FirstName))
+					if (this.FirstNameOk)
 						return false;
 
-					if (this.RequiresMiddleNames && string.IsNullOrWhiteSpace(this.MiddleNames))
+					if (this.MiddleNamesOk)
 						return false;
 
-					if (this.RequiresLastNames && string.IsNullOrWhiteSpace(this.LastNames))
+					if (this.LastNamesOk)
 						return false;
 
-					if (this.RequiresPersonalNumber && string.IsNullOrWhiteSpace(this.PersonalNumber))  // TODO: Check with personal number schemes.
+					if (this.PersonalNumberOk)
 						return false;
 
-					if (this.RequiresAddress && string.IsNullOrWhiteSpace(this.Address))
+					if (this.AddressOk)
 						return false;
 
-					if (this.RequiresAddress2 && string.IsNullOrWhiteSpace(this.Address2))
+					if (this.Address2Ok)
 						return false;
 
-					if (this.RequiresZipCode && string.IsNullOrWhiteSpace(this.ZipCode))
+					if (this.ZipCodeOk)
 						return false;
 
-					if (this.RequiresArea && string.IsNullOrWhiteSpace(this.Area))
+					if (this.AreaOk)
 						return false;
 
-					if (this.RequiresCity && string.IsNullOrWhiteSpace(this.City))
+					if (this.CityOk)
 						return false;
 
-					if (this.RequiresRegion && string.IsNullOrWhiteSpace(this.Region))
+					if (this.RegionOk)
 						return false;
 
-					if (this.RequiresCountry && string.IsNullOrWhiteSpace(this.CountryCode))
+					if (this.CountryOk)
 						return false;
 
 					if (this.RequiresCountryIso3166 && !ISO_3166_1.TryGetCountryByCode(this.CountryCode, out _))
@@ -335,7 +250,11 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 				if (!await App.AuthenticateUser(true))
 					return;
 
-				// TODO
+				(bool Succeeded, LegalIdentity? AddedIdentity) = await ServiceRef.NetworkService.TryRequest(() =>
+					ServiceRef.XmppService.AddLegalIdentity(this));
+
+				if (Succeeded && AddedIdentity is not null)
+					ServiceRef.TagProfile.LegalIdentity = AddedIdentity;
 			}
 			catch (Exception ex)
 			{
