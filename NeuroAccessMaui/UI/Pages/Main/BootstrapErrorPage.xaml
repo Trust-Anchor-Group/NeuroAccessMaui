@@ -1,32 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<base:BaseContentPage x:Name="ThisPage" x:Class="NeuroAccessMaui.UI.Pages.Main.BootstrapErrorPage" x:DataType="viewmodel:BootstrapErrorPage"
-	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
-	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main"
-	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
-
+<base:BaseContentPage x:Name="ThisPage"
+							 x:Class="NeuroAccessMaui.UI.Pages.Main.BootstrapErrorPage"
+							 x:DataType="viewmodel:BootstrapErrorPage"
+							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main"
+							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
 	<Grid
 		Padding="{StaticResource LargeMargins}"
 		RowSpacing="{StaticResource LargeSpacing}">
 		<ScrollView>
 			<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
-				<Label
-					VerticalOptions="Start"
-					FontFamily="HaasGroteskBold"
-					Text="{Binding TraceTitle}" />
-
-				<Label
-					FontSize="14"
-					Text="{Binding TraceText}" />
+				<Label VerticalOptions="Start" FontFamily="HaasGroteskBold" Text="{Binding TraceTitle}" />
+				<Label FontSize="14" Text="{Binding TraceText}" />
 			</VerticalStackLayout>
 		</ScrollView>
 
-		<controls:TextButton
-			VerticalOptions="End"
-			Command="{Binding CopyToClipboardCommand}"
-			Style="{StaticResource FilledTextButtonStyle}"
-			LabelData="{l:Localize CopyToClipboard}" />
+		<controls:TextButton VerticalOptions="End" Command="{Binding CopyToClipboardCommand}" Style="{StaticResource FilledTextButtonStyle}"
+									LabelData="{l:Localize CopyToClipboard}" />
 	</Grid>
 </base:BaseContentPage>
