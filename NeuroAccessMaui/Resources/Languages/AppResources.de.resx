@@ -921,10 +921,28 @@
   <data name="PinCode" xml:space="preserve">
     <value>PIN-Code</value>
   </data>
+  <data name="Applications" xml:space="preserve">
+    <value>Anträge</value>
+  </data>
   <data name="FingerprintDescription" xml:space="preserve">
     <value>Scannen Sie Ihren Fingerabdruck.</value>
   </data>
   <data name="FingerprintTitle" xml:space="preserve">
     <value>Authentifizierung erforderlich</value>
+  </data>
+  <data name="IdentityApplications" xml:space="preserve">
+    <value>Identitäts-Anwendungen</value>
+  </data>
+  <data name="OrganizationalId" xml:space="preserve">
+    <value>Organisations-ID</value>
+  </data>
+  <data name="OrganizationalIdDescription" xml:space="preserve">
+    <value>Beantragen Sie eine neue digitale Organisations-ID. Die ID enthält Ihre persönlichen Daten, die zugehörigen Organisationsinformationen und Ihre Rolle in der Organisation. Es kann verwendet werden, um Ihre persönliche Identität und Ihre Rolle in der Organisation zu überprüfen und Zugriff auf Dienste zu erhalten, die eine verifizierte Organisationsidentität erfordern.</value>
+  </data>
+  <data name="PersonalId" xml:space="preserve">
+    <value>Persönlicher Ausweis</value>
+  </data>
+  <data name="PersonalIdDescription" xml:space="preserve">
+    <value>Beantragen Sie einen neuen digitalen Personalausweis. Die ID enthält Ihre persönlichen Daten und kann verwendet werden, um Ihre persönliche Identität zu überprüfen und Zugang zu Diensten zu erhalten, die eine verifizierte persönliche Identität erfordern.</value>
   </data>
 </root>

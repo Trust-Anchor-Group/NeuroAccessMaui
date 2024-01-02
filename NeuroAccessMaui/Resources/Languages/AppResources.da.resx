@@ -921,10 +921,28 @@
   <data name="PinCode" xml:space="preserve">
     <value>PIN-kode</value>
   </data>
+  <data name="Applications" xml:space="preserve">
+    <value>Programmer</value>
+  </data>
   <data name="FingerprintDescription" xml:space="preserve">
     <value>Scan dit fingeraftryk.</value>
   </data>
   <data name="FingerprintTitle" xml:space="preserve">
     <value>Godkendelse påkrævet</value>
+  </data>
+  <data name="IdentityApplications" xml:space="preserve">
+    <value>Identitetsansøgninger</value>
+  </data>
+  <data name="OrganizationalId" xml:space="preserve">
+    <value>Organisations-id</value>
+  </data>
+  <data name="OrganizationalIdDescription" xml:space="preserve">
+    <value>Ansøg om et nyt digitalt organisations-id. ID'et indeholder dine personlige oplysninger, de tilknyttede organisatoriske oplysninger og din rolle i organisationen. Det kan bruges til at validere din personlige identitet og din rolle i organisationen samt få adgang til tjenester, der kræver en verificeret organisatorisk identitet.</value>
+  </data>
+  <data name="PersonalId" xml:space="preserve">
+    <value>Personligt id</value>
+  </data>
+  <data name="PersonalIdDescription" xml:space="preserve">
+    <value>Ansøg om nyt digitalt person-id. ID'et indeholder dine personlige oplysninger og kan bruges til at validere din personlige identitet samt få adgang til tjenester, der kræver en verificeret personlig identitet.</value>
   </data>
 </root>

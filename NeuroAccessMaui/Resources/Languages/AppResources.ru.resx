@@ -921,10 +921,28 @@
   <data name="PinCode" xml:space="preserve">
     <value>PIN-код</value>
   </data>
+  <data name="Applications" xml:space="preserve">
+    <value>Приложений</value>
+  </data>
   <data name="FingerprintDescription" xml:space="preserve">
     <value>Отсканируйте отпечаток пальца.</value>
   </data>
   <data name="FingerprintTitle" xml:space="preserve">
     <value>Требуется аутентификация</value>
+  </data>
+  <data name="IdentityApplications" xml:space="preserve">
+    <value>Приложения для идентификации</value>
+  </data>
+  <data name="OrganizationalId" xml:space="preserve">
+    <value>Идентификатор организации</value>
+  </data>
+  <data name="OrganizationalIdDescription" xml:space="preserve">
+    <value>Подайте заявку на получение нового цифрового идентификатора организации. Идентификатор будет содержать вашу личную информацию, связанную с ней информацию об организации и вашу роль в организации. Его можно использовать для подтверждения вашей личности и вашей роли в организации, а также для получения доступа к услугам, требующим подтвержденной идентификации организации.</value>
+  </data>
+  <data name="PersonalId" xml:space="preserve">
+    <value>Личный идентификатор</value>
+  </data>
+  <data name="PersonalIdDescription" xml:space="preserve">
+    <value>Подайте заявку на получение нового цифрового удостоверения личности. Идентификатор будет содержать вашу личную информацию и может быть использован для подтверждения вашей личности, а также для получения доступа к услугам, требующим подтвержденной личности.</value>
   </data>
 </root>

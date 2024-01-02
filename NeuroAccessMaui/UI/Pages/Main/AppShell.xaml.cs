@@ -1,5 +1,6 @@
 ﻿using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Pages.Identity;
+using NeuroAccessMaui.UI.Pages.Main.Applications;
 using NeuroAccessMaui.UI.Pages.Main.QR;
 using NeuroAccessMaui.UI.Pages.Main.Settings;
 using NeuroAccessMaui.UI.Pages.Main.VerifyCode;
@@ -23,6 +24,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			Routing.RegisterRoute(nameof(ScanQrCodePage), typeof(ScanQrCodePage));
 			Routing.RegisterRoute(nameof(SettingsPage), typeof(SettingsPage));
 			Routing.RegisterRoute(nameof(ChangePinPage), typeof(ChangePinPage));
+			Routing.RegisterRoute(nameof(ApplicationsPage), typeof(ApplicationsPage));
 			Routing.RegisterRoute(nameof(VerifyCodePage), typeof(VerifyCodePage));
 			Routing.RegisterRoute(nameof(PetitionSignaturePage), typeof(PetitionSignaturePage));
 			Routing.RegisterRoute(nameof(ViewIdentityPage), typeof(ViewIdentityPage));
@@ -59,6 +61,18 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			try
 			{
 				await ServiceRef.NavigationService.GoToAsync(nameof(SettingsPage));
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
+		}
+
+		private async void Applications_Clicked(object sender, EventArgs e)
+		{
+			try
+			{
+				await ServiceRef.NavigationService.GoToAsync(nameof(ApplicationsPage));
 			}
 			catch (Exception ex)
 			{

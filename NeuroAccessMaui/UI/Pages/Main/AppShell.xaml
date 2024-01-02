@@ -23,6 +23,9 @@
 	<MenuItem Text="{l:Localize ViewId}" Clicked="ViewId_Clicked" StyleId="MenuItemLabel"
 				 IconImageSource="{AppThemeBinding Light=view_id_light.svg, Dark=view_id_dark.svg}"/>
 
+	<MenuItem Text="{l:Localize Applications}" Clicked="Applications_Clicked" StyleId="MenuItemLabel"
+				 IconImageSource="{AppThemeBinding Light=neuro_access_light.svg, Dark=neuro_access_dark.svg}"/>
+
 	<MenuItem Text="{l:Localize Settings}" Clicked="Settings_Clicked" StyleId="MenuItemLabel"
 				 IconImageSource="{AppThemeBinding Light=settings_light.svg, Dark=settings_dark.svg}"/>
 

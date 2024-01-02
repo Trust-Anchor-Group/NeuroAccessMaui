@@ -921,10 +921,28 @@
   <data name="PinCode" xml:space="preserve">
     <value>Code PIN</value>
   </data>
+  <data name="Applications" xml:space="preserve">
+    <value>Applications</value>
+  </data>
   <data name="FingerprintDescription" xml:space="preserve">
     <value>Scannez votre empreinte digitale.</value>
   </data>
   <data name="FingerprintTitle" xml:space="preserve">
     <value>Authentification requise</value>
+  </data>
+  <data name="IdentityApplications" xml:space="preserve">
+    <value>Applications d’identité</value>
+  </data>
+  <data name="OrganizationalId" xml:space="preserve">
+    <value>ID de l’organisation</value>
+  </data>
+  <data name="OrganizationalIdDescription" xml:space="preserve">
+    <value>Demandez un nouvel identifiant d’organisation numérique. La pièce d’identité contiendra vos informations personnelles, les informations organisationnelles associées et votre rôle dans l’organisation. Il peut être utilisé pour valider votre identité personnelle et votre rôle dans l’organisation, ainsi que pour accéder à des services nécessitant une identité organisationnelle vérifiée.</value>
+  </data>
+  <data name="PersonalId" xml:space="preserve">
+    <value>Pièce d’identité personnelle</value>
+  </data>
+  <data name="PersonalIdDescription" xml:space="preserve">
+    <value>Demandez une nouvelle carte d’identité numérique. La pièce d’identité contiendra vos informations personnelles et pourra être utilisée pour valider votre identité personnelle, ainsi que pour accéder à des services nécessitant une identité personnelle vérifiée.</value>
   </data>
 </root>

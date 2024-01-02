@@ -921,10 +921,28 @@
   <data name="PinCode" xml:space="preserve">
     <value>Codul PIN</value>
   </data>
+  <data name="Applications" xml:space="preserve">
+    <value>Aplicaţii</value>
+  </data>
   <data name="FingerprintDescription" xml:space="preserve">
     <value>Scanați amprenta.</value>
   </data>
   <data name="FingerprintTitle" xml:space="preserve">
     <value>Este necesară autentificarea</value>
+  </data>
+  <data name="IdentityApplications" xml:space="preserve">
+    <value>Cereri de identitate</value>
+  </data>
+  <data name="OrganizationalId" xml:space="preserve">
+    <value>ID organizație</value>
+  </data>
+  <data name="OrganizationalIdDescription" xml:space="preserve">
+    <value>Solicitați un nou ID organizațional digital. ID-ul va conține informațiile dvs. personale, informațiile organizaționale asociate și rolul dvs. în organizație. Acesta poate fi folosit pentru a vă valida identitatea personală și rolul în organizație, precum și pentru a obține acces la servicii care necesită o identitate organizațională verificată.</value>
+  </data>
+  <data name="PersonalId" xml:space="preserve">
+    <value>Personal ID</value>
+  </data>
+  <data name="PersonalIdDescription" xml:space="preserve">
+    <value>Solicitați un nou ID personal digital. ID-ul va conține informațiile dvs. personale și poate fi utilizat pentru a vă valida identitatea personală, precum și pentru a avea acces la servicii care necesită o identitate personală verificată.</value>
   </data>
 </root>

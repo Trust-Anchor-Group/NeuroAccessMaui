@@ -921,10 +921,28 @@
   <data name="PinCode" xml:space="preserve">
     <value>PIN kôd</value>
   </data>
+  <data name="Applications" xml:space="preserve">
+    <value>Aplikacije</value>
+  </data>
   <data name="FingerprintDescription" xml:space="preserve">
     <value>Skeniraj otisak prsta.</value>
   </data>
   <data name="FingerprintTitle" xml:space="preserve">
     <value>Potrebna je potvrda identiteta</value>
+  </data>
+  <data name="IdentityApplications" xml:space="preserve">
+    <value>Aplikacije identiteta</value>
+  </data>
+  <data name="OrganizationalId" xml:space="preserve">
+    <value>Organizacioni ID</value>
+  </data>
+  <data name="OrganizationalIdDescription" xml:space="preserve">
+    <value>Prijavite se za novi digitalni organizacioni ID. ID će sadržati vaše lične informacije, povezane organizacione informacije i vašu ulogu u organizaciji. Može se koristiti za proveru ličnog identiteta i vaše uloge u organizaciji, kao i za dobijanje pristupa uslugama koje zahtevaju provereni organizacioni identitet.</value>
+  </data>
+  <data name="PersonalId" xml:space="preserve">
+    <value>Lična lična id</value>
+  </data>
+  <data name="PersonalIdDescription" xml:space="preserve">
+    <value>Prijavite se za novi digitalni lični ID. ID će sadržati vaše lične podatke i može se koristiti za proveru vašeg ličnog identiteta, kao i za dobijanje pristupa uslugama koje zahtevaju provereni lični identitet.</value>
   </data>
 </root>

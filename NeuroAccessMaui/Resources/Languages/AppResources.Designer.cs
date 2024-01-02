@@ -187,6 +187,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Applications.
+        /// </summary>
+        internal static string Applications {
+            get {
+                return ResourceManager.GetString("Applications", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to App is not connected to the network..
         /// </summary>
         internal static string AppNotConnected {
@@ -790,6 +799,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Identity applications.
+        /// </summary>
+        internal static string IdentityApplications {
+            get {
+                return ResourceManager.GetString("IdentityApplications", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Identity Settings.
         /// </summary>
         internal static string IdentitySettings {
@@ -1231,6 +1249,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Organizational ID.
+        /// </summary>
+        internal static string OrganizationalId {
+            get {
+                return ResourceManager.GetString("OrganizationalId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Apply for a new digital Organizational ID. The ID will contain your personal information, the associated organizational information and your role in the organization. It can be used to to validate your personal identity, and your role in the organization, as well as gain access to services requiring a verified organizational identity..
+        /// </summary>
+        internal static string OrganizationalIdDescription {
+            get {
+                return ResourceManager.GetString("OrganizationalIdDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Organizational Information.
         /// </summary>
         internal static string OrganizationalInformation {
@@ -1344,6 +1380,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string PeerReviewRejected {
             get {
                 return ResourceManager.GetString("PeerReviewRejected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Personal ID.
+        /// </summary>
+        internal static string PersonalId {
+            get {
+                return ResourceManager.GetString("PersonalId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Apply for a new digital Personal ID. The ID will contain your personal information and can be used to to validate your personal identity, as well as gain access to services requiring a verified personal identity..
+        /// </summary>
+        internal static string PersonalIdDescription {
+            get {
+                return ResourceManager.GetString("PersonalIdDescription", resourceCulture);
             }
         }
         

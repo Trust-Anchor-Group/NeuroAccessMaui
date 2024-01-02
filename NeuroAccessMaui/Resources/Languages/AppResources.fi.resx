@@ -921,10 +921,28 @@
   <data name="PinCode" xml:space="preserve">
     <value>PIN-koodi</value>
   </data>
+  <data name="Applications" xml:space="preserve">
+    <value>Sovelluksia</value>
+  </data>
   <data name="FingerprintDescription" xml:space="preserve">
     <value>Skannaa sormenjälkesi.</value>
   </data>
   <data name="FingerprintTitle" xml:space="preserve">
     <value>Todennus vaaditaan</value>
+  </data>
+  <data name="IdentityApplications" xml:space="preserve">
+    <value>Henkilöllisyyttä koskevat hakemukset</value>
+  </data>
+  <data name="OrganizationalId" xml:space="preserve">
+    <value>Organisaation tunnus</value>
+  </data>
+  <data name="OrganizationalIdDescription" xml:space="preserve">
+    <value>Hae uutta digitaalista organisaatiotunnusta. Tunnus sisältää henkilökohtaiset tietosi, niihin liittyvät organisaatiotiedot ja roolisi organisaatiossa. Sen avulla voidaan vahvistaa henkilökohtainen henkilöllisyytesi ja roolisi organisaatiossa sekä saada pääsy palveluihin, jotka edellyttävät vahvistettua organisaation identiteettiä.</value>
+  </data>
+  <data name="PersonalId" xml:space="preserve">
+    <value>Henkilötunnus</value>
+  </data>
+  <data name="PersonalIdDescription" xml:space="preserve">
+    <value>Hae uutta digitaalista henkilötunnusta. Tunnus sisältää henkilötietosi, ja sitä voidaan käyttää henkilöllisyytesi vahvistamiseen sekä pääsyä palveluihin, jotka edellyttävät vahvistettua henkilöllisyyttä.</value>
   </data>
 </root>

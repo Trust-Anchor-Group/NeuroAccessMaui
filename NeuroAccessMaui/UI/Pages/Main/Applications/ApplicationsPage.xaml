@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseContentPage x:Name="ThisPage"
+							 x:Class="NeuroAccessMaui.UI.Pages.Main.Applications.ApplicationsPage"
+							 x:DataType="viewmodel:ApplicationsViewModel"
+							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.Applications">
+
+	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+
+		<controls:Background/>
+
+		<ScrollView>
+			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+
+				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
+											 Style="{StaticResource BackImageButtonStyle}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+
+				<Label Style="{StaticResource PageTitleLabelStyle}" Text="{l:Localize Applications}"/>
+
+				<!-- IDentity Applications -->
+				<Frame Style="{StaticResource FrameSet}">
+					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+						<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize IdentityApplications}"/>
+
+						<!-- Apply for Personal ID -->
+						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding ApplyPersonalIdCommand}">
+							<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True">
+								<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
+									<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize PersonalId}" InputTransparent="True"/>
+									<Label Style="{StaticResource KeyLabel}" Text="{l:Localize PersonalIdDescription}" InputTransparent="True"/>
+								</VerticalStackLayout>
+							</Frame>
+						</controls:TemplatedButton>
+
+						<!-- Apply for Organizational ID -->
+						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding ApplyOrganizationalIdCommand}">
+							<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True">
+								<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
+									<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize OrganizationalId}" InputTransparent="True"/>
+									<Label Style="{StaticResource KeyLabel}" Text="{l:Localize OrganizationalIdDescription}" InputTransparent="True"/>
+								</VerticalStackLayout>
+							</Frame>
+						</controls:TemplatedButton>
+
+					</VerticalStackLayout>
+				</Frame>
+
+			</VerticalStackLayout>
+		</ScrollView>
+	</Grid>
+</base:BaseContentPage>

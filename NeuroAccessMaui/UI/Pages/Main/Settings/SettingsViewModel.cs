@@ -17,7 +17,7 @@ using NeuroAccessMaui.Services.Tag;
 namespace NeuroAccessMaui.UI.Pages.Main.Settings
 {
 	/// <summary>
-	/// The view model to bind to for when displaying security options.
+	/// The view model to bind to for when displaying the settings page.
 	/// </summary>
 	public partial class SettingsViewModel : XmppViewModel
 	{
