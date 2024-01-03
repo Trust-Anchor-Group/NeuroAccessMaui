@@ -53,6 +53,19 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 			return Task.CompletedTask;
 		}
 
+		protected override async Task OnAppearing()
+		{
+			await base.OnAppearing();
+
+			// Page is not correctly updated if changes has happened when viewing a sub-view. Fix by resending notification.
+
+			bool IdApplicationSent = ServiceRef.TagProfile.IdentityApplication is not null;
+			if (this.IdentityApplicationSent != IdApplicationSent)
+				this.IdentityApplicationSent = IdApplicationSent;
+			else
+				this.OnPropertyChanged(nameof(this.IdentityApplicationSent));
+		}
+
 		/// <inheritdoc/>
 		protected override Task XmppService_ConnectionStateChanged(object? Sender, XmppState NewState)
 		{
