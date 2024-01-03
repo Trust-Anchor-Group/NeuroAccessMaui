@@ -168,7 +168,10 @@
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
 						<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize ContactInformation}"/>
-						<Label Style="{StaticResource InfoLabelStyle}" Text="{l:Localize ContactInformationDescription}"/>
+						<Label Style="{StaticResource InfoLabelStyle}" Text="{l:Localize ContactInformationDescription}"
+								 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"/>
+						<Label Style="{StaticResource InfoLabelStyle}" Text="{l:Localize ContactInformationSentDescription}"
+								 IsVisible="{Binding ApplicationSent}"/>
 
 						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 							<HorizontalStackLayout>

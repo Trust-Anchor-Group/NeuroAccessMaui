@@ -939,6 +939,9 @@
   <data name="ContactInformationDescription" xml:space="preserve">
     <value>The following contact information will be included in the application. This information is taken from the onboarding process.</value>
   </data>
+  <data name="ContactInformationSentDescription" xml:space="preserve">
+    <value>The following contact information has been included in the application for a Personal ID.</value>
+  </data>
   <data name="CorrectDescription" xml:space="preserve">
     <value>I affirm the information provided above is both current and correct.</value>
   </data>
