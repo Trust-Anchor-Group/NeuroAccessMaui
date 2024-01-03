@@ -1,26 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<base:BaseContentPage x:Name="ThisPage" x:Class="NeuroAccessMaui.UI.Pages.Main.QR.ScanQrCodePage" x:DataType="viewmodel:ScanQrCodeViewModel"
-	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-	xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-	xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
-	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.QR"
-	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-	xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
-	Shell.FlyoutBehavior="Disabled">
-	<!--
-		Title="{x:Static resx:AppResources.ScanQRCode}"
-		Style="{StaticResource BaseBackgroundPage}"
-		>
-	-->
+<base:BaseContentPage x:Name="ThisPage"
+							 x:Class="NeuroAccessMaui.UI.Pages.Main.QR.ScanQrCodePage"
+							 x:DataType="viewmodel:ScanQrCodeViewModel"
+							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.QR"
+							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							 xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
+							 Shell.FlyoutBehavior="Disabled">
 
 	<VisualElement.Resources>
 		<ResourceDictionary>
-			<Style x:Key="CameraImageButtonBorderStyle"
-				ApplyToDerivedTypes="False"
-				TargetType="Border">
+			<Style x:Key="CameraImageButtonBorderStyle" ApplyToDerivedTypes="False" TargetType="Border">
 				<Setter Property="BackgroundColor" Value="#33F5F6F7" />
 				<Setter Property="Padding" Value="{StaticResource MediumMargins}" />
 				<Setter Property="StrokeShape">
@@ -28,9 +23,7 @@
 				</Setter>
 			</Style>
 
-			<Style x:Key="CameraTextButtonBorderStyle"
-				ApplyToDerivedTypes="False"
-				TargetType="Border">
+			<Style x:Key="CameraTextButtonBorderStyle" ApplyToDerivedTypes="False" TargetType="Border">
 				<Setter Property="BackgroundColor" Value="#33F5F6F7" />
 				<Setter Property="Padding" Value="{StaticResource ButtonMediumMargins}" />
 				<Setter Property="StrokeShape">
@@ -38,45 +31,21 @@
 				</Setter>
 			</Style>
 
-			<Style x:Key="CameraImageButtonPathStyle"
-				ApplyToDerivedTypes="False"
-				TargetType="Path">
+			<Style x:Key="CameraImageButtonPathStyle" ApplyToDerivedTypes="False" TargetType="Path">
 				<Setter Property="Fill" Value="{StaticResource PrimaryBackgroundLight}" />
 			</Style>
 
-			<Style x:Key="CameraTextButtonLabelStyle"
-				ApplyToDerivedTypes="False"
-				TargetType="Label">
+			<Style x:Key="CameraTextButtonLabelStyle" ApplyToDerivedTypes="False" TargetType="Label">
 				<Setter Property="TextColor" Value="{StaticResource PrimaryBackgroundLight}" />
 				<Setter Property="Style" Value="{StaticResource BoldItemTitleLabelStyle}" />
 			</Style>
 
-			<Style x:Key="CameraImageButtonStyle"
-				ApplyToDerivedTypes="False"
-				TargetType="controls:ImageButton">
-
+			<Style x:Key="CameraImageButtonStyle" ApplyToDerivedTypes="False" TargetType="controls:ImageButton">
 				<Setter Property="BorderStyle" Value="{StaticResource CameraImageButtonBorderStyle}" />
 				<Setter Property="PathStyle" Value="{StaticResource CameraImageButtonPathStyle}" />
-
-				<!--
-				<Setter Property="VisualStateManager.VisualStateGroups">
-					<VisualStateGroupList>
-						<VisualStateGroup x:Name="CommonStates">
-							<VisualState x:Name="Normal" />
-							<VisualState x:Name="Disabled">
-								<VisualState.Setters>
-								</VisualState.Setters>
-							</VisualState>
-						</VisualStateGroup>
-					</VisualStateGroupList>
-				</Setter>
-				-->
 			</Style>
 
-			<Style x:Key="CameraTextButtonStyle"
-				ApplyToDerivedTypes="False"
-				TargetType="controls:TextButton">
-
+			<Style x:Key="CameraTextButtonStyle" ApplyToDerivedTypes="False" TargetType="controls:TextButton">
 				<Setter Property="BorderStyle" Value="{StaticResource CameraTextButtonBorderStyle}" />
 				<Setter Property="LabelStyle" Value="{StaticResource CameraTextButtonLabelStyle}" />
 			</Style>
@@ -84,68 +53,32 @@
 	</VisualElement.Resources>
 
 	<Grid x:Name="GridWithAnimation">
-
 		<mct:StateContainer.StateViews>
 			<Grid mct:StateView.StateKey="AutomaticScan">
-				<zxing:CameraBarcodeReaderView x:Name="CameraBarcodeReaderView"
-					VerticalOptions="FillAndExpand"
-					HorizontalOptions="FillAndExpand"
-					BarcodesDetected="CameraBarcodeReaderView_BarcodesDetected" />
+				<zxing:CameraBarcodeReaderView x:Name="CameraBarcodeReaderView" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"
+														 BarcodesDetected="CameraBarcodeReaderView_BarcodesDetected" />
 
 				<Grid Padding="{StaticResource LargeMargins}">
-					<VerticalStackLayout
-						VerticalOptions="Start"
-						Spacing="{StaticResource LargeSpacing}">
-
-						<controls:ImageButton
-							HorizontalOptions="Start"
-							Command="{Binding GoBackCommand}"
-							Style="{StaticResource CameraImageButtonStyle}"
-							PathData="{x:Static ui:Geometries.BackButtonPath}" />
-
-						<Label
-							HorizontalOptions="Center"
-							HorizontalTextAlignment="Center"
-							Style="{StaticResource PageTitleLabelStyle}"
-							Text="{Binding LocalizedQrPageTitle}"
-							TextColor="{StaticResource PrimaryBackgroundLight}" />
+					<VerticalStackLayout VerticalOptions="Start" Spacing="{StaticResource LargeSpacing}">
+						<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{StaticResource CameraImageButtonStyle}"
+													 PathData="{x:Static ui:Geometries.BackButtonPath}" />
+						<Label HorizontalOptions="Center" HorizontalTextAlignment="Center" Style="{StaticResource PageTitleLabelStyle}"
+								 Text="{Binding LocalizedQrPageTitle}" TextColor="{StaticResource PrimaryBackgroundLight}" />
 					</VerticalStackLayout>
 
-					<VerticalStackLayout
-						VerticalOptions="End"
-						Spacing="{StaticResource LargeSpacing}">
-
-						<VerticalStackLayout
-							Spacing="{StaticResource SmallSpacing}"
-							IsVisible="{Binding HasAllowedSchemas}">
-							<Border
-								HeightRequest="66"
-								WidthRequest="66"
-								BackgroundColor="{Binding BackgroundIcon}"
-								Stroke="{Binding IconColor}"
-								StrokeShape="RoundRectangle 33"
-								StrokeThickness="3">
-								<Path
-									VerticalOptions="Center"
-									HorizontalOptions="Center"
-									HeightRequest="40"
-									WidthRequest="40"
-									Aspect="Uniform"
-									Data="{Binding IconGeometry}"
-									Fill="{Binding IconColor}" />
+					<VerticalStackLayout VerticalOptions="End" Spacing="{StaticResource LargeSpacing}">
+						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" IsVisible="{Binding HasAllowedSchemas}">
+							<Border HeightRequest="66" WidthRequest="66" BackgroundColor="{Binding BackgroundIcon}" Stroke="{Binding IconColor}"
+									  StrokeShape="RoundRectangle 33" StrokeThickness="3">
+								<Path VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="40" WidthRequest="40" Aspect="Uniform"
+										Data="{Binding IconGeometry}" Fill="{Binding IconColor}" />
 							</Border>
-							<Label
-								HorizontalOptions="Center"
-								HorizontalTextAlignment="Center"
-								Style="{StaticResource SectionTitleLabelStyle}"
-								Text="{l:Localize QrSectionTitle}"
-								TextColor="{StaticResource PrimaryBackgroundLight}" />
+									
+							<Label HorizontalOptions="Center" HorizontalTextAlignment="Center" Style="{StaticResource SectionTitleLabelStyle}"
+									 Text="{l:Localize QrSectionTitle}" TextColor="{StaticResource PrimaryBackgroundLight}" />
 						</VerticalStackLayout>
 
-						<HorizontalStackLayout
-							HorizontalOptions="Center"
-							Spacing="{StaticResource LargeSpacing}">
-
+						<HorizontalStackLayout HorizontalOptions="Center" Spacing="{StaticResource LargeSpacing}">
 							<controls:ImageButton
 								Command="{Binding PickPhotoCommand, Source={x:Reference ThisPage}}"
 								Style="{StaticResource CameraImageButtonStyle}"
@@ -162,19 +95,14 @@
 								PathData="{x:Static ui:Geometries.CameraSwitchButtonPath}" />
 						</HorizontalStackLayout>
 
-						<controls:TextButton
-							Command="{Binding Path=SwitchModeCommand, Source={x:Reference ThisPage}}"
-							Style="{StaticResource CameraTextButtonStyle}"
-							LabelData="{l:Localize QrEnterManually}" />
+						<controls:TextButton Command="{Binding Path=SwitchModeCommand, Source={x:Reference ThisPage}}" Style="{StaticResource CameraTextButtonStyle}"
+													LabelData="{l:Localize QrEnterManually}" />
 					</VerticalStackLayout>
 				</Grid>
 			</Grid>
 
-			<Grid x:Name="ManualScanGrid" mct:StateView.StateKey="ManualScan"
-				RowDefinitions="auto,*">
-
+			<Grid x:Name="ManualScanGrid" mct:StateView.StateKey="ManualScan" RowDefinitions="auto,*">
 				<controls:Background Grid.RowSpan="2" />
-
 				<Grid Grid.Row="0" RowDefinitions="auto" ColumnDefinitions="*">
 					<Grid.Padding>
 						<Thickness Left="{StaticResource LargeSpacing}" Top="{StaticResource LargeSpacing}" Right="{StaticResource LargeSpacing}" />

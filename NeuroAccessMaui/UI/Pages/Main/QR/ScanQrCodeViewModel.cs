@@ -146,8 +146,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		{
 			get
 			{
-				if (this.navigationArgs?.AllowedSchemas is not null &&
-					this.navigationArgs.AllowedSchemas.Length > 0)		// TODO: If multiple allowed schemas: Generic QR-code
+				if (this.navigationArgs?.AllowedSchemas is not null && this.navigationArgs.AllowedSchemas.Length > 0)		// TODO: If multiple allowed schemas: Generic QR-code
 				{
 					switch (this.navigationArgs.AllowedSchemas[0])
 					{

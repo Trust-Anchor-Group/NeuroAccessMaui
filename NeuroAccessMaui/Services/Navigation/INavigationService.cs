@@ -35,11 +35,28 @@ namespace NeuroAccessMaui.Services.Navigation
 		Task GoBackAsync(bool Animate = true);
 
 		/// <summary>
+		/// Pops the latests navigation arguments. Can only be used once to get the navigation arguments. Called by constructors to find
+		/// associated navigation arguments for a page being constructed.
+		/// </summary>
+		/// <returns>Latest navigation arguments, or null if not found.</returns>
+		TArgs? PopLatestArgs<TArgs>()
+			where TArgs : NavigationArgs, new();
+
+		/// <summary>
+		/// Returns the page's arguments from the (one-level) deep navigation stack.
+		/// </summary>
+		/// <param name="UniqueId">View's unique ID.</param>
+		/// <returns>View's navigation arguments, or null if not found.</returns>
+		TArgs? TryGetArgs<TArgs>(string? UniqueId = null)
+			where TArgs : NavigationArgs, new();
+
+		/// <summary>
 		/// Returns the page's arguments from the (one-level) deep navigation stack.
 		/// </summary>
 		/// <param name="Args">View's navigation arguments.</param>
 		/// <param name="UniqueId">View's unique ID.</param>
-		bool TryGetArgs<TArgs>([NotNullWhen(true)] out TArgs? Args, string? UniqueId = null) where TArgs : NavigationArgs, new();
+		bool TryGetArgs<TArgs>([NotNullWhen(true)] out TArgs? Args, string? UniqueId = null)
+			where TArgs : NavigationArgs, new();
 
 		/// <summary>
 		/// Current page

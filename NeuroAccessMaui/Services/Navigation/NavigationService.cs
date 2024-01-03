@@ -1,10 +1,8 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.UI.Pages;
-using NeuroAccessMaui.Resources.Languages;
+using System.Diagnostics.CodeAnalysis;
 using Waher.Events;
 using Waher.Runtime.Inventory;
-using NeuroAccessMaui.UI.Pages.Main;
-using Waher.Networking.XMPP.StreamErrors;
 
 namespace NeuroAccessMaui.Services.Navigation
 {
@@ -13,6 +11,7 @@ namespace NeuroAccessMaui.Services.Navigation
 	{
 		private bool isNavigating = false;
 		private readonly Dictionary<string, NavigationArgs> navigationArgsMap = [];
+		private NavigationArgs? latestArguments = null;
 
 		public NavigationService()
 		{
@@ -162,8 +161,44 @@ namespace NeuroAccessMaui.Services.Navigation
 			}
 		}
 
-		/// <inheritdoc/>
-		public bool TryGetArgs<TArgs>([NotNullWhen(true)] out TArgs? Args, string? UniqueId = null) where TArgs : NavigationArgs, new()
+		/// <summary>
+		/// Pops the latests navigation arguments. Can only be used once to get the navigation arguments. Called by constructors to find
+		/// associated navigation arguments for a page being constructed.
+		/// </summary>
+		/// <returns>Latest navigation arguments, or null if not found.</returns>
+		public TArgs? PopLatestArgs<TArgs>()
+			where TArgs : NavigationArgs, new()
+		{
+			if (this.latestArguments is TArgs Result)
+			{
+				this.latestArguments = null;
+				return Result;
+			}
+			else
+				return null;
+		}
+
+		/// <summary>
+		/// Returns the page's arguments from the (one-level) deep navigation stack.
+		/// </summary>
+		/// <param name="UniqueId">View's unique ID.</param>
+		/// <returns>View's navigation arguments, or null if not found.</returns>
+		public TArgs? TryGetArgs<TArgs>(string? UniqueId = null)
+			where TArgs : NavigationArgs, new()
+		{
+			if (this.TryGetArgs(out TArgs? Result, UniqueId))
+				return Result;
+			else
+				return null;
+		}
+
+		/// <summary>
+		/// Returns the page's arguments from the (one-level) deep navigation stack.
+		/// </summary>
+		/// <param name="Args">View's navigation arguments.</param>
+		/// <param name="UniqueId">View's unique ID.</param>
+		public bool TryGetArgs<TArgs>([NotNullWhen(true)] out TArgs? Args, string? UniqueId = null)
+			where TArgs : NavigationArgs, new()
 		{
 			NavigationArgs? NavigationArgs = null;
 
@@ -222,8 +257,7 @@ namespace NeuroAccessMaui.Services.Navigation
 		{
 			try
 			{
-				if ((e.Source == ShellNavigationSource.Pop) &&
-					e.CanCancel && !this.isNavigating)
+				if ((e.Source == ShellNavigationSource.Pop) && e.CanCancel && !this.isNavigating)
 				{
 					e.Cancel();
 
@@ -254,6 +288,8 @@ namespace NeuroAccessMaui.Services.Navigation
 
 		private void PushArgs(string Route, NavigationArgs Args)
 		{
+			this.latestArguments = Args;
+
 			if (TryGetPageName(Route, out string? PageName))
 			{
 				if (Args is not null)
@@ -266,9 +302,7 @@ namespace NeuroAccessMaui.Services.Navigation
 					this.navigationArgsMap[PageName] = Args;
 				}
 				else
-				{
 					this.navigationArgsMap.Remove(PageName);
-				}
 			}
 		}
 

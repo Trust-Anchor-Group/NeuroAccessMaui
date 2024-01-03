@@ -2,6 +2,7 @@ using CommunityToolkit.Maui.Core.Platform;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
+using NeuroAccessMaui.Services;
 
 namespace NeuroAccessMaui.UI.Pages.Main.VerifyCode
 {
@@ -37,7 +38,8 @@ namespace NeuroAccessMaui.UI.Pages.Main.VerifyCode
 		/// <remarks>
 		/// A parameterless constructor is required for shell routing system (it uses <c>Activator.CreateInstance</c>).
 		/// </remarks>
-		public VerifyCodePage() : this(null)
+		public VerifyCodePage()
+			: this(ServiceRef.NavigationService.PopLatestArgs<VerifyCodeNavigationArgs>())
 		{
 		}
 
