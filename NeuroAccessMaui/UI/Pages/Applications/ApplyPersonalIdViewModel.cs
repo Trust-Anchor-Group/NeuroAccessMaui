@@ -42,10 +42,30 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 					this.SetProperties(ServiceRef.TagProfile.LegalIdentity.Properties, true);
 			}
 
+			ServiceRef.XmppService.IdentityApplicationChanged += this.XmppService_IdentityApplicationChanged;
+
 			await base.OnInitialize();
 
 			if (!this.HasApplicationAttributes && this.IsConnected)
 				await Task.Run(this.LoadApplicationAttributes);
+		}
+
+		protected override Task OnDispose()
+		{
+			ServiceRef.XmppService.IdentityApplicationChanged -= this.XmppService_IdentityApplicationChanged;
+
+			return base.OnDispose();
+		}
+
+		private Task XmppService_IdentityApplicationChanged(object Sender, LegalIdentityEventArgs e)
+		{
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				this.ApplicationSent = ServiceRef.TagProfile.IdentityApplication is not null;
+
+			});
+
+			return Task.CompletedTask;
 		}
 
 		/// <inheritdoc/>

@@ -2527,6 +2527,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to View ID Application.
+        /// </summary>
+        internal static string ViewIdApplication {
+            get {
+                return ResourceManager.GetString("ViewIdApplication", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An ID Application is pending review. You can view the status of the application here..
+        /// </summary>
+        internal static string ViewIdApplicationDescription {
+            get {
+                return ResourceManager.GetString("ViewIdApplicationDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Warning.
         /// </summary>
         internal static string WarningTitle {

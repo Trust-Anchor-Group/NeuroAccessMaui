@@ -26,30 +26,49 @@
 
 				<!-- Identity Applications -->
 				<Frame Style="{StaticResource FrameSet}">
-					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-						<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize IdentityApplications}"/>
+					<Grid>
+						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}"
+												IsVisible="{Binding IdentityApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
 
-						<!-- Apply for Personal ID -->
-						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding ApplyPersonalIdCommand}">
-							<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True">
-								<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
-									<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize PersonalId}" InputTransparent="True"/>
-									<Label Style="{StaticResource KeyLabel}" Text="{l:Localize PersonalIdDescription}" InputTransparent="True"/>
-								</VerticalStackLayout>
-							</Frame>
-						</controls:TemplatedButton>
+							<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize IdentityApplications}"/>
 
-						<!-- Apply for Organizational ID -->
-						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding ApplyOrganizationalIdCommand}">
-							<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True">
-								<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
-									<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize OrganizationalId}" InputTransparent="True"/>
-									<Label Style="{StaticResource KeyLabel}" Text="{l:Localize OrganizationalIdDescription}" InputTransparent="True"/>
-								</VerticalStackLayout>
-							</Frame>
-						</controls:TemplatedButton>
+							<!-- Apply for Personal ID -->
+							<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding ApplyPersonalIdCommand}">
+								<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True">
+									<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
+										<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize PersonalId}" InputTransparent="True"/>
+										<Label Style="{StaticResource KeyLabel}" Text="{l:Localize PersonalIdDescription}" InputTransparent="True"/>
+									</VerticalStackLayout>
+								</Frame>
+							</controls:TemplatedButton>
 
-					</VerticalStackLayout>
+							<!-- Apply for Organizational ID -->
+							<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding ApplyOrganizationalIdCommand}">
+								<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True">
+									<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
+										<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize OrganizationalId}" InputTransparent="True"/>
+										<Label Style="{StaticResource KeyLabel}" Text="{l:Localize OrganizationalIdDescription}" InputTransparent="True"/>
+									</VerticalStackLayout>
+								</Frame>
+							</controls:TemplatedButton>
+
+						</VerticalStackLayout>
+
+						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" IsVisible="{Binding IdentityApplicationSent}">
+							<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize IdentityApplications}"/>
+
+							<!-- View Identity Application -->
+							<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding ViewIdApplicationCommand}">
+								<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True">
+									<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
+										<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize ViewIdApplication}" InputTransparent="True"/>
+										<Label Style="{StaticResource KeyLabel}" Text="{l:Localize ViewIdApplicationDescription}" InputTransparent="True"/>
+									</VerticalStackLayout>
+								</Frame>
+							</controls:TemplatedButton>
+
+						</VerticalStackLayout>
+					</Grid>
 				</Frame>
 
 			</VerticalStackLayout>

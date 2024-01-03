@@ -1,6 +1,9 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Services;
 using Waher.Networking.XMPP;
+using Waher.Networking.XMPP.Contracts;
 
 namespace NeuroAccessMaui.UI.Pages.Applications
 {
@@ -19,8 +22,36 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 
 		protected override async Task OnInitialize()
 		{
+			if (ServiceRef.TagProfile.IdentityApplication is not null)
+			{
+				if (ServiceRef.TagProfile.IdentityApplication.IsDiscarded())
+					ServiceRef.TagProfile.IdentityApplication = null;
+			}
+
+			this.IdentityApplicationSent = ServiceRef.TagProfile.IdentityApplication is not null;
+
+			ServiceRef.XmppService.IdentityApplicationChanged += this.XmppService_IdentityApplicationChanged;
+
 			await base.OnInitialize();
 			this.NotifyCommandsCanExecuteChanged();
+		}
+
+		protected override Task OnDispose()
+		{
+			ServiceRef.XmppService.IdentityApplicationChanged -= this.XmppService_IdentityApplicationChanged;
+
+			return base.OnDispose();
+		}
+
+		private Task XmppService_IdentityApplicationChanged(object Sender, LegalIdentityEventArgs e)
+		{
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				this.IdentityApplicationSent = ServiceRef.TagProfile.IdentityApplication is not null;
+
+			});
+
+			return Task.CompletedTask;
 		}
 
 		/// <inheritdoc/>
@@ -52,7 +83,13 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		/// <summary>
 		/// Used to find out if an ICommand can execute
 		/// </summary>
-		public bool CanExecuteCommands => !this.IsBusy && this.IsConnected;
+		public bool CanExecuteCommands => !this.IsBusy;
+
+		/// <summary>
+		/// If an identity application has been sent.
+		/// </summary>
+		[ObservableProperty]
+		private bool identityApplicationSent;
 
 		#endregion
 
@@ -62,6 +99,26 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		private static async Task GoBack()
 		{
 			await ServiceRef.NavigationService.GoBackAsync();
+		}
+
+		[RelayCommand(CanExecute = nameof(CanExecuteCommands))]
+		private async Task ViewIdApplication()
+		{
+			try
+			{
+				if (ServiceRef.TagProfile.IdentityApplication is null)
+					return;
+
+				if (!await App.AuthenticateUser())
+					return;
+
+				await ServiceRef.NavigationService.GoToAsync(nameof(ApplyPersonalIdPage));
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
+			}
 		}
 
 		[RelayCommand(CanExecute = nameof(CanExecuteCommands))]
@@ -89,6 +146,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 				if (!await App.AuthenticateUser())
 					return;
 
+				// TODO
 				//await ServiceRef.NavigationService.GoToAsync(nameof(ApplyOrganizationalIdPage));
 			}
 			catch (Exception ex)

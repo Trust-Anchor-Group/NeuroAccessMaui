@@ -1008,4 +1008,10 @@
   <data name="SendApplication" xml:space="preserve">
     <value>Send Application</value>
   </data>
+  <data name="ViewIdApplication" xml:space="preserve">
+    <value>View ID Application</value>
+  </data>
+  <data name="ViewIdApplicationDescription" xml:space="preserve">
+    <value>An ID Application is pending review. You can view the status of the application here.</value>
+  </data>
 </root>
