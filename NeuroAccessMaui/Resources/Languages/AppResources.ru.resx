@@ -927,6 +927,9 @@
   <data name="Applications" xml:space="preserve">
     <value>Приложений</value>
   </data>
+  <data name="AreYouSureYouWantToSendThisIdApplication" xml:space="preserve">
+    <value>Вы уверены, что хотите отправить это заявление на получение удостоверения личности? При отправке заявления на получение удостоверения личности ваше текущее удостоверение личности устареет.</value>
+  </data>
   <data name="ConsentDescription" xml:space="preserve">
     <value>Я даю согласие на обработку персональных данных, предоставленных в этом заявлении, в целях проверки и одобрения заявки.</value>
   </data>
@@ -971,6 +974,9 @@
   </data>
   <data name="PersonalInformationDescription" xml:space="preserve">
     <value>Следующая личная информация будет включена в заявление на получение удостоверения личности.</value>
+  </data>
+  <data name="PersonalInformationSentDescription" xml:space="preserve">
+    <value>В заявлении на получение удостоверения личности указана следующая личная информация.</value>
   </data>
   <data name="PhoneNr" xml:space="preserve">
     <value>Номер телефона</value>

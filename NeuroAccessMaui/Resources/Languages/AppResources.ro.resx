@@ -927,6 +927,9 @@
   <data name="Applications" xml:space="preserve">
     <value>Aplicaţii</value>
   </data>
+  <data name="AreYouSureYouWantToSendThisIdApplication" xml:space="preserve">
+    <value>Sigur doriți să trimiteți această cerere de identificare? Trimiterea unei cereri de identitate vă va perima ID-ul actual.</value>
+  </data>
   <data name="ConsentDescription" xml:space="preserve">
     <value>Sunt de acord cu prelucrarea informațiilor personale furnizate în această aplicație, în scopul validării și aprobării cererii.</value>
   </data>
@@ -971,6 +974,9 @@
   </data>
   <data name="PersonalInformationDescription" xml:space="preserve">
     <value>Următoarele informații personale vor fi incluse în cererea pentru un ID personal.</value>
+  </data>
+  <data name="PersonalInformationSentDescription" xml:space="preserve">
+    <value>Următoarele informații personale au fost incluse în cererea pentru un ID personal.</value>
   </data>
   <data name="PhoneNr" xml:space="preserve">
     <value>Număr de telefon</value>

@@ -927,6 +927,9 @@
   <data name="Applications" xml:space="preserve">
     <value>Programmer</value>
   </data>
+  <data name="AreYouSureYouWantToSendThisIdApplication" xml:space="preserve">
+    <value>Er du sikker på at du vil sende denne ID-søknaden? Å sende en ID-søknad vil forelde din nåværende ID.</value>
+  </data>
   <data name="ConsentDescription" xml:space="preserve">
     <value>Jeg samtykker til behandling av personopplysningene som er oppgitt i denne søknaden, med det formål å validere og godkjenne søknaden.</value>
   </data>
@@ -971,6 +974,9 @@
   </data>
   <data name="PersonalInformationDescription" xml:space="preserve">
     <value>Følgende personopplysninger vil inngå i søknaden om person-ID.</value>
+  </data>
+  <data name="PersonalInformationSentDescription" xml:space="preserve">
+    <value>Følgende personopplysninger er lagt ved i søknaden om person-ID.</value>
   </data>
   <data name="PhoneNr" xml:space="preserve">
     <value>Telefonnummer</value>

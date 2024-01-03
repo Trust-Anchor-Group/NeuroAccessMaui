@@ -927,6 +927,9 @@
   <data name="Applications" xml:space="preserve">
     <value>Aplikacije</value>
   </data>
+  <data name="AreYouSureYouWantToSendThisIdApplication" xml:space="preserve">
+    <value>Želite li zaista da pošaljete ovu ID aplikaciju? Slanje ID aplikacije će zastareli vaš trenutni ID.</value>
+  </data>
   <data name="ConsentDescription" xml:space="preserve">
     <value>Pristajem na obradu ličnih podataka navedenih u ovoj aplikaciji, u svrhu provere valjanosti i odobravanja aplikacije.</value>
   </data>
@@ -971,6 +974,9 @@
   </data>
   <data name="PersonalInformationDescription" xml:space="preserve">
     <value>Sledeće lične informacije biće uključene u aplikaciju za lični ID.</value>
+  </data>
+  <data name="PersonalInformationSentDescription" xml:space="preserve">
+    <value>Sledeće lične informacije su uključene u aplikaciju za lični ID.</value>
   </data>
   <data name="PhoneNr" xml:space="preserve">
     <value>Telefonski broj</value>

@@ -927,6 +927,9 @@
   <data name="Applications" xml:space="preserve">
     <value>Sovelluksia</value>
   </data>
+  <data name="AreYouSureYouWantToSendThisIdApplication" xml:space="preserve">
+    <value>Haluatko varmasti lähettää tämän henkilöllisyystodistuksen? Henkilöllisyystodistushakemuksen lähettäminen vanhentaa nykyisen tunnuksesi.</value>
+  </data>
   <data name="ConsentDescription" xml:space="preserve">
     <value>Suostun tässä hakemuksessa annettujen henkilötietojen käsittelyyn hakemuksen validoimiseksi ja hyväksymiseksi.</value>
   </data>
@@ -971,6 +974,9 @@
   </data>
   <data name="PersonalInformationDescription" xml:space="preserve">
     <value>Henkilötunnushakemukseen sisällytetään seuraavat henkilötiedot.</value>
+  </data>
+  <data name="PersonalInformationSentDescription" xml:space="preserve">
+    <value>Henkilötunnushakemukseen on sisällytetty seuraavat henkilötiedot.</value>
   </data>
   <data name="PhoneNr" xml:space="preserve">
     <value>Puhelinnumero</value>

@@ -975,6 +975,9 @@
   <data name="PersonalInformationDescription" xml:space="preserve">
     <value>The following personal information will be included in the application for a Personal ID.</value>
   </data>
+  <data name="PersonalInformationSentDescription" xml:space="preserve">
+    <value>The following personal information has been included in the application for a Personal ID.</value>
+  </data>
   <data name="PhoneNr" xml:space="preserve">
     <value>Phone number</value>
   </data>

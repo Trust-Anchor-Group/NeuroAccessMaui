@@ -1501,6 +1501,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The following personal information has been included in the application for a Personal ID..
+        /// </summary>
+        internal static string PersonalInformationSentDescription {
+            get {
+                return ResourceManager.GetString("PersonalInformationSentDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Personal number.
         /// </summary>
         internal static string PersonalNumber {

@@ -927,6 +927,9 @@
   <data name="Applications" xml:space="preserve">
     <value>Aplicativos</value>
   </data>
+  <data name="AreYouSureYouWantToSendThisIdApplication" xml:space="preserve">
+    <value>Tem certeza de que deseja enviar este Aplicativo de ID? O envio de um aplicativo de ID tornará obsoleta sua ID atual.</value>
+  </data>
   <data name="ConsentDescription" xml:space="preserve">
     <value>Autorizo o processamento das informações pessoais fornecidas neste aplicativo, para fins de validação e aprovação do aplicativo.</value>
   </data>
@@ -971,6 +974,9 @@
   </data>
   <data name="PersonalInformationDescription" xml:space="preserve">
     <value>As seguintes informações pessoais serão incluídas no pedido de uma ID Pessoal.</value>
+  </data>
+  <data name="PersonalInformationSentDescription" xml:space="preserve">
+    <value>As seguintes informações pessoais foram incluídas no pedido de uma ID Pessoal.</value>
   </data>
   <data name="PhoneNr" xml:space="preserve">
     <value>Número de telefone</value>

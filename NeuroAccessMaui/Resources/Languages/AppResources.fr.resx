@@ -927,6 +927,9 @@
   <data name="Applications" xml:space="preserve">
     <value>Applications</value>
   </data>
+  <data name="AreYouSureYouWantToSendThisIdApplication" xml:space="preserve">
+    <value>Êtes-vous sûr de vouloir envoyer cette demande d’identification ? L’envoi d’une demande d’identification rendra votre pièce d’identité actuelle obsolète.</value>
+  </data>
   <data name="ConsentDescription" xml:space="preserve">
     <value>Je consens au traitement des renseignements personnels fournis dans cette demande, aux fins de validation et d’approbation de la demande.</value>
   </data>
@@ -971,6 +974,9 @@
   </data>
   <data name="PersonalInformationDescription" xml:space="preserve">
     <value>Les renseignements personnels suivants seront inclus dans la demande d’identification personnelle.</value>
+  </data>
+  <data name="PersonalInformationSentDescription" xml:space="preserve">
+    <value>Les renseignements personnels suivants ont été inclus dans la demande d’identification personnelle.</value>
   </data>
   <data name="PhoneNr" xml:space="preserve">
     <value>Numéro de téléphone</value>

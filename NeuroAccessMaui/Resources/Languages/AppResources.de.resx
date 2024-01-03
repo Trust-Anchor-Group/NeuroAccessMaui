@@ -927,6 +927,9 @@
   <data name="Applications" xml:space="preserve">
     <value>Anträge</value>
   </data>
+  <data name="AreYouSureYouWantToSendThisIdApplication" xml:space="preserve">
+    <value>Sind Sie sicher, dass Sie diesen ID-Antrag senden möchten? Durch das Senden eines ID-Antrags wird Ihr aktueller Ausweis obsolet.</value>
+  </data>
   <data name="ConsentDescription" xml:space="preserve">
     <value>Ich stimme der Verarbeitung der in diesem Antrag angegebenen personenbezogenen Daten zum Zwecke der Validierung und Genehmigung des Antrags zu.</value>
   </data>
@@ -971,6 +974,9 @@
   </data>
   <data name="PersonalInformationDescription" xml:space="preserve">
     <value>Die folgenden personenbezogenen Daten werden in den Antrag auf eine persönliche ID aufgenommen.</value>
+  </data>
+  <data name="PersonalInformationSentDescription" xml:space="preserve">
+    <value>Die folgenden personenbezogenen Daten wurden in den Antrag auf eine persönliche ID aufgenommen.</value>
   </data>
   <data name="PhoneNr" xml:space="preserve">
     <value>Telefonnummer</value>
