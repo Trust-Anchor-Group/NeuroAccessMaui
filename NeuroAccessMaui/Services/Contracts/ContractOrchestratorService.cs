@@ -215,67 +215,70 @@ namespace NeuroAccessMaui.Services.Contracts
 		{
 			try
 			{
-				LegalIdentity Identity = e.RequestedIdentity;
+				LegalIdentity? ReviewedIdentity = ServiceRef.TagProfile.IdentityApplication;
+				if (ReviewedIdentity is null)
+					return;
 
-				if (Identity is not null)
+				LegalIdentity ReviewerIdentity = e.RequestedIdentity;
+				if (ReviewerIdentity is null)
+					return;
+
+				try
 				{
-					try
+					if (!e.Response)
 					{
-						if (!e.Response)
+						await ServiceRef.UiSerializer.DisplayAlert(
+							ServiceRef.Localizer[nameof(AppResources.PeerReviewRejected)],
+							ServiceRef.Localizer[nameof(AppResources.APeerYouRequestedToReviewHasRejected)],
+							ServiceRef.Localizer[nameof(AppResources.Ok)]);
+					}
+					else
+					{
+						StringBuilder Xml = new();
+						ReviewedIdentity.Serialize(Xml, true, true, true, true, true, true, true);
+						string s = Xml.ToString();
+						byte[] Data = Encoding.UTF8.GetBytes(s);
+						bool? Result;
+
+						try
+						{
+							Result = ServiceRef.XmppService.ValidateSignature(ReviewerIdentity, Data, e.Signature);
+						}
+						catch (Exception ex)
+						{
+							await ServiceRef.UiSerializer.DisplayAlert(
+								ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message);
+							return;
+						}
+
+						if (!Result.HasValue || !Result.Value)
 						{
 							await ServiceRef.UiSerializer.DisplayAlert(
 								ServiceRef.Localizer[nameof(AppResources.PeerReviewRejected)],
-								ServiceRef.Localizer[nameof(AppResources.APeerYouRequestedToReviewHasRejected)],
+								ServiceRef.Localizer[nameof(AppResources.APeerYouRequestedToReviewHasBeenRejectedDueToSignatureError)],
 								ServiceRef.Localizer[nameof(AppResources.Ok)]);
 						}
 						else
 						{
-							StringBuilder Xml = new();
-							ServiceRef.TagProfile.LegalIdentity!.Serialize(Xml, true, true, true, true, true, true, true);
-							byte[] Data = Encoding.UTF8.GetBytes(Xml.ToString());
-							bool? Result;
+							(bool Succeeded, LegalIdentity? LegalIdentity) = await ServiceRef.NetworkService.TryRequest(
+								() => ServiceRef.XmppService.AddPeerReviewIdAttachment(ReviewedIdentity, ReviewerIdentity, e.Signature));
 
-							try
-							{
-								Result = ServiceRef.XmppService.ValidateSignature(Identity, Data, e.Signature);
-							}
-							catch (Exception ex)
+							if (Succeeded)
 							{
 								await ServiceRef.UiSerializer.DisplayAlert(
-									ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message);
-								return;
-							}
-
-							if (!Result.HasValue || !Result.Value)
-							{
-								await ServiceRef.UiSerializer.DisplayAlert(
-									ServiceRef.Localizer[nameof(AppResources.PeerReviewRejected)],
-									ServiceRef.Localizer[nameof(AppResources.APeerYouRequestedToReviewHasBeenRejectedDueToSignatureError)],
+									ServiceRef.Localizer[nameof(AppResources.PeerReviewAccepted)],
+									ServiceRef.Localizer[nameof(AppResources.APeerReviewYouhaveRequestedHasBeenAccepted)],
 									ServiceRef.Localizer[nameof(AppResources.Ok)]);
-							}
-							else
-							{
-								(bool Succeeded, LegalIdentity? LegalIdentity) = await ServiceRef.NetworkService.TryRequest(
-									() => ServiceRef.XmppService.AddPeerReviewIdAttachment(
-										ServiceRef.TagProfile.LegalIdentity, Identity, e.Signature));
-
-								if (Succeeded)
-								{
-									await ServiceRef.UiSerializer.DisplayAlert(
-										ServiceRef.Localizer[nameof(AppResources.PeerReviewAccepted)],
-										ServiceRef.Localizer[nameof(AppResources.APeerReviewYouhaveRequestedHasBeenAccepted)],
-										ServiceRef.Localizer[nameof(AppResources.Ok)]);
-								}
 							}
 						}
 					}
-					catch (Exception ex)
-					{
-						ServiceRef.LogService.LogException(ex);
-						await ServiceRef.UiSerializer.DisplayAlert(
-							ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message,
-							ServiceRef.Localizer[nameof(AppResources.Ok)]);
-					}
+				}
+				catch (Exception ex)
+				{
+					ServiceRef.LogService.LogException(ex);
+					await ServiceRef.UiSerializer.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message,
+						ServiceRef.Localizer[nameof(AppResources.Ok)]);
 				}
 			}
 			catch (Exception ex)
@@ -321,7 +324,7 @@ namespace NeuroAccessMaui.Services.Contracts
 		{
 			if (ServiceRef.XmppService is null ||
 				!await ServiceRef.XmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect) ||
-				!ServiceRef.XmppService.IsOnline  ||
+				!ServiceRef.XmppService.IsOnline ||
 				ServiceRef.TagProfile.LegalIdentity is null)
 			{
 				return;
@@ -333,7 +336,7 @@ namespace NeuroAccessMaui.Services.Contracts
 			{
 				Identity = await ServiceRef.XmppService!.GetLegalIdentity(ServiceRef.TagProfile.LegalIdentity.Id);
 			}
-			catch (ForbiddenException)		// Old ID belonging to a previous account, for example. Simply discard.
+			catch (ForbiddenException)    // Old ID belonging to a previous account, for example. Simply discard.
 			{
 				ServiceRef.TagProfile.ClearLegalIdentity();
 				await App.SetRegistrationPageAsync();
