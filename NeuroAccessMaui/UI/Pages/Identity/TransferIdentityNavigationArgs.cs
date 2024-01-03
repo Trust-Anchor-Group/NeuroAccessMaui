@@ -11,7 +11,10 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 		/// <summary>
 		/// Creates a new instance of the <see cref="TransferIdentityNavigationArgs"/> class.
 		/// </summary>
-		public TransferIdentityNavigationArgs() : this(null) { }
+		public TransferIdentityNavigationArgs()
+			: this(null)
+		{
+		}
 
 		/// <summary>
 		/// Transfer URI

@@ -12,12 +12,12 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 	/// <summary>
 	/// The view model to bind to for when displaying the an application for a Personal ID.
 	/// </summary>
-	public partial class ApplyPersonalIdViewModel : RegisterIdentityModel
+	public partial class ApplyIdViewModel : RegisterIdentityModel
 	{
 		/// <summary>
-		/// Creates an instance of the <see cref="ApplyPersonalIdViewModel"/> class.
+		/// Creates an instance of the <see cref="ApplyIdViewModel"/> class.
 		/// </summary>
-		public ApplyPersonalIdViewModel()
+		public ApplyIdViewModel()
 			: base()
 		{
 		}
@@ -30,16 +30,33 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 					ServiceRef.TagProfile.IdentityApplication = null;
 			}
 
+			LegalIdentity? IdentityReference;
+
 			if (ServiceRef.TagProfile.IdentityApplication is not null)
 			{
+				IdentityReference = ServiceRef.TagProfile.IdentityApplication;
 				this.ApplicationSent = true;
-				this.SetProperties(ServiceRef.TagProfile.IdentityApplication.Properties, true);
 			}
 			else
 			{
 				this.ApplicationSent = false;
-				if (ServiceRef.TagProfile.LegalIdentity is not null)
-					this.SetProperties(ServiceRef.TagProfile.LegalIdentity.Properties, true);
+				IdentityReference = ServiceRef.TagProfile.LegalIdentity;
+			}
+
+			if (IdentityReference is not null)
+				this.SetProperties(IdentityReference.Properties, true);
+
+			ApplyIdNavigationArgs? Args = ServiceRef.NavigationService.PopLatestArgs<ApplyIdNavigationArgs>();
+
+			if (Args is not null)
+			{
+				this.Personal = Args.Personal;
+				this.Organizational = Args.Organizational;
+			}
+			else if (IdentityReference is not null)
+			{
+				this.Organizational = IdentityReference.IsOrganizational();
+				this.Personal = !this.Organizational;
 			}
 
 			ServiceRef.XmppService.IdentityApplicationChanged += this.XmppService_IdentityApplicationChanged;
@@ -230,6 +247,18 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		private bool applicationSent;
+
+		/// <summary>
+		/// If application is personal.
+		/// </summary>
+		[ObservableProperty]
+		private bool personal;
+
+		/// <summary>
+		/// If application is organizational.
+		/// </summary>
+		[ObservableProperty]
+		private bool organizational;
 
 		#endregion
 

@@ -112,7 +112,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 				if (!await App.AuthenticateUser())
 					return;
 
-				await ServiceRef.NavigationService.GoToAsync(nameof(ApplyPersonalIdPage));
+				await ServiceRef.NavigationService.GoToAsync(nameof(ApplyIdPage));
 			}
 			catch (Exception ex)
 			{
@@ -129,7 +129,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 				if (!await App.AuthenticateUser())
 					return;
 
-				await ServiceRef.NavigationService.GoToAsync(nameof(ApplyPersonalIdPage));
+				await ServiceRef.NavigationService.GoToAsync(nameof(ApplyIdPage), new ApplyIdNavigationArgs(true));
 			}
 			catch (Exception ex)
 			{
@@ -146,8 +146,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 				if (!await App.AuthenticateUser())
 					return;
 
-				// TODO
-				//await ServiceRef.NavigationService.GoToAsync(nameof(ApplyOrganizationalIdPage));
+				await ServiceRef.NavigationService.GoToAsync(nameof(ApplyIdPage), new ApplyIdNavigationArgs(false));
 			}
 			catch (Exception ex)
 			{

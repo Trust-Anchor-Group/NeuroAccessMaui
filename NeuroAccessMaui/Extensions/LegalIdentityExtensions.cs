@@ -10,24 +10,24 @@ namespace NeuroAccessMaui.Extensions
 		/// <summary>
 		/// Returns <c>true</c> if the legal identity is either null or is in a 'bad' state (rejected, compromised or obsolete).
 		/// </summary>
-		/// <param name="legalIdentity">The legal identity whose state to check.</param>
+		/// <param name="Identity">The legal identity whose state to check.</param>
 		/// <returns>If ID has been discarded.</returns>
-		public static bool IsDiscarded(this LegalIdentity legalIdentity)
+		public static bool IsDiscarded(this LegalIdentity Identity)
 		{
-			return legalIdentity is null ||
-				legalIdentity.State == IdentityState.Compromised ||
-				legalIdentity.State == IdentityState.Obsoleted ||
-				legalIdentity.State == IdentityState.Rejected;
+			return Identity is null ||
+				Identity.State == IdentityState.Compromised ||
+				Identity.State == IdentityState.Obsoleted ||
+				Identity.State == IdentityState.Rejected;
 		}
 
 		/// <summary>
 		/// Returns <c>true</c> if the legal identity has been approved.
 		/// </summary>
-		/// <param name="legalIdentity">The legal identity whose state to check.</param>
+		/// <param name="Identity">The legal identity whose state to check.</param>
 		/// <returns>If ID has been approved.</returns>
-		public static bool IsApproved(this LegalIdentity legalIdentity)
+		public static bool IsApproved(this LegalIdentity Identity)
 		{
-			return legalIdentity is not null && legalIdentity.State == IdentityState.Approved;
+			return Identity is not null && Identity.State == IdentityState.Approved;
 		}
 
 		/// <summary>
@@ -44,6 +44,48 @@ namespace NeuroAccessMaui.Extensions
 				Jid = legalIdentity.Properties.FirstOrDefault(x => x.Name == Constants.XmppProperties.Jid)?.Value;
 
 			return !string.IsNullOrWhiteSpace(Jid) ? Jid : defaultValueIfNotFound;
+		}
+
+		/// <summary>
+		/// Returns <c>true</c> if the legal identity has organizational properties.
+		/// </summary>
+		/// <param name="Identity">The legal identity whose state to check.</param>
+		/// <returns>If ID is organizational.</returns>
+		public static bool IsOrganizational(this LegalIdentity Identity)
+		{
+			if (Identity?.Properties is null)
+				return false;
+
+			foreach (Property P in Identity.Properties)
+			{
+				switch (P.Name)
+				{
+					case Constants.XmppProperties.OrgAddress:
+					case Constants.XmppProperties.OrgAddress2:
+					case Constants.XmppProperties.OrgArea:
+					case Constants.XmppProperties.OrgCity:
+					case Constants.XmppProperties.OrgCountry:
+					case Constants.XmppProperties.OrgDepartment:
+					case Constants.XmppProperties.OrgName:
+					case Constants.XmppProperties.OrgNumber:
+					case Constants.XmppProperties.OrgRegion:
+					case Constants.XmppProperties.OrgRole:
+					case Constants.XmppProperties.OrgZipCode:
+						return true;
+				}
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		/// Returns <c>true</c> if the legal identity does not have organizational properties.
+		/// </summary>
+		/// <param name="Identity">The legal identity whose state to check.</param>
+		/// <returns>If ID is personal.</returns>
+		public static bool IsPersonal(this LegalIdentity Identity)
+		{
+			return !Identity.IsOrganizational();
 		}
 	}
 }

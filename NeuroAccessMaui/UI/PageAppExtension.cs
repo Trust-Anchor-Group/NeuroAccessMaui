@@ -41,7 +41,7 @@ namespace NeuroAccessMaui.UI
 
 			// Applications
 			Builder.Services.AddTransient<ApplicationsPage, ApplicationsViewModel>();
-			Builder.Services.AddTransient<ApplyPersonalIdPage, ApplyPersonalIdViewModel>();
+			Builder.Services.AddTransient<ApplyIdPage, ApplyIdViewModel>();
 
 			// Popups
 			Builder.Services.AddTransient<ViewImagePage, ViewImageViewModel>();

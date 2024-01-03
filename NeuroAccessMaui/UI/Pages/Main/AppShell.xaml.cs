@@ -28,7 +28,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			Routing.RegisterRoute(nameof(PetitionSignaturePage), typeof(PetitionSignaturePage));
 			Routing.RegisterRoute(nameof(ViewIdentityPage), typeof(ViewIdentityPage));
 			Routing.RegisterRoute(nameof(ApplicationsPage), typeof(ApplicationsPage));
-			Routing.RegisterRoute(nameof(ApplyPersonalIdPage), typeof(ApplyPersonalIdPage));
+			Routing.RegisterRoute(nameof(ApplyIdPage), typeof(ApplyIdPage));
 		}
 
 		private async void Close_Clicked(object sender, EventArgs e)
