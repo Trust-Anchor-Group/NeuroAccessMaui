@@ -10,7 +10,8 @@
 							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
-							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Applications">
+							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Applications"
+							 xmlns:behaviors="clr-namespace:NeuroAccessMaui.UI.Behaviors">
 
 	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
 
@@ -117,7 +118,11 @@
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresRegion}"/>
 							</HorizontalStackLayout>
 							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=Region}" 
-															 BackgroundColor="{Binding RegionOk, Converter={converters:ControlBgColor}}" />
+															 BackgroundColor="{Binding RegionOk, Converter={converters:ControlBgColor}}">
+								<controls:CompositeEntry.Behaviors>
+									<behaviors:HideKeyboardOnCompletedBehavior/>
+								</controls:CompositeEntry.Behaviors>
+							</controls:CompositeEntry>
 						</VerticalStackLayout>
 
 						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
@@ -127,7 +132,11 @@
 							</HorizontalStackLayout>
 							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}"
 															 EntryData="{Binding Path=CountryName}" IsReadOnly="True" 
-															 BackgroundColor="{Binding CountryOk, Converter={converters:ControlBgColor}}" />
+															 BackgroundColor="{Binding CountryOk, Converter={converters:ControlBgColor}}">
+								<controls:CompositeEntry.Behaviors>
+									<behaviors:HideKeyboardOnCompletedBehavior/>
+								</controls:CompositeEntry.Behaviors>
+							</controls:CompositeEntry>
 						</VerticalStackLayout>
 					</VerticalStackLayout>
 				</Frame>
@@ -141,19 +150,31 @@
 						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 							<Label Text="{l:Localize EMail}" HorizontalOptions="FillAndExpand"/>
 							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}"
-															 EntryData="{Binding Path=EMail}" IsReadOnly="True" />
+															 EntryData="{Binding Path=EMail}" IsReadOnly="True">
+								<controls:CompositeEntry.Behaviors>
+									<behaviors:HideKeyboardOnCompletedBehavior/>
+								</controls:CompositeEntry.Behaviors>
+							</controls:CompositeEntry>
 						</VerticalStackLayout>
 
 						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 							<Label Text="{l:Localize PhoneNr}" HorizontalOptions="FillAndExpand"/>
 							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}"
-															 EntryData="{Binding Path=PhoneNr}" IsReadOnly="True" />
+															 EntryData="{Binding Path=PhoneNr}" IsReadOnly="True">
+								<controls:CompositeEntry.Behaviors>
+									<behaviors:HideKeyboardOnCompletedBehavior/>
+								</controls:CompositeEntry.Behaviors>
+							</controls:CompositeEntry>
 						</VerticalStackLayout>
 
 						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 							<Label Text="{l:Localize NeuroAccessAccount}" HorizontalOptions="FillAndExpand"/>
 							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}"
-															 EntryData="{Binding Path=Jid}" IsReadOnly="True" />
+															 EntryData="{Binding Path=Jid}" IsReadOnly="True">
+								<controls:CompositeEntry.Behaviors>
+									<behaviors:HideKeyboardOnCompletedBehavior/>
+								</controls:CompositeEntry.Behaviors>
+							</controls:CompositeEntry>
 						</VerticalStackLayout>
 					</VerticalStackLayout>
 				</Frame>
