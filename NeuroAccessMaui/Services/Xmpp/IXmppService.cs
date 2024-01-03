@@ -299,6 +299,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 		event LegalIdentityEventHandler? LegalIdentityChanged;
 
 		/// <summary>
+		/// An event that fires when an ID Application has changed.
+		/// </summary>
+		public event LegalIdentityEventHandler? IdentityApplicationChanged;
+
+		/// <summary>
 		/// An event that fires when a petition for an identity is received.
 		/// </summary>
 		event LegalIdentityPetitionEventHandler? PetitionForIdentityReceived;

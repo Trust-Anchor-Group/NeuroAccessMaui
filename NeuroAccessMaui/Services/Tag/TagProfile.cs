@@ -196,7 +196,7 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <returns>If legal identity need updating</returns>
 		public virtual bool LegalIdentityNeedsUpdating()
 		{
-			return this.legalIdentity?.Discarded() ?? true;
+			return this.legalIdentity?.IsDiscarded() ?? true;
 		}
 
 		/// <summary>

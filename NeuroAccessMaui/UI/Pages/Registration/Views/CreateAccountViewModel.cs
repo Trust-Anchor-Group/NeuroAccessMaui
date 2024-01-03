@@ -50,7 +50,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			{
 				if (LegalIdentity.State == IdentityState.Approved)
 					GoToRegistrationStep(RegistrationStep.DefinePin);
-				else if (LegalIdentity.Discarded())
+				else if (LegalIdentity.IsDiscarded())
 				{
 					ServiceRef.TagProfile.ClearLegalIdentity();
 					GoToRegistrationStep(RegistrationStep.ValidatePhone);
@@ -66,8 +66,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 		private async Task XmppContracts_LegalIdentityChanged(object _, LegalIdentityEventArgs e)
 		{
-			ServiceRef.TagProfile.LegalIdentity = e.Identity;
-
 			await this.DoAssignProperties();
 		}
 

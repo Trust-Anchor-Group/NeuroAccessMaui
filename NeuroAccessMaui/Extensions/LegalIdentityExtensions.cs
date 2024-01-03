@@ -11,13 +11,23 @@ namespace NeuroAccessMaui.Extensions
 		/// Returns <c>true</c> if the legal identity is either null or is in a 'bad' state (rejected, compromised or obsolete).
 		/// </summary>
 		/// <param name="legalIdentity">The legal identity whose state to check.</param>
-		/// <returns>If ID needs to be updated</returns>
-		public static bool Discarded(this LegalIdentity legalIdentity)
+		/// <returns>If ID has been discarded.</returns>
+		public static bool IsDiscarded(this LegalIdentity legalIdentity)
 		{
 			return legalIdentity is null ||
 				legalIdentity.State == IdentityState.Compromised ||
 				legalIdentity.State == IdentityState.Obsoleted ||
 				legalIdentity.State == IdentityState.Rejected;
+		}
+
+		/// <summary>
+		/// Returns <c>true</c> if the legal identity has been approved.
+		/// </summary>
+		/// <param name="legalIdentity">The legal identity whose state to check.</param>
+		/// <returns>If ID has been approved.</returns>
+		public static bool IsApproved(this LegalIdentity legalIdentity)
+		{
+			return legalIdentity is not null && legalIdentity.State == IdentityState.Approved;
 		}
 
 		/// <summary>

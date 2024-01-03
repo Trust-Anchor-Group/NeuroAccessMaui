@@ -1,9 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Data;
-using NeuroAccessMaui.Services.Tag;
-using NeuroAccessMaui.UI.Pages.Main.Settings;
 using NeuroAccessMaui.UI.Pages.Registration;
 using Waher.Networking.XMPP.Contracts;
 
@@ -24,9 +23,23 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 
 		protected override async Task OnInitialize()
 		{
-			LegalIdentity? CurrentId = ServiceRef.TagProfile.LegalIdentity;
-			if (CurrentId is not null)
-				this.SetProperties(CurrentId.Properties, true);
+			if (ServiceRef.TagProfile.IdentityApplication is not null)
+			{
+				if (ServiceRef.TagProfile.IdentityApplication.IsDiscarded())
+					ServiceRef.TagProfile.IdentityApplication = null;
+			}
+
+			if (ServiceRef.TagProfile.IdentityApplication is not null)
+			{
+				this.ApplicationSent = true;
+				this.SetProperties(ServiceRef.TagProfile.IdentityApplication.Properties, true);
+			}
+			else
+			{
+				this.ApplicationSent = false;
+				if (ServiceRef.TagProfile.LegalIdentity is not null)
+					this.SetProperties(ServiceRef.TagProfile.LegalIdentity.Properties, true);
+			}
 
 			await base.OnInitialize();
 
@@ -41,6 +54,13 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 
 			if (!this.HasApplicationAttributes && this.IsConnected)
 				await Task.Run(this.LoadApplicationAttributes);
+		}
+
+		/// <inheritdoc/>
+		public override void SetIsBusy(bool IsBusy)
+		{
+			base.SetIsBusy(IsBusy);
+			this.NotifyCommandsCanExecuteChanged();
 		}
 
 		private async Task LoadApplicationAttributes()
@@ -183,6 +203,13 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		private bool peerReview;
 
+		/// <summary>
+		/// If an ID application has been sent.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		private bool applicationSent;
+
 		#endregion
 
 		#region Commands
@@ -194,7 +221,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		{
 			get
 			{
-				if (!this.CanExecuteCommands || !this.Consent || !this.Correct)
+				if (!this.CanExecuteCommands || !this.Consent || !this.Correct || this.ApplicationSent)
 					return false;
 
 				if (this.HasApplicationAttributes)
@@ -248,6 +275,9 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		/// </summary>
 		protected override async Task Apply()
 		{
+			if (this.ApplicationSent)
+				return;
+
 			if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToSendThisIdApplication)]))
 				return;
 
@@ -256,28 +286,25 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 
 			try
 			{
+				this.SetIsBusy(true);
+
 				(bool Succeeded, LegalIdentity? AddedIdentity) = await ServiceRef.NetworkService.TryRequest(() =>
 					ServiceRef.XmppService.AddLegalIdentity(this, false));
 
 				if (Succeeded && AddedIdentity is not null)
+				{
 					ServiceRef.TagProfile.IdentityApplication = AddedIdentity;
+					this.ApplicationSent = true;
+				}
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
 				await ServiceRef.UiSerializer.DisplayException(ex);
-				await GoToRegistrationSte(RegistrationStep.ValidatePhone);
 			}
-		}
-
-		private static async Task GoToRegistrationSte(RegistrationStep Step)
-		{
-			if (Shell.Current.CurrentState.Location.OriginalString == Constants.Pages.RegistrationPage)
-				ServiceRef.TagProfile.GoToStep(Step);
-			else
+			finally
 			{
-				ServiceRef.TagProfile.GoToStep(Step, true);
-				await Shell.Current.GoToAsync(Constants.Pages.RegistrationPage);
+				this.SetIsBusy(false);
 			}
 		}
 

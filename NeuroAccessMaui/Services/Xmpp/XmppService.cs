@@ -1,7 +1,6 @@
 ﻿using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Tag;
-using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.UI.Pages.Registration;
 using System.ComponentModel;
 using System.Reflection;
@@ -1285,17 +1284,24 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// </summary>
 		public event LegalIdentityEventHandler? LegalIdentityChanged;
 
+		/// <summary>
+		/// An event that fires when an ID Application has changed.
+		/// </summary>
+		public event LegalIdentityEventHandler? IdentityApplicationChanged;
+
 		private async Task ContractsClient_IdentityUpdated(object? Sender, LegalIdentityEventArgs e)
 		{
-			if (ServiceRef.TagProfile.LegalIdentity is null ||
-				ServiceRef.TagProfile.LegalIdentity.Id == e.Identity.Id ||
-				ServiceRef.TagProfile.LegalIdentity.Created < e.Identity.Created)
+			try
 			{
-				try
+				if (ServiceRef.TagProfile.LegalIdentity is not null && ServiceRef.TagProfile.LegalIdentity.Id == e.Identity.Id)
 				{
+					if (ServiceRef.TagProfile.LegalIdentity.Created > e.Identity.Created)
+						return;
+
+					ServiceRef.TagProfile.LegalIdentity = e.Identity;
 					this.LegalIdentityChanged?.Invoke(this, e);
 
-					if (e.Identity.Discarded() && Shell.Current.CurrentState.Location.OriginalString != Constants.Pages.RegistrationPage)
+					if (e.Identity.IsDiscarded() && Shell.Current.CurrentState.Location.OriginalString != Constants.Pages.RegistrationPage)
 					{
 						MainThread.BeginInvokeOnMainThread(async () =>
 						{
@@ -1313,11 +1319,45 @@ namespace NeuroAccessMaui.Services.Xmpp
 						});
 					}
 				}
-				catch (Exception ex)
+				else if (ServiceRef.TagProfile.IdentityApplication is not null && ServiceRef.TagProfile.IdentityApplication.Id == e.Identity.Id)
 				{
-					ServiceRef.LogService.LogException(ex);
-					await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message);
+					if (ServiceRef.TagProfile.IdentityApplication.Created > e.Identity.Created)
+						return;
+
+					if (e.Identity.IsDiscarded())
+					{
+						ServiceRef.TagProfile.IdentityApplication = null;
+						this.IdentityApplicationChanged?.Invoke(this, e);
+					}
+					else if (e.Identity.IsApproved())
+					{
+						LegalIdentity? ToObsolete = ServiceRef.TagProfile.LegalIdentity;
+
+						ServiceRef.TagProfile.LegalIdentity = e.Identity;
+						ServiceRef.TagProfile.IdentityApplication = null;
+
+						this.LegalIdentityChanged?.Invoke(this, e);
+						this.IdentityApplicationChanged?.Invoke(this, e);
+					}
+					else
+					{
+						ServiceRef.TagProfile.IdentityApplication = e.Identity;
+						this.IdentityApplicationChanged?.Invoke(this, e);
+					}
 				}
+				else if (ServiceRef.TagProfile.LegalIdentity is null)
+				{
+					if (e.Identity.IsDiscarded())
+						return;
+
+					ServiceRef.TagProfile.LegalIdentity = e.Identity;
+					this.LegalIdentityChanged?.Invoke(this, e);
+				}
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message);
 			}
 		}
 
