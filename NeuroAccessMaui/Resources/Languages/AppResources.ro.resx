@@ -1008,4 +1008,10 @@
   <data name="SendApplication" xml:space="preserve">
     <value>Trimite cerere</value>
   </data>
+  <data name="ViewIdApplication" xml:space="preserve">
+    <value>Vizualizare aplicație ID</value>
+  </data>
+  <data name="ViewIdApplicationDescription" xml:space="preserve">
+    <value>O cerere ID este în curs de examinare. Puteți vizualiza starea aplicației aici.</value>
+  </data>
 </root>

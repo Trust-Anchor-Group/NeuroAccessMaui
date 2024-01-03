@@ -1008,4 +1008,10 @@
   <data name="SendApplication" xml:space="preserve">
     <value>Отправить заявку</value>
   </data>
+  <data name="ViewIdApplication" xml:space="preserve">
+    <value>Посмотреть приложение ID</value>
+  </data>
+  <data name="ViewIdApplicationDescription" xml:space="preserve">
+    <value>Заявка на получение удостоверения личности находится на рассмотрении. Статус заявки можно посмотреть здесь.</value>
+  </data>
 </root>

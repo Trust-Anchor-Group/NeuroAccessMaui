@@ -1008,4 +1008,10 @@
   <data name="SendApplication" xml:space="preserve">
     <value>Enviar solicitud</value>
   </data>
+  <data name="ViewIdApplication" xml:space="preserve">
+    <value>Ver solicitud de ID</value>
+  </data>
+  <data name="ViewIdApplicationDescription" xml:space="preserve">
+    <value>Una solicitud de identificación está pendiente de revisión. Puedes ver el estado de la solicitud aquí.</value>
+  </data>
 </root>

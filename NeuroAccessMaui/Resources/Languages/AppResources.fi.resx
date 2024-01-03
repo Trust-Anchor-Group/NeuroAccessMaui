@@ -1008,4 +1008,10 @@
   <data name="SendApplication" xml:space="preserve">
     <value>Lähetä hakemus</value>
   </data>
+  <data name="ViewIdApplication" xml:space="preserve">
+    <value>Näytä ID -sovellus</value>
+  </data>
+  <data name="ViewIdApplicationDescription" xml:space="preserve">
+    <value>ID-hakemus odottaa tarkistusta. Voit tarkastella sovelluksen tilaa täällä.</value>
+  </data>
 </root>

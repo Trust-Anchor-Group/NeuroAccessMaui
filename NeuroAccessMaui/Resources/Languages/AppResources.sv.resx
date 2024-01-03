@@ -1008,4 +1008,10 @@
   <data name="SendApplication" xml:space="preserve">
     <value>Skicka ansökan</value>
   </data>
+  <data name="ViewIdApplication" xml:space="preserve">
+    <value>Visa ID-program</value>
+  </data>
+  <data name="ViewIdApplicationDescription" xml:space="preserve">
+    <value>En ID-ansökan väntar på granskning. Du kan se status för ansökan här.</value>
+  </data>
 </root>

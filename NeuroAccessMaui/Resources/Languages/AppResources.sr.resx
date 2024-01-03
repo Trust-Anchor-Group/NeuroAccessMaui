@@ -1008,4 +1008,10 @@
   <data name="SendApplication" xml:space="preserve">
     <value>Pošalji aplikaciju</value>
   </data>
+  <data name="ViewIdApplication" xml:space="preserve">
+    <value>Prikaži ID aplikaciju</value>
+  </data>
+  <data name="ViewIdApplicationDescription" xml:space="preserve">
+    <value>ID aplikacija čeka na redigovanje. Status prijave možete pogledati ovde.</value>
+  </data>
 </root>

@@ -1008,4 +1008,10 @@
   <data name="SendApplication" xml:space="preserve">
     <value>Send søknad</value>
   </data>
+  <data name="ViewIdApplication" xml:space="preserve">
+    <value>Vis ID-applikasjon</value>
+  </data>
+  <data name="ViewIdApplicationDescription" xml:space="preserve">
+    <value>En ID-søknad venter på gjennomgang. Du kan se status for søknaden her.</value>
+  </data>
 </root>

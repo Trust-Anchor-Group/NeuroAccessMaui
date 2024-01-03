@@ -1008,4 +1008,10 @@
   <data name="SendApplication" xml:space="preserve">
     <value>Enviar Candidatura</value>
   </data>
+  <data name="ViewIdApplication" xml:space="preserve">
+    <value>Exibir aplicativo ID</value>
+  </data>
+  <data name="ViewIdApplicationDescription" xml:space="preserve">
+    <value>Um aplicativo de ID está pendente de revisão. Você pode ver o status do aplicativo aqui.</value>
+  </data>
 </root>

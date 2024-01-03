@@ -1008,4 +1008,10 @@
   <data name="SendApplication" xml:space="preserve">
     <value>Bewerbung absenden</value>
   </data>
+  <data name="ViewIdApplication" xml:space="preserve">
+    <value>ID-Anwendung anzeigen</value>
+  </data>
+  <data name="ViewIdApplicationDescription" xml:space="preserve">
+    <value>Ein ID-Antrag steht noch aus. Den Status des Antrags können Sie hier einsehen.</value>
+  </data>
 </root>

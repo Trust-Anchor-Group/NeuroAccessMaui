@@ -1008,4 +1008,10 @@
   <data name="SendApplication" xml:space="preserve">
     <value>Envoyer la candidature</value>
   </data>
+  <data name="ViewIdApplication" xml:space="preserve">
+    <value>Voir l’application d’identification</value>
+  </data>
+  <data name="ViewIdApplicationDescription" xml:space="preserve">
+    <value>Une demande d’identification est en attente d’examen. Vous pouvez consulter l’état de la demande ici.</value>
+  </data>
 </root>
