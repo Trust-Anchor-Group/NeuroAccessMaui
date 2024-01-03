@@ -948,6 +948,9 @@
   <data name="CorrectDescription" xml:space="preserve">
     <value>Vakuutan, että edellä annetut tiedot ovat sekä ajankohtaisia että oikeita.</value>
   </data>
+  <data name="CouldYouPleaseReviewMyIdentityInformation" xml:space="preserve">
+    <value>Voisitteko tarkistaa henkilöllisyystietoni?</value>
+  </data>
   <data name="EMail" xml:space="preserve">
     <value>Sähköposti</value>
   </data>

@@ -948,6 +948,9 @@
   <data name="CorrectDescription" xml:space="preserve">
     <value>Potvrđujem da su gore navedene informacije i aktuelne i tačne.</value>
   </data>
+  <data name="CouldYouPleaseReviewMyIdentityInformation" xml:space="preserve">
+    <value>Možete li, molim vas, da pregledate moje informacije o identitetu?</value>
+  </data>
   <data name="EMail" xml:space="preserve">
     <value>E-pošta</value>
   </data>

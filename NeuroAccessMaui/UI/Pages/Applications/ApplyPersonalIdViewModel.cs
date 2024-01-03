@@ -352,17 +352,39 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		/// Scan a QR-code belonging to a peer
 		/// </summary>
 		[RelayCommand]
-		private static async Task ScanQrCode()
+		private async Task ScanQrCode()
 		{
 			string? Url = await Services.UI.QR.QrCode.ScanQrCode(nameof(AppResources.QrPageTitleScanPeerId),
 				[
 					Constants.UriSchemes.IotId
 				]);
 
-			if (string.IsNullOrEmpty(Url))
+			if (string.IsNullOrEmpty(Url) || !Constants.UriSchemes.StartsWithIdScheme(Url))
 				return;
 
-			await App.OpenUrlAsync(Url);     // TODO: Send peer review petition
+			string? ReviewerId = Constants.UriSchemes.RemoveScheme(Url);
+			LegalIdentity? ToReview = ServiceRef.TagProfile.IdentityApplication;
+			if (ToReview is null || string.IsNullOrEmpty(ReviewerId))
+				return;
+
+			try
+			{
+				this.SetIsBusy(true);
+
+				await ServiceRef.XmppService.PetitionPeerReviewId(ReviewerId, ToReview, Guid.NewGuid().ToString(),
+					ServiceRef.Localizer["CouldYouPleaseReviewMyIdentityInformation"]);
+
+				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer["PetitionSent"], ServiceRef.Localizer["APetitionHasBeenSentToYourPeer"]);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
+			}
+			finally
+			{
+				this.SetIsBusy(false);
+			}
 		}
 
 		/// <summary>

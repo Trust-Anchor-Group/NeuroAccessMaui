@@ -948,6 +948,9 @@
   <data name="CorrectDescription" xml:space="preserve">
     <value>Ich bestätige, dass die oben genannten Informationen sowohl aktuell als auch korrekt sind.</value>
   </data>
+  <data name="CouldYouPleaseReviewMyIdentityInformation" xml:space="preserve">
+    <value>Könnten Sie bitte meine Identitätsinformationen überprüfen?</value>
+  </data>
   <data name="EMail" xml:space="preserve">
     <value>E-Mail</value>
   </data>
