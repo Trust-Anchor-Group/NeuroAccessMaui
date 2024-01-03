@@ -927,6 +927,9 @@
   <data name="Applications" xml:space="preserve">
     <value>Aplicaciones</value>
   </data>
+  <data name="AreYouSureYouWantToRevokeTheCurrentIdApplication" xml:space="preserve">
+    <value>¿Está seguro de que desea revocar la solicitud de identificación actual?</value>
+  </data>
   <data name="AreYouSureYouWantToSendThisIdApplication" xml:space="preserve">
     <value>¿Estás seguro de que quieres enviar esta Solicitud de ID? El envío de una solicitud de identificación dejará obsoleta su identificación actual.</value>
   </data>
@@ -995,6 +998,9 @@
   </data>
   <data name="QrPageTitleScanPeerId" xml:space="preserve">
     <value>ID de escaneo del par</value>
+  </data>
+  <data name="RevokeApplication" xml:space="preserve">
+    <value>Revocar solicitud</value>
   </data>
   <data name="SendApplication" xml:space="preserve">
     <value>Enviar solicitud</value>

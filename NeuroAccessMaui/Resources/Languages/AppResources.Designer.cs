@@ -250,6 +250,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to revoke the current ID application?.
+        /// </summary>
+        internal static string AreYouSureYouWantToRevokeTheCurrentIdApplication {
+            get {
+                return ResourceManager.GetString("AreYouSureYouWantToRevokeTheCurrentIdApplication", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to revoke your legal identity from the application?.
         /// </summary>
         internal static string AreYouSureYouWantToRevokeYourLegalIdentity {
@@ -2118,6 +2127,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string RestartNeededDueToThemeChange {
             get {
                 return ResourceManager.GetString("RestartNeededDueToThemeChange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Revoke Application.
+        /// </summary>
+        internal static string RevokeApplication {
+            get {
+                return ResourceManager.GetString("RevokeApplication", resourceCulture);
             }
         }
         

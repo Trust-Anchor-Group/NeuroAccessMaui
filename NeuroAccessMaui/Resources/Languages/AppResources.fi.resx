@@ -927,6 +927,9 @@
   <data name="Applications" xml:space="preserve">
     <value>Sovelluksia</value>
   </data>
+  <data name="AreYouSureYouWantToRevokeTheCurrentIdApplication" xml:space="preserve">
+    <value>Haluatko varmasti peruuttaa nykyisen henkilöllisyystodistuksen?</value>
+  </data>
   <data name="AreYouSureYouWantToSendThisIdApplication" xml:space="preserve">
     <value>Haluatko varmasti lähettää tämän henkilöllisyystodistuksen? Henkilöllisyystodistushakemuksen lähettäminen vanhentaa nykyisen tunnuksesi.</value>
   </data>
@@ -995,6 +998,9 @@
   </data>
   <data name="QrPageTitleScanPeerId" xml:space="preserve">
     <value>Vertaisryhmän skannaustunnus</value>
+  </data>
+  <data name="RevokeApplication" xml:space="preserve">
+    <value>Peruuta hakemus</value>
   </data>
   <data name="SendApplication" xml:space="preserve">
     <value>Lähetä hakemus</value>

@@ -310,6 +310,45 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		}
 
 		/// <summary>
+		/// Revokes the current application.
+		/// </summary>
+		[RelayCommand]
+		private async Task RevokeApplication()
+		{
+			LegalIdentity? Application = ServiceRef.TagProfile.IdentityApplication;
+			if (Application is null)
+			{
+				this.ApplicationSent = false;
+				return;
+			}
+
+			if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToRevokeTheCurrentIdApplication)]))
+				return;
+
+			if (!await App.AuthenticateUser(true))
+				return;
+
+			try
+			{
+				this.SetIsBusy(true);
+
+				await ServiceRef.XmppService.ObsoleteLegalIdentity(Application.Id);
+
+				ServiceRef.TagProfile.IdentityApplication = null;
+				this.ApplicationSent = false;
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
+			}
+			finally
+			{
+				this.SetIsBusy(false);
+			}
+		}
+
+		/// <summary>
 		/// Scan a QR-code belonging to a peer
 		/// </summary>
 		[RelayCommand]
@@ -323,7 +362,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 			if (string.IsNullOrEmpty(Url))
 				return;
 
-			await App.OpenUrlAsync(Url);		// TODO: Send peer review petition
+			await App.OpenUrlAsync(Url);     // TODO: Send peer review petition
 		}
 
 		/// <summary>

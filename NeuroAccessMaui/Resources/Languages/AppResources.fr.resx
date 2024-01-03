@@ -927,6 +927,9 @@
   <data name="Applications" xml:space="preserve">
     <value>Applications</value>
   </data>
+  <data name="AreYouSureYouWantToRevokeTheCurrentIdApplication" xml:space="preserve">
+    <value>Êtes-vous sûr de vouloir révoquer la demande d’identification actuelle ?</value>
+  </data>
   <data name="AreYouSureYouWantToSendThisIdApplication" xml:space="preserve">
     <value>Êtes-vous sûr de vouloir envoyer cette demande d’identification ? L’envoi d’une demande d’identification rendra votre pièce d’identité actuelle obsolète.</value>
   </data>
@@ -995,6 +998,9 @@
   </data>
   <data name="QrPageTitleScanPeerId" xml:space="preserve">
     <value>ID de numérisation de l’homologue</value>
+  </data>
+  <data name="RevokeApplication" xml:space="preserve">
+    <value>Révoquer la demande</value>
   </data>
   <data name="SendApplication" xml:space="preserve">
     <value>Envoyer la candidature</value>

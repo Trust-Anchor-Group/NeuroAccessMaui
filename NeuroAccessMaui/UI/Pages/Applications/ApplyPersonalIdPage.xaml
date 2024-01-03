@@ -229,6 +229,9 @@
 
 							<controls:TextButton Command="{Binding FeaturedPeerReviewersCommand}" Style="{StaticResource FilledTextButtonStyleNoRoundedCorners}"
 														LabelData="{l:Localize FeaturedReviewers}" IsVisible="{Binding PeerReview}" />
+
+							<controls:TextButton Command="{Binding RevokeApplicationCommand}" Style="{StaticResource FilledTextButtonStyleNoRoundedCorners}"
+														LabelData="{l:Localize RevokeApplication}" />
 						</VerticalStackLayout>
 					</Grid>
 				</Frame>

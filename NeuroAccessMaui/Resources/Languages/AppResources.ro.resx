@@ -927,6 +927,9 @@
   <data name="Applications" xml:space="preserve">
     <value>Aplicaţii</value>
   </data>
+  <data name="AreYouSureYouWantToRevokeTheCurrentIdApplication" xml:space="preserve">
+    <value>Sigur doriți să revocați cererea actuală de identificare?</value>
+  </data>
   <data name="AreYouSureYouWantToSendThisIdApplication" xml:space="preserve">
     <value>Sigur doriți să trimiteți această cerere de identificare? Trimiterea unei cereri de identitate vă va perima ID-ul actual.</value>
   </data>
@@ -995,6 +998,9 @@
   </data>
   <data name="QrPageTitleScanPeerId" xml:space="preserve">
     <value>ID-ul de scanare al colegilor</value>
+  </data>
+  <data name="RevokeApplication" xml:space="preserve">
+    <value>Revocați cererea</value>
   </data>
   <data name="SendApplication" xml:space="preserve">
     <value>Trimite cerere</value>

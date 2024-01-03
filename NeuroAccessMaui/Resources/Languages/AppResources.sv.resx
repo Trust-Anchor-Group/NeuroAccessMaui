@@ -927,6 +927,9 @@
   <data name="Applications" xml:space="preserve">
     <value>Program</value>
   </data>
+  <data name="AreYouSureYouWantToRevokeTheCurrentIdApplication" xml:space="preserve">
+    <value>Är du säker på att du vill återkalla den aktuella ID-ansökan?</value>
+  </data>
   <data name="AreYouSureYouWantToSendThisIdApplication" xml:space="preserve">
     <value>Är du säker på att du vill skicka den här ID-ansökan? Om du skickar en ID-ansökan kommer ditt nuvarande ID att bli föråldrat.</value>
   </data>
@@ -995,6 +998,9 @@
   </data>
   <data name="QrPageTitleScanPeerId" xml:space="preserve">
     <value>Genomsöknings-ID för peer</value>
+  </data>
+  <data name="RevokeApplication" xml:space="preserve">
+    <value>Återkalla ansökan</value>
   </data>
   <data name="SendApplication" xml:space="preserve">
     <value>Skicka ansökan</value>

@@ -927,6 +927,9 @@
   <data name="Applications" xml:space="preserve">
     <value>Anträge</value>
   </data>
+  <data name="AreYouSureYouWantToRevokeTheCurrentIdApplication" xml:space="preserve">
+    <value>Sind Sie sicher, dass Sie den aktuellen ID-Antrag widerrufen möchten?</value>
+  </data>
   <data name="AreYouSureYouWantToSendThisIdApplication" xml:space="preserve">
     <value>Sind Sie sicher, dass Sie diesen ID-Antrag senden möchten? Durch das Senden eines ID-Antrags wird Ihr aktueller Ausweis obsolet.</value>
   </data>
@@ -995,6 +998,9 @@
   </data>
   <data name="QrPageTitleScanPeerId" xml:space="preserve">
     <value>Scan-ID des Peers</value>
+  </data>
+  <data name="RevokeApplication" xml:space="preserve">
+    <value>Anwendung widerrufen</value>
   </data>
   <data name="SendApplication" xml:space="preserve">
     <value>Bewerbung absenden</value>

@@ -927,6 +927,9 @@
   <data name="Applications" xml:space="preserve">
     <value>Aplicativos</value>
   </data>
+  <data name="AreYouSureYouWantToRevokeTheCurrentIdApplication" xml:space="preserve">
+    <value>Tem certeza de que deseja revogar o aplicativo de ID atual?</value>
+  </data>
   <data name="AreYouSureYouWantToSendThisIdApplication" xml:space="preserve">
     <value>Tem certeza de que deseja enviar este Aplicativo de ID? O envio de um aplicativo de ID tornará obsoleta sua ID atual.</value>
   </data>
@@ -995,6 +998,9 @@
   </data>
   <data name="QrPageTitleScanPeerId" xml:space="preserve">
     <value>ID de varredura do par</value>
+  </data>
+  <data name="RevokeApplication" xml:space="preserve">
+    <value>Revogar aplicativo</value>
   </data>
   <data name="SendApplication" xml:space="preserve">
     <value>Enviar Candidatura</value>

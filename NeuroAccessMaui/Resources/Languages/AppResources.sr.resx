@@ -927,6 +927,9 @@
   <data name="Applications" xml:space="preserve">
     <value>Aplikacije</value>
   </data>
+  <data name="AreYouSureYouWantToRevokeTheCurrentIdApplication" xml:space="preserve">
+    <value>Želite li zaista da opozovete trenutnu ID aplikaciju?</value>
+  </data>
   <data name="AreYouSureYouWantToSendThisIdApplication" xml:space="preserve">
     <value>Želite li zaista da pošaljete ovu ID aplikaciju? Slanje ID aplikacije će zastareli vaš trenutni ID.</value>
   </data>
@@ -995,6 +998,9 @@
   </data>
   <data name="QrPageTitleScanPeerId" xml:space="preserve">
     <value>ID skeniranja ravnopravnog uređaja</value>
+  </data>
+  <data name="RevokeApplication" xml:space="preserve">
+    <value>Opozivanje aplikacije</value>
   </data>
   <data name="SendApplication" xml:space="preserve">
     <value>Pošalji aplikaciju</value>

@@ -927,6 +927,9 @@
   <data name="Applications" xml:space="preserve">
     <value>Приложений</value>
   </data>
+  <data name="AreYouSureYouWantToRevokeTheCurrentIdApplication" xml:space="preserve">
+    <value>Вы уверены, что хотите отозвать текущее заявление на получение удостоверения личности?</value>
+  </data>
   <data name="AreYouSureYouWantToSendThisIdApplication" xml:space="preserve">
     <value>Вы уверены, что хотите отправить это заявление на получение удостоверения личности? При отправке заявления на получение удостоверения личности ваше текущее удостоверение личности устареет.</value>
   </data>
@@ -995,6 +998,9 @@
   </data>
   <data name="QrPageTitleScanPeerId" xml:space="preserve">
     <value>Идентификатор сканирования однорангового узла</value>
+  </data>
+  <data name="RevokeApplication" xml:space="preserve">
+    <value>Отозвать заявление</value>
   </data>
   <data name="SendApplication" xml:space="preserve">
     <value>Отправить заявку</value>
