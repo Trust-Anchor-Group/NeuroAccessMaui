@@ -939,11 +939,17 @@
   <data name="ContactInformationDescription" xml:space="preserve">
     <value>Følgende kontaktinformasjon vil bli inkludert i søknaden. Denne informasjonen er hentet fra onboarding-prosessen.</value>
   </data>
+  <data name="ContactInformationSentDescription" xml:space="preserve">
+    <value>Følgende kontaktinformasjon er lagt inn i søknaden om person-ID.</value>
+  </data>
   <data name="CorrectDescription" xml:space="preserve">
     <value>Jeg bekrefter at informasjonen ovenfor er både aktuell og korrekt.</value>
   </data>
   <data name="EMail" xml:space="preserve">
     <value>E-post</value>
+  </data>
+  <data name="FeaturedReviewers" xml:space="preserve">
+    <value>Utvalgte anmeldere</value>
   </data>
   <data name="FingerprintDescription" xml:space="preserve">
     <value>Skann fingeravtrykket.</value>
@@ -953,6 +959,9 @@
   </data>
   <data name="IdApplicationDescription" xml:space="preserve">
     <value>Ved å sende inn en ny ID-søknad bekrefter jeg herved at all informasjon som er gitt er korrekt og aktuell. Applikasjonen vil forelde enhver nåværende identitet som er registrert i appen.</value>
+  </data>
+  <data name="IdApplicationSentDescription" xml:space="preserve">
+    <value>Det er sendt ut søknad om ny ID. Venter på at søknaden skal bli vurdert. Du kan komme tilbake til denne siden for å se statusen for søknaden.</value>
   </data>
   <data name="IdentityApplications" xml:space="preserve">
     <value>Identitetssøknader</value>
@@ -965,6 +974,9 @@
   </data>
   <data name="OrganizationalIdDescription" xml:space="preserve">
     <value>Søk om en ny digital organisasjons-ID. ID-en vil inneholde din personlige informasjon, tilhørende organisasjonsinformasjon og din rolle i organisasjonen. Den kan brukes til å validere din personlige identitet og din rolle i organisasjonen, samt få tilgang til tjenester som krever en verifisert organisasjonsidentitet.</value>
+  </data>
+  <data name="PeerReviewDescription" xml:space="preserve">
+    <value>Fagfellevurderinger er aktivert, slik at du kan be fagfeller (personer med allerede godkjente digitale ID-er) om å gjennomgå søknaden din og samarbeide om å godkjenne den. Hvis du ønsker å be fagfeller om å gjennomgå søknaden din, kan du skanne QR-kodene til identiteten deres for å be dem om å gjennomgå søknaden din. Du kan også be om en gjennomgang fra alle fremhevede fagfeller som er tilgjengelige hos tjenesteleverandøren.</value>
   </data>
   <data name="PersonalId" xml:space="preserve">
     <value>Personlig ID</value>
@@ -980,6 +992,9 @@
   </data>
   <data name="PhoneNr" xml:space="preserve">
     <value>Telefonnummer</value>
+  </data>
+  <data name="QrPageTitleScanPeerId" xml:space="preserve">
+    <value>Skann-ID for node</value>
   </data>
   <data name="SendApplication" xml:space="preserve">
     <value>Send søknad</value>

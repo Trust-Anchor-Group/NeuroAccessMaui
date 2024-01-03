@@ -948,6 +948,9 @@
   <data name="EMail" xml:space="preserve">
     <value>E-Mail</value>
   </data>
+  <data name="FeaturedReviewers" xml:space="preserve">
+    <value>Featured Reviewers</value>
+  </data>
   <data name="FingerprintDescription" xml:space="preserve">
     <value>Scan your finger print.</value>
   </data>
@@ -956,6 +959,9 @@
   </data>
   <data name="IdApplicationDescription" xml:space="preserve">
     <value>By sending in a new ID application, I hereby confirm all information provided is correct and current. The application will obsolete any current identity registered with the App.</value>
+  </data>
+  <data name="IdApplicationSentDescription" xml:space="preserve">
+    <value>An application for a new ID has been sent. Waiting for the application to be reviewed. You can come back to this page to review the status of the application.</value>
   </data>
   <data name="IdentityApplications" xml:space="preserve">
     <value>Identity applications</value>
@@ -968,6 +974,9 @@
   </data>
   <data name="OrganizationalIdDescription" xml:space="preserve">
     <value>Apply for a new digital Organizational ID. The ID will contain your personal information, the associated organizational information and your role in the organization. It can be used to to validate your personal identity, and your role in the organization, as well as gain access to services requiring a verified organizational identity.</value>
+  </data>
+  <data name="PeerReviewDescription" xml:space="preserve">
+    <value>Peer reviews are enabled, allowing you to request peers (people with already approved digital IDs) to review your application and collaboratively approve it. If you wish to request peers to review your application, scan the QR-codes of their identities to request them to review your application. You can also request a review from any featured peer reviewers available on your service provider.</value>
   </data>
   <data name="PersonalId" xml:space="preserve">
     <value>Personal ID</value>
@@ -983,6 +992,9 @@
   </data>
   <data name="PhoneNr" xml:space="preserve">
     <value>Phone number</value>
+  </data>
+  <data name="QrPageTitleScanPeerId" xml:space="preserve">
+    <value>Scan ID of peer</value>
   </data>
   <data name="SendApplication" xml:space="preserve">
     <value>Send Application</value>

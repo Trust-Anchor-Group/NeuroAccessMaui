@@ -939,11 +939,17 @@
   <data name="ContactInformationDescription" xml:space="preserve">
     <value>Hakemukseen sisällytetään seuraavat yhteystiedot. Nämä tiedot otetaan perehdytysprosessista.</value>
   </data>
+  <data name="ContactInformationSentDescription" xml:space="preserve">
+    <value>Henkilötunnushakemukseen on kirjattu seuraavat yhteystiedot.</value>
+  </data>
   <data name="CorrectDescription" xml:space="preserve">
     <value>Vakuutan, että edellä annetut tiedot ovat sekä ajankohtaisia että oikeita.</value>
   </data>
   <data name="EMail" xml:space="preserve">
     <value>Sähköposti</value>
+  </data>
+  <data name="FeaturedReviewers" xml:space="preserve">
+    <value>Suositellut arvioijat</value>
   </data>
   <data name="FingerprintDescription" xml:space="preserve">
     <value>Skannaa sormenjälkesi.</value>
@@ -953,6 +959,9 @@
   </data>
   <data name="IdApplicationDescription" xml:space="preserve">
     <value>Lähettämällä uuden henkilöllisyystodistuksen vahvistan täten, että kaikki annetut tiedot ovat oikeita ja ajantasaisia. Sovellus vanhentaa kaikki sovellukseen rekisteröidyt nykyiset henkilöllisyydet.</value>
+  </data>
+  <data name="IdApplicationSentDescription" xml:space="preserve">
+    <value>Hakemus uudesta tunnuksesta on lähetetty. Odotetaan hakemuksen tarkistamista. Voit palata tälle sivulle tarkistamaan sovelluksen tilan.</value>
   </data>
   <data name="IdentityApplications" xml:space="preserve">
     <value>Henkilöllisyyttä koskevat hakemukset</value>
@@ -965,6 +974,9 @@
   </data>
   <data name="OrganizationalIdDescription" xml:space="preserve">
     <value>Hae uutta digitaalista organisaatiotunnusta. Tunnus sisältää henkilökohtaiset tietosi, niihin liittyvät organisaatiotiedot ja roolisi organisaatiossa. Sen avulla voidaan vahvistaa henkilökohtainen henkilöllisyytesi ja roolisi organisaatiossa sekä saada pääsy palveluihin, jotka edellyttävät vahvistettua organisaation identiteettiä.</value>
+  </data>
+  <data name="PeerReviewDescription" xml:space="preserve">
+    <value>Vertaisarvioinnit ovat käytössä, joten voit pyytää vertaisarviointeja (henkilöitä, joilla on jo hyväksytyt digitaaliset tunnukset) tarkistamaan hakemuksesi ja hyväksymään sen yhteistyössä. Jos haluat pyytää kollegoita tarkistamaan hakemuksesi, skannaa heidän henkilöllisyytensä QR-koodit ja pyydä heitä tarkistamaan hakemuksesi. Voit myös pyytää arviointia keneltä tahansa palveluntarjoajasi käytettävissä olevalta vertaisarvioijalta.</value>
   </data>
   <data name="PersonalId" xml:space="preserve">
     <value>Henkilötunnus</value>
@@ -980,6 +992,9 @@
   </data>
   <data name="PhoneNr" xml:space="preserve">
     <value>Puhelinnumero</value>
+  </data>
+  <data name="QrPageTitleScanPeerId" xml:space="preserve">
+    <value>Vertaisryhmän skannaustunnus</value>
   </data>
   <data name="SendApplication" xml:space="preserve">
     <value>Lähetä hakemus</value>

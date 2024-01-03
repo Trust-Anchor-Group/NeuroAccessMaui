@@ -939,11 +939,17 @@
   <data name="ContactInformationDescription" xml:space="preserve">
     <value>Sledeće kontakt informacije će biti uključene u aplikaciju. Ove informacije su preuzete iz procesa ukrcavanja.</value>
   </data>
+  <data name="ContactInformationSentDescription" xml:space="preserve">
+    <value>Sledeće kontakt informacije su uključene u aplikaciju za lični ID.</value>
+  </data>
   <data name="CorrectDescription" xml:space="preserve">
     <value>Potvrđujem da su gore navedene informacije i aktuelne i tačne.</value>
   </data>
   <data name="EMail" xml:space="preserve">
     <value>E-pošta</value>
+  </data>
+  <data name="FeaturedReviewers" xml:space="preserve">
+    <value>Istaknuti redaktori</value>
   </data>
   <data name="FingerprintDescription" xml:space="preserve">
     <value>Skeniraj otisak prsta.</value>
@@ -953,6 +959,9 @@
   </data>
   <data name="IdApplicationDescription" xml:space="preserve">
     <value>Slanjem nove ID aplikacije potvrđujem da su sve navedene informacije tačne i aktuelne. Aplikacija će zastareti svaki trenutni identitet registrovan u aplikaciji.</value>
+  </data>
+  <data name="IdApplicationSentDescription" xml:space="preserve">
+    <value>Poslata je aplikacija za novi ID. Čeka se da aplikacija bude pregledana. Možete da se vratite na ovu stranicu da biste pregledali status aplikacije.</value>
   </data>
   <data name="IdentityApplications" xml:space="preserve">
     <value>Aplikacije identiteta</value>
@@ -965,6 +974,9 @@
   </data>
   <data name="OrganizationalIdDescription" xml:space="preserve">
     <value>Prijavite se za novi digitalni organizacioni ID. ID će sadržati vaše lične informacije, povezane organizacione informacije i vašu ulogu u organizaciji. Može se koristiti za proveru ličnog identiteta i vaše uloge u organizaciji, kao i za dobijanje pristupa uslugama koje zahtevaju provereni organizacioni identitet.</value>
+  </data>
+  <data name="PeerReviewDescription" xml:space="preserve">
+    <value>Pregledi ravnopravnih uređaja su omogućeni, što vam omogućava da zahtevate od vršnjaka (osoba sa već odobrenim digitalnim ID-ovima) da pregledaju vašu aplikaciju i saradnički je odobre. Ako želite da zatražite od vršnjaka da pregledaju vašu aplikaciju, skenirajte QR kodove njihovih identiteta da biste ih zatražili da pregledaju vašu aplikaciju. Takođe možete da zatražite pregled od svih istaknutih vršnjačkih redaktora koji su dostupni na dobavljaču usluga.</value>
   </data>
   <data name="PersonalId" xml:space="preserve">
     <value>Lična lična id</value>
@@ -980,6 +992,9 @@
   </data>
   <data name="PhoneNr" xml:space="preserve">
     <value>Telefonski broj</value>
+  </data>
+  <data name="QrPageTitleScanPeerId" xml:space="preserve">
+    <value>ID skeniranja ravnopravnog uređaja</value>
   </data>
   <data name="SendApplication" xml:space="preserve">
     <value>Pošalji aplikaciju</value>

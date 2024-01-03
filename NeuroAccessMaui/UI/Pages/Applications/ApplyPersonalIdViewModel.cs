@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
@@ -306,6 +307,32 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 			{
 				this.SetIsBusy(false);
 			}
+		}
+
+		/// <summary>
+		/// Scan a QR-code belonging to a peer
+		/// </summary>
+		[RelayCommand]
+		private static async Task ScanQrCode()
+		{
+			string? Url = await Services.UI.QR.QrCode.ScanQrCode(nameof(AppResources.QrPageTitleScanPeerId),
+				[
+					Constants.UriSchemes.IotId
+				]);
+
+			if (string.IsNullOrEmpty(Url))
+				return;
+
+			await App.OpenUrlAsync(Url);		// TODO: Send peer review petition
+		}
+
+		/// <summary>
+		/// Select from a list of featured peer reviewers.
+		/// </summary>
+		[RelayCommand]
+		private static async Task FeaturedPeerReviewers()
+		{
+			// TODO
 		}
 
 		#endregion

@@ -939,11 +939,17 @@
   <data name="ContactInformationDescription" xml:space="preserve">
     <value>As seguintes informações de contato serão incluídas no aplicativo. Essas informações são retiradas do processo de integração.</value>
   </data>
+  <data name="ContactInformationSentDescription" xml:space="preserve">
+    <value>As seguintes informações de contato foram incluídas no aplicativo para uma ID pessoal.</value>
+  </data>
   <data name="CorrectDescription" xml:space="preserve">
     <value>Afirmo que as informações fornecidas acima são atuais e corretas.</value>
   </data>
   <data name="EMail" xml:space="preserve">
     <value>E-mail</value>
+  </data>
+  <data name="FeaturedReviewers" xml:space="preserve">
+    <value>Revisores em destaque</value>
   </data>
   <data name="FingerprintDescription" xml:space="preserve">
     <value>Digitalize sua impressão digital.</value>
@@ -953,6 +959,9 @@
   </data>
   <data name="IdApplicationDescription" xml:space="preserve">
     <value>Ao enviar um novo pedido de identificação, confirmo que todas as informações fornecidas estão corretas e atualizadas. O aplicativo obsoleta qualquer identidade atual registrada com o aplicativo.</value>
+  </data>
+  <data name="IdApplicationSentDescription" xml:space="preserve">
+    <value>Um pedido para um novo ID foi enviado. Aguardando a análise do pedido. Você pode voltar a esta página para revisar o status do aplicativo.</value>
   </data>
   <data name="IdentityApplications" xml:space="preserve">
     <value>Aplicativos de identidade</value>
@@ -965,6 +974,9 @@
   </data>
   <data name="OrganizationalIdDescription" xml:space="preserve">
     <value>Solicite uma nova ID organizacional digital. O ID conterá suas informações pessoais, as informações organizacionais associadas e sua função na organização. Ele pode ser usado para validar sua identidade pessoal e sua função na organização, bem como obter acesso a serviços que exigem uma identidade organizacional verificada.</value>
+  </data>
+  <data name="PeerReviewDescription" xml:space="preserve">
+    <value>As revisões por pares estão habilitadas, permitindo que você solicite que os pares (pessoas com IDs digitais já aprovadas) revisem seu aplicativo e o aprovem de forma colaborativa. Se você deseja solicitar que colegas revisem seu aplicativo, escaneie os códigos QR de suas identidades para solicitar que eles revisem seu pedido. Você também pode solicitar uma revisão de qualquer revisor de pares em destaque disponível em seu provedor de serviços.</value>
   </data>
   <data name="PersonalId" xml:space="preserve">
     <value>Identificação pessoal</value>
@@ -980,6 +992,9 @@
   </data>
   <data name="PhoneNr" xml:space="preserve">
     <value>Número de telefone</value>
+  </data>
+  <data name="QrPageTitleScanPeerId" xml:space="preserve">
+    <value>ID de varredura do par</value>
   </data>
   <data name="SendApplication" xml:space="preserve">
     <value>Enviar Candidatura</value>

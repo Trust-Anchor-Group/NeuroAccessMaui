@@ -939,11 +939,17 @@
   <data name="ContactInformationDescription" xml:space="preserve">
     <value>Följande kontaktuppgifter kommer att finnas med i ansökan. Den här informationen hämtas från registreringsprocessen.</value>
   </data>
+  <data name="ContactInformationSentDescription" xml:space="preserve">
+    <value>Följande kontaktuppgifter har angetts i ansökan om personbeteckning.</value>
+  </data>
   <data name="CorrectDescription" xml:space="preserve">
     <value>Jag bekräftar att informationen ovan är både aktuell och korrekt.</value>
   </data>
   <data name="EMail" xml:space="preserve">
     <value>E-post</value>
+  </data>
+  <data name="FeaturedReviewers" xml:space="preserve">
+    <value>Utvalda recensenter</value>
   </data>
   <data name="FingerprintDescription" xml:space="preserve">
     <value>Skanna ditt fingeravtryck.</value>
@@ -953,6 +959,9 @@
   </data>
   <data name="IdApplicationDescription" xml:space="preserve">
     <value>Genom att skicka in en ny ID-ansökan bekräftar jag härmed att alla uppgifter som lämnats är korrekta och aktuella. Applikationen kommer att föråldra alla aktuella identiteter som är registrerade i appen.</value>
+  </data>
+  <data name="IdApplicationSentDescription" xml:space="preserve">
+    <value>En ansökan om ny legitimation har skickats in. Väntar på att ansökan ska granskas. Du kan gå tillbaka till den här sidan för att granska statusen för programmet.</value>
   </data>
   <data name="IdentityApplications" xml:space="preserve">
     <value>Identitets program</value>
@@ -965,6 +974,9 @@
   </data>
   <data name="OrganizationalIdDescription" xml:space="preserve">
     <value>Ansök om ett nytt digitalt organisations-ID. ID:t innehåller din personliga information, tillhörande organisationsinformation och din roll i organisationen. Den kan användas för att validera din personliga identitet och din roll i organisationen, samt få tillgång till tjänster som kräver en verifierad organisationsidentitet.</value>
+  </data>
+  <data name="PeerReviewDescription" xml:space="preserve">
+    <value>Peer-granskningar är aktiverade, vilket gör att du kan begära peer-datorer (personer med redan godkända digitala ID:n) att granska din ansökan och tillsammans godkänna den. Om du vill be kollegor att granska din ansökan, skanna QR-koderna för deras identiteter för att begära att de granskar din ansökan. Du kan också begära en granskning från alla granskare som finns tillgängliga hos din tjänsteleverantör.</value>
   </data>
   <data name="PersonalId" xml:space="preserve">
     <value>Personligt ID</value>
@@ -980,6 +992,9 @@
   </data>
   <data name="PhoneNr" xml:space="preserve">
     <value>Telefonnummer</value>
+  </data>
+  <data name="QrPageTitleScanPeerId" xml:space="preserve">
+    <value>Genomsöknings-ID för peer</value>
   </data>
   <data name="SendApplication" xml:space="preserve">
     <value>Skicka ansökan</value>

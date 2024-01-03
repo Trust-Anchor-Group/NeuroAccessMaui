@@ -799,6 +799,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Featured Reviewers.
+        /// </summary>
+        internal static string FeaturedReviewers {
+            get {
+                return ResourceManager.GetString("FeaturedReviewers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No file upload service found on broker..
         /// </summary>
         internal static string FileUploadServiceNotFound {
@@ -867,6 +876,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string IdApplicationDescription {
             get {
                 return ResourceManager.GetString("IdApplicationDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An application for a new ID has been sent. Waiting for the application to be reviewed. You can come back to this page to review the status of the application..
+        /// </summary>
+        internal static string IdApplicationSentDescription {
+            get {
+                return ResourceManager.GetString("IdApplicationSentDescription", resourceCulture);
             }
         }
         
@@ -1465,6 +1483,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Peer reviews are enabled, allowing you to request peers (people with already approved digital IDs) to review your application and collaboratively approve it. If you wish to request peers to review your application, scan the QR-codes of their identities to request them to review your application. You can also request a review from any featured peer reviewers available on your service provider..
+        /// </summary>
+        internal static string PeerReviewDescription {
+            get {
+                return ResourceManager.GetString("PeerReviewDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Peer review rejected.
         /// </summary>
         internal static string PeerReviewRejected {
@@ -1956,6 +1983,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string QrPageTitleScanInvitation {
             get {
                 return ResourceManager.GetString("QrPageTitleScanInvitation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scan ID of peer.
+        /// </summary>
+        internal static string QrPageTitleScanPeerId {
+            get {
+                return ResourceManager.GetString("QrPageTitleScanPeerId", resourceCulture);
             }
         }
         

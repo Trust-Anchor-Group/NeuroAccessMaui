@@ -939,11 +939,17 @@
   <data name="ContactInformationDescription" xml:space="preserve">
     <value>Les coordonnées suivantes seront incluses dans la demande. Ces informations sont issues du processus d’intégration.</value>
   </data>
+  <data name="ContactInformationSentDescription" xml:space="preserve">
+    <value>Les coordonnées suivantes ont été incluses dans la demande de carte d’identité personnelle.</value>
+  </data>
   <data name="CorrectDescription" xml:space="preserve">
     <value>J’affirme que les renseignements fournis ci-dessus sont à la fois actuels et exacts.</value>
   </data>
   <data name="EMail" xml:space="preserve">
     <value>Courriel</value>
+  </data>
+  <data name="FeaturedReviewers" xml:space="preserve">
+    <value>Commentateurs en vedette</value>
   </data>
   <data name="FingerprintDescription" xml:space="preserve">
     <value>Scannez votre empreinte digitale.</value>
@@ -953,6 +959,9 @@
   </data>
   <data name="IdApplicationDescription" xml:space="preserve">
     <value>En envoyant une nouvelle demande d’identification, je confirme par la présente que toutes les informations fournies sont correctes et à jour. L’application rendra obsolète toute identité actuelle enregistrée auprès de l’application.</value>
+  </data>
+  <data name="IdApplicationSentDescription" xml:space="preserve">
+    <value>Une demande de nouvelle pièce d’identité a été envoyée. En attente de l’examen de la demande. Vous pouvez revenir sur cette page pour vérifier l’état de la demande.</value>
   </data>
   <data name="IdentityApplications" xml:space="preserve">
     <value>Applications d’identité</value>
@@ -965,6 +974,9 @@
   </data>
   <data name="OrganizationalIdDescription" xml:space="preserve">
     <value>Demandez un nouvel identifiant d’organisation numérique. La pièce d’identité contiendra vos informations personnelles, les informations organisationnelles associées et votre rôle dans l’organisation. Il peut être utilisé pour valider votre identité personnelle et votre rôle dans l’organisation, ainsi que pour accéder à des services nécessitant une identité organisationnelle vérifiée.</value>
+  </data>
+  <data name="PeerReviewDescription" xml:space="preserve">
+    <value>Les évaluations par les pairs sont activées, ce qui vous permet de demander à des pairs (personnes ayant déjà des identifiants numériques approuvés) d’examiner votre demande et de l’approuver en collaboration. Si vous souhaitez demander à vos pairs d’examiner votre demande, scannez les codes QR de leur identité pour leur demander d’examiner votre demande. Vous pouvez également demander un examen à n’importe quel évaluateur de pairs disponible sur votre fournisseur de services.</value>
   </data>
   <data name="PersonalId" xml:space="preserve">
     <value>Pièce d’identité personnelle</value>
@@ -980,6 +992,9 @@
   </data>
   <data name="PhoneNr" xml:space="preserve">
     <value>Numéro de téléphone</value>
+  </data>
+  <data name="QrPageTitleScanPeerId" xml:space="preserve">
+    <value>ID de numérisation de l’homologue</value>
   </data>
   <data name="SendApplication" xml:space="preserve">
     <value>Envoyer la candidature</value>
