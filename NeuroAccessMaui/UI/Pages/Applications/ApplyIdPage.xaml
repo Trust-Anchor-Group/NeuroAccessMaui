@@ -149,7 +149,11 @@
 							</HorizontalStackLayout>
 							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=Region}" 
 															 BackgroundColor="{Binding RegionOk, Converter={converters:ControlBgColor}}"
-															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"/>
+															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
+								<controls:CompositeEntry.Behaviors>
+									<behaviors:HideKeyboardOnCompletedBehavior/>
+								</controls:CompositeEntry.Behaviors>
+							</controls:CompositeEntry>
 							<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding Path=Region, Converter={converters:HyphenIfEmpty}}"
 									 IsVisible="{Binding ApplicationSent}"/>
 						</VerticalStackLayout>

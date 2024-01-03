@@ -48,7 +48,6 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
 				this.IdentityApplicationSent = ServiceRef.TagProfile.IdentityApplication is not null;
-
 			});
 
 			return Task.CompletedTask;
