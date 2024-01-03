@@ -115,16 +115,11 @@
 			public static string? GetScheme(string Url)
 			{
 				if (string.IsNullOrWhiteSpace(Url))
-				{
 					return null;
-				}
 
 				int i = Url.IndexOf(':');
-
 				if (i < 0)
-				{
 					return null;
-				}
 
 				Url = Url[..i].ToLowerInvariant();
 
@@ -145,7 +140,7 @@
 			public static bool StartsWithIdScheme(string Url)
 			{
 				return !string.IsNullOrWhiteSpace(Url) &&
-					   Url.StartsWith(IotId + ":", StringComparison.InvariantCultureIgnoreCase);
+					Url.StartsWith(IotId + ":", StringComparison.InvariantCultureIgnoreCase);
 			}
 
 			/// <summary>
@@ -168,9 +163,7 @@
 				string? Scheme = GetScheme(Url);
 
 				if (string.IsNullOrEmpty(Scheme))
-				{
 					return null;
-				}
 
 				return Url[(Scheme.Length + 1)..];
 			}
