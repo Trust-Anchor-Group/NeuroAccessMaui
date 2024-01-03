@@ -35,6 +35,7 @@ namespace NeuroAccessMaui.Services.Tag
 		}
 
 		private LegalIdentity? legalIdentity;
+		private LegalIdentity? identityApplication;
 		private string? objectId;
 		private string? initialDomain;
 		private string? initialApiKey;
@@ -121,6 +122,7 @@ namespace NeuroAccessMaui.Services.Tag
 				Purpose = this.Purpose,
 				TestOtpTimestamp = this.TestOtpTimestamp,
 				LegalIdentity = this.LegalIdentity,
+				IdentityApplication = this.identityApplication,
 				Step = this.Step,
 				Theme = this.Theme,
 				AuthenticationMethod = this.AuthenticationMethod
@@ -163,6 +165,7 @@ namespace NeuroAccessMaui.Services.Tag
 				this.Purpose = configuration.Purpose;
 				this.TestOtpTimestamp = configuration.TestOtpTimestamp;
 				this.LegalIdentity = configuration.LegalIdentity;
+				this.identityApplication = configuration.IdentityApplication;
 				this.Theme = configuration.Theme;
 				this.AuthenticationMethod = configuration.AuthenticationMethod;
 
@@ -644,7 +647,7 @@ namespace NeuroAccessMaui.Services.Tag
 		}
 
 		/// <summary>
-		/// The legal identity of the curren user/profile.
+		/// The legal identity of the current user/profile.
 		/// </summary>
 		public LegalIdentity? LegalIdentity
 		{
@@ -655,6 +658,22 @@ namespace NeuroAccessMaui.Services.Tag
 				{
 					this.legalIdentity = value;
 					this.FlagAsDirty(nameof(this.LegalIdentity));
+				}
+			}
+		}
+
+		/// <summary>
+		/// Any current Identity application.
+		/// </summary>
+		public LegalIdentity? IdentityApplication
+		{
+			get => this.identityApplication;
+			set
+			{
+				if (!Equals(this.identityApplication, value))
+				{
+					this.identityApplication = value;
+					this.FlagAsDirty(nameof(this.IdentityApplication));
 				}
 			}
 		}
@@ -912,6 +931,7 @@ namespace NeuroAccessMaui.Services.Tag
 		public void ClearAll()
 		{
 			this.legalIdentity = null;
+			this.identityApplication = null;
 			this.domain = string.Empty;
 			this.apiKey = string.Empty;
 			this.apiSecret = string.Empty;

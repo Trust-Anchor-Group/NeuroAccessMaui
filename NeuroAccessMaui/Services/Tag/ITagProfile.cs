@@ -160,9 +160,14 @@ namespace NeuroAccessMaui.Services.Tag
 		DateTime? TestOtpTimestamp { get; set; }
 
 		/// <summary>
-		/// The legal identity of the curren user/profile.
+		/// The legal identity of the current user/profile.
 		/// </summary>
 		LegalIdentity? LegalIdentity { get; set; }
+
+		/// <summary>
+		/// Any current Identity application.
+		/// </summary>
+		LegalIdentity? IdentityApplication { get; set; }
 
 		/// <summary>
 		/// Currently selected theme.

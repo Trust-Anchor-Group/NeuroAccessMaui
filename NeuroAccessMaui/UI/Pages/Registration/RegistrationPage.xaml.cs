@@ -88,7 +88,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 				RegistrationStep.ChooseProvider => "ChooseProvider",
 				RegistrationStep.CreateAccount => "CreateAccount",
 				RegistrationStep.DefinePin => "DefinePin",
-				RegistrationStep.IdApplication => "IdApplication",
 				_ => throw new NotImplementedException(),
 			};
 

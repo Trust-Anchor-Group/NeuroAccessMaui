@@ -38,11 +38,6 @@
 		/// <summary>
 		/// Profile is completed.
 		/// </summary>
-		Complete = 6,
-
-		/// <summary>
-		/// Waiting for result of an ID Application
-		/// </summary>
-		IdApplication = 100
+		Complete = 6
 	}
 }

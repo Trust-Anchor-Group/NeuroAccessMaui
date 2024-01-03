@@ -1122,11 +1122,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// Adds a legal identity.
 		/// </summary>
 		/// <param name="Model">The model holding all the values needed.</param>
+		/// <param name="ObsoleteExistingIDsAndKeys">If existing keys and IDs are to be obsoleted.</param>
 		/// <param name="Attachments">The physical attachments to upload.</param>
 		/// <returns>Legal Identity</returns>
-		public async Task<LegalIdentity> AddLegalIdentity(RegisterIdentityModel Model, params LegalIdentityAttachment[] Attachments)
+		public async Task<LegalIdentity> AddLegalIdentity(RegisterIdentityModel Model, bool ObsoleteExistingIDsAndKeys,
+			params LegalIdentityAttachment[] Attachments)
 		{
-			await this.ContractsClient.GenerateNewKeys();
+			if (ObsoleteExistingIDsAndKeys)
+				await this.ContractsClient.GenerateNewKeys();
 
 			LegalIdentity Identity = await this.ContractsClient.ApplyAsync(Model.ToProperties(ServiceRef.XmppService));
 

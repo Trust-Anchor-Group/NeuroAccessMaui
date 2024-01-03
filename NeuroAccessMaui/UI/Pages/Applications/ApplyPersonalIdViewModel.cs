@@ -256,15 +256,11 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 
 			try
 			{
-				await GoToRegistrationSte(RegistrationStep.IdApplication);
-
 				(bool Succeeded, LegalIdentity? AddedIdentity) = await ServiceRef.NetworkService.TryRequest(() =>
-					ServiceRef.XmppService.AddLegalIdentity(this));
+					ServiceRef.XmppService.AddLegalIdentity(this, false));
 
 				if (Succeeded && AddedIdentity is not null)
-					ServiceRef.TagProfile.LegalIdentity = AddedIdentity;
-				else
-					await GoToRegistrationSte(RegistrationStep.ValidatePhone);
+					ServiceRef.TagProfile.IdentityApplication = AddedIdentity;
 			}
 			catch (Exception ex)
 			{

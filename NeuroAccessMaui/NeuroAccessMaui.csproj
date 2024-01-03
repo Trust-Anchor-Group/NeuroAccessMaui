@@ -193,9 +193,6 @@
 	  <Compile Update="UI\Pages\Main\Settings\SettingsPage.xaml.cs">
 	    <DependentUpon>SettingsPage.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="UI\Pages\Registration\Views\IdApplicationView.xaml.cs">
-	    <DependentUpon>IdApplicationView.xaml</DependentUpon>
-	  </Compile>
 	  <Compile Update="UI\Popups\Pin\BasePopup.xaml.cs">
 	    <DependentUpon>%(Filename)</DependentUpon>
 	  </Compile>
@@ -224,9 +221,6 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="UI\Pages\Main\Settings\SettingsPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Registration\Views\IdApplicationView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="UI\Popups\Pin\BasePopup.xaml">

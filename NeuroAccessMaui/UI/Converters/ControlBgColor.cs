@@ -20,9 +20,9 @@ namespace NeuroAccessMaui.UI.Converters
 		}
 
 		/// <summary>
-		/// Converts a contract state to a representative color.
+		/// Converts a control state to a representative color.
 		/// </summary>
-		/// <param name="State">Contract State</param>
+		/// <param name="Ok">If the control is OK</param>
 		/// <returns>Color</returns>
 		public static Color ToColor(bool Ok)
 		{

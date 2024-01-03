@@ -212,7 +212,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				LegalIdentityAttachment[] Photos = []; // Photos are left empty
 
 				(bool Succeeded, LegalIdentity? AddedIdentity) = await ServiceRef.NetworkService.TryRequest(() =>
-					ServiceRef.XmppService.AddLegalIdentity(IdentityModel, Photos));
+					ServiceRef.XmppService.AddLegalIdentity(IdentityModel, true, Photos));
 
 				if (Succeeded && AddedIdentity is not null)
 					ServiceRef.TagProfile.LegalIdentity = AddedIdentity;

@@ -150,6 +150,12 @@ namespace NeuroAccessMaui.Services
 		public LegalIdentity? LegalIdentity { get; set; }
 
 		/// <summary>
+		/// Any current Identity application.
+		/// </summary>
+		[DefaultValueNull]
+		public LegalIdentity? IdentityApplication { get; set; }
+
+		/// <summary>
 		/// Current step in the registration process.
 		/// </summary>
 		[DefaultValue(RegistrationStep.RequestPurpose)]
