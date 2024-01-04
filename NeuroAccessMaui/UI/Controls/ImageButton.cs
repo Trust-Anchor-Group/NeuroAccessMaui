@@ -63,7 +63,7 @@ namespace NeuroAccessMaui.UI.Controls
 
 			this.innerBorder = new()
 			{
-				StrokeThickness = 1,
+				StrokeThickness = 2,
 				Content = this.innerPath
 			};
 

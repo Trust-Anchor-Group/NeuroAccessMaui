@@ -5,25 +5,60 @@
 						  xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 						  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
 
-	<Style x:Key="GlyphImageButtonBorderStyle" ApplyToDerivedTypes="False" TargetType="Border">
+	<Style x:Key="ImageOnlyButtonBorderStyle" ApplyToDerivedTypes="False" TargetType="Border">
 		<Setter Property="BackgroundColor" Value="Transparent" />
 		<Setter Property="Padding">
 			<Thickness Right="{StaticResource MediumSpacing}" Bottom="{StaticResource MediumSpacing}" />
 		</Setter>
 	</Style>
 
-	<Style x:Key="GlyphImageButtonPathStyle" ApplyToDerivedTypes="False" TargetType="Path">
+	<Style x:Key="ImageOnlyButtonPathStyle" ApplyToDerivedTypes="False" TargetType="Path">
 		<Setter Property="WidthRequest" Value="24" />
 		<Setter Property="HeightRequest" Value="24" />
 		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
 	</Style>
 
-	<Style x:Key="GlyphImageButtonStyle" ApplyToDerivedTypes="False" TargetType="controls:ImageButton">
+	<Style x:Key="ImageOnlyButtonStyle" ApplyToDerivedTypes="False" TargetType="controls:ImageButton">
 		<Setter Property="HorizontalOptions" Value="Start" />
 		<Setter Property="VerticalOptions" Value="Start" />
-		<Setter Property="BorderStyle" Value="{StaticResource GlyphImageButtonBorderStyle}" />
-		<Setter Property="PathStyle" Value="{StaticResource GlyphImageButtonPathStyle}" />
+		<Setter Property="BorderStyle" Value="{StaticResource ImageOnlyButtonBorderStyle}" />
+		<Setter Property="PathStyle" Value="{StaticResource ImageOnlyButtonPathStyle}" />
 		<Setter Property="PathData" Value="{x:Static ui:Geometries.BackButtonPath}" />
+	</Style>
+
+	<Style x:Key="TransparentImageButtonBorderStyle" ApplyToDerivedTypes="False" TargetType="Border">
+		<Setter Property="BackgroundColor" Value="#33F5F6F7" />
+		<Setter Property="Padding" Value="{StaticResource MediumMargins}" />
+		<Setter Property="StrokeShape">
+			<RoundRectangle CornerRadius="{StaticResource MediumCornerRadius}" />
+		</Setter>
+	</Style>
+
+	<Style x:Key="TransparentImageButtonPathStyle" ApplyToDerivedTypes="False" TargetType="Path">
+		<Setter Property="Fill" Value="{StaticResource PrimaryBackgroundLight}" />
+	</Style>
+
+	<Style x:Key="TransparentImageButtonStyle" ApplyToDerivedTypes="False" TargetType="controls:ImageButton">
+		<Setter Property="BorderStyle" Value="{StaticResource TransparentImageButtonBorderStyle}" />
+		<Setter Property="PathStyle" Value="{StaticResource TransparentImageButtonPathStyle}" />
+	</Style>
+
+	<Style x:Key="TransparentTextButtonBorderStyle" ApplyToDerivedTypes="False" TargetType="Border">
+		<Setter Property="BackgroundColor" Value="#33F5F6F7" />
+		<Setter Property="Padding" Value="{StaticResource ButtonMediumMargins}" />
+		<Setter Property="StrokeShape">
+			<RoundRectangle CornerRadius="{StaticResource SmallCornerRadius}" />
+		</Setter>
+	</Style>
+
+	<Style x:Key="TransparentTextButtonLabelStyle" ApplyToDerivedTypes="False" TargetType="Label">
+		<Setter Property="TextColor" Value="{StaticResource PrimaryBackgroundLight}" />
+		<Setter Property="Style" Value="{StaticResource BoldItemTitleLabelStyle}" />
+	</Style>
+
+	<Style x:Key="TransparentTextButtonStyle" ApplyToDerivedTypes="False" TargetType="controls:TextButton">
+		<Setter Property="BorderStyle" Value="{StaticResource TransparentTextButtonBorderStyle}" />
+		<Setter Property="LabelStyle" Value="{StaticResource TransparentTextButtonLabelStyle}" />
 	</Style>
 
 	<Style x:Key="FilledTextButtonBorderStyle" ApplyToDerivedTypes="False" TargetType="Border">
@@ -156,6 +191,23 @@
 	<Style x:Key="OutlinedTextButtonStyleNoRoundedCorners" ApplyToDerivedTypes="False" TargetType="controls:TextButton">
 		<Setter Property="BorderStyle" Value="{StaticResource OutlinedTextButtonBorderStyleNoRoundedCorners}" />
 		<Setter Property="LabelStyle" Value="{StaticResource OutlinedTextButtonLabelStyle}" />
+	</Style>
+
+	<Style x:Key="OutlinedImageButtonBorderStyle" ApplyToDerivedTypes="False" TargetType="Border">
+		<Setter Property="BackgroundColor" Value="Transparent" />
+		<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource EnabledOutlinedButtonForegroundLight}, Dark={StaticResource EnabledOutlinedButtonForegroundDark}}" />
+		<Setter Property="StrokeThickness" Value="{StaticResource MediumStrokeThickness}" />
+		<Setter Property="Padding" Value="{StaticResource MediumMargins}" />
+		<Setter Property="Padding" Value="{StaticResource MediumMargins}" />
+	</Style>
+
+	<Style x:Key="OutlinedImageButtonPathStyle" ApplyToDerivedTypes="False" TargetType="Path">
+		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource EnabledOutlinedButtonForegroundLight}, Dark={StaticResource EnabledOutlinedButtonForegroundDark}}" />
+	</Style>
+
+	<Style x:Key="OutlinedImageButtonStyle" ApplyToDerivedTypes="False" TargetType="controls:ImageButton">
+		<Setter Property="BorderStyle" Value="{StaticResource OutlinedImageButtonBorderStyle}" />
+		<Setter Property="PathStyle" Value="{StaticResource OutlinedImageButtonPathStyle}" />
 	</Style>
 
 </ResourceDictionary>
