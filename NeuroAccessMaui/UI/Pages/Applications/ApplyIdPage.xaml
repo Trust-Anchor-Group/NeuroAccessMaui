@@ -168,6 +168,149 @@
 					</VerticalStackLayout>
 				</Frame>
 
+				<!-- Organizational Information -->
+				<Frame Style="{StaticResource FrameSet}" IsVisible="{Binding Organizational}">
+					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+						<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize OrganizationalInformation}"/>
+						<Label Style="{StaticResource InfoLabelStyle}" Text="{l:Localize OrganizationalInformationDescription}"
+								 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"/>
+						<Label Style="{StaticResource InfoLabelStyle}" Text="{l:Localize OrganizationalInformationSentDescription}"
+								 IsVisible="{Binding ApplicationSent}"/>
+
+						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+							<HorizontalStackLayout>
+								<Label Text="{l:Localize OrgName}" HorizontalOptions="FillAndExpand"/>
+								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresOrgName}"/>
+							</HorizontalStackLayout>
+							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=OrgName}"
+															 BackgroundColor="{Binding OrgNameOk, Converter={converters:ControlBgColor}}"
+															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"/>
+							<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding Path=OrgName, Converter={converters:HyphenIfEmpty}}"
+									 IsVisible="{Binding ApplicationSent}"/>
+						</VerticalStackLayout>
+
+						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+							<HorizontalStackLayout>
+								<Label Text="{l:Localize OrgDepartment}" HorizontalOptions="FillAndExpand"/>
+								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresOrgDepartment}"/>
+							</HorizontalStackLayout>
+							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=OrgDepartment}" 
+															 BackgroundColor="{Binding OrgDepartmentOk, Converter={converters:ControlBgColor}}"
+															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"/>
+							<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding Path=OrgDepartment, Converter={converters:HyphenIfEmpty}}"
+									 IsVisible="{Binding ApplicationSent}"/>
+						</VerticalStackLayout>
+
+						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+							<HorizontalStackLayout>
+								<Label Text="{l:Localize OrgRole}" HorizontalOptions="FillAndExpand"/>
+								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresOrgRole}"/>
+							</HorizontalStackLayout>
+							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=OrgRole}" 
+															 BackgroundColor="{Binding OrgRoleOk, Converter={converters:ControlBgColor}}"
+															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"/>
+							<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding Path=OrgRole, Converter={converters:HyphenIfEmpty}}"
+									 IsVisible="{Binding ApplicationSent}"/>
+						</VerticalStackLayout>
+
+						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+							<HorizontalStackLayout>
+								<Label Text="{l:Localize OrgNumber}" HorizontalOptions="FillAndExpand"/>
+								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresOrgNumber}"/>
+							</HorizontalStackLayout>
+							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=OrgNumber}" 
+															 BackgroundColor="{Binding OrgNumberOk, Converter={converters:ControlBgColor}}"
+															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"/>
+							<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding Path=OrgNumber, Converter={converters:HyphenIfEmpty}}"
+									 IsVisible="{Binding ApplicationSent}"/>
+						</VerticalStackLayout>
+
+						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+							<HorizontalStackLayout>
+								<Label Text="{l:Localize OrgAddress}" HorizontalOptions="FillAndExpand"/>
+								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresOrgAddress}"/>
+							</HorizontalStackLayout>
+							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=OrgAddress}" 
+															 BackgroundColor="{Binding OrgAddressOk, Converter={converters:ControlBgColor}}"
+															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"/>
+							<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding Path=OrgAddress, Converter={converters:HyphenIfEmpty}}"
+									 IsVisible="{Binding ApplicationSent}"/>
+						</VerticalStackLayout>
+
+						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+							<HorizontalStackLayout>
+								<Label Text="{l:Localize OrgAddress2}" HorizontalOptions="FillAndExpand"/>
+								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresOrgAddress2}"/>
+							</HorizontalStackLayout>
+							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=OrgAddress2}" 
+															 BackgroundColor="{Binding OrgAddress2Ok, Converter={converters:ControlBgColor}}"
+															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"/>
+							<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding Path=OrgAddress2, Converter={converters:HyphenIfEmpty}}"
+									 IsVisible="{Binding ApplicationSent}"/>
+						</VerticalStackLayout>
+
+						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+							<HorizontalStackLayout>
+								<Label Text="{l:Localize OrgZipCode}" HorizontalOptions="FillAndExpand"/>
+								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresOrgZipCode}"/>
+							</HorizontalStackLayout>
+							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=OrgZipCode}" 
+															 BackgroundColor="{Binding OrgZipCodeOk, Converter={converters:ControlBgColor}}"
+															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"/>
+							<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding Path=OrgZipCode, Converter={converters:HyphenIfEmpty}}"
+									 IsVisible="{Binding ApplicationSent}"/>
+						</VerticalStackLayout>
+
+						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+							<HorizontalStackLayout>
+								<Label Text="{l:Localize OrgArea}" HorizontalOptions="FillAndExpand"/>
+								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresOrgArea}"/>
+							</HorizontalStackLayout>
+							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=OrgArea}" 
+															 BackgroundColor="{Binding OrgAreaOk, Converter={converters:ControlBgColor}}"
+															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"/>
+							<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding Path=OrgArea, Converter={converters:HyphenIfEmpty}}"
+									 IsVisible="{Binding ApplicationSent}"/>
+						</VerticalStackLayout>
+
+						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+							<HorizontalStackLayout>
+								<Label Text="{l:Localize OrgCity}" HorizontalOptions="FillAndExpand"/>
+								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresOrgCity}"/>
+							</HorizontalStackLayout>
+							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=OrgCity}" 
+															 BackgroundColor="{Binding OrgCityOk, Converter={converters:ControlBgColor}}"
+															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"/>
+							<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding Path=OrgCity, Converter={converters:HyphenIfEmpty}}"
+									 IsVisible="{Binding ApplicationSent}"/>
+						</VerticalStackLayout>
+
+						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+							<HorizontalStackLayout>
+								<Label Text="{l:Localize OrgRegion}" HorizontalOptions="FillAndExpand"/>
+								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresOrgRegion}"/>
+							</HorizontalStackLayout>
+							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=OrgRegion}" 
+															 BackgroundColor="{Binding OrgRegionOk, Converter={converters:ControlBgColor}}"
+															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
+								<controls:CompositeEntry.Behaviors>
+									<behaviors:HideKeyboardOnCompletedBehavior/>
+								</controls:CompositeEntry.Behaviors>
+							</controls:CompositeEntry>
+							<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding Path=OrgRegion, Converter={converters:HyphenIfEmpty}}"
+									 IsVisible="{Binding ApplicationSent}"/>
+						</VerticalStackLayout>
+
+						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+							<HorizontalStackLayout>
+								<Label Text="{l:Localize OrgCountry}" HorizontalOptions="FillAndExpand"/>
+								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresOrgCountry}"/>
+							</HorizontalStackLayout>
+							<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding Path=OrgCountryName, Converter={converters:HyphenIfEmpty}}"/>
+						</VerticalStackLayout>
+					</VerticalStackLayout>
+				</Frame>
+
 				<!-- Contact Information -->
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">

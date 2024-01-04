@@ -44,7 +44,15 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 			}
 
 			if (IdentityReference is not null)
+			{
 				this.SetProperties(IdentityReference.Properties, true);
+
+				if (string.IsNullOrEmpty(this.OrgCountryCode))
+				{
+					this.OrgCountryCode = this.CountryCode;
+					this.OrgCountryName = this.CountryName;
+				}
+			}
 
 			ApplyIdNavigationArgs? Args = ServiceRef.NavigationService.PopLatestArgs<ApplyIdNavigationArgs>();
 
@@ -58,6 +66,11 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 				this.Organizational = IdentityReference.IsOrganizational();
 				this.Personal = !this.Organizational;
 			}
+
+			this.RequiresOrgName = this.Organizational;
+			this.RequiresOrgDepartment = this.Organizational;
+			this.RequiresOrgRole = this.Organizational;
+			this.RequiresOrgNumber = this.Organizational;
 
 			ServiceRef.XmppService.IdentityApplicationChanged += this.XmppService_IdentityApplicationChanged;
 
@@ -187,6 +200,13 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 						this.RequiresCity = RequiresCity;
 						this.RequiresRegion = RequiresRegion;
 						this.RequiresCountry = RequiresCountry;
+						this.RequiresOrgAddress = this.Organizational && RequiresAddress;
+						this.RequiresOrgAddress2 = this.Organizational && RequiresAddress2;
+						this.RequiresOrgZipCode = this.Organizational && RequiresZipCode;
+						this.RequiresOrgArea = this.Organizational && RequiresArea;
+						this.RequiresOrgCity = this.Organizational && RequiresCity;
+						this.RequiresOrgRegion = this.Organizational && RequiresRegion;
+						this.RequiresOrgCountry = this.Organizational && RequiresCountry;
 						this.HasApplicationAttributes = true;
 					});
 				}
@@ -279,41 +299,41 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 					//if (this.NrPhotos > 0)
 					//	return false;     // TODO
 
-					if (!this.FirstNameOk)
+					if (!this.FirstNameOk ||
+						!this.MiddleNamesOk ||
+						!this.LastNamesOk ||
+						!this.PersonalNumberOk ||
+						!this.AddressOk ||
+						!this.Address2Ok ||
+						!this.ZipCodeOk ||
+						!this.AreaOk ||
+						!this.CityOk ||
+						!this.RegionOk ||
+						!this.CountryOk)
+					{
 						return false;
-
-					if (!this.MiddleNamesOk)
-						return false;
-
-					if (!this.LastNamesOk)
-						return false;
-
-					if (!this.PersonalNumberOk)
-						return false;
-
-					if (!this.AddressOk)
-						return false;
-
-					if (!this.Address2Ok)
-						return false;
-
-					if (!this.ZipCodeOk)
-						return false;
-
-					if (!this.AreaOk)
-						return false;
-
-					if (!this.CityOk)
-						return false;
-
-					if (!this.RegionOk)
-						return false;
-
-					if (!this.CountryOk)
-						return false;
+					}
 
 					if (this.RequiresCountryIso3166 && !ISO_3166_1.TryGetCountryByCode(this.CountryCode, out _))
 						return false;
+
+					if (this.Organizational)
+					{
+						if (!this.OrgNameOk ||
+							!this.OrgDepartmentOk ||
+							!this.OrgRoleOk ||
+							!this.OrgNumberOk ||
+							!this.OrgAddressOk ||
+							!this.OrgAddress2Ok ||
+							!this.OrgZipCodeOk ||
+							!this.OrgAreaOk ||
+							!this.OrgCityOk ||
+							!this.OrgRegionOk ||
+							!this.OrgCountryOk)
+						{
+							return false;
+						}
+					}
 				}
 
 				return true;

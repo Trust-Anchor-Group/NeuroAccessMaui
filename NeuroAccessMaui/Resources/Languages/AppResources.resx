@@ -981,6 +981,12 @@
   <data name="OrganizationalIdDescription" xml:space="preserve">
     <value>Apply for a new digital Organizational ID. The ID will contain your personal information, the associated organizational information and your role in the organization. It can be used to to validate your personal identity, and your role in the organization, as well as gain access to services requiring a verified organizational identity.</value>
   </data>
+  <data name="OrganizationalInformationDescription" xml:space="preserve">
+    <value>The following organizational information will be included in the application for an Organizational ID.</value>
+  </data>
+  <data name="OrganizationalInformationSentDescription" xml:space="preserve">
+    <value>The following organizational information has been included in the application for an Organizational ID.</value>
+  </data>
   <data name="PeerReviewDescription" xml:space="preserve">
     <value>Peer reviews are enabled, allowing you to request peers (people with already approved digital IDs) to review your application and collaboratively approve it. If you wish to request peers to review your application, scan the QR-codes of their identities to request them to review your application. You can also request a review from any featured peer reviewers available on your service provider.</value>
   </data>

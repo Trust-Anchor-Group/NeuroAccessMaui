@@ -165,6 +165,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		/// </summary>
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(OrgNameOk))]
 		private string? orgName;
 
 		/// <summary>
@@ -172,6 +173,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		/// </summary>
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(OrgNumberOk))]
 		private string? orgNumber;
 
 		/// <summary>
@@ -179,6 +181,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		/// </summary>
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(OrgAddressOk))]
 		private string? orgAddress;
 
 		/// <summary>
@@ -186,6 +189,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		/// </summary>
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(OrgAddress2Ok))]
 		private string? orgAddress2;
 
 		/// <summary>
@@ -193,6 +197,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		/// </summary>
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(OrgZipCodeOk))]
 		private string? orgZipCode;
 
 		/// <summary>
@@ -200,6 +205,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		/// </summary>
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(OrgAreaOk))]
 		private string? orgArea;
 
 		/// <summary>
@@ -207,6 +213,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		/// </summary>
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(OrgCityOk))]
 		private string? orgCity;
 
 		/// <summary>
@@ -214,6 +221,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		/// </summary>
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(OrgRegionOk))]
 		private string? orgRegion;
 
 		/// <summary>
@@ -228,6 +236,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		/// </summary>
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(OrgCountryOk))]
 		private string? orgCountryName;
 
 		/// <summary>
@@ -235,6 +244,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		/// </summary>
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(OrgDepartmentOk))]
 		private string? orgDepartment;
 
 		/// <summary>
@@ -242,6 +252,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		/// </summary>
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(OrgRoleOk))]
 		private string? orgRole;
 
 		/// <summary>
@@ -368,6 +379,95 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		[NotifyPropertyChangedFor(nameof(CountryOk))]
 		private bool requiresCountryIso3166;
 
+
+		/// <summary>
+		/// If organization name is required.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(OrgNameOk))]
+		private bool requiresOrgName;
+
+		/// <summary>
+		/// If organization department is required.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(OrgDepartmentOk))]
+		private bool requiresOrgDepartment;
+
+		/// <summary>
+		/// If organization role is required.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(OrgRoleOk))]
+		private bool requiresOrgRole;
+
+		/// <summary>
+		/// If organization number is required.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(OrgNumberOk))]
+		private bool requiresOrgNumber;
+
+		/// <summary>
+		/// If organization address is required.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(OrgAddressOk))]
+		private bool requiresOrgAddress;
+
+		/// <summary>
+		/// If organization address (2nd row) is required.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(OrgAddress2Ok))]
+		private bool requiresOrgAddress2;
+
+		/// <summary>
+		/// If organization ZIP code is required.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(OrgZipCodeOk))]
+		private bool requiresOrgZipCode;
+
+		/// <summary>
+		/// If organization Area is required.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(OrgAreaOk))]
+		private bool requiresOrgArea;
+
+		/// <summary>
+		/// If organization City is required.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(OrgCityOk))]
+		private bool requiresOrgCity;
+
+		/// <summary>
+		/// If organization region is required.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(OrgRegionOk))]
+		private bool requiresOrgRegion;
+
+		/// <summary>
+		/// If organization Country is required.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(OrgCountryOk))]
+		private bool requiresOrgCountry;
+
 		/// <summary>
 		/// If <see cref="FirstName"/> is OK.
 		/// </summary>
@@ -443,6 +543,73 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 					return !this.RequiresCountry;
 
 				if (this.RequiresCountryIso3166 && !ISO_3166_1.TryGetCountryByCode(this.CountryCode, out _))
+					return false;
+
+				return true;
+			}
+		}
+
+		/// <summary>
+		/// If <see cref="OrgName"/> is OK.
+		/// </summary>
+		public bool OrgNameOk => !this.RequiresOrgName || !string.IsNullOrWhiteSpace(this.OrgName);
+
+		/// <summary>
+		/// If <see cref="OrgDepartment"/> is OK.
+		/// </summary>
+		public bool OrgDepartmentOk => !this.RequiresOrgDepartment || !string.IsNullOrWhiteSpace(this.OrgDepartment);
+
+		/// <summary>
+		/// If <see cref="OrgRole"/> is OK.
+		/// </summary>
+		public bool OrgRoleOk => !this.RequiresOrgRole || !string.IsNullOrWhiteSpace(this.OrgRole);
+
+		/// <summary>
+		/// If <see cref="OrgNumber"/> is OK.
+		/// </summary>
+		public bool OrgNumberOk => !this.RequiresOrgNumber || !string.IsNullOrEmpty(this.OrgNumber);
+
+		/// <summary>
+		/// If <see cref="OrgAddress"/> is OK.
+		/// </summary>
+		public bool OrgAddressOk => !this.RequiresOrgAddress || !string.IsNullOrWhiteSpace(this.OrgAddress);
+
+		/// <summary>
+		/// If <see cref="OrgAddress2"/> is OK.
+		/// </summary>
+		public bool OrgAddress2Ok => !this.RequiresOrgAddress2 || !string.IsNullOrWhiteSpace(this.OrgAddress2);
+
+		/// <summary>
+		/// If <see cref="OrgZipCode"/> is OK.
+		/// </summary>
+		public bool OrgZipCodeOk => !this.RequiresOrgZipCode || !string.IsNullOrWhiteSpace(this.OrgZipCode);
+
+		/// <summary>
+		/// If <see cref="OrgArea"/> is OK.
+		/// </summary>
+		public bool OrgAreaOk => !this.RequiresOrgArea || !string.IsNullOrWhiteSpace(this.OrgArea);
+
+		/// <summary>
+		/// If <see cref="OrgCity"/> is OK.
+		/// </summary>
+		public bool OrgCityOk => !this.RequiresOrgCity || !string.IsNullOrWhiteSpace(this.OrgCity);
+
+		/// <summary>
+		/// If <see cref="OrgRegion"/> is OK.
+		/// </summary>
+		public bool OrgRegionOk => !this.RequiresOrgRegion || !string.IsNullOrWhiteSpace(this.OrgRegion);
+
+		/// <summary>
+		/// If <see cref="OrgCountryCode"/> is OK.
+		/// </summary>
+		public bool OrgCountryOk
+		{
+			get
+			{
+				if (string.IsNullOrWhiteSpace(this.OrgCountryCode))
+					return !this.RequiresOrgCountry;
+
+				if (this.RequiresCountryIso3166 && !ISO_3166_1.TryGetCountryByCode(this.OrgCountryCode, out _))
 					return false;
 
 				return true;

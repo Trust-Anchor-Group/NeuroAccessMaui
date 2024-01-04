@@ -1402,6 +1402,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The following organizational information will be included in the application for an Organizational ID..
+        /// </summary>
+        internal static string OrganizationalInformationDescription {
+            get {
+                return ResourceManager.GetString("OrganizationalInformationDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The following organizational information has been included in the application for an Organizational ID..
+        /// </summary>
+        internal static string OrganizationalInformationSentDescription {
+            get {
+                return ResourceManager.GetString("OrganizationalInformationSentDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Organization Information.
         /// </summary>
         internal static string OrganizationInformation {
