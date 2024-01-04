@@ -30,26 +30,23 @@
 					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
 						<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize Photos}"/>
 						<Label Style="{StaticResource InfoLabelStyle}" Text="{l:Localize PhotosDescription}"
-							 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"/>
+								 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"/>
 						<Label Style="{StaticResource InfoLabelStyle}" Text="{l:Localize PhotosSentDescription}"
-							 IsVisible="{Binding ApplicationSent}"/>
-
+								 IsVisible="{Binding ApplicationSent}"/>
 						<Grid RowDefinitions="auto,auto,auto" ColumnDefinitions="*,auto,auto,*">
 							<Image Source="{Binding Image}" Grid.Column="1" Grid.Row="0" Grid.RowSpan="3" IsVisible="{Binding HasPhoto}"/>
 							<Image Source="{AppThemeBinding Light=neuro_access_light.svg, Dark=neuro_access_dark.svg}" Grid.Column="1" Grid.Row="0"
 									 Grid.RowSpan="3" IsVisible="{Binding HasPhoto, Converter={StaticResource InverseBoolConverter}}"/>
 
 							<controls:ImageButton Grid.Column="2" Grid.Row="0" Command="{Binding RemovePhotoCommand}"
-														 Style="{StaticResource CameraImageButtonStyle}" IsVisible="{Binding Path=HasPhoto}"
+														 Style="{StaticResource GlyphImageButtonStyle}" IsVisible="{Binding Path=HasPhoto}"
 														 PathData="{x:Static ui:Geometries.TrashCanButtonPath}" />
 
 							<controls:ImageButton Grid.Column="2" Grid.Row="1" Command="{Binding TakePhotoCommand}"
-														 Style="{StaticResource CameraImageButtonStyle}"
-														 PathData="{x:Static ui:Geometries.CameraPhotoButtonPath}" />
+														 Style="{StaticResource GlyphImageButtonStyle}" PathData="{x:Static ui:Geometries.CameraPhotoButtonPath}" />
 
 							<controls:ImageButton Grid.Column="2" Grid.Row="2" Command="{Binding PickPhotoCommand}"
-														 Style="{StaticResource CameraImageButtonStyle}"
-														 PathData="{x:Static ui:Geometries.CameraImageButtonPath}" />
+														 Style="{StaticResource GlyphImageButtonStyle}" PathData="{x:Static ui:Geometries.CameraImageButtonPath}" />
 
 						</Grid>
 					</VerticalStackLayout>
