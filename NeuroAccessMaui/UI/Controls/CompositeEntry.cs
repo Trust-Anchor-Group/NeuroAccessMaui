@@ -241,7 +241,9 @@ namespace NeuroAccessMaui.UI.Controls
 			};
 
 			this.innerGrid.Add(this.innerPath, 0, 0);
-			this.innerGrid.Add(this.innerEntry, 1, 0);
+
+			if (this.PathData is not null)
+				this.innerGrid.Add(this.innerEntry, 1, 0);
 
 			this.innerBorder = new()
 			{
