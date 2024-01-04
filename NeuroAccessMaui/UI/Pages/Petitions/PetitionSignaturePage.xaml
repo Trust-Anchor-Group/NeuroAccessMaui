@@ -100,7 +100,7 @@
 						</Grid.RowDefinitions>
 
 						<controls:ImageButton Grid.Row="0" Grid.Column="0" HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-													 Style="{StaticResource BackImageButtonStyle}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+													 Style="{StaticResource GlyphImageButtonStyle}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
 						<!--    -->
 						<Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"

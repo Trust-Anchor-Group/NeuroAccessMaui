@@ -29,7 +29,7 @@
 			<controls:ImageButton
 				IsVisible="{Binding CanGoToPrev}"
 				Command="{Binding GoToPrevCommand}"
-				Style="{StaticResource BackImageButtonStyle}" />
+				Style="{StaticResource GlyphImageButtonStyle}" />
 
 			<controls:TemplatedButton x:Name="LanguageButton"
 				VerticalOptions="Start"

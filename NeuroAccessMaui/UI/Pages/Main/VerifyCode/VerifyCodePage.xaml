@@ -87,7 +87,7 @@
 
 			<controls:ImageButton
 				Command="{Binding GoBackCommand}"
-				Style="{StaticResource BackImageButtonStyle}" />
+				Style="{StaticResource GlyphImageButtonStyle}" />
 		</Grid>
 
 

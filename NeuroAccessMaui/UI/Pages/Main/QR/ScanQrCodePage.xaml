@@ -107,7 +107,7 @@
 					<Grid.Padding>
 						<Thickness Left="{StaticResource LargeSpacing}" Top="{StaticResource LargeSpacing}" Right="{StaticResource LargeSpacing}" />
 					</Grid.Padding>
-					<controls:ImageButton Command="{Binding GoBackCommand}" Style="{StaticResource BackImageButtonStyle}" />
+					<controls:ImageButton Command="{Binding GoBackCommand}" Style="{StaticResource GlyphImageButtonStyle}" />
 				</Grid>
 
 				<ScrollView Grid.Row="1">
