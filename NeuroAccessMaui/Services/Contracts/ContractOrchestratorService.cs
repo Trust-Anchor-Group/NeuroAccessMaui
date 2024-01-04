@@ -20,9 +20,9 @@ namespace NeuroAccessMaui.Services.Contracts
 		{
 		}
 
-		public override Task Load(bool isResuming, CancellationToken cancellationToken)
+		public override Task Load(bool IsResuming, CancellationToken CancellationToken)
 		{
-			if (this.BeginLoad(cancellationToken))
+			if (this.BeginLoad(IsResuming, CancellationToken))
 			{
 				ServiceRef.XmppService.ConnectionStateChanged += this.Contracts_ConnectionStateChanged;
 				ServiceRef.XmppService.PetitionForPeerReviewIdReceived += this.Contracts_PetitionForPeerReviewIdReceived;

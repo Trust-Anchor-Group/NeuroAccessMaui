@@ -284,9 +284,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 			return i >= 0;
 		}
 
-		public override async Task Load(bool isResuming, CancellationToken cancellationToken)
+		public override async Task Load(bool IsResuming, CancellationToken CancellationToken)
 		{
-			if (this.BeginLoad(cancellationToken))
+			if (this.BeginLoad(IsResuming, CancellationToken))
 			{
 				try
 				{
@@ -1338,6 +1338,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 						this.LegalIdentityChanged?.Invoke(this, e);
 						this.IdentityApplicationChanged?.Invoke(this, e);
+
+						if (ToObsolete is not null && !ToObsolete.IsDiscarded())
+							await this.ObsoleteLegalIdentity(ToObsolete.Id);
 					}
 					else
 					{

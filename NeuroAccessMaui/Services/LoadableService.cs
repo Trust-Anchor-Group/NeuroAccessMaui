@@ -21,10 +21,17 @@
 		public bool IsUnloading { get; protected set; }
 
 		/// <summary>
+		/// If App is resuming service.
+		/// </summary>
+		public bool IsResuming { get; protected set; }
+
+		/// <summary>
 		/// Sets the <see cref="IsLoading"/> flag if the service isn't already loading.
 		/// </summary>
+		/// <param name="IsResuming">If App is resuming service.</param>
+		/// <param name="CancellationToken">Cancellation token.</param>
 		/// <returns><c>true</c> if the service will load, <c>false</c> otherwise.</returns>
-		protected bool BeginLoad(CancellationToken cancellationToken)
+		protected bool BeginLoad(bool IsResuming, CancellationToken CancellationToken)
 		{
 			//this.worker.Wait();
 
@@ -35,8 +42,9 @@
 			}
 
 			this.IsLoading = true;
+			this.IsResuming = IsResuming;
 
-			cancellationToken.ThrowIfCancellationRequested();
+			CancellationToken.ThrowIfCancellationRequested();
 
 			return true;
 		}
@@ -53,7 +61,7 @@
 
 			//this.worker.Release();
 
-			this.OnLoaded(new LoadedEventArgs(this.IsLoaded));
+			this.OnLoaded(new LoadedEventArgs(this.IsLoaded, this.IsResuming));
 		}
 
 		/// <summary>
@@ -86,7 +94,7 @@
 
 			//this.worker.Release();
 
-			this.OnLoaded(new LoadedEventArgs(this.IsLoaded));
+			this.OnLoaded(new LoadedEventArgs(this.IsLoaded, this.IsResuming));
 		}
 
 		/// <inheritdoc/>
@@ -109,7 +117,7 @@
 			add
 			{
 				PrivLoaded += value;
-				value(this, new LoadedEventArgs(this.IsLoaded));
+				value(this, new LoadedEventArgs(this.IsLoaded, this.IsResuming));
 			}
 			remove
 			{

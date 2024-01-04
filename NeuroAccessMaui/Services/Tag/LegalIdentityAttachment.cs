@@ -1,6 +1,6 @@
 ﻿using Waher.Networking.XMPP.Contracts;
 
-// !!! keep the namespace as is. It's impotant for the database
+// !!! keep the namespace as is. It's important for the database
 namespace NeuroAccessMaui.Services
 {
 	/// <summary>

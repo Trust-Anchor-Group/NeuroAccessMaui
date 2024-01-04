@@ -612,10 +612,7 @@ namespace NeuroAccessMaui
 		/// </summary>
 		public static Task SetRegistrationPageAsync()
 		{
-			return MainThread.InvokeOnMainThreadAsync(() =>
-			{
-				Shell.Current.GoToAsync(Constants.Pages.RegistrationPage);
-			});
+			return SetPage(Constants.Pages.RegistrationPage);
 		}
 
 		/// <summary>
@@ -623,9 +620,21 @@ namespace NeuroAccessMaui
 		/// </summary>
 		public static Task SetMainPageAsync()
 		{
+			return SetPage(Constants.Pages.MainPage);
+		}
+
+		/// <summary>
+		/// Sets the current page, if not already shown.
+		/// </summary>
+		/// <param name="PagePath">Path to current page.</param>
+		public static Task SetPage(string PagePath)
+		{
+			if (Shell.Current.CurrentState.Location?.OriginalString == PagePath)
+				return Task.CompletedTask;
+
 			return MainThread.InvokeOnMainThreadAsync(() =>
 			{
-				return Shell.Current.GoToAsync(Constants.Pages.MainPage);
+				return Shell.Current.GoToAsync(PagePath);
 			});
 		}
 
@@ -934,10 +943,10 @@ namespace NeuroAccessMaui
 						return false;
 
 					if (await ServiceRef.PlatformSpecific.AuthenticateUserFingerprint(
-						ServiceRef.Localizer["FingerprintTitle"],
+						ServiceRef.Localizer[nameof(AppResources.FingerprintTitle)],
 						null,
-						ServiceRef.Localizer["FingerprintDescription"],
-						ServiceRef.Localizer["Cancel"],
+						ServiceRef.Localizer[nameof(AppResources.FingerprintDescription)],
+						ServiceRef.Localizer[nameof(AppResources.Cancel)],
 						null))
 					{
 						await UserAuthenticationSuccessful();

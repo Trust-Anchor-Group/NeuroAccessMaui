@@ -21,9 +21,9 @@ namespace NeuroAccessMaui.Services.Navigation
 		public Page CurrentPage => Shell.Current.CurrentPage;
 
 		/// <inheritdoc/>
-		public override Task Load(bool isResuming, CancellationToken cancellationToken)
+		public override Task Load(bool IsResuming, CancellationToken CancellationToken)
 		{
-			if (this.BeginLoad(cancellationToken))
+			if (this.BeginLoad(IsResuming, CancellationToken))
 			{
 				try
 				{

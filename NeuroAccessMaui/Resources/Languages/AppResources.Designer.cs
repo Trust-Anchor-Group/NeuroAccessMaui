@@ -781,6 +781,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to load photo.
+        /// </summary>
+        internal static string FailedToLoadPhoto {
+            get {
+                return ResourceManager.GetString("FailedToLoadPhoto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to navigate to page {0}  {1}.
         /// </summary>
         internal static string FailedToNavigateToPage {
@@ -1681,6 +1690,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Photo is too large.
+        /// </summary>
+        internal static string PhotoIsTooLarge {
+            get {
+                return ResourceManager.GetString("PhotoIsTooLarge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Photos.
         /// </summary>
         internal static string Photos {
@@ -1704,6 +1722,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string PhotosSentDescription {
             get {
                 return ResourceManager.GetString("PhotosSentDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pick a photo of yourself.
+        /// </summary>
+        internal static string PickPhotoOfYourself {
+            get {
+                return ResourceManager.GetString("PickPhotoOfYourself", resourceCulture);
             }
         }
         
@@ -2406,6 +2433,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string TagValueCopiedToClipboard {
             get {
                 return ResourceManager.GetString("TagValueCopiedToClipboard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Take a Photo of yourself.
+        /// </summary>
+        internal static string TakePhotoOfYourself {
+            get {
+                return ResourceManager.GetString("TakePhotoOfYourself", resourceCulture);
             }
         }
         

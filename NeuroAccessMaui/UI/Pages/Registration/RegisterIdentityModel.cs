@@ -666,9 +666,9 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		/// <summary>
 		/// Sets the properties of the view model.
 		/// </summary>
-		/// <param name="Properties">Array of properties to set.</param>
+		/// <param name="Identity">Identity containing properties to set.</param>
 		/// <param name="ClearPropertiesNotFound">If properties should be cleared if they are not found in <paramref name="Properties"/>.</param>
-		public void SetProperties(Property[] Properties, bool ClearPropertiesNotFound)
+		protected virtual void SetProperties(LegalIdentity Identity, bool ClearPropertiesNotFound)
 		{
 			if (ClearPropertiesNotFound)
 			{
@@ -702,7 +702,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 				this.Jid = string.Empty;
 			}
 
-			foreach (Property P in Properties)
+			foreach (Property P in Identity.Properties)
 			{
 				switch (P.Name)
 				{

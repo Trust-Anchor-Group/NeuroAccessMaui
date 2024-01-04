@@ -4,7 +4,10 @@ using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Data;
+using NeuroAccessMaui.Services.UI.Photos;
 using NeuroAccessMaui.UI.Pages.Registration;
+using SkiaSharp;
+using Waher.Content;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 
@@ -15,12 +18,17 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 	/// </summary>
 	public partial class ApplyIdViewModel : RegisterIdentityModel
 	{
+		private const string profilePhotoFileName = "ProfilePhoto.jpg";
+		private readonly string localPhotoFileName;
+		private LegalIdentityAttachment? photo;
+
 		/// <summary>
 		/// Creates an instance of the <see cref="ApplyIdViewModel"/> class.
 		/// </summary>
 		public ApplyIdViewModel()
 			: base()
 		{
+			this.localPhotoFileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), profilePhotoFileName);
 		}
 
 		protected override async Task OnInitialize()
@@ -46,7 +54,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 
 			if (IdentityReference is not null)
 			{
-				this.SetProperties(IdentityReference.Properties, true);
+				this.SetProperties(IdentityReference, true);
 
 				if (string.IsNullOrEmpty(this.OrgCountryCode))
 				{
@@ -120,6 +128,20 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		{
 			base.SetIsBusy(IsBusy);
 			this.NotifyCommandsCanExecuteChanged();
+		}
+
+		protected override void SetProperties(LegalIdentity Identity, bool ClearPropertiesNotFound)
+		{
+			base.SetProperties(Identity, ClearPropertiesNotFound);
+
+			bool PhotoFound = false;
+
+			if (Identity.Attachments is not null)
+			{
+				foreach (Attachment Attachment in Identity.Attachments)
+				{
+				}
+			}
 		}
 
 		private async Task LoadApplicationAttributes()
@@ -276,6 +298,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		[NotifyPropertyChangedFor(nameof(CanEdit))]
 		[NotifyPropertyChangedFor(nameof(CanRemovePhoto))]
+		[NotifyPropertyChangedFor(nameof(CanTakePhoto))]
 		[NotifyPropertyChangedFor(nameof(ApplicationSentAndConnected))]
 		private bool applicationSent;
 
@@ -296,6 +319,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		/// </summary>
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(CanRemovePhoto))]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		private bool hasPhoto;
 
 		/// <summary>
@@ -321,6 +345,11 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		public bool CanRemovePhoto => this.CanEdit && this.HasPhoto;
 
 		/// <summary>
+		/// If a photo can be taken.
+		/// </summary>
+		public bool CanTakePhoto => this.CanEdit && MediaPicker.IsCaptureSupported;
+
+		/// <summary>
 		/// If application has been sent and app is connected.
 		/// </summary>
 		public bool ApplicationSentAndConnected => this.ApplicationSent && this.IsConnected;
@@ -336,14 +365,11 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		{
 			get
 			{
-				if (!this.CanExecuteCommands || !this.Consent || !this.Correct || this.ApplicationSent)
+				if (!this.CanExecuteCommands || !this.Consent || !this.Correct || this.ApplicationSent || !this.HasPhoto)
 					return false;
 
 				if (this.HasApplicationAttributes)
 				{
-					//if (this.NrPhotos > 0)
-					//	return false;     // TODO
-
 					if (!this.FirstNameOk ||
 						!this.MiddleNamesOk ||
 						!this.LastNamesOk ||
@@ -401,10 +427,12 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 
 			try
 			{
+				LegalIdentityAttachment[] Photos = this.photo is null ? [] : [ this.photo ];
+
 				this.SetIsBusy(true);
 
 				(bool Succeeded, LegalIdentity? AddedIdentity) = await ServiceRef.NetworkService.TryRequest(() =>
-					ServiceRef.XmppService.AddLegalIdentity(this, false));
+					ServiceRef.XmppService.AddLegalIdentity(this, false, Photos));
 
 				if (Succeeded && AddedIdentity is not null)
 				{
@@ -486,9 +514,10 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 				this.SetIsBusy(true);
 
 				await ServiceRef.XmppService.PetitionPeerReviewId(ReviewerId, ToReview, Guid.NewGuid().ToString(),
-					ServiceRef.Localizer["CouldYouPleaseReviewMyIdentityInformation"]);
+					ServiceRef.Localizer[nameof(AppResources.CouldYouPleaseReviewMyIdentityInformation)]);
 
-				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer["PetitionSent"], ServiceRef.Localizer["APetitionHasBeenSentToYourPeer"]);
+				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.PetitionSent)],
+					ServiceRef.Localizer[nameof(AppResources.APetitionHasBeenSentToYourPeer)]);
 			}
 			catch (Exception ex)
 			{
@@ -502,30 +531,261 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		}
 
 		/// <summary>
+		/// Takes a new photo
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(CanTakePhoto))]
+		private async Task TakePhoto()
+		{
+			if (!this.CanTakePhoto)
+				return;
+
+			try
+			{
+				FileResult Result = await MediaPicker.Default.CapturePhotoAsync(new MediaPickerOptions()
+				{
+					Title = ServiceRef.Localizer[nameof(AppResources.TakePhotoOfYourself)]
+				});
+
+				if (Result is null)
+					return;
+
+				await this.AddPhoto(Result.FullPath, true);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
+			}
+		}
+
+		/// <summary>
+		/// Adds a photo from the specified path to use as a profile photo.
+		/// </summary>
+		/// <param name="Bin">Binary content</param>
+		/// <param name="ContentType">Content-Type</param>
+		/// <param name="Rotation">Rotation to use, to display the image correctly.</param>
+		/// <param name="saveLocalCopy">Set to <c>true</c> to save a local copy, <c>false</c> otherwise.</param>
+		/// <param name="showAlert">Set to <c>true</c> to show an alert if photo is too large; <c>false</c> otherwise.</param>
+		protected internal async Task AddPhoto(byte[] Bin, string ContentType, int Rotation, bool saveLocalCopy, bool showAlert)
+		{
+			if (Bin.Length > ServiceRef.TagProfile.HttpFileUploadMaxSize)
+			{
+				if (showAlert)
+					await ServiceRef.UiSerializer.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						ServiceRef.Localizer[nameof(AppResources.PhotoIsTooLarge)]);
+
+				return;
+			}
+
+			this.RemovePhoto(saveLocalCopy);
+
+			if (saveLocalCopy)
+			{
+				try
+				{
+					File.WriteAllBytes(this.localPhotoFileName, Bin);
+				}
+				catch (Exception ex)
+				{
+					ServiceRef.LogService.LogException(ex);
+				}
+			}
+
+			this.photo = new LegalIdentityAttachment(this.localPhotoFileName, ContentType, Bin);
+			this.ImageRotation = Rotation;
+			this.Image = ImageSource.FromStream(() => new MemoryStream(Bin));
+			this.HasPhoto = true;
+		}
+
+		/// <summary>
+		/// Adds a photo from the specified path to use as a profile photo.
+		/// </summary>
+		/// <param name="FilePath">The full path to the file.</param>
+		/// <param name="SaveLocalCopy">Set to <c>true</c> to save a local copy, <c>false</c> otherwise.</param>
+		protected internal async Task AddPhoto(string FilePath, bool SaveLocalCopy)
+		{
+			SKData? ImageData = null;
+
+			try
+			{
+				bool FallbackOriginal = true;
+
+				if (SaveLocalCopy)
+				{
+					// try to downscale and comress the image
+					using FileStream InputStream = File.OpenRead(FilePath);
+					ImageData = CompressImage(InputStream);
+
+					if (ImageData is not null)
+					{
+						FallbackOriginal = false;
+						await this.AddPhoto(ImageData.ToArray(), Constants.MimeTypes.Jpeg, 0, SaveLocalCopy, true);
+					}
+				}
+
+				if (FallbackOriginal)
+				{
+					byte[] Bin = File.ReadAllBytes(FilePath);
+					if (!InternetContent.TryGetContentType(Path.GetExtension(FilePath), out string ContentType))
+						ContentType = "application/octet-stream";
+
+					await this.AddPhoto(Bin, ContentType, PhotosLoader.GetImageRotation(Bin), SaveLocalCopy, true);
+				}
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiSerializer.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						ServiceRef.Localizer[nameof(AppResources.FailedToLoadPhoto)]);
+			}
+			finally
+			{
+				ImageData?.Dispose();
+			}
+		}
+
+		private static SKData? CompressImage(Stream inputStream)
+		{
+			try
+			{
+				using SKManagedStream ManagedStream = new(inputStream);
+				using SKData ImageData = SKData.Create(ManagedStream);
+
+				SKCodec Codec = SKCodec.Create(ImageData);
+				SKBitmap SkBitmap = SKBitmap.Decode(ImageData);
+
+				SkBitmap = HandleOrientation(SkBitmap, Codec.EncodedOrigin);
+
+				bool Resize = false;
+				int Height = SkBitmap.Height;
+				int Width = SkBitmap.Width;
+
+				// downdsample to FHD
+				if ((Width >= Height) && (Width > 1920))
+				{
+					Height = (int)(Height * (1920.0 / Width) + 0.5);
+					Width = 1920;
+					Resize = true;
+				}
+				else if ((Height > Width) && (Height > 1920))
+				{
+					Width = (int)(Width * (1920.0 / Height) + 0.5);
+					Height = 1920;
+					Resize = true;
+				}
+
+				if (Resize)
+				{
+					SKImageInfo Info = SkBitmap.Info;
+					SKImageInfo NewInfo = new(Width, Height, Info.ColorType, Info.AlphaType, Info.ColorSpace);
+					SkBitmap = SkBitmap.Resize(NewInfo, SKFilterQuality.High);
+				}
+
+				return SkBitmap.Encode(SKEncodedImageFormat.Jpeg, 80);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				return null;
+			}
+		}
+
+		private static SKBitmap HandleOrientation(SKBitmap Bitmap, SKEncodedOrigin Orientation)
+		{
+			SKBitmap Rotated;
+
+			switch (Orientation)
+			{
+				case SKEncodedOrigin.BottomRight:
+					Rotated = new SKBitmap(Bitmap.Width, Bitmap.Height);
+
+					using (SKCanvas Surface = new(Rotated))
+					{
+						Surface.RotateDegrees(180, Bitmap.Width / 2, Bitmap.Height / 2);
+						Surface.DrawBitmap(Bitmap, 0, 0);
+					}
+					break;
+
+				case SKEncodedOrigin.RightTop:
+					Rotated = new SKBitmap(Bitmap.Height, Bitmap.Width);
+
+					using (SKCanvas Surface = new(Rotated))
+					{
+						Surface.Translate(Rotated.Width, 0);
+						Surface.RotateDegrees(90);
+						Surface.DrawBitmap(Bitmap, 0, 0);
+					}
+					break;
+
+				case SKEncodedOrigin.LeftBottom:
+					Rotated = new SKBitmap(Bitmap.Height, Bitmap.Width);
+
+					using (SKCanvas Surface = new(Rotated))
+					{
+						Surface.Translate(0, Rotated.Height);
+						Surface.RotateDegrees(270);
+						Surface.DrawBitmap(Bitmap, 0, 0);
+					}
+					break;
+
+				default:
+					return Bitmap;
+			}
+
+			return Rotated;
+		}
+
+		private void RemovePhoto(bool RemoveFileOnDisc)
+		{
+			try
+			{
+				this.photo = null;
+				this.Image = null;
+				this.HasPhoto = false;
+
+				if (RemoveFileOnDisc && File.Exists(this.localPhotoFileName))
+					File.Delete(this.localPhotoFileName);
+			}
+			catch (Exception e)
+			{
+				ServiceRef.LogService.LogException(e);
+			}
+		}
+
+		/// <summary>
+		/// Takes a new photo
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(CanEdit))]
+		private async Task PickPhoto()
+		{
+			try
+			{
+				FileResult Result = await MediaPicker.Default.PickPhotoAsync(new MediaPickerOptions()
+				{
+					Title = ServiceRef.Localizer[nameof(AppResources.PickPhotoOfYourself)]
+				});
+
+				if (Result is null)
+					return;
+
+				await this.AddPhoto(Result.FullPath, true);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
+			}
+		}
+
+		/// <summary>
 		/// Removes the current photo.
 		/// </summary>
 		[RelayCommand(CanExecute = nameof(CanRemovePhoto))]
-		private static async Task RemovePhoto()
+		private void RemovePhoto()
 		{
-			// TODO
-		}
-
-		/// <summary>
-		/// Takes a new photo
-		/// </summary>
-		[RelayCommand(CanExecute = nameof(CanEdit))]
-		private static async Task TakePhoto()
-		{
-			// TODO
-		}
-
-		/// <summary>
-		/// Takes a new photo
-		/// </summary>
-		[RelayCommand(CanExecute = nameof(CanEdit))]
-		private static async Task PickPhoto()
-		{
-			// TODO
+			this.RemovePhoto(true);
 		}
 
 		/// <summary>

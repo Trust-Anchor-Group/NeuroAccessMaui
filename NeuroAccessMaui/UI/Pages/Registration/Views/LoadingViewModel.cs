@@ -97,7 +97,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		{
 			try
 			{
-				if (e.IsLoaded)
+				if (e.IsLoaded && !e.IsResuming)
 				{
 					this.IsBusy = false;
 

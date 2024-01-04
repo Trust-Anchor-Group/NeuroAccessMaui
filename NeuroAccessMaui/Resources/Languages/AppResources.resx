@@ -1029,4 +1029,16 @@
   <data name="ViewIdApplicationDescription" xml:space="preserve">
     <value>An ID Application is pending review. You can view the status of the application here.</value>
   </data>
+  <data name="TakePhotoOfYourself" xml:space="preserve">
+    <value>Take a Photo of yourself</value>
+  </data>
+  <data name="PhotoIsTooLarge" xml:space="preserve">
+    <value>Photo is too large</value>
+  </data>
+  <data name="FailedToLoadPhoto" xml:space="preserve">
+    <value>Failed to load photo</value>
+  </data>
+  <data name="PickPhotoOfYourself" xml:space="preserve">
+    <value>Pick a photo of yourself</value>
+  </data>
 </root>

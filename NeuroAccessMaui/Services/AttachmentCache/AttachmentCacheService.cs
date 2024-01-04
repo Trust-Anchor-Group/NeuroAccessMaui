@@ -19,15 +19,15 @@ namespace NeuroAccessMaui.Services.AttachmentCache
 		}
 
 		/// <inheritdoc/>
-		public override async Task Load(bool isResuming, CancellationToken cancellationToken)
+		public override async Task Load(bool IsResuming, CancellationToken CancellationToken)
 		{
-			if (this.BeginLoad(cancellationToken))
+			if (this.BeginLoad(IsResuming, CancellationToken))
 			{
 				try
 				{
 					CreateCacheFolderIfNeeded();
 
-					if (!isResuming)
+					if (!IsResuming)
 						await EvictOldEntries();
 
 					this.EndLoad(true);

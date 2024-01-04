@@ -23,9 +23,9 @@ namespace NeuroAccessMaui.Services.Network
 		}
 
 		/// <inheritdoc/>
-		public override Task Load(bool isResuming, CancellationToken cancellationToken)
+		public override Task Load(bool IsResuming, CancellationToken CancellationToken)
 		{
-			if (this.BeginLoad(cancellationToken))
+			if (this.BeginLoad(IsResuming, CancellationToken))
 			{
 				if (DeviceInfo.Platform != DevicePlatform.Unknown && !DesignMode.IsDesignModeEnabled) // Need to check this, as Xamarin.Essentials doesn't work in unit tests. It has no effect when running on a real phone.
 					Connectivity.ConnectivityChanged += this.Connectivity_ConnectivityChanged;
