@@ -114,6 +114,7 @@
 	  <None Remove="Resources\Images\light_mode_light.svg" />
 	  <None Remove="Resources\Images\neuro_access_dark.svg" />
 	  <None Remove="Resources\Images\neuro_access_light.svg" />
+	  <None Remove="Resources\Images\photo_placeholder.svg" />
 	  <None Remove="Resources\Images\pin_code_dark.svg" />
 	  <None Remove="Resources\Images\pin_code_light.svg" />
 	  <None Remove="Resources\Images\radiobutton_checked_dark.svg" />

@@ -320,6 +320,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(CanRemovePhoto))]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyCanExecuteChangedFor(nameof(RemovePhotoCommand))]
 		private bool hasPhoto;
 
 		/// <summary>
