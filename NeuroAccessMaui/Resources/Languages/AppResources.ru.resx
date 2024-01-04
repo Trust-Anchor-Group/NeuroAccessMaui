@@ -981,6 +981,12 @@
   <data name="OrganizationalIdDescription" xml:space="preserve">
     <value>Подайте заявку на получение нового цифрового идентификатора организации. Идентификатор будет содержать вашу личную информацию, связанную с ней информацию об организации и вашу роль в организации. Его можно использовать для подтверждения вашей личности и вашей роли в организации, а также для получения доступа к услугам, требующим подтвержденной идентификации организации.</value>
   </data>
+  <data name="OrganizationalInformationDescription" xml:space="preserve">
+    <value>Следующая организационная информация будет включена в заявку на получение идентификатора организации.</value>
+  </data>
+  <data name="OrganizationalInformationSentDescription" xml:space="preserve">
+    <value>В заявку на получение идентификатора организации включены следующие организационные сведения.</value>
+  </data>
   <data name="PeerReviewDescription" xml:space="preserve">
     <value>Включена экспертная проверка, что позволяет запрашивать одноранговых узлов (людей с уже утвержденными цифровыми удостоверениями) для проверки вашей заявки и ее совместного утверждения. Если вы хотите попросить коллег рассмотреть вашу заявку, отсканируйте QR-коды их личности, чтобы попросить их рассмотреть вашу заявку. Вы также можете запросить рецензирование у любого избранного рецензента, доступного у вашего поставщика услуг.</value>
   </data>
@@ -998,6 +1004,15 @@
   </data>
   <data name="PhoneNr" xml:space="preserve">
     <value>Номер телефона</value>
+  </data>
+  <data name="Photo" xml:space="preserve">
+    <value>Фото</value>
+  </data>
+  <data name="PhotosDescription" xml:space="preserve">
+    <value>Пожалуйста, добавьте изображение, на котором вас можно легко идентифицировать.</value>
+  </data>
+  <data name="PhotosSentDescription" xml:space="preserve">
+    <value>В приложение включены следующие изображения.</value>
   </data>
   <data name="QrPageTitleScanPeerId" xml:space="preserve">
     <value>Идентификатор сканирования однорангового узла</value>

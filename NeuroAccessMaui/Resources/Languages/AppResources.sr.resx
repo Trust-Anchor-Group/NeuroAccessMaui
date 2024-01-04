@@ -981,6 +981,12 @@
   <data name="OrganizationalIdDescription" xml:space="preserve">
     <value>Prijavite se za novi digitalni organizacioni ID. ID će sadržati vaše lične informacije, povezane organizacione informacije i vašu ulogu u organizaciji. Može se koristiti za proveru ličnog identiteta i vaše uloge u organizaciji, kao i za dobijanje pristupa uslugama koje zahtevaju provereni organizacioni identitet.</value>
   </data>
+  <data name="OrganizationalInformationDescription" xml:space="preserve">
+    <value>Sledeće organizacione informacije će biti uključene u aplikaciju za organizacioni ID.</value>
+  </data>
+  <data name="OrganizationalInformationSentDescription" xml:space="preserve">
+    <value>Sledeće organizacione informacije su uključene u aplikaciju za organizacioni ID.</value>
+  </data>
   <data name="PeerReviewDescription" xml:space="preserve">
     <value>Pregledi ravnopravnih uređaja su omogućeni, što vam omogućava da zahtevate od vršnjaka (osoba sa već odobrenim digitalnim ID-ovima) da pregledaju vašu aplikaciju i saradnički je odobre. Ako želite da zatražite od vršnjaka da pregledaju vašu aplikaciju, skenirajte QR kodove njihovih identiteta da biste ih zatražili da pregledaju vašu aplikaciju. Takođe možete da zatražite pregled od svih istaknutih vršnjačkih redaktora koji su dostupni na dobavljaču usluga.</value>
   </data>
@@ -998,6 +1004,15 @@
   </data>
   <data name="PhoneNr" xml:space="preserve">
     <value>Telefonski broj</value>
+  </data>
+  <data name="Photo" xml:space="preserve">
+    <value>Fotografija</value>
+  </data>
+  <data name="PhotosDescription" xml:space="preserve">
+    <value>Dodajte sliku na koju možete lako da budete identifikovani.</value>
+  </data>
+  <data name="PhotosSentDescription" xml:space="preserve">
+    <value>Sledeće slike su uključene u aplikaciju.</value>
   </data>
   <data name="QrPageTitleScanPeerId" xml:space="preserve">
     <value>ID skeniranja ravnopravnog uređaja</value>

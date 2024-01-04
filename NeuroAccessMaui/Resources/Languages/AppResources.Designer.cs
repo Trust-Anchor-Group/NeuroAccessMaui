@@ -1672,11 +1672,38 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Photo.
+        /// </summary>
+        internal static string Photo {
+            get {
+                return ResourceManager.GetString("Photo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Photos.
         /// </summary>
         internal static string Photos {
             get {
                 return ResourceManager.GetString("Photos", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please add an image where you can easily be identified..
+        /// </summary>
+        internal static string PhotosDescription {
+            get {
+                return ResourceManager.GetString("PhotosDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The following images have been included in the application..
+        /// </summary>
+        internal static string PhotosSentDescription {
+            get {
+                return ResourceManager.GetString("PhotosSentDescription", resourceCulture);
             }
         }
         

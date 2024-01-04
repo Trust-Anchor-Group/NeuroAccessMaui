@@ -112,6 +112,14 @@ namespace NeuroAccessMaui.UI
 		M8 10C5.33 10 0 11.34 0 14V16H16V14C16 11.34 10.67 10 8 10Z
 		""");
 
+		public static readonly Geometry CameraPhotoButtonPath = GeometryConverter.ParseStringToPathGeometry(
+			"""
+		M18 2H14.83L13 0H7L5.17 2H2C0.9 2 0 2.9 0 4V16C0 17.1 0.9 18 2 18H18C19.1 18 20 17.1 20 16V4C20 2.9 19.1 2 18 2Z
+		M18 16H2V4H6.05L7.88 2H12.12L13.95 4H18V16Z
+		M10 5C7.24 5 5 7.24 5 10C5 12.76 7.24 15 10 15C12.76 15 15 12.76 15 10C15 7.24 12.76 5 10 5Z
+		M10 13C8.35 13 7 11.65 7 10C7 8.35 8.35 7 10 7C11.65 7 13 8.35 13 10C13 11.65 11.65 13 10 13Z
+		""");
+
 		public static readonly Geometry CameraImageButtonPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 		M16 2V16H2V2H16Z
@@ -133,6 +141,11 @@ namespace NeuroAccessMaui.UI
 		M6 8V6H3.09C4.47 3.61 7.05 2 10 2C13.72 2 16.85 4.56 17.74 8H19.8C18.87 3.44 14.84 0 10 0C6.73 0 3.82 1.58 2 4.01V2H0V8H6Z
 		M14 12V14H16.91C15.53 16.39 12.95 18 10 18C6.28 18 3.15 15.44 2.26 12H0.2C1.13 16.56 5.16 20 10 20C13.27 20 16.18 18.42 18 15.99V18H20V12H14Z
 		""");
+
+		public static readonly Geometry TrashCanButtonPath = GeometryConverter.ParseStringToPathGeometry(
+			"""
+			M14 1.41049L12.59 0.000488281L7 5.59049L1.41 0.000488281L0 1.41049L5.59 7.00049L0 12.5905L1.41 14.0005L7 8.41049L12.59 14.0005L14 12.5905L8.41 7.00049L14 1.41049Z
+			""");
 
 		public static readonly Color UserColor = Colors.Red;
 		public static readonly Geometry UserIconPath = GeometryConverter.ParseStringToPathGeometry(

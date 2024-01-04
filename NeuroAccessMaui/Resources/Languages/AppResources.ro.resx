@@ -981,6 +981,12 @@
   <data name="OrganizationalIdDescription" xml:space="preserve">
     <value>Solicitați un nou ID organizațional digital. ID-ul va conține informațiile dvs. personale, informațiile organizaționale asociate și rolul dvs. în organizație. Acesta poate fi folosit pentru a vă valida identitatea personală și rolul în organizație, precum și pentru a obține acces la servicii care necesită o identitate organizațională verificată.</value>
   </data>
+  <data name="OrganizationalInformationDescription" xml:space="preserve">
+    <value>Următoarele informații organizaționale vor fi incluse în cererea pentru un ID de organizație.</value>
+  </data>
+  <data name="OrganizationalInformationSentDescription" xml:space="preserve">
+    <value>Următoarele informații organizaționale au fost incluse în cererea pentru un ID de organizație.</value>
+  </data>
   <data name="PeerReviewDescription" xml:space="preserve">
     <value>Evaluările inter pares sunt activate, permițându-vă să solicitați colegilor (persoane cu ID-uri digitale deja aprobate) să vă revizuiască cererea și să o aprobe în colaborare. Dacă doriți să solicitați colegilor să vă examineze cererea, scanați codurile QR ale identității lor pentru a le solicita să vă examineze cererea. De asemenea, puteți solicita o revizuire de la orice recenzori peer prezentați disponibili la furnizorul dvs. de servicii.</value>
   </data>
@@ -998,6 +1004,15 @@
   </data>
   <data name="PhoneNr" xml:space="preserve">
     <value>Număr de telefon</value>
+  </data>
+  <data name="Photo" xml:space="preserve">
+    <value>Fotografie</value>
+  </data>
+  <data name="PhotosDescription" xml:space="preserve">
+    <value>Vă rugăm să adăugați o imagine în care puteți fi identificat cu ușurință.</value>
+  </data>
+  <data name="PhotosSentDescription" xml:space="preserve">
+    <value>Următoarele imagini au fost incluse în aplicație.</value>
   </data>
   <data name="QrPageTitleScanPeerId" xml:space="preserve">
     <value>ID-ul de scanare al colegilor</value>

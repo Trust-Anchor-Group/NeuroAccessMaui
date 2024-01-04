@@ -1,34 +1,24 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <?xaml-comp compile="true" ?>
-<ResourceDictionary
-	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-	xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+						  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+						  xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+						  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
 
-	<Style x:Key="BackImageButtonBorderStyle"
-		ApplyToDerivedTypes="False"
-		TargetType="Border">
+	<Style x:Key="BackImageButtonBorderStyle" ApplyToDerivedTypes="False" TargetType="Border">
 		<Setter Property="BackgroundColor" Value="Transparent" />
 		<Setter Property="Padding">
-			<Thickness
-				Right="{StaticResource MediumSpacing}"
-				Bottom="{StaticResource MediumSpacing}" />
+			<Thickness Right="{StaticResource MediumSpacing}" Bottom="{StaticResource MediumSpacing}" />
 		</Setter>
 	</Style>
 
-	<Style x:Key="BackImageButtonPathStyle"
-		ApplyToDerivedTypes="False"
-		TargetType="Path">
+	<Style x:Key="BackImageButtonPathStyle" ApplyToDerivedTypes="False" TargetType="Path">
 		<Setter Property="WidthRequest" Value="24" />
 		<Setter Property="HeightRequest" Value="24" />
 		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
 	</Style>
 
-	<Style x:Key="BackImageButtonStyle"
-		ApplyToDerivedTypes="False"
-		TargetType="controls:ImageButton">
-
+	<Style x:Key="BackImageButtonStyle" ApplyToDerivedTypes="False" TargetType="controls:ImageButton">
 		<Setter Property="HorizontalOptions" Value="Start" />
 		<Setter Property="VerticalOptions" Value="Start" />
 		<Setter Property="BorderStyle" Value="{StaticResource BackImageButtonBorderStyle}" />
@@ -75,13 +65,8 @@
 		</Setter>
 	</Style>
 
-	<Style x:Key="FilledTextButtonLabelStyle"
-		ApplyToDerivedTypes="False"
-		BasedOn="{StaticResource BoldItemTitleLabelStyle}"
-		TargetType="Label">
-
+	<Style x:Key="FilledTextButtonLabelStyle" ApplyToDerivedTypes="False" BasedOn="{StaticResource BoldItemTitleLabelStyle}" TargetType="Label">
 		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource EnabledFilledButtonForegroundLight}, Dark={StaticResource EnabledFilledButtonForegroundDark}}" />
-
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>
 				<VisualStateGroup x:Name="CommonStates">
@@ -147,13 +132,8 @@
 		</Setter>
 	</Style>
 
-	<Style x:Key="OutlinedTextButtonLabelStyle"
-		ApplyToDerivedTypes="False"
-		BasedOn="{StaticResource BoldItemTitleLabelStyle}"
-		TargetType="Label">
-
+	<Style x:Key="OutlinedTextButtonLabelStyle" ApplyToDerivedTypes="False" BasedOn="{StaticResource BoldItemTitleLabelStyle}" TargetType="Label">
 		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource EnabledOutlinedButtonForegroundLight}, Dark={StaticResource EnabledOutlinedButtonForegroundDark}}" />
-
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>
 				<VisualStateGroup x:Name="CommonStates">
@@ -168,16 +148,12 @@
 		</Setter>
 	</Style>
 
-	<Style x:Key="OutlinedTextButtonStyle"
-		ApplyToDerivedTypes="False"
-		TargetType="controls:TextButton">
-
+	<Style x:Key="OutlinedTextButtonStyle" ApplyToDerivedTypes="False" TargetType="controls:TextButton">
 		<Setter Property="BorderStyle" Value="{StaticResource OutlinedTextButtonBorderStyle}" />
 		<Setter Property="LabelStyle" Value="{StaticResource OutlinedTextButtonLabelStyle}" />
 	</Style>
 
 	<Style x:Key="OutlinedTextButtonStyleNoRoundedCorners" ApplyToDerivedTypes="False" TargetType="controls:TextButton">
-
 		<Setter Property="BorderStyle" Value="{StaticResource OutlinedTextButtonBorderStyleNoRoundedCorners}" />
 		<Setter Property="LabelStyle" Value="{StaticResource OutlinedTextButtonLabelStyle}" />
 	</Style>

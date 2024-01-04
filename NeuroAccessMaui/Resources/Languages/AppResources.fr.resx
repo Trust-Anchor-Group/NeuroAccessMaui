@@ -981,6 +981,12 @@
   <data name="OrganizationalIdDescription" xml:space="preserve">
     <value>Demandez un nouvel identifiant d’organisation numérique. La pièce d’identité contiendra vos informations personnelles, les informations organisationnelles associées et votre rôle dans l’organisation. Il peut être utilisé pour valider votre identité personnelle et votre rôle dans l’organisation, ainsi que pour accéder à des services nécessitant une identité organisationnelle vérifiée.</value>
   </data>
+  <data name="OrganizationalInformationDescription" xml:space="preserve">
+    <value>Les renseignements organisationnels suivants seront inclus dans la demande d’ID d’organisation.</value>
+  </data>
+  <data name="OrganizationalInformationSentDescription" xml:space="preserve">
+    <value>Les renseignements organisationnels suivants ont été inclus dans la demande d’ID d’organisation.</value>
+  </data>
   <data name="PeerReviewDescription" xml:space="preserve">
     <value>Les évaluations par les pairs sont activées, ce qui vous permet de demander à des pairs (personnes ayant déjà des identifiants numériques approuvés) d’examiner votre demande et de l’approuver en collaboration. Si vous souhaitez demander à vos pairs d’examiner votre demande, scannez les codes QR de leur identité pour leur demander d’examiner votre demande. Vous pouvez également demander un examen à n’importe quel évaluateur de pairs disponible sur votre fournisseur de services.</value>
   </data>
@@ -998,6 +1004,15 @@
   </data>
   <data name="PhoneNr" xml:space="preserve">
     <value>Numéro de téléphone</value>
+  </data>
+  <data name="Photo" xml:space="preserve">
+    <value>Photo</value>
+  </data>
+  <data name="PhotosDescription" xml:space="preserve">
+    <value>Veuillez ajouter une image où vous pouvez être facilement identifié.</value>
+  </data>
+  <data name="PhotosSentDescription" xml:space="preserve">
+    <value>Les images suivantes ont été incluses dans l’application.</value>
   </data>
   <data name="QrPageTitleScanPeerId" xml:space="preserve">
     <value>ID de numérisation de l’homologue</value>

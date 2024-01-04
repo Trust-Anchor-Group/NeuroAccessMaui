@@ -981,6 +981,12 @@
   <data name="OrganizationalIdDescription" xml:space="preserve">
     <value>Ansøg om et nyt digitalt organisations-id. ID'et indeholder dine personlige oplysninger, de tilknyttede organisatoriske oplysninger og din rolle i organisationen. Det kan bruges til at validere din personlige identitet og din rolle i organisationen samt få adgang til tjenester, der kræver en verificeret organisatorisk identitet.</value>
   </data>
+  <data name="OrganizationalInformationDescription" xml:space="preserve">
+    <value>Følgende organisationsoplysninger medtages i ansøgningen om et organisations-id.</value>
+  </data>
+  <data name="OrganizationalInformationSentDescription" xml:space="preserve">
+    <value>Følgende organisationsoplysninger er inkluderet i ansøgningen om et organisations-id.</value>
+  </data>
   <data name="PeerReviewDescription" xml:space="preserve">
     <value>Peer reviews er aktiveret, så du kan anmode peers (personer med allerede godkendte digitale id'er) om at gennemgå din ansøgning og samarbejde om at godkende den. Hvis du ønsker at bede peers om at gennemgå din ansøgning, skal du scanne QR-koderne for deres identiteter for at bede dem om at gennemgå din ansøgning. Du kan også anmode om en gennemgang fra alle udvalgte peer reviewere, der er tilgængelige hos din tjenesteudbyder.</value>
   </data>
@@ -998,6 +1004,15 @@
   </data>
   <data name="PhoneNr" xml:space="preserve">
     <value>Telefonnummer</value>
+  </data>
+  <data name="Photo" xml:space="preserve">
+    <value>Foto</value>
+  </data>
+  <data name="PhotosDescription" xml:space="preserve">
+    <value>Tilføj venligst et billede, hvor du let kan identificeres.</value>
+  </data>
+  <data name="PhotosSentDescription" xml:space="preserve">
+    <value>Følgende billeder er inkluderet i ansøgningen.</value>
   </data>
   <data name="QrPageTitleScanPeerId" xml:space="preserve">
     <value>Scan ID for peer</value>

@@ -981,6 +981,12 @@
   <data name="OrganizationalIdDescription" xml:space="preserve">
     <value>Beantragen Sie eine neue digitale Organisations-ID. Die ID enthält Ihre persönlichen Daten, die zugehörigen Organisationsinformationen und Ihre Rolle in der Organisation. Es kann verwendet werden, um Ihre persönliche Identität und Ihre Rolle in der Organisation zu überprüfen und Zugriff auf Dienste zu erhalten, die eine verifizierte Organisationsidentität erfordern.</value>
   </data>
+  <data name="OrganizationalInformationDescription" xml:space="preserve">
+    <value>Die folgenden organisatorischen Informationen werden in den Antrag auf eine Organisations-ID aufgenommen.</value>
+  </data>
+  <data name="OrganizationalInformationSentDescription" xml:space="preserve">
+    <value>Die folgenden organisatorischen Informationen wurden in den Antrag für eine Organisations-ID aufgenommen.</value>
+  </data>
   <data name="PeerReviewDescription" xml:space="preserve">
     <value>Peer-Reviews sind aktiviert, sodass Sie Peers (Personen mit bereits genehmigten digitalen IDs) auffordern können, Ihren Antrag zu überprüfen und gemeinsam zu genehmigen. Wenn Sie Peers auffordern möchten, Ihre Bewerbung zu überprüfen, scannen Sie die QR-Codes ihrer Identitäten, um sie aufzufordern, Ihre Bewerbung zu überprüfen. Sie können auch eine Überprüfung von allen vorgestellten Peer-Reviewern anfordern, die bei Ihrem Dienstanbieter verfügbar sind.</value>
   </data>
@@ -998,6 +1004,15 @@
   </data>
   <data name="PhoneNr" xml:space="preserve">
     <value>Telefonnummer</value>
+  </data>
+  <data name="Photo" xml:space="preserve">
+    <value>Foto</value>
+  </data>
+  <data name="PhotosDescription" xml:space="preserve">
+    <value>Bitte fügen Sie ein Bild hinzu, auf dem Sie leicht identifiziert werden können.</value>
+  </data>
+  <data name="PhotosSentDescription" xml:space="preserve">
+    <value>Die folgenden Bilder wurden in die Anwendung aufgenommen.</value>
   </data>
   <data name="QrPageTitleScanPeerId" xml:space="preserve">
     <value>Scan-ID des Peers</value>

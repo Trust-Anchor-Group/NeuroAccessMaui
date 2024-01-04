@@ -5,6 +5,7 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Data;
 using NeuroAccessMaui.UI.Pages.Registration;
+using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 
 namespace NeuroAccessMaui.UI.Pages.Applications
@@ -96,6 +97,13 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 			});
 
 			return Task.CompletedTask;
+		}
+
+		/// <inheritdoc/>
+		protected override async Task XmppService_ConnectionStateChanged(object? Sender, XmppState NewState)
+		{
+			await base.XmppService_ConnectionStateChanged(Sender, NewState);
+			this.OnPropertyChanged(nameof(this.ApplicationSentAndConnected));
 		}
 
 		/// <inheritdoc/>
@@ -266,6 +274,9 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		/// </summary>
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(CanEdit))]
+		[NotifyPropertyChangedFor(nameof(CanRemovePhoto))]
+		[NotifyPropertyChangedFor(nameof(ApplicationSentAndConnected))]
 		private bool applicationSent;
 
 		/// <summary>
@@ -279,6 +290,40 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		/// </summary>
 		[ObservableProperty]
 		private bool organizational;
+
+		/// <summary>
+		/// If a photo is available.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(CanRemovePhoto))]
+		private bool hasPhoto;
+
+		/// <summary>
+		/// Photo
+		/// </summary>
+		[ObservableProperty]
+		private ImageSource? image;
+
+		/// <summary>
+		/// Rotation of <see cref="Image"/>
+		/// </summary>
+		[ObservableProperty]
+		private int imageRotation;
+
+		/// <summary>
+		/// If the form can be edited.
+		/// </summary>
+		public bool CanEdit => !this.ApplicationSent;
+
+		/// <summary>
+		/// If the form can be edited.
+		/// </summary>
+		public bool CanRemovePhoto => this.CanEdit && this.HasPhoto;
+
+		/// <summary>
+		/// If application has been sent and app is connected.
+		/// </summary>
+		public bool ApplicationSentAndConnected => this.ApplicationSent && this.IsConnected;
 
 		#endregion
 
@@ -381,7 +426,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		/// <summary>
 		/// Revokes the current application.
 		/// </summary>
-		[RelayCommand]
+		[RelayCommand(CanExecute = nameof(ApplicationSent))]
 		private async Task RevokeApplication()
 		{
 			LegalIdentity? Application = ServiceRef.TagProfile.IdentityApplication;
@@ -420,7 +465,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		/// <summary>
 		/// Scan a QR-code belonging to a peer
 		/// </summary>
-		[RelayCommand]
+		[RelayCommand(CanExecute = nameof(ApplicationSent))]
 		private async Task ScanQrCode()
 		{
 			string? Url = await Services.UI.QR.QrCode.ScanQrCode(nameof(AppResources.QrPageTitleScanPeerId),
@@ -457,9 +502,36 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		}
 
 		/// <summary>
+		/// Removes the current photo.
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(CanRemovePhoto))]
+		private static async Task RemovePhoto()
+		{
+			// TODO
+		}
+
+		/// <summary>
+		/// Takes a new photo
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(CanEdit))]
+		private static async Task TakePhoto()
+		{
+			// TODO
+		}
+
+		/// <summary>
+		/// Takes a new photo
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(CanEdit))]
+		private static async Task PickPhoto()
+		{
+			// TODO
+		}
+
+		/// <summary>
 		/// Select from a list of featured peer reviewers.
 		/// </summary>
-		[RelayCommand]
+		[RelayCommand(CanExecute = nameof(ApplicationSent))]
 		private static async Task FeaturedPeerReviewers()
 		{
 			// TODO

@@ -981,6 +981,12 @@
   <data name="OrganizationalIdDescription" xml:space="preserve">
     <value>Solicite un nuevo ID de organización digital. El ID contendrá su información personal, la información de la organización asociada y su función en la organización. Se puede utilizar para validar su identidad personal y su rol en la organización, así como para obtener acceso a servicios que requieren una identidad organizacional verificada.</value>
   </data>
+  <data name="OrganizationalInformationDescription" xml:space="preserve">
+    <value>La siguiente información de la organización se incluirá en la solicitud de un ID de organización.</value>
+  </data>
+  <data name="OrganizationalInformationSentDescription" xml:space="preserve">
+    <value>La siguiente información de la organización se ha incluido en la solicitud de un ID de organización.</value>
+  </data>
   <data name="PeerReviewDescription" xml:space="preserve">
     <value>Las revisiones por pares están habilitadas, lo que le permite solicitar a los pares (personas con identificaciones digitales ya aprobadas) que revisen su solicitud y la aprueben de manera colaborativa. Si desea solicitar a sus compañeros que revisen su solicitud, escanee los códigos QR de sus identidades para solicitarles que revisen su solicitud. También puede solicitar una revisión de cualquier revisor destacado disponible en su proveedor de servicios.</value>
   </data>
@@ -998,6 +1004,15 @@
   </data>
   <data name="PhoneNr" xml:space="preserve">
     <value>Número de teléfono</value>
+  </data>
+  <data name="Photo" xml:space="preserve">
+    <value>Foto</value>
+  </data>
+  <data name="PhotosDescription" xml:space="preserve">
+    <value>Por favor, añada una imagen en la que pueda ser fácilmente identificado.</value>
+  </data>
+  <data name="PhotosSentDescription" xml:space="preserve">
+    <value>En la aplicación se han incluido las siguientes imágenes.</value>
   </data>
   <data name="QrPageTitleScanPeerId" xml:space="preserve">
     <value>ID de escaneo del par</value>

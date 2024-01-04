@@ -981,6 +981,12 @@
   <data name="OrganizationalIdDescription" xml:space="preserve">
     <value>Søk om en ny digital organisasjons-ID. ID-en vil inneholde din personlige informasjon, tilhørende organisasjonsinformasjon og din rolle i organisasjonen. Den kan brukes til å validere din personlige identitet og din rolle i organisasjonen, samt få tilgang til tjenester som krever en verifisert organisasjonsidentitet.</value>
   </data>
+  <data name="OrganizationalInformationDescription" xml:space="preserve">
+    <value>Følgende organisasjonsinformasjon vil bli inkludert i søknaden om en organisasjons-ID.</value>
+  </data>
+  <data name="OrganizationalInformationSentDescription" xml:space="preserve">
+    <value>Følgende organisasjonsinformasjon er inkludert i søknaden om en organisasjons-ID.</value>
+  </data>
   <data name="PeerReviewDescription" xml:space="preserve">
     <value>Fagfellevurderinger er aktivert, slik at du kan be fagfeller (personer med allerede godkjente digitale ID-er) om å gjennomgå søknaden din og samarbeide om å godkjenne den. Hvis du ønsker å be fagfeller om å gjennomgå søknaden din, kan du skanne QR-kodene til identiteten deres for å be dem om å gjennomgå søknaden din. Du kan også be om en gjennomgang fra alle fremhevede fagfeller som er tilgjengelige hos tjenesteleverandøren.</value>
   </data>
@@ -998,6 +1004,15 @@
   </data>
   <data name="PhoneNr" xml:space="preserve">
     <value>Telefonnummer</value>
+  </data>
+  <data name="Photo" xml:space="preserve">
+    <value>Foto</value>
+  </data>
+  <data name="PhotosDescription" xml:space="preserve">
+    <value>Vennligst legg til et bilde der du enkelt kan identifiseres.</value>
+  </data>
+  <data name="PhotosSentDescription" xml:space="preserve">
+    <value>Følgende bilder er inkludert i søknaden.</value>
   </data>
   <data name="QrPageTitleScanPeerId" xml:space="preserve">
     <value>Skann-ID for node</value>
