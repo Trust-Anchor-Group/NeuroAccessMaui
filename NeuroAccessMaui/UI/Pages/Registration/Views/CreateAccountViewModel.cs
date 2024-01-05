@@ -49,7 +49,10 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			if (ServiceRef.TagProfile.LegalIdentity is LegalIdentity LegalIdentity)
 			{
 				if (LegalIdentity.State == IdentityState.Approved)
-					GoToRegistrationStep(RegistrationStep.DefinePin);
+				{
+					if (Shell.Current.CurrentState.Location.OriginalString == Constants.Pages.RegistrationPage)
+						GoToRegistrationStep(RegistrationStep.DefinePin);
+				}
 				else if (LegalIdentity.IsDiscarded())
 				{
 					await ServiceRef.TagProfile.ClearLegalIdentity();
