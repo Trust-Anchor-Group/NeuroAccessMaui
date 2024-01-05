@@ -36,7 +36,8 @@
 						<Grid RowDefinitions="auto,auto,auto,*" ColumnDefinitions="*,auto,auto,*"
 								ColumnSpacing="{StaticResource SmallSpacing}" RowSpacing="{StaticResource SmallSpacing}">
 							<Border Grid.Column="1" Grid.Row="0" Grid.RowSpan="4" Padding="{StaticResource SmallMargins}"
-									  Style="{StaticResource OutlinedImageButtonBorderStyle}">
+									  Style="{StaticResource OutlinedImageButtonBorderStyle}"
+									  BackgroundColor="{Binding HasPhoto, Converter={converters:ControlBgColor}}">
 								<Grid>
 									<Image Source="{Binding Image}" Aspect="AspectFit" HeightRequest="200" IsVisible="{Binding HasPhoto}"/>
 									<Image Source="photo_placeholder.svg" Aspect="Center" HeightRequest="200"
