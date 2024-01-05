@@ -1,4 +1,5 @@
 ﻿using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Storage;
 using System.ComponentModel;
 using System.Text;
@@ -659,10 +660,24 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <param name="RemoveOldAttachments">If old attachments should be removed.</param>
 		public async Task SetLegalIdentity(LegalIdentity? Identity, bool RemoveOldAttachments)
 		{
+			bool ScanIdUnlocked =
+				!this.legalIdentity.HasApprovedPersonalInformation() &&
+				Identity.HasApprovedPersonalInformation();
+
 			Attachment[]? OldAttachments = this.SetLegalIdentityInternal(Identity);
 
 			if (RemoveOldAttachments)
 				await ServiceRef.AttachmentCacheService.RemoveAttachments(OldAttachments);
+
+			if (ScanIdUnlocked)
+			{
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
+					ServiceRef.UiSerializer.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.Unlocked)],
+						ServiceRef.Localizer[nameof(AppResources.YouCanNowScanIdCodes)]);
+				});
+			}
 		}
 
 		private Attachment[]? SetLegalIdentityInternal(LegalIdentity? Identity)

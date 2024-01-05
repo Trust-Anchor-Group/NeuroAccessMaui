@@ -1047,4 +1047,10 @@
   <data name="YourApplicationWasRejected" xml:space="preserve">
     <value>Ваша заявка была отклонена.</value>
   </data>
+  <data name="Unlocked" xml:space="preserve">
+    <value>Разблокирован</value>
+  </data>
+  <data name="YouCanNowScanIdCodes" xml:space="preserve">
+    <value>Теперь вы можете сканировать QR-коды других цифровых удостоверений личности, чтобы запросить дополнительную информацию о них.</value>
+  </data>
 </root>

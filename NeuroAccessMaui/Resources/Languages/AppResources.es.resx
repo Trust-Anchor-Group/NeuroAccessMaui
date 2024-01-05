@@ -1047,4 +1047,10 @@
   <data name="YourApplicationWasRejected" xml:space="preserve">
     <value>Su solicitud ha sido rechazada.</value>
   </data>
+  <data name="Unlocked" xml:space="preserve">
+    <value>Desbloqueado</value>
+  </data>
+  <data name="YouCanNowScanIdCodes" xml:space="preserve">
+    <value>Ahora puede escanear los códigos QR de otras identidades digitales para solicitar más información sobre ellas.</value>
+  </data>
 </root>

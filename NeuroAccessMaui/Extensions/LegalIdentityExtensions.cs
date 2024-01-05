@@ -31,6 +31,51 @@ namespace NeuroAccessMaui.Extensions
 		}
 
 		/// <summary>
+		/// If the Legal Identity has an approved identity with personal information.
+		/// </summary>
+		/// <param name="Identity">Identity</param>
+		/// <returns>If an approved identity with personal information.</returns>
+		public static bool HasApprovedPersonalInformation(this LegalIdentity? Identity)
+		{
+			if (Identity?.Attachments is null)
+				return false;
+
+			if (!Identity.IsApproved())
+				return false;
+
+			bool HasFirstName = false;
+			bool HasLastName = false;
+			bool HasPersonalNumber = false;
+
+			foreach (Property P in Identity.Properties)
+			{
+				switch (P.Name)
+				{
+					case Constants.XmppProperties.FirstName:
+						HasFirstName = true;
+						break;
+
+					case Constants.XmppProperties.LastNames:
+						HasLastName = true;
+						break;
+
+					case Constants.XmppProperties.PersonalNumber:
+						HasPersonalNumber = true;
+						break;
+				}
+			}
+
+			if (!(HasFirstName && HasLastName && HasPersonalNumber))
+				return false;
+
+			Attachment? Photo = Identity.Attachments.GetFirstImageAttachment();
+			if (Photo is null)
+				return false;
+
+			return true;
+		}
+
+		/// <summary>
 		/// Returns the JID if the <see cref="LegalIdentity"/> has one, or the empty string otherwise.
 		/// </summary>
 		/// <param name="legalIdentity">The legal identity whose JID to get.</param>

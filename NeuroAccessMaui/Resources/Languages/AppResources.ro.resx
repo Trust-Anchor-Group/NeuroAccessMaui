@@ -1047,4 +1047,10 @@
   <data name="YourApplicationWasRejected" xml:space="preserve">
     <value>Cererea dumneavoastră a fost respinsă.</value>
   </data>
+  <data name="Unlocked" xml:space="preserve">
+    <value>Descuiat</value>
+  </data>
+  <data name="YouCanNowScanIdCodes" xml:space="preserve">
+    <value>Acum puteți scana codurile QR ale altor identități digitale, pentru a solicita mai multe informații despre acestea.</value>
+  </data>
 </root>

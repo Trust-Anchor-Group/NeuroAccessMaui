@@ -1047,4 +1047,10 @@
   <data name="YourApplicationWasRejected" xml:space="preserve">
     <value>Vaša molba je odbijena.</value>
   </data>
+  <data name="Unlocked" xml:space="preserve">
+    <value>Otkljuиana</value>
+  </data>
+  <data name="YouCanNowScanIdCodes" xml:space="preserve">
+    <value>Sada možete da skenirate QR-kodove drugih digitalnih identiteta da biste zatražili više informacija o njima.</value>
+  </data>
 </root>

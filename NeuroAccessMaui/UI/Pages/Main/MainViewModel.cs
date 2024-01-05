@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services;
 
 namespace NeuroAccessMaui.UI.Pages.Main
 {
@@ -30,11 +32,21 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		[RelayCommand(CanExecute = nameof(CanScanQrCode))]
 		private async Task ScanQrCode()
 		{
-			string? Url = await Services.UI.QR.QrCode.ScanQrCode(nameof(AppResources.QrPageTitleScanInvitation),
-				[
-					Constants.UriSchemes.TagSign		// TODO: Add other schemas, as user unlocks features.
-				]);
+			List<string> AllowedSchemas = [Constants.UriSchemes.TagSign];
 
+			if (ServiceRef.TagProfile.LegalIdentity?.HasApprovedPersonalInformation() ?? false)
+			{
+				AllowedSchemas.Add(Constants.UriSchemes.IotId);
+
+				// TODO:
+				// AllowedSchemas.Add(Constants.UriSchemes.IotSc);
+				// AllowedSchemas.Add(Constants.UriSchemes.IotDisco);
+				// AllowedSchemas.Add(Constants.UriSchemes.EDaler);
+				// AllowedSchemas.Add(Constants.UriSchemes.NeuroFeature);
+				// AllowedSchemas.Add(Constants.UriSchemes.Xmpp);
+			}
+
+			string? Url = await Services.UI.QR.QrCode.ScanQrCode(nameof(AppResources.QrPageTitleScanInvitation), [.. AllowedSchemas]);
 			if (string.IsNullOrEmpty(Url))
 				return;
 

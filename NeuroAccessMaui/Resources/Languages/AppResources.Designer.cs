@@ -2581,6 +2581,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unlocked.
+        /// </summary>
+        internal static string Unlocked {
+            get {
+                return ResourceManager.GetString("Unlocked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Updated.
         /// </summary>
         internal static string Updated {
@@ -2784,6 +2793,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string Yes {
             get {
                 return ResourceManager.GetString("Yes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can now scan the QR-codes of other digital identities, to request more information about them..
+        /// </summary>
+        internal static string YouCanNowScanIdCodes {
+            get {
+                return ResourceManager.GetString("YouCanNowScanIdCodes", resourceCulture);
             }
         }
         

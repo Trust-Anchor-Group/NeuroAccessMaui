@@ -1047,4 +1047,10 @@
   <data name="YourApplicationWasRejected" xml:space="preserve">
     <value>Din ansøgning blev afvist.</value>
   </data>
+  <data name="Unlocked" xml:space="preserve">
+    <value>Ulåst</value>
+  </data>
+  <data name="YouCanNowScanIdCodes" xml:space="preserve">
+    <value>Du kan nu scanne QR-koder for andre digitale identiteter for at anmode om flere oplysninger om dem.</value>
+  </data>
 </root>

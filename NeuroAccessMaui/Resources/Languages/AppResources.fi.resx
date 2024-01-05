@@ -1047,4 +1047,10 @@
   <data name="YourApplicationWasRejected" xml:space="preserve">
     <value>Hakemuksesi hylättiin.</value>
   </data>
+  <data name="Unlocked" xml:space="preserve">
+    <value>Auki</value>
+  </data>
+  <data name="YouCanNowScanIdCodes" xml:space="preserve">
+    <value>Voit nyt skannata muiden digitaalisten identiteettien QR-koodit ja pyytää niistä lisätietoja.</value>
+  </data>
 </root>
