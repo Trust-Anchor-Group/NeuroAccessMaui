@@ -395,15 +395,23 @@
 								<Label Grid.Column="1" Grid.Row="1" Text="{l:Localize CorrectDescription}" HorizontalOptions="FillAndExpand"/>
 							</Grid>
 
+							<ActivityIndicator VerticalOptions="Center" HorizontalOptions="Center"
+													 IsVisible="{Binding IsApplying}" IsRunning="{Binding IsApplying}" />
+
 							<controls:TextButton x:Name="ApplyButton" Command="{Binding ApplyCommand}"
-													Style="{StaticResource FilledTextButtonStyleNoRoundedCorners}"
-													LabelData="{l:Localize SendApplication}" />
+														Style="{StaticResource FilledTextButtonStyleNoRoundedCorners}"
+														IsVisible="{Binding IsApplying, Converter={StaticResource InvertedBoolConverter}}"
+														LabelData="{l:Localize SendApplication}" />
+
 						</VerticalStackLayout>
 
 						<VerticalStackLayout Spacing="{StaticResource MediumSpacing}" IsVisible="{Binding ApplicationSent}">
 							<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize Application}"/>
 							<Label Style="{StaticResource InfoLabelStyle}" Text="{l:Localize IdApplicationSentDescription}"/>
 							<Label Style="{StaticResource InfoLabelStyle}" Text="{l:Localize PeerReviewDescription}" IsVisible="{Binding PeerReview}"/>
+
+							<ActivityIndicator VerticalOptions="Center" HorizontalOptions="Center"
+													 IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" />
 
 							<controls:TextButton Command="{Binding ScanQrCodeCommand}" Style="{StaticResource FilledTextButtonStyleNoRoundedCorners}"
 														LabelData="{l:Localize QrScanCode}" IsVisible="{Binding PeerReview}" />

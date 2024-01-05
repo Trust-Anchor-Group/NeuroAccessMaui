@@ -381,6 +381,12 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		/// </summary>
 		public bool ApplicationSentAndConnected => this.ApplicationSent && this.IsConnected;
 
+		/// <summary>
+		/// If app is in the processing of uploading application.
+		/// </summary>
+		[ObservableProperty]
+		private bool isApplying;
+
 		#endregion
 
 		#region Commands
@@ -457,6 +463,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 				LegalIdentityAttachment[] Photos = this.photo is null ? [] : [this.photo];
 
 				this.SetIsBusy(true);
+				this.IsApplying = true;
 
 				(bool Succeeded, LegalIdentity? AddedIdentity) = await ServiceRef.NetworkService.TryRequest(() =>
 					ServiceRef.XmppService.AddLegalIdentity(this, false, Photos));
@@ -483,6 +490,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 			finally
 			{
 				this.SetIsBusy(false);
+				this.IsApplying = false;
 			}
 		}
 
