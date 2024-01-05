@@ -54,9 +54,11 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 				IdentityReference = ServiceRef.TagProfile.LegalIdentity;
 			}
 
+			ApplyIdNavigationArgs? Args = ServiceRef.NavigationService.PopLatestArgs<ApplyIdNavigationArgs>();
+
 			if (IdentityReference is not null)
 			{
-				await this.SetProperties(IdentityReference, true);
+				await this.SetProperties(IdentityReference, Args?.ReusePhoto ?? true, true);
 
 				if (string.IsNullOrEmpty(this.OrgCountryCode))
 				{
@@ -64,8 +66,6 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 					this.OrgCountryName = this.CountryName;
 				}
 			}
-
-			ApplyIdNavigationArgs? Args = ServiceRef.NavigationService.PopLatestArgs<ApplyIdNavigationArgs>();
 
 			if (Args is not null)
 			{
@@ -134,11 +134,11 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 			this.NotifyCommandsCanExecuteChanged();
 		}
 
-		protected override async Task SetProperties(LegalIdentity Identity, bool ClearPropertiesNotFound)
+		protected async Task SetProperties(LegalIdentity Identity, bool SetPhoto, bool ClearPropertiesNotFound)
 		{
 			await base.SetProperties(Identity, ClearPropertiesNotFound);
 
-			if (Identity?.Attachments is not null)
+			if (SetPhoto && Identity?.Attachments is not null)
 			{
 				Photo? First = await this.photosLoader.LoadPhotos(Identity.Attachments, SignWith.LatestApprovedIdOrCurrentKeys);
 

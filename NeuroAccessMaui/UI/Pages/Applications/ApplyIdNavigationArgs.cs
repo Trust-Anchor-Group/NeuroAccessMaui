@@ -6,13 +6,14 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 	/// Navigation arguments for the <see cref="ApplyIdPage"/> and <see cref="ApplyIdViewModel"/>.
 	/// </summary>
 	/// <param name="Personal">If the ID application is a personal ID application.</param>
-	public class ApplyIdNavigationArgs(bool Personal) : NavigationArgs()
+	/// <param name="ReusePhoto">If existing photo can be reused.</param>
+	public class ApplyIdNavigationArgs(bool Personal, bool ReusePhoto) : NavigationArgs()
 	{
 		/// <summary>
 		/// Navigation arguments for the <see cref="ApplyIdPage"/> and <see cref="ApplyIdViewModel"/>.
 		/// </summary>
 		public ApplyIdNavigationArgs()
-			: this(true)
+			: this(true, true)
 		{
 		}
 
@@ -25,5 +26,10 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		/// If it is an organizational ID application.
 		/// </summary>
 		public bool Organizational { get; } = !Personal;
+
+		/// <summary>
+		/// If existing photo can be reused.
+		/// </summary>
+		public bool ReusePhoto { get; } = ReusePhoto;
 	}
 }
