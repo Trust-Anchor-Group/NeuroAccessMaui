@@ -55,21 +55,23 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		{
 			base.OnPropertyChanged(e);
 
-			if (e.PropertyName == nameof(this.SelectedButton))
+			switch (e.PropertyName)
 			{
-				if ((this.SelectedButton is not null) && (this.SelectedButton.Button == ButtonType.Change))
-				{
-					MainThread.BeginInvokeOnMainThread(() =>
+				case nameof(this.SelectedButton):
+					if ((this.SelectedButton is not null) && (this.SelectedButton.Button == ButtonType.Change))
 					{
-						if (this.ScanQrCodeCommand.CanExecute(null))
-							this.ScanQrCodeCommand.Execute(null);
-					});
-				}
-			}
-			else if (e.PropertyName == nameof(this.IsBusy))
-			{
-				this.ContinueCommand.NotifyCanExecuteChanged();
-				this.ScanQrCodeCommand.NotifyCanExecuteChanged();
+						MainThread.BeginInvokeOnMainThread(() =>
+						{
+							if (this.ScanQrCodeCommand.CanExecute(null))
+								this.ScanQrCodeCommand.Execute(null);
+						});
+					}
+					break;
+
+				case nameof(this.IsBusy):
+					this.ContinueCommand.NotifyCanExecuteChanged();
+					this.ScanQrCodeCommand.NotifyCanExecuteChanged();
+					break;
 			}
 		}
 

@@ -73,15 +73,17 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		{
 			base.OnPropertyChanged(e);
 
-			if (e.PropertyName == nameof(this.IsBusy))
+			switch (e.PropertyName)
 			{
-				this.CreateAccountCommand.NotifyCanExecuteChanged();
-				this.CreateIdentityCommand.NotifyCanExecuteChanged();
-			}
-			else if (e.PropertyName == nameof(this.AccountText))
-			{
-				this.AccountIsNotValid = false;
-				this.AlternativeNames = [];
+				case nameof(this.IsBusy):
+					this.CreateAccountCommand.NotifyCanExecuteChanged();
+					this.CreateIdentityCommand.NotifyCanExecuteChanged();
+					break;
+
+				case nameof(this.AccountText):
+					this.AccountIsNotValid = false;
+					this.AlternativeNames = [];
+					break;
 			}
 		}
 
