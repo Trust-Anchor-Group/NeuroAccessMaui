@@ -25,12 +25,11 @@
 		public string GetBackRoute()
 		{
 			BackMethod BackMethod = this.backMethod;
+			string BackRoute = "..";
+			NavigationArgs? ParentArgs = this.parentArgs;
 
 			if (BackMethod == BackMethod.Inherited)
 			{
-				string BackRoute = "..";
-				NavigationArgs? ParentArgs = this.parentArgs;
-
 				while ((ParentArgs is not null) && (ParentArgs.backMethod == BackMethod.Inherited))
 				{
 					ParentArgs = ParentArgs.parentArgs;
@@ -40,35 +39,24 @@
 				if (ParentArgs is null)
 					return ".."; // Pop is inherited by default
 
-				BackMethod ParentBackMethod = ParentArgs.backMethod;
-
-				if (ParentBackMethod == BackMethod.Pop)
-					return "..";
-				else if (ParentBackMethod == BackMethod.ToThisPage)
-					return BackRoute + "/..";
-				/*
-				else if (ParentBackMethod == BackMethod.ToParentPage)
-					return BackRoute + "/../..";
-				else if (ParentBackMethod == BackMethod.ToMainPage)
-					return "///" + nameof(MainPage);
-				*/
+				BackMethod = ParentArgs.backMethod;
 			}
-			else
+
+			switch (BackMethod)
 			{
-				if (BackMethod == BackMethod.Pop)
+				case BackMethod.Pop:
+				default:
 					return "..";
-				else if (BackMethod == BackMethod.ToThisPage)
-					return "..";
-				/*
-				else if (BackMethod == BackMethod.ToParentPage)
-					return "../..";
-				if (this.backMethod == BackMethod.ToMainPage)
-					return "///" + nameof(MainPage);
-				*/
-			}
 
-			// all variants should be returned by now
-			throw new NotImplementedException();
+				case BackMethod.Pop2:
+					return "../..";
+
+				case BackMethod.CurrentPage:
+					if (BackMethod == BackMethod.Inherited)
+						return BackRoute + "/..";
+					else
+						return "..";
+			}
 		}
 
 		/// <summary>

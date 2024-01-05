@@ -17,20 +17,13 @@
 		Pop = 1,
 
 		/// <summary>
-		/// Pop until this page is reached
+		/// Pop two pages
 		/// </summary>
-		ToThisPage = 2,
-
-		/*
-		/// <summary>
-		/// Pop until this page's parent is reached
-		/// </summary>
-		ToParentPage = 3,
+		Pop2 = 2,
 
 		/// <summary>
-		/// Goes back to the main page - the route "///" + nameof(MainPage)
+		/// Pop until the current page is reached
 		/// </summary>
-		ToMainPage = 4,
-		*/
+		CurrentPage = 3
 	}
 }
