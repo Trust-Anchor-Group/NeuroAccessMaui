@@ -1,4 +1,6 @@
-﻿using Waher.Persistence;
+﻿using System.Net.Mime;
+using Waher.Networking.XMPP.Contracts;
+using Waher.Persistence;
 using Waher.Persistence.Filters;
 using Waher.Runtime.Inventory;
 
@@ -127,6 +129,59 @@ namespace NeuroAccessMaui.Services.AttachmentCache
 			File.WriteAllBytes(Entry.LocalFileName, Data);
 
 			await Database.Provider.Flush();
+		}
+
+		/// <summary>
+		/// Removes an image from the cache.
+		/// </summary>
+		/// <param name="Url">URL of image.</param>
+		/// <returns>If entry was found and removed.</returns>
+		public async Task<bool> Remove(string Url)
+		{
+			if (string.IsNullOrWhiteSpace(Url) || !Uri.IsWellFormedUriString(Url, UriKind.RelativeOrAbsolute))
+				return false;
+
+			CacheEntry Entry = await Database.FindFirstDeleteRest<CacheEntry>(new FilterFieldEqualTo("Url", Url));
+			if (Entry is null)
+				return false;
+
+			try
+			{
+				if (File.Exists(Entry.LocalFileName))
+					File.Delete(Entry.LocalFileName);
+
+				await Database.Delete(Entry);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		/// Removes any attachments found in an identity, from the cache.
+		/// </summary>
+		/// <param name="Attachments">Optional array of attachments to process.</param>
+		/// <returns>If attachments were found and removed.</returns>
+		public async Task<bool> RemoveAttachments(Attachment[]? Attachments)
+		{
+			if (Attachments is null)
+				return false;
+
+			bool Removed = false;
+
+			foreach (Attachment Attachment in Attachments)
+			{
+				if (!Attachment.ContentType.StartsWith("image/", StringComparison.Ordinal))
+					continue;
+
+				if (await this.Remove(Attachment.Url))
+					Removed = true;
+			}
+
+			return Removed;
 		}
 
 		private static string CreateCacheFolderIfNeeded()

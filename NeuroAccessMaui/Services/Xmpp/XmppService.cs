@@ -1298,7 +1298,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 					if (ServiceRef.TagProfile.LegalIdentity.Created > e.Identity.Created)
 						return;
 
-					ServiceRef.TagProfile.LegalIdentity = e.Identity;
+					await ServiceRef.TagProfile.SetLegalIdentity(e.Identity, true);
 					this.LegalIdentityChanged?.Invoke(this, e);
 
 					if (e.Identity.IsDiscarded() && Shell.Current.CurrentState.Location.OriginalString != Constants.Pages.RegistrationPage)
@@ -1307,7 +1307,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 						{
 							try
 							{
-								ServiceRef.TagProfile.ClearLegalIdentity();
+								await ServiceRef.TagProfile.ClearLegalIdentity();
 								ServiceRef.TagProfile.GoToStep(RegistrationStep.ValidatePhone, true);
 								await Shell.Current.GoToAsync(Constants.Pages.RegistrationPage);
 							}
@@ -1326,15 +1326,15 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 					if (e.Identity.IsDiscarded())
 					{
-						ServiceRef.TagProfile.IdentityApplication = null;
+						await ServiceRef.TagProfile.SetIdentityApplication(null, true);
 						this.IdentityApplicationChanged?.Invoke(this, e);
 					}
 					else if (e.Identity.IsApproved())
 					{
 						LegalIdentity? ToObsolete = ServiceRef.TagProfile.LegalIdentity;
 
-						ServiceRef.TagProfile.LegalIdentity = e.Identity;
-						ServiceRef.TagProfile.IdentityApplication = null;
+						await ServiceRef.TagProfile.SetLegalIdentity(e.Identity, true);
+						await ServiceRef.TagProfile.SetIdentityApplication(null, false);
 
 						this.LegalIdentityChanged?.Invoke(this, e);
 						this.IdentityApplicationChanged?.Invoke(this, e);
@@ -1344,7 +1344,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 					}
 					else
 					{
-						ServiceRef.TagProfile.IdentityApplication = e.Identity;
+						await ServiceRef.TagProfile.SetIdentityApplication(e.Identity, false);
 						this.IdentityApplicationChanged?.Invoke(this, e);
 					}
 				}
@@ -1353,7 +1353,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 					if (e.Identity.IsDiscarded())
 						return;
 
-					ServiceRef.TagProfile.LegalIdentity = e.Identity;
+					await ServiceRef.TagProfile.SetLegalIdentity(e.Identity, true);
 					this.LegalIdentityChanged?.Invoke(this, e);
 				}
 			}

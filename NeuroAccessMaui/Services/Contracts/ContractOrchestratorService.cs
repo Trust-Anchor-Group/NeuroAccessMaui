@@ -338,7 +338,7 @@ namespace NeuroAccessMaui.Services.Contracts
 			}
 			catch (ForbiddenException)    // Old ID belonging to a previous account, for example. Simply discard.
 			{
-				ServiceRef.TagProfile.ClearLegalIdentity();
+				await ServiceRef.TagProfile.ClearLegalIdentity();
 				await App.SetRegistrationPageAsync();
 				return;
 			}
@@ -358,13 +358,13 @@ namespace NeuroAccessMaui.Services.Contracts
 					if (Identity.State == IdentityState.Compromised)
 					{
 						userMessage = ServiceRef.Localizer[nameof(AppResources.YourLegalIdentityHasBeenCompromised)];
-						ServiceRef.TagProfile.CompromiseLegalIdentity(Identity);
+						await ServiceRef.TagProfile.CompromiseLegalIdentity(Identity);
 						gotoRegistrationPage = true;
 					}
 					else if (Identity.State == IdentityState.Obsoleted)
 					{
 						userMessage = ServiceRef.Localizer[nameof(AppResources.YourLegalIdentityHasBeenObsoleted)];
-						ServiceRef.TagProfile.RevokeLegalIdentity(Identity);
+						await ServiceRef.TagProfile.RevokeLegalIdentity(Identity);
 						gotoRegistrationPage = true;
 					}
 					else if (Identity.State == IdentityState.Approved && !await ServiceRef.XmppService!.HasPrivateKey(Identity.Id))
@@ -376,7 +376,7 @@ namespace NeuroAccessMaui.Services.Contracts
 							ServiceRef.Localizer[nameof(AppResources.Repair)]);
 
 						if (Response)
-							ServiceRef.TagProfile.LegalIdentity = Identity;
+							await ServiceRef.TagProfile.SetLegalIdentity(Identity, true);
 						else
 						{
 							try
@@ -394,7 +394,7 @@ namespace NeuroAccessMaui.Services.Contracts
 						}
 					}
 					else
-						ServiceRef.TagProfile.LegalIdentity = Identity;
+						await ServiceRef.TagProfile.SetLegalIdentity(Identity, true);
 
 					if (gotoRegistrationPage)
 					{

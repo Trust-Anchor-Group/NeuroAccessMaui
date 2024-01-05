@@ -1,4 +1,5 @@
-﻿using Waher.Runtime.Inventory;
+﻿using Waher.Networking.XMPP.Contracts;
+using Waher.Runtime.Inventory;
 
 namespace NeuroAccessMaui.Services.AttachmentCache
 {
@@ -25,5 +26,19 @@ namespace NeuroAccessMaui.Services.AttachmentCache
 		/// <param name="Data">Binary data of image</param>
 		/// <param name="ContentType">Content-Type of data.</param>
 		Task Add(string Url, string ParentId, bool Permanent, byte[] Data, string ContentType);
+
+		/// <summary>
+		/// Removes an image from the cache.
+		/// </summary>
+		/// <param name="Url">URL of image.</param>
+		/// <returns>If entry was found and removed.</returns>
+		Task<bool> Remove(string Url);
+
+		/// <summary>
+		/// Removes any attachments found in an identity, from the cache.
+		/// </summary>
+		/// <param name="Attachments">Optional array of attachments to process.</param>
+		/// <returns>If attachments were found and removed.</returns>
+		Task<bool> RemoveAttachments(Attachment[]? Attachments);
 	}
 }

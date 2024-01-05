@@ -25,7 +25,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 			if (ServiceRef.TagProfile.IdentityApplication is not null)
 			{
 				if (ServiceRef.TagProfile.IdentityApplication.IsDiscarded())
-					ServiceRef.TagProfile.IdentityApplication = null;
+					await ServiceRef.TagProfile.SetIdentityApplication(null, true);
 			}
 
 			this.IdentityApplicationSent = ServiceRef.TagProfile.IdentityApplication is not null;

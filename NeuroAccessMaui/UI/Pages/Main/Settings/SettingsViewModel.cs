@@ -321,7 +321,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 
 				if (succeeded && RevokedIdentity is not null)
 				{
-					ServiceRef.TagProfile.RevokeLegalIdentity(RevokedIdentity);
+					await ServiceRef.TagProfile.RevokeLegalIdentity(RevokedIdentity);
 					await App.SetRegistrationPageAsync();
 				}
 			}
@@ -351,7 +351,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 
 				if (succeeded && CompromisedIdentity is not null)
 				{
-					ServiceRef.TagProfile.CompromiseLegalIdentity(CompromisedIdentity);
+					await ServiceRef.TagProfile.CompromiseLegalIdentity(CompromisedIdentity);
 					await App.SetRegistrationPageAsync();
 				}
 			}

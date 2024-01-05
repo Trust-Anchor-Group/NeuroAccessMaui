@@ -20,6 +20,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 	{
 		private const string profilePhotoFileName = "ProfilePhoto.jpg";
 		private readonly string localPhotoFileName;
+		private readonly PhotosLoader photosLoader;
 		private LegalIdentityAttachment? photo;
 
 		/// <summary>
@@ -29,6 +30,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 			: base()
 		{
 			this.localPhotoFileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), profilePhotoFileName);
+			this.photosLoader = new PhotosLoader();
 		}
 
 		protected override async Task OnInitialize()
@@ -36,7 +38,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 			if (ServiceRef.TagProfile.IdentityApplication is not null)
 			{
 				if (ServiceRef.TagProfile.IdentityApplication.IsDiscarded())
-					ServiceRef.TagProfile.IdentityApplication = null;
+					await ServiceRef.TagProfile.SetIdentityApplication(null, true);
 			}
 
 			LegalIdentity? IdentityReference;
@@ -54,7 +56,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 
 			if (IdentityReference is not null)
 			{
-				this.SetProperties(IdentityReference, true);
+				await this.SetProperties(IdentityReference, true);
 
 				if (string.IsNullOrEmpty(this.OrgCountryCode))
 				{
@@ -91,6 +93,8 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 
 		protected override Task OnDispose()
 		{
+			this.photosLoader.CancelLoadPhotos();
+
 			ServiceRef.XmppService.IdentityApplicationChanged -= this.XmppService_IdentityApplicationChanged;
 
 			return base.OnDispose();
@@ -130,16 +134,29 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 			this.NotifyCommandsCanExecuteChanged();
 		}
 
-		protected override void SetProperties(LegalIdentity Identity, bool ClearPropertiesNotFound)
+		protected override async Task SetProperties(LegalIdentity Identity, bool ClearPropertiesNotFound)
 		{
-			base.SetProperties(Identity, ClearPropertiesNotFound);
+			await base.SetProperties(Identity, ClearPropertiesNotFound);
 
-			bool PhotoFound = false;
-
-			if (Identity.Attachments is not null)
+			if (Identity?.Attachments is not null)
 			{
-				foreach (Attachment Attachment in Identity.Attachments)
+				Photo? First = await this.photosLoader.LoadPhotos(Identity.Attachments, SignWith.LatestApprovedIdOrCurrentKeys);
+
+				if (First is null)
 				{
+					if (ClearPropertiesNotFound)
+					{
+						this.photo = null;
+						this.Image = null;
+						this.ImageBin = null;
+						this.HasPhoto = false;
+					}
+				}
+				else
+				{
+					this.Image = First.Source;
+					this.ImageBin = First.Binary;
+					this.HasPhoto = true;
 				}
 			}
 		}
@@ -333,6 +350,12 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		private ImageSource? image;
 
 		/// <summary>
+		/// Binary representation of photo
+		/// </summary>
+		[ObservableProperty]
+		private byte[]? imageBin;
+
+		/// <summary>
 		/// Rotation of <see cref="Image"/>
 		/// </summary>
 		[ObservableProperty]
@@ -431,7 +454,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 
 			try
 			{
-				LegalIdentityAttachment[] Photos = this.photo is null ? [] : [ this.photo ];
+				LegalIdentityAttachment[] Photos = this.photo is null ? [] : [this.photo];
 
 				this.SetIsBusy(true);
 
@@ -440,8 +463,16 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 
 				if (Succeeded && AddedIdentity is not null)
 				{
-					ServiceRef.TagProfile.IdentityApplication = AddedIdentity;
+					await ServiceRef.TagProfile.SetIdentityApplication(AddedIdentity, true);
 					this.ApplicationSent = true;
+
+					if (this.HasPhoto)
+					{
+						Attachment? FirstImage = AddedIdentity.Attachments.GetFirstImageAttachment();
+
+						if (FirstImage is not null && this.ImageBin is not null)
+							await ServiceRef.AttachmentCacheService.Add(FirstImage.Url, AddedIdentity.Id, true, this.ImageBin, FirstImage.ContentType);
+					}
 				}
 			}
 			catch (Exception ex)
@@ -480,7 +511,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 
 				await ServiceRef.XmppService.ObsoleteLegalIdentity(Application.Id);
 
-				ServiceRef.TagProfile.IdentityApplication = null;
+				await ServiceRef.TagProfile.SetIdentityApplication(null, true);
 				this.ApplicationSent = false;
 			}
 			catch (Exception ex)
@@ -599,6 +630,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 			this.photo = new LegalIdentityAttachment(this.localPhotoFileName, ContentType, Bin);
 			this.ImageRotation = Rotation;
 			this.Image = ImageSource.FromStream(() => new MemoryStream(Bin));
+			this.ImageBin = Bin;
 			this.HasPhoto = true;
 		}
 
@@ -747,6 +779,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 			{
 				this.photo = null;
 				this.Image = null;
+				this.ImageBin = null;
 				this.HasPhoto = false;
 
 				if (RemoveFileOnDisc && File.Exists(this.localPhotoFileName))

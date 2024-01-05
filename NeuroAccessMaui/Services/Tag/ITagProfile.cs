@@ -162,12 +162,12 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <summary>
 		/// The legal identity of the current user/profile.
 		/// </summary>
-		LegalIdentity? LegalIdentity { get; set; }
+		LegalIdentity? LegalIdentity { get; }
 
 		/// <summary>
 		/// Any current Identity application.
 		/// </summary>
-		LegalIdentity? IdentityApplication { get; set; }
+		LegalIdentity? IdentityApplication { get; }
 
 		/// <summary>
 		/// Currently selected theme.
@@ -276,7 +276,21 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <param name="ClientPasswordHash">The password hash (never send the real password).</param>
 		/// <param name="ClientPasswordHashMethod">The hash method used when hashing the password.</param>
 		/// <param name="Identity">The new identity.</param>
-		void SetAccountAndLegalIdentity(string AccountName, string ClientPasswordHash, string ClientPasswordHashMethod, LegalIdentity Identity);
+		Task SetAccountAndLegalIdentity(string AccountName, string ClientPasswordHash, string ClientPasswordHashMethod, LegalIdentity Identity);
+
+		/// <summary>
+		/// Sets the legal identity of the profile.
+		/// </summary>
+		/// <param name="Identity">Identity to set.</param>
+		/// <param name="RemoveOldAttachments">If old attachments should be removed.</param>
+		Task SetLegalIdentity(LegalIdentity? Identity, bool RemoveOldAttachments);
+
+		/// <summary>
+		/// Sets the legal identity of the profile.
+		/// </summary>
+		/// <param name="Identity">Identity to set.</param>
+		/// <param name="RemoveOldAttachments">If old attachments should be removed.</param>
+		Task SetIdentityApplication(LegalIdentity? Identity, bool RemoveOldAttachments);
 
 		/// <summary>
 		/// Revert the Set Account
@@ -286,7 +300,7 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <summary>
 		/// Revert the Set LegalIdentity
 		/// </summary>
-		void ClearLegalIdentity();
+		Task ClearLegalIdentity();
 
 		/// <summary>
 		/// Set if the user choose the educational or experimental purpose.
@@ -299,13 +313,13 @@ namespace NeuroAccessMaui.Services.Tag
 		/// Sets the current <see cref="LegalIdentity"/> to the revoked identity, and reverses the <see cref="Step"/> property.
 		/// </summary>
 		/// <param name="revokedIdentity">The revoked identity to use.</param>
-		void RevokeLegalIdentity(LegalIdentity revokedIdentity);
+		Task RevokeLegalIdentity(LegalIdentity revokedIdentity);
 
 		/// <summary>
 		/// Sets the current <see cref="LegalIdentity"/> to the compromised identity, and reverses the <see cref="Step"/> property.
 		/// </summary>
 		/// <param name="compromisedIdentity">The compromised identity to use.</param>
-		void CompromiseLegalIdentity(LegalIdentity compromisedIdentity);
+		Task CompromiseLegalIdentity(LegalIdentity compromisedIdentity);
 
 		/// <summary>
 		/// Used during XMPP service discovery. Sets the file upload parameters.

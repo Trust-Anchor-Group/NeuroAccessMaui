@@ -52,7 +52,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 					GoToRegistrationStep(RegistrationStep.DefinePin);
 				else if (LegalIdentity.IsDiscarded())
 				{
-					ServiceRef.TagProfile.ClearLegalIdentity();
+					await ServiceRef.TagProfile.ClearLegalIdentity();
 					GoToRegistrationStep(RegistrationStep.ValidatePhone);
 				}
 			}
@@ -213,7 +213,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 					ServiceRef.XmppService.AddLegalIdentity(IdentityModel, true, Photos));
 
 				if (Succeeded && AddedIdentity is not null)
-					ServiceRef.TagProfile.LegalIdentity = AddedIdentity;
+					await ServiceRef.TagProfile.SetLegalIdentity(AddedIdentity, true);
 			}
 			catch (Exception ex)
 			{

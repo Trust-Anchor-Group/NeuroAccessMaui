@@ -667,8 +667,8 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		/// Sets the properties of the view model.
 		/// </summary>
 		/// <param name="Identity">Identity containing properties to set.</param>
-		/// <param name="ClearPropertiesNotFound">If properties should be cleared if they are not found in <paramref name="Properties"/>.</param>
-		protected virtual void SetProperties(LegalIdentity Identity, bool ClearPropertiesNotFound)
+		/// <param name="ClearPropertiesNotFound">If properties should be cleared if they are not found in <paramref name="Identity"/>.</param>
+		protected virtual Task SetProperties(LegalIdentity Identity, bool ClearPropertiesNotFound)
 		{
 			if (ClearPropertiesNotFound)
 			{
@@ -801,6 +801,8 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 			this.Jid = ServiceRef.XmppService.BareJid;
 			this.PhoneNr = ServiceRef.TagProfile.PhoneNumber;
 			this.EMail = ServiceRef.TagProfile.EMail;
+
+			return Task.CompletedTask;
 		}
 
 		/// <summary>

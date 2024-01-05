@@ -164,10 +164,11 @@ namespace NeuroAccessMaui.Services.Tag
 				this.IsTest = configuration.IsTest;
 				this.Purpose = configuration.Purpose;
 				this.TestOtpTimestamp = configuration.TestOtpTimestamp;
-				this.LegalIdentity = configuration.LegalIdentity;
 				this.identityApplication = configuration.IdentityApplication;
 				this.Theme = configuration.Theme;
 				this.AuthenticationMethod = configuration.AuthenticationMethod;
+
+				this.SetLegalIdentityInternal(configuration.LegalIdentity);
 
 				// Do this last, as listeners will read the other properties when the event is fired.
 				this.GoToStep(configuration.Step);
@@ -185,9 +186,9 @@ namespace NeuroAccessMaui.Services.Tag
 		public virtual bool NeedsUpdating()
 		{
 			return string.IsNullOrWhiteSpace(this.legalJid) ||
-				   string.IsNullOrWhiteSpace(this.httpFileUploadJid) ||
-				   string.IsNullOrWhiteSpace(this.logJid) ||
-				   string.IsNullOrWhiteSpace(this.mucJid);
+					string.IsNullOrWhiteSpace(this.httpFileUploadJid) ||
+					string.IsNullOrWhiteSpace(this.logJid) ||
+					string.IsNullOrWhiteSpace(this.mucJid);
 		}
 
 		/// <summary>
@@ -649,32 +650,60 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <summary>
 		/// The legal identity of the current user/profile.
 		/// </summary>
-		public LegalIdentity? LegalIdentity
+		public LegalIdentity? LegalIdentity => this.legalIdentity;
+
+		/// <summary>
+		/// Sets the legal identity of the profile.
+		/// </summary>
+		/// <param name="Identity">Identity to set.</param>
+		/// <param name="RemoveOldAttachments">If old attachments should be removed.</param>
+		public async Task SetLegalIdentity(LegalIdentity? Identity, bool RemoveOldAttachments)
 		{
-			get => this.legalIdentity;
-			set
-			{
-				if (!Equals(this.legalIdentity, value))
-				{
-					this.legalIdentity = value;
-					this.FlagAsDirty(nameof(this.LegalIdentity));
-				}
-			}
+			Attachment[]? OldAttachments = this.SetLegalIdentityInternal(Identity);
+
+			if (RemoveOldAttachments)
+				await ServiceRef.AttachmentCacheService.RemoveAttachments(OldAttachments);
+		}
+
+		private Attachment[]? SetLegalIdentityInternal(LegalIdentity? Identity)
+		{
+			if (Equals(this.legalIdentity, Identity))
+				return null;
+
+			Attachment[]? OldAttachments = this.legalIdentity?.Attachments;
+			bool RemoveAttachments = (this.legalIdentity is not null) && (Identity is null || this.legalIdentity.Id != Identity.Id);
+
+			this.legalIdentity = Identity;
+			this.FlagAsDirty(nameof(this.LegalIdentity));
+
+			return RemoveAttachments ? OldAttachments : null;
 		}
 
 		/// <summary>
 		/// Any current Identity application.
 		/// </summary>
-		public LegalIdentity? IdentityApplication
+		public LegalIdentity? IdentityApplication => this.identityApplication;
+
+		/// <summary>
+		/// Sets the legal identity of the profile.
+		/// </summary>
+		/// <param name="Identity">Identity to set.</param>
+		/// <param name="RemoveOldAttachments">If old attachments should be removed.</param>
+		public async Task SetIdentityApplication(LegalIdentity? Identity, bool RemoveOldAttachments)
 		{
-			get => this.identityApplication;
-			set
+			if (!Equals(this.identityApplication, Identity))
 			{
-				if (!Equals(this.identityApplication, value))
-				{
-					this.identityApplication = value;
-					this.FlagAsDirty(nameof(this.IdentityApplication));
-				}
+				if (Equals(this.identityApplication, Identity))
+					return;
+
+				Attachment[]? OldAttachments = this.identityApplication?.Attachments;
+				bool RemoveAttachments = (this.identityApplication is not null) && (Identity is null || this.identityApplication.Id != Identity.Id);
+
+				this.identityApplication = Identity;
+				this.FlagAsDirty(nameof(this.IdentityApplication));
+
+				if (RemoveOldAttachments && RemoveAttachments)
+					await ServiceRef.AttachmentCacheService.RemoveAttachments(OldAttachments);
 			}
 		}
 
@@ -810,13 +839,14 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <param name="ClientPasswordHash">The password hash (never send the real password).</param>
 		/// <param name="ClientPasswordHashMethod">The hash method used when hashing the password.</param>
 		/// <param name="Identity">The new identity.</param>
-		public void SetAccountAndLegalIdentity(string AccountName, string ClientPasswordHash, string ClientPasswordHashMethod, LegalIdentity Identity)
+		public async Task SetAccountAndLegalIdentity(string AccountName, string ClientPasswordHash, string ClientPasswordHashMethod, LegalIdentity Identity)
 		{
 			this.PasswordHash = ClientPasswordHash;
 			this.PasswordHashMethod = ClientPasswordHashMethod;
 			this.ApiKey = string.Empty;
 			this.ApiSecret = string.Empty;
-			this.LegalIdentity = Identity;
+
+			await this.SetLegalIdentity(Identity, true);
 
 			// It's important for this to be the last, since it will fire the account change notification.
 			this.Account = AccountName;
@@ -838,27 +868,27 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <summary>
 		/// Revert the Set LegalIdentity
 		/// </summary>
-		public void ClearLegalIdentity()
+		public Task ClearLegalIdentity()
 		{
-			this.LegalIdentity = null;
+			return this.SetLegalIdentity(null, true);
 		}
 
 		/// <summary>
 		/// Sets the current <see cref="LegalIdentity"/> to the revoked identity, and reverses the <see cref="Step"/> property.
 		/// </summary>
 		/// <param name="RevokedIdentity">The revoked identity to use.</param>
-		public void RevokeLegalIdentity(LegalIdentity RevokedIdentity)
+		public Task RevokeLegalIdentity(LegalIdentity RevokedIdentity)
 		{
-			this.LegalIdentity = RevokedIdentity;
+			return this.SetLegalIdentity(RevokedIdentity, true);
 		}
 
 		/// <summary>
 		/// Sets the current <see cref="LegalIdentity"/> to the compromised identity, and reverses the <see cref="Step"/> property.
 		/// </summary>
 		/// <param name="CompromisedIdentity">The compromised identity to use.</param>
-		public void CompromiseLegalIdentity(LegalIdentity CompromisedIdentity)
+		public Task CompromiseLegalIdentity(LegalIdentity CompromisedIdentity)
 		{
-			this.LegalIdentity = CompromisedIdentity;
+			return this.SetLegalIdentity(CompromisedIdentity, true);
 		}
 
 		/// <summary>
