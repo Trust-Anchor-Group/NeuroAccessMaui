@@ -1029,4 +1029,16 @@
   <data name="ViewIdApplicationDescription" xml:space="preserve">
     <value>Una solicitud de identificación está pendiente de revisión. Puedes ver el estado de la solicitud aquí.</value>
   </data>
+  <data name="TakePhotoOfYourself" xml:space="preserve">
+    <value>Hazte una foto</value>
+  </data>
+  <data name="PhotoIsTooLarge" xml:space="preserve">
+    <value>La foto es demasiado grande</value>
+  </data>
+  <data name="FailedToLoadPhoto" xml:space="preserve">
+    <value>No se pudo cargar la foto</value>
+  </data>
+  <data name="PickPhotoOfYourself" xml:space="preserve">
+    <value>Escoge una foto tuya</value>
+  </data>
 </root>

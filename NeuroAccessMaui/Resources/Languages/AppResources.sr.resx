@@ -1029,4 +1029,16 @@
   <data name="ViewIdApplicationDescription" xml:space="preserve">
     <value>ID aplikacija čeka na redigovanje. Status prijave možete pogledati ovde.</value>
   </data>
+  <data name="TakePhotoOfYourself" xml:space="preserve">
+    <value>Napravite fotografiju sebe</value>
+  </data>
+  <data name="PhotoIsTooLarge" xml:space="preserve">
+    <value>Fotografija je prevelika</value>
+  </data>
+  <data name="FailedToLoadPhoto" xml:space="preserve">
+    <value>Učitavanje fotografije nije uspelo</value>
+  </data>
+  <data name="PickPhotoOfYourself" xml:space="preserve">
+    <value>Izaberi svoju fotografiju</value>
+  </data>
 </root>

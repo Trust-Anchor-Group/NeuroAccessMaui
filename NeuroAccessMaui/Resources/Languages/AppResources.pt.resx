@@ -1029,4 +1029,16 @@
   <data name="ViewIdApplicationDescription" xml:space="preserve">
     <value>Um aplicativo de ID está pendente de revisão. Você pode ver o status do aplicativo aqui.</value>
   </data>
+  <data name="TakePhotoOfYourself" xml:space="preserve">
+    <value>Tire uma foto de si mesmo</value>
+  </data>
+  <data name="PhotoIsTooLarge" xml:space="preserve">
+    <value>A foto é muito grande</value>
+  </data>
+  <data name="FailedToLoadPhoto" xml:space="preserve">
+    <value>Falha ao carregar foto</value>
+  </data>
+  <data name="PickPhotoOfYourself" xml:space="preserve">
+    <value>Escolha uma foto sua</value>
+  </data>
 </root>

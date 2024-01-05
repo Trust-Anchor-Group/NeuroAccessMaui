@@ -1029,4 +1029,16 @@
   <data name="ViewIdApplicationDescription" xml:space="preserve">
     <value>O cerere ID este în curs de examinare. Puteți vizualiza starea aplicației aici.</value>
   </data>
+  <data name="TakePhotoOfYourself" xml:space="preserve">
+    <value>Fă-ți o fotografie</value>
+  </data>
+  <data name="PhotoIsTooLarge" xml:space="preserve">
+    <value>Fotografia este prea mare</value>
+  </data>
+  <data name="FailedToLoadPhoto" xml:space="preserve">
+    <value>Nu s-a reușit încărcarea fotografiei</value>
+  </data>
+  <data name="PickPhotoOfYourself" xml:space="preserve">
+    <value>Alege o fotografie cu tine</value>
+  </data>
 </root>

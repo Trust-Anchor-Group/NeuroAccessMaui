@@ -1029,4 +1029,16 @@
   <data name="ViewIdApplicationDescription" xml:space="preserve">
     <value>En ID-søknad venter på gjennomgang. Du kan se status for søknaden her.</value>
   </data>
+  <data name="TakePhotoOfYourself" xml:space="preserve">
+    <value>Ta et bilde av deg selv</value>
+  </data>
+  <data name="PhotoIsTooLarge" xml:space="preserve">
+    <value>Bildet er for stort</value>
+  </data>
+  <data name="FailedToLoadPhoto" xml:space="preserve">
+    <value>Kunne ikke laste inn bilde</value>
+  </data>
+  <data name="PickPhotoOfYourself" xml:space="preserve">
+    <value>Velg et bilde av deg selv</value>
+  </data>
 </root>

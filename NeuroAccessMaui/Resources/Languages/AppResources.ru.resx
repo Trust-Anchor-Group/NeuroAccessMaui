@@ -1029,4 +1029,16 @@
   <data name="ViewIdApplicationDescription" xml:space="preserve">
     <value>Заявка на получение удостоверения личности находится на рассмотрении. Статус заявки можно посмотреть здесь.</value>
   </data>
+  <data name="TakePhotoOfYourself" xml:space="preserve">
+    <value>Сфотографируйтесь</value>
+  </data>
+  <data name="PhotoIsTooLarge" xml:space="preserve">
+    <value>Фотография слишком большая</value>
+  </data>
+  <data name="FailedToLoadPhoto" xml:space="preserve">
+    <value>Не удалось загрузить фотографию</value>
+  </data>
+  <data name="PickPhotoOfYourself" xml:space="preserve">
+    <value>Выберите свою фотографию</value>
+  </data>
 </root>

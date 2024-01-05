@@ -1029,4 +1029,16 @@
   <data name="ViewIdApplicationDescription" xml:space="preserve">
     <value>Ein ID-Antrag steht noch aus. Den Status des Antrags können Sie hier einsehen.</value>
   </data>
+  <data name="TakePhotoOfYourself" xml:space="preserve">
+    <value>Machen Sie ein Foto von sich</value>
+  </data>
+  <data name="PhotoIsTooLarge" xml:space="preserve">
+    <value>Foto ist zu groß</value>
+  </data>
+  <data name="FailedToLoadPhoto" xml:space="preserve">
+    <value>Das Foto konnte nicht geladen werden</value>
+  </data>
+  <data name="PickPhotoOfYourself" xml:space="preserve">
+    <value>Wählen Sie ein Foto von sich aus</value>
+  </data>
 </root>

@@ -1029,4 +1029,16 @@
   <data name="ViewIdApplicationDescription" xml:space="preserve">
     <value>ID-hakemus odottaa tarkistusta. Voit tarkastella sovelluksen tilaa täällä.</value>
   </data>
+  <data name="TakePhotoOfYourself" xml:space="preserve">
+    <value>Ota kuva itsestäsi</value>
+  </data>
+  <data name="PhotoIsTooLarge" xml:space="preserve">
+    <value>Kuva on liian suuri</value>
+  </data>
+  <data name="FailedToLoadPhoto" xml:space="preserve">
+    <value>Valokuvan lataaminen epäonnistui</value>
+  </data>
+  <data name="PickPhotoOfYourself" xml:space="preserve">
+    <value>Valitse kuva itsestäsi</value>
+  </data>
 </root>
