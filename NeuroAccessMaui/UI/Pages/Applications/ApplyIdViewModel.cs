@@ -296,6 +296,9 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		/// </summary>
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyCanExecuteChangedFor(nameof(ScanQrCodeCommand))]
+		[NotifyCanExecuteChangedFor(nameof(FeaturedPeerReviewersCommand))]
+		[NotifyCanExecuteChangedFor(nameof(RevokeApplicationCommand))]
 		[NotifyPropertyChangedFor(nameof(CanEdit))]
 		[NotifyPropertyChangedFor(nameof(CanRemovePhoto))]
 		[NotifyPropertyChangedFor(nameof(CanTakePhoto))]
