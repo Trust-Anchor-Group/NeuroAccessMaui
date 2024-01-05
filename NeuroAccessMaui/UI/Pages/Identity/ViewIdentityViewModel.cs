@@ -1012,9 +1012,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 				});
 
 				if (Succeeded2)
-				{
 					await ServiceRef.NavigationService.GoBackAsync();
-				}
 			}
 			catch (Exception ex)
 			{
