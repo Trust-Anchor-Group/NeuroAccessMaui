@@ -4,7 +4,9 @@ using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Data;
+using NeuroAccessMaui.Services.Navigation;
 using NeuroAccessMaui.Services.UI.Photos;
+using NeuroAccessMaui.UI.Pages.Identity;
 using NeuroAccessMaui.UI.Pages.Registration;
 using SkiaSharp;
 using Waher.Content;
@@ -35,6 +37,8 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 
 		protected override async Task OnInitialize()
 		{
+			this.ApplicationId = null;
+
 			if (ServiceRef.TagProfile.IdentityApplication is not null)
 			{
 				if (ServiceRef.TagProfile.IdentityApplication.IsDiscarded())
@@ -47,6 +51,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 			{
 				IdentityReference = ServiceRef.TagProfile.IdentityApplication;
 				this.ApplicationSent = true;
+				this.ApplicationId = IdentityReference.Id;
 			}
 			else
 			{
@@ -102,10 +107,12 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 
 		private Task XmppService_IdentityApplicationChanged(object Sender, LegalIdentityEventArgs e)
 		{
-			MainThread.BeginInvokeOnMainThread(() =>
+			MainThread.BeginInvokeOnMainThread(async () =>
 			{
 				this.ApplicationSent = ServiceRef.TagProfile.IdentityApplication is not null;
 
+				if (this.ApplicationId is not null && this.ApplicationId == ServiceRef.TagProfile.LegalIdentity?.Id)
+					await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), BackMethod.Pop2);
 			});
 
 			return Task.CompletedTask;
@@ -387,6 +394,12 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		[ObservableProperty]
 		private bool isApplying;
 
+		/// <summary>
+		/// ID of application.
+		/// </summary>
+		[ObservableProperty]
+		private string? applicationId;
+
 		#endregion
 
 		#region Commands
@@ -472,6 +485,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 				{
 					await ServiceRef.TagProfile.SetIdentityApplication(AddedIdentity, true);
 					this.ApplicationSent = true;
+					this.ApplicationId = AddedIdentity.Id;
 
 					if (this.HasPhoto)
 					{
