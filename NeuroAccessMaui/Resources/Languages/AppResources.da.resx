@@ -1041,4 +1041,10 @@
   <data name="PickPhotoOfYourself" xml:space="preserve">
     <value>Vælg et billede af dig selv</value>
   </data>
+  <data name="Rejected" xml:space="preserve">
+    <value>Afvist</value>
+  </data>
+  <data name="YourApplicationWasRejected" xml:space="preserve">
+    <value>Din ansøgning blev afvist.</value>
+  </data>
 </root>

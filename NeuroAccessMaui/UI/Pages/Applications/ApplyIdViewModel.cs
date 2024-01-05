@@ -113,6 +113,12 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 
 				if (this.ApplicationId is not null && this.ApplicationId == ServiceRef.TagProfile.LegalIdentity?.Id)
 					await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), BackMethod.Pop2);
+				else if (!this.ApplicationSent && !this.IsRevoking)
+				{
+					await ServiceRef.UiSerializer.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.Rejected)],
+						ServiceRef.Localizer[nameof(AppResources.YourApplicationWasRejected)]);
+				}
 			});
 
 			return Task.CompletedTask;
@@ -395,6 +401,12 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		private bool isApplying;
 
 		/// <summary>
+		/// If app is in the processing of revoking an application.
+		/// </summary>
+		[ObservableProperty]
+		private bool isRevoking;
+
+		/// <summary>
 		/// ID of application.
 		/// </summary>
 		[ObservableProperty]
@@ -530,6 +542,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 			try
 			{
 				this.SetIsBusy(true);
+				this.IsRevoking = true; // Will be cleared from event-handle.
 
 				await ServiceRef.XmppService.ObsoleteLegalIdentity(Application.Id);
 
@@ -540,6 +553,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 			{
 				ServiceRef.LogService.LogException(ex);
 				await ServiceRef.UiSerializer.DisplayException(ex);
+				this.IsRevoking = false;
 			}
 			finally
 			{

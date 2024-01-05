@@ -1041,4 +1041,10 @@
   <data name="PickPhotoOfYourself" xml:space="preserve">
     <value>Alege o fotografie cu tine</value>
   </data>
+  <data name="Rejected" xml:space="preserve">
+    <value>Respins</value>
+  </data>
+  <data name="YourApplicationWasRejected" xml:space="preserve">
+    <value>Cererea dumneavoastră a fost respinsă.</value>
+  </data>
 </root>

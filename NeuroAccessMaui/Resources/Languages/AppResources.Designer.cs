@@ -2122,6 +2122,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rejected.
+        /// </summary>
+        internal static string Rejected {
+            get {
+                return ResourceManager.GetString("Rejected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Repair.
         /// </summary>
         internal static string Repair {
@@ -2793,6 +2802,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string YouNeedToCheckCarefullyReviewed {
             get {
                 return ResourceManager.GetString("YouNeedToCheckCarefullyReviewed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your application was rejected..
+        /// </summary>
+        internal static string YourApplicationWasRejected {
+            get {
+                return ResourceManager.GetString("YourApplicationWasRejected", resourceCulture);
             }
         }
         

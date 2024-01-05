@@ -1041,4 +1041,10 @@
   <data name="PickPhotoOfYourself" xml:space="preserve">
     <value>Выберите свою фотографию</value>
   </data>
+  <data name="Rejected" xml:space="preserve">
+    <value>Отклонено</value>
+  </data>
+  <data name="YourApplicationWasRejected" xml:space="preserve">
+    <value>Ваша заявка была отклонена.</value>
+  </data>
 </root>
