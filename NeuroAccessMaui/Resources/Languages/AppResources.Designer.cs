@@ -2185,6 +2185,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Request review.
+        /// </summary>
+        internal static string RequestReview {
+            get {
+                return ResourceManager.GetString("RequestReview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Request another user to review your application..
+        /// </summary>
+        internal static string RequestReviewFromAPeer {
+            get {
+                return ResourceManager.GetString("RequestReviewFromAPeer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The request timed out.
         /// </summary>
         internal static string RequestTimedOut {
@@ -2307,6 +2325,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string SelectDisplayMode {
             get {
                 return ResourceManager.GetString("SelectDisplayMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select where to send the review request..
+        /// </summary>
+        internal static string SelectServiceProviderPeerReview {
+            get {
+                return ResourceManager.GetString("SelectServiceProviderPeerReview", resourceCulture);
             }
         }
         

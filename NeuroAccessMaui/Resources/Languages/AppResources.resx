@@ -1056,4 +1056,13 @@
   <data name="QrSectionTitlePlural" xml:space="preserve">
     <value>Point the camera at a QR-code with any of the above symbols</value>
   </data>
+  <data name="RequestReview" xml:space="preserve">
+    <value>Request review</value>
+  </data>
+  <data name="RequestReviewFromAPeer" xml:space="preserve">
+    <value>Request another user to review your application.</value>
+  </data>
+  <data name="SelectServiceProviderPeerReview" xml:space="preserve">
+    <value>Select where to send the review request.</value>
+  </data>
 </root>

@@ -1056,4 +1056,13 @@
   <data name="QrSectionTitlePlural" xml:space="preserve">
     <value>Îndreptați camera spre un cod QR cu oricare dintre simbolurile de mai sus</value>
   </data>
+  <data name="RequestReview" xml:space="preserve">
+    <value>Solicitați o examinare</value>
+  </data>
+  <data name="RequestReviewFromAPeer" xml:space="preserve">
+    <value>Solicitați unui alt utilizator să vă examineze cererea.</value>
+  </data>
+  <data name="SelectServiceProviderPeerReview" xml:space="preserve">
+    <value>Selectați unde doriți să trimiteți solicitarea de examinare.</value>
+  </data>
 </root>

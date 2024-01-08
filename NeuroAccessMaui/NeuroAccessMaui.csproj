@@ -123,6 +123,7 @@
 	  <None Remove="Resources\Images\radiobutton_unchecked_light.svg" />
 	  <None Remove="Resources\Images\settings_dark.svg" />
 	  <None Remove="Resources\Images\settings_light.svg" />
+	  <None Remove="Resources\Images\user.svg" />
 	  <None Remove="Resources\Images\view_id_dark.svg" />
 	  <None Remove="Resources\Images\view_id_light.svg" />
 	  <None Remove="Services\Data\PersonalNumbers\PersonalNumberSchemes.xml" />
@@ -222,6 +223,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="UI\Pages\Main\Settings\SettingsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Wallet\ServiceProviders\ServiceProvidersPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="UI\Popups\Pin\BasePopup.xaml">

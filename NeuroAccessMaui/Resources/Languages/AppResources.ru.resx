@@ -1056,4 +1056,13 @@
   <data name="QrSectionTitlePlural" xml:space="preserve">
     <value>Наведите камеру на QR-код с любым из вышеперечисленных символов</value>
   </data>
+  <data name="RequestReview" xml:space="preserve">
+    <value>Запросить отзыв</value>
+  </data>
+  <data name="RequestReviewFromAPeer" xml:space="preserve">
+    <value>Попросите другого пользователя проверить ваше приложение.</value>
+  </data>
+  <data name="SelectServiceProviderPeerReview" xml:space="preserve">
+    <value>Выберите, куда отправить запрос на проверку.</value>
+  </data>
 </root>

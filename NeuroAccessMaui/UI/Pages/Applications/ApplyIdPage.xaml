@@ -416,7 +416,7 @@
 							<controls:TextButton Command="{Binding ScanQrCodeCommand}" Style="{StaticResource FilledTextButtonStyleNoRoundedCorners}"
 														LabelData="{l:Localize QrScanCode}" IsVisible="{Binding PeerReview}" />
 
-							<controls:TextButton Command="{Binding FeaturedPeerReviewersCommand}" Style="{StaticResource FilledTextButtonStyleNoRoundedCorners}"
+							<controls:TextButton Command="{Binding RequestReviewCommand}" Style="{StaticResource FilledTextButtonStyleNoRoundedCorners}"
 														LabelData="{l:Localize FeaturedReviewers}" IsVisible="{Binding PeerReview}" />
 
 							<controls:TextButton Command="{Binding RevokeApplicationCommand}" Style="{StaticResource FilledTextButtonStyleNoRoundedCorners}"

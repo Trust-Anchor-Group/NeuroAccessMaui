@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseContentPage x:Name="ThisPage"
+							 x:Class="NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders.ServiceProvidersPage"
+							 x:DataType="viewmodel:ServiceProvidersViewModel"
+							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders">
+
+	<!--
+	<VisualElement.Resources>
+		<DataTemplate x:Key="ShowImageAndText" x:DataType="model:ServiceProviderModel">
+			<Grid Padding="5,5">
+				<Frame HasShadow="False" BorderColor="LightGray" Margin="0" Padding="10">
+					<Grid ColumnDefinitions="auto,*" RowDefinitions="auto">
+						<ffimage:CachedImage Grid.Column="0" Grid.Row="0" Aspect="AspectFit"
+											 WidthRequest="150" MinimumWidthRequest="150"
+											 HorizontalOptions="FillAndExpand" VerticalOptions="Center"
+											 Source="{Binding IconUrlSource}" HeightRequest="150" MinimumHeightRequest="150" />
+						<Label Grid.Column="1" Grid.Row="0"
+							   HorizontalOptions="Center" VerticalOptions="Center" LineBreakMode="CharacterWrap"
+							   TextType="Text" Text="{Binding Path=Name}" Style="{StaticResource ClickableValueLabel}"/>
+					</Grid>
+				</Frame>
+			</Grid>
+		</DataTemplate>
+		<DataTemplate x:Key="ShowImage" x:DataType="model:ServiceProviderModel">
+			<Grid Padding="5,5">
+				<Frame HasShadow="False" BorderColor="LightGray" Margin="0" Padding="10">
+					<Grid ColumnDefinitions="*" RowDefinitions="auto">
+						<Label Grid.Column="0" Grid.Row="0" IsVisible="{Binding HasIcon, Converter={converters:LogicalNot}}"
+									   HorizontalOptions="Center" VerticalOptions="Center" LineBreakMode="CharacterWrap"
+									   TextType="Text" Text="{Binding Path=Name}" Style="{StaticResource ClickableValueLabel}"/>
+						<ffimage:CachedImage Grid.Column="0" Grid.Row="0" IsVisible="{Binding HasIcon}" Aspect="AspectFit"
+											 WidthRequest="150" MinimumWidthRequest="150"
+											 HorizontalOptions="FillAndExpand" VerticalOptions="Center"
+											 Source="{Binding IconUrlSource}" HeightRequest="150" MinimumHeightRequest="150" />
+					</Grid>
+				</Frame>
+			</Grid>
+		</DataTemplate>
+		<DataTemplate x:Key="ShowText" x:DataType="model:ServiceProviderModel">
+			<Grid Padding="5,5">
+				<Frame HasShadow="False" BorderColor="LightGray" Margin="0" Padding="10">
+					<Label HorizontalOptions="Center" VerticalOptions="Center" LineBreakMode="CharacterWrap"
+							TextType="Text" Text="{Binding Path=Name}" Style="{StaticResource ClickableValueLabel}"/>
+				</Frame>
+			</Grid>
+		</DataTemplate>
+		<DataTemplate x:Key="ShowNothing" x:DataType="model:ServiceProviderModel">
+			<Grid Padding="5,5">
+				<Frame HasShadow="False" BorderColor="LightGray" Margin="0" Padding="10"/>
+			</Grid>
+		</DataTemplate>
+		<model:ServiceTemplateSelector x:Key="ServiceStyleSelector"
+									   ImageAndTextTemplate="{StaticResource ShowImageAndText}"
+									   ImageOnlyTemplate="{StaticResource ShowImage}"
+									   TextOnlyTemplate="{StaticResource ShowText}"
+									   DefaultTemplate="{StaticResource ShowNothing}"/>
+	</VisualElement.Resources>
+	-->
+	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+
+		<controls:Background/>
+
+		<ScrollView>
+			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
+											 Style="{StaticResource ImageOnlyButtonStyle}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+
+				<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=Title}" Style="{StaticResource Heading}"/>
+				<Label Grid.Column="0" Grid.Row="1" Text="{Binding Path=Description}" HorizontalOptions="Center" VerticalOptions="Start"/>
+
+			</VerticalStackLayout>
+		</ScrollView>
+	</Grid>
+
+	<!--
+	<Grid Margin="{StaticResource DefaultMargin}" ColumnDefinitions="*" RowDefinitions="auto,auto,*"
+          HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand">
+		<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=Title}" Style="{StaticResource Heading}"/>
+		<Label Grid.Column="0" Grid.Row="1" Text="{Binding Path=Description}" HorizontalOptions="Center" VerticalOptions="Start"/>
+
+		<noBounce:NoBounceCollectionView Grid.Column="0" Grid.Row="2" x:Name="ServiceProviders" VerticalOptions="StartAndExpand"
+                                         ItemSizingStrategy="MeasureAllItems" SelectionMode="Single"
+										 ItemsSource="{Binding Path=ServiceProviders}"
+										 ItemTemplate="{StaticResource ServiceStyleSelector}"
+                                         SelectedItem="{Binding Path=SelectedServiceProvider, Mode=TwoWay}">
+			<CollectionView.ItemsLayout>
+				<GridItemsLayout Orientation="Vertical" VerticalItemSpacing="0" />
+			</CollectionView.ItemsLayout>
+		</noBounce:NoBounceCollectionView>
+	</Grid>
+	-->
+</base:BaseContentPage>

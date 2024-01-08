@@ -8,10 +8,12 @@ using NeuroAccessMaui.Services.Navigation;
 using NeuroAccessMaui.Services.UI.Photos;
 using NeuroAccessMaui.UI.Pages.Identity;
 using NeuroAccessMaui.UI.Pages.Registration;
+using NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders;
 using SkiaSharp;
 using Waher.Content;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
+using IServiceProvider = Waher.Networking.XMPP.Contracts.IServiceProvider;
 
 namespace NeuroAccessMaui.UI.Pages.Applications
 {
@@ -24,6 +26,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		private readonly string localPhotoFileName;
 		private readonly PhotosLoader photosLoader;
 		private LegalIdentityAttachment? photo;
+		private ServiceProviderWithLegalId[]? peerReviewServices = null;
 
 		/// <summary>
 		/// Creates an instance of the <see cref="ApplyIdViewModel"/> class.
@@ -327,7 +330,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		[NotifyCanExecuteChangedFor(nameof(ScanQrCodeCommand))]
-		[NotifyCanExecuteChangedFor(nameof(FeaturedPeerReviewersCommand))]
+		[NotifyCanExecuteChangedFor(nameof(RequestReviewCommand))]
 		[NotifyCanExecuteChangedFor(nameof(RevokeApplicationCommand))]
 		[NotifyPropertyChangedFor(nameof(CanEdit))]
 		[NotifyPropertyChangedFor(nameof(CanRemovePhoto))]
@@ -575,7 +578,11 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 			if (string.IsNullOrEmpty(Url) || !Constants.UriSchemes.StartsWithIdScheme(Url))
 				return;
 
-			string? ReviewerId = Constants.UriSchemes.RemoveScheme(Url);
+			await this.SendPeerReviewRequest(Constants.UriSchemes.RemoveScheme(Url));
+		}
+
+		private async Task SendPeerReviewRequest(string? ReviewerId)
+		{ 
 			LegalIdentity? ToReview = ServiceRef.TagProfile.IdentityApplication;
 			if (ToReview is null || string.IsNullOrEmpty(ReviewerId))
 				return;
@@ -865,9 +872,52 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		/// Select from a list of featured peer reviewers.
 		/// </summary>
 		[RelayCommand(CanExecute = nameof(ApplicationSent))]
-		private static async Task FeaturedPeerReviewers()
+		private async Task RequestReview()
 		{
-			// TODO
+			if (this.peerReviewServices is null)
+			{
+				if (!await ServiceRef.NetworkService.TryRequest(async () =>
+				{
+					this.peerReviewServices = await ServiceRef.XmppService.GetServiceProvidersForPeerReviewAsync();
+				}))
+				{
+					return;
+				}
+			}
+
+			if ((this.peerReviewServices?.Length ?? 0) > 0)
+			{
+				List<ServiceProviderWithLegalId> ServiceProviders = [.. this.peerReviewServices, new RequestFromPeer()];
+
+				ServiceProvidersNavigationArgs e = new([.. ServiceProviders],
+					ServiceRef.Localizer[nameof(AppResources.RequestReview)],
+					ServiceRef.Localizer[nameof(AppResources.SelectServiceProviderPeerReview)]);
+
+				await ServiceRef.NavigationService.GoToAsync(nameof(ServiceProvidersPage), e, BackMethod.Pop2);
+
+				if (e.ServiceProvider is not null)
+				{
+					IServiceProvider? ServiceProvider = await e.ServiceProvider.Task;
+
+					if (ServiceProvider is ServiceProviderWithLegalId ServiceProviderWithLegalId &&
+						!string.IsNullOrEmpty(ServiceProviderWithLegalId.LegalId))
+					{
+						if (!ServiceProviderWithLegalId.External)
+						{
+							if (!await ServiceRef.NetworkService.TryRequest(async () =>
+								await ServiceRef.XmppService.SelectPeerReviewService(ServiceProvider.Id, ServiceProvider.Type)))
+							{
+								return;
+							}
+						}
+
+						await this.SendPeerReviewRequest(ServiceProviderWithLegalId.LegalId);
+						return;
+					}
+				}
+			}
+
+			await this.ScanQrCode();
 		}
 
 		#endregion

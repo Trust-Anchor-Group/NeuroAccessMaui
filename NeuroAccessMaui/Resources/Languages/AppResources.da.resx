@@ -1056,4 +1056,13 @@
   <data name="QrSectionTitlePlural" xml:space="preserve">
     <value>Ret kameraet mod en QR-kode med et af ovenstående symboler</value>
   </data>
+  <data name="RequestReview" xml:space="preserve">
+    <value>Anmod om gennemgang</value>
+  </data>
+  <data name="RequestReviewFromAPeer" xml:space="preserve">
+    <value>Anmod en anden bruger om at gennemgå din ansøgning.</value>
+  </data>
+  <data name="SelectServiceProviderPeerReview" xml:space="preserve">
+    <value>Vælg, hvor anmodningen om gennemgang skal sendes hen.</value>
+  </data>
 </root>

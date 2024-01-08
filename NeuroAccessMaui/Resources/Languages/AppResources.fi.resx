@@ -1056,4 +1056,13 @@
   <data name="QrSectionTitlePlural" xml:space="preserve">
     <value>Osoita kameralla QR-koodia, jossa on jokin yllä olevista symboleista</value>
   </data>
+  <data name="RequestReview" xml:space="preserve">
+    <value>Pyydä tarkistusta</value>
+  </data>
+  <data name="RequestReviewFromAPeer" xml:space="preserve">
+    <value>Pyydä toista käyttäjää tarkistamaan hakemuksesi.</value>
+  </data>
+  <data name="SelectServiceProviderPeerReview" xml:space="preserve">
+    <value>Valitse, minne tarkastuspyyntö lähetetään.</value>
+  </data>
 </root>

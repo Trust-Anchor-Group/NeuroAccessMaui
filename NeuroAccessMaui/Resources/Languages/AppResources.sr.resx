@@ -1056,4 +1056,13 @@
   <data name="QrSectionTitlePlural" xml:space="preserve">
     <value>Usmeri kameru na QR kod sa bilo kojim od gorenavedenih simbola</value>
   </data>
+  <data name="RequestReview" xml:space="preserve">
+    <value>Recenzija zahteva</value>
+  </data>
+  <data name="RequestReviewFromAPeer" xml:space="preserve">
+    <value>Zahtevajte od drugog korisnika da pregleda vašu aplikaciju.</value>
+  </data>
+  <data name="SelectServiceProviderPeerReview" xml:space="preserve">
+    <value>Izaberite gde želite da pošaljete zahtev za redigovanje.</value>
+  </data>
 </root>
