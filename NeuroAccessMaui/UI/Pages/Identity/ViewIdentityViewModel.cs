@@ -1,5 +1,3 @@
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
@@ -7,10 +5,13 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Data;
 using NeuroAccessMaui.Services.UI.Photos;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Text;
+using System.Windows.Input;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;
-using System.Windows.Input;
 
 namespace NeuroAccessMaui.UI.Pages.Identity
 {
@@ -395,18 +396,21 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 		/// First name of the identity
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(FullName))]
 		private string? firstName;
 
 		/// <summary>
 		/// Middle name(s) of the identity
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(FullName))]
 		private string? middleNames;
 
 		/// <summary>
 		/// Last name(s) of the identity
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(FullName))]
 		private string? lastNames;
 
 		/// <summary>
@@ -887,6 +891,23 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 		/// Used to find out if an ICommand can execute
 		/// </summary>
 		public bool CanExecuteCommands => !this.IsBusy && this.IsConnected;
+
+		/// <summary>
+		/// Full name of person
+		/// </summary>
+		public string FullName
+		{
+			get
+			{
+				StringBuilder? sb = null;
+
+				ContactInfo.AppendName(ref sb, this.FirstName);
+				ContactInfo.AppendName(ref sb, this.MiddleNames);
+				ContactInfo.AppendName(ref sb, this.LastNames);
+
+				return sb?.ToString() ?? string.Empty;
+			}
+		}
 
 		#endregion
 
