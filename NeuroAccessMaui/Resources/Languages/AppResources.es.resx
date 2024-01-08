@@ -657,8 +657,8 @@
   <data name="QrPageTitleScanInvitation" xml:space="preserve">
     <value>Invitación de escaneo</value>
   </data>
-  <data name="QrSectionTitle" xml:space="preserve">
-    <value>Apunte la cámara al código QR con el siguiente símbolo</value>
+  <data name="QrSectionTitleSingular" xml:space="preserve">
+    <value>Apunte la cámara a un código QR con el símbolo de arriba</value>
   </data>
   <data name="QrEnterManually" xml:space="preserve">
     <value>Introducir QR manualmente</value>
@@ -1052,5 +1052,8 @@
   </data>
   <data name="YouCanNowScanIdCodes" xml:space="preserve">
     <value>Ahora puede escanear los códigos QR de otras identidades digitales para solicitar más información sobre ellas.</value>
+  </data>
+  <data name="QrSectionTitlePlural" xml:space="preserve">
+    <value>Apunte la cámara a un código QR con cualquiera de los símbolos anteriores</value>
   </data>
 </root>

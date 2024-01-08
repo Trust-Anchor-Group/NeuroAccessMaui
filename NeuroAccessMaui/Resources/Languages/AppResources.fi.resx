@@ -657,8 +657,8 @@
   <data name="QrPageTitleScanInvitation" xml:space="preserve">
     <value>Skannaa kutsu</value>
   </data>
-  <data name="QrSectionTitle" xml:space="preserve">
-    <value>Osoita kameralla QR-koodia, jossa on seuraava symboli</value>
+  <data name="QrSectionTitleSingular" xml:space="preserve">
+    <value>Osoita kameralla QR-koodia, jossa on yllä oleva symboli</value>
   </data>
   <data name="QrEnterManually" xml:space="preserve">
     <value>Kirjoita QR manuaalisesti</value>
@@ -1052,5 +1052,8 @@
   </data>
   <data name="YouCanNowScanIdCodes" xml:space="preserve">
     <value>Voit nyt skannata muiden digitaalisten identiteettien QR-koodit ja pyytää niistä lisätietoja.</value>
+  </data>
+  <data name="QrSectionTitlePlural" xml:space="preserve">
+    <value>Osoita kameralla QR-koodia, jossa on jokin yllä olevista symboleista</value>
   </data>
 </root>

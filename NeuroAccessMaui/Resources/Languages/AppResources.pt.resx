@@ -657,8 +657,8 @@
   <data name="QrPageTitleScanInvitation" xml:space="preserve">
     <value>Convite de varredura</value>
   </data>
-  <data name="QrSectionTitle" xml:space="preserve">
-    <value>Aponte a câmera para o código QR com o seguinte símbolo</value>
+  <data name="QrSectionTitleSingular" xml:space="preserve">
+    <value>Aponte a câmera para um código QR com o símbolo acima</value>
   </data>
   <data name="QrEnterManually" xml:space="preserve">
     <value>Digite o QR manualmente</value>
@@ -1052,5 +1052,8 @@
   </data>
   <data name="YouCanNowScanIdCodes" xml:space="preserve">
     <value>Agora você pode escanear os códigos QR de outras identidades digitais, para solicitar mais informações sobre eles.</value>
+  </data>
+  <data name="QrSectionTitlePlural" xml:space="preserve">
+    <value>Aponte a câmera para um código QR com qualquer um dos símbolos acima</value>
   </data>
 </root>

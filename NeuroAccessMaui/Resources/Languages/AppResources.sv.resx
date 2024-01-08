@@ -657,8 +657,8 @@
   <data name="QrPageTitleScanInvitation" xml:space="preserve">
     <value>Skanna inbjudan</value>
   </data>
-  <data name="QrSectionTitle" xml:space="preserve">
-    <value>Rikta kameran mot QR-koden med följande symbol</value>
+  <data name="QrSectionTitleSingular" xml:space="preserve">
+    <value>Rikta kameran mot en QR-kod med ovanstående symbol</value>
   </data>
   <data name="QrEnterManually" xml:space="preserve">
     <value>Ange QR-kod manuellt</value>
@@ -1052,5 +1052,8 @@
   </data>
   <data name="YouCanNowScanIdCodes" xml:space="preserve">
     <value>Du kan nu skanna QR-koderna för andra digitala identiteter för att begära mer information om dem.</value>
+  </data>
+  <data name="QrSectionTitlePlural" xml:space="preserve">
+    <value>Rikta kameran mot en QR-kod med någon av ovanstående symboler</value>
   </data>
 </root>

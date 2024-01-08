@@ -657,8 +657,8 @@
   <data name="QrPageTitleScanInvitation" xml:space="preserve">
     <value>Invitație la scanare</value>
   </data>
-  <data name="QrSectionTitle" xml:space="preserve">
-    <value>Îndreptați camera spre codul QR cu următorul simbol</value>
+  <data name="QrSectionTitleSingular" xml:space="preserve">
+    <value>Îndreptați camera spre un cod QR cu simbolul de mai sus</value>
   </data>
   <data name="QrEnterManually" xml:space="preserve">
     <value>Introduceți QR manual</value>
@@ -1052,5 +1052,8 @@
   </data>
   <data name="YouCanNowScanIdCodes" xml:space="preserve">
     <value>Acum puteți scana codurile QR ale altor identități digitale, pentru a solicita mai multe informații despre acestea.</value>
+  </data>
+  <data name="QrSectionTitlePlural" xml:space="preserve">
+    <value>Îndreptați camera spre un cod QR cu oricare dintre simbolurile de mai sus</value>
   </data>
 </root>

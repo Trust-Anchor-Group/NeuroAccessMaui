@@ -46,7 +46,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 				// AllowedSchemas.Add(Constants.UriSchemes.Xmpp);
 			}
 
-			string? Url = await Services.UI.QR.QrCode.ScanQrCode(nameof(AppResources.QrPageTitleScanInvitation), [.. AllowedSchemas]);
+			string? Url = await Services.UI.QR.QrCode.ScanQrCode(nameof(AppResources.QrScanCode), [.. AllowedSchemas]);
 			if (string.IsNullOrEmpty(Url))
 				return;
 

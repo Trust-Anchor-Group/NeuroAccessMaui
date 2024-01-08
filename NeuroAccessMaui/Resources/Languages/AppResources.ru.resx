@@ -657,8 +657,8 @@
   <data name="QrPageTitleScanInvitation" xml:space="preserve">
     <value>Сканирование приглашения</value>
   </data>
-  <data name="QrSectionTitle" xml:space="preserve">
-    <value>Наведите камеру на QR-код со следующим символом</value>
+  <data name="QrSectionTitleSingular" xml:space="preserve">
+    <value>Наведите камеру на QR-код с приведенным выше символом</value>
   </data>
   <data name="QrEnterManually" xml:space="preserve">
     <value>Введите QR вручную</value>
@@ -1052,5 +1052,8 @@
   </data>
   <data name="YouCanNowScanIdCodes" xml:space="preserve">
     <value>Теперь вы можете сканировать QR-коды других цифровых удостоверений личности, чтобы запросить дополнительную информацию о них.</value>
+  </data>
+  <data name="QrSectionTitlePlural" xml:space="preserve">
+    <value>Наведите камеру на QR-код с любым из вышеперечисленных символов</value>
   </data>
 </root>

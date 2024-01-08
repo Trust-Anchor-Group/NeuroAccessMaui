@@ -657,8 +657,8 @@
   <data name="QrPageTitleScanInvitation" xml:space="preserve">
     <value>Pozivnica za skeniranje</value>
   </data>
-  <data name="QrSectionTitle" xml:space="preserve">
-    <value>Usmeri kameru na QR kod sa sledećim simbolom</value>
+  <data name="QrSectionTitleSingular" xml:space="preserve">
+    <value>Usmeri kameru na QR kod sa gorenavedetim simbolom</value>
   </data>
   <data name="QrEnterManually" xml:space="preserve">
     <value>Ručno unesite QR</value>
@@ -1052,5 +1052,8 @@
   </data>
   <data name="YouCanNowScanIdCodes" xml:space="preserve">
     <value>Sada možete da skenirate QR-kodove drugih digitalnih identiteta da biste zatražili više informacija o njima.</value>
+  </data>
+  <data name="QrSectionTitlePlural" xml:space="preserve">
+    <value>Usmeri kameru na QR kod sa bilo kojim od gorenavedenih simbola</value>
   </data>
 </root>

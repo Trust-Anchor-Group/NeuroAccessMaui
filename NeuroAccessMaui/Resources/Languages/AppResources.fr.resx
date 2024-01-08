@@ -657,8 +657,8 @@
   <data name="QrPageTitleScanInvitation" xml:space="preserve">
     <value>Numériser l’invitation</value>
   </data>
-  <data name="QrSectionTitle" xml:space="preserve">
-    <value>Dirigez l’appareil photo vers le code QR avec le symbole suivant</value>
+  <data name="QrSectionTitleSingular" xml:space="preserve">
+    <value>Pointez l’appareil photo vers un code QR avec le symbole ci-dessus</value>
   </data>
   <data name="QrEnterManually" xml:space="preserve">
     <value>Saisir le code QR manuellement</value>
@@ -1052,5 +1052,8 @@
   </data>
   <data name="YouCanNowScanIdCodes" xml:space="preserve">
     <value>Vous pouvez désormais scanner les codes QR d’autres identités numériques, pour demander plus d’informations à leur sujet.</value>
+  </data>
+  <data name="QrSectionTitlePlural" xml:space="preserve">
+    <value>Pointez l’appareil photo vers un code QR avec l’un des symboles ci-dessus</value>
   </data>
 </root>

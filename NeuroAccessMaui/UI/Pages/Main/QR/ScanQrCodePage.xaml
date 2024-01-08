@@ -28,14 +28,26 @@
 
 					<VerticalStackLayout VerticalOptions="End" Spacing="{StaticResource LargeSpacing}">
 						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" IsVisible="{Binding HasAllowedSchemas}">
-							<Border HeightRequest="66" WidthRequest="66" BackgroundColor="{Binding BackgroundIcon}" Stroke="{Binding IconColor}"
-									  StrokeShape="RoundRectangle 33" StrokeThickness="3">
-								<Path VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="40" WidthRequest="40" Aspect="Uniform"
-										Data="{Binding IconGeometry}" Fill="{Binding IconColor}" />
-							</Border>
-									
+							<FlexLayout x:Name="IconsLayout" AlignContent="Center" AlignItems="Center" BindableLayout.ItemsSource="{Binding Path=Icons}"
+											Direction="Row" JustifyContent="Center" Margin="{StaticResource SmallMargins}">
+								<BindableLayout.ItemTemplate>
+									<DataTemplate x:DataType="viewmodel:UriSchemaIcon">
+										<Border HeightRequest="66" WidthRequest="66" BackgroundColor="{Binding BackgroundColor}"
+												  Stroke="{Binding ForegroundColor}" StrokeShape="RoundRectangle 33" StrokeThickness="3">
+											<Path VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="40" WidthRequest="40" Aspect="Uniform"
+													Data="{Binding Geometry}" Fill="{Binding ForegroundColor}" />
+										</Border>
+									</DataTemplate>
+								</BindableLayout.ItemTemplate>
+							</FlexLayout>
+																		
 							<Label HorizontalOptions="Center" HorizontalTextAlignment="Center" Style="{StaticResource SectionTitleLabelStyle}"
-									 Text="{l:Localize QrSectionTitle}" TextColor="{StaticResource PrimaryBackgroundLight}" />
+									 Text="{l:Localize QrSectionTitleSingular}" TextColor="{StaticResource PrimaryBackgroundLight}"
+									 IsVisible="{Binding SingleIcon}"/>
+
+							<Label HorizontalOptions="Center" HorizontalTextAlignment="Center" Style="{StaticResource SectionTitleLabelStyle}"
+									 Text="{l:Localize QrSectionTitlePlural}" TextColor="{StaticResource PrimaryBackgroundLight}"
+									 IsVisible="{Binding MultipleIcons}"/>
 						</VerticalStackLayout>
 
 						<HorizontalStackLayout HorizontalOptions="Center" Spacing="{StaticResource LargeSpacing}">
