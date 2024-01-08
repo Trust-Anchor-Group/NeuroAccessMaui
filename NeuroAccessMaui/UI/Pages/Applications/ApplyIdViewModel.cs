@@ -55,25 +55,18 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 				IdentityReference = ServiceRef.TagProfile.IdentityApplication;
 				this.ApplicationSent = true;
 				this.ApplicationId = IdentityReference.Id;
+
+				await Task.Run(this.LoadFeaturedPeerReviewers);
 			}
 			else
 			{
 				this.ApplicationSent = false;
 				IdentityReference = ServiceRef.TagProfile.LegalIdentity;
+				this.peerReviewServices = null;
+				this.HasFeaturedPeerReviewers = false;
 			}
 
 			ApplyIdNavigationArgs? Args = ServiceRef.NavigationService.PopLatestArgs<ApplyIdNavigationArgs>();
-
-			if (IdentityReference is not null)
-			{
-				await this.SetProperties(IdentityReference, Args?.ReusePhoto ?? true, true);
-
-				if (string.IsNullOrEmpty(this.OrgCountryCode))
-				{
-					this.OrgCountryCode = this.CountryCode;
-					this.OrgCountryName = this.CountryName;
-				}
-			}
 
 			if (Args is not null)
 			{
@@ -84,6 +77,17 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 			{
 				this.Organizational = IdentityReference.IsOrganizational();
 				this.Personal = !this.Organizational;
+			}
+
+			if (IdentityReference is not null)
+			{
+				await this.SetProperties(IdentityReference, Args?.ReusePhoto ?? true, true, this.Personal, this.Organizational);
+
+				if (string.IsNullOrEmpty(this.OrgCountryCode) && this.Organizational)
+				{
+					this.OrgCountryCode = this.CountryCode;
+					this.OrgCountryName = this.CountryName;
+				}
 			}
 
 			this.RequiresOrgName = this.Organizational;
@@ -116,11 +120,25 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 
 				if (this.ApplicationId is not null && this.ApplicationId == ServiceRef.TagProfile.LegalIdentity?.Id)
 					await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), BackMethod.Pop2);
-				else if (!this.ApplicationSent && !this.IsRevoking)
+				else
 				{
-					await ServiceRef.UiSerializer.DisplayAlert(
-						ServiceRef.Localizer[nameof(AppResources.Rejected)],
-						ServiceRef.Localizer[nameof(AppResources.YourApplicationWasRejected)]);
+					if (this.ApplicationSent)
+					{
+						if (this.peerReviewServices is null)
+							await Task.Run(this.LoadFeaturedPeerReviewers);
+					}
+					else
+					{
+						this.peerReviewServices = null;
+						this.HasFeaturedPeerReviewers = false;
+					}
+
+					if (!this.ApplicationSent && !this.IsRevoking)
+					{
+						await ServiceRef.UiSerializer.DisplayAlert(
+							ServiceRef.Localizer[nameof(AppResources.Rejected)],
+							ServiceRef.Localizer[nameof(AppResources.YourApplicationWasRejected)]);
+					}
 				}
 			});
 
@@ -150,9 +168,10 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 			this.NotifyCommandsCanExecuteChanged();
 		}
 
-		protected async Task SetProperties(LegalIdentity Identity, bool SetPhoto, bool ClearPropertiesNotFound)
+		protected async Task SetProperties(LegalIdentity Identity, bool SetPhoto, bool ClearPropertiesNotFound, bool SetPersonalProperties,
+			bool SetOrganizationalProperties)
 		{
-			await base.SetProperties(Identity, ClearPropertiesNotFound);
+			await base.SetProperties(Identity, ClearPropertiesNotFound, SetPersonalProperties, SetOrganizationalProperties);
 
 			if (SetPhoto && Identity?.Attachments is not null)
 			{
@@ -322,6 +341,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		/// </summary>
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(FeaturedPeerReviewers))]
 		private bool peerReview;
 
 		/// <summary>
@@ -336,6 +356,8 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		[NotifyPropertyChangedFor(nameof(CanRemovePhoto))]
 		[NotifyPropertyChangedFor(nameof(CanTakePhoto))]
 		[NotifyPropertyChangedFor(nameof(ApplicationSentAndConnected))]
+		[NotifyPropertyChangedFor(nameof(CanRequestFeaturedPeerReviewer))]
+		[NotifyPropertyChangedFor(nameof(FeaturedPeerReviewers))]
 		private bool applicationSent;
 
 		/// <summary>
@@ -414,6 +436,25 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		/// </summary>
 		[ObservableProperty]
 		private string? applicationId;
+
+		/// <summary>
+		/// If view has featured peer reviewers.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(this.RequestReviewCommand))]
+		[NotifyPropertyChangedFor(nameof(CanRequestFeaturedPeerReviewer))]
+		[NotifyPropertyChangedFor(nameof(FeaturedPeerReviewers))]
+		private bool hasFeaturedPeerReviewers;
+
+		/// <summary>
+		/// If the user can request a review from a featured peer reviewer.
+		/// </summary>
+		public bool CanRequestFeaturedPeerReviewer => this.ApplicationSent && this.HasFeaturedPeerReviewers;
+
+		/// <summary>
+		/// If the option to request featured peer reviewer should be shown.
+		/// </summary>
+		public bool FeaturedPeerReviewers => this.CanRequestFeaturedPeerReviewer && this.PeerReview;
 
 		#endregion
 
@@ -502,6 +543,8 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 					this.ApplicationSent = true;
 					this.ApplicationId = AddedIdentity.Id;
 
+					await Task.Run(this.LoadFeaturedPeerReviewers);
+
 					if (this.HasPhoto)
 					{
 						Attachment? FirstImage = AddedIdentity.Attachments.GetFirstImageAttachment();
@@ -533,6 +576,8 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 			if (Application is null)
 			{
 				this.ApplicationSent = false;
+				this.peerReviewServices = null;
+				this.HasFeaturedPeerReviewers = false;
 				return;
 			}
 
@@ -551,6 +596,8 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 
 				await ServiceRef.TagProfile.SetIdentityApplication(null, true);
 				this.ApplicationSent = false;
+				this.peerReviewServices = null;
+				this.HasFeaturedPeerReviewers = false;
 			}
 			catch (Exception ex)
 			{
@@ -868,22 +915,27 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 			this.RemovePhoto(true);
 		}
 
+		private async Task LoadFeaturedPeerReviewers()
+		{
+			await ServiceRef.NetworkService.TryRequest(async () =>
+			{
+				this.peerReviewServices = await ServiceRef.XmppService.GetServiceProvidersForPeerReviewAsync();
+
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
+					this.HasFeaturedPeerReviewers = this.peerReviewServices.Length > 0;
+				});
+			});
+		}
+
 		/// <summary>
 		/// Select from a list of featured peer reviewers.
 		/// </summary>
-		[RelayCommand(CanExecute = nameof(ApplicationSent))]
+		[RelayCommand(CanExecute = nameof(CanRequestFeaturedPeerReviewer))]
 		private async Task RequestReview()
 		{
 			if (this.peerReviewServices is null)
-			{
-				if (!await ServiceRef.NetworkService.TryRequest(async () =>
-				{
-					this.peerReviewServices = await ServiceRef.XmppService.GetServiceProvidersForPeerReviewAsync();
-				}))
-				{
-					return;
-				}
-			}
+				await this.LoadFeaturedPeerReviewers();
 
 			if ((this.peerReviewServices?.Length ?? 0) > 0)
 			{
@@ -893,7 +945,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 					ServiceRef.Localizer[nameof(AppResources.RequestReview)],
 					ServiceRef.Localizer[nameof(AppResources.SelectServiceProviderPeerReview)]);
 
-				await ServiceRef.NavigationService.GoToAsync(nameof(ServiceProvidersPage), e, BackMethod.Pop2);
+				await ServiceRef.NavigationService.GoToAsync(nameof(ServiceProvidersPage), e, BackMethod.Pop);
 
 				if (e.ServiceProvider is not null)
 				{
@@ -914,6 +966,8 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 						await this.SendPeerReviewRequest(ServiceProviderWithLegalId.LegalId);
 						return;
 					}
+					else if (ServiceProvider is null)
+						return;
 				}
 			}
 

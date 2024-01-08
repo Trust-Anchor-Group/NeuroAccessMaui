@@ -668,7 +668,10 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		/// </summary>
 		/// <param name="Identity">Identity containing properties to set.</param>
 		/// <param name="ClearPropertiesNotFound">If properties should be cleared if they are not found in <paramref name="Identity"/>.</param>
-		protected virtual Task SetProperties(LegalIdentity Identity, bool ClearPropertiesNotFound)
+		/// <param name="SetPersonalProperties">If personal properties are to be set.</param>
+		/// <param name="SetOrganizationalProperties">If organizational properties are to be set.</param>
+		protected virtual Task SetProperties(LegalIdentity Identity, bool ClearPropertiesNotFound, bool SetPersonalProperties,
+			bool SetOrganizationalProperties)
 		{
 			if (ClearPropertiesNotFound)
 			{
@@ -707,93 +710,119 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 				switch (P.Name)
 				{
 					case Constants.XmppProperties.FirstName:
-						this.FirstName = P.Value;
+						if (SetPersonalProperties)
+							this.FirstName = P.Value;
 						break;
 
 					case Constants.XmppProperties.MiddleNames:
-						this.MiddleNames = P.Value;
+						if (SetPersonalProperties)
+							this.MiddleNames = P.Value;
 						break;
 
 					case Constants.XmppProperties.LastNames:
-						this.LastNames = P.Value;
+						if (SetPersonalProperties)
+							this.LastNames = P.Value;
 						break;
 
 					case Constants.XmppProperties.PersonalNumber:
-						this.PersonalNumber = P.Value;
+						if (SetPersonalProperties)
+							this.PersonalNumber = P.Value;
 						break;
 
 					case Constants.XmppProperties.Address:
-						this.Address = P.Value;
+						if (SetPersonalProperties)
+							this.Address = P.Value;
 						break;
 
 					case Constants.XmppProperties.Address2:
-						this.Address2 = P.Value;
+						if (SetPersonalProperties)
+							this.Address2 = P.Value;
 						break;
 
 					case Constants.XmppProperties.ZipCode:
-						this.ZipCode = P.Value;
+						if (SetPersonalProperties)
+							this.ZipCode = P.Value;
 						break;
 
 					case Constants.XmppProperties.Area:
-						this.Area = P.Value;
+						if (SetPersonalProperties)
+							this.Area = P.Value;
 						break;
 
 					case Constants.XmppProperties.City:
-						this.City = P.Value;
+						if (SetPersonalProperties)
+							this.City = P.Value;
 						break;
 
 					case Constants.XmppProperties.Region:
-						this.Region = P.Value;
+						if (SetPersonalProperties)
+							this.Region = P.Value;
 						break;
 
 					case Constants.XmppProperties.Country:
-						this.CountryCode = P.Value;
-						this.CountryName = ISO_3166_1.ToName(P.Value);
+						if (SetPersonalProperties)
+						{
+							this.CountryCode = P.Value;
+							this.CountryName = ISO_3166_1.ToName(P.Value);
+						}
 						break;
 
 					case Constants.XmppProperties.OrgName:
-						this.OrgName = P.Value;
+						if (SetOrganizationalProperties)
+							this.OrgName = P.Value;
 						break;
 
 					case Constants.XmppProperties.OrgNumber:
-						this.OrgNumber = P.Value;
+						if (SetOrganizationalProperties)
+							this.OrgNumber = P.Value;
 						break;
 
 					case Constants.XmppProperties.OrgRole:
-						this.OrgRole = P.Value;
+						if (SetOrganizationalProperties)
+							this.OrgRole = P.Value;
 						break;
 
 					case Constants.XmppProperties.OrgDepartment:
-						this.OrgDepartment = P.Value;
+						if (SetOrganizationalProperties)
+							this.OrgDepartment = P.Value;
 						break;
 
 					case Constants.XmppProperties.OrgAddress:
-						this.OrgAddress = P.Value;
+						if (SetOrganizationalProperties)
+							this.OrgAddress = P.Value;
 						break;
 
 					case Constants.XmppProperties.OrgAddress2:
-						this.OrgAddress2 = P.Value;
+						if (SetOrganizationalProperties)
+							this.OrgAddress2 = P.Value;
 						break;
 
 					case Constants.XmppProperties.OrgZipCode:
-						this.OrgZipCode = P.Value;
+						if (SetOrganizationalProperties)
+							this.OrgZipCode = P.Value;
 						break;
 
 					case Constants.XmppProperties.OrgArea:
-						this.OrgArea = P.Value;
+						if (SetOrganizationalProperties)
+							this.OrgArea = P.Value;
 						break;
 
 					case Constants.XmppProperties.OrgCity:
-						this.OrgCity = P.Value;
+						if (SetOrganizationalProperties)
+							this.OrgCity = P.Value;
 						break;
 
 					case Constants.XmppProperties.OrgRegion:
-						this.OrgRegion = P.Value;
+						if (SetOrganizationalProperties)
+							this.OrgRegion = P.Value;
 						break;
 
 					case Constants.XmppProperties.OrgCountry:
-						this.OrgCountryCode = P.Value;
-						this.OrgCountryName = ISO_3166_1.ToName(P.Value);
+						if (SetOrganizationalProperties)
+						{
+							this.OrgCountryCode = P.Value;
+							this.OrgCountryName = ISO_3166_1.ToName(P.Value);
+						}
 						break;
 				}
 			}

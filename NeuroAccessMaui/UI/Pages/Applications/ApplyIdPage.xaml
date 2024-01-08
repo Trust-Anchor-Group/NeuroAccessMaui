@@ -23,7 +23,8 @@
 				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
 											 Style="{StaticResource ImageOnlyButtonStyle}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-				<Label Style="{StaticResource PageTitleLabelStyle}" Text="{l:Localize PersonalId}"/>
+				<Label Style="{StaticResource PageTitleLabelStyle}" Text="{l:Localize PersonalId}" IsVisible="{Binding Organizational, Converter={StaticResource InvertedBoolConverter}}"/>
+				<Label Style="{StaticResource PageTitleLabelStyle}" Text="{l:Localize OrganizationalId}" IsVisible="{Binding Organizational}"/>
 
 				<!-- Photos -->
 				<Frame Style="{StaticResource FrameSet}">
@@ -417,7 +418,7 @@
 														LabelData="{l:Localize QrScanCode}" IsVisible="{Binding PeerReview}" />
 
 							<controls:TextButton Command="{Binding RequestReviewCommand}" Style="{StaticResource FilledTextButtonStyleNoRoundedCorners}"
-														LabelData="{l:Localize FeaturedReviewers}" IsVisible="{Binding PeerReview}" />
+														LabelData="{l:Localize FeaturedReviewers}" IsVisible="{Binding FeaturedPeerReviewers}" />
 
 							<controls:TextButton Command="{Binding RevokeApplicationCommand}" Style="{StaticResource FilledTextButtonStyleNoRoundedCorners}"
 														LabelData="{l:Localize RevokeApplication}" />

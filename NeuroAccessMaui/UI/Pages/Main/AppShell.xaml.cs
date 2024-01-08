@@ -5,6 +5,7 @@ using NeuroAccessMaui.UI.Pages.Main.QR;
 using NeuroAccessMaui.UI.Pages.Main.Settings;
 using NeuroAccessMaui.UI.Pages.Main.VerifyCode;
 using NeuroAccessMaui.UI.Pages.Petitions;
+using NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders;
 
 namespace NeuroAccessMaui.UI.Pages.Main
 {
@@ -29,6 +30,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			Routing.RegisterRoute(nameof(ViewIdentityPage), typeof(ViewIdentityPage));
 			Routing.RegisterRoute(nameof(ApplicationsPage), typeof(ApplicationsPage));
 			Routing.RegisterRoute(nameof(ApplyIdPage), typeof(ApplyIdPage));
+			Routing.RegisterRoute(nameof(ServiceProvidersPage), typeof(ServiceProvidersPage));
 		}
 
 		private async void Close_Clicked(object sender, EventArgs e)

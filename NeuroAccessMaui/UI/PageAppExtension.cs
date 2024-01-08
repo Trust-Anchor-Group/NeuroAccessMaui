@@ -6,6 +6,7 @@ using NeuroAccessMaui.UI.Pages.Main.Settings;
 using NeuroAccessMaui.UI.Pages.Petitions;
 using NeuroAccessMaui.UI.Pages.Registration;
 using NeuroAccessMaui.UI.Pages.Registration.Views;
+using NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders;
 using NeuroAccessMaui.UI.Popups;
 using NeuroAccessMaui.UI.Popups.Pin;
 
@@ -42,6 +43,9 @@ namespace NeuroAccessMaui.UI
 			// Applications
 			Builder.Services.AddTransient<ApplicationsPage, ApplicationsViewModel>();
 			Builder.Services.AddTransient<ApplyIdPage, ApplyIdViewModel>();
+
+			// Wallet
+			Builder.Services.AddTransient<ServiceProvidersPage, ServiceProvidersViewModel>();
 
 			// Popups
 			Builder.Services.AddTransient<ViewImagePage, ViewImageViewModel>();
