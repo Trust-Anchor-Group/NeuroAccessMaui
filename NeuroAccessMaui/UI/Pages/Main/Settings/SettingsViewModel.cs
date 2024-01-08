@@ -293,8 +293,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			ServiceRef.PlatformSpecific.ProhibitScreenCapture = true;
 		}
 
-		[RelayCommand]
-		private async Task GoBack()
+		protected override async Task GoBack()
 		{
 			if (this.RestartNeeded)
 				await App.Stop();

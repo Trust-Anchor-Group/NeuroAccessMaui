@@ -806,16 +806,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		}
 
 		/// <summary>
-		/// Command for closing current view and go back to previous view.
-		/// </summary>
-		[RelayCommand]
-		protected virtual async Task GoBack()
-		{
-			await ServiceRef.NavigationService.GoBackAsync();
-		}
-
-
-		/// <summary>
 		/// Used to find out if an ICommand can execute
 		/// </summary>
 		public virtual bool CanExecuteCommands => !this.IsBusy && this.IsConnected;

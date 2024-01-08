@@ -485,12 +485,5 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
-
-		[RelayCommand]
-		private static Task GoBack()
-		{
-			return ServiceRef.NavigationService.GoBackAsync();
-		}
-
 	}
 }

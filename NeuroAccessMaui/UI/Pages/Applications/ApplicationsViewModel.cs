@@ -107,12 +107,6 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 
 		#region Commands
 
-		[RelayCommand]
-		private static async Task GoBack()
-		{
-			await ServiceRef.NavigationService.GoBackAsync();
-		}
-
 		[RelayCommand(CanExecute = nameof(CanExecuteCommands))]
 		private async Task ViewIdApplication()
 		{

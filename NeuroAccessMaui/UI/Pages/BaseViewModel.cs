@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
@@ -297,6 +298,12 @@ namespace NeuroAccessMaui.UI.Pages
 				ServiceRef.Localizer[nameof(AppResources.Confirm)], Message,
 				ServiceRef.Localizer[nameof(AppResources.Yes)],
 				ServiceRef.Localizer[nameof(AppResources.No)]);
+		}
+
+		[RelayCommand]
+		protected virtual async Task GoBack()
+		{
+			await ServiceRef.NavigationService.GoBackAsync();
 		}
 
 	}

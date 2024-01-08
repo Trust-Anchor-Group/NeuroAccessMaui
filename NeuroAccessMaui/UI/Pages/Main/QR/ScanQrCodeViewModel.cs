@@ -293,8 +293,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 			return this.TrySetResultAndClosePage(this.ManualText!.Trim());
 		}
 
-		[RelayCommand]
-		private Task GoBack()
+		protected override Task GoBack()
 		{
 			return this.TrySetResultAndClosePage(null);
 		}

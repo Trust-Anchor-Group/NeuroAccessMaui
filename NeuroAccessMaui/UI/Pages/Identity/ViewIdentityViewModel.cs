@@ -1067,12 +1067,6 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 			}
 		}
 
-		[RelayCommand]
-		private static Task GoBack()
-		{
-			return ServiceRef.NavigationService.GoBackAsync();
-		}
-
 		#region ILinkableView
 
 		/// <summary>

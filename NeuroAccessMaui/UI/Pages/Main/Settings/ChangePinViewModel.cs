@@ -171,14 +171,5 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 				}
 			}
 		}
-
-		/// <summary>
-		/// Goes back to the previous page.
-		/// </summary>
-		[RelayCommand]
-		private static Task GoBack()
-		{
-			return ServiceRef.NavigationService.GoBackAsync();
-		}
 	}
 }
