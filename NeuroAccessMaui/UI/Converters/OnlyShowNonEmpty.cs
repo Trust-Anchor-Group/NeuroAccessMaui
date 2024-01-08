@@ -12,7 +12,9 @@ namespace NeuroAccessMaui.UI.Converters
 		{
 			if (value is string s)
 				return !string.IsNullOrEmpty(s);
-			else 
+			else if (value is bool b)
+				return b;
+			else
 				return value is not null;
 		}
 
