@@ -583,7 +583,12 @@ namespace NeuroAccessMaui.Services
 			return sb?.ToString() ?? string.Empty;
 		}
 
-		private static void AppendName(ref StringBuilder? sb, string? Value)
+		/// <summary>
+		/// Appends a value, if non-empty.
+		/// </summary>
+		/// <param name="sb">String-builder</param>
+		/// <param name="Value">Value to add.</param>
+		internal static void AppendName(ref StringBuilder? sb, string? Value)
 		{
 			if (!string.IsNullOrEmpty(Value))
 			{
