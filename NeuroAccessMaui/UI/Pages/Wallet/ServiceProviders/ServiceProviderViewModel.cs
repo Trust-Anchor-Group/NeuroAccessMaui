@@ -1,4 +1,5 @@
-﻿using IServiceProvider = Waher.Networking.XMPP.Contracts.IServiceProvider;
+﻿using CommunityToolkit.Mvvm.Input;
+using IServiceProvider = Waher.Networking.XMPP.Contracts.IServiceProvider;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 {
@@ -6,7 +7,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 	/// Service Provider information model, including related notification information.
 	/// </summary>
 	/// <param name="ServiceProvider">Contact information.</param>
-	public class ServiceProviderViewModel(IServiceProvider ServiceProvider) : XmppViewModel
+	public partial class ServiceProviderViewModel(IServiceProvider ServiceProvider) : XmppViewModel
 	{
 		private readonly IServiceProvider serviceProvider = ServiceProvider;
 		private ImageSource? iconSource;
@@ -74,5 +75,13 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 		/// Icon Height
 		/// </summary>
 		public int IconHeight => this.serviceProvider.IconHeight;
+
+		/// <summary>
+		/// Requests a review from the service provider.
+		/// </summary>
+		[RelayCommand]
+		private async Task RequestReview()
+		{
+		}
 	}
 }
