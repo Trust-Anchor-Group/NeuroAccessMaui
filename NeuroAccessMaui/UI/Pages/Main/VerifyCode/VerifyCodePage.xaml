@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<base:BaseContentPage x:Name="ThisPage" x:Class="NeuroAccessMaui.UI.Pages.Main.VerifyCode.VerifyCodePage" x:DataType="viewmodel:VerifyCodeViewModel"
-	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-	xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-	xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
-	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.VerifyCode"
-	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-	xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls">
+<base:BaseContentPage x:Name="ThisPage"
+							 x:Class="NeuroAccessMaui.UI.Pages.Main.VerifyCode.VerifyCodePage"
+							 x:DataType="viewmodel:VerifyCodeViewModel"
+							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.VerifyCode"
+							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							 xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls">
 
 	<VisualElement.Resources>
 		<ResourceDictionary>
@@ -69,154 +71,76 @@
 		</ResourceDictionary>
 	</VisualElement.Resources>
 
-	<Grid x:Name="TheMainGrid"
-		RowDefinitions="auto,*">
-
+	<Grid x:Name="TheMainGrid" RowDefinitions="auto,*">
 		<controls:Background Grid.RowSpan="2" />
 
-		<Grid
-			Grid.Row="0"
-			RowDefinitions="auto"
-			ColumnDefinitions="*">
+		<Grid Grid.Row="0" RowDefinitions="auto" ColumnDefinitions="*">
 			<Grid.Padding>
-				<Thickness
-					Left="{StaticResource LargeSpacing}"
-					Top="{StaticResource LargeSpacing}"
-					Right="{StaticResource LargeSpacing}" />
+				<Thickness Left="{StaticResource LargeSpacing}" Top="{StaticResource LargeSpacing}" Right="{StaticResource LargeSpacing}" />
 			</Grid.Padding>
-
-			<controls:ImageButton
-				Command="{Binding GoBackCommand}"
-				Style="{StaticResource ImageOnlyButtonStyle}" />
+			<controls:ImageButton Command="{Binding GoBackCommand}" Style="{StaticResource ImageOnlyButtonStyle}" />
 		</Grid>
 
-
 		<ScrollView Grid.Row="1">
-			<Grid
-				RowDefinitions="auto,auto"
-				Padding="{StaticResource LargeMargins}"
-				RowSpacing="{StaticResource LargeSpacing}">
+			<Grid RowDefinitions="auto,auto" Padding="{StaticResource LargeMargins}" RowSpacing="{StaticResource LargeSpacing}">
 
-				<VerticalStackLayout
-					Grid.Row="0"
-					Spacing="{StaticResource LargeSpacing}">
-
-					<Image
-						HorizontalOptions="Center"
-						Source="{AppThemeBinding Light=neuro_access_logo_light.png,
-												 Dark=neuro_access_logo_dark.png}" />
+				<VerticalStackLayout Grid.Row="0" Spacing="{StaticResource LargeSpacing}">
+					<Image HorizontalOptions="Center" Source="{AppThemeBinding Light=neuro_access_logo_light.png, Dark=neuro_access_logo_dark.png}" />
 				</VerticalStackLayout>
 
-				<Grid
-					Grid.Row="1"
-					RowDefinitions="auto,auto"
-					RowSpacing="{StaticResource LargeSpacing}">
-
-					<VerticalStackLayout
-						Grid.Row="0"
-						Spacing="{StaticResource LargeSpacing}">
-
+				<Grid Grid.Row="1" RowDefinitions="auto,auto" RowSpacing="{StaticResource LargeSpacing}">
+					<VerticalStackLayout Grid.Row="0" Spacing="{StaticResource LargeSpacing}">
 						<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
-							<Label
-								Style="{StaticResource PopupTitleLabelStyle}"
-								Text="{l:Localize OnboardingVerifyCodePageTitle}" />
-
-							<Label
-								Style="{StaticResource PopupDetailsLabelStyle}"
-								Text="{Binding LocalizedVerifyCodePageDetails}" />
-
+							<Label Style="{StaticResource PopupTitleLabelStyle}" Text="{l:Localize OnboardingVerifyCodePageTitle}" />
+							<Label Style="{StaticResource PopupDetailsLabelStyle}" Text="{Binding LocalizedVerifyCodePageDetails}" />
 							<Grid>
 								<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-									<Label
-										Style="{StaticResource PopupSectionTitleLabelStyle}"
-										Text="{l:Localize VerifyCodeSectionTitle}" />
-									<Grid
-										RowDefinitions="auto"
-										ColumnDefinitions="auto,*,auto,*,auto,*,auto,*,auto,*,auto"
-										ColumnSpacing="0">
+									<Label Style="{StaticResource PopupSectionTitleLabelStyle}" Text="{l:Localize VerifyCodeSectionTitle}" />
+									<Grid RowDefinitions="auto" ColumnDefinitions="auto,*,auto,*,auto,*,auto,*,auto,*,auto" ColumnSpacing="0">
 										<Grid.GestureRecognizers>
 											<TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
 										</Grid.GestureRecognizers>
-
-										<Border
-											Grid.Column="0"
-											Style="{StaticResource PopupOutlinedBorderStyle}">
-
-											<Label x:Name="InnerCode1"
-												Style="{StaticResource PopupOutlinedLabelStyle}" />
+										<Border Grid.Column="0" Style="{StaticResource PopupOutlinedBorderStyle}">
+											<Label x:Name="InnerCode1" Style="{StaticResource PopupOutlinedLabelStyle}" />
 										</Border>
-
-										<Border
-											Grid.Column="2"
-											Style="{StaticResource PopupOutlinedBorderStyle}">
-
-											<Label x:Name="InnerCode2"
-												Style="{StaticResource PopupOutlinedLabelStyle}" />
+										<Border Grid.Column="2" Style="{StaticResource PopupOutlinedBorderStyle}">
+											<Label x:Name="InnerCode2" Style="{StaticResource PopupOutlinedLabelStyle}" />
 										</Border>
-
-										<Border
-											Grid.Column="4"
-											Style="{StaticResource PopupOutlinedBorderStyle}">
-
-											<Label x:Name="InnerCode3"
-												Style="{StaticResource PopupOutlinedLabelStyle}" />
+										<Border Grid.Column="4" Style="{StaticResource PopupOutlinedBorderStyle}">
+											<Label x:Name="InnerCode3" Style="{StaticResource PopupOutlinedLabelStyle}" />
 										</Border>
-
-										<Border
-											Grid.Column="6"
-											Style="{StaticResource PopupOutlinedBorderStyle}">
-
-											<Label x:Name="InnerCode4"
-												Style="{StaticResource PopupOutlinedLabelStyle}" />
+										<Border Grid.Column="6" Style="{StaticResource PopupOutlinedBorderStyle}">
+											<Label x:Name="InnerCode4" Style="{StaticResource PopupOutlinedLabelStyle}" />
 										</Border>
-
-										<Border
-											Grid.Column="8"
-											Style="{StaticResource PopupOutlinedBorderStyle}">
-
-											<Label x:Name="InnerCode5"
-												Style="{StaticResource PopupOutlinedLabelStyle}" />
+										<Border Grid.Column="8" Style="{StaticResource PopupOutlinedBorderStyle}">
+											<Label x:Name="InnerCode5" Style="{StaticResource PopupOutlinedLabelStyle}" />
 										</Border>
-
-										<Border
-											Grid.Column="10"
-											Style="{StaticResource PopupOutlinedBorderStyle}">
-
-											<Label x:Name="InnerCode6"
-												Style="{StaticResource PopupOutlinedLabelStyle}" />
+										<Border Grid.Column="10" Style="{StaticResource PopupOutlinedBorderStyle}">
+											<Label x:Name="InnerCode6" Style="{StaticResource PopupOutlinedLabelStyle}" />
 										</Border>
 									</Grid>
 								</VerticalStackLayout>
 
 								<Entry x:Name="InnerCodeEntry"
-									VerticalOptions="End"
-									HeightRequest="{StaticResource SmallSpacing}"
-									ClearButtonVisibility="Never"
-									IsSpellCheckEnabled="False"
-									IsTextPredictionEnabled="False"
-									Keyboard="Numeric"
-									Opacity="0"
-									Text="{Binding VerifyCodeText}"
-									TextChanged="InnerCodeEntry_TextChanged" />
+										 VerticalOptions="End"
+										 HeightRequest="{StaticResource SmallSpacing}"
+										 ClearButtonVisibility="Never"
+										 IsSpellCheckEnabled="False"
+										 IsTextPredictionEnabled="False"
+										 Keyboard="Numeric"
+										 Opacity="0"
+										 Text="{Binding VerifyCodeText}"
+										 TextChanged="InnerCodeEntry_TextChanged" />
 							</Grid>
 						</VerticalStackLayout>
 					</VerticalStackLayout>
 
-					<VerticalStackLayout
-						Grid.Row="1"
-						Spacing="{StaticResource MediumSpacing}">
+					<VerticalStackLayout Grid.Row="1" Spacing="{StaticResource MediumSpacing}">
+						<controls:TextButton HorizontalOptions="FillAndExpand" Command="{Binding VerifyCommand}"
+													Style="{StaticResource FilledTextButtonStyle}" LabelData="{l:Localize Verify}" />
 
-						<controls:TextButton
-							HorizontalOptions="FillAndExpand"
-							Command="{Binding VerifyCommand}"
-							Style="{StaticResource FilledTextButtonStyle}"
-							LabelData="{l:Localize Verify}" />
-
-						<controls:TextButton
-							HorizontalOptions="FillAndExpand"
-							Command="{Binding CodeVerification.ResendCodeCommand}"
-							Style="{StaticResource OutlinedTextButtonStyle}"
-							LabelData="{Binding LocalizedResendCodeText}" />
+						<controls:TextButton HorizontalOptions="FillAndExpand" Command="{Binding CodeVerification.ResendCodeCommand}"
+													Style="{StaticResource OutlinedTextButtonStyle}" LabelData="{Binding LocalizedResendCodeText}" />
 					</VerticalStackLayout>
 				</Grid>
 			</Grid>
