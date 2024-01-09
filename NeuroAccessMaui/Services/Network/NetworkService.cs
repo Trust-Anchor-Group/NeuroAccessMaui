@@ -59,14 +59,14 @@ namespace NeuroAccessMaui.Services.Network
 			Connectivity.NetworkAccess == NetworkAccess.Internet ||
 			Connectivity.NetworkAccess == NetworkAccess.ConstrainedInternet;
 
-		public async Task<(string hostName, int port, bool isIpAddress)> LookupXmppHostnameAndPort(string domainName)
+		public async Task<(string HostName, int Port, bool IsIpAddress)> LookupXmppHostnameAndPort(string DomainName)
 		{
-			if (IPAddress.TryParse(domainName, out IPAddress? _))
-				return (domainName, defaultXmppPortNumber, true);
+			if (IPAddress.TryParse(DomainName, out IPAddress? _))
+				return (DomainName, defaultXmppPortNumber, true);
 
 			try
 			{
-				SRV endpoint = await DnsResolver.LookupServiceEndpoint(domainName, "xmpp-client", "tcp");
+				SRV endpoint = await DnsResolver.LookupServiceEndpoint(DomainName, "xmpp-client", "tcp");
 
 				if (endpoint is not null && !string.IsNullOrWhiteSpace(endpoint.TargetHost) && endpoint.Port > 0)
 					return (endpoint.TargetHost, endpoint.Port, false);
@@ -76,10 +76,11 @@ namespace NeuroAccessMaui.Services.Network
 				// No service endpoint registered
 			}
 
-			return (domainName, defaultXmppPortNumber, false);
+			return (DomainName, defaultXmppPortNumber, false);
 		}
 
-		public async Task<bool> TryRequest(Func<Task> func, bool rethrowException = false, bool displayAlert = true, [CallerMemberName] string memberName = "")
+		public async Task<bool> TryRequest(Func<Task> func, bool rethrowException = false, bool displayAlert = true,
+			[CallerMemberName] string memberName = "")
 		{
 			(bool succeeded, bool _) = await this.PerformRequestInner(async () =>
 			{
@@ -109,7 +110,7 @@ namespace NeuroAccessMaui.Services.Network
 					{
 						await ServiceRef.UiSerializer.DisplayAlert(
 							ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-							CreateMessage(ServiceRef.Localizer[nameof(AppResources.ThereIsNoNetwork)], memberName));
+							ServiceRef.Localizer[nameof(AppResources.ThereIsNoNetwork)]);
 					}
 				}
 				else
@@ -130,7 +131,7 @@ namespace NeuroAccessMaui.Services.Network
 					{
 						await ServiceRef.UiSerializer.DisplayAlert(
 							ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-							CreateMessage(ServiceRef.Localizer[nameof(AppResources.RequestTimedOut)], memberName));
+							ServiceRef.Localizer[nameof(AppResources.RequestTimedOut)]);
 					}
 				}
 				else if (ae.InnerException is TaskCanceledException tce)
@@ -141,7 +142,7 @@ namespace NeuroAccessMaui.Services.Network
 					{
 						await ServiceRef.UiSerializer.DisplayAlert(
 							ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-							CreateMessage(ServiceRef.Localizer[nameof(AppResources.RequestWasCancelled)], memberName));
+							ServiceRef.Localizer[nameof(AppResources.RequestWasCancelled)]);
 					}
 				}
 				else if (ae.InnerException is not null)
@@ -152,7 +153,7 @@ namespace NeuroAccessMaui.Services.Network
 					{
 						await ServiceRef.UiSerializer.DisplayAlert(
 							ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-							CreateMessage(ae.InnerException.Message, memberName));
+							ae.InnerException.Message);
 					}
 				}
 				else
@@ -163,7 +164,7 @@ namespace NeuroAccessMaui.Services.Network
 					{
 						await ServiceRef.UiSerializer.DisplayAlert(
 							ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-							CreateMessage(ae.Message, memberName));
+							ae.Message);
 					}
 				}
 			}
@@ -176,7 +177,7 @@ namespace NeuroAccessMaui.Services.Network
 				{
 					await ServiceRef.UiSerializer.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-						CreateMessage(ServiceRef.Localizer[nameof(AppResources.RequestTimedOut)], memberName));
+						ServiceRef.Localizer[nameof(AppResources.RequestTimedOut)]);
 				}
 			}
 			catch (TaskCanceledException tce)
@@ -188,7 +189,7 @@ namespace NeuroAccessMaui.Services.Network
 				{
 					await ServiceRef.UiSerializer.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-						CreateMessage(ServiceRef.Localizer[nameof(AppResources.RequestWasCancelled)], memberName));
+						ServiceRef.Localizer[nameof(AppResources.RequestWasCancelled)]);
 				}
 			}
 			catch (Exception e)
@@ -208,7 +209,7 @@ namespace NeuroAccessMaui.Services.Network
 				{
 					await ServiceRef.UiSerializer.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-						CreateMessage(message, memberName));
+						message);
 				}
 			}
 
@@ -218,23 +219,13 @@ namespace NeuroAccessMaui.Services.Network
 			return (false, default);
 		}
 
-
-		private static string CreateMessage(string message, string memberName)
+		private static KeyValuePair<string, object>[] GetParameter(string MemberName)
 		{
-#if DEBUG
-			if (!string.IsNullOrWhiteSpace(memberName))
-				return message + Environment.NewLine + "Caller: " + memberName;
-#endif
-			return message;
-		}
-
-		private static KeyValuePair<string, object>[] GetParameter(string memberName)
-		{
-			if (!string.IsNullOrWhiteSpace(memberName))
+			if (!string.IsNullOrWhiteSpace(MemberName))
 			{
 				return
 				[
-					new KeyValuePair<string, object>("Caller", memberName)
+					new KeyValuePair<string, object>("Caller", MemberName)
 				];
 			}
 
