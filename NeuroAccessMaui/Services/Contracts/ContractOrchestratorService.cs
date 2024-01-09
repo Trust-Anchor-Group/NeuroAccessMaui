@@ -260,8 +260,12 @@ namespace NeuroAccessMaui.Services.Contracts
 						}
 						else
 						{
-							(bool Succeeded, LegalIdentity? LegalIdentity) = await ServiceRef.NetworkService.TryRequest(
-								() => ServiceRef.XmppService.AddPeerReviewIdAttachment(ReviewedIdentity, ReviewerIdentity, e.Signature));
+							(bool Succeeded, LegalIdentity? LegalIdentity) = await ServiceRef.NetworkService.TryRequest(async () =>
+							{
+								LegalIdentity Result = await ServiceRef.XmppService.AddPeerReviewIdAttachment(ReviewedIdentity, ReviewerIdentity, e.Signature);
+								await ServiceRef.TagProfile.IncrementNrPeerReviews();
+								return Result;
+							});
 
 							if (Succeeded)
 							{

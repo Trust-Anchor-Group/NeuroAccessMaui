@@ -988,7 +988,7 @@
     <value>Les renseignements organisationnels suivants ont été inclus dans la demande d’ID d’organisation.</value>
   </data>
   <data name="PeerReviewDescription" xml:space="preserve">
-    <value>Les évaluations par les pairs sont activées, ce qui vous permet de demander à des pairs (personnes ayant déjà des identifiants numériques approuvés) d’examiner votre demande et de l’approuver en collaboration. Si vous souhaitez demander à vos pairs d’examiner votre demande, scannez les codes QR de leur identité pour leur demander d’examiner votre demande. Vous pouvez également demander un examen à n’importe quel évaluateur de pairs disponible sur votre fournisseur de services.</value>
+    <value>Les évaluations par les pairs sont activées. Cela vous permet de demander à des pairs (personnes ayant déjà des identifiants numériques approuvés) d’examiner votre demande et de l’approuver de manière collaborative.</value>
   </data>
   <data name="PersonalId" xml:space="preserve">
     <value>Pièce d’identité personnelle</value>
@@ -1064,5 +1064,8 @@
   </data>
   <data name="SelectServiceProviderPeerReview" xml:space="preserve">
     <value>Sélectionnez l’emplacement d’envoi de la demande d’avis.</value>
+  </data>
+  <data name="NrPeerReviews" xml:space="preserve">
+    <value>Nombre d’évaluations par les pairs :</value>
   </data>
 </root>

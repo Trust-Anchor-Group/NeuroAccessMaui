@@ -988,7 +988,7 @@
     <value>The following organizational information has been included in the application for an Organizational ID.</value>
   </data>
   <data name="PeerReviewDescription" xml:space="preserve">
-    <value>Peer reviews are enabled, allowing you to request peers (people with already approved digital IDs) to review your application and collaboratively approve it. If you wish to request peers to review your application, scan the QR-codes of their identities to request them to review your application. You can also request a review from any featured peer reviewers available on your service provider.</value>
+    <value>Peer reviews are enabled. This allows you to request peers (people with already approved digital IDs) to review your application and collaboratively approve it.</value>
   </data>
   <data name="PersonalId" xml:space="preserve">
     <value>Personal ID</value>
@@ -1064,5 +1064,8 @@
   </data>
   <data name="SelectServiceProviderPeerReview" xml:space="preserve">
     <value>Select where to send the review request.</value>
+  </data>
+  <data name="NrPeerReviews" xml:space="preserve">
+    <value>Number of peer reviews:</value>
   </data>
 </root>

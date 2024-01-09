@@ -988,7 +988,7 @@
     <value>Följande organisationsinformation har inkluderats i ansökan om organisations-ID.</value>
   </data>
   <data name="PeerReviewDescription" xml:space="preserve">
-    <value>Peer-granskningar är aktiverade, vilket gör att du kan begära peer-datorer (personer med redan godkända digitala ID:n) att granska din ansökan och tillsammans godkänna den. Om du vill be kollegor att granska din ansökan, skanna QR-koderna för deras identiteter för att begära att de granskar din ansökan. Du kan också begära en granskning från alla granskare som finns tillgängliga hos din tjänsteleverantör.</value>
+    <value>Peer-granskningar är aktiverade. På så sätt kan du be peers (personer med redan godkända digitala ID:n) att granska din ansökan och godkänna den tillsammans.</value>
   </data>
   <data name="PersonalId" xml:space="preserve">
     <value>Personligt ID</value>
@@ -1064,5 +1064,8 @@
   </data>
   <data name="SelectServiceProviderPeerReview" xml:space="preserve">
     <value>Välj vart du vill skicka granskningsbegäran.</value>
+  </data>
+  <data name="NrPeerReviews" xml:space="preserve">
+    <value>Antal referentgranskningar:</value>
   </data>
 </root>

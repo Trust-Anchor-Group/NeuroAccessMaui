@@ -1204,6 +1204,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Number of peer reviews:.
+        /// </summary>
+        internal static string NrPeerReviews {
+            get {
+                return ResourceManager.GetString("NrPeerReviews", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to OK.
         /// </summary>
         internal static string Ok {
@@ -1528,7 +1537,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Peer reviews are enabled, allowing you to request peers (people with already approved digital IDs) to review your application and collaboratively approve it. If you wish to request peers to review your application, scan the QR-codes of their identities to request them to review your application. You can also request a review from any featured peer reviewers available on your service provider..
+        ///   Looks up a localized string similar to Peer reviews are enabled. This allows you to request peers (people with already approved digital IDs) to review your application and collaboratively approve it..
         /// </summary>
         internal static string PeerReviewDescription {
             get {

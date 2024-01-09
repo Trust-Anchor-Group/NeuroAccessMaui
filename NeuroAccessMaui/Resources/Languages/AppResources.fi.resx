@@ -988,7 +988,7 @@
     <value>Seuraavat organisaatiotiedot on sisällytetty organisaatiotunnushakemukseen.</value>
   </data>
   <data name="PeerReviewDescription" xml:space="preserve">
-    <value>Vertaisarvioinnit ovat käytössä, joten voit pyytää vertaisarviointeja (henkilöitä, joilla on jo hyväksytyt digitaaliset tunnukset) tarkistamaan hakemuksesi ja hyväksymään sen yhteistyössä. Jos haluat pyytää kollegoita tarkistamaan hakemuksesi, skannaa heidän henkilöllisyytensä QR-koodit ja pyydä heitä tarkistamaan hakemuksesi. Voit myös pyytää arviointia keneltä tahansa palveluntarjoajasi käytettävissä olevalta vertaisarvioijalta.</value>
+    <value>Vertaisarvioinnit ovat käytössä. Näin voit pyytää kollegoita (henkilöitä, joilla on jo hyväksytyt digitaaliset tunnukset) tarkistamaan hakemuksesi ja hyväksymään sen yhteistyössä.</value>
   </data>
   <data name="PersonalId" xml:space="preserve">
     <value>Henkilötunnus</value>
@@ -1064,5 +1064,8 @@
   </data>
   <data name="SelectServiceProviderPeerReview" xml:space="preserve">
     <value>Valitse, minne tarkastuspyyntö lähetetään.</value>
+  </data>
+  <data name="NrPeerReviews" xml:space="preserve">
+    <value>Vertaisarviointien määrä:</value>
   </data>
 </root>

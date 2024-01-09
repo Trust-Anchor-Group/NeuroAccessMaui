@@ -56,6 +56,7 @@ namespace NeuroAccessMaui.Services.Tag
 		private string? mucJid;
 		private string? pinHash;
 		private long httpFileUploadMaxSize;
+		private int nrReviews;
 		private bool isTest;
 		private PurposeUse purpose;
 		private DateTime? testOtpTimestamp;
@@ -124,6 +125,7 @@ namespace NeuroAccessMaui.Services.Tag
 				TestOtpTimestamp = this.TestOtpTimestamp,
 				LegalIdentity = this.LegalIdentity,
 				IdentityApplication = this.identityApplication,
+				NrReviews = this.NrReviews,
 				Step = this.Step,
 				Theme = this.Theme,
 				AuthenticationMethod = this.AuthenticationMethod
@@ -166,6 +168,7 @@ namespace NeuroAccessMaui.Services.Tag
 				this.Purpose = configuration.Purpose;
 				this.TestOtpTimestamp = configuration.TestOtpTimestamp;
 				this.identityApplication = configuration.IdentityApplication;
+				this.nrReviews = configuration.NrReviews;
 				this.Theme = configuration.Theme;
 				this.AuthenticationMethod = configuration.AuthenticationMethod;
 
@@ -708,18 +711,44 @@ namespace NeuroAccessMaui.Services.Tag
 		{
 			if (!Equals(this.identityApplication, Identity))
 			{
-				if (Equals(this.identityApplication, Identity))
-					return;
-
 				Attachment[]? OldAttachments = this.identityApplication?.Attachments;
 				bool RemoveAttachments = (this.identityApplication is not null) && (Identity is null || this.identityApplication.Id != Identity.Id);
 
 				this.identityApplication = Identity;
 				this.FlagAsDirty(nameof(this.IdentityApplication));
 
+				if (RemoveOldAttachments || Identity is null)
+					this.NrReviews = 0;
+
 				if (RemoveOldAttachments && RemoveAttachments)
 					await ServiceRef.AttachmentCacheService.RemoveAttachments(OldAttachments);
 			}
+		}
+
+		/// <summary>
+		/// Number of peer reviews accepted for the current identity application.
+		/// </summary>
+		public int NrReviews
+		{
+			get => this.nrReviews;
+			set
+			{
+				if (this.nrReviews != value)
+				{
+					this.nrReviews = value;
+					this.FlagAsDirty(nameof(this.NrReviews));
+				}
+			}
+		}
+
+		/// <summary>
+		/// Increments the number of peer reviews performed on the current identity application.
+		/// </summary>
+		public Task IncrementNrPeerReviews()
+		{
+			this.nrReviews++;
+			this.FlagAsDirty(nameof(this.NrReviews));
+			return Task.CompletedTask;
 		}
 
 		/// <summary>
@@ -996,6 +1025,7 @@ namespace NeuroAccessMaui.Services.Tag
 			this.TestOtpTimestamp = null;
 			this.step = RegistrationStep.RequestPurpose;
 			this.defaultXmppConnectivity = false;
+			this.nrReviews = 0;
 
 			this.IsDirty = true;
 		}

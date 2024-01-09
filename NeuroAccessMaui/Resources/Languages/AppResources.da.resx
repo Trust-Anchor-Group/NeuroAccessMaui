@@ -988,7 +988,7 @@
     <value>Følgende organisationsoplysninger er inkluderet i ansøgningen om et organisations-id.</value>
   </data>
   <data name="PeerReviewDescription" xml:space="preserve">
-    <value>Peer reviews er aktiveret, så du kan anmode peers (personer med allerede godkendte digitale id'er) om at gennemgå din ansøgning og samarbejde om at godkende den. Hvis du ønsker at bede peers om at gennemgå din ansøgning, skal du scanne QR-koderne for deres identiteter for at bede dem om at gennemgå din ansøgning. Du kan også anmode om en gennemgang fra alle udvalgte peer reviewere, der er tilgængelige hos din tjenesteudbyder.</value>
+    <value>Peer reviews er aktiveret. Dette giver dig mulighed for at anmode peers (personer med allerede godkendte digitale id'er) om at gennemgå din ansøgning og samarbejde om at godkende den.</value>
   </data>
   <data name="PersonalId" xml:space="preserve">
     <value>Personligt id</value>
@@ -1064,5 +1064,8 @@
   </data>
   <data name="SelectServiceProviderPeerReview" xml:space="preserve">
     <value>Vælg, hvor anmodningen om gennemgang skal sendes hen.</value>
+  </data>
+  <data name="NrPeerReviews" xml:space="preserve">
+    <value>Antal peer reviews:</value>
   </data>
 </root>

@@ -988,7 +988,7 @@
     <value>La siguiente información de la organización se ha incluido en la solicitud de un ID de organización.</value>
   </data>
   <data name="PeerReviewDescription" xml:space="preserve">
-    <value>Las revisiones por pares están habilitadas, lo que le permite solicitar a los pares (personas con identificaciones digitales ya aprobadas) que revisen su solicitud y la aprueben de manera colaborativa. Si desea solicitar a sus compañeros que revisen su solicitud, escanee los códigos QR de sus identidades para solicitarles que revisen su solicitud. También puede solicitar una revisión de cualquier revisor destacado disponible en su proveedor de servicios.</value>
+    <value>Las revisiones por pares están habilitadas. Esto le permite solicitar a sus compañeros (personas con identificaciones digitales ya aprobadas) que revisen su solicitud y la aprueben de forma colaborativa.</value>
   </data>
   <data name="PersonalId" xml:space="preserve">
     <value>Identificación personal</value>
@@ -1064,5 +1064,8 @@
   </data>
   <data name="SelectServiceProviderPeerReview" xml:space="preserve">
     <value>Seleccione dónde enviar la solicitud de revisión.</value>
+  </data>
+  <data name="NrPeerReviews" xml:space="preserve">
+    <value>Número de revisiones por pares:</value>
   </data>
 </root>

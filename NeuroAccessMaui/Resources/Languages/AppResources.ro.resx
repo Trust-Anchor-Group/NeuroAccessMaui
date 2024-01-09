@@ -988,7 +988,7 @@
     <value>Următoarele informații organizaționale au fost incluse în cererea pentru un ID de organizație.</value>
   </data>
   <data name="PeerReviewDescription" xml:space="preserve">
-    <value>Evaluările inter pares sunt activate, permițându-vă să solicitați colegilor (persoane cu ID-uri digitale deja aprobate) să vă revizuiască cererea și să o aprobe în colaborare. Dacă doriți să solicitați colegilor să vă examineze cererea, scanați codurile QR ale identității lor pentru a le solicita să vă examineze cererea. De asemenea, puteți solicita o revizuire de la orice recenzori peer prezentați disponibili la furnizorul dvs. de servicii.</value>
+    <value>Evaluările inter pares sunt activate. Acest lucru vă permite să solicitați colegilor (persoane cu ID-uri digitale deja aprobate) să vă revizuiască cererea și să o aprobe în colaborare.</value>
   </data>
   <data name="PersonalId" xml:space="preserve">
     <value>Personal ID</value>
@@ -1064,5 +1064,8 @@
   </data>
   <data name="SelectServiceProviderPeerReview" xml:space="preserve">
     <value>Selectați unde doriți să trimiteți solicitarea de examinare.</value>
+  </data>
+  <data name="NrPeerReviews" xml:space="preserve">
+    <value>Numărul de evaluări inter pares:</value>
   </data>
 </root>

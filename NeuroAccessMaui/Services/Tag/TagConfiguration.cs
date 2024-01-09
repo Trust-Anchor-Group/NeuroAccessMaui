@@ -156,6 +156,12 @@ namespace NeuroAccessMaui.Services
 		public LegalIdentity? IdentityApplication { get; set; }
 
 		/// <summary>
+		/// Number of peer reviews accepted for the current identity application.
+		/// </summary>
+		[DefaultValue(0)]
+		public int NrReviews { get; set; }
+
+		/// <summary>
 		/// Current step in the registration process.
 		/// </summary>
 		[DefaultValue(RegistrationStep.RequestPurpose)]

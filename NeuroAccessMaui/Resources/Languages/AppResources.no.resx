@@ -988,7 +988,7 @@
     <value>Følgende organisasjonsinformasjon er inkludert i søknaden om en organisasjons-ID.</value>
   </data>
   <data name="PeerReviewDescription" xml:space="preserve">
-    <value>Fagfellevurderinger er aktivert, slik at du kan be fagfeller (personer med allerede godkjente digitale ID-er) om å gjennomgå søknaden din og samarbeide om å godkjenne den. Hvis du ønsker å be fagfeller om å gjennomgå søknaden din, kan du skanne QR-kodene til identiteten deres for å be dem om å gjennomgå søknaden din. Du kan også be om en gjennomgang fra alle fremhevede fagfeller som er tilgjengelige hos tjenesteleverandøren.</value>
+    <value>Fagfellevurderinger er aktivert. Dette gjør at du kan be noder (personer med allerede godkjente digitale ID-er) om å gjennomgå søknaden din og samarbeide om å godkjenne den.</value>
   </data>
   <data name="PersonalId" xml:space="preserve">
     <value>Personlig ID</value>
@@ -1064,5 +1064,8 @@
   </data>
   <data name="SelectServiceProviderPeerReview" xml:space="preserve">
     <value>Velg hvor forespørselen om gjennomgang skal sendes.</value>
+  </data>
+  <data name="NrPeerReviews" xml:space="preserve">
+    <value>Antall fagfellevurderinger:</value>
   </data>
 </root>

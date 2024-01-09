@@ -170,6 +170,11 @@ namespace NeuroAccessMaui.Services.Tag
 		LegalIdentity? IdentityApplication { get; }
 
 		/// <summary>
+		/// Number of peer reviews accepted for the current identity application.
+		/// </summary>
+		int NrReviews { get; }
+
+		/// <summary>
 		/// Currently selected theme.
 		/// </summary>
 		AppTheme? Theme { get; }
@@ -291,6 +296,11 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <param name="Identity">Identity to set.</param>
 		/// <param name="RemoveOldAttachments">If old attachments should be removed.</param>
 		Task SetIdentityApplication(LegalIdentity? Identity, bool RemoveOldAttachments);
+
+		/// <summary>
+		/// Increments the number of peer reviews performed on the current identity application.
+		/// </summary>
+		Task IncrementNrPeerReviews();
 
 		/// <summary>
 		/// Revert the Set Account

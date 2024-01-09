@@ -988,7 +988,7 @@
     <value>Sledeće organizacione informacije su uključene u aplikaciju za organizacioni ID.</value>
   </data>
   <data name="PeerReviewDescription" xml:space="preserve">
-    <value>Pregledi ravnopravnih uređaja su omogućeni, što vam omogućava da zahtevate od vršnjaka (osoba sa već odobrenim digitalnim ID-ovima) da pregledaju vašu aplikaciju i saradnički je odobre. Ako želite da zatražite od vršnjaka da pregledaju vašu aplikaciju, skenirajte QR kodove njihovih identiteta da biste ih zatražili da pregledaju vašu aplikaciju. Takođe možete da zatražite pregled od svih istaknutih vršnjačkih redaktora koji su dostupni na dobavljaču usluga.</value>
+    <value>Vršnjačke recenzije su omogućene. Ovo vam omogućava da zahtevate od vršnjaka (osoba sa već odobrenim digitalnim ID-ovima) da pregledaju vašu aplikaciju i saradnički je odobre.</value>
   </data>
   <data name="PersonalId" xml:space="preserve">
     <value>Lična lična id</value>
@@ -1064,5 +1064,8 @@
   </data>
   <data name="SelectServiceProviderPeerReview" xml:space="preserve">
     <value>Izaberite gde želite da pošaljete zahtev za redigovanje.</value>
+  </data>
+  <data name="NrPeerReviews" xml:space="preserve">
+    <value>Broj vršnjačkih recenzija:</value>
   </data>
 </root>

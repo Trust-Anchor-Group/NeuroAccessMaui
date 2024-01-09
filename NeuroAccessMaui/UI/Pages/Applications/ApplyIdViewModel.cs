@@ -55,6 +55,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 				IdentityReference = ServiceRef.TagProfile.IdentityApplication;
 				this.ApplicationSent = true;
 				this.ApplicationId = IdentityReference.Id;
+				this.NrReviews = ServiceRef.TagProfile.NrReviews;
 
 				await Task.Run(this.LoadFeaturedPeerReviewers);
 			}
@@ -62,6 +63,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 			{
 				this.ApplicationSent = false;
 				IdentityReference = ServiceRef.TagProfile.LegalIdentity;
+				this.NrReviews = 0;
 				this.peerReviewServices = null;
 				this.HasFeaturedPeerReviewers = false;
 			}
@@ -117,6 +119,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 			MainThread.BeginInvokeOnMainThread(async () =>
 			{
 				this.ApplicationSent = ServiceRef.TagProfile.IdentityApplication is not null;
+				this.NrReviews = ServiceRef.TagProfile.NrReviews;
 
 				if (this.ApplicationId is not null && this.ApplicationId == ServiceRef.TagProfile.LegalIdentity?.Id)
 					await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), BackMethod.Pop2);
@@ -335,6 +338,12 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		private int nrReviewers;
+
+		/// <summary>
+		/// Number of reviews on current application.
+		/// </summary>
+		[ObservableProperty]
+		private int nrReviews;
 
 		/// <summary>
 		/// If peer review is permitted.

@@ -988,7 +988,7 @@
     <value>As seguintes informações organizacionais foram incluídas no aplicativo para uma ID organizacional.</value>
   </data>
   <data name="PeerReviewDescription" xml:space="preserve">
-    <value>As revisões por pares estão habilitadas, permitindo que você solicite que os pares (pessoas com IDs digitais já aprovadas) revisem seu aplicativo e o aprovem de forma colaborativa. Se você deseja solicitar que colegas revisem seu aplicativo, escaneie os códigos QR de suas identidades para solicitar que eles revisem seu pedido. Você também pode solicitar uma revisão de qualquer revisor de pares em destaque disponível em seu provedor de serviços.</value>
+    <value>As revisões por pares estão habilitadas. Isso permite que você solicite que colegas (pessoas com IDs digitais já aprovadas) analisem seu aplicativo e o aprovem de forma colaborativa.</value>
   </data>
   <data name="PersonalId" xml:space="preserve">
     <value>Identificação pessoal</value>
@@ -1064,5 +1064,8 @@
   </data>
   <data name="SelectServiceProviderPeerReview" xml:space="preserve">
     <value>Selecione para onde enviar a solicitação de revisão.</value>
+  </data>
+  <data name="NrPeerReviews" xml:space="preserve">
+    <value>Número de avaliações por pares:</value>
   </data>
 </root>
