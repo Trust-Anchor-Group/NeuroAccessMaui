@@ -12,6 +12,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 	/// </summary>
 	public partial class ServiceProvidersViewModel : XmppViewModel
 	{
+		private const int defaultIconHeight = 150;
+
 		private readonly bool useShellNavigationService;
 		private ServiceProvidersNavigationArgs? navigationArgs;
 
@@ -50,7 +52,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 			if (this.navigationArgs is not null)
 			{
 				foreach (IServiceProvider ServiceProvider in this.navigationArgs.ServiceProviders)
-					this.ServiceProviders.Add(new ServiceProviderViewModel(ServiceProvider));
+					this.ServiceProviders.Add(new ServiceProviderViewModel(ServiceProvider, defaultIconHeight));
 			}
 		}
 

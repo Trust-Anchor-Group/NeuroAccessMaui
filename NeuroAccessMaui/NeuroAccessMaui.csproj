@@ -117,13 +117,13 @@
 	  <None Remove="Resources\Images\photo_placeholder.svg" />
 	  <None Remove="Resources\Images\pin_code_dark.svg" />
 	  <None Remove="Resources\Images\pin_code_light.svg" />
+	  <None Remove="Resources\Images\qr_person.svg" />
 	  <None Remove="Resources\Images\radiobutton_checked_dark.svg" />
 	  <None Remove="Resources\Images\radiobutton_checked_light.svg" />
 	  <None Remove="Resources\Images\radiobutton_unchecked_dark.svg" />
 	  <None Remove="Resources\Images\radiobutton_unchecked_light.svg" />
 	  <None Remove="Resources\Images\settings_dark.svg" />
 	  <None Remove="Resources\Images\settings_light.svg" />
-	  <None Remove="Resources\Images\user.svg" />
 	  <None Remove="Resources\Images\view_id_dark.svg" />
 	  <None Remove="Resources\Images\view_id_light.svg" />
 	  <None Remove="Services\Data\PersonalNumbers\PersonalNumberSchemes.xml" />

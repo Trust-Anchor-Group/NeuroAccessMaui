@@ -7,7 +7,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 	/// Service Provider information model, including related notification information.
 	/// </summary>
 	/// <param name="ServiceProvider">Contact information.</param>
-	public partial class ServiceProviderViewModel(IServiceProvider ServiceProvider) : XmppViewModel
+	public partial class ServiceProviderViewModel(IServiceProvider ServiceProvider, int IconHeight) : XmppViewModel
 	{
 		private readonly IServiceProvider serviceProvider = ServiceProvider;
 		private ImageSource? iconSource;
@@ -48,6 +48,27 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 		public bool ShowText => !this.HasIcon || this.IconWidth <= 250 || this.serviceProvider.GetType().Assembly == typeof(App).Assembly;
 
 		/// <summary>
+		/// Icon Height
+		/// </summary>
+		public int IconHeight { get; } = IconHeight;
+
+		/// <summary>
+		/// Icon Width
+		/// </summary>
+		public int IconWidth
+		{
+			get
+			{
+				if (!this.HasIcon || this.serviceProvider.IconHeight == 0)
+					return 0;
+
+				double s = ((double)this.IconHeight) / this.serviceProvider.IconHeight;
+				
+				return (int)(this.serviceProvider.IconWidth * s + 0.5);
+			}
+		}
+
+		/// <summary>
 		/// Icon URL Source
 		/// </summary>
 		public ImageSource? IconUrlSource
@@ -58,23 +79,17 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 				{
 					if (this.IconUrl.StartsWith("resource://", StringComparison.Ordinal))
 						this.iconSource = ImageSource.FromResource(this.IconUrl[11..]);
+					else if (this.IconUrl.StartsWith("file://", StringComparison.Ordinal))
+						this.iconSource = this.IconUrl[7..];
 					else if (Uri.TryCreate(this.IconUrl, UriKind.Absolute, out Uri? ParsedUri))
 						this.iconSource = ImageSource.FromUri(ParsedUri);
+					else
+						this.iconSource = ImageSource.FromFile(this.IconUrl);
 				}
 
 				return this.iconSource;
 			}
 		}
-
-		/// <summary>
-		/// Icon Width
-		/// </summary>
-		public int IconWidth => this.serviceProvider.IconWidth;
-
-		/// <summary>
-		/// Icon Height
-		/// </summary>
-		public int IconHeight => this.serviceProvider.IconHeight;
 
 		/// <summary>
 		/// Requests a review from the service provider.
