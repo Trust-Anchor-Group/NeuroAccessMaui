@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.UI.Pages.Identity;
 
 namespace NeuroAccessMaui.UI.Pages.Main
 {
@@ -51,6 +52,19 @@ namespace NeuroAccessMaui.UI.Pages.Main
 				return;
 
 			await App.OpenUrlAsync(Url);
+		}
+
+		[RelayCommand]
+		public static async Task ViewId()
+		{
+			try
+			{
+				await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage));
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
 		}
 	}
 }

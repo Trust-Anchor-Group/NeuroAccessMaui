@@ -15,41 +15,36 @@
 							 Shell.NavBarIsVisible="True">
 
 	<Grid x:Name="TheMainGrid"
-			RowDefinitions="auto,*"
+			RowDefinitions="auto,*,auto"
 			ColumnDefinitions="*"
 			BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
 
-		<controls:Background Grid.RowSpan="2" />
+		<controls:Background Grid.RowSpan="3" />
 
-		<Grid Grid.Row="0"
-				RowDefinitions="auto"
-				ColumnDefinitions="*">
+		<Grid Grid.Row="1"
+				RowDefinitions="auto,*"
+				Padding="{StaticResource LargeMargins}"
+				RowSpacing="{StaticResource LargeSpacing}">
 
-			<Grid.Padding>
-				<Thickness Left="{StaticResource LargeSpacing}"
-							  Top="{StaticResource LargeSpacing}"
-							  Right="{StaticResource LargeSpacing}" />
-			</Grid.Padding>
+			<VerticalStackLayout Grid.Row="0" Spacing="{StaticResource LargeSpacing}">
+
+				<Image HorizontalOptions="Center"
+							Source="{AppThemeBinding Light=neuro_access_logo_light.png, Dark=neuro_access_logo_dark.png}" />
+
+			</VerticalStackLayout>
+
+			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Grid.Row="1" VerticalOptions="Center">
+				<controls:TextButton Command="{Binding ScanQrCodeCommand}" Style="{StaticResource FilledTextButtonStyle}" LabelData="{l:Localize QrScanCode}" />
+				<Label Text="{l:Localize ScanQrCodeLabel}" HorizontalTextAlignment="Center" LineBreakMode="WordWrap" Style="{StaticResource InfoLabelStyle}" />
+			</VerticalStackLayout>
+
 		</Grid>
 
-		<ScrollView Grid.Row="1">
-			<Grid RowDefinitions="auto,*"
-					Padding="{StaticResource LargeMargins}"
-					RowSpacing="{StaticResource LargeSpacing}">
+		<controls:TextButton Grid.Row="2" Command="{Binding Path=ViewIdCommand}" 
+									LabelData="^" HorizontalOptions="Fill" />
 
-				<VerticalStackLayout Grid.Row="0" Spacing="{StaticResource LargeSpacing}">
-
-					<Image HorizontalOptions="Center"
-							 Source="{AppThemeBinding Light=neuro_access_logo_light.png, Dark=neuro_access_logo_dark.png}" />
-
-				</VerticalStackLayout>
-
-				<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Grid.Row="1" VerticalOptions="Center">
-					<controls:TextButton Command="{Binding ScanQrCodeCommand}" Style="{StaticResource FilledTextButtonStyle}" LabelData="{l:Localize QrScanCode}" />
-					<Label Text="{l:Localize ScanQrCodeLabel}" HorizontalTextAlignment="Center" LineBreakMode="WordWrap" Style="{StaticResource InfoLabelStyle}" />
-				</VerticalStackLayout>
-
-			</Grid>
-		</ScrollView>
+		<Grid.GestureRecognizers>
+			<SwipeGestureRecognizer Direction="Up" Swiped="SwipeGestureRecognizer_Swiped"/>
+		</Grid.GestureRecognizers>
 	</Grid>
 </base:BaseContentPage>
