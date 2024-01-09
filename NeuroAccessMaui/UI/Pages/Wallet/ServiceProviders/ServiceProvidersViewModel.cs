@@ -52,7 +52,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 			if (this.navigationArgs is not null)
 			{
 				foreach (IServiceProvider ServiceProvider in this.navigationArgs.ServiceProviders)
-					this.ServiceProviders.Add(new ServiceProviderViewModel(ServiceProvider, defaultIconHeight));
+					this.ServiceProviders.Add(new ServiceProviderViewModel(ServiceProvider, defaultIconHeight, this));
 			}
 		}
 
@@ -131,6 +131,15 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 			await ServiceRef.NavigationService.GoBackAsync();
 
 			TaskSource?.TrySetResult(ServiceProvider);
+		}
+
+		/// <summary>
+		/// Selects a service provider.
+		/// </summary>
+		/// <param name="ServiceProvider">Service provider selected.</param>
+		internal async Task SelectServiceProvider(ServiceProviderViewModel ServiceProvider)
+		{
+			await this.TrySetResultAndClosePage(ServiceProvider.ServiceProvider);
 		}
 	}
 }

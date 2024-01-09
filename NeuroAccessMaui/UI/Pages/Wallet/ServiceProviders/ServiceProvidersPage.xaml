@@ -13,7 +13,7 @@
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders">
 	<VisualElement.Resources>
 		<DataTemplate x:Key="ShowImageAndText" x:DataType="viewmodel:ServiceProviderViewModel">
-			<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding RequestReviewCommand}">
+			<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding SelectServiceProviderCommand}">
 				<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True">
 					<Grid ColumnDefinitions="auto,*" RowDefinitions="auto">
 						<Border Grid.Column="0" Style="{StaticResource OutlinedImageButtonBorderStyle}" Padding="0">
@@ -28,7 +28,7 @@
 			</controls:TemplatedButton>
 		</DataTemplate>
 		<DataTemplate x:Key="ShowImage" x:DataType="viewmodel:ServiceProviderViewModel">
-			<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding RequestReviewCommand}">
+			<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding SelectServiceProviderCommand}">
 				<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True" HorizontalOptions="Center">
 					<Border Grid.Column="0" Style="{StaticResource OutlinedImageButtonBorderStyle}" Padding="0">
 						<Image Source="{Binding IconUrlSource}" Aspect="AspectFill"
@@ -39,7 +39,7 @@
 			</controls:TemplatedButton>
 		</DataTemplate>
 		<DataTemplate x:Key="ShowText" x:DataType="viewmodel:ServiceProviderViewModel">
-			<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding RequestReviewCommand}">
+			<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding SelectServiceProviderCommand}">
 				<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True" HorizontalOptions="Center">
 					<Label HorizontalOptions="Center" VerticalOptions="Center" LineBreakMode="CharacterWrap"
 							 TextType="Text" Text="{Binding Path=Name}" Style="{StaticResource InfoLabelStyle}"
@@ -48,7 +48,7 @@
 			</controls:TemplatedButton>
 		</DataTemplate>
 		<DataTemplate x:Key="ShowNothing" x:DataType="viewmodel:ServiceProviderViewModel">
-			<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding RequestReviewCommand}">
+			<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding SelectServiceProviderCommand}">
 				<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True"/>
 			</controls:TemplatedButton>
 		</DataTemplate>

@@ -7,9 +7,13 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 	/// Service Provider information model, including related notification information.
 	/// </summary>
 	/// <param name="ServiceProvider">Contact information.</param>
-	public partial class ServiceProviderViewModel(IServiceProvider ServiceProvider, int IconHeight) : XmppViewModel
+	/// <param name="IconHeight">Desired Icon Height</param>
+	/// <param name="Parent">Parent view.</param>
+	public partial class ServiceProviderViewModel(IServiceProvider ServiceProvider, int IconHeight, ServiceProvidersViewModel Parent)
+		: XmppViewModel
 	{
 		private readonly IServiceProvider serviceProvider = ServiceProvider;
+		private readonly ServiceProvidersViewModel parent = Parent;
 		private ImageSource? iconSource;
 
 		/// <summary>
@@ -92,11 +96,12 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 		}
 
 		/// <summary>
-		/// Requests a review from the service provider.
+		/// Selects a service provider.
 		/// </summary>
 		[RelayCommand]
-		private async Task RequestReview()
+		private Task SelectServiceProvider()
 		{
+			return this.parent.SelectServiceProvider(this);
 		}
 	}
 }
