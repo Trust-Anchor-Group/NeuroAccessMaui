@@ -73,7 +73,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 			}
 
 			this.AssignProperties();
-			this.EvaluateAllCommands();
+			EvaluateAllCommands();
 
 			this.ReloadPhotos();
 		}
@@ -108,7 +108,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 			await base.OnDispose();
 		}
 
-		private void EvaluateAllCommands()
+		private static void EvaluateAllCommands()
 		{
 		}
 
@@ -152,7 +152,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 		}
 
 		[RelayCommand]
-		private async Task Ignore()
+		private static async Task Ignore()
 		{
 			await ServiceRef.NavigationService.GoBackAsync();
 		}
@@ -266,6 +266,30 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 		/// </summary>
 		[ObservableProperty]
 		private string? country;
+
+		/// <summary>
+		/// Nationality (ISO code)
+		/// </summary>
+		[ObservableProperty]
+		private string? nationalityCode;
+
+		/// <summary>
+		/// Nationality Name
+		/// </summary>
+		[ObservableProperty]
+		private string? nationality;
+
+		/// <summary>
+		/// Gender
+		/// </summary>
+		[ObservableProperty]
+		private string? gender;
+
+		/// <summary>
+		/// Birth Date
+		/// </summary>
+		[ObservableProperty]
+		private DateTime? birthDate;
 
 		/// <summary>
 		/// The legal identity's organization name property
@@ -417,6 +441,29 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 				this.Region = this.RequestorIdentity[Constants.XmppProperties.Region];
 				this.CountryCode = this.RequestorIdentity[Constants.XmppProperties.Country];
 				this.Country = ISO_3166_1.ToName(this.CountryCode);
+				this.NationalityCode = this.RequestorIdentity[Constants.XmppProperties.Nationality];
+				this.Nationality = ISO_3166_1.ToName(this.NationalityCode);
+				this.Gender = this.RequestorIdentity[Constants.XmppProperties.Gender];
+
+				string BirthDayStr = this.RequestorIdentity[Constants.XmppProperties.BirthDay];
+				string BirthMonthStr = this.RequestorIdentity[Constants.XmppProperties.BirthMonth];
+				string BirthYearStr = this.RequestorIdentity[Constants.XmppProperties.BirthYear];
+
+				if (!string.IsNullOrEmpty(BirthDayStr) && int.TryParse(BirthDayStr, out int BirthDay) &&
+					!string.IsNullOrEmpty(BirthMonthStr) && int.TryParse(BirthMonthStr, out int BirthMonth) &&
+					!string.IsNullOrEmpty(BirthYearStr) && int.TryParse(BirthYearStr, out int BirthYear))
+				{
+					try
+					{
+						this.BirthDate = new DateTime(BirthYear, BirthMonth, BirthDay);
+					}
+					catch (Exception ex)
+					{
+						ServiceRef.LogService.LogException(ex);
+						this.BirthDate = null;
+					}
+				}
+
 				this.OrgName = this.RequestorIdentity[Constants.XmppProperties.OrgName];
 				this.OrgNumber = this.RequestorIdentity[Constants.XmppProperties.OrgNumber];
 				this.OrgDepartment = this.RequestorIdentity[Constants.XmppProperties.OrgDepartment];

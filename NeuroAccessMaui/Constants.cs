@@ -262,6 +262,31 @@
 			public const string Country = "COUNTRY";
 
 			/// <summary>
+			/// Nationality
+			/// </summary>
+			public const string Nationality = "NATIONALITY";
+
+			/// <summary>
+			/// Gender
+			/// </summary>
+			public const string Gender = "GENDER";
+
+			/// <summary>
+			/// Birth Day
+			/// </summary>
+			public const string BirthDay = "BDAY";
+
+			/// <summary>
+			/// Birth Month
+			/// </summary>
+			public const string BirthMonth = "BMONTH";
+
+			/// <summary>
+			/// Birth Year
+			/// </summary>
+			public const string BirthYear = "BYEAR";
+
+			/// <summary>
 			/// Organization name
 			/// </summary>
 			public const string OrgName = "ORGNAME";

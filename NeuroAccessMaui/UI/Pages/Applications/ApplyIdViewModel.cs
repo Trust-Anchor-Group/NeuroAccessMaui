@@ -219,6 +219,9 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 						bool RequiresCity = false;
 						bool RequiresRegion = false;
 						bool RequiresCountry = false;
+						bool RequiresNationality = false;
+						bool RequiresGender = false;
+						bool RequiresBirthDate = false;
 
 						foreach (string Name in e.RequiredProperties)
 						{
@@ -267,6 +270,20 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 								case Constants.XmppProperties.Country:
 									RequiresCountry = true;
 									break;
+
+								case Constants.XmppProperties.Nationality:
+									RequiresNationality = true;
+									break;
+
+								case Constants.XmppProperties.Gender:
+									RequiresGender = true;
+									break;
+
+								case Constants.XmppProperties.BirthDay:
+								case Constants.XmppProperties.BirthMonth:
+								case Constants.XmppProperties.BirthYear:
+									RequiresBirthDate = true;
+									break;
 							}
 						}
 
@@ -285,6 +302,9 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 						this.RequiresCity = RequiresCity;
 						this.RequiresRegion = RequiresRegion;
 						this.RequiresCountry = RequiresCountry;
+						this.RequiresNationality = RequiresNationality;
+						this.RequiresGender = RequiresGender;
+						this.RequiresBirthDate = RequiresBirthDate;
 						this.RequiresOrgAddress = this.Organizational && RequiresAddress;
 						this.RequiresOrgAddress2 = this.Organizational && RequiresAddress2;
 						this.RequiresOrgZipCode = this.Organizational && RequiresZipCode;
@@ -491,7 +511,10 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 						!this.AreaOk ||
 						!this.CityOk ||
 						!this.RegionOk ||
-						!this.CountryOk)
+						!this.CountryOk ||
+						!this.NationalityOk ||
+						!this.GenderOk ||
+						!this.BirthDateOk)
 					{
 						return false;
 					}

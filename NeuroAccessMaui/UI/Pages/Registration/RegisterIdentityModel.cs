@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Globalization;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Data;
@@ -159,6 +160,38 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		[NotifyPropertyChangedFor(nameof(CountryOk))]
 		private string? countryName;
+
+		/// <summary>
+		/// Nationality (ISO code)
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(NationalityOk))]
+		private string? nationalityCode;
+
+		/// <summary>
+		/// Nationality Name
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(NationalityOk))]
+		private string? nationalityName;
+
+		/// <summary>
+		/// Gender
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(GenderOk))]
+		private string? gender;
+
+		/// <summary>
+		/// Birth Date
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(BirthDateOk))]
+		private DateTime? birthDate;
 
 		/// <summary>
 		/// Organization name
@@ -379,6 +412,29 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		[NotifyPropertyChangedFor(nameof(CountryOk))]
 		private bool requiresCountryIso3166;
 
+		/// <summary>
+		/// If Nationality is required.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(NationalityOk))]
+		private bool requiresNationality;
+
+		/// <summary>
+		/// If Gender is required.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(GenderOk))]
+		private bool requiresGender;
+
+		/// <summary>
+		/// If Birth Date is required.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		[NotifyPropertyChangedFor(nameof(BirthDateOk))]
+		private bool requiresBirthDate;
 
 		/// <summary>
 		/// If organization name is required.
@@ -550,6 +606,61 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		}
 
 		/// <summary>
+		/// If <see cref="NationalityCode"/> is OK.
+		/// </summary>
+		public bool NationalityOk
+		{
+			get
+			{
+				if (string.IsNullOrWhiteSpace(this.NationalityCode))
+					return !this.RequiresNationality;
+
+				if (this.RequiresCountryIso3166 && !ISO_3166_1.TryGetCountryByCode(this.NationalityCode, out _))
+					return false;
+
+				return true;
+			}
+		}
+
+		/// <summary>
+		/// If <see cref="Gender"/> is OK.
+		/// </summary>
+		public bool GenderOk
+		{
+			get
+			{
+				if (string.IsNullOrEmpty(this.Gender))
+					return !this.RequiresGender;
+
+				return this.Gender switch
+				{
+					"M" or "F" or "X" => true,
+					_ => false,
+				};
+			}
+		}
+
+		/// <summary>
+		/// If <see cref="OrgName"/> is OK.
+		/// </summary>
+		public bool BirthDateOk
+		{
+			get
+			{
+				if (!this.BirthDate.HasValue)
+					return !this.RequiresBirthDate;
+
+				if (this.BirthDate.Value.TimeOfDay != TimeSpan.Zero)
+					return false;
+
+				DateTime TP = this.BirthDate.Value;
+				DateTime Today = DateTime.Today;
+
+				return TP <= Today && TP >= Today.AddYears(-120);
+			}
+		}
+
+		/// <summary>
 		/// If <see cref="OrgName"/> is OK.
 		/// </summary>
 		public bool OrgNameOk => !this.RequiresOrgName || !string.IsNullOrWhiteSpace(this.OrgName);
@@ -636,6 +747,16 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 			AddProperty(Properties, Constants.XmppProperties.City, this.City);
 			AddProperty(Properties, Constants.XmppProperties.Region, this.Region);
 			AddProperty(Properties, Constants.XmppProperties.Country, ISO_3166_1.ToCode(this.CountryCode));
+			AddProperty(Properties, Constants.XmppProperties.Nationality, ISO_3166_1.ToCode(this.NationalityCode));
+			AddProperty(Properties, Constants.XmppProperties.Gender, this.Gender);
+
+			if (this.BirthDate.HasValue)
+			{
+				AddProperty(Properties, Constants.XmppProperties.BirthDay, this.BirthDate.Value.Day.ToString(CultureInfo.InvariantCulture));
+				AddProperty(Properties, Constants.XmppProperties.BirthMonth, this.BirthDate.Value.Month.ToString(CultureInfo.InvariantCulture));
+				AddProperty(Properties, Constants.XmppProperties.BirthYear, this.BirthDate.Value.Year.ToString(CultureInfo.InvariantCulture));
+			}
+
 			AddProperty(Properties, Constants.XmppProperties.OrgName, this.OrgName);
 			AddProperty(Properties, Constants.XmppProperties.OrgNumber, this.OrgNumber);
 			AddProperty(Properties, Constants.XmppProperties.OrgDepartment, this.OrgDepartment);
@@ -705,6 +826,10 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 				this.Jid = string.Empty;
 			}
 
+			int? BirthDay = null;
+			int? BirthMonth = null;
+			int? BirthYear = null;
+
 			foreach (Property P in Identity.Properties)
 			{
 				switch (P.Name)
@@ -767,6 +892,34 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 						}
 						break;
 
+					case Constants.XmppProperties.Nationality:
+						if (SetPersonalProperties)
+						{
+							this.NationalityCode = P.Value;
+							this.NationalityName = ISO_3166_1.ToName(P.Value);
+						}
+						break;
+
+					case Constants.XmppProperties.Gender:
+						if (SetPersonalProperties)
+							this.Gender = P.Value;
+						break;
+
+					case Constants.XmppProperties.BirthDay:
+						if (int.TryParse(P.Value, out int i))
+							BirthDay = i;
+						break;
+
+					case Constants.XmppProperties.BirthMonth:
+						if (int.TryParse(P.Value, out i))
+							BirthMonth = i;
+						break;
+
+					case Constants.XmppProperties.BirthYear:
+						if (int.TryParse(P.Value, out i))
+							BirthYear = i;
+						break;
+
 					case Constants.XmppProperties.OrgName:
 						if (SetOrganizationalProperties)
 							this.OrgName = P.Value;
@@ -824,6 +977,19 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 							this.OrgCountryName = ISO_3166_1.ToName(P.Value);
 						}
 						break;
+				}
+			}
+
+			if (SetPersonalProperties && BirthDay.HasValue && BirthMonth.HasValue && BirthYear.HasValue)
+			{
+				try
+				{
+					this.BirthDate = new DateTime(BirthYear.Value, BirthMonth.Value, BirthDay.Value);
+				}
+				catch (Exception ex)
+				{
+					ServiceRef.LogService.LogException(ex);
+					this.BirthDate = null;
 				}
 			}
 
