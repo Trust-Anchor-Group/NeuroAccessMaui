@@ -13,7 +13,7 @@ namespace NeuroAccessMaui.UI.Converters
 			if (value is string s && string.IsNullOrEmpty(s))
 				return "-";
 			else
-				return value ?? string.Empty;
+				return value ?? "-";
 		}
 
 		/// <inheritdoc/>
