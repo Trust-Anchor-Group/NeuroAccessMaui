@@ -38,7 +38,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		{
 			this.localPhotoFileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), profilePhotoFileName);
 			this.photosLoader = new PhotosLoader();
-			this.countries = new ObservableCollection<ISO3166Country>(ISO_3166_1.Countries);
+			this.countries = new ObservableCollection<ISO_3166_Country>(ISO_3166_1.Countries);
 		}
 
 		protected override async Task OnInitialize()
@@ -181,7 +181,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 
 			int i = 0;
 
-			foreach (ISO3166Country Country in this.Countries)
+			foreach (ISO_3166_Country Country in this.Countries)
 			{
 				if (Country.Alpha2 == this.CountryCode)
 				{
@@ -505,12 +505,12 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		/// Available country definitions
 		/// </summary>
 		[ObservableProperty]
-		private ObservableCollection<ISO3166Country> countries;
+		private ObservableCollection<ISO_3166_Country> countries;
 
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(NationalityCode))]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
-		private ISO3166Country? nationality;
+		private ISO_3166_Country? nationality;
 
 		/// <inheritdoc/>
 		protected override void OnPropertyChanged(PropertyChangedEventArgs e)

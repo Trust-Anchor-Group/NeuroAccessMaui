@@ -18,7 +18,7 @@
 	</mopups:PopupPage.Animation>
 
 	<VisualElement.Resources>
-		<DataTemplate x:Key="SelectPhoneCodeTemplate" x:DataType="data:ISO3166Country">
+		<DataTemplate x:Key="SelectPhoneCodeTemplate" x:DataType="data:ISO_3166_Country">
 			<Grid
 				BackgroundColor="{AppThemeBinding Light={StaticResource SecondaryBackgroundLight},
 												  Dark={StaticResource SecondaryBackgroundDark}}"

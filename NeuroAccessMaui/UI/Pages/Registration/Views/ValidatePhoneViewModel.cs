@@ -48,7 +48,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 						Response.TryGetValue("CountryCode", out object? cc) &&
 						(cc is string CountryCode))
 					{
-						if (ISO_3166_1.TryGetCountryByCode(CountryCode, out ISO3166Country? Country))
+						if (ISO_3166_1.TryGetCountryByCode(CountryCode, out ISO_3166_Country? Country))
 							this.SelectedCountry = Country;
 					}
 				}
@@ -93,7 +93,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 						Response.TryGetValue("CountryCode", out object? cc) &&
 						(cc is string CountryCode))
 					{
-						if (ISO_3166_1.TryGetCountryByCode(CountryCode, out ISO3166Country? Country))
+						if (ISO_3166_1.TryGetCountryByCode(CountryCode, out ISO_3166_Country? Country))
 							this.SelectedCountry = Country;
 					}
 				}
@@ -106,7 +106,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			{
 				string SelectedCountry = ServiceRef.TagProfile.SelectedCountry!;
 
-				if (ISO_3166_1.TryGetCountryByCode(SelectedCountry, out ISO3166Country? Country))
+				if (ISO_3166_1.TryGetCountryByCode(SelectedCountry, out ISO_3166_Country? Country))
 				{
 					this.SelectedCountry = Country;
 					this.PhoneNumber = PhoneNumber[(Country.DialCode.Length + 1)..];
@@ -130,7 +130,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		}
 
 		[ObservableProperty]
-		ISO3166Country selectedCountry = ISO_3166_1.DefaultCountry;
+		ISO_3166_Country selectedCountry = ISO_3166_1.DefaultCountry;
 
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(SendCodeCommand))]
@@ -195,7 +195,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			SelectPhoneCodePage Page = new();
 			await MopupService.Instance.PushAsync(Page);
 
-			ISO3166Country? Result = await Page.Result;
+			ISO_3166_Country? Result = await Page.Result;
 
 			if (Result is not null)
 				this.SelectedCountry = Result;

@@ -5,8 +5,7 @@ namespace NeuroAccessMaui.Services.Data
 	/// <summary>
 	/// Representation of an ISO3166-1 Country
 	/// </summary>
-	public class ISO3166Country(string Name, string Alpha2, string Alpha3,
-		int NumericCode, string DialCode, EmojiInfo? EmojiInfo = null)
+	public class ISO_3166_Country(string Name, string Alpha2, string Alpha3, int NumericCode, string DialCode, EmojiInfo? EmojiInfo = null)
 	{
 		public string Name { get; private set; } = Name;
 		public string Alpha2 { get; private set; } = Alpha2;

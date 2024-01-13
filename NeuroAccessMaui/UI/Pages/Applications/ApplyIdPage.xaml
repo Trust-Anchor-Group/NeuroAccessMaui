@@ -215,7 +215,7 @@
 									  BackgroundColor="{Binding NationalityOk, Converter={converters:ControlBgColor}}"
                              ItemsSource="{Binding Path=Countries}" SelectedItem="{Binding Path=Nationality}"
 									  IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
-									<Picker.ItemDisplayBinding x:DataType="data:ISO3166Country">
+									<Picker.ItemDisplayBinding x:DataType="data:ISO_3166_Country">
 										<Binding Path="Alpha2" Converter="{converters:CountryCodeToFlagAndName}"/>
 									</Picker.ItemDisplayBinding>
 								</Picker>

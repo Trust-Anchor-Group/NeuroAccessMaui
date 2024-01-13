@@ -5,19 +5,19 @@ namespace NeuroAccessMaui.UI.Popups
 {
 	public partial class SelectPhoneCodePage : IDisposable
 	{
-		private readonly TaskCompletionSource<ISO3166Country?> result = new();
+		private readonly TaskCompletionSource<ISO_3166_Country?> result = new();
 		private CancellationTokenSource? cancellationTokenSource;
 		private bool isDisposed;
 
 		/// <summary>
 		/// Task waiting for result. null means dialog was closed without selection.
 		/// </summary>
-		public Task<ISO3166Country?> Result => this.result.Task;
+		public Task<ISO_3166_Country?> Result => this.result.Task;
 
 		/// <summary>
 		/// Available country definitions.
 		/// </summary>
-		public static ISO3166Country[] Countries => ISO_3166_1.Countries;
+		public static ISO_3166_Country[] Countries => ISO_3166_1.Countries;
 
 		public SelectPhoneCodePage(ImageSource? Background = null)
 			: base(Background)
@@ -47,7 +47,7 @@ namespace NeuroAccessMaui.UI.Popups
 
 			Task.Run(() =>
 			{
-				IEnumerable<ISO3166Country> CountriesFiltered = Countries.Where(el =>
+				IEnumerable<ISO_3166_Country> CountriesFiltered = Countries.Where(el =>
 				{
 					bool Result = el.Name.Contains(e.NewTextValue, StringComparison.OrdinalIgnoreCase) ||
 					string.Equals(el.Alpha2, e.NewTextValue, StringComparison.OrdinalIgnoreCase) ||
@@ -67,7 +67,7 @@ namespace NeuroAccessMaui.UI.Popups
 
 		private async void InnerListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			this.result.TrySetResult((ISO3166Country)this.InnerListView.SelectedItem);
+			this.result.TrySetResult((ISO_3166_Country)this.InnerListView.SelectedItem);
 			await MopupService.Instance.PopAsync();
 		}
 
