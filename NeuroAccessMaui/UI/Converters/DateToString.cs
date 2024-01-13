@@ -13,7 +13,7 @@ namespace NeuroAccessMaui.UI.Converters
 			if (value is DateTime TP)
 				return TP.ToShortDateString();
 			else
-				return Colors.Transparent;
+				return value?.ToString() ?? string.Empty;
 		}
 
 		/// <inheritdoc/>
