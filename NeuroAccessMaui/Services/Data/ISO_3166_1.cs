@@ -4,20 +4,6 @@ using Waher.Content.Emoji;
 namespace NeuroAccessMaui.Services.Data
 {
 	/// <summary>
-	/// Representation of an ISO3166-1 Country
-	/// </summary>
-	public class ISO3166Country(string Name, string Alpha2, string Alpha3,
-		int NumericCode, string DialCode, EmojiInfo? EmojiInfo = null)
-	{
-		public string Name { get; private set; } = Name;
-		public string Alpha2 { get; private set; } = Alpha2;
-		public string Alpha3 { get; private set; } = Alpha3;
-		public int NumericCode { get; private set; } = NumericCode;
-		public string DialCode { get; private set; } = DialCode;
-		public EmojiInfo EmojiInfo { get; set; } = EmojiInfo ?? EmojiUtilities.Emoji_waving_white_flag;
-	}
-
-	/// <summary>
 	/// Conversion between Country Names and ISO-3166-1 country codes.
 	/// </summary>
 	public static class ISO_3166_1
@@ -32,9 +18,7 @@ namespace NeuroAccessMaui.Services.Data
 			foreach (ISO3166Country Country in Countries)
 			{
 				if (EmojiUtilities.TryGetEmoji($"flag-{Country.Alpha2}".ToLowerInvariant(), out EmojiInfo EmojiInfo))
-				{
 					Country.EmojiInfo = EmojiInfo;
-				}
 
 				code2ByCountry[Country.Name] = Country;
 				countryByCode2[Country.Alpha2] = Country;
@@ -50,7 +34,7 @@ namespace NeuroAccessMaui.Services.Data
 		/// <summary>
 		/// This collection built from Wikipedia entry on ISO3166-1 on 9th Feb 2016
 		/// </summary>
-		public static List<ISO3166Country> Countries => countries;
+		public static ISO3166Country[] Countries => countries;
 
 		/// <summary>
 		/// Tries to get the country, given its country and phone codes.
@@ -137,7 +121,7 @@ namespace NeuroAccessMaui.Services.Data
 		}
 
 		#region Build Collection
-		private static readonly List<ISO3166Country> countries = [
+		private static readonly ISO3166Country[] countries = [
 			new ISO3166Country("Afghanistan", "AF", "AFG", 4, "93"),
 			new ISO3166Country("Åland Islands", "AX", "ALA", 248, "358"),
 			new ISO3166Country("Albania", "AL", "ALB", 8, "355"),
