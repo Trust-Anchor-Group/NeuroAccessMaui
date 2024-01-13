@@ -1086,6 +1086,9 @@
   <data name="Other" xml:space="preserve">
     <value>Andere</value>
   </data>
+  <data name="SelectGender" xml:space="preserve">
+    <value>Geschlecht auswählen</value>
+  </data>
   <data name="SelectNationality" xml:space="preserve">
     <value>Wählen Sie die Nationalität aus</value>
   </data>

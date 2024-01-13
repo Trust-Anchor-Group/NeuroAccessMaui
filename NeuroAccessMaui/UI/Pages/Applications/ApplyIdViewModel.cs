@@ -39,6 +39,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 			this.localPhotoFileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), profilePhotoFileName);
 			this.photosLoader = new PhotosLoader();
 			this.countries = new ObservableCollection<ISO_3166_Country>(ISO_3166_1.Countries);
+			this.genders = new ObservableCollection<ISO_5218_Gender>(ISO_5218.Genders);
 		}
 
 		protected override async Task OnInitialize()
@@ -512,6 +513,17 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		private ISO_3166_Country? nationality;
 
+		/// <summary>
+		/// Available gender definitions
+		/// </summary>
+		[ObservableProperty]
+		private ObservableCollection<ISO_5218_Gender> genders;
+
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(GenderCode))]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		private ISO_5218_Gender? gender;
+
 		/// <inheritdoc/>
 		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
 		{
@@ -519,6 +531,10 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 			{
 				case nameof(this.Nationality):
 					this.NationalityCode = this.Nationality?.Alpha2 ?? string.Empty;
+					break;
+
+				case nameof(this.Gender):
+					this.GenderCode = this.Gender?.Letter ?? string.Empty;
 					break;
 			}
 

@@ -167,7 +167,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		[NotifyPropertyChangedFor(nameof(GenderOk))]
-		private string? gender;
+		private string? genderCode;
 
 		/// <summary>
 		/// Birth Date
@@ -599,16 +599,16 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		}
 
 		/// <summary>
-		/// If <see cref="Gender"/> is OK.
+		/// If <see cref="GenderCode"/> is OK.
 		/// </summary>
 		public bool GenderOk
 		{
 			get
 			{
-				if (string.IsNullOrEmpty(this.Gender))
+				if (string.IsNullOrEmpty(this.GenderCode))
 					return !this.RequiresGender;
 
-				return ISO_5218.LetterToGender(this.Gender, out _);
+				return ISO_5218.LetterToGender(this.GenderCode, out _);
 			}
 		}
 
@@ -720,7 +720,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 			AddProperty(Properties, Constants.XmppProperties.Region, this.Region);
 			AddProperty(Properties, Constants.XmppProperties.Country, ISO_3166_1.ToCode(this.CountryCode));
 			AddProperty(Properties, Constants.XmppProperties.Nationality, ISO_3166_1.ToCode(this.NationalityCode));
-			AddProperty(Properties, Constants.XmppProperties.Gender, this.Gender);
+			AddProperty(Properties, Constants.XmppProperties.Gender, this.GenderCode);
 
 			if (this.BirthDate.HasValue)
 			{
@@ -780,7 +780,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 				this.Region = string.Empty;
 				this.CountryCode = string.Empty;
 				this.NationalityCode = string.Empty;
-				this.Gender = string.Empty;
+				this.GenderCode = string.Empty;
 				this.BirthDate = null;
 				this.OrgName = string.Empty;
 				this.OrgNumber = string.Empty;
@@ -869,7 +869,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 
 					case Constants.XmppProperties.Gender:
 						if (SetPersonalProperties)
-							this.Gender = P.Value;
+							this.GenderCode = P.Value;
 						break;
 
 					case Constants.XmppProperties.BirthDay:

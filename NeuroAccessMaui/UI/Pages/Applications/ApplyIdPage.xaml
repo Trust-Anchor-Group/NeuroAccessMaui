@@ -19,8 +19,12 @@
 			<converters:CountryCodeToFlagAndName/>
 			<converters:HyphenIfEmpty/>
 		</converters:ConversionSequence>
+		<converters:ConversionSequence x:Key="GenderCodeToSymbolAndLabelHyphenIfEmpty">
+			<converters:GenderCodeToSymbolAndLabel/>
+			<converters:HyphenIfEmpty/>
+		</converters:ConversionSequence>
 	</VisualElement.Resources>
-	
+
 	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
 
 		<controls:Background/>
@@ -221,6 +225,25 @@
 								</Picker>
 							</Border>
 							<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding Path=NationalityCode, Converter={StaticResource CountryCodeToFlagAndNameHyphenIfEmpty}}"
+									 IsVisible="{Binding ApplicationSent}"/>
+						</VerticalStackLayout>
+
+						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+							<HorizontalStackLayout>
+								<Label Text="{l:Localize Gender}" HorizontalOptions="FillAndExpand"/>
+								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresGender}"/>
+							</HorizontalStackLayout>
+							<Border StrokeThickness="2" Style="{StaticResource RegularCompositeEntryBorderStyleNoRoundedCorners}">
+								<Picker HorizontalOptions="FillAndExpand" Title="{l:Localize SelectGender}"
+									  BackgroundColor="{Binding GenderOk, Converter={converters:ControlBgColor}}"
+                             ItemsSource="{Binding Path=Genders}" SelectedItem="{Binding Path=Gender}"
+									  IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
+									<Picker.ItemDisplayBinding x:DataType="data:ISO_5218_Gender">
+										<Binding Path="Code" Converter="{converters:GenderCodeToSymbolAndLabel}"/>
+									</Picker.ItemDisplayBinding>
+								</Picker>
+							</Border>
+							<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding Path=GenderCode, Converter={StaticResource GenderCodeToSymbolAndLabelHyphenIfEmpty}}"
 									 IsVisible="{Binding ApplicationSent}"/>
 						</VerticalStackLayout>
 					</VerticalStackLayout>

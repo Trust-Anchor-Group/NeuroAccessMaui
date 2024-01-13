@@ -1086,6 +1086,9 @@
   <data name="Other" xml:space="preserve">
     <value>Drugi</value>
   </data>
+  <data name="SelectGender" xml:space="preserve">
+    <value>Izbor pola</value>
+  </data>
   <data name="SelectNationality" xml:space="preserve">
     <value>Izaberi nacionalnost</value>
   </data>

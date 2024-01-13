@@ -2392,6 +2392,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select Gender.
+        /// </summary>
+        internal static string SelectGender {
+            get {
+                return ResourceManager.GetString("SelectGender", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select Nationality.
         /// </summary>
         internal static string SelectNationality {

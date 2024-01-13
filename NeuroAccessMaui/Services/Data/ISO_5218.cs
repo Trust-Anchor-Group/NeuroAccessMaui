@@ -7,7 +7,6 @@ namespace NeuroAccessMaui.Services.Data
 	/// </summary>
 	public static partial class ISO_5218
 	{
-
 		private static Dictionary<int, ISO_5218_Gender>? genderByCode = null;
 		private static Dictionary<string, ISO_5218_Gender>? genderByLetter = null;
 
@@ -23,7 +22,7 @@ namespace NeuroAccessMaui.Services.Data
 			{
 				Dictionary<int, ISO_5218_Gender> Temp = [];
 
-				foreach (ISO_5218_Gender Rec in Data)
+				foreach (ISO_5218_Gender Rec in Genders)
 					Temp[Rec.Code] = Rec;
 
 				genderByCode = Temp;
@@ -44,7 +43,7 @@ namespace NeuroAccessMaui.Services.Data
 			{
 				Dictionary<string, ISO_5218_Gender> Temp = [];
 
-				foreach (ISO_5218_Gender Rec in Data)
+				foreach (ISO_5218_Gender Rec in Genders)
 					Temp[Rec.Letter] = Rec;
 
 				genderByLetter = Temp;
@@ -56,7 +55,7 @@ namespace NeuroAccessMaui.Services.Data
 		/// <summary>
 		/// Available gender codes
 		/// </summary>
-		public static readonly ISO_5218_Gender[] Data =
+		public static readonly ISO_5218_Gender[] Genders =
 		[
 			new("Male", 1, "M", nameof(AppResources.Male), '♂'),
 			new("Female", 2, "F", nameof(AppResources.Female), '♀'),
