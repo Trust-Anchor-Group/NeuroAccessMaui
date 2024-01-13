@@ -200,7 +200,6 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 
 				this.QrCodeWidth = 250;
 				this.QrCodeHeight = 250;
-				this.GenerateQrCode(Constants.UriSchemes.CreateIdUri(this.LegalId!));
 			}
 			else
 			{

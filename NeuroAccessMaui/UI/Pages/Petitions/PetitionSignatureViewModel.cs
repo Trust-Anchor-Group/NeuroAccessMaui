@@ -7,6 +7,7 @@ using NeuroAccessMaui.Services.Data;
 using NeuroAccessMaui.Services.UI.Photos;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 
 namespace NeuroAccessMaui.UI.Pages.Petitions
@@ -376,6 +377,18 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 		[ObservableProperty]
 		private string? purpose;
 
+		/// <summary>
+		/// Image source of the first photo in the identity.
+		/// </summary>
+		[ObservableProperty]
+		private ImageSource? firstPhotoSource;
+
+		/// <summary>
+		/// Rotation of the first photo in the identity.
+		/// </summary>
+		[ObservableProperty]
+		private int firstPhotoRotation;
+
 		#endregion
 
 		private void AssignProperties()
@@ -457,7 +470,6 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 
 				this.QrCodeWidth = 250;
 				this.QrCodeHeight = 250;
-				this.GenerateQrCode(Constants.UriSchemes.CreateIdUri(this.LegalId));
 			}
 			else
 			{
@@ -497,6 +509,52 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 				this.PhoneNr = Constants.NotAvailableValue;
 				this.EMail = Constants.NotAvailableValue;
 				this.IsApproved = false;
+			}
+
+			// QR
+			if (this.RequestorIdentity is null)
+				this.RemoveQrCode();
+			else
+				this.GenerateQrCode(Constants.UriSchemes.CreateIdUri(this.RequestorIdentity.Id));
+
+			if (this.IsConnected)
+				this.ReloadPhotos();
+		}
+
+		/// <inheritdoc/>
+		protected override Task XmppService_ConnectionStateChanged(object? Sender, XmppState NewState)
+		{
+			return MainThread.InvokeOnMainThreadAsync(async () =>
+			{
+				await base.XmppService_ConnectionStateChanged(Sender, NewState);
+
+				if (this.IsConnected)
+				{
+					await Task.Delay(Constants.Timeouts.XmppInit);
+					this.ReloadPhotos();
+				}
+			});
+		}
+
+		private async void ReloadPhotos()
+		{
+			try
+			{
+				this.photosLoader.CancelLoadPhotos();
+
+				Attachment[]? Attachments = this.RequestorIdentity?.Attachments;
+
+				if (Attachments is not null)
+				{
+					Photo? First = await this.photosLoader.LoadPhotos(Attachments, SignWith.LatestApprovedIdOrCurrentKeys);
+
+					this.FirstPhotoSource = First?.Source;
+					this.FirstPhotoRotation = First?.Rotation ?? 0;
+				}
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
 			}
 		}
 

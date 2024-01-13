@@ -23,6 +23,8 @@
 				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{StaticResource ImageOnlyButtonStyle}"
 											 PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
+				<Label Style="{StaticResource PageTitleLabelStyle}" Text="{l:Localize LegalId}"/>
+
 				<!-- Photo and QR-code -->
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout>
