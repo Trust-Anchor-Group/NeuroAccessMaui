@@ -11,6 +11,12 @@
 		<Setter Property="FontSize" Value="18" />
 	</Style>
 
+	<Style ApplyToDerivedTypes="True" TargetType="DatePicker">
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource NormalEditForegroundLight}, Dark={StaticResource NormalEditForegroundDark}}" />
+		<Setter Property="FontFamily" Value="HaasGroteskRegular" />
+		<Setter Property="FontSize" Value="18" />
+	</Style>
+
 	<!--
     <Style ApplyToDerivedTypes="True" TargetType="Picker">
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />

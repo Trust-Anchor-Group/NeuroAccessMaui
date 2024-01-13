@@ -613,12 +613,25 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		}
 
 		/// <summary>
+		/// Maximum birth date. (i.e. Minimum age.)
+		/// </summary>
+		public static DateTime MaxBirthDate => DateTime.Today.AddYears(-Constants.Age.MinAge);
+
+		/// <summary>
+		/// Minimum birth date. (i.e. Maximum age.)
+		/// </summary>
+		public static DateTime MinBirthDate => DateTime.Today.AddYears(-Constants.Age.MaxAge);
+
+		/// <summary>
 		/// If <see cref="OrgName"/> is OK.
 		/// </summary>
 		public bool BirthDateOk
 		{
 			get
 			{
+				if (this.BirthDate.HasValue && (this.BirthDate.Value > MaxBirthDate || this.BirthDate.Value < MinBirthDate))
+					return false;
+
 				if (!this.BirthDate.HasValue)
 					return !this.RequiresBirthDate;
 

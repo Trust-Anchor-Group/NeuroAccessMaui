@@ -638,5 +638,21 @@
 			/// </summary>
 			public const string RegistrationPage = "//Registration";
 		}
+
+		/// <summary>
+		/// Age-related constants.
+		/// </summary>
+		public static class Age
+		{
+			/// <summary>
+			/// Minimum age for applying for an ID
+			/// </summary>
+			public const int MinAge = 13;
+
+			/// <summary>
+			/// Maximum age for applying for an ID
+			/// </summary>
+			public const int MaxAge = 120;
+		}
 	}
 }

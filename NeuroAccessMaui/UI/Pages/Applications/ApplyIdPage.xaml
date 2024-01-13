@@ -246,6 +246,20 @@
 							<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding Path=GenderCode, Converter={StaticResource GenderCodeToSymbolAndLabelHyphenIfEmpty}}"
 									 IsVisible="{Binding ApplicationSent}"/>
 						</VerticalStackLayout>
+
+						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+							<HorizontalStackLayout>
+								<Label Text="{l:Localize BirthDate}" HorizontalOptions="FillAndExpand"/>
+								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresBirthDate}"/>
+							</HorizontalStackLayout>
+							<Border StrokeThickness="2" Style="{StaticResource RegularCompositeEntryBorderStyleNoRoundedCorners}">
+								<DatePicker HorizontalOptions="FillAndExpand" BackgroundColor="{Binding BirthDateOk, Converter={converters:ControlBgColor}}"
+												Date="{Binding BirthDate}" IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
+												MinimumDate="{Binding MinBirthDate}" MaximumDate="{Binding MaxBirthDate}"/>
+							</Border>
+							<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding Path=BirthDate, Converter={converters:DateToString}}"
+									 IsVisible="{Binding ApplicationSent}"/>
+						</VerticalStackLayout>
 					</VerticalStackLayout>
 				</Frame>
 
