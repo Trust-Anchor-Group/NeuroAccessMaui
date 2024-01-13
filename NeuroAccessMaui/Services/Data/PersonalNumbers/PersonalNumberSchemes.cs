@@ -129,15 +129,15 @@ namespace NeuroAccessMaui.Services.Data.PersonalNumbers
 		/// <summary>
 		/// Gets the expected personal number format for the given country.
 		/// </summary>
-		/// <param name="countryCode">ISO 3166-1 Country Codes.</param>
+		/// <param name="CountryCode">ISO 3166-1 Country Codes.</param>
 		/// <returns>A string that can be displayed to a user, informing the user about the approximate format expected.</returns>
-		public static string? DisplayStringForCountry(string countryCode)
+		public static string? DisplayStringForCountry(string CountryCode)
 		{
 			LazyLoad();
 
-			if (!string.IsNullOrWhiteSpace(countryCode))
+			if (!string.IsNullOrWhiteSpace(CountryCode))
 			{
-				if (schemesByCode.TryGetValue(countryCode, out LinkedList<PersonalNumberScheme>? Schemes))
+				if (schemesByCode.TryGetValue(CountryCode, out LinkedList<PersonalNumberScheme>? Schemes))
 					return Schemes?.First?.Value?.DisplayString;
 			}
 
