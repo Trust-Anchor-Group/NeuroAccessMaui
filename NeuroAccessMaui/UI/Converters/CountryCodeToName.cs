@@ -11,8 +11,8 @@ namespace NeuroAccessMaui.UI.Converters
 		/// <inheritdoc/>
 		public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
 		{
-			if (value is string Code && ISO_3166_1.TryGetCountryByCode(Code, out ISO3166Country? Country) && Country is not null)
-				return Country.Name;
+			if (value is string Code)
+				return ISO_3166_1.ToName(Code) ?? Code;
 			else
 				return value ?? string.Empty;
 		}

@@ -12,7 +12,7 @@ namespace NeuroAccessMaui.UI.Converters
 		public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
 		{
 			if (value is string Code && ISO_3166_1.TryGetCountryByCode(Code, out ISO3166Country? Country) && Country is not null)
-				return Country.EmojiInfo.Unicode + " " + Country.Name;
+				return Country.EmojiInfo.Unicode + "\t" + Country.Name;
 			else
 				return value ?? string.Empty;
 		}
