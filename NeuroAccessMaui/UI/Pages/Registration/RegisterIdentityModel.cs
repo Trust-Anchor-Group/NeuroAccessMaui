@@ -154,28 +154,12 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		private string? countryCode;
 
 		/// <summary>
-		/// Country Name
-		/// </summary>
-		[ObservableProperty]
-		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
-		[NotifyPropertyChangedFor(nameof(CountryOk))]
-		private string? countryName;
-
-		/// <summary>
 		/// Nationality (ISO code)
 		/// </summary>
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		[NotifyPropertyChangedFor(nameof(NationalityOk))]
 		private string? nationalityCode;
-
-		/// <summary>
-		/// Nationality Name
-		/// </summary>
-		[ObservableProperty]
-		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
-		[NotifyPropertyChangedFor(nameof(NationalityOk))]
-		private string? nationalityName;
 
 		/// <summary>
 		/// Gender
@@ -263,14 +247,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		private string? orgCountryCode;
-
-		/// <summary>
-		/// Organization Country Name
-		/// </summary>
-		[ObservableProperty]
-		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
-		[NotifyPropertyChangedFor(nameof(OrgCountryOk))]
-		private string? orgCountryName;
 
 		/// <summary>
 		/// Organization Department
@@ -803,7 +779,9 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 				this.City = string.Empty;
 				this.Region = string.Empty;
 				this.CountryCode = string.Empty;
-				this.CountryName = string.Empty;
+				this.NationalityCode = string.Empty;
+				this.Gender = string.Empty;
+				this.BirthDate = null;
 				this.OrgName = string.Empty;
 				this.OrgNumber = string.Empty;
 				this.OrgAddress = string.Empty;
@@ -813,7 +791,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 				this.OrgCity = string.Empty;
 				this.OrgRegion = string.Empty;
 				this.OrgCountryCode = string.Empty;
-				this.OrgCountryName = string.Empty;
 				this.OrgDepartment = string.Empty;
 				this.OrgRole = string.Empty;
 				this.PhoneNr = string.Empty;
@@ -882,18 +859,12 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 
 					case Constants.XmppProperties.Country:
 						if (SetPersonalProperties)
-						{
 							this.CountryCode = P.Value;
-							this.CountryName = ISO_3166_1.ToName(P.Value);
-						}
 						break;
 
 					case Constants.XmppProperties.Nationality:
 						if (SetPersonalProperties)
-						{
 							this.NationalityCode = P.Value;
-							this.NationalityName = ISO_3166_1.ToName(P.Value);
-						}
 						break;
 
 					case Constants.XmppProperties.Gender:
@@ -968,10 +939,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 
 					case Constants.XmppProperties.OrgCountry:
 						if (SetOrganizationalProperties)
-						{
 							this.OrgCountryCode = P.Value;
-							this.OrgCountryName = ISO_3166_1.ToName(P.Value);
-						}
 						break;
 				}
 			}

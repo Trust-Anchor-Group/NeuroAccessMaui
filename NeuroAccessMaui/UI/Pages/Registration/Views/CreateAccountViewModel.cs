@@ -264,7 +264,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 					s = LegalIdentity[Constants.XmppProperties.Country];
 
 				IdentityModel.CountryCode = s;
-				IdentityModel.CountryName = ISO_3166_1.ToName(s);
 			}
 
 			return IdentityModel;

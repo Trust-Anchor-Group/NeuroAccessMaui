@@ -220,7 +220,7 @@
 									</Picker.ItemDisplayBinding>
 								</Picker>
 							</Border>
-							<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding Path=NationalityName, Converter={converters:HyphenIfEmpty}}"
+							<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding Path=NationalityCode, Converter={StaticResource CountryCodeToFlagAndNameHyphenIfEmpty}}"
 									 IsVisible="{Binding ApplicationSent}"/>
 						</VerticalStackLayout>
 					</VerticalStackLayout>
@@ -364,7 +364,7 @@
 								<Label Text="{l:Localize OrgCountry}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresOrgCountry}"/>
 							</HorizontalStackLayout>
-							<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding Path=OrgCountryName, Converter={converters:HyphenIfEmpty}}"/>
+							<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding Path=OrgCountryCode, Converter={StaticResource CountryCodeToFlagAndNameHyphenIfEmpty}}"/>
 						</VerticalStackLayout>
 					</VerticalStackLayout>
 				</Frame>

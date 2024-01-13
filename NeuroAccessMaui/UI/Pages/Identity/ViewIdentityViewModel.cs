@@ -145,9 +145,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 				this.City = this.LegalIdentity[Constants.XmppProperties.City];
 				this.Region = this.LegalIdentity[Constants.XmppProperties.Region];
 				this.CountryCode = this.LegalIdentity[Constants.XmppProperties.Country];
-				this.Country = ISO_3166_1.ToName(this.CountryCode);
 				this.NationalityCode = this.LegalIdentity[Constants.XmppProperties.Nationality];
-				this.Nationality = ISO_3166_1.ToName(this.NationalityCode);
 				this.Gender = this.LegalIdentity[Constants.XmppProperties.Gender];
 
 				string BirthDayStr = this.LegalIdentity[Constants.XmppProperties.BirthDay];
@@ -180,7 +178,6 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 				this.OrgCity = this.LegalIdentity[Constants.XmppProperties.OrgCity];
 				this.OrgRegion = this.LegalIdentity[Constants.XmppProperties.OrgRegion];
 				this.OrgCountryCode = this.LegalIdentity[Constants.XmppProperties.OrgCountry];
-				this.OrgCountry = ISO_3166_1.ToName(this.OrgCountryCode);
 				this.HasOrg =
 					!string.IsNullOrEmpty(this.OrgName) ||
 					!string.IsNullOrEmpty(this.OrgNumber) ||
@@ -192,8 +189,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 					!string.IsNullOrEmpty(this.OrgArea) ||
 					!string.IsNullOrEmpty(this.OrgCity) ||
 					!string.IsNullOrEmpty(this.OrgRegion) ||
-					!string.IsNullOrEmpty(this.OrgCountryCode) ||
-					!string.IsNullOrEmpty(this.OrgCountry);
+					!string.IsNullOrEmpty(this.OrgCountryCode);
 				this.HasPhotos = this.Photos.Count > 0;
 				this.PhoneNr = this.LegalIdentity[Constants.XmppProperties.Phone];
 				this.EMail = this.LegalIdentity[Constants.XmppProperties.EMail];
@@ -214,7 +210,9 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 				this.City = string.Empty;
 				this.Region = string.Empty;
 				this.CountryCode = string.Empty;
-				this.Country = string.Empty;
+				this.NationalityCode = string.Empty;
+				this.Gender = string.Empty;
+				this.BirthDate = null;
 				this.OrgName = Constants.NotAvailableValue;
 				this.OrgNumber = Constants.NotAvailableValue;
 				this.OrgDepartment = Constants.NotAvailableValue;
@@ -226,7 +224,6 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 				this.OrgCity = Constants.NotAvailableValue;
 				this.OrgRegion = Constants.NotAvailableValue;
 				this.OrgCountryCode = Constants.NotAvailableValue;
-				this.OrgCountry = Constants.NotAvailableValue;
 				this.HasOrg = false;
 				this.HasPhotos = false;
 				this.PhoneNr = string.Empty;
@@ -250,7 +247,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 			this.IsForReviewZipCode = !string.IsNullOrWhiteSpace(this.ZipCode) && this.IsForReview;
 			this.IsForReviewArea = !string.IsNullOrWhiteSpace(this.Area) && this.IsForReview;
 			this.IsForReviewRegion = !string.IsNullOrWhiteSpace(this.Region) && this.IsForReview;
-			this.IsForReviewCountry = !string.IsNullOrWhiteSpace(this.Country) && this.IsForReview;
+			this.IsForReviewCountry = !string.IsNullOrWhiteSpace(this.CountryCode) && this.IsForReview;
 
 			this.IsForReviewOrgName = !string.IsNullOrWhiteSpace(this.OrgName) && this.IsForReview;
 			this.IsForReviewOrgNumber = !string.IsNullOrWhiteSpace(this.OrgNumber) && this.IsForReview;
@@ -262,7 +259,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 			this.IsForReviewOrgZipCode = !string.IsNullOrWhiteSpace(this.OrgZipCode) && this.IsForReview;
 			this.IsForReviewOrgArea = !string.IsNullOrWhiteSpace(this.OrgArea) && this.IsForReview;
 			this.IsForReviewOrgRegion = !string.IsNullOrWhiteSpace(this.OrgRegion) && this.IsForReview;
-			this.IsForReviewOrgCountry = !string.IsNullOrWhiteSpace(this.OrgCountry) && this.IsForReview;
+			this.IsForReviewOrgCountry = !string.IsNullOrWhiteSpace(this.OrgCountryCode) && this.IsForReview;
 
 			// QR
 			if (this.LegalIdentity is null)
@@ -478,12 +475,6 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 		private string? region;
 
 		/// <summary>
-		/// Country of the identity
-		/// </summary>
-		[ObservableProperty]
-		private string? country;
-
-		/// <summary>
 		/// Country code of the identity
 		/// </summary>
 		[ObservableProperty]
@@ -494,12 +485,6 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 		/// </summary>
 		[ObservableProperty]
 		private string? nationalityCode;
-
-		/// <summary>
-		/// Nationality Name
-		/// </summary>
-		[ObservableProperty]
-		private string? nationality;
 
 		/// <summary>
 		/// Gender
@@ -578,12 +563,6 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 		/// </summary>
 		[ObservableProperty]
 		private string? orgCountryCode;
-
-		/// <summary>
-		/// The legal identity's organization country property
-		/// </summary>
-		[ObservableProperty]
-		private string? orgCountry;
 
 		/// <summary>
 		/// If organization information is available.
@@ -850,7 +829,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 		private bool isForReviewRegion;
 
 		/// <summary>
-		/// Gets or sets whether the <see cref="Country"/> property is for review.
+		/// Gets or sets whether the <see cref="CountryCode"/> property is for review.
 		/// </summary>
 		[ObservableProperty]
 		private bool isForReviewCountry;
@@ -916,7 +895,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity
 		private bool isForReviewOrgRegion;
 
 		/// <summary>
-		/// Gets or sets whether the <see cref="OrgCountry"/> property is for review.
+		/// Gets or sets whether the <see cref="OrgCountryCode"/> property is for review.
 		/// </summary>
 		[ObservableProperty]
 		private bool isForReviewOrgCountry;

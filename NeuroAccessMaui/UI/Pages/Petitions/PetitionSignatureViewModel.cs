@@ -240,22 +240,10 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 		private string? countryCode;
 
 		/// <summary>
-		/// Country of the identity
-		/// </summary>
-		[ObservableProperty]
-		private string? country;
-
-		/// <summary>
 		/// Nationality (ISO code)
 		/// </summary>
 		[ObservableProperty]
 		private string? nationalityCode;
-
-		/// <summary>
-		/// Nationality Name
-		/// </summary>
-		[ObservableProperty]
-		private string? nationality;
 
 		/// <summary>
 		/// Gender
@@ -336,12 +324,6 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 		private string? orgCountryCode;
 
 		/// <summary>
-		/// The legal identity's organization country property
-		/// </summary>
-		[ObservableProperty]
-		private string? orgCountry;
-
-		/// <summary>
 		/// If organization information is available.
 		/// </summary>
 		[ObservableProperty]
@@ -414,9 +396,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 				this.City = this.RequestorIdentity[Constants.XmppProperties.City];
 				this.Region = this.RequestorIdentity[Constants.XmppProperties.Region];
 				this.CountryCode = this.RequestorIdentity[Constants.XmppProperties.Country];
-				this.Country = ISO_3166_1.ToName(this.CountryCode);
 				this.NationalityCode = this.RequestorIdentity[Constants.XmppProperties.Nationality];
-				this.Nationality = ISO_3166_1.ToName(this.NationalityCode);
 				this.Gender = this.RequestorIdentity[Constants.XmppProperties.Gender];
 
 				string BirthDayStr = this.RequestorIdentity[Constants.XmppProperties.BirthDay];
@@ -449,7 +429,6 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 				this.OrgCity = this.RequestorIdentity[Constants.XmppProperties.OrgCity];
 				this.OrgRegion = this.RequestorIdentity[Constants.XmppProperties.OrgRegion];
 				this.OrgCountryCode = this.RequestorIdentity[Constants.XmppProperties.OrgCountry];
-				this.OrgCountry = ISO_3166_1.ToName(this.OrgCountryCode);
 				this.HasOrg =
 					!string.IsNullOrEmpty(this.OrgName) ||
 					!string.IsNullOrEmpty(this.OrgNumber) ||
@@ -461,8 +440,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 					!string.IsNullOrEmpty(this.OrgArea) ||
 					!string.IsNullOrEmpty(this.OrgCity) ||
 					!string.IsNullOrEmpty(this.OrgRegion) ||
-					!string.IsNullOrEmpty(this.OrgCountryCode) ||
-					!string.IsNullOrEmpty(this.OrgCountry);
+					!string.IsNullOrEmpty(this.OrgCountryCode);
 				this.HasPhotos = this.Photos.Count > 0;
 				this.PhoneNr = this.RequestorIdentity[Constants.XmppProperties.Phone];
 				this.EMail = this.RequestorIdentity[Constants.XmppProperties.EMail];
@@ -491,7 +469,9 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 				this.City = Constants.NotAvailableValue;
 				this.Region = Constants.NotAvailableValue;
 				this.CountryCode = Constants.NotAvailableValue;
-				this.Country = Constants.NotAvailableValue;
+				this.NationalityCode = Constants.NotAvailableValue;
+				this.Gender = Constants.NotAvailableValue;
+				this.BirthDate = null;
 				this.OrgName = Constants.NotAvailableValue;
 				this.OrgNumber = Constants.NotAvailableValue;
 				this.OrgDepartment = Constants.NotAvailableValue;
@@ -503,7 +483,6 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 				this.OrgCity = Constants.NotAvailableValue;
 				this.OrgRegion = Constants.NotAvailableValue;
 				this.OrgCountryCode = Constants.NotAvailableValue;
-				this.OrgCountry = Constants.NotAvailableValue;
 				this.HasOrg = false;
 				this.HasPhotos = false;
 				this.PhoneNr = Constants.NotAvailableValue;

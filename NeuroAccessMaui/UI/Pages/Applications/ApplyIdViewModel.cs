@@ -86,19 +86,13 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 
 			if (IdentityReference is not null)
 			{
-				await this.SetProperties(IdentityReference, Args?.ReusePhoto ?? true, true, this.Personal, this.Organizational);
+				await this.SetProperties(IdentityReference, Args?.ReusePhoto ?? true, true, true, this.Organizational);
 
 				if (string.IsNullOrEmpty(this.OrgCountryCode) && this.Organizational)
-				{
 					this.OrgCountryCode = this.CountryCode;
-					this.OrgCountryName = this.CountryName;
-				}
 
 				if (string.IsNullOrEmpty(this.NationalityCode) && this.RequiresNationality)
-				{
 					this.NationalityCode = this.CountryCode;
-					this.NationalityName = this.CountryName;
-				}
 			}
 
 			this.RequiresOrgName = this.Organizational;
@@ -515,7 +509,6 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(NationalityCode))]
-		[NotifyPropertyChangedFor(nameof(NationalityName))]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		private ISO3166Country? nationality;
 
@@ -526,7 +519,6 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 			{
 				case nameof(this.Nationality):
 					this.NationalityCode = this.Nationality?.Alpha2 ?? string.Empty;
-					this.NationalityName = this.Nationality?.Name ?? string.Empty;
 					break;
 			}
 

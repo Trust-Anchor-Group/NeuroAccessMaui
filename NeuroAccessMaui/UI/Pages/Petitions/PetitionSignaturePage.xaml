@@ -84,8 +84,8 @@
 								<RowDefinition Height="{Binding Area, Converter={converters:AutoIfNonEmpty}}" />
 								<RowDefinition Height="{Binding City, Converter={converters:AutoIfNonEmpty}}" />
 								<RowDefinition Height="{Binding Region, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding Country, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding Nationality, Converter={converters:AutoIfNonEmpty}}" />
+								<RowDefinition Height="{Binding CountryCode, Converter={converters:AutoIfNonEmpty}}" />
+								<RowDefinition Height="{Binding NationalityCode, Converter={converters:AutoIfNonEmpty}}" />
 								<RowDefinition Height="{Binding Gender, Converter={converters:AutoIfNonEmpty}}" />
 								<RowDefinition Height="{Binding BirthDate, Converter={converters:AutoIfNonEmpty}}" />
 								<RowDefinition Height="{Binding HasPhotos, Converter={converters:AutoIfNonEmpty}}" />
@@ -121,10 +121,10 @@
 							<Label Grid.Row="9" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding Region}" />
 							<!--    -->
 							<Label Grid.Row="10" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize Country}" />
-							<Label Grid.Row="10" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding Country}" />
+							<Label Grid.Row="10" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding CountryCode, Converter={converters:CountryCodeToFlagAndName}}" />
 							<!--    -->
 							<Label Grid.Row="11" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize Nationality}" />
-							<Label Grid.Row="11" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding Nationality}" />
+							<Label Grid.Row="11" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding NationalityCode, Converter={converters:CountryCodeToFlagAndName}}" />
 							<!--    -->
 							<Label Grid.Row="12" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize Gender}" />
 							<Label Grid.Row="12" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding Gender, Converter={converters:GenderSymbolToLabel}}" />
@@ -210,7 +210,7 @@
 							<Label Grid.Row="9" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding OrgRegion}" />
 							<!--    -->
 							<Label Grid.Row="10" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize Country}" />
-							<Label Grid.Row="10" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding OrgCountry}" />
+							<Label Grid.Row="10" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding OrgCountryCode, Converter={converters:CountryCodeToFlagAndName}}" />
 						</Grid>
 					</VerticalStackLayout>
 				</Frame>
