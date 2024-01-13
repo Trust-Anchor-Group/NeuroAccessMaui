@@ -255,7 +255,8 @@
 							<Border StrokeThickness="2" Style="{StaticResource RegularCompositeEntryBorderStyleNoRoundedCorners}">
 								<DatePicker HorizontalOptions="FillAndExpand" BackgroundColor="{Binding BirthDateOk, Converter={converters:ControlBgColor}}"
 												Date="{Binding BirthDate}" IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
-												MinimumDate="{Binding MinBirthDate}" MaximumDate="{Binding MaxBirthDate}"/>
+												MinimumDate="{Binding MinBirthDate}" MaximumDate="{Binding MaxBirthDate}"
+												TextColor="{Binding BirthDate, Converter={converters:TransparentIfNull}}"/>
 							</Border>
 							<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding Path=BirthDate, Converter={converters:DateToString}}"
 									 IsVisible="{Binding ApplicationSent}"/>
