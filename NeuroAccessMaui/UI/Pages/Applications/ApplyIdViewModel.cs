@@ -1,4 +1,6 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
@@ -36,6 +38,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		{
 			this.localPhotoFileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), profilePhotoFileName);
 			this.photosLoader = new PhotosLoader();
+			this.countries = new ObservableCollection<ISO3166Country>(ISO_3166_1.Countries);
 		}
 
 		protected override async Task OnInitialize()
@@ -89,6 +92,12 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 				{
 					this.OrgCountryCode = this.CountryCode;
 					this.OrgCountryName = this.CountryName;
+				}
+
+				if (string.IsNullOrEmpty(this.NationalityCode) && this.RequiresNationality)
+				{
+					this.NationalityCode = this.CountryCode;
+					this.NationalityName = this.CountryName;
 				}
 			}
 
@@ -175,6 +184,19 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 			bool SetOrganizationalProperties)
 		{
 			await base.SetProperties(Identity, ClearPropertiesNotFound, SetPersonalProperties, SetOrganizationalProperties);
+
+			int i = 0;
+
+			foreach (ISO3166Country Country in this.Countries)
+			{
+				if (Country.Alpha2 == this.CountryCode)
+				{
+					this.Countries.Move(i, 0);
+					break;
+				}
+
+				i++;
+			}
 
 			if (SetPhoto && Identity?.Attachments is not null)
 			{
@@ -485,6 +507,32 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		/// </summary>
 		public bool FeaturedPeerReviewers => this.CanRequestFeaturedPeerReviewer && this.PeerReview;
 
+		/// <summary>
+		/// Available country definitions
+		/// </summary>
+		[ObservableProperty]
+		private ObservableCollection<ISO3166Country> countries;
+
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(NationalityCode))]
+		[NotifyPropertyChangedFor(nameof(NationalityName))]
+		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+		private ISO3166Country? nationality;
+
+		/// <inheritdoc/>
+		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+		{
+			switch (e.PropertyName)
+			{
+				case nameof(this.Nationality):
+					this.NationalityCode = this.Nationality?.Alpha2 ?? string.Empty;
+					this.NationalityName = this.Nationality?.Name ?? string.Empty;
+					break;
+			}
+
+			base.OnPropertyChanged(e);
+		}
+
 		#endregion
 
 		#region Commands
@@ -661,7 +709,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications
 		}
 
 		private async Task SendPeerReviewRequest(string? ReviewerId)
-		{ 
+		{
 			LegalIdentity? ToReview = ServiceRef.TagProfile.IdentityApplication;
 			if (ToReview is null || string.IsNullOrEmpty(ReviewerId))
 				return;

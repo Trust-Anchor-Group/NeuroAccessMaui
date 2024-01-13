@@ -216,6 +216,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="Resources\Styles\PickerStyles.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="UI\Pages\Applications\ApplyIdPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

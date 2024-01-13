@@ -14,5 +14,6 @@ namespace NeuroAccessMaui.Services.Data
 		public int NumericCode { get; private set; } = NumericCode;
 		public string DialCode { get; private set; } = DialCode;
 		public EmojiInfo EmojiInfo { get; set; } = EmojiInfo ?? EmojiUtilities.Emoji_waving_white_flag;
+		public string FlagAndName => this.EmojiInfo.Unicode + " " + this.Name;
 	}
 }

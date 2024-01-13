@@ -11,8 +11,16 @@
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Applications"
+							 xmlns:data="clr-namespace:NeuroAccessMaui.Services.Data"
 							 xmlns:behaviors="clr-namespace:NeuroAccessMaui.UI.Behaviors">
 
+	<VisualElement.Resources>
+		<converters:ConversionSequence x:Key="CountryCodeToFlagAndNameHyphenIfEmpty">
+			<converters:CountryCodeToFlagAndName/>
+			<converters:HyphenIfEmpty/>
+		</converters:ConversionSequence>
+	</VisualElement.Resources>
+	
 	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
 
 		<controls:Background/>
@@ -184,11 +192,7 @@
 							</HorizontalStackLayout>
 							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" EntryData="{Binding Path=Region}" 
 															 BackgroundColor="{Binding RegionOk, Converter={converters:ControlBgColor}}"
-															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
-								<controls:CompositeEntry.Behaviors>
-									<behaviors:HideKeyboardOnCompletedBehavior/>
-								</controls:CompositeEntry.Behaviors>
-							</controls:CompositeEntry>
+															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"/>
 							<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding Path=Region, Converter={converters:HyphenIfEmpty}}"
 									 IsVisible="{Binding ApplicationSent}"/>
 						</VerticalStackLayout>
@@ -198,7 +202,26 @@
 								<Label Text="{l:Localize Country}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresCountry}"/>
 							</HorizontalStackLayout>
-							<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding Path=CountryName, Converter={converters:HyphenIfEmpty}}"/>
+							<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding Path=CountryCode, Converter={StaticResource CountryCodeToFlagAndNameHyphenIfEmpty}}"/>
+						</VerticalStackLayout>
+
+						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+							<HorizontalStackLayout>
+								<Label Text="{l:Localize Nationality}" HorizontalOptions="FillAndExpand"/>
+								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresNationality}"/>
+							</HorizontalStackLayout>
+							<Border StrokeThickness="2" Style="{StaticResource RegularCompositeEntryBorderStyleNoRoundedCorners}">
+								<Picker HorizontalOptions="FillAndExpand" Title="{l:Localize SelectNationality}"
+									  BackgroundColor="{Binding NationalityOk, Converter={converters:ControlBgColor}}"
+                             ItemsSource="{Binding Path=Countries}" SelectedItem="{Binding Path=Nationality}"
+									  IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
+									<Picker.ItemDisplayBinding x:DataType="data:ISO3166Country">
+										<Binding Path="Alpha2" Converter="{converters:CountryCodeToFlagAndName}"/>
+									</Picker.ItemDisplayBinding>
+								</Picker>
+							</Border>
+							<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding Path=NationalityName, Converter={converters:HyphenIfEmpty}}"
+									 IsVisible="{Binding ApplicationSent}"/>
 						</VerticalStackLayout>
 					</VerticalStackLayout>
 				</Frame>
