@@ -1068,4 +1068,22 @@
   <data name="NrPeerReviews" xml:space="preserve">
     <value>Nombre d’évaluations par les pairs :</value>
   </data>
+  <data name="BirthDate" xml:space="preserve">
+    <value>Date de naissance</value>
+  </data>
+  <data name="Female" xml:space="preserve">
+    <value>Femelle</value>
+  </data>
+  <data name="Gender" xml:space="preserve">
+    <value>Genre</value>
+  </data>
+  <data name="Male" xml:space="preserve">
+    <value>Mâle</value>
+  </data>
+  <data name="Nationality" xml:space="preserve">
+    <value>Nationalité</value>
+  </data>
+  <data name="Other" xml:space="preserve">
+    <value>Autre</value>
+  </data>
 </root>

@@ -1068,4 +1068,22 @@
   <data name="NrPeerReviews" xml:space="preserve">
     <value>Numărul de evaluări inter pares:</value>
   </data>
+  <data name="BirthDate" xml:space="preserve">
+    <value>Data nasterii</value>
+  </data>
+  <data name="Female" xml:space="preserve">
+    <value>Feminin</value>
+  </data>
+  <data name="Gender" xml:space="preserve">
+    <value>Gen</value>
+  </data>
+  <data name="Male" xml:space="preserve">
+    <value>Mascul</value>
+  </data>
+  <data name="Nationality" xml:space="preserve">
+    <value>Naționalitate</value>
+  </data>
+  <data name="Other" xml:space="preserve">
+    <value>Alt</value>
+  </data>
 </root>

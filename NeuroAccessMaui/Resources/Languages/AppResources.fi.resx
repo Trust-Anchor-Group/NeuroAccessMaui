@@ -1068,4 +1068,22 @@
   <data name="NrPeerReviews" xml:space="preserve">
     <value>Vertaisarviointien määrä:</value>
   </data>
+  <data name="BirthDate" xml:space="preserve">
+    <value>Syntymäaika</value>
+  </data>
+  <data name="Female" xml:space="preserve">
+    <value>Naispuolinen</value>
+  </data>
+  <data name="Gender" xml:space="preserve">
+    <value>Sukupuoli</value>
+  </data>
+  <data name="Male" xml:space="preserve">
+    <value>Mies</value>
+  </data>
+  <data name="Nationality" xml:space="preserve">
+    <value>Kansallisuus</value>
+  </data>
+  <data name="Other" xml:space="preserve">
+    <value>Toinen</value>
+  </data>
 </root>

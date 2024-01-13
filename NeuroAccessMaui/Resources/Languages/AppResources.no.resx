@@ -1068,4 +1068,22 @@
   <data name="NrPeerReviews" xml:space="preserve">
     <value>Antall fagfellevurderinger:</value>
   </data>
+  <data name="BirthDate" xml:space="preserve">
+    <value>Fødselsdato</value>
+  </data>
+  <data name="Female" xml:space="preserve">
+    <value>Kvinnelig</value>
+  </data>
+  <data name="Gender" xml:space="preserve">
+    <value>Kjønn</value>
+  </data>
+  <data name="Male" xml:space="preserve">
+    <value>Mannlig</value>
+  </data>
+  <data name="Nationality" xml:space="preserve">
+    <value>Nasjonalitet</value>
+  </data>
+  <data name="Other" xml:space="preserve">
+    <value>Annet __________</value>
+  </data>
 </root>

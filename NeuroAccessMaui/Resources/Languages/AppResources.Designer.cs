@@ -313,6 +313,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Birth Date.
+        /// </summary>
+        internal static string BirthDate {
+            get {
+                return ResourceManager.GetString("BirthDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         internal static string Cancel {
@@ -835,6 +844,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Female.
+        /// </summary>
+        internal static string Female {
+            get {
+                return ResourceManager.GetString("Female", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No file upload service found on broker..
         /// </summary>
         internal static string FileUploadServiceNotFound {
@@ -876,6 +894,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string FirstName {
             get {
                 return ResourceManager.GetString("FirstName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Gender.
+        /// </summary>
+        internal static string Gender {
+            get {
+                return ResourceManager.GetString("Gender", resourceCulture);
             }
         }
         
@@ -1123,6 +1150,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Male.
+        /// </summary>
+        internal static string Male {
+            get {
+                return ResourceManager.GetString("Male", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to (me).
         /// </summary>
         internal static string Me {
@@ -1146,6 +1182,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string MiddleNames {
             get {
                 return ResourceManager.GetString("MiddleNames", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nationality.
+        /// </summary>
+        internal static string Nationality {
+            get {
+                return ResourceManager.GetString("Nationality", resourceCulture);
             }
         }
         
@@ -1524,6 +1569,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string OrgZipCode {
             get {
                 return ResourceManager.GetString("OrgZipCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Other.
+        /// </summary>
+        internal static string Other {
+            get {
+                return ResourceManager.GetString("Other", resourceCulture);
             }
         }
         

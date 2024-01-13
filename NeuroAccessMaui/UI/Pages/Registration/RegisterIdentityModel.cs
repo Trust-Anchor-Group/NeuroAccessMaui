@@ -632,11 +632,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 				if (string.IsNullOrEmpty(this.Gender))
 					return !this.RequiresGender;
 
-				return this.Gender switch
-				{
-					"M" or "F" or "X" => true,
-					_ => false,
-				};
+				return ISO_5218.LetterToGender(this.Gender, out _);
 			}
 		}
 

@@ -1068,4 +1068,22 @@
   <data name="NrPeerReviews" xml:space="preserve">
     <value>Antal peer reviews:</value>
   </data>
+  <data name="BirthDate" xml:space="preserve">
+    <value>Fødselsdag</value>
+  </data>
+  <data name="Female" xml:space="preserve">
+    <value>Kvindelig</value>
+  </data>
+  <data name="Gender" xml:space="preserve">
+    <value>Køn</value>
+  </data>
+  <data name="Male" xml:space="preserve">
+    <value>Mandlig</value>
+  </data>
+  <data name="Nationality" xml:space="preserve">
+    <value>Nationalitet</value>
+  </data>
+  <data name="Other" xml:space="preserve">
+    <value>Anden</value>
+  </data>
 </root>

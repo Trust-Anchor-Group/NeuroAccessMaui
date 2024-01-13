@@ -1068,4 +1068,22 @@
   <data name="NrPeerReviews" xml:space="preserve">
     <value>Broj vršnjačkih recenzija:</value>
   </data>
+  <data name="BirthDate" xml:space="preserve">
+    <value>Datum rođenja</value>
+  </data>
+  <data name="Female" xml:space="preserve">
+    <value>Ћenski</value>
+  </data>
+  <data name="Gender" xml:space="preserve">
+    <value>Pol</value>
+  </data>
+  <data name="Male" xml:space="preserve">
+    <value>Muљkarac</value>
+  </data>
+  <data name="Nationality" xml:space="preserve">
+    <value>Nacionalnost</value>
+  </data>
+  <data name="Other" xml:space="preserve">
+    <value>Drugi</value>
+  </data>
 </root>

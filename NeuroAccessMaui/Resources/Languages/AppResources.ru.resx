@@ -1068,4 +1068,22 @@
   <data name="NrPeerReviews" xml:space="preserve">
     <value>Количество рецензий:</value>
   </data>
+  <data name="BirthDate" xml:space="preserve">
+    <value>Дата рождения</value>
+  </data>
+  <data name="Female" xml:space="preserve">
+    <value>Женский</value>
+  </data>
+  <data name="Gender" xml:space="preserve">
+    <value>Род</value>
+  </data>
+  <data name="Male" xml:space="preserve">
+    <value>Мужской</value>
+  </data>
+  <data name="Nationality" xml:space="preserve">
+    <value>Национальность</value>
+  </data>
+  <data name="Other" xml:space="preserve">
+    <value>Другой</value>
+  </data>
 </root>
