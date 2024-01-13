@@ -14,7 +14,10 @@ namespace NeuroAccessMaui.UI.Popups
 		/// </summary>
 		public Task<ISO3166Country?> Result => this.result.Task;
 
-		public List<ISO3166Country> Countries { get; } = new(ISO_3166_1.Countries);
+		/// <summary>
+		/// Available country definitions.
+		/// </summary>
+		public static ISO3166Country[] Countries => ISO_3166_1.Countries;
 
 		public SelectPhoneCodePage(ImageSource? Background = null)
 			: base(Background)
@@ -29,7 +32,7 @@ namespace NeuroAccessMaui.UI.Popups
 		{
 			if (e.NewTextValue.Length == 0)
 			{
-				this.InnerListView.ItemsSource = this.Countries;
+				this.InnerListView.ItemsSource = Countries;
 				return;
 			}
 
@@ -44,7 +47,7 @@ namespace NeuroAccessMaui.UI.Popups
 
 			Task.Run(() =>
 			{
-				IEnumerable<ISO3166Country> CountriesFiltered = this.Countries.Where(el =>
+				IEnumerable<ISO3166Country> CountriesFiltered = Countries.Where(el =>
 				{
 					bool Result = el.Name.Contains(e.NewTextValue, StringComparison.OrdinalIgnoreCase) ||
 					string.Equals(el.Alpha2, e.NewTextValue, StringComparison.OrdinalIgnoreCase) ||
@@ -83,8 +86,6 @@ namespace NeuroAccessMaui.UI.Popups
 					this.cancellationTokenSource?.Dispose();
 					this.cancellationTokenSource = null;
 				}
-
-				this.Countries.Clear();
 
 				this.isDisposed = true;
 			}
