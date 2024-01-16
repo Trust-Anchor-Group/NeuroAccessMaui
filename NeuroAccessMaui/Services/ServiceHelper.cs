@@ -11,8 +11,11 @@
 			{
 				Service = MauiProgram.Current?.Services?.GetService<T>();
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
+#if DEBUG
+				App.SendAlert(ex.Message, "text/plain").Wait();
+#endif
 				throw new ArgumentException("Service not found: " + typeof(T).FullName);
 			}
 

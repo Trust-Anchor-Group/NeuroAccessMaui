@@ -473,6 +473,9 @@
 		<Setter Property="Margin" Value="{StaticResource SmallMargins}" />
 	</Style>
 
+	<Style ApplyToDerivedTypes="True" TargetType="Frame" x:Key="ShellFrame">
+	</Style>
+
 	<ControlTemplate x:Key="RadioButtonTemplate">
 		<Image>
 			<VisualStateManager.VisualStateGroups>
