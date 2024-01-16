@@ -84,7 +84,8 @@ namespace NeuroAccessMaui
 		public static new App? Current => appInstance;
 
 		/// <inheritdoc/>
-		public App() : this(false)
+		public App()
+			: this(false)
 		{
 		}
 
