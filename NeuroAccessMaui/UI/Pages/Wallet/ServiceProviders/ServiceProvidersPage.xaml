@@ -68,7 +68,7 @@
 				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
 											 Style="{StaticResource ImageOnlyButtonStyle}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-				<Label Text="{Binding Path=Title}" Style="{StaticResource Heading}"/>
+				<Label Text="{Binding Path=Title}" Style="{StaticResource PageTitleLabelStyle}"/>
 
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
@@ -81,22 +81,4 @@
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>
-
-	<!--
-	<Grid Margin="{StaticResource DefaultMargin}" ColumnDefinitions="*" RowDefinitions="auto,auto,*"
-          HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand">
-		<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=Title}" Style="{StaticResource Heading}"/>
-		<Label Grid.Column="0" Grid.Row="1" Text="{Binding Path=Description}" HorizontalOptions="Center" VerticalOptions="Start"/>
-
-		<noBounce:NoBounceCollectionView Grid.Column="0" Grid.Row="2" x:Name="ServiceProviders" VerticalOptions="StartAndExpand"
-                                         ItemSizingStrategy="MeasureAllItems" SelectionMode="Single"
-										 ItemsSource="{Binding Path=ServiceProviders}"
-										 ItemTemplate="{StaticResource ServiceStyleSelector}"
-                                         SelectedItem="{Binding Path=SelectedServiceProvider, Mode=TwoWay}">
-			<CollectionView.ItemsLayout>
-				<GridItemsLayout Orientation="Vertical" VerticalItemSpacing="0" />
-			</CollectionView.ItemsLayout>
-		</noBounce:NoBounceCollectionView>
-	</Grid>
-	-->
 </base:BaseContentPage>
