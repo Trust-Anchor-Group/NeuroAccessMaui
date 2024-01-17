@@ -195,6 +195,9 @@
 	  <Compile Update="UI\Pages\Main\Settings\SettingsPage.xaml.cs">
 	    <DependentUpon>SettingsPage.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="UI\Pages\Petitions\PetitionPeerReviewPage.xaml.cs">
+	    <DependentUpon>PetitionPeerReviewPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="UI\Popups\Pin\BasePopup.xaml.cs">
 	    <DependentUpon>%(Filename)</DependentUpon>
 	  </Compile>
@@ -226,6 +229,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="UI\Pages\Main\Settings\SettingsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Petitions\PetitionPeerReviewPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="UI\Pages\Wallet\ServiceProviders\ServiceProvidersPage.xaml">

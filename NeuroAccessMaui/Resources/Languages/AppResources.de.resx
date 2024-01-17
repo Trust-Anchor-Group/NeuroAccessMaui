@@ -1092,4 +1092,7 @@
   <data name="SelectNationality" xml:space="preserve">
     <value>Wählen Sie die Nationalität aus</value>
   </data>
+  <data name="RequestForReview" xml:space="preserve">
+    <value>Antrag auf Überprüfung</value>
+  </data>
 </root>

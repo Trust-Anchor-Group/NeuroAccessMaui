@@ -66,11 +66,10 @@ namespace NeuroAccessMaui.Services.Contracts
 
 				if (Identity is not null)
 				{
-					ViewIdentityNavigationArgs Args = new(
-						Identity, e.RequestorFullJid, e.SignatoryIdentityId,
-						e.PetitionId, e.Purpose, e.ContentToSign);
+					PetitionPeerReviewNavigationArgs Args = new(Identity, e.RequestorFullJid, e.SignatoryIdentityId, e.PetitionId,
+						e.Purpose, e.ContentToSign);
 
-					await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), Args);
+					await ServiceRef.NavigationService.GoToAsync(nameof(PetitionPeerReviewPage), Args);
 				}
 			}
 			catch (Exception ex)

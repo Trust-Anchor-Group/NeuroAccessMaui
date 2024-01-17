@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.UI.Photos;
 using Waher.Networking.XMPP;
@@ -13,7 +14,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 	/// <summary>
 	/// The view model to bind to when displaying petitioning of an identity in a view or page.
 	/// </summary>
-	public partial class PetitionIdentityViewModel : BaseViewModel
+	public partial class PetitionPeerReviewViewModel : QrXmppViewModel
 	{
 		private readonly PhotosLoader photosLoader;
 		private string? requestorFullJid;
@@ -21,9 +22,9 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 		private string? petitionId;
 
 		/// <summary>
-		/// Creates a new instance of the <see cref="PetitionIdentityViewModel"/> class.
+		/// Creates a new instance of the <see cref="PetitionPeerReviewViewModel"/> class.
 		/// </summary>
-		public PetitionIdentityViewModel()
+		public PetitionPeerReviewViewModel()
 		{
 			this.photosLoader = new PhotosLoader(this.Photos);
 		}
@@ -33,13 +34,14 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.NavigationService.TryGetArgs(out PetitionIdentityNavigationArgs? Args))
+			if (ServiceRef.NavigationService.TryGetArgs(out PetitionPeerReviewNavigationArgs? Args))
 			{
 				this.RequestorIdentity = Args.RequestorIdentity;
 				this.requestorFullJid = Args.RequestorFullJid;
 				this.requestedIdentityId = Args.RequestedIdentityId;
 				this.petitionId = Args.PetitionId;
 				this.Purpose = Args.Purpose;
+				this.ContentToSign = Args.ContentToSign;
 
 				string BareJid;
 
@@ -72,7 +74,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 			}
 
 			this.AssignProperties();
-			EvaluateAllCommands();
+			this.NotifyCommandsCanExecuteChanged();
 
 			this.ReloadPhotos();
 		}
@@ -107,10 +109,6 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 			await base.OnDispose();
 		}
 
-		private static void EvaluateAllCommands()
-		{
-		}
-
 		/// <summary>
 		/// The list of photos related to the identity being petitioned.
 		/// </summary>
@@ -121,29 +119,69 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 		/// </summary>
 		public LegalIdentity? RequestorIdentity { get; private set; }
 
-		[RelayCommand]
+		/// <inheritdoc/>
+		protected override Task XmppService_ConnectionStateChanged(object? Sender, XmppState NewState)
+		{
+			return MainThread.InvokeOnMainThreadAsync(async () =>
+			{
+				await base.XmppService_ConnectionStateChanged(Sender, NewState);
+
+				this.NotifyCommandsCanExecuteChanged();
+			});
+		}
+
+		public override void SetIsBusy(bool IsBusy)
+		{
+			base.SetIsBusy(IsBusy);
+			this.NotifyCommandsCanExecuteChanged();
+		}
+
+		private void NotifyCommandsCanExecuteChanged()
+		{
+			this.AcceptCommand.NotifyCanExecuteChanged();
+			this.DeclineCommand.NotifyCanExecuteChanged();
+		}
+
+		/// <summary>
+		/// If the user can accept the review.
+		/// </summary>
+		public bool CanAccept => this.IsConnected && !this.IsBusy && this.ContentToSign is not null;
+
+		[RelayCommand(CanExecute = nameof(CanAccept))]
 		private async Task Accept()
 		{
-			if (!await App.AuthenticateUser())
+			if (this.ContentToSign is null || !await App.AuthenticateUser())
 				return;
 
-			bool Succeeded = await ServiceRef.NetworkService.TryRequest(() =>
+			bool Succeeded = await ServiceRef.NetworkService.TryRequest(async () =>
 			{
-				return ServiceRef.XmppService.SendPetitionIdentityResponse(this.requestedIdentityId, this.petitionId!,
-					this.requestorFullJid!, true);
+				byte[] Signature = await ServiceRef.XmppService.Sign(this.ContentToSign!, SignWith.LatestApprovedId);
+
+				await ServiceRef.XmppService.SendPetitionSignatureResponse(this.requestedIdentityId, this.ContentToSign, Signature,
+					this.petitionId!, this.requestorFullJid!, true);
 			});
 
 			if (Succeeded)
 				await ServiceRef.NavigationService.GoBackAsync();
 		}
 
-		[RelayCommand]
+		/// <summary>
+		/// If the user can decline the review.
+		/// </summary>
+		public bool CanDecline => this.IsConnected && !this.IsBusy && this.ContentToSign is not null;
+
+		[RelayCommand(CanExecute = nameof(CanDecline))]
 		private async Task Decline()
 		{
-			bool Succeeded = await ServiceRef.NetworkService.TryRequest(() =>
+			if (this.ContentToSign is null || !await App.AuthenticateUser())
+				return;
+
+			bool Succeeded = await ServiceRef.NetworkService.TryRequest(async () =>
 			{
-				return ServiceRef.XmppService.SendPetitionIdentityResponse(this.requestedIdentityId, this.petitionId!,
-					this.requestorFullJid!, false);
+				byte[] Signature = await ServiceRef.XmppService.Sign(this.ContentToSign!, SignWith.LatestApprovedId);
+
+				await ServiceRef.XmppService.SendPetitionSignatureResponse(this.requestedIdentityId, this.ContentToSign, Signature,
+					this.petitionId!, this.requestorFullJid!, false);
 			});
 
 			if (Succeeded)
@@ -381,6 +419,12 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 		private string? purpose;
 
 		/// <summary>
+		/// Content to sign.
+		/// </summary>
+		[ObservableProperty]
+		private byte[]? contentToSign;
+
+		/// <summary>
 		/// Gets or sets whether the identity is in the contact list or not.
 		/// </summary>
 		[ObservableProperty]
@@ -509,5 +553,14 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 				this.IsApproved = false;
 			}
 		}
+
+		#region ILinkableView
+
+		/// <summary>
+		/// Title of the current view
+		/// </summary>
+		public override Task<string> Title => Task.FromResult<string>(ServiceRef.Localizer[nameof(AppResources.RequestForReview)]);
+
+		#endregion
 	}
 }

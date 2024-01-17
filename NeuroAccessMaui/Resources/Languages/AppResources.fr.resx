@@ -1092,4 +1092,7 @@
   <data name="SelectNationality" xml:space="preserve">
     <value>Sélectionnez Nationalité</value>
   </data>
+  <data name="RequestForReview" xml:space="preserve">
+    <value>Demande d’examen</value>
+  </data>
 </root>

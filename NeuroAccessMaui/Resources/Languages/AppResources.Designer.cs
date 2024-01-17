@@ -2239,6 +2239,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Request for Review.
+        /// </summary>
+        internal static string RequestForReview {
+            get {
+                return ResourceManager.GetString("RequestForReview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Requesting entity.
         /// </summary>
         internal static string RequestingEntity {

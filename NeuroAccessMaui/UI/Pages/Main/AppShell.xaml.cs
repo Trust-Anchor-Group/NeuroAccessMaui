@@ -30,6 +30,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			Routing.RegisterRoute(nameof(ViewIdentityPage), typeof(ViewIdentityPage));
 			Routing.RegisterRoute(nameof(ApplicationsPage), typeof(ApplicationsPage));
 			Routing.RegisterRoute(nameof(ApplyIdPage), typeof(ApplyIdPage));
+			Routing.RegisterRoute(nameof(PetitionPeerReviewPage), typeof(PetitionPeerReviewPage));
 			Routing.RegisterRoute(nameof(ServiceProvidersPage), typeof(ServiceProvidersPage));
 		}
 

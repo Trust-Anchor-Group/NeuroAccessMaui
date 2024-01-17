@@ -1092,4 +1092,7 @@
   <data name="SelectNationality" xml:space="preserve">
     <value>Выберите национальность</value>
   </data>
+  <data name="RequestForReview" xml:space="preserve">
+    <value>Запрос на рецензирование</value>
+  </data>
 </root>

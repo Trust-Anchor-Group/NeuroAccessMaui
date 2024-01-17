@@ -39,6 +39,7 @@ namespace NeuroAccessMaui.UI
 			// Petitions
 			Builder.Services.AddTransient<PetitionIdentityPage, PetitionIdentityViewModel>();
 			Builder.Services.AddTransient<PetitionSignaturePage, PetitionSignatureViewModel>();
+			Builder.Services.AddTransient<PetitionPeerReviewPage, PetitionPeerReviewViewModel>();
 
 			// Applications
 			Builder.Services.AddTransient<ApplicationsPage, ApplicationsViewModel>();
