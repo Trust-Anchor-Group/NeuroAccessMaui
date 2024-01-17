@@ -27,6 +27,8 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 		public PetitionPeerReviewViewModel()
 		{
 			this.photosLoader = new PhotosLoader(this.Photos);
+
+			this.Pages = [this, this, this, this, this, this, this]; // Photo, NamePnr, PersonalInfo, OrganizationalInfo, Consent, Authenticate, Approved
 		}
 
 		/// <inheritdoc/>
@@ -118,6 +120,18 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 		/// The identity of the requestor.
 		/// </summary>
 		public LegalIdentity? RequestorIdentity { get; private set; }
+
+		/// <summary>
+		/// Pages
+		/// </summary>
+		[ObservableProperty]
+		private ObservableCollection<PetitionPeerReviewViewModel> pages;
+
+		/// <summary>
+		/// Page index
+		/// </summary>
+		[ObservableProperty]
+		private int pageIndex;
 
 		/// <inheritdoc/>
 		protected override Task XmppService_ConnectionStateChanged(object? Sender, XmppState NewState)
@@ -559,7 +573,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 		/// <summary>
 		/// Title of the current view
 		/// </summary>
-		public override Task<string> Title => Task.FromResult<string>(ServiceRef.Localizer[nameof(AppResources.RequestForReview)]);
+		public override Task<string> Title => Task.FromResult<string>(ContactInfo.GetFriendlyName(this.RequestorIdentity!));
 
 		#endregion
 	}

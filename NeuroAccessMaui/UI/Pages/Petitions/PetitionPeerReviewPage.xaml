@@ -1,12 +1,80 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<base:BaseContentPage x:Name="ThisPage" x:Class="NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReviewPage" x:DataType="viewmodel:PetitionPeerReviewViewModel"
-	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-	xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
-	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-	xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
-	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Petitions">
+<base:BaseContentPage x:Name="ThisPage"
+							 x:Class="NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReviewPage"
+							 x:DataType="viewmodel:PetitionPeerReviewViewModel"
+							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Petitions">
 
-	<Grid />
+	<VisualElement.Resources>
+		<DataTemplate x:Key="ShowPhoto" x:DataType="viewmodel:PetitionPeerReviewViewModel">
+			<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+				<Label Text="Photo" HorizontalOptions="Center" VerticalOptions="Start"/>
+			</VerticalStackLayout>
+		</DataTemplate>
+		<DataTemplate x:Key="ShowNamePnr" x:DataType="viewmodel:PetitionPeerReviewViewModel">
+			<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+				<Label Text="Name &amp; PNR" HorizontalOptions="Center" VerticalOptions="Start"/>
+			</VerticalStackLayout>
+		</DataTemplate>
+		<DataTemplate x:Key="ShowPersonalInfo" x:DataType="viewmodel:PetitionPeerReviewViewModel">
+			<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+				<Label Text="Personal Info" HorizontalOptions="Center" VerticalOptions="Start"/>
+			</VerticalStackLayout>
+		</DataTemplate>
+		<DataTemplate x:Key="ShowOrganizationalInfo" x:DataType="viewmodel:PetitionPeerReviewViewModel">
+			<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+				<Label Text="OrganizationalInfo" HorizontalOptions="Center" VerticalOptions="Start"/>
+			</VerticalStackLayout>
+		</DataTemplate>
+		<DataTemplate x:Key="ShowConsent" x:DataType="viewmodel:PetitionPeerReviewViewModel">
+			<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+				<Label Text="Consent" HorizontalOptions="Center" VerticalOptions="Start"/>
+			</VerticalStackLayout>
+		</DataTemplate>
+		<DataTemplate x:Key="ShowAuthenticate" x:DataType="viewmodel:PetitionPeerReviewViewModel">
+			<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+				<Label Text="Authentication" HorizontalOptions="Center" VerticalOptions="Start"/>
+			</VerticalStackLayout>
+		</DataTemplate>
+		<DataTemplate x:Key="ShowApproved" x:DataType="viewmodel:PetitionPeerReviewViewModel">
+			<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+				<Label Text="Approval" HorizontalOptions="Center" VerticalOptions="Start"/>
+			</VerticalStackLayout>
+		</DataTemplate>
+	</VisualElement.Resources>
+	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+
+		<controls:Background/>
+
+		<ScrollView>
+			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
+											 Style="{StaticResource ImageOnlyButtonStyle}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+
+				<Label Text="{l:Localize RequestForReview}" Style="{StaticResource PageTitleLabelStyle}"/>
+
+				<Frame Style="{StaticResource FrameSet}">
+					<CarouselView ItemsSource="{Binding Pages}" Position="{Binding PageIndex, Mode=TwoWay}">
+						<CarouselView.ItemTemplate>
+							<controls:CarouselTemplateSelector Page1="{StaticResource ShowPhoto}"
+																		  Page2="{StaticResource ShowNamePnr}"
+																		  Page3="{StaticResource ShowPersonalInfo}"
+																		  Page4="{StaticResource ShowOrganizationalInfo}"
+																		  Page5="{StaticResource ShowConsent}"
+																		  Page6="{StaticResource ShowAuthenticate}"
+																		  Page7="{StaticResource ShowApproved}"/>
+						</CarouselView.ItemTemplate>
+					</CarouselView>
+				</Frame>
+				<IndicatorView Count="7" Position="{Binding PageIndex, Mode=TwoWay}" HorizontalOptions="Center"/>
+			</VerticalStackLayout>
+		</ScrollView>
+	</Grid>
 </base:BaseContentPage>

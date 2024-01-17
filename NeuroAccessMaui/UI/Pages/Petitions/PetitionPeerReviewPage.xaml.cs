@@ -20,13 +20,5 @@
 			//!!! this.PhotoViewer.HidePhotos();
 			return base.OnDisappearingAsync();
 		}
-
-		private void Image_Tapped(object? Sender, EventArgs e)
-		{
-			PetitionPeerReviewViewModel ViewModel = this.ViewModel<PetitionPeerReviewViewModel>();
-
-			//!!! Attachment[] Attachments = ViewModel.RequestorIdentity?.Attachments;
-			//!!! this.PhotoViewer.ShowPhotos(Attachments);
-		}
 	}
 }
