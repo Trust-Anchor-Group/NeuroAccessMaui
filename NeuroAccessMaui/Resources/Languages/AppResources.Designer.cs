@@ -1600,6 +1600,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The photo clearly represents {0}..
+        /// </summary>
+        internal static string PeerReviewPhotoText {
+            get {
+                return ResourceManager.GetString("PeerReviewPhotoText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Peer review rejected.
         /// </summary>
         internal static string PeerReviewRejected {
@@ -2190,6 +2199,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string Region {
             get {
                 return ResourceManager.GetString("Region", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reject.
+        /// </summary>
+        internal static string Reject {
+            get {
+                return ResourceManager.GetString("Reject", resourceCulture);
             }
         }
         

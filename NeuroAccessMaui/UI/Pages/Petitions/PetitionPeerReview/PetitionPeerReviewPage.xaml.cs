@@ -24,6 +24,26 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 			ViewModel.AddView(ReviewStep.Approved, this.ApprovedView);
 
 			StateContainer.SetCurrentState(this.GridWithAnimation, nameof(ReviewStep.Photo));
+
+			ViewModel.PropertyChanged += this.ViewModel_PropertyChanged;
+		}
+
+		/// <summary>
+		/// Destroys the page.
+		/// </summary>
+		~PetitionPeerReviewPage()
+		{
+			this.ContentPageModel.PropertyChanged -= this.ViewModel_PropertyChanged;
+		}
+
+		private void ViewModel_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
+			switch (e.PropertyName)
+			{
+				case nameof(PetitionPeerReviewViewModel.CurrentStep):
+					StateContainer.SetCurrentState(this.GridWithAnimation, (this.ContentPageModel as PetitionPeerReviewViewModel)?.CurrentStep.ToString());
+					break;
+			}
 		}
 
 		/// <inheritdoc/>

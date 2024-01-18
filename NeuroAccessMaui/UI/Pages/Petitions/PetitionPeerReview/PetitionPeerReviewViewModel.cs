@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.UI.Photos;
 using System.Collections.ObjectModel;
@@ -33,6 +34,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		/// </summary>
 		public void AddView(ReviewStep Step, BaseContentView View)
 		{
+			View.BindingContext = this;
 			this.stepViews[Step] = View;
 		}
 
@@ -40,7 +42,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		/// Gets or sets the current step from the list of <see cref="stepViews"/>.
 		/// </summary>
 		[ObservableProperty]
-		ReviewStep currentStep = ReviewStep.Photo;
+		private ReviewStep currentStep = ReviewStep.Photo;
 
 		/// <summary>
 		/// The list of steps needed to register a digital identity.
@@ -137,12 +139,6 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		/// </summary>
 		public LegalIdentity? RequestorIdentity { get; private set; }
 
-		/// <summary>
-		/// State of the peer-review process
-		/// </summary>
-		[ObservableProperty]
-		private string currentState = "Photo";
-
 		/// <inheritdoc/>
 		protected override Task XmppService_ConnectionStateChanged(object? Sender, XmppState NewState)
 		{
@@ -218,6 +214,13 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 			await ServiceRef.NavigationService.GoBackAsync();
 		}
 
+		[RelayCommand(CanExecute = nameof(IsPhotoOk))]
+		private void AcceptPhoto()
+		{
+			if (this.IsPhotoOk)
+				this.CurrentStep = ReviewStep.NamePnr;
+		}
+
 		#region Properties
 
 		/// <summary>
@@ -260,18 +263,24 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		/// First name of the identity
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(FullName))]
+		[NotifyPropertyChangedFor(nameof(PhotoReviewText))]
 		private string? firstName;
 
 		/// <summary>
 		/// Middle name(s) of the identity
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(FullName))]
+		[NotifyPropertyChangedFor(nameof(PhotoReviewText))]
 		private string? middleNames;
 
 		/// <summary>
 		/// Last name(s) of the identity
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(FullName))]
+		[NotifyPropertyChangedFor(nameof(PhotoReviewText))]
 		private string? lastNames;
 
 		/// <summary>
@@ -465,6 +474,21 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		/// </summary>
 		[ObservableProperty]
 		private int firstPhotoRotation;
+
+		// Full name of requesting entity.
+		public string FullName => ContactInfo.GetFullName(this.FirstName, this.MiddleNames, this.LastNames);
+
+		/// <summary>
+		/// If photo is OK
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(AcceptPhotoCommand))]
+		private bool isPhotoOk;
+
+		/// <summary>
+		/// Instruction to reviewer when reviewing photo.
+		/// </summary>
+		public string PhotoReviewText => ServiceRef.Localizer[nameof(AppResources.PeerReviewPhotoText), this.FullName];
 
 		#endregion
 

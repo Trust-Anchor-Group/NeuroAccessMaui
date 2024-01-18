@@ -1095,4 +1095,10 @@
   <data name="RequestForReview" xml:space="preserve">
     <value>Запрос на рецензирование</value>
   </data>
+  <data name="PeerReviewPhotoText" xml:space="preserve">
+    <value>Фотография наглядно представляет {0}.</value>
+  </data>
+  <data name="Reject" xml:space="preserve">
+    <value>Отвергать</value>
+  </data>
 </root>

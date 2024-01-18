@@ -40,14 +40,16 @@
 						<Label HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="Large" Text="{l:Localize LegalId}"
 								 Style="{StaticResource SectionTitleLabelStyle}" />
 
-						<VerticalStackLayout Margin="{StaticResource LargeMargins}"
-													HorizontalOptions="Center" VerticalOptions="Center" Spacing="0"
+						<VerticalStackLayout Margin="{StaticResource LargeMargins}" Spacing="{StaticResource SmallSpacing}"
+													HorizontalOptions="Center" VerticalOptions="Center" 
 													IsVisible="{Binding FirstPhotoSource, Converter={converters:OnlyShowNonEmpty}}">
 							<Border Style="{StaticResource OutlinedImageButtonBorderStyle}" Padding="0">
 								<Image Source="{Binding FirstPhotoSource}" WidthRequest="250" Aspect="AspectFit" HorizontalOptions="Center" Margin="0"/>
 							</Border>
-							<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding FullName}" HorizontalOptions="Center" Margin="0" Padding="0" />
-							<Label Style="{StaticResource InfoLabelStyle}" Text="{Binding PersonalNumber}" HorizontalOptions="Center" Margin="0" Padding="0" />
+							<VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="0">
+								<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding FullName}" HorizontalOptions="Center" Margin="0" Padding="0" />
+								<Label Style="{StaticResource InfoLabelStyle}" Text="{Binding PersonalNumber}" HorizontalOptions="Center" Margin="0" Padding="0" />
+							</VerticalStackLayout>
 						</VerticalStackLayout>
 
 						<Image x:Name="QrCode" Source="{Binding QrCode}" IsVisible="{Binding HasQrCode}" WidthRequest="{Binding QrCodeWidth}"
