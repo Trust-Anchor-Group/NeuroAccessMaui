@@ -35,8 +35,9 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		}
 
 		/// <summary>
-		/// Creates a new instance of the <see cref="RegistrationViewModel"/> class.
+		/// Adds sub-views
 		/// </summary>
+		/// <param name="Items">Views to add.</param>
 		public void SetPagesContainer(List<BaseRegistrationView> Items)
 		{
 			foreach (BaseRegistrationView Item in Items)
