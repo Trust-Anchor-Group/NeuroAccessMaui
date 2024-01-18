@@ -775,6 +775,105 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		/// </summary>
 		public string PhotoReviewText => ServiceRef.Localizer[nameof(AppResources.PeerReviewPhotoText), this.FullName];
 
+		/// <summary>
+		/// Toggles <see cref="IsPhotoOk"/>
+		/// </summary>
+		[RelayCommand]
+		public void ToggleIsPhotoOk()
+		{
+			this.IsPhotoOk = !this.IsPhotoOk;
+		}
+
+		/// <summary>
+		/// Toggles <see cref="IsNameOk"/>
+		/// </summary>
+		[RelayCommand]
+		public void ToggleIsNameOk()
+		{
+			this.IsNameOk = !this.IsNameOk;
+		}
+
+		/// <summary>
+		/// Toggles <see cref="IsPnrOk"/>
+		/// </summary>
+		[RelayCommand]
+		public void ToggleIsPnrOk()
+		{
+			this.IsPnrOk = !this.IsPnrOk;
+		}
+
+		/// <summary>
+		/// Toggles <see cref="IsNationalityOk"/>
+		/// </summary>
+		[RelayCommand]
+		public void ToggleIsNationalityOk()
+		{
+			this.IsNationalityOk = !this.IsNationalityOk;
+		}
+
+		/// <summary>
+		/// Toggles <see cref="IsBirthDateOk"/>
+		/// </summary>
+		[RelayCommand]
+		public void ToggleIsBirthDateOk()
+		{
+			this.IsBirthDateOk = !this.IsBirthDateOk;
+		}
+
+		/// <summary>
+		/// Toggles <see cref="IsGenderOk"/>
+		/// </summary>
+		[RelayCommand]
+		public void ToggleIsGenderOk()
+		{
+			this.IsGenderOk = !this.IsGenderOk;
+		}
+
+		/// <summary>
+		/// Toggles <see cref="IsPersonalAddressInfoOk"/>
+		/// </summary>
+		[RelayCommand]
+		public void ToggleIsPersonalAddressInfoOk()
+		{
+			this.IsPersonalAddressInfoOk = !this.IsPersonalAddressInfoOk;
+		}
+
+		/// <summary>
+		/// Toggles <see cref="IsOrganizationalInfoOk"/>
+		/// </summary>
+		[RelayCommand]
+		public void ToggleIsOrganizationalInfoOk()
+		{
+			this.IsOrganizationalInfoOk = !this.IsOrganizationalInfoOk;
+		}
+
+		/// <summary>
+		/// Toggles <see cref="AcknowledgeResponsibility"/>
+		/// </summary>
+		[RelayCommand]
+		public void ToggleAcknowledgeResponsibility()
+		{
+			this.AcknowledgeResponsibility = !this.AcknowledgeResponsibility;
+		}
+
+		/// <summary>
+		/// Toggles <see cref="ConsentProcessing"/>
+		/// </summary>
+		[RelayCommand]
+		public void ToggleConsentProcessing()
+		{
+			this.ConsentProcessing = !this.ConsentProcessing;
+		}
+
+		/// <summary>
+		/// Toggles <see cref="IsConfirmCorrectOk"/>
+		/// </summary>
+		[RelayCommand]
+		public void ToggleIsConfirmCorrect()
+		{
+			this.ConfirmCorrect = !this.ConfirmCorrect;
+		}
+
 		#endregion
 
 		private void AssignProperties()

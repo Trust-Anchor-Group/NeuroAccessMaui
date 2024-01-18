@@ -546,6 +546,24 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		#region Commands
 
 		/// <summary>
+		/// Toggles <see cref="Consent"/>
+		/// </summary>
+		[RelayCommand]
+		public void ToggleConsent()
+		{
+			this.Consent = !this.Consent;
+		}
+
+		/// <summary>
+		/// Toggles <see cref="Correct"/>
+		/// </summary>
+		[RelayCommand]
+		public void ToggleCorrect()
+		{
+			this.Correct = !this.Correct;
+		}
+
+		/// <summary>
 		/// Used to find out if an ICommand can execute
 		/// </summary>
 		public override bool CanApply

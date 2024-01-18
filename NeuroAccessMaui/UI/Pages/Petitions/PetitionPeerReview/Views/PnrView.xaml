@@ -27,7 +27,11 @@
 
 		<Grid ColumnDefinitions="auto,*" RowDefinitions="auto" ColumnSpacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumMargins}">
 			<CheckBox Grid.Column="0" IsChecked="{Binding IsPnrOk}" VerticalOptions="Center"/>
-			<Label Grid.Column="1" Text="{l:Localize PeerReviewPnrText}" VerticalOptions="Center" LineBreakMode="WordWrap"/>
+			<Label Grid.Column="1" Text="{l:Localize PeerReviewPnrText}" VerticalOptions="Center" LineBreakMode="WordWrap">
+				<Label.GestureRecognizers>
+					<TapGestureRecognizer Command="{Binding ToggleIsPnrOkCommand}"/>
+				</Label.GestureRecognizers>
+			</Label>
 		</Grid>
 
 		<Grid ColumnDefinitions="*,*" RowDefinitions="auto" ColumnSpacing="{StaticResource SmallSpacing}">

@@ -451,10 +451,18 @@
 
 							<Grid ColumnDefinitions="auto,*" RowDefinitions="auto,auto" RowSpacing="{StaticResource SmallSpacing}">
 								<CheckBox Grid.Column="0" Grid.Row="0" IsChecked="{Binding Consent}" Margin="{StaticResource SmallMargins}"/>
-								<Label Grid.Column="1" Grid.Row="0" Text="{l:Localize ConsentDescription}" HorizontalOptions="FillAndExpand"/>
+								<Label Grid.Column="1" Grid.Row="0" Text="{l:Localize ConsentDescription}" HorizontalOptions="FillAndExpand">
+									<Label.GestureRecognizers>
+										<TapGestureRecognizer Command="{Binding ToggleConsentCommand}"/>
+									</Label.GestureRecognizers>
+								</Label>
 
 								<CheckBox Grid.Column="0" Grid.Row="1" IsChecked="{Binding Correct}" Margin="{StaticResource SmallMargins}"/>
-								<Label Grid.Column="1" Grid.Row="1" Text="{l:Localize CorrectDescription}" HorizontalOptions="FillAndExpand"/>
+								<Label Grid.Column="1" Grid.Row="1" Text="{l:Localize CorrectDescription}" HorizontalOptions="FillAndExpand">
+									<Label.GestureRecognizers>
+										<TapGestureRecognizer Command="{Binding ToggleCorrectCommand}"/>
+									</Label.GestureRecognizers>
+								</Label>
 							</Grid>
 
 							<ActivityIndicator VerticalOptions="Center" HorizontalOptions="Center"
