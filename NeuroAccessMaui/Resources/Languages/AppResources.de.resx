@@ -1095,8 +1095,14 @@
   <data name="RequestForReview" xml:space="preserve">
     <value>Antrag auf Überprüfung</value>
   </data>
+  <data name="PeerReviewNameText" xml:space="preserve">
+    <value>Der vollständige Name ist korrekt.</value>
+  </data>
   <data name="PeerReviewPhotoText" xml:space="preserve">
     <value>Das Foto stellt eindeutig {0} dar.</value>
+  </data>
+  <data name="PeerReviewPnrText" xml:space="preserve">
+    <value>Die persönliche Nummer ist korrekt.</value>
   </data>
   <data name="Reject" xml:space="preserve">
     <value>Ablehnen</value>

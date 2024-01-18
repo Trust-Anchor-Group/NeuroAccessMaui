@@ -15,7 +15,7 @@
 			</Border>
 			<VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="0">
 				<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding FullName}" HorizontalOptions="Center" Margin="0" Padding="0" />
-				<Label Style="{StaticResource InfoLabelStyle}" Text="{Binding PersonalNumber}" HorizontalOptions="Center" Margin="0" Padding="0" />
+				<Label Style="{StaticResource InfoLabelStyle}" Text="{Binding PersonalNumberWithFlag}" HorizontalOptions="Center" Margin="0" Padding="0" />
 			</VerticalStackLayout>
 		</VerticalStackLayout>
 

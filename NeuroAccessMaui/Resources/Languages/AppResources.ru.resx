@@ -1095,8 +1095,14 @@
   <data name="RequestForReview" xml:space="preserve">
     <value>Запрос на рецензирование</value>
   </data>
+  <data name="PeerReviewNameText" xml:space="preserve">
+    <value>Полное название верное.</value>
+  </data>
   <data name="PeerReviewPhotoText" xml:space="preserve">
     <value>Фотография наглядно представляет {0}.</value>
+  </data>
+  <data name="PeerReviewPnrText" xml:space="preserve">
+    <value>Личный номер правильный.</value>
   </data>
   <data name="Reject" xml:space="preserve">
     <value>Отвергать</value>

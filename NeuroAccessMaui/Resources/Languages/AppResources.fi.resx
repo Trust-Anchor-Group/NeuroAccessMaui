@@ -1095,8 +1095,14 @@
   <data name="RequestForReview" xml:space="preserve">
     <value>Uudelleentarkastelua koskeva pyyntö</value>
   </data>
+  <data name="PeerReviewNameText" xml:space="preserve">
+    <value>Koko nimi on oikein.</value>
+  </data>
   <data name="PeerReviewPhotoText" xml:space="preserve">
     <value>Kuva edustaa selvästi {0}.</value>
+  </data>
+  <data name="PeerReviewPnrText" xml:space="preserve">
+    <value>Henkilönumero on oikein.</value>
   </data>
   <data name="Reject" xml:space="preserve">
     <value>Hylätä</value>

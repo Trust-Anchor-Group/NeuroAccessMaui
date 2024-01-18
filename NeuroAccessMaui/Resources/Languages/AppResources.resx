@@ -1101,6 +1101,9 @@
   <data name="PeerReviewPhotoText" xml:space="preserve">
     <value>The photo clearly represents {0}.</value>
   </data>
+  <data name="PeerReviewPnrText" xml:space="preserve">
+    <value>The Personal number is correct.</value>
+  </data>
   <data name="Reject" xml:space="preserve">
     <value>Reject</value>
   </data>

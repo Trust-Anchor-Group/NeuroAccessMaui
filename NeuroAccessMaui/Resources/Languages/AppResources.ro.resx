@@ -1095,8 +1095,14 @@
   <data name="RequestForReview" xml:space="preserve">
     <value>Cerere de reexaminare</value>
   </data>
+  <data name="PeerReviewNameText" xml:space="preserve">
+    <value>Numele complet este corect.</value>
+  </data>
   <data name="PeerReviewPhotoText" xml:space="preserve">
     <value>Fotografia reprezintă în mod clar {0}.</value>
+  </data>
+  <data name="PeerReviewPnrText" xml:space="preserve">
+    <value>Numărul personal este corect.</value>
   </data>
   <data name="Reject" xml:space="preserve">
     <value>Respinge</value>

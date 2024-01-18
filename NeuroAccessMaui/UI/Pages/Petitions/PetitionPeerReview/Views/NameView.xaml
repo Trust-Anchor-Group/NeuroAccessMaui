@@ -11,14 +11,14 @@
 	<VerticalStackLayout>
 		<VerticalStackLayout Margin="{StaticResource LargeMargins}" HorizontalOptions="Center" VerticalOptions="Center" Spacing="{StaticResource SmallSpacing}">
 			<Border Style="{StaticResource OutlinedImageButtonBorderStyle}" Padding="0">
-				<Image Source="{Binding FirstPhotoSource}" WidthRequest="250" Aspect="AspectFit" HorizontalOptions="Center" Margin="0"/>
+				<Image Source="{Binding FirstPhotoSource}" WidthRequest="150" Aspect="AspectFit" HorizontalOptions="Center" Margin="0"/>
 			</Border>
 			<VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="0">
 				<Border Style="{StaticResource OutlinedImageButtonBorderStyle}" Padding="{StaticResource SmallSpacing}"
 						  Stroke="{AppThemeBinding Light={StaticResource AccentForegroundLight}, Dark={StaticResource AccentForegroundDark}}">
 					<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding FullName}" HorizontalOptions="Center" Margin="0" Padding="0" />
 				</Border>
-				<Label Style="{StaticResource InfoLabelStyle}" Text="{Binding PersonalNumber}" HorizontalOptions="Center" Margin="0" Padding="0" />
+				<Label Style="{StaticResource InfoLabelStyle}" Text="{Binding PersonalNumberWithFlag}" HorizontalOptions="Center" Margin="0" Padding="0" />
 			</VerticalStackLayout>
 		</VerticalStackLayout>
 

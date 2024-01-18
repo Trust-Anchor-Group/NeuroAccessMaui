@@ -1618,6 +1618,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The Personal number is correct..
+        /// </summary>
+        internal static string PeerReviewPnrText {
+            get {
+                return ResourceManager.GetString("PeerReviewPnrText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Peer review rejected.
         /// </summary>
         internal static string PeerReviewRejected {

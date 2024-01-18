@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Data;
 using NeuroAccessMaui.Services.UI.Photos;
 using System.Collections.ObjectModel;
 using Waher.Networking.XMPP;
@@ -473,7 +474,26 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		/// Personal number of the identity
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(PersonalNumberWithFlag))]
 		private string? personalNumber;
+
+		/// <summary>
+		/// Personal number with country flag.
+		/// </summary>
+		public string? PersonalNumberWithFlag
+		{
+			get
+			{
+				if (string.IsNullOrEmpty(this.CountryCode) ||
+					!ISO_3166_1.TryGetCountryByCode(this.CountryCode, out ISO_3166_Country? Country) ||
+					Country is null)
+				{
+					return this.PersonalNumber;
+				}
+
+				return Country.EmojiInfo.Unicode + " " + this.PersonalNumber;
+			}
+		}
 
 		/// <summary>
 		/// Address of the identity
@@ -515,6 +535,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		/// Country code of the identity
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(PersonalNumberWithFlag))]
 		private string? countryCode;
 
 		/// <summary>

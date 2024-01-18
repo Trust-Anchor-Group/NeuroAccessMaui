@@ -1095,8 +1095,14 @@
   <data name="RequestForReview" xml:space="preserve">
     <value>Solicitud de revisión</value>
   </data>
+  <data name="PeerReviewNameText" xml:space="preserve">
+    <value>El nombre completo es correcto.</value>
+  </data>
   <data name="PeerReviewPhotoText" xml:space="preserve">
     <value>La foto representa claramente {0}.</value>
+  </data>
+  <data name="PeerReviewPnrText" xml:space="preserve">
+    <value>El número personal es correcto.</value>
   </data>
   <data name="Reject" xml:space="preserve">
     <value>Rechazar</value>

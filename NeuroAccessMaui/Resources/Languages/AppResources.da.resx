@@ -1095,8 +1095,14 @@
   <data name="RequestForReview" xml:space="preserve">
     <value>Anmodning om fornyet undersøgelse</value>
   </data>
+  <data name="PeerReviewNameText" xml:space="preserve">
+    <value>Det fulde navn er korrekt.</value>
+  </data>
   <data name="PeerReviewPhotoText" xml:space="preserve">
     <value>Billedet repræsenterer tydeligt {0}.</value>
+  </data>
+  <data name="PeerReviewPnrText" xml:space="preserve">
+    <value>Personnummeret er korrekt.</value>
   </data>
   <data name="Reject" xml:space="preserve">
     <value>Afvise</value>
