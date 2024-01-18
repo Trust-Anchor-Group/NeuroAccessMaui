@@ -1600,6 +1600,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The full name is correct..
+        /// </summary>
+        internal static string PeerReviewNameText {
+            get {
+                return ResourceManager.GetString("PeerReviewNameText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The photo clearly represents {0}..
         /// </summary>
         internal static string PeerReviewPhotoText {
