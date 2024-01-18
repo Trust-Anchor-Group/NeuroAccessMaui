@@ -488,13 +488,13 @@
 
 							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
 								<controls:TextButton Command="{Binding ScanQrCodeCommand}" Style="{StaticResource FilledTextButtonStyleNoRoundedCorners}"
-														LabelData="{l:Localize QrScanCode}" IsVisible="{Binding PeerReview}" />
+															LabelData="{l:Localize QrScanCode}" IsVisible="{Binding PeerReview}" />
 
 								<controls:TextButton Command="{Binding RequestReviewCommand}" Style="{StaticResource FilledTextButtonStyleNoRoundedCorners}"
-														LabelData="{l:Localize FeaturedReviewers}" IsVisible="{Binding FeaturedPeerReviewers}" />
+															LabelData="{l:Localize FeaturedReviewers}" IsVisible="{Binding FeaturedPeerReviewers}" />
 
 								<controls:TextButton Command="{Binding RevokeApplicationCommand}" Style="{StaticResource FilledTextButtonStyleNoRoundedCorners}"
-														LabelData="{l:Localize RevokeApplication}" />
+															LabelData="{l:Localize RevokeApplication}" />
 							</VerticalStackLayout>
 						</VerticalStackLayout>
 					</Grid>
