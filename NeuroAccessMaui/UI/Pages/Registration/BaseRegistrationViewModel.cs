@@ -1,5 +1,4 @@
-﻿using NeuroAccessMaui.Services;
-using NeuroAccessMaui.Services.Tag;
+﻿using NeuroAccessMaui.Services.Tag;
 
 namespace NeuroAccessMaui.UI.Pages.Registration
 {
