@@ -198,7 +198,6 @@
 		<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource EnabledOutlinedButtonForegroundLight}, Dark={StaticResource EnabledOutlinedButtonForegroundDark}}" />
 		<Setter Property="StrokeThickness" Value="{StaticResource MediumStrokeThickness}" />
 		<Setter Property="Padding" Value="{StaticResource MediumMargins}" />
-		<Setter Property="Padding" Value="{StaticResource MediumMargins}" />
 	</Style>
 
 	<Style x:Key="OutlinedImageButtonPathStyle" ApplyToDerivedTypes="False" TargetType="Path">

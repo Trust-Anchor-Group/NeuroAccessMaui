@@ -7,9 +7,7 @@
 							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
 							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview">
-
 	<VerticalStackLayout>
 		<VerticalStackLayout Margin="{StaticResource LargeMargins}" HorizontalOptions="Center" VerticalOptions="Center" Spacing="{StaticResource SmallSpacing}">
 			<Border Style="{StaticResource OutlinedImageButtonBorderStyle}" Padding="0">
