@@ -1,6 +1,6 @@
 ﻿using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Pages.Applications;
-using NeuroAccessMaui.UI.Pages.Identity;
+using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Main.QR;
 using NeuroAccessMaui.UI.Pages.Main.Settings;
 using NeuroAccessMaui.UI.Pages.Main.VerifyCode;

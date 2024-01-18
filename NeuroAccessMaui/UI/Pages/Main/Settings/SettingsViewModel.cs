@@ -1,7 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Mopups.Services;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Tag;
+using NeuroAccessMaui.UI.Pages.Identity.TransferIdentity;
+using NeuroAccessMaui.UI.Popups;
 using System.ComponentModel;
 using System.Security.Cryptography;
 using System.Text;
@@ -9,10 +13,6 @@ using System.Xml;
 using Waher.Content.Xml;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
-using NeuroAccessMaui.UI.Pages.Identity;
-using Mopups.Services;
-using NeuroAccessMaui.UI.Popups;
-using NeuroAccessMaui.Services.Tag;
 
 namespace NeuroAccessMaui.UI.Pages.Main.Settings
 {

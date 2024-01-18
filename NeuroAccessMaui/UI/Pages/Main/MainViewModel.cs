@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
-using NeuroAccessMaui.UI.Pages.Identity;
+using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 
 namespace NeuroAccessMaui.UI.Pages.Main
 {

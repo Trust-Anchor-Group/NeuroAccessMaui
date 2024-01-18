@@ -8,7 +8,7 @@ using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Data;
 using NeuroAccessMaui.Services.Navigation;
 using NeuroAccessMaui.Services.UI.Photos;
-using NeuroAccessMaui.UI.Pages.Identity;
+using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Registration;
 using NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders;
 using SkiaSharp;

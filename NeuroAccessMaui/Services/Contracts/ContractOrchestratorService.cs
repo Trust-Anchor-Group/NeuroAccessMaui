@@ -1,7 +1,8 @@
 ﻿using NeuroAccessMaui.Extensions;
-using NeuroAccessMaui.UI.Pages.Identity;
-using NeuroAccessMaui.UI.Pages.Petitions;
 using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
+using NeuroAccessMaui.UI.Pages.Petitions;
+using System.Globalization;
 using System.Reflection;
 using System.Text;
 using Waher.Content.Xml;
@@ -9,7 +10,6 @@ using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.StanzaErrors;
 using Waher.Runtime.Inventory;
-using System.Globalization;
 
 namespace NeuroAccessMaui.Services.Contracts
 {

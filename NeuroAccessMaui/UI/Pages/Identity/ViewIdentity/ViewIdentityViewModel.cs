@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
-using NeuroAccessMaui.Services.Data;
 using NeuroAccessMaui.Services.UI.Photos;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -13,7 +12,7 @@ using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;
 
-namespace NeuroAccessMaui.UI.Pages.Identity
+namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 {
 	/// <summary>
 	/// The view model to bind to for when displaying identities.

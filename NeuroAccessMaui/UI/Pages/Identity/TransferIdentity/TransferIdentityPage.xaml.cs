@@ -1,4 +1,4 @@
-﻿namespace NeuroAccessMaui.UI.Pages.Identity
+﻿namespace NeuroAccessMaui.UI.Pages.Identity.TransferIdentity
 {
 	/// <summary>
 	/// A page to display when the user wants to transfer an identity.

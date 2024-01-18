@@ -1,4 +1,4 @@
-namespace NeuroAccessMaui.UI.Pages.Identity
+namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 {
 	/// <summary>
 	/// A page to display when the user wants to view an identity.
