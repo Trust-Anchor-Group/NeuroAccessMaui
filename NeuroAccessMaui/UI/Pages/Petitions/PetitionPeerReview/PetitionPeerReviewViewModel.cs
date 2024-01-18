@@ -542,7 +542,26 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		/// Nationality (ISO code)
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(NationalityWithFlag))]
 		private string? nationalityCode;
+
+		/// <summary>
+		/// Nationality with country flag.
+		/// </summary>
+		public string? NationalityWithFlag
+		{
+			get
+			{
+				if (string.IsNullOrEmpty(this.NationalityCode) ||
+					!ISO_3166_1.TryGetCountryByCode(this.NationalityCode, out ISO_3166_Country? Country) ||
+					Country is null)
+				{
+					return this.NationalityCode;
+				}
+
+				return Country.EmojiInfo.Unicode + " " + Country.Name;
+			}
+		}
 
 		/// <summary>
 		/// Gender

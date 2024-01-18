@@ -1098,6 +1098,9 @@
   <data name="PeerReviewNameText" xml:space="preserve">
     <value>O nome completo está correto.</value>
   </data>
+  <data name="PeerReviewNationalityText" xml:space="preserve">
+    <value>A nacionalidade está correta.</value>
+  </data>
   <data name="PeerReviewPhotoText" xml:space="preserve">
     <value>A foto representa claramente {0}.</value>
   </data>
