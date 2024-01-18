@@ -26,9 +26,26 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		public PetitionPeerReviewViewModel()
 		{
 			this.photosLoader = new PhotosLoader(this.Photos);
-
-			this.Pages = [this, this, this, this, this, this, this]; // Photo, NamePnr, PersonalInfo, OrganizationalInfo, Consent, Authenticate, Approved
 		}
+
+		/// <summary>
+		/// Adds a view to the wizard dialog.
+		/// </summary>
+		public void AddView(ReviewStep Step, BaseContentView View)
+		{
+			this.stepViews[Step] = View;
+		}
+
+		/// <summary>
+		/// Gets or sets the current step from the list of <see cref="stepViews"/>.
+		/// </summary>
+		[ObservableProperty]
+		ReviewStep currentStep = ReviewStep.Photo;
+
+		/// <summary>
+		/// The list of steps needed to register a digital identity.
+		/// </summary>
+		private readonly SortedDictionary<ReviewStep, BaseContentView> stepViews = [];
 
 		/// <inheritdoc/>
 		protected override async Task OnInitialize()
@@ -121,10 +138,10 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		public LegalIdentity? RequestorIdentity { get; private set; }
 
 		/// <summary>
-		/// Pages
+		/// State of the peer-review process
 		/// </summary>
 		[ObservableProperty]
-		private ObservableCollection<PetitionPeerReviewViewModel> pages;
+		private string currentState = "Photo";
 
 		/// <inheritdoc/>
 		protected override Task XmppService_ConnectionStateChanged(object? Sender, XmppState NewState)

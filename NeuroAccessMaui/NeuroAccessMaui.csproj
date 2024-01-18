@@ -198,8 +198,32 @@
 	  <Compile Update="UI\Pages\Petitions\PetitionPeerReview\PetitionPeerReviewPage.xaml.cs">
 	    <DependentUpon>PetitionPeerReviewPage.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\NamePnrView.xaml.cs">
+	    <DependentUpon>NamePnrView.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\PersonalInfoView.xaml.cs">
+	    <DependentUpon>PersonalInfoView.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\OrganizationalInfoView.xaml.cs">
+	    <DependentUpon>OrganizationalInfoView.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\ConsentView.xaml.cs">
+	    <DependentUpon>ConsentView.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\AuthenticateView.xaml.cs">
+	    <DependentUpon>AuthenticateView.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\ApprovedView.xaml.cs">
+	    <DependentUpon>ApprovedView.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\PhotoView.xaml.cs">
+	    <DependentUpon>PhotoView.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="UI\Pages\Petitions\PetitionSignature\PetitionSignaturePage.xaml.cs">
 	    <DependentUpon>PetitionSignaturePage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="UI\Pages\Registration\Views\RequestPurposeView.xaml.cs">
+	    <DependentUpon>RequestPurposeView.xaml</DependentUpon>
 	  </Compile>
 	  <Compile Update="UI\Popups\Pin\BasePopup.xaml.cs">
 	    <DependentUpon>%(Filename)</DependentUpon>
@@ -235,6 +259,27 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\PetitionPeerReviewPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\NamePnrView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\PersonalInfoView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\OrganizationalInfoView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\ConsentView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\AuthenticateView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\ApprovedView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\PhotoView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="UI\Pages\Wallet\ServiceProviders\ServiceProvidersPage.xaml">

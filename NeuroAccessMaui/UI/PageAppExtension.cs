@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Maui;
+using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.UI.Pages.Applications.Applications;
 using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
 using NeuroAccessMaui.UI.Pages.Identity.TransferIdentity;
@@ -7,6 +8,7 @@ using NeuroAccessMaui.UI.Pages.Main;
 using NeuroAccessMaui.UI.Pages.Main.Settings;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview;
+using NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview.Views;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature;
 using NeuroAccessMaui.UI.Pages.Registration;
 using NeuroAccessMaui.UI.Pages.Registration.Views;
@@ -44,6 +46,13 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<PetitionIdentityPage, PetitionIdentityViewModel>();
 			Builder.Services.AddTransient<PetitionSignaturePage, PetitionSignatureViewModel>();
 			Builder.Services.AddTransient<PetitionPeerReviewPage, PetitionPeerReviewViewModel>();
+			Builder.Services.AddTransient<PhotoView, EmptyViewModel>();
+			Builder.Services.AddTransient<NamePnrView, EmptyViewModel>();
+			Builder.Services.AddTransient<PersonalInfoView, EmptyViewModel>();
+			Builder.Services.AddTransient<OrganizationalInfoView, EmptyViewModel>();
+			Builder.Services.AddTransient<ConsentView, EmptyViewModel>();
+			Builder.Services.AddTransient<AuthenticateView, EmptyViewModel>();
+			Builder.Services.AddTransient<ApprovedView, EmptyViewModel>();
 
 			// Applications
 			Builder.Services.AddTransient<ApplicationsPage, ApplicationsViewModel>();

@@ -10,68 +10,35 @@
 							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
-							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview">
+							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview"
+							 xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview.Views">
 
-	<VisualElement.Resources>
-		<DataTemplate x:Key="ShowPhoto" x:DataType="viewmodel:PetitionPeerReviewViewModel">
-			<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
-				<Label Text="Photo" HorizontalOptions="Center" VerticalOptions="Start"/>
-			</VerticalStackLayout>
-		</DataTemplate>
-		<DataTemplate x:Key="ShowNamePnr" x:DataType="viewmodel:PetitionPeerReviewViewModel">
-			<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
-				<Label Text="Name &amp; PNR" HorizontalOptions="Center" VerticalOptions="Start"/>
-			</VerticalStackLayout>
-		</DataTemplate>
-		<DataTemplate x:Key="ShowPersonalInfo" x:DataType="viewmodel:PetitionPeerReviewViewModel">
-			<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
-				<Label Text="Personal Info" HorizontalOptions="Center" VerticalOptions="Start"/>
-			</VerticalStackLayout>
-		</DataTemplate>
-		<DataTemplate x:Key="ShowOrganizationalInfo" x:DataType="viewmodel:PetitionPeerReviewViewModel">
-			<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
-				<Label Text="OrganizationalInfo" HorizontalOptions="Center" VerticalOptions="Start"/>
-			</VerticalStackLayout>
-		</DataTemplate>
-		<DataTemplate x:Key="ShowConsent" x:DataType="viewmodel:PetitionPeerReviewViewModel">
-			<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
-				<Label Text="Consent" HorizontalOptions="Center" VerticalOptions="Start"/>
-			</VerticalStackLayout>
-		</DataTemplate>
-		<DataTemplate x:Key="ShowAuthenticate" x:DataType="viewmodel:PetitionPeerReviewViewModel">
-			<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
-				<Label Text="Authentication" HorizontalOptions="Center" VerticalOptions="Start"/>
-			</VerticalStackLayout>
-		</DataTemplate>
-		<DataTemplate x:Key="ShowApproved" x:DataType="viewmodel:PetitionPeerReviewViewModel">
-			<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
-				<Label Text="Approval" HorizontalOptions="Center" VerticalOptions="Start"/>
-			</VerticalStackLayout>
-		</DataTemplate>
-	</VisualElement.Resources>
 	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
 
 		<controls:Background/>
 
 		<ScrollView>
 			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+
 				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
 											 Style="{StaticResource ImageOnlyButtonStyle}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-				<Label Text="{l:Localize RequestForReview}" Style="{StaticResource PageTitleLabelStyle}"/>
+				<Label Style="{StaticResource PageTitleLabelStyle}" Text="{l:Localize RequestForReview}"/>
 
 				<Frame Style="{StaticResource FrameSet}">
-					<CarouselView ItemsSource="{Binding Pages}">
-						<CarouselView.ItemTemplate>
-							<controls:CarouselTemplateSelector Page1="{StaticResource ShowPhoto}"
-																		  Page2="{StaticResource ShowNamePnr}"
-																		  Page3="{StaticResource ShowPersonalInfo}"
-																		  Page4="{StaticResource ShowOrganizationalInfo}"
-																		  Page5="{StaticResource ShowConsent}"
-																		  Page6="{StaticResource ShowAuthenticate}"
-																		  Page7="{StaticResource ShowApproved}"/>
-						</CarouselView.ItemTemplate>
-					</CarouselView>
+					<Grid x:Name="GridWithAnimation">
+
+						<mct:StateContainer.StateViews>
+							<views:PhotoView x:Name="PhotoView" x:FactoryMethod="Create" mct:StateView.StateKey="Photo" />
+							<views:NamePnrView x:Name="NamePnrView" x:FactoryMethod="Create" mct:StateView.StateKey="NamePnr" />
+							<views:PersonalInfoView x:Name="PersonalInfoView" x:FactoryMethod="Create" mct:StateView.StateKey="PersonalInfo" />
+							<views:OrganizationalInfoView x:Name="OrganizationalInfoView" x:FactoryMethod="Create" mct:StateView.StateKey="OrganizationalInfo" />
+							<views:ConsentView x:Name="ConsentView" x:FactoryMethod="Create" mct:StateView.StateKey="Consent" />
+							<views:AuthenticateView x:Name="AuthenticateView" x:FactoryMethod="Create" mct:StateView.StateKey="Authenticate" />
+							<views:ApprovedView x:Name="ApprovedView" x:FactoryMethod="Create" mct:StateView.StateKey="Approved" />
+						</mct:StateContainer.StateViews>
+
+					</Grid>
 				</Frame>
 			</VerticalStackLayout>
 		</ScrollView>
