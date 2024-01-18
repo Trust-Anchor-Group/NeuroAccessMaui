@@ -1095,6 +1095,12 @@
   <data name="RequestForReview" xml:space="preserve">
     <value>Cerere de reexaminare</value>
   </data>
+  <data name="PeerReviewBirthDateText" xml:space="preserve">
+    <value>Data nașterii este corectă.</value>
+  </data>
+  <data name="PeerReviewGenderText" xml:space="preserve">
+    <value>Genul este corect.</value>
+  </data>
   <data name="PeerReviewNameText" xml:space="preserve">
     <value>Numele complet este corect.</value>
   </data>

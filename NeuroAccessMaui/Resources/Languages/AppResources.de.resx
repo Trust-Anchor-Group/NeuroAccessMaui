@@ -1095,6 +1095,12 @@
   <data name="RequestForReview" xml:space="preserve">
     <value>Antrag auf Überprüfung</value>
   </data>
+  <data name="PeerReviewBirthDateText" xml:space="preserve">
+    <value>Das Geburtsdatum ist korrekt.</value>
+  </data>
+  <data name="PeerReviewGenderText" xml:space="preserve">
+    <value>Das Geschlecht ist korrekt.</value>
+  </data>
   <data name="PeerReviewNameText" xml:space="preserve">
     <value>Der vollständige Name ist korrekt.</value>
   </data>

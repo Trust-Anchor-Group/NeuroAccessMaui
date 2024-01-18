@@ -1591,11 +1591,29 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The Birth Date is correct..
+        /// </summary>
+        internal static string PeerReviewBirthDateText {
+            get {
+                return ResourceManager.GetString("PeerReviewBirthDateText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Peer reviews are enabled. This allows you to request peers (people with already approved digital IDs) to review your application and collaboratively approve it..
         /// </summary>
         internal static string PeerReviewDescription {
             get {
                 return ResourceManager.GetString("PeerReviewDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Gender is correct..
+        /// </summary>
+        internal static string PeerReviewGenderText {
+            get {
+                return ResourceManager.GetString("PeerReviewGenderText", resourceCulture);
             }
         }
         

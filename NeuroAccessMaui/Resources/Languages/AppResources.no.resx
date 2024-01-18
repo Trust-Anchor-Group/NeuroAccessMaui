@@ -1095,6 +1095,12 @@
   <data name="RequestForReview" xml:space="preserve">
     <value>Forespørsel om gjennomgang</value>
   </data>
+  <data name="PeerReviewBirthDateText" xml:space="preserve">
+    <value>Fødselsdatoen er riktig.</value>
+  </data>
+  <data name="PeerReviewGenderText" xml:space="preserve">
+    <value>Kjønnet er riktig.</value>
+  </data>
   <data name="PeerReviewNameText" xml:space="preserve">
     <value>Det fulle navnet er riktig.</value>
   </data>

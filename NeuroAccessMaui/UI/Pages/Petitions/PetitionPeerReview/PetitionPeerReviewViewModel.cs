@@ -491,7 +491,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 					return this.PersonalNumber;
 				}
 
-				return Country.EmojiInfo.Unicode + " " + this.PersonalNumber;
+				return Country.EmojiInfo.Unicode + "\t" + this.PersonalNumber;
 			}
 		}
 
@@ -559,7 +559,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 					return this.NationalityCode;
 				}
 
-				return Country.EmojiInfo.Unicode + " " + Country.Name;
+				return Country.EmojiInfo.Unicode + "\t" + Country.Name;
 			}
 		}
 
@@ -567,7 +567,26 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		/// Gender
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(GenderWithSymbol))]
 		private string? gender;
+
+		/// <summary>
+		/// Gender with Unicode symbol.
+		/// </summary>
+		public string? GenderWithSymbol
+		{
+			get
+			{
+				if (string.IsNullOrEmpty(this.Gender) ||
+					!ISO_5218.LetterToGender(this.Gender, out ISO_5218_Gender? Gender) ||
+					Gender is null)
+				{
+					return this.Gender;
+				}
+
+				return Gender.Unicode + "\t" + ServiceRef.Localizer[Gender.LocalizedNameId];
+			}
+		}
 
 		/// <summary>
 		/// Birth Date
