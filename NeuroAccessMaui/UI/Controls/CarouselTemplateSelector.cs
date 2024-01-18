@@ -56,19 +56,19 @@
 			CarouselView? View = Container as CarouselView;
 			int Position = View?.Position ?? 0;
 
-			switch (Position)
+			return Position switch
 			{
-				case 0:return this.Page1;
-				case 1:return this.Page2;
-				case 2:return this.Page3;
-				case 3:return this.Page4;
-				case 4:return this.Page5;
-				case 5:return this.Page6;
-				case 6:return this.Page7;
-				case 7:return this.Page8;
-				case 8:return this.Page9;
-				default:return null;
-			}
+				0 => this.Page1,
+				1 => this.Page2,
+				2 => this.Page3,
+				3 => this.Page4,
+				4 => this.Page5,
+				5 => this.Page6,
+				6 => this.Page7,
+				7 => this.Page8,
+				8 => this.Page9,
+				_ => null,
+			};
 		}
 	}
 }
