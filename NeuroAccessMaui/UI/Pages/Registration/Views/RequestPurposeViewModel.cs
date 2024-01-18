@@ -9,9 +9,9 @@ using NeuroAccessMaui.Services.Tag;
 
 namespace NeuroAccessMaui.UI.Pages.Registration.Views
 {
-	public partial class ChoosePurposeViewModel : BaseRegistrationViewModel
+	public partial class RequestPurposeViewModel : BaseRegistrationViewModel
 	{
-		public ChoosePurposeViewModel()
+		public RequestPurposeViewModel()
 			: base(RegistrationStep.RequestPurpose)
 		{
 		}

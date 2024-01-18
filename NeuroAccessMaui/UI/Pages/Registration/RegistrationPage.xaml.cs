@@ -19,7 +19,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 
 			ViewModel.SetPagesContainer([
 				this.LoadingView,
-				this.ChoosePurposeView,
+				this.RequestPurposeView,
 				this.ValidatePhoneView,
 				this.ValidateEmailView,
 				this.ChooseProviderView,
@@ -80,16 +80,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 				return;
 			}
 
-			string NewState = NewStep switch
-			{
-				RegistrationStep.RequestPurpose => "ChoosePurpose",
-				RegistrationStep.ValidatePhone => "ValidatePhone",
-				RegistrationStep.ValidateEmail => "ValidateEmail",
-				RegistrationStep.ChooseProvider => "ChooseProvider",
-				RegistrationStep.CreateAccount => "CreateAccount",
-				RegistrationStep.DefinePin => "DefinePin",
-				_ => throw new NotImplementedException(),
-			};
+			string NewState = NewStep.ToString();
 
 			if (ServiceRef.PlatformSpecific.CanProhibitScreenCapture)
 				ServiceRef.PlatformSpecific.ProhibitScreenCapture = true;	// Allows user to record onboarding process, for troubleshooting purposes

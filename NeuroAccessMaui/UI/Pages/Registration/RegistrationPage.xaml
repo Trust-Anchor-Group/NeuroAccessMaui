@@ -15,10 +15,7 @@
 
 		<controls:Background Grid.RowSpan="2" />
 
-		<Grid
-			Grid.Row="0"
-			RowDefinitions="auto"
-			ColumnDefinitions="*">
+		<Grid Grid.Row="0" RowDefinitions="auto" ColumnDefinitions="*">
 			<Grid.Padding>
 				<Thickness Left="{StaticResource LargeSpacing}" Top="{StaticResource LargeSpacing}" Right="{StaticResource LargeSpacing}" />
 			</Grid.Padding>
@@ -60,7 +57,7 @@
 
 					<mct:StateContainer.StateViews>
 						<views:LoadingView x:Name="LoadingView" x:FactoryMethod="Create" mct:StateView.StateKey="Loading" />
-						<views:ChoosePurposeView x:Name="ChoosePurposeView" x:FactoryMethod="Create" mct:StateView.StateKey="ChoosePurpose" />
+						<views:RequestPurposeView x:Name="RequestPurposeView" x:FactoryMethod="Create" mct:StateView.StateKey="RequestPurpose" />
 						<views:ValidatePhoneView x:Name="ValidatePhoneView" x:FactoryMethod="Create" mct:StateView.StateKey="ValidatePhone" />
 						<views:ValidateEmailView x:Name="ValidateEmailView" x:FactoryMethod="Create" mct:StateView.StateKey="ValidateEmail" />
 						<views:ChooseProviderView x:Name="ChooseProviderView" x:FactoryMethod="Create" mct:StateView.StateKey="ChooseProvider" />

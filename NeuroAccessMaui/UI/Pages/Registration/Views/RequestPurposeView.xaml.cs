@@ -5,16 +5,16 @@ using NeuroAccessMaui.UI.Popups;
 
 namespace NeuroAccessMaui.UI.Pages.Registration.Views
 {
-	public partial class ChoosePurposeView
+	public partial class RequestPurposeView
 	{
-		public static ChoosePurposeView Create()
+		public static RequestPurposeView Create()
 		{
-			return Create<ChoosePurposeView>();
+			return Create<RequestPurposeView>();
 		}
 
-		private readonly ChoosePurposeViewModel viewModel;
+		private readonly RequestPurposeViewModel viewModel;
 
-		public ChoosePurposeView(ChoosePurposeViewModel ViewModel)
+		public RequestPurposeView(RequestPurposeViewModel ViewModel)
 		{
 			this.InitializeComponent();
 			this.ContentViewModel = ViewModel;

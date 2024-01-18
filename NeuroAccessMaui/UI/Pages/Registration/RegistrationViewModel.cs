@@ -12,12 +12,8 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 {
 	public partial class RegistrationViewModel : BaseViewModel
 	{
-		[ObservableProperty]
-		private string currentState = "Loading";
-
 		public RegistrationViewModel()
 		{
-
 		}
 
 		/// <inheritdoc/>
