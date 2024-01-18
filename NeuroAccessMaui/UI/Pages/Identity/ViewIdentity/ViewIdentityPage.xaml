@@ -41,7 +41,11 @@
 						</VerticalStackLayout>
 
 						<Image x:Name="QrCode" Source="{Binding QrCode}" IsVisible="{Binding HasQrCode}" WidthRequest="{Binding QrCodeWidth}"
-								 HeightRequest="{Binding QrCodeHeight}" HorizontalOptions="Center"/>
+								 HeightRequest="{Binding QrCodeHeight}" HorizontalOptions="Center">
+							<Image.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding LegalId}" />
+							</Image.GestureRecognizers>
+						</Image>
 
 						<HorizontalStackLayout HorizontalOptions="Center" Spacing="{StaticResource SmallSpacing}" Margin="0,0,0,12">
 							<Path VerticalOptions="Center" HeightRequest="20" WidthRequest="20" Aspect="Uniform"
@@ -222,7 +226,7 @@
 								<RowDefinition Height="Auto" />
 								<RowDefinition Height="{Binding NetworkId, Converter={converters:AutoIfNonEmpty}}" />
 							</Grid.RowDefinitions>
-									
+
 							<Label Grid.Row="0" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize Created}" />
 							<Label Grid.Row="0" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding Created, Converter={converters:DateToString}}" />
 							<!--    -->
