@@ -26,8 +26,7 @@
 				<Label Style="{StaticResource PageTitleLabelStyle}" Text="{l:Localize RequestForReview}"/>
 
 				<Frame Style="{StaticResource FrameSet}">
-					<Grid x:Name="GridWithAnimation">
-
+					<Grid x:Name="GridWithAnimation" AnchorX="0.5" AnchorY="0.5">
 						<mct:StateContainer.StateViews>
 							<views:PhotoView x:Name="PhotoView" x:FactoryMethod="Create" mct:StateView.StateKey="Photo" />
 							<views:NameView x:Name="NameView" x:FactoryMethod="Create" mct:StateView.StateKey="Name" />
@@ -41,7 +40,6 @@
 							<views:AuthenticateView x:Name="AuthenticateView" x:FactoryMethod="Create" mct:StateView.StateKey="Authenticate" />
 							<views:ApprovedView x:Name="ApprovedView" x:FactoryMethod="Create" mct:StateView.StateKey="Approved" />
 						</mct:StateContainer.StateViews>
-
 					</Grid>
 				</Frame>
 			</VerticalStackLayout>

@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Maui.Layouts;
+﻿using System.Runtime.CompilerServices;
+using CommunityToolkit.Maui.Layouts;
 
 namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 {
@@ -45,7 +46,33 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 			switch (e.PropertyName)
 			{
 				case nameof(PetitionPeerReviewViewModel.CurrentStep):
-					StateContainer.SetCurrentState(this.GridWithAnimation, (this.ContentPageModel as PetitionPeerReviewViewModel)?.CurrentStep.ToString());
+					StateContainer.ChangeStateWithAnimation(this.GridWithAnimation,
+						(this.ContentPageModel as PetitionPeerReviewViewModel)?.CurrentStep.ToString(),
+						new Animation()
+						{
+							{
+								0,
+								1,
+								new Animation((p)=>
+								{
+									this.GridWithAnimation.Scale = p / 5 + 0.8;
+									this.GridWithAnimation.Opacity = p;
+								}, 1, 0, Easing.CubicIn)
+							}
+						},
+						new Animation()
+						{
+							{
+								0,
+								1,
+								new Animation((p)=>
+								{
+									this.GridWithAnimation.Scale = p / 5 + 0.8;
+									this.GridWithAnimation.Opacity = p;
+								}, 0, 1, Easing.CubicInOut)
+							}
+						},
+						CancellationToken.None);
 					break;
 			}
 		}
