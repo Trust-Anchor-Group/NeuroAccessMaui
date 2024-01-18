@@ -9,7 +9,7 @@ namespace NeuroAccessMaui.UI.Converters
 	public class GenderCodeToSymbol : IValueConverter, IMarkupExtension
 	{
 		/// <inheritdoc/>
-		public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+		public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
 		{
 			ISO_5218_Gender? Rec;
 
@@ -29,7 +29,7 @@ namespace NeuroAccessMaui.UI.Converters
 		}
 
 		/// <inheritdoc/>
-		public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+		public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
 		{
 			return value?.ToString() ?? string.Empty;
 		}

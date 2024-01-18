@@ -9,7 +9,7 @@ namespace NeuroAccessMaui.UI.Converters
 	public class ControlBgColor : IValueConverter, IMarkupExtension
 	{
 		/// <inheritdoc/>
-		public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+		public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
 		{
 			if (value is bool Ok)
 				return ToColor(Ok);

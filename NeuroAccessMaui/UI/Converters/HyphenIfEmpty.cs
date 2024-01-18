@@ -8,7 +8,7 @@ namespace NeuroAccessMaui.UI.Converters
 	public class HyphenIfEmpty : IValueConverter, IMarkupExtension
 	{
 		/// <inheritdoc/>
-		public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+		public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
 		{
 			if (value is string s && string.IsNullOrEmpty(s))
 				return "-";
@@ -17,7 +17,7 @@ namespace NeuroAccessMaui.UI.Converters
 		}
 
 		/// <inheritdoc/>
-		public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+		public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
 		{
 			return value ?? string.Empty;
 		}

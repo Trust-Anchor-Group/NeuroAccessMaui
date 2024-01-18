@@ -8,7 +8,7 @@ namespace NeuroAccessMaui.UI.Converters
 	public class ConversionSequence : List<IValueConverter>, IValueConverter, IMarkupExtension
 	{
 		/// <inheritdoc/>
-		public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+		public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
 		{
 			foreach (IValueConverter Step in this)
 				value = Step.Convert(value, targetType, parameter, culture);
@@ -17,7 +17,7 @@ namespace NeuroAccessMaui.UI.Converters
 		}
 
 		/// <inheritdoc/>
-		public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+		public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
 		{
 			int c = this.Count;
 

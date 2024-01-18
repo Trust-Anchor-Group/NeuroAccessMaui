@@ -10,7 +10,7 @@ namespace NeuroAccessMaui.UI.Converters
 		private static readonly GridLength zeroLength = new(0, GridUnitType.Absolute);
 
 		/// <inheritdoc/>
-		public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+		public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
 		{
 			if (value is string s)
 				return !string.IsNullOrEmpty(s) ? GridLength.Auto : zeroLength;
@@ -21,7 +21,7 @@ namespace NeuroAccessMaui.UI.Converters
 		}
 
 		/// <inheritdoc/>
-		public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+		public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
 		{
 			return value?.ToString() ?? string.Empty;
 		}

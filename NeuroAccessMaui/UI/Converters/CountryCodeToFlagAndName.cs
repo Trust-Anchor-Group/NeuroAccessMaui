@@ -9,7 +9,7 @@ namespace NeuroAccessMaui.UI.Converters
 	public class CountryCodeToFlagAndName : IValueConverter, IMarkupExtension
 	{
 		/// <inheritdoc/>
-		public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+		public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
 		{
 			if (value is string Code && ISO_3166_1.TryGetCountryByCode(Code, out ISO_3166_Country? Country) && Country is not null)
 				return Country.EmojiInfo.Unicode + "\t" + Country.Name;

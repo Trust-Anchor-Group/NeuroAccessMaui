@@ -8,7 +8,7 @@ namespace NeuroAccessMaui.UI.Converters
 	public class DateToString : IValueConverter, IMarkupExtension
 	{
 		/// <inheritdoc/>
-		public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+		public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
 		{
 			if (value is DateTime TP)
 				return TP.ToShortDateString();

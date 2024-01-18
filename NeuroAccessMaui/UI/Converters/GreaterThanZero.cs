@@ -8,7 +8,7 @@ namespace NeuroAccessMaui.UI.Converters
 	public class GreaterThanZero : IValueConverter, IMarkupExtension
 	{
 		/// <inheritdoc/>
-		public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+		public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
 		{
 			if (value is decimal v)
 				return v > 0;
@@ -21,7 +21,7 @@ namespace NeuroAccessMaui.UI.Converters
 		}
 
 		/// <inheritdoc/>
-		public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+		public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
 		{
 			throw new NotImplementedException("Feature not implemented.");
 		}
