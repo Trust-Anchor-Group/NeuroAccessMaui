@@ -61,7 +61,7 @@
 				<Label Text="{l:Localize RequestForReview}" Style="{StaticResource PageTitleLabelStyle}"/>
 
 				<Frame Style="{StaticResource FrameSet}">
-					<CarouselView ItemsSource="{Binding Pages}" Position="{Binding PageIndex, Mode=TwoWay}">
+					<CarouselView ItemsSource="{Binding Pages}">
 						<CarouselView.ItemTemplate>
 							<controls:CarouselTemplateSelector Page1="{StaticResource ShowPhoto}"
 																		  Page2="{StaticResource ShowNamePnr}"
@@ -73,7 +73,6 @@
 						</CarouselView.ItemTemplate>
 					</CarouselView>
 				</Frame>
-				<IndicatorView Count="7" Position="{Binding PageIndex, Mode=TwoWay}" HorizontalOptions="Center"/>
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>

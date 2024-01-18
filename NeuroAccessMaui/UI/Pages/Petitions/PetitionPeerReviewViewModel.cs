@@ -127,12 +127,6 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 		[ObservableProperty]
 		private ObservableCollection<PetitionPeerReviewViewModel> pages;
 
-		/// <summary>
-		/// Page index
-		/// </summary>
-		[ObservableProperty]
-		private int pageIndex;
-
 		/// <inheritdoc/>
 		protected override Task XmppService_ConnectionStateChanged(object? Sender, XmppState NewState)
 		{
