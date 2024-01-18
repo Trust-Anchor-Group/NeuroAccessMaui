@@ -1,7 +1,9 @@
 ﻿using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
-using NeuroAccessMaui.UI.Pages.Petitions;
+using NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity;
+using NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview;
+using NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature;
 using System.Globalization;
 using System.Reflection;
 using System.Text;

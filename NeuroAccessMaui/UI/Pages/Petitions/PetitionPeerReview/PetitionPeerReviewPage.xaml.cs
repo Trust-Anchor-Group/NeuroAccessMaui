@@ -1,4 +1,4 @@
-﻿namespace NeuroAccessMaui.UI.Pages.Petitions
+﻿namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 {
 	/// <summary>
 	/// A page to display when the user is asked to review an identity application.

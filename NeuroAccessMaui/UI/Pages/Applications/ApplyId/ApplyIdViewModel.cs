@@ -17,7 +17,7 @@ using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using IServiceProvider = Waher.Networking.XMPP.Contracts.IServiceProvider;
 
-namespace NeuroAccessMaui.UI.Pages.Applications
+namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 {
 	/// <summary>
 	/// The view model to bind to for when displaying the an application for a Personal ID.

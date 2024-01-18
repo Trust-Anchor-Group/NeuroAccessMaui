@@ -1,14 +1,14 @@
-﻿using System.Collections.ObjectModel;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.UI.Photos;
+using System.Collections.ObjectModel;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;
 
-namespace NeuroAccessMaui.UI.Pages.Petitions
+namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity
 {
 	/// <summary>
 	/// The view model to bind to when displaying petitioning of an identity in a view or page.

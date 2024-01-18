@@ -1,4 +1,4 @@
-﻿namespace NeuroAccessMaui.UI.Pages.Applications
+﻿namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 {
 	/// <summary>
 	/// Page allowing the user to apply for a Personal ID.

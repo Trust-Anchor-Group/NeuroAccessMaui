@@ -2,7 +2,7 @@
 using NeuroAccessMaui.Services;
 using Waher.Networking.XMPP.Contracts;
 
-namespace NeuroAccessMaui.UI.Pages.Applications
+namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 {
 	/// <summary>
 	/// Represents representing a peer review from a peer, by scanning their QR-code.

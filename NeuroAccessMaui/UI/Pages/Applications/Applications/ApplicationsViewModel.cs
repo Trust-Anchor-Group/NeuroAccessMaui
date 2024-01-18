@@ -2,10 +2,11 @@
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 
-namespace NeuroAccessMaui.UI.Pages.Applications
+namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 {
 	/// <summary>
 	/// The view model to bind to for when displaying the applications page.

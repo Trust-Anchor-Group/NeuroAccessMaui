@@ -9,7 +9,7 @@ using System.Windows.Input;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 
-namespace NeuroAccessMaui.UI.Pages.Petitions
+namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature
 {
 	/// <summary>
 	/// The view model to bind to when displaying petitioning of a signature in a view or page.

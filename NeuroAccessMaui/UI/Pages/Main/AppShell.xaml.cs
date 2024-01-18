@@ -1,10 +1,12 @@
 ﻿using NeuroAccessMaui.Services;
-using NeuroAccessMaui.UI.Pages.Applications;
+using NeuroAccessMaui.UI.Pages.Applications.Applications;
+using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Main.QR;
 using NeuroAccessMaui.UI.Pages.Main.Settings;
 using NeuroAccessMaui.UI.Pages.Main.VerifyCode;
-using NeuroAccessMaui.UI.Pages.Petitions;
+using NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview;
+using NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature;
 using NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders;
 
 namespace NeuroAccessMaui.UI.Pages.Main

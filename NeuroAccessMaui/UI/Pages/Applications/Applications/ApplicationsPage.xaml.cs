@@ -1,4 +1,4 @@
-﻿namespace NeuroAccessMaui.UI.Pages.Applications
+﻿namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 {
 	/// <summary>
 	/// Main applications page.

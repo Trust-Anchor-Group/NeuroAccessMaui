@@ -1,10 +1,13 @@
 ﻿using CommunityToolkit.Maui;
-using NeuroAccessMaui.UI.Pages.Applications;
+using NeuroAccessMaui.UI.Pages.Applications.Applications;
+using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
 using NeuroAccessMaui.UI.Pages.Identity.TransferIdentity;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Main;
 using NeuroAccessMaui.UI.Pages.Main.Settings;
-using NeuroAccessMaui.UI.Pages.Petitions;
+using NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity;
+using NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview;
+using NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature;
 using NeuroAccessMaui.UI.Pages.Registration;
 using NeuroAccessMaui.UI.Pages.Registration.Views;
 using NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders;

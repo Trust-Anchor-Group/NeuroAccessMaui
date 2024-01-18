@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <base:BaseContentPage x:Name="ThisPage"
-							 x:Class="NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReviewPage"
+							 x:Class="NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview.PetitionPeerReviewPage"
 							 x:DataType="viewmodel:PetitionPeerReviewViewModel"
 							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -10,7 +10,7 @@
 							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
-							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Petitions">
+							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview">
 
 	<VisualElement.Resources>
 		<DataTemplate x:Key="ShowPhoto" x:DataType="viewmodel:PetitionPeerReviewViewModel">

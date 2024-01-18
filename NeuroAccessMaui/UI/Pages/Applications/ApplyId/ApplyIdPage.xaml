@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <base:BaseContentPage x:Name="ThisPage"
-							 x:Class="NeuroAccessMaui.UI.Pages.Applications.ApplyIdPage"
+							 x:Class="NeuroAccessMaui.UI.Pages.Applications.ApplyId.ApplyIdPage"
 							 x:DataType="viewmodel:ApplyIdViewModel"
 							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -10,7 +10,7 @@
 							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
-							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Applications"
+							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Applications.ApplyId"
 							 xmlns:data="clr-namespace:NeuroAccessMaui.Services.Data"
 							 xmlns:behaviors="clr-namespace:NeuroAccessMaui.UI.Behaviors">
 

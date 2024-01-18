@@ -1,6 +1,6 @@
 ﻿using NeuroAccessMaui.Services.Navigation;
 
-namespace NeuroAccessMaui.UI.Pages.Applications
+namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 {
 	/// <summary>
 	/// Navigation arguments for the <see cref="ApplyIdPage"/> and <see cref="ApplyIdViewModel"/>.

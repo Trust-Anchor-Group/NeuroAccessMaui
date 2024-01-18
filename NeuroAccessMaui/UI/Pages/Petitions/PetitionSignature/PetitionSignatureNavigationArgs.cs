@@ -1,7 +1,7 @@
 ﻿using NeuroAccessMaui.Services.Navigation;
 using Waher.Networking.XMPP.Contracts;
 
-namespace NeuroAccessMaui.UI.Pages.Petitions
+namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature
 {
 	/// <summary>
 	/// Holds navigation parameters specific to views displaying a petition of a signature.

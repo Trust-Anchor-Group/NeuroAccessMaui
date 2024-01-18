@@ -1,7 +1,7 @@
 ﻿using NeuroAccessMaui.Services.Navigation;
 using Waher.Networking.XMPP.Contracts;
 
-namespace NeuroAccessMaui.UI.Pages.Petitions
+namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 {
 	/// <summary>
 	/// Holds navigation parameters specific to views displaying a petition of a legal identity.
@@ -11,14 +11,14 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 	/// <param name="RequestedIdentityId">The requested identity id.</param>
 	/// <param name="PetitionId">The petition id.</param>
 	/// <param name="Purpose">The purpose of the petition.</param>
-	public class PetitionIdentityNavigationArgs(LegalIdentity? RequestorIdentity,
-				string? RequestorFullJid = null, string? RequestedIdentityId = null,
-				string? PetitionId = null, string? Purpose = null) : NavigationArgs
+	/// <param name="ContentToSign">Content to sign.</param>
+	public class PetitionPeerReviewNavigationArgs(LegalIdentity? RequestorIdentity, string? RequestorFullJid = null,
+		string? RequestedIdentityId = null, string? PetitionId = null, string? Purpose = null, byte[]? ContentToSign = null) : NavigationArgs
 	{
 		/// <summary>
 		/// Creates a default instance.
 		/// </summary>
-		public PetitionIdentityNavigationArgs() : this(null) { }
+		public PetitionPeerReviewNavigationArgs() : this(null) { }
 
 		/// <summary>
 		/// The identity of the requestor.
@@ -44,5 +44,10 @@ namespace NeuroAccessMaui.UI.Pages.Petitions
 		/// The purpose of the petition.
 		/// </summary>
 		public string? Purpose { get; } = Purpose;
+
+		/// <summary>
+		/// Content to sign.
+		/// </summary>
+		public byte[]? ContentToSign { get; } = ContentToSign;
 	}
 }
