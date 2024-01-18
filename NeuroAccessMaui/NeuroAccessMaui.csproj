@@ -198,11 +198,23 @@
 	  <Compile Update="UI\Pages\Petitions\PetitionPeerReview\PetitionPeerReviewPage.xaml.cs">
 	    <DependentUpon>PetitionPeerReviewPage.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\NamePnrView.xaml.cs">
-	    <DependentUpon>NamePnrView.xaml</DependentUpon>
+	  <Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\NameView.xaml.cs">
+	    <DependentUpon>NameView.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\PersonalInfoView.xaml.cs">
-	    <DependentUpon>PersonalInfoView.xaml</DependentUpon>
+	  <Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\NationalityView.xaml.cs">
+	    <DependentUpon>NationalityView.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\BirthDateView.xaml.cs">
+	    <DependentUpon>BirthDateView.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\GenderView.xaml.cs">
+	    <DependentUpon>GenderView.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\PnrView.xaml.cs">
+	    <DependentUpon>PnrView.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\PersonalAddressInfoView.xaml.cs">
+	    <DependentUpon>PersonalAddressInfoView.xaml</DependentUpon>
 	  </Compile>
 	  <Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\OrganizationalInfoView.xaml.cs">
 	    <DependentUpon>OrganizationalInfoView.xaml</DependentUpon>
@@ -261,10 +273,22 @@
 	  <MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\PetitionPeerReviewPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\NamePnrView.xaml">
+	  <MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\NameView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\PersonalInfoView.xaml">
+	  <MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\NationalityView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\BirthDateView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\GenderView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\PnrView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\PersonalAddressInfoView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\OrganizationalInfoView.xaml">

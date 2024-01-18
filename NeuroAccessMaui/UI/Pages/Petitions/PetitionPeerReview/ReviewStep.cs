@@ -8,36 +8,56 @@
 		/// <summary>
 		/// Review photo
 		/// </summary>
-		Photo,
+		Photo = 0,
 
 		/// <summary>
-		/// Review name and personal number
+		/// Review name
 		/// </summary>
-		NamePnr,
+		Name = 1,
 
 		/// <summary>
-		/// Review other personal information
+		/// Review personal number
 		/// </summary>
-		PersonalInfo,
+		Pnr = 2,
+
+		/// <summary>
+		/// Review nationality
+		/// </summary>
+		Nationality = 3,
+
+		/// <summary>
+		/// Review birth date
+		/// </summary>
+		BirthDate = 4,
+
+		/// <summary>
+		/// Review gender
+		/// </summary>
+		Gender = 5,
+
+		/// <summary>
+		/// Review personal address information
+		/// </summary>
+		PersonalAddressInfo = 6,
 
 		/// <summary>
 		/// Review organizational information
 		/// </summary>
-		OrganizationalInfo,
+		OrganizationalInfo = 7,
 
 		/// <summary>
 		/// Get consent by reviewer
 		/// </summary>
-		Consent,
+		Consent = 8,
 
 		/// <summary>
 		/// Authenticate reviewer
 		/// </summary>
-		Authenticate,
+		Authenticate = 9,
 
 		/// <summary>
 		/// Show approval information
 		/// </summary>
-		Approved
+		Approved = 10
 	}
 }

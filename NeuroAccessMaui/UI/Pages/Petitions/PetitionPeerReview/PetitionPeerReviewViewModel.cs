@@ -165,7 +165,43 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		/// <summary>
 		/// If the user can accept the review.
 		/// </summary>
-		public bool CanAccept => this.IsConnected && !this.IsBusy && this.ContentToSign is not null;
+		public bool CanAccept
+		{
+			get
+			{
+				if (!this.IsConnected || this.IsBusy || this.ContentToSign is null)
+					return false;
+
+				if (this.HasPhoto && !this.IsPhotoOk)
+					return false;
+
+				if (this.HasName && !this.IsNameOk)
+					return false;
+
+				if (this.HasPersonalNumber && !this.IsPnrOk)
+					return false;
+
+				if (this.HasNationality && !this.IsNationalityOk)
+					return false;
+
+				if (this.HasBirthDate && !this.IsBirthDateOk)
+					return false;
+
+				if (this.HasGender && !this.IsGenderOk)
+					return false;
+
+				if (this.HasPersonalAddressInfo && !this.IsPersonalAddressInfoOk)
+					return false;
+
+				if (this.HasOrganizationalInfo && !this.IsOrganizationalInfoOk)
+					return false;
+
+				if (!this.AcknowledgeResponsibility || !this.ConsentProcessing || !this.ConfirmCorrect)
+					return false;
+
+				return true;
+			}
+		}
 
 		[RelayCommand(CanExecute = nameof(CanAccept))]
 		private async Task Accept()
@@ -218,7 +254,157 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		private void AcceptPhoto()
 		{
 			if (this.IsPhotoOk)
-				this.CurrentStep = ReviewStep.NamePnr;
+				this.NextPage();
+		}
+
+		[RelayCommand(CanExecute = nameof(IsNameOk))]
+		private void AcceptName()
+		{
+			if (this.IsNameOk)
+				this.NextPage();
+		}
+
+		[RelayCommand(CanExecute = nameof(IsPnrOk))]
+		private void AcceptPnr()
+		{
+			if (this.IsPnrOk)
+				this.NextPage();
+		}
+
+		[RelayCommand(CanExecute = nameof(IsNationalityOk))]
+		private void AcceptNationality()
+		{
+			if (this.IsNationalityOk)
+				this.NextPage();
+		}
+
+		[RelayCommand(CanExecute = nameof(IsBirthDateOk))]
+		private void AcceptBirthDate()
+		{
+			if (this.IsBirthDateOk)
+				this.NextPage();
+		}
+
+		[RelayCommand(CanExecute = nameof(IsGenderOk))]
+		private void AcceptGender()
+		{
+			if (this.IsGenderOk)
+				this.NextPage();
+		}
+
+		[RelayCommand(CanExecute = nameof(IsPersonalAddressInfoOk))]
+		private void AcceptPersonalAddressInfo()
+		{
+			if (this.IsPersonalAddressInfoOk)
+				this.NextPage();
+		}
+
+		[RelayCommand(CanExecute = nameof(IsOrganizationalInfoOk))]
+		private void AcceptOrganizationalInfo()
+		{
+			if (this.IsOrganizationalInfoOk)
+				this.NextPage();
+		}
+
+		[RelayCommand(CanExecute = nameof(IsConsentOk))]
+		private void AcceptConsent()
+		{
+			if (this.IsConsentOk)
+				this.NextPage();
+		}
+
+		private void NextPage()
+		{
+			ReviewStep Current = this.CurrentStep;
+			bool IsVisible;
+
+			do
+			{
+				Current++;
+				IsVisible = Current switch
+				{
+					ReviewStep.Photo => this.HasPhoto,
+					ReviewStep.Name => this.HasName,
+					ReviewStep.Pnr => this.HasPersonalNumber,
+					ReviewStep.Nationality => this.HasNationality,
+					ReviewStep.BirthDate => this.HasBirthDate,
+					ReviewStep.Gender => this.HasGender,
+					ReviewStep.PersonalAddressInfo => this.HasPersonalAddressInfo,
+					ReviewStep.OrganizationalInfo => this.HasOrganizationalInfo,
+					_ => true,
+				};
+			}
+			while (!IsVisible);
+
+			this.CurrentStep = Current;
+		}
+
+		/// <summary>
+		/// If request contains a photo
+		/// </summary>
+		public bool HasPhoto => this.FirstPhotoSource is not null;
+
+		/// <summary>
+		/// If request contains a full name
+		/// </summary>
+		public bool HasName => !string.IsNullOrEmpty(this.FullName);
+
+		/// <summary>
+		/// If request contains a personal number
+		/// </summary>
+		public bool HasPersonalNumber => !string.IsNullOrEmpty(this.PersonalNumber);
+
+		/// <summary>
+		/// If request contains nationality
+		/// </summary>
+		public bool HasNationality => !string.IsNullOrEmpty(this.NationalityCode);
+
+		/// <summary>
+		/// If request contains birth date
+		/// </summary>
+		public bool HasBirthDate => this.BirthDate is not null;
+
+		/// <summary>
+		/// If request contains gender
+		/// </summary>
+		public bool HasGender => !string.IsNullOrEmpty(this.Gender);
+
+		/// <summary>
+		/// If request contains personal address information
+		/// </summary>
+		public bool HasPersonalAddressInfo
+		{
+			get
+			{
+				return
+					!string.IsNullOrEmpty(this.Address) ||
+					!string.IsNullOrEmpty(this.Address2) ||
+					!string.IsNullOrEmpty(this.Area) ||
+					!string.IsNullOrEmpty(this.City) ||
+					!string.IsNullOrEmpty(this.Region) ||
+					!string.IsNullOrEmpty(this.CountryCode);
+			}
+		}
+
+		/// <summary>
+		/// If request contains organizational information
+		/// </summary>
+		public bool HasOrganizationalInfo
+		{
+			get
+			{
+				return
+					!string.IsNullOrEmpty(this.OrgName) ||
+					!string.IsNullOrEmpty(this.OrgNumber) ||
+					!string.IsNullOrEmpty(this.OrgDepartment) ||
+					!string.IsNullOrEmpty(this.OrgRole) ||
+					!string.IsNullOrEmpty(this.OrgAddress) ||
+					!string.IsNullOrEmpty(this.OrgAddress2) ||
+					!string.IsNullOrEmpty(this.OrgArea) ||
+					!string.IsNullOrEmpty(this.OrgCity) ||
+					!string.IsNullOrEmpty(this.OrgRegion) ||
+					!string.IsNullOrEmpty(this.OrgCountryCode);
+			}
 		}
 
 		#region Properties
@@ -484,6 +670,84 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(AcceptPhotoCommand))]
 		private bool isPhotoOk;
+
+		/// <summary>
+		/// If name is OK
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(AcceptNameCommand))]
+		private bool isNameOk;
+
+		/// <summary>
+		/// If personal number is OK
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(AcceptPnrCommand))]
+		private bool isPnrOk;
+
+		/// <summary>
+		/// If nationality is OK
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(AcceptNationalityCommand))]
+		private bool isNationalityOk;
+
+		/// <summary>
+		/// If birth date is OK
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(AcceptBirthDateCommand))]
+		private bool isBirthDateOk;
+
+		/// <summary>
+		/// If gender is OK
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(AcceptGenderCommand))]
+		private bool isGenderOk;
+
+		/// <summary>
+		/// If personal address information is OK
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(AcceptPersonalAddressInfoCommand))]
+		private bool isPersonalAddressInfoOk;
+
+		/// <summary>
+		/// If organizational information is OK
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(AcceptOrganizationalInfoCommand))]
+		private bool isOrganizationalInfoOk;
+
+		/// <summary>
+		/// If reviewer acknowledges responsibility for review
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(AcceptConsentCommand))]
+		[NotifyPropertyChangedFor(nameof(IsConsentOk))]
+		private bool acknowledgeResponsibility;
+
+		/// <summary>
+		/// If reviewer gives consent for processing
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(AcceptConsentCommand))]
+		[NotifyPropertyChangedFor(nameof(IsConsentOk))]
+		private bool consentProcessing;
+
+		/// <summary>
+		/// If reviewer confirms information given is correct.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(AcceptConsentCommand))]
+		[NotifyPropertyChangedFor(nameof(IsConsentOk))]
+		private bool confirmCorrect;
+
+		/// <summary>
+		/// If proper consent and acknowledgement has been given.
+		/// </summary>
+		public bool IsConsentOk => this.AcknowledgeResponsibility && this.ConsentProcessing && this.ConfirmCorrect;
 
 		/// <summary>
 		/// Instruction to reviewer when reviewing photo.

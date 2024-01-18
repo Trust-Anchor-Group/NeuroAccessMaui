@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <base:BaseContentView x:Name="ThisPage"
-							 x:Class="NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview.Views.PersonalInfoView"
+							 x:Class="NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview.Views.PnrView"
 							 x:DataType="viewmodel:PetitionPeerReviewViewModel"
 							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview">
 
-	<Label Text="Personal Information"/>
+	<Label Text="Name &amp; PNR"/>
 	
 </base:BaseContentView>

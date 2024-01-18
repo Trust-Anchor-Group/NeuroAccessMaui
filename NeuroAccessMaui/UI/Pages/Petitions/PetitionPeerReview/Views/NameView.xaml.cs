@@ -1,13 +1,13 @@
 namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview.Views
 {
-	public partial class NamePnrView
+	public partial class NameView
 	{
-		public static NamePnrView Create()
+		public static NameView Create()
 		{
-			return Create<NamePnrView>();
+			return Create<NameView>();
 		}
 
-		public NamePnrView(PetitionPeerReviewViewModel ViewModel)
+		public NameView(PetitionPeerReviewViewModel ViewModel)
 		{
 			this.InitializeComponent();
 			this.ContentViewModel = ViewModel;

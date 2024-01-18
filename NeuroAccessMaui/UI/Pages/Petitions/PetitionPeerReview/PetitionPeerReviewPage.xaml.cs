@@ -16,8 +16,12 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 			this.ContentPageModel = ViewModel;
 
 			ViewModel.AddView(ReviewStep.Photo, this.PhotoView);
-			ViewModel.AddView(ReviewStep.NamePnr, this.NamePnrView);
-			ViewModel.AddView(ReviewStep.PersonalInfo, this.PersonalInfoView);
+			ViewModel.AddView(ReviewStep.Name, this.NameView);
+			ViewModel.AddView(ReviewStep.Pnr, this.PnrView);
+			ViewModel.AddView(ReviewStep.Nationality, this.NationalityView);
+			ViewModel.AddView(ReviewStep.BirthDate, this.BirthDateView);
+			ViewModel.AddView(ReviewStep.Gender, this.GenderView);
+			ViewModel.AddView(ReviewStep.PersonalAddressInfo, this.PersonalAddressInfoView);
 			ViewModel.AddView(ReviewStep.OrganizationalInfo, this.OrganizationalInfoView);
 			ViewModel.AddView(ReviewStep.Consent, this.ConsentView);
 			ViewModel.AddView(ReviewStep.Authenticate, this.AuthenticateView);

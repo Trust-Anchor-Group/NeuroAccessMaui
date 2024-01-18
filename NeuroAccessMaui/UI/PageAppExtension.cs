@@ -47,8 +47,12 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<PetitionSignaturePage, PetitionSignatureViewModel>();
 			Builder.Services.AddTransient<PetitionPeerReviewPage, PetitionPeerReviewViewModel>();
 			Builder.Services.AddTransient<PhotoView, EmptyViewModel>();
-			Builder.Services.AddTransient<NamePnrView, EmptyViewModel>();
-			Builder.Services.AddTransient<PersonalInfoView, EmptyViewModel>();
+			Builder.Services.AddTransient<NameView, EmptyViewModel>();
+			Builder.Services.AddTransient<PnrView, EmptyViewModel>();
+			Builder.Services.AddTransient<NationalityView, EmptyViewModel>();
+			Builder.Services.AddTransient<BirthDateView, EmptyViewModel>();
+			Builder.Services.AddTransient<GenderView, EmptyViewModel>();
+			Builder.Services.AddTransient<PersonalAddressInfoView, EmptyViewModel>();
 			Builder.Services.AddTransient<OrganizationalInfoView, EmptyViewModel>();
 			Builder.Services.AddTransient<ConsentView, EmptyViewModel>();
 			Builder.Services.AddTransient<AuthenticateView, EmptyViewModel>();

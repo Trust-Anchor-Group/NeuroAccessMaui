@@ -30,8 +30,12 @@
 
 						<mct:StateContainer.StateViews>
 							<views:PhotoView x:Name="PhotoView" x:FactoryMethod="Create" mct:StateView.StateKey="Photo" />
-							<views:NamePnrView x:Name="NamePnrView" x:FactoryMethod="Create" mct:StateView.StateKey="NamePnr" />
-							<views:PersonalInfoView x:Name="PersonalInfoView" x:FactoryMethod="Create" mct:StateView.StateKey="PersonalInfo" />
+							<views:NameView x:Name="NameView" x:FactoryMethod="Create" mct:StateView.StateKey="Name" />
+							<views:PnrView x:Name="PnrView" x:FactoryMethod="Create" mct:StateView.StateKey="Pnr" />
+							<views:PnrView x:Name="NationalityView" x:FactoryMethod="Create" mct:StateView.StateKey="Nationality" />
+							<views:PnrView x:Name="BirthDateView" x:FactoryMethod="Create" mct:StateView.StateKey="BirthDate" />
+							<views:PnrView x:Name="GenderView" x:FactoryMethod="Create" mct:StateView.StateKey="Gender" />
+							<views:PersonalAddressInfoView x:Name="PersonalAddressInfoView" x:FactoryMethod="Create" mct:StateView.StateKey="PersonalAddressInfo" />
 							<views:OrganizationalInfoView x:Name="OrganizationalInfoView" x:FactoryMethod="Create" mct:StateView.StateKey="OrganizationalInfo" />
 							<views:ConsentView x:Name="ConsentView" x:FactoryMethod="Create" mct:StateView.StateKey="Consent" />
 							<views:AuthenticateView x:Name="AuthenticateView" x:FactoryMethod="Create" mct:StateView.StateKey="Authenticate" />
