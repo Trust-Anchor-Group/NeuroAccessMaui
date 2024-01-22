@@ -30,7 +30,7 @@
 				<Image HorizontalOptions="Center" Source="{AppThemeBinding Light=neuro_access_logo_light.png, Dark=neuro_access_logo_dark.png}" />
 			</VerticalStackLayout>
 
-			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Grid.Row="1" VerticalOptions="Center">
+			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Grid.Row="1" VerticalOptions="End">
 				<controls:TextButton Command="{Binding ScanQrCodeCommand}" Style="{StaticResource FilledTextButtonStyle}" LabelData="{l:Localize QrScanCode}" />
 				<Label Text="{l:Localize ScanQrCodeLabel}" HorizontalTextAlignment="Center" LineBreakMode="WordWrap" Style="{StaticResource InfoLabelStyle}" />
 			</VerticalStackLayout>
