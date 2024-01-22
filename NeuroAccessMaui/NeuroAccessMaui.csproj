@@ -101,6 +101,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Images\arrow_down_dark.svg" />
+	  <None Remove="Resources\Images\arrow_down_light.svg" />
+	  <None Remove="Resources\Images\arrow_up_dark.svg" />
+	  <None Remove="Resources\Images\arrow_up_light.svg" />
 	  <None Remove="Resources\Images\close_dark.svg" />
 	  <None Remove="Resources\Images\close_light.svg" />
 	  <None Remove="Resources\Images\dark_mode_dark.svg" />

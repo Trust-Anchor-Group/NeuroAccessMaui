@@ -23,7 +23,26 @@
 		<Setter Property="VerticalOptions" Value="Start" />
 		<Setter Property="BorderStyle" Value="{StaticResource ImageOnlyButtonBorderStyle}" />
 		<Setter Property="PathStyle" Value="{StaticResource ImageOnlyButtonPathStyle}" />
-		<Setter Property="PathData" Value="{x:Static ui:Geometries.BackButtonPath}" />
+	</Style>
+
+	<Style x:Key="ExpanderButtonBorderStyle" ApplyToDerivedTypes="False" TargetType="Border">
+		<Setter Property="BackgroundColor" Value="Transparent" />
+		<Setter Property="Padding">
+			<Thickness Right="{StaticResource MediumSpacing}" Bottom="{StaticResource MediumSpacing}" />
+		</Setter>
+	</Style>
+
+	<Style x:Key="ExpanderButtonPathStyle" ApplyToDerivedTypes="False" TargetType="Path">
+		<Setter Property="WidthRequest" Value="12" />
+		<Setter Property="HeightRequest" Value="12" />
+		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
+	</Style>
+
+	<Style x:Key="ExpanderButtonStyle" ApplyToDerivedTypes="False" TargetType="controls:ImageButton">
+		<Setter Property="HorizontalOptions" Value="Center" />
+		<Setter Property="VerticalOptions" Value="Center" />
+		<Setter Property="BorderStyle" Value="{StaticResource ExpanderButtonBorderStyle}" />
+		<Setter Property="PathStyle" Value="{StaticResource ExpanderButtonPathStyle}" />
 	</Style>
 
 	<Style x:Key="TransparentImageButtonBorderStyle" ApplyToDerivedTypes="False" TargetType="Border">
