@@ -1107,6 +1107,9 @@
   <data name="PeerReviewNationalityText" xml:space="preserve">
     <value>Nacionalnost je tačna.</value>
   </data>
+  <data name="PeerReviewPersonalAddressInfoText" xml:space="preserve">
+    <value>Lične informacije o adresi su tačne.</value>
+  </data>
   <data name="PeerReviewPhotoText" xml:space="preserve">
     <value>Fotografija jasno predstavlja {0}.</value>
   </data>

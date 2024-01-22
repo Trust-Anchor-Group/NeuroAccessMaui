@@ -1636,6 +1636,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The Personal Address Information is correct..
+        /// </summary>
+        internal static string PeerReviewPersonalAddressInfoText {
+            get {
+                return ResourceManager.GetString("PeerReviewPersonalAddressInfoText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The photo clearly represents {0}..
         /// </summary>
         internal static string PeerReviewPhotoText {

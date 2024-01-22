@@ -4,9 +4,93 @@
 							 x:DataType="viewmodel:PetitionPeerReviewViewModel"
 							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview">
+	<VerticalStackLayout>
+		<Grid ColumnDefinitions="auto,auto" RowDefinitions="auto" ColumnSpacing="{StaticResource SmallSpacing}" Margin="{StaticResource LargeMargins}"
+				HorizontalOptions="Center" VerticalOptions="Center">
+			<Border Style="{StaticResource OutlinedImageButtonBorderStyle}" Padding="0" Grid.Column="0">
+				<Image Source="{Binding FirstPhotoSource}" WidthRequest="75" Aspect="AspectFit" HorizontalOptions="Center" Margin="0"/>
+			</Border>
+			<VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="0" Grid.Column="1">
+				<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding FullName}" HorizontalOptions="Center" Margin="0" Padding="0" />
+				<Label Style="{StaticResource InfoLabelStyle}" Text="{Binding PersonalNumberWithFlag}" HorizontalOptions="Center" Margin="0" Padding="0" />
+			</VerticalStackLayout>
+		</Grid>
 
-	<Label Text="Personal Information"/>
-	
+		<Border Style="{StaticResource OutlinedImageButtonBorderStyle}" Padding="0">
+			<Grid ColumnDefinitions="*,*" ColumnSpacing="{StaticResource SmallSpacing}" Margin="{StaticResource SmallMargins}">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="{Binding Address, Converter={converters:AutoIfNonEmpty}}"/>
+					<RowDefinition Height="{Binding Address2, Converter={converters:AutoIfNonEmpty}}"/>
+					<RowDefinition Height="{Binding Area, Converter={converters:AutoIfNonEmpty}}"/>
+					<RowDefinition Height="{Binding ZipCode, Converter={converters:AutoIfNonEmpty}}"/>
+					<RowDefinition Height="{Binding City, Converter={converters:AutoIfNonEmpty}}"/>
+					<RowDefinition Height="{Binding Region, Converter={converters:AutoIfNonEmpty}}"/>
+					<RowDefinition Height="{Binding CountryCode, Converter={converters:AutoIfNonEmpty}}"/>
+				</Grid.RowDefinitions>
+
+				<Label Grid.Column="0" Grid.Row="0" Style="{StaticResource KeyLabel}" Text="{l:Localize Address}"
+						 IsVisible="{Binding Address, Converter={converters:OnlyShowNonEmpty}}"/>
+				<Label Grid.Column="1" Grid.Row="0" Style="{StaticResource ValueLabel}" Text="{Binding Address}"
+						 IsVisible="{Binding Address, Converter={converters:OnlyShowNonEmpty}}"/>
+
+				<Label Grid.Column="0" Grid.Row="1" Style="{StaticResource KeyLabel}" Text="{l:Localize Address2}"
+						 IsVisible="{Binding Address2, Converter={converters:OnlyShowNonEmpty}}"/>
+				<Label Grid.Column="1" Grid.Row="1" Style="{StaticResource ValueLabel}" Text="{Binding Address2}"
+						 IsVisible="{Binding Address2, Converter={converters:OnlyShowNonEmpty}}"/>
+
+				<Label Grid.Column="0" Grid.Row="2" Style="{StaticResource KeyLabel}" Text="{l:Localize Area}"
+					    IsVisible="{Binding Area, Converter={converters:OnlyShowNonEmpty}}"/>
+				<Label Grid.Column="1" Grid.Row="2" Style="{StaticResource ValueLabel}" Text="{Binding Area}"
+						 IsVisible="{Binding Area, Converter={converters:OnlyShowNonEmpty}}"/>
+
+				<Label Grid.Column="0" Grid.Row="3" Style="{StaticResource KeyLabel}" Text="{l:Localize ZipCode}"
+						 IsVisible="{Binding ZipCode, Converter={converters:OnlyShowNonEmpty}}"/>
+				<Label Grid.Column="1" Grid.Row="3" Style="{StaticResource ValueLabel}" Text="{Binding ZipCode}"
+						 IsVisible="{Binding ZipCode, Converter={converters:OnlyShowNonEmpty}}"/>
+
+				<Label Grid.Column="0" Grid.Row="4" Style="{StaticResource KeyLabel}" Text="{l:Localize City}"
+						 IsVisible="{Binding City, Converter={converters:OnlyShowNonEmpty}}"/>
+				<Label Grid.Column="1" Grid.Row="4" Style="{StaticResource ValueLabel}" Text="{Binding City}"
+						 IsVisible="{Binding City, Converter={converters:OnlyShowNonEmpty}}"/>
+
+				<Label Grid.Column="0" Grid.Row="5" Style="{StaticResource KeyLabel}" Text="{l:Localize Region}"
+						 IsVisible="{Binding Region, Converter={converters:OnlyShowNonEmpty}}"/>
+				<Label Grid.Column="1" Grid.Row="5" Style="{StaticResource ValueLabel}" Text="{Binding Region}"
+						 IsVisible="{Binding Region, Converter={converters:OnlyShowNonEmpty}}"/>
+
+				<Label Grid.Column="0" Grid.Row="6" Style="{StaticResource KeyLabel}" Text="{l:Localize Country}"
+						 IsVisible="{Binding CountryCode, Converter={converters:OnlyShowNonEmpty}}"/>
+				<Label Grid.Column="1" Grid.Row="6" Style="{StaticResource ValueLabel}"
+						 Text="{Binding CountryCode, Converter={converters:CountryCodeToFlagAndName}}"
+						 IsVisible="{Binding CountryCode, Converter={converters:OnlyShowNonEmpty}}"/>
+			</Grid>
+		</Border>
+
+		<VerticalStackLayout HeightRequest="{StaticResource MediumSpacing}"/>
+
+		<Rectangle BackgroundColor="{AppThemeBinding Light={StaticResource DisabledFilledButtonBackgroundLight}, Dark={StaticResource DisabledFilledB5uttonBackgroundDark}}"
+					  WidthRequest="250" HeightRequest="2"/>
+
+		<Grid ColumnDefinitions="auto,*" RowDefinitions="auto" ColumnSpacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumMargins}">
+			<CheckBox Grid.Column="0" IsChecked="{Binding IsPersonalAddressInfoOk}" VerticalOptions="Center"/>
+			<Label Grid.Column="1" Text="{l:Localize PeerReviewPersonalAddressInfoText}" VerticalOptions="Center" LineBreakMode="WordWrap">
+				<Label.GestureRecognizers>
+					<TapGestureRecognizer Command="{Binding ToggleIsPersonalAddressInfoOkCommand}"/>
+				</Label.GestureRecognizers>
+			</Label>
+		</Grid>
+
+		<Grid ColumnDefinitions="*,*" RowDefinitions="auto" ColumnSpacing="{StaticResource SmallSpacing}">
+			<controls:TextButton Command="{Binding DeclineCommand}" Style="{StaticResource OutlinedTextButtonStyleNoRoundedCorners}"
+										LabelData="{l:Localize Reject}" Grid.Column="0" />
+
+			<controls:TextButton Command="{Binding AcceptNationalityCommand}" Style="{StaticResource FilledTextButtonStyleNoRoundedCorners}"
+										LabelData="{l:Localize Continue}" Grid.Column="1" />
+		</Grid>
+	</VerticalStackLayout>
 </base:BaseContentView>

@@ -1107,6 +1107,9 @@
   <data name="PeerReviewNationalityText" xml:space="preserve">
     <value>Die Nationalität ist korrekt.</value>
   </data>
+  <data name="PeerReviewPersonalAddressInfoText" xml:space="preserve">
+    <value>Die persönlichen Adressdaten sind korrekt.</value>
+  </data>
   <data name="PeerReviewPhotoText" xml:space="preserve">
     <value>Das Foto stellt eindeutig {0} dar.</value>
   </data>

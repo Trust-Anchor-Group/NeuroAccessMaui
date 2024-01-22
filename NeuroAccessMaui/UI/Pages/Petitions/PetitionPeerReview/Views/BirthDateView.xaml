@@ -21,12 +21,14 @@
 			</VerticalStackLayout>
 		</Grid>
 
-		<Grid ColumnDefinitions="*,*" RowDefinitions="auto" ColumnSpacing="{StaticResource SmallSpacing}" Margin="{StaticResource LargeMargins}">
+		<Grid ColumnDefinitions="*,*" RowDefinitions="auto" ColumnSpacing="{StaticResource SmallSpacing}" Margin="{StaticResource SmallMargins}">
 			<Label Grid.Column="0" Style="{StaticResource KeyLabel}" Text="{l:Localize BirthDate}"/>
 			<Border Style="{StaticResource OutlinedImageButtonBorderStyle}" Padding="0" Grid.Column="1">
 				<Label Style="{StaticResource ValueLabel}" Text="{Binding BirthDate, Converter={converters:DateToString}}"/>
 			</Border>
 		</Grid>
+
+		<VerticalStackLayout HeightRequest="{StaticResource MediumSpacing}"/>
 
 		<Rectangle BackgroundColor="{AppThemeBinding Light={StaticResource DisabledFilledButtonBackgroundLight}, Dark={StaticResource DisabledFilledButtonBackgroundDark}}"
 					  WidthRequest="250" HeightRequest="2"/>
