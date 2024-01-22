@@ -1095,6 +1095,9 @@
   <data name="RequestForReview" xml:space="preserve">
     <value>Pedido de Revisão</value>
   </data>
+  <data name="AuthenticateAndSign" xml:space="preserve">
+    <value>Autenticar sinal de &amp;</value>
+  </data>
   <data name="ConcludeReview" xml:space="preserve">
     <value>Concluir revisão de</value>
   </data>
@@ -1108,7 +1111,7 @@
     <value>Reconheço que sou responsável pelas informações que forneço nesta revisão das informações fornecidas.</value>
   </data>
   <data name="PeerReviewAuthenticationText" xml:space="preserve">
-    <value>Ao autenticar-me, confirmo que as informações de identidade enviadas por {0} estão corretas.</value>
+    <value>Ao autenticar-me e assinar a revisão, confirmo que as informações de identidade enviadas por {0} estão corretas.</value>
   </data>
   <data name="PeerReviewBirthDateText" xml:space="preserve">
     <value>A Data de Nascimento está correta.</value>

@@ -172,6 +172,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		{
 			this.AcceptCommand.NotifyCanExecuteChanged();
 			this.DeclineCommand.NotifyCanExecuteChanged();
+			this.AuthenticateReviewerCommand.NotifyCanExecuteChanged();
 		}
 
 		/// <summary>
@@ -349,9 +350,6 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 			while (!IsVisible);
 
 			this.CurrentStep = Current;
-
-			if (Current == ReviewStep.Authenticate)
-				Task.Delay(1000).ContinueWith((_) => MainThread.BeginInvokeOnMainThread(this.AuthenticateReviewer));
 		}
 
 		/// <summary>
@@ -1112,7 +1110,8 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 			}
 		}
 
-		private async void AuthenticateReviewer()
+		[RelayCommand(CanExecute = nameof(CanAccept))]
+		private async Task AuthenticateReviewer()
 		{
 			try
 			{
@@ -1120,11 +1119,6 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 				{
 					await this.Accept(false);
 					this.NextPage();
-				}
-				else
-				{
-					await this.Decline(false);
-					await this.GoBack();
 				}
 			}
 			catch (Exception ex)

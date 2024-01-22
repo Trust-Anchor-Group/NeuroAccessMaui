@@ -1095,6 +1095,9 @@
   <data name="RequestForReview" xml:space="preserve">
     <value>Begäran om omprövning</value>
   </data>
+  <data name="AuthenticateAndSign" xml:space="preserve">
+    <value>Autentisera och signera</value>
+  </data>
   <data name="ConcludeReview" xml:space="preserve">
     <value>Avsluta granskningen av</value>
   </data>
@@ -1108,7 +1111,7 @@
     <value>Jag bekräftar att jag är ansvarig för den information jag tillhandahåller i denna granskning av den tillhandahållna informationen.</value>
   </data>
   <data name="PeerReviewAuthenticationText" xml:space="preserve">
-    <value>Genom att autentisera mig bekräftar jag härmed att de identitetsuppgifter som skickas av {0} är korrekta.</value>
+    <value>Genom att autentisera mig och underteckna recensionen bekräftar jag härmed att identitetsinformationen som skickas av {0} är korrekt.</value>
   </data>
   <data name="PeerReviewBirthDateText" xml:space="preserve">
     <value>Födelsedatumet är korrekt.</value>

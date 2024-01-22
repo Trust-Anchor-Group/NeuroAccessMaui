@@ -304,6 +304,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Authenticate &amp; Sign.
+        /// </summary>
+        internal static string AuthenticateAndSign {
+            get {
+                return ResourceManager.GetString("AuthenticateAndSign", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Authentication method.
         /// </summary>
         internal static string AuthenticationMethod {
@@ -1627,7 +1636,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to By authenticating myself I hereby confirm that the identity information sent by {0} is correct..
+        ///   Looks up a localized string similar to By authenticating myself and signing the review, I hereby confirm that the identity information sent by {0} is correct..
         /// </summary>
         internal static string PeerReviewAuthenticationText {
             get {

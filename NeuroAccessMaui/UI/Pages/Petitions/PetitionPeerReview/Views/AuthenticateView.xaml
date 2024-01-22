@@ -24,5 +24,18 @@
 		<Label HorizontalOptions="Center" Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize ConcludeReview}"/>
 		<Label HorizontalOptions="Center" Text="{Binding FullName}"/>
 		<Label HorizontalOptions="Center" Text="{Binding PeerReviewAuthenticationText}" Margin="{StaticResource MediumMargins}"/>
+
+		<Rectangle BackgroundColor="{AppThemeBinding Light={StaticResource DisabledFilledButtonBackgroundLight}, Dark={StaticResource DisabledFilledButtonBackgroundDark}}"
+					  WidthRequest="250" HeightRequest="2"/>
+
+		<VerticalStackLayout HeightRequest="{StaticResource MediumSpacing}"/>
+
+		<Grid ColumnDefinitions="*,*" RowDefinitions="auto" ColumnSpacing="{StaticResource SmallSpacing}">
+			<controls:TextButton Command="{Binding DeclineCommand}" Style="{StaticResource OutlinedTextButtonStyleNoRoundedCorners}"
+										LabelData="{l:Localize Reject}" Grid.Column="0" />
+
+			<controls:TextButton Command="{Binding AuthenticateReviewerCommand}" Style="{StaticResource FilledTextButtonStyleNoRoundedCorners}"
+										LabelData="{l:Localize AuthenticateAndSign}" Grid.Column="1"/>
+		</Grid>
 	</VerticalStackLayout>
 </base:BaseContentView>

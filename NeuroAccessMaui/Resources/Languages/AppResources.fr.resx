@@ -1095,6 +1095,9 @@
   <data name="RequestForReview" xml:space="preserve">
     <value>Demande d’examen</value>
   </data>
+  <data name="AuthenticateAndSign" xml:space="preserve">
+    <value>Authentifier et signer</value>
+  </data>
   <data name="ConcludeReview" xml:space="preserve">
     <value>Conclure l’examen de</value>
   </data>
@@ -1108,7 +1111,7 @@
     <value>Je reconnais que je suis responsable des informations que je fournis dans le cadre de cet examen des informations fournies.</value>
   </data>
   <data name="PeerReviewAuthenticationText" xml:space="preserve">
-    <value>En m’authentifiant, je confirme que les informations d’identité envoyées par {0} sont correctes.</value>
+    <value>En m’authentifiant et en signant l’avis, je confirme par la présente que les informations d’identité envoyées par {0} sont correctes.</value>
   </data>
   <data name="PeerReviewBirthDateText" xml:space="preserve">
     <value>La date de naissance est correcte.</value>

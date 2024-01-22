@@ -1095,6 +1095,9 @@
   <data name="RequestForReview" xml:space="preserve">
     <value>Request for Review</value>
   </data>
+  <data name="AuthenticateAndSign" xml:space="preserve">
+    <value>Authenticate &amp; Sign</value>
+  </data>
   <data name="ConcludeReview" xml:space="preserve">
     <value>Conclude Review of</value>
   </data>
@@ -1108,7 +1111,7 @@
     <value>I acknowledge that I am responsible for the information I provide in this review of the provided information.</value>
   </data>
   <data name="PeerReviewAuthenticationText" xml:space="preserve">
-    <value>By authenticating myself I hereby confirm that the identity information sent by {0} is correct.</value>
+    <value>By authenticating myself and signing the review, I hereby confirm that the identity information sent by {0} is correct.</value>
   </data>
   <data name="PeerReviewBirthDateText" xml:space="preserve">
     <value>The Birth Date is correct.</value>

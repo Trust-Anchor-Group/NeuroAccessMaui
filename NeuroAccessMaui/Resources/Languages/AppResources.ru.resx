@@ -1095,6 +1095,9 @@
   <data name="RequestForReview" xml:space="preserve">
     <value>Запрос на рецензирование</value>
   </data>
+  <data name="AuthenticateAndSign" xml:space="preserve">
+    <value>Аутентификация и подписание</value>
+  </data>
   <data name="ConcludeReview" xml:space="preserve">
     <value>Заключите обзор</value>
   </data>
@@ -1108,7 +1111,7 @@
     <value>Я признаю, что несу ответственность за информацию, которую я предоставляю в этом обзоре предоставленной информации.</value>
   </data>
   <data name="PeerReviewAuthenticationText" xml:space="preserve">
-    <value>Аутентифицируясь, я подтверждаю, что идентификационная информация, отправленная {0}, верна.</value>
+    <value>Аутентифицируя себя и подписывая отзыв, я тем самым подтверждаю, что идентификационная информация, отправленная {0}, верна.</value>
   </data>
   <data name="PeerReviewBirthDateText" xml:space="preserve">
     <value>Дата рождения указана правильно.</value>

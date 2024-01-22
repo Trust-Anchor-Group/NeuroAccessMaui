@@ -1095,6 +1095,9 @@
   <data name="RequestForReview" xml:space="preserve">
     <value>Uudelleentarkastelua koskeva pyyntö</value>
   </data>
+  <data name="AuthenticateAndSign" xml:space="preserve">
+    <value>Todenna ja allekirjoita</value>
+  </data>
   <data name="ConcludeReview" xml:space="preserve">
     <value>Päätä tarkastelu</value>
   </data>
@@ -1108,7 +1111,7 @@
     <value>Hyväksyn, että olen vastuussa tiedoista, jotka annan tässä annettujen tietojen tarkastelussa.</value>
   </data>
   <data name="PeerReviewAuthenticationText" xml:space="preserve">
-    <value>Tunnistautumalla vahvistan täten, että {0} lähettämät henkilöllisyystiedot ovat oikein.</value>
+    <value>Tunnistautumalla ja allekirjoittamalla arvostelun vahvistan täten, että {0} lähettämät henkilöllisyystiedot ovat oikein.</value>
   </data>
   <data name="PeerReviewBirthDateText" xml:space="preserve">
     <value>Syntymäaika on oikein.</value>

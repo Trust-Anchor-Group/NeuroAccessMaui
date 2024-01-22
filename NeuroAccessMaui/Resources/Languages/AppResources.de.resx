@@ -1095,6 +1095,9 @@
   <data name="RequestForReview" xml:space="preserve">
     <value>Antrag auf Überprüfung</value>
   </data>
+  <data name="AuthenticateAndSign" xml:space="preserve">
+    <value>Authentifizieren und Signieren</value>
+  </data>
   <data name="ConcludeReview" xml:space="preserve">
     <value>Abschließen der Überprüfung der</value>
   </data>
@@ -1108,7 +1111,7 @@
     <value>Ich bestätige, dass ich für die Informationen, die ich in dieser Überprüfung der bereitgestellten Informationen zur Verfügung stelle, verantwortlich bin.</value>
   </data>
   <data name="PeerReviewAuthenticationText" xml:space="preserve">
-    <value>Indem ich mich authentifiziere, bestätige ich hiermit, dass die von {0} übermittelten Identitätsinformationen korrekt sind.</value>
+    <value>Indem ich mich authentifiziere und die Bewertung unterschreibe, bestätige ich hiermit, dass die von {0} gesendeten Identitätsinformationen korrekt sind.</value>
   </data>
   <data name="PeerReviewBirthDateText" xml:space="preserve">
     <value>Das Geburtsdatum ist korrekt.</value>
