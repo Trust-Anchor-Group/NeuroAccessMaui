@@ -11,7 +11,8 @@
 	<VerticalStackLayout>
 		<VerticalStackLayout Margin="{StaticResource LargeMargins}" HorizontalOptions="Center" VerticalOptions="Center" Spacing="{StaticResource SmallSpacing}">
 			<Border Style="{StaticResource OutlinedImageButtonBorderStyle}" Padding="0">
-				<Image Source="{Binding FirstPhotoSource}" WidthRequest="150" Aspect="AspectFit" HorizontalOptions="Center" Margin="0"/>
+				<Image Source="{Binding FirstPhotoSource}" Rotation="{Binding FirstPhotoRotation}"
+						 WidthRequest="150" Aspect="AspectFit" HorizontalOptions="Center" Margin="0"/>
 			</Border>
 			<VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="0">
 				<Border Style="{StaticResource OutlinedImageButtonBorderStyle}" Padding="{StaticResource SmallSpacing}"
