@@ -1,5 +1,5 @@
 ﻿using System.Globalization;
-using NeuroAccessMaui.Services;
+using NeuroAccessMaui.UI.Pages.Main.Settings;
 using Waher.Networking.XMPP.Contracts;
 
 namespace NeuroAccessMaui.UI.Converters
@@ -27,9 +27,9 @@ namespace NeuroAccessMaui.UI.Converters
 		{
 			return State switch
 			{
-				IdentityState.Approved => ServiceRef.TagProfile.Theme == AppTheme.Light	? Colors.Green : Colors.LightGreen,
-				IdentityState.Created => ServiceRef.TagProfile.Theme == AppTheme.Light ? Colors.DarkOrange: Colors.Orange,
-				_ => ServiceRef.TagProfile.Theme == AppTheme.Light ? Colors.Salmon : Colors.LightSalmon,
+				IdentityState.Approved => SettingsViewModel.CurrentDisplayMode == AppTheme.Light	? Colors.Green : Colors.LightGreen,
+				IdentityState.Created => SettingsViewModel.CurrentDisplayMode == AppTheme.Light ? Colors.DarkOrange: Colors.Orange,
+				_ => SettingsViewModel.CurrentDisplayMode == AppTheme.Light ? Colors.Salmon : Colors.LightSalmon,
 			};
 		}
 

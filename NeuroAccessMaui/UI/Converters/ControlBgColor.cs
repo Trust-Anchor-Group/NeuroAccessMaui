@@ -1,5 +1,5 @@
 ﻿using System.Globalization;
-using NeuroAccessMaui.Services;
+using NeuroAccessMaui.UI.Pages.Main.Settings;
 
 namespace NeuroAccessMaui.UI.Converters
 {
@@ -29,7 +29,7 @@ namespace NeuroAccessMaui.UI.Converters
 			return Ok switch
 			{
 				true => Colors.Transparent,
-				false => ServiceRef.TagProfile.Theme == AppTheme.Light ? Colors.Salmon : Colors.LightSalmon,
+				false => SettingsViewModel.CurrentDisplayMode == AppTheme.Light ? Colors.Salmon : Colors.LightSalmon,
 			};
 		}
 

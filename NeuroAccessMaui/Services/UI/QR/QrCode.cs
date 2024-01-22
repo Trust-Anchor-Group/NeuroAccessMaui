@@ -2,6 +2,7 @@ using NeuroAccessMaui.Links;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Navigation;
 using NeuroAccessMaui.UI.Pages.Main.QR;
+using NeuroAccessMaui.UI.Pages.Main.Settings;
 using SkiaSharp;
 using Waher.Content.QR;
 using Waher.Content.QR.Encoding;
@@ -138,7 +139,7 @@ namespace NeuroAccessMaui.Services.UI.QR
 
 			int i = Text.IndexOf(':');
 			string UriScheme = i < 0 ? string.Empty : Text[..i].ToLowerInvariant();
-			bool LightTheme = (ServiceRef.TagProfile.Theme ?? AppTheme.Light) != AppTheme.Dark;
+			bool LightTheme = SettingsViewModel.CurrentDisplayMode != AppTheme.Dark;
 
 			switch (UriScheme)
 			{

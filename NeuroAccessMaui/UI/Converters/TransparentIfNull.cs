@@ -1,5 +1,5 @@
 ﻿using System.Globalization;
-using NeuroAccessMaui.Services;
+using NeuroAccessMaui.UI.Pages.Main.Settings;
 
 namespace NeuroAccessMaui.UI.Converters
 {
@@ -16,7 +16,7 @@ namespace NeuroAccessMaui.UI.Converters
 
 			try
 			{
-				string Key = ServiceRef.TagProfile.Theme == AppTheme.Light ? "NormalEditForegroundLight" : "NormalEditForegroundDark";
+				string Key = SettingsViewModel.CurrentDisplayMode == AppTheme.Light ? "NormalEditForegroundLight" : "NormalEditForegroundDark";
 				if (!(App.Current?.Resources.TryGetValue(Key, out object Obj) ?? false))
 					return Colors.Transparent;
 
