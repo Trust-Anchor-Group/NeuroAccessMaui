@@ -217,7 +217,12 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		}
 
 		[RelayCommand(CanExecute = nameof(CanAccept))]
-		private async Task Accept(bool GoBackIfOk = true)
+		private Task Accept()
+		{
+			return this.Accept(true);
+		}
+
+		private async Task Accept(bool GoBackIfOk)
 		{
 			if (this.ContentToSign is null || !await App.AuthenticateUser())
 				return;
@@ -240,7 +245,12 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		public bool CanDecline => this.IsConnected && !this.IsBusy && this.ContentToSign is not null;
 
 		[RelayCommand(CanExecute = nameof(CanDecline))]
-		private async Task Decline(bool GoBackIfOk = true)
+		private Task Decline()
+		{
+			return this.Decline(true);
+		}
+
+		private async Task Decline(bool GoBackIfOk)
 		{
 			if (this.ContentToSign is null || !await App.AuthenticateUser())
 				return;
