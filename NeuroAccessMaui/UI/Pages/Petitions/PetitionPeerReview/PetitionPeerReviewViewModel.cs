@@ -904,7 +904,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		}
 
 		/// <summary>
-		/// Toggles <see cref="IsConfirmCorrectOk"/>
+		/// Toggles <see cref="ConfirmCorrect"/>
 		/// </summary>
 		[RelayCommand]
 		public void ToggleIsConfirmCorrect()

@@ -1107,6 +1107,9 @@
   <data name="PeerReviewNationalityText" xml:space="preserve">
     <value>Nationaliteten er korrekt.</value>
   </data>
+  <data name="PeerReviewOrganizationalInfoText" xml:space="preserve">
+    <value>Organisationsoplysningerne er korrekte.</value>
+  </data>
   <data name="PeerReviewPersonalAddressInfoText" xml:space="preserve">
     <value>De personlige adresseoplysninger er korrekte.</value>
   </data>
