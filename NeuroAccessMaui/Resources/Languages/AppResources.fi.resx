@@ -1146,10 +1146,16 @@
   <data name="Reject" xml:space="preserve">
     <value>Hylätä</value>
   </data>
+  <data name="ReviewApproved" xml:space="preserve">
+    <value>Olet nyt hyväksynyt {0} toimittamat tiedot. Tarkistustasi voidaan käyttää henkilöllisyyshakemuksen hyväksymiseen.</value>
+  </data>
   <data name="ReviewNote" xml:space="preserve">
     <value>Jos epäilet, että jokin antamista tiedoista ei pidä paikkaansa, sinun on hylättävä tiedot.</value>
   </data>
   <data name="SeeInformationAgain" xml:space="preserve">
     <value>Katso tiedot uudelleen</value>
+  </data>
+  <data name="UnableToSignReview" xml:space="preserve">
+    <value>Arvostelua ei voi allekirjoittaa.</value>
   </data>
 </root>

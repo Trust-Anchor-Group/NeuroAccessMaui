@@ -2473,6 +2473,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You have now approved the information provided by {0}. Your review may be used to approve the identity application..
+        /// </summary>
+        internal static string ReviewApproved {
+            get {
+                return ResourceManager.GetString("ReviewApproved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to If you suspect any of the information provided is not correct, you should reject the information..
         /// </summary>
         internal static string ReviewNote {
@@ -2847,6 +2856,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string UnableToOpenLink {
             get {
                 return ResourceManager.GetString("UnableToOpenLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to sign the review..
+        /// </summary>
+        internal static string UnableToSignReview {
+            get {
+                return ResourceManager.GetString("UnableToSignReview", resourceCulture);
             }
         }
         

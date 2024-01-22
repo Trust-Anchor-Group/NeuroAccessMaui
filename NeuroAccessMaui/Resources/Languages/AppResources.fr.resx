@@ -1146,10 +1146,16 @@
   <data name="Reject" xml:space="preserve">
     <value>Rejeter</value>
   </data>
+  <data name="ReviewApproved" xml:space="preserve">
+    <value>Vous avez maintenant approuvé les informations fournies par {0}. Votre avis peut être utilisé pour approuver la demande d’identité.</value>
+  </data>
   <data name="ReviewNote" xml:space="preserve">
     <value>Si vous pensez que l’une des informations fournies n’est pas correcte, vous devez la rejeter.</value>
   </data>
   <data name="SeeInformationAgain" xml:space="preserve">
     <value>Voir à nouveau les informations</value>
+  </data>
+  <data name="UnableToSignReview" xml:space="preserve">
+    <value>Impossible de signer l’avis.</value>
   </data>
 </root>

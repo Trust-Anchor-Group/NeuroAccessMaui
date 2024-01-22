@@ -1146,10 +1146,16 @@
   <data name="Reject" xml:space="preserve">
     <value>Avvisa</value>
   </data>
+  <data name="ReviewApproved" xml:space="preserve">
+    <value>Du har nu godkänt den information som {0} lämnar. Din granskning kan användas för att godkänna identitetsansökan.</value>
+  </data>
   <data name="ReviewNote" xml:space="preserve">
     <value>Om du misstänker att någon av de uppgifter som lämnats inte är korrekta bör du avvisa informationen.</value>
   </data>
   <data name="SeeInformationAgain" xml:space="preserve">
     <value>Visa information igen</value>
+  </data>
+  <data name="UnableToSignReview" xml:space="preserve">
+    <value>Det gick inte att signera recensionen.</value>
   </data>
 </root>

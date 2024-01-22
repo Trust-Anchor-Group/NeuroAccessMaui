@@ -1146,10 +1146,16 @@
   <data name="Reject" xml:space="preserve">
     <value>Respinge</value>
   </data>
+  <data name="ReviewApproved" xml:space="preserve">
+    <value>Acum ați aprobat informațiile furnizate de {0}. Recenzia dvs. poate fi utilizată pentru a aproba cererea de identitate.</value>
+  </data>
   <data name="ReviewNote" xml:space="preserve">
     <value>Dacă bănuiți că oricare dintre informațiile furnizate nu este corectă, ar trebui să respingeți informațiile.</value>
   </data>
   <data name="SeeInformationAgain" xml:space="preserve">
     <value>Vedeți din nou informații</value>
+  </data>
+  <data name="UnableToSignReview" xml:space="preserve">
+    <value>Nu se poate semna recenzia.</value>
   </data>
 </root>

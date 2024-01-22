@@ -1146,10 +1146,16 @@
   <data name="Reject" xml:space="preserve">
     <value>Odbaci</value>
   </data>
+  <data name="ReviewApproved" xml:space="preserve">
+    <value>Sada ste odobrili informacije koje ste dali {0}. Vaša recenzija se može koristiti za odobravanje aplikacije identiteta.</value>
+  </data>
   <data name="ReviewNote" xml:space="preserve">
     <value>Ako sumnjate da bilo koja od navedenih informacija nije tačna, trebalo bi da odbijete informacije.</value>
   </data>
   <data name="SeeInformationAgain" xml:space="preserve">
     <value>Ponovo pogledajte informacije</value>
+  </data>
+  <data name="UnableToSignReview" xml:space="preserve">
+    <value>Nije moguće potpisati redigovanje.</value>
   </data>
 </root>

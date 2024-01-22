@@ -1146,10 +1146,16 @@
   <data name="Reject" xml:space="preserve">
     <value>Отвергать</value>
   </data>
+  <data name="ReviewApproved" xml:space="preserve">
+    <value>Вы согласились с информацией, предоставленной {0}. Ваш отзыв может быть использован для утверждения заявки на идентификацию.</value>
+  </data>
   <data name="ReviewNote" xml:space="preserve">
     <value>Если вы подозреваете, что какая-либо из предоставленных сведений неверна, вы должны отклонить эту информацию.</value>
   </data>
   <data name="SeeInformationAgain" xml:space="preserve">
     <value>Посмотреть информацию еще раз</value>
+  </data>
+  <data name="UnableToSignReview" xml:space="preserve">
+    <value>Не могу подписать отзыв.</value>
   </data>
 </root>

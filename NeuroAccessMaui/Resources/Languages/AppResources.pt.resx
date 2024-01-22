@@ -1146,10 +1146,16 @@
   <data name="Reject" xml:space="preserve">
     <value>Rejeitar</value>
   </data>
+  <data name="ReviewApproved" xml:space="preserve">
+    <value>Aprovou agora as informações fornecidas pelo {0}. Sua análise pode ser usada para aprovar o aplicativo de identidade.</value>
+  </data>
   <data name="ReviewNote" xml:space="preserve">
     <value>Se você suspeitar que qualquer uma das informações fornecidas não está correta, você deve rejeitar as informações.</value>
   </data>
   <data name="SeeInformationAgain" xml:space="preserve">
     <value>Ver informações novamente</value>
+  </data>
+  <data name="UnableToSignReview" xml:space="preserve">
+    <value>Não é possível assinar a revisão.</value>
   </data>
 </root>

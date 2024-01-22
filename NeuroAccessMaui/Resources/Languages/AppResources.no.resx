@@ -1146,10 +1146,16 @@
   <data name="Reject" xml:space="preserve">
     <value>Vrake</value>
   </data>
+  <data name="ReviewApproved" xml:space="preserve">
+    <value>Du har nå godkjent informasjonen fra {0}. Anmeldelsen din kan brukes til å godkjenne identitetssøknaden.</value>
+  </data>
   <data name="ReviewNote" xml:space="preserve">
     <value>Hvis du mistenker at noe av informasjonen som er oppgitt ikke er riktig, bør du avvise informasjonen.</value>
   </data>
   <data name="SeeInformationAgain" xml:space="preserve">
     <value>Se informasjon igjen</value>
+  </data>
+  <data name="UnableToSignReview" xml:space="preserve">
+    <value>Kan ikke signere anmeldelsen.</value>
   </data>
 </root>

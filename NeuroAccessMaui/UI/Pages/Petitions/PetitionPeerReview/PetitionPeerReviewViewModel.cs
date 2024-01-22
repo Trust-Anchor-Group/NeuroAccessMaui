@@ -466,6 +466,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		[NotifyPropertyChangedFor(nameof(PhotoReviewText))]
 		[NotifyPropertyChangedFor(nameof(PeerReviewConfirmCorrectText))]
 		[NotifyPropertyChangedFor(nameof(PeerReviewAuthenticationText))]
+		[NotifyPropertyChangedFor(nameof(ReviewApproved))]
 		private string? firstName;
 
 		/// <summary>
@@ -476,6 +477,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		[NotifyPropertyChangedFor(nameof(PhotoReviewText))]
 		[NotifyPropertyChangedFor(nameof(PeerReviewConfirmCorrectText))]
 		[NotifyPropertyChangedFor(nameof(PeerReviewAuthenticationText))]
+		[NotifyPropertyChangedFor(nameof(ReviewApproved))]
 		private string? middleNames;
 
 		/// <summary>
@@ -486,6 +488,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		[NotifyPropertyChangedFor(nameof(PhotoReviewText))]
 		[NotifyPropertyChangedFor(nameof(PeerReviewConfirmCorrectText))]
 		[NotifyPropertyChangedFor(nameof(PeerReviewAuthenticationText))]
+		[NotifyPropertyChangedFor(nameof(ReviewApproved))]
 		private string? lastNames;
 
 		/// <summary>
@@ -891,6 +894,11 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		public string PeerReviewAuthenticationText => ServiceRef.Localizer[nameof(AppResources.PeerReviewAuthenticationText), this.FullName];
 
 		/// <summary>
+		/// Information that peer review has been approved.
+		/// </summary>
+		public string ReviewApproved => ServiceRef.Localizer[nameof(AppResources.ReviewApproved), this.FullName];
+
+		/// <summary>
 		/// Toggles <see cref="IsPhotoOk"/>
 		/// </summary>
 		[RelayCommand]
@@ -1124,6 +1132,10 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
+
+				await ServiceRef.UiSerializer.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					ServiceRef.Localizer[nameof(AppResources.UnableToSignReview)]);
 			}
 		}
 
@@ -1132,7 +1144,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		/// <summary>
 		/// Title of the current view
 		/// </summary>
-		public override Task<string> Title => Task.FromResult<string>(ContactInfo.GetFriendlyName(this.RequestorIdentity!));
+		public override Task<string> Title => Task.FromResult(ContactInfo.GetFriendlyName(this.RequestorIdentity!));
 
 		#endregion
 	}

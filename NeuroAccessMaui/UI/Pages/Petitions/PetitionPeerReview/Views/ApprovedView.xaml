@@ -4,9 +4,31 @@
 							 x:DataType="viewmodel:PetitionPeerReviewViewModel"
 							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview">
+	<VerticalStackLayout>
+		<VerticalStackLayout Margin="{StaticResource LargeMargins}" HorizontalOptions="Center" VerticalOptions="Center" Spacing="{StaticResource SmallSpacing}">
+			<Border Style="{StaticResource OutlinedImageButtonBorderStyle}" Padding="0">
+				<Image Source="{Binding FirstPhotoSource}" Rotation="{Binding FirstPhotoRotation}"
+						 WidthRequest="150" Aspect="AspectFit" HorizontalOptions="Center" Margin="0"/>
+			</Border>
+			<VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="0">
+				<Border Style="{StaticResource OutlinedImageButtonBorderStyle}" Padding="{StaticResource SmallSpacing}"
+						  Stroke="{AppThemeBinding Light={StaticResource AccentForegroundLight}, Dark={StaticResource AccentForegroundDark}}">
+					<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding FullName}" HorizontalOptions="Center" Margin="0" Padding="0" />
+				</Border>
+				<Label Style="{StaticResource InfoLabelStyle}" Text="{Binding PersonalNumberWithFlag}" HorizontalOptions="Center" Margin="0" Padding="0" />
+			</VerticalStackLayout>
+		</VerticalStackLayout>
 
-	<Label Text="Approved"/>
-	
+		<Rectangle BackgroundColor="{AppThemeBinding Light={StaticResource DisabledFilledButtonBackgroundLight}, Dark={StaticResource DisabledFilledButtonBackgroundDark}}"
+					  WidthRequest="250" HeightRequest="2"/>
+
+		<Label HorizontalOptions="Center" Text="{Binding ReviewApproved}" Margin="{StaticResource MediumMargins}"/>
+
+		<controls:TextButton Command="{Binding GoBackCommand}" Style="{StaticResource FilledTextButtonStyleNoRoundedCorners}"
+									LabelData="{l:Localize Continue}" />
+	</VerticalStackLayout>
 </base:BaseContentView>

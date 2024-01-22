@@ -1146,10 +1146,16 @@
   <data name="Reject" xml:space="preserve">
     <value>Ablehnen</value>
   </data>
+  <data name="ReviewApproved" xml:space="preserve">
+    <value>Sie haben nun die von {0} bereitgestellten Informationen genehmigt. Ihre Überprüfung kann verwendet werden, um den Identitätsantrag zu genehmigen.</value>
+  </data>
   <data name="ReviewNote" xml:space="preserve">
     <value>Wenn Sie den Verdacht haben, dass eine der bereitgestellten Informationen nicht korrekt ist, sollten Sie die Informationen ablehnen.</value>
   </data>
   <data name="SeeInformationAgain" xml:space="preserve">
     <value>Informationen erneut anzeigen</value>
+  </data>
+  <data name="UnableToSignReview" xml:space="preserve">
+    <value>Die Bewertung kann nicht signiert werden.</value>
   </data>
 </root>

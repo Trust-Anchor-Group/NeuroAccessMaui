@@ -1146,10 +1146,16 @@
   <data name="Reject" xml:space="preserve">
     <value>Reject</value>
   </data>
+  <data name="ReviewApproved" xml:space="preserve">
+    <value>You have now approved the information provided by {0}. Your review may be used to approve the identity application.</value>
+  </data>
   <data name="ReviewNote" xml:space="preserve">
     <value>If you suspect any of the information provided is not correct, you should reject the information.</value>
   </data>
   <data name="SeeInformationAgain" xml:space="preserve">
     <value>See information again</value>
+  </data>
+  <data name="UnableToSignReview" xml:space="preserve">
+    <value>Unable to sign the review.</value>
   </data>
 </root>
