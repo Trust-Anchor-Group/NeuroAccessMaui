@@ -216,7 +216,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		}
 
 		[RelayCommand(CanExecute = nameof(CanAccept))]
-		private async Task Accept()
+		private async Task Accept(bool GoBackIfOk = true)
 		{
 			if (this.ContentToSign is null || !await App.AuthenticateUser())
 				return;
@@ -229,7 +229,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 					this.petitionId!, this.requestorFullJid!, true);
 			});
 
-			if (Succeeded)
+			if (Succeeded && GoBackIfOk)
 				await ServiceRef.NavigationService.GoBackAsync();
 		}
 
@@ -239,7 +239,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		public bool CanDecline => this.IsConnected && !this.IsBusy && this.ContentToSign is not null;
 
 		[RelayCommand(CanExecute = nameof(CanDecline))]
-		private async Task Decline()
+		private async Task Decline(bool GoBackIfOk = true)
 		{
 			if (this.ContentToSign is null || !await App.AuthenticateUser())
 				return;
@@ -252,7 +252,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 					this.petitionId!, this.requestorFullJid!, false);
 			});
 
-			if (Succeeded)
+			if (Succeeded && GoBackIfOk)
 				await ServiceRef.NavigationService.GoBackAsync();
 		}
 
@@ -349,6 +349,9 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 			while (!IsVisible);
 
 			this.CurrentStep = Current;
+
+			if (Current == ReviewStep.Authenticate)
+				Task.Delay(1000).ContinueWith((_) => MainThread.BeginInvokeOnMainThread(this.AuthenticateReviewer));
 		}
 
 		/// <summary>
@@ -535,7 +538,6 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 				}
 
 				return MyCountry.EmojiInfo.Unicode + "\t" + MyPersonalNumber;
-
 			}
 		}
 
@@ -1108,7 +1110,27 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 				this.EMail = Constants.NotAvailableValue;
 				this.IsApproved = false;
 			}
+		}
 
+		private async void AuthenticateReviewer()
+		{
+			try
+			{
+				if (await App.AuthenticateUser(true))
+				{
+					await this.Accept(false);
+					this.NextPage();
+				}
+				else
+				{
+					await this.Decline(false);
+					await this.GoBack();
+				}
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
 		}
 
 		#region ILinkableView
