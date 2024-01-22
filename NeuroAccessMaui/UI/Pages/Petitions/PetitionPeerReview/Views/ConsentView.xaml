@@ -14,7 +14,8 @@
 		<Grid ColumnDefinitions="auto,auto" RowDefinitions="auto" ColumnSpacing="{StaticResource MediumSpacing}" Margin="{StaticResource LargeMargins}"
 				HorizontalOptions="Center" VerticalOptions="Center">
 			<Border Style="{StaticResource OutlinedImageButtonBorderStyle}" Padding="0" Grid.Column="0">
-				<Image Source="{Binding FirstPhotoSource}" WidthRequest="75" Aspect="AspectFit" HorizontalOptions="Center" Margin="0"/>
+				<Image Source="{Binding FirstPhotoSource}" Rotation="{Binding FirstPhotoRotation}"
+						 WidthRequest="75" Aspect="AspectFit" HorizontalOptions="Center" Margin="0"/>
 			</Border>
 			<VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="0" Grid.Column="1">
 				<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding FullName}" HorizontalOptions="Center" Margin="0" Padding="0" />
@@ -215,7 +216,7 @@
 			</Label>
 
 			<CheckBox Grid.Column="0" Grid.Row="1" IsChecked="{Binding ConfirmCorrect}" VerticalOptions="Center"/>
-			<Label Grid.Column="1" Grid.Row="1" Text="{Binding ConfirmCorrectText}" VerticalOptions="Center" LineBreakMode="WordWrap">
+			<Label Grid.Column="1" Grid.Row="1" Text="{Binding PeerReviewConfirmCorrectText}" VerticalOptions="Center" LineBreakMode="WordWrap">
 				<Label.GestureRecognizers>
 					<TapGestureRecognizer Command="{Binding ToggleConfirmCorrectCommand}"/>
 				</Label.GestureRecognizers>

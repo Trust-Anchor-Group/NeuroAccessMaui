@@ -1095,6 +1095,9 @@
   <data name="RequestForReview" xml:space="preserve">
     <value>Solicitud de revisión</value>
   </data>
+  <data name="ConcludeReview" xml:space="preserve">
+    <value>Concluir la revisión de</value>
+  </data>
   <data name="HideInformation" xml:space="preserve">
     <value>Ocultar información</value>
   </data>
@@ -1103,6 +1106,9 @@
   </data>
   <data name="PeerReviewAcknowledgeResponsibilityText" xml:space="preserve">
     <value>Reconozco que soy responsable de la información que proporciono en esta revisión de la información proporcionada.</value>
+  </data>
+  <data name="PeerReviewAuthenticationText" xml:space="preserve">
+    <value>Al autenticarme, confirmo que la información de identidad enviada por {0} es correcta.</value>
   </data>
   <data name="PeerReviewBirthDateText" xml:space="preserve">
     <value>La fecha de nacimiento es correcta.</value>

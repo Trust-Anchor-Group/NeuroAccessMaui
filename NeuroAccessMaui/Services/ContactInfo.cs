@@ -569,6 +569,40 @@ namespace NeuroAccessMaui.Services
 		/// <summary>
 		/// Gets the full name of a person.
 		/// </summary>
+		/// <param name="Identity">Legal identity</param>
+		public static string GetFullName(LegalIdentity? Identity)
+		{
+			string? FirstName = null;
+			string? MiddleNames = null;
+			string? LastNames = null;
+
+			if (Identity?.Properties is not null)
+			{
+				foreach (Property P in Identity.Properties)
+				{
+					switch (P.Name)
+					{
+						case Constants.XmppProperties.FirstName:
+							FirstName = P.Value;
+							break;
+
+						case Constants.XmppProperties.LastNames:
+							LastNames = P.Value;
+							break;
+
+						case Constants.XmppProperties.MiddleNames:
+							MiddleNames = P.Value;
+							break;
+					}
+				}
+			}
+
+			return GetFullName(FirstName, MiddleNames, LastNames);
+		}
+
+		/// <summary>
+		/// Gets the full name of a person.
+		/// </summary>
 		/// <param name="FirstName">First name</param>
 		/// <param name="MiddleNames">Middle name(s)</param>
 		/// <param name="LastNames">Last name(s)</param>

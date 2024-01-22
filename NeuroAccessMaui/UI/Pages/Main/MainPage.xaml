@@ -27,10 +27,7 @@
 				RowSpacing="{StaticResource LargeSpacing}">
 
 			<VerticalStackLayout Grid.Row="0" Spacing="{StaticResource LargeSpacing}">
-
-				<Image HorizontalOptions="Center"
-							Source="{AppThemeBinding Light=neuro_access_logo_light.png, Dark=neuro_access_logo_dark.png}" />
-
+				<Image HorizontalOptions="Center" Source="{AppThemeBinding Light=neuro_access_logo_light.png, Dark=neuro_access_logo_dark.png}" />
 			</VerticalStackLayout>
 
 			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Grid.Row="1" VerticalOptions="Center">

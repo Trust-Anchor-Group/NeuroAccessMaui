@@ -4,9 +4,25 @@
 							 x:DataType="viewmodel:PetitionPeerReviewViewModel"
 							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview">
+	<VerticalStackLayout>
+		<Grid ColumnDefinitions="auto,auto" RowDefinitions="auto" ColumnSpacing="{StaticResource MediumSpacing}" Margin="{StaticResource LargeMargins}"
+				HorizontalOptions="Center" VerticalOptions="Center">
+			<Border Style="{StaticResource OutlinedImageButtonBorderStyle}" Padding="0" Grid.Column="0">
+				<Image Source="{Binding MyFirstPhotoSource}" Rotation="{Binding MyFirstPhotoRotation}"
+						 WidthRequest="75" Aspect="AspectFit" HorizontalOptions="Center" Margin="0"/>
+			</Border>
+			<VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="0" Grid.Column="1">
+				<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding MyFullName}" HorizontalOptions="Center" Margin="0" Padding="0" />
+				<Label Style="{StaticResource InfoLabelStyle}" Text="{Binding MyPersonalNumberWithFlag}" HorizontalOptions="Center" Margin="0" Padding="0" />
+			</VerticalStackLayout>
+		</Grid>
 
-	<Label Text="Authenticate"/>
-	
+		<Label HorizontalOptions="Center" Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize ConcludeReview}"/>
+		<Label HorizontalOptions="Center" Text="{Binding FullName}"/>
+		<Label HorizontalOptions="Center" Text="{Binding PeerReviewAuthenticationText}" Margin="{StaticResource MediumMargins}"/>
+	</VerticalStackLayout>
 </base:BaseContentView>

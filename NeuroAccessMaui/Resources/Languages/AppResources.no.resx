@@ -1095,6 +1095,9 @@
   <data name="RequestForReview" xml:space="preserve">
     <value>Forespørsel om gjennomgang</value>
   </data>
+  <data name="ConcludeReview" xml:space="preserve">
+    <value>Avslutt gjennomgang av</value>
+  </data>
   <data name="HideInformation" xml:space="preserve">
     <value>Skjul informasjon</value>
   </data>
@@ -1103,6 +1106,9 @@
   </data>
   <data name="PeerReviewAcknowledgeResponsibilityText" xml:space="preserve">
     <value>Jeg erkjenner at jeg er ansvarlig for informasjonen jeg gir i denne gjennomgangen av den oppgitte informasjonen.</value>
+  </data>
+  <data name="PeerReviewAuthenticationText" xml:space="preserve">
+    <value>Ved å autentisere meg bekrefter jeg herved at identitetsinformasjonen sendt av {0} er korrekt.</value>
   </data>
   <data name="PeerReviewBirthDateText" xml:space="preserve">
     <value>Fødselsdatoen er riktig.</value>

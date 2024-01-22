@@ -52,7 +52,8 @@
 									  Style="{StaticResource OutlinedImageButtonBorderStyle}"
 									  BackgroundColor="{Binding HasPhoto, Converter={converters:ControlBgColor}}">
 								<Grid>
-									<Image Source="{Binding Image}" Aspect="AspectFit" HeightRequest="200" IsVisible="{Binding HasPhoto}"/>
+									<Image Source="{Binding Image}" Rotation="{Binding ImageRotation}"
+											 Aspect="AspectFit" HeightRequest="200" IsVisible="{Binding HasPhoto}"/>
 									<Image Source="photo_placeholder.svg" Aspect="Center" HeightRequest="200"
 											 IsVisible="{Binding HasPhoto, Converter={StaticResource InvertedBoolConverter}}"/>
 								</Grid>

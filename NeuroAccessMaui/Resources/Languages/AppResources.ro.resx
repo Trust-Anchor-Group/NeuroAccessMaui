@@ -1095,6 +1095,9 @@
   <data name="RequestForReview" xml:space="preserve">
     <value>Cerere de reexaminare</value>
   </data>
+  <data name="ConcludeReview" xml:space="preserve">
+    <value>Finalizați revizuirea</value>
+  </data>
   <data name="HideInformation" xml:space="preserve">
     <value>Ascunderea informațiilor</value>
   </data>
@@ -1103,6 +1106,9 @@
   </data>
   <data name="PeerReviewAcknowledgeResponsibilityText" xml:space="preserve">
     <value>Recunosc că sunt responsabil pentru informațiile pe care le furnizez în această revizuire a informațiilor furnizate.</value>
+  </data>
+  <data name="PeerReviewAuthenticationText" xml:space="preserve">
+    <value>Prin autentificare, confirm prin prezenta că informațiile de identitate trimise de {0} sunt corecte.</value>
   </data>
   <data name="PeerReviewBirthDateText" xml:space="preserve">
     <value>Data nașterii este corectă.</value>

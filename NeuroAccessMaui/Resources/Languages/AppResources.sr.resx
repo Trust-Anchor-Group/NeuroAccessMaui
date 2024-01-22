@@ -1095,6 +1095,9 @@
   <data name="RequestForReview" xml:space="preserve">
     <value>Zahtev za redigovanje</value>
   </data>
+  <data name="ConcludeReview" xml:space="preserve">
+    <value>Zaključi pregled</value>
+  </data>
   <data name="HideInformation" xml:space="preserve">
     <value>Sakrij informacije</value>
   </data>
@@ -1103,6 +1106,9 @@
   </data>
   <data name="PeerReviewAcknowledgeResponsibilityText" xml:space="preserve">
     <value>Potvrđujem da sam odgovoran za informacije koje pružam u ovom pregledu pruženih informacija.</value>
+  </data>
+  <data name="PeerReviewAuthenticationText" xml:space="preserve">
+    <value>Potvrdom identiteta potvrđujem da su informacije o identitetu koje {0} tačne.</value>
   </data>
   <data name="PeerReviewBirthDateText" xml:space="preserve">
     <value>Datum rođenja je tačan.</value>

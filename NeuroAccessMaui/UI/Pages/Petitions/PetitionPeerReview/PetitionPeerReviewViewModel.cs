@@ -107,13 +107,24 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 				this.photosLoader.CancelLoadPhotos();
 
 				Attachment[]? Attachments = this.RequestorIdentity?.Attachments;
+				Photo? First;
 
 				if (Attachments is not null)
 				{
-					Photo? First = await this.photosLoader.LoadPhotos(Attachments, SignWith.LatestApprovedId);
+					First = await this.photosLoader.LoadPhotos(Attachments, SignWith.LatestApprovedId);
 
 					this.FirstPhotoSource = First?.Source;
 					this.FirstPhotoRotation = First?.Rotation ?? 0;
+				}
+
+				Attachments = ServiceRef.TagProfile.LegalIdentity?.Attachments;
+
+				if (Attachments is not null)
+				{
+					First = await this.photosLoader.LoadPhotos(Attachments, SignWith.LatestApprovedId);
+
+					this.MyFirstPhotoSource = First?.Source;
+					this.MyFirstPhotoRotation = First?.Rotation ?? 0;
 				}
 			}
 			catch (Exception ex)
@@ -452,7 +463,8 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(FullName))]
 		[NotifyPropertyChangedFor(nameof(PhotoReviewText))]
-		[NotifyPropertyChangedFor(nameof(ConfirmCorrectText))]
+		[NotifyPropertyChangedFor(nameof(PeerReviewConfirmCorrectText))]
+		[NotifyPropertyChangedFor(nameof(PeerReviewAuthenticationText))]
 		private string? firstName;
 
 		/// <summary>
@@ -461,7 +473,8 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(FullName))]
 		[NotifyPropertyChangedFor(nameof(PhotoReviewText))]
-		[NotifyPropertyChangedFor(nameof(ConfirmCorrectText))]
+		[NotifyPropertyChangedFor(nameof(PeerReviewConfirmCorrectText))]
+		[NotifyPropertyChangedFor(nameof(PeerReviewAuthenticationText))]
 		private string? middleNames;
 
 		/// <summary>
@@ -470,7 +483,8 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(FullName))]
 		[NotifyPropertyChangedFor(nameof(PhotoReviewText))]
-		[NotifyPropertyChangedFor(nameof(ConfirmCorrectText))]
+		[NotifyPropertyChangedFor(nameof(PeerReviewConfirmCorrectText))]
+		[NotifyPropertyChangedFor(nameof(PeerReviewAuthenticationText))]
 		private string? lastNames;
 
 		/// <summary>
@@ -495,6 +509,33 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 				}
 
 				return Country.EmojiInfo.Unicode + "\t" + this.PersonalNumber;
+			}
+		}
+
+		/// <summary>
+		/// Personal number of reviewer with country flag.
+		/// </summary>
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static",
+			Justification = "Must be instance property for view binding to work.")]
+		public string? MyPersonalNumberWithFlag
+		{
+			get
+			{
+				if (ServiceRef.TagProfile.LegalIdentity is null)
+					return null;
+
+				string? MyCountryCode = ServiceRef.TagProfile.LegalIdentity[Constants.XmppProperties.Country];
+				string? MyPersonalNumber = ServiceRef.TagProfile.LegalIdentity[Constants.XmppProperties.PersonalNumber];
+
+				if (string.IsNullOrEmpty(MyCountryCode) ||
+					!ISO_3166_1.TryGetCountryByCode(MyCountryCode, out ISO_3166_Country? MyCountry) ||
+					MyCountry is null)
+				{
+					return MyPersonalNumber;
+				}
+
+				return MyCountry.EmojiInfo.Unicode + "\t" + MyPersonalNumber;
+
 			}
 		}
 
@@ -723,8 +764,25 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		[ObservableProperty]
 		private int firstPhotoRotation;
 
+		/// <summary>
+		/// Image source of the first photo in the identity of the reviewer.
+		/// </summary>
+		[ObservableProperty]
+		private ImageSource? myFirstPhotoSource;
+
+		/// <summary>
+		/// Rotation of the first photo in the identity of the reviewer.
+		/// </summary>
+		[ObservableProperty]
+		private int myFirstPhotoRotation;
+
 		// Full name of requesting entity.
 		public string FullName => ContactInfo.GetFullName(this.FirstName, this.MiddleNames, this.LastNames);
+
+		// Full name of reviewer.
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static",
+			Justification = "Must be instance property for view binding to work.")]
+		public string MyFullName => ContactInfo.GetFullName(ServiceRef.TagProfile.LegalIdentity);
 
 		/// <summary>
 		/// If photo is OK
@@ -825,7 +883,12 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		/// <summary>
 		/// Instruction to reviewer when confirming reviewed information is correct.
 		/// </summary>
-		public string ConfirmCorrectText => ServiceRef.Localizer[nameof(AppResources.PeerReviewConfirmCorrectText), this.FullName];
+		public string PeerReviewConfirmCorrectText => ServiceRef.Localizer[nameof(AppResources.PeerReviewConfirmCorrectText), this.FullName];
+
+		/// <summary>
+		/// Instruction to reviewer when accepting peer review.
+		/// </summary>
+		public string PeerReviewAuthenticationText => ServiceRef.Localizer[nameof(AppResources.PeerReviewAuthenticationText), this.FullName];
 
 		/// <summary>
 		/// Toggles <see cref="IsPhotoOk"/>
@@ -1045,6 +1108,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 				this.EMail = Constants.NotAvailableValue;
 				this.IsApproved = false;
 			}
+
 		}
 
 		#region ILinkableView

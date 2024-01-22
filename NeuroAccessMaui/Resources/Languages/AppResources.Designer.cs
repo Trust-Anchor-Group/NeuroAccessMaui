@@ -502,6 +502,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Conclude Review of.
+        /// </summary>
+        internal static string ConcludeReview {
+            get {
+                return ResourceManager.GetString("ConcludeReview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirm.
         /// </summary>
         internal static string Confirm {
@@ -1614,6 +1623,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string PeerReviewAcknowledgeResponsibilityText {
             get {
                 return ResourceManager.GetString("PeerReviewAcknowledgeResponsibilityText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to By authenticating myself I hereby confirm that the identity information sent by {0} is correct..
+        /// </summary>
+        internal static string PeerReviewAuthenticationText {
+            get {
+                return ResourceManager.GetString("PeerReviewAuthenticationText", resourceCulture);
             }
         }
         
