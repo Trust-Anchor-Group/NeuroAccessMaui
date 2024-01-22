@@ -10,7 +10,7 @@
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview">
 	<VerticalStackLayout>
-		<Grid ColumnDefinitions="auto,auto" RowDefinitions="auto" ColumnSpacing="{StaticResource SmallSpacing}" Margin="{StaticResource LargeMargins}"
+		<Grid ColumnDefinitions="auto,auto" RowDefinitions="auto" ColumnSpacing="{StaticResource MediumSpacing}" Margin="{StaticResource LargeMargins}"
 				HorizontalOptions="Center" VerticalOptions="Center">
 			<Border Style="{StaticResource OutlinedImageButtonBorderStyle}" Padding="0" Grid.Column="0">
 				<Image Source="{Binding FirstPhotoSource}" WidthRequest="75" Aspect="AspectFit" HorizontalOptions="Center" Margin="0"/>
@@ -89,7 +89,7 @@
 			<controls:TextButton Command="{Binding DeclineCommand}" Style="{StaticResource OutlinedTextButtonStyleNoRoundedCorners}"
 										LabelData="{l:Localize Reject}" Grid.Column="0" />
 
-			<controls:TextButton Command="{Binding AcceptNationalityCommand}" Style="{StaticResource FilledTextButtonStyleNoRoundedCorners}"
+			<controls:TextButton Command="{Binding AcceptPersonalAddressInfoCommand}" Style="{StaticResource FilledTextButtonStyleNoRoundedCorners}"
 										LabelData="{l:Localize Continue}" Grid.Column="1" />
 		</Grid>
 	</VerticalStackLayout>

@@ -452,6 +452,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(FullName))]
 		[NotifyPropertyChangedFor(nameof(PhotoReviewText))]
+		[NotifyPropertyChangedFor(nameof(ConfirmCorrectText))]
 		private string? firstName;
 
 		/// <summary>
@@ -460,6 +461,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(FullName))]
 		[NotifyPropertyChangedFor(nameof(PhotoReviewText))]
+		[NotifyPropertyChangedFor(nameof(ConfirmCorrectText))]
 		private string? middleNames;
 
 		/// <summary>
@@ -468,6 +470,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(FullName))]
 		[NotifyPropertyChangedFor(nameof(PhotoReviewText))]
+		[NotifyPropertyChangedFor(nameof(ConfirmCorrectText))]
 		private string? lastNames;
 
 		/// <summary>
@@ -804,6 +807,12 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		private bool confirmCorrect;
 
 		/// <summary>
+		/// If details should be displayed.
+		/// </summary>
+		[ObservableProperty]
+		private bool showDetails;
+
+		/// <summary>
 		/// If proper consent and acknowledgement has been given.
 		/// </summary>
 		public bool IsConsentOk => this.AcknowledgeResponsibility && this.ConsentProcessing && this.ConfirmCorrect;
@@ -812,6 +821,11 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		/// Instruction to reviewer when reviewing photo.
 		/// </summary>
 		public string PhotoReviewText => ServiceRef.Localizer[nameof(AppResources.PeerReviewPhotoText), this.FullName];
+
+		/// <summary>
+		/// Instruction to reviewer when confirming reviewed information is correct.
+		/// </summary>
+		public string ConfirmCorrectText => ServiceRef.Localizer[nameof(AppResources.PeerReviewConfirmCorrectText), this.FullName];
 
 		/// <summary>
 		/// Toggles <see cref="IsPhotoOk"/>
@@ -907,9 +921,18 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		/// Toggles <see cref="ConfirmCorrect"/>
 		/// </summary>
 		[RelayCommand]
-		public void ToggleIsConfirmCorrect()
+		public void ToggleConfirmCorrect()
 		{
 			this.ConfirmCorrect = !this.ConfirmCorrect;
+		}
+
+		/// <summary>
+		/// Toggles <see cref="ShowDetails"/>
+		/// </summary>
+		[RelayCommand]
+		public void ToggleShowDetails()
+		{
+			this.ShowDetails = !this.ShowDetails;
 		}
 
 		#endregion

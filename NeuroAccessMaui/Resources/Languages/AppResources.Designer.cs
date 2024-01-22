@@ -907,6 +907,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hide information.
+        /// </summary>
+        internal static string HideInformation {
+            get {
+                return ResourceManager.GetString("HideInformation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Home.
         /// </summary>
         internal static string Home {
@@ -1245,6 +1254,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string NoLegalIdSelected {
             get {
                 return ResourceManager.GetString("NoLegalIdSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Note.
+        /// </summary>
+        internal static string Note {
+            get {
+                return ResourceManager.GetString("Note", resourceCulture);
             }
         }
         
@@ -1591,11 +1609,38 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to I acknowledge that I am responsible for the information I provide in this review of the provided information..
+        /// </summary>
+        internal static string PeerReviewAcknowledgeResponsibilityText {
+            get {
+                return ResourceManager.GetString("PeerReviewAcknowledgeResponsibilityText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The Birth Date is correct..
         /// </summary>
         internal static string PeerReviewBirthDateText {
             get {
                 return ResourceManager.GetString("PeerReviewBirthDateText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I confirm that the information provided by {0} is correct..
+        /// </summary>
+        internal static string PeerReviewConfirmCorrectText {
+            get {
+                return ResourceManager.GetString("PeerReviewConfirmCorrectText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I consent to my identity being associated as a reviewer with the reviewed identity. When reviewing an identity, the identity of reviewers can also be seen..
+        /// </summary>
+        internal static string PeerReviewConsentProcessingText {
+            get {
+                return ResourceManager.GetString("PeerReviewConsentProcessingText", resourceCulture);
             }
         }
         
@@ -2401,6 +2446,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to If you suspect any of the information provided is not correct, you should reject the information..
+        /// </summary>
+        internal static string ReviewNote {
+            get {
+                return ResourceManager.GetString("ReviewNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Revoke Application.
         /// </summary>
         internal static string RevokeApplication {
@@ -2469,6 +2523,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string SecuritySettings {
             get {
                 return ResourceManager.GetString("SecuritySettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to See information again.
+        /// </summary>
+        internal static string SeeInformationAgain {
+            get {
+                return ResourceManager.GetString("SeeInformationAgain", resourceCulture);
             }
         }
         

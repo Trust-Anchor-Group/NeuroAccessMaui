@@ -1095,8 +1095,23 @@
   <data name="RequestForReview" xml:space="preserve">
     <value>Forespørsel om gjennomgang</value>
   </data>
+  <data name="HideInformation" xml:space="preserve">
+    <value>Skjul informasjon</value>
+  </data>
+  <data name="Note" xml:space="preserve">
+    <value>Notat</value>
+  </data>
+  <data name="PeerReviewAcknowledgeResponsibilityText" xml:space="preserve">
+    <value>Jeg erkjenner at jeg er ansvarlig for informasjonen jeg gir i denne gjennomgangen av den oppgitte informasjonen.</value>
+  </data>
   <data name="PeerReviewBirthDateText" xml:space="preserve">
     <value>Fødselsdatoen er riktig.</value>
+  </data>
+  <data name="PeerReviewConfirmCorrectText" xml:space="preserve">
+    <value>Jeg bekrefter at informasjonen fra {0} er riktig.</value>
+  </data>
+  <data name="PeerReviewConsentProcessingText" xml:space="preserve">
+    <value>Jeg samtykker i at identiteten min knyttes som anmelder til den gjennomgåtte identiteten. Når du vurderer en identitet, kan du også se identiteten til anmelderne.</value>
   </data>
   <data name="PeerReviewGenderText" xml:space="preserve">
     <value>Kjønnet er riktig.</value>
@@ -1121,5 +1136,11 @@
   </data>
   <data name="Reject" xml:space="preserve">
     <value>Vrake</value>
+  </data>
+  <data name="ReviewNote" xml:space="preserve">
+    <value>Hvis du mistenker at noe av informasjonen som er oppgitt ikke er riktig, bør du avvise informasjonen.</value>
+  </data>
+  <data name="SeeInformationAgain" xml:space="preserve">
+    <value>Se informasjon igjen</value>
   </data>
 </root>

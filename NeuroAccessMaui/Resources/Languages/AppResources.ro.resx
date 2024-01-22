@@ -1095,8 +1095,23 @@
   <data name="RequestForReview" xml:space="preserve">
     <value>Cerere de reexaminare</value>
   </data>
+  <data name="HideInformation" xml:space="preserve">
+    <value>Ascunderea informațiilor</value>
+  </data>
+  <data name="Note" xml:space="preserve">
+    <value>Notă</value>
+  </data>
+  <data name="PeerReviewAcknowledgeResponsibilityText" xml:space="preserve">
+    <value>Recunosc că sunt responsabil pentru informațiile pe care le furnizez în această revizuire a informațiilor furnizate.</value>
+  </data>
   <data name="PeerReviewBirthDateText" xml:space="preserve">
     <value>Data nașterii este corectă.</value>
+  </data>
+  <data name="PeerReviewConfirmCorrectText" xml:space="preserve">
+    <value>Confirm că informațiile furnizate de {0} sunt corecte.</value>
+  </data>
+  <data name="PeerReviewConsentProcessingText" xml:space="preserve">
+    <value>Sunt de acord ca identitatea mea să fie asociată ca recenzent cu identitatea revizuită. La revizuirea unei identități, poate fi văzută și identitatea recenzenților.</value>
   </data>
   <data name="PeerReviewGenderText" xml:space="preserve">
     <value>Genul este corect.</value>
@@ -1121,5 +1136,11 @@
   </data>
   <data name="Reject" xml:space="preserve">
     <value>Respinge</value>
+  </data>
+  <data name="ReviewNote" xml:space="preserve">
+    <value>Dacă bănuiți că oricare dintre informațiile furnizate nu este corectă, ar trebui să respingeți informațiile.</value>
+  </data>
+  <data name="SeeInformationAgain" xml:space="preserve">
+    <value>Vedeți din nou informații</value>
   </data>
 </root>

@@ -1095,8 +1095,23 @@
   <data name="RequestForReview" xml:space="preserve">
     <value>Запрос на рецензирование</value>
   </data>
+  <data name="HideInformation" xml:space="preserve">
+    <value>Скрыть информацию</value>
+  </data>
+  <data name="Note" xml:space="preserve">
+    <value>Заметка</value>
+  </data>
+  <data name="PeerReviewAcknowledgeResponsibilityText" xml:space="preserve">
+    <value>Я признаю, что несу ответственность за информацию, которую я предоставляю в этом обзоре предоставленной информации.</value>
+  </data>
   <data name="PeerReviewBirthDateText" xml:space="preserve">
     <value>Дата рождения указана правильно.</value>
+  </data>
+  <data name="PeerReviewConfirmCorrectText" xml:space="preserve">
+    <value>Я подтверждаю, что информация, предоставленная {0}, верна.</value>
+  </data>
+  <data name="PeerReviewConsentProcessingText" xml:space="preserve">
+    <value>Я даю согласие на то, чтобы моя личность как рецензента ассоциировалась с проверяемой личностью. При проверке удостоверения также можно увидеть личность рецензентов.</value>
   </data>
   <data name="PeerReviewGenderText" xml:space="preserve">
     <value>Пол правильный.</value>
@@ -1121,5 +1136,11 @@
   </data>
   <data name="Reject" xml:space="preserve">
     <value>Отвергать</value>
+  </data>
+  <data name="ReviewNote" xml:space="preserve">
+    <value>Если вы подозреваете, что какая-либо из предоставленных сведений неверна, вы должны отклонить эту информацию.</value>
+  </data>
+  <data name="SeeInformationAgain" xml:space="preserve">
+    <value>Посмотреть информацию еще раз</value>
   </data>
 </root>

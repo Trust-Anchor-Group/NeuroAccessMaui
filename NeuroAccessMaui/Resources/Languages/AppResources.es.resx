@@ -1095,8 +1095,23 @@
   <data name="RequestForReview" xml:space="preserve">
     <value>Solicitud de revisión</value>
   </data>
+  <data name="HideInformation" xml:space="preserve">
+    <value>Ocultar información</value>
+  </data>
+  <data name="Note" xml:space="preserve">
+    <value>Nota</value>
+  </data>
+  <data name="PeerReviewAcknowledgeResponsibilityText" xml:space="preserve">
+    <value>Reconozco que soy responsable de la información que proporciono en esta revisión de la información proporcionada.</value>
+  </data>
   <data name="PeerReviewBirthDateText" xml:space="preserve">
     <value>La fecha de nacimiento es correcta.</value>
+  </data>
+  <data name="PeerReviewConfirmCorrectText" xml:space="preserve">
+    <value>Confirmo que la información proporcionada por {0} es correcta.</value>
+  </data>
+  <data name="PeerReviewConsentProcessingText" xml:space="preserve">
+    <value>Doy mi consentimiento para que mi identidad como revisor se asocie con la identidad revisada. Al revisar una identidad, también se puede ver la identidad de los revisores.</value>
   </data>
   <data name="PeerReviewGenderText" xml:space="preserve">
     <value>El género es correcto.</value>
@@ -1121,5 +1136,11 @@
   </data>
   <data name="Reject" xml:space="preserve">
     <value>Rechazar</value>
+  </data>
+  <data name="ReviewNote" xml:space="preserve">
+    <value>Si sospecha que alguna de la información proporcionada no es correcta, debe rechazarla.</value>
+  </data>
+  <data name="SeeInformationAgain" xml:space="preserve">
+    <value>Ver información de nuevo</value>
   </data>
 </root>

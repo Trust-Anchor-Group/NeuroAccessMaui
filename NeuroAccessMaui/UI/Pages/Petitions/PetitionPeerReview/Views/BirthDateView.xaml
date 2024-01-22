@@ -10,7 +10,7 @@
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview">
 	<VerticalStackLayout>
-		<Grid ColumnDefinitions="auto,auto" RowDefinitions="auto" ColumnSpacing="{StaticResource SmallSpacing}" Margin="{StaticResource LargeMargins}"
+		<Grid ColumnDefinitions="auto,auto" RowDefinitions="auto" ColumnSpacing="{StaticResource MediumSpacing}" Margin="{StaticResource LargeMargins}"
 				HorizontalOptions="Center" VerticalOptions="Center">
 			<Border Style="{StaticResource OutlinedImageButtonBorderStyle}" Padding="0" Grid.Column="0">
 				<Image Source="{Binding FirstPhotoSource}" WidthRequest="75" Aspect="AspectFit" HorizontalOptions="Center" Margin="0"/>

@@ -1095,8 +1095,23 @@
   <data name="RequestForReview" xml:space="preserve">
     <value>Antrag auf Überprüfung</value>
   </data>
+  <data name="HideInformation" xml:space="preserve">
+    <value>Informationen ausblenden</value>
+  </data>
+  <data name="Note" xml:space="preserve">
+    <value>Anmerkung</value>
+  </data>
+  <data name="PeerReviewAcknowledgeResponsibilityText" xml:space="preserve">
+    <value>Ich bestätige, dass ich für die Informationen, die ich in dieser Überprüfung der bereitgestellten Informationen zur Verfügung stelle, verantwortlich bin.</value>
+  </data>
   <data name="PeerReviewBirthDateText" xml:space="preserve">
     <value>Das Geburtsdatum ist korrekt.</value>
+  </data>
+  <data name="PeerReviewConfirmCorrectText" xml:space="preserve">
+    <value>Ich bestätige, dass die von {0} gemachten Angaben korrekt sind.</value>
+  </data>
+  <data name="PeerReviewConsentProcessingText" xml:space="preserve">
+    <value>Ich bin damit einverstanden, dass meine Identität als Bewerter mit der überprüften Identität verknüpft wird. Bei der Überprüfung einer Identität kann auch die Identität von Prüfern eingesehen werden.</value>
   </data>
   <data name="PeerReviewGenderText" xml:space="preserve">
     <value>Das Geschlecht ist korrekt.</value>
@@ -1121,5 +1136,11 @@
   </data>
   <data name="Reject" xml:space="preserve">
     <value>Ablehnen</value>
+  </data>
+  <data name="ReviewNote" xml:space="preserve">
+    <value>Wenn Sie den Verdacht haben, dass eine der bereitgestellten Informationen nicht korrekt ist, sollten Sie die Informationen ablehnen.</value>
+  </data>
+  <data name="SeeInformationAgain" xml:space="preserve">
+    <value>Informationen erneut anzeigen</value>
   </data>
 </root>
