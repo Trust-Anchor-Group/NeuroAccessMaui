@@ -37,8 +37,8 @@
 
 		</Grid>
 
-		<controls:ImageButton Grid.Row="2" Command="{Binding Path=ViewIdCommand}" HorizontalOptions="Center" VerticalOptions="Center"
-									 PathData="{x:Static ui:Geometries.ArrowUpPath}" Style="{StaticResource ExpanderButtonStyle}"/>
+		<controls:ImageButton Grid.Row="2" Command="{Binding Path=ViewIdCommand}" PathData="{x:Static ui:Geometries.ArrowUpPath}"
+									 Style="{StaticResource ExpanderButtonStyle}"/>
 
 		<Grid.GestureRecognizers>
 			<SwipeGestureRecognizer Direction="Up" Swiped="SwipeGestureRecognizer_Swiped"/>
