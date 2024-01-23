@@ -19,7 +19,7 @@
 
   <ItemGroup>
     <PackageReference Include="SkiaSharp" Version="2.88.7" />
-    <PackageReference Include="Waher.Script" Version="2.6.5" />
+    <PackageReference Include="Waher.Script" Version="2.6.6" />
   </ItemGroup>
 
 </Project>

@@ -152,7 +152,7 @@
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
 		<PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
-		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.3" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.6" />
 		<PackageReference Include="Mopups" Version="1.3.0" />
 		<PackageReference Include="Plugin.Fingerprint" Version="3.0.0-beta.1" />
 		<PackageReference Include="SkiaSharp" Version="2.88.7" />
@@ -178,7 +178,7 @@
 		<PackageReference Include="Waher.Runtime.Settings" Version="1.0.10" />
 		<PackageReference Include="Waher.Runtime.Temporary" Version="1.0.0" />
 		<PackageReference Include="Waher.Runtime.Text" Version="1.1.0" />
-		<PackageReference Include="Waher.Script" Version="2.6.5" />
+		<PackageReference Include="Waher.Script" Version="2.6.6" />
 		<PackageReference Include="Waher.Script.Content" Version="2.1.3" />
 		<PackageReference Include="Waher.Security" Version="1.0.8" />
 		<PackageReference Include="ZXing.Net.Maui.Controls" Version="0.4.0" />
@@ -323,5 +323,9 @@
 
 	<ItemGroup>
 	  <Folder Include="UI\Pages\Main\Applications\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="8.0.6" />
 	</ItemGroup>
 </Project>
