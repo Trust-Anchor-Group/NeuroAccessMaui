@@ -28,7 +28,7 @@
 
 		<Label HorizontalOptions="Center" Text="{Binding ReviewApproved}" Margin="{StaticResource MediumMargins}"/>
 
-		<controls:TextButton Command="{Binding GoBackCommand}" Style="{StaticResource FilledTextButtonStyleNoRoundedCorners}"
+		<controls:TextButton Command="{Binding CloseCommand}" Style="{StaticResource FilledTextButtonStyleNoRoundedCorners}"
 									LabelData="{l:Localize Continue}" />
 	</VerticalStackLayout>
 </base:BaseContentView>

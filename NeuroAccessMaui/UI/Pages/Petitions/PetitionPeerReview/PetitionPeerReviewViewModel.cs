@@ -1187,6 +1187,15 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 				await base.GoBack();
 		}
 
+		/// <summary>
+		/// Closes the view.
+		/// </summary>
+		[RelayCommand]
+		public Task Close()
+		{
+			return base.GoBack();
+		}
+
 		#region ILinkableView
 
 		/// <summary>
