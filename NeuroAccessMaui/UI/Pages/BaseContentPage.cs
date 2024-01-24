@@ -203,8 +203,8 @@ namespace NeuroAccessMaui.UI.Pages
 				{
 					MainThread.BeginInvokeOnMainThread(async () =>
 					{
-						if (this.BindingContext is BaseViewModel BaseViewModel)
-							await BaseViewModel.GoBack();
+						if (ViewModel is not null)
+							await ViewModel.GoBack();
 						else
 							await ServiceRef.NavigationService.GoBackAsync();
 					});
@@ -259,5 +259,6 @@ namespace NeuroAccessMaui.UI.Pages
 				Log.Critical(ex);
 			}
 		}
+
 	}
 }
