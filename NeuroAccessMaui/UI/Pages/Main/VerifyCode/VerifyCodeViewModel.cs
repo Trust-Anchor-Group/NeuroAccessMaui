@@ -135,7 +135,8 @@ namespace NeuroAccessMaui.UI.Pages.Main.VerifyCode
 			return this.TrySetResultAndClosePage(this.VerifyCodeText);
 		}
 
-		protected override Task GoBack()
+		/// <inheritdoc/>
+		public override Task GoBack()
 		{
 			return this.TrySetResultAndClosePage(string.Empty);
 		}

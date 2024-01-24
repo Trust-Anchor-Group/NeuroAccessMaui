@@ -113,7 +113,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 
 		#endregion
 
-		protected override Task GoBack()
+		/// <inheritdoc/>
+		public override Task GoBack()
 		{
 			return this.TrySetResultAndClosePage(null);
 		}

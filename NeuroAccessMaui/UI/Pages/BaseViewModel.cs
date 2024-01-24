@@ -300,8 +300,11 @@ namespace NeuroAccessMaui.UI.Pages
 				ServiceRef.Localizer[nameof(AppResources.No)]);
 		}
 
+		/// <summary>
+		/// Method called when user wants to navigate to the previous screen.
+		/// </summary>
 		[RelayCommand]
-		protected virtual async Task GoBack()
+		public virtual async Task GoBack()
 		{
 			await ServiceRef.NavigationService.GoBackAsync();
 		}

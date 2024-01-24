@@ -362,6 +362,37 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 			this.CurrentStep = Current;
 		}
 
+		private bool PrevPage()
+		{
+			ReviewStep Current = this.CurrentStep;
+			bool IsVisible;
+
+			do
+			{
+				if (Current == 0)
+					return false;
+
+				Current--;
+				IsVisible = Current switch
+				{
+					ReviewStep.Photo => this.HasPhoto,
+					ReviewStep.Name => this.HasName,
+					ReviewStep.Pnr => this.HasPersonalNumber,
+					ReviewStep.Nationality => this.HasNationality,
+					ReviewStep.BirthDate => this.HasBirthDate,
+					ReviewStep.Gender => this.HasGender,
+					ReviewStep.PersonalAddressInfo => this.HasPersonalAddressInfo,
+					ReviewStep.OrganizationalInfo => this.HasOrganizationalInfo,
+					_ => true,
+				};
+			}
+			while (!IsVisible);
+
+			this.CurrentStep = Current;
+
+			return true;
+		}
+
 		/// <summary>
 		/// If request contains a photo
 		/// </summary>
@@ -1147,6 +1178,13 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 					ServiceRef.Localizer[nameof(AppResources.UnableToSignReview)]);
 			}
+		}
+
+		/// <inheritdoc/>
+		public override async Task GoBack()
+		{
+			if (!this.PrevPage())
+				await base.GoBack();
 		}
 
 		#region ILinkableView
