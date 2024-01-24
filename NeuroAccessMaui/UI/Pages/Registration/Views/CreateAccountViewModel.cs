@@ -61,10 +61,18 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			}
 		}
 
-		private async Task XmppService_ConnectionStateChanged(object _, XmppState NewState)
+		private Task XmppService_ConnectionStateChanged(object _, XmppState NewState)
 		{
-			if (NewState == XmppState.Connected && this.CreateIdentityCommand.CanExecute(null))
-				await this.CreateIdentityCommand.ExecuteAsync(null);
+			if (NewState == XmppState.Connected)
+			{
+				MainThread.BeginInvokeOnMainThread(async () =>
+				{
+					if (this.CreateIdentityCommand.CanExecute(null))
+						await this.CreateIdentityCommand.ExecuteAsync(null);
+				});
+			}
+
+			return Task.CompletedTask;
 		}
 
 		private async Task XmppContracts_LegalIdentityChanged(object _, LegalIdentityEventArgs e)
