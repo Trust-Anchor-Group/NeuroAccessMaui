@@ -87,17 +87,29 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 
 			await this.Dispatcher.DispatchAsync(async () =>
 			{
-				string OldState = StateContainer.GetCurrentState(this.GridWithAnimation);
-
-				if (!string.Equals(OldState, NewState, StringComparison.OrdinalIgnoreCase))
+				try
 				{
-					await StateContainer.ChangeStateWithAnimation(this.GridWithAnimation, NewState, CancellationToken.None);
+					string OldState = StateContainer.GetCurrentState(this.GridWithAnimation);
 
-					if (Recipient is RegistrationPage RegistrationPage)
+					if (!string.Equals(OldState, NewState, StringComparison.OrdinalIgnoreCase))
 					{
-						RegistrationViewModel ViewModel = RegistrationPage.ViewModel<RegistrationViewModel>();
-						await ViewModel.DoAssignProperties(NewStep);
+						DateTime Start = DateTime.Now;
+
+						while (!StateContainer.GetCanStateChange(this.GridWithAnimation) && DateTime.Now.Subtract(Start).TotalSeconds < 2)
+							await Task.Delay(100);
+
+						await StateContainer.ChangeStateWithAnimation(this.GridWithAnimation, NewState, CancellationToken.None);
+
+						if (Recipient is RegistrationPage RegistrationPage)
+						{
+							RegistrationViewModel ViewModel = RegistrationPage.ViewModel<RegistrationViewModel>();
+							await ViewModel.DoAssignProperties(NewStep);
+						}
 					}
+				}
+				catch (Exception ex)
+				{
+					ServiceRef.LogService.LogException(ex);
 				}
 			});
 		}

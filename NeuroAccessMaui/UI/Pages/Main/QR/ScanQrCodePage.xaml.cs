@@ -96,40 +96,52 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		{
 			await this.Dispatcher.DispatchAsync(async () =>
 			{
-				string CurrentState = StateContainer.GetCurrentState(this.GridWithAnimation);
-				bool IsAutomaticScan = string.Equals(CurrentState, "AutomaticScan", StringComparison.OrdinalIgnoreCase);
-
-				if (!IsAutomaticScan)
-					this.LinkEntry.Entry.Unfocus();
-				else
+				try
 				{
-					this.CameraBarcodeReaderView.IsTorchOn = false;
-					this.CameraBarcodeReaderView.IsDetecting = false;
-				}
+					string CurrentState = StateContainer.GetCurrentState(this.GridWithAnimation);
+					bool IsAutomaticScan = string.Equals(CurrentState, "AutomaticScan", StringComparison.OrdinalIgnoreCase);
 
-				await StateContainer.ChangeStateWithAnimation(this.GridWithAnimation,
-					IsAutomaticScan ? "ManualScan" : "AutomaticScan", CancellationToken.None);
-
-				ScanQrCodeViewModel ViewModel = this.ViewModel<ScanQrCodeViewModel>();
-				await ViewModel.DoSwitchMode(IsAutomaticScan);
-
-				if (IsAutomaticScan)
-					this.LinkEntry.Entry.Focus();
-				else
-				{
-					// reinitialize the camera by switching it
-					if (this.CameraBarcodeReaderView.CameraLocation == CameraLocation.Rear)
-					{
-						this.CameraBarcodeReaderView.CameraLocation = CameraLocation.Front;
-						this.CameraBarcodeReaderView.CameraLocation = CameraLocation.Rear;
-					}
+					if (!IsAutomaticScan)
+						this.LinkEntry.Entry.Unfocus();
 					else
 					{
-						this.CameraBarcodeReaderView.CameraLocation = CameraLocation.Rear;
-						this.CameraBarcodeReaderView.CameraLocation = CameraLocation.Front;
+						this.CameraBarcodeReaderView.IsTorchOn = false;
+						this.CameraBarcodeReaderView.IsDetecting = false;
 					}
 
-					this.CameraBarcodeReaderView.IsDetecting = true;
+					DateTime Start = DateTime.Now;
+
+					while (!StateContainer.GetCanStateChange(this.GridWithAnimation) && DateTime.Now.Subtract(Start).TotalSeconds < 2)
+						await Task.Delay(100);
+
+					await StateContainer.ChangeStateWithAnimation(this.GridWithAnimation,
+						IsAutomaticScan ? "ManualScan" : "AutomaticScan", CancellationToken.None);
+
+					ScanQrCodeViewModel ViewModel = this.ViewModel<ScanQrCodeViewModel>();
+					await ViewModel.DoSwitchMode(IsAutomaticScan);
+
+					if (IsAutomaticScan)
+						this.LinkEntry.Entry.Focus();
+					else
+					{
+						// reinitialize the camera by switching it
+						if (this.CameraBarcodeReaderView.CameraLocation == CameraLocation.Rear)
+						{
+							this.CameraBarcodeReaderView.CameraLocation = CameraLocation.Front;
+							this.CameraBarcodeReaderView.CameraLocation = CameraLocation.Rear;
+						}
+						else
+						{
+							this.CameraBarcodeReaderView.CameraLocation = CameraLocation.Rear;
+							this.CameraBarcodeReaderView.CameraLocation = CameraLocation.Front;
+						}
+
+						this.CameraBarcodeReaderView.IsDetecting = true;
+					}
+				}
+				catch (Exception ex)
+				{
+					ServiceRef.LogService.LogException(ex);
 				}
 			});
 		}
