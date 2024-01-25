@@ -1158,4 +1158,7 @@
   <data name="UnableToSignReview" xml:space="preserve">
     <value>Не могу подписать отзыв.</value>
   </data>
+  <data name="DeviceID" xml:space="preserve">
+    <value>Идентификатор устройства</value>
+  </data>
 </root>

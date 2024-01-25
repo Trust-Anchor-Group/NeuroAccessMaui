@@ -192,6 +192,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 				this.HasPhotos = this.Photos.Count > 0;
 				this.PhoneNr = this.LegalIdentity[Constants.XmppProperties.Phone];
 				this.EMail = this.LegalIdentity[Constants.XmppProperties.EMail];
+				this.DeviceId = this.LegalIdentity[Constants.XmppProperties.DeviceId];
 
 				this.QrCodeWidth = 250;
 				this.QrCodeHeight = 250;
@@ -227,6 +228,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 				this.HasPhotos = false;
 				this.PhoneNr = string.Empty;
 				this.EMail = string.Empty;
+				this.DeviceId = string.Empty;
 				this.NetworkId = Constants.NotAvailableValue;
 			}
 
@@ -576,16 +578,22 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 		private bool hasPhotos;
 
 		/// <summary>
-		/// Country code of the identity
+		/// Phone number of the identity
 		/// </summary>
 		[ObservableProperty]
 		private string? phoneNr;
 
 		/// <summary>
-		/// Country code of the identity
+		/// E-Mail of the identity
 		/// </summary>
 		[ObservableProperty]
 		private string? eMail;
+
+		/// <summary>
+		/// Device-ID of the identity
+		/// </summary>
+		[ObservableProperty]
+		private string? deviceId;
 
 		/// <summary>
 		/// Gets or sets whether the identity is approved or not.

@@ -87,7 +87,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 
 			if (IdentityReference is not null)
 			{
-				await this.SetProperties(IdentityReference, Args?.ReusePhoto ?? true, true, true, this.Organizational);
+				await this.SetProperties(IdentityReference, Args?.ReusePhoto ?? true, true, true, this.Organizational, true);
 
 				if (string.IsNullOrEmpty(this.OrgCountryCode) && this.Organizational)
 					this.OrgCountryCode = this.CountryCode;
@@ -175,10 +175,19 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			this.NotifyCommandsCanExecuteChanged();
 		}
 
+		/// <summary>
+		/// Sets the properties of the view model.
+		/// </summary>
+		/// <param name="Identity">Identity containing properties to set.</param>
+		/// <param name="SetPhoto">If Photo is to be set.</param>
+		/// <param name="ClearPropertiesNotFound">If properties should be cleared if they are not found in <paramref name="Identity"/>.</param>
+		/// <param name="SetPersonalProperties">If personal properties are to be set.</param>
+		/// <param name="SetOrganizationalProperties">If organizational properties are to be set.</param>
+		/// <param name="SetAppProperties">If app-specific properties are to be set.</param>
 		protected async Task SetProperties(LegalIdentity Identity, bool SetPhoto, bool ClearPropertiesNotFound, bool SetPersonalProperties,
-			bool SetOrganizationalProperties)
+			bool SetOrganizationalProperties, bool SetAppProperties)
 		{
-			await base.SetProperties(Identity, ClearPropertiesNotFound, SetPersonalProperties, SetOrganizationalProperties);
+			await base.SetProperties(Identity, ClearPropertiesNotFound, SetPersonalProperties, SetOrganizationalProperties, SetAppProperties);
 
 			int i = 0;
 

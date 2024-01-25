@@ -238,6 +238,7 @@
 								<RowDefinition Height="Auto" />
 								<RowDefinition Height="Auto" />
 								<RowDefinition Height="{Binding NetworkId, Converter={converters:AutoIfNonEmpty}}" />
+								<RowDefinition Height="{Binding DeviceId, Converter={converters:AutoIfNonEmpty}}" />
 							</Grid.RowDefinitions>
 
 							<Label Grid.Row="0" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize Created}" />
@@ -260,6 +261,16 @@
 								 Text="{Binding NetworkId}" IsVisible="{Binding NetworkId, Converter={converters:OnlyShowNonEmpty}}">
 								<Label.GestureRecognizers>
 									<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding NetworkId}" />
+								</Label.GestureRecognizers>
+							</Label>
+
+							<!--    -->
+							<Label Grid.Row="4" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}"
+								 Text="{l:Localize DeviceID}" IsVisible="{Binding DeviceId, Converter={converters:OnlyShowNonEmpty}}"/>
+							<Label Grid.Row="4" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ClickableValueLabel}"
+								 Text="{Binding DeviceId}" IsVisible="{Binding DeviceId, Converter={converters:OnlyShowNonEmpty}}">
+								<Label.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding DeviceId}" />
 								</Label.GestureRecognizers>
 							</Label>
 						</Grid>

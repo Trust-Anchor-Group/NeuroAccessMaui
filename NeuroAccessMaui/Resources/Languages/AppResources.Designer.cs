@@ -682,6 +682,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Device ID.
+        /// </summary>
+        internal static string DeviceID {
+            get {
+                return ResourceManager.GetString("DeviceID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Display Settings.
         /// </summary>
         internal static string DisplaySettings {

@@ -1158,4 +1158,7 @@
   <data name="UnableToSignReview" xml:space="preserve">
     <value>No se puede firmar la reseña.</value>
   </data>
+  <data name="DeviceID" xml:space="preserve">
+    <value>ID de dispositivo</value>
+  </data>
 </root>

@@ -1158,4 +1158,7 @@
   <data name="UnableToSignReview" xml:space="preserve">
     <value>Impossible de signer l’avis.</value>
   </data>
+  <data name="DeviceID" xml:space="preserve">
+    <value>ID de l’appareil</value>
+  </data>
 </root>

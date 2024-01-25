@@ -1158,4 +1158,7 @@
   <data name="UnableToSignReview" xml:space="preserve">
     <value>Unable to sign the review.</value>
   </data>
+  <data name="DeviceID" xml:space="preserve">
+    <value>Device ID</value>
+  </data>
 </root>

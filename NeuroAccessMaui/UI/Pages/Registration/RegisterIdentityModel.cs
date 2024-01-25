@@ -776,8 +776,9 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		/// <param name="ClearPropertiesNotFound">If properties should be cleared if they are not found in <paramref name="Identity"/>.</param>
 		/// <param name="SetPersonalProperties">If personal properties are to be set.</param>
 		/// <param name="SetOrganizationalProperties">If organizational properties are to be set.</param>
+		/// <param name="SetAppProperties">If app-specific properties are to be set.</param>
 		protected virtual Task SetProperties(LegalIdentity Identity, bool ClearPropertiesNotFound, bool SetPersonalProperties,
-			bool SetOrganizationalProperties)
+			bool SetOrganizationalProperties, bool SetAppProperties)
 		{
 			if (ClearPropertiesNotFound)
 			{
@@ -954,6 +955,22 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 						if (SetOrganizationalProperties)
 							this.OrgCountryCode = P.Value;
 						break;
+
+					case Constants.XmppProperties.DeviceId:
+						this.DeviceId = P.Value;
+						break;
+
+					case Constants.XmppProperties.Jid:
+						this.Jid = P.Value;
+						break;
+
+					case Constants.XmppProperties.Phone:
+						this.PhoneNr = P.Value;
+						break;
+
+					case Constants.XmppProperties.EMail:
+						this.EMail = P.Value;
+						break;
 				}
 			}
 
@@ -970,9 +987,13 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 				}
 			}
 
-			this.Jid = ServiceRef.XmppService.BareJid;
-			this.PhoneNr = ServiceRef.TagProfile.PhoneNumber;
-			this.EMail = ServiceRef.TagProfile.EMail;
+			if (SetAppProperties)
+			{
+				this.DeviceId = ServiceRef.PlatformSpecific.GetDeviceId();
+				this.Jid = ServiceRef.XmppService.BareJid;
+				this.PhoneNr = ServiceRef.TagProfile.PhoneNumber;
+				this.EMail = ServiceRef.TagProfile.EMail;
+			}
 
 			return Task.CompletedTask;
 		}

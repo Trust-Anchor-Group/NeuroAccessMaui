@@ -1158,4 +1158,7 @@
   <data name="UnableToSignReview" xml:space="preserve">
     <value>Die Bewertung kann nicht signiert werden.</value>
   </data>
+  <data name="DeviceID" xml:space="preserve">
+    <value>Geräte-ID</value>
+  </data>
 </root>

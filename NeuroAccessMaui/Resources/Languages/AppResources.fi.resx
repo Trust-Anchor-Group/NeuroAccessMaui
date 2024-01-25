@@ -1158,4 +1158,7 @@
   <data name="UnableToSignReview" xml:space="preserve">
     <value>Arvostelua ei voi allekirjoittaa.</value>
   </data>
+  <data name="DeviceID" xml:space="preserve">
+    <value>Laitteen tunnus</value>
+  </data>
 </root>

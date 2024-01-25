@@ -1158,4 +1158,7 @@
   <data name="UnableToSignReview" xml:space="preserve">
     <value>Det gick inte att signera recensionen.</value>
   </data>
+  <data name="DeviceID" xml:space="preserve">
+    <value>Enhets-ID</value>
+  </data>
 </root>

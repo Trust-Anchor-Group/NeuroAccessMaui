@@ -773,6 +773,12 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		private string? eMail;
 
 		/// <summary>
+		/// Device-ID of the identity
+		/// </summary>
+		[ObservableProperty]
+		private string? deviceId;
+
+		/// <summary>
 		/// Is the contract approved?
 		/// </summary>
 		[ObservableProperty]
@@ -1117,6 +1123,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 					!string.IsNullOrEmpty(this.OrgCountryCode);
 				this.PhoneNr = this.RequestorIdentity[Constants.XmppProperties.Phone];
 				this.EMail = this.RequestorIdentity[Constants.XmppProperties.EMail];
+				this.DeviceId = this.RequestorIdentity[Constants.XmppProperties.DeviceId];
 				this.IsApproved = this.RequestorIdentity.State == IdentityState.Approved;
 			}
 			else
@@ -1155,6 +1162,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 				this.HasOrg = false;
 				this.PhoneNr = Constants.NotAvailableValue;
 				this.EMail = Constants.NotAvailableValue;
+				this.DeviceId = Constants.NotAvailableValue;
 				this.IsApproved = false;
 			}
 		}

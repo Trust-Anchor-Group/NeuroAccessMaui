@@ -421,27 +421,23 @@
 								 IsVisible="{Binding ApplicationSent}"/>
 
 						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-							<HorizontalStackLayout>
-								<Label Text="{l:Localize EMail}" HorizontalOptions="FillAndExpand"/>
-								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresRegion}"/>
-							</HorizontalStackLayout>
+							<Label Text="{l:Localize EMail}" HorizontalOptions="FillAndExpand"/>
 							<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding Path=EMail, Converter={converters:HyphenIfEmpty}}"/>
 						</VerticalStackLayout>
 
 						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-							<HorizontalStackLayout>
-								<Label Text="{l:Localize PhoneNr}" HorizontalOptions="FillAndExpand"/>
-								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresRegion}"/>
-							</HorizontalStackLayout>
+							<Label Text="{l:Localize PhoneNr}" HorizontalOptions="FillAndExpand"/>
 							<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding Path=PhoneNr, Converter={converters:HyphenIfEmpty}}"/>
 						</VerticalStackLayout>
 
 						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-							<HorizontalStackLayout>
-								<Label Text="{l:Localize NeuroAccessAccount}" HorizontalOptions="FillAndExpand"/>
-								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresRegion}"/>
-							</HorizontalStackLayout>
+							<Label Text="{l:Localize NeuroAccessAccount}" HorizontalOptions="FillAndExpand"/>
 							<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding Path=Jid, Converter={converters:HyphenIfEmpty}}"/>
+						</VerticalStackLayout>
+
+						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+							<Label Text="{l:Localize DeviceID}" HorizontalOptions="FillAndExpand"/>
+							<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding Path=DeviceId, Converter={converters:HyphenIfEmpty}}"/>
 						</VerticalStackLayout>
 					</VerticalStackLayout>
 				</Frame>
