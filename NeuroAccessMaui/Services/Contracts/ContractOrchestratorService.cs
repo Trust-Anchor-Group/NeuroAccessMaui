@@ -66,8 +66,55 @@ namespace NeuroAccessMaui.Services.Contracts
 			{
 				LegalIdentity Identity = e.RequestorIdentity;
 
-				if (Identity is not null)
+				if (Identity?.Properties is not null)
 				{
+					foreach (Property Property in Identity.Properties)
+					{
+						switch (Property.Name)
+						{
+							case Constants.XmppProperties.FirstName:
+							case Constants.XmppProperties.MiddleNames:
+							case Constants.XmppProperties.LastNames:
+							case Constants.XmppProperties.PersonalNumber:
+							case Constants.XmppProperties.Address:
+							case Constants.XmppProperties.Address2:
+							case Constants.XmppProperties.Area:
+							case Constants.XmppProperties.City:
+							case Constants.XmppProperties.ZipCode:
+							case Constants.XmppProperties.Region:
+							case Constants.XmppProperties.Country:
+							case Constants.XmppProperties.Nationality:
+							case Constants.XmppProperties.Gender:
+							case Constants.XmppProperties.BirthDay:
+							case Constants.XmppProperties.BirthMonth:
+							case Constants.XmppProperties.BirthYear:
+							case Constants.XmppProperties.OrgName:
+							case Constants.XmppProperties.OrgNumber:
+							case Constants.XmppProperties.OrgAddress:
+							case Constants.XmppProperties.OrgAddress2:
+							case Constants.XmppProperties.OrgArea:
+							case Constants.XmppProperties.OrgCity:
+							case Constants.XmppProperties.OrgZipCode:
+							case Constants.XmppProperties.OrgRegion:
+							case Constants.XmppProperties.OrgCountry:
+							case Constants.XmppProperties.OrgDepartment:
+							case Constants.XmppProperties.OrgRole:
+							case Constants.XmppProperties.DeviceId:
+							case Constants.XmppProperties.Jid:
+							case Constants.XmppProperties.Phone:
+							case Constants.XmppProperties.EMail:
+								break;
+
+							default:
+								byte[] Signature = await ServiceRef.XmppService.Sign(e.ContentToSign, SignWith.LatestApprovedId);
+
+								await ServiceRef.XmppService.SendPetitionSignatureResponse(e.SignatoryIdentityId, e.ContentToSign, Signature,
+									e.PetitionId, e.RequestorFullJid, false);
+
+								return;
+						}
+					}
+
 					PetitionPeerReviewNavigationArgs Args = new(Identity, e.RequestorFullJid, e.SignatoryIdentityId, e.PetitionId,
 						e.Purpose, e.ContentToSign);
 
