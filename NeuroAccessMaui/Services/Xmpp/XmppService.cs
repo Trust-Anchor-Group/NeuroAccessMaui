@@ -1360,7 +1360,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message);
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
 
@@ -1378,7 +1378,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message);
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
 
@@ -1397,7 +1397,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message);
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
 
@@ -1434,11 +1434,13 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		#region Smart Contracts
 
+		private readonly Dictionary<CaseInsensitiveString, DateTime> lastContractEvent = [];
+
 		/// <summary>
 		/// Reference to contracts client, with a check that one is created.
 		/// Note: Do not make public. Reference only from inside the XmppService class.
 		/// </summary>
-		private ContractsClient ContractsClient
+		public ContractsClient ContractsClient
 		{
 			get
 			{
@@ -1454,10 +1456,333 @@ namespace NeuroAccessMaui.Services.Xmpp
 			this.ContractsClient.IdentityUpdated += this.ContractsClient_IdentityUpdated;
 			this.ContractsClient.PetitionForIdentityReceived += this.ContractsClient_PetitionForIdentityReceived;
 			this.ContractsClient.PetitionedIdentityResponseReceived += this.ContractsClient_PetitionedIdentityResponseReceived;
+			this.ContractsClient.PetitionForContractReceived += this.ContractsClient_PetitionForContractReceived;
+			this.ContractsClient.PetitionedContractResponseReceived += this.ContractsClient_PetitionedContractResponseReceived;
 			this.ContractsClient.PetitionForSignatureReceived += this.ContractsClient_PetitionForSignatureReceived;
 			this.ContractsClient.PetitionedSignatureResponseReceived += this.ContractsClient_PetitionedSignatureResponseReceived;
 			this.ContractsClient.PetitionForPeerReviewIDReceived += this.ContractsClient_PetitionForPeerReviewIdReceived;
 			this.ContractsClient.PetitionedPeerReviewIDResponseReceived += this.ContractsClient_PetitionedPeerReviewIdResponseReceived;
+			this.ContractsClient.PetitionClientUrlReceived += this.ContractsClient_PetitionClientUrlReceived;
+			this.ContractsClient.ContractProposalReceived += this.ContractsClient_ContractProposalReceived;
+			this.ContractsClient.ContractUpdated += this.ContractsClient_ContractUpdated;
+			this.ContractsClient.ContractSigned += this.ContractsClient_ContractSigned;
+		}
+
+		/// <summary>
+		/// Gets the contract with the specified id.
+		/// </summary>
+		/// <param name="ContractId">The contract id.</param>
+		/// <returns>Smart Contract</returns>
+		public Task<Contract> GetContract(CaseInsensitiveString ContractId)
+		{
+			return this.ContractsClient.GetContractAsync(ContractId);
+		}
+
+		/// <summary>
+		/// Gets created contracts.
+		/// </summary>
+		/// <returns>Created contracts.</returns>
+		public async Task<string[]> GetCreatedContractReferences()
+		{
+			List<string> Result = [];
+			string[] ContractIds;
+			int Offset = 0;
+			int Nr;
+
+			do
+			{
+				ContractIds = await this.ContractsClient.GetCreatedContractReferencesAsync(Offset, 20);
+				Result.AddRange(ContractIds);
+				Nr = ContractIds.Length;
+				Offset += Nr;
+			}
+			while (Nr == 20);
+
+			return [.. Result];
+		}
+
+		/// <summary>
+		/// Gets signed contracts.
+		/// </summary>
+		/// <returns>Signed contracts.</returns>
+		public async Task<string[]> GetSignedContractReferences()
+		{
+			List<string> Result = [];
+			string[] ContractIds;
+			int Offset = 0;
+			int Nr;
+
+			do
+			{
+				ContractIds = await this.ContractsClient.GetSignedContractReferencesAsync(Offset, 20);
+				Result.AddRange(ContractIds);
+				Nr = ContractIds.Length;
+				Offset += Nr;
+			}
+			while (Nr == 20);
+
+			return [.. Result];
+		}
+
+		/// <summary>
+		/// Signs a given contract.
+		/// </summary>
+		/// <param name="Contract">The contract to sign.</param>
+		/// <param name="Role">The role of the signer.</param>
+		/// <param name="Transferable">Whether the contract is transferable or not.</param>
+		/// <returns>Smart Contract</returns>
+		public async Task<Contract> SignContract(Contract Contract, string Role, bool Transferable)
+		{
+			if (Contract.ForMachinesNamespace == Constants.ContractMachineNames.PaymentInstructionsNamespace && (
+				Contract.ForMachinesLocalName == Constants.ContractMachineNames.BuyEDaler ||
+				Contract.ForMachinesLocalName == Constants.ContractMachineNames.SellEDaler))
+			{
+				lock (this.currentTransactions)
+				{
+					string TransactionId = Contract.ContractId;
+					string Currency = Contract["Currency"]?.ToString() ?? string.Empty;
+
+					this.currentTransactions[Contract.ContractId] = new PaymentTransaction(TransactionId, Currency);
+				}
+			}
+
+			Contract Result = await this.ContractsClient.SignContractAsync(Contract, Role, Transferable);
+			await this.UpdateContractReference(Result);
+			return Result;
+		}
+
+		/// <summary>
+		/// Obsoletes a contract.
+		/// </summary>
+		/// <param name="ContractId">The id of the contract to obsolete.</param>
+		/// <returns>Smart Contract</returns>
+		public async Task<Contract> ObsoleteContract(CaseInsensitiveString ContractId)
+		{
+			Contract Result = await this.ContractsClient.ObsoleteContractAsync(ContractId);
+			await this.UpdateContractReference(Result);
+			return Result;
+		}
+
+		/// <summary>
+		/// Creates a new contract.
+		/// </summary>
+		/// <param name="TemplateId">The id of the contract template to use.</param>
+		/// <param name="Parts">The individual contract parts.</param>
+		/// <param name="Parameters">Contract parameters.</param>
+		/// <param name="Visibility">The contract's visibility.</param>
+		/// <param name="PartsMode">The contract's parts.</param>
+		/// <param name="Duration">Duration of the contract.</param>
+		/// <param name="ArchiveRequired">Required duration for contract archival.</param>
+		/// <param name="ArchiveOptional">Optional duration for contract archival.</param>
+		/// <param name="SignAfter">Timestamp of when the contract can be signed at the earliest.</param>
+		/// <param name="SignBefore">Timestamp of when the contract can be signed at the latest.</param>
+		/// <param name="CanActAsTemplate">Can this contract act as a template itself?</param>
+		/// <returns>Smart Contract</returns>
+		public async Task<Contract> CreateContract(
+			CaseInsensitiveString TemplateId,
+			Part[] Parts,
+			Parameter[] Parameters,
+			ContractVisibility Visibility,
+			ContractParts PartsMode,
+			Duration Duration,
+			Duration ArchiveRequired,
+			Duration ArchiveOptional,
+			DateTime? SignAfter,
+			DateTime? SignBefore,
+			bool CanActAsTemplate)
+		{
+			Contract Result = await this.ContractsClient.CreateContractAsync(TemplateId, Parts, Parameters, Visibility, PartsMode, Duration, ArchiveRequired, ArchiveOptional, SignAfter, SignBefore, CanActAsTemplate);
+			await this.UpdateContractReference(Result);
+			return Result;
+		}
+
+		/// <summary>
+		/// Deletes a contract.
+		/// </summary>
+		/// <param name="ContractId">The id of the contract to delete.</param>
+		/// <returns>Smart Contract</returns>
+		public async Task<Contract> DeleteContract(CaseInsensitiveString ContractId)
+		{
+			Contract Contract = await this.ContractsClient.DeleteContractAsync(ContractId);
+			await this.UpdateContractReference(Contract);
+			return Contract;
+		}
+
+		/// <summary>
+		/// Petitions a contract with the specified id and purpose.
+		/// </summary>
+		/// <param name="ContractId">The contract id.</param>
+		/// <param name="PetitionId">The petition id.</param>
+		/// <param name="Purpose">The purpose.</param>
+		public Task PetitionContract(CaseInsensitiveString ContractId, string PetitionId, string Purpose)
+		{
+			this.StartPetition(PetitionId);
+			return this.ContractsClient.PetitionContractAsync(ContractId, PetitionId, Purpose);
+		}
+
+		/// <summary>
+		/// Sends a response to a petitioning contract request.
+		/// </summary>
+		/// <param name="ContractId">The id of the contract.</param>
+		/// <param name="PetitionId">The petition id.</param>
+		/// <param name="RequestorFullJid">The full Jid of the requestor.</param>
+		/// <param name="Response">If the petition is accepted (true) or rejected (false).</param>
+		public Task SendPetitionContractResponse(CaseInsensitiveString ContractId, string PetitionId, string RequestorFullJid, bool Response)
+		{
+			return this.ContractsClient.PetitionContractResponseAsync(ContractId, PetitionId, RequestorFullJid, Response);
+		}
+
+		/// <summary>
+		/// An event that fires when a petition for a contract is received.
+		/// </summary>
+		public event ContractPetitionEventHandler PetitionForContractReceived;
+
+		private async Task ContractsClient_PetitionForContractReceived(object Sender, ContractPetitionEventArgs e)
+		{
+			try
+			{
+				this.PetitionForContractReceived?.Invoke(this, e);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
+			}
+		}
+
+		/// <summary>
+		/// An event that fires when a petitioned contract response is received.
+		/// </summary>
+		public event ContractPetitionResponseEventHandler PetitionedContractResponseReceived;
+
+		private async Task ContractsClient_PetitionedContractResponseReceived(object Sender, ContractPetitionResponseEventArgs e)
+		{
+			try
+			{
+				this.EndPetition(e.PetitionId);
+				this.PetitionedContractResponseReceived?.Invoke(this, e);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
+			}
+		}
+
+		/// <summary>
+		/// Gets the timestamp of the last event received for a given contract ID.
+		/// </summary>
+		/// <param name="ContractId">Contract ID</param>
+		/// <returns>Timestamp</returns>
+		public DateTime GetTimeOfLastContractEvent(CaseInsensitiveString ContractId)
+		{
+			lock (this.lastContractEvent)
+			{
+				if (this.lastContractEvent.TryGetValue(ContractId, out DateTime TP))
+					return TP;
+				else
+					return DateTime.MinValue;
+			}
+		}
+
+		private async Task UpdateContractReference(Contract Contract)
+		{
+			ContractReference Ref = await Database.FindFirstDeleteRest<ContractReference>(
+				new FilterFieldEqualTo("ContractId", Contract.ContractId));
+
+			if (Ref is null)
+			{
+				Ref = new ContractReference()
+				{
+					ContractId = Contract.ContractId
+				};
+
+				await Ref.SetContract(Contract, this);
+				await Database.Insert(Ref);
+			}
+			else
+			{
+				await Ref.SetContract(Contract, this);
+				await Database.Update(Ref);
+			}
+		}
+
+		/// <summary>
+		/// Event raised when a contract proposal has been received.
+		/// </summary>
+		public event ContractProposalEventHandler ContractProposalReceived;
+
+		private async Task ContractsClient_ContractProposalReceived(object Sender, ContractProposalEventArgs e)
+		{
+			try
+			{
+				this.ContractProposalReceived?.Invoke(this, e);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
+			}
+		}
+
+		/// <summary>
+		/// Event raised when contract was updated.
+		/// </summary>
+		public event ContractReferenceEventHandler ContractUpdated;
+
+		private async Task ContractsClient_ContractUpdated(object Sender, ContractReferenceEventArgs e)
+		{
+			await this.ContractUpdatedOrSigned(e);
+
+			try
+			{
+				this.ContractUpdated?.Invoke(this, e);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService?.LogException(ex);
+			}
+		}
+
+		private Task ContractUpdatedOrSigned(ContractReferenceEventArgs e)
+		{
+			lock (this.lastContractEvent)
+			{
+				this.lastContractEvent[e.ContractId] = DateTime.Now;
+			}
+
+			return Task.CompletedTask;
+		}
+
+		/// <summary>
+		/// Event raised when contract was signed.
+		/// </summary>
+		public event ContractSignedEventHandler ContractSigned;
+
+		private async Task ContractsClient_ContractSigned(object Sender, ContractSignedEventArgs e)
+		{
+			await this.ContractUpdatedOrSigned(e);
+
+			try
+			{
+				this.ContractSigned?.Invoke(this, e);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService?.LogException(ex);
+			}
+		}
+
+		/// <summary>
+		/// Sends a contract proposal to a recipient.
+		/// </summary>
+		/// <param name="ContractId">ID of proposed contract.</param>
+		/// <param name="Role">Proposed role of recipient.</param>
+		/// <param name="To">Recipient Address (Bare or Full JID).</param>
+		/// <param name="Message">Optional message included in message.</param>
+		public void SendContractProposal(string ContractId, string Role, string To, string Message)
+		{
+			this.ContractsClient.SendContractProposal(ContractId, Role, To, Message);
 		}
 
 		#endregion
@@ -1521,7 +1846,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message);
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
 
@@ -1540,7 +1865,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message);
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
 
@@ -1640,7 +1965,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message);
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
 
@@ -1659,7 +1984,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message);
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
 

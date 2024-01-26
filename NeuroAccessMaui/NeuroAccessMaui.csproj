@@ -150,10 +150,12 @@
 		<PackageReference Include="CommunityToolkit.Maui" Version="7.0.1" />
 		<PackageReference Include="CommunityToolkit.Maui.Markup" Version="4.0.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+		<PackageReference Include="EDaler" Version="2.5.1" />
 		<PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.6" />
 		<PackageReference Include="Mopups" Version="1.3.0" />
+		<PackageReference Include="NeuroFeatures" Version="1.3.0" />
 		<PackageReference Include="Plugin.Fingerprint" Version="3.0.0-beta.1" />
 		<PackageReference Include="SkiaSharp" Version="2.88.7" />
 		<PackageReference Include="System.Net.Http" Version="4.3.4" />
@@ -177,7 +179,7 @@
 		<PackageReference Include="Waher.Runtime.Profiling" Version="1.0.7" />
 		<PackageReference Include="Waher.Runtime.Settings" Version="1.0.10" />
 		<PackageReference Include="Waher.Runtime.Temporary" Version="1.0.0" />
-		<PackageReference Include="Waher.Runtime.Text" Version="1.1.0" />
+		<PackageReference Include="Waher.Runtime.Text" Version="1.1.1" />
 		<PackageReference Include="Waher.Script" Version="2.6.6" />
 		<PackageReference Include="Waher.Script.Content" Version="2.1.3" />
 		<PackageReference Include="Waher.Security" Version="1.0.8" />
@@ -271,7 +273,19 @@
 	  <MauiXaml Update="UI\Pages\Applications\Applications\ApplicationsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Contracts\MyContracts\MyContractsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Contracts\NewContract\NewContractPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Contracts\ViewContract\ViewContractPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="UI\Pages\Main\Settings\SettingsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Petitions\PetitionContract\PetitionContractPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\PetitionPeerReviewPage.xaml">

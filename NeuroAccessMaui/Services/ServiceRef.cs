@@ -8,6 +8,7 @@ using NeuroAccessMaui.Services.Localization;
 using NeuroAccessMaui.Services.Navigation;
 using NeuroAccessMaui.Services.Network;
 using NeuroAccessMaui.Services.Nfc;
+using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.Settings;
 using NeuroAccessMaui.Services.Storage;
 using NeuroAccessMaui.Services.Tag;
@@ -34,6 +35,7 @@ namespace NeuroAccessMaui.Services
 		private static ISettingsService? settingsService;
 		private static IStorageService? storageService;
 		private static INfcService? nfcService;
+		private static INotificationService? notificationService;
 		private static IStringLocalizer? localizer;
 		private static IPlatformSpecific? platformSpecific;
 		private static IBarcodeReader? barcodeReader;
@@ -179,6 +181,18 @@ namespace NeuroAccessMaui.Services
 			{
 				nfcService ??= App.Instantiate<INfcService>();
 				return nfcService;
+			}
+		}
+
+		/// <summary>
+		/// Service for managing notifications for the user.
+		/// </summary>
+		public static INotificationService NotificationService
+		{
+			get
+			{
+				notificationService ??= App.Instantiate<INotificationService>();
+				return notificationService;
 			}
 		}
 

@@ -1161,4 +1161,172 @@
   <data name="DeviceID" xml:space="preserve">
     <value>Device ID</value>
   </data>
+  <data name="AddContactToContract" xml:space="preserve">
+    <value>Add Contact to Contract</value>
+  </data>
+  <data name="AddPart" xml:space="preserve">
+    <value>Add part</value>
+  </data>
+  <data name="Archiving_Optional" xml:space="preserve">
+    <value>Archiving (optional)</value>
+  </data>
+  <data name="Archiving_Required" xml:space="preserve">
+    <value>Archiving (required)</value>
+  </data>
+  <data name="BalanceUpdated" xml:space="preserve">
+    <value>Balance updated.</value>
+  </data>
+  <data name="CanActAsTemplate" xml:space="preserve">
+    <value>Can act as template</value>
+  </data>
+  <data name="ContractHasBeenDeleted" xml:space="preserve">
+    <value>Contract has been deleted.</value>
+  </data>
+  <data name="ContractHasBeenObsoleted" xml:space="preserve">
+    <value>Contract has been obsoleted.</value>
+  </data>
+  <data name="ContractId" xml:space="preserve">
+    <value>Contract ID</value>
+  </data>
+  <data name="ContractRoleMustBeSelected" xml:space="preserve">
+    <value>Select contract role first, and then try again.</value>
+  </data>
+  <data name="Contracts" xml:space="preserve">
+    <value>Contracts</value>
+  </data>
+  <data name="ContractsInfoText" xml:space="preserve">
+    <value>Below is a list of contracts that you have created or signed. Click on a contract for more information about it.</value>
+  </data>
+  <data name="ContractSuccessfullySigned" xml:space="preserve">
+    <value>Contract successfully signed.</value>
+  </data>
+  <data name="ContractTemplates" xml:space="preserve">
+    <value>Contract Templates</value>
+  </data>
+  <data name="ContractTemplatesInfoText" xml:space="preserve">
+    <value>Below is a list of contract templates that you have used. Click on a template to create a new contract based on that template.</value>
+  </data>
+  <data name="ContractVisibilityMustBeSelected" xml:space="preserve">
+    <value>Select contract visibility first, and then try again.</value>
+  </data>
+  <data name="ContractVisibility_CreatorAndParts" xml:space="preserve">
+    <value>Creator and parts</value>
+  </data>
+  <data name="ContractVisibility_DomainAndParts" xml:space="preserve">
+    <value>Domain and parts</value>
+  </data>
+  <data name="ContractVisibility_Public" xml:space="preserve">
+    <value>Public, not searchable</value>
+  </data>
+  <data name="ContractVisibility_PublicSearchable" xml:space="preserve">
+    <value>Public and searchable</value>
+  </data>
+  <data name="Digest" xml:space="preserve">
+    <value>Digest</value>
+  </data>
+  <data name="Duration" xml:space="preserve">
+    <value>Duration</value>
+  </data>
+  <data name="EnterProposal" xml:space="preserve">
+    <value>Enter the text to include in the proposal to {0}, or leave blank if a proposal should not be sent.</value>
+  </data>
+  <data name="ExpiredEDalerUri" xml:space="preserve">
+    <value>This eDaler code has expired.</value>
+  </data>
+  <data name="ForInclusionInContract" xml:space="preserve">
+    <value>For inclusion as part in a contract.</value>
+  </data>
+  <data name="From" xml:space="preserve">
+    <value>From</value>
+  </data>
+  <data name="HashFunction" xml:space="preserve">
+    <value>Hash Function</value>
+  </data>
+  <data name="InvalidEDalerUri" xml:space="preserve">
+    <value>Invalid eDaler URI: {0}</value>
+  </data>
+  <data name="LocalName" xml:space="preserve">
+    <value>Local name</value>
+  </data>
+  <data name="Mode" xml:space="preserve">
+    <value>Mode</value>
+  </data>
+  <data name="Namespace" xml:space="preserve">
+    <value>Namespace</value>
+  </data>
+  <data name="Parameters" xml:space="preserve">
+    <value>Parameters</value>
+  </data>
+  <data name="Proposal" xml:space="preserve">
+    <value>Proposal</value>
+  </data>
+  <data name="PurposeReviewContract" xml:space="preserve">
+    <value>Reviewing contract where you are part.</value>
+  </data>
+  <data name="RequestToAccessContract" xml:space="preserve">
+    <value>Request to access contract</value>
+  </data>
+  <data name="SelectedContactCannotBeAdded" xml:space="preserve">
+    <value>The selected contact cannot be added. It does not have a Legal ID registered.</value>
+  </data>
+  <data name="Send" xml:space="preserve">
+    <value>Send</value>
+  </data>
+  <data name="SignAfter" xml:space="preserve">
+    <value>Sign after</value>
+  </data>
+  <data name="SignAsRole" xml:space="preserve">
+    <value>Sign as {0}</value>
+  </data>
+  <data name="SignBefore" xml:space="preserve">
+    <value>Sign before</value>
+  </data>
+  <data name="StateChangedTo" xml:space="preserve">
+    <value>State changed to {0}</value>
+  </data>
+  <data name="TemplateId" xml:space="preserve">
+    <value>Template ID</value>
+  </data>
+  <data name="TheContractRequiresAtLeast_AddMoreParts" xml:space="preserve">
+    <value>The contract requires at least {0} part(s) of role {1}. Add more parts to the contract and try again.</value>
+  </data>
+  <data name="TheContractRequiresAtMost_RemoveParts" xml:space="preserve">
+    <value>The contract requires at most {0} part(s) of role {1}. Remove some of the parts from the contract and try again.</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>To</value>
+  </data>
+  <data name="TokenAdded" xml:space="preserve">
+    <value>A token has been added to your wallet.</value>
+  </data>
+  <data name="TokenAdded2" xml:space="preserve">
+    <value>Token Added</value>
+  </data>
+  <data name="TokenCreationTemplates" xml:space="preserve">
+    <value>Token Templates</value>
+  </data>
+  <data name="TokenCreationTemplatesInfoText" xml:space="preserve">
+    <value>Below is a list of token templates that you have used or can use to create new tokens. Click on a template to create a new contract based on that template. Once the contract has been signed and approved, the corresponding token or tokens will be created.</value>
+  </data>
+  <data name="TokenRemoved" xml:space="preserve">
+    <value>A token has been removed from your wallet.</value>
+  </data>
+  <data name="TokenRemoved2" xml:space="preserve">
+    <value>Token Removed</value>
+  </data>
+  <data name="UnrecognizedEDalerURI" xml:space="preserve">
+    <value>Unrecognized eDaler URI.</value>
+  </data>
+  <data name="VariablesUpdated" xml:space="preserve">
+    <value>Variables Updated</value>
+  </data>
+  <data name="Visibility" xml:space="preserve">
+    <value>Visibility</value>
+  </data>
+  <data name="YouHaveReceivedAProposal" xml:space="preserve">
+    <value>You have received a proposal.</value>
+  </data>
+  <data name="YourContractContainsErrors" xml:space="preserve">
+    <value>Your contract contains errors. Fix these errors and try again.</value>
+  </data>
 </root>

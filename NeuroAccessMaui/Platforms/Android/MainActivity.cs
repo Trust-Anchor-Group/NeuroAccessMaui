@@ -12,7 +12,7 @@ namespace NeuroAccessMaui
 			Categories = [Intent.CategoryDefault], DataMimeType = "*/*")]
 	[IntentFilter([Intent.ActionView],
 			Categories = [Intent.CategoryDefault, Intent.CategoryBrowsable],
-			DataSchemes = ["iotid", "tagsign", "obinfo"])]
+			DataSchemes = ["iotid", "iotsc", "tagsign", "obinfo"])]
 	public class MainActivity : MauiAppCompatActivity
 	{
 	}

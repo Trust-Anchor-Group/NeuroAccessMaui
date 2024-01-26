@@ -335,6 +335,143 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		#endregion
 
+		#region Smart Contracts
+
+		/// <summary>
+		/// Refrence to the underlying contracts client.
+		/// </summary>
+		ContractsClient ContractsClient { get; }
+
+		/// <summary>
+		/// Gets the contract with the specified id.
+		/// </summary>
+		/// <param name="ContractId">The contract id.</param>
+		/// <returns>Smart Contract</returns>
+		Task<Contract> GetContract(CaseInsensitiveString ContractId);
+
+		/// <summary>
+		/// Gets references to created contracts.
+		/// </summary>
+		/// <returns>Created contracts.</returns>
+		Task<string[]> GetCreatedContractReferences();
+
+		/// <summary>
+		/// Gets references to signed contracts.
+		/// </summary>
+		/// <returns>Signed contracts.</returns>
+		Task<string[]> GetSignedContractReferences();
+
+		/// <summary>
+		/// Signs a given contract.
+		/// </summary>
+		/// <param name="Contract">The contract to sign.</param>
+		/// <param name="Role">The role of the signer.</param>
+		/// <param name="Transferable">Whether the contract is transferable or not.</param>
+		/// <returns>Smart Contract</returns>
+		Task<Contract> SignContract(Contract Contract, string Role, bool Transferable);
+
+		/// <summary>
+		/// Obsoletes a contract.
+		/// </summary>
+		/// <param name="ContractId">The id of the contract to obsolete.</param>
+		/// <returns>Smart Contract</returns>
+		Task<Contract> ObsoleteContract(CaseInsensitiveString ContractId);
+
+		/// <summary>
+		/// Creates a new contract.
+		/// </summary>
+		/// <param name="TemplateId">The id of the contract template to use.</param>
+		/// <param name="Parts">The individual contract parts.</param>
+		/// <param name="Parameters">Contract parameters.</param>
+		/// <param name="Visibility">The contract's visibility.</param>
+		/// <param name="PartsMode">The contract's parts.</param>
+		/// <param name="Duration">Duration of the contract.</param>
+		/// <param name="ArchiveRequired">Required duration for contract archival.</param>
+		/// <param name="ArchiveOptional">Optional duration for contract archival.</param>
+		/// <param name="SignAfter">Timestamp of when the contract can be signed at the earliest.</param>
+		/// <param name="SignBefore">Timestamp of when the contract can be signed at the latest.</param>
+		/// <param name="CanActAsTemplate">Can this contract act as a template itself?</param>
+		/// <returns>Smart Contract</returns>
+		Task<Contract> CreateContract(
+			CaseInsensitiveString TemplateId,
+			Part[] Parts,
+			Parameter[] Parameters,
+			ContractVisibility Visibility,
+			ContractParts PartsMode,
+			Duration Duration,
+			Duration ArchiveRequired,
+			Duration ArchiveOptional,
+			DateTime? SignAfter,
+			DateTime? SignBefore,
+			bool CanActAsTemplate);
+
+		/// <summary>
+		/// Deletes a contract.
+		/// </summary>
+		/// <param name="ContractId">The id of the contract to delete.</param>
+		/// <returns>Smart Contract</returns>
+		Task<Contract> DeleteContract(CaseInsensitiveString ContractId);
+
+		/// <summary>
+		/// Petitions a contract with the specified id and purpose.
+		/// </summary>
+		/// <param name="ContractId">The contract id.</param>
+		/// <param name="PetitionId">The petition id.</param>
+		/// <param name="Purpose">The purpose.</param>
+		Task PetitionContract(CaseInsensitiveString ContractId, string PetitionId, string Purpose);
+
+		/// <summary>
+		/// Sends a response to a petitioning contract request.
+		/// </summary>
+		/// <param name="ContractId">The id of the contract.</param>
+		/// <param name="PetitionId">The petition id.</param>
+		/// <param name="RequestorFullJid">The full Jid of the requestor.</param>
+		/// <param name="Response">If the petition is accepted (true) or rejected (false).</param>
+		Task SendPetitionContractResponse(CaseInsensitiveString ContractId, string PetitionId, string RequestorFullJid, bool Response);
+
+		/// <summary>
+		/// Event raised when a contract proposal has been received.
+		/// </summary>
+		event ContractProposalEventHandler ContractProposalReceived;
+
+		/// <summary>
+		/// Event raised when contract was updated.
+		/// </summary>
+		event ContractReferenceEventHandler ContractUpdated;
+
+		/// <summary>
+		/// Event raised when contract was signed.
+		/// </summary>
+		event ContractSignedEventHandler ContractSigned;
+
+		/// <summary>
+		/// An event that fires when a petition for a contract is received.
+		/// </summary>
+		event ContractPetitionEventHandler PetitionForContractReceived;
+
+		/// <summary>
+		/// An event that fires when a petitioned contract response is received.
+		/// </summary>
+		event ContractPetitionResponseEventHandler PetitionedContractResponseReceived;
+
+		/// <summary>
+		/// Gets the timestamp of the last event received for a given contract ID.
+		/// </summary>
+		/// <param name="ContractId">Contract ID</param>
+		/// <returns>Timestamp</returns>
+		DateTime GetTimeOfLastContractEvent(CaseInsensitiveString ContractId);
+
+		/// <summary>
+		/// Sends a contract proposal to a recipient.
+		/// </summary>
+		/// <param name="ContractId">ID of proposed contract.</param>
+		/// <param name="Role">Proposed role of recipient.</param>
+		/// <param name="To">Recipient Address (Bare or Full JID).</param>
+		/// <param name="Message">Optional message included in message.</param>
+		void SendContractProposal(string ContractId, string Role, string To, string Message);
+
+		#endregion
+
 		#region Attachments
 
 		/// <summary>

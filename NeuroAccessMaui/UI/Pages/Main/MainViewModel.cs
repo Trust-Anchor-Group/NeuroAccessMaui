@@ -38,9 +38,9 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			if (ServiceRef.TagProfile.LegalIdentity?.HasApprovedPersonalInformation() ?? false)
 			{
 				AllowedSchemas.Add(Constants.UriSchemes.IotId);
+				AllowedSchemas.Add(Constants.UriSchemes.IotSc);
 
 				// TODO:
-				// AllowedSchemas.Add(Constants.UriSchemes.IotSc);
 				// AllowedSchemas.Add(Constants.UriSchemes.IotDisco);
 				// AllowedSchemas.Add(Constants.UriSchemes.EDaler);
 				// AllowedSchemas.Add(Constants.UriSchemes.NeuroFeature);

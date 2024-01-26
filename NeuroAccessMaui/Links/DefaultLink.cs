@@ -30,9 +30,7 @@ namespace NeuroAccessMaui.Links
 		public async Task<bool> TryOpenLink(Uri Link)
 		{
 			if (await Launcher.TryOpenAsync(Link.OriginalString))
-			{
 				return true;
-			}
 			else
 			{
 				await ServiceRef.UiSerializer.DisplayAlert(

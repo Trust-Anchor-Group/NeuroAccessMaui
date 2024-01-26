@@ -71,7 +71,7 @@ namespace NeuroAccessMaui.Services.Storage
 
 			//!!! test to uncomment it
 			/* On iOS the UI is not initialized at this point, need to find another solution
-			if (await ServiceRef.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["DatabaseIssue"], LocalizationResourceManager.Current["DatabaseCorruptInfoText"], LocalizationResourceManager.Current["RepairAndContinue"], LocalizationResourceManager.Current["ContinueAnyway"]))
+			if (await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.DatabaseIssue"], ServiceRef.Localizer[nameof(AppResources.DatabaseCorruptInfoText"], ServiceRef.Localizer[nameof(AppResources.RepairAndContinue"], ServiceRef.Localizer[nameof(AppResources.ContinueAnyway"]))
 			*/
 			//TODO: when UI is ready, show an alert that the database was reset due to unrecoverable error
 			//TODO: say to close the application in a controlled manner
@@ -101,7 +101,7 @@ namespace NeuroAccessMaui.Services.Storage
 					await App.Stop();
 					/*
 					Thread?.NewState("UI");
-					await ServiceRef.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["DatabaseIssue"], LocalizationResourceManager.Current["DatabaseRepairFailedInfoText"], LocalizationResourceManager.Current["Ok"]);
+					await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.DatabaseIssue"], ServiceRef.Localizer[nameof(AppResources.DatabaseRepairFailedInfoText"], ServiceRef.Localizer[nameof(AppResources.Ok"]);
 					*/
 				}
 			}

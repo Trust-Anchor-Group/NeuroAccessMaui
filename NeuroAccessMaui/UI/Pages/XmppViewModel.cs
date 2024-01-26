@@ -28,13 +28,13 @@ namespace NeuroAccessMaui.UI.Pages
 		{
 			await base.OnInitialize();
 
-			ServiceRef.XmppService.ConnectionStateChanged += this.XmppService_ConnectionStateChanged;
+			ServiceRef.XmppService.ConnectionStateChanged += ServiceRef.XmppService_ConnectionStateChanged;
 		}
 
 		/// <inheritdoc/>
 		protected override async Task OnDispose()
 		{
-			ServiceRef.XmppService.ConnectionStateChanged -= this.XmppService_ConnectionStateChanged;
+			ServiceRef.XmppService.ConnectionStateChanged -= ServiceRef.XmppService_ConnectionStateChanged;
 			await base.OnDispose();
 		}
 

@@ -2,6 +2,7 @@
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
+using EDaler;
 using Microsoft.Maui.Controls.Internals;
 using Mopups.Services;
 using NeuroAccessMaui.Extensions;
@@ -15,6 +16,7 @@ using NeuroAccessMaui.Services.Localization;
 using NeuroAccessMaui.Services.Navigation;
 using NeuroAccessMaui.Services.Network;
 using NeuroAccessMaui.Services.Nfc;
+using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.Settings;
 using NeuroAccessMaui.Services.Storage;
 using NeuroAccessMaui.Services.Tag;
@@ -24,6 +26,7 @@ using NeuroAccessMaui.Services.Xmpp;
 using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.UI.Pages.Main;
 using NeuroAccessMaui.UI.Popups.Pin;
+using NeuroFeatures;
 using Waher.Content;
 using Waher.Content.Images;
 using Waher.Content.Xml;
@@ -48,7 +51,7 @@ using Waher.Security.LoginMonitor;
 namespace NeuroAccessMaui
 {
 	/// <summary>
-	/// The Application class, representing an instance of the IdApp.
+	/// The Application class, representing an instance of the Neuro-Access app.
 	/// </summary>
 	public partial class App : Application, IDisposable
 	{
@@ -250,6 +253,8 @@ namespace NeuroAccessMaui
 					typeof(DnsResolver).Assembly,               // Serialization of DNS-related objects
 					typeof(XmppClient).Assembly,                // Serialization of general XMPP objects
 					typeof(ContractsClient).Assembly,           // Serialization of XMPP objects related to digital identities and smart contracts
+					typeof(NeuroFeaturesClient).Assembly,       // Serialization of XMPP objects related to Neuro-Feature tokens
+					typeof(EDalerClient).Assembly,              // Management of eDaler URIs
 					typeof(Expression).Assembly,                // Indexes basic script functions
 					typeof(Graph).Assembly,                     // Indexes graph script functions
 					typeof(GraphEncoder).Assembly,              // Indexes content script functions
@@ -276,6 +281,7 @@ namespace NeuroAccessMaui
 			Types.InstantiateDefault<IAttachmentCacheService>(false);
 			Types.InstantiateDefault<IContractOrchestratorService>(false);
 			Types.InstantiateDefault<INfcService>(false);
+			Types.InstantiateDefault<INotificationService>(false);
 
 			defaultInstantiatedSource.TrySetResult(true);
 

@@ -126,6 +126,7 @@
 				return Url switch
 				{
 					IotId or
+					IotSc or
 					TagSign or
 					Onboarding => Url,
 					_ => null,
@@ -653,6 +654,88 @@
 			/// Maximum age for applying for an ID
 			/// </summary>
 			public const int MaxAge = 120;
+		}
+
+		/// <summary>
+		/// Size constants.
+		/// </summary>
+		public static class BatchSizes
+		{
+			/// <summary>
+			/// Number of messages to load in a single batch.
+			/// </summary>
+			public const int MessageBatchSize = 30;
+
+			/// <summary>
+			/// Number of tokens to load in a single batch.
+			/// </summary>
+			public const int TokenBatchSize = 10;
+
+			/// <summary>
+			/// Number of account events to load in a single batch.
+			/// </summary>
+			public const int AccountEventBatchSize = 10;
+
+			/// <summary>
+			/// Number of devices to load in a single batch.
+			/// </summary>
+			public const int DeviceBatchSize = 100;
+		}
+
+		/// <summary>
+		/// Machine-readable names in contracts.
+		/// </summary>
+		public static class ContractMachineNames
+		{
+			/// <summary>
+			/// Namespace for payment instructions
+			/// </summary>
+			public const string PaymentInstructionsNamespace = "https://paiwise.tagroot.io/Schema/PaymentInstructions.xsd";
+
+			/// <summary>
+			/// Local name for contracts for buying eDaler.
+			/// </summary>
+			public const string BuyEDaler = "BuyEDaler";
+
+			/// <summary>
+			/// Local name for contracts for selling eDaler.
+			/// </summary>
+			public const string SellEDaler = "SellEDaler";
+		}
+
+		/// <summary>
+		/// Contract templates
+		/// </summary>
+		public static class ContractTemplates
+		{
+			/// <summary>
+			/// Contract template for creating a demo token
+			/// </summary>
+			public const string CreateDemoTokenTemplate = "2bb9fff1-8716-cb1b-5807-9fdb05b2207b@legal.lab.tagroot.io";
+
+			/// <summary>
+			/// Contract template for creating five demo tokens
+			/// </summary>
+			public const string CreateDemoTokens5Template = "2bba00ac-8716-cb3e-5807-9fdb055370c4@legal.lab.tagroot.io";
+
+			/// <summary>
+			/// Array of contract templates for creating tokens.
+			/// </summary>
+			public static readonly string[] TokenCreationTemplates = 
+			[
+				CreateDemoTokenTemplate,
+				CreateDemoTokens5Template
+			];
+
+			/// <summary>
+			/// Contract template for transferring a token from a seller to a buyer
+			/// </summary>
+			public const string TransferTokenTemplate = "2a6d6b09-cae9-bb7e-4015-a272cd9cd5b9@legal.lab.tagroot.io";
+
+			/// <summary>
+			/// Contract template for consigning the token to an auctioneer with the purpose of selling it.
+			/// </summary>
+			public const string TokenConsignmentTemplate = "2a6d86d3-cae9-be05-4015-a272cd0cbbb9@legal.lab.tagroot.io";
 		}
 	}
 }

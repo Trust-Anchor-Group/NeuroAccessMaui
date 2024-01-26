@@ -1,5 +1,8 @@
 ﻿using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services.Navigation;
+using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
+using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview;
@@ -11,6 +14,8 @@ using Waher.Content.Xml;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.StanzaErrors;
+using Waher.Persistence;
+using Waher.Persistence.Filters;
 using Waher.Runtime.Inventory;
 
 namespace NeuroAccessMaui.Services.Contracts
@@ -295,8 +300,7 @@ namespace NeuroAccessMaui.Services.Contracts
 					}
 					catch (Exception ex)
 					{
-						await ServiceRef.UiSerializer.DisplayAlert(
-							ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message);
+						await ServiceRef.UiSerializer.DisplayException(ex);
 						return;
 					}
 
@@ -469,6 +473,11 @@ namespace NeuroAccessMaui.Services.Contracts
 			}
 		}
 
+		/// <summary>
+		/// Downloads the specified <see cref="LegalIdentity"/> and opens the corresponding page in the app to show it.
+		/// </summary>
+		/// <param name="LegalId">The id of the legal identity to show.</param>
+		/// <param name="Purpose">The purpose to state if the identity can't be downloaded and needs to be petitioned instead.</param>
 		public async Task OpenLegalIdentity(string LegalId, string Purpose)
 		{
 			try
@@ -493,6 +502,79 @@ namespace NeuroAccessMaui.Services.Contracts
 						await ServiceRef.UiSerializer.DisplayAlert(
 							ServiceRef.Localizer[nameof(AppResources.PetitionSent)],
 							ServiceRef.Localizer[nameof(AppResources.APetitionHasBeenSentToTheOwner)]);
+					}
+				});
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
+				await ServiceRef.UiSerializer.DisplayException(ex);
+			}
+		}
+
+		/// <summary>
+		/// Downloads the specified <see cref="Contract"/> and opens the corresponding page in the app to show it.
+		/// </summary>
+		/// <param name="ContractId">The id of the contract to show.</param>
+		/// <param name="Purpose">The purpose to state if the contract can't be downloaded and needs to be petitioned instead.</param>
+		/// <param name="ParameterValues">Parameter values to set in new contract.</param>
+		public async Task OpenContract(string ContractId, string Purpose, Dictionary<CaseInsensitiveString, object> ParameterValues)
+		{
+			try
+			{
+				Contract Contract = await ServiceRef.XmppService.GetContract(ContractId);
+
+				ContractReference Ref = await Database.FindFirstDeleteRest<ContractReference>(
+					new FilterFieldEqualTo("ContractId", Contract.ContractId));
+
+				if (Ref is not null && (Ref.Updated != Contract.Updated || !Ref.ContractLoaded))
+				{
+					await Ref.SetContract(Contract);
+					await Database.Update(Ref);
+				}
+
+				MainThread.BeginInvokeOnMainThread(async () =>
+				{
+					if (Contract.PartsMode == ContractParts.TemplateOnly && Contract.State == ContractState.Approved)
+					{
+						if (Ref is null)
+						{
+							Ref = new()
+							{
+								ContractId = Contract.ContractId
+							};
+
+							await Ref.SetContract(Contract);
+							await Database.Insert(Ref);
+						}
+
+						NewContractNavigationArgs e = new(Contract, ParameterValues);
+
+						await ServiceRef.NavigationService.GoToAsync(nameof(NewContractPage), e, BackMethod.CurrentPage);
+					}
+					else
+					{
+						ViewContractNavigationArgs e = new(Contract, false);
+
+						await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), e, BackMethod.Pop);
+					}
+				});
+			}
+			catch (ForbiddenException)
+			{
+				// This happens if you try to view someone else's contract.
+				// When this happens, try to send a petition to view it instead.
+				// Normal operation. Should not be logged.
+
+				MainThread.BeginInvokeOnMainThread(async () =>
+				{
+					bool succeeded = await ServiceRef.NetworkService.TryRequest(() =>
+						ServiceRef.XmppService.PetitionContract(ContractId, Guid.NewGuid().ToString(), Purpose));
+
+					if (succeeded)
+					{
+						await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.PetitionSent)],
+							ServiceRef.Localizer[nameof(AppResources.APetitionHasBeenSentToTheContract)]);
 					}
 				});
 			}

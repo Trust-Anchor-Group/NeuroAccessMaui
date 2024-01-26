@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<views:ContentBasePage xmlns="http://xamarin.com/schemas/2014/forms"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                       xmlns:resx="clr-namespace:IdApp.Resx"
+                       xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages"
+                       xmlns:model="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract"
+                       x:DataType="model:NewContractViewModel"
+                       x:Class="NeuroAccessMaui.UI.Pages.Contracts.NewContract.NewContractPage"
+                       Style="{StaticResource BaseBackgroundPage}"
+                       Title="{x:Static resx:AppResources.NewContract}">
+    <ScrollView>
+        <StackLayout Orientation="Vertical" Padding="{StaticResource DefaultMargin}"
+                     BackgroundColor="{AppThemeBinding Light={StaticResource PageBackgroundColorLightTheme}, Dark={StaticResource PageBackgroundColorDarkTheme}}">
+            <StackLayout.Resources>
+                <Style TargetType="Label" ApplyToDerivedTypes="True" CanCascade="True">
+                    <Setter Property="FontSize" Value="Medium" />
+                </Style>
+            </StackLayout.Resources>
+
+            <ContentView Content="{Binding Path=HumanReadableText}" Margin="{StaticResource DefaultBottomOnlyMargin}" />
+
+            <Label Text="{x:Static resx:AppResources.Visibility}" Style="{StaticResource Heading}" HorizontalOptions="Start" />
+            <Picker Title="{x:Static resx:AppResources.SelectWhoShouldHaveAccessToThisContract}" 
+                    ItemsSource="{Binding Path=ContractVisibilityItems}" 
+                    SelectedItem="{Binding Path=SelectedContractVisibilityItem, Mode=TwoWay}" Margin="0,0,0,20"/>
+
+            <Label Text="{x:Static resx:AppResources.YourRole}" Style="{StaticResource Heading}" HorizontalOptions="Start" />
+            <Picker Title="{x:Static resx:AppResources.SelectYourRoleInThisContract}" 
+                    ItemsSource="{Binding Path=AvailableRoles}" 
+                    SelectedItem="{Binding Path=SelectedRole, Mode=TwoWay}" 
+                    IsEnabled="{Binding Path=HasRoles}" Margin="0,0,0,20"/>
+
+            <ContentView Content="{Binding Path=Roles}" />
+            <ContentView Content="{Binding Path=Parameters}" />
+
+            <Button Text="{x:Static resx:AppResources.Propose}" Command="{Binding Path=ProposeCommand}" Margin="{StaticResource DefaultTopAndBottomOnlyMargin}"/>
+        </StackLayout>
+    </ScrollView>
+</views:ContentBasePage>

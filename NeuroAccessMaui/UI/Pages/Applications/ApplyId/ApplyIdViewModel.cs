@@ -101,7 +101,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			this.RequiresOrgRole = this.Organizational;
 			this.RequiresOrgNumber = this.Organizational;
 
-			ServiceRef.XmppService.IdentityApplicationChanged += this.XmppService_IdentityApplicationChanged;
+			ServiceRef.XmppService.IdentityApplicationChanged += ServiceRef.XmppService_IdentityApplicationChanged;
 
 			await base.OnInitialize();
 
@@ -113,7 +113,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		{
 			this.photosLoader.CancelLoadPhotos();
 
-			ServiceRef.XmppService.IdentityApplicationChanged -= this.XmppService_IdentityApplicationChanged;
+			ServiceRef.XmppService.IdentityApplicationChanged -= ServiceRef.XmppService_IdentityApplicationChanged;
 
 			return base.OnDispose();
 		}

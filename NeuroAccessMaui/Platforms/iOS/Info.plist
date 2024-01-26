@@ -59,6 +59,7 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>iotid</string>
+				<string>iotsc</string>
 				<string>tagsign</string>
 				<string>obinfo</string>
 			</array>
