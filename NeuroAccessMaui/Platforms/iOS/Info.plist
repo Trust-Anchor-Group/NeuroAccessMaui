@@ -31,7 +31,9 @@
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Neuro-Access needs to be able to add photos to your galleries, if you want to save photos you take for later use.</string>
 	<key>NFCReaderUsageDescription</key>
-	<string>Neuro-Access needs access to the NFC tag to read NDEF messages into the application.</string>
+	<string>Neuro-Access needs access the NFC reader, to be able to read NFC tags containing references to IDs, contracts, tokens, things, etc.</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Neuro-Access needs access to Bluetooth, allowing you to connect with other Neuro-Access apps, and exchange information with other users.</string>
 	<key>CFBundleLocalizations</key>
 	<array>
 		<string>en</string>
