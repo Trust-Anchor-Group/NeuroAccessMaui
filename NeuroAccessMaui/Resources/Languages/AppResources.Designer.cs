@@ -376,6 +376,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to perform calculation..
+        /// </summary>
+        internal static string CalculationError {
+            get {
+                return ResourceManager.GetString("CalculationError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can act as template.
         /// </summary>
         internal static string CanActAsTemplate {
@@ -835,6 +844,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to day.
+        /// </summary>
+        internal static string Day {
+            get {
+                return ResourceManager.GetString("Day", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to days.
+        /// </summary>
+        internal static string Days {
+            get {
+                return ResourceManager.GetString("Days", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Decline.
         /// </summary>
         internal static string Decline {
@@ -984,6 +1011,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string EnterProposal {
             get {
                 return ResourceManager.GetString("EnterProposal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter a valid value first..
+        /// </summary>
+        internal static string EnterValidValue {
+            get {
+                return ResourceManager.GetString("EnterValidValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You need to enter a value first..
+        /// </summary>
+        internal static string EnterValue {
+            get {
+                return ResourceManager.GetString("EnterValue", resourceCulture);
             }
         }
         
@@ -1191,6 +1236,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string Home {
             get {
                 return ResourceManager.GetString("Home", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to hour.
+        /// </summary>
+        internal static string Hour {
+            get {
+                return ResourceManager.GetString("Hour", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to hours.
+        /// </summary>
+        internal static string Hours {
+            get {
+                return ResourceManager.GetString("Hours", resourceCulture);
             }
         }
         
@@ -1483,11 +1546,47 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to minute.
+        /// </summary>
+        internal static string Minute {
+            get {
+                return ResourceManager.GetString("Minute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to minutes.
+        /// </summary>
+        internal static string Minutes {
+            get {
+                return ResourceManager.GetString("Minutes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Mode.
         /// </summary>
         internal static string Mode {
             get {
                 return ResourceManager.GetString("Mode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to month.
+        /// </summary>
+        internal static string Month {
+            get {
+                return ResourceManager.GetString("Month", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to months.
+        /// </summary>
+        internal static string Months {
+            get {
+                return ResourceManager.GetString("Months", resourceCulture);
             }
         }
         
@@ -1506,6 +1605,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string Nationality {
             get {
                 return ResourceManager.GetString("Nationality", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Negative.
+        /// </summary>
+        internal static string Negative {
+            get {
+                return ResourceManager.GetString("Negative", resourceCulture);
             }
         }
         
@@ -2878,6 +2986,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to second.
+        /// </summary>
+        internal static string Second {
+            get {
+                return ResourceManager.GetString("Second", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to seconds.
+        /// </summary>
+        internal static string Seconds {
+            get {
+                return ResourceManager.GetString("Seconds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Security Settings.
         /// </summary>
         internal static string SecuritySettings {
@@ -3594,6 +3720,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string XOnY {
             get {
                 return ResourceManager.GetString("XOnY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to year.
+        /// </summary>
+        internal static string Year {
+            get {
+                return ResourceManager.GetString("Year", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to years.
+        /// </summary>
+        internal static string Years {
+            get {
+                return ResourceManager.GetString("Years", resourceCulture);
             }
         }
         

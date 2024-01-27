@@ -19,7 +19,7 @@ namespace NeuroAccessMaui.Extensions
 
 			foreach (string Option in Languages)
 			{
-				if (string.Compare(Option.Before("-"), Language, StringComparison.OrdinalIgnoreCase) == 0)
+				if (string.Equals(Option.Before("-"), Language, StringComparison.OrdinalIgnoreCase))
 					return Option;
 			}
 

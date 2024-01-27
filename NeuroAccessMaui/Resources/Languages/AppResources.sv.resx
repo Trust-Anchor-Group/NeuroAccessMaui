@@ -1161,4 +1161,220 @@
   <data name="DeviceID" xml:space="preserve">
     <value>Enhets-ID</value>
   </data>
+  <data name="AddContactToContract" xml:space="preserve">
+    <value>Lägg till kontakt i kontrakt</value>
+  </data>
+  <data name="AddPart" xml:space="preserve">
+    <value>Lägg till artikel</value>
+  </data>
+  <data name="Archiving_Optional" xml:space="preserve">
+    <value>Arkivering (valfritt)</value>
+  </data>
+  <data name="Archiving_Required" xml:space="preserve">
+    <value>Arkivering (obligatoriskt)</value>
+  </data>
+  <data name="BalanceUpdated" xml:space="preserve">
+    <value>Saldo uppdaterat.</value>
+  </data>
+  <data name="CalculationError" xml:space="preserve">
+    <value>Det går inte att utföra beräkningen.</value>
+  </data>
+  <data name="CanActAsTemplate" xml:space="preserve">
+    <value>Kan fungera som mall</value>
+  </data>
+  <data name="ContractHasBeenDeleted" xml:space="preserve">
+    <value>Kontraktet har tagits bort.</value>
+  </data>
+  <data name="ContractHasBeenObsoleted" xml:space="preserve">
+    <value>Kontraktet har föråldrats.</value>
+  </data>
+  <data name="ContractId" xml:space="preserve">
+    <value>Kontrakt-ID</value>
+  </data>
+  <data name="ContractRoleMustBeSelected" xml:space="preserve">
+    <value>Välj först kontraktsroll och försök sedan igen.</value>
+  </data>
+  <data name="Contracts" xml:space="preserve">
+    <value>Kontrakt</value>
+  </data>
+  <data name="ContractsInfoText" xml:space="preserve">
+    <value>Nedan finns en lista över avtal som du har skapat eller signerat. Klicka på ett kontrakt för mer information om det.</value>
+  </data>
+  <data name="ContractSuccessfullySigned" xml:space="preserve">
+    <value>Kontraktet har undertecknats.</value>
+  </data>
+  <data name="ContractTemplates" xml:space="preserve">
+    <value>Mallar för avtal</value>
+  </data>
+  <data name="ContractTemplatesInfoText" xml:space="preserve">
+    <value>Nedan finns en lista över avtalsmallar som du har använt. Klicka på en mall för att skapa ett nytt avtal baserat på den mallen.</value>
+  </data>
+  <data name="ContractVisibilityMustBeSelected" xml:space="preserve">
+    <value>Välj avtalssynlighet först och försök sedan igen.</value>
+  </data>
+  <data name="ContractVisibility_CreatorAndParts" xml:space="preserve">
+    <value>Skapare och delar</value>
+  </data>
+  <data name="ContractVisibility_DomainAndParts" xml:space="preserve">
+    <value>Domän och delar</value>
+  </data>
+  <data name="ContractVisibility_Public" xml:space="preserve">
+    <value>Offentligt, ej sökbart</value>
+  </data>
+  <data name="ContractVisibility_PublicSearchable" xml:space="preserve">
+    <value>Publik och sökbar</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>dag</value>
+  </data>
+  <data name="Days" xml:space="preserve">
+    <value>Dagar</value>
+  </data>
+  <data name="Digest" xml:space="preserve">
+    <value>Smälta</value>
+  </data>
+  <data name="Duration" xml:space="preserve">
+    <value>Varaktighet</value>
+  </data>
+  <data name="EnterProposal" xml:space="preserve">
+    <value>Ange den text som ska ingå i förslaget som ska {0}, eller lämna tomt om ett förslag inte ska skickas.</value>
+  </data>
+  <data name="EnterValidValue" xml:space="preserve">
+    <value>Ange först ett giltigt värde.</value>
+  </data>
+  <data name="EnterValue" xml:space="preserve">
+    <value>Du måste ange ett värde först.</value>
+  </data>
+  <data name="ExpiredEDalerUri" xml:space="preserve">
+    <value>Denna eDaler-kod har upphört att gälla.</value>
+  </data>
+  <data name="ForInclusionInContract" xml:space="preserve">
+    <value>För inkludering som en del av ett kontrakt.</value>
+  </data>
+  <data name="From" xml:space="preserve">
+    <value>Från</value>
+  </data>
+  <data name="HashFunction" xml:space="preserve">
+    <value>Hash-funktion</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>timme</value>
+  </data>
+  <data name="Hours" xml:space="preserve">
+    <value>Timmar</value>
+  </data>
+  <data name="InvalidEDalerUri" xml:space="preserve">
+    <value>Ogiltig eDaler-URI: {0}</value>
+  </data>
+  <data name="LocalName" xml:space="preserve">
+    <value>Lokalt namn</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>minut</value>
+  </data>
+  <data name="Minutes" xml:space="preserve">
+    <value>protokoll</value>
+  </data>
+  <data name="Mode" xml:space="preserve">
+    <value>Läge</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>månad</value>
+  </data>
+  <data name="Months" xml:space="preserve">
+    <value>Månader</value>
+  </data>
+  <data name="Namespace" xml:space="preserve">
+    <value>Namnområde</value>
+  </data>
+  <data name="Negative" xml:space="preserve">
+    <value>Negativ</value>
+  </data>
+  <data name="Parameters" xml:space="preserve">
+    <value>Parametrar</value>
+  </data>
+  <data name="Proposal" xml:space="preserve">
+    <value>Förslag</value>
+  </data>
+  <data name="PurposeReviewContract" xml:space="preserve">
+    <value>Granska avtal där du är en del.</value>
+  </data>
+  <data name="RequestToAccessContract" xml:space="preserve">
+    <value>Begäran om att få tillgång till avtal</value>
+  </data>
+  <data name="Second" xml:space="preserve">
+    <value>andra</value>
+  </data>
+  <data name="Seconds" xml:space="preserve">
+    <value>Sekunder</value>
+  </data>
+  <data name="SelectedContactCannotBeAdded" xml:space="preserve">
+    <value>Det går inte att lägga till den valda kontakten. Den har inget juridiskt ID registrerat.</value>
+  </data>
+  <data name="Send" xml:space="preserve">
+    <value>Sända</value>
+  </data>
+  <data name="SignAfter" xml:space="preserve">
+    <value>Logga efter</value>
+  </data>
+  <data name="SignAsRole" xml:space="preserve">
+    <value>Signera som {0}</value>
+  </data>
+  <data name="SignBefore" xml:space="preserve">
+    <value>Signera innan</value>
+  </data>
+  <data name="StateChangedTo" xml:space="preserve">
+    <value>Staten har ändrats till {0}</value>
+  </data>
+  <data name="TemplateId" xml:space="preserve">
+    <value>Mall-ID</value>
+  </data>
+  <data name="TheContractRequiresAtLeast_AddMoreParts" xml:space="preserve">
+    <value>Kontraktet kräver minst {0} eller några delar av rollen {1}. Lägg till fler delar i kontraktet och försök igen.</value>
+  </data>
+  <data name="TheContractRequiresAtMost_RemoveParts" xml:space="preserve">
+    <value>Kontraktet kräver högst {0} eller flera delar av rollen {1}. Ta bort några av delarna från kontraktet och försök igen.</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>Till</value>
+  </data>
+  <data name="TokenAdded" xml:space="preserve">
+    <value>En token har lagts till i din plånbok.</value>
+  </data>
+  <data name="TokenAdded2" xml:space="preserve">
+    <value>Token har lagts till</value>
+  </data>
+  <data name="TokenCreationTemplates" xml:space="preserve">
+    <value>Mallar för token</value>
+  </data>
+  <data name="TokenCreationTemplatesInfoText" xml:space="preserve">
+    <value>Nedan visas en lista över tokenmallar som du har använt eller kan använda för att skapa nya token. Klicka på en mall för att skapa ett nytt avtal baserat på den mallen. När kontraktet har undertecknats och godkänts skapas motsvarande token eller tokens.</value>
+  </data>
+  <data name="TokenRemoved" xml:space="preserve">
+    <value>En token har tagits bort från din plånbok.</value>
+  </data>
+  <data name="TokenRemoved2" xml:space="preserve">
+    <value>Token har tagits bort</value>
+  </data>
+  <data name="UnrecognizedEDalerURI" xml:space="preserve">
+    <value>Okänd eDaler-URI.</value>
+  </data>
+  <data name="VariablesUpdated" xml:space="preserve">
+    <value>Variabler uppdaterade</value>
+  </data>
+  <data name="Visibility" xml:space="preserve">
+    <value>Synlighet</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>år</value>
+  </data>
+  <data name="Years" xml:space="preserve">
+    <value>år</value>
+  </data>
+  <data name="YouHaveReceivedAProposal" xml:space="preserve">
+    <value>Du har fått ett förslag.</value>
+  </data>
+  <data name="YourContractContainsErrors" xml:space="preserve">
+    <value>Ditt avtal innehåller fel. Åtgärda dessa fel och försök igen.</value>
+  </data>
 </root>

@@ -72,7 +72,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 			{
 				if (Part.LegalId == ServiceRef.TagProfile.LegalJid ||
 					 (Signatures.TryGetValue(Part.LegalId, out ClientSignature? PartSignature) &&
-					 string.Compare(PartSignature.BareJid, ServiceRef.XmppService.BareJid, StringComparison.OrdinalIgnoreCase) == 0))
+					 string.Equals(PartSignature.BareJid, ServiceRef.XmppService.BareJid, StringComparison.OrdinalIgnoreCase)))
 				{
 					continue;   // Self
 				}
@@ -103,7 +103,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 
 			foreach (HumanReadableText Localization in Localizations)
 			{
-				if (string.Compare(Localization.Language, Language, StringComparison.OrdinalIgnoreCase) != 0)
+				if (!string.Equals(Localization.Language, Language, StringComparison.OrdinalIgnoreCase))
 					continue;
 
 				foreach (BlockElement Block in Localization.Body)

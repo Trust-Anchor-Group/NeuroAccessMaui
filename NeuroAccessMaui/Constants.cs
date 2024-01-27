@@ -145,6 +145,16 @@
 			}
 
 			/// <summary>
+			/// Generates a IoT Scan Uri form the specified id.
+			/// </summary>
+			/// <param name="id">The Id to use when generating the Uri.</param>
+			/// <returns>Smart Contract URI</returns>
+			public static string CreateSmartContractUri(string id)
+			{
+				return IotSc + ":" + id;
+			}
+
+			/// <summary>
 			/// Generates a IoT ID Uri form the specified id.
 			/// </summary>
 			/// <param name="id">The Id to use when generating the Uri.</param>
@@ -152,6 +162,16 @@
 			public static string CreateIdUri(string id)
 			{
 				return IotId + ":" + id;
+			}
+
+			/// <summary>
+			/// Generates a Neuro-Feature ID Uri form the specified id.
+			/// </summary>
+			/// <param name="id">The Id to use when generating the Uri.</param>
+			/// <returns>Neuro-Feature URI</returns>
+			public static string CreateTokenUri(string id)
+			{
+				return NeuroFeature + ":" + id;
 			}
 
 			/// <summary>

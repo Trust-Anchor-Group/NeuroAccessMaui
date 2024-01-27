@@ -12,18 +12,19 @@ using Waher.Persistence.Filters;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Resources.Languages;
 using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 {
 	/// <summary>
 	/// The view model to bind to when displaying 'my' contracts.
 	/// </summary>
-	public class MyContractsViewModel : BaseViewModel
+	public partial class MyContractsViewModel : BaseViewModel
 	{
 		private readonly Dictionary<string, Contract> contractsMap = [];
 		private ContractsListMode contractsListMode;
-		private TaskCompletionSource<Contract> selection;
-		private Contract selectedContract = null;
+		private TaskCompletionSource<Contract?>? selection;
+		private Contract? selectedContract = null;
 
 		/// <summary>
 		/// Creates an instance of the <see cref="MyContractsViewModel"/> class.
@@ -103,64 +104,28 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		}
 
 		/// <summary>
-		/// See <see cref="Title"/>
-		/// </summary>
-		public static readonly BindableProperty TitleProperty =
-			BindableProperty.Create(nameof(Title), typeof(string), typeof(MyContractsViewModel), default(string));
-
-		/// <summary>
 		/// Gets or sets the title for the view displaying contracts.
 		/// </summary>
-		public string Title
-		{
-			get => (string)this.GetValue(TitleProperty);
-			set => this.SetValue(TitleProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="Description"/>
-		/// </summary>
-		public static readonly BindableProperty DescriptionProperty =
-			BindableProperty.Create(nameof(Description), typeof(string), typeof(MyContractsViewModel), default(string));
+		[ObservableProperty]
+		private string? title;
 
 		/// <summary>
 		/// Gets or sets the introductory text for the view displaying contracts.
 		/// </summary>
-		public string Description
-		{
-			get => (string)this.GetValue(DescriptionProperty);
-			set => this.SetValue(DescriptionProperty, value);
-		}
-
-		/// <summary>
-		/// <see cref="Action"/>
-		/// </summary>
-		public static readonly BindableProperty ActionProperty =
-			BindableProperty.Create(nameof(Action), typeof(SelectContractAction), typeof(MyContractsViewModel), default(SelectContractAction));
+		[ObservableProperty]
+		private string? description;
 
 		/// <summary>
 		/// The action to take when contact has been selected.
 		/// </summary>
-		public SelectContractAction Action
-		{
-			get => (SelectContractAction)this.GetValue(ActionProperty);
-			set => this.SetValue(ActionProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="ShowContractsMissing"/>
-		/// </summary>
-		public static readonly BindableProperty ShowContractsMissingProperty =
-			BindableProperty.Create(nameof(ShowContractsMissing), typeof(bool), typeof(MyContractsViewModel), default(bool));
+		[ObservableProperty]
+		private SelectContractAction action;
 
 		/// <summary>
 		/// Gets or sets whether to show a contracts missing alert or not.
 		/// </summary>
-		public bool ShowContractsMissing
-		{
-			get => (bool)this.GetValue(ShowContractsMissingProperty);
-			set => this.SetValue(ShowContractsMissingProperty, value);
-		}
+		[ObservableProperty]
+		private bool showContractsMissing;
 
 		/// <summary>
 		/// Holds the list of contracts to display, ordered by category.
@@ -326,7 +291,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 				}
 
 				SortedDictionary<string, List<ContractModel>> ContractsByCategory = new(StringComparer.CurrentCultureIgnoreCase);
-				SortedDictionary<CaseInsensitiveString, NotificationEvent[]> EventsByCategory = this.NotificationService.GetEventsByCategory(EventButton.Contracts);
+				SortedDictionary<CaseInsensitiveString, NotificationEvent[]> EventsByCategory = ServiceRef.NotificationService.GetEventsByCategory(NotificationEventType.Contracts);
 				bool Found = false;
 
 				foreach (ContractReference Ref in ContractReferences)
@@ -418,7 +383,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 				MainThread.BeginInvokeOnMainThread(() =>
 				{
 					this.Categories.Clear();
-					this.Categories.AddRange(NewCategories);
+
+					foreach (IUniqueItem Item in NewCategories)
+						this.Categories.Add(Item);
+
 					this.ShowContractsMissing = !Found;
 				});
 			}
@@ -430,7 +398,20 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 
 		private class DateTimeDesc : IComparer<ContractModel>
 		{
-			public int Compare(ContractModel x, ContractModel y) => y.Timestamp.CompareTo(x.Timestamp);
+			public int Compare(ContractModel? x, ContractModel? y)
+			{
+				if (x is null)
+				{
+					if (y is null)
+						return 0;
+					else
+						return -1;
+				}
+				else if (y is null)
+					return 1;
+				else
+					return y.Timestamp.CompareTo(x.Timestamp);
+			}
 		}
 
 		private void NotificationService_OnNotificationsDeleted(object Sender, NotificationEventsArgs e)
@@ -442,7 +423,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 					if (Event.Type != NotificationEventType.Contracts)
 						continue;
 
-					HeaderModel LastHeader = null;
+					HeaderModel? LastHeader = null;
 
 					foreach (IUniqueItem Group in this.Categories)
 					{
@@ -467,7 +448,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
-				HeaderModel LastHeader = null;
+				HeaderModel? LastHeader = null;
 
 				foreach (IUniqueItem Group in this.Categories)
 				{
@@ -483,6 +464,5 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 				}
 			});
 		}
-
 	}
 }

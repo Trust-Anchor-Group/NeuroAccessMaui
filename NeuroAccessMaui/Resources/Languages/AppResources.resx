@@ -1176,6 +1176,9 @@
   <data name="BalanceUpdated" xml:space="preserve">
     <value>Balance updated.</value>
   </data>
+  <data name="CalculationError" xml:space="preserve">
+    <value>Unable to perform calculation.</value>
+  </data>
   <data name="CanActAsTemplate" xml:space="preserve">
     <value>Can act as template</value>
   </data>
@@ -1221,6 +1224,12 @@
   <data name="ContractVisibility_PublicSearchable" xml:space="preserve">
     <value>Public and searchable</value>
   </data>
+  <data name="Day" xml:space="preserve">
+    <value>day</value>
+  </data>
+  <data name="Days" xml:space="preserve">
+    <value>days</value>
+  </data>
   <data name="Digest" xml:space="preserve">
     <value>Digest</value>
   </data>
@@ -1229,6 +1238,12 @@
   </data>
   <data name="EnterProposal" xml:space="preserve">
     <value>Enter the text to include in the proposal to {0}, or leave blank if a proposal should not be sent.</value>
+  </data>
+  <data name="EnterValidValue" xml:space="preserve">
+    <value>Enter a valid value first.</value>
+  </data>
+  <data name="EnterValue" xml:space="preserve">
+    <value>You need to enter a value first.</value>
   </data>
   <data name="ExpiredEDalerUri" xml:space="preserve">
     <value>This eDaler code has expired.</value>
@@ -1242,17 +1257,38 @@
   <data name="HashFunction" xml:space="preserve">
     <value>Hash Function</value>
   </data>
+  <data name="Hour" xml:space="preserve">
+    <value>hour</value>
+  </data>
+  <data name="Hours" xml:space="preserve">
+    <value>hours</value>
+  </data>
   <data name="InvalidEDalerUri" xml:space="preserve">
     <value>Invalid eDaler URI: {0}</value>
   </data>
   <data name="LocalName" xml:space="preserve">
     <value>Local name</value>
   </data>
+  <data name="Minute" xml:space="preserve">
+    <value>minute</value>
+  </data>
+  <data name="Minutes" xml:space="preserve">
+    <value>minutes</value>
+  </data>
   <data name="Mode" xml:space="preserve">
     <value>Mode</value>
   </data>
+  <data name="Month" xml:space="preserve">
+    <value>month</value>
+  </data>
+  <data name="Months" xml:space="preserve">
+    <value>months</value>
+  </data>
   <data name="Namespace" xml:space="preserve">
     <value>Namespace</value>
+  </data>
+  <data name="Negative" xml:space="preserve">
+    <value>Negative</value>
   </data>
   <data name="Parameters" xml:space="preserve">
     <value>Parameters</value>
@@ -1265,6 +1301,12 @@
   </data>
   <data name="RequestToAccessContract" xml:space="preserve">
     <value>Request to access contract</value>
+  </data>
+  <data name="Second" xml:space="preserve">
+    <value>second</value>
+  </data>
+  <data name="Seconds" xml:space="preserve">
+    <value>seconds</value>
   </data>
   <data name="SelectedContactCannotBeAdded" xml:space="preserve">
     <value>The selected contact cannot be added. It does not have a Legal ID registered.</value>
@@ -1322,6 +1364,12 @@
   </data>
   <data name="Visibility" xml:space="preserve">
     <value>Visibility</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>year</value>
+  </data>
+  <data name="Years" xml:space="preserve">
+    <value>years</value>
   </data>
   <data name="YouHaveReceivedAProposal" xml:space="preserve">
     <value>You have received a proposal.</value>

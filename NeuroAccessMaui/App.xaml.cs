@@ -33,10 +33,17 @@ using Waher.Content.Xml;
 using Waher.Events;
 using Waher.Networking.DNS;
 using Waher.Networking.XMPP;
+using Waher.Networking.XMPP.Avatar;
+using Waher.Networking.XMPP.Concentrator;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Networking.XMPP.Control;
 using Waher.Networking.XMPP.HTTPX;
 using Waher.Networking.XMPP.P2P;
 using Waher.Networking.XMPP.P2P.E2E;
+using Waher.Networking.XMPP.PEP;
+using Waher.Networking.XMPP.Provisioning;
+using Waher.Networking.XMPP.PubSub;
+using Waher.Networking.XMPP.Sensor;
 using Waher.Persistence;
 using Waher.Persistence.Files;
 using Waher.Persistence.Serialization;
@@ -47,6 +54,7 @@ using Waher.Script;
 using Waher.Script.Content;
 using Waher.Script.Graphs;
 using Waher.Security.LoginMonitor;
+using Waher.Things;
 
 namespace NeuroAccessMaui
 {
@@ -255,6 +263,14 @@ namespace NeuroAccessMaui
 					typeof(ContractsClient).Assembly,           // Serialization of XMPP objects related to digital identities and smart contracts
 					typeof(NeuroFeaturesClient).Assembly,       // Serialization of XMPP objects related to Neuro-Feature tokens
 					typeof(EDalerClient).Assembly,              // Management of eDaler URIs
+					typeof(SensorClient).Assembly,              // Serialization of XMPP objects related to sensors
+					typeof(ControlClient).Assembly,             // Serialization of XMPP objects related to actuators
+					typeof(ConcentratorClient).Assembly,        // Serialization of XMPP objects related to concentrators
+					typeof(ProvisioningClient).Assembly,        // Serialization of XMPP objects related to provisioning
+					typeof(PubSubClient).Assembly,              // Serialization of XMPP objects related to publish/subscribe pattern
+					typeof(PepClient).Assembly,                 // Serialization of XMPP objects related to personal eventing protocol (PEP)
+					typeof(AvatarClient).Assembly,              // Serialization of XMPP objects related to avatars
+					typeof(ThingReference).Assembly,            // Serialization of IoT-related objects
 					typeof(Expression).Assembly,                // Indexes basic script functions
 					typeof(Graph).Assembly,                     // Indexes graph script functions
 					typeof(GraphEncoder).Assembly,              // Indexes content script functions

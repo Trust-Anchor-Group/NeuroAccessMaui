@@ -1161,4 +1161,220 @@
   <data name="DeviceID" xml:space="preserve">
     <value>Laitteen tunnus</value>
   </data>
+  <data name="AddContactToContract" xml:space="preserve">
+    <value>Lisää yhteyshenkilö sopimukseen</value>
+  </data>
+  <data name="AddPart" xml:space="preserve">
+    <value>Lisää osa</value>
+  </data>
+  <data name="Archiving_Optional" xml:space="preserve">
+    <value>Arkistointi (valinnainen)</value>
+  </data>
+  <data name="Archiving_Required" xml:space="preserve">
+    <value>Arkistointi (pakollinen)</value>
+  </data>
+  <data name="BalanceUpdated" xml:space="preserve">
+    <value>Saldo päivitetty.</value>
+  </data>
+  <data name="CalculationError" xml:space="preserve">
+    <value>Laskentaa ei voi suorittaa.</value>
+  </data>
+  <data name="CanActAsTemplate" xml:space="preserve">
+    <value>Voi toimia mallina</value>
+  </data>
+  <data name="ContractHasBeenDeleted" xml:space="preserve">
+    <value>Sopimus on poistettu.</value>
+  </data>
+  <data name="ContractHasBeenObsoleted" xml:space="preserve">
+    <value>Sopimus on vanhentunut.</value>
+  </data>
+  <data name="ContractId" xml:space="preserve">
+    <value>Sopimuksen tunnus</value>
+  </data>
+  <data name="ContractRoleMustBeSelected" xml:space="preserve">
+    <value>Valitse ensin sopimusrooli ja yritä sitten uudelleen.</value>
+  </data>
+  <data name="Contracts" xml:space="preserve">
+    <value>Sopimukset</value>
+  </data>
+  <data name="ContractsInfoText" xml:space="preserve">
+    <value>Alla on luettelo sopimuksista, jotka olet luonut tai allekirjoittanut. Napsauta sopimusta saadaksesi lisätietoja siitä.</value>
+  </data>
+  <data name="ContractSuccessfullySigned" xml:space="preserve">
+    <value>Sopimus allekirjoitettiin onnistuneesti.</value>
+  </data>
+  <data name="ContractTemplates" xml:space="preserve">
+    <value>Sopimuspohjat</value>
+  </data>
+  <data name="ContractTemplatesInfoText" xml:space="preserve">
+    <value>Alla on luettelo käyttämistäsi sopimusmalleista. Napsauta mallia luodaksesi uuden sopimuksen kyseisen mallin perusteella.</value>
+  </data>
+  <data name="ContractVisibilityMustBeSelected" xml:space="preserve">
+    <value>Valitse ensin sopimuksen näkyvyys ja yritä sitten uudelleen.</value>
+  </data>
+  <data name="ContractVisibility_CreatorAndParts" xml:space="preserve">
+    <value>Luoja ja osat</value>
+  </data>
+  <data name="ContractVisibility_DomainAndParts" xml:space="preserve">
+    <value>Toimialue ja osat</value>
+  </data>
+  <data name="ContractVisibility_Public" xml:space="preserve">
+    <value>Julkinen, ei haettavissa</value>
+  </data>
+  <data name="ContractVisibility_PublicSearchable" xml:space="preserve">
+    <value>Julkinen ja haettavissa</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>päivä</value>
+  </data>
+  <data name="Days" xml:space="preserve">
+    <value>Päivää</value>
+  </data>
+  <data name="Digest" xml:space="preserve">
+    <value>Sulattaa</value>
+  </data>
+  <data name="Duration" xml:space="preserve">
+    <value>Kesto</value>
+  </data>
+  <data name="EnterProposal" xml:space="preserve">
+    <value>Kirjoita {0} ehdotukseen sisällytettävä teksti tai jätä tyhjäksi, jos ehdotusta ei tule lähettää.</value>
+  </data>
+  <data name="EnterValidValue" xml:space="preserve">
+    <value>Kirjoita ensin kelvollinen arvo.</value>
+  </data>
+  <data name="EnterValue" xml:space="preserve">
+    <value>Sinun on ensin annettava arvo.</value>
+  </data>
+  <data name="ExpiredEDalerUri" xml:space="preserve">
+    <value>Tämä eDaler-koodi on vanhentunut.</value>
+  </data>
+  <data name="ForInclusionInContract" xml:space="preserve">
+    <value>Sisällytettäväksi osaksi sopimusta.</value>
+  </data>
+  <data name="From" xml:space="preserve">
+    <value>Alkaen</value>
+  </data>
+  <data name="HashFunction" xml:space="preserve">
+    <value>Hajautusfunktio</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>tunti</value>
+  </data>
+  <data name="Hours" xml:space="preserve">
+    <value>työaika</value>
+  </data>
+  <data name="InvalidEDalerUri" xml:space="preserve">
+    <value>Virheellinen eDaler URI: {0}</value>
+  </data>
+  <data name="LocalName" xml:space="preserve">
+    <value>Paikallinen nimi</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>minuutti</value>
+  </data>
+  <data name="Minutes" xml:space="preserve">
+    <value>pöytäkirja</value>
+  </data>
+  <data name="Mode" xml:space="preserve">
+    <value>Moodi</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>kuukausi</value>
+  </data>
+  <data name="Months" xml:space="preserve">
+    <value>Kuukautta</value>
+  </data>
+  <data name="Namespace" xml:space="preserve">
+    <value>Nimiavaruus</value>
+  </data>
+  <data name="Negative" xml:space="preserve">
+    <value>Negatiivinen</value>
+  </data>
+  <data name="Parameters" xml:space="preserve">
+    <value>Parametrit</value>
+  </data>
+  <data name="Proposal" xml:space="preserve">
+    <value>Ehdotus</value>
+  </data>
+  <data name="PurposeReviewContract" xml:space="preserve">
+    <value>Sopimuksen tarkistaminen, jos olet osa.</value>
+  </data>
+  <data name="RequestToAccessContract" xml:space="preserve">
+    <value>Pyyntö saada tutustua sopimukseen</value>
+  </data>
+  <data name="Second" xml:space="preserve">
+    <value>toinen</value>
+  </data>
+  <data name="Seconds" xml:space="preserve">
+    <value>Sekuntia</value>
+  </data>
+  <data name="SelectedContactCannotBeAdded" xml:space="preserve">
+    <value>Valittua yhteystietoa ei voi lisätä. Sillä ei ole rekisteröityä oikeushenkilöä.</value>
+  </data>
+  <data name="Send" xml:space="preserve">
+    <value>Lähettää</value>
+  </data>
+  <data name="SignAfter" xml:space="preserve">
+    <value>Kirjaudu jälkeen</value>
+  </data>
+  <data name="SignAsRole" xml:space="preserve">
+    <value>Allekirjoita {0}</value>
+  </data>
+  <data name="SignBefore" xml:space="preserve">
+    <value>Allekirjoita ennen</value>
+  </data>
+  <data name="StateChangedTo" xml:space="preserve">
+    <value>Osavaltio muuttui {0}</value>
+  </data>
+  <data name="TemplateId" xml:space="preserve">
+    <value>Mallin tunnus</value>
+  </data>
+  <data name="TheContractRequiresAtLeast_AddMoreParts" xml:space="preserve">
+    <value>Sopimuksessa edellytetään vähintään {0} osaa {1} roolista. Lisää sopimukseen osia ja yritä uudelleen.</value>
+  </data>
+  <data name="TheContractRequiresAtMost_RemoveParts" xml:space="preserve">
+    <value>Sopimus edellyttää enintään {0} osaa {1} roolista. Poista joitakin osia sopimuksesta ja yritä uudelleen.</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>Jotta</value>
+  </data>
+  <data name="TokenAdded" xml:space="preserve">
+    <value>Lompakkoosi on lisätty token.</value>
+  </data>
+  <data name="TokenAdded2" xml:space="preserve">
+    <value>Tunnus lisätty</value>
+  </data>
+  <data name="TokenCreationTemplates" xml:space="preserve">
+    <value>Token-mallit</value>
+  </data>
+  <data name="TokenCreationTemplatesInfoText" xml:space="preserve">
+    <value>Alla on luettelo tunnusmalleista, joita olet käyttänyt tai voit käyttää uusien tunnusten luomiseen. Napsauta mallia luodaksesi uuden sopimuksen kyseisen mallin perusteella. Kun sopimus on allekirjoitettu ja hyväksytty, vastaava tunnus tai tunnukset luodaan.</value>
+  </data>
+  <data name="TokenRemoved" xml:space="preserve">
+    <value>Token on poistettu lompakostasi.</value>
+  </data>
+  <data name="TokenRemoved2" xml:space="preserve">
+    <value>Tunnus poistettu</value>
+  </data>
+  <data name="UnrecognizedEDalerURI" xml:space="preserve">
+    <value>Tunnistamaton eDaler URI.</value>
+  </data>
+  <data name="VariablesUpdated" xml:space="preserve">
+    <value>Muuttujat päivitetty</value>
+  </data>
+  <data name="Visibility" xml:space="preserve">
+    <value>Näkyvyys</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>vuosi</value>
+  </data>
+  <data name="Years" xml:space="preserve">
+    <value>vuosia</value>
+  </data>
+  <data name="YouHaveReceivedAProposal" xml:space="preserve">
+    <value>Olette saanut ehdotuksen.</value>
+  </data>
+  <data name="YourContractContainsErrors" xml:space="preserve">
+    <value>Sopimuksessa on virheitä. Korjaa nämä virheet ja yritä uudelleen.</value>
+  </data>
 </root>

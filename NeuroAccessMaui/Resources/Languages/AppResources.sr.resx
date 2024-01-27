@@ -1161,4 +1161,220 @@
   <data name="DeviceID" xml:space="preserve">
     <value>ID uređaja</value>
   </data>
+  <data name="AddContactToContract" xml:space="preserve">
+    <value>Dodaj kontakt ugovoru</value>
+  </data>
+  <data name="AddPart" xml:space="preserve">
+    <value>Dodaj deo</value>
+  </data>
+  <data name="Archiving_Optional" xml:space="preserve">
+    <value>Arhiviranje (opcionalno)</value>
+  </data>
+  <data name="Archiving_Required" xml:space="preserve">
+    <value>Arhiviranje (obavezno)</value>
+  </data>
+  <data name="BalanceUpdated" xml:space="preserve">
+    <value>Saldo je ažuriran.</value>
+  </data>
+  <data name="CalculationError" xml:space="preserve">
+    <value>Nije moguće izvršiti izračunavanje.</value>
+  </data>
+  <data name="CanActAsTemplate" xml:space="preserve">
+    <value>Može da deluje kao predložak</value>
+  </data>
+  <data name="ContractHasBeenDeleted" xml:space="preserve">
+    <value>Ugovor je izbrisan.</value>
+  </data>
+  <data name="ContractHasBeenObsoleted" xml:space="preserve">
+    <value>Ugovor je zastareo.</value>
+  </data>
+  <data name="ContractId" xml:space="preserve">
+    <value>ID ugovora</value>
+  </data>
+  <data name="ContractRoleMustBeSelected" xml:space="preserve">
+    <value>Prvo izaberite ulogu ugovora, a zatim pokušajte ponovo.</value>
+  </data>
+  <data name="Contracts" xml:space="preserve">
+    <value>Ugovore</value>
+  </data>
+  <data name="ContractsInfoText" xml:space="preserve">
+    <value>Ispod je lista ugovora koje ste kreirali ili potpisali. Kliknite na ugovor za više informacija o njemu.</value>
+  </data>
+  <data name="ContractSuccessfullySigned" xml:space="preserve">
+    <value>Ugovor je uspešno potpisan.</value>
+  </data>
+  <data name="ContractTemplates" xml:space="preserve">
+    <value>Predlošci ugovora</value>
+  </data>
+  <data name="ContractTemplatesInfoText" xml:space="preserve">
+    <value>Ispod je lista predložaka ugovora koje ste koristili. Kliknite na predložak da biste kreirali novi ugovor zasnovan na tom predlošku.</value>
+  </data>
+  <data name="ContractVisibilityMustBeSelected" xml:space="preserve">
+    <value>Prvo izaberite vidljivost ugovora, a zatim pokušajte ponovo.</value>
+  </data>
+  <data name="ContractVisibility_CreatorAndParts" xml:space="preserve">
+    <value>Kreator i delovi</value>
+  </data>
+  <data name="ContractVisibility_DomainAndParts" xml:space="preserve">
+    <value>Domen i delovi</value>
+  </data>
+  <data name="ContractVisibility_Public" xml:space="preserve">
+    <value>Javno, ne može se pretraživati</value>
+  </data>
+  <data name="ContractVisibility_PublicSearchable" xml:space="preserve">
+    <value>Javno i pretraživo</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>Dan</value>
+  </data>
+  <data name="Days" xml:space="preserve">
+    <value>Dani</value>
+  </data>
+  <data name="Digest" xml:space="preserve">
+    <value>Digest</value>
+  </data>
+  <data name="Duration" xml:space="preserve">
+    <value>Trajanje</value>
+  </data>
+  <data name="EnterProposal" xml:space="preserve">
+    <value>Unesite tekst koji treba uključiti u predlog da biste {0} ili ostavite prazan ako predlog ne bi trebalo da bude poslat.</value>
+  </data>
+  <data name="EnterValidValue" xml:space="preserve">
+    <value>Prvo unesite važeću vrednost.</value>
+  </data>
+  <data name="EnterValue" xml:space="preserve">
+    <value>Prvo morate da unesete vrednost.</value>
+  </data>
+  <data name="ExpiredEDalerUri" xml:space="preserve">
+    <value>Ovaj eDaler kod je istekao.</value>
+  </data>
+  <data name="ForInclusionInContract" xml:space="preserve">
+    <value>Za uključivanje kao deo ugovora.</value>
+  </data>
+  <data name="From" xml:space="preserve">
+    <value>Iz</value>
+  </data>
+  <data name="HashFunction" xml:space="preserve">
+    <value>Funkcija Hash</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>Sat</value>
+  </data>
+  <data name="Hours" xml:space="preserve">
+    <value>Sati</value>
+  </data>
+  <data name="InvalidEDalerUri" xml:space="preserve">
+    <value>Nevažeći eDaler URI: {0}</value>
+  </data>
+  <data name="LocalName" xml:space="preserve">
+    <value>Lokalno ime</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>Minut</value>
+  </data>
+  <data name="Minutes" xml:space="preserve">
+    <value>Minuta</value>
+  </data>
+  <data name="Mode" xml:space="preserve">
+    <value>Režimu</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>Meseca</value>
+  </data>
+  <data name="Months" xml:space="preserve">
+    <value>Meseci</value>
+  </data>
+  <data name="Namespace" xml:space="preserve">
+    <value>Prostor za ime</value>
+  </data>
+  <data name="Negative" xml:space="preserve">
+    <value>Negativna</value>
+  </data>
+  <data name="Parameters" xml:space="preserve">
+    <value>Parametre</value>
+  </data>
+  <data name="Proposal" xml:space="preserve">
+    <value>Predlog</value>
+  </data>
+  <data name="PurposeReviewContract" xml:space="preserve">
+    <value>Redigovanje ugovora tamo gde ste deo.</value>
+  </data>
+  <data name="RequestToAccessContract" xml:space="preserve">
+    <value>Zahtev za pristup ugovoru</value>
+  </data>
+  <data name="Second" xml:space="preserve">
+    <value>Drugi</value>
+  </data>
+  <data name="Seconds" xml:space="preserve">
+    <value>Sekundi</value>
+  </data>
+  <data name="SelectedContactCannotBeAdded" xml:space="preserve">
+    <value>Nije moguće dodati izabrani kontakt. Nema registrovan pravni ID.</value>
+  </data>
+  <data name="Send" xml:space="preserve">
+    <value>Poљalji</value>
+  </data>
+  <data name="SignAfter" xml:space="preserve">
+    <value>Potpiši posle</value>
+  </data>
+  <data name="SignAsRole" xml:space="preserve">
+    <value>Potpiši kao {0}</value>
+  </data>
+  <data name="SignBefore" xml:space="preserve">
+    <value>Potpiši pre</value>
+  </data>
+  <data name="StateChangedTo" xml:space="preserve">
+    <value>Stanje je promenjeno u {0}</value>
+  </data>
+  <data name="TemplateId" xml:space="preserve">
+    <value>ID predloška</value>
+  </data>
+  <data name="TheContractRequiresAtLeast_AddMoreParts" xml:space="preserve">
+    <value>Ugovor zahteva najmanje {0} uloge u {1}. Dodajte još delova ugovoru i pokušajte ponovo.</value>
+  </data>
+  <data name="TheContractRequiresAtMost_RemoveParts" xml:space="preserve">
+    <value>Ugovor zahteva najviše {0} deo uloge {1}. Uklonite neke delove iz ugovora i pokušajte ponovo.</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>Da</value>
+  </data>
+  <data name="TokenAdded" xml:space="preserve">
+    <value>Simbol je dodat u vaš novčanik.</value>
+  </data>
+  <data name="TokenAdded2" xml:space="preserve">
+    <value>Dodat simbol</value>
+  </data>
+  <data name="TokenCreationTemplates" xml:space="preserve">
+    <value>Predlošci simbola</value>
+  </data>
+  <data name="TokenCreationTemplatesInfoText" xml:space="preserve">
+    <value>Ispod je lista predložaka simbola koje ste koristili ili koje možete da koristite za kreiranje novih tokena. Kliknite na predložak da biste kreirali novi ugovor zasnovan na tom predlošku. Kada ugovor bude potpisan i odobren, biće kreiran odgovarajući simbol ili simboli.</value>
+  </data>
+  <data name="TokenRemoved" xml:space="preserve">
+    <value>Simbol je uklonjen iz vašeg novčanika.</value>
+  </data>
+  <data name="TokenRemoved2" xml:space="preserve">
+    <value>Simbol je uklonjen</value>
+  </data>
+  <data name="UnrecognizedEDalerURI" xml:space="preserve">
+    <value>Neprepoznatljiv eDaler URI.</value>
+  </data>
+  <data name="VariablesUpdated" xml:space="preserve">
+    <value>Promenljive su ažurirane</value>
+  </data>
+  <data name="Visibility" xml:space="preserve">
+    <value>Vidljivost</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>Godine</value>
+  </data>
+  <data name="Years" xml:space="preserve">
+    <value>Godina</value>
+  </data>
+  <data name="YouHaveReceivedAProposal" xml:space="preserve">
+    <value>Primili ste predlog.</value>
+  </data>
+  <data name="YourContractContainsErrors" xml:space="preserve">
+    <value>Vaš ugovor sadrži greške. Otklonjene ove greške i pokušajte ponovo.</value>
+  </data>
 </root>

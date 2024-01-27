@@ -1161,4 +1161,220 @@
   <data name="DeviceID" xml:space="preserve">
     <value>Идентификатор устройства</value>
   </data>
+  <data name="AddContactToContract" xml:space="preserve">
+    <value>Добавить контакт в контракт</value>
+  </data>
+  <data name="AddPart" xml:space="preserve">
+    <value>Добавить деталь</value>
+  </data>
+  <data name="Archiving_Optional" xml:space="preserve">
+    <value>Архивирование (опционально)</value>
+  </data>
+  <data name="Archiving_Required" xml:space="preserve">
+    <value>Архивирование (обязательно)</value>
+  </data>
+  <data name="BalanceUpdated" xml:space="preserve">
+    <value>Баланс обновлен.</value>
+  </data>
+  <data name="CalculationError" xml:space="preserve">
+    <value>Не удается выполнить расчет.</value>
+  </data>
+  <data name="CanActAsTemplate" xml:space="preserve">
+    <value>Может выступать в качестве шаблона</value>
+  </data>
+  <data name="ContractHasBeenDeleted" xml:space="preserve">
+    <value>Контракт был удален.</value>
+  </data>
+  <data name="ContractHasBeenObsoleted" xml:space="preserve">
+    <value>Контракт устарел.</value>
+  </data>
+  <data name="ContractId" xml:space="preserve">
+    <value>Идентификатор контракта</value>
+  </data>
+  <data name="ContractRoleMustBeSelected" xml:space="preserve">
+    <value>Сначала выберите роль контракта, а затем повторите попытку.</value>
+  </data>
+  <data name="Contracts" xml:space="preserve">
+    <value>Контракты</value>
+  </data>
+  <data name="ContractsInfoText" xml:space="preserve">
+    <value>Ниже приведен список договоров, которые вы создали или подписали. Нажмите на контракт, чтобы получить дополнительную информацию о нем.</value>
+  </data>
+  <data name="ContractSuccessfullySigned" xml:space="preserve">
+    <value>Контракт успешно подписан.</value>
+  </data>
+  <data name="ContractTemplates" xml:space="preserve">
+    <value>Шаблоны договоров</value>
+  </data>
+  <data name="ContractTemplatesInfoText" xml:space="preserve">
+    <value>Ниже приведен список шаблонов договоров, которые вы использовали. Нажмите на шаблон, чтобы создать новый контракт на основе этого шаблона.</value>
+  </data>
+  <data name="ContractVisibilityMustBeSelected" xml:space="preserve">
+    <value>Сначала выберите видимость контракта, а затем повторите попытку.</value>
+  </data>
+  <data name="ContractVisibility_CreatorAndParts" xml:space="preserve">
+    <value>Создатель и детали</value>
+  </data>
+  <data name="ContractVisibility_DomainAndParts" xml:space="preserve">
+    <value>Домен и детали</value>
+  </data>
+  <data name="ContractVisibility_Public" xml:space="preserve">
+    <value>Общедоступный, без возможности поиска</value>
+  </data>
+  <data name="ContractVisibility_PublicSearchable" xml:space="preserve">
+    <value>Общедоступный и доступный для поиска</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>день</value>
+  </data>
+  <data name="Days" xml:space="preserve">
+    <value>Дни недели</value>
+  </data>
+  <data name="Digest" xml:space="preserve">
+    <value>Переваривать</value>
+  </data>
+  <data name="Duration" xml:space="preserve">
+    <value>Длительность</value>
+  </data>
+  <data name="EnterProposal" xml:space="preserve">
+    <value>Введите текст, который будет включен в предложение {0}, или оставьте пустым, если предложение не должно быть отправлено.</value>
+  </data>
+  <data name="EnterValidValue" xml:space="preserve">
+    <value>Сначала введите допустимое значение.</value>
+  </data>
+  <data name="EnterValue" xml:space="preserve">
+    <value>Сначала нужно ввести значение.</value>
+  </data>
+  <data name="ExpiredEDalerUri" xml:space="preserve">
+    <value>Срок действия этого кода eDaler истек.</value>
+  </data>
+  <data name="ForInclusionInContract" xml:space="preserve">
+    <value>Для включения в состав договора.</value>
+  </data>
+  <data name="From" xml:space="preserve">
+    <value>От</value>
+  </data>
+  <data name="HashFunction" xml:space="preserve">
+    <value>Хэш-функция</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>час</value>
+  </data>
+  <data name="Hours" xml:space="preserve">
+    <value>Часов</value>
+  </data>
+  <data name="InvalidEDalerUri" xml:space="preserve">
+    <value>Недопустимый URI eDalaler: {0}</value>
+  </data>
+  <data name="LocalName" xml:space="preserve">
+    <value>Локальное название</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>минута</value>
+  </data>
+  <data name="Minutes" xml:space="preserve">
+    <value>протокол</value>
+  </data>
+  <data name="Mode" xml:space="preserve">
+    <value>Режим</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>месяц</value>
+  </data>
+  <data name="Months" xml:space="preserve">
+    <value>Месяцы</value>
+  </data>
+  <data name="Namespace" xml:space="preserve">
+    <value>Пространство имен</value>
+  </data>
+  <data name="Negative" xml:space="preserve">
+    <value>Отрицательная</value>
+  </data>
+  <data name="Parameters" xml:space="preserve">
+    <value>Параметры</value>
+  </data>
+  <data name="Proposal" xml:space="preserve">
+    <value>Предложение</value>
+  </data>
+  <data name="PurposeReviewContract" xml:space="preserve">
+    <value>Проверка договора, в котором вы состоите.</value>
+  </data>
+  <data name="RequestToAccessContract" xml:space="preserve">
+    <value>Запрос на доступ к договору</value>
+  </data>
+  <data name="Second" xml:space="preserve">
+    <value>секунда</value>
+  </data>
+  <data name="Seconds" xml:space="preserve">
+    <value>товары второго сорта</value>
+  </data>
+  <data name="SelectedContactCannotBeAdded" xml:space="preserve">
+    <value>Выбранный контакт не может быть добавлен. У него не зарегистрировано юридическое удостоверение личности.</value>
+  </data>
+  <data name="Send" xml:space="preserve">
+    <value>Отправить</value>
+  </data>
+  <data name="SignAfter" xml:space="preserve">
+    <value>Подписать после</value>
+  </data>
+  <data name="SignAsRole" xml:space="preserve">
+    <value>Подписать как {0}</value>
+  </data>
+  <data name="SignBefore" xml:space="preserve">
+    <value>Подпишите перед</value>
+  </data>
+  <data name="StateChangedTo" xml:space="preserve">
+    <value>Состояние изменено на {0}</value>
+  </data>
+  <data name="TemplateId" xml:space="preserve">
+    <value>Идентификатор шаблона</value>
+  </data>
+  <data name="TheContractRequiresAtLeast_AddMoreParts" xml:space="preserve">
+    <value>Контракт требует, по крайней мере{0} часть (части) ролевых {1}. Добавьте в контракт дополнительные детали и повторите попытку.</value>
+  </data>
+  <data name="TheContractRequiresAtMost_RemoveParts" xml:space="preserve">
+    <value>Контракт требует не более {0} части ролей {1}. Удалите некоторые части из контракта и повторите попытку.</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>Кому</value>
+  </data>
+  <data name="TokenAdded" xml:space="preserve">
+    <value>Токен добавлен в ваш кошелек.</value>
+  </data>
+  <data name="TokenAdded2" xml:space="preserve">
+    <value>Добавлен токен</value>
+  </data>
+  <data name="TokenCreationTemplates" xml:space="preserve">
+    <value>Шаблоны токенов</value>
+  </data>
+  <data name="TokenCreationTemplatesInfoText" xml:space="preserve">
+    <value>Ниже приведен список шаблонов токенов, которые вы использовали или можете использовать для создания новых токенов. Нажмите на шаблон, чтобы создать новый контракт на основе этого шаблона. После того, как контракт будет подписан и утвержден, будет создан соответствующий токен или токены.</value>
+  </data>
+  <data name="TokenRemoved" xml:space="preserve">
+    <value>Токен был удален из вашего кошелька.</value>
+  </data>
+  <data name="TokenRemoved2" xml:space="preserve">
+    <value>Фишка удалена</value>
+  </data>
+  <data name="UnrecognizedEDalerURI" xml:space="preserve">
+    <value>Нераспознанный eDaler URI.</value>
+  </data>
+  <data name="VariablesUpdated" xml:space="preserve">
+    <value>Переменные обновлены</value>
+  </data>
+  <data name="Visibility" xml:space="preserve">
+    <value>Видимость</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>год</value>
+  </data>
+  <data name="Years" xml:space="preserve">
+    <value>годы</value>
+  </data>
+  <data name="YouHaveReceivedAProposal" xml:space="preserve">
+    <value>Вы получили предложение.</value>
+  </data>
+  <data name="YourContractContainsErrors" xml:space="preserve">
+    <value>Ваш контракт содержит ошибки. Исправьте эти ошибки и повторите попытку.</value>
+  </data>
 </root>

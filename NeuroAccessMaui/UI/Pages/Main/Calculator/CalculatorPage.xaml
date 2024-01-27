@@ -1,0 +1,209 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseContentPage x:Name="ThisPage"
+							 x:Class="NeuroAccessMaui.UI.Pages.Main.Calculator.CalculatorPage"
+							 x:DataType="viewmodel:CalculatorViewModel"
+							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.Calculator">
+	<Grid RowDefinitions="auto,*,*,*,*,*,*,*" ColumnDefinitions="*,*,*,*,*" RowSpacing="2" ColumnSpacing="2" Padding="2" Margin="0">
+		<Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="5" Text="{Binding MemoryString}" Margin="10"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" HorizontalTextAlignment="Start" VerticalTextAlignment="Center"
+			   FontSize="Subtitle"/>
+		<Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="5" Text="{Binding StackString}" Margin="10"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" HorizontalTextAlignment="End" VerticalTextAlignment="Center"
+			   FontSize="Subtitle"/>
+		<Frame Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="5" HorizontalOptions="Fill" VerticalOptions="Fill"
+			   BorderColor="Black" Margin="5" CornerRadius="8" BackgroundColor="Transparent" Padding="20,5,20,5">
+			<Label FontSize="30" HorizontalOptions="Fill" VerticalOptions="Fill"
+				   HorizontalTextAlignment="Start" VerticalTextAlignment="Center">
+				<Label.FormattedText>
+					<FormattedString>
+						<Span Text="{Binding Value}"/>
+						<Span Text="|" TextColor="{StaticResource GrayColor}" FontSize="35"/>
+					</FormattedString>
+				</Label.FormattedText>
+			</Label>
+		</Frame>
+
+		<!-- Main buttons -->
+
+		<Button Grid.Column="0" Grid.Row="2" Text="7" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="7"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayMain}" Padding="-2"/>
+		<Button Grid.Column="1" Grid.Row="2" Text="8" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="8"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayMain}" Padding="-2"/>
+		<Button Grid.Column="2" Grid.Row="2" Text="9" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="9"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayMain}" Padding="-2"/>
+		<Button Grid.Column="3" Grid.Row="2" Text="+" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="+"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayMain}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="4" Grid.Row="2" Text="M+" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="M+"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayMain}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+
+		<Button Grid.Column="0" Grid.Row="3" Text="4" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="4"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayMain}" Padding="-2"/>
+		<Button Grid.Column="1" Grid.Row="3" Text="5" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="5"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayMain}" Padding="-2"/>
+		<Button Grid.Column="2" Grid.Row="3" Text="6" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="6"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayMain}" Padding="-2"/>
+		<Button Grid.Column="3" Grid.Row="3" Text="−" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="-"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayMain}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="4" Grid.Row="3" Text="M−" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="M-"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayMain}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+
+		<Button Grid.Column="0" Grid.Row="4" Text="1" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="1"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayMain}" Padding="-2"/>
+		<Button Grid.Column="1" Grid.Row="4" Text="2" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="2"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayMain}" Padding="-2"/>
+		<Button Grid.Column="2" Grid.Row="4" Text="3" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="3"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayMain}" Padding="-2"/>
+		<Button Grid.Column="3" Grid.Row="4" Text="⨉" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="*"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayMain}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="4" Grid.Row="4" Text="MR" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="MR"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayMain}" Padding="-2" IsEnabled="{Binding HasStatistics}"/>
+
+		<Button Grid.Column="0" Grid.Row="5" Text="±" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="+-"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayMain}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="1" Grid.Row="5" Text="0" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="0"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayMain}" Padding="-2"/>
+		<Button Grid.Column="2" Grid.Row="5" Text="{Binding DecimalSeparator}" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="."
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayMain}" Padding="-2"/>
+		<Button Grid.Column="3" Grid.Row="5" Text="÷" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="/"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayMain}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="4" Grid.Row="5" Text="C" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="C"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayMain}" Padding="-2"/>
+
+		<Button Grid.Column="0" Grid.Row="6" Text="1/x" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="1/x"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayMain}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="1" Grid.Row="6" Text="%" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="%"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayMain}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="2" Grid.Row="6" Text="x²" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="x2"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayMain}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="3" Grid.Row="6" Text="xʸ" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="^"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayMain}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="4" Grid.Row="6" Text="CE" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="CE"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayMain}" Padding="-2"/>
+
+		<Button Grid.Column="0" Grid.Row="7" Text="f(x)" FontSize="Large" TextTransform="None" Command="{Binding ToggleCommand}"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayMain}" Padding="-2"/>
+		<Button Grid.Column="1" Grid.Row="7" Text="(" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="("
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayMain}" Padding="-2"/>
+		<Button Grid.Column="2" Grid.Row="7" Text="√x" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="sqrt"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayMain}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="3" Grid.Row="7" Text="ʸ√x" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="yrt"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayMain}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="4" Grid.Row="7" Text="=" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="="
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayEquals}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="4" Grid.Row="7" Text=")" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter=")"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayEndParenthesis}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+
+		<!-- Funcion buttons -->
+
+		<Button Grid.Column="0" Grid.Row="2" Text="‰" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="%0"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayFunctions}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="1" Grid.Row="2" Text="exp" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="exp"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayFunctions}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="2" Grid.Row="2" Text="sin" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="sin"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayNotHyperbolicNotInverse}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="2" Grid.Row="2" Text="sinh" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="sinh"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayHyperbolicNotInverse}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="2" Grid.Row="2" Text="asin" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="asin"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayNotHyperbolicInverse}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="2" Grid.Row="2" Text="asinh" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="asinh"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayHyperbolicInverse}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="3" Grid.Row="2" Text="|x|" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="abs"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayFunctions}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="4" Grid.Row="2" Text="µ" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="avg"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayFunctions}" Padding="-2" IsEnabled="{Binding HasStatistics}"/>
+
+		<Button Grid.Column="0" Grid.Row="3" Text="°" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="°"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayFunctions}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="1" Grid.Row="3" Text="10ˣ" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="10^x"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayFunctions}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="2" Grid.Row="3" Text="cos" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="cos"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayNotHyperbolicNotInverse}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="2" Grid.Row="3" Text="cosh" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="cosh"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayHyperbolicNotInverse}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="2" Grid.Row="3" Text="acos" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="acos"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayNotHyperbolicInverse}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="2" Grid.Row="3" Text="acosh" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="acosh"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayHyperbolicInverse}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="3" Grid.Row="3" Text="frac" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="frac"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayFunctions}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="4" Grid.Row="3" Text="σ" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="stddev"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayFunctions}" Padding="-2" IsEnabled="{Binding HasStatistics}"/>
+
+		<Button Grid.Column="0" Grid.Row="4" Text="rad" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="rad"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayFunctions}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="1" Grid.Row="4" Text="2ˣ" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="2^x"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayFunctions}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="2" Grid.Row="4" Text="tan" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="tan"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayNotHyperbolicNotInverse}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="2" Grid.Row="4" Text="tanh" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="tanh"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayHyperbolicNotInverse}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="2" Grid.Row="4" Text="atan" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="atan"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayNotHyperbolicInverse}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="2" Grid.Row="4" Text="atanh" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="atanh"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayHyperbolicInverse}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="3" Grid.Row="4" Text="sign" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="sign"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayFunctions}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="4" Grid.Row="4" Text="Σ" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="sum"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayFunctions}" Padding="-2" IsEnabled="{Binding HasStatistics}"/>
+
+		<Button Grid.Column="0" Grid.Row="5" Text="arc" FontSize="Large" TextTransform="None" Command="{Binding ToggleInverseCommand}"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayFunctions}" Padding="-2"/>
+		<Button Grid.Column="1" Grid.Row="5" Text="log" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="lg"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayFunctions}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="2" Grid.Row="5" Text="sec" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="sec"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayNotHyperbolicNotInverse}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="2" Grid.Row="5" Text="sech" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="sech"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayHyperbolicNotInverse}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="2" Grid.Row="5" Text="asec" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="asec"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayNotHyperbolicInverse}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="2" Grid.Row="5" Text="asech" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="asech"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayHyperbolicInverse}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="3" Grid.Row="5" Text="round" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="round"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayFunctions}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="4" Grid.Row="5" Text="∏" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="prod"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayFunctions}" Padding="-2" IsEnabled="{Binding HasStatistics}"/>
+
+		<Button Grid.Column="0" Grid.Row="6" Text="hyp" FontSize="Large" TextTransform="None" Command="{Binding ToggleHyperbolicCommand}"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayFunctions}" Padding="-2"/>
+		<Button Grid.Column="1" Grid.Row="6" Text="ln" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="ln"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayFunctions}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="2" Grid.Row="6" Text="csc" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="csc"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayNotHyperbolicNotInverse}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="2" Grid.Row="6" Text="csch" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="csch"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayHyperbolicNotInverse}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="2" Grid.Row="6" Text="acsc" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="acsc"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayNotHyperbolicInverse}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="2" Grid.Row="6" Text="acsch" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="acsch"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayHyperbolicInverse}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="3" Grid.Row="6" Text="⌈x⌉" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="ceil"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayFunctions}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="4" Grid.Row="6" Text="inf" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="min"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayFunctions}" Padding="-2" IsEnabled="{Binding HasStatistics}"/>
+
+		<Button Grid.Column="0" Grid.Row="7" Text="op" FontSize="Large" TextTransform="None" Command="{Binding ToggleCommand}"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayFunctions}" Padding="-2"/>
+		<Button Grid.Column="1" Grid.Row="7" Text="lg₂" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="log2"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayFunctions}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="2" Grid.Row="7" Text="cot" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="cot"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayNotHyperbolicNotInverse}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="2" Grid.Row="7" Text="coth" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="coth"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayHyperbolicNotInverse}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="2" Grid.Row="7" Text="acot" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="acot"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayNotHyperbolicInverse}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="2" Grid.Row="7" Text="acoth" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="acoth"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayHyperbolicInverse}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="3" Grid.Row="7" Text="⌊x⌋" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="floor"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayFunctions}" Padding="-2" IsEnabled="{Binding HasValue}"/>
+		<Button Grid.Column="4" Grid.Row="7" Text="sup" FontSize="Large" TextTransform="None" Command="{Binding KeyPressCommand}" CommandParameter="max"
+			   HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="{Binding DisplayFunctions}" Padding="-2" IsEnabled="{Binding HasStatistics}"/>
+
+	</Grid>
+</base:BaseContentPage>

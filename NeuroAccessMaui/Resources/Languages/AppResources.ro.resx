@@ -1161,4 +1161,220 @@
   <data name="DeviceID" xml:space="preserve">
     <value>ID-ul dispozitivului</value>
   </data>
+  <data name="AddContactToContract" xml:space="preserve">
+    <value>Adăugați o persoană de contact la contract</value>
+  </data>
+  <data name="AddPart" xml:space="preserve">
+    <value>Adaugă parte</value>
+  </data>
+  <data name="Archiving_Optional" xml:space="preserve">
+    <value>Arhivare (opțional)</value>
+  </data>
+  <data name="Archiving_Required" xml:space="preserve">
+    <value>Arhivare (obligatoriu)</value>
+  </data>
+  <data name="BalanceUpdated" xml:space="preserve">
+    <value>Sold actualizat.</value>
+  </data>
+  <data name="CalculationError" xml:space="preserve">
+    <value>Nu se poate efectua calculul.</value>
+  </data>
+  <data name="CanActAsTemplate" xml:space="preserve">
+    <value>Poate acționa ca șablon</value>
+  </data>
+  <data name="ContractHasBeenDeleted" xml:space="preserve">
+    <value>Contractul a fost șters.</value>
+  </data>
+  <data name="ContractHasBeenObsoleted" xml:space="preserve">
+    <value>Contractul a fost caduc.</value>
+  </data>
+  <data name="ContractId" xml:space="preserve">
+    <value>Contract ID</value>
+  </data>
+  <data name="ContractRoleMustBeSelected" xml:space="preserve">
+    <value>Selectați mai întâi rolul de contract, apoi încercați din nou.</value>
+  </data>
+  <data name="Contracts" xml:space="preserve">
+    <value>Contracte</value>
+  </data>
+  <data name="ContractsInfoText" xml:space="preserve">
+    <value>Mai jos este o listă de contracte pe care le-ați creat sau semnat. Faceți clic pe un contract pentru mai multe informații despre acesta.</value>
+  </data>
+  <data name="ContractSuccessfullySigned" xml:space="preserve">
+    <value>Contract semnat cu succes.</value>
+  </data>
+  <data name="ContractTemplates" xml:space="preserve">
+    <value>Șabloane de contract</value>
+  </data>
+  <data name="ContractTemplatesInfoText" xml:space="preserve">
+    <value>Mai jos este o listă de șabloane de contract pe care le-ați utilizat. Faceți clic pe un șablon pentru a crea un nou contract bazat pe acel șablon.</value>
+  </data>
+  <data name="ContractVisibilityMustBeSelected" xml:space="preserve">
+    <value>Selectați mai întâi vizibilitatea contractului, apoi încercați din nou.</value>
+  </data>
+  <data name="ContractVisibility_CreatorAndParts" xml:space="preserve">
+    <value>Creator și părți</value>
+  </data>
+  <data name="ContractVisibility_DomainAndParts" xml:space="preserve">
+    <value>Domeniu și părți</value>
+  </data>
+  <data name="ContractVisibility_Public" xml:space="preserve">
+    <value>Public, nu poate fi căutat</value>
+  </data>
+  <data name="ContractVisibility_PublicSearchable" xml:space="preserve">
+    <value>Public și căutabil</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>zi</value>
+  </data>
+  <data name="Days" xml:space="preserve">
+    <value>Zile</value>
+  </data>
+  <data name="Digest" xml:space="preserve">
+    <value>Digera</value>
+  </data>
+  <data name="Duration" xml:space="preserve">
+    <value>Durată</value>
+  </data>
+  <data name="EnterProposal" xml:space="preserve">
+    <value>Introduceți textul de inclus în propunere pentru a {0} sau lăsați necompletat dacă nu trebuie trimisă o propunere.</value>
+  </data>
+  <data name="EnterValidValue" xml:space="preserve">
+    <value>Introduceți mai întâi o valoare validă.</value>
+  </data>
+  <data name="EnterValue" xml:space="preserve">
+    <value>Trebuie să introduceți mai întâi o valoare.</value>
+  </data>
+  <data name="ExpiredEDalerUri" xml:space="preserve">
+    <value>Acest cod eDaler a expirat.</value>
+  </data>
+  <data name="ForInclusionInContract" xml:space="preserve">
+    <value>Pentru includerea ca parte a unui contract.</value>
+  </data>
+  <data name="From" xml:space="preserve">
+    <value>Din</value>
+  </data>
+  <data name="HashFunction" xml:space="preserve">
+    <value>Funcția Hash</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>oră</value>
+  </data>
+  <data name="Hours" xml:space="preserve">
+    <value>Ore</value>
+  </data>
+  <data name="InvalidEDalerUri" xml:space="preserve">
+    <value>URI eDaler nevalid: {0}</value>
+  </data>
+  <data name="LocalName" xml:space="preserve">
+    <value>Denumirea locală</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>minut</value>
+  </data>
+  <data name="Minutes" xml:space="preserve">
+    <value>Minute</value>
+  </data>
+  <data name="Mode" xml:space="preserve">
+    <value>Mod</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>lună</value>
+  </data>
+  <data name="Months" xml:space="preserve">
+    <value>Luni</value>
+  </data>
+  <data name="Namespace" xml:space="preserve">
+    <value>Spațiu de nume</value>
+  </data>
+  <data name="Negative" xml:space="preserve">
+    <value>Negativ</value>
+  </data>
+  <data name="Parameters" xml:space="preserve">
+    <value>Parametrii</value>
+  </data>
+  <data name="Proposal" xml:space="preserve">
+    <value>Propunere</value>
+  </data>
+  <data name="PurposeReviewContract" xml:space="preserve">
+    <value>Revizuirea contractului în care sunteți parte.</value>
+  </data>
+  <data name="RequestToAccessContract" xml:space="preserve">
+    <value>Cerere de acces contract</value>
+  </data>
+  <data name="Second" xml:space="preserve">
+    <value>secundă</value>
+  </data>
+  <data name="Seconds" xml:space="preserve">
+    <value>Secunde</value>
+  </data>
+  <data name="SelectedContactCannotBeAdded" xml:space="preserve">
+    <value>Persoana de contact selectată nu poate fi adăugată. Nu are un ID legal înregistrat.</value>
+  </data>
+  <data name="Send" xml:space="preserve">
+    <value>Expedia</value>
+  </data>
+  <data name="SignAfter" xml:space="preserve">
+    <value>Semnează după</value>
+  </data>
+  <data name="SignAsRole" xml:space="preserve">
+    <value>Semnează ca {0}</value>
+  </data>
+  <data name="SignBefore" xml:space="preserve">
+    <value>Semnează înainte</value>
+  </data>
+  <data name="StateChangedTo" xml:space="preserve">
+    <value>Statul s-a schimbat în {0}</value>
+  </data>
+  <data name="TemplateId" xml:space="preserve">
+    <value>ID-ul șablonului</value>
+  </data>
+  <data name="TheContractRequiresAtLeast_AddMoreParts" xml:space="preserve">
+    <value>Contractul necesită cel puțin {0} parte (părți) de rol {1}. Adăugați mai multe părți la contract și încercați din nou.</value>
+  </data>
+  <data name="TheContractRequiresAtMost_RemoveParts" xml:space="preserve">
+    <value>Contractul necesită cel mult {0} parte (părți) a (ale) rolului {1}. Scoateți unele părți din contract și încercați din nou.</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>Spre</value>
+  </data>
+  <data name="TokenAdded" xml:space="preserve">
+    <value>Un token a fost adăugat în portofel.</value>
+  </data>
+  <data name="TokenAdded2" xml:space="preserve">
+    <value>Token adăugat</value>
+  </data>
+  <data name="TokenCreationTemplates" xml:space="preserve">
+    <value>Șabloane de jetoane</value>
+  </data>
+  <data name="TokenCreationTemplatesInfoText" xml:space="preserve">
+    <value>Mai jos este o listă de șabloane de tokenuri pe care le-ați utilizat sau le puteți utiliza pentru a crea tokenuri noi. Faceți clic pe un șablon pentru a crea un nou contract bazat pe acel șablon. Odată ce contractul a fost semnat și aprobat, token-ul sau jetoanele corespunzătoare vor fi create.</value>
+  </data>
+  <data name="TokenRemoved" xml:space="preserve">
+    <value>Un token a fost eliminat din portofel.</value>
+  </data>
+  <data name="TokenRemoved2" xml:space="preserve">
+    <value>Token eliminat</value>
+  </data>
+  <data name="UnrecognizedEDalerURI" xml:space="preserve">
+    <value>URI eDaler nerecunoscut.</value>
+  </data>
+  <data name="VariablesUpdated" xml:space="preserve">
+    <value>Variabile actualizate</value>
+  </data>
+  <data name="Visibility" xml:space="preserve">
+    <value>Vizibilitate</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>an</value>
+  </data>
+  <data name="Years" xml:space="preserve">
+    <value>Ani</value>
+  </data>
+  <data name="YouHaveReceivedAProposal" xml:space="preserve">
+    <value>Ați primit o propunere.</value>
+  </data>
+  <data name="YourContractContainsErrors" xml:space="preserve">
+    <value>Contractul dumneavoastră conține erori. Remediați aceste erori și încercați din nou.</value>
+  </data>
 </root>

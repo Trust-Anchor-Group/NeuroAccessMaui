@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<views:ContentBasePage x:Class="IdApp.Pages.Signatures.ServerSignature.ServerSignaturePage" x:DataType="model:ServerSignatureViewModel"
+	xmlns="http://xamarin.com/schemas/2014/forms"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:model="clr-namespace:IdApp.Pages.Signatures.ServerSignature;assembly=IdApp"
+	xmlns:resx="clr-namespace:IdApp.Resx;assembly=IdApp"
+	xmlns:views="clr-namespace:IdApp.Pages;assembly=IdApp"
+	Title="{x:Static resx:AppResources.ServerSignature}"
+	Style="{StaticResource BaseBackgroundPage}">
+	<ScrollView x:Name="ScrollView">
+		<StackLayout
+			Margin="{DynamicResource SafeAreaInsetsDefaultMargin}"
+			VerticalOptions="Start">
+			<Label
+				Style="{StaticResource Heading}"
+				Text="{x:Static resx:AppResources.SignatureInformation}" />
+			<Label
+				HorizontalOptions="Center"
+				VerticalOptions="CenterAndExpand"
+				Text="{x:Static resx:AppResources.ServerSignatureInformationInfoText}" />
+			<Grid
+				VerticalOptions="StartAndExpand">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition
+						Width="Auto" />
+					<ColumnDefinition
+						Width="*" />
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<RowDefinition
+						Height="Auto" />
+					<RowDefinition
+						Height="Auto" />
+					<RowDefinition
+						Height="Auto" />
+				</Grid.RowDefinitions>
+				<!--    -->
+				<Label
+					Grid.Row="0"
+					Grid.Column="0"
+					Style="{StaticResource KeyLabel}"
+					Text="{x:Static resx:AppResources.Provider}" />
+				<Label
+					Grid.Row="0"
+					Grid.Column="1"
+					Style="{StaticResource ValueLabel}"
+					Text="{Binding Path=Provider}" />
+				<!--    -->
+				<Label
+					Grid.Row="1"
+					Grid.Column="0"
+					Style="{StaticResource KeyLabel}"
+					Text="{x:Static resx:AppResources.Timestamp}" />
+				<Label
+					Grid.Row="1"
+					Grid.Column="1"
+					Style="{StaticResource ValueLabel}"
+					Text="{Binding Path=Timestamp}" />
+				<!--    -->
+				<Label
+					Grid.Row="2"
+					Grid.Column="0"
+					Style="{StaticResource KeyLabel}"
+					Text="{x:Static resx:AppResources.Signature}" />
+				<Label
+					Grid.Row="2"
+					Grid.Column="1"
+					Style="{StaticResource ValueLabel}"
+					Text="{Binding Path=Signature}" />
+			</Grid>
+		</StackLayout>
+	</ScrollView>
+</views:ContentBasePage>

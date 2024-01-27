@@ -1,26 +1,25 @@
-﻿using IdApp.Controls.Extended;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Navigation;
 using NeuroAccessMaui.UI.Converters;
-using IdApp.Extensions;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel;
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
 using NeuroAccessMaui.UI.Pages.Main.Calculator;
 using NeuroAccessMaui.UI.Pages.Main.Duration;
-using IdApp.Resx;
-using NeuroAccessMaui.Services;
-using NeuroAccessMaui.Services.Navigation;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Text;
-using System.Windows.Input;
 using Waher.Content;
 using Waher.Content.Xml;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.EventArguments;
 using Waher.Persistence;
 using Waher.Script;
-using NeuroAccessMaui.Resources.Languages;
-using NeuroAccessMaui.Extensions;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 {
@@ -49,7 +48,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			this.ContractVisibilityItems = [];
 			this.AvailableRoles = [];
 			this.ParameterOptions = [];
-			this.ProposeCommand = new Command(async _ => await this.Propose(), _ => this.CanPropose());
 			this.partsToAdd = [];
 		}
 
@@ -112,7 +110,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			await base.OnDispose();
 		}
 
-		private void Template_FormatParameterDisplay(object Sender, ParameterValueFormattingEventArgs e)
+		private void Template_FormatParameterDisplay(object? Sender, ParameterValueFormattingEventArgs e)
 		{
 			if (e.Value is Duration Duration)
 				e.Value = DurationToString.ToString(Duration);
@@ -213,43 +211,17 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		#region Properties
 
 		/// <summary>
-		/// The Propose action which creates a new contract.
-		/// </summary>
-		public ICommand ProposeCommand { get; }
-
-		/// <summary>
-		/// See <see cref="IsProposing"/>
-		/// </summary>
-		public static readonly BindableProperty IsProposingProperty =
-			BindableProperty.Create(nameof(IsProposing), typeof(bool), typeof(NewContractViewModel), default(bool));
-
-		/// <summary>
 		/// Gets or sets whether the user is proposing the contract at the current time.
 		/// </summary>
-		public bool IsProposing
-		{
-			get => (bool)this.GetValue(IsProposingProperty);
-			set
-			{
-				this.SetValue(IsProposingProperty, value);
-				this.EvaluateCommands(this.ProposeCommand);
-			}
-		}
-
-		/// <summary>
-		/// See <see cref="IsTemplate"/>
-		/// </summary>
-		public static readonly BindableProperty IsTemplateProperty =
-			BindableProperty.Create(nameof(IsTemplate), typeof(bool), typeof(NewContractViewModel), default(bool));
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ProposeCommand))]
+		private bool isProposing;
 
 		/// <summary>
 		/// Gets or sets whether this contract is a template or not.
 		/// </summary>
-		public bool IsTemplate
-		{
-			get => (bool)this.GetValue(IsTemplateProperty);
-			set => this.SetValue(IsTemplateProperty, value);
-		}
+		[ObservableProperty]
+		private bool isTemplate;
 
 		/// <summary>
 		/// A list of valid visibility items to choose from for this contract.
@@ -257,40 +229,48 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		public ObservableCollection<ContractVisibilityModel> ContractVisibilityItems { get; }
 
 		/// <summary>
-		/// See <see cref="SelectedContractVisibilityItem"/>
-		/// </summary>
-		public static readonly BindableProperty SelectedContractVisibilityItemProperty =
-			BindableProperty.Create(nameof(SelectedContractVisibilityItem), typeof(ContractVisibilityModel), typeof(NewContractViewModel), default(ContractVisibilityModel));
-
-		/// <summary>
 		/// The selected contract visibility item, if any.
 		/// </summary>
-		public ContractVisibilityModel SelectedContractVisibilityItem
-		{
-			get => (ContractVisibilityModel)this.GetValue(SelectedContractVisibilityItemProperty);
-			set
-			{
-				this.SetValue(SelectedContractVisibilityItemProperty, value);
+		[ObservableProperty]
+		private ContractVisibilityModel selectedContractVisibilityItem;
 
-				if (this.template is not null && value is not null)
-					this.template.Visibility = value.Visibility;
+		/// <inheritdoc/>
+		protected override void OnPropertyChanging(System.ComponentModel.PropertyChangingEventArgs e)
+		{
+			base.OnPropertyChanging(e);
+
+			switch (e.PropertyName)
+			{
+				case nameof(this.SelectedRole):
+					this.RemoveRole(this.SelectedRole, ServiceRef.TagProfile.LegalIdentity!.Id);
+					break;
+			}
+		}
+
+		/// <inheritdoc/>
+		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+		{
+			base.OnPropertyChanged(e);
+
+			switch (e.PropertyName)
+			{
+				case nameof(this.SelectedContractVisibilityItem):
+					if (this.template is not null && this.SelectedContractVisibilityItem is not null)
+						this.template.Visibility = this.SelectedContractVisibilityItem.Visibility;
+					break;
+
+				case nameof(this.SelectedRole):
+					if (this.template is not null && !string.IsNullOrWhiteSpace(this.SelectedRole))
+						this.AddRole(this.SelectedRole, ServiceRef.TagProfile.LegalIdentity!.Id).Wait();
+					break;
 			}
 		}
 
 		/// <summary>
-		/// See <see cref="VisibilityIsEnabled"/>
-		/// </summary>
-		public static readonly BindableProperty VisibilityIsEnabledProperty =
-			BindableProperty.Create(nameof(VisibilityIsEnabled), typeof(bool), typeof(NewContractViewModel), default(bool));
-
-		/// <summary>
 		/// Gets or sets whether the visibility items should be shown to the user or not.
 		/// </summary>
-		public bool VisibilityIsEnabled
-		{
-			get => (bool)this.GetValue(VisibilityIsEnabledProperty);
-			set => this.SetValue(VisibilityIsEnabledProperty, value);
-		}
+		[ObservableProperty]
+		private bool visibilityIsEnabled;
 
 		/// <summary>
 		/// The different roles available to choose from when creating a contract.
@@ -303,149 +283,58 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		public ObservableCollection<ContractOption> ParameterOptions { get; }
 
 		/// <summary>
-		/// See <see cref="SelectedRole"/>
-		/// </summary>
-		public static readonly BindableProperty SelectedRoleProperty =
-			BindableProperty.Create(nameof(SelectedRole), typeof(string), typeof(NewContractViewModel), default(string), propertyChanged: (b, oldValue, newValue) =>
-			{
-				NewContractViewModel viewModel = (NewContractViewModel)b;
-				string oldRole = (string)oldValue;
-				viewModel.RemoveRole(oldRole, viewModel.TagProfile.LegalIdentity.Id);
-				string newRole = (string)newValue;
-				if (viewModel.template is not null && !string.IsNullOrWhiteSpace(newRole))
-				{
-					viewModel.AddRole(newRole, viewModel.TagProfile.LegalIdentity.Id).Wait();
-				}
-			});
-
-		/// <summary>
 		/// The role selected for the contract, if any.
 		/// </summary>
-		public string SelectedRole
-		{
-			get => (string)this.GetValue(SelectedRoleProperty);
-			set => this.SetValue(SelectedRoleProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="Roles"/>
-		/// </summary>
-		public static readonly BindableProperty RolesProperty =
-			BindableProperty.Create(nameof(Roles), typeof(StackLayout), typeof(NewContractViewModel), default(StackLayout));
+		[ObservableProperty]
+		private string selectedRole;
 
 		/// <summary>
 		/// Holds Xaml code for visually representing a contract's roles.
 		/// </summary>
-		public StackLayout Roles
-		{
-			get => (StackLayout)this.GetValue(RolesProperty);
-			set => this.SetValue(RolesProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="Parameters"/>
-		/// </summary>
-		public static readonly BindableProperty ParametersProperty =
-			BindableProperty.Create(nameof(Parameters), typeof(StackLayout), typeof(NewContractViewModel), default(StackLayout));
+		[ObservableProperty]
+		private StackLayout roles;
 
 		/// <summary>
 		/// Holds Xaml code for visually representing a contract's parameters.
 		/// </summary>
-		public StackLayout Parameters
-		{
-			get => (StackLayout)this.GetValue(ParametersProperty);
-			set => this.SetValue(ParametersProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="HumanReadableText"/>
-		/// </summary>
-		public static readonly BindableProperty HumanReadableTextProperty =
-			BindableProperty.Create(nameof(HumanReadableText), typeof(StackLayout), typeof(NewContractViewModel), default(StackLayout));
+		[ObservableProperty]
+		private StackLayout parameters;
 
 		/// <summary>
 		/// Holds Xaml code for visually representing a contract's human readable text section.
 		/// </summary>
-		public StackLayout HumanReadableText
-		{
-			get => (StackLayout)this.GetValue(HumanReadableTextProperty);
-			set => this.SetValue(HumanReadableTextProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="HasRoles"/>
-		/// </summary>
-		public static readonly BindableProperty HasRolesProperty =
-			BindableProperty.Create(nameof(HasRoles), typeof(bool), typeof(NewContractViewModel), default(bool));
+		[ObservableProperty]
+		private StackLayout humanReadableText;
 
 		/// <summary>
 		/// Gets or sets whether the contract has roles.
 		/// </summary>
-		public bool HasRoles
-		{
-			get => (bool)this.GetValue(HasRolesProperty);
-			set => this.SetValue(HasRolesProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="HasParameters"/>
-		/// </summary>
-		public static readonly BindableProperty HasParametersProperty =
-			BindableProperty.Create(nameof(HasParameters), typeof(bool), typeof(NewContractViewModel), default(bool));
+		[ObservableProperty]
+		private bool hasRoles;
 
 		/// <summary>
 		/// Gets or sets whether the contract has parameters.
 		/// </summary>
-		public bool HasParameters
-		{
-			get => (bool)this.GetValue(HasParametersProperty);
-			set => this.SetValue(HasParametersProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="ParametersOk"/>
-		/// </summary>
-		public static readonly BindableProperty ParametersOkProperty =
-			BindableProperty.Create(nameof(ParametersOk), typeof(bool), typeof(NewContractViewModel), default(bool));
+		[ObservableProperty]
+		private bool hasParameters;
 
 		/// <summary>
 		/// Gets or sets whether the contract has parameters.
 		/// </summary>
-		public bool ParametersOk
-		{
-			get => (bool)this.GetValue(ParametersOkProperty);
-			set => this.SetValue(ParametersOkProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="HasHumanReadableText"/>
-		/// </summary>
-		public static readonly BindableProperty HasHumanReadableTextProperty =
-			BindableProperty.Create(nameof(HasHumanReadableText), typeof(bool), typeof(NewContractViewModel), default(bool));
+		[ObservableProperty]
+		private bool parametersOk;
 
 		/// <summary>
 		/// Gets or sets whether the contract is comprised of human readable text.
 		/// </summary>
-		public bool HasHumanReadableText
-		{
-			get => (bool)this.GetValue(HasHumanReadableTextProperty);
-			set => this.SetValue(HasHumanReadableTextProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="CanAddParts"/>
-		/// </summary>
-		public static readonly BindableProperty CanAddPartsProperty =
-			BindableProperty.Create(nameof(CanAddParts), typeof(bool), typeof(NewContractViewModel), default(bool));
+		[ObservableProperty]
+		private bool hasHumanReadableText;
 
 		/// <summary>
 		/// Gets or sets whether a user can add parts to a contract.
 		/// </summary>
-		public bool CanAddParts
-		{
-			get => (bool)this.GetValue(CanAddPartsProperty);
-			set => this.SetValue(CanAddPartsProperty, value);
-		}
+		[ObservableProperty]
+		private bool canAddParts;
 
 		#endregion
 
@@ -494,7 +383,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			if (this.Roles is not null)
 			{
-				foreach (View View in this.Roles.Children)
+				foreach (IView View in this.Roles.Children)
 				{
 					switch (State)
 					{
@@ -571,7 +460,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				bool CurrentRole = false;
 				bool LegalIdAdded = false;
 
-				foreach (View View in this.Roles.Children)
+				foreach (IView View in this.Roles.Children)
 				{
 					if (View is Label Label)
 					{
@@ -596,7 +485,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 							{
 								Label = new Label
 								{
-									Text = await ContactInfo.GetFriendlyName(LegalId, this),
+									Text = await ContactInfo.GetFriendlyName(LegalId),
 									StyleId = LegalId,
 									HorizontalOptions = LayoutOptions.FillAndExpand,
 									HorizontalTextAlignment = TextAlignment.Center,
@@ -630,21 +519,24 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			}
 		}
 
-		private async void LegalId_Tapped(object Sender, EventArgs e)
+		private async void LegalId_Tapped(object? Sender, EventArgs e)
 		{
 			try
 			{
 				if (Sender is Label label && !string.IsNullOrEmpty(label.StyleId))
-					await this.ContractOrchestratorService.OpenLegalIdentity(label.StyleId, ServiceRef.Localizer[nameof(AppResources.ForInclusionInContract)]);
+				{
+					await ServiceRef.ContractOrchestratorService.OpenLegalIdentity(label.StyleId,
+						ServiceRef.Localizer[nameof(AppResources.ForInclusionInContract)]);
+				}
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayAlert(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
 
-		private async void AddPartButton_Clicked(object Sender, EventArgs e)
+		private async void AddPartButton_Clicked(object? Sender, EventArgs e)
 		{
 			try
 			{
@@ -681,15 +573,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayAlert(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
 
-		private async void Parameter_DateChanged(object Sender, NullableDateChangedEventArgs e)
+		private async void Parameter_DateChanged(object? Sender, NullableDateChangedEventArgs e)
 		{
 			try
 			{
-				if (Sender is not ExtendedDatePicker Picker || !this.parametersByName.TryGetValue(Picker.StyleId, out ParameterInfo ParameterInfo))
+				if (Sender is not ExtendedDatePicker Picker || !this.parametersByName.TryGetValue(Picker.StyleId, out ParameterInfo? ParameterInfo))
 					return;
 
 				if (ParameterInfo.Parameter is DateParameter DP)
@@ -715,11 +607,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			}
 		}
 
-		private async void Parameter_TextChanged(object Sender, TextChangedEventArgs e)
+		private async void Parameter_TextChanged(object? Sender, TextChangedEventArgs e)
 		{
 			try
 			{
-				if (Sender is not Entry Entry || !this.parametersByName.TryGetValue(Entry.StyleId, out ParameterInfo ParameterInfo))
+				if (Sender is not Entry Entry || !this.parametersByName.TryGetValue(Entry.StyleId, out ParameterInfo? ParameterInfo))
 					return;
 
 				if (ParameterInfo.Parameter is StringParameter SP)
@@ -815,11 +707,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			}
 		}
 
-		private async void Parameter_CheckedChanged(object Sender, CheckedChangedEventArgs e)
+		private async void Parameter_CheckedChanged(object? Sender, CheckedChangedEventArgs e)
 		{
 			try
 			{
-				if (Sender is not CheckBox CheckBox || !this.parametersByName.TryGetValue(CheckBox.StyleId, out ParameterInfo ParameterInfo))
+				if (Sender is not CheckBox CheckBox || !this.parametersByName.TryGetValue(CheckBox.StyleId, out ParameterInfo? ParameterInfo))
 					return;
 
 				if (ParameterInfo.Parameter is BooleanParameter BP)
@@ -853,9 +745,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				{
 					// Calculation parameters might only execute on the server. So, if they fail in the client, allow user to propose contract anyway.
 
-					ServiceReferences Services = new();
-
-					Valid = await P.Parameter.IsParameterValid(Variables, Services.XmppService.ContractsClient) || P.Control is null;
+					Valid = await P.Parameter.IsParameterValid(Variables, ServiceRef.XmppService.ContractsClient) || P.Control is null;
 				}
 				catch (Exception)
 				{
@@ -881,6 +771,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			this.EvaluateCommands(this.ProposeCommand);
 		}
 
+		[RelayCommand(CanExecute = nameof(CanPropose))]
 		private async Task Propose()
 		{
 			List<Part> Parts = [];
@@ -896,7 +787,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			{
 				if (this.Roles is not null)
 				{
-					foreach (View View in this.Roles.Children)
+					foreach (IView View in this.Roles.Children)
 					{
 						switch (State)
 						{
@@ -924,13 +815,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 								{
 									if (Nr < Min)
 									{
-										await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], string.Format(ServiceRef.Localizer[nameof(AppResources.TheContractRequiresAtLeast_AddMoreParts)], Min, Role));
+										await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+											ServiceRef.Localizer[nameof(AppResources.TheContractRequiresAtLeast_AddMoreParts), Min, Role]);
 										return;
 									}
 
 									if (Nr > Min)
 									{
-										await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], string.Format(ServiceRef.Localizer[nameof(AppResources.TheContractRequiresAtMost_RemoveParts)], Max, Role));
+										await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+											ServiceRef.Localizer[nameof(AppResources.TheContractRequiresAtMost_RemoveParts), Max, Role]);
 										return;
 									}
 
@@ -952,13 +845,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					}
 				}
 
-				foreach (View View in this.Parameters.Children)
+				foreach (IView View in this.Parameters.Children)
 				{
 					if (View is Entry Entry)
 					{
 						if (Entry.BackgroundColor == ControlBgColor.ToColor(false))
 						{
-							await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ServiceRef.Localizer[nameof(AppResources.YourContractContainsErrors)]);
+							await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+								ServiceRef.Localizer[nameof(AppResources.YourContractContainsErrors)]);
+
 							Entry.Focus();
 							return;
 						}
@@ -986,13 +881,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						break;
 
 					default:
-						await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ServiceRef.Localizer[nameof(AppResources.ContractVisibilityMustBeSelected)]);
+						await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+							ServiceRef.Localizer[nameof(AppResources.ContractVisibilityMustBeSelected)]);
 						return;
 				}
 
 				if (this.SelectedRole is null)
 				{
-					await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ServiceRef.Localizer[nameof(AppResources.ContractRoleMustBeSelected)]);
+					await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						ServiceRef.Localizer[nameof(AppResources.ContractRoleMustBeSelected)]);
 					return;
 				}
 
@@ -1029,7 +926,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayAlert(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 			finally
 			{
@@ -1049,9 +946,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		{
 			StackLayout xaml = new StackLayout().LoadFromXaml(Xaml);
 
-			List<View> children = [.. xaml.Children];
+			List<IView> children = [.. xaml.Children];
 
-			foreach (View Element in children)
+			foreach (IView Element in children)
 				Layout.Children.Add(Element);
 		}
 
@@ -1068,32 +965,36 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			this.VisibilityIsEnabled = true;
 
 			StackLayout rolesLayout = [];
-			foreach (Role Role in this.template.Roles)
+			if (this.template.Roles is not null)
 			{
-				this.AvailableRoles.Add(Role.Name);
-
-				rolesLayout.Children.Add(new Label
+				foreach (Role Role in this.template.Roles)
 				{
-					Text = Role.Name,
-					Style = (Style)Application.Current.Resources["LeftAlignedHeading"],
-					StyleId = Role.Name
-				});
+					this.AvailableRoles.Add(Role.Name);
 
-				Populate(rolesLayout, await Role.ToXamarinForms(this.template.DeviceLanguage(), this.template));
-
-				if (Role.MinCount > 0)
-				{
-					Button button = new()
+					rolesLayout.Children.Add(new Label
 					{
-						Text = ServiceRef.Localizer[nameof(AppResources.AddPart)],
-						StyleId = Role.Name,
-						Margin = (Thickness)Application.Current.Resources["DefaultBottomOnlyMargin"]
-					};
-					button.Clicked += this.AddPartButton_Clicked;
+						Text = Role.Name,
+						Style = (Style)Application.Current!.Resources["LeftAlignedHeading"],
+						StyleId = Role.Name
+					});
 
-					rolesLayout.Children.Add(button);
+					Populate(rolesLayout, await Role.ToXamarinForms(this.template.DeviceLanguage(), this.template));
+
+					if (Role.MinCount > 0)
+					{
+						Button button = new()
+						{
+							Text = ServiceRef.Localizer[nameof(AppResources.AddPart)],
+							StyleId = Role.Name,
+							Margin = (Thickness)Application.Current.Resources["DefaultBottomOnlyMargin"]
+						};
+						button.Clicked += this.AddPartButton_Clicked;
+
+						rolesLayout.Children.Add(button);
+					}
 				}
 			}
+
 			this.Roles = rolesLayout;
 
 			StackLayout ParametersLayout = [];
@@ -1102,7 +1003,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				ParametersLayout.Children.Add(new Label
 				{
 					Text = ServiceRef.Localizer[nameof(AppResources.Parameters)],
-					Style = (Style)Application.Current.Resources["LeftAlignedHeading"]
+					Style = (Style)Application.Current!.Resources["LeftAlignedHeading"]
 				});
 			}
 
@@ -1135,7 +1036,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					this.parametersByName[Parameter.Name] = PI;
 					this.parametersInOrder.AddLast(PI);
 
-					if (this.presetParameterValues.TryGetValue(Parameter.Name, out object PresetValue))
+					if (this.presetParameterValues.TryGetValue(Parameter.Name, out object? PresetValue))
 					{
 						this.presetParameterValues.Remove(Parameter.Name);
 
@@ -1171,7 +1072,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					this.parametersByName[Parameter.Name] = PI;
 					this.parametersInOrder.AddLast(PI);
 
-					if (this.presetParameterValues.TryGetValue(Parameter.Name, out object PresetValue))
+					if (this.presetParameterValues.TryGetValue(Parameter.Name, out object? PresetValue))
 					{
 						this.presetParameterValues.Remove(Parameter.Name);
 
@@ -1194,14 +1095,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					string CalculatorButtonType = null;
 
 					if (Parameter is NumericalParameter NumericalParameter)
-					{
-						CalculatorButtonType = FontAwesome.Calculator;
-					}
+						CalculatorButtonType = "🖩";	// TODO: SVG icon
 
 					if (Parameter is DurationParameter DurationParameter)
-					{
-						CalculatorButtonType = FontAwesome.Clock;
-					}
+						CalculatorButtonType = "🕑";	// TODO: SVG icon
 
 					if (CalculatorButtonType is not null)
 					{
@@ -1231,13 +1128,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 							Margin = new Thickness(0)
 						};
 
-						Grid.SetColumn(Entry, 0);
-						Grid.SetRow(Entry, 0);
+						Grid.SetColumn((IView)Entry, 0);
+						Grid.SetRow((IView)Entry, 0);
 						Grid.Children.Add(Entry);
 
 						Button CalcButton = new()
 						{
-							FontFamily = (OnPlatform<string>)Application.Current.Resources["FontAwesomeSolid"],
+							FontFamily = (OnPlatform<string>)Application.Current!.Resources["FontAwesomeSolid"],
 							TextColor = (Color)Application.Current.Resources["TextColorLightTheme"],
 							Text = CalculatorButtonType,
 							HorizontalOptions = LayoutOptions.End,
@@ -1249,8 +1146,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 						CalcButton.Clicked += this.CalcButton_Clicked;
 
-						Grid.SetColumn(CalcButton, 1);
-						Grid.SetRow(CalcButton, 0);
+						Grid.SetColumn((IView)CalcButton, 1);
+						Grid.SetRow((IView)CalcButton, 0);
 						Grid.Children.Add(CalcButton);
 
 						ParametersLayout.Children.Add(Grid);
@@ -1274,7 +1171,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					this.parametersByName[Parameter.Name] = ParameterInfo;
 					this.parametersInOrder.AddLast(ParameterInfo);
 
-					if (this.presetParameterValues.TryGetValue(Parameter.Name, out object PresetValue))
+					if (this.presetParameterValues.TryGetValue(Parameter.Name, out object? PresetValue))
 					{
 						this.presetParameterValues.Remove(Parameter.Name);
 						Entry.Text = PresetValue.ToString();
@@ -1289,14 +1186,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			{
 				foreach (Part Part in this.template.Parts)
 				{
-					if (this.TagProfile.LegalIdentity.Id == Part.LegalId)
+					if (ServiceRef.TagProfile.LegalIdentity?.Id == Part.LegalId)
 						this.SelectedRole = Part.Role;
 					else
 						await this.AddRole(Part.Role, Part.LegalId);
 				}
 			}
 
-			if (this.presetParameterValues.TryGetValue("Visibility", out object Obj) &&
+			if (this.presetParameterValues.TryGetValue("Visibility", out object? Obj) &&
 				(Obj is ContractVisibility Visibility2 || Enum.TryParse(Obj?.ToString() ?? string.Empty, out Visibility2)))
 			{
 				Visibility = Visibility2;
@@ -1361,20 +1258,20 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				!this.IsProposing;
 		}
 
-		private async void CalcButton_Clicked(object Sender, EventArgs e)
+		private async void CalcButton_Clicked(object? Sender, EventArgs e)
 		{
 			try
 			{
 				if (Sender is not Button CalcButton)
 					return;
 
-				if (!this.parametersByName.TryGetValue(CalcButton.StyleId, out ParameterInfo ParameterInfo))
+				if (!this.parametersByName.TryGetValue(CalcButton.StyleId, out ParameterInfo? ParameterInfo))
 					return;
 
 				if (ParameterInfo.Control is not Entry Entry)
 					return;
 
-				if (CalcButton.Text == FontAwesome.Clock)
+				if (CalcButton.Text == "🕑")  // TODO: SVG icon
 				{
 					DurationNavigationArgs Args = new(Entry);
 					await ServiceRef.NavigationService.GoToAsync(nameof(DurationPage), Args, BackMethod.Pop);
@@ -1500,21 +1397,21 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				{
 					if (ParameterName.StartsWith("Max(", StringComparison.CurrentCultureIgnoreCase) && ParameterName.EndsWith(')'))
 					{
-						if (!this.parametersByName.TryGetValue(ParameterName[4..^1].Trim(), out ParameterInfo Info))
+						if (!this.parametersByName.TryGetValue(ParameterName[4..^1].Trim(), out ParameterInfo? Info))
 							continue;
 
 						Info.Parameter.SetMaxValue(Parameter.Value, true);
 					}
 					else if (ParameterName.StartsWith("Min(", StringComparison.CurrentCultureIgnoreCase) && ParameterName.EndsWith(')'))
 					{
-						if (!this.parametersByName.TryGetValue(ParameterName[4..^1].Trim(), out ParameterInfo Info))
+						if (!this.parametersByName.TryGetValue(ParameterName[4..^1].Trim(), out ParameterInfo? Info))
 							continue;
 
 						Info.Parameter.SetMinValue(Parameter.Value, true);
 					}
 					else
 					{
-						if (!this.parametersByName.TryGetValue(ParameterName, out ParameterInfo Info))
+						if (!this.parametersByName.TryGetValue(ParameterName, out ParameterInfo? Info))
 							continue;
 
 						Info.Parameter.SetValue(Parameter.Value);
@@ -1586,7 +1483,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				return;
 			}
 
-			if (!this.parametersByName.TryGetValue(PrimaryKey, out ParameterInfo Info))
+			if (!this.parametersByName.TryGetValue(PrimaryKey, out ParameterInfo? Info))
 			{
 				ServiceRef.LogService.LogWarning("Options not displayed. Primary key not available in contract.");
 				return;
@@ -1607,7 +1504,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			this.ParameterOptions.Clear();
 
-			ContractOption SelectedOption = null;
+			ContractOption? SelectedOption = null;
 
 			foreach (IDictionary<CaseInsensitiveString, object> Option in Options)
 			{
@@ -1638,7 +1535,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				Picker.SelectedItem = SelectedOption;
 		}
 
-		private async void Parameter_OptionSelectionChanged(object Sender, EventArgs e)
+		private async void Parameter_OptionSelectionChanged(object? Sender, EventArgs e)
 		{
 			if (Sender is not Picker Picker)
 				return;
@@ -1656,24 +1553,24 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					{
 						if (ParameterName.StartsWith("Max(", StringComparison.CurrentCultureIgnoreCase) && ParameterName.EndsWith(')'))
 						{
-							if (!this.parametersByName.TryGetValue(ParameterName[4..^1].Trim(), out ParameterInfo Info))
+							if (!this.parametersByName.TryGetValue(ParameterName[4..^1].Trim(), out ParameterInfo? Info))
 								continue;
 
 							Info.Parameter.SetMaxValue(P.Value, true);
 						}
 						else if (ParameterName.StartsWith("Min(", StringComparison.CurrentCultureIgnoreCase) && ParameterName.EndsWith(')'))
 						{
-							if (!this.parametersByName.TryGetValue(ParameterName[4..^1].Trim(), out ParameterInfo Info))
+							if (!this.parametersByName.TryGetValue(ParameterName[4..^1].Trim(), out ParameterInfo? Info))
 								continue;
 
 							Info.Parameter.SetMinValue(P.Value, true);
 						}
 						else
 						{
-							if (!this.parametersByName.TryGetValue(ParameterName, out ParameterInfo Info))
+							if (!this.parametersByName.TryGetValue(ParameterName, out ParameterInfo? Info))
 								continue;
 
-							Entry Entry = Info.Control as Entry;
+							Entry? Entry = Info.Control as Entry;
 
 							if (Info.Parameter is StringParameter SP)
 							{
@@ -1704,7 +1601,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 							}
 							else if (Info.Parameter is BooleanParameter BP)
 							{
-								CheckBox CheckBox = Info.Control as CheckBox;
+								CheckBox? CheckBox = Info.Control as CheckBox;
 
 								try
 								{
@@ -1731,7 +1628,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 							}
 							else if (Info.Parameter is DateTimeParameter DTP)
 							{
-								Picker Picker2 = Info.Control as Picker;
+								Picker? Picker2 = Info.Control as Picker;
 
 								if (P.Value is DateTime TP ||
 									(P.Value is string s && (DateTime.TryParse(s, out TP) || XML.TryParse(s, out TP))))
@@ -1808,7 +1705,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			{
 				foreach (KeyValuePair<CaseInsensitiveString, object> P in Option)
 				{
-					if (!ByKeyAndValue.TryGetValue(P.Key, out Dictionary<string, bool> Values))
+					if (!ByKeyAndValue.TryGetValue(P.Key, out Dictionary<string, bool>? Values))
 					{
 						Values = [];
 						ByKeyAndValue[P.Key] = Values;
@@ -1822,7 +1719,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			foreach (CaseInsensitiveString Key in Keys)
 			{
 				if (ByKeyAndValue[Key].Count == c &&
-					this.parametersByName.TryGetValue(Key, out ParameterInfo Info) &&
+					this.parametersByName.TryGetValue(Key, out ParameterInfo? Info) &&
 					Info.Control is Entry)
 				{
 					return Key;

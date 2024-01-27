@@ -28,7 +28,7 @@ namespace NeuroAccessMaui.Services.Wallet
 		/// <param name="Currency">Currency</param>
 		public void Completed(decimal Amount, string Currency)
 		{
-			if (string.Compare(this.currency, Currency, StringComparison.OrdinalIgnoreCase) == 0)
+			if (string.Equals(this.currency, Currency, StringComparison.OrdinalIgnoreCase))
 				this.result.TrySetResult(Amount);
 			else
 			{

@@ -1161,4 +1161,220 @@
   <data name="DeviceID" xml:space="preserve">
     <value>ID do dispositivo</value>
   </data>
+  <data name="AddContactToContract" xml:space="preserve">
+    <value>Adicionar contato ao contrato</value>
+  </data>
+  <data name="AddPart" xml:space="preserve">
+    <value>Adicionar peça</value>
+  </data>
+  <data name="Archiving_Optional" xml:space="preserve">
+    <value>Arquivamento (opcional)</value>
+  </data>
+  <data name="Archiving_Required" xml:space="preserve">
+    <value>Arquivamento (obrigatório)</value>
+  </data>
+  <data name="BalanceUpdated" xml:space="preserve">
+    <value>Saldo atualizado.</value>
+  </data>
+  <data name="CalculationError" xml:space="preserve">
+    <value>Não é possível executar o cálculo.</value>
+  </data>
+  <data name="CanActAsTemplate" xml:space="preserve">
+    <value>Pode atuar como modelo</value>
+  </data>
+  <data name="ContractHasBeenDeleted" xml:space="preserve">
+    <value>O contrato foi excluído.</value>
+  </data>
+  <data name="ContractHasBeenObsoleted" xml:space="preserve">
+    <value>O contrato está obsoleto.</value>
+  </data>
+  <data name="ContractId" xml:space="preserve">
+    <value>ID do Contrato</value>
+  </data>
+  <data name="ContractRoleMustBeSelected" xml:space="preserve">
+    <value>Selecione a função de contrato primeiro e tente novamente.</value>
+  </data>
+  <data name="Contracts" xml:space="preserve">
+    <value>Contratos</value>
+  </data>
+  <data name="ContractsInfoText" xml:space="preserve">
+    <value>Abaixo está uma lista de contratos que você criou ou assinou. Clique em um contrato para obter mais informações sobre ele.</value>
+  </data>
+  <data name="ContractSuccessfullySigned" xml:space="preserve">
+    <value>Contrato assinado com sucesso.</value>
+  </data>
+  <data name="ContractTemplates" xml:space="preserve">
+    <value>Modelos de Contrato</value>
+  </data>
+  <data name="ContractTemplatesInfoText" xml:space="preserve">
+    <value>Abaixo está uma lista de modelos de contrato que você usou. Clique em um modelo para criar um novo contrato com base nesse modelo.</value>
+  </data>
+  <data name="ContractVisibilityMustBeSelected" xml:space="preserve">
+    <value>Selecione a visibilidade do contrato primeiro e tente novamente.</value>
+  </data>
+  <data name="ContractVisibility_CreatorAndParts" xml:space="preserve">
+    <value>Criador e peças</value>
+  </data>
+  <data name="ContractVisibility_DomainAndParts" xml:space="preserve">
+    <value>Domínio e peças</value>
+  </data>
+  <data name="ContractVisibility_Public" xml:space="preserve">
+    <value>Público, não pesquisável</value>
+  </data>
+  <data name="ContractVisibility_PublicSearchable" xml:space="preserve">
+    <value>Público e pesquisável</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>dia</value>
+  </data>
+  <data name="Days" xml:space="preserve">
+    <value>Dias</value>
+  </data>
+  <data name="Digest" xml:space="preserve">
+    <value>Digerir</value>
+  </data>
+  <data name="Duration" xml:space="preserve">
+    <value>Duração</value>
+  </data>
+  <data name="EnterProposal" xml:space="preserve">
+    <value>Insira o texto a ser incluído na proposta a ser {0}, ou deixe em branco se uma proposta não for enviada.</value>
+  </data>
+  <data name="EnterValidValue" xml:space="preserve">
+    <value>Insira um valor válido primeiro.</value>
+  </data>
+  <data name="EnterValue" xml:space="preserve">
+    <value>Você precisa inserir um valor primeiro.</value>
+  </data>
+  <data name="ExpiredEDalerUri" xml:space="preserve">
+    <value>Este código eDaler expirou.</value>
+  </data>
+  <data name="ForInclusionInContract" xml:space="preserve">
+    <value>Para inclusão como parte em um contrato.</value>
+  </data>
+  <data name="From" xml:space="preserve">
+    <value>De</value>
+  </data>
+  <data name="HashFunction" xml:space="preserve">
+    <value>Função Hash</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>hora</value>
+  </data>
+  <data name="Hours" xml:space="preserve">
+    <value>Horas</value>
+  </data>
+  <data name="InvalidEDalerUri" xml:space="preserve">
+    <value>URI eDaler inválido: {0}</value>
+  </data>
+  <data name="LocalName" xml:space="preserve">
+    <value>Nome do local</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>minuto</value>
+  </data>
+  <data name="Minutes" xml:space="preserve">
+    <value>ata</value>
+  </data>
+  <data name="Mode" xml:space="preserve">
+    <value>Modo</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>mês</value>
+  </data>
+  <data name="Months" xml:space="preserve">
+    <value>Meses</value>
+  </data>
+  <data name="Namespace" xml:space="preserve">
+    <value>Espaço de nomes</value>
+  </data>
+  <data name="Negative" xml:space="preserve">
+    <value>Negativo</value>
+  </data>
+  <data name="Parameters" xml:space="preserve">
+    <value>Parâmetros</value>
+  </data>
+  <data name="Proposal" xml:space="preserve">
+    <value>Proposta</value>
+  </data>
+  <data name="PurposeReviewContract" xml:space="preserve">
+    <value>Revisão do contrato onde você faz parte.</value>
+  </data>
+  <data name="RequestToAccessContract" xml:space="preserve">
+    <value>Contrato de solicitação de acesso</value>
+  </data>
+  <data name="Second" xml:space="preserve">
+    <value>segundo</value>
+  </data>
+  <data name="Seconds" xml:space="preserve">
+    <value>Segundos</value>
+  </data>
+  <data name="SelectedContactCannotBeAdded" xml:space="preserve">
+    <value>O contato selecionado não pode ser adicionado. Não possui CNPJ cadastrada.</value>
+  </data>
+  <data name="Send" xml:space="preserve">
+    <value>Enviar</value>
+  </data>
+  <data name="SignAfter" xml:space="preserve">
+    <value>Assine depois</value>
+  </data>
+  <data name="SignAsRole" xml:space="preserve">
+    <value>Assine como {0}</value>
+  </data>
+  <data name="SignBefore" xml:space="preserve">
+    <value>Assine antes</value>
+  </data>
+  <data name="StateChangedTo" xml:space="preserve">
+    <value>Estado alterado para {0}</value>
+  </data>
+  <data name="TemplateId" xml:space="preserve">
+    <value>ID do modelo</value>
+  </data>
+  <data name="TheContractRequiresAtLeast_AddMoreParts" xml:space="preserve">
+    <value>O contrato exige pelo menos {0} parte(s) da {1} de função. Adicione mais peças ao contrato e tente novamente.</value>
+  </data>
+  <data name="TheContractRequiresAtMost_RemoveParts" xml:space="preserve">
+    <value>O contrato exige, no máximo, {0} parte(s) de {1} de função. Remova algumas das partes do contrato e tente novamente.</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>Para</value>
+  </data>
+  <data name="TokenAdded" xml:space="preserve">
+    <value>Um token foi adicionado à sua carteira.</value>
+  </data>
+  <data name="TokenAdded2" xml:space="preserve">
+    <value>Token adicionado</value>
+  </data>
+  <data name="TokenCreationTemplates" xml:space="preserve">
+    <value>Modelos de token</value>
+  </data>
+  <data name="TokenCreationTemplatesInfoText" xml:space="preserve">
+    <value>Abaixo está uma lista de modelos de token que você usou ou pode usar para criar novos tokens. Clique em um modelo para criar um novo contrato com base nesse modelo. Uma vez que o contrato tenha sido assinado e aprovado, o token ou tokens correspondentes serão criados.</value>
+  </data>
+  <data name="TokenRemoved" xml:space="preserve">
+    <value>Um token foi removido da sua carteira.</value>
+  </data>
+  <data name="TokenRemoved2" xml:space="preserve">
+    <value>Token removido</value>
+  </data>
+  <data name="UnrecognizedEDalerURI" xml:space="preserve">
+    <value>URI eDaler não reconhecido.</value>
+  </data>
+  <data name="VariablesUpdated" xml:space="preserve">
+    <value>Variáveis atualizadas</value>
+  </data>
+  <data name="Visibility" xml:space="preserve">
+    <value>Visibilidade</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>ano</value>
+  </data>
+  <data name="Years" xml:space="preserve">
+    <value>Anos</value>
+  </data>
+  <data name="YouHaveReceivedAProposal" xml:space="preserve">
+    <value>Recebeu uma proposta.</value>
+  </data>
+  <data name="YourContractContainsErrors" xml:space="preserve">
+    <value>Seu contrato contém erros. Corrija esses erros e tente novamente.</value>
+  </data>
 </root>

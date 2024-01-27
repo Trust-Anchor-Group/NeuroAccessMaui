@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
+using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Converters;
-using IdApp.Extensions;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract.ObjectModel;
 using NeuroAccessMaui.UI.Pages.Signatures.ClientSignature;
@@ -17,13 +15,7 @@ using NeuroAccessMaui.Services.UI.Photos;
 using Waher.Content;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.HttpFileUpload;
-using Xamarin.CommunityToolkit.Helpers;
-using Xamarin.Essentials;
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
-using NeuroAccessMaui.Resources.Languages;
-using NeuroAccessMaui.Services;
-using NeuroAccessMaui.Extensions;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 {
@@ -43,11 +35,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		{
 			this.Photos = [];
 			this.photosLoader = new PhotosLoader(this.Photos);
-
-			this.ObsoleteContractCommand = new Command(async _ => await this.ObsoleteContract());
-			this.DeleteContractCommand = new Command(async _ => await this.DeleteContract());
-			this.ShowDetailsCommand = new Command(async _ => await this.ShowDetails());
-
 			this.GeneralInformation = [];
 		}
 
@@ -56,7 +43,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		{
 			await base.OnInitialize();
 
-			if (this.NavigationService.TryGetArgs(out ViewContractNavigationArgs args))
+			if (ServiceRef.NavigationService.TryGetArgs(out ViewContractNavigationArgs args))
 			{
 				this.Contract = args.Contract;
 				this.isReadOnly = args.IsReadOnly;
@@ -142,64 +129,22 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		#region Properties
 
 		/// <summary>
-		/// The command to bind to when marking a contract as obsolete.
-		/// </summary>
-		public ICommand ObsoleteContractCommand { get; }
-
-		/// <summary>
-		/// The command to bind to when deleting a contract.
-		/// </summary>
-		public ICommand DeleteContractCommand { get; }
-
-		/// <summary>
-		/// Command to show machine-readable details of contract.
-		/// </summary>
-		public ICommand ShowDetailsCommand { get; }
-
-		/// <summary>
-		/// See <see cref="Role"/>
-		/// </summary>
-		public static readonly BindableProperty RoleProperty =
-			BindableProperty.Create(nameof(Role), typeof(string), typeof(ViewContractViewModel), default(string));
-
-		/// <summary>
 		/// Contains proposed role, if a proposal, null if not a proposal.
 		/// </summary>
-		public string Role
-		{
-			get => (string)this.GetValue(RoleProperty);
-			set => this.SetValue(RoleProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="IsProposal"/>
-		/// </summary>
-		public static readonly BindableProperty IsProposalProperty =
-			BindableProperty.Create(nameof(IsProposal), typeof(bool), typeof(ViewContractViewModel), default(bool));
+		[ObservableProperty]
+		private string role;
 
 		/// <summary>
 		/// If the view represents a proposal to sign a contract.
 		/// </summary>
-		public bool IsProposal
-		{
-			get => (bool)this.GetValue(IsProposalProperty);
-			set => this.SetValue(IsProposalProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="Proposal"/>
-		/// </summary>
-		public static readonly BindableProperty ProposalProperty =
-			BindableProperty.Create(nameof(Proposal), typeof(string), typeof(ViewContractViewModel), default(string));
+		[ObservableProperty]
+		private bool isProposal;
 
 		/// <summary>
 		/// If the contract is a proposal
 		/// </summary>
-		public string Proposal
-		{
-			get => (string)this.GetValue(ProposalProperty);
-			set => this.SetValue(ProposalProperty, value);
-		}
+		[ObservableProperty]
+		private string proposal;
 
 		/// <summary>
 		/// Holds a list of general information sections for the contract.
@@ -207,109 +152,46 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		public ObservableCollection<PartModel> GeneralInformation { get; }
 
 		/// <summary>
-		/// See <see cref="Roles"/>
-		/// </summary>
-		public static readonly BindableProperty RolesProperty =
-			BindableProperty.Create(nameof(Roles), typeof(StackLayout), typeof(ViewContractViewModel), default(StackLayout));
-
-		/// <summary>
 		/// Holds Xaml code for visually representing a contract's roles.
 		/// </summary>
-		public StackLayout Roles
-		{
-			get => (StackLayout)this.GetValue(RolesProperty);
-			set => this.SetValue(RolesProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="Parts"/>
-		/// </summary>
-		public static readonly BindableProperty PartsProperty =
-			BindableProperty.Create(nameof(Parts), typeof(StackLayout), typeof(ViewContractViewModel), default(StackLayout));
+		[ObservableProperty]
+		private StackLayout roles;
 
 		/// <summary>
 		/// Holds Xaml code for visually representing a contract's parts.
 		/// </summary>
-		public StackLayout Parts
-		{
-			get => (StackLayout)this.GetValue(PartsProperty);
-			set => this.SetValue(PartsProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="Parameters"/>
-		/// </summary>
-		public static readonly BindableProperty ParametersProperty =
-			BindableProperty.Create(nameof(Parameters), typeof(StackLayout), typeof(ViewContractViewModel), default(StackLayout));
+		[ObservableProperty]
+		private StackLayout parts;
 
 		/// <summary>
 		/// Holds Xaml code for visually representing a contract's parameters.
 		/// </summary>
-		public StackLayout Parameters
-		{
-			get => (StackLayout)this.GetValue(ParametersProperty);
-			set => this.SetValue(ParametersProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="HumanReadableText"/>
-		/// </summary>
-		public static readonly BindableProperty HumanReadableTextProperty =
-			BindableProperty.Create(nameof(HumanReadableText), typeof(StackLayout), typeof(ViewContractViewModel), default(StackLayout));
+		[ObservableProperty]
+		private StackLayout parameters;
 
 		/// <summary>
 		/// Holds Xaml code for visually representing a contract's human readable text section.
 		/// </summary>
-		public StackLayout HumanReadableText
-		{
-			get => (StackLayout)this.GetValue(HumanReadableTextProperty);
-			set => this.SetValue(HumanReadableTextProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="MachineReadableText"/>
-		/// </summary>
-		public static readonly BindableProperty MachineReadableTextProperty =
-			BindableProperty.Create(nameof(MachineReadableText), typeof(StackLayout), typeof(ViewContractViewModel), default(StackLayout));
+		[ObservableProperty]
+		private StackLayout humanReadableText;
 
 		/// <summary>
 		/// Holds Xaml code for visually representing a contract's machine readable text section.
 		/// </summary>
-		public StackLayout MachineReadableText
-		{
-			get => (StackLayout)this.GetValue(MachineReadableTextProperty);
-			set => this.SetValue(MachineReadableTextProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="ClientSignatures"/>
-		/// </summary>
-		public static readonly BindableProperty ClientSignaturesProperty =
-			BindableProperty.Create(nameof(ClientSignatures), typeof(StackLayout), typeof(ViewContractViewModel), default(StackLayout));
+		[ObservableProperty]
+		private StackLayout machineReadableText;
 
 		/// <summary>
 		/// Holds Xaml code for visually representing a contract's client signatures.
 		/// </summary>
-		public StackLayout ClientSignatures
-		{
-			get => (StackLayout)this.GetValue(ClientSignaturesProperty);
-			set => this.SetValue(ClientSignaturesProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="ServerSignatures"/>
-		/// </summary>
-		public static readonly BindableProperty ServerSignaturesProperty =
-			BindableProperty.Create(nameof(ServerSignatures), typeof(StackLayout), typeof(ViewContractViewModel), default(StackLayout));
+		[ObservableProperty]
+		private StackLayout clientSignatures;
 
 		/// <summary>
 		/// Holds Xaml code for visually representing a contract's server signatures.
 		/// </summary>
-		public StackLayout ServerSignatures
-		{
-			get => (StackLayout)this.GetValue(ServerSignaturesProperty);
-			set => this.SetValue(ServerSignaturesProperty, value);
-		}
+		[ObservableProperty]
+		private StackLayout serverSignatures;
 
 		/// <summary>
 		/// Gets the list of photos associated with the contract.
@@ -322,154 +204,64 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		public Contract Contract { get; private set; }
 
 		/// <summary>
-		/// See <see cref="HasPhotos"/>
-		/// </summary>
-		public static readonly BindableProperty HasPhotosProperty =
-			BindableProperty.Create(nameof(HasPhotos), typeof(bool), typeof(ViewContractViewModel), default(bool));
-
-		/// <summary>
 		/// Gets or sets whether photos are available.
 		/// </summary>
-		public bool HasPhotos
-		{
-			get => (bool)this.GetValue(HasPhotosProperty);
-			set => this.SetValue(HasPhotosProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="HasRoles"/>
-		/// </summary>
-		public static readonly BindableProperty HasRolesProperty =
-			BindableProperty.Create(nameof(HasRoles), typeof(bool), typeof(ViewContractViewModel), default(bool));
+		[ObservableProperty]
+		private bool hasPhotos;
 
 		/// <summary>
 		/// Gets or sets whether the contract has any roles to display.
 		/// </summary>
-		public bool HasRoles
-		{
-			get => (bool)this.GetValue(HasRolesProperty);
-			set => this.SetValue(HasRolesProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="HasParts"/>
-		/// </summary>
-		public static readonly BindableProperty HasPartsProperty =
-			BindableProperty.Create(nameof(HasParts), typeof(bool), typeof(ViewContractViewModel), default(bool));
+		[ObservableProperty]
+		private bool hasRoles;
 
 		/// <summary>
 		/// Gets or sets whether the contract has any contract parts to display.
 		/// </summary>
-		public bool HasParts
-		{
-			get => (bool)this.GetValue(HasPartsProperty);
-			set => this.SetValue(HasPartsProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="HasParameters"/>
-		/// </summary>
-		public static readonly BindableProperty HasParametersProperty =
-			BindableProperty.Create(nameof(HasParameters), typeof(bool), typeof(ViewContractViewModel), default(bool));
+		[ObservableProperty]
+		private bool hasParts;
 
 		/// <summary>
 		/// Gets or sets whether the contract has any parameters to display.
 		/// </summary>
-		public bool HasParameters
-		{
-			get => (bool)this.GetValue(HasParametersProperty);
-			set => this.SetValue(HasParametersProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="HasHumanReadableText"/>
-		/// </summary>
-		public static readonly BindableProperty HasHumanReadableTextProperty =
-			BindableProperty.Create(nameof(HasHumanReadableText), typeof(bool), typeof(ViewContractViewModel), default(bool));
+		[ObservableProperty]
+		private bool hasParameters;
 
 		/// <summary>
 		/// Gets or sets whether the contract has any human readable texts to display.
 		/// </summary>
-		public bool HasHumanReadableText
-		{
-			get => (bool)this.GetValue(HasHumanReadableTextProperty);
-			set => this.SetValue(HasHumanReadableTextProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="HasMachineReadableText"/>
-		/// </summary>
-		public static readonly BindableProperty HasMachineReadableTextProperty =
-			BindableProperty.Create(nameof(HasMachineReadableText), typeof(bool), typeof(ViewContractViewModel), default(bool));
+		[ObservableProperty]
+		private bool hasHumanReadableText;
 
 		/// <summary>
 		/// Gets or sets whether the contract has any machine readable texts to display.
 		/// </summary>
-		public bool HasMachineReadableText
-		{
-			get => (bool)this.GetValue(HasMachineReadableTextProperty);
-			set => this.SetValue(HasMachineReadableTextProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="HasClientSignatures"/>
-		/// </summary>
-		public static readonly BindableProperty HasClientSignaturesProperty =
-			BindableProperty.Create(nameof(HasClientSignatures), typeof(bool), typeof(ViewContractViewModel), default(bool));
+		[ObservableProperty]
+		private bool hasMachineReadableText;
 
 		/// <summary>
 		/// Gets or sets whether the contract has any client signatures to display.
 		/// </summary>
-		public bool HasClientSignatures
-		{
-			get => (bool)this.GetValue(HasClientSignaturesProperty);
-			set => this.SetValue(HasClientSignaturesProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="HasServerSignatures"/>
-		/// </summary>
-		public static readonly BindableProperty HasServerSignaturesProperty =
-			BindableProperty.Create(nameof(HasServerSignatures), typeof(bool), typeof(ViewContractViewModel), default(bool));
+		[ObservableProperty]
+		private bool hasClientSignatures;
 
 		/// <summary>
 		/// Gets or sets whether the contract has any server signatures to display.
 		/// </summary>
-		public bool HasServerSignatures
-		{
-			get => (bool)this.GetValue(HasServerSignaturesProperty);
-			set => this.SetValue(HasServerSignaturesProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="CanDeleteContract"/>
-		/// </summary>
-		public static readonly BindableProperty CanDeleteContractProperty =
-			BindableProperty.Create(nameof(CanDeleteContract), typeof(bool), typeof(ViewContractViewModel), default(bool));
+		[ObservableProperty]
+		private bool hasServerSignatures;
 
 		/// <summary>
 		/// Gets or sets whether a user can delete or obsolete a contract.
 		/// </summary>
-		public bool CanDeleteContract
-		{
-			get => (bool)this.GetValue(CanDeleteContractProperty);
-			set => this.SetValue(CanDeleteContractProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="CanObsoleteContract"/>
-		/// </summary>
-		public static readonly BindableProperty CanObsoleteContractProperty =
-			BindableProperty.Create(nameof(CanObsoleteContract), typeof(bool), typeof(ViewContractViewModel), default(bool));
+		[ObservableProperty]
+		private bool canDeleteContract;
 
 		/// <summary>
 		/// Gets or sets whether a user can delete or obsolete a contract.
 		/// </summary>
-		public bool CanObsoleteContract
-		{
-			get => (bool)this.GetValue(CanObsoleteContractProperty);
-			set => this.SetValue(CanObsoleteContractProperty, value);
-		}
+		[ObservableProperty]
+		private bool canObsoleteContract;
 
 		#endregion
 
@@ -515,7 +307,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				{
 					foreach (Waher.Networking.XMPP.Contracts.ClientSignature signature in this.Contract.ClientSignatures)
 					{
-						if (signature.LegalId == this.TagProfile.LegalIdentity.Id)
+						if (signature.LegalId == ServiceRef.TagProfile.LegalIdentity!.Id)
 							HasSigned = true;
 
 						if (!NrSignatures.TryGetValue(signature.Role, out int count))
@@ -523,7 +315,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 						NrSignatures[signature.Role] = count + 1;
 
-						if (string.Compare(signature.BareJid, ServiceRef.XmppService.BareJid, true) == 0)
+						if (string.Equals(signature.BareJid, ServiceRef.XmppService.BareJid, StringComparison.OrdinalIgnoreCase))
 						{
 							if (this.Contract.Roles is not null)
 							{
@@ -776,7 +568,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 					.ToArray());
 
 				this.ClearContract();
-				await ServiceRef.UiSerializer.DisplayAlert(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
 
@@ -853,7 +645,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayAlert(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
 
@@ -867,7 +659,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayAlert(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
 
@@ -881,7 +673,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayAlert(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
 
@@ -895,7 +687,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayAlert(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
 
@@ -912,7 +704,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayAlert(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
 
@@ -937,7 +729,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayAlert(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
 
@@ -954,10 +746,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayAlert(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
 
+		/// <summary>
+		/// The command to bind to when marking a contract as obsolete.
+		/// </summary>
+		[RelayCommand]
 		private async Task ObsoleteContract()
 		{
 			try
@@ -975,10 +771,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayAlert(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
 
+		/// <summary>
+		/// The command to bind to when deleting a contract.
+		/// </summary>
+		[RelayCommand]
 		private async Task DeleteContract()
 		{
 			try
@@ -996,10 +796,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayAlert(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
 
+		/// <summary>
+		/// Command to show machine-readable details of contract.
+		/// </summary>
+		[RelayCommand]
 		private async Task ShowDetails()
 		{
 			try
@@ -1013,11 +817,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 					await App.OpenUrlAsync(e.GetUrl);
 				}
 				else
-					await ServiceRef.UiSerializer.DisplayAlert(e.StanzaError ?? new Exception(e.ErrorText));
+					await ServiceRef.UiSerializer.DisplayException(e.StanzaError ?? new Exception(e.ErrorText));
 			}
 			catch (Exception ex)
 			{
-				await ServiceRef.UiSerializer.DisplayAlert(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
 
@@ -1031,7 +835,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		/// <summary>
 		/// Title of the current view
 		/// </summary>
-		public override Task<string> Title => ContractModel.GetName(this.Contract, this);
+		public override Task<string?> Title => ContractModel.GetName(this.Contract);
 
 		#endregion
 

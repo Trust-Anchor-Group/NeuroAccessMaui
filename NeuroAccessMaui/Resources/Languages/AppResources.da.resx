@@ -1161,4 +1161,220 @@
   <data name="DeviceID" xml:space="preserve">
     <value>Enheds-id</value>
   </data>
+  <data name="AddContactToContract" xml:space="preserve">
+    <value>Føj kontakt til kontrakt</value>
+  </data>
+  <data name="AddPart" xml:space="preserve">
+    <value>Tilføj del</value>
+  </data>
+  <data name="Archiving_Optional" xml:space="preserve">
+    <value>Arkivering (valgfrit)</value>
+  </data>
+  <data name="Archiving_Required" xml:space="preserve">
+    <value>Arkivering (påkrævet)</value>
+  </data>
+  <data name="BalanceUpdated" xml:space="preserve">
+    <value>Saldo opdateret.</value>
+  </data>
+  <data name="CalculationError" xml:space="preserve">
+    <value>Kan ikke udføre beregning.</value>
+  </data>
+  <data name="CanActAsTemplate" xml:space="preserve">
+    <value>Kan fungere som skabelon</value>
+  </data>
+  <data name="ContractHasBeenDeleted" xml:space="preserve">
+    <value>Kontrakten er blevet slettet.</value>
+  </data>
+  <data name="ContractHasBeenObsoleted" xml:space="preserve">
+    <value>Kontrakten er forældet.</value>
+  </data>
+  <data name="ContractId" xml:space="preserve">
+    <value>Kontrakt-id</value>
+  </data>
+  <data name="ContractRoleMustBeSelected" xml:space="preserve">
+    <value>Vælg kontraktrolle først, og prøv derefter igen.</value>
+  </data>
+  <data name="Contracts" xml:space="preserve">
+    <value>Kontrakter</value>
+  </data>
+  <data name="ContractsInfoText" xml:space="preserve">
+    <value>Nedenfor er en liste over kontrakter, som du har oprettet eller underskrevet. Klik på en kontrakt for at få flere oplysninger om den.</value>
+  </data>
+  <data name="ContractSuccessfullySigned" xml:space="preserve">
+    <value>Kontrakt underskrevet med succes.</value>
+  </data>
+  <data name="ContractTemplates" xml:space="preserve">
+    <value>Kontrakt skabeloner</value>
+  </data>
+  <data name="ContractTemplatesInfoText" xml:space="preserve">
+    <value>Nedenfor er en liste over kontraktskabeloner, som du har brugt. Klik på en skabelon for at oprette en ny kontrakt baseret på skabelonen.</value>
+  </data>
+  <data name="ContractVisibilityMustBeSelected" xml:space="preserve">
+    <value>Vælg først kontraktsynlighed, og prøv derefter igen.</value>
+  </data>
+  <data name="ContractVisibility_CreatorAndParts" xml:space="preserve">
+    <value>Skaber og dele</value>
+  </data>
+  <data name="ContractVisibility_DomainAndParts" xml:space="preserve">
+    <value>Domæne og dele</value>
+  </data>
+  <data name="ContractVisibility_Public" xml:space="preserve">
+    <value>Offentlig, ikke søgbar</value>
+  </data>
+  <data name="ContractVisibility_PublicSearchable" xml:space="preserve">
+    <value>Offentlig og søgbar</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>dag</value>
+  </data>
+  <data name="Days" xml:space="preserve">
+    <value>Dage</value>
+  </data>
+  <data name="Digest" xml:space="preserve">
+    <value>Fordøje</value>
+  </data>
+  <data name="Duration" xml:space="preserve">
+    <value>Varighed</value>
+  </data>
+  <data name="EnterProposal" xml:space="preserve">
+    <value>Indtast den tekst, der skal medtages i forslaget for at {0}, eller lad feltet stå tomt, hvis et forslag ikke skal sendes.</value>
+  </data>
+  <data name="EnterValidValue" xml:space="preserve">
+    <value>Indtast først en gyldig værdi.</value>
+  </data>
+  <data name="EnterValue" xml:space="preserve">
+    <value>Du skal først indtaste en værdi.</value>
+  </data>
+  <data name="ExpiredEDalerUri" xml:space="preserve">
+    <value>Denne eDaler kode er udløbet.</value>
+  </data>
+  <data name="ForInclusionInContract" xml:space="preserve">
+    <value>Til optagelse som en del af en kontrakt.</value>
+  </data>
+  <data name="From" xml:space="preserve">
+    <value>Fra</value>
+  </data>
+  <data name="HashFunction" xml:space="preserve">
+    <value>Hash-funktion</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>time</value>
+  </data>
+  <data name="Hours" xml:space="preserve">
+    <value>Timer</value>
+  </data>
+  <data name="InvalidEDalerUri" xml:space="preserve">
+    <value>Ugyldig eDaler URI: {0}</value>
+  </data>
+  <data name="LocalName" xml:space="preserve">
+    <value>Lokalt navn</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>minut</value>
+  </data>
+  <data name="Minutes" xml:space="preserve">
+    <value>minutter</value>
+  </data>
+  <data name="Mode" xml:space="preserve">
+    <value>Tilstand</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>måned</value>
+  </data>
+  <data name="Months" xml:space="preserve">
+    <value>Måneder</value>
+  </data>
+  <data name="Namespace" xml:space="preserve">
+    <value>Navneområde</value>
+  </data>
+  <data name="Negative" xml:space="preserve">
+    <value>Negativ</value>
+  </data>
+  <data name="Parameters" xml:space="preserve">
+    <value>Parametre</value>
+  </data>
+  <data name="Proposal" xml:space="preserve">
+    <value>Forslag</value>
+  </data>
+  <data name="PurposeReviewContract" xml:space="preserve">
+    <value>Gennemgang af kontrakt, hvor du er en del.</value>
+  </data>
+  <data name="RequestToAccessContract" xml:space="preserve">
+    <value>Anmodning om adgang til kontrakt</value>
+  </data>
+  <data name="Second" xml:space="preserve">
+    <value>anden</value>
+  </data>
+  <data name="Seconds" xml:space="preserve">
+    <value>Sekunder</value>
+  </data>
+  <data name="SelectedContactCannotBeAdded" xml:space="preserve">
+    <value>Den valgte kontakt kan ikke tilføjes. Det har ikke et juridisk ID registreret.</value>
+  </data>
+  <data name="Send" xml:space="preserve">
+    <value>Sende</value>
+  </data>
+  <data name="SignAfter" xml:space="preserve">
+    <value>Underskriv efter</value>
+  </data>
+  <data name="SignAsRole" xml:space="preserve">
+    <value>Underskriv som {0}</value>
+  </data>
+  <data name="SignBefore" xml:space="preserve">
+    <value>Underskriv før</value>
+  </data>
+  <data name="StateChangedTo" xml:space="preserve">
+    <value>Stat ændret til {0}</value>
+  </data>
+  <data name="TemplateId" xml:space="preserve">
+    <value>Skabelon-id</value>
+  </data>
+  <data name="TheContractRequiresAtLeast_AddMoreParts" xml:space="preserve">
+    <value>Kontrakten kræver mindst {0} del af rollen {1}. Føj flere dele til kontrakten, og prøv igen.</value>
+  </data>
+  <data name="TheContractRequiresAtMost_RemoveParts" xml:space="preserve">
+    <value>Kontrakten kræver højst {0} del af rolle {1}. Fjern nogle af delene fra kontrakten, og prøv igen.</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>Til</value>
+  </data>
+  <data name="TokenAdded" xml:space="preserve">
+    <value>Et token er blevet tilføjet til din tegnebog.</value>
+  </data>
+  <data name="TokenAdded2" xml:space="preserve">
+    <value>Token tilføjet</value>
+  </data>
+  <data name="TokenCreationTemplates" xml:space="preserve">
+    <value>Token skabeloner</value>
+  </data>
+  <data name="TokenCreationTemplatesInfoText" xml:space="preserve">
+    <value>Nedenfor er en liste over tokenskabeloner, som du har brugt eller kan bruge til at oprette nye tokens. Klik på en skabelon for at oprette en ny kontrakt baseret på skabelonen. Når kontrakten er underskrevet og godkendt, oprettes det eller de tilsvarende tokens.</value>
+  </data>
+  <data name="TokenRemoved" xml:space="preserve">
+    <value>Et token er blevet fjernet fra din tegnebog.</value>
+  </data>
+  <data name="TokenRemoved2" xml:space="preserve">
+    <value>Token fjernet</value>
+  </data>
+  <data name="UnrecognizedEDalerURI" xml:space="preserve">
+    <value>Ukendt eDaler URI.</value>
+  </data>
+  <data name="VariablesUpdated" xml:space="preserve">
+    <value>Variabler opdateret</value>
+  </data>
+  <data name="Visibility" xml:space="preserve">
+    <value>Synlighed</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>år</value>
+  </data>
+  <data name="Years" xml:space="preserve">
+    <value>År</value>
+  </data>
+  <data name="YouHaveReceivedAProposal" xml:space="preserve">
+    <value>De har modtaget et forslag.</value>
+  </data>
+  <data name="YourContractContainsErrors" xml:space="preserve">
+    <value>Din kontrakt indeholder fejl. Ret disse fejl, og prøv igen.</value>
+  </data>
 </root>

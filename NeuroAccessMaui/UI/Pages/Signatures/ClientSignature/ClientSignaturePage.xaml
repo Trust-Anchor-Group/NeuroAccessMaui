@@ -1,0 +1,157 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<views:ContentBasePage xmlns="http://xamarin.com/schemas/2014/forms"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                       xmlns:views="clr-namespace:IdApp.Pages;assembly=IdApp"
+                       xmlns:resx="clr-namespace:IdApp.Resx;assembly=IdApp"
+                       xmlns:model="clr-namespace:IdApp.Pages.Signatures.ClientSignature;assembly=IdApp"
+                       xmlns:converters="clr-namespace:IdApp.Converters;assembly=IdApp"
+                       x:DataType="model:ClientSignatureViewModel"
+                       x:Class="IdApp.Pages.Signatures.ClientSignature.ClientSignaturePage"
+                       Style="{StaticResource BaseBackgroundPage}"
+                       Title="{x:Static resx:AppResources.ClientSignature}">
+    <ScrollView>
+        <StackLayout Margin="{StaticResource DefaultMargin}" VerticalOptions="Start">
+            <Label Text="{x:Static resx:AppResources.IdentityInformation}" Style="{StaticResource Heading}" />
+            <Label Text="{x:Static resx:AppResources.IdentityInformationInfoText}" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" />
+            <Grid VerticalOptions="StartAndExpand" RowSpacing="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/><!-- 0 -->
+                    <RowDefinition Height="Auto"/><!-- 1 -->
+                    <RowDefinition Height="Auto"/><!-- 2 -->
+                    <RowDefinition Height="Auto"/><!-- 3 -->
+                    <RowDefinition Height="Auto"/><!-- 4 -->
+                    <RowDefinition Height="Auto"/><!-- 5 -->
+                    <RowDefinition Height="Auto"/><!-- 6 -->
+                    <RowDefinition Height="Auto"/><!-- 7 -->
+                    <RowDefinition Height="Auto"/><!-- 8 -->
+                    <RowDefinition Height="Auto"/><!-- 9 -->
+                    <RowDefinition Height="Auto"/><!-- 10 -->
+                    <RowDefinition Height="Auto"/><!-- 11 -->
+                    <RowDefinition Height="Auto"/><!-- 12 -->
+                    <RowDefinition Height="Auto"/><!-- 13 -->
+                    <RowDefinition Height="{Binding OrgRowHeight}"/><!-- 14 -->
+                    <RowDefinition Height="{Binding OrgRowHeight}"/><!-- 15 -->
+                    <RowDefinition Height="{Binding OrgRowHeight}"/><!-- 16 -->
+                    <RowDefinition Height="{Binding OrgRowHeight}"/><!-- 17 -->
+                    <RowDefinition Height="{Binding OrgRowHeight}"/><!-- 18 -->
+                    <RowDefinition Height="{Binding OrgRowHeight}"/><!-- 19 -->
+					<RowDefinition Height="{Binding OrgRowHeight}"/><!-- 20 -->
+					<RowDefinition Height="{Binding OrgRowHeight}"/><!-- 21 -->
+					<RowDefinition Height="{Binding OrgRowHeight}"/><!-- 22 -->
+					<RowDefinition Height="{Binding OrgRowHeight}"/><!-- 23 -->
+					<RowDefinition Height="{Binding OrgRowHeight}"/><!-- 24 -->
+					<RowDefinition Height="Auto"/><!-- 25 -->
+					<RowDefinition Height="Auto"/><!-- 26 -->
+					<RowDefinition Height="Auto"/><!-- 27 -->
+					<RowDefinition Height="Auto"/><!-- 28 -->
+					<RowDefinition Height="Auto"/><!-- 29 -->
+					<RowDefinition Height="Auto"/><!-- 30 -->
+					<RowDefinition Height="Auto"/><!-- 31 -->
+				</Grid.RowDefinitions>
+                <!-- -->
+                <Label Grid.Row="0" Grid.Column="0" Text="{x:Static resx:AppResources.Created}" Style="{StaticResource KeyLabel}"/>
+                <Label Grid.Row="0" Grid.Column="1" Text="{Binding Path=Created}" Style="{StaticResource ValueLabel}"/>
+                <!-- -->
+                <Label Grid.Row="1" Grid.Column="0" Text="{x:Static resx:AppResources.Updated}" Style="{StaticResource KeyLabel}" Margin="0,6,0,0"/>
+                <Label Grid.Row="1" Grid.Column="1" Text="{Binding Path=Updated}" Style="{StaticResource ValueLabel}" Margin="0,6,0,0"/>
+                <!-- -->
+                <Label Grid.Row="2" Grid.Column="0" Text="{x:Static resx:AppResources.State}" Style="{StaticResource KeyLabel}" Margin="0,6,0,0"/>
+                <Label Grid.Row="2" Grid.Column="1" Text="{Binding Path=State}" Style="{StaticResource ValueLabelWithBackground}"
+                       BackgroundColor="{Binding Path=State, Converter={converters:IdentityStateToColor}}" Margin="0,6,0,0"/>
+                <!-- -->
+                <Label Grid.Row="3" Grid.Column="0" Text="{x:Static resx:AppResources.FirstName}" Style="{StaticResource KeyLabel}" Margin="0,6,0,0"/>
+                <Label Grid.Row="3" Grid.Column="1" Text="{Binding Path=FirstName}" Style="{StaticResource ValueLabel}" Margin="0,6,0,0"/>
+                <!-- -->
+                <Label Grid.Row="4" Grid.Column="0" Text="{x:Static resx:AppResources.MiddleNames}" Style="{StaticResource KeyLabel}"  Margin="0,6,0,0"/>
+                <Label Grid.Row="4" Grid.Column="1" Text="{Binding Path=MiddleNames}" Style="{StaticResource ValueLabel}" Margin="0,6,0,0"/>
+                <!-- -->
+                <Label Grid.Row="5" Grid.Column="0" Text="{x:Static resx:AppResources.LastNames}" Style="{StaticResource KeyLabel}"  Margin="0,6,0,0"/>
+                <Label Grid.Row="5" Grid.Column="1" Text="{Binding Path=LastNames}" Style="{StaticResource ValueLabel}" Margin="0,6,0,0"/>
+                <!-- -->
+                <Label Grid.Row="6" Grid.Column="0" Text="{x:Static resx:AppResources.PersonalNumber}" Style="{StaticResource KeyLabel}"  Margin="0,6,0,0"/>
+                <Label Grid.Row="6" Grid.Column="1" Text="{Binding Path=PersonalNumber}" Style="{StaticResource ValueLabel}" Margin="0,6,0,0"/>
+                <!-- -->
+                <Label Grid.Row="7" Grid.Column="0" Text="{x:Static resx:AppResources.Address}" Style="{StaticResource KeyLabel}"  Margin="0,6,0,0"/>
+                <Label Grid.Row="7" Grid.Column="1" Text="{Binding Path=Address}" Style="{StaticResource ValueLabel}" Margin="0,6,0,0"/>
+                <!-- -->
+                <Label Grid.Row="8" Grid.Column="0" Text="{x:Static resx:AppResources.Address2}" Style="{StaticResource KeyLabel}"  Margin="0,6,0,0"/>
+                <Label Grid.Row="8" Grid.Column="1" Text="{Binding Path=Address2}" Style="{StaticResource ValueLabel}" Margin="0,6,0,0"/>
+                <!-- -->
+                <Label Grid.Row="9" Grid.Column="0" Text="{x:Static resx:AppResources.ZipCode}" Style="{StaticResource KeyLabel}"  Margin="0,6,0,0"/>
+                <Label Grid.Row="9" Grid.Column="1" Text="{Binding Path=ZipCode}" Style="{StaticResource ValueLabel}" Margin="0,6,0,0"/>
+                <!-- -->
+                <Label Grid.Row="10" Grid.Column="0" Text="{x:Static resx:AppResources.Area}" Style="{StaticResource KeyLabel}"  Margin="0,6,0,0"/>
+                <Label Grid.Row="10" Grid.Column="1" Text="{Binding Path=Area}" FontAttributes="Bold" Margin="0,6,0,0"/>
+                <!-- -->
+                <Label Grid.Row="11" Grid.Column="0" Text="{x:Static resx:AppResources.City}" Style="{StaticResource KeyLabel}"  Margin="0,6,0,0"/>
+                <Label Grid.Row="11" Grid.Column="1" Text="{Binding Path=City}" Style="{StaticResource ValueLabel}" Margin="0,6,0,0"/>
+                <!-- -->
+                <Label Grid.Row="12" Grid.Column="0" Text="{x:Static resx:AppResources.Region}" Style="{StaticResource KeyLabel}"  Margin="0,6,0,0"/>
+                <Label Grid.Row="12" Grid.Column="1" Text="{Binding Path=Region}" Style="{StaticResource ValueLabel}" Margin="0,6,0,0"/>
+                <!-- -->
+                <Label Grid.Row="13" Grid.Column="0" Text="{x:Static resx:AppResources.Country}" Style="{StaticResource KeyLabel}"  Margin="0,6,0,0"/>
+                <Label Grid.Row="13" Grid.Column="1" Text="{Binding Path=Country}" Style="{StaticResource ValueLabel}" Margin="0,6,0,0"/>
+                <!-- -->
+				<Label Grid.Row="14" Grid.Column="0" Text="{x:Static resx:AppResources.OrgName}" Style="{StaticResource KeyLabel}" IsVisible="{Binding HasOrg}" Margin="0,6,0,0"/>
+				<Label Grid.Row="14" Grid.Column="1" Text="{Binding Path=OrgName}" Style="{StaticResource ValueLabel}" IsVisible="{Binding HasOrg}" Margin="0,6,0,0"/>
+				<!-- -->
+				<Label Grid.Row="15" Grid.Column="0" Text="{x:Static resx:AppResources.OrgNumber}" Style="{StaticResource KeyLabel}"  IsVisible="{Binding HasOrg}" Margin="0,6,0,0"/>
+				<Label Grid.Row="15" Grid.Column="1" Text="{Binding Path=OrgNumber}" Style="{StaticResource ValueLabel}" IsVisible="{Binding HasOrg}" Margin="0,6,0,0"/>
+				<!-- -->
+				<Label Grid.Row="16" Grid.Column="0" Text="{x:Static resx:AppResources.OrgRole}" Style="{StaticResource KeyLabel}"  IsVisible="{Binding HasOrg}" Margin="0,6,0,0"/>
+				<Label Grid.Row="16" Grid.Column="1" Text="{Binding Path=OrgRole}" Style="{StaticResource ValueLabel}" IsVisible="{Binding HasOrg}" Margin="0,6,0,0"/>
+				<!-- -->
+				<Label Grid.Row="17" Grid.Column="0" Text="{x:Static resx:AppResources.OrgDepartment}" Style="{StaticResource KeyLabel}"  IsVisible="{Binding HasOrg}" Margin="0,6,0,0"/>
+				<Label Grid.Row="17" Grid.Column="1" Text="{Binding Path=OrgDepartment}" Style="{StaticResource ValueLabel}" IsVisible="{Binding HasOrg}" Margin="0,6,0,0"/>
+				<!-- -->
+				<Label Grid.Row="18" Grid.Column="0" Text="{x:Static resx:AppResources.OrgAddress}" Style="{StaticResource KeyLabel}"  IsVisible="{Binding HasOrg}" Margin="0,6,0,0"/>
+				<Label Grid.Row="18" Grid.Column="1" Text="{Binding Path=OrgAddress}" Style="{StaticResource ValueLabel}" IsVisible="{Binding HasOrg}" Margin="0,6,0,0"/>
+				<!-- -->
+				<Label Grid.Row="19" Grid.Column="0" Text="{x:Static resx:AppResources.OrgAddress2}" Style="{StaticResource KeyLabel}"  IsVisible="{Binding HasOrg}" Margin="0,6,0,0"/>
+				<Label Grid.Row="19" Grid.Column="1" Text="{Binding Path=OrgAddress2}" Style="{StaticResource ValueLabel}" IsVisible="{Binding HasOrg}" Margin="0,6,0,0"/>
+				<!-- -->
+				<Label Grid.Row="20" Grid.Column="0" Text="{x:Static resx:AppResources.OrgZipCode}" Style="{StaticResource KeyLabel}"  IsVisible="{Binding HasOrg}" Margin="0,6,0,0"/>
+				<Label Grid.Row="20" Grid.Column="1" Text="{Binding Path=OrgZipCode}" Style="{StaticResource ValueLabel}" IsVisible="{Binding HasOrg}" Margin="0,6,0,0"/>
+				<!-- -->
+				<Label Grid.Row="21" Grid.Column="0" Text="{x:Static resx:AppResources.OrgArea}" Style="{StaticResource KeyLabel}"  IsVisible="{Binding HasOrg}" Margin="0,6,0,0"/>
+				<Label Grid.Row="21" Grid.Column="1" Text="{Binding Path=OrgArea}" FontAttributes="Bold" IsVisible="{Binding HasOrg}" Margin="0,6,0,0"/>
+				<!-- -->
+				<Label Grid.Row="22" Grid.Column="0" Text="{x:Static resx:AppResources.OrgCity}" Style="{StaticResource KeyLabel}"  IsVisible="{Binding HasOrg}" Margin="0,6,0,0"/>
+				<Label Grid.Row="22" Grid.Column="1" Text="{Binding Path=OrgCity}" Style="{StaticResource ValueLabel}" IsVisible="{Binding HasOrg}" Margin="0,6,0,0"/>
+				<!-- -->
+				<Label Grid.Row="23" Grid.Column="0" Text="{x:Static resx:AppResources.OrgRegion}" Style="{StaticResource KeyLabel}"  IsVisible="{Binding HasOrg}" Margin="0,6,0,0"/>
+				<Label Grid.Row="23" Grid.Column="1" Text="{Binding Path=OrgRegion}" Style="{StaticResource ValueLabel}" IsVisible="{Binding HasOrg}" Margin="0,6,0,0"/>
+				<!-- -->
+				<Label Grid.Row="24" Grid.Column="0" Text="{x:Static resx:AppResources.OrgCountry}" Style="{StaticResource KeyLabel}"  IsVisible="{Binding HasOrg}" Margin="0,6,0,0"/>
+				<Label Grid.Row="24" Grid.Column="1" Text="{Binding Path=OrgCountry}" Style="{StaticResource ValueLabel}" IsVisible="{Binding HasOrg}" Margin="0,6,0,0"/>
+				<!-- -->
+				<Label Grid.Row="25" Grid.Column="0" Text="{x:Static resx:AppResources.LegalId}" Style="{StaticResource KeyLabel}"  Margin="0,6,0,0"/>
+                <Label Grid.Row="25" Grid.Column="1" Text="{Binding Path=LegalId}" Style="{StaticResource ValueLabel}" Margin="0,6,0,0"/>
+                <!-- -->
+				<StackLayout Grid.Row="26" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Vertical" Margin="0,6,0,0">
+                    <Label Text="{x:Static resx:AppResources.Signature}" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="Large" />
+                    <Label Text="{x:Static resx:AppResources.ClientSignatureInformationInfoText}" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" />
+                </StackLayout>
+                <!-- -->
+                <Label Grid.Row="27" Grid.Column="0" Text="{x:Static resx:AppResources.Role}" Style="{StaticResource KeyLabel}" Margin="0,6,0,0"/>
+                <Label Grid.Row="27" Grid.Column="1" Text="{Binding Path=Role}" Style="{StaticResource ValueLabel}" Margin="0,6,0,0"/>
+                <!-- -->
+                <Label Grid.Row="28" Grid.Column="0" Text="{x:Static resx:AppResources.Timestamp}" Style="{StaticResource KeyLabel}" Margin="0,6,0,0"/>
+                <Label Grid.Row="28" Grid.Column="1" Text="{Binding Path=Timestamp}" Style="{StaticResource ValueLabel}" Margin="0,6,0,0"/>
+                <!-- -->
+                <Label Grid.Row="29" Grid.Column="0" Text="{x:Static resx:AppResources.Transferable}" Style="{StaticResource KeyLabel}" Margin="0,6,0,0"/>
+                <Label Grid.Row="29" Grid.Column="1" Text="{Binding Path=IsTransferable}" Style="{StaticResource ValueLabel}" Margin="0,6,0,0"/>
+                <!-- -->
+                <Label Grid.Row="30" Grid.Column="0" Text="{x:Static resx:AppResources.Network}" Style="{StaticResource KeyLabel}" Margin="0,6,0,0"/>
+                <Label Grid.Row="30" Grid.Column="1" Text="{Binding Path=BareJid}" Style="{StaticResource ValueLabel}" Margin="0,6,0,0"/>
+                <!-- -->
+                <Label Grid.Row="31" Grid.Column="0" Text="{x:Static resx:AppResources.Signature}" Style="{StaticResource KeyLabel}" Margin="0,6,0,0"/>
+                <Label Grid.Row="31" Grid.Column="1" Text="{Binding Path=Signature}" Style="{StaticResource ValueLabel}" Margin="0,6,0,0"/>
+            </Grid>
+        </StackLayout>
+    </ScrollView>
+</views:ContentBasePage>

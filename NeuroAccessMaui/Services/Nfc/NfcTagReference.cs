@@ -80,10 +80,8 @@ namespace NeuroAccessMaui.Services.Nfc
 				{
 					foreach (Property P in this.metaData)
 					{
-						if (string.Compare(P.Name, PropertyName, StringComparison.OrdinalIgnoreCase) == 0)
-						{
+						if (string.Equals(P.Name, PropertyName, StringComparison.OrdinalIgnoreCase))
 							return P.Value;
-						}
 					}
 				}
 
