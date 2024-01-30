@@ -76,7 +76,7 @@ namespace NeuroAccessMaui.UI.Popups
 				}
 			}
 
-			if ((SelectedLanguage is not null) && (Name != CultureInfo.CurrentUICulture.Name))
+			if ((SelectedLanguage is not null) && (Name != CultureInfo.CurrentCulture.Name))
 			{
 				Preferences.Set("user_selected_language", SelectedLanguage.TwoLetterISOLanguageName);
 				LocalizationManager.Current.CurrentCulture = SelectedLanguage;

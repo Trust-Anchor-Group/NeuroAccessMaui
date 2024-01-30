@@ -341,16 +341,16 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 				// General Information
 
-				this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.Created)], this.Contract.Created.ToString(CultureInfo.CurrentUICulture)));
+				this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.Created)], this.Contract.Created.ToString(CultureInfo.CurrentCulture)));
 
 				if (this.Contract.Updated > DateTime.MinValue)
-					this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.Updated)], this.Contract.Updated.ToString(CultureInfo.CurrentUICulture)));
+					this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.Updated)], this.Contract.Updated.ToString(CultureInfo.CurrentCulture)));
 
 				this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.State)], this.Contract.State.ToString(), ContractStateToColor.ToColor(this.Contract.State)));
 				this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.Visibility)], this.Contract.Visibility.ToString()));
 				this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.Duration)], this.Contract.Duration.ToString()));
-				this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.From)], this.Contract.From.ToString(CultureInfo.CurrentUICulture)));
-				this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.To)], this.Contract.To.ToString(CultureInfo.CurrentUICulture)));
+				this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.From)], this.Contract.From.ToString(CultureInfo.CurrentCulture)));
+				this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.To)], this.Contract.To.ToString(CultureInfo.CurrentCulture)));
 				this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.Archiving_Optional)], this.Contract.ArchiveOptional.ToString()));
 				this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.Archiving_Required)], this.Contract.ArchiveRequired.ToString()));
 				this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.CanActAsTemplate)], this.Contract.CanActAsTemplate.ToYesNo()));
@@ -393,10 +393,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				StackLayout PartsLayout = [];
 
 				if (this.Contract.SignAfter.HasValue)
-					AddKeyValueLabelPair(PartsLayout, ServiceRef.Localizer[nameof(AppResources.SignAfter)], this.Contract.SignAfter.Value.ToString(CultureInfo.CurrentUICulture));
+					AddKeyValueLabelPair(PartsLayout, ServiceRef.Localizer[nameof(AppResources.SignAfter)], this.Contract.SignAfter.Value.ToString(CultureInfo.CurrentCulture));
 
 				if (this.Contract.SignBefore.HasValue)
-					AddKeyValueLabelPair(PartsLayout, ServiceRef.Localizer[nameof(AppResources.SignBefore)], this.Contract.SignBefore.Value.ToString(CultureInfo.CurrentUICulture));
+					AddKeyValueLabelPair(PartsLayout, ServiceRef.Localizer[nameof(AppResources.SignBefore)], this.Contract.SignBefore.Value.ToString(CultureInfo.CurrentCulture));
 
 				AddKeyValueLabelPair(PartsLayout, ServiceRef.Localizer[nameof(AppResources.Mode)], this.Contract.PartsMode.ToString());
 
@@ -513,7 +513,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 						sb.Append(", ");
 						sb.Append(signature.BareJid);
 						sb.Append(", ");
-						sb.Append(signature.Timestamp.ToString(CultureInfo.CurrentUICulture));
+						sb.Append(signature.Timestamp.ToString(CultureInfo.CurrentCulture));
 						sb.Append(", ");
 						sb.Append(Sign);
 
@@ -532,7 +532,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 					openServerSignature.Tapped += this.ServerSignature_Tapped;
 
 					StringBuilder sb = new();
-					sb.Append(this.Contract.ServerSignature.Timestamp.ToString(CultureInfo.CurrentUICulture));
+					sb.Append(this.Contract.ServerSignature.Timestamp.ToString(CultureInfo.CurrentCulture));
 					sb.Append(", ");
 					sb.Append(Convert.ToBase64String(this.Contract.ServerSignature.DigitalSignature));
 
@@ -564,7 +564,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod())
-					.Append(new KeyValuePair<string, object>("ContractId", this.Contract?.ContractId))
+					.Append(new KeyValuePair<string, object>("ContractId", this.Contract?.ContractId ?? string.Empty))
 					.ToArray());
 
 				this.ClearContract();
