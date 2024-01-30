@@ -59,9 +59,15 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>iotid</string>
+				<string>iotdisco</string>
 				<string>iotsc</string>
 				<string>tagsign</string>
 				<string>obinfo</string>
+				<string>edaler</string>
+				<string>nfeat</string>
+				<string>xmpp</string>
+				<string>aes256</string>
+				<string>neuroaccess</string>
 			</array>
 		</dict>
 	</array>

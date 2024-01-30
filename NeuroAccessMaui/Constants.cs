@@ -63,6 +63,11 @@
 		public static class UriSchemes
 		{
 			/// <summary>
+			/// The App's URI Scheme (neuroaccess)
+			/// </summary>
+			public const string NeuroAccess = "neuroaccess";
+
+			/// <summary>
 			/// The IoT ID URI Scheme (iotid)
 			/// </summary>
 			public const string IotId = "iotid";
@@ -126,9 +131,14 @@
 				return Url switch
 				{
 					IotId or
+					IotDisco or
 					IotSc or
 					TagSign or
-					Onboarding => Url,
+					EDaler or
+					NeuroFeature or
+					Onboarding or
+					Xmpp or
+					NeuroAccess => Url,
 					_ => null,
 				};
 			}
@@ -543,6 +553,47 @@
 			/// Download file timeout
 			/// </summary>
 			public static readonly TimeSpan DownloadFile = TimeSpan.FromSeconds(10);
+		}
+
+		/// <summary>
+		/// Push chennels
+		/// </summary>
+		public static class PushChannels
+		{
+			/// <summary>
+			/// Messages channel
+			/// </summary>
+			public const string Messages = "Messages";
+
+			/// <summary>
+			/// Petitions channel
+			/// </summary>
+			public const string Petitions = "Petitions";
+
+			/// <summary>
+			/// Identities channel
+			/// </summary>
+			public const string Identities = "Identities";
+
+			/// <summary>
+			/// Contracts channel
+			/// </summary>
+			public const string Contracts = "Contracts";
+
+			/// <summary>
+			/// eDaler channel
+			/// </summary>
+			public const string EDaler = "eDaler";
+
+			/// <summary>
+			/// Tokens channel
+			/// </summary>
+			public const string Tokens = "Tokens";
+
+			/// <summary>
+			/// Provisioning channel
+			/// </summary>
+			public const string Provisioning = "Provisioning";
 		}
 
 		/// <summary>

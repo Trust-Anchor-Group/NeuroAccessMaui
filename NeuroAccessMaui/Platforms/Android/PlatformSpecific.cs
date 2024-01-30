@@ -12,7 +12,9 @@ using AndroidX.Biometric;
 using AndroidX.Fragment.App;
 using AndroidX.Lifecycle;
 using Java.Util.Concurrent;
+using NeuroAccessMaui.Services.Push;
 using Waher.Events;
+using Waher.Networking.XMPP.Push;
 
 namespace NeuroAccessMaui.Services
 {
@@ -560,6 +562,33 @@ namespace NeuroAccessMaui.Services
 			{
 				this.result.TrySetResult(false);
 			}
+		}
+
+		/// <summary>
+		/// Gets a Push Notification token for the device.
+		/// </summary>
+		/// <returns>Token, Service used, and type of client.</returns>
+		public async Task<TokenInformation> GetToken()
+		{
+			Java.Lang.Object Token = string.Empty;
+
+			try
+			{
+				Token = await FirebaseMessaging.Instance.GetToken().AsAsync<Java.Lang.Object>();
+			}
+			catch (Exception ex)
+			{
+				Log.Critical(ex);
+			}
+
+			TokenInformation TokenInformation = new()
+			{
+				Token = Token.ToString(),
+				ClientType = ClientType.Android,
+				Service = PushMessagingService.Firebase
+			};
+
+			return TokenInformation;
 		}
 
 	}

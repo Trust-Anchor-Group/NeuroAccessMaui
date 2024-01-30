@@ -1377,4 +1377,124 @@
   <data name="YourContractContainsErrors" xml:space="preserve">
     <value>Your contract contains errors. Fix these errors and try again.</value>
   </data>
+  <data name="AccessRequest" xml:space="preserve">
+    <value>Access Request</value>
+  </data>
+  <data name="ContractCreated" xml:space="preserve">
+    <value>A contract has been created.</value>
+  </data>
+  <data name="ContractDeleted" xml:space="preserve">
+    <value>A contract has been deleted.</value>
+  </data>
+  <data name="ContractProposed" xml:space="preserve">
+    <value>A contract has been proposed.</value>
+  </data>
+  <data name="ContractSigned" xml:space="preserve">
+    <value>A contract has been signed.</value>
+  </data>
+  <data name="ContractUpdated" xml:space="preserve">
+    <value>A contract has been updated.</value>
+  </data>
+  <data name="ControlRequest" xml:space="preserve">
+    <value>Control Request</value>
+  </data>
+  <data name="IdentityUpdated" xml:space="preserve">
+    <value>The digital identity has been updated.</value>
+  </data>
+  <data name="InvalidIoTDiscoClaimUri" xml:space="preserve">
+    <value>Not a valid iotdisco claim URI.</value>
+  </data>
+  <data name="InvalidIoTDiscoveryCode" xml:space="preserve">
+    <value>Invalid IoT Discovery Code</value>
+  </data>
+  <data name="MessageFrom" xml:space="preserve">
+    <value>Message from:</value>
+  </data>
+  <data name="NeuroFeaturesServiceNotFound" xml:space="preserve">
+    <value>No Neuro-Features service found on broker.</value>
+  </data>
+  <data name="PetitionFrom" xml:space="preserve">
+    <value>Petition from:</value>
+  </data>
+  <data name="ReadRequest" xml:space="preserve">
+    <value>Readout Request</value>
+  </data>
+  <data name="UnableToGetHistory" xml:space="preserve">
+    <value>Unable to get history report.</value>
+  </data>
+  <data name="UnableToGetPresent" xml:space="preserve">
+    <value>Unable to get present report.</value>
+  </data>
+  <data name="UnableToGetProfiling" xml:space="preserve">
+    <value>Unable to get profiling report.</value>
+  </data>
+  <data name="UnableToGetStateDiagram" xml:space="preserve">
+    <value>Unable to get state diagram report.</value>
+  </data>
+  <data name="AccessRequestText" xml:space="preserve">
+    <value>{0} wants to connect to your device {1}.</value>
+  </data>
+  <data name="ConcentratorServiceNotFound" xml:space="preserve">
+    <value>No concentrator service found.</value>
+  </data>
+  <data name="ControlRequestText" xml:space="preserve">
+    <value>{0} wants to control parameters on your device {1}.</value>
+  </data>
+  <data name="ControlServiceNotFound" xml:space="preserve">
+    <value>No control service found.</value>
+  </data>
+  <data name="EDalerServiceNotFound" xml:space="preserve">
+    <value>No eDaler service found on broker.</value>
+  </data>
+  <data name="GettingOptionsCancelled" xml:space="preserve">
+    <value>Getting available options was cancelled.</value>
+  </data>
+  <data name="IdentityResponse" xml:space="preserve">
+    <value>Response to identity request</value>
+  </data>
+  <data name="IdentityReviewRequest" xml:space="preserve">
+    <value>Request to review identity</value>
+  </data>
+  <data name="NoThingsFound" xml:space="preserve">
+    <value>No Things Found.</value>
+  </data>
+  <data name="PaymentCancelled" xml:space="preserve">
+    <value>Payment Cancelled</value>
+  </data>
+  <data name="PaymentFailed" xml:space="preserve">
+    <value>Payment Failed</value>
+  </data>
+  <data name="PepServiceNotFound" xml:space="preserve">
+    <value>No personal eventing service found.</value>
+  </data>
+  <data name="ProvisioningServiceNotFound" xml:space="preserve">
+    <value>No provisioning service found on broker.</value>
+  </data>
+  <data name="PushNotificationServiceNotFound" xml:space="preserve">
+    <value>No push-notification service found.</value>
+  </data>
+  <data name="ReadoutRequestText" xml:space="preserve">
+    <value>{0} wants to read data from your device {1}.</value>
+  </data>
+  <data name="RequestSignature" xml:space="preserve">
+    <value>Request signature</value>
+  </data>
+  <data name="RequestToAccessIdentity" xml:space="preserve">
+    <value>Request to access identity</value>
+  </data>
+  <data name="SensorServiceNotFound" xml:space="preserve">
+    <value>No sensor service found.</value>
+  </data>
+  <data name="SignatureResponse" xml:space="preserve">
+    <value>Response to signature request</value>
+  </data>
+  <data name="ThingRegistryServiceNotFound" xml:space="preserve">
+    <value>No thing registry service found on broker.</value>
+  </data>
+  <data name="UnableToGetListOfMyDevices" xml:space="preserve">
+    <value>Unable to get list of my devices.</value>
+  </data>
+  <data name="UnableToGetOptions" xml:space="preserve">
+    <value>Unable to get available options.</value>
+  </data>
 </root>

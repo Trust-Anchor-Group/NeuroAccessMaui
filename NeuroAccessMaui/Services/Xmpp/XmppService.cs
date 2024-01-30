@@ -1,27 +1,47 @@
-﻿using NeuroAccessMaui.Extensions;
+﻿using EDaler;
+using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services.Contracts;
+using NeuroAccessMaui.Services.Push;
 using NeuroAccessMaui.Services.Tag;
+using NeuroAccessMaui.Services.UI.Photos;
+using NeuroAccessMaui.Services.Wallet;
 using NeuroAccessMaui.UI.Pages.Registration;
+using NeuroFeatures;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Reflection;
 using System.Text;
 using System.Xml;
 using Waher.Content;
+using Waher.Content.Html;
+using Waher.Content.Markdown;
 using Waher.Content.Xml;
 using Waher.Events;
 using Waher.Events.XMPP;
 using Waher.Networking.Sniffers;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Abuse;
+using Waher.Networking.XMPP.Concentrator;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Networking.XMPP.Control;
 using Waher.Networking.XMPP.HttpFileUpload;
 using Waher.Networking.XMPP.HTTPX;
+using Waher.Networking.XMPP.PEP;
+using Waher.Networking.XMPP.Provisioning;
+using Waher.Networking.XMPP.Provisioning.SearchOperators;
+using Waher.Networking.XMPP.PubSub;
+using Waher.Networking.XMPP.Push;
+using Waher.Networking.XMPP.Sensor;
 using Waher.Networking.XMPP.ServiceDiscovery;
 using Waher.Networking.XMPP.StanzaErrors;
 using Waher.Persistence;
+using Waher.Persistence.Filters;
 using Waher.Runtime.Inventory;
 using Waher.Runtime.Settings;
 using Waher.Runtime.Temporary;
+using Waher.Security.JWT;
 
 namespace NeuroAccessMaui.Services.Xmpp
 {
@@ -38,7 +58,16 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private XmppClient? xmppClient;
 		private ContractsClient? contractsClient;
 		private HttpFileUploadClient? fileUploadClient;
+		private ThingRegistryClient? thingRegistryClient;
+		private ProvisioningClient? provisioningClient;
+		private ControlClient? controlClient;
+		private SensorClient? sensorClient;
+		private ConcentratorClient? concentratorClient;
+		private EDalerClient? eDalerClient;
+		private NeuroFeaturesClient? neuroFeaturesClient;
+		private PushNotificationClient? pushNotificationClient;
 		private AbuseClient? abuseClient;
+		private PepClient? pepClient;
 		private HttpxClient? httpxClient;
 		private Timer? reconnectTimer;
 		private string? domainName;
@@ -47,7 +76,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private string? passwordHashMethod;
 		private bool xmppConnected = false;
 		private DateTime xmppLastStateChange = DateTime.MinValue;
-		private InMemorySniffer? sniffer = new(250);
+		private readonly InMemorySniffer? sniffer = new(250);
 		private bool isCreatingClient;
 		private XmppEventSink? xmppEventSink;
 		private string? token = null;
@@ -129,7 +158,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 					this.xmppClient.OnStateChanged += this.XmppClient_StateChanged;
 					this.xmppClient.OnConnectionError += this.XmppClient_ConnectionError;
 					this.xmppClient.OnError += this.XmppClient_Error;
+					this.xmppClient.OnChatMessage += this.XmppClient_OnChatMessage;
+					this.xmppClient.OnNormalMessage += this.XmppClient_OnNormalMessage;
 					this.xmppClient.OnPresenceSubscribe += this.XmppClient_OnPresenceSubscribe;
+					this.xmppClient.OnPresenceUnsubscribed += this.XmppClient_OnPresenceUnsubscribed;
+					this.xmppClient.OnRosterItemAdded += this.XmppClient_OnRosterItemAdded;
+					this.xmppClient.OnRosterItemUpdated += this.XmppClient_OnRosterItemUpdated;
+					this.xmppClient.OnRosterItemRemoved += this.XmppClient_OnRosterItemRemoved;
+					this.xmppClient.OnPresence += this.XmppClient_OnPresence;
 
 					this.xmppClient.RegisterMessageHandler("Delivered", ContractsClient.NamespaceOnboarding, this.TransferIdDelivered, true);
 					this.xmppClient.RegisterMessageHandler("clientMessage", ContractsClient.NamespaceLegalIdentities, this.ClientMessage, true);
@@ -161,6 +197,43 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 					if (!string.IsNullOrWhiteSpace(ServiceRef.TagProfile.HttpFileUploadJid) && (ServiceRef.TagProfile.HttpFileUploadMaxSize > 0))
 						this.fileUploadClient = new HttpFileUploadClient(this.xmppClient, ServiceRef.TagProfile.HttpFileUploadJid, ServiceRef.TagProfile.HttpFileUploadMaxSize);
+
+					if (!string.IsNullOrWhiteSpace(ServiceRef.TagProfile.RegistryJid))
+						this.thingRegistryClient = new ThingRegistryClient(this.xmppClient, ServiceRef.TagProfile.RegistryJid);
+
+					if (!string.IsNullOrWhiteSpace(ServiceRef.TagProfile.ProvisioningJid))
+					{
+						this.provisioningClient = new ProvisioningClient(this.xmppClient, ServiceRef.TagProfile.ProvisioningJid)
+						{
+							ManagePresenceSubscriptionRequests = false
+						};
+
+						this.provisioningClient.CanControlQuestion += this.ProvisioningClient_CanControlQuestion;
+						this.provisioningClient.CanReadQuestion += this.ProvisioningClient_CanReadQuestion;
+						this.provisioningClient.IsFriendQuestion += this.ProvisioningClient_IsFriendQuestion;
+					}
+
+					if (!string.IsNullOrWhiteSpace(ServiceRef.TagProfile.EDalerJid))
+					{
+						this.eDalerClient = new EDalerClient(this.xmppClient, this.contractsClient, ServiceRef.TagProfile.EDalerJid);
+						this.RegisterEDalerEventHandlers(this.eDalerClient);
+					}
+
+					if (!string.IsNullOrWhiteSpace(ServiceRef.TagProfile.NeuroFeaturesJid))
+					{
+						this.neuroFeaturesClient = new NeuroFeaturesClient(this.xmppClient, this.contractsClient, ServiceRef.TagProfile.NeuroFeaturesJid);
+						this.RegisterNeuroFeatureEventHandlers(this.neuroFeaturesClient);
+					}
+
+					if (ServiceRef.TagProfile.SupportsPushNotification)
+						this.pushNotificationClient = new PushNotificationClient(this.xmppClient);
+
+					this.sensorClient = new SensorClient(this.xmppClient);
+					this.controlClient = new ControlClient(this.xmppClient);
+					this.concentratorClient = new ConcentratorClient(this.xmppClient);
+
+					this.pepClient = new PepClient(this.xmppClient);
+					this.ReregisterPepEventHandlers(this.pepClient);
 
 					this.httpxClient = new HttpxClient(this.xmppClient, 8192);
 					Types.SetModuleParameter("XMPP", this.xmppClient);      // Makes the XMPP Client the default XMPP client, when resolving HTTP over XMPP requests.
@@ -208,6 +281,33 @@ namespace NeuroAccessMaui.Services.Xmpp
 			this.fileUploadClient?.Dispose();
 			this.fileUploadClient = null;
 
+			this.thingRegistryClient?.Dispose();
+			this.thingRegistryClient = null;
+
+			this.provisioningClient?.Dispose();
+			this.provisioningClient = null;
+
+			this.eDalerClient?.Dispose();
+			this.eDalerClient = null;
+
+			this.neuroFeaturesClient?.Dispose();
+			this.neuroFeaturesClient = null;
+
+			this.pushNotificationClient?.Dispose();
+			this.pushNotificationClient = null;
+
+			this.sensorClient?.Dispose();
+			this.sensorClient = null;
+
+			this.controlClient?.Dispose();
+			this.controlClient = null;
+
+			this.concentratorClient?.Dispose();
+			this.concentratorClient = null;
+
+			this.pepClient?.Dispose();
+			this.pepClient = null;
+
 			this.abuseClient?.Dispose();
 			this.abuseClient = null;
 
@@ -246,6 +346,21 @@ namespace NeuroAccessMaui.Services.Xmpp
 			if (this.fileUploadClient?.FileUploadJid != ServiceRef.TagProfile.HttpFileUploadJid)
 				return false;
 
+			if (this.thingRegistryClient?.ThingRegistryAddress != ServiceRef.TagProfile.RegistryJid)
+				return false;
+
+			if (this.provisioningClient?.ProvisioningServerAddress != ServiceRef.TagProfile.ProvisioningJid)
+				return false;
+
+			if (this.eDalerClient?.ComponentAddress != ServiceRef.TagProfile.EDalerJid)
+				return false;
+
+			if (this.neuroFeaturesClient?.ComponentAddress != ServiceRef.TagProfile.NeuroFeaturesJid)
+				return false;
+
+			if ((this.pushNotificationClient is null) ^ !ServiceRef.TagProfile.SupportsPushNotification)
+				return false;
+
 			return true;
 		}
 
@@ -255,6 +370,90 @@ namespace NeuroAccessMaui.Services.Xmpp
 			this.reconnectTimer = new Timer(this.ReconnectTimer_Tick, null, Constants.Intervals.Reconnect, Constants.Intervals.Reconnect);
 		}
 
+		/// <inheritdoc/>
+		public void Dispose()
+		{
+			this.reconnectTimer?.Dispose();
+			this.reconnectTimer = null;
+
+			if (this.xmppEventSink is not null)
+			{
+				ServiceRef.LogService.RemoveListener(this.xmppEventSink);
+				this.xmppEventSink.Dispose();
+				this.xmppEventSink = null;
+			}
+
+			this.contractsClient?.Dispose();
+			this.contractsClient = null;
+
+			this.fileUploadClient?.Dispose();
+			this.fileUploadClient = null;
+
+			this.thingRegistryClient?.Dispose();
+			this.thingRegistryClient = null;
+
+			this.provisioningClient?.Dispose();
+			this.provisioningClient = null;
+
+			this.eDalerClient?.Dispose();
+			this.eDalerClient = null;
+
+			this.neuroFeaturesClient?.Dispose();
+			this.neuroFeaturesClient = null;
+
+			this.pushNotificationClient?.Dispose();
+			this.pushNotificationClient = null;
+
+			this.sensorClient?.Dispose();
+			this.sensorClient = null;
+
+			this.controlClient?.Dispose();
+			this.controlClient = null;
+
+			this.concentratorClient?.Dispose();
+			this.concentratorClient = null;
+
+			this.pepClient?.Dispose();
+			this.pepClient = null;
+
+			this.abuseClient?.Dispose();
+			this.abuseClient = null;
+
+			this.xmppClient?.Dispose();
+			this.xmppClient = null;
+
+			/*
+			this.Dispose(true);
+			GC.SuppressFinalize(this);
+			*/
+		}
+
+		/*
+		/// <summary>
+		/// <see cref="IDisposable.Dispose"/>
+		/// </summary>
+		protected virtual void Dispose(bool disposing)
+		{
+			if (this.isDisposed)
+			{
+				return;
+			}
+
+			if (disposing)
+			{
+				this.abuseClient.Dispose();
+				this.contractsClient.Dispose();
+				this.fileUploadClient.Dispose();
+				this.httpxClient.Dispose();
+				this.reconnectTimer.Dispose();
+				this.sniffer.Dispose();
+				this.xmppClient.Dispose();
+				this.xmppEventSink.Dispose();
+			}
+
+			this.isDisposed = true;
+		}
+		*/
 		#endregion
 
 		#region Lifecycle
@@ -455,9 +654,41 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 						if (this.fileUploadClient is null && !string.IsNullOrWhiteSpace(ServiceRef.TagProfile.HttpFileUploadJid) && (ServiceRef.TagProfile.HttpFileUploadMaxSize > 0))
 							this.fileUploadClient = new HttpFileUploadClient(this.xmppClient, ServiceRef.TagProfile.HttpFileUploadJid, ServiceRef.TagProfile.HttpFileUploadMaxSize);
+
+						if (this.thingRegistryClient is null && !string.IsNullOrWhiteSpace(ServiceRef.TagProfile.RegistryJid))
+							this.thingRegistryClient = new ThingRegistryClient(this.xmppClient, ServiceRef.TagProfile.RegistryJid);
+
+						if (this.provisioningClient is null && !string.IsNullOrWhiteSpace(ServiceRef.TagProfile.RegistryJid))
+						{
+							this.provisioningClient = new ProvisioningClient(this.xmppClient, ServiceRef.TagProfile.ProvisioningJid)
+							{
+								ManagePresenceSubscriptionRequests = false
+							};
+
+							this.provisioningClient.CanControlQuestion += this.ProvisioningClient_CanControlQuestion;
+							this.provisioningClient.CanReadQuestion += this.ProvisioningClient_CanReadQuestion;
+							this.provisioningClient.IsFriendQuestion += this.ProvisioningClient_IsFriendQuestion;
+						}
+
+						if (this.eDalerClient is null && !string.IsNullOrWhiteSpace(ServiceRef.TagProfile.EDalerJid))
+						{
+							this.eDalerClient = new EDalerClient(this.xmppClient, this.contractsClient, ServiceRef.TagProfile.EDalerJid);
+							this.RegisterEDalerEventHandlers(this.eDalerClient);
+						}
+
+						if (this.neuroFeaturesClient is null && !string.IsNullOrWhiteSpace(ServiceRef.TagProfile.NeuroFeaturesJid))
+						{
+							this.neuroFeaturesClient = new NeuroFeaturesClient(this.xmppClient, this.contractsClient, ServiceRef.TagProfile.NeuroFeaturesJid);
+							this.RegisterNeuroFeatureEventHandlers(this.neuroFeaturesClient);
+						}
+
+						if (this.pushNotificationClient is null && ServiceRef.TagProfile.SupportsPushNotification)
+							this.pushNotificationClient = new PushNotificationClient(this.xmppClient);
 					}
 
 					ServiceRef.LogService.AddListener(this.xmppEventSink!);
+
+					await ServiceRef.PushNotificationService.CheckPushNotificationToken();
 					break;
 
 				case XmppState.Offline:
@@ -796,6 +1027,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 			List<Task> Tasks = [];
 			object SynchObject = new();
 
+			Tasks.Add(CheckFeatures(Client, SynchObject));
+
 			foreach (Item Item in response.Items)
 				Tasks.Add(CheckComponent(Client, Item, SynchObject));
 
@@ -810,7 +1043,26 @@ namespace NeuroAccessMaui.Services.Xmpp
 			if (string.IsNullOrWhiteSpace(ServiceRef.TagProfile.LogJid))
 				return false;
 
+			if (string.IsNullOrWhiteSpace(ServiceRef.TagProfile.EDalerJid))
+				return false;
+
+			if (string.IsNullOrWhiteSpace(ServiceRef.TagProfile.NeuroFeaturesJid))
+				return false;
+
+			if (!ServiceRef.TagProfile.SupportsPushNotification)
+				return false;
+
 			return true;
+		}
+
+		private static async Task CheckFeatures(XmppClient Client, object SynchObject)
+		{
+			ServiceDiscoveryEventArgs e = await Client.ServiceDiscoveryAsync(string.Empty);
+
+			lock (SynchObject)
+			{
+				ServiceRef.TagProfile.SupportsPushNotification = e.HasFeature(PushNotificationClient.MessagePushNamespace);
+			}
 		}
 
 		private static async Task CheckComponent(XmppClient Client, Item Item, object SynchObject)
@@ -822,6 +1074,16 @@ namespace NeuroAccessMaui.Services.Xmpp
 				if (itemResponse.HasFeature(ContractsClient.NamespaceLegalIdentities))
 					ServiceRef.TagProfile.LegalJid = Item.JID;
 
+				if (itemResponse.HasFeature(ThingRegistryClient.NamespaceDiscovery))
+					ServiceRef.TagProfile.RegistryJid = Item.JID;
+
+				if (itemResponse.HasFeature(ProvisioningClient.NamespaceProvisioningDevice) &&
+					itemResponse.HasFeature(ProvisioningClient.NamespaceProvisioningOwner) &&
+					itemResponse.HasFeature(ProvisioningClient.NamespaceProvisioningToken))
+				{
+					ServiceRef.TagProfile.ProvisioningJid = Item.JID;
+				}
+
 				if (itemResponse.HasFeature(HttpFileUploadClient.Namespace))
 				{
 					long maxSize = HttpFileUploadClient.FindMaxFileSize(Client, itemResponse) ?? 0;
@@ -830,6 +1092,15 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 				if (itemResponse.HasFeature(XmppEventSink.NamespaceEventLogging))
 					ServiceRef.TagProfile.LogJid = Item.JID;
+
+				if (itemResponse.HasFeature(XmppEventSink.NamespaceEventLogging))
+					ServiceRef.TagProfile.LogJid = Item.JID;
+
+				if (itemResponse.HasFeature(EDalerClient.NamespaceEDaler))
+					ServiceRef.TagProfile.EDalerJid = Item.JID;
+
+				if (itemResponse.HasFeature(NeuroFeaturesClient.NamespaceNeuroFeatures))
+					ServiceRef.TagProfile.NeuroFeaturesJid = Item.JID;
 			}
 		}
 
@@ -892,10 +1163,187 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		#region Presence Subscriptions
 
-		private Task XmppClient_OnPresenceSubscribe(object? Sender, PresenceEventArgs e)
+		private async Task XmppClient_OnPresenceSubscribe(object Sender, PresenceEventArgs e)
 		{
-			e.Decline();
-			return Task.CompletedTask;
+			LegalIdentity? RemoteIdentity = null;
+			string FriendlyName = string.IsNullOrWhiteSpace(e.NickName) ? e.FromBareJID : e.NickName;
+			string? PhotoUrl = null;
+			int PhotoWidth = 0;
+			int PhotoHeight = 0;
+
+			foreach (XmlNode N in e.Presence.ChildNodes)
+			{
+				if (N is XmlElement E && E.LocalName == "identity" && E.NamespaceURI == ContractsClient.NamespaceLegalIdentities)
+				{
+					RemoteIdentity = LegalIdentity.Parse(E);
+					if (RemoteIdentity is not null)
+					{
+						FriendlyName = ContactInfo.GetFriendlyName(RemoteIdentity);
+
+						IdentityStatus Status = await this.ContractsClient.ValidateAsync(RemoteIdentity);
+						if (Status != IdentityStatus.Valid)
+						{
+							e.Decline();
+
+							Log.Warning("Invalid ID received. Presence subscription declined.", e.FromBareJID, RemoteIdentity.Id, "IdValidationError",
+								new KeyValuePair<string, object>("Recipient JID", this.BareJid),
+								new KeyValuePair<string, object>("Sender JID", e.FromBareJID),
+								new KeyValuePair<string, object>("Legal ID", RemoteIdentity.Id),
+								new KeyValuePair<string, object>("Validation", Status));
+							return;
+						}
+
+						break;
+					}
+				}
+			}
+
+			ContactInfo Info = await ContactInfo.FindByBareJid(e.FromBareJID);
+			if ((Info is not null) && Info.AllowSubscriptionFrom.HasValue)
+			{
+				if (Info.AllowSubscriptionFrom.Value)
+					e.Accept();
+				else
+					e.Decline();
+
+				if (Info.FriendlyName != FriendlyName || ((RemoteIdentity is not null) && Info.LegalId != RemoteIdentity.Id))
+				{
+					if (RemoteIdentity is not null)
+					{
+						Info.LegalId = RemoteIdentity.Id;
+						Info.LegalIdentity = RemoteIdentity;
+					}
+
+					Info.FriendlyName = FriendlyName;
+					await Database.Update(Info);
+				}
+
+				return;
+			}
+
+			if ((RemoteIdentity is not null) && (RemoteIdentity.Attachments is not null))
+				(PhotoUrl, PhotoWidth, PhotoHeight) = await PhotosLoader.LoadPhotoAsTemporaryFile(RemoteIdentity.Attachments, 300, 300);
+
+			SubscriptionRequestPopupPage SubscriptionRequestPage = new(e.FromBareJID, FriendlyName, PhotoUrl, PhotoWidth, PhotoHeight);
+
+			await Rg.Plugins.Popup.Services.PopupNavigation.Instance.PushAsync(SubscriptionRequestPage);
+			PresenceRequestAction Action = await SubscriptionRequestPage.Result;
+
+			switch (Action)
+			{
+				case PresenceRequestAction.Accept:
+					e.Accept();
+
+					if (Info is null)
+					{
+						Info = new ContactInfo()
+						{
+							AllowSubscriptionFrom = true,
+							BareJid = e.FromBareJID,
+							FriendlyName = string.IsNullOrWhiteSpace(e.NickName) ? e.FromBareJID : e.NickName,
+							IsThing = false
+						};
+
+						await Database.Insert(Info);
+					}
+					else if (!Info.AllowSubscriptionFrom.HasValue || !Info.AllowSubscriptionFrom.Value)
+					{
+						Info.AllowSubscriptionFrom = true;
+						await Database.Update(Info);
+					}
+
+					RosterItem? Item = this.XmppClient[e.FromBareJID];
+
+					if (Item is null || (Item.State != SubscriptionState.Both && Item.State != SubscriptionState.To))
+					{
+						SubscribeToPopupPage SubscribeToPage = new(e.FromBareJID);
+
+						await Rg.Plugins.Popup.Services.PopupNavigation.Instance.PushAsync(SubscribeToPage);
+						bool? SubscribeTo = await SubscribeToPage.Result;
+
+						if (SubscribeTo.HasValue && SubscribeTo.Value)
+						{
+							string IdXml;
+
+							if (ServiceRef.TagProfile.LegalIdentity is null)
+								IdXml = string.Empty;
+							else
+							{
+								StringBuilder Xml = new();
+								ServiceRef.TagProfile.LegalIdentity.Serialize(Xml, true, true, true, true, true, true, true);
+								IdXml = Xml.ToString();
+							}
+
+							e.Client.RequestPresenceSubscription(e.FromBareJID, IdXml);
+						}
+					}
+					break;
+
+				case PresenceRequestAction.Reject:
+					e.Decline();
+
+					ReportOrBlockPopupPage ReportOrBlockPage = new(e.FromBareJID);
+
+					await Rg.Plugins.Popup.Services.PopupNavigation.Instance.PushAsync(ReportOrBlockPage);
+					ReportOrBlockAction ReportOrBlock = await ReportOrBlockPage.Result;
+
+					if (ReportOrBlock == ReportOrBlockAction.Block || ReportOrBlock == ReportOrBlockAction.Report)
+					{
+						if (Info is null)
+						{
+							Info = new ContactInfo()
+							{
+								AllowSubscriptionFrom = false,
+								BareJid = e.FromBareJID,
+								FriendlyName = string.IsNullOrWhiteSpace(e.NickName) ? e.FromBareJID : e.NickName,
+								IsThing = false
+							};
+
+							await Database.Insert(Info);
+						}
+						else if (!Info.AllowSubscriptionFrom.HasValue || Info.AllowSubscriptionFrom.Value)
+						{
+							Info.AllowSubscriptionFrom = false;
+							await Database.Update(Info);
+						}
+
+						if (ReportOrBlock == ReportOrBlockAction.Report)
+						{
+							ReportTypePopupPage ReportTypePage = new(e.FromBareJID);
+
+							await Rg.Plugins.Popup.Services.PopupNavigation.Instance.PushAsync(ReportOrBlockPage);
+							ReportingReason? ReportType = await ReportTypePage.Result;
+
+							if (ReportType.HasValue)
+							{
+								TaskCompletionSource<bool> Result = new();
+
+								await this.abuseClient.BlockJID(e.FromBareJID, ReportType.Value, (sender2, e2) =>
+								{
+									Result.TrySetResult(e.Ok);
+									return Task.CompletedTask;
+								}, null);
+
+								await Result.Task;
+							}
+						}
+					}
+					break;
+
+				case PresenceRequestAction.Ignore:
+				default:
+					break;
+			}
+		}
+
+		private async Task XmppClient_OnPresenceUnsubscribed(object Sender, PresenceEventArgs e)
+		{
+			ContactInfo ContactInfo = await ContactInfo.FindByBareJid(e.FromBareJID);
+			if ((ContactInfo is not null) && ContactInfo.AllowSubscriptionFrom.HasValue && ContactInfo.AllowSubscriptionFrom.Value)
+			{
+				ContactInfo.AllowSubscriptionFrom = null;
+				await Database.Update(ContactInfo);
+			}
 		}
 
 		#endregion
@@ -932,6 +1380,260 @@ namespace NeuroAccessMaui.Services.Xmpp
 		#endregion
 
 		#region Messages
+
+		/// <summary>
+		/// Sends a message
+		/// </summary>
+		/// <param name="QoS">Quality of Service level of message.</param>
+		/// <param name="Type">Type of message to send.</param>
+		/// <param name="Id">Message ID</param>
+		/// <param name="To">Destination address</param>
+		/// <param name="CustomXml">Custom XML</param>
+		/// <param name="Body">Body text of chat message.</param>
+		/// <param name="Subject">Subject</param>
+		/// <param name="Language">Language used.</param>
+		/// <param name="ThreadId">Thread ID</param>
+		/// <param name="ParentThreadId">Parent Thread ID</param>
+		/// <param name="DeliveryCallback">Callback to call when message has been sent, or failed to be sent.</param>
+		/// <param name="State">State object to pass on to the callback method.</param>
+		public void SendMessage(QoSLevel QoS, Waher.Networking.XMPP.MessageType Type, string Id, string To, string CustomXml, string Body,
+			string Subject, string Language, string ThreadId, string ParentThreadId, DeliveryEventHandler DeliveryCallback, object State)
+		{
+			this.XmppClient.SendMessage(QoS, Type, Id, To, CustomXml, Body, Subject, Language, ThreadId, ParentThreadId, DeliveryCallback, State);
+			// TODO: End-to-End encryption
+		}
+
+		private Task XmppClient_OnNormalMessage(object Sender, MessageEventArgs e)
+		{
+			Log.Warning("Unhandled message received.", e.To, e.From,
+				new KeyValuePair<string, object>("Stanza", e.Message.OuterXml));
+
+			return Task.CompletedTask;
+		}
+
+		private async Task XmppClient_OnChatMessage(object Sender, MessageEventArgs e)
+		{
+			string RemoteBareJid = e.FromBareJID;
+
+			foreach (XmlNode N in e.Message.ChildNodes)
+			{
+				if (N is XmlElement E &&
+					E.LocalName == "qlRef" &&
+					E.NamespaceURI == XmppClient.NamespaceQuickLogin &&
+					RemoteBareJid.IndexOf('@') < 0 &&
+					RemoteBareJid.IndexOf('/') < 0)
+				{
+					LegalIdentity? RemoteIdentity = null;
+
+					foreach (XmlNode N2 in E.ChildNodes)
+					{
+						if (N2 is XmlElement E2 &&
+							E2.LocalName == "identity" &&
+							E2.NamespaceURI == ContractsClient.NamespaceLegalIdentities)
+						{
+							RemoteIdentity = LegalIdentity.Parse(E2);
+							break;
+						}
+					}
+
+					if (RemoteIdentity is not null)
+					{
+						IdentityStatus Status = await this.ValidateIdentity(RemoteIdentity);
+						if (Status != IdentityStatus.Valid)
+						{
+							Log.Warning("Message rejected because the embedded legal identity was not valid.",
+								new KeyValuePair<string, object>("Identity", RemoteIdentity.Id),
+								new KeyValuePair<string, object>("From", RemoteBareJid),
+								new KeyValuePair<string, object>("Status", Status));
+							return;
+						}
+
+						string Jid = RemoteIdentity["JID"];
+
+						if (string.IsNullOrEmpty(Jid))
+						{
+							Log.Warning("Message rejected because the embedded legal identity lacked JID.",
+								new KeyValuePair<string, object>("Identity", RemoteIdentity.Id),
+								new KeyValuePair<string, object>("From", RemoteBareJid),
+								new KeyValuePair<string, object>("Status", Status));
+							return;
+						}
+
+						if (!string.Equals(XML.Attribute(E, "bareJid", string.Empty), Jid, StringComparison.OrdinalIgnoreCase))
+						{
+							Log.Warning("Message rejected because the embedded legal identity had a different JID compared to the JID of the quick-login reference.",
+								new KeyValuePair<string, object>("Identity", RemoteIdentity.Id),
+								new KeyValuePair<string, object>("From", RemoteBareJid),
+								new KeyValuePair<string, object>("Status", Status));
+							return;
+						}
+
+						RemoteBareJid = Jid;
+					}
+				}
+			}
+
+			ContactInfo ContactInfo = await ContactInfo.FindByBareJid(RemoteBareJid);
+			string FriendlyName = ContactInfo?.FriendlyName ?? RemoteBareJid;
+			string? ReplaceObjectId = null;
+
+			ChatMessage Message = new()
+			{
+				Created = DateTime.UtcNow,
+				RemoteBareJid = RemoteBareJid,
+				RemoteObjectId = e.Id,
+				MessageType = Messages.MessageType.Received,
+				Html = string.Empty,
+				PlainText = e.Body,
+				Markdown = string.Empty
+			};
+
+			foreach (XmlNode N in e.Message.ChildNodes)
+			{
+				if (N is XmlElement E)
+				{
+					switch (N.LocalName)
+					{
+						case "content":
+							if (E.NamespaceURI == "urn:xmpp:content")
+							{
+								string Type = XML.Attribute(E, "type");
+
+								switch (Type)
+								{
+									case "text/markdown":
+										Message.Markdown = E.InnerText;
+										break;
+
+									case "text/plain":
+										Message.PlainText = E.InnerText;
+										break;
+
+									case "text/html":
+										Message.Html = E.InnerText;
+										break;
+								}
+							}
+							break;
+
+						case "html":
+							if (E.NamespaceURI == "http://jabber.org/protocol/xhtml-im")
+							{
+								string Html = E.InnerXml;
+
+								int i = Html.IndexOf("<body", StringComparison.OrdinalIgnoreCase);
+								if (i >= 0)
+								{
+									i = Html.IndexOf('>', i + 5);
+									if (i >= 0)
+										Html = Html[(i + 1)..].TrimStart();
+
+									i = Html.LastIndexOf("</body>", StringComparison.OrdinalIgnoreCase);
+									if (i >= 0)
+										Html = Html[..i].TrimEnd();
+								}
+
+								Message.Html = Html;
+							}
+							break;
+
+						case "replace":
+							if (E.NamespaceURI == "urn:xmpp:message-correct:0")
+								ReplaceObjectId = XML.Attribute(E, "id");
+							break;
+
+						case "delay":
+							if (E.NamespaceURI == PubSubClient.NamespaceDelayedDelivery &&
+								E.HasAttribute("stamp") &&
+								XML.TryParse(E.GetAttribute("stamp"), out DateTime Timestamp2))
+							{
+								Message.Created = Timestamp2.ToUniversalTime();
+							}
+							break;
+					}
+				}
+			}
+
+			if (!string.IsNullOrEmpty(Message.Markdown))
+			{
+				try
+				{
+					MarkdownSettings Settings = new()
+					{
+						AllowScriptTag = false,
+						EmbedEmojis = false,    // TODO: Emojis
+						AudioAutoplay = false,
+						AudioControls = false,
+						ParseMetaData = false,
+						VideoAutoplay = false,
+						VideoControls = false
+					};
+
+					MarkdownDocument Doc = await MarkdownDocument.CreateAsync(Message.Markdown, Settings);
+
+					if (string.IsNullOrEmpty(Message.PlainText))
+						Message.PlainText = (await Doc.GeneratePlainText()).Trim();
+
+					if (string.IsNullOrEmpty(Message.Html))
+						Message.Html = HtmlDocument.GetBody(await Doc.GenerateHTML());
+				}
+				catch (Exception ex)
+				{
+					ServiceRef.LogService.LogException(ex);
+					Message.Markdown = string.Empty;
+				}
+			}
+
+			if (string.IsNullOrEmpty(ReplaceObjectId))
+				await Database.Insert(Message);
+			else
+			{
+				ChatMessage Old = await Database.FindFirstIgnoreRest<ChatMessage>(new FilterAnd(
+					new FilterFieldEqualTo("RemoteBareJid", RemoteBareJid),
+					new FilterFieldEqualTo("RemoteObjectId", ReplaceObjectId)));
+
+				if (Old is null)
+				{
+					ReplaceObjectId = null;
+					await Database.Insert(Message);
+				}
+				else
+				{
+					Old.Updated = Message.Created;
+					Old.Html = Message.Html;
+					Old.PlainText = Message.PlainText;
+					Old.Markdown = Message.Markdown;
+
+					await Database.Update(Old);
+
+					Message = Old;
+				}
+			}
+
+			ServiceRef.UiSerializer.BeginInvokeOnMainThread(async () =>
+			{
+				INavigationService NavigationService = App.Instantiate<INavigationService>();
+
+				if ((NavigationService.CurrentPage is ChatPage || NavigationService.CurrentPage is ChatPageIos) &&
+					NavigationService.CurrentPage.BindingContext is ChatViewModel ChatViewModel &&
+					string.Compare(ChatViewModel.BareJid, RemoteBareJid, true) == 0)
+				{
+					if (string.IsNullOrEmpty(ReplaceObjectId))
+						await ChatViewModel.MessageAddedAsync(Message);
+					else
+						await ChatViewModel.MessageUpdatedAsync(Message);
+				}
+				else
+				{
+					await ServiceRef.NotificationService.NewEvent(new ChatMessageNotificationEvent(e, RemoteBareJid)
+					{
+						ReplaceObjectId = ReplaceObjectId,
+						BareJid = RemoteBareJid,
+						Category = RemoteBareJid
+					});
+				}
+			});
+		}
 
 		private Task ClientMessage(object? Sender, MessageEventArgs e)
 		{
@@ -977,6 +1679,239 @@ namespace NeuroAccessMaui.Services.Xmpp
 			});
 
 			return Task.CompletedTask;
+		}
+
+		#endregion
+
+		#region Presence
+
+		private async Task XmppClient_OnPresence(object Sender, PresenceEventArgs e)
+		{
+			try
+			{
+				Task? T = this.OnPresence?.Invoke(this, e);
+				if (T is not null)
+					await T;
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
+		}
+
+		/// <summary>
+		/// Event raised when a new presence stanza has been received.
+		/// </summary>
+		public event PresenceEventHandlerAsync? OnPresence;
+
+		/// <summary>
+		/// Requests subscription of presence information from a contact.
+		/// </summary>
+		/// <param name="BareJid">Bare JID of contact.</param>
+		public void RequestPresenceSubscription(string BareJid)
+		{
+			this.XmppClient.RequestPresenceSubscription(BareJid);
+		}
+
+		/// <summary>
+		/// Requests subscription of presence information from a contact.
+		/// </summary>
+		/// <param name="BareJid">Bare JID of contact.</param>
+		/// <param name="CustomXml">Custom XML to include in the subscription request.</param>
+		public void RequestPresenceSubscription(string BareJid, string CustomXml)
+		{
+			this.XmppClient.RequestPresenceSubscription(BareJid, CustomXml);
+		}
+
+		/// <summary>
+		/// Requests unssubscription of presence information from a contact.
+		/// </summary>
+		/// <param name="BareJid">Bare JID of contact.</param>
+		public void RequestPresenceUnsubscription(string BareJid)
+		{
+			this.XmppClient.RequestPresenceUnsubscription(BareJid);
+		}
+
+		/// <summary>
+		/// Requests a previous presence subscription request revoked.
+		/// </summary>
+		/// <param name="BareJid">Bare JID of contact.</param>
+		public void RequestRevokePresenceSubscription(string BareJid)
+		{
+			this.XmppClient.RequestRevokePresenceSubscription(BareJid);
+		}
+
+		#endregion
+
+		#region Roster
+
+		/// <summary>
+		/// Items in the roster.
+		/// </summary>
+		public RosterItem[] Roster => this.xmppClient?.Roster ?? [];
+
+		/// <summary>
+		/// Gets a roster item.
+		/// </summary>
+		/// <param name="BareJid">Bare JID of roster item.</param>
+		/// <returns>Roster item, if found, or null, if not available.</returns>
+		public RosterItem? GetRosterItem(string BareJid)
+		{
+			return this.XmppClient?.GetRosterItem(BareJid);
+		}
+
+		/// <summary>
+		/// Adds an item to the roster. If an item with the same Bare JID is found in the roster, that item is updated.
+		/// </summary>
+		/// <param name="Item">Item to add.</param>
+		public void AddRosterItem(RosterItem Item)
+		{
+			this.XmppClient.AddRosterItem(Item);
+		}
+
+		/// <summary>
+		/// Removes an item from the roster.
+		/// </summary>
+		/// <param name="BareJid">Bare JID of the roster item.</param>
+		public void RemoveRosterItem(string BareJid)
+		{
+			this.XmppClient.RemoveRosterItem(BareJid);
+		}
+
+		private async Task XmppClient_OnRosterItemAdded(object Sender, RosterItem Item)
+		{
+			try
+			{
+				Task? T = this.OnRosterItemAdded?.Invoke(this, Item);
+				if (T is not null)
+					await T;
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
+		}
+
+		/// <summary>
+		/// Event raised when a roster item has been added to the roster.
+		/// </summary>
+		public event RosterItemEventHandlerAsync? OnRosterItemAdded;
+
+		private async Task XmppClient_OnRosterItemUpdated(object Sender, RosterItem Item)
+		{
+			try
+			{
+				Task? T = this.OnRosterItemUpdated?.Invoke(this, Item);
+				if (T is not null)
+					await T;
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
+		}
+
+		/// <summary>
+		/// Event raised when a roster item has been updated in the roster.
+		/// </summary>
+		public event RosterItemEventHandlerAsync? OnRosterItemUpdated;
+
+		private async Task XmppClient_OnRosterItemRemoved(object Sender, RosterItem Item)
+		{
+			try
+			{
+				Task? T = this.OnRosterItemRemoved?.Invoke(this, Item);
+				if (T is not null)
+					await T;
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
+		}
+
+		/// <summary>
+		/// Event raised when a roster item has been removed from the roster.
+		/// </summary>
+		public event RosterItemEventHandlerAsync? OnRosterItemRemoved;
+
+		#endregion
+
+		#region Push Notification
+
+		/// <summary>
+		/// If push notification is supported.
+		/// </summary>
+		public bool SupportsPushNotification => this.pushNotificationClient is not null;
+
+
+		/// <summary>
+		/// Reference to the Push-notification client.
+		/// </summary>
+		private PushNotificationClient PushNotificationClient
+		{
+			get
+			{
+				if (this.pushNotificationClient is null)
+					throw new InvalidOperationException(ServiceRef.Localizer[nameof(AppResources.PushNotificationServiceNotFound)]);
+
+				return this.pushNotificationClient;
+			}
+		}
+
+		/// <summary>
+		/// Registers a new token.
+		/// </summary>
+		/// <param name="TokenInformation">Token information.</param>
+		/// <returns>If token could be registered.</returns>
+		public async Task<bool> NewPushNotificationToken(TokenInformation TokenInformation)
+		{
+			// TODO: Check if started
+
+			if (this.pushNotificationClient is null || !this.IsOnline || string.IsNullOrEmpty(TokenInformation.Token))
+				return false;
+			else
+			{
+				await this.ReportNewPushNotificationToken(TokenInformation.Token, TokenInformation.Service, TokenInformation.ClientType);
+
+				return true;
+			}
+		}
+
+		/// <summary>
+		/// Reports a new push-notification token to the broker.
+		/// </summary>
+		/// <param name="Token">Token</param>
+		/// <param name="Service">Service used</param>
+		/// <param name="ClientType">Client type.</param>
+		public Task ReportNewPushNotificationToken(string Token, PushMessagingService Service, ClientType ClientType)
+		{
+			return this.PushNotificationClient.NewTokenAsync(Token, Service, ClientType);
+		}
+
+		/// <summary>
+		/// Clears configured push notification rules in the broker.
+		/// </summary>
+		public Task ClearPushNotificationRules()
+		{
+			return this.PushNotificationClient.ClearRulesAsync();
+		}
+
+		/// <summary>
+		/// Adds a push-notification rule in the broker.
+		/// </summary>
+		/// <param name="MessageType">Type of message</param>
+		/// <param name="LocalName">Local name of content element</param>
+		/// <param name="Namespace">Namespace of content element</param>
+		/// <param name="Channel">Push-notification channel</param>
+		/// <param name="MessageVariable">Variable to receive message stanza</param>
+		/// <param name="PatternMatchingScript">Pattern matching script</param>
+		/// <param name="ContentScript">Content script</param>
+		public Task AddPushNotificationRule(Waher.Networking.XMPP.MessageType MessageType, string LocalName, string Namespace,
+			string Channel, string MessageVariable, string PatternMatchingScript, string ContentScript)
+		{
+			return this.PushNotificationClient.AddRuleAsync(MessageType, LocalName, Namespace, Channel, MessageVariable,
+				PatternMatchingScript, ContentScript);
 		}
 
 		#endregion
@@ -1103,6 +2038,378 @@ namespace NeuroAccessMaui.Services.Xmpp
 			return this.FileUploadClient.RequestUploadSlotAsync(FileName, ContentType, ContentSize);
 		}
 
+
+		#endregion
+
+		#region Personal Eventing Protocol (PEP)
+
+		private readonly LinkedList<KeyValuePair<Type, PersonalEventNotificationEventHandler>> pepHandlers = new();
+
+		/// <summary>
+		/// Reference to Personal Eventing Protocol (PEP) client, with a check that one is created.
+		/// Note: Do not make public. Reference only from inside the XmppService class.
+		/// </summary>
+		private PepClient PepClient
+		{
+			get
+			{
+				if (this.pepClient is null)
+					throw new InvalidOperationException(ServiceRef.Localizer[nameof(AppResources.PepServiceNotFound)]);
+
+				return this.pepClient;
+			}
+		}
+
+		/// <summary>
+		/// Registers an event handler of a specific type of personal events.
+		/// </summary>
+		/// <param name="PersonalEventType">Type of personal event.</param>
+		/// <param name="Handler">Event handler.</param>
+		public void RegisterPepHandler(Type PersonalEventType, PersonalEventNotificationEventHandler Handler)
+		{
+			lock (this.pepHandlers)
+			{
+				this.pepHandlers.AddLast(new KeyValuePair<Type, PersonalEventNotificationEventHandler>(PersonalEventType, Handler));
+			}
+
+			this.PepClient.RegisterHandler(PersonalEventType, Handler);
+		}
+
+		/// <summary>
+		/// Unregisters an event handler of a specific type of personal events.
+		/// </summary>
+		/// <param name="PersonalEventType">Type of personal event.</param>
+		/// <param name="Handler">Event handler.</param>
+		/// <returns>If the event handler was found and removed.</returns>
+		public bool UnregisterPepHandler(Type PersonalEventType, PersonalEventNotificationEventHandler Handler)
+		{
+			lock (this.pepHandlers)
+			{
+				LinkedListNode<KeyValuePair<Type, PersonalEventNotificationEventHandler>>? Node = this.pepHandlers.First;
+
+				while (Node is not null)
+				{
+					if (Node.Value.Key == PersonalEventType &&
+						(Node.Value.Value.Target?.Equals(Handler.Target) ?? Handler.Target is null) &&
+						Node.Value.Value.Method.Equals(Handler.Method))
+					{
+						this.pepHandlers.Remove(Node);
+						break;
+					}
+
+					Node = Node.Next;
+				}
+			}
+
+			return this.PepClient.UnregisterHandler(PersonalEventType, Handler);
+		}
+
+		private void ReregisterPepEventHandlers(PepClient PepClient)
+		{
+			lock (this.pepHandlers)
+			{
+				foreach (KeyValuePair<Type, PersonalEventNotificationEventHandler> P in this.pepHandlers)
+					PepClient.RegisterHandler(P.Key, P.Value);
+			}
+		}
+
+		#endregion
+
+		#region Thing Registries & Discovery
+
+		/// <summary>
+		/// Reference to thing registry client, with a check that one is created.
+		/// Note: Do not make public. Reference only from inside the XmppService class.
+		/// </summary>
+		private ThingRegistryClient ThingRegistryClient
+		{
+			get
+			{
+				if (this.thingRegistryClient is null)
+					throw new InvalidOperationException(ServiceRef.Localizer[nameof(AppResources.ThingRegistryServiceNotFound)]);
+
+				return this.thingRegistryClient;
+			}
+		}
+
+		/// <summary>
+		/// JID of thing registry service.
+		/// </summary>
+		public string RegistryServiceJid => this.ThingRegistryClient.ThingRegistryAddress;
+
+		/// <summary>
+		/// Checks if a URI is a claim URI.
+		/// </summary>
+		/// <param name="DiscoUri">IoTDisco URI</param>
+		/// <returns>If <paramref name="DiscoUri"/> is a claim URI.</returns>
+		public bool IsIoTDiscoClaimURI(string DiscoUri)
+		{
+			return ThingRegistryClient.IsIoTDiscoClaimURI(DiscoUri);
+		}
+
+		/// <summary>
+		/// Checks if a URI is a search URI.
+		/// </summary>
+		/// <param name="DiscoUri">IoTDisco URI</param>
+		/// <returns>If <paramref name="DiscoUri"/> is a search URI.</returns>
+		public bool IsIoTDiscoSearchURI(string DiscoUri)
+		{
+			return ThingRegistryClient.IsIoTDiscoSearchURI(DiscoUri);
+		}
+
+		/// <summary>
+		/// Checks if a URI is a direct reference URI.
+		/// </summary>
+		/// <param name="DiscoUri">IoTDisco URI</param>
+		/// <returns>If <paramref name="DiscoUri"/> is a direct reference URI.</returns>
+		public bool IsIoTDiscoDirectURI(string DiscoUri)
+		{
+			return ThingRegistryClient.IsIoTDiscoDirectURI(DiscoUri);
+		}
+
+		/// <summary>
+		/// Tries to decode an IoTDisco Claim URI (subset of all possible IoTDisco URIs).
+		/// </summary>
+		/// <param name="DiscoUri">IoTDisco URI</param>
+		/// <param name="Tags">Decoded meta data tags.</param>
+		/// <returns>If DiscoUri was successfully decoded.</returns>
+		public bool TryDecodeIoTDiscoClaimURI(string DiscoUri, out MetaDataTag[]? Tags)
+		{
+			return ThingRegistryClient.TryDecodeIoTDiscoClaimURI(DiscoUri, out Tags);
+		}
+
+		/// <summary>
+		/// Tries to decode an IoTDisco Search URI (subset of all possible IoTDisco URIs).
+		/// </summary>
+		/// <param name="DiscoUri">IoTDisco URI</param>
+		/// <param name="Operators">Search operators.</param>
+		/// <param name="RegistryJid">Registry Service JID</param>
+		/// <returns>If the URI could be parsed.</returns>
+		public bool TryDecodeIoTDiscoSearchURI(string DiscoUri, [NotNullWhen(true)] out SearchOperator[]? Operators,
+			out string? RegistryJid)
+		{
+			RegistryJid = null;
+			Operators = null;
+			if (!ThingRegistryClient.TryDecodeIoTDiscoURI(DiscoUri, out IEnumerable<SearchOperator> Operators2))
+				return false;
+
+			List<SearchOperator> List = [];
+
+			foreach (SearchOperator Operator in Operators2)
+			{
+				if (Operator.Name.Equals("R", StringComparison.OrdinalIgnoreCase))
+				{
+					if (!string.IsNullOrEmpty(RegistryJid))
+						return false;
+
+					if (Operator is not StringTagEqualTo StrEqOp)
+						return false;
+
+					RegistryJid = StrEqOp.Value;
+				}
+				else
+					List.Add(Operator);
+			}
+
+			Operators = [.. List];
+
+			return true;
+		}
+
+		/// <summary>
+		/// Tries to decode an IoTDisco Direct Reference URI (subset of all possible IoTDisco URIs).
+		/// </summary>
+		/// <param name="DiscoUri">IoTDisco URI</param>
+		/// <param name="Jid">JID of device</param>
+		/// <param name="SourceId">Optional Source ID of device, or null if none.</param>
+		/// <param name="NodeId">Optional Node ID of device, or null if none.</param>
+		/// <param name="PartitionId">Optional Partition ID of device, or null if none.</param>
+		/// <param name="Tags">Decoded meta data tags.</param>
+		/// <returns>If the URI could be parsed.</returns>
+		public bool TryDecodeIoTDiscoDirectURI(string DiscoUri, [NotNullWhen(true)] out string? Jid, out string? SourceId, out string? NodeId,
+			out string? PartitionId, [NotNullWhen(true)] out MetaDataTag[]? Tags)
+		{
+			Jid = null;
+			SourceId = null;
+			NodeId = null;
+			PartitionId = null;
+
+			if (!ThingRegistryClient.TryDecodeIoTDiscoURI(DiscoUri, out IEnumerable<SearchOperator> Operators2))
+			{
+				Tags = null;
+				return false;
+			}
+
+			List<MetaDataTag> TagsFound = [];
+
+			foreach (SearchOperator Operator in Operators2)
+			{
+				if (Operator is StringTagEqualTo S)
+				{
+					switch (S.Name.ToUpper(CultureInfo.InvariantCulture))
+					{
+						case Constants.XmppProperties.Jid:
+							Jid = S.Value;
+							break;
+
+						case Constants.XmppProperties.SourceId:
+							SourceId = S.Value;
+							break;
+
+						case Constants.XmppProperties.NodeId:
+							NodeId = S.Value;
+							break;
+
+						case Constants.XmppProperties.Partition:
+							PartitionId = S.Value;
+							break;
+
+						default:
+							TagsFound.Add(new MetaDataStringTag(S.Name, S.Value));
+							break;
+					}
+				}
+				else if (Operator is NumericTagEqualTo N)
+					TagsFound.Add(new MetaDataNumericTag(N.Name, N.Value));
+				else
+				{
+					Tags = null;
+					return false;
+				}
+			}
+
+			Tags = [.. TagsFound];
+
+			return !string.IsNullOrEmpty(Jid);
+		}
+
+		/// <summary>
+		/// Claims a think in accordance with parameters defined in a iotdisco claim URI.
+		/// </summary>
+		/// <param name="DiscoUri">IoTDisco URI</param>
+		/// <param name="MakePublic">If the device should be public in the thing registry.</param>
+		/// <returns>Information about the thing, or error if unable.</returns>
+		public Task<NodeResultEventArgs> ClaimThing(string DiscoUri, bool MakePublic)
+		{
+			if (!this.TryDecodeIoTDiscoClaimURI(DiscoUri, out MetaDataTag[]? Tags))
+				throw new ArgumentException(ServiceRef.Localizer[nameof(AppResources.InvalidIoTDiscoClaimUri)], nameof(DiscoUri));
+
+			TaskCompletionSource<NodeResultEventArgs> Result = new();
+
+			this.ThingRegistryClient.Mine(MakePublic, Tags, (sender, e) =>
+			{
+				Result.TrySetResult(e);
+				return Task.CompletedTask;
+			}, null);
+
+			return Result.Task;
+		}
+
+		/// <summary>
+		/// Disowns a thing
+		/// </summary>
+		/// <param name="RegistryJid">Registry JID</param>
+		/// <param name="ThingJid">Thing JID</param>
+		/// <param name="SourceId">Source ID</param>
+		/// <param name="Partition">Partition</param>
+		/// <param name="NodeId">Node ID</param>
+		/// <returns>If the thing was disowned</returns>
+		public Task<bool> Disown(string RegistryJid, string ThingJid, string SourceId, string Partition, string NodeId)
+		{
+			TaskCompletionSource<bool> Result = new();
+
+			this.ThingRegistryClient.Disown(RegistryJid, ThingJid, NodeId, SourceId, Partition, (sender, e) =>
+			{
+				Result.TrySetResult(e.Ok);
+				return Task.CompletedTask;
+			}, null);
+
+			return Result.Task;
+		}
+
+		/// <summary>
+		/// Searches for devices in accordance with settings in a iotdisco-URI.
+		/// </summary>
+		/// <param name="Offset">Start offset of list</param>
+		/// <param name="MaxCount">Maximum number of items in response.</param>
+		/// <param name="DiscoUri">iotdisco URI.</param>
+		/// <returns>Devices found, Registry JID, and if more devices are available.</returns>
+		public async Task<(SearchResultThing[], string?, bool)> Search(int Offset, int MaxCount, string DiscoUri)
+		{
+			if (!this.TryDecodeIoTDiscoSearchURI(DiscoUri, out SearchOperator[]? Operators, out string? RegistryJid))
+				return (Array.Empty<SearchResultThing>(), RegistryJid, false);
+
+			(SearchResultThing[] Things, bool More) = await this.Search(Offset, MaxCount, RegistryJid, Operators);
+
+			return (Things, RegistryJid, More);
+		}
+
+		/// <summary>
+		/// Searches for devices in accordance with settings in a iotdisco-URI.
+		/// </summary>
+		/// <param name="Offset">Start offset of list</param>
+		/// <param name="MaxCount">Maximum number of items in response.</param>
+		/// <param name="RegistryJid">Registry Service JID</param>
+		/// <param name="Operators">Search operators.</param>
+		/// <returns>Devices found, and if more devices are available.</returns>
+		public Task<(SearchResultThing[], bool)> Search(int Offset, int MaxCount, string? RegistryJid, params SearchOperator[] Operators)
+		{
+			TaskCompletionSource<(SearchResultThing[], bool)> Result = new();
+
+			this.ThingRegistryClient.Search(RegistryJid ?? ServiceRef.TagProfile.RegistryJid, Offset, MaxCount, Operators, (sender, e) =>
+			{
+				if (e.Ok)
+					Result.TrySetResult((e.Things, e.More));
+				else
+					Result.TrySetException(e.StanzaError ?? new Exception("Unable to perform search."));
+
+				return Task.CompletedTask;
+			}, null);
+
+			return Result.Task;
+		}
+
+		/// <summary>
+		/// Searches for all devices in accordance with settings in a iotdisco-URI.
+		/// </summary>
+		/// <param name="DiscoUri">iotdisco URI.</param>
+		/// <returns>Complete list of devices in registry matching the search operators, and the JID of the registry service.</returns>
+		public async Task<(SearchResultThing[], string?)> SearchAll(string DiscoUri)
+		{
+			if (!this.TryDecodeIoTDiscoSearchURI(DiscoUri, out SearchOperator[]? Operators, out string? RegistryJid))
+				return (Array.Empty<SearchResultThing>(), RegistryJid);
+
+			SearchResultThing[] Things = await this.SearchAll(RegistryJid ?? ServiceRef.TagProfile.RegistryJid, Operators);
+
+			return (Things, RegistryJid);
+		}
+
+		/// <summary>
+		/// Searches for all devices in accordance with settings in a iotdisco-URI.
+		/// </summary>
+		/// <param name="RegistryJid">Registry Service JID</param>
+		/// <param name="Operators">Search operators.</param>
+		/// <returns>Complete list of devices in registry matching the search operators.</returns>
+		public async Task<SearchResultThing[]> SearchAll(string? RegistryJid, params SearchOperator[] Operators)
+		{
+			(SearchResultThing[] Things, bool More) = await this.Search(0, Constants.BatchSizes.DeviceBatchSize, RegistryJid, Operators);
+			if (!More)
+				return Things;
+
+			List<SearchResultThing> Result = [];
+			int Offset = Things.Length;
+
+			Result.AddRange(Things);
+
+			while (More)
+			{
+				(Things, More) = await this.Search(Offset, Constants.BatchSizes.DeviceBatchSize, RegistryJid, Operators);
+				Result.AddRange(Things);
+				Offset += Things.Length;
+			}
+
+			return [.. Result];
+		}
 
 		#endregion
 
@@ -1635,7 +2942,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// An event that fires when a petition for a contract is received.
 		/// </summary>
-		public event ContractPetitionEventHandler PetitionForContractReceived;
+		public event ContractPetitionEventHandler? PetitionForContractReceived;
 
 		private async Task ContractsClient_PetitionForContractReceived(object Sender, ContractPetitionEventArgs e)
 		{
@@ -1653,7 +2960,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// An event that fires when a petitioned contract response is received.
 		/// </summary>
-		public event ContractPetitionResponseEventHandler PetitionedContractResponseReceived;
+		public event ContractPetitionResponseEventHandler? PetitionedContractResponseReceived;
 
 		private async Task ContractsClient_PetitionedContractResponseReceived(object Sender, ContractPetitionResponseEventArgs e)
 		{
@@ -1697,12 +3004,12 @@ namespace NeuroAccessMaui.Services.Xmpp
 					ContractId = Contract.ContractId
 				};
 
-				await Ref.SetContract(Contract, this);
+				await Ref.SetContract(Contract);
 				await Database.Insert(Ref);
 			}
 			else
 			{
-				await Ref.SetContract(Contract, this);
+				await Ref.SetContract(Contract);
 				await Database.Update(Ref);
 			}
 		}
@@ -1710,7 +3017,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// Event raised when a contract proposal has been received.
 		/// </summary>
-		public event ContractProposalEventHandler ContractProposalReceived;
+		public event ContractProposalEventHandler? ContractProposalReceived;
 
 		private async Task ContractsClient_ContractProposalReceived(object Sender, ContractProposalEventArgs e)
 		{
@@ -1728,7 +3035,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// Event raised when contract was updated.
 		/// </summary>
-		public event ContractReferenceEventHandler ContractUpdated;
+		public event ContractReferenceEventHandler? ContractUpdated;
 
 		private async Task ContractsClient_ContractUpdated(object Sender, ContractReferenceEventArgs e)
 		{
@@ -1757,7 +3064,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// Event raised when contract was signed.
 		/// </summary>
-		public event ContractSignedEventHandler ContractSigned;
+		public event ContractSignedEventHandler? ContractSigned;
 
 		private async Task ContractsClient_ContractSigned(object Sender, ContractSignedEventArgs e)
 		{
@@ -1990,6 +3297,1579 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		#endregion
 
+		#region Provisioning
+
+		/// <summary>
+		/// Access to provisioning client, for authorization control, with a check that one is created.
+		/// Note: Do not make public. Reference only from inside the XmppService class.
+		/// </summary>
+		private ProvisioningClient ProvisioningClient
+		{
+			get
+			{
+				if (this.provisioningClient is null)
+					throw new InvalidOperationException(ServiceRef.Localizer[nameof(AppResources.ProvisioningServiceNotFound)]);
+
+				return this.provisioningClient;
+			}
+		}
+
+		private async Task ProvisioningClient_IsFriendQuestion(object Sender, IsFriendEventArgs e)
+		{
+			if (e.From.IndexOfAny(clientChars) < 0)
+				await ServiceRef.NotificationService.NewEvent(new IsFriendNotificationEvent(e));
+		}
+
+		private async Task ProvisioningClient_CanReadQuestion(object Sender, CanReadEventArgs e)
+		{
+			if (e.From.IndexOfAny(clientChars) < 0)
+				await ServiceRef.NotificationService.NewEvent(new CanReadNotificationEvent(e));
+		}
+
+		private async Task ProvisioningClient_CanControlQuestion(object Sender, CanControlEventArgs e)
+		{
+			if (e.From.IndexOfAny(clientChars) < 0)
+				await ServiceRef.NotificationService.NewEvent(new CanControlNotificationEvent(e));
+		}
+
+		private static readonly char[] clientChars = [ '@', '/' ];
+
+		/// <summary>
+		/// JID of provisioning service.
+		/// </summary>
+		public string ProvisioningServiceJid => this.ProvisioningClient.ProvisioningServerAddress;
+
+		/// <summary>
+		/// Sends a response to a previous "Is Friend" question.
+		/// </summary>
+		/// <param name="ProvisioningServiceJID">Provisioning service JID.</param>
+		/// <param name="JID">JID of device asking the question.</param>
+		/// <param name="RemoteJID">JID of caller.</param>
+		/// <param name="Key">Key corresponding to request.</param>
+		/// <param name="IsFriend">If the response is yes or no.</param>
+		/// <param name="Range">The range of the response.</param>
+		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
+		/// <param name="State">State object to pass on to callback method.</param>
+		public void IsFriendResponse(string ProvisioningServiceJID, string JID, string RemoteJID, string Key, bool IsFriend,
+			RuleRange Range, IqResultEventHandlerAsync Callback, object State)
+		{
+			this.ProvisioningClient.IsFriendResponse(ProvisioningServiceJID, JID, RemoteJID, Key, IsFriend, Range, Callback, State);
+		}
+
+		/// <summary>
+		/// Sends a response to a previous "Can Control" question, for all future requests.
+		/// </summary>
+		/// <param name="ProvisioningServiceJID">Provisioning service JID.</param>
+		/// <param name="JID">JID of device asking the question.</param>
+		/// <param name="RemoteJID">JID of caller.</param>
+		/// <param name="Key">Key corresponding to request.</param>
+		/// <param name="CanControl">If the caller is allowed to control the device.</param>
+		/// <param name="ParameterNames">Parameter names allowed</param>
+		/// <param name="Node">Optional node reference. Can be null or Waher.Things.ThingReference.Empty.</param>
+		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
+		/// <param name="State">State object to pass on to callback method.</param>
+		public void CanControlResponseAll(string ProvisioningServiceJID, string JID, string RemoteJID, string Key, bool CanControl,
+			string[] ParameterNames, IThingReference Node, IqResultEventHandlerAsync Callback, object State)
+		{
+			this.ProvisioningClient.CanControlResponseAll(ProvisioningServiceJID, JID, RemoteJID, Key, CanControl, ParameterNames,
+				Node, Callback, State);
+		}
+
+		/// <summary>
+		/// Sends a response to a previous "Can Control" question, based on the JID of the caller.
+		/// </summary>
+		/// <param name="ProvisioningServiceJID">Provisioning service JID.</param>
+		/// <param name="JID">JID of device asking the question.</param>
+		/// <param name="RemoteJID">JID of caller.</param>
+		/// <param name="Key">Key corresponding to request.</param>
+		/// <param name="CanControl">If the caller is allowed to control the device.</param>
+		/// <param name="ParameterNames">Parameter names allowed</param>
+		/// <param name="Node">Optional node reference. Can be null or Waher.Things.ThingReference.Empty.</param>
+		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
+		/// <param name="State">State object to pass on to callback method.</param>
+		public void CanControlResponseCaller(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
+			bool CanControl, string[] ParameterNames, IThingReference Node, IqResultEventHandlerAsync Callback, object State)
+		{
+			this.ProvisioningClient.CanControlResponseCaller(ProvisioningServiceJID, JID, RemoteJID, Key, CanControl,
+				ParameterNames, Node, Callback, State);
+		}
+
+		/// <summary>
+		/// Sends a response to a previous "Can Control" question, based on the domain of the caller.
+		/// </summary>
+		/// <param name="ProvisioningServiceJID">Provisioning service JID.</param>
+		/// <param name="JID">JID of device asking the question.</param>
+		/// <param name="RemoteJID">JID of caller.</param>
+		/// <param name="Key">Key corresponding to request.</param>
+		/// <param name="CanControl">If the caller is allowed to control the device.</param>
+		/// <param name="ParameterNames">Parameter names allowed</param>
+		/// <param name="Node">Optional node reference. Can be null or Waher.Things.ThingReference.Empty.</param>
+		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
+		/// <param name="State">State object to pass on to callback method.</param>
+		public void CanControlResponseDomain(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
+			bool CanControl, string[] ParameterNames, IThingReference Node, IqResultEventHandlerAsync Callback, object State)
+		{
+			this.ProvisioningClient.CanControlResponseDomain(ProvisioningServiceJID, JID, RemoteJID, Key, CanControl,
+				ParameterNames, Node, Callback, State);
+		}
+
+		/// <summary>
+		/// Sends a response to a previous "Can Control" question, based on a device token.
+		/// </summary>
+		/// <param name="ProvisioningServiceJID">Provisioning service JID.</param>
+		/// <param name="JID">JID of device asking the question.</param>
+		/// <param name="RemoteJID">JID of caller.</param>
+		/// <param name="Key">Key corresponding to request.</param>
+		/// <param name="CanControl">If the caller is allowed to control the device.</param>
+		/// <param name="ParameterNames">Parameter names allowed</param>
+		/// <param name="Token">Token.</param>
+		/// <param name="Node">Optional node reference. Can be null or Waher.Things.ThingReference.Empty.</param>
+		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
+		/// <param name="State">State object to pass on to callback method.</param>
+		public void CanControlResponseDevice(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
+			bool CanControl, string[] ParameterNames, string Token, IThingReference Node, IqResultEventHandlerAsync Callback,
+			object State)
+		{
+			this.ProvisioningClient.CanControlResponseDevice(ProvisioningServiceJID, JID, RemoteJID, Key, CanControl,
+				ParameterNames, Token, Node, Callback, State);
+		}
+
+		/// <summary>
+		/// Sends a response to a previous "Can Control" question, based on a service token.
+		/// </summary>
+		/// <param name="ProvisioningServiceJID">Provisioning service JID.</param>
+		/// <param name="JID">JID of device asking the question.</param>
+		/// <param name="RemoteJID">JID of caller.</param>
+		/// <param name="Key">Key corresponding to request.</param>
+		/// <param name="CanControl">If the caller is allowed to control the device.</param>
+		/// <param name="ParameterNames">Parameter names allowed</param>
+		/// <param name="Token">Token.</param>
+		/// <param name="Node">Optional node reference. Can be null or Waher.Things.ThingReference.Empty.</param>
+		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
+		/// <param name="State">State object to pass on to callback method.</param>
+		public void CanControlResponseService(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
+			bool CanControl, string[] ParameterNames, string Token, IThingReference Node, IqResultEventHandlerAsync Callback,
+			object State)
+		{
+			this.ProvisioningClient.CanControlResponseService(ProvisioningServiceJID, JID, RemoteJID, Key, CanControl,
+				ParameterNames, Token, Node, Callback, State);
+		}
+
+		/// <summary>
+		/// Sends a response to a previous "Can Control" question, based on a user token.
+		/// </summary>
+		/// <param name="ProvisioningServiceJID">Provisioning service JID.</param>
+		/// <param name="JID">JID of device asking the question.</param>
+		/// <param name="RemoteJID">JID of caller.</param>
+		/// <param name="Key">Key corresponding to request.</param>
+		/// <param name="CanControl">If the caller is allowed to control the device.</param>
+		/// <param name="ParameterNames">Parameter names allowed</param>
+		/// <param name="Token">Token.</param>
+		/// <param name="Node">Optional node reference. Can be null or Waher.Things.ThingReference.Empty.</param>
+		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
+		/// <param name="State">State object to pass on to callback method.</param>
+		public void CanControlResponseUser(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
+			bool CanControl, string[] ParameterNames, string Token, IThingReference Node, IqResultEventHandlerAsync Callback,
+			object State)
+		{
+			this.ProvisioningClient.CanControlResponseUser(ProvisioningServiceJID, JID, RemoteJID, Key, CanControl,
+				ParameterNames, Token, Node, Callback, State);
+		}
+
+		/// <summary>
+		/// Sends a response to a previous "Can Read" question, for all future requests.
+		/// </summary>
+		/// <param name="ProvisioningServiceJID">Provisioning service JID.</param>
+		/// <param name="JID">JID of device asking the question.</param>
+		/// <param name="RemoteJID">JID of caller.</param>
+		/// <param name="Key">Key corresponding to request.</param>
+		/// <param name="CanRead">If the caller is allowed to control the device.</param>
+		/// <param name="FieldTypes">Field types allowed.</param>
+		/// <param name="FieldNames">Field names allowed</param>
+		/// <param name="Node">Optional node reference. Can be null or Waher.Things.ThingReference.Empty.</param>
+		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
+		/// <param name="State">State object to pass on to callback method.</param>
+		public void CanReadResponseAll(string ProvisioningServiceJID, string JID, string RemoteJID, string Key, bool CanRead,
+			FieldType FieldTypes, string[] FieldNames, IThingReference Node, IqResultEventHandlerAsync Callback, object State)
+		{
+			this.ProvisioningClient.CanReadResponseAll(ProvisioningServiceJID, JID, RemoteJID, Key, CanRead, FieldTypes, FieldNames,
+				Node, Callback, State);
+		}
+
+		/// <summary>
+		/// Sends a response to a previous "Can Read" question, based on the JID of the caller.
+		/// </summary>
+		/// <param name="ProvisioningServiceJID">Provisioning service JID.</param>
+		/// <param name="JID">JID of device asking the question.</param>
+		/// <param name="RemoteJID">JID of caller.</param>
+		/// <param name="Key">Key corresponding to request.</param>
+		/// <param name="CanRead">If the caller is allowed to control the device.</param>
+		/// <param name="FieldTypes">Field types allowed.</param>
+		/// <param name="FieldNames">Field names allowed</param>
+		/// <param name="Node">Optional node reference. Can be null or Waher.Things.ThingReference.Empty.</param>
+		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
+		/// <param name="State">State object to pass on to callback method.</param>
+		public void CanReadResponseCaller(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
+			bool CanRead, FieldType FieldTypes, string[] FieldNames, IThingReference Node, IqResultEventHandlerAsync Callback, object State)
+		{
+			this.ProvisioningClient.CanReadResponseCaller(ProvisioningServiceJID, JID, RemoteJID, Key, CanRead,
+				FieldTypes, FieldNames, Node, Callback, State);
+		}
+
+		/// <summary>
+		/// Sends a response to a previous "Can Read" question, based on the domain of the caller.
+		/// </summary>
+		/// <param name="ProvisioningServiceJID">Provisioning service JID.</param>
+		/// <param name="JID">JID of device asking the question.</param>
+		/// <param name="RemoteJID">JID of caller.</param>
+		/// <param name="Key">Key corresponding to request.</param>
+		/// <param name="CanRead">If the caller is allowed to control the device.</param>
+		/// <param name="FieldTypes">Field types allowed.</param>
+		/// <param name="FieldNames">Field names allowed</param>
+		/// <param name="Node">Optional node reference. Can be null or Waher.Things.ThingReference.Empty.</param>
+		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
+		/// <param name="State">State object to pass on to callback method.</param>
+		public void CanReadResponseDomain(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
+			bool CanRead, FieldType FieldTypes, string[] FieldNames, IThingReference Node, IqResultEventHandlerAsync Callback, object State)
+		{
+			this.ProvisioningClient.CanReadResponseDomain(ProvisioningServiceJID, JID, RemoteJID, Key, CanRead,
+				FieldTypes, FieldNames, Node, Callback, State);
+		}
+
+		/// <summary>
+		/// Sends a response to a previous "Can Read" question, based on a device token.
+		/// </summary>
+		/// <param name="ProvisioningServiceJID">Provisioning service JID.</param>
+		/// <param name="JID">JID of device asking the question.</param>
+		/// <param name="RemoteJID">JID of caller.</param>
+		/// <param name="Key">Key corresponding to request.</param>
+		/// <param name="CanRead">If the caller is allowed to control the device.</param>
+		/// <param name="FieldTypes">Field types allowed.</param>
+		/// <param name="FieldNames">Field names allowed</param>
+		/// <param name="Token">Token.</param>
+		/// <param name="Node">Optional node reference. Can be null or Waher.Things.ThingReference.Empty.</param>
+		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
+		/// <param name="State">State object to pass on to callback method.</param>
+		public void CanReadResponseDevice(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
+			bool CanRead, FieldType FieldTypes, string[] FieldNames, string Token, IThingReference Node, IqResultEventHandlerAsync Callback,
+			object State)
+		{
+			this.ProvisioningClient.CanReadResponseDevice(ProvisioningServiceJID, JID, RemoteJID, Key, CanRead,
+				FieldTypes, FieldNames, Token, Node, Callback, State);
+		}
+
+		/// <summary>
+		/// Sends a response to a previous "Can Read" question, based on a service token.
+		/// </summary>
+		/// <param name="ProvisioningServiceJID">Provisioning service JID.</param>
+		/// <param name="JID">JID of device asking the question.</param>
+		/// <param name="RemoteJID">JID of caller.</param>
+		/// <param name="Key">Key corresponding to request.</param>
+		/// <param name="CanRead">If the caller is allowed to control the device.</param>
+		/// <param name="FieldTypes">Field types allowed.</param>
+		/// <param name="FieldNames">Field names allowed</param>
+		/// <param name="Token">Token.</param>
+		/// <param name="Node">Optional node reference. Can be null or Waher.Things.ThingReference.Empty.</param>
+		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
+		/// <param name="State">State object to pass on to callback method.</param>
+		public void CanReadResponseService(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
+			bool CanRead, FieldType FieldTypes, string[] FieldNames, string Token, IThingReference Node, IqResultEventHandlerAsync Callback,
+			object State)
+		{
+			this.ProvisioningClient.CanReadResponseService(ProvisioningServiceJID, JID, RemoteJID, Key, CanRead,
+				FieldTypes, FieldNames, Token, Node, Callback, State);
+		}
+
+		/// <summary>
+		/// Sends a response to a previous "Can Read" question, based on a user token.
+		/// </summary>
+		/// <param name="ProvisioningServiceJID">Provisioning service JID.</param>
+		/// <param name="JID">JID of device asking the question.</param>
+		/// <param name="RemoteJID">JID of caller.</param>
+		/// <param name="Key">Key corresponding to request.</param>
+		/// <param name="CanRead">If the caller is allowed to control the device.</param>
+		/// <param name="FieldTypes">Field types allowed.</param>
+		/// <param name="FieldNames">Field names allowed</param>
+		/// <param name="Token">Token.</param>
+		/// <param name="Node">Optional node reference. Can be null or Waher.Things.ThingReference.Empty.</param>
+		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
+		/// <param name="State">State object to pass on to callback method.</param>
+		public void CanReadResponseUser(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
+			bool CanRead, FieldType FieldTypes, string[] FieldNames, string Token, IThingReference Node, IqResultEventHandlerAsync Callback,
+			object State)
+		{
+			this.ProvisioningClient.CanReadResponseUser(ProvisioningServiceJID, JID, RemoteJID, Key, CanRead,
+				FieldTypes, FieldNames, Token, Node, Callback, State);
+		}
+
+		/// <summary>
+		/// Deletes the rules of a device.
+		/// </summary>
+		/// <param name="ServiceJID">JID of provisioning service.</param>
+		/// <param name="DeviceJID">Bare JID of device whose rules are to be deleted. If null, all owned devices will get their rules deleted.</param>
+		/// <param name="NodeId">Optional Node ID of device.</param>
+		/// <param name="SourceId">Optional Source ID of device.</param>
+		/// <param name="Partition">Optional Partition of device.</param>
+		/// <param name="Callback">Method to call when response is returned.</param>
+		/// <param name="State">State object to pass on to callback method.</param>
+		public void DeleteDeviceRules(string ServiceJID, string DeviceJID, string NodeId, string SourceId, string Partition,
+			IqResultEventHandlerAsync Callback, object State)
+		{
+			this.ProvisioningClient.DeleteDeviceRules(ServiceJID, DeviceJID, NodeId, SourceId, Partition, Callback, State);
+		}
+
+		#endregion
+
+		#region IoT
+
+		/// <summary>
+		/// Access to sensor client, for sensor data readout and subscription, with a check that one is created.
+		/// Note: Do not make public. Reference only from inside the XmppService class.
+		/// </summary>
+		private SensorClient SensorClient
+		{
+			get
+			{
+				if (this.sensorClient is null)
+					throw new InvalidOperationException(ServiceRef.Localizer[nameof(AppResources.SensorServiceNotFound)]);
+
+				return this.sensorClient;
+			}
+		}
+
+		/// <summary>
+		/// Access to control client, for access to actuators, with a check that one is created.
+		/// Note: Do not make public. Reference only from inside the XmppService class.
+		/// </summary>
+		private ControlClient ControlClient
+		{
+			get
+			{
+				if (this.controlClient is null)
+					throw new InvalidOperationException(ServiceRef.Localizer[nameof(AppResources.ControlServiceNotFound)]);
+
+				return this.controlClient;
+			}
+		}
+
+		/// <summary>
+		/// Access to concentrator client, for administrative purposes of concentrators, with a check that one is created.
+		/// Note: Do not make public. Reference only from inside the XmppService class.
+		/// </summary>
+		private ConcentratorClient ConcentratorClient
+		{
+			get
+			{
+				if (this.concentratorClient is null)
+					throw new InvalidOperationException(ServiceRef.Localizer[nameof(AppResources.ConcentratorServiceNotFound)]);
+
+				return this.concentratorClient;
+			}
+		}
+
+		/// <summary>
+		/// Gets a (partial) list of my devices.
+		/// </summary>
+		/// <param name="Offset">Start offset of list</param>
+		/// <param name="MaxCount">Maximum number of items in response.</param>
+		/// <returns>Found devices, and if there are more devices available.</returns>
+		public Task<(SearchResultThing[], bool)> GetMyDevices(int Offset, int MaxCount)
+		{
+			TaskCompletionSource<(SearchResultThing[], bool)> Result = new();
+
+			this.ProvisioningClient.GetDevices(Offset, MaxCount, (sender, e) =>
+			{
+				if (e.Ok)
+					Result.TrySetResult((e.Things, e.More));
+				else
+					Result.TrySetException(e.StanzaError ?? new Exception(ServiceRef.Localizer[nameof(AppResources.UnableToGetListOfMyDevices)]));
+
+				return Task.CompletedTask;
+			}, null);
+
+			return Result.Task;
+		}
+
+		/// <summary>
+		/// Gets the full list of my devices.
+		/// </summary>
+		/// <returns>Complete list of my devices.</returns>
+		public async Task<SearchResultThing[]> GetAllMyDevices()
+		{
+			(SearchResultThing[] Things, bool More) = await this.GetMyDevices(0, Constants.BatchSizes.DeviceBatchSize);
+			if (!More)
+				return Things;
+
+			List<SearchResultThing> Result = [];
+			int Offset = Things.Length;
+
+			Result.AddRange(Things);
+
+			while (More)
+			{
+				(Things, More) = await this.GetMyDevices(Offset, Constants.BatchSizes.DeviceBatchSize);
+				Result.AddRange(Things);
+				Offset += Things.Length;
+			}
+
+			return [.. Result];
+		}
+
+		/// <summary>
+		/// Gets the certificate the corresponds to a token. This certificate can be used
+		/// to identify services, devices or users. Tokens are challenged to make sure they
+		/// correspond to the holder of the private part of the corresponding certificate.
+		/// </summary>
+		/// <param name="Token">Token corresponding to the requested certificate.</param>
+		/// <param name="Callback">Callback method called, when certificate is available.</param>
+		/// <param name="State">State object that will be passed on to the callback method.</param>
+		public void GetCertificate(string Token, CertificateCallback Callback, object State)
+		{
+			this.ProvisioningClient.GetCertificate(Token, Callback, State);
+		}
+
+		/// <summary>
+		/// Gets a control form from an actuator.
+		/// </summary>
+		/// <param name="To">Address of actuator.</param>
+		/// <param name="Language">Language</param>
+		/// <param name="Callback">Method to call when response is returned.</param>
+		/// <param name="State">State object.</param>
+		/// <param name="Nodes">Node references</param>
+		public void GetControlForm(string To, string Language, DataFormResultEventHandler Callback, object State,
+			params ThingReference[] Nodes)
+		{
+			this.ControlClient.GetForm(To, Language, Callback, State, Nodes);
+		}
+
+		/// <summary>
+		/// Requests a sensor data readout.
+		/// </summary>
+		/// <param name="Destination">JID of sensor to read.</param>
+		/// <param name="Types">Field Types to read.</param>
+		/// <returns>Request object maintaining the current status of the request.</returns>
+		public SensorDataClientRequest RequestSensorReadout(string Destination, FieldType Types)
+		{
+			return this.SensorClient.RequestReadout(Destination, Types);
+		}
+
+		/// <summary>
+		/// Requests a sensor data readout.
+		/// </summary>
+		/// <param name="Destination">JID of sensor to read.</param>
+		/// <param name="Nodes">Array of nodes to read. Can be null or empty, if reading a sensor that is not a concentrator.</param>
+		/// <param name="Types">Field Types to read.</param>
+		/// <returns>Request object maintaining the current status of the request.</returns>
+		public SensorDataClientRequest RequestSensorReadout(string Destination, ThingReference[] Nodes, FieldType Types)
+		{
+			return this.SensorClient.RequestReadout(Destination, Nodes, Types);
+		}
+
+		#endregion
+
+		#region e-Daler
+
+		private readonly Dictionary<string, Wallet.Transaction> currentTransactions = [];
+		private Balance? lastBalance = null;
+		private DateTime lastEDalerEvent = DateTime.MinValue;
+
+		/// <summary>
+		/// Reference to the e-Daler client implementing the e-Daler XMPP extension
+		/// Note: Do not make public. Reference only from inside the XmppService class.
+		/// </summary>
+		private EDalerClient EDalerClient
+		{
+			get
+			{
+				if (this.eDalerClient is null)
+					throw new InvalidOperationException(ServiceRef.Localizer[nameof(AppResources.EDalerServiceNotFound)]);
+
+				return this.eDalerClient;
+			}
+		}
+
+		private void RegisterEDalerEventHandlers(EDalerClient Client)
+		{
+			Client.BalanceUpdated += this.EDalerClient_BalanceUpdated;
+			Client.BuyEDalerOptionsClientUrlReceived += this.NeuroWallet_BuyEDalerOptionsClientUrlReceived;
+			Client.BuyEDalerOptionsCompleted += this.NeuroWallet_BuyEDalerOptionsCompleted;
+			Client.BuyEDalerOptionsError += this.NeuroWallet_BuyEDalerOptionsError;
+			Client.BuyEDalerClientUrlReceived += this.NeuroWallet_BuyEDalerClientUrlReceived;
+			Client.BuyEDalerCompleted += this.NeuroWallet_BuyEDalerCompleted;
+			Client.BuyEDalerError += this.NeuroWallet_BuyEDalerError;
+			Client.SellEDalerOptionsClientUrlReceived += this.NeuroWallet_SellEDalerOptionsClientUrlReceived;
+			Client.SellEDalerOptionsCompleted += this.NeuroWallet_SellEDalerOptionsCompleted;
+			Client.SellEDalerOptionsError += this.NeuroWallet_SellEDalerOptionsError;
+			Client.SellEDalerClientUrlReceived += this.NeuroWallet_SellEDalerClientUrlReceived;
+			Client.SellEDalerCompleted += this.NeuroWallet_SellEDalerCompleted;
+			Client.SellEDalerError += this.NeuroWallet_SellEDalerError;
+		}
+
+		private async Task EDalerClient_BalanceUpdated(object Sender, BalanceEventArgs e)
+		{
+			this.lastBalance = e.Balance;
+			this.lastEDalerEvent = DateTime.Now;
+
+			BalanceEventHandler h = this.EDalerBalanceUpdated;
+			if (h is not null)
+			{
+				try
+				{
+					await h(this, e);
+				}
+				catch (Exception ex)
+				{
+					ServiceRef.LogService.LogException(ex);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Event raised when balance has been updated
+		/// </summary>
+		public event BalanceEventHandler EDalerBalanceUpdated;
+
+		/// <summary>
+		/// Last reported balance
+		/// </summary>
+		public Balance? LastEDalerBalance => this.lastBalance;
+
+		/// <summary>
+		/// Timepoint of last event.
+		/// </summary>
+		public DateTime LastEDalerEvent => this.lastEDalerEvent;
+
+		/// <summary>
+		/// Tries to parse an eDaler URI.
+		/// </summary>
+		/// <param name="Uri">URI string.</param>
+		/// <param name="Parsed">Parsed eDaler URI, if successful.</param>
+		/// <param name="Reason">Error message, if not able to parse URI.</param>
+		/// <returns>If URI string could be parsed.</returns>
+		public bool TryParseEDalerUri(string Uri, out EDalerUri Parsed, out string Reason)
+		{
+			return EDalerUri.TryParse(Uri, out Parsed, out Reason);
+		}
+
+		/// <summary>
+		/// Tries to decrypt an encrypted private message.
+		/// </summary>
+		/// <param name="EncryptedMessage">Encrypted message.</param>
+		/// <param name="PublicKey">Public key used.</param>
+		/// <param name="TransactionId">ID of transaction containing the encrypted message.</param>
+		/// <param name="RemoteEndpoint">Remote endpoint</param>
+		/// <returns>Decrypted string, if successful, or null, if not.</returns>
+		public async Task<string> TryDecryptMessage(byte[] EncryptedMessage, byte[] PublicKey, Guid TransactionId, string RemoteEndpoint)
+		{
+			try
+			{
+				return await this.EDalerClient.DecryptMessage(EncryptedMessage, PublicKey, TransactionId, RemoteEndpoint);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				return string.Empty;
+			}
+		}
+
+		/// <summary>
+		/// Sends an eDaler URI to the eDaler service.
+		/// </summary>
+		/// <param name="Uri">eDaler URI</param>
+		/// <returns>Transaction object containing information about the processed URI.</returns>
+		public Task<EDaler.Transaction> SendEDalerUri(string Uri)
+		{
+			return this.EDalerClient.SendEDalerUriAsync(Uri);
+		}
+
+		/// <summary>
+		/// Gets account events available for the wallet.
+		/// </summary>
+		/// <param name="MaxCount">Maximum number of events to return.</param>
+		/// <returns>Events found, and if more events are available.</returns>
+		public Task<(AccountEvent[], bool)> GetEDalerAccountEvents(int MaxCount)
+		{
+			return this.EDalerClient.GetAccountEventsAsync(MaxCount);
+		}
+
+		/// <summary>
+		/// Gets account events available for the wallet.
+		/// </summary>
+		/// <param name="MaxCount">Maximum number of events to return.</param>
+		/// <param name="From">From what point in time events should be returned.</param>
+		/// <returns>Events found, and if more events are available.</returns>
+		public Task<(AccountEvent[], bool)> GetEDalerAccountEvents(int MaxCount, DateTime From)
+		{
+			return this.EDalerClient.GetAccountEventsAsync(MaxCount, From);
+		}
+
+		/// <summary>
+		/// Gets the current account balance.
+		/// </summary>
+		/// <returns>Current account balance.</returns>
+		public Task<Balance> GetEDalerBalance()
+		{
+			return this.EDalerClient.GetBalanceAsync();
+		}
+
+		/// <summary>
+		/// Gets pending payments
+		/// </summary>
+		/// <returns>(Total amount, currency, items)</returns>
+		public Task<(decimal, string, PendingPayment[])> GetPendingEDalerPayments()
+		{
+			return this.EDalerClient.GetPendingPayments();
+		}
+
+		/// <summary>
+		/// Creates a full payment URI.
+		/// </summary>
+		/// <param name="ToBareJid">To whom the payment is to be made.</param>
+		/// <param name="Amount">Amount of eDaler to pay.</param>
+		/// <param name="AmountExtra">Any amount extra of eDaler to pay.</param>
+		/// <param name="Currency">Currency to pay.</param>
+		/// <param name="ValidNrDays">For how many days the URI should be valid.</param>
+		/// <returns>Signed payment URI.</returns>
+		public Task<string> CreateFullEDalerPaymentUri(string ToBareJid, decimal Amount, decimal? AmountExtra, string Currency, int ValidNrDays)
+		{
+			this.lastEDalerEvent = DateTime.Now;
+			return this.EDalerClient.CreateFullPaymentUri(ToBareJid, Amount, AmountExtra, Currency, ValidNrDays);
+		}
+
+		/// <summary>
+		/// Creates a full payment URI.
+		/// </summary>
+		/// <param name="ToBareJid">To whom the payment is to be made.</param>
+		/// <param name="Amount">Amount of eDaler to pay.</param>
+		/// <param name="AmountExtra">Any amount extra of eDaler to pay.</param>
+		/// <param name="Currency">Currency to pay.</param>
+		/// <param name="ValidNrDays">For how many days the URI should be valid.</param>
+		/// <param name="Message">Unencrypted message to send to recipient.</param>
+		/// <returns>Signed payment URI.</returns>
+		public Task<string> CreateFullEDalerPaymentUri(string ToBareJid, decimal Amount, decimal? AmountExtra, string Currency, int ValidNrDays, string Message)
+		{
+			this.lastEDalerEvent = DateTime.Now;
+			return this.EDalerClient.CreateFullPaymentUri(ToBareJid, Amount, AmountExtra, Currency, ValidNrDays, Message);
+		}
+
+		/// <summary>
+		/// Creates a full payment URI.
+		/// </summary>
+		/// <param name="To">To whom the payment is to be made.</param>
+		/// <param name="Amount">Amount of eDaler to pay.</param>
+		/// <param name="AmountExtra">Any amount extra of eDaler to pay.</param>
+		/// <param name="Currency">Currency to pay.</param>
+		/// <param name="ValidNrDays">For how many days the URI should be valid.</param>
+		/// <returns>Signed payment URI.</returns>
+		public Task<string> CreateFullEDalerPaymentUri(LegalIdentity To, decimal Amount, decimal? AmountExtra, string Currency, int ValidNrDays)
+		{
+			this.lastEDalerEvent = DateTime.Now;
+			return this.EDalerClient.CreateFullPaymentUri(To, Amount, AmountExtra, Currency, ValidNrDays);
+		}
+
+		/// <summary>
+		/// Creates a full payment URI.
+		/// </summary>
+		/// <param name="To">To whom the payment is to be made.</param>
+		/// <param name="Amount">Amount of eDaler to pay.</param>
+		/// <param name="AmountExtra">Any amount extra of eDaler to pay.</param>
+		/// <param name="Currency">Currency to pay.</param>
+		/// <param name="ValidNrDays">For how many days the URI should be valid.</param>
+		/// <param name="PrivateMessage">Message to be sent to recipient. Message will be end-to-end encrypted.</param>
+		/// <returns>Signed payment URI.</returns>
+		public Task<string> CreateFullEDalerPaymentUri(LegalIdentity To, decimal Amount, decimal? AmountExtra, string Currency, int ValidNrDays, string PrivateMessage)
+		{
+			this.lastEDalerEvent = DateTime.Now;
+			return this.EDalerClient.CreateFullPaymentUri(To, Amount, AmountExtra, Currency, ValidNrDays, PrivateMessage);
+		}
+
+		/// <summary>
+		/// Creates an incomplete PayMe-URI.
+		/// </summary>
+		/// <param name="BareJid">To whom the payment is to be made.</param>
+		/// <param name="Amount">Amount of eDaler to pay.</param>
+		/// <param name="AmountExtra">Any amount extra of eDaler to pay.</param>
+		/// <param name="Currency">Currency to pay.</param>
+		/// <param name="Message">Message to be sent to recipient (not encrypted).</param>
+		/// <returns>Incomplete PayMe-URI.</returns>
+		public string CreateIncompleteEDalerPayMeUri(string BareJid, decimal? Amount, decimal? AmountExtra, string Currency, string Message)
+		{
+			return this.EDalerClient.CreateIncompletePayMeUri(BareJid, Amount, AmountExtra, Currency, Message);
+		}
+
+		/// <summary>
+		/// Creates an incomplete PayMe-URI.
+		/// </summary>
+		/// <param name="To">To whom the payment is to be made.</param>
+		/// <param name="Amount">Amount of eDaler to pay.</param>
+		/// <param name="AmountExtra">Any amount extra of eDaler to pay.</param>
+		/// <param name="Currency">Currency to pay.</param>
+		/// <param name="PrivateMessage">Message to be sent to recipient. Message will be end-to-end encrypted in payment.
+		/// But the message will be unencrypted in the incomplete PeyMe URI.</param>
+		/// <returns>Incomplete PayMe-URI.</returns>
+		public string CreateIncompleteEDalerPayMeUri(LegalIdentity To, decimal? Amount, decimal? AmountExtra, string Currency, string PrivateMessage)
+		{
+			return this.EDalerClient.CreateIncompletePayMeUri(To, Amount, AmountExtra, Currency, PrivateMessage);
+		}
+
+		/// <summary>
+		/// Gets available service providers for buying eDaler.
+		/// </summary>
+		/// <returns>Available service providers.</returns>
+		public async Task<IBuyEDalerServiceProvider[]> GetServiceProvidersForBuyingEDalerAsync()
+		{
+			return await this.EDalerClient.GetServiceProvidersForBuyingEDalerAsync();
+		}
+
+		/// <summary>
+		/// Initiates the process of getting available options for buying of eDaler using a service provider that
+		/// uses a smart contract.
+		/// </summary>
+		/// <param name="ServiceId">Service ID</param>
+		/// <param name="ServiceProvider">Service Provider</param>
+		/// <returns>Transaction ID</returns>
+		public async Task<OptionsTransaction> InitiateBuyEDalerGetOptions(string ServiceId, string ServiceProvider)
+		{
+			string TransactionId = Guid.NewGuid().ToString();
+			string SuccessUrl = this.GenerateNeuroAccessUrl(
+				new KeyValuePair<string, object>("cmd", "beos"),
+				new KeyValuePair<string, object>("tid", TransactionId),
+				new KeyValuePair<string, object>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
+				new KeyValuePair<string, object>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
+			string FailureUrl = this.GenerateNeuroAccessUrl(
+				new KeyValuePair<string, object>("cmd", "beof"),
+				new KeyValuePair<string, object>("tid", TransactionId),
+				new KeyValuePair<string, object>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
+				new KeyValuePair<string, object>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
+			string CancelUrl = this.GenerateNeuroAccessUrl(
+				new KeyValuePair<string, object>("cmd", "beoc"),
+				new KeyValuePair<string, object>("tid", TransactionId),
+				new KeyValuePair<string, object>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
+				new KeyValuePair<string, object>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
+
+			TransactionId = await this.EDalerClient.InitiateGetOptionsBuyEDalerAsync(ServiceId, ServiceProvider, TransactionId, SuccessUrl, FailureUrl, CancelUrl);
+			OptionsTransaction Result = new(TransactionId);
+
+			lock (this.currentTransactions)
+			{
+				this.currentTransactions[TransactionId] = Result;
+			}
+
+			return Result;
+		}
+
+		private async Task NeuroWallet_BuyEDalerOptionsClientUrlReceived(object Sender, BuyEDalerClientUrlEventArgs e)
+		{
+			Wallet.Transaction Transaction;
+
+			lock (this.currentTransactions)
+			{
+				if (!this.currentTransactions.TryGetValue(e.TransactionId, out Transaction))
+				{
+					ServiceRef.LogService.LogWarning("Client URL message for getting options for buying eDaler ignored. Transaction ID not recognized.",
+						new KeyValuePair<string, object>("TransactionId", e.TransactionId),
+						new KeyValuePair<string, object>("ClientUrl", e.ClientUrl));
+					return;
+				}
+			}
+
+			await Transaction.OpenUrl(e.ClientUrl);
+		}
+
+		private Task NeuroWallet_BuyEDalerOptionsCompleted(object Sender, PaymentOptionsEventArgs e)
+		{
+			this.BuyEDalerGetOptionsCompleted(e.TransactionId, e.Options);
+			return Task.CompletedTask;
+		}
+
+		/// <summary>
+		/// Registers an initiated getting of payment options for buying eDaler as completed.
+		/// </summary>
+		/// <param name="TransactionId">Transaction ID</param>
+		/// <param name="Options">Available options.</param>
+		public void BuyEDalerGetOptionsCompleted(string TransactionId, IDictionary<CaseInsensitiveString, object>[] Options)
+		{
+			Wallet.Transaction? Transaction;
+
+			lock (this.currentTransactions)
+			{
+				if (!this.currentTransactions.TryGetValue(TransactionId, out Transaction))
+					return;
+
+				this.currentTransactions.Remove(TransactionId);
+			}
+
+			if (Transaction is OptionsTransaction OptionsTransaction)
+				OptionsTransaction.Completed(Options);
+		}
+
+		private Task NeuroWallet_BuyEDalerOptionsError(object Sender, PaymentErrorEventArgs e)
+		{
+			this.BuyEDalerGetOptionsFailed(e.TransactionId, e.Message);
+			return Task.CompletedTask;
+		}
+
+		/// <summary>
+		/// Registers an initiated getting of payment options for buying eDaler as failed.
+		/// </summary>
+		/// <param name="TransactionId">Transaction ID</param>
+		/// <param name="Message">Error message.</param>
+		public void BuyEDalerGetOptionsFailed(string TransactionId, string Message)
+		{
+			Wallet.Transaction? Transaction;
+
+			lock (this.currentTransactions)
+			{
+				if (!this.currentTransactions.TryGetValue(TransactionId, out Transaction))
+					return;
+
+				this.currentTransactions.Remove(TransactionId);
+			}
+
+			Transaction.ErrorReported(Message);
+		}
+
+		/// <summary>
+		/// Initiates the buying of eDaler using a service provider that does not use a smart contract.
+		/// </summary>
+		/// <param name="ServiceId">Service ID</param>
+		/// <param name="ServiceProvider">Service Provider</param>
+		/// <param name="Amount">Amount</param>
+		/// <param name="Currency">Currency</param>
+		/// <returns>Transaction ID</returns>
+		public async Task<PaymentTransaction> InitiateBuyEDaler(string ServiceId, string ServiceProvider, decimal Amount, string Currency)
+		{
+			string TransactionId = Guid.NewGuid().ToString();
+			string SuccessUrl = this.GenerateNeuroAccessUrl(
+				new KeyValuePair<string, object>("cmd", "bes"),
+				new KeyValuePair<string, object>("tid", TransactionId),
+				new KeyValuePair<string, object>("amt", Amount),
+				new KeyValuePair<string, object>("cur", Currency),
+				new KeyValuePair<string, object>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
+				new KeyValuePair<string, object>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
+			string FailureUrl = this.GenerateNeuroAccessUrl(
+				new KeyValuePair<string, object>("cmd", "bef"),
+				new KeyValuePair<string, object>("tid", TransactionId),
+				new KeyValuePair<string, object>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
+				new KeyValuePair<string, object>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
+			string CancelUrl = this.GenerateNeuroAccessUrl(
+				new KeyValuePair<string, object>("cmd", "bec"),
+				new KeyValuePair<string, object>("tid", TransactionId),
+				new KeyValuePair<string, object>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
+				new KeyValuePair<string, object>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
+
+			TransactionId = await this.EDalerClient.InitiateBuyEDalerAsync(ServiceId, ServiceProvider, Amount, Currency, TransactionId, SuccessUrl, FailureUrl, CancelUrl);
+			PaymentTransaction Result = new(TransactionId, Currency);
+
+			lock (this.currentTransactions)
+			{
+				this.currentTransactions[TransactionId] = Result;
+			}
+
+			return Result;
+		}
+
+		private string GenerateNeuroAccessUrl(params KeyValuePair<string, object>[] Claims)
+		{
+			string Token = ServiceRef.CryptoService.GenerateJwtToken(Claims);
+			return Constants.UriSchemes.NeuroAccess + ":" + Token;
+		}
+
+		private async Task NeuroWallet_BuyEDalerClientUrlReceived(object Sender, BuyEDalerClientUrlEventArgs e)
+		{
+			Wallet.Transaction? Transaction;
+
+			lock (this.currentTransactions)
+			{
+				if (!this.currentTransactions.TryGetValue(e.TransactionId, out Transaction))
+				{
+					ServiceRef.LogService.LogWarning("Client URL message for buying eDaler ignored. Transaction ID not recognized.",
+						new KeyValuePair<string, object>("TransactionId", e.TransactionId),
+						new KeyValuePair<string, object>("ClientUrl", e.ClientUrl));
+					return;
+				}
+			}
+
+			await Transaction.OpenUrl(e.ClientUrl);
+		}
+
+		private Task NeuroWallet_BuyEDalerCompleted(object Sender, PaymentCompletedEventArgs e)
+		{
+			this.BuyEDalerCompleted(e.TransactionId, e.Amount, e.Currency);
+			return Task.CompletedTask;
+		}
+
+		/// <summary>
+		/// Registers an initiated payment as completed.
+		/// </summary>
+		/// <param name="TransactionId">Transaction ID</param>
+		/// <param name="Amount">Amount</param>
+		/// <param name="Currency">Currency</param>
+		public void BuyEDalerCompleted(string TransactionId, decimal Amount, string Currency)
+		{
+			Wallet.Transaction Transaction;
+
+			lock (this.currentTransactions)
+			{
+				if (!this.currentTransactions.TryGetValue(TransactionId, out Transaction))
+					return;
+
+				this.currentTransactions.Remove(TransactionId);
+			}
+
+			if (Transaction is PaymentTransaction PaymentTransaction)
+				PaymentTransaction.Completed(Amount, Currency);
+		}
+
+		private Task NeuroWallet_BuyEDalerError(object Sender, PaymentErrorEventArgs e)
+		{
+			this.BuyEDalerFailed(e.TransactionId, e.Message);
+			return Task.CompletedTask;
+		}
+
+		/// <summary>
+		/// Registers an initiated payment as failed.
+		/// </summary>
+		/// <param name="TransactionId">Transaction ID</param>
+		/// <param name="Message">Error message.</param>
+		public void BuyEDalerFailed(string TransactionId, string Message)
+		{
+			Wallet.Transaction? Transaction;
+
+			lock (this.currentTransactions)
+			{
+				if (!this.currentTransactions.TryGetValue(TransactionId, out Transaction))
+					return;
+
+				this.currentTransactions.Remove(TransactionId);
+			}
+
+			Transaction.ErrorReported(Message);
+		}
+
+		/// <summary>
+		/// Gets available service providers for selling eDaler.
+		/// </summary>
+		/// <returns>Available service providers.</returns>
+		public async Task<ISellEDalerServiceProvider[]> GetServiceProvidersForSellingEDalerAsync()
+		{
+			return await this.EDalerClient.GetServiceProvidersForSellingEDalerAsync();
+		}
+
+		/// <summary>
+		/// Initiates the process of getting available options for selling of eDaler using a service provider that
+		/// uses a smart contract.
+		/// </summary>
+		/// <param name="ServiceId">Service ID</param>
+		/// <param name="ServiceProvider">Service Provider</param>
+		/// <returns>Transaction ID</returns>
+		public async Task<OptionsTransaction> InitiateSellEDalerGetOptions(string ServiceId, string ServiceProvider)
+		{
+			string TransactionId = Guid.NewGuid().ToString();
+			string SuccessUrl = this.GenerateNeuroAccessUrl(
+				new KeyValuePair<string, object>("cmd", "seos"),
+				new KeyValuePair<string, object>("tid", TransactionId),
+				new KeyValuePair<string, object>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
+				new KeyValuePair<string, object>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
+			string FailureUrl = this.GenerateNeuroAccessUrl(
+				new KeyValuePair<string, object>("cmd", "seof"),
+				new KeyValuePair<string, object>("tid", TransactionId),
+				new KeyValuePair<string, object>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
+				new KeyValuePair<string, object>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
+			string CancelUrl = this.GenerateNeuroAccessUrl(
+				new KeyValuePair<string, object>("cmd", "seoc"),
+				new KeyValuePair<string, object>("tid", TransactionId),
+				new KeyValuePair<string, object>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
+				new KeyValuePair<string, object>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
+
+			TransactionId = await this.EDalerClient.InitiateGetOptionsSellEDalerAsync(ServiceId, ServiceProvider, TransactionId, SuccessUrl, FailureUrl, CancelUrl);
+			OptionsTransaction Result = new(TransactionId);
+
+			lock (this.currentTransactions)
+			{
+				this.currentTransactions[TransactionId] = Result;
+			}
+
+			return Result;
+		}
+
+		private async Task NeuroWallet_SellEDalerOptionsClientUrlReceived(object Sender, SellEDalerClientUrlEventArgs e)
+		{
+			Wallet.Transaction? Transaction;
+
+			lock (this.currentTransactions)
+			{
+				if (!this.currentTransactions.TryGetValue(e.TransactionId, out Transaction))
+				{
+					ServiceRef.LogService.LogWarning("Client URL message for getting options for selling eDaler ignored. Transaction ID not recognized.",
+						new KeyValuePair<string, object>("TransactionId", e.TransactionId),
+						new KeyValuePair<string, object>("ClientUrl", e.ClientUrl));
+					return;
+				}
+			}
+
+			await Transaction.OpenUrl(e.ClientUrl);
+		}
+
+		private Task NeuroWallet_SellEDalerOptionsCompleted(object Sender, PaymentOptionsEventArgs e)
+		{
+			this.SellEDalerGetOptionsCompleted(e.TransactionId, e.Options);
+			return Task.CompletedTask;
+		}
+
+		/// <summary>
+		/// Registers an initiated getting of payment options for selling eDaler as completed.
+		/// </summary>
+		/// <param name="TransactionId">Transaction ID</param>
+		/// <param name="Options">Available options.</param>
+		public void SellEDalerGetOptionsCompleted(string TransactionId, IDictionary<CaseInsensitiveString, object>[] Options)
+		{
+			Wallet.Transaction? Transaction;
+
+			lock (this.currentTransactions)
+			{
+				if (!this.currentTransactions.TryGetValue(TransactionId, out Transaction))
+					return;
+
+				this.currentTransactions.Remove(TransactionId);
+			}
+
+			if (Transaction is OptionsTransaction OptionsTransaction)
+				OptionsTransaction.Completed(Options);
+		}
+
+		private Task NeuroWallet_SellEDalerOptionsError(object Sender, PaymentErrorEventArgs e)
+		{
+			this.SellEDalerGetOptionsFailed(e.TransactionId, e.Message);
+			return Task.CompletedTask;
+		}
+
+		/// <summary>
+		/// Registers an initiated getting of payment options for selling eDaler as failed.
+		/// </summary>
+		/// <param name="TransactionId">Transaction ID</param>
+		/// <param name="Message">Error message.</param>
+		public void SellEDalerGetOptionsFailed(string TransactionId, string Message)
+		{
+			Wallet.Transaction? Transaction;
+
+			lock (this.currentTransactions)
+			{
+				if (!this.currentTransactions.TryGetValue(TransactionId, out Transaction))
+					return;
+
+				this.currentTransactions.Remove(TransactionId);
+			}
+
+			Transaction.ErrorReported(Message);
+		}
+
+		/// <summary>
+		/// Initiates the selling of eDaler using a service provider that does not use a smart contract.
+		/// </summary>
+		/// <param name="ServiceId">Service ID</param>
+		/// <param name="ServiceProvider">Service Provider</param>
+		/// <param name="Amount">Amount</param>
+		/// <param name="Currency">Currency</param>
+		/// <returns>Transaction ID</returns>
+		public async Task<PaymentTransaction> InitiateSellEDaler(string ServiceId, string ServiceProvider, decimal Amount, string Currency)
+		{
+			string TransactionId = Guid.NewGuid().ToString();
+			string SuccessUrl = this.GenerateNeuroAccessUrl(
+				new KeyValuePair<string, object>("cmd", "ses"),
+				new KeyValuePair<string, object>("tid", TransactionId),
+				new KeyValuePair<string, object>("amt", Amount),
+				new KeyValuePair<string, object>("cur", Currency),
+				new KeyValuePair<string, object>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
+				new KeyValuePair<string, object>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
+			string FailureUrl = this.GenerateNeuroAccessUrl(
+				new KeyValuePair<string, object>("cmd", "sef"),
+				new KeyValuePair<string, object>("tid", TransactionId),
+				new KeyValuePair<string, object>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
+				new KeyValuePair<string, object>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
+			string CancelUrl = this.GenerateNeuroAccessUrl(
+				new KeyValuePair<string, object>("cmd", "sec"),
+				new KeyValuePair<string, object>("tid", TransactionId),
+				new KeyValuePair<string, object>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
+				new KeyValuePair<string, object>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
+
+			TransactionId = await this.EDalerClient.InitiateSellEDalerAsync(ServiceId, ServiceProvider, Amount, Currency, TransactionId, SuccessUrl, FailureUrl, CancelUrl);
+			PaymentTransaction Result = new(TransactionId, Currency);
+
+			lock (this.currentTransactions)
+			{
+				this.currentTransactions[TransactionId] = Result;
+			}
+
+			return Result;
+		}
+
+		private async Task NeuroWallet_SellEDalerClientUrlReceived(object Sender, SellEDalerClientUrlEventArgs e)
+		{
+			Wallet.Transaction? Transaction;
+
+			lock (this.currentTransactions)
+			{
+				if (!this.currentTransactions.TryGetValue(e.TransactionId, out Transaction))
+				{
+					ServiceRef.LogService.LogWarning("Client URL message ignored. Transaction ID not recognized.",
+						new KeyValuePair<string, object>("TransactionId", e.TransactionId),
+						new KeyValuePair<string, object>("ClientUrl", e.ClientUrl));
+					return;
+				}
+			}
+
+			await Transaction.OpenUrl(e.ClientUrl);
+		}
+
+		private Task NeuroWallet_SellEDalerError(object Sender, PaymentErrorEventArgs e)
+		{
+			this.SellEDalerFailed(e.TransactionId, e.Message);
+			return Task.CompletedTask;
+		}
+
+		/// <summary>
+		/// Registers an initiated payment as failed.
+		/// </summary>
+		/// <param name="TransactionId">Transaction ID</param>
+		/// <param name="Message">Error message.</param>
+		public void SellEDalerFailed(string TransactionId, string Message)
+		{
+			Wallet.Transaction? Transaction;
+
+			lock (this.currentTransactions)
+			{
+				if (!this.currentTransactions.TryGetValue(TransactionId, out Transaction))
+					return;
+
+				this.currentTransactions.Remove(TransactionId);
+			}
+
+			Transaction.ErrorReported(Message);
+		}
+
+		private Task NeuroWallet_SellEDalerCompleted(object Sender, PaymentCompletedEventArgs e)
+		{
+			this.SellEDalerCompleted(e.TransactionId, e.Amount, e.Currency);
+			return Task.CompletedTask;
+		}
+
+		/// <summary>
+		/// Registers an initiated payment as completed.
+		/// </summary>
+		/// <param name="TransactionId">Transaction ID</param>
+		/// <param name="Amount">Amount</param>
+		/// <param name="Currency">Currency</param>
+		public void SellEDalerCompleted(string TransactionId, decimal Amount, string Currency)
+		{
+			Wallet.Transaction? Transaction;
+
+			lock (this.currentTransactions)
+			{
+				if (!this.currentTransactions.TryGetValue(TransactionId, out Transaction))
+					return;
+
+				this.currentTransactions.Remove(TransactionId);
+			}
+
+			if (Transaction is PaymentTransaction PaymentTransaction)
+				PaymentTransaction.Completed(Amount, Currency);
+		}
+
+		#endregion
+
+		#region Neuro-Features
+
+		private DateTime lastTokenEvent = DateTime.MinValue;
+
+		/// <summary>
+		/// Reference to the Neuro-Features client implementing the Neuro-Features XMPP extension
+		/// </summary>
+		private NeuroFeaturesClient NeuroFeaturesClient
+		{
+			get
+			{
+				if (this.neuroFeaturesClient is null)
+					throw new InvalidOperationException(ServiceRef.Localizer[nameof(AppResources.NeuroFeaturesServiceNotFound)]);
+
+				return this.neuroFeaturesClient;
+			}
+		}
+
+		private void RegisterNeuroFeatureEventHandlers(NeuroFeaturesClient Client)
+		{
+			Client.TokenAdded += this.NeuroFeaturesClient_TokenAdded;
+			Client.TokenRemoved += this.NeuroFeaturesClient_TokenRemoved;
+
+			Client.StateUpdated += this.NeuroFeaturesClient_StateUpdated;
+			Client.VariablesUpdated += this.NeuroFeaturesClient_VariablesUpdated;
+		}
+
+		/// <summary>
+		/// Timepoint of last event.
+		/// </summary>
+		public DateTime LastNeuroFeatureEvent => this.lastTokenEvent;
+
+		private async Task NeuroFeaturesClient_TokenRemoved(object _, NeuroFeatures.TokenEventArgs e)
+		{
+			this.lastTokenEvent = DateTime.Now;
+
+			TokenEventHandler h = this.NeuroFeatureRemoved;
+			if (h is not null)
+			{
+				try
+				{
+					await h(this, e);
+				}
+				catch (Exception ex)
+				{
+					ServiceRef.LogService.LogException(ex);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Event raised when a token has been removed from the wallet.
+		/// </summary>
+		public event TokenEventHandler? NeuroFeatureRemoved;
+
+		private async Task NeuroFeaturesClient_TokenAdded(object _, NeuroFeatures.TokenEventArgs e)
+		{
+			this.lastTokenEvent = DateTime.Now;
+
+			TokenEventHandler h = this.NeuroFeatureAdded;
+			if (h is not null)
+			{
+				try
+				{
+					await h(this, e);
+				}
+				catch (Exception ex)
+				{
+					ServiceRef.LogService.LogException(ex);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Event raised when a token has been added to the wallet.
+		/// </summary>
+		public event TokenEventHandler? NeuroFeatureAdded;
+
+		private async Task NeuroFeaturesClient_VariablesUpdated(object Sender, VariablesUpdatedEventArgs e)
+		{
+			VariablesUpdatedEventHandler h = this.NeuroFeatureVariablesUpdated;
+			if (h is not null)
+			{
+				try
+				{
+					await h(this, e);
+				}
+				catch (Exception ex)
+				{
+					ServiceRef.LogService.LogException(ex);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Event raised when variables have been updated in a state-machine.
+		/// </summary>
+		public event VariablesUpdatedEventHandler? NeuroFeatureVariablesUpdated;
+
+		private async Task NeuroFeaturesClient_StateUpdated(object Sender, NewStateEventArgs e)
+		{
+			NewStateEventHandler h = this.NeuroFeatureStateUpdated;
+			if (h is not null)
+			{
+				try
+				{
+					await h(this, e);
+				}
+				catch (Exception ex)
+				{
+					ServiceRef.LogService.LogException(ex);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Event raised when a state-machine has received a new state.
+		/// </summary>
+		public event NewStateEventHandler? NeuroFeatureStateUpdated;
+
+		/// <summary>
+		/// Gets available tokens
+		/// </summary>
+		/// <returns>Response with tokens.</returns>
+		public Task<TokensEventArgs> GetNeuroFeatures()
+		{
+			return this.GetNeuroFeatures(0, int.MaxValue);
+		}
+
+		/// <summary>
+		/// Gets a section of available tokens
+		/// </summary>
+		/// <param name="Offset">Start offset of list</param>
+		/// <param name="MaxCount">Maximum number of items in response.</param>
+		/// <returns>Response with tokens.</returns>
+		public Task<TokensEventArgs> GetNeuroFeatures(int Offset, int MaxCount)
+		{
+			return this.NeuroFeaturesClient.GetTokensAsync(Offset, MaxCount);
+		}
+
+		/// <summary>
+		/// Gets references to available tokens
+		/// </summary>
+		/// <returns>Response with tokens.</returns>
+		public Task<string[]> GetNeuroFeatureReferences()
+		{
+			return this.GetNeuroFeatureReferences(0, int.MaxValue);
+		}
+
+		/// <summary>
+		/// Gets references to a section of available tokens
+		/// </summary>
+		/// <param name="Offset">Start offset of list</param>
+		/// <param name="MaxCount">Maximum number of items in response.</param>
+		/// <returns>Response with tokens.</returns>
+		public Task<string[]> GetNeuroFeatureReferences(int Offset, int MaxCount)
+		{
+			return this.NeuroFeaturesClient.GetTokenReferencesAsync(Offset, MaxCount);
+		}
+
+		/// <summary>
+		/// Gets the value totals of tokens available in the wallet, grouped and ordered by currency.
+		/// </summary>
+		/// <returns>Response with tokens.</returns>
+		public Task<TokenTotalsEventArgs> GetNeuroFeatureTotals()
+		{
+			return this.NeuroFeaturesClient.GetTotalsAsync();
+		}
+
+		/// <summary>
+		/// Gets tokens created by a smart contract
+		/// </summary>
+		/// <param name="ContractId">Contract ID</param>
+		/// <returns>Response with tokens.</returns>
+		public Task<TokensEventArgs> GetNeuroFeaturesForContract(string ContractId)
+		{
+			return this.NeuroFeaturesClient.GetContractTokensAsync(ContractId);
+		}
+
+		/// <summary>
+		/// Gets tokens created by a smart contract
+		/// </summary>
+		/// <param name="ContractId">Contract ID</param>
+		/// <param name="Offset">Start offset of list</param>
+		/// <param name="MaxCount">Maximum number of items in response.</param>
+		/// <returns>Response with tokens.</returns>
+		public Task<TokensEventArgs> GetNeuroFeaturesForContract(string ContractId, int Offset, int MaxCount)
+		{
+			return this.NeuroFeaturesClient.GetContractTokensAsync(ContractId, Offset, MaxCount);
+		}
+
+		/// <summary>
+		/// Gets token references created by a smart contract
+		/// </summary>
+		/// <param name="ContractId">Contract ID</param>
+		/// <returns>Response with tokens.</returns>
+		public Task<string[]> GetNeuroFeatureReferencesForContract(string ContractId)
+		{
+			return this.NeuroFeaturesClient.GetContractTokenReferencesAsync(ContractId);
+		}
+
+		/// <summary>
+		/// Gets token references created by a smart contract
+		/// </summary>
+		/// <param name="ContractId">Contract ID</param>
+		/// <param name="Offset">Start offset of list</param>
+		/// <param name="MaxCount">Maximum number of items in response.</param>
+		/// <returns>Response with tokens.</returns>
+		public Task<string[]> GetNeuroFeatureReferencesForContract(string ContractId, int Offset, int MaxCount)
+		{
+			return this.NeuroFeaturesClient.GetContractTokenReferencesAsync(ContractId, Offset, MaxCount);
+		}
+
+		/// <summary>
+		/// Gets a specific token.
+		/// </summary>
+		/// <param name="TokenId">Token ID</param>
+		/// <returns>Token</returns>
+		public Task<Token> GetNeuroFeature(string TokenId)
+		{
+			return this.NeuroFeaturesClient.GetTokenAsync(TokenId);
+		}
+
+		/// <summary>
+		/// Gets events relating to a specific token.
+		/// </summary>
+		/// <param name="TokenId">Token ID</param>
+		/// <returns>Token events.</returns>
+		public Task<TokenEvent[]> GetNeuroFeatureEvents(string TokenId)
+		{
+			return this.GetNeuroFeatureEvents(TokenId, 0, int.MaxValue);
+		}
+
+		/// <summary>
+		/// Gets events relating to a specific token.
+		/// </summary>
+		/// <param name="TokenId">Token ID</param>
+		/// <param name="Offset">Offset </param>
+		/// <param name="MaxCount">Maximum number of events to return.</param>
+		/// <returns>Token events.</returns>
+		public Task<TokenEvent[]> GetNeuroFeatureEvents(string TokenId, int Offset, int MaxCount)
+		{
+			return this.NeuroFeaturesClient.GetEventsAsync(TokenId, Offset, MaxCount);
+		}
+
+		/// <summary>
+		/// Adds a text note on a token.
+		/// </summary>
+		/// <param name="TokenId">Token ID</param>
+		/// <param name="TextNote">Text Note</param>
+		public Task AddNeuroFeatureTextNote(string TokenId, string TextNote)
+		{
+			return this.AddNeuroFeatureTextNote(TokenId, TextNote, false);
+		}
+
+		/// <summary>
+		/// Adds a text note on a token.
+		/// </summary>
+		/// <param name="TokenId">Token ID</param>
+		/// <param name="TextNote">Text Note</param>
+		/// <param name="Personal">If the text note contains personal information. (default=false).
+		///
+		/// Note: Personal notes are deleted when ownership of token is transferred.</param>
+		public Task AddNeuroFeatureTextNote(string TokenId, string TextNote, bool Personal)
+		{
+			this.lastTokenEvent = DateTime.Now;
+
+			return this.NeuroFeaturesClient.AddTextNoteAsync(TokenId, TextNote, Personal);
+		}
+
+		/// <summary>
+		/// Adds a xml note on a token.
+		/// </summary>
+		/// <param name="TokenId">Token ID</param>
+		/// <param name="XmlNote">Xml Note</param>
+		public Task AddNeuroFeatureXmlNote(string TokenId, string XmlNote)
+		{
+			return this.AddNeuroFeatureXmlNote(TokenId, XmlNote, false);
+		}
+
+		/// <summary>
+		/// Adds a xml note on a token.
+		/// </summary>
+		/// <param name="TokenId">Token ID</param>
+		/// <param name="XmlNote">Xml Note</param>
+		/// <param name="Personal">If the xml note contains personal information. (default=false).
+		///
+		/// Note: Personal notes are deleted when ownership of token is transferred.</param>
+		public Task AddNeuroFeatureXmlNote(string TokenId, string XmlNote, bool Personal)
+		{
+			this.lastTokenEvent = DateTime.Now;
+
+			return this.NeuroFeaturesClient.AddXmlNoteAsync(TokenId, XmlNote, Personal);
+		}
+
+		/// <summary>
+		/// Gets token creation attributes from the broker.
+		/// </summary>
+		/// <returns>Token creation attributes.</returns>
+		public Task<CreationAttributesEventArgs> GetNeuroFeatureCreationAttributes()
+		{
+			return this.NeuroFeaturesClient.GetCreationAttributesAsync();
+		}
+
+		/// <summary>
+		/// Generates a XAML report for a state diagram corresponding to the token.
+		/// </summary>
+		/// <returns>String-representation of XAML of report.</returns>
+		public async Task<string> GenerateNeuroFeatureStateDiagramReport(string TokenId)
+		{
+			ReportEventArgs e = await this.NeuroFeaturesClient.GenerateStateDiagramAsync(TokenId, ReportFormat.XamarinXaml);
+			if (!e.Ok)
+				throw e.StanzaError ?? new Exception(ServiceRef.Localizer[nameof(AppResources.UnableToGetStateDiagram)]);
+
+			return e.ReportText;
+		}
+
+		/// <summary>
+		/// Generates a XAML report for a timing diagram corresponding to the token.
+		/// </summary>
+		/// <returns>String-representation of XAML of report.</returns>
+		public async Task<string> GenerateNeuroFeatureProfilingReport(string TokenId)
+		{
+			ReportEventArgs e = await this.NeuroFeaturesClient.GenerateProfilingReportAsync(TokenId, ReportFormat.XamarinXaml);
+			if (!e.Ok)
+				throw e.StanzaError ?? new Exception(ServiceRef.Localizer[nameof(AppResources.UnableToGetProfiling)]);
+
+			return e.ReportText;
+		}
+
+		/// <summary>
+		/// Generates a XAML present report for a token.
+		/// </summary>
+		/// <returns>String-representation of XAML of report.</returns>
+		public async Task<string> GenerateNeuroFeaturePresentReport(string TokenId)
+		{
+			ReportEventArgs e = await this.NeuroFeaturesClient.GeneratePresentReportAsync(TokenId, ReportFormat.XamarinXaml);
+			if (!e.Ok)
+				throw e.StanzaError ?? new Exception(ServiceRef.Localizer[nameof(AppResources.UnableToGetPresent)]);
+
+			return e.ReportText;
+		}
+
+		/// <summary>
+		/// Generates a XAML history report for a token.
+		/// </summary>
+		/// <returns>String-representation of XAML of report.</returns>
+		public async Task<string> GenerateNeuroFeatureHistoryReport(string TokenId)
+		{
+			ReportEventArgs e = await this.NeuroFeaturesClient.GenerateHistoryReportAsync(TokenId, ReportFormat.XamarinXaml);
+			if (!e.Ok)
+				throw e.StanzaError ?? new Exception(ServiceRef.Localizer[nameof(AppResources.UnableToGetHistory)]);
+
+			return e.ReportText;
+		}
+
+		/// <summary>
+		/// Gets the current state of a Neuro-Feature token.
+		/// </summary>
+		/// <param name="TokenId">Token ID</param>
+		/// <returns>Current state</returns>
+		public Task<CurrentStateEventArgs> GetNeuroFeatureCurrentState(string TokenId)
+		{
+			return this.NeuroFeaturesClient.GetCurrentStateAsync(TokenId);
+		}
+
+		#endregion
+
 		#region Private XML
 
 		/// <summary>
@@ -2049,58 +4929,5 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		#endregion
 
-		/// <inheritdoc/>
-		public void Dispose()
-		{
-			this.sniffer?.Dispose();
-			this.abuseClient?.Dispose();
-			this.contractsClient?.Dispose();
-			this.fileUploadClient?.Dispose();
-			this.httpxClient?.Dispose();
-			this.reconnectTimer?.Dispose();
-			this.xmppClient?.Dispose();
-			this.xmppEventSink?.Dispose();
-
-			this.sniffer = null;
-			this.abuseClient = null;
-			this.contractsClient = null;
-			this.fileUploadClient = null;
-			this.httpxClient = null;
-			this.reconnectTimer = null;
-			this.xmppClient = null;
-			this.xmppEventSink = null;
-
-			/*
-			this.Dispose(true);
-			GC.SuppressFinalize(this);
-			*/
-		}
-
-		/*
-		/// <summary>
-		/// <see cref="IDisposable.Dispose"/>
-		/// </summary>
-		protected virtual void Dispose(bool disposing)
-		{
-			if (this.isDisposed)
-			{
-				return;
-			}
-
-			if (disposing)
-			{
-				this.abuseClient.Dispose();
-				this.contractsClient.Dispose();
-				this.fileUploadClient.Dispose();
-				this.httpxClient.Dispose();
-				this.reconnectTimer.Dispose();
-				this.sniffer.Dispose();
-				this.xmppClient.Dispose();
-				this.xmppEventSink.Dispose();
-			}
-
-			this.isDisposed = true;
-		}
-		*/
 	}
 }

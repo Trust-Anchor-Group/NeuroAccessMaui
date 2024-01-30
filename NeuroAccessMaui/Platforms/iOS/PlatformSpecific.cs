@@ -1,8 +1,11 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Foundation;
 using LocalAuthentication;
+using NeuroAccessMaui.Services.Push;
 using ObjCRuntime;
 using UIKit;
+using Waher.Events;
+using Waher.Networking.XMPP.Push;
 
 namespace NeuroAccessMaui.Services
 {
@@ -261,6 +264,33 @@ namespace NeuroAccessMaui.Services
 				if (Registration.HasValue)
 					Registration.Value.Dispose();
 			}
+		}
+
+		/// <summary>
+		/// Gets a Push Notification token for the device.
+		/// </summary>
+		/// <returns>Token, Service used, and type of client.</returns>
+		public async Task<TokenInformation> GetToken()
+		{
+			string Token = string.Empty;
+
+			try
+			{
+				Token = Messaging.SharedInstance.FcmToken ?? string.Empty;
+			}
+			catch (Exception ex)
+			{
+				Log.Critical(ex);
+			}
+
+			TokenInformation TokenInformation = new()
+			{
+				Token = Token,
+				ClientType = ClientType.iOS,
+				Service = PushMessagingService.Firebase
+			};
+
+			return await Task.FromResult(TokenInformation);
 		}
 
 	}

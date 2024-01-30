@@ -38,11 +38,13 @@ using Waher.Networking.XMPP.Concentrator;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Control;
 using Waher.Networking.XMPP.HTTPX;
+using Waher.Networking.XMPP.Mail;
 using Waher.Networking.XMPP.P2P;
 using Waher.Networking.XMPP.P2P.E2E;
 using Waher.Networking.XMPP.PEP;
 using Waher.Networking.XMPP.Provisioning;
 using Waher.Networking.XMPP.PubSub;
+using Waher.Networking.XMPP.Push;
 using Waher.Networking.XMPP.Sensor;
 using Waher.Persistence;
 using Waher.Persistence.Files;
@@ -53,6 +55,8 @@ using Waher.Runtime.Text;
 using Waher.Script;
 using Waher.Script.Content;
 using Waher.Script.Graphs;
+using Waher.Security.JWS;
+using Waher.Security.JWT;
 using Waher.Security.LoginMonitor;
 using Waher.Things;
 
@@ -228,6 +232,7 @@ namespace NeuroAccessMaui
 			{
 				this.InitInstances();
 
+				await ServiceRef.CryptoService.InitializeJwtFactory();
 				await this.PerformStartup(false, BackgroundStart);
 
 				Result.TrySetResult(true);
@@ -270,7 +275,11 @@ namespace NeuroAccessMaui
 					typeof(PubSubClient).Assembly,              // Serialization of XMPP objects related to publish/subscribe pattern
 					typeof(PepClient).Assembly,                 // Serialization of XMPP objects related to personal eventing protocol (PEP)
 					typeof(AvatarClient).Assembly,              // Serialization of XMPP objects related to avatars
-					typeof(ThingReference).Assembly,            // Serialization of IoT-related objects
+					typeof(PushNotificationClient).Assembly,    // Serialization of XMPP objects related to push notification
+					typeof(MailClient).Assembly,					  // Serialization of XMPP objects related to processing of incoming e-mail
+					typeof(ThingReference).Assembly,            // IoT Abstraction library
+					typeof(JwtFactory).Assembly,					  // JSON Web Tokens (JWT)
+					typeof(JwsAlgorithm).Assembly,              // JSON Web Signatures (JWS)
 					typeof(Expression).Assembly,                // Indexes basic script functions
 					typeof(Graph).Assembly,                     // Indexes graph script functions
 					typeof(GraphEncoder).Assembly,              // Indexes content script functions
@@ -446,6 +455,9 @@ namespace NeuroAccessMaui
 				await ServiceRef.NavigationService.Load(isResuming, Token);
 				await ServiceRef.AttachmentCacheService.Load(isResuming, Token);
 				await ServiceRef.ContractOrchestratorService.Load(isResuming, Token);
+				await ServiceRef.ThingRegistryOrchestratorService.Load(isResuming, Token);
+				await ServiceRef.NeuroWalletOrchestratorService.Load(isResuming, Token);
+				await ServiceRef.NotificationService.Load(isResuming, Token);
 			}
 			catch (OperationCanceledException)
 			{

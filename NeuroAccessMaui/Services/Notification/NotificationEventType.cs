@@ -21,8 +21,13 @@
 		Contracts = 2,
 
 		/// <summary>
+		/// Identities
+		/// </summary>
+		Identities = 3,
+
+		/// <summary>
 		/// Wallet
 		/// </summary>
-		Wallet = 3
+		Wallet = 4
 	}
 }

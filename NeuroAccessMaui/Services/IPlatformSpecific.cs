@@ -1,4 +1,6 @@
-﻿namespace NeuroAccessMaui.Services
+﻿using NeuroAccessMaui.Services.Push;
+
+namespace NeuroAccessMaui.Services
 {
 	/// <summary>
 	/// Interface for platform-specific functions.
@@ -60,5 +62,11 @@
 		/// <param name="CancellationToken">Optional cancellation token, to cancel process.</param>
 		/// <returns>If the user has been successfully authenticated.</returns>
 		Task<bool> AuthenticateUserFingerprint(string Title, string? Subtitle, string Description, string Cancel, CancellationToken? CancellationToken);
+
+		/// <summary>
+		/// Gets a Push Notification token for the device.
+		/// </summary>
+		/// <returns>Token information.</returns>
+		Task<TokenInformation> GetPushNotificationToken();
 	}
 }

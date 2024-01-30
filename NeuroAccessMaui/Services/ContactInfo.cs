@@ -1,6 +1,8 @@
 ﻿using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services.Xmpp;
 using System.Globalization;
 using System.Text;
+using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;
 using Waher.Persistence.Attributes;
@@ -295,6 +297,10 @@ namespace NeuroAccessMaui.Services
 						return s;
 				}
 			}
+
+			RosterItem? Item = ServiceRef.XmppService.GetRosterItem(RemoteId);
+			if (Item is not null)
+				return Item.NameOrBareJid;
 
 			lock (identityCache)
 			{

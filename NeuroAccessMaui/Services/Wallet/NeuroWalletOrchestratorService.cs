@@ -1,23 +1,12 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using EDaler;
+﻿using EDaler;
 using EDaler.Uris;
 using EDaler.Uris.Incomplete;
-using NeuroAccessMaui.Pages.Wallet;
-using NeuroAccessMaui.Pages.Wallet.IssueEDaler;
-using NeuroAccessMaui.Pages.Wallet.MyWallet;
-using NeuroAccessMaui.Pages.Wallet.MyWallet.ObjectModels;
-using NeuroAccessMaui.Pages.Wallet.Payment;
-using NeuroAccessMaui.Pages.Wallet.PaymentAcceptance;
-using NeuroAccessMaui.Pages.Wallet.TokenDetails;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Navigation;
 using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.Notification.Wallet;
 using NeuroFeatures;
 using Waher.Runtime.Inventory;
-using Xamarin.CommunityToolkit.Helpers;
 
 namespace NeuroAccessMaui.Services.Wallet
 {

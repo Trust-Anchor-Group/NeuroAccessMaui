@@ -1,7 +1,9 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using System.Xml;
 using EDaler;
 using EDaler.Uris;
+using NeuroAccessMaui.Services.Push;
 using NeuroAccessMaui.Services.Wallet;
 using NeuroAccessMaui.UI.Pages.Registration;
 using NeuroFeatures;
@@ -14,6 +16,7 @@ using Waher.Networking.XMPP.HttpFileUpload;
 using Waher.Networking.XMPP.PEP;
 using Waher.Networking.XMPP.Provisioning;
 using Waher.Networking.XMPP.Provisioning.SearchOperators;
+using Waher.Networking.XMPP.Push;
 using Waher.Networking.XMPP.Sensor;
 using Waher.Networking.XMPP.ServiceDiscovery;
 using Waher.Persistence;
@@ -205,9 +208,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="ParentThreadId">Parent Thread ID</param>
 		/// <param name="DeliveryCallback">Callback to call when message has been sent, or failed to be sent.</param>
 		/// <param name="State">State object to pass on to the callback method.</param>
-		public void SendMessage(QoSLevel QoS, Waher.Networking.XMPP.MessageType Type, string Id, string To, string CustomXml,
+		public void SendMessage(QoSLevel QoS, MessageType Type, string Id, string To, string CustomXml,
 			string Body, string Subject, string Language, string ThreadId, string ParentThreadId,
-			DeliveryEventHandler DeliveryCallback, object State);
+			DeliveryEventHandler DeliveryCallback, object? State);
 
 		#endregion
 
@@ -216,7 +219,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// Event raised when a new presence stanza has been received.
 		/// </summary>
-		event PresenceEventHandlerAsync OnPresence;
+		event PresenceEventHandlerAsync? OnPresence;
 
 		/// <summary>
 		/// Requests subscription of presence information from a contact.
@@ -257,7 +260,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// </summary>
 		/// <param name="BareJid">Bare JID of roster item.</param>
 		/// <returns>Roster item, if found, or null, if not available.</returns>
-		RosterItem GetRosterItem(string BareJid);
+		RosterItem? GetRosterItem(string BareJid);
 
 		/// <summary>
 		/// Adds an item to the roster. If an item with the same Bare JID is found in the roster, that item is updated.
@@ -274,17 +277,17 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// Event raised when a roster item has been added to the roster.
 		/// </summary>
-		event RosterItemEventHandlerAsync OnRosterItemAdded;
+		event RosterItemEventHandlerAsync? OnRosterItemAdded;
 
 		/// <summary>
 		/// Event raised when a roster item has been updated in the roster.
 		/// </summary>
-		event RosterItemEventHandlerAsync OnRosterItemUpdated;
+		event RosterItemEventHandlerAsync? OnRosterItemUpdated;
 
 		/// <summary>
 		/// Event raised when a roster item has been removed from the roster.
 		/// </summary>
-		event RosterItemEventHandlerAsync OnRosterItemRemoved;
+		event RosterItemEventHandlerAsync? OnRosterItemRemoved;
 
 		#endregion
 
@@ -424,7 +427,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="DiscoUri">IoTDisco URI</param>
 		/// <param name="Tags">Decoded meta data tags.</param>
 		/// <returns>If DiscoUri was successfully decoded.</returns>
-		bool TryDecodeIoTDiscoClaimURI(string DiscoUri, out MetaDataTag[] Tags);
+		bool TryDecodeIoTDiscoClaimURI(string DiscoUri, out MetaDataTag[]? Tags);
 
 		/// <summary>
 		/// Tries to decode an IoTDisco Search URI (subset of all possible IoTDisco URIs).
@@ -433,7 +436,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Operators">Search operators.</param>
 		/// <param name="RegistryJid">Registry Service JID</param>
 		/// <returns>If the URI could be parsed.</returns>
-		bool TryDecodeIoTDiscoSearchURI(string DiscoUri, out SearchOperator[] Operators, out string RegistryJid);
+		bool TryDecodeIoTDiscoSearchURI(string DiscoUri, [NotNullWhen(true)] out SearchOperator[]? Operators, out string? RegistryJid);
 
 		/// <summary>
 		/// Tries to decode an IoTDisco Direct Reference URI (subset of all possible IoTDisco URIs).
@@ -445,8 +448,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="PartitionId">Optional Partition ID of device, or null if none.</param>
 		/// <param name="Tags">Decoded meta data tags.</param>
 		/// <returns>If the URI could be parsed.</returns>
-		bool TryDecodeIoTDiscoDirectURI(string DiscoUri, out string Jid, out string SourceId, out string NodeId, out string PartitionId,
-			out MetaDataTag[] Tags);
+		bool TryDecodeIoTDiscoDirectURI(string DiscoUri, [NotNullWhen(true)] out string? Jid, out string? SourceId, out string? NodeId,
+			out string? PartitionId, [NotNullWhen(true)] out MetaDataTag[]? Tags);
 
 		/// <summary>
 		/// Claims a think in accordance with parameters defined in a iotdisco claim URI.
@@ -474,7 +477,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="MaxCount">Maximum number of items in response.</param>
 		/// <param name="DiscoUri">iotdisco URI.</param>
 		/// <returns>Devices found, Registry JID, and if more devices are available.</returns>
-		Task<(SearchResultThing[], string, bool)> Search(int Offset, int MaxCount, string DiscoUri);
+		Task<(SearchResultThing[], string?, bool)> Search(int Offset, int MaxCount, string DiscoUri);
 
 		/// <summary>
 		/// Searches for devices in accordance with settings in a iotdisco-URI.
@@ -484,14 +487,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="RegistryJid">Registry Service JID</param>
 		/// <param name="Operators">Search operators.</param>
 		/// <returns>Devices found, and if more devices are available.</returns>
-		Task<(SearchResultThing[], bool)> Search(int Offset, int MaxCount, string RegistryJid, params SearchOperator[] Operators);
+		Task<(SearchResultThing[], bool)> Search(int Offset, int MaxCount, string? RegistryJid, params SearchOperator[] Operators);
 
 		/// <summary>
 		/// Searches for all devices in accordance with settings in a iotdisco-URI.
 		/// </summary>
 		/// <param name="DiscoUri">iotdisco URI.</param>
 		/// <returns>Complete list of devices in registry matching the search operators, and the JID of the registry service.</returns>
-		Task<(SearchResultThing[], string)> SearchAll(string DiscoUri);
+		Task<(SearchResultThing[], string?)> SearchAll(string DiscoUri);
 
 		/// <summary>
 		/// Searches for all devices in accordance with settings in a iotdisco-URI.
@@ -882,7 +885,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
 		/// <param name="State">State object to pass on to callback method.</param>
 		void IsFriendResponse(string ProvisioningServiceJID, string JID, string RemoteJID, string Key, bool IsFriend,
-			RuleRange Range, IqResultEventHandlerAsync Callback, object State);
+			RuleRange Range, IqResultEventHandlerAsync Callback, object? State);
 
 		/// <summary>
 		/// Sends a response to a previous "Can Control" question, for all future requests.
@@ -897,7 +900,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
 		/// <param name="State">State object to pass on to callback method.</param>
 		void CanControlResponseAll(string ProvisioningServiceJID, string JID, string RemoteJID, string Key, bool CanControl,
-			string[] ParameterNames, IThingReference Node, IqResultEventHandlerAsync Callback, object State);
+			string[] ParameterNames, IThingReference Node, IqResultEventHandlerAsync Callback, object? State);
 
 		/// <summary>
 		/// Sends a response to a previous "Can Control" question, based on the JID of the caller.
@@ -912,7 +915,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
 		/// <param name="State">State object to pass on to callback method.</param>
 		void CanControlResponseCaller(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
-			bool CanControl, string[] ParameterNames, IThingReference Node, IqResultEventHandlerAsync Callback, object State);
+			bool CanControl, string[] ParameterNames, IThingReference Node, IqResultEventHandlerAsync Callback, object? State);
 
 		/// <summary>
 		/// Sends a response to a previous "Can Control" question, based on the domain of the caller.
@@ -927,7 +930,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
 		/// <param name="State">State object to pass on to callback method.</param>
 		void CanControlResponseDomain(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
-			bool CanControl, string[] ParameterNames, IThingReference Node, IqResultEventHandlerAsync Callback, object State);
+			bool CanControl, string[] ParameterNames, IThingReference Node, IqResultEventHandlerAsync Callback, object? State);
 
 		/// <summary>
 		/// Sends a response to a previous "Can Control" question, based on a device token.
@@ -944,7 +947,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="State">State object to pass on to callback method.</param>
 		void CanControlResponseDevice(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
 			bool CanControl, string[] ParameterNames, string Token, IThingReference Node, IqResultEventHandlerAsync Callback,
-			object State);
+			object? State);
 
 		/// <summary>
 		/// Sends a response to a previous "Can Control" question, based on a service token.
@@ -961,7 +964,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="State">State object to pass on to callback method.</param>
 		void CanControlResponseService(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
 			bool CanControl, string[] ParameterNames, string Token, IThingReference Node, IqResultEventHandlerAsync Callback,
-			object State);
+			object? State);
 
 		/// <summary>
 		/// Sends a response to a previous "Can Control" question, based on a user token.
@@ -978,7 +981,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="State">State object to pass on to callback method.</param>
 		void CanControlResponseUser(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
 			bool CanControl, string[] ParameterNames, string Token, IThingReference Node, IqResultEventHandlerAsync Callback,
-			object State);
+			object? State);
 
 		/// <summary>
 		/// Sends a response to a previous "Can Read" question, for all future requests.
@@ -994,7 +997,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
 		/// <param name="State">State object to pass on to callback method.</param>
 		void CanReadResponseAll(string ProvisioningServiceJID, string JID, string RemoteJID, string Key, bool CanRead,
-			FieldType FieldTypes, string[] FieldNames, IThingReference Node, IqResultEventHandlerAsync Callback, object State);
+			FieldType FieldTypes, string[] FieldNames, IThingReference Node, IqResultEventHandlerAsync Callback, object? State);
 
 		/// <summary>
 		/// Sends a response to a previous "Can Read" question, based on the JID of the caller.
@@ -1010,7 +1013,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
 		/// <param name="State">State object to pass on to callback method.</param>
 		void CanReadResponseCaller(string ProvisioningServiceJID, string JID, string RemoteJID, string Key, bool CanRead,
-			FieldType FieldTypes, string[] FieldNames, IThingReference Node, IqResultEventHandlerAsync Callback, object State);
+			FieldType FieldTypes, string[] FieldNames, IThingReference Node, IqResultEventHandlerAsync Callback, object? State);
 
 		/// <summary>
 		/// Sends a response to a previous "Can Read" question, based on the domain of the caller.
@@ -1026,7 +1029,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
 		/// <param name="State">State object to pass on to callback method.</param>
 		void CanReadResponseDomain(string ProvisioningServiceJID, string JID, string RemoteJID, string Key, bool CanRead,
-			FieldType FieldTypes, string[] FieldNames, IThingReference Node, IqResultEventHandlerAsync Callback, object State);
+			FieldType FieldTypes, string[] FieldNames, IThingReference Node, IqResultEventHandlerAsync Callback, object? State);
 
 		/// <summary>
 		/// Sends a response to a previous "Can Read" question, based on a device token.
@@ -1044,7 +1047,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="State">State object to pass on to callback method.</param>
 		void CanReadResponseDevice(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
 			bool CanRead, FieldType FieldTypes, string[] FieldNames, string Token, IThingReference Node, IqResultEventHandlerAsync Callback,
-			object State);
+			object? State);
 
 		/// <summary>
 		/// Sends a response to a previous "Can Read" question, based on a service token.
@@ -1062,7 +1065,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="State">State object to pass on to callback method.</param>
 		void CanReadResponseService(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
 			bool CanRead, FieldType FieldTypes, string[] FieldNames, string Token, IThingReference Node, IqResultEventHandlerAsync Callback,
-			object State);
+			object? State);
 
 		/// <summary>
 		/// Sends a response to a previous "Can Read" question, based on a user token.
@@ -1080,7 +1083,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="State">State object to pass on to callback method.</param>
 		void CanReadResponseUser(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
 			bool CanRead, FieldType FieldTypes, string[] FieldNames, string Token, IThingReference Node, IqResultEventHandlerAsync Callback,
-			object State);
+			object? State);
 
 		/// <summary>
 		/// Deletes the rules of a device.
@@ -1093,7 +1096,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Callback">Method to call when response is returned.</param>
 		/// <param name="State">State object to pass on to callback method.</param>
 		void DeleteDeviceRules(string ServiceJID, string DeviceJID, string NodeId, string SourceId, string Partition,
-			IqResultEventHandlerAsync Callback, object State);
+			IqResultEventHandlerAsync Callback, object? State);
 
 		/// <summary>
 		/// Gets the certificate the corresponds to a token. This certificate can be used
@@ -1103,7 +1106,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Token">Token corresponding to the requested certificate.</param>
 		/// <param name="Callback">Callback method called, when certificate is available.</param>
 		/// <param name="State">State object that will be passed on to the callback method.</param>
-		void GetCertificate(string Token, CertificateCallback Callback, object State);
+		void GetCertificate(string Token, CertificateCallback Callback, object? State);
 
 		#endregion
 
@@ -1131,7 +1134,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Callback">Method to call when response is returned.</param>
 		/// <param name="State">State object.</param>
 		/// <param name="Nodes">Node references</param>
-		void GetControlForm(string To, string Language, DataFormResultEventHandler Callback, object State,
+		void GetControlForm(string To, string Language, DataFormResultEventHandler Callback, object? State,
 			params ThingReference[] Nodes);
 
 		/// <summary>
