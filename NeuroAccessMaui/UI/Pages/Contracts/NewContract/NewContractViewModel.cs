@@ -4,6 +4,7 @@ using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Navigation;
+using NeuroAccessMaui.UI.Controls.Extended;
 using NeuroAccessMaui.UI.Converters;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel;
@@ -323,6 +324,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// Gets or sets whether the contract has parameters.
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ProposeCommand))]
 		private bool parametersOk;
 
 		/// <summary>
@@ -358,7 +360,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			this.CanAddParts = false;
 			this.VisibilityIsEnabled = false;
-			this.EvaluateCommands(this.ProposeCommand);
 		}
 
 		private void RemoveRole(string Role, string LegalId)
@@ -768,8 +769,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			}
 
 			this.ParametersOk = Ok;
-
-			this.EvaluateCommands(this.ProposeCommand);
 		}
 
 		[RelayCommand(CanExecute = nameof(CanPropose))]
@@ -1243,7 +1242,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			}
 
 			await this.ValidateParameters();
-			this.EvaluateCommands(this.ProposeCommand);
 		}
 
 		private async Task PopulateHumanReadableText()

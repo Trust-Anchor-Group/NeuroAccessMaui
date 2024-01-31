@@ -63,8 +63,11 @@ namespace NeuroAccessMaui.Services.Wallet
 
 		private async Task Wallet_TokenRemoved(object Sender, TokenEventArgs e)
 		{
-			if (ServiceRef.NotificationService.TryGetNotificationEvents(NotificationEventType.Wallet, e.Token.TokenId, out NotificationEvent[]? Events))
+			if (ServiceRef.NotificationService.TryGetNotificationEvents(NotificationEventType.Wallet, e.Token.TokenId,
+				out NotificationEvent[]? Events) && Events is not null)
+			{
 				await ServiceRef.NotificationService.DeleteEvents(Events);
+			}
 
 			await ServiceRef.NotificationService.NewEvent(new TokenRemovedNotificationEvent(e));
 		}

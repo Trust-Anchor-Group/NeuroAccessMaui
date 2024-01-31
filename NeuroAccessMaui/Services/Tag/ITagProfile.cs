@@ -127,12 +127,12 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <summary>
 		/// The XMPP server's eDaler service JID.
 		/// </summary>
-		string EDalerJid { get; set; }
+		string? EDalerJid { get; set; }
 
 		/// <summary>
 		/// The XMPP server's Neuro-Features service JID.
 		/// </summary>
-		string NeuroFeaturesJid { get; set; }
+		string? NeuroFeaturesJid { get; set; }
 
 		/// <summary>
 		/// If Push Notification is supported by server.

@@ -1,8 +1,8 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Foundation;
+﻿using Foundation;
 using LocalAuthentication;
 using NeuroAccessMaui.Services.Push;
 using ObjCRuntime;
+using System.Diagnostics.CodeAnalysis;
 using UIKit;
 using Waher.Events;
 using Waher.Networking.XMPP.Push;
@@ -44,7 +44,6 @@ namespace NeuroAccessMaui.Services
 
 			this.isDisposed = true;
 		}
-
 
 		/// <summary>
 		/// If screen capture prohibition is supported

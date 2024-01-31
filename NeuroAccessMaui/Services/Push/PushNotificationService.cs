@@ -18,7 +18,7 @@ namespace NeuroAccessMaui.Services.Push
 	[Singleton]
 	public class PushNotificationService : LoadableService, IPushNotificationService
 	{
-		private readonly Dictionary<PushMessagingService, string> tokens = new();
+		private readonly Dictionary<PushMessagingService, string> tokens = [];
 		private DateTime lastTokenCheck = DateTime.MinValue;
 
 		/// <summary>
@@ -34,27 +34,30 @@ namespace NeuroAccessMaui.Services.Push
 		/// <param name="TokenInformation">Token information</param>
 		public async Task NewToken(TokenInformation TokenInformation)
 		{
-			lock (this.tokens)
+			if (!string.IsNullOrEmpty(TokenInformation.Token))
 			{
-				this.tokens[TokenInformation.Service] = TokenInformation.Token;
-			}
+				lock (this.tokens)
+				{
+					this.tokens[TokenInformation.Service] = TokenInformation.Token;
+				}
 
-			await ServiceRef.XmppService.NewPushNotificationToken(TokenInformation);
+				await ServiceRef.XmppService.NewPushNotificationToken(TokenInformation);
 
-			try
-			{
-				this.OnNewToken?.Invoke(this, new TokenEventArgs(TokenInformation.Service, TokenInformation.Token, TokenInformation.ClientType));
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
+				try
+				{
+					this.OnNewToken?.Invoke(this, new TokenEventArgs(TokenInformation.Service, TokenInformation.Token, TokenInformation.ClientType));
+				}
+				catch (Exception ex)
+				{
+					ServiceRef.LogService.LogException(ex);
+				}
 			}
 		}
 
 		/// <summary>
 		/// Event raised when a new token is made available.
 		/// </summary>
-		public event TokenEventHandler OnNewToken;
+		public event TokenEventHandler? OnNewToken;
 
 		/// <summary>
 		/// Tries to get a token from a push notification service.
@@ -70,7 +73,7 @@ namespace NeuroAccessMaui.Services.Push
 			}
 		}
 
-		private async Task<bool> ForceTokenReport(TokenInformation TokenInformation)
+		private static async Task<bool> ForceTokenReport(TokenInformation TokenInformation)
 		{
 			string OldToken = await RuntimeSettings.GetAsync("PUSH.TOKEN", string.Empty);
 			DateTime ReportDate = await RuntimeSettings.GetAsync("PUSH.REPORT_DATE", DateTime.MinValue);
@@ -82,7 +85,7 @@ namespace NeuroAccessMaui.Services.Push
 		/// Checks if the Push Notification Token is current and registered properly.
 		/// </summary>
 		/// <param name="TokenInformation">Non null if we got it from the OnNewToken</param>
-		public async Task CheckPushNotificationToken(TokenInformation TokenInformation)
+		public async Task CheckPushNotificationToken(TokenInformation? TokenInformation)
 		{
 			try
 			{
@@ -94,32 +97,32 @@ namespace NeuroAccessMaui.Services.Push
 				{
 					this.lastTokenCheck = Now;
 
-					IGetPushNotificationToken GetToken = DependencyService.Get<IGetPushNotificationToken>();
-					if (GetToken is null)
-						return;
-
 					if (TokenInformation is null)
 					{
-						TokenInformation = await GetToken.GetToken();
+						TokenInformation = await ServiceRef.PlatformSpecific.GetPushNotificationToken();
 						if (string.IsNullOrEmpty(TokenInformation.Token))
 							return;
 					}
 
-					bool ForceTokenReport = await this.ForceTokenReport(TokenInformation);
+					bool ForceReport = await ForceTokenReport(TokenInformation);
 
 					string Version = AppInfo.VersionString + "." + AppInfo.BuildString;
 					string PrevVersion = await RuntimeSettings.GetAsync("PUSH.CONFIG_VERSION", string.Empty);
 					bool IsVersionChanged = Version != PrevVersion;
 
-					if (IsVersionChanged || ForceTokenReport)
+					if (IsVersionChanged || ForceReport)
 					{
-						string Token = TokenInformation.Token;
-						PushMessagingService Service = TokenInformation.Service;
-						ClientType ClientType = TokenInformation.ClientType;
-						await ServiceRef.XmppService.ReportNewPushNotificationToken(Token, Service, ClientType);
+						string? Token = TokenInformation.Token;
 
-						await RuntimeSettings.SetAsync("PUSH.TOKEN", TokenInformation.Token);
-						await RuntimeSettings.SetAsync("PUSH.REPORT_DATE", DateTime.UtcNow);
+						if (!string.IsNullOrEmpty(Token))
+						{
+							PushMessagingService Service = TokenInformation.Service;
+							ClientType ClientType = TokenInformation.ClientType;
+							await ServiceRef.XmppService.ReportNewPushNotificationToken(Token, Service, ClientType);
+
+							await RuntimeSettings.SetAsync("PUSH.TOKEN", TokenInformation.Token);
+							await RuntimeSettings.SetAsync("PUSH.REPORT_DATE", DateTime.UtcNow);
+						}
 					}
 
 					if (IsVersionChanged)
