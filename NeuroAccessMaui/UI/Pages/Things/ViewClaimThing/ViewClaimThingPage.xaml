@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<views:ContentBasePage xmlns="http://xamarin.com/schemas/2014/forms"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                       xmlns:resx="clr-namespace:IdApp.Resx"
+                       xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages"
+                       xmlns:model="clr-namespace:NeuroAccessMaui.UI.Pages.Things.ViewClaimThing"
+                       xmlns:objectmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Things"
+                       x:DataType="model:ViewClaimThingViewModel"
+                       x:Class="NeuroAccessMaui.UI.Pages.Things.ViewClaimThing.ViewClaimThingPage"
+                       Style="{StaticResource BaseBackgroundPage}"
+                       Title="{x:Static resx:AppResources.ClaimThing}">
+    <Grid>
+        <ScrollView>
+            <StackLayout Margin="{StaticResource DefaultMargin}">
+                <!-- TAGS -->
+                <Label Text="{x:Static resx:AppResources.InformationAboutThing}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
+                <Label Text="{x:Static resx:AppResources.InformationAboutClaimedThingText}" Style="{StaticResource InfoText}" VerticalOptions="Start"/>
+                <StackLayout x:Name="TagLayout" Orientation="Vertical" BindableLayout.ItemsSource="{Binding Path=Tags}" VerticalOptions="StartAndExpand" Margin="{StaticResource DefaultMargin}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="objectmodel:HumanReadableTag">
+                            <StackLayout Orientation="Horizontal">
+                                <Label Text="{Binding Path=LocalizedName}" Style="{StaticResource KeyLabel}" LineBreakMode="WordWrap" WidthRequest="100"/>
+                                <Label LineBreakMode="WordWrap" Text="{Binding Path=LocalizedValue}" Style="{StaticResource ClickableValueLabel}">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Path=BindingContext.ClickCommand, Source={x:Reference TagLayout}}" CommandParameter="{Binding}" />
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </StackLayout>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </StackLayout>
+                <StackLayout Orientation="Horizontal" Margin="{StaticResource DefaultTopAndBottomOnlyMargin}">
+                    <CheckBox IsChecked="{Binding Path=MakePublic, Mode=TwoWay}" VerticalOptions="Center"/>
+                    <Label Text="{x:Static resx:AppResources.MakeThingPublic}" VerticalOptions="Center" />
+                </StackLayout>
+                <!-- BUTTONS -->
+                <Button Text="{x:Static resx:AppResources.ClaimThing}" Command="{Binding Path=ClaimThingCommand}" IsEnabled="{Binding Path=CanClaimThing}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
+            </StackLayout>
+        </ScrollView>
+    </Grid>
+</views:ContentBasePage>

@@ -158,7 +158,7 @@ namespace NeuroAccessMaui.Services.Notification.Identities
 		/// <returns>Icon</returns>
 		public override Task<string> GetCategoryIcon()
 		{
-			return Task.FromResult<string>("🆔");	// TODO: SVG Icon
+			return Task.FromResult("🆔");	// TODO: SVG Icon
 		}
 
 		/// <summary>

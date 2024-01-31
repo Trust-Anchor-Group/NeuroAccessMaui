@@ -118,7 +118,7 @@ namespace NeuroAccessMaui.Services.Notification.Wallet
 		/// <returns>Icon</returns>
 		public override Task<string> GetCategoryIcon()
 		{
-			return Task.FromResult("✻");	// TODO SVG icon
+			return Task.FromResult("✻");	// TODO: SVG icon
 		}
 
 		/// <summary>

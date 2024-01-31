@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<views:ContentBasePage xmlns="http://xamarin.com/schemas/2014/forms"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                       xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages"
+                       xmlns:resx="clr-namespace:IdApp.Resx"
+                       xmlns:model="clr-namespace:NeuroAccessMaui.UI.Pages.Things.IsFriend"
+                       xmlns:things="clr-namespace:NeuroAccessMaui.UI.Pages.Things"
+                       xmlns:conv="clr-namespace:IdApp.Converters"
+                       x:DataType="model:IsFriendModel"
+                       x:Class="NeuroAccessMaui.UI.Pages.Things.IsFriend.IsFriendPage"
+                       Style="{StaticResource BaseBackgroundPage}"
+                       Title="{x:Static resx:AppResources.AccessRequest}">
+    <Grid>
+        <ScrollView>
+            <StackLayout Margin="{StaticResource DefaultMargin}">
+				<Label Text="{x:Static resx:AppResources.AccessRequest}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}"
+					   VerticalOptions="Start"/>
+				<Label Text="{x:Static resx:AppResources.AccessRequestText2}" Style="{StaticResource InfoText}" VerticalOptions="Start"
+					   HorizontalOptions="Start"/>
+				<!-- Caller -->
+				<Label Text="{x:Static resx:AppResources.Caller}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}"
+					   VerticalOptions="Start"/>
+				<Label Text="{x:Static resx:AppResources.InformationAboutCallerText}" Style="{StaticResource InfoText}" VerticalOptions="Start"
+					   HorizontalOptions="Start"/>
+				<Grid ColumnDefinitions="*,*" RowDefinitions="auto,auto">
+					<Label Grid.Column="0" Grid.Row="0" Text="{x:Static resx:AppResources.CallerAddress}" Style="{StaticResource KeyLabel}" LineBreakMode="WordWrap" />
+					<Label Grid.Column="1" Grid.Row="0" LineBreakMode="WordWrap" Text="{Binding Path=RemoteJid}" Style="{StaticResource ClickableValueLabel}">
+						<Label.GestureRecognizers>
+							<TapGestureRecognizer Command="{Binding Path=ClickCommand}" CommandParameter="{Binding RemoteJid}" />
+						</Label.GestureRecognizers>
+					</Label>
+					<Label Grid.Column="0" Grid.Row="1" Text="{x:Static resx:AppResources.FriendlyName}" Style="{StaticResource KeyLabel}" LineBreakMode="WordWrap" />
+					<Label Grid.Column="1" Grid.Row="1" LineBreakMode="WordWrap" Text="{Binding Path=RemoteFriendlyName}" Style="{StaticResource ClickableValueLabel}">
+						<Label.GestureRecognizers>
+							<TapGestureRecognizer Command="{Binding Path=ClickCommand}" CommandParameter="{Binding RemoteFriendlyName}" />
+						</Label.GestureRecognizers>
+					</Label>
+				</Grid>
+				<StackLayout x:Name="CallerLayout" Orientation="Vertical" BindableLayout.ItemsSource="{Binding Path=CallerTags}" VerticalOptions="StartAndExpand" Margin="{StaticResource DefaultMargin}">
+					<BindableLayout.ItemTemplate>
+						<DataTemplate x:DataType="things:HumanReadableTag">
+							<Grid ColumnDefinitions="*,*" RowDefinitions="auto">
+								<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=LocalizedName}" Style="{StaticResource KeyLabel}" LineBreakMode="WordWrap"/>
+								<Label Grid.Column="1" Grid.Row="0" LineBreakMode="WordWrap" Text="{Binding Path=LocalizedValue}" Style="{StaticResource ClickableValueLabel}">
+									<Label.GestureRecognizers>
+										<TapGestureRecognizer Command="{Binding Path=BindingContext.ClickCommand, Source={x:Reference CallerLayout}}" CommandParameter="{Binding}" />
+									</Label.GestureRecognizers>
+								</Label>
+							</Grid>
+						</DataTemplate>
+					</BindableLayout.ItemTemplate>
+				</StackLayout>
+				<Button Text="{x:Static resx:AppResources.AddContact}" Command="{Binding Path=AddContactCommand}"
+						IsVisible="{Binding CallerInContactsList, Converter={conv:LogicalNot}}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
+				<Button Text="{x:Static resx:AppResources.RemoveContact}" Command="{Binding Path=RemoveContactCommand}"
+						IsVisible="{Binding CallerInContactsList}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
+				<!-- Thing -->
+				<Label Text="{x:Static resx:AppResources.InformationAboutThing}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
+				<Label Text="{x:Static resx:AppResources.InformationAboutThingText}" Style="{StaticResource InfoText}" VerticalOptions="Start"
+					   HorizontalOptions="Start"/>
+				<StackLayout x:Name="TagLayout" Orientation="Vertical" BindableLayout.ItemsSource="{Binding Path=Tags}" VerticalOptions="StartAndExpand" Margin="{StaticResource DefaultMargin}">
+					<BindableLayout.ItemTemplate>
+						<DataTemplate x:DataType="things:HumanReadableTag">
+							<Grid ColumnDefinitions="*,*" RowDefinitions="auto">
+								<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=LocalizedName}" Style="{StaticResource KeyLabel}" LineBreakMode="WordWrap"/>
+								<Label Grid.Column="1" Grid.Row="0" LineBreakMode="WordWrap" Text="{Binding Path=LocalizedValue}" Style="{StaticResource ClickableValueLabel}">
+									<Label.GestureRecognizers>
+										<TapGestureRecognizer Command="{Binding Path=BindingContext.ClickCommand, Source={x:Reference TagLayout}}" CommandParameter="{Binding}" />
+									</Label.GestureRecognizers>
+								</Label>
+							</Grid>
+						</DataTemplate>
+					</BindableLayout.ItemTemplate>
+				</StackLayout>
+				<!-- Range -->
+				<Label Text="{x:Static resx:AppResources.Range}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}"
+					   VerticalOptions="Start"/>
+				<Label Text="{x:Static resx:AppResources.RangeText}" Style="{StaticResource InfoText}" VerticalOptions="Start"
+					   HorizontalOptions="Start"/>
+				<Picker SelectedIndex="{Binding SelectedRuleRangeIndex}" ItemsSource="{Binding RuleRanges}"
+						Margin="{StaticResource DefaultBottomOnlyMargin}"
+						BackgroundColor="{AppThemeBinding Dark={StaticResource PageBackgroundColorDarkTheme}, Default={StaticResource PageBackgroundColor}}"/>
+				<!-- BUTTONS -->
+				<Label Text="{x:Static resx:AppResources.Options}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}"
+					   VerticalOptions="Start"/>
+				<Button Text="{x:Static resx:AppResources.Accept}" Command="{Binding Path=AcceptCommand}" IsEnabled="{Binding Path=IsConnected}"
+						Margin="{StaticResource DefaultBottomOnlyMargin}"/>
+				<Button Text="{x:Static resx:AppResources.Reject}" Command="{Binding Path=RejectCommand}" IsEnabled="{Binding Path=IsConnected}"
+						Margin="{StaticResource DefaultBottomOnlyMargin}"/>
+				<Button Text="{x:Static resx:AppResources.Ignore}" Command="{Binding Path=IgnoreCommand}" IsEnabled="{Binding Path=IsConnected}"
+						Margin="{StaticResource DefaultBottomOnlyMargin}"/>
+			</StackLayout>
+        </ScrollView>
+    </Grid>
+</views:ContentBasePage>

@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<views:ContentBasePage xmlns="http://xamarin.com/schemas/2014/forms"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                       xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages"
+                       xmlns:resx="clr-namespace:IdApp.Resx"
+                       xmlns:things="clr-namespace:NeuroAccessMaui.UI.Pages.Things"
+                       xmlns:readsensor="clr-namespace:NeuroAccessMaui.UI.Pages.Things.ReadSensor"
+                       xmlns:model="clr-namespace:NeuroAccessMaui.UI.Pages.Things.ReadSensor.Model"
+                       x:DataType="readsensor:ReadSensorModel"
+                       x:Class="NeuroAccessMaui.UI.Pages.Things.ReadSensor.ReadSensorPage"
+                       Style="{StaticResource BaseBackgroundPage}"
+                       Title="{x:Static resx:AppResources.ReadSensor}">
+	
+	<views:ContentBasePage.Resources>
+		<DataTemplate x:Key="DefaultTemplate">
+			<Grid />
+		</DataTemplate>
+
+		<DataTemplate x:Key="HeaderModelTemplate" x:DataType="model:HeaderModel">
+			<Label Text="{Binding Path=Label}" Style="{StaticResource Heading}" HorizontalOptions="Center"
+				   Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
+		</DataTemplate>
+
+		<DataTemplate x:Key="TagTemplate" x:DataType="things:HumanReadableTag">
+			<Grid ColumnDefinitions="*,*" RowDefinitions="auto">
+				<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=LocalizedName}" Style="{StaticResource KeyLabel}" LineBreakMode="WordWrap"/>
+				<Label Grid.Column="1" Grid.Row="0" LineBreakMode="WordWrap" Text="{Binding Path=LocalizedValue}" Style="{StaticResource ClickableValueLabel}">
+					<Label.GestureRecognizers>
+						<TapGestureRecognizer Command="{Binding Path=BindingContext.ClickCommand, Source={x:Reference SensorData}}" CommandParameter="{Binding}" />
+					</Label.GestureRecognizers>
+				</Label>
+			</Grid>
+		</DataTemplate>
+
+		<DataTemplate x:Key="FieldModelTemplate" x:DataType="model:FieldModel">
+			<Grid ColumnDefinitions="*,*" RowDefinitions="auto">
+				<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=Name}" Style="{StaticResource KeyLabel}" LineBreakMode="WordWrap"/>
+				<Label Grid.Column="1" Grid.Row="0" LineBreakMode="WordWrap" Text="{Binding Path=ValueString}" Style="{StaticResource ClickableValueLabel}"
+					   HorizontalTextAlignment="{Binding HorizontalAlignment}">
+					<Label.GestureRecognizers>
+						<TapGestureRecognizer Command="{Binding Path=BindingContext.ClickCommand, Source={x:Reference SensorData}}" CommandParameter="{Binding}" />
+					</Label.GestureRecognizers>
+				</Label>
+			</Grid>
+		</DataTemplate>
+
+		<DataTemplate x:Key="ErrorModelTemplate" x:DataType="model:ErrorModel">
+			<Label LineBreakMode="WordWrap" Text="{Binding Path=ErrorMessage}" Style="{StaticResource AlertLabel}">
+				<Label.GestureRecognizers>
+					<TapGestureRecognizer Command="{Binding Path=BindingContext.ClickCommand, Source={x:Reference SensorData}}" CommandParameter="{Binding}" />
+				</Label.GestureRecognizers>
+			</Label>
+		</DataTemplate>
+
+		<DataTemplate x:Key="GraphModelTemplate" x:DataType="model:GraphModel">
+			<Image Source="{Binding Image}" IsVisible="{Binding HasImage}"/>
+		</DataTemplate>
+
+		<readsensor:SensorDataTemplateSelector x:Key="ItemStyleSelector"
+											   DefaultTemplate="{StaticResource DefaultTemplate}"
+											   HeaderTemplate="{StaticResource HeaderModelTemplate}"
+											   FieldTemplate="{StaticResource FieldModelTemplate}"
+											   GraphTemplate="{StaticResource GraphModelTemplate}"
+											   ErrorTemplate="{StaticResource ErrorModelTemplate}"
+											   TagTemplate="{StaticResource TagTemplate}"/>
+	</views:ContentBasePage.Resources>
+
+	<Grid>
+        <ScrollView>
+            <StackLayout Margin="{StaticResource DefaultMargin}">
+                <Label Text="{x:Static resx:AppResources.SensorData}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
+                <Label Text="{x:Static resx:AppResources.SensorDataText}" Style="{StaticResource InfoText}" VerticalOptions="Start"/>
+				<Label Text="{Binding Path=Status}" Style="{StaticResource InfoText}" VerticalOptions="Center" IsVisible="{Binding Path=HasStatus}"/>
+				<StackLayout x:Name="SensorData" VerticalOptions="StartAndExpand" HorizontalOptions="StartAndExpand"
+							 BindableLayout.ItemsSource="{Binding SensorData}"
+							 BindableLayout.ItemTemplateSelector="{StaticResource ItemStyleSelector}"/>
+			</StackLayout>
+        </ScrollView>
+    </Grid>
+</views:ContentBasePage>

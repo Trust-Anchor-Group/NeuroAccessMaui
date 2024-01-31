@@ -1,5 +1,5 @@
-﻿using IdApp.Pages.Contracts.MyContracts.ObjectModels;
-using IdApp.Pages.Contracts.ViewContract;
+﻿using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
+using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
 using IdApp.Services.Navigation;
 using System.Text;
 using System.Threading.Tasks;

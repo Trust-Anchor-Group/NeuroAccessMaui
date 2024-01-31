@@ -16,8 +16,8 @@ using Waher.Content;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.HttpFileUpload;
 using CommunityToolkit.Mvvm.ComponentModel;
-using IdApp.Pages.Signatures.ClientSignature;
-using IdApp.Pages.Signatures.ServerSignature;
+using NeuroAccessMaui.UI.Pages.Signatures.ClientSignature;
+using NeuroAccessMaui.UI.Pages.Signatures.ServerSignature;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 {
@@ -454,9 +454,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				string Xaml = await this.Contract.ToXamarinForms(this.Contract.DeviceLanguage());
 				StackLayout HumanReadableXaml = new StackLayout().LoadFromXaml(Xaml);
 
-				List<View> Children = [.. HumanReadableXaml.Children];
+				List<IView> Children = [.. HumanReadableXaml.Children];
 
-				foreach (View View in Children)
+				foreach (IView View in Children)
 				{
 					if (View is ContentView ContentView)
 					{

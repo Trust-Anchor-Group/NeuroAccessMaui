@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace IdApp.Pages.Signatures.ClientSignature
+namespace NeuroAccessMaui.UI.Pages.Signatures.ClientSignature
 {
     /// <summary>
     /// A page that displays a client signature.

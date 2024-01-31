@@ -1,11 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <?xaml-comp compile="true" ?>
-<ResourceDictionary
-	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
-
-	<Color x:Key="ClickableColor">Blue</Color>
-	<Color x:Key="ClickableColorDarkTheme">#0a84ff</Color>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+						  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
 	<Style ApplyToDerivedTypes="True" TargetType="Label">
 		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
@@ -66,8 +62,12 @@
 	</Style>
 
 	<Style x:Key="RequiredFieldMarker" ApplyToDerivedTypes="False" TargetType="Label">
-		<Setter Property="TextColor" Value="Red"/>
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource AlertColor}, Dark={StaticResource AlertColorDarkTheme}}"/>
 		<Setter Property="Text" Value="*"/>
+	</Style>
+
+	<Style x:Key="AlertLabel" TargetType="Label">
+		<Setter Property="TextColor"  Value="{AppThemeBinding Light={StaticResource AlertColor}, Dark={StaticResource AlertColorDarkTheme}}" />
 	</Style>
 
 </ResourceDictionary>

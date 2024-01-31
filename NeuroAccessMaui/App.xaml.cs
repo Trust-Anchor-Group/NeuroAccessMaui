@@ -29,6 +29,7 @@ using NeuroAccessMaui.UI.Popups.Pin;
 using NeuroFeatures;
 using Waher.Content;
 using Waher.Content.Images;
+using Waher.Content.Markdown;
 using Waher.Content.Xml;
 using Waher.Events;
 using Waher.Networking.DNS;
@@ -262,6 +263,7 @@ namespace NeuroAccessMaui
 					typeof(RuntimeSettings).Assembly,           // Allows for persistence of settings in the object database
 					typeof(InternetContent).Assembly,           // Common Content-Types
 					typeof(ImageCodec).Assembly,                // Common Image Content-Types
+					typeof(MarkdownDocument).Assembly,          // Markdown object model
 					typeof(XML).Assembly,                       // XML Content-Type
 					typeof(DnsResolver).Assembly,               // Serialization of DNS-related objects
 					typeof(XmppClient).Assembly,                // Serialization of general XMPP objects

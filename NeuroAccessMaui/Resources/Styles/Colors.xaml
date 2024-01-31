@@ -76,4 +76,12 @@
 	<Color x:Key="CurvedLinesLight">#FCFCFD</Color>
 	<Color x:Key="CurvedLinesDark">#0F0F10</Color>
 
+	<!-- Alerts -->
+	<Color x:Key="AlertColor">Red</Color>
+	<Color x:Key="AlertColorDarkTheme">#ff453a</Color>
+
+	<!-- Links -->
+	<Color x:Key="ClickableColor">Blue</Color>
+	<Color x:Key="ClickableColorDarkTheme">#0a84ff</Color>
+
 </ResourceDictionary>

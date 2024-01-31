@@ -8,17 +8,32 @@
 		/// <summary>
 		/// Convenience method for resetting a stream to position = 0.
 		/// </summary>
-		/// <param name="stream">The stream to reset.</param>
-		public static void Reset(this Stream stream)
+		/// <param name="Stream">The stream to reset.</param>
+		public static void Reset(this Stream Stream)
 		{
-			if (stream is not null && stream.CanSeek)
+			if (Stream is not null && Stream.CanSeek)
+				Stream.Seek(0, SeekOrigin.Begin);
+			else if (Stream is not null)
+				Stream.Position = 0;
+		}
+
+		/// <summary>
+		/// Returns a byte array containing the contents of a stream.
+		/// </summary>
+		/// <param name="Stream">Stream.</param>
+		/// <returns>Byte array.</returns>
+		public static byte[]? ToByteArray(this Stream Stream)
+		{
+			if (Stream is null)
+				return null;
+
+			if (Stream is not MemoryStream ms)
 			{
-				stream.Seek(0, SeekOrigin.Begin);
+				ms = new MemoryStream();
+				Stream.CopyTo(ms);
 			}
-			else if (stream is not null)
-			{
-				stream.Position = 0;
-			}
+
+			return ms.ToArray();
 		}
 	}
 }

@@ -1,4 +1,7 @@
-﻿namespace NeuroAccessMaui.Extensions
+﻿using Waher.Content.Markdown;
+using Waher.Events;
+
+namespace NeuroAccessMaui.Extensions
 {
 	/// <summary>
 	/// An extensions class for the <see cref="string"/> class.
@@ -58,5 +61,86 @@
 
 			return UnicodeCount;
 		}
+
+		/// <summary>
+		/// Converts Markdown text to Xamarin XAML
+		/// </summary>
+		/// <param name="Markdown">Markdown</param>
+		/// <returns>Xamarin XAML</returns>
+		public static async Task<object> MarkdownToXaml(this string Markdown)
+		{
+			try
+			{
+				MarkdownSettings Settings = new()
+				{
+					AllowScriptTag = false,
+					EmbedEmojis = false,    // TODO: Emojis
+					AudioAutoplay = false,
+					AudioControls = false,
+					ParseMetaData = false,
+					VideoAutoplay = false,
+					VideoControls = false
+				};
+
+				MarkdownDocument Doc = await MarkdownDocument.CreateAsync(Markdown, Settings);
+
+				string Xaml = await Doc.GenerateXamarinForms();
+				Xaml = Xaml.Replace("TextColor=\"{Binding HyperlinkColor}\"", "Style=\"{StaticResource HyperlinkColor}\"");
+
+				return new StackLayout().LoadFromXaml(Xaml);
+			}
+			catch (Exception ex)
+			{
+				Log.Critical(ex);
+
+				StackLayout Layout = new()
+				{
+					Orientation = StackOrientation.Vertical,
+				};
+
+				Layout.Children.Add(new Label()
+				{
+					Text = ex.Message,
+					FontFamily = "Courier New",
+					TextColor = Colors.Red,
+					TextType = TextType.Text
+				});
+
+				return Layout;
+			}
+		}
+
+		/// <summary>
+		/// Parses a string into simple XAML (for inclusion in tables, tooltips, etc.)
+		/// </summary>
+		/// <param name="Xaml">XAML</param>
+		/// <returns>Parsed XAML</returns>
+		public static object? ParseXaml(this string Xaml)
+		{
+			if (string.IsNullOrEmpty(Xaml))
+				return null;
+
+			object Result = new StackLayout().LoadFromXaml(Xaml);
+
+			if (Result is StackLayout Panel && Panel.Children.Count == 1)
+			{
+				IView Child = Panel.Children[0];
+				Panel.Children.RemoveAt(0);
+
+				if (Child is ContentView ContentView)
+				{
+					Child = ContentView.Content;
+					ContentView.Content = null;
+				}
+
+				if (Child is View View)
+					View.Margin = new Thickness(0);
+
+				return Child;
+			}
+			else
+				return Result;
+		}
+
 	}
 }

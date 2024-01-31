@@ -1497,4 +1497,31 @@
   <data name="UnableToGetOptions" xml:space="preserve">
     <value>Unable to get available options.</value>
   </data>
+  <data name="Anonymous" xml:space="preserve">
+    <value>Anonymous</value>
+  </data>
+  <data name="Contacts" xml:space="preserve">
+    <value>Contacts</value>
+  </data>
+  <data name="ContactsDescription" xml:space="preserve">
+    <value>Below are all contacts in your contact book. Click on any to interact with that contact.</value>
+  </data>
+  <data name="InvalidNeuroFeatureToken" xml:space="preserve">
+    <value>Invalid Neuro-Feature token.</value>
+  </data>
+  <data name="NoContactsFound" xml:space="preserve">
+    <value>No Contacts Found.</value>
+  </data>
+  <data name="Question" xml:space="preserve">
+    <value>Question</value>
+  </data>
+  <data name="RemoveSubscriptionFrom" xml:space="preserve">
+    <value>Do you want to remove the presence subscription from {0}?</value>
+  </data>
+  <data name="ScanQRCode" xml:space="preserve">
+    <value>Scan QR Code</value>
+  </data>
+  <data name="TheSpecifiedCodeIsNotALegalIdentity" xml:space="preserve">
+    <value>You need to scan a different type of QR Code, one that represents a legal identity</value>
+  </data>
 </root>

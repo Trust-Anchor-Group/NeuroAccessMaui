@@ -1,0 +1,211 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<views:ContentBasePage
+	xmlns="http://xamarin.com/schemas/2014/forms"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+	xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages"
+	xmlns:resx="clr-namespace:IdApp.Resx"
+	xmlns:model="clr-namespace:NeuroAccessMaui.UI.Pages.Contacts.Chat"
+	xmlns:messages="clr-namespace:IdApp.Services.Messages"
+	xmlns:behaviors="clr-namespace:IdApp.Behaviors"
+	xmlns:loading="clr-namespace:NeuroAccessMaui.UI.Controls.LoadingCollectionView"
+	xmlns:fadeview="clr-namespace:NeuroAccessMaui.UI.Controls.FadeView"
+	xmlns:converters="clr-namespace:IdApp.Converters"
+	xmlns:controls="clr-namespace:IdApp.Controls"
+	x:DataType="model:ChatViewModel"
+	x:Class="NeuroAccessMaui.UI.Pages.Contacts.Chat.ChatPage"
+	Title="{Binding Path=FriendlyName}"
+	Style="{StaticResource BaseBackgroundPage}">
+
+	<views:ContentBasePage.Resources>
+		<ResourceDictionary>
+			<Style TargetType="ContentView" >
+				<Setter Property="BackgroundColor" Value="Transparent" />
+			</Style>
+			<Style TargetType="Label">
+				<Setter Property="TextColor" Value="{StaticResource ForegroundColorLightTheme}" />
+			</Style>
+		</ResourceDictionary>
+		<DataTemplate x:Key="EmptyMessage" x:DataType="messages:ChatMessage">
+			<ContentView Content="{Binding Path=ParsedXaml}" HeightRequest="1"/>
+		</DataTemplate>
+		<DataTemplate x:Key="SentMessage" x:DataType="messages:ChatMessage">
+			<Grid ColumnDefinitions="auto,*" ColumnSpacing="0">
+				<Frame Grid.Column="0" Rotation="180" BackgroundColor="{StaticResource SendMessageBackground}"
+					   Padding="5" CornerRadius="5" BorderColor="{StaticResource SendMessageBorder}" HasShadow="False">
+					<ContentView Content="{Binding Path=ParsedXaml}" />
+				</Frame>
+				<Grid Grid.Column="1" BackgroundColor="Transparent"/>
+			</Grid>
+		</DataTemplate>
+		<DataTemplate x:Key="ReceivedMessage" x:DataType="messages:ChatMessage">
+			<Grid ColumnDefinitions="*,auto" ColumnSpacing="0">
+				<Grid Grid.Column="0" BackgroundColor="Transparent"/>
+				<Frame Grid.Column="1" Rotation="180" BackgroundColor="{StaticResource RecivedMessageBackground}"
+					   Padding="5" CornerRadius="5" BorderColor="{StaticResource RecivedMessageBorder}" HasShadow="False">
+					<ContentView Content="{Binding Path=ParsedXaml}" />
+				</Frame>
+			</Grid>
+		</DataTemplate>
+		<DataTemplate x:Key="OtherItems" x:DataType="messages:ChatMessage">
+			<Grid ColumnDefinitions="*,auto,*" ColumnSpacing="0">
+				<Grid Grid.Column="0" BackgroundColor="Transparent"/>
+				<Frame Grid.Column="1" Rotation="180" BackgroundColor="{StaticResource OtherMessageBackground}"
+					   Padding="5" CornerRadius="5" BorderColor="{StaticResource OtherMessageBorder}" HasShadow="False">
+					<ContentView Content="{Binding Path=ParsedXaml}" />
+				</Frame>
+				<Grid Grid.Column="1" BackgroundColor="Transparent"/>
+			</Grid>
+		</DataTemplate>
+		<messages:MessageTypeTemplateSelector x:Key="MessageStyleSelector"
+                                              EmptyTemplate="{StaticResource EmptyMessage}"
+                                              SentTemplate="{StaticResource SentMessage}"
+                                              ReceivedTemplate="{StaticResource ReceivedMessage}"
+                                              DefaultTemplate="{StaticResource OtherItems}"/>
+	</views:ContentBasePage.Resources>
+
+	<Grid x:Name="ContainerView" Margin="{StaticResource DefaultMargin}">
+		<Grid RowDefinitions="*,auto">
+			<loading:LoadingCollectionView x:Name="CollectionView" SelectionMode="Single" Rotation="180"
+										   VerticalOptions="StartAndExpand" ItemSizingStrategy="MeasureAllItems"
+										   ItemsUpdatingScrollMode="KeepScrollOffset" RemainingItemsThreshold="1"
+										   ItemsSource="{Binding Path=Messages}"
+										   ItemTemplate="{StaticResource MessageStyleSelector}"
+										   ItemSelectedCommand="{Binding Path=MessageSelected}"
+										   LoadMoreCommand="{Binding LoadMoreMessages}">
+				<CollectionView.ItemsLayout>
+					<GridItemsLayout Orientation="Vertical" VerticalItemSpacing="12"/>
+				</CollectionView.ItemsLayout>
+			</loading:LoadingCollectionView>
+
+			<Grid x:Name="ControlGrid" ColumnDefinitions="*,40" Grid.Row="1" Margin="0,12,0,0">
+				<Frame CornerRadius="5" Padding="5,5,5,5"
+					   BorderColor="{AppThemeBinding Light={StaticResource ForegroundColorLightTheme}, Dark={StaticResource ForegroundColorDarkTheme}}">
+					<Frame.Behaviors>
+						<behaviors:SetFocusOnTappedBehavior SetFocusTo="EditorControl" BindingContext="{Binding BindingContext, Source={x:Reference ControlGrid}}"/>
+					</Frame.Behaviors>
+
+					<Grid ColumnDefinitions="*" RowDefinitions="auto">
+						<Grid ColumnDefinitions="*,auto" ColumnSpacing="0"
+							  IsVisible="{Binding IsRecordingAudio, Converter={converters:LogicalNot}}">
+							<Editor x:Name="EditorControl" HorizontalOptions="FillAndExpand" MinimumHeightRequest="40"
+									IsEnabled="{Binding IsRecordingAudio, Converter={converters:LogicalNot}}"
+									Text="{Binding MarkdownInput}" Keyboard="Chat" AutoSize="TextChanges"
+									Unfocused="OnEditorControlUnfocused"/>
+
+							<Button Grid.Column="1" HorizontalOptions="End" VerticalOptions="End"
+									CornerRadius="8" WidthRequest="40" HeightRequest="40" Margin="5,0,0,0"
+									Text="{x:Static resx:FontAwesome.WindowClose}" TextColor="{StaticResource TextColorLightTheme}"
+									FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
+									IsVisible="{Binding Path=IsWriting}" Command="{Binding CancelCommand}">
+								<Button.Behaviors>
+									<behaviors:UnfocusOnClickedBehavior UnfocusControl="EditorControl"/>
+								</Button.Behaviors>
+							</Button>
+						</Grid>
+						<Grid ColumnDefinitions="auto,*,auto" ColumnSpacing="0"
+							  IsVisible="{Binding IsRecordingAudio}">
+
+							<Frame Grid.Column="0" CornerRadius="8" VerticalOptions="Center" Padding="5" Margin="0" HasShadow="False"
+							   xct:TouchEffect.AnimationDuration="100"
+							   xct:TouchEffect.AnimationEasing="{x:Static Easing.CubicInOut}"
+							   xct:TouchEffect.PressedOpacity="0.75"
+							   xct:TouchEffect.Command="{Binding Path=PauseResumeCommand}">
+
+								<Grid WidthRequest="35" HeightRequest="35" BackgroundColor="Transparent">
+									<controls:TintedSvgCachedImage TintColor="{AppThemeBinding Light={StaticResource HeadingBackgroundLightTheme}, Dark={StaticResource HeadingBackgroundDarkTheme}}"
+										Source="{x:Static resx:Svgs.Pause}" IsVisible="{Binding IsRecordingPaused, Converter={converters:LogicalNot}}" />
+									<controls:TintedSvgCachedImage TintColor="{AppThemeBinding Light={StaticResource HeadingBackgroundLightTheme}, Dark={StaticResource HeadingBackgroundDarkTheme}}"
+										Source="{x:Static resx:Svgs.Play}" IsVisible="{Binding IsRecordingPaused}" />
+								</Grid>
+							</Frame>
+
+							<Label Grid.Column="1" Style="{StaticResource ValueLabel}" FontSize="Medium"
+								   Text="{Binding RecordingTime}" HorizontalOptions="Center" VerticalOptions="Center"/>
+
+							<Frame Grid.Column="2" CornerRadius="8" VerticalOptions="Center" Padding="5" Margin="0" HasShadow="False"
+							   xct:TouchEffect.AnimationDuration="100"
+							   xct:TouchEffect.AnimationEasing="{x:Static Easing.CubicInOut}"
+							   xct:TouchEffect.PressedOpacity="0.75"
+							   xct:TouchEffect.Command="{Binding Path=CancelCommand}">
+
+								<controls:TintedSvgCachedImage TintColor="{AppThemeBinding Light={StaticResource HeadingBackgroundLightTheme}, Dark={StaticResource HeadingBackgroundDarkTheme}}"
+									Source="{x:Static resx:Svgs.Trash}" WidthRequest="35" HeightRequest="35" />
+							</Frame>
+						</Grid>
+					</Grid>
+				</Frame>
+				<Grid Grid.Column="1" BackgroundColor="Transparent" />
+			</Grid>
+		</Grid>
+
+		<Grid HorizontalOptions="End" VerticalOptions="End" Margin="0,0,0,5">
+			<fadeview:FadeView IsFrontView="{Binding Path=IsWriting, Converter={converters:LogicalNot}}">
+				<fadeview:FadeView.FrontView>
+					<xct:Expander Direction="Up" AnimationLength="300" AnimationEasing="CubicInOut"
+								  IsExpanded="{Binding IsButtonExpanded}">
+						<xct:Expander.Header>
+							<StackLayout BackgroundColor="White">
+								<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
+										Text="{x:Static resx:FontAwesome.EllipsisH}" TextColor="{StaticResource TextColorLightTheme}"
+										FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
+										Command="{Binding ExpandButtons}" />
+							</StackLayout>
+						</xct:Expander.Header>
+						<StackLayout Orientation="Vertical" Spacing="5" Margin="0,0,0,5" BackgroundColor="Transparent">
+							<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
+									Text="{x:Static resx:FontAwesome.Microphone}" TextColor="{StaticResource TextColorLightTheme}"
+									FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
+									Command="{Binding RecordAudio}"/>
+
+							<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
+									Text="{x:Static resx:FontAwesome.Camera}" TextColor="{StaticResource TextColorLightTheme}"
+									FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
+									Command="{Binding TakePhoto}"/>
+
+							<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
+									Text="{x:Static resx:FontAwesome.PaperClip}" TextColor="{StaticResource TextColorLightTheme}"
+									FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
+									Command="{Binding EmbedFile}"/>
+
+							<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
+									Text="{x:Static resx:FontAwesome.User}" TextColor="{StaticResource TextColorLightTheme}"
+									FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
+									Command="{Binding EmbedId}"/>
+
+							<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
+									Text="{x:Static resx:FontAwesome.Paragraph}" TextColor="{StaticResource TextColorLightTheme}"
+									FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
+									Command="{Binding EmbedContract}"/>
+
+							<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
+									Text="{x:Static resx:FontAwesome.MoneyBill}" TextColor="{StaticResource TextColorLightTheme}"
+									FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
+									Command="{Binding EmbedMoney}"/>
+
+							<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
+									Text="{x:Static resx:FontAwesome.StarOfLife}" TextColor="{StaticResource TextColorLightTheme}"
+									FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
+									Command="{Binding EmbedToken}"/>
+
+							<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
+									Text="{x:Static resx:FontAwesome.Things}" TextColor="{StaticResource TextColorLightTheme}"
+									FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
+									Command="{Binding EmbedThing}"/>
+						</StackLayout>
+					</xct:Expander>
+				</fadeview:FadeView.FrontView>
+				<fadeview:FadeView.BackView>
+					<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
+							Text="{x:Static resx:FontAwesome.PaperPlane}" TextColor="{StaticResource TextColorLightTheme}"
+							FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
+							Command="{Binding SendCommand}">
+						<Button.Behaviors>
+							<behaviors:UnfocusOnClickedBehavior UnfocusControl="EditorControl"/>
+						</Button.Behaviors>
+					</Button>
+				</fadeview:FadeView.BackView>
+			</fadeview:FadeView>
+		</Grid>
+	</Grid>
+</views:ContentBasePage>

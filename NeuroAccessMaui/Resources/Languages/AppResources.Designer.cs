@@ -169,6 +169,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Anonymous.
+        /// </summary>
+        internal static string Anonymous {
+            get {
+                return ResourceManager.GetString("Anonymous", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A peer review you requested has been accepted..
         /// </summary>
         internal static string APeerReviewYouhaveRequestedHasBeenAccepted {
@@ -660,6 +669,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string ContactInformationSentDescription {
             get {
                 return ResourceManager.GetString("ContactInformationSentDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contacts.
+        /// </summary>
+        internal static string Contacts {
+            get {
+                return ResourceManager.GetString("Contacts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Below are all contacts in your contact book. Click on any to interact with that contact..
+        /// </summary>
+        internal static string ContactsDescription {
+            get {
+                return ResourceManager.GetString("ContactsDescription", resourceCulture);
             }
         }
         
@@ -1564,6 +1591,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid Neuro-Feature token..
+        /// </summary>
+        internal static string InvalidNeuroFeatureToken {
+            get {
+                return ResourceManager.GetString("InvalidNeuroFeatureToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid TAG Signature URI..
         /// </summary>
         internal static string InvalidTagSignatureId {
@@ -1839,6 +1875,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string No {
             get {
                 return ResourceManager.GetString("No", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No Contacts Found..
+        /// </summary>
+        internal static string NoContactsFound {
+            get {
+                return ResourceManager.GetString("NoContactsFound", resourceCulture);
             }
         }
         
@@ -2995,6 +3040,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Question.
+        /// </summary>
+        internal static string Question {
+            get {
+                return ResourceManager.GetString("Question", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} wants to read data from your device {1}..
         /// </summary>
         internal static string ReadoutRequestText {
@@ -3036,6 +3090,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string Rejected {
             get {
                 return ResourceManager.GetString("Rejected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to remove the presence subscription from {0}?.
+        /// </summary>
+        internal static string RemoveSubscriptionFrom {
+            get {
+                return ResourceManager.GetString("RemoveSubscriptionFrom", resourceCulture);
             }
         }
         
@@ -3234,6 +3297,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string ScannedQrCode {
             get {
                 return ResourceManager.GetString("ScannedQrCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scan QR Code.
+        /// </summary>
+        internal static string ScanQRCode {
+            get {
+                return ResourceManager.GetString("ScanQRCode", resourceCulture);
             }
         }
         
@@ -3612,6 +3684,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string ThereIsNoNetwork {
             get {
                 return ResourceManager.GetString("ThereIsNoNetwork", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You need to scan a different type of QR Code, one that represents a legal identity.
+        /// </summary>
+        internal static string TheSpecifiedCodeIsNotALegalIdentity {
+            get {
+                return ResourceManager.GetString("TheSpecifiedCodeIsNotALegalIdentity", resourceCulture);
             }
         }
         

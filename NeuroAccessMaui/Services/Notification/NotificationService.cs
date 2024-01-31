@@ -1,4 +1,5 @@
-﻿using Waher.Events;
+﻿using System.Diagnostics.CodeAnalysis;
+using Waher.Events;
 using Waher.Persistence;
 using Waher.Runtime.Inventory;
 
@@ -410,7 +411,8 @@ namespace NeuroAccessMaui.Services.Notification
 		/// <param name="Category">Notification event category</param>
 		/// <param name="Events">Notification events, if found.</param>
 		/// <returns>If notification events where found for the given category.</returns>
-		public bool TryGetNotificationEvents(NotificationEventType Type, CaseInsensitiveString Category, out NotificationEvent[]? Events)
+		public bool TryGetNotificationEvents(NotificationEventType Type, CaseInsensitiveString Category,
+			[NotNullWhen(true)] out NotificationEvent[]? Events)
 		{
 			int i = (int)Type;
 			if (i < 0 || i >= nrTypes)

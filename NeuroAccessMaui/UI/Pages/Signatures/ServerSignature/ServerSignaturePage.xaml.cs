@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace IdApp.Pages.Signatures.ServerSignature
+namespace NeuroAccessMaui.UI.Pages.Signatures.ServerSignature
 {
     /// <summary>
     /// A page that displays a server signature.

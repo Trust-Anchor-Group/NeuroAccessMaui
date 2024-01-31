@@ -1,6 +1,6 @@
 ﻿using IdApp.Extensions;
-using IdApp.Pages.Contracts.MyContracts.ObjectModels;
-using IdApp.Pages.Contracts.ViewContract;
+using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
+using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
 using IdApp.Services.Navigation;
 using IdApp.Services.UI.Photos;
 using System;

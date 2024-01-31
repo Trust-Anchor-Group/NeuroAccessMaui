@@ -35,7 +35,7 @@
 		/// <returns>Money Icon</returns>
 		public override Task<string> GetCategoryIcon()
 		{
-			return Task.FromResult<string>("💵");	// TODO: SVG icon
+			return Task.FromResult("💵");	// TODO: SVG icon
 		}
 	}
 }

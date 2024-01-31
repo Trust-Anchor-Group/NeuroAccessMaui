@@ -8,6 +8,7 @@ using NeuroAccessMaui.Services.Push;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.Services.UI.Photos;
 using NeuroAccessMaui.Services.Wallet;
+using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Registration;
 using NeuroFeatures;
 using NeuroFeatures.Events;
@@ -1488,7 +1489,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				Created = DateTime.UtcNow,
 				RemoteBareJid = RemoteBareJid,
 				RemoteObjectId = e.Id,
-				MessageType = Messages.MessageType.Received,
+				MessageType = NeuroAccessMaui.UI.Pages.Contacts.Chat.MessageType.Received,
 				Html = string.Empty,
 				PlainText = e.Body,
 				Markdown = string.Empty
