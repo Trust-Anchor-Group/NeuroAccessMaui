@@ -115,7 +115,7 @@ namespace NeuroAccessMaui.Services.Notification.Things
 
 				if (Form is not null)
 				{
-					SortedDictionary<string, bool> Parameters = new();
+					SortedDictionary<string, bool> Parameters = [];
 
 					foreach (Field Field in Form.Fields)
 					{

@@ -1288,7 +1288,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// Last reported balance
 		/// </summary>
-		Balance LastEDalerBalance { get; }
+		Balance? LastEDalerBalance { get; }
 
 		/// <summary>
 		/// Timepoint of last eDaler event.

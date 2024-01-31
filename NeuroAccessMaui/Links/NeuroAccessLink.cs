@@ -40,7 +40,7 @@ namespace NeuroAccessMaui.Links
 			if (string.IsNullOrEmpty(Token))
 				return Task.FromResult(false);
 
-			JwtToken Parsed = ServiceRef.CryptoService.ParseAndValidateJwtToken(Token);
+			JwtToken? Parsed = ServiceRef.CryptoService.ParseAndValidateJwtToken(Token);
 			if (Parsed is null)
 				return Task.FromResult(false);
 
@@ -131,7 +131,7 @@ namespace NeuroAccessMaui.Links
 					if (!Parsed.TryGetClaim("tid", out Obj) || Obj is not string TransactionId7)
 						return Task.FromResult(false);
 
-					ServiceRef.XmppService.BuyEDalerGetOptionsCompleted(TransactionId7, new IDictionary<CaseInsensitiveString, object>[0]);
+					ServiceRef.XmppService.BuyEDalerGetOptionsCompleted(TransactionId7, []);
 					return Task.FromResult(true);
 
 				case "beof":  // Buy eDaler Get Options Failed
@@ -152,7 +152,7 @@ namespace NeuroAccessMaui.Links
 					if (!Parsed.TryGetClaim("tid", out Obj) || Obj is not string TransactionId10)
 						return Task.FromResult(false);
 
-					ServiceRef.XmppService.SellEDalerGetOptionsCompleted(TransactionId10, new IDictionary<CaseInsensitiveString, object>[0]);
+					ServiceRef.XmppService.SellEDalerGetOptionsCompleted(TransactionId10, []);
 					return Task.FromResult(true);
 
 				case "seof":  // Sell eDaler Get Options Failed

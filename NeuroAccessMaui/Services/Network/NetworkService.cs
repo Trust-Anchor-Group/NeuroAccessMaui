@@ -219,13 +219,13 @@ namespace NeuroAccessMaui.Services.Network
 			return (false, default);
 		}
 
-		private static KeyValuePair<string, object>[] GetParameter(string MemberName)
+		private static KeyValuePair<string, object?>[] GetParameter(string MemberName)
 		{
 			if (!string.IsNullOrWhiteSpace(MemberName))
 			{
 				return
 				[
-					new KeyValuePair<string, object>("Caller", MemberName)
+					new KeyValuePair<string, object?>("Caller", MemberName)
 				];
 			}
 

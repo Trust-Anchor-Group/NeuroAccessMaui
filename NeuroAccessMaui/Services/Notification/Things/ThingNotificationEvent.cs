@@ -125,7 +125,7 @@ namespace NeuroAccessMaui.Services.Notification.Things
 				await Database.Update(this);
 		}
 
-		private static readonly Dictionary<string, X509Certificate2> certificatesyByToken = new();
+		private static readonly Dictionary<string, X509Certificate2> certificatesyByToken = [];
 
 		private async Task CertificateResponse(object Sender, CertificateEventArgs e)
 		{

@@ -1377,4 +1377,124 @@
   <data name="YourContractContainsErrors" xml:space="preserve">
     <value>Votre contrat contient des erreurs. Corrigez ces erreurs et réessayez.</value>
   </data>
+  <data name="AccessRequest" xml:space="preserve">
+    <value>Demande d’accès</value>
+  </data>
+  <data name="ContractCreated" xml:space="preserve">
+    <value>Un contrat a été créé.</value>
+  </data>
+  <data name="ContractDeleted" xml:space="preserve">
+    <value>Un contrat a été supprimé.</value>
+  </data>
+  <data name="ContractProposed" xml:space="preserve">
+    <value>Un contrat a été proposé.</value>
+  </data>
+  <data name="ContractSigned" xml:space="preserve">
+    <value>Un contrat a été signé.</value>
+  </data>
+  <data name="ContractUpdated" xml:space="preserve">
+    <value>Un contrat a été mis à jour.</value>
+  </data>
+  <data name="ControlRequest" xml:space="preserve">
+    <value>Demande de contrôle</value>
+  </data>
+  <data name="IdentityUpdated" xml:space="preserve">
+    <value>L’identité numérique a été mise à jour.</value>
+  </data>
+  <data name="InvalidIoTDiscoClaimUri" xml:space="preserve">
+    <value>Il ne s’agit pas d’un URI de revendication iotdisco valide.</value>
+  </data>
+  <data name="InvalidIoTDiscoveryCode" xml:space="preserve">
+    <value>Code de découverte IoT non valide</value>
+  </data>
+  <data name="MessageFrom" xml:space="preserve">
+    <value>Message de :</value>
+  </data>
+  <data name="NeuroFeaturesServiceNotFound" xml:space="preserve">
+    <value>Aucun service Neuro-Features n’a été trouvé sur le courtier.</value>
+  </data>
+  <data name="PetitionFrom" xml:space="preserve">
+    <value>Pétition de :</value>
+  </data>
+  <data name="ReadRequest" xml:space="preserve">
+    <value>Demande de lecture</value>
+  </data>
+  <data name="UnableToGetHistory" xml:space="preserve">
+    <value>Impossible d’obtenir le rapport d’historique.</value>
+  </data>
+  <data name="UnableToGetPresent" xml:space="preserve">
+    <value>Impossible d’obtenir le rapport actuel.</value>
+  </data>
+  <data name="UnableToGetProfiling" xml:space="preserve">
+    <value>Impossible d’obtenir le rapport de profilage.</value>
+  </data>
+  <data name="UnableToGetStateDiagram" xml:space="preserve">
+    <value>Impossible d’obtenir le rapport du diagramme d’état.</value>
+  </data>
+  <data name="AccessRequestText" xml:space="preserve">
+    <value>{0} souhaite se connecter à votre appareil {1}.</value>
+  </data>
+  <data name="ConcentratorServiceNotFound" xml:space="preserve">
+    <value>Aucun service de concentrateur n’a été trouvé.</value>
+  </data>
+  <data name="ControlRequestText" xml:space="preserve">
+    <value>{0} souhaite contrôler les paramètres de votre appareil {1}.</value>
+  </data>
+  <data name="ControlServiceNotFound" xml:space="preserve">
+    <value>Aucun service de contrôle n’a été trouvé.</value>
+  </data>
+  <data name="EDalerServiceNotFound" xml:space="preserve">
+    <value>Aucun service eDaler n’a été trouvé sur le courtier.</value>
+  </data>
+  <data name="GettingOptionsCancelled" xml:space="preserve">
+    <value>L’obtention des options disponibles a été annulée.</value>
+  </data>
+  <data name="IdentityResponse" xml:space="preserve">
+    <value>Réponse à une demande d’identité</value>
+  </data>
+  <data name="IdentityReviewRequest" xml:space="preserve">
+    <value>Demande d’examen de l’identité</value>
+  </data>
+  <data name="NoThingsFound" xml:space="preserve">
+    <value>Aucune chose n’a été trouvée.</value>
+  </data>
+  <data name="PaymentCancelled" xml:space="preserve">
+    <value>Paiement annulé</value>
+  </data>
+  <data name="PaymentFailed" xml:space="preserve">
+    <value>Échec du paiement</value>
+  </data>
+  <data name="PepServiceNotFound" xml:space="preserve">
+    <value>Aucun service personnel de concours complet n’a été trouvé.</value>
+  </data>
+  <data name="ProvisioningServiceNotFound" xml:space="preserve">
+    <value>Aucun service d’approvisionnement n’a été trouvé sur le courtier.</value>
+  </data>
+  <data name="PushNotificationServiceNotFound" xml:space="preserve">
+    <value>Aucun service de notification push n’a été trouvé.</value>
+  </data>
+  <data name="ReadoutRequestText" xml:space="preserve">
+    <value>{0} souhaite lire les données de votre appareil {1}.</value>
+  </data>
+  <data name="RequestSignature" xml:space="preserve">
+    <value>Demander une signature</value>
+  </data>
+  <data name="RequestToAccessIdentity" xml:space="preserve">
+    <value>Demande d’accès à l’identité</value>
+  </data>
+  <data name="SensorServiceNotFound" xml:space="preserve">
+    <value>Aucun service de capteur n’a été trouvé.</value>
+  </data>
+  <data name="SignatureResponse" xml:space="preserve">
+    <value>Réponse à la demande de signature</value>
+  </data>
+  <data name="ThingRegistryServiceNotFound" xml:space="preserve">
+    <value>Aucun service de registre n’a été trouvé sur le courtier.</value>
+  </data>
+  <data name="UnableToGetListOfMyDevices" xml:space="preserve">
+    <value>Impossible d’obtenir la liste de mes appareils.</value>
+  </data>
+  <data name="UnableToGetOptions" xml:space="preserve">
+    <value>Impossible d’obtenir les options disponibles.</value>
+  </data>
 </root>

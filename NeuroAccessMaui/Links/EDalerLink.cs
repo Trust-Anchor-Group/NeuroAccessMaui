@@ -22,7 +22,7 @@ namespace NeuroAccessMaui.Links
 		/// <returns>Support grade of opener for the given link.</returns>
 		public Grade Supports(Uri Link)
 		{
-			return Link.Scheme.ToLower() == Constants.UriSchemes.EDaler ? Grade.Ok : Grade.NotAtAll;
+			return Link.Scheme.Equals(Constants.UriSchemes.EDaler, StringComparison.OrdinalIgnoreCase) ? Grade.Ok : Grade.NotAtAll;
 		}
 
 		/// <summary>

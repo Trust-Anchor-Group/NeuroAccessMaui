@@ -33,7 +33,7 @@ namespace NeuroAccessMaui.Services.EventLog
 				Log.Unregister(eventSink);
 		}
 
-		public void LogWarning(string Message, params KeyValuePair<string, object>[] Tags)
+		public void LogWarning(string Message, params KeyValuePair<string, object?>[] Tags)
 		{
 			Log.Warning(Message, string.Empty, this.bareJid, this.GetParameters(Tags).ToArray());
 		}
@@ -43,7 +43,7 @@ namespace NeuroAccessMaui.Services.EventLog
 			this.LogException(ex, []);
 		}
 
-		public void LogException(Exception ex, params KeyValuePair<string, object>[] extraParameters)
+		public void LogException(Exception ex, params KeyValuePair<string, object?>[] extraParameters)
 		{
 			ex = Log.UnnestException(ex);
 
@@ -52,7 +52,7 @@ namespace NeuroAccessMaui.Services.EventLog
 			if (ex is InconsistencyException && !this.repairRequested)
 			{
 				this.repairRequested = true;
-				Task.Run(() => RestartForRepair());
+				Task.Run(RestartForRepair);
 			}
 		}
 
@@ -111,19 +111,19 @@ namespace NeuroAccessMaui.Services.EventLog
 		}
 
 		/// <inheritdoc/>
-		public IList<KeyValuePair<string, object>> GetParameters(params KeyValuePair<string, object>[] Tags)
+		public IList<KeyValuePair<string, object?>> GetParameters(params KeyValuePair<string, object?>[] Tags)
 		{
-			List<KeyValuePair<string, object>> Result =
+			List<KeyValuePair<string, object?>> Result =
 			[
-				new KeyValuePair<string, object>("Platform", DeviceInfo.Platform),
-				new KeyValuePair<string, object>("RuntimeVersion", typeof(LogService).Assembly.ImageRuntimeVersion),
-				new KeyValuePair<string, object>("AppVersion", AppInfo.VersionString),
-				new KeyValuePair<string, object>("Manufacturer", DeviceInfo.Manufacturer),
-				new KeyValuePair<string, object>("Device Model", DeviceInfo.Model),
-				new KeyValuePair<string, object>("Device Name", DeviceInfo.Name),
-				new KeyValuePair<string, object>("OS", DeviceInfo.VersionString),
-				new KeyValuePair<string, object>("Platform", DeviceInfo.Platform.ToString()),
-				new KeyValuePair<string, object>("Device Type", DeviceInfo.DeviceType.ToString()),
+				new KeyValuePair<string, object?>("Platform", DeviceInfo.Platform),
+				new KeyValuePair<string, object?>("RuntimeVersion", typeof(LogService).Assembly.ImageRuntimeVersion),
+				new KeyValuePair<string, object?>("AppVersion", AppInfo.VersionString),
+				new KeyValuePair<string, object?>("Manufacturer", DeviceInfo.Manufacturer),
+				new KeyValuePair<string, object?>("Device Model", DeviceInfo.Model),
+				new KeyValuePair<string, object?>("Device Name", DeviceInfo.Name),
+				new KeyValuePair<string, object?>("OS", DeviceInfo.VersionString),
+				new KeyValuePair<string, object?>("Platform", DeviceInfo.Platform.ToString()),
+				new KeyValuePair<string, object?>("Device Type", DeviceInfo.DeviceType.ToString()),
 			];
 
 			if (Tags is not null)

@@ -101,7 +101,7 @@ namespace NeuroAccessMaui.Services.Notification.Things
 				if (Item is null || !Item.HasLastPresence || !Item.LastPresence.IsOnline)
 					return null;
 
-				SortedDictionary<string, bool> Fields = new();
+				SortedDictionary<string, bool> Fields = [];
 				SensorDataClientRequest Request = ServiceRef.XmppService.RequestSensorReadout(Item.LastPresenceFullJid, [ Thing ], FieldType.All);
 				TaskCompletionSource<bool> Done = new();
 

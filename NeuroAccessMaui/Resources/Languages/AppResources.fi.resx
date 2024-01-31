@@ -1377,4 +1377,124 @@
   <data name="YourContractContainsErrors" xml:space="preserve">
     <value>Sopimuksessa on virheitä. Korjaa nämä virheet ja yritä uudelleen.</value>
   </data>
+  <data name="AccessRequest" xml:space="preserve">
+    <value>Käyttöoikeuspyyntö</value>
+  </data>
+  <data name="ContractCreated" xml:space="preserve">
+    <value>Sopimus on luotu.</value>
+  </data>
+  <data name="ContractDeleted" xml:space="preserve">
+    <value>Sopimus on poistettu.</value>
+  </data>
+  <data name="ContractProposed" xml:space="preserve">
+    <value>Sopimusta on ehdotettu.</value>
+  </data>
+  <data name="ContractSigned" xml:space="preserve">
+    <value>Sopimus on allekirjoitettu.</value>
+  </data>
+  <data name="ContractUpdated" xml:space="preserve">
+    <value>Sopimus on päivitetty.</value>
+  </data>
+  <data name="ControlRequest" xml:space="preserve">
+    <value>Valvontapyyntö</value>
+  </data>
+  <data name="IdentityUpdated" xml:space="preserve">
+    <value>Digitaalinen identiteetti on päivitetty.</value>
+  </data>
+  <data name="InvalidIoTDiscoClaimUri" xml:space="preserve">
+    <value>Ei kelvollinen iotdiskoväite URI.</value>
+  </data>
+  <data name="InvalidIoTDiscoveryCode" xml:space="preserve">
+    <value>Virheellinen IoT-etsintäkoodi</value>
+  </data>
+  <data name="MessageFrom" xml:space="preserve">
+    <value>Viestin lähettäjä:</value>
+  </data>
+  <data name="NeuroFeaturesServiceNotFound" xml:space="preserve">
+    <value>Välittäjältä ei löytynyt Neuro-Features-palvelua.</value>
+  </data>
+  <data name="PetitionFrom" xml:space="preserve">
+    <value>Vetoomus:</value>
+  </data>
+  <data name="ReadRequest" xml:space="preserve">
+    <value>Lukupyyntö</value>
+  </data>
+  <data name="UnableToGetHistory" xml:space="preserve">
+    <value>Historiaraporttia ei voi saada.</value>
+  </data>
+  <data name="UnableToGetPresent" xml:space="preserve">
+    <value>Raporttia ei voi saada.</value>
+  </data>
+  <data name="UnableToGetProfiling" xml:space="preserve">
+    <value>Profilointiraporttia ei voi saada.</value>
+  </data>
+  <data name="UnableToGetStateDiagram" xml:space="preserve">
+    <value>Tilakaavioraporttia ei voi saada.</value>
+  </data>
+  <data name="AccessRequestText" xml:space="preserve">
+    <value>{0} haluaa muodostaa yhteyden laitteeseesi {1}.</value>
+  </data>
+  <data name="ConcentratorServiceNotFound" xml:space="preserve">
+    <value>Keskitinpalvelua ei löytynyt.</value>
+  </data>
+  <data name="ControlRequestText" xml:space="preserve">
+    <value>{0} haluaa hallita laitteesi parametreja {1}.</value>
+  </data>
+  <data name="ControlServiceNotFound" xml:space="preserve">
+    <value>Ohjauspalvelua ei löytynyt.</value>
+  </data>
+  <data name="EDalerServiceNotFound" xml:space="preserve">
+    <value>Välittäjältä ei löytynyt eDaler-palvelua.</value>
+  </data>
+  <data name="GettingOptionsCancelled" xml:space="preserve">
+    <value>Käytettävissä olevien vaihtoehtojen saaminen peruutettiin.</value>
+  </data>
+  <data name="IdentityResponse" xml:space="preserve">
+    <value>Vastaus henkilöllisyyspyyntöön</value>
+  </data>
+  <data name="IdentityReviewRequest" xml:space="preserve">
+    <value>Henkilöllisyyden tarkastuspyyntö</value>
+  </data>
+  <data name="NoThingsFound" xml:space="preserve">
+    <value>Mitään ei löytynyt.</value>
+  </data>
+  <data name="PaymentCancelled" xml:space="preserve">
+    <value>Maksu peruutettu</value>
+  </data>
+  <data name="PaymentFailed" xml:space="preserve">
+    <value>Maksu epäonnistui</value>
+  </data>
+  <data name="PepServiceNotFound" xml:space="preserve">
+    <value>Henkilökohtaista tapahtumapalvelua ei löytynyt.</value>
+  </data>
+  <data name="ProvisioningServiceNotFound" xml:space="preserve">
+    <value>Välittäjältä ei löytynyt provisiointipalvelua.</value>
+  </data>
+  <data name="PushNotificationServiceNotFound" xml:space="preserve">
+    <value>Push-ilmoituspalvelua ei löytynyt.</value>
+  </data>
+  <data name="ReadoutRequestText" xml:space="preserve">
+    <value>{0} haluaa lukea tietoja laitteestasi {1}.</value>
+  </data>
+  <data name="RequestSignature" xml:space="preserve">
+    <value>Pyydä allekirjoitusta</value>
+  </data>
+  <data name="RequestToAccessIdentity" xml:space="preserve">
+    <value>Henkilöllisyyden tarkastuspyyntö</value>
+  </data>
+  <data name="SensorServiceNotFound" xml:space="preserve">
+    <value>Anturipalvelua ei löytynyt.</value>
+  </data>
+  <data name="SignatureResponse" xml:space="preserve">
+    <value>Vastaus allekirjoituspyyntöön</value>
+  </data>
+  <data name="ThingRegistryServiceNotFound" xml:space="preserve">
+    <value>Välittäjältä ei löytynyt mitään rekisteripalvelua.</value>
+  </data>
+  <data name="UnableToGetListOfMyDevices" xml:space="preserve">
+    <value>En voi saada luetteloa laitteistani.</value>
+  </data>
+  <data name="UnableToGetOptions" xml:space="preserve">
+    <value>Käytettävissä olevia vaihtoehtoja ei voi saada.</value>
+  </data>
 </root>

@@ -146,10 +146,10 @@ namespace IdApp.Services.Notification.Contracts
 				catch (Exception ex)
 				{
 					ServiceReferences.LogService.LogException(ex,
-						new KeyValuePair<string, object>("ContractId", this.ContractId),
-						new KeyValuePair<string, object>("LegalId", this.LegalId),
-						new KeyValuePair<string, object>("Role", this.Role),
-						new KeyValuePair<string, object>(Constants.XmppProperties.Jid, ServiceReferences.XmppService.BareJid));
+						new KeyValuePair<string, object?>("ContractId", this.ContractId),
+						new KeyValuePair<string, object?>("LegalId", this.LegalId),
+						new KeyValuePair<string, object?>("Role", this.Role),
+						new KeyValuePair<string, object?>(Constants.XmppProperties.Jid, ServiceReferences.XmppService.BareJid));
 				}
 			}
 

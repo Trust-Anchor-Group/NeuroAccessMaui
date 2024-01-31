@@ -44,7 +44,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 		public static async Task<ContractModel> Create(string ContractId, DateTime Timestamp, Contract Contract, NotificationEvent[] Events)
 		{
 			string Category = await GetCategory(Contract) ?? Contract.ForMachinesNamespace + "#" + Contract.ForMachinesLocalName;
-			string Name = await GetName(Contract) ?? Contract.ContractId;
+			string Name = await GetName(Contract);
+
+			if (string.IsNullOrEmpty(Name))
+				Name = Contract.ContractId;
 
 			return new ContractModel(ContractId, Timestamp, Contract, Category, Name, Events);
 		}
@@ -54,12 +57,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 		/// </summary>
 		/// <param name="Contract">Contract</param>
 		/// <returns>Displayable Name</returns>
-		public static async Task<string?> GetName(Contract Contract)
+		public static async Task<string> GetName(Contract? Contract)
 		{
-			if (Contract.Parts is null)
-				return null;
+			if (Contract?.Parts is null)
+				return string.Empty;
 
-			Dictionary<string, Waher.Networking.XMPP.Contracts.ClientSignature> Signatures = [];
+			Dictionary<string, ClientSignature> Signatures = [];
 			StringBuilder? sb = null;
 
 			if (Contract.ClientSignatures is not null)
@@ -88,7 +91,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 				}
 			}
 
-			return sb?.ToString();
+			return sb?.ToString() ?? string.Empty;
 		}
 
 		/// <summary>

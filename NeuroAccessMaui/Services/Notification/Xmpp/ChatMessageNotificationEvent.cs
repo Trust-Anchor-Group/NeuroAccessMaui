@@ -21,16 +21,15 @@ namespace NeuroAccessMaui.Services.Notification.Xmpp
 		/// </summary>
 		/// <param name="e">Event arguments</param>
 		public ChatMessageNotificationEvent(MessageEventArgs e)
-			: this(e, e.FromBareJID)
+			: this(e.FromBareJID)
 		{
 		}
 
 		/// <summary>
 		/// Contains information about an incoming chat message.
 		/// </summary>
-		/// <param name="e">Event arguments</param>
 		/// <param name="RemoteBareJid">Remote Bare JID</param>
-		public ChatMessageNotificationEvent(MessageEventArgs e, string RemoteBareJid)
+		public ChatMessageNotificationEvent(string RemoteBareJid)
 			: base()
 		{
 			this.Category = RemoteBareJid;
@@ -42,7 +41,7 @@ namespace NeuroAccessMaui.Services.Notification.Xmpp
 		/// <summary>
 		/// ID of message object being updated
 		/// </summary>
-		public string ReplaceObjectId { get; set; }
+		public string? ReplaceObjectId { get; set; }
 
 		/// <summary>
 		/// Gets an icon for the category of event.

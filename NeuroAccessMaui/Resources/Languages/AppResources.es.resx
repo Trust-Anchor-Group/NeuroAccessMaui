@@ -1377,4 +1377,124 @@
   <data name="YourContractContainsErrors" xml:space="preserve">
     <value>Su contrato contiene errores. Corrija estos errores e inténtelo de nuevo.</value>
   </data>
+  <data name="AccessRequest" xml:space="preserve">
+    <value>Solicitud de acceso</value>
+  </data>
+  <data name="ContractCreated" xml:space="preserve">
+    <value>Se ha creado un contrato.</value>
+  </data>
+  <data name="ContractDeleted" xml:space="preserve">
+    <value>Se ha eliminado un contrato.</value>
+  </data>
+  <data name="ContractProposed" xml:space="preserve">
+    <value>Se ha propuesto un contrato.</value>
+  </data>
+  <data name="ContractSigned" xml:space="preserve">
+    <value>Se ha firmado un contrato.</value>
+  </data>
+  <data name="ContractUpdated" xml:space="preserve">
+    <value>Se ha actualizado un contrato.</value>
+  </data>
+  <data name="ControlRequest" xml:space="preserve">
+    <value>Solicitud de control</value>
+  </data>
+  <data name="IdentityUpdated" xml:space="preserve">
+    <value>Se ha actualizado la identidad digital.</value>
+  </data>
+  <data name="InvalidIoTDiscoClaimUri" xml:space="preserve">
+    <value>No es un URI de notificación de iotdisco válido.</value>
+  </data>
+  <data name="InvalidIoTDiscoveryCode" xml:space="preserve">
+    <value>Código de detección de IoT no válido</value>
+  </data>
+  <data name="MessageFrom" xml:space="preserve">
+    <value>Mensaje de:</value>
+  </data>
+  <data name="NeuroFeaturesServiceNotFound" xml:space="preserve">
+    <value>No se encontró ningún servicio de Neuro-Features en el corredor.</value>
+  </data>
+  <data name="PetitionFrom" xml:space="preserve">
+    <value>Petición de:</value>
+  </data>
+  <data name="ReadRequest" xml:space="preserve">
+    <value>Solicitud de lectura</value>
+  </data>
+  <data name="UnableToGetHistory" xml:space="preserve">
+    <value>No se puede obtener el informe del historial.</value>
+  </data>
+  <data name="UnableToGetPresent" xml:space="preserve">
+    <value>No se puede obtener el informe actual.</value>
+  </data>
+  <data name="UnableToGetProfiling" xml:space="preserve">
+    <value>No se puede obtener el informe de generación de perfiles.</value>
+  </data>
+  <data name="UnableToGetStateDiagram" xml:space="preserve">
+    <value>No se puede obtener el informe del diagrama de estado.</value>
+  </data>
+  <data name="AccessRequestText" xml:space="preserve">
+    <value>{0} quiere conectarse a su dispositivo {1}.</value>
+  </data>
+  <data name="ConcentratorServiceNotFound" xml:space="preserve">
+    <value>No se encontró ningún servicio de concentrador.</value>
+  </data>
+  <data name="ControlRequestText" xml:space="preserve">
+    <value>{0} quiere controlar los parámetros de su dispositivo {1}.</value>
+  </data>
+  <data name="ControlServiceNotFound" xml:space="preserve">
+    <value>No se ha encontrado ningún servicio de control.</value>
+  </data>
+  <data name="EDalerServiceNotFound" xml:space="preserve">
+    <value>No se encontró ningún servicio de eDaler en el corredor.</value>
+  </data>
+  <data name="GettingOptionsCancelled" xml:space="preserve">
+    <value>Se canceló la obtención de opciones disponibles.</value>
+  </data>
+  <data name="IdentityResponse" xml:space="preserve">
+    <value>Respuesta a la solicitud de identidad</value>
+  </data>
+  <data name="IdentityReviewRequest" xml:space="preserve">
+    <value>Solicitud de revisión de identidad</value>
+  </data>
+  <data name="NoThingsFound" xml:space="preserve">
+    <value>No se encontraron cosas.</value>
+  </data>
+  <data name="PaymentCancelled" xml:space="preserve">
+    <value>Pago cancelado</value>
+  </data>
+  <data name="PaymentFailed" xml:space="preserve">
+    <value>Error en el pago</value>
+  </data>
+  <data name="PepServiceNotFound" xml:space="preserve">
+    <value>No se ha encontrado ningún servicio de eventos personales.</value>
+  </data>
+  <data name="ProvisioningServiceNotFound" xml:space="preserve">
+    <value>No se encontró ningún servicio de aprovisionamiento en el corredor.</value>
+  </data>
+  <data name="PushNotificationServiceNotFound" xml:space="preserve">
+    <value>No se encontró ningún servicio de notificaciones push.</value>
+  </data>
+  <data name="ReadoutRequestText" xml:space="preserve">
+    <value>{0} quiere leer datos de su dispositivo {1}.</value>
+  </data>
+  <data name="RequestSignature" xml:space="preserve">
+    <value>Solicitar firma</value>
+  </data>
+  <data name="RequestToAccessIdentity" xml:space="preserve">
+    <value>Solicitud de identidad de acceso</value>
+  </data>
+  <data name="SensorServiceNotFound" xml:space="preserve">
+    <value>No se ha encontrado ningún servicio de sensores.</value>
+  </data>
+  <data name="SignatureResponse" xml:space="preserve">
+    <value>Respuesta a la solicitud de firma</value>
+  </data>
+  <data name="ThingRegistryServiceNotFound" xml:space="preserve">
+    <value>No se encontró nada del servicio de registro en el corredor.</value>
+  </data>
+  <data name="UnableToGetListOfMyDevices" xml:space="preserve">
+    <value>No se puede obtener la lista de mis dispositivos.</value>
+  </data>
+  <data name="UnableToGetOptions" xml:space="preserve">
+    <value>No se pueden obtener las opciones disponibles.</value>
+  </data>
 </root>

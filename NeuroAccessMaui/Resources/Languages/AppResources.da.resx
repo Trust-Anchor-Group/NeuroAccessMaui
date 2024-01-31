@@ -1377,4 +1377,124 @@
   <data name="YourContractContainsErrors" xml:space="preserve">
     <value>Din kontrakt indeholder fejl. Ret disse fejl, og prøv igen.</value>
   </data>
+  <data name="AccessRequest" xml:space="preserve">
+    <value>Anmodning om adgang</value>
+  </data>
+  <data name="ContractCreated" xml:space="preserve">
+    <value>Der er oprettet en kontrakt.</value>
+  </data>
+  <data name="ContractDeleted" xml:space="preserve">
+    <value>En kontrakt er blevet slettet.</value>
+  </data>
+  <data name="ContractProposed" xml:space="preserve">
+    <value>Der er foreslået en kontrakt.</value>
+  </data>
+  <data name="ContractSigned" xml:space="preserve">
+    <value>Der er underskrevet en kontrakt.</value>
+  </data>
+  <data name="ContractUpdated" xml:space="preserve">
+    <value>En kontrakt er blevet opdateret.</value>
+  </data>
+  <data name="ControlRequest" xml:space="preserve">
+    <value>Anmodning om kontrol</value>
+  </data>
+  <data name="IdentityUpdated" xml:space="preserve">
+    <value>Den digitale identitet er blevet opdateret.</value>
+  </data>
+  <data name="InvalidIoTDiscoClaimUri" xml:space="preserve">
+    <value>Ikke en gyldig iotdisco-krav-URI.</value>
+  </data>
+  <data name="InvalidIoTDiscoveryCode" xml:space="preserve">
+    <value>Ugyldig IoT-registreringskode</value>
+  </data>
+  <data name="MessageFrom" xml:space="preserve">
+    <value>Besked fra:</value>
+  </data>
+  <data name="NeuroFeaturesServiceNotFound" xml:space="preserve">
+    <value>Ingen Neuro-Features service fundet på mægler.</value>
+  </data>
+  <data name="PetitionFrom" xml:space="preserve">
+    <value>Andragende fra:</value>
+  </data>
+  <data name="ReadRequest" xml:space="preserve">
+    <value>Anmodning om udlæsning</value>
+  </data>
+  <data name="UnableToGetHistory" xml:space="preserve">
+    <value>Kan ikke få historikrapport.</value>
+  </data>
+  <data name="UnableToGetPresent" xml:space="preserve">
+    <value>Kan ikke få nærværende rapport.</value>
+  </data>
+  <data name="UnableToGetProfiling" xml:space="preserve">
+    <value>Kan ikke få profileringsrapport.</value>
+  </data>
+  <data name="UnableToGetStateDiagram" xml:space="preserve">
+    <value>Kan ikke hente tilstandsdiagramrapport.</value>
+  </data>
+  <data name="AccessRequestText" xml:space="preserve">
+    <value>{0} vil oprette forbindelse til din enhed {1}.</value>
+  </data>
+  <data name="ConcentratorServiceNotFound" xml:space="preserve">
+    <value>Ingen koncentratortjeneste fundet.</value>
+  </data>
+  <data name="ControlRequestText" xml:space="preserve">
+    <value>{0} vil kontrollere parametre på din enhed {1}.</value>
+  </data>
+  <data name="ControlServiceNotFound" xml:space="preserve">
+    <value>Der blev ikke fundet nogen kontroltjeneste.</value>
+  </data>
+  <data name="EDalerServiceNotFound" xml:space="preserve">
+    <value>Ingen eDaler-service fundet på mægler.</value>
+  </data>
+  <data name="GettingOptionsCancelled" xml:space="preserve">
+    <value>At få tilgængelige muligheder blev annulleret.</value>
+  </data>
+  <data name="IdentityResponse" xml:space="preserve">
+    <value>Svar på identitetsanmodning</value>
+  </data>
+  <data name="IdentityReviewRequest" xml:space="preserve">
+    <value>Anmodning om gennemgang af identitet</value>
+  </data>
+  <data name="NoThingsFound" xml:space="preserve">
+    <value>Ingen ting fundet.</value>
+  </data>
+  <data name="PaymentCancelled" xml:space="preserve">
+    <value>Betaling annulleret</value>
+  </data>
+  <data name="PaymentFailed" xml:space="preserve">
+    <value>Betaling mislykkedes</value>
+  </data>
+  <data name="PepServiceNotFound" xml:space="preserve">
+    <value>Ingen personlig begivenhedstjeneste fundet.</value>
+  </data>
+  <data name="ProvisioningServiceNotFound" xml:space="preserve">
+    <value>Ingen klargøringstjeneste fundet på mægler.</value>
+  </data>
+  <data name="PushNotificationServiceNotFound" xml:space="preserve">
+    <value>Der blev ikke fundet nogen push-notifikationstjeneste.</value>
+  </data>
+  <data name="ReadoutRequestText" xml:space="preserve">
+    <value>{0} vil læse data fra din enhed {1}.</value>
+  </data>
+  <data name="RequestSignature" xml:space="preserve">
+    <value>Anmod om underskrift</value>
+  </data>
+  <data name="RequestToAccessIdentity" xml:space="preserve">
+    <value>Anmod om adgang til identitet</value>
+  </data>
+  <data name="SensorServiceNotFound" xml:space="preserve">
+    <value>Der blev ikke fundet nogen sensortjeneste.</value>
+  </data>
+  <data name="SignatureResponse" xml:space="preserve">
+    <value>Svar på underskriftsanmodning</value>
+  </data>
+  <data name="ThingRegistryServiceNotFound" xml:space="preserve">
+    <value>Ingen ting registreringstjeneste fundet på mægler.</value>
+  </data>
+  <data name="UnableToGetListOfMyDevices" xml:space="preserve">
+    <value>Kan ikke få listen over mine enheder.</value>
+  </data>
+  <data name="UnableToGetOptions" xml:space="preserve">
+    <value>Kan ikke få tilgængelige indstillinger.</value>
+  </data>
 </root>

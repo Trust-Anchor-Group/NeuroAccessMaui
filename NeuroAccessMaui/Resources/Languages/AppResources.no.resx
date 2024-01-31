@@ -1377,4 +1377,124 @@
   <data name="YourContractContainsErrors" xml:space="preserve">
     <value>Kontrakten inneholder feil. Rett opp disse feilene, og prøv på nytt.</value>
   </data>
+  <data name="AccessRequest" xml:space="preserve">
+    <value>Forespørsel om tilgang</value>
+  </data>
+  <data name="ContractCreated" xml:space="preserve">
+    <value>Det er opprettet en kontrakt.</value>
+  </data>
+  <data name="ContractDeleted" xml:space="preserve">
+    <value>En kontrakt er slettet.</value>
+  </data>
+  <data name="ContractProposed" xml:space="preserve">
+    <value>Det er foreslått en kontrakt.</value>
+  </data>
+  <data name="ContractSigned" xml:space="preserve">
+    <value>Kontrakt er signert.</value>
+  </data>
+  <data name="ContractUpdated" xml:space="preserve">
+    <value>En kontrakt er oppdatert.</value>
+  </data>
+  <data name="ControlRequest" xml:space="preserve">
+    <value>Forespørsel om kontroll</value>
+  </data>
+  <data name="IdentityUpdated" xml:space="preserve">
+    <value>Den digitale identiteten er oppdatert.</value>
+  </data>
+  <data name="InvalidIoTDiscoClaimUri" xml:space="preserve">
+    <value>Ikke en gyldig URI for iotdisco-krav.</value>
+  </data>
+  <data name="InvalidIoTDiscoveryCode" xml:space="preserve">
+    <value>Ugyldig IoT-oppdagelseskode</value>
+  </data>
+  <data name="MessageFrom" xml:space="preserve">
+    <value>Melding fra:</value>
+  </data>
+  <data name="NeuroFeaturesServiceNotFound" xml:space="preserve">
+    <value>Ingen Neuro-Features-tjeneste funnet på megler.</value>
+  </data>
+  <data name="PetitionFrom" xml:space="preserve">
+    <value>Opprop fra:</value>
+  </data>
+  <data name="ReadRequest" xml:space="preserve">
+    <value>Forespørsel om avlesning</value>
+  </data>
+  <data name="UnableToGetHistory" xml:space="preserve">
+    <value>Kan ikke få historikkrapport.</value>
+  </data>
+  <data name="UnableToGetPresent" xml:space="preserve">
+    <value>Kan ikke få presentere rapporten.</value>
+  </data>
+  <data name="UnableToGetProfiling" xml:space="preserve">
+    <value>Kan ikke få profileringsrapport.</value>
+  </data>
+  <data name="UnableToGetStateDiagram" xml:space="preserve">
+    <value>Kan ikke få tilstandsdiagramrapport.</value>
+  </data>
+  <data name="AccessRequestText" xml:space="preserve">
+    <value>{0} vil koble til enheten din {1}.</value>
+  </data>
+  <data name="ConcentratorServiceNotFound" xml:space="preserve">
+    <value>Ingen konsentratortjeneste funnet.</value>
+  </data>
+  <data name="ControlRequestText" xml:space="preserve">
+    <value>{0} vil kontrollere parametere på enheten din {1}.</value>
+  </data>
+  <data name="ControlServiceNotFound" xml:space="preserve">
+    <value>Ingen kontrolltjeneste funnet.</value>
+  </data>
+  <data name="EDalerServiceNotFound" xml:space="preserve">
+    <value>Ingen eDaler-tjeneste funnet på megler.</value>
+  </data>
+  <data name="GettingOptionsCancelled" xml:space="preserve">
+    <value>Tilgjengelige alternativer ble kansellert.</value>
+  </data>
+  <data name="IdentityResponse" xml:space="preserve">
+    <value>Svar på identitetsforespørsel</value>
+  </data>
+  <data name="IdentityReviewRequest" xml:space="preserve">
+    <value>Forespørsel om å gjennomgå identitet</value>
+  </data>
+  <data name="NoThingsFound" xml:space="preserve">
+    <value>Ingen ting funnet.</value>
+  </data>
+  <data name="PaymentCancelled" xml:space="preserve">
+    <value>Betaling kansellert</value>
+  </data>
+  <data name="PaymentFailed" xml:space="preserve">
+    <value>Betaling mislyktes</value>
+  </data>
+  <data name="PepServiceNotFound" xml:space="preserve">
+    <value>Ingen personlig feltritttjeneste funnet.</value>
+  </data>
+  <data name="ProvisioningServiceNotFound" xml:space="preserve">
+    <value>Ingen provisjonstjeneste funnet på megler.</value>
+  </data>
+  <data name="PushNotificationServiceNotFound" xml:space="preserve">
+    <value>Ingen push-varslingstjeneste funnet.</value>
+  </data>
+  <data name="ReadoutRequestText" xml:space="preserve">
+    <value>{0} vil lese data fra enheten din {1}.</value>
+  </data>
+  <data name="RequestSignature" xml:space="preserve">
+    <value>Be om signatur</value>
+  </data>
+  <data name="RequestToAccessIdentity" xml:space="preserve">
+    <value>Forespørsel om tilgang til identitet</value>
+  </data>
+  <data name="SensorServiceNotFound" xml:space="preserve">
+    <value>Ingen sensortjeneste funnet.</value>
+  </data>
+  <data name="SignatureResponse" xml:space="preserve">
+    <value>Svar på forespørsel om underskrift</value>
+  </data>
+  <data name="ThingRegistryServiceNotFound" xml:space="preserve">
+    <value>Ingen ting registertjeneste funnet på megler.</value>
+  </data>
+  <data name="UnableToGetListOfMyDevices" xml:space="preserve">
+    <value>Kan ikke få en liste over enhetene mine.</value>
+  </data>
+  <data name="UnableToGetOptions" xml:space="preserve">
+    <value>Kan ikke få tilgjengelige alternativer.</value>
+  </data>
 </root>

@@ -1377,4 +1377,124 @@
   <data name="YourContractContainsErrors" xml:space="preserve">
     <value>Vaš ugovor sadrži greške. Otklonjene ove greške i pokušajte ponovo.</value>
   </data>
+  <data name="AccessRequest" xml:space="preserve">
+    <value>Zahtev za pristup</value>
+  </data>
+  <data name="ContractCreated" xml:space="preserve">
+    <value>Ugovor je kreiran.</value>
+  </data>
+  <data name="ContractDeleted" xml:space="preserve">
+    <value>Ugovor je izbrisan.</value>
+  </data>
+  <data name="ContractProposed" xml:space="preserve">
+    <value>Predložen je ugovor.</value>
+  </data>
+  <data name="ContractSigned" xml:space="preserve">
+    <value>Potpisan je ugovor.</value>
+  </data>
+  <data name="ContractUpdated" xml:space="preserve">
+    <value>Ugovor je ažuriran.</value>
+  </data>
+  <data name="ControlRequest" xml:space="preserve">
+    <value>Zahtev za kontrolu</value>
+  </data>
+  <data name="IdentityUpdated" xml:space="preserve">
+    <value>Digitalni identitet je ažuriran.</value>
+  </data>
+  <data name="InvalidIoTDiscoClaimUri" xml:space="preserve">
+    <value>Nije važeći iotdisco zahtev URI.</value>
+  </data>
+  <data name="InvalidIoTDiscoveryCode" xml:space="preserve">
+    <value>Nevažeći IoT kôd otkrivanja</value>
+  </data>
+  <data name="MessageFrom" xml:space="preserve">
+    <value>Poruka od:</value>
+  </data>
+  <data name="NeuroFeaturesServiceNotFound" xml:space="preserve">
+    <value>Nije pronađena usluga neuro-karakteristika na brokeru.</value>
+  </data>
+  <data name="PetitionFrom" xml:space="preserve">
+    <value>Peticija od:</value>
+  </data>
+  <data name="ReadRequest" xml:space="preserve">
+    <value>Zahtev za čitanje</value>
+  </data>
+  <data name="UnableToGetHistory" xml:space="preserve">
+    <value>Nije moguće dobiti izveštaj iz istorije.</value>
+  </data>
+  <data name="UnableToGetPresent" xml:space="preserve">
+    <value>Nije moguće dobiti sadašnji izveštaj.</value>
+  </data>
+  <data name="UnableToGetProfiling" xml:space="preserve">
+    <value>Nije moguće dobiti izveštaj o profilisanju.</value>
+  </data>
+  <data name="UnableToGetStateDiagram" xml:space="preserve">
+    <value>Nije moguće dobiti izveštaj o državnom dijagramu.</value>
+  </data>
+  <data name="AccessRequestText" xml:space="preserve">
+    <value>{0} želi da se poveže sa uređajem {1}.</value>
+  </data>
+  <data name="ConcentratorServiceNotFound" xml:space="preserve">
+    <value>Nije pronađena nijedna usluga koncentratora.</value>
+  </data>
+  <data name="ControlRequestText" xml:space="preserve">
+    <value>{0} želi da kontroliše parametre na uređaju {1}.</value>
+  </data>
+  <data name="ControlServiceNotFound" xml:space="preserve">
+    <value>Nije pronađena nijedna kontrolna usluga.</value>
+  </data>
+  <data name="EDalerServiceNotFound" xml:space="preserve">
+    <value>Nije pronađena eDaler usluga na brokeru.</value>
+  </data>
+  <data name="GettingOptionsCancelled" xml:space="preserve">
+    <value>Dobijanje dostupnih opcija je otkazano.</value>
+  </data>
+  <data name="IdentityResponse" xml:space="preserve">
+    <value>Odgovor na zahtev identiteta</value>
+  </data>
+  <data name="IdentityReviewRequest" xml:space="preserve">
+    <value>Zahtev za redigovanje identiteta</value>
+  </data>
+  <data name="NoThingsFound" xml:space="preserve">
+    <value>Nijedna stvari nisu pronađene.</value>
+  </data>
+  <data name="PaymentCancelled" xml:space="preserve">
+    <value>Plaćanje je otkazano</value>
+  </data>
+  <data name="PaymentFailed" xml:space="preserve">
+    <value>Plaćanje nije uspelo</value>
+  </data>
+  <data name="PepServiceNotFound" xml:space="preserve">
+    <value>Nije pronađena usluga ličnog događaja.</value>
+  </data>
+  <data name="ProvisioningServiceNotFound" xml:space="preserve">
+    <value>Nije pronađena usluga pružanja na brokeru.</value>
+  </data>
+  <data name="PushNotificationServiceNotFound" xml:space="preserve">
+    <value>Nije pronađena usluga push-obaveštavanja.</value>
+  </data>
+  <data name="ReadoutRequestText" xml:space="preserve">
+    <value>{0} želi da čita podatke sa uređaja {1}.</value>
+  </data>
+  <data name="RequestSignature" xml:space="preserve">
+    <value>Zahtevaj potpis</value>
+  </data>
+  <data name="RequestToAccessIdentity" xml:space="preserve">
+    <value>Zahtev za pristup identitetu</value>
+  </data>
+  <data name="SensorServiceNotFound" xml:space="preserve">
+    <value>Nije pronađena usluga senzora.</value>
+  </data>
+  <data name="SignatureResponse" xml:space="preserve">
+    <value>Odgovor na zahtev za potpis</value>
+  </data>
+  <data name="ThingRegistryServiceNotFound" xml:space="preserve">
+    <value>Nije pronađena usluga registratora kod brokera.</value>
+  </data>
+  <data name="UnableToGetListOfMyDevices" xml:space="preserve">
+    <value>Nije moguće dobiti listu mojih uređaja.</value>
+  </data>
+  <data name="UnableToGetOptions" xml:space="preserve">
+    <value>Nije moguće dobiti dostupne opcije.</value>
+  </data>
 </root>

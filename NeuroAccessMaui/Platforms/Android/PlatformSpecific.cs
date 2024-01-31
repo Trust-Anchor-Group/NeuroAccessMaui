@@ -568,9 +568,9 @@ namespace NeuroAccessMaui.Services
 		/// Gets a Push Notification token for the device.
 		/// </summary>
 		/// <returns>Token, Service used, and type of client.</returns>
-		public async Task<TokenInformation> GetToken()
+		public async Task<TokenInformation> GetPushNotificationToken()
 		{
-			Java.Lang.Object Token = string.Empty;
+			Java.Lang.Object? Token = string.Empty;
 
 			try
 			{
@@ -583,7 +583,7 @@ namespace NeuroAccessMaui.Services
 
 			TokenInformation TokenInformation = new()
 			{
-				Token = Token.ToString(),
+				Token = Token?.ToString(),
 				ClientType = ClientType.Android,
 				Service = PushMessagingService.Firebase
 			};

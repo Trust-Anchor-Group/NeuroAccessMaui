@@ -739,12 +739,12 @@ namespace NeuroAccessMaui
 				string StackTrace = ServiceRef.LogService.LoadExceptionDump();
 				if (!string.IsNullOrWhiteSpace(StackTrace))
 				{
-					List<KeyValuePair<string, object>> Tags =
+					List<KeyValuePair<string, object?>> Tags =
 					[
-						new KeyValuePair<string, object>(Constants.XmppProperties.Jid, ServiceRef.XmppService.BareJid)
+						new KeyValuePair<string, object?>(Constants.XmppProperties.Jid, ServiceRef.XmppService.BareJid)
 					];
 
-					KeyValuePair<string, object>[]? Tags2 = ServiceRef.TagProfile.LegalIdentity?.GetTags();
+					KeyValuePair<string, object?>[]? Tags2 = ServiceRef.TagProfile.LegalIdentity?.GetTags();
 
 					if (Tags2 is not null)
 						Tags.AddRange(Tags2);

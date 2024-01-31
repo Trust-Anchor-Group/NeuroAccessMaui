@@ -22,7 +22,7 @@ namespace NeuroAccessMaui.Services.Push
 		/// <param name="Source">Source of token</param>
 		/// <param name="Token">Token, if found.</param>
 		/// <returns>If a token was found for the corresponding source.</returns>
-		bool TryGetToken(PushMessagingService Source, out string Token);
+		bool TryGetToken(PushMessagingService Source, out string? Token);
 
 		/// <summary>
 		/// Event raised when a new token is made available.

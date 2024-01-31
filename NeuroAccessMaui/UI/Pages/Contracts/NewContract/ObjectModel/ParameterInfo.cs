@@ -1,37 +1,27 @@
-﻿using Waher.Content;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Waher.Content;
 using Waher.Networking.XMPP.Contracts;
-using Xamarin.CommunityToolkit.ObjectModel;
-using Xamarin.Forms;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
 {
-    /// <summary>
-    /// Contains information about a parameter.
-    /// </summary>
-    public class ParameterInfo : ObservableObject
+	/// <summary>
+	/// Contains information about a parameter.
+	/// </summary>
+	/// <param name="Parameter">Contract parameter.</param>
+	/// <param name="Control">Generated control.</param>
+	public class ParameterInfo(Parameter Parameter, View? Control) : ObservableObject
     {
 		private Duration durationValue = Duration.Zero;
 
 		/// <summary>
-		/// Contains information about a parameter.
+		/// Contract parameter.
 		/// </summary>
-		/// <param name="Parameter">Contract parameter.</param>
-		/// <param name="Control">Generated control.</param>
-		public ParameterInfo(Parameter Parameter, View Control)
-		{
-            this.Parameter = Parameter;
-            this.Control = Control;
-		}
+		public Parameter Parameter { get; internal set; } = Parameter;
 
-        /// <summary>
-        /// Contract parameter.
-        /// </summary>
-        public Parameter Parameter { get; internal set; }
-
-        /// <summary>
-        /// Generated control.
-        /// </summary>
-        public View Control { get; internal set; }
+		/// <summary>
+		/// Generated control.
+		/// </summary>
+		public View? Control { get; internal set; } = Control;
 
 		/// <summary>
 		/// Duration object

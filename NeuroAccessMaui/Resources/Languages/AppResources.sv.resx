@@ -1377,4 +1377,124 @@
   <data name="YourContractContainsErrors" xml:space="preserve">
     <value>Ditt avtal innehåller fel. Åtgärda dessa fel och försök igen.</value>
   </data>
+  <data name="AccessRequest" xml:space="preserve">
+    <value>Begäran om åtkomst</value>
+  </data>
+  <data name="ContractCreated" xml:space="preserve">
+    <value>Ett kontrakt har skapats.</value>
+  </data>
+  <data name="ContractDeleted" xml:space="preserve">
+    <value>Ett kontrakt har tagits bort.</value>
+  </data>
+  <data name="ContractProposed" xml:space="preserve">
+    <value>Ett kontrakt har föreslagits.</value>
+  </data>
+  <data name="ContractSigned" xml:space="preserve">
+    <value>Ett kontrakt har undertecknats.</value>
+  </data>
+  <data name="ContractUpdated" xml:space="preserve">
+    <value>Ett avtal har uppdaterats.</value>
+  </data>
+  <data name="ControlRequest" xml:space="preserve">
+    <value>Begäran om kontroll</value>
+  </data>
+  <data name="IdentityUpdated" xml:space="preserve">
+    <value>Den digitala identiteten har uppdaterats.</value>
+  </data>
+  <data name="InvalidIoTDiscoClaimUri" xml:space="preserve">
+    <value>Inte en giltig iotdisco-anspråks-URI.</value>
+  </data>
+  <data name="InvalidIoTDiscoveryCode" xml:space="preserve">
+    <value>Ogiltig IoT-identifieringskod</value>
+  </data>
+  <data name="MessageFrom" xml:space="preserve">
+    <value>Meddelande från:</value>
+  </data>
+  <data name="NeuroFeaturesServiceNotFound" xml:space="preserve">
+    <value>Ingen Neuro-Features-tjänst hittades på mäklaren.</value>
+  </data>
+  <data name="PetitionFrom" xml:space="preserve">
+    <value>Framställning från:</value>
+  </data>
+  <data name="ReadRequest" xml:space="preserve">
+    <value>Begäran om avläsning</value>
+  </data>
+  <data name="UnableToGetHistory" xml:space="preserve">
+    <value>Det går inte att hämta historikrapporten.</value>
+  </data>
+  <data name="UnableToGetPresent" xml:space="preserve">
+    <value>Det gick inte att få aktuell rapport.</value>
+  </data>
+  <data name="UnableToGetProfiling" xml:space="preserve">
+    <value>Det går inte att få profileringsrapport.</value>
+  </data>
+  <data name="UnableToGetStateDiagram" xml:space="preserve">
+    <value>Det gick inte att hämta tillståndsdiagramrapporten.</value>
+  </data>
+  <data name="AccessRequestText" xml:space="preserve">
+    <value>{0} vill ansluta till din enhet {1}.</value>
+  </data>
+  <data name="ConcentratorServiceNotFound" xml:space="preserve">
+    <value>Ingen koncentratortjänst hittades.</value>
+  </data>
+  <data name="ControlRequestText" xml:space="preserve">
+    <value>{0} vill styra parametrar på din enhet {1}.</value>
+  </data>
+  <data name="ControlServiceNotFound" xml:space="preserve">
+    <value>Ingen kontrolltjänst hittades.</value>
+  </data>
+  <data name="EDalerServiceNotFound" xml:space="preserve">
+    <value>Ingen eDaler-tjänst hittades på mäklaren.</value>
+  </data>
+  <data name="GettingOptionsCancelled" xml:space="preserve">
+    <value>Att få tillgängliga alternativ avbröts.</value>
+  </data>
+  <data name="IdentityResponse" xml:space="preserve">
+    <value>Svar på identitetsförfrågan</value>
+  </data>
+  <data name="IdentityReviewRequest" xml:space="preserve">
+    <value>Begäran om granskning av identitet</value>
+  </data>
+  <data name="NoThingsFound" xml:space="preserve">
+    <value>Inga saker hittades.</value>
+  </data>
+  <data name="PaymentCancelled" xml:space="preserve">
+    <value>Annullerad betalning</value>
+  </data>
+  <data name="PaymentFailed" xml:space="preserve">
+    <value>Betalningen misslyckades</value>
+  </data>
+  <data name="PepServiceNotFound" xml:space="preserve">
+    <value>Ingen personlig fälttävlanstjänst hittades.</value>
+  </data>
+  <data name="ProvisioningServiceNotFound" xml:space="preserve">
+    <value>Ingen etableringstjänst hittades på asynkron meddelandekö.</value>
+  </data>
+  <data name="PushNotificationServiceNotFound" xml:space="preserve">
+    <value>Ingen tjänst för push-meddelanden hittades.</value>
+  </data>
+  <data name="ReadoutRequestText" xml:space="preserve">
+    <value>{0} vill läsa data från din enhet {1}.</value>
+  </data>
+  <data name="RequestSignature" xml:space="preserve">
+    <value>Begär signatur</value>
+  </data>
+  <data name="RequestToAccessIdentity" xml:space="preserve">
+    <value>Begäran om åtkomst till identitet</value>
+  </data>
+  <data name="SensorServiceNotFound" xml:space="preserve">
+    <value>Ingen sensortjänst hittades.</value>
+  </data>
+  <data name="SignatureResponse" xml:space="preserve">
+    <value>Svar på begäran om underskrift</value>
+  </data>
+  <data name="ThingRegistryServiceNotFound" xml:space="preserve">
+    <value>Ingen sak registertjänst hittades på mäklare.</value>
+  </data>
+  <data name="UnableToGetListOfMyDevices" xml:space="preserve">
+    <value>Det går inte att hämta en lista över mina enheter.</value>
+  </data>
+  <data name="UnableToGetOptions" xml:space="preserve">
+    <value>Det går inte att få tillgängliga alternativ.</value>
+  </data>
 </root>

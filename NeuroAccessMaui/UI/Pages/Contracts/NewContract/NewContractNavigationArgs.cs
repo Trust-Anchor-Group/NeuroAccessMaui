@@ -26,7 +26,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// Creates an instance of the <see cref="NewContractNavigationArgs"/> class.
 		/// </summary>
 		/// <param name="ParameterValues">Parameter values to set in new contract.</param>
-		public NewContractNavigationArgs(Dictionary<CaseInsensitiveString, object> ParameterValues)
+		public NewContractNavigationArgs(Dictionary<CaseInsensitiveString, object>? ParameterValues)
 			: this(null, false, ParameterValues)
 		{
 		}

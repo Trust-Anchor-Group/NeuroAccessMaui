@@ -153,8 +153,8 @@ namespace NeuroAccessMaui.Services.Contracts
 				if (Identity is null)
 				{
 					ServiceRef.LogService.LogWarning("Identity is missing or cannot be retrieved, ignore.",
-						new KeyValuePair<string, object>("Type", this.GetType().Name),
-						new KeyValuePair<string, object>("Method", nameof(Contracts_PetitionForIdentityReceived)));
+						new KeyValuePair<string, object?>("Type", this.GetType().Name),
+						new KeyValuePair<string, object?>("Method", nameof(Contracts_PetitionForIdentityReceived)));
 
 					return;
 				}
@@ -205,8 +205,8 @@ namespace NeuroAccessMaui.Services.Contracts
 				if (Identity is null)
 				{
 					ServiceRef.LogService.LogWarning("Identity is missing or cannot be retrieved, ignore.",
-						new KeyValuePair<string, object>("Type", this.GetType().Name),
-						new KeyValuePair<string, object>("Method", nameof(Contracts_PetitionForSignatureReceived)));
+						new KeyValuePair<string, object?>("Type", this.GetType().Name),
+						new KeyValuePair<string, object?>("Method", nameof(Contracts_PetitionForSignatureReceived)));
 
 					return;
 				}
@@ -518,7 +518,7 @@ namespace NeuroAccessMaui.Services.Contracts
 		/// <param name="ContractId">The id of the contract to show.</param>
 		/// <param name="Purpose">The purpose to state if the contract can't be downloaded and needs to be petitioned instead.</param>
 		/// <param name="ParameterValues">Parameter values to set in new contract.</param>
-		public async Task OpenContract(string ContractId, string Purpose, Dictionary<CaseInsensitiveString, object> ParameterValues)
+		public async Task OpenContract(string ContractId, string Purpose, Dictionary<CaseInsensitiveString, object>? ParameterValues)
 		{
 			try
 			{

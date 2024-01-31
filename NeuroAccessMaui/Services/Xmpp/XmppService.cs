@@ -1,13 +1,16 @@
 ﻿using EDaler;
+using EDaler.Uris;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Contracts;
+using NeuroAccessMaui.Services.Notification.Things;
 using NeuroAccessMaui.Services.Push;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.Services.UI.Photos;
 using NeuroAccessMaui.Services.Wallet;
 using NeuroAccessMaui.UI.Pages.Registration;
 using NeuroFeatures;
+using NeuroFeatures.Events;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -26,6 +29,7 @@ using Waher.Networking.XMPP.Abuse;
 using Waher.Networking.XMPP.Concentrator;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Control;
+using Waher.Networking.XMPP.DataForms;
 using Waher.Networking.XMPP.HttpFileUpload;
 using Waher.Networking.XMPP.HTTPX;
 using Waher.Networking.XMPP.PEP;
@@ -42,6 +46,8 @@ using Waher.Runtime.Inventory;
 using Waher.Runtime.Settings;
 using Waher.Runtime.Temporary;
 using Waher.Security.JWT;
+using Waher.Things;
+using Waher.Things.SensorData;
 
 namespace NeuroAccessMaui.Services.Xmpp
 {
@@ -248,9 +254,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 						if (!await this.WaitForConnectedState(Constants.Timeouts.XmppConnect))
 						{
 							ServiceRef.LogService.LogWarning("Connection to XMPP server failed.",
-								new KeyValuePair<string, object>("Domain", this.domainName ?? string.Empty),
-								new KeyValuePair<string, object>("Account", this.accountName ?? string.Empty),
-								new KeyValuePair<string, object>("Timeout", Constants.Timeouts.XmppConnect));
+								new KeyValuePair<string, object?>("Domain", this.domainName ?? string.Empty),
+								new KeyValuePair<string, object?>("Account", this.accountName ?? string.Empty),
+								new KeyValuePair<string, object?>("Timeout", Constants.Timeouts.XmppConnect));
 						}
 					}
 				}
@@ -893,7 +899,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			}
 			catch (Exception ex)
 			{
-				ServiceRef.LogService.LogException(ex, new KeyValuePair<string, object>(nameof(ConnectOperation), Operation.ToString()));
+				ServiceRef.LogService.LogException(ex, new KeyValuePair<string, object?>(nameof(ConnectOperation), Operation.ToString()));
 				Succeeded = false;
 				ErrorMessage = ServiceRef.Localizer[nameof(AppResources.UnableToConnectTo), Domain];
 			}
@@ -1018,7 +1024,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				if (this.sniffer is not null)
 				{
 					string commsDump = await this.sniffer.SnifferToText();
-					ServiceRef.LogService.LogException(ex, new KeyValuePair<string, object>("Sniffer", commsDump));
+					ServiceRef.LogService.LogException(ex, new KeyValuePair<string, object?>("Sniffer", commsDump));
 				}
 
 				return false;
@@ -1186,10 +1192,10 @@ namespace NeuroAccessMaui.Services.Xmpp
 							e.Decline();
 
 							Log.Warning("Invalid ID received. Presence subscription declined.", e.FromBareJID, RemoteIdentity.Id, "IdValidationError",
-								new KeyValuePair<string, object>("Recipient JID", this.BareJid),
-								new KeyValuePair<string, object>("Sender JID", e.FromBareJID),
-								new KeyValuePair<string, object>("Legal ID", RemoteIdentity.Id),
-								new KeyValuePair<string, object>("Validation", Status));
+								new KeyValuePair<string, object?>("Recipient JID", this.BareJid),
+								new KeyValuePair<string, object?>("Sender JID", e.FromBareJID),
+								new KeyValuePair<string, object?>("Legal ID", RemoteIdentity.Id),
+								new KeyValuePair<string, object?>("Validation", Status));
 							return;
 						}
 
@@ -1396,8 +1402,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="ParentThreadId">Parent Thread ID</param>
 		/// <param name="DeliveryCallback">Callback to call when message has been sent, or failed to be sent.</param>
 		/// <param name="State">State object to pass on to the callback method.</param>
-		public void SendMessage(QoSLevel QoS, Waher.Networking.XMPP.MessageType Type, string Id, string To, string CustomXml, string Body,
-			string Subject, string Language, string ThreadId, string ParentThreadId, DeliveryEventHandler DeliveryCallback, object State)
+		public void SendMessage(QoSLevel QoS, MessageType Type, string Id, string To, string CustomXml, string Body,
+			string Subject, string Language, string ThreadId, string ParentThreadId, DeliveryEventHandler DeliveryCallback, object? State)
 		{
 			this.XmppClient.SendMessage(QoS, Type, Id, To, CustomXml, Body, Subject, Language, ThreadId, ParentThreadId, DeliveryCallback, State);
 			// TODO: End-to-End encryption
@@ -1406,7 +1412,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private Task XmppClient_OnNormalMessage(object Sender, MessageEventArgs e)
 		{
 			Log.Warning("Unhandled message received.", e.To, e.From,
-				new KeyValuePair<string, object>("Stanza", e.Message.OuterXml));
+				new KeyValuePair<string, object?>("Stanza", e.Message.OuterXml));
 
 			return Task.CompletedTask;
 		}
@@ -1442,9 +1448,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 						if (Status != IdentityStatus.Valid)
 						{
 							Log.Warning("Message rejected because the embedded legal identity was not valid.",
-								new KeyValuePair<string, object>("Identity", RemoteIdentity.Id),
-								new KeyValuePair<string, object>("From", RemoteBareJid),
-								new KeyValuePair<string, object>("Status", Status));
+								new KeyValuePair<string, object?>("Identity", RemoteIdentity.Id),
+								new KeyValuePair<string, object?>("From", RemoteBareJid),
+								new KeyValuePair<string, object?>("Status", Status));
 							return;
 						}
 
@@ -1453,18 +1459,18 @@ namespace NeuroAccessMaui.Services.Xmpp
 						if (string.IsNullOrEmpty(Jid))
 						{
 							Log.Warning("Message rejected because the embedded legal identity lacked JID.",
-								new KeyValuePair<string, object>("Identity", RemoteIdentity.Id),
-								new KeyValuePair<string, object>("From", RemoteBareJid),
-								new KeyValuePair<string, object>("Status", Status));
+								new KeyValuePair<string, object?>("Identity", RemoteIdentity.Id),
+								new KeyValuePair<string, object?>("From", RemoteBareJid),
+								new KeyValuePair<string, object?>("Status", Status));
 							return;
 						}
 
 						if (!string.Equals(XML.Attribute(E, "bareJid", string.Empty), Jid, StringComparison.OrdinalIgnoreCase))
 						{
 							Log.Warning("Message rejected because the embedded legal identity had a different JID compared to the JID of the quick-login reference.",
-								new KeyValuePair<string, object>("Identity", RemoteIdentity.Id),
-								new KeyValuePair<string, object>("From", RemoteBareJid),
-								new KeyValuePair<string, object>("Status", Status));
+								new KeyValuePair<string, object?>("Identity", RemoteIdentity.Id),
+								new KeyValuePair<string, object?>("From", RemoteBareJid),
+								new KeyValuePair<string, object?>("Status", Status));
 							return;
 						}
 
@@ -1610,12 +1616,10 @@ namespace NeuroAccessMaui.Services.Xmpp
 				}
 			}
 
-			ServiceRef.UiSerializer.BeginInvokeOnMainThread(async () =>
+			MainThread.BeginInvokeOnMainThread(async () =>
 			{
-				INavigationService NavigationService = App.Instantiate<INavigationService>();
-
-				if ((NavigationService.CurrentPage is ChatPage || NavigationService.CurrentPage is ChatPageIos) &&
-					NavigationService.CurrentPage.BindingContext is ChatViewModel ChatViewModel &&
+				if ((ServiceRef.NavigationService.CurrentPage is ChatPage || ServiceRef.NavigationService.CurrentPage is ChatPageIos) &&
+					ServiceRef.NavigationService.CurrentPage.BindingContext is ChatViewModel ChatViewModel &&
 					string.Compare(ChatViewModel.BareJid, RemoteBareJid, true) == 0)
 				{
 					if (string.IsNullOrEmpty(ReplaceObjectId))
@@ -1907,7 +1911,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="MessageVariable">Variable to receive message stanza</param>
 		/// <param name="PatternMatchingScript">Pattern matching script</param>
 		/// <param name="ContentScript">Content script</param>
-		public Task AddPushNotificationRule(Waher.Networking.XMPP.MessageType MessageType, string LocalName, string Namespace,
+		public Task AddPushNotificationRule(MessageType MessageType, string LocalName, string Namespace,
 			string Channel, string MessageVariable, string PatternMatchingScript, string ContentScript)
 		{
 			return this.PushNotificationClient.AddRuleAsync(MessageType, LocalName, Namespace, Channel, MessageVariable,
@@ -2854,7 +2858,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			}
 
 			Contract Result = await this.ContractsClient.SignContractAsync(Contract, Role, Transferable);
-			await this.UpdateContractReference(Result);
+			await UpdateContractReference(Result);
 			return Result;
 		}
 
@@ -2866,7 +2870,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		public async Task<Contract> ObsoleteContract(CaseInsensitiveString ContractId)
 		{
 			Contract Result = await this.ContractsClient.ObsoleteContractAsync(ContractId);
-			await this.UpdateContractReference(Result);
+			await UpdateContractReference(Result);
 			return Result;
 		}
 
@@ -2899,7 +2903,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			bool CanActAsTemplate)
 		{
 			Contract Result = await this.ContractsClient.CreateContractAsync(TemplateId, Parts, Parameters, Visibility, PartsMode, Duration, ArchiveRequired, ArchiveOptional, SignAfter, SignBefore, CanActAsTemplate);
-			await this.UpdateContractReference(Result);
+			await UpdateContractReference(Result);
 			return Result;
 		}
 
@@ -2911,7 +2915,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		public async Task<Contract> DeleteContract(CaseInsensitiveString ContractId)
 		{
 			Contract Contract = await this.ContractsClient.DeleteContractAsync(ContractId);
-			await this.UpdateContractReference(Contract);
+			await UpdateContractReference(Contract);
 			return Contract;
 		}
 
@@ -2992,7 +2996,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			}
 		}
 
-		private async Task UpdateContractReference(Contract Contract)
+		private static async Task UpdateContractReference(Contract Contract)
 		{
 			ContractReference Ref = await Database.FindFirstDeleteRest<ContractReference>(
 				new FilterFieldEqualTo("ContractId", Contract.ContractId));
@@ -3205,8 +3209,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 				if (!this.currentPetitions.ContainsKey(e.PetitionId))
 				{
 					ServiceRef.LogService.LogWarning("Client URL message for a petition is ignored. Petition ID not recognized.",
-						new KeyValuePair<string, object>("PetitionId", e.PetitionId),
-						new KeyValuePair<string, object>("ClientUrl", e.ClientUrl));
+						new KeyValuePair<string, object?>("PetitionId", e.PetitionId),
+						new KeyValuePair<string, object?>("ClientUrl", e.ClientUrl));
 					return;
 				}
 			}
@@ -3351,7 +3355,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
 		/// <param name="State">State object to pass on to callback method.</param>
 		public void IsFriendResponse(string ProvisioningServiceJID, string JID, string RemoteJID, string Key, bool IsFriend,
-			RuleRange Range, IqResultEventHandlerAsync Callback, object State)
+			RuleRange Range, IqResultEventHandlerAsync Callback, object? State)
 		{
 			this.ProvisioningClient.IsFriendResponse(ProvisioningServiceJID, JID, RemoteJID, Key, IsFriend, Range, Callback, State);
 		}
@@ -3369,7 +3373,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
 		/// <param name="State">State object to pass on to callback method.</param>
 		public void CanControlResponseAll(string ProvisioningServiceJID, string JID, string RemoteJID, string Key, bool CanControl,
-			string[] ParameterNames, IThingReference Node, IqResultEventHandlerAsync Callback, object State)
+			string[] ParameterNames, IThingReference Node, IqResultEventHandlerAsync Callback, object? State)
 		{
 			this.ProvisioningClient.CanControlResponseAll(ProvisioningServiceJID, JID, RemoteJID, Key, CanControl, ParameterNames,
 				Node, Callback, State);
@@ -3388,7 +3392,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
 		/// <param name="State">State object to pass on to callback method.</param>
 		public void CanControlResponseCaller(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
-			bool CanControl, string[] ParameterNames, IThingReference Node, IqResultEventHandlerAsync Callback, object State)
+			bool CanControl, string[] ParameterNames, IThingReference Node, IqResultEventHandlerAsync Callback, object? State)
 		{
 			this.ProvisioningClient.CanControlResponseCaller(ProvisioningServiceJID, JID, RemoteJID, Key, CanControl,
 				ParameterNames, Node, Callback, State);
@@ -3407,7 +3411,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
 		/// <param name="State">State object to pass on to callback method.</param>
 		public void CanControlResponseDomain(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
-			bool CanControl, string[] ParameterNames, IThingReference Node, IqResultEventHandlerAsync Callback, object State)
+			bool CanControl, string[] ParameterNames, IThingReference Node, IqResultEventHandlerAsync Callback, object? State)
 		{
 			this.ProvisioningClient.CanControlResponseDomain(ProvisioningServiceJID, JID, RemoteJID, Key, CanControl,
 				ParameterNames, Node, Callback, State);
@@ -3428,7 +3432,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="State">State object to pass on to callback method.</param>
 		public void CanControlResponseDevice(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
 			bool CanControl, string[] ParameterNames, string Token, IThingReference Node, IqResultEventHandlerAsync Callback,
-			object State)
+			object? State)
 		{
 			this.ProvisioningClient.CanControlResponseDevice(ProvisioningServiceJID, JID, RemoteJID, Key, CanControl,
 				ParameterNames, Token, Node, Callback, State);
@@ -3449,7 +3453,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="State">State object to pass on to callback method.</param>
 		public void CanControlResponseService(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
 			bool CanControl, string[] ParameterNames, string Token, IThingReference Node, IqResultEventHandlerAsync Callback,
-			object State)
+			object? State)
 		{
 			this.ProvisioningClient.CanControlResponseService(ProvisioningServiceJID, JID, RemoteJID, Key, CanControl,
 				ParameterNames, Token, Node, Callback, State);
@@ -3470,7 +3474,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="State">State object to pass on to callback method.</param>
 		public void CanControlResponseUser(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
 			bool CanControl, string[] ParameterNames, string Token, IThingReference Node, IqResultEventHandlerAsync Callback,
-			object State)
+			object? State)
 		{
 			this.ProvisioningClient.CanControlResponseUser(ProvisioningServiceJID, JID, RemoteJID, Key, CanControl,
 				ParameterNames, Token, Node, Callback, State);
@@ -3490,7 +3494,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
 		/// <param name="State">State object to pass on to callback method.</param>
 		public void CanReadResponseAll(string ProvisioningServiceJID, string JID, string RemoteJID, string Key, bool CanRead,
-			FieldType FieldTypes, string[] FieldNames, IThingReference Node, IqResultEventHandlerAsync Callback, object State)
+			FieldType FieldTypes, string[] FieldNames, IThingReference Node, IqResultEventHandlerAsync Callback, object? State)
 		{
 			this.ProvisioningClient.CanReadResponseAll(ProvisioningServiceJID, JID, RemoteJID, Key, CanRead, FieldTypes, FieldNames,
 				Node, Callback, State);
@@ -3510,7 +3514,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
 		/// <param name="State">State object to pass on to callback method.</param>
 		public void CanReadResponseCaller(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
-			bool CanRead, FieldType FieldTypes, string[] FieldNames, IThingReference Node, IqResultEventHandlerAsync Callback, object State)
+			bool CanRead, FieldType FieldTypes, string[] FieldNames, IThingReference Node, IqResultEventHandlerAsync Callback, object? State)
 		{
 			this.ProvisioningClient.CanReadResponseCaller(ProvisioningServiceJID, JID, RemoteJID, Key, CanRead,
 				FieldTypes, FieldNames, Node, Callback, State);
@@ -3530,7 +3534,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
 		/// <param name="State">State object to pass on to callback method.</param>
 		public void CanReadResponseDomain(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
-			bool CanRead, FieldType FieldTypes, string[] FieldNames, IThingReference Node, IqResultEventHandlerAsync Callback, object State)
+			bool CanRead, FieldType FieldTypes, string[] FieldNames, IThingReference Node, IqResultEventHandlerAsync Callback, object? State)
 		{
 			this.ProvisioningClient.CanReadResponseDomain(ProvisioningServiceJID, JID, RemoteJID, Key, CanRead,
 				FieldTypes, FieldNames, Node, Callback, State);
@@ -3552,7 +3556,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="State">State object to pass on to callback method.</param>
 		public void CanReadResponseDevice(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
 			bool CanRead, FieldType FieldTypes, string[] FieldNames, string Token, IThingReference Node, IqResultEventHandlerAsync Callback,
-			object State)
+			object? State)
 		{
 			this.ProvisioningClient.CanReadResponseDevice(ProvisioningServiceJID, JID, RemoteJID, Key, CanRead,
 				FieldTypes, FieldNames, Token, Node, Callback, State);
@@ -3574,7 +3578,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="State">State object to pass on to callback method.</param>
 		public void CanReadResponseService(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
 			bool CanRead, FieldType FieldTypes, string[] FieldNames, string Token, IThingReference Node, IqResultEventHandlerAsync Callback,
-			object State)
+			object? State)
 		{
 			this.ProvisioningClient.CanReadResponseService(ProvisioningServiceJID, JID, RemoteJID, Key, CanRead,
 				FieldTypes, FieldNames, Token, Node, Callback, State);
@@ -3596,7 +3600,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="State">State object to pass on to callback method.</param>
 		public void CanReadResponseUser(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
 			bool CanRead, FieldType FieldTypes, string[] FieldNames, string Token, IThingReference Node, IqResultEventHandlerAsync Callback,
-			object State)
+			object? State)
 		{
 			this.ProvisioningClient.CanReadResponseUser(ProvisioningServiceJID, JID, RemoteJID, Key, CanRead,
 				FieldTypes, FieldNames, Token, Node, Callback, State);
@@ -3613,7 +3617,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Callback">Method to call when response is returned.</param>
 		/// <param name="State">State object to pass on to callback method.</param>
 		public void DeleteDeviceRules(string ServiceJID, string DeviceJID, string NodeId, string SourceId, string Partition,
-			IqResultEventHandlerAsync Callback, object State)
+			IqResultEventHandlerAsync Callback, object? State)
 		{
 			this.ProvisioningClient.DeleteDeviceRules(ServiceJID, DeviceJID, NodeId, SourceId, Partition, Callback, State);
 		}
@@ -3723,7 +3727,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Token">Token corresponding to the requested certificate.</param>
 		/// <param name="Callback">Callback method called, when certificate is available.</param>
 		/// <param name="State">State object that will be passed on to the callback method.</param>
-		public void GetCertificate(string Token, CertificateCallback Callback, object State)
+		public void GetCertificate(string Token, CertificateCallback Callback, object? State)
 		{
 			this.ProvisioningClient.GetCertificate(Token, Callback, State);
 		}
@@ -3736,7 +3740,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Callback">Method to call when response is returned.</param>
 		/// <param name="State">State object.</param>
 		/// <param name="Nodes">Node references</param>
-		public void GetControlForm(string To, string Language, DataFormResultEventHandler Callback, object State,
+		public void GetControlForm(string To, string Language, DataFormResultEventHandler Callback, object? State,
 			params ThingReference[] Nodes)
 		{
 			this.ControlClient.GetForm(To, Language, Callback, State, Nodes);
@@ -3810,7 +3814,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			this.lastBalance = e.Balance;
 			this.lastEDalerEvent = DateTime.Now;
 
-			BalanceEventHandler h = this.EDalerBalanceUpdated;
+			BalanceEventHandler? h = this.EDalerBalanceUpdated;
 			if (h is not null)
 			{
 				try
@@ -3827,7 +3831,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// Event raised when balance has been updated
 		/// </summary>
-		public event BalanceEventHandler EDalerBalanceUpdated;
+		public event BalanceEventHandler? EDalerBalanceUpdated;
 
 		/// <summary>
 		/// Last reported balance
@@ -4031,27 +4035,27 @@ namespace NeuroAccessMaui.Services.Xmpp
 		public async Task<OptionsTransaction> InitiateBuyEDalerGetOptions(string ServiceId, string ServiceProvider)
 		{
 			string TransactionId = Guid.NewGuid().ToString();
-			string SuccessUrl = this.GenerateNeuroAccessUrl(
-				new KeyValuePair<string, object>("cmd", "beos"),
-				new KeyValuePair<string, object>("tid", TransactionId),
-				new KeyValuePair<string, object>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
-				new KeyValuePair<string, object>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
-				new KeyValuePair<string, object>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
-				new KeyValuePair<string, object>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
-			string FailureUrl = this.GenerateNeuroAccessUrl(
-				new KeyValuePair<string, object>("cmd", "beof"),
-				new KeyValuePair<string, object>("tid", TransactionId),
-				new KeyValuePair<string, object>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
-				new KeyValuePair<string, object>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
-				new KeyValuePair<string, object>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
-				new KeyValuePair<string, object>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
-			string CancelUrl = this.GenerateNeuroAccessUrl(
-				new KeyValuePair<string, object>("cmd", "beoc"),
-				new KeyValuePair<string, object>("tid", TransactionId),
-				new KeyValuePair<string, object>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
-				new KeyValuePair<string, object>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
-				new KeyValuePair<string, object>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
-				new KeyValuePair<string, object>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
+			string SuccessUrl = GenerateNeuroAccessUrl(
+				new KeyValuePair<string, object?>("cmd", "beos"),
+				new KeyValuePair<string, object?>("tid", TransactionId),
+				new KeyValuePair<string, object?>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object?>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object?>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
+				new KeyValuePair<string, object?>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
+			string FailureUrl = GenerateNeuroAccessUrl(
+				new KeyValuePair<string, object?>("cmd", "beof"),
+				new KeyValuePair<string, object?>("tid", TransactionId),
+				new KeyValuePair<string, object?>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object?>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object?>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
+				new KeyValuePair<string, object?>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
+			string CancelUrl = GenerateNeuroAccessUrl(
+				new KeyValuePair<string, object?>("cmd", "beoc"),
+				new KeyValuePair<string, object?>("tid", TransactionId),
+				new KeyValuePair<string, object?>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object?>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object?>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
+				new KeyValuePair<string, object?>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
 
 			TransactionId = await this.EDalerClient.InitiateGetOptionsBuyEDalerAsync(ServiceId, ServiceProvider, TransactionId, SuccessUrl, FailureUrl, CancelUrl);
 			OptionsTransaction Result = new(TransactionId);
@@ -4066,20 +4070,18 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private async Task NeuroWallet_BuyEDalerOptionsClientUrlReceived(object Sender, BuyEDalerClientUrlEventArgs e)
 		{
-			Wallet.Transaction Transaction;
-
 			lock (this.currentTransactions)
 			{
-				if (!this.currentTransactions.TryGetValue(e.TransactionId, out Transaction))
+				if (!this.currentTransactions.ContainsKey(e.TransactionId))
 				{
 					ServiceRef.LogService.LogWarning("Client URL message for getting options for buying eDaler ignored. Transaction ID not recognized.",
-						new KeyValuePair<string, object>("TransactionId", e.TransactionId),
-						new KeyValuePair<string, object>("ClientUrl", e.ClientUrl));
+						new KeyValuePair<string, object?>("TransactionId", e.TransactionId),
+						new KeyValuePair<string, object?>("ClientUrl", e.ClientUrl));
 					return;
 				}
 			}
 
-			await Transaction.OpenUrl(e.ClientUrl);
+			await Wallet.Transaction.OpenUrl(e.ClientUrl);
 		}
 
 		private Task NeuroWallet_BuyEDalerOptionsCompleted(object Sender, PaymentOptionsEventArgs e)
@@ -4146,29 +4148,29 @@ namespace NeuroAccessMaui.Services.Xmpp
 		public async Task<PaymentTransaction> InitiateBuyEDaler(string ServiceId, string ServiceProvider, decimal Amount, string Currency)
 		{
 			string TransactionId = Guid.NewGuid().ToString();
-			string SuccessUrl = this.GenerateNeuroAccessUrl(
-				new KeyValuePair<string, object>("cmd", "bes"),
-				new KeyValuePair<string, object>("tid", TransactionId),
-				new KeyValuePair<string, object>("amt", Amount),
-				new KeyValuePair<string, object>("cur", Currency),
-				new KeyValuePair<string, object>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
-				new KeyValuePair<string, object>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
-				new KeyValuePair<string, object>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
-				new KeyValuePair<string, object>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
-			string FailureUrl = this.GenerateNeuroAccessUrl(
-				new KeyValuePair<string, object>("cmd", "bef"),
-				new KeyValuePair<string, object>("tid", TransactionId),
-				new KeyValuePair<string, object>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
-				new KeyValuePair<string, object>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
-				new KeyValuePair<string, object>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
-				new KeyValuePair<string, object>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
-			string CancelUrl = this.GenerateNeuroAccessUrl(
-				new KeyValuePair<string, object>("cmd", "bec"),
-				new KeyValuePair<string, object>("tid", TransactionId),
-				new KeyValuePair<string, object>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
-				new KeyValuePair<string, object>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
-				new KeyValuePair<string, object>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
-				new KeyValuePair<string, object>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
+			string SuccessUrl = GenerateNeuroAccessUrl(
+				new KeyValuePair<string, object?>("cmd", "bes"),
+				new KeyValuePair<string, object?>("tid", TransactionId),
+				new KeyValuePair<string, object?>("amt", Amount),
+				new KeyValuePair<string, object?>("cur", Currency),
+				new KeyValuePair<string, object?>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object?>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object?>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
+				new KeyValuePair<string, object?>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
+			string FailureUrl = GenerateNeuroAccessUrl(
+				new KeyValuePair<string, object?>("cmd", "bef"),
+				new KeyValuePair<string, object?>("tid", TransactionId),
+				new KeyValuePair<string, object?>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object?>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object?>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
+				new KeyValuePair<string, object?>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
+			string CancelUrl = GenerateNeuroAccessUrl(
+				new KeyValuePair<string, object?>("cmd", "bec"),
+				new KeyValuePair<string, object?>("tid", TransactionId),
+				new KeyValuePair<string, object?>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object?>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object?>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
+				new KeyValuePair<string, object?>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
 
 			TransactionId = await this.EDalerClient.InitiateBuyEDalerAsync(ServiceId, ServiceProvider, Amount, Currency, TransactionId, SuccessUrl, FailureUrl, CancelUrl);
 			PaymentTransaction Result = new(TransactionId, Currency);
@@ -4181,7 +4183,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			return Result;
 		}
 
-		private string GenerateNeuroAccessUrl(params KeyValuePair<string, object>[] Claims)
+		private static string GenerateNeuroAccessUrl(params KeyValuePair<string, object?>[] Claims)
 		{
 			string Token = ServiceRef.CryptoService.GenerateJwtToken(Claims);
 			return Constants.UriSchemes.NeuroAccess + ":" + Token;
@@ -4189,20 +4191,18 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private async Task NeuroWallet_BuyEDalerClientUrlReceived(object Sender, BuyEDalerClientUrlEventArgs e)
 		{
-			Wallet.Transaction? Transaction;
-
 			lock (this.currentTransactions)
 			{
-				if (!this.currentTransactions.TryGetValue(e.TransactionId, out Transaction))
+				if (!this.currentTransactions.ContainsKey(e.TransactionId))
 				{
 					ServiceRef.LogService.LogWarning("Client URL message for buying eDaler ignored. Transaction ID not recognized.",
-						new KeyValuePair<string, object>("TransactionId", e.TransactionId),
-						new KeyValuePair<string, object>("ClientUrl", e.ClientUrl));
+						new KeyValuePair<string, object?>("TransactionId", e.TransactionId),
+						new KeyValuePair<string, object?>("ClientUrl", e.ClientUrl));
 					return;
 				}
 			}
 
-			await Transaction.OpenUrl(e.ClientUrl);
+			await Wallet.Transaction.OpenUrl(e.ClientUrl);
 		}
 
 		private Task NeuroWallet_BuyEDalerCompleted(object Sender, PaymentCompletedEventArgs e)
@@ -4219,7 +4219,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Currency">Currency</param>
 		public void BuyEDalerCompleted(string TransactionId, decimal Amount, string Currency)
 		{
-			Wallet.Transaction Transaction;
+			Wallet.Transaction? Transaction;
 
 			lock (this.currentTransactions)
 			{
@@ -4278,27 +4278,27 @@ namespace NeuroAccessMaui.Services.Xmpp
 		public async Task<OptionsTransaction> InitiateSellEDalerGetOptions(string ServiceId, string ServiceProvider)
 		{
 			string TransactionId = Guid.NewGuid().ToString();
-			string SuccessUrl = this.GenerateNeuroAccessUrl(
-				new KeyValuePair<string, object>("cmd", "seos"),
-				new KeyValuePair<string, object>("tid", TransactionId),
-				new KeyValuePair<string, object>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
-				new KeyValuePair<string, object>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
-				new KeyValuePair<string, object>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
-				new KeyValuePair<string, object>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
-			string FailureUrl = this.GenerateNeuroAccessUrl(
-				new KeyValuePair<string, object>("cmd", "seof"),
-				new KeyValuePair<string, object>("tid", TransactionId),
-				new KeyValuePair<string, object>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
-				new KeyValuePair<string, object>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
-				new KeyValuePair<string, object>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
-				new KeyValuePair<string, object>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
-			string CancelUrl = this.GenerateNeuroAccessUrl(
-				new KeyValuePair<string, object>("cmd", "seoc"),
-				new KeyValuePair<string, object>("tid", TransactionId),
-				new KeyValuePair<string, object>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
-				new KeyValuePair<string, object>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
-				new KeyValuePair<string, object>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
-				new KeyValuePair<string, object>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
+			string SuccessUrl = GenerateNeuroAccessUrl(
+				new KeyValuePair<string, object?>("cmd", "seos"),
+				new KeyValuePair<string, object?>("tid", TransactionId),
+				new KeyValuePair<string, object?>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object?>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object?>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
+				new KeyValuePair<string, object?>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
+			string FailureUrl = GenerateNeuroAccessUrl(
+				new KeyValuePair<string, object?>("cmd", "seof"),
+				new KeyValuePair<string, object?>("tid", TransactionId),
+				new KeyValuePair<string, object?>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object?>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object?>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
+				new KeyValuePair<string, object?>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
+			string CancelUrl = GenerateNeuroAccessUrl(
+				new KeyValuePair<string, object?>("cmd", "seoc"),
+				new KeyValuePair<string, object?>("tid", TransactionId),
+				new KeyValuePair<string, object?>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object?>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object?>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
+				new KeyValuePair<string, object?>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
 
 			TransactionId = await this.EDalerClient.InitiateGetOptionsSellEDalerAsync(ServiceId, ServiceProvider, TransactionId, SuccessUrl, FailureUrl, CancelUrl);
 			OptionsTransaction Result = new(TransactionId);
@@ -4313,20 +4313,18 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private async Task NeuroWallet_SellEDalerOptionsClientUrlReceived(object Sender, SellEDalerClientUrlEventArgs e)
 		{
-			Wallet.Transaction? Transaction;
-
 			lock (this.currentTransactions)
 			{
-				if (!this.currentTransactions.TryGetValue(e.TransactionId, out Transaction))
+				if (!this.currentTransactions.ContainsKey(e.TransactionId))
 				{
 					ServiceRef.LogService.LogWarning("Client URL message for getting options for selling eDaler ignored. Transaction ID not recognized.",
-						new KeyValuePair<string, object>("TransactionId", e.TransactionId),
-						new KeyValuePair<string, object>("ClientUrl", e.ClientUrl));
+						new KeyValuePair<string, object?>("TransactionId", e.TransactionId),
+						new KeyValuePair<string, object?>("ClientUrl", e.ClientUrl));
 					return;
 				}
 			}
 
-			await Transaction.OpenUrl(e.ClientUrl);
+			await Wallet.Transaction.OpenUrl(e.ClientUrl);
 		}
 
 		private Task NeuroWallet_SellEDalerOptionsCompleted(object Sender, PaymentOptionsEventArgs e)
@@ -4393,29 +4391,29 @@ namespace NeuroAccessMaui.Services.Xmpp
 		public async Task<PaymentTransaction> InitiateSellEDaler(string ServiceId, string ServiceProvider, decimal Amount, string Currency)
 		{
 			string TransactionId = Guid.NewGuid().ToString();
-			string SuccessUrl = this.GenerateNeuroAccessUrl(
-				new KeyValuePair<string, object>("cmd", "ses"),
-				new KeyValuePair<string, object>("tid", TransactionId),
-				new KeyValuePair<string, object>("amt", Amount),
-				new KeyValuePair<string, object>("cur", Currency),
-				new KeyValuePair<string, object>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
-				new KeyValuePair<string, object>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
-				new KeyValuePair<string, object>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
-				new KeyValuePair<string, object>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
-			string FailureUrl = this.GenerateNeuroAccessUrl(
-				new KeyValuePair<string, object>("cmd", "sef"),
-				new KeyValuePair<string, object>("tid", TransactionId),
-				new KeyValuePair<string, object>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
-				new KeyValuePair<string, object>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
-				new KeyValuePair<string, object>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
-				new KeyValuePair<string, object>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
-			string CancelUrl = this.GenerateNeuroAccessUrl(
-				new KeyValuePair<string, object>("cmd", "sec"),
-				new KeyValuePair<string, object>("tid", TransactionId),
-				new KeyValuePair<string, object>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
-				new KeyValuePair<string, object>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
-				new KeyValuePair<string, object>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
-				new KeyValuePair<string, object>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
+			string SuccessUrl = GenerateNeuroAccessUrl(
+				new KeyValuePair<string, object?>("cmd", "ses"),
+				new KeyValuePair<string, object?>("tid", TransactionId),
+				new KeyValuePair<string, object?>("amt", Amount),
+				new KeyValuePair<string, object?>("cur", Currency),
+				new KeyValuePair<string, object?>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object?>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object?>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
+				new KeyValuePair<string, object?>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
+			string FailureUrl = GenerateNeuroAccessUrl(
+				new KeyValuePair<string, object?>("cmd", "sef"),
+				new KeyValuePair<string, object?>("tid", TransactionId),
+				new KeyValuePair<string, object?>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object?>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object?>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
+				new KeyValuePair<string, object?>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
+			string CancelUrl = GenerateNeuroAccessUrl(
+				new KeyValuePair<string, object?>("cmd", "sec"),
+				new KeyValuePair<string, object?>("tid", TransactionId),
+				new KeyValuePair<string, object?>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object?>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
+				new KeyValuePair<string, object?>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
+				new KeyValuePair<string, object?>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
 
 			TransactionId = await this.EDalerClient.InitiateSellEDalerAsync(ServiceId, ServiceProvider, Amount, Currency, TransactionId, SuccessUrl, FailureUrl, CancelUrl);
 			PaymentTransaction Result = new(TransactionId, Currency);
@@ -4430,20 +4428,18 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private async Task NeuroWallet_SellEDalerClientUrlReceived(object Sender, SellEDalerClientUrlEventArgs e)
 		{
-			Wallet.Transaction? Transaction;
-
 			lock (this.currentTransactions)
 			{
-				if (!this.currentTransactions.TryGetValue(e.TransactionId, out Transaction))
+				if (!this.currentTransactions.ContainsKey(e.TransactionId))
 				{
 					ServiceRef.LogService.LogWarning("Client URL message ignored. Transaction ID not recognized.",
-						new KeyValuePair<string, object>("TransactionId", e.TransactionId),
-						new KeyValuePair<string, object>("ClientUrl", e.ClientUrl));
+						new KeyValuePair<string, object?>("TransactionId", e.TransactionId),
+						new KeyValuePair<string, object?>("ClientUrl", e.ClientUrl));
 					return;
 				}
 			}
 
-			await Transaction.OpenUrl(e.ClientUrl);
+			await Wallet.Transaction.OpenUrl(e.ClientUrl);
 		}
 
 		private Task NeuroWallet_SellEDalerError(object Sender, PaymentErrorEventArgs e)
@@ -4538,7 +4534,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		{
 			this.lastTokenEvent = DateTime.Now;
 
-			TokenEventHandler h = this.NeuroFeatureRemoved;
+			NeuroFeatures.TokenEventHandler? h = this.NeuroFeatureRemoved;
 			if (h is not null)
 			{
 				try
@@ -4555,13 +4551,13 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// Event raised when a token has been removed from the wallet.
 		/// </summary>
-		public event TokenEventHandler? NeuroFeatureRemoved;
+		public event NeuroFeatures.TokenEventHandler? NeuroFeatureRemoved;
 
 		private async Task NeuroFeaturesClient_TokenAdded(object _, NeuroFeatures.TokenEventArgs e)
 		{
 			this.lastTokenEvent = DateTime.Now;
 
-			TokenEventHandler h = this.NeuroFeatureAdded;
+			NeuroFeatures.TokenEventHandler? h = this.NeuroFeatureAdded;
 			if (h is not null)
 			{
 				try
@@ -4578,11 +4574,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// Event raised when a token has been added to the wallet.
 		/// </summary>
-		public event TokenEventHandler? NeuroFeatureAdded;
+		public event NeuroFeatures.TokenEventHandler? NeuroFeatureAdded;
 
 		private async Task NeuroFeaturesClient_VariablesUpdated(object Sender, VariablesUpdatedEventArgs e)
 		{
-			VariablesUpdatedEventHandler h = this.NeuroFeatureVariablesUpdated;
+			VariablesUpdatedEventHandler? h = this.NeuroFeatureVariablesUpdated;
 			if (h is not null)
 			{
 				try
@@ -4603,7 +4599,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private async Task NeuroFeaturesClient_StateUpdated(object Sender, NewStateEventArgs e)
 		{
-			NewStateEventHandler h = this.NeuroFeatureStateUpdated;
+			NewStateEventHandler? h = this.NeuroFeatureStateUpdated;
 			if (h is not null)
 			{
 				try

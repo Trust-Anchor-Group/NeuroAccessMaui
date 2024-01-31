@@ -1377,4 +1377,124 @@
   <data name="YourContractContainsErrors" xml:space="preserve">
     <value>Contractul dumneavoastră conține erori. Remediați aceste erori și încercați din nou.</value>
   </data>
+  <data name="AccessRequest" xml:space="preserve">
+    <value>Cerere de acces</value>
+  </data>
+  <data name="ContractCreated" xml:space="preserve">
+    <value>A fost creat un contract.</value>
+  </data>
+  <data name="ContractDeleted" xml:space="preserve">
+    <value>Un contract a fost eliminat.</value>
+  </data>
+  <data name="ContractProposed" xml:space="preserve">
+    <value>A fost propus un contract.</value>
+  </data>
+  <data name="ContractSigned" xml:space="preserve">
+    <value>A fost semnat un contract.</value>
+  </data>
+  <data name="ContractUpdated" xml:space="preserve">
+    <value>Un contract a fost actualizat.</value>
+  </data>
+  <data name="ControlRequest" xml:space="preserve">
+    <value>Cerere de control</value>
+  </data>
+  <data name="IdentityUpdated" xml:space="preserve">
+    <value>Identitatea digitală a fost actualizată.</value>
+  </data>
+  <data name="InvalidIoTDiscoClaimUri" xml:space="preserve">
+    <value>Nu este un URI valid de revendicare iotdisco.</value>
+  </data>
+  <data name="InvalidIoTDiscoveryCode" xml:space="preserve">
+    <value>Cod de descoperire IoT nevalid</value>
+  </data>
+  <data name="MessageFrom" xml:space="preserve">
+    <value>Mesaj de la:</value>
+  </data>
+  <data name="NeuroFeaturesServiceNotFound" xml:space="preserve">
+    <value>Nici un serviciu Neuro-Features găsit pe broker.</value>
+  </data>
+  <data name="PetitionFrom" xml:space="preserve">
+    <value>Petiție de la:</value>
+  </data>
+  <data name="ReadRequest" xml:space="preserve">
+    <value>Cerere de citire</value>
+  </data>
+  <data name="UnableToGetHistory" xml:space="preserve">
+    <value>Nu se poate obține raportul istoricului.</value>
+  </data>
+  <data name="UnableToGetPresent" xml:space="preserve">
+    <value>Nu se poate prezenta raportul.</value>
+  </data>
+  <data name="UnableToGetProfiling" xml:space="preserve">
+    <value>Nu se poate obține raportul de profilare.</value>
+  </data>
+  <data name="UnableToGetStateDiagram" xml:space="preserve">
+    <value>Nu se poate obține raportul diagramei de stare.</value>
+  </data>
+  <data name="AccessRequestText" xml:space="preserve">
+    <value>{0} dorește să se conecteze la dispozitivul dvs. {1}.</value>
+  </data>
+  <data name="ConcentratorServiceNotFound" xml:space="preserve">
+    <value>Nu s-a găsit niciun serviciu de concentrator.</value>
+  </data>
+  <data name="ControlRequestText" xml:space="preserve">
+    <value>{0} dorește să controleze parametrii de pe {1} dispozitivului.</value>
+  </data>
+  <data name="ControlServiceNotFound" xml:space="preserve">
+    <value>Nu s-a găsit niciun serviciu de control.</value>
+  </data>
+  <data name="EDalerServiceNotFound" xml:space="preserve">
+    <value>Nici un serviciu eDaler găsit pe broker.</value>
+  </data>
+  <data name="GettingOptionsCancelled" xml:space="preserve">
+    <value>Obținerea opțiunilor disponibile a fost anulată.</value>
+  </data>
+  <data name="IdentityResponse" xml:space="preserve">
+    <value>Răspuns la cererea de identitate</value>
+  </data>
+  <data name="IdentityReviewRequest" xml:space="preserve">
+    <value>Cerere de revizuire a identității</value>
+  </data>
+  <data name="NoThingsFound" xml:space="preserve">
+    <value>Nu s-au găsit lucruri.</value>
+  </data>
+  <data name="PaymentCancelled" xml:space="preserve">
+    <value>Plată anulată</value>
+  </data>
+  <data name="PaymentFailed" xml:space="preserve">
+    <value>Plata nu a reușit</value>
+  </data>
+  <data name="PepServiceNotFound" xml:space="preserve">
+    <value>Nu s-a găsit niciun serviciu de evenimente personale.</value>
+  </data>
+  <data name="ProvisioningServiceNotFound" xml:space="preserve">
+    <value>Nici un serviciu de provizionare găsit pe broker.</value>
+  </data>
+  <data name="PushNotificationServiceNotFound" xml:space="preserve">
+    <value>Nu s-a găsit niciun serviciu de notificare push.</value>
+  </data>
+  <data name="ReadoutRequestText" xml:space="preserve">
+    <value>{0} dorește să citească datele de pe dispozitivul dvs. {1}.</value>
+  </data>
+  <data name="RequestSignature" xml:space="preserve">
+    <value>Solicitare semnătură</value>
+  </data>
+  <data name="RequestToAccessIdentity" xml:space="preserve">
+    <value>Cerere de acces la identitate</value>
+  </data>
+  <data name="SensorServiceNotFound" xml:space="preserve">
+    <value>Nu s-a găsit niciun serviciu de senzori.</value>
+  </data>
+  <data name="SignatureResponse" xml:space="preserve">
+    <value>Răspuns la solicitarea de semnătură</value>
+  </data>
+  <data name="ThingRegistryServiceNotFound" xml:space="preserve">
+    <value>Nici un lucru serviciu de registru găsit pe broker.</value>
+  </data>
+  <data name="UnableToGetListOfMyDevices" xml:space="preserve">
+    <value>Nu se poate obține lista dispozitivelor mele.</value>
+  </data>
+  <data name="UnableToGetOptions" xml:space="preserve">
+    <value>Nu se pot obține opțiunile disponibile.</value>
+  </data>
 </root>

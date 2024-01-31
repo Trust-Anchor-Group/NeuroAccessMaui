@@ -27,7 +27,7 @@ namespace NeuroAccessMaui.Services.EventLog
 		/// </summary>
 		/// <param name="Message">Warning message.</param>
 		/// <param name="Tags">Tags to log together with message.</param>
-		void LogWarning(string Message, params KeyValuePair<string, object>[] Tags);
+		void LogWarning(string Message, params KeyValuePair<string, object?>[] Tags);
 
 		/// <summary>
 		/// Invoke this method to add an <see cref="Exception"/> entry to the log.
@@ -40,7 +40,7 @@ namespace NeuroAccessMaui.Services.EventLog
 		/// </summary>
 		/// <param name="e">The exception to log.</param>
 		/// <param name="extraParameters">Any extra parameters that are added to the log.</param>
-		void LogException(Exception e, params KeyValuePair<string, object>[] extraParameters);
+		void LogException(Exception e, params KeyValuePair<string, object?>[] extraParameters);
 
 		/// <summary>
 		/// Saves an exception dump to disc, completely offline. A last resort operation.
@@ -65,6 +65,6 @@ namespace NeuroAccessMaui.Services.EventLog
 		/// </summary>
 		/// <param name="Tags">Extra tags</param>
 		/// <returns>Parameters</returns>
-		IList<KeyValuePair<string, object>> GetParameters(params KeyValuePair<string, object>[] Tags);
+		IList<KeyValuePair<string, object?>> GetParameters(params KeyValuePair<string, object?>[] Tags);
 	}
 }

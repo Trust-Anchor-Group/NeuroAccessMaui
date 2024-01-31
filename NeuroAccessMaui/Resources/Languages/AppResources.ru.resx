@@ -1377,4 +1377,124 @@
   <data name="YourContractContainsErrors" xml:space="preserve">
     <value>Ваш контракт содержит ошибки. Исправьте эти ошибки и повторите попытку.</value>
   </data>
+  <data name="AccessRequest" xml:space="preserve">
+    <value>Запрос доступа</value>
+  </data>
+  <data name="ContractCreated" xml:space="preserve">
+    <value>Контракт создан.</value>
+  </data>
+  <data name="ContractDeleted" xml:space="preserve">
+    <value>Контракт был удален.</value>
+  </data>
+  <data name="ContractProposed" xml:space="preserve">
+    <value>Предложен контракт.</value>
+  </data>
+  <data name="ContractSigned" xml:space="preserve">
+    <value>Подписан контракт.</value>
+  </data>
+  <data name="ContractUpdated" xml:space="preserve">
+    <value>Контракт был обновлен.</value>
+  </data>
+  <data name="ControlRequest" xml:space="preserve">
+    <value>Запрос на управление</value>
+  </data>
+  <data name="IdentityUpdated" xml:space="preserve">
+    <value>Цифровая идентификация была обновлена.</value>
+  </data>
+  <data name="InvalidIoTDiscoClaimUri" xml:space="preserve">
+    <value>Недопустимый URI утверждения iotdisco.</value>
+  </data>
+  <data name="InvalidIoTDiscoveryCode" xml:space="preserve">
+    <value>Недопустимый код обнаружения Интернета вещей</value>
+  </data>
+  <data name="MessageFrom" xml:space="preserve">
+    <value>Сообщение от:</value>
+  </data>
+  <data name="NeuroFeaturesServiceNotFound" xml:space="preserve">
+    <value>Сервис Neuro-Features не найден у брокера.</value>
+  </data>
+  <data name="PetitionFrom" xml:space="preserve">
+    <value>Петиция от:</value>
+  </data>
+  <data name="ReadRequest" xml:space="preserve">
+    <value>Запрос на считывание</value>
+  </data>
+  <data name="UnableToGetHistory" xml:space="preserve">
+    <value>Не удается получить отчет об истории.</value>
+  </data>
+  <data name="UnableToGetPresent" xml:space="preserve">
+    <value>Не удается получить текущий отчет.</value>
+  </data>
+  <data name="UnableToGetProfiling" xml:space="preserve">
+    <value>Не удалось получить отчет о профилировании.</value>
+  </data>
+  <data name="UnableToGetStateDiagram" xml:space="preserve">
+    <value>Не удается получить отчет о диаграмме состояний.</value>
+  </data>
+  <data name="AccessRequestText" xml:space="preserve">
+    <value>{0} хочет подключиться к вашему устройству {1}.</value>
+  </data>
+  <data name="ConcentratorServiceNotFound" xml:space="preserve">
+    <value>Обслуживание концентратора не найдено.</value>
+  </data>
+  <data name="ControlRequestText" xml:space="preserve">
+    <value>{0} хочет управлять параметрами на вашем устройстве {1}.</value>
+  </data>
+  <data name="ControlServiceNotFound" xml:space="preserve">
+    <value>Служба управления не найдена.</value>
+  </data>
+  <data name="EDalerServiceNotFound" xml:space="preserve">
+    <value>Сервис eDaler не найден у брокера.</value>
+  </data>
+  <data name="GettingOptionsCancelled" xml:space="preserve">
+    <value>Получение доступных опций было отменено.</value>
+  </data>
+  <data name="IdentityResponse" xml:space="preserve">
+    <value>Ответ на запрос удостоверения</value>
+  </data>
+  <data name="IdentityReviewRequest" xml:space="preserve">
+    <value>Запрос на проверку удостоверения</value>
+  </data>
+  <data name="NoThingsFound" xml:space="preserve">
+    <value>Ничего не найдено.</value>
+  </data>
+  <data name="PaymentCancelled" xml:space="preserve">
+    <value>Платеж отменен</value>
+  </data>
+  <data name="PaymentFailed" xml:space="preserve">
+    <value>Платеж не удался</value>
+  </data>
+  <data name="PepServiceNotFound" xml:space="preserve">
+    <value>Услуга персонального троеборья не найдена.</value>
+  </data>
+  <data name="ProvisioningServiceNotFound" xml:space="preserve">
+    <value>Служба подготовки не найдена у брокера.</value>
+  </data>
+  <data name="PushNotificationServiceNotFound" xml:space="preserve">
+    <value>Сервис push-уведомлений не найден.</value>
+  </data>
+  <data name="ReadoutRequestText" xml:space="preserve">
+    <value>{0} хочет считывать данные с вашего устройства {1}.</value>
+  </data>
+  <data name="RequestSignature" xml:space="preserve">
+    <value>Запрос подписи</value>
+  </data>
+  <data name="RequestToAccessIdentity" xml:space="preserve">
+    <value>Запрос на доступ к удостоверению</value>
+  </data>
+  <data name="SensorServiceNotFound" xml:space="preserve">
+    <value>Служба датчика не найдена.</value>
+  </data>
+  <data name="SignatureResponse" xml:space="preserve">
+    <value>Ответ на запрос подписи</value>
+  </data>
+  <data name="ThingRegistryServiceNotFound" xml:space="preserve">
+    <value>Ничего не нашлось на брокере.</value>
+  </data>
+  <data name="UnableToGetListOfMyDevices" xml:space="preserve">
+    <value>Не могу получить список своих устройств.</value>
+  </data>
+  <data name="UnableToGetOptions" xml:space="preserve">
+    <value>Не удается получить доступные варианты.</value>
+  </data>
 </root>

@@ -5,7 +5,6 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Navigation;
 using NeuroAccessMaui.UI.Converters;
-using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel;
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
@@ -26,18 +25,18 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 	/// <summary>
 	/// The view model to bind to when displaying a new contract view or page.
 	/// </summary>
-	public class NewContractViewModel : BaseViewModel, ILinkableView
+	public partial class NewContractViewModel : BaseViewModel, ILinkableView
 	{
 		private static readonly string partSettingsPrefix = typeof(NewContractViewModel).FullName + ".Part_";
 
 		private readonly SortedDictionary<CaseInsensitiveString, ParameterInfo> parametersByName = [];
 		private readonly LinkedList<ParameterInfo> parametersInOrder = new();
 		private Dictionary<CaseInsensitiveString, object> presetParameterValues = [];
-		private CaseInsensitiveString[] suppressedProposalIds;
-		private Contract template;
-		private string templateId;
+		private CaseInsensitiveString[]? suppressedProposalIds;
+		private Contract? template;
+		private string? templateId;
 		private bool saveStateWhileScanning;
-		private Contract stateTemplateWhileScanning;
+		private Contract? stateTemplateWhileScanning;
 		private readonly Dictionary<CaseInsensitiveString, string> partsToAdd;
 
 		/// <summary>
@@ -58,7 +57,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			ContractVisibility? Visibility = null;
 
-			if (ServiceRef.NavigationService.TryGetArgs(out NewContractNavigationArgs Args))
+			if (ServiceRef.NavigationService.TryGetArgs(out NewContractNavigationArgs? Args))
 			{
 				this.template = Args.Template;
 				this.suppressedProposalIds = Args.SuppressedProposalLegalIds;
@@ -67,9 +66,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					this.presetParameterValues = Args.ParameterValues;
 
 				if (Args.SetVisibility)
-					Visibility = Args.Template.Visibility;
+					Visibility = Args.Template?.Visibility;
 
-				this.template.FormatParameterDisplay += this.Template_FormatParameterDisplay;
+				if (this.template is not null)
+					this.template.FormatParameterDisplay += this.Template_FormatParameterDisplay;
 			}
 			else if (this.stateTemplateWhileScanning is not null)
 			{
@@ -164,15 +164,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		{
 			if (this.saveStateWhileScanning)
 			{
-				Enum e = await ServiceRef.SettingsService.RestoreEnumState(this.GetSettingsKey(nameof(this.SelectedContractVisibilityItem)));
+				Enum? e = await ServiceRef.SettingsService.RestoreEnumState(this.GetSettingsKey(nameof(this.SelectedContractVisibilityItem)));
 				if (e is not null)
 				{
 					ContractVisibility cv = (ContractVisibility)e;
 					this.SelectedContractVisibilityItem = this.ContractVisibilityItems.FirstOrDefault(x => x.Visibility == cv);
 				}
 
-				string selectedRole = await ServiceRef.SettingsService.RestoreStringState(this.GetSettingsKey(nameof(this.SelectedRole)));
-				string matchingRole = this.AvailableRoles.FirstOrDefault(x => x.Equals(selectedRole));
+				string? selectedRole = await ServiceRef.SettingsService.RestoreStringState(this.GetSettingsKey(nameof(this.SelectedRole)));
+				string? matchingRole = this.AvailableRoles.FirstOrDefault(x => x.Equals(selectedRole, StringComparison.Ordinal));
 
 				if (!string.IsNullOrWhiteSpace(matchingRole))
 					this.SelectedRole = matchingRole;
@@ -232,7 +232,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// The selected contract visibility item, if any.
 		/// </summary>
 		[ObservableProperty]
-		private ContractVisibilityModel selectedContractVisibilityItem;
+		private ContractVisibilityModel? selectedContractVisibilityItem;
 
 		/// <inheritdoc/>
 		protected override void OnPropertyChanging(System.ComponentModel.PropertyChangingEventArgs e)
@@ -242,7 +242,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			switch (e.PropertyName)
 			{
 				case nameof(this.SelectedRole):
-					this.RemoveRole(this.SelectedRole, ServiceRef.TagProfile.LegalIdentity!.Id);
+					if (this.SelectedRole is not null)
+						this.RemoveRole(this.SelectedRole, ServiceRef.TagProfile.LegalIdentity!.Id);
 					break;
 			}
 		}
@@ -286,25 +287,25 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// The role selected for the contract, if any.
 		/// </summary>
 		[ObservableProperty]
-		private string selectedRole;
+		private string? selectedRole;
 
 		/// <summary>
 		/// Holds Xaml code for visually representing a contract's roles.
 		/// </summary>
 		[ObservableProperty]
-		private StackLayout roles;
+		private StackLayout? roles;
 
 		/// <summary>
 		/// Holds Xaml code for visually representing a contract's parameters.
 		/// </summary>
 		[ObservableProperty]
-		private StackLayout parameters;
+		private StackLayout? parameters;
 
 		/// <summary>
 		/// Holds Xaml code for visually representing a contract's human readable text section.
 		/// </summary>
 		[ObservableProperty]
-		private StackLayout humanReadableText;
+		private StackLayout? humanReadableText;
 
 		/// <summary>
 		/// Gets or sets whether the contract has roles.
@@ -360,9 +361,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			this.EvaluateCommands(this.ProposeCommand);
 		}
 
-		private void RemoveRole(string role, string legalId)
+		private void RemoveRole(string Role, string LegalId)
 		{
-			Label ToRemove = null;
+			Label? ToRemove = null;
 			int State = 0;
 
 			if (this.Roles is null)
@@ -374,7 +375,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 				foreach (Part Part in this.template.Parts)
 				{
-					if (Part.LegalId != legalId || Part.Role != role)
+					if (Part.LegalId != LegalId || Part.Role != Role)
 						Parts.Add(Part);
 				}
 
@@ -388,7 +389,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					switch (State)
 					{
 						case 0:
-							if (View is Label Label && Label.StyleId == role)
+							if (View is Label Label && Label.StyleId == Role)
 								State++;
 							break;
 
@@ -402,7 +403,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 								}
 								return;
 							}
-							else if (View is Label Label2 && Label2.StyleId == legalId)
+							else if (View is Label Label2 && Label2.StyleId == LegalId)
 								ToRemove = Label2;
 							break;
 					}
@@ -412,12 +413,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 		private async Task AddRole(string Role, string LegalId)
 		{
-			Contract contractToUse = this.template ?? this.stateTemplateWhileScanning;
+			Contract? contractToUse = this.template ?? this.stateTemplateWhileScanning;
 
 			if ((contractToUse is null) || (this.Roles is null))
 				return;
 
-			Role RoleObj = null;
+			Role? RoleObj = null;
 
 			foreach (Role R in contractToUse.Roles)
 			{
@@ -584,7 +585,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				if (Sender is not ExtendedDatePicker Picker || !this.parametersByName.TryGetValue(Picker.StyleId, out ParameterInfo? ParameterInfo))
 					return;
 
-				if (ParameterInfo.Parameter is DateParameter DP)
+				if (ParameterInfo?.Parameter is DateParameter DP)
 				{
 					if (e.NewDate is not null)
 					{
@@ -774,8 +775,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		[RelayCommand(CanExecute = nameof(CanPropose))]
 		private async Task Propose()
 		{
+			if (this.template is null)
+				return;
+
 			List<Part> Parts = [];
-			Contract Created = null;
+			Contract? Created = null;
 			string Role = string.Empty;
 			int State = 0;
 			int Nr = 0;
@@ -845,23 +849,27 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					}
 				}
 
-				foreach (IView View in this.Parameters.Children)
+				if (this.Parameters is not null)
 				{
-					if (View is Entry Entry)
+					foreach (IView View in this.Parameters.Children)
 					{
-						if (Entry.BackgroundColor == ControlBgColor.ToColor(false))
+						if (View is Entry Entry)
 						{
-							await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-								ServiceRef.Localizer[nameof(AppResources.YourContractContainsErrors)]);
+							if (Entry.BackgroundColor == ControlBgColor.ToColor(false))
+							{
+								await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+									ServiceRef.Localizer[nameof(AppResources.YourContractContainsErrors)]);
 
-							Entry.Focus();
-							return;
+								Entry.Focus();
+								return;
+							}
 						}
 					}
 				}
 
 				this.template.PartsMode = ContractParts.Open;
-				int i = this.ContractVisibilityItems.IndexOf(this.SelectedContractVisibilityItem);
+
+				int i = this.SelectedContractVisibilityItem is null ? -1 : this.ContractVisibilityItems.IndexOf(this.SelectedContractVisibilityItem);
 				switch (i)
 				{
 					case 0:
@@ -896,7 +904,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				if (!await App.AuthenticateUser(true))
 					return;
 
-				Created = await ServiceRef.XmppService.CreateContract(this.templateId, Parts.ToArray(), this.template.Parameters,
+				Created = await ServiceRef.XmppService.CreateContract(this.templateId, [.. Parts], this.template.Parameters,
 					this.template.Visibility, ContractParts.ExplicitlyDefined, this.template.Duration ?? Duration.FromYears(1),
 					this.template.ArchiveRequired ?? Duration.FromYears(1), this.template.ArchiveOptional ?? Duration.FromYears(1),
 					null, null, false);
@@ -914,9 +922,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						if (Info is null || string.IsNullOrEmpty(Info.BareJid))
 							continue;
 
-						string Proposal = await ServiceRef.UiSerializer.DisplayPrompt(ServiceRef.Localizer[nameof(AppResources.Proposal)],
-							string.Format(ServiceRef.Localizer[nameof(AppResources.EnterProposal)], Info.FriendlyName),
-							ServiceRef.Localizer[nameof(AppResources.Send)], ServiceRef.Localizer[nameof(AppResources.Cancel)]);
+						string? Proposal = await ServiceRef.UiSerializer.DisplayPrompt(ServiceRef.Localizer[nameof(AppResources.Proposal)],
+							ServiceRef.Localizer[nameof(AppResources.EnterProposal), Info.FriendlyName],
+							ServiceRef.Localizer[nameof(AppResources.Send)],
+							ServiceRef.Localizer[nameof(AppResources.Cancel)]);
 
 						if (!string.IsNullOrEmpty(Proposal))
 							ServiceRef.XmppService.SendContractProposal(Created.ContractId, Part.Role, Info.BareJid, Proposal);
@@ -1092,13 +1101,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						HorizontalOptions = LayoutOptions.FillAndExpand,
 					};
 
-					string CalculatorButtonType = null;
+					string? CalculatorButtonType = null;
 
 					if (Parameter is NumericalParameter NumericalParameter)
-						CalculatorButtonType = "🖩";	// TODO: SVG icon
+						CalculatorButtonType = "🖩";  // TODO: SVG icon
 
 					if (Parameter is DurationParameter DurationParameter)
-						CalculatorButtonType = "🕑";	// TODO: SVG icon
+						CalculatorButtonType = "🕑";  // TODO: SVG icon
 
 					if (CalculatorButtonType is not null)
 					{
@@ -1312,7 +1321,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 				Url.Append(Constants.UriSchemes.IotSc);
 				Url.Append(':');
-				Url.Append(this.template.ContractId);
+				Url.Append(this.template?.ContractId);
 
 				foreach (KeyValuePair<CaseInsensitiveString, ParameterInfo> P in this.parametersByName)
 				{
@@ -1349,7 +1358,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// <summary>
 		/// Title of the current view
 		/// </summary>
-		public Task<string> Title => ContractModel.GetName(this.template, this);
+		public Task<string> Title => ContractModel.GetName(this.template);
 
 		/// <summary>
 		/// If linkable view has media associated with link.
@@ -1359,12 +1368,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// <summary>
 		/// Encoded media, if available.
 		/// </summary>
-		public byte[] Media => null;
+		public byte[]? Media => null;
 
 		/// <summary>
 		/// Content-Type of associated media.
 		/// </summary>
-		public string MediaContentType => null;
+		public string? MediaContentType => null;
 
 		#endregion
 
@@ -1433,9 +1442,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 							else
 							{
 								ServiceRef.LogService.LogWarning("Invalid option value.",
-									new KeyValuePair<string, object>("Parameter", ParameterName),
-									new KeyValuePair<string, object>("Value", Parameter.Value),
-									new KeyValuePair<string, object>("Type", Parameter.Value?.GetType().FullName ?? string.Empty));
+									new KeyValuePair<string, object?>("Parameter", ParameterName),
+									new KeyValuePair<string, object?>("Value", Parameter.Value),
+									new KeyValuePair<string, object?>("Type", Parameter.Value?.GetType().FullName ?? string.Empty));
 							}
 						}
 						else if (Info.Control is ExtendedDatePicker Picker)
@@ -1447,9 +1456,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 							else
 							{
 								ServiceRef.LogService.LogWarning("Invalid option value.",
-									new KeyValuePair<string, object>("Parameter", ParameterName),
-									new KeyValuePair<string, object>("Value", Parameter.Value),
-									new KeyValuePair<string, object>("Type", Parameter.Value?.GetType().FullName ?? string.Empty));
+									new KeyValuePair<string, object?>("Parameter", ParameterName),
+									new KeyValuePair<string, object?>("Value", Parameter.Value),
+									new KeyValuePair<string, object?>("Type", Parameter.Value?.GetType().FullName ?? string.Empty));
 							}
 						}
 					}
@@ -1457,9 +1466,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				catch (Exception ex)
 				{
 					ServiceRef.LogService.LogWarning("Invalid option value. Exception: " + ex.Message,
-						new KeyValuePair<string, object>("Parameter", ParameterName),
-						new KeyValuePair<string, object>("Value", Parameter.Value),
-						new KeyValuePair<string, object>("Type", Parameter.Value?.GetType().FullName ?? string.Empty));
+						new KeyValuePair<string, object?>("Parameter", ParameterName),
+						new KeyValuePair<string, object?>("Value", Parameter.Value),
+						new KeyValuePair<string, object?>("Type", Parameter.Value?.GetType().FullName ?? string.Empty));
 
 					continue;
 				}
@@ -1495,7 +1504,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				return;
 			}
 
-			int EntryIndex = this.Parameters.Children.IndexOf(Entry);
+			int EntryIndex = this.Parameters?.Children.IndexOf(Entry) ?? -1;
 			if (EntryIndex < 0)
 			{
 				ServiceRef.LogService.LogWarning("Options not displayed. Primary Key Entry not found.");
@@ -1525,8 +1534,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				HorizontalOptions = LayoutOptions.FillAndExpand
 			};
 
-			this.Parameters.Children.RemoveAt(EntryIndex);
-			this.Parameters.Children.Insert(EntryIndex, Picker);
+			this.Parameters?.Children.RemoveAt(EntryIndex);
+			this.Parameters?.Children.Insert(EntryIndex, Picker);
 
 			Picker.SelectedIndexChanged += this.Parameter_OptionSelectionChanged;
 			Info.Control = Picker;

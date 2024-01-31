@@ -11,15 +11,17 @@ namespace NeuroAccessMaui.UI.Pages.Signatures.ServerSignature
 		/// <summary>
 		/// Creates a new instance of the <see cref="ServerSignatureNavigationArgs"/> class.
 		/// </summary>
-		public ServerSignatureNavigationArgs() { }
+		public ServerSignatureNavigationArgs()
+		{
+		}
 
 		/// <summary>
 		/// Creates a new instance of the <see cref="ServerSignatureNavigationArgs"/> class.
 		/// </summary>
-		/// <param name="contract">The contract to display.</param>
-		public ServerSignatureNavigationArgs(Contract contract)
+		/// <param name="Contract">The contract to display.</param>
+		public ServerSignatureNavigationArgs(Contract? Contract)
 		{
-			this.Contract = contract;
+			this.Contract = Contract;
 		}
 
 		/// <summary>

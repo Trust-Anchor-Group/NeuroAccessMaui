@@ -1,7 +1,5 @@
 ﻿using EDaler;
-using NeuroAccessMaui.DeviceSpecific;
 using NeuroAccessMaui.Resources.Languages;
-using NeuroAccessMaui.Services.Xmpp;
 using NeuroFeatures;
 using System.Text;
 using Waher.Content;

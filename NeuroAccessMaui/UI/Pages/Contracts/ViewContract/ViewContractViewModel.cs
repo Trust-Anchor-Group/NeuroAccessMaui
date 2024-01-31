@@ -16,13 +16,15 @@ using Waher.Content;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.HttpFileUpload;
 using CommunityToolkit.Mvvm.ComponentModel;
+using IdApp.Pages.Signatures.ClientSignature;
+using IdApp.Pages.Signatures.ServerSignature;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 {
 	/// <summary>
 	/// The view model to bind to for when displaying contracts.
 	/// </summary>
-	public class ViewContractViewModel : QrXmppViewModel
+	public partial class ViewContractViewModel : QrXmppViewModel
 	{
 		private bool isReadOnly;
 		private readonly PhotosLoader photosLoader;
@@ -43,7 +45,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.NavigationService.TryGetArgs(out ViewContractNavigationArgs args))
+			if (ServiceRef.NavigationService.TryGetArgs(out ViewContractNavigationArgs? args))
 			{
 				this.Contract = args.Contract;
 				this.isReadOnly = args.IsReadOnly;
@@ -88,15 +90,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			await base.OnDispose();
 		}
 
-		private void Contract_FormatParameterDisplay(object Sender, Waher.Networking.XMPP.Contracts.EventArguments.ParameterValueFormattingEventArgs e)
+		private void Contract_FormatParameterDisplay(object? Sender, Waher.Networking.XMPP.Contracts.EventArguments.ParameterValueFormattingEventArgs e)
 		{
 			if (e.Value is Duration Duration)
 				e.Value = DurationToString.ToString(Duration);
 		}
 
-		private Task ContractsClient_ContractUpdatedOrSigned(object Sender, ContractReferenceEventArgs e)
+		private Task ContractsClient_ContractUpdatedOrSigned(object? Sender, ContractReferenceEventArgs e)
 		{
-			if (e.ContractId == this.Contract.ContractId && DateTime.Now.Subtract(this.skipContractEvent).TotalSeconds > 5)
+			if (e.ContractId == this.Contract?.ContractId && DateTime.Now.Subtract(this.skipContractEvent).TotalSeconds > 5)
 				this.ReloadContract(e.ContractId);
 
 			return Task.CompletedTask;
@@ -132,7 +134,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		/// Contains proposed role, if a proposal, null if not a proposal.
 		/// </summary>
 		[ObservableProperty]
-		private string role;
+		private string? role;
 
 		/// <summary>
 		/// If the view represents a proposal to sign a contract.
@@ -144,7 +146,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		/// If the contract is a proposal
 		/// </summary>
 		[ObservableProperty]
-		private string proposal;
+		private string? proposal;
 
 		/// <summary>
 		/// Holds a list of general information sections for the contract.
@@ -155,43 +157,43 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		/// Holds Xaml code for visually representing a contract's roles.
 		/// </summary>
 		[ObservableProperty]
-		private StackLayout roles;
+		private StackLayout? roles;
 
 		/// <summary>
 		/// Holds Xaml code for visually representing a contract's parts.
 		/// </summary>
 		[ObservableProperty]
-		private StackLayout parts;
+		private StackLayout? parts;
 
 		/// <summary>
 		/// Holds Xaml code for visually representing a contract's parameters.
 		/// </summary>
 		[ObservableProperty]
-		private StackLayout parameters;
+		private StackLayout? parameters;
 
 		/// <summary>
 		/// Holds Xaml code for visually representing a contract's human readable text section.
 		/// </summary>
 		[ObservableProperty]
-		private StackLayout humanReadableText;
+		private StackLayout? humanReadableText;
 
 		/// <summary>
 		/// Holds Xaml code for visually representing a contract's machine readable text section.
 		/// </summary>
 		[ObservableProperty]
-		private StackLayout machineReadableText;
+		private StackLayout? machineReadableText;
 
 		/// <summary>
 		/// Holds Xaml code for visually representing a contract's client signatures.
 		/// </summary>
 		[ObservableProperty]
-		private StackLayout clientSignatures;
+		private StackLayout? clientSignatures;
 
 		/// <summary>
 		/// Holds Xaml code for visually representing a contract's server signatures.
 		/// </summary>
 		[ObservableProperty]
-		private StackLayout serverSignatures;
+		private StackLayout? serverSignatures;
 
 		/// <summary>
 		/// Gets the list of photos associated with the contract.
@@ -201,7 +203,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		/// <summary>
 		/// The contract to display.
 		/// </summary>
-		public Contract Contract { get; private set; }
+		public Contract? Contract { get; private set; }
 
 		/// <summary>
 		/// Gets or sets whether photos are available.
@@ -293,19 +295,23 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 		private async Task DisplayContract()
 		{
+			if (this.Contract is null)
+				return;
+
 			try
 			{
 				bool HasSigned = false;
 				bool AcceptsSignatures =
+					(this.Contract is not null) &&
 					(this.Contract.State == ContractState.Approved || this.Contract.State == ContractState.BeingSigned) &&
 					(!this.Contract.SignAfter.HasValue || this.Contract.SignAfter.Value < DateTime.Now) &&
 					(!this.Contract.SignBefore.HasValue || this.Contract.SignBefore.Value > DateTime.Now);
 				Dictionary<string, int> NrSignatures = [];
 				bool CanObsolete = false;
 
-				if (this.Contract.ClientSignatures is not null)
+				if (this.Contract!.ClientSignatures is not null)
 				{
-					foreach (Waher.Networking.XMPP.Contracts.ClientSignature signature in this.Contract.ClientSignatures)
+					foreach (ClientSignature signature in this.Contract.ClientSignatures)
 					{
 						if (signature.LegalId == ServiceRef.TagProfile.LegalIdentity!.Id)
 							HasSigned = true;
@@ -348,11 +354,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 				this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.State)], this.Contract.State.ToString(), ContractStateToColor.ToColor(this.Contract.State)));
 				this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.Visibility)], this.Contract.Visibility.ToString()));
-				this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.Duration)], this.Contract.Duration.ToString()));
+				this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.Duration)], this.Contract.Duration?.ToString() ?? string.Empty));
 				this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.From)], this.Contract.From.ToString(CultureInfo.CurrentCulture)));
 				this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.To)], this.Contract.To.ToString(CultureInfo.CurrentCulture)));
-				this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.Archiving_Optional)], this.Contract.ArchiveOptional.ToString()));
-				this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.Archiving_Required)], this.Contract.ArchiveRequired.ToString()));
+				this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.Archiving_Optional)], this.Contract.ArchiveOptional?.ToString() ?? string.Empty));
+				this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.Archiving_Required)], this.Contract.ArchiveRequired?.ToString() ?? string.Empty));
 				this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.CanActAsTemplate)], this.Contract.CanActAsTemplate.ToYesNo()));
 
 				this.GenerateQrCode(Constants.UriSchemes.CreateSmartContractUri(this.Contract.ContractId));
@@ -376,7 +382,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 						{
 							Button button = new()
 							{
-								Text = string.Format(ServiceRef.Localizer[nameof(AppResources.SignAsRole)], Role.Name),
+								Text = ServiceRef.Localizer[nameof(AppResources.SignAsRole), Role.Name],
 								StyleId = Role.Name
 							};
 
@@ -409,11 +415,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 					{
 						AddKeyValueLabelPair(PartsLayout, Part.Role, Part.LegalId, false, OpenLegalId);
 
-						if (!this.isReadOnly && AcceptsSignatures && !HasSigned && Part.LegalId == this.TagProfile.LegalIdentity.Id)
+						if (!this.isReadOnly && AcceptsSignatures && !HasSigned && Part.LegalId == ServiceRef.TagProfile.LegalIdentity?.Id)
 						{
 							Button Button = new()
 							{
-								Text = string.Format(ServiceRef.Localizer[nameof(AppResources.SignAsRole)], Part.Role),
+								Text = ServiceRef.Localizer[nameof(AppResources.SignAsRole), Part.Role],
 								StyleId = Part.Role
 							};
 
@@ -436,7 +442,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 						if (Parameter.ObjectValue is bool b)
 							AddKeyValueLabelPair(ParametersLayout, Parameter.Name, b ? "✔" : "✗");
 						else
-							AddKeyValueLabelPair(ParametersLayout, Parameter.Name, Parameter.ObjectValue?.ToString());
+							AddKeyValueLabelPair(ParametersLayout, Parameter.Name, Parameter.ObjectValue?.ToString() ?? string.Empty);
 					}
 
 					this.Parameters = ParametersLayout;
@@ -452,14 +458,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 				foreach (View View in Children)
 				{
-					if (View is ContentView)
+					if (View is ContentView ContentView)
 					{
-						foreach (Element InnView in (View as ContentView).Children)
+						foreach (Element InnerView in ContentView.Children)
 						{
-							if (InnView is Label)
+							if (InnerView is Label Label)
 							{
-								(InnView as Label).TextColor = (Color)(Application.Current.RequestedTheme == OSAppTheme.Dark ?
-								Application.Current.Resources["LabelTextColorDarkTheme"] : Application.Current.Resources["LabelTextColorLightTheme"]);
+								Label.TextColor = (Color?)(Application.Current?.RequestedTheme == AppTheme.Dark ?
+									Application.Current?.Resources["LabelTextColorDarkTheme"] :
+									Application.Current?.Resources["LabelTextColorLightTheme"]);
 							}
 						}
 					}
@@ -505,7 +512,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 					TapGestureRecognizer openClientSignature = new();
 					openClientSignature.Tapped += this.ClientSignature_Tapped;
 
-					foreach (Waher.Networking.XMPP.Contracts.ClientSignature signature in this.Contract.ClientSignatures)
+					foreach (ClientSignature signature in this.Contract.ClientSignatures)
 					{
 						string Sign = Convert.ToBase64String(signature.DigitalSignature);
 						StringBuilder sb = new();
@@ -563,9 +570,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			}
 			catch (Exception ex)
 			{
-				ServiceRef.LogService.LogException(ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod())
-					.Append(new KeyValuePair<string, object>("ContractId", this.Contract?.ContractId ?? string.Empty))
-					.ToArray());
+				IEnumerable<KeyValuePair<string, object?>> Tags = this.GetClassAndMethod(MethodBase.GetCurrentMethod());
+				Tags = Tags.Append(new KeyValuePair<string, object?>("ContractId", this.Contract?.ContractId ?? string.Empty));
+
+				ServiceRef.LogService.LogException(ex, Tags.ToArray());
 
 				this.ClearContract();
 				await ServiceRef.UiSerializer.DisplayException(ex);
@@ -579,10 +587,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				if (max == 1)
 					return string.Empty;
 
-				return " (" + max.ToString() + ")";
+				return " (" + max.ToString(CultureInfo.InvariantCulture) + ")";
 			}
 
-			return " (" + min.ToString() + " - " + max.ToString() + ")";
+			return " (" + min.ToString(CultureInfo.InvariantCulture) + " - " + max.ToString(CultureInfo.InvariantCulture) + ")";
 		}
 
 		private static void AddKeyValueLabelPair(StackLayout Container, string Key,
@@ -598,7 +606,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		}
 
 		private static void AddKeyValueLabelPair(StackLayout Container, string Key,
-			string Value, bool IsHtml, string StyleId, TapGestureRecognizer TapGestureRecognizer)
+			string Value, bool IsHtml, string StyleId, TapGestureRecognizer? TapGestureRecognizer)
 		{
 			StackLayout layout = new()
 			{
@@ -611,22 +619,25 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			layout.Children.Add(new Label
 			{
 				Text = Key + ":",
-				Style = (Style)Application.Current.Resources["KeyLabel"]
+				Style = (Style?)Application.Current?.Resources["KeyLabel"]
 			});
 
 			layout.Children.Add(new Label
 			{
 				Text = Value,
 				TextType = IsHtml ? TextType.Html : TextType.Text,
-				Style = (Style)Application.Current.Resources[IsHtml ? "FormattedValueLabel" : TapGestureRecognizer is null ? "ValueLabel" : "ClickableValueLabel"]
+				Style = (Style?)Application.Current?.Resources[IsHtml ? "FormattedValueLabel" : TapGestureRecognizer is null ? "ValueLabel" : "ClickableValueLabel"]
 			});
 
 			if (TapGestureRecognizer is not null)
 				layout.GestureRecognizers.Add(TapGestureRecognizer);
 		}
 
-		private async void SignButton_Clicked(object Sender, EventArgs e)
+		private async void SignButton_Clicked(object? Sender, EventArgs e)
 		{
+			if (this.Contract is null)
+				return;
+
 			try
 			{
 				if (!await App.AuthenticateUser(true))
@@ -649,12 +660,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			}
 		}
 
-		private async void Part_Tapped(object Sender, EventArgs e)
+		private async void Part_Tapped(object? Sender, EventArgs e)
 		{
 			try
 			{
 				if (Sender is StackLayout Layout && !string.IsNullOrEmpty(Layout.StyleId))
-					await this.ContractOrchestratorService.OpenLegalIdentity(Layout.StyleId, ServiceRef.Localizer[nameof(AppResources.PurposeReviewContract)]);
+				{
+					await ServiceRef.ContractOrchestratorService.OpenLegalIdentity(Layout.StyleId,
+						ServiceRef.Localizer[nameof(AppResources.PurposeReviewContract)]);
+				}
 			}
 			catch (Exception ex)
 			{
@@ -663,12 +677,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			}
 		}
 
-		private async void ContractId_Tapped(object Sender, EventArgs e)
+		private async void ContractId_Tapped(object? Sender, EventArgs e)
 		{
 			try
 			{
 				if (Sender is StackLayout Layout && !string.IsNullOrEmpty(Layout.StyleId))
-					await this.ContractOrchestratorService.OpenContract(Layout.StyleId, ServiceRef.Localizer[nameof(AppResources.PurposeReviewContract)], null);
+				{
+					await ServiceRef.ContractOrchestratorService.OpenContract(Layout.StyleId,
+						ServiceRef.Localizer[nameof(AppResources.PurposeReviewContract)], null);
+				}
 			}
 			catch (Exception ex)
 			{
@@ -677,7 +694,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			}
 		}
 
-		private async void Link_Tapped(object Sender, EventArgs e)
+		private async void Link_Tapped(object? Sender, EventArgs e)
 		{
 			try
 			{
@@ -691,7 +708,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			}
 		}
 
-		private async void CopyToClipboard_Tapped(object Sender, EventArgs e)
+		private async void CopyToClipboard_Tapped(object? Sender, EventArgs e)
 		{
 			try
 			{
@@ -708,20 +725,20 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			}
 		}
 
-		private async void ClientSignature_Tapped(object Sender, EventArgs e)
+		private async void ClientSignature_Tapped(object? Sender, EventArgs e)
 		{
 			try
 			{
 				if (Sender is StackLayout layout && !string.IsNullOrEmpty(layout.StyleId))
 				{
 					string sign = layout.StyleId;
-					Waher.Networking.XMPP.Contracts.ClientSignature signature = this.Contract.ClientSignatures.FirstOrDefault(x => sign == Convert.ToBase64String(x.DigitalSignature));
+					ClientSignature? signature = this.Contract?.ClientSignatures.FirstOrDefault(x => sign == Convert.ToBase64String(x.DigitalSignature));
 					if (signature is not null)
 					{
 						string legalId = signature.LegalId;
 						LegalIdentity identity = await ServiceRef.XmppService.GetLegalIdentity(legalId);
 
-						await this.NavigationService.GoToAsync(nameof(ClientSignaturePage),
+						await ServiceRef.NavigationService.GoToAsync(nameof(ClientSignaturePage),
 							new ClientSignatureNavigationArgs(signature, identity));
 					}
 				}
@@ -733,13 +750,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			}
 		}
 
-		private async void ServerSignature_Tapped(object Sender, EventArgs e)
+		private async void ServerSignature_Tapped(object? Sender, EventArgs e)
 		{
 			try
 			{
 				if (Sender is StackLayout layout && !string.IsNullOrEmpty(layout.StyleId))
 				{
-					await this.NavigationService.GoToAsync(nameof(ServerSignaturePage),
+					await ServiceRef.NavigationService.GoToAsync(nameof(ServerSignaturePage),
 						  new ServerSignatureNavigationArgs(this.Contract));
 				}
 			}
@@ -756,6 +773,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		[RelayCommand]
 		private async Task ObsoleteContract()
 		{
+			if (this.Contract is null)
+				return;
+
 			try
 			{
 				if (!await App.AuthenticateUser(true))
@@ -781,6 +801,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		[RelayCommand]
 		private async Task DeleteContract()
 		{
+			if (this.Contract is null)
+				return;
+
 			try
 			{
 				if (!await App.AuthenticateUser(true))
@@ -806,6 +829,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		[RelayCommand]
 		private async Task ShowDetails()
 		{
+			if (this.Contract is null)
+				return;
+
 			try
 			{
 				byte[] Bin = Encoding.UTF8.GetBytes(this.Contract.ForMachines.OuterXml);
@@ -830,12 +856,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		/// <summary>
 		/// Link to the current view
 		/// </summary>
-		public override string Link { get; }
+		public override string? Link { get; }
 
 		/// <summary>
 		/// Title of the current view
 		/// </summary>
-		public override Task<string?> Title => ContractModel.GetName(this.Contract);
+		public override Task<string> Title => ContractModel.GetName(this.Contract);
 
 		#endregion
 
