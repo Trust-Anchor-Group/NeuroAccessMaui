@@ -1,23 +1,21 @@
-﻿using CommunityToolkit.Mvvm.Input;
-using System.Collections.ObjectModel;
-using System.Globalization;
-using System.Reflection;
-using System.Text;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.UI.Photos;
 using NeuroAccessMaui.UI.Converters;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract.ObjectModel;
 using NeuroAccessMaui.UI.Pages.Signatures.ClientSignature;
 using NeuroAccessMaui.UI.Pages.Signatures.ServerSignature;
-using NeuroAccessMaui.Services.UI.Photos;
+using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Reflection;
+using System.Text;
 using Waher.Content;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.HttpFileUpload;
-using CommunityToolkit.Mvvm.ComponentModel;
-using NeuroAccessMaui.UI.Pages.Signatures.ClientSignature;
-using NeuroAccessMaui.UI.Pages.Signatures.ServerSignature;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 {

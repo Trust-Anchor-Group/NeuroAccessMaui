@@ -1,4 +1,6 @@
 ﻿using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services.Contacts;
+using NeuroAccessMaui.UI.Pages.Things.IsFriend;
 using Waher.Networking.XMPP.Provisioning;
 
 namespace NeuroAccessMaui.Services.Notification.Things

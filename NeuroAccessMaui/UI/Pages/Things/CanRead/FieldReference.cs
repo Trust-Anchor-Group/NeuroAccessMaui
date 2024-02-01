@@ -1,4 +1,5 @@
 ﻿using IdApp.Services;
+using NeuroAccessMaui.Services;
 using System;
 using System.ComponentModel;
 
@@ -7,24 +8,12 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 	/// <summary>
 	/// Class used to represent a field name, and if it is permitted or not.
 	/// </summary>
-	public class FieldReference : INotifyPropertyChanged
+	/// <param name="FieldName">Field Name</param>
+	/// <param name="Permitted">If the field is permitted or not.</param>
+	public class FieldReference(string FieldName, bool Permitted) : INotifyPropertyChanged
 	{
-		private readonly IServiceReferences references;
-		private readonly string name;
-		private bool permitted;
-
-		/// <summary>
-		/// Class used to represent a field name, and if it is permitted or not.
-		/// </summary>
-		/// <param name="References">Service References</param>
-		/// <param name="FieldName">Field Name</param>
-		/// <param name="Permitted">If the field is permitted or not.</param>
-		public FieldReference(IServiceReferences References, string FieldName, bool Permitted)
-		{
-			this.references = References;
-			this.name = FieldName;
-			this.permitted = Permitted;
-		}
+		private readonly string name = FieldName;
+		private bool permitted = Permitted;
 
 		/// <summary>
 		/// Tag name.
@@ -56,13 +45,13 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 			}
 			catch (Exception ex)
 			{
-				this.references.LogService.LogException(ex);
+				ServiceRef.LogService.LogException(ex);
 			}
 		}
 
 		/// <summary>
 		/// Occurs when a property value changes.
 		/// </summary>
-		public event PropertyChangedEventHandler PropertyChanged;
+		public event PropertyChangedEventHandler? PropertyChanged;
 	}
 }

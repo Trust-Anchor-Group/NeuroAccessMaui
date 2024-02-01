@@ -1,4 +1,8 @@
-﻿namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
+﻿using Microsoft.Maui.Controls.PlatformConfiguration;
+using Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;
+using NeuroAccessMaui.Services;
+
+namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 {
 	/// <summary>
 	/// A page that displays a list of the current user's contacts.
@@ -28,15 +32,15 @@
 		{
 			await base.OnAppearingAsync();
 
-			if (Device.RuntimePlatform == Device.Android)
-				App.Current.On<Android>().UseWindowSoftInputModeAdjust(WindowSoftInputModeAdjust.Resize);
+			if (DeviceInfo.Platform == DevicePlatform.Android)
+				App.Current?.On<Android>().UseWindowSoftInputModeAdjust(WindowSoftInputModeAdjust.Resize);
 
 			MessagingCenter.Subscribe<object, KeyboardAppearEventArgs>(this, Constants.MessagingCenter.KeyboardAppears, (sender, eargs) =>
 			{
 				if (this.ContainerView.TranslationY == 0)
 				{
 					double Bottom = 0;
-					if (Device.RuntimePlatform == Device.iOS)
+					if (DeviceInfo.Platform == DevicePlatform.iOS)
 					{
 						Thickness SafeInsets = this.On<iOS>().SafeAreaInsets();
 						Bottom = SafeInsets.Bottom;
@@ -67,8 +71,8 @@
 			MessagingCenter.Unsubscribe<object>(this, Constants.MessagingCenter.KeyboardDisappears);
 			MessagingCenter.Unsubscribe<object>(this, Constants.MessagingCenter.ChatEditorFocus);
 
-			if (Device.RuntimePlatform == Device.Android)
-				App.Current.On<Android>().UseWindowSoftInputModeAdjust(WindowSoftInputModeAdjust.Pan);
+			if (DeviceInfo.Platform == DevicePlatform.Android)
+				App.Current?.On<Android>().UseWindowSoftInputModeAdjust(WindowSoftInputModeAdjust.Pan);
 
 			await base.OnDisappearingAsync();
 			

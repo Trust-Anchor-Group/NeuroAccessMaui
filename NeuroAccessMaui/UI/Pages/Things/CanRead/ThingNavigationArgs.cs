@@ -1,5 +1,5 @@
-﻿using NeuroAccessMaui.UI.Pages.Things.IsFriend;
-using IdApp.Services.Notification.Things;
+﻿using NeuroAccessMaui.Services.Notification.Things;
+using NeuroAccessMaui.UI.Pages.Things.IsFriend;
 
 namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 {
@@ -11,7 +11,9 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 		/// <summary>
 		/// Base class for thing navigation arguments.
 		/// </summary>
-		public ThingNavigationArgs() { }
+		public ThingNavigationArgs()
+		{
+		}
 
 		/// <summary>
 		/// Creates a new instance of the <see cref="ThingNavigationArgs"/> class.
@@ -33,31 +35,31 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 		/// <summary>
 		/// Node ID
 		/// </summary>
-		public string NodeId { get; }
+		public string? NodeId { get; }
 
 		/// <summary>
 		/// Partition ID
 		/// </summary>
-		public string PartitionId { get; }
+		public string? PartitionId { get; }
 
 		/// <summary>
 		/// Source ID
 		/// </summary>
-		public string SourceId { get; }
+		public string? SourceId { get; }
 
 		/// <summary>
 		/// User Tokens
 		/// </summary>
-		public ProvisioningToken[] UserTokens { get; }
+		public ProvisioningToken[]? UserTokens { get; }
 
 		/// <summary>
 		/// Service Tokens
 		/// </summary>
-		public ProvisioningToken[] ServiceTokens { get; }
+		public ProvisioningToken[]? ServiceTokens { get; }
 
 		/// <summary>
 		/// Device Tokens
 		/// </summary>
-		public ProvisioningToken[] DeviceTokens { get; }
+		public ProvisioningToken[]? DeviceTokens { get; }
 	}
 }

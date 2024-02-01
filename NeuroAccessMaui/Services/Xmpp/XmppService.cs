@@ -4,6 +4,7 @@ using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Notification.Things;
+using NeuroAccessMaui.Services.Notification.Xmpp;
 using NeuroAccessMaui.Services.Push;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.Services.UI.Photos;
@@ -1403,8 +1404,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="ParentThreadId">Parent Thread ID</param>
 		/// <param name="DeliveryCallback">Callback to call when message has been sent, or failed to be sent.</param>
 		/// <param name="State">State object to pass on to the callback method.</param>
-		public void SendMessage(QoSLevel QoS, MessageType Type, string Id, string To, string CustomXml, string Body,
-			string Subject, string Language, string ThreadId, string ParentThreadId, DeliveryEventHandler DeliveryCallback, object? State)
+		public void SendMessage(QoSLevel QoS, Waher.Networking.XMPP.MessageType Type, string Id, string To, string CustomXml, string Body,
+			string Subject, string Language, string ThreadId, string ParentThreadId, DeliveryEventHandler? DeliveryCallback, object? State)
 		{
 			this.XmppClient.SendMessage(QoS, Type, Id, To, CustomXml, Body, Subject, Language, ThreadId, ParentThreadId, DeliveryCallback, State);
 			// TODO: End-to-End encryption
@@ -1621,7 +1622,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			{
 				if ((ServiceRef.NavigationService.CurrentPage is ChatPage || ServiceRef.NavigationService.CurrentPage is ChatPageIos) &&
 					ServiceRef.NavigationService.CurrentPage.BindingContext is ChatViewModel ChatViewModel &&
-					string.Compare(ChatViewModel.BareJid, RemoteBareJid, true) == 0)
+					string.Equals(ChatViewModel.BareJid, RemoteBareJid, StringComparison.OrdinalIgnoreCase))
 				{
 					if (string.IsNullOrEmpty(ReplaceObjectId))
 						await ChatViewModel.MessageAddedAsync(Message);
@@ -1912,7 +1913,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="MessageVariable">Variable to receive message stanza</param>
 		/// <param name="PatternMatchingScript">Pattern matching script</param>
 		/// <param name="ContentScript">Content script</param>
-		public Task AddPushNotificationRule(MessageType MessageType, string LocalName, string Namespace,
+		public Task AddPushNotificationRule(Waher.Networking.XMPP.MessageType MessageType, string LocalName, string Namespace,
 			string Channel, string MessageVariable, string PatternMatchingScript, string ContentScript)
 		{
 			return this.PushNotificationClient.AddRuleAsync(MessageType, LocalName, Namespace, Channel, MessageVariable,
@@ -2178,7 +2179,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="DiscoUri">IoTDisco URI</param>
 		/// <param name="Tags">Decoded meta data tags.</param>
 		/// <returns>If DiscoUri was successfully decoded.</returns>
-		public bool TryDecodeIoTDiscoClaimURI(string DiscoUri, out MetaDataTag[]? Tags)
+		public bool TryDecodeIoTDiscoClaimURI(string DiscoUri, [NotNullWhen(true)] out MetaDataTag[]? Tags)
 		{
 			return ThingRegistryClient.TryDecodeIoTDiscoClaimURI(DiscoUri, out Tags);
 		}

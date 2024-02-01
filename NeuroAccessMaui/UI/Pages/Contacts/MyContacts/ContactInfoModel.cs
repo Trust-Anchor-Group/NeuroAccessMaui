@@ -3,6 +3,7 @@ using System.Text;
 using System.Windows.Input;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Notification;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
@@ -23,7 +24,6 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 		/// <summary>
 		/// Contact Information model, including related notification information.
 		/// </summary>
-		/// <param name="References">Service references.</param>
 		/// <param name="Contact">Contact information.</param>
 		/// <param name="Events">Notification events</param>
 		public ContactInfoModel(ContactInfo? Contact, params NotificationEvent[] Events)

@@ -80,7 +80,7 @@
 			<loading:LoadingListView x:Name="CollectionView" SelectionMode="Single" Rotation="180"
 									 VerticalOptions="StartAndExpand" HasUnevenRows="True" SeparatorVisibility="None"
 									 ItemsSource="{Binding Path=Messages}" ItemTemplate="{StaticResource MessageStyleSelector}"
-									 ItemSelectedCommand="{Binding Path=MessageSelected}" LoadMoreCommand="{Binding LoadMoreMessages}">
+									 ItemSelectedCommand="{Binding Path=MessageSelected}" LoadMoreCommand="{Binding LoadMoreMessagesCommand}">
 			</loading:LoadingListView>
 
 			<Grid x:Name="ControlGrid" ColumnDefinitions="*,40" Grid.Row="1" Margin="0,12,0,0">
@@ -154,7 +154,7 @@
 								<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
 										Text="{x:Static resx:FontAwesome.EllipsisH}" TextColor="{StaticResource TextColorLightTheme}"
 										FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
-										Command="{Binding ExpandButtons}" />
+										Command="{Binding ExpandButtonsCommand}" />
 							</StackLayout>
 						</xct:Expander.Header>
 						<StackLayout Orientation="Vertical" Spacing="5" Margin="0,0,0,5" BackgroundColor="Transparent">

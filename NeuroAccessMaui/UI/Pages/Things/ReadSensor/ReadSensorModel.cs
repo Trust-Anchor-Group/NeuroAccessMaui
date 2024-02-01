@@ -1,31 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Threading.Tasks;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Pages.Things.ReadSensor.Model;
 using NeuroAccessMaui.UI.Pages.Things.ViewClaimThing;
 using NeuroAccessMaui.UI.Pages.Things.ViewThing;
-using IdApp.Services;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.PEP;
 using Waher.Networking.XMPP.Sensor;
 using Waher.Things;
 using Waher.Things.SensorData;
-using Xamarin.CommunityToolkit.Helpers;
-using Xamarin.Forms;
 
 namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor
 {
 	/// <summary>
 	/// The view model to bind to when displaying a thing.
 	/// </summary>
-	public class ReadSensorModel : XmppViewModel
+	public partial class ReadSensorModel : XmppViewModel
 	{
-		private ContactInfo thing;
-		private ThingReference thingRef;
-		private SensorDataClientRequest request;
+		private ContactInfo? thing;
+		private ThingReference? thingRef;
+		private SensorDataClientRequest? request;
 
 		/// <summary>
 		/// Creates an instance of the <see cref="ReadSensorModel"/> class.
@@ -33,9 +31,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor
 		protected internal ReadSensorModel()
 			: base()
 		{
-			this.ClickCommand = new Command(async x => await this.LabelClicked(x));
-
-			this.SensorData = new ObservableCollection<object>();
+			this.SensorData = [];
 		}
 
 		/// <inheritdoc/>
@@ -43,7 +39,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor
 		{
 			await base.OnInitialize();
 
-			if (this.NavigationService.TryGetArgs(out ViewThingNavigationArgs args))
+			if (ServiceRef.NavigationService.TryGetArgs(out ViewThingNavigationArgs? args) && args.Thing is not null)
 			{
 				this.thing = args.Thing;
 
@@ -54,7 +50,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor
 
 				if (this.thing.MetaData is not null && this.thing.MetaData.Length > 0)
 				{
-					this.SensorData.Add(new HeaderModel(LocalizationResourceManager.Current["GeneralInformation"]));
+					this.SensorData.Add(new HeaderModel(ServiceRef.Localizer[nameof(AppResources.GeneralInformation)]));
 
 					foreach (Property Tag in this.thing.MetaData)
 						this.SensorData.Add(new HumanReadableTag(Tag));
@@ -63,35 +59,39 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor
 				this.SupportsSensorEvents = this.thing.SupportsSensorEvents ?? false;
 			}
 
-			this.AssignProperties();
-			this.EvaluateAllCommands();
+			this.CalcThingIsOnline();
 
-			this.XmppService.OnPresence += this.Xmpp_OnPresence;
-			this.TagProfile.Changed += this.TagProfile_Changed;
+			ServiceRef.XmppService.OnPresence += this.Xmpp_OnPresence;
+			ServiceRef.TagProfile.Changed += this.TagProfile_Changed;
 
-			if (this.thingRef is null)
-				this.request = this.XmppService.RequestSensorReadout(this.GetFullJid(), FieldType.All);
-			else
-				this.request = this.XmppService.RequestSensorReadout(this.GetFullJid(), new ThingReference[] { this.thingRef }, FieldType.All);
+			string? FullJid = this.GetFullJid();
 
-			this.request.OnStateChanged += this.Request_OnStateChanged;
-			this.request.OnFieldsReceived += this.Request_OnFieldsReceived;
-			this.request.OnErrorsReceived += this.Request_OnErrorsReceived;
+			if (!string.IsNullOrEmpty(FullJid))
+			{
+				if (this.thingRef is null)
+					this.request = ServiceRef.XmppService.RequestSensorReadout(FullJid, FieldType.All);
+				else
+					this.request = ServiceRef.XmppService.RequestSensorReadout(FullJid, [this.thingRef], FieldType.All);
 
-			this.XmppService.RegisterPepHandler(typeof(SensorData), this.SensorDataPersonalEventHandler);
+				this.request.OnStateChanged += this.Request_OnStateChanged;
+				this.request.OnFieldsReceived += this.Request_OnFieldsReceived;
+				this.request.OnErrorsReceived += this.Request_OnErrorsReceived;
+			}
+
+			ServiceRef.XmppService.RegisterPepHandler(typeof(SensorData), this.SensorDataPersonalEventHandler);
 		}
 
 		private Task Request_OnStateChanged(object Sender, SensorDataReadoutState NewState)
 		{
 			this.Status = NewState switch
 			{
-				SensorDataReadoutState.Requested => LocalizationResourceManager.Current["SensorDataRequested"],
-				SensorDataReadoutState.Accepted => LocalizationResourceManager.Current["SensorDataAccepted"],
-				SensorDataReadoutState.Cancelled => LocalizationResourceManager.Current["SensorDataCancelled"],
-				SensorDataReadoutState.Done => LocalizationResourceManager.Current["SensorDataDone"],
-				SensorDataReadoutState.Failure => LocalizationResourceManager.Current["SensorDataFailure"],
-				SensorDataReadoutState.Receiving => LocalizationResourceManager.Current["SensorDataReceiving"],
-				SensorDataReadoutState.Started => LocalizationResourceManager.Current["SensorDataStarted"],
+				SensorDataReadoutState.Requested => ServiceRef.Localizer[nameof(AppResources.SensorDataRequested)],
+				SensorDataReadoutState.Accepted => ServiceRef.Localizer[nameof(AppResources.SensorDataAccepted)],
+				SensorDataReadoutState.Cancelled => ServiceRef.Localizer[nameof(AppResources.SensorDataCancelled)],
+				SensorDataReadoutState.Done => ServiceRef.Localizer[nameof(AppResources.SensorDataDone)],
+				SensorDataReadoutState.Failure => ServiceRef.Localizer[nameof(AppResources.SensorDataFailure)],
+				SensorDataReadoutState.Receiving => ServiceRef.Localizer[nameof(AppResources.SensorDataReceiving)],
+				SensorDataReadoutState.Started => ServiceRef.Localizer[nameof(AppResources.SensorDataStarted)],
 				_ => string.Empty,
 			};
 
@@ -101,19 +101,19 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor
 		private string GetFieldTypeString(FieldType Type)
 		{
 			if (Type.HasFlag(FieldType.Identity))
-				return LocalizationResourceManager.Current["SensorDataHeaderIdentity"];
+				return ServiceRef.Localizer[nameof(AppResources.SensorDataHeaderIdentity)];
 			else if (Type.HasFlag(FieldType.Status))
-				return LocalizationResourceManager.Current["SensorDataHeaderStatus"];
+				return ServiceRef.Localizer[nameof(AppResources.SensorDataHeaderStatus)];
 			else if (Type.HasFlag(FieldType.Momentary))
-				return LocalizationResourceManager.Current["SensorDataHeaderMomentary"];
+				return ServiceRef.Localizer[nameof(AppResources.SensorDataHeaderMomentary)];
 			else if (Type.HasFlag(FieldType.Peak))
-				return LocalizationResourceManager.Current["SensorDataHeaderPeak"];
+				return ServiceRef.Localizer[nameof(AppResources.SensorDataHeaderPeak)];
 			else if (Type.HasFlag(FieldType.Computed))
-				return LocalizationResourceManager.Current["SensorDataHeaderComputed"];
+				return ServiceRef.Localizer[nameof(AppResources.SensorDataHeaderComputed)];
 			else if (Type.HasFlag(FieldType.Historical))
-				return LocalizationResourceManager.Current["SensorDataHeaderHistorical"];
+				return ServiceRef.Localizer[nameof(AppResources.SensorDataHeaderHistorical)];
 			else
-				return LocalizationResourceManager.Current["SensorDataHeaderOther"];
+				return ServiceRef.Localizer[nameof(AppResources.SensorDataHeaderOther)];
 		}
 
 		private Task Request_OnFieldsReceived(object Sender, IEnumerable<Field> NewFields)
@@ -123,10 +123,10 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor
 
 		private Task NewFieldsReported(IEnumerable<Field> NewFields)
 		{
-			this.UiSerializer.BeginInvokeOnMainThread(() =>
+			MainThread.BeginInvokeOnMainThread(() =>
 			{
 				string Category;
-				HeaderModel CategoryHeader = null;
+				HeaderModel? CategoryHeader = null;
 				string FieldName;
 				int CategoryIndex = 0;
 				int i, j, c;
@@ -192,7 +192,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor
 
 							if (Obj is GraphModel GraphModel)
 							{
-								j = string.Compare(FieldName, GraphModel.FieldName, true);
+								j = string.Compare(FieldName, GraphModel.FieldName, StringComparison.OrdinalIgnoreCase);
 								if (j < 0)
 									continue;
 								else
@@ -207,20 +207,20 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor
 											GraphModel.Add(Field);
 									}
 									else if (j > 0 && !IsMin && !IsMax)
-										this.SensorData.Insert(i, new GraphModel(Field, this));
+										this.SensorData.Insert(i, new GraphModel(Field));
 
 									break;
 								}
 							}
 							else
 							{
-								this.SensorData.Insert(i, new GraphModel(Field, this));
+								this.SensorData.Insert(i, new GraphModel(Field));
 								break;
 							}
 						}
 
 						if (i >= c)
-							this.SensorData.Add(new GraphModel(Field, this));
+							this.SensorData.Add(new GraphModel(Field));
 					}
 					else
 					{
@@ -230,7 +230,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor
 
 							if (Obj is FieldModel FieldModel)
 							{
-								j = string.Compare(FieldName, FieldModel.Name, true);
+								j = string.Compare(FieldName, FieldModel.Name, StringComparison.OrdinalIgnoreCase);
 								if (j < 0)
 									continue;
 								else
@@ -259,17 +259,17 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor
 			return Task.CompletedTask;
 		}
 
-		private Task Request_OnErrorsReceived(object Sender, IEnumerable<ThingError> NewErrors)
+		private Task Request_OnErrorsReceived(object? Sender, IEnumerable<ThingError> NewErrors)
 		{
 			return this.NewErrorsReported(NewErrors);
 		}
 
 		private Task NewErrorsReported(IEnumerable<ThingError> NewErrors)
 		{
-			this.UiSerializer.BeginInvokeOnMainThread(() =>
+			MainThread.BeginInvokeOnMainThread(() =>
 			{
-				string Errors = LocalizationResourceManager.Current["Errors"];
-				HeaderModel CategoryHeader = null;
+				string Errors = ServiceRef.Localizer[nameof(AppResources.Errors)];
+				HeaderModel? CategoryHeader = null;
 				int CategoryIndex = 0;
 				int i, c;
 
@@ -318,10 +318,11 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor
 			return Task.CompletedTask;
 		}
 
-		private async Task SensorDataPersonalEventHandler(object Sender, PersonalEventNotificationEventArgs e)
+		private async Task SensorDataPersonalEventHandler(object? Sender, PersonalEventNotificationEventArgs e)
 		{
 			if (e.PersonalEvent is SensorData SensorData &&
-				string.Compare(this.thing.BareJid, e.Publisher, true) == 0 &&
+				!string.IsNullOrEmpty(this.thing?.BareJid) &&
+				string.Equals(this.thing.BareJid, e.Publisher, StringComparison.OrdinalIgnoreCase) &&
 				string.IsNullOrEmpty(this.thing.SourceId) &&
 				string.IsNullOrEmpty(this.thing.NodeId) &&
 				string.IsNullOrEmpty(this.thing.Partition))
@@ -337,10 +338,10 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor
 		/// <inheritdoc/>
 		protected override async Task OnDispose()
 		{
-			this.XmppService.UnregisterPepHandler(typeof(SensorData), this.SensorDataPersonalEventHandler);
+			ServiceRef.XmppService.UnregisterPepHandler(typeof(SensorData), this.SensorDataPersonalEventHandler);
 
-			this.XmppService.OnPresence -= this.Xmpp_OnPresence;
-			this.TagProfile.Changed -= this.TagProfile_Changed;
+			ServiceRef.XmppService.OnPresence -= this.Xmpp_OnPresence;
+			ServiceRef.TagProfile.Changed -= this.TagProfile_Changed;
 
 			if (this.request is not null &&
 				(this.request.State == SensorDataReadoutState.Receiving ||
@@ -354,7 +355,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor
 			await base.OnDispose();
 		}
 
-		private Task Xmpp_OnPresence(object Sender, PresenceEventArgs e)
+		private Task Xmpp_OnPresence(object? Sender, PresenceEventArgs e)
 		{
 			this.CalcThingIsOnline();
 			return Task.CompletedTask;
@@ -366,18 +367,18 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor
 				this.IsThingOnline = false;
 			else
 			{
-				RosterItem Item = this.XmppService.GetRosterItem(this.thing.BareJid);
+				RosterItem? Item = ServiceRef.XmppService.GetRosterItem(this.thing.BareJid);
 				this.IsThingOnline = Item is not null && Item.HasLastPresence && Item.LastPresence.IsOnline;
 			}
 		}
 
-		private string GetFullJid()
+		private string? GetFullJid()
 		{
 			if (this.thing is null)
 				return null;
 			else
 			{
-				RosterItem Item = this.XmppService.GetRosterItem(this.thing.BareJid);
+				RosterItem? Item = ServiceRef.XmppService.GetRosterItem(this.thing.BareJid);
 
 				if (Item is null || !Item.HasLastPresence || !Item.LastPresence.IsOnline)
 					return null;
@@ -386,30 +387,20 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor
 			}
 		}
 
-		private void AssignProperties()
-		{
-			this.CalcThingIsOnline();
-		}
-
-		private void EvaluateAllCommands()
-		{
-		}
-
 		/// <inheritdoc/>
-		protected override Task XmppService_ConnectionStateChanged(object _, XmppState NewState)
+		protected override Task XmppService_ConnectionStateChanged(object? _, XmppState NewState)
 		{
-			this.UiSerializer.BeginInvokeOnMainThread(() =>
+			MainThread.BeginInvokeOnMainThread(() =>
 			{
 				this.SetConnectionStateAndText(NewState);
-				this.EvaluateAllCommands();
 			});
 
 			return Task.CompletedTask;
 		}
 
-		private void TagProfile_Changed(object Sender, PropertyChangedEventArgs e)
+		private void TagProfile_Changed(object? Sender, PropertyChangedEventArgs e)
 		{
-			this.UiSerializer.BeginInvokeOnMainThread(this.AssignProperties);
+			MainThread.BeginInvokeOnMainThread(this.CalcThingIsOnline);
 		}
 
 		#region Properties
@@ -420,86 +411,62 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor
 		public ObservableCollection<object> SensorData { get; }
 
 		/// <summary>
-		/// See <see cref="IsThingOnline"/>
-		/// </summary>
-		public static readonly BindableProperty IsThingOnlineProperty =
-			BindableProperty.Create(nameof(IsThingOnline), typeof(bool), typeof(ReadSensorModel), default(bool));
-
-		/// <summary>
 		/// Gets or sets whether the thing is in the contact.
 		/// </summary>
-		public bool IsThingOnline
-		{
-			get => (bool)this.GetValue(IsThingOnlineProperty);
-			set => this.SetValue(IsThingOnlineProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="SupportsSensorEvents"/>
-		/// </summary>
-		public static readonly BindableProperty SupportsSensorEventsProperty =
-			BindableProperty.Create(nameof(SupportsSensorEvents), typeof(bool), typeof(ReadSensorModel), default(bool));
+		[ObservableProperty]
+		private bool isThingOnline;
 
 		/// <summary>
 		/// Gets or sets whether the thing is a sensor
 		/// </summary>
-		public bool SupportsSensorEvents
-		{
-			get => (bool)this.GetValue(SupportsSensorEventsProperty);
-			set => this.SetValue(SupportsSensorEventsProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="HasStatus"/>
-		/// </summary>
-		public static readonly BindableProperty HasStatusProperty =
-			BindableProperty.Create(nameof(HasStatus), typeof(bool), typeof(ReadSensorModel), default(bool));
+		[ObservableProperty]
+		private bool supportsSensorEvents;
 
 		/// <summary>
 		/// Gets or sets whether there's a status message to display
 		/// </summary>
-		public bool HasStatus
-		{
-			get => (bool)this.GetValue(HasStatusProperty);
-			set => this.SetValue(HasStatusProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="Status"/>
-		/// </summary>
-		public static readonly BindableProperty StatusProperty =
-			BindableProperty.Create(nameof(Status), typeof(string), typeof(ReadSensorModel), default(string));
+		[ObservableProperty]
+		private bool hasStatus;
 
 		/// <summary>
 		/// Gets or sets a status message.
 		/// </summary>
-		public string Status
+		[ObservableProperty]
+		private string? status;
+
+		/// <inheritdoc/>
+		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
 		{
-			get => (string)this.GetValue(StatusProperty);
-			set
+			base.OnPropertyChanged(e);
+
+			switch (e.PropertyName)
 			{
-				this.SetValue(StatusProperty, value);
-				this.HasStatus = !string.IsNullOrEmpty(value);
+				case nameof(this.Status):
+					this.HasStatus = !string.IsNullOrEmpty(this.Status);
+					break;
+
+				case nameof(this.IsConnected):
+					this.CalcThingIsOnline();
+					break;
 			}
 		}
+
+		#endregion
 
 		/// <summary>
 		/// Command to bind to for detecting when a tag value has been clicked on.
 		/// </summary>
-		public System.Windows.Input.ICommand ClickCommand { get; }
-
-		#endregion
-
-		private Task LabelClicked(object obj)
+		[RelayCommand]
+		private static Task Click(object obj)
 		{
 			if (obj is HumanReadableTag Tag)
-				return ViewClaimThingViewModel.LabelClicked(Tag.Name, Tag.Value, Tag.LocalizedValue, this);
+				return ViewClaimThingViewModel.LabelClicked(Tag.Name, Tag.Value, Tag.LocalizedValue);
 			else if (obj is FieldModel Field)
-				return ViewClaimThingViewModel.LabelClicked(Field.Name, Field.ValueString, Field.ValueString, this);
+				return ViewClaimThingViewModel.LabelClicked(Field.Name, Field.ValueString, Field.ValueString);
 			else if (obj is ErrorModel Error)
-				return ViewClaimThingViewModel.LabelClicked(string.Empty, Error.ErrorMessage, Error.ErrorMessage, this);
+				return ViewClaimThingViewModel.LabelClicked(string.Empty, Error.ErrorMessage, Error.ErrorMessage);
 			else if (obj is string s)
-				return ViewClaimThingViewModel.LabelClicked(string.Empty, s, s, this);
+				return ViewClaimThingViewModel.LabelClicked(string.Empty, s, s);
 			else
 				return Task.CompletedTask;
 		}

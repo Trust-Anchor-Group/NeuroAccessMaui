@@ -217,7 +217,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.CodeBlocks
 		/// <returns>Grade of support.</returns>
 		public Grade Supports(string Language)
 		{
-			return string.Compare(Language, Constants.UriSchemes.IotSc, true) == 0 ? Grade.Excellent : Grade.NotAtAll;
+			return string.Equals(Language, Constants.UriSchemes.IotSc, StringComparison.OrdinalIgnoreCase) ? Grade.Excellent : Grade.NotAtAll;
 		}
 	}
 }

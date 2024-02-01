@@ -1,5 +1,4 @@
 ﻿using NeuroAccessMaui.Resources.Languages;
-using NeuroAccessMaui.Services.Xmpp;
 using System.Globalization;
 using System.Text;
 using Waher.Networking.XMPP;
@@ -8,7 +7,7 @@ using Waher.Persistence;
 using Waher.Persistence.Attributes;
 using Waher.Persistence.Filters;
 
-namespace NeuroAccessMaui.Services
+namespace NeuroAccessMaui.Services.Contacts
 {
 	/// <summary>
 	/// Contains information about a contact.
@@ -303,22 +302,16 @@ namespace NeuroAccessMaui.Services
 				return Item.NameOrBareJid;
 
 			lock (identityCache)
-			{
 				if (identityCache.TryGetValue(RemoteId, out LegalIdentity? Id))
-				{
 					if (Id is not null)
 						return GetFriendlyName(Id);
 					else
 						AccountIsGuid = false;
-				}
-			}
 
 			if (AccountIsGuid)
 			{
 				lock (identityCache)
-				{
 					identityCache[RemoteId] = null;
-				}
 
 				Task _ = Task.Run(async () =>
 				{
@@ -327,9 +320,7 @@ namespace NeuroAccessMaui.Services
 						LegalIdentity Id = await ServiceRef.XmppService.GetLegalIdentity(RemoteId);
 
 						lock (identityCache)
-						{
 							identityCache[RemoteId] = Id;
-						}
 					}
 					catch (Exception)
 					{
@@ -389,7 +380,6 @@ namespace NeuroAccessMaui.Services
 			string? Phone = null;
 
 			foreach (Property P in MetaData)
-			{
 				switch (P.Name.ToUpper(CultureInfo.InvariantCulture))
 				{
 					case Constants.XmppProperties.Apartment:
@@ -464,7 +454,6 @@ namespace NeuroAccessMaui.Services
 						Phone = P.Value;
 						break;
 				}
-			}
 
 			StringBuilder? sb = null;
 
@@ -508,7 +497,6 @@ namespace NeuroAccessMaui.Services
 			bool HasOrg = false;
 
 			foreach (Property P in Identity.Properties)
-			{
 				switch (P.Name.ToUpper(CultureInfo.InvariantCulture))
 				{
 					case Constants.XmppProperties.FirstName:
@@ -545,7 +533,6 @@ namespace NeuroAccessMaui.Services
 						HasOrg = true;
 						break;
 				}
-			}
 
 			StringBuilder? sb = null;
 
@@ -583,9 +570,7 @@ namespace NeuroAccessMaui.Services
 			string? LastNames = null;
 
 			if (Identity?.Properties is not null)
-			{
 				foreach (Property P in Identity.Properties)
-				{
 					switch (P.Name)
 					{
 						case Constants.XmppProperties.FirstName:
@@ -600,8 +585,6 @@ namespace NeuroAccessMaui.Services
 							MiddleNames = P.Value;
 							break;
 					}
-				}
-			}
 
 			return GetFullName(FirstName, MiddleNames, LastNames);
 		}
@@ -654,7 +637,7 @@ namespace NeuroAccessMaui.Services
 			if (string.IsNullOrEmpty(NodeId) && string.IsNullOrEmpty(PartitionId) && string.IsNullOrEmpty(SourceId))
 				return await GetFriendlyName(BareJid);
 
-			ContactInfo Thing = await ContactInfo.FindByBareJid(BareJid, SourceId, PartitionId, NodeId);
+			ContactInfo Thing = await FindByBareJid(BareJid, SourceId, PartitionId, NodeId);
 
 			if (Thing is not null)
 				return Thing.FriendlyName;
@@ -662,20 +645,16 @@ namespace NeuroAccessMaui.Services
 			string s = NodeId;
 
 			if (!string.IsNullOrEmpty(PartitionId))
-			{
 				if (string.IsNullOrEmpty(s))
 					s = PartitionId;
 				else
 					s = ServiceRef.Localizer[nameof(AppResources.XInY), s, PartitionId];
-			}
 
 			if (!string.IsNullOrEmpty(SourceId))
-			{
 				if (string.IsNullOrEmpty(s))
 					s = SourceId;
 				else
 					s = ServiceRef.Localizer[nameof(AppResources.XInY), s, SourceId];
-			}
 
 			return ServiceRef.Localizer[nameof(AppResources.XOnY), s, BareJid];
 		}
@@ -690,13 +669,9 @@ namespace NeuroAccessMaui.Services
 			get
 			{
 				if (this.metaData is not null)
-				{
 					foreach (Property P in this.metaData)
-					{
 						if (string.Equals(P.Name, PropertyName, StringComparison.OrdinalIgnoreCase))
 							return P.Value;
-					}
-				}
 
 				return string.Empty;
 			}

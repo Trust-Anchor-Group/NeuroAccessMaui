@@ -1,5 +1,5 @@
-﻿using NeuroAccessMaui.UI.Pages.Things.CanRead;
-using IdApp.Services.Notification.Things;
+﻿using NeuroAccessMaui.Services.Notification.Things;
+using NeuroAccessMaui.UI.Pages.Things.CanRead;
 
 namespace NeuroAccessMaui.UI.Pages.Things.CanControl
 {
@@ -8,12 +8,14 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanControl
 	/// </summary>
 	public class CanControlNavigationArgs : ThingNavigationArgs
 	{
-		private readonly CanControlNotificationEvent @event;
+		private readonly CanControlNotificationEvent? @event;
 
 		/// <summary>
 		/// Creates a new instance of the <see cref="CanControlNavigationArgs"/> class.
 		/// </summary>
-		public CanControlNavigationArgs() { }
+		public CanControlNavigationArgs()
+		{
+		}
 
 		/// <summary>
 		/// Creates a new instance of the <see cref="CanControlNavigationArgs"/> class.
@@ -32,16 +34,16 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanControl
 		/// <summary>
 		/// Notification event objcet.
 		/// </summary>
-		public new CanControlNotificationEvent Event => this.@event;
+		public new CanControlNotificationEvent? Event => this.@event;
 
 		/// <summary>
 		/// Parameters
 		/// </summary>
-		public string[] Parameters { get; }
+		public string[]? Parameters { get; }
 
 		/// <summary>
 		/// AllParameters
 		/// </summary>
-		public string[] AllParameters { get; }
+		public string[]? AllParameters { get; }
 	}
 }

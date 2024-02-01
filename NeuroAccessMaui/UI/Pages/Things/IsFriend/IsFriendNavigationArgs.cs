@@ -1,4 +1,4 @@
-﻿using IdApp.Services.Notification.Things;
+﻿using NeuroAccessMaui.Services.Notification.Things;
 
 namespace NeuroAccessMaui.UI.Pages.Things.IsFriend
 {
@@ -10,7 +10,9 @@ namespace NeuroAccessMaui.UI.Pages.Things.IsFriend
 		/// <summary>
 		/// Creates a new instance of the <see cref="IsFriendNavigationArgs"/> class.
 		/// </summary>
-		public IsFriendNavigationArgs() { }
+		public IsFriendNavigationArgs()
+		{
+		}
 
 		/// <summary>
 		/// Creates a new instance of the <see cref="IsFriendNavigationArgs"/> class.

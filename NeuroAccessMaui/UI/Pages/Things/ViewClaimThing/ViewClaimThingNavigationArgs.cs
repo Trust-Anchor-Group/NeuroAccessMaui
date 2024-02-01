@@ -1,4 +1,4 @@
-﻿using IdApp.Services.Navigation;
+﻿using NeuroAccessMaui.Services.Navigation;
 
 namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 {
@@ -24,6 +24,6 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
         /// <summary>
         /// The iotdisco claim URI
         /// </summary>
-        public string Uri { get; }
+        public string? Uri { get; }
     }
 }

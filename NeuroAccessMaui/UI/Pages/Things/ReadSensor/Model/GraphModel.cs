@@ -1,18 +1,11 @@
-﻿using IdApp.Services;
-using SkiaSharp;
-using System;
-using System.Collections.Generic;
+﻿using SkiaSharp;
 using System.ComponentModel;
-using System.IO;
 using System.Text;
-using System.Threading;
 using Waher.Events;
 using Waher.Script;
 using Waher.Script.Graphs;
 using Waher.Script.Objects.VectorSpaces;
 using Waher.Things.SensorData;
-using Xamarin.CommunityToolkit.Helpers;
-using Xamarin.Forms;
 
 namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor.Model
 {
@@ -21,23 +14,20 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor.Model
 	/// </summary>
 	public class GraphModel : INotifyPropertyChanged
 	{
-		private readonly SortedDictionary<DateTime, Field> fieldValues = new();
-		private readonly SortedDictionary<DateTime, Field> minFieldValues = new();
-		private readonly SortedDictionary<DateTime, Field> maxFieldValues = new();
-		private readonly IServiceReferences references;
+		private readonly SortedDictionary<DateTime, Field> fieldValues = [];
+		private readonly SortedDictionary<DateTime, Field> minFieldValues = [];
+		private readonly SortedDictionary<DateTime, Field> maxFieldValues = [];
 		private readonly string fieldName;
-		private Timer timer = null;
-		private ImageSource image = null;
+		private Timer? timer = null;
+		private ImageSource? image = null;
 
 		/// <summary>
 		/// Represents a set of historical field values.
 		/// </summary>
 		/// <param name="Field">Field added</param>
-		/// <param name="References">Service references</param>
-		public GraphModel(Field Field, IServiceReferences References)
+		public GraphModel(Field Field)
 		{
 			this.fieldName = Field.Name;
-			this.references = References;
 
 			this.Add(Field);
 		}
@@ -50,7 +40,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor.Model
 		/// <summary>
 		/// Image Source
 		/// </summary>
-		public ImageSource Image => this.image;
+		public ImageSource? Image => this.image;
 
 		/// <summary>
 		/// If graph has an image.
@@ -107,11 +97,11 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor.Model
 			this.timer = new Timer(this.GenerateGraph, null, 500, Timeout.Infinite);
 		}
 
-		private async void GenerateGraph(object _)
+		private async void GenerateGraph(object? _)
 		{
 			try
 			{
-				Variables v = new();
+				Variables v = [];
 				Expression Exp;
 				bool HasMin = false;
 				bool HasMax = false;
@@ -209,7 +199,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor.Model
 
 				Exp = new Expression(sb.ToString());
 
-				Graph Graph = await Exp.EvaluateAsync(v) as Graph;
+				Graph? Graph = await Exp.EvaluateAsync(v) as Graph;
 
 				if (Graph is not null)
 				{
@@ -261,6 +251,6 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor.Model
 		/// <summary>
 		/// Event raised when a property has changed.
 		/// </summary>
-		public event PropertyChangedEventHandler PropertyChanged;
+		public event PropertyChangedEventHandler? PropertyChanged;
 	}
 }

@@ -28,6 +28,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
 using NeuroAccessMaui.Resources.Languages;
 using System.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 {
@@ -44,11 +45,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		protected internal ChatViewModel()
 			: base()
 		{
-			this.ExpandButtons = new Command(_ => this.IsButtonExpanded = !this.IsButtonExpanded);
-			this.SendCommand = new Command(async _ => await this.ExecuteSendMessage(), _ => this.CanExecuteSendMessage());
-			this.PauseResumeCommand = new Command(async _ => await this.ExecutePauseResume(), _ => this.CanExecutePauseResume());
 			this.CancelCommand = new Command(async _ => await this.ExecuteCancelMessage(), _ => this.CanExecuteCancelMessage());
-			this.LoadMoreMessages = new Command(async _ => await this.ExecuteLoadMessagesAsync(), _ => this.CanExecuteLoadMoreMessages());
 			this.RecordAudio = new Command(async _ => await this.ExecuteRecordAudio(), _ => this.CanExecuteRecordAudio());
 			this.TakePhoto = new Command(async _ => await this.ExecuteTakePhoto(), _ => this.CanExecuteTakePhoto());
 			this.EmbedFile = new Command(async _ => await this.ExecuteEmbedFile(), _ => this.CanExecuteEmbedFile());
@@ -97,7 +94,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 
 		private void EvaluateAllCommands()
 		{
-			this.EvaluateCommands(this.SendCommand, this.CancelCommand, this.LoadMoreMessages, this.PauseResumeCommand, this.RecordAudio, this.TakePhoto, this.EmbedFile,
+			this.EvaluateCommands(this.CancelCommand, this.RecordAudio, this.TakePhoto, this.EmbedFile,
 				this.EmbedId, this.EmbedContract, this.EmbedMoney, this.EmbedToken, this.EmbedThing);
 		}
 
@@ -138,8 +135,10 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		/// Current Markdown input.
 		/// </summary>
 		[ObservableProperty]
-		private string MarkdownInput;
+		[NotifyCanExecuteChangedFor(nameof(SendCommand))]
+		private string markdownInput = string.Empty;
 
+		/// <inheritdoc/>
 		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
 		{
 			base.OnPropertyChanged(e);
@@ -155,8 +154,33 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 					break;
 
 				case nameof(this.MessageId):
-					this.IsWriting = !string.IsNullOrEmpty(value);
+					this.IsWriting = !string.IsNullOrEmpty(this.MessageId);
 					this.EvaluateAllCommands();
+					break;
+
+				case nameof(this.IsWriting):
+					this.IsButtonExpanded = false;
+					break;
+
+				case nameof(this.IsRecordingAudio):
+					this.IsRecordingPaused = audioRecorder.Value.IsPaused;
+					this.IsWriting = this.IsRecordingAudio;
+
+					if (audioRecorderTimer is null)
+					{
+						audioRecorderTimer = new System.Timers.Timer(100);
+						audioRecorderTimer.Elapsed += this.OnAudioRecorderTimer;
+						audioRecorderTimer.AutoReset = true;
+					}
+
+					audioRecorderTimer.Enabled = this.IsRecordingAudio;
+
+					this.OnPropertyChanged(nameof(RecordingTime));
+					this.EvaluateAllCommands();
+					break;
+
+				case nameof(this.IsConnected):
+					this.SendCommand.NotifyCanExecuteChanged();
 					break;
 			}
 		}
@@ -165,7 +189,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		/// Current Markdown input.
 		/// </summary>
 		[ObservableProperty]
-		private string messageId;
+		private string? messageId;
 
 		/// <summary>
 		/// Current Markdown input.
@@ -175,55 +199,17 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		private bool existsMoreMessages;
 
 		/// <summary>
-		/// <see cref="IsWriting"/>
-		/// </summary>
-		public static readonly BindableProperty IsWritingProperty =
-			BindableProperty.Create(nameof(IsWriting), typeof(bool), typeof(ChatViewModel), default(bool));
-
-		/// <summary>
 		/// If the user is writing markdown.
 		/// </summary>
-		public bool IsWriting
-		{
-			get => (bool)this.GetValue(IsWritingProperty);
-			set
-			{
-				this.SetValue(IsWritingProperty, value);
-				this.IsButtonExpanded = false;
-			}
-		}
-
-		/// <summary>
-		/// <see cref="IsRecordingAudio"/>
-		/// </summary>
-		public static readonly BindableProperty IsRecordingAudioProperty =
-			BindableProperty.Create(nameof(IsRecordingAudio), typeof(bool), typeof(ChatViewModel), default(bool));
+		[ObservableProperty]		
+		private bool isWriting;
 
 		/// <summary>
 		/// If the user is recording an audio message
 		/// </summary>
-		public bool IsRecordingAudio
-		{
-			get => (bool)this.GetValue(IsRecordingAudioProperty);
-			set
-			{
-				this.SetValue(IsRecordingAudioProperty, value);
-				this.IsRecordingPaused = audioRecorder.Value.IsPaused;
-				this.IsWriting = value;
-
-				if (audioRecorderTimer is null)
-				{
-					audioRecorderTimer = new Timer(100);
-					audioRecorderTimer.Elapsed += this.OnAudioRecorderTimer;
-					audioRecorderTimer.AutoReset = true;
-				}
-
-				audioRecorderTimer.Enabled = value;
-
-				this.OnPropertyChanged(nameof(this.RecordingTime));
-				this.EvaluateAllCommands();
-			}
-		}
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(SendCommand))]
+		private bool isRecordingAudio;
 
 		/// <summary>
 		/// If the audio recording is paused
@@ -332,7 +318,30 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			});
 		}
 
-		private async Task ExecuteLoadMessagesAsync(bool LoadMore = true)
+		/// <summary>
+		/// Toggles command buttons
+		/// </summary>
+		[RelayCommand]
+		private void ExpandButtons()
+		{
+			this.IsButtonExpanded = !this.IsButtonExpanded;
+		}
+
+		/// <summary>
+		/// The command to bind to for loading more messages.
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(CanExecuteLoadMoreMessages))]
+		private Task LoadMoreMessages()
+		{
+			return this.LoadMoreMessages(true);
+		}
+
+		private bool CanExecuteLoadMoreMessages()
+		{
+			return this.ExistsMoreMessages && this.Messages.Count > 0;
+		}
+
+		private async Task LoadMoreMessages(bool LoadMore)
 		{
 			IEnumerable<ChatMessage>? Messages = null;
 			int c = Constants.BatchSizes.MessageBatchSize;
@@ -415,29 +424,19 @@ After:
 		}
 
 		/// <summary>
-		/// <see cref="IsButtonExpanded"/>
-		/// </summary>
-		public static readonly BindableProperty IsButtonExpandedProperty =
-			BindableProperty.Create(nameof(IsButtonExpanded), typeof(bool), typeof(ChatViewModel), default(bool));
-
-		/// <summary>
 		/// If the button is expanded
 		/// </summary>
-		public bool IsButtonExpanded
-		{
-			get => (bool)this.GetValue(IsButtonExpandedProperty);
-			set => this.SetValue(IsButtonExpandedProperty, value);
-		}
-
-		/// <summary>
-		/// Command to expand the buttons
-		/// </summary>
-		public ICommand ExpandButtons { get; }
+		[ObservableProperty]
+		private bool isButtonExpanded;
 
 		/// <summary>
 		/// The command to bind to for sending user input
 		/// </summary>
-		public ICommand SendCommand { get; }
+		[RelayCommand(CanExecute = nameof(CanExecuteSendMessage))]
+		private Task Send()
+		{
+			return this.ExecuteSendMessage();
+		}
 
 		private bool CanExecuteSendMessage()
 		{
@@ -451,12 +450,10 @@ After:
 				try
 				{
 					await audioRecorder.Value.StopRecording();
-					string audioPath = await this.audioRecorderTask;
+					string audioPath = await this.audioRecorderTask!;
 
 					if (audioPath is not null)
-					{
 						await this.EmbedMedia(audioPath, true);
-					}
 				}
 				catch (Exception ex)
 				{
@@ -474,9 +471,9 @@ After:
 			}
 		}
 
-		private Task ExecuteSendMessage(string ReplaceObjectId, string MarkdownInput)
+		private Task ExecuteSendMessage(string? ReplaceObjectId, string MarkdownInput)
 		{
-			return ExecuteSendMessage(ReplaceObjectId, MarkdownInput, this.BareJid, this);
+			return ExecuteSendMessage(ReplaceObjectId, MarkdownInput, this.BareJid!, this);
 		}
 
 		/// <summary>
@@ -485,8 +482,19 @@ After:
 		/// <param name="ReplaceObjectId">ID of message being updated, or the empty string.</param>
 		/// <param name="MarkdownInput">Markdown input.</param>
 		/// <param name="BareJid">Bare JID of recipient.</param>
-		/// <param name="ServiceReferences">Service references.</param>
-		public static async Task ExecuteSendMessage(string ReplaceObjectId, string MarkdownInput, string BareJid, IServiceReferences ServiceReferences)
+		public static Task ExecuteSendMessage(string? ReplaceObjectId, string MarkdownInput, string BareJid)
+		{
+			return ExecuteSendMessage(ReplaceObjectId, MarkdownInput, BareJid, null);
+		}
+
+		/// <summary>
+		/// Sends a Markdown-formatted chat message
+		/// </summary>
+		/// <param name="ReplaceObjectId">ID of message being updated, or the empty string.</param>
+		/// <param name="MarkdownInput">Markdown input.</param>
+		/// <param name="BareJid">Bare JID of recipient.</param>
+		/// <param name="ChatViewModel">Optional chat view model.</param>
+		public static async Task ExecuteSendMessage(string? ReplaceObjectId, string MarkdownInput, string BareJid, ChatViewModel? ChatViewModel)
 		{
 			try
 			{
@@ -548,7 +556,7 @@ After:
 				{
 					await Database.Insert(Message);
 
-					if (ServiceReferences is ChatViewModel ChatViewModel)
+					if (ChatViewModel is not null)
 						await ChatViewModel.MessageAddedAsync(Message);
 				}
 				else
@@ -560,7 +568,7 @@ After:
 						ReplaceObjectId = null;
 						await Database.Insert(Message);
 
-						if (ServiceReferences is ChatViewModel ChatViewModel)
+						if (ChatViewModel is not null)
 							await ChatViewModel.MessageAddedAsync(Message);
 					}
 					else
@@ -574,24 +582,33 @@ After:
 
 						Message = Old;
 
-						if (ServiceReferences is ChatViewModel ChatViewModel)
+						if (ChatViewModel is not null)
 							await ChatViewModel.MessageUpdatedAsync(Message);
 					}
 				}
 
-				ServiceReferences.XmppService.SendMessage(QoSLevel.Unacknowledged, Waher.Networking.XMPP.MessageType.Chat, Message.ObjectId,
+				ServiceRef.XmppService.SendMessage(QoSLevel.Unacknowledged, Waher.Networking.XMPP.MessageType.Chat, Message.ObjectId ?? string.Empty,
 					BareJid, Xml.ToString(), Message.PlainText, string.Empty, string.Empty, string.Empty, string.Empty, null, null);
 			}
 			catch (Exception ex)
 			{
-				await ServiceReferences.UiSerializer.DisplayAlert(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
 
 		/// <summary>
 		/// The command to bind for pausing/resuming the audio recording
 		/// </summary>
-		public ICommand PauseResumeCommand { get; }
+		[RelayCommand(CanExecute = nameof(CanExecutePauseResume))]
+		private async Task PauseResume()
+		{
+			if (audioRecorder.Value.IsPaused)
+				await audioRecorder.Value.Resume();
+			else
+				await audioRecorder.Value.Pause();
+
+			this.IsRecordingPaused = audioRecorder.Value.IsPaused;
+		}
 
 		private bool CanExecutePauseResume()
 		{
@@ -634,16 +651,6 @@ After:
 			return Task.CompletedTask;
 		}
 
-		/// <summary>
-		/// The command to bind to for loading more messages.
-		/// </summary>
-		public ICommand LoadMoreMessages { get; }
-
-		private bool CanExecuteLoadMoreMessages()
-		{
-			return this.ExistsMoreMessages && this.Messages.Count > 0;
-		}
-
 		private static Timer audioRecorderTimer;
 
 		private static readonly Lazy<AudioRecorderService> audioRecorder = new(() => {
@@ -655,7 +662,7 @@ After:
 			};
 		}, System.Threading.LazyThreadSafetyMode.PublicationOnly);
 
-		private Task<string> audioRecorderTask = null;
+		private Task<string>? audioRecorderTask = null;
 
 		/// <summary>
 		/// Command to take and send a audio record
@@ -678,23 +685,9 @@ After:
 			return this.IsConnected && !this.IsWriting && ServiceRef.XmppService.FileUploadIsSupported;
 		}
 
-		private async Task ExecutePauseResume()
+		private void OnAudioRecorderTimer(object source, ElapsedEventArgs e)
 		{
-			if (audioRecorder.Value.IsPaused)
-			{
-				await audioRecorder.Value.Resume();
-			}
-			else
-			{
-				await audioRecorder.Value.Pause();
-			}
-
-			this.IsRecordingPaused = audioRecorder.Value.IsPaused;
-		}
-
-		private void OnAudioRecorderTimer(Object source, System.Timers.ElapsedEventArgs e)
-		{
-			this.OnPropertyChanged(nameof(this.RecordingTime));
+			this.OnPropertyChanged(nameof(RecordingTime));
 			this.IsRecordingPaused = audioRecorder.Value.IsPaused;
 		}
 
@@ -732,7 +725,7 @@ After:
 				return;
 			}
 
-			if (Device.RuntimePlatform == Device.iOS)
+			if (DeviceInfo.Platform == DevicePlatform.iOS)
 			{
 				MediaFile capturedPhoto;
 
@@ -759,7 +752,7 @@ After:
 					}
 					catch (Exception ex)
 					{
-						await ServiceRef.UiSerializer.DisplayAlert(ex);
+						await ServiceRef.UiSerializer.DisplayException(ex);
 					}
 				}
 			}
@@ -788,7 +781,7 @@ After:
 					}
 					catch (Exception ex)
 					{
-						await ServiceRef.UiSerializer.DisplayAlert(ex);
+						await ServiceRef.UiSerializer.DisplayException(ex);
 					}
 				}
 			}
@@ -941,7 +934,7 @@ After:
 
 		private async Task ExecuteEmbedId()
 		{
-			TaskCompletionSource<ContactInfoModel> SelectedContact = new();
+			TaskCompletionSource<ContactInfoModel?> SelectedContact = new();
 			ContactListNavigationArgs Args = new(ServiceRef.Localizer[nameof(AppResources.SelectContactToPay)], SelectedContact)
 			{
 				CanScanQrCode = true
@@ -949,7 +942,7 @@ After:
 
 			await ServiceRef.NavigationService.GoToAsync(nameof(MyContactsPage), Args, BackMethod.Pop);
 
-			ContactInfoModel Contact = await SelectedContact.Task;
+			ContactInfoModel? Contact = await SelectedContact.Task;
 			if (Contact is null)
 				return;
 
@@ -996,12 +989,12 @@ After:
 
 		private async Task ExecuteEmbedContract()
 		{
-			TaskCompletionSource<Contract> SelectedContract = new();
+			TaskCompletionSource<Contract?> SelectedContract = new();
 			MyContractsNavigationArgs Args = new(ContractsListMode.Contracts, SelectedContract);
 
 			await ServiceRef.NavigationService.GoToAsync(nameof(MyContractsPage), Args, BackMethod.Pop);
 
-			Contract Contract = await SelectedContract.Task;
+			Contract? Contract = await SelectedContract.Task;
 			if (Contract is null)
 				return;
 
@@ -1286,7 +1279,7 @@ After:
 								if (!Token.TryParse(Doc.DocumentElement, out Token ParsedToken))
 									throw new Exception(ServiceRef.Localizer[nameof(AppResources.InvalidNeuroFeatureToken)]);
 
-								if (!ServiceRef.NotificationService.TryGetNotificationEvents(NotificationEventType.Wallet, ParsedToken.TokenId, out NotificationEvent[] Events))
+								if (!ServiceRef.NotificationService.TryGetNotificationEvents(NotificationEventType.Wallet, ParsedToken.TokenId, out NotificationEvent[]? Events))
 									Events = [];
 
 								TokenDetailsNavigationArgs Args = new(new TokenItem(ParsedToken, this, Events));
@@ -1304,7 +1297,7 @@ After:
 			}
 			catch (Exception ex)
 			{
-				await ServiceRef.UiSerializer.DisplayAlert(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
 
@@ -1393,7 +1386,7 @@ After:
 		/// <summary>
 		/// Title of the current view
 		/// </summary>
-		public Task<string> Title => Task.FromResult<string>(this.FriendlyName);
+		public Task<string> Title => Task.FromResult<string>(this.FriendlyName ?? string.Empty);
 
 		/// <summary>
 		/// If linkable view has media associated with link.
@@ -1403,12 +1396,12 @@ After:
 		/// <summary>
 		/// Encoded media, if available.
 		/// </summary>
-		public byte[] Media => null;
+		public byte[]? Media => null;
 
 		/// <summary>
 		/// Content-Type of associated media.
 		/// </summary>
-		public string MediaContentType => null;
+		public string? MediaContentType => null;
 
 		#endregion
 

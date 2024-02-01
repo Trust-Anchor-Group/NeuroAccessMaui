@@ -1,29 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services;
+using NeuroAccessMaui.UI.Pages.Contacts.Chat;
+using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using IdApp.Services;
+using System.Globalization;
+using System.Text.RegularExpressions;
 using Waher.Networking.DNS;
 using Waher.Networking.DNS.ResourceRecords;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Provisioning;
 using Waher.Persistence;
-using Xamarin.CommunityToolkit.Helpers;
-using Xamarin.Essentials;
-using Xamarin.Forms;
-using System.Text.RegularExpressions;
-using NeuroAccessMaui.UI.Pages.Contacts.Chat;
-using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 
 namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 {
 	/// <summary>
 	/// The view model to bind to for when displaying thing claim information.
 	/// </summary>
-	public class ViewClaimThingViewModel : XmppViewModel
+	public partial class ViewClaimThingViewModel : XmppViewModel
 	{
 		/// <summary>
 		/// Creates an instance of the <see cref="ViewClaimThingViewModel"/> class.
@@ -31,9 +28,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 		public ViewClaimThingViewModel()
 			: base()
 		{
-			this.ClickCommand = new Command(async x => await this.LabelClicked(x));
-			this.ClaimThingCommand = new Command(async _ => await this.ClaimThing(), _ => this.CanClaimThing);
-			this.Tags = new ObservableCollection<HumanReadableTag>();
+			this.Tags = [];
 		}
 
 		/// <inheritdoc/>
@@ -41,11 +36,11 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 		{
 			await base.OnInitialize();
 
-			if (this.NavigationService.TryGetArgs(out ViewClaimThingNavigationArgs args))
+			if (ServiceRef.NavigationService.TryGetArgs(out ViewClaimThingNavigationArgs? args) && args.Uri is not null)
 			{
 				this.Uri = args.Uri;
 
-				if (this.XmppService.TryDecodeIoTDiscoClaimURI(args.Uri, out MetaDataTag[] Tags))
+				if (ServiceRef.XmppService.TryDecodeIoTDiscoClaimURI(args.Uri, out MetaDataTag[]? Tags))
 				{
 					this.RegistryJid = null;
 
@@ -53,76 +48,35 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 					{
 						this.Tags.Add(new HumanReadableTag(Tag));
 
-						if (Tag.Name.ToUpper() == "R")
+						if (string.Equals(Tag.Name, "R", StringComparison.OrdinalIgnoreCase))
 							this.RegistryJid = Tag.StringValue;
 					}
 
 					if (string.IsNullOrEmpty(this.RegistryJid))
-						this.RegistryJid = this.XmppService.RegistryServiceJid;
+						this.RegistryJid = ServiceRef.XmppService.RegistryServiceJid;
 				}
 			}
-
-			this.AssignProperties();
-			this.EvaluateAllCommands();
-
-			this.TagProfile.Changed += this.TagProfile_Changed;
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnDispose()
+		protected override Task XmppService_ConnectionStateChanged(object? Sender, XmppState NewState)
 		{
-			this.TagProfile.Changed -= this.TagProfile_Changed;
-
-			await base.OnDispose();
-		}
-
-		private void AssignProperties()
-		{
-		}
-
-		private void EvaluateAllCommands()
-		{
-			this.EvaluateCommands(this.ClaimThingCommand);
-		}
-
-		/// <inheritdoc/>
-		protected override Task XmppService_ConnectionStateChanged(object Sender, XmppState NewState)
-		{
-			this.UiSerializer.BeginInvokeOnMainThread(() =>
+			MainThread.BeginInvokeOnMainThread(() =>
 			{
 				this.SetConnectionStateAndText(NewState);
-				this.EvaluateAllCommands();
+				this.ClaimThingCommand.NotifyCanExecuteChanged();
 			});
 
 			return Task.CompletedTask;
 		}
 
-		private void TagProfile_Changed(object Sender, PropertyChangedEventArgs e)
-		{
-			this.UiSerializer.BeginInvokeOnMainThread(this.AssignProperties);
-		}
-
 		#region Properties
-
-		/// <summary>
-		/// Command to bind to for detecting when a tag value has been clicked on.
-		/// </summary>
-		public ICommand ClickCommand { get; }
-
-		/// <summary>
-		/// See <see cref="Uri"/>
-		/// </summary>
-		public static readonly BindableProperty UriProperty =
-			BindableProperty.Create(nameof(Uri), typeof(string), typeof(ViewClaimThingViewModel), default(string));
 
 		/// <summary>
 		/// iotdisco URI to process
 		/// </summary>
-		public string Uri
-		{
-			get => (string)this.GetValue(UriProperty);
-			set => this.SetValue(UriProperty, value);
-		}
+		[ObservableProperty]
+		private string? uri;
 
 		/// <summary>
 		/// Holds a list of meta-data tags associated with a thing.
@@ -130,62 +84,29 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 		public ObservableCollection<HumanReadableTag> Tags { get; }
 
 		/// <summary>
-		/// The command to bind to for claiming a thing
-		/// </summary>
-		public ICommand ClaimThingCommand { get; }
-
-		/// <summary>
-		/// See <see cref="CanClaimThing"/>
-		/// </summary>
-		public static readonly BindableProperty CanClaimThingProperty =
-			BindableProperty.Create(nameof(CanClaimThing), typeof(bool), typeof(ViewClaimThingViewModel), default(bool));
-
-		/// <summary>
 		/// Gets or sets whether a user can claim a thing.
 		/// </summary>
-		public bool CanClaimThing
-		{
-			get { return this.IsConnected && this.XmppService.IsOnline; }
-		}
-
-		/// <summary>
-		/// See <see cref="MakePublic"/>
-		/// </summary>
-		public static readonly BindableProperty MakePublicProperty =
-			BindableProperty.Create(nameof(MakePublic), typeof(bool), typeof(ViewClaimThingViewModel), default(bool));
-
-		/// <summary>
-		/// Gets or sets whether a user can claim a thing.
-		/// </summary>
-		public bool MakePublic
-		{
-			get => (bool)this.GetValue(MakePublicProperty);
-			set => this.SetValue(MakePublicProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="RegistryJid"/>
-		/// </summary>
-		public static readonly BindableProperty RegistryJidProperty =
-			BindableProperty.Create(nameof(RegistryJid), typeof(string), typeof(ViewClaimThingViewModel), default(string));
+		[ObservableProperty]
+		private bool makePublic;
 
 		/// <summary>
 		/// JID of registry the thing uses.
 		/// </summary>
-		public string RegistryJid
-		{
-			get => (string)this.GetValue(RegistryJidProperty);
-			set => this.SetValue(RegistryJidProperty, value);
-		}
+		[ObservableProperty]
+		private string? registryJid;
 
 		#endregion
 
-		private Task LabelClicked(object obj)
+		/// <summary>
+		/// Command to bind to for detecting when a tag value has been clicked on.
+		/// </summary>
+		[RelayCommand]
+		private static Task Click(object obj)
 		{
 			if (obj is HumanReadableTag Tag)
-				return LabelClicked(Tag.Name, Tag.Value, Tag.LocalizedValue, this);
+				return LabelClicked(Tag.Name, Tag.Value, Tag.LocalizedValue);
 			else if (obj is string s)
-				return LabelClicked(string.Empty, s, s, this);
+				return LabelClicked(string.Empty, s, s);
 			else
 				return Task.CompletedTask;
 		}
@@ -196,15 +117,14 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 		/// <param name="Name">Tag name</param>
 		/// <param name="Value">Tag value</param>
 		/// <param name="LocalizedValue">Localized tag value</param>
-		/// <param name="Services">Service references</param>
-		public static async Task LabelClicked(string Name, string Value, string LocalizedValue, IServiceReferences Services)
-		{ 
+		public static async Task LabelClicked(string Name, string Value, string LocalizedValue)
+		{
 			try
 			{
 				switch (Name)
 				{
 					case "MAN":
-						if (System.Uri.TryCreate("https://" + Value, UriKind.Absolute, out Uri Uri) && await Launcher.TryOpenAsync(Uri))
+						if (System.Uri.TryCreate("https://" + Value, UriKind.Absolute, out Uri? Uri) && await Launcher.TryOpenAsync(Uri))
 							return;
 						break;
 
@@ -246,27 +166,27 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 								ContactInfo Info = await ContactInfo.FindByBareJid(Value);
 								if (Info is not null)
 								{
-									await Services.NavigationService.GoToAsync(nameof(ChatPage), new ChatNavigationArgs(Info));
+									await ServiceRef.NavigationService.GoToAsync(nameof(ChatPage), new ChatNavigationArgs(Info));
 									return;
 								}
 
 								int i = Value.IndexOf('@');
 								if (i > 0 && Guid.TryParse(Value[..i], out _))
 								{
-									if (Services.NavigationService.CurrentPage is not ViewIdentityPage)
+									if (ServiceRef.NavigationService.CurrentPage is not ViewIdentityPage)
 									{
 										Info = await ContactInfo.FindByLegalId(Value);
 										if (Info?.LegalIdentity is not null)
 										{
-											await Services.NavigationService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Info.LegalIdentity));
+											await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Info.LegalIdentity));
 											return;
 										}
 									}
 								}
 								else
 								{
-									string FriendlyName = await ContactInfo.GetFriendlyName(Value, Services);
-									await Services.NavigationService.GoToAsync(nameof(ChatPage), new ChatNavigationArgs(string.Empty, Value, FriendlyName));
+									string FriendlyName = await ContactInfo.GetFriendlyName(Value);
+									await ServiceRef.NavigationService.GoToAsync(nameof(ChatPage), new ChatNavigationArgs(string.Empty, Value, FriendlyName));
 									return;
 								}
 							}
@@ -275,19 +195,20 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 				}
 
 				await Clipboard.SetTextAsync(LocalizedValue);
-				await Services.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["SuccessTitle"], LocalizationResourceManager.Current["TagValueCopiedToClipboard"]);
+				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+					ServiceRef.Localizer[nameof(AppResources.TagValueCopiedToClipboard)]);
 			}
 			catch (Exception ex)
 			{
-				Services.LogService.LogException(ex);
-				await Services.UiSerializer.DisplayAlert(ex);
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
 
 		/// <summary>
 		/// Get Friendly name of thing
 		/// </summary>
-		public static string GetFriendlyName(IEnumerable<HumanReadableTag> Tags)
+		public static string? GetFriendlyName(IEnumerable<HumanReadableTag> Tags)
 		{
 			return GetFriendlyName(ToProperties(Tags));
 		}
@@ -295,7 +216,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 		/// <summary>
 		/// Get Friendly name of thing
 		/// </summary>
-		public static string GetFriendlyName(IEnumerable<MetaDataTag> Tags)
+		public static string? GetFriendlyName(IEnumerable<MetaDataTag> Tags)
 		{
 			return GetFriendlyName(ToProperties(Tags));
 		}
@@ -303,28 +224,58 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 		/// <summary>
 		/// Get Friendly name of thing
 		/// </summary>
-		public static string GetFriendlyName(IEnumerable<Property> Tags)
+		public static string? GetFriendlyName(IEnumerable<Property> Tags)
 		{
 			return ContactInfo.GetFriendlyName(Tags);
 		}
 
+		/// <summary>
+		/// Gets or sets whether a user can claim a thing.
+		/// </summary>
+		public bool CanClaimThing
+		{
+			get { return this.IsConnected && ServiceRef.XmppService.IsOnline; }
+		}
+
+		/// <inheritdoc/>
+		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+		{
+			base.OnPropertyChanged(e);
+
+			switch (e.PropertyName)
+			{
+				case nameof(this.IsConnected):
+					this.ClaimThingCommand.NotifyCanExecuteChanged();
+					break;
+			}
+		}
+
+		/// <summary>
+		/// The command to bind to for claiming a thing
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(CanClaimThing))]
 		private async Task ClaimThing()
 		{
 			try
 			{
-				if (!await App.VerifyPin())
+				if (string.IsNullOrEmpty(this.Uri))
 					return;
 
-				(bool Succeeded, NodeResultEventArgs e) = await this.NetworkService.TryRequest(() => this.XmppService.ClaimThing(this.Uri, this.MakePublic));
-				if (!Succeeded)
+				if (!await App.AuthenticateUser(true))
+					return;
+
+				(bool Succeeded, NodeResultEventArgs? e) = await ServiceRef.NetworkService.TryRequest(() =>
+					ServiceRef.XmppService.ClaimThing(this.Uri, this.MakePublic));
+
+				if (!Succeeded || e is null)
 					return;
 
 				if (e.Ok)
 				{
-					string FriendlyName = GetFriendlyName(this.Tags);
-					RosterItem Item = this.XmppService.GetRosterItem(e.JID);
+					string? FriendlyName = GetFriendlyName(this.Tags);
+					RosterItem? Item = ServiceRef.XmppService.GetRosterItem(e.JID);
 					if (Item is null)
-						this.XmppService.AddRosterItem(new RosterItem(e.JID, FriendlyName));
+						ServiceRef.XmppService.AddRosterItem(new RosterItem(e.JID, FriendlyName));
 
 					ContactInfo Info = await ContactInfo.FindByBareJid(e.JID, e.Node.SourceId, e.Node.Partition, e.Node.NodeId);
 					if (Info is null)
@@ -334,7 +285,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 							BareJid = e.JID,
 							LegalId = string.Empty,
 							LegalIdentity = null,
-							FriendlyName = FriendlyName,
+							FriendlyName = FriendlyName ?? string.Empty,
 							IsThing = true,
 							Owner = true,
 							SourceId = e.Node.SourceId,
@@ -348,27 +299,27 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 					}
 					else
 					{
-						Info.FriendlyName = FriendlyName;
+						Info.FriendlyName = FriendlyName ?? string.Empty;
 
 						await Database.Update(Info);
 					}
 
 					await Database.Provider.Flush();
-					await this.NavigationService.GoBackAsync();
+					await ServiceRef.NavigationService.GoBackAsync();
 				}
 				else
 				{
 					string Msg = e.ErrorText;
 					if (string.IsNullOrEmpty(Msg))
-						Msg = LocalizationResourceManager.Current["UnableToClaimThing"];
+						Msg = ServiceRef.Localizer[nameof(AppResources.UnableToClaimThing)];
 
-					await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["ErrorTitle"], Msg);
+					await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], Msg);
 				}
 			}
 			catch (Exception ex)
 			{
-				this.LogService.LogException(ex);
-				await this.UiSerializer.DisplayAlert(ex);
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
 
@@ -379,12 +330,12 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 		/// <returns>Enumerable set of <see cref="Property"/></returns>
 		public static Property[] ToProperties(IEnumerable<HumanReadableTag> Tags)
 		{
-			List<Property> Result = new();
+			List<Property> Result = [];
 
 			foreach (HumanReadableTag Tag in Tags)
 				Result.Add(new Property(Tag.Name, Tag.Value));
 
-			return Result.ToArray();
+			return [.. Result];
 		}
 
 		/// <summary>
@@ -394,12 +345,12 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 		/// <returns>Enumerable set of <see cref="Property"/></returns>
 		public static Property[] ToProperties(IEnumerable<MetaDataTag> Tags)
 		{
-			List<Property> Result = new();
+			List<Property> Result = [];
 
 			foreach (MetaDataTag Tag in Tags)
 				Result.Add(new Property(Tag.Name, Tag.StringValue));
 
-			return Result.ToArray();
+			return [.. Result];
 		}
 
 	}

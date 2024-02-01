@@ -210,7 +210,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="State">State object to pass on to the callback method.</param>
 		public void SendMessage(QoSLevel QoS, MessageType Type, string Id, string To, string CustomXml,
 			string Body, string Subject, string Language, string ThreadId, string ParentThreadId,
-			DeliveryEventHandler DeliveryCallback, object? State);
+			DeliveryEventHandler? DeliveryCallback, object? State);
 
 		#endregion
 
@@ -427,7 +427,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="DiscoUri">IoTDisco URI</param>
 		/// <param name="Tags">Decoded meta data tags.</param>
 		/// <returns>If DiscoUri was successfully decoded.</returns>
-		bool TryDecodeIoTDiscoClaimURI(string DiscoUri, out MetaDataTag[]? Tags);
+		bool TryDecodeIoTDiscoClaimURI(string DiscoUri, [NotNullWhen(true)] out MetaDataTag[]? Tags);
 
 		/// <summary>
 		/// Tries to decode an IoTDisco Search URI (subset of all possible IoTDisco URIs).

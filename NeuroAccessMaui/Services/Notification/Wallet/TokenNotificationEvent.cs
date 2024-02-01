@@ -139,6 +139,9 @@ namespace NeuroAccessMaui.Services.Notification.Wallet
 		/// </summary>
 		public override async Task Open()
 		{
+			if (string.IsNullOrEmpty(this.TokenId))
+				return;
+
 			this.Token ??= await ServiceRef.XmppService.GetNeuroFeature(this.TokenId);
 
 			if (!ServiceRef.NotificationService.TryGetNotificationEvents(NotificationEventType.Wallet, this.TokenId, out NotificationEvent[]? Events))

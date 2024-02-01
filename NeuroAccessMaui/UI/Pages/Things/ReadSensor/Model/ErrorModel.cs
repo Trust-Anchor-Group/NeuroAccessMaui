@@ -8,18 +8,10 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor.Model
 	/// <summary>
 	/// Represents an error from a thing.
 	/// </summary>
-	public class ErrorModel : INotifyPropertyChanged
+	/// <param name="Error">Error information.</param>
+	public class ErrorModel(ThingError Error) : INotifyPropertyChanged
 	{
-		private ThingError error;
-
-		/// <summary>
-		/// Represents an error from a thing.
-		/// </summary>
-		/// <param name="Error">Error information.</param>
-		public ErrorModel(ThingError Error)
-		{
-			this.error = Error;
-		}
+		private ThingError error = Error;
 
 		/// <summary>
 		/// Error message
@@ -67,6 +59,6 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor.Model
 		/// <summary>
 		/// Event raised when a property has changed.
 		/// </summary>
-		public event PropertyChangedEventHandler PropertyChanged;
+		public event PropertyChangedEventHandler? PropertyChanged;
 	}
 }

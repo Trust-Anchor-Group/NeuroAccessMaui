@@ -2,6 +2,7 @@
 using System.Text;
 using System.Xml;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.UI.Photos;
 using Waher.Content.Markdown;
 using Waher.Content.Markdown.Model;

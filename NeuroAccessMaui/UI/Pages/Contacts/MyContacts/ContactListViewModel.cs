@@ -15,6 +15,7 @@ using System.ComponentModel;
 using Waher.Networking.XMPP;
 using Waher.Persistence;
 using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services.Contacts;
 
 namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 {

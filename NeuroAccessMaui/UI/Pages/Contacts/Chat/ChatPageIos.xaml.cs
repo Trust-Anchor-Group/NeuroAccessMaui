@@ -44,7 +44,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 				if (this.ContainerView.TranslationY == 0)
 				{
 					double Bottom = 0;
-					if (Device.RuntimePlatform == Device.iOS)
+					if (DeviceInfo.Platform == DevicePlatform.iOS)
 					{
 						Thickness SafeInsets = this.On<iOS>().SafeAreaInsets();
 						Bottom = SafeInsets.Bottom;
@@ -85,12 +85,14 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			this.CollectionView.SelectedItem = null;
 		}
 
-		private void ViewCell_Appearing(object Sender, EventArgs EventArgs)
+		private void ViewCell_Appearing(object? Sender, EventArgs EventArgs)
 		{
 			// This is a one-time Cell.Appearing event handler to work around an iOS issue whereby an image inside a ListView
 			// does not update its size when fully loaded.
 
-			ViewCell ViewCell = (ViewCell)Sender;
+			if (Sender is not ViewCell ViewCell)
+				return;
+
 			ViewCell.Appearing -= this.ViewCell_Appearing;
 
 			FFImageLoading.Forms.CachedImage CachedImage = ViewCell.View.Descendants().OfType<FFImageLoading.Forms.CachedImage>().FirstOrDefault();
@@ -114,7 +116,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		{
 			private readonly WeakReference<ViewCell> weakViewCell = WeakViewCell;
 
-			public void HandleSizeChanged(object Sender, EventArgs EventArgs)
+			public void HandleSizeChanged(object? Sender, EventArgs EventArgs)
 			{
 				if (this.weakViewCell.TryGetTarget(out ViewCell? ViewCell))
 					ViewCell.ForceUpdateSize();

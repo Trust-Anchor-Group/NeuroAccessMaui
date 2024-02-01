@@ -72,7 +72,7 @@
 										   ItemsSource="{Binding Path=Messages}"
 										   ItemTemplate="{StaticResource MessageStyleSelector}"
 										   ItemSelectedCommand="{Binding Path=MessageSelected}"
-										   LoadMoreCommand="{Binding LoadMoreMessages}">
+										   LoadMoreCommand="{Binding LoadMoreMessagesCommand}">
 				<CollectionView.ItemsLayout>
 					<GridItemsLayout Orientation="Vertical" VerticalItemSpacing="12"/>
 				</CollectionView.ItemsLayout>
@@ -149,7 +149,7 @@
 								<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
 										Text="{x:Static resx:FontAwesome.EllipsisH}" TextColor="{StaticResource TextColorLightTheme}"
 										FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
-										Command="{Binding ExpandButtons}" />
+										Command="{Binding ExpandButtonsCommand}" />
 							</StackLayout>
 						</xct:Expander.Header>
 						<StackLayout Orientation="Vertical" Spacing="5" Margin="0,0,0,5" BackgroundColor="Transparent">

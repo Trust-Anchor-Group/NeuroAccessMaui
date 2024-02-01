@@ -61,7 +61,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		private string html = string.Empty;
 		private object? parsedXaml = null;
 
-		private IChatView chatView;
+		private IChatView? chatView;
 
 		/// <summary>
 		/// Chat Messages
@@ -77,11 +77,11 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			this.NeuroFeatureUriClicked = new Command(async Parameter => await this.ExecuteUriClicked(Parameter, UriScheme.NeuroFeature));
 			this.IotDiscoUriClicked = new Command(async Parameter => await this.ExecuteUriClicked(Parameter, UriScheme.IotDisco));
 			this.EDalerUriClicked = new Command(async Parameter => await this.ExecuteUriClicked(Parameter, UriScheme.EDaler));
-			this.HyperlinkClicked = new Command(async Parameter => await this.ExecuteHyperlinkClicked(Parameter));
+			this.HyperlinkClicked = new Command(async Parameter => await ExecuteHyperlinkClicked(Parameter));
 		}
 
 		/// <inheritdoc/>
-		public string UniqueName => this.ObjectId;
+		public string UniqueName => this.ObjectId ?? string.Empty;
 
 		/// <summary>
 		/// Object ID

@@ -1,4 +1,5 @@
 ﻿using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Navigation;
 
 namespace NeuroAccessMaui.UI.Pages.Contacts.Chat

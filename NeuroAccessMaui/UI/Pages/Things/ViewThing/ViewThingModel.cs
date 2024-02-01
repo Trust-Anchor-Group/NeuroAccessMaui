@@ -1,17 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Contacts;
+using NeuroAccessMaui.Services.Localization;
+using NeuroAccessMaui.Services.Navigation;
+using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
-using NeuroAccessMaui.UI.Pages.Main.XmppForm;
 using NeuroAccessMaui.UI.Pages.Things.MyThings;
 using NeuroAccessMaui.UI.Pages.Things.ReadSensor;
-using IdApp.Services;
-using IdApp.Services.Navigation;
-using IdApp.Services.Notification;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Globalization;
+using System.Text;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Concentrator;
 using Waher.Networking.XMPP.Contracts;
@@ -20,20 +22,18 @@ using Waher.Networking.XMPP.DataForms;
 using Waher.Networking.XMPP.Sensor;
 using Waher.Networking.XMPP.ServiceDiscovery;
 using Waher.Persistence;
+using Waher.Script.Constants;
 using Waher.Things;
-using Xamarin.CommunityToolkit.Helpers;
-using Xamarin.Essentials;
-using Xamarin.Forms;
 
 namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 {
 	/// <summary>
 	/// The view model to bind to when displaying a thing.
 	/// </summary>
-	public class ViewThingModel : XmppViewModel, ILinkableView
+	public partial class ViewThingModel : XmppViewModel, ILinkableView
 	{
 		private readonly Dictionary<string, PresenceEventArgs> presences = new(StringComparer.InvariantCultureIgnoreCase);
-		private ContactInfo thing;
+		private ContactInfo? thing;
 
 		/// <summary>
 		/// Creates an instance of the <see cref="ViewThingModel"/> class.
@@ -41,17 +41,8 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 		protected internal ViewThingModel()
 			: base()
 		{
-			this.ClickCommand = new Command(async x => await this.Clicked(x));
-			this.AddToListCommand = new Command(async _ => await this.AddToList(), _ => !this.InContacts);
-			this.RemoveFromListCommand = new Command(async _ => await this.RemoveFromList(), _ => this.InContactsAndNotOwner);
-			this.DeleteRulesCommand = new Command(async _ => await this.DeleteRules(), _ => this.IsConnected && this.IsOwner);
-			this.DisownThingCommand = new Command(async _ => await this.DisownThing(), _ => this.IsConnected && this.IsOwner);
-			this.ReadSensorCommand = new Command(async _ => await this.ReadSensor(), _ => this.IsConnected && this.IsSensor);
-			this.ControlActuatorCommand = new Command(async _ => await this.ControlActuator(), _ => this.IsConnected && this.IsActuator);
-			this.ChatCommand = new Command(async _ => await this.Chat(), _ => this.IsConnected && !this.IsNodeInConcentrator);
-
-			this.Tags = new ObservableCollection<HumanReadableTag>();
-			this.Notifications = new ObservableCollection<EventModel>();
+			this.Tags = [];
+			this.Notifications = [];
 		}
 
 		/// <inheritdoc/>
@@ -59,11 +50,11 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 		{
 			await base.OnInitialize();
 
-			if (this.NavigationService.TryGetArgs(out ViewThingNavigationArgs args))
+			if (ServiceRef.NavigationService.TryGetArgs(out ViewThingNavigationArgs? args))
 			{
 				this.thing = args.Thing;
 
-				if (this.thing.MetaData is not null)
+				if (this.thing?.MetaData is not null)
 				{
 					this.Tags.Clear();
 
@@ -80,12 +71,11 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 					foreach (NotificationEvent Event in args.Events)
 					{
 						this.Notifications.Add(new EventModel(Event.Received,
-							await Event.GetCategoryIcon(this),
-							await Event.GetDescription(this),
-							Event,
-							this));
+							await Event.GetCategoryIcon(),
+							await Event.GetDescription(),
+							Event));
 
-						if (Event.Button == EventButton.Contacts)
+						if (Event.Type == NotificationEventType.Contacts)
 							c++;
 					}
 
@@ -93,26 +83,32 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 					this.HasPendingChatMessages = c > 0;
 				}
 
-				this.InContacts = !string.IsNullOrEmpty(this.thing.ObjectId);
-				this.IsOwner = this.thing.Owner ?? false;
-				this.IsSensor = this.thing.IsSensor ?? false;
-				this.IsActuator = this.thing.IsActuator ?? false;
-				this.IsConcentrator = this.thing.IsConcentrator ?? false;
-				this.IsNodeInConcentrator = !string.IsNullOrEmpty(this.thing.NodeId) || !string.IsNullOrEmpty(this.thing.SourceId) || !string.IsNullOrEmpty(this.thing.Partition);
-				this.SupportsSensorEvents = this.thing.SupportsSensorEvents ?? false;
+				this.InContacts = !string.IsNullOrEmpty(this.thing?.ObjectId);
+				this.IsOwner = this.thing?.Owner ?? false;
+				this.IsSensor = this.thing?.IsSensor ?? false;
+				this.IsActuator = this.thing?.IsActuator ?? false;
+				this.IsConcentrator = this.thing?.IsConcentrator ?? false;
+				this.IsNodeInConcentrator = !string.IsNullOrEmpty(this.thing?.NodeId) || !string.IsNullOrEmpty(this.thing?.SourceId) || !string.IsNullOrEmpty(this.thing?.Partition);
+				this.SupportsSensorEvents = this.thing?.SupportsSensorEvents ?? false;
 				this.HasNotifications = this.Notifications.Count > 0;
+
+				this.InContactsAndNotOwner = this.InContacts && !this.IsOwner;
+				this.NotInContacts = !this.InContacts;
+				this.IsConnectedAndOwner = this.IsConnected && this.IsOwner;
+				this.IsConnectedAndSensor = this.IsConnected && this.IsSensor;
+				this.IsConnectedAndActuator = this.IsConnected && this.IsActuator;
+				this.IsConnectedAndNotConcentrator = this.IsConnected && !this.IsConcentrator;
 			}
 
-			await this.AssignProperties();
-			this.EvaluateAllCommands();
+			await this.CalcThingIsOnline();
 
-			this.XmppService.OnPresence += this.Xmpp_OnPresence;
-			this.XmppService.OnRosterItemAdded += this.Xmpp_OnRosterItemAdded;
-			this.XmppService.OnRosterItemUpdated += this.Xmpp_OnRosterItemUpdated;
-			this.XmppService.OnRosterItemRemoved += this.Xmpp_OnRosterItemRemoved;
-			this.TagProfile.Changed += this.TagProfile_Changed;
-			this.NotificationService.OnNewNotification += this.NotificationService_OnNewNotification;
-			this.NotificationService.OnNotificationsDeleted += this.NotificationService_OnNotificationsDeleted;
+			ServiceRef.XmppService.OnPresence += this.Xmpp_OnPresence;
+			ServiceRef.XmppService.OnRosterItemAdded += this.Xmpp_OnRosterItemAdded;
+			ServiceRef.XmppService.OnRosterItemUpdated += this.Xmpp_OnRosterItemUpdated;
+			ServiceRef.XmppService.OnRosterItemRemoved += this.Xmpp_OnRosterItemRemoved;
+			ServiceRef.TagProfile.Changed += this.TagProfile_Changed;
+			ServiceRef.NotificationService.OnNewNotification += this.NotificationService_OnNewNotification;
+			ServiceRef.NotificationService.OnNotificationsDeleted += this.NotificationService_OnNotificationsDeleted;
 
 			if (this.IsConnected && this.IsThingOnline)
 				await this.CheckCapabilities();
@@ -121,16 +117,17 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 		private async Task CheckCapabilities()
 		{
 			if (this.InContacts &&
-				!this.thing.IsSensor.HasValue ||
+				this.thing is not null &&
+				(!this.thing.IsSensor.HasValue ||
 				!this.thing.IsActuator.HasValue ||
 				!this.thing.IsConcentrator.HasValue ||
-				!this.thing.SupportsSensorEvents.HasValue)
+				!this.thing.SupportsSensorEvents.HasValue))
 			{
-				string FullJid = this.GetFullJid();
+				string? FullJid = this.GetFullJid();
 
 				if (!string.IsNullOrEmpty(FullJid))
 				{
-					ServiceDiscoveryEventArgs e = await this.XmppService.SendServiceDiscoveryRequest(FullJid);
+					ServiceDiscoveryEventArgs e = await ServiceRef.XmppService.SendServiceDiscoveryRequest(FullJid);
 
 					if (!this.InContacts)
 						return;
@@ -143,14 +140,12 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 					if (this.InContacts && !string.IsNullOrEmpty(this.thing.ObjectId))
 						await Database.Update(this.thing);
 
-					this.UiSerializer.BeginInvokeOnMainThread(() =>
+					MainThread.BeginInvokeOnMainThread(() =>
 					{
 						this.IsSensor = this.thing.IsSensor ?? false;
 						this.IsActuator = this.thing.IsActuator ?? false;
 						this.IsConcentrator = this.thing.IsConcentrator ?? false;
 						this.SupportsSensorEvents = this.thing.SupportsSensorEvents ?? false;
-
-						this.EvaluateAllCommands();
 					});
 				}
 			}
@@ -159,27 +154,27 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 		/// <inheritdoc/>
 		protected override async Task OnDispose()
 		{
-			this.XmppService.OnPresence -= this.Xmpp_OnPresence;
-			this.XmppService.OnRosterItemAdded -= this.Xmpp_OnRosterItemAdded;
-			this.XmppService.OnRosterItemUpdated -= this.Xmpp_OnRosterItemUpdated;
-			this.XmppService.OnRosterItemRemoved -= this.Xmpp_OnRosterItemRemoved;
-			this.TagProfile.Changed -= this.TagProfile_Changed;
-			this.NotificationService.OnNewNotification -= this.NotificationService_OnNewNotification;
-			this.NotificationService.OnNotificationsDeleted -= this.NotificationService_OnNotificationsDeleted;
+			ServiceRef.XmppService.OnPresence -= this.Xmpp_OnPresence;
+			ServiceRef.XmppService.OnRosterItemAdded -= this.Xmpp_OnRosterItemAdded;
+			ServiceRef.XmppService.OnRosterItemUpdated -= this.Xmpp_OnRosterItemUpdated;
+			ServiceRef.XmppService.OnRosterItemRemoved -= this.Xmpp_OnRosterItemRemoved;
+			ServiceRef.TagProfile.Changed -= this.TagProfile_Changed;
+			ServiceRef.NotificationService.OnNewNotification -= this.NotificationService_OnNewNotification;
+			ServiceRef.NotificationService.OnNotificationsDeleted -= this.NotificationService_OnNotificationsDeleted;
 
 			await base.OnDispose();
 		}
 
-		private async Task Xmpp_OnPresence(object Sender, PresenceEventArgs e)
+		private async Task Xmpp_OnPresence(object? Sender, PresenceEventArgs e)
 		{
 			switch (e.Type)
 			{
 				case PresenceType.Available:
 					this.presences[e.FromBareJID] = e;
 
-					if (!this.InContacts && string.Compare(e.FromBareJID, this.thing.BareJid, true) == 0)
+					if (!this.InContacts && string.Equals(e.FromBareJID, this.thing?.BareJid, StringComparison.OrdinalIgnoreCase))
 					{
-						if (string.IsNullOrEmpty(this.thing.ObjectId))
+						if (string.IsNullOrEmpty(this.thing?.ObjectId))
 							await Database.Insert(this.thing);
 
 						this.InContacts = true;
@@ -192,7 +187,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 					break;
 			}
 
-			this.UiSerializer.BeginInvokeOnMainThread(async () => await this.CalcThingIsOnline());
+			MainThread.BeginInvokeOnMainThread(async () => await this.CalcThingIsOnline());
 		}
 
 		private async Task CalcThingIsOnline()
@@ -206,32 +201,30 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 				if (this.IsThingOnline)
 					await this.CheckCapabilities();
 			}
-
-			this.EvaluateAllCommands();
 		}
 
 		private bool IsOnline(string BareJid)
 		{
-			if (this.presences.TryGetValue(BareJid, out PresenceEventArgs e))
+			if (this.presences.TryGetValue(BareJid, out PresenceEventArgs? e))
 				return e.IsOnline;
 
-			RosterItem Item = this.XmppService?.GetRosterItem(BareJid);
+			RosterItem? Item = ServiceRef.XmppService?.GetRosterItem(BareJid);
 			if (Item is not null && Item.HasLastPresence)
 				return Item.LastPresence.IsOnline;
 
 			return false;
 		}
 
-		private string GetFullJid()
+		private string? GetFullJid()
 		{
 			if (this.thing is null)
 				return null;
 			else
 			{
-				if (this.presences.TryGetValue(this.thing.BareJid, out PresenceEventArgs e))
-					return e.IsOnline ? e.From : null;
+				if (this.presences.TryGetValue(this.thing.BareJid, out PresenceEventArgs? e))
+					return (e?.IsOnline == false) ? e.From : null;
 
-				RosterItem Item = this.XmppService.GetRosterItem(this.thing.BareJid);
+				RosterItem? Item = ServiceRef.XmppService.GetRosterItem(this.thing.BareJid);
 
 				if (Item is null || !Item.HasLastPresence || !Item.LastPresence.IsOnline)
 					return null;
@@ -240,32 +233,20 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 			}
 		}
 
-		private Task AssignProperties()
-		{
-			return this.CalcThingIsOnline();
-		}
-
-		private void EvaluateAllCommands()
-		{
-			this.EvaluateCommands(this.ClickCommand, this.AddToListCommand, this.RemoveFromListCommand, this.DeleteRulesCommand,
-				this.DisownThingCommand, this.ReadSensorCommand, this.ControlActuatorCommand, this.ChatCommand);
-		}
-
 		/// <inheritdoc/>
-		protected override Task XmppService_ConnectionStateChanged(object Sender, XmppState NewState)
+		protected override Task XmppService_ConnectionStateChanged(object? Sender, XmppState NewState)
 		{
-			this.UiSerializer.BeginInvokeOnMainThread(() =>
+			MainThread.BeginInvokeOnMainThread(() =>
 			{
 				this.SetConnectionStateAndText(NewState);
-				this.EvaluateAllCommands();
 			});
 
 			return Task.CompletedTask;
 		}
 
-		private void TagProfile_Changed(object Sender, PropertyChangedEventArgs e)
+		private void TagProfile_Changed(object? Sender, PropertyChangedEventArgs e)
 		{
-			this.UiSerializer.BeginInvokeOnMainThread(async () => await this.AssignProperties());
+			MainThread.BeginInvokeOnMainThread(async () => await this.CalcThingIsOnline());
 		}
 
 		#region Properties
@@ -281,262 +262,192 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 		public ObservableCollection<EventModel> Notifications { get; }
 
 		/// <summary>
-		/// Command to bind to for detecting when a tag value has been clicked on.
+		/// Gets or sets whether the thing is in the contact list.
 		/// </summary>
-		public System.Windows.Input.ICommand ClickCommand { get; }
-
-		/// <summary>
-		/// The command to bind to for adding a thing to the list
-		/// </summary>
-		public System.Windows.Input.ICommand AddToListCommand { get; }
-
-		/// <summary>
-		/// The command to bind to for removing a thing from the list
-		/// </summary>
-		public System.Windows.Input.ICommand RemoveFromListCommand { get; }
-
-		/// <summary>
-		/// The command to bind to for clearing rules for the thing.
-		/// </summary>
-		public System.Windows.Input.ICommand DeleteRulesCommand { get; }
-
-		/// <summary>
-		/// The command to bind to for disowning a thing
-		/// </summary>
-		public System.Windows.Input.ICommand DisownThingCommand { get; }
-
-		/// <summary>
-		/// The command to bind to for reading a sensor
-		/// </summary>
-		public System.Windows.Input.ICommand ReadSensorCommand { get; }
-
-		/// <summary>
-		/// The command to bind to for controlling an actuator
-		/// </summary>
-		public System.Windows.Input.ICommand ControlActuatorCommand { get; }
-
-		/// <summary>
-		/// The command to bind to for chatting with a thing
-		/// </summary>
-		public System.Windows.Input.ICommand ChatCommand { get; }
-
-		/// <summary>
-		/// See <see cref="InContacts"/>
-		/// </summary>
-		public static readonly BindableProperty InContactsProperty =
-			BindableProperty.Create(nameof(InContacts), typeof(bool), typeof(ViewThingModel), default(bool));
+		[ObservableProperty]
+		private bool inContacts;
 
 		/// <summary>
 		/// Gets or sets whether the thing is in the contact list.
 		/// </summary>
-		public bool InContacts
+		[ObservableProperty]
+		private bool notInContacts;
+
+		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
 		{
-			get => (bool)this.GetValue(InContactsProperty);
-			set
+			base.OnPropertyChanged(e);
+
+			switch (e.PropertyName)
 			{
-				this.SetValue(InContactsProperty, value);
-				this.InContactsAndNotOwner = this.InContacts && !this.IsOwner;
+				case nameof(this.InContacts):
+				case nameof(this.IsOwner):
+					this.InContactsAndNotOwner = this.InContacts && !this.IsOwner;
+					this.NotInContacts = !this.InContacts;
+					break;
+			}
+
+			switch (e.PropertyName)
+			{
+				case nameof(this.IsConnected):
+				case nameof(this.IsOwner):
+					this.IsConnectedAndOwner = this.IsConnected && this.IsOwner;
+					break;
+			}
+
+			switch (e.PropertyName)
+			{
+				case nameof(this.IsConnected):
+				case nameof(this.IsSensor):
+					this.IsConnectedAndSensor = this.IsConnected && this.IsSensor;
+					break;
+			}
+
+			switch (e.PropertyName)
+			{
+				case nameof(this.IsConnected):
+				case nameof(this.IsActuator):
+					this.IsConnectedAndActuator = this.IsConnected && this.IsActuator;
+					break;
+			}
+
+			switch (e.PropertyName)
+			{
+				case nameof(this.IsConnected):
+				case nameof(this.IsConcentrator):
+					this.IsConnectedAndNotConcentrator = this.IsConnected && !this.IsConcentrator;
+					break;
 			}
 		}
 
 		/// <summary>
-		/// See <see cref="IsOwner"/>
+		/// Gets or sets whether the thing is in the contact.
 		/// </summary>
-		public static readonly BindableProperty IsOwnerProperty =
-			BindableProperty.Create(nameof(IsOwner), typeof(bool), typeof(ViewThingModel), default(bool));
+		[ObservableProperty]
+		private bool isOwner;
+
+		/// <summary>
+		/// If the device is in the contact list, but the user is not the owner.
+		/// </summary>
+		[ObservableProperty]
+		private bool inContactsAndNotOwner;
+
+		/// <summary>
+		/// If the user is the owner, and the app is connected.
+		/// </summary>
+		[ObservableProperty]
+		private bool isConnectedAndOwner;
+
+		/// <summary>
+		/// If the app is connected, and the device is a sensor.
+		/// </summary>
+		[ObservableProperty]
+		private bool isConnectedAndSensor;
+
+		/// <summary>
+		/// If the app is connected, and the device is an actuator.
+		/// </summary>
+		[ObservableProperty]
+		private bool isConnectedAndActuator;
+
+		/// <summary>
+		/// If the app is connected, and the device is not in a concentrator.
+		/// </summary>
+		[ObservableProperty]
+		private bool isConnectedAndNotConcentrator;
 
 		/// <summary>
 		/// Gets or sets whether the thing is in the contact.
 		/// </summary>
-		public bool IsOwner
-		{
-			get => (bool)this.GetValue(IsOwnerProperty);
-			set
-			{
-				this.SetValue(IsOwnerProperty, value);
-				this.InContactsAndNotOwner = this.InContacts && !this.IsOwner;
-			}
-		}
-
-		/// <summary>
-		/// See <see cref="InContactsAndNotOwner"/>
-		/// </summary>
-		public static readonly BindableProperty InContactsAndNotOwnerProperty =
-			BindableProperty.Create(nameof(InContactsAndNotOwner), typeof(bool), typeof(ViewThingModel), default(bool));
-
-		/// <summary>
-		/// Gets or sets whether the thing is in the contact list.
-		/// </summary>
-		public bool InContactsAndNotOwner
-		{
-			get => (bool)this.GetValue(InContactsAndNotOwnerProperty);
-			set => this.SetValue(InContactsAndNotOwnerProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="IsThingOnline"/>
-		/// </summary>
-		public static readonly BindableProperty IsThingOnlineProperty =
-			BindableProperty.Create(nameof(IsThingOnline), typeof(bool), typeof(ViewThingModel), default(bool));
-
-		/// <summary>
-		/// Gets or sets whether the thing is in the contact.
-		/// </summary>
-		public bool IsThingOnline
-		{
-			get => (bool)this.GetValue(IsThingOnlineProperty);
-			set => this.SetValue(IsThingOnlineProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="IsSensor"/>
-		/// </summary>
-		public static readonly BindableProperty IsSensorProperty =
-			BindableProperty.Create(nameof(IsSensor), typeof(bool), typeof(ViewThingModel), default(bool));
+		[ObservableProperty]
+		private bool isThingOnline;
 
 		/// <summary>
 		/// Gets or sets whether the thing is a sensor
 		/// </summary>
-		public bool IsSensor
-		{
-			get => (bool)this.GetValue(IsSensorProperty);
-			set => this.SetValue(IsSensorProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="IsActuator"/>
-		/// </summary>
-		public static readonly BindableProperty IsActuatorProperty =
-			BindableProperty.Create(nameof(IsActuator), typeof(bool), typeof(ViewThingModel), default(bool));
+		[ObservableProperty]
+		private bool isSensor;
 
 		/// <summary>
 		/// Gets or sets whether the thing is an actuator
 		/// </summary>
-		public bool IsActuator
-		{
-			get => (bool)this.GetValue(IsActuatorProperty);
-			set => this.SetValue(IsActuatorProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="IsConcentrator"/>
-		/// </summary>
-		public static readonly BindableProperty IsConcentratorProperty =
-			BindableProperty.Create(nameof(IsConcentrator), typeof(bool), typeof(ViewThingModel), default(bool));
+		[ObservableProperty]
+		private bool isActuator;
 
 		/// <summary>
 		/// Gets or sets whether the thing is a concentrator
 		/// </summary>
-		public bool IsConcentrator
-		{
-			get => (bool)this.GetValue(IsConcentratorProperty);
-			set => this.SetValue(IsConcentratorProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="IsNodeInConcentrator"/>
-		/// </summary>
-		public static readonly BindableProperty IsNodeInConcentratorProperty =
-			BindableProperty.Create(nameof(IsNodeInConcentrator), typeof(bool), typeof(ViewThingModel), default(bool));
+		[ObservableProperty]
+		private bool isConcentrator;
 
 		/// <summary>
 		/// Gets or sets whether the thing is a concentrator
 		/// </summary>
-		public bool IsNodeInConcentrator
-		{
-			get => (bool)this.GetValue(IsNodeInConcentratorProperty);
-			set => this.SetValue(IsNodeInConcentratorProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="SupportsSensorEvents"/>
-		/// </summary>
-		public static readonly BindableProperty SupportsSensorEventsProperty =
-			BindableProperty.Create(nameof(SupportsSensorEvents), typeof(bool), typeof(ViewThingModel), default(bool));
+		[ObservableProperty]
+		private bool isNodeInConcentrator;
 
 		/// <summary>
 		/// Gets or sets whether the thing is a sensor
 		/// </summary>
-		public bool SupportsSensorEvents
-		{
-			get => (bool)this.GetValue(SupportsSensorEventsProperty);
-			set => this.SetValue(SupportsSensorEventsProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="HasNotifications"/>
-		/// </summary>
-		public static readonly BindableProperty HasNotificationsProperty =
-			BindableProperty.Create(nameof(HasNotifications), typeof(bool), typeof(ViewThingModel), default(bool));
-
+		[ObservableProperty]
+		private bool supportsSensorEvents;
 		/// <summary>
 		/// Gets or sets whether the thing is a sensor
 		/// </summary>
-		public bool HasNotifications
-		{
-			get => (bool)this.GetValue(HasNotificationsProperty);
-			set => this.SetValue(HasNotificationsProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="HasPendingChatMessages"/>
-		/// </summary>
-		public static readonly BindableProperty HasPendingChatMessagesProperty =
-			BindableProperty.Create(nameof(HasPendingChatMessages), typeof(bool), typeof(ViewThingModel), default(bool));
+		[ObservableProperty]
+		private bool hasNotifications;
 
 		/// <summary>
 		/// Gets or sets whether the identity is in the contact.
 		/// </summary>
-		public bool HasPendingChatMessages
-		{
-			get => (bool)this.GetValue(HasPendingChatMessagesProperty);
-			set => this.SetValue(HasPendingChatMessagesProperty, value);
-		}
-
-		/// <summary>
-		/// See <see cref="NrPendingChatMessages"/>
-		/// </summary>
-		public static readonly BindableProperty NrPendingChatMessagesProperty =
-			BindableProperty.Create(nameof(NrPendingChatMessages), typeof(int), typeof(ViewThingModel), default(int));
+		[ObservableProperty]
+		private bool hasPendingChatMessages;
 
 		/// <summary>
 		/// Gets or sets whether the identity is in the contact.
 		/// </summary>
-		public int NrPendingChatMessages
-		{
-			get => (int)this.GetValue(NrPendingChatMessagesProperty);
-			set => this.SetValue(NrPendingChatMessagesProperty, value);
-		}
+		[ObservableProperty]
+		private int nrPendingChatMessages;
 
 		#endregion
 
-		private Task Clicked(object obj)
+		/// <summary>
+		/// Command to bind to for detecting when a tag value has been clicked on.
+		/// </summary>
+		[RelayCommand]
+		private static Task Click(object obj)
 		{
 			if (obj is HumanReadableTag Tag)
-				return ViewClaimThing.ViewClaimThingViewModel.LabelClicked(Tag.Name, Tag.Value, Tag.LocalizedValue, this);
+				return ViewClaimThing.ViewClaimThingViewModel.LabelClicked(Tag.Name, Tag.Value, Tag.LocalizedValue);
 			else if (obj is string s)
-				return ViewClaimThing.ViewClaimThingViewModel.LabelClicked(string.Empty, s, s, this);
+				return ViewClaimThing.ViewClaimThingViewModel.LabelClicked(string.Empty, s, s);
 			else
 				return Task.CompletedTask;
 		}
 
+		/// <summary>
+		/// The command to bind to for clearing rules for the thing.
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(IsConnectedAndOwner))]
 		private async Task DeleteRules()
 		{
+			if (this.thing is null)
+				return;
+
 			try
 			{
-				if (!await this.UiSerializer.DisplayAlert(
-					LocalizationResourceManager.Current["Question"], LocalizationResourceManager.Current["DeleteRulesQuestion"],
-					LocalizationResourceManager.Current["Yes"], LocalizationResourceManager.Current["Cancel"]))
+				if (!await ServiceRef.UiSerializer.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.Question)], ServiceRef.Localizer[nameof(AppResources.DeleteRulesQuestion)],
+					ServiceRef.Localizer[nameof(AppResources.Yes)], ServiceRef.Localizer[nameof(AppResources.Cancel)]))
 				{
 					return;
 				}
 
-				if (!await App.VerifyPin())
+				if (!await App.AuthenticateUser(true))
 					return;
 
 				TaskCompletionSource<bool> Result = new();
 
-				this.XmppService.DeleteDeviceRules(this.thing.RegistryJid, this.thing.BareJid, this.thing.NodeId,
+				ServiceRef.XmppService.DeleteDeviceRules(this.thing.RegistryJid, this.thing.BareJid, this.thing.NodeId,
 					this.thing.SourceId, this.thing.Partition, (sender, e) =>
 				{
 					if (e.Ok)
@@ -549,41 +460,50 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 					return Task.CompletedTask;
 				}, null);
 
+
 				if (!await Result.Task)
 					return;
 
-				await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["SuccessTitle"], LocalizationResourceManager.Current["RulesDeleted"]);
+				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+					ServiceRef.Localizer[nameof(AppResources.RulesDeleted)]);
 			}
 			catch (Exception ex)
 			{
-				this.LogService.LogException(ex);
-				await this.UiSerializer.DisplayAlert(ex);
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
 
+		/// <summary>
+		/// The command to bind to for disowning a thing
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(IsConnectedAndOwner))]
 		private async Task DisownThing()
 		{
+			if (this.thing is null)
+				return;
+
 			try
 			{
-				if (!await this.UiSerializer.DisplayAlert(
-					LocalizationResourceManager.Current["Question"], LocalizationResourceManager.Current["DisownThingQuestion"],
-					LocalizationResourceManager.Current["Yes"], LocalizationResourceManager.Current["Cancel"]))
+				if (!await ServiceRef.UiSerializer.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.Question)], ServiceRef.Localizer[nameof(AppResources.DisownThingQuestion)],
+					ServiceRef.Localizer[nameof(AppResources.Yes)], ServiceRef.Localizer[nameof(AppResources.Cancel)]))
 				{
 					return;
 				}
 
-				if (!await App.VerifyPin())
+				if (!await App.AuthenticateUser(true))
 					return;
 
-				(bool Succeeded, bool Done) = await this.NetworkService.TryRequest(() =>
-					this.XmppService.Disown(this.thing.RegistryJid, this.thing.BareJid, this.thing.SourceId, this.thing.Partition, this.thing.NodeId));
+				(bool Succeeded, bool Done) = await ServiceRef.NetworkService.TryRequest(() =>
+					ServiceRef.XmppService.Disown(this.thing.RegistryJid, this.thing.BareJid, this.thing.SourceId, this.thing.Partition, this.thing.NodeId));
 
 				if (!Succeeded)
 					return;
 
 				if (this.InContacts)
 				{
-					if (!string.IsNullOrEmpty(this.thing.ObjectId))
+					if (!string.IsNullOrEmpty(this.thing?.ObjectId))
 					{
 						await Database.Delete(this.thing);
 						await Database.Provider.Flush();
@@ -595,38 +515,46 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 					this.InContacts = false;
 				}
 
-				await this.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["SuccessTitle"], LocalizationResourceManager.Current["ThingDisowned"]);
-				await this.NavigationService.GoBackAsync();
+				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+					ServiceRef.Localizer[nameof(AppResources.ThingDisowned)]);
+				await ServiceRef.NavigationService.GoBackAsync();
 			}
 			catch (Exception ex)
 			{
-				this.LogService.LogException(ex);
-				await this.UiSerializer.DisplayAlert(ex);
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
 
+		/// <summary>
+		/// The command to bind to for adding a thing to the list
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(NotInContacts))]
 		private async Task AddToList()
 		{
+			if (this.thing is null)
+				return;
+
 			try
 			{
-				if (!await App.VerifyPin())
+				if (!await App.AuthenticateUser())
 					return;
 
-				RosterItem Item = this.XmppService.GetRosterItem(this.thing.BareJid);
+				RosterItem? Item = ServiceRef.XmppService.GetRosterItem(this.thing.BareJid);
 				if (Item is null || Item.State == SubscriptionState.None || Item.State == SubscriptionState.From)
 				{
 					string IdXml;
 
-					if (this.TagProfile.LegalIdentity is null)
+					if (ServiceRef.TagProfile.LegalIdentity is null)
 						IdXml = string.Empty;
 					else
 					{
 						StringBuilder Xml = new();
-						this.TagProfile.LegalIdentity.Serialize(Xml, true, true, true, true, true, true, true);
+						ServiceRef.TagProfile.LegalIdentity.Serialize(Xml, true, true, true, true, true, true, true);
 						IdXml = Xml.ToString();
 					}
 
-					this.XmppService.RequestPresenceSubscription(this.thing.BareJid);
+					ServiceRef.XmppService.RequestPresenceSubscription(this.thing.BareJid);
 				}
 				else
 				{
@@ -643,16 +571,23 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 			}
 			catch (Exception ex)
 			{
-				this.LogService.LogException(ex);
-				await this.UiSerializer.DisplayAlert(ex);
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
 
+		/// <summary>
+		/// The command to bind to for removing a thing from the list
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(InContactsAndNotOwner))]
 		private async Task RemoveFromList()
 		{
+			if (this.thing is null)
+				return;
+
 			try
 			{
-				if (!await App.VerifyPin())
+				if (!await App.AuthenticateUser())
 					return;
 
 				if (this.InContacts)
@@ -663,12 +598,12 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 						this.thing.ObjectId = null;
 					}
 
-					this.XmppService.RequestPresenceUnsubscription(this.thing.BareJid);
+					ServiceRef.XmppService.RequestPresenceUnsubscription(this.thing.BareJid);
 
-					if (this.XmppService.GetRosterItem(this.thing.BareJid) is not null)
-						this.XmppService.RemoveRosterItem(this.thing.BareJid);
+					if (ServiceRef.XmppService.GetRosterItem(this.thing.BareJid) is not null)
+						ServiceRef.XmppService.RemoveRosterItem(this.thing.BareJid);
 
-					this.UiSerializer.BeginInvokeOnMainThread(() =>
+					MainThread.BeginInvokeOnMainThread(() =>
 					{
 						this.thing.ObjectId = null;
 						this.thing.IsActuator = null;
@@ -680,79 +615,105 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 						this.IsActuator = false;
 
 						this.InContacts = false;
-
-						this.EvaluateAllCommands();
 					});
 				}
 			}
 			catch (Exception ex)
 			{
-				this.LogService.LogException(ex);
-				await this.UiSerializer.DisplayAlert(ex);
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
 
+		/// <summary>
+		/// The command to bind to for reading a sensor
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(IsConnectedAndSensor))]
 		private async Task ReadSensor()
 		{
+			if (this.thing is null)
+				return;
+
 			ViewThingNavigationArgs Args = new(this.thing, MyThingsViewModel.GetNotificationEvents(this, this.thing));
 
-			await this.NavigationService.GoToAsync(nameof(ReadSensorPage), Args, BackMethod.Pop);
+			await ServiceRef.NavigationService.GoToAsync(nameof(ReadSensorPage), Args, BackMethod.Pop);
 		}
 
+		/// <summary>
+		/// The command to bind to for controlling an actuator
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(IsConnectedAndActuator))]
 		private async Task ControlActuator()
 		{
+			if (this.thing is null)
+				return;
+
 			try
 			{
-				string SelectedLanguage = App.SelectedLanguage;
+				string? FullJid = this.GetFullJid();
+				if (string.IsNullOrEmpty(FullJid))
+					return;
+
+				LanguageInfo SelectedLanguage = App.SelectedLanguage;
 
 				if (string.IsNullOrEmpty(this.thing.NodeId) && string.IsNullOrEmpty(this.thing.SourceId) && string.IsNullOrEmpty(this.thing.Partition))
-					this.XmppService.GetControlForm(this.GetFullJid(), SelectedLanguage, this.ControlFormCallback, null);
+					ServiceRef.XmppService.GetControlForm(FullJid, SelectedLanguage.Name, this.ControlFormCallback, null);
 				else
 				{
 					ThingReference ThingRef = new(this.thing.NodeId, this.thing.SourceId, this.thing.Partition);
-					this.XmppService.GetControlForm(this.GetFullJid(), SelectedLanguage, this.ControlFormCallback, null, ThingRef);
+					ServiceRef.XmppService.GetControlForm(FullJid, SelectedLanguage.Name, this.ControlFormCallback, null, ThingRef);
 				}
 			}
 			catch (Exception ex)
 			{
-				await this.UiSerializer.DisplayAlert(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
 
-		private Task ControlFormCallback(object Sender, DataFormEventArgs e)
+		private Task ControlFormCallback(object? Sender, DataFormEventArgs e)
 		{
 			if (e.Ok)
 			{
-				this.UiSerializer.BeginInvokeOnMainThread(async () =>
+				MainThread.BeginInvokeOnMainThread(async () =>
 				{
-					await this.NavigationService.GoToAsync(nameof(XmppFormPage), new XmppFormNavigationArgs(e.Form));
+					await ServiceRef.NavigationService.GoToAsync(nameof(XmppFormPage), new XmppFormNavigationArgs(e.Form));
 				});
 			}
 			else
-				this.UiSerializer.DisplayAlert(e.StanzaError ?? new Exception("Unable to get control form."));
+				ServiceRef.UiSerializer.DisplayException(e.StanzaError ?? new Exception("Unable to get control form."));
 
 			return Task.CompletedTask;
 		}
 
+		/// <summary>
+		/// The command to bind to for chatting with a thing
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(IsConnectedAndNotConcentrator))]
 		private async Task Chat()
 		{
+			if (this.thing is null)
+				return;
+
 			try
 			{
-				string LegalId = this.thing?.LegalId;
+				string LegalId = this.thing.LegalId;
 				string FriendlyName = this.thing.FriendlyName;
 				ChatNavigationArgs Args = new(LegalId, this.thing.BareJid, FriendlyName);
 
-				await this.NavigationService.GoToAsync(nameof(ChatPage), Args, BackMethod.Inherited, this.thing.BareJid);
+				await ServiceRef.NavigationService.GoToAsync(nameof(ChatPage), Args, BackMethod.Inherited, this.thing.BareJid);
 			}
 			catch (Exception ex)
 			{
-				await this.UiSerializer.DisplayAlert(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
 
-		private void NotificationService_OnNotificationsDeleted(object Sender, NotificationEventsArgs e)
+		private void NotificationService_OnNotificationsDeleted(object? Sender, NotificationEventsArgs e)
 		{
-			this.UiSerializer.BeginInvokeOnMainThread(() =>
+			if (this.thing is null)
+				return;
+
+			MainThread.BeginInvokeOnMainThread(() =>
 			{
 				bool IsNode = this.IsNodeInConcentrator;
 				string Key = this.thing.ThingNotificationCategoryKey;
@@ -760,9 +721,9 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 
 				foreach (NotificationEvent Event in e.Events)
 				{
-					switch (Event.Button)
+					switch (Event.Type)
 					{
-						case EventButton.Contacts:
+						case NotificationEventType.Contacts:
 							if (IsNode)
 								continue;
 
@@ -770,7 +731,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 								continue;
 							break;
 
-						case EventButton.Things:
+						case NotificationEventType.Things:
 							if (Event.Category != Key)
 								continue;
 							break;
@@ -787,7 +748,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 						{
 							this.Notifications.RemoveAt(i);
 
-							if (Event.Button == EventButton.Contacts)
+							if (Event.Type == NotificationEventType.Contacts)
 								NrChatMessagesRemoved++;
 
 							break;
@@ -803,24 +764,24 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 			});
 		}
 
-		private void NotificationService_OnNewNotification(object Sender, NotificationEventArgs e)
+		private void NotificationService_OnNewNotification(object? Sender, NotificationEventArgs e)
 		{
-			this.UiSerializer.BeginInvokeOnMainThread(async () =>
+			MainThread.BeginInvokeOnMainThread(async () =>
 			{
 				try
 				{
-					switch (e.Event.Button)
+					switch (e.Event.Type)
 					{
-						case EventButton.Contacts:
+						case NotificationEventType.Contacts:
 							if (this.IsNodeInConcentrator)
 								return;
 
-							if (e.Event.Category != this.thing.BareJid)
+							if (e.Event.Category != this.thing?.BareJid)
 								return;
 							break;
 
-						case EventButton.Things:
-							if (e.Event.Category != this.thing.ThingNotificationCategoryKey)
+						case NotificationEventType.Things:
+							if (e.Event.Category != this.thing?.ThingNotificationCategoryKey)
 								return;
 							break;
 
@@ -829,13 +790,13 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 					}
 
 					this.Notifications.Add(new EventModel(e.Event.Received,
-						await e.Event.GetCategoryIcon(this),
-						await e.Event.GetDescription(this),
-						e.Event, this));
+						await e.Event.GetCategoryIcon(),
+						await e.Event.GetDescription(),
+						e.Event));
 
 					this.HasNotifications = true;
 
-					if (e.Event.Button == EventButton.Contacts)
+					if (e.Event.Type == NotificationEventType.Contacts)
 					{
 						this.NrPendingChatMessages++;
 						this.HasPendingChatMessages = true;
@@ -843,27 +804,27 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 				}
 				catch (Exception ex)
 				{
-					this.LogService.LogException(ex);
+					ServiceRef.LogService.LogException(ex);
 				}
 			});
 		}
 
-		private Task Xmpp_OnRosterItemRemoved(object Sender, RosterItem Item)
+		private Task Xmpp_OnRosterItemRemoved(object? Sender, RosterItem Item)
 		{
 			this.presences.Remove(Item.BareJid);
-			this.UiSerializer.BeginInvokeOnMainThread(async () => await this.CalcThingIsOnline());
+			MainThread.BeginInvokeOnMainThread(async () => await this.CalcThingIsOnline());
 			return Task.CompletedTask;
 		}
 
-		private Task Xmpp_OnRosterItemUpdated(object Sender, RosterItem Item)
+		private Task Xmpp_OnRosterItemUpdated(object? Sender, RosterItem Item)
 		{
-			this.UiSerializer.BeginInvokeOnMainThread(async () => await this.CalcThingIsOnline());
+			MainThread.BeginInvokeOnMainThread(async () => await this.CalcThingIsOnline());
 			return Task.CompletedTask;
 		}
 
-		private Task Xmpp_OnRosterItemAdded(object Sender, RosterItem Item)
+		private Task Xmpp_OnRosterItemAdded(object? Sender, RosterItem Item)
 		{
-			this.UiSerializer.BeginInvokeOnMainThread(async () => await this.CalcThingIsOnline());
+			MainThread.BeginInvokeOnMainThread(async () => await this.CalcThingIsOnline());
 			return Task.CompletedTask;
 		}
 
@@ -895,76 +856,79 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 
 				sb.Append("iotdisco:");
 
-				if (this.thing.MetaData is not null)
+				if (this.thing is not null)
 				{
-					foreach (Property P in this.thing.MetaData)
+					if (this.thing.MetaData is not null)
 					{
-						sb.Append(';');
-
-						switch (P.Name.ToUpper())
+						foreach (Property P in this.thing.MetaData)
 						{
-							case Constants.XmppProperties.Altitude:
-							case Constants.XmppProperties.Latitude:
-							case Constants.XmppProperties.Longitude:
-							case Constants.XmppProperties.Version:
-								sb.Append('#');
-								break;
+							sb.Append(';');
 
-							case Constants.XmppProperties.Jid:
-								HasJid = true;
-								break;
+							switch (P.Name.ToUpper(CultureInfo.InvariantCulture))
+							{
+								case Constants.XmppProperties.Altitude:
+								case Constants.XmppProperties.Latitude:
+								case Constants.XmppProperties.Longitude:
+								case Constants.XmppProperties.Version:
+									sb.Append('#');
+									break;
 
-							case Constants.XmppProperties.SourceId:
-								HasSourceId = true;
-								break;
+								case Constants.XmppProperties.Jid:
+									HasJid = true;
+									break;
 
-							case Constants.XmppProperties.Partition:
-								HasPartition = true;
-								break;
+								case Constants.XmppProperties.SourceId:
+									HasSourceId = true;
+									break;
 
-							case Constants.XmppProperties.NodeId:
-								HasNodeId = true;
-								break;
+								case Constants.XmppProperties.Partition:
+									HasPartition = true;
+									break;
 
-							case Constants.XmppProperties.Registry:
-								HasRegistry = true;
-								break;
+								case Constants.XmppProperties.NodeId:
+									HasNodeId = true;
+									break;
+
+								case Constants.XmppProperties.Registry:
+									HasRegistry = true;
+									break;
+							}
+
+							sb.Append(Uri.EscapeDataString(P.Name));
+							sb.Append('=');
+							sb.Append(Uri.EscapeDataString(P.Value));
 						}
-
-						sb.Append(Uri.EscapeDataString(P.Name));
-						sb.Append('=');
-						sb.Append(Uri.EscapeDataString(P.Value));
 					}
-				}
 
-				if (!HasJid)
-				{
-					sb.Append("JID=");
-					sb.Append(Uri.EscapeDataString(this.thing.BareJid));
-				}
+					if (!HasJid)
+					{
+						sb.Append("JID=");
+						sb.Append(Uri.EscapeDataString(this.thing.BareJid));
+					}
 
-				if (!HasSourceId && !string.IsNullOrEmpty(this.thing.SourceId))
-				{
-					sb.Append(";SID=");
-					sb.Append(Uri.EscapeDataString(this.thing.SourceId));
-				}
+					if (!HasSourceId && !string.IsNullOrEmpty(this.thing.SourceId))
+					{
+						sb.Append(";SID=");
+						sb.Append(Uri.EscapeDataString(this.thing.SourceId));
+					}
 
-				if (!HasPartition && !string.IsNullOrEmpty(this.thing.Partition))
-				{
-					sb.Append(";PT=");
-					sb.Append(Uri.EscapeDataString(this.thing.Partition));
-				}
+					if (!HasPartition && !string.IsNullOrEmpty(this.thing.Partition))
+					{
+						sb.Append(";PT=");
+						sb.Append(Uri.EscapeDataString(this.thing.Partition));
+					}
 
-				if (!HasNodeId && !string.IsNullOrEmpty(this.thing.NodeId))
-				{
-					sb.Append(";NID=");
-					sb.Append(Uri.EscapeDataString(this.thing.NodeId));
-				}
+					if (!HasNodeId && !string.IsNullOrEmpty(this.thing.NodeId))
+					{
+						sb.Append(";NID=");
+						sb.Append(Uri.EscapeDataString(this.thing.NodeId));
+					}
 
-				if (!HasRegistry && !string.IsNullOrEmpty(this.thing.RegistryJid))
-				{
-					sb.Append(";R=");
-					sb.Append(Uri.EscapeDataString(this.thing.RegistryJid));
+					if (!HasRegistry && !string.IsNullOrEmpty(this.thing.RegistryJid))
+					{
+						sb.Append(";R=");
+						sb.Append(Uri.EscapeDataString(this.thing.RegistryJid));
+					}
 				}
 
 				return sb.ToString();
@@ -974,7 +938,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 		/// <summary>
 		/// Title of the current view
 		/// </summary>
-		public Task<string> Title => Task.FromResult(this.thing.FriendlyName);
+		public Task<string> Title => Task.FromResult(this.thing?.FriendlyName ?? string.Empty);
 
 		/// <summary>
 		/// If linkable view has media associated with link.
@@ -984,12 +948,12 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 		/// <summary>
 		/// Encoded media, if available.
 		/// </summary>
-		public byte[] Media => null;
+		public byte[]? Media => null;
 
 		/// <summary>
 		/// Content-Type of associated media.
 		/// </summary>
-		public string MediaContentType => null;
+		public string? MediaContentType => null;
 
 		#endregion
 	}

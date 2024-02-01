@@ -1,5 +1,5 @@
-﻿using IdApp.Services.Navigation;
-using IdApp.Services.Notification.Things;
+﻿using NeuroAccessMaui.Services.Navigation;
+using NeuroAccessMaui.Services.Notification.Things;
 
 namespace NeuroAccessMaui.UI.Pages.Things.IsFriend
 {
@@ -11,7 +11,9 @@ namespace NeuroAccessMaui.UI.Pages.Things.IsFriend
 		/// <summary>
 		/// Base class for provisioning navigation arguments.
 		/// </summary>
-		public ProvisioningNavigationArgs() { }
+		public ProvisioningNavigationArgs()
+		{
+		}
 
 		/// <summary>
 		/// Base class for provisioning navigation arguments.
@@ -33,36 +35,36 @@ namespace NeuroAccessMaui.UI.Pages.Things.IsFriend
 		/// <summary>
 		/// Notification event object.
 		/// </summary>
-		public ProvisioningNotificationEvent Event { get; }
+		public ProvisioningNotificationEvent? Event { get; }
 
 		/// <summary>
 		/// Bare JID of device.
 		/// </summary>
-		public string BareJid { get; }
+		public string? BareJid { get; }
 
 		/// <summary>
 		/// Friendly name of device.
 		/// </summary>
-		public string FriendlyName { get; }
+		public string? FriendlyName { get; }
 
 		/// <summary>
 		/// Bare JID of remote entity trying to connect to device.
 		/// </summary>
-		public string RemoteJid { get; }
+		public string? RemoteJid { get; }
 
 		/// <summary>
 		/// Friendly name of remote entity.
 		/// </summary>
-		public string RemoteFriendlyName { get; }
+		public string? RemoteFriendlyName { get; }
 
 		/// <summary>
 		/// Provisioning key
 		/// </summary>
-		public string Key { get; }
+		public string? Key { get; }
 
 		/// <summary>
 		/// Provisioning Service
 		/// </summary>
-		public string ProvisioningService { get; }
+		public string? ProvisioningService { get; }
 	}
 }

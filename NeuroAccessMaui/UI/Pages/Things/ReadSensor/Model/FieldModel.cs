@@ -9,18 +9,10 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor.Model
 	/// <summary>
 	/// Represents a sensor-data field.
 	/// </summary>
-	public class FieldModel : INotifyPropertyChanged
+	/// <param name="Field">Sensor-data field.</param>
+	public class FieldModel(Field Field) : INotifyPropertyChanged
 	{
-		private Field field;
-
-		/// <summary>
-		/// Represents a sensor-data field.
-		/// </summary>
-		/// <param name="Field">Sensor-data field.</param>
-		public FieldModel(Field Field)
-		{
-			this.field = Field;
-		}
+		private Field field = Field;
 
 		/// <summary>
 		/// Field Name
@@ -141,6 +133,6 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor.Model
 		/// <summary>
 		/// Event raised when a property has changed.
 		/// </summary>
-		public event PropertyChangedEventHandler PropertyChanged;
+		public event PropertyChangedEventHandler? PropertyChanged;
 	}
 }
