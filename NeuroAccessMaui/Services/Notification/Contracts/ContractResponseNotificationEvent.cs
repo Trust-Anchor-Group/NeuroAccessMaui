@@ -1,4 +1,6 @@
-﻿using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
+﻿using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services.Navigation;
+using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
 using System.Text;
 using Waher.Networking.XMPP.Contracts;
@@ -37,20 +39,20 @@ namespace NeuroAccessMaui.Services.Notification.Contracts
 		/// Opens the event.
 		/// </summary>
 		/// <param name="ServiceReferences">Service references</param>
-		public override async Task Open(IServiceReferences ServiceReferences)
+		public override async Task Open()
 		{
-			Contract Contract = await this.GetContract();
+			Contract? Contract = await this.GetContract();
 
 			if (!this.Response || Contract is null)
 			{
-				await ServiceReferences.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["Message"],
-					LocalizationResourceManager.Current["PetitionToViewContractWasDenied"], LocalizationResourceManager.Current["Ok"]);
+				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.Message)],
+					ServiceRef.Localizer[nameof(AppResources.PetitionToViewContractWasDenied)], ServiceRef.Localizer[nameof(AppResources.Ok)]);
 			}
 			else
 			{
 				ViewContractNavigationArgs Args = new(Contract, false);
 
-				await ServiceReferences.NavigationService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop);
+				await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop);
 			}
 		}
 
@@ -58,12 +60,12 @@ namespace NeuroAccessMaui.Services.Notification.Contracts
 		/// Gets a descriptive text for the category of event.
 		/// </summary>
 		/// <param name="ServiceReferences">Service references</param>
-		public override async Task<string> GetDescription(IServiceReferences ServiceReferences)
+		public override async Task<string> GetDescription()
 		{
-			Contract Contract = await this.GetContract();
+			Contract? Contract = await this.GetContract();
 			StringBuilder Result = new();
 
-			Result.Append(LocalizationResourceManager.Current["ContractResponse"]);
+			Result.Append(ServiceRef.Localizer[nameof(AppResources.ContractResponse)]);
 
 			if (Contract is not null)
 			{

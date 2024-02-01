@@ -660,7 +660,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			return Task.CompletedTask;
 		}
 
-		private bool CanExecutePauseResume()
+		private static bool CanExecutePauseResume()
 		{
 			// TODO: Audio
 			//
@@ -719,7 +719,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		// 	};
 		// }, LazyThreadSafetyMode.PublicationOnly);
 
-		private Task<string>? audioRecorderTask = null;
+		private readonly Task<string>? audioRecorderTask = null;
 
 		private bool CanExecuteRecordAudio()
 		{

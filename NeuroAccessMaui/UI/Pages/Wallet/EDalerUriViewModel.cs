@@ -463,7 +463,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 					try
 					{
 						LegalIdentity LegalIdentity = await ServiceRef.XmppService.GetLegalIdentity(this.To);
-						Uri = await ServiceRef.XmppService.CreateFullEDalerPaymentUri(LegalIdentity, this.Amount, this.AmountExtra,
+						Uri = await ServiceRef.XmppService.CreateFullEDalerPaymentUri(LegalIdentity, this.Amount ?? 0, this.AmountExtra,
 							this.Currency, 3, this.Message);
 					}
 					catch (ForbiddenException)
@@ -491,7 +491,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				}
 				else
 				{
-					Uri = await ServiceRef.XmppService.CreateFullEDalerPaymentUri(this.To, this.Amount, this.AmountExtra,
+					Uri = await ServiceRef.XmppService.CreateFullEDalerPaymentUri(this.To, this.Amount ?? 0, this.AmountExtra,
 						this.Currency, 3, this.Message);
 				}
 
@@ -547,12 +547,12 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				if (this.EncryptMessage && this.ToType == EntityType.LegalId)
 				{
 					LegalIdentity LegalIdentity = await ServiceRef.XmppService.GetLegalIdentity(this.To);
-					Uri = await ServiceRef.XmppService.CreateFullEDalerPaymentUri(LegalIdentity, this.Amount, this.AmountExtra,
+					Uri = await ServiceRef.XmppService.CreateFullEDalerPaymentUri(LegalIdentity, this.Amount ?? 0, this.AmountExtra,
 						this.Currency, 3, this.Message);
 				}
 				else
 				{
-					Uri = await ServiceRef.XmppService.CreateFullEDalerPaymentUri(this.To, this.Amount, this.AmountExtra,
+					Uri = await ServiceRef.XmppService.CreateFullEDalerPaymentUri(this.To, this.Amount ?? 0, this.AmountExtra,
 						this.Currency, 3, this.Message);
 				}
 
@@ -695,12 +695,12 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				if (this.EncryptMessage && this.ToType == EntityType.LegalId)
 				{
 					LegalIdentity LegalIdentity = await ServiceRef.XmppService.GetLegalIdentity(this.To);
-					Uri = await ServiceRef.XmppService.CreateFullEDalerPaymentUri(LegalIdentity, this.Amount, this.AmountExtra,
+					Uri = await ServiceRef.XmppService.CreateFullEDalerPaymentUri(LegalIdentity, this.Amount ?? 0, this.AmountExtra,
 						this.Currency, 3, this.Message);
 				}
 				else
 				{
-					Uri = await ServiceRef.XmppService.CreateFullEDalerPaymentUri(this.To, this.Amount, this.AmountExtra,
+					Uri = await ServiceRef.XmppService.CreateFullEDalerPaymentUri(this.To, this.Amount ?? 0, this.AmountExtra,
 						this.Currency, 3, this.Message);
 				}
 

@@ -1527,6 +1527,9 @@
   <data name="ContractProposal" xml:space="preserve">
     <value>Contract proposal</value>
   </data>
+  <data name="ContractResponse" xml:space="preserve">
+    <value>Response to contract request</value>
+  </data>
   <data name="ContractSignatureReceived" xml:space="preserve">
     <value>Contract signature received</value>
   </data>

@@ -817,6 +817,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Response to contract request.
+        /// </summary>
+        internal static string ContractResponse {
+            get {
+                return ResourceManager.GetString("ContractResponse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select contract role first, and then try again..
         /// </summary>
         internal static string ContractRoleMustBeSelected {

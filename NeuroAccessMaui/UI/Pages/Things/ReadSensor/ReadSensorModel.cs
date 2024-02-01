@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.UI.Pages.Things.ReadSensor.Model;
 using NeuroAccessMaui.UI.Pages.Things.ViewClaimThing;
 using NeuroAccessMaui.UI.Pages.Things.ViewThing;
@@ -98,7 +99,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor
 			return Task.CompletedTask;
 		}
 
-		private string GetFieldTypeString(FieldType Type)
+		private static string GetFieldTypeString(FieldType Type)
 		{
 			if (Type.HasFlag(FieldType.Identity))
 				return ServiceRef.Localizer[nameof(AppResources.SensorDataHeaderIdentity)];
@@ -157,7 +158,14 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor
 					}
 					else
 					{
+
+/* Unmerged change from project 'NeuroAccessMaui (net8.0-ios)'
+Before:
 						Category = this.GetFieldTypeString(Field.Type);
+After:
+						Category = GetFieldTypeString(Field.Type);
+*/
+						Category = ReadSensorModel.GetFieldTypeString(Field.Type);
 						IsMin = IsMax = false;
 					}
 
