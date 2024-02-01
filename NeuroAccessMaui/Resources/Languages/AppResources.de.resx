@@ -1506,6 +1506,9 @@
   <data name="Apartment" xml:space="preserve">
     <value>Wohnung</value>
   </data>
+  <data name="APetitionHasBeenSentForEncryption" xml:space="preserve">
+    <value>Die Verschlüsselung kann nur durchgeführt werden, wenn Sie Zugriff auf die Identität des Empfängers haben. Daher wurde eine Petition für diese Identität an den Empfänger gesendet. Wenn der Empfänger die Petition annimmt, erhalten Sie die Identität und können die Zahlung mit einer verschlüsselten Nachricht senden, wenn Sie es erneut versuchen. Sie können sich auch dafür entscheiden, eine unverschlüsselte Nachricht mit der Zahlung zu senden.</value>
+  </data>
   <data name="Building" xml:space="preserve">
     <value>Gebäude</value>
   </data>
@@ -1524,6 +1527,9 @@
   <data name="ContractProposal" xml:space="preserve">
     <value>Vertragsangebot</value>
   </data>
+  <data name="ContractSignatureReceived" xml:space="preserve">
+    <value>Vertragsunterzeichnung erhalten</value>
+  </data>
   <data name="ContractUpdateReceived" xml:space="preserve">
     <value>Vertrag aktualisiert</value>
   </data>
@@ -1536,6 +1542,9 @@
   <data name="DisownThingQuestion" xml:space="preserve">
     <value>Willst du das Ding verleugnen? Dadurch wird das Ding aus Ihrer Liste entfernt, und ein anderer Benutzer kann das Gerät als sein Gerät beanspruchen.</value>
   </data>
+  <data name="EncryptedPayment" xml:space="preserve">
+    <value>Verschlüsselte Zahlung</value>
+  </data>
   <data name="EntireDomain" xml:space="preserve">
     <value>Jeder von {0}</value>
   </data>
@@ -1544,6 +1553,9 @@
   </data>
   <data name="Everyone" xml:space="preserve">
     <value>Jeder</value>
+  </data>
+  <data name="FromUser" xml:space="preserve">
+    <value>Vom Benutzer</value>
   </data>
   <data name="GeneralInformation" xml:space="preserve">
     <value>Allgemeine Informationen</value>
@@ -1580,6 +1592,15 @@
   </data>
   <data name="NotAvailable" xml:space="preserve">
     <value>Nicht verfügbar</value>
+  </data>
+  <data name="Payment" xml:space="preserve">
+    <value>Zahlung</value>
+  </data>
+  <data name="PaymentAlreadySent" xml:space="preserve">
+    <value>Die Zahlungsanweisung wurde bereits gesendet. Sie können ausstehende Zahlungen aus der Ansicht "Ausstehende Zahlungen" erneut senden.</value>
+  </data>
+  <data name="PaymentSuccess" xml:space="preserve">
+    <value>Die Zahlung wurde erfolgreich durchgeführt.</value>
   </data>
   <data name="Phone" xml:space="preserve">
     <value>Telefon</value>
@@ -1665,6 +1686,9 @@
   <data name="Service" xml:space="preserve">
     <value>Dienst</value>
   </data>
+  <data name="Share" xml:space="preserve">
+    <value>Freigeben</value>
+  </data>
   <data name="StreetName" xml:space="preserve">
     <value>Straßenname</value>
   </data>
@@ -1698,14 +1722,26 @@
   <data name="ToUser" xml:space="preserve">
     <value>An den Benutzer, unabhängig von der Quelle</value>
   </data>
+  <data name="ToUser2" xml:space="preserve">
+    <value>Zum Benutzer</value>
+  </data>
+  <data name="TransactionAccepted" xml:space="preserve">
+    <value>Die Transaktion wurde akzeptiert und verarbeitet.</value>
+  </data>
   <data name="UnableToClaimThing" xml:space="preserve">
     <value>Es ist nicht möglich, etwas zu beanspruchen</value>
+  </data>
+  <data name="UnableToProcessEDalerUri" xml:space="preserve">
+    <value>eDaler-Code kann nicht verarbeitet werden.</value>
   </data>
   <data name="UnableToRespond" xml:space="preserve">
     <value>Die Anfrage kann nicht beantwortet werden.</value>
   </data>
   <data name="User" xml:space="preserve">
     <value>Benutzer</value>
+  </data>
+  <data name="UserSignedAs" xml:space="preserve">
+    <value>{0} als {1} unterschrieben.</value>
   </data>
   <data name="Version" xml:space="preserve">
     <value>Version</value>

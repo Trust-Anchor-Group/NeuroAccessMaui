@@ -33,6 +33,7 @@ using NeuroAccessMaui.Services.Navigation;
 using NeuroAccessMaui.UI.Converters;
 using ZXing.OneD;
 using NeuroAccessMaui.Services.UI.QR;
+using NeuroAccessMaui.UI.Pages.Wallet;
 
 namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 {
@@ -126,9 +127,6 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			{
 				case nameof(this.MarkdownInput):
 					this.IsWriting = !string.IsNullOrEmpty(this.MarkdownInput);
-
-					if (!string.IsNullOrEmpty(this.MarkdownInput))
-						MessagingCenter.Send<object>(this, Constants.MessagingCenter.ChatEditorFocus);
 					break;
 
 				case nameof(this.MessageId):
@@ -140,17 +138,19 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 					break;
 
 				case nameof(this.IsRecordingAudio):
-					this.IsRecordingPaused = audioRecorder.Value.IsPaused;
+					// TODO: Audio
+					//
+					//this.IsRecordingPaused = audioRecorder.Value.IsPaused;
 					this.IsWriting = this.IsRecordingAudio;
 
-					if (audioRecorderTimer is null)
-					{
-						audioRecorderTimer = new System.Timers.Timer(100);
-						audioRecorderTimer.Elapsed += this.OnAudioRecorderTimer;
-						audioRecorderTimer.AutoReset = true;
-					}
-
-					audioRecorderTimer.Enabled = this.IsRecordingAudio;
+					//if (audioRecorderTimer is null)
+					//{
+					//	audioRecorderTimer = new System.Timers.Timer(100);
+					//	audioRecorderTimer.Elapsed += this.OnAudioRecorderTimer;
+					//	audioRecorderTimer.AutoReset = true;
+					//}
+					//
+					//audioRecorderTimer.Enabled = this.IsRecordingAudio;
 
 					this.OnPropertyChanged(nameof(RecordingTime));
 					this.CancelCommand.NotifyCanExecuteChanged();
@@ -218,8 +218,12 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		{
 			get
 			{
-				double Milliseconds = audioRecorder.Value.TotalAudioTimeout.TotalMilliseconds - audioRecorder.Value.RecordingTime.TotalMilliseconds;
-				return (Milliseconds > 0) ? string.Format(CultureInfo.CurrentCulture, "{0:F0}s left", Math.Ceiling(Milliseconds / 1000.0)) : "TIMEOUT";
+				// TODO: Audio
+				//
+				//double Milliseconds = audioRecorder.Value.TotalAudioTimeout.TotalMilliseconds - audioRecorder.Value.RecordingTime.TotalMilliseconds;
+				//return (Milliseconds > 0) ? string.Format(CultureInfo.CurrentCulture, "{0:F0}s left", Math.Ceiling(Milliseconds / 1000.0)) : "TIMEOUT";
+
+				return string.Empty;
 			}
 		}
 
@@ -311,6 +315,57 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 				}
 			});
 		}
+
+		private async Task ExecuteLoadMessagesAsync(bool LoadMore = true)
+		{
+			IEnumerable<ChatMessage>? Messages = null;
+			int c = Constants.BatchSizes.MessageBatchSize;
+
+			try
+			{
+				this.ExistsMoreMessages = false;
+
+				DateTime LastTime = LoadMore ? this.Messages[^1].Created : DateTime.MaxValue;
+
+				Messages = await Database.Find<ChatMessage>(0, Constants.BatchSizes.MessageBatchSize,
+					new FilterAnd(
+						new FilterFieldEqualTo("RemoteBareJid", this.BareJid),
+						new FilterFieldLesserThan("Created", LastTime)), "-Created");
+
+				foreach (ChatMessage Message in Messages)
+				{
+					await Message.GenerateXaml(this);
+					c--;
+				}
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				this.ExistsMoreMessages = false;
+				return;
+			}
+
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				try
+				{
+					this.MergeObservableCollections(LoadMore, Messages.ToList());
+					this.ExistsMoreMessages = c <= 0;
+					this.EnsureFirstMessageIsEmpty();
+				}
+				catch (Exception ex)
+				{
+					ServiceRef.LogService.LogException(ex);
+					this.ExistsMoreMessages = false;
+				}
+			});
+		}
+
+		/// <summary>
+		/// If the button is expanded
+		/// </summary>
+		[ObservableProperty]
+		private bool isButtonExpanded;
 
 		/// <summary>
 		/// Toggles command buttons
@@ -419,12 +474,6 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		}
 
 		/// <summary>
-		/// If the button is expanded
-		/// </summary>
-		[ObservableProperty]
-		private bool isButtonExpanded;
-
-		/// <summary>
 		/// The command to bind to for sending user input
 		/// </summary>
 		[RelayCommand(CanExecute = nameof(CanExecuteSendMessage))]
@@ -442,22 +491,24 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		{
 			if (this.IsRecordingAudio)
 			{
-				try
-				{
-					await audioRecorder.Value.StopRecording();
-					string audioPath = await this.audioRecorderTask!;
-
-					if (audioPath is not null)
-						await this.EmbedMedia(audioPath, true);
-				}
-				catch (Exception ex)
-				{
-					ServiceRef.LogService.LogException(ex);
-				}
-				finally
-				{
-					this.IsRecordingAudio = false;
-				}
+				// TODO: Audio
+				//
+				// try
+				// {
+				// 	await audioRecorder.Value.StopRecording();
+				// 	string audioPath = await this.audioRecorderTask!;
+				// 
+				// 	if (audioPath is not null)
+				// 		await this.EmbedMedia(audioPath, true);
+				// }
+				// catch (Exception ex)
+				// {
+				// 	ServiceRef.LogService.LogException(ex);
+				// }
+				// finally
+				// {
+				// 	this.IsRecordingAudio = false;
+				// }
 			}
 			else
 			{
@@ -521,7 +572,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 					After:
 										MessageType = MessageType.Sent,
 					*/
-					MessageType = Chat.MessageType.Sent,
+					MessageType = MessageType.Sent,
 					Html = HtmlDocument.GetBody(await Doc.GenerateHTML()),
 					PlainText = (await Doc.GeneratePlainText()).Trim(),
 					Markdown = MarkdownInput
@@ -595,19 +646,26 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		/// The command to bind for pausing/resuming the audio recording
 		/// </summary>
 		[RelayCommand(CanExecute = nameof(CanExecutePauseResume))]
-		private async Task PauseResume()
+		private Task PauseResume()
 		{
-			if (audioRecorder.Value.IsPaused)
-				await audioRecorder.Value.Resume();
-			else
-				await audioRecorder.Value.Pause();
+			// TODO: Audio
+			//
+			// if (audioRecorder.Value.IsPaused)
+			// 	await audioRecorder.Value.Resume();
+			// else
+			// 	await audioRecorder.Value.Pause();
+			// 
+			// this.IsRecordingPaused = audioRecorder.Value.IsPaused;
 
-			this.IsRecordingPaused = audioRecorder.Value.IsPaused;
+			return Task.CompletedTask;
 		}
 
 		private bool CanExecutePauseResume()
 		{
-			return this.IsRecordingAudio && audioRecorder.Value.IsRecording;
+			// TODO: Audio
+			//
+			// return this.IsRecordingAudio && audioRecorder.Value.IsRecording;
+			return false;
 		}
 
 		private bool CanExecuteCancelMessage()
@@ -623,18 +681,20 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		{
 			if (this.IsRecordingAudio)
 			{
-				try
-				{
-					return audioRecorder.Value.StopRecording();
-				}
-				catch (Exception ex)
-				{
-					ServiceRef.LogService.LogException(ex);
-				}
-				finally
-				{
-					this.IsRecordingAudio = false;
-				}
+				// TODO: Audio
+				//
+				// try
+				// {
+				// 	return audioRecorder.Value.StopRecording();
+				// }
+				// catch (Exception ex)
+				// {
+				// 	ServiceRef.LogService.LogException(ex);
+				// }
+				// finally
+				// {
+				// 	this.IsRecordingAudio = false;
+				// }
 			}
 			else
 			{
@@ -669,7 +729,10 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		private void OnAudioRecorderTimer(object? source, ElapsedEventArgs e)
 		{
 			this.OnPropertyChanged(nameof(RecordingTime));
-			this.IsRecordingPaused = audioRecorder.Value.IsPaused;
+
+			// TODO: Audio
+			//
+			// this.IsRecordingPaused = audioRecorder.Value.IsPaused;
 		}
 
 		[RelayCommand(CanExecute = nameof(CanExecuteRecordAudio))]
@@ -688,8 +751,10 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 
 				if (Status == PermissionStatus.Granted)
 				{
-					this.audioRecorderTask = await audioRecorder.Value.StartRecording();
-					this.IsRecordingAudio = true;
+					// TODO: Audio
+					//
+					// this.audioRecorderTask = await audioRecorder.Value.StartRecording();
+					// this.IsRecordingAudio = true;
 				}
 			}
 			catch (Exception ex)
@@ -1036,12 +1101,12 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			if (!EDalerUri.TryParse(sb.ToString(), out EDalerUri Parsed))
 				return;
 
-			TaskCompletionSource<string> UriToSend = new();
-			EDalerUriNavigationArgs Args = new(Parsed, this.FriendlyName, UriToSend);
+			TaskCompletionSource<string?> UriToSend = new();
+			EDalerUriNavigationArgs Args = new(Parsed, this.FriendlyName ?? string.Empty, UriToSend);
 
 			await ServiceRef.NavigationService.GoToAsync(nameof(SendPaymentPage), Args, BackMethod.Pop);
 
-			string Uri = await UriToSend.Task;
+			string? Uri = await UriToSend.Task;
 			if (string.IsNullOrEmpty(Uri) || !EDalerUri.TryParse(Uri, out Parsed))
 				return;
 
@@ -1210,8 +1275,6 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 						break;
 				}
 			}
-
-			this.EvaluateAllCommands();
 
 			return Task.CompletedTask;
 		}

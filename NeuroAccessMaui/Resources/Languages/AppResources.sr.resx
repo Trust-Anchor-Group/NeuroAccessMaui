@@ -1506,6 +1506,9 @@
   <data name="Apartment" xml:space="preserve">
     <value>Stan</value>
   </data>
+  <data name="APetitionHasBeenSentForEncryption" xml:space="preserve">
+    <value>Šifrovanje se može izvršiti samo ako imate pristup identitetu primalaca. Zbog toga je upućena peticija za ovaj identitet upućena primaocu. Ako primalac prihvati peticiju, dobićete identitet i moći ćete da pošaljete uplatu šifrovanom porukom kada pokušate ponovo. Takođe možete odabrati da pošaljete nešifrovanu poruku sa uplatom.</value>
+  </data>
   <data name="Building" xml:space="preserve">
     <value>Zgradu</value>
   </data>
@@ -1524,6 +1527,9 @@
   <data name="ContractProposal" xml:space="preserve">
     <value>Predlog ugovora</value>
   </data>
+  <data name="ContractSignatureReceived" xml:space="preserve">
+    <value>Primljen potpis ugovora</value>
+  </data>
   <data name="ContractUpdateReceived" xml:space="preserve">
     <value>Ugovor je ažuriran</value>
   </data>
@@ -1536,6 +1542,9 @@
   <data name="DisownThingQuestion" xml:space="preserve">
     <value>Želite li da se odreknete te stvari? Ovo će ukloniti stvar sa vaše liste stvari, i dozvoliti drugome da prisvoji uređaj kao njihov.</value>
   </data>
+  <data name="EncryptedPayment" xml:space="preserve">
+    <value>Šifrovano plaćanje</value>
+  </data>
   <data name="EntireDomain" xml:space="preserve">
     <value>Svi iz {0}</value>
   </data>
@@ -1544,6 +1553,9 @@
   </data>
   <data name="Everyone" xml:space="preserve">
     <value>Svi</value>
+  </data>
+  <data name="FromUser" xml:space="preserve">
+    <value>Od korisnika</value>
   </data>
   <data name="GeneralInformation" xml:space="preserve">
     <value>Opšte informacije</value>
@@ -1580,6 +1592,15 @@
   </data>
   <data name="NotAvailable" xml:space="preserve">
     <value>Nije dostupno</value>
+  </data>
+  <data name="Payment" xml:space="preserve">
+    <value>Plaćanja</value>
+  </data>
+  <data name="PaymentAlreadySent" xml:space="preserve">
+    <value>Uputstvo za plaćanje je već poslato. Uplate na čekanju možete ponovo da posaote iz prikaza neobrađene uplate.</value>
+  </data>
+  <data name="PaymentSuccess" xml:space="preserve">
+    <value>Plaćanje je uspešno realizovano.</value>
   </data>
   <data name="Phone" xml:space="preserve">
     <value>Telefon</value>
@@ -1665,6 +1686,9 @@
   <data name="Service" xml:space="preserve">
     <value>Usluga</value>
   </data>
+  <data name="Share" xml:space="preserve">
+    <value>Delite</value>
+  </data>
   <data name="StreetName" xml:space="preserve">
     <value>Ime ulice</value>
   </data>
@@ -1698,14 +1722,26 @@
   <data name="ToUser" xml:space="preserve">
     <value>Korisniku, bez obzira na izvor</value>
   </data>
+  <data name="ToUser2" xml:space="preserve">
+    <value>Korisniku</value>
+  </data>
+  <data name="TransactionAccepted" xml:space="preserve">
+    <value>Transakcija je prihvaćena i obrađena.</value>
+  </data>
   <data name="UnableToClaimThing" xml:space="preserve">
     <value>Nije moguće tražiti stvar</value>
+  </data>
+  <data name="UnableToProcessEDalerUri" xml:space="preserve">
+    <value>Nije moguće obraditi eDaler kôd.</value>
   </data>
   <data name="UnableToRespond" xml:space="preserve">
     <value>Nije moguće odgovoriti na zahtev.</value>
   </data>
   <data name="User" xml:space="preserve">
     <value>Korisnik</value>
+  </data>
+  <data name="UserSignedAs" xml:space="preserve">
+    <value>{0} kao {1}.</value>
   </data>
   <data name="Version" xml:space="preserve">
     <value>Verzija</value>

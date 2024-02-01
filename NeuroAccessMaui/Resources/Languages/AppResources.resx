@@ -1506,6 +1506,9 @@
   <data name="Apartment" xml:space="preserve">
     <value>Apartment</value>
   </data>
+  <data name="APetitionHasBeenSentForEncryption" xml:space="preserve">
+    <value>Encryption can only be performed, if you have access to the recipients identity. A petition for this identity has therefore been sent to the indended recipient. If the recipient accepts the petition, you will receive the identity and be able to send the payment with an encrypted message when you try again. You can also choose to send an unencrypted message with the payment.</value>
+  </data>
   <data name="Building" xml:space="preserve">
     <value>Building</value>
   </data>
@@ -1524,6 +1527,9 @@
   <data name="ContractProposal" xml:space="preserve">
     <value>Contract proposal</value>
   </data>
+  <data name="ContractSignatureReceived" xml:space="preserve">
+    <value>Contract signature received</value>
+  </data>
   <data name="ContractUpdateReceived" xml:space="preserve">
     <value>Contract updated</value>
   </data>
@@ -1536,6 +1542,9 @@
   <data name="DisownThingQuestion" xml:space="preserve">
     <value>Do you want to disown the thing? This will remove the thing from your list of things, and will permit another to claim the device as theirs.</value>
   </data>
+  <data name="EncryptedPayment" xml:space="preserve">
+    <value>Encrypted Payment</value>
+  </data>
   <data name="EntireDomain" xml:space="preserve">
     <value>Everyone from {0}</value>
   </data>
@@ -1544,6 +1553,9 @@
   </data>
   <data name="Everyone" xml:space="preserve">
     <value>Everyone</value>
+  </data>
+  <data name="FromUser" xml:space="preserve">
+    <value>From User</value>
   </data>
   <data name="GeneralInformation" xml:space="preserve">
     <value>General Information</value>
@@ -1580,6 +1592,15 @@
   </data>
   <data name="NotAvailable" xml:space="preserve">
     <value>Not Available</value>
+  </data>
+  <data name="Payment" xml:space="preserve">
+    <value>Payment</value>
+  </data>
+  <data name="PaymentAlreadySent" xml:space="preserve">
+    <value>Payment instruction has already been sent. You can resend pending payments from the pending payment view.</value>
+  </data>
+  <data name="PaymentSuccess" xml:space="preserve">
+    <value>Payment successfully realized.</value>
   </data>
   <data name="Phone" xml:space="preserve">
     <value>Phone</value>
@@ -1665,6 +1686,9 @@
   <data name="Service" xml:space="preserve">
     <value>Service</value>
   </data>
+  <data name="Share" xml:space="preserve">
+    <value>Share</value>
+  </data>
   <data name="StreetName" xml:space="preserve">
     <value>Street Name</value>
   </data>
@@ -1698,14 +1722,26 @@
   <data name="ToUser" xml:space="preserve">
     <value>To user, regardless of source</value>
   </data>
+  <data name="ToUser2" xml:space="preserve">
+    <value>To User</value>
+  </data>
+  <data name="TransactionAccepted" xml:space="preserve">
+    <value>Transaction has been accepted and processed.</value>
+  </data>
   <data name="UnableToClaimThing" xml:space="preserve">
     <value>Unable to claim thing</value>
+  </data>
+  <data name="UnableToProcessEDalerUri" xml:space="preserve">
+    <value>Unable to process eDaler code.</value>
   </data>
   <data name="UnableToRespond" xml:space="preserve">
     <value>Unable to respond to request.</value>
   </data>
   <data name="User" xml:space="preserve">
     <value>User</value>
+  </data>
+  <data name="UserSignedAs" xml:space="preserve">
+    <value>{0} signed as {1}.</value>
   </data>
   <data name="Version" xml:space="preserve">
     <value>Version</value>

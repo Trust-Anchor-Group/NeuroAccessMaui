@@ -808,5 +808,13 @@
 			/// </summary>
 			public const string TokenConsignmentTemplate = "2a6d86d3-cae9-be05-4015-a272cd0cbbb9@legal.lab.tagroot.io";
 		}
+
+		public static class Images
+		{
+			/// <summary>
+			/// QR-code with a person icon.
+			/// </summary>
+			public const string Qr_Person = "file://qr_person.svg";
+		}
 	}
 }

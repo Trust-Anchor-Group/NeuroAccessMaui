@@ -1506,6 +1506,9 @@
   <data name="Apartment" xml:space="preserve">
     <value>Apartament</value>
   </data>
+  <data name="APetitionHasBeenSentForEncryption" xml:space="preserve">
+    <value>Criptarea poate fi efectuată numai dacă aveți acces la identitatea destinatarilor. Prin urmare, o petiție pentru această identitate a fost trimisă destinatarului urmărit. Dacă destinatarul acceptă petiția, veți primi identitatea și veți putea trimite plata cu un mesaj criptat atunci când încercați din nou. De asemenea, puteți alege să trimiteți un mesaj necriptat odată cu plata.</value>
+  </data>
   <data name="Building" xml:space="preserve">
     <value>Clădire</value>
   </data>
@@ -1524,6 +1527,9 @@
   <data name="ContractProposal" xml:space="preserve">
     <value>Propunere de contract</value>
   </data>
+  <data name="ContractSignatureReceived" xml:space="preserve">
+    <value>Semnarea contractului primită</value>
+  </data>
   <data name="ContractUpdateReceived" xml:space="preserve">
     <value>Contract actualizat</value>
   </data>
@@ -1536,6 +1542,9 @@
   <data name="DisownThingQuestion" xml:space="preserve">
     <value>Vrei să renegi lucrul? Acest lucru va elimina lucrul din lista dvs. de lucruri și va permite altuia să revendice dispozitivul ca fiind al lor.</value>
   </data>
+  <data name="EncryptedPayment" xml:space="preserve">
+    <value>Plată criptată</value>
+  </data>
   <data name="EntireDomain" xml:space="preserve">
     <value>Toată lumea din {0}</value>
   </data>
@@ -1544,6 +1553,9 @@
   </data>
   <data name="Everyone" xml:space="preserve">
     <value>Oricine</value>
+  </data>
+  <data name="FromUser" xml:space="preserve">
+    <value>De la utilizator</value>
   </data>
   <data name="GeneralInformation" xml:space="preserve">
     <value>Informații generale</value>
@@ -1580,6 +1592,15 @@
   </data>
   <data name="NotAvailable" xml:space="preserve">
     <value>Nu este disponibil</value>
+  </data>
+  <data name="Payment" xml:space="preserve">
+    <value>Plată</value>
+  </data>
+  <data name="PaymentAlreadySent" xml:space="preserve">
+    <value>Instrucțiunea de plată a fost deja trimisă. Puteți retrimite plățile în așteptare din vizualizarea plăților în așteptare.</value>
+  </data>
+  <data name="PaymentSuccess" xml:space="preserve">
+    <value>Plata realizată cu succes.</value>
   </data>
   <data name="Phone" xml:space="preserve">
     <value>Telefon</value>
@@ -1665,6 +1686,9 @@
   <data name="Service" xml:space="preserve">
     <value>Serviciu</value>
   </data>
+  <data name="Share" xml:space="preserve">
+    <value>Acțiune</value>
+  </data>
   <data name="StreetName" xml:space="preserve">
     <value>Numele străzii</value>
   </data>
@@ -1698,14 +1722,26 @@
   <data name="ToUser" xml:space="preserve">
     <value>Pentru utilizator, indiferent de sursă</value>
   </data>
+  <data name="ToUser2" xml:space="preserve">
+    <value>Către utilizator</value>
+  </data>
+  <data name="TransactionAccepted" xml:space="preserve">
+    <value>Tranzacția a fost acceptată și procesată.</value>
+  </data>
   <data name="UnableToClaimThing" xml:space="preserve">
     <value>Nu se poate pretinde ceva</value>
+  </data>
+  <data name="UnableToProcessEDalerUri" xml:space="preserve">
+    <value>Nu se poate procesa codul eDaler.</value>
   </data>
   <data name="UnableToRespond" xml:space="preserve">
     <value>Nu se poate răspunde la solicitare.</value>
   </data>
   <data name="User" xml:space="preserve">
     <value>Utilizator</value>
+  </data>
+  <data name="UserSignedAs" xml:space="preserve">
+    <value>{0} semnat ca {1}.</value>
   </data>
   <data name="Version" xml:space="preserve">
     <value>Versiune</value>

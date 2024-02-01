@@ -1506,6 +1506,9 @@
   <data name="Apartment" xml:space="preserve">
     <value>Asunto</value>
   </data>
+  <data name="APetitionHasBeenSentForEncryption" xml:space="preserve">
+    <value>Salaus voidaan suorittaa vain, jos sinulla on pääsy vastaanottajien tunnistetietoihin. Tätä henkilöllisyyttä koskeva vetoomus on siksi lähetetty vastaanottajalle. Jos vastaanottaja hyväksyy vetoomuksen, saat henkilöllisyyden ja voit lähettää maksun salatulla viestillä, kun yrität uudelleen. Voit myös lähettää salaamattoman viestin maksun mukana.</value>
+  </data>
   <data name="Building" xml:space="preserve">
     <value>Rakennus</value>
   </data>
@@ -1524,6 +1527,9 @@
   <data name="ContractProposal" xml:space="preserve">
     <value>Sopimusehdotus</value>
   </data>
+  <data name="ContractSignatureReceived" xml:space="preserve">
+    <value>Sopimuksen allekirjoitus vastaanotettu</value>
+  </data>
   <data name="ContractUpdateReceived" xml:space="preserve">
     <value>Sopimus päivitetty</value>
   </data>
@@ -1536,6 +1542,9 @@
   <data name="DisownThingQuestion" xml:space="preserve">
     <value>Haluatko kieltää asian? Tämä poistaa asian asioiden luettelostasi ja sallii toisen vaatia laitetta omakseen.</value>
   </data>
+  <data name="EncryptedPayment" xml:space="preserve">
+    <value>Salattu maksu</value>
+  </data>
   <data name="EntireDomain" xml:space="preserve">
     <value>Kaikki {0}</value>
   </data>
@@ -1544,6 +1553,9 @@
   </data>
   <data name="Everyone" xml:space="preserve">
     <value>Kaikki</value>
+  </data>
+  <data name="FromUser" xml:space="preserve">
+    <value>Käyttäjältä</value>
   </data>
   <data name="GeneralInformation" xml:space="preserve">
     <value>Yleistä tietoa</value>
@@ -1580,6 +1592,15 @@
   </data>
   <data name="NotAvailable" xml:space="preserve">
     <value>Ei saatavilla</value>
+  </data>
+  <data name="Payment" xml:space="preserve">
+    <value>Maksu</value>
+  </data>
+  <data name="PaymentAlreadySent" xml:space="preserve">
+    <value>Maksutoimeksianto on jo lähetetty. Voit lähettää odottavat maksut uudelleen odottavan maksun näkymästä.</value>
+  </data>
+  <data name="PaymentSuccess" xml:space="preserve">
+    <value>Maksu toteutui onnistuneesti.</value>
   </data>
   <data name="Phone" xml:space="preserve">
     <value>Puhelin</value>
@@ -1665,6 +1686,9 @@
   <data name="Service" xml:space="preserve">
     <value>Palvelu</value>
   </data>
+  <data name="Share" xml:space="preserve">
+    <value>Jakaa</value>
+  </data>
   <data name="StreetName" xml:space="preserve">
     <value>Lempinimi</value>
   </data>
@@ -1698,14 +1722,26 @@
   <data name="ToUser" xml:space="preserve">
     <value>Käyttäjälle lähteestä riippumatta</value>
   </data>
+  <data name="ToUser2" xml:space="preserve">
+    <value>Käyttäjälle</value>
+  </data>
+  <data name="TransactionAccepted" xml:space="preserve">
+    <value>Tapahtuma on hyväksytty ja käsitelty.</value>
+  </data>
   <data name="UnableToClaimThing" xml:space="preserve">
     <value>Ei voi vaatia mitään</value>
+  </data>
+  <data name="UnableToProcessEDalerUri" xml:space="preserve">
+    <value>eDaler-koodia ei voi käsitellä.</value>
   </data>
   <data name="UnableToRespond" xml:space="preserve">
     <value>Pyyntöön ei voi vastata.</value>
   </data>
   <data name="User" xml:space="preserve">
     <value>Käyttäjä</value>
+  </data>
+  <data name="UserSignedAs" xml:space="preserve">
+    <value>{0} allekirjoitti {1}.</value>
   </data>
   <data name="Version" xml:space="preserve">
     <value>Versio</value>

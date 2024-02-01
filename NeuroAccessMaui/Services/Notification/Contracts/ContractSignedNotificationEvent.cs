@@ -1,4 +1,9 @@
-﻿using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
+﻿using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services.Contacts;
+using NeuroAccessMaui.Services.Navigation;
+using NeuroAccessMaui.Services.UI.Photos;
+using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
 using System.Text;
 using System.Xml;
@@ -11,7 +16,7 @@ namespace NeuroAccessMaui.Services.Notification.Contracts
 	/// </summary>
 	public class ContractSignedNotificationEvent : ContractNotificationEvent
 	{
-		private LegalIdentity identity;
+		private LegalIdentity? identity;
 
 		/// <summary>
 		/// Notification event for when a contract has been signed.
@@ -36,32 +41,32 @@ namespace NeuroAccessMaui.Services.Notification.Contracts
 		/// <summary>
 		/// Legal ID signing the contract.
 		/// </summary>
-		public string LegalId { get; set; }
+		public string? LegalId { get; set; }
 
 		/// <summary>
 		/// Role being signed
 		/// </summary>
-		public string Role { get; set; }
+		public string? Role { get; set; }
 
 		/// <summary>
 		/// Opens the event.
 		/// </summary>
 		/// <param name="ServiceReferences">Service references</param>
-		public override async Task Open(IServiceReferences ServiceReferences)
+		public override async Task Open()
 		{
-			Contract Contract = await this.GetContract();
+			Contract? Contract = await this.GetContract();
 			ViewContractNavigationArgs Args = new(Contract, false);
 
-			await ServiceReferences.NavigationService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop);
+			await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop);
 		}
 
 		/// <summary>
 		/// Gets a descriptive text for the category of event.
 		/// </summary>
 		/// <param name="ServiceReferences">Service references</param>
-		public override async Task<string> GetDescription(IServiceReferences ServiceReferences)
+		public override async Task<string> GetDescription()
 		{
-			Contract Contract = await this.GetContract();
+			Contract? Contract = await this.GetContract();
 			StringBuilder Result = new();
 
 			if (Contract is not null)
@@ -71,11 +76,11 @@ namespace NeuroAccessMaui.Services.Notification.Contracts
 			}
 
 			if (this.identity is null)
-				Result.Append(LocalizationResourceManager.Current["ContractSignatureReceived"]);
+				Result.Append(ServiceRef.Localizer[nameof(AppResources.ContractSignatureReceived)]);
 			else
 			{
 				string FriendlyName = ContactInfo.GetFriendlyName(this.identity);
-				Result.Append(string.Format(LocalizationResourceManager.Current["UserSignedAs"], FriendlyName, this.Role));
+				Result.Append(ServiceRef.Localizer[nameof(AppResources.UserSignedAs), FriendlyName, this.Role]);
 			}
 
 			Result.Append('.');
@@ -86,13 +91,13 @@ namespace NeuroAccessMaui.Services.Notification.Contracts
 		/// <summary>
 		/// XML of identity.
 		/// </summary>
-		public string IdentityXml { get; set; }
+		public string? IdentityXml { get; set; }
 
 		/// <summary>
 		/// Gets a parsed identity.
 		/// </summary>
 		/// <returns>Parsed identity</returns>
-		public LegalIdentity Identity
+		public LegalIdentity? Identity
 		{
 			get
 			{
@@ -128,25 +133,25 @@ namespace NeuroAccessMaui.Services.Notification.Contracts
 		/// <summary>
 		/// Performs perparatory tasks, that will simplify opening the notification.
 		/// </summary>
-		public override async Task Prepare(IServiceReferences ServiceReferences)
+		public override async Task Prepare()
 		{
 			if (this.identity is null && !string.IsNullOrEmpty(this.LegalId))
 			{
 				try
 				{
-					this.Identity = await ServiceReferences.XmppService.GetLegalIdentity(this.LegalId);
+					this.Identity = await ServiceRef.XmppService.GetLegalIdentity(this.LegalId);
 				}
 				catch (Exception ex)
 				{
-					ServiceReferences.LogService.LogException(ex,
+					ServiceRef.LogService.LogException(ex,
 						new KeyValuePair<string, object?>("ContractId", this.ContractId),
 						new KeyValuePair<string, object?>("LegalId", this.LegalId),
 						new KeyValuePair<string, object?>("Role", this.Role),
-						new KeyValuePair<string, object?>(Constants.XmppProperties.Jid, ServiceReferences.XmppService.BareJid));
+						new KeyValuePair<string, object?>(Constants.XmppProperties.Jid, ServiceRef.XmppService.BareJid));
 				}
 			}
 
-			LegalIdentity Identity = this.Identity;
+			LegalIdentity? Identity = this.Identity;
 
 			if (Identity?.Attachments is not null)
 			{
@@ -158,7 +163,7 @@ namespace NeuroAccessMaui.Services.Notification.Contracts
 					}
 					catch (Exception ex)
 					{
-						ServiceReferences.LogService.LogException(ex);
+						ServiceRef.LogService.LogException(ex);
 					}
 				}
 			}

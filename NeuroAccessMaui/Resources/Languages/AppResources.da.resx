@@ -1506,6 +1506,9 @@
   <data name="Apartment" xml:space="preserve">
     <value>Lejlighed</value>
   </data>
+  <data name="APetitionHasBeenSentForEncryption" xml:space="preserve">
+    <value>Kryptering kan kun udføres, hvis du har adgang til modtagerens identitet. Der er derfor sendt et andragende om denne identitet til den indstillede modtager. Hvis modtageren accepterer andragendet, modtager du identiteten og kan sende betalingen med en krypteret besked, når du prøver igen. Du kan også vælge at sende en ukrypteret besked med betalingen.</value>
+  </data>
   <data name="Building" xml:space="preserve">
     <value>Bygning</value>
   </data>
@@ -1524,6 +1527,9 @@
   <data name="ContractProposal" xml:space="preserve">
     <value>Forslag til kontrakt</value>
   </data>
+  <data name="ContractSignatureReceived" xml:space="preserve">
+    <value>Kontraktunderskrift modtaget</value>
+  </data>
   <data name="ContractUpdateReceived" xml:space="preserve">
     <value>Kontrakt opdateret</value>
   </data>
@@ -1536,6 +1542,9 @@
   <data name="DisownThingQuestion" xml:space="preserve">
     <value>Vil du fornægte tingen? Dette fjerner tingen fra din liste over ting og tillader en anden at gøre krav på enheden som deres.</value>
   </data>
+  <data name="EncryptedPayment" xml:space="preserve">
+    <value>Krypteret betaling</value>
+  </data>
   <data name="EntireDomain" xml:space="preserve">
     <value>Alle fra {0}</value>
   </data>
@@ -1544,6 +1553,9 @@
   </data>
   <data name="Everyone" xml:space="preserve">
     <value>Alle</value>
+  </data>
+  <data name="FromUser" xml:space="preserve">
+    <value>Fra bruger</value>
   </data>
   <data name="GeneralInformation" xml:space="preserve">
     <value>Generelle oplysninger</value>
@@ -1580,6 +1592,15 @@
   </data>
   <data name="NotAvailable" xml:space="preserve">
     <value>Ikke tilgængelig</value>
+  </data>
+  <data name="Payment" xml:space="preserve">
+    <value>Betaling</value>
+  </data>
+  <data name="PaymentAlreadySent" xml:space="preserve">
+    <value>Betalingsinstruktion er allerede sendt. Du kan sende afventende betalinger igen fra visningen Afventende betaling.</value>
+  </data>
+  <data name="PaymentSuccess" xml:space="preserve">
+    <value>Betaling realiseret med succes.</value>
   </data>
   <data name="Phone" xml:space="preserve">
     <value>Telefon</value>
@@ -1665,6 +1686,9 @@
   <data name="Service" xml:space="preserve">
     <value>Tjeneste</value>
   </data>
+  <data name="Share" xml:space="preserve">
+    <value>Aktie</value>
+  </data>
   <data name="StreetName" xml:space="preserve">
     <value>Gadenavn</value>
   </data>
@@ -1698,14 +1722,26 @@
   <data name="ToUser" xml:space="preserve">
     <value>Til brugeren, uanset kilde</value>
   </data>
+  <data name="ToUser2" xml:space="preserve">
+    <value>Til bruger</value>
+  </data>
+  <data name="TransactionAccepted" xml:space="preserve">
+    <value>Transaktionen er blevet accepteret og behandlet.</value>
+  </data>
   <data name="UnableToClaimThing" xml:space="preserve">
     <value>Kan ikke gøre krav på ting</value>
+  </data>
+  <data name="UnableToProcessEDalerUri" xml:space="preserve">
+    <value>Kan ikke behandle eDaler-kode.</value>
   </data>
   <data name="UnableToRespond" xml:space="preserve">
     <value>Kan ikke svare på anmodningen.</value>
   </data>
   <data name="User" xml:space="preserve">
     <value>Bruger</value>
+  </data>
+  <data name="UserSignedAs" xml:space="preserve">
+    <value>{0} underskrevet som {1}.</value>
   </data>
   <data name="Version" xml:space="preserve">
     <value>Version</value>

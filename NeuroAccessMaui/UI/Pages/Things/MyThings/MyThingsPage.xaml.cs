@@ -1,7 +1,4 @@
-﻿using IdApp.Services.Navigation;
-using Xamarin.Forms.Xaml;
-
-namespace NeuroAccessMaui.UI.Pages.Things.MyThings
+﻿namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 {
 	/// <summary>
 	/// A page that displays a list of the current user's things.

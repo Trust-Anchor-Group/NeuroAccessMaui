@@ -1506,6 +1506,9 @@
   <data name="Apartment" xml:space="preserve">
     <value>Lägenhet</value>
   </data>
+  <data name="APetitionHasBeenSentForEncryption" xml:space="preserve">
+    <value>Kryptering kan endast utföras om du har tillgång till mottagarens identitet. En begäran om denna identitet har därför skickats till den berörda mottagaren. Om mottagaren accepterar framställningen får du identiteten och kan skicka betalningen med ett krypterat meddelande när du försöker igen. Du kan också välja att skicka ett okrypterat meddelande med betalningen.</value>
+  </data>
   <data name="Building" xml:space="preserve">
     <value>Byggnad</value>
   </data>
@@ -1524,6 +1527,9 @@
   <data name="ContractProposal" xml:space="preserve">
     <value>Förslag till kontrakt</value>
   </data>
+  <data name="ContractSignatureReceived" xml:space="preserve">
+    <value>Undertecknande av kontrakt mottaget</value>
+  </data>
   <data name="ContractUpdateReceived" xml:space="preserve">
     <value>Kontraktet uppdaterat</value>
   </data>
@@ -1536,6 +1542,9 @@
   <data name="DisownThingQuestion" xml:space="preserve">
     <value>Vill du förneka saken? Detta kommer att ta bort saken från din lista över saker och kommer att tillåta en annan att göra anspråk på enheten som sin.</value>
   </data>
+  <data name="EncryptedPayment" xml:space="preserve">
+    <value>Krypterad betalning</value>
+  </data>
   <data name="EntireDomain" xml:space="preserve">
     <value>Alla från {0}</value>
   </data>
@@ -1544,6 +1553,9 @@
   </data>
   <data name="Everyone" xml:space="preserve">
     <value>Alla</value>
+  </data>
+  <data name="FromUser" xml:space="preserve">
+    <value>Från användare</value>
   </data>
   <data name="GeneralInformation" xml:space="preserve">
     <value>Allmän information</value>
@@ -1580,6 +1592,15 @@
   </data>
   <data name="NotAvailable" xml:space="preserve">
     <value>Ej tillgänglig</value>
+  </data>
+  <data name="Payment" xml:space="preserve">
+    <value>Betalning</value>
+  </data>
+  <data name="PaymentAlreadySent" xml:space="preserve">
+    <value>Betalningsinstruktion har redan skickats. Du kan skicka om väntande betalningar från vyn väntande betalning.</value>
+  </data>
+  <data name="PaymentSuccess" xml:space="preserve">
+    <value>Betalningen har genomförts.</value>
   </data>
   <data name="Phone" xml:space="preserve">
     <value>Telefon</value>
@@ -1665,6 +1686,9 @@
   <data name="Service" xml:space="preserve">
     <value>Tjänst</value>
   </data>
+  <data name="Share" xml:space="preserve">
+    <value>Aktie</value>
+  </data>
   <data name="StreetName" xml:space="preserve">
     <value>Gatunamn</value>
   </data>
@@ -1698,14 +1722,26 @@
   <data name="ToUser" xml:space="preserve">
     <value>Till användaren, oavsett källa</value>
   </data>
+  <data name="ToUser2" xml:space="preserve">
+    <value>Till användare</value>
+  </data>
+  <data name="TransactionAccepted" xml:space="preserve">
+    <value>Transaktionen har accepterats och behandlats.</value>
+  </data>
   <data name="UnableToClaimThing" xml:space="preserve">
     <value>Det går inte att göra anspråk på saken</value>
+  </data>
+  <data name="UnableToProcessEDalerUri" xml:space="preserve">
+    <value>Det går inte att bearbeta eDaler-kod.</value>
   </data>
   <data name="UnableToRespond" xml:space="preserve">
     <value>Det går inte att svara på begäran.</value>
   </data>
   <data name="User" xml:space="preserve">
     <value>Användare</value>
+  </data>
+  <data name="UserSignedAs" xml:space="preserve">
+    <value>{0} undertecknade som {1}.</value>
   </data>
   <data name="Version" xml:space="preserve">
     <value>Version</value>

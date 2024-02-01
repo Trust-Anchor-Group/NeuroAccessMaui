@@ -223,6 +223,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Encryption can only be performed, if you have access to the recipients identity. A petition for this identity has therefore been sent to the indended recipient. If the recipient accepts the petition, you will receive the identity and be able to send the payment with an encrypted message when you try again. You can also choose to send an unencrypted message with the payment..
+        /// </summary>
+        internal static string APetitionHasBeenSentForEncryption {
+            get {
+                return ResourceManager.GetString("APetitionHasBeenSentForEncryption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A petition has been sent to the parts of the contract. If any of the parts accepts the petition, the contract information will be displayed on the screen..
         /// </summary>
         internal static string APetitionHasBeenSentToTheContract {
@@ -826,6 +835,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Contract signature received.
+        /// </summary>
+        internal static string ContractSignatureReceived {
+            get {
+                return ResourceManager.GetString("ContractSignatureReceived", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A contract has been signed..
         /// </summary>
         internal static string ContractSigned {
@@ -1195,6 +1213,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Encrypted Payment.
+        /// </summary>
+        internal static string EncryptedPayment {
+            get {
+                return ResourceManager.GetString("EncryptedPayment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enter.
         /// </summary>
         internal static string Enter {
@@ -1452,6 +1479,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string From {
             get {
                 return ResourceManager.GetString("From", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to From User.
+        /// </summary>
+        internal static string FromUser {
+            get {
+                return ResourceManager.GetString("FromUser", resourceCulture);
             }
         }
         
@@ -2464,6 +2500,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Payment.
+        /// </summary>
+        internal static string Payment {
+            get {
+                return ResourceManager.GetString("Payment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Payment instruction has already been sent. You can resend pending payments from the pending payment view..
+        /// </summary>
+        internal static string PaymentAlreadySent {
+            get {
+                return ResourceManager.GetString("PaymentAlreadySent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Payment Cancelled.
         /// </summary>
         internal static string PaymentCancelled {
@@ -2478,6 +2532,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string PaymentFailed {
             get {
                 return ResourceManager.GetString("PaymentFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Payment successfully realized..
+        /// </summary>
+        internal static string PaymentSuccess {
+            get {
+                return ResourceManager.GetString("PaymentSuccess", resourceCulture);
             }
         }
         
@@ -3922,6 +3985,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Share.
+        /// </summary>
+        internal static string Share {
+            get {
+                return ResourceManager.GetString("Share", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sign after.
         /// </summary>
         internal static string SignAfter {
@@ -4300,6 +4372,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to To User.
+        /// </summary>
+        internal static string ToUser2 {
+            get {
+                return ResourceManager.GetString("ToUser2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transaction has been accepted and processed..
+        /// </summary>
+        internal static string TransactionAccepted {
+            get {
+                return ResourceManager.GetString("TransactionAccepted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to access invitation information..
         /// </summary>
         internal static string UnableToAccessInvitation {
@@ -4426,6 +4516,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to process eDaler code..
+        /// </summary>
+        internal static string UnableToProcessEDalerUri {
+            get {
+                return ResourceManager.GetString("UnableToProcessEDalerUri", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to respond to request..
         /// </summary>
         internal static string UnableToRespond {
@@ -4503,6 +4602,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string User {
             get {
                 return ResourceManager.GetString("User", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} signed as {1}..
+        /// </summary>
+        internal static string UserSignedAs {
+            get {
+                return ResourceManager.GetString("UserSignedAs", resourceCulture);
             }
         }
         

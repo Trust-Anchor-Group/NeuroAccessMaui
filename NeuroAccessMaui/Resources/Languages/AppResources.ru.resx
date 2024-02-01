@@ -1506,6 +1506,9 @@
   <data name="Apartment" xml:space="preserve">
     <value>Квартира</value>
   </data>
+  <data name="APetitionHasBeenSentForEncryption" xml:space="preserve">
+    <value>Шифрование может быть выполнено только в том случае, если у вас есть доступ к идентификационным данным получателей. В связи с этим получателю было направлено ходатайство об установлении личности. Если получатель примет петицию, вы получите удостоверение личности и сможете отправить платеж с зашифрованным сообщением при повторной попытке. Вы также можете отправить незашифрованное сообщение вместе с платежом.</value>
+  </data>
   <data name="Building" xml:space="preserve">
     <value>Здание</value>
   </data>
@@ -1524,6 +1527,9 @@
   <data name="ContractProposal" xml:space="preserve">
     <value>Предложение по контракту</value>
   </data>
+  <data name="ContractSignatureReceived" xml:space="preserve">
+    <value>Подписание контракта получено</value>
+  </data>
   <data name="ContractUpdateReceived" xml:space="preserve">
     <value>Контракт обновлен</value>
   </data>
@@ -1536,6 +1542,9 @@
   <data name="DisownThingQuestion" xml:space="preserve">
     <value>Вы хотите отречься от этой вещи? Это удалит вещь из вашего списка вещей и позволит другому заявить о том, что устройство принадлежит ему.</value>
   </data>
+  <data name="EncryptedPayment" xml:space="preserve">
+    <value>Зашифрованный платеж</value>
+  </data>
   <data name="EntireDomain" xml:space="preserve">
     <value>Все из {0}</value>
   </data>
@@ -1544,6 +1553,9 @@
   </data>
   <data name="Everyone" xml:space="preserve">
     <value>Каждый</value>
+  </data>
+  <data name="FromUser" xml:space="preserve">
+    <value>От пользователя</value>
   </data>
   <data name="GeneralInformation" xml:space="preserve">
     <value>Общая информация</value>
@@ -1580,6 +1592,15 @@
   </data>
   <data name="NotAvailable" xml:space="preserve">
     <value>Нет в наличии</value>
+  </data>
+  <data name="Payment" xml:space="preserve">
+    <value>Уплата</value>
+  </data>
+  <data name="PaymentAlreadySent" xml:space="preserve">
+    <value>Платежное поручение уже отправлено. Вы можете повторно отправить ожидающие платежи в представлении ожидающих платежей.</value>
+  </data>
+  <data name="PaymentSuccess" xml:space="preserve">
+    <value>Оплата успешно осуществлена.</value>
   </data>
   <data name="Phone" xml:space="preserve">
     <value>Телефон</value>
@@ -1665,6 +1686,9 @@
   <data name="Service" xml:space="preserve">
     <value>Служба</value>
   </data>
+  <data name="Share" xml:space="preserve">
+    <value>Предоставить общий доступ</value>
+  </data>
   <data name="StreetName" xml:space="preserve">
     <value>Название улицы</value>
   </data>
@@ -1698,14 +1722,26 @@
   <data name="ToUser" xml:space="preserve">
     <value>Пользователю, независимо от источника</value>
   </data>
+  <data name="ToUser2" xml:space="preserve">
+    <value>Пользователю</value>
+  </data>
+  <data name="TransactionAccepted" xml:space="preserve">
+    <value>Транзакция принята и обработана.</value>
+  </data>
   <data name="UnableToClaimThing" xml:space="preserve">
     <value>Невозможно забрать вещь</value>
+  </data>
+  <data name="UnableToProcessEDalerUri" xml:space="preserve">
+    <value>Не удалось обработать код eDalaler.</value>
   </data>
   <data name="UnableToRespond" xml:space="preserve">
     <value>Не могу ответить на запрос.</value>
   </data>
   <data name="User" xml:space="preserve">
     <value>Пользователь</value>
+  </data>
+  <data name="UserSignedAs" xml:space="preserve">
+    <value>{0} подписались как {1}.</value>
   </data>
   <data name="Version" xml:space="preserve">
     <value>Версия</value>
