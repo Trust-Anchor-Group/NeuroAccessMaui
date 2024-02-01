@@ -511,7 +511,9 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 						this.thing.ObjectId = null;
 					}
 
-					this.thing.ObjectId = null;
+					if (this.thing is not null)
+						this.thing.ObjectId = null;
+
 					this.InContacts = false;
 				}
 
@@ -634,7 +636,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 			if (this.thing is null)
 				return;
 
-			ViewThingNavigationArgs Args = new(this.thing, MyThingsViewModel.GetNotificationEvents(this, this.thing));
+			ViewThingNavigationArgs Args = new(this.thing, MyThingsViewModel.GetNotificationEvents(this.thing) ?? []);
 
 			await ServiceRef.NavigationService.GoToAsync(nameof(ReadSensorPage), Args, BackMethod.Pop);
 		}

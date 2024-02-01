@@ -161,42 +161,42 @@
 							<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
 									Text="{x:Static resx:FontAwesome.Microphone}" TextColor="{StaticResource TextColorLightTheme}"
 									FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
-									Command="{Binding RecordAudio}"/>
+									Command="{Binding RecordAudioCommand}"/>
 
 							<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
 									Text="{x:Static resx:FontAwesome.Camera}" TextColor="{StaticResource TextColorLightTheme}"
 									FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
-									Command="{Binding TakePhoto}"/>
+									Command="{Binding TakePhotoCommand}"/>
 
 							<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
 									Text="{x:Static resx:FontAwesome.PaperClip}" TextColor="{StaticResource TextColorLightTheme}"
 									FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
-									Command="{Binding EmbedFile}"/>
+									Command="{Binding EmbedFileCommand}"/>
 
 							<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
 									Text="{x:Static resx:FontAwesome.User}" TextColor="{StaticResource TextColorLightTheme}"
 									FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
-									Command="{Binding EmbedId}"/>
+									Command="{Binding EmbedIdCommand}"/>
 
 							<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
 									Text="{x:Static resx:FontAwesome.Paragraph}" TextColor="{StaticResource TextColorLightTheme}"
 									FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
-									Command="{Binding EmbedContract}"/>
+									Command="{Binding EmbedContractCommand}"/>
 
 							<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
 									Text="{x:Static resx:FontAwesome.MoneyBill}" TextColor="{StaticResource TextColorLightTheme}"
 									FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
-									Command="{Binding EmbedMoney}"/>
+									Command="{Binding EmbedMoneyCommand}"/>
 
 							<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
 									Text="{x:Static resx:FontAwesome.StarOfLife}" TextColor="{StaticResource TextColorLightTheme}"
 									FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
-									Command="{Binding EmbedToken}"/>
+									Command="{Binding EmbedTokenCommand}"/>
 
 							<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
 									Text="{x:Static resx:FontAwesome.Things}" TextColor="{StaticResource TextColorLightTheme}"
 									FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
-									Command="{Binding EmbedThing}"/>
+									Command="{Binding EmbedThingCommand}"/>
 						</StackLayout>
 					</xct:Expander>
 				</fadeview:FadeView.FrontView>

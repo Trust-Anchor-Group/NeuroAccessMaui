@@ -219,7 +219,6 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanControl
 		private string? remoteFriendlyName;
 
 		/// <summary>
-		/// <summary>
 		/// If the Friendly Name of the remote entity exists
 		/// </summary>
 		[ObservableProperty]

@@ -1497,4 +1497,217 @@
   <data name="UnableToGetOptions" xml:space="preserve">
     <value>No se pueden obtener las opciones disponibles.</value>
   </data>
+  <data name="Altitude" xml:space="preserve">
+    <value>Altitud</value>
+  </data>
+  <data name="Anonymous" xml:space="preserve">
+    <value>Anónimo</value>
+  </data>
+  <data name="Apartment" xml:space="preserve">
+    <value>Apartamento</value>
+  </data>
+  <data name="Building" xml:space="preserve">
+    <value>Edificio</value>
+  </data>
+  <data name="CallerOnly" xml:space="preserve">
+    <value>Solo persona que llama</value>
+  </data>
+  <data name="Class" xml:space="preserve">
+    <value>Clase</value>
+  </data>
+  <data name="Contacts" xml:space="preserve">
+    <value>Contactos</value>
+  </data>
+  <data name="ContactsDescription" xml:space="preserve">
+    <value>A continuación se muestran todos los contactos en su libreta de contactos. Haga clic en cualquiera para interactuar con ese contacto.</value>
+  </data>
+  <data name="ContractProposal" xml:space="preserve">
+    <value>Propuesta de contrato</value>
+  </data>
+  <data name="ContractUpdateReceived" xml:space="preserve">
+    <value>Contrato actualizado</value>
+  </data>
+  <data name="DeleteRulesQuestion" xml:space="preserve">
+    <value>¿Desea eliminar todas las reglas de aprovisionamiento de la cosa? Al hacerlo, la cosa te pedirá de nuevo todos los eventos nuevos para saber para qué está autorizada.</value>
+  </data>
+  <data name="Device" xml:space="preserve">
+    <value>Dispositivo</value>
+  </data>
+  <data name="DisownThingQuestion" xml:space="preserve">
+    <value>¿Quieres repudiar la cosa? Esto eliminará la cosa de su lista de cosas y permitirá que otra persona reclame el dispositivo como suyo.</value>
+  </data>
+  <data name="EntireDomain" xml:space="preserve">
+    <value>Todos desde {0}</value>
+  </data>
+  <data name="Errors" xml:space="preserve">
+    <value>Errores</value>
+  </data>
+  <data name="Everyone" xml:space="preserve">
+    <value>Todos</value>
+  </data>
+  <data name="GeneralInformation" xml:space="preserve">
+    <value>Información general</value>
+  </data>
+  <data name="InvalidNeuroFeatureToken" xml:space="preserve">
+    <value>Token de Neuro-Feature no válido.</value>
+  </data>
+  <data name="Key" xml:space="preserve">
+    <value>Llave</value>
+  </data>
+  <data name="Latitude" xml:space="preserve">
+    <value>Latitud</value>
+  </data>
+  <data name="Longitude" xml:space="preserve">
+    <value>Longitud</value>
+  </data>
+  <data name="Manufacturer" xml:space="preserve">
+    <value>Fabricante</value>
+  </data>
+  <data name="MeterLocation" xml:space="preserve">
+    <value>Ubicación del medidor</value>
+  </data>
+  <data name="MeterNumber" xml:space="preserve">
+    <value>Número de medidor</value>
+  </data>
+  <data name="Model" xml:space="preserve">
+    <value>Modelo</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="NoContactsFound" xml:space="preserve">
+    <value>No se han encontrado contactos.</value>
+  </data>
+  <data name="NotAvailable" xml:space="preserve">
+    <value>No disponible</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>Teléfono</value>
+  </data>
+  <data name="PickPhoto" xml:space="preserve">
+    <value>Elegir foto</value>
+  </data>
+  <data name="ProductInformation" xml:space="preserve">
+    <value>Información del producto</value>
+  </data>
+  <data name="Question" xml:space="preserve">
+    <value>Pregunta</value>
+  </data>
+  <data name="Registry" xml:space="preserve">
+    <value>Registro</value>
+  </data>
+  <data name="RemoveSubscriptionFrom" xml:space="preserve">
+    <value>¿Desea eliminar la suscripción de presencia de {0}?</value>
+  </data>
+  <data name="Room" xml:space="preserve">
+    <value>Cuarto</value>
+  </data>
+  <data name="RulesDeleted" xml:space="preserve">
+    <value>Se han eliminado las reglas de aprovisionamiento.</value>
+  </data>
+  <data name="ScanQRCode" xml:space="preserve">
+    <value>Escanear código QR</value>
+  </data>
+  <data name="SelectContactToPay" xml:space="preserve">
+    <value>A continuación se muestran todos los contactos en su libreta de contactos. Seleccione el contacto al que desea realizar el pago.</value>
+  </data>
+  <data name="SelectingAPhotoIsNotSupported" xml:space="preserve">
+    <value>La selección de una foto no es compatible con este dispositivo</value>
+  </data>
+  <data name="SensorDataAccepted" xml:space="preserve">
+    <value>La solicitud ha sido aceptada.</value>
+  </data>
+  <data name="SensorDataCancelled" xml:space="preserve">
+    <value>Se ha cancelado la lectura de datos del sensor.</value>
+  </data>
+  <data name="SensorDataDone" xml:space="preserve">
+    <value>La lectura de los datos del sensor se ha completado.</value>
+  </data>
+  <data name="SensorDataFailure" xml:space="preserve">
+    <value>Error en la lectura de datos del sensor.</value>
+  </data>
+  <data name="SensorDataHeaderComputed" xml:space="preserve">
+    <value>Computada</value>
+  </data>
+  <data name="SensorDataHeaderHistorical" xml:space="preserve">
+    <value>Histórico</value>
+  </data>
+  <data name="SensorDataHeaderIdentity" xml:space="preserve">
+    <value>Identidad</value>
+  </data>
+  <data name="SensorDataHeaderMomentary" xml:space="preserve">
+    <value>Momentáneo</value>
+  </data>
+  <data name="SensorDataHeaderOther" xml:space="preserve">
+    <value>Otro</value>
+  </data>
+  <data name="SensorDataHeaderPeak" xml:space="preserve">
+    <value>Pico</value>
+  </data>
+  <data name="SensorDataHeaderStatus" xml:space="preserve">
+    <value>Estado</value>
+  </data>
+  <data name="SensorDataReceiving" xml:space="preserve">
+    <value>Recepción de datos de sensores.</value>
+  </data>
+  <data name="SensorDataRequested" xml:space="preserve">
+    <value>Se han solicitado los datos del sensor.</value>
+  </data>
+  <data name="SensorDataStarted" xml:space="preserve">
+    <value>La lectura de datos del sensor ha comenzado.</value>
+  </data>
+  <data name="SerialNumber" xml:space="preserve">
+    <value>Número de serie</value>
+  </data>
+  <data name="ServerDoesNotSupportFileUpload" xml:space="preserve">
+    <value>El servidor no parece admitir la carga de archivos.</value>
+  </data>
+  <data name="Service" xml:space="preserve">
+    <value>Servicio</value>
+  </data>
+  <data name="StreetName" xml:space="preserve">
+    <value>Nombre de la calle</value>
+  </data>
+  <data name="StreetNumber" xml:space="preserve">
+    <value>Número de calle</value>
+  </data>
+  <data name="TakePhoto" xml:space="preserve">
+    <value>Tomar foto</value>
+  </data>
+  <data name="TakePhotoToShare" xml:space="preserve">
+    <value>Toma una foto para compartirla</value>
+  </data>
+  <data name="TakingAPhotoIsNotSupported" xml:space="preserve">
+    <value>Tomar una foto no es compatible con este dispositivo</value>
+  </data>
+  <data name="TheSpecifiedCodeIsNotALegalIdentity" xml:space="preserve">
+    <value>Debe escanear un tipo diferente de código QR, uno que represente una identidad legal</value>
+  </data>
+  <data name="ThingDisowned" xml:space="preserve">
+    <value>Esto ha sido repudiado con éxito. Ahora puede ser reclamado por un nuevo propietario.</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Hora</value>
+  </data>
+  <data name="ToDevice" xml:space="preserve">
+    <value>Al dispositivo, independientemente de la fuente</value>
+  </data>
+  <data name="ToService" xml:space="preserve">
+    <value>Al servicio, independientemente de la fuente</value>
+  </data>
+  <data name="ToUser" xml:space="preserve">
+    <value>Para el usuario, independientemente de la fuente</value>
+  </data>
+  <data name="UnableToClaimThing" xml:space="preserve">
+    <value>No se puede reclamar algo</value>
+  </data>
+  <data name="UnableToRespond" xml:space="preserve">
+    <value>No se puede responder a la solicitud.</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>Usuario</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Versión</value>
+  </data>
 </root>

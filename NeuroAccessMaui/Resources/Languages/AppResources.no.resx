@@ -1497,4 +1497,217 @@
   <data name="UnableToGetOptions" xml:space="preserve">
     <value>Kan ikke få tilgjengelige alternativer.</value>
   </data>
+  <data name="Altitude" xml:space="preserve">
+    <value>Høyde</value>
+  </data>
+  <data name="Anonymous" xml:space="preserve">
+    <value>Anonym</value>
+  </data>
+  <data name="Apartment" xml:space="preserve">
+    <value>Leilighet</value>
+  </data>
+  <data name="Building" xml:space="preserve">
+    <value>Bygning</value>
+  </data>
+  <data name="CallerOnly" xml:space="preserve">
+    <value>Bare innringer</value>
+  </data>
+  <data name="Class" xml:space="preserve">
+    <value>Klasse</value>
+  </data>
+  <data name="Contacts" xml:space="preserve">
+    <value>Kontakter</value>
+  </data>
+  <data name="ContactsDescription" xml:space="preserve">
+    <value>Nedenfor er alle kontakter i kontaktboken din. Klikk på en for å samhandle med den kontakten.</value>
+  </data>
+  <data name="ContractProposal" xml:space="preserve">
+    <value>Forslag til kontrakt</value>
+  </data>
+  <data name="ContractUpdateReceived" xml:space="preserve">
+    <value>Kontrakten oppdatert</value>
+  </data>
+  <data name="DeleteRulesQuestion" xml:space="preserve">
+    <value>Vil du slette alle klargjøringsregler for tingen? Ved å gjøre det, vil tingen be dere igjen om alle nye begivenheter for å lære hva den er autorisert til å gjøre.</value>
+  </data>
+  <data name="Device" xml:space="preserve">
+    <value>Innretning</value>
+  </data>
+  <data name="DisownThingQuestion" xml:space="preserve">
+    <value>Vil du fornekte tingen? Dette vil fjerne tingen fra listen over ting, og vil tillate en annen å kreve enheten som deres.</value>
+  </data>
+  <data name="EntireDomain" xml:space="preserve">
+    <value>Alle fra {0}</value>
+  </data>
+  <data name="Errors" xml:space="preserve">
+    <value>Feil</value>
+  </data>
+  <data name="Everyone" xml:space="preserve">
+    <value>Alle</value>
+  </data>
+  <data name="GeneralInformation" xml:space="preserve">
+    <value>Generell informasjon</value>
+  </data>
+  <data name="InvalidNeuroFeatureToken" xml:space="preserve">
+    <value>Ugyldig Neuro-Feature-token.</value>
+  </data>
+  <data name="Key" xml:space="preserve">
+    <value>Nøkkel</value>
+  </data>
+  <data name="Latitude" xml:space="preserve">
+    <value>Breddegrad</value>
+  </data>
+  <data name="Longitude" xml:space="preserve">
+    <value>Lengdegrad</value>
+  </data>
+  <data name="Manufacturer" xml:space="preserve">
+    <value>Fabrikant</value>
+  </data>
+  <data name="MeterLocation" xml:space="preserve">
+    <value>Meter Plassering</value>
+  </data>
+  <data name="MeterNumber" xml:space="preserve">
+    <value>Meter nummer</value>
+  </data>
+  <data name="Model" xml:space="preserve">
+    <value>Modell</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Navn</value>
+  </data>
+  <data name="NoContactsFound" xml:space="preserve">
+    <value>Ingen kontakter funnet.</value>
+  </data>
+  <data name="NotAvailable" xml:space="preserve">
+    <value>Ikke tilgjengelig</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>Telefon</value>
+  </data>
+  <data name="PickPhoto" xml:space="preserve">
+    <value>Velg bilde</value>
+  </data>
+  <data name="ProductInformation" xml:space="preserve">
+    <value>Produktinformasjon</value>
+  </data>
+  <data name="Question" xml:space="preserve">
+    <value>Spørsmål</value>
+  </data>
+  <data name="Registry" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="RemoveSubscriptionFrom" xml:space="preserve">
+    <value>Vil du fjerne tilstedeværelsesabonnementet fra {0}?</value>
+  </data>
+  <data name="Room" xml:space="preserve">
+    <value>Rom</value>
+  </data>
+  <data name="RulesDeleted" xml:space="preserve">
+    <value>Klargjøringsregler er slettet.</value>
+  </data>
+  <data name="ScanQRCode" xml:space="preserve">
+    <value>Skann QR-kode</value>
+  </data>
+  <data name="SelectContactToPay" xml:space="preserve">
+    <value>Nedenfor er alle kontakter i kontaktboken din. Velg kontakten du vil betale til.</value>
+  </data>
+  <data name="SelectingAPhotoIsNotSupported" xml:space="preserve">
+    <value>Valg av bilde støttes ikke på denne enheten</value>
+  </data>
+  <data name="SensorDataAccepted" xml:space="preserve">
+    <value>Forespørselen er akseptert.</value>
+  </data>
+  <data name="SensorDataCancelled" xml:space="preserve">
+    <value>Sensordataavlesning er avbrutt.</value>
+  </data>
+  <data name="SensorDataDone" xml:space="preserve">
+    <value>Sensordataavlesningen er fullført.</value>
+  </data>
+  <data name="SensorDataFailure" xml:space="preserve">
+    <value>Sensordataavlesningen mislyktes.</value>
+  </data>
+  <data name="SensorDataHeaderComputed" xml:space="preserve">
+    <value>Beregnet</value>
+  </data>
+  <data name="SensorDataHeaderHistorical" xml:space="preserve">
+    <value>Historisk</value>
+  </data>
+  <data name="SensorDataHeaderIdentity" xml:space="preserve">
+    <value>Identitet</value>
+  </data>
+  <data name="SensorDataHeaderMomentary" xml:space="preserve">
+    <value>Øyeblikkelig</value>
+  </data>
+  <data name="SensorDataHeaderOther" xml:space="preserve">
+    <value>Annet __________</value>
+  </data>
+  <data name="SensorDataHeaderPeak" xml:space="preserve">
+    <value>Topp</value>
+  </data>
+  <data name="SensorDataHeaderStatus" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="SensorDataReceiving" xml:space="preserve">
+    <value>Motta sensordata.</value>
+  </data>
+  <data name="SensorDataRequested" xml:space="preserve">
+    <value>Sensordata er etterspurt.</value>
+  </data>
+  <data name="SensorDataStarted" xml:space="preserve">
+    <value>Sensordataavlesningen har startet.</value>
+  </data>
+  <data name="SerialNumber" xml:space="preserve">
+    <value>Serienummer</value>
+  </data>
+  <data name="ServerDoesNotSupportFileUpload" xml:space="preserve">
+    <value>Serveren ser ikke ut til å støtte filopplasting.</value>
+  </data>
+  <data name="Service" xml:space="preserve">
+    <value>Tjeneste</value>
+  </data>
+  <data name="StreetName" xml:space="preserve">
+    <value>Gatenavn</value>
+  </data>
+  <data name="StreetNumber" xml:space="preserve">
+    <value>Gatenummer</value>
+  </data>
+  <data name="TakePhoto" xml:space="preserve">
+    <value>Ta bilde</value>
+  </data>
+  <data name="TakePhotoToShare" xml:space="preserve">
+    <value>Ta et bilde for å dele</value>
+  </data>
+  <data name="TakingAPhotoIsNotSupported" xml:space="preserve">
+    <value>Å ta et bilde støttes ikke på denne enheten</value>
+  </data>
+  <data name="TheSpecifiedCodeIsNotALegalIdentity" xml:space="preserve">
+    <value>Du må skanne en annen type QR-kode, en som representerer en juridisk identitet</value>
+  </data>
+  <data name="ThingDisowned" xml:space="preserve">
+    <value>Dette har blitt forkastet. Det kan nå kreves av en ny eier.</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Tid</value>
+  </data>
+  <data name="ToDevice" xml:space="preserve">
+    <value>Til enhet, uavhengig av kilde</value>
+  </data>
+  <data name="ToService" xml:space="preserve">
+    <value>Til service, uavhengig av kilde</value>
+  </data>
+  <data name="ToUser" xml:space="preserve">
+    <value>Til bruker, uavhengig av kilde</value>
+  </data>
+  <data name="UnableToClaimThing" xml:space="preserve">
+    <value>Kan ikke kreve noe</value>
+  </data>
+  <data name="UnableToRespond" xml:space="preserve">
+    <value>Kan ikke svare på forespørsel.</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>Bruker</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Versjon</value>
+  </data>
 </root>

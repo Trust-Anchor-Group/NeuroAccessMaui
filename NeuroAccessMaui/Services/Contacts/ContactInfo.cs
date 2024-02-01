@@ -696,17 +696,25 @@ namespace NeuroAccessMaui.Services.Contacts
 		/// <param name="SourceId">Source ID of device.</param>
 		/// <param name="Partition">Partition of device.</param>
 		/// <returns>Key</returns>
-		public static string GetThingNotificationCategoryKey(string BareJid, string NodeId, string SourceId, string Partition)
+		public static string GetThingNotificationCategoryKey(string BareJid, string? NodeId, string? SourceId, string? Partition)
 		{
 			StringBuilder sb = new();
 
 			sb.Append(BareJid);
 			sb.Append('|');
-			sb.Append(SourceId);
+
+			if (SourceId is not null)
+				sb.Append(SourceId);
+
 			sb.Append('|');
-			sb.Append(Partition);
+
+			if (Partition is not null)
+				sb.Append(Partition);
+
 			sb.Append('|');
-			sb.Append(NodeId);
+
+			if (NodeId is not null)
+				sb.Append(NodeId);
 
 			return sb.ToString();
 		}

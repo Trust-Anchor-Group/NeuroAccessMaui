@@ -1,12 +1,11 @@
-﻿using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
+﻿using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services.Navigation;
+using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
-using IdApp.Services.Navigation;
 using System.Text;
-using System.Threading.Tasks;
 using Waher.Networking.XMPP.Contracts;
-using Xamarin.CommunityToolkit.Helpers;
 
-namespace IdApp.Services.Notification.Contracts
+namespace NeuroAccessMaui.Services.Notification.Contracts
 {
 	/// <summary>
 	/// Notification event for when a contract has been updated.
@@ -34,25 +33,30 @@ namespace IdApp.Services.Notification.Contracts
 		/// <summary>
 		/// Opens the event.
 		/// </summary>
-		/// <param name="ServiceReferences">Service references</param>
-		public override async Task Open(IServiceReferences ServiceReferences)
+		public override async Task Open()
 		{
-			Contract Contract = await this.GetContract();
-			ViewContractNavigationArgs Args = new(Contract, false);
+			Contract? Contract = await this.GetContract();
+			if (Contract is not null)
+			{
+				ViewContractNavigationArgs Args = new(Contract, false);
 
-			await ServiceReferences.NavigationService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop);
+				await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop);
+			}
 		}
 
 		/// <summary>
 		/// Gets a descriptive text for the category of event.
 		/// </summary>
 		/// <param name="ServiceReferences">Service references</param>
-		public override async Task<string> GetDescription(IServiceReferences ServiceReferences)
+		public override async Task<string> GetDescription()
 		{
-			Contract Contract = await this.GetContract();
+			Contract? Contract = await this.GetContract();
+			if (Contract is null)
+				return string.Empty;
+
 			StringBuilder Result = new();
 
-			Result.Append(LocalizationResourceManager.Current["ContractUpdateReceived"]);
+			Result.Append(ServiceRef.Localizer[nameof(AppResources.ContractUpdateReceived)]);
 
 			if (Contract is not null)
 			{

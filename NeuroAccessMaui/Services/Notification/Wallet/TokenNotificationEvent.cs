@@ -147,7 +147,7 @@ namespace NeuroAccessMaui.Services.Notification.Wallet
 			if (!ServiceRef.NotificationService.TryGetNotificationEvents(NotificationEventType.Wallet, this.TokenId, out NotificationEvent[]? Events))
 				Events = [];
 
-			TokenDetailsNavigationArgs Args = new(new TokenItem(this.Token, ServiceReferences, Events));
+			TokenDetailsNavigationArgs Args = new(new TokenItem(this.Token, Events));
 
 			await ServiceRef.NavigationService.GoToAsync(nameof(TokenDetailsPage), Args, BackMethod.Pop);
 		}

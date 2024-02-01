@@ -1,4 +1,4 @@
-﻿using IdApp.Services.Notification.Things;
+﻿using NeuroAccessMaui.Services.Notification.Things;
 using Waher.Things.SensorData;
 
 namespace NeuroAccessMaui.UI.Pages.Things.CanRead
@@ -8,12 +8,14 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 	/// </summary>
 	public class CanReadNavigationArgs : ThingNavigationArgs
 	{
-		private readonly CanReadNotificationEvent @event;
+		private readonly CanReadNotificationEvent? @event;
 
 		/// <summary>
 		/// Creates a new instance of the <see cref="CanReadNavigationArgs"/> class.
 		/// </summary>
-		public CanReadNavigationArgs() { }
+		public CanReadNavigationArgs()
+		{
+		}
 
 		/// <summary>
 		/// Creates a new instance of the <see cref="CanReadNavigationArgs"/> class.
@@ -33,17 +35,17 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 		/// <summary>
 		/// Notification event objcet.
 		/// </summary>
-		public new CanReadNotificationEvent Event => this.@event;
+		public new CanReadNotificationEvent? Event => this.@event;
 
 		/// <summary>
 		/// Fields
 		/// </summary>
-		public string[] Fields { get; }
+		public string[]? Fields { get; }
 
 		/// <summary>
 		/// AllFields
 		/// </summary>
-		public string[] AllFields { get; }
+		public string[]? AllFields { get; }
 
 		/// <summary>
 		/// Field Types

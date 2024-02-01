@@ -2,11 +2,11 @@
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Globalization;
 using System.Text.RegularExpressions;
 using Waher.Networking.DNS;
 using Waher.Networking.DNS.ResourceRecords;

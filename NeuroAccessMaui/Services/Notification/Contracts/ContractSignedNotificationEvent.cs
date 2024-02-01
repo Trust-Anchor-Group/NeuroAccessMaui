@@ -1,17 +1,10 @@
-﻿using IdApp.Extensions;
-using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
+﻿using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
-using IdApp.Services.Navigation;
-using IdApp.Services.UI.Photos;
-using System;
-using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using Waher.Networking.XMPP.Contracts;
-using Xamarin.CommunityToolkit.Helpers;
 
-namespace IdApp.Services.Notification.Contracts
+namespace NeuroAccessMaui.Services.Notification.Contracts
 {
 	/// <summary>
 	/// Notification event for when a contract has been signed.

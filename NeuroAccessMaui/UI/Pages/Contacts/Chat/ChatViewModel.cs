@@ -29,13 +29,17 @@ using System.Collections.ObjectModel;
 using NeuroAccessMaui.Resources.Languages;
 using System.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using NeuroAccessMaui.Services.Navigation;
+using NeuroAccessMaui.UI.Converters;
+using ZXing.OneD;
+using NeuroAccessMaui.Services.UI.QR;
 
 namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 {
 	/// <summary>
 	/// The view model to bind to when displaying the list of contacts.
 	/// </summary>
-	public class ChatViewModel : XmppViewModel, IChatView, ILinkableView
+	public partial class ChatViewModel : XmppViewModel, IChatView, ILinkableView
 	{
 		private TaskCompletionSource<bool> waitUntilBound = new();
 
@@ -45,16 +49,6 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		protected internal ChatViewModel()
 			: base()
 		{
-			this.CancelCommand = new Command(async _ => await this.ExecuteCancelMessage(), _ => this.CanExecuteCancelMessage());
-			this.RecordAudio = new Command(async _ => await this.ExecuteRecordAudio(), _ => this.CanExecuteRecordAudio());
-			this.TakePhoto = new Command(async _ => await this.ExecuteTakePhoto(), _ => this.CanExecuteTakePhoto());
-			this.EmbedFile = new Command(async _ => await this.ExecuteEmbedFile(), _ => this.CanExecuteEmbedFile());
-			this.EmbedId = new Command(async _ => await this.ExecuteEmbedId(), _ => this.CanExecuteEmbedId());
-			this.EmbedContract = new Command(async _ => await this.ExecuteEmbedContract(), _ => this.CanExecuteEmbedContract());
-			this.EmbedMoney = new Command(async _ => await this.ExecuteEmbedMoney(), _ => this.CanExecuteEmbedMoney());
-			this.EmbedToken = new Command(async _ => await this.ExecuteEmbedToken(), _ => this.CanExecuteEmbedToken());
-			this.EmbedThing = new Command(async _ => await this.ExecuteEmbedThing(), _ => this.CanExecuteEmbedThing());
-
 			this.MessageSelected = new Command(async Parameter => await this.ExecuteMessageSelected(Parameter));
 		}
 
@@ -78,7 +72,6 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 
 			await this.ExecuteLoadMessagesAsync(false);
 
-			this.EvaluateAllCommands();
 			this.waitUntilBound.TrySetResult(true);
 
 			await ServiceRef.NotificationService.DeleteEvents(NotificationEventType.Contacts, this.BareJid);
@@ -90,21 +83,6 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			await base.OnDispose();
 
 			this.waitUntilBound = new TaskCompletionSource<bool>();
-		}
-
-		private void EvaluateAllCommands()
-		{
-			this.EvaluateCommands(this.CancelCommand, this.RecordAudio, this.TakePhoto, this.EmbedFile,
-				this.EmbedId, this.EmbedContract, this.EmbedMoney, this.EmbedToken, this.EmbedThing);
-		}
-
-		/// <inheritdoc/>
-		protected override Task XmppService_ConnectionStateChanged(object? Sender, XmppState NewState)
-		{
-			base.XmppService_ConnectionStateChanged(Sender, NewState);
-			MainThread.BeginInvokeOnMainThread(() => this.EvaluateAllCommands());
-
-			return Task.CompletedTask;
 		}
 
 		/// <summary>
@@ -136,6 +114,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		/// </summary>
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(SendCommand))]
+		[NotifyCanExecuteChangedFor(nameof(CancelCommand))]
 		private string markdownInput = string.Empty;
 
 		/// <inheritdoc/>
@@ -147,7 +126,6 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			{
 				case nameof(this.MarkdownInput):
 					this.IsWriting = !string.IsNullOrEmpty(this.MarkdownInput);
-					this.EvaluateAllCommands();
 
 					if (!string.IsNullOrEmpty(this.MarkdownInput))
 						MessagingCenter.Send<object>(this, Constants.MessagingCenter.ChatEditorFocus);
@@ -155,7 +133,6 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 
 				case nameof(this.MessageId):
 					this.IsWriting = !string.IsNullOrEmpty(this.MessageId);
-					this.EvaluateAllCommands();
 					break;
 
 				case nameof(this.IsWriting):
@@ -176,11 +153,20 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 					audioRecorderTimer.Enabled = this.IsRecordingAudio;
 
 					this.OnPropertyChanged(nameof(RecordingTime));
-					this.EvaluateAllCommands();
+					this.CancelCommand.NotifyCanExecuteChanged();
 					break;
 
 				case nameof(this.IsConnected):
 					this.SendCommand.NotifyCanExecuteChanged();
+					this.CancelCommand.NotifyCanExecuteChanged();
+					this.RecordAudioCommand.NotifyCanExecuteChanged();
+					this.TakePhotoCommand.NotifyCanExecuteChanged();
+					this.EmbedFileCommand.NotifyCanExecuteChanged();
+					this.EmbedIdCommand.NotifyCanExecuteChanged();
+					this.EmbedContractCommand.NotifyCanExecuteChanged();
+					this.EmbedMoneyCommand.NotifyCanExecuteChanged();
+					this.EmbedTokenCommand.NotifyCanExecuteChanged();
+					this.EmbedThingCommand.NotifyCanExecuteChanged();
 					break;
 			}
 		}
@@ -201,7 +187,15 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		/// <summary>
 		/// If the user is writing markdown.
 		/// </summary>
-		[ObservableProperty]		
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(RecordAudioCommand))]
+		[NotifyCanExecuteChangedFor(nameof(TakePhotoCommand))]
+		[NotifyCanExecuteChangedFor(nameof(EmbedFileCommand))]
+		[NotifyCanExecuteChangedFor(nameof(EmbedIdCommand))]
+		[NotifyCanExecuteChangedFor(nameof(EmbedContractCommand))]
+		[NotifyCanExecuteChangedFor(nameof(EmbedMoneyCommand))]
+		[NotifyCanExecuteChangedFor(nameof(EmbedTokenCommand))]
+		[NotifyCanExecuteChangedFor(nameof(EmbedThingCommand))]
 		private bool isWriting;
 
 		/// <summary>
@@ -390,12 +384,15 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		{
 			if (LoadMore || (this.Messages.Count == 0))
 			{
-				this.Messages.AddRange(NewMessages);
+				foreach (ChatMessage Message in NewMessages)
+					this.Messages.Add(Message);
 				return;
 			}
 
 			List<ChatMessage> RemoveItems = this.Messages.Where(oel => NewMessages.All(nel => nel.UniqueName != oel.UniqueName)).ToList();
-			this.Messages.RemoveRange(RemoveItems);
+
+			foreach (ChatMessage Message in RemoveItems)
+				this.Messages.Remove(Message);
 
 			for (int i = 0; i < NewMessages.Count; i++)
 			{
@@ -410,17 +407,15 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 
 		private void EnsureFirstMessageIsEmpty()
 		{
+			/* Unmerged change from project 'NeuroAccessMaui (net8.0-ios)'
+			Before:
+						if (this.Messages.Count > 0 && this.Messages[0].MessageType != Services.Messages.MessageType.Empty)
+			After:
+						if (this.Messages.Count > 0 && this.Messages[0].MessageType != MessageType.Empty)
+			*/
 
-/* Unmerged change from project 'NeuroAccessMaui (net8.0-ios)'
-Before:
-			if (this.Messages.Count > 0 && this.Messages[0].MessageType != Services.Messages.MessageType.Empty)
-After:
 			if (this.Messages.Count > 0 && this.Messages[0].MessageType != MessageType.Empty)
-*/
-			if (this.Messages.Count > 0 && this.Messages[0].MessageType != Chat.MessageType.Empty)
-			{
 				this.Messages.Insert(0, ChatMessage.Empty);
-			}
 		}
 
 		/// <summary>
@@ -467,7 +462,7 @@ After:
 			else
 			{
 				await this.ExecuteSendMessage(this.MessageId, this.MarkdownInput);
-				await this.ExecuteCancelMessage();
+				await this.Cancel();
 			}
 		}
 
@@ -520,12 +515,12 @@ After:
 					RemoteBareJid = BareJid,
 					RemoteObjectId = string.Empty,
 
-/* Unmerged change from project 'NeuroAccessMaui (net8.0-ios)'
-Before:
-					MessageType = Services.Messages.MessageType.Sent,
-After:
-					MessageType = MessageType.Sent,
-*/
+					/* Unmerged change from project 'NeuroAccessMaui (net8.0-ios)'
+					Before:
+										MessageType = Services.Messages.MessageType.Sent,
+					After:
+										MessageType = MessageType.Sent,
+					*/
 					MessageType = Chat.MessageType.Sent,
 					Html = HtmlDocument.GetBody(await Doc.GenerateHTML()),
 					PlainText = (await Doc.GeneratePlainText()).Trim(),
@@ -615,17 +610,16 @@ After:
 			return this.IsRecordingAudio && audioRecorder.Value.IsRecording;
 		}
 
-		/// <summary>
-		/// The command to bind to for sending user input
-		/// </summary>
-		public ICommand CancelCommand { get; }
-
 		private bool CanExecuteCancelMessage()
 		{
 			return this.IsConnected && (!string.IsNullOrEmpty(this.MarkdownInput) || this.IsRecordingAudio);
 		}
 
-		private Task ExecuteCancelMessage()
+		/// <summary>
+		/// The command to bind to for sending user input
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(CanExecuteCancelMessage))]
+		private Task Cancel()
 		{
 			if (this.IsRecordingAudio)
 			{
@@ -651,47 +645,35 @@ After:
 			return Task.CompletedTask;
 		}
 
-		private static Timer audioRecorderTimer;
-
-		private static readonly Lazy<AudioRecorderService> audioRecorder = new(() => {
-			return new AudioRecorderService()
-			{
-				StopRecordingOnSilence = false,
-				StopRecordingAfterTimeout = true,
-				TotalAudioTimeout = TimeSpan.FromSeconds(60)
-			};
-		}, System.Threading.LazyThreadSafetyMode.PublicationOnly);
+		// TODO: Audio
+		// 
+		// private static System.Timers.Timer audioRecorderTimer;
+		// 
+		// private static readonly Lazy<AudioRecorderService> audioRecorder = new(() =>
+		// {
+		// 	return new AudioRecorderService()
+		// 	{
+		// 		StopRecordingOnSilence = false,
+		// 		StopRecordingAfterTimeout = true,
+		// 		TotalAudioTimeout = TimeSpan.FromSeconds(60)
+		// 	};
+		// }, LazyThreadSafetyMode.PublicationOnly);
 
 		private Task<string>? audioRecorderTask = null;
-
-		/// <summary>
-		/// Command to take and send a audio record
-		/// </summary>
-		public ICommand RecordAudio { get; }
 
 		private bool CanExecuteRecordAudio()
 		{
 			return this.IsConnected && !this.IsWriting && ServiceRef.XmppService.FileUploadIsSupported;
 		}
 
-		/// <summary>
-		/// Command to take and send a photo
-		/// </summary>
-		public ICommand TakePhoto { get; }
-
-
-		private bool CanExecuteTakePhoto()
-		{
-			return this.IsConnected && !this.IsWriting && ServiceRef.XmppService.FileUploadIsSupported;
-		}
-
-		private void OnAudioRecorderTimer(object source, ElapsedEventArgs e)
+		private void OnAudioRecorderTimer(object? source, ElapsedEventArgs e)
 		{
 			this.OnPropertyChanged(nameof(RecordingTime));
 			this.IsRecordingPaused = audioRecorder.Value.IsPaused;
 		}
 
-		private async Task ExecuteRecordAudio()
+		[RelayCommand(CanExecute = nameof(CanExecuteRecordAudio))]
+		private async Task RecordAudio()
 		{
 			if (!ServiceRef.XmppService.FileUploadIsSupported)
 			{
@@ -716,7 +698,16 @@ After:
 			}
 		}
 
-		private async Task ExecuteTakePhoto()
+		private bool CanExecuteTakePhoto()
+		{
+			return this.IsConnected && !this.IsWriting && ServiceRef.XmppService.FileUploadIsSupported;
+		}
+
+		/// <summary>
+		/// Command to take and send a photo
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(CanExecuteTakePhoto))]
+		private async Task TakePhoto()
 		{
 			if (!ServiceRef.XmppService.FileUploadIsSupported)
 			{
@@ -727,14 +718,13 @@ After:
 
 			if (DeviceInfo.Platform == DevicePlatform.iOS)
 			{
-				MediaFile capturedPhoto;
+				FileResult capturedPhoto;
 
 				try
 				{
-					capturedPhoto = await CrossMedia.Current.TakePhotoAsync(new StoreCameraMediaOptions()
+					capturedPhoto = await MediaPicker.Default.CapturePhotoAsync(new MediaPickerOptions()
 					{
-						CompressionQuality = 80,
-						RotateImage = false
+						Title = ServiceRef.Localizer[nameof(AppResources.TakePhotoToShare)]
 					});
 				}
 				catch (Exception ex)
@@ -748,7 +738,7 @@ After:
 				{
 					try
 					{
-						await this.EmbedMedia(capturedPhoto.Path, true);
+						await this.EmbedMedia(capturedPhoto.FullPath, true);
 					}
 					catch (Exception ex)
 					{
@@ -795,7 +785,7 @@ After:
 				if (!InternetContent.TryGetContentType(Path.GetExtension(FilePath), out string ContentType))
 					ContentType = "application/octet-stream";
 
-				if (Bin.Length > this.TagProfile.HttpFileUploadMaxSize)
+				if (Bin.Length > ServiceRef.TagProfile.HttpFileUploadMaxSize)
 				{
 					await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						ServiceRef.Localizer[nameof(AppResources.PhotoIsTooLarge)]);
@@ -806,7 +796,7 @@ After:
 				if (!await ServiceRef.XmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect))
 				{
 					await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-						string.Format(ServiceRef.Localizer[nameof(AppResources.UnableToConnectTo)], this.TagProfile.Domain));
+						ServiceRef.Localizer[nameof(AppResources.UnableToConnectTo), ServiceRef.TagProfile.Domain ?? string.Empty]);
 					return;
 				}
 
@@ -840,7 +830,7 @@ After:
 				Xml.Append(Bin.Length.ToString(CultureInfo.InvariantCulture));
 				Xml.Append("' content-type='application/octet-stream'/>");
 
-				await ServiceRef.XmppService.IqSetAsync(this.TagProfile.HttpFileUploadJid, Xml.ToString());
+				await ServiceRef.XmppService.IqSetAsync(ServiceRef.TagProfile.HttpFileUploadJid!, Xml.ToString());
 				// Empty response expected. Errors cause an exception to be raised.
 
 				// Requesting upload slot
@@ -898,17 +888,16 @@ After:
 			}
 		}
 
-		/// <summary>
-		/// Command to embed a file
-		/// </summary>
-		public ICommand EmbedFile { get; }
-
 		private bool CanExecuteEmbedFile()
 		{
 			return this.IsConnected && !this.IsWriting && ServiceRef.XmppService.FileUploadIsSupported;
 		}
 
-		private async Task ExecuteEmbedFile()
+		/// <summary>
+		/// Command to embed a file
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(CanExecuteEmbedFile))]
+		private async Task EmbedFile()
 		{
 			if (!ServiceRef.XmppService.FileUploadIsSupported)
 			{
@@ -922,17 +911,16 @@ After:
 				await this.EmbedMedia(pickedPhoto.FullPath, false);
 		}
 
-		/// <summary>
-		/// Command to embed a reference to a legal ID
-		/// </summary>
-		public ICommand EmbedId { get; }
-
 		private bool CanExecuteEmbedId()
 		{
 			return this.IsConnected && !this.IsWriting;
 		}
 
-		private async Task ExecuteEmbedId()
+		/// <summary>
+		/// Command to embed a reference to a legal ID
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(CanExecuteEmbedId))]
+		private async Task EmbedId()
 		{
 			TaskCompletionSource<ContactInfoModel?> SelectedContact = new();
 			ContactListNavigationArgs Args = new(ServiceRef.Localizer[nameof(AppResources.SelectContactToPay)], SelectedContact)
@@ -977,17 +965,16 @@ After:
 			}
 		}
 
-		/// <summary>
-		/// Command to embed a reference to a smart contract
-		/// </summary>
-		public ICommand EmbedContract { get; }
-
 		private bool CanExecuteEmbedContract()
 		{
 			return this.IsConnected && !this.IsWriting;
 		}
 
-		private async Task ExecuteEmbedContract()
+		/// <summary>
+		/// Command to embed a reference to a smart contract
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(CanExecuteEmbedContract))]
+		private async Task EmbedContract()
 		{
 			TaskCompletionSource<Contract?> SelectedContract = new();
 			MyContractsNavigationArgs Args = new(ContractsListMode.Contracts, SelectedContract);
@@ -1013,17 +1000,16 @@ After:
 			await this.ExecuteSendMessage(string.Empty, Markdown.ToString());
 		}
 
-		/// <summary>
-		/// Command to embed a payment
-		/// </summary>
-		public ICommand EmbedMoney { get; }
-
 		private bool CanExecuteEmbedMoney()
 		{
 			return this.IsConnected && !this.IsWriting;
 		}
 
-		private async Task ExecuteEmbedMoney()
+		/// <summary>
+		/// Command to embed a payment
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(CanExecuteEmbedMoney))]
+		private async Task EmbedMoney()
 		{
 			StringBuilder sb = new();
 
@@ -1068,26 +1054,25 @@ After:
 			{
 				sb.Append(" (+");
 				sb.Append(MoneyToString.ToString(Parsed.AmountExtra.Value));
-				sb.Append(")");
+				sb.Append(')');
 			}
 
-			sb.Append(" ");
+			sb.Append(' ');
 			sb.Append(Parsed.Currency);
 
 			await this.ExecuteSendMessage(string.Empty, "![" + sb.ToString() + "](" + Uri + ")");
 		}
-
-		/// <summary>
-		/// Command to embed a token reference
-		/// </summary>
-		public ICommand EmbedToken { get; }
 
 		private bool CanExecuteEmbedToken()
 		{
 			return this.IsConnected && !this.IsWriting;
 		}
 
-		private async Task ExecuteEmbedToken()
+		/// <summary>
+		/// Command to embed a token reference
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(CanExecuteEmbedToken))]
+		private async Task EmbedToken()
 		{
 			MyTokensNavigationArgs Args = new();
 
@@ -1108,28 +1093,25 @@ After:
 			Markdown.AppendLine("```");
 
 			await this.ExecuteSendMessage(string.Empty, Markdown.ToString());
-			return;
-
 		}
-
-		/// <summary>
-		/// Command to embed a reference to a thing
-		/// </summary>
-		public ICommand EmbedThing { get; }
 
 		private bool CanExecuteEmbedThing()
 		{
 			return this.IsConnected && !this.IsWriting;
 		}
 
-		private async Task ExecuteEmbedThing()
+		/// <summary>
+		/// Command to embed a reference to a thing
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(CanExecuteEmbedThing))]
+		private async Task EmbedThing()
 		{
-			TaskCompletionSource<ContactInfoModel> ThingToShare = new();
+			TaskCompletionSource<ContactInfoModel?> ThingToShare = new();
 			MyThingsNavigationArgs Args = new(ThingToShare);
 
 			await ServiceRef.NavigationService.GoToAsync(nameof(MyThingsPage), Args, BackMethod.Pop);
 
-			ContactInfoModel Thing = await ThingToShare.Task;
+			ContactInfoModel? Thing = await ThingToShare.Task;
 			if (Thing is null)
 				return;
 
@@ -1160,7 +1142,7 @@ After:
 				sb.Append(Thing.NodeId);
 			}
 
-			sb.Append(")");
+			sb.Append(')');
 
 			await this.ExecuteSendMessage(string.Empty, sb.ToString());
 		}
@@ -1174,36 +1156,38 @@ After:
 		{
 			if (Parameter is ChatMessage Message)
 			{
-				if (Message.ParsedXaml is View View)
-				{
-					AudioPlayerControl AudioPlayer = View.Descendants().OfType<AudioPlayerControl>().FirstOrDefault();
-					if (AudioPlayer is not null)
-					{
-						return Task.CompletedTask;
-					}
-				}
+				// TODO: Audio
+				//
+				// if (Message.ParsedXaml is View View)
+				// {
+				// 	AudioPlayerControl AudioPlayer = View.Descendants().OfType<AudioPlayerControl>().FirstOrDefault();
+				// 	if (AudioPlayer is not null)
+				// 	{
+				// 		return Task.CompletedTask;
+				// 	}
+				// }
 
 				switch (Message.MessageType)
 				{
 
-/* Unmerged change from project 'NeuroAccessMaui (net8.0-ios)'
-Before:
-					case Services.Messages.MessageType.Sent:
-After:
-					case MessageType.Sent:
-*/
+					/* Unmerged change from project 'NeuroAccessMaui (net8.0-ios)'
+					Before:
+										case Services.Messages.MessageType.Sent:
+					After:
+										case MessageType.Sent:
+					*/
 					case Chat.MessageType.Sent:
 						this.MessageId = Message.ObjectId;
 						this.MarkdownInput = Message.Markdown;
 						break;
 
 
-/* Unmerged change from project 'NeuroAccessMaui (net8.0-ios)'
-Before:
-					case Services.Messages.MessageType.Received:
-After:
-					case MessageType.Received:
-*/
+					/* Unmerged change from project 'NeuroAccessMaui (net8.0-ios)'
+					Before:
+										case Services.Messages.MessageType.Received:
+					After:
+										case MessageType.Received:
+					*/
 					case Chat.MessageType.Received:
 						string s = Message.Markdown;
 						if (string.IsNullOrEmpty(s))
@@ -1243,7 +1227,7 @@ After:
 			try
 			{
 				if (Scheme == UriScheme.Xmpp)
-					await ProcessXmppUri(Uri, ServiceRef.XmppService, this.TagProfile);
+					await ProcessXmppUri(Uri);
 				else
 				{
 					int i = Uri.IndexOf(':');

@@ -1497,4 +1497,217 @@
   <data name="UnableToGetOptions" xml:space="preserve">
     <value>Käytettävissä olevia vaihtoehtoja ei voi saada.</value>
   </data>
+  <data name="Altitude" xml:space="preserve">
+    <value>Korkeus</value>
+  </data>
+  <data name="Anonymous" xml:space="preserve">
+    <value>Anonyymi</value>
+  </data>
+  <data name="Apartment" xml:space="preserve">
+    <value>Asunto</value>
+  </data>
+  <data name="Building" xml:space="preserve">
+    <value>Rakennus</value>
+  </data>
+  <data name="CallerOnly" xml:space="preserve">
+    <value>Vain soittaja</value>
+  </data>
+  <data name="Class" xml:space="preserve">
+    <value>Luokka</value>
+  </data>
+  <data name="Contacts" xml:space="preserve">
+    <value>Yhteystiedot</value>
+  </data>
+  <data name="ContactsDescription" xml:space="preserve">
+    <value>Alla on kaikki yhteystiedot yhteystietokirjassasi. Napsauta mitä tahansa ollaksesi vuorovaikutuksessa kyseisen yhteyshenkilön kanssa.</value>
+  </data>
+  <data name="ContractProposal" xml:space="preserve">
+    <value>Sopimusehdotus</value>
+  </data>
+  <data name="ContractUpdateReceived" xml:space="preserve">
+    <value>Sopimus päivitetty</value>
+  </data>
+  <data name="DeleteRulesQuestion" xml:space="preserve">
+    <value>Haluatko poistaa kaikki asian valmistelusäännöt? Näin tekemällä asia pyytää sinua uudelleen kaikista uusista tapahtumista oppimaan, mitä sillä on lupa tehdä.</value>
+  </data>
+  <data name="Device" xml:space="preserve">
+    <value>Laite</value>
+  </data>
+  <data name="DisownThingQuestion" xml:space="preserve">
+    <value>Haluatko kieltää asian? Tämä poistaa asian asioiden luettelostasi ja sallii toisen vaatia laitetta omakseen.</value>
+  </data>
+  <data name="EntireDomain" xml:space="preserve">
+    <value>Kaikki {0}</value>
+  </data>
+  <data name="Errors" xml:space="preserve">
+    <value>Virheitä</value>
+  </data>
+  <data name="Everyone" xml:space="preserve">
+    <value>Kaikki</value>
+  </data>
+  <data name="GeneralInformation" xml:space="preserve">
+    <value>Yleistä tietoa</value>
+  </data>
+  <data name="InvalidNeuroFeatureToken" xml:space="preserve">
+    <value>Virheellinen Neuro-Feature-tunnus.</value>
+  </data>
+  <data name="Key" xml:space="preserve">
+    <value>Avain</value>
+  </data>
+  <data name="Latitude" xml:space="preserve">
+    <value>Leveysaste</value>
+  </data>
+  <data name="Longitude" xml:space="preserve">
+    <value>Pituusaste</value>
+  </data>
+  <data name="Manufacturer" xml:space="preserve">
+    <value>Valmistaja</value>
+  </data>
+  <data name="MeterLocation" xml:space="preserve">
+    <value>Mittarin sijainti</value>
+  </data>
+  <data name="MeterNumber" xml:space="preserve">
+    <value>Mittarin numero</value>
+  </data>
+  <data name="Model" xml:space="preserve">
+    <value>Malli</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Nimi</value>
+  </data>
+  <data name="NoContactsFound" xml:space="preserve">
+    <value>Yhteystietoja ei löytynyt.</value>
+  </data>
+  <data name="NotAvailable" xml:space="preserve">
+    <value>Ei saatavilla</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>Puhelin</value>
+  </data>
+  <data name="PickPhoto" xml:space="preserve">
+    <value>Valitse valokuva</value>
+  </data>
+  <data name="ProductInformation" xml:space="preserve">
+    <value>Tuotetiedot</value>
+  </data>
+  <data name="Question" xml:space="preserve">
+    <value>Kysymys</value>
+  </data>
+  <data name="Registry" xml:space="preserve">
+    <value>Rekisteri</value>
+  </data>
+  <data name="RemoveSubscriptionFrom" xml:space="preserve">
+    <value>Haluatko poistaa tavoitettavuustilauksen {0}:stä?</value>
+  </data>
+  <data name="Room" xml:space="preserve">
+    <value>Huone</value>
+  </data>
+  <data name="RulesDeleted" xml:space="preserve">
+    <value>Valmistelusäännöt on poistettu.</value>
+  </data>
+  <data name="ScanQRCode" xml:space="preserve">
+    <value>Skannaa QR-koodi</value>
+  </data>
+  <data name="SelectContactToPay" xml:space="preserve">
+    <value>Alla on kaikki yhteystiedot yhteystietokirjassasi. Valitse yhteyshenkilö, jolle haluat suorittaa maksun.</value>
+  </data>
+  <data name="SelectingAPhotoIsNotSupported" xml:space="preserve">
+    <value>Tämä laite ei tue valokuvan valitsemista</value>
+  </data>
+  <data name="SensorDataAccepted" xml:space="preserve">
+    <value>Pyyntö on hyväksytty.</value>
+  </data>
+  <data name="SensorDataCancelled" xml:space="preserve">
+    <value>Anturitietojen lukeminen on peruttu.</value>
+  </data>
+  <data name="SensorDataDone" xml:space="preserve">
+    <value>Anturitietojen lukeminen on valmis.</value>
+  </data>
+  <data name="SensorDataFailure" xml:space="preserve">
+    <value>Anturitietojen lukeminen epäonnistui.</value>
+  </data>
+  <data name="SensorDataHeaderComputed" xml:space="preserve">
+    <value>Laskettu</value>
+  </data>
+  <data name="SensorDataHeaderHistorical" xml:space="preserve">
+    <value>Historiallinen</value>
+  </data>
+  <data name="SensorDataHeaderIdentity" xml:space="preserve">
+    <value>Identiteetti</value>
+  </data>
+  <data name="SensorDataHeaderMomentary" xml:space="preserve">
+    <value>Hetkellinen</value>
+  </data>
+  <data name="SensorDataHeaderOther" xml:space="preserve">
+    <value>Toinen</value>
+  </data>
+  <data name="SensorDataHeaderPeak" xml:space="preserve">
+    <value>Huippu</value>
+  </data>
+  <data name="SensorDataHeaderStatus" xml:space="preserve">
+    <value>Tila</value>
+  </data>
+  <data name="SensorDataReceiving" xml:space="preserve">
+    <value>Anturitietojen vastaanottaminen.</value>
+  </data>
+  <data name="SensorDataRequested" xml:space="preserve">
+    <value>Anturitietoja on pyydetty.</value>
+  </data>
+  <data name="SensorDataStarted" xml:space="preserve">
+    <value>Anturitietojen lukeminen on alkanut.</value>
+  </data>
+  <data name="SerialNumber" xml:space="preserve">
+    <value>Sarjanumero</value>
+  </data>
+  <data name="ServerDoesNotSupportFileUpload" xml:space="preserve">
+    <value>Palvelin ei näytä tukevan tiedostojen lataamista.</value>
+  </data>
+  <data name="Service" xml:space="preserve">
+    <value>Palvelu</value>
+  </data>
+  <data name="StreetName" xml:space="preserve">
+    <value>Lempinimi</value>
+  </data>
+  <data name="StreetNumber" xml:space="preserve">
+    <value>Kadun numero</value>
+  </data>
+  <data name="TakePhoto" xml:space="preserve">
+    <value>Ota valokuva</value>
+  </data>
+  <data name="TakePhotoToShare" xml:space="preserve">
+    <value>Ota valokuva jaettavaksi</value>
+  </data>
+  <data name="TakingAPhotoIsNotSupported" xml:space="preserve">
+    <value>Tämä laite ei tue valokuvan ottamista</value>
+  </data>
+  <data name="TheSpecifiedCodeIsNotALegalIdentity" xml:space="preserve">
+    <value>Sinun on skannattava erityyppinen QR-koodi, joka edustaa oikeudellista identiteettiä</value>
+  </data>
+  <data name="ThingDisowned" xml:space="preserve">
+    <value>Tämä on onnistuneesti hylätty. Uusi omistaja voi nyt lunastaa sen.</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Aika</value>
+  </data>
+  <data name="ToDevice" xml:space="preserve">
+    <value>Laitteeseen lähteestä riippumatta</value>
+  </data>
+  <data name="ToService" xml:space="preserve">
+    <value>Huoltoon lähteestä riippumatta</value>
+  </data>
+  <data name="ToUser" xml:space="preserve">
+    <value>Käyttäjälle lähteestä riippumatta</value>
+  </data>
+  <data name="UnableToClaimThing" xml:space="preserve">
+    <value>Ei voi vaatia mitään</value>
+  </data>
+  <data name="UnableToRespond" xml:space="preserve">
+    <value>Pyyntöön ei voi vastata.</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>Käyttäjä</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Versio</value>
+  </data>
 </root>

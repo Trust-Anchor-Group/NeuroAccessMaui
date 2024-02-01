@@ -1,28 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using IdApp.Extensions;
+﻿using System.ComponentModel;
+using System.Globalization;
+using CommunityToolkit.Mvvm.ComponentModel;
+using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Contacts;
+using NeuroAccessMaui.Services.Navigation;
+using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Things.ViewThing;
-using IdApp.Services;
-using IdApp.Services.Navigation;
-using IdApp.Services.Notification;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Provisioning;
 using Waher.Persistence;
 using Waher.Persistence.Filters;
-using Xamarin.Forms;
 
 namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 {
 	/// <summary>
 	/// The view model to bind to when displaying the list of things.
 	/// </summary>
-	public class MyThingsViewModel : BaseViewModel
+	public partial class MyThingsViewModel : BaseViewModel
 	{
-		private readonly Dictionary<CaseInsensitiveString, List<ContactInfoModel>> byBareJid = new();
-		private TaskCompletionSource<ContactInfoModel> selectedThing;
+		private readonly Dictionary<CaseInsensitiveString, List<ContactInfoModel>> byBareJid = [];
+		private TaskCompletionSource<ContactInfoModel?>? result;
 
 		/// <summary>
 		/// Creates an instance of the <see cref="MyThingsViewModel"/> class.
@@ -36,14 +36,14 @@ namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 		{
 			await base.OnInitialize();
 
-			if (this.NavigationService.TryGetArgs(out MyThingsNavigationArgs Args))
-				this.selectedThing = Args.ThingToShare;
+			if (ServiceRef.NavigationService.TryGetArgs(out MyThingsNavigationArgs? Args))
+				this.result = Args.ThingToShare;
 			else
-				this.selectedThing = null;
+				this.result = null;
 
-			this.XmppService.OnPresence += this.Xmpp_OnPresence;
-			this.NotificationService.OnNewNotification += this.NotificationService_OnNewNotification;
-			this.NotificationService.OnNotificationsDeleted += this.NotificationService_OnNotificationsDeleted;
+			ServiceRef.XmppService.OnPresence += this.Xmpp_OnPresence;
+			ServiceRef.NotificationService.OnNewNotification += this.NotificationService_OnNewNotification;
+			ServiceRef.NotificationService.OnNotificationsDeleted += this.NotificationService_OnNotificationsDeleted;
 		}
 
 		/// <inheritdoc/>
@@ -51,23 +51,20 @@ namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 		{
 			await base.OnAppearing();
 
-			if (this.selectedThing is not null && this.selectedThing.Task.IsCompleted)
-			{
-				await this.NavigationService.GoBackAsync();
-			}
+			if (this.result is not null && this.result.Task.IsCompleted)
+				await ServiceRef.NavigationService.GoBackAsync();
 			else
 			{
-				this.SelectedThing = null;
+				this.result = null;
 
 				await this.LoadThings();
 			}
 		}
 
-
 		private async Task LoadThings()
 		{
-			SortedDictionary<string, ContactInfo> SortedByName = new();
-			SortedDictionary<string, ContactInfo> SortedByAddress = new();
+			SortedDictionary<string, ContactInfo> SortedByName = [];
+			SortedDictionary<string, ContactInfo> SortedByAddress = [];
 			string Name;
 			string Suffix;
 			string Key;
@@ -82,7 +79,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 
 					do
 					{
-						Suffix = " " + (++i).ToString();
+						Suffix = " " + (++i).ToString(CultureInfo.InvariantCulture);
 					}
 					while (SortedByName.ContainsKey(Name + Suffix));
 
@@ -95,19 +92,19 @@ namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 				SortedByAddress[Key] = Info;
 			}
 
-			SearchResultThing[] MyDevices = await this.XmppService.GetAllMyDevices();
+			SearchResultThing[] MyDevices = await ServiceRef.XmppService.GetAllMyDevices();
 			foreach (SearchResultThing Thing in MyDevices)
 			{
 				Property[] MetaData = ViewClaimThing.ViewClaimThingViewModel.ToProperties(Thing.Tags);
 
 				Key = Thing.Jid + ", " + Thing.Node.SourceId + ", " + Thing.Node.Partition + ", " + Thing.Node.NodeId;
-				if (SortedByAddress.TryGetValue(Key, out ContactInfo Info))
+				if (SortedByAddress.TryGetValue(Key, out ContactInfo? Info))
 				{
 					if (!Info.Owner.HasValue || !Info.Owner.Value || !AreSame(Info.MetaData, MetaData))
 					{
 						Info.Owner = true;
 						Info.MetaData = MetaData;
-						Info.FriendlyName = ViewClaimThing.ViewClaimThingViewModel.GetFriendlyName(MetaData);
+						Info.FriendlyName = ViewClaimThing.ViewClaimThingViewModel.GetFriendlyName(MetaData) ?? string.Empty;
 
 						await Database.Update(Info);
 					}
@@ -120,19 +117,19 @@ namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 					BareJid = Thing.Jid,
 					LegalId = string.Empty,
 					LegalIdentity = null,
-					FriendlyName = ViewClaimThing.ViewClaimThingViewModel.GetFriendlyName(Thing.Tags),
+					FriendlyName = ViewClaimThing.ViewClaimThingViewModel.GetFriendlyName(Thing.Tags) ?? string.Empty,
 					IsThing = true,
 					SourceId = Thing.Node.SourceId,
 					Partition = Thing.Node.Partition,
 					NodeId = Thing.Node.NodeId,
 					Owner = true,
 					MetaData = MetaData,
-					RegistryJid = this.XmppService.RegistryServiceJid
+					RegistryJid = ServiceRef.XmppService.RegistryServiceJid
 				};
 
 				foreach (MetaDataTag Tag in Thing.Tags)
 				{
-					if (Tag.Name.ToUpper() == "R")
+					if (Tag.Name.Equals("R", StringComparison.OrdinalIgnoreCase))
 						Info.RegistryJid = Tag.StringValue;
 				}
 
@@ -145,7 +142,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 
 					do
 					{
-						Suffix = " " + (++i).ToString();
+						Suffix = " " + (++i).ToString(CultureInfo.InvariantCulture);
 					}
 					while (SortedByName.ContainsKey(Name + Suffix));
 
@@ -161,18 +158,18 @@ namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 
 			this.byBareJid.Clear();
 
-			ObservableItemGroup<IUniqueItem> NewThings = new(nameof(this.Things), new());
+			ObservableItemGroup<IUniqueItem> NewThings = new(nameof(this.Things), []);
 
 			foreach (ContactInfo Info in SortedByName.Values)
 			{
-				NotificationEvent[] Events = GetNotificationEvents(this, Info);
+				NotificationEvent[]? Events = GetNotificationEvents(Info);
 
-				ContactInfoModel InfoModel = new(this, Info, Events);
+				ContactInfoModel InfoModel = new(Info, Events ?? []);
 				NewThings.Add(InfoModel);
 
-				if (!this.byBareJid.TryGetValue(Info.BareJid, out List<ContactInfoModel> Contacts))
+				if (!this.byBareJid.TryGetValue(Info.BareJid, out List<ContactInfoModel>? Contacts))
 				{
-					Contacts = new List<ContactInfoModel>();
+					Contacts = [];
 					this.byBareJid[Info.BareJid] = Contacts;
 				}
 
@@ -181,43 +178,42 @@ namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 
 			this.ShowThingsMissing = SortedByName.Count == 0;
 
-			Device.BeginInvokeOnMainThread(() => ObservableItemGroup<IUniqueItem>.UpdateGroupsItems(this.Things, NewThings));
+			MainThread.BeginInvokeOnMainThread(() => ObservableItemGroup<IUniqueItem>.UpdateGroupsItems(this.Things, NewThings));
 		}
 
 
 		/// <summary>
 		/// Gets available notification events related to a thing.
 		/// </summary>
-		/// <param name="References">Service references.</param>
 		/// <param name="Thing">Thing reference</param>
 		/// <returns>Array of events, null if none.</returns>
-		public static NotificationEvent[] GetNotificationEvents(IServiceReferences References, ContactInfo Thing)
+		public static NotificationEvent[]? GetNotificationEvents(ContactInfo Thing)
 		{
 			if (!string.IsNullOrEmpty(Thing.SourceId) ||
 				!string.IsNullOrEmpty(Thing.Partition) ||
 				!string.IsNullOrEmpty(Thing.NodeId) ||
-				!References.NotificationService.TryGetNotificationEvents(EventButton.Contacts, Thing.BareJid, out NotificationEvent[] ContactEvents))
+				!ServiceRef.NotificationService.TryGetNotificationEvents(NotificationEventType.Contacts, Thing.BareJid, out NotificationEvent[]? ContactEvents))
 			{
 				ContactEvents = null;
 			}
 
-			if (!References.NotificationService.TryGetNotificationEvents(EventButton.Things, Thing.ThingNotificationCategoryKey, out NotificationEvent[] ThingEvents))
+			if (!ServiceRef.NotificationService.TryGetNotificationEvents(NotificationEventType.Things, Thing.ThingNotificationCategoryKey, out NotificationEvent[]? ThingEvents))
 				ThingEvents = null;
 
-			return ContactEvents.Join(ThingEvents);
+			return ThingEvents is null ? ContactEvents : ContactEvents?.Join(ThingEvents);
 		}
 
 		/// <inheritdoc/>
 		protected override async Task OnDispose()
 		{
-			this.XmppService.OnPresence -= this.Xmpp_OnPresence;
-			this.NotificationService.OnNewNotification -= this.NotificationService_OnNewNotification;
-			this.NotificationService.OnNotificationsDeleted -= this.NotificationService_OnNotificationsDeleted;
+			ServiceRef.XmppService.OnPresence -= this.Xmpp_OnPresence;
+			ServiceRef.NotificationService.OnNewNotification -= this.NotificationService_OnNewNotification;
+			ServiceRef.NotificationService.OnNotificationsDeleted -= this.NotificationService_OnNotificationsDeleted;
 
 			this.ShowThingsMissing = false;
 			this.Things.Clear();
 
-			this.selectedThing?.TrySetResult(null);
+			this.result?.TrySetResult(null);
 
 			await base.OnDispose();
 		}
@@ -228,12 +224,12 @@ namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 		/// <param name="MetaData1">First set of meta-data.</param>
 		/// <param name="MetaData2">Second set of meta-data.</param>
 		/// <returns>If they are the same.</returns>
-		public static bool AreSame(Property[] MetaData1, Property[] MetaData2)
+		public static bool AreSame(Property[]? MetaData1, Property[]? MetaData2)
 		{
 			if ((MetaData1 is null) ^ (MetaData2 is null))
 				return false;
 
-			if (MetaData1 is null)
+			if (MetaData1 is null || MetaData2 is null)  // Second only necessary to avoid compiler warnings.
 				return true;
 
 			int i, c = MetaData1.Length;
@@ -250,67 +246,58 @@ namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 		}
 
 		/// <summary>
-		/// See <see cref="ShowThingsMissing"/>
-		/// </summary>
-		public static readonly BindableProperty ShowThingsMissingProperty =
-			BindableProperty.Create(nameof(ShowThingsMissing), typeof(bool), typeof(MyThingsViewModel), default(bool));
-
-		/// <summary>
 		/// Gets or sets whether to show a contacts missing alert or not.
 		/// </summary>
-		public bool ShowThingsMissing
-		{
-			get => (bool)this.GetValue(ShowThingsMissingProperty);
-			set => this.SetValue(ShowThingsMissingProperty, value);
-		}
+		[ObservableProperty]
+		private bool showThingsMissing;
 
 		/// <summary>
 		/// Holds the list of contacts to display.
 		/// </summary>
-		public ObservableItemGroup<IUniqueItem> Things { get; } = new(nameof(Things), new());
-
-		/// <summary>
-		/// See <see cref="SelectedThing"/>
-		/// </summary>
-		public static readonly BindableProperty SelectedThingProperty =
-			BindableProperty.Create(nameof(SelectedThing), typeof(ContactInfoModel), typeof(MyThingsViewModel), default(ContactInfoModel));
+		public ObservableItemGroup<IUniqueItem> Things { get; } = new(nameof(Things), []);
 
 		/// <summary>
 		/// The currently selected contact, if any.
 		/// </summary>
-		public ContactInfoModel SelectedThing
-		{
-			get => (ContactInfoModel)this.GetValue(SelectedThingProperty);
-			set
-			{
-				this.SetValue(SelectedThingProperty, value);
+		[ObservableProperty]
+		private ContactInfoModel? selectedThing;
 
-				if (value is not null)
-					this.OnSelected(value);
+		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+		{
+			base.OnPropertyChanged(e);
+
+			switch (e.PropertyName)
+			{
+				case nameof(this.SelectedThing):
+					if (this.SelectedThing is not null)
+						this.OnSelected(this.SelectedThing);
+					break;
 			}
 		}
 
 		private void OnSelected(ContactInfoModel Thing)
 		{
-			this.UiSerializer.BeginInvokeOnMainThread(async () =>
+			if (Thing.Contact is null)
+				return;
+
+			MainThread.BeginInvokeOnMainThread(async () =>
 			{
-				if (this.selectedThing is null)
+				if (this.result is null)
 				{
 					ViewThingNavigationArgs Args = new(Thing.Contact, Thing.Events);
-					// Inherit the back method here from the parrent
-					await this.NavigationService.GoToAsync(nameof(ViewThingPage), Args, BackMethod.Inherited);
+					await ServiceRef.NavigationService.GoToAsync(nameof(ViewThingPage), Args, BackMethod.Pop2);
 				}
 				else
 				{
-					this.selectedThing.TrySetResult(Thing);
-					await this.NavigationService.GoBackAsync();
+					this.result.TrySetResult(Thing);
+					await ServiceRef.NavigationService.GoBackAsync();
 				}
 			});
 		}
 
 		private Task Xmpp_OnPresence(object Sender, PresenceEventArgs e)
 		{
-			if (this.byBareJid.TryGetValue(e.FromBareJID, out List<ContactInfoModel> Contacts))
+			if (this.byBareJid.TryGetValue(e.FromBareJID, out List<ContactInfoModel>? Contacts))
 			{
 				foreach (ContactInfoModel Contact in Contacts)
 					Contact.PresenceUpdated();
@@ -321,13 +308,13 @@ namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 
 		private void NotificationService_OnNotificationsDeleted(object Sender, NotificationEventsArgs e)
 		{
-			this.UiSerializer.BeginInvokeOnMainThread(() =>
+			MainThread.BeginInvokeOnMainThread(() =>
 			{
 				foreach (NotificationEvent Event in e.Events)
 				{
-					switch (Event.Button)
+					switch (Event.Type)
 					{
-						case EventButton.Contacts:
+						case NotificationEventType.Contacts:
 							foreach (IUniqueItem Item in this.Things)
 							{
 								if (Item is ContactInfoModel Thing)
@@ -348,7 +335,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 							}
 							break;
 
-						case EventButton.Things:
+						case NotificationEventType.Things:
 							foreach (IUniqueItem Item in this.Things)
 							{
 								if (Item is ContactInfoModel Thing)
@@ -369,15 +356,15 @@ namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 			});
 		}
 
-		private void NotificationService_OnNewNotification(object Sender, NotificationEventArgs e)
+		private void NotificationService_OnNewNotification(object? Sender, NotificationEventArgs e)
 		{
-			this.UiSerializer.BeginInvokeOnMainThread(() =>
+			MainThread.BeginInvokeOnMainThread(() =>
 			{
 				try
 				{
-					switch (e.Event.Button)
+					switch (e.Event.Type)
 					{
-						case EventButton.Contacts:
+						case NotificationEventType.Contacts:
 							foreach (IUniqueItem Item in this.Things)
 							{
 								if (Item is ContactInfoModel Thing)
@@ -397,7 +384,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 							}
 							break;
 
-						case EventButton.Things:
+						case NotificationEventType.Things:
 							foreach (IUniqueItem Item in this.Things)
 							{
 								if (Item is ContactInfoModel Thing)
@@ -416,7 +403,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 				}
 				catch (Exception ex)
 				{
-					this.LogService.LogException(ex);
+					ServiceRef.LogService.LogException(ex);
 				}
 			});
 		}

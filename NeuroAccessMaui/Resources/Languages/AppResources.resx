@@ -1497,8 +1497,23 @@
   <data name="UnableToGetOptions" xml:space="preserve">
     <value>Unable to get available options.</value>
   </data>
+  <data name="Altitude" xml:space="preserve">
+    <value>Altitude</value>
+  </data>
   <data name="Anonymous" xml:space="preserve">
     <value>Anonymous</value>
+  </data>
+  <data name="Apartment" xml:space="preserve">
+    <value>Apartment</value>
+  </data>
+  <data name="Building" xml:space="preserve">
+    <value>Building</value>
+  </data>
+  <data name="CallerOnly" xml:space="preserve">
+    <value>Caller Only</value>
+  </data>
+  <data name="Class" xml:space="preserve">
+    <value>Class</value>
   </data>
   <data name="Contacts" xml:space="preserve">
     <value>Contacts</value>
@@ -1506,22 +1521,193 @@
   <data name="ContactsDescription" xml:space="preserve">
     <value>Below are all contacts in your contact book. Click on any to interact with that contact.</value>
   </data>
+  <data name="ContractProposal" xml:space="preserve">
+    <value>Contract proposal</value>
+  </data>
+  <data name="ContractUpdateReceived" xml:space="preserve">
+    <value>Contract updated</value>
+  </data>
+  <data name="DeleteRulesQuestion" xml:space="preserve">
+    <value>Do you want to delete all provisioning rules for the thing? By doing so, the thing will ask you again for all new events to learn what it is authorized to do.</value>
+  </data>
+  <data name="Device" xml:space="preserve">
+    <value>Device</value>
+  </data>
+  <data name="DisownThingQuestion" xml:space="preserve">
+    <value>Do you want to disown the thing? This will remove the thing from your list of things, and will permit another to claim the device as theirs.</value>
+  </data>
+  <data name="EntireDomain" xml:space="preserve">
+    <value>Everyone from {0}</value>
+  </data>
+  <data name="Errors" xml:space="preserve">
+    <value>Errors</value>
+  </data>
+  <data name="Everyone" xml:space="preserve">
+    <value>Everyone</value>
+  </data>
+  <data name="GeneralInformation" xml:space="preserve">
+    <value>General Information</value>
+  </data>
   <data name="InvalidNeuroFeatureToken" xml:space="preserve">
     <value>Invalid Neuro-Feature token.</value>
+  </data>
+  <data name="Key" xml:space="preserve">
+    <value>Key</value>
+  </data>
+  <data name="Latitude" xml:space="preserve">
+    <value>Latitude</value>
+  </data>
+  <data name="Longitude" xml:space="preserve">
+    <value>Longitude</value>
+  </data>
+  <data name="Manufacturer" xml:space="preserve">
+    <value>Manufacturer</value>
+  </data>
+  <data name="MeterLocation" xml:space="preserve">
+    <value>Meter Location</value>
+  </data>
+  <data name="MeterNumber" xml:space="preserve">
+    <value>Meter Number</value>
+  </data>
+  <data name="Model" xml:space="preserve">
+    <value>Model</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
   </data>
   <data name="NoContactsFound" xml:space="preserve">
     <value>No Contacts Found.</value>
   </data>
+  <data name="NotAvailable" xml:space="preserve">
+    <value>Not Available</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>Phone</value>
+  </data>
+  <data name="PickPhoto" xml:space="preserve">
+    <value>Pick photo</value>
+  </data>
+  <data name="ProductInformation" xml:space="preserve">
+    <value>Product Information</value>
+  </data>
   <data name="Question" xml:space="preserve">
     <value>Question</value>
+  </data>
+  <data name="Registry" xml:space="preserve">
+    <value>Registry</value>
   </data>
   <data name="RemoveSubscriptionFrom" xml:space="preserve">
     <value>Do you want to remove the presence subscription from {0}?</value>
   </data>
+  <data name="Room" xml:space="preserve">
+    <value>Room</value>
+  </data>
+  <data name="RulesDeleted" xml:space="preserve">
+    <value>Provisioning rules have been deleted.</value>
+  </data>
   <data name="ScanQRCode" xml:space="preserve">
     <value>Scan QR Code</value>
   </data>
+  <data name="SelectContactToPay" xml:space="preserve">
+    <value>Below are all contacts in your contact book. Select the contact to whom you want to make the payment.</value>
+  </data>
+  <data name="SelectingAPhotoIsNotSupported" xml:space="preserve">
+    <value>Selecting a photo is not supported on this device</value>
+  </data>
+  <data name="SensorDataAccepted" xml:space="preserve">
+    <value>Request has been accepted.</value>
+  </data>
+  <data name="SensorDataCancelled" xml:space="preserve">
+    <value>Sensor Data readout has been cancelled.</value>
+  </data>
+  <data name="SensorDataDone" xml:space="preserve">
+    <value>Sensor Data readout has completed.</value>
+  </data>
+  <data name="SensorDataFailure" xml:space="preserve">
+    <value>Sensor Data readout has failed.</value>
+  </data>
+  <data name="SensorDataHeaderComputed" xml:space="preserve">
+    <value>Computed</value>
+  </data>
+  <data name="SensorDataHeaderHistorical" xml:space="preserve">
+    <value>Historical</value>
+  </data>
+  <data name="SensorDataHeaderIdentity" xml:space="preserve">
+    <value>Identity</value>
+  </data>
+  <data name="SensorDataHeaderMomentary" xml:space="preserve">
+    <value>Momentary</value>
+  </data>
+  <data name="SensorDataHeaderOther" xml:space="preserve">
+    <value>Other</value>
+  </data>
+  <data name="SensorDataHeaderPeak" xml:space="preserve">
+    <value>Peak</value>
+  </data>
+  <data name="SensorDataHeaderStatus" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="SensorDataReceiving" xml:space="preserve">
+    <value>Receiving Sensor Data.</value>
+  </data>
+  <data name="SensorDataRequested" xml:space="preserve">
+    <value>Sensor Data has been requested.</value>
+  </data>
+  <data name="SensorDataStarted" xml:space="preserve">
+    <value>Sensor Data readout has started.</value>
+  </data>
+  <data name="SerialNumber" xml:space="preserve">
+    <value>Serial Number</value>
+  </data>
+  <data name="ServerDoesNotSupportFileUpload" xml:space="preserve">
+    <value>The server does not seem to support File Uploading.</value>
+  </data>
+  <data name="Service" xml:space="preserve">
+    <value>Service</value>
+  </data>
+  <data name="StreetName" xml:space="preserve">
+    <value>Street Name</value>
+  </data>
+  <data name="StreetNumber" xml:space="preserve">
+    <value>Street Number</value>
+  </data>
+  <data name="TakePhoto" xml:space="preserve">
+    <value>Take photo</value>
+  </data>
+  <data name="TakePhotoToShare" xml:space="preserve">
+    <value>Take a photo to share</value>
+  </data>
+  <data name="TakingAPhotoIsNotSupported" xml:space="preserve">
+    <value>Taking a photo is not supported on this device</value>
+  </data>
   <data name="TheSpecifiedCodeIsNotALegalIdentity" xml:space="preserve">
     <value>You need to scan a different type of QR Code, one that represents a legal identity</value>
+  </data>
+  <data name="ThingDisowned" xml:space="preserve">
+    <value>This has been successfully disowned. It can now be claimed by a new owner.</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Time</value>
+  </data>
+  <data name="ToDevice" xml:space="preserve">
+    <value>To device, regardless of source</value>
+  </data>
+  <data name="ToService" xml:space="preserve">
+    <value>To service, regardless of source</value>
+  </data>
+  <data name="ToUser" xml:space="preserve">
+    <value>To user, regardless of source</value>
+  </data>
+  <data name="UnableToClaimThing" xml:space="preserve">
+    <value>Unable to claim thing</value>
+  </data>
+  <data name="UnableToRespond" xml:space="preserve">
+    <value>Unable to respond to request.</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Version</value>
   </data>
 </root>

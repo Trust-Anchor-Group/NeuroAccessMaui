@@ -1,4 +1,4 @@
-﻿using NeuroAccessMaui.Services;
+﻿using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Navigation;
 using NeuroAccessMaui.Services.Notification;
 

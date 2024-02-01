@@ -1,13 +1,8 @@
-﻿using IdApp.Resx;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using System.Xml;
 using Waher.Content.Markdown;
 using Waher.Content.Markdown.Model;
 using Waher.Runtime.Inventory;
-using Xamarin.CommunityToolkit.Helpers;
 
 namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.Multimedia
 {

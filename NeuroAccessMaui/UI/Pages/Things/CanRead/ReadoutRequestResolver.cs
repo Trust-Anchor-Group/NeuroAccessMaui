@@ -1,5 +1,6 @@
-﻿using IdApp.Services.Notification;
-using IdApp.Services.Notification.Things;
+﻿using System.Globalization;
+using NeuroAccessMaui.Services.Notification;
+using NeuroAccessMaui.Services.Notification.Things;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Provisioning;
 
@@ -13,15 +14,15 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 		private readonly string bareJid;
 		private readonly string remoteJid;
 		private readonly RuleRange range;
-		private readonly ProvisioningToken token;
+		private readonly ProvisioningToken? token;
 
 		/// <summary>
 		/// Resolves pending readout requests
 		/// </summary>
 		public ReadoutRequestResolver(string BareJid, string RemoteJid, RuleRange Range)
 		{
-			this.bareJid = BareJid.ToLower();
-			this.remoteJid = RemoteJid.ToLower();
+			this.bareJid = BareJid.ToLower(CultureInfo.InvariantCulture);
+			this.remoteJid = RemoteJid.ToLower(CultureInfo.InvariantCulture);
 			this.range = Range;
 			this.token = null;
 		}
@@ -31,8 +32,8 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 		/// </summary>
 		public ReadoutRequestResolver(string BareJid, string RemoteJid, ProvisioningToken Token)
 		{
-			this.bareJid = BareJid.ToLower();
-			this.remoteJid = RemoteJid.ToLower();
+			this.bareJid = BareJid.ToLower(CultureInfo.InvariantCulture);
+			this.remoteJid = RemoteJid.ToLower(CultureInfo.InvariantCulture);
 			this.range = default;
 			this.token = Token;
 		}
@@ -44,7 +45,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 		/// <returns>If the resolver resolves the event.</returns>
 		public bool Resolves(NotificationEvent Event)
 		{
-			if (Event.Button != EventButton.Things || Event is not CanReadNotificationEvent CanReadNotificationEvent)
+			if (Event.Type != NotificationEventType.Things || Event is not CanReadNotificationEvent CanReadNotificationEvent)
 				return false;
 
 			if (CanReadNotificationEvent.BareJid != this.bareJid)
@@ -55,8 +56,8 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 				return this.range switch
 				{
 					RuleRange.All => true,
-					RuleRange.Domain => XmppClient.GetDomain(this.remoteJid) == XmppClient.GetDomain(CanReadNotificationEvent.RemoteJid).ToLower(),
-					RuleRange.Caller => this.remoteJid == CanReadNotificationEvent.RemoteJid.ToLower(),
+					RuleRange.Domain => string.Equals(XmppClient.GetDomain(this.remoteJid), XmppClient.GetDomain(CanReadNotificationEvent.RemoteJid), StringComparison.OrdinalIgnoreCase),
+					RuleRange.Caller => string.Equals(this.remoteJid, CanReadNotificationEvent.RemoteJid.ToLower(), StringComparison.OrdinalIgnoreCase),
 					_ => false,
 				};
 			}
@@ -72,7 +73,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 			}
 		}
 
-		private bool IsResolved(ProvisioningToken[] Tokens)
+		private bool IsResolved(ProvisioningToken[]? Tokens)
 		{
 			if (Tokens is null)
 				return false;

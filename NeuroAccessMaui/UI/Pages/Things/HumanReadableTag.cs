@@ -1,6 +1,7 @@
-﻿using Waher.Networking.XMPP.Contracts;
+﻿using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services;
+using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Provisioning;
-using Xamarin.CommunityToolkit.Helpers;
 
 namespace NeuroAccessMaui.UI.Pages.Things
 {
@@ -51,30 +52,30 @@ namespace NeuroAccessMaui.UI.Pages.Things
 			{
 				return this.name switch
 				{
-					Constants.XmppProperties.Altitude => LocalizationResourceManager.Current["Altitude"],
-					Constants.XmppProperties.Apartment => LocalizationResourceManager.Current["Apartment"],
-					Constants.XmppProperties.Area => LocalizationResourceManager.Current["Area"],
-					Constants.XmppProperties.Building => LocalizationResourceManager.Current["Building"],
-					Constants.XmppProperties.City => LocalizationResourceManager.Current["City"],
-					Constants.XmppProperties.Class => LocalizationResourceManager.Current["Class"],
-					Constants.XmppProperties.Country => LocalizationResourceManager.Current["Country"],
-					Constants.XmppProperties.Phone => LocalizationResourceManager.Current["Phone"],
-					Constants.XmppProperties.Key => LocalizationResourceManager.Current["Key"],
-					Constants.XmppProperties.Latitude => LocalizationResourceManager.Current["Latitude"],
-					Constants.XmppProperties.Longitude => LocalizationResourceManager.Current["Longitude"],
-					Constants.XmppProperties.Manufacturer => LocalizationResourceManager.Current["Manufacturer"],
-					Constants.XmppProperties.MeterLocation => LocalizationResourceManager.Current["MeterLocation"],
-					Constants.XmppProperties.MeterNumber => LocalizationResourceManager.Current["MeterNumber"],
-					Constants.XmppProperties.Model => LocalizationResourceManager.Current["Model"],
-					Constants.XmppProperties.Name => LocalizationResourceManager.Current["Name"],
-					Constants.XmppProperties.ProductInformation => LocalizationResourceManager.Current["ProductInformation"],
-					Constants.XmppProperties.Registry => LocalizationResourceManager.Current["Registry"],
-					Constants.XmppProperties.Region => LocalizationResourceManager.Current["Region"],
-					Constants.XmppProperties.Room => LocalizationResourceManager.Current["Room"],
-					Constants.XmppProperties.SerialNumber => LocalizationResourceManager.Current["SerialNumber"],
-					Constants.XmppProperties.StreetName => LocalizationResourceManager.Current["StreetName"],
-					Constants.XmppProperties.StreetNumber => LocalizationResourceManager.Current["StreetNumber"],
-					Constants.XmppProperties.Version => LocalizationResourceManager.Current["Version"],
+					Constants.XmppProperties.Altitude => ServiceRef.Localizer[nameof(AppResources.Altitude)],
+					Constants.XmppProperties.Apartment => ServiceRef.Localizer[nameof(AppResources.Apartment)],
+					Constants.XmppProperties.Area => ServiceRef.Localizer[nameof(AppResources.Area)],
+					Constants.XmppProperties.Building => ServiceRef.Localizer[nameof(AppResources.Building)],
+					Constants.XmppProperties.City => ServiceRef.Localizer[nameof(AppResources.City)],
+					Constants.XmppProperties.Class => ServiceRef.Localizer[nameof(AppResources.Class)],
+					Constants.XmppProperties.Country => ServiceRef.Localizer[nameof(AppResources.Country)],
+					Constants.XmppProperties.Phone => ServiceRef.Localizer[nameof(AppResources.Phone)],
+					Constants.XmppProperties.Key => ServiceRef.Localizer[nameof(AppResources.Key)],
+					Constants.XmppProperties.Latitude => ServiceRef.Localizer[nameof(AppResources.Latitude)],
+					Constants.XmppProperties.Longitude => ServiceRef.Localizer[nameof(AppResources.Longitude)],
+					Constants.XmppProperties.Manufacturer => ServiceRef.Localizer[nameof(AppResources.Manufacturer)],
+					Constants.XmppProperties.MeterLocation => ServiceRef.Localizer[nameof(AppResources.MeterLocation)],
+					Constants.XmppProperties.MeterNumber => ServiceRef.Localizer[nameof(AppResources.MeterNumber)],
+					Constants.XmppProperties.Model => ServiceRef.Localizer[nameof(AppResources.Model)],
+					Constants.XmppProperties.Name => ServiceRef.Localizer[nameof(AppResources.Name)],
+					Constants.XmppProperties.ProductInformation => ServiceRef.Localizer[nameof(AppResources.ProductInformation)],
+					Constants.XmppProperties.Registry => ServiceRef.Localizer[nameof(AppResources.Registry)],
+					Constants.XmppProperties.Region => ServiceRef.Localizer[nameof(AppResources.Region)],
+					Constants.XmppProperties.Room => ServiceRef.Localizer[nameof(AppResources.Room)],
+					Constants.XmppProperties.SerialNumber => ServiceRef.Localizer[nameof(AppResources.SerialNumber)],
+					Constants.XmppProperties.StreetName => ServiceRef.Localizer[nameof(AppResources.StreetName)],
+					Constants.XmppProperties.StreetNumber => ServiceRef.Localizer[nameof(AppResources.StreetNumber)],
+					Constants.XmppProperties.Version => ServiceRef.Localizer[nameof(AppResources.Version)],
 					_ => this.name,
 				};
 			}

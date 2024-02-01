@@ -1497,4 +1497,217 @@
   <data name="UnableToGetOptions" xml:space="preserve">
     <value>Не удается получить доступные варианты.</value>
   </data>
+  <data name="Altitude" xml:space="preserve">
+    <value>Высота</value>
+  </data>
+  <data name="Anonymous" xml:space="preserve">
+    <value>Анонимный</value>
+  </data>
+  <data name="Apartment" xml:space="preserve">
+    <value>Квартира</value>
+  </data>
+  <data name="Building" xml:space="preserve">
+    <value>Здание</value>
+  </data>
+  <data name="CallerOnly" xml:space="preserve">
+    <value>Только вызывающий абонент</value>
+  </data>
+  <data name="Class" xml:space="preserve">
+    <value>Класс</value>
+  </data>
+  <data name="Contacts" xml:space="preserve">
+    <value>Контакты</value>
+  </data>
+  <data name="ContactsDescription" xml:space="preserve">
+    <value>Ниже приведены все контакты в вашей контактной книге. Нажмите на любой из них, чтобы связаться с этим контактом.</value>
+  </data>
+  <data name="ContractProposal" xml:space="preserve">
+    <value>Предложение по контракту</value>
+  </data>
+  <data name="ContractUpdateReceived" xml:space="preserve">
+    <value>Контракт обновлен</value>
+  </data>
+  <data name="DeleteRulesQuestion" xml:space="preserve">
+    <value>Вы хотите удалить все правила подготовки для вещи? Таким образом, вещь будет снова запрашивать у вас все новые события, чтобы узнать, что она уполномочена делать.</value>
+  </data>
+  <data name="Device" xml:space="preserve">
+    <value>Устройство</value>
+  </data>
+  <data name="DisownThingQuestion" xml:space="preserve">
+    <value>Вы хотите отречься от этой вещи? Это удалит вещь из вашего списка вещей и позволит другому заявить о том, что устройство принадлежит ему.</value>
+  </data>
+  <data name="EntireDomain" xml:space="preserve">
+    <value>Все из {0}</value>
+  </data>
+  <data name="Errors" xml:space="preserve">
+    <value>Ошибки</value>
+  </data>
+  <data name="Everyone" xml:space="preserve">
+    <value>Каждый</value>
+  </data>
+  <data name="GeneralInformation" xml:space="preserve">
+    <value>Общая информация</value>
+  </data>
+  <data name="InvalidNeuroFeatureToken" xml:space="preserve">
+    <value>Недопустимый токен Neuro-Feature.</value>
+  </data>
+  <data name="Key" xml:space="preserve">
+    <value>Ключ</value>
+  </data>
+  <data name="Latitude" xml:space="preserve">
+    <value>Широта</value>
+  </data>
+  <data name="Longitude" xml:space="preserve">
+    <value>Долгота</value>
+  </data>
+  <data name="Manufacturer" xml:space="preserve">
+    <value>Изготовитель</value>
+  </data>
+  <data name="MeterLocation" xml:space="preserve">
+    <value>Местоположение счетчика</value>
+  </data>
+  <data name="MeterNumber" xml:space="preserve">
+    <value>Номер счетчика</value>
+  </data>
+  <data name="Model" xml:space="preserve">
+    <value>Модель</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="NoContactsFound" xml:space="preserve">
+    <value>Контакты не найдены.</value>
+  </data>
+  <data name="NotAvailable" xml:space="preserve">
+    <value>Нет в наличии</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>Телефон</value>
+  </data>
+  <data name="PickPhoto" xml:space="preserve">
+    <value>Выбрать фотографию</value>
+  </data>
+  <data name="ProductInformation" xml:space="preserve">
+    <value>Информация о продукте</value>
+  </data>
+  <data name="Question" xml:space="preserve">
+    <value>Вопрос</value>
+  </data>
+  <data name="Registry" xml:space="preserve">
+    <value>Регистратура</value>
+  </data>
+  <data name="RemoveSubscriptionFrom" xml:space="preserve">
+    <value>Вы хотите удалить подписку на присутствие из {0}?</value>
+  </data>
+  <data name="Room" xml:space="preserve">
+    <value>Комната</value>
+  </data>
+  <data name="RulesDeleted" xml:space="preserve">
+    <value>Правила подготовки были удалены.</value>
+  </data>
+  <data name="ScanQRCode" xml:space="preserve">
+    <value>Отсканировать QR-код</value>
+  </data>
+  <data name="SelectContactToPay" xml:space="preserve">
+    <value>Ниже приведены все контакты в вашей контактной книге. Выберите контактное лицо, которому вы хотите произвести оплату.</value>
+  </data>
+  <data name="SelectingAPhotoIsNotSupported" xml:space="preserve">
+    <value>Выбор фотографии не поддерживается на этом устройстве</value>
+  </data>
+  <data name="SensorDataAccepted" xml:space="preserve">
+    <value>Заявка принята.</value>
+  </data>
+  <data name="SensorDataCancelled" xml:space="preserve">
+    <value>Считывание данных с датчиков отменено.</value>
+  </data>
+  <data name="SensorDataDone" xml:space="preserve">
+    <value>Считывание данных датчика завершено.</value>
+  </data>
+  <data name="SensorDataFailure" xml:space="preserve">
+    <value>Сбой считывания данных датчика.</value>
+  </data>
+  <data name="SensorDataHeaderComputed" xml:space="preserve">
+    <value>Вычисляемый</value>
+  </data>
+  <data name="SensorDataHeaderHistorical" xml:space="preserve">
+    <value>Исторический</value>
+  </data>
+  <data name="SensorDataHeaderIdentity" xml:space="preserve">
+    <value>Тождество</value>
+  </data>
+  <data name="SensorDataHeaderMomentary" xml:space="preserve">
+    <value>Мгновенный</value>
+  </data>
+  <data name="SensorDataHeaderOther" xml:space="preserve">
+    <value>Другой</value>
+  </data>
+  <data name="SensorDataHeaderPeak" xml:space="preserve">
+    <value>Пик</value>
+  </data>
+  <data name="SensorDataHeaderStatus" xml:space="preserve">
+    <value>Статус</value>
+  </data>
+  <data name="SensorDataReceiving" xml:space="preserve">
+    <value>Получение данных с датчиков.</value>
+  </data>
+  <data name="SensorDataRequested" xml:space="preserve">
+    <value>Запрошены данные датчиков.</value>
+  </data>
+  <data name="SensorDataStarted" xml:space="preserve">
+    <value>Началось считывание данных с датчиков.</value>
+  </data>
+  <data name="SerialNumber" xml:space="preserve">
+    <value>Порядковый номер</value>
+  </data>
+  <data name="ServerDoesNotSupportFileUpload" xml:space="preserve">
+    <value>Похоже, что сервер не поддерживает загрузку файлов.</value>
+  </data>
+  <data name="Service" xml:space="preserve">
+    <value>Служба</value>
+  </data>
+  <data name="StreetName" xml:space="preserve">
+    <value>Название улицы</value>
+  </data>
+  <data name="StreetNumber" xml:space="preserve">
+    <value>Номер улицы</value>
+  </data>
+  <data name="TakePhoto" xml:space="preserve">
+    <value>Сделать фото</value>
+  </data>
+  <data name="TakePhotoToShare" xml:space="preserve">
+    <value>Сделайте фотографию, чтобы поделиться ею</value>
+  </data>
+  <data name="TakingAPhotoIsNotSupported" xml:space="preserve">
+    <value>Фотосъемка на этом устройстве не поддерживается</value>
+  </data>
+  <data name="TheSpecifiedCodeIsNotALegalIdentity" xml:space="preserve">
+    <value>Вам нужно отсканировать QR-код другого типа, который представляет собой юридическое лицо</value>
+  </data>
+  <data name="ThingDisowned" xml:space="preserve">
+    <value>От этого успешно открещиваются. Теперь на него может претендовать новый владелец.</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Время</value>
+  </data>
+  <data name="ToDevice" xml:space="preserve">
+    <value>На устройство, независимо от источника</value>
+  </data>
+  <data name="ToService" xml:space="preserve">
+    <value>К обслуживанию, независимо от источника</value>
+  </data>
+  <data name="ToUser" xml:space="preserve">
+    <value>Пользователю, независимо от источника</value>
+  </data>
+  <data name="UnableToClaimThing" xml:space="preserve">
+    <value>Невозможно забрать вещь</value>
+  </data>
+  <data name="UnableToRespond" xml:space="preserve">
+    <value>Не могу ответить на запрос.</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>Пользователь</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Версия</value>
+  </data>
 </root>

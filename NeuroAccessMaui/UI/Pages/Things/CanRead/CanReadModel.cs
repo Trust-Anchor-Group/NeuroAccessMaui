@@ -168,7 +168,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 		}
 
 		/// <inheritdoc/>
-		protected override Task XmppService_ConnectionStateChanged(object`? _, XmppState NewState)
+		protected override Task XmppService_ConnectionStateChanged(object? _, XmppState NewState)
 		{
 			MainThread.BeginInvokeOnMainThread(() =>
 			{

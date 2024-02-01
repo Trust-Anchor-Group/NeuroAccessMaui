@@ -1,4 +1,6 @@
-﻿using SkiaSharp;
+﻿using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services;
+using SkiaSharp;
 using System.ComponentModel;
 using System.Text;
 using Waher.Events;
@@ -12,7 +14,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor.Model
 	/// <summary>
 	/// Represents a set of historical field values.
 	/// </summary>
-	public class GraphModel : INotifyPropertyChanged
+	public class GraphModel : INotifyPropertyChanged, IDisposable
 	{
 		private readonly SortedDictionary<DateTime, Field> fieldValues = [];
 		private readonly SortedDictionary<DateTime, Field> minFieldValues = [];
@@ -177,7 +179,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor.Model
 
 				sb.AppendLine("G+=plot2dline(x,y,'Green',5);");
 				sb.Append("G.LabelX:='");
-				sb.Append(LocalizationResourceManager.Current["Time"]);
+				sb.Append(ServiceRef.Localizer[nameof(AppResources.Time)]);
 				sb.AppendLine("';");
 				sb.Append("G.LabelY:='");
 
@@ -219,7 +221,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor.Model
 					PixelInformation Pixels = Graph.CreatePixels(Settings);
 					byte[] Png = Pixels.EncodeAsPng();
 
-					this.references.UiSerializer.BeginInvokeOnMainThread(() =>
+					MainThread.BeginInvokeOnMainThread(() =>
 					{
 						bool OldWasNull = this.image is null;
 						this.image = ImageSource.FromStream(() => new MemoryStream(Png));
@@ -246,6 +248,24 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor.Model
 			{
 				Log.Critical(ex);
 			}
+		}
+
+		/// <summary>
+		/// <see cref="IDisposable.Dispose"/>
+		/// </summary>
+		public void Dispose()
+		{
+			this.Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		/// <summary>
+		/// <see cref="IDisposable.Dispose"/>
+		/// </summary>
+		protected virtual void Dispose(bool disposing)
+		{
+			this.timer?.Dispose();
+			this.timer = null;
 		}
 
 		/// <summary>

@@ -1,12 +1,9 @@
 ﻿using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
-using IdApp.Services.Navigation;
 using System.Text;
-using System.Threading.Tasks;
 using Waher.Networking.XMPP.Contracts;
-using Xamarin.CommunityToolkit.Helpers;
 
-namespace IdApp.Services.Notification.Contracts
+namespace NeuroAccessMaui.Services.Notification.Contracts
 {
 	/// <summary>
 	/// Notification event for contract petition responses.

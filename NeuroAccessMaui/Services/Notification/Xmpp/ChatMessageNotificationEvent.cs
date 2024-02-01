@@ -1,4 +1,6 @@
-﻿using NeuroAccessMaui.Services.Navigation;
+﻿using NeuroAccessMaui.Services.Contacts;
+using NeuroAccessMaui.Services.Navigation;
+using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using Waher.Networking.XMPP;
 
 namespace NeuroAccessMaui.Services.Notification.Xmpp

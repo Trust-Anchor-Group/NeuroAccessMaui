@@ -1497,4 +1497,217 @@
   <data name="UnableToGetOptions" xml:space="preserve">
     <value>Nu se pot obține opțiunile disponibile.</value>
   </data>
+  <data name="Altitude" xml:space="preserve">
+    <value>Altitudine</value>
+  </data>
+  <data name="Anonymous" xml:space="preserve">
+    <value>Anonim</value>
+  </data>
+  <data name="Apartment" xml:space="preserve">
+    <value>Apartament</value>
+  </data>
+  <data name="Building" xml:space="preserve">
+    <value>Clădire</value>
+  </data>
+  <data name="CallerOnly" xml:space="preserve">
+    <value>Doar apelant</value>
+  </data>
+  <data name="Class" xml:space="preserve">
+    <value>Clasă</value>
+  </data>
+  <data name="Contacts" xml:space="preserve">
+    <value>Contacte</value>
+  </data>
+  <data name="ContactsDescription" xml:space="preserve">
+    <value>Mai jos sunt toate contactele din agenda dvs. Faceți clic pe oricare pentru a interacționa cu acel contact.</value>
+  </data>
+  <data name="ContractProposal" xml:space="preserve">
+    <value>Propunere de contract</value>
+  </data>
+  <data name="ContractUpdateReceived" xml:space="preserve">
+    <value>Contract actualizat</value>
+  </data>
+  <data name="DeleteRulesQuestion" xml:space="preserve">
+    <value>Doriți să ștergeți toate regulile de asigurare a accesului pentru lucru? Procedând astfel, lucrul vă va cere din nou ca toate evenimentele noi să învețe ce este autorizat să facă.</value>
+  </data>
+  <data name="Device" xml:space="preserve">
+    <value>Dispozitiv</value>
+  </data>
+  <data name="DisownThingQuestion" xml:space="preserve">
+    <value>Vrei să renegi lucrul? Acest lucru va elimina lucrul din lista dvs. de lucruri și va permite altuia să revendice dispozitivul ca fiind al lor.</value>
+  </data>
+  <data name="EntireDomain" xml:space="preserve">
+    <value>Toată lumea din {0}</value>
+  </data>
+  <data name="Errors" xml:space="preserve">
+    <value>Erori</value>
+  </data>
+  <data name="Everyone" xml:space="preserve">
+    <value>Oricine</value>
+  </data>
+  <data name="GeneralInformation" xml:space="preserve">
+    <value>Informații generale</value>
+  </data>
+  <data name="InvalidNeuroFeatureToken" xml:space="preserve">
+    <value>Token Neuro-caracteristică nevalid.</value>
+  </data>
+  <data name="Key" xml:space="preserve">
+    <value>Cheie</value>
+  </data>
+  <data name="Latitude" xml:space="preserve">
+    <value>Latitudine</value>
+  </data>
+  <data name="Longitude" xml:space="preserve">
+    <value>Longitudine</value>
+  </data>
+  <data name="Manufacturer" xml:space="preserve">
+    <value>Producător</value>
+  </data>
+  <data name="MeterLocation" xml:space="preserve">
+    <value>Locația contorului</value>
+  </data>
+  <data name="MeterNumber" xml:space="preserve">
+    <value>Numărul contorului</value>
+  </data>
+  <data name="Model" xml:space="preserve">
+    <value>Model</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Nume</value>
+  </data>
+  <data name="NoContactsFound" xml:space="preserve">
+    <value>Nu s-au găsit contacte.</value>
+  </data>
+  <data name="NotAvailable" xml:space="preserve">
+    <value>Nu este disponibil</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>Telefon</value>
+  </data>
+  <data name="PickPhoto" xml:space="preserve">
+    <value>Alege fotografia</value>
+  </data>
+  <data name="ProductInformation" xml:space="preserve">
+    <value>Informații despre produs</value>
+  </data>
+  <data name="Question" xml:space="preserve">
+    <value>Întrebare</value>
+  </data>
+  <data name="Registry" xml:space="preserve">
+    <value>Registru</value>
+  </data>
+  <data name="RemoveSubscriptionFrom" xml:space="preserve">
+    <value>Doriți să eliminați abonamentul de prezență din {0}?</value>
+  </data>
+  <data name="Room" xml:space="preserve">
+    <value>Cameră</value>
+  </data>
+  <data name="RulesDeleted" xml:space="preserve">
+    <value>Regulile de asigurare a accesului au fost eliminate.</value>
+  </data>
+  <data name="ScanQRCode" xml:space="preserve">
+    <value>Scanați codul QR</value>
+  </data>
+  <data name="SelectContactToPay" xml:space="preserve">
+    <value>Mai jos sunt toate contactele din agenda dvs. Selectați persoana de contact căreia doriți să efectuați plata.</value>
+  </data>
+  <data name="SelectingAPhotoIsNotSupported" xml:space="preserve">
+    <value>Selectarea unei fotografii nu este acceptată pe acest dispozitiv</value>
+  </data>
+  <data name="SensorDataAccepted" xml:space="preserve">
+    <value>Cererea a fost acceptată.</value>
+  </data>
+  <data name="SensorDataCancelled" xml:space="preserve">
+    <value>Citirea datelor senzorilor a fost anulată.</value>
+  </data>
+  <data name="SensorDataDone" xml:space="preserve">
+    <value>Citirea datelor senzorilor s-a finalizat.</value>
+  </data>
+  <data name="SensorDataFailure" xml:space="preserve">
+    <value>Citirea datelor senzorului nu a reușit.</value>
+  </data>
+  <data name="SensorDataHeaderComputed" xml:space="preserve">
+    <value>Calculat</value>
+  </data>
+  <data name="SensorDataHeaderHistorical" xml:space="preserve">
+    <value>Istoric</value>
+  </data>
+  <data name="SensorDataHeaderIdentity" xml:space="preserve">
+    <value>Identitate</value>
+  </data>
+  <data name="SensorDataHeaderMomentary" xml:space="preserve">
+    <value>Momentan</value>
+  </data>
+  <data name="SensorDataHeaderOther" xml:space="preserve">
+    <value>Alt</value>
+  </data>
+  <data name="SensorDataHeaderPeak" xml:space="preserve">
+    <value>Vârf</value>
+  </data>
+  <data name="SensorDataHeaderStatus" xml:space="preserve">
+    <value>Stare</value>
+  </data>
+  <data name="SensorDataReceiving" xml:space="preserve">
+    <value>Recepționarea datelor senzorului.</value>
+  </data>
+  <data name="SensorDataRequested" xml:space="preserve">
+    <value>Datele senzorilor au fost solicitate.</value>
+  </data>
+  <data name="SensorDataStarted" xml:space="preserve">
+    <value>Citirea datelor senzorului a început.</value>
+  </data>
+  <data name="SerialNumber" xml:space="preserve">
+    <value>Număr de serie</value>
+  </data>
+  <data name="ServerDoesNotSupportFileUpload" xml:space="preserve">
+    <value>Serverul nu pare să accepte încărcarea fișierelor.</value>
+  </data>
+  <data name="Service" xml:space="preserve">
+    <value>Serviciu</value>
+  </data>
+  <data name="StreetName" xml:space="preserve">
+    <value>Numele străzii</value>
+  </data>
+  <data name="StreetNumber" xml:space="preserve">
+    <value>Numărul străzii</value>
+  </data>
+  <data name="TakePhoto" xml:space="preserve">
+    <value>Faceți o fotografie</value>
+  </data>
+  <data name="TakePhotoToShare" xml:space="preserve">
+    <value>Faceți o fotografie pentru a o partaja</value>
+  </data>
+  <data name="TakingAPhotoIsNotSupported" xml:space="preserve">
+    <value>Realizarea unei fotografii nu este acceptată pe acest dispozitiv</value>
+  </data>
+  <data name="TheSpecifiedCodeIsNotALegalIdentity" xml:space="preserve">
+    <value>Trebuie să scanați un alt tip de cod QR, unul care reprezintă o identitate legală</value>
+  </data>
+  <data name="ThingDisowned" xml:space="preserve">
+    <value>Acest lucru a fost renegat cu succes. Acum poate fi revendicat de un nou proprietar.</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Oră</value>
+  </data>
+  <data name="ToDevice" xml:space="preserve">
+    <value>Către dispozitiv, indiferent de sursă</value>
+  </data>
+  <data name="ToService" xml:space="preserve">
+    <value>Pentru service, indiferent de sursă</value>
+  </data>
+  <data name="ToUser" xml:space="preserve">
+    <value>Pentru utilizator, indiferent de sursă</value>
+  </data>
+  <data name="UnableToClaimThing" xml:space="preserve">
+    <value>Nu se poate pretinde ceva</value>
+  </data>
+  <data name="UnableToRespond" xml:space="preserve">
+    <value>Nu se poate răspunde la solicitare.</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>Utilizator</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Versiune</value>
+  </data>
 </root>

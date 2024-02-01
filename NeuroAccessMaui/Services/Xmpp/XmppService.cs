@@ -2,6 +2,7 @@
 using EDaler.Uris;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Notification.Things;
 using NeuroAccessMaui.Services.Notification.Xmpp;
@@ -1631,7 +1632,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				}
 				else
 				{
-					await ServiceRef.NotificationService.NewEvent(new ChatMessageNotificationEvent(e, RemoteBareJid)
+					await ServiceRef.NotificationService.NewEvent(new ChatMessageNotificationEvent(e)
 					{
 						ReplaceObjectId = ReplaceObjectId,
 						BareJid = RemoteBareJid,
@@ -3375,7 +3376,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
 		/// <param name="State">State object to pass on to callback method.</param>
 		public void CanControlResponseAll(string ProvisioningServiceJID, string JID, string RemoteJID, string Key, bool CanControl,
-			string[] ParameterNames, IThingReference Node, IqResultEventHandlerAsync Callback, object? State)
+			string[]? ParameterNames, IThingReference Node, IqResultEventHandlerAsync Callback, object? State)
 		{
 			this.ProvisioningClient.CanControlResponseAll(ProvisioningServiceJID, JID, RemoteJID, Key, CanControl, ParameterNames,
 				Node, Callback, State);
@@ -3394,7 +3395,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
 		/// <param name="State">State object to pass on to callback method.</param>
 		public void CanControlResponseCaller(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
-			bool CanControl, string[] ParameterNames, IThingReference Node, IqResultEventHandlerAsync Callback, object? State)
+			bool CanControl, string[]? ParameterNames, IThingReference Node, IqResultEventHandlerAsync Callback, object? State)
 		{
 			this.ProvisioningClient.CanControlResponseCaller(ProvisioningServiceJID, JID, RemoteJID, Key, CanControl,
 				ParameterNames, Node, Callback, State);
@@ -3413,7 +3414,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
 		/// <param name="State">State object to pass on to callback method.</param>
 		public void CanControlResponseDomain(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
-			bool CanControl, string[] ParameterNames, IThingReference Node, IqResultEventHandlerAsync Callback, object? State)
+			bool CanControl, string[]? ParameterNames, IThingReference Node, IqResultEventHandlerAsync Callback, object? State)
 		{
 			this.ProvisioningClient.CanControlResponseDomain(ProvisioningServiceJID, JID, RemoteJID, Key, CanControl,
 				ParameterNames, Node, Callback, State);
@@ -3433,7 +3434,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
 		/// <param name="State">State object to pass on to callback method.</param>
 		public void CanControlResponseDevice(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
-			bool CanControl, string[] ParameterNames, string Token, IThingReference Node, IqResultEventHandlerAsync Callback,
+			bool CanControl, string[]? ParameterNames, string Token, IThingReference Node, IqResultEventHandlerAsync Callback,
 			object? State)
 		{
 			this.ProvisioningClient.CanControlResponseDevice(ProvisioningServiceJID, JID, RemoteJID, Key, CanControl,
@@ -3454,7 +3455,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
 		/// <param name="State">State object to pass on to callback method.</param>
 		public void CanControlResponseService(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
-			bool CanControl, string[] ParameterNames, string Token, IThingReference Node, IqResultEventHandlerAsync Callback,
+			bool CanControl, string[]? ParameterNames, string Token, IThingReference Node, IqResultEventHandlerAsync Callback,
 			object? State)
 		{
 			this.ProvisioningClient.CanControlResponseService(ProvisioningServiceJID, JID, RemoteJID, Key, CanControl,
@@ -3475,7 +3476,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
 		/// <param name="State">State object to pass on to callback method.</param>
 		public void CanControlResponseUser(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
-			bool CanControl, string[] ParameterNames, string Token, IThingReference Node, IqResultEventHandlerAsync Callback,
+			bool CanControl, string[]? ParameterNames, string Token, IThingReference Node, IqResultEventHandlerAsync Callback,
 			object? State)
 		{
 			this.ProvisioningClient.CanControlResponseUser(ProvisioningServiceJID, JID, RemoteJID, Key, CanControl,
@@ -3496,7 +3497,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
 		/// <param name="State">State object to pass on to callback method.</param>
 		public void CanReadResponseAll(string ProvisioningServiceJID, string JID, string RemoteJID, string Key, bool CanRead,
-			FieldType FieldTypes, string[] FieldNames, IThingReference Node, IqResultEventHandlerAsync Callback, object? State)
+			FieldType FieldTypes, string[]? FieldNames, IThingReference Node, IqResultEventHandlerAsync Callback, object? State)
 		{
 			this.ProvisioningClient.CanReadResponseAll(ProvisioningServiceJID, JID, RemoteJID, Key, CanRead, FieldTypes, FieldNames,
 				Node, Callback, State);
@@ -3516,7 +3517,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
 		/// <param name="State">State object to pass on to callback method.</param>
 		public void CanReadResponseCaller(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
-			bool CanRead, FieldType FieldTypes, string[] FieldNames, IThingReference Node, IqResultEventHandlerAsync Callback, object? State)
+			bool CanRead, FieldType FieldTypes, string[]? FieldNames, IThingReference Node, IqResultEventHandlerAsync Callback, object? State)
 		{
 			this.ProvisioningClient.CanReadResponseCaller(ProvisioningServiceJID, JID, RemoteJID, Key, CanRead,
 				FieldTypes, FieldNames, Node, Callback, State);
@@ -3536,7 +3537,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
 		/// <param name="State">State object to pass on to callback method.</param>
 		public void CanReadResponseDomain(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
-			bool CanRead, FieldType FieldTypes, string[] FieldNames, IThingReference Node, IqResultEventHandlerAsync Callback, object? State)
+			bool CanRead, FieldType FieldTypes, string[]? FieldNames, IThingReference Node, IqResultEventHandlerAsync Callback, object? State)
 		{
 			this.ProvisioningClient.CanReadResponseDomain(ProvisioningServiceJID, JID, RemoteJID, Key, CanRead,
 				FieldTypes, FieldNames, Node, Callback, State);
@@ -3557,7 +3558,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
 		/// <param name="State">State object to pass on to callback method.</param>
 		public void CanReadResponseDevice(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
-			bool CanRead, FieldType FieldTypes, string[] FieldNames, string Token, IThingReference Node, IqResultEventHandlerAsync Callback,
+			bool CanRead, FieldType FieldTypes, string[]? FieldNames, string Token, IThingReference Node, IqResultEventHandlerAsync Callback,
 			object? State)
 		{
 			this.ProvisioningClient.CanReadResponseDevice(ProvisioningServiceJID, JID, RemoteJID, Key, CanRead,
@@ -3579,7 +3580,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
 		/// <param name="State">State object to pass on to callback method.</param>
 		public void CanReadResponseService(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
-			bool CanRead, FieldType FieldTypes, string[] FieldNames, string Token, IThingReference Node, IqResultEventHandlerAsync Callback,
+			bool CanRead, FieldType FieldTypes, string[]? FieldNames, string Token, IThingReference Node, IqResultEventHandlerAsync Callback,
 			object? State)
 		{
 			this.ProvisioningClient.CanReadResponseService(ProvisioningServiceJID, JID, RemoteJID, Key, CanRead,
@@ -3601,7 +3602,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
 		/// <param name="State">State object to pass on to callback method.</param>
 		public void CanReadResponseUser(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
-			bool CanRead, FieldType FieldTypes, string[] FieldNames, string Token, IThingReference Node, IqResultEventHandlerAsync Callback,
+			bool CanRead, FieldType FieldTypes, string[]? FieldNames, string Token, IThingReference Node, IqResultEventHandlerAsync Callback,
 			object? State)
 		{
 			this.ProvisioningClient.CanReadResponseUser(ProvisioningServiceJID, JID, RemoteJID, Key, CanRead,

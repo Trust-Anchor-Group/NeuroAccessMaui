@@ -9,21 +9,11 @@ namespace NeuroAccessMaui.UI.Pages.Things.IsFriend
 	/// <summary>
 	/// Resolves pending friendship requests
 	/// </summary>
-	public class FriendshipResolver : IEventResolver
+	public class FriendshipResolver(string BareJid, string RemoteJid, RuleRange Range) : IEventResolver
 	{
-		private readonly string bareJid;
-		private readonly string remoteJid;
-		private readonly RuleRange range;
-
-		/// <summary>
-		/// Resolves pending friendship requests
-		/// </summary>
-		public FriendshipResolver(string BareJid, string RemoteJid, RuleRange Range)
-		{
-			this.bareJid = BareJid.ToLower(CultureInfo.InvariantCulture);
-			this.remoteJid = RemoteJid.ToLower(CultureInfo.InvariantCulture);
-			this.range = Range;
-		}
+		private readonly string bareJid = BareJid.ToLower(CultureInfo.InvariantCulture);
+		private readonly string remoteJid = RemoteJid.ToLower(CultureInfo.InvariantCulture);
+		private readonly RuleRange range = Range;
 
 		/// <summary>
 		/// If the resolver resolves an event.

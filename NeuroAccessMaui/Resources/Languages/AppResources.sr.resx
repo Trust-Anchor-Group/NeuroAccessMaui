@@ -1497,4 +1497,217 @@
   <data name="UnableToGetOptions" xml:space="preserve">
     <value>Nije moguće dobiti dostupne opcije.</value>
   </data>
+  <data name="Altitude" xml:space="preserve">
+    <value>Visinu</value>
+  </data>
+  <data name="Anonymous" xml:space="preserve">
+    <value>Anonimni</value>
+  </data>
+  <data name="Apartment" xml:space="preserve">
+    <value>Stan</value>
+  </data>
+  <data name="Building" xml:space="preserve">
+    <value>Zgradu</value>
+  </data>
+  <data name="CallerOnly" xml:space="preserve">
+    <value>Samo pozivalac</value>
+  </data>
+  <data name="Class" xml:space="preserve">
+    <value>Klase</value>
+  </data>
+  <data name="Contacts" xml:space="preserve">
+    <value>Kontakti</value>
+  </data>
+  <data name="ContactsDescription" xml:space="preserve">
+    <value>Ispod su svi kontakti u vašoj knjizi kontakata. Kliknite na bilo koju od 10 osoba da biste imali interakciju sa tim kontaktom.</value>
+  </data>
+  <data name="ContractProposal" xml:space="preserve">
+    <value>Predlog ugovora</value>
+  </data>
+  <data name="ContractUpdateReceived" xml:space="preserve">
+    <value>Ugovor je ažuriran</value>
+  </data>
+  <data name="DeleteRulesQuestion" xml:space="preserve">
+    <value>Želite li da izbrišete sva pravila obezbeđivanja za tu stvar? Time će vas stvar ponovo zamoliti za sve nove događaje kako biste saznali šta je ovlašćeno da radi.</value>
+  </data>
+  <data name="Device" xml:space="preserve">
+    <value>Uređaj</value>
+  </data>
+  <data name="DisownThingQuestion" xml:space="preserve">
+    <value>Želite li da se odreknete te stvari? Ovo će ukloniti stvar sa vaše liste stvari, i dozvoliti drugome da prisvoji uređaj kao njihov.</value>
+  </data>
+  <data name="EntireDomain" xml:space="preserve">
+    <value>Svi iz {0}</value>
+  </data>
+  <data name="Errors" xml:space="preserve">
+    <value>Greške</value>
+  </data>
+  <data name="Everyone" xml:space="preserve">
+    <value>Svi</value>
+  </data>
+  <data name="GeneralInformation" xml:space="preserve">
+    <value>Opšte informacije</value>
+  </data>
+  <data name="InvalidNeuroFeatureToken" xml:space="preserve">
+    <value>Nevažeći oznaka neuro-funkcije.</value>
+  </data>
+  <data name="Key" xml:space="preserve">
+    <value>Ključ</value>
+  </data>
+  <data name="Latitude" xml:space="preserve">
+    <value>Geografska širina</value>
+  </data>
+  <data name="Longitude" xml:space="preserve">
+    <value>Geografska dužina</value>
+  </data>
+  <data name="Manufacturer" xml:space="preserve">
+    <value>Proizvođača</value>
+  </data>
+  <data name="MeterLocation" xml:space="preserve">
+    <value>Lokacija merača</value>
+  </data>
+  <data name="MeterNumber" xml:space="preserve">
+    <value>Broj merača</value>
+  </data>
+  <data name="Model" xml:space="preserve">
+    <value>Model</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Ime</value>
+  </data>
+  <data name="NoContactsFound" xml:space="preserve">
+    <value>Nisu pronađeni kontakti.</value>
+  </data>
+  <data name="NotAvailable" xml:space="preserve">
+    <value>Nije dostupno</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>Telefon</value>
+  </data>
+  <data name="PickPhoto" xml:space="preserve">
+    <value>Odaberi fotografiju</value>
+  </data>
+  <data name="ProductInformation" xml:space="preserve">
+    <value>Informacije o proizvodu</value>
+  </data>
+  <data name="Question" xml:space="preserve">
+    <value>Pitanje</value>
+  </data>
+  <data name="Registry" xml:space="preserve">
+    <value>Registratora</value>
+  </data>
+  <data name="RemoveSubscriptionFrom" xml:space="preserve">
+    <value>Želite li da uklonite pretplatu na prisustvo iz {0}?</value>
+  </data>
+  <data name="Room" xml:space="preserve">
+    <value>Soba</value>
+  </data>
+  <data name="RulesDeleted" xml:space="preserve">
+    <value>Pravila obezbeđivanja su izbrisana.</value>
+  </data>
+  <data name="ScanQRCode" xml:space="preserve">
+    <value>Skeniraj QR kôd</value>
+  </data>
+  <data name="SelectContactToPay" xml:space="preserve">
+    <value>Ispod su svi kontakti u vašoj knjizi kontakata. Izaberite kontakt kome želite da izvršite uplatu.</value>
+  </data>
+  <data name="SelectingAPhotoIsNotSupported" xml:space="preserve">
+    <value>Izbor fotografije nije podržan na ovom uređaju</value>
+  </data>
+  <data name="SensorDataAccepted" xml:space="preserve">
+    <value>Zahtev je prihvaćen.</value>
+  </data>
+  <data name="SensorDataCancelled" xml:space="preserve">
+    <value>Očitavanje podataka senzora je otkazano.</value>
+  </data>
+  <data name="SensorDataDone" xml:space="preserve">
+    <value>Očitavanje podataka senzora je dovršeno.</value>
+  </data>
+  <data name="SensorDataFailure" xml:space="preserve">
+    <value>Očitavanje podataka senzora nije uspelo.</value>
+  </data>
+  <data name="SensorDataHeaderComputed" xml:space="preserve">
+    <value>Izračunato</value>
+  </data>
+  <data name="SensorDataHeaderHistorical" xml:space="preserve">
+    <value>Istorijski</value>
+  </data>
+  <data name="SensorDataHeaderIdentity" xml:space="preserve">
+    <value>Identitet</value>
+  </data>
+  <data name="SensorDataHeaderMomentary" xml:space="preserve">
+    <value>Trenutna</value>
+  </data>
+  <data name="SensorDataHeaderOther" xml:space="preserve">
+    <value>Drugo __________</value>
+  </data>
+  <data name="SensorDataHeaderPeak" xml:space="preserve">
+    <value>Vrhunac</value>
+  </data>
+  <data name="SensorDataHeaderStatus" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="SensorDataReceiving" xml:space="preserve">
+    <value>Primanje podataka senzora.</value>
+  </data>
+  <data name="SensorDataRequested" xml:space="preserve">
+    <value>Podaci o senzorima su zatraženi.</value>
+  </data>
+  <data name="SensorDataStarted" xml:space="preserve">
+    <value>Očitavanje podataka senzora je počelo.</value>
+  </data>
+  <data name="SerialNumber" xml:space="preserve">
+    <value>Serijski broj</value>
+  </data>
+  <data name="ServerDoesNotSupportFileUpload" xml:space="preserve">
+    <value>Izgleda da server ne podržava otpremanje datoteka.</value>
+  </data>
+  <data name="Service" xml:space="preserve">
+    <value>Usluga</value>
+  </data>
+  <data name="StreetName" xml:space="preserve">
+    <value>Ime ulice</value>
+  </data>
+  <data name="StreetNumber" xml:space="preserve">
+    <value>Broj ulice</value>
+  </data>
+  <data name="TakePhoto" xml:space="preserve">
+    <value>Fotografisanje</value>
+  </data>
+  <data name="TakePhotoToShare" xml:space="preserve">
+    <value>Fotografisanje za deljenje</value>
+  </data>
+  <data name="TakingAPhotoIsNotSupported" xml:space="preserve">
+    <value>Fotografisanje nije podržano na ovom uređaju</value>
+  </data>
+  <data name="TheSpecifiedCodeIsNotALegalIdentity" xml:space="preserve">
+    <value>Potrebno je da skenirate drugi tip QR koda, onaj koji predstavlja pravni identitet</value>
+  </data>
+  <data name="ThingDisowned" xml:space="preserve">
+    <value>Ovo se uspešno odreklo. Sada ga može tražiti novi vlasnik.</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Vreme</value>
+  </data>
+  <data name="ToDevice" xml:space="preserve">
+    <value>Na uređaj, bez obzira na izvor</value>
+  </data>
+  <data name="ToService" xml:space="preserve">
+    <value>Za servis, bez obzira na izvor</value>
+  </data>
+  <data name="ToUser" xml:space="preserve">
+    <value>Korisniku, bez obzira na izvor</value>
+  </data>
+  <data name="UnableToClaimThing" xml:space="preserve">
+    <value>Nije moguće tražiti stvar</value>
+  </data>
+  <data name="UnableToRespond" xml:space="preserve">
+    <value>Nije moguće odgovoriti na zahtev.</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>Korisnik</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Verzija</value>
+  </data>
 </root>
