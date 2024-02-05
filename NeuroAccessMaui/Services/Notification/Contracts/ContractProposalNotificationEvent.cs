@@ -34,12 +34,12 @@ namespace NeuroAccessMaui.Services.Notification.Contracts
 		/// <summary>
 		/// Role
 		/// </summary>
-		public string Role { get; set; }
+		public string? Role { get; set; }
 
 		/// <summary>
 		/// Message
 		/// </summary>
-		public string Message { get; set; }
+		public string? Message { get; set; }
 
 		/// <summary>
 		/// Opens the event.

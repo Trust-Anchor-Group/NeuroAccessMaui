@@ -23,7 +23,7 @@
 			this.InitializeComponent();
 		}
 
-		private void OnEditorControlUnfocused(object Sender, FocusEventArgs e)
+		private void OnEditorControlUnfocused(object? Sender, FocusEventArgs e)
 		{
 			this.CollectionView.SelectedItem = null;
 		}

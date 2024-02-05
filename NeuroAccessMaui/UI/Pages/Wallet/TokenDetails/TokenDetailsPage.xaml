@@ -1,0 +1,306 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<views:ContentBasePage xmlns="http://xamarin.com/schemas/2014/forms"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                       xmlns:resx="clr-namespace:IdApp.Resx;assembly=IdApp"
+                       xmlns:views="clr-namespace:IdApp.Pages;assembly=IdApp"
+                       xmlns:model="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.TokenDetails;assembly=IdApp"
+                       xmlns:converters="clr-namespace:IdApp.Converters;assembly=IdApp"
+                       x:DataType="model:TokenDetailsViewModel"
+                       x:Class="NeuroAccessMaui.UI.Pages.Wallet.TokenDetails.TokenDetailsPage"
+                       Style="{StaticResource BaseBackgroundPage}"
+                       Title="{x:Static resx:AppResources.TokenDetails}">
+    <Grid>
+        <ScrollView x:Name="ScrollView">
+            <StackLayout Margin="{StaticResource DefaultMargin}">
+                <Label Text="{x:Static resx:AppResources.TokenDetails}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
+                <Label Text="{x:Static resx:AppResources.TokenDetailsDescription}" Style="{StaticResource InfoText}" VerticalOptions="Start"/>
+				<Label Text="{x:Static resx:AppResources.Description}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
+				<ContentView Content="{Binding Description}" VerticalOptions="StartAndExpand" Margin="10,0,10,10"/>
+				<Grid x:Name="GeneralInfoGrid">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+					</Grid.RowDefinitions>
+
+					<Label Grid.Column="0" Grid.Row="0" Text="{x:Static resx:AppResources.Name}" Style="{StaticResource KeyLabel}"/>
+                    <Label Grid.Column="1" Grid.Row="0" Text="{Binding FriendlyName}" Style="{StaticResource ValueLabel}"/>
+
+					<Label Grid.Column="0" Grid.Row="1" Text="{x:Static resx:AppResources.Category}" Style="{StaticResource KeyLabel}"/>
+					<Label Grid.Column="1" Grid.Row="1" Text="{Binding Category}" Style="{StaticResource ValueLabel}"/>
+
+					<Label Grid.Column="0" Grid.Row="2" Text="{x:Static resx:AppResources.TokenId}" Style="{StaticResource KeyLabel}"/>
+                    <Label Grid.Column="1" Grid.Row="2" Text="{Binding TokenId}" Style="{StaticResource ClickableValueLabel}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding CopyToClipboardCommand}" CommandParameter="{Binding TokenId}" />
+                        </Label.GestureRecognizers>
+                    </Label>
+
+					<Label Grid.Column="0" Grid.Row="3" Text="{x:Static resx:AppResources.ShortId}" Style="{StaticResource KeyLabel}"
+						   IsVisible="{Binding HasShortTokenId}"/>
+					<Label Grid.Column="1" Grid.Row="3" Text="{Binding ShortTokenId}" Style="{StaticResource ClickableValueLabel}"
+						   IsVisible="{Binding HasShortTokenId}">
+						<Label.GestureRecognizers>
+							<TapGestureRecognizer Command="{Binding CopyToClipboardCommand}" CommandParameter="{Binding ShortTokenId}" />
+						</Label.GestureRecognizers>
+					</Label>
+
+					<Label Grid.Column="0" Grid.Row="4" Text="{x:Static resx:AppResources.TokenIdMethod}" Style="{StaticResource KeyLabel}"/>
+                    <Label Grid.Column="1" Grid.Row="4" Text="{Binding TokenIdMethod}" Style="{StaticResource ValueLabel}"/>
+
+                    <Label Grid.Column="0" Grid.Row="5" Text="{x:Static resx:AppResources.TokenVisibility}" Style="{StaticResource KeyLabel}"/>
+                    <Label Grid.Column="1" Grid.Row="5" Text="{Binding Visibility}" Style="{StaticResource ValueLabel}"/>
+
+                    <Label Grid.Column="0" Grid.Row="6" Text="{x:Static resx:AppResources.Ordinal}" Style="{StaticResource KeyLabel}"/>
+                    <Label Grid.Column="1" Grid.Row="6" Style="{StaticResource ValueLabel}">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="{Binding Ordinal}"/>
+                                <Span Text=" of "/>
+                                <Span Text="{Binding BatchSize}"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+
+                    <Label Grid.Column="0" Grid.Row="7" Text="{x:Static resx:AppResources.Valuation}" Style="{StaticResource KeyLabel}"/>
+                    <Label Grid.Column="1" Grid.Row="7" Style="{StaticResource ValueLabel}">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="{Binding Value}"/>
+                                <Span Text=" "/>
+                                <Span Text="{Binding Currency}"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+
+                    <Label Grid.Column="0" Grid.Row="8" Text="{x:Static resx:AppResources.Created}" Style="{StaticResource KeyLabel}"/>
+                    <Label Grid.Column="1" Grid.Row="8" Text="{Binding Created, Converter={converters:DateTimeToString}}" Style="{StaticResource ValueLabel}"/>
+
+                    <Label Grid.Column="0" Grid.Row="9" Text="{x:Static resx:AppResources.Updated}" Style="{StaticResource KeyLabel}"/>
+                    <Label Grid.Column="1" Grid.Row="9" Text="{Binding Updated, Converter={converters:DateTimeToString}}" Style="{StaticResource ValueLabel}"/>
+
+                    <Label Grid.Column="0" Grid.Row="10" Text="{x:Static resx:AppResources.Expires}" Style="{StaticResource KeyLabel}"/>
+                    <Label Grid.Column="1" Grid.Row="10" Text="{Binding Expires, Converter={converters:DateTimeToString}}" Style="{StaticResource ValueLabel}"/>
+                </Grid>
+
+                <Image Source="{Binding Path=GlyphImage}" IsVisible="{Binding Path=HasGlyphImage}"
+                       WidthRequest="{Binding Path=GlyphWidth, Mode=OneTime}" HeightRequest="{Binding Path=GlyphHeight, Mode=OneTime}" 
+                       VerticalOptions="Start" HorizontalOptions="Center" Margin="{StaticResource DefaultTopOnlyMargin}" />
+
+                <Image Source="{Binding Path=QrCode}" IsVisible="{Binding Path=HasQrCode}" 
+                       WidthRequest="{Binding Path=QrCodeWidth, Mode=OneTime}" HeightRequest="{Binding Path=QrCodeHeight, Mode=OneTime}" 
+                       VerticalOptions="StartAndExpand" HorizontalOptions="CenterAndExpand" Margin="{StaticResource DefaultTopOnlyMargin}" />
+
+				<Label Text="{x:Static resx:AppResources.Reports}" Style="{StaticResource Heading}"
+					   Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"
+					   IsVisible="{Binding HasStateMachine}"/>
+
+				<Button Text="{x:Static resx:AppResources.Present}" Margin="{StaticResource DefaultBottomOnlyMargin}"
+                        Command="{Binding Path=PresentReportCommand}" IsEnabled="{Binding Path=IsBusy, Converter={converters:LogicalNot}}"
+						IsVisible="{Binding HasStateMachine}"/>
+
+				<Button Text="{x:Static resx:AppResources.History}" Margin="{StaticResource DefaultBottomOnlyMargin}"
+                        Command="{Binding Path=HistoryReportCommand}" IsEnabled="{Binding Path=IsBusy, Converter={converters:LogicalNot}}"
+						IsVisible="{Binding HasStateMachine}"/>
+
+				<Button Text="{x:Static resx:AppResources.Variables}" Margin="{StaticResource DefaultBottomOnlyMargin}"
+                        Command="{Binding Path=VariablesReportCommand}" IsEnabled="{Binding Path=IsBusy, Converter={converters:LogicalNot}}"
+						IsVisible="{Binding HasStateMachine}"/>
+
+				<Button Text="{x:Static resx:AppResources.States}" Margin="{StaticResource DefaultBottomOnlyMargin}"
+                        Command="{Binding Path=StatesReportCommand}" IsEnabled="{Binding Path=IsBusy, Converter={converters:LogicalNot}}"
+						IsVisible="{Binding HasStateMachine}"/>
+
+				<Button Text="{x:Static resx:AppResources.Profiling}" Margin="{StaticResource DefaultBottomOnlyMargin}"
+                        Command="{Binding Path=ProfilingReportCommand}" IsEnabled="{Binding Path=IsBusy, Converter={converters:LogicalNot}}"
+						IsVisible="{Binding HasStateMachine}"/>
+
+				<Label Text="{x:Static resx:AppResources.Parts}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
+                <Label Text="{x:Static resx:AppResources.TokenPartsInfoText}" Style="{StaticResource InfoText}" VerticalOptions="Start"/>
+
+                <Grid x:Name="PartsGrid">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Column="0" Grid.Row="0" Text="{x:Static resx:AppResources.Owner}" Style="{StaticResource KeyLabel}"/>
+                    <Label Grid.Column="1" Grid.Row="0" Text="{Binding OwnerFriendlyName}" Style="{StaticResource ClickableValueLabel}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ViewIdCommand}" CommandParameter="{Binding Owner}" />
+                        </Label.GestureRecognizers>
+                    </Label>
+
+                    <Label Grid.Column="0" Grid.Row="1" Text="{x:Static resx:AppResources.OwnerJid}" Style="{StaticResource KeyLabel}"/>
+                    <Label Grid.Column="1" Grid.Row="1" Text="{Binding OwnerJid}" Style="{StaticResource ClickableValueLabel}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding OpenChatCommand}" CommandParameter="Owner" />
+                        </Label.GestureRecognizers>
+                    </Label>
+
+                    <Label Grid.Column="0" Grid.Row="2" Text="{x:Static resx:AppResources.OwnershipContract}" Style="{StaticResource KeyLabel}"/>
+                    <Label Grid.Column="1" Grid.Row="2" Text="{Binding OwnershipContract}" Style="{StaticResource ClickableValueLabel}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ViewContractCommand}" CommandParameter="{Binding OwnershipContract}" />
+                        </Label.GestureRecognizers>
+                    </Label>
+
+                    <Label Grid.Column="0" Grid.Row="3" Text="{x:Static resx:AppResources.Creator}" Style="{StaticResource KeyLabel}"/>
+                    <Label Grid.Column="1" Grid.Row="3" Text="{Binding CreatorFriendlyName}" Style="{StaticResource ClickableValueLabel}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ViewIdCommand}" CommandParameter="{Binding Creator}" />
+                        </Label.GestureRecognizers>
+                    </Label>
+
+                    <Label Grid.Column="0" Grid.Row="4" Text="{x:Static resx:AppResources.CreatorJid}" Style="{StaticResource KeyLabel}"/>
+                    <Label Grid.Column="1" Grid.Row="4" Text="{Binding CreatorJid}" Style="{StaticResource ClickableValueLabel}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding OpenChatCommand}" CommandParameter="Creator" />
+                        </Label.GestureRecognizers>
+                    </Label>
+
+                    <Label Grid.Column="0" Grid.Row="5" Text="{x:Static resx:AppResources.CreationContract}" Style="{StaticResource KeyLabel}"/>
+                    <Label Grid.Column="1" Grid.Row="5" Text="{Binding CreationContract}" Style="{StaticResource ClickableValueLabel}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ViewContractCommand}" CommandParameter="{Binding CreationContract}" />
+                        </Label.GestureRecognizers>
+                    </Label>
+
+                    <Label Grid.Column="0" Grid.Row="6" Text="{x:Static resx:AppResources.TrustProvider}" Style="{StaticResource KeyLabel}"/>
+                    <Label Grid.Column="1" Grid.Row="6" Text="{Binding TrustProviderFriendlyName}" Style="{StaticResource ClickableValueLabel}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ViewIdCommand}" CommandParameter="{Binding TrustProvider}" />
+                        </Label.GestureRecognizers>
+                    </Label>
+
+                    <Label Grid.Column="0" Grid.Row="7" Text="{x:Static resx:AppResources.TrustProviderJid}" Style="{StaticResource KeyLabel}"/>
+                    <Label Grid.Column="1" Grid.Row="7" Text="{Binding TrustProviderJid}" Style="{StaticResource ClickableValueLabel}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding OpenChatCommand}" CommandParameter="TrustProvider" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                </Grid>
+
+                <Label Text="{x:Static resx:AppResources.Privileges}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
+                <Label Text="{x:Static resx:AppResources.TokenPrivilegesInfoText}" Style="{StaticResource InfoText}" VerticalOptions="Start"/>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="4*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Column="0" Grid.Row="0" Text="{x:Static resx:AppResources.CreatorCanDestroy}" Style="{StaticResource KeyLabel}"/>
+                    <Label Grid.Column="1" Grid.Row="0" Text="{Binding CreatorCanDestroy, Converter={converters:BooleanToYesNo}}" Style="{StaticResource ValueLabel}" HorizontalOptions="Center"/>
+
+                    <Label Grid.Column="0" Grid.Row="1" Text="{x:Static resx:AppResources.OwnerCanDestroyBatch}" Style="{StaticResource KeyLabel}"/>
+                    <Label Grid.Column="1" Grid.Row="1" Text="{Binding OwnerCanDestroyBatch, Converter={converters:BooleanToYesNo}}" Style="{StaticResource ValueLabel}" HorizontalOptions="Center"/>
+
+                    <Label Grid.Column="0" Grid.Row="2" Text="{x:Static resx:AppResources.OwnerCanDestroyIndividual}" Style="{StaticResource KeyLabel}"/>
+                    <Label Grid.Column="1" Grid.Row="2" Text="{Binding OwnerCanDestroyIndividual, Converter={converters:BooleanToYesNo}}" Style="{StaticResource ValueLabel}" HorizontalOptions="Center"/>
+
+                    <Label Grid.Column="0" Grid.Row="3" Text="{x:Static resx:AppResources.CertifierCanDestroy}" Style="{StaticResource KeyLabel}"/>
+                    <Label Grid.Column="1" Grid.Row="3" Text="{Binding CertifierCanDestroy, Converter={converters:BooleanToYesNo}}" Style="{StaticResource ValueLabel}" HorizontalOptions="Center"/>
+                </Grid>
+
+                <Label Text="{x:Static resx:AppResources.MachineReadableText}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
+                <Label Text="{x:Static resx:AppResources.MachineReadableInfoTextToken}" Style="{StaticResource InfoText}" VerticalOptions="Start"/>
+
+                <Grid Margin="{StaticResource DefaultBottomOnlyMargin}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Column="0" Grid.Row="0" Text="{x:Static resx:AppResources.Signature}" Style="{StaticResource KeyLabel}"/>
+                    <Label Grid.Column="1" Grid.Row="0" Text="{Binding Signature, Converter={converters:BinaryToBase64}}" Style="{StaticResource ClickableValueLabel}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding CopyToClipboardCommand}" CommandParameter="{Binding Signature, Converter={converters:BinaryToBase64}}" />
+                        </Label.GestureRecognizers>
+                    </Label>
+
+                    <Label Grid.Column="0" Grid.Row="1" Text="{x:Static resx:AppResources.Timestamp}" Style="{StaticResource KeyLabel}"/>
+                    <Label Grid.Column="1" Grid.Row="1" Text="{Binding SignatureTimestamp, Converter={converters:DateTimeToString}}" Style="{StaticResource ValueLabel}"/>
+
+                    <Label Grid.Column="0" Grid.Row="2" Text="{x:Static resx:AppResources.DefinitionNamespace}" Style="{StaticResource KeyLabel}"/>
+                    <Label Grid.Column="1" Grid.Row="2" Text="{Binding DefinitionNamespace}" Style="{StaticResource ClickableValueLabel}" HorizontalOptions="Center">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding OpenLinkCommand}" CommandParameter="{Binding DefinitionNamespace}" />
+                        </Label.GestureRecognizers>
+                    </Label>
+
+                    <Label Grid.Column="0" Grid.Row="3" Text="{x:Static resx:AppResources.DefinitionSchemaDigest}" Style="{StaticResource KeyLabel}"/>
+                    <Label Grid.Column="1" Grid.Row="3" Text="{Binding DefinitionSchemaDigest, Converter={converters:BinaryToBase64}}" Style="{StaticResource ClickableValueLabel}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding OpenLinkCommand}" CommandParameter="{Binding DefinitionSchemaUrl}" />
+                        </Label.GestureRecognizers>
+                    </Label>
+
+                    <Label Grid.Column="0" Grid.Row="4" Text="{x:Static resx:AppResources.HashFunction}" Style="{StaticResource KeyLabel}"/>
+                    <Label Grid.Column="1" Grid.Row="4" Text="{Binding DefinitionSchemaHashFunction}" Style="{StaticResource ValueLabel}"/>
+                </Grid>
+
+                <Button Text="{x:Static resx:AppResources.ShowM2MInfo}" Margin="{StaticResource DefaultBottomOnlyMargin}"
+                        Command="{Binding Path=ShowM2mInfoCommand}" IsEnabled="{Binding Path=IsBusy, Converter={converters:LogicalNot}}" />
+
+				<Label Text="{x:Static resx:AppResources.Actions}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
+
+				<Button Text="{x:Static resx:AppResources.SendToContact}" Margin="{StaticResource DefaultBottomOnlyMargin}"
+                        Command="{Binding Path=SendToContactCommand}" IsEnabled="{Binding Path=IsBusy, Converter={converters:LogicalNot}}" />
+
+                <Button Text="{x:Static resx:AppResources.Share}" Margin="{StaticResource DefaultBottomOnlyMargin}"
+                        Command="{Binding Path=ShareCommand}" IsEnabled="{Binding Path=IsBusy, Converter={converters:LogicalNot}}" />
+
+				<Button Text="{x:Static resx:AppResources.PublishMarketplace}" Margin="{StaticResource DefaultBottomOnlyMargin}"
+                        Command="{Binding Path=PublishMarketplaceCommand}" IsEnabled="{Binding Path=IsBusy, Converter={converters:LogicalNot}}"
+                        IsVisible="{Binding IsMyToken}"/>
+
+				<Button Text="{x:Static resx:AppResources.OfferToSell}" Margin="{StaticResource DefaultBottomOnlyMargin}"
+                        Command="{Binding Path=OfferToSellCommand}" IsEnabled="{Binding Path=IsBusy, Converter={converters:LogicalNot}}"
+                        IsVisible="{Binding IsMyToken}"/>
+
+                <Button Text="{x:Static resx:AppResources.OfferToBuy}" Margin="{StaticResource DefaultBottomOnlyMargin}"
+                        Command="{Binding Path=OfferToBuyCommand}" IsEnabled="{Binding Path=IsBusy, Converter={converters:LogicalNot}}"
+                        IsVisible="{Binding IsMyToken, Converter={converters:LogicalNot}}"/>
+
+                <Button Text="{x:Static resx:AppResources.ViewEvents}" Margin="{StaticResource DefaultBottomOnlyMargin}"
+                        Command="{Binding Path=ViewEventsCommand}" IsEnabled="{Binding Path=IsBusy, Converter={converters:LogicalNot}}"/>
+            </StackLayout>
+        </ScrollView>
+    </Grid>
+</views:ContentBasePage>

@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<views:ContentBasePage xmlns="http://xamarin.com/schemas/2014/forms"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                       xmlns:resx="clr-namespace:IdApp.Resx;assembly=IdApp"
+                       xmlns:views="clr-namespace:IdApp.Pages;assembly=IdApp"
+                       xmlns:model="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler;assembly=IdApp"
+                       x:DataType="model:BuyEDalerViewModel"
+                       x:Class="NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler.BuyEDalerPage"
+                       Style="{StaticResource BaseBackgroundPage}"
+                       Title="{x:Static resx:AppResources.BuyEDaler}">
+    <Grid>
+        <ScrollView x:Name="ScrollView">
+            <StackLayout Margin="{StaticResource DefaultMargin}"
+                         BackgroundColor="{AppThemeBinding Light={StaticResource PageBackgroundColorLightTheme}, Dark={StaticResource PageBackgroundColorDarkTheme}}">
+                <Label Text="{x:Static resx:AppResources.BuyEDaler}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
+                <Label Text="{x:Static resx:AppResources.BuyEDalerDescription}" Style="{StaticResource InfoText}" VerticalOptions="Start"/>
+                <Label Text="{x:Static resx:AppResources.Amount}"/>
+				<Grid ColumnDefinitions="*,auto" RowDefinitions="auto" Padding="0" Margin="0" ColumnSpacing="0" RowSpacing="0">
+					<Entry Grid.Column="0" Grid.Row="0" Text="{Binding Path=AmountText}" BackgroundColor="{Binding Path=AmountColor}" Placeholder="{Binding Path=Currency}"/>
+					<Button Grid.Column="1" Grid.Row="0" CornerRadius="8" WidthRequest="40" HeightRequest="40"
+							Text="{x:Static resx:FontAwesome.Calculator}" TextColor="{StaticResource TextColorLightTheme}"
+							FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
+							Command="{Binding OpenCalculatorCommand}" CommandParameter="AmountText" />
+				</Grid>
+                <Button Text="{x:Static resx:AppResources.Buy}" Command="{Binding Path=BuyCommand}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
+            </StackLayout>
+        </ScrollView>
+    </Grid>
+</views:ContentBasePage>

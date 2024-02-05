@@ -233,17 +233,6 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 			}
 		}
 
-		/// <inheritdoc/>
-		protected override Task XmppService_ConnectionStateChanged(object? Sender, XmppState NewState)
-		{
-			MainThread.BeginInvokeOnMainThread(() =>
-			{
-				this.SetConnectionStateAndText(NewState);
-			});
-
-			return Task.CompletedTask;
-		}
-
 		private void TagProfile_Changed(object? Sender, PropertyChangedEventArgs e)
 		{
 			MainThread.BeginInvokeOnMainThread(async () => await this.CalcThingIsOnline());

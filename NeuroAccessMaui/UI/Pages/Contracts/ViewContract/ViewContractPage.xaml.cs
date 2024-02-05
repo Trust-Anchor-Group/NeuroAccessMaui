@@ -28,7 +28,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			return base.OnDisappearingAsync();
 		}
 
-		private void Image_Tapped(object Sender, EventArgs e)
+		private void Image_Tapped(object? Sender, EventArgs e)
 		{
 			if (this.ViewModel is ViewContractViewModel ViewContractViewModel)
 			{

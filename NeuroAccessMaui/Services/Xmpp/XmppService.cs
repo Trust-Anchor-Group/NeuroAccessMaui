@@ -1172,7 +1172,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		#region Presence Subscriptions
 
-		private async Task XmppClient_OnPresenceSubscribe(object Sender, PresenceEventArgs e)
+		private async Task XmppClient_OnPresenceSubscribe(object? Sender, PresenceEventArgs e)
 		{
 			LegalIdentity? RemoteIdentity = null;
 			string FriendlyName = string.IsNullOrWhiteSpace(e.NickName) ? e.FromBareJID : e.NickName;
@@ -1345,7 +1345,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			}
 		}
 
-		private async Task XmppClient_OnPresenceUnsubscribed(object Sender, PresenceEventArgs e)
+		private async Task XmppClient_OnPresenceUnsubscribed(object? Sender, PresenceEventArgs e)
 		{
 			ContactInfo ContactInfo = await ContactInfo.FindByBareJid(e.FromBareJID);
 			if ((ContactInfo is not null) && ContactInfo.AllowSubscriptionFrom.HasValue && ContactInfo.AllowSubscriptionFrom.Value)
@@ -1412,7 +1412,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			// TODO: End-to-End encryption
 		}
 
-		private Task XmppClient_OnNormalMessage(object Sender, MessageEventArgs e)
+		private Task XmppClient_OnNormalMessage(object? Sender, MessageEventArgs e)
 		{
 			Log.Warning("Unhandled message received.", e.To, e.From,
 				new KeyValuePair<string, object?>("Stanza", e.Message.OuterXml));
@@ -1420,7 +1420,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			return Task.CompletedTask;
 		}
 
-		private async Task XmppClient_OnChatMessage(object Sender, MessageEventArgs e)
+		private async Task XmppClient_OnChatMessage(object? Sender, MessageEventArgs e)
 		{
 			string RemoteBareJid = e.FromBareJID;
 
@@ -1692,7 +1692,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		#region Presence
 
-		private async Task XmppClient_OnPresence(object Sender, PresenceEventArgs e)
+		private async Task XmppClient_OnPresence(object? Sender, PresenceEventArgs e)
 		{
 			try
 			{
@@ -1785,7 +1785,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			this.XmppClient.RemoveRosterItem(BareJid);
 		}
 
-		private async Task XmppClient_OnRosterItemAdded(object Sender, RosterItem Item)
+		private async Task XmppClient_OnRosterItemAdded(object? Sender, RosterItem Item)
 		{
 			try
 			{
@@ -1804,7 +1804,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// </summary>
 		public event RosterItemEventHandlerAsync? OnRosterItemAdded;
 
-		private async Task XmppClient_OnRosterItemUpdated(object Sender, RosterItem Item)
+		private async Task XmppClient_OnRosterItemUpdated(object? Sender, RosterItem Item)
 		{
 			try
 			{
@@ -1823,7 +1823,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// </summary>
 		public event RosterItemEventHandlerAsync? OnRosterItemUpdated;
 
-		private async Task XmppClient_OnRosterItemRemoved(object Sender, RosterItem Item)
+		private async Task XmppClient_OnRosterItemRemoved(object? Sender, RosterItem Item)
 		{
 			try
 			{
@@ -2951,7 +2951,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// </summary>
 		public event ContractPetitionEventHandler? PetitionForContractReceived;
 
-		private async Task ContractsClient_PetitionForContractReceived(object Sender, ContractPetitionEventArgs e)
+		private async Task ContractsClient_PetitionForContractReceived(object? Sender, ContractPetitionEventArgs e)
 		{
 			try
 			{
@@ -2969,7 +2969,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// </summary>
 		public event ContractPetitionResponseEventHandler? PetitionedContractResponseReceived;
 
-		private async Task ContractsClient_PetitionedContractResponseReceived(object Sender, ContractPetitionResponseEventArgs e)
+		private async Task ContractsClient_PetitionedContractResponseReceived(object? Sender, ContractPetitionResponseEventArgs e)
 		{
 			try
 			{
@@ -3026,7 +3026,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// </summary>
 		public event ContractProposalEventHandler? ContractProposalReceived;
 
-		private async Task ContractsClient_ContractProposalReceived(object Sender, ContractProposalEventArgs e)
+		private async Task ContractsClient_ContractProposalReceived(object? Sender, ContractProposalEventArgs e)
 		{
 			try
 			{
@@ -3044,7 +3044,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// </summary>
 		public event ContractReferenceEventHandler? ContractUpdated;
 
-		private async Task ContractsClient_ContractUpdated(object Sender, ContractReferenceEventArgs e)
+		private async Task ContractsClient_ContractUpdated(object? Sender, ContractReferenceEventArgs e)
 		{
 			await this.ContractUpdatedOrSigned(e);
 
@@ -3073,7 +3073,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// </summary>
 		public event ContractSignedEventHandler? ContractSigned;
 
-		private async Task ContractsClient_ContractSigned(object Sender, ContractSignedEventArgs e)
+		private async Task ContractsClient_ContractSigned(object? Sender, ContractSignedEventArgs e)
 		{
 			await this.ContractUpdatedOrSigned(e);
 
@@ -3321,19 +3321,19 @@ namespace NeuroAccessMaui.Services.Xmpp
 			}
 		}
 
-		private async Task ProvisioningClient_IsFriendQuestion(object Sender, IsFriendEventArgs e)
+		private async Task ProvisioningClient_IsFriendQuestion(object? Sender, IsFriendEventArgs e)
 		{
 			if (e.From.IndexOfAny(clientChars) < 0)
 				await ServiceRef.NotificationService.NewEvent(new IsFriendNotificationEvent(e));
 		}
 
-		private async Task ProvisioningClient_CanReadQuestion(object Sender, CanReadEventArgs e)
+		private async Task ProvisioningClient_CanReadQuestion(object? Sender, CanReadEventArgs e)
 		{
 			if (e.From.IndexOfAny(clientChars) < 0)
 				await ServiceRef.NotificationService.NewEvent(new CanReadNotificationEvent(e));
 		}
 
-		private async Task ProvisioningClient_CanControlQuestion(object Sender, CanControlEventArgs e)
+		private async Task ProvisioningClient_CanControlQuestion(object? Sender, CanControlEventArgs e)
 		{
 			if (e.From.IndexOfAny(clientChars) < 0)
 				await ServiceRef.NotificationService.NewEvent(new CanControlNotificationEvent(e));
@@ -3812,7 +3812,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			Client.SellEDalerError += this.NeuroWallet_SellEDalerError;
 		}
 
-		private async Task EDalerClient_BalanceUpdated(object Sender, BalanceEventArgs e)
+		private async Task EDalerClient_BalanceUpdated(object? Sender, BalanceEventArgs e)
 		{
 			this.lastBalance = e.Balance;
 			this.lastEDalerEvent = DateTime.Now;
@@ -4071,7 +4071,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			return Result;
 		}
 
-		private async Task NeuroWallet_BuyEDalerOptionsClientUrlReceived(object Sender, BuyEDalerClientUrlEventArgs e)
+		private async Task NeuroWallet_BuyEDalerOptionsClientUrlReceived(object? Sender, BuyEDalerClientUrlEventArgs e)
 		{
 			lock (this.currentTransactions)
 			{
@@ -4087,7 +4087,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			await Wallet.Transaction.OpenUrl(e.ClientUrl);
 		}
 
-		private Task NeuroWallet_BuyEDalerOptionsCompleted(object Sender, PaymentOptionsEventArgs e)
+		private Task NeuroWallet_BuyEDalerOptionsCompleted(object? Sender, PaymentOptionsEventArgs e)
 		{
 			this.BuyEDalerGetOptionsCompleted(e.TransactionId, e.Options);
 			return Task.CompletedTask;
@@ -4114,7 +4114,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				OptionsTransaction.Completed(Options);
 		}
 
-		private Task NeuroWallet_BuyEDalerOptionsError(object Sender, PaymentErrorEventArgs e)
+		private Task NeuroWallet_BuyEDalerOptionsError(object? Sender, PaymentErrorEventArgs e)
 		{
 			this.BuyEDalerGetOptionsFailed(e.TransactionId, e.Message);
 			return Task.CompletedTask;
@@ -4192,7 +4192,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			return Constants.UriSchemes.NeuroAccess + ":" + Token;
 		}
 
-		private async Task NeuroWallet_BuyEDalerClientUrlReceived(object Sender, BuyEDalerClientUrlEventArgs e)
+		private async Task NeuroWallet_BuyEDalerClientUrlReceived(object? Sender, BuyEDalerClientUrlEventArgs e)
 		{
 			lock (this.currentTransactions)
 			{
@@ -4208,7 +4208,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			await Wallet.Transaction.OpenUrl(e.ClientUrl);
 		}
 
-		private Task NeuroWallet_BuyEDalerCompleted(object Sender, PaymentCompletedEventArgs e)
+		private Task NeuroWallet_BuyEDalerCompleted(object? Sender, PaymentCompletedEventArgs e)
 		{
 			this.BuyEDalerCompleted(e.TransactionId, e.Amount, e.Currency);
 			return Task.CompletedTask;
@@ -4236,7 +4236,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				PaymentTransaction.Completed(Amount, Currency);
 		}
 
-		private Task NeuroWallet_BuyEDalerError(object Sender, PaymentErrorEventArgs e)
+		private Task NeuroWallet_BuyEDalerError(object? Sender, PaymentErrorEventArgs e)
 		{
 			this.BuyEDalerFailed(e.TransactionId, e.Message);
 			return Task.CompletedTask;
@@ -4314,7 +4314,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			return Result;
 		}
 
-		private async Task NeuroWallet_SellEDalerOptionsClientUrlReceived(object Sender, SellEDalerClientUrlEventArgs e)
+		private async Task NeuroWallet_SellEDalerOptionsClientUrlReceived(object? Sender, SellEDalerClientUrlEventArgs e)
 		{
 			lock (this.currentTransactions)
 			{
@@ -4330,7 +4330,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			await Wallet.Transaction.OpenUrl(e.ClientUrl);
 		}
 
-		private Task NeuroWallet_SellEDalerOptionsCompleted(object Sender, PaymentOptionsEventArgs e)
+		private Task NeuroWallet_SellEDalerOptionsCompleted(object? Sender, PaymentOptionsEventArgs e)
 		{
 			this.SellEDalerGetOptionsCompleted(e.TransactionId, e.Options);
 			return Task.CompletedTask;
@@ -4357,7 +4357,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				OptionsTransaction.Completed(Options);
 		}
 
-		private Task NeuroWallet_SellEDalerOptionsError(object Sender, PaymentErrorEventArgs e)
+		private Task NeuroWallet_SellEDalerOptionsError(object? Sender, PaymentErrorEventArgs e)
 		{
 			this.SellEDalerGetOptionsFailed(e.TransactionId, e.Message);
 			return Task.CompletedTask;
@@ -4429,7 +4429,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			return Result;
 		}
 
-		private async Task NeuroWallet_SellEDalerClientUrlReceived(object Sender, SellEDalerClientUrlEventArgs e)
+		private async Task NeuroWallet_SellEDalerClientUrlReceived(object? Sender, SellEDalerClientUrlEventArgs e)
 		{
 			lock (this.currentTransactions)
 			{
@@ -4445,7 +4445,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			await Wallet.Transaction.OpenUrl(e.ClientUrl);
 		}
 
-		private Task NeuroWallet_SellEDalerError(object Sender, PaymentErrorEventArgs e)
+		private Task NeuroWallet_SellEDalerError(object? Sender, PaymentErrorEventArgs e)
 		{
 			this.SellEDalerFailed(e.TransactionId, e.Message);
 			return Task.CompletedTask;
@@ -4471,7 +4471,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			Transaction.ErrorReported(Message);
 		}
 
-		private Task NeuroWallet_SellEDalerCompleted(object Sender, PaymentCompletedEventArgs e)
+		private Task NeuroWallet_SellEDalerCompleted(object? Sender, PaymentCompletedEventArgs e)
 		{
 			this.SellEDalerCompleted(e.TransactionId, e.Amount, e.Currency);
 			return Task.CompletedTask;
@@ -4579,7 +4579,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// </summary>
 		public event NeuroFeatures.TokenEventHandler? NeuroFeatureAdded;
 
-		private async Task NeuroFeaturesClient_VariablesUpdated(object Sender, VariablesUpdatedEventArgs e)
+		private async Task NeuroFeaturesClient_VariablesUpdated(object? Sender, VariablesUpdatedEventArgs e)
 		{
 			VariablesUpdatedEventHandler? h = this.NeuroFeatureVariablesUpdated;
 			if (h is not null)
@@ -4600,7 +4600,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// </summary>
 		public event VariablesUpdatedEventHandler? NeuroFeatureVariablesUpdated;
 
-		private async Task NeuroFeaturesClient_StateUpdated(object Sender, NewStateEventArgs e)
+		private async Task NeuroFeaturesClient_StateUpdated(object? Sender, NewStateEventArgs e)
 		{
 			NewStateEventHandler? h = this.NeuroFeatureStateUpdated;
 			if (h is not null)

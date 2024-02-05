@@ -5,7 +5,7 @@
 	/// </summary>
 	/// <param name="Sender">Sender of event.</param>
 	/// <param name="e">Event arguments.</param>
-	public delegate void NotificationEventHandler(object Sender, NotificationEventArgs e);
+	public delegate void NotificationEventHandler(object? Sender, NotificationEventArgs e);
 
 	/// <summary>
 	/// Event argument for notification events.

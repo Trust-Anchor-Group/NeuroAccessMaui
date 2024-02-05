@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<views:ContentBasePage xmlns="http://xamarin.com/schemas/2014/forms"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                       xmlns:resx="clr-namespace:IdApp.Resx;assembly=IdApp"
+                       xmlns:views="clr-namespace:IdApp.Pages;assembly=IdApp"
+                       xmlns:model="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MachineReport;assembly=IdApp"
+                       x:DataType="model:MachineReportViewModel"
+                       x:Class="NeuroAccessMaui.UI.Pages.Wallet.MachineReport.MachineReportPage"
+                       Style="{StaticResource BaseBackgroundPage}"
+                       Title="{Binding Title}">
+	<ScrollView>
+		<ContentView Content="{Binding Report}"/>
+	</ScrollView>
+</views:ContentBasePage>

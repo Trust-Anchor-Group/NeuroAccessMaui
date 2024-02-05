@@ -33,25 +33,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		[RelayCommand(CanExecute = nameof(CanScanQrCode))]
 		private async Task ScanQrCode()
 		{
-			List<string> AllowedSchemas = [Constants.UriSchemes.TagSign];
-
-			if (ServiceRef.TagProfile.LegalIdentity?.HasApprovedPersonalInformation() ?? false)
-			{
-				AllowedSchemas.Add(Constants.UriSchemes.IotId);
-				AllowedSchemas.Add(Constants.UriSchemes.IotSc);
-
-				// TODO:
-				// AllowedSchemas.Add(Constants.UriSchemes.IotDisco);
-				// AllowedSchemas.Add(Constants.UriSchemes.EDaler);
-				// AllowedSchemas.Add(Constants.UriSchemes.NeuroFeature);
-				// AllowedSchemas.Add(Constants.UriSchemes.Xmpp);
-			}
-
-			string? Url = await Services.UI.QR.QrCode.ScanQrCode(nameof(AppResources.QrScanCode), [.. AllowedSchemas]);
-			if (string.IsNullOrEmpty(Url))
-				return;
-
-			await App.OpenUrlAsync(Url);
+			await Services.UI.QR.QrCode.ScanQrCodeAndHandleResult();
 		}
 
 		[RelayCommand]

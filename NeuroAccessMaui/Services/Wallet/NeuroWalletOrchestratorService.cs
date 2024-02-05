@@ -5,6 +5,13 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Navigation;
 using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.Notification.Wallet;
+using NeuroAccessMaui.UI.Pages.Wallet;
+using NeuroAccessMaui.UI.Pages.Wallet.IssueEDaler;
+using NeuroAccessMaui.UI.Pages.Wallet.MyWallet;
+using NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels;
+using NeuroAccessMaui.UI.Pages.Wallet.Payment;
+using NeuroAccessMaui.UI.Pages.Wallet.PaymentAcceptance;
+using NeuroAccessMaui.UI.Pages.Wallet.TokenDetails;
 using NeuroFeatures;
 using Waher.Runtime.Inventory;
 
@@ -51,17 +58,17 @@ namespace NeuroAccessMaui.Services.Wallet
 
 		#region Event Handlers
 
-		private async Task Wallet_BalanceUpdated(object Sender, BalanceEventArgs e)
+		private async Task Wallet_BalanceUpdated(object? Sender, BalanceEventArgs e)
 		{
 			await ServiceRef.NotificationService.NewEvent(new BalanceNotificationEvent(e));
 		}
 
-		private async Task Wallet_TokenAdded(object Sender, TokenEventArgs e)
+		private async Task Wallet_TokenAdded(object? Sender, TokenEventArgs e)
 		{
 			await ServiceRef.NotificationService.NewEvent(new TokenAddedNotificationEvent(e));
 		}
 
-		private async Task Wallet_TokenRemoved(object Sender, TokenEventArgs e)
+		private async Task Wallet_TokenRemoved(object? Sender, TokenEventArgs e)
 		{
 			if (ServiceRef.NotificationService.TryGetNotificationEvents(NotificationEventType.Wallet, e.Token.TokenId,
 				out NotificationEvent[]? Events) && Events is not null)
@@ -72,12 +79,12 @@ namespace NeuroAccessMaui.Services.Wallet
 			await ServiceRef.NotificationService.NewEvent(new TokenRemovedNotificationEvent(e));
 		}
 
-		private async Task Wallet_StateUpdated(object Sender, NewStateEventArgs e)
+		private async Task Wallet_StateUpdated(object? Sender, NewStateEventArgs e)
 		{
 			await ServiceRef.NotificationService.NewEvent(new StateMachineNewStateNotificationEvent(e));
 		}
 
-		private async Task Wallet_VariablesUpdated(object Sender, VariablesUpdatedEventArgs e)
+		private async Task Wallet_VariablesUpdated(object? Sender, VariablesUpdatedEventArgs e)
 		{
 			await ServiceRef.NotificationService.NewEvent(new StateMachineVariablesUpdatedNotificationEvent(e));
 		}
@@ -101,7 +108,7 @@ namespace NeuroAccessMaui.Services.Wallet
 			}
 			catch (Exception ex)
 			{
-				await ServiceRef.UiSerializer.DisplayAlert(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
 

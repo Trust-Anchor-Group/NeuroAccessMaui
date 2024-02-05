@@ -127,7 +127,7 @@ namespace NeuroAccessMaui.Services.Notification.Things
 
 		private static readonly Dictionary<string, X509Certificate2> certificatesyByToken = [];
 
-		private async Task CertificateResponse(object Sender, CertificateEventArgs e)
+		private async Task CertificateResponse(object? Sender, CertificateEventArgs e)
 		{
 			if (e.Ok && e.State is ProvisioningToken Token)
 			{

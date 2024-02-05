@@ -6,7 +6,7 @@
 	xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages"
 	xmlns:resx="clr-namespace:IdApp.Resx"
 	xmlns:model="clr-namespace:NeuroAccessMaui.UI.Pages.Contacts.Chat"
-	xmlns:messages="clr-namespace:IdApp.Services.Messages"
+	xmlns:messages="clr-namespace:NeuroAccessMaui.Services.Messages"
 	xmlns:behaviors="clr-namespace:IdApp.Behaviors"
 	xmlns:loading="clr-namespace:NeuroAccessMaui.UI.Controls.LoadingCollectionView"
 	xmlns:fadeview="clr-namespace:NeuroAccessMaui.UI.Controls.FadeView"

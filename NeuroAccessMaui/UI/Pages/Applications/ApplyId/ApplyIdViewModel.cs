@@ -118,7 +118,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			return base.OnDispose();
 		}
 
-		private Task XmppService_IdentityApplicationChanged(object Sender, LegalIdentityEventArgs e)
+		private Task XmppService_IdentityApplicationChanged(object? Sender, LegalIdentityEventArgs e)
 		{
 			MainThread.BeginInvokeOnMainThread(async () =>
 			{

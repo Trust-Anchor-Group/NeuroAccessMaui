@@ -1512,6 +1512,9 @@
   <data name="Building" xml:space="preserve">
     <value>Building</value>
   </data>
+  <data name="BuyEDaler" xml:space="preserve">
+    <value>Buy eDaler.</value>
+  </data>
   <data name="CallerOnly" xml:space="preserve">
     <value>Caller Only</value>
   </data>
@@ -1563,6 +1566,9 @@
   <data name="GeneralInformation" xml:space="preserve">
     <value>General Information</value>
   </data>
+  <data name="History" xml:space="preserve">
+    <value>History</value>
+  </data>
   <data name="InvalidNeuroFeatureToken" xml:space="preserve">
     <value>Invalid Neuro-Feature token.</value>
   </data>
@@ -1590,6 +1596,9 @@
   <data name="Name" xml:space="preserve">
     <value>Name</value>
   </data>
+  <data name="NetworkAddressOfContactUnknown" xml:space="preserve">
+    <value>Network address of contact unknown.</value>
+  </data>
   <data name="NoContactsFound" xml:space="preserve">
     <value>No Contacts Found.</value>
   </data>
@@ -1611,8 +1620,14 @@
   <data name="PickPhoto" xml:space="preserve">
     <value>Pick photo</value>
   </data>
+  <data name="Present" xml:space="preserve">
+    <value>Present</value>
+  </data>
   <data name="ProductInformation" xml:space="preserve">
     <value>Product Information</value>
+  </data>
+  <data name="Profiling" xml:space="preserve">
+    <value>Profiling</value>
   </data>
   <data name="Question" xml:space="preserve">
     <value>Question</value>
@@ -1622,6 +1637,12 @@
   </data>
   <data name="RemoveSubscriptionFrom" xml:space="preserve">
     <value>Do you want to remove the presence subscription from {0}?</value>
+  </data>
+  <data name="RequestPayment" xml:space="preserve">
+    <value>Request Payment</value>
+  </data>
+  <data name="RequestPaymentMessage" xml:space="preserve">
+    <value>Requesting payment of {0} {1}.</value>
   </data>
   <data name="Room" xml:space="preserve">
     <value>Room</value>
@@ -1635,8 +1656,20 @@
   <data name="SelectContactToPay" xml:space="preserve">
     <value>Below are all contacts in your contact book. Select the contact to whom you want to make the payment.</value>
   </data>
+  <data name="SelectFromWhomToRequestPayment" xml:space="preserve">
+    <value>Select from whom to request payment.</value>
+  </data>
   <data name="SelectingAPhotoIsNotSupported" xml:space="preserve">
     <value>Selecting a photo is not supported on this device</value>
+  </data>
+  <data name="SelectServiceProviderBuyEDaler" xml:space="preserve">
+    <value>Select the Service Provider you want to use to buy eDaler.</value>
+  </data>
+  <data name="SelectServiceProviderSellEDaler" xml:space="preserve">
+    <value>Select the Service Provider you want to use to sell eDaler.</value>
+  </data>
+  <data name="SellEDaler" xml:space="preserve">
+    <value>Sell eDaler.</value>
   </data>
   <data name="SensorDataAccepted" xml:space="preserve">
     <value>Request has been accepted.</value>
@@ -1691,6 +1724,9 @@
   </data>
   <data name="Share" xml:space="preserve">
     <value>Share</value>
+  </data>
+  <data name="StateDiagram" xml:space="preserve">
+    <value>State Diagram</value>
   </data>
   <data name="StreetName" xml:space="preserve">
     <value>Street Name</value>
@@ -1748,5 +1784,8 @@
   </data>
   <data name="Version" xml:space="preserve">
     <value>Version</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Yesterday</value>
   </data>
 </root>

@@ -80,17 +80,6 @@ namespace NeuroAccessMaui.UI.Pages.Things.IsFriend
 			}
 		}
 
-		/// <inheritdoc/>
-		protected override Task XmppService_ConnectionStateChanged(object? _, XmppState NewState)
-		{
-			MainThread.BeginInvokeOnMainThread(() =>
-			{
-				this.SetConnectionStateAndText(NewState);
-			});
-
-			return Task.CompletedTask;
-		}
-
 		#region Properties
 
 		/// <summary>
@@ -252,7 +241,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.IsFriend
 				this.ResponseHandler, Resolver);
 		}
 
-		private async Task ResponseHandler(object Sender, IqResultEventArgs e)
+		private async Task ResponseHandler(object? Sender, IqResultEventArgs e)
 		{
 			if (e.Ok)
 			{

@@ -25,7 +25,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			this.InitializeComponent();
 		}
 
-		private void ContractsSelectionChanged(object Sender, SelectionChangedEventArgs e)
+		private void ContractsSelectionChanged(object? Sender, SelectionChangedEventArgs e)
 		{
 			if (this.ViewModel is MyContractsViewModel MyContractsViewModel)
 			{

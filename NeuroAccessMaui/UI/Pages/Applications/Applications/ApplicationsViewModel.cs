@@ -44,7 +44,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 			return base.OnDispose();
 		}
 
-		private Task XmppService_IdentityApplicationChanged(object Sender, LegalIdentityEventArgs e)
+		private Task XmppService_IdentityApplicationChanged(object? Sender, LegalIdentityEventArgs e)
 		{
 			MainThread.BeginInvokeOnMainThread(() =>
 			{

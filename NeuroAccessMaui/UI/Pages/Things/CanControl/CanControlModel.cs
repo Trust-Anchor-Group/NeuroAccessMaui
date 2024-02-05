@@ -160,17 +160,6 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanControl
 			}
 		}
 
-		/// <inheritdoc/>
-		protected override Task XmppService_ConnectionStateChanged(object? _, XmppState NewState)
-		{
-			MainThread.BeginInvokeOnMainThread(() =>
-			{
-				this.SetConnectionStateAndText(NewState);
-			});
-
-			return Task.CompletedTask;
-		}
-
 		#region Properties
 
 		/// <summary>
@@ -455,11 +444,13 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanControl
 				return [.. Result];
 		}
 
-		private async Task ResponseHandler(object Sender, IqResultEventArgs e)
+		private async Task ResponseHandler(object? Sender, IqResultEventArgs e)
 		{
 			if (e.Ok)
 			{
-				await ServiceRef.NotificationService.DeleteEvents(this.@event);
+				if (this.@event is not null)
+					await ServiceRef.NotificationService.DeleteEvents(this.@event);
+
 				await ServiceRef.NotificationService.DeleteResolvedEvents((IEventResolver)e.State);
 
 				MainThread.BeginInvokeOnMainThread(async () =>
@@ -480,7 +471,9 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanControl
 		[RelayCommand]
 		private async Task Ignore()
 		{
-			await ServiceRef.NotificationService.DeleteEvents(this.@event);
+			if (this.@event is not null)
+				await ServiceRef.NotificationService.DeleteEvents(this.@event);
+
 			await ServiceRef.NavigationService.GoBackAsync();
 		}
 

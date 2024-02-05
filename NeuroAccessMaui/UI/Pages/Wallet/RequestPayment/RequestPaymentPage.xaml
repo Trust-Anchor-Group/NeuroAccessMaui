@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<views:ContentBasePage xmlns="http://xamarin.com/schemas/2014/forms"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                       xmlns:resx="clr-namespace:IdApp.Resx;assembly=IdApp"
+                       xmlns:views="clr-namespace:IdApp.Pages;assembly=IdApp"
+                       xmlns:model="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.RequestPayment;assembly=IdApp"
+                       x:DataType="model:RequestPaymentViewModel"
+                       x:Class="NeuroAccessMaui.UI.Pages.Wallet.RequestPayment.RequestPaymentPage"
+                       Style="{StaticResource BaseBackgroundPage}"
+                       Title="{x:Static resx:AppResources.RequestPayment}">
+    <Grid>
+        <ScrollView x:Name="ScrollView">
+            <StackLayout Margin="{StaticResource DefaultMargin}"
+                         BackgroundColor="{AppThemeBinding Light={StaticResource PageBackgroundColorLightTheme}, Dark={StaticResource PageBackgroundColorDarkTheme}}">
+                <Label Text="{x:Static resx:AppResources.RequestPayment}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
+                <Label Text="{x:Static resx:AppResources.RequestPaymentDescription}" Style="{StaticResource InfoText}" VerticalOptions="Start"/>
+                <!-- Note -->
+                <Label Text="{x:Static resx:AppResources.Amount}"/>
+				<Grid ColumnDefinitions="*,auto" RowDefinitions="auto" Padding="0" Margin="0" ColumnSpacing="0" RowSpacing="0">
+					<Entry Grid.Column="0" Grid.Row="0" Text="{Binding Path=AmountText}" BackgroundColor="{Binding Path=AmountColor}" Placeholder="{Binding Path=Currency}"/>
+					<Button Grid.Column="1" Grid.Row="0" CornerRadius="8" WidthRequest="40" HeightRequest="40"
+							Text="{x:Static resx:FontAwesome.Calculator}" TextColor="{StaticResource TextColorLightTheme}"
+							FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
+							Command="{Binding OpenCalculatorCommand}" CommandParameter="AmountText" />
+				</Grid>
+                <Label Text="{x:Static resx:AppResources.AmountExtra}"/>
+				<Grid ColumnDefinitions="*,auto" RowDefinitions="auto" Padding="0" Margin="0" ColumnSpacing="0" RowSpacing="0">
+					<Entry Grid.Column="0" Grid.Row="0" Text="{Binding Path=AmountExtraText}" BackgroundColor="{Binding Path=AmountExtraColor}" Placeholder="{Binding Path=Currency}"/>
+					<Button Grid.Column="1" Grid.Row="0" CornerRadius="8" WidthRequest="40" HeightRequest="40"
+							Text="{x:Static resx:FontAwesome.Calculator}" TextColor="{StaticResource TextColorLightTheme}"
+							FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
+							Command="{Binding OpenCalculatorCommand}" CommandParameter="AmountExtraText" />
+				</Grid>
+                <Label Text="{x:Static resx:AppResources.Message}"/>
+                <Entry Text="{Binding Path=Message}"/>
+                <StackLayout Orientation="Horizontal" Margin="{StaticResource DefaultTopAndBottomOnlyMargin}">
+					<CheckBox IsChecked="{Binding Path=EncryptMessage, Mode=TwoWay}" VerticalOptions="Center"/>
+                    <Label Text="{x:Static resx:AppResources.EncryptMessage}" VerticalOptions="Center" />
+                </StackLayout>
+                <!-- BUTTONS -->
+                <Button Text="{x:Static resx:AppResources.GenerateQrCode}" Command="{Binding Path=GenerateQrCodeCommand}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
+                <Image x:Name="QrCode" BackgroundColor="{StaticResource HeadingForeground}" Source="{Binding Path=QrCode}" 
+                       IsVisible="{Binding Path=HasQrCode}" WidthRequest="{Binding Path=QrCodeWidth}" 
+                       HeightRequest="{Binding Path=QrCodeHeight}" HorizontalOptions="Center" VerticalOptions="Start" 
+                       Margin="0" />
+				<Label Text="{x:Static resx:AppResources.Share}" Style="{StaticResource Heading}"
+					   Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"
+					   IsVisible="{Binding Path=HasQrCode}" />
+				<Label Text="{x:Static resx:AppResources.ShareDescription}"
+					   Style="{StaticResource InfoText}" VerticalOptions="Start"
+					   IsVisible="{Binding Path=HasQrCode}" />
+				<Button x:Name="ShareContactButton" Text="{x:Static resx:AppResources.Contact}" Command="{Binding Path=ShareContactCommand}" 
+                        IsVisible="{Binding Path=HasQrCode}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
+				<Button x:Name="ShareExternalButton" Text="{x:Static resx:AppResources.OtherApp}" Command="{Binding Path=ShareExternalCommand}" 
+                        IsVisible="{Binding Path=HasQrCode}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
+            </StackLayout>
+        </ScrollView>
+    </Grid>
+</views:ContentBasePage>

@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<views:ContentBasePage xmlns="http://xamarin.com/schemas/2014/forms"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                       xmlns:resx="clr-namespace:IdApp.Resx;assembly=IdApp"
+                       xmlns:views="clr-namespace:IdApp.Pages;assembly=IdApp"
+                       xmlns:model="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet;assembly=IdApp"
+                       x:DataType="model:EDalerUriViewModel"
+                       x:Class="NeuroAccessMaui.UI.Pages.Wallet.SendPayment.SendPaymentPage"
+                       Style="{StaticResource BaseBackgroundPage}"
+                       Title="{x:Static resx:AppResources.SendPayment}">
+    <Grid>
+        <ScrollView x:Name="ScrollView">
+            <StackLayout Margin="{StaticResource DefaultMargin}">
+                <Label Text="{x:Static resx:AppResources.Payment}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
+                <Label Text="{x:Static resx:AppResources.PaymentDescription}" Style="{StaticResource InfoText}" VerticalOptions="Start"/>
+                <!-- Note -->
+                <Label Text="{x:Static resx:AppResources.To}"/>
+                <Entry Text="{Binding Path=To}" IsReadOnly="{Binding Path=ToPreset}"/>
+                <Label Text="{x:Static resx:AppResources.Amount}"/>
+				<Grid ColumnDefinitions="*,auto" RowDefinitions="auto" Padding="0" Margin="0" ColumnSpacing="0" RowSpacing="0">
+					<Entry Grid.Column="0" Grid.Row="0" Text="{Binding Path=AmountText}" BackgroundColor="{Binding Path=AmountColor}" 
+                       Placeholder="{Binding Path=Currency}" IsReadOnly="{Binding Path=AmountPreset}"/>
+					<Button Grid.Column="1" Grid.Row="0" CornerRadius="8" WidthRequest="40" HeightRequest="40" IsEnabled="{Binding Path=AmountPreset}"
+							Text="{x:Static resx:FontAwesome.Calculator}" TextColor="{StaticResource TextColorLightTheme}"
+							FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
+							Command="{Binding OpenCalculatorCommand}" CommandParameter="AmountText" />
+				</Grid>
+				<Label Text="{x:Static resx:AppResources.AmountExtra}" IsVisible="{Binding Path=AmountPreset}"/>
+				<Grid ColumnDefinitions="*,auto" RowDefinitions="auto" Padding="0" Margin="0" ColumnSpacing="0" RowSpacing="0" IsVisible="{Binding Path=AmountPreset}">
+					<Entry Text="{Binding Path=AmountExtraText}" BackgroundColor="{Binding Path=AmountExtraColor}" 
+                       Placeholder="{Binding Path=Currency}" IsVisible="{Binding Path=AmountPreset}"/>
+					<Button CornerRadius="8" WidthRequest="40" HeightRequest="40" IsEnabled="{Binding Path=AmountPreset}"
+							Text="{x:Static resx:FontAwesome.Calculator}" TextColor="{StaticResource TextColorLightTheme}"
+							FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
+							Command="{Binding OpenCalculatorCommand}" CommandParameter="AmountExtraText" />
+				</Grid>
+                <Label Text="{x:Static resx:AppResources.Message}"/>
+                <Entry Text="{Binding Path=Message}" IsReadOnly="{Binding Path=MessagePreset}"/>
+                <StackLayout Orientation="Horizontal" Margin="{StaticResource DefaultTopAndBottomOnlyMargin}">
+					<CheckBox IsChecked="{Binding Path=EncryptMessage, Mode=TwoWay}" VerticalOptions="Center" IsEnabled="{Binding CanEncryptMessage}"/>
+                    <Label Text="{x:Static resx:AppResources.EncryptMessage}" VerticalOptions="Center" />
+                </StackLayout>
+                <!-- BUTTONS -->
+                <Button Text="{x:Static resx:AppResources.Send}" Command="{Binding Path=SendPaymentCommand}" 
+                        Margin="{StaticResource DefaultBottomOnlyMargin}"/>
+            </StackLayout>
+        </ScrollView>
+    </Grid>
+</views:ContentBasePage>

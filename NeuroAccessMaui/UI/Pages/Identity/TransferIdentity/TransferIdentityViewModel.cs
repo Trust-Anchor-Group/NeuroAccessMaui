@@ -101,9 +101,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.TransferIdentity
 		protected virtual void Dispose(bool disposing)
 		{
 			if (this.isDisposed)
-			{
 				return;
-			}
 
 			if (disposing)
 			{

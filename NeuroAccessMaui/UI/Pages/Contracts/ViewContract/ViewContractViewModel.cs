@@ -462,9 +462,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 						{
 							if (InnerView is Label Label)
 							{
-								Label.TextColor = (Color?)(Application.Current?.RequestedTheme == AppTheme.Dark ?
-									Application.Current?.Resources["LabelTextColorDarkTheme"] :
-									Application.Current?.Resources["LabelTextColorLightTheme"]);
+								if (Application.Current?.RequestedTheme == AppTheme.Dark)
+									Label.TextColor = (Color?)Application.Current?.Resources["PrimaryForegroundDark"];
+								else
+									Label.TextColor = (Color?)Application.Current?.Resources["PrimaryForegroundLight"];
 							}
 						}
 					}

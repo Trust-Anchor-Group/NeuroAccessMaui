@@ -167,17 +167,6 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 			}
 		}
 
-		/// <inheritdoc/>
-		protected override Task XmppService_ConnectionStateChanged(object? _, XmppState NewState)
-		{
-			MainThread.BeginInvokeOnMainThread(() =>
-			{
-				this.SetConnectionStateAndText(NewState);
-			});
-
-			return Task.CompletedTask;
-		}
-
 		#region Properties
 
 		/// <summary>
@@ -466,47 +455,47 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 
 				if (Range.RuleRange is RuleRange RuleRange)
 				{
-					ReadoutRequestResolver Resolver = new(this.BareJid, this.RemoteFriendlyName, RuleRange);
+					ReadoutRequestResolver Resolver = new(this.BareJid ?? string.Empty, this.RemoteFriendlyName ?? string.Empty, RuleRange);
 
 					switch (RuleRange)
 					{
 						case RuleRange.Caller:
 						default:
-							ServiceRef.XmppService.CanReadResponseCaller(this.ProvisioningService, this.BareJid, this.RemoteJid, this.Key,
-								Accepts, FieldTypes, this.GetFields(), Thing, this.ResponseHandler, Resolver);
+							ServiceRef.XmppService.CanReadResponseCaller(this.ProvisioningService ?? ServiceRef.TagProfile.ProvisioningJid ?? string.Empty,
+								this.BareJid, this.RemoteJid, this.Key, Accepts, FieldTypes, this.GetFields(), Thing, this.ResponseHandler, Resolver);
 							break;
 
 						case RuleRange.Domain:
-							ServiceRef.XmppService.CanReadResponseDomain(this.ProvisioningService, this.BareJid, this.RemoteJid, this.Key,
-								Accepts, FieldTypes, this.GetFields(), Thing, this.ResponseHandler, Resolver);
+							ServiceRef.XmppService.CanReadResponseDomain(this.ProvisioningService ?? ServiceRef.TagProfile.ProvisioningJid ?? string.Empty,
+								this.BareJid, this.RemoteJid, this.Key, Accepts, FieldTypes, this.GetFields(), Thing, this.ResponseHandler, Resolver);
 							break;
 
 						case RuleRange.All:
-							ServiceRef.XmppService.CanReadResponseAll(this.ProvisioningService, this.BareJid, this.RemoteJid, this.Key,
-								Accepts, FieldTypes, this.GetFields(), Thing, this.ResponseHandler, Resolver);
+							ServiceRef.XmppService.CanReadResponseAll(this.ProvisioningService ?? ServiceRef.TagProfile.ProvisioningJid ?? string.Empty,
+								 this.BareJid, this.RemoteJid, this.Key, Accepts, FieldTypes, this.GetFields(), Thing, this.ResponseHandler, Resolver);
 							break;
 
 					}
 				}
 				else if (Range.RuleRange is ProvisioningToken Token)
 				{
-					ReadoutRequestResolver Resolver = new(this.BareJid, this.RemoteFriendlyName, Token);
+					ReadoutRequestResolver Resolver = new(this.BareJid ?? string.Empty, this.RemoteFriendlyName ?? string.Empty, Token);
 
 					switch (Token.Type)
 					{
 						case TokenType.User:
-							ServiceRef.XmppService.CanReadResponseUser(this.ProvisioningService, this.BareJid, this.RemoteJid, this.Key,
-								Accepts, FieldTypes, this.GetFields(), Token.Token, Thing, this.ResponseHandler, Resolver);
+							ServiceRef.XmppService.CanReadResponseUser(this.ProvisioningService ?? ServiceRef.TagProfile.ProvisioningJid ?? string.Empty,
+								this.BareJid, this.RemoteJid, this.Key, Accepts, FieldTypes, this.GetFields(), Token.Token, Thing, this.ResponseHandler, Resolver);
 							break;
 
 						case TokenType.Service:
-							ServiceRef.XmppService.CanReadResponseService(this.ProvisioningService, this.BareJid, this.RemoteJid, this.Key,
-								Accepts, FieldTypes, this.GetFields(), Token.Token, Thing, this.ResponseHandler, Resolver);
+							ServiceRef.XmppService.CanReadResponseService(this.ProvisioningService ?? ServiceRef.TagProfile.ProvisioningJid ?? string.Empty,
+								this.BareJid, this.RemoteJid, this.Key, Accepts, FieldTypes, this.GetFields(), Token.Token, Thing, this.ResponseHandler, Resolver);
 							break;
 
 						case TokenType.Device:
-							ServiceRef.XmppService.CanReadResponseDevice(this.ProvisioningService, this.BareJid, this.RemoteJid, this.Key,
-								Accepts, FieldTypes, this.GetFields(), Token.Token, Thing, this.ResponseHandler, Resolver);
+							ServiceRef.XmppService.CanReadResponseDevice(this.ProvisioningService ?? ServiceRef.TagProfile.ProvisioningJid ?? string.Empty,
+								this.BareJid, this.RemoteJid, this.Key, Accepts, FieldTypes, this.GetFields(), Token.Token, Thing, this.ResponseHandler, Resolver);
 							break;
 					}
 				}

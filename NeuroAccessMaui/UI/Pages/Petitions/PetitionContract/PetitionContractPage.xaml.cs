@@ -25,7 +25,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 			return base.OnDisappearingAsync();
 		}
 
-		private void Image_Tapped(object Sender, EventArgs e)
+		private void Image_Tapped(object? Sender, EventArgs e)
 		{
 			if (this.ViewModel is PetitionContractViewModel PetitionContractViewModel)
 			{

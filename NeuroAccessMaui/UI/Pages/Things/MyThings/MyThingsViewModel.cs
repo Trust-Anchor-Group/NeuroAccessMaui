@@ -295,7 +295,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 			});
 		}
 
-		private Task Xmpp_OnPresence(object Sender, PresenceEventArgs e)
+		private Task Xmpp_OnPresence(object? Sender, PresenceEventArgs e)
 		{
 			if (this.byBareJid.TryGetValue(e.FromBareJID, out List<ContactInfoModel>? Contacts))
 			{
@@ -306,7 +306,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 			return Task.CompletedTask;
 		}
 
-		private void NotificationService_OnNotificationsDeleted(object Sender, NotificationEventsArgs e)
+		private void NotificationService_OnNotificationsDeleted(object? Sender, NotificationEventsArgs e)
 		{
 			MainThread.BeginInvokeOnMainThread(() =>
 			{

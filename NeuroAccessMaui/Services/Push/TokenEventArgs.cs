@@ -7,7 +7,7 @@ namespace NeuroAccessMaui.Services.Push
 	/// </summary>
 	/// <param name="Sender">Sender of event.</param>
 	/// <param name="e">Event arguments.</param>
-	public delegate Task TokenEventHandler(object Sender, TokenEventArgs e);
+	public delegate Task TokenEventHandler(object? Sender, TokenEventArgs e);
 
 	/// <summary>
 	/// Event argumens for token-based events.

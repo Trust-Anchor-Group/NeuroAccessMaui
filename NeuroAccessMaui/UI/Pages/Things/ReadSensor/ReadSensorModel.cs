@@ -82,7 +82,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor
 			ServiceRef.XmppService.RegisterPepHandler(typeof(SensorData), this.SensorDataPersonalEventHandler);
 		}
 
-		private Task Request_OnStateChanged(object Sender, SensorDataReadoutState NewState)
+		private Task Request_OnStateChanged(object? Sender, SensorDataReadoutState NewState)
 		{
 			this.Status = NewState switch
 			{
@@ -117,7 +117,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor
 				return ServiceRef.Localizer[nameof(AppResources.SensorDataHeaderOther)];
 		}
 
-		private Task Request_OnFieldsReceived(object Sender, IEnumerable<Field> NewFields)
+		private Task Request_OnFieldsReceived(object? Sender, IEnumerable<Field> NewFields)
 		{
 			return this.NewFieldsReported(NewFields);
 		}
@@ -393,17 +393,6 @@ After:
 				else
 					return Item.LastPresenceFullJid;
 			}
-		}
-
-		/// <inheritdoc/>
-		protected override Task XmppService_ConnectionStateChanged(object? _, XmppState NewState)
-		{
-			MainThread.BeginInvokeOnMainThread(() =>
-			{
-				this.SetConnectionStateAndText(NewState);
-			});
-
-			return Task.CompletedTask;
 		}
 
 		private void TagProfile_Changed(object? Sender, PropertyChangedEventArgs e)

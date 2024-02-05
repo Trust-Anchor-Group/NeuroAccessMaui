@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<views:ContentBasePage xmlns="http://xamarin.com/schemas/2014/forms"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                       xmlns:resx="clr-namespace:IdApp.Resx;assembly=IdApp"
+                       xmlns:views="clr-namespace:IdApp.Pages;assembly=IdApp"
+                       xmlns:model="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.AccountEvent;assembly=IdApp"
+                       xmlns:converters="clr-namespace:IdApp.Converters;assembly=IdApp"
+                       x:DataType="model:AccountEventViewModel"
+                       x:Class="NeuroAccessMaui.UI.Pages.Wallet.AccountEvent.AccountEventPage"
+                       Title="{x:Static resx:AppResources.AccountEvent}">
+    <Grid>
+        <ScrollView x:Name="ScrollView">
+            <StackLayout Margin="{StaticResource DefaultMargin}">
+                <Label Text="{x:Static resx:AppResources.AccountEvent}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
+                <Label Text="{x:Static resx:AppResources.AccountEventDescription}" Style="{StaticResource InfoText}" VerticalOptions="Start"/>
+                <!-- Note -->
+                <Label Text="{x:Static resx:AppResources.RemoteParty}"/>
+                <Entry Text="{Binding Path=FriendlyName}" IsReadOnly="True"/>
+                <Label Text="{x:Static resx:AppResources.Timestamp}"/>
+                <Entry Text="{Binding Path=TimestampStr}" IsReadOnly="True"/>
+                <Label Text="{x:Static resx:AppResources.Change}"/>
+                <Entry Text="{Binding Path=ChangeAndCurrency}" IsReadOnly="True" TextColor="{Binding Path=ChangeColor}"/>
+                <Label Text="{x:Static resx:AppResources.Balance}"/>
+                <Entry Text="{Binding Path=BalanceAndCurrency}" IsReadOnly="True"/>
+				<Label Text="{x:Static resx:AppResources.Reserved}" IsVisible="{Binding Reserved, Converter={converters:GreaterThanZero}}"/>
+				<Entry Text="{Binding Path=ReservedAndCurrency}" IsReadOnly="True" IsVisible="{Binding Reserved, Converter={converters:GreaterThanZero}}"/>
+				<Label Text="{x:Static resx:AppResources.Message}" IsVisible="{Binding Path=HasMessage}"/>
+                <Entry Text="{Binding Path=Message}" IsReadOnly="True" IsVisible="{Binding Path=HasMessage}"/>
+                <Button Text="{Static resx:AppResources.OpenMessageLink}" Command="{Binding OpenMessageLinkCommand}" IsVisible="{Binding MessageIsUri}"/>
+                <Label Text="{x:Static resx:AppResources.TransactionId}"/>
+                <Entry Text="{Binding Path=Id}" IsReadOnly="True"/>
+            </StackLayout>
+        </ScrollView>
+    </Grid>
+</views:ContentBasePage>

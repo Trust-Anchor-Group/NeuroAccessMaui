@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<views:ContentBasePage xmlns="http://xamarin.com/schemas/2014/forms"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                       xmlns:resx="clr-namespace:IdApp.Resx;assembly=IdApp"
+                       xmlns:converters="clr-namespace:IdApp.Converters;assembly=IdApp"
+                       xmlns:views="clr-namespace:IdApp.Pages;assembly=IdApp"
+                       xmlns:model="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MyTokens;assembly=IdApp"
+                       xmlns:objectmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels;assembly=IdApp"
+                       xmlns:loading="clr-namespace:IdApp.Controls.LoadingCollectionView;assembly=IdApp"
+                       x:DataType="model:MyTokensViewModel"
+                       x:Class="NeuroAccessMaui.UI.Pages.Wallet.MyTokens.MyTokensPage"
+                       Style="{StaticResource BaseBackgroundPage}"
+                       Title="{x:Static resx:AppResources.MyTokens}">
+
+    <StackLayout Grid.Row="1" Margin="{StaticResource DefaultMargin}" >
+        <loading:LoadingCollectionView VerticalOptions="StartAndExpand" SelectionMode="Single" RemainingItemsThreshold="1"
+                                       ItemSizingStrategy="MeasureFirstItem" BackgroundColor="{StaticResource PageBackgroundColor}"
+                                       ItemsSource="{Binding Path=Tokens}" LoadMoreCommand="{Binding LoadMoreTokensCommand}">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical" VerticalItemSpacing="12"/>
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="objectmodel:TokenItem">
+                    <Grid ColumnDefinitions="*,4*,2*,*" RowDefinitions="auto">
+                        <Image Grid.Column="0" Grid.Row="0"
+                                            Source="{Binding Path=GlyphImage}" IsVisible="{Binding Path=HasGlyphImage}"
+                                            WidthRequest="{Binding Path=GlyphWidth, Mode=OneTime}"
+                                            HeightRequest="{Binding Path=GlyphHeight, Mode=OneTime}"
+                                            VerticalOptions="Center" HorizontalOptions="Center" />
+                        <Label Grid.Column="1" Grid.Row="0" Text="{Binding Path=FriendlyName}"
+                                            Style="{StaticResource KeyLabel}" LineBreakMode="TailTruncation"
+                                            FontAttributes="Bold" FontSize="18" HorizontalTextAlignment="Start"
+                                            VerticalOptions="Center"/>
+						<Frame Grid.Row="0" Grid.Column="2" CornerRadius="12" Margin="2" Padding="8,3,8,3" IsVisible="{Binding New}"
+							   HorizontalOptions="Start" VerticalOptions="Center" Style="{StaticResource AlertFrame}">
+							<Label FontSize="Caption" TextColor="{StaticResource HeadingForeground}" Text="{Binding NrEvents}" Padding="1"/>
+						</Frame>
+						<Label Grid.Column="2" Grid.Row="0" Text="{Binding Path=Value, Converter={converters:MoneyToString}}"
+                                            Style="{StaticResource KeyLabel}" LineBreakMode="TailTruncation" FontSize="18"
+                                            HorizontalTextAlignment="End" VerticalOptions="Center"/>
+                        <Label Grid.Column="3" Grid.Row="0" Text="{Binding Path=Currency}" FontSize="18"
+                                            Style="{StaticResource KeyLabel}" LineBreakMode="TailTruncation"
+                                            HorizontalTextAlignment="Start" VerticalOptions="Center"/>
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ClickedCommand}" CommandParameter="{Binding .}"/>
+                        </Grid.GestureRecognizers>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </loading:LoadingCollectionView>
+    </StackLayout>
+</views:ContentBasePage>

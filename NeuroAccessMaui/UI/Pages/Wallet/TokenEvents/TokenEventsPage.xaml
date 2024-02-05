@@ -1,0 +1,277 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<views:ContentBasePage xmlns="http://xamarin.com/schemas/2014/forms"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                       xmlns:resx="clr-namespace:IdApp.Resx;assembly=IdApp"
+                       xmlns:views="clr-namespace:IdApp.Pages;assembly=IdApp"
+                       xmlns:model="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.TokenEvents;assembly=IdApp"
+                       xmlns:events="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.TokenEvents.Events;assembly=IdApp"
+                       xmlns:converters="clr-namespace:IdApp.Converters;assembly=IdApp"
+					   xmlns:system="clr-namespace:System;assembly=netstandard"
+                       x:DataType="model:TokenEventsViewModel"
+                       x:Class="NeuroAccessMaui.UI.Pages.Wallet.TokenEvents.TokenEventsPage"
+                       Style="{StaticResource BaseBackgroundPage}"
+                       Title="{x:Static resx:AppResources.TokenEvents}">
+    <views:ContentBasePage.Resources>
+        <DataTemplate x:Key="CreatedEvent" x:DataType="events:CreatedItem">
+            <ViewCell>
+                <Grid ColumnDefinitions="*,*" RowDefinitions="auto,auto,auto,auto,auto" Margin="{StaticResource DefaultBottomOnlyMargin}">
+                    <Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Style="{StaticResource TableHeader}">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="{Binding Timestamp, Converter={converters:DateTimeToString}}"/>
+                                <Span Text=", "/>
+                                <Span Text="{x:Static resx:AppResources.Created}"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+
+                    <Label Grid.Column="0" Grid.Row="1" Text="{x:Static resx:AppResources.Creator}" Style="{StaticResource KeyLabel}"/>
+                    <Label Grid.Column="1" Grid.Row="1" Text="{Binding CreatorFriendlyName}" Style="{StaticResource ClickableValueLabel}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ViewIdCommand}" CommandParameter="{Binding Creator}" />
+                        </Label.GestureRecognizers>
+                    </Label>
+
+                    <Label Grid.Column="0" Grid.Row="2" Text="{x:Static resx:AppResources.Owner}" Style="{StaticResource KeyLabel}"/>
+                    <Label Grid.Column="1" Grid.Row="2" Text="{Binding OwnerFriendlyName}" Style="{StaticResource ClickableValueLabel}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ViewIdCommand}" CommandParameter="{Binding Owner}" />
+                        </Label.GestureRecognizers>
+                    </Label>
+
+                    <Label Grid.Column="0" Grid.Row="3" Text="{x:Static resx:AppResources.OwnershipContract}" Style="{StaticResource KeyLabel}"/>
+                    <Label Grid.Column="1" Grid.Row="3" Text="{Binding OwnershipContract}" Style="{StaticResource ClickableValueLabel}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ViewContractCommand}" CommandParameter="{Binding OwnershipContract}" />
+                        </Label.GestureRecognizers>
+                    </Label>
+
+                    <Label Grid.Column="0" Grid.Row="4" Text="{x:Static resx:AppResources.Value}" Style="{StaticResource KeyLabel}"/>
+                    <Label Grid.Column="1" Grid.Row="4" Style="{StaticResource ValueLabel}">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="{Binding Value, Converter={converters:MoneyToString}}"/>
+                                <Span Text=" "/>
+                                <Span Text="{Binding Currency}"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                </Grid>
+            </ViewCell>
+        </DataTemplate>
+        <DataTemplate x:Key="DestroyedEvent" x:DataType="events:DestroyedItem">
+            <ViewCell>
+                <Grid ColumnDefinitions="*,*" RowDefinitions="auto,auto,auto,auto" Margin="{StaticResource DefaultBottomOnlyMargin}">
+                    <Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Style="{StaticResource TableHeader}">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="{Binding Timestamp, Converter={converters:DateTimeToString}}"/>
+                                <Span Text=", "/>
+                                <Span Text="{x:Static resx:AppResources.Destroyed}"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+
+                    <Label Grid.Column="0" Grid.Row="1" Text="{x:Static resx:AppResources.Owner}" Style="{StaticResource KeyLabel}"/>
+                    <Label Grid.Column="1" Grid.Row="1" Text="{Binding OwnerFriendlyName}" Style="{StaticResource ClickableValueLabel}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ViewIdCommand}" CommandParameter="{Binding Owner}" />
+                        </Label.GestureRecognizers>
+                    </Label>
+
+                    <Label Grid.Column="0" Grid.Row="2" Text="{x:Static resx:AppResources.OwnershipContract}" Style="{StaticResource KeyLabel}"/>
+                    <Label Grid.Column="1" Grid.Row="2" Text="{Binding OwnershipContract}" Style="{StaticResource ClickableValueLabel}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ViewContractCommand}" CommandParameter="{Binding OwnershipContract}" />
+                        </Label.GestureRecognizers>
+                    </Label>
+
+                    <Label Grid.Column="0" Grid.Row="3" Text="{x:Static resx:AppResources.Value}" Style="{StaticResource KeyLabel}"/>
+                    <Label Grid.Column="1" Grid.Row="3" Style="{StaticResource ValueLabel}">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="{Binding Value, Converter={converters:MoneyToString}}"/>
+                                <Span Text=" "/>
+                                <Span Text="{Binding Currency}"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                </Grid>
+            </ViewCell>
+        </DataTemplate>
+        <DataTemplate x:Key="TransferredEvent" x:DataType="events:TransferredItem">
+            <ViewCell>
+                <Grid ColumnDefinitions="*,*" RowDefinitions="auto,auto,auto,auto,auto" Margin="{StaticResource DefaultBottomOnlyMargin}">
+                    <Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Style="{StaticResource TableHeader}">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="{Binding Timestamp, Converter={converters:DateTimeToString}}"/>
+                                <Span Text=", "/>
+                                <Span Text="{x:Static resx:AppResources.Transferred}"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+
+                    <Label Grid.Column="0" Grid.Row="1" Text="{x:Static resx:AppResources.Seller}" Style="{StaticResource KeyLabel}"/>
+                    <Label Grid.Column="1" Grid.Row="1" Text="{Binding SellerFriendlyName}" Style="{StaticResource ClickableValueLabel}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ViewIdCommand}" CommandParameter="{Binding Seller}" />
+                        </Label.GestureRecognizers>
+                    </Label>
+
+                    <Label Grid.Column="0" Grid.Row="2" Text="{x:Static resx:AppResources.Owner}" Style="{StaticResource KeyLabel}"/>
+                    <Label Grid.Column="1" Grid.Row="2" Text="{Binding OwnerFriendlyName}" Style="{StaticResource ClickableValueLabel}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ViewIdCommand}" CommandParameter="{Binding Owner}" />
+                        </Label.GestureRecognizers>
+                    </Label>
+
+                    <Label Grid.Column="0" Grid.Row="3" Text="{x:Static resx:AppResources.OwnershipContract}" Style="{StaticResource KeyLabel}"/>
+                    <Label Grid.Column="1" Grid.Row="3" Text="{Binding OwnershipContract}" Style="{StaticResource ClickableValueLabel}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ViewContractCommand}" CommandParameter="{Binding OwnershipContract}" />
+                        </Label.GestureRecognizers>
+                    </Label>
+
+                    <Label Grid.Column="0" Grid.Row="4" Text="{x:Static resx:AppResources.Value}" Style="{StaticResource KeyLabel}"/>
+                    <Label Grid.Column="1" Grid.Row="4" Style="{StaticResource ValueLabel}">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="{Binding Value, Converter={converters:MoneyToString}}"/>
+                                <Span Text=" "/>
+                                <Span Text="{Binding Currency}"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                </Grid>
+            </ViewCell>
+        </DataTemplate>
+        <DataTemplate x:Key="NoteText" x:DataType="events:NoteTextItem">
+            <ViewCell>
+                <Grid ColumnDefinitions="*,*" RowDefinitions="auto,auto" Margin="{StaticResource DefaultBottomOnlyMargin}">
+                    <Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Style="{StaticResource TableHeader}">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="{Binding Timestamp, Converter={converters:DateTimeToString}}"/>
+                                <Span Text=", "/>
+                                <Span Text="{x:Static resx:AppResources.TextNote}"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+
+                    <Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding Note}" Style="{StaticResource ClickableValueLabel}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding CopyToClipboardCommand}" CommandParameter="{Binding Note}" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                </Grid>
+            </ViewCell>
+        </DataTemplate>
+        <DataTemplate x:Key="NoteXml" x:DataType="events:NoteXmlItem">
+            <ViewCell>
+                <Grid ColumnDefinitions="*,*" RowDefinitions="auto,auto" Margin="{StaticResource DefaultBottomOnlyMargin}">
+                    <Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Style="{StaticResource TableHeader}">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="{Binding Timestamp, Converter={converters:DateTimeToString}}"/>
+                                <Span Text=", "/>
+                                <Span Text="{x:Static resx:AppResources.XmlNote}"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                    <Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Text="{x:Static resx:AppResources.ViewXmlInBrowser}" Style="{StaticResource ClickableValueLabel}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ViewXmlInBrowserCommand}" CommandParameter="{Binding Note}" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                </Grid>
+            </ViewCell>
+        </DataTemplate>
+		<DataTemplate x:Key="ExternalNoteText" x:DataType="events:ExternalNoteTextItem">
+			<ViewCell>
+				<Grid ColumnDefinitions="*,*" RowDefinitions="auto,auto" Margin="{StaticResource DefaultBottomOnlyMargin}">
+					<Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Style="{StaticResource TableHeader}">
+						<Label.FormattedText>
+							<FormattedString>
+								<Span Text="{Binding Timestamp, Converter={converters:DateTimeToString}}"/>
+								<Span Text=", "/>
+								<Span Text="{x:Static resx:AppResources.TextNote}"/>
+								<Span Text="{x:Static system:Environment.NewLine}"/>
+								<Span Text="(" Style="{StaticResource ValueSpan}"/>
+								<Span Text="{x:Static resx:AppResources.From}" Style="{StaticResource ValueSpan}"/>
+								<Span Text=" " Style="{StaticResource ValueSpan}"/>
+								<Span Text="{Binding Source}" Style="{StaticResource ClickableValueSpan}">
+									<Span.GestureRecognizers>
+										<TapGestureRecognizer Command="{Binding ViewSourceCommand}" CommandParameter="{Binding Source}" />
+									</Span.GestureRecognizers>
+								</Span>
+								<Span Text=")" Style="{StaticResource ValueSpan}"/>
+							</FormattedString>
+						</Label.FormattedText>
+					</Label>
+
+					<Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding Note}" Style="{StaticResource ClickableValueLabel}">
+						<Label.GestureRecognizers>
+							<TapGestureRecognizer Command="{Binding CopyToClipboardCommand}" CommandParameter="{Binding Note}" />
+						</Label.GestureRecognizers>
+					</Label>
+				</Grid>
+			</ViewCell>
+		</DataTemplate>
+		<DataTemplate x:Key="ExternalNoteXml" x:DataType="events:ExternalNoteXmlItem">
+			<ViewCell>
+				<Grid ColumnDefinitions="*,*" RowDefinitions="auto,auto" Margin="{StaticResource DefaultBottomOnlyMargin}">
+					<Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Style="{StaticResource TableHeader}">
+						<Label.FormattedText>
+							<FormattedString>
+								<Span Text="{Binding Timestamp, Converter={converters:DateTimeToString}}"/>
+								<Span Text=", "/>
+								<Span Text="{x:Static resx:AppResources.XmlNote}"/>
+								<Span Text="{x:Static system:Environment.NewLine}"/>
+								<Span Text="(" Style="{StaticResource ValueSpan}"/>
+								<Span Text="{x:Static resx:AppResources.From}" Style="{StaticResource ValueSpan}"/>
+								<Span Text=" " Style="{StaticResource ValueSpan}"/>
+								<Span Text="{Binding Source}" Style="{StaticResource ClickableValueSpan}">
+									<Span.GestureRecognizers>
+										<TapGestureRecognizer Command="{Binding ViewSourceCommand}" CommandParameter="{Binding Source}" />
+									</Span.GestureRecognizers>
+								</Span>
+								<Span Text=")" Style="{StaticResource ValueSpan}"/>
+							</FormattedString>
+						</Label.FormattedText>
+					</Label>
+					<Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Text="{x:Static resx:AppResources.ViewXmlInBrowser}" Style="{StaticResource ClickableValueLabel}">
+						<Label.GestureRecognizers>
+							<TapGestureRecognizer Command="{Binding ViewXmlInBrowserCommand}" CommandParameter="{Binding Note}" />
+						</Label.GestureRecognizers>
+					</Label>
+				</Grid>
+			</ViewCell>
+		</DataTemplate>
+		<DataTemplate x:Key="OtherEvents" x:DataType="model:EventItem">
+            <ViewCell>
+                <Grid ColumnDefinitions="*,*" RowDefinitions="auto,auto" Margin="{StaticResource DefaultBottomOnlyMargin}">
+                    <Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding Timestamp, Converter={converters:DateTimeToString}}" Style="{StaticResource TableHeader}"/>
+                    <Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Text="{x:Static resx:AppResources.UnrecognizedEventType}" Style="{StaticResource ValueLabel}"/>
+                </Grid>
+            </ViewCell>
+        </DataTemplate>
+        <model:EventTypeTemplateSelector x:Key="EventStyleSelector" 
+                                         CreatedTemplate="{StaticResource CreatedEvent}" 
+                                         DestroyedTemplate="{StaticResource DestroyedEvent}" 
+                                         TransferredTemplate="{StaticResource TransferredEvent}" 
+                                         NoteTextTemplate="{StaticResource NoteText}" 
+                                         NoteXmlTemplate="{StaticResource NoteXml}"
+                                         ExternalNoteTextTemplate="{StaticResource ExternalNoteText}" 
+                                         ExternalNoteXmlTemplate="{StaticResource ExternalNoteXml}"
+                                         DefaultTemplate="{StaticResource OtherEvents}"/>
+    </views:ContentBasePage.Resources>
+    <Grid ColumnDefinitions="*" RowDefinitions="auto,auto,*,auto" Margin="{StaticResource DefaultMargin}">
+        <Label Grid.Column="0" Grid.Row="0" Text="{x:Static resx:AppResources.TokenEvents}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
+        <Label Grid.Column="0" Grid.Row="1" Text="{x:Static resx:AppResources.TokenEventsDescription}" Style="{StaticResource InfoText}" VerticalOptions="Start"/>
+        <ListView Grid.Column="0" Grid.Row="2" HasUnevenRows="True" SeparatorVisibility="None" VerticalOptions="StartAndExpand"
+                    ItemsSource="{Binding Path=Events}" ItemTemplate="{StaticResource EventStyleSelector}"/>
+        <Button Grid.Column="0" Grid.Row="3" Text="{x:Static resx:AppResources.AddNote}" Margin="{StaticResource DefaultBottomOnlyMargin}"
+                Command="{Binding Path=AddNoteCommand}" IsEnabled="{Binding Path=IsBusy, Converter={converters:LogicalNot}}" />
+    </Grid>
+</views:ContentBasePage>

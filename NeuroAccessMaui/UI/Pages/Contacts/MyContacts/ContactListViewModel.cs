@@ -428,7 +428,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 			this.OnSelected(new ContactInfoModel(null, []));
 		}
 
-		private Task Xmpp_OnPresence(object Sender, PresenceEventArgs e)
+		private Task Xmpp_OnPresence(object? Sender, PresenceEventArgs e)
 		{
 			if (this.byBareJid.TryGetValue(e.FromBareJID, out List<ContactInfoModel>? Contacts))
 			{
@@ -441,7 +441,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 			return Task.CompletedTask;
 		}
 
-		private void NotificationService_OnNewNotification(object Sender, NotificationEventArgs e)
+		private void NotificationService_OnNewNotification(object? Sender, NotificationEventArgs e)
 		{
 			if (e.Event.Type == NotificationEventType.Contacts)
 				this.UpdateNotifications(e.Event.Category ?? string.Empty);
@@ -465,7 +465,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 			}
 		}
 
-		private void NotificationService_OnNotificationsDeleted(object Sender, NotificationEventsArgs e)
+		private void NotificationService_OnNotificationsDeleted(object? Sender, NotificationEventsArgs e)
 		{
 			Dictionary<CaseInsensitiveString, bool> Categories = [];
 

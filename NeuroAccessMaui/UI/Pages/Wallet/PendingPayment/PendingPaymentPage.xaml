@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<views:ContentBasePage xmlns="http://xamarin.com/schemas/2014/forms"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                       xmlns:resx="clr-namespace:IdApp.Resx;assembly=IdApp"
+                       xmlns:views="clr-namespace:IdApp.Pages;assembly=IdApp"
+                       xmlns:model="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet;assembly=IdApp"
+                       x:DataType="model:EDalerUriViewModel"
+                       x:Class="NeuroAccessMaui.UI.Pages.Wallet.PendingPayment.PendingPaymentPage"
+                       Style="{StaticResource BaseBackgroundPage}"
+                       Title="{x:Static resx:AppResources.PendingPayment}">
+    <Grid>
+        <ScrollView x:Name="ScrollView">
+            <StackLayout Margin="{StaticResource DefaultMargin}">
+                <Label Text="{x:Static resx:AppResources.PendingPayment}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
+                <Label Text="{x:Static resx:AppResources.PendingPaymentDescription}" Style="{StaticResource InfoText}" VerticalOptions="Start"/>
+                <!-- Note -->
+                <Label Text="{x:Static resx:AppResources.To}"/>
+                <Entry Text="{Binding Path=FriendlyName}" IsReadOnly="True"/>
+                <Label Text="{x:Static resx:AppResources.Amount}"/>
+                <Entry Text="{Binding Path=AmountAndCurrency}" IsReadOnly="True"/>
+                <Label Text="{x:Static resx:AppResources.AmountExtra}" IsVisible="{Binding Path=AmountExtraPreset}"/>
+                <Entry Text="{Binding Path=AmountExtraAndCurrency}" IsVisible="{Binding Path=AmountExtraPreset}" IsReadOnly="True"/>
+                <Label Text="{x:Static resx:AppResources.Message}" IsVisible="{Binding Path=MessagePreset}"/>
+                <Entry Text="{Binding Path=Message}" IsReadOnly="True" IsVisible="{Binding Path=MessagePreset}"/>
+                <Label Text="{x:Static resx:AppResources.ExpiresAt}"/>
+                <Entry Text="{Binding Path=ExpiresStr}" IsReadOnly="True"/>
+                <!-- BUTTONS -->
+                <Button Text="{x:Static resx:AppResources.Submit}" Command="{Binding Path=SubmitCommand}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
+                <Button Text="{x:Static resx:AppResources.ShowCode}" Command="{Binding Path=ShowCodeCommand}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
+                <Image x:Name="QrCode" BackgroundColor="{StaticResource HeadingForeground}" Source="{Binding Path=QrCode}" 
+                       IsVisible="{Binding Path=HasQrCode}" WidthRequest="{Binding Path=QrCodeWidth}" 
+                       HeightRequest="{Binding Path=QrCodeHeight}" HorizontalOptions="Center" VerticalOptions="Start" 
+                       Margin="0" />
+                <Button x:Name="ShareButton" Text="{x:Static resx:AppResources.Share}" Command="{Binding Path=ShareCommand}" 
+                        IsVisible="{Binding Path=HasQrCode}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
+            </StackLayout>
+        </ScrollView>
+    </Grid>
+</views:ContentBasePage>

@@ -414,7 +414,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			}
 		}
 
-		private void NotificationService_OnNotificationsDeleted(object Sender, NotificationEventsArgs e)
+		private void NotificationService_OnNotificationsDeleted(object? Sender, NotificationEventsArgs e)
 		{
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
@@ -441,7 +441,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			});
 		}
 
-		private void NotificationService_OnNewNotification(object Sender, NotificationEventArgs e)
+		private void NotificationService_OnNewNotification(object? Sender, NotificationEventArgs e)
 		{
 			if (e.Event.Type != NotificationEventType.Contracts)
 				return;
