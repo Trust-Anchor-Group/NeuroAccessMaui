@@ -549,7 +549,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					this.saveStateWhileScanning = true;
 					this.stateTemplateWhileScanning = this.template;
 
-					TaskCompletionSource<ContactInfoModel> Selected = new();
+					TaskCompletionSource<ContactInfoModel?> Selected = new();
 					ContactListNavigationArgs Args = new(ServiceRef.Localizer[nameof(AppResources.AddContactToContract)], Selected)
 					{
 						CanScanQrCode = true
@@ -557,7 +557,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 					await ServiceRef.NavigationService.GoToAsync(nameof(MyContactsPage), Args, BackMethod.Pop);
 
-					ContactInfoModel Contact = await Selected.Task;
+					ContactInfoModel? Contact = await Selected.Task;
 					if (Contact is null)
 						return;
 
@@ -1144,8 +1144,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 						Button CalcButton = new()
 						{
-							FontFamily = (OnPlatform<string>)Application.Current!.Resources["FontAwesomeSolid"],
-							TextColor = (Color)Application.Current.Resources["TextColorLightTheme"],
+							TextColor = ThemeColors.PrimaryForeground,
 							Text = CalculatorButtonType,
 							HorizontalOptions = LayoutOptions.End,
 							WidthRequest = 40,

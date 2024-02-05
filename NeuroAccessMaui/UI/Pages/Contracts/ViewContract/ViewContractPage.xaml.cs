@@ -28,7 +28,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		{
 			if (this.ViewModel is ViewContractViewModel ViewContractViewModel)
 			{
-				Attachment[] attachments = ViewContractViewModel.Contract?.Attachments;
+				Attachment[]? attachments = ViewContractViewModel.Contract?.Attachments;
 				this.PhotoViewer.ShowPhotos(attachments);
 			}
 		}

@@ -1509,11 +1509,23 @@
   <data name="APetitionHasBeenSentForEncryption" xml:space="preserve">
     <value>Šifrovanje se može izvršiti samo ako imate pristup identitetu primalaca. Zbog toga je upućena peticija za ovaj identitet upućena primaocu. Ako primalac prihvati peticiju, dobićete identitet i moći ćete da pošaljete uplatu šifrovanom porukom kada pokušate ponovo. Takođe možete odabrati da pošaljete nešifrovanu poruku sa uplatom.</value>
   </data>
+  <data name="Assessor" xml:space="preserve">
+    <value>Procenitelj</value>
+  </data>
   <data name="Building" xml:space="preserve">
     <value>Zgradu</value>
   </data>
+  <data name="BuyEDaler" xml:space="preserve">
+    <value>Kupi eDaler.</value>
+  </data>
   <data name="CallerOnly" xml:space="preserve">
     <value>Samo pozivalac</value>
+  </data>
+  <data name="Certifier" xml:space="preserve">
+    <value>Certifikator</value>
+  </data>
+  <data name="CertifierJid" xml:space="preserve">
+    <value>Adresa potvrde</value>
   </data>
   <data name="Class" xml:space="preserve">
     <value>Klase</value>
@@ -1526,6 +1538,9 @@
   </data>
   <data name="ContractProposal" xml:space="preserve">
     <value>Predlog ugovora</value>
+  </data>
+  <data name="ContractResponse" xml:space="preserve">
+    <value>Odgovor na zahtev za ugovor</value>
   </data>
   <data name="ContractSignatureReceived" xml:space="preserve">
     <value>Primljen potpis ugovora</value>
@@ -1554,11 +1569,17 @@
   <data name="Everyone" xml:space="preserve">
     <value>Svi</value>
   </data>
+  <data name="ExpiresAt" xml:space="preserve">
+    <value>(Ističe {0})</value>
+  </data>
   <data name="FromUser" xml:space="preserve">
     <value>Od korisnika</value>
   </data>
   <data name="GeneralInformation" xml:space="preserve">
     <value>Opšte informacije</value>
+  </data>
+  <data name="History" xml:space="preserve">
+    <value>Istorija</value>
   </data>
   <data name="InvalidNeuroFeatureToken" xml:space="preserve">
     <value>Nevažeći oznaka neuro-funkcije.</value>
@@ -1587,11 +1608,17 @@
   <data name="Name" xml:space="preserve">
     <value>Ime</value>
   </data>
+  <data name="NetworkAddressOfContactUnknown" xml:space="preserve">
+    <value>Mrežna adresa kontakta nepoznata.</value>
+  </data>
   <data name="NoContactsFound" xml:space="preserve">
     <value>Nisu pronađeni kontakti.</value>
   </data>
   <data name="NotAvailable" xml:space="preserve">
     <value>Nije dostupno</value>
+  </data>
+  <data name="NoteCopiedToClipboard" xml:space="preserve">
+    <value>Napomena kopirana u ostavu.</value>
   </data>
   <data name="Payment" xml:space="preserve">
     <value>Plaćanja</value>
@@ -1608,17 +1635,35 @@
   <data name="PickPhoto" xml:space="preserve">
     <value>Odaberi fotografiju</value>
   </data>
+  <data name="Present" xml:space="preserve">
+    <value>Poklon</value>
+  </data>
   <data name="ProductInformation" xml:space="preserve">
     <value>Informacije o proizvodu</value>
   </data>
+  <data name="Profiling" xml:space="preserve">
+    <value>Profilisanje</value>
+  </data>
+  <data name="PurposeReviewToken" xml:space="preserve">
+    <value>Redigovanje simbola mesta gde ste deo.</value>
+  </data>
   <data name="Question" xml:space="preserve">
     <value>Pitanje</value>
+  </data>
+  <data name="Reference" xml:space="preserve">
+    <value>Referenca</value>
   </data>
   <data name="Registry" xml:space="preserve">
     <value>Registratora</value>
   </data>
   <data name="RemoveSubscriptionFrom" xml:space="preserve">
     <value>Želite li da uklonite pretplatu na prisustvo iz {0}?</value>
+  </data>
+  <data name="RequestPayment" xml:space="preserve">
+    <value>Uplata zahteva</value>
+  </data>
+  <data name="RequestPaymentMessage" xml:space="preserve">
+    <value>Zahtevam isplatu {0} {1}.</value>
   </data>
   <data name="Room" xml:space="preserve">
     <value>Soba</value>
@@ -1632,8 +1677,23 @@
   <data name="SelectContactToPay" xml:space="preserve">
     <value>Ispod su svi kontakti u vašoj knjizi kontakata. Izaberite kontakt kome želite da izvršite uplatu.</value>
   </data>
+  <data name="SelectFromWhomToRequestPayment" xml:space="preserve">
+    <value>Izaberite od koga želite da zatražite uplatu.</value>
+  </data>
   <data name="SelectingAPhotoIsNotSupported" xml:space="preserve">
     <value>Izbor fotografije nije podržan na ovom uređaju</value>
+  </data>
+  <data name="SelectServiceProviderBuyEDaler" xml:space="preserve">
+    <value>Izaberite dobavljača usluga kojeg želite da koristite za kupovinu eDaler-a.</value>
+  </data>
+  <data name="SelectServiceProviderSellEDaler" xml:space="preserve">
+    <value>Izaberite dobavljača usluga kojeg želite da koristite za prodaju eDaler-a.</value>
+  </data>
+  <data name="SellEDaler" xml:space="preserve">
+    <value>Prodaj eDaler.</value>
+  </data>
+  <data name="SendInformationTo" xml:space="preserve">
+    <value>Želite li da pošaljete informacije?</value>
   </data>
   <data name="SensorDataAccepted" xml:space="preserve">
     <value>Zahtev je prihvaćen.</value>
@@ -1689,6 +1749,9 @@
   <data name="Share" xml:space="preserve">
     <value>Delite</value>
   </data>
+  <data name="StateDiagram" xml:space="preserve">
+    <value>Državni dijagram</value>
+  </data>
   <data name="StreetName" xml:space="preserve">
     <value>Ime ulice</value>
   </data>
@@ -1737,13 +1800,25 @@
   <data name="UnableToRespond" xml:space="preserve">
     <value>Nije moguće odgovoriti na zahtev.</value>
   </data>
+  <data name="UnrecognizedEventType" xml:space="preserve">
+    <value>Neprepoznatljiv tip događaja:</value>
+  </data>
   <data name="User" xml:space="preserve">
     <value>Korisnik</value>
   </data>
   <data name="UserSignedAs" xml:space="preserve">
     <value>{0} kao {1}.</value>
   </data>
+  <data name="Valuator" xml:space="preserve">
+    <value>Valuator</value>
+  </data>
   <data name="Version" xml:space="preserve">
     <value>Verzija</value>
+  </data>
+  <data name="Witness" xml:space="preserve">
+    <value>Svedok</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Juče</value>
   </data>
 </root>

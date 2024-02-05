@@ -1509,11 +1509,23 @@
   <data name="APetitionHasBeenSentForEncryption" xml:space="preserve">
     <value>Salaus voidaan suorittaa vain, jos sinulla on pääsy vastaanottajien tunnistetietoihin. Tätä henkilöllisyyttä koskeva vetoomus on siksi lähetetty vastaanottajalle. Jos vastaanottaja hyväksyy vetoomuksen, saat henkilöllisyyden ja voit lähettää maksun salatulla viestillä, kun yrität uudelleen. Voit myös lähettää salaamattoman viestin maksun mukana.</value>
   </data>
+  <data name="Assessor" xml:space="preserve">
+    <value>Asessori</value>
+  </data>
   <data name="Building" xml:space="preserve">
     <value>Rakennus</value>
   </data>
+  <data name="BuyEDaler" xml:space="preserve">
+    <value>Osta eDaler.</value>
+  </data>
   <data name="CallerOnly" xml:space="preserve">
     <value>Vain soittaja</value>
+  </data>
+  <data name="Certifier" xml:space="preserve">
+    <value>Sertifioija</value>
+  </data>
+  <data name="CertifierJid" xml:space="preserve">
+    <value>Sertifioijan osoite</value>
   </data>
   <data name="Class" xml:space="preserve">
     <value>Luokka</value>
@@ -1526,6 +1538,9 @@
   </data>
   <data name="ContractProposal" xml:space="preserve">
     <value>Sopimusehdotus</value>
+  </data>
+  <data name="ContractResponse" xml:space="preserve">
+    <value>Vastaus sopimuspyyntöön</value>
   </data>
   <data name="ContractSignatureReceived" xml:space="preserve">
     <value>Sopimuksen allekirjoitus vastaanotettu</value>
@@ -1554,11 +1569,17 @@
   <data name="Everyone" xml:space="preserve">
     <value>Kaikki</value>
   </data>
+  <data name="ExpiresAt" xml:space="preserve">
+    <value>(Vanhenee {0})</value>
+  </data>
   <data name="FromUser" xml:space="preserve">
     <value>Käyttäjältä</value>
   </data>
   <data name="GeneralInformation" xml:space="preserve">
     <value>Yleistä tietoa</value>
+  </data>
+  <data name="History" xml:space="preserve">
+    <value>Historia</value>
   </data>
   <data name="InvalidNeuroFeatureToken" xml:space="preserve">
     <value>Virheellinen Neuro-Feature-tunnus.</value>
@@ -1587,11 +1608,17 @@
   <data name="Name" xml:space="preserve">
     <value>Nimi</value>
   </data>
+  <data name="NetworkAddressOfContactUnknown" xml:space="preserve">
+    <value>Yhteyshenkilön verkko-osoite tuntematon.</value>
+  </data>
   <data name="NoContactsFound" xml:space="preserve">
     <value>Yhteystietoja ei löytynyt.</value>
   </data>
   <data name="NotAvailable" xml:space="preserve">
     <value>Ei saatavilla</value>
+  </data>
+  <data name="NoteCopiedToClipboard" xml:space="preserve">
+    <value>Huomautus kopioitu leikepöydälle.</value>
   </data>
   <data name="Payment" xml:space="preserve">
     <value>Maksu</value>
@@ -1608,17 +1635,35 @@
   <data name="PickPhoto" xml:space="preserve">
     <value>Valitse valokuva</value>
   </data>
+  <data name="Present" xml:space="preserve">
+    <value>Lahja</value>
+  </data>
   <data name="ProductInformation" xml:space="preserve">
     <value>Tuotetiedot</value>
   </data>
+  <data name="Profiling" xml:space="preserve">
+    <value>Profilointi</value>
+  </data>
+  <data name="PurposeReviewToken" xml:space="preserve">
+    <value>Tunnuksen tarkistaminen siellä, missä olet osa.</value>
+  </data>
   <data name="Question" xml:space="preserve">
     <value>Kysymys</value>
+  </data>
+  <data name="Reference" xml:space="preserve">
+    <value>Viittaus</value>
   </data>
   <data name="Registry" xml:space="preserve">
     <value>Rekisteri</value>
   </data>
   <data name="RemoveSubscriptionFrom" xml:space="preserve">
     <value>Haluatko poistaa tavoitettavuustilauksen {0}:stä?</value>
+  </data>
+  <data name="RequestPayment" xml:space="preserve">
+    <value>Pyydä maksua</value>
+  </data>
+  <data name="RequestPaymentMessage" xml:space="preserve">
+    <value>{0} {1} maksun pyytäminen.</value>
   </data>
   <data name="Room" xml:space="preserve">
     <value>Huone</value>
@@ -1632,8 +1677,23 @@
   <data name="SelectContactToPay" xml:space="preserve">
     <value>Alla on kaikki yhteystiedot yhteystietokirjassasi. Valitse yhteyshenkilö, jolle haluat suorittaa maksun.</value>
   </data>
+  <data name="SelectFromWhomToRequestPayment" xml:space="preserve">
+    <value>Valitse, keneltä maksua pyydetään.</value>
+  </data>
   <data name="SelectingAPhotoIsNotSupported" xml:space="preserve">
     <value>Tämä laite ei tue valokuvan valitsemista</value>
+  </data>
+  <data name="SelectServiceProviderBuyEDaler" xml:space="preserve">
+    <value>Valitse palveluntarjoaja, jota haluat käyttää eDalerin ostamiseen.</value>
+  </data>
+  <data name="SelectServiceProviderSellEDaler" xml:space="preserve">
+    <value>Valitse palveluntarjoaja, jota haluat käyttää eDalerin myyntiin.</value>
+  </data>
+  <data name="SellEDaler" xml:space="preserve">
+    <value>Myy eDaler.</value>
+  </data>
+  <data name="SendInformationTo" xml:space="preserve">
+    <value>Lähetä tietoja osoitteeseen?</value>
   </data>
   <data name="SensorDataAccepted" xml:space="preserve">
     <value>Pyyntö on hyväksytty.</value>
@@ -1689,6 +1749,9 @@
   <data name="Share" xml:space="preserve">
     <value>Jakaa</value>
   </data>
+  <data name="StateDiagram" xml:space="preserve">
+    <value>Tilakaavio</value>
+  </data>
   <data name="StreetName" xml:space="preserve">
     <value>Lempinimi</value>
   </data>
@@ -1737,13 +1800,25 @@
   <data name="UnableToRespond" xml:space="preserve">
     <value>Pyyntöön ei voi vastata.</value>
   </data>
+  <data name="UnrecognizedEventType" xml:space="preserve">
+    <value>Tunnistamaton tapahtumatyyppi:</value>
+  </data>
   <data name="User" xml:space="preserve">
     <value>Käyttäjä</value>
   </data>
   <data name="UserSignedAs" xml:space="preserve">
     <value>{0} allekirjoitti {1}.</value>
   </data>
+  <data name="Valuator" xml:space="preserve">
+    <value>Arvioija</value>
+  </data>
   <data name="Version" xml:space="preserve">
     <value>Versio</value>
+  </data>
+  <data name="Witness" xml:space="preserve">
+    <value>Todistaja</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Eilen</value>
   </data>
 </root>

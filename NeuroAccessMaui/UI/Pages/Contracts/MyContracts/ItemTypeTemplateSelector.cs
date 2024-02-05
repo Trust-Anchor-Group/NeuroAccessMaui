@@ -10,25 +10,25 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		/// <summary>
 		/// Template to use for contract header
 		/// </summary>
-		public DataTemplate HeaderTemplate { get; set; }
+		public DataTemplate? HeaderTemplate { get; set; }
 
 		/// <summary>
 		/// Template to use for contracts
 		/// </summary>
-		public DataTemplate ContractTemplate { get; set; }
+		public DataTemplate? ContractTemplate { get; set; }
 
 		/// <summary>
 		/// Template to use for standalone notification events.
 		/// </summary>
-		public DataTemplate EventTemplate { get; set; }
+		public DataTemplate? EventTemplate { get; set; }
 
 		/// <summary>
 		/// Template to use for other items.
 		/// </summary>
-		public DataTemplate DefaultTemplate { get; set; }
+		public DataTemplate? DefaultTemplate { get; set; }
 
 		/// <inheritdoc/>
-		protected override DataTemplate OnSelectTemplate(object item, BindableObject container)
+		protected override DataTemplate? OnSelectTemplate(object item, BindableObject container)
 		{
 			if (item is HeaderModel)
 				return this.HeaderTemplate ?? this.DefaultTemplate;

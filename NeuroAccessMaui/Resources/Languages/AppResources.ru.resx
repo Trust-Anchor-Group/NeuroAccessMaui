@@ -1509,11 +1509,23 @@
   <data name="APetitionHasBeenSentForEncryption" xml:space="preserve">
     <value>Шифрование может быть выполнено только в том случае, если у вас есть доступ к идентификационным данным получателей. В связи с этим получателю было направлено ходатайство об установлении личности. Если получатель примет петицию, вы получите удостоверение личности и сможете отправить платеж с зашифрованным сообщением при повторной попытке. Вы также можете отправить незашифрованное сообщение вместе с платежом.</value>
   </data>
+  <data name="Assessor" xml:space="preserve">
+    <value>Заседатель</value>
+  </data>
   <data name="Building" xml:space="preserve">
     <value>Здание</value>
   </data>
+  <data name="BuyEDaler" xml:space="preserve">
+    <value>Купить eDaler.</value>
+  </data>
   <data name="CallerOnly" xml:space="preserve">
     <value>Только вызывающий абонент</value>
+  </data>
+  <data name="Certifier" xml:space="preserve">
+    <value>Сертифицирующий орган</value>
+  </data>
+  <data name="CertifierJid" xml:space="preserve">
+    <value>Адрес сертифицирующего органа</value>
   </data>
   <data name="Class" xml:space="preserve">
     <value>Класс</value>
@@ -1526,6 +1538,9 @@
   </data>
   <data name="ContractProposal" xml:space="preserve">
     <value>Предложение по контракту</value>
+  </data>
+  <data name="ContractResponse" xml:space="preserve">
+    <value>Ответ на запрос о заключении договора</value>
   </data>
   <data name="ContractSignatureReceived" xml:space="preserve">
     <value>Подписание контракта получено</value>
@@ -1554,11 +1569,17 @@
   <data name="Everyone" xml:space="preserve">
     <value>Каждый</value>
   </data>
+  <data name="ExpiresAt" xml:space="preserve">
+    <value>(Срок действия истекает {0})</value>
+  </data>
   <data name="FromUser" xml:space="preserve">
     <value>От пользователя</value>
   </data>
   <data name="GeneralInformation" xml:space="preserve">
     <value>Общая информация</value>
+  </data>
+  <data name="History" xml:space="preserve">
+    <value>История</value>
   </data>
   <data name="InvalidNeuroFeatureToken" xml:space="preserve">
     <value>Недопустимый токен Neuro-Feature.</value>
@@ -1587,11 +1608,17 @@
   <data name="Name" xml:space="preserve">
     <value>Имя</value>
   </data>
+  <data name="NetworkAddressOfContactUnknown" xml:space="preserve">
+    <value>Сетевой адрес контакта неизвестен.</value>
+  </data>
   <data name="NoContactsFound" xml:space="preserve">
     <value>Контакты не найдены.</value>
   </data>
   <data name="NotAvailable" xml:space="preserve">
     <value>Нет в наличии</value>
+  </data>
+  <data name="NoteCopiedToClipboard" xml:space="preserve">
+    <value>Заметка скопирована в буфер обмена.</value>
   </data>
   <data name="Payment" xml:space="preserve">
     <value>Уплата</value>
@@ -1608,17 +1635,35 @@
   <data name="PickPhoto" xml:space="preserve">
     <value>Выбрать фотографию</value>
   </data>
+  <data name="Present" xml:space="preserve">
+    <value>Присутствующий</value>
+  </data>
   <data name="ProductInformation" xml:space="preserve">
     <value>Информация о продукте</value>
   </data>
+  <data name="Profiling" xml:space="preserve">
+    <value>Профилирование</value>
+  </data>
+  <data name="PurposeReviewToken" xml:space="preserve">
+    <value>Просмотр токена, в котором вы состоите.</value>
+  </data>
   <data name="Question" xml:space="preserve">
     <value>Вопрос</value>
+  </data>
+  <data name="Reference" xml:space="preserve">
+    <value>Ссылка</value>
   </data>
   <data name="Registry" xml:space="preserve">
     <value>Регистратура</value>
   </data>
   <data name="RemoveSubscriptionFrom" xml:space="preserve">
     <value>Вы хотите удалить подписку на присутствие из {0}?</value>
+  </data>
+  <data name="RequestPayment" xml:space="preserve">
+    <value>Запросить оплату</value>
+  </data>
+  <data name="RequestPaymentMessage" xml:space="preserve">
+    <value>Запрос на оплату {0} {1}.</value>
   </data>
   <data name="Room" xml:space="preserve">
     <value>Комната</value>
@@ -1632,8 +1677,23 @@
   <data name="SelectContactToPay" xml:space="preserve">
     <value>Ниже приведены все контакты в вашей контактной книге. Выберите контактное лицо, которому вы хотите произвести оплату.</value>
   </data>
+  <data name="SelectFromWhomToRequestPayment" xml:space="preserve">
+    <value>Выберите, у кого запрашивать оплату.</value>
+  </data>
   <data name="SelectingAPhotoIsNotSupported" xml:space="preserve">
     <value>Выбор фотографии не поддерживается на этом устройстве</value>
+  </data>
+  <data name="SelectServiceProviderBuyEDaler" xml:space="preserve">
+    <value>Выберите поставщика услуг, которого вы хотите использовать для покупки eDaler.</value>
+  </data>
+  <data name="SelectServiceProviderSellEDaler" xml:space="preserve">
+    <value>Выберите поставщика услуг, которого вы хотите использовать для продажи eDaler.</value>
+  </data>
+  <data name="SellEDaler" xml:space="preserve">
+    <value>Продам eDaler.</value>
+  </data>
+  <data name="SendInformationTo" xml:space="preserve">
+    <value>Отправить информацию?</value>
   </data>
   <data name="SensorDataAccepted" xml:space="preserve">
     <value>Заявка принята.</value>
@@ -1689,6 +1749,9 @@
   <data name="Share" xml:space="preserve">
     <value>Предоставить общий доступ</value>
   </data>
+  <data name="StateDiagram" xml:space="preserve">
+    <value>Диаграмма состояний</value>
+  </data>
   <data name="StreetName" xml:space="preserve">
     <value>Название улицы</value>
   </data>
@@ -1737,13 +1800,25 @@
   <data name="UnableToRespond" xml:space="preserve">
     <value>Не могу ответить на запрос.</value>
   </data>
+  <data name="UnrecognizedEventType" xml:space="preserve">
+    <value>Тип нераспознанного события:</value>
+  </data>
   <data name="User" xml:space="preserve">
     <value>Пользователь</value>
   </data>
   <data name="UserSignedAs" xml:space="preserve">
     <value>{0} подписались как {1}.</value>
   </data>
+  <data name="Valuator" xml:space="preserve">
+    <value>Устройство ввода чисел</value>
+  </data>
   <data name="Version" xml:space="preserve">
     <value>Версия</value>
+  </data>
+  <data name="Witness" xml:space="preserve">
+    <value>Свидетель</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Вчера</value>
   </data>
 </root>

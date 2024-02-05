@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<views:ContentBasePage xmlns="http://xamarin.com/schemas/2014/forms"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                       xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages;assembly=IdApp"
+                       xmlns:model="clr-namespace:NeuroAccessMaui.UI.Pages.Main.XmppForm;assembly=IdApp"
+                       xmlns:model2="clr-namespace:NeuroAccessMaui.UI.Pages.Main.XmppForm.Model;assembly=IdApp"
+                       x:DataType="model:XmppFormViewModel"
+                       x:Class="NeuroAccessMaui.UI.Pages.Main.XmppForm.XmppFormPage"
+                       Title="{Binding Title}">
+	<StackLayout BackgroundColor="{AppThemeBinding Light={StaticResource PageBackgroundColorLightTheme}, Dark={StaticResource PageBackgroundColorDarkTheme}}">
+		<StackLayout.Resources>
+			<ResourceDictionary>
+				<DataTemplate x:Key="PageTemplate">
+					<StackLayout>
+					</StackLayout>
+				</DataTemplate>
+			</ResourceDictionary>
+		</StackLayout.Resources>
+		<Grid ColumnDefinitions="*" RowDefinitions="auto,*,auto,auto">
+			<StackLayout Grid.Column="0" Grid.Row="0" Orientation="Vertical"
+						 BindableLayout.ItemsSource="{Binding Instructions}">
+				<BindableLayout.ItemTemplate>
+					<DataTemplate>
+						<Label Text="{Binding .}" LineBreakMode="WordWrap"/>
+					</DataTemplate>
+				</BindableLayout.ItemTemplate>
+			</StackLayout>
+			<CarouselView Grid.Column="0" Grid.Row="1" ItemsSource="{Binding Pages}" IndicatorView="IndicatorView" IsSwipeEnabled="{Binding MultiplePages}">
+				<CarouselView.ItemTemplate>
+					<DataTemplate x:DataType="model2:PageModel">
+						<ScrollView Orientation="Vertical">
+							<StackLayout Orientation="Vertical" Padding="10">
+								<Label Text="{Binding Label}" IsVisible="{Binding HasLabel}" Style="{StaticResource Heading}" LineBreakMode="WordWrap"/>
+								<ContentView Content="{Binding Content}"/>
+							</StackLayout>
+						</ScrollView>
+					</DataTemplate>
+				</CarouselView.ItemTemplate>
+			</CarouselView>
+			<IndicatorView Grid.Column="0" Grid.Row="2" IsVisible="{Binding MultiplePages}"
+						   x:Name="IndicatorView"
+						   HorizontalOptions="Fill"
+						   IndicatorColor="{StaticResource HeadingForeground}"
+						   Padding="0,12,0,0"
+						   BackgroundColor="{StaticResource HeadingBackground}"
+						   Style="{StaticResource IndicatorViewStyle}">
+				<IndicatorView.Margin>
+					<OnPlatform x:TypeArguments="Thickness">
+						<On Platform="iOS" Value="0,-1,0,0"/>
+					</OnPlatform>
+				</IndicatorView.Margin>
+			</IndicatorView>
+			<Button Grid.Column="0" Grid.Row="3" Text="{Static resx:AppResources.Submit}"
+					Command="{Binding SubmitCommand}" IsEnabled="{Binding IsFormOk}" Margin="{StaticResource DefaultMargin}"/>
+		</Grid>
+	</StackLayout>
+</views:ContentBasePage>

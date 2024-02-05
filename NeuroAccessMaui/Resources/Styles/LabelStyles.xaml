@@ -46,7 +46,7 @@
 		<Setter Property="FontSize" Value="14" />
 		<Setter Property="Margin" Value="10" />
 		<Setter Property="FontAttributes" Value="Bold" />
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ClickableColor}, Dark={StaticResource ClickableColorDarkTheme}}"/>
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ClickableLight}, Dark={StaticResource ClickableDark}}"/>
 	</Style>
 
 	<Style x:Key="RegularItemTitleLabelStyle" ApplyToDerivedTypes="False" TargetType="Label">
@@ -62,12 +62,12 @@
 	</Style>
 
 	<Style x:Key="RequiredFieldMarker" ApplyToDerivedTypes="False" TargetType="Label">
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource AlertColor}, Dark={StaticResource AlertColorDarkTheme}}"/>
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource AlertLight}, Dark={StaticResource AlertDark}}"/>
 		<Setter Property="Text" Value="*"/>
 	</Style>
 
 	<Style x:Key="AlertLabel" TargetType="Label">
-		<Setter Property="TextColor"  Value="{AppThemeBinding Light={StaticResource AlertColor}, Dark={StaticResource AlertColorDarkTheme}}" />
+		<Setter Property="TextColor"  Value="{AppThemeBinding Light={StaticResource AlertLight}, Dark={StaticResource AlertDark}}" />
 	</Style>
 
 </ResourceDictionary>

@@ -1509,11 +1509,23 @@
   <data name="APetitionHasBeenSentForEncryption" xml:space="preserve">
     <value>Kryptering kan endast utföras om du har tillgång till mottagarens identitet. En begäran om denna identitet har därför skickats till den berörda mottagaren. Om mottagaren accepterar framställningen får du identiteten och kan skicka betalningen med ett krypterat meddelande när du försöker igen. Du kan också välja att skicka ett okrypterat meddelande med betalningen.</value>
   </data>
+  <data name="Assessor" xml:space="preserve">
+    <value>Bisittare</value>
+  </data>
   <data name="Building" xml:space="preserve">
     <value>Byggnad</value>
   </data>
+  <data name="BuyEDaler" xml:space="preserve">
+    <value>Köp eDaler.</value>
+  </data>
   <data name="CallerOnly" xml:space="preserve">
     <value>Endast uppringare</value>
+  </data>
+  <data name="Certifier" xml:space="preserve">
+    <value>Certifierare</value>
+  </data>
+  <data name="CertifierJid" xml:space="preserve">
+    <value>Certifierarens adress</value>
   </data>
   <data name="Class" xml:space="preserve">
     <value>Klass</value>
@@ -1526,6 +1538,9 @@
   </data>
   <data name="ContractProposal" xml:space="preserve">
     <value>Förslag till kontrakt</value>
+  </data>
+  <data name="ContractResponse" xml:space="preserve">
+    <value>Svar på avtalsförfrågan</value>
   </data>
   <data name="ContractSignatureReceived" xml:space="preserve">
     <value>Undertecknande av kontrakt mottaget</value>
@@ -1554,11 +1569,17 @@
   <data name="Everyone" xml:space="preserve">
     <value>Alla</value>
   </data>
+  <data name="ExpiresAt" xml:space="preserve">
+    <value>(Upphör {0})</value>
+  </data>
   <data name="FromUser" xml:space="preserve">
     <value>Från användare</value>
   </data>
   <data name="GeneralInformation" xml:space="preserve">
     <value>Allmän information</value>
+  </data>
+  <data name="History" xml:space="preserve">
+    <value>Historia</value>
   </data>
   <data name="InvalidNeuroFeatureToken" xml:space="preserve">
     <value>Ogiltig Neuro-Feature-token.</value>
@@ -1587,11 +1608,17 @@
   <data name="Name" xml:space="preserve">
     <value>Namn</value>
   </data>
+  <data name="NetworkAddressOfContactUnknown" xml:space="preserve">
+    <value>Kontaktens nätverksadress okänd.</value>
+  </data>
   <data name="NoContactsFound" xml:space="preserve">
     <value>Inga kontakter hittades.</value>
   </data>
   <data name="NotAvailable" xml:space="preserve">
     <value>Ej tillgänglig</value>
+  </data>
+  <data name="NoteCopiedToClipboard" xml:space="preserve">
+    <value>Anteckning kopierad till Urklipp.</value>
   </data>
   <data name="Payment" xml:space="preserve">
     <value>Betalning</value>
@@ -1608,17 +1635,35 @@
   <data name="PickPhoto" xml:space="preserve">
     <value>Välj foto</value>
   </data>
+  <data name="Present" xml:space="preserve">
+    <value>Gåva</value>
+  </data>
   <data name="ProductInformation" xml:space="preserve">
     <value>Produktinformation</value>
   </data>
+  <data name="Profiling" xml:space="preserve">
+    <value>Profilering</value>
+  </data>
+  <data name="PurposeReviewToken" xml:space="preserve">
+    <value>Granska token där du är en del.</value>
+  </data>
   <data name="Question" xml:space="preserve">
     <value>Fråga</value>
+  </data>
+  <data name="Reference" xml:space="preserve">
+    <value>Hänvisning</value>
   </data>
   <data name="Registry" xml:space="preserve">
     <value>Register</value>
   </data>
   <data name="RemoveSubscriptionFrom" xml:space="preserve">
     <value>Vill du ta bort närvaroprenumerationen från {0}?</value>
+  </data>
+  <data name="RequestPayment" xml:space="preserve">
+    <value>Begär betalning</value>
+  </data>
+  <data name="RequestPaymentMessage" xml:space="preserve">
+    <value>Begära betalning av {0} {1}.</value>
   </data>
   <data name="Room" xml:space="preserve">
     <value>Rum</value>
@@ -1632,8 +1677,23 @@
   <data name="SelectContactToPay" xml:space="preserve">
     <value>Nedan finns alla kontakter i din kontaktbok. Välj den kontakt som du vill göra betalningen till.</value>
   </data>
+  <data name="SelectFromWhomToRequestPayment" xml:space="preserve">
+    <value>Välj från vem du vill begära betalning.</value>
+  </data>
   <data name="SelectingAPhotoIsNotSupported" xml:space="preserve">
     <value>Det går inte att välja ett foto på den här enheten</value>
+  </data>
+  <data name="SelectServiceProviderBuyEDaler" xml:space="preserve">
+    <value>Välj den tjänsteleverantör du vill använda för att köpa eDaler.</value>
+  </data>
+  <data name="SelectServiceProviderSellEDaler" xml:space="preserve">
+    <value>Välj den tjänsteleverantör du vill använda för att sälja eDaler.</value>
+  </data>
+  <data name="SellEDaler" xml:space="preserve">
+    <value>Sälj eDaler.</value>
+  </data>
+  <data name="SendInformationTo" xml:space="preserve">
+    <value>Skicka information till?</value>
   </data>
   <data name="SensorDataAccepted" xml:space="preserve">
     <value>Begäran har godkänts.</value>
@@ -1689,6 +1749,9 @@
   <data name="Share" xml:space="preserve">
     <value>Aktie</value>
   </data>
+  <data name="StateDiagram" xml:space="preserve">
+    <value>Tillstånd Diagram</value>
+  </data>
   <data name="StreetName" xml:space="preserve">
     <value>Gatunamn</value>
   </data>
@@ -1737,13 +1800,25 @@
   <data name="UnableToRespond" xml:space="preserve">
     <value>Det går inte att svara på begäran.</value>
   </data>
+  <data name="UnrecognizedEventType" xml:space="preserve">
+    <value>Okänd händelsetyp:</value>
+  </data>
   <data name="User" xml:space="preserve">
     <value>Användare</value>
   </data>
   <data name="UserSignedAs" xml:space="preserve">
     <value>{0} undertecknade som {1}.</value>
   </data>
+  <data name="Valuator" xml:space="preserve">
+    <value>Värdering</value>
+  </data>
   <data name="Version" xml:space="preserve">
     <value>Version</value>
+  </data>
+  <data name="Witness" xml:space="preserve">
+    <value>Vittne</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Igår</value>
   </data>
 </root>

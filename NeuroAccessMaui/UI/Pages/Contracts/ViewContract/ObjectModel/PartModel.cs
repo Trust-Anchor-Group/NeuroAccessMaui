@@ -26,19 +26,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract.ObjectModel
 		/// <param name="value">The contract part value.</param>
 		/// <param name="BgColor">Background color.</param>
 		/// <param name="LegalId">A legal id (optional).</param>
-		public PartModel(string key, string value, Color BgColor, string? LegalId = null)
+		public PartModel(string key, string value, Color? BgColor, string? LegalId = null)
 		{
 			this.Key = key;
 			this.Value = value;
 			this.BgColor = BgColor;
 			this.LegalId = LegalId;
 		}
-
-		/// <summary>
-		/// Defines bindable property <see cref="Key"/>.
-		/// </summary>
-		public static readonly BindableProperty KeyProperty =
-			BindableProperty.Create(nameof(Key), typeof(string), typeof(PartModel), default(string));
 
 		/// <summary>
 		/// A unique contract part key.

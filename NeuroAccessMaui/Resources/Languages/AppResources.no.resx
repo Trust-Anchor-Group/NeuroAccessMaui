@@ -1509,11 +1509,23 @@
   <data name="APetitionHasBeenSentForEncryption" xml:space="preserve">
     <value>Kryptering kan bare utføres hvis du har tilgang til mottakerens identitet. Det er derfor sendt en begjæring om denne identiteten til den indendte mottakeren. Hvis mottakeren godtar begjæringen, vil du motta identiteten og kunne sende betalingen med en kryptert melding når du prøver igjen. Du kan også velge å sende en ukryptert melding med betalingen.</value>
   </data>
+  <data name="Assessor" xml:space="preserve">
+    <value>Takstmann</value>
+  </data>
   <data name="Building" xml:space="preserve">
     <value>Bygning</value>
   </data>
+  <data name="BuyEDaler" xml:space="preserve">
+    <value>Kjøp eDaler.</value>
+  </data>
   <data name="CallerOnly" xml:space="preserve">
     <value>Bare innringer</value>
+  </data>
+  <data name="Certifier" xml:space="preserve">
+    <value>Sertifisør</value>
+  </data>
+  <data name="CertifierJid" xml:space="preserve">
+    <value>Sertifisøradresse</value>
   </data>
   <data name="Class" xml:space="preserve">
     <value>Klasse</value>
@@ -1526,6 +1538,9 @@
   </data>
   <data name="ContractProposal" xml:space="preserve">
     <value>Forslag til kontrakt</value>
+  </data>
+  <data name="ContractResponse" xml:space="preserve">
+    <value>Svar på kontraktsforespørsel</value>
   </data>
   <data name="ContractSignatureReceived" xml:space="preserve">
     <value>Kontraktsignering mottatt</value>
@@ -1554,11 +1569,17 @@
   <data name="Everyone" xml:space="preserve">
     <value>Alle</value>
   </data>
+  <data name="ExpiresAt" xml:space="preserve">
+    <value>(Utløper {0})</value>
+  </data>
   <data name="FromUser" xml:space="preserve">
     <value>Fra bruker</value>
   </data>
   <data name="GeneralInformation" xml:space="preserve">
     <value>Generell informasjon</value>
+  </data>
+  <data name="History" xml:space="preserve">
+    <value>Historie</value>
   </data>
   <data name="InvalidNeuroFeatureToken" xml:space="preserve">
     <value>Ugyldig Neuro-Feature-token.</value>
@@ -1587,11 +1608,17 @@
   <data name="Name" xml:space="preserve">
     <value>Navn</value>
   </data>
+  <data name="NetworkAddressOfContactUnknown" xml:space="preserve">
+    <value>Nettverksadressen til kontakten ukjent.</value>
+  </data>
   <data name="NoContactsFound" xml:space="preserve">
     <value>Ingen kontakter funnet.</value>
   </data>
   <data name="NotAvailable" xml:space="preserve">
     <value>Ikke tilgjengelig</value>
+  </data>
+  <data name="NoteCopiedToClipboard" xml:space="preserve">
+    <value>Notat kopiert til utklippstavlen.</value>
   </data>
   <data name="Payment" xml:space="preserve">
     <value>Betaling</value>
@@ -1608,17 +1635,35 @@
   <data name="PickPhoto" xml:space="preserve">
     <value>Velg bilde</value>
   </data>
+  <data name="Present" xml:space="preserve">
+    <value>Gave</value>
+  </data>
   <data name="ProductInformation" xml:space="preserve">
     <value>Produktinformasjon</value>
   </data>
+  <data name="Profiling" xml:space="preserve">
+    <value>Profilering</value>
+  </data>
+  <data name="PurposeReviewToken" xml:space="preserve">
+    <value>Gjennomgang av token der du er en del.</value>
+  </data>
   <data name="Question" xml:space="preserve">
     <value>Spørsmål</value>
+  </data>
+  <data name="Reference" xml:space="preserve">
+    <value>Referanse</value>
   </data>
   <data name="Registry" xml:space="preserve">
     <value>Register</value>
   </data>
   <data name="RemoveSubscriptionFrom" xml:space="preserve">
     <value>Vil du fjerne tilstedeværelsesabonnementet fra {0}?</value>
+  </data>
+  <data name="RequestPayment" xml:space="preserve">
+    <value>Be om betaling</value>
+  </data>
+  <data name="RequestPaymentMessage" xml:space="preserve">
+    <value>Be om betaling av {0} {1}.</value>
   </data>
   <data name="Room" xml:space="preserve">
     <value>Rom</value>
@@ -1632,8 +1677,23 @@
   <data name="SelectContactToPay" xml:space="preserve">
     <value>Nedenfor er alle kontakter i kontaktboken din. Velg kontakten du vil betale til.</value>
   </data>
+  <data name="SelectFromWhomToRequestPayment" xml:space="preserve">
+    <value>Velg hvem du vil be om betaling fra.</value>
+  </data>
   <data name="SelectingAPhotoIsNotSupported" xml:space="preserve">
     <value>Valg av bilde støttes ikke på denne enheten</value>
+  </data>
+  <data name="SelectServiceProviderBuyEDaler" xml:space="preserve">
+    <value>Velg tjenesteleverandøren du vil bruke til å kjøpe eDaler.</value>
+  </data>
+  <data name="SelectServiceProviderSellEDaler" xml:space="preserve">
+    <value>Velg den tjenesteleverandøren du vil bruke til å selge eDaler.</value>
+  </data>
+  <data name="SellEDaler" xml:space="preserve">
+    <value>Selg eDaler.</value>
+  </data>
+  <data name="SendInformationTo" xml:space="preserve">
+    <value>Sende informasjon til?</value>
   </data>
   <data name="SensorDataAccepted" xml:space="preserve">
     <value>Forespørselen er akseptert.</value>
@@ -1689,6 +1749,9 @@
   <data name="Share" xml:space="preserve">
     <value>Aksje</value>
   </data>
+  <data name="StateDiagram" xml:space="preserve">
+    <value>Tilstandsdiagram</value>
+  </data>
   <data name="StreetName" xml:space="preserve">
     <value>Gatenavn</value>
   </data>
@@ -1737,13 +1800,25 @@
   <data name="UnableToRespond" xml:space="preserve">
     <value>Kan ikke svare på forespørsel.</value>
   </data>
+  <data name="UnrecognizedEventType" xml:space="preserve">
+    <value>Ukjent hendelsestype:</value>
+  </data>
   <data name="User" xml:space="preserve">
     <value>Bruker</value>
   </data>
   <data name="UserSignedAs" xml:space="preserve">
     <value>{0} signert som {1}.</value>
   </data>
+  <data name="Valuator" xml:space="preserve">
+    <value>Takstmann</value>
+  </data>
   <data name="Version" xml:space="preserve">
     <value>Versjon</value>
+  </data>
+  <data name="Witness" xml:space="preserve">
+    <value>Vitne</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>I går</value>
   </data>
 </root>

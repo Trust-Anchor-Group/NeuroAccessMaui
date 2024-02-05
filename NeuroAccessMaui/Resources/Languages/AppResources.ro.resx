@@ -1509,11 +1509,23 @@
   <data name="APetitionHasBeenSentForEncryption" xml:space="preserve">
     <value>Criptarea poate fi efectuată numai dacă aveți acces la identitatea destinatarilor. Prin urmare, o petiție pentru această identitate a fost trimisă destinatarului urmărit. Dacă destinatarul acceptă petiția, veți primi identitatea și veți putea trimite plata cu un mesaj criptat atunci când încercați din nou. De asemenea, puteți alege să trimiteți un mesaj necriptat odată cu plata.</value>
   </data>
+  <data name="Assessor" xml:space="preserve">
+    <value>Evaluator</value>
+  </data>
   <data name="Building" xml:space="preserve">
     <value>Clădire</value>
   </data>
+  <data name="BuyEDaler" xml:space="preserve">
+    <value>Cumpărați eDaler.</value>
+  </data>
   <data name="CallerOnly" xml:space="preserve">
     <value>Doar apelant</value>
+  </data>
+  <data name="Certifier" xml:space="preserve">
+    <value>Certificator</value>
+  </data>
+  <data name="CertifierJid" xml:space="preserve">
+    <value>Adresa certificatorului</value>
   </data>
   <data name="Class" xml:space="preserve">
     <value>Clasă</value>
@@ -1526,6 +1538,9 @@
   </data>
   <data name="ContractProposal" xml:space="preserve">
     <value>Propunere de contract</value>
+  </data>
+  <data name="ContractResponse" xml:space="preserve">
+    <value>Răspuns la solicitarea contractului</value>
   </data>
   <data name="ContractSignatureReceived" xml:space="preserve">
     <value>Semnarea contractului primită</value>
@@ -1554,11 +1569,17 @@
   <data name="Everyone" xml:space="preserve">
     <value>Oricine</value>
   </data>
+  <data name="ExpiresAt" xml:space="preserve">
+    <value>(Expiră {0})</value>
+  </data>
   <data name="FromUser" xml:space="preserve">
     <value>De la utilizator</value>
   </data>
   <data name="GeneralInformation" xml:space="preserve">
     <value>Informații generale</value>
+  </data>
+  <data name="History" xml:space="preserve">
+    <value>Istorie</value>
   </data>
   <data name="InvalidNeuroFeatureToken" xml:space="preserve">
     <value>Token Neuro-caracteristică nevalid.</value>
@@ -1587,11 +1608,17 @@
   <data name="Name" xml:space="preserve">
     <value>Nume</value>
   </data>
+  <data name="NetworkAddressOfContactUnknown" xml:space="preserve">
+    <value>Adresa de rețea a contactului necunoscută.</value>
+  </data>
   <data name="NoContactsFound" xml:space="preserve">
     <value>Nu s-au găsit contacte.</value>
   </data>
   <data name="NotAvailable" xml:space="preserve">
     <value>Nu este disponibil</value>
+  </data>
+  <data name="NoteCopiedToClipboard" xml:space="preserve">
+    <value>Notă copiată în clipboard.</value>
   </data>
   <data name="Payment" xml:space="preserve">
     <value>Plată</value>
@@ -1608,17 +1635,35 @@
   <data name="PickPhoto" xml:space="preserve">
     <value>Alege fotografia</value>
   </data>
+  <data name="Present" xml:space="preserve">
+    <value>Prezent</value>
+  </data>
   <data name="ProductInformation" xml:space="preserve">
     <value>Informații despre produs</value>
   </data>
+  <data name="Profiling" xml:space="preserve">
+    <value>Profilare</value>
+  </data>
+  <data name="PurposeReviewToken" xml:space="preserve">
+    <value>Revizuirea tokenului din care faceți parte.</value>
+  </data>
   <data name="Question" xml:space="preserve">
     <value>Întrebare</value>
+  </data>
+  <data name="Reference" xml:space="preserve">
+    <value>Referință</value>
   </data>
   <data name="Registry" xml:space="preserve">
     <value>Registru</value>
   </data>
   <data name="RemoveSubscriptionFrom" xml:space="preserve">
     <value>Doriți să eliminați abonamentul de prezență din {0}?</value>
+  </data>
+  <data name="RequestPayment" xml:space="preserve">
+    <value>Solicitați plata</value>
+  </data>
+  <data name="RequestPaymentMessage" xml:space="preserve">
+    <value>Solicitarea plății {0} {1}.</value>
   </data>
   <data name="Room" xml:space="preserve">
     <value>Cameră</value>
@@ -1632,8 +1677,23 @@
   <data name="SelectContactToPay" xml:space="preserve">
     <value>Mai jos sunt toate contactele din agenda dvs. Selectați persoana de contact căreia doriți să efectuați plata.</value>
   </data>
+  <data name="SelectFromWhomToRequestPayment" xml:space="preserve">
+    <value>Selectați de la cine să solicitați plata.</value>
+  </data>
   <data name="SelectingAPhotoIsNotSupported" xml:space="preserve">
     <value>Selectarea unei fotografii nu este acceptată pe acest dispozitiv</value>
+  </data>
+  <data name="SelectServiceProviderBuyEDaler" xml:space="preserve">
+    <value>Selectați furnizorul de servicii pe care doriți să îl utilizați pentru a cumpăra eDaler.</value>
+  </data>
+  <data name="SelectServiceProviderSellEDaler" xml:space="preserve">
+    <value>Selectați furnizorul de servicii pe care doriți să îl utilizați pentru a vinde eDaler.</value>
+  </data>
+  <data name="SellEDaler" xml:space="preserve">
+    <value>Vindeți eDaler.</value>
+  </data>
+  <data name="SendInformationTo" xml:space="preserve">
+    <value>Trimiteți informații către?</value>
   </data>
   <data name="SensorDataAccepted" xml:space="preserve">
     <value>Cererea a fost acceptată.</value>
@@ -1689,6 +1749,9 @@
   <data name="Share" xml:space="preserve">
     <value>Acțiune</value>
   </data>
+  <data name="StateDiagram" xml:space="preserve">
+    <value>Diagramă de stare</value>
+  </data>
   <data name="StreetName" xml:space="preserve">
     <value>Numele străzii</value>
   </data>
@@ -1737,13 +1800,25 @@
   <data name="UnableToRespond" xml:space="preserve">
     <value>Nu se poate răspunde la solicitare.</value>
   </data>
+  <data name="UnrecognizedEventType" xml:space="preserve">
+    <value>Tip de eveniment nerecunoscut:</value>
+  </data>
   <data name="User" xml:space="preserve">
     <value>Utilizator</value>
   </data>
   <data name="UserSignedAs" xml:space="preserve">
     <value>{0} semnat ca {1}.</value>
   </data>
+  <data name="Valuator" xml:space="preserve">
+    <value>Evaluator</value>
+  </data>
   <data name="Version" xml:space="preserve">
     <value>Versiune</value>
+  </data>
+  <data name="Witness" xml:space="preserve">
+    <value>Martor</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Ieri</value>
   </data>
 </root>

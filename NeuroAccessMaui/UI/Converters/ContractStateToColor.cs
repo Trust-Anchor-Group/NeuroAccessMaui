@@ -23,7 +23,7 @@ namespace NeuroAccessMaui.UI.Converters
 		/// </summary>
 		/// <param name="State">Contract State</param>
 		/// <returns>Color</returns>
-		public static Color ToColor(ContractState State)
+		public static Color? ToColor(ContractState State)
 		{
 			return State switch
 			{
@@ -31,7 +31,7 @@ namespace NeuroAccessMaui.UI.Converters
 				ContractState.Proposed or
 				ContractState.Approved or
 				ContractState.BeingSigned => SettingsViewModel.CurrentDisplayMode == AppTheme.Light ? Colors.DarkOrange : Colors.Orange,
-				_ => SettingsViewModel.CurrentDisplayMode == AppTheme.Light ? Colors.Salmon : Colors.LightSalmon,
+				_ => ThemeColors.ErrorBackground,
 			};
 		}
 

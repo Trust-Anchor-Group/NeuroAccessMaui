@@ -9,9 +9,7 @@ using NeuroAccessMaui.UI.Pages.Main.Calculator;
 using System.ComponentModel;
 using System.Globalization;
 using System.Text;
-using System.Windows.Input;
 using Waher.Content;
-using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.StanzaErrors;
 
@@ -20,9 +18,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 	/// <summary>
 	/// The view model to bind to for when displaying the contents of an eDaler URI.
 	/// </summary>
-	public partial class EDalerUriViewModel(IShareQrCode ShareQrCode) : QrXmppViewModel()
+	public partial class EDalerUriViewModel(IShareQrCode? ShareQrCode) : QrXmppViewModel()
 	{
-		private readonly IShareQrCode shareQrCode = ShareQrCode;
+		private readonly IShareQrCode? shareQrCode = ShareQrCode;
 		private TaskCompletionSource<string?>? uriToSend = null;
 
 		/// <inheritdoc/>

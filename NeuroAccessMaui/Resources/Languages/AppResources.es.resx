@@ -1509,11 +1509,23 @@
   <data name="APetitionHasBeenSentForEncryption" xml:space="preserve">
     <value>El cifrado solo se puede realizar si tiene acceso a la identidad de los destinatarios. Por lo tanto, se ha enviado una petición de esta identidad al destinatario afectado. Si el destinatario acepta la petición, recibirás la identidad y podrás enviar el pago con un mensaje encriptado cuando vuelvas a intentarlo. También puede optar por enviar un mensaje sin cifrar con el pago.</value>
   </data>
+  <data name="Assessor" xml:space="preserve">
+    <value>Tasador</value>
+  </data>
   <data name="Building" xml:space="preserve">
     <value>Edificio</value>
   </data>
+  <data name="BuyEDaler" xml:space="preserve">
+    <value>Compra eDaler.</value>
+  </data>
   <data name="CallerOnly" xml:space="preserve">
     <value>Solo persona que llama</value>
+  </data>
+  <data name="Certifier" xml:space="preserve">
+    <value>Certificador</value>
+  </data>
+  <data name="CertifierJid" xml:space="preserve">
+    <value>Dirección del certificador</value>
   </data>
   <data name="Class" xml:space="preserve">
     <value>Clase</value>
@@ -1526,6 +1538,9 @@
   </data>
   <data name="ContractProposal" xml:space="preserve">
     <value>Propuesta de contrato</value>
+  </data>
+  <data name="ContractResponse" xml:space="preserve">
+    <value>Respuesta a la solicitud de contrato</value>
   </data>
   <data name="ContractSignatureReceived" xml:space="preserve">
     <value>Firma del contrato recibida</value>
@@ -1554,11 +1569,17 @@
   <data name="Everyone" xml:space="preserve">
     <value>Todos</value>
   </data>
+  <data name="ExpiresAt" xml:space="preserve">
+    <value>(Caduca {0})</value>
+  </data>
   <data name="FromUser" xml:space="preserve">
     <value>Del usuario</value>
   </data>
   <data name="GeneralInformation" xml:space="preserve">
     <value>Información general</value>
+  </data>
+  <data name="History" xml:space="preserve">
+    <value>Historia</value>
   </data>
   <data name="InvalidNeuroFeatureToken" xml:space="preserve">
     <value>Token de Neuro-Feature no válido.</value>
@@ -1587,11 +1608,17 @@
   <data name="Name" xml:space="preserve">
     <value>Nombre</value>
   </data>
+  <data name="NetworkAddressOfContactUnknown" xml:space="preserve">
+    <value>Se desconoce la dirección de red del contacto.</value>
+  </data>
   <data name="NoContactsFound" xml:space="preserve">
     <value>No se han encontrado contactos.</value>
   </data>
   <data name="NotAvailable" xml:space="preserve">
     <value>No disponible</value>
+  </data>
+  <data name="NoteCopiedToClipboard" xml:space="preserve">
+    <value>Nota copiada en el portapapeles.</value>
   </data>
   <data name="Payment" xml:space="preserve">
     <value>Pago</value>
@@ -1608,17 +1635,35 @@
   <data name="PickPhoto" xml:space="preserve">
     <value>Elegir foto</value>
   </data>
+  <data name="Present" xml:space="preserve">
+    <value>Presente</value>
+  </data>
   <data name="ProductInformation" xml:space="preserve">
     <value>Información del producto</value>
   </data>
+  <data name="Profiling" xml:space="preserve">
+    <value>Perfiles</value>
+  </data>
+  <data name="PurposeReviewToken" xml:space="preserve">
+    <value>Revisando el token del que forma parte.</value>
+  </data>
   <data name="Question" xml:space="preserve">
     <value>Pregunta</value>
+  </data>
+  <data name="Reference" xml:space="preserve">
+    <value>Referencia</value>
   </data>
   <data name="Registry" xml:space="preserve">
     <value>Registro</value>
   </data>
   <data name="RemoveSubscriptionFrom" xml:space="preserve">
     <value>¿Desea eliminar la suscripción de presencia de {0}?</value>
+  </data>
+  <data name="RequestPayment" xml:space="preserve">
+    <value>Solicitar pago</value>
+  </data>
+  <data name="RequestPaymentMessage" xml:space="preserve">
+    <value>Solicitud de pago de {0} {1}.</value>
   </data>
   <data name="Room" xml:space="preserve">
     <value>Cuarto</value>
@@ -1632,8 +1677,23 @@
   <data name="SelectContactToPay" xml:space="preserve">
     <value>A continuación se muestran todos los contactos en su libreta de contactos. Seleccione el contacto al que desea realizar el pago.</value>
   </data>
+  <data name="SelectFromWhomToRequestPayment" xml:space="preserve">
+    <value>Seleccione a quién solicitar el pago.</value>
+  </data>
   <data name="SelectingAPhotoIsNotSupported" xml:space="preserve">
     <value>La selección de una foto no es compatible con este dispositivo</value>
+  </data>
+  <data name="SelectServiceProviderBuyEDaler" xml:space="preserve">
+    <value>Seleccione el proveedor de servicios que desea utilizar para comprar eDaler.</value>
+  </data>
+  <data name="SelectServiceProviderSellEDaler" xml:space="preserve">
+    <value>Seleccione el proveedor de servicios que desea utilizar para vender eDaler.</value>
+  </data>
+  <data name="SellEDaler" xml:space="preserve">
+    <value>Vende eDaler.</value>
+  </data>
+  <data name="SendInformationTo" xml:space="preserve">
+    <value>¿Enviar información a?</value>
   </data>
   <data name="SensorDataAccepted" xml:space="preserve">
     <value>La solicitud ha sido aceptada.</value>
@@ -1689,6 +1749,9 @@
   <data name="Share" xml:space="preserve">
     <value>Compartir</value>
   </data>
+  <data name="StateDiagram" xml:space="preserve">
+    <value>Diagrama de estado</value>
+  </data>
   <data name="StreetName" xml:space="preserve">
     <value>Nombre de la calle</value>
   </data>
@@ -1737,13 +1800,25 @@
   <data name="UnableToRespond" xml:space="preserve">
     <value>No se puede responder a la solicitud.</value>
   </data>
+  <data name="UnrecognizedEventType" xml:space="preserve">
+    <value>Tipo de evento no reconocido:</value>
+  </data>
   <data name="User" xml:space="preserve">
     <value>Usuario</value>
   </data>
   <data name="UserSignedAs" xml:space="preserve">
     <value>{0} firmada como {1}.</value>
   </data>
+  <data name="Valuator" xml:space="preserve">
+    <value>Tasador</value>
+  </data>
   <data name="Version" xml:space="preserve">
     <value>Versión</value>
+  </data>
+  <data name="Witness" xml:space="preserve">
+    <value>Testigo</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Ayer</value>
   </data>
 </root>
