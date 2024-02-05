@@ -1,8 +1,8 @@
 ﻿using EDaler;
-using NeuroAccessMaui.Pages.Wallet;
-using NeuroAccessMaui.Pages.Wallet.EDalerReceived;
 using NeuroAccessMaui.Resources.Languages;
-using System.Threading.Tasks;
+using NeuroAccessMaui.Services.Contacts;
+using NeuroAccessMaui.UI.Pages.Wallet;
+using NeuroAccessMaui.UI.Pages.Wallet.EDalerReceived;
 using Waher.Persistence;
 
 namespace NeuroAccessMaui.Services.Notification.Wallet

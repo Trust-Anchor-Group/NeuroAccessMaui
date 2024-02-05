@@ -1,6 +1,4 @@
-﻿using Xamarin.Forms.Xaml;
-
-namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
+﻿namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 {
 	/// <summary>
 	/// A page that displays information about a thing and allows the user to interact with it.
@@ -14,7 +12,6 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 		public ViewThingPage()
 		{
 			this.ViewModel = new ViewThingModel();
-
 			this.InitializeComponent();
 		}
 	}

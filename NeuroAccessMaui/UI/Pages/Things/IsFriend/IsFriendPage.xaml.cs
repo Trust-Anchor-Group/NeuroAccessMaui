@@ -1,6 +1,4 @@
-﻿using Xamarin.Forms.Xaml;
-
-namespace NeuroAccessMaui.UI.Pages.Things.IsFriend
+﻿namespace NeuroAccessMaui.UI.Pages.Things.IsFriend
 {
 	/// <summary>
 	/// A page that asks the user if a remote entity is allowed to connect to a device.
@@ -14,7 +12,6 @@ namespace NeuroAccessMaui.UI.Pages.Things.IsFriend
 		public IsFriendPage()
 		{
 			this.ViewModel = new IsFriendModel();
-
 			this.InitializeComponent();
 		}
 	}

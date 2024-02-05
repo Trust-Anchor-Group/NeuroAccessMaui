@@ -121,7 +121,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 				{
 					AllFields = await CanReadNotificationEvent.GetAvailableFieldNames(this.BareJid, new ThingReference(this.NodeId, this.SourceId, this.PartitionId));
 
-					if (AllFields is not null)
+					if (AllFields is not null && args.Event is not null)
 					{
 						args.Event.AllFields = AllFields;
 						await Database.Update(args.Event);
@@ -462,17 +462,17 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 						case RuleRange.Caller:
 						default:
 							ServiceRef.XmppService.CanReadResponseCaller(this.ProvisioningService ?? ServiceRef.TagProfile.ProvisioningJid ?? string.Empty,
-								this.BareJid, this.RemoteJid, this.Key, Accepts, FieldTypes, this.GetFields(), Thing, this.ResponseHandler, Resolver);
+								this.BareJid!, this.RemoteJid!, this.Key!, Accepts, FieldTypes, this.GetFields(), Thing, this.ResponseHandler, Resolver);
 							break;
 
 						case RuleRange.Domain:
 							ServiceRef.XmppService.CanReadResponseDomain(this.ProvisioningService ?? ServiceRef.TagProfile.ProvisioningJid ?? string.Empty,
-								this.BareJid, this.RemoteJid, this.Key, Accepts, FieldTypes, this.GetFields(), Thing, this.ResponseHandler, Resolver);
+								this.BareJid!, this.RemoteJid!, this.Key!, Accepts, FieldTypes, this.GetFields(), Thing, this.ResponseHandler, Resolver);
 							break;
 
 						case RuleRange.All:
 							ServiceRef.XmppService.CanReadResponseAll(this.ProvisioningService ?? ServiceRef.TagProfile.ProvisioningJid ?? string.Empty,
-								 this.BareJid, this.RemoteJid, this.Key, Accepts, FieldTypes, this.GetFields(), Thing, this.ResponseHandler, Resolver);
+								 this.BareJid!, this.RemoteJid!, this.Key!, Accepts, FieldTypes, this.GetFields(), Thing, this.ResponseHandler, Resolver);
 							break;
 
 					}
@@ -485,17 +485,17 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 					{
 						case TokenType.User:
 							ServiceRef.XmppService.CanReadResponseUser(this.ProvisioningService ?? ServiceRef.TagProfile.ProvisioningJid ?? string.Empty,
-								this.BareJid, this.RemoteJid, this.Key, Accepts, FieldTypes, this.GetFields(), Token.Token, Thing, this.ResponseHandler, Resolver);
+								this.BareJid!, this.RemoteJid!, this.Key!, Accepts, FieldTypes, this.GetFields(), Token.Token, Thing, this.ResponseHandler, Resolver);
 							break;
 
 						case TokenType.Service:
 							ServiceRef.XmppService.CanReadResponseService(this.ProvisioningService ?? ServiceRef.TagProfile.ProvisioningJid ?? string.Empty,
-								this.BareJid, this.RemoteJid, this.Key, Accepts, FieldTypes, this.GetFields(), Token.Token, Thing, this.ResponseHandler, Resolver);
+								this.BareJid!, this.RemoteJid!, this.Key!, Accepts, FieldTypes, this.GetFields(), Token.Token, Thing, this.ResponseHandler, Resolver);
 							break;
 
 						case TokenType.Device:
 							ServiceRef.XmppService.CanReadResponseDevice(this.ProvisioningService ?? ServiceRef.TagProfile.ProvisioningJid ?? string.Empty,
-								this.BareJid, this.RemoteJid, this.Key, Accepts, FieldTypes, this.GetFields(), Token.Token, Thing, this.ResponseHandler, Resolver);
+								this.BareJid!, this.RemoteJid!, this.Key!, Accepts, FieldTypes, this.GetFields(), Token.Token, Thing, this.ResponseHandler, Resolver);
 							break;
 					}
 				}
@@ -525,7 +525,9 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 		{
 			if (e.Ok)
 			{
-				await ServiceRef.NotificationService.DeleteEvents(this.@event);
+				if (this.@event is not null)
+					await ServiceRef.NotificationService.DeleteEvents(this.@event);
+
 				await ServiceRef.NotificationService.DeleteResolvedEvents((IEventResolver)e.State);
 
 				MainThread.BeginInvokeOnMainThread(async () =>
@@ -546,7 +548,9 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 		[RelayCommand]
 		private async Task Ignore()
 		{
-			await ServiceRef.NotificationService.DeleteEvents(this.@event);
+			if (this.@event is not null)
+				await ServiceRef.NotificationService.DeleteEvents(this.@event);
+
 			await ServiceRef.NavigationService.GoBackAsync();
 		}
 

@@ -1,8 +1,4 @@
-﻿using NeuroAccessMaui.Services.Messages;
-using System;
-using System.Threading.Tasks;
-
-namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
+﻿namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 {
 	/// <summary>
 	/// URI Scheme

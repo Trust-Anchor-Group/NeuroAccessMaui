@@ -378,47 +378,47 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanControl
 
 				if (Range.RuleRange is RuleRange RuleRange)
 				{
-					ControlRequestResolver Resolver = new(this.BareJid, this.RemoteFriendlyName, RuleRange);
+					ControlRequestResolver Resolver = new(this.BareJid!, this.RemoteFriendlyName ?? string.Empty, RuleRange);
 
 					switch (RuleRange)
 					{
 						case RuleRange.Caller:
 						default:
-							ServiceRef.XmppService.CanControlResponseCaller(this.ProvisioningService, this.BareJid, this.RemoteJid, this.Key,
-								Accepts, this.GetParameters(), Thing, this.ResponseHandler, Resolver);
+							ServiceRef.XmppService.CanControlResponseCaller(this.ProvisioningService ?? ServiceRef.TagProfile.ProvisioningJid ?? string.Empty,
+								this.BareJid!, this.RemoteJid!, this.Key!, Accepts, this.GetParameters(), Thing, this.ResponseHandler, Resolver);
 							break;
 
 						case RuleRange.Domain:
-							ServiceRef.XmppService.CanControlResponseDomain(this.ProvisioningService, this.BareJid, this.RemoteJid, this.Key,
-								Accepts, this.GetParameters(), Thing, this.ResponseHandler, Resolver);
+							ServiceRef.XmppService.CanControlResponseDomain(this.ProvisioningService ?? ServiceRef.TagProfile.ProvisioningJid ?? string.Empty,
+								this.BareJid!, this.RemoteJid!, this.Key!, Accepts, this.GetParameters(), Thing, this.ResponseHandler, Resolver);
 							break;
 
 						case RuleRange.All:
-							ServiceRef.XmppService.CanControlResponseAll(this.ProvisioningService, this.BareJid, this.RemoteJid, this.Key,
-								Accepts, this.GetParameters(), Thing, this.ResponseHandler, Resolver);
+							ServiceRef.XmppService.CanControlResponseAll(this.ProvisioningService ?? ServiceRef.TagProfile.ProvisioningJid ?? string.Empty,
+								this.BareJid!, this.RemoteJid!, this.Key!, Accepts, this.GetParameters(), Thing, this.ResponseHandler, Resolver);
 							break;
 
 					}
 				}
 				else if (Range.RuleRange is ProvisioningToken Token)
 				{
-					ControlRequestResolver Resolver = new(this.BareJid, this.RemoteFriendlyName, Token);
+					ControlRequestResolver Resolver = new(this.BareJid!, this.RemoteFriendlyName ?? string.Empty, Token);
 
 					switch (Token.Type)
 					{
 						case TokenType.User:
-							ServiceRef.XmppService.CanControlResponseUser(this.ProvisioningService, this.BareJid, this.RemoteJid, this.Key,
-								Accepts, this.GetParameters(), Token.Token, Thing, this.ResponseHandler, Resolver);
+							ServiceRef.XmppService.CanControlResponseUser(this.ProvisioningService ?? ServiceRef.TagProfile.ProvisioningJid ?? string.Empty,
+								this.BareJid!, this.RemoteJid!, this.Key!, Accepts, this.GetParameters(), Token.Token, Thing, this.ResponseHandler, Resolver);
 							break;
 
 						case TokenType.Service:
-							ServiceRef.XmppService.CanControlResponseService(this.ProvisioningService, this.BareJid, this.RemoteJid, this.Key,
-								Accepts, this.GetParameters(), Token.Token, Thing, this.ResponseHandler, Resolver);
+							ServiceRef.XmppService.CanControlResponseService(this.ProvisioningService ?? ServiceRef.TagProfile.ProvisioningJid ?? string.Empty,
+								this.BareJid!, this.RemoteJid!, this.Key!, Accepts, this.GetParameters(), Token.Token, Thing, this.ResponseHandler, Resolver);
 							break;
 
 						case TokenType.Device:
-							ServiceRef.XmppService.CanControlResponseDevice(this.ProvisioningService, this.BareJid, this.RemoteJid, this.Key,
-								Accepts, this.GetParameters(), Token.Token, Thing, this.ResponseHandler, Resolver);
+							ServiceRef.XmppService.CanControlResponseDevice(this.ProvisioningService ?? ServiceRef.TagProfile.ProvisioningJid ?? string.Empty,
+								this.BareJid!, this.RemoteJid!, this.Key!, Accepts, this.GetParameters(), Token.Token, Thing, this.ResponseHandler, Resolver);
 							break;
 					}
 				}

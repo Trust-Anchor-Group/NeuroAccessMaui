@@ -1,6 +1,4 @@
-﻿using Xamarin.Forms.Xaml;
-
-namespace NeuroAccessMaui.UI.Pages.Things.CanRead
+﻿namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 {
 	/// <summary>
 	/// A page that asks the user if a remote entity is allowed to read the device.
@@ -14,7 +12,6 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 		public CanReadPage()
 		{
 			this.ViewModel = new CanReadModel();
-
 			this.InitializeComponent();
 		}
 	}

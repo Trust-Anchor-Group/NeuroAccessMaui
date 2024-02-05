@@ -57,7 +57,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 				{
 					RuleRange.All => true,
 					RuleRange.Domain => string.Equals(XmppClient.GetDomain(this.remoteJid), XmppClient.GetDomain(CanReadNotificationEvent.RemoteJid), StringComparison.OrdinalIgnoreCase),
-					RuleRange.Caller => string.Equals(this.remoteJid, CanReadNotificationEvent.RemoteJid.ToLower(), StringComparison.OrdinalIgnoreCase),
+					RuleRange.Caller => string.Equals(this.remoteJid, CanReadNotificationEvent.RemoteJid?.ToLower(CultureInfo.InvariantCulture), StringComparison.OrdinalIgnoreCase),
 					_ => false,
 				};
 			}

@@ -38,7 +38,6 @@ namespace NeuroAccessMaui.Services.Notification.Contracts
 		/// <summary>
 		/// Opens the event.
 		/// </summary>
-		/// <param name="ServiceReferences">Service references</param>
 		public override async Task Open()
 		{
 			Contract? Contract = await this.GetContract();
@@ -59,7 +58,6 @@ namespace NeuroAccessMaui.Services.Notification.Contracts
 		/// <summary>
 		/// Gets a descriptive text for the category of event.
 		/// </summary>
-		/// <param name="ServiceReferences">Service references</param>
 		public override async Task<string> GetDescription()
 		{
 			Contract? Contract = await this.GetContract();

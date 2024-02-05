@@ -980,7 +980,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Callback">Optional callback method to call, when response to request has been received.</param>
 		/// <param name="State">State object to pass on to callback method.</param>
 		void CanControlResponseUser(string ProvisioningServiceJID, string JID, string RemoteJID, string Key,
-			bool CanControl, string[] ParameterNames, string Token, IThingReference Node, IqResultEventHandlerAsync Callback,
+			bool CanControl, string[]? ParameterNames, string Token, IThingReference Node, IqResultEventHandlerAsync Callback,
 			object? State);
 
 		/// <summary>

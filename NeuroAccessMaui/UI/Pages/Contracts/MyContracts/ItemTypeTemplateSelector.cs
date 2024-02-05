@@ -1,5 +1,4 @@
 ﻿using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
-using Xamarin.Forms;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 {

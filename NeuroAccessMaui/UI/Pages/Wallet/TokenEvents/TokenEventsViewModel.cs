@@ -33,11 +33,14 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 
 				this.Events.Clear();
 
-				foreach (TokenEvent Event in args.Events)
+				if (args.Events is not null)
 				{
-					EventItem Item = EventItem.Create(Event);
-					await Item.DoBind();
-					this.Events.Add(Item);
+					foreach (TokenEvent Event in args.Events)
+					{
+						EventItem Item = EventItem.Create(Event);
+						await Item.DoBind();
+						this.Events.Add(Item);
+					}
 				}
 			}
 		}

@@ -1,6 +1,4 @@
-﻿using Xamarin.Forms.Xaml;
-
-namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport
+﻿namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport
 {
 	/// <summary>
 	/// A page that allows the user to view a state-machine report.
@@ -14,7 +12,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport
 		public MachineReportPage()
 		{
 			this.ViewModel = new MachineReportViewModel();
-
 			this.InitializeComponent();
 		}
 	}

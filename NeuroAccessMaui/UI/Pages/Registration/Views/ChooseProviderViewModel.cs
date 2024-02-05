@@ -298,7 +298,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 					bool AccountDone = false;
 					XmlElement? LegalIdDefinition = null;
-					string? Pin = null;
+					//string? Pin = null;
 
 					while (ToProcess.First is not null)
 					{

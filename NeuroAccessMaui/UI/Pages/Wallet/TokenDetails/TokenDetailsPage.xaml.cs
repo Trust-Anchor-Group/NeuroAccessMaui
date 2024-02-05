@@ -1,8 +1,4 @@
-﻿using System;
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
-
-namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
+﻿namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 {
 	/// <summary>
 	/// A page that allows the user to view information about a token.
@@ -16,7 +12,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		public TokenDetailsPage()
 		{
 			this.ViewModel = new TokenDetailsViewModel(this);
-
 			this.InitializeComponent();
 		}
 

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using NeuroAccessMaui.Services.Navigation;
-using Waher.Networking.XMPP.Contracts;
-using Xamarin.Forms.Xaml;
+﻿using Waher.Networking.XMPP.Contracts;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 {

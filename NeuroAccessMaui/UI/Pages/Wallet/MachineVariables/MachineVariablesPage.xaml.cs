@@ -1,6 +1,4 @@
-﻿using Xamarin.Forms.Xaml;
-
-namespace NeuroAccessMaui.UI.Pages.Wallet.MachineVariables
+﻿namespace NeuroAccessMaui.UI.Pages.Wallet.MachineVariables
 {
 	/// <summary>
 	/// A page that allows the user to view information about the current state of a state-machine.
@@ -14,7 +12,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineVariables
 		public MachineVariablesPage()
 		{
 			this.ViewModel = new MachineVariablesViewModel();
-
 			this.InitializeComponent();
 		}
 	}

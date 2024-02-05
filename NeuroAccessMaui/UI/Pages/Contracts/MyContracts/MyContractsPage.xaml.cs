@@ -1,9 +1,4 @@
 ﻿using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
-using NeuroAccessMaui.Services.Navigation;
-using NeuroAccessMaui.Services.Notification;
-using System;
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 {

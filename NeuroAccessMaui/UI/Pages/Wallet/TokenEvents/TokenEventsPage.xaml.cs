@@ -1,6 +1,4 @@
-﻿using Xamarin.Forms.Xaml;
-
-namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
+﻿namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 {
 	/// <summary>
 	/// A page that allows the user to view information about a token.
@@ -14,9 +12,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 		public TokenEventsPage()
 		{
 			this.ViewModel = new TokenEventsViewModel();
-
 			this.InitializeComponent();
 		}
-
 	}
 }

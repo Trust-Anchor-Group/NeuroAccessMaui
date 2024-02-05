@@ -1,20 +1,18 @@
-﻿using Xamarin.Forms.Xaml;
-
-namespace NeuroAccessMaui.UI.Pages.Wallet.SellEDaler
+﻿namespace NeuroAccessMaui.UI.Pages.Wallet.SellEDaler
 {
 	/// <summary>
 	/// A page that allows the user to sell eDaler.
 	/// </summary>
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class SellEDalerPage
-    {
-        /// <summary>
-        /// Creates a new instance of the <see cref="SellEDalerPage"/> class.
-        /// </summary>
+	{
+		/// <summary>
+		/// Creates a new instance of the <see cref="SellEDalerPage"/> class.
+		/// </summary>
 		public SellEDalerPage()
 		{
-            this.ViewModel = new SellEDalerViewModel();
+			this.ViewModel = new SellEDalerViewModel();
 			this.InitializeComponent();
-        }
+		}
 	}
 }

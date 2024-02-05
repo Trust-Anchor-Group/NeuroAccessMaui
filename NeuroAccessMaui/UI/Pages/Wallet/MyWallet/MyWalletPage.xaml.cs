@@ -1,9 +1,4 @@
-﻿using IdApp.Controls.FlipView;
-using System;
-using System.Threading.Tasks;
-using Xamarin.Forms.Xaml;
-
-namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
+﻿namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 {
 	/// <summary>
 	/// A page that allows the user to view the contents of its wallet, pending payments and recent account events.

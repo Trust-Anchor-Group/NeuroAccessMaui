@@ -480,8 +480,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				}
 				else
 				{
-					Uri = await ServiceRef.XmppService.CreateFullEDalerPaymentUri(this.To, this.Amount ?? 0, this.AmountExtra,
-						this.Currency, 3, this.Message);
+					Uri = await ServiceRef.XmppService.CreateFullEDalerPaymentUri(this.To!, this.Amount ?? 0, this.AmountExtra,
+						this.Currency!, 3, this.Message ?? string.Empty);
 				}
 
 				// TODO: Validate To is a Bare JID or proper Legal Identity
@@ -602,6 +602,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 		[RelayCommand(CanExecute = nameof(IsConnected))]
 		private async Task Submit()
 		{
+			if (this.Uri is null)
+				return;
+
 			try
 			{
 				if (!await App.AuthenticateUser())
@@ -631,6 +634,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 		[RelayCommand]
 		private async Task ShowCode()
 		{
+			if (this.Uri is null)
+				return;
+
 			if (!await App.AuthenticateUser(true))
 				return;
 
@@ -685,12 +691,12 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				{
 					LegalIdentity LegalIdentity = await ServiceRef.XmppService.GetLegalIdentity(this.To);
 					Uri = await ServiceRef.XmppService.CreateFullEDalerPaymentUri(LegalIdentity, this.Amount ?? 0, this.AmountExtra,
-						this.Currency, 3, this.Message);
+						this.Currency!, 3, this.Message ?? string.Empty);
 				}
 				else
 				{
-					Uri = await ServiceRef.XmppService.CreateFullEDalerPaymentUri(this.To, this.Amount ?? 0, this.AmountExtra,
-						this.Currency, 3, this.Message);
+					Uri = await ServiceRef.XmppService.CreateFullEDalerPaymentUri(this.To!, this.Amount ?? 0, this.AmountExtra,
+						this.Currency!, 3, this.Message ?? string.Empty);
 				}
 
 				// TODO: Validate To is a Bare JID or proper Legal Identity

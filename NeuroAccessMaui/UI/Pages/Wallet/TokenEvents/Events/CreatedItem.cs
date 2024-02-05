@@ -30,7 +30,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents.Events
 		/// <summary>
 		/// Binds properties
 		/// </summary>
-		/// <param name="Ref">Service references.</param>
 		public override async Task DoBind()
 		{
 			await base.DoBind();

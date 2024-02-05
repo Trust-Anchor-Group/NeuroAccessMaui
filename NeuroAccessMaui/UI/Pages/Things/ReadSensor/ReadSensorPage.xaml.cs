@@ -1,6 +1,4 @@
-﻿using Xamarin.Forms.Xaml;
-
-namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor
+﻿namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor
 {
 	/// <summary>
 	/// A page that displays sensor data from a sensor.
@@ -14,7 +12,6 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor
 		public ReadSensorPage()
 		{
 			this.ViewModel = new ReadSensorModel();
-
 			this.InitializeComponent();
 		}
 	}

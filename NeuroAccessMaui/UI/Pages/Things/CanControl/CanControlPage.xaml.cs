@@ -1,6 +1,4 @@
-﻿using Xamarin.Forms.Xaml;
-
-namespace NeuroAccessMaui.UI.Pages.Things.CanControl
+﻿namespace NeuroAccessMaui.UI.Pages.Things.CanControl
 {
 	/// <summary>
 	/// A page that asks the user if a remote entity is allowed to control the device.
@@ -14,7 +12,6 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanControl
 		public CanControlPage()
 		{
 			this.ViewModel = new CanControlModel();
-
 			this.InitializeComponent();
 		}
 	}
