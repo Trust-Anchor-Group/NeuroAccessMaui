@@ -203,7 +203,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.IsFriend
 			}
 		}
 
-		private	RuleRange GetRuleRange()
+		private RuleRange GetRuleRange()
 		{
 			return this.SelectedRuleRangeIndex switch
 			{
@@ -268,7 +268,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.IsFriend
 		[RelayCommand]
 		private async Task Ignore()
 		{
-				if (this.@event is not null)
+			if (this.@event is not null)
 				await ServiceRef.NotificationService.DeleteEvents(this.@event);
 
 			await ServiceRef.NavigationService.GoBackAsync();

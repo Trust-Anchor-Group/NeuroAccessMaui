@@ -1,26 +1,17 @@
-﻿using System;
-using Xamarin.CommunityToolkit.Helpers;
+﻿using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels
 {
 	/// <summary>
 	/// Encapsulates a <see cref="PendingPayment"/> object.
 	/// </summary>
-	public class PendingPaymentItem : IUniqueItem
+	/// <param name="PendingPayment">Pending payment.</param>
+	/// <param name="FriendlyName">Friendly name.</param>
+	public class PendingPaymentItem(EDaler.PendingPayment PendingPayment, string FriendlyName) : IUniqueItem
 	{
-		private readonly EDaler.PendingPayment pendingPayment;
-		private readonly string friendlyName;
-
-		/// <summary>
-		/// Encapsulates a <see cref="PendingPayment"/> object.
-		/// </summary>
-		/// <param name="PendingPayment">Pending payment.</param>
-		/// <param name="FriendlyName">Friendly name.</param>
-		public PendingPaymentItem(EDaler.PendingPayment PendingPayment, string FriendlyName)
-		{
-			this.pendingPayment = PendingPayment;
-			this.friendlyName = FriendlyName;
-		}
+		private readonly EDaler.PendingPayment pendingPayment = PendingPayment;
+		private readonly string friendlyName = FriendlyName;
 
 		/// <summary>
 		/// Associated transaction ID
@@ -38,7 +29,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels
 		/// <summary>
 		/// String representation of <see cref="Expires"/>
 		/// </summary>
-		public string ExpiresStr => string.Format(LocalizationResourceManager.Current["ExpiresAt"], this.Expires.ToShortDateString());
+		public string ExpiresStr => ServiceRef.Localizer[nameof(AppResources.ExpiresAt), this.Expires.ToShortDateString()];
 
 		/// <summary>
 		/// Currency of pending payment

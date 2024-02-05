@@ -1509,6 +1509,9 @@
   <data name="APetitionHasBeenSentForEncryption" xml:space="preserve">
     <value>Encryption can only be performed, if you have access to the recipients identity. A petition for this identity has therefore been sent to the indended recipient. If the recipient accepts the petition, you will receive the identity and be able to send the payment with an encrypted message when you try again. You can also choose to send an unencrypted message with the payment.</value>
   </data>
+  <data name="Assessor" xml:space="preserve">
+    <value>Assessor</value>
+  </data>
   <data name="Building" xml:space="preserve">
     <value>Building</value>
   </data>
@@ -1517,6 +1520,12 @@
   </data>
   <data name="CallerOnly" xml:space="preserve">
     <value>Caller Only</value>
+  </data>
+  <data name="Certifier" xml:space="preserve">
+    <value>Certifier</value>
+  </data>
+  <data name="CertifierJid" xml:space="preserve">
+    <value>Certifier Address</value>
   </data>
   <data name="Class" xml:space="preserve">
     <value>Class</value>
@@ -1559,6 +1568,9 @@
   </data>
   <data name="Everyone" xml:space="preserve">
     <value>Everyone</value>
+  </data>
+  <data name="ExpiresAt" xml:space="preserve">
+    <value>(Expires {0})</value>
   </data>
   <data name="FromUser" xml:space="preserve">
     <value>From User</value>
@@ -1605,6 +1617,9 @@
   <data name="NotAvailable" xml:space="preserve">
     <value>Not Available</value>
   </data>
+  <data name="NoteCopiedToClipboard" xml:space="preserve">
+    <value>Note copied to clipboard.</value>
+  </data>
   <data name="Payment" xml:space="preserve">
     <value>Payment</value>
   </data>
@@ -1629,8 +1644,14 @@
   <data name="Profiling" xml:space="preserve">
     <value>Profiling</value>
   </data>
+  <data name="PurposeReviewToken" xml:space="preserve">
+    <value>Reviewing token where you are part.</value>
+  </data>
   <data name="Question" xml:space="preserve">
     <value>Question</value>
+  </data>
+  <data name="Reference" xml:space="preserve">
+    <value>Reference</value>
   </data>
   <data name="Registry" xml:space="preserve">
     <value>Registry</value>
@@ -1670,6 +1691,9 @@
   </data>
   <data name="SellEDaler" xml:space="preserve">
     <value>Sell eDaler.</value>
+  </data>
+  <data name="SendInformationTo" xml:space="preserve">
+    <value>Send Information To?</value>
   </data>
   <data name="SensorDataAccepted" xml:space="preserve">
     <value>Request has been accepted.</value>
@@ -1776,14 +1800,23 @@
   <data name="UnableToRespond" xml:space="preserve">
     <value>Unable to respond to request.</value>
   </data>
+  <data name="UnrecognizedEventType" xml:space="preserve">
+    <value>Unrecognized event type:</value>
+  </data>
   <data name="User" xml:space="preserve">
     <value>User</value>
   </data>
   <data name="UserSignedAs" xml:space="preserve">
     <value>{0} signed as {1}.</value>
   </data>
+  <data name="Valuator" xml:space="preserve">
+    <value>Valuator</value>
+  </data>
   <data name="Version" xml:space="preserve">
     <value>Version</value>
+  </data>
+  <data name="Witness" xml:space="preserve">
+    <value>Witness</value>
   </data>
   <data name="Yesterday" xml:space="preserve">
     <value>Yesterday</value>

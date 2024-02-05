@@ -1,16 +1,30 @@
-﻿using EDaler;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using EDaler;
 using EDaler.Uris;
+using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Navigation;
+using NeuroAccessMaui.Services.Notification;
+using NeuroAccessMaui.Services.UI.QR;
+using NeuroAccessMaui.UI.Converters;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts;
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Things.MyThings;
+using NeuroAccessMaui.UI.Pages.Wallet;
+using NeuroAccessMaui.UI.Pages.Wallet.MyTokens;
+using NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels;
+using NeuroAccessMaui.UI.Pages.Wallet.TokenDetails;
 using NeuroFeatures;
 using SkiaSharp;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 using System.Timers;
-using System.Windows.Input;
 using System.Xml;
 using Waher.Content;
 using Waher.Content.Html;
@@ -21,19 +35,6 @@ using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.HttpFileUpload;
 using Waher.Persistence;
 using Waher.Persistence.Filters;
-using System.Globalization;
-using NeuroAccessMaui.Services;
-using NeuroAccessMaui.Services.Notification;
-using CommunityToolkit.Mvvm.ComponentModel;
-using System.Collections.ObjectModel;
-using NeuroAccessMaui.Resources.Languages;
-using System.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using NeuroAccessMaui.Services.Navigation;
-using NeuroAccessMaui.UI.Converters;
-using ZXing.OneD;
-using NeuroAccessMaui.Services.UI.QR;
-using NeuroAccessMaui.UI.Pages.Wallet;
 
 namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 {
@@ -50,7 +51,6 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		protected internal ChatViewModel()
 			: base()
 		{
-			this.MessageSelected = new Command(async Parameter => await this.ExecuteMessageSelected(Parameter));
 		}
 
 		/// <inheritdoc/>
@@ -462,13 +462,6 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 
 		private void EnsureFirstMessageIsEmpty()
 		{
-			/* Unmerged change from project 'NeuroAccessMaui (net8.0-ios)'
-			Before:
-						if (this.Messages.Count > 0 && this.Messages[0].MessageType != Services.Messages.MessageType.Empty)
-			After:
-						if (this.Messages.Count > 0 && this.Messages[0].MessageType != MessageType.Empty)
-			*/
-
 			if (this.Messages.Count > 0 && this.Messages[0].MessageType != MessageType.Empty)
 				this.Messages.Insert(0, ChatMessage.Empty);
 		}
@@ -566,12 +559,6 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 					RemoteBareJid = BareJid,
 					RemoteObjectId = string.Empty,
 
-					/* Unmerged change from project 'NeuroAccessMaui (net8.0-ios)'
-					Before:
-										MessageType = Services.Messages.MessageType.Sent,
-					After:
-										MessageType = MessageType.Sent,
-					*/
 					MessageType = MessageType.Sent,
 					Html = HtmlDocument.GetBody(await Doc.GenerateHTML()),
 					PlainText = (await Doc.GeneratePlainText()).Trim(),
@@ -1143,7 +1130,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 
 			await ServiceRef.NavigationService.GoToAsync(nameof(MyTokensPage), Args, BackMethod.Pop);
 
-			TokenItem Selected = await Args.TokenItemProvider.Task;
+			TokenItem? Selected = await Args.TokenItemProvider.Task;
 
 			if (Selected is null)
 				return;
@@ -1215,9 +1202,8 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		/// <summary>
 		/// Command executed when a message has been selected (or deselected) in the list view.
 		/// </summary>
-		public ICommand MessageSelected { get; }
-
-		private Task ExecuteMessageSelected(object Parameter)
+		[RelayCommand]
+		private Task MessageSelected(object Parameter)
 		{
 			if (Parameter is ChatMessage Message)
 			{
@@ -1235,25 +1221,13 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 				switch (Message.MessageType)
 				{
 
-					/* Unmerged change from project 'NeuroAccessMaui (net8.0-ios)'
-					Before:
-										case Services.Messages.MessageType.Sent:
-					After:
-										case MessageType.Sent:
-					*/
-					case Chat.MessageType.Sent:
+					case MessageType.Sent:
 						this.MessageId = Message.ObjectId;
 						this.MarkdownInput = Message.Markdown;
 						break;
 
 
-					/* Unmerged change from project 'NeuroAccessMaui (net8.0-ios)'
-					Before:
-										case Services.Messages.MessageType.Received:
-					After:
-										case MessageType.Received:
-					*/
-					case Chat.MessageType.Received:
+					case MessageType.Received:
 						string s = Message.Markdown;
 						if (string.IsNullOrEmpty(s))
 							s = MarkdownDocument.Encode(Message.PlainText);
@@ -1329,7 +1303,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 								if (!ServiceRef.NotificationService.TryGetNotificationEvents(NotificationEventType.Wallet, ParsedToken.TokenId, out NotificationEvent[]? Events))
 									Events = [];
 
-								TokenDetailsNavigationArgs Args = new(new TokenItem(ParsedToken, this, Events));
+								TokenDetailsNavigationArgs Args = new(new TokenItem(ParsedToken, Events));
 
 								await ServiceRef.NavigationService.GoToAsync(nameof(TokenDetailsPage), Args, BackMethod.Pop);
 								break;

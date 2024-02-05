@@ -394,6 +394,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Assessor.
+        /// </summary>
+        internal static string Assessor {
+            get {
+                return ResourceManager.GetString("Assessor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Authenticate &amp; Sign.
         /// </summary>
         internal static string AuthenticateAndSign {
@@ -489,6 +498,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string CantConnectTo {
             get {
                 return ResourceManager.GetString("CantConnectTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Certifier.
+        /// </summary>
+        internal static string Certifier {
+            get {
+                return ResourceManager.GetString("Certifier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Certifier Address.
+        /// </summary>
+        internal static string CertifierJid {
+            get {
+                return ResourceManager.GetString("CertifierJid", resourceCulture);
             }
         }
         
@@ -1357,6 +1384,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to (Expires {0}).
+        /// </summary>
+        internal static string ExpiresAt {
+            get {
+                return ResourceManager.GetString("ExpiresAt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to bind viewmodel {0} for page {1}.
         /// </summary>
         internal static string FailedToBindViewModelForPage {
@@ -2181,6 +2217,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string Note {
             get {
                 return ResourceManager.GetString("Note", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Note copied to clipboard..
+        /// </summary>
+        internal static string NoteCopiedToClipboard {
+            get {
+                return ResourceManager.GetString("NoteCopiedToClipboard", resourceCulture);
             }
         }
         
@@ -3283,6 +3328,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Reviewing token where you are part..
+        /// </summary>
+        internal static string PurposeReviewToken {
+            get {
+                return ResourceManager.GetString("PurposeReviewToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Choose access purpose .
         /// </summary>
         internal static string PurposesSectionTitle {
@@ -3414,6 +3468,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string ReadRequest {
             get {
                 return ResourceManager.GetString("ReadRequest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reference.
+        /// </summary>
+        internal static string Reference {
+            get {
+                return ResourceManager.GetString("Reference", resourceCulture);
             }
         }
         
@@ -3909,6 +3972,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string SendEmailWarning {
             get {
                 return ResourceManager.GetString("SendEmailWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send Information To?.
+        /// </summary>
+        internal static string SendInformationTo {
+            get {
+                return ResourceManager.GetString("SendInformationTo", resourceCulture);
             }
         }
         
@@ -4705,6 +4777,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unrecognized event type:.
+        /// </summary>
+        internal static string UnrecognizedEventType {
+            get {
+                return ResourceManager.GetString("UnrecognizedEventType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Updated.
         /// </summary>
         internal static string Updated {
@@ -4728,6 +4809,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string UserSignedAs {
             get {
                 return ResourceManager.GetString("UserSignedAs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Valuator.
+        /// </summary>
+        internal static string Valuator {
+            get {
+                return ResourceManager.GetString("Valuator", resourceCulture);
             }
         }
         
@@ -4809,6 +4899,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string WarningTitle {
             get {
                 return ResourceManager.GetString("WarningTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Witness.
+        /// </summary>
+        internal static string Witness {
+            get {
+                return ResourceManager.GetString("Witness", resourceCulture);
             }
         }
         

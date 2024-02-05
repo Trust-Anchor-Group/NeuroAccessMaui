@@ -3,11 +3,11 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.UI.Photos;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
-using System.Windows.Input;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;
@@ -33,8 +33,6 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 		public ViewIdentityViewModel()
 			: base()
 		{
-			this.CopyCommand = new Command(async (Item) => await this.CopyToClipboard(Item));
-
 			this.photosLoader = new PhotosLoader(this.Photos);
 		}
 
@@ -336,11 +334,6 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 		}
 
 		#region Properties
-
-		/// <summary>
-		/// The command for copying data to clipboard.
-		/// </summary>
-		public ICommand CopyCommand { get; }
 
 		/// <summary>
 		/// Holds a list of photos associated with this identity.
@@ -920,7 +913,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 		private int firstPhotoRotation;
 
 		/// <summary>
-		/// Used to find out if an ICommand can execute
+		/// Used to find out if a command can execute
 		/// </summary>
 		public bool CanExecuteCommands => !this.IsBusy && this.IsConnected;
 
@@ -960,7 +953,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 		/// Copies Item to clipboard
 		/// </summary>
 		[RelayCommand]
-		private async Task CopyToClipboard(object Item)
+		private async Task Copy(object Item)
 		{
 			try
 			{

@@ -1,8 +1,6 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using Waher.Events;
 using Waher.Things.SensorData;
-using Xamarin.Forms;
 
 namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor.Model
 {

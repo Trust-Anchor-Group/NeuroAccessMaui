@@ -80,7 +80,7 @@
 			<loading:LoadingListView x:Name="CollectionView" SelectionMode="Single" Rotation="180"
 									 VerticalOptions="StartAndExpand" HasUnevenRows="True" SeparatorVisibility="None"
 									 ItemsSource="{Binding Path=Messages}" ItemTemplate="{StaticResource MessageStyleSelector}"
-									 ItemSelectedCommand="{Binding Path=MessageSelected}" LoadMoreCommand="{Binding LoadMoreMessagesCommand}">
+									 ItemSelectedCommand="{Binding Path=MessageSelectedCommand}" LoadMoreCommand="{Binding LoadMoreMessagesCommand}">
 			</loading:LoadingListView>
 
 			<Grid x:Name="ControlGrid" ColumnDefinitions="*,40" Grid.Row="1" Margin="0,12,0,0">

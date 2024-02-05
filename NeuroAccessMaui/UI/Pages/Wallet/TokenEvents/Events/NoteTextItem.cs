@@ -5,17 +5,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents.Events
 	/// <summary>
 	/// Represents a text note on a token.
 	/// </summary>
-	public class NoteTextItem : NoteItem
+	/// <param name="Event">Token event</param>
+	public class NoteTextItem(NoteText Event) : NoteItem(Event)
 	{
-		/// <summary>
-		/// Represents a text note on a token.
-		/// </summary>
-		/// <param name="Event">Token event</param>
-		public NoteTextItem(NoteText Event)
-			: base(Event)
-		{
-		}
-
 		/// <summary>
 		/// Type of event.
 		/// </summary>

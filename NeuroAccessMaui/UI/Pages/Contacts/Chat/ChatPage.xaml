@@ -71,7 +71,7 @@
 										   ItemsUpdatingScrollMode="KeepScrollOffset" RemainingItemsThreshold="1"
 										   ItemsSource="{Binding Path=Messages}"
 										   ItemTemplate="{StaticResource MessageStyleSelector}"
-										   ItemSelectedCommand="{Binding Path=MessageSelected}"
+										   ItemSelectedCommand="{Binding Path=MessageSelectedCommand}"
 										   LoadMoreCommand="{Binding LoadMoreMessagesCommand}">
 				<CollectionView.ItemsLayout>
 					<GridItemsLayout Orientation="Vertical" VerticalItemSpacing="12"/>

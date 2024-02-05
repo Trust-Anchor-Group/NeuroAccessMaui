@@ -1,6 +1,4 @@
 ﻿using NeuroAccessMaui.Services;
-using NeuroAccessMaui.Services;
-using System;
 using System.ComponentModel;
 
 namespace NeuroAccessMaui.UI.Pages.Things.CanRead

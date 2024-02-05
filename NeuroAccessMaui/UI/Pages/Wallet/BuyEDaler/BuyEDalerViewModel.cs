@@ -63,12 +63,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler
 		private bool amountOk;
 
 		/// <summary>
-		/// Color of <see cref="Amount"/> field.
-		/// </summary>
-		[ObservableProperty]
-		private Color? amountColor;
-
-		/// <summary>
 		/// <see cref="Amount"/> as text.
 		/// </summary>
 		[ObservableProperty]
@@ -85,13 +79,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler
 					{
 						this.Amount = d;
 						this.AmountOk = true;
-						this.AmountColor = Colors.Default;
 					}
 					else
-					{
 						this.AmountOk = false;
-						this.AmountColor = Colors.Salmon;
-					}
 					break;
 			}
 		}

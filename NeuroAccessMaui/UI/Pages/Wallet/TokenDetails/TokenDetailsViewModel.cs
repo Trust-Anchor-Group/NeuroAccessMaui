@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
@@ -19,7 +20,6 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Text;
 using System.Web;
-using System.Windows.Input;
 using System.Xml;
 using Waher.Content;
 using Waher.Networking.XMPP.Contracts;
@@ -32,43 +32,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 	/// <summary>
 	/// The view model to bind to for when displaying the contents of a token.
 	/// </summary>
-	public partial class TokenDetailsViewModel : QrXmppViewModel
+	/// <param name="Page">Page hosting details.</param>
+	public partial class TokenDetailsViewModel(TokenDetailsPage Page) : QrXmppViewModel()
 	{
-		private readonly TokenDetailsPage page;
-
-		/// <summary>
-		/// Creates an instance of the <see cref="TokenDetailsViewModel"/> class.
-		/// </summary>
-		/// <param name="Page">Page hosting details.</param>
-		public TokenDetailsViewModel(TokenDetailsPage Page)
-			: base()
-		{
-			this.page = Page;
-
-			this.Certifiers = [];
-			this.Valuators = [];
-			this.Assessors = [];
-			this.Witnesses = [];
-			this.Tags = [];
-
-			this.CopyToClipboardCommand = new Command(async P => await this.CopyToClipboard(P));
-			this.ViewIdCommand = new Command(async P => await this.ViewId(P));
-			this.ViewContractCommand = new Command(async P => await this.ViewContract(P));
-			this.OpenChatCommand = new Command(async P => await this.OpenChat(P));
-			this.OpenLinkCommand = new Command(async P => await this.OpenLink(P));
-			this.ShowM2mInfoCommand = new Command(async _ => await this.ShowM2mInfo());
-			this.SendToContactCommand = new Command(async _ => await this.SendToContact());
-			this.ShareCommand = new Command(async _ => await this.Share());
-			this.OfferToSellCommand = new Command(async _ => await this.OfferToSell());
-			this.PublishMarketplaceCommand = new Command(async _ => await this.PublishMarketplace());
-			this.OfferToBuyCommand = new Command(async _ => await this.OfferToBuy());
-			this.ViewEventsCommand = new Command(async _ => await this.ViewEvents());
-			this.PresentReportCommand = new Command(async _ => await this.PresentReport());
-			this.HistoryReportCommand = new Command(async _ => await this.HistoryReport());
-			this.VariablesReportCommand = new Command(async _ => await this.VariablesReport());
-			this.StatesReportCommand = new Command(async _ => await this.StatesReport());
-			this.ProfilingReportCommand = new Command(async _ => await this.ProfilingReport());
-		}
+		private readonly TokenDetailsPage page = Page;
 
 		/// <inheritdoc/>
 		protected override async Task OnInitialize()
@@ -143,14 +110,14 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 				if (this.TokenId is not null)
 					this.GenerateQrCode(Constants.UriSchemes.CreateTokenUri(this.TokenId));
 
-				await this.Populate(ServiceRef.Localizer[nameof(AppResources.Witness)], string.Empty, args.Token.Witness, null, this.Witnesses);
-				await this.Populate(ServiceRef.Localizer[nameof(AppResources.Certifier)], ServiceRef.Localizer[nameof(AppResources.CertifierJid)], args.Token.Certifier, args.Token.CertifierJids, this.Certifiers);
-				await this.Populate(ServiceRef.Localizer[nameof(AppResources.Valuator)], string.Empty, args.Token.Valuator, null, this.Valuators);
-				await this.Populate(ServiceRef.Localizer[nameof(AppResources.Assessor)], string.Empty, args.Token.Assessor, null, this.Assessors);
+				await this.Populate(ServiceRef.Localizer[nameof(AppResources.Witness)], string.Empty, args.Token?.Witness, null, this.Witnesses);
+				await this.Populate(ServiceRef.Localizer[nameof(AppResources.Certifier)], ServiceRef.Localizer[nameof(AppResources.CertifierJid)], args.Token?.Certifier, args.Token?.CertifierJids, this.Certifiers);
+				await this.Populate(ServiceRef.Localizer[nameof(AppResources.Valuator)], string.Empty, args.Token?.Valuator, null, this.Valuators);
+				await this.Populate(ServiceRef.Localizer[nameof(AppResources.Assessor)], string.Empty, args.Token?.Assessor, null, this.Assessors);
 
 				this.Tags.Clear();
 
-				if (args.Token.Tags is not null)
+				if (args.Token?.Tags is not null)
 				{
 					foreach (TokenTag Tag in args.Token.Tags)
 						this.Tags.Add(Tag);
@@ -175,9 +142,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			}
 		}
 
-		private async Task Populate(string LegalIdLabel, string JidLabel, string[] LegalIds, string[] Jids, ObservableCollection<PartItem> Parts)
+		private async Task Populate(string LegalIdLabel, string JidLabel, string[]? LegalIds, string[]? Jids, ObservableCollection<PartItem> Parts)
 		{
-			int i, c = LegalIds.Length;
+			int i, c = LegalIds?.Length ?? 0;
 			int d = Jids?.Length ?? 0;
 			string FriendlyName;
 			string Jid;
@@ -186,7 +153,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 
 			for (i = 0; i < c; i++)
 			{
-				FriendlyName = await ContactInfo.GetFriendlyName(LegalIds[i]);
+				FriendlyName = await ContactInfo.GetFriendlyName(LegalIds![i]);
 				Jid = i < d ? (Jids![i] ?? string.Empty) : string.Empty;
 
 				Parts.Add(new PartItem(LegalIds[i], Jid, FriendlyName));
@@ -209,27 +176,27 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		/// <summary>
 		/// Certifiers
 		/// </summary>
-		public ObservableCollection<PartItem> Certifiers { get; }
+		public ObservableCollection<PartItem> Certifiers { get; } = [];
 
 		/// <summary>
 		/// Valuators
 		/// </summary>
-		public ObservableCollection<PartItem> Valuators { get; }
+		public ObservableCollection<PartItem> Valuators { get; } = [];
 
 		/// <summary>
 		/// Assessors
 		/// </summary>
-		public ObservableCollection<PartItem> Assessors { get; }
+		public ObservableCollection<PartItem> Assessors { get; } = [];
 
 		/// <summary>
 		/// Witnesses
 		/// </summary>
-		public ObservableCollection<PartItem> Witnesses { get; }
+		public ObservableCollection<PartItem> Witnesses { get; } = [];
 
 		/// <summary>
 		/// Witnesses
 		/// </summary>
-		public ObservableCollection<TokenTag> Tags { get; }
+		public ObservableCollection<TokenTag> Tags { get; } = [];
 
 		/// <summary>
 		/// When token was created.
@@ -533,89 +500,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		/// <summary>
 		/// Command to copy a value to the clipboard.
 		/// </summary>
-		public ICommand CopyToClipboardCommand { get; }
-
-		/// <summary>
-		/// Command to view a Legal ID.
-		/// </summary>
-		public ICommand ViewIdCommand { get; }
-
-		/// <summary>
-		/// Command to view a smart contract.
-		/// </summary>
-		public ICommand ViewContractCommand { get; }
-
-		/// <summary>
-		/// Command to open a chat page.
-		/// </summary>
-		public ICommand OpenChatCommand { get; }
-
-		/// <summary>
-		/// Command to open a link.
-		/// </summary>
-		public ICommand OpenLinkCommand { get; }
-
-		/// <summary>
-		/// Command to show machine-readable details of token.
-		/// </summary>
-		public ICommand ShowM2mInfoCommand { get; }
-
-		/// <summary>
-		/// Command to send token to contact
-		/// </summary>
-		public ICommand SendToContactCommand { get; }
-
-		/// <summary>
-		/// Command to share token with other applications
-		/// </summary>
-		public ICommand ShareCommand { get; }
-
-		/// <summary>
-		/// Command to publish the token on the marketplace, for sale.
-		/// </summary>
-		public ICommand PublishMarketplaceCommand { get; }
-
-		/// <summary>
-		/// Command to offer the token for sale.
-		/// </summary>
-		public ICommand OfferToSellCommand { get; }
-
-		/// <summary>
-		/// Command to offer to buy the token.
-		/// </summary>
-		public ICommand OfferToBuyCommand { get; }
-
-		/// <summary>
-		/// Command to view events related to token.
-		/// </summary>
-		public ICommand ViewEventsCommand { get; }
-
-		/// <summary>
-		/// Command to display the present state report of a state-machine.
-		/// </summary>
-		public ICommand PresentReportCommand { get; }
-
-		/// <summary>
-		/// Command to display the historic states report of a state-machine.
-		/// </summary>
-		public ICommand HistoryReportCommand { get; }
-
-		/// <summary>
-		/// Command to display the current states of variables of a state-machine.
-		/// </summary>
-		public ICommand VariablesReportCommand { get; }
-
-		/// <summary>
-		/// Command to display the state diagram of a state-machine.
-		/// </summary>
-		public ICommand StatesReportCommand { get; }
-
-		/// <summary>
-		/// Command to display a profiling report of a state-machine.
-		/// </summary>
-		public ICommand ProfilingReportCommand { get; }
-
-		private async Task CopyToClipboard(object Parameter)
+		[RelayCommand]
+		private static async Task CopyToClipboard(object Parameter)
 		{
 			try
 			{
@@ -640,12 +526,19 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			}
 		}
 
-		private async Task ViewId(object Parameter)
+		/// <summary>
+		/// Command to view a Legal ID.
+		/// </summary>
+		[RelayCommand]
+		private static async Task ViewId(object Parameter)
 		{
+			string? LegalId = Parameter?.ToString();
+			if (string.IsNullOrEmpty(LegalId))
+				return;
+
 			try
 			{
-				await ServiceRef.ContractOrchestratorService.OpenLegalIdentity(Parameter.ToString(),
-					ServiceRef.Localizer[nameof(AppResources.PurposeReviewToken)]);
+				await ServiceRef.ContractOrchestratorService.OpenLegalIdentity(LegalId, ServiceRef.Localizer[nameof(AppResources.PurposeReviewToken)]);
 			}
 			catch (Exception ex)
 			{
@@ -653,12 +546,19 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			}
 		}
 
-		private async Task ViewContract(object Parameter)
+		/// <summary>
+		/// Command to view a smart contract.
+		/// </summary>
+		[RelayCommand]
+		private static async Task ViewContract(object Parameter)
 		{
+			string? ContractId = Parameter?.ToString();
+			if (string.IsNullOrEmpty(ContractId))
+				return;
+
 			try
 			{
-				await ServiceRef.ContractOrchestratorService.OpenContract(Parameter.ToString(),
-					ServiceRef.Localizer[nameof(AppResources.PurposeReviewToken)], null);
+				await ServiceRef.ContractOrchestratorService.OpenContract(ContractId, ServiceRef.Localizer[nameof(AppResources.PurposeReviewToken)], null);
 			}
 			catch (Exception ex)
 			{
@@ -666,9 +566,16 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			}
 		}
 
+		/// <summary>
+		/// Command to open a chat page.
+		/// </summary>
+		[RelayCommand]
 		private async Task OpenChat(object Parameter)
 		{
 			string? s = Parameter?.ToString();
+			if (string.IsNullOrEmpty(s))
+				return;
+
 			string? BareJid;
 			string? LegalId;
 			string? FriendlyName;
@@ -716,12 +623,20 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			}
 		}
 
-		private async Task OpenLink(object Parameter)
+		/// <summary>
+		/// Command to open a link.
+		/// </summary>
+		[RelayCommand]
+		private static async Task OpenLink(object Parameter)
 		{
 			if (Parameter is not null)
 				await App.OpenUrlAsync(Parameter.ToString()!);
 		}
 
+		/// <summary>
+		/// Command to show machine-readable details of token.
+		/// </summary>
+		[RelayCommand]
 		private async Task ShowM2mInfo()
 		{
 			if (this.Definition is null)
@@ -746,6 +661,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			}
 		}
 
+		/// <summary>
+		/// Command to send token to contact
+		/// </summary>
+		[RelayCommand]
 		private async Task SendToContact()
 		{
 			TaskCompletionSource<ContactInfoModel?> Selected = new();
@@ -779,6 +698,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			}
 		}
 
+		/// <summary>
+		/// Command to share token with other applications
+		/// </summary>
+		[RelayCommand]
 		private async Task Share()
 		{
 			try
@@ -798,6 +721,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			}
 		}
 
+		/// <summary>
+		/// Command to publish the token on the marketplace, for sale.
+		/// </summary>
+		[RelayCommand]
 		private async Task PublishMarketplace()
 		{
 			try
@@ -817,12 +744,12 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 
 				Template.Parts = new Part[]
 				{
-					new Part()
+					new()
 					{
 						Role = "Seller",
 						LegalId = ServiceRef.TagProfile.LegalIdentity?.Id
 					},
-					new Part()
+					new()
 					{
 						Role = "Auctioneer",
 						LegalId = e.TrustProviderId
@@ -839,11 +766,15 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			}
 		}
 
+		/// <summary>
+		/// Command to offer the token for sale.
+		/// </summary>
+		[RelayCommand]
 		private async Task OfferToSell()
 		{
 			try
 			{
-				Dictionary<CaseInsensitiveString, object> Parameters = new();
+				Dictionary<CaseInsensitiveString, object> Parameters = [];
 				string? TrustProviderId = null;
 				Contract Template = await ServiceRef.XmppService.GetContract(Constants.ContractTemplates.TransferTokenTemplate);
 				Template.Visibility = ContractVisibility.Public;
@@ -871,7 +802,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 
 					if (Template.Parts is null)
 					{
-						List<Part> Parts = new();
+						List<Part> Parts = [];
 
 						if (!string.IsNullOrEmpty(SellerRole))
 						{
@@ -891,7 +822,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 							});
 						}
 
-						Template.Parts = Parts.ToArray();
+						Template.Parts = [.. Parts];
 						Template.PartsMode = ContractParts.ExplicitlyDefined;
 					}
 					else
@@ -931,11 +862,15 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			}
 		}
 
+		/// <summary>
+		/// Command to offer to buy the token.
+		/// </summary>
+		[RelayCommand]
 		private async Task OfferToBuy()
 		{
 			try
 			{
-				Dictionary<CaseInsensitiveString, object> Parameters = new();
+				Dictionary<CaseInsensitiveString, object> Parameters = [];
 				string? TrustProviderId = null;
 				Contract Template = await ServiceRef.XmppService.GetContract(Constants.ContractTemplates.TransferTokenTemplate);
 				Template.Visibility = ContractVisibility.Public;
@@ -964,7 +899,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 
 					if (Template.Parts is null)
 					{
-						List<Part> Parts = new();
+						List<Part> Parts = [];
 
 						if (!string.IsNullOrEmpty(BuyerRole))
 						{
@@ -993,7 +928,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 							});
 						}
 
-						Template.Parts = Parts.ToArray();
+						Template.Parts = [.. Parts];
 						Template.PartsMode = ContractParts.ExplicitlyDefined;
 					}
 					else
@@ -1035,46 +970,88 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			}
 		}
 
+		/// <summary>
+		/// Command to view events related to token.
+		/// </summary>
+		[RelayCommand]
 		private async Task ViewEvents()
 		{
+			if (this.TokenId is null)
+				return;
+
 			try
 			{
 				TokenEvent[] Events = this.TokenId is null ? [] : await ServiceRef.XmppService.GetNeuroFeatureEvents(this.TokenId);
-				TokenEventsNavigationArgs Args = new(this.TokenId, Events);
+				TokenEventsNavigationArgs Args = new(this.TokenId!, Events);
 
 				await ServiceRef.NavigationService.GoToAsync(nameof(TokenEventsPage), Args, BackMethod.Pop);
 			}
 			catch (Exception ex)
 			{
-				await this.UiSerializer.DisplayAlert(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
 
+		/// <summary>
+		/// Command to display the present state report of a state-machine.
+		/// </summary>
+		[RelayCommand]
 		private async Task PresentReport()
 		{
-			await this.ShowReport(new TokenPresentReport(this.XmppService, this.TokenId));
+			if (this.TokenId is null)
+				return;
+
+			await this.ShowReport(new TokenPresentReport(this.TokenId));
 		}
 
+		/// <summary>
+		/// Command to display the historic states report of a state-machine.
+		/// </summary>
+		[RelayCommand]
 		private async Task HistoryReport()
 		{
-			await this.ShowReport(new TokenHistoryReport(this.XmppService, this.TokenId));
+			if (this.TokenId is null)
+				return;
+
+			await this.ShowReport(new TokenHistoryReport(this.TokenId));
 		}
 
+		/// <summary>
+		/// Command to display the state diagram of a state-machine.
+		/// </summary>
+		[RelayCommand]
 		private async Task StatesReport()
 		{
-			await this.ShowReport(new TokenStateDiagramReport(this.XmppService, this.TokenId));
+			if (this.TokenId is null)
+				return;
+
+			await this.ShowReport(new TokenStateDiagramReport(this.TokenId));
 		}
 
+		/// <summary>
+		/// Command to display a profiling report of a state-machine.
+		/// </summary>
+		[RelayCommand]
 		private async Task ProfilingReport()
 		{
-			await this.ShowReport(new TokenProfilingReport(this.XmppService, this.TokenId));
+			if (this.TokenId is null)
+				return;
+
+			await this.ShowReport(new TokenProfilingReport(this.TokenId));
 		}
 
+		/// <summary>
+		/// Command to display the current states of variables of a state-machine.
+		/// </summary>
+		[RelayCommand]
 		private async Task VariablesReport()
 		{
+			if (this.TokenId is null)
+				return;
+
 			try
 			{
-				CurrentStateEventArgs e = await this.XmppService.GetNeuroFeatureCurrentState(this.TokenId);
+				CurrentStateEventArgs e = await ServiceRef.XmppService.GetNeuroFeatureCurrentState(this.TokenId);
 				if (e.Ok)
 				{
 					MachineVariablesNavigationArgs Args = new(e.Running, e.Ended, e.CurrentState, e.Variables);
@@ -1082,11 +1059,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 					await ServiceRef.NavigationService.GoToAsync(nameof(MachineVariablesPage), Args, BackMethod.Pop);
 				}
 				else
-					await this.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], e.ErrorText);
+					await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], e.ErrorText);
 			}
 			catch (Exception ex)
 			{
-				await this.UiSerializer.DisplayAlert(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
 

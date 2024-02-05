@@ -22,7 +22,6 @@ using Waher.Networking.XMPP.DataForms;
 using Waher.Networking.XMPP.Sensor;
 using Waher.Networking.XMPP.ServiceDiscovery;
 using Waher.Persistence;
-using Waher.Script.Constants;
 using Waher.Things;
 
 namespace NeuroAccessMaui.UI.Pages.Things.ViewThing

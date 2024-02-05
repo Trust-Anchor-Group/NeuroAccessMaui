@@ -1,26 +1,16 @@
-﻿using NeuroAccessMaui.Services;
+﻿using NeuroAccessMaui.Services.Contacts;
 using NeuroFeatures.Events;
-using System.Threading.Tasks;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents.Events
 {
 	/// <summary>
 	/// Represents a token transfer event.
 	/// </summary>
-	public class TransferredItem : OwnershipEventItem
+	/// <param name="Event">Token event</param>
+	public class TransferredItem(Transferred Event) : OwnershipEventItem(Event)
 	{
-		private readonly Transferred @event;
-		private string sellerFriendlyName;
-
-		/// <summary>
-		/// Represents a token transfer event.
-		/// </summary>
-		/// <param name="Event">Token event</param>
-		public TransferredItem(Transferred Event)
-			: base(Event)
-		{
-			this.@event = Event;
-		}
+		private readonly Transferred @event = Event;
+		private string? sellerFriendlyName;
 
 		/// <summary>
 		/// Type of event.
@@ -35,17 +25,16 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents.Events
 		/// <summary>
 		/// Seller (Friendly Name)
 		/// </summary>
-		public string SellerFriendlyName => this.sellerFriendlyName;
+		public string SellerFriendlyName => this.sellerFriendlyName ?? string.Empty;
 
 		/// <summary>
 		/// Binds properties
 		/// </summary>
-		/// <param name="Ref">Service references.</param>
-		public override async Task DoBind(IServiceReferences Ref)
+		public override async Task DoBind()
 		{
-			await base.DoBind(Ref);
+			await base.DoBind();
 
-			this.sellerFriendlyName = await ContactInfo.GetFriendlyName(this.Seller, Ref);
+			this.sellerFriendlyName = await ContactInfo.GetFriendlyName(this.Seller);
 		}
 	}
 }

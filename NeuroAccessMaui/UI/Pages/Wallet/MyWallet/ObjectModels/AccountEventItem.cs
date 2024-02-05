@@ -71,7 +71,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels
 		/// <summary>
 		/// Currency used for event.
 		/// </summary>
-		public string Currency => this.viewModel.Currency;
+		public string? Currency => this.viewModel.Currency;
 
 		/// <summary>
 		/// Associated notification events

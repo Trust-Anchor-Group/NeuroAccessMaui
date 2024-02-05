@@ -29,24 +29,14 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 	/// <summary>
 	/// The view model to bind to for when displaying the wallet.
 	/// </summary>
-	public partial class MyWalletViewModel : XmppViewModel
+	public partial class MyWalletViewModel(MyWalletPage Page) : XmppViewModel()
 	{
-		private readonly MyWalletPage page;
+		private readonly MyWalletPage page = Page;
 		private DateTime lastEDalerEvent;
 		private DateTime lastTokenEvent;
 		private bool hasMoreTokens;
 		private bool hasTotals;
 		private bool hasTokens;
-
-
-		/// <summary>
-		/// Creates an instance of the <see cref="MyWalletViewModel"/> class.
-		/// </summary>
-		public MyWalletViewModel(MyWalletPage Page)
-			: base()
-		{
-			this.page = Page;
-		}
 
 		/// <inheritdoc/>
 		protected override async Task OnInitialize()
@@ -124,8 +114,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			return Result;
 		}
 
-		private async Task AssignProperties(Balance? Balance, decimal PendingAmount, string PendingCurrency,
-			EDaler.PendingPayment[] PendingPayments, EDaler.AccountEvent[] Events, bool More, DateTime LastEvent,
+		private async Task AssignProperties(Balance? Balance, decimal PendingAmount, string? PendingCurrency,
+			EDaler.PendingPayment[]? PendingPayments, EDaler.AccountEvent[]? Events, bool More, DateTime LastEvent,
 			SortedDictionary<CaseInsensitiveString, NotificationEvent[]> NotificationEvents)
 		{
 			if (Balance is not null)
@@ -166,9 +156,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 				}
 
 				if (NewPendingPayments.Count > 0)
-				{
 					NewPaymentItems.Add(new ObservableItemGroup<IUniqueItem>(nameof(PendingPaymentItem), NewPendingPayments));
-				}
 			}
 
 			if (Events is not null)
@@ -443,14 +431,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 								PaymentTransaction Transaction = await ServiceRef.XmppService.InitiateBuyEDaler(ServiceProvider.Id, ServiceProvider.Type,
 									Amount.Value, this.Balance?.Currency);
 
-
-/* Unmerged change from project 'NeuroAccessMaui (net8.0-ios)'
-Before:
-								this.WaitForComletion(Transaction);
-After:
 								WaitForComletion(Transaction);
-*/
-								MyWalletViewModel.WaitForComletion(Transaction);
 							}
 						}
 						else
@@ -559,14 +540,7 @@ After:
 								PaymentTransaction Transaction = await ServiceRef.XmppService.InitiateSellEDaler(ServiceProvider.Id, ServiceProvider.Type,
 									Amount.Value, this.Balance?.Currency);
 
-
-/* Unmerged change from project 'NeuroAccessMaui (net8.0-ios)'
-Before:
-								this.WaitForComletion(Transaction);
-After:
 								WaitForComletion(Transaction);
-*/
-								MyWalletViewModel.WaitForComletion(Transaction);
 							}
 						}
 						else
@@ -820,7 +794,7 @@ After:
 							}
 						}
 
-						this.hasMoreTokens = teArgs?.Tokens is null ? false : teArgs.Tokens.Length == Constants.BatchSizes.TokenBatchSize;
+						this.hasMoreTokens = teArgs?.Tokens is not null && teArgs.Tokens.Length == Constants.BatchSizes.TokenBatchSize;
 
 						MainThread.BeginInvokeOnMainThread(() => ObservableItemGroup<IUniqueItem>.UpdateGroupsItems(this.Tokens, NewTokens));
 					}

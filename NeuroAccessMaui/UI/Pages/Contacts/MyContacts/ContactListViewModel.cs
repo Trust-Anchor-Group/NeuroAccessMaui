@@ -10,12 +10,14 @@ using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Text;
-using System.Windows.Input;
 using System.ComponentModel;
 using Waher.Networking.XMPP;
 using Waher.Persistence;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Contacts;
+using NeuroAccessMaui.UI.Pages.Wallet.Payment;
+using NeuroAccessMaui.UI.Pages.Wallet;
+using CommunityToolkit.Mvvm.Input;
 
 namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 {
@@ -32,9 +34,6 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 		/// </summary>
 		protected internal ContactListViewModel()
 		{
-			this.AnonymousCommand = new Command(_ => this.SelectAnonymous());
-			this.ScanQrCodeCommand = new Command(async _ => await this.ScanQrCode());
-
 			this.Contacts = [];
 			this.byBareJid = [];
 
@@ -396,13 +395,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 		/// <summary>
 		/// Command executed when the user wants to scan a contact from a QR Code.
 		/// </summary>
-		public ICommand ScanQrCodeCommand { get; }
-
-		/// <summary>
-		/// Command executed when the user wants to perform an action with someone anonymous.
-		/// </summary>
-		public ICommand AnonymousCommand { get; }
-
+		[RelayCommand]
 		private async Task ScanQrCode()
 		{
 			string? Code = await QrCode.ScanQrCode(ServiceRef.Localizer[nameof(AppResources.ScanQRCode)], [Constants.UriSchemes.IotId]);
@@ -423,7 +416,11 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 			}
 		}
 
-		private void SelectAnonymous()
+		/// <summary>
+		/// Command executed when the user wants to perform an action with someone anonymous.
+		/// </summary>
+		[RelayCommand]
+		private void Anonymous()
 		{
 			this.OnSelected(new ContactInfoModel(null, []));
 		}
@@ -433,9 +430,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 			if (this.byBareJid.TryGetValue(e.FromBareJID, out List<ContactInfoModel>? Contacts))
 			{
 				foreach (ContactInfoModel Contact in Contacts)
-				{
 					Contact.PresenceUpdated();
-				}
 			}
 
 			return Task.CompletedTask;

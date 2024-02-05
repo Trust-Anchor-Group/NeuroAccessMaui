@@ -573,7 +573,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		}
 
 		/// <summary>
-		/// Used to find out if an ICommand can execute
+		/// If user can Apply for a new ID.
 		/// </summary>
 		public override bool CanApply
 		{

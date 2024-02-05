@@ -1,5 +1,4 @@
-﻿using NeuroAccessMaui.Services;
-using NeuroAccessMaui.Services.Contacts;
+﻿using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Navigation;
 
 namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
@@ -33,7 +32,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		/// <param name="LegalId">Legal ID, if available.</param>
 		/// <param name="BareJid">Bare JID of remote chat party</param>
 		/// <param name="FriendlyName">Friendly name</param>
-		public ChatNavigationArgs(string LegalId, string BareJid, string FriendlyName)
+		public ChatNavigationArgs(string? LegalId, string? BareJid, string? FriendlyName)
 		{
 			this.legalId = LegalId;
 			this.bareJid = BareJid;

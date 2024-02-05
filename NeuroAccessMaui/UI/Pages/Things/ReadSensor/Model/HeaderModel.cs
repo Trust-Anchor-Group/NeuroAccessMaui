@@ -3,20 +3,12 @@
 	/// <summary>
 	/// Represents a header
 	/// </summary>
-	public class HeaderModel
+	/// <param name="Label">Header label.</param>
+	public class HeaderModel(string Label)
 	{
-		/// <summary>
-		/// Represents a header
-		/// </summary>
-		/// <param name="Label">Header label.</param>
-		public HeaderModel(string Label)
-		{
-			this.Label = Label;
-		}
-
 		/// <summary>
 		/// Header label.
 		/// </summary>
-		public string Label { get; set; }
+		public string Label { get; set; } = Label;
 	}
 }

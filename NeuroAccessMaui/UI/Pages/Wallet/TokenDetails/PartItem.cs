@@ -3,24 +3,14 @@
 	/// <summary>
 	/// Represents a part related to a token.
 	/// </summary>
-	public class PartItem
+	/// <param name="LegalId">Legal ID</param>
+	/// <param name="Jid">JID of part.</param>
+	/// <param name="FriendlyName">Friendly Name</param>
+	public class PartItem(string LegalId, string Jid, string FriendlyName)
 	{
-		private readonly string legalId;
-		private readonly string jid;
-		private readonly string friendlyName;
-
-		/// <summary>
-		/// Represents a part related to a token.
-		/// </summary>
-		/// <param name="LegalId">Legal ID</param>
-		/// <param name="Jid">JID of part.</param>
-		/// <param name="FriendlyName">Friendly Name</param>
-		public PartItem(string LegalId, string Jid, string FriendlyName)
-		{
-			this.legalId = LegalId;
-			this.jid = Jid;
-			this.friendlyName = FriendlyName;
-		}
+		private readonly string legalId = LegalId;
+		private readonly string jid = Jid;
+		private readonly string friendlyName = FriendlyName;
 
 		/// <summary>
 		/// Legal ID

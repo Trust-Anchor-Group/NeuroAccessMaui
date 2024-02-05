@@ -1,17 +1,14 @@
-﻿using IdApp.Pages.Contacts.Chat;
-using NeuroAccessMaui.UI.Pages.Wallet.TokenEvents.Events;
-using NeuroAccessMaui.Services;
+﻿using NeuroAccessMaui.UI.Pages.Wallet.TokenEvents.Events;
 using NeuroAccessMaui.Services.Navigation;
 using NeuroFeatures.Events;
-using System;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using Waher.Content;
 using Waher.Networking.XMPP.HttpFileUpload;
-using Xamarin.CommunityToolkit.Helpers;
-using Xamarin.Essentials;
-using Xamarin.Forms;
+using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Contacts;
+using NeuroAccessMaui.UI.Pages.Contacts.Chat;
+using NeuroAccessMaui.Resources.Languages;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 {
@@ -62,7 +59,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 	public abstract class EventItem
 	{
 		private readonly TokenEvent @event;
-		private IServiceReferences @ref;
 
 		/// <summary>
 		/// Represents a token event.
@@ -72,11 +68,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 		{
 			this.@event = Event;
 
-			this.ViewIdCommand = new Command(async P => await this.ViewId((string)P));
-			this.ViewContractCommand = new Command(async P => await this.ViewContract((string)P));
+			this.ViewIdCommand = new Command(async P => await ViewId((string)P));
+			this.ViewContractCommand = new Command(async P => await ViewContract((string)P));
 			this.ViewSourceCommand = new Command(async P => await this.ViewSource((string)P));
-			this.CopyToClipboardCommand = new Command(async P => await this.CopyToClipboard((string)P));
-			this.ViewXmlInBrowserCommand = new Command(async P => await this.ViewXmlInBrowser((string)P));
+			this.CopyToClipboardCommand = new Command(async P => await CopyToClipboard((string)P));
+			this.ViewXmlInBrowserCommand = new Command(async P => await ViewXmlInBrowser((string)P));
 		}
 
 		/// <summary>
@@ -170,7 +166,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 					Personal = Event.Personal,
 					Timestamp = Event.Timestamp,
 					TokenId = Event.TokenId,
-					Note = LocalizationResourceManager.Current["UnrecognizedEventType"] + " " + Event.GetType().FullName
+					Note = ServiceRef.Localizer[nameof(AppResources.UnrecognizedEventType)] + " " + Event.GetType().FullName
 				});
 			}
 		}
@@ -178,10 +174,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 		/// <summary>
 		/// Binds properties
 		/// </summary>
-		/// <param name="Ref">Service references.</param>
-		public virtual Task DoBind(IServiceReferences Ref)
+		public virtual Task DoBind()
 		{
-			this.@ref = Ref;
 			return Task.CompletedTask;
 		}
 
@@ -189,40 +183,41 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 		/// Shows a Legal Identity to the suer.
 		/// </summary>
 		/// <param name="IdentityId">Identity ID</param>
-		public Task ViewId(string IdentityId)
+		public static Task ViewId(string IdentityId)
 		{
-			return this.@ref.ContractOrchestratorService.OpenLegalIdentity(IdentityId, LocalizationResourceManager.Current["PurposeReviewToken"]);
+			return ServiceRef.ContractOrchestratorService.OpenLegalIdentity(IdentityId, ServiceRef.Localizer[nameof(AppResources.PurposeReviewToken)]);
 		}
 
 		/// <summary>
 		/// Shows a Smart Contract to the user.
 		/// </summary>
 		/// <param name="ContractId">Contract ID</param>
-		public Task ViewContract(string ContractId)
+		public static Task ViewContract(string ContractId)
 		{
-			return this.@ref.ContractOrchestratorService.OpenContract(ContractId, LocalizationResourceManager.Current["PurposeReviewToken"], null);
+			return ServiceRef.ContractOrchestratorService.OpenContract(ContractId, ServiceRef.Localizer[nameof(AppResources.PurposeReviewToken)], null);
 		}
 
 		/// <summary>
 		/// Copies text to the clipboard.
 		/// </summary>
 		/// <param name="Text">Text to copy.</param>
-		public async Task CopyToClipboard(string Text)
+		public static async Task CopyToClipboard(string Text)
 		{
 			await Clipboard.SetTextAsync(Text);
-			await this.@ref.UiSerializer.DisplayAlert(LocalizationResourceManager.Current["SuccessTitle"], LocalizationResourceManager.Current["NoteCopiedToClipboard"]);
+			await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+				ServiceRef.Localizer[nameof(AppResources.NoteCopiedToClipboard)]);
 		}
 
 		/// <summary>
 		/// Displays XML in a browser.
 		/// </summary>
 		/// <param name="Xml">XML to display.</param>
-		public async Task ViewXmlInBrowser(string Xml)
+		public static async Task ViewXmlInBrowser(string Xml)
 		{
 			try
 			{
 				byte[] Bin = Encoding.UTF8.GetBytes(Xml);
-				HttpFileUploadEventArgs e = await this.@ref.XmppService.RequestUploadSlotAsync("Note.xml", "text/xml; charset=utf-8", Bin.Length);
+				HttpFileUploadEventArgs e = await ServiceRef.XmppService.RequestUploadSlotAsync("Note.xml", "text/xml; charset=utf-8", Bin.Length);
 
 				if (e.Ok)
 				{
@@ -230,11 +225,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 					await App.OpenUrlAsync(e.GetUrl);
 				}
 				else
-					await this.@ref.UiSerializer.DisplayAlert(e.StanzaError ?? new Exception(e.ErrorText));
+					await ServiceRef.UiSerializer.DisplayException(e.StanzaError ?? new Exception(e.ErrorText));
 			}
 			catch (Exception ex)
 			{
-				await this.@ref.UiSerializer.DisplayAlert(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
 
@@ -263,7 +258,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 						ContactInfo Contact = await ContactInfo.FindByBareJid(Source);
 						ChatNavigationArgs Args = new(Contact?.LegalId, Contact?.BareJid ?? Source, Contact?.FriendlyName ?? Source);
 
-						await this.@ref.NavigationService.GoToAsync(nameof(ChatPage), Args, BackMethod.Inherited, Contact?.BareJid ?? Source);
+						await ServiceRef.NavigationService.GoToAsync(nameof(ChatPage), Args, BackMethod.Inherited, Contact?.BareJid ?? Source);
 						return;
 					}
 				}
@@ -272,9 +267,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 			}
 			catch (Exception ex)
 			{
-				await this.@ref.UiSerializer.DisplayAlert(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
-
 	}
 }

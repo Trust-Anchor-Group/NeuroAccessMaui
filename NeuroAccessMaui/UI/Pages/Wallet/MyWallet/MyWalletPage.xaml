@@ -211,7 +211,7 @@
                 <mainTabBar:MainTabBarView x:Name="WalletFrontTabBar" Grid.Row="2"
 
                                            LeftButton1Text="{x:Static resx:FontAwesome.ArrowLeft}"
-                                           LeftButton1Command="{Binding Path=BackCommand}"
+                                           LeftButton1Command="{Binding Path=GoBackCommand}"
 
 										   LeftButton2Text="{x:Static resx:FontAwesome.Rotate}"
                                            LeftButton2Command="{Binding Path=FlipCommand}"
@@ -280,7 +280,7 @@
                 <mainTabBar:MainTabBarView x:Name="WalletBackTabBar" Grid.Row="2"
 
                                            LeftButton1Text="{x:Static resx:FontAwesome.ArrowLeft}"
-                                           LeftButton1Command="{Binding Path=BackCommand}"
+                                           LeftButton1Command="{Binding Path=GoBackCommand}"
 
                                            LeftButton2Text="{x:Static resx:FontAwesome.Rotate}"
                                            LeftButton2Command="{Binding Path=FlipCommand}"

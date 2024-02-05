@@ -1,6 +1,4 @@
 ﻿using NeuroAccessMaui.UI.Pages.Things.ReadSensor.Model;
-using Waher.Things;
-using Xamarin.Forms;
 
 namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor
 {
@@ -12,35 +10,35 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor
 		/// <summary>
 		/// Template to use for headers
 		/// </summary>
-		public DataTemplate HeaderTemplate { get; set; }
+		public DataTemplate? HeaderTemplate { get; set; }
 
 		/// <summary>
 		/// Template to use for fields
 		/// </summary>
-		public DataTemplate FieldTemplate { get; set; }
+		public DataTemplate? FieldTemplate { get; set; }
 
 		/// <summary>
 		/// Template to use for graphs
 		/// </summary>
-		public DataTemplate GraphTemplate { get; set; }
+		public DataTemplate? GraphTemplate { get; set; }
 
 		/// <summary>
 		/// Template to use for informative tags
 		/// </summary>
-		public DataTemplate TagTemplate { get; set; }
+		public DataTemplate? TagTemplate { get; set; }
 
 		/// <summary>
 		/// Template to use for errors
 		/// </summary>
-		public DataTemplate ErrorTemplate { get; set; }
+		public DataTemplate? ErrorTemplate { get; set; }
 
 		/// <summary>
 		/// Template to use for other items.
 		/// </summary>
-		public DataTemplate DefaultTemplate { get; set; }
+		public DataTemplate? DefaultTemplate { get; set; }
 
 		/// <inheritdoc/>
-		protected override DataTemplate OnSelectTemplate(object item, BindableObject container)
+		protected override DataTemplate? OnSelectTemplate(object item, BindableObject container)
 		{
 			if (item is HeaderModel)
 				return this.HeaderTemplate ?? this.DefaultTemplate;

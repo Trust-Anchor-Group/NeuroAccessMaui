@@ -5,17 +5,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents.Events
 	/// <summary>
 	/// Represents a text note on a token from an external source.
 	/// </summary>
-	public class ExternalNoteTextItem : ExternalNoteItem
+	/// <param name="Event">Token event</param>
+	public class ExternalNoteTextItem(ExternalNoteText Event) : ExternalNoteItem(Event)
 	{
-		/// <summary>
-		/// Represents a text note on a token from an external source.
-		/// </summary>
-		/// <param name="Event">Token event</param>
-		public ExternalNoteTextItem(ExternalNoteText Event)
-			: base(Event)
-		{
-		}
-
 		/// <summary>
 		/// Type of event.
 		/// </summary>

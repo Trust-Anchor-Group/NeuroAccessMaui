@@ -80,7 +80,7 @@ namespace NeuroAccessMaui.Services.Notification.Contracts
 			else
 			{
 				string FriendlyName = ContactInfo.GetFriendlyName(this.identity);
-				Result.Append(ServiceRef.Localizer[nameof(AppResources.UserSignedAs), FriendlyName, this.Role]);
+				Result.Append(ServiceRef.Localizer[nameof(AppResources.UserSignedAs), FriendlyName, this.Role ?? string.Empty]);
 			}
 
 			Result.Append('.');

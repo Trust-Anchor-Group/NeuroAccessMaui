@@ -1,26 +1,16 @@
-﻿using NeuroAccessMaui.Services;
+﻿using NeuroAccessMaui.Services.Contacts;
 using NeuroFeatures.Events;
-using System.Threading.Tasks;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents.Events
 {
 	/// <summary>
 	/// Represents a token creation event.
 	/// </summary>
-	public class CreatedItem : OwnershipEventItem
+	/// <param name="Event">Token event</param>
+	public class CreatedItem(Created Event) : OwnershipEventItem(Event)
 	{
-		private readonly Created @event;
-		private string creatorFriendlyName;
-
-		/// <summary>
-		/// Represents a token creation event.
-		/// </summary>
-		/// <param name="Event">Token event</param>
-		public CreatedItem(Created Event)
-			: base(Event)
-		{
-			this.@event = Event;
-		}
+		private readonly Created @event = Event;
+		private string? creatorFriendlyName;
 
 		/// <summary>
 		/// Type of event.
@@ -35,17 +25,17 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents.Events
 		/// <summary>
 		/// Creator (Friendly Name)
 		/// </summary>
-		public string CreatorFriendlyName => this.creatorFriendlyName;
+		public string CreatorFriendlyName => this.creatorFriendlyName ?? string.Empty;
 
 		/// <summary>
 		/// Binds properties
 		/// </summary>
 		/// <param name="Ref">Service references.</param>
-		public override async Task DoBind(IServiceReferences Ref)
+		public override async Task DoBind()
 		{
-			await base.DoBind(Ref);
+			await base.DoBind();
 
-			this.creatorFriendlyName = await ContactInfo.GetFriendlyName(this.Creator, Ref);
+			this.creatorFriendlyName = await ContactInfo.GetFriendlyName(this.Creator);
 		}
 	}
 }

@@ -158,7 +158,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		}
 
 		/// <summary>
-		/// Used to find out if an ICommand can execute
+		/// Used to find out if a command can execute
 		/// </summary>
 		public bool CanExecuteCommands => !this.IsBusy && this.IsConnected;
 

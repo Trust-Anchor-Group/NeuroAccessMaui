@@ -9,21 +9,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineVariables
 	/// <summary>
 	/// Represents a state-machine variable.
 	/// </summary>
-	public partial class VariableModel : BaseViewModel
+	/// <param name="Name">Name of variable</param>
+	/// <param name="Value">Value of variable</param>
+	public partial class VariableModel(string Name, object Value) : BaseViewModel
 	{
-		private readonly string name;
-
-		/// <summary>
-		/// Represents a state-machine variable.
-		/// </summary>
-		/// <param name="Name">Name of variable</param>
-		/// <param name="Value">Value of variable</param>
-		public VariableModel(string Name, object Value)
-		{
-			this.name = Name;
-			this.value = Value;
-			this.asScript = Expression.ToString(Value);
-		}
+		private readonly string name = Name;
 
 		/// <summary>
 		/// Name of variable
@@ -34,13 +24,13 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineVariables
 		/// Value of variable
 		/// </summary>
 		[ObservableProperty]
-		private object value;
+		private object value = Value;
 
 		/// <summary>
 		/// Value as script
 		/// </summary>
 		[ObservableProperty]
-		private string asScript;
+		private string asScript = Expression.ToString(Value);
 
 		/// <summary>
 		/// Updates the value of the variable.

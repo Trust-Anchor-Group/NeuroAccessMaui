@@ -1,6 +1,5 @@
 ﻿using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Services;
-using NeuroAccessMaui.Services.Xmpp;
 using NeuroFeatures;
 using System.Text;
 using System.Text.RegularExpressions;

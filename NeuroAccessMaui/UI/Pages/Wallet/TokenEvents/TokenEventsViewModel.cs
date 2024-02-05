@@ -1,19 +1,17 @@
-﻿using NeuroAccessMaui.UI.Pages.Wallet.TokenEvents.Events;
-using IdApp.Popups.Tokens.AddTextNote;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using NeuroAccessMaui.Services;
+using NeuroAccessMaui.UI.Pages.Wallet.TokenEvents.Events;
 using NeuroFeatures.Events;
-using System;
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
-using System.Windows.Input;
 using Waher.Content.Xml;
-using Xamarin.Forms;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 {
 	/// <summary>
 	/// The view model to bind to for when displaying the events of a token.
 	/// </summary>
-	public class TokenEventsViewModel : BaseViewModel
+	public partial class TokenEventsViewModel : BaseViewModel
 	{
 		/// <summary>
 		/// Creates an instance of the <see cref="TokenEventsViewModel"/> class.
@@ -21,9 +19,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 		public TokenEventsViewModel()
 			: base()
 		{
-			this.Events = new();
-
-			this.AddNoteCommand = new Command(async _ => await this.AddNote());
+			this.Events = [];
 		}
 
 		/// <inheritdoc/>
@@ -31,7 +27,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.NavigationService.TryGetArgs(out TokenEventsNavigationArgs args))
+			if (ServiceRef.NavigationService.TryGetArgs(out TokenEventsNavigationArgs? args))
 			{
 				this.TokenId = args.TokenId;
 
@@ -40,13 +36,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 				foreach (TokenEvent Event in args.Events)
 				{
 					EventItem Item = EventItem.Create(Event);
-					await Item.DoBind(this);
+					await Item.DoBind();
 					this.Events.Add(Item);
 				}
 			}
-
-			this.AssignProperties();
-			this.EvaluateAllCommands();
 		}
 
 		/// <inheritdoc/>
@@ -57,14 +50,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 			await base.OnDispose();
 		}
 
-		private void AssignProperties()
-		{
-		}
-
-		private void EvaluateAllCommands()
-		{
-		}
-
 		#region Properties
 
 		/// <summary>
@@ -73,19 +58,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 		public ObservableCollection<EventItem> Events { get; }
 
 		/// <summary>
-		/// See <see cref="TokenId"/>
-		/// </summary>
-		public static readonly BindableProperty TokenIdProperty =
-			BindableProperty.Create(nameof(TokenId), typeof(string), typeof(TokenEventsViewModel), default(string));
-
-		/// <summary>
 		/// Token ID
 		/// </summary>
-		public string TokenId
-		{
-			get => (string)this.GetValue(TokenIdProperty);
-			set => this.SetValue(TokenIdProperty, value);
-		}
+		[ObservableProperty]
+		private string? tokenId;
 
 		#endregion
 
@@ -94,8 +70,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 		/// <summary>
 		/// Command to copy a value to the clipboard.
 		/// </summary>
-		public ICommand AddNoteCommand { get; }
-
+		[RelayCommand]
 		private async Task AddNote()
 		{
 			try
@@ -111,7 +86,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 
 					if (XML.IsValidXml(AddTextNotePage.TextNote))
 					{
-						await this.XmppService.AddNeuroFeatureXmlNote(this.TokenId, AddTextNotePage.TextNote, AddTextNotePage.Personal);
+						await ServiceRef.XmppService.AddNeuroFeatureXmlNote(this.TokenId, AddTextNotePage.TextNote, AddTextNotePage.Personal);
 
 						NewEvent = new NoteXmlItem(new NoteXml()
 						{
@@ -123,7 +98,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 					}
 					else
 					{
-						await this.XmppService.AddNeuroFeatureTextNote(this.TokenId, AddTextNotePage.TextNote, AddTextNotePage.Personal);
+						await ServiceRef.XmppService.AddNeuroFeatureTextNote(this.TokenId, AddTextNotePage.TextNote, AddTextNotePage.Personal);
 
 						NewEvent = new NoteTextItem(new NoteText()
 						{
@@ -134,15 +109,15 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 						});
 					}
 
-					await NewEvent.DoBind(this);
+					await NewEvent.DoBind();
 
 					this.Events.Insert(0, NewEvent);
 				}
 			}
 			catch (Exception ex)
 			{
-				this.LogService.LogException(ex);
-				await this.UiSerializer.DisplayAlert(ex);
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
 

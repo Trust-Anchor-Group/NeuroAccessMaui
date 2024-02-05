@@ -158,14 +158,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor
 					}
 					else
 					{
-
-/* Unmerged change from project 'NeuroAccessMaui (net8.0-ios)'
-Before:
-						Category = this.GetFieldTypeString(Field.Type);
-After:
 						Category = GetFieldTypeString(Field.Type);
-*/
-						Category = ReadSensorModel.GetFieldTypeString(Field.Type);
 						IsMin = IsMax = false;
 					}
 

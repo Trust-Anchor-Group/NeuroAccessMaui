@@ -5,18 +5,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels
 	/// <summary>
 	/// Encapsulates a <see cref="TokenTotal"/> object.
 	/// </summary>
-	public class TokenTotalItem : IUniqueItem
+	/// <param name="Total">Token Total.</param>
+	public class TokenTotalItem(TokenTotal Total) : IUniqueItem
 	{
-		private readonly TokenTotal total;
-
-		/// <summary>
-		/// Encapsulates a <see cref="TokenTotal"/> object.
-		/// </summary>
-		/// <param name="Total">Token Total.</param>
-		public TokenTotalItem(TokenTotal Total)
-		{
-			this.total = Total;
-		}
+		private readonly TokenTotal total = Total;
 
 		/// <inheritdoc/>
 		public string UniqueName => this.total.Currency;

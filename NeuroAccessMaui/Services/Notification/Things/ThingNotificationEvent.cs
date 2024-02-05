@@ -1,4 +1,5 @@
 ﻿using System.Security.Cryptography.X509Certificates;
+using NeuroAccessMaui.Services.Contacts;
 using Waher.Networking.XMPP.Provisioning;
 using Waher.Persistence;
 using Waher.Persistence.Attributes;

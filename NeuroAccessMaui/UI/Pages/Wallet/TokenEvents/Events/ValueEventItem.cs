@@ -5,19 +5,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents.Events
 	/// <summary>
 	/// Represents a token value event.
 	/// </summary>
-	public abstract class ValueEventItem : EventItem
+	/// <param name="Event">Token event</param>
+	public abstract class ValueEventItem(TokenValueEvent Event) : EventItem(Event)
 	{
-		private readonly TokenValueEvent @event;
-
-		/// <summary>
-		/// Represents a token value event.
-		/// </summary>
-		/// <param name="Event">Token event</param>
-		public ValueEventItem(TokenValueEvent Event)
-			: base(Event)
-		{
-			this.@event = Event;
-		}
+		private readonly TokenValueEvent @event = Event;
 
 		/// <summary>
 		/// Currency

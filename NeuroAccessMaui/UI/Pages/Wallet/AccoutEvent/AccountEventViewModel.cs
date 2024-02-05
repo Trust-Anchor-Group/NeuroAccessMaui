@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Converters;
-using Waher.Networking.XMPP;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.AccountEvent
 {

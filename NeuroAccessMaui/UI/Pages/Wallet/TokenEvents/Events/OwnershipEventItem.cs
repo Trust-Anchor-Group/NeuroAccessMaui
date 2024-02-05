@@ -1,26 +1,16 @@
-﻿using NeuroAccessMaui.Services;
+﻿using NeuroAccessMaui.Services.Contacts;
 using NeuroFeatures.Events;
-using System.Threading.Tasks;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents.Events
 {
 	/// <summary>
 	/// Represents a token ownership event.
 	/// </summary>
-	public abstract class OwnershipEventItem : ValueEventItem
+	/// <param name="Event">Token event</param>
+	public abstract class OwnershipEventItem(TokenOwnershipEvent Event) : ValueEventItem(Event)
 	{
-		private readonly TokenOwnershipEvent @event;
-		private string ownerFriendlyName;
-
-		/// <summary>
-		/// Represents a token ownership event.
-		/// </summary>
-		/// <param name="Event">Token event</param>
-		public OwnershipEventItem(TokenOwnershipEvent Event)
-			: base(Event)
-		{
-			this.@event = Event;
-		}
+		private readonly TokenOwnershipEvent @event = Event;
+		private string? ownerFriendlyName;
 
 		/// <summary>
 		/// Owner
@@ -35,17 +25,16 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents.Events
 		/// <summary>
 		/// Owner (Friendly Name)
 		/// </summary>
-		public string OwnerFriendlyName => this.ownerFriendlyName;
+		public string OwnerFriendlyName => this.ownerFriendlyName ?? string.Empty;
 
 		/// <summary>
 		/// Binds properties
 		/// </summary>
-		/// <param name="Ref">Service references.</param>
-		public override async Task DoBind(IServiceReferences Ref)
+		public override async Task DoBind()
 		{
-			await base.DoBind(Ref);
+			await base.DoBind();
 
-			this.ownerFriendlyName = await ContactInfo.GetFriendlyName(this.Owner, Ref);
+			this.ownerFriendlyName = await ContactInfo.GetFriendlyName(this.Owner);
 		}
 
 	}
