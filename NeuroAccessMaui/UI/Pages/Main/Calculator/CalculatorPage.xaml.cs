@@ -11,8 +11,7 @@
 		/// </summary>
 		public CalculatorPage()
 		{
-			this.ViewModel = new CalculatorViewModel();
-
+			this.ContentPageModel = new CalculatorViewModel();
 			this.InitializeComponent();
 		}
 	}

@@ -11,7 +11,7 @@
 		/// </summary>
 		public MachineReportPage()
 		{
-			this.ViewModel = new MachineReportViewModel();
+			this.ContentPageModel = new MachineReportViewModel();
 			this.InitializeComponent();
 		}
 	}

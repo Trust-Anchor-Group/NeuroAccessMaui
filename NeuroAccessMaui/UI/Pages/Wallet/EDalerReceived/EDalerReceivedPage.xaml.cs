@@ -11,7 +11,7 @@
 		/// </summary>
 		public EDalerReceivedPage()
 		{
-			this.ViewModel = new EDalerReceivedViewModel();
+			this.ContentPageModel = new EDalerReceivedViewModel();
 			this.InitializeComponent();
 		}
 	}

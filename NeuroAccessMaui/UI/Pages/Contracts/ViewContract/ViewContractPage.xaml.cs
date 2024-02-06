@@ -13,7 +13,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		/// </summary>
 		public ViewContractPage()
 		{
-			this.ViewModel = new ViewContractViewModel();
+			this.ContentPageModel = new ViewContractViewModel();
 			this.InitializeComponent();
 		}
 
@@ -26,7 +26,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 		private void Image_Tapped(object? Sender, EventArgs e)
 		{
-			if (this.ViewModel is ViewContractViewModel ViewContractViewModel)
+			if (this.ContentPageModel is ViewContractViewModel ViewContractViewModel)
 			{
 				Attachment[]? attachments = ViewContractViewModel.Contract?.Attachments;
 				this.PhotoViewer.ShowPhotos(attachments);

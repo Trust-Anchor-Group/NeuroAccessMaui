@@ -142,12 +142,10 @@ namespace NeuroAccessMaui.Services.Settings
 				keyPrefix = FormatKey(keyPrefix);
 				Dictionary<string, object> existingStates = (await RuntimeSettings.GetWhereKeyLikeAsync(keyPrefix, wildCard));
 
-				foreach (KeyValuePair<string, object?> state in existingStates)
+				foreach (KeyValuePair<string, object> State in existingStates)
 				{
-					if (state.Value is T typedValue)
-					{
-						matches.Add((state.Key, typedValue));
-					}
+					if (State.Value is T typedValue)
+						matches.Add((State.Key, typedValue));
 				}
 			}
 			catch (Exception e)

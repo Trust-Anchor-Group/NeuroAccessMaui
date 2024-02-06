@@ -13,7 +13,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// </summary>
 		public NewContractPage()
 		{
-			this.ViewModel = new NewContractViewModel();
+			this.ContentPageModel = new NewContractViewModel();
 			this.InitializeComponent();
 		}
 
@@ -23,7 +23,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// <param name="Options">Available options, as dictionaries with contract parameters.</param>
 		public async Task ShowContractOptions(IDictionary<CaseInsensitiveString, object>[] Options)
 		{
-			if (this.ViewModel is NewContractViewModel ViewModel)
+			if (this.ContentPageModel is NewContractViewModel ViewModel)
 				await ViewModel.ShowContractOptions(Options);
 		}
 

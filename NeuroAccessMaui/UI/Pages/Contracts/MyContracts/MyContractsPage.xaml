@@ -1,15 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<base:BaseContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-                      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+<base:BaseContentPage x:Name="ThisPage"
+							 x:Class="NeuroAccessMaui.UI.Pages.Contracts.MyContracts.MyContractsPage"
+							 x:DataType="viewmodel:MyContractsViewModel"
+							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
 							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
-                      xmlns:model="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.MyContracts"
-                      xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
-                      xmlns:objectmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels"
-                      xmlns:selector="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.MyContracts"
-                      x:DataType="model:MyContractsViewModel"
-                      x:Class="NeuroAccessMaui.UI.Pages.Contracts.MyContracts.MyContractsPage"
-							 Title="{Binding Path=Title}"
-							 Style="{StaticResource BaseBackgroundPage}">
+							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.MyContracts"
+							 xmlns:objectmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels">
 	<VisualElement.Resources>
 		<DataTemplate x:Key="DefaultTemplate">
 			<Grid />
@@ -83,33 +85,47 @@
 			</Grid>
 		</DataTemplate>
 
-		<selector:ItemTypeTemplateSelector x:Key="ItemStyleSelector"
-										   DefaultTemplate="{StaticResource DefaultTemplate}"
-										   HeaderTemplate="{StaticResource HeaderModelTemplate}"
-										   EventTemplate="{StaticResource EventModelTemplate}"
-										   ContractTemplate="{StaticResource ContractModelTemplate}"/>
+		<viewmodel:ItemTypeTemplateSelector x:Key="ItemStyleSelector"
+														DefaultTemplate="{StaticResource DefaultTemplate}"
+														HeaderTemplate="{StaticResource HeaderModelTemplate}"
+														EventTemplate="{StaticResource EventModelTemplate}"
+														ContractTemplate="{StaticResource ContractModelTemplate}"/>
 	</VisualElement.Resources>
+	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
 
-	<StackLayout Margin="{StaticResource DefaultMargin}">
-		<Label Text="{Binding Path=Title}" Style="{StaticResource Heading}"/>
-		<Label Text="{Binding Path=Description}" HorizontalOptions="Center" VerticalOptions="Start"/>
-		<Label Style="{StaticResource AlertLabel}" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center"
-			   VerticalOptions="Start" IsVisible="{Binding Path=ShowContractsMissing}" Text="{x:Static resx:AppResources.NoContractsFound}" />
-		<ActivityIndicator x:Name="Loading" IsVisible="{Binding Path=IsBusy}" IsRunning="{Binding Path=IsBusy}"
+		<controls:Background/>
+
+		<ScrollView>
+			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
+											 Style="{StaticResource ImageOnlyButtonStyle}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+
+				<Label Text="{Binding Path=Title}" Style="{StaticResource PageTitleLabelStyle}"/>
+
+				<Frame Style="{StaticResource FrameSet}">
+					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+						<Label Text="{Binding Path=Description}" HorizontalOptions="Center" VerticalOptions="Start"/>
+						<Label Style="{StaticResource AlertLabel}" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center"
+			   VerticalOptions="Start" IsVisible="{Binding Path=ShowContractsMissing}" Text="{l:Localize NoContractsFound}" />
+						<ActivityIndicator x:Name="Loading" IsVisible="{Binding Path=IsBusy}" IsRunning="{Binding Path=IsBusy}"
                            HorizontalOptions="Center" VerticalOptions="Center" Margin="{StaticResource DefaultMargin}"
                            Style="{StaticResource AccentIndicator}"/>
 
-		<!-- CollectionView's IsVisible used to be bound to IsIdle, but there seems to be a race condition somewhere because this led
+						<!-- CollectionView's IsVisible used to be bound to IsIdle, but there seems to be a race condition somewhere because this led
 		the CollectionView not appearing sometimes on iOS. Always showing it seems to be OK because it is empty before contracts are loaded anyway. -->
-		<noBounce:NoBounceCollectionView x:Name="Contracts" VerticalOptions="StartAndExpand"
+						<CollectionView x:Name="Contracts" VerticalOptions="StartAndExpand"
                                          ItemSizingStrategy="MeasureAllItems" SelectionMode="Single"
                                          IsVisible="True"
                                          ItemsSource="{Binding Path=Categories}"
                                          ItemTemplate="{StaticResource ItemStyleSelector}"
 										 SelectionChanged="ContractsSelectionChanged">
-			<CollectionView.ItemsLayout>
-				<GridItemsLayout Orientation="Vertical" VerticalItemSpacing="5" />
-			</CollectionView.ItemsLayout>
-		</noBounce:NoBounceCollectionView>
-	</StackLayout>
+							<CollectionView.ItemsLayout>
+								<GridItemsLayout Orientation="Vertical" VerticalItemSpacing="5" />
+							</CollectionView.ItemsLayout>
+						</CollectionView>
+					</VerticalStackLayout>
+				</Frame>
+			</VerticalStackLayout>
+		</ScrollView>
+	</Grid>
 </base:BaseContentPage>

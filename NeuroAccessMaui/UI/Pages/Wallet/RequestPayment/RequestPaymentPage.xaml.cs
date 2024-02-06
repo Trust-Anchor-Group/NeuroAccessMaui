@@ -11,7 +11,7 @@
 		/// </summary>
 		public RequestPaymentPage()
 		{
-			this.ViewModel = new RequestPaymentViewModel(this);
+			this.ContentPageModel = new RequestPaymentViewModel(this);
 			this.InitializeComponent();
 		}
 

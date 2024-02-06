@@ -11,8 +11,7 @@
 		/// </summary>
 		public MyThingsPage()
 		{
-			this.ViewModel = new MyThingsViewModel();
-
+			this.ContentPageModel = new MyThingsViewModel();
 			this.InitializeComponent();
 		}
 	}

@@ -11,7 +11,7 @@
 		/// </summary>
 		public MyTokenWalletPage()
 		{
-			this.ViewModel = new MyWalletViewModel(this);
+			this.ContentPageModel = new MyWalletViewModel();
 			this.InitializeComponent();
 		}
 	}

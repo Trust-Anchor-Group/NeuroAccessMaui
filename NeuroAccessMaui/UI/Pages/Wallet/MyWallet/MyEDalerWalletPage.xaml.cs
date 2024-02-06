@@ -11,7 +11,7 @@
 		/// </summary>
 		public MyEDalerWalletPage()
 		{
-			this.ViewModel = new MyWalletViewModel(this);
+			this.ContentPageModel = new MyWalletViewModel();
 			this.InitializeComponent();
 		}
 	}

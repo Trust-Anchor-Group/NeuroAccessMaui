@@ -1,90 +1,104 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<views:ContentBasePage xmlns="http://xamarin.com/schemas/2014/forms"
-                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                       xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages"
-                       xmlns:conv="clr-namespace:IdApp.Converters"
-                       xmlns:resx="clr-namespace:IdApp.Resx"
-                       xmlns:model="clr-namespace:NeuroAccessMaui.UI.Pages.Things.ViewThing"
-                       xmlns:objectmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Things"
-                       xmlns:objectmodel2="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels"
-                       x:DataType="model:ViewThingModel"
-                       x:Class="NeuroAccessMaui.UI.Pages.Things.ViewThing.ViewThingPage"
-                       Style="{StaticResource BaseBackgroundPage}"
-                       Title="{x:Static resx:AppResources.Thing}">
-    <Grid>
-        <ScrollView>
-            <StackLayout Margin="{StaticResource DefaultMargin}">
-                <!-- TAGS -->
-                <Label Text="{x:Static resx:AppResources.InformationAboutThing}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
-                <Label Text="{x:Static resx:AppResources.InformationAboutThingText}" Style="{StaticResource InfoText}" VerticalOptions="Start"/>
-                <StackLayout x:Name="TagLayout" Orientation="Vertical" BindableLayout.ItemsSource="{Binding Path=Tags}" VerticalOptions="StartAndExpand" Margin="{StaticResource DefaultMargin}">
-                    <BindableLayout.ItemTemplate>
-                        <DataTemplate x:DataType="objectmodel:HumanReadableTag">
-                            <StackLayout Orientation="Horizontal">
-                                <Label Text="{Binding Path=LocalizedName}" Style="{StaticResource KeyLabel}" LineBreakMode="WordWrap" WidthRequest="100"/>
-                                <Label LineBreakMode="WordWrap" Text="{Binding Path=LocalizedValue}" Style="{StaticResource ClickableValueLabel}">
-                                    <Label.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding Path=BindingContext.ClickCommand, Source={x:Reference TagLayout}}" CommandParameter="{Binding}" />
-                                    </Label.GestureRecognizers>
-                                </Label>
-                            </StackLayout>
-                        </DataTemplate>
-                    </BindableLayout.ItemTemplate>
-                </StackLayout>
-				<!-- NOTIFICATIONS -->
-				<Label Text="{x:Static resx:AppResources.Notifications}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}"
+<base:BaseContentPage x:Name="ThisPage"
+							 x:Class="NeuroAccessMaui.UI.Pages.Things.ViewThing.ViewThingPage"
+							 x:DataType="viewmodel:ViewThingModel"
+							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Things.ViewThing"
+							 xmlns:things="clr-namespace:NeuroAccessMaui.UI.Pages.Things"
+							 xmlns:model2="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels">
+	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+
+		<controls:Background/>
+
+		<ScrollView>
+			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
+											 Style="{StaticResource ImageOnlyButtonStyle}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+
+				<Label Text="{l:Localize Thing}" Style="{StaticResource PageTitleLabelStyle}"/>
+
+				<Frame Style="{StaticResource FrameSet}">
+					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+						<!-- TAGS -->
+						<Label Text="{l:Localize InformationAboutThing}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
+						<Label Text="{l:Localize InformationAboutThingText}" Style="{StaticResource InfoText}" VerticalOptions="Start"/>
+						<StackLayout x:Name="TagLayout" Orientation="Vertical" BindableLayout.ItemsSource="{Binding Path=Tags}" VerticalOptions="StartAndExpand" Margin="{StaticResource DefaultMargin}">
+							<BindableLayout.ItemTemplate>
+								<DataTemplate x:DataType="things:HumanReadableTag">
+									<StackLayout Orientation="Horizontal">
+										<Label Text="{Binding Path=LocalizedName}" Style="{StaticResource KeyLabel}" LineBreakMode="WordWrap" WidthRequest="100"/>
+										<Label LineBreakMode="WordWrap" Text="{Binding Path=LocalizedValue}" Style="{StaticResource ClickableValueLabel}">
+											<Label.GestureRecognizers>
+												<TapGestureRecognizer Command="{Binding Path=BindingContext.ClickCommand, Source={x:Reference TagLayout}}" CommandParameter="{Binding}" />
+											</Label.GestureRecognizers>
+										</Label>
+									</StackLayout>
+								</DataTemplate>
+							</BindableLayout.ItemTemplate>
+						</StackLayout>
+						<!-- NOTIFICATIONS -->
+						<Label Text="{l:Localize Notifications}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}"
 					   VerticalOptions="Start" IsVisible="{Binding HasNotifications}"/>
-				<Label Text="{x:Static resx:AppResources.NotificationsText}" Style="{StaticResource InfoText}" VerticalOptions="Start"
+						<Label Text="{l:Localize NotificationsText}" Style="{StaticResource InfoText}" VerticalOptions="Start"
 					   IsVisible="{Binding HasNotifications}"/>
-				<StackLayout x:Name="Notifications" Orientation="Vertical" BindableLayout.ItemsSource="{Binding Path=Notifications}" VerticalOptions="StartAndExpand" Margin="{StaticResource DefaultMargin}">
-					<BindableLayout.ItemTemplate>
-						<DataTemplate x:DataType="objectmodel2:EventModel">
-							<Grid ColumnDefinitions="auto,*,auto" RowDefinitions="auto,auto" Padding="5,5,5,5">
-								<Label Grid.Column="0" Grid.Row="0" LineBreakMode="NoWrap" Padding="5,2,5,0"
-									   Text="{Binding Path=Received, Converter={conv:DateToString}}"
+						<StackLayout x:Name="Notifications" Orientation="Vertical" BindableLayout.ItemsSource="{Binding Path=Notifications}" VerticalOptions="StartAndExpand" Margin="{StaticResource DefaultMargin}">
+							<BindableLayout.ItemTemplate>
+								<DataTemplate x:DataType="model2:EventModel">
+									<Grid ColumnDefinitions="auto,*,auto" RowDefinitions="auto,auto" Padding="5,5,5,5">
+										<Label Grid.Column="0" Grid.Row="0" LineBreakMode="NoWrap" Padding="5,2,5,0"
+									   Text="{Binding Path=Received, Converter={converters:DateToString}}"
 									   HorizontalOptions="Center" VerticalOptions="Center"/>
-								<Label Grid.Column="0" Grid.Row="1" LineBreakMode="NoWrap" Padding="5,0,5,2"
-									   Text="{Binding Path=Received, Converter={conv:TimeToString}}"
+										<Label Grid.Column="0" Grid.Row="1" LineBreakMode="NoWrap" Padding="5,0,5,2"
+									   Text="{Binding Path=Received, Converter={converters:TimeToString}}"
 									   HorizontalOptions="Center" VerticalOptions="Center"/>
-								<Label Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" LineBreakMode="CharacterWrap" TextType="Text"
+										<Label Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" LineBreakMode="CharacterWrap" TextType="Text"
 									   HorizontalTextAlignment="Start" VerticalTextAlignment="Center" Padding="5,2,5,2"
 									   Text="{Binding Path=Description}" Style="{StaticResource ClickableValueLabel}"/>
-								<Label Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" LineBreakMode="NoWrap" Padding="5,2,5,0"
+										<Label Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" LineBreakMode="NoWrap" Padding="5,2,5,0"
 									   Text="{Binding Path=Icon}" FontFamily="{StaticResource FontAwesomeSolid}"
 									   HorizontalOptions="Center" VerticalOptions="Center"/>
-								<Label Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" LineBreakMode="NoWrap" Padding="5,2,5,0"
+										<Label Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" LineBreakMode="NoWrap" Padding="5,2,5,0"
 									   Text="•" FontSize="50" HorizontalOptions="End" VerticalOptions="Center"
 									   Style="{StaticResource AlertLabel}"/>
-								<Grid.GestureRecognizers>
-									<TapGestureRecognizer Command="{Binding ClickedCommand}" CommandParameter="{Binding .}"/>
-								</Grid.GestureRecognizers>
-							</Grid>
-						</DataTemplate>
-					</BindableLayout.ItemTemplate>
-				</StackLayout>
-				<!-- BUTTONS -->
-				<Button Text="{x:Static resx:AppResources.ReadSensor}" Command="{Binding Path=ReadSensorCommand}" IsEnabled="{Binding Path=IsConnected}"
+										<Grid.GestureRecognizers>
+											<TapGestureRecognizer Command="{Binding ClickedCommand}" CommandParameter="{Binding .}"/>
+										</Grid.GestureRecognizers>
+									</Grid>
+								</DataTemplate>
+							</BindableLayout.ItemTemplate>
+						</StackLayout>
+						<!-- BUTTONS -->
+						<Button Text="{l:Localize ReadSensor}" Command="{Binding Path=ReadSensorCommand}" IsEnabled="{Binding Path=IsConnected}"
 						IsVisible="{Binding IsSensor}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
-				<Button Text="{x:Static resx:AppResources.ControlActuator}" Command="{Binding Path=ControlActuatorCommand}" IsEnabled="{Binding Path=IsConnected}"
+						<Button Text="{l:Localize ControlActuator}" Command="{Binding Path=ControlActuatorCommand}" IsEnabled="{Binding Path=IsConnected}"
 						IsVisible="{Binding IsActuator}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
-				<Grid ColumnDefinitions="*" RowDefinitions="auto" Padding="0" Margin="0" ColumnSpacing="0" RowSpacing="0">
-					<Button Text="{x:Static resx:AppResources.Chat}" Command="{Binding Path=ChatCommand}" IsEnabled="{Binding Path=IsConnected}"
+						<Grid ColumnDefinitions="*" RowDefinitions="auto" Padding="0" Margin="0" ColumnSpacing="0" RowSpacing="0">
+							<Button Text="{l:Localize Chat}" Command="{Binding Path=ChatCommand}" IsEnabled="{Binding Path=IsConnected}"
 						IsVisible="{Binding IsNodeInConcentrator, Converter={StaticResource InvertedBoolConverter}}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
-					<Frame Grid.Row="0" Grid.Column="0" CornerRadius="12" Padding="8,3,8,3" IsVisible="{Binding HasPendingChatMessages}"
+							<Frame Grid.Row="0" Grid.Column="0" CornerRadius="12" Padding="8,3,8,3" IsVisible="{Binding HasPendingChatMessages}"
 						   HorizontalOptions="End" VerticalOptions="Center" Margin="{StaticResource DefaultLeftRightAndBottomMargin}"
 						   Style="{StaticResource AlertFrame}">
-						<Label FontSize="Caption" TextColor="{StaticResource HeadingForeground}" Text="{Binding NrPendingChatMessages}" Padding="1"/>
-					</Frame>
-				</Grid>
-				<Button Text="{x:Static resx:AppResources.ConnectToDevice}" Command="{Binding Path=AddToListCommand}" 
+								<Label FontSize="Caption" TextColor="{StaticResource HeadingForeground}" Text="{Binding NrPendingChatMessages}" Padding="1"/>
+							</Frame>
+						</Grid>
+						<Button Text="{l:Localize ConnectToDevice}" Command="{Binding Path=AddToListCommand}" 
 						IsVisible="{Binding InContacts, Converter={StaticResource InvertedBoolConverter}}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
-				<Button Text="{x:Static resx:AppResources.DisconnectFromDevice}" Command="{Binding Path=RemoveFromListCommand}" 
+						<Button Text="{l:Localize DisconnectFromDevice}" Command="{Binding Path=RemoveFromListCommand}" 
 						IsVisible="{Binding InContactsAndNotOwner}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
-				<Button Text="{x:Static resx:AppResources.DeleteRules}" Command="{Binding Path=DeleteRulesCommand}" IsEnabled="{Binding Path=IsConnected}"
+						<Button Text="{l:Localize DeleteRules}" Command="{Binding Path=DeleteRulesCommand}" IsEnabled="{Binding Path=IsConnected}"
 						IsVisible="{Binding IsOwner}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
-				<Button Text="{x:Static resx:AppResources.DisownThing}" Command="{Binding Path=DisownThingCommand}" IsEnabled="{Binding Path=IsConnected}"
+						<Button Text="{l:Localize DisownThing}" Command="{Binding Path=DisownThingCommand}" IsEnabled="{Binding Path=IsConnected}"
 						IsVisible="{Binding IsOwner}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
-			</StackLayout>
-        </ScrollView>
-    </Grid>
-</views:ContentBasePage>
+					</VerticalStackLayout>
+				</Frame>
+			</VerticalStackLayout>
+		</ScrollView>
+	</Grid>
+</base:BaseContentPage>

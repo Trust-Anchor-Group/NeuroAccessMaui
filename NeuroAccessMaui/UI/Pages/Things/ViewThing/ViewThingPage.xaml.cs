@@ -11,7 +11,7 @@
 		/// </summary>
 		public ViewThingPage()
 		{
-			this.ViewModel = new ViewThingModel();
+			this.ContentPageModel = new ViewThingModel();
 			this.InitializeComponent();
 		}
 	}

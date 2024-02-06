@@ -11,7 +11,7 @@
 		/// </summary>
 		public AccountEventPage()
 		{
-			this.ViewModel = new AccountEventViewModel();
+			this.ContentPageModel = new AccountEventViewModel();
 			this.InitializeComponent();
 		}
 	}

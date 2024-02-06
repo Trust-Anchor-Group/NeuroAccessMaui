@@ -537,7 +537,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Calculator
 
 			try
 			{
-				Variables v = new();
+				Variables v = [];
 
 				v["x"] = x;
 
@@ -570,7 +570,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Calculator
 
 				try
 				{
-					Variables v = new();
+					Variables v = [];
 
 					v["x"] = x;
 					v["y"] = y;
@@ -609,14 +609,14 @@ namespace NeuroAccessMaui.UI.Pages.Main.Calculator
 
 		private async Task EvaluateStatistics(string Script)
 		{
-			List<Waher.Script.Abstraction.Elements.IElement> Elements = new();
+			List<Waher.Script.Abstraction.Elements.IElement> Elements = [];
 
 			foreach (object Item in this.MemoryItems)
 				Elements.Add(Expression.Encapsulate(Item));
 
 			try
 			{
-				Variables v = new();
+				Variables v = [];
 
 				v["x"] = VectorDefinition.Encapsulate(Elements, false, null);
 
@@ -748,7 +748,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Calculator
 				this.Memory = x;
 			else
 			{
-				Variables v = new();
+				Variables v = [];
 
 				v["M"] = this.Memory;
 				v["x"] = x;
@@ -770,7 +770,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Calculator
 
 			if (this.Memory is null)
 			{
-				Variables v = new();
+				Variables v = [];
 
 				v["x"] = x;
 
@@ -778,7 +778,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Calculator
 			}
 			else
 			{
-				Variables v = new();
+				Variables v = [];
 
 				v["M"] = this.Memory;
 				v["x"] = x;

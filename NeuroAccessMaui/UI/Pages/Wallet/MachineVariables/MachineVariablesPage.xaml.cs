@@ -11,7 +11,7 @@
 		/// </summary>
 		public MachineVariablesPage()
 		{
-			this.ViewModel = new MachineVariablesViewModel();
+			this.ContentPageModel = new MachineVariablesViewModel();
 			this.InitializeComponent();
 		}
 	}

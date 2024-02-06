@@ -1,95 +1,109 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<views:ContentBasePage xmlns="http://xamarin.com/schemas/2014/forms"
-                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                       xmlns:resx="clr-namespace:IdApp.Resx"
-                       xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages"
-                       xmlns:image="clr-namespace:IdApp.Popups.Photos.Image"
-                       xmlns:photos="clr-namespace:NeuroAccessMaui.Services.UI.Photos"
-                       xmlns:model="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract"
-                       xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
-                       xmlns:objectmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract.ObjectModel"
-                       x:DataType="model:ViewContractViewModel"
-                       x:Class="NeuroAccessMaui.UI.Pages.Contracts.ViewContract.ViewContractPage"
-                       Title="{x:Static resx:AppResources.ViewContract}">
-    <Grid>
-        <ScrollView>
-            <StackLayout Margin="{StaticResource DefaultMargin}">
-                <!-- Proposal -->
-                <Label Text="{x:Static resx:AppResources.Proposal}" Style="{StaticResource Heading}" 
+<base:BaseContentPage x:Name="ThisPage"
+							 x:Class="NeuroAccessMaui.UI.Pages.Contracts.ViewContract.ViewContractPage"
+							 x:DataType="viewmodel:ViewContractViewModel"
+							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract"
+							 xmlns:objectmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract.ObjectModel"
+							 xmlns:photos="clr-namespace:NeuroAccessMaui.Services.UI.Photos">
+	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+
+		<controls:Background/>
+
+		<ScrollView>
+			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
+											 Style="{StaticResource ImageOnlyButtonStyle}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+
+				<Label Text="{l:Localize ViewContract}" Style="{StaticResource PageTitleLabelStyle}"/>
+
+				<Frame Style="{StaticResource FrameSet}">
+					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+						<!-- Proposal -->
+						<Label Text="{x:Static resx:AppResources.Proposal}" Style="{StaticResource Heading}" 
                        Margin="{StaticResource DefaultTopOnlyMargin}" IsVisible="{Binding Path=IsProposal}" />
-                <Label Text="{Binding Path=Proposal}" Style="{StaticResource InfoText}" IsVisible="{Binding Path=IsProposal}" />
-                <!-- HUMAN READABLE TEXT -->
-                <Label Text="{x:Static resx:AppResources.HumanReadableText}" Style="{StaticResource Heading}" IsVisible="{Binding Path=HasHumanReadableText}" Margin="{StaticResource DefaultBottomOnlyMargin}" VerticalOptions="StartAndExpand" />
-                <ContentView Content="{Binding Path=HumanReadableText}" VerticalOptions="StartAndExpand"/>
-                <!-- GENERAL -->
-                <Label Text="{x:Static resx:AppResources.GeneralInformation}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" />
-                <Label Text="{x:Static resx:AppResources.GeneralInformationInfoText}" Style="{StaticResource InfoText}" />
-                <StackLayout Orientation="Vertical" BindableLayout.ItemsSource="{Binding Path=GeneralInformation}">
-                    <BindableLayout.ItemTemplate>
-                        <DataTemplate x:DataType="objectmodel:PartModel">
-                            <StackLayout Orientation="Horizontal">
-                                <Label Text="{Binding Path=Key}" Style="{StaticResource KeyLabel}"/>
-                                <Label LineBreakMode="NoWrap" Text="{Binding Path=Value}" Style="{StaticResource ValueLabelForContacrt}"
+						<Label Text="{Binding Path=Proposal}" Style="{StaticResource InfoText}" IsVisible="{Binding Path=IsProposal}" />
+						<!-- HUMAN READABLE TEXT -->
+						<Label Text="{x:Static resx:AppResources.HumanReadableText}" Style="{StaticResource Heading}" IsVisible="{Binding Path=HasHumanReadableText}" Margin="{StaticResource DefaultBottomOnlyMargin}" VerticalOptions="StartAndExpand" />
+						<ContentView Content="{Binding Path=HumanReadableText}" VerticalOptions="StartAndExpand"/>
+						<!-- GENERAL -->
+						<Label Text="{x:Static resx:AppResources.GeneralInformation}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" />
+						<Label Text="{x:Static resx:AppResources.GeneralInformationInfoText}" Style="{StaticResource InfoText}" />
+						<StackLayout Orientation="Vertical" BindableLayout.ItemsSource="{Binding Path=GeneralInformation}">
+							<BindableLayout.ItemTemplate>
+								<DataTemplate x:DataType="objectmodel:PartModel">
+									<StackLayout Orientation="Horizontal">
+										<Label Text="{Binding Path=Key}" Style="{StaticResource KeyLabel}"/>
+										<Label LineBreakMode="NoWrap" Text="{Binding Path=Value}" Style="{StaticResource ValueLabelForContacrt}"
                                        BackgroundColor="{Binding BgColor}"/>
-                            </StackLayout>
-                        </DataTemplate>
-                    </BindableLayout.ItemTemplate>
-                </StackLayout>
-                <!-- PHOTOS -->
-                <StackLayout Orientation="Horizontal" IsVisible="{Binding Path=HasPhotos}" VerticalOptions="StartAndExpand">
-                    <Label Text="{x:Static resx:AppResources.Photos}" HorizontalOptions="StartAndExpand" />
-                    <ScrollView Orientation="Horizontal" HeightRequest="68">
-                        <FlexLayout x:Name="PhotosLayout"
+									</StackLayout>
+								</DataTemplate>
+							</BindableLayout.ItemTemplate>
+						</StackLayout>
+						<!-- PHOTOS -->
+						<StackLayout Orientation="Horizontal" IsVisible="{Binding Path=HasPhotos}" VerticalOptions="StartAndExpand">
+							<Label Text="{x:Static resx:AppResources.Photos}" HorizontalOptions="StartAndExpand" />
+							<ScrollView Orientation="Horizontal" HeightRequest="68">
+								<FlexLayout x:Name="PhotosLayout"
                                     AlignContent="Center"
                                     AlignItems="Center" 
                                     Direction="Row" 
                                     JustifyContent="Start" 
                                     BindableLayout.ItemsSource="{Binding Path=Photos}">
-                            <BindableLayout.ItemTemplate>
-                                <DataTemplate x:DataType="photos:Photo">
-                                    <Image Source="{Binding Path=Source}" Rotation="{Binding Path=Rotation}" HeightRequest="64" WidthRequest="64" Aspect="AspectFill" Margin="2">
-                                        <Image.GestureRecognizers>
-                                            <TapGestureRecognizer Tapped="Image_Tapped"/>
-                                        </Image.GestureRecognizers>
-                                    </Image>
-                                </DataTemplate>
-                            </BindableLayout.ItemTemplate>
-                        </FlexLayout>
-                    </ScrollView>
-                </StackLayout>
-                <!-- QR -->
-                <Image x:Name="QrCode" Source="{Binding Path=QrCode}" IsVisible="{Binding Path=HasQrCode}" WidthRequest="{Binding Path=QrCodeWidth, Mode=OneTime}" HeightRequest="{Binding Path=QrCodeHeight, Mode=OneTime}" VerticalOptions="StartAndExpand" HorizontalOptions="CenterAndExpand" Margin="{StaticResource DefaultTopOnlyMargin}" />
-                <!-- ROLES -->
-                <Label Text="{x:Static resx:AppResources.Roles}" Style="{StaticResource Heading}" IsVisible="{Binding Path=HasRoles}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="StartAndExpand" />
-                <Label Text="{x:Static resx:AppResources.RolesInfoText}" Style="{StaticResource InfoText}" IsVisible="{Binding Path=HasRoles}" VerticalOptions="StartAndExpand"/>
-                <ContentView Content="{Binding Path=Roles}" VerticalOptions="StartAndExpand"/>
-                <!-- PARTs -->
-                <Label Text="{x:Static resx:AppResources.Parts}" Style="{StaticResource Heading}" IsVisible="{Binding Path=HasParts}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="StartAndExpand" />
-                <Label Text="{x:Static resx:AppResources.PartsInfoText}" Style="{StaticResource InfoText}" IsVisible="{Binding Path=HasParts}"  VerticalOptions="StartAndExpand" />
-                <ContentView Content="{Binding Path=Parts}" VerticalOptions="StartAndExpand" />
-                <!-- PARAMETERS -->
-                <Label Text="{x:Static resx:AppResources.Parameters}" Style="{StaticResource Heading}" IsVisible="{Binding Path=HasParameters}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="StartAndExpand" />
-                <Label Text="{x:Static resx:AppResources.ParametersInfoText}" Style="{StaticResource InfoText}" IsVisible="{Binding Path=HasParameters}" VerticalOptions="StartAndExpand" />
-                <ContentView Content="{Binding Path=Parameters}" VerticalOptions="StartAndExpand"/>
-                <!-- MACHINE READABLE TEXT -->
-                <Label Text="{x:Static resx:AppResources.MachineReadableText}" Style="{StaticResource Heading}" IsVisible="{Binding Path=HasMachineReadableText}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="StartAndExpand" />
-                <Label Text="{x:Static resx:AppResources.MachineReadableInfoText}" Style="{StaticResource InfoText}" IsVisible="{Binding Path=HasMachineReadableText}" VerticalOptions="StartAndExpand" />
-                <ContentView Content="{Binding Path=MachineReadableText}" VerticalOptions="StartAndExpand"/>
-                <Button Text="{x:Static resx:AppResources.ShowDetails}" Margin="{StaticResource DefaultBottomOnlyMargin}"
+									<BindableLayout.ItemTemplate>
+										<DataTemplate x:DataType="photos:Photo">
+											<Image Source="{Binding Path=Source}" Rotation="{Binding Path=Rotation}" HeightRequest="64" WidthRequest="64" Aspect="AspectFill" Margin="2">
+												<Image.GestureRecognizers>
+													<TapGestureRecognizer Tapped="Image_Tapped"/>
+												</Image.GestureRecognizers>
+											</Image>
+										</DataTemplate>
+									</BindableLayout.ItemTemplate>
+								</FlexLayout>
+							</ScrollView>
+						</StackLayout>
+						<!-- QR -->
+						<Image x:Name="QrCode" Source="{Binding Path=QrCode}" IsVisible="{Binding Path=HasQrCode}" WidthRequest="{Binding Path=QrCodeWidth, Mode=OneTime}" HeightRequest="{Binding Path=QrCodeHeight, Mode=OneTime}" VerticalOptions="StartAndExpand" HorizontalOptions="CenterAndExpand" Margin="{StaticResource DefaultTopOnlyMargin}" />
+						<!-- ROLES -->
+						<Label Text="{x:Static resx:AppResources.Roles}" Style="{StaticResource Heading}" IsVisible="{Binding Path=HasRoles}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="StartAndExpand" />
+						<Label Text="{x:Static resx:AppResources.RolesInfoText}" Style="{StaticResource InfoText}" IsVisible="{Binding Path=HasRoles}" VerticalOptions="StartAndExpand"/>
+						<ContentView Content="{Binding Path=Roles}" VerticalOptions="StartAndExpand"/>
+						<!-- PARTs -->
+						<Label Text="{x:Static resx:AppResources.Parts}" Style="{StaticResource Heading}" IsVisible="{Binding Path=HasParts}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="StartAndExpand" />
+						<Label Text="{x:Static resx:AppResources.PartsInfoText}" Style="{StaticResource InfoText}" IsVisible="{Binding Path=HasParts}"  VerticalOptions="StartAndExpand" />
+						<ContentView Content="{Binding Path=Parts}" VerticalOptions="StartAndExpand" />
+						<!-- PARAMETERS -->
+						<Label Text="{x:Static resx:AppResources.Parameters}" Style="{StaticResource Heading}" IsVisible="{Binding Path=HasParameters}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="StartAndExpand" />
+						<Label Text="{x:Static resx:AppResources.ParametersInfoText}" Style="{StaticResource InfoText}" IsVisible="{Binding Path=HasParameters}" VerticalOptions="StartAndExpand" />
+						<ContentView Content="{Binding Path=Parameters}" VerticalOptions="StartAndExpand"/>
+						<!-- MACHINE READABLE TEXT -->
+						<Label Text="{x:Static resx:AppResources.MachineReadableText}" Style="{StaticResource Heading}" IsVisible="{Binding Path=HasMachineReadableText}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="StartAndExpand" />
+						<Label Text="{x:Static resx:AppResources.MachineReadableInfoText}" Style="{StaticResource InfoText}" IsVisible="{Binding Path=HasMachineReadableText}" VerticalOptions="StartAndExpand" />
+						<ContentView Content="{Binding Path=MachineReadableText}" VerticalOptions="StartAndExpand"/>
+						<Button Text="{x:Static resx:AppResources.ShowDetails}" Margin="{StaticResource DefaultBottomOnlyMargin}"
                         Command="{Binding Path=ShowDetailsCommand}" IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
-                <!-- CLIENT SIGNATURES -->
-                <Label Text="{x:Static resx:AppResources.ClientSignatures}" Style="{StaticResource Heading}" IsVisible="{Binding Path=HasClientSignatures}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="StartAndExpand" />
-                <Label Text="{x:Static resx:AppResources.ClientSignaturesInfoText}" Style="{StaticResource InfoText}" IsVisible="{Binding Path=HasClientSignatures}" VerticalOptions="StartAndExpand" />
-                <ContentView Content="{Binding Path=ClientSignatures}" VerticalOptions="StartAndExpand"/>
-                <!-- SERVER SIGNATURES -->
-                <Label Text="{x:Static resx:AppResources.ServerSignatures}" Style="{StaticResource Heading}" IsVisible="{Binding Path=HasServerSignatures}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="StartAndExpand" />
-                <Label Text="{x:Static resx:AppResources.ServerSignaturesInfoText}" Style="{StaticResource InfoText}" IsVisible="{Binding Path=HasServerSignatures}" VerticalOptions="StartAndExpand" />
-                <ContentView Content="{Binding Path=ServerSignatures}" VerticalOptions="StartAndExpand"/>
-                <!-- BUTTONS -->
-                <Button Text="{x:Static resx:AppResources.ObsoleteContract}" Command="{Binding Path=ObsoleteContractCommand}" IsVisible="{Binding Path=CanObsoleteContract}" Margin="{StaticResource DefaultTopAndBottomOnlyMargin}"/>
-                <Button Text="{x:Static resx:AppResources.DeleteContract}" Command="{Binding Path=DeleteContractCommand}" IsVisible="{Binding Path=CanDeleteContract}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
-            </StackLayout>
-        </ScrollView>
-        <image:ImageView x:Name="PhotoViewer" IsVisible="False"/>
-    </Grid>
-</views:ContentBasePage>
+						<!-- CLIENT SIGNATURES -->
+						<Label Text="{x:Static resx:AppResources.ClientSignatures}" Style="{StaticResource Heading}" IsVisible="{Binding Path=HasClientSignatures}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="StartAndExpand" />
+						<Label Text="{x:Static resx:AppResources.ClientSignaturesInfoText}" Style="{StaticResource InfoText}" IsVisible="{Binding Path=HasClientSignatures}" VerticalOptions="StartAndExpand" />
+						<ContentView Content="{Binding Path=ClientSignatures}" VerticalOptions="StartAndExpand"/>
+						<!-- SERVER SIGNATURES -->
+						<Label Text="{x:Static resx:AppResources.ServerSignatures}" Style="{StaticResource Heading}" IsVisible="{Binding Path=HasServerSignatures}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="StartAndExpand" />
+						<Label Text="{x:Static resx:AppResources.ServerSignaturesInfoText}" Style="{StaticResource InfoText}" IsVisible="{Binding Path=HasServerSignatures}" VerticalOptions="StartAndExpand" />
+						<ContentView Content="{Binding Path=ServerSignatures}" VerticalOptions="StartAndExpand"/>
+						<!-- BUTTONS -->
+						<Button Text="{x:Static resx:AppResources.ObsoleteContract}" Command="{Binding Path=ObsoleteContractCommand}" IsVisible="{Binding Path=CanObsoleteContract}" Margin="{StaticResource DefaultTopAndBottomOnlyMargin}"/>
+						<Button Text="{x:Static resx:AppResources.DeleteContract}" Command="{Binding Path=DeleteContractCommand}" IsVisible="{Binding Path=CanDeleteContract}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
+						<!--<image:ImageView x:Name="PhotoViewer" IsVisible="False"/>-->
+					</VerticalStackLayout>
+				</Frame>
+			</VerticalStackLayout>
+		</ScrollView>
+	</Grid>
+</base:BaseContentPage>

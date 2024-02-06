@@ -1,5 +1,9 @@
 ﻿using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Navigation;
+using NeuroAccessMaui.UI.Pages.Things.MyThings;
+using NeuroAccessMaui.UI.Pages.Things.ViewClaimThing;
+using NeuroAccessMaui.UI.Pages.Things.ViewThing;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Provisioning;
 using Waher.Persistence;
@@ -72,7 +76,7 @@ namespace NeuroAccessMaui.Services.ThingRegistries
 								IsThing = true,
 								LegalId = string.Empty,
 								LegalIdentity = null,
-								FriendlyName = ViewClaimThingViewModel.GetFriendlyName(Properties),
+								FriendlyName = ViewClaimThingViewModel.GetFriendlyName(Properties) ?? string.Empty,
 								MetaData = Properties,
 								SourceId = Thing.Node.SourceId,
 								Partition = Thing.Node.Partition,
@@ -83,7 +87,7 @@ namespace NeuroAccessMaui.Services.ThingRegistries
 							};
 
 							await ServiceRef.NavigationService.GoToAsync(nameof(ViewThingPage), new ViewThingNavigationArgs(ContactInfo,
-								MyThingsViewModel.GetNotificationEvents(this, ContactInfo)));
+								MyThingsViewModel.GetNotificationEvents(ContactInfo) ?? []));
 						});
 						break;
 
@@ -145,7 +149,7 @@ namespace NeuroAccessMaui.Services.ThingRegistries
 					await Database.Update(Info);
 				}
 
-				ViewThingNavigationArgs Args = new(Info, MyThingsViewModel.GetNotificationEvents(this, Info));
+				ViewThingNavigationArgs Args = new(Info, MyThingsViewModel.GetNotificationEvents(Info) ?? []);
 
 				await ServiceRef.NavigationService.GoToAsync(nameof(ViewThingPage), Args, BackMethod.CurrentPage);
 			}

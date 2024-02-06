@@ -1,25 +1,43 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<views:ContentBasePage xmlns="http://xamarin.com/schemas/2014/forms"
-                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                       xmlns:resx="clr-namespace:IdApp.Resx;assembly=IdApp"
-                       xmlns:views="clr-namespace:IdApp.Pages;assembly=IdApp"
-                       xmlns:model="clr-namespace:IdApp.Pages.Identity.TransferIdentity;assembly=IdApp"
-                       x:DataType="model:TransferIdentityViewModel"
-                       x:Class="IdApp.Pages.Identity.TransferIdentity.TransferIdentityPage"
-                       Style="{StaticResource BaseBackgroundPage}"
-                       Title="{x:Static resx:AppResources.Identity}">
-	<Grid>
+<base:BaseContentPage x:Name="ThisPage"
+							 x:Class="NeuroAccessMaui.UI.Pages.Identity.TransferIdentity.TransferIdentityPage"
+							 x:DataType="viewmodel:TransferIdentityViewModel"
+							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Identity.TransferIdentity"
+							 xmlns:photos="clr-namespace:NeuroAccessMaui.Services.UI.Photos">
+
+	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+
+		<controls:Background/>
+
 		<ScrollView>
-			<StackLayout Margin="{StaticResource DefaultMargin}" VerticalOptions="Start">
-				<Label Text="{x:Static resx:AppResources.TransferId}" Style="{StaticResource Heading}" />
-				<Label Text="{x:Static resx:AppResources.TransferIdentityInformationText}" Style="{StaticResource InfoText}" Margin="{StaticResource DefaultBottomOnlyMargin}" />
-				<Image x:Name="QrCode" Source="{Binding Path=QrCode}" HorizontalOptions="CenterAndExpand" Margin="0"
+			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+
+				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{StaticResource ImageOnlyButtonStyle}"
+											 PathData="{x:Static ui:Geometries.BackButtonPath}" />
+
+				<Label Style="{StaticResource PageTitleLabelStyle}" Text="{l:Localize TransferId}"/>
+
+				<Frame Style="{StaticResource FrameSet}">
+					<VerticalStackLayout>
+						<Label Text="{x:Static resx:AppResources.TransferIdentityInformationText}" Style="{StaticResource InfoText}" Margin="{StaticResource DefaultBottomOnlyMargin}" />
+						<Image x:Name="QrCode" Source="{Binding Path=QrCode}" HorizontalOptions="CenterAndExpand" Margin="0"
                        WidthRequest="{Binding Path=QrCodeWidth, Mode=OneTime}" HeightRequest="{Binding Path=QrCodeHeight, Mode=OneTime}">
-					<Image.GestureRecognizers>
-						<TapGestureRecognizer Command="{Binding CopyUriToClipboard}"/>
-					</Image.GestureRecognizers>
-				</Image>
-			</StackLayout>
+							<Image.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding CopyUriToClipboard}"/>
+							</Image.GestureRecognizers>
+						</Image>
+					</VerticalStackLayout>
+				</Frame>
+			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>
-</views:ContentBasePage>
+
+</base:BaseContentPage>

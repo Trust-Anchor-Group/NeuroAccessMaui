@@ -13,7 +13,7 @@ namespace NeuroAccessMaui.UI.Pages.Signatures.ClientSignature
         /// </summary>
 		public ClientSignaturePage()
 		{
-			this.ViewModel = new ClientSignatureViewModel();
+			this.ContentPageModel = new ClientSignatureViewModel();
 			this.InitializeComponent();
 		}
     }

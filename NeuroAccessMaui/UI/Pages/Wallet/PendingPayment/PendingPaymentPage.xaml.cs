@@ -11,7 +11,7 @@
 		/// </summary>
 		public PendingPaymentPage()
 		{
-			this.ViewModel = new EDalerUriViewModel(this);
+			this.ContentPageModel = new EDalerUriViewModel(this);
 			this.InitializeComponent();
 		}
 

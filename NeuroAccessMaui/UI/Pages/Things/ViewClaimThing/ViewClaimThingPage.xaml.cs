@@ -11,7 +11,7 @@
 		/// </summary>
 		public ViewClaimThingPage()
 		{
-			this.ViewModel = new ViewClaimThingViewModel();
+			this.ContentPageModel = new ViewClaimThingViewModel();
 			this.InitializeComponent();
 		}
 	}

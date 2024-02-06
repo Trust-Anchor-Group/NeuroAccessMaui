@@ -14,7 +14,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 		/// </summary>
 		public PetitionContractPage()
 		{
-			this.ViewModel = new PetitionContractViewModel();
+			this.ContentPageModel = new PetitionContractViewModel();
 			this.InitializeComponent();
 		}
 
@@ -27,7 +27,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 
 		private void Image_Tapped(object? Sender, EventArgs e)
 		{
-			if (this.ViewModel is PetitionContractViewModel PetitionContractViewModel)
+			if (this.ContentPageModel is PetitionContractViewModel PetitionContractViewModel)
 			{
 				Attachment[] attachments = PetitionContractViewModel.RequestorIdentity?.Attachments;
 				this.PhotoViewer.ShowPhotos(attachments);

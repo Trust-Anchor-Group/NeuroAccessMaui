@@ -13,7 +13,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		/// </summary>
 		public TokenDetailsPage()
 		{
-			this.ViewModel = new TokenDetailsViewModel(this);
+			this.ContentPageModel = new TokenDetailsViewModel(this);
 			this.InitializeComponent();
 		}
 

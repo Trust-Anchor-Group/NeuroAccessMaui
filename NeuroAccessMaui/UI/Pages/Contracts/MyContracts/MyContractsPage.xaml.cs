@@ -1,4 +1,5 @@
-﻿using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
+﻿using NeuroAccessMaui.Services;
+using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 {
@@ -15,14 +16,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		{
 			MyContractsViewModel ViewModel = new();
 			this.Title = ViewModel.Title;
-			this.ViewModel = ViewModel;
+			this.ContentPageModel = ViewModel;
 
 			this.InitializeComponent();
 		}
 
 		private void ContractsSelectionChanged(object? Sender, SelectionChangedEventArgs e)
 		{
-			if (this.ViewModel is MyContractsViewModel MyContractsViewModel)
+			if (this.ContentPageModel is MyContractsViewModel MyContractsViewModel)
 			{
 				object SelectedItem = this.Contracts.SelectedItem;
 
@@ -36,7 +37,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 					MyContractsViewModel.ContractSelected(Contract.ContractId);
 
 					if (Contract.HasEvents)
-						MyContractsViewModel.NotificationService.DeleteEvents(Contract.Events);
+						ServiceRef.NotificationService.DeleteEvents(Contract.Events);
 				}
 				else if (SelectedItem is EventModel Event)
 					Event.Clicked();

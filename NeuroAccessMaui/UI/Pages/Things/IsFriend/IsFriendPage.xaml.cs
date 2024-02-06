@@ -11,7 +11,7 @@
 		/// </summary>
 		public IsFriendPage()
 		{
-			this.ViewModel = new IsFriendModel();
+			this.ContentPageModel = new IsFriendModel();
 			this.InitializeComponent();
 		}
 	}

@@ -11,7 +11,7 @@
 		/// </summary>
 		public CanControlPage()
 		{
-			this.ViewModel = new CanControlModel();
+			this.ContentPageModel = new CanControlModel();
 			this.InitializeComponent();
 		}
 	}

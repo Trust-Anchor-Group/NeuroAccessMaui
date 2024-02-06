@@ -11,7 +11,7 @@
 		/// </summary>
 		public MyTokensPage()
 		{
-			this.ViewModel = new MyTokensViewModel();
+			this.ContentPageModel = new MyTokensViewModel();
 			this.InitializeComponent();
 		}
 	}

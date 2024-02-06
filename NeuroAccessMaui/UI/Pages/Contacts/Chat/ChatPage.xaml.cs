@@ -7,10 +7,14 @@
 	public partial class ChatPage
 	{
 		/// <inheritdoc/>
-		public override string UniqueId
+		public override string? UniqueId
 		{
-			get => (this.ViewModel as ChatViewModel).UniqueId;
-			set => (this.ViewModel as ChatViewModel).UniqueId = value;
+			get => (this.ContentPageModel as ChatViewModel)?.UniqueId;
+			set
+			{
+				if (this.ContentPageModel is ChatViewModel ChatViewModel)
+					ChatViewModel.UniqueId = value;
+			}
 		}
 
 		/// <summary>
@@ -18,8 +22,7 @@
 		/// </summary>
 		public ChatPage()
 		{
-			this.ViewModel = new ChatViewModel();
-
+			this.ContentPageModel = new ChatViewModel();
 			this.InitializeComponent();
 		}
 

@@ -11,7 +11,7 @@
 		/// </summary>
 		public SendPaymentPage()
 		{
-			this.ViewModel = new EDalerUriViewModel(null);
+			this.ContentPageModel = new EDalerUriViewModel(null);
 			this.InitializeComponent();
 		}
 	}

@@ -11,7 +11,7 @@
 		/// </summary>
 		public XmppFormPage()
 		{
-			this.ViewModel = new XmppFormViewModel();
+			this.ContentPageModel = new XmppFormViewModel();
 			this.InitializeComponent();
 		}
 	}

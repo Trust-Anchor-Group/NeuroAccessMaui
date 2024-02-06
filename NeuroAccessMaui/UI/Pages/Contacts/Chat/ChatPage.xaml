@@ -1,23 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<views:ContentBasePage
-	xmlns="http://xamarin.com/schemas/2014/forms"
-	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-	xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
-	xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages"
-	xmlns:resx="clr-namespace:IdApp.Resx"
-	xmlns:model="clr-namespace:NeuroAccessMaui.UI.Pages.Contacts.Chat"
-	xmlns:messages="clr-namespace:NeuroAccessMaui.Services.Messages"
-	xmlns:behaviors="clr-namespace:IdApp.Behaviors"
-	xmlns:loading="clr-namespace:NeuroAccessMaui.UI.Controls.LoadingCollectionView"
-	xmlns:fadeview="clr-namespace:NeuroAccessMaui.UI.Controls.FadeView"
-	xmlns:converters="clr-namespace:IdApp.Converters"
-	xmlns:controls="clr-namespace:IdApp.Controls"
-	x:DataType="model:ChatViewModel"
-	x:Class="NeuroAccessMaui.UI.Pages.Contacts.Chat.ChatPage"
-	Title="{Binding Path=FriendlyName}"
-	Style="{StaticResource BaseBackgroundPage}">
+<base:BaseContentPage x:Name="ThisPage"
+							 x:Class="NeuroAccessMaui.UI.Pages.Contacts.Chat.ChatPage"
+							 x:DataType="viewmodel:ChatViewModel"
+							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							 xmlns:behaviors="clr-namespace:NeuroAccessMaui.UI.Behaviors"
+							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contacts.Chat">
 
-	<views:ContentBasePage.Resources>
+	<VisualElement.Resources>
 		<ResourceDictionary>
 			<Style TargetType="ContentView" >
 				<Setter Property="BackgroundColor" Value="Transparent" />
@@ -26,10 +22,10 @@
 				<Setter Property="TextColor" Value="{StaticResource ForegroundColorLightTheme}" />
 			</Style>
 		</ResourceDictionary>
-		<DataTemplate x:Key="EmptyMessage" x:DataType="messages:ChatMessage">
+		<DataTemplate x:Key="EmptyMessage" x:DataType="viewmodel:ChatMessage">
 			<ContentView Content="{Binding Path=ParsedXaml}" HeightRequest="1"/>
 		</DataTemplate>
-		<DataTemplate x:Key="SentMessage" x:DataType="messages:ChatMessage">
+		<DataTemplate x:Key="SentMessage" x:DataType="viewmodel:ChatMessage">
 			<Grid ColumnDefinitions="auto,*" ColumnSpacing="0">
 				<Frame Grid.Column="0" Rotation="180" BackgroundColor="{StaticResource SendMessageBackground}"
 					   Padding="5" CornerRadius="5" BorderColor="{StaticResource SendMessageBorder}" HasShadow="False">
@@ -38,7 +34,7 @@
 				<Grid Grid.Column="1" BackgroundColor="Transparent"/>
 			</Grid>
 		</DataTemplate>
-		<DataTemplate x:Key="ReceivedMessage" x:DataType="messages:ChatMessage">
+		<DataTemplate x:Key="ReceivedMessage" x:DataType="viewmodel:ChatMessage">
 			<Grid ColumnDefinitions="*,auto" ColumnSpacing="0">
 				<Grid Grid.Column="0" BackgroundColor="Transparent"/>
 				<Frame Grid.Column="1" Rotation="180" BackgroundColor="{StaticResource RecivedMessageBackground}"
@@ -47,7 +43,7 @@
 				</Frame>
 			</Grid>
 		</DataTemplate>
-		<DataTemplate x:Key="OtherItems" x:DataType="messages:ChatMessage">
+		<DataTemplate x:Key="OtherItems" x:DataType="viewmodel:ChatMessage">
 			<Grid ColumnDefinitions="*,auto,*" ColumnSpacing="0">
 				<Grid Grid.Column="0" BackgroundColor="Transparent"/>
 				<Frame Grid.Column="1" Rotation="180" BackgroundColor="{StaticResource OtherMessageBackground}"
@@ -57,26 +53,26 @@
 				<Grid Grid.Column="1" BackgroundColor="Transparent"/>
 			</Grid>
 		</DataTemplate>
-		<messages:MessageTypeTemplateSelector x:Key="MessageStyleSelector"
-                                              EmptyTemplate="{StaticResource EmptyMessage}"
-                                              SentTemplate="{StaticResource SentMessage}"
-                                              ReceivedTemplate="{StaticResource ReceivedMessage}"
-                                              DefaultTemplate="{StaticResource OtherItems}"/>
-	</views:ContentBasePage.Resources>
+		<viewmodel:MessageTypeTemplateSelector x:Key="MessageStyleSelector"
+                                             EmptyTemplate="{StaticResource EmptyMessage}"
+                                             SentTemplate="{StaticResource SentMessage}"
+                                             ReceivedTemplate="{StaticResource ReceivedMessage}"
+                                             DefaultTemplate="{StaticResource OtherItems}"/>
+	</VisualElement.Resources>
 
 	<Grid x:Name="ContainerView" Margin="{StaticResource DefaultMargin}">
 		<Grid RowDefinitions="*,auto">
-			<loading:LoadingCollectionView x:Name="CollectionView" SelectionMode="Single" Rotation="180"
-										   VerticalOptions="StartAndExpand" ItemSizingStrategy="MeasureAllItems"
-										   ItemsUpdatingScrollMode="KeepScrollOffset" RemainingItemsThreshold="1"
-										   ItemsSource="{Binding Path=Messages}"
-										   ItemTemplate="{StaticResource MessageStyleSelector}"
-										   ItemSelectedCommand="{Binding Path=MessageSelectedCommand}"
-										   LoadMoreCommand="{Binding LoadMoreMessagesCommand}">
+			<controls:LoadingCollectionView x:Name="CollectionView" SelectionMode="Single" Rotation="180"
+													  VerticalOptions="StartAndExpand" ItemSizingStrategy="MeasureAllItems"
+													  ItemsUpdatingScrollMode="KeepScrollOffset" RemainingItemsThreshold="1"
+													  ItemsSource="{Binding Path=Messages}"
+													  ItemTemplate="{StaticResource MessageStyleSelector}"
+													  ItemSelectedCommand="{Binding Path=MessageSelectedCommand}"
+													  LoadMoreCommand="{Binding LoadMoreMessagesCommand}">
 				<CollectionView.ItemsLayout>
 					<GridItemsLayout Orientation="Vertical" VerticalItemSpacing="12"/>
 				</CollectionView.ItemsLayout>
-			</loading:LoadingCollectionView>
+			</controls:LoadingCollectionView>
 
 			<Grid x:Name="ControlGrid" ColumnDefinitions="*,40" Grid.Row="1" Margin="0,12,0,0">
 				<Frame CornerRadius="5" Padding="5,5,5,5"
@@ -106,16 +102,17 @@
 						<Grid ColumnDefinitions="auto,*,auto" ColumnSpacing="0"
 							  IsVisible="{Binding IsRecordingAudio}">
 
-							<Frame Grid.Column="0" CornerRadius="8" VerticalOptions="Center" Padding="5" Margin="0" HasShadow="False"
-							   xct:TouchEffect.AnimationDuration="100"
+							<Frame Grid.Column="0" CornerRadius="8" VerticalOptions="Center" Padding="5" Margin="0" HasShadow="False">
+								<!--
+								xct:TouchEffect.AnimationDuration="100"
 							   xct:TouchEffect.AnimationEasing="{x:Static Easing.CubicInOut}"
 							   xct:TouchEffect.PressedOpacity="0.75"
-							   xct:TouchEffect.Command="{Binding Path=PauseResumeCommand}">
+							   xct:TouchEffect.Command="{Binding Path=PauseResumeCommand}">-->
 
 								<Grid WidthRequest="35" HeightRequest="35" BackgroundColor="Transparent">
-									<controls:TintedSvgCachedImage TintColor="{AppThemeBinding Light={StaticResource HeadingBackgroundLightTheme}, Dark={StaticResource HeadingBackgroundDarkTheme}}"
+									<controls:TintedImage TintColor="{AppThemeBinding Light={StaticResource HeadingBackgroundLightTheme}, Dark={StaticResource HeadingBackgroundDarkTheme}}"
 										Source="{x:Static resx:Svgs.Pause}" IsVisible="{Binding IsRecordingPaused, Converter={StaticResource InvertedBoolConverter}}" />
-									<controls:TintedSvgCachedImage TintColor="{AppThemeBinding Light={StaticResource HeadingBackgroundLightTheme}, Dark={StaticResource HeadingBackgroundDarkTheme}}"
+									<controls:TintedImage TintColor="{AppThemeBinding Light={StaticResource HeadingBackgroundLightTheme}, Dark={StaticResource HeadingBackgroundDarkTheme}}"
 										Source="{x:Static resx:Svgs.Play}" IsVisible="{Binding IsRecordingPaused}" />
 								</Grid>
 							</Frame>
@@ -123,13 +120,14 @@
 							<Label Grid.Column="1" Style="{StaticResource ValueLabel}" FontSize="Medium"
 								   Text="{Binding RecordingTime}" HorizontalOptions="Center" VerticalOptions="Center"/>
 
-							<Frame Grid.Column="2" CornerRadius="8" VerticalOptions="Center" Padding="5" Margin="0" HasShadow="False"
-							   xct:TouchEffect.AnimationDuration="100"
+							<Frame Grid.Column="2" CornerRadius="8" VerticalOptions="Center" Padding="5" Margin="0" HasShadow="False">
+										 <!--
+								xct:TouchEffect.AnimationDuration="100"
 							   xct:TouchEffect.AnimationEasing="{x:Static Easing.CubicInOut}"
 							   xct:TouchEffect.PressedOpacity="0.75"
-							   xct:TouchEffect.Command="{Binding Path=CancelCommand}">
+							   xct:TouchEffect.Command="{Binding Path=CancelCommand}">-->
 
-								<controls:TintedSvgCachedImage TintColor="{AppThemeBinding Light={StaticResource HeadingBackgroundLightTheme}, Dark={StaticResource HeadingBackgroundDarkTheme}}"
+								<controls:TintedImage TintColor="{AppThemeBinding Light={StaticResource HeadingBackgroundLightTheme}, Dark={StaticResource HeadingBackgroundDarkTheme}}"
 									Source="{x:Static resx:Svgs.Trash}" WidthRequest="35" HeightRequest="35" />
 							</Frame>
 						</Grid>
@@ -140,18 +138,17 @@
 		</Grid>
 
 		<Grid HorizontalOptions="End" VerticalOptions="End" Margin="0,0,0,5">
-			<fadeview:FadeView IsFrontView="{Binding Path=IsWriting, Converter={StaticResource InvertedBoolConverter}}">
-				<fadeview:FadeView.FrontView>
-					<xct:Expander Direction="Up" AnimationLength="300" AnimationEasing="CubicInOut"
-								  IsExpanded="{Binding IsButtonExpanded}">
-						<xct:Expander.Header>
+			<controls:FadeView IsFrontView="{Binding Path=IsWriting, Converter={StaticResource InvertedBoolConverter}}">
+				<controls:FadeView.FrontView>
+					<mct:Expander Direction="Up" IsExpanded="{Binding IsButtonExpanded}">
+						<mct:Expander.Header>
 							<StackLayout BackgroundColor="White">
 								<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
 										Text="{x:Static resx:FontAwesome.EllipsisH}" TextColor="{StaticResource TextColorLightTheme}"
 										FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
 										Command="{Binding ExpandButtonsCommand}" />
 							</StackLayout>
-						</xct:Expander.Header>
+						</mct:Expander.Header>
 						<StackLayout Orientation="Vertical" Spacing="5" Margin="0,0,0,5" BackgroundColor="Transparent">
 							<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
 									Text="{x:Static resx:FontAwesome.Microphone}" TextColor="{StaticResource TextColorLightTheme}"
@@ -193,9 +190,9 @@
 									FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
 									Command="{Binding EmbedThingCommand}"/>
 						</StackLayout>
-					</xct:Expander>
-				</fadeview:FadeView.FrontView>
-				<fadeview:FadeView.BackView>
+					</mct:Expander>
+				</controls:FadeView.FrontView>
+				<controls:FadeView.BackView>
 					<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
 							Text="{x:Static resx:FontAwesome.PaperPlane}" TextColor="{StaticResource TextColorLightTheme}"
 							FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
@@ -204,8 +201,8 @@
 							<behaviors:UnfocusOnClickedBehavior UnfocusControl="EditorControl"/>
 						</Button.Behaviors>
 					</Button>
-				</fadeview:FadeView.BackView>
-			</fadeview:FadeView>
+				</controls:FadeView.BackView>
+			</controls:FadeView>
 		</Grid>
 	</Grid>
-</views:ContentBasePage>
+</base:BaseContentPage>

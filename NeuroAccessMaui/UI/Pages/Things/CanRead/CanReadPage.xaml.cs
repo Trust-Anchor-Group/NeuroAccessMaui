@@ -11,7 +11,7 @@
 		/// </summary>
 		public CanReadPage()
 		{
-			this.ViewModel = new CanReadModel();
+			this.ContentPageModel = new CanReadModel();
 			this.InitializeComponent();
 		}
 	}

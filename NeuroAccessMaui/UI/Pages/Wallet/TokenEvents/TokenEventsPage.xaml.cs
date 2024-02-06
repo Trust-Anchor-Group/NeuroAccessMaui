@@ -11,7 +11,7 @@
 		/// </summary>
 		public TokenEventsPage()
 		{
-			this.ViewModel = new TokenEventsViewModel();
+			this.ContentPageModel = new TokenEventsViewModel();
 			this.InitializeComponent();
 		}
 	}

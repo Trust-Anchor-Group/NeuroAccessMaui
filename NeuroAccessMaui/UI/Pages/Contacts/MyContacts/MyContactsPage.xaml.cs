@@ -11,7 +11,7 @@
 		/// </summary>
 		public MyContactsPage()
 		{
-			this.ViewModel = new ContactListViewModel();
+			this.ContentPageModel = new ContactListViewModel();
 			this.InitializeComponent();
 		}
 	}
