@@ -9,9 +9,9 @@ namespace NeuroAccessMaui.Services.Wallet
     public interface INeuroWalletOrchestratorService : ILoadableService
     {
         /// <summary>
-        /// Opens the wallet
+        /// Opens the eDaler wallet
         /// </summary>
-        Task OpenWallet();
+        Task OpenEDalerWallet();
 
         /// <summary>
         /// eDaler URI scanned.

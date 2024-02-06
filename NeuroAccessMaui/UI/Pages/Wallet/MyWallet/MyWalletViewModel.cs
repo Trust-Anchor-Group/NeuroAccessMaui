@@ -29,9 +29,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 	/// <summary>
 	/// The view model to bind to for when displaying the wallet.
 	/// </summary>
-	public partial class MyWalletViewModel(MyWalletPage Page) : XmppViewModel()
+	public partial class MyWalletViewModel() : XmppViewModel()
 	{
-		private readonly MyWalletPage page = Page;
 		private DateTime lastEDalerEvent;
 		private DateTime lastTokenEvent;
 		private bool hasMoreTokens;
@@ -663,16 +662,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 					ServiceRef.LogService.LogException(ex);
 				}
 			}
-		}
-
-		/// <summary>
-		/// The command to bind to for flipping the wallet.
-		/// </summary>
-		[RelayCommand]
-		private Task Flip()
-		{
-			this.page.WalletFlipView_Tapped(this, EventArgs.Empty);
-			return Task.CompletedTask;
 		}
 
 		/// <summary>

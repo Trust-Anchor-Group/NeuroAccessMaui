@@ -1,51 +1,67 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<views:ContentBasePage xmlns="http://xamarin.com/schemas/2014/forms"
-                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                       xmlns:noBounce="clr-namespace:NeuroAccessMaui.UI.Controls.NoBounceView"
-                       xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages"
-                       xmlns:resx="clr-namespace:IdApp.Resx"
-                       xmlns:contacts="clr-namespace:NeuroAccessMaui.UI.Pages.Contacts.MyContacts"
-                       xmlns:model="clr-namespace:NeuroAccessMaui.UI.Pages.Things.MyThings"
-                       x:DataType="model:MyThingsViewModel"
-                       x:Class="NeuroAccessMaui.UI.Pages.Things.MyThings.MyThingsPage"
-                       Style="{StaticResource BaseBackgroundPage}"
-                       Title="{x:Static resx:AppResources.Things}">
-    <StackLayout Margin="{StaticResource DefaultMargin}">
-        <Label Text="{x:Static resx:AppResources.Things}" Style="{StaticResource Heading}"/>
-        <Label Text="{x:Static resx:AppResources.ThingsDescription}" HorizontalOptions="Center" VerticalOptions="Start"/>
-        <Label Style="{StaticResource AlertLabel}" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" VerticalOptions="Start" IsVisible="{Binding Path=ShowThingsMissing}" Text="{x:Static resx:AppResources.NoThingsFound}" />
+<base:BaseContentPage x:Name="ThisPage"
+							 x:Class="NeuroAccessMaui.UI.Pages.Things.MyThings.MyThingsPage"
+							 x:DataType="viewmodel:MyThingsViewModel"
+							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Things.MyThings"
+							 xmlns:contacts="clr-namespace:NeuroAccessMaui.UI.Pages.Contacts.MyContacts">
+	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
 
-        <noBounce:NoBounceCollectionView x:Name="Things" VerticalOptions="StartAndExpand"
+		<controls:Background/>
+
+		<ScrollView>
+			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
+											 Style="{StaticResource ImageOnlyButtonStyle}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+
+				<Label Text="{l:Localize Things}" Style="{StaticResource PageTitleLabelStyle}"/>
+
+				<Frame Style="{StaticResource FrameSet}">
+					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+						<Label Text="{x:Static resx:AppResources.ThingsDescription}" HorizontalOptions="Center" VerticalOptions="Start"/>
+						<Label Style="{StaticResource AlertLabel}" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" VerticalOptions="Start" IsVisible="{Binding Path=ShowThingsMissing}" Text="{x:Static resx:AppResources.NoThingsFound}" />
+
+						<CollectionView x:Name="Things" VerticalOptions="StartAndExpand"
                                          ItemSizingStrategy="MeasureAllItems" SelectionMode="Single"
                                          ItemsSource="{Binding Path=Things}"
                                          SelectedItem="{Binding Path=SelectedThing, Mode=TwoWay}">
-                <CollectionView.ItemsLayout>
-                    <GridItemsLayout Orientation="Vertical" VerticalItemSpacing="0" />
-                </CollectionView.ItemsLayout>
+							<CollectionView.ItemsLayout>
+								<GridItemsLayout Orientation="Vertical" VerticalItemSpacing="0" />
+							</CollectionView.ItemsLayout>
 
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="contacts:ContactInfoModel">
-						<Grid ColumnDefinitions="*,30" RowDefinitions="auto" ColumnSpacing="2">
+							<CollectionView.ItemTemplate>
+								<DataTemplate x:DataType="contacts:ContactInfoModel">
+									<Grid ColumnDefinitions="*,30" RowDefinitions="auto" ColumnSpacing="2">
 
-							<Label Grid.Column="0" Grid.Row="0" Margin="0,10,0,10" 
+										<Label Grid.Column="0" Grid.Row="0" Margin="0,10,0,10" 
 									   HorizontalOptions="Start" VerticalTextAlignment="Center" LineBreakMode="CharacterWrap"
 									   TextType="Text" Text="{Binding Path=FriendlyName}" Style="{StaticResource ClickableValueLabel}"/>
 
-							<Frame Grid.Row="0" Grid.Column="0" CornerRadius="12" Margin="2" Padding="8,3,8,3" IsVisible="{Binding HasEvents}"
+										<Frame Grid.Row="0" Grid.Column="0" CornerRadius="12" Margin="2" Padding="8,3,8,3" IsVisible="{Binding HasEvents}"
 									   HorizontalOptions="End" VerticalOptions="Center" Style="{StaticResource AlertFrame}">
-								<Label FontSize="Caption" TextColor="{StaticResource HeadingForeground}" Text="{Binding NrEvents}" Padding="1"/>
-							</Frame>
+											<Label FontSize="Caption" TextColor="{StaticResource HeadingForeground}" Text="{Binding NrEvents}" Padding="1"/>
+										</Frame>
 
-							<Ellipse Grid.Column="1" Grid.Row="0" WidthRequest="25" HeightRequest="25"
+										<Ellipse Grid.Column="1" Grid.Row="0" WidthRequest="25" HeightRequest="25"
 										 Fill="{Binding ConnectionColor}" Stroke="Black" StrokeThickness="2"
 										 HorizontalOptions="Center" VerticalOptions="Center">
-								<Ellipse.GestureRecognizers>
-									<TapGestureRecognizer Command="{Binding ToggleSubscriptionCommand}" />
-								</Ellipse.GestureRecognizers>
-							</Ellipse>
-						</Grid>
-					</DataTemplate>
-                </CollectionView.ItemTemplate>
-        </noBounce:NoBounceCollectionView>
-    </StackLayout>
-</views:ContentBasePage>
+											<Ellipse.GestureRecognizers>
+												<TapGestureRecognizer Command="{Binding ToggleSubscriptionCommand}" />
+											</Ellipse.GestureRecognizers>
+										</Ellipse>
+									</Grid>
+								</DataTemplate>
+							</CollectionView.ItemTemplate>
+						</CollectionView>
+					</VerticalStackLayout>
+				</Frame>
+			</VerticalStackLayout>
+		</ScrollView>
+	</Grid>
+</base:BaseContentPage>

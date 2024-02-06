@@ -1,17 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<views:ContentBasePage xmlns="http://xamarin.com/schemas/2014/forms"
-                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                       xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages"
-                       xmlns:resx="clr-namespace:IdApp.Resx"
-                       xmlns:things="clr-namespace:NeuroAccessMaui.UI.Pages.Things"
-                       xmlns:readsensor="clr-namespace:NeuroAccessMaui.UI.Pages.Things.ReadSensor"
-                       xmlns:model="clr-namespace:NeuroAccessMaui.UI.Pages.Things.ReadSensor.Model"
-                       x:DataType="readsensor:ReadSensorModel"
-                       x:Class="NeuroAccessMaui.UI.Pages.Things.ReadSensor.ReadSensorPage"
-                       Style="{StaticResource BaseBackgroundPage}"
-                       Title="{x:Static resx:AppResources.ReadSensor}">
-	
-	<views:ContentBasePage.Resources>
+<base:BaseContentPage x:Name="ThisPage"
+							 x:Class="NeuroAccessMaui.UI.Pages.Things.ReadSensor.ReadSensorPage"
+							 x:DataType="viewmodel:ReadSensorModel"
+							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Things.ReadSensor"
+							 xmlns:model="clr-namespace:NeuroAccessMaui.UI.Pages.Things.ReadSensor.Model"
+							 xmlns:things="clr-namespace:NeuroAccessMaui.UI.Pages.Things">
+	<VisualElement.Resources>
 		<DataTemplate x:Key="DefaultTemplate">
 			<Grid />
 		</DataTemplate>
@@ -56,25 +58,37 @@
 			<Image Source="{Binding Image}" IsVisible="{Binding HasImage}"/>
 		</DataTemplate>
 
-		<readsensor:SensorDataTemplateSelector x:Key="ItemStyleSelector"
-											   DefaultTemplate="{StaticResource DefaultTemplate}"
-											   HeaderTemplate="{StaticResource HeaderModelTemplate}"
-											   FieldTemplate="{StaticResource FieldModelTemplate}"
-											   GraphTemplate="{StaticResource GraphModelTemplate}"
-											   ErrorTemplate="{StaticResource ErrorModelTemplate}"
-											   TagTemplate="{StaticResource TagTemplate}"/>
-	</views:ContentBasePage.Resources>
+		<viewmodel:SensorDataTemplateSelector x:Key="ItemStyleSelector"
+														  DefaultTemplate="{StaticResource DefaultTemplate}"
+														  HeaderTemplate="{StaticResource HeaderModelTemplate}"
+														  FieldTemplate="{StaticResource FieldModelTemplate}"
+														  GraphTemplate="{StaticResource GraphModelTemplate}"
+														  ErrorTemplate="{StaticResource ErrorModelTemplate}"
+														  TagTemplate="{StaticResource TagTemplate}"/>
+	</VisualElement.Resources>
+	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
 
-	<Grid>
-        <ScrollView>
-            <StackLayout Margin="{StaticResource DefaultMargin}">
-                <Label Text="{x:Static resx:AppResources.SensorData}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
-                <Label Text="{x:Static resx:AppResources.SensorDataText}" Style="{StaticResource InfoText}" VerticalOptions="Start"/>
-				<Label Text="{Binding Path=Status}" Style="{StaticResource InfoText}" VerticalOptions="Center" IsVisible="{Binding Path=HasStatus}"/>
-				<StackLayout x:Name="SensorData" VerticalOptions="StartAndExpand" HorizontalOptions="StartAndExpand"
+		<controls:Background/>
+
+		<ScrollView>
+			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
+											 Style="{StaticResource ImageOnlyButtonStyle}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+
+				<Label Text="{l:Localize SensorData}" Style="{StaticResource PageTitleLabelStyle}"/>
+
+				<Frame Style="{StaticResource FrameSet}">
+					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+						<Label Text="{Binding Path=Description}" HorizontalOptions="Center" VerticalOptions="Start"/>
+
+						<Label Text="{x:Static resx:AppResources.SensorDataText}" Style="{StaticResource InfoText}" VerticalOptions="Start"/>
+						<Label Text="{Binding Path=Status}" Style="{StaticResource InfoText}" VerticalOptions="Center" IsVisible="{Binding Path=HasStatus}"/>
+						<StackLayout x:Name="SensorData" VerticalOptions="StartAndExpand" HorizontalOptions="StartAndExpand"
 							 BindableLayout.ItemsSource="{Binding SensorData}"
 							 BindableLayout.ItemTemplateSelector="{StaticResource ItemStyleSelector}"/>
-			</StackLayout>
-        </ScrollView>
-    </Grid>
-</views:ContentBasePage>
+					</VerticalStackLayout>
+				</Frame>
+			</VerticalStackLayout>
+		</ScrollView>
+	</Grid>
+</base:BaseContentPage>

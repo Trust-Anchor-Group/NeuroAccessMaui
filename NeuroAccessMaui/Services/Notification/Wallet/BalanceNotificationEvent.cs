@@ -78,7 +78,7 @@ namespace NeuroAccessMaui.Services.Notification.Wallet
 				await ServiceRef.NavigationService.GoToAsync(nameof(EDalerReceivedPage), new EDalerBalanceNavigationArgs(Balance));
 			}
 			else
-				await ServiceRef.NeuroWalletOrchestratorService.OpenWallet();
+				await ServiceRef.NeuroWalletOrchestratorService.OpenEDalerWallet();
 		}
 	}
 }

@@ -92,9 +92,9 @@
 
 					<Grid ColumnDefinitions="*" RowDefinitions="auto">
 						<Grid ColumnDefinitions="*,auto" ColumnSpacing="0"
-							  IsVisible="{Binding IsRecordingAudio, Converter={converters:LogicalNot}}">
+							  IsVisible="{Binding IsRecordingAudio, Converter={StaticResource InvertedBoolConverter}}">
 							<Editor x:Name="EditorControl" HorizontalOptions="FillAndExpand" MinimumHeightRequest="40"
-									IsEnabled="{Binding IsRecordingAudio, Converter={converters:LogicalNot}}"
+									IsEnabled="{Binding IsRecordingAudio, Converter={StaticResource InvertedBoolConverter}}"
 									Text="{Binding MarkdownInput}" Keyboard="Chat" AutoSize="TextChanges"
 									Unfocused="OnEditorControlUnfocused"/>
 
@@ -119,7 +119,7 @@
 
 								<Grid WidthRequest="35" HeightRequest="35" BackgroundColor="Transparent">
 									<controls:TintedSvgCachedImage TintColor="{AppThemeBinding Light={StaticResource HeadingBackgroundLightTheme}, Dark={StaticResource HeadingBackgroundDarkTheme}}"
-										Source="{x:Static resx:Svgs.Pause}" IsVisible="{Binding IsRecordingPaused, Converter={converters:LogicalNot}}" />
+										Source="{x:Static resx:Svgs.Pause}" IsVisible="{Binding IsRecordingPaused, Converter={StaticResource InvertedBoolConverter}}" />
 									<controls:TintedSvgCachedImage TintColor="{AppThemeBinding Light={StaticResource HeadingBackgroundLightTheme}, Dark={StaticResource HeadingBackgroundDarkTheme}}"
 										Source="{x:Static resx:Svgs.Play}" IsVisible="{Binding IsRecordingPaused}" />
 								</Grid>
@@ -145,7 +145,7 @@
 		</Grid>
 
 		<Grid HorizontalOptions="End" VerticalOptions="End" Margin="0,0,0,5">
-			<fadeview:FadeView IsFrontView="{Binding Path=IsWriting, Converter={converters:LogicalNot}}">
+			<fadeview:FadeView IsFrontView="{Binding Path=IsWriting, Converter={StaticResource InvertedBoolConverter}}">
 				<fadeview:FadeView.FrontView>
 					<xct:Expander Direction="Up" AnimationLength="300" AnimationEasing="CubicInOut"
 								  IsExpanded="{Binding IsButtonExpanded}">

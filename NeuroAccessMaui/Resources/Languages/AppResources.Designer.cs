@@ -97,6 +97,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Account Event.
+        /// </summary>
+        internal static string AccountEvent {
+            get {
+                return ResourceManager.GetString("AccountEvent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Account name {0} is already taken. Choose another..
         /// </summary>
         internal static string AccountNameAlreadyTaken {

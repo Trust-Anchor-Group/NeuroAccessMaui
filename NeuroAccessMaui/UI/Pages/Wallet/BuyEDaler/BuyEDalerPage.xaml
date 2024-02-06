@@ -1,29 +1,44 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<views:ContentBasePage xmlns="http://xamarin.com/schemas/2014/forms"
-                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                       xmlns:resx="clr-namespace:IdApp.Resx;assembly=IdApp"
-                       xmlns:views="clr-namespace:IdApp.Pages;assembly=IdApp"
-                       xmlns:model="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler;assembly=IdApp"
-                       x:DataType="model:BuyEDalerViewModel"
-                       x:Class="NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler.BuyEDalerPage"
-                       Style="{StaticResource BaseBackgroundPage}"
-                       Title="{x:Static resx:AppResources.BuyEDaler}">
-    <Grid>
-        <ScrollView x:Name="ScrollView">
-            <StackLayout Margin="{StaticResource DefaultMargin}"
-                         BackgroundColor="{AppThemeBinding Light={StaticResource PageBackgroundColorLightTheme}, Dark={StaticResource PageBackgroundColorDarkTheme}}">
-                <Label Text="{x:Static resx:AppResources.BuyEDaler}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
-                <Label Text="{x:Static resx:AppResources.BuyEDalerDescription}" Style="{StaticResource InfoText}" VerticalOptions="Start"/>
-                <Label Text="{x:Static resx:AppResources.Amount}"/>
-				<Grid ColumnDefinitions="*,auto" RowDefinitions="auto" Padding="0" Margin="0" ColumnSpacing="0" RowSpacing="0">
-					<Entry Grid.Column="0" Grid.Row="0" Text="{Binding Path=AmountText}" BackgroundColor="{Binding Path=AmountColor}" Placeholder="{Binding Path=Currency}"/>
-					<Button Grid.Column="1" Grid.Row="0" CornerRadius="8" WidthRequest="40" HeightRequest="40"
-							Text="{x:Static resx:FontAwesome.Calculator}" TextColor="{StaticResource TextColorLightTheme}"
-							FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
-							Command="{Binding OpenCalculatorCommand}" CommandParameter="AmountText" />
-				</Grid>
-                <Button Text="{x:Static resx:AppResources.Buy}" Command="{Binding Path=BuyCommand}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
-            </StackLayout>
-        </ScrollView>
-    </Grid>
-</views:ContentBasePage>
+<base:BaseContentPage x:Name="ThisPage"
+							 x:Class="NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler.BuyEDalerPage"
+							 x:DataType="viewmodel:BuyEDalerViewModel"
+							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler">
+	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+
+		<controls:Background/>
+
+		<ScrollView>
+			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
+											 Style="{StaticResource ImageOnlyButtonStyle}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+
+				<Label Text="{l:Localize BuyEDaler}" Style="{StaticResource PageTitleLabelStyle}"/>
+
+				<Frame Style="{StaticResource FrameSet}">
+					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+						<Label Text="{l:Localize BuyEDalerDescription}" VerticalOptions="Start"/>
+						<Label Text="{l:Localize Amount}"/>
+						<Grid ColumnDefinitions="*,auto" RowDefinitions="auto" Padding="0" Margin="0" ColumnSpacing="0" RowSpacing="0">
+							<Entry Grid.Column="0" Grid.Row="0" Text="{Binding Path=AmountText}"
+									 BackgroundColor="{Binding Path=AmountOk, Converter={converters:ControlBgColor}}"
+									 Placeholder="{Binding Path=Currency}"/>
+
+							<controls:TextButton Grid.Column="1" Grid.Row="0" WidthRequest="40" HeightRequest="40" LabelData="🖩"
+														Style="{StaticResource FilledTextButtonStyleNoRoundedCorners}"
+														Command="{Binding OpenCalculatorCommand}" CommandParameter="AmountText" />
+						</Grid>
+						<controls:TextButton LabelData="{l:Localize Buy}" Command="{Binding Path=BuyCommand}"
+													Margin="{StaticResource DefaultBottomOnlyMargin}"/>
+					</VerticalStackLayout>
+				</Frame>
+			</VerticalStackLayout>
+		</ScrollView>
+	</Grid>
+</base:BaseContentPage>

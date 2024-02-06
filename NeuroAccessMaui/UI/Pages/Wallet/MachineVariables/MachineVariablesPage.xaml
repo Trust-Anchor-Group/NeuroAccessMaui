@@ -1,37 +1,53 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<views:ContentBasePage xmlns="http://xamarin.com/schemas/2014/forms"
-                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                       xmlns:resx="clr-namespace:IdApp.Resx;assembly=IdApp"
-                       xmlns:views="clr-namespace:IdApp.Pages;assembly=IdApp"
-                       xmlns:model="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MachineVariables;assembly=IdApp"
-                       x:DataType="model:MachineVariablesViewModel"
-                       x:Class="NeuroAccessMaui.UI.Pages.Wallet.MachineVariables.MachineVariablesPage"
-					   Style="{StaticResource BaseBackgroundPage}"
-                       Title="{x:Static resx:AppResources.Variables}">
-	<ScrollView>
-		<Grid ColumnDefinitions="*" RowDefinitions="auto,auto,auto,*" Margin="{StaticResource DefaultMargin}">
-			<Label Grid.Column="0" Grid.Row="0" Text="{x:Static resx:AppResources.CurrentState}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
-			<Label Grid.Column="0" Grid.Row="1" Text="{Binding CurrentState}" Margin="10" VerticalOptions="Start"
-				   HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Style="{StaticResource ValueLabel}"
-				   IsVisible="{Binding Running}"/>
-			<Label Grid.Column="0" Grid.Row="1" Text="{x:Static resx:AppResources.MachineHasEnded}" Margin="10" VerticalOptions="Start"
-				   HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Style="{StaticResource ValueLabel}"
-				   IsVisible="{Binding Ended}"/>
-			<Label Grid.Column="0" Grid.Row="2" Text="{x:Static resx:AppResources.CurrentVariables}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
-			<StackLayout Grid.Column="0" Grid.Row="3" Orientation="Vertical" BindableLayout.ItemsSource="{Binding Path=Variables}">
-				<BindableLayout.ItemTemplate>
-					<DataTemplate x:DataType="model:VariableModel">
-						<StackLayout Orientation="Vertical">
-							<Label Text="{Binding Path=Name}" Style="{StaticResource KeyLabel}"/>
-							<Label LineBreakMode="NoWrap" Text="{Binding Path=AsScript}" Style="{StaticResource ValueLabel}">
-								<Label.GestureRecognizers>
-									<TapGestureRecognizer Command="{Binding CopyToClipboardCommand}"/>
-								</Label.GestureRecognizers>
-							</Label>
+<base:BaseContentPage x:Name="ThisPage"
+							 x:Class="NeuroAccessMaui.UI.Pages.Wallet.MachineVariables.MachineVariablesPage"
+							 x:DataType="viewmodel:MachineVariablesViewModel"
+							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MachineVariables">
+	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+
+		<controls:Background/>
+
+		<ScrollView>
+			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
+											 Style="{StaticResource ImageOnlyButtonStyle}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+
+				<Label Text="{l:Localize Variables}" Style="{StaticResource PageTitleLabelStyle}"/>
+
+				<Frame Style="{StaticResource FrameSet}">
+					<Grid ColumnDefinitions="*" RowDefinitions="auto,auto,auto,*" Margin="{StaticResource DefaultMargin}">
+						<Label Grid.Column="0" Grid.Row="0" Text="{l:Localize CurrentState}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
+						<Label Grid.Column="0" Grid.Row="1" Text="{Binding CurrentState}" Margin="10" VerticalOptions="Start"
+								 HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Style="{StaticResource ValueLabel}"
+								 IsVisible="{Binding Running}"/>
+						<Label Grid.Column="0" Grid.Row="1" Text="{l:Localize MachineHasEnded}" Margin="10" VerticalOptions="Start"
+								 HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Style="{StaticResource ValueLabel}"
+								 IsVisible="{Binding Ended}"/>
+						<Label Grid.Column="0" Grid.Row="2" Text="{l:Localize CurrentVariables}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
+						<StackLayout Grid.Column="0" Grid.Row="3" Orientation="Vertical" BindableLayout.ItemsSource="{Binding Path=Variables}">
+							<BindableLayout.ItemTemplate>
+								<DataTemplate x:DataType="viewmodel:VariableModel">
+									<StackLayout Orientation="Vertical">
+										<Label Text="{Binding Path=Name}" Style="{StaticResource KeyLabel}"/>
+										<Label LineBreakMode="NoWrap" Text="{Binding Path=AsScript}" Style="{StaticResource ValueLabel}">
+											<Label.GestureRecognizers>
+												<TapGestureRecognizer Command="{Binding CopyToClipboardCommand}"/>
+											</Label.GestureRecognizers>
+										</Label>
+									</StackLayout>
+								</DataTemplate>
+							</BindableLayout.ItemTemplate>
 						</StackLayout>
-					</DataTemplate>
-				</BindableLayout.ItemTemplate>
-			</StackLayout>
-		</Grid>
-	</ScrollView>
-</views:ContentBasePage>
+					</Grid>
+				</Frame>
+			</VerticalStackLayout>
+		</ScrollView>
+	</Grid>
+</base:BaseContentPage>

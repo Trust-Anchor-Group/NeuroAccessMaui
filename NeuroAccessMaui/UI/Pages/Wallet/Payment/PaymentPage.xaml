@@ -1,57 +1,68 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<views:ContentBasePage xmlns="http://xamarin.com/schemas/2014/forms"
-                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                       xmlns:resx="clr-namespace:IdApp.Resx;assembly=IdApp"
-                       xmlns:views="clr-namespace:IdApp.Pages;assembly=IdApp"
-                       xmlns:model="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet;assembly=IdApp"
-					   xmlns:converters="clr-namespace:IdApp.Converters;assembly=IdApp"
-                       x:DataType="model:EDalerUriViewModel"
-                       x:Class="NeuroAccessMaui.UI.Pages.Wallet.Payment.PaymentPage"
-                       Style="{StaticResource BaseBackgroundPage}"
-                       Title="{x:Static resx:AppResources.MakePayment}">
-    <Grid>
-        <ScrollView x:Name="ScrollView">
-            <StackLayout Margin="{StaticResource DefaultMargin}">
-                <Label Text="{x:Static resx:AppResources.Payment}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
-                <Label Text="{x:Static resx:AppResources.PaymentDescription}" Style="{StaticResource InfoText}" VerticalOptions="Start"/>
-                <!-- Note -->
-                <Label Text="{x:Static resx:AppResources.To}" IsVisible="{Binding ToPreset}"/>
-				<Entry Text="{Binding Path=To}" IsReadOnly="True" IsVisible="{Binding ToPreset}"/>
-                <Label Text="{x:Static resx:AppResources.Amount}"/>
-				<Grid ColumnDefinitions="*,auto" RowDefinitions="auto" Padding="0" Margin="0" ColumnSpacing="0" RowSpacing="0">
-					<Entry Grid.Column="0" Grid.Row="0" Text="{Binding Path=AmountText}" BackgroundColor="{Binding Path=AmountColor}" 
+<base:BaseContentPage x:Name="ThisPage"
+							 x:Class="NeuroAccessMaui.UI.Pages.Wallet.Payment.PaymentPage"
+							 x:DataType="viewmodel:EDalerUriViewModel"
+							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet">
+	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+
+		<controls:Background/>
+
+		<ScrollView>
+			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
+											 Style="{StaticResource ImageOnlyButtonStyle}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+
+				<Label Text="{l:Localize MakePayment}" Style="{StaticResource PageTitleLabelStyle}"/>
+
+				<Frame Style="{StaticResource FrameSet}">
+					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+						<Label Text="{l:Localize Payment}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
+						<Label Text="{l:Localize PaymentDescription}" Style="{StaticResource InfoText}" VerticalOptions="Start"/>
+						<!-- Note -->
+						<Label Text="{l:Localize To}" IsVisible="{Binding ToPreset}"/>
+						<Entry Text="{Binding Path=To}" IsReadOnly="True" IsVisible="{Binding ToPreset}"/>
+						<Label Text="{l:Localize Amount}"/>
+						<Grid ColumnDefinitions="*,auto" RowDefinitions="auto" Padding="0" Margin="0" ColumnSpacing="0" RowSpacing="0">
+							<Entry Grid.Column="0" Grid.Row="0" Text="{Binding Path=AmountText}" BackgroundColor="{Binding Path=AmountColor}" 
                        Placeholder="{Binding Path=Currency}" IsReadOnly="{Binding Path=AmountPreset}"/>
-					<Button Grid.Column="1" Grid.Row="0" CornerRadius="8" WidthRequest="40" HeightRequest="40" IsEnabled="{Binding Path=AmountPreset, Converter={converters:LogicalNot}}"
-							Text="{x:Static resx:FontAwesome.Calculator}" TextColor="{StaticResource TextColorLightTheme}"
-							FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
+							<Button Grid.Column="1" Grid.Row="0" CornerRadius="8" WidthRequest="40" HeightRequest="40" IsEnabled="{Binding Path=AmountPreset, Converter={StaticResource InvertedBoolConverter}}"
+							Text="🖩" TextColor="{StaticResource TextColorLightTheme}" FontSize="Medium"
 							Command="{Binding OpenCalculatorCommand}" CommandParameter="AmountText" />
-				</Grid>
-                <Label Text="{x:Static resx:AppResources.AmountExtra}" IsVisible="{Binding Path=AmountPreset}"/>
-				<Grid ColumnDefinitions="*,auto" RowDefinitions="auto" Padding="0" Margin="0" ColumnSpacing="0" RowSpacing="0" IsVisible="{Binding Path=AmountPreset}">
-					<Entry Grid.Column="0" Grid.Row="0" Text="{Binding Path=AmountExtraText}" BackgroundColor="{Binding Path=AmountExtraColor}" 
+						</Grid>
+						<Label Text="{l:Localize AmountExtra}" IsVisible="{Binding Path=AmountPreset}"/>
+						<Grid ColumnDefinitions="*,auto" RowDefinitions="auto" Padding="0" Margin="0" ColumnSpacing="0" RowSpacing="0" IsVisible="{Binding Path=AmountPreset}">
+							<Entry Grid.Column="0" Grid.Row="0" Text="{Binding Path=AmountExtraText}" BackgroundColor="{Binding Path=AmountExtraColor}" 
                        Placeholder="{Binding Path=Currency}" IsVisible="{Binding Path=AmountPreset}"/>
-					<Button Grid.Column="1" Grid.Row="0" CornerRadius="8" WidthRequest="40" HeightRequest="40" IsEnabled="{Binding Path=AmountPreset}"
-							Text="{x:Static resx:FontAwesome.Calculator}" TextColor="{StaticResource TextColorLightTheme}"
-							FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
+							<Button Grid.Column="1" Grid.Row="0" CornerRadius="8" WidthRequest="40" HeightRequest="40" IsEnabled="{Binding Path=AmountPreset}"
+							Text="🖩" TextColor="{StaticResource TextColorLightTheme}" FontSize="Medium"
 							Command="{Binding OpenCalculatorCommand}" CommandParameter="AmountExtraText" />
-				</Grid>
-				<Label Text="{x:Static resx:AppResources.Message}"/>
-                <Entry Text="{Binding Path=Message}" IsReadOnly="{Binding Path=MessagePreset}"/>
-				<StackLayout Orientation="Horizontal" Margin="{StaticResource DefaultTopAndBottomOnlyMargin}" IsVisible="{Binding ToPreset}">
-                    <CheckBox IsChecked="{Binding Path=EncryptMessage, Mode=TwoWay}" VerticalOptions="Center" IsEnabled="{Binding CanEncryptMessage}"/>
-                    <Label Text="{x:Static resx:AppResources.EncryptMessage}" VerticalOptions="Center" />
-                </StackLayout>
-                <!-- BUTTONS -->
-                <Button Text="{x:Static resx:AppResources.PayOnline}" Command="{Binding Path=PayOnlineCommand}" 
+						</Grid>
+						<Label Text="{l:Localize Message}"/>
+						<Entry Text="{Binding Path=Message}" IsReadOnly="{Binding Path=MessagePreset}"/>
+						<StackLayout Orientation="Horizontal" Margin="{StaticResource DefaultTopAndBottomOnlyMargin}" IsVisible="{Binding ToPreset}">
+							<CheckBox IsChecked="{Binding Path=EncryptMessage, Mode=TwoWay}" VerticalOptions="Center" IsEnabled="{Binding CanEncryptMessage}"/>
+							<Label Text="{l:Localize EncryptMessage}" VerticalOptions="Center" />
+						</StackLayout>
+						<!-- BUTTONS -->
+						<Button Text="{l:Localize PayOnline}" Command="{Binding Path=PayOnlineCommand}" 
                         IsEnabled="{Binding Path=NotPaid}" Margin="{StaticResource DefaultBottomOnlyMargin}" IsVisible="{Binding ToPreset}"/>
-                <Button Text="{x:Static resx:AppResources.PayOffline}" Command="{Binding Path=GenerateQrCodeCommand}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
-                <Image x:Name="QrCode" BackgroundColor="{StaticResource HeadingForeground}" Source="{Binding Path=QrCode}" 
+						<Button Text="{l:Localize PayOffline}" Command="{Binding Path=GenerateQrCodeCommand}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
+						<Image x:Name="QrCode" BackgroundColor="{StaticResource HeadingForeground}" Source="{Binding Path=QrCode}" 
                        IsVisible="{Binding Path=HasQrCode}" WidthRequest="{Binding Path=QrCodeWidth}" 
                        HeightRequest="{Binding Path=QrCodeHeight}" HorizontalOptions="Center" VerticalOptions="Start" 
                        Margin="0" />
-                <Button x:Name="ShareButton" Text="{x:Static resx:AppResources.Share}" Command="{Binding Path=ShareCommand}" 
+						<Button x:Name="ShareButton" Text="{l:Localize Share}" Command="{Binding Path=ShareCommand}" 
                         IsVisible="{Binding Path=HasQrCode}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
-            </StackLayout>
-        </ScrollView>
-    </Grid>
-</views:ContentBasePage>
+					</VerticalStackLayout>
+				</Frame>
+			</VerticalStackLayout>
+		</ScrollView>
+	</Grid>
+</base:BaseContentPage>

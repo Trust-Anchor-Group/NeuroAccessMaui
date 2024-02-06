@@ -254,6 +254,12 @@
 	  <Compile Update="UI\Pages\Registration\Views\RequestPurposeView.xaml.cs">
 	    <DependentUpon>RequestPurposeView.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="UI\Pages\Wallet\MyWallet\MyEDalerWalletPage.xaml.cs">
+	    <DependentUpon>MyEDalerWalletPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="UI\Pages\Wallet\MyWallet\MyTokenWalletPage.xaml.cs">
+	    <DependentUpon>MyTokenWalletPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="UI\Popups\Pin\BasePopup.xaml.cs">
 	    <DependentUpon>%(Filename)</DependentUpon>
 	  </Compile>
@@ -401,7 +407,10 @@
 	  <MauiXaml Update="UI\Pages\Wallet\MyTokens\MyTokensPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Wallet\MyWallet\MyWalletPage.xaml">
+	  <MauiXaml Update="UI\Pages\Wallet\MyWallet\MyEDalerWalletPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Wallet\MyWallet\MyTokenWalletPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="UI\Pages\Wallet\PaymentAcceptance\PaymentAcceptancePage.xaml">

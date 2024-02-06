@@ -1821,4 +1821,7 @@
   <data name="Yesterday" xml:space="preserve">
     <value>Yesterday</value>
   </data>
+  <data name="AccountEvent" xml:space="preserve">
+    <value>Account Event</value>
+  </data>
 </root>

@@ -19,7 +19,7 @@
 				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
 											 Style="{StaticResource ImageOnlyButtonStyle}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-				<Label Text="{controls:Localize AccountEvent}" Style="{StaticResource PageTitleLabelStyle}"/>
+				<Label Text="{l:Localize AccountEvent}" Style="{StaticResource PageTitleLabelStyle}"/>
 
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">

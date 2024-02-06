@@ -94,7 +94,7 @@ namespace NeuroAccessMaui.Services.Wallet
 		/// <summary>
 		/// Opens the wallet
 		/// </summary>
-		public async Task OpenWallet()
+		public async Task OpenEDalerWallet()
 		{
 			try
 			{
@@ -104,7 +104,7 @@ namespace NeuroAccessMaui.Services.Wallet
 
 				WalletNavigationArgs e = new(Balance, PendingAmount, PendingCurrency, PendingPayments, Events, More);
 
-				await ServiceRef.NavigationService.GoToAsync(nameof(MyWalletPage), e);
+				await ServiceRef.NavigationService.GoToAsync(nameof(MyEDalerWalletPage), e);
 			}
 			catch (Exception ex)
 			{
