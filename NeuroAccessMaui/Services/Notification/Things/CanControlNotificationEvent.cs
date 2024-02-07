@@ -1,4 +1,6 @@
 ﻿using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services.Contacts;
+using NeuroAccessMaui.UI.Pages.Things.CanControl;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.DataForms;
 using Waher.Networking.XMPP.Provisioning;

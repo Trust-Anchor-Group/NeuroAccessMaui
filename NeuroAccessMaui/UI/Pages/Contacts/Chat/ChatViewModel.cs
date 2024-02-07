@@ -16,6 +16,7 @@ using NeuroAccessMaui.UI.Pages.Things.MyThings;
 using NeuroAccessMaui.UI.Pages.Wallet;
 using NeuroAccessMaui.UI.Pages.Wallet.MyTokens;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels;
+using NeuroAccessMaui.UI.Pages.Wallet.SendPayment;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenDetails;
 using NeuroFeatures;
 using SkiaSharp;

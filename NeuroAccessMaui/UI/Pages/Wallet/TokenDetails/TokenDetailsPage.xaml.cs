@@ -36,13 +36,13 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 				Height = GridLength.Auto
 			});
 
-			this.PartsGrid.Children.Add(new Label()
+			this.PartsGrid.Add(new Label()
 			{
 				Text = Label,
 				Style = App.Current?.Resources["KeyLabel"] as Style
 			}, 0, Row);
 
-			this.PartsGrid.Children.Add(Lbl = new Label()
+			this.PartsGrid.Add(Lbl = new Label()
 			{
 				Text = FriendlyName,
 				Style = App.Current?.Resources["ClickableValueLabel"] as Style
@@ -74,13 +74,13 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 				Height = GridLength.Auto
 			});
 
-			this.PartsGrid.Children.Add(new Label()
+			this.PartsGrid.Add(new Label()
 			{
 				Text = Label,
 				Style = App.Current?.Resources["KeyLabel"] as Style
 			}, 0, Row);
 
-			this.PartsGrid.Children.Add(Lbl = new Label()
+			this.PartsGrid.Add(Lbl = new Label()
 			{
 				Text = Jid,
 				Style = App.Current?.Resources["ClickableValueLabel"] as Style
@@ -110,13 +110,13 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 				Height = GridLength.Auto
 			});
 
-			this.GeneralInfoGrid.Children.Add(new Label()
+			this.GeneralInfoGrid.Add(new Label()
 			{
 				Text = Label,
 				Style = App.Current?.Resources["KeyLabel"] as Style
 			}, 0, Row);
 
-			this.GeneralInfoGrid.Children.Add(Lbl = new Label()
+			this.GeneralInfoGrid.Add(Lbl = new Label()
 			{
 				Text = LinkUri,
 				Style = App.Current?.Resources["ClickableValueLabel"] as Style
@@ -146,13 +146,13 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 				Height = GridLength.Auto
 			});
 
-			this.GeneralInfoGrid.Children.Add(new Label()
+			this.GeneralInfoGrid.Add(new Label()
 			{
 				Text = Label,
 				Style = App.Current?.Resources["KeyLabel"] as Style
 			}, 0, Row);
 
-			this.GeneralInfoGrid.Children.Add(Lbl = new Label()
+			this.GeneralInfoGrid.Add(Lbl = new Label()
 			{
 				Text = Value,
 				Style = App.Current?.Resources["ValueLabel"] as Style

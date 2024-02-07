@@ -2,6 +2,7 @@
 using System.Text;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Notification;
 using Waher.Content.Markdown;
 using Waher.Networking.XMPP.Contracts;

@@ -1,4 +1,5 @@
-﻿using Waher.Runtime.Inventory;
+﻿using NeuroAccessMaui.UI.Pages.Contacts.Chat;
+using Waher.Runtime.Inventory;
 
 namespace NeuroAccessMaui.Links
 {

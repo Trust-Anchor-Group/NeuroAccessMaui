@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.UI.Photos;
 using System.Collections.ObjectModel;
 using Waher.Networking.XMPP;
