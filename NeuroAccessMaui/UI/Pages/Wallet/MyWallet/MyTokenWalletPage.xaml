@@ -57,8 +57,7 @@
 					   HorizontalTextAlignment="Start" VerticalTextAlignment="Center" Padding="5,2,5,2"
 					   Text="{Binding Path=Description}" Style="{StaticResource ClickableValueLabel}"/>
 				<Label Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" LineBreakMode="NoWrap" Padding="5,2,5,0"
-					   Text="{Binding Path=Icon}" FontFamily="{StaticResource FontAwesomeSolid}"
-					   HorizontalOptions="Center" VerticalOptions="Center"/>
+					   Text="{Binding Path=Icon}" HorizontalOptions="Center" VerticalOptions="Center"/>
 				<Label Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" LineBreakMode="NoWrap" Padding="5,2,5,0"
 					   Text="•" FontSize="50" HorizontalOptions="End" VerticalOptions="Center"
 					   Style="{StaticResource AlertLabel}"/>
@@ -126,23 +125,6 @@
 						</CollectionView.ItemsLayout>
 					</controls:LoadingCollectionView>
 				</StackLayout>
-
-					<!--
-				<mainTabBar:MainTabBarView x:Name="WalletBackTabBar" Grid.Row="2"
-
-                                           LeftButton1Text="{x:Static resx:FontAwesome.ArrowLeft}"
-                                           LeftButton1Command="{Binding Path=GoBackCommand}"
-
-                                           LeftButton2Text="{x:Static resx:FontAwesome.Rotate}"
-                                           LeftButton2Command="{Binding Path=FlipCommand}"
-										   LeftButton2Overlay="{Binding Path=NrBalanceNotifications}"
-
-                                           CenterButtonText="{x:Static resx:FontAwesome.ScanQr}"
-                                           CenterButtonCommand="{Binding Path=ScanQrCodeCommand}"
-
-                                           RightButton1Text="{x:Static resx:FontAwesome.StarOfLife}"
-                                           RightButton1Command="{Binding Path=CreateTokenCommand}"/>
-					-->
 			</Grid>
 		</ScrollView>
 	</Grid>

@@ -278,6 +278,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanControl
 		/// <summary>
 		/// The command to bind to for processing a user click on a label
 		/// </summary>
+		[RelayCommand]
 		private static Task Click(object obj)
 		{
 			if (obj is HumanReadableTag Tag)

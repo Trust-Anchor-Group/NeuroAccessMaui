@@ -135,7 +135,7 @@
                                                ItemTemplate="{StaticResource AccountItemStyleSelector}"
                                                LoadMoreCommand="{Binding LoadMoreAccountEventsCommand}">
 						<CollectionView.GroupHeaderTemplate>
-							<DataTemplate x:DataType="views:IUniqueItem">
+							<DataTemplate x:DataType="base:IUniqueItem">
 								<Frame BackgroundColor="{StaticResource LightGrayColor}" CornerRadius="8" Padding="5" Margin="0" HasShadow="False">
 									<Label Text="{Binding LocalisedName}" Style="{StaticResource KeyLabel}"
 									   HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"
@@ -148,26 +148,6 @@
 						</CollectionView.ItemsLayout>
 					</controls:LoadingCollectionView>
 				</StackLayout>
-
-					<!--
-				<mainTabBar:MainTabBarView x:Name="WalletFrontTabBar" Grid.Row="2"
-
-                                           LeftButton1Text="{x:Static resx:FontAwesome.ArrowLeft}"
-                                           LeftButton1Command="{Binding Path=GoBackCommand}"
-
-										   LeftButton2Text="{x:Static resx:FontAwesome.Rotate}"
-                                           LeftButton2Command="{Binding Path=FlipCommand}"
-										   LeftButton2Overlay="{Binding Path=NrTokenNotifications}"
-
-                                           CenterButtonText="{x:Static resx:FontAwesome.ScanQr}"
-                                           CenterButtonCommand="{Binding Path=ScanQrCodeCommand}"
-
-                                           RightButton1Text="{x:Static resx:FontAwesome.HandHolding}"
-                                           RightButton1Command="{Binding Path=RequestPaymentCommand}"
-
-										   RightButton2Text="{x:Static resx:FontAwesome.MoneyBill}"
-                                           RightButton2Command="{Binding Path=MakePaymentCommand}"/>
-					-->
 			</Grid>
 		</ScrollView>
 	</Grid>

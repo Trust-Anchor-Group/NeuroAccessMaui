@@ -1,7 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.UI.Photos;
 using System.Collections.ObjectModel;
 using Waher.Networking.XMPP.Contracts;
@@ -125,6 +127,9 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 			await ServiceRef.NavigationService.GoBackAsync();
 		}
 
+		// Full name of requesting entity.
+		public string FullName => ContactInfo.GetFullName(this.FirstName, this.MiddleNames, this.LastNames);
+
 		#region Properties
 
 		/// <summary>
@@ -140,10 +145,22 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 		private DateTime? updated;
 
 		/// <summary>
+		/// When the identity expires
+		/// </summary>
+		[ObservableProperty]
+		private DateTime? expires;
+
+		/// <summary>
 		/// Legal id of the contract
 		/// </summary>
 		[ObservableProperty]
 		private string? legalId;
+
+		/// <summary>
+		/// Network ID
+		/// </summary>
+		[ObservableProperty]
+		private string? networkId;
 
 		/// <summary>
 		/// Current state of the contract
@@ -167,18 +184,21 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 		/// First name of the contract
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(FullName))]
 		private string? firstName;
 
 		/// <summary>
 		/// Middle name(s) of the contract
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(FullName))]
 		private string? middleNames;
 
 		/// <summary>
 		/// Last name(s) of the contract
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(FullName))]
 		private string? lastNames;
 
 		/// <summary>
@@ -228,6 +248,24 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 		/// </summary>
 		[ObservableProperty]
 		private string? countryCode;
+
+		/// <summary>
+		/// Nationality (ISO code)
+		/// </summary>
+		[ObservableProperty]
+		private string? nationalityCode;
+
+		/// <summary>
+		/// Gender
+		/// </summary>
+		[ObservableProperty]
+		private string? gender;
+
+		/// <summary>
+		/// Birth Date
+		/// </summary>
+		[ObservableProperty]
+		private DateTime? birthDate;
 
 		/// <summary>
 		/// The legal identity's organization name property
@@ -302,6 +340,12 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 		private bool hasOrg;
 
 		/// <summary>
+		/// If photos are available.
+		/// </summary>
+		[ObservableProperty]
+		private bool hasPhotos;
+
+		/// <summary>
 		/// PhoneNr of the contract
 		/// </summary>
 		[ObservableProperty]
@@ -312,6 +356,12 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 		/// </summary>
 		[ObservableProperty]
 		private string? eMail;
+
+		/// <summary>
+		/// Device-ID of the identity
+		/// </summary>
+		[ObservableProperty]
+		private string? deviceId;
 
 		/// <summary>
 		/// Is the contract approved?
@@ -345,7 +395,9 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 			{
 				this.Created = this.RequestorIdentity.Created;
 				this.Updated = this.RequestorIdentity.Updated.GetDateOrNullIfMinValue();
+				this.Expires = this.RequestorIdentity.To.GetDateOrNullIfMinValue();
 				this.LegalId = this.RequestorIdentity.Id;
+				this.NetworkId = this.RequestorIdentity.GetJid();
 				this.State = this.RequestorIdentity.State;
 				this.From = this.RequestorIdentity.From.GetDateOrNullIfMinValue();
 				this.To = this.RequestorIdentity.To.GetDateOrNullIfMinValue();
@@ -360,6 +412,28 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 				this.City = this.RequestorIdentity[Constants.XmppProperties.City];
 				this.Region = this.RequestorIdentity[Constants.XmppProperties.Region];
 				this.CountryCode = this.RequestorIdentity[Constants.XmppProperties.Country];
+				this.NationalityCode = this.RequestorIdentity[Constants.XmppProperties.Nationality];
+				this.Gender = this.RequestorIdentity[Constants.XmppProperties.Gender];
+
+				string BirthDayStr = this.RequestorIdentity[Constants.XmppProperties.BirthDay];
+				string BirthMonthStr = this.RequestorIdentity[Constants.XmppProperties.BirthMonth];
+				string BirthYearStr = this.RequestorIdentity[Constants.XmppProperties.BirthYear];
+
+				if (!string.IsNullOrEmpty(BirthDayStr) && int.TryParse(BirthDayStr, out int BirthDay) &&
+					!string.IsNullOrEmpty(BirthMonthStr) && int.TryParse(BirthMonthStr, out int BirthMonth) &&
+					!string.IsNullOrEmpty(BirthYearStr) && int.TryParse(BirthYearStr, out int BirthYear))
+				{
+					try
+					{
+						this.BirthDate = new DateTime(BirthYear, BirthMonth, BirthDay);
+					}
+					catch (Exception ex)
+					{
+						ServiceRef.LogService.LogException(ex);
+						this.BirthDate = null;
+					}
+				}
+
 				this.OrgName = this.RequestorIdentity[Constants.XmppProperties.OrgName];
 				this.OrgNumber = this.RequestorIdentity[Constants.XmppProperties.OrgNumber];
 				this.OrgDepartment = this.RequestorIdentity[Constants.XmppProperties.OrgDepartment];
@@ -383,8 +457,10 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 					!string.IsNullOrEmpty(this.OrgCity) ||
 					!string.IsNullOrEmpty(this.OrgRegion) ||
 					!string.IsNullOrEmpty(this.OrgCountryCode);
+				this.HasPhotos = this.Photos.Count > 0;
 				this.PhoneNr = this.RequestorIdentity[Constants.XmppProperties.Phone];
 				this.EMail = this.RequestorIdentity[Constants.XmppProperties.EMail];
+				this.DeviceId = this.RequestorIdentity[Constants.XmppProperties.DeviceId];
 				this.IsApproved = this.RequestorIdentity.State == IdentityState.Approved;
 			}
 			else
@@ -406,6 +482,9 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 				this.City = Constants.NotAvailableValue;
 				this.Region = Constants.NotAvailableValue;
 				this.CountryCode = Constants.NotAvailableValue;
+				this.NationalityCode = string.Empty;
+				this.Gender = string.Empty;
+				this.BirthDate = null;
 				this.OrgName = Constants.NotAvailableValue;
 				this.OrgNumber = Constants.NotAvailableValue;
 				this.OrgDepartment = Constants.NotAvailableValue;
@@ -418,9 +497,44 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 				this.OrgRegion = Constants.NotAvailableValue;
 				this.OrgCountryCode = Constants.NotAvailableValue;
 				this.HasOrg = false;
+				this.HasPhotos = false;
 				this.PhoneNr = Constants.NotAvailableValue;
 				this.EMail = Constants.NotAvailableValue;
+				this.DeviceId = Constants.NotAvailableValue;
 				this.IsApproved = false;
+			}
+		}
+
+		/// <summary>
+		/// Copies Item to clipboard
+		/// </summary>
+		[RelayCommand]
+		private async Task Copy(object Item)
+		{
+			try
+			{
+				if (Item is string Label)
+				{
+					if (Label == this.LegalId)
+					{
+						await Clipboard.SetTextAsync(Constants.UriSchemes.IotId + ":" + this.LegalId);
+						await ServiceRef.UiSerializer.DisplayAlert(
+							ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+							ServiceRef.Localizer[nameof(AppResources.IdCopiedSuccessfully)]);
+					}
+					else
+					{
+						await Clipboard.SetTextAsync(Label);
+						await ServiceRef.UiSerializer.DisplayAlert(
+							ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+							ServiceRef.Localizer[nameof(AppResources.TagValueCopiedToClipboard)]);
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
 	}

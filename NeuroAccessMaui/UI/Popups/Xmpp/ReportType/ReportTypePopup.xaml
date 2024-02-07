@@ -25,9 +25,6 @@
 
 					<Label Text="{l:Localize TypeOfReport}" Style="{StaticResource SectionTitleLabelStyle}" />
 
-					<Image HorizontalOptions="Center" Source="{Binding PhotoUrl}" WidthRequest="{Binding PhotoWidth}"
-                       HeightRequest="{Binding PhotoHeight}" IsVisible="{Binding HasPhoto}"/>
-
 					<Label>
 						<Label.FormattedText>
 							<FormattedString>

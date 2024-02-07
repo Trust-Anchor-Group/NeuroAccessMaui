@@ -194,6 +194,7 @@
 		<PackageReference Include="Waher.Security" Version="1.0.8" />
 		<PackageReference Include="Waher.Security.JWS" Version="1.0.8" />
 		<PackageReference Include="Waher.Security.JWT" Version="1.3.9" />
+		<PackageReference Include="Xamarin.Firebase.iOS.Core" Version="8.10.0.3" />
 		<PackageReference Include="ZXing.Net.Maui.Controls" Version="0.4.0" />
 	</ItemGroup>
 

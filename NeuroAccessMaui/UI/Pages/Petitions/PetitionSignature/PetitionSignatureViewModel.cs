@@ -169,18 +169,21 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature
 		/// First name of the identity
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(FullName))]
 		private string? firstName;
 
 		/// <summary>
 		/// Middle name(s) of the identity
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(FullName))]
 		private string? middleNames;
 
 		/// <summary>
 		/// Last name(s) of the identity
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(FullName))]
 		private string? lastNames;
 
 		/// <summary>

@@ -6,6 +6,7 @@
 							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
@@ -37,7 +38,7 @@
 						<Entry Text="{Binding Path=ReservedAndCurrency}" IsReadOnly="True" IsVisible="{Binding Reserved, Converter={converters:GreaterThanZero}}"/>
 						<Label Text="{l:Localize Message}" IsVisible="{Binding Path=HasMessage}"/>
 						<Entry Text="{Binding Path=Message}" IsReadOnly="True" IsVisible="{Binding Path=HasMessage}"/>
-						<Button Text="{Static resx:AppResources.OpenMessageLink}" Command="{Binding OpenMessageLinkCommand}" IsVisible="{Binding MessageIsUri}"/>
+						<Button Text="{l:Localize OpenMessageLink}" Command="{Binding OpenMessageLinkCommand}" IsVisible="{Binding MessageIsUri}"/>
 						<Label Text="{l:Localize TransactionId}"/>
 						<Entry Text="{Binding Path=Id}" IsReadOnly="True"/>
 					</VerticalStackLayout>

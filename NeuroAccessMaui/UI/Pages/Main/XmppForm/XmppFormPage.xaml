@@ -63,7 +63,7 @@
 									</OnPlatform>
 								</IndicatorView.Margin>
 							</IndicatorView>
-							<Button Grid.Column="0" Grid.Row="3" Text="{Static resx:AppResources.Submit}"
+							<Button Grid.Column="0" Grid.Row="3" Text="{l:Localize Submit}"
 					Command="{Binding SubmitCommand}" IsEnabled="{Binding IsFormOk}" Margin="{StaticResource DefaultMargin}"/>
 						</Grid>
 					</VerticalStackLayout>

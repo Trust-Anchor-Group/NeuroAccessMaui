@@ -142,6 +142,24 @@ namespace NeuroAccessMaui.UI.Pages.Signatures.ClientSignature
 		private string? countryCode;
 
 		/// <summary>
+		/// Nationality (ISO code)
+		/// </summary>
+		[ObservableProperty]
+		private string? nationalityCode;
+
+		/// <summary>
+		/// Gender
+		/// </summary>
+		[ObservableProperty]
+		private string? gender;
+
+		/// <summary>
+		/// Birth Date
+		/// </summary>
+		[ObservableProperty]
+		private DateTime? birthDate;
+
+		/// <summary>
 		/// The legal identity's organization name property
 		/// </summary>
 		[ObservableProperty]
@@ -284,6 +302,28 @@ namespace NeuroAccessMaui.UI.Pages.Signatures.ClientSignature
 				this.City = this.identity[Constants.XmppProperties.City];
 				this.Region = this.identity[Constants.XmppProperties.Region];
 				this.CountryCode = this.identity[Constants.XmppProperties.Country];
+				this.NationalityCode = this.identity[Constants.XmppProperties.Nationality];
+				this.Gender = this.identity[Constants.XmppProperties.Gender];
+
+				string BirthDayStr = this.identity[Constants.XmppProperties.BirthDay];
+				string BirthMonthStr = this.identity[Constants.XmppProperties.BirthMonth];
+				string BirthYearStr = this.identity[Constants.XmppProperties.BirthYear];
+
+				if (!string.IsNullOrEmpty(BirthDayStr) && int.TryParse(BirthDayStr, out int BirthDay) &&
+					!string.IsNullOrEmpty(BirthMonthStr) && int.TryParse(BirthMonthStr, out int BirthMonth) &&
+					!string.IsNullOrEmpty(BirthYearStr) && int.TryParse(BirthYearStr, out int BirthYear))
+				{
+					try
+					{
+						this.BirthDate = new DateTime(BirthYear, BirthMonth, BirthDay);
+					}
+					catch (Exception ex)
+					{
+						ServiceRef.LogService.LogException(ex);
+						this.BirthDate = null;
+					}
+				}
+
 				this.OrgName = this.identity[Constants.XmppProperties.OrgName];
 				this.OrgNumber = this.identity[Constants.XmppProperties.OrgNumber];
 				this.OrgDepartment = this.identity[Constants.XmppProperties.OrgDepartment];
@@ -331,6 +371,9 @@ namespace NeuroAccessMaui.UI.Pages.Signatures.ClientSignature
 				this.City = Constants.NotAvailableValue;
 				this.Region = Constants.NotAvailableValue;
 				this.CountryCode = Constants.NotAvailableValue;
+				this.NationalityCode = Constants.NotAvailableValue;
+				this.Gender = Constants.NotAvailableValue;
+				this.BirthDate = null;
 				this.OrgName = Constants.NotAvailableValue;
 				this.OrgNumber = Constants.NotAvailableValue;
 				this.OrgDepartment = Constants.NotAvailableValue;

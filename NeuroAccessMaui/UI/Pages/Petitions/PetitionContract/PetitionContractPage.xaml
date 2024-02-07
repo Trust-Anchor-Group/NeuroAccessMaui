@@ -54,13 +54,6 @@
 							</VerticalStackLayout>
 						</VerticalStackLayout>
 
-						<Image x:Name="QrCode" Source="{Binding QrCode}" IsVisible="{Binding HasQrCode}" WidthRequest="{Binding QrCodeWidth}"
-								 HeightRequest="{Binding QrCodeHeight}" HorizontalOptions="Center">
-							<Image.GestureRecognizers>
-								<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding LegalId}" />
-							</Image.GestureRecognizers>
-						</Image>
-
 						<HorizontalStackLayout HorizontalOptions="Center" Spacing="{StaticResource SmallSpacing}" Margin="0,0,0,12">
 							<Path VerticalOptions="Center" HeightRequest="20" WidthRequest="20" Aspect="Uniform"
 									Data="{x:Static ui:Geometries.CirclePath}"
@@ -139,26 +132,6 @@
 							<!--    -->
 							<Label Grid.Row="13" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize BirthDate}" />
 							<Label Grid.Row="13" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding BirthDate, Converter={converters:DateToString}}" />
-
-							<!--    -->
-							<Label Grid.Row="14" Grid.Column="0" Margin="0,6,6,0" HorizontalOptions="StartAndExpand" Text="{l:Localize Photos}"
-								 Style="{StaticResource KeyLabel}" IsVisible="{Binding HasPhotos}"/>
-							<ScrollView Grid.Row="14" Grid.Column="1" Margin="0,6,0,0" HeightRequest="68" Orientation="Horizontal"
-										IsVisible="{Binding HasPhotos}">
-								<FlexLayout x:Name="PhotosLayout" AlignContent="Center" AlignItems="Center" BindableLayout.ItemsSource="{Binding Photos}"
-											Direction="Row" JustifyContent="Start">
-									<BindableLayout.ItemTemplate>
-										<DataTemplate x:DataType="photos:Photo">
-											<Image Margin="2" Aspect="AspectFill" HeightRequest="64" Rotation="{Binding Rotation}"
-												 Source="{Binding Source}" WidthRequest="64">
-												<Image.GestureRecognizers>
-													<TapGestureRecognizer Tapped="Image_Tapped" />
-												</Image.GestureRecognizers>
-											</Image>
-										</DataTemplate>
-									</BindableLayout.ItemTemplate>
-								</FlexLayout>
-							</ScrollView>
 						</Grid>
 					</VerticalStackLayout>
 				</Frame>

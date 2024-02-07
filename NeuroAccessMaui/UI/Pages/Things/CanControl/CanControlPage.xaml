@@ -6,6 +6,7 @@
 							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
@@ -25,23 +26,23 @@
 
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
-						<Label Text="{x:Static resx:AppResources.ControlRequest}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}"
+						<Label Text="{l:Localize ControlRequest}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}"
 					   VerticalOptions="Start"/>
-						<Label Text="{x:Static resx:AppResources.ControlRequestText2}" Style="{StaticResource InfoText}" VerticalOptions="Start"
+						<Label Text="{l:Localize ControlRequestText2}" Style="{StaticResource InfoText}" VerticalOptions="Start"
 					   HorizontalOptions="Start"/>
 						<!-- Caller -->
-						<Label Text="{x:Static resx:AppResources.Caller}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}"
+						<Label Text="{l:Localize Caller}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}"
 					   VerticalOptions="Start"/>
-						<Label Text="{x:Static resx:AppResources.InformationAboutCallerText}" Style="{StaticResource InfoText}" VerticalOptions="Start"
+						<Label Text="{l:Localize InformationAboutCallerText}" Style="{StaticResource InfoText}" VerticalOptions="Start"
 					   HorizontalOptions="Start"/>
 						<Grid ColumnDefinitions="*,*" RowDefinitions="auto,auto">
-							<Label Grid.Column="0" Grid.Row="0" Text="{x:Static resx:AppResources.CallerAddress}" Style="{StaticResource KeyLabel}" LineBreakMode="WordWrap" />
+							<Label Grid.Column="0" Grid.Row="0" Text="{l:Localize CallerAddress}" Style="{StaticResource KeyLabel}" LineBreakMode="WordWrap" />
 							<Label Grid.Column="1" Grid.Row="0" LineBreakMode="WordWrap" Text="{Binding Path=RemoteJid}" Style="{StaticResource ClickableValueLabel}">
 								<Label.GestureRecognizers>
 									<TapGestureRecognizer Command="{Binding Path=ClickCommand}" CommandParameter="{Binding RemoteJid}" />
 								</Label.GestureRecognizers>
 							</Label>
-							<Label Grid.Column="0" Grid.Row="1" Text="{x:Static resx:AppResources.FriendlyName}" Style="{StaticResource KeyLabel}" LineBreakMode="WordWrap" />
+							<Label Grid.Column="0" Grid.Row="1" Text="{l:Localize FriendlyName}" Style="{StaticResource KeyLabel}" LineBreakMode="WordWrap" />
 							<Label Grid.Column="1" Grid.Row="1" LineBreakMode="WordWrap" Text="{Binding Path=RemoteFriendlyName}" Style="{StaticResource ClickableValueLabel}">
 								<Label.GestureRecognizers>
 									<TapGestureRecognizer Command="{Binding Path=ClickCommand}" CommandParameter="{Binding RemoteFriendlyName}" />
@@ -62,13 +63,13 @@
 								</DataTemplate>
 							</BindableLayout.ItemTemplate>
 						</StackLayout>
-						<Button Text="{x:Static resx:AppResources.AddContact}" Command="{Binding Path=AddContactCommand}"
+						<Button Text="{l:Localize AddContact}" Command="{Binding Path=AddContactCommand}"
 						IsVisible="{Binding CallerInContactsList, Converter={StaticResource InvertedBoolConverter}}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
-						<Button Text="{x:Static resx:AppResources.RemoveContact}" Command="{Binding Path=RemoveContactCommand}"
+						<Button Text="{l:Localize RemoveContact}" Command="{Binding Path=RemoveContactCommand}"
 						IsVisible="{Binding CallerInContactsList}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
 						<!-- Thing -->
-						<Label Text="{x:Static resx:AppResources.InformationAboutThing}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
-						<Label Text="{x:Static resx:AppResources.InformationAboutThingText}" Style="{StaticResource InfoText}" VerticalOptions="Start"
+						<Label Text="{l:Localize InformationAboutThing}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
+						<Label Text="{l:Localize InformationAboutThingText}" Style="{StaticResource InfoText}" VerticalOptions="Start"
 					   HorizontalOptions="Start"/>
 						<StackLayout x:Name="TagLayout" Orientation="Vertical" BindableLayout.ItemsSource="{Binding Path=Tags}" VerticalOptions="StartAndExpand" Margin="{StaticResource DefaultMargin}">
 							<BindableLayout.ItemTemplate>
@@ -85,8 +86,8 @@
 							</BindableLayout.ItemTemplate>
 						</StackLayout>
 						<!-- Parameter Names -->
-						<Label Text="{x:Static resx:AppResources.Parameters}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
-						<Label Text="{x:Static resx:AppResources.PermitParametersText}" LineBreakMode="WordWrap" Style="{StaticResource InfoText}"/>
+						<Label Text="{l:Localize Parameters}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
+						<Label Text="{l:Localize PermitParametersText}" LineBreakMode="WordWrap" Style="{StaticResource InfoText}"/>
 						<StackLayout x:Name="ParameterLayout" Orientation="Vertical" BindableLayout.ItemsSource="{Binding Path=Parameters}" VerticalOptions="StartAndExpand">
 							<BindableLayout.ItemTemplate>
 								<DataTemplate x:DataType="viewmodel2:FieldReference">
@@ -97,26 +98,26 @@
 								</DataTemplate>
 							</BindableLayout.ItemTemplate>
 						</StackLayout>
-						<Button Text="{x:Static resx:AppResources.All}" Command="{Binding Path=AllParametersCommand}"
+						<Button Text="{l:Localize All}" Command="{Binding Path=AllParametersCommand}"
 						Margin="{StaticResource DefaultTopAndBottomOnlyMargin}"/>
-						<Button Text="{x:Static resx:AppResources.None}" Command="{Binding Path=NoParametersCommand}"
+						<Button Text="{l:Localize None}" Command="{Binding Path=NoParametersCommand}"
 						Margin="{StaticResource DefaultBottomOnlyMargin}"/>
 						<!-- Range -->
-						<Label Text="{x:Static resx:AppResources.Range}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}"
+						<Label Text="{l:Localize Range}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}"
 					   VerticalOptions="Start"/>
-						<Label Text="{x:Static resx:AppResources.RangeText}" Style="{StaticResource InfoText}" VerticalOptions="Start"
+						<Label Text="{l:Localize RangeText}" Style="{StaticResource InfoText}" VerticalOptions="Start"
 					   HorizontalOptions="Start"/>
 						<Picker SelectedIndex="{Binding SelectedRuleRangeIndex}" ItemsSource="{Binding RuleRanges}"
 						Margin="{StaticResource DefaultBottomOnlyMargin}"
 						BackgroundColor="{AppThemeBinding Dark={StaticResource PageBackgroundColorDarkTheme}, Default={StaticResource PageBackgroundColor}}"/>
 						<!-- BUTTONS -->
-						<Label Text="{x:Static resx:AppResources.Options}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}"
+						<Label Text="{l:Localize Options}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}"
 					   VerticalOptions="Start"/>
-						<Button Text="{x:Static resx:AppResources.Accept}" Command="{Binding Path=AcceptCommand}"
+						<Button Text="{l:Localize Accept}" Command="{Binding Path=AcceptCommand}"
 						Margin="{StaticResource DefaultBottomOnlyMargin}"/>
-						<Button Text="{x:Static resx:AppResources.Reject}" Command="{Binding Path=RejectCommand}"
+						<Button Text="{l:Localize Reject}" Command="{Binding Path=RejectCommand}"
 						Margin="{StaticResource DefaultBottomOnlyMargin}"/>
-						<Button Text="{x:Static resx:AppResources.Ignore}" Command="{Binding Path=IgnoreCommand}"
+						<Button Text="{l:Localize Ignore}" Command="{Binding Path=IgnoreCommand}"
 						Margin="{StaticResource DefaultBottomOnlyMargin}"/>
 					</VerticalStackLayout>
 				</Frame>

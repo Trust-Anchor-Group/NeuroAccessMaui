@@ -27,39 +27,6 @@
 				<Label Style="{StaticResource PageTitleLabelStyle}" Text="{l:Localize IdentityInformation}"/>
 				<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize IdentityInformationInfoText}"/>
 
-				<!-- Photo and QR-code -->
-				<Frame Style="{StaticResource FrameSet}">
-					<VerticalStackLayout>
-						<VerticalStackLayout Margin="{StaticResource LargeMargins}" Spacing="{StaticResource SmallSpacing}"
-													HorizontalOptions="Center" VerticalOptions="Center"
-													IsVisible="{Binding FirstPhotoSource, Converter={converters:OnlyShowNonEmpty}}">
-							<Border Style="{StaticResource OutlinedImageButtonBorderStyle}" Padding="0">
-								<Image Source="{Binding FirstPhotoSource}" Rotation="{Binding FirstPhotoRotation}"
-										 WidthRequest="250" Aspect="AspectFit" HorizontalOptions="Center" Margin="0"/>
-							</Border>
-							<VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="0">
-								<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding FullName}" HorizontalOptions="Center" Margin="0" Padding="0" />
-								<Label Style="{StaticResource InfoLabelStyle}" Text="{Binding PersonalNumber}" HorizontalOptions="Center" Margin="0" Padding="0" />
-							</VerticalStackLayout>
-						</VerticalStackLayout>
-
-						<Image x:Name="QrCode" Source="{Binding QrCode}" IsVisible="{Binding HasQrCode}" WidthRequest="{Binding QrCodeWidth}"
-								 HeightRequest="{Binding QrCodeHeight}" HorizontalOptions="Center">
-							<Image.GestureRecognizers>
-								<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding LegalId}" />
-							</Image.GestureRecognizers>
-						</Image>
-
-						<HorizontalStackLayout HorizontalOptions="Center" Spacing="{StaticResource SmallSpacing}" Margin="0,0,0,12">
-							<Path VerticalOptions="Center" HeightRequest="20" WidthRequest="20" Aspect="Uniform"
-									Data="{x:Static ui:Geometries.CirclePath}"
-									Fill="{Binding State, Converter={converters:IdentityStateToColor}}" />
-
-							<Label Style="{StaticResource ValueLabel}" Text="{Binding State}" />
-						</HorizontalStackLayout>
-					</VerticalStackLayout>
-				</Frame>
-
 				<!-- Personal Information -->
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
@@ -128,26 +95,6 @@
 							<!--    -->
 							<Label Grid.Row="13" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize BirthDate}" />
 							<Label Grid.Row="13" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding BirthDate, Converter={converters:DateToString}}" />
-
-							<!--    -->
-							<Label Grid.Row="14" Grid.Column="0" Margin="0,6,6,0" HorizontalOptions="StartAndExpand" Text="{l:Localize Photos}"
-								 Style="{StaticResource KeyLabel}" IsVisible="{Binding HasPhotos}"/>
-							<ScrollView Grid.Row="14" Grid.Column="1" Margin="0,6,0,0" HeightRequest="68" Orientation="Horizontal"
-										IsVisible="{Binding HasPhotos}">
-								<FlexLayout x:Name="PhotosLayout" AlignContent="Center" AlignItems="Center" BindableLayout.ItemsSource="{Binding Photos}"
-											Direction="Row" JustifyContent="Start">
-									<BindableLayout.ItemTemplate>
-										<DataTemplate x:DataType="photos:Photo">
-											<Image Margin="2" Aspect="AspectFill" HeightRequest="64" Rotation="{Binding Rotation}"
-												 Source="{Binding Source}" WidthRequest="64">
-												<Image.GestureRecognizers>
-													<TapGestureRecognizer Tapped="Image_Tapped" />
-												</Image.GestureRecognizers>
-											</Image>
-										</DataTemplate>
-									</BindableLayout.ItemTemplate>
-								</FlexLayout>
-							</ScrollView>
 						</Grid>
 					</VerticalStackLayout>
 				</Frame>
@@ -212,10 +159,11 @@
 					</VerticalStackLayout>
 				</Frame>
 
-				<!-- Technical Information -->
+				<!-- Signature Information -->
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-						<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize Technical}"/>
+						<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize Signature}"/>
+						<Label Text="{l:Localize ClientSignatureInformationInfoText}"/>
 
 						<Grid VerticalOptions="StartAndExpand" RowSpacing="0">
 							<Grid.ColumnDefinitions>
@@ -227,42 +175,23 @@
 								<RowDefinition Height="Auto" />
 								<RowDefinition Height="Auto" />
 								<RowDefinition Height="Auto" />
-								<RowDefinition Height="{Binding NetworkId, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding DeviceId, Converter={converters:AutoIfNonEmpty}}" />
+								<RowDefinition Height="Auto" />
 							</Grid.RowDefinitions>
 
-							<Label Grid.Row="0" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize Created}" />
-							<Label Grid.Row="0" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding Created, Converter={converters:DateToString}}" />
-							<!--    -->
-							<Label Grid.Row="1" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize Expires}" />
-							<Label Grid.Row="1" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding Expires, Converter={converters:DateToString}}" />
-							<!--    -->
-							<Label Grid.Row="2" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize NeuroID}" />
-							<Label Grid.Row="2" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ClickableValueLabel}" Text="{Binding LegalId}">
-								<Label.GestureRecognizers>
-									<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding LegalId}" />
-								</Label.GestureRecognizers>
-							</Label>
-
-							<!--    -->
-							<Label Grid.Row="3" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}"
-								 Text="{l:Localize NetworkID}" IsVisible="{Binding NetworkId, Converter={converters:OnlyShowNonEmpty}}"/>
-							<Label Grid.Row="3" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ClickableValueLabel}"
-								 Text="{Binding NetworkId}" IsVisible="{Binding NetworkId, Converter={converters:OnlyShowNonEmpty}}">
-								<Label.GestureRecognizers>
-									<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding NetworkId}" />
-								</Label.GestureRecognizers>
-							</Label>
-
-							<!--    -->
-							<Label Grid.Row="4" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}"
-								 Text="{l:Localize DeviceID}" IsVisible="{Binding DeviceId, Converter={converters:OnlyShowNonEmpty}}"/>
-							<Label Grid.Row="4" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ClickableValueLabel}"
-								 Text="{Binding DeviceId}" IsVisible="{Binding DeviceId, Converter={converters:OnlyShowNonEmpty}}">
-								<Label.GestureRecognizers>
-									<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding DeviceId}" />
-								</Label.GestureRecognizers>
-							</Label>
+							<Label Grid.Row="0" Grid.Column="0" Text="{l:Localize Role}" Style="{StaticResource KeyLabel}" Margin="0,6,0,0"/>
+							<Label Grid.Row="0" Grid.Column="1" Text="{Binding Path=Role}" Style="{StaticResource ValueLabel}" Margin="0,6,0,0"/>
+							<!-- -->
+							<Label Grid.Row="1" Grid.Column="0" Text="{l:Localize Timestamp}" Style="{StaticResource KeyLabel}" Margin="0,6,0,0"/>
+							<Label Grid.Row="1" Grid.Column="1" Text="{Binding Path=Timestamp}" Style="{StaticResource ValueLabel}" Margin="0,6,0,0"/>
+							<!-- -->
+							<Label Grid.Row="2" Grid.Column="0" Text="{l:Localize Transferable}" Style="{StaticResource KeyLabel}" Margin="0,6,0,0"/>
+							<Label Grid.Row="2" Grid.Column="1" Text="{Binding Path=IsTransferable}" Style="{StaticResource ValueLabel}" Margin="0,6,0,0"/>
+							<!-- -->
+							<Label Grid.Row="3" Grid.Column="0" Text="{l:Localize Network}" Style="{StaticResource KeyLabel}" Margin="0,6,0,0"/>
+							<Label Grid.Row="3" Grid.Column="1" Text="{Binding Path=BareJid}" Style="{StaticResource ValueLabel}" Margin="0,6,0,0"/>
+							<!-- -->
+							<Label Grid.Row="4" Grid.Column="0" Text="{l:Localize Signature}" Style="{StaticResource KeyLabel}" Margin="0,6,0,0"/>
+							<Label Grid.Row="4" Grid.Column="1" Text="{Binding Path=Signature}" Style="{StaticResource ValueLabel}" Margin="0,6,0,0"/>
 						</Grid>
 					</VerticalStackLayout>
 				</Frame>

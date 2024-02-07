@@ -40,5 +40,17 @@ namespace NeuroAccessMaui.Services.AttachmentCache
 		/// <param name="Attachments">Optional array of attachments to process.</param>
 		/// <returns>If attachments were found and removed.</returns>
 		Task<bool> RemoveAttachments(Attachment[]? Attachments);
+
+		/// <summary>
+		/// Makes items in the cache, belonging to a given parent object, temporary.
+		/// </summary>
+		/// <param name="ParentId">Associated Legal or Contract ID (Parent ID)</param>
+		Task MakeTemporary(string ParentId);
+
+		/// <summary>
+		/// Makes items in the cache, belonging to a given parent object, permanent.
+		/// </summary>
+		/// <param name="ParentId">Associated Legal or Contract ID (Parent ID)</param>
+		Task MakePermanent(string ParentId);
 	}
 }

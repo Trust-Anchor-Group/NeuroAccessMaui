@@ -8,6 +8,7 @@
 							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
 							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+							 xmlns:system="clr-namespace:System;assembly=netstandard"
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.TokenEvents"

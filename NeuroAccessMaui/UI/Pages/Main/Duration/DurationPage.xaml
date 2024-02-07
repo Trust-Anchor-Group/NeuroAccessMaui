@@ -46,31 +46,29 @@
 						<Label Text="{l:Localize Minutes}" Grid.Column="0" Grid.Row="5" VerticalOptions="Center" />
 						<Label Text="{l:Localize Seconds}" Grid.Column="0" Grid.Row="6" VerticalOptions="Center" />
 
-						<controls:CompositeEntry EntryData="{Binding Path=FirstName}"
-															 BackgroundColor="{Binding FirstNameOk, Converter={converters:ControlBgColor}}"
-															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"/>
-
-						<controls:CompositeEntry Grid.Column="1" Grid.Row="1" Keyboard="Numeric"
+						<!-- TODO:  Keyboard="Numeric" on entries -->
+							  
+						<controls:CompositeEntry Grid.Column="1" Grid.Row="1"
 														 Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}"
 														 BackgroundColor="{Binding YearsOk, Converter={converters:ControlBgColor}}"
 														 EntryData="{Binding Years}" />
-						<controls:CompositeEntry Grid.Column="1" Grid.Row="2" Keyboard="Numeric"
+						<controls:CompositeEntry Grid.Column="1" Grid.Row="2"
 														 Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" 
 														 BackgroundColor="{Binding MonthsOk, Converter={converters:ControlBgColor}}"
 				   									 EntryData="{Binding Months}" />
-						<controls:CompositeEntry Grid.Column="1" Grid.Row="3" Keyboard="Numeric"
+						<controls:CompositeEntry Grid.Column="1" Grid.Row="3"
 														 Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" 
 														 BackgroundColor="{Binding DaysOk, Converter={converters:ControlBgColor}}"
 				   									 EntryData="{Binding Days}" />
-						<controls:CompositeEntry Grid.Column="1" Grid.Row="4" Keyboard="Numeric"
+						<controls:CompositeEntry Grid.Column="1" Grid.Row="4"
 														 Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" 
 														 BackgroundColor="{Binding HoursOk, Converter={converters:ControlBgColor}}"
 				   									 EntryData="{Binding Hours}" />
-						<controls:CompositeEntry Grid.Column="1" Grid.Row="5" Keyboard="Numeric"
+						<controls:CompositeEntry Grid.Column="1" Grid.Row="5"
 														 Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" 
 														 BackgroundColor="{Binding MinutesOk, Converter={converters:ControlBgColor}}"
 				   									 EntryData="{Binding Minutes}" />
-						<controls:CompositeEntry Grid.Column="1" Grid.Row="6" Keyboard="Numeric"
+						<controls:CompositeEntry Grid.Column="1" Grid.Row="6"
 														 Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" 
 														 BackgroundColor="{Binding SecondsOk, Converter={converters:ControlBgColor}}"
 				   									 EntryData="{Binding Seconds}" />

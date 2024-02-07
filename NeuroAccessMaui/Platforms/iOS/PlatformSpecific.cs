@@ -275,7 +275,7 @@ namespace NeuroAccessMaui.Services
 
 			try
 			{
-				Token = Messaging.SharedInstance.FcmToken ?? string.Empty;
+				//Token = Firebase.CloudMessaging.Messaging.SharedInstance.FcmToken ?? string.Empty;
 			}
 			catch (Exception ex)
 			{

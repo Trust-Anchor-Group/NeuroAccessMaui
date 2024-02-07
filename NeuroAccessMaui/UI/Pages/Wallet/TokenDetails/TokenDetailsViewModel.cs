@@ -501,7 +501,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		/// Command to copy a value to the clipboard.
 		/// </summary>
 		[RelayCommand]
-		private static async Task CopyToClipboard(object Parameter)
+		public static async Task CopyToClipboard(object Parameter)
 		{
 			try
 			{
@@ -511,12 +511,14 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 				if (i > 0 && Guid.TryParse(s[..i], out _))
 				{
 					await Clipboard.SetTextAsync(Constants.UriSchemes.NeuroFeature + ":" + s);
-					await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)], ServiceRef.Localizer[nameof(AppResources.IdCopiedSuccessfully)]);
+					await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+						ServiceRef.Localizer[nameof(AppResources.IdCopiedSuccessfully)]);
 				}
 				else
 				{
 					await Clipboard.SetTextAsync(s);
-					await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)], ServiceRef.Localizer[nameof(AppResources.TagValueCopiedToClipboard)]);
+					await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+						ServiceRef.Localizer[nameof(AppResources.TagValueCopiedToClipboard)]);
 				}
 			}
 			catch (Exception ex)

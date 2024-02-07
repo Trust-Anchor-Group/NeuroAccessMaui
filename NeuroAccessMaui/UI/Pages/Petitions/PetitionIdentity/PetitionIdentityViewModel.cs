@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.UI.Photos;
@@ -157,6 +158,9 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity
 			await ServiceRef.NavigationService.GoBackAsync();
 		}
 
+		// Full name of requesting entity.
+		public string FullName => ContactInfo.GetFullName(this.FirstName, this.MiddleNames, this.LastNames);
+
 		#region Properties
 
 		/// <summary>
@@ -172,10 +176,22 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity
 		private DateTime? updated;
 
 		/// <summary>
+		/// When the identity expires
+		/// </summary>
+		[ObservableProperty]
+		private DateTime? expires;
+
+		/// <summary>
 		/// Legal id of the identity
 		/// </summary>
 		[ObservableProperty]
 		private string? legalId;
+
+		/// <summary>
+		/// Network ID
+		/// </summary>
+		[ObservableProperty]
+		private string? networkId;
 
 		/// <summary>
 		/// Current state of the identity
@@ -199,18 +215,21 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity
 		/// First name of the identity
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(FullName))]
 		private string? firstName;
 
 		/// <summary>
 		/// Middle name(s) of the identity
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(FullName))]
 		private string? middleNames;
 
 		/// <summary>
 		/// Last name(s) of the identity
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(FullName))]
 		private string? lastNames;
 
 		/// <summary>
@@ -349,13 +368,13 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity
 		/// If organization information is available.
 		/// </summary>
 		[ObservableProperty]
-		[NotifyPropertyChangedFor(nameof(OrgRowHeight))]
 		private bool hasOrg;
 
 		/// <summary>
-		/// If organization information is available.
+		/// If photos are available.
 		/// </summary>
-		public GridLength OrgRowHeight => this.HasOrg ? GridLength.Auto : new GridLength(0, GridUnitType.Absolute);
+		[ObservableProperty]
+		private bool hasPhotos;
 
 		/// <summary>
 		/// PhoneNr of the identity
@@ -391,6 +410,8 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity
 		/// Gets or sets whether the identity is in the contact list or not.
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(AddContactCommand))]
+		[NotifyCanExecuteChangedFor(nameof(RemoveContactCommand))]
 		private bool thirdPartyInContacts;
 
 		/// <summary>
@@ -413,7 +434,9 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity
 			{
 				this.Created = this.RequestorIdentity.Created;
 				this.Updated = this.RequestorIdentity.Updated.GetDateOrNullIfMinValue();
+				this.Expires = this.RequestorIdentity.To.GetDateOrNullIfMinValue();
 				this.LegalId = this.RequestorIdentity.Id;
+				this.NetworkId = this.RequestorIdentity.GetJid();
 				this.State = this.RequestorIdentity.State;
 				this.From = this.RequestorIdentity.From.GetDateOrNullIfMinValue();
 				this.To = this.RequestorIdentity.To.GetDateOrNullIfMinValue();
@@ -473,6 +496,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity
 					!string.IsNullOrEmpty(this.OrgCity) ||
 					!string.IsNullOrEmpty(this.OrgRegion) ||
 					!string.IsNullOrEmpty(this.OrgCountryCode);
+				this.HasPhotos = this.Photos.Count > 0;
 				this.PhoneNr = this.RequestorIdentity[Constants.XmppProperties.Phone];
 				this.EMail = this.RequestorIdentity[Constants.XmppProperties.EMail];
 				this.DeviceId = this.RequestorIdentity[Constants.XmppProperties.DeviceId];
@@ -512,10 +536,143 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity
 				this.OrgRegion = Constants.NotAvailableValue;
 				this.OrgCountryCode = Constants.NotAvailableValue;
 				this.HasOrg = false;
+				this.HasPhotos = false;
 				this.PhoneNr = Constants.NotAvailableValue;
 				this.EMail = Constants.NotAvailableValue;
-				this.DeviceId = string.Empty;
+				this.DeviceId = Constants.NotAvailableValue;
 				this.IsApproved = false;
+			}
+		}
+
+		/// <summary>
+		/// Copies Item to clipboard
+		/// </summary>
+		[RelayCommand]
+		private async Task Copy(object Item)
+		{
+			try
+			{
+				if (Item is string Label)
+				{
+					if (Label == this.LegalId)
+					{
+						await Clipboard.SetTextAsync(Constants.UriSchemes.IotId + ":" + this.LegalId);
+						await ServiceRef.UiSerializer.DisplayAlert(
+							ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+							ServiceRef.Localizer[nameof(AppResources.IdCopiedSuccessfully)]);
+					}
+					else
+					{
+						await Clipboard.SetTextAsync(Label);
+						await ServiceRef.UiSerializer.DisplayAlert(
+							ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+							ServiceRef.Localizer[nameof(AppResources.TagValueCopiedToClipboard)]);
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiSerializer.DisplayException(ex);
+			}
+		}
+
+		/// <summary>
+		/// If <see cref="AddContactCommand"/> can be executed.
+		/// </summary>
+		public bool CanAddContact => !this.ThirdPartyInContacts;
+
+		/// <summary>
+		/// Adds the remote identity from the list of contacgs.
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(CanAddContact))]
+		private async Task AddContact()
+		{
+			if (this.RequestorIdentity is null)
+				return;
+
+			try
+			{
+				string FriendlyName = ContactInfo.GetFriendlyName(this.RequestorIdentity);
+				string BareJid = XmppClient.GetBareJID(this.requestorFullJid);
+
+				RosterItem? Item = ServiceRef.XmppService.GetRosterItem(BareJid);
+				if (Item is null)
+					ServiceRef.XmppService.AddRosterItem(new RosterItem(BareJid, FriendlyName));
+
+				ContactInfo Info = await ContactInfo.FindByBareJid(BareJid);
+				if (Info is null)
+				{
+					Info = new ContactInfo()
+					{
+						BareJid = BareJid,
+						LegalId = this.RequestorIdentity.Id,
+						LegalIdentity = this.RequestorIdentity,
+						FriendlyName = FriendlyName,
+						IsThing = false
+					};
+
+					await Database.Insert(Info);
+				}
+				else
+				{
+					Info.LegalId = this.requestedIdentityId;
+					Info.LegalIdentity = this.RequestorIdentity;
+					Info.FriendlyName = FriendlyName;
+
+					await Database.Update(Info);
+				}
+
+				await ServiceRef.AttachmentCacheService.MakePermanent(this.LegalId!);
+				await Database.Provider.Flush();
+
+				this.ThirdPartyInContacts = true;
+			}
+			catch (Exception ex)
+			{
+				await ServiceRef.UiSerializer.DisplayException(ex);
+			}
+		}
+
+		/// <summary>
+		/// If <see cref="RemoveContactCommand"/> can be executed.
+		/// </summary>
+		public bool CanRemoveContact => this.ThirdPartyInContacts;
+
+		/// <summary>
+		/// Removes the remote identity from the list of contacgs.
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(CanRemoveContact))]
+		private async Task RemoveContact()
+		{
+			try
+			{
+				if (!await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.Confirm)],
+					ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToRemoveContact)],
+					ServiceRef.Localizer[nameof(AppResources.Yes)], ServiceRef.Localizer[nameof(AppResources.Cancel)]))
+				{
+					return;
+				}
+
+				string BareJid = XmppClient.GetBareJID(this.requestorFullJid);
+
+				ContactInfo Info = await ContactInfo.FindByBareJid(BareJid);
+				if (Info is not null)
+				{
+					await Database.Delete(Info);
+					await ServiceRef.AttachmentCacheService.MakeTemporary(Info.LegalId);
+					await Database.Provider.Flush();
+				}
+
+				RosterItem? Item = ServiceRef.XmppService.GetRosterItem(BareJid);
+				if (Item is not null)
+					ServiceRef.XmppService.RemoveRosterItem(BareJid);
+
+				this.ThirdPartyInContacts = false;
+			}
+			catch (Exception ex)
+			{
+				await ServiceRef.UiSerializer.DisplayException(ex);
 			}
 		}
 	}

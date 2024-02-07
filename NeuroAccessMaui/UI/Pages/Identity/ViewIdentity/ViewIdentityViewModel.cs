@@ -920,19 +920,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 		/// <summary>
 		/// Full name of person
 		/// </summary>
-		public string FullName
-		{
-			get
-			{
-				StringBuilder? sb = null;
-
-				ContactInfo.AppendName(ref sb, this.FirstName);
-				ContactInfo.AppendName(ref sb, this.MiddleNames);
-				ContactInfo.AppendName(ref sb, this.LastNames);
-
-				return sb?.ToString() ?? string.Empty;
-			}
-		}
+		public string FullName => ContactInfo.GetFullName(this.FirstName, this.MiddleNames, this.LastNames);
 
 		#endregion
 

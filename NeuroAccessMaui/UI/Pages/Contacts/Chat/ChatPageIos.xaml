@@ -28,7 +28,7 @@
 			</ViewCell>
 		</DataTemplate>
 		<DataTemplate x:Key="SentMessage" x:DataType="viewmodel:ChatMessage">
-			<ViewCell Appearing="ViewCell_Appearing">
+			<ViewCell>
 				<Grid ColumnDefinitions="auto,*" ColumnSpacing="0">
 					<Frame Grid.Column="0" Rotation="180" BackgroundColor="{StaticResource SendMessageBackground}"
 						   Padding="5" CornerRadius="5" BorderColor="{StaticResource SendMessageBorder}" HasShadow="False"
@@ -40,7 +40,7 @@
 			</ViewCell>
 		</DataTemplate>
 		<DataTemplate x:Key="ReceivedMessage" x:DataType="viewmodel:ChatMessage">
-			<ViewCell Appearing="ViewCell_Appearing">
+			<ViewCell>
 				<Grid ColumnDefinitions="*,auto" ColumnSpacing="0">
 					<Grid Grid.Column="0" BackgroundColor="Transparent"/>
 					<Frame Grid.Column="1" Rotation="180" BackgroundColor="{StaticResource RecivedMessageBackground}"
@@ -96,23 +96,22 @@
 
 							<Button Grid.Column="1" HorizontalOptions="End" VerticalOptions="End"
 									CornerRadius="8" WidthRequest="40" HeightRequest="40" Margin="5,0,0,0"
-									Text="{x:Static resx:FontAwesome.WindowClose}" TextColor="{StaticResource TextColorLightTheme}"
-									FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
+									Text="❌" TextColor="{StaticResource TextColorLightTheme}" FontSize="Medium"
 									IsVisible="{Binding Path=IsWriting}" Command="{Binding CancelCommand}">
 								<Button.Behaviors>
 									<behaviors:UnfocusOnClickedBehavior UnfocusControl="EditorControl"/>
 								</Button.Behaviors>
 							</Button>
 						</Grid>
+						<!--
 						<Grid ColumnDefinitions="auto,*,auto" ColumnSpacing="0"
 							  IsVisible="{Binding IsRecordingAudio}">
 
 							<Frame Grid.Column="0" CornerRadius="8" VerticalOptions="Center" Padding="5" Margin="0" HasShadow="False">
-										 <!--
 								xct:TouchEffect.AnimationDuration="100"
 							   xct:TouchEffect.AnimationEasing="{x:Static Easing.CubicInOut}"
 							   xct:TouchEffect.PressedOpacity="0.75"
-							   xct:TouchEffect.Command="{Binding Path=PauseResumeCommand}">-->
+							   xct:TouchEffect.Command="{Binding Path=PauseResumeCommand}">
 
 								<Grid WidthRequest="35" HeightRequest="35" BackgroundColor="Transparent">
 									<controls:TintedImage TintColor="{AppThemeBinding Light={StaticResource HeadingBackgroundLightTheme}, Dark={StaticResource HeadingBackgroundDarkTheme}}"
@@ -126,16 +125,16 @@
 								   Text="{Binding RecordingTime}" HorizontalOptions="Center" VerticalOptions="Center"/>
 
 							<Frame Grid.Column="2" CornerRadius="8" VerticalOptions="Center" Padding="5" Margin="0" HasShadow="False">
-										 <!--
 								xct:TouchEffect.AnimationDuration="100"
 							   xct:TouchEffect.AnimationEasing="{x:Static Easing.CubicInOut}"
 							   xct:TouchEffect.PressedOpacity="0.75"
-							   xct:TouchEffect.Command="{Binding Path=CancelCommand}">-->
+							   xct:TouchEffect.Command="{Binding Path=CancelCommand}">
 
 								<controls:TintedImage TintColor="{AppThemeBinding Light={StaticResource HeadingBackgroundLightTheme}, Dark={StaticResource HeadingBackgroundDarkTheme}}"
 									Source="{x:Static resx:Svgs.Trash}" WidthRequest="35" HeightRequest="35" />
 							</Frame>
 						</Grid>
+						-->
 					</Grid>
 				</Frame>
 				<Grid Grid.Column="1" BackgroundColor="Transparent" />
@@ -149,58 +148,48 @@
 						<mct:Expander.Header>
 							<StackLayout BackgroundColor="White">
 								<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
-										Text="{x:Static resx:FontAwesome.EllipsisH}" TextColor="{StaticResource TextColorLightTheme}"
-										FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
+										Text="…" TextColor="{StaticResource TextColorLightTheme}" FontSize="Medium"
 										Command="{Binding ExpandButtonsCommand}" />
 							</StackLayout>
 						</mct:Expander.Header>
 						<StackLayout Orientation="Vertical" Spacing="5" Margin="0,0,0,5" BackgroundColor="Transparent">
 							<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
-									Text="{x:Static resx:FontAwesome.Microphone}" TextColor="{StaticResource TextColorLightTheme}"
-									FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
+									Text="🎤" TextColor="{StaticResource TextColorLightTheme}" FontSize="Medium"
 									Command="{Binding RecordAudioCommand}"/>
 
 							<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
-									Text="{x:Static resx:FontAwesome.Camera}" TextColor="{StaticResource TextColorLightTheme}"
-									FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
+									Text="📷" TextColor="{StaticResource TextColorLightTheme}" FontSize="Medium"
 									Command="{Binding TakePhotoCommand}"/>
 
 							<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
-									Text="{x:Static resx:FontAwesome.PaperClip}" TextColor="{StaticResource TextColorLightTheme}"
-									FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
+									Text="📎" TextColor="{StaticResource TextColorLightTheme}" FontSize="Medium"
 									Command="{Binding EmbedFileCommand}"/>
 
 							<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
-									Text="{x:Static resx:FontAwesome.User}" TextColor="{StaticResource TextColorLightTheme}"
-									FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
+									Text="👤" TextColor="{StaticResource TextColorLightTheme}" FontSize="Medium"
 									Command="{Binding EmbedIdCommand}"/>
 
 							<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
-									Text="{x:Static resx:FontAwesome.Paragraph}" TextColor="{StaticResource TextColorLightTheme}"
-									FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
+									Text="¶" TextColor="{StaticResource TextColorLightTheme}" FontSize="Medium"
 									Command="{Binding EmbedContractCommand}"/>
 
 							<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
-									Text="{x:Static resx:FontAwesome.MoneyBill}" TextColor="{StaticResource TextColorLightTheme}"
-									FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
+									Text="💵" TextColor="{StaticResource TextColorLightTheme}" FontSize="Medium"
 									Command="{Binding EmbedMoneyCommand}"/>
 
 							<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
-									Text="{x:Static resx:FontAwesome.StarOfLife}" TextColor="{StaticResource TextColorLightTheme}"
-									FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
+									Text="✻" TextColor="{StaticResource TextColorLightTheme}" FontSize="Medium"
 									Command="{Binding EmbedTokenCommand}"/>
 
 							<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
-									Text="{x:Static resx:FontAwesome.Things}" TextColor="{StaticResource TextColorLightTheme}"
-									FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
+									Text="📟︎" TextColor="{StaticResource TextColorLightTheme}" FontSize="Medium"
 									Command="{Binding EmbedThingCommand}"/>
 						</StackLayout>
 					</mct:Expander>
 				</controls:FadeView.FrontView>
 				<controls:FadeView.BackView>
 					<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
-							Text="{x:Static resx:FontAwesome.PaperPlane}" TextColor="{StaticResource TextColorLightTheme}"
-							FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium"
+							Text="✉" TextColor="{StaticResource TextColorLightTheme}" FontSize="Medium"
 							Command="{Binding SendCommand}">
 						<Button.Behaviors>
 							<behaviors:UnfocusOnClickedBehavior UnfocusControl="EditorControl"/>

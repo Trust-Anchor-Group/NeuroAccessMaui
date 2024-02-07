@@ -27,11 +27,11 @@
 
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout>
-						<Label Text="{x:Static resx:AppResources.TransferIdentityInformationText}" Style="{StaticResource InfoText}" Margin="{StaticResource DefaultBottomOnlyMargin}" />
+						<Label Text="{l:Localize TransferIdentityInformationText}" Style="{StaticResource InfoText}" Margin="{StaticResource DefaultBottomOnlyMargin}" />
 						<Image x:Name="QrCode" Source="{Binding Path=QrCode}" HorizontalOptions="CenterAndExpand" Margin="0"
                        WidthRequest="{Binding Path=QrCodeWidth, Mode=OneTime}" HeightRequest="{Binding Path=QrCodeHeight, Mode=OneTime}">
 							<Image.GestureRecognizers>
-								<TapGestureRecognizer Command="{Binding CopyUriToClipboard}"/>
+								<TapGestureRecognizer Command="{Binding CopyUriToClipboardCommand}"/>
 							</Image.GestureRecognizers>
 						</Image>
 					</VerticalStackLayout>
