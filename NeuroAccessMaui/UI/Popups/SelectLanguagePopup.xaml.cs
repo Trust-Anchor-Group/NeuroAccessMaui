@@ -4,16 +4,16 @@ using System.Globalization;
 
 namespace NeuroAccessMaui.UI.Popups
 {
-	public partial class SelectLanguagePage
+	public partial class SelectLanguagePopup
 	{
 		/*
 		/// <summary>
 		/// Popup factory
 		/// </summary>
-		public static Task<SelectLanguagePage> Create()
+		public static Task<SelectLanguagePopup> Create()
 		{
 			//SelectLanguageViewModel ViewModel = ServiceHelper.GetService<SelectLanguageViewModel>();
-			//return Task.FromResult(new SelectLanguagePage(ViewModel));
+			//return Task.FromResult(new SelectLanguagePopup(ViewModel));
 
 			return await MainThread.InvokeOnMainThreadAsync(async () => await
 			{
@@ -24,14 +24,14 @@ namespace NeuroAccessMaui.UI.Popups
 					byte[] ScreenBitmap = await ServiceRef.PlatformSpecific.CaptureScreen(10);
 
 					ImageSource Background = ImageSource.FromStream(() => new MemoryStream(ScreenBitmap));
-					Page = new SelectLanguagePage(ViewModel, Background);
+					Page = new SelectLanguagePopup(ViewModel, Background);
 				}
 				catch (Exception ex)
 				{
 					ServiceRef.LogService.LogException(ex);
 					await ServiceRef.UiSerializer.DisplayException(ex);
 
-					Page = new SelectLanguagePage(ViewModel, null);
+					Page = new SelectLanguagePopup(ViewModel, null);
 				}
 
 				return Page;
@@ -42,7 +42,7 @@ namespace NeuroAccessMaui.UI.Popups
 
 		public List<LanguageInfo> Languages { get; } = new(App.SupportedLanguages);
 
-		public SelectLanguagePage(ImageSource? Background = null)
+		public SelectLanguagePopup(ImageSource? Background = null)
 			: base(Background)
 		{
 			this.InitializeComponent();

@@ -40,7 +40,7 @@ namespace NeuroAccessMaui.Services.Notification
 		/// <summary>
 		/// Gets an icon for the category of event.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>Unicode icon.</returns>
 		public abstract Task<string> GetCategoryIcon();
 
 		/// <summary>

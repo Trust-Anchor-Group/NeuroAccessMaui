@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
-<base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Xmpp.RemoveSubscription.RemoveSubscriptionPage"
-					 x:DataType="viewmodel:RemoveSubscriptionViewModel"
+<base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Tokens.AddTextNote.AddTextNotePopup"
+					 x:DataType="viewmodel:AddTextNoteViewModel"
 					 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 					 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 					 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
@@ -8,7 +8,7 @@
 					 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 					 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 					 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
-					 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Xmpp.RemoveSubscription"
+					 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Tokens.AddTextNote"
 					 xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
 					 xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups">
 
@@ -23,27 +23,25 @@
 			<ScrollView x:Name="InnerScrollView" VerticalOptions="Center">
 				<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
 
-					<Label Text="{l:Localize RemoveSubscription}" Style="{StaticResource SectionTitleLabelStyle}" />
+					<Label Text="{l:Localize TextNote}" Style="{StaticResource SectionTitleLabelStyle}" />
 
-					<Label>
-						<Label.FormattedText>
-							<FormattedString>
-								<Span Text="{l:Localize RemoveSubscription1}"/>
-								<Span Text=" "/>
-								<Span Text="{Binding BareJid}" FontAttributes="Bold"/>
-								<Span Text=". "/>
-								<Span Text="{l:Localize RemoveSubscription2}"/>
-							</FormattedString>
-						</Label.FormattedText>
-					</Label>
+					<controls:CompositeEntry x:Name="NoteEntry"
+													 Style="{StaticResource RegularCompositeEntryStyle}"
+													 EntryData="{Binding TextNote}"
+													 ReturnCommand="{Binding AddNoteCommand}"/>
 
-					<controls:TextButton Command="{Binding YesCommand}"
+					<HorizontalStackLayout>
+						<CheckBox IsChecked="{Binding Personal}" VerticalOptions="Center"/>
+						<Label Text="{l:Localize NoteIsPersonal}" VerticalOptions="Center"/>
+					</HorizontalStackLayout>
+
+					<controls:TextButton Command="{Binding AddNoteCommand}"
 												Style="{StaticResource FilledTextButtonStyle}"
-												LabelData="{l:Localize Yes}" />
+												LabelData="{l:Localize Add}" />
 
-					<controls:TextButton Command="{Binding NoCommand}"
+					<controls:TextButton Command="{Binding CancelCommand}"
 												Style="{StaticResource OutlinedTextButtonStyle}"
-												LabelData="{l:Localize No}" />
+												LabelData="{l:Localize Cancel}" />
 
 				</VerticalStackLayout>
 			</ScrollView>

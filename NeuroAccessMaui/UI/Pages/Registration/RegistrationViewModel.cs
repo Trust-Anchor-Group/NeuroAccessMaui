@@ -139,7 +139,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		[RelayCommand]
 		private static async Task ChangeLanguage()
 		{
-			SelectLanguagePage Page = new();
+			SelectLanguagePopup Page = new();
 			await MopupService.Instance.PushAsync(Page);
 		}
 	}

@@ -29,7 +29,7 @@ namespace NeuroAccessMaui.UI.Converters
 		/// Converts a monetary value to a string, removing any round-off errors.
 		/// </summary>
 		/// <param name="Money"></param>
-		/// <returns></returns>
+		/// <returns>String-representation of <paramref name="Money"/>.</returns>
 		public static string ToString(decimal Money)
 		{
 			string s = Money.ToString("F9", CultureInfo.InvariantCulture);

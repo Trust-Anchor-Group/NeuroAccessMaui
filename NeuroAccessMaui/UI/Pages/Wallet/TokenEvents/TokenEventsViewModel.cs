@@ -81,9 +81,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 			try
 			{
 				AddTextNoteViewModel AddTextNoteViewModel = new();
-				AddTextNotePage AddTextNotePage = new(AddTextNoteViewModel);
+				AddTextNotePopup AddTextNotePopup = new(AddTextNoteViewModel);
 
-				await MopupService.Instance.PushAsync(AddTextNotePage);
+				await MopupService.Instance.PushAsync(AddTextNotePopup);
 				bool? Result = await AddTextNoteViewModel.Result;
 
 				if (Result.HasValue && Result.Value)

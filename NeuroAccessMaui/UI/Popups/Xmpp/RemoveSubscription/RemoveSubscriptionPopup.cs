@@ -1,18 +1,18 @@
-namespace NeuroAccessMaui.UI.Popups.Xmpp.SubscribeTo
+namespace NeuroAccessMaui.UI.Popups.Xmpp.RemoveSubscription
 {
 	/// <summary>
 	/// Asks the user if it wants to remove an existing presence subscription request as well.
 	/// </summary>
-	public partial class SubscribeToPage
+	public partial class RemoveSubscriptionPopup
 	{
-		private readonly SubscribeToViewModel viewModel;
+		private readonly RemoveSubscriptionViewModel viewModel;
 
 		/// <summary>
 		/// Asks the user if it wants to remove an existing presence subscription request as well.
 		/// </summary>
 		/// <param name="ViewModel">View model</param>
 		/// <param name="Background">Optional background</param>
-		public SubscribeToPage(SubscribeToViewModel ViewModel, ImageSource? Background = null)
+		public RemoveSubscriptionPopup(RemoveSubscriptionViewModel ViewModel, ImageSource? Background = null)
 			: base(Background)
 		{
 			this.InitializeComponent();

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
-<viewmodel:BasePopup x:Class="NeuroAccessMaui.UI.Popups.ShowInfoPage"
-							x:DataType="viewmodel:ShowInfoPage"
+<viewmodel:BasePopup x:Class="NeuroAccessMaui.UI.Popups.ShowInfoPopup"
+							x:DataType="viewmodel:ShowInfoPopup"
 							xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 							xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 							xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"

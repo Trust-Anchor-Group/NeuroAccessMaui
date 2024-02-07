@@ -13,7 +13,10 @@ using NeuroAccessMaui.Services.UI.Photos;
 using NeuroAccessMaui.Services.Wallet;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Registration;
+using NeuroAccessMaui.UI.Popups.Xmpp.ReportOrBlock;
+using NeuroAccessMaui.UI.Popups.Xmpp.ReportType;
 using NeuroAccessMaui.UI.Popups.Xmpp.SubscribeTo;
+using NeuroAccessMaui.UI.Popups.Xmpp.SubscriptionRequest;
 using NeuroFeatures;
 using NeuroFeatures.Events;
 using System.ComponentModel;
@@ -1235,10 +1238,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 			if ((RemoteIdentity is not null) && (RemoteIdentity.Attachments is not null))
 				(PhotoUrl, PhotoWidth, PhotoHeight) = await PhotosLoader.LoadPhotoAsTemporaryFile(RemoteIdentity.Attachments, 300, 300);
 
-			SubscriptionRequestPopupPage SubscriptionRequestPage = new(e.FromBareJID, FriendlyName, PhotoUrl, PhotoWidth, PhotoHeight);
+			SubscriptionRequestViewModel SubscriptionRequestViewModel = new(e.FromBareJID, FriendlyName, PhotoUrl, PhotoWidth, PhotoHeight);
+			SubscriptionRequestPopup SubscriptionRequestPopup = new(SubscriptionRequestViewModel);
 
-			await Rg.Plugins.Popup.Services.PopupNavigation.Instance.PushAsync(SubscriptionRequestPage);
-			PresenceRequestAction Action = await SubscriptionRequestPage.Result;
+			await MopupService.Instance.PushAsync(SubscriptionRequestPopup);
+			PresenceRequestAction Action = await SubscriptionRequestViewModel.Result;
 
 			switch (Action)
 			{
@@ -1268,9 +1272,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 					if (Item is null || (Item.State != SubscriptionState.Both && Item.State != SubscriptionState.To))
 					{
 						SubscribeToViewModel SubscribeToViewModel = new(e.FromBareJID);
-						SubscribeToPage SubscribeToPage = new(SubscribeToViewModel);
+						SubscribeToPopup SubscribeToPopup = new(SubscribeToViewModel);
 
-						await MopupService.Instance.PushAsync(SubscribeToPage);
+						await MopupService.Instance.PushAsync(SubscribeToPopup);
 						bool? SubscribeTo = await SubscribeToViewModel.Result;
 
 						if (SubscribeTo.HasValue && SubscribeTo.Value)
@@ -1294,10 +1298,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 				case PresenceRequestAction.Reject:
 					e.Decline();
 
-					ReportOrBlockPopupPage ReportOrBlockPage = new(e.FromBareJID);
+					if (this.abuseClient is null)
+						break;
 
-					await Rg.Plugins.Popup.Services.PopupNavigation.Instance.PushAsync(ReportOrBlockPage);
-					ReportOrBlockAction ReportOrBlock = await ReportOrBlockPage.Result;
+					ReportOrBlockViewModel ReportOrBlockViewModel = new(e.FromBareJID);
+					ReportOrBlockPopup ReportOrBlockPopup = new(ReportOrBlockViewModel);
+
+					await MopupService.Instance.PushAsync(ReportOrBlockPopup);
+					ReportOrBlockAction ReportOrBlock = await ReportOrBlockViewModel.Result;
 
 					if (ReportOrBlock == ReportOrBlockAction.Block || ReportOrBlock == ReportOrBlockAction.Report)
 					{
@@ -1321,10 +1329,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 						if (ReportOrBlock == ReportOrBlockAction.Report)
 						{
-							ReportTypePopupPage ReportTypePage = new(e.FromBareJID);
+							ReportTypeViewModel ReportTypeViewModel = new(e.FromBareJID);
+							ReportTypePopup ReportTypePopup = new(ReportTypeViewModel);
 
-							await Rg.Plugins.Popup.Services.PopupNavigation.Instance.PushAsync(ReportOrBlockPage);
-							ReportingReason? ReportType = await ReportTypePage.Result;
+							await MopupService.Instance.PushAsync(ReportOrBlockPopup);
+							ReportingReason? ReportType = await ReportTypeViewModel.Result;
 
 							if (ReportType.HasValue)
 							{
@@ -3342,7 +3351,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				await ServiceRef.NotificationService.NewEvent(new CanControlNotificationEvent(e));
 		}
 
-		private static readonly char[] clientChars = [ '@', '/' ];
+		private static readonly char[] clientChars = ['@', '/'];
 
 		/// <summary>
 		/// JID of provisioning service.

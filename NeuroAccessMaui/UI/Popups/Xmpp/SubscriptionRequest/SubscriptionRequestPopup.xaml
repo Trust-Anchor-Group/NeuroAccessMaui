@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
-<base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Xmpp.SubscribeTo.SubscribeToPage"
-					 x:DataType="viewmodel:SubscribeToViewModel"
+<base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Xmpp.SubscriptionRequest.SubscriptionRequestPopup"
+					 x:DataType="viewmodel:SubscriptionRequestViewModel"
 					 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 					 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 					 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
@@ -8,7 +8,7 @@
 					 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 					 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 					 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
-					 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Xmpp.SubscribeTo"
+					 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Xmpp.SubscriptionRequest"
 					 xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
 					 xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups">
 
@@ -23,29 +23,37 @@
 			<ScrollView x:Name="InnerScrollView" VerticalOptions="Center">
 				<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
 
-					<Label Text="{l:Localize SubscribeToPresence}" Style="{StaticResource SectionTitleLabelStyle}" />
+					<Label Text="{l:Localize PresenceSubscriptionRequest}" Style="{StaticResource SectionTitleLabelStyle}" />
+
+					<Image HorizontalOptions="Center" Source="{Binding PhotoUrl}" WidthRequest="{Binding PhotoWidth}"
+                       HeightRequest="{Binding PhotoHeight}" IsVisible="{Binding HasPhoto}"/>
 
 					<Label>
 						<Label.FormattedText>
 							<FormattedString>
-								<Span Text="{l:Localize SubscribeToPresence1}"/>
+								<Span Text="{l:Localize PresenceSubscriptionReceived1}"/>
 								<Span Text=" "/>
-								<Span Text="{Binding BareJid}" FontAttributes="Bold"/>
-								<Span Text="? "/>
-								<Span Text="{l:Localize SubscribeToPresence2}"/>
+								<Span Text="{Binding PrimaryName}" FontAttributes="Bold"/>
+								<Span Text="{Binding SecondaryName}"/>
 								<Span Text=" "/>
-								<Span Text="{l:Localize SubscribeToPresence3}"/>
+								<Span Text="{l:Localize PresenceSubscriptionReceived2}"/>
+								<Span Text=" "/>
+								<Span Text="{l:Localize PresenceSubscriptionReceived3}"/>
+								<Span Text=" "/>
+								<Span Text="{l:Localize PresenceSubscriptionReceived4}"/>
+								<Span Text=" "/>
+								<Span Text="{l:Localize PresenceSubscriptionReceived5}"/>
 							</FormattedString>
 						</Label.FormattedText>
 					</Label>
 
-					<controls:TextButton Command="{Binding YesCommand}"
+					<controls:TextButton Command="{Binding AcceptCommand}"
 												Style="{StaticResource FilledTextButtonStyle}"
-												LabelData="{l:Localize Yes}" />
+												LabelData="{l:Localize Accept}" />
 
-					<controls:TextButton Command="{Binding NoCommand}"
+					<controls:TextButton Command="{Binding RejectCommand}"
 												Style="{StaticResource OutlinedTextButtonStyle}"
-												LabelData="{l:Localize No}" />
+												LabelData="{l:Localize Reject}" />
 
 				</VerticalStackLayout>
 			</ScrollView>

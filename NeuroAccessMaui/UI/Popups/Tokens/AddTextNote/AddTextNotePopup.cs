@@ -3,7 +3,7 @@ namespace NeuroAccessMaui.UI.Popups.Tokens.AddTextNote
 	/// <summary>
 	/// Prompts the user for text to add as a note for a token.
 	/// </summary>
-	public partial class AddTextNotePage
+	public partial class AddTextNotePopup
 	{
 		private readonly AddTextNoteViewModel viewModel;
 
@@ -12,7 +12,7 @@ namespace NeuroAccessMaui.UI.Popups.Tokens.AddTextNote
 		/// </summary>
 		/// <param name="ViewModel">View model</param>
 		/// <param name="Background">Optional background</param>
-		public AddTextNotePage(AddTextNoteViewModel ViewModel, ImageSource? Background = null)
+		public AddTextNotePopup(AddTextNoteViewModel ViewModel, ImageSource? Background = null)
 			: base(Background)
 		{
 			this.InitializeComponent();

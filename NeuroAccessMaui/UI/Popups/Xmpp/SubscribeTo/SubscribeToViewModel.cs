@@ -6,14 +6,14 @@ using NeuroAccessMaui.UI.Pages;
 namespace NeuroAccessMaui.UI.Popups.Xmpp.SubscribeTo
 {
 	/// <summary>
-	/// View model for <see cref="SubscribeToPage"/>
+	/// View model for <see cref="SubscribeToPopup"/>
 	/// </summary>
 	public partial class SubscribeToViewModel : BaseViewModel
 	{
 		private readonly TaskCompletionSource<bool?> result = new();
 
 		/// <summary>
-		/// View model for <see cref="SubscribeToPage"/>
+		/// View model for <see cref="SubscribeToPopup"/>
 		/// </summary>
 		/// <param name="BareJid">Bare JID of sender of request.</param>
 		public SubscribeToViewModel(string BareJid)
@@ -34,9 +34,8 @@ namespace NeuroAccessMaui.UI.Popups.Xmpp.SubscribeTo
 		public Task<bool?> Result => this.result.Task;
 
 		/// <summary>
-		/// Adds the note
+		/// Subscribes to contact.
 		/// </summary>
-		/// <returns></returns>
 		[RelayCommand]
 		private async Task Yes()
 		{
@@ -45,7 +44,7 @@ namespace NeuroAccessMaui.UI.Popups.Xmpp.SubscribeTo
 		}
 
 		/// <summary>
-		/// Cancels PIN-entry
+		/// Does not subscribe to contact.
 		/// </summary>
 		[RelayCommand]
 		private async Task No()

@@ -192,7 +192,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		[RelayCommand]
 		private async Task SelectPhoneCode()
 		{
-			SelectPhoneCodePage Page = new();
+			SelectPhoneCodePopup Page = new();
 			await MopupService.Instance.PushAsync(Page);
 
 			ISO_3166_Country? Result = await Page.Result;

@@ -171,7 +171,6 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 		/// <summary>
 		/// Subscribes to an unsubscribed contact; unsubscribes from a subscribed one, with user permission.
 		/// </summary>
-		/// <returns></returns>
 		public async Task ToggleSubscription()
 		{
 			if (string.IsNullOrEmpty(this.contact?.BareJid))
@@ -199,7 +198,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 				if (Item is not null && (Item.State == SubscriptionState.From || Item.State == SubscriptionState.Both))
 				{
 					RemoveSubscriptionViewModel ViewModel = new(this.BareJid);
-					RemoveSubscriptionPage Page = new(ViewModel);
+					RemoveSubscriptionPopup Page = new(ViewModel);
 
 					await MopupService.Instance.PushAsync(Page);
 					bool? Remove = await ViewModel.Result;
@@ -219,7 +218,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 			else
 			{
 				SubscribeToViewModel ViewModel = new(this.BareJid);
-				SubscribeToPage Page = new(ViewModel);
+				SubscribeToPopup Page = new(ViewModel);
 
 				await MopupService.Instance.PushAsync(Page);
 				bool? SubscribeTo = await ViewModel.Result;

@@ -3,7 +3,7 @@ using NeuroAccessMaui.Services.Data;
 
 namespace NeuroAccessMaui.UI.Popups
 {
-	public partial class SelectPhoneCodePage : IDisposable
+	public partial class SelectPhoneCodePopup : IDisposable
 	{
 		private readonly TaskCompletionSource<ISO_3166_Country?> result = new();
 		private CancellationTokenSource? cancellationTokenSource;
@@ -19,7 +19,7 @@ namespace NeuroAccessMaui.UI.Popups
 		/// </summary>
 		public static ISO_3166_Country[] Countries => ISO_3166_1.Countries;
 
-		public SelectPhoneCodePage(ImageSource? Background = null)
+		public SelectPhoneCodePopup(ImageSource? Background = null)
 			: base(Background)
 		{
 			this.InitializeComponent();

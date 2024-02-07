@@ -1355,9 +1355,9 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			{
 				case "subscribe":
 					SubscribeToViewModel SubscribeToViewModel = new(Jid);
-					SubscribeToPage SubscribeToPage = new(SubscribeToViewModel);
+					SubscribeToPopup SubscribeToPopup = new(SubscribeToViewModel);
 
-					await MopupService.Instance.PushAsync(SubscribeToPage);
+					await MopupService.Instance.PushAsync(SubscribeToPopup);
 					bool? SubscribeTo = await SubscribeToViewModel.Result;
 
 					if (SubscribeTo.HasValue && SubscribeTo.Value)

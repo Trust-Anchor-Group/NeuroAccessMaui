@@ -3,7 +3,7 @@
 	/// <summary>
 	/// Page letting the user enter a PIN to be verified with the PIN defined by the user earlier.
 	/// </summary>
-	public partial class CheckPinPage
+	public partial class CheckPinPopup
 	{
 		private readonly CheckPinViewModel viewModel;
 
@@ -12,7 +12,7 @@
 		/// </summary>
 		/// <param name="ViewModel">View model.</param>
 		/// <param name="Background">Optional background.</param>
-		public CheckPinPage(CheckPinViewModel ViewModel, ImageSource? Background = null)
+		public CheckPinPopup(CheckPinViewModel ViewModel, ImageSource? Background = null)
 			: base(Background)
 		{
 			this.InitializeComponent();

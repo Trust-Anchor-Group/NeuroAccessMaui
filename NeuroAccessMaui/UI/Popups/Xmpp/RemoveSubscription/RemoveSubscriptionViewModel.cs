@@ -6,14 +6,14 @@ using NeuroAccessMaui.UI.Pages;
 namespace NeuroAccessMaui.UI.Popups.Xmpp.RemoveSubscription
 {
 	/// <summary>
-	/// View model for <see cref="RemoveSubscriptionPage"/>
+	/// View model for <see cref="RemoveSubscriptionPopup"/>
 	/// </summary>
 	public partial class RemoveSubscriptionViewModel : BaseViewModel
 	{
 		private readonly TaskCompletionSource<bool?> result = new();
 
 		/// <summary>
-		/// View model for <see cref="RemoveSubscriptionPage"/>
+		/// View model for <see cref="RemoveSubscriptionPopup"/>
 		/// </summary>
 		/// <param name="BareJid">Bare JID of sender of request.</param>
 		public RemoveSubscriptionViewModel(string BareJid)
@@ -34,9 +34,8 @@ namespace NeuroAccessMaui.UI.Popups.Xmpp.RemoveSubscription
 		public Task<bool?> Result => this.result.Task;
 
 		/// <summary>
-		/// Adds the note
+		/// Removes the subscription.
 		/// </summary>
-		/// <returns></returns>
 		[RelayCommand]
 		private async Task Yes()
 		{
@@ -45,7 +44,7 @@ namespace NeuroAccessMaui.UI.Popups.Xmpp.RemoveSubscription
 		}
 
 		/// <summary>
-		/// Cancels PIN-entry
+		/// Does not remove subscription.
 		/// </summary>
 		[RelayCommand]
 		private async Task No()

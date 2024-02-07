@@ -922,7 +922,7 @@ namespace NeuroAccessMaui
 					return string.Empty;
 
 				CheckPinViewModel ViewModel = new();
-				CheckPinPage Page = new(ViewModel);
+				CheckPinPopup Page = new(ViewModel);
 				await MopupService.Instance.PushAsync(Page);
 				await CheckUserBlocking();
 				return await ViewModel.Result;

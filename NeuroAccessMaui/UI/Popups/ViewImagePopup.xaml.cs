@@ -6,15 +6,15 @@ namespace NeuroAccessMaui.UI.Popups
 	/// <summary>
 	/// A generic UI component to display images.
 	/// </summary>
-	public partial class ViewImagePage
+	public partial class ViewImagePopup
 	{
 		private readonly ViewImageViewModel viewModel;
 		private const uint durationInMs = 300;
 
 		/// <summary>
-		/// Creates a new instance of the <see cref="ViewImagePage"/> class.
+		/// Creates a new instance of the <see cref="ViewImagePopup"/> class.
 		/// </summary>
-		public ViewImagePage(ViewImageViewModel ViewModel)
+		public ViewImagePopup(ViewImageViewModel ViewModel)
 		{
 			this.InitializeComponent();
 			this.BindingContext = ViewModel;

@@ -14,7 +14,7 @@ namespace IdApp.Cv.Basic
 		/// </summary>
 		/// <param name="Contour">Contour</param>
 		/// <param name="Threshold">Distance from a line deemed "within the same line".</param>
-		/// <returns></returns>
+		/// <returns>Reduced set of points.</returns>
 		public static Point[] Reduce(this Point[] Contour, int Threshold)
 		{
 			List<Point> Result = new List<Point>();

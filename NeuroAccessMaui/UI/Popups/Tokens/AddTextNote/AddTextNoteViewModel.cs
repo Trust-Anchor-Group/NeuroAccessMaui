@@ -46,7 +46,6 @@ namespace NeuroAccessMaui.UI.Popups.Tokens.AddTextNote
 		/// <summary>
 		/// Adds the note
 		/// </summary>
-		/// <returns></returns>
 		[RelayCommand(CanExecute = nameof(CanAddNote))]
 		private async Task AddNote()
 		{
@@ -55,7 +54,7 @@ namespace NeuroAccessMaui.UI.Popups.Tokens.AddTextNote
 		}
 
 		/// <summary>
-		/// Cancels PIN-entry
+		/// Does not add note.
 		/// </summary>
 		[RelayCommand]
 		private async Task Cancel()
