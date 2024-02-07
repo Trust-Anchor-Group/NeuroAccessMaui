@@ -12,7 +12,8 @@
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract"
 							 xmlns:objectmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract.ObjectModel"
-							 xmlns:photos="clr-namespace:NeuroAccessMaui.Services.UI.Photos">
+							 xmlns:photos="clr-namespace:NeuroAccessMaui.Services.UI.Photos"
+							 xmlns:image="clr-namespace:NeuroAccessMaui.UI.Popups.Photos.Image">
 	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
 
 		<controls:Background/>
@@ -100,7 +101,7 @@
 						<!-- BUTTONS -->
 						<Button Text="{x:Static resx:AppResources.ObsoleteContract}" Command="{Binding Path=ObsoleteContractCommand}" IsVisible="{Binding Path=CanObsoleteContract}" Margin="{StaticResource DefaultTopAndBottomOnlyMargin}"/>
 						<Button Text="{x:Static resx:AppResources.DeleteContract}" Command="{Binding Path=DeleteContractCommand}" IsVisible="{Binding Path=CanDeleteContract}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
-						<!--<image:ImageView x:Name="PhotoViewer" IsVisible="False"/>-->
+						<image:ImageView x:Name="PhotoViewer" IsVisible="False"/>
 					</VerticalStackLayout>
 				</Frame>
 			</VerticalStackLayout>

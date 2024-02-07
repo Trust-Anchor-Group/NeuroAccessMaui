@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<base:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui" 
+                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							  xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+							  xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+							  xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+                       xmlns:photos="clr-namespace:NeuroAccessMaui.Services.UI.Photos"
+                       xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Photos.Image"
+                       x:DataType="viewmodel:ImageViewModel"
+                       x:Class="NeuroAccessMaui.UI.Popups.Photos.Image.ImageView">
+	<Frame Style="{StaticResource PopupFrame}" x:Name="PhotoViewer" HasShadow="true"
+			 BackgroundColor="{DynamicResource HeadingBackgroundTranslucent}"
+			 Opacity="0" HorizontalOptions="Center" VerticalOptions="Center">
+		<Grid>
+			<StackLayout Orientation="Vertical" Margin="0">
+				<CarouselView x:Name="CarouselView"
+                                  IsSwipeEnabled="{Binding Path=IsSwipeEnabled}"
+                                  HorizontalOptions="FillAndExpand"
+                                  VerticalOptions="FillAndExpand"
+                                  ItemsSource="{Binding Path=Photos}"
+                                  IndicatorView="IndicatorView">
+					<CarouselView.ItemTemplate>
+						<DataTemplate x:DataType="photos:Photo">
+							<Image Source="{Binding Path=Source}" Rotation="{Binding Path=Rotation}" Aspect="AspectFit"/>
+						</DataTemplate>
+					</CarouselView.ItemTemplate>
+				</CarouselView>
+				<IndicatorView x:Name="IndicatorView"
+                                   HorizontalOptions="Fill"
+                                   IndicatorColor="{StaticResource HeadingForeground}"
+                                   Padding="0,0,0,0"
+                                   BackgroundColor="{StaticResource HeadingBackground}"
+                                   Style="{StaticResource IndicatorViewStyle}">
+					<IndicatorView.Margin>
+						<OnPlatform x:TypeArguments="Thickness">
+							<On Platform="iOS" Value="0,-1,0,0"/>
+						</OnPlatform>
+					</IndicatorView.Margin>
+				</IndicatorView>
+			</StackLayout>
+			<!-- Close button -->
+			<Grid Style="{StaticResource PopupGrid}">
+				<Grid.GestureRecognizers>
+					<TapGestureRecognizer Tapped="CloseIcon_Tapped"/>
+				</Grid.GestureRecognizers>
+				<Ellipse StrokeThickness="2" WidthRequest="32" HeightRequest="32" HorizontalOptions="Center" VerticalOptions="Center">
+					<Ellipse.Fill>
+						<SolidColorBrush Color="{AppThemeBinding Light={StaticResource PageBackgroundColorLightTheme}, Dark={StaticResource PageBackgroundColorDarkTheme}}"/>
+					</Ellipse.Fill>
+					<Ellipse.Stroke>
+						<SolidColorBrush Color="{AppThemeBinding Light={StaticResource HeadingBackgroundLightTheme}, Dark={StaticResource HeadingBackgroundDarkTheme}}"/>
+					</Ellipse.Stroke>
+				</Ellipse>
+				<Label Style="{StaticResource PopupCloseButton}"/>
+			</Grid>
+		</Grid>
+	</Frame>
+</base:BaseContentPage>

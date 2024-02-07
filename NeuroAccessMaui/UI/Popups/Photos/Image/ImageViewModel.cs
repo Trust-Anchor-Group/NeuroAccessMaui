@@ -1,29 +1,31 @@
-﻿using System.Collections.ObjectModel;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using NeuroAccessMaui.Services.UI.Photos;
+using NeuroAccessMaui.UI.Pages;
+using System.Collections.ObjectModel;
 using Waher.Networking.XMPP.Contracts;
 
-namespace NeuroAccessMaui.UI.Popups
+namespace NeuroAccessMaui.UI.Popups.Photos.Image
 {
 	/// <summary>
 	///  The class to use as binding context for displaying images.
 	/// </summary>
-	public partial class ViewImageViewModel : ObservableObject
+	public partial class ImageViewModel : BaseViewModel
 	{
 		private readonly PhotosLoader photosLoader;
 
 		/// <summary>
-		/// Creates a new instance of the <see cref="ViewImageViewModel"/> class.
+		/// Creates a new instance of the <see cref="ImageViewModel"/> class.
 		/// </summary>
-		public ViewImageViewModel()
+		public ImageViewModel()
 		{
+			this.Photos = [];
 			this.photosLoader = new PhotosLoader(this.Photos);
 		}
 
 		/// <summary>
 		/// Holds the list of photos to display.
 		/// </summary>
-		public ObservableCollection<Photo> Photos { get; } = [];
+		public ObservableCollection<Photo> Photos { get; }
 
 		/// <summary>
 		/// Gets or sets whether a user can swipe to see the photos.

@@ -275,9 +275,6 @@
 	  <Compile Update="UI\Popups\ShowInfoPopup.xaml.cs">
 	    <DependentUpon>ShowInfoPopup.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="UI\Popups\ViewImagePopup.xaml.cs">
-	    <DependentUpon>ViewImagePopup.xaml</DependentUpon>
-	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -450,6 +447,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="UI\Pages\Wallet\TokenEvents\TokenEventsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Popups\Photos\Image\ImageView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="UI\Popups\Pin\CheckPinPopup.xaml">

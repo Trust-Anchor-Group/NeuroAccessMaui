@@ -29,8 +29,11 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 		{
 			if (this.ContentPageModel is PetitionContractViewModel PetitionContractViewModel)
 			{
-				Attachment[]? attachments = PetitionContractViewModel.RequestorIdentity?.Attachments;
-				this.PhotoViewer.ShowPhotos(attachments);
+				Attachment[]? Attachments = PetitionContractViewModel.RequestorIdentity?.Attachments;
+				if (Attachments is null)
+					this.PhotoViewer.HidePhotos();
+				else
+					this.PhotoViewer.ShowPhotos(Attachments);
 			}
 		}
 	}

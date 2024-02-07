@@ -11,7 +11,8 @@
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity"
-							 xmlns:photos="clr-namespace:NeuroAccessMaui.Services.UI.Photos">
+							 xmlns:photos="clr-namespace:NeuroAccessMaui.Services.UI.Photos"
+							 xmlns:image="clr-namespace:NeuroAccessMaui.UI.Popups.Photos.Image">
 
 	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
 
@@ -302,5 +303,6 @@
 				</VerticalStackLayout>
 			</VerticalStackLayout>
 		</ScrollView>
+		<image:ImageView x:Name="PhotoViewer" IsVisible="False" />
 	</Grid>
 </base:BaseContentPage>

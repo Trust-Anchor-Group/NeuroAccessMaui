@@ -32,42 +32,42 @@
 			this.CollectionView.SelectedItem = null;
 		}
 
-		private void ViewCell_Appearing(object? Sender, EventArgs EventArgs)
-		{
-			// This is a one-time Cell.Appearing event handler to work around an iOS issue whereby an image inside a ListView
-			// does not update its size when fully loaded.
-
-			if (Sender is not ViewCell ViewCell)
-				return;
-
-			ViewCell.Appearing -= this.ViewCell_Appearing;
-
-			FFImageLoading.Forms.CachedImage CachedImage = ViewCell.View.Descendants().OfType<FFImageLoading.Forms.CachedImage>().FirstOrDefault();
-			if (CachedImage is not null)
-			{
-				ImageSizeChangedHandler SizeChangedHandler = new(new WeakReference<ViewCell>(ViewCell));
-				CachedImage.SizeChanged += SizeChangedHandler.HandleSizeChanged;
-			}
-			else
-			{
-				Image Image = ViewCell.View.Descendants().OfType<Image>().FirstOrDefault();
-				if (Image is not null)
-				{
-					ImageSizeChangedHandler SizeChangedHandler = new(new WeakReference<ViewCell>(ViewCell));
-					Image.SizeChanged += SizeChangedHandler.HandleSizeChanged;
-				}
-			}
-		}
-
-		private class ImageSizeChangedHandler(WeakReference<ViewCell> WeakViewCell)
-		{
-			private readonly WeakReference<ViewCell> weakViewCell = WeakViewCell;
-
-			public void HandleSizeChanged(object? Sender, EventArgs EventArgs)
-			{
-				if (this.weakViewCell.TryGetTarget(out ViewCell? ViewCell))
-					ViewCell.ForceUpdateSize();
-			}
-		}
+		//private void ViewCell_Appearing(object? Sender, EventArgs EventArgs)
+		//{
+		//	// This is a one-time Cell.Appearing event handler to work around an iOS issue whereby an image inside a ListView
+		//	// does not update its size when fully loaded.
+		//
+		//	if (Sender is not ViewCell ViewCell)
+		//		return;
+		//
+		//	ViewCell.Appearing -= this.ViewCell_Appearing;
+		//
+		//	FFImageLoading.Forms.CachedImage CachedImage = ViewCell.View.Descendants().OfType<FFImageLoading.Forms.CachedImage>().FirstOrDefault();
+		//	if (CachedImage is not null)
+		//	{
+		//		ImageSizeChangedHandler SizeChangedHandler = new(new WeakReference<ViewCell>(ViewCell));
+		//		CachedImage.SizeChanged += SizeChangedHandler.HandleSizeChanged;
+		//	}
+		//	else
+		//	{
+		//		Image Image = ViewCell.View.Descendants().OfType<Image>().FirstOrDefault();
+		//		if (Image is not null)
+		//		{
+		//			ImageSizeChangedHandler SizeChangedHandler = new(new WeakReference<ViewCell>(ViewCell));
+		//			Image.SizeChanged += SizeChangedHandler.HandleSizeChanged;
+		//		}
+		//	}
+		//}
+		//
+		//private class ImageSizeChangedHandler(WeakReference<ViewCell> WeakViewCell)
+		//{
+		//	private readonly WeakReference<ViewCell> weakViewCell = WeakViewCell;
+		//
+		//	public void HandleSizeChanged(object? Sender, EventArgs EventArgs)
+		//	{
+		//		if (this.weakViewCell.TryGetTarget(out ViewCell? ViewCell))
+		//			ViewCell.ForceUpdateSize();
+		//	}
+		//}
 	}
 }

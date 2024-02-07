@@ -66,8 +66,7 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<ServiceProvidersPage, ServiceProvidersViewModel>();
 
 			// Popups
-			Builder.Services.AddTransient<ViewImagePopup, ViewImageViewModel>();
-			Builder.Services.AddTransient<CheckPinPopup>();
+			Builder.Services.AddTransient<CheckPinPopup, CheckPinViewModel>();
 
 			// Controls
 

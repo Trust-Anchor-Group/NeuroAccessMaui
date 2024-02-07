@@ -1,4 +1,6 @@
-﻿namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity
+﻿using Waher.Networking.XMPP.Contracts;
+
+namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity
 {
 	/// <summary>
 	/// A page to display when the user is asked to petition an identity.
@@ -17,7 +19,7 @@
 		/// <inheritdoc/>
 		protected override Task OnDisappearingAsync()
 		{
-			//!!! this.PhotoViewer.HidePhotos();
+			this.PhotoViewer.HidePhotos();
 			return base.OnDisappearingAsync();
 		}
 
@@ -25,8 +27,11 @@
 		{
 			PetitionIdentityViewModel ViewModel = this.ViewModel<PetitionIdentityViewModel>();
 
-			//!!! Attachment[] Attachments = ViewModel.RequestorIdentity?.Attachments;
-			//!!! this.PhotoViewer.ShowPhotos(Attachments);
+			Attachment[]? Attachments = ViewModel.RequestorIdentity?.Attachments;
+			if (Attachments is null)
+				this.PhotoViewer.HidePhotos();
+			else
+				this.PhotoViewer.ShowPhotos(Attachments);
 		}
 	}
 }
