@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using EDaler;
 using EDaler.Uris;
+using Mopups.Services;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Navigation;
@@ -18,6 +19,7 @@ using NeuroAccessMaui.UI.Pages.Wallet.MyTokens;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Wallet.SendPayment;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenDetails;
+using NeuroAccessMaui.UI.Popups.Xmpp.SubscribeTo;
 using NeuroFeatures;
 using SkiaSharp;
 using System.Collections.ObjectModel;
@@ -1352,10 +1354,11 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			switch (Command.ToLower(CultureInfo.InvariantCulture))
 			{
 				case "subscribe":
-					SubscribeToPopupPage SubscribeToPopupPage = new(Jid);
+					SubscribeToViewModel SubscribeToViewModel = new(Jid);
+					SubscribeToPage SubscribeToPage = new(SubscribeToViewModel);
 
-					await Rg.Plugins.Popup.Services.PopupNavigation.Instance.PushAsync(SubscribeToPopupPage);
-					bool? SubscribeTo = await SubscribeToPopupPage.Result;
+					await MopupService.Instance.PushAsync(SubscribeToPage);
+					bool? SubscribeTo = await SubscribeToViewModel.Result;
 
 					if (SubscribeTo.HasValue && SubscribeTo.Value)
 					{

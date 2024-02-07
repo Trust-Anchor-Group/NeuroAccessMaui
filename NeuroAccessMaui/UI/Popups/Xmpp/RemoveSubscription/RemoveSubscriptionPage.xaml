@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
-<base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Pin.CheckPinPage"
-					 x:DataType="viewmodel:CheckPinViewModel"
+<base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Xmpp.RemoveSubscription.RemoveSubscriptionPage"
+					 x:DataType="viewmodel:RemoveSubscriptionViewModel"
 					 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 					 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 					 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
@@ -8,7 +8,7 @@
 					 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 					 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 					 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
-					 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Pin"
+					 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Xmpp.RemoveSubscription"
 					 xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
 					 xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups">
 
@@ -23,21 +23,27 @@
 			<ScrollView x:Name="InnerScrollView" VerticalOptions="Center">
 				<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
 
-					<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize EnterPin}" />
+					<Label Text="{l:Localize RemoveSubscription}" Style="{StaticResource SectionTitleLabelStyle}" />
 
-					<controls:CompositeEntry x:Name="PinEntry"
-													 Style="{StaticResource RegularCompositeEntryStyle}"
-													 EntryData="{Binding PinText}"
-													 IsPassword="True"
-													 ReturnCommand="{Binding EnterPinCommand}"/>
+					<Label>
+						<Label.FormattedText>
+							<FormattedString>
+								<Span Text="{l:Localize RemoveSubscription1}"/>
+								<Span Text=" "/>
+								<Span Text="{Binding BareJid}" FontAttributes="Bold"/>
+								<Span Text=". "/>
+								<Span Text="{l:Localize RemoveSubscription2}"/>
+							</FormattedString>
+						</Label.FormattedText>
+					</Label>
 
-					<controls:TextButton Command="{Binding EnterPinCommand}"
+					<controls:TextButton Command="{Binding YesCommand}"
 												Style="{StaticResource FilledTextButtonStyle}"
-												LabelData="{l:Localize Enter}" />
+												LabelData="{l:Localize Yes}" />
 
-					<controls:TextButton Command="{Binding CancelCommand}"
+					<controls:TextButton Command="{Binding NoCommand}"
 												Style="{StaticResource OutlinedTextButtonStyle}"
-												LabelData="{l:Localize Cancel}" />
+												LabelData="{l:Localize No}" />
 
 				</VerticalStackLayout>
 			</ScrollView>

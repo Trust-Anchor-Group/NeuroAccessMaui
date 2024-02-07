@@ -1,10 +1,13 @@
 ﻿using System.ComponentModel;
 using System.Text;
 using System.Windows.Input;
+using Mopups.Services;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Notification;
+using NeuroAccessMaui.UI.Popups.Xmpp.RemoveSubscription;
+using NeuroAccessMaui.UI.Popups.Xmpp.SubscribeTo;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;
@@ -195,10 +198,11 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 
 				if (Item is not null && (Item.State == SubscriptionState.From || Item.State == SubscriptionState.Both))
 				{
-					RemoveSubscriptionPopupPage Page = new(this.BareJid);
+					RemoveSubscriptionViewModel ViewModel = new(this.BareJid);
+					RemoveSubscriptionPage Page = new(ViewModel);
 
-					await Rg.Plugins.Popup.Services.PopupNavigation.Instance.PushAsync(Page);
-					bool? Remove = await Page.Result;
+					await MopupService.Instance.PushAsync(Page);
+					bool? Remove = await ViewModel.Result;
 
 					if (Remove.HasValue && Remove.Value)
 					{
@@ -214,10 +218,11 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 			}
 			else
 			{
-				SubscribeToPopupPage SubscribeToPopupPage = new(this.BareJid);
+				SubscribeToViewModel ViewModel = new(this.BareJid);
+				SubscribeToPage Page = new(ViewModel);
 
-				await Rg.Plugins.Popup.Services.PopupNavigation.Instance.PushAsync(SubscribeToPopupPage);
-				bool? SubscribeTo = await SubscribeToPopupPage.Result;
+				await MopupService.Instance.PushAsync(Page);
+				bool? SubscribeTo = await ViewModel.Result;
 
 				if (SubscribeTo.HasValue && SubscribeTo.Value)
 				{

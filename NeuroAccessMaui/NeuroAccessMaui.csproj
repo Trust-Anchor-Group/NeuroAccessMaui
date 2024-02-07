@@ -260,9 +260,6 @@
 	  <Compile Update="UI\Pages\Wallet\MyWallet\MyTokenWalletPage.xaml.cs">
 	    <DependentUpon>MyTokenWalletPage.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="UI\Popups\Pin\BasePopup.xaml.cs">
-	    <DependentUpon>%(Filename)</DependentUpon>
-	  </Compile>
 	  <Compile Update="UI\Popups\Pin\CheckPinPage.xaml.cs">
 	    <DependentUpon>CheckPinPage.xaml</DependentUpon>
 	  </Compile>
@@ -440,10 +437,25 @@
 	  <MauiXaml Update="UI\Pages\Wallet\TokenEvents\TokenEventsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="UI\Popups\Pin\BasePopup.xaml">
+	  <MauiXaml Update="UI\Popups\Pin\CheckPinPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="UI\Popups\Pin\CheckPinPage.xaml">
+	  <MauiXaml Update="UI\Popups\Tokens\AddTextNote\AddTextNotePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Popups\Xmpp\RemoveSubscription\RemoveSubscriptionPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Popups\Xmpp\ReportOrBlock\ReportOrBlockPopupPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Popups\Xmpp\ReportType\ReportTypePopupPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Popups\Xmpp\SubscribeTo\SubscribeToPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Popups\Xmpp\SubscriptionRequest\SubscriptionRequestPopupPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

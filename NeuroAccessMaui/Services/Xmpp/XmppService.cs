@@ -1,5 +1,6 @@
 ﻿using EDaler;
 using EDaler.Uris;
+using Mopups.Services;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Contacts;
@@ -12,6 +13,7 @@ using NeuroAccessMaui.Services.UI.Photos;
 using NeuroAccessMaui.Services.Wallet;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Registration;
+using NeuroAccessMaui.UI.Popups.Xmpp.SubscribeTo;
 using NeuroFeatures;
 using NeuroFeatures.Events;
 using System.ComponentModel;
@@ -1265,10 +1267,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 					if (Item is null || (Item.State != SubscriptionState.Both && Item.State != SubscriptionState.To))
 					{
-						SubscribeToPopupPage SubscribeToPage = new(e.FromBareJID);
+						SubscribeToViewModel SubscribeToViewModel = new(e.FromBareJID);
+						SubscribeToPage SubscribeToPage = new(SubscribeToViewModel);
 
-						await Rg.Plugins.Popup.Services.PopupNavigation.Instance.PushAsync(SubscribeToPage);
-						bool? SubscribeTo = await SubscribeToPage.Result;
+						await MopupService.Instance.PushAsync(SubscribeToPage);
+						bool? SubscribeTo = await SubscribeToViewModel.Result;
 
 						if (SubscribeTo.HasValue && SubscribeTo.Value)
 						{

@@ -31,7 +31,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 
 			this.IdentityApplicationSent = ServiceRef.TagProfile.IdentityApplication is not null;
 
-			ServiceRef.XmppService.IdentityApplicationChanged += ServiceRef.XmppService_IdentityApplicationChanged;
+			ServiceRef.XmppService.IdentityApplicationChanged += this.XmppService_IdentityApplicationChanged;
 
 			await base.OnInitialize();
 			this.NotifyCommandsCanExecuteChanged();
@@ -39,7 +39,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 
 		protected override Task OnDispose()
 		{
-			ServiceRef.XmppService.IdentityApplicationChanged -= ServiceRef.XmppService_IdentityApplicationChanged;
+			ServiceRef.XmppService.IdentityApplicationChanged -= this.XmppService_IdentityApplicationChanged;
 
 			return base.OnDispose();
 		}

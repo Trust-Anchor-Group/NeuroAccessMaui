@@ -291,3 +291,4 @@
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>
+</base:BaseContentPage>

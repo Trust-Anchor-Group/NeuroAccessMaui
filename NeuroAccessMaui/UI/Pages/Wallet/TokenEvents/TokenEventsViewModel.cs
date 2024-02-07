@@ -1,7 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Mopups.Services;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenEvents.Events;
+using NeuroAccessMaui.UI.Popups.Tokens.AddTextNote;
 using NeuroFeatures.Events;
 using System.Collections.ObjectModel;
 using Waher.Content.Xml;
@@ -78,35 +80,36 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 		{
 			try
 			{
-				AddTextNotePage AddTextNotePage = new();
+				AddTextNoteViewModel AddTextNoteViewModel = new();
+				AddTextNotePage AddTextNotePage = new(AddTextNoteViewModel);
 
-				await Rg.Plugins.Popup.Services.PopupNavigation.Instance.PushAsync(AddTextNotePage);
-				bool? Result = await AddTextNotePage.Result;
+				await MopupService.Instance.PushAsync(AddTextNotePage);
+				bool? Result = await AddTextNoteViewModel.Result;
 
 				if (Result.HasValue && Result.Value)
 				{
 					NoteItem NewEvent;
 
-					if (XML.IsValidXml(AddTextNotePage.TextNote))
+					if (XML.IsValidXml(AddTextNoteViewModel.TextNote))
 					{
-						await ServiceRef.XmppService.AddNeuroFeatureXmlNote(this.TokenId, AddTextNotePage.TextNote, AddTextNotePage.Personal);
+						await ServiceRef.XmppService.AddNeuroFeatureXmlNote(this.TokenId!, AddTextNoteViewModel.TextNote!, AddTextNoteViewModel.Personal);
 
 						NewEvent = new NoteXmlItem(new NoteXml()
 						{
-							Note = AddTextNotePage.TextNote,
-							Personal = AddTextNotePage.Personal,
+							Note = AddTextNoteViewModel.TextNote,
+							Personal = AddTextNoteViewModel.Personal,
 							TokenId = this.TokenId,
 							Timestamp = DateTime.Now
 						});
 					}
 					else
 					{
-						await ServiceRef.XmppService.AddNeuroFeatureTextNote(this.TokenId, AddTextNotePage.TextNote, AddTextNotePage.Personal);
+						await ServiceRef.XmppService.AddNeuroFeatureTextNote(this.TokenId!, AddTextNoteViewModel.TextNote!, AddTextNoteViewModel.Personal);
 
 						NewEvent = new NoteTextItem(new NoteText()
 						{
-							Note = AddTextNotePage.TextNote,
-							Personal = AddTextNotePage.Personal,
+							Note = AddTextNoteViewModel.TextNote,
+							Personal = AddTextNoteViewModel.Personal,
 							TokenId = this.TokenId,
 							Timestamp = DateTime.Now
 						});

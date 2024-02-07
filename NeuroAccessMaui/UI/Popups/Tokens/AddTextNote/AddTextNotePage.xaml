@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
-<base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Pin.CheckPinPage"
-					 x:DataType="viewmodel:CheckPinViewModel"
+<base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Tokens.AddTextNote.AddTextNotePage"
+					 x:DataType="viewmodel:AddTextNoteViewModel"
 					 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 					 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 					 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
@@ -8,7 +8,7 @@
 					 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 					 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 					 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
-					 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Pin"
+					 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Tokens.AddTextNote"
 					 xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
 					 xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups">
 
@@ -23,17 +23,21 @@
 			<ScrollView x:Name="InnerScrollView" VerticalOptions="Center">
 				<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
 
-					<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize EnterPin}" />
+					<Label Text="{l:Localize TextNote}" Style="{StaticResource SectionTitleLabelStyle}" />
 
-					<controls:CompositeEntry x:Name="PinEntry"
+					<controls:CompositeEntry x:Name="NoteEntry"
 													 Style="{StaticResource RegularCompositeEntryStyle}"
-													 EntryData="{Binding PinText}"
-													 IsPassword="True"
-													 ReturnCommand="{Binding EnterPinCommand}"/>
+													 EntryData="{Binding TextNote}"
+													 ReturnCommand="{Binding AddNoteCommand}"/>
 
-					<controls:TextButton Command="{Binding EnterPinCommand}"
+					<HorizontalStackLayout>
+						<CheckBox IsChecked="{Binding Personal}" VerticalOptions="Center"/>
+						<Label Text="{l:Localize NoteIsPersonal}" VerticalOptions="Center"/>
+					</HorizontalStackLayout>
+
+					<controls:TextButton Command="{Binding AddNoteCommand}"
 												Style="{StaticResource FilledTextButtonStyle}"
-												LabelData="{l:Localize Enter}" />
+												LabelData="{l:Localize Add}" />
 
 					<controls:TextButton Command="{Binding CancelCommand}"
 												Style="{StaticResource OutlinedTextButtonStyle}"

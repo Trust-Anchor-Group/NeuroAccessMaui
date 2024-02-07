@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<pages:PopupPage xmlns="http://xamarin.com/schemas/2014/forms"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                 xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
+                 xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup"
+                 xmlns:resx="clr-namespace:IdApp.Resx;assembly=IdApp"
+                 x:Class="NeuroAccessMaui.UI.Popups.Xmpp.SubscriptionRequest.SubscriptionRequestPopupPage">
+    <pages:PopupPage.Animation>
+        <animations:ScaleAnimation 
+            PositionIn="Center"
+            PositionOut="Center"
+            ScaleIn="1.2"
+            ScaleOut="0.8"
+            DurationIn="400"
+            DurationOut="300"
+            EasingIn="SinOut"
+            EasingOut="SinIn"
+            HasBackgroundAnimation="True"/>
+    </pages:PopupPage.Animation>
+    <Grid HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
+		<Frame Style="{StaticResource PopupFrame}">
+            <ScrollView Orientation="Vertical">
+                <StackLayout Padding="10,5" Spacing="3">
+                    <Label Text="{x:Static resx:AppResources.PresenceSubscriptionRequest}" FontSize="Large"/>
+                    <Image HorizontalOptions="Center" Source="{Binding PhotoUrl}" WidthRequest="{Binding PhotoWidth}"
+                       HeightRequest="{Binding PhotoHeight}" IsVisible="{Binding HasPhoto}"/>
+                    <Label>
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="{x:Static resx:AppResources.PresenceSubscriptionReceived1}"/>
+                                <Span Text=" "/>
+                                <Span Text="{Binding PrimaryName}" FontAttributes="Bold"/>
+                                <Span Text="{Binding SecondaryName}"/>
+                                <Span Text=" "/>
+                                <Span Text="{x:Static resx:AppResources.PresenceSubscriptionReceived2}"/>
+                                <Span Text=" "/>
+                                <Span Text="{x:Static resx:AppResources.PresenceSubscriptionReceived3}"/>
+                                <Span Text=" "/>
+                                <Span Text="{x:Static resx:AppResources.PresenceSubscriptionReceived4}"/>
+                                <Span Text=" "/>
+                                <Span Text="{x:Static resx:AppResources.PresenceSubscriptionReceived5}"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                    <Button Margin="10,5" Clicked="OnAccept" HorizontalOptions="Fill" Text="{x:Static resx:AppResources.Accept}">
+                        <Button.HeightRequest>
+                            <OnPlatform x:TypeArguments="x:Double" Android="50" WinPhone="30" iOS="30" />
+                        </Button.HeightRequest>
+                    </Button>
+                    <Button Margin="10,5" Clicked="OnReject" HorizontalOptions="Fill" Text="{x:Static resx:AppResources.Reject}">
+                        <Button.HeightRequest>
+                            <OnPlatform x:TypeArguments="x:Double" Android="50" WinPhone="30" iOS="30" />
+                        </Button.HeightRequest>
+                    </Button>
+                </StackLayout>
+            </ScrollView>
+        </Frame>
+		<Grid Style="{StaticResource PopupGrid}">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnCloseButtonTapped" />
+            </Grid.GestureRecognizers>
+            <Ellipse StrokeThickness="2" WidthRequest="32" HeightRequest="32" HorizontalOptions="Center" VerticalOptions="Center">
+                <Ellipse.Fill>
+                    <SolidColorBrush Color="{StaticResource PageBackgroundColor}"/>
+                </Ellipse.Fill>
+                <Ellipse.Stroke>
+                    <SolidColorBrush Color="{StaticResource HeadingBackground}"/>
+                </Ellipse.Stroke>
+            </Ellipse>
+			<Label Style="{StaticResource PopupCloseButton}"/>
+        </Grid>
+    </Grid>
+</pages:PopupPage>

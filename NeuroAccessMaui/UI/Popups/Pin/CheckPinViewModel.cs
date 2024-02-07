@@ -73,7 +73,7 @@ namespace NeuroAccessMaui.UI.Popups.Pin
 		/// <summary>
 		/// Cancels PIN-entry
 		/// </summary>
-		[RelayCommand()]
+		[RelayCommand]
 		private async Task Cancel()
 		{
 			this.result.TrySetResult(null);
