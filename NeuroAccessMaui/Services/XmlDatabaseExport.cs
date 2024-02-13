@@ -477,7 +477,9 @@ namespace NeuroAccessMaui.Services
 			this.output.WriteEndElement();
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// <see cref="IDisposable.Dispose"/>
+		/// </summary>
 		public void Dispose()
 		{
 			this.Dispose(true);

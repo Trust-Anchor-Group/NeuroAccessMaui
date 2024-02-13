@@ -89,7 +89,9 @@ namespace NeuroAccessMaui.UI.Pages.Identity.TransferIdentity
 
 		#endregion
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// <see cref="IDisposable.Dispose"/>
+		/// </summary>
 		public void Dispose()
 		{
 			this.Dispose(true);

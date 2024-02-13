@@ -24,7 +24,9 @@ namespace NeuroAccessMaui.Services
 		{
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// <see cref="IDisposable.Dispose"/>
+		/// </summary>
 		public void Dispose()
 		{
 			this.Dispose(true);

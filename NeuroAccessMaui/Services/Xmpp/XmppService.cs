@@ -384,7 +384,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 			this.reconnectTimer = new Timer(this.ReconnectTimer_Tick, null, Constants.Intervals.Reconnect, Constants.Intervals.Reconnect);
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// <see cref="IDisposable.Dispose"/>
+		/// </summary>
 		public void Dispose()
 		{
 			this.reconnectTimer?.Dispose();

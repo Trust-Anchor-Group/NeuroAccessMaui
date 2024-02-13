@@ -87,8 +87,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport
 		[ObservableProperty]
 		private TokenReport? tokenReport;
 
-
-		/// <inheritdoc/>
+		/// <summary>
+		/// <see cref="IDisposable.Dispose"/>
+		/// </summary>
 		public void Dispose()
 		{
 			this.Dispose(true);

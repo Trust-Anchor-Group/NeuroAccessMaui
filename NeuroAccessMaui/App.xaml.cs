@@ -1110,7 +1110,9 @@ namespace NeuroAccessMaui
 			await ServiceRef.SettingsService.SaveState(Constants.Pin.CurrentPinAttemptCounter, CurrentPinAttemptCounter);
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// <see cref="IDisposable.Dispose"/>
+		/// </summary>
 		public void Dispose()
 		{
 			this.Dispose(true);
