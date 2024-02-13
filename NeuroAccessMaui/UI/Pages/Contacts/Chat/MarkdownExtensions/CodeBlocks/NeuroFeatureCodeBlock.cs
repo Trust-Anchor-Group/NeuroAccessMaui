@@ -140,8 +140,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.CodeBlocks
 				return Task.FromResult(false);
 			}
 
-			Output.WriteStartElement("StackLayout");
-			Output.WriteAttributeString("Orientation", "Vertical");
+			Output.WriteStartElement("VerticalStackLayout");
 			Output.WriteAttributeString("HorizontalOptions", "Center");
 
 			Output.WriteStartElement("Label");

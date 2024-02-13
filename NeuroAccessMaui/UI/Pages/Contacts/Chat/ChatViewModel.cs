@@ -708,8 +708,8 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		// 		TotalAudioTimeout = TimeSpan.FromSeconds(60)
 		// 	};
 		// }, LazyThreadSafetyMode.PublicationOnly);
-
-		private readonly Task<string>? audioRecorderTask = null;
+		//
+		//private readonly Task<string>? audioRecorderTask = null;
 
 		private bool CanExecuteRecordAudio()
 		{

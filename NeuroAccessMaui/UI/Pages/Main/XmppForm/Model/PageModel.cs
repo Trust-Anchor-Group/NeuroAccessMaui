@@ -43,14 +43,9 @@ namespace NeuroAccessMaui.UI.Pages.Main.XmppForm.Model
 		/// </summary>
 		public object Content => this.content;
 
-		private StackLayout BuildContent(Layout.LayoutElement[] Elements)
+		private VerticalStackLayout BuildContent(Layout.LayoutElement[] Elements)
 		{
-			StackLayout Result = new()
-			{
-				HorizontalOptions = LayoutOptions.StartAndExpand,
-				VerticalOptions = LayoutOptions.StartAndExpand,
-				Orientation = StackOrientation.Vertical
-			};
+			VerticalStackLayout Result = [];
 
 			foreach (Layout.LayoutElement Element in Elements)
 			{
@@ -73,10 +68,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.XmppForm.Model
 
 				if (Field is BooleanField)
 				{
-					StackLayout Layout = new()
-					{
-						Orientation = StackOrientation.Horizontal
-					};
+					HorizontalStackLayout Layout = [];
 
 					CheckBox CheckBox = new()
 					{
@@ -111,10 +103,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.XmppForm.Model
 				}
 				else if (Field is TextSingleField TextSingleField || Field is JidSingleField || Field is TextPrivateField)
 				{
-					StackLayout Layout = new()
-					{
-						Orientation = StackOrientation.Vertical
-					};
+					VerticalStackLayout Layout = [];
 
 					Layout.Children.Add(new Label()
 					{
@@ -140,10 +129,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.XmppForm.Model
 				}
 				else if (Field is TextMultiField || Field is JidMultiField)
 				{
-					StackLayout Layout = new()
-					{
-						Orientation = StackOrientation.Vertical
-					};
+					VerticalStackLayout Layout = [];
 
 					Layout.Children.Add(new Label()
 					{
@@ -168,10 +154,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.XmppForm.Model
 				}
 				else if (Field is ListSingleField ListSingleField)
 				{
-					StackLayout Layout = new()
-					{
-						Orientation = StackOrientation.Vertical
-					};
+					VerticalStackLayout Layout = [];
 
 					Layout.Children.Add(new Label()
 					{
@@ -203,10 +186,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.XmppForm.Model
 				}
 				else if (Field is ListMultiField)
 				{
-					StackLayout Layout = new()
-					{
-						Orientation = StackOrientation.Vertical
-					};
+					VerticalStackLayout Layout = [];
 
 					Layout.Children.Add(new Label()
 					{
@@ -227,10 +207,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.XmppForm.Model
 
 						foreach (KeyValuePair<string, string> Option in Field.Options)
 						{
-							StackLayout Layout2 = new()
-							{
-								Orientation = StackOrientation.Horizontal
-							};
+							HorizontalStackLayout Layout2 = [];
 
 							CheckBox CheckBox = new()
 							{
@@ -264,10 +241,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.XmppForm.Model
 
 					if (string.IsNullOrEmpty(Media.ContentType) || Media.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
 					{
-						StackLayout Layout = new()
-						{
-							Orientation = StackOrientation.Vertical
-						};
+						VerticalStackLayout Layout = [];
 
 						Layout.Children.Add(new Label()
 						{
@@ -307,12 +281,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.XmppForm.Model
 			}
 			else if (Element is Layout.Section Section)
 			{
-				StackLayout Layout = new()
-				{
-					HorizontalOptions = LayoutOptions.StartAndExpand,
-					VerticalOptions = LayoutOptions.StartAndExpand,
-					Orientation = StackOrientation.Vertical
-				};
+				VerticalStackLayout Layout = [];
 
 				if (!string.IsNullOrEmpty(Section.Label))
 				{

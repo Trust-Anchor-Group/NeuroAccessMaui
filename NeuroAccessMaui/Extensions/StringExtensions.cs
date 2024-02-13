@@ -87,16 +87,13 @@ namespace NeuroAccessMaui.Extensions
 				string Xaml = await Doc.GenerateXamarinForms();
 				Xaml = Xaml.Replace("TextColor=\"{Binding HyperlinkColor}\"", "Style=\"{StaticResource HyperlinkColor}\"");
 
-				return new StackLayout().LoadFromXaml(Xaml);
+				return new VerticalStackLayout().LoadFromXaml(Xaml);
 			}
 			catch (Exception ex)
 			{
 				Log.Critical(ex);
 
-				StackLayout Layout = new()
-				{
-					Orientation = StackOrientation.Vertical,
-				};
+				VerticalStackLayout Layout = [];
 
 				Layout.Children.Add(new Label()
 				{
@@ -120,9 +117,9 @@ namespace NeuroAccessMaui.Extensions
 			if (string.IsNullOrEmpty(Xaml))
 				return null;
 
-			object Result = new StackLayout().LoadFromXaml(Xaml);
+			object Result = new VerticalStackLayout().LoadFromXaml(Xaml);
 
-			if (Result is StackLayout Panel && Panel.Children.Count == 1)
+			if (Result is VerticalStackLayout Panel && Panel.Children.Count == 1)
 			{
 				IView Child = Panel.Children[0];
 				Panel.Children.RemoveAt(0);

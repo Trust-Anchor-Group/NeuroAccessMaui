@@ -185,7 +185,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 
 			if (this.MessageType == MessageType.Empty)
 			{
-				this.parsedXaml = new StackLayout()
+				this.parsedXaml = new VerticalStackLayout()
 				{
 					Spacing = 0
 				};
@@ -196,14 +196,13 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			if (!string.IsNullOrEmpty(this.markdown))
 			{
 				this.parsedXaml = await this.markdown.MarkdownToXaml();
-				if (this.parsedXaml is StackLayout Layout)
+				if (this.parsedXaml is VerticalStackLayout Layout)
 					Layout.StyleId = this.StyleId;
 			}
 			else
 			{
-				StackLayout Layout = new()
+				VerticalStackLayout Layout = new()
 				{
-					Orientation = StackOrientation.Vertical,
 					StyleId = string.IsNullOrEmpty(this.html) && string.IsNullOrEmpty(this.plainText) ? string.Empty : this.StyleId
 				};
 

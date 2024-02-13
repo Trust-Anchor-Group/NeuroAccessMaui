@@ -59,8 +59,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.Multimedia
 		{
 			foreach (MultimediaItem Item in Items)
 			{
-				Output.WriteStartElement("StackLayout");
-				Output.WriteAttributeString("Orientation", "Vertical");
+				Output.WriteStartElement("VerticalStackLayout");
 				Output.WriteAttributeString("HorizontalOptions", "Center");
 
 				Output.WriteStartElement("Label");
@@ -69,8 +68,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.Multimedia
 				Output.WriteAttributeString("HorizontalOptions", "Center");
 				Output.WriteEndElement();
 
-				Output.WriteStartElement("StackLayout");
-				Output.WriteAttributeString("Orientation", "Horizontal");
+				Output.WriteStartElement("VerticalStackLayout");
 				Output.WriteAttributeString("HorizontalOptions", "Center");
 
 				Output.WriteStartElement("Label");
@@ -87,7 +85,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.Multimedia
 
 				Output.WriteEndElement();
 
-				Output.WriteStartElement("StackLayout.GestureRecognizers");
+				Output.WriteStartElement("VerticalStackLayout.GestureRecognizers");
 
 				Output.WriteStartElement("TapGestureRecognizer");
 				Output.WriteAttributeString("Command", "{Binding Path=IotDiscoUriClicked}");

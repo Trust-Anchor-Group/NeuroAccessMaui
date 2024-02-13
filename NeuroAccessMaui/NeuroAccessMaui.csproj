@@ -478,4 +478,8 @@
 	<ItemGroup>
 	  <PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="8.0.6" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="UI\Pages\Contracts\Test\" />
+	</ItemGroup>
 </Project>

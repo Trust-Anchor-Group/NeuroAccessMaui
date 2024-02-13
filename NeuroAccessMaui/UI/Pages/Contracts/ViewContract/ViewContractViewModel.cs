@@ -155,43 +155,43 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		/// Holds Xaml code for visually representing a contract's roles.
 		/// </summary>
 		[ObservableProperty]
-		private StackLayout? roles;
+		private VerticalStackLayout? roles;
 
 		/// <summary>
 		/// Holds Xaml code for visually representing a contract's parts.
 		/// </summary>
 		[ObservableProperty]
-		private StackLayout? parts;
+		private VerticalStackLayout? parts;
 
 		/// <summary>
 		/// Holds Xaml code for visually representing a contract's parameters.
 		/// </summary>
 		[ObservableProperty]
-		private StackLayout? parameters;
+		private VerticalStackLayout? parameters;
 
 		/// <summary>
 		/// Holds Xaml code for visually representing a contract's human readable text section.
 		/// </summary>
 		[ObservableProperty]
-		private StackLayout? humanReadableText;
+		private VerticalStackLayout? humanReadableText;
 
 		/// <summary>
 		/// Holds Xaml code for visually representing a contract's machine readable text section.
 		/// </summary>
 		[ObservableProperty]
-		private StackLayout? machineReadableText;
+		private VerticalStackLayout? machineReadableText;
 
 		/// <summary>
 		/// Holds Xaml code for visually representing a contract's client signatures.
 		/// </summary>
 		[ObservableProperty]
-		private StackLayout? clientSignatures;
+		private VerticalStackLayout? clientSignatures;
 
 		/// <summary>
 		/// Holds Xaml code for visually representing a contract's server signatures.
 		/// </summary>
 		[ObservableProperty]
-		private StackLayout? serverSignatures;
+		private VerticalStackLayout? serverSignatures;
 
 		/// <summary>
 		/// Gets the list of photos associated with the contract.
@@ -365,7 +365,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 				if (this.Contract.Roles is not null)
 				{
-					StackLayout RolesLayout = [];
+					VerticalStackLayout RolesLayout = [];
 
 					foreach (Role Role in this.Contract.Roles)
 					{
@@ -394,7 +394,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 				// Parts
 
-				StackLayout PartsLayout = [];
+				VerticalStackLayout PartsLayout = [];
 
 				if (this.Contract.SignAfter.HasValue)
 					AddKeyValueLabelPair(PartsLayout, ServiceRef.Localizer[nameof(AppResources.SignAfter)], this.Contract.SignAfter.Value.ToString(CultureInfo.CurrentCulture));
@@ -433,7 +433,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 				if (this.Contract.Parameters is not null)
 				{
-					StackLayout ParametersLayout = [];
+					VerticalStackLayout ParametersLayout = [];
 
 					foreach (Parameter Parameter in this.Contract.Parameters)
 					{
@@ -448,9 +448,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 				// Human readable text
 
-				StackLayout HumanReadableTextLayout = [];
-				string Xaml = await this.Contract.ToXamarinForms(this.Contract.DeviceLanguage());
-				StackLayout HumanReadableXaml = new StackLayout().LoadFromXaml(Xaml);
+				VerticalStackLayout HumanReadableTextLayout = [];
+				string Xaml = await this.Contract.ToMaui(this.Contract.DeviceLanguage());
+				VerticalStackLayout HumanReadableXaml = new VerticalStackLayout().LoadFromXaml(Xaml);
 
 				List<IView> Children = [.. HumanReadableXaml.Children];
 
@@ -481,7 +481,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				TapGestureRecognizer CopyToClipboard = new();
 				CopyToClipboard.Tapped += this.CopyToClipboard_Tapped;
 
-				StackLayout MachineReadableTextLayout = [];
+				VerticalStackLayout MachineReadableTextLayout = [];
 				AddKeyValueLabelPair(MachineReadableTextLayout, ServiceRef.Localizer[nameof(AppResources.ContractId)],
 					this.Contract.ContractId, false, Constants.UriSchemes.IotSc + ":" + this.Contract.ContractId,
 					CopyToClipboard);
@@ -502,7 +502,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				// Client signatures
 				if (this.Contract.ClientSignatures is not null)
 				{
-					StackLayout clientSignaturesLayout = [];
+					VerticalStackLayout clientSignaturesLayout = [];
 					TapGestureRecognizer openClientSignature = new();
 					openClientSignature.Tapped += this.ClientSignature_Tapped;
 
@@ -527,7 +527,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				// Server signature
 				if (this.Contract.ServerSignature is not null)
 				{
-					StackLayout serverSignaturesLayout = [];
+					VerticalStackLayout serverSignaturesLayout = [];
 
 					TapGestureRecognizer openServerSignature = new();
 					openServerSignature.Tapped += this.ServerSignature_Tapped;
@@ -587,24 +587,23 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			return " (" + min.ToString(CultureInfo.InvariantCulture) + " - " + max.ToString(CultureInfo.InvariantCulture) + ")";
 		}
 
-		private static void AddKeyValueLabelPair(StackLayout Container, string Key,
+		private static void AddKeyValueLabelPair(VerticalStackLayout Container, string Key,
 			string Value)
 		{
 			AddKeyValueLabelPair(Container, Key, Value, false, string.Empty, null);
 		}
 
-		private static void AddKeyValueLabelPair(StackLayout Container, string Key,
+		private static void AddKeyValueLabelPair(VerticalStackLayout Container, string Key,
 			string Value, bool IsHtml, TapGestureRecognizer TapGestureRecognizer)
 		{
 			AddKeyValueLabelPair(Container, Key, Value, IsHtml, Value, TapGestureRecognizer);
 		}
 
-		private static void AddKeyValueLabelPair(StackLayout Container, string Key,
+		private static void AddKeyValueLabelPair(VerticalStackLayout Container, string Key,
 			string Value, bool IsHtml, string StyleId, TapGestureRecognizer? TapGestureRecognizer)
 		{
-			StackLayout layout = new()
+			HorizontalStackLayout layout = new()
 			{
-				Orientation = StackOrientation.Horizontal,
 				StyleId = StyleId
 			};
 
@@ -658,7 +657,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		{
 			try
 			{
-				if (Sender is StackLayout Layout && !string.IsNullOrEmpty(Layout.StyleId))
+				if (Sender is VerticalStackLayout Layout && !string.IsNullOrEmpty(Layout.StyleId))
 				{
 					await ServiceRef.ContractOrchestratorService.OpenLegalIdentity(Layout.StyleId,
 						ServiceRef.Localizer[nameof(AppResources.PurposeReviewContract)]);
@@ -675,7 +674,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		{
 			try
 			{
-				if (Sender is StackLayout Layout && !string.IsNullOrEmpty(Layout.StyleId))
+				if (Sender is VerticalStackLayout Layout && !string.IsNullOrEmpty(Layout.StyleId))
 				{
 					await ServiceRef.ContractOrchestratorService.OpenContract(Layout.StyleId,
 						ServiceRef.Localizer[nameof(AppResources.PurposeReviewContract)], null);
@@ -692,7 +691,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		{
 			try
 			{
-				if (Sender is StackLayout Layout && !string.IsNullOrEmpty(Layout.StyleId))
+				if (Sender is VerticalStackLayout Layout && !string.IsNullOrEmpty(Layout.StyleId))
 					await App.OpenUrlAsync(Layout.StyleId);
 			}
 			catch (Exception ex)
@@ -706,7 +705,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		{
 			try
 			{
-				if (Sender is StackLayout Layout && !string.IsNullOrEmpty(Layout.StyleId))
+				if (Sender is VerticalStackLayout Layout && !string.IsNullOrEmpty(Layout.StyleId))
 				{
 					await Clipboard.SetTextAsync(Layout.StyleId);
 					await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)], ServiceRef.Localizer[nameof(AppResources.TagValueCopiedToClipboard)]);
@@ -723,7 +722,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		{
 			try
 			{
-				if (Sender is StackLayout layout && !string.IsNullOrEmpty(layout.StyleId))
+				if (Sender is VerticalStackLayout layout && !string.IsNullOrEmpty(layout.StyleId))
 				{
 					string sign = layout.StyleId;
 					ClientSignature? signature = this.Contract?.ClientSignatures.FirstOrDefault(x => sign == Convert.ToBase64String(x.DigitalSignature));
@@ -748,7 +747,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		{
 			try
 			{
-				if (Sender is StackLayout layout && !string.IsNullOrEmpty(layout.StyleId))
+				if (Sender is VerticalStackLayout layout && !string.IsNullOrEmpty(layout.StyleId))
 				{
 					await ServiceRef.NavigationService.GoToAsync(nameof(ServerSignaturePage),
 						  new ServerSignatureNavigationArgs(this.Contract));

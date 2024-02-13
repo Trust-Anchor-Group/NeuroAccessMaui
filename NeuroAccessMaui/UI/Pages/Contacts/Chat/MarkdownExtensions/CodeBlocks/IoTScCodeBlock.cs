@@ -145,8 +145,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.CodeBlocks
 				return false;
 			}
 
-			Output.WriteStartElement("StackLayout");
-			Output.WriteAttributeString("Orientation", "Vertical");
+			Output.WriteStartElement("VerticalStackLayout");
 			Output.WriteAttributeString("HorizontalOptions", "Center");
 
 			bool ImageShown = false;
@@ -185,7 +184,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.CodeBlocks
 			Output.WriteAttributeString("Text", FriendlyName);
 			Output.WriteEndElement();
 
-			Output.WriteStartElement("StackLayout.GestureRecognizers");
+			Output.WriteStartElement("VerticalStackLayout.GestureRecognizers");
 
 			StringBuilder Xml = new();
 			Contract.Serialize(Xml, true, true, true, true, true, true, true);

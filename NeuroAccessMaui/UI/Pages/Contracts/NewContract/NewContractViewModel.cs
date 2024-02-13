@@ -296,19 +296,19 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// Holds Xaml code for visually representing a contract's roles.
 		/// </summary>
 		[ObservableProperty]
-		private StackLayout? roles;
+		private VerticalStackLayout? roles;
 
 		/// <summary>
 		/// Holds Xaml code for visually representing a contract's parameters.
 		/// </summary>
 		[ObservableProperty]
-		private StackLayout? parameters;
+		private VerticalStackLayout? parameters;
 
 		/// <summary>
 		/// Holds Xaml code for visually representing a contract's human readable text section.
 		/// </summary>
 		[ObservableProperty]
-		private StackLayout? humanReadableText;
+		private VerticalStackLayout? humanReadableText;
 
 		/// <summary>
 		/// Gets or sets whether the contract has roles.
@@ -491,7 +491,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 								{
 									Text = await ContactInfo.GetFriendlyName(LegalId),
 									StyleId = LegalId,
-									HorizontalOptions = LayoutOptions.FillAndExpand,
 									HorizontalTextAlignment = TextAlignment.Center,
 									FontAttributes = FontAttributes.Bold
 								};
@@ -952,9 +951,19 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			}
 		}
 
-		internal static void Populate(StackLayout Layout, string Xaml)
+		internal static void Populate(VerticalStackLayout Layout, string Xaml)
 		{
-			StackLayout xaml = new StackLayout().LoadFromXaml(Xaml);
+			VerticalStackLayout xaml = new VerticalStackLayout().LoadFromXaml(Xaml);
+
+			List<IView> children = [.. xaml.Children];
+
+			foreach (IView Element in children)
+				Layout.Children.Add(Element);
+		}
+
+		internal static void Populate(HorizontalStackLayout Layout, string Xaml)
+		{
+			VerticalStackLayout xaml = new VerticalStackLayout().LoadFromXaml(Xaml);
 
 			List<IView> children = [.. xaml.Children];
 
@@ -974,7 +983,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			this.HasRoles = (this.template.Roles?.Length ?? 0) > 0;
 			this.VisibilityIsEnabled = true;
 
-			StackLayout rolesLayout = [];
+			VerticalStackLayout rolesLayout = [];
 			if (this.template.Roles is not null)
 			{
 				foreach (Role Role in this.template.Roles)
@@ -988,7 +997,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						StyleId = Role.Name
 					});
 
-					Populate(rolesLayout, await Role.ToXamarinForms(this.template.DeviceLanguage(), this.template));
+					Populate(rolesLayout, await Role.ToMaui(this.template.DeviceLanguage(), this.template));
 
 					if (Role.MinCount > 0)
 					{
@@ -1007,7 +1016,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			this.Roles = rolesLayout;
 
-			StackLayout ParametersLayout = [];
+			VerticalStackLayout ParametersLayout = [];
 			if (this.template.Parameters.Length > 0)
 			{
 				ParametersLayout.Children.Add(new Label
@@ -1031,13 +1040,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						VerticalOptions = LayoutOptions.Center
 					};
 
-					StackLayout Layout = new()
-					{
-						Orientation = StackOrientation.Horizontal
-					};
+					HorizontalStackLayout Layout = [];
 
 					Layout.Children.Add(CheckBox);
-					Populate(Layout, await Parameter.ToXamarinForms(this.template.DeviceLanguage(), this.template));
+					Populate(Layout, await Parameter.ToMaui(this.template.DeviceLanguage(), this.template));
 					ParametersLayout.Children.Add(Layout);
 
 					CheckBox.CheckedChanged += this.Parameter_CheckedChanged;
@@ -1064,14 +1070,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				}
 				else if (Parameter is DateParameter DP)
 				{
-					Populate(ParametersLayout, await Parameter.ToXamarinForms(this.template.DeviceLanguage(), this.template));
+					Populate(ParametersLayout, await Parameter.ToMaui(this.template.DeviceLanguage(), this.template));
 
 					ExtendedDatePicker Picker = new()
 					{
 						StyleId = Parameter.Name,
 						NullableDate = Parameter.ObjectValue as DateTime?,
-						Placeholder = Parameter.Guide,
-						HorizontalOptions = LayoutOptions.FillAndExpand,
+						Placeholder = Parameter.Guide
 					};
 
 					ParametersLayout.Children.Add(Picker);
@@ -1092,14 +1097,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				}
 				else
 				{
-					Populate(ParametersLayout, await Parameter.ToXamarinForms(this.template.DeviceLanguage(), this.template));
+					Populate(ParametersLayout, await Parameter.ToMaui(this.template.DeviceLanguage(), this.template));
 
 					Entry Entry = new()
 					{
 						StyleId = Parameter.Name,
 						Text = Parameter.ObjectValue?.ToString(),
-						Placeholder = Parameter.Guide,
-						HorizontalOptions = LayoutOptions.FillAndExpand,
+						Placeholder = Parameter.Guide
 					};
 
 					string? CalculatorButtonType = null;
@@ -1249,10 +1253,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		{
 			this.HumanReadableText = null;
 
-			StackLayout humanReadableTextLayout = [];
+			VerticalStackLayout humanReadableTextLayout = [];
 
 			if (this.template is not null)
-				Populate(humanReadableTextLayout, await this.template.ToXamarinForms(this.template.DeviceLanguage()));
+				Populate(humanReadableTextLayout, await this.template.ToMaui(this.template.DeviceLanguage()));
 
 			this.HumanReadableText = humanReadableTextLayout;
 			this.HasHumanReadableText = humanReadableTextLayout.Children.Count > 0;
@@ -1529,8 +1533,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			{
 				StyleId = Info.Parameter.Name,
 				ItemsSource = this.ParameterOptions,
-				Title = Info.Parameter.Guide,
-				HorizontalOptions = LayoutOptions.FillAndExpand
+				Title = Info.Parameter.Guide
 			};
 
 			this.Parameters?.Children.RemoveAt(EntryIndex);
