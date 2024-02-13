@@ -1,16 +1,27 @@
-﻿using Microsoft.Extensions.Localization;
-using NeuroAccessMaui.Resources.Languages;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Globalization;
 using System.Reflection;
+using System.Text;
+using Microsoft.Extensions.Localization;
+using NeuroAccessMaui.Resources.Languages;
 
 namespace NeuroAccessMaui.Services.Localization
 {
+	/// <summary>
+	/// Access to localized strings.
+	/// </summary>
 	[ContentProperty(nameof(Path))]
-	public class LocalizeExtension : IMarkupExtension<BindingBase>, INotifyPropertyChanged
+	public class LocalizeExtension : IMarkupExtension<BindingBase>, INotifyPropertyChanged, IDisposable
 	{
-		private IStringLocalizer? localizer;
+		private static readonly Dictionary<Type, Dictionary<string, bool>> missingStrings = [];
+		private static Timer? timer = null;
 
+		private IStringLocalizer? localizer;
+		private bool isDisposed;
+
+		/// <summary>
+		/// Localizer instance reference.
+		/// </summary>
 		public IStringLocalizer Localizer
 		{
 			get
@@ -38,57 +49,54 @@ namespace NeuroAccessMaui.Services.Localization
 
 			if (ResourcesType.GetRuntimeProperties().FirstOrDefault(pi => pi.Name == this.Path) is null)
 			{
-				ServiceRef.LogService.LogWarning($"No property found for '{this.Path}' in '{ResourcesType}'");
+				lock (missingStrings)
+				{
+					timer?.Dispose();
+					timer = null;
+
+					if (!missingStrings.TryGetValue(ResourcesType, out Dictionary<string, bool>? PerId))
+					{
+						PerId = [];
+						missingStrings[ResourcesType] = PerId;
+					}
+
+					PerId[this.Path] = true;
+
+					timer = new Timer(LogWarning, null, 1000, Timeout.Infinite);
+				}
+
 				return new Binding("Localizer[STRINGNOTDEFINED]", this.Mode, this.Converter, this.ConverterParameter, this.StringFormat, this);
 			}
 
 			return new Binding($"Localizer[{this.Path}]", this.Mode, this.Converter, this.ConverterParameter, this.StringFormat, this);
 		}
 
-		/*
-			public string Member { get; set; }
-
-			if (serviceProvider == null)
-				throw new ArgumentNullException(nameof(serviceProvider));
-			if (!(serviceProvider.GetService(typeof(IXamlTypeResolver)) is IXamlTypeResolver typeResolver))
-				throw new ArgumentException("No IXamlTypeResolver in IServiceProvider");
-			if (string.IsNullOrEmpty(Member) || Member.IndexOf(".", StringComparison.Ordinal) == -1)
-				throw new XamlParseException("Syntax for x:Static is [Member=][prefix:]typeName.staticMemberName", serviceProvider);
-
-			var dotIdx = Member.LastIndexOf('.');
-			var typename = Member.Substring(0, dotIdx);
-			var membername = Member.Substring(dotIdx + 1);
-
-			var type = typeResolver.Resolve(typename, serviceProvider);
-
-			var pinfo = type.GetRuntimeProperties().FirstOrDefault(pi => pi.Name == membername && pi.GetMethod.IsStatic);
-			if (pinfo != null)
-				return pinfo.GetMethod.Invoke(null, new object[] { });
-
-			var finfo = type.GetRuntimeFields().FirstOrDefault(fi => fi.Name == membername && fi.IsStatic);
-			if (finfo != null)
-				return finfo.GetValue(null);
-
-			throw new XamlParseException($"No static member found for {Member}", serviceProvider);
-		*/
-
-		/*
-		public override object ProvideValue(IServiceProvider serviceProvider)
+		private static void LogWarning(object? _)
 		{
-			if (serviceProvider == null)
-				throw new ArgumentNullException(nameof(serviceProvider));
+			StringBuilder sb = new();
 
-			if (Type == null || string.IsNullOrEmpty(Member) || Member.Contains("."))
-				throw new ArgumentException("Syntax for x:NameOf is Type={x:Type [className]} Member=[propertyName]");
+			sb.AppendLine("Missing localized strings:");
+			sb.AppendLine();
 
-			var pinfo = Type.GetRuntimeProperties().FirstOrDefault(pi => pi.Name == Member);
-			var finfo = Type.GetRuntimeFields().FirstOrDefault(fi => fi.Name == Member);
-			if (pinfo == null && finfo == null)
-				throw new ArgumentException($"No property or field found for {Member} in {Type}");
+			lock (missingStrings)
+			{
+				foreach (KeyValuePair<Type, Dictionary<string, bool>> P in missingStrings)
+				{
+					sb.AppendLine();
+					sb.AppendLine(P.Key.FullName);
+					sb.AppendLine(new string('-', (P.Key.FullName?.Length ?? 0) + 3));
+					sb.AppendLine();
 
-			return Member;
+					foreach (string Key in P.Value.Keys)
+					{
+						sb.Append("* ");
+						sb.AppendLine(Key);
+					}
+				}
+			}
+
+			ServiceRef.LogService.LogWarning(sb.ToString());
 		}
-		*/
 
 		public LocalizeExtension()
 		{
@@ -97,12 +105,34 @@ namespace NeuroAccessMaui.Services.Localization
 
 		~LocalizeExtension()
 		{
-			LocalizationManager.CurrentCultureChanged -= this.OnCurrentCultureChanged;
+			this.Dispose(false);
 		}
 
 		private void OnCurrentCultureChanged(object? sender, CultureInfo culture)
 		{
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.Localizer)));
+		}
+
+		/// <summary>
+		/// <see cref="IDisposable.Dispose"/>
+		/// </summary>
+		public void Dispose()
+		{
+			this.Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		/// <summary>
+		/// <see cref="IDisposable.Dispose"/>
+		/// </summary>
+		protected virtual void Dispose(bool disposing)
+		{
+			if (this.isDisposed)
+				return;
+
+			LocalizationManager.CurrentCultureChanged -= this.OnCurrentCultureChanged;
+
+			this.isDisposed = true;
 		}
 
 		public event PropertyChangedEventHandler? PropertyChanged;
