@@ -20,19 +20,19 @@
 			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
 
 				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-											 Style="{StaticResource ImageOnlyButtonStyle}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+											 Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-				<Label Style="{StaticResource PageTitleLabelStyle}" Text="{l:Localize Settings}"/>
+				<Label Style="{StaticResource PageTitleLabel}" Text="{l:Localize Settings}"/>
 
 				<!-- Display Settings -->
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-						<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize DisplaySettings}"/>
+						<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize DisplaySettings}"/>
 
 						<!-- Display Mode -->
 						<Frame Style="{StaticResource FrameSubSet}">
 							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-								<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize SelectDisplayMode}"/>
+								<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize SelectDisplayMode}"/>
 								<Grid RowDefinitions="auto,auto" ColumnDefinitions="auto,*,auto"
 										RadioButtonGroup.GroupName="DisplayMode"
 										RadioButtonGroup.SelectedValue="{Binding DisplayMode}">
@@ -51,7 +51,7 @@
 						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding ChangeLanguageCommand}">
 							<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True">
 								<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
-									<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize LanguageOptions}" InputTransparent="True"/>
+									<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize LanguageOptions}" InputTransparent="True"/>
 									<Label Style="{StaticResource KeyLabel}" Text="{l:Localize LanguageOptionsDescription}" InputTransparent="True"/>
 								</VerticalStackLayout>
 							</Frame>
@@ -62,13 +62,13 @@
 				<!-- Identity Settings -->
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-						<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize IdentitySettings}"/>
+						<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize IdentitySettings}"/>
 
 						<!-- Compromized -->
 						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding CompromiseCommand}">
 							<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True">
 								<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
-									<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize ReportAsCompromized}" InputTransparent="True"/>
+									<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize ReportAsCompromized}" InputTransparent="True"/>
 									<Label Style="{StaticResource KeyLabel}" Text="{l:Localize ReportAsCompromizedDescription}" InputTransparent="True"/>
 								</VerticalStackLayout>
 							</Frame>
@@ -78,7 +78,7 @@
 						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding RevokeCommand}">
 							<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True">
 								<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
-									<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize RevokeIdentity}" InputTransparent="True"/>
+									<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize RevokeIdentity}" InputTransparent="True"/>
 									<Label Style="{StaticResource KeyLabel}" Text="{l:Localize RevokeIdentityDescription}" InputTransparent="True"/>
 								</VerticalStackLayout>
 							</Frame>
@@ -90,13 +90,13 @@
 				<!-- Security Settings -->
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-						<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize SecuritySettings}"/>
+						<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize SecuritySettings}"/>
 
 						<!-- Change PIN -->
 						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding ChangePinCommand}">
 							<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True">
 								<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
-									<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize ChangePin}" InputTransparent="True"/>
+									<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize ChangePin}" InputTransparent="True"/>
 									<Label Style="{StaticResource KeyLabel}" Text="{l:Localize ChangePinDescription}" InputTransparent="True"/>
 								</VerticalStackLayout>
 							</Frame>
@@ -105,7 +105,7 @@
 						<!-- Local Authentication -->
 						<Frame Style="{StaticResource FrameSubSet}" IsVisible="{Binding CanUseAlternativeAuthenticationMethods}">
 							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-								<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize AuthenticationMethod}"/>
+								<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize AuthenticationMethod}"/>
 								<Grid RowDefinitions="auto,auto" ColumnDefinitions="auto,*,auto"
 										RadioButtonGroup.GroupName="AuthenticationMethod"
 										RadioButtonGroup.SelectedValue="{Binding AuthenticationMethod}">
@@ -126,7 +126,7 @@
 						<!-- Screen Capture -->
 						<Frame Style="{StaticResource FrameSubSet}" IsVisible="{Binding CanProhibitScreenCapture}">
 							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-								<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize ScreenRecording}"/>
+								<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize ScreenRecording}"/>
 								<Grid RowDefinitions="auto,auto" ColumnDefinitions="*,auto"
 										RadioButtonGroup.GroupName="ScreenRecording"
 										RadioButtonGroup.SelectedValue="{Binding ScreenCaptureMode}">

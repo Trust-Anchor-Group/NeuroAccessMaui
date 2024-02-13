@@ -15,7 +15,7 @@
 		<DataTemplate x:Key="SelectButtonDataTemplate" x:DataType="viewmodel:ButtonInfo">
 			<Border
 				Padding="0"
-				Style="{StaticResource ItemOuterBorderStyle}"
+				Style="{StaticResource ItemOuterBorder}"
 				BackgroundColor="{AppThemeBinding Light={StaticResource NormalBackgroundLight},
 												  Dark={StaticResource NormalBackgroundDark}}"
 				Stroke="{AppThemeBinding Light={StaticResource NormalForegroundLight},
@@ -33,7 +33,7 @@
 					<Border
 						Grid.Column="0"
 						VerticalOptions="FillAndExpand"
-						Style="{StaticResource InnerFrameBorderStyle}">
+						Style="{StaticResource InnerFrameBorder}">
 
 						<Border.Padding>
 							<Thickness
@@ -52,7 +52,7 @@
 
 					<Label x:Name="InnerLabel"
 						Grid.Column="1"
-						Style="{StaticResource BoldItemTitleLabelStyle}"
+						Style="{StaticResource BoldItemTitleLabel}"
 						LineBreakMode="WordWrap"
 						Text="{Binding LocalizedName}"
 						TextColor="{AppThemeBinding Light={StaticResource NormalForegroundLight},
@@ -90,7 +90,7 @@
 			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 				<Label
 					HorizontalOptions="Center"
-					Style="{StaticResource PageTitleLabelStyle}"
+					Style="{StaticResource PageTitleLabel}"
 					Text="{l:Localize OnboardingProviderPageTitle}" />
 
 				<HorizontalStackLayout
@@ -139,7 +139,7 @@
 
 		<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 			<Label
-				Style="{StaticResource SectionTitleLabelStyle}"
+				Style="{StaticResource SectionTitleLabel}"
 				Text="{l:Localize ProviderSectionTitle}" />
 
 			<VerticalStackLayout x:Name="PurposesContainer"
@@ -187,7 +187,7 @@
 
 		<controls:TextButton
 			Command="{Binding ContinueCommand}"
-			Style="{StaticResource FilledTextButtonStyle}"
+			Style="{StaticResource FilledTextButton}"
 			LabelData="{l:Localize Continue}" />
 	</VerticalStackLayout>
 

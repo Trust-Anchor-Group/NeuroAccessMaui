@@ -21,36 +21,36 @@
 		<ScrollView>
 			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
 
-				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{StaticResource ImageOnlyButtonStyle}"
+				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{StaticResource ImageOnlyButton}"
 											 PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-				<Label Style="{StaticResource PageTitleLabelStyle}" Text="{l:Localize Petition}"/>
+				<Label Style="{StaticResource PageTitleLabel}" Text="{l:Localize Petition}"/>
 
 				<!-- Photo and QR-code -->
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout>
 
 						<Label HorizontalOptions="Center" VerticalOptions="CenterAndExpand" Text="{l:Localize PetitionSignatureInformationText}"
-								 Style="{StaticResource InfoLabelStyle}" />
+								 Style="{StaticResource InfoLabel}" />
 
 						<Label HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="Large" Text="{l:Localize Purpose}"
-								 Style="{StaticResource SectionTitleLabelStyle}" />
+								 Style="{StaticResource SectionTitleLabel}" />
 
-						<Label Style="{StaticResource InfoLabelStyle}" Text="{Binding Path=Purpose}" />
+						<Label Style="{StaticResource InfoLabel}" Text="{Binding Path=Purpose}" />
 
 						<Label HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="Large" Text="{l:Localize LegalId}"
-								 Style="{StaticResource SectionTitleLabelStyle}" />
+								 Style="{StaticResource SectionTitleLabel}" />
 
 						<VerticalStackLayout Margin="{StaticResource LargeMargins}" Spacing="{StaticResource SmallSpacing}"
 													HorizontalOptions="Center" VerticalOptions="Center" 
 													IsVisible="{Binding FirstPhotoSource, Converter={converters:OnlyShowNonEmpty}}">
-							<Border Style="{StaticResource OutlinedImageButtonBorderStyle}" Padding="0">
+							<Border Style="{StaticResource OutlinedImageButtonBorder}" Padding="0">
 								<Image Source="{Binding FirstPhotoSource}" Rotation="{Binding FirstPhotoRotation}"
 										 WidthRequest="250" Aspect="AspectFit" HorizontalOptions="Center" Margin="0"/>
 							</Border>
 							<VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="0">
-								<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding FullName}" HorizontalOptions="Center" Margin="0" Padding="0" />
-								<Label Style="{StaticResource InfoLabelStyle}" Text="{Binding PersonalNumber}" HorizontalOptions="Center" Margin="0" Padding="0" />
+								<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding FullName}" HorizontalOptions="Center" Margin="0" Padding="0" />
+								<Label Style="{StaticResource InfoLabel}" Text="{Binding PersonalNumber}" HorizontalOptions="Center" Margin="0" Padding="0" />
 							</VerticalStackLayout>
 						</VerticalStackLayout>
 
@@ -74,7 +74,7 @@
 				<!-- Personal Information -->
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-						<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize PersonalInformation}"/>
+						<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize PersonalInformation}"/>
 
 						<Grid VerticalOptions="StartAndExpand" RowSpacing="0">
 							<Grid.ColumnDefinitions>
@@ -166,7 +166,7 @@
 				<!-- Organizational Information -->
 				<Frame Style="{StaticResource FrameSet}" IsVisible="{Binding HasOrg}">
 					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-						<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize OrganizationalInformation}"/>
+						<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize OrganizationalInformation}"/>
 
 						<Grid VerticalOptions="StartAndExpand" RowSpacing="0">
 							<Grid.ColumnDefinitions>
@@ -226,7 +226,7 @@
 				<!-- Technical Information -->
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-						<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize Technical}"/>
+						<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize Technical}"/>
 
 						<Grid VerticalOptions="StartAndExpand" RowSpacing="0">
 							<Grid.ColumnDefinitions>
@@ -280,16 +280,16 @@
 
 				<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource SmallSpacing}">
 					<Label HorizontalOptions="Center" VerticalOptions="CenterAndExpand" Text="{l:Localize Options}"
-							 FontSize="Large" Style="{StaticResource SectionTitleLabelStyle}"/>
+							 FontSize="Large" Style="{StaticResource SectionTitleLabel}"/>
 
 					<controls:TextButton x:Name="AcceptButton" LabelData="{l:Localize Accept}" Command="{Binding AcceptCommand}"
-												Style="{StaticResource FilledTextButtonStyle}" />
+												Style="{StaticResource FilledTextButton}" />
 
 					<controls:TextButton x:Name="DeclineButton" LabelData="{l:Localize Decline}" Command="{Binding DeclineCommand}"
-												Style="{StaticResource FilledTextButtonStyle}" />
+												Style="{StaticResource FilledTextButton}" />
 
 					<controls:TextButton x:Name="IgnoreButton" LabelData="{l:Localize Ignore}" Command="{Binding IgnoreCommand}"
-												Style="{StaticResource FilledTextButtonStyle}" />
+												Style="{StaticResource FilledTextButton}" />
 				</VerticalStackLayout>
 			</VerticalStackLayout>
 		</ScrollView>

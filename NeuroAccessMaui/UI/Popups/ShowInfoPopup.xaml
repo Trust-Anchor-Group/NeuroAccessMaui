@@ -15,12 +15,12 @@
 	</mopups:PopupPage.Animation>
 
 	<Grid
-		Style="{StaticResource PopupGridStyle}">
+		Style="{StaticResource PopupGrid}">
 
 		<Border
 			WidthRequest="{Binding ViewWidthRequest}"
 			MaximumHeightRequest="{Binding MaximumViewHeightRequest}"
-			Style="{StaticResource PopupBorderStyle}">
+			Style="{StaticResource PopupBorder}">
 
 			<ScrollView
 				VerticalOptions="Center">
@@ -32,7 +32,7 @@
 
 						<Label
 							HorizontalTextAlignment="Center"
-							Style="{StaticResource PageTitleLabelStyle}"
+							Style="{StaticResource PageTitleLabel}"
 							Text="{Binding InfoTitle}" />
 
 						<Label
@@ -42,7 +42,7 @@
 					<controls:TextButton
 						Command="{Binding CloseCommand}"
 						LabelData="{l:Localize Close}"
-						Style="{StaticResource FilledTextButtonStyle}" />
+						Style="{StaticResource FilledTextButton}" />
 				</VerticalStackLayout>
 			</ScrollView>
 		</Border>

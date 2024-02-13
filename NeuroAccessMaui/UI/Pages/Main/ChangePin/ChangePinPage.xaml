@@ -20,15 +20,15 @@
 			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
 
 				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-											 Style="{StaticResource ImageOnlyButtonStyle}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+											 Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-				<Label Style="{StaticResource PageTitleLabelStyle}" Text="{l:Localize SecuritySettings}" />
+				<Label Style="{StaticResource PageTitleLabel}" Text="{l:Localize SecuritySettings}" />
 
 				<Frame Style="{StaticResource FrameSet}">
 
 					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 
-						<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize ChangePin}" />
+						<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize ChangePin}" />
 
 						<VerticalStackLayout>
 							<Label Style="{StaticResource KeyLabel}" Text="{l:Localize EnterCurrentPin}"/>
@@ -36,7 +36,7 @@
 							<!-- TODO: For some reason, using Rounded Corners fails, and the entire sub-view is invisible. -->
 
 							<controls:CompositeEntry x:Name="OldPinEntry"
-															 Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}"
+															 Style="{StaticResource RegularCompositeEntryNoRoundedCorners}"
 															 EntryData="{Binding OldPin}"
 															 IsPassword="True">
 								<controls:CompositeEntry.Behaviors>
@@ -51,7 +51,7 @@
 							<!-- TODO: For some reason, using Rounded Corners fails, and the entire sub-view is invisible. -->
 
 							<controls:CompositeEntry x:Name="NewPinEntry"
-															 Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}"
+															 Style="{StaticResource RegularCompositeEntryNoRoundedCorners}"
 															 EntryData="{Binding NewPin}"
 															 IsPassword="True">
 								<controls:CompositeEntry.Behaviors>
@@ -80,7 +80,7 @@
 							<!-- TODO: For some reason, using Rounded Corners fails, and the entire sub-view is invisible. -->
 
 							<controls:CompositeEntry x:Name="NewPinEntry2"
-															 Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}"
+															 Style="{StaticResource RegularCompositeEntryNoRoundedCorners}"
 															 EntryData="{Binding NewPin2}"
 															 IsPassword="True"
 															 ReturnCommand="{Binding ChangePinCommand}">
@@ -113,13 +113,13 @@
 						<!-- TODO: For some reason, using Rounded Corners fails, and the entire sub-view is invisible. -->
 
 						<controls:TextButton x:Name="ChangePinButton" Command="{Binding ChangePinCommand}"
-													Style="{StaticResource FilledTextButtonStyleNoRoundedCorners}"
+													Style="{StaticResource FilledTextButtonNoRoundedCorners}"
 													LabelData="{l:Localize Change}" />
 
 						<!-- TODO: For some reason, using Rounded Corners fails, and the entire sub-view is invisible. -->
 
 						<controls:TextButton Command="{Binding GoBackCommand}"
-													Style="{StaticResource OutlinedTextButtonStyleNoRoundedCorners}"
+													Style="{StaticResource OutlinedTextButtonNoRoundedCorners}"
 													LabelData="{l:Localize Cancel}" />
 
 					</VerticalStackLayout>

@@ -15,7 +15,7 @@
 		<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
 
 			<Label
-				Style="{StaticResource PageTitleLabelStyle}"
+				Style="{StaticResource PageTitleLabel}"
 				Text="{l:Localize OnboardingEmailPageTitle}" />
 
 			<Label Text="{l:Localize OnboardingEmailPageDetails}" />
@@ -23,11 +23,11 @@
 			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 
 				<Label
-					Style="{StaticResource SectionTitleLabelStyle}"
+					Style="{StaticResource SectionTitleLabel}"
 					Text="{l:Localize EmailSectionTitle}" />
 
 				<controls:CompositeEntry x:Name="EmailEntry"
-					Style="{StaticResource RegularCompositeEntryStyle}"
+					Style="{StaticResource RegularCompositeEntry}"
 					EntryData="{Binding EmailText}"
 					PathData="{x:Static ui:Geometries.EmailIconPath}">
 					<controls:CompositeEntry.Behaviors>
@@ -63,7 +63,7 @@
 
 		<controls:TextButton
 			Command="{Binding SendCodeCommand}"
-			Style="{StaticResource FilledTextButtonStyle}"
+			Style="{StaticResource FilledTextButton}"
 			LabelData="{Binding LocalizedSendCodeText}" />
 	</VerticalStackLayout>
 </base:BaseRegistrationView>

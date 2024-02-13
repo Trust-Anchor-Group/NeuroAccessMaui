@@ -22,7 +22,7 @@
 												  Dark={StaticResource NormalBackgroundDark}}"
 				Stroke="{AppThemeBinding Light={StaticResource NormalForegroundLight},
 										 Dark={StaticResource NormalBackgroundDark}}"
-				Style="{StaticResource ItemOuterBorderStyle}">
+				Style="{StaticResource ItemOuterBorder}">
 				<Border.GestureRecognizers>
 					<TapGestureRecognizer
 						Command="{Binding SelectLanguageCommand, Source={x:Reference ThisPage}}"
@@ -31,7 +31,7 @@
 
 				<Label x:Name="InnerLabel"
 					HorizontalOptions="Center"
-					Style="{StaticResource BoldItemTitleLabelStyle}"
+					Style="{StaticResource BoldItemTitleLabel}"
 					Text="{Binding MyNativeName}"
 					TextColor="{AppThemeBinding Light={StaticResource NormalForegroundLight},
 												Dark={StaticResource NormalForegroundDark}}" />
@@ -55,11 +55,11 @@
 		</DataTemplate>
 	</VisualElement.Resources>
 
-	<Grid Style="{StaticResource PopupGridStyle}">
+	<Grid Style="{StaticResource PopupGrid}">
 
 		<Border WidthRequest="{Binding ViewWidthRequest}"
 				  MaximumHeightRequest="{Binding MaximumViewHeightRequest}"
-				  Style="{StaticResource PopupBorderStyle}">
+				  Style="{StaticResource PopupBorder}">
 
 			<ScrollView x:Name="InnerScrollView"
 							VerticalOptions="Center">

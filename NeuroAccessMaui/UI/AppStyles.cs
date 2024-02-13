@@ -93,11 +93,11 @@ namespace NeuroAccessMaui.UI
 		/// <summary>
 		/// Style of section title labels
 		/// </summary>
-		public static Style SectionTitleLabelStyle
+		public static Style SectionTitleLabel
 		{
 			get
 			{
-				sectionTitleLabelStyle ??= TryGetResource<Style>("SectionTitleLabelStyle");
+				sectionTitleLabelStyle ??= TryGetResource<Style>("SectionTitleLabel");
 				return sectionTitleLabelStyle!;
 			}
 		}
@@ -153,11 +153,11 @@ namespace NeuroAccessMaui.UI
 		/// <summary>
 		/// Style of information labels
 		/// </summary>
-		public static Style InfoLabelStyle
+		public static Style InfoLabel
 		{
 			get
 			{
-				infoLabelStyle ??= TryGetResource<Style>("InfoLabelStyle");
+				infoLabelStyle ??= TryGetResource<Style>("InfoLabel");
 				return infoLabelStyle!;
 			}
 		}

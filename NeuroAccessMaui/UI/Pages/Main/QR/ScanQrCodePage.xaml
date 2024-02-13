@@ -20,9 +20,9 @@
 
 				<Grid Padding="{StaticResource LargeMargins}">
 					<VerticalStackLayout VerticalOptions="Start" Spacing="{StaticResource LargeSpacing}">
-						<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{StaticResource TransparentImageButtonStyle}"
+						<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{StaticResource TransparentImageButton}"
 													 PathData="{x:Static ui:Geometries.BackButtonPath}" />
-						<Label HorizontalOptions="Center" HorizontalTextAlignment="Center" Style="{StaticResource PageTitleLabelStyle}"
+						<Label HorizontalOptions="Center" HorizontalTextAlignment="Center" Style="{StaticResource PageTitleLabel}"
 								 Text="{Binding LocalizedQrPageTitle}" TextColor="{StaticResource PrimaryBackgroundLight}" />
 					</VerticalStackLayout>
 
@@ -41,11 +41,11 @@
 								</BindableLayout.ItemTemplate>
 							</FlexLayout>
 																		
-							<Label HorizontalOptions="Center" HorizontalTextAlignment="Center" Style="{StaticResource SectionTitleLabelStyle}"
+							<Label HorizontalOptions="Center" HorizontalTextAlignment="Center" Style="{StaticResource SectionTitleLabel}"
 									 Text="{l:Localize QrSectionTitleSingular}" TextColor="{StaticResource PrimaryBackgroundLight}"
 									 IsVisible="{Binding SingleIcon}"/>
 
-							<Label HorizontalOptions="Center" HorizontalTextAlignment="Center" Style="{StaticResource SectionTitleLabelStyle}"
+							<Label HorizontalOptions="Center" HorizontalTextAlignment="Center" Style="{StaticResource SectionTitleLabel}"
 									 Text="{l:Localize QrSectionTitlePlural}" TextColor="{StaticResource PrimaryBackgroundLight}"
 									 IsVisible="{Binding MultipleIcons}"/>
 						</VerticalStackLayout>
@@ -53,21 +53,21 @@
 						<HorizontalStackLayout HorizontalOptions="Center" Spacing="{StaticResource LargeSpacing}">
 							<controls:ImageButton
 								Command="{Binding PickPhotoCommand, Source={x:Reference ThisPage}}"
-								Style="{StaticResource TransparentImageButtonStyle}"
+								Style="{StaticResource TransparentImageButton}"
 								PathData="{x:Static ui:Geometries.CameraImageButtonPath}" />
 
 							<controls:ImageButton
 								Command="{Binding SwitchTorchCommand, Source={x:Reference ThisPage}}"
-								Style="{StaticResource TransparentImageButtonStyle}"
+								Style="{StaticResource TransparentImageButton}"
 								PathData="{x:Static ui:Geometries.CameraTorchButtonPath}" />
 
 							<controls:ImageButton
 								Command="{Binding SwitchCameraCommand, Source={x:Reference ThisPage}}"
-								Style="{StaticResource TransparentImageButtonStyle}"
+								Style="{StaticResource TransparentImageButton}"
 								PathData="{x:Static ui:Geometries.CameraSwitchButtonPath}" />
 						</HorizontalStackLayout>
 
-						<controls:TextButton Command="{Binding Path=SwitchModeCommand, Source={x:Reference ThisPage}}" Style="{StaticResource TransparentTextButtonStyle}"
+						<controls:TextButton Command="{Binding Path=SwitchModeCommand, Source={x:Reference ThisPage}}" Style="{StaticResource TransparentTextButton}"
 													LabelData="{l:Localize QrEnterManually}" />
 					</VerticalStackLayout>
 				</Grid>
@@ -79,7 +79,7 @@
 					<Grid.Padding>
 						<Thickness Left="{StaticResource LargeSpacing}" Top="{StaticResource LargeSpacing}" Right="{StaticResource LargeSpacing}" />
 					</Grid.Padding>
-					<controls:ImageButton Command="{Binding GoBackCommand}" Style="{StaticResource ImageOnlyButtonStyle}" />
+					<controls:ImageButton Command="{Binding GoBackCommand}" Style="{StaticResource ImageOnlyButton}" />
 				</Grid>
 
 				<ScrollView Grid.Row="1">
@@ -87,13 +87,13 @@
 
 						<VerticalStackLayout Grid.Row="0" Spacing="{StaticResource SmallSpacing}">
 							<Label HorizontalOptions="FillAndExpand" Text="{l:Localize QrScanUri}" />
-							<controls:CompositeEntry x:Name="LinkEntry" Style="{StaticResource RegularCompositeEntryStyle}" EntryData="{Binding Path=ManualText}" />
+							<controls:CompositeEntry x:Name="LinkEntry" Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=ManualText}" />
 						</VerticalStackLayout>
 
 						<VerticalStackLayout Grid.Row="1" Spacing="{StaticResource MediumSpacing}">
-							<controls:TextButton Command="{Binding OpenUrlCommand}" Style="{StaticResource FilledTextButtonStyle}" LabelData="{l:Localize Open}" />
+							<controls:TextButton Command="{Binding OpenUrlCommand}" Style="{StaticResource FilledTextButton}" LabelData="{l:Localize Open}" />
 							<controls:TextButton Grid.Row="1" Command="{Binding Path=SwitchModeCommand, Source={x:Reference ThisPage}}"
-														Style="{StaticResource OutlinedTextButtonStyle}" LabelData="{l:Localize QrScanCode}" />
+														Style="{StaticResource OutlinedTextButton}" LabelData="{l:Localize QrScanCode}" />
 						</VerticalStackLayout>
 					</Grid>
 				</ScrollView>

@@ -1000,7 +1000,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					rolesLayout.Children.Add(new Label
 					{
 						Text = Role.Name,
-						Style = AppStyles.SectionTitleLabelStyle,
+						Style = AppStyles.SectionTitleLabel,
 						StyleId = Role.Name
 					});
 
@@ -1029,7 +1029,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				ParametersLayout.Children.Add(new Label
 				{
 					Text = ServiceRef.Localizer[nameof(AppResources.Parameters)],
-					Style = AppStyles.SectionTitleLabelStyle
+					Style = AppStyles.SectionTitleLabel
 				});
 			}
 

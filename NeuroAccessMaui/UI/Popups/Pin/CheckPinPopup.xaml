@@ -17,26 +17,26 @@
 											PositionIn="Center" PositionOut="Center" />
 	</mopups:PopupPage.Animation>
 
-	<Grid Style="{StaticResource PopupGridStyle}">
+	<Grid Style="{StaticResource PopupGrid}">
 
-		<Border WidthRequest="{Binding ViewWidthRequest}" MaximumHeightRequest="{Binding MaximumViewHeightRequest}" Style="{StaticResource PopupBorderStyle}">
+		<Border WidthRequest="{Binding ViewWidthRequest}" MaximumHeightRequest="{Binding MaximumViewHeightRequest}" Style="{StaticResource PopupBorder}">
 			<ScrollView x:Name="InnerScrollView" VerticalOptions="Center">
 				<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
 
-					<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize EnterPin}" />
+					<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize EnterPin}" />
 
 					<controls:CompositeEntry x:Name="PinEntry"
-													 Style="{StaticResource RegularCompositeEntryStyle}"
+													 Style="{StaticResource RegularCompositeEntry}"
 													 EntryData="{Binding PinText}"
 													 IsPassword="True"
 													 ReturnCommand="{Binding EnterPinCommand}"/>
 
 					<controls:TextButton Command="{Binding EnterPinCommand}"
-												Style="{StaticResource FilledTextButtonStyle}"
+												Style="{StaticResource FilledTextButton}"
 												LabelData="{l:Localize Enter}" />
 
 					<controls:TextButton Command="{Binding CancelCommand}"
-												Style="{StaticResource OutlinedTextButtonStyle}"
+												Style="{StaticResource OutlinedTextButton}"
 												LabelData="{l:Localize Cancel}" />
 
 				</VerticalStackLayout>

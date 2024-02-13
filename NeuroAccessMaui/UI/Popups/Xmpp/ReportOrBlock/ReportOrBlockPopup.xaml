@@ -17,13 +17,13 @@
 											PositionIn="Center" PositionOut="Center" />
 	</mopups:PopupPage.Animation>
 
-	<Grid Style="{StaticResource PopupGridStyle}">
+	<Grid Style="{StaticResource PopupGrid}">
 
-		<Border WidthRequest="{Binding ViewWidthRequest}" MaximumHeightRequest="{Binding MaximumViewHeightRequest}" Style="{StaticResource PopupBorderStyle}">
+		<Border WidthRequest="{Binding ViewWidthRequest}" MaximumHeightRequest="{Binding MaximumViewHeightRequest}" Style="{StaticResource PopupBorder}">
 			<ScrollView x:Name="InnerScrollView" VerticalOptions="Center">
 				<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
 
-					<Label Text="{l:Localize FurtherAction}" Style="{StaticResource SectionTitleLabelStyle}" />
+					<Label Text="{l:Localize FurtherAction}" Style="{StaticResource SectionTitleLabel}" />
 
 					<Label>
 						<Label.FormattedText>
@@ -42,15 +42,15 @@
 					</Label>
 
 					<controls:TextButton Command="{Binding BlockCommand}"
-												Style="{StaticResource FilledTextButtonStyle}"
+												Style="{StaticResource FilledTextButton}"
 												LabelData="{l:Localize Block}" />
 
 					<controls:TextButton Command="{Binding ReportCommand}"
-												Style="{StaticResource FilledTextButtonStyle}"
+												Style="{StaticResource FilledTextButton}"
 												LabelData="{l:Localize Report}" />
 
 					<controls:TextButton Command="{Binding IgnoreCommand}"
-												Style="{StaticResource OutlinedTextButtonStyle}"
+												Style="{StaticResource OutlinedTextButton}"
 												LabelData="{l:Localize NoJustIgnore}" />
 				</VerticalStackLayout>
 			</ScrollView>

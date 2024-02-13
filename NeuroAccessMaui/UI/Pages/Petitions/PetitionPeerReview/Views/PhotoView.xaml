@@ -10,13 +10,13 @@
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview">
 	<VerticalStackLayout>
 		<VerticalStackLayout Margin="{StaticResource LargeMargins}" HorizontalOptions="Center" VerticalOptions="Center" Spacing="{StaticResource SmallSpacing}">
-			<Border Style="{StaticResource OutlinedImageButtonBorderStyle}" Padding="0">
+			<Border Style="{StaticResource OutlinedImageButtonBorder}" Padding="0">
 				<Image Source="{Binding FirstPhotoSource}" Rotation="{Binding FirstPhotoRotation}"
 						 WidthRequest="250" Aspect="AspectFit" HorizontalOptions="Center" Margin="0"/>
 			</Border>
 			<VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="0">
-				<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding FullName}" HorizontalOptions="Center" Margin="0" Padding="0" />
-				<Label Style="{StaticResource InfoLabelStyle}" Text="{Binding PersonalNumberWithFlag}" HorizontalOptions="Center" Margin="0" Padding="0" />
+				<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding FullName}" HorizontalOptions="Center" Margin="0" Padding="0" />
+				<Label Style="{StaticResource InfoLabel}" Text="{Binding PersonalNumberWithFlag}" HorizontalOptions="Center" Margin="0" Padding="0" />
 			</VerticalStackLayout>
 		</VerticalStackLayout>
 
@@ -33,10 +33,10 @@
 		</Grid>
 
 		<Grid ColumnDefinitions="*,*" RowDefinitions="auto" ColumnSpacing="{StaticResource SmallSpacing}">
-			<controls:TextButton Command="{Binding DeclineCommand}" Style="{StaticResource OutlinedTextButtonStyleNoRoundedCorners}"
+			<controls:TextButton Command="{Binding DeclineCommand}" Style="{StaticResource OutlinedTextButtonNoRoundedCorners}"
 										LabelData="{l:Localize Reject}" Grid.Column="0" />
 
-			<controls:TextButton Command="{Binding AcceptPhotoCommand}" Style="{StaticResource FilledTextButtonStyleNoRoundedCorners}"
+			<controls:TextButton Command="{Binding AcceptPhotoCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
 										LabelData="{l:Localize Continue}" Grid.Column="1" />
 		</Grid>
 	</VerticalStackLayout>

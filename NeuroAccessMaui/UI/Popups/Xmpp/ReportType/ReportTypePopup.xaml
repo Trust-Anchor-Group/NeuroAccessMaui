@@ -17,13 +17,13 @@
 											PositionIn="Center" PositionOut="Center" />
 	</mopups:PopupPage.Animation>
 
-	<Grid Style="{StaticResource PopupGridStyle}">
+	<Grid Style="{StaticResource PopupGrid}">
 
-		<Border WidthRequest="{Binding ViewWidthRequest}" MaximumHeightRequest="{Binding MaximumViewHeightRequest}" Style="{StaticResource PopupBorderStyle}">
+		<Border WidthRequest="{Binding ViewWidthRequest}" MaximumHeightRequest="{Binding MaximumViewHeightRequest}" Style="{StaticResource PopupBorder}">
 			<ScrollView x:Name="InnerScrollView" VerticalOptions="Center">
 				<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
 
-					<Label Text="{l:Localize TypeOfReport}" Style="{StaticResource SectionTitleLabelStyle}" />
+					<Label Text="{l:Localize TypeOfReport}" Style="{StaticResource SectionTitleLabel}" />
 
 					<Label>
 						<Label.FormattedText>
@@ -36,19 +36,19 @@
 					</Label>
 
 					<controls:TextButton Command="{Binding SpamCommand}"
-												Style="{StaticResource FilledTextButtonStyle}"
+												Style="{StaticResource FilledTextButton}"
 												LabelData="{l:Localize Spam}" />
 
 					<controls:TextButton Command="{Binding AbuseCommand}"
-												Style="{StaticResource FilledTextButtonStyle}"
+												Style="{StaticResource FilledTextButton}"
 												LabelData="{l:Localize Abuse}" />
 
 					<controls:TextButton Command="{Binding OtherCommand}"
-												Style="{StaticResource FilledTextButtonStyle}"
+												Style="{StaticResource FilledTextButton}"
 												LabelData="{l:Localize Other}" />
 
 					<controls:TextButton Command="{Binding IgnoreCommand}"
-												Style="{StaticResource OutlinedTextButtonStyle}"
+												Style="{StaticResource OutlinedTextButton}"
 												LabelData="{l:Localize NoJustIgnore}" />
 				</VerticalStackLayout>
 			</ScrollView>

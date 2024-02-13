@@ -20,10 +20,10 @@
 		<ScrollView>
 			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
 
-				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{StaticResource ImageOnlyButtonStyle}"
+				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{StaticResource ImageOnlyButton}"
 											 PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-				<Label Style="{StaticResource PageTitleLabelStyle}" Text="{l:Localize TransferId}"/>
+				<Label Style="{StaticResource PageTitleLabel}" Text="{l:Localize TransferId}"/>
 
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout>

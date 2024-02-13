@@ -14,15 +14,15 @@
 	<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
 		<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
 
-			<Label Style="{StaticResource PageTitleLabelStyle}" Text="{l:Localize OnboardingDefinePinPageTitle}" />
+			<Label Style="{StaticResource PageTitleLabel}" Text="{l:Localize OnboardingDefinePinPageTitle}" />
 			<Label Text="{l:Localize OnboardingDefinePinPageDetails}" />
 
 			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 
-				<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize DefinePinSectionTitle1}" />
+				<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize DefinePinSectionTitle1}" />
 
 				<controls:CompositeEntry x:Name="PinEntry1"
-												 Style="{StaticResource RegularCompositeEntryStyle}"
+												 Style="{StaticResource RegularCompositeEntry}"
 												 EntryData="{Binding PinText1}"
 												 IsPassword="True"/>
 
@@ -51,10 +51,10 @@
 
 			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 					
-				<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize DefinePinSectionTitle2}" />
+				<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize DefinePinSectionTitle2}" />
 
 				<controls:CompositeEntry x:Name="PinEntry2"
-												 Style="{StaticResource RegularCompositeEntryStyle}"
+												 Style="{StaticResource RegularCompositeEntry}"
 												 EntryData="{Binding PinText2}"
 												 IsPassword="True"/>
 
@@ -79,7 +79,7 @@
 			</VerticalStackLayout>
 		</VerticalStackLayout>
 
-		<controls:TextButton Style="{StaticResource FilledTextButtonStyle}"
+		<controls:TextButton Style="{StaticResource FilledTextButton}"
 									Command="{Binding ContinueCommand}"
 									LabelData="{l:Localize CreatePin}" />
 		 

@@ -18,7 +18,7 @@
 			</VerticalStackLayout>
 		</ScrollView>
 
-		<controls:TextButton VerticalOptions="End" Command="{Binding CopyToClipboardCommand}" Style="{StaticResource FilledTextButtonStyle}"
+		<controls:TextButton VerticalOptions="End" Command="{Binding CopyToClipboardCommand}" Style="{StaticResource FilledTextButton}"
 									LabelData="{l:Localize CopyToClipboard}" />
 	</Grid>
 </base:BaseContentPage>

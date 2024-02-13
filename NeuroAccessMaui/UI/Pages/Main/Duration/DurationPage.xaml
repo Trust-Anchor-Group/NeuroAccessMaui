@@ -21,9 +21,9 @@
 			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
 
 				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-											 Style="{StaticResource ImageOnlyButtonStyle}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+											 Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-				<Label Style="{StaticResource PageTitleLabelStyle}" Text="{l:Localize Duration}"/>
+				<Label Style="{StaticResource PageTitleLabel}" Text="{l:Localize Duration}"/>
 
 				<Frame Style="{StaticResource FrameSet}">
 
@@ -32,9 +32,9 @@
 							Padding="{StaticResource SmallSpacing}">
 
 						<controls:TextButton Grid.Column="0" Grid.Row="0" Command="{Binding PlusMinusCommand}"
-													Style="{StaticResource FilledTextButtonStyleNoRoundedCorners}" LabelData="±" />
+													Style="{StaticResource FilledTextButtonNoRoundedCorners}" LabelData="±" />
 
-						<Border Style="{StaticResource OutlinedImageButtonBorderStyle}" Padding="0" Grid.Column="1" Grid.Row="0">
+						<Border Style="{StaticResource OutlinedImageButtonBorder}" Padding="0" Grid.Column="1" Grid.Row="0">
 							<Label Style="{StaticResource ValueLabel}" Text="{Binding Value, Converter={converters:DurationToString}}"
 									 LineBreakMode="WordWrap"/>
 						</Border>
@@ -49,27 +49,27 @@
 						<!-- TODO:  Keyboard="Numeric" on entries -->
 							  
 						<controls:CompositeEntry Grid.Column="1" Grid.Row="1"
-														 Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}"
+														 Style="{StaticResource RegularCompositeEntryNoRoundedCorners}"
 														 BackgroundColor="{Binding YearsOk, Converter={converters:ControlBgColor}}"
 														 EntryData="{Binding Years}" />
 						<controls:CompositeEntry Grid.Column="1" Grid.Row="2"
-														 Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" 
+														 Style="{StaticResource RegularCompositeEntryNoRoundedCorners}" 
 														 BackgroundColor="{Binding MonthsOk, Converter={converters:ControlBgColor}}"
 				   									 EntryData="{Binding Months}" />
 						<controls:CompositeEntry Grid.Column="1" Grid.Row="3"
-														 Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" 
+														 Style="{StaticResource RegularCompositeEntryNoRoundedCorners}" 
 														 BackgroundColor="{Binding DaysOk, Converter={converters:ControlBgColor}}"
 				   									 EntryData="{Binding Days}" />
 						<controls:CompositeEntry Grid.Column="1" Grid.Row="4"
-														 Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" 
+														 Style="{StaticResource RegularCompositeEntryNoRoundedCorners}" 
 														 BackgroundColor="{Binding HoursOk, Converter={converters:ControlBgColor}}"
 				   									 EntryData="{Binding Hours}" />
 						<controls:CompositeEntry Grid.Column="1" Grid.Row="5"
-														 Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" 
+														 Style="{StaticResource RegularCompositeEntryNoRoundedCorners}" 
 														 BackgroundColor="{Binding MinutesOk, Converter={converters:ControlBgColor}}"
 				   									 EntryData="{Binding Minutes}" />
 						<controls:CompositeEntry Grid.Column="1" Grid.Row="6"
-														 Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" 
+														 Style="{StaticResource RegularCompositeEntryNoRoundedCorners}" 
 														 BackgroundColor="{Binding SecondsOk, Converter={converters:ControlBgColor}}"
 				   									 EntryData="{Binding Seconds}" />
 					</Grid>

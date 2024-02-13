@@ -24,14 +24,14 @@
 					Padding="{StaticResource SmallMargins}">
 					
 				<Label Grid.Column="0" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="End" FontAutoScalingEnabled="False"
-						 LineBreakMode="NoWrap" Style="{StaticResource RegularItemTitleLabelStyle}" Text="{Binding DialCode}"
+						 LineBreakMode="NoWrap" Style="{StaticResource RegularItemTitleLabel}" Text="{Binding DialCode}"
 						 TextColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
 
-				<Label Grid.Column="1" Style="{StaticResource RegularItemTitleLabelStyle}" Text="{Binding EmojiInfo.Unicode}"
+				<Label Grid.Column="1" Style="{StaticResource RegularItemTitleLabel}" Text="{Binding EmojiInfo.Unicode}"
 						 TextColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
 
 				<Label Grid.Column="2" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Start" LineBreakMode="NoWrap"
-						 Style="{StaticResource RegularItemTitleLabelStyle}" Text="{Binding Name}"
+						 Style="{StaticResource RegularItemTitleLabel}" Text="{Binding Name}"
 						 TextColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
 
 				<VisualStateManager.VisualStateGroups>
@@ -48,8 +48,8 @@
 		</DataTemplate>
 	</VisualElement.Resources>
 
-	<Grid Style="{StaticResource PopupGridStyle}">
-		<Border HeightRequest="{Binding MaximumViewHeightRequest}" WidthRequest="{Binding ViewWidthRequest}" Style="{StaticResource PopupBorderStyle}">
+	<Grid Style="{StaticResource PopupGrid}">
+		<Border HeightRequest="{Binding MaximumViewHeightRequest}" WidthRequest="{Binding ViewWidthRequest}" Style="{StaticResource PopupBorder}">
 			<Grid VerticalOptions="Fill" RowDefinitions="auto,*" RowSpacing="{StaticResource SmallSpacing}">
 				<SearchBar x:Name="InnerSearchBar" Grid.Row="0" Placeholder="{l:Localize SearchByCountry}" TextChanged="SearchBar_TextChanged" />
 				<CollectionView x:Name="InnerListView" Grid.Row="1" VerticalOptions="Fill" ItemSizingStrategy="MeasureFirstItem"

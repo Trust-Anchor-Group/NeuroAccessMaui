@@ -17,13 +17,13 @@
 											PositionIn="Center" PositionOut="Center" />
 	</mopups:PopupPage.Animation>
 
-	<Grid Style="{StaticResource PopupGridStyle}">
+	<Grid Style="{StaticResource PopupGrid}">
 
-		<Border WidthRequest="{Binding ViewWidthRequest}" MaximumHeightRequest="{Binding MaximumViewHeightRequest}" Style="{StaticResource PopupBorderStyle}">
+		<Border WidthRequest="{Binding ViewWidthRequest}" MaximumHeightRequest="{Binding MaximumViewHeightRequest}" Style="{StaticResource PopupBorder}">
 			<ScrollView x:Name="InnerScrollView" VerticalOptions="Center">
 				<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
 
-					<Label Text="{l:Localize RemoveSubscription}" Style="{StaticResource SectionTitleLabelStyle}" />
+					<Label Text="{l:Localize RemoveSubscription}" Style="{StaticResource SectionTitleLabel}" />
 
 					<Label>
 						<Label.FormattedText>
@@ -38,11 +38,11 @@
 					</Label>
 
 					<controls:TextButton Command="{Binding YesCommand}"
-												Style="{StaticResource FilledTextButtonStyle}"
+												Style="{StaticResource FilledTextButton}"
 												LabelData="{l:Localize Yes}" />
 
 					<controls:TextButton Command="{Binding NoCommand}"
-												Style="{StaticResource OutlinedTextButtonStyle}"
+												Style="{StaticResource OutlinedTextButton}"
 												LabelData="{l:Localize No}" />
 
 				</VerticalStackLayout>

@@ -21,16 +21,16 @@
 		<ScrollView>
 			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
 
-				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{StaticResource ImageOnlyButtonStyle}"
+				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{StaticResource ImageOnlyButton}"
 											 PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-				<Label Style="{StaticResource PageTitleLabelStyle}" Text="{l:Localize IdentityInformation}"/>
-				<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize IdentityInformationInfoText}"/>
+				<Label Style="{StaticResource PageTitleLabel}" Text="{l:Localize IdentityInformation}"/>
+				<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize IdentityInformationInfoText}"/>
 
 				<!-- Personal Information -->
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-						<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize PersonalInformation}"/>
+						<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize PersonalInformation}"/>
 
 						<Grid VerticalOptions="StartAndExpand" RowSpacing="0">
 							<Grid.ColumnDefinitions>
@@ -102,7 +102,7 @@
 				<!-- Organizational Information -->
 				<Frame Style="{StaticResource FrameSet}" IsVisible="{Binding HasOrg}">
 					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-						<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize OrganizationalInformation}"/>
+						<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize OrganizationalInformation}"/>
 
 						<Grid VerticalOptions="StartAndExpand" RowSpacing="0">
 							<Grid.ColumnDefinitions>
@@ -162,7 +162,7 @@
 				<!-- Signature Information -->
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-						<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize Signature}"/>
+						<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize Signature}"/>
 						<Label Text="{l:Localize ClientSignatureInformationInfoText}"/>
 
 						<Grid VerticalOptions="StartAndExpand" RowSpacing="0">

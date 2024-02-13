@@ -17,16 +17,16 @@
 											PositionIn="Center" PositionOut="Center" />
 	</mopups:PopupPage.Animation>
 
-	<Grid Style="{StaticResource PopupGridStyle}">
+	<Grid Style="{StaticResource PopupGrid}">
 
-		<Border WidthRequest="{Binding ViewWidthRequest}" MaximumHeightRequest="{Binding MaximumViewHeightRequest}" Style="{StaticResource PopupBorderStyle}">
+		<Border WidthRequest="{Binding ViewWidthRequest}" MaximumHeightRequest="{Binding MaximumViewHeightRequest}" Style="{StaticResource PopupBorder}">
 			<ScrollView x:Name="InnerScrollView" VerticalOptions="Center">
 				<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
 
-					<Label Text="{l:Localize TextNote}" Style="{StaticResource SectionTitleLabelStyle}" />
+					<Label Text="{l:Localize TextNote}" Style="{StaticResource SectionTitleLabel}" />
 
 					<controls:CompositeEntry x:Name="NoteEntry"
-													 Style="{StaticResource RegularCompositeEntryStyle}"
+													 Style="{StaticResource RegularCompositeEntry}"
 													 EntryData="{Binding TextNote}"
 													 ReturnCommand="{Binding AddNoteCommand}"/>
 
@@ -36,11 +36,11 @@
 					</HorizontalStackLayout>
 
 					<controls:TextButton Command="{Binding AddNoteCommand}"
-												Style="{StaticResource FilledTextButtonStyle}"
+												Style="{StaticResource FilledTextButton}"
 												LabelData="{l:Localize Add}" />
 
 					<controls:TextButton Command="{Binding CancelCommand}"
-												Style="{StaticResource OutlinedTextButtonStyle}"
+												Style="{StaticResource OutlinedTextButton}"
 												LabelData="{l:Localize Cancel}" />
 
 				</VerticalStackLayout>

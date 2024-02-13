@@ -18,9 +18,9 @@
 		<ScrollView>
 			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
 				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-											 Style="{StaticResource ImageOnlyButtonStyle}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+											 Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-				<Label Text="{l:Localize EDalerNote}" Style="{StaticResource PageTitleLabelStyle}"/>
+				<Label Text="{l:Localize EDalerNote}" Style="{StaticResource PageTitleLabel}"/>
 
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
@@ -53,7 +53,7 @@
 						<Label Text="{Binding Path=Message}" IsVisible="{Binding Path=HasMessage}" VerticalOptions="Start"/>
 						<!-- BUTTONS -->
 						<controls:TextButton LabelData="{l:Localize Accept}" Command="{Binding Path=AcceptCommand}"
-													Style="{StaticResource FilledTextButtonStyleNoRoundedCorners}"
+													Style="{StaticResource FilledTextButtonNoRoundedCorners}"
 													Margin="{StaticResource DefaultBottomOnlyMargin}"/>
 					</VerticalStackLayout>
 				</Frame>

@@ -21,10 +21,10 @@
 		<ScrollView>
 			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
 
-				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{StaticResource ImageOnlyButtonStyle}"
+				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{StaticResource ImageOnlyButton}"
 											 PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-				<Label Style="{StaticResource PageTitleLabelStyle}" Text="{Binding Title}"/>
+				<Label Style="{StaticResource PageTitleLabel}" Text="{Binding Title}"/>
 
 				<!-- Photo and QR-code -->
 				<Frame Style="{StaticResource FrameSet}">

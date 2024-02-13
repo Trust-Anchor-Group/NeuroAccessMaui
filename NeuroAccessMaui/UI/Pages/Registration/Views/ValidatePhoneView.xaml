@@ -15,7 +15,7 @@
 		<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
 
 			<Label
-				Style="{StaticResource PageTitleLabelStyle}"
+				Style="{StaticResource PageTitleLabel}"
 				Text="{l:Localize OnboardingPhonePageTitle}" />
 
 			<Label Text="{l:Localize OnboardingPhonePageDetails}" />
@@ -23,12 +23,12 @@
 			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 
 				<Label
-					Style="{StaticResource SectionTitleLabelStyle}"
+					Style="{StaticResource SectionTitleLabel}"
 					Text="{l:Localize PhoneSectionTitle}" />
 
 				<Border
 					Padding="{StaticResource EditMediumMargins}"
-					Style="{StaticResource ItemOuterBorderStyle}"
+					Style="{StaticResource ItemOuterBorder}"
 					BackgroundColor="{AppThemeBinding Light={StaticResource NormalEditBackgroundLight},
 													  Dark={StaticResource NormalEditBackgroundDark}}"
 					Stroke="{AppThemeBinding Light={StaticResource NormalEditForegroundLight},
@@ -105,7 +105,7 @@
 
 		<controls:TextButton
 			Command="{Binding SendCodeCommand}"
-			Style="{StaticResource FilledTextButtonStyle}"
+			Style="{StaticResource FilledTextButton}"
 			LabelData="{Binding LocalizedSendCodeText}" />
 	</VerticalStackLayout>
 </base:BaseRegistrationView>

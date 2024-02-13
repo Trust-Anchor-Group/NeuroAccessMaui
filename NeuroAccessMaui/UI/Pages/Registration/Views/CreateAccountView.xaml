@@ -30,18 +30,18 @@
 			<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
 
 				<Label
-					Style="{StaticResource PageTitleLabelStyle}"
+					Style="{StaticResource PageTitleLabel}"
 					Text="{l:Localize OnboardingAccountPageTitle}" />
 
 				<Label Text="{l:Localize OnboardingAccountPageDetails}" />
 
 				<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 					<Label
-						Style="{StaticResource SectionTitleLabelStyle}"
+						Style="{StaticResource SectionTitleLabel}"
 						Text="{l:Localize AccountSectionTitle}" />
 
 					<controls:CompositeEntry x:Name="AccountEntry"
-						Style="{StaticResource RegularCompositeEntryStyle}"
+						Style="{StaticResource RegularCompositeEntry}"
 						EntryData="{Binding AccountText}"
 						PathData="{x:Static ui:Geometries.AccountIconPath}" />
 
@@ -92,7 +92,7 @@
 
 			<controls:TextButton
 				Command="{Binding CreateAccountCommand}"
-				Style="{StaticResource FilledTextButtonStyle}"
+				Style="{StaticResource FilledTextButton}"
 				LabelData="{l:Localize Create}" />
 		</VerticalStackLayout>
 	</Grid>

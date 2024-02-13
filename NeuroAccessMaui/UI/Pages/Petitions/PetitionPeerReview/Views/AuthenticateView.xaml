@@ -11,17 +11,17 @@
 	<VerticalStackLayout>
 		<Grid ColumnDefinitions="auto,auto" RowDefinitions="auto" ColumnSpacing="{StaticResource MediumSpacing}" Margin="{StaticResource LargeMargins}"
 				HorizontalOptions="Center" VerticalOptions="Center">
-			<Border Style="{StaticResource OutlinedImageButtonBorderStyle}" Padding="0" Grid.Column="0">
+			<Border Style="{StaticResource OutlinedImageButtonBorder}" Padding="0" Grid.Column="0">
 				<Image Source="{Binding MyFirstPhotoSource}" Rotation="{Binding MyFirstPhotoRotation}"
 						 WidthRequest="75" Aspect="AspectFit" HorizontalOptions="Center" Margin="0"/>
 			</Border>
 			<VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="0" Grid.Column="1">
-				<Label Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding MyFullName}" HorizontalOptions="Center" Margin="0" Padding="0" />
-				<Label Style="{StaticResource InfoLabelStyle}" Text="{Binding MyPersonalNumberWithFlag}" HorizontalOptions="Center" Margin="0" Padding="0" />
+				<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding MyFullName}" HorizontalOptions="Center" Margin="0" Padding="0" />
+				<Label Style="{StaticResource InfoLabel}" Text="{Binding MyPersonalNumberWithFlag}" HorizontalOptions="Center" Margin="0" Padding="0" />
 			</VerticalStackLayout>
 		</Grid>
 
-		<Label HorizontalOptions="Center" Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize ConcludeReview}"/>
+		<Label HorizontalOptions="Center" Style="{StaticResource SectionTitleLabel}" Text="{l:Localize ConcludeReview}"/>
 		<Label HorizontalOptions="Center" Text="{Binding FullName}"/>
 		<Label HorizontalOptions="Center" Text="{Binding PeerReviewAuthenticationText}" Margin="{StaticResource MediumMargins}"/>
 
@@ -31,10 +31,10 @@
 		<VerticalStackLayout HeightRequest="{StaticResource MediumSpacing}"/>
 
 		<Grid ColumnDefinitions="*,*" RowDefinitions="auto" ColumnSpacing="{StaticResource SmallSpacing}">
-			<controls:TextButton Command="{Binding DeclineCommand}" Style="{StaticResource OutlinedTextButtonStyleNoRoundedCorners}"
+			<controls:TextButton Command="{Binding DeclineCommand}" Style="{StaticResource OutlinedTextButtonNoRoundedCorners}"
 										LabelData="{l:Localize Reject}" Grid.Column="0" />
 
-			<controls:TextButton Command="{Binding AuthenticateReviewerCommand}" Style="{StaticResource FilledTextButtonStyleNoRoundedCorners}"
+			<controls:TextButton Command="{Binding AuthenticateReviewerCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
 										LabelData="{l:Localize AuthenticateAndSign}" Grid.Column="1"/>
 		</Grid>
 	</VerticalStackLayout>

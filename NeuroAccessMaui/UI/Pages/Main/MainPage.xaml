@@ -31,14 +31,14 @@
 			</VerticalStackLayout>
 
 			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Grid.Row="1" VerticalOptions="End">
-				<controls:TextButton Command="{Binding ScanQrCodeCommand}" Style="{StaticResource FilledTextButtonStyle}" LabelData="{l:Localize QrScanCode}" />
-				<Label Text="{l:Localize ScanQrCodeLabel}" HorizontalTextAlignment="Center" LineBreakMode="WordWrap" Style="{StaticResource InfoLabelStyle}" />
+				<controls:TextButton Command="{Binding ScanQrCodeCommand}" Style="{StaticResource FilledTextButton}" LabelData="{l:Localize QrScanCode}" />
+				<Label Text="{l:Localize ScanQrCodeLabel}" HorizontalTextAlignment="Center" LineBreakMode="WordWrap" Style="{StaticResource InfoLabel}" />
 			</VerticalStackLayout>
 
 		</Grid>
 
 		<controls:ImageButton Grid.Row="2" Command="{Binding Path=ViewIdCommand}" PathData="{x:Static ui:Geometries.ArrowUpPath}"
-									 Style="{StaticResource ExpanderButtonStyle}"/>
+									 Style="{StaticResource ExpanderButton}"/>
 
 		<Grid.GestureRecognizers>
 			<SwipeGestureRecognizer Direction="Up" Swiped="SwipeGestureRecognizer_Swiped"/>

@@ -13,7 +13,7 @@
 
 	<VisualElement.Resources>
 		<DataTemplate x:Key="SelectPurposeDataTemplate" x:DataType="viewmodel:PurposeInfo">
-			<Border Padding="0" Style="{StaticResource ItemOuterBorderStyle}"
+			<Border Padding="0" Style="{StaticResource ItemOuterBorder}"
 					  BackgroundColor="{AppThemeBinding Light={StaticResource NormalBackgroundLight}, Dark={StaticResource NormalBackgroundDark}}"
 					  Stroke="{AppThemeBinding Light={StaticResource NormalForegroundLight}, Dark={StaticResource NormalBackgroundDark}}">
 					
@@ -23,7 +23,7 @@
 
 				<Grid RowDefinitions="auto" ColumnDefinitions="*,auto">
 
-					<Label x:Name="InnerLabel" Grid.Column="0" Style="{StaticResource BoldItemTitleLabelStyle}" Text="{Binding LocalizedName}"
+					<Label x:Name="InnerLabel" Grid.Column="0" Style="{StaticResource BoldItemTitleLabel}" Text="{Binding LocalizedName}"
 							 TextColor="{AppThemeBinding Light={StaticResource NormalForegroundLight}, Dark={StaticResource NormalForegroundDark}}">
 
 						<Label.Padding>
@@ -31,7 +31,7 @@
 						</Label.Padding>
 					</Label>
 
-					<Border Grid.Column="1" VerticalOptions="FillAndExpand" Style="{StaticResource InnerFrameBorderStyle}">
+					<Border Grid.Column="1" VerticalOptions="FillAndExpand" Style="{StaticResource InnerFrameBorder}">
 
 						<Border.Padding>
 							<Thickness Left="{StaticResource MediumSpacing}" Right="{StaticResource MediumSpacing}" />
@@ -66,19 +66,19 @@
 	<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
 
 		<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
-			<Label Style="{StaticResource PageTitleLabelStyle}" Text="{l:Localize OnboardingPurposePageTitle}" />
+			<Label Style="{StaticResource PageTitleLabel}" Text="{l:Localize OnboardingPurposePageTitle}" />
 			<Label Text="{l:Localize OnboardingPurposePageDetails}" />
 		</VerticalStackLayout>
 
 		<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-			<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize PurposesSectionTitle}" />
+			<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize PurposesSectionTitle}" />
 
 			<VerticalStackLayout x:Name="PurposesContainer" Spacing="{StaticResource MediumSpacing}"
 										BindableLayout.ItemTemplate="{StaticResource SelectPurposeDataTemplate}"
 										BindableLayout.ItemsSource="{Binding Purposes}" />
 		</VerticalStackLayout>
 
-		<controls:TextButton Command="{Binding ContinueCommand}" Style="{StaticResource FilledTextButtonStyle}" LabelData="{l:Localize Continue}" />
+		<controls:TextButton Command="{Binding ContinueCommand}" Style="{StaticResource FilledTextButton}" LabelData="{l:Localize Continue}" />
 	</VerticalStackLayout>
 
 </base:BaseRegistrationView>

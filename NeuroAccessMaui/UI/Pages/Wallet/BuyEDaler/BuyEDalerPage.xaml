@@ -18,9 +18,9 @@
 		<ScrollView>
 			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
 				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-											 Style="{StaticResource ImageOnlyButtonStyle}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+											 Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-				<Label Text="{l:Localize BuyEDaler}" Style="{StaticResource PageTitleLabelStyle}"/>
+				<Label Text="{l:Localize BuyEDaler}" Style="{StaticResource PageTitleLabel}"/>
 
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
@@ -32,7 +32,7 @@
 									 Placeholder="{Binding Path=Currency}"/>
 
 							<controls:TextButton Grid.Column="1" Grid.Row="0" WidthRequest="40" HeightRequest="40" LabelData="🖩"
-														Style="{StaticResource FilledTextButtonStyleNoRoundedCorners}"
+														Style="{StaticResource FilledTextButtonNoRoundedCorners}"
 														Command="{Binding OpenCalculatorCommand}" CommandParameter="AmountText" />
 						</Grid>
 						<controls:TextButton LabelData="{l:Localize Buy}" Command="{Binding Path=BuyCommand}"

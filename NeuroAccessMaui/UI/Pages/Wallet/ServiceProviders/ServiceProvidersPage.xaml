@@ -16,13 +16,13 @@
 			<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding SelectServiceProviderCommand}">
 				<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True">
 					<Grid ColumnDefinitions="auto,*" RowDefinitions="auto">
-						<Border Grid.Column="0" Style="{StaticResource OutlinedImageButtonBorderStyle}" Padding="0">
+						<Border Grid.Column="0" Style="{StaticResource OutlinedImageButtonBorder}" Padding="0">
 							<Image Source="{Binding IconUrlSource}" Aspect="AspectFill"
 									 HeightRequest="{Binding IconHeight}" WidthRequest="{Binding IconWidth}"
 									 MinimumHeightRequest="{Binding IconHeight}" MinimumWidthRequest="{Binding IconWidth}"/>
 						</Border>
 						<Label Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" LineBreakMode="CharacterWrap"
-							    TextType="Text" Text="{Binding Path=Name}" Style="{StaticResource InfoLabelStyle}"/>
+							    TextType="Text" Text="{Binding Path=Name}" Style="{StaticResource InfoLabel}"/>
 					</Grid>
 				</Frame>
 			</controls:TemplatedButton>
@@ -30,7 +30,7 @@
 		<DataTemplate x:Key="ShowImage" x:DataType="viewmodel:ServiceProviderViewModel">
 			<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding SelectServiceProviderCommand}">
 				<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True" HorizontalOptions="Center">
-					<Border Grid.Column="0" Style="{StaticResource OutlinedImageButtonBorderStyle}" Padding="0">
+					<Border Grid.Column="0" Style="{StaticResource OutlinedImageButtonBorder}" Padding="0">
 						<Image Source="{Binding IconUrlSource}" Aspect="AspectFill"
 								 HeightRequest="{Binding IconHeight}" WidthRequest="{Binding IconWidth}" 
 								 MinimumHeightRequest="{Binding IconHeight}" MinimumWidthRequest="{Binding IconWidth}"/>
@@ -42,7 +42,7 @@
 			<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding SelectServiceProviderCommand}">
 				<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True" HorizontalOptions="Center">
 					<Label HorizontalOptions="Center" VerticalOptions="Center" LineBreakMode="CharacterWrap"
-							 TextType="Text" Text="{Binding Path=Name}" Style="{StaticResource InfoLabelStyle}"
+							 TextType="Text" Text="{Binding Path=Name}" Style="{StaticResource InfoLabel}"
 							 HeightRequest="150" MinimumHeightRequest="150"/>
 				</Frame>
 			</controls:TemplatedButton>
@@ -66,9 +66,9 @@
 		<ScrollView>
 			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
 				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-											 Style="{StaticResource ImageOnlyButtonStyle}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+											 Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-				<Label Text="{Binding Path=Title}" Style="{StaticResource PageTitleLabelStyle}"/>
+				<Label Text="{Binding Path=Title}" Style="{StaticResource PageTitleLabel}"/>
 
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">

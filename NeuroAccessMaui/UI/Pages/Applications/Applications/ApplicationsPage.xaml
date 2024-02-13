@@ -20,9 +20,9 @@
 			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
 
 				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-											 Style="{StaticResource ImageOnlyButtonStyle}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+											 Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-				<Label Style="{StaticResource PageTitleLabelStyle}" Text="{l:Localize Applications}"/>
+				<Label Style="{StaticResource PageTitleLabel}" Text="{l:Localize Applications}"/>
 
 				<!-- Identity Applications -->
 				<Frame Style="{StaticResource FrameSet}">
@@ -30,13 +30,13 @@
 						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}"
 												IsVisible="{Binding IdentityApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
 
-							<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize IdentityApplications}"/>
+							<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize IdentityApplications}"/>
 
 							<!-- Apply for Personal ID -->
 							<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding ApplyPersonalIdCommand}">
 								<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True">
 									<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
-										<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize PersonalId}" InputTransparent="True"/>
+										<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize PersonalId}" InputTransparent="True"/>
 										<Label Style="{StaticResource KeyLabel}" Text="{l:Localize PersonalIdDescription}" InputTransparent="True"/>
 									</VerticalStackLayout>
 								</Frame>
@@ -46,7 +46,7 @@
 							<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding ApplyOrganizationalIdCommand}">
 								<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True">
 									<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
-										<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize OrganizationalId}" InputTransparent="True"/>
+										<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize OrganizationalId}" InputTransparent="True"/>
 										<Label Style="{StaticResource KeyLabel}" Text="{l:Localize OrganizationalIdDescription}" InputTransparent="True"/>
 									</VerticalStackLayout>
 								</Frame>
@@ -55,13 +55,13 @@
 						</VerticalStackLayout>
 
 						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" IsVisible="{Binding IdentityApplicationSent}">
-							<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize IdentityApplications}"/>
+							<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize IdentityApplications}"/>
 
 							<!-- View Identity Application -->
 							<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding ViewIdApplicationCommand}">
 								<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True">
 									<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
-										<Label Style="{StaticResource SectionTitleLabelStyle}" Text="{l:Localize ViewIdApplication}" InputTransparent="True"/>
+										<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize ViewIdApplication}" InputTransparent="True"/>
 										<Label Style="{StaticResource KeyLabel}" Text="{l:Localize ViewIdApplicationDescription}" InputTransparent="True"/>
 									</VerticalStackLayout>
 								</Frame>

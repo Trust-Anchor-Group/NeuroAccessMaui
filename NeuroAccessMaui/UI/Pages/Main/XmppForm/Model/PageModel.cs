@@ -97,7 +97,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.XmppForm.Model
 					return new Label()
 					{
 						Text = FixedField.ValueString,
-						Style = AppStyles.InfoLabelStyle,
+						Style = AppStyles.InfoLabel,
 						LineBreakMode = LineBreakMode.WordWrap
 					};
 				}
@@ -288,7 +288,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.XmppForm.Model
 					Layout.Children.Add(new Label()
 					{
 						Text = Section.Label,
-						Style = AppStyles.SectionTitleLabelStyle,
+						Style = AppStyles.SectionTitleLabel,
 						LineBreakMode = LineBreakMode.WordWrap
 					});
 				}
@@ -316,7 +316,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.XmppForm.Model
 				return new Label()
 				{
 					Text = Text.Text,
-					Style = AppStyles.InfoLabelStyle,
+					Style = AppStyles.InfoLabel,
 					LineBreakMode = LineBreakMode.WordWrap
 				};
 			}

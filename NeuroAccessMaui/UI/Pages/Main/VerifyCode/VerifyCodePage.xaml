@@ -16,7 +16,7 @@
 		<ResourceDictionary>
 			<Style x:Key="PopupTitleLabelStyle"
 				ApplyToDerivedTypes="False"
-				BasedOn="{StaticResource PageTitleLabelStyle}"
+				BasedOn="{StaticResource PageTitleLabel}"
 				TargetType="Label">
 				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SecondaryForegroundLight}, Dark={StaticResource SecondaryForegroundDark}}" />
 				<Setter Property="FontFamily" Value="SpaceGroteskBold" />
@@ -29,9 +29,9 @@
 				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SecondaryForegroundLight}, Dark={StaticResource SecondaryForegroundDark}}" />
 			</Style>
 
-			<Style x:Key="PopupSectionTitleLabelStyle"
+			<Style x:Key="PopupSectionTitleLabel"
 				ApplyToDerivedTypes="False"
-				BasedOn="{StaticResource SectionTitleLabelStyle}"
+				BasedOn="{StaticResource SectionTitleLabel}"
 				TargetType="Label">
 				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SecondaryForegroundLight}, Dark={StaticResource SecondaryForegroundDark}}" />
 			</Style>
@@ -78,7 +78,7 @@
 			<Grid.Padding>
 				<Thickness Left="{StaticResource LargeSpacing}" Top="{StaticResource LargeSpacing}" Right="{StaticResource LargeSpacing}" />
 			</Grid.Padding>
-			<controls:ImageButton Command="{Binding GoBackCommand}" Style="{StaticResource ImageOnlyButtonStyle}" />
+			<controls:ImageButton Command="{Binding GoBackCommand}" Style="{StaticResource ImageOnlyButton}" />
 		</Grid>
 
 		<ScrollView Grid.Row="1">
@@ -95,7 +95,7 @@
 							<Label Style="{StaticResource PopupDetailsLabelStyle}" Text="{Binding LocalizedVerifyCodePageDetails}" />
 							<Grid>
 								<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-									<Label Style="{StaticResource PopupSectionTitleLabelStyle}" Text="{l:Localize VerifyCodeSectionTitle}" />
+									<Label Style="{StaticResource PopupSectionTitleLabel}" Text="{l:Localize VerifyCodeSectionTitle}" />
 									<Grid RowDefinitions="auto" ColumnDefinitions="auto,*,auto,*,auto,*,auto,*,auto,*,auto" ColumnSpacing="0">
 										<Grid.GestureRecognizers>
 											<TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
@@ -137,10 +137,10 @@
 
 					<VerticalStackLayout Grid.Row="1" Spacing="{StaticResource MediumSpacing}">
 						<controls:TextButton HorizontalOptions="FillAndExpand" Command="{Binding VerifyCommand}"
-													Style="{StaticResource FilledTextButtonStyle}" LabelData="{l:Localize Verify}" />
+													Style="{StaticResource FilledTextButton}" LabelData="{l:Localize Verify}" />
 
 						<controls:TextButton HorizontalOptions="FillAndExpand" Command="{Binding CodeVerification.ResendCodeCommand}"
-													Style="{StaticResource OutlinedTextButtonStyle}" LabelData="{Binding LocalizedResendCodeText}" />
+													Style="{StaticResource OutlinedTextButton}" LabelData="{Binding LocalizedResendCodeText}" />
 					</VerticalStackLayout>
 				</Grid>
 			</Grid>
