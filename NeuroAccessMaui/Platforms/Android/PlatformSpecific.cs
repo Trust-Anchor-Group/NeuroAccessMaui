@@ -2,7 +2,7 @@
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
-using Android.Gms.Extensions;
+//using Android.Gms.Extensions;
 using Android.Graphics;
 using Android.OS;
 using Android.Renderscripts;
@@ -12,7 +12,7 @@ using Android.Views.InputMethods;
 using AndroidX.Biometric;
 using AndroidX.Fragment.App;
 using AndroidX.Lifecycle;
-using Firebase.Messaging;
+//using Firebase.Messaging;	// TODO: Firebase
 using Java.Util.Concurrent;
 using NeuroAccessMaui.Services.Push;
 using Waher.Events;
@@ -576,7 +576,7 @@ namespace NeuroAccessMaui.Services
 
 			try
 			{
-				Token = await FirebaseMessaging.Instance.GetToken().AsAsync<Java.Lang.Object>();
+				Token = string.Empty;   // await FirebaseMessaging.Instance.GetToken().AsAsync<Java.Lang.Object>();		// TODO: Firebase
 			}
 			catch (Exception ex)
 			{
