@@ -51,7 +51,6 @@ using NeuroAccessMaui.UI.Pages.Wallet.SendPayment;
 using NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenDetails;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenEvents;
-using NeuroAccessMaui.UI.Popups;
 using NeuroAccessMaui.UI.Popups.Photos.Image;
 using NeuroAccessMaui.UI.Popups.Pin;
 using NeuroAccessMaui.UI.Popups.Tokens.AddTextNote;
