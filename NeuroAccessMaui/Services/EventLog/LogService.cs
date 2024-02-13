@@ -13,36 +13,59 @@ namespace NeuroAccessMaui.Services.EventLog
 		private string bareJid = string.Empty;
 		private bool repairRequested = false;
 
-		public void AddListener(IEventSink eventSink)
+		/// <summary>
+		/// Adds an <see cref="IEventSink"/> to the log service. Any listeners will be called
+		/// whenever any log event occurs.
+		/// </summary>
+		/// <param name="EventSink">The listener to add.</param>
+		public void AddListener(IEventSink EventSink)
 		{
-			if (eventSink is XmppEventSink xmppEventSink)
+			if (EventSink is XmppEventSink xmppEventSink)
 				this.bareJid = xmppEventSink.Client?.BareJID ?? string.Empty;
 
 			foreach (IEventSink Sink in Log.Sinks)
 			{
-				if (Sink == eventSink)
+				if (Sink == EventSink)
 					return;
 			}
 
-			Log.Register(eventSink);
+			Log.Register(EventSink);
 		}
 
-		public void RemoveListener(IEventSink eventSink)
+		/// <summary>
+		/// Removes an <see cref="IEventSink"/> to the log service.
+		/// </summary>
+		/// <param name="EventSink">The listener to remove.</param>
+		public void RemoveListener(IEventSink EventSink)
 		{
-			if (eventSink is not null)
-				Log.Unregister(eventSink);
+			if (EventSink is not null)
+				Log.Unregister(EventSink);
 		}
 
+		/// <summary>
+		/// Invoke this method to add a warning statement to the log.
+		/// </summary>
+		/// <param name="Message">Warning message.</param>
+		/// <param name="Tags">Tags to log together with message.</param>
 		public void LogWarning(string Message, params KeyValuePair<string, object?>[] Tags)
 		{
 			Log.Warning(Message, string.Empty, this.bareJid, this.GetParameters(Tags).ToArray());
 		}
 
+		/// <summary>
+		/// Invoke this method to add an <see cref="Exception"/> entry to the log.
+		/// </summary>
+		/// <param name="ex">Exception object</param>
 		public void LogException(Exception ex)
 		{
 			this.LogException(ex, []);
 		}
 
+		/// <summary>
+		/// Invoke this method to add an <see cref="Exception"/> entry to the log.
+		/// </summary>
+		/// <param name="ex">The exception to log.</param>
+		/// <param name="extraParameters">Any extra parameters that are added to the log.</param>
 		public void LogException(Exception ex, params KeyValuePair<string, object?>[] extraParameters)
 		{
 			ex = Log.UnnestException(ex);
@@ -54,6 +77,16 @@ namespace NeuroAccessMaui.Services.EventLog
 				this.repairRequested = true;
 				Task.Run(RestartForRepair);
 			}
+		}
+
+		/// <summary>
+		/// Invoke this method to add an alert statement to the log.
+		/// </summary>
+		/// <param name="Message">Alert message.</param>
+		/// <param name="Tags">Tags to log together with message.</param>
+		public void LogAlert(string Message, params KeyValuePair<string, object?>[] Tags)
+		{
+			Log.Alert(Message, string.Empty, this.bareJid, this.GetParameters(Tags).ToArray());
 		}
 
 		private static async Task RestartForRepair()
@@ -74,9 +107,14 @@ namespace NeuroAccessMaui.Services.EventLog
 			}
 		}
 
-		public void SaveExceptionDump(string title, string stackTrace)
+		/// <summary>
+		/// Saves an exception dump to disc, completely offline. A last resort operation.
+		/// </summary>
+		/// <param name="Title">The title of the stack trace.</param>
+		/// <param name="StackTrace">The actual stack trace.</param>
+		public void SaveExceptionDump(string Title, string StackTrace)
 		{
-			stackTrace = Log.CleanStackTrace(stackTrace);
+			StackTrace = Log.CleanStackTrace(StackTrace);
 
 			string contents;
 			string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), startupCrashFileName);
@@ -86,9 +124,13 @@ namespace NeuroAccessMaui.Services.EventLog
 			else
 				contents = string.Empty;
 
-			File.WriteAllText(fileName, title + Environment.NewLine + stackTrace + Environment.NewLine + contents);
+			File.WriteAllText(fileName, Title + Environment.NewLine + StackTrace + Environment.NewLine + contents);
 		}
 
+		/// <summary>
+		/// Restores any exception dump that has previously been persisted with the <see cref="SaveExceptionDump"/> method.
+		/// </summary>
+		/// <returns>The exception dump, if it exists, or <c>null</c>.</returns>
 		public string LoadExceptionDump()
 		{
 			string contents;
@@ -102,6 +144,9 @@ namespace NeuroAccessMaui.Services.EventLog
 			return contents;
 		}
 
+		/// <summary>
+		/// Removes any exception dump from disc, if it exists.
+		/// </summary>
 		public void DeleteExceptionDump()
 		{
 			string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), startupCrashFileName);
@@ -110,7 +155,11 @@ namespace NeuroAccessMaui.Services.EventLog
 				File.Delete(fileName);
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Gets a list of extra parameters that are useful when logging: Platform, RuntimeVersion, AppVersion.
+		/// </summary>
+		/// <param name="Tags">Extra tags</param>
+		/// <returns>Parameters</returns>
 		public IList<KeyValuePair<string, object?>> GetParameters(params KeyValuePair<string, object?>[] Tags)
 		{
 			List<KeyValuePair<string, object?>> Result =

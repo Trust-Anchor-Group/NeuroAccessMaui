@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Text;
 using Microsoft.Extensions.Localization;
 using NeuroAccessMaui.Resources.Languages;
+using Waher.Events;
 
 namespace NeuroAccessMaui.Services.Localization
 {
@@ -13,11 +14,22 @@ namespace NeuroAccessMaui.Services.Localization
 	[ContentProperty(nameof(Path))]
 	public class LocalizeExtension : IMarkupExtension<BindingBase>, INotifyPropertyChanged, IDisposable
 	{
-		private static readonly Dictionary<Type, Dictionary<string, bool>> missingStrings = [];
+		private static readonly Dictionary<Type, SortedDictionary<string, bool>> missingStrings = [];
 		private static Timer? timer = null;
 
 		private IStringLocalizer? localizer;
 		private bool isDisposed;
+
+		static LocalizeExtension()
+		{
+			Log.Terminating += Log_Terminating;
+		}
+
+		private static void Log_Terminating(object? sender, EventArgs e)
+		{
+			timer?.Dispose();
+			timer = null;
+		}
 
 		/// <summary>
 		/// Localizer instance reference.
@@ -54,7 +66,7 @@ namespace NeuroAccessMaui.Services.Localization
 					timer?.Dispose();
 					timer = null;
 
-					if (!missingStrings.TryGetValue(ResourcesType, out Dictionary<string, bool>? PerId))
+					if (!missingStrings.TryGetValue(ResourcesType, out SortedDictionary<string, bool>? PerId))
 					{
 						PerId = [];
 						missingStrings[ResourcesType] = PerId;
@@ -62,7 +74,7 @@ namespace NeuroAccessMaui.Services.Localization
 
 					PerId[this.Path] = true;
 
-					timer = new Timer(LogWarning, null, 1000, Timeout.Infinite);
+					timer = new Timer(LogAlert, null, 1000, Timeout.Infinite);
 				}
 
 				return new Binding("Localizer[STRINGNOTDEFINED]", this.Mode, this.Converter, this.ConverterParameter, this.StringFormat, this);
@@ -71,7 +83,7 @@ namespace NeuroAccessMaui.Services.Localization
 			return new Binding($"Localizer[{this.Path}]", this.Mode, this.Converter, this.ConverterParameter, this.StringFormat, this);
 		}
 
-		private static void LogWarning(object? _)
+		private static void LogAlert(object? _)
 		{
 			StringBuilder sb = new();
 
@@ -80,7 +92,7 @@ namespace NeuroAccessMaui.Services.Localization
 
 			lock (missingStrings)
 			{
-				foreach (KeyValuePair<Type, Dictionary<string, bool>> P in missingStrings)
+				foreach (KeyValuePair<Type, SortedDictionary<string, bool>> P in missingStrings)
 				{
 					sb.AppendLine();
 					sb.AppendLine(P.Key.FullName);
@@ -93,9 +105,11 @@ namespace NeuroAccessMaui.Services.Localization
 						sb.AppendLine(Key);
 					}
 				}
+
+				missingStrings.Clear();
 			}
 
-			ServiceRef.LogService.LogWarning(sb.ToString());
+			ServiceRef.LogService.LogAlert(sb.ToString());
 		}
 
 		public LocalizeExtension()

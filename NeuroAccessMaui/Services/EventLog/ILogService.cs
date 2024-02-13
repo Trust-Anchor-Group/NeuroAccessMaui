@@ -13,14 +13,14 @@ namespace NeuroAccessMaui.Services.EventLog
 		/// Adds an <see cref="IEventSink"/> to the log service. Any listeners will be called
 		/// whenever any log event occurs.
 		/// </summary>
-		/// <param name="eventSink">The listener to add.</param>
-		void AddListener(IEventSink eventSink);
+		/// <param name="EventSink">The listener to add.</param>
+		void AddListener(IEventSink EventSink);
 
 		/// <summary>
 		/// Removes an <see cref="IEventSink"/> to the log service.
 		/// </summary>
-		/// <param name="eventSink">The listener to remove.</param>
-		void RemoveListener(IEventSink eventSink);
+		/// <param name="EventSink">The listener to remove.</param>
+		void RemoveListener(IEventSink EventSink);
 
 		/// <summary>
 		/// Invoke this method to add a warning statement to the log.
@@ -32,22 +32,29 @@ namespace NeuroAccessMaui.Services.EventLog
 		/// <summary>
 		/// Invoke this method to add an <see cref="Exception"/> entry to the log.
 		/// </summary>
-		/// <param name="e"></param>
-		void LogException(Exception e);
+		/// <param name="ex">Exception object</param>
+		void LogException(Exception ex);
 
 		/// <summary>
 		/// Invoke this method to add an <see cref="Exception"/> entry to the log.
 		/// </summary>
-		/// <param name="e">The exception to log.</param>
+		/// <param name="ex">The exception to log.</param>
 		/// <param name="extraParameters">Any extra parameters that are added to the log.</param>
-		void LogException(Exception e, params KeyValuePair<string, object?>[] extraParameters);
+		void LogException(Exception ex, params KeyValuePair<string, object?>[] extraParameters);
+
+		/// <summary>
+		/// Invoke this method to add an alert statement to the log.
+		/// </summary>
+		/// <param name="Message">Alert message.</param>
+		/// <param name="Tags">Tags to log together with message.</param>
+		void LogAlert(string Message, params KeyValuePair<string, object?>[] Tags);
 
 		/// <summary>
 		/// Saves an exception dump to disc, completely offline. A last resort operation.
 		/// </summary>
-		/// <param name="title">The title of the stack trace.</param>
-		/// <param name="stackTrace">The actual stack trace.</param>
-		void SaveExceptionDump(string title, string stackTrace);
+		/// <param name="Title">The title of the stack trace.</param>
+		/// <param name="StackTrace">The actual stack trace.</param>
+		void SaveExceptionDump(string Title, string StackTrace);
 
 		/// <summary>
 		/// Restores any exception dump that has previously been persisted with the <see cref="SaveExceptionDump"/> method.

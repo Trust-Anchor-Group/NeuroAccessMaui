@@ -1,10 +1,17 @@
-﻿namespace NeuroAccessMaui.UI
+﻿using System.Text;
+using NeuroAccessMaui.Services;
+using Waher.Events;
+
+namespace NeuroAccessMaui.UI
 {
 	/// <summary>
 	/// Static class that gives access to app-specific styles
 	/// </summary>
 	public static class AppStyles
 	{
+		private static readonly SortedDictionary<string, bool> missingStyles = [];
+		private static Timer? timer = null;
+
 		private static Thickness? smallBottomOnlyMargins;
 		private static Style? sectionTitleLabelStyle;
 		private static Style? keyLabel;
@@ -13,6 +20,64 @@
 		private static Style? clickableValueLabel;
 		private static Style? infoLabelStyle;
 
+		static AppStyles()
+		{
+			Log.Terminating += Log_Terminating;
+		}
+
+		private static void Log_Terminating(object? sender, EventArgs e)
+		{
+			timer?.Dispose();
+			timer = null;
+		}
+
+		/// <summary>
+		/// Tries to get an embedded resource.
+		/// </summary>
+		/// <typeparam name="T">Type of resource.</typeparam>
+		/// <param name="Name">Name of resource.</param>
+		/// <returns>Typed resource, if found.</returns>
+		public static T? TryGetResource<T>(string Name)
+		{
+			if ((Application.Current?.Resources.TryGetValue(Name, out object Value) ?? false) && Value is T TypedValue)
+				return TypedValue;
+			else
+			{
+				lock (missingStyles)
+				{
+					timer?.Dispose();
+					timer = null;
+
+					missingStyles[Name] = true;
+
+					timer = new Timer(LogAlert, null, 1000, Timeout.Infinite);
+				}
+
+				return default;
+			}
+		}
+
+		private static void LogAlert(object? _)
+		{
+			StringBuilder sb = new();
+
+			sb.AppendLine("Missing styles:");
+			sb.AppendLine();
+
+			lock (missingStyles)
+			{
+				foreach (string Key in missingStyles.Keys)
+				{
+					sb.Append("* ");
+					sb.AppendLine(Key);
+				}
+
+				missingStyles.Clear();
+			}
+
+			ServiceRef.LogService.LogAlert(sb.ToString());
+		}
+
 		/// <summary>
 		/// Bottom-only small margins
 		/// </summary>
@@ -20,7 +85,7 @@
 		{
 			get
 			{
-				smallBottomOnlyMargins ??= (Thickness)Application.Current!.Resources["SmallBottomOnlyMargins"];
+				smallBottomOnlyMargins ??= TryGetResource<Thickness>("SmallBottomOnlyMargins");
 				return smallBottomOnlyMargins.Value;
 			}
 		}
@@ -32,7 +97,7 @@
 		{
 			get
 			{
-				sectionTitleLabelStyle ??= (Style)Application.Current!.Resources["SectionTitleLabelStyle"];
+				sectionTitleLabelStyle ??= TryGetResource<Style>("SectionTitleLabelStyle");
 				return sectionTitleLabelStyle!;
 			}
 		}
@@ -44,7 +109,7 @@
 		{
 			get
 			{
-				keyLabel ??= (Style)Application.Current!.Resources["KeyLabel"];
+				keyLabel ??= TryGetResource<Style>("KeyLabel");
 				return keyLabel!;
 			}
 		}
@@ -56,7 +121,7 @@
 		{
 			get
 			{
-				valueLabel ??= (Style)Application.Current!.Resources["ValueLabel"];
+				valueLabel ??= TryGetResource<Style>("ValueLabel");
 				return valueLabel!;
 			}
 		}
@@ -68,7 +133,7 @@
 		{
 			get
 			{
-				formattedValueLabel ??= (Style)Application.Current!.Resources["FormattedValueLabel"];
+				formattedValueLabel ??= TryGetResource<Style>("FormattedValueLabel");
 				return formattedValueLabel!;
 			}
 		}
@@ -80,7 +145,7 @@
 		{
 			get
 			{
-				clickableValueLabel ??= (Style)Application.Current!.Resources["ClickableValueLabel"];
+				clickableValueLabel ??= TryGetResource<Style>("ClickableValueLabel");
 				return clickableValueLabel!;
 			}
 		}
@@ -92,10 +157,10 @@
 		{
 			get
 			{
-				infoLabelStyle ??= (Style)Application.Current!.Resources["InfoLabelStyle"];
+				infoLabelStyle ??= TryGetResource<Style>("InfoLabelStyle");
 				return infoLabelStyle!;
 			}
 		}
-		
+
 	}
 }
