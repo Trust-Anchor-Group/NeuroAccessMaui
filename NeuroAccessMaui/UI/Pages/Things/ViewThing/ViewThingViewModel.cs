@@ -30,15 +30,15 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 	/// <summary>
 	/// The view model to bind to when displaying a thing.
 	/// </summary>
-	public partial class ViewThingModel : XmppViewModel, ILinkableView
+	public partial class ViewThingViewModel : XmppViewModel, ILinkableView
 	{
 		private readonly Dictionary<string, PresenceEventArgs> presences = new(StringComparer.InvariantCultureIgnoreCase);
 		private ContactInfo? thing;
 
 		/// <summary>
-		/// Creates an instance of the <see cref="ViewThingModel"/> class.
+		/// Creates an instance of the <see cref="ViewThingViewModel"/> class.
 		/// </summary>
-		protected internal ViewThingModel()
+		protected internal ViewThingViewModel()
 			: base()
 		{
 			this.Tags = [];

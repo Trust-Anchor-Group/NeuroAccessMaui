@@ -20,16 +20,16 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor
 	/// <summary>
 	/// The view model to bind to when displaying a thing.
 	/// </summary>
-	public partial class ReadSensorModel : XmppViewModel
+	public partial class ReadSensorViewModel : XmppViewModel
 	{
 		private ContactInfo? thing;
 		private ThingReference? thingRef;
 		private SensorDataClientRequest? request;
 
 		/// <summary>
-		/// Creates an instance of the <see cref="ReadSensorModel"/> class.
+		/// Creates an instance of the <see cref="ReadSensorViewModel"/> class.
 		/// </summary>
-		protected internal ReadSensorModel()
+		protected internal ReadSensorViewModel()
 			: base()
 		{
 			this.SensorData = [];

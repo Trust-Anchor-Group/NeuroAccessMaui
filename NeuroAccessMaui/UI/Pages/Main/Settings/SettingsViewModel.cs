@@ -5,6 +5,7 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.UI.Pages.Identity.TransferIdentity;
+using NeuroAccessMaui.UI.Pages.Main.ChangePin;
 using NeuroAccessMaui.UI.Popups;
 using System.ComponentModel;
 using System.Security.Cryptography;

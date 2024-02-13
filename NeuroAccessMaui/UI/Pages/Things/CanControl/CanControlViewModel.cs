@@ -5,6 +5,7 @@ using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.Notification.Things;
+using NeuroAccessMaui.UI.Pages.Things.CanRead;
 using NeuroAccessMaui.UI.Pages.Things.IsFriend;
 using NeuroAccessMaui.UI.Pages.Things.ViewClaimThing;
 using System.Collections.ObjectModel;
@@ -14,26 +15,25 @@ using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Provisioning;
 using Waher.Persistence;
 using Waher.Things;
-using Waher.Things.SensorData;
 
-namespace NeuroAccessMaui.UI.Pages.Things.CanRead
+namespace NeuroAccessMaui.UI.Pages.Things.CanControl
 {
 	/// <summary>
 	/// The view model to bind to when displaying a thing.
 	/// </summary>
-	public partial class CanReadModel : XmppViewModel
+	public partial class CanControlViewModel : XmppViewModel
 	{
 		private NotificationEvent? @event;
 
 		/// <summary>
-		/// Creates an instance of the <see cref="CanReadModel"/> class.
+		/// Creates an instance of the <see cref="CanControlViewModel"/> class.
 		/// </summary>
-		protected internal CanReadModel()
+		protected internal CanControlViewModel()
 			: base()
 		{
 			this.Tags = [];
 			this.CallerTags = [];
-			this.Fields = [];
+			this.Parameters = [];
 			this.RuleRanges = [];
 		}
 
@@ -42,7 +42,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.NavigationService.TryGetArgs(out CanReadNavigationArgs? args))
+			if (ServiceRef.NavigationService.TryGetArgs(out CanControlNavigationArgs? args))
 			{
 				this.@event = args.Event;
 				this.BareJid = args.BareJid;
@@ -51,17 +51,9 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 				this.RemoteFriendlyName = args.RemoteFriendlyName;
 				this.Key = args.Key;
 				this.ProvisioningService = args.ProvisioningService;
-				this.FieldTypes = args.FieldTypes;
 				this.NodeId = args.NodeId;
 				this.SourceId = args.SourceId;
 				this.PartitionId = args.PartitionId;
-
-				this.PermitMomentary = args.FieldTypes.HasFlag(FieldType.Momentary);
-				this.PermitIdentity = args.FieldTypes.HasFlag(FieldType.Identity);
-				this.PermitStatus = args.FieldTypes.HasFlag(FieldType.Status);
-				this.PermitComputed = args.FieldTypes.HasFlag(FieldType.Computed);
-				this.PermitPeak = args.FieldTypes.HasFlag(FieldType.Peak);
-				this.PermitHistorical = args.FieldTypes.HasFlag(FieldType.Historical);
 
 				if (this.FriendlyName == this.BareJid)
 					this.FriendlyName = ServiceRef.Localizer[nameof(AppResources.NotAvailable)];
@@ -112,40 +104,41 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 					this.HasDevice = true;
 				}
 
-				this.Fields.Clear();
+				this.Parameters.Clear();
 
-				SortedDictionary<string, bool> PermittedFields = [];
-				string[]? AllFields = args.AllFields;
+				SortedDictionary<string, bool> PermittedParameters = [];
+				string[]? AllParameters = args.AllParameters;
 
-				if (AllFields is null && !string.IsNullOrEmpty(this.BareJid))
+				if (AllParameters is null && !string.IsNullOrEmpty(this.BareJid))
 				{
-					AllFields = await CanReadNotificationEvent.GetAvailableFieldNames(this.BareJid, new ThingReference(this.NodeId, this.SourceId, this.PartitionId));
+					AllParameters = await CanControlNotificationEvent.GetAvailableParameterNames(this.BareJid,
+						new ThingReference(this.NodeId, this.SourceId, this.PartitionId));
 
-					if (AllFields is not null && args.Event is not null)
+					if (AllParameters is not null && args?.Event is not null)
 					{
-						args.Event.AllFields = AllFields;
+						args.Event.AllParameters = AllParameters;
 						await Database.Update(args.Event);
 					}
 				}
 
-				bool AllFieldsPermitted = args.Fields is null;
+				bool AllParametersPermitted = args?.Parameters is null;
 
-				if (AllFields is not null)
+				if (AllParameters is not null)
 				{
-					foreach (string Field in AllFields)
-						PermittedFields[Field] = AllFieldsPermitted;
+					foreach (string Parameter in AllParameters)
+						PermittedParameters[Parameter] = AllParametersPermitted;
 				}
 
-				if (!AllFieldsPermitted && args?.Fields is not null)
+				if (!AllParametersPermitted && args?.Parameters is not null)
 				{
-					foreach (string Field in args.Fields)
-						PermittedFields[Field] = true;
+					foreach (string Parameter in args.Parameters)
+						PermittedParameters[Parameter] = true;
 				}
 
-				foreach (KeyValuePair<string, bool> P in PermittedFields)
+				foreach (KeyValuePair<string, bool> P in PermittedParameters)
 				{
-					FieldReference Field = new(P.Key, P.Value);
-					this.Fields.Add(Field);
+					FieldReference Parameter = new(P.Key, P.Value);
+					this.Parameters.Add(Parameter);
 				}
 
 				this.RuleRanges.Clear();
@@ -180,9 +173,9 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 		public ObservableCollection<HumanReadableTag> CallerTags { get; }
 
 		/// <summary>
-		/// Holds a list of fields that will be permitted.
+		/// Holds a list of parameters that will be permitted.
 		/// </summary>
-		public ObservableCollection<FieldReference> Fields { get; }
+		public ObservableCollection<FieldReference> Parameters { get; }
 
 		/// <summary>
 		/// Available Rule Ranges
@@ -206,6 +199,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 		/// </summary>
 		[ObservableProperty]
 		private string? remoteJid;
+
 
 		/// <summary>
 		/// The Friendly Name of the remote entity
@@ -244,7 +238,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 		private bool hasDevice;
 
 		/// <summary>
-		/// Provisioning key.
+		/// Provisioning service.
 		/// </summary>
 		[ObservableProperty]
 		private string? provisioningService;
@@ -260,54 +254,6 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 		/// </summary>
 		[ObservableProperty]
 		private int selectedRuleRangeIndex;
-
-		/// <summary>
-		/// Sensor-Data FieldTypes
-		/// </summary>
-		[ObservableProperty]
-		private FieldType fieldTypes;
-
-		/// <summary>
-		/// If Momentary values should be permitted.
-		/// </summary>
-		[ObservableProperty]
-		[NotifyCanExecuteChangedFor(nameof(AcceptCommand))]
-		private bool permitMomentary;
-
-		/// <summary>
-		/// If Identity values should be permitted.
-		/// </summary>
-		[ObservableProperty]
-		[NotifyCanExecuteChangedFor(nameof(AcceptCommand))]
-		private bool permitIdentity;
-
-		/// <summary>
-		/// If Status values should be permitted.
-		/// </summary>
-		[ObservableProperty]
-		[NotifyCanExecuteChangedFor(nameof(AcceptCommand))]
-		private bool permitStatus;
-
-		/// <summary>
-		/// If Computed values should be permitted.
-		/// </summary>
-		[ObservableProperty]
-		[NotifyCanExecuteChangedFor(nameof(AcceptCommand))]
-		private bool permitComputed;
-
-		/// <summary>
-		/// If Peak values should be permitted.
-		/// </summary>
-		[ObservableProperty]
-		[NotifyCanExecuteChangedFor(nameof(AcceptCommand))]
-		private bool permitPeak;
-
-		/// <summary>
-		/// If Historical values should be permitted.
-		/// </summary>
-		[ObservableProperty]
-		[NotifyCanExecuteChangedFor(nameof(AcceptCommand))]
-		private bool permitHistorical;
 
 		/// <summary>
 		/// Node ID
@@ -369,9 +315,9 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 		[RelayCommand]
 		private async Task RemoveContact()
 		{
-			if (this.CallerInContactsList)
+			if (this.CallerInContactsList && !string.IsNullOrEmpty(this.RemoteJid))
 			{
-				ContactInfo Info = await ContactInfo.FindByBareJid(this.RemoteJid ?? string.Empty);
+				ContactInfo Info = await ContactInfo.FindByBareJid(this.RemoteJid);
 				if (Info is not null)
 					await Database.Delete(Info);
 
@@ -406,12 +352,9 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 			if (!this.IsConnected)
 				return false;
 
-			if (this.PermitMomentary || this.PermitIdentity || this.PermitStatus || this.PermitComputed || this.PermitPeak || this.PermitHistorical)
-				return true;
-
-			foreach (FieldReference Field in this.Fields)
+			foreach (FieldReference Parameter in this.Parameters)
 			{
-				if (Field.Permitted)
+				if (Parameter.Permitted)
 					return true;
 			}
 
@@ -421,7 +364,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 		/// <summary>
 		/// The command to bind to for rejecting the request
 		/// </summary>
-		[RelayCommand(CanExecute = nameof(this.IsConnected))]
+		[RelayCommand(CanExecute = nameof(IsConnected))]
 		private void Reject()
 		{
 			this.Respond(false);
@@ -433,84 +376,65 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 			{
 				RuleRangeModel Range = this.RuleRanges[this.SelectedRuleRangeIndex];
 				ThingReference Thing = new(this.NodeId, this.SourceId, this.PartitionId);
-				FieldType FieldTypes = (FieldType)0;
-
-				if (this.PermitMomentary)
-					FieldTypes |= FieldType.Momentary;
-
-				if (this.PermitIdentity)
-					FieldTypes |= FieldType.Identity;
-
-				if (this.PermitStatus)
-					FieldTypes |= FieldType.Status;
-
-				if (this.PermitComputed)
-					FieldTypes |= FieldType.Computed;
-
-				if (this.PermitPeak)
-					FieldTypes |= FieldType.Peak;
-
-				if (this.PermitHistorical)
-					FieldTypes |= FieldType.Historical;
 
 				if (Range.RuleRange is RuleRange RuleRange)
 				{
-					ReadoutRequestResolver Resolver = new(this.BareJid ?? string.Empty, this.RemoteFriendlyName ?? string.Empty, RuleRange);
+					ControlRequestResolver Resolver = new(this.BareJid!, this.RemoteFriendlyName ?? string.Empty, RuleRange);
 
 					switch (RuleRange)
 					{
 						case RuleRange.Caller:
 						default:
-							ServiceRef.XmppService.CanReadResponseCaller(this.ProvisioningService ?? ServiceRef.TagProfile.ProvisioningJid ?? string.Empty,
-								this.BareJid!, this.RemoteJid!, this.Key!, Accepts, FieldTypes, this.GetFields(), Thing, this.ResponseHandler, Resolver);
+							ServiceRef.XmppService.CanControlResponseCaller(this.ProvisioningService ?? ServiceRef.TagProfile.ProvisioningJid ?? string.Empty,
+								this.BareJid!, this.RemoteJid!, this.Key!, Accepts, this.GetParameters(), Thing, this.ResponseHandler, Resolver);
 							break;
 
 						case RuleRange.Domain:
-							ServiceRef.XmppService.CanReadResponseDomain(this.ProvisioningService ?? ServiceRef.TagProfile.ProvisioningJid ?? string.Empty,
-								this.BareJid!, this.RemoteJid!, this.Key!, Accepts, FieldTypes, this.GetFields(), Thing, this.ResponseHandler, Resolver);
+							ServiceRef.XmppService.CanControlResponseDomain(this.ProvisioningService ?? ServiceRef.TagProfile.ProvisioningJid ?? string.Empty,
+								this.BareJid!, this.RemoteJid!, this.Key!, Accepts, this.GetParameters(), Thing, this.ResponseHandler, Resolver);
 							break;
 
 						case RuleRange.All:
-							ServiceRef.XmppService.CanReadResponseAll(this.ProvisioningService ?? ServiceRef.TagProfile.ProvisioningJid ?? string.Empty,
-								 this.BareJid!, this.RemoteJid!, this.Key!, Accepts, FieldTypes, this.GetFields(), Thing, this.ResponseHandler, Resolver);
+							ServiceRef.XmppService.CanControlResponseAll(this.ProvisioningService ?? ServiceRef.TagProfile.ProvisioningJid ?? string.Empty,
+								this.BareJid!, this.RemoteJid!, this.Key!, Accepts, this.GetParameters(), Thing, this.ResponseHandler, Resolver);
 							break;
 
 					}
 				}
 				else if (Range.RuleRange is ProvisioningToken Token)
 				{
-					ReadoutRequestResolver Resolver = new(this.BareJid ?? string.Empty, this.RemoteFriendlyName ?? string.Empty, Token);
+					ControlRequestResolver Resolver = new(this.BareJid!, this.RemoteFriendlyName ?? string.Empty, Token);
 
 					switch (Token.Type)
 					{
 						case TokenType.User:
-							ServiceRef.XmppService.CanReadResponseUser(this.ProvisioningService ?? ServiceRef.TagProfile.ProvisioningJid ?? string.Empty,
-								this.BareJid!, this.RemoteJid!, this.Key!, Accepts, FieldTypes, this.GetFields(), Token.Token, Thing, this.ResponseHandler, Resolver);
+							ServiceRef.XmppService.CanControlResponseUser(this.ProvisioningService ?? ServiceRef.TagProfile.ProvisioningJid ?? string.Empty,
+								this.BareJid!, this.RemoteJid!, this.Key!, Accepts, this.GetParameters(), Token.Token, Thing, this.ResponseHandler, Resolver);
 							break;
 
 						case TokenType.Service:
-							ServiceRef.XmppService.CanReadResponseService(this.ProvisioningService ?? ServiceRef.TagProfile.ProvisioningJid ?? string.Empty,
-								this.BareJid!, this.RemoteJid!, this.Key!, Accepts, FieldTypes, this.GetFields(), Token.Token, Thing, this.ResponseHandler, Resolver);
+							ServiceRef.XmppService.CanControlResponseService(this.ProvisioningService ?? ServiceRef.TagProfile.ProvisioningJid ?? string.Empty,
+								this.BareJid!, this.RemoteJid!, this.Key!, Accepts, this.GetParameters(), Token.Token, Thing, this.ResponseHandler, Resolver);
 							break;
 
 						case TokenType.Device:
-							ServiceRef.XmppService.CanReadResponseDevice(this.ProvisioningService ?? ServiceRef.TagProfile.ProvisioningJid ?? string.Empty,
-								this.BareJid!, this.RemoteJid!, this.Key!, Accepts, FieldTypes, this.GetFields(), Token.Token, Thing, this.ResponseHandler, Resolver);
+							ServiceRef.XmppService.CanControlResponseDevice(this.ProvisioningService ?? ServiceRef.TagProfile.ProvisioningJid ?? string.Empty,
+								this.BareJid!, this.RemoteJid!, this.Key!, Accepts, this.GetParameters(), Token.Token, Thing, this.ResponseHandler, Resolver);
 							break;
 					}
 				}
 			}
 		}
 
-		private string[]? GetFields()
+		private string[]? GetParameters()
 		{
 			List<string> Result = [];
 			bool AllPermitted = true;
 
-			foreach (FieldReference Field in this.Fields)
+			foreach (FieldReference Parameter in this.Parameters)
 			{
-				if (Field.Permitted)
-					Result.Add(Field.Name);
+				if (Parameter.Permitted)
+					Result.Add(Parameter.Name);
 				else
 					AllPermitted = false;
 			}
@@ -555,51 +479,23 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 		}
 
 		/// <summary>
-		/// The command to bind to for selecting all field types
+		/// The command to bind to for selecting all control parameters
 		/// </summary>
 		[RelayCommand]
-		private void AllFieldTypes()
+		private void AllParameters()
 		{
-			this.PermitMomentary = true;
-			this.PermitIdentity = true;
-			this.PermitStatus = true;
-			this.PermitComputed = true;
-			this.PermitPeak = true;
-			this.PermitHistorical = true;
+			foreach (FieldReference Parameter in this.Parameters)
+				Parameter.Permitted = true;
 		}
 
 		/// <summary>
-		/// The command to bind to for selecting no field types
+		/// The command to bind to for selecting no control parameters
 		/// </summary>
 		[RelayCommand]
-		private void NoFieldTypes()
+		private void NoParameters()
 		{
-			this.PermitMomentary = false;
-			this.PermitIdentity = false;
-			this.PermitStatus = false;
-			this.PermitComputed = false;
-			this.PermitPeak = false;
-			this.PermitHistorical = false;
-		}
-
-		/// <summary>
-		/// The command to bind to for selecting all fields
-		/// </summary>
-		[RelayCommand]
-		private void AllFields()
-		{
-			foreach (FieldReference Field in this.Fields)
-				Field.Permitted = true;
-		}
-
-		/// <summary>
-		/// The command to bind to for selecting no fields
-		/// </summary>
-		[RelayCommand]
-		private void NoFields()
-		{
-			foreach (FieldReference Field in this.Fields)
-				Field.Permitted = false;
+			foreach (FieldReference Parameter in this.Parameters)
+				Parameter.Permitted = false;
 		}
 
 	}

@@ -16,14 +16,14 @@ namespace NeuroAccessMaui.UI.Pages.Things.IsFriend
 	/// <summary>
 	/// The view model to bind to when displaying a thing.
 	/// </summary>
-	public partial class IsFriendModel : XmppViewModel
+	public partial class IsFriendViewModel : XmppViewModel
 	{
 		private NotificationEvent? @event;
 
 		/// <summary>
-		/// Creates an instance of the <see cref="IsFriendModel"/> class.
+		/// Creates an instance of the <see cref="IsFriendViewModel"/> class.
 		/// </summary>
-		protected internal IsFriendModel()
+		protected internal IsFriendViewModel()
 			: base()
 		{
 			this.Tags = [];

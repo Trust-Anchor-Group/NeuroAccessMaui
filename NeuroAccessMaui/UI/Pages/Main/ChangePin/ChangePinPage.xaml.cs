@@ -2,7 +2,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 
-namespace NeuroAccessMaui.UI.Pages.Main.Settings
+namespace NeuroAccessMaui.UI.Pages.Main.ChangePin
 {
 	/// <summary>
 	/// Allows the user to change its PIN.

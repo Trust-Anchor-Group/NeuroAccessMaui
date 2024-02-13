@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <base:BaseContentPage x:Name="ThisPage"
-							 x:Class="NeuroAccessMaui.UI.Pages.Main.Settings.ChangePinPage"
+							 x:Class="NeuroAccessMaui.UI.Pages.Main.ChangePin.ChangePinPage"
 							 x:DataType="viewmodel:ChangePinViewModel"
 							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -10,7 +10,7 @@
 							 xmlns:behaviors="clr-namespace:NeuroAccessMaui.UI.Behaviors"
 							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.Settings">
+							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.ChangePin">
 
 	<Grid x:Name="TheMainGrid" BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
 

@@ -11,7 +11,7 @@
 		/// </summary>
 		public ReadSensorPage()
 		{
-			this.ContentPageModel = new ReadSensorModel();
+			this.ContentPageModel = new ReadSensorViewModel();
 			this.InitializeComponent();
 		}
 	}

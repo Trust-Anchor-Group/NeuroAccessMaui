@@ -6,7 +6,7 @@ using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.UI.Pages.Registration.Views;
 using Waher.Networking.XMPP;
 
-namespace NeuroAccessMaui.UI.Pages.Main.Settings
+namespace NeuroAccessMaui.UI.Pages.Main.ChangePin
 {
 	/// <summary>
 	/// View model for the <see cref="ChangePinPage"/> page.
