@@ -1821,4 +1821,22 @@
   <data name="Yesterday" xml:space="preserve">
     <value>Igår</value>
   </data>
+  <data name="AccountEvent" xml:space="preserve">
+    <value>Händelse för konto</value>
+  </data>
+  <data name="NewContract" xml:space="preserve">
+    <value>Nytt kontrakt</value>
+  </data>
+  <data name="Propose" xml:space="preserve">
+    <value>Föreslå</value>
+  </data>
+  <data name="SelectWhoShouldHaveAccessToThisContract" xml:space="preserve">
+    <value>Välj vem som ska ha åtkomst till det här kontraktet.</value>
+  </data>
+  <data name="SelectYourRoleInThisContract" xml:space="preserve">
+    <value>Välj din roll i det här kontraktet.</value>
+  </data>
+  <data name="YourRole" xml:space="preserve">
+    <value>Din roll</value>
+  </data>
 </root>

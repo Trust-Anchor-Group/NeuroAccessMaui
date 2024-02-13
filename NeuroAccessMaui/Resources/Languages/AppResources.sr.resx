@@ -1821,4 +1821,22 @@
   <data name="Yesterday" xml:space="preserve">
     <value>Juče</value>
   </data>
+  <data name="AccountEvent" xml:space="preserve">
+    <value>Događaj naloga</value>
+  </data>
+  <data name="NewContract" xml:space="preserve">
+    <value>Novi ugovor</value>
+  </data>
+  <data name="Propose" xml:space="preserve">
+    <value>Predloži</value>
+  </data>
+  <data name="SelectWhoShouldHaveAccessToThisContract" xml:space="preserve">
+    <value>Izaberite ko bi trebalo da ima pristup ovom ugovoru.</value>
+  </data>
+  <data name="SelectYourRoleInThisContract" xml:space="preserve">
+    <value>Izaberite svoju ulogu u ovom ugovoru.</value>
+  </data>
+  <data name="YourRole" xml:space="preserve">
+    <value>Vaša uloga</value>
+  </data>
 </root>

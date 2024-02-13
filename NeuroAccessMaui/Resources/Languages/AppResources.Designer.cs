@@ -2185,6 +2185,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to New Contract.
+        /// </summary>
+        internal static string NewContract {
+            get {
+                return ResourceManager.GetString("NewContract", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No.
         /// </summary>
         internal static string No {
@@ -3229,6 +3238,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Propose.
+        /// </summary>
+        internal static string Propose {
+            get {
+                return ResourceManager.GetString("Propose", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Approve service provider.
         /// </summary>
         internal static string ProviderSectionApproveOption {
@@ -3927,6 +3945,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string SelectServiceProviderSellEDaler {
             get {
                 return ResourceManager.GetString("SelectServiceProviderSellEDaler", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select who should have access to this contract..
+        /// </summary>
+        internal static string SelectWhoShouldHaveAccessToThisContract {
+            get {
+                return ResourceManager.GetString("SelectWhoShouldHaveAccessToThisContract", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select your role in this contract..
+        /// </summary>
+        internal static string SelectYourRoleInThisContract {
+            get {
+                return ResourceManager.GetString("SelectYourRoleInThisContract", resourceCulture);
             }
         }
         
@@ -5169,6 +5205,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string YourLegalIdentityHasBeenObsoleted {
             get {
                 return ResourceManager.GetString("YourLegalIdentityHasBeenObsoleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your Role.
+        /// </summary>
+        internal static string YourRole {
+            get {
+                return ResourceManager.GetString("YourRole", resourceCulture);
             }
         }
         

@@ -1821,4 +1821,22 @@
   <data name="Yesterday" xml:space="preserve">
     <value>Вчера</value>
   </data>
+  <data name="AccountEvent" xml:space="preserve">
+    <value>Событие учетной записи</value>
+  </data>
+  <data name="NewContract" xml:space="preserve">
+    <value>Новый контракт</value>
+  </data>
+  <data name="Propose" xml:space="preserve">
+    <value>Предлагать</value>
+  </data>
+  <data name="SelectWhoShouldHaveAccessToThisContract" xml:space="preserve">
+    <value>Выберите, кто должен иметь доступ к этому контракту.</value>
+  </data>
+  <data name="SelectYourRoleInThisContract" xml:space="preserve">
+    <value>Выберите свою роль в этом контракте.</value>
+  </data>
+  <data name="YourRole" xml:space="preserve">
+    <value>Ваша роль</value>
+  </data>
 </root>
