@@ -39,13 +39,13 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			this.PartsGrid.Add(new Label()
 			{
 				Text = Label,
-				Style = App.Current?.Resources["KeyLabel"] as Style
+				Style = AppStyles.KeyLabel
 			}, 0, Row);
 
 			this.PartsGrid.Add(Lbl = new Label()
 			{
 				Text = FriendlyName,
-				Style = App.Current?.Resources["ClickableValueLabel"] as Style
+				Style = AppStyles.ClickableValueLabel
 			}, 1, Row);
 
 			TapGestureRecognizer Tap = new();
@@ -77,13 +77,13 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			this.PartsGrid.Add(new Label()
 			{
 				Text = Label,
-				Style = App.Current?.Resources["KeyLabel"] as Style
+				Style = AppStyles.KeyLabel
 			}, 0, Row);
 
 			this.PartsGrid.Add(Lbl = new Label()
 			{
 				Text = Jid,
-				Style = App.Current?.Resources["ClickableValueLabel"] as Style
+				Style = AppStyles.ClickableValueLabel
 			}, 1, Row);
 
 			TapGestureRecognizer Tap = new();
@@ -113,13 +113,13 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			this.GeneralInfoGrid.Add(new Label()
 			{
 				Text = Label,
-				Style = App.Current?.Resources["KeyLabel"] as Style
+				Style = AppStyles.KeyLabel
 			}, 0, Row);
 
 			this.GeneralInfoGrid.Add(Lbl = new Label()
 			{
 				Text = LinkUri,
-				Style = App.Current?.Resources["ClickableValueLabel"] as Style
+				Style = AppStyles.ClickableValueLabel
 			}, 1, Row);
 
 			TapGestureRecognizer Tap = new();
@@ -149,20 +149,20 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			this.GeneralInfoGrid.Add(new Label()
 			{
 				Text = Label,
-				Style = App.Current?.Resources["KeyLabel"] as Style
+				Style = AppStyles.KeyLabel
 			}, 0, Row);
 
 			this.GeneralInfoGrid.Add(Lbl = new Label()
 			{
 				Text = Value,
-				Style = App.Current?.Resources["ValueLabel"] as Style
+				Style = AppStyles.ValueLabel
 			}, 1, Row);
 
 			if (Uri.TryCreate(Value, UriKind.Absolute, out Uri? RefUri) &&
 				RefUri.Scheme.ToLower(CultureInfo.InvariantCulture) is string s &&
 				(s == "http" || s == "https"))
 			{
-				Lbl.Style = App.Current?.Resources["ClickableValueLabel"] as Style;
+				Lbl.Style = AppStyles.ClickableValueLabel;
 
 				TapGestureRecognizer Tap = new();
 				Lbl.GestureRecognizers.Add(Tap);

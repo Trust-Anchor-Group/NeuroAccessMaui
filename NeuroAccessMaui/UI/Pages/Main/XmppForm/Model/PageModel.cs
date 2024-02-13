@@ -85,7 +85,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.XmppForm.Model
 					Layout.Children.Add(new Label()
 					{
 						Text = Field.Label,
-						Style = App.Current?.Resources["KeyLabel"] as Style,
+						Style = AppStyles.KeyLabel,
 						LineBreakMode = LineBreakMode.WordWrap,
 						VerticalOptions = LayoutOptions.Center
 					});
@@ -97,7 +97,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.XmppForm.Model
 					return new Label()
 					{
 						Text = FixedField.ValueString,
-						Style = App.Current?.Resources["InfoLabelStyle"] as Style,
+						Style = AppStyles.InfoLabelStyle,
 						LineBreakMode = LineBreakMode.WordWrap
 					};
 				}
@@ -108,7 +108,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.XmppForm.Model
 					Layout.Children.Add(new Label()
 					{
 						Text = Field.Label,
-						Style = App.Current?.Resources["KeyLabel"] as Style,
+						Style = AppStyles.KeyLabel,
 						LineBreakMode = LineBreakMode.WordWrap
 					});
 
@@ -134,7 +134,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.XmppForm.Model
 					Layout.Children.Add(new Label()
 					{
 						Text = Field.Label,
-						Style = App.Current?.Resources["KeyLabel"] as Style,
+						Style = AppStyles.KeyLabel,
 						LineBreakMode = LineBreakMode.WordWrap
 					});
 
@@ -159,7 +159,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.XmppForm.Model
 					Layout.Children.Add(new Label()
 					{
 						Text = Field.Label,
-						Style = App.Current?.Resources["KeyLabel"] as Style,
+						Style = AppStyles.KeyLabel,
 						LineBreakMode = LineBreakMode.WordWrap
 					});
 
@@ -191,7 +191,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.XmppForm.Model
 					Layout.Children.Add(new Label()
 					{
 						Text = Field.Label,
-						Style = App.Current?.Resources["KeyLabel"] as Style,
+						Style = AppStyles.KeyLabel,
 						LineBreakMode = LineBreakMode.WordWrap
 					});
 
@@ -224,7 +224,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.XmppForm.Model
 							Layout2.Children.Add(new Label()
 							{
 								Text = Option.Key,
-								Style = App.Current?.Resources["KeyLabel"] as Style,
+								Style = AppStyles.KeyLabel,
 								LineBreakMode = LineBreakMode.WordWrap,
 								VerticalOptions = LayoutOptions.Center
 							});
@@ -246,7 +246,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.XmppForm.Model
 						Layout.Children.Add(new Label()
 						{
 							Text = Field.Label,
-							Style = App.Current?.Resources["KeyLabel"] as Style,
+							Style = AppStyles.KeyLabel,
 							LineBreakMode = LineBreakMode.WordWrap
 						});
 
@@ -288,7 +288,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.XmppForm.Model
 					Layout.Children.Add(new Label()
 					{
 						Text = Section.Label,
-						Style = App.Current?.Resources["SectionTitleLabelStyle"] as Style,
+						Style = AppStyles.SectionTitleLabelStyle,
 						LineBreakMode = LineBreakMode.WordWrap
 					});
 				}
@@ -303,7 +303,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.XmppForm.Model
 
 				Frame Frame = new()
 				{
-					BorderColor = App.Current?.Resources["ForegroundColor"] as Color,
+					BorderColor = AppColors.PrimaryForeground,
 					Padding = new Thickness(10),
 					CornerRadius = 5,
 					Content = Layout
@@ -316,7 +316,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.XmppForm.Model
 				return new Label()
 				{
 					Text = Text.Text,
-					Style = App.Current?.Resources["InfoLabelStyle"] as Style,
+					Style = AppStyles.InfoLabelStyle,
 					LineBreakMode = LineBreakMode.WordWrap
 				};
 			}
@@ -327,9 +327,9 @@ namespace NeuroAccessMaui.UI.Pages.Main.XmppForm.Model
 		private static Color? BackgroundColor(Field F)
 		{
 			if (F.HasError)
-				return ThemeColors.ErrorBackground;
+				return AppColors.ErrorBackground;
 			else if (F.NotSame)
-				return ThemeColors.DisabledFilledButtonBackground;
+				return AppColors.DisabledFilledButtonBackground;
 			else
 				return null;
 		}

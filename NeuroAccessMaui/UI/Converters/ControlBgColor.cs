@@ -29,7 +29,7 @@ namespace NeuroAccessMaui.UI.Converters
 			return Ok switch
 			{
 				true => null,
-				false => ThemeColors.ErrorBackground,
+				false => AppColors.ErrorBackground,
 			};
 		}
 

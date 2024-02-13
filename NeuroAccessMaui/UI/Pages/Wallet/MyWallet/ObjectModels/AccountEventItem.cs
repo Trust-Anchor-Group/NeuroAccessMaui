@@ -110,9 +110,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels
 			get
 			{
 				if (this.Change >= 0)
-					return ThemeColors.PrimaryForeground;
+					return AppColors.PrimaryForeground;
 				else
-					return ThemeColors.Alert;
+					return AppColors.Alert;
 			}
 		}
 

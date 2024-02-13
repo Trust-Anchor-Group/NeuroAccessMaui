@@ -252,21 +252,28 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		}
 
 		/// <inheritdoc/>
-		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+		protected override async void OnPropertyChanged(PropertyChangedEventArgs e)
 		{
-			base.OnPropertyChanged(e);
-
-			switch (e.PropertyName)
+			try
 			{
-				case nameof(this.SelectedContractVisibilityItem):
-					if (this.template is not null && this.SelectedContractVisibilityItem is not null)
-						this.template.Visibility = this.SelectedContractVisibilityItem.Visibility;
-					break;
+				base.OnPropertyChanged(e);
 
-				case nameof(this.SelectedRole):
-					if (this.template is not null && !string.IsNullOrWhiteSpace(this.SelectedRole))
-						this.AddRole(this.SelectedRole, ServiceRef.TagProfile.LegalIdentity!.Id).Wait();
-					break;
+				switch (e.PropertyName)
+				{
+					case nameof(this.SelectedContractVisibilityItem):
+						if (this.template is not null && this.SelectedContractVisibilityItem is not null)
+							this.template.Visibility = this.SelectedContractVisibilityItem.Visibility;
+						break;
+
+					case nameof(this.SelectedRole):
+						if (this.template is not null && !string.IsNullOrWhiteSpace(this.SelectedRole))
+							await this.AddRole(this.SelectedRole, ServiceRef.TagProfile.LegalIdentity!.Id);
+						break;
+				}
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
 			}
 		}
 
@@ -993,7 +1000,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					rolesLayout.Children.Add(new Label
 					{
 						Text = Role.Name,
-						Style = (Style)Application.Current!.Resources["LeftAlignedHeading"],
+						Style = AppStyles.SectionTitleLabelStyle,
 						StyleId = Role.Name
 					});
 
@@ -1005,7 +1012,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						{
 							Text = ServiceRef.Localizer[nameof(AppResources.AddPart)],
 							StyleId = Role.Name,
-							Margin = (Thickness)Application.Current.Resources["DefaultBottomOnlyMargin"]
+							Margin = AppStyles.SmallBottomOnlyMargins
 						};
 						button.Clicked += this.AddPartButton_Clicked;
 
@@ -1022,7 +1029,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				ParametersLayout.Children.Add(new Label
 				{
 					Text = ServiceRef.Localizer[nameof(AppResources.Parameters)],
-					Style = (Style)Application.Current!.Resources["LeftAlignedHeading"]
+					Style = AppStyles.SectionTitleLabelStyle
 				});
 			}
 
@@ -1148,7 +1155,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 						Button CalcButton = new()
 						{
-							TextColor = ThemeColors.PrimaryForeground,
+							TextColor = AppColors.PrimaryForeground,
 							Text = CalculatorButtonType,
 							HorizontalOptions = LayoutOptions.End,
 							WidthRequest = 40,

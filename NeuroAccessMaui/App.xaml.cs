@@ -278,9 +278,9 @@ namespace NeuroAccessMaui
 					typeof(PepClient).Assembly,                 // Serialization of XMPP objects related to personal eventing protocol (PEP)
 					typeof(AvatarClient).Assembly,              // Serialization of XMPP objects related to avatars
 					typeof(PushNotificationClient).Assembly,    // Serialization of XMPP objects related to push notification
-					typeof(MailClient).Assembly,					  // Serialization of XMPP objects related to processing of incoming e-mail
+					typeof(MailClient).Assembly,                // Serialization of XMPP objects related to processing of incoming e-mail
 					typeof(ThingReference).Assembly,            // IoT Abstraction library
-					typeof(JwtFactory).Assembly,					  // JSON Web Tokens (JWT)
+					typeof(JwtFactory).Assembly,                // JSON Web Tokens (JWT)
 					typeof(JwsAlgorithm).Assembly,              // JSON Web Signatures (JWS)
 					typeof(Expression).Assembly,                // Indexes basic script functions
 					typeof(Graph).Assembly,                     // Indexes graph script functions
@@ -677,19 +677,33 @@ namespace NeuroAccessMaui
 
 		#region Error Handling
 
-		private void TaskScheduler_UnobservedTaskException(object? Sender, UnobservedTaskExceptionEventArgs e)
+		private async void TaskScheduler_UnobservedTaskException(object? Sender, UnobservedTaskExceptionEventArgs e)
 		{
-			Exception ex = e.Exception;
-			e.SetObserved();
+			try
+			{
+				Exception ex = e.Exception;
+				e.SetObserved();
 
-			ex = Log.UnnestException(ex);
+				ex = Log.UnnestException(ex);
 
-			this.Handle_UnhandledException(ex, nameof(TaskScheduler_UnobservedTaskException), false).Wait();
+				await this.Handle_UnhandledException(ex, nameof(TaskScheduler_UnobservedTaskException), false);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
 		}
 
-		private void CurrentDomain_UnhandledException(object? Sender, UnhandledExceptionEventArgs e)
+		private async void CurrentDomain_UnhandledException(object? Sender, UnhandledExceptionEventArgs e)
 		{
-			this.Handle_UnhandledException(e.ExceptionObject as Exception, nameof(CurrentDomain_UnhandledException), true).Wait();
+			try
+			{
+				await this.Handle_UnhandledException(e.ExceptionObject as Exception, nameof(CurrentDomain_UnhandledException), true);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
 		}
 
 		private async Task Handle_UnhandledException(Exception? ex, string title, bool shutdown)

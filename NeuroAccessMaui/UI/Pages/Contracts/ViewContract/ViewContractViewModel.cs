@@ -461,7 +461,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 						foreach (Element InnerView in ContentView.Children)
 						{
 							if (InnerView is Label Label)
-								Label.TextColor = ThemeColors.PrimaryForeground;
+								Label.TextColor = AppColors.PrimaryForeground;
 						}
 					}
 
@@ -612,14 +612,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			layout.Children.Add(new Label
 			{
 				Text = Key + ":",
-				Style = (Style?)Application.Current?.Resources["KeyLabel"]
+				Style = AppStyles.KeyLabel
 			});
 
 			layout.Children.Add(new Label
 			{
 				Text = Value,
 				TextType = IsHtml ? TextType.Html : TextType.Text,
-				Style = (Style?)Application.Current?.Resources[IsHtml ? "FormattedValueLabel" : TapGestureRecognizer is null ? "ValueLabel" : "ClickableValueLabel"]
+				Style = IsHtml ? AppStyles.FormattedValueLabel : TapGestureRecognizer is null ? AppStyles.ValueLabel : AppStyles.ClickableValueLabel
 			});
 
 			if (TapGestureRecognizer is not null)

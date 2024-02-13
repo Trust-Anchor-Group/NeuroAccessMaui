@@ -31,7 +31,7 @@ namespace NeuroAccessMaui.UI.Converters
 				ContractState.Proposed or
 				ContractState.Approved or
 				ContractState.BeingSigned => SettingsViewModel.CurrentDisplayMode == AppTheme.Light ? Colors.DarkOrange : Colors.Orange,
-				_ => ThemeColors.ErrorBackground,
+				_ => AppColors.ErrorBackground,
 			};
 		}
 

@@ -29,7 +29,7 @@ namespace NeuroAccessMaui.UI.Converters
 			{
 				IdentityState.Approved => SettingsViewModel.CurrentDisplayMode == AppTheme.Light	? Colors.Green : Colors.LightGreen,
 				IdentityState.Created => SettingsViewModel.CurrentDisplayMode == AppTheme.Light ? Colors.DarkOrange: Colors.Orange,
-				_ => ThemeColors.ErrorBackground,
+				_ => AppColors.ErrorBackground,
 			};
 		}
 
