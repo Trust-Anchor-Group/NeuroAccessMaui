@@ -1,3 +1,4 @@
+using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Links;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Navigation;
@@ -18,6 +19,38 @@ namespace NeuroAccessMaui.Services.UI.QR
 		private static readonly QrEncoder encoder = new();
 
 		/// <summary>
+		/// Gets the schemas that have been unlocked in the app.
+		/// </summary>
+		/// <returns>Array of schemas the user can scan.</returns>
+		public static string[] GetAllowedSchemas()
+		{
+			List<string> AllowedSchemas = [Constants.UriSchemes.TagSign];
+
+			if (ServiceRef.TagProfile.LegalIdentity?.HasApprovedPersonalInformation() ?? false)
+			{
+				AllowedSchemas.Add(Constants.UriSchemes.IotId);
+				AllowedSchemas.Add(Constants.UriSchemes.IotSc);
+
+				// TODO:
+				// AllowedSchemas.Add(Constants.UriSchemes.IotDisco);
+				// AllowedSchemas.Add(Constants.UriSchemes.EDaler);
+				// AllowedSchemas.Add(Constants.UriSchemes.NeuroFeature);
+				// AllowedSchemas.Add(Constants.UriSchemes.Xmpp);
+			}
+
+			return [.. AllowedSchemas];
+		}
+
+		/// <summary>
+		/// Scans a QR Code, and depending on the actual result, takes different actions.
+		/// This typically means navigating to an appropriate page.
+		/// </summary>
+		public static Task ScanQrCodeAndHandleResult()
+		{
+			return ScanQrCodeAndHandleResult(nameof(AppResources.QrScanCode), GetAllowedSchemas());
+		}
+
+		/// <summary>
 		/// Scans a QR Code, and depending on the actual result, takes different actions.
 		/// This typically means navigating to an appropriate page.
 		/// </summary>
@@ -25,7 +58,7 @@ namespace NeuroAccessMaui.Services.UI.QR
 		/// <param name="AllowedSchemas">Schemas permitted.</param>
 		public static async Task ScanQrCodeAndHandleResult(string QrTitle, string[] AllowedSchemas)
 		{
-			string? Url = await QrCode.ScanQrCode(QrTitle, AllowedSchemas);
+			string? Url = await ScanQrCode(QrTitle, AllowedSchemas);
 			if (string.IsNullOrWhiteSpace(Url))
 				return;
 

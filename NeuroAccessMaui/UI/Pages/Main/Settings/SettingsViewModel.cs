@@ -158,7 +158,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		}
 
 		/// <summary>
-		/// Used to find out if an ICommand can execute
+		/// Used to find out if a command can execute
 		/// </summary>
 		public bool CanExecuteCommands => !this.IsBusy && this.IsConnected;
 
@@ -477,7 +477,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		[RelayCommand]
 		private static async Task ChangeLanguage()
 		{
-			SelectLanguagePage Page = new();
+			SelectLanguagePopup Page = new();
 			await MopupService.Instance.PushAsync(Page);
 		}
 

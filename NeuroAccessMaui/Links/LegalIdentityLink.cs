@@ -30,11 +30,8 @@ namespace NeuroAccessMaui.Links
 		public async Task<bool> TryOpenLink(Uri Link)
 		{
 			string? LegalId = Constants.UriSchemes.RemoveScheme(Link.OriginalString);
-
 			if (LegalId is null)
-			{
 				return false;
-			}
 
 			await ServiceRef.ContractOrchestratorService.OpenLegalIdentity(LegalId,
 				ServiceRef.Localizer[nameof(AppResources.ScannedQrCode)]);

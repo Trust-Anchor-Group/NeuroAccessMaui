@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Reflection;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using NeuroAccessMaui.Resources.Languages;
@@ -307,6 +308,32 @@ namespace NeuroAccessMaui.UI.Pages
 		public virtual async Task GoBack()
 		{
 			await ServiceRef.NavigationService.GoBackAsync();
+		}
+
+		/// <summary>
+		/// Gets the value of a property in the view model.
+		/// </summary>
+		/// <param name="PropertyName">Name of property.</param>
+		/// <returns>Property value.</returns>
+		public virtual object? GetValue(string PropertyName)
+		{
+			PropertyInfo? PI = this.GetType().GetProperty(PropertyName)
+				?? throw new ArgumentException("Property not found: " + PropertyName, nameof(PropertyName));
+
+			return PI.GetValue(this);
+		}
+
+		/// <summary>
+		/// Sets the value of a property in the view model.
+		/// </summary>
+		/// <param name="PropertyName">Name of property.</param>
+		/// <returns>Property value, if available, null otherwise.</returns>
+		public virtual void SetValue(string PropertyName, object? Value)
+		{
+			PropertyInfo? PI = this.GetType().GetProperty(PropertyName)
+				?? throw new ArgumentException("Property not found: " + PropertyName, nameof(PropertyName));
+
+			PI.SetValue(this, Value);
 		}
 
 	}

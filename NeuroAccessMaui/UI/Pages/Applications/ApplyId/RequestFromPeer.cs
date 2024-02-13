@@ -14,7 +14,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		/// </summary>
 		public RequestFromPeer()
 			: base(string.Empty,string.Empty, ServiceRef.Localizer[nameof(AppResources.RequestReviewFromAPeer)],
-				  string.Empty, true, "file://qr_person.svg", 230, 230)
+				  string.Empty, true, Constants.Images.Qr_Person, 230, 230)
 		{
 		}
 	}

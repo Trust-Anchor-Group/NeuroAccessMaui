@@ -24,7 +24,7 @@ namespace NeuroAccessMaui.Services.Localization
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.IsCurrent)));
 		}
 
-		public bool IsCurrent => this.Name == CurrentUICulture.Name;
+		public bool IsCurrent => this.Name == CurrentCulture.Name;
 
 		public event PropertyChangedEventHandler? PropertyChanged;
 	}

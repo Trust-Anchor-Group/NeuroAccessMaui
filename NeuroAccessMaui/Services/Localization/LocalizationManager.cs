@@ -48,7 +48,7 @@ namespace NeuroAccessMaui.Services.Localization
 		{
 			get
 			{
-				return CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft
+				return CultureInfo.CurrentCulture.TextInfo.IsRightToLeft
 					? FlowDirection.RightToLeft
 					: FlowDirection.LeftToRight;
 			}
@@ -56,7 +56,7 @@ namespace NeuroAccessMaui.Services.Localization
 
 		public CultureInfo CurrentCulture
 		{
-			get => CultureInfo.CurrentUICulture;
+			get => CultureInfo.CurrentCulture;
 
 			set
 			{
@@ -65,7 +65,7 @@ namespace NeuroAccessMaui.Services.Localization
 					return;
 				}
 
-				CultureInfo.CurrentCulture = CultureInfo.CurrentUICulture = value;
+				CultureInfo.CurrentCulture = CultureInfo.CurrentCulture = value;
 
 				CurrentCultureChanged?.Invoke(null, value);
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.CurrentCulture)));

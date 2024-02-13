@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseContentPage x:Name="ThisPage"
+							 x:Class="NeuroAccessMaui.UI.Pages.Wallet.MyWallet.MyTokenWalletPage"
+							 x:DataType="viewmodel:MyWalletViewModel"
+							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+							 xmlns:objectmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels"
+							 xmlns:objectmodel2="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels"
+							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MyWallet">
+	<VisualElement.Resources>
+		<DataTemplate x:Key="DefaultTemplate">
+			<Grid />
+		</DataTemplate>
+
+		<DataTemplate x:Key="TokenTemplate" x:DataType="objectmodel:TokenItem">
+			<Grid ColumnDefinitions="*,4*,2*,*" RowDefinitions="auto" BackgroundColor="Transparent">
+				<Image Grid.Column="0" Grid.Row="0"
+					   Source="{Binding Path=GlyphImage}" IsVisible="{Binding Path=HasGlyphImage}"
+					   WidthRequest="{Binding Path=GlyphWidth, Mode=OneTime}"
+					   HeightRequest="{Binding Path=GlyphHeight, Mode=OneTime}"
+					   VerticalOptions="Center" HorizontalOptions="Center" />
+				<Label Grid.Column="1" Grid.Row="0" Text="{Binding Path=FriendlyName}"
+					   Style="{StaticResource KeyLabel}" LineBreakMode="TailTruncation"
+					   FontAttributes="Bold" FontSize="18" HorizontalTextAlignment="Start"
+					   BackgroundColor="Transparent" VerticalOptions="Center"/>
+				<Frame Grid.Row="0" Grid.Column="2" CornerRadius="12" Margin="2" Padding="8,3,8,3" IsVisible="{Binding New}"
+					   HorizontalOptions="Start" VerticalOptions="Center" Style="{StaticResource AlertFrame}">
+					<Label FontSize="Caption" TextColor="{StaticResource HeadingForeground}" Text="{Binding NrEvents}" Padding="1"/>
+				</Frame>
+				<Label Grid.Column="2" Grid.Row="0" Text="{Binding Path=Value, Converter={converters:MoneyToString}}"
+					   Style="{StaticResource KeyLabel}" LineBreakMode="TailTruncation" FontSize="18"
+					   BackgroundColor="Transparent" HorizontalTextAlignment="End" VerticalOptions="Center"/>
+				<Label Grid.Column="3" Grid.Row="0" Text="{Binding Path=Currency}" FontSize="18"
+					   Style="{StaticResource KeyLabel}" LineBreakMode="TailTruncation"
+					   BackgroundColor="Transparent" HorizontalTextAlignment="Start" VerticalOptions="Center"/>
+				<Grid.GestureRecognizers>
+					<TapGestureRecognizer Command="{Binding ClickedCommand}" CommandParameter="{Binding .}"/>
+				</Grid.GestureRecognizers>
+			</Grid>
+		</DataTemplate>
+
+		<DataTemplate x:Key="EventTemplate" x:DataType="objectmodel2:EventModel">
+			<Grid ColumnDefinitions="auto,*,auto" RowDefinitions="auto,auto" Padding="5,5,5,5">
+				<Label Grid.Column="0" Grid.Row="0" LineBreakMode="NoWrap" Padding="5,2,5,0"
+					   Text="{Binding Path=Received, Converter={converters:DateToString}}"
+					   HorizontalOptions="Center" VerticalOptions="Center"/>
+				<Label Grid.Column="0" Grid.Row="1" LineBreakMode="NoWrap" Padding="5,0,5,2"
+					   Text="{Binding Path=Received, Converter={converters:TimeToString}}"
+					   HorizontalOptions="Center" VerticalOptions="Center"/>
+				<Label Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" LineBreakMode="CharacterWrap" TextType="Text"
+					   HorizontalTextAlignment="Start" VerticalTextAlignment="Center" Padding="5,2,5,2"
+					   Text="{Binding Path=Description}" Style="{StaticResource ClickableValueLabel}"/>
+				<Label Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" LineBreakMode="NoWrap" Padding="5,2,5,0"
+					   Text="{Binding Path=Icon}" HorizontalOptions="Center" VerticalOptions="Center"/>
+				<Label Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" LineBreakMode="NoWrap" Padding="5,2,5,0"
+					   Text="•" FontSize="50" HorizontalOptions="End" VerticalOptions="Center"
+					   Style="{StaticResource AlertLabel}"/>
+				<Grid.GestureRecognizers>
+					<TapGestureRecognizer Command="{Binding ClickedCommand}" CommandParameter="{Binding .}"/>
+				</Grid.GestureRecognizers>
+			</Grid>
+		</DataTemplate>
+
+		<viewmodel:TokenItemTypeTemplateSelector x:Key="TokenItemStyleSelector"
+															  DefaultTemplate="{StaticResource DefaultTemplate}"
+															  TokenTemplate="{StaticResource TokenTemplate}"
+															  NotificationTemplate="{StaticResource EventTemplate}"/>
+	</VisualElement.Resources>
+	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+
+		<controls:Background/>
+
+		<ScrollView>
+			<Grid RowDefinitions="auto,*,auto">
+				<Frame Grid.Row="0"  Style="{StaticResource MyWalletFrame}" HeightRequest="150" HasShadow="True"
+                       BackgroundColor="{StaticResource HeadingBackground}">
+					<Grid HeightRequest="150" RowDefinitions="25,125" BackgroundColor="Transparent">
+						<Image x:Name="ImgBack" Grid.RowSpan="2" Source="{Binding Path=EDalerBackGlyph}" Opacity="0.5"/>
+						<Label Grid.Row="0" Text="{Binding Path=Timestamp, Converter={converters:DateTimeToString}}" HorizontalOptions="StartAndExpand"
+                               TextColor="{StaticResource HeadingForeground}" BackgroundColor="Transparent"/>
+
+						<CollectionView Grid.Row="1" VerticalOptions="StartAndExpand"
+                                        RemainingItemsThreshold="1" SelectionMode="None"
+                                        ItemSizingStrategy="MeasureFirstItem"
+                                        ItemsSource="{Binding Path=Totals}">
+							<CollectionView.ItemsLayout>
+								<GridItemsLayout Orientation="Vertical" VerticalItemSpacing="12"/>
+							</CollectionView.ItemsLayout>
+							<CollectionView.ItemTemplate>
+								<DataTemplate x:DataType="objectmodel:TokenTotalItem">
+									<Grid ColumnDefinitions="*,*,*" RowDefinitions="auto" BackgroundColor="Transparent">
+										<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=Total, Converter={converters:MoneyToString}}" Style="{StaticResource KeyLabel}" LineBreakMode="TailTruncation" FontAttributes="Bold" FontSize="24" TextColor="{StaticResource HeadingForeground}" BackgroundColor="Transparent"/>
+										<Label Grid.Column="1" Grid.Row="0" Text="{Binding Path=Currency}" Style="{StaticResource KeyLabel}" LineBreakMode="TailTruncation" HorizontalTextAlignment="End" FontAttributes="Bold" FontSize="24" TextColor="{StaticResource HeadingForeground}" BackgroundColor="Transparent"/>
+										<Label Grid.Column="2" Grid.Row="0" LineBreakMode="TailTruncation" HorizontalTextAlignment="End" FontSize="24" TextColor="{StaticResource HeadingForeground}" BackgroundColor="Transparent">
+											<Label.FormattedText>
+												<FormattedString>
+													<Span Text="("/>
+													<Span Text="{Binding Path=NrTokens}"/>
+													<Span Text=")"/>
+												</FormattedString>
+											</Label.FormattedText>
+										</Label>
+									</Grid>
+								</DataTemplate>
+							</CollectionView.ItemTemplate>
+						</CollectionView>
+					</Grid>
+				</Frame>
+
+				<StackLayout Grid.Row="1" Margin="{StaticResource DefaultMargin}" >
+					<controls:LoadingCollectionView VerticalOptions="StartAndExpand" SelectionMode="Single"
+                                               RemainingItemsThreshold="1" ItemSizingStrategy="MeasureFirstItem"
+                                               Style="{StaticResource MyWalletView}"
+                                               ItemsSource="{Binding Path=Tokens}"
+															  ItemTemplate="{StaticResource TokenItemStyleSelector}"
+															  LoadMoreCommand="{Binding LoadMoreTokensCommand}">
+						<CollectionView.ItemsLayout>
+							<GridItemsLayout Orientation="Vertical" VerticalItemSpacing="12"/>
+						</CollectionView.ItemsLayout>
+					</controls:LoadingCollectionView>
+				</StackLayout>
+			</Grid>
+		</ScrollView>
+	</Grid>
+</base:BaseContentPage>

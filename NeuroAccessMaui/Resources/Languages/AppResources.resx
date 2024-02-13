@@ -1161,4 +1161,667 @@
   <data name="DeviceID" xml:space="preserve">
     <value>Device ID</value>
   </data>
+  <data name="AddContactToContract" xml:space="preserve">
+    <value>Add Contact to Contract</value>
+  </data>
+  <data name="AddPart" xml:space="preserve">
+    <value>Add part</value>
+  </data>
+  <data name="Archiving_Optional" xml:space="preserve">
+    <value>Archiving (optional)</value>
+  </data>
+  <data name="Archiving_Required" xml:space="preserve">
+    <value>Archiving (required)</value>
+  </data>
+  <data name="BalanceUpdated" xml:space="preserve">
+    <value>Balance updated.</value>
+  </data>
+  <data name="CalculationError" xml:space="preserve">
+    <value>Unable to perform calculation.</value>
+  </data>
+  <data name="CanActAsTemplate" xml:space="preserve">
+    <value>Can act as template</value>
+  </data>
+  <data name="ContractHasBeenDeleted" xml:space="preserve">
+    <value>Contract has been deleted.</value>
+  </data>
+  <data name="ContractHasBeenObsoleted" xml:space="preserve">
+    <value>Contract has been obsoleted.</value>
+  </data>
+  <data name="ContractId" xml:space="preserve">
+    <value>Contract ID</value>
+  </data>
+  <data name="ContractRoleMustBeSelected" xml:space="preserve">
+    <value>Select contract role first, and then try again.</value>
+  </data>
+  <data name="Contracts" xml:space="preserve">
+    <value>Contracts</value>
+  </data>
+  <data name="ContractsInfoText" xml:space="preserve">
+    <value>Below is a list of contracts that you have created or signed. Click on a contract for more information about it.</value>
+  </data>
+  <data name="ContractSuccessfullySigned" xml:space="preserve">
+    <value>Contract successfully signed.</value>
+  </data>
+  <data name="ContractTemplates" xml:space="preserve">
+    <value>Contract Templates</value>
+  </data>
+  <data name="ContractTemplatesInfoText" xml:space="preserve">
+    <value>Below is a list of contract templates that you have used. Click on a template to create a new contract based on that template.</value>
+  </data>
+  <data name="ContractVisibilityMustBeSelected" xml:space="preserve">
+    <value>Select contract visibility first, and then try again.</value>
+  </data>
+  <data name="ContractVisibility_CreatorAndParts" xml:space="preserve">
+    <value>Creator and parts</value>
+  </data>
+  <data name="ContractVisibility_DomainAndParts" xml:space="preserve">
+    <value>Domain and parts</value>
+  </data>
+  <data name="ContractVisibility_Public" xml:space="preserve">
+    <value>Public, not searchable</value>
+  </data>
+  <data name="ContractVisibility_PublicSearchable" xml:space="preserve">
+    <value>Public and searchable</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>day</value>
+  </data>
+  <data name="Days" xml:space="preserve">
+    <value>days</value>
+  </data>
+  <data name="Digest" xml:space="preserve">
+    <value>Digest</value>
+  </data>
+  <data name="Duration" xml:space="preserve">
+    <value>Duration</value>
+  </data>
+  <data name="EnterProposal" xml:space="preserve">
+    <value>Enter the text to include in the proposal to {0}, or leave blank if a proposal should not be sent.</value>
+  </data>
+  <data name="EnterValidValue" xml:space="preserve">
+    <value>Enter a valid value first.</value>
+  </data>
+  <data name="EnterValue" xml:space="preserve">
+    <value>You need to enter a value first.</value>
+  </data>
+  <data name="ExpiredEDalerUri" xml:space="preserve">
+    <value>This eDaler code has expired.</value>
+  </data>
+  <data name="ForInclusionInContract" xml:space="preserve">
+    <value>For inclusion as part in a contract.</value>
+  </data>
+  <data name="From" xml:space="preserve">
+    <value>From</value>
+  </data>
+  <data name="HashFunction" xml:space="preserve">
+    <value>Hash Function</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>hour</value>
+  </data>
+  <data name="Hours" xml:space="preserve">
+    <value>hours</value>
+  </data>
+  <data name="InvalidEDalerUri" xml:space="preserve">
+    <value>Invalid eDaler URI: {0}</value>
+  </data>
+  <data name="LocalName" xml:space="preserve">
+    <value>Local name</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>minute</value>
+  </data>
+  <data name="Minutes" xml:space="preserve">
+    <value>minutes</value>
+  </data>
+  <data name="Mode" xml:space="preserve">
+    <value>Mode</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>month</value>
+  </data>
+  <data name="Months" xml:space="preserve">
+    <value>months</value>
+  </data>
+  <data name="Namespace" xml:space="preserve">
+    <value>Namespace</value>
+  </data>
+  <data name="Negative" xml:space="preserve">
+    <value>Negative</value>
+  </data>
+  <data name="Parameters" xml:space="preserve">
+    <value>Parameters</value>
+  </data>
+  <data name="Proposal" xml:space="preserve">
+    <value>Proposal</value>
+  </data>
+  <data name="PurposeReviewContract" xml:space="preserve">
+    <value>Reviewing contract where you are part.</value>
+  </data>
+  <data name="RequestToAccessContract" xml:space="preserve">
+    <value>Request to access contract</value>
+  </data>
+  <data name="Second" xml:space="preserve">
+    <value>second</value>
+  </data>
+  <data name="Seconds" xml:space="preserve">
+    <value>seconds</value>
+  </data>
+  <data name="SelectedContactCannotBeAdded" xml:space="preserve">
+    <value>The selected contact cannot be added. It does not have a Legal ID registered.</value>
+  </data>
+  <data name="Send" xml:space="preserve">
+    <value>Send</value>
+  </data>
+  <data name="SignAfter" xml:space="preserve">
+    <value>Sign after</value>
+  </data>
+  <data name="SignAsRole" xml:space="preserve">
+    <value>Sign as {0}</value>
+  </data>
+  <data name="SignBefore" xml:space="preserve">
+    <value>Sign before</value>
+  </data>
+  <data name="StateChangedTo" xml:space="preserve">
+    <value>State changed to {0}</value>
+  </data>
+  <data name="TemplateId" xml:space="preserve">
+    <value>Template ID</value>
+  </data>
+  <data name="TheContractRequiresAtLeast_AddMoreParts" xml:space="preserve">
+    <value>The contract requires at least {0} part(s) of role {1}. Add more parts to the contract and try again.</value>
+  </data>
+  <data name="TheContractRequiresAtMost_RemoveParts" xml:space="preserve">
+    <value>The contract requires at most {0} part(s) of role {1}. Remove some of the parts from the contract and try again.</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>To</value>
+  </data>
+  <data name="TokenAdded" xml:space="preserve">
+    <value>A token has been added to your wallet.</value>
+  </data>
+  <data name="TokenAdded2" xml:space="preserve">
+    <value>Token Added</value>
+  </data>
+  <data name="TokenCreationTemplates" xml:space="preserve">
+    <value>Token Templates</value>
+  </data>
+  <data name="TokenCreationTemplatesInfoText" xml:space="preserve">
+    <value>Below is a list of token templates that you have used or can use to create new tokens. Click on a template to create a new contract based on that template. Once the contract has been signed and approved, the corresponding token or tokens will be created.</value>
+  </data>
+  <data name="TokenRemoved" xml:space="preserve">
+    <value>A token has been removed from your wallet.</value>
+  </data>
+  <data name="TokenRemoved2" xml:space="preserve">
+    <value>Token Removed</value>
+  </data>
+  <data name="UnrecognizedEDalerURI" xml:space="preserve">
+    <value>Unrecognized eDaler URI.</value>
+  </data>
+  <data name="VariablesUpdated" xml:space="preserve">
+    <value>Variables Updated</value>
+  </data>
+  <data name="Visibility" xml:space="preserve">
+    <value>Visibility</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>year</value>
+  </data>
+  <data name="Years" xml:space="preserve">
+    <value>years</value>
+  </data>
+  <data name="YouHaveReceivedAProposal" xml:space="preserve">
+    <value>You have received a proposal.</value>
+  </data>
+  <data name="YourContractContainsErrors" xml:space="preserve">
+    <value>Your contract contains errors. Fix these errors and try again.</value>
+  </data>
+  <data name="AccessRequest" xml:space="preserve">
+    <value>Access Request</value>
+  </data>
+  <data name="ContractCreated" xml:space="preserve">
+    <value>A contract has been created.</value>
+  </data>
+  <data name="ContractDeleted" xml:space="preserve">
+    <value>A contract has been deleted.</value>
+  </data>
+  <data name="ContractProposed" xml:space="preserve">
+    <value>A contract has been proposed.</value>
+  </data>
+  <data name="ContractSigned" xml:space="preserve">
+    <value>A contract has been signed.</value>
+  </data>
+  <data name="ContractUpdated" xml:space="preserve">
+    <value>A contract has been updated.</value>
+  </data>
+  <data name="ControlRequest" xml:space="preserve">
+    <value>Control Request</value>
+  </data>
+  <data name="IdentityUpdated" xml:space="preserve">
+    <value>The digital identity has been updated.</value>
+  </data>
+  <data name="InvalidIoTDiscoClaimUri" xml:space="preserve">
+    <value>Not a valid iotdisco claim URI.</value>
+  </data>
+  <data name="InvalidIoTDiscoveryCode" xml:space="preserve">
+    <value>Invalid IoT Discovery Code</value>
+  </data>
+  <data name="MessageFrom" xml:space="preserve">
+    <value>Message from:</value>
+  </data>
+  <data name="NeuroFeaturesServiceNotFound" xml:space="preserve">
+    <value>No Neuro-Features service found on broker.</value>
+  </data>
+  <data name="PetitionFrom" xml:space="preserve">
+    <value>Petition from:</value>
+  </data>
+  <data name="ReadRequest" xml:space="preserve">
+    <value>Readout Request</value>
+  </data>
+  <data name="UnableToGetHistory" xml:space="preserve">
+    <value>Unable to get history report.</value>
+  </data>
+  <data name="UnableToGetPresent" xml:space="preserve">
+    <value>Unable to get present report.</value>
+  </data>
+  <data name="UnableToGetProfiling" xml:space="preserve">
+    <value>Unable to get profiling report.</value>
+  </data>
+  <data name="UnableToGetStateDiagram" xml:space="preserve">
+    <value>Unable to get state diagram report.</value>
+  </data>
+  <data name="AccessRequestText" xml:space="preserve">
+    <value>{0} wants to connect to your device {1}.</value>
+  </data>
+  <data name="ConcentratorServiceNotFound" xml:space="preserve">
+    <value>No concentrator service found.</value>
+  </data>
+  <data name="ControlRequestText" xml:space="preserve">
+    <value>{0} wants to control parameters on your device {1}.</value>
+  </data>
+  <data name="ControlServiceNotFound" xml:space="preserve">
+    <value>No control service found.</value>
+  </data>
+  <data name="EDalerServiceNotFound" xml:space="preserve">
+    <value>No eDaler service found on broker.</value>
+  </data>
+  <data name="GettingOptionsCancelled" xml:space="preserve">
+    <value>Getting available options was cancelled.</value>
+  </data>
+  <data name="IdentityResponse" xml:space="preserve">
+    <value>Response to identity request</value>
+  </data>
+  <data name="IdentityReviewRequest" xml:space="preserve">
+    <value>Request to review identity</value>
+  </data>
+  <data name="NoThingsFound" xml:space="preserve">
+    <value>No Things Found.</value>
+  </data>
+  <data name="PaymentCancelled" xml:space="preserve">
+    <value>Payment Cancelled</value>
+  </data>
+  <data name="PaymentFailed" xml:space="preserve">
+    <value>Payment Failed</value>
+  </data>
+  <data name="PepServiceNotFound" xml:space="preserve">
+    <value>No personal eventing service found.</value>
+  </data>
+  <data name="ProvisioningServiceNotFound" xml:space="preserve">
+    <value>No provisioning service found on broker.</value>
+  </data>
+  <data name="PushNotificationServiceNotFound" xml:space="preserve">
+    <value>No push-notification service found.</value>
+  </data>
+  <data name="ReadoutRequestText" xml:space="preserve">
+    <value>{0} wants to read data from your device {1}.</value>
+  </data>
+  <data name="RequestSignature" xml:space="preserve">
+    <value>Request signature</value>
+  </data>
+  <data name="RequestToAccessIdentity" xml:space="preserve">
+    <value>Request to access identity</value>
+  </data>
+  <data name="SensorServiceNotFound" xml:space="preserve">
+    <value>No sensor service found.</value>
+  </data>
+  <data name="SignatureResponse" xml:space="preserve">
+    <value>Response to signature request</value>
+  </data>
+  <data name="ThingRegistryServiceNotFound" xml:space="preserve">
+    <value>No thing registry service found on broker.</value>
+  </data>
+  <data name="UnableToGetListOfMyDevices" xml:space="preserve">
+    <value>Unable to get list of my devices.</value>
+  </data>
+  <data name="UnableToGetOptions" xml:space="preserve">
+    <value>Unable to get available options.</value>
+  </data>
+  <data name="Altitude" xml:space="preserve">
+    <value>Altitude</value>
+  </data>
+  <data name="Anonymous" xml:space="preserve">
+    <value>Anonymous</value>
+  </data>
+  <data name="Apartment" xml:space="preserve">
+    <value>Apartment</value>
+  </data>
+  <data name="APetitionHasBeenSentForEncryption" xml:space="preserve">
+    <value>Encryption can only be performed, if you have access to the recipients identity. A petition for this identity has therefore been sent to the indended recipient. If the recipient accepts the petition, you will receive the identity and be able to send the payment with an encrypted message when you try again. You can also choose to send an unencrypted message with the payment.</value>
+  </data>
+  <data name="Assessor" xml:space="preserve">
+    <value>Assessor</value>
+  </data>
+  <data name="Building" xml:space="preserve">
+    <value>Building</value>
+  </data>
+  <data name="BuyEDaler" xml:space="preserve">
+    <value>Buy eDaler.</value>
+  </data>
+  <data name="CallerOnly" xml:space="preserve">
+    <value>Caller Only</value>
+  </data>
+  <data name="Certifier" xml:space="preserve">
+    <value>Certifier</value>
+  </data>
+  <data name="CertifierJid" xml:space="preserve">
+    <value>Certifier Address</value>
+  </data>
+  <data name="Class" xml:space="preserve">
+    <value>Class</value>
+  </data>
+  <data name="Contacts" xml:space="preserve">
+    <value>Contacts</value>
+  </data>
+  <data name="ContactsDescription" xml:space="preserve">
+    <value>Below are all contacts in your contact book. Click on any to interact with that contact.</value>
+  </data>
+  <data name="ContractProposal" xml:space="preserve">
+    <value>Contract proposal</value>
+  </data>
+  <data name="ContractResponse" xml:space="preserve">
+    <value>Response to contract request</value>
+  </data>
+  <data name="ContractSignatureReceived" xml:space="preserve">
+    <value>Contract signature received</value>
+  </data>
+  <data name="ContractUpdateReceived" xml:space="preserve">
+    <value>Contract updated</value>
+  </data>
+  <data name="DeleteRulesQuestion" xml:space="preserve">
+    <value>Do you want to delete all provisioning rules for the thing? By doing so, the thing will ask you again for all new events to learn what it is authorized to do.</value>
+  </data>
+  <data name="Device" xml:space="preserve">
+    <value>Device</value>
+  </data>
+  <data name="DisownThingQuestion" xml:space="preserve">
+    <value>Do you want to disown the thing? This will remove the thing from your list of things, and will permit another to claim the device as theirs.</value>
+  </data>
+  <data name="EncryptedPayment" xml:space="preserve">
+    <value>Encrypted Payment</value>
+  </data>
+  <data name="EntireDomain" xml:space="preserve">
+    <value>Everyone from {0}</value>
+  </data>
+  <data name="Errors" xml:space="preserve">
+    <value>Errors</value>
+  </data>
+  <data name="Everyone" xml:space="preserve">
+    <value>Everyone</value>
+  </data>
+  <data name="ExpiresAt" xml:space="preserve">
+    <value>(Expires {0})</value>
+  </data>
+  <data name="FromUser" xml:space="preserve">
+    <value>From User</value>
+  </data>
+  <data name="GeneralInformation" xml:space="preserve">
+    <value>General Information</value>
+  </data>
+  <data name="History" xml:space="preserve">
+    <value>History</value>
+  </data>
+  <data name="InvalidNeuroFeatureToken" xml:space="preserve">
+    <value>Invalid Neuro-Feature token.</value>
+  </data>
+  <data name="Key" xml:space="preserve">
+    <value>Key</value>
+  </data>
+  <data name="Latitude" xml:space="preserve">
+    <value>Latitude</value>
+  </data>
+  <data name="Longitude" xml:space="preserve">
+    <value>Longitude</value>
+  </data>
+  <data name="Manufacturer" xml:space="preserve">
+    <value>Manufacturer</value>
+  </data>
+  <data name="MeterLocation" xml:space="preserve">
+    <value>Meter Location</value>
+  </data>
+  <data name="MeterNumber" xml:space="preserve">
+    <value>Meter Number</value>
+  </data>
+  <data name="Model" xml:space="preserve">
+    <value>Model</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="NetworkAddressOfContactUnknown" xml:space="preserve">
+    <value>Network address of contact unknown.</value>
+  </data>
+  <data name="NoContactsFound" xml:space="preserve">
+    <value>No Contacts Found.</value>
+  </data>
+  <data name="NotAvailable" xml:space="preserve">
+    <value>Not Available</value>
+  </data>
+  <data name="NoteCopiedToClipboard" xml:space="preserve">
+    <value>Note copied to clipboard.</value>
+  </data>
+  <data name="Payment" xml:space="preserve">
+    <value>Payment</value>
+  </data>
+  <data name="PaymentAlreadySent" xml:space="preserve">
+    <value>Payment instruction has already been sent. You can resend pending payments from the pending payment view.</value>
+  </data>
+  <data name="PaymentSuccess" xml:space="preserve">
+    <value>Payment successfully realized.</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>Phone</value>
+  </data>
+  <data name="PickPhoto" xml:space="preserve">
+    <value>Pick photo</value>
+  </data>
+  <data name="Present" xml:space="preserve">
+    <value>Present</value>
+  </data>
+  <data name="ProductInformation" xml:space="preserve">
+    <value>Product Information</value>
+  </data>
+  <data name="Profiling" xml:space="preserve">
+    <value>Profiling</value>
+  </data>
+  <data name="PurposeReviewToken" xml:space="preserve">
+    <value>Reviewing token where you are part.</value>
+  </data>
+  <data name="Question" xml:space="preserve">
+    <value>Question</value>
+  </data>
+  <data name="Reference" xml:space="preserve">
+    <value>Reference</value>
+  </data>
+  <data name="Registry" xml:space="preserve">
+    <value>Registry</value>
+  </data>
+  <data name="RemoveSubscriptionFrom" xml:space="preserve">
+    <value>Do you want to remove the presence subscription from {0}?</value>
+  </data>
+  <data name="RequestPayment" xml:space="preserve">
+    <value>Request Payment</value>
+  </data>
+  <data name="RequestPaymentMessage" xml:space="preserve">
+    <value>Requesting payment of {0} {1}.</value>
+  </data>
+  <data name="Room" xml:space="preserve">
+    <value>Room</value>
+  </data>
+  <data name="RulesDeleted" xml:space="preserve">
+    <value>Provisioning rules have been deleted.</value>
+  </data>
+  <data name="ScanQRCode" xml:space="preserve">
+    <value>Scan QR Code</value>
+  </data>
+  <data name="SelectContactToPay" xml:space="preserve">
+    <value>Below are all contacts in your contact book. Select the contact to whom you want to make the payment.</value>
+  </data>
+  <data name="SelectFromWhomToRequestPayment" xml:space="preserve">
+    <value>Select from whom to request payment.</value>
+  </data>
+  <data name="SelectingAPhotoIsNotSupported" xml:space="preserve">
+    <value>Selecting a photo is not supported on this device</value>
+  </data>
+  <data name="SelectServiceProviderBuyEDaler" xml:space="preserve">
+    <value>Select the Service Provider you want to use to buy eDaler.</value>
+  </data>
+  <data name="SelectServiceProviderSellEDaler" xml:space="preserve">
+    <value>Select the Service Provider you want to use to sell eDaler.</value>
+  </data>
+  <data name="SellEDaler" xml:space="preserve">
+    <value>Sell eDaler.</value>
+  </data>
+  <data name="SendInformationTo" xml:space="preserve">
+    <value>Send Information To?</value>
+  </data>
+  <data name="SensorDataAccepted" xml:space="preserve">
+    <value>Request has been accepted.</value>
+  </data>
+  <data name="SensorDataCancelled" xml:space="preserve">
+    <value>Sensor Data readout has been cancelled.</value>
+  </data>
+  <data name="SensorDataDone" xml:space="preserve">
+    <value>Sensor Data readout has completed.</value>
+  </data>
+  <data name="SensorDataFailure" xml:space="preserve">
+    <value>Sensor Data readout has failed.</value>
+  </data>
+  <data name="SensorDataHeaderComputed" xml:space="preserve">
+    <value>Computed</value>
+  </data>
+  <data name="SensorDataHeaderHistorical" xml:space="preserve">
+    <value>Historical</value>
+  </data>
+  <data name="SensorDataHeaderIdentity" xml:space="preserve">
+    <value>Identity</value>
+  </data>
+  <data name="SensorDataHeaderMomentary" xml:space="preserve">
+    <value>Momentary</value>
+  </data>
+  <data name="SensorDataHeaderOther" xml:space="preserve">
+    <value>Other</value>
+  </data>
+  <data name="SensorDataHeaderPeak" xml:space="preserve">
+    <value>Peak</value>
+  </data>
+  <data name="SensorDataHeaderStatus" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="SensorDataReceiving" xml:space="preserve">
+    <value>Receiving Sensor Data.</value>
+  </data>
+  <data name="SensorDataRequested" xml:space="preserve">
+    <value>Sensor Data has been requested.</value>
+  </data>
+  <data name="SensorDataStarted" xml:space="preserve">
+    <value>Sensor Data readout has started.</value>
+  </data>
+  <data name="SerialNumber" xml:space="preserve">
+    <value>Serial Number</value>
+  </data>
+  <data name="ServerDoesNotSupportFileUpload" xml:space="preserve">
+    <value>The server does not seem to support File Uploading.</value>
+  </data>
+  <data name="Service" xml:space="preserve">
+    <value>Service</value>
+  </data>
+  <data name="Share" xml:space="preserve">
+    <value>Share</value>
+  </data>
+  <data name="StateDiagram" xml:space="preserve">
+    <value>State Diagram</value>
+  </data>
+  <data name="StreetName" xml:space="preserve">
+    <value>Street Name</value>
+  </data>
+  <data name="StreetNumber" xml:space="preserve">
+    <value>Street Number</value>
+  </data>
+  <data name="TakePhoto" xml:space="preserve">
+    <value>Take photo</value>
+  </data>
+  <data name="TakePhotoToShare" xml:space="preserve">
+    <value>Take a photo to share</value>
+  </data>
+  <data name="TakingAPhotoIsNotSupported" xml:space="preserve">
+    <value>Taking a photo is not supported on this device</value>
+  </data>
+  <data name="TheSpecifiedCodeIsNotALegalIdentity" xml:space="preserve">
+    <value>You need to scan a different type of QR Code, one that represents a legal identity</value>
+  </data>
+  <data name="ThingDisowned" xml:space="preserve">
+    <value>This has been successfully disowned. It can now be claimed by a new owner.</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Time</value>
+  </data>
+  <data name="ToDevice" xml:space="preserve">
+    <value>To device, regardless of source</value>
+  </data>
+  <data name="ToService" xml:space="preserve">
+    <value>To service, regardless of source</value>
+  </data>
+  <data name="ToUser" xml:space="preserve">
+    <value>To user, regardless of source</value>
+  </data>
+  <data name="ToUser2" xml:space="preserve">
+    <value>To User</value>
+  </data>
+  <data name="TransactionAccepted" xml:space="preserve">
+    <value>Transaction has been accepted and processed.</value>
+  </data>
+  <data name="UnableToClaimThing" xml:space="preserve">
+    <value>Unable to claim thing</value>
+  </data>
+  <data name="UnableToProcessEDalerUri" xml:space="preserve">
+    <value>Unable to process eDaler code.</value>
+  </data>
+  <data name="UnableToRespond" xml:space="preserve">
+    <value>Unable to respond to request.</value>
+  </data>
+  <data name="UnrecognizedEventType" xml:space="preserve">
+    <value>Unrecognized event type:</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="UserSignedAs" xml:space="preserve">
+    <value>{0} signed as {1}.</value>
+  </data>
+  <data name="Valuator" xml:space="preserve">
+    <value>Valuator</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="Witness" xml:space="preserve">
+    <value>Witness</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Yesterday</value>
+  </data>
+  <data name="AccountEvent" xml:space="preserve">
+    <value>Account Event</value>
+  </data>
 </root>

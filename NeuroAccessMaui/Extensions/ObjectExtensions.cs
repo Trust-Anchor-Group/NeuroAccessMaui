@@ -14,12 +14,12 @@ namespace NeuroAccessMaui.Extensions
 		/// <param name="MethodInfo">The current method instance.</param>
 		/// <param name="Method">An optional method name. If not specified, the method name is extracted from the <c>methodInfo</c> parameter.</param>
 		/// <returns>Class and Method</returns>
-		public static KeyValuePair<string, object>[] GetClassAndMethod(this object Obj, MethodBase? MethodInfo, string? Method = null)
+		public static KeyValuePair<string, object?>[] GetClassAndMethod(this object Obj, MethodBase? MethodInfo, string? Method = null)
 		{
 			return
 				[
-					new KeyValuePair<string, object>("Class", Obj.GetType().Name),
-					new KeyValuePair<string, object>("Method", Method ?? MethodInfo?.Name ?? "UNKNOWN")
+					new KeyValuePair<string, object?>("Class", Obj.GetType().Name),
+					new KeyValuePair<string, object?>("Method", Method ?? MethodInfo?.Name ?? "UNKNOWN")
 				];
 		}
 	}

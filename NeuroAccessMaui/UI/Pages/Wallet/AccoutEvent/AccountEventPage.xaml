@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseContentPage x:Name="ThisPage"
+							 x:Class="NeuroAccessMaui.UI.Pages.Wallet.AccountEvent.AccountEventPage"
+							 x:DataType="viewmodel:AccountEventViewModel"
+							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.AccountEvent">
+	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+
+		<controls:Background/>
+
+		<ScrollView>
+			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
+											 Style="{StaticResource ImageOnlyButtonStyle}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+
+				<Label Text="{l:Localize AccountEvent}" Style="{StaticResource PageTitleLabelStyle}"/>
+
+				<Frame Style="{StaticResource FrameSet}">
+					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+						<Label Text="{l:Localize AccountEventDescription}" VerticalOptions="Start"/>
+						<!-- Note -->
+						<Label Text="{l:Localize RemoteParty}"/>
+						<Entry Text="{Binding Path=FriendlyName}" IsReadOnly="True"/>
+						<Label Text="{l:Localize Timestamp}"/>
+						<Entry Text="{Binding Path=TimestampStr}" IsReadOnly="True"/>
+						<Label Text="{l:Localize Change}"/>
+						<Entry Text="{Binding Path=ChangeAndCurrency}" IsReadOnly="True" TextColor="{Binding Path=ChangeColor}"/>
+						<Label Text="{l:Localize Balance}"/>
+						<Entry Text="{Binding Path=BalanceAndCurrency}" IsReadOnly="True"/>
+						<Label Text="{l:Localize Reserved}" IsVisible="{Binding Reserved, Converter={converters:GreaterThanZero}}"/>
+						<Entry Text="{Binding Path=ReservedAndCurrency}" IsReadOnly="True" IsVisible="{Binding Reserved, Converter={converters:GreaterThanZero}}"/>
+						<Label Text="{l:Localize Message}" IsVisible="{Binding Path=HasMessage}"/>
+						<Entry Text="{Binding Path=Message}" IsReadOnly="True" IsVisible="{Binding Path=HasMessage}"/>
+						<Button Text="{l:Localize OpenMessageLink}" Command="{Binding OpenMessageLinkCommand}" IsVisible="{Binding MessageIsUri}"/>
+						<Label Text="{l:Localize TransactionId}"/>
+						<Entry Text="{Binding Path=Id}" IsReadOnly="True"/>
+					</VerticalStackLayout>
+				</Frame>
+			</VerticalStackLayout>
+		</ScrollView>
+	</Grid>
+</base:BaseContentPage>

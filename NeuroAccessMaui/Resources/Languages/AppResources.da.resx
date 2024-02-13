@@ -1161,4 +1161,664 @@
   <data name="DeviceID" xml:space="preserve">
     <value>Enheds-id</value>
   </data>
+  <data name="AddContactToContract" xml:space="preserve">
+    <value>Føj kontakt til kontrakt</value>
+  </data>
+  <data name="AddPart" xml:space="preserve">
+    <value>Tilføj del</value>
+  </data>
+  <data name="Archiving_Optional" xml:space="preserve">
+    <value>Arkivering (valgfrit)</value>
+  </data>
+  <data name="Archiving_Required" xml:space="preserve">
+    <value>Arkivering (påkrævet)</value>
+  </data>
+  <data name="BalanceUpdated" xml:space="preserve">
+    <value>Saldo opdateret.</value>
+  </data>
+  <data name="CalculationError" xml:space="preserve">
+    <value>Kan ikke udføre beregning.</value>
+  </data>
+  <data name="CanActAsTemplate" xml:space="preserve">
+    <value>Kan fungere som skabelon</value>
+  </data>
+  <data name="ContractHasBeenDeleted" xml:space="preserve">
+    <value>Kontrakten er blevet slettet.</value>
+  </data>
+  <data name="ContractHasBeenObsoleted" xml:space="preserve">
+    <value>Kontrakten er forældet.</value>
+  </data>
+  <data name="ContractId" xml:space="preserve">
+    <value>Kontrakt-id</value>
+  </data>
+  <data name="ContractRoleMustBeSelected" xml:space="preserve">
+    <value>Vælg kontraktrolle først, og prøv derefter igen.</value>
+  </data>
+  <data name="Contracts" xml:space="preserve">
+    <value>Kontrakter</value>
+  </data>
+  <data name="ContractsInfoText" xml:space="preserve">
+    <value>Nedenfor er en liste over kontrakter, som du har oprettet eller underskrevet. Klik på en kontrakt for at få flere oplysninger om den.</value>
+  </data>
+  <data name="ContractSuccessfullySigned" xml:space="preserve">
+    <value>Kontrakt underskrevet med succes.</value>
+  </data>
+  <data name="ContractTemplates" xml:space="preserve">
+    <value>Kontrakt skabeloner</value>
+  </data>
+  <data name="ContractTemplatesInfoText" xml:space="preserve">
+    <value>Nedenfor er en liste over kontraktskabeloner, som du har brugt. Klik på en skabelon for at oprette en ny kontrakt baseret på skabelonen.</value>
+  </data>
+  <data name="ContractVisibilityMustBeSelected" xml:space="preserve">
+    <value>Vælg først kontraktsynlighed, og prøv derefter igen.</value>
+  </data>
+  <data name="ContractVisibility_CreatorAndParts" xml:space="preserve">
+    <value>Skaber og dele</value>
+  </data>
+  <data name="ContractVisibility_DomainAndParts" xml:space="preserve">
+    <value>Domæne og dele</value>
+  </data>
+  <data name="ContractVisibility_Public" xml:space="preserve">
+    <value>Offentlig, ikke søgbar</value>
+  </data>
+  <data name="ContractVisibility_PublicSearchable" xml:space="preserve">
+    <value>Offentlig og søgbar</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>dag</value>
+  </data>
+  <data name="Days" xml:space="preserve">
+    <value>Dage</value>
+  </data>
+  <data name="Digest" xml:space="preserve">
+    <value>Fordøje</value>
+  </data>
+  <data name="Duration" xml:space="preserve">
+    <value>Varighed</value>
+  </data>
+  <data name="EnterProposal" xml:space="preserve">
+    <value>Indtast den tekst, der skal medtages i forslaget for at {0}, eller lad feltet stå tomt, hvis et forslag ikke skal sendes.</value>
+  </data>
+  <data name="EnterValidValue" xml:space="preserve">
+    <value>Indtast først en gyldig værdi.</value>
+  </data>
+  <data name="EnterValue" xml:space="preserve">
+    <value>Du skal først indtaste en værdi.</value>
+  </data>
+  <data name="ExpiredEDalerUri" xml:space="preserve">
+    <value>Denne eDaler kode er udløbet.</value>
+  </data>
+  <data name="ForInclusionInContract" xml:space="preserve">
+    <value>Til optagelse som en del af en kontrakt.</value>
+  </data>
+  <data name="From" xml:space="preserve">
+    <value>Fra</value>
+  </data>
+  <data name="HashFunction" xml:space="preserve">
+    <value>Hash-funktion</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>time</value>
+  </data>
+  <data name="Hours" xml:space="preserve">
+    <value>Timer</value>
+  </data>
+  <data name="InvalidEDalerUri" xml:space="preserve">
+    <value>Ugyldig eDaler URI: {0}</value>
+  </data>
+  <data name="LocalName" xml:space="preserve">
+    <value>Lokalt navn</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>minut</value>
+  </data>
+  <data name="Minutes" xml:space="preserve">
+    <value>minutter</value>
+  </data>
+  <data name="Mode" xml:space="preserve">
+    <value>Tilstand</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>måned</value>
+  </data>
+  <data name="Months" xml:space="preserve">
+    <value>Måneder</value>
+  </data>
+  <data name="Namespace" xml:space="preserve">
+    <value>Navneområde</value>
+  </data>
+  <data name="Negative" xml:space="preserve">
+    <value>Negativ</value>
+  </data>
+  <data name="Parameters" xml:space="preserve">
+    <value>Parametre</value>
+  </data>
+  <data name="Proposal" xml:space="preserve">
+    <value>Forslag</value>
+  </data>
+  <data name="PurposeReviewContract" xml:space="preserve">
+    <value>Gennemgang af kontrakt, hvor du er en del.</value>
+  </data>
+  <data name="RequestToAccessContract" xml:space="preserve">
+    <value>Anmodning om adgang til kontrakt</value>
+  </data>
+  <data name="Second" xml:space="preserve">
+    <value>anden</value>
+  </data>
+  <data name="Seconds" xml:space="preserve">
+    <value>Sekunder</value>
+  </data>
+  <data name="SelectedContactCannotBeAdded" xml:space="preserve">
+    <value>Den valgte kontakt kan ikke tilføjes. Det har ikke et juridisk ID registreret.</value>
+  </data>
+  <data name="Send" xml:space="preserve">
+    <value>Sende</value>
+  </data>
+  <data name="SignAfter" xml:space="preserve">
+    <value>Underskriv efter</value>
+  </data>
+  <data name="SignAsRole" xml:space="preserve">
+    <value>Underskriv som {0}</value>
+  </data>
+  <data name="SignBefore" xml:space="preserve">
+    <value>Underskriv før</value>
+  </data>
+  <data name="StateChangedTo" xml:space="preserve">
+    <value>Stat ændret til {0}</value>
+  </data>
+  <data name="TemplateId" xml:space="preserve">
+    <value>Skabelon-id</value>
+  </data>
+  <data name="TheContractRequiresAtLeast_AddMoreParts" xml:space="preserve">
+    <value>Kontrakten kræver mindst {0} del af rollen {1}. Føj flere dele til kontrakten, og prøv igen.</value>
+  </data>
+  <data name="TheContractRequiresAtMost_RemoveParts" xml:space="preserve">
+    <value>Kontrakten kræver højst {0} del af rolle {1}. Fjern nogle af delene fra kontrakten, og prøv igen.</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>Til</value>
+  </data>
+  <data name="TokenAdded" xml:space="preserve">
+    <value>Et token er blevet tilføjet til din tegnebog.</value>
+  </data>
+  <data name="TokenAdded2" xml:space="preserve">
+    <value>Token tilføjet</value>
+  </data>
+  <data name="TokenCreationTemplates" xml:space="preserve">
+    <value>Token skabeloner</value>
+  </data>
+  <data name="TokenCreationTemplatesInfoText" xml:space="preserve">
+    <value>Nedenfor er en liste over tokenskabeloner, som du har brugt eller kan bruge til at oprette nye tokens. Klik på en skabelon for at oprette en ny kontrakt baseret på skabelonen. Når kontrakten er underskrevet og godkendt, oprettes det eller de tilsvarende tokens.</value>
+  </data>
+  <data name="TokenRemoved" xml:space="preserve">
+    <value>Et token er blevet fjernet fra din tegnebog.</value>
+  </data>
+  <data name="TokenRemoved2" xml:space="preserve">
+    <value>Token fjernet</value>
+  </data>
+  <data name="UnrecognizedEDalerURI" xml:space="preserve">
+    <value>Ukendt eDaler URI.</value>
+  </data>
+  <data name="VariablesUpdated" xml:space="preserve">
+    <value>Variabler opdateret</value>
+  </data>
+  <data name="Visibility" xml:space="preserve">
+    <value>Synlighed</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>år</value>
+  </data>
+  <data name="Years" xml:space="preserve">
+    <value>År</value>
+  </data>
+  <data name="YouHaveReceivedAProposal" xml:space="preserve">
+    <value>De har modtaget et forslag.</value>
+  </data>
+  <data name="YourContractContainsErrors" xml:space="preserve">
+    <value>Din kontrakt indeholder fejl. Ret disse fejl, og prøv igen.</value>
+  </data>
+  <data name="AccessRequest" xml:space="preserve">
+    <value>Anmodning om adgang</value>
+  </data>
+  <data name="ContractCreated" xml:space="preserve">
+    <value>Der er oprettet en kontrakt.</value>
+  </data>
+  <data name="ContractDeleted" xml:space="preserve">
+    <value>En kontrakt er blevet slettet.</value>
+  </data>
+  <data name="ContractProposed" xml:space="preserve">
+    <value>Der er foreslået en kontrakt.</value>
+  </data>
+  <data name="ContractSigned" xml:space="preserve">
+    <value>Der er underskrevet en kontrakt.</value>
+  </data>
+  <data name="ContractUpdated" xml:space="preserve">
+    <value>En kontrakt er blevet opdateret.</value>
+  </data>
+  <data name="ControlRequest" xml:space="preserve">
+    <value>Anmodning om kontrol</value>
+  </data>
+  <data name="IdentityUpdated" xml:space="preserve">
+    <value>Den digitale identitet er blevet opdateret.</value>
+  </data>
+  <data name="InvalidIoTDiscoClaimUri" xml:space="preserve">
+    <value>Ikke en gyldig iotdisco-krav-URI.</value>
+  </data>
+  <data name="InvalidIoTDiscoveryCode" xml:space="preserve">
+    <value>Ugyldig IoT-registreringskode</value>
+  </data>
+  <data name="MessageFrom" xml:space="preserve">
+    <value>Besked fra:</value>
+  </data>
+  <data name="NeuroFeaturesServiceNotFound" xml:space="preserve">
+    <value>Ingen Neuro-Features service fundet på mægler.</value>
+  </data>
+  <data name="PetitionFrom" xml:space="preserve">
+    <value>Andragende fra:</value>
+  </data>
+  <data name="ReadRequest" xml:space="preserve">
+    <value>Anmodning om udlæsning</value>
+  </data>
+  <data name="UnableToGetHistory" xml:space="preserve">
+    <value>Kan ikke få historikrapport.</value>
+  </data>
+  <data name="UnableToGetPresent" xml:space="preserve">
+    <value>Kan ikke få nærværende rapport.</value>
+  </data>
+  <data name="UnableToGetProfiling" xml:space="preserve">
+    <value>Kan ikke få profileringsrapport.</value>
+  </data>
+  <data name="UnableToGetStateDiagram" xml:space="preserve">
+    <value>Kan ikke hente tilstandsdiagramrapport.</value>
+  </data>
+  <data name="AccessRequestText" xml:space="preserve">
+    <value>{0} vil oprette forbindelse til din enhed {1}.</value>
+  </data>
+  <data name="ConcentratorServiceNotFound" xml:space="preserve">
+    <value>Ingen koncentratortjeneste fundet.</value>
+  </data>
+  <data name="ControlRequestText" xml:space="preserve">
+    <value>{0} vil kontrollere parametre på din enhed {1}.</value>
+  </data>
+  <data name="ControlServiceNotFound" xml:space="preserve">
+    <value>Der blev ikke fundet nogen kontroltjeneste.</value>
+  </data>
+  <data name="EDalerServiceNotFound" xml:space="preserve">
+    <value>Ingen eDaler-service fundet på mægler.</value>
+  </data>
+  <data name="GettingOptionsCancelled" xml:space="preserve">
+    <value>At få tilgængelige muligheder blev annulleret.</value>
+  </data>
+  <data name="IdentityResponse" xml:space="preserve">
+    <value>Svar på identitetsanmodning</value>
+  </data>
+  <data name="IdentityReviewRequest" xml:space="preserve">
+    <value>Anmodning om gennemgang af identitet</value>
+  </data>
+  <data name="NoThingsFound" xml:space="preserve">
+    <value>Ingen ting fundet.</value>
+  </data>
+  <data name="PaymentCancelled" xml:space="preserve">
+    <value>Betaling annulleret</value>
+  </data>
+  <data name="PaymentFailed" xml:space="preserve">
+    <value>Betaling mislykkedes</value>
+  </data>
+  <data name="PepServiceNotFound" xml:space="preserve">
+    <value>Ingen personlig begivenhedstjeneste fundet.</value>
+  </data>
+  <data name="ProvisioningServiceNotFound" xml:space="preserve">
+    <value>Ingen klargøringstjeneste fundet på mægler.</value>
+  </data>
+  <data name="PushNotificationServiceNotFound" xml:space="preserve">
+    <value>Der blev ikke fundet nogen push-notifikationstjeneste.</value>
+  </data>
+  <data name="ReadoutRequestText" xml:space="preserve">
+    <value>{0} vil læse data fra din enhed {1}.</value>
+  </data>
+  <data name="RequestSignature" xml:space="preserve">
+    <value>Anmod om underskrift</value>
+  </data>
+  <data name="RequestToAccessIdentity" xml:space="preserve">
+    <value>Anmod om adgang til identitet</value>
+  </data>
+  <data name="SensorServiceNotFound" xml:space="preserve">
+    <value>Der blev ikke fundet nogen sensortjeneste.</value>
+  </data>
+  <data name="SignatureResponse" xml:space="preserve">
+    <value>Svar på underskriftsanmodning</value>
+  </data>
+  <data name="ThingRegistryServiceNotFound" xml:space="preserve">
+    <value>Ingen ting registreringstjeneste fundet på mægler.</value>
+  </data>
+  <data name="UnableToGetListOfMyDevices" xml:space="preserve">
+    <value>Kan ikke få listen over mine enheder.</value>
+  </data>
+  <data name="UnableToGetOptions" xml:space="preserve">
+    <value>Kan ikke få tilgængelige indstillinger.</value>
+  </data>
+  <data name="Altitude" xml:space="preserve">
+    <value>Højde</value>
+  </data>
+  <data name="Anonymous" xml:space="preserve">
+    <value>Anonym</value>
+  </data>
+  <data name="Apartment" xml:space="preserve">
+    <value>Lejlighed</value>
+  </data>
+  <data name="APetitionHasBeenSentForEncryption" xml:space="preserve">
+    <value>Kryptering kan kun udføres, hvis du har adgang til modtagerens identitet. Der er derfor sendt et andragende om denne identitet til den indstillede modtager. Hvis modtageren accepterer andragendet, modtager du identiteten og kan sende betalingen med en krypteret besked, når du prøver igen. Du kan også vælge at sende en ukrypteret besked med betalingen.</value>
+  </data>
+  <data name="Assessor" xml:space="preserve">
+    <value>Vurderingsmand</value>
+  </data>
+  <data name="Building" xml:space="preserve">
+    <value>Bygning</value>
+  </data>
+  <data name="BuyEDaler" xml:space="preserve">
+    <value>Køb eDaler.</value>
+  </data>
+  <data name="CallerOnly" xml:space="preserve">
+    <value>Kun opkalder</value>
+  </data>
+  <data name="Certifier" xml:space="preserve">
+    <value>Certificerer</value>
+  </data>
+  <data name="CertifierJid" xml:space="preserve">
+    <value>Certificeringsadresse</value>
+  </data>
+  <data name="Class" xml:space="preserve">
+    <value>Klasse</value>
+  </data>
+  <data name="Contacts" xml:space="preserve">
+    <value>Kontakter</value>
+  </data>
+  <data name="ContactsDescription" xml:space="preserve">
+    <value>Nedenfor er alle kontakter i din kontaktbog. Klik på en vilkårlig for at interagere med den pågældende kontakt.</value>
+  </data>
+  <data name="ContractProposal" xml:space="preserve">
+    <value>Forslag til kontrakt</value>
+  </data>
+  <data name="ContractResponse" xml:space="preserve">
+    <value>Svar på kontraktanmodning</value>
+  </data>
+  <data name="ContractSignatureReceived" xml:space="preserve">
+    <value>Kontraktunderskrift modtaget</value>
+  </data>
+  <data name="ContractUpdateReceived" xml:space="preserve">
+    <value>Kontrakt opdateret</value>
+  </data>
+  <data name="DeleteRulesQuestion" xml:space="preserve">
+    <value>Vil du slette alle klargøringsregler for tingen? Ved at gøre det, vil tingen bede jer igen om alle nye begivenheder for at lære, hvad den er autoriseret til at gøre.</value>
+  </data>
+  <data name="Device" xml:space="preserve">
+    <value>Apparat</value>
+  </data>
+  <data name="DisownThingQuestion" xml:space="preserve">
+    <value>Vil du fornægte tingen? Dette fjerner tingen fra din liste over ting og tillader en anden at gøre krav på enheden som deres.</value>
+  </data>
+  <data name="EncryptedPayment" xml:space="preserve">
+    <value>Krypteret betaling</value>
+  </data>
+  <data name="EntireDomain" xml:space="preserve">
+    <value>Alle fra {0}</value>
+  </data>
+  <data name="Errors" xml:space="preserve">
+    <value>Fejl</value>
+  </data>
+  <data name="Everyone" xml:space="preserve">
+    <value>Alle</value>
+  </data>
+  <data name="ExpiresAt" xml:space="preserve">
+    <value>(Udløber {0})</value>
+  </data>
+  <data name="FromUser" xml:space="preserve">
+    <value>Fra bruger</value>
+  </data>
+  <data name="GeneralInformation" xml:space="preserve">
+    <value>Generelle oplysninger</value>
+  </data>
+  <data name="History" xml:space="preserve">
+    <value>Historie</value>
+  </data>
+  <data name="InvalidNeuroFeatureToken" xml:space="preserve">
+    <value>Ugyldigt Neuro-Feature-token.</value>
+  </data>
+  <data name="Key" xml:space="preserve">
+    <value>Nøgle</value>
+  </data>
+  <data name="Latitude" xml:space="preserve">
+    <value>Breddegrad</value>
+  </data>
+  <data name="Longitude" xml:space="preserve">
+    <value>Længdegrad</value>
+  </data>
+  <data name="Manufacturer" xml:space="preserve">
+    <value>Fabrikant</value>
+  </data>
+  <data name="MeterLocation" xml:space="preserve">
+    <value>Målerens placering</value>
+  </data>
+  <data name="MeterNumber" xml:space="preserve">
+    <value>Målernummer</value>
+  </data>
+  <data name="Model" xml:space="preserve">
+    <value>Model</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Navn</value>
+  </data>
+  <data name="NetworkAddressOfContactUnknown" xml:space="preserve">
+    <value>Netværkets adresse på kontaktpersonen ukendt.</value>
+  </data>
+  <data name="NoContactsFound" xml:space="preserve">
+    <value>Der blev ikke fundet nogen kontakter.</value>
+  </data>
+  <data name="NotAvailable" xml:space="preserve">
+    <value>Ikke tilgængelig</value>
+  </data>
+  <data name="NoteCopiedToClipboard" xml:space="preserve">
+    <value>Bemærk kopieret til udklipsholder.</value>
+  </data>
+  <data name="Payment" xml:space="preserve">
+    <value>Betaling</value>
+  </data>
+  <data name="PaymentAlreadySent" xml:space="preserve">
+    <value>Betalingsinstruktion er allerede sendt. Du kan sende afventende betalinger igen fra visningen Afventende betaling.</value>
+  </data>
+  <data name="PaymentSuccess" xml:space="preserve">
+    <value>Betaling realiseret med succes.</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>Telefon</value>
+  </data>
+  <data name="PickPhoto" xml:space="preserve">
+    <value>Vælg billede</value>
+  </data>
+  <data name="Present" xml:space="preserve">
+    <value>Gave</value>
+  </data>
+  <data name="ProductInformation" xml:space="preserve">
+    <value>Produktinformation</value>
+  </data>
+  <data name="Profiling" xml:space="preserve">
+    <value>Profilering</value>
+  </data>
+  <data name="PurposeReviewToken" xml:space="preserve">
+    <value>Gennemgang af token, hvor du er en del.</value>
+  </data>
+  <data name="Question" xml:space="preserve">
+    <value>Spørgsmål</value>
+  </data>
+  <data name="Reference" xml:space="preserve">
+    <value>Henvisning</value>
+  </data>
+  <data name="Registry" xml:space="preserve">
+    <value>Registreringsdatabase</value>
+  </data>
+  <data name="RemoveSubscriptionFrom" xml:space="preserve">
+    <value>Vil du fjerne tilstedeværelsesabonnementet fra {0}?</value>
+  </data>
+  <data name="RequestPayment" xml:space="preserve">
+    <value>Anmod om betaling</value>
+  </data>
+  <data name="RequestPaymentMessage" xml:space="preserve">
+    <value>Anmodning om betaling af {0} {1}.</value>
+  </data>
+  <data name="Room" xml:space="preserve">
+    <value>Værelse</value>
+  </data>
+  <data name="RulesDeleted" xml:space="preserve">
+    <value>Klargøringsregler er blevet slettet.</value>
+  </data>
+  <data name="ScanQRCode" xml:space="preserve">
+    <value>Scan QR-kode</value>
+  </data>
+  <data name="SelectContactToPay" xml:space="preserve">
+    <value>Nedenfor er alle kontakter i din kontaktbog. Vælg den kontakt, du vil foretage betalingen til.</value>
+  </data>
+  <data name="SelectFromWhomToRequestPayment" xml:space="preserve">
+    <value>Vælg, hvem du vil anmode om betaling fra.</value>
+  </data>
+  <data name="SelectingAPhotoIsNotSupported" xml:space="preserve">
+    <value>Valg af et foto understøttes ikke på denne enhed</value>
+  </data>
+  <data name="SelectServiceProviderBuyEDaler" xml:space="preserve">
+    <value>Vælg den tjenesteudbyder, du vil bruge til at købe eDaler.</value>
+  </data>
+  <data name="SelectServiceProviderSellEDaler" xml:space="preserve">
+    <value>Vælg den tjenesteudbyder, du vil bruge til at sælge eDaler.</value>
+  </data>
+  <data name="SellEDaler" xml:space="preserve">
+    <value>Sælg eDaler.</value>
+  </data>
+  <data name="SendInformationTo" xml:space="preserve">
+    <value>Send information til?</value>
+  </data>
+  <data name="SensorDataAccepted" xml:space="preserve">
+    <value>Anmodningen er blevet accepteret.</value>
+  </data>
+  <data name="SensorDataCancelled" xml:space="preserve">
+    <value>Udlæsning af sensordata er blevet annulleret.</value>
+  </data>
+  <data name="SensorDataDone" xml:space="preserve">
+    <value>Udlæsningen af sensordata er afsluttet.</value>
+  </data>
+  <data name="SensorDataFailure" xml:space="preserve">
+    <value>Udlæsning af sensordata mislykkedes.</value>
+  </data>
+  <data name="SensorDataHeaderComputed" xml:space="preserve">
+    <value>Beregnet</value>
+  </data>
+  <data name="SensorDataHeaderHistorical" xml:space="preserve">
+    <value>Historisk</value>
+  </data>
+  <data name="SensorDataHeaderIdentity" xml:space="preserve">
+    <value>Identitet</value>
+  </data>
+  <data name="SensorDataHeaderMomentary" xml:space="preserve">
+    <value>Momentan</value>
+  </data>
+  <data name="SensorDataHeaderOther" xml:space="preserve">
+    <value>Anden</value>
+  </data>
+  <data name="SensorDataHeaderPeak" xml:space="preserve">
+    <value>Top</value>
+  </data>
+  <data name="SensorDataHeaderStatus" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="SensorDataReceiving" xml:space="preserve">
+    <value>Modtagelse af sensordata.</value>
+  </data>
+  <data name="SensorDataRequested" xml:space="preserve">
+    <value>Der er anmodet om sensordata.</value>
+  </data>
+  <data name="SensorDataStarted" xml:space="preserve">
+    <value>Udlæsning af sensordata er startet.</value>
+  </data>
+  <data name="SerialNumber" xml:space="preserve">
+    <value>Serienummer</value>
+  </data>
+  <data name="ServerDoesNotSupportFileUpload" xml:space="preserve">
+    <value>Serveren understøtter tilsyneladende ikke filoverførsel.</value>
+  </data>
+  <data name="Service" xml:space="preserve">
+    <value>Tjeneste</value>
+  </data>
+  <data name="Share" xml:space="preserve">
+    <value>Aktie</value>
+  </data>
+  <data name="StateDiagram" xml:space="preserve">
+    <value>Tilstandsdiagram</value>
+  </data>
+  <data name="StreetName" xml:space="preserve">
+    <value>Gadenavn</value>
+  </data>
+  <data name="StreetNumber" xml:space="preserve">
+    <value>Gadenummer</value>
+  </data>
+  <data name="TakePhoto" xml:space="preserve">
+    <value>Tag billede</value>
+  </data>
+  <data name="TakePhotoToShare" xml:space="preserve">
+    <value>Tag et billede for at dele</value>
+  </data>
+  <data name="TakingAPhotoIsNotSupported" xml:space="preserve">
+    <value>Optagelse af et billede understøttes ikke på denne enhed</value>
+  </data>
+  <data name="TheSpecifiedCodeIsNotALegalIdentity" xml:space="preserve">
+    <value>Du skal scanne en anden type QR-kode, en der repræsenterer en juridisk identitet</value>
+  </data>
+  <data name="ThingDisowned" xml:space="preserve">
+    <value>Det er lykkedes at fornægte dette. Det kan nu kræves af en ny ejer.</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Tidspunkt</value>
+  </data>
+  <data name="ToDevice" xml:space="preserve">
+    <value>Til enhed, uanset kilde</value>
+  </data>
+  <data name="ToService" xml:space="preserve">
+    <value>At servicere, uanset kilde</value>
+  </data>
+  <data name="ToUser" xml:space="preserve">
+    <value>Til brugeren, uanset kilde</value>
+  </data>
+  <data name="ToUser2" xml:space="preserve">
+    <value>Til bruger</value>
+  </data>
+  <data name="TransactionAccepted" xml:space="preserve">
+    <value>Transaktionen er blevet accepteret og behandlet.</value>
+  </data>
+  <data name="UnableToClaimThing" xml:space="preserve">
+    <value>Kan ikke gøre krav på ting</value>
+  </data>
+  <data name="UnableToProcessEDalerUri" xml:space="preserve">
+    <value>Kan ikke behandle eDaler-kode.</value>
+  </data>
+  <data name="UnableToRespond" xml:space="preserve">
+    <value>Kan ikke svare på anmodningen.</value>
+  </data>
+  <data name="UnrecognizedEventType" xml:space="preserve">
+    <value>Ukendt hændelsestype:</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>Bruger</value>
+  </data>
+  <data name="UserSignedAs" xml:space="preserve">
+    <value>{0} underskrevet som {1}.</value>
+  </data>
+  <data name="Valuator" xml:space="preserve">
+    <value>Evaluator</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="Witness" xml:space="preserve">
+    <value>Vidne</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>I går</value>
+  </data>
 </root>

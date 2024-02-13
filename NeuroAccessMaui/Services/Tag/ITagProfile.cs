@@ -100,6 +100,16 @@ namespace NeuroAccessMaui.Services.Tag
 		string? LegalJid { get; set; }
 
 		/// <summary>
+		/// The Thing Registry JID
+		/// </summary>
+		string? RegistryJid { get; set; }
+
+		/// <summary>
+		/// The XMPP server's provisioning Jid.
+		/// </summary>
+		string? ProvisioningJid { get; set; }
+
+		/// <summary>
 		/// The XMPP server's file upload Jid.
 		/// </summary>
 		string? HttpFileUploadJid { get; }
@@ -113,6 +123,21 @@ namespace NeuroAccessMaui.Services.Tag
 		/// The XMPP server's log Jid.
 		/// </summary>
 		string? LogJid { get; set; }
+
+		/// <summary>
+		/// The XMPP server's eDaler service JID.
+		/// </summary>
+		string? EDalerJid { get; set; }
+
+		/// <summary>
+		/// The XMPP server's Neuro-Features service JID.
+		/// </summary>
+		string? NeuroFeaturesJid { get; set; }
+
+		/// <summary>
+		/// If Push Notification is supported by server.
+		/// </summary>
+		bool SupportsPushNotification { get; set; }
 
 		/// <summary>
 		/// This profile's current registration step.

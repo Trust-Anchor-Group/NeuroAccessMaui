@@ -51,11 +51,15 @@ namespace NeuroAccessMaui.Services.Tag
 		private string? passwordHash;
 		private string? passwordHashMethod;
 		private string? legalJid;
+		private string? registryJid;
+		private string? provisioningJid;
 		private string? httpFileUploadJid;
 		private string? logJid;
-		private string? mucJid;
+		private string? eDalerJid;
+		private string? neuroFeaturesJid;
 		private string? pinHash;
 		private long httpFileUploadMaxSize;
+		private bool supportsPushNotification;
 		private int nrReviews;
 		private bool isTest;
 		private PurposeUse purpose;
@@ -116,9 +120,14 @@ namespace NeuroAccessMaui.Services.Tag
 				PasswordHash = this.PasswordHash,
 				PasswordHashMethod = this.PasswordHashMethod,
 				LegalJid = this.LegalJid,
+				RegistryJid = this.RegistryJid,
+				ProvisioningJid = this.ProvisioningJid,
 				HttpFileUploadJid = this.HttpFileUploadJid,
 				HttpFileUploadMaxSize = this.HttpFileUploadMaxSize,
 				LogJid = this.LogJid,
+				EDalerJid = this.EDalerJid,
+				NeuroFeaturesJid = this.NeuroFeaturesJid,
+				SupportsPushNotification = this.SupportsPushNotification,
 				PinHash = this.PinHash,
 				IsTest = this.IsTest,
 				Purpose = this.Purpose,
@@ -160,9 +169,14 @@ namespace NeuroAccessMaui.Services.Tag
 				this.PasswordHash = configuration.PasswordHash;
 				this.PasswordHashMethod = configuration.PasswordHashMethod;
 				this.LegalJid = configuration.LegalJid;
+				this.RegistryJid = configuration.RegistryJid;
+				this.ProvisioningJid = configuration.ProvisioningJid;
 				this.HttpFileUploadJid = configuration.HttpFileUploadJid;
 				this.HttpFileUploadMaxSize = configuration.HttpFileUploadMaxSize;
 				this.LogJid = configuration.LogJid;
+				this.EDalerJid = configuration.EDalerJid;
+				this.NeuroFeaturesJid = configuration.NeuroFeaturesJid;
+				this.SupportsPushNotification = configuration.SupportsPushNotification;
 				this.PinHash = configuration.PinHash;
 				this.IsTest = configuration.IsTest;
 				this.Purpose = configuration.Purpose;
@@ -190,9 +204,12 @@ namespace NeuroAccessMaui.Services.Tag
 		public virtual bool NeedsUpdating()
 		{
 			return string.IsNullOrWhiteSpace(this.legalJid) ||
+					string.IsNullOrWhiteSpace(this.registryJid) ||
+					string.IsNullOrWhiteSpace(this.provisioningJid) ||
 					string.IsNullOrWhiteSpace(this.httpFileUploadJid) ||
 					string.IsNullOrWhiteSpace(this.logJid) ||
-					string.IsNullOrWhiteSpace(this.mucJid);
+					string.IsNullOrWhiteSpace(this.eDalerJid) ||
+					string.IsNullOrWhiteSpace(this.neuroFeaturesJid);
 		}
 
 		/// <summary>
@@ -477,6 +494,34 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 		}
 
+		/// <inheritdoc/>
+		public string? RegistryJid
+		{
+			get => this.registryJid;
+			set
+			{
+				if (!string.Equals(this.registryJid, value, StringComparison.Ordinal))
+				{
+					this.registryJid = value;
+					this.FlagAsDirty(nameof(this.RegistryJid));
+				}
+			}
+		}
+
+		/// <inheritdoc/>
+		public string? ProvisioningJid
+		{
+			get => this.provisioningJid;
+			set
+			{
+				if (!string.Equals(this.provisioningJid, value, StringComparison.Ordinal))
+				{
+					this.provisioningJid = value;
+					this.FlagAsDirty(nameof(this.ProvisioningJid));
+				}
+			}
+		}
+
 		/// <summary>
 		/// The XMPP server's file upload Jid.
 		/// </summary>
@@ -521,6 +566,48 @@ namespace NeuroAccessMaui.Services.Tag
 				{
 					this.logJid = value;
 					this.FlagAsDirty(nameof(this.LogJid));
+				}
+			}
+		}
+
+		/// <inheritdoc/>
+		public string? EDalerJid
+		{
+			get => this.eDalerJid;
+			set
+			{
+				if (!string.Equals(this.eDalerJid, value, StringComparison.Ordinal))
+				{
+					this.eDalerJid = value;
+					this.FlagAsDirty(nameof(this.EDalerJid));
+				}
+			}
+		}
+
+		/// <inheritdoc/>
+		public string? NeuroFeaturesJid
+		{
+			get => this.neuroFeaturesJid;
+			set
+			{
+				if (!string.Equals(this.neuroFeaturesJid, value, StringComparison.Ordinal))
+				{
+					this.neuroFeaturesJid = value;
+					this.FlagAsDirty(nameof(this.NeuroFeaturesJid));
+				}
+			}
+		}
+
+		/// <inheritdoc/>
+		public bool SupportsPushNotification
+		{
+			get => this.supportsPushNotification;
+			set
+			{
+				if (this.supportsPushNotification != value)
+				{
+					this.supportsPushNotification = value;
+					this.FlagAsDirty(nameof(this.SupportsPushNotification));
 				}
 			}
 		}
@@ -904,6 +991,11 @@ namespace NeuroAccessMaui.Services.Tag
 			this.PasswordHash = string.Empty;
 			this.PasswordHashMethod = string.Empty;
 			this.LegalJid = string.Empty;
+			this.RegistryJid = null;
+			this.ProvisioningJid = null;
+			this.EDalerJid = null;
+			this.NeuroFeaturesJid = null;
+			this.SupportsPushNotification = false;
 
 			// It's important for this to be the last, since it will fire the account change notification.
 			this.Account = string.Empty;
@@ -1016,9 +1108,12 @@ namespace NeuroAccessMaui.Services.Tag
 			this.passwordHash = string.Empty;
 			this.passwordHashMethod = string.Empty;
 			this.legalJid = string.Empty;
+			this.registryJid = string.Empty;
+			this.provisioningJid = string.Empty;
 			this.httpFileUploadJid = string.Empty;
 			this.logJid = string.Empty;
-			this.mucJid = string.Empty;
+			this.eDalerJid = string.Empty;
+			this.neuroFeaturesJid = string.Empty;
 			this.pinHash = string.Empty;
 			this.httpFileUploadMaxSize = 0;
 			this.isTest = false;
@@ -1026,6 +1121,7 @@ namespace NeuroAccessMaui.Services.Tag
 			this.step = RegistrationStep.RequestPurpose;
 			this.defaultXmppConnectivity = false;
 			this.nrReviews = 0;
+			this.supportsPushNotification = false;
 
 			this.IsDirty = true;
 		}

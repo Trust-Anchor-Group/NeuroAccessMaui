@@ -1161,4 +1161,664 @@
   <data name="DeviceID" xml:space="preserve">
     <value>Enhets-ID</value>
   </data>
+  <data name="AddContactToContract" xml:space="preserve">
+    <value>Lägg till kontakt i kontrakt</value>
+  </data>
+  <data name="AddPart" xml:space="preserve">
+    <value>Lägg till artikel</value>
+  </data>
+  <data name="Archiving_Optional" xml:space="preserve">
+    <value>Arkivering (valfritt)</value>
+  </data>
+  <data name="Archiving_Required" xml:space="preserve">
+    <value>Arkivering (obligatoriskt)</value>
+  </data>
+  <data name="BalanceUpdated" xml:space="preserve">
+    <value>Saldo uppdaterat.</value>
+  </data>
+  <data name="CalculationError" xml:space="preserve">
+    <value>Det går inte att utföra beräkningen.</value>
+  </data>
+  <data name="CanActAsTemplate" xml:space="preserve">
+    <value>Kan fungera som mall</value>
+  </data>
+  <data name="ContractHasBeenDeleted" xml:space="preserve">
+    <value>Kontraktet har tagits bort.</value>
+  </data>
+  <data name="ContractHasBeenObsoleted" xml:space="preserve">
+    <value>Kontraktet har föråldrats.</value>
+  </data>
+  <data name="ContractId" xml:space="preserve">
+    <value>Kontrakt-ID</value>
+  </data>
+  <data name="ContractRoleMustBeSelected" xml:space="preserve">
+    <value>Välj först kontraktsroll och försök sedan igen.</value>
+  </data>
+  <data name="Contracts" xml:space="preserve">
+    <value>Kontrakt</value>
+  </data>
+  <data name="ContractsInfoText" xml:space="preserve">
+    <value>Nedan finns en lista över avtal som du har skapat eller signerat. Klicka på ett kontrakt för mer information om det.</value>
+  </data>
+  <data name="ContractSuccessfullySigned" xml:space="preserve">
+    <value>Kontraktet har undertecknats.</value>
+  </data>
+  <data name="ContractTemplates" xml:space="preserve">
+    <value>Mallar för avtal</value>
+  </data>
+  <data name="ContractTemplatesInfoText" xml:space="preserve">
+    <value>Nedan finns en lista över avtalsmallar som du har använt. Klicka på en mall för att skapa ett nytt avtal baserat på den mallen.</value>
+  </data>
+  <data name="ContractVisibilityMustBeSelected" xml:space="preserve">
+    <value>Välj avtalssynlighet först och försök sedan igen.</value>
+  </data>
+  <data name="ContractVisibility_CreatorAndParts" xml:space="preserve">
+    <value>Skapare och delar</value>
+  </data>
+  <data name="ContractVisibility_DomainAndParts" xml:space="preserve">
+    <value>Domän och delar</value>
+  </data>
+  <data name="ContractVisibility_Public" xml:space="preserve">
+    <value>Offentligt, ej sökbart</value>
+  </data>
+  <data name="ContractVisibility_PublicSearchable" xml:space="preserve">
+    <value>Publik och sökbar</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>dag</value>
+  </data>
+  <data name="Days" xml:space="preserve">
+    <value>Dagar</value>
+  </data>
+  <data name="Digest" xml:space="preserve">
+    <value>Smälta</value>
+  </data>
+  <data name="Duration" xml:space="preserve">
+    <value>Varaktighet</value>
+  </data>
+  <data name="EnterProposal" xml:space="preserve">
+    <value>Ange den text som ska ingå i förslaget som ska {0}, eller lämna tomt om ett förslag inte ska skickas.</value>
+  </data>
+  <data name="EnterValidValue" xml:space="preserve">
+    <value>Ange först ett giltigt värde.</value>
+  </data>
+  <data name="EnterValue" xml:space="preserve">
+    <value>Du måste ange ett värde först.</value>
+  </data>
+  <data name="ExpiredEDalerUri" xml:space="preserve">
+    <value>Denna eDaler-kod har upphört att gälla.</value>
+  </data>
+  <data name="ForInclusionInContract" xml:space="preserve">
+    <value>För inkludering som en del av ett kontrakt.</value>
+  </data>
+  <data name="From" xml:space="preserve">
+    <value>Från</value>
+  </data>
+  <data name="HashFunction" xml:space="preserve">
+    <value>Hash-funktion</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>timme</value>
+  </data>
+  <data name="Hours" xml:space="preserve">
+    <value>Timmar</value>
+  </data>
+  <data name="InvalidEDalerUri" xml:space="preserve">
+    <value>Ogiltig eDaler-URI: {0}</value>
+  </data>
+  <data name="LocalName" xml:space="preserve">
+    <value>Lokalt namn</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>minut</value>
+  </data>
+  <data name="Minutes" xml:space="preserve">
+    <value>protokoll</value>
+  </data>
+  <data name="Mode" xml:space="preserve">
+    <value>Läge</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>månad</value>
+  </data>
+  <data name="Months" xml:space="preserve">
+    <value>Månader</value>
+  </data>
+  <data name="Namespace" xml:space="preserve">
+    <value>Namnområde</value>
+  </data>
+  <data name="Negative" xml:space="preserve">
+    <value>Negativ</value>
+  </data>
+  <data name="Parameters" xml:space="preserve">
+    <value>Parametrar</value>
+  </data>
+  <data name="Proposal" xml:space="preserve">
+    <value>Förslag</value>
+  </data>
+  <data name="PurposeReviewContract" xml:space="preserve">
+    <value>Granska avtal där du är en del.</value>
+  </data>
+  <data name="RequestToAccessContract" xml:space="preserve">
+    <value>Begäran om att få tillgång till avtal</value>
+  </data>
+  <data name="Second" xml:space="preserve">
+    <value>andra</value>
+  </data>
+  <data name="Seconds" xml:space="preserve">
+    <value>Sekunder</value>
+  </data>
+  <data name="SelectedContactCannotBeAdded" xml:space="preserve">
+    <value>Det går inte att lägga till den valda kontakten. Den har inget juridiskt ID registrerat.</value>
+  </data>
+  <data name="Send" xml:space="preserve">
+    <value>Sända</value>
+  </data>
+  <data name="SignAfter" xml:space="preserve">
+    <value>Logga efter</value>
+  </data>
+  <data name="SignAsRole" xml:space="preserve">
+    <value>Signera som {0}</value>
+  </data>
+  <data name="SignBefore" xml:space="preserve">
+    <value>Signera innan</value>
+  </data>
+  <data name="StateChangedTo" xml:space="preserve">
+    <value>Staten har ändrats till {0}</value>
+  </data>
+  <data name="TemplateId" xml:space="preserve">
+    <value>Mall-ID</value>
+  </data>
+  <data name="TheContractRequiresAtLeast_AddMoreParts" xml:space="preserve">
+    <value>Kontraktet kräver minst {0} eller några delar av rollen {1}. Lägg till fler delar i kontraktet och försök igen.</value>
+  </data>
+  <data name="TheContractRequiresAtMost_RemoveParts" xml:space="preserve">
+    <value>Kontraktet kräver högst {0} eller flera delar av rollen {1}. Ta bort några av delarna från kontraktet och försök igen.</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>Till</value>
+  </data>
+  <data name="TokenAdded" xml:space="preserve">
+    <value>En token har lagts till i din plånbok.</value>
+  </data>
+  <data name="TokenAdded2" xml:space="preserve">
+    <value>Token har lagts till</value>
+  </data>
+  <data name="TokenCreationTemplates" xml:space="preserve">
+    <value>Mallar för token</value>
+  </data>
+  <data name="TokenCreationTemplatesInfoText" xml:space="preserve">
+    <value>Nedan visas en lista över tokenmallar som du har använt eller kan använda för att skapa nya token. Klicka på en mall för att skapa ett nytt avtal baserat på den mallen. När kontraktet har undertecknats och godkänts skapas motsvarande token eller tokens.</value>
+  </data>
+  <data name="TokenRemoved" xml:space="preserve">
+    <value>En token har tagits bort från din plånbok.</value>
+  </data>
+  <data name="TokenRemoved2" xml:space="preserve">
+    <value>Token har tagits bort</value>
+  </data>
+  <data name="UnrecognizedEDalerURI" xml:space="preserve">
+    <value>Okänd eDaler-URI.</value>
+  </data>
+  <data name="VariablesUpdated" xml:space="preserve">
+    <value>Variabler uppdaterade</value>
+  </data>
+  <data name="Visibility" xml:space="preserve">
+    <value>Synlighet</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>år</value>
+  </data>
+  <data name="Years" xml:space="preserve">
+    <value>år</value>
+  </data>
+  <data name="YouHaveReceivedAProposal" xml:space="preserve">
+    <value>Du har fått ett förslag.</value>
+  </data>
+  <data name="YourContractContainsErrors" xml:space="preserve">
+    <value>Ditt avtal innehåller fel. Åtgärda dessa fel och försök igen.</value>
+  </data>
+  <data name="AccessRequest" xml:space="preserve">
+    <value>Begäran om åtkomst</value>
+  </data>
+  <data name="ContractCreated" xml:space="preserve">
+    <value>Ett kontrakt har skapats.</value>
+  </data>
+  <data name="ContractDeleted" xml:space="preserve">
+    <value>Ett kontrakt har tagits bort.</value>
+  </data>
+  <data name="ContractProposed" xml:space="preserve">
+    <value>Ett kontrakt har föreslagits.</value>
+  </data>
+  <data name="ContractSigned" xml:space="preserve">
+    <value>Ett kontrakt har undertecknats.</value>
+  </data>
+  <data name="ContractUpdated" xml:space="preserve">
+    <value>Ett avtal har uppdaterats.</value>
+  </data>
+  <data name="ControlRequest" xml:space="preserve">
+    <value>Begäran om kontroll</value>
+  </data>
+  <data name="IdentityUpdated" xml:space="preserve">
+    <value>Den digitala identiteten har uppdaterats.</value>
+  </data>
+  <data name="InvalidIoTDiscoClaimUri" xml:space="preserve">
+    <value>Inte en giltig iotdisco-anspråks-URI.</value>
+  </data>
+  <data name="InvalidIoTDiscoveryCode" xml:space="preserve">
+    <value>Ogiltig IoT-identifieringskod</value>
+  </data>
+  <data name="MessageFrom" xml:space="preserve">
+    <value>Meddelande från:</value>
+  </data>
+  <data name="NeuroFeaturesServiceNotFound" xml:space="preserve">
+    <value>Ingen Neuro-Features-tjänst hittades på mäklaren.</value>
+  </data>
+  <data name="PetitionFrom" xml:space="preserve">
+    <value>Framställning från:</value>
+  </data>
+  <data name="ReadRequest" xml:space="preserve">
+    <value>Begäran om avläsning</value>
+  </data>
+  <data name="UnableToGetHistory" xml:space="preserve">
+    <value>Det går inte att hämta historikrapporten.</value>
+  </data>
+  <data name="UnableToGetPresent" xml:space="preserve">
+    <value>Det gick inte att få aktuell rapport.</value>
+  </data>
+  <data name="UnableToGetProfiling" xml:space="preserve">
+    <value>Det går inte att få profileringsrapport.</value>
+  </data>
+  <data name="UnableToGetStateDiagram" xml:space="preserve">
+    <value>Det gick inte att hämta tillståndsdiagramrapporten.</value>
+  </data>
+  <data name="AccessRequestText" xml:space="preserve">
+    <value>{0} vill ansluta till din enhet {1}.</value>
+  </data>
+  <data name="ConcentratorServiceNotFound" xml:space="preserve">
+    <value>Ingen koncentratortjänst hittades.</value>
+  </data>
+  <data name="ControlRequestText" xml:space="preserve">
+    <value>{0} vill styra parametrar på din enhet {1}.</value>
+  </data>
+  <data name="ControlServiceNotFound" xml:space="preserve">
+    <value>Ingen kontrolltjänst hittades.</value>
+  </data>
+  <data name="EDalerServiceNotFound" xml:space="preserve">
+    <value>Ingen eDaler-tjänst hittades på mäklaren.</value>
+  </data>
+  <data name="GettingOptionsCancelled" xml:space="preserve">
+    <value>Att få tillgängliga alternativ avbröts.</value>
+  </data>
+  <data name="IdentityResponse" xml:space="preserve">
+    <value>Svar på identitetsförfrågan</value>
+  </data>
+  <data name="IdentityReviewRequest" xml:space="preserve">
+    <value>Begäran om granskning av identitet</value>
+  </data>
+  <data name="NoThingsFound" xml:space="preserve">
+    <value>Inga saker hittades.</value>
+  </data>
+  <data name="PaymentCancelled" xml:space="preserve">
+    <value>Annullerad betalning</value>
+  </data>
+  <data name="PaymentFailed" xml:space="preserve">
+    <value>Betalningen misslyckades</value>
+  </data>
+  <data name="PepServiceNotFound" xml:space="preserve">
+    <value>Ingen personlig fälttävlanstjänst hittades.</value>
+  </data>
+  <data name="ProvisioningServiceNotFound" xml:space="preserve">
+    <value>Ingen etableringstjänst hittades på asynkron meddelandekö.</value>
+  </data>
+  <data name="PushNotificationServiceNotFound" xml:space="preserve">
+    <value>Ingen tjänst för push-meddelanden hittades.</value>
+  </data>
+  <data name="ReadoutRequestText" xml:space="preserve">
+    <value>{0} vill läsa data från din enhet {1}.</value>
+  </data>
+  <data name="RequestSignature" xml:space="preserve">
+    <value>Begär signatur</value>
+  </data>
+  <data name="RequestToAccessIdentity" xml:space="preserve">
+    <value>Begäran om åtkomst till identitet</value>
+  </data>
+  <data name="SensorServiceNotFound" xml:space="preserve">
+    <value>Ingen sensortjänst hittades.</value>
+  </data>
+  <data name="SignatureResponse" xml:space="preserve">
+    <value>Svar på begäran om underskrift</value>
+  </data>
+  <data name="ThingRegistryServiceNotFound" xml:space="preserve">
+    <value>Ingen sak registertjänst hittades på mäklare.</value>
+  </data>
+  <data name="UnableToGetListOfMyDevices" xml:space="preserve">
+    <value>Det går inte att hämta en lista över mina enheter.</value>
+  </data>
+  <data name="UnableToGetOptions" xml:space="preserve">
+    <value>Det går inte att få tillgängliga alternativ.</value>
+  </data>
+  <data name="Altitude" xml:space="preserve">
+    <value>Höjd</value>
+  </data>
+  <data name="Anonymous" xml:space="preserve">
+    <value>Anonym</value>
+  </data>
+  <data name="Apartment" xml:space="preserve">
+    <value>Lägenhet</value>
+  </data>
+  <data name="APetitionHasBeenSentForEncryption" xml:space="preserve">
+    <value>Kryptering kan endast utföras om du har tillgång till mottagarens identitet. En begäran om denna identitet har därför skickats till den berörda mottagaren. Om mottagaren accepterar framställningen får du identiteten och kan skicka betalningen med ett krypterat meddelande när du försöker igen. Du kan också välja att skicka ett okrypterat meddelande med betalningen.</value>
+  </data>
+  <data name="Assessor" xml:space="preserve">
+    <value>Bisittare</value>
+  </data>
+  <data name="Building" xml:space="preserve">
+    <value>Byggnad</value>
+  </data>
+  <data name="BuyEDaler" xml:space="preserve">
+    <value>Köp eDaler.</value>
+  </data>
+  <data name="CallerOnly" xml:space="preserve">
+    <value>Endast uppringare</value>
+  </data>
+  <data name="Certifier" xml:space="preserve">
+    <value>Certifierare</value>
+  </data>
+  <data name="CertifierJid" xml:space="preserve">
+    <value>Certifierarens adress</value>
+  </data>
+  <data name="Class" xml:space="preserve">
+    <value>Klass</value>
+  </data>
+  <data name="Contacts" xml:space="preserve">
+    <value>Kontakter</value>
+  </data>
+  <data name="ContactsDescription" xml:space="preserve">
+    <value>Nedan finns alla kontakter i din kontaktbok. Klicka på valfri för att interagera med den kontakten.</value>
+  </data>
+  <data name="ContractProposal" xml:space="preserve">
+    <value>Förslag till kontrakt</value>
+  </data>
+  <data name="ContractResponse" xml:space="preserve">
+    <value>Svar på avtalsförfrågan</value>
+  </data>
+  <data name="ContractSignatureReceived" xml:space="preserve">
+    <value>Undertecknande av kontrakt mottaget</value>
+  </data>
+  <data name="ContractUpdateReceived" xml:space="preserve">
+    <value>Kontraktet uppdaterat</value>
+  </data>
+  <data name="DeleteRulesQuestion" xml:space="preserve">
+    <value>Vill du ta bort alla etableringsregler för saken? Genom att göra det kommer saken att be dig igen om att alla nya händelser ska lära sig vad den har rätt att göra.</value>
+  </data>
+  <data name="Device" xml:space="preserve">
+    <value>Apparat</value>
+  </data>
+  <data name="DisownThingQuestion" xml:space="preserve">
+    <value>Vill du förneka saken? Detta kommer att ta bort saken från din lista över saker och kommer att tillåta en annan att göra anspråk på enheten som sin.</value>
+  </data>
+  <data name="EncryptedPayment" xml:space="preserve">
+    <value>Krypterad betalning</value>
+  </data>
+  <data name="EntireDomain" xml:space="preserve">
+    <value>Alla från {0}</value>
+  </data>
+  <data name="Errors" xml:space="preserve">
+    <value>Fel</value>
+  </data>
+  <data name="Everyone" xml:space="preserve">
+    <value>Alla</value>
+  </data>
+  <data name="ExpiresAt" xml:space="preserve">
+    <value>(Upphör {0})</value>
+  </data>
+  <data name="FromUser" xml:space="preserve">
+    <value>Från användare</value>
+  </data>
+  <data name="GeneralInformation" xml:space="preserve">
+    <value>Allmän information</value>
+  </data>
+  <data name="History" xml:space="preserve">
+    <value>Historia</value>
+  </data>
+  <data name="InvalidNeuroFeatureToken" xml:space="preserve">
+    <value>Ogiltig Neuro-Feature-token.</value>
+  </data>
+  <data name="Key" xml:space="preserve">
+    <value>Nyckel</value>
+  </data>
+  <data name="Latitude" xml:space="preserve">
+    <value>Breddgrad</value>
+  </data>
+  <data name="Longitude" xml:space="preserve">
+    <value>Longitud</value>
+  </data>
+  <data name="Manufacturer" xml:space="preserve">
+    <value>Tillverkare</value>
+  </data>
+  <data name="MeterLocation" xml:space="preserve">
+    <value>Mätarens placering</value>
+  </data>
+  <data name="MeterNumber" xml:space="preserve">
+    <value>Mätarens nummer</value>
+  </data>
+  <data name="Model" xml:space="preserve">
+    <value>Modell</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Namn</value>
+  </data>
+  <data name="NetworkAddressOfContactUnknown" xml:space="preserve">
+    <value>Kontaktens nätverksadress okänd.</value>
+  </data>
+  <data name="NoContactsFound" xml:space="preserve">
+    <value>Inga kontakter hittades.</value>
+  </data>
+  <data name="NotAvailable" xml:space="preserve">
+    <value>Ej tillgänglig</value>
+  </data>
+  <data name="NoteCopiedToClipboard" xml:space="preserve">
+    <value>Anteckning kopierad till Urklipp.</value>
+  </data>
+  <data name="Payment" xml:space="preserve">
+    <value>Betalning</value>
+  </data>
+  <data name="PaymentAlreadySent" xml:space="preserve">
+    <value>Betalningsinstruktion har redan skickats. Du kan skicka om väntande betalningar från vyn väntande betalning.</value>
+  </data>
+  <data name="PaymentSuccess" xml:space="preserve">
+    <value>Betalningen har genomförts.</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>Telefon</value>
+  </data>
+  <data name="PickPhoto" xml:space="preserve">
+    <value>Välj foto</value>
+  </data>
+  <data name="Present" xml:space="preserve">
+    <value>Gåva</value>
+  </data>
+  <data name="ProductInformation" xml:space="preserve">
+    <value>Produktinformation</value>
+  </data>
+  <data name="Profiling" xml:space="preserve">
+    <value>Profilering</value>
+  </data>
+  <data name="PurposeReviewToken" xml:space="preserve">
+    <value>Granska token där du är en del.</value>
+  </data>
+  <data name="Question" xml:space="preserve">
+    <value>Fråga</value>
+  </data>
+  <data name="Reference" xml:space="preserve">
+    <value>Hänvisning</value>
+  </data>
+  <data name="Registry" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="RemoveSubscriptionFrom" xml:space="preserve">
+    <value>Vill du ta bort närvaroprenumerationen från {0}?</value>
+  </data>
+  <data name="RequestPayment" xml:space="preserve">
+    <value>Begär betalning</value>
+  </data>
+  <data name="RequestPaymentMessage" xml:space="preserve">
+    <value>Begära betalning av {0} {1}.</value>
+  </data>
+  <data name="Room" xml:space="preserve">
+    <value>Rum</value>
+  </data>
+  <data name="RulesDeleted" xml:space="preserve">
+    <value>Etableringsregler har tagits bort.</value>
+  </data>
+  <data name="ScanQRCode" xml:space="preserve">
+    <value>Skanna QR-kod</value>
+  </data>
+  <data name="SelectContactToPay" xml:space="preserve">
+    <value>Nedan finns alla kontakter i din kontaktbok. Välj den kontakt som du vill göra betalningen till.</value>
+  </data>
+  <data name="SelectFromWhomToRequestPayment" xml:space="preserve">
+    <value>Välj från vem du vill begära betalning.</value>
+  </data>
+  <data name="SelectingAPhotoIsNotSupported" xml:space="preserve">
+    <value>Det går inte att välja ett foto på den här enheten</value>
+  </data>
+  <data name="SelectServiceProviderBuyEDaler" xml:space="preserve">
+    <value>Välj den tjänsteleverantör du vill använda för att köpa eDaler.</value>
+  </data>
+  <data name="SelectServiceProviderSellEDaler" xml:space="preserve">
+    <value>Välj den tjänsteleverantör du vill använda för att sälja eDaler.</value>
+  </data>
+  <data name="SellEDaler" xml:space="preserve">
+    <value>Sälj eDaler.</value>
+  </data>
+  <data name="SendInformationTo" xml:space="preserve">
+    <value>Skicka information till?</value>
+  </data>
+  <data name="SensorDataAccepted" xml:space="preserve">
+    <value>Begäran har godkänts.</value>
+  </data>
+  <data name="SensorDataCancelled" xml:space="preserve">
+    <value>Avläsning av sensordata har avbrutits.</value>
+  </data>
+  <data name="SensorDataDone" xml:space="preserve">
+    <value>Avläsningen av sensordata har slutförts.</value>
+  </data>
+  <data name="SensorDataFailure" xml:space="preserve">
+    <value>Avläsningen av sensordata misslyckades.</value>
+  </data>
+  <data name="SensorDataHeaderComputed" xml:space="preserve">
+    <value>Beräknade</value>
+  </data>
+  <data name="SensorDataHeaderHistorical" xml:space="preserve">
+    <value>Historisk</value>
+  </data>
+  <data name="SensorDataHeaderIdentity" xml:space="preserve">
+    <value>Identitet</value>
+  </data>
+  <data name="SensorDataHeaderMomentary" xml:space="preserve">
+    <value>Tillfällig</value>
+  </data>
+  <data name="SensorDataHeaderOther" xml:space="preserve">
+    <value>Andra __________</value>
+  </data>
+  <data name="SensorDataHeaderPeak" xml:space="preserve">
+    <value>Topp</value>
+  </data>
+  <data name="SensorDataHeaderStatus" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="SensorDataReceiving" xml:space="preserve">
+    <value>Ta emot sensordata.</value>
+  </data>
+  <data name="SensorDataRequested" xml:space="preserve">
+    <value>Sensordata har begärts.</value>
+  </data>
+  <data name="SensorDataStarted" xml:space="preserve">
+    <value>Avläsning av sensordata har startat.</value>
+  </data>
+  <data name="SerialNumber" xml:space="preserve">
+    <value>Serienummer</value>
+  </data>
+  <data name="ServerDoesNotSupportFileUpload" xml:space="preserve">
+    <value>Servern verkar inte ha stöd för filuppladdning.</value>
+  </data>
+  <data name="Service" xml:space="preserve">
+    <value>Tjänst</value>
+  </data>
+  <data name="Share" xml:space="preserve">
+    <value>Aktie</value>
+  </data>
+  <data name="StateDiagram" xml:space="preserve">
+    <value>Tillstånd Diagram</value>
+  </data>
+  <data name="StreetName" xml:space="preserve">
+    <value>Gatunamn</value>
+  </data>
+  <data name="StreetNumber" xml:space="preserve">
+    <value>Gatunummer</value>
+  </data>
+  <data name="TakePhoto" xml:space="preserve">
+    <value>Ta foto</value>
+  </data>
+  <data name="TakePhotoToShare" xml:space="preserve">
+    <value>Ta ett foto som du vill dela</value>
+  </data>
+  <data name="TakingAPhotoIsNotSupported" xml:space="preserve">
+    <value>Det går inte att ta ett foto på den här enheten</value>
+  </data>
+  <data name="TheSpecifiedCodeIsNotALegalIdentity" xml:space="preserve">
+    <value>Du måste skanna en annan typ av QR-kod, en som representerar en juridisk identitet</value>
+  </data>
+  <data name="ThingDisowned" xml:space="preserve">
+    <value>Detta har framgångsrikt förnekats. Den kan nu tas i anspråk av en ny ägare.</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Tid</value>
+  </data>
+  <data name="ToDevice" xml:space="preserve">
+    <value>Till enhet, oavsett källa</value>
+  </data>
+  <data name="ToService" xml:space="preserve">
+    <value>Till service, oavsett källa</value>
+  </data>
+  <data name="ToUser" xml:space="preserve">
+    <value>Till användaren, oavsett källa</value>
+  </data>
+  <data name="ToUser2" xml:space="preserve">
+    <value>Till användare</value>
+  </data>
+  <data name="TransactionAccepted" xml:space="preserve">
+    <value>Transaktionen har accepterats och behandlats.</value>
+  </data>
+  <data name="UnableToClaimThing" xml:space="preserve">
+    <value>Det går inte att göra anspråk på saken</value>
+  </data>
+  <data name="UnableToProcessEDalerUri" xml:space="preserve">
+    <value>Det går inte att bearbeta eDaler-kod.</value>
+  </data>
+  <data name="UnableToRespond" xml:space="preserve">
+    <value>Det går inte att svara på begäran.</value>
+  </data>
+  <data name="UnrecognizedEventType" xml:space="preserve">
+    <value>Okänd händelsetyp:</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>Användare</value>
+  </data>
+  <data name="UserSignedAs" xml:space="preserve">
+    <value>{0} undertecknade som {1}.</value>
+  </data>
+  <data name="Valuator" xml:space="preserve">
+    <value>Värdering</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="Witness" xml:space="preserve">
+    <value>Vittne</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Igår</value>
+  </data>
 </root>

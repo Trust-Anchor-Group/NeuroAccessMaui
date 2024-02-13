@@ -296,7 +296,7 @@
             </summary>
             <param name="Contour">Contour</param>
             <param name="Threshold">Distance from a line deemed "within the same line".</param>
-            <returns></returns>
+            <returns>Reduced set of points.</returns>
         </member>
         <member name="M:IdApp.Cv.Basic.BasicOperations.DistanceToLine(IdApp.Cv.Basic.Point,IdApp.Cv.Basic.Point,IdApp.Cv.Basic.Point)">
             <summary>

@@ -429,7 +429,7 @@ namespace NeuroAccessMaui.Services
 
 							this.output.WriteAttributeString("type", string.Empty, Obj.TypeName);
 
-							foreach (KeyValuePair<string, object> P in Obj)
+							foreach (KeyValuePair<string, object?> P in Obj)
 								await this.ReportProperty(P.Key, P.Value);
 
 							this.output.WriteEndElement();

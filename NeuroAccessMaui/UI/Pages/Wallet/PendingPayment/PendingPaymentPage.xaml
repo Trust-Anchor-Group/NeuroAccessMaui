@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseContentPage x:Name="ThisPage"
+							 x:Class="NeuroAccessMaui.UI.Pages.Wallet.PendingPayment.PendingPaymentPage"
+							 x:DataType="viewmodel:EDalerUriViewModel"
+							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet">
+	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+
+		<controls:Background/>
+
+		<ScrollView x:Name="ScrollView">
+			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
+											 Style="{StaticResource ImageOnlyButtonStyle}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+
+				<Label Text="{l:Localize PendingPayment}" Style="{StaticResource PageTitleLabelStyle}"/>
+
+				<Frame Style="{StaticResource FrameSet}">
+					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+						<Label Text="{l:Localize PendingPayment}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
+						<Label Text="{l:Localize PendingPaymentDescription}" Style="{StaticResource InfoText}" VerticalOptions="Start"/>
+						<!-- Note -->
+						<Label Text="{l:Localize To}"/>
+						<Entry Text="{Binding Path=FriendlyName}" IsReadOnly="True"/>
+						<Label Text="{l:Localize Amount}"/>
+						<Entry Text="{Binding Path=AmountAndCurrency}" IsReadOnly="True"/>
+						<Label Text="{l:Localize AmountExtra}" IsVisible="{Binding Path=AmountExtraPreset}"/>
+						<Entry Text="{Binding Path=AmountExtraAndCurrency}" IsVisible="{Binding Path=AmountExtraPreset}" IsReadOnly="True"/>
+						<Label Text="{l:Localize Message}" IsVisible="{Binding Path=MessagePreset}"/>
+						<Entry Text="{Binding Path=Message}" IsReadOnly="True" IsVisible="{Binding Path=MessagePreset}"/>
+						<Label Text="{l:Localize ExpiresAt}"/>
+						<Entry Text="{Binding Path=ExpiresStr}" IsReadOnly="True"/>
+						<!-- BUTTONS -->
+						<Button Text="{l:Localize Submit}" Command="{Binding Path=SubmitCommand}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
+						<Button Text="{l:Localize ShowCode}" Command="{Binding Path=ShowCodeCommand}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
+						<Image x:Name="QrCode" BackgroundColor="{StaticResource HeadingForeground}" Source="{Binding Path=QrCode}" 
+                       IsVisible="{Binding Path=HasQrCode}" WidthRequest="{Binding Path=QrCodeWidth}" 
+                       HeightRequest="{Binding Path=QrCodeHeight}" HorizontalOptions="Center" VerticalOptions="Start" 
+                       Margin="0" />
+						<Button x:Name="ShareButton" Text="{l:Localize Share}" Command="{Binding Path=ShareCommand}" 
+                        IsVisible="{Binding Path=HasQrCode}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
+					</VerticalStackLayout>
+				</Frame>
+			</VerticalStackLayout>
+		</ScrollView>
+	</Grid>
+</base:BaseContentPage>

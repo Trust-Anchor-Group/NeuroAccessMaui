@@ -88,12 +88,5 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 				ServiceRef.LogService.LogException(ex);
 			}
 		}
-
-		/// <inheritdoc/>
-		protected override Task OnDisappearingAsync()
-		{
-			//!!! this.PhotoViewer.HidePhotos();
-			return base.OnDisappearingAsync();
-		}
 	}
 }

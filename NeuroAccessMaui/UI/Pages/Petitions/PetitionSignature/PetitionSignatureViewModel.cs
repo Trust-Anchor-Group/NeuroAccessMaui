@@ -3,9 +3,9 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.UI.Photos;
 using System.Collections.ObjectModel;
-using System.Windows.Input;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 
@@ -28,8 +28,6 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature
 		public PetitionSignatureViewModel()
 			: base()
 		{
-			this.CopyCommand = new Command(async (Item) => await this.CopyToClipboard(Item));
-
 			this.photosLoader = new PhotosLoader(this.Photos);
 		}
 
@@ -61,11 +59,6 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature
 
 			await base.OnDispose();
 		}
-
-		/// <summary>
-		/// The command for copying data to clipboard.
-		/// </summary>
-		public ICommand CopyCommand { get; }
 
 		/// <summary>
 		/// The list of photos related to the identity being petitioned.
@@ -176,18 +169,21 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature
 		/// First name of the identity
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(FullName))]
 		private string? firstName;
 
 		/// <summary>
 		/// Middle name(s) of the identity
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(FullName))]
 		private string? middleNames;
 
 		/// <summary>
 		/// Last name(s) of the identity
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(FullName))]
 		private string? lastNames;
 
 		/// <summary>
@@ -548,7 +544,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature
 		/// Copies Item to clipboard
 		/// </summary>
 		[RelayCommand]
-		private async Task CopyToClipboard(object Item)
+		private async Task Copy(object Item)
 		{
 			try
 			{

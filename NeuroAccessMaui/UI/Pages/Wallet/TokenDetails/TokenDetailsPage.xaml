@@ -1,0 +1,336 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseContentPage x:Name="ThisPage"
+							 x:Class="NeuroAccessMaui.UI.Pages.Wallet.TokenDetails.TokenDetailsPage"
+							 x:DataType="viewmodel:TokenDetailsViewModel"
+							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.TokenDetails">
+	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+
+		<controls:Background/>
+
+		<ScrollView>
+			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
+											 Style="{StaticResource ImageOnlyButtonStyle}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+
+				<Label Text="{l:Localize TokenDetails}" Style="{StaticResource PageTitleLabelStyle}"/>
+
+				<Frame Style="{StaticResource FrameSet}">
+					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+						<StackLayout Margin="{StaticResource DefaultMargin}">
+							<Label Text="{l:Localize TokenDetails}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}"
+									 VerticalOptions="Start"/>
+							<Label Text="{l:Localize TokenDetailsDescription}" Style="{StaticResource InfoText}" VerticalOptions="Start"/>
+							<Label Text="{l:Localize Description}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}"
+									 VerticalOptions="Start"/>
+							<ContentView Content="{Binding Description}" VerticalOptions="StartAndExpand" Margin="10,0,10,10"/>
+							<Grid x:Name="GeneralInfoGrid">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*"/>
+									<ColumnDefinition Width="*"/>
+								</Grid.ColumnDefinitions>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+								</Grid.RowDefinitions>
+
+								<Label Grid.Column="0" Grid.Row="0" Text="{l:Localize Name}" Style="{StaticResource KeyLabel}"/>
+								<Label Grid.Column="1" Grid.Row="0" Text="{Binding FriendlyName}" Style="{StaticResource ValueLabel}"/>
+
+								<Label Grid.Column="0" Grid.Row="1" Text="{l:Localize Category}" Style="{StaticResource KeyLabel}"/>
+								<Label Grid.Column="1" Grid.Row="1" Text="{Binding Category}" Style="{StaticResource ValueLabel}"/>
+
+								<Label Grid.Column="0" Grid.Row="2" Text="{l:Localize TokenId}" Style="{StaticResource KeyLabel}"/>
+								<Label Grid.Column="1" Grid.Row="2" Text="{Binding TokenId}" Style="{StaticResource ClickableValueLabel}">
+									<Label.GestureRecognizers>
+										<TapGestureRecognizer Command="{Binding CopyToClipboardCommand}" CommandParameter="{Binding TokenId}" />
+									</Label.GestureRecognizers>
+								</Label>
+
+								<Label Grid.Column="0" Grid.Row="3" Text="{l:Localize ShortId}" Style="{StaticResource KeyLabel}"
+										 IsVisible="{Binding HasShortTokenId}"/>
+								<Label Grid.Column="1" Grid.Row="3" Text="{Binding ShortTokenId}" Style="{StaticResource ClickableValueLabel}"
+										 IsVisible="{Binding HasShortTokenId}">
+									<Label.GestureRecognizers>
+										<TapGestureRecognizer Command="{Binding CopyToClipboardCommand}" CommandParameter="{Binding ShortTokenId}" />
+									</Label.GestureRecognizers>
+								</Label>
+
+								<Label Grid.Column="0" Grid.Row="4" Text="{l:Localize TokenIdMethod}" Style="{StaticResource KeyLabel}"/>
+								<Label Grid.Column="1" Grid.Row="4" Text="{Binding TokenIdMethod}" Style="{StaticResource ValueLabel}"/>
+
+								<Label Grid.Column="0" Grid.Row="5" Text="{l:Localize TokenVisibility}" Style="{StaticResource KeyLabel}"/>
+								<Label Grid.Column="1" Grid.Row="5" Text="{Binding Visibility}" Style="{StaticResource ValueLabel}"/>
+
+								<Label Grid.Column="0" Grid.Row="6" Text="{l:Localize Ordinal}" Style="{StaticResource KeyLabel}"/>
+								<Label Grid.Column="1" Grid.Row="6" Style="{StaticResource ValueLabel}">
+									<Label.FormattedText>
+										<FormattedString>
+											<Span Text="{Binding Ordinal}"/>
+											<Span Text=" of "/>
+											<Span Text="{Binding BatchSize}"/>
+										</FormattedString>
+									</Label.FormattedText>
+								</Label>
+
+								<Label Grid.Column="0" Grid.Row="7" Text="{l:Localize Valuation}" Style="{StaticResource KeyLabel}"/>
+								<Label Grid.Column="1" Grid.Row="7" Style="{StaticResource ValueLabel}">
+									<Label.FormattedText>
+										<FormattedString>
+											<Span Text="{Binding Value}"/>
+											<Span Text=" "/>
+											<Span Text="{Binding Currency}"/>
+										</FormattedString>
+									</Label.FormattedText>
+								</Label>
+
+								<Label Grid.Column="0" Grid.Row="8" Text="{l:Localize Created}" Style="{StaticResource KeyLabel}"/>
+								<Label Grid.Column="1" Grid.Row="8" Text="{Binding Created, Converter={converters:DateTimeToString}}" Style="{StaticResource ValueLabel}"/>
+
+								<Label Grid.Column="0" Grid.Row="9" Text="{l:Localize Updated}" Style="{StaticResource KeyLabel}"/>
+								<Label Grid.Column="1" Grid.Row="9" Text="{Binding Updated, Converter={converters:DateTimeToString}}" Style="{StaticResource ValueLabel}"/>
+
+								<Label Grid.Column="0" Grid.Row="10" Text="{l:Localize Expires}" Style="{StaticResource KeyLabel}"/>
+								<Label Grid.Column="1" Grid.Row="10" Text="{Binding Expires, Converter={converters:DateTimeToString}}" Style="{StaticResource ValueLabel}"/>
+							</Grid>
+
+							<Image Source="{Binding Path=GlyphImage}" IsVisible="{Binding Path=HasGlyphImage}"
+                       WidthRequest="{Binding Path=GlyphWidth, Mode=OneTime}" HeightRequest="{Binding Path=GlyphHeight, Mode=OneTime}" 
+                       VerticalOptions="Start" HorizontalOptions="Center" Margin="{StaticResource DefaultTopOnlyMargin}" />
+
+							<Image Source="{Binding Path=QrCode}" IsVisible="{Binding Path=HasQrCode}" 
+                       WidthRequest="{Binding Path=QrCodeWidth, Mode=OneTime}" HeightRequest="{Binding Path=QrCodeHeight, Mode=OneTime}" 
+                       VerticalOptions="StartAndExpand" HorizontalOptions="CenterAndExpand" Margin="{StaticResource DefaultTopOnlyMargin}" />
+
+							<Label Text="{l:Localize Reports}" Style="{StaticResource Heading}"
+									 Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"
+									 IsVisible="{Binding HasStateMachine}"/>
+
+							<Button Text="{l:Localize Present}" Margin="{StaticResource DefaultBottomOnlyMargin}"
+				                 Command="{Binding Path=PresentReportCommand}" IsVisible="{Binding HasStateMachine}"
+									  IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"/>
+
+							<Button Text="{l:Localize History}" Margin="{StaticResource DefaultBottomOnlyMargin}"
+									  Command="{Binding Path=HistoryReportCommand}"
+									  IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+									  IsVisible="{Binding HasStateMachine}"/>
+
+							<Button Text="{l:Localize Variables}" Margin="{StaticResource DefaultBottomOnlyMargin}"
+									  Command="{Binding Path=VariablesReportCommand}"
+									  IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+									  IsVisible="{Binding HasStateMachine}"/>
+
+							<Button Text="{l:Localize States}" Margin="{StaticResource DefaultBottomOnlyMargin}"
+									  Command="{Binding Path=StatesReportCommand}"
+									  IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+									  IsVisible="{Binding HasStateMachine}"/>
+
+							<Button Text="{l:Localize Profiling}" Margin="{StaticResource DefaultBottomOnlyMargin}"
+									  Command="{Binding Path=ProfilingReportCommand}"
+									  IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+									  IsVisible="{Binding HasStateMachine}"/>
+
+							<Label Text="{l:Localize Parts}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
+							<Label Text="{l:Localize TokenPartsInfoText}" Style="{StaticResource InfoText}" VerticalOptions="Start"/>
+
+							<Grid x:Name="PartsGrid">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*"/>
+									<ColumnDefinition Width="*"/>
+								</Grid.ColumnDefinitions>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+								</Grid.RowDefinitions>
+
+								<Label Grid.Column="0" Grid.Row="0" Text="{l:Localize Owner}" Style="{StaticResource KeyLabel}"/>
+								<Label Grid.Column="1" Grid.Row="0" Text="{Binding OwnerFriendlyName}" Style="{StaticResource ClickableValueLabel}">
+									<Label.GestureRecognizers>
+										<TapGestureRecognizer Command="{Binding ViewIdCommand}" CommandParameter="{Binding Owner}" />
+									</Label.GestureRecognizers>
+								</Label>
+
+								<Label Grid.Column="0" Grid.Row="1" Text="{l:Localize OwnerJid}" Style="{StaticResource KeyLabel}"/>
+								<Label Grid.Column="1" Grid.Row="1" Text="{Binding OwnerJid}" Style="{StaticResource ClickableValueLabel}">
+									<Label.GestureRecognizers>
+										<TapGestureRecognizer Command="{Binding OpenChatCommand}" CommandParameter="Owner" />
+									</Label.GestureRecognizers>
+								</Label>
+
+								<Label Grid.Column="0" Grid.Row="2" Text="{l:Localize OwnershipContract}" Style="{StaticResource KeyLabel}"/>
+								<Label Grid.Column="1" Grid.Row="2" Text="{Binding OwnershipContract}" Style="{StaticResource ClickableValueLabel}">
+									<Label.GestureRecognizers>
+										<TapGestureRecognizer Command="{Binding ViewContractCommand}" CommandParameter="{Binding OwnershipContract}" />
+									</Label.GestureRecognizers>
+								</Label>
+
+								<Label Grid.Column="0" Grid.Row="3" Text="{l:Localize Creator}" Style="{StaticResource KeyLabel}"/>
+								<Label Grid.Column="1" Grid.Row="3" Text="{Binding CreatorFriendlyName}" Style="{StaticResource ClickableValueLabel}">
+									<Label.GestureRecognizers>
+										<TapGestureRecognizer Command="{Binding ViewIdCommand}" CommandParameter="{Binding Creator}" />
+									</Label.GestureRecognizers>
+								</Label>
+
+								<Label Grid.Column="0" Grid.Row="4" Text="{l:Localize CreatorJid}" Style="{StaticResource KeyLabel}"/>
+								<Label Grid.Column="1" Grid.Row="4" Text="{Binding CreatorJid}" Style="{StaticResource ClickableValueLabel}">
+									<Label.GestureRecognizers>
+										<TapGestureRecognizer Command="{Binding OpenChatCommand}" CommandParameter="Creator" />
+									</Label.GestureRecognizers>
+								</Label>
+
+								<Label Grid.Column="0" Grid.Row="5" Text="{l:Localize CreationContract}" Style="{StaticResource KeyLabel}"/>
+								<Label Grid.Column="1" Grid.Row="5" Text="{Binding CreationContract}" Style="{StaticResource ClickableValueLabel}">
+									<Label.GestureRecognizers>
+										<TapGestureRecognizer Command="{Binding ViewContractCommand}" CommandParameter="{Binding CreationContract}" />
+									</Label.GestureRecognizers>
+								</Label>
+
+								<Label Grid.Column="0" Grid.Row="6" Text="{l:Localize TrustProvider}" Style="{StaticResource KeyLabel}"/>
+								<Label Grid.Column="1" Grid.Row="6" Text="{Binding TrustProviderFriendlyName}" Style="{StaticResource ClickableValueLabel}">
+									<Label.GestureRecognizers>
+										<TapGestureRecognizer Command="{Binding ViewIdCommand}" CommandParameter="{Binding TrustProvider}" />
+									</Label.GestureRecognizers>
+								</Label>
+
+								<Label Grid.Column="0" Grid.Row="7" Text="{l:Localize TrustProviderJid}" Style="{StaticResource KeyLabel}"/>
+								<Label Grid.Column="1" Grid.Row="7" Text="{Binding TrustProviderJid}" Style="{StaticResource ClickableValueLabel}">
+									<Label.GestureRecognizers>
+										<TapGestureRecognizer Command="{Binding OpenChatCommand}" CommandParameter="TrustProvider" />
+									</Label.GestureRecognizers>
+								</Label>
+							</Grid>
+
+							<Label Text="{l:Localize Privileges}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
+							<Label Text="{l:Localize TokenPrivilegesInfoText}" Style="{StaticResource InfoText}" VerticalOptions="Start"/>
+
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="4*"/>
+									<ColumnDefinition Width="*"/>
+								</Grid.ColumnDefinitions>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+								</Grid.RowDefinitions>
+
+								<Label Grid.Column="0" Grid.Row="0" Text="{l:Localize CreatorCanDestroy}" Style="{StaticResource KeyLabel}"/>
+								<Label Grid.Column="1" Grid.Row="0" Text="{Binding CreatorCanDestroy, Converter={converters:BooleanToYesNo}}" Style="{StaticResource ValueLabel}" HorizontalOptions="Center"/>
+
+								<Label Grid.Column="0" Grid.Row="1" Text="{l:Localize OwnerCanDestroyBatch}" Style="{StaticResource KeyLabel}"/>
+								<Label Grid.Column="1" Grid.Row="1" Text="{Binding OwnerCanDestroyBatch, Converter={converters:BooleanToYesNo}}" Style="{StaticResource ValueLabel}" HorizontalOptions="Center"/>
+
+								<Label Grid.Column="0" Grid.Row="2" Text="{l:Localize OwnerCanDestroyIndividual}" Style="{StaticResource KeyLabel}"/>
+								<Label Grid.Column="1" Grid.Row="2" Text="{Binding OwnerCanDestroyIndividual, Converter={converters:BooleanToYesNo}}" Style="{StaticResource ValueLabel}" HorizontalOptions="Center"/>
+
+								<Label Grid.Column="0" Grid.Row="3" Text="{l:Localize CertifierCanDestroy}" Style="{StaticResource KeyLabel}"/>
+								<Label Grid.Column="1" Grid.Row="3" Text="{Binding CertifierCanDestroy, Converter={converters:BooleanToYesNo}}" Style="{StaticResource ValueLabel}" HorizontalOptions="Center"/>
+							</Grid>
+
+							<Label Text="{l:Localize MachineReadableText}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
+							<Label Text="{l:Localize MachineReadableInfoTextToken}" Style="{StaticResource InfoText}" VerticalOptions="Start"/>
+
+							<Grid Margin="{StaticResource DefaultBottomOnlyMargin}">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*"/>
+									<ColumnDefinition Width="*"/>
+								</Grid.ColumnDefinitions>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+								</Grid.RowDefinitions>
+
+								<Label Grid.Column="0" Grid.Row="0" Text="{l:Localize Signature}" Style="{StaticResource KeyLabel}"/>
+								<Label Grid.Column="1" Grid.Row="0" Text="{Binding Signature, Converter={converters:BinaryToBase64}}" Style="{StaticResource ClickableValueLabel}">
+									<Label.GestureRecognizers>
+										<TapGestureRecognizer Command="{Binding CopyToClipboardCommand}" CommandParameter="{Binding Signature, Converter={converters:BinaryToBase64}}" />
+									</Label.GestureRecognizers>
+								</Label>
+
+								<Label Grid.Column="0" Grid.Row="1" Text="{l:Localize Timestamp}" Style="{StaticResource KeyLabel}"/>
+								<Label Grid.Column="1" Grid.Row="1" Text="{Binding SignatureTimestamp, Converter={converters:DateTimeToString}}" Style="{StaticResource ValueLabel}"/>
+
+								<Label Grid.Column="0" Grid.Row="2" Text="{l:Localize DefinitionNamespace}" Style="{StaticResource KeyLabel}"/>
+								<Label Grid.Column="1" Grid.Row="2" Text="{Binding DefinitionNamespace}" Style="{StaticResource ClickableValueLabel}" HorizontalOptions="Center">
+									<Label.GestureRecognizers>
+										<TapGestureRecognizer Command="{Binding OpenLinkCommand}" CommandParameter="{Binding DefinitionNamespace}" />
+									</Label.GestureRecognizers>
+								</Label>
+
+								<Label Grid.Column="0" Grid.Row="3" Text="{l:Localize DefinitionSchemaDigest}" Style="{StaticResource KeyLabel}"/>
+								<Label Grid.Column="1" Grid.Row="3" Text="{Binding DefinitionSchemaDigest, Converter={converters:BinaryToBase64}}" Style="{StaticResource ClickableValueLabel}">
+									<Label.GestureRecognizers>
+										<TapGestureRecognizer Command="{Binding OpenLinkCommand}" CommandParameter="{Binding DefinitionSchemaUrl}" />
+									</Label.GestureRecognizers>
+								</Label>
+
+								<Label Grid.Column="0" Grid.Row="4" Text="{l:Localize HashFunction}" Style="{StaticResource KeyLabel}"/>
+								<Label Grid.Column="1" Grid.Row="4" Text="{Binding DefinitionSchemaHashFunction}" Style="{StaticResource ValueLabel}"/>
+							</Grid>
+
+							<Button Text="{l:Localize ShowM2MInfo}" Margin="{StaticResource DefaultBottomOnlyMargin}"
+									  Command="{Binding Path=ShowM2mInfoCommand}"
+									  IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
+
+							<Label Text="{l:Localize Actions}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}"
+									 VerticalOptions="Start"/>
+
+							<Button Text="{l:Localize SendToContact}" Margin="{StaticResource DefaultBottomOnlyMargin}"
+									  Command="{Binding Path=SendToContactCommand}"
+									  IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
+
+							<Button Text="{l:Localize Share}" Margin="{StaticResource DefaultBottomOnlyMargin}"
+									  Command="{Binding Path=ShareCommand}"
+									  IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
+
+							<Button Text="{l:Localize PublishMarketplace}" Margin="{StaticResource DefaultBottomOnlyMargin}"
+									  Command="{Binding Path=PublishMarketplaceCommand}"
+									  IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+									  IsVisible="{Binding IsMyToken}"/>
+
+							<Button Text="{l:Localize OfferToSell}" Margin="{StaticResource DefaultBottomOnlyMargin}"
+									  Command="{Binding Path=OfferToSellCommand}"
+									  IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+									  IsVisible="{Binding IsMyToken}"/>
+
+							<Button Text="{l:Localize OfferToBuy}" Margin="{StaticResource DefaultBottomOnlyMargin}"
+									  Command="{Binding Path=OfferToBuyCommand}"
+									  IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+									  IsVisible="{Binding IsMyToken, Converter={StaticResource InvertedBoolConverter}}"/>
+
+							<Button Text="{l:Localize ViewEvents}" Margin="{StaticResource DefaultBottomOnlyMargin}"
+									  Command="{Binding Path=ViewEventsCommand}"
+									  IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"/>
+						</StackLayout>
+					</VerticalStackLayout>
+				</Frame>
+			</VerticalStackLayout>
+		</ScrollView>
+	</Grid>
+</base:BaseContentPage>

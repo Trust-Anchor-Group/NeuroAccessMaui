@@ -63,6 +63,11 @@
 		public static class UriSchemes
 		{
 			/// <summary>
+			/// The App's URI Scheme (neuroaccess)
+			/// </summary>
+			public const string NeuroAccess = "neuroaccess";
+
+			/// <summary>
 			/// The IoT ID URI Scheme (iotid)
 			/// </summary>
 			public const string IotId = "iotid";
@@ -126,8 +131,14 @@
 				return Url switch
 				{
 					IotId or
+					IotDisco or
+					IotSc or
 					TagSign or
-					Onboarding => Url,
+					EDaler or
+					NeuroFeature or
+					Onboarding or
+					Xmpp or
+					NeuroAccess => Url,
 					_ => null,
 				};
 			}
@@ -144,6 +155,16 @@
 			}
 
 			/// <summary>
+			/// Generates a IoT Scan Uri form the specified id.
+			/// </summary>
+			/// <param name="id">The Id to use when generating the Uri.</param>
+			/// <returns>Smart Contract URI</returns>
+			public static string CreateSmartContractUri(string id)
+			{
+				return IotSc + ":" + id;
+			}
+
+			/// <summary>
 			/// Generates a IoT ID Uri form the specified id.
 			/// </summary>
 			/// <param name="id">The Id to use when generating the Uri.</param>
@@ -151,6 +172,16 @@
 			public static string CreateIdUri(string id)
 			{
 				return IotId + ":" + id;
+			}
+
+			/// <summary>
+			/// Generates a Neuro-Feature ID Uri form the specified id.
+			/// </summary>
+			/// <param name="id">The Id to use when generating the Uri.</param>
+			/// <returns>Neuro-Feature URI</returns>
+			public static string CreateTokenUri(string id)
+			{
+				return NeuroFeature + ":" + id;
 			}
 
 			/// <summary>
@@ -525,6 +556,47 @@
 		}
 
 		/// <summary>
+		/// Push chennels
+		/// </summary>
+		public static class PushChannels
+		{
+			/// <summary>
+			/// Messages channel
+			/// </summary>
+			public const string Messages = "Messages";
+
+			/// <summary>
+			/// Petitions channel
+			/// </summary>
+			public const string Petitions = "Petitions";
+
+			/// <summary>
+			/// Identities channel
+			/// </summary>
+			public const string Identities = "Identities";
+
+			/// <summary>
+			/// Contracts channel
+			/// </summary>
+			public const string Contracts = "Contracts";
+
+			/// <summary>
+			/// eDaler channel
+			/// </summary>
+			public const string EDaler = "eDaler";
+
+			/// <summary>
+			/// Tokens channel
+			/// </summary>
+			public const string Tokens = "Tokens";
+
+			/// <summary>
+			/// Provisioning channel
+			/// </summary>
+			public const string Provisioning = "Provisioning";
+		}
+
+		/// <summary>
 		/// Names of Effects.
 		/// </summary>
 		public static class Effects
@@ -653,6 +725,96 @@
 			/// Maximum age for applying for an ID
 			/// </summary>
 			public const int MaxAge = 120;
+		}
+
+		/// <summary>
+		/// Size constants.
+		/// </summary>
+		public static class BatchSizes
+		{
+			/// <summary>
+			/// Number of messages to load in a single batch.
+			/// </summary>
+			public const int MessageBatchSize = 30;
+
+			/// <summary>
+			/// Number of tokens to load in a single batch.
+			/// </summary>
+			public const int TokenBatchSize = 10;
+
+			/// <summary>
+			/// Number of account events to load in a single batch.
+			/// </summary>
+			public const int AccountEventBatchSize = 10;
+
+			/// <summary>
+			/// Number of devices to load in a single batch.
+			/// </summary>
+			public const int DeviceBatchSize = 100;
+		}
+
+		/// <summary>
+		/// Machine-readable names in contracts.
+		/// </summary>
+		public static class ContractMachineNames
+		{
+			/// <summary>
+			/// Namespace for payment instructions
+			/// </summary>
+			public const string PaymentInstructionsNamespace = "https://paiwise.tagroot.io/Schema/PaymentInstructions.xsd";
+
+			/// <summary>
+			/// Local name for contracts for buying eDaler.
+			/// </summary>
+			public const string BuyEDaler = "BuyEDaler";
+
+			/// <summary>
+			/// Local name for contracts for selling eDaler.
+			/// </summary>
+			public const string SellEDaler = "SellEDaler";
+		}
+
+		/// <summary>
+		/// Contract templates
+		/// </summary>
+		public static class ContractTemplates
+		{
+			/// <summary>
+			/// Contract template for creating a demo token
+			/// </summary>
+			public const string CreateDemoTokenTemplate = "2bb9fff1-8716-cb1b-5807-9fdb05b2207b@legal.lab.tagroot.io";
+
+			/// <summary>
+			/// Contract template for creating five demo tokens
+			/// </summary>
+			public const string CreateDemoTokens5Template = "2bba00ac-8716-cb3e-5807-9fdb055370c4@legal.lab.tagroot.io";
+
+			/// <summary>
+			/// Array of contract templates for creating tokens.
+			/// </summary>
+			public static readonly string[] TokenCreationTemplates = 
+			[
+				CreateDemoTokenTemplate,
+				CreateDemoTokens5Template
+			];
+
+			/// <summary>
+			/// Contract template for transferring a token from a seller to a buyer
+			/// </summary>
+			public const string TransferTokenTemplate = "2a6d6b09-cae9-bb7e-4015-a272cd9cd5b9@legal.lab.tagroot.io";
+
+			/// <summary>
+			/// Contract template for consigning the token to an auctioneer with the purpose of selling it.
+			/// </summary>
+			public const string TokenConsignmentTemplate = "2a6d86d3-cae9-be05-4015-a272cd0cbbb9@legal.lab.tagroot.io";
+		}
+
+		public static class Images
+		{
+			/// <summary>
+			/// QR-code with a person icon.
+			/// </summary>
+			public const string Qr_Person = "file://qr_person.svg";
 		}
 	}
 }

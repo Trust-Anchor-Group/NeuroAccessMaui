@@ -150,10 +150,12 @@
 		<PackageReference Include="CommunityToolkit.Maui" Version="7.0.1" />
 		<PackageReference Include="CommunityToolkit.Maui.Markup" Version="4.0.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+		<PackageReference Include="EDaler" Version="2.5.1" />
 		<PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.6" />
 		<PackageReference Include="Mopups" Version="1.3.0" />
+		<PackageReference Include="NeuroFeatures" Version="1.3.0" />
 		<PackageReference Include="Plugin.Fingerprint" Version="3.0.0-beta.1" />
 		<PackageReference Include="SkiaSharp" Version="2.88.7" />
 		<PackageReference Include="System.Net.Http" Version="4.3.4" />
@@ -168,19 +170,30 @@
 		<PackageReference Include="Waher.Networking.PeerToPeer" Version="2.0.1" />
 		<PackageReference Include="Waher.Networking.UPnP" Version="2.0.2" />
 		<PackageReference Include="Waher.Networking.XMPP" Version="2.1.5" />
+		<PackageReference Include="Waher.Networking.XMPP.Avatar" Version="2.2.1" />
+		<PackageReference Include="Waher.Networking.XMPP.Concentrator" Version="2.1.3" />
 		<PackageReference Include="Waher.Networking.XMPP.Contracts" Version="2.9.3" />
+		<PackageReference Include="Waher.Networking.XMPP.Control" Version="2.0.5" />
 		<PackageReference Include="Waher.Networking.XMPP.HTTPX" Version="2.2.4" />
+		<PackageReference Include="Waher.Networking.XMPP.Mail" Version="2.0.0" />
 		<PackageReference Include="Waher.Networking.XMPP.P2P" Version="2.0.5" />
+		<PackageReference Include="Waher.Networking.XMPP.PEP" Version="2.0.4" />
+		<PackageReference Include="Waher.Networking.XMPP.Provisioning" Version="2.0.8" />
+		<PackageReference Include="Waher.Networking.XMPP.PubSub" Version="2.0.6" />
+		<PackageReference Include="Waher.Networking.XMPP.Push" Version="2.0.0" />
+		<PackageReference Include="Waher.Networking.XMPP.Sensor" Version="2.1.5" />
 		<PackageReference Include="Waher.Persistence" Version="1.10.1" />
 		<PackageReference Include="Waher.Persistence.FilesLW" Version="1.11.5" />
 		<PackageReference Include="Waher.Runtime.Inventory" Version="1.1.5" />
 		<PackageReference Include="Waher.Runtime.Profiling" Version="1.0.7" />
 		<PackageReference Include="Waher.Runtime.Settings" Version="1.0.10" />
 		<PackageReference Include="Waher.Runtime.Temporary" Version="1.0.0" />
-		<PackageReference Include="Waher.Runtime.Text" Version="1.1.0" />
+		<PackageReference Include="Waher.Runtime.Text" Version="1.1.1" />
 		<PackageReference Include="Waher.Script" Version="2.6.6" />
 		<PackageReference Include="Waher.Script.Content" Version="2.1.3" />
 		<PackageReference Include="Waher.Security" Version="1.0.8" />
+		<PackageReference Include="Waher.Security.JWS" Version="1.0.8" />
+		<PackageReference Include="Waher.Security.JWT" Version="1.3.9" />
 		<PackageReference Include="ZXing.Net.Maui.Controls" Version="0.4.0" />
 	</ItemGroup>
 
@@ -241,11 +254,26 @@
 	  <Compile Update="UI\Pages\Registration\Views\RequestPurposeView.xaml.cs">
 	    <DependentUpon>RequestPurposeView.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="UI\Popups\Pin\BasePopup.xaml.cs">
-	    <DependentUpon>%(Filename)</DependentUpon>
+	  <Compile Update="UI\Pages\Wallet\MyWallet\MyEDalerWalletPage.xaml.cs">
+	    <DependentUpon>MyEDalerWalletPage.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="UI\Popups\Pin\CheckPinPage.xaml.cs">
-	    <DependentUpon>CheckPinPage.xaml</DependentUpon>
+	  <Compile Update="UI\Pages\Wallet\MyWallet\MyTokenWalletPage.xaml.cs">
+	    <DependentUpon>MyTokenWalletPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="UI\Popups\Pin\CheckPinPopup.xaml.cs">
+	    <DependentUpon>CheckPinPopup.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="UI\Popups\Pin\CheckPinPopup.xaml.cs">
+	    <DependentUpon>CheckPinPopup.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="UI\Popups\SelectLanguagePopup.xaml.cs">
+	    <DependentUpon>SelectLanguagePopup.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="UI\Popups\SelectPhoneCodePopup.xaml.cs">
+	    <DependentUpon>SelectPhoneCodePopup.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="UI\Popups\ShowInfoPopup.xaml.cs">
+	    <DependentUpon>ShowInfoPopup.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 
@@ -271,7 +299,37 @@
 	  <MauiXaml Update="UI\Pages\Applications\Applications\ApplicationsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Contacts\Chat\ChatPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Contacts\Chat\ChatPageIos.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Contacts\MyContacts\MyContactsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Contracts\MyContracts\MyContractsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Contracts\NewContract\NewContractPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Contracts\ViewContract\ViewContractPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Main\Calculator\CalculatorPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Main\Duration\DurationPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="UI\Pages\Main\Settings\SettingsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Main\XmppForm\XmppFormPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Petitions\PetitionContract\PetitionContractPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\PetitionPeerReviewPage.xaml">
@@ -310,13 +368,109 @@
 	  <MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\PhotoView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Signatures\ClientSignature\ClientSignaturePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Signatures\ServerSignature\ServerSignaturePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Things\CanControl\CanControlPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Things\CanRead\CanReadPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Things\IsFriend\IsFriendPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Things\MyThings\MyThingsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Things\ReadSensor\ReadSensorPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Things\ViewClaimThing\ViewClaimThingPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Things\ViewThing\ViewThingPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Wallet\AccoutEvent\AccountEventPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Wallet\BuyEDaler\BuyEDalerPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Wallet\EDalerReceived\EDalerReceivedPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Wallet\IssueEDaler\IssueEDalerPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Wallet\MachineReport\MachineReportPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Wallet\MachineVariables\MachineVariablesPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Wallet\MyTokens\MyTokensPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Wallet\MyWallet\MyEDalerWalletPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Wallet\MyWallet\MyTokenWalletPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Wallet\PaymentAcceptance\PaymentAcceptancePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Wallet\Payment\PaymentPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Wallet\PendingPayment\PendingPaymentPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Wallet\RequestPayment\RequestPaymentPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Wallet\SellEDaler\SellEDalerPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Pages\Wallet\SendPayment\SendPaymentPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="UI\Pages\Wallet\ServiceProviders\ServiceProvidersPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="UI\Popups\Pin\BasePopup.xaml">
+	  <MauiXaml Update="UI\Pages\Wallet\TokenDetails\TokenDetailsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="UI\Popups\Pin\CheckPinPage.xaml">
+	  <MauiXaml Update="UI\Pages\Wallet\TokenEvents\TokenEventsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Popups\Photos\Image\ImageView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Popups\Pin\CheckPinPopup.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Popups\Tokens\AddTextNote\AddTextNotePopup.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Popups\Xmpp\RemoveSubscription\RemoveSubscriptionPopup.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Popups\Xmpp\ReportOrBlock\ReportOrBlockPopup.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Popups\Xmpp\ReportType\ReportTypePopup.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Popups\Xmpp\SubscribeTo\SubscribeToPopup.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Popups\Xmpp\SubscriptionRequest\SubscriptionRequestPopup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

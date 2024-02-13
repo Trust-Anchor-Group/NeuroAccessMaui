@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<viewmodel:BasePopup x:Class="NeuroAccessMaui.UI.Popups.SelectPhoneCodePopup"
+							x:DataType="viewmodel:SelectPhoneCodePopup"
+							xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+							xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+							xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+							xmlns:data="clr-namespace:NeuroAccessMaui.Services.Data"
+							xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+							xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups"
+							xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
+							xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups">
+
+	<mopups:PopupPage.Animation>
+		<animations:ScaleAnimation DurationIn="500" DurationOut="500" EasingIn="CubicIn" EasingOut="CubicOut" HasBackgroundAnimation="True"
+											PositionIn="Center" PositionOut="Center" />
+	</mopups:PopupPage.Animation>
+
+	<VisualElement.Resources>
+		<DataTemplate x:Key="SelectPhoneCodeTemplate" x:DataType="data:ISO_3166_Country">
+			<Grid BackgroundColor="{AppThemeBinding Light={StaticResource SecondaryBackgroundLight}, Dark={StaticResource SecondaryBackgroundDark}}"
+					ColumnDefinitions="35,auto,*" ColumnSpacing="{StaticResource SmallSpacing}" RowDefinitions="auto"
+					Padding="{StaticResource SmallMargins}">
+					
+				<Label Grid.Column="0" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="End" FontAutoScalingEnabled="False"
+						 LineBreakMode="NoWrap" Style="{StaticResource RegularItemTitleLabelStyle}" Text="{Binding DialCode}"
+						 TextColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
+
+				<Label Grid.Column="1" Style="{StaticResource RegularItemTitleLabelStyle}" Text="{Binding EmojiInfo.Unicode}"
+						 TextColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
+
+				<Label Grid.Column="2" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Start" LineBreakMode="NoWrap"
+						 Style="{StaticResource RegularItemTitleLabelStyle}" Text="{Binding Name}"
+						 TextColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
+
+				<VisualStateManager.VisualStateGroups>
+					<VisualStateGroup Name="CommonStates">
+						<VisualState Name="Normal" />
+						<VisualState Name="Selected">
+							<VisualState.Setters>
+								<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}" />
+							</VisualState.Setters>
+						</VisualState>
+					</VisualStateGroup>
+				</VisualStateManager.VisualStateGroups>
+			</Grid>
+		</DataTemplate>
+	</VisualElement.Resources>
+
+	<Grid Style="{StaticResource PopupGridStyle}">
+		<Border HeightRequest="{Binding MaximumViewHeightRequest}" WidthRequest="{Binding ViewWidthRequest}" Style="{StaticResource PopupBorderStyle}">
+			<Grid VerticalOptions="Fill" RowDefinitions="auto,*" RowSpacing="{StaticResource SmallSpacing}">
+				<SearchBar x:Name="InnerSearchBar" Grid.Row="0" Placeholder="{l:Localize SearchByCountry}" TextChanged="SearchBar_TextChanged" />
+				<CollectionView x:Name="InnerListView" Grid.Row="1" VerticalOptions="Fill" ItemSizingStrategy="MeasureFirstItem"
+									 ItemTemplate="{StaticResource SelectPhoneCodeTemplate}" SelectionChanged="InnerListView_SelectionChanged" />
+			</Grid>
+		</Border>
+	</Grid>
+</viewmodel:BasePopup>

@@ -24,12 +24,12 @@ namespace NeuroAccessMaui.UI.Converters
 		/// </summary>
 		/// <param name="Ok">If the control is OK</param>
 		/// <returns>Color</returns>
-		public static Color ToColor(bool Ok)
+		public static Color? ToColor(bool Ok)
 		{
 			return Ok switch
 			{
-				true => Colors.Transparent,
-				false => SettingsViewModel.CurrentDisplayMode == AppTheme.Light ? Colors.Salmon : Colors.LightSalmon,
+				true => null,
+				false => ThemeColors.ErrorBackground,
 			};
 		}
 
@@ -40,7 +40,7 @@ namespace NeuroAccessMaui.UI.Converters
 		}
 
 		/// <inheritdoc/>
-		public object ProvideValue(System.IServiceProvider serviceProvider)
+		public object ProvideValue(IServiceProvider serviceProvider)
 		{
 			return this;
 		}

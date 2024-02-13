@@ -1,3 +1,5 @@
+using Waher.Networking.XMPP.Contracts;
+
 namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 {
 	/// <summary>
@@ -23,10 +25,13 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 
 		private void Image_Tapped(object? Sender, EventArgs e)
 		{
-			//ViewIdentityViewModel ViewModel = this.ViewModel<ViewIdentityViewModel>();
+			ViewIdentityViewModel ViewModel = this.ViewModel<ViewIdentityViewModel>();
 
-			//!!! Attachment[] Attachments = ViewModel.LegalIdentity?.Attachments;
-			//!!! this.PhotoViewer.ShowPhotos(Attachments);
+			Attachment[]? Attachments = ViewModel.LegalIdentity?.Attachments;
+			if (Attachments is null)
+				this.PhotoViewer.HidePhotos();
+			else
+				this.PhotoViewer.ShowPhotos(Attachments);
 		}
 	}
 }

@@ -2,6 +2,7 @@
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
+using EDaler;
 using Microsoft.Maui.Controls.Internals;
 using Mopups.Services;
 using NeuroAccessMaui.Extensions;
@@ -15,6 +16,7 @@ using NeuroAccessMaui.Services.Localization;
 using NeuroAccessMaui.Services.Navigation;
 using NeuroAccessMaui.Services.Network;
 using NeuroAccessMaui.Services.Nfc;
+using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.Settings;
 using NeuroAccessMaui.Services.Storage;
 using NeuroAccessMaui.Services.Tag;
@@ -24,16 +26,27 @@ using NeuroAccessMaui.Services.Xmpp;
 using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.UI.Pages.Main;
 using NeuroAccessMaui.UI.Popups.Pin;
+using NeuroFeatures;
 using Waher.Content;
 using Waher.Content.Images;
+using Waher.Content.Markdown;
 using Waher.Content.Xml;
 using Waher.Events;
 using Waher.Networking.DNS;
 using Waher.Networking.XMPP;
+using Waher.Networking.XMPP.Avatar;
+using Waher.Networking.XMPP.Concentrator;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Networking.XMPP.Control;
 using Waher.Networking.XMPP.HTTPX;
+using Waher.Networking.XMPP.Mail;
 using Waher.Networking.XMPP.P2P;
 using Waher.Networking.XMPP.P2P.E2E;
+using Waher.Networking.XMPP.PEP;
+using Waher.Networking.XMPP.Provisioning;
+using Waher.Networking.XMPP.PubSub;
+using Waher.Networking.XMPP.Push;
+using Waher.Networking.XMPP.Sensor;
 using Waher.Persistence;
 using Waher.Persistence.Files;
 using Waher.Persistence.Serialization;
@@ -43,12 +56,15 @@ using Waher.Runtime.Text;
 using Waher.Script;
 using Waher.Script.Content;
 using Waher.Script.Graphs;
+using Waher.Security.JWS;
+using Waher.Security.JWT;
 using Waher.Security.LoginMonitor;
+using Waher.Things;
 
 namespace NeuroAccessMaui
 {
 	/// <summary>
-	/// The Application class, representing an instance of the IdApp.
+	/// The Application class, representing an instance of the Neuro-Access app.
 	/// </summary>
 	public partial class App : Application, IDisposable
 	{
@@ -217,6 +233,7 @@ namespace NeuroAccessMaui
 			{
 				this.InitInstances();
 
+				await ServiceRef.CryptoService.InitializeJwtFactory();
 				await this.PerformStartup(false, BackgroundStart);
 
 				Result.TrySetResult(true);
@@ -246,10 +263,25 @@ namespace NeuroAccessMaui
 					typeof(RuntimeSettings).Assembly,           // Allows for persistence of settings in the object database
 					typeof(InternetContent).Assembly,           // Common Content-Types
 					typeof(ImageCodec).Assembly,                // Common Image Content-Types
+					typeof(MarkdownDocument).Assembly,          // Markdown object model
 					typeof(XML).Assembly,                       // XML Content-Type
 					typeof(DnsResolver).Assembly,               // Serialization of DNS-related objects
 					typeof(XmppClient).Assembly,                // Serialization of general XMPP objects
 					typeof(ContractsClient).Assembly,           // Serialization of XMPP objects related to digital identities and smart contracts
+					typeof(NeuroFeaturesClient).Assembly,       // Serialization of XMPP objects related to Neuro-Feature tokens
+					typeof(EDalerClient).Assembly,              // Management of eDaler URIs
+					typeof(SensorClient).Assembly,              // Serialization of XMPP objects related to sensors
+					typeof(ControlClient).Assembly,             // Serialization of XMPP objects related to actuators
+					typeof(ConcentratorClient).Assembly,        // Serialization of XMPP objects related to concentrators
+					typeof(ProvisioningClient).Assembly,        // Serialization of XMPP objects related to provisioning
+					typeof(PubSubClient).Assembly,              // Serialization of XMPP objects related to publish/subscribe pattern
+					typeof(PepClient).Assembly,                 // Serialization of XMPP objects related to personal eventing protocol (PEP)
+					typeof(AvatarClient).Assembly,              // Serialization of XMPP objects related to avatars
+					typeof(PushNotificationClient).Assembly,    // Serialization of XMPP objects related to push notification
+					typeof(MailClient).Assembly,					  // Serialization of XMPP objects related to processing of incoming e-mail
+					typeof(ThingReference).Assembly,            // IoT Abstraction library
+					typeof(JwtFactory).Assembly,					  // JSON Web Tokens (JWT)
+					typeof(JwsAlgorithm).Assembly,              // JSON Web Signatures (JWS)
 					typeof(Expression).Assembly,                // Indexes basic script functions
 					typeof(Graph).Assembly,                     // Indexes graph script functions
 					typeof(GraphEncoder).Assembly,              // Indexes content script functions
@@ -276,6 +308,7 @@ namespace NeuroAccessMaui
 			Types.InstantiateDefault<IAttachmentCacheService>(false);
 			Types.InstantiateDefault<IContractOrchestratorService>(false);
 			Types.InstantiateDefault<INfcService>(false);
+			Types.InstantiateDefault<INotificationService>(false);
 
 			defaultInstantiatedSource.TrySetResult(true);
 
@@ -424,6 +457,9 @@ namespace NeuroAccessMaui
 				await ServiceRef.NavigationService.Load(isResuming, Token);
 				await ServiceRef.AttachmentCacheService.Load(isResuming, Token);
 				await ServiceRef.ContractOrchestratorService.Load(isResuming, Token);
+				await ServiceRef.ThingRegistryOrchestratorService.Load(isResuming, Token);
+				await ServiceRef.NeuroWalletOrchestratorService.Load(isResuming, Token);
+				await ServiceRef.NotificationService.Load(isResuming, Token);
 			}
 			catch (OperationCanceledException)
 			{
@@ -705,12 +741,12 @@ namespace NeuroAccessMaui
 				string StackTrace = ServiceRef.LogService.LoadExceptionDump();
 				if (!string.IsNullOrWhiteSpace(StackTrace))
 				{
-					List<KeyValuePair<string, object>> Tags =
+					List<KeyValuePair<string, object?>> Tags =
 					[
-						new KeyValuePair<string, object>(Constants.XmppProperties.Jid, ServiceRef.XmppService.BareJid)
+						new KeyValuePair<string, object?>(Constants.XmppProperties.Jid, ServiceRef.XmppService.BareJid)
 					];
 
-					KeyValuePair<string, object>[]? Tags2 = ServiceRef.TagProfile.LegalIdentity?.GetTags();
+					KeyValuePair<string, object?>[]? Tags2 = ServiceRef.TagProfile.LegalIdentity?.GetTags();
 
 					if (Tags2 is not null)
 						Tags.AddRange(Tags2);
@@ -886,7 +922,7 @@ namespace NeuroAccessMaui
 					return string.Empty;
 
 				CheckPinViewModel ViewModel = new();
-				CheckPinPage Page = new(ViewModel);
+				CheckPinPopup Page = new(ViewModel);
 				await MopupService.Instance.PushAsync(Page);
 				await CheckUserBlocking();
 				return await ViewModel.Result;

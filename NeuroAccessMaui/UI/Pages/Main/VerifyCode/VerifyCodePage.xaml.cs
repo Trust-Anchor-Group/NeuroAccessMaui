@@ -48,7 +48,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.VerifyCode
 		{
 			await base.OnAppearingAsync();
 
-			WeakReferenceMessenger.Default.Register<KeyboardSizeMessage>(this, this.HandleKeyboardSizeMessage);		
+			WeakReferenceMessenger.Default.Register<KeyboardSizeMessage>(this, this.HandleKeyboardSizeMessage);
 		}
 
 		/// <inheritdoc/>

@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Contacts;
 
 namespace NeuroAccessMaui.UI.Pages.Identity.TransferIdentity
 {
@@ -101,9 +102,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.TransferIdentity
 		protected virtual void Dispose(bool disposing)
 		{
 			if (this.isDisposed)
-			{
 				return;
-			}
 
 			if (disposing)
 			{

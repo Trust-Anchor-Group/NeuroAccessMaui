@@ -44,7 +44,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 			return base.OnDispose();
 		}
 
-		private Task XmppService_IdentityApplicationChanged(object Sender, LegalIdentityEventArgs e)
+		private Task XmppService_IdentityApplicationChanged(object? Sender, LegalIdentityEventArgs e)
 		{
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
@@ -94,7 +94,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 		#region Properties
 
 		/// <summary>
-		/// Used to find out if an ICommand can execute
+		/// Used to find out if a command can execute
 		/// </summary>
 		public bool CanExecuteCommands => !this.IsBusy;
 

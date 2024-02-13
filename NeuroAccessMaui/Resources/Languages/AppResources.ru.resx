@@ -1161,4 +1161,664 @@
   <data name="DeviceID" xml:space="preserve">
     <value>Идентификатор устройства</value>
   </data>
+  <data name="AddContactToContract" xml:space="preserve">
+    <value>Добавить контакт в контракт</value>
+  </data>
+  <data name="AddPart" xml:space="preserve">
+    <value>Добавить деталь</value>
+  </data>
+  <data name="Archiving_Optional" xml:space="preserve">
+    <value>Архивирование (опционально)</value>
+  </data>
+  <data name="Archiving_Required" xml:space="preserve">
+    <value>Архивирование (обязательно)</value>
+  </data>
+  <data name="BalanceUpdated" xml:space="preserve">
+    <value>Баланс обновлен.</value>
+  </data>
+  <data name="CalculationError" xml:space="preserve">
+    <value>Не удается выполнить расчет.</value>
+  </data>
+  <data name="CanActAsTemplate" xml:space="preserve">
+    <value>Может выступать в качестве шаблона</value>
+  </data>
+  <data name="ContractHasBeenDeleted" xml:space="preserve">
+    <value>Контракт был удален.</value>
+  </data>
+  <data name="ContractHasBeenObsoleted" xml:space="preserve">
+    <value>Контракт устарел.</value>
+  </data>
+  <data name="ContractId" xml:space="preserve">
+    <value>Идентификатор контракта</value>
+  </data>
+  <data name="ContractRoleMustBeSelected" xml:space="preserve">
+    <value>Сначала выберите роль контракта, а затем повторите попытку.</value>
+  </data>
+  <data name="Contracts" xml:space="preserve">
+    <value>Контракты</value>
+  </data>
+  <data name="ContractsInfoText" xml:space="preserve">
+    <value>Ниже приведен список договоров, которые вы создали или подписали. Нажмите на контракт, чтобы получить дополнительную информацию о нем.</value>
+  </data>
+  <data name="ContractSuccessfullySigned" xml:space="preserve">
+    <value>Контракт успешно подписан.</value>
+  </data>
+  <data name="ContractTemplates" xml:space="preserve">
+    <value>Шаблоны договоров</value>
+  </data>
+  <data name="ContractTemplatesInfoText" xml:space="preserve">
+    <value>Ниже приведен список шаблонов договоров, которые вы использовали. Нажмите на шаблон, чтобы создать новый контракт на основе этого шаблона.</value>
+  </data>
+  <data name="ContractVisibilityMustBeSelected" xml:space="preserve">
+    <value>Сначала выберите видимость контракта, а затем повторите попытку.</value>
+  </data>
+  <data name="ContractVisibility_CreatorAndParts" xml:space="preserve">
+    <value>Создатель и детали</value>
+  </data>
+  <data name="ContractVisibility_DomainAndParts" xml:space="preserve">
+    <value>Домен и детали</value>
+  </data>
+  <data name="ContractVisibility_Public" xml:space="preserve">
+    <value>Общедоступный, без возможности поиска</value>
+  </data>
+  <data name="ContractVisibility_PublicSearchable" xml:space="preserve">
+    <value>Общедоступный и доступный для поиска</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>день</value>
+  </data>
+  <data name="Days" xml:space="preserve">
+    <value>Дни недели</value>
+  </data>
+  <data name="Digest" xml:space="preserve">
+    <value>Переваривать</value>
+  </data>
+  <data name="Duration" xml:space="preserve">
+    <value>Длительность</value>
+  </data>
+  <data name="EnterProposal" xml:space="preserve">
+    <value>Введите текст, который будет включен в предложение {0}, или оставьте пустым, если предложение не должно быть отправлено.</value>
+  </data>
+  <data name="EnterValidValue" xml:space="preserve">
+    <value>Сначала введите допустимое значение.</value>
+  </data>
+  <data name="EnterValue" xml:space="preserve">
+    <value>Сначала нужно ввести значение.</value>
+  </data>
+  <data name="ExpiredEDalerUri" xml:space="preserve">
+    <value>Срок действия этого кода eDaler истек.</value>
+  </data>
+  <data name="ForInclusionInContract" xml:space="preserve">
+    <value>Для включения в состав договора.</value>
+  </data>
+  <data name="From" xml:space="preserve">
+    <value>От</value>
+  </data>
+  <data name="HashFunction" xml:space="preserve">
+    <value>Хэш-функция</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>час</value>
+  </data>
+  <data name="Hours" xml:space="preserve">
+    <value>Часов</value>
+  </data>
+  <data name="InvalidEDalerUri" xml:space="preserve">
+    <value>Недопустимый URI eDalaler: {0}</value>
+  </data>
+  <data name="LocalName" xml:space="preserve">
+    <value>Локальное название</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>минута</value>
+  </data>
+  <data name="Minutes" xml:space="preserve">
+    <value>протокол</value>
+  </data>
+  <data name="Mode" xml:space="preserve">
+    <value>Режим</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>месяц</value>
+  </data>
+  <data name="Months" xml:space="preserve">
+    <value>Месяцы</value>
+  </data>
+  <data name="Namespace" xml:space="preserve">
+    <value>Пространство имен</value>
+  </data>
+  <data name="Negative" xml:space="preserve">
+    <value>Отрицательная</value>
+  </data>
+  <data name="Parameters" xml:space="preserve">
+    <value>Параметры</value>
+  </data>
+  <data name="Proposal" xml:space="preserve">
+    <value>Предложение</value>
+  </data>
+  <data name="PurposeReviewContract" xml:space="preserve">
+    <value>Проверка договора, в котором вы состоите.</value>
+  </data>
+  <data name="RequestToAccessContract" xml:space="preserve">
+    <value>Запрос на доступ к договору</value>
+  </data>
+  <data name="Second" xml:space="preserve">
+    <value>секунда</value>
+  </data>
+  <data name="Seconds" xml:space="preserve">
+    <value>товары второго сорта</value>
+  </data>
+  <data name="SelectedContactCannotBeAdded" xml:space="preserve">
+    <value>Выбранный контакт не может быть добавлен. У него не зарегистрировано юридическое удостоверение личности.</value>
+  </data>
+  <data name="Send" xml:space="preserve">
+    <value>Отправить</value>
+  </data>
+  <data name="SignAfter" xml:space="preserve">
+    <value>Подписать после</value>
+  </data>
+  <data name="SignAsRole" xml:space="preserve">
+    <value>Подписать как {0}</value>
+  </data>
+  <data name="SignBefore" xml:space="preserve">
+    <value>Подпишите перед</value>
+  </data>
+  <data name="StateChangedTo" xml:space="preserve">
+    <value>Состояние изменено на {0}</value>
+  </data>
+  <data name="TemplateId" xml:space="preserve">
+    <value>Идентификатор шаблона</value>
+  </data>
+  <data name="TheContractRequiresAtLeast_AddMoreParts" xml:space="preserve">
+    <value>Контракт требует, по крайней мере{0} часть (части) ролевых {1}. Добавьте в контракт дополнительные детали и повторите попытку.</value>
+  </data>
+  <data name="TheContractRequiresAtMost_RemoveParts" xml:space="preserve">
+    <value>Контракт требует не более {0} части ролей {1}. Удалите некоторые части из контракта и повторите попытку.</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>Кому</value>
+  </data>
+  <data name="TokenAdded" xml:space="preserve">
+    <value>Токен добавлен в ваш кошелек.</value>
+  </data>
+  <data name="TokenAdded2" xml:space="preserve">
+    <value>Добавлен токен</value>
+  </data>
+  <data name="TokenCreationTemplates" xml:space="preserve">
+    <value>Шаблоны токенов</value>
+  </data>
+  <data name="TokenCreationTemplatesInfoText" xml:space="preserve">
+    <value>Ниже приведен список шаблонов токенов, которые вы использовали или можете использовать для создания новых токенов. Нажмите на шаблон, чтобы создать новый контракт на основе этого шаблона. После того, как контракт будет подписан и утвержден, будет создан соответствующий токен или токены.</value>
+  </data>
+  <data name="TokenRemoved" xml:space="preserve">
+    <value>Токен был удален из вашего кошелька.</value>
+  </data>
+  <data name="TokenRemoved2" xml:space="preserve">
+    <value>Фишка удалена</value>
+  </data>
+  <data name="UnrecognizedEDalerURI" xml:space="preserve">
+    <value>Нераспознанный eDaler URI.</value>
+  </data>
+  <data name="VariablesUpdated" xml:space="preserve">
+    <value>Переменные обновлены</value>
+  </data>
+  <data name="Visibility" xml:space="preserve">
+    <value>Видимость</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>год</value>
+  </data>
+  <data name="Years" xml:space="preserve">
+    <value>годы</value>
+  </data>
+  <data name="YouHaveReceivedAProposal" xml:space="preserve">
+    <value>Вы получили предложение.</value>
+  </data>
+  <data name="YourContractContainsErrors" xml:space="preserve">
+    <value>Ваш контракт содержит ошибки. Исправьте эти ошибки и повторите попытку.</value>
+  </data>
+  <data name="AccessRequest" xml:space="preserve">
+    <value>Запрос доступа</value>
+  </data>
+  <data name="ContractCreated" xml:space="preserve">
+    <value>Контракт создан.</value>
+  </data>
+  <data name="ContractDeleted" xml:space="preserve">
+    <value>Контракт был удален.</value>
+  </data>
+  <data name="ContractProposed" xml:space="preserve">
+    <value>Предложен контракт.</value>
+  </data>
+  <data name="ContractSigned" xml:space="preserve">
+    <value>Подписан контракт.</value>
+  </data>
+  <data name="ContractUpdated" xml:space="preserve">
+    <value>Контракт был обновлен.</value>
+  </data>
+  <data name="ControlRequest" xml:space="preserve">
+    <value>Запрос на управление</value>
+  </data>
+  <data name="IdentityUpdated" xml:space="preserve">
+    <value>Цифровая идентификация была обновлена.</value>
+  </data>
+  <data name="InvalidIoTDiscoClaimUri" xml:space="preserve">
+    <value>Недопустимый URI утверждения iotdisco.</value>
+  </data>
+  <data name="InvalidIoTDiscoveryCode" xml:space="preserve">
+    <value>Недопустимый код обнаружения Интернета вещей</value>
+  </data>
+  <data name="MessageFrom" xml:space="preserve">
+    <value>Сообщение от:</value>
+  </data>
+  <data name="NeuroFeaturesServiceNotFound" xml:space="preserve">
+    <value>Сервис Neuro-Features не найден у брокера.</value>
+  </data>
+  <data name="PetitionFrom" xml:space="preserve">
+    <value>Петиция от:</value>
+  </data>
+  <data name="ReadRequest" xml:space="preserve">
+    <value>Запрос на считывание</value>
+  </data>
+  <data name="UnableToGetHistory" xml:space="preserve">
+    <value>Не удается получить отчет об истории.</value>
+  </data>
+  <data name="UnableToGetPresent" xml:space="preserve">
+    <value>Не удается получить текущий отчет.</value>
+  </data>
+  <data name="UnableToGetProfiling" xml:space="preserve">
+    <value>Не удалось получить отчет о профилировании.</value>
+  </data>
+  <data name="UnableToGetStateDiagram" xml:space="preserve">
+    <value>Не удается получить отчет о диаграмме состояний.</value>
+  </data>
+  <data name="AccessRequestText" xml:space="preserve">
+    <value>{0} хочет подключиться к вашему устройству {1}.</value>
+  </data>
+  <data name="ConcentratorServiceNotFound" xml:space="preserve">
+    <value>Обслуживание концентратора не найдено.</value>
+  </data>
+  <data name="ControlRequestText" xml:space="preserve">
+    <value>{0} хочет управлять параметрами на вашем устройстве {1}.</value>
+  </data>
+  <data name="ControlServiceNotFound" xml:space="preserve">
+    <value>Служба управления не найдена.</value>
+  </data>
+  <data name="EDalerServiceNotFound" xml:space="preserve">
+    <value>Сервис eDaler не найден у брокера.</value>
+  </data>
+  <data name="GettingOptionsCancelled" xml:space="preserve">
+    <value>Получение доступных опций было отменено.</value>
+  </data>
+  <data name="IdentityResponse" xml:space="preserve">
+    <value>Ответ на запрос удостоверения</value>
+  </data>
+  <data name="IdentityReviewRequest" xml:space="preserve">
+    <value>Запрос на проверку удостоверения</value>
+  </data>
+  <data name="NoThingsFound" xml:space="preserve">
+    <value>Ничего не найдено.</value>
+  </data>
+  <data name="PaymentCancelled" xml:space="preserve">
+    <value>Платеж отменен</value>
+  </data>
+  <data name="PaymentFailed" xml:space="preserve">
+    <value>Платеж не удался</value>
+  </data>
+  <data name="PepServiceNotFound" xml:space="preserve">
+    <value>Услуга персонального троеборья не найдена.</value>
+  </data>
+  <data name="ProvisioningServiceNotFound" xml:space="preserve">
+    <value>Служба подготовки не найдена у брокера.</value>
+  </data>
+  <data name="PushNotificationServiceNotFound" xml:space="preserve">
+    <value>Сервис push-уведомлений не найден.</value>
+  </data>
+  <data name="ReadoutRequestText" xml:space="preserve">
+    <value>{0} хочет считывать данные с вашего устройства {1}.</value>
+  </data>
+  <data name="RequestSignature" xml:space="preserve">
+    <value>Запрос подписи</value>
+  </data>
+  <data name="RequestToAccessIdentity" xml:space="preserve">
+    <value>Запрос на доступ к удостоверению</value>
+  </data>
+  <data name="SensorServiceNotFound" xml:space="preserve">
+    <value>Служба датчика не найдена.</value>
+  </data>
+  <data name="SignatureResponse" xml:space="preserve">
+    <value>Ответ на запрос подписи</value>
+  </data>
+  <data name="ThingRegistryServiceNotFound" xml:space="preserve">
+    <value>Ничего не нашлось на брокере.</value>
+  </data>
+  <data name="UnableToGetListOfMyDevices" xml:space="preserve">
+    <value>Не могу получить список своих устройств.</value>
+  </data>
+  <data name="UnableToGetOptions" xml:space="preserve">
+    <value>Не удается получить доступные варианты.</value>
+  </data>
+  <data name="Altitude" xml:space="preserve">
+    <value>Высота</value>
+  </data>
+  <data name="Anonymous" xml:space="preserve">
+    <value>Анонимный</value>
+  </data>
+  <data name="Apartment" xml:space="preserve">
+    <value>Квартира</value>
+  </data>
+  <data name="APetitionHasBeenSentForEncryption" xml:space="preserve">
+    <value>Шифрование может быть выполнено только в том случае, если у вас есть доступ к идентификационным данным получателей. В связи с этим получателю было направлено ходатайство об установлении личности. Если получатель примет петицию, вы получите удостоверение личности и сможете отправить платеж с зашифрованным сообщением при повторной попытке. Вы также можете отправить незашифрованное сообщение вместе с платежом.</value>
+  </data>
+  <data name="Assessor" xml:space="preserve">
+    <value>Заседатель</value>
+  </data>
+  <data name="Building" xml:space="preserve">
+    <value>Здание</value>
+  </data>
+  <data name="BuyEDaler" xml:space="preserve">
+    <value>Купить eDaler.</value>
+  </data>
+  <data name="CallerOnly" xml:space="preserve">
+    <value>Только вызывающий абонент</value>
+  </data>
+  <data name="Certifier" xml:space="preserve">
+    <value>Сертифицирующий орган</value>
+  </data>
+  <data name="CertifierJid" xml:space="preserve">
+    <value>Адрес сертифицирующего органа</value>
+  </data>
+  <data name="Class" xml:space="preserve">
+    <value>Класс</value>
+  </data>
+  <data name="Contacts" xml:space="preserve">
+    <value>Контакты</value>
+  </data>
+  <data name="ContactsDescription" xml:space="preserve">
+    <value>Ниже приведены все контакты в вашей контактной книге. Нажмите на любой из них, чтобы связаться с этим контактом.</value>
+  </data>
+  <data name="ContractProposal" xml:space="preserve">
+    <value>Предложение по контракту</value>
+  </data>
+  <data name="ContractResponse" xml:space="preserve">
+    <value>Ответ на запрос о заключении договора</value>
+  </data>
+  <data name="ContractSignatureReceived" xml:space="preserve">
+    <value>Подписание контракта получено</value>
+  </data>
+  <data name="ContractUpdateReceived" xml:space="preserve">
+    <value>Контракт обновлен</value>
+  </data>
+  <data name="DeleteRulesQuestion" xml:space="preserve">
+    <value>Вы хотите удалить все правила подготовки для вещи? Таким образом, вещь будет снова запрашивать у вас все новые события, чтобы узнать, что она уполномочена делать.</value>
+  </data>
+  <data name="Device" xml:space="preserve">
+    <value>Устройство</value>
+  </data>
+  <data name="DisownThingQuestion" xml:space="preserve">
+    <value>Вы хотите отречься от этой вещи? Это удалит вещь из вашего списка вещей и позволит другому заявить о том, что устройство принадлежит ему.</value>
+  </data>
+  <data name="EncryptedPayment" xml:space="preserve">
+    <value>Зашифрованный платеж</value>
+  </data>
+  <data name="EntireDomain" xml:space="preserve">
+    <value>Все из {0}</value>
+  </data>
+  <data name="Errors" xml:space="preserve">
+    <value>Ошибки</value>
+  </data>
+  <data name="Everyone" xml:space="preserve">
+    <value>Каждый</value>
+  </data>
+  <data name="ExpiresAt" xml:space="preserve">
+    <value>(Срок действия истекает {0})</value>
+  </data>
+  <data name="FromUser" xml:space="preserve">
+    <value>От пользователя</value>
+  </data>
+  <data name="GeneralInformation" xml:space="preserve">
+    <value>Общая информация</value>
+  </data>
+  <data name="History" xml:space="preserve">
+    <value>История</value>
+  </data>
+  <data name="InvalidNeuroFeatureToken" xml:space="preserve">
+    <value>Недопустимый токен Neuro-Feature.</value>
+  </data>
+  <data name="Key" xml:space="preserve">
+    <value>Ключ</value>
+  </data>
+  <data name="Latitude" xml:space="preserve">
+    <value>Широта</value>
+  </data>
+  <data name="Longitude" xml:space="preserve">
+    <value>Долгота</value>
+  </data>
+  <data name="Manufacturer" xml:space="preserve">
+    <value>Изготовитель</value>
+  </data>
+  <data name="MeterLocation" xml:space="preserve">
+    <value>Местоположение счетчика</value>
+  </data>
+  <data name="MeterNumber" xml:space="preserve">
+    <value>Номер счетчика</value>
+  </data>
+  <data name="Model" xml:space="preserve">
+    <value>Модель</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="NetworkAddressOfContactUnknown" xml:space="preserve">
+    <value>Сетевой адрес контакта неизвестен.</value>
+  </data>
+  <data name="NoContactsFound" xml:space="preserve">
+    <value>Контакты не найдены.</value>
+  </data>
+  <data name="NotAvailable" xml:space="preserve">
+    <value>Нет в наличии</value>
+  </data>
+  <data name="NoteCopiedToClipboard" xml:space="preserve">
+    <value>Заметка скопирована в буфер обмена.</value>
+  </data>
+  <data name="Payment" xml:space="preserve">
+    <value>Уплата</value>
+  </data>
+  <data name="PaymentAlreadySent" xml:space="preserve">
+    <value>Платежное поручение уже отправлено. Вы можете повторно отправить ожидающие платежи в представлении ожидающих платежей.</value>
+  </data>
+  <data name="PaymentSuccess" xml:space="preserve">
+    <value>Оплата успешно осуществлена.</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>Телефон</value>
+  </data>
+  <data name="PickPhoto" xml:space="preserve">
+    <value>Выбрать фотографию</value>
+  </data>
+  <data name="Present" xml:space="preserve">
+    <value>Присутствующий</value>
+  </data>
+  <data name="ProductInformation" xml:space="preserve">
+    <value>Информация о продукте</value>
+  </data>
+  <data name="Profiling" xml:space="preserve">
+    <value>Профилирование</value>
+  </data>
+  <data name="PurposeReviewToken" xml:space="preserve">
+    <value>Просмотр токена, в котором вы состоите.</value>
+  </data>
+  <data name="Question" xml:space="preserve">
+    <value>Вопрос</value>
+  </data>
+  <data name="Reference" xml:space="preserve">
+    <value>Ссылка</value>
+  </data>
+  <data name="Registry" xml:space="preserve">
+    <value>Регистратура</value>
+  </data>
+  <data name="RemoveSubscriptionFrom" xml:space="preserve">
+    <value>Вы хотите удалить подписку на присутствие из {0}?</value>
+  </data>
+  <data name="RequestPayment" xml:space="preserve">
+    <value>Запросить оплату</value>
+  </data>
+  <data name="RequestPaymentMessage" xml:space="preserve">
+    <value>Запрос на оплату {0} {1}.</value>
+  </data>
+  <data name="Room" xml:space="preserve">
+    <value>Комната</value>
+  </data>
+  <data name="RulesDeleted" xml:space="preserve">
+    <value>Правила подготовки были удалены.</value>
+  </data>
+  <data name="ScanQRCode" xml:space="preserve">
+    <value>Отсканировать QR-код</value>
+  </data>
+  <data name="SelectContactToPay" xml:space="preserve">
+    <value>Ниже приведены все контакты в вашей контактной книге. Выберите контактное лицо, которому вы хотите произвести оплату.</value>
+  </data>
+  <data name="SelectFromWhomToRequestPayment" xml:space="preserve">
+    <value>Выберите, у кого запрашивать оплату.</value>
+  </data>
+  <data name="SelectingAPhotoIsNotSupported" xml:space="preserve">
+    <value>Выбор фотографии не поддерживается на этом устройстве</value>
+  </data>
+  <data name="SelectServiceProviderBuyEDaler" xml:space="preserve">
+    <value>Выберите поставщика услуг, которого вы хотите использовать для покупки eDaler.</value>
+  </data>
+  <data name="SelectServiceProviderSellEDaler" xml:space="preserve">
+    <value>Выберите поставщика услуг, которого вы хотите использовать для продажи eDaler.</value>
+  </data>
+  <data name="SellEDaler" xml:space="preserve">
+    <value>Продам eDaler.</value>
+  </data>
+  <data name="SendInformationTo" xml:space="preserve">
+    <value>Отправить информацию?</value>
+  </data>
+  <data name="SensorDataAccepted" xml:space="preserve">
+    <value>Заявка принята.</value>
+  </data>
+  <data name="SensorDataCancelled" xml:space="preserve">
+    <value>Считывание данных с датчиков отменено.</value>
+  </data>
+  <data name="SensorDataDone" xml:space="preserve">
+    <value>Считывание данных датчика завершено.</value>
+  </data>
+  <data name="SensorDataFailure" xml:space="preserve">
+    <value>Сбой считывания данных датчика.</value>
+  </data>
+  <data name="SensorDataHeaderComputed" xml:space="preserve">
+    <value>Вычисляемый</value>
+  </data>
+  <data name="SensorDataHeaderHistorical" xml:space="preserve">
+    <value>Исторический</value>
+  </data>
+  <data name="SensorDataHeaderIdentity" xml:space="preserve">
+    <value>Тождество</value>
+  </data>
+  <data name="SensorDataHeaderMomentary" xml:space="preserve">
+    <value>Мгновенный</value>
+  </data>
+  <data name="SensorDataHeaderOther" xml:space="preserve">
+    <value>Другой</value>
+  </data>
+  <data name="SensorDataHeaderPeak" xml:space="preserve">
+    <value>Пик</value>
+  </data>
+  <data name="SensorDataHeaderStatus" xml:space="preserve">
+    <value>Статус</value>
+  </data>
+  <data name="SensorDataReceiving" xml:space="preserve">
+    <value>Получение данных с датчиков.</value>
+  </data>
+  <data name="SensorDataRequested" xml:space="preserve">
+    <value>Запрошены данные датчиков.</value>
+  </data>
+  <data name="SensorDataStarted" xml:space="preserve">
+    <value>Началось считывание данных с датчиков.</value>
+  </data>
+  <data name="SerialNumber" xml:space="preserve">
+    <value>Порядковый номер</value>
+  </data>
+  <data name="ServerDoesNotSupportFileUpload" xml:space="preserve">
+    <value>Похоже, что сервер не поддерживает загрузку файлов.</value>
+  </data>
+  <data name="Service" xml:space="preserve">
+    <value>Служба</value>
+  </data>
+  <data name="Share" xml:space="preserve">
+    <value>Предоставить общий доступ</value>
+  </data>
+  <data name="StateDiagram" xml:space="preserve">
+    <value>Диаграмма состояний</value>
+  </data>
+  <data name="StreetName" xml:space="preserve">
+    <value>Название улицы</value>
+  </data>
+  <data name="StreetNumber" xml:space="preserve">
+    <value>Номер улицы</value>
+  </data>
+  <data name="TakePhoto" xml:space="preserve">
+    <value>Сделать фото</value>
+  </data>
+  <data name="TakePhotoToShare" xml:space="preserve">
+    <value>Сделайте фотографию, чтобы поделиться ею</value>
+  </data>
+  <data name="TakingAPhotoIsNotSupported" xml:space="preserve">
+    <value>Фотосъемка на этом устройстве не поддерживается</value>
+  </data>
+  <data name="TheSpecifiedCodeIsNotALegalIdentity" xml:space="preserve">
+    <value>Вам нужно отсканировать QR-код другого типа, который представляет собой юридическое лицо</value>
+  </data>
+  <data name="ThingDisowned" xml:space="preserve">
+    <value>От этого успешно открещиваются. Теперь на него может претендовать новый владелец.</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Время</value>
+  </data>
+  <data name="ToDevice" xml:space="preserve">
+    <value>На устройство, независимо от источника</value>
+  </data>
+  <data name="ToService" xml:space="preserve">
+    <value>К обслуживанию, независимо от источника</value>
+  </data>
+  <data name="ToUser" xml:space="preserve">
+    <value>Пользователю, независимо от источника</value>
+  </data>
+  <data name="ToUser2" xml:space="preserve">
+    <value>Пользователю</value>
+  </data>
+  <data name="TransactionAccepted" xml:space="preserve">
+    <value>Транзакция принята и обработана.</value>
+  </data>
+  <data name="UnableToClaimThing" xml:space="preserve">
+    <value>Невозможно забрать вещь</value>
+  </data>
+  <data name="UnableToProcessEDalerUri" xml:space="preserve">
+    <value>Не удалось обработать код eDalaler.</value>
+  </data>
+  <data name="UnableToRespond" xml:space="preserve">
+    <value>Не могу ответить на запрос.</value>
+  </data>
+  <data name="UnrecognizedEventType" xml:space="preserve">
+    <value>Тип нераспознанного события:</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>Пользователь</value>
+  </data>
+  <data name="UserSignedAs" xml:space="preserve">
+    <value>{0} подписались как {1}.</value>
+  </data>
+  <data name="Valuator" xml:space="preserve">
+    <value>Устройство ввода чисел</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Версия</value>
+  </data>
+  <data name="Witness" xml:space="preserve">
+    <value>Свидетель</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Вчера</value>
+  </data>
 </root>

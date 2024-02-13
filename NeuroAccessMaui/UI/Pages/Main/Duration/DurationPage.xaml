@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseContentPage x:Name="ThisPage"
+							 x:Class="NeuroAccessMaui.UI.Pages.Main.Duration.DurationPage"
+							 x:DataType="viewmodel:DurationViewModel"
+							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.Duration"
+							 xmlns:data="clr-namespace:NeuroAccessMaui.Services.Data"
+							 xmlns:behaviors="clr-namespace:NeuroAccessMaui.UI.Behaviors">
+	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+
+		<controls:Background/>
+
+		<ScrollView>
+			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+
+				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
+											 Style="{StaticResource ImageOnlyButtonStyle}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+
+				<Label Style="{StaticResource PageTitleLabelStyle}" Text="{l:Localize Duration}"/>
+
+				<Frame Style="{StaticResource FrameSet}">
+
+					<Grid RowDefinitions="auto,auto,auto,auto,auto,auto,auto" ColumnDefinitions="auto,*"
+							RowSpacing="{StaticResource SmallSpacing}" ColumnSpacing="{StaticResource SmallSpacing}"
+							Padding="{StaticResource SmallSpacing}">
+
+						<controls:TextButton Grid.Column="0" Grid.Row="0" Command="{Binding PlusMinusCommand}"
+													Style="{StaticResource FilledTextButtonStyleNoRoundedCorners}" LabelData="±" />
+
+						<Border Style="{StaticResource OutlinedImageButtonBorderStyle}" Padding="0" Grid.Column="1" Grid.Row="0">
+							<Label Style="{StaticResource ValueLabel}" Text="{Binding Value, Converter={converters:DurationToString}}"
+									 LineBreakMode="WordWrap"/>
+						</Border>
+
+						<Label Text="{l:Localize Years}" Grid.Column="0" Grid.Row="1" VerticalOptions="Center" />
+						<Label Text="{l:Localize Months}" Grid.Column="0" Grid.Row="2" VerticalOptions="Center" />
+						<Label Text="{l:Localize Days}" Grid.Column="0" Grid.Row="3" VerticalOptions="Center" />
+						<Label Text="{l:Localize Hours}" Grid.Column="0" Grid.Row="4" VerticalOptions="Center" />
+						<Label Text="{l:Localize Minutes}" Grid.Column="0" Grid.Row="5" VerticalOptions="Center" />
+						<Label Text="{l:Localize Seconds}" Grid.Column="0" Grid.Row="6" VerticalOptions="Center" />
+
+						<!-- TODO:  Keyboard="Numeric" on entries -->
+							  
+						<controls:CompositeEntry Grid.Column="1" Grid.Row="1"
+														 Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}"
+														 BackgroundColor="{Binding YearsOk, Converter={converters:ControlBgColor}}"
+														 EntryData="{Binding Years}" />
+						<controls:CompositeEntry Grid.Column="1" Grid.Row="2"
+														 Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" 
+														 BackgroundColor="{Binding MonthsOk, Converter={converters:ControlBgColor}}"
+				   									 EntryData="{Binding Months}" />
+						<controls:CompositeEntry Grid.Column="1" Grid.Row="3"
+														 Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" 
+														 BackgroundColor="{Binding DaysOk, Converter={converters:ControlBgColor}}"
+				   									 EntryData="{Binding Days}" />
+						<controls:CompositeEntry Grid.Column="1" Grid.Row="4"
+														 Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" 
+														 BackgroundColor="{Binding HoursOk, Converter={converters:ControlBgColor}}"
+				   									 EntryData="{Binding Hours}" />
+						<controls:CompositeEntry Grid.Column="1" Grid.Row="5"
+														 Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" 
+														 BackgroundColor="{Binding MinutesOk, Converter={converters:ControlBgColor}}"
+				   									 EntryData="{Binding Minutes}" />
+						<controls:CompositeEntry Grid.Column="1" Grid.Row="6"
+														 Style="{StaticResource RegularCompositeEntryStyleNoRoundedCorners}" 
+														 BackgroundColor="{Binding SecondsOk, Converter={converters:ControlBgColor}}"
+				   									 EntryData="{Binding Seconds}" />
+					</Grid>
+				</Frame>
+			</VerticalStackLayout>
+		</ScrollView>
+	</Grid>
+</base:BaseContentPage>

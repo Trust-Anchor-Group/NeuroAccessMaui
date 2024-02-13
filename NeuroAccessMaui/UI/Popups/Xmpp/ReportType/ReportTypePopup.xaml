@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Xmpp.ReportType.ReportTypePopup"
+					 x:DataType="viewmodel:ReportTypeViewModel"
+					 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+					 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+					 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+					 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+					 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+					 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+					 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
+					 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Xmpp.ReportType"
+					 xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
+					 xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups">
+
+	<mopups:PopupPage.Animation>
+		<animations:ScaleAnimation DurationIn="500" DurationOut="500" EasingIn="CubicIn" EasingOut="CubicOut" HasBackgroundAnimation="True"
+											PositionIn="Center" PositionOut="Center" />
+	</mopups:PopupPage.Animation>
+
+	<Grid Style="{StaticResource PopupGridStyle}">
+
+		<Border WidthRequest="{Binding ViewWidthRequest}" MaximumHeightRequest="{Binding MaximumViewHeightRequest}" Style="{StaticResource PopupBorderStyle}">
+			<ScrollView x:Name="InnerScrollView" VerticalOptions="Center">
+				<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
+
+					<Label Text="{l:Localize TypeOfReport}" Style="{StaticResource SectionTitleLabelStyle}" />
+
+					<Label>
+						<Label.FormattedText>
+							<FormattedString>
+								<Span Text="{l:Localize TypeOfReport1}"/>
+								<Span Text=" "/>
+								<Span Text="{Binding BareJid}" FontAttributes="Bold"/>
+							</FormattedString>
+						</Label.FormattedText>
+					</Label>
+
+					<controls:TextButton Command="{Binding SpamCommand}"
+												Style="{StaticResource FilledTextButtonStyle}"
+												LabelData="{l:Localize Spam}" />
+
+					<controls:TextButton Command="{Binding AbuseCommand}"
+												Style="{StaticResource FilledTextButtonStyle}"
+												LabelData="{l:Localize Abuse}" />
+
+					<controls:TextButton Command="{Binding OtherCommand}"
+												Style="{StaticResource FilledTextButtonStyle}"
+												LabelData="{l:Localize Other}" />
+
+					<controls:TextButton Command="{Binding IgnoreCommand}"
+												Style="{StaticResource OutlinedTextButtonStyle}"
+												LabelData="{l:Localize NoJustIgnore}" />
+				</VerticalStackLayout>
+			</ScrollView>
+		</Border>
+	</Grid>
+</base:BasePopup>

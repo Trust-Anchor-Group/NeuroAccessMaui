@@ -1,5 +1,4 @@
-﻿using System.Net.Mime;
-using Waher.Networking.XMPP.Contracts;
+﻿using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;
 using Waher.Persistence.Filters;
 using Waher.Runtime.Inventory;
@@ -221,6 +220,42 @@ namespace NeuroAccessMaui.Services.AttachmentCache
 			{
 				ServiceRef.LogService.LogException(ex);
 			}
+		}
+
+		/// <summary>
+		/// Makes items in the cache, belonging to a given parent object, temporary.
+		/// </summary>
+		/// <param name="ParentId">Associated Legal or Contract ID (Parent ID)</param>
+		public async Task MakeTemporary(string ParentId)
+		{
+			foreach (CacheEntry Entry in await Database.Find<CacheEntry>(new FilterFieldEqualTo("ParentId", ParentId)))
+			{
+				if (Entry.Expires == DateTime.MaxValue)
+				{
+					Entry.Expires = DateTime.UtcNow + expiryTemporary;
+					await Database.Update(Entry);
+				}
+			}
+
+			await Database.Provider.Flush();
+		}
+
+		/// <summary>
+		/// Makes items in the cache, belonging to a given parent object, permanent.
+		/// </summary>
+		/// <param name="ParentId">Associated Legal or Contract ID (Parent ID)</param>
+		public async Task MakePermanent(string ParentId)
+		{
+			foreach (CacheEntry Entry in await Database.Find<CacheEntry>(new FilterFieldEqualTo("ParentId", ParentId)))
+			{
+				if (Entry.Expires != DateTime.MaxValue)
+				{
+					Entry.Expires = DateTime.MaxValue;
+					await Database.Update(Entry);
+				}
+			}
+
+			await Database.Provider.Flush();
 		}
 	}
 }

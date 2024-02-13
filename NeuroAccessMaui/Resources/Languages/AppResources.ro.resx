@@ -1161,4 +1161,664 @@
   <data name="DeviceID" xml:space="preserve">
     <value>ID-ul dispozitivului</value>
   </data>
+  <data name="AddContactToContract" xml:space="preserve">
+    <value>Adăugați o persoană de contact la contract</value>
+  </data>
+  <data name="AddPart" xml:space="preserve">
+    <value>Adaugă parte</value>
+  </data>
+  <data name="Archiving_Optional" xml:space="preserve">
+    <value>Arhivare (opțional)</value>
+  </data>
+  <data name="Archiving_Required" xml:space="preserve">
+    <value>Arhivare (obligatoriu)</value>
+  </data>
+  <data name="BalanceUpdated" xml:space="preserve">
+    <value>Sold actualizat.</value>
+  </data>
+  <data name="CalculationError" xml:space="preserve">
+    <value>Nu se poate efectua calculul.</value>
+  </data>
+  <data name="CanActAsTemplate" xml:space="preserve">
+    <value>Poate acționa ca șablon</value>
+  </data>
+  <data name="ContractHasBeenDeleted" xml:space="preserve">
+    <value>Contractul a fost șters.</value>
+  </data>
+  <data name="ContractHasBeenObsoleted" xml:space="preserve">
+    <value>Contractul a fost caduc.</value>
+  </data>
+  <data name="ContractId" xml:space="preserve">
+    <value>Contract ID</value>
+  </data>
+  <data name="ContractRoleMustBeSelected" xml:space="preserve">
+    <value>Selectați mai întâi rolul de contract, apoi încercați din nou.</value>
+  </data>
+  <data name="Contracts" xml:space="preserve">
+    <value>Contracte</value>
+  </data>
+  <data name="ContractsInfoText" xml:space="preserve">
+    <value>Mai jos este o listă de contracte pe care le-ați creat sau semnat. Faceți clic pe un contract pentru mai multe informații despre acesta.</value>
+  </data>
+  <data name="ContractSuccessfullySigned" xml:space="preserve">
+    <value>Contract semnat cu succes.</value>
+  </data>
+  <data name="ContractTemplates" xml:space="preserve">
+    <value>Șabloane de contract</value>
+  </data>
+  <data name="ContractTemplatesInfoText" xml:space="preserve">
+    <value>Mai jos este o listă de șabloane de contract pe care le-ați utilizat. Faceți clic pe un șablon pentru a crea un nou contract bazat pe acel șablon.</value>
+  </data>
+  <data name="ContractVisibilityMustBeSelected" xml:space="preserve">
+    <value>Selectați mai întâi vizibilitatea contractului, apoi încercați din nou.</value>
+  </data>
+  <data name="ContractVisibility_CreatorAndParts" xml:space="preserve">
+    <value>Creator și părți</value>
+  </data>
+  <data name="ContractVisibility_DomainAndParts" xml:space="preserve">
+    <value>Domeniu și părți</value>
+  </data>
+  <data name="ContractVisibility_Public" xml:space="preserve">
+    <value>Public, nu poate fi căutat</value>
+  </data>
+  <data name="ContractVisibility_PublicSearchable" xml:space="preserve">
+    <value>Public și căutabil</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>zi</value>
+  </data>
+  <data name="Days" xml:space="preserve">
+    <value>Zile</value>
+  </data>
+  <data name="Digest" xml:space="preserve">
+    <value>Digera</value>
+  </data>
+  <data name="Duration" xml:space="preserve">
+    <value>Durată</value>
+  </data>
+  <data name="EnterProposal" xml:space="preserve">
+    <value>Introduceți textul de inclus în propunere pentru a {0} sau lăsați necompletat dacă nu trebuie trimisă o propunere.</value>
+  </data>
+  <data name="EnterValidValue" xml:space="preserve">
+    <value>Introduceți mai întâi o valoare validă.</value>
+  </data>
+  <data name="EnterValue" xml:space="preserve">
+    <value>Trebuie să introduceți mai întâi o valoare.</value>
+  </data>
+  <data name="ExpiredEDalerUri" xml:space="preserve">
+    <value>Acest cod eDaler a expirat.</value>
+  </data>
+  <data name="ForInclusionInContract" xml:space="preserve">
+    <value>Pentru includerea ca parte a unui contract.</value>
+  </data>
+  <data name="From" xml:space="preserve">
+    <value>Din</value>
+  </data>
+  <data name="HashFunction" xml:space="preserve">
+    <value>Funcția Hash</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>oră</value>
+  </data>
+  <data name="Hours" xml:space="preserve">
+    <value>Ore</value>
+  </data>
+  <data name="InvalidEDalerUri" xml:space="preserve">
+    <value>URI eDaler nevalid: {0}</value>
+  </data>
+  <data name="LocalName" xml:space="preserve">
+    <value>Denumirea locală</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>minut</value>
+  </data>
+  <data name="Minutes" xml:space="preserve">
+    <value>Minute</value>
+  </data>
+  <data name="Mode" xml:space="preserve">
+    <value>Mod</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>lună</value>
+  </data>
+  <data name="Months" xml:space="preserve">
+    <value>Luni</value>
+  </data>
+  <data name="Namespace" xml:space="preserve">
+    <value>Spațiu de nume</value>
+  </data>
+  <data name="Negative" xml:space="preserve">
+    <value>Negativ</value>
+  </data>
+  <data name="Parameters" xml:space="preserve">
+    <value>Parametrii</value>
+  </data>
+  <data name="Proposal" xml:space="preserve">
+    <value>Propunere</value>
+  </data>
+  <data name="PurposeReviewContract" xml:space="preserve">
+    <value>Revizuirea contractului în care sunteți parte.</value>
+  </data>
+  <data name="RequestToAccessContract" xml:space="preserve">
+    <value>Cerere de acces contract</value>
+  </data>
+  <data name="Second" xml:space="preserve">
+    <value>secundă</value>
+  </data>
+  <data name="Seconds" xml:space="preserve">
+    <value>Secunde</value>
+  </data>
+  <data name="SelectedContactCannotBeAdded" xml:space="preserve">
+    <value>Persoana de contact selectată nu poate fi adăugată. Nu are un ID legal înregistrat.</value>
+  </data>
+  <data name="Send" xml:space="preserve">
+    <value>Expedia</value>
+  </data>
+  <data name="SignAfter" xml:space="preserve">
+    <value>Semnează după</value>
+  </data>
+  <data name="SignAsRole" xml:space="preserve">
+    <value>Semnează ca {0}</value>
+  </data>
+  <data name="SignBefore" xml:space="preserve">
+    <value>Semnează înainte</value>
+  </data>
+  <data name="StateChangedTo" xml:space="preserve">
+    <value>Statul s-a schimbat în {0}</value>
+  </data>
+  <data name="TemplateId" xml:space="preserve">
+    <value>ID-ul șablonului</value>
+  </data>
+  <data name="TheContractRequiresAtLeast_AddMoreParts" xml:space="preserve">
+    <value>Contractul necesită cel puțin {0} parte (părți) de rol {1}. Adăugați mai multe părți la contract și încercați din nou.</value>
+  </data>
+  <data name="TheContractRequiresAtMost_RemoveParts" xml:space="preserve">
+    <value>Contractul necesită cel mult {0} parte (părți) a (ale) rolului {1}. Scoateți unele părți din contract și încercați din nou.</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>Spre</value>
+  </data>
+  <data name="TokenAdded" xml:space="preserve">
+    <value>Un token a fost adăugat în portofel.</value>
+  </data>
+  <data name="TokenAdded2" xml:space="preserve">
+    <value>Token adăugat</value>
+  </data>
+  <data name="TokenCreationTemplates" xml:space="preserve">
+    <value>Șabloane de jetoane</value>
+  </data>
+  <data name="TokenCreationTemplatesInfoText" xml:space="preserve">
+    <value>Mai jos este o listă de șabloane de tokenuri pe care le-ați utilizat sau le puteți utiliza pentru a crea tokenuri noi. Faceți clic pe un șablon pentru a crea un nou contract bazat pe acel șablon. Odată ce contractul a fost semnat și aprobat, token-ul sau jetoanele corespunzătoare vor fi create.</value>
+  </data>
+  <data name="TokenRemoved" xml:space="preserve">
+    <value>Un token a fost eliminat din portofel.</value>
+  </data>
+  <data name="TokenRemoved2" xml:space="preserve">
+    <value>Token eliminat</value>
+  </data>
+  <data name="UnrecognizedEDalerURI" xml:space="preserve">
+    <value>URI eDaler nerecunoscut.</value>
+  </data>
+  <data name="VariablesUpdated" xml:space="preserve">
+    <value>Variabile actualizate</value>
+  </data>
+  <data name="Visibility" xml:space="preserve">
+    <value>Vizibilitate</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>an</value>
+  </data>
+  <data name="Years" xml:space="preserve">
+    <value>Ani</value>
+  </data>
+  <data name="YouHaveReceivedAProposal" xml:space="preserve">
+    <value>Ați primit o propunere.</value>
+  </data>
+  <data name="YourContractContainsErrors" xml:space="preserve">
+    <value>Contractul dumneavoastră conține erori. Remediați aceste erori și încercați din nou.</value>
+  </data>
+  <data name="AccessRequest" xml:space="preserve">
+    <value>Cerere de acces</value>
+  </data>
+  <data name="ContractCreated" xml:space="preserve">
+    <value>A fost creat un contract.</value>
+  </data>
+  <data name="ContractDeleted" xml:space="preserve">
+    <value>Un contract a fost eliminat.</value>
+  </data>
+  <data name="ContractProposed" xml:space="preserve">
+    <value>A fost propus un contract.</value>
+  </data>
+  <data name="ContractSigned" xml:space="preserve">
+    <value>A fost semnat un contract.</value>
+  </data>
+  <data name="ContractUpdated" xml:space="preserve">
+    <value>Un contract a fost actualizat.</value>
+  </data>
+  <data name="ControlRequest" xml:space="preserve">
+    <value>Cerere de control</value>
+  </data>
+  <data name="IdentityUpdated" xml:space="preserve">
+    <value>Identitatea digitală a fost actualizată.</value>
+  </data>
+  <data name="InvalidIoTDiscoClaimUri" xml:space="preserve">
+    <value>Nu este un URI valid de revendicare iotdisco.</value>
+  </data>
+  <data name="InvalidIoTDiscoveryCode" xml:space="preserve">
+    <value>Cod de descoperire IoT nevalid</value>
+  </data>
+  <data name="MessageFrom" xml:space="preserve">
+    <value>Mesaj de la:</value>
+  </data>
+  <data name="NeuroFeaturesServiceNotFound" xml:space="preserve">
+    <value>Nici un serviciu Neuro-Features găsit pe broker.</value>
+  </data>
+  <data name="PetitionFrom" xml:space="preserve">
+    <value>Petiție de la:</value>
+  </data>
+  <data name="ReadRequest" xml:space="preserve">
+    <value>Cerere de citire</value>
+  </data>
+  <data name="UnableToGetHistory" xml:space="preserve">
+    <value>Nu se poate obține raportul istoricului.</value>
+  </data>
+  <data name="UnableToGetPresent" xml:space="preserve">
+    <value>Nu se poate prezenta raportul.</value>
+  </data>
+  <data name="UnableToGetProfiling" xml:space="preserve">
+    <value>Nu se poate obține raportul de profilare.</value>
+  </data>
+  <data name="UnableToGetStateDiagram" xml:space="preserve">
+    <value>Nu se poate obține raportul diagramei de stare.</value>
+  </data>
+  <data name="AccessRequestText" xml:space="preserve">
+    <value>{0} dorește să se conecteze la dispozitivul dvs. {1}.</value>
+  </data>
+  <data name="ConcentratorServiceNotFound" xml:space="preserve">
+    <value>Nu s-a găsit niciun serviciu de concentrator.</value>
+  </data>
+  <data name="ControlRequestText" xml:space="preserve">
+    <value>{0} dorește să controleze parametrii de pe {1} dispozitivului.</value>
+  </data>
+  <data name="ControlServiceNotFound" xml:space="preserve">
+    <value>Nu s-a găsit niciun serviciu de control.</value>
+  </data>
+  <data name="EDalerServiceNotFound" xml:space="preserve">
+    <value>Nici un serviciu eDaler găsit pe broker.</value>
+  </data>
+  <data name="GettingOptionsCancelled" xml:space="preserve">
+    <value>Obținerea opțiunilor disponibile a fost anulată.</value>
+  </data>
+  <data name="IdentityResponse" xml:space="preserve">
+    <value>Răspuns la cererea de identitate</value>
+  </data>
+  <data name="IdentityReviewRequest" xml:space="preserve">
+    <value>Cerere de revizuire a identității</value>
+  </data>
+  <data name="NoThingsFound" xml:space="preserve">
+    <value>Nu s-au găsit lucruri.</value>
+  </data>
+  <data name="PaymentCancelled" xml:space="preserve">
+    <value>Plată anulată</value>
+  </data>
+  <data name="PaymentFailed" xml:space="preserve">
+    <value>Plata nu a reușit</value>
+  </data>
+  <data name="PepServiceNotFound" xml:space="preserve">
+    <value>Nu s-a găsit niciun serviciu de evenimente personale.</value>
+  </data>
+  <data name="ProvisioningServiceNotFound" xml:space="preserve">
+    <value>Nici un serviciu de provizionare găsit pe broker.</value>
+  </data>
+  <data name="PushNotificationServiceNotFound" xml:space="preserve">
+    <value>Nu s-a găsit niciun serviciu de notificare push.</value>
+  </data>
+  <data name="ReadoutRequestText" xml:space="preserve">
+    <value>{0} dorește să citească datele de pe dispozitivul dvs. {1}.</value>
+  </data>
+  <data name="RequestSignature" xml:space="preserve">
+    <value>Solicitare semnătură</value>
+  </data>
+  <data name="RequestToAccessIdentity" xml:space="preserve">
+    <value>Cerere de acces la identitate</value>
+  </data>
+  <data name="SensorServiceNotFound" xml:space="preserve">
+    <value>Nu s-a găsit niciun serviciu de senzori.</value>
+  </data>
+  <data name="SignatureResponse" xml:space="preserve">
+    <value>Răspuns la solicitarea de semnătură</value>
+  </data>
+  <data name="ThingRegistryServiceNotFound" xml:space="preserve">
+    <value>Nici un lucru serviciu de registru găsit pe broker.</value>
+  </data>
+  <data name="UnableToGetListOfMyDevices" xml:space="preserve">
+    <value>Nu se poate obține lista dispozitivelor mele.</value>
+  </data>
+  <data name="UnableToGetOptions" xml:space="preserve">
+    <value>Nu se pot obține opțiunile disponibile.</value>
+  </data>
+  <data name="Altitude" xml:space="preserve">
+    <value>Altitudine</value>
+  </data>
+  <data name="Anonymous" xml:space="preserve">
+    <value>Anonim</value>
+  </data>
+  <data name="Apartment" xml:space="preserve">
+    <value>Apartament</value>
+  </data>
+  <data name="APetitionHasBeenSentForEncryption" xml:space="preserve">
+    <value>Criptarea poate fi efectuată numai dacă aveți acces la identitatea destinatarilor. Prin urmare, o petiție pentru această identitate a fost trimisă destinatarului urmărit. Dacă destinatarul acceptă petiția, veți primi identitatea și veți putea trimite plata cu un mesaj criptat atunci când încercați din nou. De asemenea, puteți alege să trimiteți un mesaj necriptat odată cu plata.</value>
+  </data>
+  <data name="Assessor" xml:space="preserve">
+    <value>Evaluator</value>
+  </data>
+  <data name="Building" xml:space="preserve">
+    <value>Clădire</value>
+  </data>
+  <data name="BuyEDaler" xml:space="preserve">
+    <value>Cumpărați eDaler.</value>
+  </data>
+  <data name="CallerOnly" xml:space="preserve">
+    <value>Doar apelant</value>
+  </data>
+  <data name="Certifier" xml:space="preserve">
+    <value>Certificator</value>
+  </data>
+  <data name="CertifierJid" xml:space="preserve">
+    <value>Adresa certificatorului</value>
+  </data>
+  <data name="Class" xml:space="preserve">
+    <value>Clasă</value>
+  </data>
+  <data name="Contacts" xml:space="preserve">
+    <value>Contacte</value>
+  </data>
+  <data name="ContactsDescription" xml:space="preserve">
+    <value>Mai jos sunt toate contactele din agenda dvs. Faceți clic pe oricare pentru a interacționa cu acel contact.</value>
+  </data>
+  <data name="ContractProposal" xml:space="preserve">
+    <value>Propunere de contract</value>
+  </data>
+  <data name="ContractResponse" xml:space="preserve">
+    <value>Răspuns la solicitarea contractului</value>
+  </data>
+  <data name="ContractSignatureReceived" xml:space="preserve">
+    <value>Semnarea contractului primită</value>
+  </data>
+  <data name="ContractUpdateReceived" xml:space="preserve">
+    <value>Contract actualizat</value>
+  </data>
+  <data name="DeleteRulesQuestion" xml:space="preserve">
+    <value>Doriți să ștergeți toate regulile de asigurare a accesului pentru lucru? Procedând astfel, lucrul vă va cere din nou ca toate evenimentele noi să învețe ce este autorizat să facă.</value>
+  </data>
+  <data name="Device" xml:space="preserve">
+    <value>Dispozitiv</value>
+  </data>
+  <data name="DisownThingQuestion" xml:space="preserve">
+    <value>Vrei să renegi lucrul? Acest lucru va elimina lucrul din lista dvs. de lucruri și va permite altuia să revendice dispozitivul ca fiind al lor.</value>
+  </data>
+  <data name="EncryptedPayment" xml:space="preserve">
+    <value>Plată criptată</value>
+  </data>
+  <data name="EntireDomain" xml:space="preserve">
+    <value>Toată lumea din {0}</value>
+  </data>
+  <data name="Errors" xml:space="preserve">
+    <value>Erori</value>
+  </data>
+  <data name="Everyone" xml:space="preserve">
+    <value>Oricine</value>
+  </data>
+  <data name="ExpiresAt" xml:space="preserve">
+    <value>(Expiră {0})</value>
+  </data>
+  <data name="FromUser" xml:space="preserve">
+    <value>De la utilizator</value>
+  </data>
+  <data name="GeneralInformation" xml:space="preserve">
+    <value>Informații generale</value>
+  </data>
+  <data name="History" xml:space="preserve">
+    <value>Istorie</value>
+  </data>
+  <data name="InvalidNeuroFeatureToken" xml:space="preserve">
+    <value>Token Neuro-caracteristică nevalid.</value>
+  </data>
+  <data name="Key" xml:space="preserve">
+    <value>Cheie</value>
+  </data>
+  <data name="Latitude" xml:space="preserve">
+    <value>Latitudine</value>
+  </data>
+  <data name="Longitude" xml:space="preserve">
+    <value>Longitudine</value>
+  </data>
+  <data name="Manufacturer" xml:space="preserve">
+    <value>Producător</value>
+  </data>
+  <data name="MeterLocation" xml:space="preserve">
+    <value>Locația contorului</value>
+  </data>
+  <data name="MeterNumber" xml:space="preserve">
+    <value>Numărul contorului</value>
+  </data>
+  <data name="Model" xml:space="preserve">
+    <value>Model</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Nume</value>
+  </data>
+  <data name="NetworkAddressOfContactUnknown" xml:space="preserve">
+    <value>Adresa de rețea a contactului necunoscută.</value>
+  </data>
+  <data name="NoContactsFound" xml:space="preserve">
+    <value>Nu s-au găsit contacte.</value>
+  </data>
+  <data name="NotAvailable" xml:space="preserve">
+    <value>Nu este disponibil</value>
+  </data>
+  <data name="NoteCopiedToClipboard" xml:space="preserve">
+    <value>Notă copiată în clipboard.</value>
+  </data>
+  <data name="Payment" xml:space="preserve">
+    <value>Plată</value>
+  </data>
+  <data name="PaymentAlreadySent" xml:space="preserve">
+    <value>Instrucțiunea de plată a fost deja trimisă. Puteți retrimite plățile în așteptare din vizualizarea plăților în așteptare.</value>
+  </data>
+  <data name="PaymentSuccess" xml:space="preserve">
+    <value>Plata realizată cu succes.</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>Telefon</value>
+  </data>
+  <data name="PickPhoto" xml:space="preserve">
+    <value>Alege fotografia</value>
+  </data>
+  <data name="Present" xml:space="preserve">
+    <value>Prezent</value>
+  </data>
+  <data name="ProductInformation" xml:space="preserve">
+    <value>Informații despre produs</value>
+  </data>
+  <data name="Profiling" xml:space="preserve">
+    <value>Profilare</value>
+  </data>
+  <data name="PurposeReviewToken" xml:space="preserve">
+    <value>Revizuirea tokenului din care faceți parte.</value>
+  </data>
+  <data name="Question" xml:space="preserve">
+    <value>Întrebare</value>
+  </data>
+  <data name="Reference" xml:space="preserve">
+    <value>Referință</value>
+  </data>
+  <data name="Registry" xml:space="preserve">
+    <value>Registru</value>
+  </data>
+  <data name="RemoveSubscriptionFrom" xml:space="preserve">
+    <value>Doriți să eliminați abonamentul de prezență din {0}?</value>
+  </data>
+  <data name="RequestPayment" xml:space="preserve">
+    <value>Solicitați plata</value>
+  </data>
+  <data name="RequestPaymentMessage" xml:space="preserve">
+    <value>Solicitarea plății {0} {1}.</value>
+  </data>
+  <data name="Room" xml:space="preserve">
+    <value>Cameră</value>
+  </data>
+  <data name="RulesDeleted" xml:space="preserve">
+    <value>Regulile de asigurare a accesului au fost eliminate.</value>
+  </data>
+  <data name="ScanQRCode" xml:space="preserve">
+    <value>Scanați codul QR</value>
+  </data>
+  <data name="SelectContactToPay" xml:space="preserve">
+    <value>Mai jos sunt toate contactele din agenda dvs. Selectați persoana de contact căreia doriți să efectuați plata.</value>
+  </data>
+  <data name="SelectFromWhomToRequestPayment" xml:space="preserve">
+    <value>Selectați de la cine să solicitați plata.</value>
+  </data>
+  <data name="SelectingAPhotoIsNotSupported" xml:space="preserve">
+    <value>Selectarea unei fotografii nu este acceptată pe acest dispozitiv</value>
+  </data>
+  <data name="SelectServiceProviderBuyEDaler" xml:space="preserve">
+    <value>Selectați furnizorul de servicii pe care doriți să îl utilizați pentru a cumpăra eDaler.</value>
+  </data>
+  <data name="SelectServiceProviderSellEDaler" xml:space="preserve">
+    <value>Selectați furnizorul de servicii pe care doriți să îl utilizați pentru a vinde eDaler.</value>
+  </data>
+  <data name="SellEDaler" xml:space="preserve">
+    <value>Vindeți eDaler.</value>
+  </data>
+  <data name="SendInformationTo" xml:space="preserve">
+    <value>Trimiteți informații către?</value>
+  </data>
+  <data name="SensorDataAccepted" xml:space="preserve">
+    <value>Cererea a fost acceptată.</value>
+  </data>
+  <data name="SensorDataCancelled" xml:space="preserve">
+    <value>Citirea datelor senzorilor a fost anulată.</value>
+  </data>
+  <data name="SensorDataDone" xml:space="preserve">
+    <value>Citirea datelor senzorilor s-a finalizat.</value>
+  </data>
+  <data name="SensorDataFailure" xml:space="preserve">
+    <value>Citirea datelor senzorului nu a reușit.</value>
+  </data>
+  <data name="SensorDataHeaderComputed" xml:space="preserve">
+    <value>Calculat</value>
+  </data>
+  <data name="SensorDataHeaderHistorical" xml:space="preserve">
+    <value>Istoric</value>
+  </data>
+  <data name="SensorDataHeaderIdentity" xml:space="preserve">
+    <value>Identitate</value>
+  </data>
+  <data name="SensorDataHeaderMomentary" xml:space="preserve">
+    <value>Momentan</value>
+  </data>
+  <data name="SensorDataHeaderOther" xml:space="preserve">
+    <value>Alt</value>
+  </data>
+  <data name="SensorDataHeaderPeak" xml:space="preserve">
+    <value>Vârf</value>
+  </data>
+  <data name="SensorDataHeaderStatus" xml:space="preserve">
+    <value>Stare</value>
+  </data>
+  <data name="SensorDataReceiving" xml:space="preserve">
+    <value>Recepționarea datelor senzorului.</value>
+  </data>
+  <data name="SensorDataRequested" xml:space="preserve">
+    <value>Datele senzorilor au fost solicitate.</value>
+  </data>
+  <data name="SensorDataStarted" xml:space="preserve">
+    <value>Citirea datelor senzorului a început.</value>
+  </data>
+  <data name="SerialNumber" xml:space="preserve">
+    <value>Număr de serie</value>
+  </data>
+  <data name="ServerDoesNotSupportFileUpload" xml:space="preserve">
+    <value>Serverul nu pare să accepte încărcarea fișierelor.</value>
+  </data>
+  <data name="Service" xml:space="preserve">
+    <value>Serviciu</value>
+  </data>
+  <data name="Share" xml:space="preserve">
+    <value>Acțiune</value>
+  </data>
+  <data name="StateDiagram" xml:space="preserve">
+    <value>Diagramă de stare</value>
+  </data>
+  <data name="StreetName" xml:space="preserve">
+    <value>Numele străzii</value>
+  </data>
+  <data name="StreetNumber" xml:space="preserve">
+    <value>Numărul străzii</value>
+  </data>
+  <data name="TakePhoto" xml:space="preserve">
+    <value>Faceți o fotografie</value>
+  </data>
+  <data name="TakePhotoToShare" xml:space="preserve">
+    <value>Faceți o fotografie pentru a o partaja</value>
+  </data>
+  <data name="TakingAPhotoIsNotSupported" xml:space="preserve">
+    <value>Realizarea unei fotografii nu este acceptată pe acest dispozitiv</value>
+  </data>
+  <data name="TheSpecifiedCodeIsNotALegalIdentity" xml:space="preserve">
+    <value>Trebuie să scanați un alt tip de cod QR, unul care reprezintă o identitate legală</value>
+  </data>
+  <data name="ThingDisowned" xml:space="preserve">
+    <value>Acest lucru a fost renegat cu succes. Acum poate fi revendicat de un nou proprietar.</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Oră</value>
+  </data>
+  <data name="ToDevice" xml:space="preserve">
+    <value>Către dispozitiv, indiferent de sursă</value>
+  </data>
+  <data name="ToService" xml:space="preserve">
+    <value>Pentru service, indiferent de sursă</value>
+  </data>
+  <data name="ToUser" xml:space="preserve">
+    <value>Pentru utilizator, indiferent de sursă</value>
+  </data>
+  <data name="ToUser2" xml:space="preserve">
+    <value>Către utilizator</value>
+  </data>
+  <data name="TransactionAccepted" xml:space="preserve">
+    <value>Tranzacția a fost acceptată și procesată.</value>
+  </data>
+  <data name="UnableToClaimThing" xml:space="preserve">
+    <value>Nu se poate pretinde ceva</value>
+  </data>
+  <data name="UnableToProcessEDalerUri" xml:space="preserve">
+    <value>Nu se poate procesa codul eDaler.</value>
+  </data>
+  <data name="UnableToRespond" xml:space="preserve">
+    <value>Nu se poate răspunde la solicitare.</value>
+  </data>
+  <data name="UnrecognizedEventType" xml:space="preserve">
+    <value>Tip de eveniment nerecunoscut:</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>Utilizator</value>
+  </data>
+  <data name="UserSignedAs" xml:space="preserve">
+    <value>{0} semnat ca {1}.</value>
+  </data>
+  <data name="Valuator" xml:space="preserve">
+    <value>Evaluator</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Versiune</value>
+  </data>
+  <data name="Witness" xml:space="preserve">
+    <value>Martor</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Ieri</value>
+  </data>
 </root>

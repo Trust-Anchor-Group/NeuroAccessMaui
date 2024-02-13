@@ -10,12 +10,13 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 	/// <summary>
 	/// The view model to bind to for when displaying a list of service providers.
 	/// </summary>
-	public partial class ServiceProvidersViewModel : XmppViewModel
+	/// <param name="NavigationArgs">Navigation arguments.</param>
+	public partial class ServiceProvidersViewModel(ServiceProvidersNavigationArgs? NavigationArgs) : XmppViewModel()
 	{
 		private const int defaultIconHeight = 150;
 
-		private readonly bool useShellNavigationService;
-		private ServiceProvidersNavigationArgs? navigationArgs;
+		private readonly bool useShellNavigationService = NavigationArgs is null;
+		private ServiceProvidersNavigationArgs? navigationArgs = NavigationArgs;
 
 		/// <summary>
 		/// Creates an instance of the <see cref="ServiceProvidersViewModel"/> class.
@@ -23,19 +24,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 		public ServiceProvidersViewModel()
 			: this(ServiceRef.NavigationService.PopLatestArgs<ServiceProvidersNavigationArgs>())
 		{
-		}
-
-		/// <summary>
-		/// Creates an instance of the <see cref="ServiceProvidersViewModel"/> class.
-		/// </summary>
-		/// <param name="NavigationArgs">Navigation arguments.</param>
-		public ServiceProvidersViewModel(ServiceProvidersNavigationArgs? NavigationArgs)
-			: base()
-		{
-			this.useShellNavigationService = NavigationArgs is null;
-			this.navigationArgs = NavigationArgs;
-			this.BackCommand = new Command(_ => this.GoBack());
-			this.ServiceProviders = [];
 		}
 
 		/// <inheritdoc/>
@@ -82,18 +70,13 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 		/// <summary>
 		/// Holds a list of service providers
 		/// </summary>
-		public ObservableCollection<ServiceProviderViewModel> ServiceProviders { get; }
+		public ObservableCollection<ServiceProviderViewModel> ServiceProviders { get; } = [];
 
 		/// <summary>
 		/// The currently selected contact, if any.
 		/// </summary>
 		[ObservableProperty]
 		private ServiceProviderViewModel? selectedServiceProvider;
-
-		/// <summary>
-		/// The command to bind to for returning to previous view.
-		/// </summary>
-		public ICommand BackCommand { get; }
 
 		/// <inheritdoc/>
 		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
