@@ -12,7 +12,7 @@ namespace NeuroAccessMaui.UI.Popups
 
 		public Task<TReturn?> Result => this.result.Task;
 
-		public override void Close()
+		public override void OnPop()
 		{
 			if (!this.Result.IsCompleted)
 			{

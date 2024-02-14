@@ -8,7 +8,7 @@ namespace NeuroAccessMaui.Services.Popup
 	public class PopupService : IPopupService
 	{
 		/// <inheritdoc/>
-		public Task PushPopup<TPage, TViewModel>() where TPage : BasePopup, new() where TViewModel : BasePopupViewModel, new()
+		public Task PushPopupAsync<TPage, TViewModel>() where TPage : BasePopup, new() where TViewModel : BasePopupViewModel, new()
 		{
 			TPage page = new();
 			TViewModel viewModel = new();
@@ -18,14 +18,14 @@ namespace NeuroAccessMaui.Services.Popup
 		}
 
 		/// <inheritdoc/>
-		public Task PushPopup<TPage, TViewModel>(TPage page, TViewModel viewModel) where TPage : BasePopup where TViewModel : BasePopupViewModel
+		public Task PushPopupAsync<TPage, TViewModel>(TPage page, TViewModel viewModel) where TPage : BasePopup where TViewModel : BasePopupViewModel
 		{
 			page.ViewModel = viewModel;
 			return MopupService.Instance.PushAsync(page);
 		}
 
 		/// <inheritdoc/>
-		public Task PushPopup<TPage, TViewModel>(TPage page) where TPage : BasePopup where TViewModel : BasePopupViewModel, new()
+		public Task PushPopupAsync<TPage, TViewModel>(TPage page) where TPage : BasePopup where TViewModel : BasePopupViewModel, new()
 		{
 			TViewModel viewModel = new();
 			page.ViewModel = viewModel;
@@ -33,7 +33,7 @@ namespace NeuroAccessMaui.Services.Popup
 		}
 
 		/// <inheritdoc/>
-		public Task PushPopup<TPage, TViewModel>(TViewModel viewModel) where TPage : BasePopup, new() where TViewModel : BasePopupViewModel
+		public Task PushPopupAsync<TPage, TViewModel>(TViewModel viewModel) where TPage : BasePopup, new() where TViewModel : BasePopupViewModel
 		{
 			TPage page = new();
 			page.ViewModel = viewModel;
@@ -41,14 +41,14 @@ namespace NeuroAccessMaui.Services.Popup
 		}
 
 		/// <inheritdoc/>
-		public Task PushPopup<TPage>() where TPage : BasePopup, new()
+		public Task PushPopupAsync<TPage>() where TPage : BasePopup, new()
 		{
 			TPage page = new();
 			return MopupService.Instance.PushAsync(page);
 		}
 
 		/// <inheritdoc/>
-		public async Task<TReturn?> PushPopup<TPage, TViewModel, TReturn>() where TPage : BasePopup, new() where TViewModel : ReturningPopupViewModel<TReturn>, new()
+		public async Task<TReturn?> PushPopupAsync<TPage, TViewModel, TReturn>() where TPage : BasePopup, new() where TViewModel : ReturningPopupViewModel<TReturn>, new()
 		{
 			TPage page = new();
 			TViewModel viewModel = new();
@@ -59,7 +59,7 @@ namespace NeuroAccessMaui.Services.Popup
 		}
 
 		/// <inheritdoc/>
-		public async Task<TReturn?> PushPopup<TPage, TViewModel, TReturn>(TPage page, TViewModel viewModel) where TPage : BasePopup where TViewModel : ReturningPopupViewModel<TReturn>
+		public async Task<TReturn?> PushPopupAsync<TPage, TViewModel, TReturn>(TPage page, TViewModel viewModel) where TPage : BasePopup where TViewModel : ReturningPopupViewModel<TReturn>
 		{
 			page.ViewModel = viewModel;
 			await MopupService.Instance.PushAsync(page);
@@ -67,7 +67,7 @@ namespace NeuroAccessMaui.Services.Popup
 		}
 
 		/// <inheritdoc/>
-		public async Task<TReturn?> PushPopup<TPage, TViewModel, TReturn>(TPage page) where TPage : BasePopup
+		public async Task<TReturn?> PushPopupAsync<TPage, TViewModel, TReturn>(TPage page) where TPage : BasePopup
 			where TViewModel : ReturningPopupViewModel<TReturn>, new()
 		{
 			TViewModel viewModel = new();
@@ -77,7 +77,7 @@ namespace NeuroAccessMaui.Services.Popup
 		}
 
 		/// <inheritdoc/>
-		public async Task<TReturn?> PushPopup<TPage, TViewModel, TReturn>(TViewModel viewModel) where TPage : BasePopup, new() where TViewModel : ReturningPopupViewModel<TReturn>
+		public async Task<TReturn?> PushPopupAsync<TPage, TViewModel, TReturn>(TViewModel viewModel) where TPage : BasePopup, new() where TViewModel : ReturningPopupViewModel<TReturn>
 		{
 			TPage page = new();
 			page.ViewModel = viewModel;
@@ -85,7 +85,7 @@ namespace NeuroAccessMaui.Services.Popup
 			return await viewModel.Result;
 		}
 
-		public async Task PopPopup()
+		public async Task PopPopupAsync()
 		{
 			await MopupService.Instance.PopAsync();
 		}

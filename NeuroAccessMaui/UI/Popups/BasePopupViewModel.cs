@@ -9,7 +9,7 @@ namespace NeuroAccessMaui.UI.Popups
 {
 	public class BasePopupViewModel : BaseViewModel
 	{
-		public virtual void Close()
+		public virtual void OnPop()
 		{
 		}
 	}

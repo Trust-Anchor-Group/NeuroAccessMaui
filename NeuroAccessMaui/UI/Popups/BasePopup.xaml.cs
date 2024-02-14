@@ -31,7 +31,7 @@ namespace NeuroAccessMaui.UI.Popups
 
 		protected void ClosePopup()
 		{
-			ServiceRef.PopupService.PopPopup();
+			ServiceRef.PopupService.PopPopupAsync();
 		}
 
 		protected override bool OnBackButtonPressed()
