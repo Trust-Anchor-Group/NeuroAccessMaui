@@ -789,7 +789,8 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 				if (Result is null)
 					return;
 
-				await this.AddPhoto(Result.FullPath, true);
+				Stream stream = await Result.OpenReadAsync();
+				await this.AddPhoto(stream, Result.FullPath, true);
 			}
 			catch (Exception ex)
 			{
@@ -840,11 +841,12 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		}
 
 		/// <summary>
-		/// Adds a photo from the specified path to use as a profile photo.
+		/// Adds a photo from a filestream to use as a profile photo.
 		/// </summary>
+		/// <param name="InputStream">Stream containing the photo.</param>
 		/// <param name="FilePath">The full path to the file.</param>
 		/// <param name="SaveLocalCopy">Set to <c>true</c> to save a local copy, <c>false</c> otherwise.</param>
-		protected internal async Task AddPhoto(string FilePath, bool SaveLocalCopy)
+		protected internal async Task AddPhoto(Stream InputStream, string FilePath, bool SaveLocalCopy)
 		{
 			SKData? ImageData = null;
 
@@ -855,7 +857,6 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 				if (SaveLocalCopy)
 				{
 					// try to downscale and comress the image
-					using FileStream InputStream = File.OpenRead(FilePath);
 					ImageData = CompressImage(InputStream);
 
 					if (ImageData is not null)
@@ -865,6 +866,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 					}
 				}
 
+				/// TODO: Check if this code below is still needed
 				if (FallbackOriginal)
 				{
 					byte[] Bin = File.ReadAllBytes(FilePath);
@@ -1012,7 +1014,8 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 				if (Result is null)
 					return;
 
-				await this.AddPhoto(Result.FullPath, true);
+				Stream stream = await Result.OpenReadAsync();
+				await this.AddPhoto(stream, Result.FullPath, true);
 			}
 			catch (Exception ex)
 			{
