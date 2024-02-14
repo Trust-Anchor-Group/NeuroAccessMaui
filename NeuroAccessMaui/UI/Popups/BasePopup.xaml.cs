@@ -1,4 +1,8 @@
-﻿namespace NeuroAccessMaui.UI.Popups
+﻿using Mopups.Pages;
+using Mopups.PreBaked.PopupPages.SingleResponse;
+using Waher.Networking.XMPP.Contracts.Search;
+
+namespace NeuroAccessMaui.UI.Popups
 {
 	/// <summary>
 	/// Creates a base popup
@@ -8,6 +12,12 @@
 		public virtual double ViewWidthRequest => (DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density) * (7.0 / 8.0);
 		public virtual double MaximumViewHeightRequest => (DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density) * (3.0 / 4.0);
 
+		public BasePopupViewModel ViewModel
+		{
+			get => this.BindingContext as BasePopupViewModel ?? throw new InvalidOperationException("BindingContext must be of type BasePopupViewModel");
+			set => this.BindingContext = value ?? throw new ArgumentNullException(nameof(value), @"ViewModel cannot be null");
+		}
+
 		protected BasePopup(ImageSource? Background)
 		{
 			this.InitializeComponent();
@@ -16,6 +26,17 @@
 				this.BackgroundImageSource = Background;
 			else
 				this.BackgroundColor = Color.FromInt(0x20000000);
+		}
+
+		protected override bool OnBackButtonPressed()
+		{
+			this.ViewModel.Close();
+			return base.OnBackButtonPressed();
+		}
+		protected override bool OnBackgroundClicked()
+		{
+			this.ViewModel.Close();
+			return base.OnBackgroundClicked();
 		}
 	}
 }
