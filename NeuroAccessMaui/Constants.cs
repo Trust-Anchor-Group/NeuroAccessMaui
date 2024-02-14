@@ -792,7 +792,7 @@
 			/// <summary>
 			/// Array of contract templates for creating tokens.
 			/// </summary>
-			public static readonly string[] TokenCreationTemplates = 
+			public static readonly string[] TokenCreationTemplates =
 			[
 				CreateDemoTokenTemplate,
 				CreateDemoTokens5Template

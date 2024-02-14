@@ -484,12 +484,12 @@
 					<VisualStateGroup x:Name="CheckedStates">
 						<VisualState x:Name="Checked">
 							<VisualState.Setters>
-								<Setter Property="Source" Value="{AppThemeBinding Light=radiobutton_checked_light.svg, Dark=radiobutton_checked_dark.svg}" />
+								<Setter Property="Source" Value="{AppThemeBinding Light=radiobutton_checked_light, Dark=radiobutton_checked_dark}" />
 							</VisualState.Setters>
 						</VisualState>
 						<VisualState x:Name="Unchecked">
 							<VisualState.Setters>
-								<Setter Property="Source" Value="{AppThemeBinding Light=radiobutton_unchecked_light.svg, Dark=radiobutton_unchecked_dark.svg}" />
+								<Setter Property="Source" Value="{AppThemeBinding Light=radiobutton_unchecked_light, Dark=radiobutton_unchecked_dark}" />
 							</VisualState.Setters>
 						</VisualState>
 					</VisualStateGroup>

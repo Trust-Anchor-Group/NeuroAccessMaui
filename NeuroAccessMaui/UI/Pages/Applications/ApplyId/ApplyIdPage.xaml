@@ -54,7 +54,7 @@
 								<Grid>
 									<Image Source="{Binding Image}" Rotation="{Binding ImageRotation}"
 											 Aspect="AspectFit" HeightRequest="200" IsVisible="{Binding HasPhoto}"/>
-									<Image Source="photo_placeholder.svg" Aspect="Center" HeightRequest="200"
+									<Image Source="photo_placeholder" Aspect="Center" HeightRequest="200"
 											 IsVisible="{Binding HasPhoto, Converter={StaticResource InvertedBoolConverter}}"/>
 								</Grid>
 							</Border>
