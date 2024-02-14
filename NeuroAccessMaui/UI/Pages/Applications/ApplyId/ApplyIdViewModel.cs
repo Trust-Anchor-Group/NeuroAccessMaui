@@ -11,6 +11,7 @@ using NeuroAccessMaui.Services.UI.Photos;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Registration;
 using NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders;
+using NeuroAccessMaui.UI.Popups;
 using SkiaSharp;
 using Waher.Content;
 using Waher.Networking.XMPP;
@@ -44,6 +45,8 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 
 		protected override async Task OnInitialize()
 		{
+			await ServiceRef.PopupService.PushPopup<TestPopup, TestPopupViewModel>();
+
 			this.ApplicationId = null;
 
 			if (ServiceRef.TagProfile.IdentityApplication is not null)

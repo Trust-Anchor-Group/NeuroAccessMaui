@@ -9,6 +9,7 @@ using NeuroAccessMaui.Services.Navigation;
 using NeuroAccessMaui.Services.Network;
 using NeuroAccessMaui.Services.Nfc;
 using NeuroAccessMaui.Services.Notification;
+using NeuroAccessMaui.Services.Popup;
 using NeuroAccessMaui.Services.Push;
 using NeuroAccessMaui.Services.Settings;
 using NeuroAccessMaui.Services.Storage;
@@ -45,6 +46,7 @@ namespace NeuroAccessMaui.Services
 		private static IStringLocalizer? localizer;
 		private static IPlatformSpecific? platformSpecific;
 		private static IBarcodeReader? barcodeReader;
+		private static IPopupService? popupService;
 
 		/// <summary>
 		/// The dispatcher to use for alerts and accessing the main thread.
@@ -272,6 +274,18 @@ namespace NeuroAccessMaui.Services
 			{
 				barcodeReader ??= ServiceHelper.GetService<IBarcodeReader>();
 				return barcodeReader;
+			}
+		}
+
+		/// <summary>
+		/// Popup service
+		/// </summary>
+		public static IPopupService PopupService
+		{
+			get
+			{
+				popupService ??= App.Instantiate<IPopupService>();
+				return popupService;
 			}
 		}
 	}
