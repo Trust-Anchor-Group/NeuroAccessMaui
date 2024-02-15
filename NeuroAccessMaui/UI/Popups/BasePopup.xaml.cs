@@ -36,18 +36,18 @@ namespace NeuroAccessMaui.UI.Popups
 
 		protected override bool OnBackButtonPressed()
 		{
-			this.ViewModel?.Close();
+			this.ViewModel?.OnPop();
 			return base.OnBackButtonPressed();
 		}
 		protected override bool OnBackgroundClicked()
 		{
-			this.ViewModel?.Close();
+			this.ViewModel?.OnPop();
 			return base.OnBackgroundClicked();
 		}
 
 		protected override void OnDisappearing()
 		{
-			this.ViewModel?.Close();
+			this.ViewModel?.OnPop();
 			base.OnDisappearing();
 		}
 	}
