@@ -34,21 +34,26 @@ namespace NeuroAccessMaui.UI.Popups
 			ServiceRef.PopupService.PopPopupAsync();
 		}
 
-		protected override bool OnBackButtonPressed()
+		protected override void OnAppearing()
 		{
-			this.ViewModel?.OnPop();
-			return base.OnBackButtonPressed();
-		}
-		protected override bool OnBackgroundClicked()
-		{
-			this.ViewModel?.OnPop();
-			return base.OnBackgroundClicked();
+			base.OnAppearing();
 		}
 
 		protected override void OnDisappearing()
 		{
-			this.ViewModel?.OnPop();
 			base.OnDisappearing();
+		}
+
+		protected override bool OnBackButtonPressed()
+		{
+			ServiceRef.PopupService.PopPopupAsync();
+			return true;
+		}
+
+		protected override bool OnBackgroundClicked()
+		{
+			ServiceRef.PopupService.PopPopupAsync();
+			return true;
 		}
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using NeuroAccessMaui.UI.Popups;
 using Waher.Runtime.Inventory;
+using Waher.Script.Content.Functions.InputOutput;
 
 namespace NeuroAccessMaui.Services.Popup
 {
@@ -11,6 +12,7 @@ namespace NeuroAccessMaui.Services.Popup
 	[DefaultImplementation(typeof(PopupService))]
 	public interface IPopupService
 	{
+
 		/// <summary>
 		/// Pushes a popup onto the current view
 		/// </summary>
