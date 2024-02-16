@@ -16,7 +16,7 @@ namespace NeuroAccessMaui.UI.Popups
 		{
 			if (!this.Result.IsCompleted)
 			{
-				this.result.TrySetResult(default);
+				this.result.TrySetResult(default(TReturn?));
 			}
 		}
 	}

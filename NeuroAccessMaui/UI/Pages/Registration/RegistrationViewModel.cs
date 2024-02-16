@@ -6,7 +6,7 @@ using Mopups.Services;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
 using NeuroAccessMaui.Services.Tag;
-using NeuroAccessMaui.UI.Popups;
+using NeuroAccessMaui.UI.Popups.Settings;
 
 namespace NeuroAccessMaui.UI.Pages.Registration
 {
@@ -139,8 +139,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		[RelayCommand]
 		private static async Task ChangeLanguage()
 		{
-			SelectLanguagePopup Page = new();
-			await MopupService.Instance.PushAsync(Page);
+			await ServiceRef.PopupService.PushAsync<SelectLanguagePopup>();
 		}
 	}
 }
