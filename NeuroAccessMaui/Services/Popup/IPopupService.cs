@@ -18,7 +18,7 @@ namespace NeuroAccessMaui.Services.Popup
 		/// </summary>
 		/// <typeparam name="TPage">The type of the page view</typeparam>
 		/// <typeparam name="TViewModel">The type of the viewmodel to bind to the page view</typeparam>
-		Task PushPopupAsync<TPage, TViewModel>()
+		Task PushAsync<TPage, TViewModel>()
 			where TViewModel : BasePopupViewModel, new()
 			where TPage : BasePopup, new();
 
@@ -30,7 +30,7 @@ namespace NeuroAccessMaui.Services.Popup
 		/// <param name="page">An instance of the page view</param>
 		/// <param name="viewModel">An instance of the viewmodel</param>
 		/// <returns></returns>
-		Task PushPopupAsync<TPage, TViewModel>(TPage page, TViewModel viewModel)
+		Task PushAsync<TPage, TViewModel>(TPage page, TViewModel viewModel)
 			where TViewModel : BasePopupViewModel
 			where TPage : BasePopup;
 
@@ -41,7 +41,7 @@ namespace NeuroAccessMaui.Services.Popup
 		/// <typeparam name="TViewModel">The type of the viewmodel to bind to the page view</typeparam>
 		/// <param name="page">An instance of the page view</param>
 		/// <returns></returns>
-		Task PushPopupAsync<TPage, TViewModel>(TPage page)
+		Task PushAsync<TPage, TViewModel>(TPage page)
 			where TViewModel : BasePopupViewModel, new()
 			where TPage : BasePopup;
 
@@ -52,7 +52,7 @@ namespace NeuroAccessMaui.Services.Popup
 		/// <typeparam name="TViewModel">The type of the viewmodel to bind to the page view</typeparam>
 		/// <param name="viewModel">An instance of the viewmodel</param>
 		/// <returns></returns>
-		Task PushPopupAsync<TPage, TViewModel>(TViewModel viewModel)
+		Task PushAsync<TPage, TViewModel>(TViewModel viewModel)
 			where TViewModel : BasePopupViewModel
 			where TPage : BasePopup, new();
 
@@ -61,7 +61,7 @@ namespace NeuroAccessMaui.Services.Popup
 		/// </summary>
 		/// <typeparam name="TPage">The type of the page view</typeparam>
 		/// <returns></returns>
-		Task PushPopupAsync<TPage>()
+		Task PushAsync<TPage>()
 			where TPage : BasePopup, new();
 
 		/// <summary>
@@ -71,7 +71,7 @@ namespace NeuroAccessMaui.Services.Popup
 		/// <typeparam name="TViewModel">The type of the viewmodel to bind to the page view</typeparam>
 		/// <typeparam name="TReturn">The return value of the TViewModel</typeparam>
 		/// <returns></returns>
-		Task<TReturn?> PushPopupAsync<TPage, TViewModel, TReturn>()
+		Task<TReturn?> PushAsync<TPage, TViewModel, TReturn>()
 			where TViewModel : ReturningPopupViewModel<TReturn>, new()
 			where TPage : BasePopup, new();
 
@@ -84,7 +84,7 @@ namespace NeuroAccessMaui.Services.Popup
 		/// <param name="page">An instance of the page view</param>
 		/// <param name="viewModel">An instance of the viewmodel</param>
 		/// <returns></returns>
-		Task<TReturn?> PushPopupAsync<TPage, TViewModel, TReturn>(TPage page, TViewModel viewModel)
+		Task<TReturn?> PushAsync<TPage, TViewModel, TReturn>(TPage page, TViewModel viewModel)
 			where TViewModel : ReturningPopupViewModel<TReturn>
 			where TPage : BasePopup;
 
@@ -96,7 +96,7 @@ namespace NeuroAccessMaui.Services.Popup
 		/// <typeparam name="TReturn">The return value of the TViewModel</typeparam>
 		/// <param name="page">An instance of the page view</param>
 		/// <returns></returns>
-		Task<TReturn?> PushPopupAsync<TPage, TViewModel, TReturn>(TPage page)
+		Task<TReturn?> PushAsync<TPage, TViewModel, TReturn>(TPage page)
 			where TViewModel : ReturningPopupViewModel<TReturn>, new()
 			where TPage : BasePopup;
 
@@ -108,11 +108,11 @@ namespace NeuroAccessMaui.Services.Popup
 		/// <typeparam name="TReturn">The return value of the TViewModel</typeparam>
 		/// <param name="viewModel">An instance of the viewmodel</param>
 		/// <returns></returns>
-		Task<TReturn?> PushPopupAsync<TPage, TViewModel, TReturn>(TViewModel viewModel)
+		Task<TReturn?> PushAsync<TPage, TViewModel, TReturn>(TViewModel viewModel)
 			where TViewModel : ReturningPopupViewModel<TReturn>
 			where TPage : BasePopup, new();
 
-		Task PopPopupAsync();
+		Task PopAsync();
 
 	}
 }

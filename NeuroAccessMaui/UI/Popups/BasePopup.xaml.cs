@@ -31,7 +31,7 @@ namespace NeuroAccessMaui.UI.Popups
 
 		protected void ClosePopup()
 		{
-			ServiceRef.PopupService.PopPopupAsync();
+			ServiceRef.PopupService.PopAsync();
 		}
 
 		protected override void OnAppearing()
@@ -46,13 +46,13 @@ namespace NeuroAccessMaui.UI.Popups
 
 		protected override bool OnBackButtonPressed()
 		{
-			ServiceRef.PopupService.PopPopupAsync();
+			ServiceRef.PopupService.PopAsync();
 			return true;
 		}
 
 		protected override bool OnBackgroundClicked()
 		{
-			ServiceRef.PopupService.PopPopupAsync();
+			ServiceRef.PopupService.PopAsync();
 			return true;
 		}
 	}

@@ -45,8 +45,6 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 
 		protected override async Task OnInitialize()
 		{
-			await ServiceRef.PopupService.PushPopupAsync<TestPopup, TestPopupViewModel>();
-
 			this.ApplicationId = null;
 
 			if (ServiceRef.TagProfile.IdentityApplication is not null)

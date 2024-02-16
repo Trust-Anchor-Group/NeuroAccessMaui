@@ -10,7 +10,7 @@ namespace NeuroAccessMaui.Services.Popup
 		protected readonly Stack<BasePopupViewModel?> viewModelStack = new();
 
 		/// <inheritdoc/>
-		public Task PushPopupAsync<TPage, TViewModel>() where TPage : BasePopup, new() where TViewModel : BasePopupViewModel, new()
+		public Task PushAsync<TPage, TViewModel>() where TPage : BasePopup, new() where TViewModel : BasePopupViewModel, new()
 		{
 			TPage page = new();
 			TViewModel viewModel = new();
@@ -20,7 +20,7 @@ namespace NeuroAccessMaui.Services.Popup
 		}
 
 		/// <inheritdoc/>
-		public Task PushPopupAsync<TPage, TViewModel>(TPage page, TViewModel viewModel) where TPage : BasePopup where TViewModel : BasePopupViewModel
+		public Task PushAsync<TPage, TViewModel>(TPage page, TViewModel viewModel) where TPage : BasePopup where TViewModel : BasePopupViewModel
 		{
 			page.ViewModel = viewModel;
 			this.viewModelStack.Push(viewModel);
@@ -28,7 +28,7 @@ namespace NeuroAccessMaui.Services.Popup
 		}
 
 		/// <inheritdoc/>
-		public Task PushPopupAsync<TPage, TViewModel>(TPage page) where TPage : BasePopup where TViewModel : BasePopupViewModel, new()
+		public Task PushAsync<TPage, TViewModel>(TPage page) where TPage : BasePopup where TViewModel : BasePopupViewModel, new()
 		{
 			TViewModel viewModel = new();
 			page.ViewModel = viewModel;
@@ -37,7 +37,7 @@ namespace NeuroAccessMaui.Services.Popup
 		}
 
 		/// <inheritdoc/>
-		public Task PushPopupAsync<TPage, TViewModel>(TViewModel viewModel) where TPage : BasePopup, new() where TViewModel : BasePopupViewModel
+		public Task PushAsync<TPage, TViewModel>(TViewModel viewModel) where TPage : BasePopup, new() where TViewModel : BasePopupViewModel
 		{
 			TPage page = new();
 			page.ViewModel = viewModel;
@@ -46,7 +46,7 @@ namespace NeuroAccessMaui.Services.Popup
 		}
 
 		/// <inheritdoc/>
-		public Task PushPopupAsync<TPage>() where TPage : BasePopup, new()
+		public Task PushAsync<TPage>() where TPage : BasePopup, new()
 		{
 			TPage page = new();
 			this.viewModelStack.Push(null);
@@ -54,7 +54,7 @@ namespace NeuroAccessMaui.Services.Popup
 		}
 
 		/// <inheritdoc/>
-		public async Task<TReturn?> PushPopupAsync<TPage, TViewModel, TReturn>() where TPage : BasePopup, new() where TViewModel : ReturningPopupViewModel<TReturn>, new()
+		public async Task<TReturn?> PushAsync<TPage, TViewModel, TReturn>() where TPage : BasePopup, new() where TViewModel : ReturningPopupViewModel<TReturn>, new()
 		{
 			TPage page = new();
 			TViewModel viewModel = new();
@@ -65,7 +65,7 @@ namespace NeuroAccessMaui.Services.Popup
 		}
 
 		/// <inheritdoc/>
-		public async Task<TReturn?> PushPopupAsync<TPage, TViewModel, TReturn>(TPage page, TViewModel viewModel) where TPage : BasePopup where TViewModel : ReturningPopupViewModel<TReturn>
+		public async Task<TReturn?> PushAsync<TPage, TViewModel, TReturn>(TPage page, TViewModel viewModel) where TPage : BasePopup where TViewModel : ReturningPopupViewModel<TReturn>
 		{
 			page.ViewModel = viewModel;
 			this.viewModelStack.Push(viewModel);
@@ -74,7 +74,7 @@ namespace NeuroAccessMaui.Services.Popup
 		}
 
 		/// <inheritdoc/>
-		public async Task<TReturn?> PushPopupAsync<TPage, TViewModel, TReturn>(TPage page) where TPage : BasePopup
+		public async Task<TReturn?> PushAsync<TPage, TViewModel, TReturn>(TPage page) where TPage : BasePopup
 			where TViewModel : ReturningPopupViewModel<TReturn>, new()
 		{
 			TViewModel viewModel = new();
@@ -85,7 +85,7 @@ namespace NeuroAccessMaui.Services.Popup
 		}
 
 		/// <inheritdoc/>
-		public async Task<TReturn?> PushPopupAsync<TPage, TViewModel, TReturn>(TViewModel viewModel) where TPage : BasePopup, new() where TViewModel : ReturningPopupViewModel<TReturn>
+		public async Task<TReturn?> PushAsync<TPage, TViewModel, TReturn>(TViewModel viewModel) where TPage : BasePopup, new() where TViewModel : ReturningPopupViewModel<TReturn>
 		{
 			TPage page = new();
 			page.ViewModel = viewModel;
@@ -95,7 +95,7 @@ namespace NeuroAccessMaui.Services.Popup
 		}
 
 		/// <inheritdoc/>
-		public async Task PopPopupAsync()
+		public async Task PopAsync()
 		{
 			if (this.viewModelStack.Count == 0)
 				return;
