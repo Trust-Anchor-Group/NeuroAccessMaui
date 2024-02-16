@@ -16,7 +16,7 @@ namespace NeuroAccessMaui.UI.Popups
 		public BasePopupViewModel? ViewModel
 		{
 			get => this.BindingContext as BasePopupViewModel;
-			set => this.BindingContext = value ?? throw new ArgumentNullException(nameof(value), @"ViewModel cannot be null");
+			set => this.BindingContext = value;
 		}
 
 		protected BasePopup(ImageSource? Background)

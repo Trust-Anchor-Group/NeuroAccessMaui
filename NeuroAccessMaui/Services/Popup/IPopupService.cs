@@ -65,6 +65,14 @@ namespace NeuroAccessMaui.Services.Popup
 			where TPage : BasePopup, new();
 
 		/// <summary>
+		/// Pushes a popup, without any viewmodel binding, onto the current view
+		/// </summary>
+		/// <typeparam name="TPage">The type of the page view</typeparam>
+		/// <returns></returns>
+		Task PushAsync<TPage>(TPage page)
+			where TPage : BasePopup;
+
+		/// <summary>
 		/// Pushes a popup onto the current view
 		/// </summary>
 		/// <typeparam name="TPage">The type of the page view</typeparam>
