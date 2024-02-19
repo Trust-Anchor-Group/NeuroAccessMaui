@@ -10,22 +10,8 @@ namespace NeuroAccessMaui.UI.Popups.Pin
 	/// <summary>
 	/// View model for page letting the user enter a PIN to be verified with the PIN defined by the user earlier.
 	/// </summary>
-	public partial class CheckPinViewModel : BaseViewModel
+	public partial class CheckPinViewModel : ReturningPopupViewModel<string>
 	{
-		private readonly TaskCompletionSource<string?> result = new();
-
-		/// <summary>
-		/// View model for page letting the user enter a PIN to be verified with the PIN defined by the user earlier.
-		/// </summary>
-		public CheckPinViewModel()
-			: base()
-		{
-		}
-
-		/// <summary>
-		/// Result will be provided here. If dialog is cancelled, null is returned.
-		/// </summary>
-		public Task<string?> Result => this.result.Task;
 
 		/// <summary>
 		/// PIN text entry
@@ -52,7 +38,7 @@ namespace NeuroAccessMaui.UI.Popups.Pin
 				if (await App.CheckPinAndUnblockUser(Pin))
 				{
 					this.result.TrySetResult(Pin);
-					await MopupService.Instance.PopAsync();
+					await ServiceRef.PopupService.PopAsync();
 				}
 				else
 				{
@@ -77,15 +63,7 @@ namespace NeuroAccessMaui.UI.Popups.Pin
 		private async Task Cancel()
 		{
 			this.result.TrySetResult(null);
-			await MopupService.Instance.PopAsync();
-		}
-
-		/// <summary>
-		/// Closes
-		/// </summary>
-		internal void Close()
-		{
-			this.result.TrySetResult(null);
+			await ServiceRef.PopupService.PopAsync();
 		}
 	}
 }

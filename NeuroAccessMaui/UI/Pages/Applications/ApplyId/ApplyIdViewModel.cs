@@ -11,6 +11,7 @@ using NeuroAccessMaui.Services.UI.Photos;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Registration;
 using NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders;
+using NeuroAccessMaui.UI.Popups;
 using SkiaSharp;
 using Waher.Content;
 using Waher.Networking.XMPP;
@@ -866,7 +867,6 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 					}
 				}
 
-				/// TODO: Check if this code below is still needed
 				if (FallbackOriginal)
 				{
 					byte[] Bin = File.ReadAllBytes(FilePath);

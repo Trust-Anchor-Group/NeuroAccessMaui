@@ -1,17 +1,16 @@
 namespace NeuroAccessMaui.UI.Popups.Xmpp.ReportType
 {
-    /// <summary>
-    /// Prompts the user for a response of a presence subscription request.
-    /// </summary>
-    public partial class ReportTypePopup
-    {
+	/// <summary>
+	/// Prompts the user for a response of a presence subscription request.
+	/// </summary>
+	public partial class ReportTypePopup
+	{
 		private readonly ReportTypeViewModel viewModel;
 
 		/// <summary>
 		/// Prompts the user for a response of a presence subscription request.
 		/// </summary>
-		public ReportTypePopup(ReportTypeViewModel ViewModel, ImageSource? Background = null)
-			: base(Background)
+		public ReportTypePopup(ReportTypeViewModel ViewModel)
 		{
 			this.InitializeComponent();
 			this.BindingContext = this.viewModel = ViewModel;

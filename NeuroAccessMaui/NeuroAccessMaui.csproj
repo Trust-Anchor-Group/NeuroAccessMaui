@@ -266,11 +266,11 @@
 	  <Compile Update="UI\Popups\Pin\CheckPinPopup.xaml.cs">
 	    <DependentUpon>CheckPinPopup.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="UI\Popups\SelectLanguagePopup.xaml.cs">
-	    <DependentUpon>SelectLanguagePopup.xaml</DependentUpon>
-	  </Compile>
 	  <Compile Update="UI\Popups\SelectPhoneCodePopup.xaml.cs">
 	    <DependentUpon>SelectPhoneCodePopup.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="UI\Popups\Settings\SelectLanguagePopup.xaml.cs">
+	    <DependentUpon>SelectLanguagePopup.xaml</DependentUpon>
 	  </Compile>
 	  <Compile Update="UI\Popups\ShowInfoPopup.xaml.cs">
 	    <DependentUpon>ShowInfoPopup.xaml</DependentUpon>
@@ -453,6 +453,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="UI\Popups\Pin\CheckPinPopup.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Popups\Settings\SelectLanguagePopup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="UI\Popups\Tokens\AddTextNote\AddTextNotePopup.xaml">

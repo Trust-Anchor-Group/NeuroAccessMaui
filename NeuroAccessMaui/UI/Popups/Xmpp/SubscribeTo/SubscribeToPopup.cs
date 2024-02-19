@@ -13,7 +13,6 @@ namespace NeuroAccessMaui.UI.Popups.Xmpp.SubscribeTo
 		/// <param name="ViewModel">View model</param>
 		/// <param name="Background">Optional background</param>
 		public SubscribeToPopup(SubscribeToViewModel ViewModel, ImageSource? Background = null)
-			: base(Background)
 		{
 			this.InitializeComponent();
 			this.BindingContext = this.viewModel = ViewModel;

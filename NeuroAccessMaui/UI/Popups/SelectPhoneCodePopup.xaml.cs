@@ -19,8 +19,7 @@ namespace NeuroAccessMaui.UI.Popups
 		/// </summary>
 		public static ISO_3166_Country[] Countries => ISO_3166_1.Countries;
 
-		public SelectPhoneCodePopup(ImageSource? Background = null)
-			: base(Background)
+		public SelectPhoneCodePopup()
 		{
 			this.InitializeComponent();
 			this.BindingContext = this;

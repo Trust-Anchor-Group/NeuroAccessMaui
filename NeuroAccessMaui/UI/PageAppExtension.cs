@@ -157,7 +157,6 @@ namespace NeuroAccessMaui.UI
 
 			// Popups
 			Builder.Services.AddTransient<ImageView, ImageViewModel>();
-			Builder.Services.AddTransient<CheckPinPopup, CheckPinViewModel>();
 			Builder.Services.AddTransient<AddTextNotePopup, AddTextNoteViewModel>();
 
 			// Xmpp

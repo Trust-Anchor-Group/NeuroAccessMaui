@@ -12,8 +12,7 @@ namespace NeuroAccessMaui.UI.Popups.Tokens.AddTextNote
 		/// </summary>
 		/// <param name="ViewModel">View model</param>
 		/// <param name="Background">Optional background</param>
-		public AddTextNotePopup(AddTextNoteViewModel ViewModel, ImageSource? Background = null)
-			: base(Background)
+		public AddTextNotePopup(AddTextNoteViewModel ViewModel)
 		{
 			this.InitializeComponent();
 			this.BindingContext = this.viewModel = ViewModel;

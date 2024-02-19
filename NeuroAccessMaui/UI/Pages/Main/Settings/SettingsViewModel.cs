@@ -6,7 +6,7 @@ using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.UI.Pages.Identity.TransferIdentity;
 using NeuroAccessMaui.UI.Pages.Main.ChangePin;
-using NeuroAccessMaui.UI.Popups;
+using NeuroAccessMaui.UI.Popups.Settings;
 using System.ComponentModel;
 using System.Security.Cryptography;
 using System.Text;
@@ -478,8 +478,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		[RelayCommand]
 		private static async Task ChangeLanguage()
 		{
-			SelectLanguagePopup Page = new();
-			await MopupService.Instance.PushAsync(Page);
+			await ServiceRef.PopupService.PushAsync<SelectLanguagePopup>();
 		}
 
 		#endregion
