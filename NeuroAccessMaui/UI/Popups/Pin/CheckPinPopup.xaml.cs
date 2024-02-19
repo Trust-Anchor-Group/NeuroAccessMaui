@@ -5,9 +5,7 @@
 	/// </summary>
 	public partial class CheckPinPopup
 	{
-
 		public CheckPinPopup()
-			: base(null)
 		{
 			this.InitializeComponent();
 		}

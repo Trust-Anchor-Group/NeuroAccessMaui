@@ -11,9 +11,7 @@ namespace NeuroAccessMaui.UI.Popups.Xmpp.SubscriptionRequest
 		/// Prompts the user for a response of a presence subscription request.
 		/// </summary>
 		/// <param name="ViewModel">View model</param>
-		/// <param name="Background">Optional background</param>
-		public SubscriptionRequestPopup(SubscriptionRequestViewModel ViewModel, ImageSource? Background = null)
-			: base(Background)
+		public SubscriptionRequestPopup(SubscriptionRequestViewModel ViewModel)
 		{
 			this.InitializeComponent();
 			this.BindingContext = this.viewModel = ViewModel;

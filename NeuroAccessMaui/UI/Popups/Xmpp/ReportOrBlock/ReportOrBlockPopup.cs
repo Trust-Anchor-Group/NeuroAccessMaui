@@ -10,8 +10,7 @@ namespace NeuroAccessMaui.UI.Popups.Xmpp.ReportOrBlock
 		/// <summary>
 		/// Prompts the user for a response of a presence subscription request.
 		/// </summary>
-		public ReportOrBlockPopup(ReportOrBlockViewModel ViewModel, ImageSource? Background = null)
-			: base(Background)
+		public ReportOrBlockPopup(ReportOrBlockViewModel ViewModel)
 		{
 			this.InitializeComponent();
 			this.BindingContext = this.viewModel = ViewModel;

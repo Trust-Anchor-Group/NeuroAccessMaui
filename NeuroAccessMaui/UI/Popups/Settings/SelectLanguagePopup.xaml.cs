@@ -10,7 +10,6 @@ namespace NeuroAccessMaui.UI.Popups.Settings
 		public List<LanguageInfo> Languages { get; } = new(App.SupportedLanguages);
 
 		public SelectLanguagePopup()
-			: base(null)
 		{
 			this.InitializeComponent();
 

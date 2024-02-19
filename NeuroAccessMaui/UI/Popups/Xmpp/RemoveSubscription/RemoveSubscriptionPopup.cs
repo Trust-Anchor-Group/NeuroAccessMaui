@@ -11,9 +11,7 @@ namespace NeuroAccessMaui.UI.Popups.Xmpp.RemoveSubscription
 		/// Asks the user if it wants to remove an existing presence subscription request as well.
 		/// </summary>
 		/// <param name="ViewModel">View model</param>
-		/// <param name="Background">Optional background</param>
-		public RemoveSubscriptionPopup(RemoveSubscriptionViewModel ViewModel, ImageSource? Background = null)
-			: base(Background)
+		public RemoveSubscriptionPopup(RemoveSubscriptionViewModel ViewModel)
 		{
 			this.InitializeComponent();
 			this.BindingContext = this.viewModel = ViewModel;

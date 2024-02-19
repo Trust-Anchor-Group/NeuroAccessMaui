@@ -50,10 +50,7 @@ namespace NeuroAccessMaui.Services.Popup
 		{
 			TPage page = new();
 			BasePopupViewModel? viewModel = page.ViewModel;
-			if(viewModel is not null)
-				this.viewModelStack.Push(viewModel);
-			else
-				this.viewModelStack.Push(null);
+			this.viewModelStack.Push(viewModel ?? null);
 			return MopupService.Instance.PushAsync(page);
 		}
 
@@ -61,10 +58,7 @@ namespace NeuroAccessMaui.Services.Popup
 		public Task PushAsync<TPage>(TPage page) where TPage : BasePopup
 		{
 			BasePopupViewModel? viewModel = page.ViewModel;
-			if (viewModel is not null)
-				this.viewModelStack.Push(viewModel);
-			else
-				this.viewModelStack.Push(null);
+			this.viewModelStack.Push(viewModel ?? null);
 			return MopupService.Instance.PushAsync(page);
 		}
 
