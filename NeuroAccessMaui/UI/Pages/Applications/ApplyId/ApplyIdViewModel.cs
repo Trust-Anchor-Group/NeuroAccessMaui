@@ -867,7 +867,6 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 					}
 				}
 
-				/// TODO: Check if this code below is still needed
 				if (FallbackOriginal)
 				{
 					byte[] Bin = File.ReadAllBytes(FilePath);

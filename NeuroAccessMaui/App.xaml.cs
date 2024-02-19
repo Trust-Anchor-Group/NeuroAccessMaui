@@ -4,7 +4,6 @@ using System.Reflection;
 using System.Text;
 using EDaler;
 using Microsoft.Maui.Controls.Internals;
-using Mopups.Services;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
@@ -17,12 +16,14 @@ using NeuroAccessMaui.Services.Navigation;
 using NeuroAccessMaui.Services.Network;
 using NeuroAccessMaui.Services.Nfc;
 using NeuroAccessMaui.Services.Notification;
+using NeuroAccessMaui.Services.Popup;
 using NeuroAccessMaui.Services.Settings;
 using NeuroAccessMaui.Services.Storage;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.QR;
 using NeuroAccessMaui.Services.Xmpp;
+using NeuroAccessMaui.Services.Screenshot;
 using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.UI.Pages.Main;
 using NeuroAccessMaui.UI.Popups.Pin;
@@ -309,6 +310,8 @@ namespace NeuroAccessMaui
 			Types.InstantiateDefault<IContractOrchestratorService>(false);
 			Types.InstantiateDefault<INfcService>(false);
 			Types.InstantiateDefault<INotificationService>(false);
+			Types.InstantiateDefault<IPopupService>(false);
+			Types.InstantiateDefault<IScreenshotService>(false);
 
 			defaultInstantiatedSource.TrySetResult(true);
 
