@@ -260,6 +260,9 @@
 	  <Compile Update="UI\Pages\Wallet\MyWallet\MyTokenWalletPage.xaml.cs">
 	    <DependentUpon>MyTokenWalletPage.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="UI\Popups\Image\ImagesPopup.xaml.cs">
+	    <DependentUpon>ImagesPopup.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="UI\Popups\Pin\CheckPinPopup.xaml.cs">
 	    <DependentUpon>CheckPinPopup.xaml</DependentUpon>
 	  </Compile>
@@ -447,6 +450,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="UI\Pages\Wallet\TokenEvents\TokenEventsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Popups\Image\ImagesPopup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="UI\Popups\Photos\Image\ImageView.xaml">
