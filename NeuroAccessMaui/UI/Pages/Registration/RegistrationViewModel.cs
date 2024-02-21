@@ -82,7 +82,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 			this.GoToPrevCommand.NotifyCanExecuteChanged();
 		}
 
-		public static bool CanGoToPrev
+		public bool CanGoToPrev
 		{
 			get
 			{

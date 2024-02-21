@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net8.0-ios;net8.0-android</TargetFrameworks>
+		<TargetFrameworks>net8.0-ios;net8.0-android34.0</TargetFrameworks>
 		<!-- <TargetFrameworks>$(TargetFrameworks);net8.0-maccatalyst</TargetFrameworks> -->
 		<!-- <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks> -->
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
@@ -30,12 +30,46 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
+		<PublishTrimmed>False</PublishTrimmed>
+		<PublishAot>False</PublishAot>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios'">
 	  <ProvisioningType>automatic</ProvisioningType>
 	  <CodesignKey>Apple Development: Ianosh Gnatiuc (QJF4K77MFW)</CodesignKey>
 	  <CodesignProvision>VS: com.trustanchorgroup.NeuroAccess Development</CodesignProvision>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
+	  <DebugSymbols>False</DebugSymbols>
+	  <RunAOTCompilation>True</RunAOTCompilation>
+	  <PublishTrimmed>True</PublishTrimmed>
+	  <ApplicationVersion>12</ApplicationVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
+	  <RunAOTCompilation>False</RunAOTCompilation>
+	  <ApplicationVersion>12</ApplicationVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
+	  <ApplicationVersion>12</ApplicationVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
+	  <ApplicationVersion>12</ApplicationVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android34.0|AnyCPU'">
+	  <ApplicationVersion>13</ApplicationVersion>
+	  <PublishTrimmed>True</PublishTrimmed>
+	  <ApplicationId>com.tag.NeuroAccess</ApplicationId>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android34.0|AnyCPU'">
+	  <ApplicationVersion>13</ApplicationVersion>
+	  <PublishTrimmed>True</PublishTrimmed>
+	  <ApplicationId>com.tag.NeuroAccess</ApplicationId>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -262,6 +296,9 @@
 	  <Compile Update="UI\Pages\Wallet\MyWallet\MyTokenWalletPage.xaml.cs">
 	    <DependentUpon>MyTokenWalletPage.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="UI\Popups\Image\ImagesPopup.xaml.cs">
+	    <DependentUpon>ImagesPopup.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="UI\Popups\Pin\CheckPinPopup.xaml.cs">
 	    <DependentUpon>CheckPinPopup.xaml</DependentUpon>
 	  </Compile>
@@ -449,6 +486,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="UI\Pages\Wallet\TokenEvents\TokenEventsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Popups\Image\ImagesPopup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="UI\Popups\Photos\Image\ImageView.xaml">

@@ -6,7 +6,7 @@ set packagefile=%1
 set keystore=%2
 set keystorepassword=%3
 
-set jarsigner="C:\Program Files (x86)\Android\android-sdk\build-tools\32.0.0\apksigner.bat"
+set jarsigner="C:\Program Files (x86)\Android\android-sdk\build-tools\34.0.0\apksigner.bat"
 set jarsignerparams=sign --min-sdk-version 21 --ks %keystore% --ks-pass pass:%keystorepassword% %packagefile%
 
 call %jarsigner% %jarsignerparams%

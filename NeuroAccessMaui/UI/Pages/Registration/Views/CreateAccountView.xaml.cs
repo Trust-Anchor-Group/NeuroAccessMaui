@@ -6,7 +6,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		{
 			return Create<CreateAccountView>();
 		}
-
 		public CreateAccountView(CreateAccountViewModel ViewModel)
 		{
 			this.InitializeComponent();

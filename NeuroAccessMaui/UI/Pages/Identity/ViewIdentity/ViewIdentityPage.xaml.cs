@@ -1,3 +1,5 @@
+using NeuroAccessMaui.Services;
+using NeuroAccessMaui.UI.Popups.Image;
 using Waher.Networking.XMPP.Contracts;
 
 namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
@@ -29,9 +31,12 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 
 			Attachment[]? Attachments = ViewModel.LegalIdentity?.Attachments;
 			if (Attachments is null)
-				this.PhotoViewer.HidePhotos();
-			else
-				this.PhotoViewer.ShowPhotos(Attachments);
+				return;
+
+			ImagesPopup ImagesPopup = new ImagesPopup();
+			ImagesViewModel ImagesViewModel = new ImagesViewModel();
+			ServiceRef.PopupService.PushAsync(ImagesPopup, ImagesViewModel);
+			ImagesViewModel.LoadPhotos(Attachments);
 		}
 	}
 }

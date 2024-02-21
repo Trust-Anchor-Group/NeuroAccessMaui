@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<base:BasePopup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+				 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+				 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+				 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
+				 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Image"
+				 xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups"
+				 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+		 		 xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
+	          xmlns:photos="clr-namespace:NeuroAccessMaui.Services.UI.Photos"
+             x:Class="NeuroAccessMaui.UI.Popups.Image.ImagesPopup"
+				 x:DataType="viewmodel:ImagesViewModel"
+             Title="ImagePopup">
+	<mopups:PopupPage.Animation>
+		<animations:ScaleAnimation DurationIn="500" DurationOut="500" EasingIn="CubicIn" EasingOut="CubicOut" HasBackgroundAnimation="True"
+											PositionIn="Center" PositionOut="Center" />
+	</mopups:PopupPage.Animation>
+	<Grid Style="{StaticResource PopupGrid}">
+		<Border WidthRequest="{Binding ViewWidthRequest}" MaximumHeightRequest="{Binding MaximumViewHeightRequest}" Style="{StaticResource PopupBorder}">
+			<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
+				<CarouselView x:Name="CarouselView"
+                                  IsSwipeEnabled="{Binding Path=IsSwipeEnabled}"
+                                  HorizontalOptions="FillAndExpand"
+                                  VerticalOptions="FillAndExpand"
+                                  ItemsSource="{Binding Path=Photos}"
+                                  IndicatorView="IndicatorView">
+					<CarouselView.ItemTemplate>
+						<DataTemplate x:DataType="photos:Photo">
+							<Image Source="{Binding Path=Source}" Rotation="{Binding Path=Rotation}" Aspect="AspectFit"/>
+						</DataTemplate>
+					</CarouselView.ItemTemplate>
+				</CarouselView>
+				<IndicatorView x:Name="IndicatorView"
+                                   HorizontalOptions="Fill"
+                                   Padding="0,0,0,0"
+                                   >
+					<IndicatorView.Margin>
+						<OnPlatform x:TypeArguments="Thickness">
+							<On Platform="iOS" Value="0,-1,0,0"/>
+						</OnPlatform>
+					</IndicatorView.Margin>
+				</IndicatorView>
+				<controls:TextButton Command="{Binding CancelCommand}"
+												Style="{StaticResource OutlinedTextButton}"
+												LabelData="{l:Localize Cancel}" />
+			</VerticalStackLayout>
+		</Border>
+
+	</Grid>
+</base:BasePopup>
