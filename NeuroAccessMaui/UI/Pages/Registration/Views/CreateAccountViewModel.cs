@@ -119,12 +119,12 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		/// <summary>
 		/// If App is connected to the XMPP network.
 		/// </summary>
-		public static bool IsXmppConnected => ServiceRef.XmppService.State == XmppState.Connected;
+		public bool IsXmppConnected => ServiceRef.XmppService.State == XmppState.Connected;
 
 		/// <summary>
 		/// If App has an XMPP account defined.
 		/// </summary>
-		public static bool IsAccountCreated => !string.IsNullOrEmpty(ServiceRef.TagProfile.Account);
+		public bool IsAccountCreated => !string.IsNullOrEmpty(ServiceRef.TagProfile.Account);
 
 		/// <summary>
 		/// If Legal ID has been created.

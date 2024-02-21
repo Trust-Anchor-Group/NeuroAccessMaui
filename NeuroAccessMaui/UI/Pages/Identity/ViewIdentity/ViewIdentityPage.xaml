@@ -11,9 +11,7 @@
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Identity.ViewIdentity"
-							 xmlns:photos="clr-namespace:NeuroAccessMaui.Services.UI.Photos"
-							 xmlns:image="clr-namespace:NeuroAccessMaui.UI.Popups.Photos.Image">
-
+							 xmlns:photos="clr-namespace:NeuroAccessMaui.Services.UI.Photos">
 	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
 
 		<controls:Background/>
@@ -172,7 +170,7 @@
 								<RowDefinition Height="{Binding OrgArea, Converter={converters:AutoIfNonEmpty}}" />
 								<RowDefinition Height="{Binding OrgCity, Converter={converters:AutoIfNonEmpty}}" />
 								<RowDefinition Height="{Binding OrgRegion, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding OrgCountry, Converter={converters:AutoIfNonEmpty}}" />
+								<RowDefinition Height="{Binding OrgCountryCode, Converter={converters:AutoIfNonEmpty}}" />
 							</Grid.RowDefinitions>
 
 							<Label Grid.Row="0" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize OrgName}" />
@@ -267,7 +265,6 @@
 				</Frame>
 			</VerticalStackLayout>
 		</ScrollView>
-		<image:ImageView x:Name="PhotoViewer" IsVisible="False" />
 	</Grid>
 
 </base:BaseContentPage>
