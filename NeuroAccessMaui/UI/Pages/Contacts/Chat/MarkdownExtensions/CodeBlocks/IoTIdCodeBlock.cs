@@ -14,7 +14,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.CodeBlocks
 	/// <summary>
 	/// Handles embedded Legal IDs.
 	/// </summary>
-	public class IoTIdCodeBlock : ICodeContent, ICodeContentXamarinFormsXamlRenderer
+	public class IoTIdCodeBlock : ICodeContent, ICodeContentMauiXamlRenderer
 	{
 		private MarkdownDocument? document;
 
@@ -33,7 +33,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.CodeBlocks
 		/// <summary>
 		/// Generates Xamarin XAML
 		/// </summary>
-		public async Task<bool> RenderXamarinFormsXaml(XamarinFormsXamlRenderer Renderer, string[] Rows, string Language, int Indent, MarkdownDocument Document)
+		public async Task<bool> RenderMauiXaml(MauiXamlRenderer Renderer, string[] Rows, string Language, int Indent, MarkdownDocument Document)
 		{
 			XmlWriter Output = Renderer.XmlOutput;
 			LegalIdentity Identity;

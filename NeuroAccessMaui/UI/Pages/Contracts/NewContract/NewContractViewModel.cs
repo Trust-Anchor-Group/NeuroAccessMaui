@@ -1004,7 +1004,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						StyleId = Role.Name
 					});
 
-					Populate(rolesLayout, await Role.ToMaui(this.template.DeviceLanguage(), this.template));
+					Populate(rolesLayout, await Role.ToMauiXaml(this.template.DeviceLanguage(), this.template));
 
 					if (Role.MinCount > 0)
 					{
@@ -1050,7 +1050,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					HorizontalStackLayout Layout = [];
 
 					Layout.Children.Add(CheckBox);
-					Populate(Layout, await Parameter.ToMaui(this.template.DeviceLanguage(), this.template));
+					Populate(Layout, await Parameter.ToMauiXaml(this.template.DeviceLanguage(), this.template));
 					ParametersLayout.Children.Add(Layout);
 
 					CheckBox.CheckedChanged += this.Parameter_CheckedChanged;
@@ -1077,7 +1077,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				}
 				else if (Parameter is DateParameter DP)
 				{
-					Populate(ParametersLayout, await Parameter.ToMaui(this.template.DeviceLanguage(), this.template));
+					Populate(ParametersLayout, await Parameter.ToMauiXaml(this.template.DeviceLanguage(), this.template));
 
 					ExtendedDatePicker Picker = new()
 					{
@@ -1104,7 +1104,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				}
 				else
 				{
-					Populate(ParametersLayout, await Parameter.ToMaui(this.template.DeviceLanguage(), this.template));
+					Populate(ParametersLayout, await Parameter.ToMauiXaml(this.template.DeviceLanguage(), this.template));
 
 					Entry Entry = new()
 					{
@@ -1263,7 +1263,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			VerticalStackLayout humanReadableTextLayout = [];
 
 			if (this.template is not null)
-				Populate(humanReadableTextLayout, await this.template.ToMaui(this.template.DeviceLanguage()));
+				Populate(humanReadableTextLayout, await this.template.ToMauiXaml(this.template.DeviceLanguage()));
 
 			this.HumanReadableText = humanReadableTextLayout;
 			this.HasHumanReadableText = humanReadableTextLayout.Children.Count > 0;

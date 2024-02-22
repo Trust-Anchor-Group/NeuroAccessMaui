@@ -85,7 +85,7 @@ namespace NeuroAccessMaui.Extensions
 
 				MarkdownDocument Doc = await MarkdownDocument.CreateAsync(Markdown, Settings);
 
-				string Xaml = await Doc.GenerateXamarinForms();
+				string Xaml = await Doc.GenerateMauiXaml();
 				Xaml = Xaml.Replace("TextColor=\"{Binding HyperlinkColor}\"", "Style=\"{StaticResource HyperlinkColor}\"");
 
 				return new VerticalStackLayout().LoadFromXaml(Xaml);

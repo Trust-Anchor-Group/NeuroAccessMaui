@@ -9,7 +9,7 @@ namespace NeuroAccessMaui.UI.Rendering.CodeContent
 	/// <remarks>
 	/// Modified from original in Waher.Content.Markdown.Xamarin library, with permission.
 	/// </remarks>
-	public class ImageContent : Waher.Content.Markdown.Model.CodeContent.ImageContent, ICodeContentXamarinFormsXamlRenderer
+	public class ImageContent : Waher.Content.Markdown.Model.CodeContent.ImageContent, ICodeContentMauiXamlRenderer
 	{
 		/// <summary>
 		/// Base64-encoded image content.
@@ -19,7 +19,7 @@ namespace NeuroAccessMaui.UI.Rendering.CodeContent
 		}
 
 		/// <summary>
-		/// Generates Xamarin.Forms XAML for the code content.
+		/// Generates Maui XAML for the code content.
 		/// </summary>
 		/// <param name="Renderer">Renderer.</param>
 		/// <param name="Rows">Code rows.</param>
@@ -27,7 +27,7 @@ namespace NeuroAccessMaui.UI.Rendering.CodeContent
 		/// <param name="Indent">Code block indentation.</param>
 		/// <param name="Document">Markdown document containing element.</param>
 		/// <returns>If renderer was able to generate output.</returns>
-		public async Task<bool> RenderXamarinFormsXaml(XamarinFormsXamlRenderer Renderer, string[] Rows, string Language, int Indent, 
+		public async Task<bool> RenderMauiXaml(MauiXamlRenderer Renderer, string[] Rows, string Language, int Indent, 
 			MarkdownDocument Document)
 		{
 			await Multimedia.ImageContent.OutputXamarinForms(Renderer.XmlOutput, new Waher.Content.Emoji.ImageSource()

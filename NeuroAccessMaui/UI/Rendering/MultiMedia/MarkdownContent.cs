@@ -9,7 +9,7 @@ namespace NeuroAccessMaui.UI.Rendering.Multimedia
 	/// <remarks>
 	/// Modified from original in Waher.Content.Markdown.Xamarin library, with permission.
 	/// </remarks>
-	public class MarkdownContent : Waher.Content.Markdown.Model.Multimedia.MarkdownContent, IMultimediaXamarinFormsXamlRenderer
+	public class MarkdownContent : Waher.Content.Markdown.Model.Multimedia.MarkdownContent, IMultimediaMauiXamlRenderer
     {
         /// <summary>
         /// Markdown content.
@@ -19,14 +19,14 @@ namespace NeuroAccessMaui.UI.Rendering.Multimedia
         }
 
 		/// <summary>
-		/// Generates Xamarin.Forms XAML for the multimedia content.
+		/// Generates Maui XAML for the multimedia content.
 		/// </summary>
 		/// <param name="Renderer">Renderer.</param>
 		/// <param name="Items">Multimedia items.</param>
 		/// <param name="ChildNodes">Child nodes.</param>
 		/// <param name="AloneInParagraph">If the element is alone in a paragraph.</param>
 		/// <param name="Document">Markdown document containing element.</param>
-		public Task RenderXamarinFormsXaml(XamarinFormsXamlRenderer Renderer, MultimediaItem[] Items, IEnumerable<MarkdownElement> ChildNodes,
+		public Task RenderXamarinFormsXaml(MauiXamlRenderer Renderer, MultimediaItem[] Items, IEnumerable<MarkdownElement> ChildNodes,
 			bool AloneInParagraph, MarkdownDocument Document)
 		{
 			return ProcessInclusion(Renderer, Items, Document);

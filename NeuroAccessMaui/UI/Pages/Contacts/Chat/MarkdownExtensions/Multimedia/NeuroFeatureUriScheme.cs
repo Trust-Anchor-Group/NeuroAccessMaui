@@ -10,7 +10,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.Multimedia
 	/// <summary>
 	/// Implements the nfeat URI Scheme
 	/// </summary>
-	public class NeuroFeatureUriScheme : MultimediaContent, IMultimediaXamarinFormsXamlRenderer
+	public class NeuroFeatureUriScheme : MultimediaContent, IMultimediaMauiXamlRenderer
 	{
 		/// <summary>
 		/// Implements the nfeat URI Scheme
@@ -35,7 +35,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.Multimedia
 		}
 
 		/// <inheritdoc/>
-		public async Task RenderXamarinFormsXaml(XamarinFormsXamlRenderer Renderer, MultimediaItem[] Items, IEnumerable<MarkdownElement> ChildNodes, bool AloneInParagraph, MarkdownDocument Document)
+		public async Task RenderXamarinFormsXaml(MauiXamlRenderer Renderer, MultimediaItem[] Items, IEnumerable<MarkdownElement> ChildNodes, bool AloneInParagraph, MarkdownDocument Document)
 		{
 			XmlWriter Output = Renderer.XmlOutput;
 

@@ -449,7 +449,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				// Human readable text
 
 				VerticalStackLayout HumanReadableTextLayout = [];
-				string Xaml = await this.Contract.ToMaui(this.Contract.DeviceLanguage());
+				string Xaml = await this.Contract.ToMauiXaml(this.Contract.DeviceLanguage());
 				VerticalStackLayout HumanReadableXaml = new VerticalStackLayout().LoadFromXaml(Xaml);
 
 				List<IView> Children = [.. HumanReadableXaml.Children];

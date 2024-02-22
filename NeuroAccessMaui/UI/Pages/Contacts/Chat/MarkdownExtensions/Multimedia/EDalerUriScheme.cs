@@ -10,7 +10,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.Multimedia
 	/// <summary>
 	/// Implements the edaler URI Scheme
 	/// </summary>
-	public class EDalerUriScheme : MultimediaContent, IMultimediaXamarinFormsXamlRenderer
+	public class EDalerUriScheme : MultimediaContent, IMultimediaMauiXamlRenderer
 	{
 		/// <summary>
 		/// Implements the edaler URI Scheme
@@ -35,7 +35,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.Multimedia
 		}
 
 		/// <inheritdoc/>
-		public async Task RenderXamarinFormsXaml(XamarinFormsXamlRenderer Renderer, MultimediaItem[] Items, IEnumerable<MarkdownElement> ChildNodes, bool AloneInParagraph, MarkdownDocument Document)
+		public async Task RenderXamarinFormsXaml(MauiXamlRenderer Renderer, MultimediaItem[] Items, IEnumerable<MarkdownElement> ChildNodes, bool AloneInParagraph, MarkdownDocument Document)
 		{
 			XmlWriter Output = Renderer.XmlOutput;
 

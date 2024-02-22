@@ -22,7 +22,7 @@ namespace NeuroAccessMaui.UI.Rendering
 	/// <remarks>
 	/// Modified from original in Waher.Content.Markdown.Xamarin library, with permission.
 	/// </remarks>
-	public class XamarinFormsXamlRenderer : Renderer
+	public class MauiXamlRenderer : Renderer
 	{
 		/// <summary>
 		/// XML output
@@ -89,7 +89,7 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// </summary>
 		/// <param name="XmlSettings">XML-specific settings.</param>
 		/// <param name="XamlSettings">XAML-specific settings.</param>
-		public XamarinFormsXamlRenderer(XmlWriterSettings XmlSettings, XamlSettings XamlSettings)
+		public MauiXamlRenderer(XmlWriterSettings XmlSettings, XamlSettings XamlSettings)
 			: base()
 		{
 			this.XamlSettings = XamlSettings;
@@ -102,7 +102,7 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// <param name="Output">XAML output.</param>
 		/// <param name="XmlSettings">XML-specific settings.</param>
 		/// <param name="XamlSettings">XAML-specific settings.</param>
-		public XamarinFormsXamlRenderer(StringBuilder Output, XmlWriterSettings XmlSettings, XamlSettings XamlSettings)
+		public MauiXamlRenderer(StringBuilder Output, XmlWriterSettings XmlSettings, XamlSettings XamlSettings)
 			: base(Output)
 		{
 			this.XamlSettings = XamlSettings;
@@ -112,9 +112,27 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// <inheritdoc/>
 		public override void Dispose()
 		{
-			base.Dispose();
+			this.Dispose(true);
+			GC.SuppressFinalize(this);
+		}
 
-			this.XmlOutput.Dispose();
+		private bool isDisposed;
+
+		/// <summary>
+		/// <see cref="IDisposable.Dispose"/>
+		/// </summary>
+		protected virtual void Dispose(bool disposing)
+		{
+			if (this.isDisposed)
+				return;
+
+			if (disposing)
+			{
+				base.Dispose();
+				this.XmlOutput.Dispose();
+			}
+
+			this.isDisposed = true;
 		}
 
 		/// <summary>
@@ -143,7 +161,7 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// </summary>
 		public override Task RenderDocumentHeader()
 		{
-			this.XmlOutput.WriteStartElement("StackLayout", "http://xamarin.com/schemas/2014/forms");
+			this.XmlOutput.WriteStartElement("VerticalStackLayout", "http://schemas.microsoft.com/dotnet/2021/maui");
 			this.XmlOutput.WriteAttributeString("xmlns", "x", null, "http://schemas.microsoft.com/winfx/2009/xaml");
 			this.XmlOutput.WriteAttributeString("Spacing", "0");
 
@@ -445,7 +463,7 @@ namespace NeuroAccessMaui.UI.Rendering
 		}
 
 		/// <summary>
-		/// Generates WPF XAML from Script output.
+		/// Generates Maui XAML from Script output.
 		/// </summary>
 		/// <param name="Result">Script output.</param>
 		/// <param name="AloneInParagraph">If the script output is to be presented alone in a paragraph.</param>
@@ -663,7 +681,7 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// <param name="Element">Element to render</param>
 		public override Task Render(Waher.Content.Markdown.Model.SpanElements.Multimedia Element)
 		{
-			IMultimediaXamarinFormsXamlRenderer Renderer = Element.MultimediaHandler<IMultimediaXamarinFormsXamlRenderer>();
+			IMultimediaMauiXamlRenderer Renderer = Element.MultimediaHandler<IMultimediaMauiXamlRenderer>();
 			if (Renderer is null)
 				return this.RenderChildren(Element);
 			else
@@ -680,7 +698,7 @@ namespace NeuroAccessMaui.UI.Rendering
 
 			if (Multimedia is not null)
 			{
-				IMultimediaXamarinFormsXamlRenderer Renderer = Multimedia.MultimediaHandler<IMultimediaXamarinFormsXamlRenderer>();
+				IMultimediaMauiXamlRenderer Renderer = Multimedia.MultimediaHandler<IMultimediaMauiXamlRenderer>();
 				if (Renderer is not null)
 					return Renderer.RenderXamarinFormsXaml(this, Multimedia.Items, Element.Children, Element.AloneInParagraph, Element.Document);
 			}
@@ -778,8 +796,7 @@ namespace NeuroAccessMaui.UI.Rendering
 			this.XmlOutput.WriteAttributeString("BorderColor", this.XamlSettings.BlockQuoteBorderColor);
 			// TODO: Border thickness
 
-			this.XmlOutput.WriteStartElement("StackLayout");
-			this.XmlOutput.WriteAttributeString("Orientation", "Vertical");
+			this.XmlOutput.WriteStartElement("VerticalStackLayout");
 
 			await this.RenderChildren(Element);
 
@@ -842,10 +859,9 @@ namespace NeuroAccessMaui.UI.Rendering
 					this.XmlOutput.WriteElementString("Label", "•");
 					this.XmlOutput.WriteEndElement();
 
-					this.XmlOutput.WriteStartElement("StackLayout");
+					this.XmlOutput.WriteStartElement("VerticalStackLayout");
 					this.XmlOutput.WriteAttributeString("Grid.Column", "1");
 					this.XmlOutput.WriteAttributeString("Grid.Row", Row.ToString(CultureInfo.InvariantCulture));
-					this.XmlOutput.WriteAttributeString("Orientation", "Vertical");
 
 					if (ParagraphBullet)
 						await E.Render(this);
@@ -907,8 +923,7 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// <param name="Element">Element to render</param>
 		public override async Task Render(CenterAligned Element)
 		{
-			this.XmlOutput.WriteStartElement("StackLayout");
-			this.XmlOutput.WriteAttributeString("Orientation", "Vertical");
+			this.XmlOutput.WriteStartElement("VerticalStackLayout");
 
 			Waher.Content.Markdown.Model.TextAlignment Bak = this.Alignment;
 			this.Alignment = Waher.Content.Markdown.Model.TextAlignment.Center;
@@ -925,13 +940,13 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// <param name="Element">Element to render</param>
 		public override async Task Render(CodeBlock Element)
 		{
-			ICodeContentXamarinFormsXamlRenderer Renderer = Element.CodeContentHandler<ICodeContentXamarinFormsXamlRenderer>();
+			ICodeContentMauiXamlRenderer Renderer = Element.CodeContentHandler<ICodeContentMauiXamlRenderer>();
 
 			if (Renderer is not null)
 			{
 				try
 				{
-					if (await Renderer.RenderXamarinFormsXaml(this, Element.Rows, Element.Language, Element.Indent, Element.Document))
+					if (await Renderer.RenderMauiXaml(this, Element.Rows, Element.Language, Element.Indent, Element.Document))
 						return;
 				}
 				catch (Exception ex)
@@ -965,8 +980,7 @@ namespace NeuroAccessMaui.UI.Rendering
 			}
 
 			this.RenderContentView();
-			this.XmlOutput.WriteStartElement("StackLayout");
-			this.XmlOutput.WriteAttributeString("Orientation", "Vertical");
+			this.XmlOutput.WriteStartElement("VerticalStackLayout");
 
 			int i;
 
@@ -1033,7 +1047,7 @@ namespace NeuroAccessMaui.UI.Rendering
 					this.XmlOutput.WriteAttributeString("Padding", this.XamlSettings.DefinitionMargin.ToString(CultureInfo.InvariantCulture) + ",0,0," +
 						(Description == Last ? this.XamlSettings.DefinitionSeparator : 0).ToString(CultureInfo.InvariantCulture));
 
-					this.XmlOutput.WriteStartElement("StackLayout");
+					this.XmlOutput.WriteStartElement("VerticalStackLayout");
 					await Description.Render(this);
 					this.XmlOutput.WriteEndElement();
 
@@ -1094,8 +1108,7 @@ namespace NeuroAccessMaui.UI.Rendering
 			this.XmlOutput.WriteAttributeString("BorderColor", this.XamlSettings.DeletedBlockQuoteBorderColor);
 			// TODO: Border thickness
 
-			this.XmlOutput.WriteStartElement("StackLayout");
-			this.XmlOutput.WriteAttributeString("Orientation", "Vertical");
+			this.XmlOutput.WriteStartElement("VerticalStackLayout");
 
 			foreach (MarkdownElement E in Element.Children)
 				await E.Render(this);
@@ -1228,8 +1241,7 @@ namespace NeuroAccessMaui.UI.Rendering
 			this.XmlOutput.WriteAttributeString("BorderColor", this.XamlSettings.InsertedBlockQuoteBorderColor);
 			// TODO: Border thickness
 
-			this.XmlOutput.WriteStartElement("StackLayout");
-			this.XmlOutput.WriteAttributeString("Orientation", "Vertical");
+			this.XmlOutput.WriteStartElement("VerticalStackLayout");
 
 			await this.RenderChildren(Element);
 
@@ -1253,8 +1265,7 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// <param name="Element">Element to render</param>
 		public override async Task Render(LeftAligned Element)
 		{
-			this.XmlOutput.WriteStartElement("StackLayout");
-			this.XmlOutput.WriteAttributeString("Orientation", "Vertical");
+			this.XmlOutput.WriteStartElement("VerticalStackLayout");
 
 			Waher.Content.Markdown.Model.TextAlignment Bak = this.Alignment;
 			this.Alignment = Waher.Content.Markdown.Model.TextAlignment.Left;
@@ -1271,8 +1282,7 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// <param name="Element">Element to render</param>
 		public override async Task Render(MarginAligned Element)
 		{
-			this.XmlOutput.WriteStartElement("StackLayout");
-			this.XmlOutput.WriteAttributeString("Orientation", "Vertical");
+			this.XmlOutput.WriteStartElement("VerticalStackLayout");
 
 			Waher.Content.Markdown.Model.TextAlignment Bak = this.Alignment;
 			this.Alignment = Waher.Content.Markdown.Model.TextAlignment.Left;
@@ -1418,10 +1428,9 @@ namespace NeuroAccessMaui.UI.Rendering
 					this.XmlOutput.WriteEndElement();
 					this.XmlOutput.WriteEndElement();
 
-					this.XmlOutput.WriteStartElement("StackLayout");
+					this.XmlOutput.WriteStartElement("VerticalStackLayout");
 					this.XmlOutput.WriteAttributeString("Grid.Column", "1");
 					this.XmlOutput.WriteAttributeString("Grid.Row", Row.ToString(CultureInfo.InvariantCulture));
-					this.XmlOutput.WriteAttributeString("Orientation", "Vertical");
 
 					if (ParagraphBullet)
 						await E.Render(this);
@@ -1610,8 +1619,7 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// <param name="Element">Element to render</param>
 		public override async Task Render(RightAligned Element)
 		{
-			this.XmlOutput.WriteStartElement("StackLayout");
-			this.XmlOutput.WriteAttributeString("Orientation", "Vertical");
+			this.XmlOutput.WriteStartElement("VerticalStackLayout");
 
 			Waher.Content.Markdown.Model.TextAlignment Bak = this.Alignment;
 			this.Alignment = Waher.Content.Markdown.Model.TextAlignment.Right;
@@ -1817,7 +1825,7 @@ namespace NeuroAccessMaui.UI.Rendering
 					this.XmlOutput.WriteStartElement("ContentView");
 					this.XmlOutput.WriteAttributeString("Padding", this.XamlSettings.TableCellPadding);
 
-					this.XmlOutput.WriteStartElement("StackLayout");
+					this.XmlOutput.WriteStartElement("VerticalStackLayout");
 					await E.Render(this);
 					this.XmlOutput.WriteEndElement();   // StackLayout
 
@@ -1896,10 +1904,9 @@ namespace NeuroAccessMaui.UI.Rendering
 						this.XmlOutput.WriteEndElement();
 					}
 
-					this.XmlOutput.WriteStartElement("StackLayout");
+					this.XmlOutput.WriteStartElement("VerticalStackLayout");
 					this.XmlOutput.WriteAttributeString("Grid.Column", "1");
 					this.XmlOutput.WriteAttributeString("Grid.Row", Row.ToString(CultureInfo.InvariantCulture));
-					this.XmlOutput.WriteAttributeString("Orientation", "Vertical");
 
 					if (ParagraphBullet)
 						await E.Render(this);

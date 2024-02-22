@@ -10,7 +10,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.Multimedia
 	/// <summary>
 	/// Implements the XMPP URI Scheme, as defined in XEP-0147: https://xmpp.org/extensions/xep-0147.html
 	/// </summary>
-	public class XmppUriScheme : MultimediaContent, IMultimediaXamarinFormsXamlRenderer
+	public class XmppUriScheme : MultimediaContent, IMultimediaMauiXamlRenderer
 	{
 		/// <summary>
 		/// Implements the XMPP URI Scheme, as defined in XEP-0147: https://xmpp.org/extensions/xep-0147.html
@@ -35,7 +35,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.Multimedia
 		}
 
 		/// <inheritdoc/>
-		public async Task RenderXamarinFormsXaml(XamarinFormsXamlRenderer Renderer, MultimediaItem[] Items, IEnumerable<MarkdownElement> ChildNodes, bool AloneInParagraph, MarkdownDocument Document)
+		public async Task RenderXamarinFormsXaml(MauiXamlRenderer Renderer, MultimediaItem[] Items, IEnumerable<MarkdownElement> ChildNodes, bool AloneInParagraph, MarkdownDocument Document)
 		{
 			XmlWriter Output = Renderer.XmlOutput;
 

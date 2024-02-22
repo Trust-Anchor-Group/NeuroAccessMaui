@@ -13,7 +13,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.CodeBlocks
 	/// <summary>
 	/// Handles embedded tokens.
 	/// </summary>
-	public class NeuroFeatureCodeBlock : ICodeContent, ICodeContentXamarinFormsXamlRenderer
+	public class NeuroFeatureCodeBlock : ICodeContent, ICodeContentMauiXamlRenderer
 	{
 		private MarkdownDocument? document;
 
@@ -32,7 +32,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.CodeBlocks
 		/// <summary>
 		/// Generates Xamarin XAML
 		/// </summary>
-		public Task<bool> RenderXamarinFormsXaml(XamarinFormsXamlRenderer Renderer, string[] Rows, string Language, int Indent, MarkdownDocument Document)
+		public Task<bool> RenderMauiXaml(MauiXamlRenderer Renderer, string[] Rows, string Language, int Indent, MarkdownDocument Document)
 		{
 			XmlWriter Output = Renderer.XmlOutput;
 			Token Token;
