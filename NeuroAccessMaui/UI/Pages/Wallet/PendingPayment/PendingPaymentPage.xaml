@@ -24,8 +24,8 @@
 
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
-						<Label Text="{l:Localize PendingPayment}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
-						<Label Text="{l:Localize PendingPaymentDescription}" Style="{StaticResource InfoText}" VerticalOptions="Start"/>
+						<Label Text="{l:Localize PendingPayment}" Margin="{StaticResource SmallTopOnlyMargins}" VerticalOptions="Start"/>
+						<Label Text="{l:Localize PendingPaymentDescription}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"/>
 						<!-- Note -->
 						<Label Text="{l:Localize To}"/>
 						<Entry Text="{Binding Path=FriendlyName}" IsReadOnly="True"/>
@@ -38,14 +38,14 @@
 						<Label Text="{l:Localize ExpiresAt}"/>
 						<Entry Text="{Binding Path=ExpiresStr}" IsReadOnly="True"/>
 						<!-- BUTTONS -->
-						<Button Text="{l:Localize Submit}" Command="{Binding Path=SubmitCommand}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
-						<Button Text="{l:Localize ShowCode}" Command="{Binding Path=ShowCodeCommand}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
+						<Button Text="{l:Localize Submit}" Command="{Binding Path=SubmitCommand}" Margin="{StaticResource SmallBottomOnlyMargins}"/>
+						<Button Text="{l:Localize ShowCode}" Command="{Binding Path=ShowCodeCommand}" Margin="{StaticResource SmallBottomOnlyMargins}"/>
 						<Image x:Name="QrCode" BackgroundColor="{StaticResource HeadingForeground}" Source="{Binding Path=QrCode}" 
                        IsVisible="{Binding Path=HasQrCode}" WidthRequest="{Binding Path=QrCodeWidth}" 
                        HeightRequest="{Binding Path=QrCodeHeight}" HorizontalOptions="Center" VerticalOptions="Start" 
                        Margin="0" />
 						<Button x:Name="ShareButton" Text="{l:Localize Share}" Command="{Binding Path=ShareCommand}" 
-                        IsVisible="{Binding Path=HasQrCode}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
+                        IsVisible="{Binding Path=HasQrCode}" Margin="{StaticResource SmallBottomOnlyMargins}"/>
 					</VerticalStackLayout>
 				</Frame>
 			</VerticalStackLayout>

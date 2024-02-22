@@ -26,14 +26,14 @@
 
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
-						<Label Text="{l:Localize ControlRequest}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}"
+						<Label Text="{l:Localize ControlRequest}" Margin="{StaticResource SmallTopOnlyMargins}"
 					   VerticalOptions="Start"/>
-						<Label Text="{l:Localize ControlRequestText2}" Style="{StaticResource InfoText}" VerticalOptions="Start"
+						<Label Text="{l:Localize ControlRequestText2}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"
 					   HorizontalOptions="Start"/>
 						<!-- Caller -->
-						<Label Text="{l:Localize Caller}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}"
+						<Label Text="{l:Localize Caller}" Margin="{StaticResource SmallTopOnlyMargins}"
 					   VerticalOptions="Start"/>
-						<Label Text="{l:Localize InformationAboutCallerText}" Style="{StaticResource InfoText}" VerticalOptions="Start"
+						<Label Text="{l:Localize InformationAboutCallerText}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"
 					   HorizontalOptions="Start"/>
 						<Grid ColumnDefinitions="*,*" RowDefinitions="auto,auto">
 							<Label Grid.Column="0" Grid.Row="0" Text="{l:Localize CallerAddress}" Style="{StaticResource KeyLabel}" LineBreakMode="WordWrap" />
@@ -64,12 +64,12 @@
 							</BindableLayout.ItemTemplate>
 						</StackLayout>
 						<Button Text="{l:Localize AddContact}" Command="{Binding Path=AddContactCommand}"
-						IsVisible="{Binding CallerInContactsList, Converter={StaticResource InvertedBoolConverter}}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
+						IsVisible="{Binding CallerInContactsList, Converter={StaticResource InvertedBoolConverter}}" Margin="{StaticResource SmallBottomOnlyMargins}"/>
 						<Button Text="{l:Localize RemoveContact}" Command="{Binding Path=RemoveContactCommand}"
-						IsVisible="{Binding CallerInContactsList}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
+						IsVisible="{Binding CallerInContactsList}" Margin="{StaticResource SmallBottomOnlyMargins}"/>
 						<!-- Thing -->
-						<Label Text="{l:Localize InformationAboutThing}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
-						<Label Text="{l:Localize InformationAboutThingText}" Style="{StaticResource InfoText}" VerticalOptions="Start"
+						<Label Text="{l:Localize InformationAboutThing}" Margin="{StaticResource SmallTopOnlyMargins}" VerticalOptions="Start"/>
+						<Label Text="{l:Localize InformationAboutThingText}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"
 					   HorizontalOptions="Start"/>
 						<StackLayout x:Name="TagLayout" Orientation="Vertical" BindableLayout.ItemsSource="{Binding Path=Tags}" VerticalOptions="StartAndExpand" Margin="{StaticResource DefaultMargin}">
 							<BindableLayout.ItemTemplate>
@@ -86,8 +86,8 @@
 							</BindableLayout.ItemTemplate>
 						</StackLayout>
 						<!-- Parameter Names -->
-						<Label Text="{l:Localize Parameters}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
-						<Label Text="{l:Localize PermitParametersText}" LineBreakMode="WordWrap" Style="{StaticResource InfoText}"/>
+						<Label Text="{l:Localize Parameters}" Margin="{StaticResource SmallTopOnlyMargins}" VerticalOptions="Start"/>
+						<Label Text="{l:Localize PermitParametersText}" LineBreakMode="WordWrap" Style="{StaticResource InfoLabel}"/>
 						<StackLayout x:Name="ParameterLayout" Orientation="Vertical" BindableLayout.ItemsSource="{Binding Path=Parameters}" VerticalOptions="StartAndExpand">
 							<BindableLayout.ItemTemplate>
 								<DataTemplate x:DataType="viewmodel2:FieldReference">
@@ -99,26 +99,26 @@
 							</BindableLayout.ItemTemplate>
 						</StackLayout>
 						<Button Text="{l:Localize All}" Command="{Binding Path=AllParametersCommand}"
-						Margin="{StaticResource DefaultTopAndBottomOnlyMargin}"/>
+						Margin="{StaticResource SmallTopAndBottomOnlyMargins}"/>
 						<Button Text="{l:Localize None}" Command="{Binding Path=NoParametersCommand}"
-						Margin="{StaticResource DefaultBottomOnlyMargin}"/>
+						Margin="{StaticResource SmallBottomOnlyMargins}"/>
 						<!-- Range -->
-						<Label Text="{l:Localize Range}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}"
+						<Label Text="{l:Localize Range}" Margin="{StaticResource SmallTopOnlyMargins}"
 					   VerticalOptions="Start"/>
-						<Label Text="{l:Localize RangeText}" Style="{StaticResource InfoText}" VerticalOptions="Start"
+						<Label Text="{l:Localize RangeText}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"
 					   HorizontalOptions="Start"/>
 						<Picker SelectedIndex="{Binding SelectedRuleRangeIndex}" ItemsSource="{Binding RuleRanges}"
-						Margin="{StaticResource DefaultBottomOnlyMargin}"
+						Margin="{StaticResource SmallBottomOnlyMargins}"
 						BackgroundColor="{AppThemeBinding Dark={StaticResource PageBackgroundColorDarkTheme}, Default={StaticResource PageBackgroundColor}}"/>
 						<!-- BUTTONS -->
-						<Label Text="{l:Localize Options}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}"
+						<Label Text="{l:Localize Options}" Margin="{StaticResource SmallTopOnlyMargins}"
 					   VerticalOptions="Start"/>
 						<Button Text="{l:Localize Accept}" Command="{Binding Path=AcceptCommand}"
-						Margin="{StaticResource DefaultBottomOnlyMargin}"/>
+						Margin="{StaticResource SmallBottomOnlyMargins}"/>
 						<Button Text="{l:Localize Reject}" Command="{Binding Path=RejectCommand}"
-						Margin="{StaticResource DefaultBottomOnlyMargin}"/>
+						Margin="{StaticResource SmallBottomOnlyMargins}"/>
 						<Button Text="{l:Localize Ignore}" Command="{Binding Path=IgnoreCommand}"
-						Margin="{StaticResource DefaultBottomOnlyMargin}"/>
+						Margin="{StaticResource SmallBottomOnlyMargins}"/>
 					</VerticalStackLayout>
 				</Frame>
 			</VerticalStackLayout>

@@ -24,23 +24,23 @@
 
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
-						<ContentView Content="{Binding Path=HumanReadableText}" Margin="{StaticResource DefaultBottomOnlyMargin}" />
+						<ContentView Content="{Binding Path=HumanReadableText}" Margin="{StaticResource SmallBottomOnlyMargins}" />
 
-						<Label Text="{l:Localize Visibility}" Style="{StaticResource Heading}" HorizontalOptions="Start" />
-						<Picker Title="{l:Localize SelectWhoShouldHaveAccessToThisContract}" 
-                    ItemsSource="{Binding Path=ContractVisibilityItems}" 
-                    SelectedItem="{Binding Path=SelectedContractVisibilityItem, Mode=TwoWay}" Margin="0,0,0,20"/>
+						<Label Text="{l:Localize Visibility}" HorizontalOptions="Start" />
+						<Picker Title="{l:Localize SelectWhoShouldHaveAccessToThisContract}"
+								  ItemsSource="{Binding Path=ContractVisibilityItems}"
+								  SelectedItem="{Binding Path=SelectedContractVisibilityItem, Mode=TwoWay}" Margin="{StaticResource MediumBottomOnlyMargins}"/>
 
-						<Label Text="{l:Localize YourRole}" Style="{StaticResource Heading}" HorizontalOptions="Start" />
+						<Label Text="{l:Localize YourRole}" HorizontalOptions="Start" />
 						<Picker Title="{l:Localize SelectYourRoleInThisContract}" 
                     ItemsSource="{Binding Path=AvailableRoles}" 
                     SelectedItem="{Binding Path=SelectedRole, Mode=TwoWay}" 
-                    IsEnabled="{Binding Path=HasRoles}" Margin="0,0,0,20"/>
+                    IsEnabled="{Binding Path=HasRoles}" Margin="{StaticResource MediumBottomOnlyMargins}"/>
 
 						<ContentView Content="{Binding Path=Roles}" />
 						<ContentView Content="{Binding Path=Parameters}" />
 
-						<Button Text="{l:Localize Propose}" Command="{Binding Path=ProposeCommand}" Margin="{StaticResource DefaultTopAndBottomOnlyMargin}"/>
+						<Button Text="{l:Localize Propose}" Command="{Binding Path=ProposeCommand}" Margin="{StaticResource SmallTopAndBottomOnlyMargins}"/>
 					</VerticalStackLayout>
 				</Frame>
 			</VerticalStackLayout>

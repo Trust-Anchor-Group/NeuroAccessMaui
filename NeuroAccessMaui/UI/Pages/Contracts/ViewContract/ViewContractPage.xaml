@@ -28,21 +28,21 @@
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
 						<!-- Proposal -->
-						<Label Text="{l:Localize Proposal}" Style="{StaticResource Heading}" 
-                       Margin="{StaticResource DefaultTopOnlyMargin}" IsVisible="{Binding Path=IsProposal}" />
-						<Label Text="{Binding Path=Proposal}" Style="{StaticResource InfoText}" IsVisible="{Binding Path=IsProposal}" />
+						<Label Text="{l:Localize Proposal}" 
+                       Margin="{StaticResource SmallTopOnlyMargins}" IsVisible="{Binding Path=IsProposal}" />
+						<Label Text="{Binding Path=Proposal}" Style="{StaticResource InfoLabel}" IsVisible="{Binding Path=IsProposal}" />
 						<!-- HUMAN READABLE TEXT -->
-						<Label Text="{l:Localize HumanReadableText}" Style="{StaticResource Heading}" IsVisible="{Binding Path=HasHumanReadableText}" Margin="{StaticResource DefaultBottomOnlyMargin}" VerticalOptions="StartAndExpand" />
+						<Label Text="{l:Localize HumanReadableText}" IsVisible="{Binding Path=HasHumanReadableText}" Margin="{StaticResource SmallBottomOnlyMargins}" VerticalOptions="StartAndExpand" />
 						<ContentView Content="{Binding Path=HumanReadableText}" VerticalOptions="StartAndExpand"/>
 						<!-- GENERAL -->
-						<Label Text="{l:Localize GeneralInformation}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" />
-						<Label Text="{l:Localize GeneralInformationInfoText}" Style="{StaticResource InfoText}" />
+						<Label Text="{l:Localize GeneralInformation}" Margin="{StaticResource SmallTopOnlyMargins}" />
+						<Label Text="{l:Localize GeneralInformationInfoText}" Style="{StaticResource InfoLabel}" />
 						<StackLayout Orientation="Vertical" BindableLayout.ItemsSource="{Binding Path=GeneralInformation}">
 							<BindableLayout.ItemTemplate>
 								<DataTemplate x:DataType="objectmodel:PartModel">
 									<StackLayout Orientation="Horizontal">
 										<Label Text="{Binding Path=Key}" Style="{StaticResource KeyLabel}"/>
-										<Label LineBreakMode="NoWrap" Text="{Binding Path=Value}" Style="{StaticResource ValueLabelForContacrt}"
+										<Label LineBreakMode="NoWrap" Text="{Binding Path=Value}" Style="{StaticResource ValueLabel}"
                                        BackgroundColor="{Binding BgColor}"/>
 									</StackLayout>
 								</DataTemplate>
@@ -71,36 +71,36 @@
 							</ScrollView>
 						</StackLayout>
 						<!-- QR -->
-						<Image x:Name="QrCode" Source="{Binding Path=QrCode}" IsVisible="{Binding Path=HasQrCode}" WidthRequest="{Binding Path=QrCodeWidth, Mode=OneTime}" HeightRequest="{Binding Path=QrCodeHeight, Mode=OneTime}" VerticalOptions="StartAndExpand" HorizontalOptions="CenterAndExpand" Margin="{StaticResource DefaultTopOnlyMargin}" />
+						<Image x:Name="QrCode" Source="{Binding Path=QrCode}" IsVisible="{Binding Path=HasQrCode}" WidthRequest="{Binding Path=QrCodeWidth, Mode=OneTime}" HeightRequest="{Binding Path=QrCodeHeight, Mode=OneTime}" VerticalOptions="StartAndExpand" HorizontalOptions="CenterAndExpand" Margin="{StaticResource SmallTopOnlyMargins}" />
 						<!-- ROLES -->
-						<Label Text="{l:Localize Roles}" Style="{StaticResource Heading}" IsVisible="{Binding Path=HasRoles}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="StartAndExpand" />
-						<Label Text="{l:Localize RolesInfoText}" Style="{StaticResource InfoText}" IsVisible="{Binding Path=HasRoles}" VerticalOptions="StartAndExpand"/>
+						<Label Text="{l:Localize Roles}" IsVisible="{Binding Path=HasRoles}" Margin="{StaticResource SmallTopOnlyMargins}" VerticalOptions="StartAndExpand" />
+						<Label Text="{l:Localize RolesInfoText}" Style="{StaticResource InfoLabel}" IsVisible="{Binding Path=HasRoles}" VerticalOptions="StartAndExpand"/>
 						<ContentView Content="{Binding Path=Roles}" VerticalOptions="StartAndExpand"/>
 						<!-- PARTs -->
-						<Label Text="{l:Localize Parts}" Style="{StaticResource Heading}" IsVisible="{Binding Path=HasParts}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="StartAndExpand" />
-						<Label Text="{l:Localize PartsInfoText}" Style="{StaticResource InfoText}" IsVisible="{Binding Path=HasParts}"  VerticalOptions="StartAndExpand" />
+						<Label Text="{l:Localize Parts}" IsVisible="{Binding Path=HasParts}" Margin="{StaticResource SmallTopOnlyMargins}" VerticalOptions="StartAndExpand" />
+						<Label Text="{l:Localize PartsInfoText}" Style="{StaticResource InfoLabel}" IsVisible="{Binding Path=HasParts}"  VerticalOptions="StartAndExpand" />
 						<ContentView Content="{Binding Path=Parts}" VerticalOptions="StartAndExpand" />
 						<!-- PARAMETERS -->
-						<Label Text="{l:Localize Parameters}" Style="{StaticResource Heading}" IsVisible="{Binding Path=HasParameters}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="StartAndExpand" />
-						<Label Text="{l:Localize ParametersInfoText}" Style="{StaticResource InfoText}" IsVisible="{Binding Path=HasParameters}" VerticalOptions="StartAndExpand" />
+						<Label Text="{l:Localize Parameters}" IsVisible="{Binding Path=HasParameters}" Margin="{StaticResource SmallTopOnlyMargins}" VerticalOptions="StartAndExpand" />
+						<Label Text="{l:Localize ParametersInfoText}" Style="{StaticResource InfoLabel}" IsVisible="{Binding Path=HasParameters}" VerticalOptions="StartAndExpand" />
 						<ContentView Content="{Binding Path=Parameters}" VerticalOptions="StartAndExpand"/>
 						<!-- MACHINE READABLE TEXT -->
-						<Label Text="{l:Localize MachineReadableText}" Style="{StaticResource Heading}" IsVisible="{Binding Path=HasMachineReadableText}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="StartAndExpand" />
-						<Label Text="{l:Localize MachineReadableInfoText}" Style="{StaticResource InfoText}" IsVisible="{Binding Path=HasMachineReadableText}" VerticalOptions="StartAndExpand" />
+						<Label Text="{l:Localize MachineReadableText}" IsVisible="{Binding Path=HasMachineReadableText}" Margin="{StaticResource SmallTopOnlyMargins}" VerticalOptions="StartAndExpand" />
+						<Label Text="{l:Localize MachineReadableInfoText}" Style="{StaticResource InfoLabel}" IsVisible="{Binding Path=HasMachineReadableText}" VerticalOptions="StartAndExpand" />
 						<ContentView Content="{Binding Path=MachineReadableText}" VerticalOptions="StartAndExpand"/>
-						<Button Text="{l:Localize ShowDetails}" Margin="{StaticResource DefaultBottomOnlyMargin}"
+						<Button Text="{l:Localize ShowDetails}" Margin="{StaticResource SmallBottomOnlyMargins}"
                         Command="{Binding Path=ShowDetailsCommand}" IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
 						<!-- CLIENT SIGNATURES -->
-						<Label Text="{l:Localize ClientSignatures}" Style="{StaticResource Heading}" IsVisible="{Binding Path=HasClientSignatures}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="StartAndExpand" />
-						<Label Text="{l:Localize ClientSignaturesInfoText}" Style="{StaticResource InfoText}" IsVisible="{Binding Path=HasClientSignatures}" VerticalOptions="StartAndExpand" />
+						<Label Text="{l:Localize ClientSignatures}" IsVisible="{Binding Path=HasClientSignatures}" Margin="{StaticResource SmallTopOnlyMargins}" VerticalOptions="StartAndExpand" />
+						<Label Text="{l:Localize ClientSignaturesInfoText}" Style="{StaticResource InfoLabel}" IsVisible="{Binding Path=HasClientSignatures}" VerticalOptions="StartAndExpand" />
 						<ContentView Content="{Binding Path=ClientSignatures}" VerticalOptions="StartAndExpand"/>
 						<!-- SERVER SIGNATURES -->
-						<Label Text="{l:Localize ServerSignatures}" Style="{StaticResource Heading}" IsVisible="{Binding Path=HasServerSignatures}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="StartAndExpand" />
-						<Label Text="{l:Localize ServerSignaturesInfoText}" Style="{StaticResource InfoText}" IsVisible="{Binding Path=HasServerSignatures}" VerticalOptions="StartAndExpand" />
+						<Label Text="{l:Localize ServerSignatures}" IsVisible="{Binding Path=HasServerSignatures}" Margin="{StaticResource SmallTopOnlyMargins}" VerticalOptions="StartAndExpand" />
+						<Label Text="{l:Localize ServerSignaturesInfoText}" Style="{StaticResource InfoLabel}" IsVisible="{Binding Path=HasServerSignatures}" VerticalOptions="StartAndExpand" />
 						<ContentView Content="{Binding Path=ServerSignatures}" VerticalOptions="StartAndExpand"/>
 						<!-- BUTTONS -->
-						<Button Text="{l:Localize ObsoleteContract}" Command="{Binding Path=ObsoleteContractCommand}" IsVisible="{Binding Path=CanObsoleteContract}" Margin="{StaticResource DefaultTopAndBottomOnlyMargin}"/>
-						<Button Text="{l:Localize DeleteContract}" Command="{Binding Path=DeleteContractCommand}" IsVisible="{Binding Path=CanDeleteContract}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
+						<Button Text="{l:Localize ObsoleteContract}" Command="{Binding Path=ObsoleteContractCommand}" IsVisible="{Binding Path=CanObsoleteContract}" Margin="{StaticResource SmallTopAndBottomOnlyMargins}"/>
+						<Button Text="{l:Localize DeleteContract}" Command="{Binding Path=DeleteContractCommand}" IsVisible="{Binding Path=CanDeleteContract}" Margin="{StaticResource SmallBottomOnlyMargins}"/>
 						<image:ImageView x:Name="PhotoViewer" IsVisible="False"/>
 					</VerticalStackLayout>
 				</Frame>

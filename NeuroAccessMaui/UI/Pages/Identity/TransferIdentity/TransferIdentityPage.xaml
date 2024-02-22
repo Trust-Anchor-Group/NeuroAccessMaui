@@ -27,7 +27,7 @@
 
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout>
-						<Label Text="{l:Localize TransferIdentityInformationText}" Style="{StaticResource InfoText}" Margin="{StaticResource DefaultBottomOnlyMargin}" />
+						<Label Text="{l:Localize TransferIdentityInformationText}" Style="{StaticResource InfoLabel}" Margin="{StaticResource SmallBottomOnlyMargins}" />
 						<Image x:Name="QrCode" Source="{Binding Path=QrCode}" HorizontalOptions="CenterAndExpand" Margin="0"
                        WidthRequest="{Binding Path=QrCodeWidth, Mode=OneTime}" HeightRequest="{Binding Path=QrCodeHeight, Mode=OneTime}">
 							<Image.GestureRecognizers>

@@ -74,7 +74,7 @@
 				</CollectionView.ItemsLayout>
 			</controls:LoadingCollectionView>
 
-			<Grid x:Name="ControlGrid" ColumnDefinitions="*,40" Grid.Row="1" Margin="0,12,0,0">
+			<Grid x:Name="ControlGrid" ColumnDefinitions="*,40" Grid.Row="1" Margin="{StaticResource SmallTopOnlyMargins}">
 				<Frame CornerRadius="5" Padding="5,5,5,5"
 					   BorderColor="{AppThemeBinding Light={StaticResource ForegroundColorLightTheme}, Dark={StaticResource ForegroundColorDarkTheme}}">
 					<Frame.Behaviors>
@@ -90,7 +90,7 @@
 									Unfocused="OnEditorControlUnfocused"/>
 
 							<Button Grid.Column="1" HorizontalOptions="End" VerticalOptions="End"
-									CornerRadius="8" WidthRequest="40" HeightRequest="40" Margin="5,0,0,0"
+									CornerRadius="8" WidthRequest="40" HeightRequest="40" Margin="{StaticResource SmallLeftOnlyMargins}"
 									Text="❌" TextColor="{StaticResource TextColorLightTheme}" FontSize="Medium"
 									IsVisible="{Binding Path=IsWriting}" Command="{Binding CancelCommand}">
 								<Button.Behaviors>
@@ -136,7 +136,7 @@
 			</Grid>
 		</Grid>
 
-		<Grid HorizontalOptions="End" VerticalOptions="End" Margin="0,0,0,5">
+		<Grid HorizontalOptions="End" VerticalOptions="End" Margin="{StaticResource SmallBottomOnlyMargins}">
 			<controls:FadeView IsFrontView="{Binding Path=IsWriting, Converter={StaticResource InvertedBoolConverter}}">
 				<controls:FadeView.FrontView>
 					<mct:Expander Direction="Up" IsExpanded="{Binding IsButtonExpanded}">
@@ -147,7 +147,7 @@
 										Command="{Binding ExpandButtonsCommand}" />
 							</StackLayout>
 						</mct:Expander.Header>
-						<StackLayout Orientation="Vertical" Spacing="5" Margin="0,0,0,5" BackgroundColor="Transparent">
+						<StackLayout Orientation="Vertical" Spacing="5" Margin="{StaticResource SmallBottomOnlyMargins}" BackgroundColor="Transparent">
 							<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
 									Text="🎤" TextColor="{StaticResource TextColorLightTheme}" FontSize="Medium"
 									Command="{Binding RecordAudioCommand}"/>

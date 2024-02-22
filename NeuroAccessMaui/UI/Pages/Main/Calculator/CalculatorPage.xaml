@@ -12,14 +12,14 @@
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.Calculator">
 	<Grid RowDefinitions="auto,*,*,*,*,*,*,*" ColumnDefinitions="*,*,*,*,*" RowSpacing="2" ColumnSpacing="2" Padding="2" Margin="0">
-		<Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="5" Text="{Binding MemoryString}" Margin="10"
+		<Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="5" Text="{Binding MemoryString}" Margin="{StaticResource SmallMargins}"
 			   HorizontalOptions="Fill" VerticalOptions="Fill" HorizontalTextAlignment="Start" VerticalTextAlignment="Center"
 			   FontSize="Subtitle"/>
-		<Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="5" Text="{Binding StackString}" Margin="10"
+		<Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="5" Text="{Binding StackString}" Margin="{StaticResource SmallMargins}"
 			   HorizontalOptions="Fill" VerticalOptions="Fill" HorizontalTextAlignment="End" VerticalTextAlignment="Center"
 			   FontSize="Subtitle"/>
 		<Frame Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="5" HorizontalOptions="Fill" VerticalOptions="Fill"
-			   BorderColor="Black" Margin="5" CornerRadius="8" BackgroundColor="Transparent" Padding="20,5,20,5">
+			   BorderColor="Black" Margin="{StaticResource SmallMargins}" CornerRadius="8" BackgroundColor="Transparent" Padding="20,5,20,5">
 			<Label FontSize="30" HorizontalOptions="Fill" VerticalOptions="Fill"
 				   HorizontalTextAlignment="Start" VerticalTextAlignment="Center">
 				<Label.FormattedText>

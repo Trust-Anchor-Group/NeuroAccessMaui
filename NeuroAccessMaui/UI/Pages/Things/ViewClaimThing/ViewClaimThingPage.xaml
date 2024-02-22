@@ -25,8 +25,8 @@
 
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
-						<Label Text="{l:Localize InformationAboutThing}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
-						<Label Text="{l:Localize InformationAboutClaimedThingText}" Style="{StaticResource InfoText}" VerticalOptions="Start"/>
+						<Label Text="{l:Localize InformationAboutThing}" Margin="{StaticResource SmallTopOnlyMargins}" VerticalOptions="Start"/>
+						<Label Text="{l:Localize InformationAboutClaimedThingText}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"/>
 						<StackLayout x:Name="TagLayout" Orientation="Vertical" BindableLayout.ItemsSource="{Binding Path=Tags}" VerticalOptions="StartAndExpand" Margin="{StaticResource DefaultMargin}">
 							<BindableLayout.ItemTemplate>
 								<DataTemplate x:DataType="things:HumanReadableTag">
@@ -41,12 +41,12 @@
 								</DataTemplate>
 							</BindableLayout.ItemTemplate>
 						</StackLayout>
-						<StackLayout Orientation="Horizontal" Margin="{StaticResource DefaultTopAndBottomOnlyMargin}">
+						<StackLayout Orientation="Horizontal" Margin="{StaticResource SmallTopAndBottomOnlyMargins}">
 							<CheckBox IsChecked="{Binding Path=MakePublic, Mode=TwoWay}" VerticalOptions="Center"/>
 							<Label Text="{l:Localize MakeThingPublic}" VerticalOptions="Center" />
 						</StackLayout>
 						<!-- BUTTONS -->
-						<Button Text="{l:Localize ClaimThing}" Command="{Binding Path=ClaimThingCommand}" IsEnabled="{Binding Path=CanClaimThing}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
+						<Button Text="{l:Localize ClaimThing}" Command="{Binding Path=ClaimThingCommand}" IsEnabled="{Binding Path=CanClaimThing}" Margin="{StaticResource SmallBottomOnlyMargins}"/>
 					</VerticalStackLayout>
 				</Frame>
 			</VerticalStackLayout>

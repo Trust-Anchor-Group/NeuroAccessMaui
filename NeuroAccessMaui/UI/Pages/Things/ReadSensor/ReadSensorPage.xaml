@@ -19,8 +19,8 @@
 		</DataTemplate>
 
 		<DataTemplate x:Key="HeaderModelTemplate" x:DataType="model:HeaderModel">
-			<Label Text="{Binding Path=Label}" Style="{StaticResource Heading}" HorizontalOptions="Center"
-				   Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
+			<Label Text="{Binding Path=Label}" HorizontalOptions="Center"
+				   Margin="{StaticResource SmallTopOnlyMargins}" VerticalOptions="Start"/>
 		</DataTemplate>
 
 		<DataTemplate x:Key="TagTemplate" x:DataType="things:HumanReadableTag">
@@ -79,8 +79,8 @@
 
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
-						<Label Text="{l:Localize SensorDataText}" Style="{StaticResource InfoText}" VerticalOptions="Start"/>
-						<Label Text="{Binding Path=Status}" Style="{StaticResource InfoText}" VerticalOptions="Center" IsVisible="{Binding Path=HasStatus}"/>
+						<Label Text="{l:Localize SensorDataText}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"/>
+						<Label Text="{Binding Path=Status}" Style="{StaticResource InfoLabel}" VerticalOptions="Center" IsVisible="{Binding Path=HasStatus}"/>
 						<StackLayout x:Name="SensorData" VerticalOptions="StartAndExpand" HorizontalOptions="StartAndExpand"
 							 BindableLayout.ItemsSource="{Binding SensorData}"
 							 BindableLayout.ItemTemplateSelector="{StaticResource ItemStyleSelector}"/>

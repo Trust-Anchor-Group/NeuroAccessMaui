@@ -47,7 +47,7 @@
 							</Image.GestureRecognizers>
 						</Image>
 
-						<HorizontalStackLayout HorizontalOptions="Center" Spacing="{StaticResource SmallSpacing}" Margin="0,0,0,12">
+						<HorizontalStackLayout HorizontalOptions="Center" Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource SmallBottomOnlyMargins}">
 							<Path VerticalOptions="Center" HeightRequest="20" WidthRequest="20" Aspect="Uniform"
 									Data="{x:Static ui:Geometries.CirclePath}"
 									Fill="{Binding State, Converter={converters:IdentityStateToColor}}" />
@@ -84,52 +84,52 @@
 								<RowDefinition Height="{Binding BirthDate, Converter={converters:AutoIfNonEmpty}}" />
 								<RowDefinition Height="{Binding HasPhotos, Converter={converters:AutoIfNonEmpty}}" />
 							</Grid.RowDefinitions>
-							<Label Grid.Row="0" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize FirstName}" />
-							<Label Grid.Row="0" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding FirstName}" />
+							<Label Grid.Row="0" Grid.Column="0" Margin="{StaticResource SmallTopAndRightOnlyMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize FirstName}" />
+							<Label Grid.Row="0" Grid.Column="1" Margin="{StaticResource SmallTopOnlyMargins}" Style="{StaticResource ValueLabel}" Text="{Binding FirstName}" />
 							<!--    -->
-							<Label Grid.Row="1" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize MiddleNames}" />
-							<Label Grid.Row="1" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding MiddleNames}" />
+							<Label Grid.Row="1" Grid.Column="0" Margin="{StaticResource SmallTopAndRightOnlyMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize MiddleNames}" />
+							<Label Grid.Row="1" Grid.Column="1" Margin="{StaticResource SmallTopOnlyMargins}" Style="{StaticResource ValueLabel}" Text="{Binding MiddleNames}" />
 							<!--    -->
-							<Label Grid.Row="2" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize LastNames}" />
-							<Label Grid.Row="2" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding LastNames}" />
+							<Label Grid.Row="2" Grid.Column="0" Margin="{StaticResource SmallTopAndRightOnlyMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize LastNames}" />
+							<Label Grid.Row="2" Grid.Column="1" Margin="{StaticResource SmallTopOnlyMargins}" Style="{StaticResource ValueLabel}" Text="{Binding LastNames}" />
 							<!--    -->
-							<Label Grid.Row="3" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize PersonalNumber}" />
-							<Label Grid.Row="3" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding PersonalNumber}" />
+							<Label Grid.Row="3" Grid.Column="0" Margin="{StaticResource SmallTopAndRightOnlyMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize PersonalNumber}" />
+							<Label Grid.Row="3" Grid.Column="1" Margin="{StaticResource SmallTopOnlyMargins}" Style="{StaticResource ValueLabel}" Text="{Binding PersonalNumber}" />
 							<!--    -->
-							<Label Grid.Row="4" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize Address}" />
-							<Label Grid.Row="4" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding Address}" />
+							<Label Grid.Row="4" Grid.Column="0" Margin="{StaticResource SmallTopAndRightOnlyMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Address}" />
+							<Label Grid.Row="4" Grid.Column="1" Margin="{StaticResource SmallTopOnlyMargins}" Style="{StaticResource ValueLabel}" Text="{Binding Address}" />
 							<!--    -->
-							<Label Grid.Row="5" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize Address2}" />
-							<Label Grid.Row="5" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding Address2}" />
+							<Label Grid.Row="5" Grid.Column="0" Margin="{StaticResource SmallTopAndRightOnlyMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Address2}" />
+							<Label Grid.Row="5" Grid.Column="1" Margin="{StaticResource SmallTopOnlyMargins}" Style="{StaticResource ValueLabel}" Text="{Binding Address2}" />
 							<!--    -->
-							<Label Grid.Row="6" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize ZipCode}" />
-							<Label Grid.Row="6" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding ZipCode}" />
+							<Label Grid.Row="6" Grid.Column="0" Margin="{StaticResource SmallTopAndRightOnlyMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize ZipCode}" />
+							<Label Grid.Row="6" Grid.Column="1" Margin="{StaticResource SmallTopOnlyMargins}" Style="{StaticResource ValueLabel}" Text="{Binding ZipCode}" />
 							<!--    -->
-							<Label Grid.Row="7" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize Area}" />
-							<Label Grid.Row="7" Grid.Column="1" Margin="0,6,0,0" FontAttributes="Bold" Text="{Binding Area}" />
+							<Label Grid.Row="7" Grid.Column="0" Margin="{StaticResource SmallTopAndRightOnlyMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Area}" />
+							<Label Grid.Row="7" Grid.Column="1" Margin="{StaticResource SmallTopOnlyMargins}" FontAttributes="Bold" Text="{Binding Area}" />
 							<!--    -->
-							<Label Grid.Row="8" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize City}" />
-							<Label Grid.Row="8" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding City}" />
+							<Label Grid.Row="8" Grid.Column="0" Margin="{StaticResource SmallTopAndRightOnlyMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize City}" />
+							<Label Grid.Row="8" Grid.Column="1" Margin="{StaticResource SmallTopOnlyMargins}" Style="{StaticResource ValueLabel}" Text="{Binding City}" />
 							<!--    -->
-							<Label Grid.Row="9" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize Region}" />
-							<Label Grid.Row="9" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding Region}" />
+							<Label Grid.Row="9" Grid.Column="0" Margin="{StaticResource SmallTopAndRightOnlyMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Region}" />
+							<Label Grid.Row="9" Grid.Column="1" Margin="{StaticResource SmallTopOnlyMargins}" Style="{StaticResource ValueLabel}" Text="{Binding Region}" />
 							<!--    -->
-							<Label Grid.Row="10" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize Country}" />
-							<Label Grid.Row="10" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding CountryCode, Converter={converters:CountryCodeToFlagAndName}}" />
+							<Label Grid.Row="10" Grid.Column="0" Margin="{StaticResource SmallTopAndRightOnlyMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Country}" />
+							<Label Grid.Row="10" Grid.Column="1" Margin="{StaticResource SmallTopOnlyMargins}" Style="{StaticResource ValueLabel}" Text="{Binding CountryCode, Converter={converters:CountryCodeToFlagAndName}}" />
 							<!--    -->
-							<Label Grid.Row="11" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize Nationality}" />
-							<Label Grid.Row="11" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding NationalityCode, Converter={converters:CountryCodeToFlagAndName}}" />
+							<Label Grid.Row="11" Grid.Column="0" Margin="{StaticResource SmallTopAndRightOnlyMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Nationality}" />
+							<Label Grid.Row="11" Grid.Column="1" Margin="{StaticResource SmallTopOnlyMargins}" Style="{StaticResource ValueLabel}" Text="{Binding NationalityCode, Converter={converters:CountryCodeToFlagAndName}}" />
 							<!--    -->
-							<Label Grid.Row="12" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize Gender}" />
-							<Label Grid.Row="12" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding Gender, Converter={converters:GenderCodeToSymbolAndLabel}}" />
+							<Label Grid.Row="12" Grid.Column="0" Margin="{StaticResource SmallTopAndRightOnlyMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Gender}" />
+							<Label Grid.Row="12" Grid.Column="1" Margin="{StaticResource SmallTopOnlyMargins}" Style="{StaticResource ValueLabel}" Text="{Binding Gender, Converter={converters:GenderCodeToSymbolAndLabel}}" />
 							<!--    -->
-							<Label Grid.Row="13" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize BirthDate}" />
-							<Label Grid.Row="13" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding BirthDate, Converter={converters:DateToString}}" />
+							<Label Grid.Row="13" Grid.Column="0" Margin="{StaticResource SmallTopAndRightOnlyMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize BirthDate}" />
+							<Label Grid.Row="13" Grid.Column="1" Margin="{StaticResource SmallTopOnlyMargins}" Style="{StaticResource ValueLabel}" Text="{Binding BirthDate, Converter={converters:DateToString}}" />
 
 							<!--    -->
-							<Label Grid.Row="14" Grid.Column="0" Margin="0,6,6,0" HorizontalOptions="StartAndExpand" Text="{l:Localize Photos}"
+							<Label Grid.Row="14" Grid.Column="0" Margin="{StaticResource SmallTopAndRightOnlyMargins}" HorizontalOptions="StartAndExpand" Text="{l:Localize Photos}"
 								 Style="{StaticResource KeyLabel}" IsVisible="{Binding HasPhotos}"/>
-							<ScrollView Grid.Row="14" Grid.Column="1" Margin="0,6,0,0" HeightRequest="68" Orientation="Horizontal"
+							<ScrollView Grid.Row="14" Grid.Column="1" Margin="{StaticResource SmallTopOnlyMargins}" HeightRequest="68" Orientation="Horizontal"
 										IsVisible="{Binding HasPhotos}">
 								<FlexLayout x:Name="PhotosLayout" AlignContent="Center" AlignItems="Center" BindableLayout.ItemsSource="{Binding Photos}"
 											Direction="Row" JustifyContent="Start">
@@ -173,38 +173,38 @@
 								<RowDefinition Height="{Binding OrgCountryCode, Converter={converters:AutoIfNonEmpty}}" />
 							</Grid.RowDefinitions>
 
-							<Label Grid.Row="0" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize OrgName}" />
-							<Label Grid.Row="0" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding OrgName}" />
+							<Label Grid.Row="0" Grid.Column="0" Margin="{StaticResource SmallTopAndRightOnlyMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize OrgName}" />
+							<Label Grid.Row="0" Grid.Column="1" Margin="{StaticResource SmallTopOnlyMargins}" Style="{StaticResource ValueLabel}" Text="{Binding OrgName}" />
 							<!--    -->
-							<Label Grid.Row="1" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize OrgNumber}" />
-							<Label Grid.Row="1" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding OrgNumber}" />
+							<Label Grid.Row="1" Grid.Column="0" Margin="{StaticResource SmallTopAndRightOnlyMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize OrgNumber}" />
+							<Label Grid.Row="1" Grid.Column="1" Margin="{StaticResource SmallTopOnlyMargins}" Style="{StaticResource ValueLabel}" Text="{Binding OrgNumber}" />
 							<!--    -->
-							<Label Grid.Row="2" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize OrgRole}" />
-							<Label Grid.Row="2" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding OrgRole}" />
+							<Label Grid.Row="2" Grid.Column="0" Margin="{StaticResource SmallTopAndRightOnlyMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize OrgRole}" />
+							<Label Grid.Row="2" Grid.Column="1" Margin="{StaticResource SmallTopOnlyMargins}" Style="{StaticResource ValueLabel}" Text="{Binding OrgRole}" />
 							<!--    -->
-							<Label Grid.Row="3" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize OrgDepartment}" />
-							<Label Grid.Row="3" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding OrgDepartment}" />
+							<Label Grid.Row="3" Grid.Column="0" Margin="{StaticResource SmallTopAndRightOnlyMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize OrgDepartment}" />
+							<Label Grid.Row="3" Grid.Column="1" Margin="{StaticResource SmallTopOnlyMargins}" Style="{StaticResource ValueLabel}" Text="{Binding OrgDepartment}" />
 							<!--    -->
-							<Label Grid.Row="4" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize Address}" />
-							<Label Grid.Row="4" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding OrgAddress}" />
+							<Label Grid.Row="4" Grid.Column="0" Margin="{StaticResource SmallTopAndRightOnlyMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Address}" />
+							<Label Grid.Row="4" Grid.Column="1" Margin="{StaticResource SmallTopOnlyMargins}" Style="{StaticResource ValueLabel}" Text="{Binding OrgAddress}" />
 							<!--    -->
-							<Label Grid.Row="5" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize Address2}" />
-							<Label Grid.Row="5" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding OrgAddress2}" />
+							<Label Grid.Row="5" Grid.Column="0" Margin="{StaticResource SmallTopAndRightOnlyMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Address2}" />
+							<Label Grid.Row="5" Grid.Column="1" Margin="{StaticResource SmallTopOnlyMargins}" Style="{StaticResource ValueLabel}" Text="{Binding OrgAddress2}" />
 							<!--    -->
-							<Label Grid.Row="6" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize ZipCode}" />
-							<Label Grid.Row="6" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding OrgZipCode}" />
+							<Label Grid.Row="6" Grid.Column="0" Margin="{StaticResource SmallTopAndRightOnlyMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize ZipCode}" />
+							<Label Grid.Row="6" Grid.Column="1" Margin="{StaticResource SmallTopOnlyMargins}" Style="{StaticResource ValueLabel}" Text="{Binding OrgZipCode}" />
 							<!--    -->
-							<Label Grid.Row="7" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize Area}" />
-							<Label Grid.Row="7" Grid.Column="1" Margin="0,6,0,0" FontAttributes="Bold" Text="{Binding OrgArea}" />
+							<Label Grid.Row="7" Grid.Column="0" Margin="{StaticResource SmallTopAndRightOnlyMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Area}" />
+							<Label Grid.Row="7" Grid.Column="1" Margin="{StaticResource SmallTopOnlyMargins}" FontAttributes="Bold" Text="{Binding OrgArea}" />
 							<!--    -->
-							<Label Grid.Row="8" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize City}" />
-							<Label Grid.Row="8" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding OrgCity}" />
+							<Label Grid.Row="8" Grid.Column="0" Margin="{StaticResource SmallTopAndRightOnlyMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize City}" />
+							<Label Grid.Row="8" Grid.Column="1" Margin="{StaticResource SmallTopOnlyMargins}" Style="{StaticResource ValueLabel}" Text="{Binding OrgCity}" />
 							<!--    -->
-							<Label Grid.Row="9" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize Region}" />
-							<Label Grid.Row="9" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding OrgRegion}" />
+							<Label Grid.Row="9" Grid.Column="0" Margin="{StaticResource SmallTopAndRightOnlyMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Region}" />
+							<Label Grid.Row="9" Grid.Column="1" Margin="{StaticResource SmallTopOnlyMargins}" Style="{StaticResource ValueLabel}" Text="{Binding OrgRegion}" />
 							<!--    -->
-							<Label Grid.Row="10" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize Country}" />
-							<Label Grid.Row="10" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding OrgCountryCode, Converter={converters:CountryCodeToFlagAndName}}" />
+							<Label Grid.Row="10" Grid.Column="0" Margin="{StaticResource SmallTopAndRightOnlyMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Country}" />
+							<Label Grid.Row="10" Grid.Column="1" Margin="{StaticResource SmallTopOnlyMargins}" Style="{StaticResource ValueLabel}" Text="{Binding OrgCountryCode, Converter={converters:CountryCodeToFlagAndName}}" />
 						</Grid>
 					</VerticalStackLayout>
 				</Frame>
@@ -228,23 +228,23 @@
 								<RowDefinition Height="{Binding DeviceId, Converter={converters:AutoIfNonEmpty}}" />
 							</Grid.RowDefinitions>
 
-							<Label Grid.Row="0" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize Created}" />
-							<Label Grid.Row="0" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding Created, Converter={converters:DateToString}}" />
+							<Label Grid.Row="0" Grid.Column="0" Margin="{StaticResource SmallTopAndRightOnlyMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Created}" />
+							<Label Grid.Row="0" Grid.Column="1" Margin="{StaticResource SmallTopOnlyMargins}" Style="{StaticResource ValueLabel}" Text="{Binding Created, Converter={converters:DateToString}}" />
 							<!--    -->
-							<Label Grid.Row="1" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize Expires}" />
-							<Label Grid.Row="1" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ValueLabel}" Text="{Binding Expires, Converter={converters:DateToString}}" />
+							<Label Grid.Row="1" Grid.Column="0" Margin="{StaticResource SmallTopAndRightOnlyMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Expires}" />
+							<Label Grid.Row="1" Grid.Column="1" Margin="{StaticResource SmallTopOnlyMargins}" Style="{StaticResource ValueLabel}" Text="{Binding Expires, Converter={converters:DateToString}}" />
 							<!--    -->
-							<Label Grid.Row="2" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}" Text="{l:Localize NeuroID}" />
-							<Label Grid.Row="2" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ClickableValueLabel}" Text="{Binding LegalId}">
+							<Label Grid.Row="2" Grid.Column="0" Margin="{StaticResource SmallTopAndRightOnlyMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize NeuroID}" />
+							<Label Grid.Row="2" Grid.Column="1" Margin="{StaticResource SmallTopOnlyMargins}" Style="{StaticResource ClickableValueLabel}" Text="{Binding LegalId}">
 								<Label.GestureRecognizers>
 									<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding LegalId}" />
 								</Label.GestureRecognizers>
 							</Label>
 
 							<!--    -->
-							<Label Grid.Row="3" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}"
+							<Label Grid.Row="3" Grid.Column="0" Margin="{StaticResource SmallTopAndRightOnlyMargins}" Style="{StaticResource KeyLabel}"
 								 Text="{l:Localize NetworkID}" IsVisible="{Binding NetworkId, Converter={converters:OnlyShowNonEmpty}}"/>
-							<Label Grid.Row="3" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ClickableValueLabel}"
+							<Label Grid.Row="3" Grid.Column="1" Margin="{StaticResource SmallTopOnlyMargins}" Style="{StaticResource ClickableValueLabel}"
 								 Text="{Binding NetworkId}" IsVisible="{Binding NetworkId, Converter={converters:OnlyShowNonEmpty}}">
 								<Label.GestureRecognizers>
 									<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding NetworkId}" />
@@ -252,9 +252,9 @@
 							</Label>
 
 							<!--    -->
-							<Label Grid.Row="4" Grid.Column="0" Margin="0,6,6,0" Style="{StaticResource KeyLabel}"
+							<Label Grid.Row="4" Grid.Column="0" Margin="{StaticResource SmallTopAndRightOnlyMargins}" Style="{StaticResource KeyLabel}"
 								 Text="{l:Localize DeviceID}" IsVisible="{Binding DeviceId, Converter={converters:OnlyShowNonEmpty}}"/>
-							<Label Grid.Row="4" Grid.Column="1" Margin="0,6,0,0" Style="{StaticResource ClickableValueLabel}"
+							<Label Grid.Row="4" Grid.Column="1" Margin="{StaticResource SmallTopOnlyMargins}" Style="{StaticResource ClickableValueLabel}"
 								 Text="{Binding DeviceId}" IsVisible="{Binding DeviceId, Converter={converters:OnlyShowNonEmpty}}">
 								<Label.GestureRecognizers>
 									<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding DeviceId}" />

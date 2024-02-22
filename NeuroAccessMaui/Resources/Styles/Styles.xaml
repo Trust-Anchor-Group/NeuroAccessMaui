@@ -14,9 +14,20 @@
 	<s:Double x:Key="MediumStrokeThickness">2</s:Double>
 	<s:Double x:Key="BoldStrokeThickness">4</s:Double>
 	<Thickness x:Key="SmallMargins">8</Thickness>
+	<Thickness x:Key="SmallLeftOnlyMargins">8,0,0,0</Thickness>
 	<Thickness x:Key="SmallBottomOnlyMargins">0,0,0,8</Thickness>
+	<Thickness x:Key="SmallTopOnlyMargins">0,8,0,0</Thickness>
+	<Thickness x:Key="SmallTopAndBottomOnlyMargins">0,8,0,8</Thickness>
+	<Thickness x:Key="SmallTopAndRightOnlyMargins">0,8,8,0</Thickness>
+	<Thickness x:Key="SmallLeftAndRightAndBottomMargins">8,0,8,8</Thickness>
 	<Thickness x:Key="MediumMargins">16</Thickness>
+	<Thickness x:Key="MediumBottomOnlyMargins">0,0,0,16</Thickness>
+	<Thickness x:Key="MediumTopOnlyMargins">0,16,0,0</Thickness>
+	<Thickness x:Key="MediumTopAndBottomOnlyMargins">0,16,0,16</Thickness>
 	<Thickness x:Key="LargeMargins">24</Thickness>
+	<Thickness x:Key="LargeBottomOnlyMargins">0,0,0,24</Thickness>
+	<Thickness x:Key="LargeTopOnlyMargins">0,24,0,0</Thickness>
+	<Thickness x:Key="LargeTopAndBottomOnlyMargins">0,24,0,24</Thickness>
 	<Thickness x:Key="ButtonThinMargins">16,8</Thickness>
 	<Thickness x:Key="ButtonMediumMargins">24,12</Thickness>
 
