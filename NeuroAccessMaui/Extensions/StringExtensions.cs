@@ -64,30 +64,38 @@ namespace NeuroAccessMaui.Extensions
 		}
 
 		/// <summary>
-		/// Converts Markdown text to Xamarin XAML
+		/// Converts Markdown text to Maui XAML
 		/// </summary>
 		/// <param name="Markdown">Markdown</param>
-		/// <returns>Xamarin XAML</returns>
-		public static async Task<object> MarkdownToXaml(this string Markdown)
+		/// <returns>Maui XAML</returns>
+		public static async Task<string> MarkdownToXaml(this string Markdown)
+		{
+			MarkdownSettings Settings = new()
+			{
+				AllowScriptTag = false,
+				EmbedEmojis = false,    // TODO: Emojis
+				AudioAutoplay = false,
+				AudioControls = false,
+				ParseMetaData = false,
+				VideoAutoplay = false,
+				VideoControls = false
+			};
+
+			MarkdownDocument Doc = await MarkdownDocument.CreateAsync(Markdown, Settings);
+
+			return await Doc.GenerateMauiXaml();
+		}
+
+		/// <summary>
+		/// Converts Markdown text to Maui XAML
+		/// </summary>
+		/// <param name="Markdown">Markdown</param>
+		/// <returns>Maui XAML</returns>
+		public static async Task<object> MarkdownToParsedXaml(this string Markdown)
 		{
 			try
 			{
-				MarkdownSettings Settings = new()
-				{
-					AllowScriptTag = false,
-					EmbedEmojis = false,    // TODO: Emojis
-					AudioAutoplay = false,
-					AudioControls = false,
-					ParseMetaData = false,
-					VideoAutoplay = false,
-					VideoControls = false
-				};
-
-				MarkdownDocument Doc = await MarkdownDocument.CreateAsync(Markdown, Settings);
-
-				string Xaml = await Doc.GenerateMauiXaml();
-				Xaml = Xaml.Replace("TextColor=\"{Binding HyperlinkColor}\"", "Style=\"{StaticResource HyperlinkColor}\"");
-
+				string Xaml = await Markdown.MarkdownToXaml();
 				return new VerticalStackLayout().LoadFromXaml(Xaml);
 			}
 			catch (Exception ex)

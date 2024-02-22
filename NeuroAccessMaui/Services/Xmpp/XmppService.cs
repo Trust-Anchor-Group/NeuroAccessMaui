@@ -4825,11 +4825,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <returns>String-representation of XAML of report.</returns>
 		public async Task<string> GenerateNeuroFeatureStateDiagramReport(string TokenId)
 		{
-			ReportEventArgs e = await this.NeuroFeaturesClient.GenerateStateDiagramAsync(TokenId, ReportFormat.XamarinXaml);
+			ReportEventArgs e = await this.NeuroFeaturesClient.GenerateStateDiagramAsync(TokenId, ReportFormat.Markdown);
 			if (!e.Ok)
 				throw e.StanzaError ?? new Exception(ServiceRef.Localizer[nameof(AppResources.UnableToGetStateDiagram)]);
 
-			return e.ReportText;
+			return await e.ReportText.MarkdownToXaml();
 		}
 
 		/// <summary>
@@ -4838,11 +4838,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <returns>String-representation of XAML of report.</returns>
 		public async Task<string> GenerateNeuroFeatureProfilingReport(string TokenId)
 		{
-			ReportEventArgs e = await this.NeuroFeaturesClient.GenerateProfilingReportAsync(TokenId, ReportFormat.XamarinXaml);
+			ReportEventArgs e = await this.NeuroFeaturesClient.GenerateProfilingReportAsync(TokenId, ReportFormat.Markdown);
 			if (!e.Ok)
 				throw e.StanzaError ?? new Exception(ServiceRef.Localizer[nameof(AppResources.UnableToGetProfiling)]);
 
-			return e.ReportText;
+			return await e.ReportText.MarkdownToXaml();
 		}
 
 		/// <summary>
@@ -4851,11 +4851,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <returns>String-representation of XAML of report.</returns>
 		public async Task<string> GenerateNeuroFeaturePresentReport(string TokenId)
 		{
-			ReportEventArgs e = await this.NeuroFeaturesClient.GeneratePresentReportAsync(TokenId, ReportFormat.XamarinXaml);
+			ReportEventArgs e = await this.NeuroFeaturesClient.GeneratePresentReportAsync(TokenId, ReportFormat.Markdown);
 			if (!e.Ok)
 				throw e.StanzaError ?? new Exception(ServiceRef.Localizer[nameof(AppResources.UnableToGetPresent)]);
 
-			return e.ReportText;
+			return await e.ReportText.MarkdownToXaml();
 		}
 
 		/// <summary>
@@ -4864,11 +4864,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <returns>String-representation of XAML of report.</returns>
 		public async Task<string> GenerateNeuroFeatureHistoryReport(string TokenId)
 		{
-			ReportEventArgs e = await this.NeuroFeaturesClient.GenerateHistoryReportAsync(TokenId, ReportFormat.XamarinXaml);
+			ReportEventArgs e = await this.NeuroFeaturesClient.GenerateHistoryReportAsync(TokenId, ReportFormat.Markdown);
 			if (!e.Ok)
 				throw e.StanzaError ?? new Exception(ServiceRef.Localizer[nameof(AppResources.UnableToGetHistory)]);
 
-			return e.ReportText;
+			return await e.ReportText.MarkdownToXaml();
 		}
 
 		/// <summary>

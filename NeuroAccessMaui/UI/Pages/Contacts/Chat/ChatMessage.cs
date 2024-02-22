@@ -195,7 +195,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 
 			if (!string.IsNullOrEmpty(this.markdown))
 			{
-				this.parsedXaml = await this.markdown.MarkdownToXaml();
+				this.parsedXaml = await this.markdown.MarkdownToParsedXaml();
 				if (this.parsedXaml is VerticalStackLayout Layout)
 					Layout.StyleId = this.StyleId;
 			}

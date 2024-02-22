@@ -1,6 +1,6 @@
-﻿using NeuroAccessMaui.Services.Contacts;
+﻿using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.UI.Photos;
-using NeuroAccessMaui.UI.Rendering;
+using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 using System.Globalization;
 using System.Text;
 using System.Xml;
@@ -9,19 +9,19 @@ using Waher.Content.Markdown.Model;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Runtime.Inventory;
 
-namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.CodeBlocks
+namespace NeuroAccessMaui.UI.Rendering.CodeContent
 {
 	/// <summary>
-	/// Handles embedded Legal IDs.
+	/// Handles embedded Smart Contracts.
 	/// </summary>
-	public class IoTIdCodeBlock : ICodeContent, ICodeContentMauiXamlRenderer
+	public class IoTScCodeBlock : ICodeContent, ICodeContentMauiXamlRenderer
 	{
 		private MarkdownDocument? document;
 
 		/// <summary>
-		/// Handles embedded Legal IDs.
+		/// Handles embedded Smart Contracts.
 		/// </summary>
-		public IoTIdCodeBlock()
+		public IoTScCodeBlock()
 		{
 		}
 
@@ -31,12 +31,12 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.CodeBlocks
 		public MarkdownDocument? Document => this.document;
 
 		/// <summary>
-		/// Generates Xamarin XAML
+		/// Generates Maui XAML
 		/// </summary>
 		public async Task<bool> RenderMauiXaml(MauiXamlRenderer Renderer, string[] Rows, string Language, int Indent, MarkdownDocument Document)
 		{
 			XmlWriter Output = Renderer.XmlOutput;
-			LegalIdentity Identity;
+			Contract Contract;
 
 			try
 			{
@@ -51,7 +51,11 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.CodeBlocks
 				};
 				Doc.LoadXml(sb.ToString());
 
-				Identity = LegalIdentity.Parse(Doc.DocumentElement);
+				ParsedContract Parsed = await Contract.Parse(Doc.DocumentElement, ServiceRef.XmppService.ContractsClient);
+				if (Parsed is null)
+					return false;
+
+				Contract = Parsed.Contract;
 			}
 			catch (Exception ex)
 			{
@@ -69,9 +73,9 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.CodeBlocks
 
 			bool ImageShown = false;
 
-			if (Identity.Attachments is not null)
+			if (Contract.Attachments is not null)
 			{
-				(string? FileName, int Width, int Height) = await PhotosLoader.LoadPhotoAsTemporaryFile(Identity.Attachments, 300, 300);
+				(string? FileName, int Width, int Height) = await PhotosLoader.LoadPhotoAsTemporaryFile(Contract.Attachments, 300, 300);
 
 				if (!string.IsNullOrEmpty(FileName))
 				{
@@ -88,27 +92,29 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.CodeBlocks
 			if (!ImageShown)
 			{
 				Output.WriteStartElement("Label");
-				Output.WriteAttributeString("Text", "👤");   // TODO: SVG icon.
+				Output.WriteAttributeString("Text", "¶"); // TODO: SVG icon
 				Output.WriteAttributeString("FontSize", "Large");
 				Output.WriteAttributeString("HorizontalOptions", "Center");
 				Output.WriteEndElement();
 			}
 
+			string? FriendlyName = await ContractModel.GetCategory(Contract);
+
 			Output.WriteStartElement("Label");
 			Output.WriteAttributeString("LineBreakMode", "WordWrap");
 			Output.WriteAttributeString("FontSize", "Medium");
 			Output.WriteAttributeString("HorizontalOptions", "Center");
-			Output.WriteAttributeString("Text", ContactInfo.GetFriendlyName(Identity));
+			Output.WriteAttributeString("Text", FriendlyName);
 			Output.WriteEndElement();
 
 			Output.WriteStartElement("VerticalStackLayout.GestureRecognizers");
 
 			StringBuilder Xml = new();
-			Identity.Serialize(Xml, true, true, true, true, true, true, true);
+			Contract.Serialize(Xml, true, true, true, true, true, true, true);
 
 			Output.WriteStartElement("TapGestureRecognizer");
-			Output.WriteAttributeString("Command", "{Binding Path=IotIdUriClicked}");
-			Output.WriteAttributeString("CommandParameter", Constants.UriSchemes.IotId + ":" + Xml.ToString());
+			Output.WriteAttributeString("Command", "{Binding Path=IotScUriClicked}");
+			Output.WriteAttributeString("CommandParameter", Constants.UriSchemes.IotSc + ":" + Xml.ToString());
 			Output.WriteEndElement();
 
 			Output.WriteEndElement();
@@ -133,7 +139,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.CodeBlocks
 		/// <returns>Grade of support.</returns>
 		public Grade Supports(string Language)
 		{
-			return string.Equals(Language, Constants.UriSchemes.IotId, StringComparison.OrdinalIgnoreCase) ? Grade.Excellent : Grade.NotAtAll;
+			return string.Equals(Language, Constants.UriSchemes.IotSc, StringComparison.OrdinalIgnoreCase) ? Grade.Excellent : Grade.NotAtAll;
 		}
 	}
 }

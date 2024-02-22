@@ -59,7 +59,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 				this.CertifierCanDestroy = args.Token?.CertifierCanDestroy ?? false;
 				this.FriendlyName = args.Token?.FriendlyName;
 				this.Category = args.Token?.Category;
-				this.Description = args.Token?.Description is null ? null : await args.Token.Description.MarkdownToXaml();
+				this.Description = args.Token?.Description is null ? null : await args.Token.Description.MarkdownToParsedXaml();
 				this.GlyphContentType = args.Token?.GlyphContentType;
 				this.Ordinal = args.Token?.Ordinal;
 				this.Value = args.Token?.Value;
@@ -97,14 +97,14 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 						RefUri.Scheme.ToLower(CultureInfo.InvariantCulture) is string s &&
 						(s == "http" || s == "https"))
 					{
-						this.page.AddLink(this, ServiceRef.Localizer[nameof(AppResources.Reference)], s);   // TODO: Replace with grouped collection, when this works in Xamarin.
+						this.page.AddLink(this, ServiceRef.Localizer[nameof(AppResources.Reference)], s);   // TODO: Replace with grouped collection, when this works in Maui.
 					}
 				}
 
 				if (args.Token?.Tags is not null)
 				{
 					foreach (TokenTag Tag in args.Token.Tags)
-						this.page.AddLink(this, Tag.Name, Tag.Value?.ToString() ?? string.Empty);   // TODO: Replace with grouped collection, when this works in Xamarin.
+						this.page.AddLink(this, Tag.Name, Tag.Value?.ToString() ?? string.Empty);   // TODO: Replace with grouped collection, when this works in Maui.
 				}
 
 				if (this.TokenId is not null)
@@ -158,10 +158,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 
 				Parts.Add(new PartItem(LegalIds[i], Jid, FriendlyName));
 
-				this.page.AddLegalId(this, LegalIdLabel, FriendlyName, LegalIds[i]);    // TODO: Replace with grouped collection, when this works in Xamarin.
+				this.page.AddLegalId(this, LegalIdLabel, FriendlyName, LegalIds[i]);    // TODO: Replace with grouped collection, when this works in Maui.
 
 				if (!string.IsNullOrEmpty(Jid))
-					this.page.AddJid(this, JidLabel, Jid, LegalIds[i], FriendlyName);   // TODO: Replace with grouped collection, when this works in Xamarin.
+					this.page.AddJid(this, JidLabel, Jid, LegalIds[i], FriendlyName);   // TODO: Replace with grouped collection, when this works in Maui.
 			}
 		}
 

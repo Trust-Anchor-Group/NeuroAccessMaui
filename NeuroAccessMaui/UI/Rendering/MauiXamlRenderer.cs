@@ -17,7 +17,7 @@ using Waher.Script.Operators.Matrices;
 namespace NeuroAccessMaui.UI.Rendering
 {
 	/// <summary>
-	/// Renders XAML (Xamarin.Forms flavour) from a Markdown document.
+	/// Renders XAML (Maui flavour) from a Markdown document.
 	/// </summary>
 	/// <remarks>
 	/// Modified from original in Waher.Content.Markdown.Xamarin library, with permission.
@@ -85,7 +85,7 @@ namespace NeuroAccessMaui.UI.Rendering
 		public string? Hyperlink = null;
 
 		/// <summary>
-		/// Renders XAML (Xamarin.Forms flavour) from a Markdown document.
+		/// Renders XAML (Maui flavour) from a Markdown document.
 		/// </summary>
 		/// <param name="XmlSettings">XML-specific settings.</param>
 		/// <param name="XamlSettings">XAML-specific settings.</param>
@@ -97,7 +97,7 @@ namespace NeuroAccessMaui.UI.Rendering
 		}
 
 		/// <summary>
-		/// Renders XAML (Xamarin.Forms flavour) from a Markdown document.
+		/// Renders XAML (Maui flavour) from a Markdown document.
 		/// </summary>
 		/// <param name="Output">XAML output.</param>
 		/// <param name="XmlSettings">XML-specific settings.</param>
@@ -349,7 +349,7 @@ namespace NeuroAccessMaui.UI.Rendering
 				else
 				{
 					Waher.Content.Emoji.IImageSource Source = await this.Document.EmojiSource.GetImageSource(Element.Emoji, Element.Level);
-					await Multimedia.ImageContent.OutputXamarinForms(this.XmlOutput, Source);
+					await Multimedia.ImageContent.OutputMauiXaml(this.XmlOutput, Source);
 				}
 			}
 		}
@@ -496,7 +496,7 @@ namespace NeuroAccessMaui.UI.Rendering
 
 				s = "data:image/png;base64," + Convert.ToBase64String(Bin, 0, Bin.Length);
 
-				await Multimedia.ImageContent.OutputXamarinForms(this.XmlOutput, new Waher.Content.Emoji.ImageSource()
+				await Multimedia.ImageContent.OutputMauiXaml(this.XmlOutput, new Waher.Content.Emoji.ImageSource()
 				{
 					Url = s,
 					Width = Pixels.Width,
@@ -510,7 +510,7 @@ namespace NeuroAccessMaui.UI.Rendering
 
 				s = "data:image/png;base64," + Convert.ToBase64String(Bin, 0, Bin.Length);
 
-				await Multimedia.ImageContent.OutputXamarinForms(this.XmlOutput, new Waher.Content.Emoji.ImageSource()
+				await Multimedia.ImageContent.OutputMauiXaml(this.XmlOutput, new Waher.Content.Emoji.ImageSource()
 				{
 					Url = s,
 					Width = Img.Width,
@@ -685,7 +685,7 @@ namespace NeuroAccessMaui.UI.Rendering
 			if (Renderer is null)
 				return this.RenderChildren(Element);
 			else
-				return Renderer.RenderXamarinFormsXaml(this, Element.Items, Element.Children, Element.AloneInParagraph, Element.Document);
+				return Renderer.RenderMauiXaml(this, Element.Items, Element.Children, Element.AloneInParagraph, Element.Document);
 		}
 
 		/// <summary>
@@ -700,7 +700,7 @@ namespace NeuroAccessMaui.UI.Rendering
 			{
 				IMultimediaMauiXamlRenderer Renderer = Multimedia.MultimediaHandler<IMultimediaMauiXamlRenderer>();
 				if (Renderer is not null)
-					return Renderer.RenderXamarinFormsXaml(this, Multimedia.Items, Element.Children, Element.AloneInParagraph, Element.Document);
+					return Renderer.RenderMauiXaml(this, Multimedia.Items, Element.Children, Element.AloneInParagraph, Element.Document);
 			}
 
 			return this.RenderChildren(Element);
@@ -1162,7 +1162,7 @@ namespace NeuroAccessMaui.UI.Rendering
 		}
 
 		/// <summary>
-		/// Writes a text-alignment attribute to a Xamarin.Forms label element.
+		/// Writes a text-alignment attribute to a Maui label element.
 		/// </summary>
 		public void RenderLabelAlignment()
 		{
@@ -1562,7 +1562,7 @@ namespace NeuroAccessMaui.UI.Rendering
 
 			if (this.Hyperlink is not null)
 			{
-				this.XmlOutput.WriteAttributeString("TextColor", "{Binding HyperlinkColor}");
+				this.XmlOutput.WriteAttributeString("TextColor", "{StaticResource HyperlinkColor}");
 
 				this.XmlOutput.WriteStartElement("Span.GestureRecognizers");
 				this.XmlOutput.WriteStartElement("TapGestureRecognizer");

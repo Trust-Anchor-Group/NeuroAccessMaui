@@ -1,28 +1,27 @@
-﻿using NeuroAccessMaui.UI.Rendering;
-using System.Xml;
+﻿using System.Xml;
 using Waher.Content.Markdown;
 using Waher.Content.Markdown.Model;
 using Waher.Content.Markdown.Rendering;
 using Waher.Runtime.Inventory;
 
-namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.Multimedia
+namespace NeuroAccessMaui.UI.Rendering.Multimedia
 {
 	/// <summary>
-	/// Implements the XMPP URI Scheme, as defined in XEP-0147: https://xmpp.org/extensions/xep-0147.html
+	/// Implements the nfeat URI Scheme
 	/// </summary>
-	public class XmppUriScheme : MultimediaContent, IMultimediaMauiXamlRenderer
+	public class NeuroFeatureUriScheme : MultimediaContent, IMultimediaMauiXamlRenderer
 	{
 		/// <summary>
-		/// Implements the XMPP URI Scheme, as defined in XEP-0147: https://xmpp.org/extensions/xep-0147.html
+		/// Implements the nfeat URI Scheme
 		/// </summary>
-		public XmppUriScheme()
+		public NeuroFeatureUriScheme()
 		{
 		}
 
 		/// <inheritdoc/>
 		public override Grade Supports(MultimediaItem Item)
 		{
-			if (Item.Url.StartsWith("xmpp:", StringComparison.OrdinalIgnoreCase))
+			if (Item.Url.StartsWith("nfeat:", StringComparison.OrdinalIgnoreCase))
 				return Grade.Excellent;
 			else
 				return Grade.NotAtAll;
@@ -35,7 +34,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.Multimedia
 		}
 
 		/// <inheritdoc/>
-		public async Task RenderXamarinFormsXaml(MauiXamlRenderer Renderer, MultimediaItem[] Items, IEnumerable<MarkdownElement> ChildNodes, bool AloneInParagraph, MarkdownDocument Document)
+		public async Task RenderMauiXaml(MauiXamlRenderer Renderer, MultimediaItem[] Items, IEnumerable<MarkdownElement> ChildNodes, bool AloneInParagraph, MarkdownDocument Document)
 		{
 			XmlWriter Output = Renderer.XmlOutput;
 
@@ -45,7 +44,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.Multimedia
 				Output.WriteAttributeString("HorizontalOptions", "Center");
 
 				Output.WriteStartElement("Label");
-				Output.WriteAttributeString("Text", "👤");   // TODO: SVG icon.
+				Output.WriteAttributeString("Text", "✻"); // TODO: SVG icon
 				Output.WriteAttributeString("FontSize", "Large");
 				Output.WriteAttributeString("HorizontalOptions", "Center");
 				Output.WriteEndElement();
@@ -74,7 +73,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.Multimedia
 				Output.WriteStartElement("VerticalStackLayout.GestureRecognizers");
 
 				Output.WriteStartElement("TapGestureRecognizer");
-				Output.WriteAttributeString("Command", "{Binding Path=XmppUriClicked}");
+				Output.WriteAttributeString("Command", "{Binding Path=NeuroFeatureUriClicked}");
 				Output.WriteAttributeString("CommandParameter", Item.Url);
 				Output.WriteEndElement();
 

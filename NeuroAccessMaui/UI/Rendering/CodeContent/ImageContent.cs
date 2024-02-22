@@ -1,5 +1,4 @@
-﻿using Waher.Content.Emoji;
-using Waher.Content.Markdown;
+﻿using Waher.Content.Markdown;
 
 namespace NeuroAccessMaui.UI.Rendering.CodeContent
 {
@@ -30,7 +29,7 @@ namespace NeuroAccessMaui.UI.Rendering.CodeContent
 		public async Task<bool> RenderMauiXaml(MauiXamlRenderer Renderer, string[] Rows, string Language, int Indent, 
 			MarkdownDocument Document)
 		{
-			await Multimedia.ImageContent.OutputXamarinForms(Renderer.XmlOutput, new Waher.Content.Emoji.ImageSource()
+			await Multimedia.ImageContent.OutputMauiXaml(Renderer.XmlOutput, new Waher.Content.Emoji.ImageSource()
 			{
 				Url = GenerateUrl(Language, Rows, out _, out _)
 			});

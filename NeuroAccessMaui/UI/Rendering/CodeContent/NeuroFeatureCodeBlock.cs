@@ -1,6 +1,5 @@
 ﻿using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
-using NeuroAccessMaui.UI.Rendering;
 using NeuroFeatures;
 using System.Text;
 using System.Xml;
@@ -8,7 +7,7 @@ using Waher.Content.Markdown;
 using Waher.Content.Markdown.Model;
 using Waher.Runtime.Inventory;
 
-namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.CodeBlocks
+namespace NeuroAccessMaui.UI.Rendering.CodeContent
 {
 	/// <summary>
 	/// Handles embedded tokens.
@@ -30,7 +29,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.CodeBlocks
 		public MarkdownDocument? Document => this.document;
 
 		/// <summary>
-		/// Generates Xamarin XAML
+		/// Generates Maui XAML
 		/// </summary>
 		public Task<bool> RenderMauiXaml(MauiXamlRenderer Renderer, string[] Rows, string Language, int Indent, MarkdownDocument Document)
 		{

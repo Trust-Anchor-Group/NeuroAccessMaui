@@ -1,28 +1,27 @@
 ﻿using System.Xml;
-using NeuroAccessMaui.UI.Rendering;
 using Waher.Content.Markdown;
 using Waher.Content.Markdown.Model;
 using Waher.Content.Markdown.Rendering;
 using Waher.Runtime.Inventory;
 
-namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.Multimedia
+namespace NeuroAccessMaui.UI.Rendering.Multimedia
 {
 	/// <summary>
-	/// Implements the iotid URI Scheme
+	/// Implements the iotsc URI Scheme
 	/// </summary>
-	public class IotIdUriScheme : MultimediaContent, IMultimediaMauiXamlRenderer
+	public class IotScUriScheme : MultimediaContent, IMultimediaMauiXamlRenderer
 	{
 		/// <summary>
-		/// Implements the iotid URI Scheme
+		/// Implements the iotsc URI Scheme
 		/// </summary>
-		public IotIdUriScheme()
+		public IotScUriScheme()
 		{
 		}
 
 		/// <inheritdoc/>
 		public override Grade Supports(MultimediaItem Item)
 		{
-			if (Item.Url.StartsWith(Constants.UriSchemes.IotId + ":", StringComparison.OrdinalIgnoreCase))
+			if (Item.Url.StartsWith(Constants.UriSchemes.IotSc + ":", StringComparison.OrdinalIgnoreCase))
 				return Grade.Excellent;
 			else
 				return Grade.NotAtAll;
@@ -35,7 +34,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.Multimedia
 		}
 
 		/// <inheritdoc/>
-		public async Task RenderXamarinFormsXaml(MauiXamlRenderer Renderer, MultimediaItem[] Items, IEnumerable<MarkdownElement> ChildNodes, bool AloneInParagraph, MarkdownDocument Document)
+		public async Task RenderMauiXaml(MauiXamlRenderer Renderer, MultimediaItem[] Items, IEnumerable<MarkdownElement> ChildNodes, bool AloneInParagraph, MarkdownDocument Document)
 		{
 			XmlWriter Output = Renderer.XmlOutput;
 
@@ -45,7 +44,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.Multimedia
 				Output.WriteAttributeString("HorizontalOptions", "Center");
 
 				Output.WriteStartElement("Label");
-				Output.WriteAttributeString("Text", "👤");   // TODO: SVG icon.
+				Output.WriteAttributeString("Text", "¶"); // TODO: SVG icon
 				Output.WriteAttributeString("FontSize", "Large");
 				Output.WriteAttributeString("HorizontalOptions", "Center");
 				Output.WriteEndElement();
@@ -74,7 +73,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.Multimedia
 				Output.WriteStartElement("VerticalStackLayout.GestureRecognizers");
 
 				Output.WriteStartElement("TapGestureRecognizer");
-				Output.WriteAttributeString("Command", "{Binding Path=IotIdUriClicked}");
+				Output.WriteAttributeString("Command", "{Binding Path=IotScUriClicked}");
 				Output.WriteAttributeString("CommandParameter", Item.Url);
 				Output.WriteEndElement();
 
