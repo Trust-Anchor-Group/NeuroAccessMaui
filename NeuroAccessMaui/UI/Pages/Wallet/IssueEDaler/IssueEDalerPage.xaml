@@ -54,7 +54,7 @@
 						</Frame>
 						<Label Text="{Binding Path=Message}" IsVisible="{Binding Path=HasMessage}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"/>
 						<!-- BUTTONS -->
-						<Button Text="{l:Localize Accept}" Command="{Binding Path=AcceptCommand}" IsEnabled="{Binding Path=IsConnected}" Margin="{StaticResource SmallBottomOnlyMargins}"/>
+						<Button Text="{l:Localize Accept}" Command="{Binding Path=AcceptCommand}" IsEnabled="{Binding Path=IsConnected}" Margin="{StaticResource SmallBottomMargins}"/>
 					</VerticalStackLayout>
 				</Frame>
 			</VerticalStackLayout>

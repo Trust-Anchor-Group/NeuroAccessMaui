@@ -24,23 +24,23 @@
 
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
-						<ContentView Content="{Binding Path=HumanReadableText}" Margin="{StaticResource SmallBottomOnlyMargins}" />
+						<ContentView Content="{Binding Path=HumanReadableText}" Margin="{StaticResource SmallBottomMargins}" />
 
 						<Label Text="{l:Localize Visibility}" HorizontalOptions="Start" />
 						<Picker Title="{l:Localize SelectWhoShouldHaveAccessToThisContract}"
 								  ItemsSource="{Binding Path=ContractVisibilityItems}"
-								  SelectedItem="{Binding Path=SelectedContractVisibilityItem, Mode=TwoWay}" Margin="{StaticResource MediumBottomOnlyMargins}"/>
+								  SelectedItem="{Binding Path=SelectedContractVisibilityItem, Mode=TwoWay}" Margin="{StaticResource MediumBottomMargins}"/>
 
 						<Label Text="{l:Localize YourRole}" HorizontalOptions="Start" />
 						<Picker Title="{l:Localize SelectYourRoleInThisContract}" 
                     ItemsSource="{Binding Path=AvailableRoles}" 
                     SelectedItem="{Binding Path=SelectedRole, Mode=TwoWay}" 
-                    IsEnabled="{Binding Path=HasRoles}" Margin="{StaticResource MediumBottomOnlyMargins}"/>
+                    IsEnabled="{Binding Path=HasRoles}" Margin="{StaticResource MediumBottomMargins}"/>
 
 						<ContentView Content="{Binding Path=Roles}" />
 						<ContentView Content="{Binding Path=Parameters}" />
 
-						<Button Text="{l:Localize Propose}" Command="{Binding Path=ProposeCommand}" Margin="{StaticResource SmallTopAndBottomOnlyMargins}"/>
+						<Button Text="{l:Localize Propose}" Command="{Binding Path=ProposeCommand}" Margin="{StaticResource SmallTopBottomMargins}"/>
 					</VerticalStackLayout>
 				</Frame>
 			</VerticalStackLayout>

@@ -20,7 +20,7 @@
 
 		<DataTemplate x:Key="HeaderModelTemplate" x:DataType="model:HeaderModel">
 			<Label Text="{Binding Path=Label}" HorizontalOptions="Center"
-				   Margin="{StaticResource SmallTopOnlyMargins}" VerticalOptions="Start"/>
+				   Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"/>
 		</DataTemplate>
 
 		<DataTemplate x:Key="TagTemplate" x:DataType="things:HumanReadableTag">

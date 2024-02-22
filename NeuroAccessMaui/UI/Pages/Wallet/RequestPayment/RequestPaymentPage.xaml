@@ -26,7 +26,7 @@
 					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
 						<StackLayout Margin="{StaticResource DefaultMargin}"
                          BackgroundColor="{AppThemeBinding Light={StaticResource PageBackgroundColorLightTheme}, Dark={StaticResource PageBackgroundColorDarkTheme}}">
-							<Label Text="{l:Localize RequestPayment}" Margin="{StaticResource SmallTopOnlyMargins}" VerticalOptions="Start"/>
+							<Label Text="{l:Localize RequestPayment}" Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"/>
 							<Label Text="{l:Localize RequestPaymentDescription}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"/>
 							<!-- Note -->
 							<Label Text="{l:Localize Amount}"/>
@@ -49,25 +49,25 @@
 							</Grid>
 							<Label Text="{l:Localize Message}"/>
 							<Entry Text="{Binding Path=Message}"/>
-							<StackLayout Orientation="Horizontal" Margin="{StaticResource SmallTopAndBottomOnlyMargins}">
+							<StackLayout Orientation="Horizontal" Margin="{StaticResource SmallTopBottomMargins}">
 								<CheckBox IsChecked="{Binding Path=EncryptMessage, Mode=TwoWay}" VerticalOptions="Center"/>
 								<Label Text="{l:Localize EncryptMessage}" VerticalOptions="Center" />
 							</StackLayout>
 							<!-- BUTTONS -->
-							<Button Text="{l:Localize GenerateQrCode}" Command="{Binding Path=GenerateQrCodeCommand}" Margin="{StaticResource SmallBottomOnlyMargins}"/>
+							<Button Text="{l:Localize GenerateQrCode}" Command="{Binding Path=GenerateQrCodeCommand}" Margin="{StaticResource SmallBottomMargins}"/>
 							<Image x:Name="QrCode" BackgroundColor="{StaticResource HeadingForeground}" Source="{Binding Path=QrCode}" 
                        IsVisible="{Binding Path=HasQrCode}" WidthRequest="{Binding Path=QrCodeWidth}" 
                        HeightRequest="{Binding Path=QrCodeHeight}" HorizontalOptions="Center" VerticalOptions="Start" 
                        Margin="0" />
-							<Label Text="{l:Localize Share}" Margin="{StaticResource SmallTopOnlyMargins}" VerticalOptions="Start"
+							<Label Text="{l:Localize Share}" Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"
 									 IsVisible="{Binding Path=HasQrCode}" />
 							<Label Text="{l:Localize ShareDescription}"
 					   Style="{StaticResource InfoLabel}" VerticalOptions="Start"
 					   IsVisible="{Binding Path=HasQrCode}" />
 							<Button x:Name="ShareContactButton" Text="{l:Localize Contact}" Command="{Binding Path=ShareContactCommand}" 
-                        IsVisible="{Binding Path=HasQrCode}" Margin="{StaticResource SmallBottomOnlyMargins}"/>
+                        IsVisible="{Binding Path=HasQrCode}" Margin="{StaticResource SmallBottomMargins}"/>
 							<Button x:Name="ShareExternalButton" Text="{l:Localize OtherApp}" Command="{Binding Path=ShareExternalCommand}" 
-                        IsVisible="{Binding Path=HasQrCode}" Margin="{StaticResource SmallBottomOnlyMargins}"/>
+                        IsVisible="{Binding Path=HasQrCode}" Margin="{StaticResource SmallBottomMargins}"/>
 						</StackLayout>
 					</VerticalStackLayout>
 				</Frame>

@@ -26,7 +26,7 @@
 					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
 						<StackLayout Margin="{StaticResource DefaultMargin}"
                          BackgroundColor="{AppThemeBinding Light={StaticResource PageBackgroundColorLightTheme}, Dark={StaticResource PageBackgroundColorDarkTheme}}">
-							<Label Text="{l:Localize SellEDaler}" Margin="{StaticResource SmallTopOnlyMargins}" VerticalOptions="Start"/>
+							<Label Text="{l:Localize SellEDaler}" Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"/>
 							<Label Text="{l:Localize SellEDalerDescription}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"/>
 							<Label Text="{l:Localize Amount}"/>
 							<Grid ColumnDefinitions="*,auto" RowDefinitions="auto" Padding="0" Margin="0" ColumnSpacing="0" RowSpacing="0">
@@ -37,7 +37,7 @@
 							Text="🖩" TextColor="{StaticResource TextColorLightTheme}" FontSize="Medium"
 							Command="{Binding OpenCalculatorCommand}" CommandParameter="AmountText" />
 							</Grid>
-							<Button Text="{l:Localize Sell}" Command="{Binding Path=SellCommand}" Margin="{StaticResource SmallBottomOnlyMargins}"/>
+							<Button Text="{l:Localize Sell}" Command="{Binding Path=SellCommand}" Margin="{StaticResource SmallBottomMargins}"/>
 						</StackLayout>
 					</VerticalStackLayout>
 				</Frame>

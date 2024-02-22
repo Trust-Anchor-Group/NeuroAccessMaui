@@ -25,12 +25,12 @@
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
 						<StackLayout Margin="{StaticResource DefaultMargin}">
-							<Label Text="{l:Localize TokenDetails}" Margin="{StaticResource SmallTopOnlyMargins}"
+							<Label Text="{l:Localize TokenDetails}" Margin="{StaticResource SmallTopMargins}"
 									 VerticalOptions="Start"/>
 							<Label Text="{l:Localize TokenDetailsDescription}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"/>
-							<Label Text="{l:Localize Description}" Margin="{StaticResource SmallTopOnlyMargins}"
+							<Label Text="{l:Localize Description}" Margin="{StaticResource SmallTopMargins}"
 									 VerticalOptions="Start"/>
-							<ContentView Content="{Binding Description}" VerticalOptions="StartAndExpand" Margin="{StaticResource SmallLeftAndRightAndBottomMargins}"/>
+							<ContentView Content="{Binding Description}" VerticalOptions="StartAndExpand" Margin="{StaticResource SmallLeftRightBottomMargins}"/>
 							<Grid x:Name="GeneralInfoGrid">
 								<Grid.ColumnDefinitions>
 									<ColumnDefinition Width="*"/>
@@ -112,40 +112,40 @@
 
 							<Image Source="{Binding Path=GlyphImage}" IsVisible="{Binding Path=HasGlyphImage}"
                        WidthRequest="{Binding Path=GlyphWidth, Mode=OneTime}" HeightRequest="{Binding Path=GlyphHeight, Mode=OneTime}" 
-                       VerticalOptions="Start" HorizontalOptions="Center" Margin="{StaticResource SmallTopOnlyMargins}" />
+                       VerticalOptions="Start" HorizontalOptions="Center" Margin="{StaticResource SmallTopMargins}" />
 
 							<Image Source="{Binding Path=QrCode}" IsVisible="{Binding Path=HasQrCode}" 
                        WidthRequest="{Binding Path=QrCodeWidth, Mode=OneTime}" HeightRequest="{Binding Path=QrCodeHeight, Mode=OneTime}" 
-                       VerticalOptions="StartAndExpand" HorizontalOptions="CenterAndExpand" Margin="{StaticResource SmallTopOnlyMargins}" />
+                       VerticalOptions="StartAndExpand" HorizontalOptions="CenterAndExpand" Margin="{StaticResource SmallTopMargins}" />
 
-							<Label Text="{l:Localize Reports}" Margin="{StaticResource SmallTopOnlyMargins}" VerticalOptions="Start"
+							<Label Text="{l:Localize Reports}" Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"
 									 IsVisible="{Binding HasStateMachine}"/>
 
-							<Button Text="{l:Localize Present}" Margin="{StaticResource SmallBottomOnlyMargins}"
+							<Button Text="{l:Localize Present}" Margin="{StaticResource SmallBottomMargins}"
 				                 Command="{Binding Path=PresentReportCommand}" IsVisible="{Binding HasStateMachine}"
 									  IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"/>
 
-							<Button Text="{l:Localize History}" Margin="{StaticResource SmallBottomOnlyMargins}"
+							<Button Text="{l:Localize History}" Margin="{StaticResource SmallBottomMargins}"
 									  Command="{Binding Path=HistoryReportCommand}"
 									  IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
 									  IsVisible="{Binding HasStateMachine}"/>
 
-							<Button Text="{l:Localize Variables}" Margin="{StaticResource SmallBottomOnlyMargins}"
+							<Button Text="{l:Localize Variables}" Margin="{StaticResource SmallBottomMargins}"
 									  Command="{Binding Path=VariablesReportCommand}"
 									  IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
 									  IsVisible="{Binding HasStateMachine}"/>
 
-							<Button Text="{l:Localize States}" Margin="{StaticResource SmallBottomOnlyMargins}"
+							<Button Text="{l:Localize States}" Margin="{StaticResource SmallBottomMargins}"
 									  Command="{Binding Path=StatesReportCommand}"
 									  IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
 									  IsVisible="{Binding HasStateMachine}"/>
 
-							<Button Text="{l:Localize Profiling}" Margin="{StaticResource SmallBottomOnlyMargins}"
+							<Button Text="{l:Localize Profiling}" Margin="{StaticResource SmallBottomMargins}"
 									  Command="{Binding Path=ProfilingReportCommand}"
 									  IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
 									  IsVisible="{Binding HasStateMachine}"/>
 
-							<Label Text="{l:Localize Parts}" Margin="{StaticResource SmallTopOnlyMargins}" VerticalOptions="Start"/>
+							<Label Text="{l:Localize Parts}" Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"/>
 							<Label Text="{l:Localize TokenPartsInfoText}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"/>
 
 							<Grid x:Name="PartsGrid">
@@ -221,7 +221,7 @@
 								</Label>
 							</Grid>
 
-							<Label Text="{l:Localize Privileges}" Margin="{StaticResource SmallTopOnlyMargins}" VerticalOptions="Start"/>
+							<Label Text="{l:Localize Privileges}" Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"/>
 							<Label Text="{l:Localize TokenPrivilegesInfoText}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"/>
 
 							<Grid>
@@ -249,10 +249,10 @@
 								<Label Grid.Column="1" Grid.Row="3" Text="{Binding CertifierCanDestroy, Converter={converters:BooleanToYesNo}}" Style="{StaticResource ValueLabel}" HorizontalOptions="Center"/>
 							</Grid>
 
-							<Label Text="{l:Localize MachineReadableText}" Margin="{StaticResource SmallTopOnlyMargins}" VerticalOptions="Start"/>
+							<Label Text="{l:Localize MachineReadableText}" Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"/>
 							<Label Text="{l:Localize MachineReadableInfoTextToken}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"/>
 
-							<Grid Margin="{StaticResource SmallBottomOnlyMargins}">
+							<Grid Margin="{StaticResource SmallBottomMargins}">
 								<Grid.ColumnDefinitions>
 									<ColumnDefinition Width="*"/>
 									<ColumnDefinition Width="*"/>
@@ -293,37 +293,37 @@
 								<Label Grid.Column="1" Grid.Row="4" Text="{Binding DefinitionSchemaHashFunction}" Style="{StaticResource ValueLabel}"/>
 							</Grid>
 
-							<Button Text="{l:Localize ShowM2MInfo}" Margin="{StaticResource SmallBottomOnlyMargins}"
+							<Button Text="{l:Localize ShowM2MInfo}" Margin="{StaticResource SmallBottomMargins}"
 									  Command="{Binding Path=ShowM2mInfoCommand}"
 									  IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
 
-							<Label Text="{l:Localize Actions}" Margin="{StaticResource SmallTopOnlyMargins}"
+							<Label Text="{l:Localize Actions}" Margin="{StaticResource SmallTopMargins}"
 									 VerticalOptions="Start"/>
 
-							<Button Text="{l:Localize SendToContact}" Margin="{StaticResource SmallBottomOnlyMargins}"
+							<Button Text="{l:Localize SendToContact}" Margin="{StaticResource SmallBottomMargins}"
 									  Command="{Binding Path=SendToContactCommand}"
 									  IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
 
-							<Button Text="{l:Localize Share}" Margin="{StaticResource SmallBottomOnlyMargins}"
+							<Button Text="{l:Localize Share}" Margin="{StaticResource SmallBottomMargins}"
 									  Command="{Binding Path=ShareCommand}"
 									  IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
 
-							<Button Text="{l:Localize PublishMarketplace}" Margin="{StaticResource SmallBottomOnlyMargins}"
+							<Button Text="{l:Localize PublishMarketplace}" Margin="{StaticResource SmallBottomMargins}"
 									  Command="{Binding Path=PublishMarketplaceCommand}"
 									  IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
 									  IsVisible="{Binding IsMyToken}"/>
 
-							<Button Text="{l:Localize OfferToSell}" Margin="{StaticResource SmallBottomOnlyMargins}"
+							<Button Text="{l:Localize OfferToSell}" Margin="{StaticResource SmallBottomMargins}"
 									  Command="{Binding Path=OfferToSellCommand}"
 									  IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
 									  IsVisible="{Binding IsMyToken}"/>
 
-							<Button Text="{l:Localize OfferToBuy}" Margin="{StaticResource SmallBottomOnlyMargins}"
+							<Button Text="{l:Localize OfferToBuy}" Margin="{StaticResource SmallBottomMargins}"
 									  Command="{Binding Path=OfferToBuyCommand}"
 									  IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
 									  IsVisible="{Binding IsMyToken, Converter={StaticResource InvertedBoolConverter}}"/>
 
-							<Button Text="{l:Localize ViewEvents}" Margin="{StaticResource SmallBottomOnlyMargins}"
+							<Button Text="{l:Localize ViewEvents}" Margin="{StaticResource SmallBottomMargins}"
 									  Command="{Binding Path=ViewEventsCommand}"
 									  IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"/>
 						</StackLayout>

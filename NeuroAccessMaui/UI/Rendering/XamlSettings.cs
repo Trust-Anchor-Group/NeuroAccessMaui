@@ -11,24 +11,8 @@ namespace NeuroAccessMaui.UI.Rendering
 	/// </remarks>
 	public class XamlSettings
 	{
-		private string paragraphMargins = "0,5,0,5";
-		private int paragraphMarginLeft = 0;
-		private int paragraphMarginTop = 5;
-		private int paragraphMarginRight = 0;
-		private int paragraphMarginBottom = 5;
-
-		private string blockQuoteBorderColor = "Black";
-		private int blockQuoteBorderThickness = 5;
-		private int blockQuoteMargin = 20;
-		private int blockQuotePadding = 10;
-
-		private string insertedBlockQuoteBorderColor = "#4000A000";
-		private string deletedBlockQuoteBorderColor = "#40A00000";
-
 		private readonly int[] headerFontSize = [28, 24, 22, 20, 18, 16, 15, 14, 13, 12];
 		private readonly string[] headerForegroundColor = ["Navy", "Navy", "Navy", "Navy", "Navy", "Navy", "Navy", "Navy", "Navy", "Navy"];
-
-		private int listContentMargin = 5;
 
 		private string tableCellPadding = "5,2,5,2";
 		private string tableCellBorderColor = "Gray";
@@ -76,146 +60,6 @@ namespace NeuroAccessMaui.UI.Rendering
 		}
 
 		/// <summary>
-		/// Paragraph margins.
-		/// </summary>
-		public string ParagraphMargins
-		{
-			get => this.paragraphMargins;
-			set
-			{
-				Parse(value, out this.paragraphMarginLeft, out this.paragraphMarginTop, out this.paragraphMarginRight, out this.paragraphMarginBottom);
-				this.paragraphMargins = value;
-			}
-		}
-
-		private void UpdateParagraphMargins()
-		{
-			StringBuilder sb = new();
-
-			sb.Append(this.paragraphMarginLeft);
-			sb.Append(',');
-			sb.Append(this.paragraphMarginTop);
-			sb.Append(',');
-			sb.Append(this.paragraphMarginRight);
-			sb.Append(',');
-			sb.Append(this.paragraphMarginBottom);
-
-			this.paragraphMargins = sb.ToString();
-		}
-
-		/// <summary>
-		/// Left margin for paragraphs.
-		/// </summary>
-		public int ParagraphMarginLeft
-		{
-			get => this.paragraphMarginLeft;
-			set
-			{
-				this.paragraphMarginLeft = value;
-				this.UpdateParagraphMargins();
-			}
-		}
-
-		/// <summary>
-		/// Top margin for paragraphs.
-		/// </summary>
-		public int ParagraphMarginTop
-		{
-			get => this.paragraphMarginTop;
-			set
-			{
-				this.paragraphMarginTop = value;
-				this.UpdateParagraphMargins();
-			}
-		}
-
-		/// <summary>
-		/// Right margin for paragraphs.
-		/// </summary>
-		public int ParagraphMarginRight
-		{
-			get => this.paragraphMarginRight;
-			set
-			{
-				this.paragraphMarginRight = value;
-				this.UpdateParagraphMargins();
-			}
-		}
-
-		/// <summary>
-		/// Bottom margin for paragraphs.
-		/// </summary>
-		public int ParagraphMarginBottom
-		{
-			get => this.paragraphMarginBottom;
-			set
-			{
-				this.paragraphMarginBottom = value;
-				this.UpdateParagraphMargins();
-			}
-		}
-
-		/// <summary>
-		/// Block Quote border color.
-		/// 
-		/// NOTE: Property is a string, to allow generation of XAML where access to WPF libraries is not available.
-		/// </summary>
-		public string BlockQuoteBorderColor
-		{
-			get => this.blockQuoteBorderColor;
-			set => this.blockQuoteBorderColor = value;
-		}
-
-		/// <summary>
-		/// Block Quote border thickness
-		/// </summary>
-		public int BlockQuoteBorderThickness
-		{
-			get => this.blockQuoteBorderThickness;
-			set => this.blockQuoteBorderThickness = value;
-		}
-
-		/// <summary>
-		/// Block Quote margin (from outside left margin to border)
-		/// </summary>
-		public int BlockQuoteMargin
-		{
-			get => this.blockQuoteMargin;
-			set => this.blockQuoteMargin = value;
-		}
-
-		/// <summary>
-		/// Block Quote padding (from border to inside left margin)
-		/// </summary>
-		public int BlockQuotePadding
-		{
-			get => this.blockQuotePadding;
-			set => this.blockQuotePadding = value;
-		}
-
-		/// <summary>
-		/// Inserted Block Quote border color.
-		/// 
-		/// NOTE: Property is a string, to allow generation of XAML where access to WPF libraries is not available.
-		/// </summary>
-		public string InsertedBlockQuoteBorderColor
-		{
-			get => this.insertedBlockQuoteBorderColor;
-			set => this.insertedBlockQuoteBorderColor = value;
-		}
-
-		/// <summary>
-		/// Deleted Block Quote border color.
-		/// 
-		/// NOTE: Property is a string, to allow generation of XAML where access to WPF libraries is not available.
-		/// </summary>
-		public string DeletedBlockQuoteBorderColor
-		{
-			get => this.deletedBlockQuoteBorderColor;
-			set => this.deletedBlockQuoteBorderColor = value;
-		}
-
-		/// <summary>
 		/// Header font sizes for different levels. Index corresponds to header level - 1.
 		/// </summary>
 		public int[] HeaderFontSize => this.headerFontSize;
@@ -226,15 +70,6 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// NOTE: Property is an array of strings, to allow generation of XAML where access to WPF libraries is not available.
 		/// </summary>
 		public string[] HeaderForegroundColor => this.headerForegroundColor;
-
-		/// <summary>
-		/// Margin between list item bullet and list item content.
-		/// </summary>
-		public int ListContentMargin
-		{
-			get => this.listContentMargin;
-			set => this.listContentMargin = value;
-		}
 
 		/// <summary>
 		/// TableCell padding.

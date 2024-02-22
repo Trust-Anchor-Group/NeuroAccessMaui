@@ -809,6 +809,9 @@
 			public const string TokenConsignmentTemplate = "2a6d86d3-cae9-be05-4015-a272cd0cbbb9@legal.lab.tagroot.io";
 		}
 
+		/// <summary>
+		/// Image resources.
+		/// </summary>
 		public static class Images
 		{
 			/// <summary>

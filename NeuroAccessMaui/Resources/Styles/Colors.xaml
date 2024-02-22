@@ -18,6 +18,16 @@
 	<Color x:Key="AccentForegroundLight">#4F7EAC</Color>
 	<Color x:Key="AccentForegroundDark">#4F7EAC</Color>
 
+	<Color x:Key="InsertedBorderLight">#4000A000</Color>
+	<Color x:Key="InsertedBackgroundLight">#2000A000</Color>
+	<Color x:Key="DeletedBorderLight">#40A00000</Color>
+	<Color x:Key="DeletedBackgroundLight">#20A00000</Color>
+
+	<Color x:Key="InsertedBorderDark">#4000A000</Color>
+	<Color x:Key="InsertedBackgroundDark">#2000A000</Color>
+	<Color x:Key="DeletedBorderDark">#40A00000</Color>
+	<Color x:Key="DeletedBackgroundDark">#20A00000</Color>
+
 	<!-- List Items -->
 	<Color x:Key="NormalBackgroundLight">#F5F6F7</Color>
 	<Color x:Key="NormalForegroundLight">#181F25</Color>

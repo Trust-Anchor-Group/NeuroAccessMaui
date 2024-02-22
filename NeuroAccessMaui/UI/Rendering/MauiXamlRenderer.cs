@@ -174,9 +174,6 @@ namespace NeuroAccessMaui.UI.Rendering
 		public override async Task RenderFootnotes()
 		{
 			Footnote Footnote;
-			string FootnoteMargin = "0," + this.XamlSettings.ParagraphMarginTop.ToString(CultureInfo.InvariantCulture) + "," +
-				this.XamlSettings.FootnoteSeparator.ToString(CultureInfo.InvariantCulture) + "," +
-				this.XamlSettings.ParagraphMarginBottom.ToString(CultureInfo.InvariantCulture);
 			string Scale = CommonTypes.Encode(this.XamlSettings.SuperscriptScale);
 			string Offset = this.XamlSettings.SuperscriptOffset.ToString(CultureInfo.InvariantCulture);
 			int Nr;
@@ -186,7 +183,7 @@ namespace NeuroAccessMaui.UI.Rendering
 			this.XmlOutput.WriteAttributeString("HeightRequest", "1");
 			this.XmlOutput.WriteAttributeString("BackgroundColor", this.XamlSettings.TableCellBorderColor);
 			this.XmlOutput.WriteAttributeString("HorizontalOptions", "FillAndExpand");
-			this.XmlOutput.WriteAttributeString("Margin", this.XamlSettings.ParagraphMargins);
+			this.XmlOutput.WriteAttributeString("Margin", SmallMarginsBinding(false, false, true, true));
 			this.XmlOutput.WriteEndElement();
 
 			this.XmlOutput.WriteStartElement("Grid");
@@ -229,7 +226,7 @@ namespace NeuroAccessMaui.UI.Rendering
 						Footnote.Referenced)
 					{
 						this.XmlOutput.WriteStartElement("ContentView");
-						this.XmlOutput.WriteAttributeString("Margin", FootnoteMargin);
+						this.XmlOutput.WriteAttributeString("Margin", "{StaticResource SmallMargins}");
 						this.XmlOutput.WriteAttributeString("Grid.Column", "0");
 						this.XmlOutput.WriteAttributeString("Grid.Row", Row.ToString(CultureInfo.InvariantCulture));
 						this.XmlOutput.WriteAttributeString("Scale", Scale);
@@ -787,13 +784,11 @@ namespace NeuroAccessMaui.UI.Rendering
 		public override async Task Render(BlockQuote Element)
 		{
 			this.XmlOutput.WriteStartElement("ContentView");
-			this.XmlOutput.WriteAttributeString("Padding", this.XamlSettings.BlockQuoteMargin.ToString(CultureInfo.InvariantCulture) + "," +
-				this.XamlSettings.ParagraphMarginTop.ToString(CultureInfo.InvariantCulture) + ",0," + this.XamlSettings.ParagraphMarginBottom.ToString(CultureInfo.InvariantCulture));
+			this.XmlOutput.WriteAttributeString("Padding", SmallMargins(true, false, true, true));
 
 			this.XmlOutput.WriteStartElement("Frame");
-			this.XmlOutput.WriteAttributeString("Padding", this.XamlSettings.BlockQuotePadding.ToString(CultureInfo.InvariantCulture) +
-				",0," + this.XamlSettings.BlockQuotePadding.ToString(CultureInfo.InvariantCulture) + ",0");
-			this.XmlOutput.WriteAttributeString("BorderColor", this.XamlSettings.BlockQuoteBorderColor);
+			this.XmlOutput.WriteAttributeString("Padding", SmallMargins(true, true, false, false));
+			this.XmlOutput.WriteAttributeString("BorderColor", "{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}");
 			// TODO: Border thickness
 
 			this.XmlOutput.WriteStartElement("VerticalStackLayout");
@@ -815,7 +810,7 @@ namespace NeuroAccessMaui.UI.Rendering
 			bool ParagraphBullet;
 
 			this.XmlOutput.WriteStartElement("ContentView");
-			this.XmlOutput.WriteAttributeString("Padding", this.XamlSettings.ParagraphMargins);
+			this.XmlOutput.WriteAttributeString("Padding", SmallMarginsBinding(false, false, true, true));
 
 			this.XmlOutput.WriteStartElement("Grid");
 			this.XmlOutput.WriteAttributeString("RowSpacing", "0");
@@ -848,11 +843,10 @@ namespace NeuroAccessMaui.UI.Rendering
 				if (E is UnnumberedItem Item)
 				{
 					ParagraphBullet = !E.InlineSpanElement || E.OutsideParagraph;
-					this.GetMargins(E, out int TopMargin, out int BottomMargin);
+					GetMargins(E, out bool TopMargin, out bool BottomMargin);
 
-					this.RenderContentView("0," + TopMargin.ToString(CultureInfo.InvariantCulture) + "," +
-						this.XamlSettings.ListContentMargin.ToString(CultureInfo.InvariantCulture) + "," +
-						BottomMargin.ToString(CultureInfo.InvariantCulture));
+					this.RenderContentView(SmallMargins(false, true, TopMargin, BottomMargin));
+
 					this.XmlOutput.WriteAttributeString("Grid.Column", "0");
 					this.XmlOutput.WriteAttributeString("Grid.Row", Row.ToString(CultureInfo.InvariantCulture));
 
@@ -878,42 +872,76 @@ namespace NeuroAccessMaui.UI.Rendering
 			this.XmlOutput.WriteEndElement();
 		}
 
+		private static string SmallMarginsBinding(bool Left, bool Right, bool Top, bool Bottom)
+		{
+			return "{StaticResource " + SmallMargins(Left, Right, Top, Bottom) + "}";
+		}
+
+		private static string SmallMargins(bool Left, bool Right, bool Top, bool Bottom)
+		{
+			if (!(Left || Right || Top || Bottom))
+				return "NoMargins";
+
+			if (Left && Right && Top && Bottom)
+				return "SmallMargins";
+
+			StringBuilder sb = new();
+
+			sb.Append("Small");
+
+			if (Left)
+				sb.Append("Left");
+
+			if (Right)
+				sb.Append("Right");
+
+			if (Top)
+				sb.Append("Top");
+
+			if (Bottom)
+				sb.Append("Bottom");
+
+			sb.Append("Margins");
+
+			return sb.ToString();
+		}
+
 		/// <summary>
 		/// Gets margins for content.
 		/// </summary>
 		/// <param name="Element">Element to render.</param>
 		/// <param name="TopMargin">Top margin.</param>
 		/// <param name="BottomMargin">Bottom margin.</param>
-		private void GetMargins(MarkdownElement Element, out int TopMargin, out int BottomMargin)
+		private static void GetMargins(MarkdownElement Element, out bool TopMargin, out bool BottomMargin)
 		{
 			if (Element.InlineSpanElement && !Element.OutsideParagraph)
 			{
-				TopMargin = 0;
-				BottomMargin = 0;
+				TopMargin = false;
+				BottomMargin = false;
 			}
 			else if (Element is NestedBlock NestedBlock)
 			{
 				bool First = true;
 
-				TopMargin = BottomMargin = 0;
+				TopMargin = BottomMargin = false;
 
 				foreach (MarkdownElement E in NestedBlock.Children)
 				{
 					if (First)
 					{
 						First = false;
-						this.GetMargins(E, out TopMargin, out BottomMargin);
+						GetMargins(E, out TopMargin, out BottomMargin);
 					}
 					else
-						this.GetMargins(E, out int _, out BottomMargin);
+						GetMargins(E, out bool _, out BottomMargin);
 				}
 			}
 			else if (Element is MarkdownElementSingleChild SingleChild)
-				this.GetMargins(SingleChild.Child, out TopMargin, out BottomMargin);
+				GetMargins(SingleChild.Child, out TopMargin, out BottomMargin);
 			else
 			{
-				TopMargin = this.XamlSettings.ParagraphMarginTop;
-				BottomMargin = this.XamlSettings.ParagraphMarginBottom;
+				TopMargin = true;
+				BottomMargin = true;
 			}
 		}
 
@@ -1071,13 +1099,11 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// <param name="Element">Element to render</param>
 		public override async Task Render(DefinitionTerms Element)
 		{
-			int TopMargin = this.XamlSettings.ParagraphMarginTop;
+			bool Top = true;
 
 			foreach (MarkdownElement Term in Element.Children)
 			{
-				this.RenderContentView(this.XamlSettings.ParagraphMarginLeft.ToString(CultureInfo.InvariantCulture) + "," +
-					TopMargin.ToString(CultureInfo.InvariantCulture) + "," +
-					this.XamlSettings.ParagraphMarginRight.ToString(CultureInfo.InvariantCulture) + ",0");
+				this.RenderContentView(SmallMargins(true, true, Top, false));
 
 				bool BoldBak = this.Bold;
 				this.Bold = true;
@@ -1087,7 +1113,7 @@ namespace NeuroAccessMaui.UI.Rendering
 				this.Bold = BoldBak;
 				this.XmlOutput.WriteEndElement();
 
-				TopMargin = 0;
+				Top = false;
 			}
 		}
 
@@ -1098,14 +1124,11 @@ namespace NeuroAccessMaui.UI.Rendering
 		public override async Task Render(DeleteBlocks Element)
 		{
 			this.XmlOutput.WriteStartElement("ContentView");
-			this.XmlOutput.WriteAttributeString("Padding", this.XamlSettings.BlockQuoteMargin.ToString(CultureInfo.InvariantCulture) + "," +
-				this.XamlSettings.ParagraphMarginTop.ToString(CultureInfo.InvariantCulture) + ",0," +
-				this.XamlSettings.ParagraphMarginBottom.ToString(CultureInfo.InvariantCulture));
+			this.XmlOutput.WriteAttributeString("Padding", SmallMargins(true, false, true, true));
 
 			this.XmlOutput.WriteStartElement("Frame");
-			this.XmlOutput.WriteAttributeString("Padding", this.XamlSettings.BlockQuotePadding.ToString(CultureInfo.InvariantCulture) +
-				",0," + this.XamlSettings.BlockQuotePadding.ToString(CultureInfo.InvariantCulture) + ",0");
-			this.XmlOutput.WriteAttributeString("BorderColor", this.XamlSettings.DeletedBlockQuoteBorderColor);
+			this.XmlOutput.WriteAttributeString("Padding", SmallMargins(true, true, false, false));
+			this.XmlOutput.WriteAttributeString("BorderColor", "{AppThemeBinding Light={StaticResource DeletedBorderLight}, Dark={StaticResource DeletedBorderDark}}");
 			// TODO: Border thickness
 
 			this.XmlOutput.WriteStartElement("VerticalStackLayout");
@@ -1192,7 +1215,7 @@ namespace NeuroAccessMaui.UI.Rendering
 			this.XmlOutput.WriteAttributeString("HeightRequest", "1");
 			this.XmlOutput.WriteAttributeString("BackgroundColor", this.XamlSettings.TableCellBorderColor);
 			this.XmlOutput.WriteAttributeString("HorizontalOptions", "FillAndExpand");
-			this.XmlOutput.WriteAttributeString("Margin", this.XamlSettings.ParagraphMargins);
+			this.XmlOutput.WriteAttributeString("Margin", SmallMarginsBinding(false, false, true, true));
 			this.XmlOutput.WriteEndElement();
 
 			return Task.CompletedTask;
@@ -1231,14 +1254,11 @@ namespace NeuroAccessMaui.UI.Rendering
 		public override async Task Render(InsertBlocks Element)
 		{
 			this.XmlOutput.WriteStartElement("ContentView");
-			this.XmlOutput.WriteAttributeString("Padding", this.XamlSettings.BlockQuoteMargin.ToString(CultureInfo.InvariantCulture) + "," +
-				this.XamlSettings.ParagraphMarginTop.ToString(CultureInfo.InvariantCulture) + ",0," +
-				this.XamlSettings.ParagraphMarginBottom.ToString(CultureInfo.InvariantCulture));
+			this.XmlOutput.WriteAttributeString("Padding", SmallMargins(true, false, true, true));
 
 			this.XmlOutput.WriteStartElement("Frame");
-			this.XmlOutput.WriteAttributeString("Padding", this.XamlSettings.BlockQuotePadding.ToString(CultureInfo.InvariantCulture) +
-				",0," + this.XamlSettings.BlockQuotePadding.ToString(CultureInfo.InvariantCulture) + ",0");
-			this.XmlOutput.WriteAttributeString("BorderColor", this.XamlSettings.InsertedBlockQuoteBorderColor);
+			this.XmlOutput.WriteAttributeString("Padding", SmallMargins(true, true, false, false));
+			this.XmlOutput.WriteAttributeString("BorderColor", "{AppThemeBinding Light={StaticResource InsertedBorderLight}, Dark={StaticResource InsertedBorderDark}}");
 			// TODO: Border thickness
 
 			this.XmlOutput.WriteStartElement("VerticalStackLayout");
@@ -1374,7 +1394,7 @@ namespace NeuroAccessMaui.UI.Rendering
 			bool ParagraphBullet;
 
 			this.XmlOutput.WriteStartElement("ContentView");
-			this.XmlOutput.WriteAttributeString("Padding", this.XamlSettings.ParagraphMargins);
+			this.XmlOutput.WriteAttributeString("Padding", SmallMarginsBinding(false, false, true, true));
 
 			this.XmlOutput.WriteStartElement("Grid");
 			this.XmlOutput.WriteAttributeString("RowSpacing", "0");
@@ -1409,11 +1429,9 @@ namespace NeuroAccessMaui.UI.Rendering
 					Expected++;
 
 					ParagraphBullet = !E.InlineSpanElement || E.OutsideParagraph;
-					this.GetMargins(E, out int TopMargin, out int BottomMargin);
+					GetMargins(E, out bool TopMargin, out bool BottomMargin);
 
-					this.RenderContentView("0," + TopMargin.ToString(CultureInfo.InvariantCulture) + "," +
-						this.XamlSettings.ListContentMargin.ToString(CultureInfo.InvariantCulture) + "," +
-						BottomMargin.ToString(CultureInfo.InvariantCulture));
+					this.RenderContentView(SmallMargins(false, true, TopMargin, BottomMargin));
 					this.XmlOutput.WriteAttributeString("Grid.Column", "0");
 					this.XmlOutput.WriteAttributeString("Grid.Row", Row.ToString(CultureInfo.InvariantCulture));
 
@@ -1584,7 +1602,7 @@ namespace NeuroAccessMaui.UI.Rendering
 
 		internal void RenderContentView()
 		{
-			this.RenderContentView(this.Alignment, this.XamlSettings.ParagraphMargins);
+			this.RenderContentView(this.Alignment, SmallMarginsBinding(false, false, true, true));
 		}
 
 		internal void RenderContentView(string Margins)
@@ -1649,7 +1667,7 @@ namespace NeuroAccessMaui.UI.Rendering
 			this.XmlOutput.WriteAttributeString("HeightRequest", "1");
 			this.XmlOutput.WriteAttributeString("BackgroundColor", this.XamlSettings.TableCellBorderColor);
 			this.XmlOutput.WriteAttributeString("HorizontalOptions", "FillAndExpand");
-			this.XmlOutput.WriteAttributeString("Margin", this.XamlSettings.ParagraphMargins);
+			this.XmlOutput.WriteAttributeString("Margin", SmallMarginsBinding(false, false, true, true));
 			this.XmlOutput.WriteEndElement();
 
 			return Task.CompletedTask;
@@ -1666,7 +1684,7 @@ namespace NeuroAccessMaui.UI.Rendering
 			int RowNr = 0;
 
 			this.XmlOutput.WriteStartElement("ContentView");
-			this.XmlOutput.WriteAttributeString("Padding", this.XamlSettings.ParagraphMargins);
+			this.XmlOutput.WriteAttributeString("Padding", SmallMarginsBinding(false, false, true, true));
 
 			this.XmlOutput.WriteStartElement("Grid");
 			this.XmlOutput.WriteAttributeString("RowSpacing", "-2");
@@ -1857,7 +1875,7 @@ namespace NeuroAccessMaui.UI.Rendering
 			bool ParagraphBullet;
 
 			this.XmlOutput.WriteStartElement("ContentView");
-			this.XmlOutput.WriteAttributeString("Padding", this.XamlSettings.ParagraphMargins);
+			this.XmlOutput.WriteAttributeString("Padding", SmallMarginsBinding(false, false, true, true));
 
 			this.XmlOutput.WriteStartElement("Grid");
 			this.XmlOutput.WriteAttributeString("RowSpacing", "0");
@@ -1890,13 +1908,11 @@ namespace NeuroAccessMaui.UI.Rendering
 				if (E is TaskItem TaskItem)
 				{
 					ParagraphBullet = !E.InlineSpanElement || E.OutsideParagraph;
-					this.GetMargins(E, out int TopMargin, out int BottomMargin);
+					GetMargins(E, out bool TopMargin, out bool BottomMargin);
 
 					if (TaskItem.IsChecked)
 					{
-						this.RenderContentView("0," + TopMargin.ToString(CultureInfo.InvariantCulture) + "," +
-							this.XamlSettings.ListContentMargin.ToString(CultureInfo.InvariantCulture) + "," +
-							BottomMargin.ToString(CultureInfo.InvariantCulture));
+						this.RenderContentView(SmallMargins(false, true, TopMargin, BottomMargin));
 						this.XmlOutput.WriteAttributeString("Grid.Column", "0");
 						this.XmlOutput.WriteAttributeString("Grid.Row", Row.ToString(CultureInfo.InvariantCulture));
 
