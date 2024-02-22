@@ -1,11 +1,11 @@
-﻿using System.Globalization;
+﻿using NeuroAccessMaui.Services.Contacts;
+using NeuroAccessMaui.Services.UI.Photos;
+using NeuroAccessMaui.UI.Rendering;
+using System.Globalization;
 using System.Text;
 using System.Xml;
-using NeuroAccessMaui.Services.Contacts;
-using NeuroAccessMaui.Services.UI.Photos;
 using Waher.Content.Markdown;
 using Waher.Content.Markdown.Model;
-using Waher.Content.Markdown.Xamarin;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Runtime.Inventory;
 

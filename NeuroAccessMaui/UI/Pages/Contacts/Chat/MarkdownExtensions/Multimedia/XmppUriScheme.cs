@@ -1,8 +1,8 @@
-﻿using System.Xml;
+﻿using NeuroAccessMaui.UI.Rendering;
+using System.Xml;
 using Waher.Content.Markdown;
 using Waher.Content.Markdown.Model;
 using Waher.Content.Markdown.Rendering;
-using Waher.Content.Markdown.Xamarin;
 using Waher.Runtime.Inventory;
 
 namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.Multimedia

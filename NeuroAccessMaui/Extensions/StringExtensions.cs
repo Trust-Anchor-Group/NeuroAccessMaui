@@ -1,5 +1,5 @@
-﻿using Waher.Content.Markdown;
-using Waher.Content.Markdown.Xamarin;
+﻿using NeuroAccessMaui.UI.Rendering;
+using Waher.Content.Markdown;
 using Waher.Events;
 
 namespace NeuroAccessMaui.Extensions

@@ -1,0 +1,41 @@
+﻿using Waher.Content.Emoji;
+using Waher.Content.Markdown;
+
+namespace NeuroAccessMaui.UI.Rendering.CodeContent
+{
+	/// <summary>
+	/// Base64-encoded image content.
+	/// </summary>
+	/// <remarks>
+	/// Modified from original in Waher.Content.Markdown.Xamarin library, with permission.
+	/// </remarks>
+	public class ImageContent : Waher.Content.Markdown.Model.CodeContent.ImageContent, ICodeContentXamarinFormsXamlRenderer
+	{
+		/// <summary>
+		/// Base64-encoded image content.
+		/// </summary>
+		public ImageContent()
+		{
+		}
+
+		/// <summary>
+		/// Generates Xamarin.Forms XAML for the code content.
+		/// </summary>
+		/// <param name="Renderer">Renderer.</param>
+		/// <param name="Rows">Code rows.</param>
+		/// <param name="Language">Language.</param>
+		/// <param name="Indent">Code block indentation.</param>
+		/// <param name="Document">Markdown document containing element.</param>
+		/// <returns>If renderer was able to generate output.</returns>
+		public async Task<bool> RenderXamarinFormsXaml(XamarinFormsXamlRenderer Renderer, string[] Rows, string Language, int Indent, 
+			MarkdownDocument Document)
+		{
+			await Multimedia.ImageContent.OutputXamarinForms(Renderer.XmlOutput, new Waher.Content.Emoji.ImageSource()
+			{
+				Url = GenerateUrl(Language, Rows, out _, out _)
+			});
+
+			return true;
+		}
+	}
+}
