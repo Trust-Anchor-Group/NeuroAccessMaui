@@ -309,7 +309,7 @@
 	  <Compile Update="UI\Popups\Settings\SelectLanguagePopup.xaml.cs">
 	    <DependentUpon>SelectLanguagePopup.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="UI\Popups\ShowInfoPopup.xaml.cs">
+	  <Compile Update="UI\Popups\Info\ShowInfoPopup.xaml.cs">
 	    <DependentUpon>ShowInfoPopup.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
