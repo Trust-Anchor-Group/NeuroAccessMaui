@@ -54,46 +54,8 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// <param name="XmlSettings">XML settings.</param>
 		public static Task GenerateMauiXaml(this MarkdownDocument Document, StringBuilder Output, XmlWriterSettings XmlSettings)
 		{
-			return Document.GenerateMauiXaml(Output, XmlSettings, new XamlSettings());
-		}
-
-		/// <summary>
-		/// Generates Maui XAML from the markdown text.
-		/// </summary>
-		/// <param name="Document">Markdown document.</param>
-		/// <param name="Output">Maui XAML will be output here.</param>
-		/// <param name="XmlSettings">XML settings.</param>
-		/// <param name="XamlSettings">XAML Settings.</param>
-		public static async Task GenerateMauiXaml(this MarkdownDocument Document, StringBuilder Output, XmlWriterSettings XmlSettings,
-			XamlSettings XamlSettings)
-		{
-			using MauiXamlRenderer Renderer = new(Output, XmlSettings, XamlSettings);
-			await Document.RenderDocument(Renderer);
-		}
-
-		/// <summary>
-		/// Generates Maui XAML from the markdown text.
-		/// </summary>
-		/// <param name="Document">Markdown document.</param>
-		/// <param name="Output">Maui XAML will be output here.</param>
-		/// <param name="XamlSettings">XAML Settings.</param>
-		public static async Task GenerateMauiXaml(this MarkdownDocument Document, StringBuilder Output, XamlSettings XamlSettings)
-		{
-			using MauiXamlRenderer Renderer = new(Output, XML.WriterSettings(false, true), XamlSettings);
-			await Document.RenderDocument(Renderer);
-		}
-
-		/// <summary>
-		/// Generates Maui XAML from the markdown text.
-		/// </summary>
-		/// <param name="Document">Markdown document.</param>
-		/// <param name="XamlSettings">XAML Settings.</param>
-		/// <returns>Maui XAML</returns>
-		public static async Task<string> GenerateMauiXaml(this MarkdownDocument Document, XamlSettings XamlSettings)
-		{
-			StringBuilder Output = new();
-			await Document.GenerateMauiXaml(Output, XamlSettings);
-			return Output.ToString();
+			using MauiXamlRenderer Renderer = new(Output, XmlSettings);
+			return Document.RenderDocument(Renderer);
 		}
 	}
 }

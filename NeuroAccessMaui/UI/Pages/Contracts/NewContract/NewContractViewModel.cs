@@ -1012,7 +1012,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						{
 							Text = ServiceRef.Localizer[nameof(AppResources.AddPart)],
 							StyleId = Role.Name,
-							Margin = AppStyles.SmallBottomOnlyMargins
+							Margin = AppStyles.SmallBottomMargins
 						};
 						button.Clicked += this.AddPartButton_Clicked;
 
