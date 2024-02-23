@@ -1,6 +1,6 @@
 ﻿using NeuroAccessMaui.Services.Contacts;
-using NeuroAccessMaui.Services.Navigation;
 using NeuroAccessMaui.Services.Notification;
+using NeuroAccessMaui.Services.UI;
 
 namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 {

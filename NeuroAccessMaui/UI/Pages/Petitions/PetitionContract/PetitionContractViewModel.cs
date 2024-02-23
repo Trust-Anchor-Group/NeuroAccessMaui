@@ -33,7 +33,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.NavigationService.TryGetArgs(out PetitionContractNavigationArgs? args))
+			if (ServiceRef.UiService.TryGetArgs(out PetitionContractNavigationArgs? args))
 			{
 				this.RequestorIdentity = args.RequestorIdentity;
 				this.requestorFullJid = args.RequestorFullJid;
@@ -102,7 +102,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 				this.RequestedContract!.ContractId, this.petitionId!, this.requestorFullJid!, true));
 
 			if (succeeded)
-				await ServiceRef.NavigationService.GoBackAsync();
+				await ServiceRef.UiService.GoBackAsync();
 		}
 
 		/// <summary>
@@ -115,7 +115,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 				this.RequestedContract!.ContractId, this.petitionId!, this.requestorFullJid!, false));
 
 			if (succeeded)
-				await ServiceRef.NavigationService.GoBackAsync();
+				await ServiceRef.UiService.GoBackAsync();
 		}
 
 		/// <summary>
@@ -124,7 +124,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 		[RelayCommand]
 		private static async Task Ignore()
 		{
-			await ServiceRef.NavigationService.GoBackAsync();
+			await ServiceRef.UiService.GoBackAsync();
 		}
 
 		// Full name of requesting entity.
@@ -518,14 +518,14 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 					if (Label == this.LegalId)
 					{
 						await Clipboard.SetTextAsync(Constants.UriSchemes.IotId + ":" + this.LegalId);
-						await ServiceRef.UiSerializer.DisplayAlert(
+						await ServiceRef.UiService.DisplayAlert(
 							ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
 							ServiceRef.Localizer[nameof(AppResources.IdCopiedSuccessfully)]);
 					}
 					else
 					{
 						await Clipboard.SetTextAsync(Label);
-						await ServiceRef.UiSerializer.DisplayAlert(
+						await ServiceRef.UiService.DisplayAlert(
 							ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
 							ServiceRef.Localizer[nameof(AppResources.TagValueCopiedToClipboard)]);
 					}
@@ -534,7 +534,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 	}

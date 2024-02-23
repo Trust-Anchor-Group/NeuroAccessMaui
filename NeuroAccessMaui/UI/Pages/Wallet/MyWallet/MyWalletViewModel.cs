@@ -5,9 +5,9 @@ using EDaler.Uris;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
-using NeuroAccessMaui.Services.Navigation;
 using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.Notification.Wallet;
+using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.Wallet;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Contracts;
@@ -45,7 +45,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			this.EDalerFrontGlyph = "https://" + ServiceRef.TagProfile.Domain + "/Images/eDalerFront200.png";
 			this.EDalerBackGlyph = "https://" + ServiceRef.TagProfile.Domain + "/Images/eDalerBack200.png";
 
-			if (ServiceRef.NavigationService.TryGetArgs(out WalletNavigationArgs? args))
+			if (ServiceRef.UiService.TryGetArgs(out WalletNavigationArgs? args))
 			{
 				SortedDictionary<CaseInsensitiveString, NotificationEvent[]> NotificationEvents = this.GetNotificationEvents();
 
@@ -391,7 +391,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 				{
 					EDalerBalanceNavigationArgs Args = new(this.Balance);
 
-					await ServiceRef.NavigationService.GoToAsync(nameof(RequestPaymentPage), Args, BackMethod.CurrentPage);
+					await ServiceRef.UiService.GoToAsync(nameof(RequestPaymentPage), Args, BackMethod.CurrentPage);
 				}
 				else
 				{
@@ -404,7 +404,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 						ServiceRef.Localizer[nameof(AppResources.BuyEDaler)],
 						ServiceRef.Localizer[nameof(AppResources.SelectServiceProviderBuyEDaler)]);
 
-					await ServiceRef.NavigationService.GoToAsync(nameof(ServiceProvidersPage), e, BackMethod.Pop);
+					await ServiceRef.UiService.GoToAsync(nameof(ServiceProvidersPage), e, BackMethod.Pop);
 
 					IBuyEDalerServiceProvider? ServiceProvider = (IBuyEDalerServiceProvider?)(e.ServiceProvider is null ? null : await e.ServiceProvider.Task);
 
@@ -414,14 +414,14 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 						{
 							EDalerBalanceNavigationArgs Args = new(this.Balance);
 
-							await ServiceRef.NavigationService.GoToAsync(nameof(RequestPaymentPage), Args, BackMethod.CurrentPage);
+							await ServiceRef.UiService.GoToAsync(nameof(RequestPaymentPage), Args, BackMethod.CurrentPage);
 						}
 						else if (string.IsNullOrEmpty(ServiceProvider.BuyEDalerTemplateContractId))
 						{
 							TaskCompletionSource<decimal?> Result = new();
 							BuyEDalerNavigationArgs Args = new(this.Balance?.Currency, Result);
 
-							await ServiceRef.NavigationService.GoToAsync(nameof(BuyEDalerPage), Args, BackMethod.CurrentPage);
+							await ServiceRef.UiService.GoToAsync(nameof(BuyEDalerPage), Args, BackMethod.CurrentPage);
 
 							decimal? Amount = await Result.Task;
 
@@ -450,7 +450,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 							OptionsTransaction OptionsTransaction = await ServiceRef.XmppService.InitiateBuyEDalerGetOptions(ServiceProvider.Id, ServiceProvider.Type);
 							IDictionary<CaseInsensitiveString, object>[] Options = await OptionsTransaction.Wait();
 
-							if (ServiceRef.NavigationService.CurrentPage is IContractOptionsPage ContractOptionsPage)
+							if (ServiceRef.UiService.CurrentPage is IContractOptionsPage ContractOptionsPage)
 								MainThread.BeginInvokeOnMainThread(async () => await ContractOptionsPage.ShowContractOptions(Options));
 						}
 					}
@@ -459,7 +459,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -472,7 +472,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -495,7 +495,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 						AnonymousText = ServiceRef.Localizer[nameof(AppResources.Open)]
 					};
 
-					await ServiceRef.NavigationService.GoToAsync(nameof(MyContactsPage), Args, BackMethod.CurrentPage);
+					await ServiceRef.UiService.GoToAsync(nameof(MyContactsPage), Args, BackMethod.CurrentPage);
 				}
 				else
 				{
@@ -508,7 +508,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 						ServiceRef.Localizer[nameof(AppResources.SellEDaler)],
 						ServiceRef.Localizer[nameof(AppResources.SelectServiceProviderSellEDaler)]);
 
-					await ServiceRef.NavigationService.GoToAsync(nameof(ServiceProvidersPage), e, BackMethod.Pop);
+					await ServiceRef.UiService.GoToAsync(nameof(ServiceProvidersPage), e, BackMethod.Pop);
 
 					ISellEDalerServiceProvider? ServiceProvider = (ISellEDalerServiceProvider?)(e.ServiceProvider is null ? null : await e.ServiceProvider.Task);
 
@@ -523,14 +523,14 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 								AnonymousText = ServiceRef.Localizer[nameof(AppResources.Open)],
 							};
 
-							await ServiceRef.NavigationService.GoToAsync(nameof(MyContactsPage), Args, BackMethod.CurrentPage);
+							await ServiceRef.UiService.GoToAsync(nameof(MyContactsPage), Args, BackMethod.CurrentPage);
 						}
 						else if (string.IsNullOrEmpty(ServiceProvider.SellEDalerTemplateContractId))
 						{
 							TaskCompletionSource<decimal?> Result = new();
 							SellEDalerNavigationArgs Args = new(this.Balance?.Currency, Result);
 
-							await ServiceRef.NavigationService.GoToAsync(nameof(SellEDalerPage), Args, BackMethod.CurrentPage);
+							await ServiceRef.UiService.GoToAsync(nameof(SellEDalerPage), Args, BackMethod.CurrentPage);
 
 							decimal? Amount = await Result.Task;
 
@@ -559,7 +559,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 							OptionsTransaction OptionsTransaction = await ServiceRef.XmppService.InitiateSellEDalerGetOptions(ServiceProvider.Id, ServiceProvider.Type);
 							IDictionary<CaseInsensitiveString, object>[] Options = await OptionsTransaction.Wait();
 
-							if (ServiceRef.NavigationService.CurrentPage is IContractOptionsPage ContractOptionsPage)
+							if (ServiceRef.UiService.CurrentPage is IContractOptionsPage ContractOptionsPage)
 								MainThread.BeginInvokeOnMainThread(async () => await ContractOptionsPage.ShowContractOptions(Options));
 						}
 					}
@@ -568,7 +568,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -582,15 +582,15 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			{
 				if (!ServiceRef.XmppService.TryParseEDalerUri(PendingItem.Uri, out EDalerUri Uri, out string Reason))
 				{
-					await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						ServiceRef.Localizer[nameof(AppResources.InvalidEDalerUri), Reason]);
 					return;
 				}
 
-				await ServiceRef.NavigationService.GoToAsync(nameof(PendingPayment.PendingPaymentPage), new EDalerUriNavigationArgs(Uri, PendingItem.FriendlyName));
+				await ServiceRef.UiService.GoToAsync(nameof(PendingPayment.PendingPaymentPage), new EDalerUriNavigationArgs(Uri, PendingItem.FriendlyName));
 			}
 			else if (Item is AccountEventItem EventItem)
-				await ServiceRef.NavigationService.GoToAsync(nameof(AccountEvent.AccountEventPage), new AccountEvent.AccountEventNavigationArgs(EventItem));
+				await ServiceRef.UiService.GoToAsync(nameof(AccountEvent.AccountEventPage), new AccountEvent.AccountEventNavigationArgs(EventItem));
 		}
 
 		/// <summary>
@@ -814,7 +814,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 				TaskCompletionSource<Contract?> TemplateSelection = new();
 				MyContractsNavigationArgs Args = new(ContractsListMode.TokenCreationTemplates, TemplateSelection);
 
-				await ServiceRef.NavigationService.GoToAsync(nameof(MyContractsPage), Args, BackMethod.Pop);
+				await ServiceRef.UiService.GoToAsync(nameof(MyContractsPage), Args, BackMethod.Pop);
 
 				Contract? Template = await TemplateSelection.Task;
 				if (Template is null)
@@ -886,11 +886,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 
 				NewContractNavigationArgs NewContractArgs = new(Template, true, Parameters);
 
-				await ServiceRef.NavigationService.GoToAsync(nameof(NewContractPage), NewContractArgs, BackMethod.CurrentPage);
+				await ServiceRef.UiService.GoToAsync(nameof(NewContractPage), NewContractArgs, BackMethod.CurrentPage);
 			}
 			catch (Exception ex)
 			{
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 

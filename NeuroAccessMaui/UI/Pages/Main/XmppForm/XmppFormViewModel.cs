@@ -31,7 +31,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.XmppForm
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.NavigationService.TryGetArgs(out XmppFormNavigationArgs? Args))
+			if (ServiceRef.UiService.TryGetArgs(out XmppFormNavigationArgs? Args))
 			{
 				this.form = Args.Form;
 				this.responseSent = false;
@@ -132,12 +132,12 @@ namespace NeuroAccessMaui.UI.Pages.Main.XmppForm
 					this.form.Submit();
 					this.responseSent = true;
 
-					await ServiceRef.NavigationService.GoBackAsync();
+					await ServiceRef.UiService.GoBackAsync();
 				}
 			}
 			catch (Exception ex)
 			{
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 

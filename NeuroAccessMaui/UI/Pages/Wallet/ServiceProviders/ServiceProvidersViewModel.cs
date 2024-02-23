@@ -22,7 +22,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 		/// Creates an instance of the <see cref="ServiceProvidersViewModel"/> class.
 		/// </summary>
 		public ServiceProvidersViewModel()
-			: this(ServiceRef.NavigationService.PopLatestArgs<ServiceProvidersNavigationArgs>())
+			: this(ServiceRef.UiService.PopLatestArgs<ServiceProvidersNavigationArgs>())
 		{
 		}
 
@@ -31,7 +31,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 		{
 			await base.OnInitialize();
 
-			if (this.navigationArgs is null && ServiceRef.NavigationService.TryGetArgs(out ServiceProvidersNavigationArgs? Args))
+			if (this.navigationArgs is null && ServiceRef.UiService.TryGetArgs(out ServiceProvidersNavigationArgs? Args))
 				this.navigationArgs = Args;
 
 			this.Title = this.navigationArgs?.Title;
@@ -112,7 +112,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 				this.navigationArgs.ServiceProvider = null;
 			}
 
-			await ServiceRef.NavigationService.GoBackAsync();
+			await ServiceRef.UiService.GoBackAsync();
 
 			TaskSource?.TrySetResult(ServiceProvider);
 		}

@@ -186,7 +186,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				}
 				else if (ErrorMessage is not null)
 				{
-					await ServiceRef.UiSerializer.DisplayAlert(
+					await ServiceRef.UiService.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ErrorMessage,
 					ServiceRef.Localizer[nameof(AppResources.Ok)]);
 				}
@@ -195,7 +195,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			{
 				ServiceRef.LogService.LogException(ex);
 
-				await ServiceRef.UiSerializer.DisplayAlert(
+				await ServiceRef.UiService.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message,
 					ServiceRef.Localizer[nameof(AppResources.Ok)]);
 			}
@@ -231,7 +231,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 			finally
 			{

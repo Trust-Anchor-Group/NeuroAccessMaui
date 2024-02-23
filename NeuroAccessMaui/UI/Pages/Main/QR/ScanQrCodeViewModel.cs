@@ -29,7 +29,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 				this.countDownTimer.Tick += this.CountDownEventHandler;
 			}
 
-			if ((this.navigationArgs is null) && ServiceRef.NavigationService.TryGetArgs(out ScanQrCodeNavigationArgs? Args))
+			if ((this.navigationArgs is null) && ServiceRef.UiService.TryGetArgs(out ScanQrCodeNavigationArgs? Args))
 			{
 				this.navigationArgs = Args;
 				this.OnPropertyChanged(nameof(this.HasAllowedSchemas));
@@ -156,7 +156,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 				{
 					try
 					{
-						await ServiceRef.NavigationService.GoBackAsync();
+						await ServiceRef.UiService.GoBackAsync();
 						TaskSource.TrySetResult(Url);
 					}
 					catch (Exception ex)

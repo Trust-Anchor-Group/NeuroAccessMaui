@@ -1,5 +1,5 @@
 ﻿using NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels;
-using NeuroAccessMaui.Services.Navigation;
+using NeuroAccessMaui.Services.UI;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.AccountEvent
 {

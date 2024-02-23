@@ -36,7 +36,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.NavigationService.TryGetArgs(out ViewClaimThingNavigationArgs? args) && args.Uri is not null)
+			if (ServiceRef.UiService.TryGetArgs(out ViewClaimThingNavigationArgs? args) && args.Uri is not null)
 			{
 				this.Uri = args.Uri;
 
@@ -166,19 +166,19 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 								ContactInfo Info = await ContactInfo.FindByBareJid(Value);
 								if (Info is not null)
 								{
-									await ServiceRef.NavigationService.GoToAsync(nameof(ChatPage), new ChatNavigationArgs(Info));
+									await ServiceRef.UiService.GoToAsync(nameof(ChatPage), new ChatNavigationArgs(Info));
 									return;
 								}
 
 								int i = Value.IndexOf('@');
 								if (i > 0 && Guid.TryParse(Value[..i], out _))
 								{
-									if (ServiceRef.NavigationService.CurrentPage is not ViewIdentityPage)
+									if (ServiceRef.UiService.CurrentPage is not ViewIdentityPage)
 									{
 										Info = await ContactInfo.FindByLegalId(Value);
 										if (Info?.LegalIdentity is not null)
 										{
-											await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Info.LegalIdentity));
+											await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Info.LegalIdentity));
 											return;
 										}
 									}
@@ -186,7 +186,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 								else
 								{
 									string FriendlyName = await ContactInfo.GetFriendlyName(Value);
-									await ServiceRef.NavigationService.GoToAsync(nameof(ChatPage), new ChatNavigationArgs(string.Empty, Value, FriendlyName));
+									await ServiceRef.UiService.GoToAsync(nameof(ChatPage), new ChatNavigationArgs(string.Empty, Value, FriendlyName));
 									return;
 								}
 							}
@@ -195,13 +195,13 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 				}
 
 				await Clipboard.SetTextAsync(LocalizedValue);
-				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
 					ServiceRef.Localizer[nameof(AppResources.TagValueCopiedToClipboard)]);
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -305,7 +305,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 					}
 
 					await Database.Provider.Flush();
-					await ServiceRef.NavigationService.GoBackAsync();
+					await ServiceRef.UiService.GoBackAsync();
 				}
 				else
 				{
@@ -313,13 +313,13 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 					if (string.IsNullOrEmpty(Msg))
 						Msg = ServiceRef.Localizer[nameof(AppResources.UnableToClaimThing)];
 
-					await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], Msg);
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], Msg);
 				}
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 

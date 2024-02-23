@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services;
-using NeuroAccessMaui.Services.Navigation;
+using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Main.Calculator;
 using System.ComponentModel;
 using Waher.Content;
@@ -29,7 +29,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.NavigationService.TryGetArgs(out BuyEDalerNavigationArgs? Args))
+			if (ServiceRef.UiService.TryGetArgs(out BuyEDalerNavigationArgs? Args))
 			{
 				this.Currency = Args.Currency;
 				this.result = Args.Result;
@@ -108,13 +108,13 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler
 					case "AmountText":
 						CalculatorNavigationArgs Args = new(this, nameof(this.AmountText));
 
-						await ServiceRef.NavigationService.GoToAsync(nameof(CalculatorPage), Args, BackMethod.Pop);
+						await ServiceRef.UiService.GoToAsync(nameof(CalculatorPage), Args, BackMethod.Pop);
 						break;
 				}
 			}
 			catch (Exception ex)
 			{
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -125,7 +125,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler
 		private async Task Buy()
 		{
 			this.buyButtonPressed = true;
-			await ServiceRef.NavigationService.GoBackAsync();
+			await ServiceRef.UiService.GoBackAsync();
 		}
 
 	}

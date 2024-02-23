@@ -1,4 +1,4 @@
-﻿using NeuroAccessMaui.Services.Navigation;
+﻿using NeuroAccessMaui.Services.UI;
 using Waher.Networking.XMPP.Contracts;
 
 namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract

@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using EDaler;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
-using NeuroAccessMaui.Services.Navigation;
+using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Converters;
 using NeuroAccessMaui.UI.Pages.Main.Calculator;
 using System.ComponentModel;
@@ -28,7 +28,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.NavigationService.TryGetArgs(out EDalerUriNavigationArgs? Args))
+			if (ServiceRef.UiService.TryGetArgs(out EDalerUriNavigationArgs? Args))
 			{
 				this.uriToSend = Args.UriToSend;
 				this.FriendlyName = Args.FriendlyName;
@@ -381,13 +381,13 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 					return;
 
 				await Clipboard.SetTextAsync(Value);
-				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
 					ServiceRef.Localizer[nameof(AppResources.TagValueCopiedToClipboard)]);
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -410,18 +410,18 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 
 				if (succeeded)
 				{
-					await ServiceRef.NavigationService.GoBackAsync();
-					await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+					await ServiceRef.UiService.GoBackAsync();
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
 						ServiceRef.Localizer[nameof(AppResources.TransactionAccepted)]);
 				}
 				else
-					await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						ServiceRef.Localizer[nameof(AppResources.UnableToProcessEDalerUri)]);
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -435,7 +435,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 			{
 				if (!this.NotPaid)
 				{
-					await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						ServiceRef.Localizer[nameof(AppResources.PaymentAlreadySent)]);
 					return;
 				}
@@ -468,7 +468,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 
 							if (Succeeded)
 							{
-								await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.PetitionSent)],
+								await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.PetitionSent)],
 									ServiceRef.Localizer[nameof(AppResources.APetitionHasBeenSentForEncryption)]);
 							}
 						});
@@ -492,14 +492,14 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 
 				if (succeeded)
 				{
-					await ServiceRef.NavigationService.GoBackAsync();
-					await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+					await ServiceRef.UiService.GoBackAsync();
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
 						ServiceRef.Localizer[nameof(AppResources.PaymentSuccess)]);
 				}
 				else
 				{
 					this.NotPaid = true;
-					await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						ServiceRef.Localizer[nameof(AppResources.UnableToProcessEDalerUri)]);
 				}
 			}
@@ -507,7 +507,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 			{
 				this.NotPaid = true;
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -519,7 +519,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 		{
 			if (!this.NotPaid)
 			{
-				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 					ServiceRef.Localizer[nameof(AppResources.PaymentAlreadySent)]);
 				return;
 			}
@@ -562,7 +562,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -590,7 +590,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -611,18 +611,18 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				(bool succeeded, Transaction? Transaction) = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.SendEDalerUri(this.Uri));
 				if (succeeded)
 				{
-					await ServiceRef.NavigationService.GoBackAsync();
-					await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+					await ServiceRef.UiService.GoBackAsync();
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
 						ServiceRef.Localizer[nameof(AppResources.PaymentSuccess)]);
 				}
 				else
-					await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						ServiceRef.Localizer[nameof(AppResources.UnableToProcessEDalerUri)]);
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -656,7 +656,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -673,7 +673,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 		{
 			if (!this.NotPaid)
 			{
-				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 					ServiceRef.Localizer[nameof(AppResources.PaymentAlreadySent)]);
 				return;
 			}
@@ -701,12 +701,12 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				// TODO: Offline options: Expiry days
 
 				this.uriToSend?.TrySetResult(Uri);
-				await ServiceRef.NavigationService.GoBackAsync();
+				await ServiceRef.UiService.GoBackAsync();
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -724,19 +724,19 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 					case "AmountText":
 						CalculatorNavigationArgs AmountArgs = new(this, nameof(this.AmountText));
 
-						await ServiceRef.NavigationService.GoToAsync(nameof(CalculatorPage), AmountArgs, BackMethod.Pop);
+						await ServiceRef.UiService.GoToAsync(nameof(CalculatorPage), AmountArgs, BackMethod.Pop);
 						break;
 
 					case "AmountExtraText":
 						CalculatorNavigationArgs ExtraArgs = new(this, nameof(this.AmountExtraText));
 
-						await ServiceRef.NavigationService.GoToAsync(nameof(CalculatorPage), ExtraArgs, BackMethod.Pop);
+						await ServiceRef.UiService.GoToAsync(nameof(CalculatorPage), ExtraArgs, BackMethod.Pop);
 						break;
 				}
 			}
 			catch (Exception ex)
 			{
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 

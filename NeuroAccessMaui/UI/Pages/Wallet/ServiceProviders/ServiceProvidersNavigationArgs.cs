@@ -1,4 +1,4 @@
-﻿using NeuroAccessMaui.Services.Navigation;
+﻿using NeuroAccessMaui.Services.UI;
 using IServiceProvider = Waher.Networking.XMPP.Contracts.IServiceProvider;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders

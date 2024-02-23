@@ -31,7 +31,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Calculator
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.NavigationService.TryGetArgs(out CalculatorNavigationArgs? Args))
+			if (ServiceRef.UiService.TryGetArgs(out CalculatorNavigationArgs? Args))
 			{
 				this.Entry = Args.Entry;
 				this.ViewModel = Args.ViewModel;

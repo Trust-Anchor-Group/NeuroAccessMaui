@@ -146,7 +146,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			// Note: Implementing as FlyoutItem only instantiates view one time.
 			try
 			{
-				await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage));
+				await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage));
 			}
 			catch (Exception ex)
 			{
@@ -158,7 +158,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		{
 			try
 			{
-				await ServiceRef.NavigationService.GoToAsync(nameof(SettingsPage));
+				await ServiceRef.UiService.GoToAsync(nameof(SettingsPage));
 			}
 			catch (Exception ex)
 			{
@@ -170,7 +170,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		{
 			try
 			{
-				await ServiceRef.NavigationService.GoToAsync(nameof(ApplicationsPage));
+				await ServiceRef.UiService.GoToAsync(nameof(ApplicationsPage));
 			}
 			catch (Exception ex)
 			{

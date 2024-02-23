@@ -24,7 +24,7 @@ namespace NeuroAccessMaui.UI.Pages.Signatures.ServerSignature
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.NavigationService.TryGetArgs(out ServerSignatureNavigationArgs? args))
+			if (ServiceRef.UiService.TryGetArgs(out ServerSignatureNavigationArgs? args))
 				this.contract = args.Contract;
 
 			this.AssignProperties();

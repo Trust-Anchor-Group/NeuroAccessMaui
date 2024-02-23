@@ -1638,8 +1638,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 			MainThread.BeginInvokeOnMainThread(async () =>
 			{
-				if ((ServiceRef.NavigationService.CurrentPage is ChatPage || ServiceRef.NavigationService.CurrentPage is ChatPageIos) &&
-					ServiceRef.NavigationService.CurrentPage.BindingContext is ChatViewModel ChatViewModel &&
+				if ((ServiceRef.UiService.CurrentPage is ChatPage || ServiceRef.UiService.CurrentPage is ChatPageIos) &&
+					ServiceRef.UiService.CurrentPage.BindingContext is ChatViewModel ChatViewModel &&
 					string.Equals(ChatViewModel.BareJid, RemoteBareJid, StringComparison.OrdinalIgnoreCase))
 				{
 					if (string.IsNullOrEmpty(ReplaceObjectId))
@@ -1686,7 +1686,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				{
 					case "NONE":
 					default:
-						await ServiceRef.UiSerializer.DisplayAlert(
+						await ServiceRef.UiService.DisplayAlert(
 							ServiceRef.Localizer[nameof(AppResources.Information)], Message,
 							ServiceRef.Localizer[nameof(AppResources.Ok)]);
 						break;
@@ -1694,7 +1694,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 					case "CLIENT":
 					case "SERVER":
 					case "SERVICE":
-						await ServiceRef.UiSerializer.DisplayAlert(
+						await ServiceRef.UiService.DisplayAlert(
 							ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], Message,
 							ServiceRef.Localizer[nameof(AppResources.Ok)]);
 						break;
@@ -2691,7 +2691,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -2709,7 +2709,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -2728,7 +2728,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -2977,7 +2977,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -2996,7 +2996,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -3052,7 +3052,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -3177,7 +3177,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -3196,7 +3196,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -3296,7 +3296,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -3315,7 +3315,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 

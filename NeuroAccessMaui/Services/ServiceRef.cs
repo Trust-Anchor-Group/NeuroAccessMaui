@@ -5,13 +5,10 @@ using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Crypto;
 using NeuroAccessMaui.Services.EventLog;
 using NeuroAccessMaui.Services.Localization;
-using NeuroAccessMaui.Services.Navigation;
 using NeuroAccessMaui.Services.Network;
 using NeuroAccessMaui.Services.Nfc;
 using NeuroAccessMaui.Services.Notification;
-using NeuroAccessMaui.Services.Popup;
 using NeuroAccessMaui.Services.Push;
-using NeuroAccessMaui.Services.Screenshot;
 using NeuroAccessMaui.Services.Settings;
 using NeuroAccessMaui.Services.Storage;
 using NeuroAccessMaui.Services.Tag;
@@ -29,9 +26,8 @@ namespace NeuroAccessMaui.Services
 	public static class ServiceRef
 	{
 		private static IXmppService? xmppService;
-		private static IUiSerializer? uiSerializer;
+		private static IUiService? uiService;
 		private static ITagProfile? tagProfile;
-		private static INavigationService? navigationService;
 		private static ILogService? logService;
 		private static INetworkService? networkService;
 		private static IContractOrchestratorService? contractOrchestratorService;
@@ -47,18 +43,16 @@ namespace NeuroAccessMaui.Services
 		private static IStringLocalizer? localizer;
 		private static IPlatformSpecific? platformSpecific;
 		private static IBarcodeReader? barcodeReader;
-		private static IPopupService? popupService;
-		private static IScreenshotService? screenshotService;
 
 		/// <summary>
-		/// The dispatcher to use for alerts and accessing the main thread.
+		/// Service serializing and managing UI-related tasks.
 		/// </summary>
-		public static IUiSerializer UiSerializer
+		public static IUiService UiService
 		{
 			get
 			{
-				uiSerializer ??= App.Instantiate<IUiSerializer>();
-				return uiSerializer;
+				uiService ??= App.Instantiate<IUiService>();
+				return uiService;
 			}
 		}
 
@@ -83,18 +77,6 @@ namespace NeuroAccessMaui.Services
 			{
 				tagProfile ??= App.Instantiate<ITagProfile>();
 				return tagProfile;
-			}
-		}
-
-		/// <summary>
-		/// Navigation service.
-		/// </summary>
-		public static INavigationService NavigationService
-		{
-			get
-			{
-				navigationService ??= App.Instantiate<INavigationService>();
-				return navigationService;
 			}
 		}
 
@@ -276,30 +258,6 @@ namespace NeuroAccessMaui.Services
 			{
 				barcodeReader ??= ServiceHelper.GetService<IBarcodeReader>();
 				return barcodeReader;
-			}
-		}
-
-		/// <summary>
-		/// Popup service
-		/// </summary>
-		public static IPopupService PopupService
-		{
-			get
-			{
-				popupService ??= App.Instantiate<IPopupService>();
-				return popupService;
-			}
-		}
-
-		/// <summary>
-		/// Screenshot service
-		/// </summary>
-		public static IScreenshotService ScreenshotService
-		{
-			get
-			{
-				screenshotService ??= App.Instantiate<IScreenshotService>();
-				return screenshotService;
 			}
 		}
 	}

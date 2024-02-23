@@ -55,7 +55,7 @@ namespace NeuroAccessMaui.UI.Popups.Image
 		[RelayCommand]
 		private async Task Cancel()
 		{
-			await ServiceRef.PopupService.PopAsync();
+			await ServiceRef.UiService.PopAsync();
 		}
 	}
 }

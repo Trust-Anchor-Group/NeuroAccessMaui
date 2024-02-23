@@ -56,7 +56,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.NavigationService.TryGetArgs(out PetitionPeerReviewNavigationArgs? Args))
+			if (ServiceRef.UiService.TryGetArgs(out PetitionPeerReviewNavigationArgs? Args))
 			{
 				this.RequestorIdentity = Args.RequestorIdentity;
 				this.requestorFullJid = Args.RequestorFullJid;
@@ -237,7 +237,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 			});
 
 			if (Succeeded && GoBackIfOk)
-				await ServiceRef.NavigationService.GoBackAsync();
+				await ServiceRef.UiService.GoBackAsync();
 		}
 
 		/// <summary>
@@ -265,13 +265,13 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 			});
 
 			if (Succeeded && GoBackIfOk)
-				await ServiceRef.NavigationService.GoBackAsync();
+				await ServiceRef.UiService.GoBackAsync();
 		}
 
 		[RelayCommand]
 		private static async Task Ignore()
 		{
-			await ServiceRef.NavigationService.GoBackAsync();
+			await ServiceRef.UiService.GoBackAsync();
 		}
 
 		[RelayCommand(CanExecute = nameof(IsPhotoOk))]
@@ -1183,7 +1183,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 			{
 				ServiceRef.LogService.LogException(ex);
 
-				await ServiceRef.UiSerializer.DisplayAlert(
+				await ServiceRef.UiService.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 					ServiceRef.Localizer[nameof(AppResources.UnableToSignReview)]);
 			}

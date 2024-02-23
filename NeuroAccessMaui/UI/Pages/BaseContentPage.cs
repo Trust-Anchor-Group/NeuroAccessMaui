@@ -101,7 +101,7 @@ namespace NeuroAccessMaui.UI.Pages
 					string Message = ServiceRef.Localizer[nameof(AppResources.FailedToBindViewModelForPage),
 						ViewModel.GetType().FullName ?? string.Empty, this.GetType().FullName ?? string.Empty];
 
-					await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], Message + Environment.NewLine + e.Message);
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], Message + Environment.NewLine + e.Message);
 				}
 			}
 
@@ -118,7 +118,7 @@ namespace NeuroAccessMaui.UI.Pages
 				string Message = ServiceRef.Localizer[nameof(AppResources.FailedToRestoreViewModelStateForPage),
 					ViewModel.GetType().FullName ?? string.Empty, this.GetType().FullName ?? string.Empty];
 
-				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], Message + Environment.NewLine + e.Message);
+				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], Message + Environment.NewLine + e.Message);
 			}
 		}
 
@@ -158,7 +158,7 @@ namespace NeuroAccessMaui.UI.Pages
 					string msg = ServiceRef.Localizer[nameof(AppResources.FailedToSaveViewModelStateForPage),
 						ViewModel.GetType().FullName ?? string.Empty, this.GetType().FullName ?? string.Empty];
 
-					await ServiceRef.UiSerializer.DisplayAlert(
+					await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						msg + Environment.NewLine + e.Message);
 				}
@@ -176,7 +176,7 @@ namespace NeuroAccessMaui.UI.Pages
 				string msg = ServiceRef.Localizer[nameof(AppResources.FailedToUnbindViewModelForPage),
 					ViewModel.GetType().FullName ?? string.Empty, this.GetType().FullName ?? string.Empty];
 
-				await ServiceRef.UiSerializer.DisplayAlert(
+				await ServiceRef.UiService.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 					msg + Environment.NewLine + e.Message);
 			}
@@ -206,7 +206,7 @@ namespace NeuroAccessMaui.UI.Pages
 						if (ViewModel is not null)
 							await ViewModel.GoBack();
 						else
-							await ServiceRef.NavigationService.GoBackAsync();
+							await ServiceRef.UiService.GoBackAsync();
 					});
 
 					return true;

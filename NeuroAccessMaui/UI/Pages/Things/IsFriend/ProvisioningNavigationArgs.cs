@@ -1,5 +1,5 @@
-﻿using NeuroAccessMaui.Services.Navigation;
-using NeuroAccessMaui.Services.Notification.Things;
+﻿using NeuroAccessMaui.Services.Notification.Things;
+using NeuroAccessMaui.Services.UI;
 
 namespace NeuroAccessMaui.UI.Pages.Things.IsFriend
 {

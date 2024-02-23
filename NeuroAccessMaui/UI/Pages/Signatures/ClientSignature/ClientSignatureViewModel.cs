@@ -28,7 +28,7 @@ namespace NeuroAccessMaui.UI.Pages.Signatures.ClientSignature
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.NavigationService.TryGetArgs(out ClientSignatureNavigationArgs? args))
+			if (ServiceRef.UiService.TryGetArgs(out ClientSignatureNavigationArgs? args))
 			{
 				this.clientSignature = args.Signature;
 				this.identity = args.Identity;

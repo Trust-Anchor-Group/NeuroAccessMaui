@@ -4,7 +4,7 @@ using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
-using NeuroAccessMaui.Services.Navigation;
+using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
@@ -42,7 +42,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.NavigationService.TryGetArgs(out TokenDetailsNavigationArgs? args))
+			if (ServiceRef.UiService.TryGetArgs(out TokenDetailsNavigationArgs? args))
 			{
 				this.Created = args.Token?.Created;
 				this.Updated = args.Token?.Updated;
@@ -511,20 +511,20 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 				if (i > 0 && Guid.TryParse(s[..i], out _))
 				{
 					await Clipboard.SetTextAsync(Constants.UriSchemes.NeuroFeature + ":" + s);
-					await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
 						ServiceRef.Localizer[nameof(AppResources.IdCopiedSuccessfully)]);
 				}
 				else
 				{
 					await Clipboard.SetTextAsync(s);
-					await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
 						ServiceRef.Localizer[nameof(AppResources.TagValueCopiedToClipboard)]);
 				}
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -544,7 +544,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			}
 			catch (Exception ex)
 			{
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -564,7 +564,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			}
 			catch (Exception ex)
 			{
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -617,11 +617,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			{
 				ChatNavigationArgs Args = new(LegalId, BareJid, FriendlyName);
 
-				await ServiceRef.NavigationService.GoToAsync(nameof(ChatPage), Args, BackMethod.Inherited, BareJid);
+				await ServiceRef.UiService.GoToAsync(nameof(ChatPage), Args, BackMethod.Inherited, BareJid);
 			}
 			catch (Exception ex)
 			{
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -655,11 +655,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 					await App.OpenUrlAsync(e.GetUrl);
 				}
 				else
-					await ServiceRef.UiSerializer.DisplayException(e.StanzaError ?? new Exception(e.ErrorText));
+					await ServiceRef.UiService.DisplayException(e.StanzaError ?? new Exception(e.ErrorText));
 			}
 			catch (Exception ex)
 			{
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -675,7 +675,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 				CanScanQrCode = true,
 			};
 
-			await ServiceRef.NavigationService.GoToAsync(nameof(MyContactsPage), ContactListArgs, BackMethod.Pop);
+			await ServiceRef.UiService.GoToAsync(nameof(MyContactsPage), ContactListArgs, BackMethod.Pop);
 
 			ContactInfoModel? Contact = await Selected.Task;
 			if (Contact is null)
@@ -696,7 +696,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 
 				ChatNavigationArgs ChatArgs = new(Contact.Contact);
 
-				await ServiceRef.NavigationService.GoToAsync(nameof(ChatPage), ChatArgs, BackMethod.Inherited, Contact.BareJid);
+				await ServiceRef.UiService.GoToAsync(nameof(ChatPage), ChatArgs, BackMethod.Inherited, Contact.BareJid);
 			}
 		}
 
@@ -719,7 +719,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -760,11 +760,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 
 				NewContractArgs.SuppressProposal(e.TrustProviderId);
 
-				await ServiceRef.NavigationService.GoToAsync(nameof(NewContractPage), NewContractArgs, BackMethod.CurrentPage);
+				await ServiceRef.UiService.GoToAsync(nameof(NewContractPage), NewContractArgs, BackMethod.CurrentPage);
 			}
 			catch (Exception ex)
 			{
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -856,11 +856,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 				if (!string.IsNullOrEmpty(TrustProviderId))
 					NewContractArgs.SuppressProposal(TrustProviderId);
 
-				await ServiceRef.NavigationService.GoToAsync(nameof(NewContractPage), NewContractArgs, BackMethod.CurrentPage);
+				await ServiceRef.UiService.GoToAsync(nameof(NewContractPage), NewContractArgs, BackMethod.CurrentPage);
 			}
 			catch (Exception ex)
 			{
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -964,11 +964,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 				if (!string.IsNullOrEmpty(TrustProviderId))
 					NewContractArgs.SuppressProposal(TrustProviderId);
 
-				await ServiceRef.NavigationService.GoToAsync(nameof(NewContractPage), NewContractArgs, BackMethod.CurrentPage);
+				await ServiceRef.UiService.GoToAsync(nameof(NewContractPage), NewContractArgs, BackMethod.CurrentPage);
 			}
 			catch (Exception ex)
 			{
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -986,11 +986,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 				TokenEvent[] Events = this.TokenId is null ? [] : await ServiceRef.XmppService.GetNeuroFeatureEvents(this.TokenId);
 				TokenEventsNavigationArgs Args = new(this.TokenId!, Events);
 
-				await ServiceRef.NavigationService.GoToAsync(nameof(TokenEventsPage), Args, BackMethod.Pop);
+				await ServiceRef.UiService.GoToAsync(nameof(TokenEventsPage), Args, BackMethod.Pop);
 			}
 			catch (Exception ex)
 			{
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -1058,14 +1058,14 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 				{
 					MachineVariablesNavigationArgs Args = new(e.Running, e.Ended, e.CurrentState, e.Variables);
 
-					await ServiceRef.NavigationService.GoToAsync(nameof(MachineVariablesPage), Args, BackMethod.Pop);
+					await ServiceRef.UiService.GoToAsync(nameof(MachineVariablesPage), Args, BackMethod.Pop);
 				}
 				else
-					await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], e.ErrorText);
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], e.ErrorText);
 			}
 			catch (Exception ex)
 			{
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -1075,11 +1075,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			{
 				MachineReportNavigationArgs Args = new(Report);
 
-				await ServiceRef.NavigationService.GoToAsync(nameof(MachineReportPage), Args, BackMethod.Pop);
+				await ServiceRef.UiService.GoToAsync(nameof(MachineReportPage), Args, BackMethod.Pop);
 			}
 			catch (Exception ex)
 			{
-				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message);
+				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message);
 			}
 		}
 

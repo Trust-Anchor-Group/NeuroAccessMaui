@@ -47,7 +47,7 @@ namespace NeuroAccessMaui.UI.Popups.Info
 		[RelayCommand]
 		public void Close()
 		{
-			ServiceRef.PopupService.PopAsync();
+			ServiceRef.UiService.PopAsync();
 		}
 	}
 }

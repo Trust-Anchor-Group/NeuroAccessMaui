@@ -43,7 +43,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.NavigationService.TryGetArgs(out ViewContractNavigationArgs? args))
+			if (ServiceRef.UiService.TryGetArgs(out ViewContractNavigationArgs? args))
 			{
 				this.Contract = args.Contract;
 				this.isReadOnly = args.IsReadOnly;
@@ -570,7 +570,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				ServiceRef.LogService.LogException(ex, Tags.ToArray());
 
 				this.ClearContract();
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -643,13 +643,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 					Contract contract = await ServiceRef.XmppService.SignContract(this.Contract, button.StyleId, false);
 					await this.ContractUpdated(contract);
 
-					await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)], ServiceRef.Localizer[nameof(AppResources.ContractSuccessfullySigned)]);
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)], ServiceRef.Localizer[nameof(AppResources.ContractSuccessfullySigned)]);
 				}
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -666,7 +666,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -683,7 +683,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -697,7 +697,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -708,13 +708,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				if (Sender is VerticalStackLayout Layout && !string.IsNullOrEmpty(Layout.StyleId))
 				{
 					await Clipboard.SetTextAsync(Layout.StyleId);
-					await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)], ServiceRef.Localizer[nameof(AppResources.TagValueCopiedToClipboard)]);
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)], ServiceRef.Localizer[nameof(AppResources.TagValueCopiedToClipboard)]);
 				}
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -731,7 +731,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 						string legalId = signature.LegalId;
 						LegalIdentity identity = await ServiceRef.XmppService.GetLegalIdentity(legalId);
 
-						await ServiceRef.NavigationService.GoToAsync(nameof(ClientSignaturePage),
+						await ServiceRef.UiService.GoToAsync(nameof(ClientSignaturePage),
 							new ClientSignatureNavigationArgs(signature, identity));
 					}
 				}
@@ -739,7 +739,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -749,14 +749,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			{
 				if (Sender is VerticalStackLayout layout && !string.IsNullOrEmpty(layout.StyleId))
 				{
-					await ServiceRef.NavigationService.GoToAsync(nameof(ServerSignaturePage),
+					await ServiceRef.UiService.GoToAsync(nameof(ServerSignaturePage),
 						  new ServerSignatureNavigationArgs(this.Contract));
 				}
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -779,12 +779,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				Contract obsoletedContract = await ServiceRef.XmppService.ObsoleteContract(this.Contract.ContractId);
 				await this.ContractUpdated(obsoletedContract);
 
-				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)], ServiceRef.Localizer[nameof(AppResources.ContractHasBeenObsoleted)]);
+				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)], ServiceRef.Localizer[nameof(AppResources.ContractHasBeenObsoleted)]);
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -807,12 +807,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				Contract deletedContract = await ServiceRef.XmppService.DeleteContract(this.Contract.ContractId);
 				await this.ContractUpdated(deletedContract);
 
-				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)], ServiceRef.Localizer[nameof(AppResources.ContractHasBeenDeleted)]);
+				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)], ServiceRef.Localizer[nameof(AppResources.ContractHasBeenDeleted)]);
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -836,11 +836,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 					await App.OpenUrlAsync(e.GetUrl);
 				}
 				else
-					await ServiceRef.UiSerializer.DisplayException(e.StanzaError ?? new Exception(e.ErrorText));
+					await ServiceRef.UiService.DisplayException(e.StanzaError ?? new Exception(e.ErrorText));
 			}
 			catch (Exception ex)
 			{
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 

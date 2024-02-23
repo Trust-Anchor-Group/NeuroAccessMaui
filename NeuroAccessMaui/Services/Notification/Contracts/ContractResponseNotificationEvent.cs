@@ -1,5 +1,5 @@
 ﻿using NeuroAccessMaui.Resources.Languages;
-using NeuroAccessMaui.Services.Navigation;
+using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
 using System.Text;
@@ -44,14 +44,14 @@ namespace NeuroAccessMaui.Services.Notification.Contracts
 
 			if (!this.Response || Contract is null)
 			{
-				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.Message)],
+				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.Message)],
 					ServiceRef.Localizer[nameof(AppResources.PetitionToViewContractWasDenied)], ServiceRef.Localizer[nameof(AppResources.Ok)]);
 			}
 			else
 			{
 				ViewContractNavigationArgs Args = new(Contract, false);
 
-				await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop);
+				await ServiceRef.UiService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop);
 			}
 		}
 

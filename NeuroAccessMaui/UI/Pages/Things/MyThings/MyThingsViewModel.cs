@@ -4,8 +4,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
-using NeuroAccessMaui.Services.Navigation;
 using NeuroAccessMaui.Services.Notification;
+using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Things.ViewThing;
 using Waher.Networking.XMPP;
@@ -36,7 +36,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.NavigationService.TryGetArgs(out MyThingsNavigationArgs? Args))
+			if (ServiceRef.UiService.TryGetArgs(out MyThingsNavigationArgs? Args))
 				this.result = Args.ThingToShare;
 			else
 				this.result = null;
@@ -52,7 +52,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 			await base.OnAppearing();
 
 			if (this.result is not null && this.result.Task.IsCompleted)
-				await ServiceRef.NavigationService.GoBackAsync();
+				await ServiceRef.UiService.GoBackAsync();
 			else
 			{
 				this.result = null;
@@ -285,12 +285,12 @@ namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 				if (this.result is null)
 				{
 					ViewThingNavigationArgs Args = new(Thing.Contact, Thing.Events);
-					await ServiceRef.NavigationService.GoToAsync(nameof(ViewThingPage), Args, BackMethod.Pop2);
+					await ServiceRef.UiService.GoToAsync(nameof(ViewThingPage), Args, BackMethod.Pop2);
 				}
 				else
 				{
 					this.result.TrySetResult(Thing);
-					await ServiceRef.NavigationService.GoBackAsync();
+					await ServiceRef.UiService.GoBackAsync();
 				}
 			});
 		}

@@ -1,5 +1,5 @@
 ﻿using NeuroAccessMaui.Resources.Languages;
-using NeuroAccessMaui.Services.Navigation;
+using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
 using System.Text;
@@ -52,7 +52,7 @@ namespace NeuroAccessMaui.Services.Notification.Contracts
 			{
 				ViewContractNavigationArgs Args = new(Contract, false, this.Role, this.Message);
 
-				await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop);
+				await ServiceRef.UiService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop);
 			}
 		}
 

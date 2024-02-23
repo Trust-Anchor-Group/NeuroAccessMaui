@@ -1,5 +1,5 @@
 ﻿using EDaler.Uris;
-using NeuroAccessMaui.Services.Navigation;
+using NeuroAccessMaui.Services.UI;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet
 {

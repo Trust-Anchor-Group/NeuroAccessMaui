@@ -32,7 +32,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.VerifyCode
 
 			LocalizationManager.Current.PropertyChanged += this.LocalizationManagerEventHandler;
 
-			if ((this.navigationArgs is null) && ServiceRef.NavigationService.TryGetArgs(out VerifyCodeNavigationArgs? Args))
+			if ((this.navigationArgs is null) && ServiceRef.UiService.TryGetArgs(out VerifyCodeNavigationArgs? Args))
 			{
 				this.navigationArgs = Args;
 
@@ -86,7 +86,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.VerifyCode
 				{
 					try
 					{
-						await ServiceRef.NavigationService.GoBackAsync();
+						await ServiceRef.UiService.GoBackAsync();
 						TaskSource.TrySetResult(Url);
 					}
 					catch (Exception ex)

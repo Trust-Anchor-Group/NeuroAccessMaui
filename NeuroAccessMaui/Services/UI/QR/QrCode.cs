@@ -1,7 +1,6 @@
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Links;
 using NeuroAccessMaui.Resources.Languages;
-using NeuroAccessMaui.Services.Navigation;
 using NeuroAccessMaui.UI.Pages.Main.QR;
 using NeuroAccessMaui.UI.Pages.Main.Settings;
 using SkiaSharp;
@@ -77,7 +76,7 @@ namespace NeuroAccessMaui.Services.UI.QR
 			{
 				if (!System.Uri.TryCreate(Url, UriKind.Absolute, out Uri? Uri))
 				{
-					await ServiceRef.UiSerializer.DisplayAlert(
+					await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						ServiceRef.Localizer[nameof(AppResources.CodeNotRecognized)]);
 
@@ -88,7 +87,7 @@ namespace NeuroAccessMaui.Services.UI.QR
 
 				if (Opener is null)
 				{
-					await ServiceRef.UiSerializer.DisplayAlert(
+					await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						ServiceRef.Localizer[nameof(AppResources.CodeNotRecognized)]);
 
@@ -97,7 +96,7 @@ namespace NeuroAccessMaui.Services.UI.QR
 
 				if (!await Opener.TryOpenLink(Uri))
 				{
-					await ServiceRef.UiSerializer.DisplayAlert(
+					await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						ServiceRef.Localizer[nameof(AppResources.UnableToOpenLink)] + " " + Uri.ToString());
 
@@ -109,7 +108,7 @@ namespace NeuroAccessMaui.Services.UI.QR
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 				return false;
 			}
 		}
@@ -136,7 +135,7 @@ namespace NeuroAccessMaui.Services.UI.QR
 		{
 			ScanQrCodeNavigationArgs NavigationArgs = new(QrTitle, AllowedSchemas);
 
-			await ServiceRef.NavigationService.GoToAsync(nameof(ScanQrCodePage), NavigationArgs, BackMethod.Pop);
+			await ServiceRef.UiService.GoToAsync(nameof(ScanQrCodePage), NavigationArgs, BackMethod.Pop);
 
 			return await NavigationArgs.QrCodeScanned!.Task;
 		}

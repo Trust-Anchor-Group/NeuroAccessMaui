@@ -4,7 +4,7 @@ using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
-using NeuroAccessMaui.Services.Navigation;
+using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Controls.Extended;
 using NeuroAccessMaui.UI.Converters;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
@@ -60,7 +60,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			ContractVisibility? Visibility = null;
 
-			if (ServiceRef.NavigationService.TryGetArgs(out NewContractNavigationArgs? Args))
+			if (ServiceRef.UiService.TryGetArgs(out NewContractNavigationArgs? Args))
 			{
 				this.template = Args.Template;
 				this.suppressedProposalIds = Args.SuppressedProposalLegalIds;
@@ -542,7 +542,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -561,14 +561,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						CanScanQrCode = true
 					};
 
-					await ServiceRef.NavigationService.GoToAsync(nameof(MyContactsPage), Args, BackMethod.Pop);
+					await ServiceRef.UiService.GoToAsync(nameof(MyContactsPage), Args, BackMethod.Pop);
 
 					ContactInfoModel? Contact = await Selected.Task;
 					if (Contact is null)
 						return;
 
 					if (string.IsNullOrEmpty(Contact.LegalId))
-						await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ServiceRef.Localizer[nameof(AppResources.SelectedContactCannotBeAdded)]);
+						await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ServiceRef.Localizer[nameof(AppResources.SelectedContactCannotBeAdded)]);
 					else
 					{
 						this.partsToAdd[button.StyleId] = Contact.LegalId;
@@ -583,7 +583,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -826,14 +826,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 								{
 									if (Nr < Min)
 									{
-										await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+										await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 											ServiceRef.Localizer[nameof(AppResources.TheContractRequiresAtLeast_AddMoreParts), Min, Role]);
 										return;
 									}
 
 									if (Nr > Min)
 									{
-										await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+										await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 											ServiceRef.Localizer[nameof(AppResources.TheContractRequiresAtMost_RemoveParts), Max, Role]);
 										return;
 									}
@@ -864,7 +864,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						{
 							if (Entry.BackgroundColor == ControlBgColor.ToColor(false))
 							{
-								await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+								await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 									ServiceRef.Localizer[nameof(AppResources.YourContractContainsErrors)]);
 
 								Entry.Focus();
@@ -896,14 +896,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						break;
 
 					default:
-						await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 							ServiceRef.Localizer[nameof(AppResources.ContractVisibilityMustBeSelected)]);
 						return;
 				}
 
 				if (this.SelectedRole is null)
 				{
-					await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						ServiceRef.Localizer[nameof(AppResources.ContractRoleMustBeSelected)]);
 					return;
 				}
@@ -929,7 +929,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						if (Info is null || string.IsNullOrEmpty(Info.BareJid))
 							continue;
 
-						string? Proposal = await ServiceRef.UiSerializer.DisplayPrompt(ServiceRef.Localizer[nameof(AppResources.Proposal)],
+						string? Proposal = await ServiceRef.UiService.DisplayPrompt(ServiceRef.Localizer[nameof(AppResources.Proposal)],
 							ServiceRef.Localizer[nameof(AppResources.EnterProposal), Info.FriendlyName],
 							ServiceRef.Localizer[nameof(AppResources.Send)],
 							ServiceRef.Localizer[nameof(AppResources.Cancel)]);
@@ -942,7 +942,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 			finally
 			{
@@ -953,7 +953,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					ViewContractNavigationArgs Args = new(Created, false);
 
 					// Inherit the back method here. It will vary if created or viewed.
-					await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Inherited);
+					await ServiceRef.UiService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Inherited);
 				}
 			}
 		}
@@ -1293,12 +1293,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				if (CalcButton.Text == "🕑")  // TODO: SVG icon
 				{
 					DurationNavigationArgs Args = new(Entry);
-					await ServiceRef.NavigationService.GoToAsync(nameof(DurationPage), Args, BackMethod.Pop);
+					await ServiceRef.UiService.GoToAsync(nameof(DurationPage), Args, BackMethod.Pop);
 				}
 				else
 				{
 					CalculatorNavigationArgs Args = new(Entry);
-					await ServiceRef.NavigationService.GoToAsync(nameof(CalculatorPage), Args, BackMethod.Pop);
+					await ServiceRef.UiService.GoToAsync(nameof(CalculatorPage), Args, BackMethod.Pop);
 				}
 			}
 			catch (Exception ex)

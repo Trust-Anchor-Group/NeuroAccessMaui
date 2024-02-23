@@ -41,7 +41,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.NavigationService.TryGetArgs(out ViewIdentityNavigationArgs? Args))
+			if (ServiceRef.UiService.TryGetArgs(out ViewIdentityNavigationArgs? Args))
 			{
 				this.LegalIdentity = Args.Identity ?? ServiceRef.TagProfile.LegalIdentity;
 				this.requestorIdentity = Args.RequestorIdentity;
@@ -952,14 +952,14 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 					if (Label == this.LegalId)
 					{
 						await Clipboard.SetTextAsync(Constants.UriSchemes.IotId + ":" + this.LegalId);
-						await ServiceRef.UiSerializer.DisplayAlert(
+						await ServiceRef.UiService.DisplayAlert(
 							ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
 							ServiceRef.Localizer[nameof(AppResources.IdCopiedSuccessfully)]);
 					}
 					else
 					{
 						await Clipboard.SetTextAsync(Label);
-						await ServiceRef.UiSerializer.DisplayAlert(
+						await ServiceRef.UiService.DisplayAlert(
 							ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
 							ServiceRef.Localizer[nameof(AppResources.TagValueCopiedToClipboard)]);
 					}
@@ -968,7 +968,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 			finally
 			{
@@ -1007,7 +1007,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 					(!string.IsNullOrEmpty(this.OrgRegion) && !this.OrgRegionIsChecked) ||
 					(!string.IsNullOrEmpty(this.OrgCountryCode) && !this.OrgCountryCodeIsChecked))
 				{
-					await ServiceRef.UiSerializer.DisplayAlert(
+					await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.Incomplete)],
 						ServiceRef.Localizer[nameof(AppResources.PleaseReviewAndCheckAllCheckboxes)]);
 					return;
@@ -1015,7 +1015,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 
 				if (!this.CarefulReviewIsChecked)
 				{
-					await ServiceRef.UiSerializer.DisplayAlert(
+					await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.Incomplete)],
 						ServiceRef.Localizer[nameof(AppResources.YouNeedToCheckCarefullyReviewed)]);
 					return;
@@ -1023,7 +1023,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 
 				if (!this.ApprovePiiIsChecked)
 				{
-					await ServiceRef.UiSerializer.DisplayAlert(
+					await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.Incomplete)],
 						ServiceRef.Localizer[nameof(AppResources.YouNeedToApproveToAssociate)]);
 					return;
@@ -1046,12 +1046,12 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 				});
 
 				if (Succeeded2)
-					await ServiceRef.NavigationService.GoBackAsync();
+					await ServiceRef.UiService.GoBackAsync();
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -1071,12 +1071,12 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 				});
 
 				if (Succeeded)
-					await ServiceRef.NavigationService.GoBackAsync();
+					await ServiceRef.UiService.GoBackAsync();
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 

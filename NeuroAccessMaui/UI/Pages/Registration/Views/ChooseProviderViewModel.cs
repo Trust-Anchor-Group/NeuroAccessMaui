@@ -189,7 +189,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			string title = ServiceRef.Localizer[nameof(AppResources.ServiceProviderInfo)];
 			string message = ServiceRef.Localizer[nameof(AppResources.ServiceProviderInfo)];
 			ShowInfoPopup infoPage = new(title, message);
-			ServiceRef.PopupService.PushAsync(infoPage);
+			ServiceRef.UiService.PushAsync(infoPage);
 		}
 
 		[RelayCommand]
@@ -216,7 +216,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 			if (Parts.Length != 5)
 			{
-				await ServiceRef.UiSerializer.DisplayAlert(
+				await ServiceRef.UiService.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 					ServiceRef.Localizer[nameof(AppResources.InvalidInvitationCode)],
 					ServiceRef.Localizer[nameof(AppResources.Ok)]);
@@ -239,7 +239,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			{
 				ServiceRef.LogService.LogException(ex);
 
-				await ServiceRef.UiSerializer.DisplayAlert(
+				await ServiceRef.UiService.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 					ServiceRef.Localizer[nameof(AppResources.InvalidInvitationCode)],
 					ServiceRef.Localizer[nameof(AppResources.Ok)]);
@@ -264,7 +264,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				{
 					ServiceRef.LogService.LogException(ex);
 
-					await ServiceRef.UiSerializer.DisplayAlert(
+					await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						ServiceRef.Localizer[nameof(AppResources.UnableToAccessInvitation)],
 						ServiceRef.Localizer[nameof(AppResources.Ok)]);
@@ -318,7 +318,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 								await SelectDomain(Domain, KeyStr, Secret);
 
-								await ServiceRef.UiSerializer.DisplayAlert(
+								await ServiceRef.UiService.DisplayAlert(
 									ServiceRef.Localizer[nameof(AppResources.InvitationAccepted)],
 									ServiceRef.Localizer[nameof(AppResources.InvitedToCreateAccountOnDomain), Domain],
 									ServiceRef.Localizer[nameof(AppResources.Ok)]);
@@ -389,7 +389,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				{
 					ServiceRef.LogService.LogException(ex);
 
-					await ServiceRef.UiSerializer.DisplayAlert(
+					await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						ServiceRef.Localizer[nameof(AppResources.InvalidInvitationCode)],
 						ServiceRef.Localizer[nameof(AppResources.Ok)]);

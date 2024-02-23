@@ -1,8 +1,4 @@
-﻿using System.Diagnostics;
-using Mopups.Pages;
-using Mopups.PreBaked.PopupPages.SingleResponse;
-using NeuroAccessMaui.Services;
-using Waher.Networking.XMPP.Contracts.Search;
+﻿using NeuroAccessMaui.Services;
 
 namespace NeuroAccessMaui.UI.Popups
 {
@@ -37,11 +33,11 @@ namespace NeuroAccessMaui.UI.Popups
 		}
 
 		/// <summary>
-		/// A shortcut for <see cref="NeuroAccessMaui.Services.Popup.IPopupService.PopAsync"/>
+		/// A shortcut for <see cref="Services.UI.IUiService.PopAsync"/>
 		/// </summary>
-		protected async void PopAsync()
+		protected static async void PopAsync()
 		{
-			await ServiceRef.PopupService.PopAsync();
+			await ServiceRef.UiService.PopAsync();
 		}
 
 		protected override void OnAppearing()
@@ -58,7 +54,7 @@ namespace NeuroAccessMaui.UI.Popups
 		/// <returns>True</returns>
 		protected override bool OnBackButtonPressed()
 		{
-			ServiceRef.PopupService.PopAsync();
+			ServiceRef.UiService.PopAsync();
 			return true;
 		}
 
@@ -69,7 +65,7 @@ namespace NeuroAccessMaui.UI.Popups
 		/// <returns>True</returns>
 		protected override bool OnBackgroundClicked()
 		{
-			ServiceRef.PopupService.PopAsync();
+			ServiceRef.UiService.PopAsync();
 			return true;
 		}
 
@@ -78,7 +74,7 @@ namespace NeuroAccessMaui.UI.Popups
 		/// </summary>
 		private async void LoadScreenshotAsync()
 		{
-			this.BackgroundImageSource = await ServiceRef.ScreenshotService.TakeBlurredScreenshotAsync();
+			this.BackgroundImageSource = await ServiceRef.UiService.TakeBlurredScreenshotAsync();
 		}
 	}
 }

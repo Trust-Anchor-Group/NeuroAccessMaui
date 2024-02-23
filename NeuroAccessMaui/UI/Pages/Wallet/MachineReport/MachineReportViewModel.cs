@@ -24,7 +24,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.NavigationService.TryGetArgs(out MachineReportNavigationArgs? args))
+			if (ServiceRef.UiService.TryGetArgs(out MachineReportNavigationArgs? args))
 			{
 				this.TokenReport = args.Report;
 

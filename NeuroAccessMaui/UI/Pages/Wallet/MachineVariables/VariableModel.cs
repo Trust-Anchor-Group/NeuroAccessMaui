@@ -53,13 +53,13 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineVariables
 			try
 			{
 				await Clipboard.SetTextAsync(this.AsScript);
-				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
 					ServiceRef.Localizer[nameof(AppResources.TagValueCopiedToClipboard)]);
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 

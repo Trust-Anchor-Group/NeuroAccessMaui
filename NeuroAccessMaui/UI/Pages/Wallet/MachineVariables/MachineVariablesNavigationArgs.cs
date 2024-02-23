@@ -1,4 +1,4 @@
-﻿using NeuroAccessMaui.Services.Navigation;
+﻿using NeuroAccessMaui.Services.UI;
 using Waher.Script;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.MachineVariables

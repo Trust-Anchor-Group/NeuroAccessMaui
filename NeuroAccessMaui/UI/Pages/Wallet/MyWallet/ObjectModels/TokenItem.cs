@@ -1,8 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services;
-using NeuroAccessMaui.Services.Navigation;
 using NeuroAccessMaui.Services.Notification;
+using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenDetails;
 using NeuroFeatures;
 using NeuroFeatures.Tags;
@@ -381,12 +381,12 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels
 			{
 				TokenDetailsNavigationArgs Args = new(this);
 
-				await ServiceRef.NavigationService.GoToAsync(nameof(TokenDetailsPage), Args, BackMethod.Pop);
+				await ServiceRef.UiService.GoToAsync(nameof(TokenDetailsPage), Args, BackMethod.Pop);
 			}
 			else
 			{
 				this.selected.TrySetResult(this);
-				await ServiceRef.NavigationService.GoBackAsync();
+				await ServiceRef.UiService.GoBackAsync();
 			}
 		}
 	}

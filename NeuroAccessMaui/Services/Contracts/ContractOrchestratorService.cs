@@ -1,6 +1,6 @@
 ﻿using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
-using NeuroAccessMaui.Services.Navigation;
+using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
@@ -123,7 +123,7 @@ namespace NeuroAccessMaui.Services.Contracts
 					PetitionPeerReviewNavigationArgs Args = new(Identity, e.RequestorFullJid, e.SignatoryIdentityId, e.PetitionId,
 						e.Purpose, e.ContentToSign);
 
-					await ServiceRef.NavigationService.GoToAsync(nameof(PetitionPeerReviewPage), Args);
+					await ServiceRef.UiService.GoToAsync(nameof(PetitionPeerReviewPage), Args);
 				}
 			}
 			catch (Exception ex)
@@ -174,7 +174,7 @@ namespace NeuroAccessMaui.Services.Contracts
 
 					if (Identity is not null)
 					{
-						await ServiceRef.NavigationService.GoToAsync(nameof(PetitionIdentityPage), new PetitionIdentityNavigationArgs(
+						await ServiceRef.UiService.GoToAsync(nameof(PetitionIdentityPage), new PetitionIdentityNavigationArgs(
 							Identity, e.RequestorFullJid, e.RequestedIdentityId, e.PetitionId, e.Purpose));
 					}
 				}
@@ -228,7 +228,7 @@ namespace NeuroAccessMaui.Services.Contracts
 						if (!await App.AuthenticateUser(true))
 							return;
 
-						await ServiceRef.NavigationService.GoToAsync(nameof(PetitionSignaturePage), new PetitionSignatureNavigationArgs(
+						await ServiceRef.UiService.GoToAsync(nameof(PetitionSignaturePage), new PetitionSignatureNavigationArgs(
 							Identity, e.RequestorFullJid, e.SignatoryIdentityId, e.ContentToSign, e.PetitionId, e.Purpose));
 					}
 				}
@@ -247,14 +247,14 @@ namespace NeuroAccessMaui.Services.Contracts
 
 				if (!e.Response || Identity is null)
 				{
-					await ServiceRef.UiSerializer.DisplayAlert(
+					await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.Message)],
 						ServiceRef.Localizer[nameof(AppResources.SignaturePetitionDenied)],
 						ServiceRef.Localizer[nameof(AppResources.Ok)]);
 				}
 				else
 				{
-					await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage),
+					await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage),
 						new ViewIdentityNavigationArgs(Identity));
 				}
 			}
@@ -274,7 +274,7 @@ namespace NeuroAccessMaui.Services.Contracts
 
 				if (!e.Response)
 				{
-					await ServiceRef.UiSerializer.DisplayAlert(
+					await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.PeerReviewRejected)],
 						ServiceRef.Localizer[nameof(AppResources.APeerYouRequestedToReviewHasRejected)],
 						ServiceRef.Localizer[nameof(AppResources.Ok)]);
@@ -300,13 +300,13 @@ namespace NeuroAccessMaui.Services.Contracts
 					}
 					catch (Exception ex)
 					{
-						await ServiceRef.UiSerializer.DisplayException(ex);
+						await ServiceRef.UiService.DisplayException(ex);
 						return;
 					}
 
 					if (!Result.HasValue || !Result.Value)
 					{
-						await ServiceRef.UiSerializer.DisplayAlert(
+						await ServiceRef.UiService.DisplayAlert(
 							ServiceRef.Localizer[nameof(AppResources.PeerReviewRejected)],
 							ServiceRef.Localizer[nameof(AppResources.APeerYouRequestedToReviewHasBeenRejectedDueToSignatureError)],
 							ServiceRef.Localizer[nameof(AppResources.Ok)]);
@@ -322,7 +322,7 @@ namespace NeuroAccessMaui.Services.Contracts
 
 						if (Succeeded)
 						{
-							await ServiceRef.UiSerializer.DisplayAlert(
+							await ServiceRef.UiService.DisplayAlert(
 								ServiceRef.Localizer[nameof(AppResources.PeerReviewAccepted)],
 								ServiceRef.Localizer[nameof(AppResources.APeerReviewYouhaveRequestedHasBeenAccepted)],
 								ServiceRef.Localizer[nameof(AppResources.Ok)]);
@@ -332,7 +332,7 @@ namespace NeuroAccessMaui.Services.Contracts
 				catch (Exception ex)
 				{
 					ServiceRef.LogService.LogException(ex);
-					await ServiceRef.UiSerializer.DisplayAlert(
+					await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message,
 						ServiceRef.Localizer[nameof(AppResources.Ok)]);
 				}
@@ -425,7 +425,7 @@ namespace NeuroAccessMaui.Services.Contracts
 					}
 					else if (Identity.State == IdentityState.Approved && !await ServiceRef.XmppService!.HasPrivateKey(Identity.Id))
 					{
-						bool Response = await ServiceRef.UiSerializer.DisplayAlert(
+						bool Response = await ServiceRef.UiService.DisplayAlert(
 							ServiceRef.Localizer[nameof(AppResources.WarningTitle)],
 							ServiceRef.Localizer[nameof(AppResources.UnableToGetAccessToYourPrivateKeys)],
 							ServiceRef.Localizer[nameof(AppResources.Continue)],
@@ -464,7 +464,7 @@ namespace NeuroAccessMaui.Services.Contracts
 							// This gives a better UX experience.
 							MainThread.BeginInvokeOnMainThread(async () =>
 							{
-								await ServiceRef.UiSerializer.DisplayAlert(
+								await ServiceRef.UiService.DisplayAlert(
 									ServiceRef.Localizer[nameof(AppResources.YourLegalIdentity)], userMessage);
 							});
 						}
@@ -485,7 +485,7 @@ namespace NeuroAccessMaui.Services.Contracts
 				LegalIdentity identity = await ServiceRef.XmppService.GetLegalIdentity(LegalId);
 				MainThread.BeginInvokeOnMainThread(async () =>
 				{
-					await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(identity));
+					await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(identity));
 				});
 			}
 			catch (ForbiddenException)
@@ -499,7 +499,7 @@ namespace NeuroAccessMaui.Services.Contracts
 					bool succeeded = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.PetitionIdentity(LegalId, Guid.NewGuid().ToString(), Purpose));
 					if (succeeded)
 					{
-						await ServiceRef.UiSerializer.DisplayAlert(
+						await ServiceRef.UiService.DisplayAlert(
 							ServiceRef.Localizer[nameof(AppResources.PetitionSent)],
 							ServiceRef.Localizer[nameof(AppResources.APetitionHasBeenSentToTheOwner)]);
 					}
@@ -508,7 +508,7 @@ namespace NeuroAccessMaui.Services.Contracts
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -550,13 +550,13 @@ namespace NeuroAccessMaui.Services.Contracts
 
 						NewContractNavigationArgs e = new(Contract, ParameterValues);
 
-						await ServiceRef.NavigationService.GoToAsync(nameof(NewContractPage), e, BackMethod.CurrentPage);
+						await ServiceRef.UiService.GoToAsync(nameof(NewContractPage), e, BackMethod.CurrentPage);
 					}
 					else
 					{
 						ViewContractNavigationArgs e = new(Contract, false);
 
-						await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), e, BackMethod.Pop);
+						await ServiceRef.UiService.GoToAsync(nameof(ViewContractPage), e, BackMethod.Pop);
 					}
 				});
 			}
@@ -573,7 +573,7 @@ namespace NeuroAccessMaui.Services.Contracts
 
 					if (succeeded)
 					{
-						await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.PetitionSent)],
+						await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.PetitionSent)],
 							ServiceRef.Localizer[nameof(AppResources.APetitionHasBeenSentToTheContract)]);
 					}
 				});
@@ -581,7 +581,7 @@ namespace NeuroAccessMaui.Services.Contracts
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -635,13 +635,13 @@ namespace NeuroAccessMaui.Services.Contracts
 
 				if (!e.Response || Identity is null)
 				{
-					await ServiceRef.UiSerializer.DisplayAlert(
+					await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.Message)],
 						ServiceRef.Localizer[nameof(AppResources.PetitionToViewLegalIdentityWasDenied)],
 						ServiceRef.Localizer[nameof(AppResources.Ok)]);
 				}
 				else
-					await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Identity));
+					await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Identity));
 			}
 			catch (Exception ex)
 			{

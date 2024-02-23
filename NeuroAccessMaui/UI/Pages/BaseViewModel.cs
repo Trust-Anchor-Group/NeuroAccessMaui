@@ -295,7 +295,7 @@ namespace NeuroAccessMaui.UI.Pages
 		/// <returns>If the user confirms the action.</returns>
 		public static async Task<bool> AreYouSure(string Message)
 		{
-			return await ServiceRef.UiSerializer.DisplayAlert(
+			return await ServiceRef.UiService.DisplayAlert(
 				ServiceRef.Localizer[nameof(AppResources.Confirm)], Message,
 				ServiceRef.Localizer[nameof(AppResources.Yes)],
 				ServiceRef.Localizer[nameof(AppResources.No)]);
@@ -307,7 +307,7 @@ namespace NeuroAccessMaui.UI.Pages
 		[RelayCommand]
 		public virtual async Task GoBack()
 		{
-			await ServiceRef.NavigationService.GoBackAsync();
+			await ServiceRef.UiService.GoBackAsync();
 		}
 
 		/// <summary>

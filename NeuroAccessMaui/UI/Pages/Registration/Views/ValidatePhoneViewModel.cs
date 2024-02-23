@@ -7,8 +7,8 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Data;
 using NeuroAccessMaui.Services.Localization;
-using NeuroAccessMaui.Services.Navigation;
 using NeuroAccessMaui.Services.Tag;
+using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Main.VerifyCode;
 using NeuroAccessMaui.UI.Popups;
 using Waher.Content;
@@ -212,7 +212,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			{
 				if (!ServiceRef.NetworkService.IsOnline)
 				{
-					await ServiceRef.UiSerializer.DisplayAlert(
+					await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						ServiceRef.Localizer[nameof(AppResources.NetworkSeemsToBeMissing)]);
 					return;
@@ -233,7 +233,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				{
 					if (!string.IsNullOrEmpty(ServiceRef.TagProfile.PhoneNumber) && (ServiceRef.TagProfile.TestOtpTimestamp is null) && SendIsTemporary)
 					{
-						await ServiceRef.UiSerializer.DisplayAlert(
+						await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						ServiceRef.Localizer[nameof(AppResources.SwitchingToTestPhoneNumberNotAllowed)]);
 					}
@@ -242,7 +242,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 						this.StartTimer();
 
 						VerifyCodeNavigationArgs NavigationArgs = new(this, FullPhoneNumber);
-						await ServiceRef.NavigationService.GoToAsync(nameof(VerifyCodePage), NavigationArgs, BackMethod.Pop);
+						await ServiceRef.UiService.GoToAsync(nameof(VerifyCodePage), NavigationArgs, BackMethod.Pop);
 						string? Code = await NavigationArgs.VarifyCode!.Task;
 
 						if (!string.IsNullOrEmpty(Code))
@@ -301,7 +301,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 							}
 							else
 							{
-								await ServiceRef.UiSerializer.DisplayAlert(
+								await ServiceRef.UiService.DisplayAlert(
 									ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 									ServiceRef.Localizer[nameof(AppResources.UnableToVerifyCode)],
 									ServiceRef.Localizer[nameof(AppResources.Ok)]);
@@ -311,7 +311,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				}
 				else
 				{
-					await ServiceRef.UiSerializer.DisplayAlert(
+					await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						ServiceRef.Localizer[nameof(AppResources.SomethingWentWrongWhenSendingPhoneCode)]);
 				}
@@ -320,7 +320,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			{
 				ServiceRef.LogService.LogException(ex);
 
-				await ServiceRef.UiSerializer.DisplayAlert(
+				await ServiceRef.UiService.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message,
 					ServiceRef.Localizer[nameof(AppResources.Ok)]);
 			}
@@ -337,7 +337,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			{
 				if (!ServiceRef.NetworkService.IsOnline)
 				{
-					await ServiceRef.UiSerializer.DisplayAlert(
+					await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						ServiceRef.Localizer[nameof(AppResources.NetworkSeemsToBeMissing)]);
 					return;
@@ -359,7 +359,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				}
 				else
 				{
-					await ServiceRef.UiSerializer.DisplayAlert(
+					await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						ServiceRef.Localizer[nameof(AppResources.SomethingWentWrongWhenSendingPhoneCode)]);
 				}
@@ -368,7 +368,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			{
 				ServiceRef.LogService.LogException(ex);
 
-				await ServiceRef.UiSerializer.DisplayAlert(
+				await ServiceRef.UiService.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message,
 					ServiceRef.Localizer[nameof(AppResources.Ok)]);
 			}

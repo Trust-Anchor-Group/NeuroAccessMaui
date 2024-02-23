@@ -2,7 +2,6 @@
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
 using NeuroAccessMaui.Services.Contracts;
-using NeuroAccessMaui.Services.Navigation;
 using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.Notification.Contracts;
 using NeuroFeatures;
@@ -13,6 +12,7 @@ using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Resources.Languages;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
+using NeuroAccessMaui.Services.UI;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 {
@@ -43,7 +43,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			this.IsBusy = true;
 			this.ShowContractsMissing = false;
 
-			if (ServiceRef.NavigationService.TryGetArgs(out MyContractsNavigationArgs? args))
+			if (ServiceRef.UiService.TryGetArgs(out MyContractsNavigationArgs? args))
 			{
 				this.contractsListMode = args.Mode;
 				this.Action = args.Action;
@@ -81,7 +81,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 
 			if (this.selection is not null && this.selection.Task.IsCompleted)
 			{
-				await ServiceRef.NavigationService.GoBackAsync();
+				await ServiceRef.UiService.GoBackAsync();
 				return;
 			}
 		}
@@ -169,19 +169,19 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 							{
 								ViewContractNavigationArgs Args = new(Contract, false);
 
-								await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop);
+								await ServiceRef.UiService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop);
 							}
 							else
 							{
 								NewContractNavigationArgs Args = new(Contract, null);
 
-								await ServiceRef.NavigationService.GoToAsync(nameof(NewContractPage), Args, BackMethod.CurrentPage);
+								await ServiceRef.UiService.GoToAsync(nameof(NewContractPage), Args, BackMethod.CurrentPage);
 							}
 							break;
 
 						case SelectContractAction.Select:
 							this.selectedContract = Contract;
-							await ServiceRef.NavigationService.GoBackAsync();
+							await ServiceRef.UiService.GoBackAsync();
 							this.selection?.TrySetResult(Contract);
 							break;
 					}

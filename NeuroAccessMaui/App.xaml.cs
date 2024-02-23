@@ -12,18 +12,15 @@ using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Crypto;
 using NeuroAccessMaui.Services.EventLog;
 using NeuroAccessMaui.Services.Localization;
-using NeuroAccessMaui.Services.Navigation;
 using NeuroAccessMaui.Services.Network;
 using NeuroAccessMaui.Services.Nfc;
 using NeuroAccessMaui.Services.Notification;
-using NeuroAccessMaui.Services.Popup;
 using NeuroAccessMaui.Services.Settings;
 using NeuroAccessMaui.Services.Storage;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.QR;
 using NeuroAccessMaui.Services.Xmpp;
-using NeuroAccessMaui.Services.Screenshot;
 using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.UI.Pages.Main;
 using NeuroAccessMaui.UI.Popups.Pin;
@@ -299,19 +296,16 @@ namespace NeuroAccessMaui
 
 			Types.InstantiateDefault<ITagProfile>(false);
 			Types.InstantiateDefault<ILogService>(false);
-			Types.InstantiateDefault<IUiSerializer>(false);
+			Types.InstantiateDefault<IUiService>(false);
 			Types.InstantiateDefault<ICryptoService>(false);
 			Types.InstantiateDefault<INetworkService>(false);
 			Types.InstantiateDefault<IStorageService>(false);
 			Types.InstantiateDefault<ISettingsService>(false);
-			Types.InstantiateDefault<INavigationService>(false);
 			Types.InstantiateDefault<IXmppService>(false);
 			Types.InstantiateDefault<IAttachmentCacheService>(false);
 			Types.InstantiateDefault<IContractOrchestratorService>(false);
 			Types.InstantiateDefault<INfcService>(false);
 			Types.InstantiateDefault<INotificationService>(false);
-			Types.InstantiateDefault<IPopupService>(false);
-			Types.InstantiateDefault<IScreenshotService>(false);
 
 			defaultInstantiatedSource.TrySetResult(true);
 
@@ -457,7 +451,7 @@ namespace NeuroAccessMaui
 				TimeSpan initialAutoSaveDelay = Constants.Intervals.AutoSave.Multiply(4);
 				this.autoSaveTimer = new Timer(async _ => await this.AutoSave(), null, initialAutoSaveDelay, Constants.Intervals.AutoSave);
 
-				await ServiceRef.NavigationService.Load(isResuming, Token);
+				await ServiceRef.UiService.Load(isResuming, Token);
 				await ServiceRef.AttachmentCacheService.Load(isResuming, Token);
 				await ServiceRef.ContractOrchestratorService.Load(isResuming, Token);
 				await ServiceRef.ThingRegistryOrchestratorService.Load(isResuming, Token);
@@ -542,8 +536,8 @@ namespace NeuroAccessMaui
 				}
 				else
 				{
-					if (ServiceRef.NavigationService is not null)
-						await ServiceRef.NavigationService.Unload();
+					if (ServiceRef.UiService is not null)
+						await ServiceRef.UiService.Unload();
 
 					if (ServiceRef.ContractOrchestratorService is not null)
 						await ServiceRef.ContractOrchestratorService.Unload();
@@ -557,8 +551,8 @@ namespace NeuroAccessMaui
 					if (ServiceRef.AttachmentCacheService is not null)
 						await ServiceRef.AttachmentCacheService.Unload();
 
-					if (ServiceRef.NavigationService is not null)
-						await ServiceRef.NavigationService.Unload();
+					if (ServiceRef.UiService is not null)
+						await ServiceRef.UiService.Unload();
 
 					foreach (IEventSink Sink in Log.Sinks)
 						Log.Unregister(Sink);
@@ -938,7 +932,7 @@ namespace NeuroAccessMaui
 				if (!Profile.HasPin)
 					return string.Empty;
 
-				string? result = await ServiceRef.PopupService.PushAsync<CheckPinPopup, CheckPinViewModel, string>();
+				string? result = await ServiceRef.UiService.PushAsync<CheckPinPopup, CheckPinViewModel, string>();
 				await CheckUserBlocking();
 				return result;
 			}
@@ -1024,7 +1018,7 @@ namespace NeuroAccessMaui
 
 			if (DateTimeForLogin.HasValue)
 			{
-				IUiSerializer Ui = ServiceRef.UiSerializer;
+				IUiService Ui = ServiceRef.UiService;
 				string MessageAlert;
 
 				if (DateTimeForLogin == DateTime.MaxValue)

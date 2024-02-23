@@ -30,7 +30,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.NavigationService.TryGetArgs(out MyTokensNavigationArgs? Args))
+			if (ServiceRef.UiService.TryGetArgs(out MyTokensNavigationArgs? Args))
 				this.navigationArgs = Args;
 
 			try

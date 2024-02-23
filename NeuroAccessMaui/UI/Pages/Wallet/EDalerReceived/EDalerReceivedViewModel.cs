@@ -24,7 +24,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.EDalerReceived
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.NavigationService.TryGetArgs(out EDalerBalanceNavigationArgs? args))
+			if (ServiceRef.UiService.TryGetArgs(out EDalerBalanceNavigationArgs? args))
 			{
 				this.Amount = args.Balance?.Amount;
 				this.Currency = args.Balance?.Currency;
@@ -168,7 +168,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.EDalerReceived
 		[RelayCommand(CanExecute = nameof(IsConnected))]
 		private Task Accept()
 		{
-			return ServiceRef.NavigationService.GoBackAsync();
+			return ServiceRef.UiService.GoBackAsync();
 		}
 	}
 }

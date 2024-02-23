@@ -43,7 +43,7 @@ namespace NeuroAccessMaui.Links
 				await ServiceRef.ThingRegistryOrchestratorService.OpenDeviceReference(Url);
 			else
 			{
-				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 					ServiceRef.Localizer[nameof(AppResources.InvalidIoTDiscoveryCode)] + Environment.NewLine + Environment.NewLine + Url);
 
 				return false;

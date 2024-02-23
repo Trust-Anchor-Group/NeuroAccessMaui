@@ -29,7 +29,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Duration
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.NavigationService.TryGetArgs(out DurationNavigationArgs? Args))
+			if (ServiceRef.UiService.TryGetArgs(out DurationNavigationArgs? Args))
 				this.Entry = Args.Entry;
 		}
 
