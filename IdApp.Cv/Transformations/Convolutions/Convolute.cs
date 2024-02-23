@@ -34,7 +34,7 @@ namespace IdApp.Cv.Transformations.Convolutions
 			float[] KernelData = Kernel.Data;
 			int ResultWidth = M.Width - KernelWidth + 1;
 			int ResultHeight = M.Height - KernelHeight + 1;
-			Matrix<float> Result = new Matrix<float>(ResultWidth, ResultHeight);
+			Matrix<float> Result = new(ResultWidth, ResultHeight);
 			float Scalar;
 
 			for (KernelY = 0; KernelY < KernelHeight; KernelY++, KernelOffset += KernelSkip)
@@ -74,7 +74,7 @@ namespace IdApp.Cv.Transformations.Convolutions
 			int[] KernelData = Kernel.Data;
 			int ResultWidth = M.Width - KernelWidth + 1;
 			int ResultHeight = M.Height - KernelHeight + 1;
-			Matrix<float> Result = new Matrix<float>(ResultWidth, ResultHeight);
+			Matrix<float> Result = new(ResultWidth, ResultHeight);
 			float Scalar;
 
 			for (KernelY = 0; KernelY < KernelHeight; KernelY++, KernelOffset += KernelSkip)
@@ -110,7 +110,7 @@ namespace IdApp.Cv.Transformations.Convolutions
 			int[] KernelData = Kernel.Data;
 			int ResultWidth = M.Width - KernelWidth + 1;
 			int ResultHeight = M.Height - KernelHeight + 1;
-			Matrix<int> Result = new Matrix<int>(ResultWidth, ResultHeight);
+			Matrix<int> Result = new(ResultWidth, ResultHeight);
 			int Scalar;
 
 			for (KernelY = 0; KernelY < KernelHeight; KernelY++, KernelOffset += KernelSkip)
@@ -153,7 +153,7 @@ namespace IdApp.Cv.Transformations.Convolutions
 			float[] KernelData = Kernel.Data;
 			int ResultWidth = M.Width - KernelWidth + 1;
 			int ResultHeight = M.Height - KernelHeight + 1;
-			Matrix<float> Result = new Matrix<float>(ResultWidth, ResultHeight);
+			Matrix<float> Result = new(ResultWidth, ResultHeight);
 			float Scalar;
 
 			for (KernelY = 0; KernelY < KernelHeight; KernelY++, KernelOffset += KernelSkip)
