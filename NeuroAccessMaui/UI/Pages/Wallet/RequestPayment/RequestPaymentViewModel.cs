@@ -153,8 +153,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.RequestPayment
 			{
 				MainThread.BeginInvokeOnMainThread(async () =>
 				{
-					this.QrCodeWidth = 300;
-					this.QrCodeHeight = 300;
+					this.QrCodeWidth = Constants.QrCode.DefaultImageWidth;
+					this.QrCodeHeight = Constants.QrCode.DefaultImageHeight;
 					this.GenerateQrCode(Uri);
 
 					await this.page.ShowQrCode();

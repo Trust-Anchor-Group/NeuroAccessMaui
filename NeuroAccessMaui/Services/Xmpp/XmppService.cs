@@ -1238,7 +1238,10 @@ namespace NeuroAccessMaui.Services.Xmpp
 			}
 
 			if ((RemoteIdentity is not null) && (RemoteIdentity.Attachments is not null))
-				(PhotoUrl, PhotoWidth, PhotoHeight) = await PhotosLoader.LoadPhotoAsTemporaryFile(RemoteIdentity.Attachments, 300, 300);
+			{
+				(PhotoUrl, PhotoWidth, PhotoHeight) = await PhotosLoader.LoadPhotoAsTemporaryFile(RemoteIdentity.Attachments,
+					Constants.QrCode.DefaultImageWidth, Constants.QrCode.DefaultImageHeight);
+			}
 
 			SubscriptionRequestViewModel SubscriptionRequestViewModel = new(e.FromBareJID, FriendlyName, PhotoUrl, PhotoWidth, PhotoHeight);
 			SubscriptionRequestPopup SubscriptionRequestPopup = new(SubscriptionRequestViewModel);

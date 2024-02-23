@@ -70,7 +70,8 @@ namespace NeuroAccessMaui.UI.Rendering.CodeContent
 
 			if (Identity.Attachments is not null)
 			{
-				(string? FileName, int Width, int Height) = await PhotosLoader.LoadPhotoAsTemporaryFile(Identity.Attachments, 300, 300);
+				(string? FileName, int Width, int Height) = await PhotosLoader.LoadPhotoAsTemporaryFile(Identity.Attachments,
+					Constants.QrCode.DefaultImageWidth, Constants.QrCode.DefaultImageHeight);
 
 				if (!string.IsNullOrEmpty(FileName))
 				{
