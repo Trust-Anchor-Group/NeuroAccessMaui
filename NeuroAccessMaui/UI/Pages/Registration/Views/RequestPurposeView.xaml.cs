@@ -1,7 +1,9 @@
 using CommunityToolkit.Mvvm.Input;
 using Mopups.Services;
+using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.UI.Popups;
+using NeuroAccessMaui.UI.Popups.Info;
 
 namespace NeuroAccessMaui.UI.Pages.Registration.Views
 {
@@ -56,7 +58,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 					(Purpose == PurposeInfo.Purpose))
 				{
 					ShowInfoPopup Page = new(PurposeInfo.LocalizedName, PurposeInfo.LocalizedDescription);
-					await MopupService.Instance.PushAsync(Page);
+					await ServiceRef.PopupService.PushAsync(Page);
 					break;
 				}
 			}
