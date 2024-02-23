@@ -11,6 +11,7 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
 using NeuroAccessMaui.Services.Tag;
+using NeuroAccessMaui.UI.Popups.Info;
 using Waher.Content;
 using Waher.Content.Xml;
 using Waher.Networking.XMPP;
@@ -185,7 +186,10 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		[RelayCommand]
 		private static void ServiceProviderInfo()
 		{
-
+			string title = ServiceRef.Localizer[nameof(AppResources.ServiceProviderInfo)];
+			string message = ServiceRef.Localizer[nameof(AppResources.ServiceProviderInfo)];
+			ShowInfoPopup infoPage = new(title, message);
+			ServiceRef.PopupService.PushAsync(infoPage);
 		}
 
 		[RelayCommand]
@@ -198,7 +202,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		private async Task ScanQrCode()
 		{
 			string? Url = await Services.UI.QR.QrCode.ScanQrCode(nameof(AppResources.QrPageTitleScanInvitation),
-				[ Constants.UriSchemes.Onboarding ]);
+				[Constants.UriSchemes.Onboarding]);
 
 			if (string.IsNullOrEmpty(Url))
 				return;

@@ -36,8 +36,9 @@
 
 	<PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios'">
 	  <ProvisioningType>automatic</ProvisioningType>
-	  <CodesignKey>Apple Development: Ianosh Gnatiuc (QJF4K77MFW)</CodesignKey>
+	  <CodesignKey>Apple Development: Maximiliam Berggren (6C6VB862B9)</CodesignKey>
 	  <CodesignProvision>VS: com.trustanchorgroup.NeuroAccess Development</CodesignProvision>
+	  <PublishTrimmed>True</PublishTrimmed>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
@@ -54,15 +55,17 @@
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
 	  <ApplicationVersion>12</ApplicationVersion>
+	  <UseInterpreter>True</UseInterpreter>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
 	  <ApplicationVersion>12</ApplicationVersion>
+	  <UseInterpreter>False</UseInterpreter>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android34.0|AnyCPU'">
 	  <ApplicationVersion>13</ApplicationVersion>
-	  <PublishTrimmed>True</PublishTrimmed>
+	  <PublishTrimmed>False</PublishTrimmed>
 	  <ApplicationId>com.tag.NeuroAccess</ApplicationId>
 	</PropertyGroup>
 
@@ -309,7 +312,7 @@
 	  <Compile Update="UI\Popups\Settings\SelectLanguagePopup.xaml.cs">
 	    <DependentUpon>SelectLanguagePopup.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="UI\Popups\ShowInfoPopup.xaml.cs">
+	  <Compile Update="UI\Popups\Info\ShowInfoPopup.xaml.cs">
 	    <DependentUpon>ShowInfoPopup.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
