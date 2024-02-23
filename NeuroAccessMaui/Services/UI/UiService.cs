@@ -1,4 +1,6 @@
-﻿using IdApp.Cv;
+﻿//#define PROFILING
+
+using IdApp.Cv;
 using IdApp.Cv.ColorModels;
 using Mopups.Services;
 using NeuroAccessMaui.Resources.Languages;
@@ -11,6 +13,10 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Waher.Events;
 using Waher.Runtime.Inventory;
+
+#if PROFILING
+using Waher.Runtime.Profiling;
+#endif
 
 namespace NeuroAccessMaui.Services.UI
 {
@@ -127,17 +133,31 @@ namespace NeuroAccessMaui.Services.UI
 		{
 			try
 			{
+#if PROFILING
+				Profiler Profiler = new("Blur", ProfilerThreadType.Sequential);
 
-				IScreenshotResult? Result = await Screenshot.CaptureAsync();
-				if (Result is null)
+				Profiler.Start();
+				Profiler.NewState("Capture");
+#endif
+				IScreenshotResult? Screen = await Screenshot.CaptureAsync();
+				if (Screen is null)
 					return null;
 
+#if PROFILING
+				Profiler.NewState("PNG");
+#endif
 				//Read screenshot
-				using Stream PngStream = await Result.OpenReadAsync(ScreenshotFormat.Png, 20);
+				using Stream PngStream = await Screen.OpenReadAsync(ScreenshotFormat.Png, 20);
 
+#if PROFILING
+				Profiler.NewState("SKBitmap");
+#endif
 				// Original SKBitmap from PNG stream
 				SKBitmap OriginalBitmap = SKBitmap.FromImage(SKImage.FromEncodedData(PngStream));
 
+#if PROFILING
+				Profiler.NewState("Scale");
+#endif
 				// Desired width and height for the downscaled image
 				int DesiredWidth = OriginalBitmap.Width / 4;   //Reduce the width by a quarter
 				int DesiredHeight = OriginalBitmap.Height / 4; //Reduce the height by a quarter
@@ -148,14 +168,38 @@ namespace NeuroAccessMaui.Services.UI
 				// Create a new SKBitmap for the downscaled image
 				SKBitmap resizedBitmap = OriginalBitmap.Resize(resizedInfo, SKFilterQuality.Medium);
 
+#if PROFILING
+				Profiler.NewState("Prepare");
+#endif
 				//Blur image
 				IMatrix RezisedMatrix = Bitmaps.FromBitmap(resizedBitmap);
 				IMatrix GreyChannelMatrix = RezisedMatrix.GrayScale();
-				IMatrix NewMatrix = IdApp.Cv.Transformations.Convolutions.ConvolutionOperations.GaussianBlur(GreyChannelMatrix, 12, 3.5f);
 
+#if PROFILING
+				Profiler.NewState("Blur 5x5");
+#endif
+				IMatrix NewMatrix = IdApp.Cv.Transformations.Convolutions.ConvolutionOperations.Blur(GreyChannelMatrix, 5);
+
+#if PROFILING
+				Profiler.NewState("Blur2");
+#endif
+				NewMatrix = IdApp.Cv.Transformations.Convolutions.ConvolutionOperations.Blur(NewMatrix, 5);
+
+#if PROFILING
+				Profiler.NewState("Encode");
+#endif
 				// Continue with the blurring and encoding to PNG as before
 				byte[] Blurred = Bitmaps.EncodeAsPng(NewMatrix);
-				return ImageSource.FromStream(() => new MemoryStream(Blurred));
+				ImageSource BlurredScreen = ImageSource.FromStream(() => new MemoryStream(Blurred));
+
+#if PROFILING
+				Profiler.Stop();
+
+				string TimingUml = Profiler.ExportPlantUml(TimeUnit.MilliSeconds);
+
+				await App.SendAlert("```uml\r\n" + TimingUml + "\r\n```", "text/markdown");
+#endif
+				return BlurredScreen;
 			}
 			catch (Exception e)
 			{
