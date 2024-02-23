@@ -773,7 +773,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 
 			if (DeviceInfo.Platform == DevicePlatform.iOS)
 			{
-				FileResult capturedPhoto;
+				FileResult? capturedPhoto;
 
 				try
 				{
@@ -803,7 +803,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			}
 			else
 			{
-				FileResult capturedPhoto;
+				FileResult? capturedPhoto;
 
 				try
 				{
@@ -960,7 +960,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 				return;
 			}
 
-			FileResult pickedPhoto = await MediaPicker.PickPhotoAsync();
+			FileResult? pickedPhoto = await MediaPicker.PickPhotoAsync();
 
 			if (pickedPhoto is not null)
 				await this.EmbedMedia(pickedPhoto.FullPath, false);

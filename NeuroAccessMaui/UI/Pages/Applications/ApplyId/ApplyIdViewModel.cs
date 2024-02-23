@@ -782,7 +782,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 
 			try
 			{
-				FileResult Result = await MediaPicker.Default.CapturePhotoAsync(new MediaPickerOptions()
+				FileResult? Result = await MediaPicker.Default.CapturePhotoAsync(new MediaPickerOptions()
 				{
 					Title = ServiceRef.Localizer[nameof(AppResources.TakePhotoOfYourself)]
 				});
@@ -1006,7 +1006,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		{
 			try
 			{
-				FileResult Result = await MediaPicker.Default.PickPhotoAsync(new MediaPickerOptions()
+				FileResult? Result = await MediaPicker.Default.PickPhotoAsync(new MediaPickerOptions()
 				{
 					Title = ServiceRef.Localizer[nameof(AppResources.PickPhotoOfYourself)]
 				});
