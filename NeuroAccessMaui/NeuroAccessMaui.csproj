@@ -36,7 +36,7 @@
 
 	<PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios'">
 	  <ProvisioningType>automatic</ProvisioningType>
-	  <CodesignKey>Apple Development: Maximiliam Berggren (6C6VB862B9)</CodesignKey>
+	  <CodesignKey>Apple Development: Peter Waher (WF549ZKBZ2)</CodesignKey>
 	  <CodesignProvision>VS: com.trustanchorgroup.NeuroAccess Development</CodesignProvision>
 	  <PublishTrimmed>True</PublishTrimmed>
 	</PropertyGroup>
@@ -188,9 +188,9 @@
 		<PackageReference Include="CommunityToolkit.Maui.Markup" Version="4.0.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
 		<PackageReference Include="EDaler" Version="2.5.1" />
-		<PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.2" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
-		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.6" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.7" />
 		<PackageReference Include="Mopups" Version="1.3.0" />
 		<PackageReference Include="NeuroFeatures" Version="1.3.0" />
 		<PackageReference Include="Plugin.Fingerprint" Version="3.0.0-beta.1" />
@@ -223,7 +223,7 @@
 		<PackageReference Include="Waher.Persistence" Version="1.10.1" />
 		<PackageReference Include="Waher.Persistence.FilesLW" Version="1.11.5" />
 		<PackageReference Include="Waher.Runtime.Inventory" Version="1.1.5" />
-		<PackageReference Include="Waher.Runtime.Profiling" Version="1.0.7" />
+		<PackageReference Include="Waher.Runtime.Profiling" Version="1.0.8" />
 		<PackageReference Include="Waher.Runtime.Settings" Version="1.0.10" />
 		<PackageReference Include="Waher.Runtime.Temporary" Version="1.0.0" />
 		<PackageReference Include="Waher.Runtime.Text" Version="1.1.2" />
@@ -523,6 +523,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="8.0.6" />
+	  <PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="8.0.7" />
 	</ItemGroup>
 </Project>
