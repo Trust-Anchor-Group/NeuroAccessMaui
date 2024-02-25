@@ -25,7 +25,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineVariables
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.NavigationService.TryGetArgs(out MachineVariablesNavigationArgs? args))
+			if (ServiceRef.UiService.TryGetArgs(out MachineVariablesNavigationArgs? args))
 			{
 				this.Running = args.Running;
 				this.Ended = args.Ended;

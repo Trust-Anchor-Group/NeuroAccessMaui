@@ -5,8 +5,8 @@ using EDaler.Uris;
 using Mopups.Services;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
-using NeuroAccessMaui.Services.Navigation;
 using NeuroAccessMaui.Services.Notification;
+using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.QR;
 using NeuroAccessMaui.UI.Converters;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
@@ -61,7 +61,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.NavigationService.TryGetArgs(out ChatNavigationArgs? args, this.UniqueId))
+			if (ServiceRef.UiService.TryGetArgs(out ChatNavigationArgs? args, this.UniqueId))
 			{
 				this.LegalId = args.LegalId;
 				this.BareJid = args.BareJid;
@@ -628,7 +628,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			}
 			catch (Exception ex)
 			{
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -730,7 +730,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		{
 			if (!ServiceRef.XmppService.FileUploadIsSupported)
 			{
-				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.TakePhoto)],
+				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.TakePhoto)],
 					ServiceRef.Localizer[nameof(AppResources.ServerDoesNotSupportFileUpload)]);
 				return;
 			}
@@ -766,14 +766,14 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		{
 			if (!ServiceRef.XmppService.FileUploadIsSupported)
 			{
-				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.TakePhoto)],
+				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.TakePhoto)],
 					ServiceRef.Localizer[nameof(AppResources.ServerDoesNotSupportFileUpload)]);
 				return;
 			}
 
 			if (DeviceInfo.Platform == DevicePlatform.iOS)
 			{
-				FileResult capturedPhoto;
+				FileResult? capturedPhoto;
 
 				try
 				{
@@ -784,7 +784,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 				}
 				catch (Exception ex)
 				{
-					await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.TakePhoto)],
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.TakePhoto)],
 						ServiceRef.Localizer[nameof(AppResources.TakingAPhotoIsNotSupported)] + ": " + ex.Message);
 					return;
 				}
@@ -797,13 +797,13 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 					}
 					catch (Exception ex)
 					{
-						await ServiceRef.UiSerializer.DisplayException(ex);
+						await ServiceRef.UiService.DisplayException(ex);
 					}
 				}
 			}
 			else
 			{
-				FileResult capturedPhoto;
+				FileResult? capturedPhoto;
 
 				try
 				{
@@ -813,7 +813,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 				}
 				catch (Exception ex)
 				{
-					await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.TakePhoto)],
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.TakePhoto)],
 						ServiceRef.Localizer[nameof(AppResources.TakingAPhotoIsNotSupported)] + ": " + ex.Message);
 					return;
 				}
@@ -826,7 +826,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 					}
 					catch (Exception ex)
 					{
-						await ServiceRef.UiSerializer.DisplayException(ex);
+						await ServiceRef.UiService.DisplayException(ex);
 					}
 				}
 			}
@@ -842,7 +842,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 
 				if (Bin.Length > ServiceRef.TagProfile.HttpFileUploadMaxSize)
 				{
-					await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						ServiceRef.Localizer[nameof(AppResources.PhotoIsTooLarge)]);
 					return;
 				}
@@ -850,7 +850,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 				// Taking or picking photos switches to another app, so ID app has to reconnect again after.
 				if (!await ServiceRef.XmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect))
 				{
-					await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						ServiceRef.Localizer[nameof(AppResources.UnableToConnectTo), ServiceRef.TagProfile.Domain ?? string.Empty]);
 					return;
 				}
@@ -937,7 +937,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			}
 			catch (Exception ex)
 			{
-				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message);
+				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message);
 				ServiceRef.LogService.LogException(ex);
 				return;
 			}
@@ -956,11 +956,11 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		{
 			if (!ServiceRef.XmppService.FileUploadIsSupported)
 			{
-				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.PickPhoto)], ServiceRef.Localizer[nameof(AppResources.SelectingAPhotoIsNotSupported)]);
+				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.PickPhoto)], ServiceRef.Localizer[nameof(AppResources.SelectingAPhotoIsNotSupported)]);
 				return;
 			}
 
-			FileResult pickedPhoto = await MediaPicker.PickPhotoAsync();
+			FileResult? pickedPhoto = await MediaPicker.PickPhotoAsync();
 
 			if (pickedPhoto is not null)
 				await this.EmbedMedia(pickedPhoto.FullPath, false);
@@ -983,7 +983,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 				CanScanQrCode = true
 			};
 
-			await ServiceRef.NavigationService.GoToAsync(nameof(MyContactsPage), Args, BackMethod.Pop);
+			await ServiceRef.UiService.GoToAsync(nameof(MyContactsPage), Args, BackMethod.Pop);
 
 			ContactInfoModel? Contact = await SelectedContact.Task;
 			if (Contact is null)
@@ -1034,7 +1034,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			TaskCompletionSource<Contract?> SelectedContract = new();
 			MyContractsNavigationArgs Args = new(ContractsListMode.Contracts, SelectedContract);
 
-			await ServiceRef.NavigationService.GoToAsync(nameof(MyContractsPage), Args, BackMethod.Pop);
+			await ServiceRef.UiService.GoToAsync(nameof(MyContractsPage), Args, BackMethod.Pop);
 
 			Contract? Contract = await SelectedContract.Task;
 			if (Contract is null)
@@ -1094,7 +1094,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			TaskCompletionSource<string?> UriToSend = new();
 			EDalerUriNavigationArgs Args = new(Parsed, this.FriendlyName ?? string.Empty, UriToSend);
 
-			await ServiceRef.NavigationService.GoToAsync(nameof(SendPaymentPage), Args, BackMethod.Pop);
+			await ServiceRef.UiService.GoToAsync(nameof(SendPaymentPage), Args, BackMethod.Pop);
 
 			string? Uri = await UriToSend.Task;
 			if (string.IsNullOrEmpty(Uri) || !EDalerUri.TryParse(Uri, out Parsed))
@@ -1131,7 +1131,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		{
 			MyTokensNavigationArgs Args = new();
 
-			await ServiceRef.NavigationService.GoToAsync(nameof(MyTokensPage), Args, BackMethod.Pop);
+			await ServiceRef.UiService.GoToAsync(nameof(MyTokensPage), Args, BackMethod.Pop);
 
 			TokenItem? Selected = await Args.TokenItemProvider.Task;
 
@@ -1164,7 +1164,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			TaskCompletionSource<ContactInfoModel?> ThingToShare = new();
 			MyThingsNavigationArgs Args = new(ThingToShare);
 
-			await ServiceRef.NavigationService.GoToAsync(nameof(MyThingsPage), Args, BackMethod.Pop);
+			await ServiceRef.UiService.GoToAsync(nameof(MyThingsPage), Args, BackMethod.Pop);
 
 			ContactInfoModel? Thing = await ThingToShare.Task;
 			if (Thing is null)
@@ -1289,14 +1289,14 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 								LegalIdentity Id = LegalIdentity.Parse(Doc.DocumentElement);
 								ViewIdentityNavigationArgs ViewIdentityArgs = new(Id);
 
-								await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), ViewIdentityArgs, BackMethod.Pop);
+								await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage), ViewIdentityArgs, BackMethod.Pop);
 								break;
 
 							case UriScheme.IotSc:
 								ParsedContract ParsedContract = await Contract.Parse(Doc.DocumentElement, ServiceRef.XmppService.ContractsClient);
 								ViewContractNavigationArgs ViewContractArgs = new(ParsedContract.Contract, false);
 
-								await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), ViewContractArgs, BackMethod.Pop);
+								await ServiceRef.UiService.GoToAsync(nameof(ViewContractPage), ViewContractArgs, BackMethod.Pop);
 								break;
 
 							case UriScheme.NeuroFeature:
@@ -1308,7 +1308,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 
 								TokenDetailsNavigationArgs Args = new(new TokenItem(ParsedToken, Events));
 
-								await ServiceRef.NavigationService.GoToAsync(nameof(TokenDetailsPage), Args, BackMethod.Pop);
+								await ServiceRef.UiService.GoToAsync(nameof(TokenDetailsPage), Args, BackMethod.Pop);
 								break;
 
 							default:
@@ -1321,7 +1321,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			}
 			catch (Exception ex)
 			{
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 

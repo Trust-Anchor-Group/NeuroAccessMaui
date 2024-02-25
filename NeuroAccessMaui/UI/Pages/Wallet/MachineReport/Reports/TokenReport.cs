@@ -208,7 +208,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport.Reports
 				}
 				catch (Exception ex)
 				{
-					await ServiceRef.UiSerializer.DisplayException(ex);
+					await ServiceRef.UiService.DisplayException(ex);
 				}
 			}
 		}
@@ -238,7 +238,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport.Reports
 				}
 				catch (Exception ex)
 				{
-					await ServiceRef.UiSerializer.DisplayException(ex);
+					await ServiceRef.UiService.DisplayException(ex);
 				}
 			});
 		}

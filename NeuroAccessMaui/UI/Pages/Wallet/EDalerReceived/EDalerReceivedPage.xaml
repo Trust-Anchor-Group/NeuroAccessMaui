@@ -54,7 +54,7 @@
 						<!-- BUTTONS -->
 						<controls:TextButton LabelData="{l:Localize Accept}" Command="{Binding Path=AcceptCommand}"
 													Style="{StaticResource FilledTextButtonNoRoundedCorners}"
-													Margin="{StaticResource DefaultBottomOnlyMargin}"/>
+													Margin="{StaticResource SmallBottomMargins}"/>
 					</VerticalStackLayout>
 				</Frame>
 			</VerticalStackLayout>

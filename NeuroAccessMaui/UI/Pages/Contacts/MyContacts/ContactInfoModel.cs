@@ -186,7 +186,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 
 			if (Subscribed)
 			{
-				if (!await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.Question)],
+				if (!await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.Question)],
 					ServiceRef.Localizer[nameof(AppResources.RemoveSubscriptionFrom), this.FriendlyName ?? string.Empty],
 					ServiceRef.Localizer[nameof(AppResources.Yes)], ServiceRef.Localizer[nameof(AppResources.Cancel)]))
 				{

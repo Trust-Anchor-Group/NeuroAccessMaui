@@ -132,14 +132,14 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 			}
 			catch (Exception ex)
 			{
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
 		[RelayCommand]
 		private static async Task ChangeLanguage()
 		{
-			await ServiceRef.PopupService.PushAsync<SelectLanguagePopup>();
+			await ServiceRef.UiService.PushAsync<SelectLanguagePopup>();
 		}
 	}
 }

@@ -4,8 +4,8 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Localization;
-using NeuroAccessMaui.Services.Navigation;
 using NeuroAccessMaui.Services.Notification;
+using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Main.XmppForm;
@@ -50,7 +50,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.NavigationService.TryGetArgs(out ViewThingNavigationArgs? args))
+			if (ServiceRef.UiService.TryGetArgs(out ViewThingNavigationArgs? args))
 			{
 				this.thing = args.Thing;
 
@@ -424,7 +424,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 
 			try
 			{
-				if (!await ServiceRef.UiSerializer.DisplayAlert(
+				if (!await ServiceRef.UiService.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.Question)], ServiceRef.Localizer[nameof(AppResources.DeleteRulesQuestion)],
 					ServiceRef.Localizer[nameof(AppResources.Yes)], ServiceRef.Localizer[nameof(AppResources.Cancel)]))
 				{
@@ -453,13 +453,13 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 				if (!await Result.Task)
 					return;
 
-				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
 					ServiceRef.Localizer[nameof(AppResources.RulesDeleted)]);
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -474,7 +474,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 
 			try
 			{
-				if (!await ServiceRef.UiSerializer.DisplayAlert(
+				if (!await ServiceRef.UiService.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.Question)], ServiceRef.Localizer[nameof(AppResources.DisownThingQuestion)],
 					ServiceRef.Localizer[nameof(AppResources.Yes)], ServiceRef.Localizer[nameof(AppResources.Cancel)]))
 				{
@@ -506,14 +506,14 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 					this.InContacts = false;
 				}
 
-				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
 					ServiceRef.Localizer[nameof(AppResources.ThingDisowned)]);
-				await ServiceRef.NavigationService.GoBackAsync();
+				await ServiceRef.UiService.GoBackAsync();
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -563,7 +563,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -612,7 +612,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -627,7 +627,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 
 			ViewThingNavigationArgs Args = new(this.thing, MyThingsViewModel.GetNotificationEvents(this.thing) ?? []);
 
-			await ServiceRef.NavigationService.GoToAsync(nameof(ReadSensorPage), Args, BackMethod.Pop);
+			await ServiceRef.UiService.GoToAsync(nameof(ReadSensorPage), Args, BackMethod.Pop);
 		}
 
 		/// <summary>
@@ -657,7 +657,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 			}
 			catch (Exception ex)
 			{
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -667,11 +667,11 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 			{
 				MainThread.BeginInvokeOnMainThread(async () =>
 				{
-					await ServiceRef.NavigationService.GoToAsync(nameof(XmppFormPage), new XmppFormNavigationArgs(e.Form));
+					await ServiceRef.UiService.GoToAsync(nameof(XmppFormPage), new XmppFormNavigationArgs(e.Form));
 				});
 			}
 			else
-				ServiceRef.UiSerializer.DisplayException(e.StanzaError ?? new Exception("Unable to get control form."));
+				ServiceRef.UiService.DisplayException(e.StanzaError ?? new Exception("Unable to get control form."));
 
 			return Task.CompletedTask;
 		}
@@ -691,11 +691,11 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 				string FriendlyName = this.thing.FriendlyName;
 				ChatNavigationArgs Args = new(LegalId, this.thing.BareJid, FriendlyName);
 
-				await ServiceRef.NavigationService.GoToAsync(nameof(ChatPage), Args, BackMethod.Inherited, this.thing.BareJid);
+				await ServiceRef.UiService.GoToAsync(nameof(ChatPage), Args, BackMethod.Inherited, this.thing.BareJid);
 			}
 			catch (Exception ex)
 			{
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 

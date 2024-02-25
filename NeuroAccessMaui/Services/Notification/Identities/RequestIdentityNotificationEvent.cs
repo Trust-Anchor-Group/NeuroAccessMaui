@@ -35,7 +35,7 @@ namespace NeuroAccessMaui.Services.Notification.Identities
 		{
 			if (this.Identity is not null)
 			{
-				await ServiceRef.NavigationService.GoToAsync(nameof(PetitionIdentityPage), new PetitionIdentityNavigationArgs(
+				await ServiceRef.UiService.GoToAsync(nameof(PetitionIdentityPage), new PetitionIdentityNavigationArgs(
 					this.Identity, this.RequestorFullJid, this.SignatoryIdentityId, this.PetitionId, this.Purpose));
 			}
 		}

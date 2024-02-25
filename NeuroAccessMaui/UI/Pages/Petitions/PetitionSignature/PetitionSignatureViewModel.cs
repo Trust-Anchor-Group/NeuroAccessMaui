@@ -36,7 +36,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.NavigationService.TryGetArgs(out PetitionSignatureNavigationArgs? Args))
+			if (ServiceRef.UiService.TryGetArgs(out PetitionSignatureNavigationArgs? Args))
 			{
 				this.RequestorIdentity = Args.RequestorIdentity;
 				this.requestorFullJid = Args.RequestorFullJid;
@@ -85,7 +85,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature
 			});
 
 			if (Succeeded)
-				await ServiceRef.NavigationService.GoBackAsync();
+				await ServiceRef.UiService.GoBackAsync();
 		}
 
 		[RelayCommand]
@@ -98,13 +98,13 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature
 			});
 
 			if (Succeeded)
-				await ServiceRef.NavigationService.GoBackAsync();
+				await ServiceRef.UiService.GoBackAsync();
 		}
 
 		[RelayCommand]
 		private static async Task Ignore()
 		{
-			await ServiceRef.NavigationService.GoBackAsync();
+			await ServiceRef.UiService.GoBackAsync();
 		}
 
 		/// <summary>
@@ -553,14 +553,14 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature
 					if (Label == this.LegalId)
 					{
 						await Clipboard.SetTextAsync(Constants.UriSchemes.IotId + ":" + this.LegalId);
-						await ServiceRef.UiSerializer.DisplayAlert(
+						await ServiceRef.UiService.DisplayAlert(
 							ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
 							ServiceRef.Localizer[nameof(AppResources.IdCopiedSuccessfully)]);
 					}
 					else
 					{
 						await Clipboard.SetTextAsync(Label);
-						await ServiceRef.UiSerializer.DisplayAlert(
+						await ServiceRef.UiService.DisplayAlert(
 							ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
 							ServiceRef.Localizer[nameof(AppResources.TagValueCopiedToClipboard)]);
 					}
@@ -569,7 +569,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 	}

@@ -1,4 +1,4 @@
-﻿using NeuroAccessMaui.Services.Navigation;
+﻿using NeuroAccessMaui.Services.UI;
 using NeuroFeatures.Events;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents

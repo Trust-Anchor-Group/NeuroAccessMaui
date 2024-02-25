@@ -1,15 +1,15 @@
-﻿using System.Text;
-using System.Xml;
+﻿using System.Xml;
 using Waher.Content.Markdown;
 using Waher.Content.Markdown.Model;
+using Waher.Content.Markdown.Rendering;
 using Waher.Runtime.Inventory;
 
-namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.Multimedia
+namespace NeuroAccessMaui.UI.Rendering.Multimedia
 {
 	/// <summary>
 	/// Implements the iotid URI Scheme
 	/// </summary>
-	public class IotIdUriScheme : MultimediaContent
+	public class IotIdUriScheme : MultimediaContent, IMultimediaMauiXamlRenderer
 	{
 		/// <summary>
 		/// Implements the iotid URI Scheme
@@ -34,29 +34,10 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.Multimedia
 		}
 
 		/// <inheritdoc/>
-		public override async Task GenerateHTML(StringBuilder Output, MultimediaItem[] Items, IEnumerable<MarkdownElement> ChildNodes, bool AloneInParagraph, MarkdownDocument Document)
+		public async Task RenderMauiXaml(MauiXamlRenderer Renderer, MultimediaItem[] Items, IEnumerable<MarkdownElement> ChildNodes, bool AloneInParagraph, MarkdownDocument Document)
 		{
-			foreach (MarkdownElement E in ChildNodes)
-				await E.GenerateHTML(Output);
-		}
+			XmlWriter Output = Renderer.XmlOutput;
 
-		/// <inheritdoc/>
-		public override async Task GenerateLaTeX(StringBuilder Output, MultimediaItem[] Items, IEnumerable<MarkdownElement> ChildNodes, bool AloneInParagraph, MarkdownDocument Document)
-		{
-			foreach (MarkdownElement E in ChildNodes)
-				await E.GenerateLaTeX(Output);
-		}
-
-		/// <inheritdoc/>
-		public override async Task GenerateXAML(XmlWriter Output, Waher.Content.Markdown.Model.TextAlignment TextAlignment, MultimediaItem[] Items, IEnumerable<MarkdownElement> ChildNodes, bool AloneInParagraph, MarkdownDocument Document)
-		{
-			foreach (MarkdownElement E in ChildNodes)
-				await E.GenerateXAML(Output, TextAlignment);
-		}
-
-		/// <inheritdoc/>
-		public override async Task GenerateXamarinForms(XmlWriter Output, XamarinRenderingState State, MultimediaItem[] Items, IEnumerable<MarkdownElement> ChildNodes, bool AloneInParagraph, MarkdownDocument Document)
-		{
 			foreach (MultimediaItem Item in Items)
 			{
 				Output.WriteStartElement("VerticalStackLayout");
@@ -75,10 +56,14 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.Multimedia
 				Output.WriteAttributeString("LineBreakMode", "WordWrap");
 				Output.WriteAttributeString("TextType", "Html");
 				Output.WriteAttributeString("FontSize", "Medium");
-				StringBuilder Html = new();
+
+				using HtmlRenderer Html = new(new HtmlSettings()
+				{
+					XmlEntitiesOnly = true
+				});
 
 				foreach (MarkdownElement E in ChildNodes)
-					await E.GenerateHTML(Html);
+					await E.Render(Html);
 
 				Output.WriteValue(Html.ToString());
 				Output.WriteEndElement();
@@ -96,13 +81,6 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.Multimedia
 				Output.WriteEndElement();
 				break;
 			}
-		}
-
-		/// <inheritdoc/>
-		public override async Task GenerateSmartContractXml(XmlWriter Output, SmartContractRenderState State, MultimediaItem[] Items, IEnumerable<MarkdownElement> ChildNodes, bool AloneInParagraph, MarkdownDocument Document)
-		{
-			foreach (MarkdownElement E in ChildNodes)
-				await E.GenerateSmartContractXml(Output, State);
 		}
 	}
 }

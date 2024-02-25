@@ -26,6 +26,51 @@
 		<Setter Property="FontSize" Value="14" />
 	</Style>
 
+	<Style x:Key="Header1" ApplyToDerivedTypes="False" TargetType="Label">
+		<Setter Property="FontAttributes" Value="Bold"/>
+		<Setter Property="FontSize" Value="28" />
+	</Style>
+
+	<Style x:Key="Header2" ApplyToDerivedTypes="False" TargetType="Label">
+		<Setter Property="FontAttributes" Value="Bold"/>
+		<Setter Property="FontSize" Value="24" />
+	</Style>
+
+	<Style x:Key="Header3" ApplyToDerivedTypes="False" TargetType="Label">
+		<Setter Property="FontAttributes" Value="Bold"/>
+		<Setter Property="FontSize" Value="22" />
+	</Style>
+
+	<Style x:Key="Header4" ApplyToDerivedTypes="False" TargetType="Label">
+		<Setter Property="FontAttributes" Value="Bold"/>
+		<Setter Property="FontSize" Value="20" />
+	</Style>
+
+	<Style x:Key="Header5" ApplyToDerivedTypes="False" TargetType="Label">
+		<Setter Property="FontAttributes" Value="Bold"/>
+		<Setter Property="FontSize" Value="18" />
+	</Style>
+
+	<Style x:Key="Header6" ApplyToDerivedTypes="False" TargetType="Label">
+		<Setter Property="FontAttributes" Value="Bold"/>
+		<Setter Property="FontSize" Value="16" />
+	</Style>
+
+	<Style x:Key="Header7" ApplyToDerivedTypes="False" TargetType="Label">
+		<Setter Property="FontAttributes" Value="Bold"/>
+		<Setter Property="FontSize" Value="15" />
+	</Style>
+
+	<Style x:Key="Header8" ApplyToDerivedTypes="False" TargetType="Label">
+		<Setter Property="FontAttributes" Value="Bold"/>
+		<Setter Property="FontSize" Value="14" />
+	</Style>
+
+	<Style x:Key="Header9" ApplyToDerivedTypes="False" TargetType="Label">
+		<Setter Property="FontAttributes" Value="Bold"/>
+		<Setter Property="FontSize" Value="13" />
+	</Style>
+
 	<Style x:Key="InfoLabel" ApplyToDerivedTypes="False" TargetType="Label">
 		<Setter Property="FontSize" Value="16" />
 		<Setter Property="Margin" Value="10" />

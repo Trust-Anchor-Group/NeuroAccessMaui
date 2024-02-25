@@ -38,7 +38,7 @@ namespace NeuroAccessMaui.UI.Popups.Pin
 				if (await App.CheckPinAndUnblockUser(Pin))
 				{
 					this.result.TrySetResult(Pin);
-					await ServiceRef.PopupService.PopAsync();
+					await ServiceRef.UiService.PopAsync();
 				}
 				else
 				{
@@ -47,7 +47,7 @@ namespace NeuroAccessMaui.UI.Popups.Pin
 					long PinAttemptCounter = await App.GetCurrentPinCounter();
 					long RemainingAttempts = Math.Max(0, Constants.Pin.FirstMaxPinAttempts - PinAttemptCounter);
 
-					await ServiceRef.UiSerializer.DisplayAlert(
+					await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						ServiceRef.Localizer[nameof(AppResources.PinIsInvalid), RemainingAttempts]);
 
@@ -63,7 +63,7 @@ namespace NeuroAccessMaui.UI.Popups.Pin
 		private async Task Cancel()
 		{
 			this.result.TrySetResult(null);
-			await ServiceRef.PopupService.PopAsync();
+			await ServiceRef.UiService.PopAsync();
 		}
 	}
 }

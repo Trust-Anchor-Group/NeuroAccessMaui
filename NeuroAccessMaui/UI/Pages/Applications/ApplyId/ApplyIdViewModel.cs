@@ -6,7 +6,7 @@ using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Data;
-using NeuroAccessMaui.Services.Navigation;
+using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.Photos;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Registration;
@@ -73,7 +73,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 				this.HasFeaturedPeerReviewers = false;
 			}
 
-			ApplyIdNavigationArgs? Args = ServiceRef.NavigationService.PopLatestArgs<ApplyIdNavigationArgs>();
+			ApplyIdNavigationArgs? Args = ServiceRef.UiService.PopLatestArgs<ApplyIdNavigationArgs>();
 
 			if (Args is not null)
 			{
@@ -127,7 +127,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 				this.NrReviews = ServiceRef.TagProfile.NrReviews;
 
 				if (this.ApplicationId is not null && this.ApplicationId == ServiceRef.TagProfile.LegalIdentity?.Id)
-					await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), BackMethod.Pop2);
+					await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage), BackMethod.Pop2);
 				else
 				{
 					if (this.ApplicationSent)
@@ -143,7 +143,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 
 					if (!this.ApplicationSent && !this.IsRevoking)
 					{
-						await ServiceRef.UiSerializer.DisplayAlert(
+						await ServiceRef.UiService.DisplayAlert(
 							ServiceRef.Localizer[nameof(AppResources.Rejected)],
 							ServiceRef.Localizer[nameof(AppResources.YourApplicationWasRejected)]);
 					}
@@ -673,7 +673,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 			finally
 			{
@@ -718,7 +718,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 				this.IsRevoking = false;
 			}
 			finally
@@ -757,13 +757,13 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 				await ServiceRef.XmppService.PetitionPeerReviewId(ReviewerId, ToReview, Guid.NewGuid().ToString(),
 					ServiceRef.Localizer[nameof(AppResources.CouldYouPleaseReviewMyIdentityInformation)]);
 
-				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.PetitionSent)],
+				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.PetitionSent)],
 					ServiceRef.Localizer[nameof(AppResources.APetitionHasBeenSentToYourPeer)]);
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 			finally
 			{
@@ -782,7 +782,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 
 			try
 			{
-				FileResult Result = await MediaPicker.Default.CapturePhotoAsync(new MediaPickerOptions()
+				FileResult? Result = await MediaPicker.Default.CapturePhotoAsync(new MediaPickerOptions()
 				{
 					Title = ServiceRef.Localizer[nameof(AppResources.TakePhotoOfYourself)]
 				});
@@ -796,7 +796,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -813,7 +813,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			if (Bin.Length > ServiceRef.TagProfile.HttpFileUploadMaxSize)
 			{
 				if (showAlert)
-					await ServiceRef.UiSerializer.DisplayAlert(
+					await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						ServiceRef.Localizer[nameof(AppResources.PhotoIsTooLarge)]);
 
@@ -879,7 +879,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayAlert(
+				await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						ServiceRef.Localizer[nameof(AppResources.FailedToLoadPhoto)]);
 			}
@@ -1006,7 +1006,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		{
 			try
 			{
-				FileResult Result = await MediaPicker.Default.PickPhotoAsync(new MediaPickerOptions()
+				FileResult? Result = await MediaPicker.Default.PickPhotoAsync(new MediaPickerOptions()
 				{
 					Title = ServiceRef.Localizer[nameof(AppResources.PickPhotoOfYourself)]
 				});
@@ -1020,7 +1020,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -1063,7 +1063,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 					ServiceRef.Localizer[nameof(AppResources.RequestReview)],
 					ServiceRef.Localizer[nameof(AppResources.SelectServiceProviderPeerReview)]);
 
-				await ServiceRef.NavigationService.GoToAsync(nameof(ServiceProvidersPage), e, BackMethod.Pop);
+				await ServiceRef.UiService.GoToAsync(nameof(ServiceProvidersPage), e, BackMethod.Pop);
 
 				if (e.ServiceProvider is not null)
 				{

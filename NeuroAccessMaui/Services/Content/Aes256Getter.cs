@@ -5,7 +5,7 @@ using Waher.Content;
 using Waher.Runtime.Inventory;
 using Waher.Runtime.Temporary;
 
-namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.Content
+namespace NeuroAccessMaui.Services.Content
 {
 	/// <summary>
 	/// Gets content previously encrypted using AES-256.

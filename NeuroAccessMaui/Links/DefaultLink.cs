@@ -33,7 +33,7 @@ namespace NeuroAccessMaui.Links
 				return true;
 			else
 			{
-				await ServiceRef.UiSerializer.DisplayAlert(
+				await ServiceRef.UiService.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 					ServiceRef.Localizer[nameof(AppResources.QrCodeNotUnderstood)] +
 					Environment.NewLine + Environment.NewLine + Link.OriginalString);

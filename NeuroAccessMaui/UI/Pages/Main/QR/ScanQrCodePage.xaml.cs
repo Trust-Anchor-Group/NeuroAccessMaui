@@ -52,7 +52,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		/// A parameterless constructor is required for shell routing system (it uses <c>Activator.CreateInstance</c>).
 		/// </remarks>
 		public ScanQrCodePage()
-			: this(ServiceRef.NavigationService.PopLatestArgs<ScanQrCodeNavigationArgs>())
+			: this(ServiceRef.UiService.PopLatestArgs<ScanQrCodeNavigationArgs>())
 		{
 		}
 

@@ -41,13 +41,13 @@ namespace NeuroAccessMaui.Services.Notification.Identities
 		{
 			if (!this.Response || this.Identity is null)
 			{
-				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.Message)],
+				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.Message)],
 					ServiceRef.Localizer[nameof(AppResources.SignaturePetitionDenied)],
 					ServiceRef.Localizer[nameof(AppResources.Ok)]);
 			}
 			else
 			{
-				await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage),
+				await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage),
 					new ViewIdentityNavigationArgs(this.Identity));
 			}
 		}

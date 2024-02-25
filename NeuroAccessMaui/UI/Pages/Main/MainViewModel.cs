@@ -41,7 +41,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		{
 			try
 			{
-				await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage));
+				await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage));
 			}
 			catch (Exception ex)
 			{

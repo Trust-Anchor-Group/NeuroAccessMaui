@@ -63,7 +63,7 @@ namespace NeuroAccessMaui.Services.Notification.Things
 			string ThingName = await ContactInfo.GetFriendlyName(this.BareJid);
 			string RemoteName = await ContactInfo.GetFriendlyName(this.RemoteJid);
 
-			await ServiceRef.NavigationService.GoToAsync(nameof(CanControlPage), new CanControlNavigationArgs(this, ThingName, RemoteName));
+			await ServiceRef.UiService.GoToAsync(nameof(CanControlPage), new CanControlNavigationArgs(this, ThingName, RemoteName));
 		}
 
 		/// <summary>

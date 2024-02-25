@@ -1,20 +1,19 @@
-﻿using System.Globalization;
+﻿using NeuroAccessMaui.Services.Contacts;
+using NeuroAccessMaui.Services.UI.Photos;
+using System.Globalization;
 using System.Text;
 using System.Xml;
-using NeuroAccessMaui.Services;
-using NeuroAccessMaui.Services.Contacts;
-using NeuroAccessMaui.Services.UI.Photos;
 using Waher.Content.Markdown;
 using Waher.Content.Markdown.Model;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Runtime.Inventory;
 
-namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.CodeBlocks
+namespace NeuroAccessMaui.UI.Rendering.CodeContent
 {
 	/// <summary>
 	/// Handles embedded Legal IDs.
 	/// </summary>
-	public class IoTIdCodeBlock : ICodeContent
+	public class IoTIdCodeBlock : ICodeContent, ICodeContentMauiXamlRenderer
 	{
 		private MarkdownDocument? document;
 
@@ -26,93 +25,16 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.CodeBlocks
 		}
 
 		/// <summary>
-		/// If generation of (transportable) Markdown is supported
-		/// </summary>
-		public bool HandlesMarkdown => false;
-
-		/// <summary>
-		/// If generation of HTML is supported
-		/// </summary>
-		public bool HandlesHTML => false;
-
-		/// <summary>
-		/// If generation of LaTeX is supported
-		/// </summary>
-		public bool HandlesLaTeX => false;
-
-		/// <summary>
-		/// If generation of Smart Contract XML is supported
-		/// </summary>
-		public bool HandlesSmartContract => false;
-
-		/// <summary>
-		/// If generation of plain text is supported.
-		/// </summary>
-		public bool HandlesPlainText => false;
-
-		/// <summary>
-		/// If generation of XAML is supported.
-		/// </summary>
-		public bool HandlesXAML => true;
-
-		/// <summary>
 		/// Markdown document.
 		/// </summary>
 		public MarkdownDocument? Document => this.document;
 
 		/// <summary>
-		/// Generates (transportable) Markdown (not supported)
+		/// Generates Maui XAML
 		/// </summary>
-		public Task<bool> GenerateMarkdown(StringBuilder Output, string[] Rows, string Language, int Indent, MarkdownDocument Document)
+		public async Task<bool> RenderMauiXaml(MauiXamlRenderer Renderer, string[] Rows, string Language, int Indent, MarkdownDocument Document)
 		{
-			return Task.FromResult(false);
-		}
-
-		/// <summary>
-		/// Generates HTML (not supported)
-		/// </summary>
-		public Task<bool> GenerateHTML(StringBuilder Output, string[] Rows, string Language, int Indent, MarkdownDocument Document)
-		{
-			return Task.FromResult(false);
-		}
-
-		/// <summary>
-		/// Generates LaTeX (not supported)
-		/// </summary>
-		public Task<bool> GenerateLaTeX(StringBuilder Output, string[] Rows, string Language, int Indent, MarkdownDocument Document)
-		{
-			return Task.FromResult(false);
-		}
-
-		/// <summary>
-		/// Generates Smart Contract XML (not supported)
-		/// </summary>
-		public Task<bool> GenerateSmartContractXml(XmlWriter Output, SmartContractRenderState State, string[] Rows, string Language, int Indent, MarkdownDocument Document)
-		{
-			return Task.FromResult(false);
-		}
-
-		/// <summary>
-		/// Generates Plain Text (not supported)
-		/// </summary>
-		public Task<bool> GeneratePlainText(StringBuilder Output, string[] Rows, string Language, int Indent, MarkdownDocument Document)
-		{
-			return Task.FromResult(false);
-		}
-
-		/// <summary>
-		/// Generates WPF XAML (not supported)
-		/// </summary>
-		public Task<bool> GenerateXAML(XmlWriter Output, Waher.Content.Markdown.Model.TextAlignment TextAlignment, string[] Rows, string Language, int Indent, MarkdownDocument Document)
-		{
-			return Task.FromResult(false);
-		}
-
-		/// <summary>
-		/// Generates Xamarin XAML
-		/// </summary>
-		public async Task<bool> GenerateXamarinForms(XmlWriter Output, XamarinRenderingState State, string[] Rows, string Language, int Indent, MarkdownDocument Document)
-		{
+			XmlWriter Output = Renderer.XmlOutput;
 			LegalIdentity Identity;
 
 			try
@@ -148,7 +70,8 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.MarkdownExtensions.CodeBlocks
 
 			if (Identity.Attachments is not null)
 			{
-				(string? FileName, int Width, int Height) = await PhotosLoader.LoadPhotoAsTemporaryFile(Identity.Attachments, 300, 300);
+				(string? FileName, int Width, int Height) = await PhotosLoader.LoadPhotoAsTemporaryFile(Identity.Attachments,
+					Constants.QrCode.DefaultImageWidth, Constants.QrCode.DefaultImageHeight);
 
 				if (!string.IsNullOrEmpty(FileName))
 				{

@@ -1,4 +1,4 @@
-﻿using NeuroAccessMaui.Services.Navigation;
+﻿using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 
 namespace NeuroAccessMaui.UI.Pages.Things.MyThings

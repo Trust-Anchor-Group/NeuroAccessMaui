@@ -12,7 +12,7 @@ namespace NeuroAccessMaui.UI
 		private static readonly SortedDictionary<string, bool> missingStyles = [];
 		private static Timer? timer = null;
 
-		private static Thickness? smallBottomOnlyMargins;
+		private static Thickness? smallBottomMargins;
 		private static Style? sectionTitleLabelStyle;
 		private static Style? keyLabel;
 		private static Style? valueLabel;
@@ -81,12 +81,12 @@ namespace NeuroAccessMaui.UI
 		/// <summary>
 		/// Bottom-only small margins
 		/// </summary>
-		public static Thickness SmallBottomOnlyMargins
+		public static Thickness SmallBottomMargins
 		{
 			get
 			{
-				smallBottomOnlyMargins ??= TryGetResource<Thickness>("SmallBottomOnlyMargins");
-				return smallBottomOnlyMargins.Value;
+				smallBottomMargins ??= TryGetResource<Thickness>("SmallBottomMargins");
+				return smallBottomMargins.Value;
 			}
 		}
 

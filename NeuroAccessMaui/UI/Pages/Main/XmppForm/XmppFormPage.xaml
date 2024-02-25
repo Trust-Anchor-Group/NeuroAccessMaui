@@ -43,7 +43,7 @@
 									<DataTemplate x:DataType="model2:PageModel">
 										<ScrollView Orientation="Vertical">
 											<StackLayout Orientation="Vertical" Padding="10">
-												<Label Text="{Binding Label}" IsVisible="{Binding HasLabel}" Style="{StaticResource Heading}" LineBreakMode="WordWrap"/>
+												<Label Text="{Binding Label}" IsVisible="{Binding HasLabel}" LineBreakMode="WordWrap"/>
 												<ContentView Content="{Binding Content}"/>
 											</StackLayout>
 										</ScrollView>

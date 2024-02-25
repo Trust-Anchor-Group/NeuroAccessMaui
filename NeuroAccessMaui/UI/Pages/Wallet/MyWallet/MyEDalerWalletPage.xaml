@@ -83,7 +83,7 @@
 
 		<ScrollView>
 			<Grid RowDefinitions="auto,*,auto">
-				<Frame Grid.Row="0" HeightRequest="150" BorderColor="Black" CornerRadius="6" HasShadow="True" Margin="5"
+				<Frame Grid.Row="0" HeightRequest="150" BorderColor="Black" CornerRadius="6" HasShadow="True" Margin="{StaticResource SmallMargins}"
                        BackgroundColor="{StaticResource HeadingBackground}">
 					<Grid HeightRequest="150" RowDefinitions="25,100,25" BackgroundColor="Transparent">
 						<Image x:Name="ImgFront" Grid.Row="0" Grid.RowSpan="3" Source="{Binding Path=EDalerFrontGlyph}" Opacity="0.5"/>

@@ -3,7 +3,7 @@ using IdApp.Nfc.Extensions;
 using IdApp.Nfc.Records;
 using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.Resources.Languages;
-using NeuroAccessMaui.Services.Navigation;
+using NeuroAccessMaui.Services.UI;
 using Waher.Runtime.Inventory;
 using Waher.Runtime.Settings;
 using Waher.Security;
@@ -70,7 +70,7 @@ namespace NeuroAccessMaui.Services.Nfc
 
 						if (Records.Length == 0)
 						{
-							INavigationService Nav = App.Instantiate<INavigationService>();
+							IUiService Nav = App.Instantiate<IUiService>();
 							if (Nav.CurrentPage is BaseContentPage ContentPage &&
 								ContentPage.ViewModel<BaseViewModel>() is ILinkableView LinkableView &&
 								LinkableView.IsLinkable &&
@@ -120,13 +120,13 @@ namespace NeuroAccessMaui.Services.Nfc
 
 								if (Ok)
 								{
-									await ServiceRef.UiSerializer.DisplayAlert(
+									await ServiceRef.UiService.DisplayAlert(
 										ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
 										ServiceRef.Localizer[nameof(AppResources.TagEngraved), Title]);
 								}
 								else
 								{
-									await ServiceRef.UiSerializer.DisplayAlert(
+									await ServiceRef.UiService.DisplayAlert(
 										ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 										ServiceRef.Localizer[nameof(AppResources.TagNotEngraved), Title]);
 								}
@@ -207,7 +207,7 @@ namespace NeuroAccessMaui.Services.Nfc
 			}
 			catch (Exception ex)
 			{
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 	}

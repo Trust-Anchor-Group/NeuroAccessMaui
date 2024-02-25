@@ -1,6 +1,6 @@
 ﻿using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Contacts;
-using NeuroAccessMaui.Services.Navigation;
+using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Things.MyThings;
 using NeuroAccessMaui.UI.Pages.Things.ViewClaimThing;
 using NeuroAccessMaui.UI.Pages.Things.ViewThing;
@@ -42,7 +42,7 @@ namespace NeuroAccessMaui.Services.ThingRegistries
 		{
 			MainThread.BeginInvokeOnMainThread(async () =>
 			{
-				await ServiceRef.NavigationService.GoToAsync(nameof(ViewClaimThingPage), new ViewClaimThingNavigationArgs(Uri));
+				await ServiceRef.UiService.GoToAsync(nameof(ViewClaimThingPage), new ViewClaimThingNavigationArgs(Uri));
 			});
 
 			return Task.CompletedTask;
@@ -57,7 +57,7 @@ namespace NeuroAccessMaui.Services.ThingRegistries
 				switch (Things.Length)
 				{
 					case 0:
-						await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 							ServiceRef.Localizer[nameof(AppResources.NoThingsFound)]);
 						break;
 
@@ -86,7 +86,7 @@ namespace NeuroAccessMaui.Services.ThingRegistries
 								SubscribeTo = null
 							};
 
-							await ServiceRef.NavigationService.GoToAsync(nameof(ViewThingPage), new ViewThingNavigationArgs(ContactInfo,
+							await ServiceRef.UiService.GoToAsync(nameof(ViewThingPage), new ViewThingNavigationArgs(ContactInfo,
 								MyThingsViewModel.GetNotificationEvents(ContactInfo) ?? []));
 						});
 						break;
@@ -98,7 +98,7 @@ namespace NeuroAccessMaui.Services.ThingRegistries
 			}
 			catch (Exception ex)
 			{
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -151,11 +151,11 @@ namespace NeuroAccessMaui.Services.ThingRegistries
 
 				ViewThingNavigationArgs Args = new(Info, MyThingsViewModel.GetNotificationEvents(Info) ?? []);
 
-				await ServiceRef.NavigationService.GoToAsync(nameof(ViewThingPage), Args, BackMethod.CurrentPage);
+				await ServiceRef.UiService.GoToAsync(nameof(ViewThingPage), Args, BackMethod.CurrentPage);
 			}
 			catch (Exception ex)
 			{
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 

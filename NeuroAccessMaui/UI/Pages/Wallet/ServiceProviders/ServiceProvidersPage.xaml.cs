@@ -12,7 +12,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 		/// Creates a new instance of the <see cref="ServiceProvidersPage"/> class.
 		/// </summary>
 		public ServiceProvidersPage()
-			: this(ServiceRef.NavigationService.PopLatestArgs<ServiceProvidersNavigationArgs>())
+			: this(ServiceRef.UiService.PopLatestArgs<ServiceProvidersNavigationArgs>())
 		{
 		}
 

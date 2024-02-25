@@ -2,7 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
-using NeuroAccessMaui.Services.Navigation;
+using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Main.Calculator;
@@ -25,7 +25,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.RequestPayment
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.NavigationService.TryGetArgs(out EDalerBalanceNavigationArgs? Args))
+			if (ServiceRef.UiService.TryGetArgs(out EDalerBalanceNavigationArgs? Args))
 				this.Currency = Args.Balance?.Currency;
 
 			this.Amount = 0;
@@ -153,8 +153,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.RequestPayment
 			{
 				MainThread.BeginInvokeOnMainThread(async () =>
 				{
-					this.QrCodeWidth = 300;
-					this.QrCodeHeight = 300;
+					this.QrCodeWidth = Constants.QrCode.DefaultImageWidth;
+					this.QrCodeHeight = Constants.QrCode.DefaultImageHeight;
 					this.GenerateQrCode(Uri);
 
 					await this.page.ShowQrCode();
@@ -178,7 +178,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.RequestPayment
 					CanScanQrCode = true
 				};
 
-				await ServiceRef.NavigationService.GoToAsync(nameof(MyContactsPage), ContactListArgs, BackMethod.Pop);
+				await ServiceRef.UiService.GoToAsync(nameof(MyContactsPage), ContactListArgs, BackMethod.Pop);
 
 				ContactInfoModel? Contact = await Selected.Task;
 				if (Contact is null)
@@ -186,7 +186,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.RequestPayment
 
 				if (string.IsNullOrEmpty(Contact.BareJid))
 				{
-					await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						ServiceRef.Localizer[nameof(AppResources.NetworkAddressOfContactUnknown)]);
 					return;
 				}
@@ -207,13 +207,13 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.RequestPayment
 
 					ChatNavigationArgs ChatArgs = new(Contact.Contact);
 
-					await ServiceRef.NavigationService.GoToAsync(nameof(ChatPage), ChatArgs, BackMethod.Inherited, Contact.BareJid);
+					await ServiceRef.UiService.GoToAsync(nameof(ChatPage), ChatArgs, BackMethod.Inherited, Contact.BareJid);
 				}
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -238,7 +238,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.RequestPayment
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -256,19 +256,19 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.RequestPayment
 					case "AmountText":
 						CalculatorNavigationArgs AmountArgs = new(this, nameof(this.AmountText));
 
-						await ServiceRef.NavigationService.GoToAsync(nameof(CalculatorPage), AmountArgs, BackMethod.Pop);
+						await ServiceRef.UiService.GoToAsync(nameof(CalculatorPage), AmountArgs, BackMethod.Pop);
 						break;
 
 					case "AmountExtraText":
 						CalculatorNavigationArgs ExtraArgs = new(this, nameof(this.AmountExtraText));
 
-						await ServiceRef.NavigationService.GoToAsync(nameof(CalculatorPage), ExtraArgs, BackMethod.Pop);
+						await ServiceRef.UiService.GoToAsync(nameof(CalculatorPage), ExtraArgs, BackMethod.Pop);
 						break;
 				}
 			}
 			catch (Exception ex)
 			{
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 

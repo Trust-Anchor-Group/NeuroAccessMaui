@@ -93,7 +93,7 @@ namespace NeuroAccessMaui.Services.EventLog
 		{
 			ServiceRef.StorageService.FlagForRepair();
 
-			await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+			await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 				ServiceRef.Localizer[nameof(AppResources.RepairRestart)],
 				ServiceRef.Localizer[nameof(AppResources.Ok)]);
 

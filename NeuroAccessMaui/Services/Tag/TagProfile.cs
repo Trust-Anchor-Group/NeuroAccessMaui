@@ -763,7 +763,7 @@ namespace NeuroAccessMaui.Services.Tag
 			{
 				MainThread.BeginInvokeOnMainThread(() =>
 				{
-					ServiceRef.UiSerializer.DisplayAlert(
+					ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.Unlocked)],
 						ServiceRef.Localizer[nameof(AppResources.YouCanNowScanIdCodes)]);
 				});

@@ -48,7 +48,7 @@ namespace NeuroAccessMaui.UI.Popups.Settings
 				Preferences.Set("user_selected_language", SelectedLanguage.TwoLetterISOLanguageName);
 				LocalizationManager.Current.CurrentCulture = SelectedLanguage;
 			}
-			ServiceRef.PopupService.PopAsync();
+			ServiceRef.UiService.PopAsync();
 		}
 	}
 }

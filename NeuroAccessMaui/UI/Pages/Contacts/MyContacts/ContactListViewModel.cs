@@ -2,7 +2,6 @@
 using EDaler;
 using EDaler.Uris;
 using NeuroAccessMaui.Services;
-using NeuroAccessMaui.Services.Navigation;
 using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.UI.QR;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
@@ -18,6 +17,7 @@ using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.UI.Pages.Wallet.Payment;
 using NeuroAccessMaui.UI.Pages.Wallet;
 using CommunityToolkit.Mvvm.Input;
+using NeuroAccessMaui.Services.UI;
 
 namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 {
@@ -47,7 +47,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.NavigationService.TryGetArgs(out ContactListNavigationArgs? args))
+			if (ServiceRef.UiService.TryGetArgs(out ContactListNavigationArgs? args))
 			{
 				this.Description = args.Description;
 				this.Action = args.Action;
@@ -72,7 +72,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 
 			if (this.selection is not null && this.selection.Task.IsCompleted)
 			{
-				await ServiceRef.NavigationService.GoBackAsync();
+				await ServiceRef.UiService.GoBackAsync();
 				return;
 			}
 
@@ -352,7 +352,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 
 							EDalerUriNavigationArgs Args = new(Parsed);
 							// Inherit the back method here from the parrent
-							await ServiceRef.NavigationService.GoToAsync(nameof(PaymentPage), Args, BackMethod.Pop2);
+							await ServiceRef.UiService.GoToAsync(nameof(PaymentPage), Args, BackMethod.Pop2);
 
 							break;
 
@@ -362,7 +362,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 							{
 								ViewIdentityNavigationArgs ViewIdentityArgs = new(Contact.LegalIdentity);
 
-								await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), ViewIdentityArgs);
+								await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage), ViewIdentityArgs);
 							}
 							else if (!string.IsNullOrEmpty(Contact.LegalId))
 							{
@@ -373,14 +373,14 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 							{
 								ChatNavigationArgs ChatArgs = new(Contact.Contact);
 
-								await ServiceRef.NavigationService.GoToAsync(nameof(ChatPage), ChatArgs, BackMethod.Inherited, Contact.BareJid);
+								await ServiceRef.UiService.GoToAsync(nameof(ChatPage), ChatArgs, BackMethod.Inherited, Contact.BareJid);
 							}
 
 							break;
 
 						case SelectContactAction.Select:
 							this.SelectedContact = Contact;
-							await ServiceRef.NavigationService.GoBackAsync();
+							await ServiceRef.UiService.GoBackAsync();
 							this.selection?.TrySetResult(Contact);
 							break;
 					}
@@ -411,7 +411,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 			}
 			else if (!string.IsNullOrEmpty(Code))
 			{
-				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 					ServiceRef.Localizer[nameof(AppResources.TheSpecifiedCodeIsNotALegalIdentity)]);
 			}
 		}

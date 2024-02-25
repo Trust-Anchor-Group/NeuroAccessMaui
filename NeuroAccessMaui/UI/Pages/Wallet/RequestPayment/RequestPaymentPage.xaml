@@ -26,8 +26,8 @@
 					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
 						<StackLayout Margin="{StaticResource DefaultMargin}"
                          BackgroundColor="{AppThemeBinding Light={StaticResource PageBackgroundColorLightTheme}, Dark={StaticResource PageBackgroundColorDarkTheme}}">
-							<Label Text="{l:Localize RequestPayment}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
-							<Label Text="{l:Localize RequestPaymentDescription}" Style="{StaticResource InfoText}" VerticalOptions="Start"/>
+							<Label Text="{l:Localize RequestPayment}" Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"/>
+							<Label Text="{l:Localize RequestPaymentDescription}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"/>
 							<!-- Note -->
 							<Label Text="{l:Localize Amount}"/>
 							<Grid ColumnDefinitions="*,auto" RowDefinitions="auto" Padding="0" Margin="0" ColumnSpacing="0" RowSpacing="0">
@@ -49,26 +49,25 @@
 							</Grid>
 							<Label Text="{l:Localize Message}"/>
 							<Entry Text="{Binding Path=Message}"/>
-							<StackLayout Orientation="Horizontal" Margin="{StaticResource DefaultTopAndBottomOnlyMargin}">
+							<StackLayout Orientation="Horizontal" Margin="{StaticResource SmallTopBottomMargins}">
 								<CheckBox IsChecked="{Binding Path=EncryptMessage, Mode=TwoWay}" VerticalOptions="Center"/>
 								<Label Text="{l:Localize EncryptMessage}" VerticalOptions="Center" />
 							</StackLayout>
 							<!-- BUTTONS -->
-							<Button Text="{l:Localize GenerateQrCode}" Command="{Binding Path=GenerateQrCodeCommand}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
+							<Button Text="{l:Localize GenerateQrCode}" Command="{Binding Path=GenerateQrCodeCommand}" Margin="{StaticResource SmallBottomMargins}"/>
 							<Image x:Name="QrCode" BackgroundColor="{StaticResource HeadingForeground}" Source="{Binding Path=QrCode}" 
                        IsVisible="{Binding Path=HasQrCode}" WidthRequest="{Binding Path=QrCodeWidth}" 
                        HeightRequest="{Binding Path=QrCodeHeight}" HorizontalOptions="Center" VerticalOptions="Start" 
                        Margin="0" />
-							<Label Text="{l:Localize Share}" Style="{StaticResource Heading}"
-					   Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"
-					   IsVisible="{Binding Path=HasQrCode}" />
+							<Label Text="{l:Localize Share}" Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"
+									 IsVisible="{Binding Path=HasQrCode}" />
 							<Label Text="{l:Localize ShareDescription}"
-					   Style="{StaticResource InfoText}" VerticalOptions="Start"
+					   Style="{StaticResource InfoLabel}" VerticalOptions="Start"
 					   IsVisible="{Binding Path=HasQrCode}" />
 							<Button x:Name="ShareContactButton" Text="{l:Localize Contact}" Command="{Binding Path=ShareContactCommand}" 
-                        IsVisible="{Binding Path=HasQrCode}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
+                        IsVisible="{Binding Path=HasQrCode}" Margin="{StaticResource SmallBottomMargins}"/>
 							<Button x:Name="ShareExternalButton" Text="{l:Localize OtherApp}" Command="{Binding Path=ShareExternalCommand}" 
-                        IsVisible="{Binding Path=HasQrCode}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
+                        IsVisible="{Binding Path=HasQrCode}" Margin="{StaticResource SmallBottomMargins}"/>
 						</StackLayout>
 					</VerticalStackLayout>
 				</Frame>

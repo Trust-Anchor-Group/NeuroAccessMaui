@@ -23,7 +23,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.AccountEvent
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.NavigationService.TryGetArgs(out AccountEventNavigationArgs? args))
+			if (ServiceRef.UiService.TryGetArgs(out AccountEventNavigationArgs? args))
 			{
 				this.Remote = args.Event?.Remote;
 				this.FriendlyName = args.Event?.FriendlyName;

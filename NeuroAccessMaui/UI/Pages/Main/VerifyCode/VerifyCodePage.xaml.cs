@@ -39,7 +39,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.VerifyCode
 		/// A parameterless constructor is required for shell routing system (it uses <c>Activator.CreateInstance</c>).
 		/// </remarks>
 		public VerifyCodePage()
-			: this(ServiceRef.NavigationService.PopLatestArgs<VerifyCodeNavigationArgs>())
+			: this(ServiceRef.UiService.PopLatestArgs<VerifyCodeNavigationArgs>())
 		{
 		}
 

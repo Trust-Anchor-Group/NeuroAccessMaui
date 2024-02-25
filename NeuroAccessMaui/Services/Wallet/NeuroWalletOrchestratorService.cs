@@ -2,9 +2,9 @@
 using EDaler.Uris;
 using EDaler.Uris.Incomplete;
 using NeuroAccessMaui.Resources.Languages;
-using NeuroAccessMaui.Services.Navigation;
 using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.Notification.Wallet;
+using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Wallet;
 using NeuroAccessMaui.UI.Pages.Wallet.IssueEDaler;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet;
@@ -104,11 +104,11 @@ namespace NeuroAccessMaui.Services.Wallet
 
 				WalletNavigationArgs e = new(Balance, PendingAmount, PendingCurrency, PendingPayments, Events, More);
 
-				await ServiceRef.NavigationService.GoToAsync(nameof(MyEDalerWalletPage), e);
+				await ServiceRef.UiService.GoToAsync(nameof(MyEDalerWalletPage), e);
 			}
 			catch (Exception ex)
 			{
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -120,14 +120,14 @@ namespace NeuroAccessMaui.Services.Wallet
 		{
 			if (!ServiceRef.XmppService.TryParseEDalerUri(Uri, out EDalerUri Parsed, out string Reason))
 			{
-				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 					ServiceRef.Localizer[nameof(AppResources.InvalidEDalerUri), Reason]);
 				return;
 			}
 
 			if (Parsed.Expires.AddDays(1) < DateTime.UtcNow)
 			{
-				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 					ServiceRef.Localizer[nameof(AppResources.ExpiredEDalerUri)]);
 				return;
 			}
@@ -136,7 +136,7 @@ namespace NeuroAccessMaui.Services.Wallet
 			{
 				MainThread.BeginInvokeOnMainThread(async () =>
 				{
-					await ServiceRef.NavigationService.GoToAsync(nameof(IssueEDalerPage), new EDalerUriNavigationArgs(Parsed));
+					await ServiceRef.UiService.GoToAsync(nameof(IssueEDalerPage), new EDalerUriNavigationArgs(Parsed));
 				});
 			}
 			else if (Parsed is EDalerDestroyerUri)
@@ -147,19 +147,19 @@ namespace NeuroAccessMaui.Services.Wallet
 			{
 				MainThread.BeginInvokeOnMainThread(async () =>
 				{
-					await ServiceRef.NavigationService.GoToAsync(nameof(PaymentAcceptancePage), new EDalerUriNavigationArgs(Parsed));
+					await ServiceRef.UiService.GoToAsync(nameof(PaymentAcceptancePage), new EDalerUriNavigationArgs(Parsed));
 				});
 			}
 			else if (Parsed is EDalerIncompletePaymentUri)
 			{
 				MainThread.BeginInvokeOnMainThread(async () =>
 				{
-					await ServiceRef.NavigationService.GoToAsync(nameof(PaymentPage), new EDalerUriNavigationArgs(Parsed));
+					await ServiceRef.UiService.GoToAsync(nameof(PaymentPage), new EDalerUriNavigationArgs(Parsed));
 				});
 			}
 			else
 			{
-				await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 					ServiceRef.Localizer[nameof(AppResources.UnrecognizedEDalerURI)]);
 				return;
 			}
@@ -186,12 +186,12 @@ namespace NeuroAccessMaui.Services.Wallet
 
 				TokenDetailsNavigationArgs Args = new(new TokenItem(Token, Events));
 
-				await ServiceRef.NavigationService.GoToAsync(nameof(TokenDetailsPage), Args, BackMethod.Pop);
+				await ServiceRef.UiService.GoToAsync(nameof(TokenDetailsPage), Args, BackMethod.Pop);
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 

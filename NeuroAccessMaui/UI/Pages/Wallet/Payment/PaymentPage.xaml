@@ -24,8 +24,8 @@
 
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
-						<Label Text="{l:Localize Payment}" Style="{StaticResource Heading}" Margin="{StaticResource DefaultTopOnlyMargin}" VerticalOptions="Start"/>
-						<Label Text="{l:Localize PaymentDescription}" Style="{StaticResource InfoText}" VerticalOptions="Start"/>
+						<Label Text="{l:Localize Payment}" Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"/>
+						<Label Text="{l:Localize PaymentDescription}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"/>
 						<!-- Note -->
 						<Label Text="{l:Localize To}" IsVisible="{Binding ToPreset}"/>
 						<Entry Text="{Binding Path=To}" IsReadOnly="True" IsVisible="{Binding ToPreset}"/>
@@ -49,20 +49,20 @@
 						</Grid>
 						<Label Text="{l:Localize Message}"/>
 						<Entry Text="{Binding Path=Message}" IsReadOnly="{Binding Path=MessagePreset}"/>
-						<StackLayout Orientation="Horizontal" Margin="{StaticResource DefaultTopAndBottomOnlyMargin}" IsVisible="{Binding ToPreset}">
+						<StackLayout Orientation="Horizontal" Margin="{StaticResource SmallTopBottomMargins}" IsVisible="{Binding ToPreset}">
 							<CheckBox IsChecked="{Binding Path=EncryptMessage, Mode=TwoWay}" VerticalOptions="Center" IsEnabled="{Binding CanEncryptMessage}"/>
 							<Label Text="{l:Localize EncryptMessage}" VerticalOptions="Center" />
 						</StackLayout>
 						<!-- BUTTONS -->
 						<Button Text="{l:Localize PayOnline}" Command="{Binding Path=PayOnlineCommand}" 
-                        IsEnabled="{Binding Path=NotPaid}" Margin="{StaticResource DefaultBottomOnlyMargin}" IsVisible="{Binding ToPreset}"/>
-						<Button Text="{l:Localize PayOffline}" Command="{Binding Path=GenerateQrCodeCommand}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
+                        IsEnabled="{Binding Path=NotPaid}" Margin="{StaticResource SmallBottomMargins}" IsVisible="{Binding ToPreset}"/>
+						<Button Text="{l:Localize PayOffline}" Command="{Binding Path=GenerateQrCodeCommand}" Margin="{StaticResource SmallBottomMargins}"/>
 						<Image x:Name="QrCode" BackgroundColor="{StaticResource HeadingForeground}" Source="{Binding Path=QrCode}" 
                        IsVisible="{Binding Path=HasQrCode}" WidthRequest="{Binding Path=QrCodeWidth}" 
                        HeightRequest="{Binding Path=QrCodeHeight}" HorizontalOptions="Center" VerticalOptions="Start" 
                        Margin="0" />
 						<Button x:Name="ShareButton" Text="{l:Localize Share}" Command="{Binding Path=ShareCommand}" 
-                        IsVisible="{Binding Path=HasQrCode}" Margin="{StaticResource DefaultBottomOnlyMargin}"/>
+                        IsVisible="{Binding Path=HasQrCode}" Margin="{StaticResource SmallBottomMargins}"/>
 					</VerticalStackLayout>
 				</Frame>
 			</VerticalStackLayout>

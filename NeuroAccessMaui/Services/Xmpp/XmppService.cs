@@ -1238,7 +1238,10 @@ namespace NeuroAccessMaui.Services.Xmpp
 			}
 
 			if ((RemoteIdentity is not null) && (RemoteIdentity.Attachments is not null))
-				(PhotoUrl, PhotoWidth, PhotoHeight) = await PhotosLoader.LoadPhotoAsTemporaryFile(RemoteIdentity.Attachments, 300, 300);
+			{
+				(PhotoUrl, PhotoWidth, PhotoHeight) = await PhotosLoader.LoadPhotoAsTemporaryFile(RemoteIdentity.Attachments,
+					Constants.QrCode.DefaultImageWidth, Constants.QrCode.DefaultImageHeight);
+			}
 
 			SubscriptionRequestViewModel SubscriptionRequestViewModel = new(e.FromBareJID, FriendlyName, PhotoUrl, PhotoWidth, PhotoHeight);
 			SubscriptionRequestPopup SubscriptionRequestPopup = new(SubscriptionRequestViewModel);
@@ -1635,8 +1638,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 			MainThread.BeginInvokeOnMainThread(async () =>
 			{
-				if ((ServiceRef.NavigationService.CurrentPage is ChatPage || ServiceRef.NavigationService.CurrentPage is ChatPageIos) &&
-					ServiceRef.NavigationService.CurrentPage.BindingContext is ChatViewModel ChatViewModel &&
+				if ((ServiceRef.UiService.CurrentPage is ChatPage || ServiceRef.UiService.CurrentPage is ChatPageIos) &&
+					ServiceRef.UiService.CurrentPage.BindingContext is ChatViewModel ChatViewModel &&
 					string.Equals(ChatViewModel.BareJid, RemoteBareJid, StringComparison.OrdinalIgnoreCase))
 				{
 					if (string.IsNullOrEmpty(ReplaceObjectId))
@@ -1683,7 +1686,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				{
 					case "NONE":
 					default:
-						await ServiceRef.UiSerializer.DisplayAlert(
+						await ServiceRef.UiService.DisplayAlert(
 							ServiceRef.Localizer[nameof(AppResources.Information)], Message,
 							ServiceRef.Localizer[nameof(AppResources.Ok)]);
 						break;
@@ -1691,7 +1694,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 					case "CLIENT":
 					case "SERVER":
 					case "SERVICE":
-						await ServiceRef.UiSerializer.DisplayAlert(
+						await ServiceRef.UiService.DisplayAlert(
 							ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], Message,
 							ServiceRef.Localizer[nameof(AppResources.Ok)]);
 						break;
@@ -2688,7 +2691,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -2706,7 +2709,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -2725,7 +2728,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -2974,7 +2977,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -2993,7 +2996,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -3049,7 +3052,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -3174,7 +3177,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -3193,7 +3196,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -3293,7 +3296,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -3312,7 +3315,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -4825,11 +4828,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <returns>String-representation of XAML of report.</returns>
 		public async Task<string> GenerateNeuroFeatureStateDiagramReport(string TokenId)
 		{
-			ReportEventArgs e = await this.NeuroFeaturesClient.GenerateStateDiagramAsync(TokenId, ReportFormat.XamarinXaml);
+			ReportEventArgs e = await this.NeuroFeaturesClient.GenerateStateDiagramAsync(TokenId, ReportFormat.Markdown);
 			if (!e.Ok)
 				throw e.StanzaError ?? new Exception(ServiceRef.Localizer[nameof(AppResources.UnableToGetStateDiagram)]);
 
-			return e.ReportText;
+			return await e.ReportText.MarkdownToXaml();
 		}
 
 		/// <summary>
@@ -4838,11 +4841,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <returns>String-representation of XAML of report.</returns>
 		public async Task<string> GenerateNeuroFeatureProfilingReport(string TokenId)
 		{
-			ReportEventArgs e = await this.NeuroFeaturesClient.GenerateProfilingReportAsync(TokenId, ReportFormat.XamarinXaml);
+			ReportEventArgs e = await this.NeuroFeaturesClient.GenerateProfilingReportAsync(TokenId, ReportFormat.Markdown);
 			if (!e.Ok)
 				throw e.StanzaError ?? new Exception(ServiceRef.Localizer[nameof(AppResources.UnableToGetProfiling)]);
 
-			return e.ReportText;
+			return await e.ReportText.MarkdownToXaml();
 		}
 
 		/// <summary>
@@ -4851,11 +4854,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <returns>String-representation of XAML of report.</returns>
 		public async Task<string> GenerateNeuroFeaturePresentReport(string TokenId)
 		{
-			ReportEventArgs e = await this.NeuroFeaturesClient.GeneratePresentReportAsync(TokenId, ReportFormat.XamarinXaml);
+			ReportEventArgs e = await this.NeuroFeaturesClient.GeneratePresentReportAsync(TokenId, ReportFormat.Markdown);
 			if (!e.Ok)
 				throw e.StanzaError ?? new Exception(ServiceRef.Localizer[nameof(AppResources.UnableToGetPresent)]);
 
-			return e.ReportText;
+			return await e.ReportText.MarkdownToXaml();
 		}
 
 		/// <summary>
@@ -4864,11 +4867,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <returns>String-representation of XAML of report.</returns>
 		public async Task<string> GenerateNeuroFeatureHistoryReport(string TokenId)
 		{
-			ReportEventArgs e = await this.NeuroFeaturesClient.GenerateHistoryReportAsync(TokenId, ReportFormat.XamarinXaml);
+			ReportEventArgs e = await this.NeuroFeaturesClient.GenerateHistoryReportAsync(TokenId, ReportFormat.Markdown);
 			if (!e.Ok)
 				throw e.StanzaError ?? new Exception(ServiceRef.Localizer[nameof(AppResources.UnableToGetHistory)]);
 
-			return e.ReportText;
+			return await e.ReportText.MarkdownToXaml();
 		}
 
 		/// <summary>

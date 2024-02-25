@@ -1,5 +1,4 @@
 ﻿using NeuroAccessMaui.UI.Pages.Wallet.TokenEvents.Events;
-using NeuroAccessMaui.Services.Navigation;
 using NeuroFeatures.Events;
 using System.Text;
 using System.Windows.Input;
@@ -9,6 +8,7 @@ using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services.UI;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 {
@@ -204,7 +204,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 		public static async Task CopyToClipboard(string Text)
 		{
 			await Clipboard.SetTextAsync(Text);
-			await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+			await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
 				ServiceRef.Localizer[nameof(AppResources.NoteCopiedToClipboard)]);
 		}
 
@@ -225,11 +225,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 					await App.OpenUrlAsync(e.GetUrl);
 				}
 				else
-					await ServiceRef.UiSerializer.DisplayException(e.StanzaError ?? new Exception(e.ErrorText));
+					await ServiceRef.UiService.DisplayException(e.StanzaError ?? new Exception(e.ErrorText));
 			}
 			catch (Exception ex)
 			{
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -258,7 +258,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 						ContactInfo Contact = await ContactInfo.FindByBareJid(Source);
 						ChatNavigationArgs Args = new(Contact?.LegalId, Contact?.BareJid ?? Source, Contact?.FriendlyName ?? Source);
 
-						await ServiceRef.NavigationService.GoToAsync(nameof(ChatPage), Args, BackMethod.Inherited, Contact?.BareJid ?? Source);
+						await ServiceRef.UiService.GoToAsync(nameof(ChatPage), Args, BackMethod.Inherited, Contact?.BareJid ?? Source);
 						return;
 					}
 				}
@@ -267,7 +267,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 			}
 			catch (Exception ex)
 			{
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 	}

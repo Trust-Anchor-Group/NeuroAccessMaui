@@ -114,7 +114,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 			if (ServiceRef.TagProfile.TestOtpTimestamp is not null)
 			{
-				ServiceRef.UiSerializer.DisplayAlert(
+				ServiceRef.UiService.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.WarningTitle)],
 					ServiceRef.Localizer[nameof(AppResources.TestOtpUsed)],
 					ServiceRef.Localizer[nameof(AppResources.Ok)]);

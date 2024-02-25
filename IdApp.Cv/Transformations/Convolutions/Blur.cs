@@ -37,12 +37,12 @@ namespace IdApp.Cv.Transformations.Convolutions
 			return M.Convolute(blurKernel_3x3);
 		}
 
-		private static readonly Matrix<int> blurKernel_3x3 = new Matrix<int>(3, 3, new int[]
-		{
+		private static readonly Matrix<int> blurKernel_3x3 = new(3, 3,
+		[
 			 1,  1,  1,
 			 1,  1,  1,
 			 1,  1,  1
-		});
+		]);
 
 		/// <summary>
 		/// Blurs an image.
@@ -52,7 +52,7 @@ namespace IdApp.Cv.Transformations.Convolutions
 		/// <returns>Blurred image.</returns>
 		public static IMatrix Blur(this IMatrix M, int KernelWidth)
 		{
-			Matrix<int> Kernel = new Matrix<int>(KernelWidth, KernelWidth);
+			Matrix<int> Kernel = new(KernelWidth, KernelWidth);
 			Kernel.Fill(1);
 			return M.Convolute(Kernel);
 		}

@@ -104,7 +104,7 @@ namespace NeuroAccessMaui.Services.Notification.Contracts
 
 			if (Contract is not null)
 			{
-				await ServiceRef.NavigationService.GoToAsync(nameof(PetitionContractPage),
+				await ServiceRef.UiService.GoToAsync(nameof(PetitionContractPage),
 					new PetitionContractNavigationArgs(this.Identity, this.RequestorFullJid, Contract, this.PetitionId, this.Purpose));
 			}
 		}

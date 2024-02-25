@@ -108,7 +108,7 @@ namespace NeuroAccessMaui.Services.Network
 
 					if (displayAlert)
 					{
-						await ServiceRef.UiSerializer.DisplayAlert(
+						await ServiceRef.UiService.DisplayAlert(
 							ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 							ServiceRef.Localizer[nameof(AppResources.ThereIsNoNetwork)]);
 					}
@@ -129,7 +129,7 @@ namespace NeuroAccessMaui.Services.Network
 
 					if (displayAlert)
 					{
-						await ServiceRef.UiSerializer.DisplayAlert(
+						await ServiceRef.UiService.DisplayAlert(
 							ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 							ServiceRef.Localizer[nameof(AppResources.RequestTimedOut)]);
 					}
@@ -140,7 +140,7 @@ namespace NeuroAccessMaui.Services.Network
 
 					if (displayAlert)
 					{
-						await ServiceRef.UiSerializer.DisplayAlert(
+						await ServiceRef.UiService.DisplayAlert(
 							ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 							ServiceRef.Localizer[nameof(AppResources.RequestWasCancelled)]);
 					}
@@ -151,7 +151,7 @@ namespace NeuroAccessMaui.Services.Network
 
 					if (displayAlert)
 					{
-						await ServiceRef.UiSerializer.DisplayAlert(
+						await ServiceRef.UiService.DisplayAlert(
 							ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 							ae.InnerException.Message);
 					}
@@ -162,7 +162,7 @@ namespace NeuroAccessMaui.Services.Network
 
 					if (displayAlert)
 					{
-						await ServiceRef.UiSerializer.DisplayAlert(
+						await ServiceRef.UiService.DisplayAlert(
 							ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 							ae.Message);
 					}
@@ -175,7 +175,7 @@ namespace NeuroAccessMaui.Services.Network
 
 				if (displayAlert)
 				{
-					await ServiceRef.UiSerializer.DisplayAlert(
+					await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						ServiceRef.Localizer[nameof(AppResources.RequestTimedOut)]);
 				}
@@ -187,7 +187,7 @@ namespace NeuroAccessMaui.Services.Network
 
 				if (displayAlert)
 				{
-					await ServiceRef.UiSerializer.DisplayAlert(
+					await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						ServiceRef.Localizer[nameof(AppResources.RequestWasCancelled)]);
 				}
@@ -207,7 +207,7 @@ namespace NeuroAccessMaui.Services.Network
 
 				if (displayAlert)
 				{
-					await ServiceRef.UiSerializer.DisplayAlert(
+					await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						message);
 				}

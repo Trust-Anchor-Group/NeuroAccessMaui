@@ -58,7 +58,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 					(Purpose == PurposeInfo.Purpose))
 				{
 					ShowInfoPopup Page = new(PurposeInfo.LocalizedName, PurposeInfo.LocalizedDescription);
-					await ServiceRef.PopupService.PushAsync(Page);
+					await ServiceRef.UiService.PushAsync(Page);
 					break;
 				}
 			}

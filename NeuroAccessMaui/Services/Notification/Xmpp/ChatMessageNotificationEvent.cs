@@ -1,5 +1,5 @@
 ﻿using NeuroAccessMaui.Services.Contacts;
-using NeuroAccessMaui.Services.Navigation;
+using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using Waher.Networking.XMPP;
 
@@ -72,7 +72,7 @@ namespace NeuroAccessMaui.Services.Notification.Xmpp
 			string FriendlyName = await this.GetDescription();
 			ChatNavigationArgs Args = new(LegalId, this.BareJid, FriendlyName);
 
-			await ServiceRef.NavigationService.GoToAsync(nameof(ChatPage), Args, BackMethod.Inherited, this.BareJid);
+			await ServiceRef.UiService.GoToAsync(nameof(ChatPage), Args, BackMethod.Inherited, this.BareJid);
 		}
 	}
 }

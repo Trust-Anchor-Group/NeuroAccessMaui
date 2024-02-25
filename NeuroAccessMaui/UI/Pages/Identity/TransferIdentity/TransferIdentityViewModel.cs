@@ -27,7 +27,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.TransferIdentity
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.NavigationService.TryGetArgs(out TransferIdentityNavigationArgs? Args))
+			if (ServiceRef.UiService.TryGetArgs(out TransferIdentityNavigationArgs? Args))
 				this.Uri = Args.Uri;
 
 			if (this.Uri is not null)
@@ -47,7 +47,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.TransferIdentity
 
 			MainThread.BeginInvokeOnMainThread(async () =>
 			{
-				await ServiceRef.NavigationService.GoBackAsync();
+				await ServiceRef.UiService.GoBackAsync();
 			});
 		}
 
@@ -75,7 +75,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.TransferIdentity
 		{
 			await Clipboard.SetTextAsync(this.Uri);
 
-			await ServiceRef.UiSerializer.DisplayAlert(
+			await ServiceRef.UiService.DisplayAlert(
 				ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
 				ServiceRef.Localizer[nameof(AppResources.TagValueCopiedToClipboard)]);
 		}

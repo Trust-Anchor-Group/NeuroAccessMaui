@@ -42,7 +42,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.NavigationService.TryGetArgs(out CanReadNavigationArgs? args))
+			if (ServiceRef.UiService.TryGetArgs(out CanReadNavigationArgs? args))
 			{
 				this.@event = args.Event;
 				this.BareJid = args.BareJid;
@@ -532,12 +532,12 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 
 				MainThread.BeginInvokeOnMainThread(async () =>
 				{
-					await ServiceRef.NavigationService.GoBackAsync();
+					await ServiceRef.UiService.GoBackAsync();
 				});
 			}
 			else
 			{
-				MainThread.BeginInvokeOnMainThread(async () => await ServiceRef.UiSerializer.DisplayException(e.StanzaError ??
+				MainThread.BeginInvokeOnMainThread(async () => await ServiceRef.UiService.DisplayException(e.StanzaError ??
 					new Exception(ServiceRef.Localizer[nameof(AppResources.UnableToRespond)])));
 			}
 		}
@@ -551,7 +551,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 			if (this.@event is not null)
 				await ServiceRef.NotificationService.DeleteEvents(this.@event);
 
-			await ServiceRef.NavigationService.GoBackAsync();
+			await ServiceRef.UiService.GoBackAsync();
 		}
 
 		/// <summary>

@@ -29,7 +29,7 @@ namespace NeuroAccessMaui.Links
 		/// <inheritdoc/>
 		public async Task<bool> TryOpenLink(Uri Link)
 		{
-			await ServiceRef.UiSerializer.DisplayAlert(
+			await ServiceRef.UiService.DisplayAlert(
 				ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 				ServiceRef.Localizer[nameof(AppResources.ThisCodeCannotBeClaimedAtThisTime)]);
 

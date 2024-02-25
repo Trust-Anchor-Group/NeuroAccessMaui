@@ -135,7 +135,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.ChangePin
 
 						if (!await ServiceRef.XmppService.ChangePassword(NewPassword))
 						{
-							await ServiceRef.UiSerializer.DisplayAlert(
+							await ServiceRef.UiService.DisplayAlert(
 								ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 								ServiceRef.Localizer[nameof(AppResources.UnableToChangePassword)]);
 							return;
@@ -144,16 +144,16 @@ namespace NeuroAccessMaui.UI.Pages.Main.ChangePin
 						ServiceRef.TagProfile.Pin = this.NewPin;
 						ServiceRef.TagProfile.SetAccount(ServiceRef.TagProfile.Account!, NewPassword, string.Empty);
 
-						await ServiceRef.UiSerializer.DisplayAlert(
+						await ServiceRef.UiService.DisplayAlert(
 							ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
 							ServiceRef.Localizer[nameof(AppResources.PinChanged)]);
 
-						await ServiceRef.NavigationService.GoBackAsync();
+						await ServiceRef.UiService.GoBackAsync();
 					}
 					catch (Exception ex)
 					{
 						ServiceRef.LogService.LogException(ex);
-						await ServiceRef.UiSerializer.DisplayException(ex);
+						await ServiceRef.UiService.DisplayException(ex);
 					}
 				}
 				else
@@ -163,7 +163,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.ChangePin
 					long PinAttemptCounter = await App.GetCurrentPinCounter();
 					long RemainingAttempts = Math.Max(0, Constants.Pin.FirstMaxPinAttempts - PinAttemptCounter);
 
-					await ServiceRef.UiSerializer.DisplayAlert(
+					await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						ServiceRef.Localizer[nameof(AppResources.PinIsInvalid), RemainingAttempts]);
 

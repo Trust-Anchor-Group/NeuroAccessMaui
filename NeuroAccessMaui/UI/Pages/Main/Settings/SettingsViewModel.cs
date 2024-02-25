@@ -184,7 +184,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 								// with a stylable FlyoutForegroundColor, which does not exist in the currently used version.
 
 								this.RestartNeeded = true;
-								await ServiceRef.UiSerializer.DisplayAlert(
+								await ServiceRef.UiService.DisplayAlert(
 									ServiceRef.Localizer[nameof(AppResources.Message)],
 									ServiceRef.Localizer[nameof(AppResources.RestartNeededDueToThemeChange)],
 									ServiceRef.Localizer[nameof(AppResources.Ok)]);
@@ -263,12 +263,12 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			try
 			{
 				await App.CheckUserBlocking();
-				await ServiceRef.NavigationService.GoToAsync(nameof(ChangePinPage));
+				await ServiceRef.UiService.GoToAsync(nameof(ChangePinPage));
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -300,7 +300,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			if (this.RestartNeeded)
 				await App.Stop();
 			else
-				await ServiceRef.NavigationService.GoBackAsync();
+				await ServiceRef.UiService.GoBackAsync();
 		}
 
 		[RelayCommand(CanExecute = nameof(CanExecuteCommands))]
@@ -329,7 +329,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -359,7 +359,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
@@ -375,7 +375,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 				if (Pin is null)
 					return;
 
-				if (!await ServiceRef.UiSerializer.DisplayAlert(
+				if (!await ServiceRef.UiService.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.Confirm)],
 					ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToTransferYourLegalIdentity)],
 					ServiceRef.Localizer[nameof(AppResources.Yes)],
@@ -454,12 +454,12 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 								Convert.ToBase64String(Key) + ":" + Convert.ToBase64String(IV);
 
 							await ServiceRef.XmppService.AddTransferCode(Code);
-							await ServiceRef.NavigationService.GoToAsync(nameof(TransferIdentityPage), new TransferIdentityNavigationArgs(Url));
+							await ServiceRef.UiService.GoToAsync(nameof(TransferIdentityPage), new TransferIdentityNavigationArgs(Url));
 							return;
 						}
 					}
 
-					await ServiceRef.UiSerializer.DisplayAlert(
+					await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						ServiceRef.Localizer[nameof(AppResources.UnexpectedResponse)]);
 				}
@@ -471,14 +471,14 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 
 		[RelayCommand]
 		private static async Task ChangeLanguage()
 		{
-			await ServiceRef.PopupService.PushAsync<SelectLanguagePopup>();
+			await ServiceRef.UiService.PushAsync<SelectLanguagePopup>();
 		}
 
 		#endregion

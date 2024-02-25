@@ -40,7 +40,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.NavigationService.TryGetArgs(out ViewThingNavigationArgs? args) && args.Thing is not null)
+			if (ServiceRef.UiService.TryGetArgs(out ViewThingNavigationArgs? args) && args.Thing is not null)
 			{
 				this.thing = args.Thing;
 

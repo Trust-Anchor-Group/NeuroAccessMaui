@@ -1,4 +1,4 @@
-﻿namespace NeuroAccessMaui.Services.Navigation
+﻿namespace NeuroAccessMaui.Services.UI
 {
 	/// <summary>
 	/// An base class holding page specific navigation parameters.
@@ -20,7 +20,7 @@
 		}
 
 		/// <summary>
-		/// Get the route used for the <see cref="INavigationService.GoBackAsync"/> method.
+		/// Get the route used for the <see cref="IUiService.GoBackAsync"/> method.
 		/// </summary>
 		public string GetBackRoute()
 		{
@@ -30,7 +30,7 @@
 
 			if (BackMethod == BackMethod.Inherited)
 			{
-				while ((ParentArgs is not null) && (ParentArgs.backMethod == BackMethod.Inherited))
+				while (ParentArgs is not null && ParentArgs.backMethod == BackMethod.Inherited)
 				{
 					ParentArgs = ParentArgs.parentArgs;
 					BackRoute += "/..";

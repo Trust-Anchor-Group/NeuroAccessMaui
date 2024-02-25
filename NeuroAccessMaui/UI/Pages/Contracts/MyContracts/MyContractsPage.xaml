@@ -18,8 +18,7 @@
 		</DataTemplate>
 
 		<DataTemplate x:Key="HeaderModelTemplate" x:DataType="objectmodel:HeaderModel">
-			<Grid ColumnDefinitions="*,auto" RowDefinitions="auto" Padding="5,5,5,5"
-				  BackgroundColor="{StaticResource HeadingBackground}">
+			<Grid ColumnDefinitions="*,auto" RowDefinitions="auto" Padding="5,5,5,5" BackgroundColor="{StaticResource HeadingBackground}">
 				<Label Grid.Column="0" Grid.Row="0" HorizontalOptions="Start" VerticalOptions="Center"
 					   LineBreakMode="CharacterWrap" TextType="Text">
 					<Label.FormattedText>

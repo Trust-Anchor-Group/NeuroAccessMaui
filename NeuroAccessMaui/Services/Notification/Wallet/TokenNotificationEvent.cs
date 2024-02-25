@@ -1,10 +1,10 @@
-﻿using NeuroAccessMaui.Services.Navigation;
-using NeuroAccessMaui.UI.Pages.Wallet.TokenDetails;
+﻿using NeuroAccessMaui.UI.Pages.Wallet.TokenDetails;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels;
 using NeuroFeatures;
 using System.Text;
 using System.Xml;
 using Waher.Persistence.Attributes;
+using NeuroAccessMaui.Services.UI;
 
 namespace NeuroAccessMaui.Services.Notification.Wallet
 {
@@ -149,7 +149,7 @@ namespace NeuroAccessMaui.Services.Notification.Wallet
 
 			TokenDetailsNavigationArgs Args = new(new TokenItem(this.Token, Events));
 
-			await ServiceRef.NavigationService.GoToAsync(nameof(TokenDetailsPage), Args, BackMethod.Pop);
+			await ServiceRef.UiService.GoToAsync(nameof(TokenDetailsPage), Args, BackMethod.Pop);
 		}
 	}
 }

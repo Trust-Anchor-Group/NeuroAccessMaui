@@ -1,4 +1,4 @@
-﻿namespace NeuroAccessMaui.Services.Navigation
+﻿namespace NeuroAccessMaui.Services.UI
 {
 	/// <summary>
 	/// Navigation Back Method

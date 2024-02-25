@@ -29,7 +29,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.NavigationService.TryGetArgs(out TokenEventsNavigationArgs? args))
+			if (ServiceRef.UiService.TryGetArgs(out TokenEventsNavigationArgs? args))
 			{
 				this.TokenId = args.TokenId;
 
@@ -123,7 +123,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiSerializer.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 

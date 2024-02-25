@@ -96,7 +96,7 @@ namespace NeuroAccessMaui.Services.Crypto
 				catch(Exception ex)
 				{
 					ServiceRef.LogService.LogException(ex);
-					await ServiceRef.UiSerializer.DisplayException(ex);
+					await ServiceRef.UiService.DisplayException(ex);
 				}
 			}
 
