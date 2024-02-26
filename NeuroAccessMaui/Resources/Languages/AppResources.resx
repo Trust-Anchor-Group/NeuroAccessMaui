@@ -1842,6 +1842,36 @@
   <data name="AddContact" xml:space="preserve">
     <value>Add Contact</value>
   </data>
+  <data name="ClientSignatures" xml:space="preserve">
+    <value>Client Signatures</value>
+  </data>
+  <data name="ClientSignaturesInfoText" xml:space="preserve">
+    <value>Cryptographic signatures made by different parts are listed below.</value>
+  </data>
+  <data name="DeleteContract" xml:space="preserve">
+    <value>Delete contract</value>
+  </data>
+  <data name="GeneralInformationInfoText" xml:space="preserve">
+    <value>Following is some general information about the contract.</value>
+  </data>
+  <data name="HumanReadableText" xml:space="preserve">
+    <value>Human readable text</value>
+  </data>
+  <data name="MachineReadableText" xml:space="preserve">
+    <value>Machine readable information</value>
+  </data>
+  <data name="ObsoleteContract" xml:space="preserve">
+    <value>Obsolete contract</value>
+  </data>
+  <data name="ParametersInfoText" xml:space="preserve">
+    <value>Contract parameters are shown below, together with their corresponding values.</value>
+  </data>
+  <data name="Parts" xml:space="preserve">
+    <value>Parts</value>
+  </data>
+  <data name="PartsInfoText" xml:space="preserve">
+    <value>The (expected) parts defined for the contract is listed below.</value>
+  </data>
   <data name="PartsInTheContract" xml:space="preserve">
     <value>Parts in the contract</value>
   </data>
@@ -1862,5 +1892,23 @@
   </data>
   <data name="RemoveContact" xml:space="preserve">
     <value>Remove Contact</value>
+  </data>
+  <data name="Roles" xml:space="preserve">
+    <value>Roles</value>
+  </data>
+  <data name="RolesInfoText" xml:space="preserve">
+    <value>Below you can see the different roles defined for the contract. If more than one part is assumed for a role, this number will be shown in the description of the role.</value>
+  </data>
+  <data name="ServerSignatures" xml:space="preserve">
+    <value>Server Signatures</value>
+  </data>
+  <data name="ServerSignaturesInfoText" xml:space="preserve">
+    <value>The integrity of the contract is protected by the server signature shown below.</value>
+  </data>
+  <data name="ShowDetails" xml:space="preserve">
+    <value>Show Details</value>
+  </data>
+  <data name="ViewContract" xml:space="preserve">
+    <value>View Contract</value>
   </data>
 </root>

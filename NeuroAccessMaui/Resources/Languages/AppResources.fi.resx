@@ -1842,6 +1842,36 @@
   <data name="AddContact" xml:space="preserve">
     <value>Lisää yhteystieto</value>
   </data>
+  <data name="ClientSignatures" xml:space="preserve">
+    <value>Asiakkaan allekirjoitukset</value>
+  </data>
+  <data name="ClientSignaturesInfoText" xml:space="preserve">
+    <value>Eri osien tekemät salausallekirjoitukset on lueteltu alla.</value>
+  </data>
+  <data name="DeleteContract" xml:space="preserve">
+    <value>Poista sopimus</value>
+  </data>
+  <data name="GeneralInformationInfoText" xml:space="preserve">
+    <value>Seuraavassa on joitain yleisiä tietoja sopimuksesta.</value>
+  </data>
+  <data name="HumanReadableText" xml:space="preserve">
+    <value>Ihmisen luettavissa oleva teksti</value>
+  </data>
+  <data name="MachineReadableText" xml:space="preserve">
+    <value>Koneluettavat tiedot</value>
+  </data>
+  <data name="ObsoleteContract" xml:space="preserve">
+    <value>Vanhentunut sopimus</value>
+  </data>
+  <data name="ParametersInfoText" xml:space="preserve">
+    <value>Sopimusparametrit ja niitä vastaavat arvot on esitetty alla.</value>
+  </data>
+  <data name="Parts" xml:space="preserve">
+    <value>Paikka</value>
+  </data>
+  <data name="PartsInfoText" xml:space="preserve">
+    <value>Sopimukselle määritellyt (odotetut) osat on lueteltu alla.</value>
+  </data>
   <data name="PartsInTheContract" xml:space="preserve">
     <value>Sopimuksen osat</value>
   </data>
@@ -1862,5 +1892,23 @@
   </data>
   <data name="RemoveContact" xml:space="preserve">
     <value>Poista yhteystieto</value>
+  </data>
+  <data name="Roles" xml:space="preserve">
+    <value>Roolit</value>
+  </data>
+  <data name="RolesInfoText" xml:space="preserve">
+    <value>Alla näet sopimukselle määritetyt eri roolit. Jos roolille oletetaan useampi kuin yksi osa, tämä numero näkyy roolin kuvauksessa.</value>
+  </data>
+  <data name="ServerSignatures" xml:space="preserve">
+    <value>Palvelimen allekirjoitukset</value>
+  </data>
+  <data name="ServerSignaturesInfoText" xml:space="preserve">
+    <value>Sopimuksen eheys on suojattu alla esitetyllä palvelimen allekirjoituksella.</value>
+  </data>
+  <data name="ShowDetails" xml:space="preserve">
+    <value>Näytä tiedot</value>
+  </data>
+  <data name="ViewContract" xml:space="preserve">
+    <value>Näytä sopimus</value>
   </data>
 </root>

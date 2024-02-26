@@ -1842,6 +1842,36 @@
   <data name="AddContact" xml:space="preserve">
     <value>Tilføj kontakt</value>
   </data>
+  <data name="ClientSignatures" xml:space="preserve">
+    <value>Klientens underskrifter</value>
+  </data>
+  <data name="ClientSignaturesInfoText" xml:space="preserve">
+    <value>Kryptografiske signaturer lavet af forskellige dele er angivet nedenfor.</value>
+  </data>
+  <data name="DeleteContract" xml:space="preserve">
+    <value>Slet kontrakt</value>
+  </data>
+  <data name="GeneralInformationInfoText" xml:space="preserve">
+    <value>Følgende er nogle generelle oplysninger om kontrakten.</value>
+  </data>
+  <data name="HumanReadableText" xml:space="preserve">
+    <value>Læsbar tekst for mennesker</value>
+  </data>
+  <data name="MachineReadableText" xml:space="preserve">
+    <value>Maskinlæsbare oplysninger</value>
+  </data>
+  <data name="ObsoleteContract" xml:space="preserve">
+    <value>Forældet kontrakt</value>
+  </data>
+  <data name="ParametersInfoText" xml:space="preserve">
+    <value>Kontraktparametre er vist nedenfor sammen med deres tilsvarende værdier.</value>
+  </data>
+  <data name="Parts" xml:space="preserve">
+    <value>Dele</value>
+  </data>
+  <data name="PartsInfoText" xml:space="preserve">
+    <value>De (forventede) dele, der er defineret for kontrakten, er angivet nedenfor.</value>
+  </data>
   <data name="PartsInTheContract" xml:space="preserve">
     <value>Dele i kontrakten</value>
   </data>
@@ -1862,5 +1892,23 @@
   </data>
   <data name="RemoveContact" xml:space="preserve">
     <value>Fjern kontakt</value>
+  </data>
+  <data name="Roles" xml:space="preserve">
+    <value>Roller</value>
+  </data>
+  <data name="RolesInfoText" xml:space="preserve">
+    <value>Nedenfor kan du se de forskellige roller, der er defineret for kontrakten. Hvis der antages mere end én del for en rolle, vises dette nummer i beskrivelsen af rollen.</value>
+  </data>
+  <data name="ServerSignatures" xml:space="preserve">
+    <value>Server signaturer</value>
+  </data>
+  <data name="ServerSignaturesInfoText" xml:space="preserve">
+    <value>Kontraktens integritet er beskyttet af serversignaturen vist nedenfor.</value>
+  </data>
+  <data name="ShowDetails" xml:space="preserve">
+    <value>Vis detaljer</value>
+  </data>
+  <data name="ViewContract" xml:space="preserve">
+    <value>Se kontrakt</value>
   </data>
 </root>

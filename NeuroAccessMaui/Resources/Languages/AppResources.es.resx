@@ -1842,6 +1842,36 @@
   <data name="AddContact" xml:space="preserve">
     <value>Agregar contacto</value>
   </data>
+  <data name="ClientSignatures" xml:space="preserve">
+    <value>Firmas de clientes</value>
+  </data>
+  <data name="ClientSignaturesInfoText" xml:space="preserve">
+    <value>A continuación se enumeran las firmas criptográficas realizadas por diferentes partes.</value>
+  </data>
+  <data name="DeleteContract" xml:space="preserve">
+    <value>Eliminar contrato</value>
+  </data>
+  <data name="GeneralInformationInfoText" xml:space="preserve">
+    <value>A continuación se presenta información general sobre el contrato.</value>
+  </data>
+  <data name="HumanReadableText" xml:space="preserve">
+    <value>Texto legible por humanos</value>
+  </data>
+  <data name="MachineReadableText" xml:space="preserve">
+    <value>Información legible por máquina</value>
+  </data>
+  <data name="ObsoleteContract" xml:space="preserve">
+    <value>Contrato obsoleto</value>
+  </data>
+  <data name="ParametersInfoText" xml:space="preserve">
+    <value>A continuación se muestran los parámetros del contrato, junto con sus valores correspondientes.</value>
+  </data>
+  <data name="Parts" xml:space="preserve">
+    <value>Partes</value>
+  </data>
+  <data name="PartsInfoText" xml:space="preserve">
+    <value>A continuación se enumeran las partes (esperadas) definidas para el contrato.</value>
+  </data>
   <data name="PartsInTheContract" xml:space="preserve">
     <value>Partes en el contrato</value>
   </data>
@@ -1862,5 +1892,23 @@
   </data>
   <data name="RemoveContact" xml:space="preserve">
     <value>Eliminar contacto</value>
+  </data>
+  <data name="Roles" xml:space="preserve">
+    <value>Papeles</value>
+  </data>
+  <data name="RolesInfoText" xml:space="preserve">
+    <value>A continuación puedes ver los diferentes roles definidos para el contrato. Si se asume más de una parte para un rol, este número se mostrará en la descripción del rol.</value>
+  </data>
+  <data name="ServerSignatures" xml:space="preserve">
+    <value>Firmas de servidor</value>
+  </data>
+  <data name="ServerSignaturesInfoText" xml:space="preserve">
+    <value>La integridad del contrato está protegida por la firma del servidor que se muestra a continuación.</value>
+  </data>
+  <data name="ShowDetails" xml:space="preserve">
+    <value>Mostrar detalles</value>
+  </data>
+  <data name="ViewContract" xml:space="preserve">
+    <value>Ver Contrato</value>
   </data>
 </root>

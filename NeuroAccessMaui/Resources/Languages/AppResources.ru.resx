@@ -1842,6 +1842,36 @@
   <data name="AddContact" xml:space="preserve">
     <value>Добавить контакт</value>
   </data>
+  <data name="ClientSignatures" xml:space="preserve">
+    <value>Подписи клиентов</value>
+  </data>
+  <data name="ClientSignaturesInfoText" xml:space="preserve">
+    <value>Ниже перечислены криптографические подписи, сделанные различными частями.</value>
+  </data>
+  <data name="DeleteContract" xml:space="preserve">
+    <value>Удалить контракт</value>
+  </data>
+  <data name="GeneralInformationInfoText" xml:space="preserve">
+    <value>Ниже приведена некоторая общая информация о контракте.</value>
+  </data>
+  <data name="HumanReadableText" xml:space="preserve">
+    <value>Удобочитаемый текст</value>
+  </data>
+  <data name="MachineReadableText" xml:space="preserve">
+    <value>Машиночитаемая информация</value>
+  </data>
+  <data name="ObsoleteContract" xml:space="preserve">
+    <value>Устаревший контракт</value>
+  </data>
+  <data name="ParametersInfoText" xml:space="preserve">
+    <value>Ниже приведены параметры контракта вместе с соответствующими значениями.</value>
+  </data>
+  <data name="Parts" xml:space="preserve">
+    <value>Комплектующие</value>
+  </data>
+  <data name="PartsInfoText" xml:space="preserve">
+    <value>Ниже перечислены (ожидаемые) части, определенные для контракта.</value>
+  </data>
   <data name="PartsInTheContract" xml:space="preserve">
     <value>Детали в договоре</value>
   </data>
@@ -1862,5 +1892,23 @@
   </data>
   <data name="RemoveContact" xml:space="preserve">
     <value>Удалить контакт</value>
+  </data>
+  <data name="Roles" xml:space="preserve">
+    <value>Роли</value>
+  </data>
+  <data name="RolesInfoText" xml:space="preserve">
+    <value>Ниже вы можете увидеть различные роли, определенные для контракта. Если для роли предполагается более одной детали, это число будет показано в описании роли.</value>
+  </data>
+  <data name="ServerSignatures" xml:space="preserve">
+    <value>Сигнатуры сервера</value>
+  </data>
+  <data name="ServerSignaturesInfoText" xml:space="preserve">
+    <value>Целостность контракта защищена подписью сервера, показанной ниже.</value>
+  </data>
+  <data name="ShowDetails" xml:space="preserve">
+    <value>Показать подробности</value>
+  </data>
+  <data name="ViewContract" xml:space="preserve">
+    <value>Посмотреть контракт</value>
   </data>
 </root>

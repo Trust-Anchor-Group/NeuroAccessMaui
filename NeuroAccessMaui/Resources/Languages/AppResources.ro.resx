@@ -1842,6 +1842,36 @@
   <data name="AddContact" xml:space="preserve">
     <value>Adăugare contact</value>
   </data>
+  <data name="ClientSignatures" xml:space="preserve">
+    <value>Semnături client</value>
+  </data>
+  <data name="ClientSignaturesInfoText" xml:space="preserve">
+    <value>Semnăturile criptografice realizate de diferite părți sunt enumerate mai jos.</value>
+  </data>
+  <data name="DeleteContract" xml:space="preserve">
+    <value>Ștergeți contractul</value>
+  </data>
+  <data name="GeneralInformationInfoText" xml:space="preserve">
+    <value>Următoarele sunt câteva informații generale despre contract.</value>
+  </data>
+  <data name="HumanReadableText" xml:space="preserve">
+    <value>Text lizibil pentru om</value>
+  </data>
+  <data name="MachineReadableText" xml:space="preserve">
+    <value>Informații care pot fi citite automat</value>
+  </data>
+  <data name="ObsoleteContract" xml:space="preserve">
+    <value>Contract caduc</value>
+  </data>
+  <data name="ParametersInfoText" xml:space="preserve">
+    <value>Parametrii contractului sunt prezentați mai jos, împreună cu valorile corespunzătoare.</value>
+  </data>
+  <data name="Parts" xml:space="preserve">
+    <value>Părţi</value>
+  </data>
+  <data name="PartsInfoText" xml:space="preserve">
+    <value>Părțile (preconizate) definite pentru contract sunt enumerate mai jos.</value>
+  </data>
   <data name="PartsInTheContract" xml:space="preserve">
     <value>Părți în contract</value>
   </data>
@@ -1862,5 +1892,23 @@
   </data>
   <data name="RemoveContact" xml:space="preserve">
     <value>Eliminați contactul</value>
+  </data>
+  <data name="Roles" xml:space="preserve">
+    <value>Roluri</value>
+  </data>
+  <data name="RolesInfoText" xml:space="preserve">
+    <value>Mai jos puteți vedea diferitele roluri definite pentru contract. Dacă se presupune mai multe părți pentru un rol, acest număr va fi afișat în descrierea rolului.</value>
+  </data>
+  <data name="ServerSignatures" xml:space="preserve">
+    <value>Semnături server</value>
+  </data>
+  <data name="ServerSignaturesInfoText" xml:space="preserve">
+    <value>Integritatea contractului este protejată de semnătura serverului prezentată mai jos.</value>
+  </data>
+  <data name="ShowDetails" xml:space="preserve">
+    <value>Arată detalii</value>
+  </data>
+  <data name="ViewContract" xml:space="preserve">
+    <value>Vezi contractul</value>
   </data>
 </root>

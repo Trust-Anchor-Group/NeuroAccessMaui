@@ -1842,6 +1842,36 @@
   <data name="AddContact" xml:space="preserve">
     <value>Dodaj kontakt</value>
   </data>
+  <data name="ClientSignatures" xml:space="preserve">
+    <value>Potpisi klijenta</value>
+  </data>
+  <data name="ClientSignaturesInfoText" xml:space="preserve">
+    <value>U nastavku su navedeni šifrovani potpisi napravljeni različitim delovima.</value>
+  </data>
+  <data name="DeleteContract" xml:space="preserve">
+    <value>Izbriši ugovor</value>
+  </data>
+  <data name="GeneralInformationInfoText" xml:space="preserve">
+    <value>Slede neke opšte informacije o ugovoru.</value>
+  </data>
+  <data name="HumanReadableText" xml:space="preserve">
+    <value>Ljudski čitljiv tekst</value>
+  </data>
+  <data name="MachineReadableText" xml:space="preserve">
+    <value>Informacije o čitljivom računaru</value>
+  </data>
+  <data name="ObsoleteContract" xml:space="preserve">
+    <value>Zastareli ugovor</value>
+  </data>
+  <data name="ParametersInfoText" xml:space="preserve">
+    <value>Dole su prikazani parametri ugovora, zajedno sa odgovarajućim vrednostima.</value>
+  </data>
+  <data name="Parts" xml:space="preserve">
+    <value>Delove</value>
+  </data>
+  <data name="PartsInfoText" xml:space="preserve">
+    <value>Dole su navedeni (očekivani) delovi definisani za ugovor.</value>
+  </data>
   <data name="PartsInTheContract" xml:space="preserve">
     <value>Delovi ugovora</value>
   </data>
@@ -1862,5 +1892,23 @@
   </data>
   <data name="RemoveContact" xml:space="preserve">
     <value>Ukloni kontakt</value>
+  </data>
+  <data name="Roles" xml:space="preserve">
+    <value>Uloge</value>
+  </data>
+  <data name="RolesInfoText" xml:space="preserve">
+    <value>U nastavku možete videti različite uloge definisane za ugovor. Ako se za ulogu preuzme više od jednog dela, ovaj broj će biti prikazan u opisu uloge.</value>
+  </data>
+  <data name="ServerSignatures" xml:space="preserve">
+    <value>Potpisi servera</value>
+  </data>
+  <data name="ServerSignaturesInfoText" xml:space="preserve">
+    <value>Integritet ugovora je zaštićen potpisom servera prikazanim ispod.</value>
+  </data>
+  <data name="ShowDetails" xml:space="preserve">
+    <value>Prikaži detalje</value>
+  </data>
+  <data name="ViewContract" xml:space="preserve">
+    <value>Prikaži ugovor</value>
   </data>
 </root>
