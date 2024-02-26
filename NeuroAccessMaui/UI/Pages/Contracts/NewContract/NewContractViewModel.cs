@@ -509,7 +509,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 											Text = await ContactInfo.GetFriendlyName(LegalId),
 											StyleId = LegalId,
 											HorizontalTextAlignment = TextAlignment.Center,
-											FontAttributes = FontAttributes.Bold
+											FontAttributes = FontAttributes.Bold,
+											Margin = AppStyles.SmallBottomMargins,
+											Style = AppStyles.ClickableValueLabel
 										};
 
 										TapGestureRecognizer OpenLegalId = new();
