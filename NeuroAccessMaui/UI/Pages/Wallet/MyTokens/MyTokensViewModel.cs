@@ -148,6 +148,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 		/// <summary>
 		/// The command to bind to for returning to previous view.
 		/// </summary>
+		[RelayCommand]
 		private Task Back()
 		{
 			return this.GoBack();
