@@ -13,7 +13,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// </summary>
 		public NewContractPage()
 		{
-			this.ContentPageModel = new NewContractViewModel();
+			this.ContentPageModel = new NewContractViewModel(this);
 			this.InitializeComponent();
 		}
 

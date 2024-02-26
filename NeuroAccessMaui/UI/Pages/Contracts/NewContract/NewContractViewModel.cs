@@ -29,7 +29,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 	/// <summary>
 	/// The view model to bind to when displaying a new contract view or page.
 	/// </summary>
-	public partial class NewContractViewModel : BaseViewModel, ILinkableView
+	/// <remarks>
+	/// Creates an instance of the <see cref="NewContractViewModel"/> class.
+	/// </remarks>
+	/// <param name="Page">Page displaying the view.</param>
+	public partial class NewContractViewModel(NewContractPage Page) : BaseViewModel, ILinkableView
 	{
 		private static readonly string partSettingsPrefix = typeof(NewContractViewModel).FullName + ".Part_";
 
@@ -41,18 +45,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		private string? templateId;
 		private bool saveStateWhileScanning;
 		private Contract? stateTemplateWhileScanning;
-		private readonly Dictionary<CaseInsensitiveString, string> partsToAdd;
-
-		/// <summary>
-		/// Creates an instance of the <see cref="NewContractViewModel"/> class.
-		/// </summary>
-		protected internal NewContractViewModel()
-		{
-			this.ContractVisibilityItems = [];
-			this.AvailableRoles = [];
-			this.ParameterOptions = [];
-			this.partsToAdd = [];
-		}
+		private readonly Dictionary<CaseInsensitiveString, string> partsToAdd = [];
+		private readonly NewContractPage page = Page;
 
 		/// <inheritdoc/>
 		protected override async Task OnInitialize()
@@ -230,7 +224,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// <summary>
 		/// A list of valid visibility items to choose from for this contract.
 		/// </summary>
-		public ObservableCollection<ContractVisibilityModel> ContractVisibilityItems { get; }
+		public ObservableCollection<ContractVisibilityModel> ContractVisibilityItems { get; } = [];
 
 		/// <summary>
 		/// The selected contract visibility item, if any.
@@ -287,12 +281,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// <summary>
 		/// The different roles available to choose from when creating a contract.
 		/// </summary>
-		public ObservableCollection<string> AvailableRoles { get; }
+		public ObservableCollection<string> AvailableRoles { get; } = [];
 
 		/// <summary>
 		/// The different parameter options available to choose from when creating a contract.
 		/// </summary>
-		public ObservableCollection<ContractOption> ParameterOptions { get; }
+		public ObservableCollection<ContractOption> ParameterOptions { get; } = [];
 
 		/// <summary>
 		/// The role selected for the contract, if any.
@@ -375,7 +369,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		private void RemoveRole(string Role, string LegalId)
 		{
 			Label? ToRemove = null;
-			int State = 0;
 
 			if (this.Roles is null)
 				return;
@@ -395,28 +388,36 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			if (this.Roles is not null)
 			{
-				foreach (IView View in this.Roles.Children)
+				foreach (IView FrameView in this.Roles.Children)
 				{
-					switch (State)
+					if (FrameView is Frame RoleFrame && RoleFrame.Content is VerticalStackLayout RoleLayout)
 					{
-						case 0:
-							if (View is Label Label && Label.StyleId == Role)
-								State++;
-							break;
+						int State = 0;
 
-						case 1:
-							if (View is TextButton Button)
+						foreach (IView View in RoleLayout.Children)
+						{
+							switch (State)
 							{
-								if (ToRemove is not null)
-								{
-									this.Roles.Children.Remove(ToRemove);
-									Button.IsEnabled = true;
-								}
-								return;
+								case 0:
+									if (View is Label Label && Label.StyleId == Role)
+										State++;
+									break;
+
+								case 1:
+									if (View is TextButton Button)
+									{
+										if (ToRemove is not null)
+										{
+											RoleLayout.Children.Remove(ToRemove);
+											Button.IsEnabled = true;
+										}
+										return;
+									}
+									else if (View is Label Label2 && Label2.StyleId == LegalId)
+										ToRemove = Label2;
+									break;
 							}
-							else if (View is Label Label2 && Label2.StyleId == LegalId)
-								ToRemove = Label2;
-							break;
+						}
 					}
 				}
 			}
@@ -468,64 +469,73 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			if (this.Roles is not null)
 			{
 				int NrParts = 0;
-				int i = 0;
-				bool CurrentRole = false;
+				int i;
+				bool CurrentRole;
 				bool LegalIdAdded = false;
 
-				foreach (IView View in this.Roles.Children)
+				foreach (IView FrameView in this.Roles.Children)
 				{
-					if (View is Label Label)
+					if (FrameView is Frame RoleFrame && RoleFrame.Content is VerticalStackLayout RoleLayout)
 					{
-						if (Label.StyleId == Role)
-						{
-							CurrentRole = true;
-							NrParts = 0;
-						}
-						else
-						{
-							if (Label.StyleId == LegalId)
-								LegalIdAdded = true;
+						CurrentRole = false;
+						i = 0;
 
-							NrParts++;
-						}
-					}
-					else if (View is TextButton Button)
-					{
-						if (CurrentRole)
+						foreach (IView View in RoleLayout.Children)
 						{
-							if (!LegalIdAdded)
+							if (View is Label Label)
 							{
-								Label = new Label
+								if (Label.StyleId == Role)
 								{
-									Text = await ContactInfo.GetFriendlyName(LegalId),
-									StyleId = LegalId,
-									HorizontalTextAlignment = TextAlignment.Center,
-									FontAttributes = FontAttributes.Bold
-								};
+									CurrentRole = true;
+									NrParts = 0;
+								}
+								else
+								{
+									if (Label.StyleId == LegalId)
+										LegalIdAdded = true;
 
-								TapGestureRecognizer OpenLegalId = new();
-								OpenLegalId.Tapped += this.LegalId_Tapped;
+									NrParts++;
+								}
+							}
+							else if (View is TextButton Button)
+							{
+								if (CurrentRole)
+								{
+									if (!LegalIdAdded)
+									{
+										Label = new Label
+										{
+											Text = await ContactInfo.GetFriendlyName(LegalId),
+											StyleId = LegalId,
+											HorizontalTextAlignment = TextAlignment.Center,
+											FontAttributes = FontAttributes.Bold
+										};
 
-								Label.GestureRecognizers.Add(OpenLegalId);
+										TapGestureRecognizer OpenLegalId = new();
+										OpenLegalId.Tapped += this.LegalId_Tapped;
 
-								this.Roles?.Children.Insert(i, Label);
-								NrParts++;
+										Label.GestureRecognizers.Add(OpenLegalId);
 
-								if (NrParts >= RoleObj.MaxCount)
-									Button.IsEnabled = false;
+										RoleLayout.Insert(i, Label);
+										NrParts++;
+
+										if (NrParts >= RoleObj.MaxCount)
+											Button.IsEnabled = false;
+									}
+
+									return;
+								}
+								else
+								{
+									CurrentRole = false;
+									LegalIdAdded = false;
+									NrParts = 0;
+								}
 							}
 
-							return;
-						}
-						else
-						{
-							CurrentRole = false;
-							LegalIdAdded = false;
-							NrParts = 0;
+							i++;
 						}
 					}
-
-					i++;
 				}
 			}
 		}
@@ -799,60 +809,68 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			{
 				if (this.Roles is not null)
 				{
-					foreach (IView View in this.Roles.Children)
+					foreach (IView FrameView in this.Roles.Children)
 					{
-						switch (State)
+						if (FrameView is Frame RoleFrame && RoleFrame.Content is VerticalStackLayout RoleLayout)
 						{
-							case 0:
-								if (View is Label Label && !string.IsNullOrEmpty(Label.StyleId))
-								{
-									Role = Label.StyleId;
-									State++;
-									Nr = Min = Max = 0;
+							State = 0;
 
-									foreach (Role R in this.template.Roles)
-									{
-										if (R.Name == Role)
+							foreach (IView View in RoleLayout.Children)
+							{
+								switch (State)
+								{
+									case 0:
+										if (View is Label Label && !string.IsNullOrEmpty(Label.StyleId))
 										{
-											Min = R.MinCount;
-											Max = R.MaxCount;
-											break;
+											Role = Label.StyleId;
+											State++;
+											Nr = Min = Max = 0;
+
+											foreach (Role R in this.template.Roles)
+											{
+												if (R.Name == Role)
+												{
+													Min = R.MinCount;
+													Max = R.MaxCount;
+													break;
+												}
+											}
 										}
-									}
+										break;
+
+									case 1:
+										if (View is TextButton)
+										{
+											if (Nr < Min)
+											{
+												await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+													ServiceRef.Localizer[nameof(AppResources.TheContractRequiresAtLeast_AddMoreParts), Min, Role]);
+												return;
+											}
+
+											if (Nr > Min)
+											{
+												await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+													ServiceRef.Localizer[nameof(AppResources.TheContractRequiresAtMost_RemoveParts), Max, Role]);
+												return;
+											}
+
+											State--;
+											Role = string.Empty;
+										}
+										else if (View is Label Label2 && !string.IsNullOrEmpty(Role))
+										{
+											Parts.Add(new Part
+											{
+												Role = Role,
+												LegalId = Label2.StyleId
+											});
+
+											Nr++;
+										}
+										break;
 								}
-								break;
-
-							case 1:
-								if (View is TextButton)
-								{
-									if (Nr < Min)
-									{
-										await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-											ServiceRef.Localizer[nameof(AppResources.TheContractRequiresAtLeast_AddMoreParts), Min, Role]);
-										return;
-									}
-
-									if (Nr > Min)
-									{
-										await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-											ServiceRef.Localizer[nameof(AppResources.TheContractRequiresAtMost_RemoveParts), Max, Role]);
-										return;
-									}
-
-									State--;
-									Role = string.Empty;
-								}
-								else if (View is Label Label2 && !string.IsNullOrEmpty(Role))
-								{
-									Parts.Add(new Part
-									{
-										Role = Role,
-										LegalId = Label2.StyleId
-									});
-
-									Nr++;
-								}
-								break;
+							}
 						}
 					}
 				}
@@ -991,7 +1009,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			this.HasRoles = (this.template.Roles?.Length ?? 0) > 0;
 			this.VisibilityIsEnabled = true;
 
-			VerticalStackLayout rolesLayout = [];
+			VerticalStackLayout RolesLayout = [];
 			if (this.template.Roles is not null)
 			{
 				foreach (Role Role in this.template.Roles)
@@ -1029,13 +1047,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						Style = AppStyles.FrameSubSet
 					};
 
-					RoleFrame.AddLogicalChild(RoleLayout);
-
-					rolesLayout.Children.Add(RoleFrame);
+					RoleFrame.Content = RoleLayout;
+					
+					RolesLayout.Children.Add(RoleFrame);
 				}
 			}
 
-			this.Roles = rolesLayout;
+			this.Roles = RolesLayout;
 
 			VerticalStackLayout ParametersLayout = [];
 
