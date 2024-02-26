@@ -2023,6 +2023,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An overview of the machine-readable data embedded in the contract is shown below..
+        /// </summary>
+        internal static string MachineReadableInfoText {
+            get {
+                return ResourceManager.GetString("MachineReadableInfoText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Machine readable information.
         /// </summary>
         internal static string MachineReadableText {

@@ -1911,4 +1911,7 @@
   <data name="ViewContract" xml:space="preserve">
     <value>Näytä sopimus</value>
   </data>
+  <data name="MachineReadableInfoText" xml:space="preserve">
+    <value>Alla on yleiskatsaus sopimukseen upotetuista koneellisesti luettavista tiedoista.</value>
+  </data>
 </root>

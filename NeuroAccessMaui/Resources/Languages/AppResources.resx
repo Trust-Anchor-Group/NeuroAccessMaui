@@ -1911,4 +1911,7 @@
   <data name="ViewContract" xml:space="preserve">
     <value>View Contract</value>
   </data>
+  <data name="MachineReadableInfoText" xml:space="preserve">
+    <value>An overview of the machine-readable data embedded in the contract is shown below.</value>
+  </data>
 </root>

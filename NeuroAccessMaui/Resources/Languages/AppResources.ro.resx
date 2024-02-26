@@ -1911,4 +1911,7 @@
   <data name="ViewContract" xml:space="preserve">
     <value>Vezi contractul</value>
   </data>
+  <data name="MachineReadableInfoText" xml:space="preserve">
+    <value>O prezentare generală a datelor care pot fi citite automat încorporate în contract este prezentată mai jos.</value>
+  </data>
 </root>

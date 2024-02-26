@@ -1911,4 +1911,7 @@
   <data name="ViewContract" xml:space="preserve">
     <value>Prikaži ugovor</value>
   </data>
+  <data name="MachineReadableInfoText" xml:space="preserve">
+    <value>Pregled podataka čitljivih na računaru ugrađenih u ugovor prikazan je ispod.</value>
+  </data>
 </root>

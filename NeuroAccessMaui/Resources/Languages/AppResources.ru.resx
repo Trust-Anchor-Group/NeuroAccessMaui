@@ -1911,4 +1911,7 @@
   <data name="ViewContract" xml:space="preserve">
     <value>Посмотреть контракт</value>
   </data>
+  <data name="MachineReadableInfoText" xml:space="preserve">
+    <value>Ниже приведен обзор машиночитаемых данных, встроенных в договор.</value>
+  </data>
 </root>
