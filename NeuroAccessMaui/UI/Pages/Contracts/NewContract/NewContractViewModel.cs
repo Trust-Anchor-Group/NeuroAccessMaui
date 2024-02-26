@@ -5,6 +5,7 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.UI;
+using NeuroAccessMaui.UI.Controls;
 using NeuroAccessMaui.UI.Controls.Extended;
 using NeuroAccessMaui.UI.Converters;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
@@ -404,7 +405,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 							break;
 
 						case 1:
-							if (View is Button Button)
+							if (View is TextButton Button)
 							{
 								if (ToRemove is not null)
 								{
@@ -488,7 +489,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 							NrParts++;
 						}
 					}
-					else if (View is Button Button)
+					else if (View is TextButton Button)
 					{
 						if (CurrentRole)
 						{
@@ -550,7 +551,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		{
 			try
 			{
-				if (Sender is Button button)
+				if (Sender is TextButton Button)
 				{
 					this.saveStateWhileScanning = true;
 					this.stateTemplateWhileScanning = this.template;
@@ -571,8 +572,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ServiceRef.Localizer[nameof(AppResources.SelectedContactCannotBeAdded)]);
 					else
 					{
-						this.partsToAdd[button.StyleId] = Contact.LegalId;
-						string settingsKey = partSettingsPrefix + button.StyleId;
+						this.partsToAdd[Button.StyleId] = Contact.LegalId;
+						string settingsKey = partSettingsPrefix + Button.StyleId;
 						await ServiceRef.SettingsService.SaveState(settingsKey, Contact.LegalId);
 
 						foreach (KeyValuePair<CaseInsensitiveString, string> part in this.GetPartsToAdd())
@@ -822,7 +823,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 								break;
 
 							case 1:
-								if (View is Button)
+								if (View is TextButton)
 								{
 									if (Nr < Min)
 									{
@@ -997,27 +998,40 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				{
 					this.AvailableRoles.Add(Role.Name);
 
-					rolesLayout.Children.Add(new Label
-					{
-						Text = Role.Name,
-						Style = AppStyles.SectionTitleLabel,
-						StyleId = Role.Name
-					});
+					VerticalStackLayout RoleLayout =
+					[
+						new Label()
+						{
+							Text = Role.Name,
+							Style = AppStyles.SectionTitleLabel,
+							StyleId = Role.Name
+						}
+					];
 
-					Populate(rolesLayout, await Role.ToMauiXaml(this.template.DeviceLanguage(), this.template));
+					Populate(RoleLayout, await Role.ToMauiXaml(this.template.DeviceLanguage(), this.template));
 
 					if (Role.MinCount > 0)
 					{
-						Button button = new()
+						TextButton Button = new()
 						{
-							Text = ServiceRef.Localizer[nameof(AppResources.AddPart)],
+							LabelData = ServiceRef.Localizer[nameof(AppResources.AddPart)],
 							StyleId = Role.Name,
+							Style = AppStyles.FilledTextButton,
 							Margin = AppStyles.SmallBottomMargins
 						};
-						button.Clicked += this.AddPartButton_Clicked;
+						Button.Clicked += this.AddPartButton_Clicked;
 
-						rolesLayout.Children.Add(button);
+						RoleLayout.Children.Add(Button);
 					}
+
+					Frame RoleFrame = new()
+					{
+						Style = AppStyles.FrameSubSet
+					};
+
+					RoleFrame.AddLogicalChild(RoleLayout);
+
+					rolesLayout.Children.Add(RoleFrame);
 				}
 			}
 
@@ -1145,15 +1159,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						Grid.SetRow((IView)Entry, 0);
 						Grid.Children.Add(Entry);
 
-						Button CalcButton = new()
+						TextButton CalcButton = new()
 						{
-							TextColor = AppColors.PrimaryForeground,
-							Text = CalculatorButtonType,
+							LabelData = CalculatorButtonType,
 							HorizontalOptions = LayoutOptions.End,
 							WidthRequest = 40,
 							HeightRequest = 40,
-							CornerRadius = 8,
-							StyleId = Parameter.Name
+							StyleId = Parameter.Name,
+							Style = AppStyles.FilledTextButton
 						};
 
 						CalcButton.Clicked += this.CalcButton_Clicked;
@@ -1273,7 +1286,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		{
 			try
 			{
-				if (Sender is not Button CalcButton)
+				if (Sender is not TextButton CalcButton)
 					return;
 
 				if (!this.parametersByName.TryGetValue(CalcButton.StyleId, out ParameterInfo? ParameterInfo))
@@ -1282,7 +1295,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				if (ParameterInfo.Control is not Entry Entry)
 					return;
 
-				if (CalcButton.Text == "🕑")  // TODO: SVG icon
+				if (CalcButton.LabelData == "🕑")  // TODO: SVG icon
 				{
 					DurationNavigationArgs Args = new(Entry);
 					await ServiceRef.UiService.GoToAsync(nameof(DurationPage), Args, BackMethod.Pop);

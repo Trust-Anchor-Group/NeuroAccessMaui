@@ -68,7 +68,9 @@
 					</VerticalStackLayout>
 				</Frame>
 
-				<Button Text="{l:Localize Propose}" Command="{Binding Path=ProposeCommand}" Margin="{StaticResource SmallTopBottomMargins}"/>
+				<controls:TextButton LabelData="{l:Localize Propose}" Command="{Binding Path=ProposeCommand}"
+											Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+											Margin="{StaticResource SmallTopBottomMargins}"/>
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>

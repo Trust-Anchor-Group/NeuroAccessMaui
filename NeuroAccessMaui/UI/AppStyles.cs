@@ -19,6 +19,9 @@ namespace NeuroAccessMaui.UI
 		private static Style? formattedValueLabel;
 		private static Style? clickableValueLabel;
 		private static Style? infoLabelStyle;
+		private static Style? filledTextButton;
+		private static Style? frameSet;
+		private static Style? frameSubSet;
 
 		static AppStyles()
 		{
@@ -159,6 +162,42 @@ namespace NeuroAccessMaui.UI
 			{
 				infoLabelStyle ??= TryGetResource<Style>("InfoLabel");
 				return infoLabelStyle!;
+			}
+		}
+
+		/// <summary>
+		/// Style for filled text buttons.
+		/// </summary>
+		public static Style FilledTextButton
+		{
+			get
+			{
+				filledTextButton ??= TryGetResource<Style>("FilledTextButtonNoRoundedCorners");	// TODO: Remove NoRoundedCorners
+				return filledTextButton!;
+			}
+		}
+
+		/// <summary>
+		/// Style for frame sets.
+		/// </summary>
+		public static Style FrameSet
+		{
+			get
+			{
+				frameSet ??= TryGetResource<Style>("FrameSet");
+				return frameSet!;
+			}
+		}
+
+		/// <summary>
+		/// Style for frame subsets.
+		/// </summary>
+		public static Style FrameSubSet
+		{
+			get
+			{
+				frameSubSet ??= TryGetResource<Style>("FrameSubSet");
+				return frameSubSet!;
 			}
 		}
 
