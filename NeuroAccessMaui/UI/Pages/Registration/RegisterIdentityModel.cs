@@ -71,7 +71,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		[NotifyPropertyChangedFor(nameof(FirstNameOk))]
-		private string? firstName;
+		private string? firstName = "";
 
 		/// <summary>
 		/// Middle name(s) as one string
@@ -171,11 +171,13 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 
 		/// <summary>
 		/// Birth Date
+		/// A value of DateTime.Today means that the birth date is invalid or not set.
 		/// </summary>
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		[NotifyPropertyChangedFor(nameof(BirthDateOk))]
-		private DateTime? birthDate;
+		[NotifyPropertyChangedFor(nameof(NullIfInvalidBirthDate))]
+		private DateTime birthDate = DateTime.Today;
 
 		/// <summary>
 		/// Organization name
@@ -615,12 +617,17 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		/// <summary>
 		/// Maximum birth date. (i.e. Minimum age.)
 		/// </summary>
-		public static DateTime MaxBirthDate => DateTime.Today.AddYears(-Constants.Age.MinAge);
+		public DateTime MaxBirthDate => DateTime.Today.AddYears(-Constants.Age.MinAge);
 
 		/// <summary>
 		/// Minimum birth date. (i.e. Maximum age.)
 		/// </summary>
-		public static DateTime MinBirthDate => DateTime.Today.AddYears(-Constants.Age.MaxAge);
+		public DateTime MinBirthDate => DateTime.Today.AddYears(-Constants.Age.MaxAge);
+
+		/// <summary>
+		/// Returns null if birth date is the minimum birth date. Else returns BirthDate.
+		/// </summary>
+		public DateTime? NullIfInvalidBirthDate => (this.BirthDate == DateTime.Today) ? null : this.BirthDate;
 
 		/// <summary>
 		/// If <see cref="OrgName"/> is OK.
@@ -629,19 +636,10 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		{
 			get
 			{
-				if (this.BirthDate.HasValue && (this.BirthDate.Value > MaxBirthDate || this.BirthDate.Value < MinBirthDate))
+				if (this.NullIfInvalidBirthDate.HasValue && (this.BirthDate > this.MaxBirthDate || this.BirthDate < this.MinBirthDate))
 					return false;
 
-				if (!this.BirthDate.HasValue)
-					return !this.RequiresBirthDate;
-
-				if (this.BirthDate.Value.TimeOfDay != TimeSpan.Zero)
-					return false;
-
-				DateTime TP = this.BirthDate.Value;
-				DateTime Today = DateTime.Today;
-
-				return TP <= Today && TP >= Today.AddYears(-120);
+				return !this.RequiresBirthDate;
 			}
 		}
 
@@ -735,11 +733,11 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 			AddProperty(Properties, Constants.XmppProperties.Nationality, ISO_3166_1.ToCode(this.NationalityCode));
 			AddProperty(Properties, Constants.XmppProperties.Gender, this.GenderCode);
 
-			if (this.BirthDate.HasValue)
+			if (this.NullIfInvalidBirthDate.HasValue)
 			{
-				AddProperty(Properties, Constants.XmppProperties.BirthDay, this.BirthDate.Value.Day.ToString(CultureInfo.InvariantCulture));
-				AddProperty(Properties, Constants.XmppProperties.BirthMonth, this.BirthDate.Value.Month.ToString(CultureInfo.InvariantCulture));
-				AddProperty(Properties, Constants.XmppProperties.BirthYear, this.BirthDate.Value.Year.ToString(CultureInfo.InvariantCulture));
+				AddProperty(Properties, Constants.XmppProperties.BirthDay, this.NullIfInvalidBirthDate.Value.Day.ToString(CultureInfo.InvariantCulture));
+				AddProperty(Properties, Constants.XmppProperties.BirthMonth, this.NullIfInvalidBirthDate.Value.Month.ToString(CultureInfo.InvariantCulture));
+				AddProperty(Properties, Constants.XmppProperties.BirthYear, this.NullIfInvalidBirthDate.Value.Year.ToString(CultureInfo.InvariantCulture));
 			}
 
 			AddProperty(Properties, Constants.XmppProperties.OrgName, this.OrgName);
@@ -795,7 +793,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 				this.CountryCode = string.Empty;
 				this.NationalityCode = string.Empty;
 				this.GenderCode = string.Empty;
-				this.BirthDate = null;
+				this.BirthDate = DateTime.Today;
 				this.OrgName = string.Empty;
 				this.OrgNumber = string.Empty;
 				this.OrgAddress = string.Empty;
@@ -983,7 +981,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 				catch (Exception ex)
 				{
 					ServiceRef.LogService.LogException(ex);
-					this.BirthDate = null;
+					this.BirthDate = DateTime.Today;
 				}
 			}
 

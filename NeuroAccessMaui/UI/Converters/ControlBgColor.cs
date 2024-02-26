@@ -26,11 +26,7 @@ namespace NeuroAccessMaui.UI.Converters
 		/// <returns>Color</returns>
 		public static Color? ToColor(bool Ok)
 		{
-			return Ok switch
-			{
-				true => null,
-				false => AppColors.ErrorBackground,
-			};
+			return Ok ? Colors.Transparent : AppColors.ErrorBackground;
 		}
 
 		/// <inheritdoc/>
