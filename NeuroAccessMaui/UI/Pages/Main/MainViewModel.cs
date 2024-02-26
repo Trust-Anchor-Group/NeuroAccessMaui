@@ -1,8 +1,7 @@
 ﻿using System.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using NeuroAccessMaui.Extensions;
-using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 
 namespace NeuroAccessMaui.UI.Pages.Main
@@ -14,7 +13,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		{
 		}
 
-		public override Task<string> Title => Task.FromResult("TBD");  // TODO
+		public override Task<string> Title => Task.FromResult(ContactInfo.GetFriendlyName(ServiceRef.TagProfile.LegalIdentity));
 
 		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
 		{

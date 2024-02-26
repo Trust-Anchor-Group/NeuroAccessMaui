@@ -484,8 +484,11 @@ namespace NeuroAccessMaui.Services.Contacts
 		/// </summary>
 		/// <param name="Identity">Legal Identity</param>
 		/// <returns>Friendly name</returns>
-		public static string GetFriendlyName(LegalIdentity Identity)
+		public static string GetFriendlyName(LegalIdentity? Identity)
 		{
+			if (Identity is null)
+				return string.Empty;
+
 			string? FirstName = null;
 			string? MiddleName = null;
 			string? LastName = null;
