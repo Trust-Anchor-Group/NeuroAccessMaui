@@ -972,7 +972,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					ViewContractNavigationArgs Args = new(Created, false);
 
 					// Inherit the back method here. It will vary if created or viewed.
-					await ServiceRef.UiService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Inherited);
+					await ServiceRef.UiService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop2);
 				}
 			}
 		}
