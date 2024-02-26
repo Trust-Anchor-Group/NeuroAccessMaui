@@ -530,23 +530,16 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 										{
 											await Task.Run(async () =>
 											{
-												try
-												{
-													LegalIdentity? Identity = await ServiceRef.ContractOrchestratorService.TryGetLegalIdentity(LegalId,
-														ServiceRef.Localizer[nameof(AppResources.ForInclusionInContract)]);
+												LegalIdentity? Identity = await ServiceRef.ContractOrchestratorService.TryGetLegalIdentity(LegalId,
+													ServiceRef.Localizer[nameof(AppResources.ForInclusionInContract)]);
 
-													if (Identity is not null)
-													{
-														MainThread.BeginInvokeOnMainThread(() =>
-														{
-															FriendlyName = ContactInfo.GetFriendlyName(Identity);
-															Label.Text = FriendlyName;
-														});
-													}
-												}
-												catch (Exception)
+												if (Identity is not null)
 												{
-													// Ignore
+													MainThread.BeginInvokeOnMainThread(() =>
+													{
+														FriendlyName = ContactInfo.GetFriendlyName(Identity);
+														Label.Text = FriendlyName;
+													});
 												}
 											});
 										}
