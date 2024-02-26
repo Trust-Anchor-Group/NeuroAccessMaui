@@ -744,8 +744,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 						{ "Currency", e.Currency }
 					});
 
-				Template.Parts = new Part[]
-				{
+				Template.Parts = 
+				[
 					new()
 					{
 						Role = "Seller",
@@ -756,7 +756,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 						Role = "Auctioneer",
 						LegalId = e.TrustProviderId
 					}
-				};
+				];
 
 				NewContractArgs.SuppressProposal(e.TrustProviderId);
 
