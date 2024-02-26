@@ -1839,4 +1839,28 @@
   <data name="YourRole" xml:space="preserve">
     <value>Your Role</value>
   </data>
+  <data name="AddContact" xml:space="preserve">
+    <value>Add Contact</value>
+  </data>
+  <data name="PartsInTheContract" xml:space="preserve">
+    <value>Parts in the contract</value>
+  </data>
+  <data name="PetitionContract" xml:space="preserve">
+    <value>Access to Contract</value>
+  </data>
+  <data name="PetitionContractInformationText" xml:space="preserve">
+    <value>A petition for the personal data in one of your contracts has been received. Review the information below and choose how you wish to respond.</value>
+  </data>
+  <data name="PetitionIdentity" xml:space="preserve">
+    <value>Access to Identity</value>
+  </data>
+  <data name="PetitionIdentityInformationText" xml:space="preserve">
+    <value>A petition for the personal data of your legal identity has been received. Review the information below and choose how you wish to respond.</value>
+  </data>
+  <data name="PetitionSignature" xml:space="preserve">
+    <value>Signature requested</value>
+  </data>
+  <data name="RemoveContact" xml:space="preserve">
+    <value>Remove Contact</value>
+  </data>
 </root>

@@ -133,6 +133,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add Contact.
+        /// </summary>
+        internal static string AddContact {
+            get {
+                return ResourceManager.GetString("AddContact", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add Contact to Contract.
         /// </summary>
         internal static string AddContactToContract {
@@ -2599,6 +2608,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Parts in the contract.
+        /// </summary>
+        internal static string PartsInTheContract {
+            get {
+                return ResourceManager.GetString("PartsInTheContract", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Payment.
         /// </summary>
         internal static string Payment {
@@ -2851,6 +2869,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Access to Contract.
+        /// </summary>
+        internal static string PetitionContract {
+            get {
+                return ResourceManager.GetString("PetitionContract", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A petition for the personal data in one of your contracts has been received. Review the information below and choose how you wish to respond..
+        /// </summary>
+        internal static string PetitionContractInformationText {
+            get {
+                return ResourceManager.GetString("PetitionContractInformationText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Petition from:.
         /// </summary>
         internal static string PetitionFrom {
@@ -2860,11 +2896,38 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Access to Identity.
+        /// </summary>
+        internal static string PetitionIdentity {
+            get {
+                return ResourceManager.GetString("PetitionIdentity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A petition for the personal data of your legal identity has been received. Review the information below and choose how you wish to respond..
+        /// </summary>
+        internal static string PetitionIdentityInformationText {
+            get {
+                return ResourceManager.GetString("PetitionIdentityInformationText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Petition sent.
         /// </summary>
         internal static string PetitionSent {
             get {
                 return ResourceManager.GetString("PetitionSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Signature requested.
+        /// </summary>
+        internal static string PetitionSignature {
+            get {
+                return ResourceManager.GetString("PetitionSignature", resourceCulture);
             }
         }
         
@@ -3540,6 +3603,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string Rejected {
             get {
                 return ResourceManager.GetString("Rejected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove Contact.
+        /// </summary>
+        internal static string RemoveContact {
+            get {
+                return ResourceManager.GetString("RemoveContact", resourceCulture);
             }
         }
         

@@ -1839,4 +1839,28 @@
   <data name="YourRole" xml:space="preserve">
     <value>Vaša uloga</value>
   </data>
+  <data name="AddContact" xml:space="preserve">
+    <value>Dodaj kontakt</value>
+  </data>
+  <data name="PartsInTheContract" xml:space="preserve">
+    <value>Delovi ugovora</value>
+  </data>
+  <data name="PetitionContract" xml:space="preserve">
+    <value>Pristup ugovoru</value>
+  </data>
+  <data name="PetitionContractInformationText" xml:space="preserve">
+    <value>Primljena je peticija za lične podatke u jednom od vaših ugovora. Pregledajte dole navedene informacije i odaberite način na koji želite da odgovorite.</value>
+  </data>
+  <data name="PetitionIdentity" xml:space="preserve">
+    <value>Pristup identitetu</value>
+  </data>
+  <data name="PetitionIdentityInformationText" xml:space="preserve">
+    <value>Primljena je peticija za lične podatke vašeg pravnog identiteta. Pregledajte dole navedene informacije i odaberite način na koji želite da odgovorite.</value>
+  </data>
+  <data name="PetitionSignature" xml:space="preserve">
+    <value>Zahteva se potpis</value>
+  </data>
+  <data name="RemoveContact" xml:space="preserve">
+    <value>Ukloni kontakt</value>
+  </data>
 </root>

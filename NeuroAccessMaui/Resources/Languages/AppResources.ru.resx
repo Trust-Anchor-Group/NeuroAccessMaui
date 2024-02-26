@@ -1839,4 +1839,28 @@
   <data name="YourRole" xml:space="preserve">
     <value>Ваша роль</value>
   </data>
+  <data name="AddContact" xml:space="preserve">
+    <value>Добавить контакт</value>
+  </data>
+  <data name="PartsInTheContract" xml:space="preserve">
+    <value>Детали в договоре</value>
+  </data>
+  <data name="PetitionContract" xml:space="preserve">
+    <value>Доступ к договору</value>
+  </data>
+  <data name="PetitionContractInformationText" xml:space="preserve">
+    <value>Получено ходатайство о предоставлении персональных данных в одном из ваших договоров. Ознакомьтесь с приведенной ниже информацией и выберите, как вы хотите ответить.</value>
+  </data>
+  <data name="PetitionIdentity" xml:space="preserve">
+    <value>Доступ к удостоверениям</value>
+  </data>
+  <data name="PetitionIdentityInformationText" xml:space="preserve">
+    <value>Получено ходатайство о предоставлении персональных данных вашей личности. Ознакомьтесь с приведенной ниже информацией и выберите, как вы хотите ответить.</value>
+  </data>
+  <data name="PetitionSignature" xml:space="preserve">
+    <value>Требуется подпись</value>
+  </data>
+  <data name="RemoveContact" xml:space="preserve">
+    <value>Удалить контакт</value>
+  </data>
 </root>

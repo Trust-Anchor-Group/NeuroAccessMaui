@@ -1839,4 +1839,28 @@
   <data name="YourRole" xml:space="preserve">
     <value>Din rolle</value>
   </data>
+  <data name="AddContact" xml:space="preserve">
+    <value>Tilføj kontakt</value>
+  </data>
+  <data name="PartsInTheContract" xml:space="preserve">
+    <value>Dele i kontrakten</value>
+  </data>
+  <data name="PetitionContract" xml:space="preserve">
+    <value>Adgang til kontrakt</value>
+  </data>
+  <data name="PetitionContractInformationText" xml:space="preserve">
+    <value>Der er modtaget et andragende om personoplysningerne i en af dine kontrakter. Gennemgå oplysningerne nedenfor, og vælg, hvordan du vil svare.</value>
+  </data>
+  <data name="PetitionIdentity" xml:space="preserve">
+    <value>Adgang til identitet</value>
+  </data>
+  <data name="PetitionIdentityInformationText" xml:space="preserve">
+    <value>Der er modtaget et andragende om personoplysninger om din juridiske identitet. Gennemgå oplysningerne nedenfor, og vælg, hvordan du vil svare.</value>
+  </data>
+  <data name="PetitionSignature" xml:space="preserve">
+    <value>Underskrift anmodet</value>
+  </data>
+  <data name="RemoveContact" xml:space="preserve">
+    <value>Fjern kontakt</value>
+  </data>
 </root>

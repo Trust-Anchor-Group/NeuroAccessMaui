@@ -25,7 +25,12 @@
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
 						<ContentView Content="{Binding Path=HumanReadableText}" Margin="{StaticResource SmallBottomMargins}" />
+					</VerticalStackLayout>
+				</Frame>
 
+				<Frame Style="{StaticResource FrameSet}">
+					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+						<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize PartsInTheContract}"/>
 						<Label Text="{l:Localize Visibility}" HorizontalOptions="Start" />
 						<Picker Title="{l:Localize SelectWhoShouldHaveAccessToThisContract}"
 								  ItemsSource="{Binding Path=ContractVisibilityItems}"
@@ -36,13 +41,18 @@
                     ItemsSource="{Binding Path=AvailableRoles}" 
                     SelectedItem="{Binding Path=SelectedRole, Mode=TwoWay}" 
                     IsEnabled="{Binding Path=HasRoles}" Margin="{StaticResource MediumBottomMargins}"/>
-
 						<ContentView Content="{Binding Path=Roles}" />
-						<ContentView Content="{Binding Path=Parameters}" />
-
-						<Button Text="{l:Localize Propose}" Command="{Binding Path=ProposeCommand}" Margin="{StaticResource SmallTopBottomMargins}"/>
 					</VerticalStackLayout>
 				</Frame>
+
+				<Frame Style="{StaticResource FrameSet}" IsVisible="{Binding HasParameters}">
+					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+						<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize Parameters}"/>
+						<ContentView Content="{Binding Path=Parameters}" />
+					</VerticalStackLayout>
+				</Frame>
+
+				<Button Text="{l:Localize Propose}" Command="{Binding Path=ProposeCommand}" Margin="{StaticResource SmallTopBottomMargins}"/>
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>

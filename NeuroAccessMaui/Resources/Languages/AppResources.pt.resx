@@ -1839,4 +1839,28 @@
   <data name="YourRole" xml:space="preserve">
     <value>Seu Papel</value>
   </data>
+  <data name="AddContact" xml:space="preserve">
+    <value>Adicionar Contato</value>
+  </data>
+  <data name="PartsInTheContract" xml:space="preserve">
+    <value>Partes do contrato</value>
+  </data>
+  <data name="PetitionContract" xml:space="preserve">
+    <value>Acesso ao Contrato</value>
+  </data>
+  <data name="PetitionContractInformationText" xml:space="preserve">
+    <value>Foi recebida uma petição para os dados pessoais em um de seus contratos. Analise as informações abaixo e escolha como deseja responder.</value>
+  </data>
+  <data name="PetitionIdentity" xml:space="preserve">
+    <value>Acesso à identidade</value>
+  </data>
+  <data name="PetitionIdentityInformationText" xml:space="preserve">
+    <value>Foi recebida uma petição para os dados pessoais da sua identidade legal. Analise as informações abaixo e escolha como deseja responder.</value>
+  </data>
+  <data name="PetitionSignature" xml:space="preserve">
+    <value>Assinatura solicitada</value>
+  </data>
+  <data name="RemoveContact" xml:space="preserve">
+    <value>Remover contato</value>
+  </data>
 </root>

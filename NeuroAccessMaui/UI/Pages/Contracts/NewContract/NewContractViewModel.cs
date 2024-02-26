@@ -1024,14 +1024,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			this.Roles = rolesLayout;
 
 			VerticalStackLayout ParametersLayout = [];
-			if (this.template.Parameters.Length > 0)
-			{
-				ParametersLayout.Children.Add(new Label
-				{
-					Text = ServiceRef.Localizer[nameof(AppResources.Parameters)],
-					Style = AppStyles.SectionTitleLabel
-				});
-			}
 
 			this.parametersByName.Clear();
 			this.parametersInOrder.Clear();

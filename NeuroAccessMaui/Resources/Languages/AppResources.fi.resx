@@ -1839,4 +1839,28 @@
   <data name="YourRole" xml:space="preserve">
     <value>Sinun roolisi</value>
   </data>
+  <data name="AddContact" xml:space="preserve">
+    <value>Lisää yhteystieto</value>
+  </data>
+  <data name="PartsInTheContract" xml:space="preserve">
+    <value>Sopimuksen osat</value>
+  </data>
+  <data name="PetitionContract" xml:space="preserve">
+    <value>Sopimuksen saatavuus</value>
+  </data>
+  <data name="PetitionContractInformationText" xml:space="preserve">
+    <value>Yhdessä sopimuksessasi olevia henkilötietoja koskeva vetoomus on vastaanotettu. Tarkista alla olevat tiedot ja valitse, miten haluat vastata.</value>
+  </data>
+  <data name="PetitionIdentity" xml:space="preserve">
+    <value>Henkilöllisyyden saatavuus</value>
+  </data>
+  <data name="PetitionIdentityInformationText" xml:space="preserve">
+    <value>Oikeushenkilöllisyytesi henkilötietoja koskeva vetoomus on vastaanotettu. Tarkista alla olevat tiedot ja valitse, miten haluat vastata.</value>
+  </data>
+  <data name="PetitionSignature" xml:space="preserve">
+    <value>Pyydetty allekirjoitus</value>
+  </data>
+  <data name="RemoveContact" xml:space="preserve">
+    <value>Poista yhteystieto</value>
+  </data>
 </root>

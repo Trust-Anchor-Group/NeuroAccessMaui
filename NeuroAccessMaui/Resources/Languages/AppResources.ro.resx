@@ -1839,4 +1839,28 @@
   <data name="YourRole" xml:space="preserve">
     <value>Rolul tău</value>
   </data>
+  <data name="AddContact" xml:space="preserve">
+    <value>Adăugare contact</value>
+  </data>
+  <data name="PartsInTheContract" xml:space="preserve">
+    <value>Părți în contract</value>
+  </data>
+  <data name="PetitionContract" xml:space="preserve">
+    <value>Accesul la contract</value>
+  </data>
+  <data name="PetitionContractInformationText" xml:space="preserve">
+    <value>A fost primită o petiție pentru datele personale dintr-unul dintre contractele dvs. Consultați informațiile de mai jos și alegeți cum doriți să răspundeți.</value>
+  </data>
+  <data name="PetitionIdentity" xml:space="preserve">
+    <value>Accesul la identitate</value>
+  </data>
+  <data name="PetitionIdentityInformationText" xml:space="preserve">
+    <value>A fost primită o petiție pentru datele personale ale identității dvs. juridice. Consultați informațiile de mai jos și alegeți cum doriți să răspundeți.</value>
+  </data>
+  <data name="PetitionSignature" xml:space="preserve">
+    <value>Semnătură solicitată</value>
+  </data>
+  <data name="RemoveContact" xml:space="preserve">
+    <value>Eliminați contactul</value>
+  </data>
 </root>
