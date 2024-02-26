@@ -81,7 +81,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 
 			if (this.selection is not null && this.selection.Task.IsCompleted)
 			{
-				await ServiceRef.UiService.GoBackAsync();
+				await this.GoBack();
 				return;
 			}
 		}
@@ -181,7 +181,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 
 						case SelectContractAction.Select:
 							this.selectedContract = Contract;
-							await ServiceRef.UiService.GoBackAsync();
+							await this.GoBack();
 							this.selection?.TrySetResult(Contract);
 							break;
 					}

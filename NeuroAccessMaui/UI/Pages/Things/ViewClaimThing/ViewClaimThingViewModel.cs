@@ -305,7 +305,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 					}
 
 					await Database.Provider.Flush();
-					await ServiceRef.UiService.GoBackAsync();
+					await this.GoBack();
 				}
 				else
 				{

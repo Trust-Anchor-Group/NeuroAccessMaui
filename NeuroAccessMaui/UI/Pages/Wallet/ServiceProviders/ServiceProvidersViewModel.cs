@@ -112,7 +112,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 				this.navigationArgs.ServiceProvider = null;
 			}
 
-			await ServiceRef.UiService.GoBackAsync();
+			await base.GoBack();
 
 			TaskSource?.TrySetResult(ServiceProvider);
 		}

@@ -456,7 +456,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanControl
 
 				MainThread.BeginInvokeOnMainThread(async () =>
 				{
-					await ServiceRef.UiService.GoBackAsync();
+					await this.GoBack();
 				});
 			}
 			else
@@ -475,7 +475,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanControl
 			if (this.@event is not null)
 				await ServiceRef.NotificationService.DeleteEvents(this.@event);
 
-			await ServiceRef.UiService.GoBackAsync();
+			await this.GoBack();
 		}
 
 		/// <summary>

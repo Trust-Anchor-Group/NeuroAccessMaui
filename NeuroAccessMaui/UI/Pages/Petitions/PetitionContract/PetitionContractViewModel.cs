@@ -102,7 +102,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 				this.RequestedContract!.ContractId, this.petitionId!, this.requestorFullJid!, true));
 
 			if (succeeded)
-				await ServiceRef.UiService.GoBackAsync();
+				await this.GoBack();
 		}
 
 		/// <summary>
@@ -115,16 +115,16 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 				this.RequestedContract!.ContractId, this.petitionId!, this.requestorFullJid!, false));
 
 			if (succeeded)
-				await ServiceRef.UiService.GoBackAsync();
+				await this.GoBack();
 		}
 
 		/// <summary>
 		/// The command to bind to for ignoring the petition
 		/// </summary>
 		[RelayCommand]
-		private static async Task Ignore()
+		private async Task Ignore()
 		{
-			await ServiceRef.UiService.GoBackAsync();
+			await this.GoBack();
 		}
 
 		// Full name of requesting entity.

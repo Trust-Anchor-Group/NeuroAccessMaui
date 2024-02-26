@@ -300,7 +300,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			if (this.RestartNeeded)
 				await App.Stop();
 			else
-				await ServiceRef.UiService.GoBackAsync();
+				await base.GoBack();
 		}
 
 		[RelayCommand(CanExecute = nameof(CanExecuteCommands))]

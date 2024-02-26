@@ -1046,7 +1046,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 				});
 
 				if (Succeeded2)
-					await ServiceRef.UiService.GoBackAsync();
+					await this.GoBack();
 			}
 			catch (Exception ex)
 			{
@@ -1071,7 +1071,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 				});
 
 				if (Succeeded)
-					await ServiceRef.UiService.GoBackAsync();
+					await this.GoBack();
 			}
 			catch (Exception ex)
 			{

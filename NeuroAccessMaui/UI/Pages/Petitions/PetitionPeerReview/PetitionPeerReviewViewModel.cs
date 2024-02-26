@@ -237,7 +237,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 			});
 
 			if (Succeeded && GoBackIfOk)
-				await ServiceRef.UiService.GoBackAsync();
+				await base.GoBack();
 		}
 
 		/// <summary>
@@ -265,13 +265,13 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 			});
 
 			if (Succeeded && GoBackIfOk)
-				await ServiceRef.UiService.GoBackAsync();
+				await base.GoBack();
 		}
 
 		[RelayCommand]
-		private static async Task Ignore()
+		private async Task Ignore()
 		{
-			await ServiceRef.UiService.GoBackAsync();
+			await base.GoBack();
 		}
 
 		[RelayCommand(CanExecute = nameof(IsPhotoOk))]

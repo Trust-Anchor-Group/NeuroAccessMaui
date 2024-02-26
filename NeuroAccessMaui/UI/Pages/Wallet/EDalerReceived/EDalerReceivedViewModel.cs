@@ -168,7 +168,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.EDalerReceived
 		[RelayCommand(CanExecute = nameof(IsConnected))]
 		private Task Accept()
 		{
-			return ServiceRef.UiService.GoBackAsync();
+			return this.GoBack();
 		}
 	}
 }

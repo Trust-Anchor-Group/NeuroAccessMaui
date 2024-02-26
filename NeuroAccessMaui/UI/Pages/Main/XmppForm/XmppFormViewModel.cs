@@ -132,7 +132,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.XmppForm
 					this.form.Submit();
 					this.responseSent = true;
 
-					await ServiceRef.UiService.GoBackAsync();
+					await this.GoBack();
 				}
 			}
 			catch (Exception ex)

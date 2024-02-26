@@ -125,7 +125,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler
 		private async Task Buy()
 		{
 			this.buyButtonPressed = true;
-			await ServiceRef.UiService.GoBackAsync();
+			await this.GoBack();
 		}
 
 	}

@@ -86,7 +86,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.VerifyCode
 				{
 					try
 					{
-						await ServiceRef.UiService.GoBackAsync();
+						await base.GoBack();
 						TaskSource.TrySetResult(Url);
 					}
 					catch (Exception ex)

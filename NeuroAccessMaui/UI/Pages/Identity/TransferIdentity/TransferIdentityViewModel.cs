@@ -47,7 +47,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.TransferIdentity
 
 			MainThread.BeginInvokeOnMainThread(async () =>
 			{
-				await ServiceRef.UiService.GoBackAsync();
+				await this.GoBack();
 			});
 		}
 

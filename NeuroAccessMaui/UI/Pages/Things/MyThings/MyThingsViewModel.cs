@@ -52,7 +52,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 			await base.OnAppearing();
 
 			if (this.result is not null && this.result.Task.IsCompleted)
-				await ServiceRef.UiService.GoBackAsync();
+				await this.GoBack();
 			else
 			{
 				this.result = null;
@@ -290,7 +290,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 				else
 				{
 					this.result.TrySetResult(Thing);
-					await ServiceRef.UiService.GoBackAsync();
+					await this.GoBack();
 				}
 			});
 		}

@@ -148,7 +148,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.ChangePin
 							ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
 							ServiceRef.Localizer[nameof(AppResources.PinChanged)]);
 
-						await ServiceRef.UiService.GoBackAsync();
+						await this.GoBack();
 					}
 					catch (Exception ex)
 					{

@@ -508,7 +508,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 
 				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
 					ServiceRef.Localizer[nameof(AppResources.ThingDisowned)]);
-				await ServiceRef.UiService.GoBackAsync();
+				await this.GoBack();
 			}
 			catch (Exception ex)
 			{

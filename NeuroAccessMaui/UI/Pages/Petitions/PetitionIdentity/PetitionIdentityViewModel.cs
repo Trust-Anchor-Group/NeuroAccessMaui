@@ -149,13 +149,13 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity
 			});
 
 			if (Succeeded)
-				await ServiceRef.UiService.GoBackAsync();
+				await this.GoBack();
 		}
 
 		[RelayCommand]
-		private static async Task Ignore()
+		private async Task Ignore()
 		{
-			await ServiceRef.UiService.GoBackAsync();
+			await this.GoBack();
 		}
 
 		// Full name of requesting entity.

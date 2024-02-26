@@ -127,7 +127,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.SellEDaler
 		private async Task Sell()
 		{
 			this.sellButtonPressed = true;
-			await ServiceRef.UiService.GoBackAsync();
+			await this.GoBack();
 		}
 
 	}

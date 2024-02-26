@@ -410,7 +410,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 
 				if (succeeded)
 				{
-					await ServiceRef.UiService.GoBackAsync();
+					await this.GoBack();
 					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
 						ServiceRef.Localizer[nameof(AppResources.TransactionAccepted)]);
 				}
@@ -492,7 +492,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 
 				if (succeeded)
 				{
-					await ServiceRef.UiService.GoBackAsync();
+					await this.GoBack();
 					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
 						ServiceRef.Localizer[nameof(AppResources.PaymentSuccess)]);
 				}
@@ -611,7 +611,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				(bool succeeded, Transaction? Transaction) = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.SendEDalerUri(this.Uri));
 				if (succeeded)
 				{
-					await ServiceRef.UiService.GoBackAsync();
+					await this.GoBack();
 					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
 						ServiceRef.Localizer[nameof(AppResources.PaymentSuccess)]);
 				}
@@ -701,7 +701,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				// TODO: Offline options: Expiry days
 
 				this.uriToSend?.TrySetResult(Uri);
-				await ServiceRef.UiService.GoBackAsync();
+				await this.GoBack();
 			}
 			catch (Exception ex)
 			{

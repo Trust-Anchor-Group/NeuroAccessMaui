@@ -85,7 +85,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature
 			});
 
 			if (Succeeded)
-				await ServiceRef.UiService.GoBackAsync();
+				await this.GoBack();
 		}
 
 		[RelayCommand]
@@ -98,13 +98,13 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature
 			});
 
 			if (Succeeded)
-				await ServiceRef.UiService.GoBackAsync();
+				await this.GoBack();
 		}
 
 		[RelayCommand]
-		private static async Task Ignore()
+		private async Task Ignore()
 		{
-			await ServiceRef.UiService.GoBackAsync();
+			await this.GoBack();
 		}
 
 		/// <summary>
