@@ -7,7 +7,14 @@ namespace NeuroAccessMaui.UI.Popups
 	/// </summary>
 	public partial class BasePopup
 	{
+		/// <summary>
+		/// The requested width of the popup view
+		/// </summary>
 		public virtual double ViewWidthRequest => (DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density) * (7.0 / 8.0);
+
+		/// <summary>
+		/// The maximum height of the popup view
+		/// </summary>
 		public virtual double MaximumViewHeightRequest => (DeviceDisplay.MainDisplayInfo.Height / DeviceDisplay.MainDisplayInfo.Density) * (3.0 / 4.0);
 
 		/// <summary>
@@ -25,6 +32,7 @@ namespace NeuroAccessMaui.UI.Popups
 			get => this.BindingContext as BasePopupViewModel;
 			set => this.BindingContext = value;
 		}
+
 
 		protected BasePopup(bool useDefaultBackground = true)
 		{
