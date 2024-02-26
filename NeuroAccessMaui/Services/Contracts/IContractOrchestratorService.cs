@@ -18,6 +18,14 @@ namespace NeuroAccessMaui.Services.Contracts
 		Task OpenLegalIdentity(string LegalId, string Purpose);
 
 		/// <summary>
+		/// Tries to get a legal identity.
+		/// </summary>
+		/// <param name="LegalId">The id of the legal identity to show.</param>
+		/// <param name="Purpose">The purpose to state if the identity can't be downloaded and needs to be petitioned instead.</param>
+		/// <returns>Legal Identity, if possible to get, null otherwise.</returns>
+		Task<LegalIdentity?> TryGetLegalIdentity(string LegalId, string Purpose);
+
+		/// <summary>
 		/// Downloads the specified <see cref="Contract"/> and opens the corresponding page in the app to show it.
 		/// </summary>
 		/// <param name="ContractId">The id of the contract to show.</param>

@@ -493,13 +493,16 @@ namespace NeuroAccessMaui.Services.Contacts
 			string? MiddleName = null;
 			string? LastName = null;
 			string? PersonalNumber = null;
+			string? Domain = null;
 			string? OrgDepartment = null;
 			string? OrgRole = null;
 			string? OrgName = null;
 			bool HasName = false;
 			bool HasOrg = false;
+			bool HasDomain = false;
 
 			foreach (Property P in Identity.Properties)
+			{
 				switch (P.Name.ToUpper(CultureInfo.InvariantCulture))
 				{
 					case Constants.XmppProperties.FirstName:
@@ -535,7 +538,13 @@ namespace NeuroAccessMaui.Services.Contacts
 						OrgRole = P.Value;
 						HasOrg = true;
 						break;
+
+					case Constants.XmppProperties.Domain:
+						Domain = P.Value;
+						HasDomain = true;
+						break;
 				}
+			}
 
 			StringBuilder? sb = null;
 
@@ -553,13 +562,12 @@ namespace NeuroAccessMaui.Services.Contacts
 				AppendName(ref sb, OrgName);
 			}
 
-			if (sb is not null)
-				return sb.ToString();
+			string Result = sb is not null ? sb.ToString() : !string.IsNullOrEmpty(PersonalNumber) ? PersonalNumber : Identity.Id;
 
-			if (!string.IsNullOrEmpty(PersonalNumber))
-				return PersonalNumber;
+			if (HasDomain)
+				Result = Domain + " (" + Result + ")";
 
-			return Identity.Id;
+			return Result;
 		}
 
 		/// <summary>

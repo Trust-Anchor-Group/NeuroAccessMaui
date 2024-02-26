@@ -393,6 +393,11 @@
 			public const string EMail = "EMAIL";
 
 			/// <summary>
+			/// Domain name.
+			/// </summary>
+			public const string Domain = "DOMAIN";
+
+			/// <summary>
 			/// Apartment
 			/// </summary>
 			public const string Apartment = "APT";

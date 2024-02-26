@@ -504,9 +504,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 								{
 									if (!LegalIdAdded)
 									{
+										string FriendlyName = await ContactInfo.GetFriendlyName(LegalId);
 										Label = new Label
 										{
-											Text = await ContactInfo.GetFriendlyName(LegalId),
+											Text = FriendlyName,
 											StyleId = LegalId,
 											HorizontalTextAlignment = TextAlignment.Center,
 											FontAttributes = FontAttributes.Bold,
@@ -524,6 +525,31 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 										if (NrParts >= RoleObj.MaxCount)
 											Button.IsEnabled = false;
+
+										if (FriendlyName == LegalId)
+										{
+											await Task.Run(async () =>
+											{
+												try
+												{
+													LegalIdentity? Identity = await ServiceRef.ContractOrchestratorService.TryGetLegalIdentity(LegalId,
+														ServiceRef.Localizer[nameof(AppResources.ForInclusionInContract)]);
+
+													if (Identity is not null)
+													{
+														MainThread.BeginInvokeOnMainThread(() =>
+														{
+															FriendlyName = ContactInfo.GetFriendlyName(Identity);
+															Label.Text = FriendlyName;
+														});
+													}
+												}
+												catch (Exception)
+												{
+													// Ignore
+												}
+											});
+										}
 									}
 
 									return;

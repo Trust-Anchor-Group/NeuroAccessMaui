@@ -513,6 +513,35 @@ namespace NeuroAccessMaui.Services.Contracts
 		}
 
 		/// <summary>
+		/// Tries to get a legal identity.
+		/// </summary>
+		/// <param name="LegalId">The id of the legal identity to show.</param>
+		/// <param name="Purpose">The purpose to state if the identity can't be downloaded and needs to be petitioned instead.</param>
+		/// <returns>Legal Identity, if possible to get, null otherwise.</returns>
+		public async Task<LegalIdentity?> TryGetLegalIdentity(string LegalId, string Purpose)
+		{
+			try
+			{
+				LegalIdentity Identity = await ServiceRef.XmppService.GetLegalIdentity(LegalId);
+				return Identity;
+			}
+			catch (ForbiddenException)
+			{
+				// This happens if you try to view someone else's legal identity.
+				// When this happens, try to send a petition to view it instead.
+				// Normal operation. Should not be logged.
+
+				await ServiceRef.XmppService.PetitionIdentity(LegalId, Guid.NewGuid().ToString(), Purpose);
+				return null;
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
+				return null;
+			}
+		}
+
+		/// <summary>
 		/// Downloads the specified <see cref="Contract"/> and opens the corresponding page in the app to show it.
 		/// </summary>
 		/// <param name="ContractId">The id of the contract to show.</param>
