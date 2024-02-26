@@ -238,9 +238,9 @@
 							<Border StrokeThickness="2" Style="{StaticResource RegularCompositeEntryBorderNoRoundedCorners}"
 									  IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
 								<Picker HorizontalOptions="FillAndExpand" Title="{l:Localize SelectGender}"
-									  BackgroundColor="{Binding GenderOk, Converter={converters:ControlBgColor}}"
-                             ItemsSource="{Binding Path=Genders}" SelectedItem="{Binding Path=Gender}"
-									  IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
+										  BackgroundColor="{Binding GenderOk, Converter={converters:ControlBgColor}}"
+										  ItemsSource="{Binding Path=Genders}" SelectedItem="{Binding Path=Gender}"
+										  IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
 									<Picker.ItemDisplayBinding x:DataType="data:ISO_5218_Gender">
 										<Binding Path="Code" Converter="{converters:GenderCodeToSymbolAndLabel}"/>
 									</Picker.ItemDisplayBinding>

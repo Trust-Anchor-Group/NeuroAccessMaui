@@ -11,6 +11,14 @@
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract">
+
+	<VisualElement.Resources>
+		<converters:ConversionSequence x:Key="OkIfSelected">
+			<converters:OnlyShowNonEmpty/>
+			<converters:ControlBgColor/>
+		</converters:ConversionSequence>
+	</VisualElement.Resources>
+
 	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
 
 		<controls:Background/>
@@ -32,15 +40,23 @@
 					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 						<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize PartsInTheContract}"/>
 						<Label Text="{l:Localize Visibility}" HorizontalOptions="Start" />
-						<Picker Title="{l:Localize SelectWhoShouldHaveAccessToThisContract}"
-								  ItemsSource="{Binding Path=ContractVisibilityItems}"
-								  SelectedItem="{Binding Path=SelectedContractVisibilityItem, Mode=TwoWay}" Margin="{StaticResource MediumBottomMargins}"/>
+						<Border StrokeThickness="2" Style="{StaticResource RegularCompositeEntryBorderNoRoundedCorners}"
+								  Margin="{StaticResource MediumBottomMargins}"
+								  BackgroundColor="{Binding SelectedContractVisibilityItem, Mode=TwoWay, Converter={StaticResource OkIfSelected}}">
+							<Picker Title="{l:Localize SelectWhoShouldHaveAccessToThisContract}"
+									  ItemsSource="{Binding Path=ContractVisibilityItems}"
+									  SelectedItem="{Binding Path=SelectedContractVisibilityItem, Mode=TwoWay}"/>
+						</Border>
 
 						<Label Text="{l:Localize YourRole}" HorizontalOptions="Start" />
-						<Picker Title="{l:Localize SelectYourRoleInThisContract}" 
-                    ItemsSource="{Binding Path=AvailableRoles}" 
-                    SelectedItem="{Binding Path=SelectedRole, Mode=TwoWay}" 
-                    IsEnabled="{Binding Path=HasRoles}" Margin="{StaticResource MediumBottomMargins}"/>
+						<Border StrokeThickness="2" Style="{StaticResource RegularCompositeEntryBorderNoRoundedCorners}"
+								  Margin="{StaticResource MediumBottomMargins}"
+								  BackgroundColor="{Binding SelectedRole, Mode=TwoWay, Converter={StaticResource OkIfSelected}}">
+							<Picker Title="{l:Localize SelectYourRoleInThisContract}"
+									  ItemsSource="{Binding Path=AvailableRoles}"
+									  SelectedItem="{Binding Path=SelectedRole, Mode=TwoWay}"
+									  IsEnabled="{Binding Path=HasRoles}"/>
+						</Border>
 						<ContentView Content="{Binding Path=Roles}" />
 					</VerticalStackLayout>
 				</Frame>
