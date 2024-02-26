@@ -1044,11 +1044,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 					Frame RoleFrame = new()
 					{
-						Style = AppStyles.FrameSubSet
+						Style = AppStyles.FrameSubSet,
+						Content = RoleLayout
 					};
 
-					RoleFrame.Content = RoleLayout;
-					
 					RolesLayout.Children.Add(RoleFrame);
 				}
 			}

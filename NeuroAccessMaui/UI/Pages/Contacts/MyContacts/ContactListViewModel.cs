@@ -72,7 +72,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 
 			if (this.selection is not null && this.selection.Task.IsCompleted)
 			{
-				await ServiceRef.UiService.GoBackAsync();
+				await this.GoBack();
 				return;
 			}
 
@@ -299,97 +299,96 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 			switch (e.PropertyName)
 			{
 				case nameof(this.SelectedContact):
-					if (this.SelectedContact is not null)
-						this.OnSelected(this.SelectedContact);
+					ContactInfoModel? Contact = this.SelectedContact;
+
+					if (Contact is not null)
+					{
+						MainThread.BeginInvokeOnMainThread(async () =>
+						{
+							this.IsOverlayVisible = true;
+
+							try
+							{
+								switch (this.Action)
+								{
+									case SelectContactAction.MakePayment:
+										StringBuilder sb = new();
+
+										sb.Append("edaler:");
+
+										if (ServiceRef.TagProfile.LegalIdentity is null)
+										{
+											sb.Append("f=");
+											sb.Append(ServiceRef.XmppService.BareJid);
+										}
+										else
+										{
+											sb.Append("fi=");
+											sb.Append(ServiceRef.TagProfile.LegalIdentity.Id);
+										}
+
+										if (!string.IsNullOrEmpty(Contact.LegalId))
+										{
+											sb.Append(";ti=");
+											sb.Append(Contact.LegalId);
+										}
+										else if (!string.IsNullOrEmpty(Contact.BareJid))
+										{
+											sb.Append(";t=");
+											sb.Append(Contact.BareJid);
+										}
+
+										Balance Balance = await ServiceRef.XmppService.GetEDalerBalance();
+
+										sb.Append(";cu=");
+										sb.Append(Balance.Currency);
+
+										if (!EDalerUri.TryParse(sb.ToString(), out EDalerUri Parsed))
+											break;
+
+										EDalerUriNavigationArgs Args = new(Parsed);
+										// Inherit the back method here from the parrent
+										await ServiceRef.UiService.GoToAsync(nameof(PaymentPage), Args, BackMethod.Pop2);
+
+										break;
+
+									case SelectContactAction.ViewIdentity:
+									default:
+										if (Contact.LegalIdentity is not null)
+										{
+											ViewIdentityNavigationArgs ViewIdentityArgs = new(Contact.LegalIdentity);
+
+											await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage), ViewIdentityArgs);
+										}
+										else if (!string.IsNullOrEmpty(Contact.LegalId))
+										{
+											await ServiceRef.ContractOrchestratorService.OpenLegalIdentity(Contact.LegalId,
+												ServiceRef.Localizer[nameof(AppResources.ScannedQrCode)]);
+										}
+										else if (!string.IsNullOrEmpty(Contact.BareJid) && Contact.Contact is not null)
+										{
+											ChatNavigationArgs ChatArgs = new(Contact.Contact);
+
+											await ServiceRef.UiService.GoToAsync(nameof(ChatPage), ChatArgs, BackMethod.Inherited, Contact.BareJid);
+										}
+
+										break;
+
+									case SelectContactAction.Select:
+										this.SelectedContact = Contact;
+										await this.GoBack();
+										this.selection?.TrySetResult(Contact);
+										break;
+								}
+							}
+							finally
+							{
+								this.IsOverlayVisible = false;
+							}
+						});
+					}
 					break;
 			}
-		}
-
-		private void OnSelected(ContactInfoModel Contact)
-		{
-			MainThread.BeginInvokeOnMainThread(async () =>
-			{
-				this.IsOverlayVisible = true;
-
-				try
-				{
-					switch (this.Action)
-					{
-						case SelectContactAction.MakePayment:
-							StringBuilder sb = new();
-
-							sb.Append("edaler:");
-
-							if (ServiceRef.TagProfile.LegalIdentity is null)
-							{
-								sb.Append("f=");
-								sb.Append(ServiceRef.XmppService.BareJid);
-							}
-							else
-							{
-								sb.Append("fi=");
-								sb.Append(ServiceRef.TagProfile.LegalIdentity.Id);
-							}
-
-							if (!string.IsNullOrEmpty(Contact.LegalId))
-							{
-								sb.Append(";ti=");
-								sb.Append(Contact.LegalId);
-							}
-							else if (!string.IsNullOrEmpty(Contact.BareJid))
-							{
-								sb.Append(";t=");
-								sb.Append(Contact.BareJid);
-							}
-
-							Balance Balance = await ServiceRef.XmppService.GetEDalerBalance();
-
-							sb.Append(";cu=");
-							sb.Append(Balance.Currency);
-
-							if (!EDalerUri.TryParse(sb.ToString(), out EDalerUri Parsed))
-								break;
-
-							EDalerUriNavigationArgs Args = new(Parsed);
-							// Inherit the back method here from the parrent
-							await ServiceRef.UiService.GoToAsync(nameof(PaymentPage), Args, BackMethod.Pop2);
-
-							break;
-
-						case SelectContactAction.ViewIdentity:
-						default:
-							if (Contact.LegalIdentity is not null)
-							{
-								ViewIdentityNavigationArgs ViewIdentityArgs = new(Contact.LegalIdentity);
-
-								await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage), ViewIdentityArgs);
-							}
-							else if (!string.IsNullOrEmpty(Contact.LegalId))
-							{
-								await ServiceRef.ContractOrchestratorService.OpenLegalIdentity(Contact.LegalId,
-									ServiceRef.Localizer[nameof(AppResources.ScannedQrCode)]);
-							}
-							else if (!string.IsNullOrEmpty(Contact.BareJid) && Contact.Contact is not null)
-							{
-								ChatNavigationArgs ChatArgs = new(Contact.Contact);
-
-								await ServiceRef.UiService.GoToAsync(nameof(ChatPage), ChatArgs, BackMethod.Inherited, Contact.BareJid);
-							}
-
-							break;
-
-						case SelectContactAction.Select:
-							this.SelectedContact = Contact;
-							await ServiceRef.UiService.GoBackAsync();
-							this.selection?.TrySetResult(Contact);
-							break;
-					}
-				}
-				finally
-				{
-					this.IsOverlayVisible = false;
-				}
-			});
 		}
 
 		/// <summary>
@@ -404,10 +403,10 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 
 			if (Constants.UriSchemes.StartsWithIdScheme(Code))
 			{
-				this.OnSelected(new ContactInfoModel(new ContactInfo()
+				this.SelectedContact = new ContactInfoModel(new ContactInfo()
 				{
 					LegalId = Constants.UriSchemes.RemoveScheme(Code)
-				}, []));
+				});
 			}
 			else if (!string.IsNullOrEmpty(Code))
 			{
@@ -422,7 +421,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 		[RelayCommand]
 		private void Anonymous()
 		{
-			this.OnSelected(new ContactInfoModel(null, []));
+			this.SelectedContact = new ContactInfoModel(null, []);
 		}
 
 		private Task Xmpp_OnPresence(object? Sender, PresenceEventArgs e)
