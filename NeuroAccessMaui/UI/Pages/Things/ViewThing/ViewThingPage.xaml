@@ -74,27 +74,34 @@
 							</BindableLayout.ItemTemplate>
 						</StackLayout>
 						<!-- BUTTONS -->
-						<Button Text="{l:Localize ReadSensor}" Command="{Binding Path=ReadSensorCommand}" IsEnabled="{Binding Path=IsConnected}"
-						IsVisible="{Binding IsSensor}" Margin="{StaticResource SmallBottomMargins}"/>
-						<Button Text="{l:Localize ControlActuator}" Command="{Binding Path=ControlActuatorCommand}" IsEnabled="{Binding Path=IsConnected}"
-						IsVisible="{Binding IsActuator}" Margin="{StaticResource SmallBottomMargins}"/>
+						<controls:TextButton LabelData="{l:Localize ReadSensor}" Command="{Binding Path=ReadSensorCommand}"
+													IsEnabled="{Binding Path=IsConnected}" IsVisible="{Binding IsSensor}"
+													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
+						<controls:TextButton LabelData="{l:Localize ControlActuator}" Command="{Binding Path=ControlActuatorCommand}"
+													IsEnabled="{Binding Path=IsConnected}" IsVisible="{Binding IsActuator}"
+													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
 						<Grid ColumnDefinitions="*" RowDefinitions="auto" Padding="0" Margin="0" ColumnSpacing="0" RowSpacing="0">
-							<Button Text="{l:Localize Chat}" Command="{Binding Path=ChatCommand}" IsEnabled="{Binding Path=IsConnected}"
-						IsVisible="{Binding IsNodeInConcentrator, Converter={StaticResource InvertedBoolConverter}}" Margin="{StaticResource SmallBottomMargins}"/>
+							<controls:TextButton LabelData="{l:Localize Chat}" Command="{Binding Path=ChatCommand}" IsEnabled="{Binding Path=IsConnected}"
+														IsVisible="{Binding IsNodeInConcentrator, Converter={StaticResource InvertedBoolConverter}}"
+														Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
 							<Frame Grid.Row="0" Grid.Column="0" CornerRadius="12" Padding="8,3,8,3" IsVisible="{Binding HasPendingChatMessages}"
 						   HorizontalOptions="End" VerticalOptions="Center" Margin="{StaticResource DefaultLeftRightAndBottomMargin}"
 						   Style="{StaticResource AlertFrame}">
 								<Label FontSize="Caption" TextColor="{StaticResource HeadingForeground}" Text="{Binding NrPendingChatMessages}" Padding="1"/>
 							</Frame>
 						</Grid>
-						<Button Text="{l:Localize ConnectToDevice}" Command="{Binding Path=AddToListCommand}" 
-						IsVisible="{Binding InContacts, Converter={StaticResource InvertedBoolConverter}}" Margin="{StaticResource SmallBottomMargins}"/>
-						<Button Text="{l:Localize DisconnectFromDevice}" Command="{Binding Path=RemoveFromListCommand}" 
-						IsVisible="{Binding InContactsAndNotOwner}" Margin="{StaticResource SmallBottomMargins}"/>
-						<Button Text="{l:Localize DeleteRules}" Command="{Binding Path=DeleteRulesCommand}" IsEnabled="{Binding Path=IsConnected}"
-						IsVisible="{Binding IsOwner}" Margin="{StaticResource SmallBottomMargins}"/>
-						<Button Text="{l:Localize DisownThing}" Command="{Binding Path=DisownThingCommand}" IsEnabled="{Binding Path=IsConnected}"
-						IsVisible="{Binding IsOwner}" Margin="{StaticResource SmallBottomMargins}"/>
+						<controls:TextButton LabelData="{l:Localize ConnectToDevice}" Command="{Binding Path=AddToListCommand}"
+													IsVisible="{Binding InContacts, Converter={StaticResource InvertedBoolConverter}}"
+													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
+						<controls:TextButton LabelData="{l:Localize DisconnectFromDevice}" Command="{Binding Path=RemoveFromListCommand}"
+													IsVisible="{Binding InContactsAndNotOwner}" Margin="{StaticResource SmallBottomMargins}"
+													Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
+						<controls:TextButton LabelData="{l:Localize DeleteRules}" Command="{Binding Path=DeleteRulesCommand}"
+													IsEnabled="{Binding Path=IsConnected}" IsVisible="{Binding IsOwner}"
+													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
+						<controls:TextButton LabelData="{l:Localize DisownThing}" Command="{Binding Path=DisownThingCommand}"
+													IsEnabled="{Binding Path=IsConnected}" IsVisible="{Binding IsOwner}"
+													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
 					</VerticalStackLayout>
 				</Frame>
 			</VerticalStackLayout>

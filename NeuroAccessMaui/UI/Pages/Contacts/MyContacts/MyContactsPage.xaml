@@ -61,8 +61,10 @@
 									
 						</CollectionView>
 							  
-						<Button Text="{Binding AnonymousText}" Command="{Binding AnonymousCommand}" IsVisible="{Binding AllowAnonymous}"/>
-						<Button Text="{l:Localize ScanQRCode}" Command="{Binding ScanQrCodeCommand}" IsVisible="{Binding CanScanQrCode}"/>
+						<controls:TextButton LabelData="{Binding AnonymousText}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+													Command="{Binding AnonymousCommand}" IsVisible="{Binding AllowAnonymous}"/>
+						<controls:TextButton LabelData="{l:Localize ScanQRCode}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+													Command="{Binding ScanQrCodeCommand}" IsVisible="{Binding CanScanQrCode}"/>
 					</VerticalStackLayout>
 				</Frame>
 			</VerticalStackLayout>

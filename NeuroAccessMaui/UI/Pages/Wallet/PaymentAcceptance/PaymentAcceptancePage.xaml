@@ -38,7 +38,8 @@
 						<Label Text="{l:Localize Message}" IsVisible="{Binding Path=MessagePreset}"/>
 						<Entry Text="{Binding Path=Message}" IsVisible="{Binding Path=MessagePreset}" IsReadOnly="True"/>
 						<!-- BUTTONS -->
-						<Button Text="{l:Localize Accept}" Command="{Binding Path=AcceptCommand}" Margin="{StaticResource SmallBottomMargins}"/>
+						<controls:TextButton LabelData="{l:Localize Accept}" Command="{Binding Path=AcceptCommand}"
+													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
 					</VerticalStackLayout>
 				</Frame>
 			</VerticalStackLayout>

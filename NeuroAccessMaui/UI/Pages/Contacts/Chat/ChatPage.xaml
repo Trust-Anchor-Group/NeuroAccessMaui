@@ -89,14 +89,14 @@
 									Text="{Binding MarkdownInput}" Keyboard="Chat" AutoSize="TextChanges"
 									Unfocused="OnEditorControlUnfocused"/>
 
-							<Button Grid.Column="1" HorizontalOptions="End" VerticalOptions="End"
-									CornerRadius="8" WidthRequest="40" HeightRequest="40" Margin="{StaticResource SmallLeftMargins}"
-									Text="❌" TextColor="{StaticResource TextColorLightTheme}" FontSize="Medium"
-									IsVisible="{Binding Path=IsWriting}" Command="{Binding CancelCommand}">
-								<Button.Behaviors>
+							<controls:TextButton Grid.Column="1" HorizontalOptions="End" VerticalOptions="End"
+														WidthRequest="40" HeightRequest="40" Margin="{StaticResource SmallLeftMargins}"
+														LabelData="❌" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+														IsVisible="{Binding Path=IsWriting}" Command="{Binding CancelCommand}">
+								<controls:TextButton.Behaviors>
 									<behaviors:UnfocusOnClickedBehavior UnfocusControl="EditorControl"/>
-								</Button.Behaviors>
-							</Button>
+								</controls:TextButton.Behaviors>
+							</controls:TextButton>
 						</Grid>
 						<!--
 						<Grid ColumnDefinitions="auto,*,auto" ColumnSpacing="0"
@@ -142,54 +142,44 @@
 					<mct:Expander Direction="Up" IsExpanded="{Binding IsButtonExpanded}">
 						<mct:Expander.Header>
 							<StackLayout BackgroundColor="White">
-								<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
-										Text="…" TextColor="{StaticResource TextColorLightTheme}" FontSize="Medium"
-										Command="{Binding ExpandButtonsCommand}" />
+								<controls:TextButton WidthRequest="40" HeightRequest="40" LabelData="…"
+															Command="{Binding ExpandButtonsCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
 							</StackLayout>
 						</mct:Expander.Header>
 						<StackLayout Orientation="Vertical" Spacing="5" Margin="{StaticResource SmallBottomMargins}" BackgroundColor="Transparent">
-							<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
-									Text="🎤" TextColor="{StaticResource TextColorLightTheme}" FontSize="Medium"
-									Command="{Binding RecordAudioCommand}"/>
+							<controls:TextButton WidthRequest="40" HeightRequest="40" LabelData="🎤"
+														Command="{Binding RecordAudioCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
 
-							<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
-									Text="📷" TextColor="{StaticResource TextColorLightTheme}" FontSize="Medium"
-									Command="{Binding TakePhotoCommand}"/>
+							<controls:TextButton WidthRequest="40" HeightRequest="40" LabelData="📷"
+														Command="{Binding TakePhotoCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
 
-							<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
-									Text="📎" TextColor="{StaticResource TextColorLightTheme}" FontSize="Medium"
-									Command="{Binding EmbedFileCommand}"/>
+							<controls:TextButton WidthRequest="40" HeightRequest="40" LabelData="📎"
+														Command="{Binding EmbedFileCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
 
-							<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
-									Text="👤" TextColor="{StaticResource TextColorLightTheme}" FontSize="Medium"
-									Command="{Binding EmbedIdCommand}"/>
+							<controls:TextButton WidthRequest="40" HeightRequest="40" LabelData="👤"
+														Command="{Binding EmbedIdCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
 
-							<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
-									Text="¶" TextColor="{StaticResource TextColorLightTheme}" FontSize="Medium"
-									Command="{Binding EmbedContractCommand}"/>
+							<controls:TextButton WidthRequest="40" HeightRequest="40" LabelData="¶"
+														Command="{Binding EmbedContractCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
 
-							<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
-									Text="💵" TextColor="{StaticResource TextColorLightTheme}" FontSize="Medium"
-									Command="{Binding EmbedMoneyCommand}"/>
+							<controls:TextButton WidthRequest="40" HeightRequest="40" LabelData="💵"
+														Command="{Binding EmbedMoneyCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
 
-							<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
-									Text="✻" TextColor="{StaticResource TextColorLightTheme}" FontSize="Medium"
-									Command="{Binding EmbedTokenCommand}"/>
+							<controls:TextButton WidthRequest="40" HeightRequest="40" LabelData="✻"
+														Command="{Binding EmbedTokenCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
 
-							<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
-									Text="📟︎" TextColor="{StaticResource TextColorLightTheme}" FontSize="Medium"
-									Command="{Binding EmbedThingCommand}"/>
+							<controls:TextButton WidthRequest="40" HeightRequest="40" LabelData="📟︎"
+														Command="{Binding EmbedThingCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
 						</StackLayout>
 					</mct:Expander>
 				</controls:FadeView.FrontView>
 				<controls:FadeView.BackView>
-					<Button CornerRadius="8" WidthRequest="40" HeightRequest="40"
-							Text="✉" TextColor="{StaticResource TextColorLightTheme}" FontSize="Medium"
-							Command="{Binding SendCommand}">
-						<Button.Behaviors>
+					<controls:TextButton WidthRequest="40" HeightRequest="40" LabelData="✉" Command="{Binding SendCommand}"
+												Style="{StaticResource FilledTextButtonNoRoundedCorners}">
+						<controls:TextButton.Behaviors>
 							<behaviors:UnfocusOnClickedBehavior UnfocusControl="EditorControl"/>
-						</Button.Behaviors>
-					</Button>
+						</controls:TextButton.Behaviors>
+					</controls:TextButton>
 				</controls:FadeView.BackView>
 			</controls:FadeView>
 		</Grid>

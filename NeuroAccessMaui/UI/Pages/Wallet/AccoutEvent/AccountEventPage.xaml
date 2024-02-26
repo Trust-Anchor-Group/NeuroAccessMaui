@@ -38,7 +38,8 @@
 						<Entry Text="{Binding Path=ReservedAndCurrency}" IsReadOnly="True" IsVisible="{Binding Reserved, Converter={converters:GreaterThanZero}}"/>
 						<Label Text="{l:Localize Message}" IsVisible="{Binding Path=HasMessage}"/>
 						<Entry Text="{Binding Path=Message}" IsReadOnly="True" IsVisible="{Binding Path=HasMessage}"/>
-						<Button Text="{l:Localize OpenMessageLink}" Command="{Binding OpenMessageLinkCommand}" IsVisible="{Binding MessageIsUri}"/>
+						<controls:TextButton LabelData="{l:Localize OpenMessageLink}" Command="{Binding OpenMessageLinkCommand}"
+													IsVisible="{Binding MessageIsUri}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
 						<Label Text="{l:Localize TransactionId}"/>
 						<Entry Text="{Binding Path=Id}" IsReadOnly="True"/>
 					</VerticalStackLayout>

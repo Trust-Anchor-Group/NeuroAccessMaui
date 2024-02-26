@@ -62,10 +62,12 @@
 								</DataTemplate>
 							</BindableLayout.ItemTemplate>
 						</StackLayout>
-						<Button Text="{l:Localize AddContact}" Command="{Binding Path=AddContactCommand}"
-						IsVisible="{Binding CallerInContactsList, Converter={StaticResource InvertedBoolConverter}}" Margin="{StaticResource SmallBottomMargins}"/>
-						<Button Text="{l:Localize RemoveContact}" Command="{Binding Path=RemoveContactCommand}"
-						IsVisible="{Binding CallerInContactsList}" Margin="{StaticResource SmallBottomMargins}"/>
+						<controls:TextButton LabelData="{l:Localize AddContact}" Command="{Binding Path=AddContactCommand}"
+													IsVisible="{Binding CallerInContactsList, Converter={StaticResource InvertedBoolConverter}}"
+													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
+						<controls:TextButton LabelData="{l:Localize RemoveContact}" Command="{Binding Path=RemoveContactCommand}"
+													IsVisible="{Binding CallerInContactsList}" Margin="{StaticResource SmallBottomMargins}"
+													Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
 						<!-- Thing -->
 						<Label Text="{l:Localize InformationAboutThing}" Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"/>
 						<Label Text="{l:Localize InformationAboutThingText}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"
@@ -95,12 +97,12 @@
 						<!-- BUTTONS -->
 						<Label Text="{l:Localize Options}" Margin="{StaticResource SmallTopMargins}"
 					   VerticalOptions="Start"/>
-						<Button Text="{l:Localize Accept}" Command="{Binding Path=AcceptCommand}" IsEnabled="{Binding Path=IsConnected}"
-						Margin="{StaticResource SmallBottomMargins}"/>
-						<Button Text="{l:Localize Reject}" Command="{Binding Path=RejectCommand}" IsEnabled="{Binding Path=IsConnected}"
-						Margin="{StaticResource SmallBottomMargins}"/>
-						<Button Text="{l:Localize Ignore}" Command="{Binding Path=IgnoreCommand}" IsEnabled="{Binding Path=IsConnected}"
-						Margin="{StaticResource SmallBottomMargins}"/>
+						<controls:TextButton LabelData="{l:Localize Accept}" Command="{Binding Path=AcceptCommand}" IsEnabled="{Binding Path=IsConnected}"
+													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
+						<controls:TextButton LabelData="{l:Localize Reject}" Command="{Binding Path=RejectCommand}" IsEnabled="{Binding Path=IsConnected}"
+													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
+						<controls:TextButton LabelData="{l:Localize Ignore}" Command="{Binding Path=IgnoreCommand}" IsEnabled="{Binding Path=IsConnected}"
+													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
 					</VerticalStackLayout>
 				</Frame>
 			</VerticalStackLayout>

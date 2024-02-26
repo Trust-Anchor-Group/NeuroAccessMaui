@@ -46,7 +46,9 @@
 							<Label Text="{l:Localize MakeThingPublic}" VerticalOptions="Center" />
 						</StackLayout>
 						<!-- BUTTONS -->
-						<Button Text="{l:Localize ClaimThing}" Command="{Binding Path=ClaimThingCommand}" IsEnabled="{Binding Path=CanClaimThing}" Margin="{StaticResource SmallBottomMargins}"/>
+						<controls:TextButton LabelData="{l:Localize ClaimThing}" Command="{Binding Path=ClaimThingCommand}"
+													IsEnabled="{Binding Path=CanClaimThing}" Margin="{StaticResource SmallBottomMargins}"
+													Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
 					</VerticalStackLayout>
 				</Frame>
 			</VerticalStackLayout>

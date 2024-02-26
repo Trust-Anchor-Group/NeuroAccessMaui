@@ -38,14 +38,17 @@
 						<Label Text="{l:Localize ExpiresAt}"/>
 						<Entry Text="{Binding Path=ExpiresStr}" IsReadOnly="True"/>
 						<!-- BUTTONS -->
-						<Button Text="{l:Localize Submit}" Command="{Binding Path=SubmitCommand}" Margin="{StaticResource SmallBottomMargins}"/>
-						<Button Text="{l:Localize ShowCode}" Command="{Binding Path=ShowCodeCommand}" Margin="{StaticResource SmallBottomMargins}"/>
+						<controls:TextButton LabelData="{l:Localize Submit}" Command="{Binding Path=SubmitCommand}"
+													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
+						<controls:TextButton LabelData="{l:Localize ShowCode}" Command="{Binding Path=ShowCodeCommand}"
+													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
 						<Image x:Name="QrCode" BackgroundColor="{StaticResource HeadingForeground}" Source="{Binding Path=QrCode}" 
                        IsVisible="{Binding Path=HasQrCode}" WidthRequest="{Binding Path=QrCodeWidth}" 
                        HeightRequest="{Binding Path=QrCodeHeight}" HorizontalOptions="Center" VerticalOptions="Start" 
                        Margin="0" />
-						<Button x:Name="ShareButton" Text="{l:Localize Share}" Command="{Binding Path=ShareCommand}" 
-                        IsVisible="{Binding Path=HasQrCode}" Margin="{StaticResource SmallBottomMargins}"/>
+						<controls:TextButton x:Name="ShareButton" LabelData="{l:Localize Share}" Command="{Binding Path=ShareCommand}"
+													IsVisible="{Binding Path=HasQrCode}" Margin="{StaticResource SmallBottomMargins}"
+													Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
 					</VerticalStackLayout>
 				</Frame>
 			</VerticalStackLayout>

@@ -63,10 +63,12 @@
 								</DataTemplate>
 							</BindableLayout.ItemTemplate>
 						</StackLayout>
-						<Button Text="{l:Localize AddContact}" Command="{Binding Path=AddContactCommand}"
-						IsVisible="{Binding CallerInContactsList, Converter={StaticResource InvertedBoolConverter}}" Margin="{StaticResource SmallBottomMargins}"/>
-						<Button Text="{l:Localize RemoveContact}" Command="{Binding Path=RemoveContactCommand}"
-						IsVisible="{Binding CallerInContactsList}" Margin="{StaticResource SmallBottomMargins}"/>
+						<controls:TextButton LabelData="{l:Localize AddContact}" Command="{Binding Path=AddContactCommand}"
+													IsVisible="{Binding CallerInContactsList, Converter={StaticResource InvertedBoolConverter}}"
+													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
+						<controls:TextButton LabelData="{l:Localize RemoveContact}" Command="{Binding Path=RemoveContactCommand}"
+													IsVisible="{Binding CallerInContactsList}" Margin="{StaticResource SmallBottomMargins}"
+													Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
 						<!-- Thing -->
 						<Label Text="{l:Localize InformationAboutThing}" Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"/>
 						<Label Text="{l:Localize InformationAboutThingText}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"
@@ -98,10 +100,10 @@
 								</DataTemplate>
 							</BindableLayout.ItemTemplate>
 						</StackLayout>
-						<Button Text="{l:Localize All}" Command="{Binding Path=AllParametersCommand}"
-						Margin="{StaticResource SmallTopBottomMargins}"/>
-						<Button Text="{l:Localize None}" Command="{Binding Path=NoParametersCommand}"
-						Margin="{StaticResource SmallBottomMargins}"/>
+						<controls:TextButton LabelData="{l:Localize All}" Command="{Binding Path=AllParametersCommand}"
+													Margin="{StaticResource SmallTopBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
+						<controls:TextButton LabelData="{l:Localize None}" Command="{Binding Path=NoParametersCommand}"
+													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
 						<!-- Range -->
 						<Label Text="{l:Localize Range}" Margin="{StaticResource SmallTopMargins}"
 					   VerticalOptions="Start"/>
@@ -113,12 +115,12 @@
 						<!-- BUTTONS -->
 						<Label Text="{l:Localize Options}" Margin="{StaticResource SmallTopMargins}"
 					   VerticalOptions="Start"/>
-						<Button Text="{l:Localize Accept}" Command="{Binding Path=AcceptCommand}"
-						Margin="{StaticResource SmallBottomMargins}"/>
-						<Button Text="{l:Localize Reject}" Command="{Binding Path=RejectCommand}"
-						Margin="{StaticResource SmallBottomMargins}"/>
-						<Button Text="{l:Localize Ignore}" Command="{Binding Path=IgnoreCommand}"
-						Margin="{StaticResource SmallBottomMargins}"/>
+						<controls:TextButton LabelData="{l:Localize Accept}" Command="{Binding Path=AcceptCommand}"
+													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
+						<controls:TextButton LabelData="{l:Localize Reject}" Command="{Binding Path=RejectCommand}"
+													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
+						<controls:TextButton LabelData="{l:Localize Ignore}" Command="{Binding Path=IgnoreCommand}"
+													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
 					</VerticalStackLayout>
 				</Frame>
 			</VerticalStackLayout>

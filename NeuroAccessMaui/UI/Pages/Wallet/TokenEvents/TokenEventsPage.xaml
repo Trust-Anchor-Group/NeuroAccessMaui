@@ -285,8 +285,9 @@
 						<Label Grid.Column="0" Grid.Row="1" Text="{l:Localize TokenEventsDescription}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"/>
 						<ListView Grid.Column="0" Grid.Row="2" HasUnevenRows="True" SeparatorVisibility="None" VerticalOptions="StartAndExpand"
                     ItemsSource="{Binding Path=Events}" ItemTemplate="{StaticResource EventStyleSelector}"/>
-						<Button Grid.Column="0" Grid.Row="3" Text="{l:Localize AddNote}" Margin="{StaticResource SmallBottomMargins}"
-                Command="{Binding Path=AddNoteCommand}" IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
+						<controls:TextButton Grid.Column="0" Grid.Row="3" LabelData="{l:Localize AddNote}" Margin="{StaticResource SmallBottomMargins}"
+													Command="{Binding Path=AddNoteCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+													IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
 					</Grid>
 				</Frame>
 			</VerticalStackLayout>
