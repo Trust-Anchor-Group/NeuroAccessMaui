@@ -1,4 +1,5 @@
-﻿using NeuroAccessMaui.Services.UI;
+﻿using NeuroAccessMaui.Services.Contacts;
+using NeuroAccessMaui.Services.UI;
 
 namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 {
@@ -90,6 +91,11 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 		/// String to display on the anonymous button
 		/// </summary>
 		public string? AnonymousText { get; set; }
+
+		/// <summary>
+		/// Any preloaded contacts
+		/// </summary>
+		public IEnumerable<ContactInfo>? Contacts { get; set; }
 
 	}
 }

@@ -5,6 +5,7 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.UI;
+using NeuroAccessMaui.Services.UI.QR;
 using NeuroAccessMaui.UI.Controls;
 using NeuroAccessMaui.UI.Controls.Extended;
 using NeuroAccessMaui.UI.Converters;
@@ -566,25 +567,49 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					this.saveStateWhileScanning = true;
 					this.stateTemplateWhileScanning = this.template;
 
-					TaskCompletionSource<ContactInfoModel?> Selected = new();
-					ContactListNavigationArgs Args = new(ServiceRef.Localizer[nameof(AppResources.AddContactToContract)], Selected)
+					IEnumerable<ContactInfo> Contacts = await Database.Find<ContactInfo>();
+					string LegalId;
+					bool HasContacts = false;
+
+					foreach (ContactInfo Contact2 in Contacts)
 					{
-						CanScanQrCode = true
-					};
+						HasContacts = true;
+						break;
+					}
 
-					await ServiceRef.UiService.GoToAsync(nameof(MyContactsPage), Args, BackMethod.Pop);
+					if (HasContacts)
+					{
+						TaskCompletionSource<ContactInfoModel?> Selected = new();
+						ContactListNavigationArgs Args = new(ServiceRef.Localizer[nameof(AppResources.AddContactToContract)], Selected)
+						{
+							CanScanQrCode = true,
+							Contacts = Contacts
+						};
 
-					ContactInfoModel? Contact = await Selected.Task;
-					if (Contact is null)
-						return;
+						await ServiceRef.UiService.GoToAsync(nameof(MyContactsPage), Args, BackMethod.Pop);
 
-					if (string.IsNullOrEmpty(Contact.LegalId))
+						ContactInfoModel? Contact = await Selected.Task;
+						if (Contact is null)
+							return;
+
+						LegalId = Contact.LegalId;
+					}
+					else
+					{
+						string? Code = await QrCode.ScanQrCode(ServiceRef.Localizer[nameof(AppResources.ScanQRCode)], [Constants.UriSchemes.IotId]);
+						if (string.IsNullOrEmpty(Code))
+							return;
+
+						LegalId = Constants.UriSchemes.RemoveScheme(Code) ?? string.Empty;
+					}
+
+					if (string.IsNullOrEmpty(LegalId))
 						await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ServiceRef.Localizer[nameof(AppResources.SelectedContactCannotBeAdded)]);
 					else
 					{
-						this.partsToAdd[Button.StyleId] = Contact.LegalId;
+						this.partsToAdd[Button.StyleId] = LegalId;
 						string settingsKey = partSettingsPrefix + Button.StyleId;
-						await ServiceRef.SettingsService.SaveState(settingsKey, Contact.LegalId);
+						await ServiceRef.SettingsService.SaveState(settingsKey, LegalId);
 
 						foreach (KeyValuePair<CaseInsensitiveString, string> part in this.GetPartsToAdd())
 							await this.AddRole(part.Key, part.Value);

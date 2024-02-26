@@ -58,7 +58,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 					ServiceRef.Localizer[nameof(AppResources.Anonymous)] : args.AnonymousText;
 			}
 
-			await this.UpdateContactList();
+			await this.UpdateContactList(args?.Contacts);
 
 			ServiceRef.XmppService.OnPresence += this.Xmpp_OnPresence;
 			ServiceRef.NotificationService.OnNewNotification += this.NotificationService_OnNewNotification;
@@ -79,12 +79,14 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 			this.SelectedContact = null;
 		}
 
-		private async Task UpdateContactList()
+		private async Task UpdateContactList(IEnumerable<ContactInfo>? Contacts)
 		{
 			SortedDictionary<CaseInsensitiveString, ContactInfo> Sorted = [];
 			Dictionary<CaseInsensitiveString, bool> Jids = [];
 
-			foreach (ContactInfo Info in await Database.Find<ContactInfo>())
+			Contacts ??= await Database.Find<ContactInfo>();
+
+			foreach (ContactInfo Info in Contacts)
 			{
 				Jids[Info.BareJid] = true;
 
@@ -160,13 +162,13 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 				if (string.IsNullOrEmpty(Contact?.BareJid))
 					continue;
 
-				if (!this.byBareJid.TryGetValue(Contact.BareJid, out List<ContactInfoModel>? Contacts))
+				if (!this.byBareJid.TryGetValue(Contact.BareJid, out List<ContactInfoModel>? Contacts2))
 				{
-					Contacts = [];
-					this.byBareJid[Contact.BareJid] = Contacts;
+					Contacts2 = [];
+					this.byBareJid[Contact.BareJid] = Contacts2;
 				}
 
-				Contacts.Add(Contact);
+				Contacts2.Add(Contact);
 			}
 
 			this.ShowContactsMissing = Sorted.Count == 0;
