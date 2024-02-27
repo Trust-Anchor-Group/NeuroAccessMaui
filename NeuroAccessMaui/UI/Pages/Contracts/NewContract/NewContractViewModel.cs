@@ -1219,7 +1219,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					string? CalculatorButtonType = null;
 
 					if (Parameter is NumericalParameter NumericalParameter)
-						CalculatorButtonType = "🖩";  // TODO: SVG icon
+						CalculatorButtonType = "∑";  // TODO: SVG icon
 
 					if (Parameter is DurationParameter DurationParameter)
 						CalculatorButtonType = "🕑";  // TODO: SVG icon

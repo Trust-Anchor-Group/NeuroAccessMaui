@@ -33,7 +33,7 @@
 								<Entry Grid.Column="0" Grid.Row="0" Text="{Binding Path=AmountText}"
 										 BackgroundColor="{Binding Path=AmountOk, Converter={converters:ControlBgColor}}"
 										 Placeholder="{Binding Path=Currency}"/>
-								<Button Grid.Column="1" Grid.Row="0" Text="🖩" Command="{Binding OpenCalculatorCommand}" CommandParameter="AmountText"
+								<Button Grid.Column="1" Grid.Row="0" Text="∑" Command="{Binding OpenCalculatorCommand}" CommandParameter="AmountText"
 										  Style="{StaticResource UnicodeCharacterButtonNoRoundedCorners}"/>
 							</Grid>
 							<controls:TextButton LabelData="{l:Localize Sell}" Command="{Binding Path=SellCommand}"

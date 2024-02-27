@@ -34,7 +34,7 @@
 								<Entry Grid.Column="0" Grid.Row="0" Text="{Binding Path=AmountText}"
 										 BackgroundColor="{Binding Path=AmountOk, Converter={converters:ControlBgColor}}"
 										 Placeholder="{Binding Path=Currency}"/>
-								<Button Grid.Column="1" Grid.Row="0" Text="🖩" Command="{Binding OpenCalculatorCommand}" CommandParameter="AmountText"
+								<Button Grid.Column="1" Grid.Row="0" Text="∑" Command="{Binding OpenCalculatorCommand}" CommandParameter="AmountText"
 										  Style="{StaticResource UnicodeCharacterButtonNoRoundedCorners}"/>
 							</Grid>
 							<Label Text="{l:Localize AmountExtra}"/>
@@ -42,7 +42,7 @@
 								<Entry Grid.Column="0" Grid.Row="0" Text="{Binding Path=AmountExtraText}"
 										 BackgroundColor="{Binding Path=AmountExtraOk, Converter={converters:ControlBgColor}}"
 										 Placeholder="{Binding Path=Currency}"/>
-								<Button Grid.Column="1" Grid.Row="0" Text="🖩" Command="{Binding OpenCalculatorCommand}" CommandParameter="AmountExtraText"
+								<Button Grid.Column="1" Grid.Row="0" Text="∑" Command="{Binding OpenCalculatorCommand}" CommandParameter="AmountExtraText"
 										  Style="{StaticResource UnicodeCharacterButtonNoRoundedCorners}"/>
 							</Grid>
 							<Label Text="{l:Localize Message}"/>
