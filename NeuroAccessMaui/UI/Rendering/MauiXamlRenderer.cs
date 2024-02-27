@@ -525,6 +525,7 @@ namespace NeuroAccessMaui.UI.Rendering
 						this.XmlOutput.WriteStartElement("Label");
 						this.XmlOutput.WriteAttributeString("LineBreakMode", "WordWrap");
 						this.XmlOutput.WriteAttributeString("TextColor", "Red");
+						this.XmlOutput.WriteAttributeString("LineBreakMode", "WordWrap");
 						this.XmlOutput.WriteValue(ex3.Message);
 						this.XmlOutput.WriteEndElement();
 						this.XmlOutput.WriteEndElement();
@@ -538,6 +539,7 @@ namespace NeuroAccessMaui.UI.Rendering
 					this.XmlOutput.WriteStartElement("Label");
 					this.XmlOutput.WriteAttributeString("LineBreakMode", "WordWrap");
 					this.XmlOutput.WriteAttributeString("TextColor", "Red");
+					this.XmlOutput.WriteAttributeString("LineBreakMode", "WordWrap");
 					this.XmlOutput.WriteValue(ex.Message);
 					this.XmlOutput.WriteEndElement();
 

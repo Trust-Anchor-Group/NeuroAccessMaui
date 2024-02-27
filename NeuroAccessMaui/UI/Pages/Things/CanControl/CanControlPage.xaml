@@ -95,7 +95,8 @@
 								<DataTemplate x:DataType="viewmodel2:FieldReference">
 									<Grid ColumnDefinitions="auto,*" RowDefinitions="auto">
 										<CheckBox Grid.Column="0" Grid.Row="0" IsChecked="{Binding Permitted}" VerticalOptions="Center"/>
-										<Label Grid.Column="1" Grid.Row="0" Text="{Binding Name}" VerticalOptions="Center" LineBreakMode="WordWrap"/>
+										<Label Grid.Column="1" Grid.Row="0" Text="{Binding Name}" VerticalOptions="Center" LineBreakMode="WordWrap"
+												 Margin="{StaticResource SmallLeftMargins}"/>
 									</Grid>
 								</DataTemplate>
 							</BindableLayout.ItemTemplate>

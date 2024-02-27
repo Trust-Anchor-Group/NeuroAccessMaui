@@ -819,18 +819,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					Valid = false;
 				}
 
-				if (Valid)
-				{
-					if (P.Control is not null)
-						P.Control.BackgroundColor = ControlBgColor.ToColor(true);
-				}
-				else
-				{
-					if (P.Control is not null)
-						P.Control.BackgroundColor = ControlBgColor.ToColor(false);
+				Ok &= Valid;
 
-					Ok = false;
-				}
+				Color? Color = ControlBgColor.ToColor(Valid);
+
+				if (P.Control is not null)
+					P.Control.BackgroundColor = Color;
+
+				if (P.AltColorElement is View Label)
+					Label.BackgroundColor = Color;
 			}
 
 			this.ParametersOk = Ok;
@@ -927,7 +924,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					{
 						if (View is Entry Entry)
 						{
-							if (Entry.BackgroundColor == ControlBgColor.ToColor(false))
+							if (Entry.BackgroundColor == AppColors.ErrorBackground)
 							{
 								await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 									ServiceRef.Localizer[nameof(AppResources.YourContractContainsErrors)]);
@@ -1023,23 +1020,36 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			}
 		}
 
+		internal static IView ParseXaml(string Xaml)
+		{
+			VerticalStackLayout VerticalLayout = new VerticalStackLayout().LoadFromXaml(Xaml);
+
+			IView? First = null;
+
+			foreach (IView Element in VerticalLayout.Children)
+			{
+				if (First is null)
+					First = Element;
+				else
+					return VerticalLayout;
+			}
+
+			return First ?? VerticalLayout;
+		}
+
 		internal static void Populate(VerticalStackLayout Layout, string Xaml)
 		{
-			VerticalStackLayout xaml = new VerticalStackLayout().LoadFromXaml(Xaml);
+			VerticalStackLayout VerticalLayout = new VerticalStackLayout().LoadFromXaml(Xaml);
 
-			List<IView> children = [.. xaml.Children];
-
-			foreach (IView Element in children)
+			foreach (IView Element in VerticalLayout.Children)
 				Layout.Children.Add(Element);
 		}
 
 		internal static void Populate(HorizontalStackLayout Layout, string Xaml)
 		{
-			VerticalStackLayout xaml = new VerticalStackLayout().LoadFromXaml(Xaml);
+			VerticalStackLayout VerticalLayout = new VerticalStackLayout().LoadFromXaml(Xaml);
 
-			List<IView> children = [.. xaml.Children];
-
-			foreach (IView Element in children)
+			foreach (IView Element in VerticalLayout.Children)
 				Layout.Children.Add(Element);
 		}
 
@@ -1113,18 +1123,32 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					{
 						StyleId = Parameter.Name,
 						IsChecked = BP.Value.HasValue && BP.Value.Value,
-						VerticalOptions = LayoutOptions.Center
+						VerticalOptions = LayoutOptions.Center,
+						Margin = AppStyles.SmallRightMargins
 					};
 
-					HorizontalStackLayout Layout = [];
+					Grid Layout = new()
+					{
+						ColumnDefinitions =
+						[
+							new ColumnDefinition(GridLength.Auto)
+						],
+						RowDefinitions =
+						[
+							new RowDefinition(GridLength.Auto),
+							new RowDefinition(GridLength.Star)
+						]
+					};
 
-					Layout.Children.Add(CheckBox);
-					Populate(Layout, await Parameter.ToMauiXaml(this.template.DeviceLanguage(), this.template));
+					IView Label = ParseXaml(await Parameter.ToMauiXaml(this.template.DeviceLanguage(), this.template));
+
+					Layout.Add(CheckBox, 0, 0);
+					Layout.Add(Label, 1, 0);
 					ParametersLayout.Children.Add(Layout);
 
 					CheckBox.CheckedChanged += this.Parameter_CheckedChanged;
 
-					ParameterInfo PI = new(Parameter, CheckBox);
+					ParameterInfo PI = new(Parameter, CheckBox, Layout);
 					this.parametersByName[Parameter.Name] = PI;
 					this.parametersInOrder.AddLast(PI);
 

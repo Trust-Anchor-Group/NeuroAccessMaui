@@ -89,30 +89,36 @@
 						<!-- Field Types -->
 						<Label Text="{l:Localize FieldTypes}" Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"/>
 						<Label Text="{l:Localize PermitFieldTypesText}" LineBreakMode="WordWrap" Style="{StaticResource InfoLabel}"/>
-						<StackLayout Orientation="Horizontal">
-							<CheckBox IsChecked="{Binding PermitMomentary}" VerticalOptions="Center"/>
-							<Label Text="{l:Localize MomentaryValues}" VerticalOptions="Center" LineBreakMode="WordWrap"/>
-						</StackLayout>
-						<StackLayout Orientation="Horizontal">
-							<CheckBox IsChecked="{Binding PermitIdentity}" VerticalOptions="Center"/>
-							<Label Text="{l:Localize IdentityValues}" VerticalOptions="Center" LineBreakMode="WordWrap"/>
-						</StackLayout>
-						<StackLayout Orientation="Horizontal">
-							<CheckBox IsChecked="{Binding PermitStatus}" VerticalOptions="Center"/>
-							<Label Text="{l:Localize StatusValues}" VerticalOptions="Center" LineBreakMode="WordWrap"/>
-						</StackLayout>
-						<StackLayout Orientation="Horizontal">
-							<CheckBox IsChecked="{Binding PermitComputed}" VerticalOptions="Center"/>
-							<Label Text="{l:Localize ComputedValues}" VerticalOptions="Center" LineBreakMode="WordWrap"/>
-						</StackLayout>
-						<StackLayout Orientation="Horizontal">
-							<CheckBox IsChecked="{Binding PermitPeak}" VerticalOptions="Center"/>
-							<Label Text="{l:Localize PeakValues}" VerticalOptions="Center" LineBreakMode="WordWrap"/>
-						</StackLayout>
-						<StackLayout Orientation="Horizontal">
-							<CheckBox IsChecked="{Binding PermitHistorical}" VerticalOptions="Center"/>
-							<Label Text="{l:Localize HistoricalValues}" VerticalOptions="Center" LineBreakMode="WordWrap"/>
-						</StackLayout>
+						<Grid ColumnDefinitions="auto,*" RowDefinitions="auto">
+							<CheckBox Grid.Column="0" Grid.Row="0" IsChecked="{Binding PermitMomentary}" VerticalOptions="Center"/>
+							<Label Grid.Column="1" Grid.Row="0" Text="{l:Localize MomentaryValues}" VerticalOptions="Center" LineBreakMode="WordWrap"
+									 Margin="{StaticResource SmallLeftMargins}"/>
+						</Grid>
+						<Grid ColumnDefinitions="auto,*" RowDefinitions="auto">
+							<CheckBox Grid.Column="0" Grid.Row="0" IsChecked="{Binding PermitIdentity}" VerticalOptions="Center"/>
+							<Label Grid.Column="1" Grid.Row="0" Text="{l:Localize IdentityValues}" VerticalOptions="Center" LineBreakMode="WordWrap"
+									 Margin="{StaticResource SmallLeftMargins}"/>
+						</Grid>
+						<Grid ColumnDefinitions="auto,*" RowDefinitions="auto">
+							<CheckBox Grid.Column="0" Grid.Row="0" IsChecked="{Binding PermitStatus}" VerticalOptions="Center"/>
+							<Label Grid.Column="1" Grid.Row="0" Text="{l:Localize StatusValues}" VerticalOptions="Center" LineBreakMode="WordWrap"
+									 Margin="{StaticResource SmallLeftMargins}"/>
+						</Grid>
+						<Grid ColumnDefinitions="auto,*" RowDefinitions="auto">
+							<CheckBox Grid.Column="0" Grid.Row="0" IsChecked="{Binding PermitComputed}" VerticalOptions="Center"/>
+							<Label Grid.Column="1" Grid.Row="0" Text="{l:Localize ComputedValues}" VerticalOptions="Center" LineBreakMode="WordWrap"
+									 Margin="{StaticResource SmallLeftMargins}"/>
+						</Grid>
+						<Grid ColumnDefinitions="auto,*" RowDefinitions="auto">
+							<CheckBox Grid.Column="0" Grid.Row="0" IsChecked="{Binding PermitPeak}" VerticalOptions="Center"/>
+							<Label Grid.Column="1" Grid.Row="0" Text="{l:Localize PeakValues}" VerticalOptions="Center" LineBreakMode="WordWrap"
+									 Margin="{StaticResource SmallLeftMargins}"/>
+						</Grid>
+						<Grid ColumnDefinitions="auto,*" RowDefinitions="auto">
+							<CheckBox Grid.Column="0" Grid.Row="0" IsChecked="{Binding PermitHistorical}" VerticalOptions="Center"/>
+							<Label Grid.Column="1" Grid.Row="0" Text="{l:Localize HistoricalValues}" VerticalOptions="Center" LineBreakMode="WordWrap"
+									 Margin="{StaticResource SmallLeftMargins}"/>
+						</Grid>
 						<controls:TextButton LabelData="{l:Localize All}" Command="{Binding Path=AllFieldTypesCommand}"
 													Margin="{StaticResource SmallTopBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
 						<controls:TextButton LabelData="{l:Localize None}" Command="{Binding Path=NoFieldTypesCommand}"
@@ -125,7 +131,8 @@
 								<DataTemplate x:DataType="viewmodel:FieldReference">
 									<Grid ColumnDefinitions="auto,*" RowDefinitions="auto">
 										<CheckBox Grid.Column="0" Grid.Row="0" IsChecked="{Binding Permitted}" VerticalOptions="Center"/>
-										<Label Grid.Column="1" Grid.Row="0" Text="{Binding Name}" VerticalOptions="Center" LineBreakMode="WordWrap"/>
+										<Label Grid.Column="1" Grid.Row="0" Text="{Binding Name}" VerticalOptions="Center" LineBreakMode="WordWrap"
+												 Margin="{StaticResource SmallLeftMargins}"/>
 									</Grid>
 								</DataTemplate>
 							</BindableLayout.ItemTemplate>

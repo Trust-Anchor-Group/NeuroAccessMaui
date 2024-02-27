@@ -30,10 +30,10 @@
 													 EntryData="{Binding TextNote}"
 													 ReturnCommand="{Binding AddNoteCommand}"/>
 
-					<HorizontalStackLayout>
-						<CheckBox IsChecked="{Binding Personal}" VerticalOptions="Center"/>
-						<Label Text="{l:Localize NoteIsPersonal}" VerticalOptions="Center"/>
-					</HorizontalStackLayout>
+					<Grid ColumnDefinitions="auto,*" RowDefinitions="auto">
+						<CheckBox Grid.Column="0" Grid.Row="0" IsChecked="{Binding Personal}" VerticalOptions="Center"/>
+						<Label Grid.Column="1" Grid.Row="0" Text="{l:Localize NoteIsPersonal}" VerticalOptions="Center" Margin="{StaticResource SmallLeftMargins}"/>
+					</Grid>
 
 					<controls:TextButton Command="{Binding AddNoteCommand}"
 												Style="{StaticResource FilledTextButton}"

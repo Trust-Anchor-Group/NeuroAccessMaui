@@ -9,7 +9,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
 	/// </summary>
 	/// <param name="Parameter">Contract parameter.</param>
 	/// <param name="Control">Generated control.</param>
-	public class ParameterInfo(Parameter Parameter, View? Control) : ObservableObject
+	/// <param name="AltColorElement">Alternative element that should follow the background coloring of <see cref="Control"/>.</param>
+	public class ParameterInfo(Parameter Parameter, View? Control, IView? AltColorElement = null) : ObservableObject
     {
 		private Duration durationValue = Duration.Zero;
 
@@ -22,6 +23,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
 		/// Generated control.
 		/// </summary>
 		public View? Control { get; internal set; } = Control;
+
+		/// <summary>
+		/// Alternative element that should follow the background coloring of <see cref="Control"/>.
+		/// </summary>
+		public IView? AltColorElement { get; internal set; } = AltColorElement;
 
 		/// <summary>
 		/// Duration object

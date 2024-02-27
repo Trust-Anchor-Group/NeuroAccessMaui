@@ -79,7 +79,8 @@
 
 		<Grid ColumnDefinitions="auto,*" RowDefinitions="auto" ColumnSpacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumMargins}">
 			<CheckBox Grid.Column="0" IsChecked="{Binding IsPersonalAddressInfoOk}" VerticalOptions="Center"/>
-			<Label Grid.Column="1" Text="{l:Localize PeerReviewPersonalAddressInfoText}" VerticalOptions="Center" LineBreakMode="WordWrap">
+			<Label Grid.Column="1" Text="{l:Localize PeerReviewPersonalAddressInfoText}" VerticalOptions="Center" LineBreakMode="WordWrap"
+					 Margin="{StaticResource SmallLeftMargins}">
 				<Label.GestureRecognizers>
 					<TapGestureRecognizer Command="{Binding ToggleIsPersonalAddressInfoOkCommand}"/>
 				</Label.GestureRecognizers>

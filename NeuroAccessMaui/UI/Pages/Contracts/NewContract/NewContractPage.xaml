@@ -45,7 +45,8 @@
 								  BackgroundColor="{Binding SelectedContractVisibilityItem, Mode=TwoWay, Converter={StaticResource OkIfSelected}}">
 							<Picker Title="{l:Localize SelectWhoShouldHaveAccessToThisContract}"
 									  ItemsSource="{Binding Path=ContractVisibilityItems}"
-									  SelectedItem="{Binding Path=SelectedContractVisibilityItem, Mode=TwoWay}"/>
+									  SelectedItem="{Binding Path=SelectedContractVisibilityItem, Mode=TwoWay}"
+									  BackgroundColor="{Binding SelectedContractVisibilityItem, Mode=TwoWay, Converter={StaticResource OkIfSelected}}"/>
 						</Border>
 
 						<Label Text="{l:Localize YourRole}" HorizontalOptions="Start" />
@@ -55,7 +56,8 @@
 							<Picker Title="{l:Localize SelectYourRoleInThisContract}"
 									  ItemsSource="{Binding Path=AvailableRoles}"
 									  SelectedItem="{Binding Path=SelectedRole, Mode=TwoWay}"
-									  IsEnabled="{Binding Path=HasRoles}"/>
+									  IsEnabled="{Binding Path=HasRoles}"
+									  BackgroundColor="{Binding SelectedRole, Mode=TwoWay, Converter={StaticResource OkIfSelected}}"/>
 						</Border>
 						<ContentView Content="{Binding Path=Roles}" />
 					</VerticalStackLayout>

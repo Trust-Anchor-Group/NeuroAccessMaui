@@ -35,7 +35,8 @@
 
 		<Grid ColumnDefinitions="auto,*" RowDefinitions="auto" ColumnSpacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumMargins}">
 			<CheckBox Grid.Column="0" IsChecked="{Binding IsGenderOk}" VerticalOptions="Center"/>
-			<Label Grid.Column="1" Text="{l:Localize PeerReviewGenderText}" VerticalOptions="Center" LineBreakMode="WordWrap">
+			<Label Grid.Column="1" Text="{l:Localize PeerReviewGenderText}" VerticalOptions="Center" LineBreakMode="WordWrap"
+					 Margin="{StaticResource SmallLeftMargins}">
 				<Label.GestureRecognizers>
 					<TapGestureRecognizer Command="{Binding ToggleIsGenderOkCommand}"/>
 				</Label.GestureRecognizers>

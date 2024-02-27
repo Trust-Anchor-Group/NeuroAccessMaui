@@ -41,10 +41,10 @@
 								</DataTemplate>
 							</BindableLayout.ItemTemplate>
 						</StackLayout>
-						<StackLayout Orientation="Horizontal" Margin="{StaticResource SmallTopBottomMargins}">
-							<CheckBox IsChecked="{Binding Path=MakePublic, Mode=TwoWay}" VerticalOptions="Center"/>
-							<Label Text="{l:Localize MakeThingPublic}" VerticalOptions="Center" />
-						</StackLayout>
+						<Grid ColumnDefinitions="auto,*" RowDefinitions="auto" Margin="{StaticResource SmallTopBottomMargins}">
+							<CheckBox Grid.Column="0" Grid.Row="0" IsChecked="{Binding Path=MakePublic, Mode=TwoWay}" VerticalOptions="Center"/>
+							<Label Grid.Column="1" Grid.Row="0" Text="{l:Localize MakeThingPublic}" VerticalOptions="Center" Margin="{StaticResource SmallLeftMargins}"/>
+						</Grid>
 						<!-- BUTTONS -->
 						<controls:TextButton LabelData="{l:Localize ClaimThing}" Command="{Binding Path=ClaimThingCommand}"
 													IsEnabled="{Binding Path=CanClaimThing}" Margin="{StaticResource SmallBottomMargins}"

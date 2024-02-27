@@ -50,10 +50,10 @@
 						</Grid>
 						<Label Text="{l:Localize Message}"/>
 						<Entry Text="{Binding Path=Message}" IsReadOnly="{Binding Path=MessagePreset}"/>
-						<StackLayout Orientation="Horizontal" Margin="{StaticResource SmallTopBottomMargins}" IsVisible="{Binding ToPreset}">
-							<CheckBox IsChecked="{Binding Path=EncryptMessage, Mode=TwoWay}" VerticalOptions="Center" IsEnabled="{Binding CanEncryptMessage}"/>
-							<Label Text="{l:Localize EncryptMessage}" VerticalOptions="Center" />
-						</StackLayout>
+						<Grid ColumnDefinitions="auto,*" RowDefinitions="auto" Margin="{StaticResource SmallTopBottomMargins}" IsVisible="{Binding ToPreset}">
+							<CheckBox Grid.Column="0" Grid.Row="0" IsChecked="{Binding Path=EncryptMessage, Mode=TwoWay}" VerticalOptions="Center" IsEnabled="{Binding CanEncryptMessage}"/>
+							<Label Grid.Column="1" Grid.Row="0" Text="{l:Localize EncryptMessage}" VerticalOptions="Center" Margin="{StaticResource SmallLeftMargins}"/>
+						</Grid>
 						<!-- BUTTONS -->
 						<controls:TextButton LabelData="{l:Localize PayOnline}" Command="{Binding Path=PayOnlineCommand}"
 													IsEnabled="{Binding Path=NotPaid}" Margin="{StaticResource SmallBottomMargins}" IsVisible="{Binding ToPreset}"

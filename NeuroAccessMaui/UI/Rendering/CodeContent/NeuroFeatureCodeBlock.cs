@@ -58,6 +58,7 @@ namespace NeuroAccessMaui.UI.Rendering.CodeContent
 				Output.WriteAttributeString("Text", ex.Message);
 				Output.WriteAttributeString("FontFamily", "Courier New");
 				Output.WriteAttributeString("TextColor", "Red");
+				Output.WriteAttributeString("LineBreakMode", "WordWrap");
 				Output.WriteEndElement();
 
 				return Task.FromResult(false);
