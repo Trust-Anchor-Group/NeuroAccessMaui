@@ -11,6 +11,9 @@ namespace NeuroAccessMaui.UI.Converters
 		/// <inheritdoc/>
 		public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
 		{
+			if(value is null)
+				return Colors.Transparent;
+
 			if (value is bool Ok)
 				return ToColor(Ok);
 			else if (value is Color Color)
@@ -26,7 +29,22 @@ namespace NeuroAccessMaui.UI.Converters
 		/// <returns>Color</returns>
 		public static Color? ToColor(bool Ok)
 		{
-			return Ok ? Colors.Transparent : AppColors.ErrorBackground;
+			if(!Ok)
+				return AppColors.ErrorBackground;
+			try
+			{
+				string key = SettingsViewModel.CurrentDisplayMode == AppTheme.Light ? "SecondaryBackgroundLight" : "SecondaryBackgroundDark";
+				if (!(App.Current?.Resources.TryGetValue(key, out object Obj) ?? false))
+					return Colors.Transparent;
+
+				if (Obj is Color Color)
+					return Color;
+				else
+					return Colors.Transparent;
+			} catch (Exception)
+			{
+				return Colors.Transparent;
+			}
 		}
 
 		/// <inheritdoc/>
