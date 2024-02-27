@@ -1123,8 +1123,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					{
 						StyleId = Parameter.Name,
 						IsChecked = BP.Value.HasValue && BP.Value.Value,
-						VerticalOptions = LayoutOptions.Center,
-						Margin = AppStyles.SmallRightMargins
+						VerticalOptions = LayoutOptions.Center
 					};
 
 					Grid Layout = new()
@@ -1137,7 +1136,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						[
 							new RowDefinition(GridLength.Auto),
 							new RowDefinition(GridLength.Star)
-						]
+						],
+						Margin = AppStyles.SmallBottomMargins
 					};
 
 					IView Label = ParseXaml(await Parameter.ToMauiXaml(this.template.DeviceLanguage(), this.template));
@@ -1172,6 +1172,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				{
 					Populate(ParametersLayout, await Parameter.ToMauiXaml(this.template.DeviceLanguage(), this.template));
 
+					Border Border = new()
+					{
+						StrokeThickness = 2,
+						Style = AppStyles.RegularCompositeEntryBorder,
+						Margin = AppStyles.SmallBottomMargins
+					};
+								  
 					ExtendedDatePicker Picker = new()
 					{
 						StyleId = Parameter.Name,
@@ -1179,11 +1186,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						Placeholder = Parameter.Guide
 					};
 
-					ParametersLayout.Children.Add(Picker);
+					Border.Content = Picker;
+					ParametersLayout.Children.Add(Border);
 
 					Picker.NullableDateSelected += this.Parameter_DateChanged;
 
-					ParameterInfo PI = new(Parameter, Picker);
+					ParameterInfo PI = new(Parameter, Picker, Border);
 					this.parametersByName[Parameter.Name] = PI;
 					this.parametersInOrder.AddLast(PI);
 
@@ -1199,11 +1207,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				{
 					Populate(ParametersLayout, await Parameter.ToMauiXaml(this.template.DeviceLanguage(), this.template));
 
-					Entry Entry = new()
+					CompositeEntry Entry = new()
 					{
 						StyleId = Parameter.Name,
-						Text = Parameter.ObjectValue?.ToString(),
-						Placeholder = Parameter.Guide
+						EntryData = Parameter.ObjectValue?.ToString() ?? string.Empty,
+						Placeholder = Parameter.Guide,
+						Style = AppStyles.RegularCompositeEntry,
+						Margin = AppStyles.SmallBottomMargins
 					};
 
 					string? CalculatorButtonType = null;
@@ -1242,9 +1252,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 							Margin = new Thickness(0)
 						};
 
-						Grid.SetColumn((IView)Entry, 0);
-						Grid.SetRow((IView)Entry, 0);
-						Grid.Children.Add(Entry);
+						Grid.Add(Entry, 0, 0);
 
 						TextButton CalcButton = new()
 						{
@@ -1258,9 +1266,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 						CalcButton.Clicked += this.CalcButton_Clicked;
 
-						Grid.SetColumn((IView)CalcButton, 1);
-						Grid.SetRow((IView)CalcButton, 0);
-						Grid.Children.Add(CalcButton);
+						Grid.Add(CalcButton, 1, 0);
 
 						ParametersLayout.Children.Add(Grid);
 					}
@@ -1269,14 +1275,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						ParametersLayout.Children.Add(Entry);
 					}
 
-					Entry.TextChanged += this.Parameter_TextChanged;
+					Entry.Entry.TextChanged += this.Parameter_TextChanged;
 
 					ParameterInfo ParameterInfo = new(Parameter, Entry);
 
 					if (Parameter is DurationParameter)
 					{
 						Entry.IsReadOnly = true;
-						Entry.SetBinding(Entry.TextProperty, new Binding("DurationValue", BindingMode.OneWay, new DurationToString()));
+						Entry.SetBinding(CompositeEntry.EntryDataProperty, new Binding("DurationValue", BindingMode.OneWay, new DurationToString()));
 						Entry.BindingContext = ParameterInfo;
 					}
 
@@ -1286,7 +1292,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					if (this.presetParameterValues.TryGetValue(Parameter.Name, out object? PresetValue))
 					{
 						this.presetParameterValues.Remove(Parameter.Name);
-						Entry.Text = PresetValue.ToString();
+						Entry.EntryData = PresetValue?.ToString() ?? string.Empty;
 					}
 				}
 			}

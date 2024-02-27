@@ -43,6 +43,9 @@ namespace NeuroAccessMaui.UI.Controls
 		/// <summary>Bindable property for <see cref="IsReadOnly"/>.</summary>
 		public static readonly BindableProperty IsReadOnlyProperty = InputView.IsReadOnlyProperty;
 
+		/// <summary>Bindable property for <see cref="Placeholder"/>.</summary>
+		public static readonly BindableProperty PlaceholderProperty = InputView.PlaceholderProperty;
+
 		public void OnBorderStylePropertyChanged(Style OldValue, Style NewValue)
 		{
 			this.innerBorder.Style = NewValue;
@@ -103,6 +106,11 @@ namespace NeuroAccessMaui.UI.Controls
 		public void OnIsReadOnlyPropertyChanged(bool _, bool NewValue)
 		{
 			this.innerEntry.IsReadOnly = NewValue;
+		}
+
+		public void OnPlaceholderPropertyChanged(string _, string NewValue)
+		{
+			this.innerEntry.Placeholder = NewValue;
 		}
 
 		public Style BorderStyle
@@ -191,6 +199,18 @@ namespace NeuroAccessMaui.UI.Controls
 			}
 		}
 
+		public string Placeholder
+		{
+			get => (string)this.GetValue(InputView.PlaceholderProperty);
+			set
+			{
+				this.SetValue(InputView.PlaceholderProperty, value);
+
+				if (this.innerEntry is not null)
+					this.innerEntry.Placeholder = value;
+			}
+		}
+
 		public Entry Entry => this.innerEntry;
 
 		/// <summary>
@@ -221,7 +241,8 @@ namespace NeuroAccessMaui.UI.Controls
 				VerticalOptions = LayoutOptions.Center,
 				HorizontalOptions = LayoutOptions.Fill,
 				IsReadOnly = this.IsReadOnly,
-				IsPassword = this.IsPassword
+				IsPassword = this.IsPassword,
+				Placeholder = this.Placeholder
 			};
 
 			this.innerEntry.Completed += this.InnerEntry_Completed;

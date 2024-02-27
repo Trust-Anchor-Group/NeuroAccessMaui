@@ -25,6 +25,8 @@ namespace NeuroAccessMaui.UI
 		private static Style? filledTextButton;
 		private static Style? frameSet;
 		private static Style? frameSubSet;
+		private static Style? regularCompositeEntry;
+		private static Style? regularCompositeEntryBorder;
 
 		static AppStyles()
 		{
@@ -240,5 +242,28 @@ namespace NeuroAccessMaui.UI
 			}
 		}
 
+		/// <summary>
+		/// Style for borders in a regular composte entry control.
+		/// </summary>
+		public static Style RegularCompositeEntry
+		{
+			get
+			{
+				regularCompositeEntry ??= TryGetResource<Style>("RegularCompositeEntryNoRoundedCorners"); // TODO: Remove NoRoundedCorners
+				return regularCompositeEntry!;
+			}
+		}
+
+		/// <summary>
+		/// Style for borders in a regular composte entry control.
+		/// </summary>
+		public static Style RegularCompositeEntryBorder
+		{
+			get
+			{
+				regularCompositeEntryBorder ??= TryGetResource<Style>("RegularCompositeEntryBorderNoRoundedCorners");	// TODO: Remove NoRoundedCorners
+				return regularCompositeEntryBorder!;
+			}
+		}
 	}
 }
