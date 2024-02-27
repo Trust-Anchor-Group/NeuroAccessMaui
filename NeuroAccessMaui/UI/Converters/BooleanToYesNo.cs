@@ -16,7 +16,7 @@ namespace NeuroAccessMaui.UI.Converters
 			if (value is bool b)
 				return b.ToYesNo();
 			else
-				return null;
+				return string.Empty;
 		}
 
 		/// <inheritdoc/>
