@@ -53,8 +53,8 @@
 									  BackgroundColor="{Binding HasPhoto, Converter={converters:ControlBgColor}}">
 								<Grid>
 									<Image Source="{Binding Image}" Rotation="{Binding ImageRotation}"
-											 Aspect="AspectFit" HeightRequest="200" IsVisible="{Binding HasPhoto}"/>
-									<Image Source="photo_placeholder" Aspect="Center" HeightRequest="200"
+											 Aspect="AspectFit" WidthRequest="200" HeightRequest="200" IsVisible="{Binding HasPhoto}"/>
+									<Image Source="photo_placeholder" Aspect="Center" WidthRequest="200"
 											 IsVisible="{Binding HasPhoto, Converter={StaticResource InvertedBoolConverter}}"/>
 								</Grid>
 							</Border>
@@ -260,7 +260,7 @@
 								<DatePicker HorizontalOptions="FillAndExpand" BackgroundColor="{Binding BirthDateOk, Converter={converters:ControlBgColor}}"
 												Date="{Binding BirthDate}" IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
 												MinimumDate="{Binding MinBirthDate}" MaximumDate="{Binding MaxBirthDate}"
-												TextColor="{Binding BirthDate, Converter={converters:TransparentIfNull}}"/>
+												TextColor="{Binding NullIfInvalidBirthDate, Converter={converters:TransparentIfNull}}"/>
 							</Border>
 							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=BirthDate, Converter={converters:DateToString}}"
 									 IsVisible="{Binding ApplicationSent}"/>
