@@ -188,6 +188,7 @@ namespace NeuroAccessMaui.Services.Tag
 
 				this.SetLegalIdentityInternal(configuration.LegalIdentity);
 
+				this.SetTheme();
 				// Do this last, as listeners will read the other properties when the event is fired.
 				this.GoToStep(configuration.Step);
 			}
