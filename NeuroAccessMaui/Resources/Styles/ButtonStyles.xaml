@@ -228,4 +228,14 @@
 		<Setter Property="PathStyle" Value="{StaticResource OutlinedImageButtonPath}" />
 	</Style>
 
+	<Style x:Key="UnicodeCharacterButtonNoRoundedCorners" ApplyToDerivedTypes="False" TargetType="Button">
+		<Setter Property="WidthRequest" Value="40" />
+		<Setter Property="HeightRequest" Value="40" />
+		<Setter Property="HorizontalOptions" Value="Center" />
+		<Setter Property="VerticalOptions" Value="Center" />
+		<Setter Property="CornerRadius" Value="0" />
+		<Setter Property="Padding" Value="0" />
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource EnabledFilledButtonBackgroundLight}, Dark={StaticResource EnabledFilledButtonBackgroundDark}}" />
+	</Style>
+
 </ResourceDictionary>

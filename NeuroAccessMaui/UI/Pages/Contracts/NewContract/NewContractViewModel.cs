@@ -1249,19 +1249,18 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 							RowSpacing = 0,
 							ColumnSpacing = 8,
 							Padding = new Thickness(0),
-							Margin = new Thickness(0)
+							Margin = new Thickness(0),
+							VerticalOptions = LayoutOptions.Center
 						};
 
+						Entry.VerticalOptions = LayoutOptions.Center;
 						Grid.Add(Entry, 0, 0);
 
-						TextButton CalcButton = new()
+						Button CalcButton = new()
 						{
-							LabelData = CalculatorButtonType,
-							HorizontalOptions = LayoutOptions.End,
-							WidthRequest = 40,
-							HeightRequest = 40,
+							Text = CalculatorButtonType,
 							StyleId = Parameter.Name,
-							Style = AppStyles.FilledTextButton
+							Style = AppStyles.UnicodeCharacterButton
 						};
 
 						CalcButton.Clicked += this.CalcButton_Clicked;

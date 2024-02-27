@@ -27,6 +27,7 @@ namespace NeuroAccessMaui.UI
 		private static Style? frameSubSet;
 		private static Style? regularCompositeEntry;
 		private static Style? regularCompositeEntryBorder;
+		private static Style? unicodeCharacterButton;
 
 		static AppStyles()
 		{
@@ -265,5 +266,18 @@ namespace NeuroAccessMaui.UI
 				return regularCompositeEntryBorder!;
 			}
 		}
+
+		/// <summary>
+		/// Style for buttons containing a single Unicode character.
+		/// </summary>
+		public static Style UnicodeCharacterButton
+		{
+			get
+			{
+				unicodeCharacterButton ??= TryGetResource<Style>("UnicodeCharacterButtonNoRoundedCorners");  // TODO: Remove NoRoundedCorners
+				return unicodeCharacterButton!;
+			}
+		}
+
 	}
 }

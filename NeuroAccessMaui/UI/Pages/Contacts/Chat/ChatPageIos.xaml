@@ -94,13 +94,12 @@
 									Text="{Binding MarkdownInput}" Keyboard="Chat" AutoSize="TextChanges"
 									Unfocused="OnEditorControlUnfocused"/>
 
-							<controls:TextButton Grid.Column="1" HorizontalOptions="End" VerticalOptions="End" WidthRequest="40" HeightRequest="40"
-														Margin="{StaticResource SmallLeftMargins}" LabelData="❌" IsVisible="{Binding Path=IsWriting}"
-														Command="{Binding CancelCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}">
+							<Button Grid.Column="1" Margin="{StaticResource SmallLeftMargins}" Text="❌" IsVisible="{Binding Path=IsWriting}"
+									  Command="{Binding CancelCommand}" Style="{StaticResource UnicodeCharacterButtonNoRoundedCorners}">
 								<Button.Behaviors>
 									<behaviors:UnfocusOnClickedBehavior UnfocusControl="EditorControl"/>
 								</Button.Behaviors>
-							</controls:TextButton>
+							</Button>
 						</Grid>
 						<!--
 						<Grid ColumnDefinitions="auto,*,auto" ColumnSpacing="0"
@@ -146,44 +145,27 @@
 					<mct:Expander Direction="Up" IsExpanded="{Binding IsButtonExpanded}">
 						<mct:Expander.Header>
 							<StackLayout BackgroundColor="White">
-								<controls:TextButton WidthRequest="40" HeightRequest="40" LabelData="…"
-															Command="{Binding ExpandButtonsCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
+								<Button Text="…" Command="{Binding ExpandButtonsCommand}" Style="{StaticResource UnicodeCharacterButtonNoRoundedCorners}"/>
 							</StackLayout>
 						</mct:Expander.Header>
 						<StackLayout Orientation="Vertical" Spacing="5" Margin="{StaticResource SmallBottomMargins}" BackgroundColor="Transparent">
-							<controls:TextButton WidthRequest="40" HeightRequest="40" LabelData="🎤"
-														Command="{Binding RecordAudioCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
-
-							<controls:TextButton WidthRequest="40" HeightRequest="40" LabelData="📷"
-														Command="{Binding TakePhotoCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
-
-							<controls:TextButton WidthRequest="40" HeightRequest="40" LabelData="📎"
-														Command="{Binding EmbedFileCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
-
-							<controls:TextButton WidthRequest="40" HeightRequest="40" LabelData="👤"
-														Command="{Binding EmbedIdCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
-
-							<controls:TextButton WidthRequest="40" HeightRequest="40" LabelData="¶"
-														Command="{Binding EmbedContractCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
-
-							<controls:TextButton WidthRequest="40" HeightRequest="40" LabelData="💵"
-														Command="{Binding EmbedMoneyCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
-
-							<controls:TextButton WidthRequest="40" HeightRequest="40" LabelData="✻"
-														Command="{Binding EmbedTokenCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
-
-							<controls:TextButton WidthRequest="40" HeightRequest="40" LabelData="📟︎"
-														Command="{Binding EmbedThingCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
+							<Button Text="🎤" Command="{Binding RecordAudioCommand}" Style="{StaticResource UnicodeCharacterButtonNoRoundedCorners}"/>
+							<Button Text="📷" Command="{Binding TakePhotoCommand}" Style="{StaticResource UnicodeCharacterButtonNoRoundedCorners}"/>
+							<Button Text="📎" Command="{Binding EmbedFileCommand}" Style="{StaticResource UnicodeCharacterButtonNoRoundedCorners}"/>
+							<Button Text="👤" Command="{Binding EmbedIdCommand}" Style="{StaticResource UnicodeCharacterButtonNoRoundedCorners}"/>
+							<Button Text="¶" Command="{Binding EmbedContractCommand}" Style="{StaticResource UnicodeCharacterButtonNoRoundedCorners}"/>
+							<Button Text="💵" Command="{Binding EmbedMoneyCommand}" Style="{StaticResource UnicodeCharacterButtonNoRoundedCorners}"/>
+							<Button Text="✻" Command="{Binding EmbedTokenCommand}" Style="{StaticResource UnicodeCharacterButtonNoRoundedCorners}"/>
+							<Button Text="📟︎" Command="{Binding EmbedThingCommand}" Style="{StaticResource UnicodeCharacterButtonNoRoundedCorners}"/>
 						</StackLayout>
 					</mct:Expander>
 				</controls:FadeView.FrontView>
 				<controls:FadeView.BackView>
-					<controls:TextButton WidthRequest="40" HeightRequest="40" LabelData="✉" Command="{Binding SendCommand}"
-												Style="{StaticResource FilledTextButtonNoRoundedCorners}">
-						<controls:TextButton.Behaviors>
+					<Button Text="✉" Command="{Binding SendCommand}" Style="{StaticResource UnicodeCharacterButtonNoRoundedCorners}">
+						<Button.Behaviors>
 							<behaviors:UnfocusOnClickedBehavior UnfocusControl="EditorControl"/>
-						</controls:TextButton.Behaviors>
-					</controls:TextButton>
+						</Button.Behaviors>
+					</Button>
 				</controls:FadeView.BackView>
 			</controls:FadeView>
 		</Grid>
