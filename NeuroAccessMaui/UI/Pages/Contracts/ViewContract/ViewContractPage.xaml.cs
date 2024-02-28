@@ -1,6 +1,4 @@
-﻿using Waher.Networking.XMPP.Contracts;
-
-namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
+﻿namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 {
 	/// <summary>
 	/// A page that displays a specific contract.
@@ -20,20 +18,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		/// <inheritdoc/>
 		protected override Task OnDisappearingAsync()
 		{
-			this.PhotoViewer.HidePhotos();
 			return base.OnDisappearingAsync();
-		}
-
-		private void Image_Tapped(object? Sender, EventArgs e)
-		{
-			if (this.ContentPageModel is ViewContractViewModel ViewContractViewModel)
-			{
-				Attachment[]? attachments = ViewContractViewModel.Contract?.Attachments;
-				if (attachments is null)
-					this.PhotoViewer.HidePhotos();
-				else
-					this.PhotoViewer.ShowPhotos(attachments);
-			}
 		}
 	}
 }

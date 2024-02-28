@@ -53,33 +53,6 @@
 								</DataTemplate>
 							</BindableLayout.ItemTemplate>
 						</VerticalStackLayout>
-					</VerticalStackLayout>
-				</Frame>
-
-				<Frame Style="{StaticResource FrameSet}" IsVisible="{Binding HasPhotos}">
-					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
-						<HorizontalStackLayout IsVisible="{Binding Path=HasPhotos}">
-							<Label Text="{l:Localize Photos}" HorizontalOptions="StartAndExpand"/>
-							<ScrollView Orientation="Horizontal" HeightRequest="68">
-								<FlexLayout x:Name="PhotosLayout"
-                                    AlignContent="Center"
-                                    AlignItems="Center" 
-                                    Direction="Row" 
-                                    JustifyContent="Start" 
-                                    BindableLayout.ItemsSource="{Binding Path=Photos}">
-									<BindableLayout.ItemTemplate>
-										<DataTemplate x:DataType="photos:Photo">
-											<Image Source="{Binding Path=Source}" Rotation="{Binding Path=Rotation}" HeightRequest="64" WidthRequest="64" Aspect="AspectFill" Margin="2">
-												<Image.GestureRecognizers>
-													<TapGestureRecognizer Tapped="Image_Tapped"/>
-												</Image.GestureRecognizers>
-											</Image>
-										</DataTemplate>
-									</BindableLayout.ItemTemplate>
-								</FlexLayout>
-							</ScrollView>
-						</HorizontalStackLayout>
-						<!-- QR -->
 						<Image x:Name="QrCode" Source="{Binding Path=QrCode}" IsVisible="{Binding Path=HasQrCode}" WidthRequest="{Binding Path=QrCodeWidth, Mode=OneTime}" HeightRequest="{Binding Path=QrCodeHeight, Mode=OneTime}" HorizontalOptions="CenterAndExpand" Margin="{StaticResource SmallTopMargins}"/>
 					</VerticalStackLayout>
 				</Frame>
@@ -141,7 +114,6 @@
 				<controls:TextButton LabelData="{l:Localize DeleteContract}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
 											Command="{Binding Path=DeleteContractCommand}" IsVisible="{Binding Path=CanDeleteContract}"
 											Margin="{StaticResource SmallBottomMargins}"/>
-				<image:ImageView x:Name="PhotoViewer" IsVisible="False"/>
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>
