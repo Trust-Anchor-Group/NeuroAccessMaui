@@ -26,20 +26,35 @@
 				<Label Text="{l:Localize ViewContract}" Style="{StaticResource PageTitleLabel}"/>
 
 				<Frame Style="{StaticResource FrameSet}" IsVisible="{Binding IsProposal}">
-					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+					<VerticalStackLayout>
 						<Label Text="{l:Localize Proposal}" Style="{StaticResource SectionTitleLabel}"/>
 						<Label Text="{Binding Path=Proposal}" Style="{StaticResource InfoLabel}"/>
 					</VerticalStackLayout>
 				</Frame>
 
 				<Frame Style="{StaticResource FrameSet}">
-					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+					<VerticalStackLayout>
+						<Image x:Name="QrCode" Source="{Binding QrCode}" IsVisible="{Binding HasQrCode}" WidthRequest="{Binding QrCodeWidth}"
+								 HeightRequest="{Binding QrCodeHeight}" HorizontalOptions="Center">
+							<Image.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding ContractId}" />
+							</Image.GestureRecognizers>
+						</Image>
+
+						<HorizontalStackLayout HorizontalOptions="Center" Spacing="{StaticResource SmallSpacing}">
+							<Path VerticalOptions="Center" HeightRequest="20" WidthRequest="20" Aspect="Uniform"
+									Data="{x:Static ui:Geometries.CirclePath}"
+									Fill="{Binding State, Converter={converters:ContractStateToColor}}" />
+
+							<Label Style="{StaticResource ValueLabel}" Text="{Binding State}" />
+						</HorizontalStackLayout>
+
 						<ContentView Content="{Binding Path=HumanReadableText}" Margin="{StaticResource SmallBottomMargins}"/>
 					</VerticalStackLayout>
 				</Frame>
 
 				<Frame Style="{StaticResource FrameSet}">
-					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+					<VerticalStackLayout>
 						<Label Text="{l:Localize GeneralInformation}" Style="{StaticResource SectionTitleLabel}"/>
 						<Label Text="{l:Localize GeneralInformationInfoText}" Style="{StaticResource InfoLabel}"/>
 						<VerticalStackLayout BindableLayout.ItemsSource="{Binding Path=GeneralInformation}">
@@ -47,18 +62,16 @@
 								<DataTemplate x:DataType="objectmodel:PartModel">
 									<HorizontalStackLayout>
 										<Label Text="{Binding Path=Key}" Style="{StaticResource KeyLabel}"/>
-										<Label LineBreakMode="NoWrap" Text="{Binding Path=Value}" Style="{StaticResource ValueLabel}"
-                                       BackgroundColor="{Binding BgColor}"/>
+										<Label LineBreakMode="NoWrap" Text="{Binding Path=Value}" Style="{StaticResource ValueLabel}"/>
 									</HorizontalStackLayout>
 								</DataTemplate>
 							</BindableLayout.ItemTemplate>
 						</VerticalStackLayout>
-						<Image x:Name="QrCode" Source="{Binding Path=QrCode}" IsVisible="{Binding Path=HasQrCode}" WidthRequest="{Binding Path=QrCodeWidth, Mode=OneTime}" HeightRequest="{Binding Path=QrCodeHeight, Mode=OneTime}" HorizontalOptions="CenterAndExpand" Margin="{StaticResource SmallTopMargins}"/>
 					</VerticalStackLayout>
 				</Frame>
 
 				<Frame Style="{StaticResource FrameSet}" IsVisible="{Binding Path=HasRoles}">
-					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+					<VerticalStackLayout>
 						<Label Text="{l:Localize Roles}" Style="{StaticResource SectionTitleLabel}"/>
 						<Label Text="{l:Localize RolesInfoText}" Style="{StaticResource InfoLabel}"/>
 						<ContentView Content="{Binding Path=Roles}"/>
@@ -66,7 +79,7 @@
 				</Frame>
 
 				<Frame Style="{StaticResource FrameSet}" IsVisible="{Binding Path=HasParts}">
-					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+					<VerticalStackLayout>
 						<Label Text="{l:Localize Parts}" Style="{StaticResource SectionTitleLabel}"/>
 						<Label Text="{l:Localize PartsInfoText}" Style="{StaticResource InfoLabel}"/>
 						<ContentView Content="{Binding Path=Parts}"/>
@@ -74,7 +87,7 @@
 				</Frame>
 
 				<Frame Style="{StaticResource FrameSet}" IsVisible="{Binding Path=HasParameters}">
-					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+					<VerticalStackLayout>
 						<Label Text="{l:Localize Parameters}" Style="{StaticResource SectionTitleLabel}"/>
 						<Label Text="{l:Localize ParametersInfoText}" Style="{StaticResource InfoLabel}"/>
 						<ContentView Content="{Binding Path=Parameters}"/>
@@ -82,7 +95,7 @@
 				</Frame>
 
 				<Frame Style="{StaticResource FrameSet}" IsVisible="{Binding Path=HasMachineReadableText}">
-					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+					<VerticalStackLayout>
 						<Label Text="{l:Localize MachineReadableText}" Style="{StaticResource SectionTitleLabel}"/>
 						<Label Text="{l:Localize MachineReadableInfoText}" Style="{StaticResource InfoLabel}"/>
 						<ContentView Content="{Binding Path=MachineReadableText}"/>
@@ -93,7 +106,7 @@
 				</Frame>
 
 				<Frame Style="{StaticResource FrameSet}" IsVisible="{Binding Path=HasClientSignatures}">
-					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+					<VerticalStackLayout>
 						<Label Text="{l:Localize ClientSignatures}" Style="{StaticResource SectionTitleLabel}"/>
 						<Label Text="{l:Localize ClientSignaturesInfoText}" Style="{StaticResource InfoLabel}"/>
 						<ContentView Content="{Binding Path=ClientSignatures}"/>
@@ -101,7 +114,7 @@
 				</Frame>
 
 				<Frame Style="{StaticResource FrameSet}" IsVisible="{Binding Path=HasServerSignatures}">
-					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+					<VerticalStackLayout>
 						<Label Text="{l:Localize ServerSignatures}" Style="{StaticResource SectionTitleLabel}"/>
 						<Label Text="{l:Localize ServerSignaturesInfoText}" Style="{StaticResource InfoLabel}"/>
 						<ContentView Content="{Binding Path=ServerSignatures}"/>

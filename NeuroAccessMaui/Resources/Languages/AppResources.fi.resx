@@ -1914,4 +1914,7 @@
   <data name="MachineReadableInfoText" xml:space="preserve">
     <value>Alla on yleiskatsaus sopimukseen upotetuista koneellisesti luettavista tiedoista.</value>
   </data>
+  <data name="ContractIdCopiedSuccessfully" xml:space="preserve">
+    <value>Linkki sopimukseen kopioitiin leikepöydälle.</value>
+  </data>
 </root>

@@ -1914,4 +1914,7 @@
   <data name="MachineReadableInfoText" xml:space="preserve">
     <value>A continuación se muestra una descripción general de los datos legibles por máquina incorporados en el contrato.</value>
   </data>
+  <data name="ContractIdCopiedSuccessfully" xml:space="preserve">
+    <value>Se copió un enlace al contrato en el portapapeles.</value>
+  </data>
 </root>

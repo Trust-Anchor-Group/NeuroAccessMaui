@@ -1914,4 +1914,7 @@
   <data name="MachineReadableInfoText" xml:space="preserve">
     <value>Nachfolgend finden Sie eine Übersicht über die maschinenlesbaren Daten, die in den Vertrag eingebettet sind.</value>
   </data>
+  <data name="ContractIdCopiedSuccessfully" xml:space="preserve">
+    <value>Ein Link zum Vertrag wurde in die Zwischenablage kopiert.</value>
+  </data>
 </root>

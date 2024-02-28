@@ -1914,4 +1914,7 @@
   <data name="MachineReadableInfoText" xml:space="preserve">
     <value>Ниже приведен обзор машиночитаемых данных, встроенных в договор.</value>
   </data>
+  <data name="ContractIdCopiedSuccessfully" xml:space="preserve">
+    <value>Ссылка на контракт была скопирована в буфер обмена.</value>
+  </data>
 </root>

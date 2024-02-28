@@ -1914,4 +1914,7 @@
   <data name="MachineReadableInfoText" xml:space="preserve">
     <value>En översikt över de maskinläsbara data som är inbäddade i avtalet visas nedan.</value>
   </data>
+  <data name="ContractIdCopiedSuccessfully" xml:space="preserve">
+    <value>En länk till avtalet kopierades till Urklipp.</value>
+  </data>
 </root>

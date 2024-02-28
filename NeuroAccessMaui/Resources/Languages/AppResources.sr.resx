@@ -1914,4 +1914,7 @@
   <data name="MachineReadableInfoText" xml:space="preserve">
     <value>Pregled podataka čitljivih na računaru ugrađenih u ugovor prikazan je ispod.</value>
   </data>
+  <data name="ContractIdCopiedSuccessfully" xml:space="preserve">
+    <value>Veza sa ugovorom je kopirana u ostavu.</value>
+  </data>
 </root>

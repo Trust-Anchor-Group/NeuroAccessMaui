@@ -1914,4 +1914,7 @@
   <data name="MachineReadableInfoText" xml:space="preserve">
     <value>O prezentare generală a datelor care pot fi citite automat încorporate în contract este prezentată mai jos.</value>
   </data>
+  <data name="ContractIdCopiedSuccessfully" xml:space="preserve">
+    <value>Un link către contract a fost copiat în clipboard.</value>
+  </data>
 </root>

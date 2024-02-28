@@ -13,24 +13,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract.ObjectModel
 		/// </summary>
 		/// <param name="key">A unique contract part key.</param>
 		/// <param name="value">The contract part value.</param>
-		/// <param name="LegalId">A legal id (optional).</param>
-		public PartModel(string key, string value, string? LegalId = null)
-			: this(key, value, Colors.Transparent, LegalId)
-		{
-		}
-
-		/// <summary>
-		/// Creates an instance of the <see cref="PartModel"/> class.
-		/// </summary>
-		/// <param name="key">A unique contract part key.</param>
-		/// <param name="value">The contract part value.</param>
 		/// <param name="BgColor">Background color.</param>
 		/// <param name="LegalId">A legal id (optional).</param>
-		public PartModel(string key, string value, Color? BgColor, string? LegalId = null)
+		public PartModel(string key, string value, string? LegalId = null)
 		{
 			this.Key = key;
 			this.Value = value;
-			this.BgColor = BgColor;
 			this.LegalId = LegalId;
 		}
 
@@ -57,12 +45,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract.ObjectModel
 		/// </summary>
 		[ObservableProperty]
 		private bool canSign;
-
-		/// <summary>
-		/// Gets or sets whether the contract part can sign a contract.
-		/// </summary>
-		[ObservableProperty]
-		private Color? bgColor;
 
 		/// <summary>
 		/// The role to use when signing.

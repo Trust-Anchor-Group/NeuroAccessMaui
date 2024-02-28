@@ -1914,4 +1914,7 @@
   <data name="MachineReadableInfoText" xml:space="preserve">
     <value>An overview of the machine-readable data embedded in the contract is shown below.</value>
   </data>
+  <data name="ContractIdCopiedSuccessfully" xml:space="preserve">
+    <value>A link to the contract was copied to the clipboard.</value>
+  </data>
 </root>

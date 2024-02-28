@@ -871,6 +871,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A link to the contract was copied to the clipboard..
+        /// </summary>
+        internal static string ContractIdCopiedSuccessfully {
+            get {
+                return ResourceManager.GetString("ContractIdCopiedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Contract proposal.
         /// </summary>
         internal static string ContractProposal {

@@ -129,6 +129,18 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		#region Properties
 
 		/// <summary>
+		/// Contract Id
+		/// </summary>
+		[ObservableProperty]
+		private string? contractId;
+
+		/// <summary>
+		/// Contract state
+		/// </summary>
+		[ObservableProperty]
+		private ContractState? state;
+
+		/// <summary>
 		/// Contains proposed role, if a proposal, null if not a proposal.
 		/// </summary>
 		[ObservableProperty]
@@ -270,6 +282,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			this.photosLoader.CancelLoadPhotos();
 			this.Contract = null;
 			this.GeneralInformation.Clear();
+			this.ContractId = null;
+			this.State = null;
 			this.Roles = null;
 			this.Parts = null;
 			this.Parameters = null;
@@ -307,7 +321,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				Dictionary<string, int> NrSignatures = [];
 				bool CanObsolete = false;
 
-				if (this.Contract!.ClientSignatures is not null)
+				this.ContractId = this.Contract!.ContractId;
+				this.State = this.Contract.State;
+
+				if (this.Contract.ClientSignatures is not null)
 				{
 					foreach (ClientSignature signature in this.Contract.ClientSignatures)
 					{
@@ -350,7 +367,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				if (this.Contract.Updated > DateTime.MinValue)
 					this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.Updated)], this.Contract.Updated.ToString(CultureInfo.CurrentCulture)));
 
-				this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.State)], this.Contract.State.ToString(), ContractStateToColor.ToColor(this.Contract.State)));
 				this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.Visibility)], this.Contract.Visibility.ToString()));
 				this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.Duration)], this.Contract.Duration?.ToString() ?? string.Empty));
 				this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.From)], this.Contract.From.ToString(CultureInfo.CurrentCulture)));
@@ -841,6 +857,45 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			catch (Exception ex)
 			{
 				await ServiceRef.UiService.DisplayException(ex);
+			}
+		}
+
+		/// <summary>
+		/// Copies Item to clipboard
+		/// </summary>
+		[RelayCommand]
+		private async Task Copy(object Item)
+		{
+			try
+			{
+				this.SetIsBusy(true);
+
+				if (Item is string Label)
+				{
+					if (Label == this.ContractId)
+					{
+						await Clipboard.SetTextAsync(Constants.UriSchemes.IotSc + ":" + this.ContractId);
+						await ServiceRef.UiService.DisplayAlert(
+							ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+							ServiceRef.Localizer[nameof(AppResources.ContractIdCopiedSuccessfully)]);
+					}
+					else
+					{
+						await Clipboard.SetTextAsync(Label);
+						await ServiceRef.UiService.DisplayAlert(
+							ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+							ServiceRef.Localizer[nameof(AppResources.TagValueCopiedToClipboard)]);
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
+			}
+			finally
+			{
+				this.SetIsBusy(false);
 			}
 		}
 
