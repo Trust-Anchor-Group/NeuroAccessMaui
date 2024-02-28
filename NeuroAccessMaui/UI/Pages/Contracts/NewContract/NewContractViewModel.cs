@@ -687,89 +687,54 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					return;
 				}
 
+				bool Ok;
+
 				if (ParameterInfo.Parameter is StringParameter SP)
 				{
 					SP.Value = e.NewTextValue;
-					Entry.BackgroundColor = ControlBgColor.ToColor(true);
+					Ok = true;
 				}
 				else if (ParameterInfo.Parameter is NumericalParameter NP)
 				{
-					if (decimal.TryParse(e.NewTextValue, out decimal d))
-					{
+					if (Ok = decimal.TryParse(e.NewTextValue, out decimal d))
 						NP.Value = d;
-						Entry.BackgroundColor = ControlBgColor.ToColor(true);
-					}
-					else
-					{
-						Entry.BackgroundColor = ControlBgColor.ToColor(false);
-						return;
-					}
 				}
 				else if (ParameterInfo.Parameter is BooleanParameter BP)
 				{
-					if (CommonTypes.TryParse(e.NewTextValue, out bool b))
-					{
+					if (Ok = CommonTypes.TryParse(e.NewTextValue, out bool b))
 						BP.Value = b;
-						Entry.BackgroundColor = ControlBgColor.ToColor(true);
-					}
-					else
-					{
-						Entry.BackgroundColor = ControlBgColor.ToColor(false);
-						return;
-					}
 				}
 				else if (ParameterInfo.Parameter is DateTimeParameter DTP)
 				{
-					if (DateTime.TryParse(e.NewTextValue, out DateTime TP))
-					{
+					if (Ok = DateTime.TryParse(e.NewTextValue, out DateTime TP))
 						DTP.Value = TP;
-						Entry.BackgroundColor = ControlBgColor.ToColor(true);
-					}
-					else
-					{
-						Entry.BackgroundColor = ControlBgColor.ToColor(false);
-						return;
-					}
 				}
 				else if (ParameterInfo.Parameter is TimeParameter TSP)
 				{
-					if (TimeSpan.TryParse(e.NewTextValue, out TimeSpan TS))
-					{
+					if (Ok = TimeSpan.TryParse(e.NewTextValue, out TimeSpan TS))
 						TSP.Value = TS;
-						Entry.BackgroundColor = ControlBgColor.ToColor(true);
-					}
-					else
-					{
-						Entry.BackgroundColor = ControlBgColor.ToColor(false);
-						return;
-					}
 				}
 				else if (ParameterInfo.Parameter is DurationParameter DP)
 				{
-					if (ParameterInfo.DurationValue != Duration.Zero)
-					{
+					if (Ok = (ParameterInfo.DurationValue != Duration.Zero))
 						DP.Value = ParameterInfo.DurationValue;
-						Entry.BackgroundColor = ControlBgColor.ToColor(true);
-					}
-					else
-					{
-						Entry.BackgroundColor = ControlBgColor.ToColor(false);
-						return;
-					}
 
 					/*
-					if (Duration.TryParse(e.NewTextValue, out Duration D))
-					{
+					if (Ok = Duration.TryParse(e.NewTextValue, out Duration D))
 						DP.Value = D;
-						Entry.BackgroundColor = ControlBgColor.ToColor(true);
-					}
-					else
-					{
-						Entry.BackgroundColor = ControlBgColor.ToColor(false);
-						return;
-					}
 					*/
 				}
+				else
+					Ok = false;
+
+				Color? BgColor = ControlBgColor.ToColor(Ok);
+
+				Entry.BackgroundColor = BgColor;
+				Border.BackgroundColor = BgColor;
+				CompositeEntry.BackgroundColor = BgColor;
+
+				if (!Ok)
+					return;
 
 				await this.ValidateParameters();
 				await this.PopulateHumanReadableText();
@@ -1184,7 +1149,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						Style = AppStyles.RegularCompositeEntryBorder,
 						Margin = AppStyles.SmallBottomMargins
 					};
-								  
+
 					ExtendedDatePicker Picker = new()
 					{
 						StyleId = Parameter.Name,
