@@ -33,8 +33,8 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 			if (Attachments is null)
 				return;
 
-			ImagesPopup ImagesPopup = new ImagesPopup();
-			ImagesViewModel ImagesViewModel = new ImagesViewModel();
+			ImagesPopup ImagesPopup = new();
+			ImagesViewModel ImagesViewModel = new();
 			ServiceRef.UiService.PushAsync(ImagesPopup, ImagesViewModel);
 			ImagesViewModel.LoadPhotos(Attachments);
 		}

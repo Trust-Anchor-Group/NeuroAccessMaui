@@ -7,7 +7,6 @@ using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.UI.Photos;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Text;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;
@@ -24,7 +23,6 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 		private string? requestorFullJid;
 		private string? signatoryIdentityId;
 		private string? petitionId;
-		private string? purpose;
 		private byte[]? contentToSign;
 
 		/// <summary>
@@ -48,7 +46,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 				this.requestorFullJid = Args.RequestorFullJid;
 				this.signatoryIdentityId = Args.SignatoryIdentityId;
 				this.petitionId = Args.PetitionId;
-				this.purpose = Args.Purpose;
+				this.Purpose = Args.Purpose;
 				this.contentToSign = Args.ContentToSign;
 			}
 
@@ -59,7 +57,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 				this.requestorFullJid = null;
 				this.signatoryIdentityId = null;
 				this.petitionId = null;
-				this.purpose = null;
+				this.Purpose = null;
 				this.contentToSign = null;
 				this.IsPersonal = true;
 			}
@@ -341,6 +339,12 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 		/// The full legal identity of the identity
 		/// </summary>
 		public LegalIdentity? LegalIdentity { get; private set; }
+
+		/// <summary>
+		/// Purpose string.
+		/// </summary>
+		[ObservableProperty]
+		private string? purpose;
 
 		/// <summary>
 		/// Created time stamp of the identity

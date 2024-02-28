@@ -169,8 +169,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		[RelayCommand]
 		private static async Task PickPhoto()
 		{
-			FileResult Result = await MediaPicker.PickPhotoAsync();
-
+			FileResult? Result = await MediaPicker.PickPhotoAsync();
 			if (Result is null)
 				return;
 
