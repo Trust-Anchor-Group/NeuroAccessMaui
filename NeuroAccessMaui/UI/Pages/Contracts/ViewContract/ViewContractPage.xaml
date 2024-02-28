@@ -11,7 +11,6 @@
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract"
-							 xmlns:objectmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract.ObjectModel"
 							 xmlns:photos="clr-namespace:NeuroAccessMaui.Services.UI.Photos"
 							 xmlns:image="clr-namespace:NeuroAccessMaui.UI.Popups.Photos.Image">
 	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
@@ -57,16 +56,70 @@
 					<VerticalStackLayout>
 						<Label Text="{l:Localize GeneralInformation}" Style="{StaticResource SectionTitleLabel}"/>
 						<Label Text="{l:Localize GeneralInformationInfoText}" Style="{StaticResource InfoLabel}"/>
-						<VerticalStackLayout BindableLayout.ItemsSource="{Binding Path=GeneralInformation}">
-							<BindableLayout.ItemTemplate>
-								<DataTemplate x:DataType="objectmodel:PartModel">
-									<HorizontalStackLayout>
-										<Label Text="{Binding Path=Key}" Style="{StaticResource KeyLabel}"/>
-										<Label LineBreakMode="NoWrap" Text="{Binding Path=Value}" Style="{StaticResource ValueLabel}"/>
-									</HorizontalStackLayout>
-								</DataTemplate>
-							</BindableLayout.ItemTemplate>
-						</VerticalStackLayout>
+						<Grid VerticalOptions="StartAndExpand" RowSpacing="0">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="*" />
+							</Grid.ColumnDefinitions>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="{Binding Created, Converter={converters:AutoIfNonEmpty}}" />
+								<RowDefinition Height="{Binding Updated, Converter={converters:AutoIfNonEmpty}}" />
+								<RowDefinition Height="{Binding Visibility, Converter={converters:AutoIfNonEmpty}}" />
+								<RowDefinition Height="{Binding From, Converter={converters:AutoIfNonEmpty}}" />
+								<RowDefinition Height="{Binding To, Converter={converters:AutoIfNonEmpty}}" />
+								<RowDefinition Height="{Binding Duration, Converter={converters:AutoIfNonEmpty}}" />
+								<RowDefinition Height="{Binding ArchivingRequired, Converter={converters:AutoIfNonEmpty}}" />
+								<RowDefinition Height="{Binding ArchivingOptional, Converter={converters:AutoIfNonEmpty}}" />
+								<RowDefinition Height="{Binding CanActAsTemplate, Converter={converters:AutoIfNonEmpty}}" />
+								<RowDefinition Height="{Binding HasPhotos, Converter={converters:AutoIfNonEmpty}}" />
+							</Grid.RowDefinitions>
+							<Label Grid.Row="0" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Created}" />
+							<Label Grid.Row="0" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding Created, Converter={converters:DateToString}}" />
+							<!--    -->
+							<Label Grid.Row="1" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Updated}" />
+							<Label Grid.Row="1" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding Updated, Converter={converters:DateToString}}" />
+							<!--    -->
+							<Label Grid.Row="2" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Visibility}" />
+							<Label Grid.Row="2" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding Visibility, Converter={converters:LocalizedState}}" />
+							<!--    -->
+							<Label Grid.Row="3" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize From}" />
+							<Label Grid.Row="3" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding From, Converter={converters:DateToString}}" />
+							<!--    -->
+							<Label Grid.Row="4" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize To}" />
+							<Label Grid.Row="4" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding To, Converter={converters:DateToString}}" />
+							<!--    -->
+							<Label Grid.Row="5" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Duration}" />
+							<Label Grid.Row="5" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding Duration, Converter={converters:DurationToString}}" />
+							<!--    -->
+							<Label Grid.Row="6" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Archiving_Optional}" />
+							<Label Grid.Row="6" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding ArchivingOptional, Converter={converters:DurationToString}}" />
+							<!--    -->
+							<Label Grid.Row="7" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Archiving_Required}" />
+							<Label Grid.Row="7" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding ArchivingRequired, Converter={converters:DurationToString}}" />
+							<!--    -->
+							<Label Grid.Row="8" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize CanActAsTemplate}" />
+							<Label Grid.Row="8" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding CanActAsTemplate}" />
+
+							<!--    -->
+							<Label Grid.Row="9" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" HorizontalOptions="StartAndExpand" Text="{l:Localize Photos}"
+								 Style="{StaticResource KeyLabel}" IsVisible="{Binding HasPhotos}"/>
+							<ScrollView Grid.Row="9" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" HeightRequest="68" Orientation="Horizontal"
+										IsVisible="{Binding HasPhotos}">
+								<FlexLayout x:Name="PhotosLayout" AlignContent="Center" AlignItems="Center" BindableLayout.ItemsSource="{Binding Photos}"
+											Direction="Row" JustifyContent="Start">
+									<BindableLayout.ItemTemplate>
+										<DataTemplate x:DataType="photos:Photo">
+											<Image Margin="2" Aspect="AspectFill" HeightRequest="64" Rotation="{Binding Rotation}"
+												 Source="{Binding Source}" WidthRequest="64">
+												<Image.GestureRecognizers>
+													<TapGestureRecognizer Tapped="Image_Tapped" />
+												</Image.GestureRecognizers>
+											</Image>
+										</DataTemplate>
+									</BindableLayout.ItemTemplate>
+								</FlexLayout>
+							</ScrollView>
+						</Grid>
 					</VerticalStackLayout>
 				</Frame>
 

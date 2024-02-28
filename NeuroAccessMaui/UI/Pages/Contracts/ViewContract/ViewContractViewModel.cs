@@ -6,7 +6,6 @@ using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.UI.Photos;
 using NeuroAccessMaui.UI.Converters;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
-using NeuroAccessMaui.UI.Pages.Contracts.ViewContract.ObjectModel;
 using NeuroAccessMaui.UI.Pages.Signatures.ClientSignature;
 using NeuroAccessMaui.UI.Pages.Signatures.ServerSignature;
 using System.Collections.ObjectModel;
@@ -35,7 +34,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		{
 			this.Photos = [];
 			this.photosLoader = new PhotosLoader(this.Photos);
-			this.GeneralInformation = [];
 		}
 
 		/// <inheritdoc/>
@@ -140,6 +138,33 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		[ObservableProperty]
 		private ContractState? state;
 
+		[ObservableProperty]
+		private DateTime? created;
+
+		[ObservableProperty]
+		private DateTime? updated;
+
+		[ObservableProperty]
+		private ContractVisibility? visibility;
+
+		[ObservableProperty]
+		private Duration? duration;
+
+		[ObservableProperty]
+		private DateTime? from;
+
+		[ObservableProperty]
+		private DateTime? to;
+
+		[ObservableProperty]
+		private Duration? archivingOptional;
+
+		[ObservableProperty]
+		private Duration? archivingRequired;
+
+		[ObservableProperty]
+		private bool? canActAsTemplate;
+
 		/// <summary>
 		/// Contains proposed role, if a proposal, null if not a proposal.
 		/// </summary>
@@ -157,11 +182,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		/// </summary>
 		[ObservableProperty]
 		private string? proposal;
-
-		/// <summary>
-		/// Holds a list of general information sections for the contract.
-		/// </summary>
-		public ObservableCollection<PartModel> GeneralInformation { get; }
 
 		/// <summary>
 		/// Holds Xaml code for visually representing a contract's roles.
@@ -281,9 +301,17 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		{
 			this.photosLoader.CancelLoadPhotos();
 			this.Contract = null;
-			this.GeneralInformation.Clear();
 			this.ContractId = null;
 			this.State = null;
+			this.Created = null;
+			this.Updated = null;
+			this.Visibility = null;
+			this.Duration = null;
+			this.From = null;
+			this.To = null;
+			this.ArchivingOptional = null;
+			this.ArchivingRequired = null;
+			this.CanActAsTemplate = null;
 			this.Roles = null;
 			this.Parts = null;
 			this.Parameters = null;
@@ -323,6 +351,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 				this.ContractId = this.Contract!.ContractId;
 				this.State = this.Contract.State;
+				this.Created = this.Contract.Created;
+				this.Updated = this.Contract.Updated == DateTime.MinValue ? null : this.Contract.Updated;
+				this.Visibility = this.Contract.Visibility;
+				this.Duration = this.Contract.Duration;
+				this.From = this.Contract.From;
+				this.To = this.Contract.To;
+				this.ArchivingOptional = this.Contract.ArchiveOptional;
+				this.ArchivingRequired = this.Contract.ArchiveRequired;
+				this.CanActAsTemplate = this.Contract.CanActAsTemplate;
 
 				if (this.Contract.ClientSignatures is not null)
 				{
@@ -359,21 +396,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 						}
 					}
 				}
-
-				// General Information
-
-				this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.Created)], this.Contract.Created.ToString(CultureInfo.CurrentCulture)));
-
-				if (this.Contract.Updated > DateTime.MinValue)
-					this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.Updated)], this.Contract.Updated.ToString(CultureInfo.CurrentCulture)));
-
-				this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.Visibility)], this.Contract.Visibility.ToString()));
-				this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.Duration)], this.Contract.Duration?.ToString() ?? string.Empty));
-				this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.From)], this.Contract.From.ToString(CultureInfo.CurrentCulture)));
-				this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.To)], this.Contract.To.ToString(CultureInfo.CurrentCulture)));
-				this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.Archiving_Optional)], this.Contract.ArchiveOptional?.ToString() ?? string.Empty));
-				this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.Archiving_Required)], this.Contract.ArchiveRequired?.ToString() ?? string.Empty));
-				this.GeneralInformation.Add(new PartModel(ServiceRef.Localizer[nameof(AppResources.CanActAsTemplate)], this.Contract.CanActAsTemplate.ToYesNo()));
 
 				this.GenerateQrCode(Constants.UriSchemes.CreateSmartContractUri(this.Contract.ContractId));
 

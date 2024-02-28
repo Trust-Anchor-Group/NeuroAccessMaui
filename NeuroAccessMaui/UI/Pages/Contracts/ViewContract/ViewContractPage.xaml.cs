@@ -1,4 +1,8 @@
-﻿namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
+﻿using NeuroAccessMaui.Services;
+using NeuroAccessMaui.UI.Popups.Image;
+using Waher.Networking.XMPP.Contracts;
+
+namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 {
 	/// <summary>
 	/// A page that displays a specific contract.
@@ -19,6 +23,20 @@
 		protected override Task OnDisappearingAsync()
 		{
 			return base.OnDisappearingAsync();
+		}
+
+		private void Image_Tapped(object? Sender, EventArgs e)
+		{
+			ViewContractViewModel ViewModel = this.ViewModel<ViewContractViewModel>();
+
+			Attachment[]? Attachments = ViewModel.Contract?.Attachments;
+			if (Attachments is null)
+				return;
+
+			ImagesPopup ImagesPopup = new();
+			ImagesViewModel ImagesViewModel = new();
+			ServiceRef.UiService.PushAsync(ImagesPopup, ImagesViewModel);
+			ImagesViewModel.LoadPhotos(Attachments);
 		}
 	}
 }
