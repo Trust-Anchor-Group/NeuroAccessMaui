@@ -138,32 +138,89 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		[ObservableProperty]
 		private ContractState? state;
 
+		/// <summary>
+		/// When contract was created
+		/// </summary>
 		[ObservableProperty]
 		private DateTime? created;
 
+		/// <summary>
+		/// When contract was updated
+		/// </summary>
 		[ObservableProperty]
 		private DateTime? updated;
 
+		/// <summary>
+		/// Contract visibility
+		/// </summary>
 		[ObservableProperty]
 		private ContractVisibility? visibility;
 
+		/// <summary>
+		/// Duration of contract
+		/// </summary>
 		[ObservableProperty]
 		private Duration? duration;
 
+		/// <summary>
+		/// From when contract is valid
+		/// </summary>
 		[ObservableProperty]
 		private DateTime? from;
 
+		/// <summary>
+		/// To when contract is valid
+		/// </summary>
 		[ObservableProperty]
 		private DateTime? to;
 
+		/// <summary>
+		/// Optional archiving time
+		/// </summary>
 		[ObservableProperty]
 		private Duration? archivingOptional;
 
+		/// <summary>
+		/// Required archiving time
+		/// </summary>
 		[ObservableProperty]
 		private Duration? archivingRequired;
 
+		/// <summary>
+		/// If contract can act as template
+		/// </summary>
 		[ObservableProperty]
 		private bool? canActAsTemplate;
+
+		/// <summary>
+		/// ID of template used to create contract
+		/// </summary>
+		[ObservableProperty]
+		private string? templateId;
+
+		/// <summary>
+		/// Content schema digest
+		/// </summary>
+		[ObservableProperty]
+		private byte[]? contentSchemaDigest;
+
+		/// <summary>
+		/// Content schema Hash Function
+		/// </summary>
+		[ObservableProperty]
+		private string? contentSchemaHashFunction;
+
+		/// <summary>
+		/// Local name of machine-readable part
+		/// </summary>
+		[ObservableProperty]
+		private string? localName;
+
+		/// <summary>
+		/// Namespace of machine-readable part
+		/// </summary>
+		[ObservableProperty]
+		private string? @namespace;
 
 		/// <summary>
 		/// Contains proposed role, if a proposal, null if not a proposal.
@@ -206,12 +263,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		/// </summary>
 		[ObservableProperty]
 		private VerticalStackLayout? humanReadableText;
-
-		/// <summary>
-		/// Holds Xaml code for visually representing a contract's machine readable text section.
-		/// </summary>
-		[ObservableProperty]
-		private VerticalStackLayout? machineReadableText;
 
 		/// <summary>
 		/// Holds Xaml code for visually representing a contract's client signatures.
@@ -266,12 +317,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		private bool hasHumanReadableText;
 
 		/// <summary>
-		/// Gets or sets whether the contract has any machine readable texts to display.
-		/// </summary>
-		[ObservableProperty]
-		private bool hasMachineReadableText;
-
-		/// <summary>
 		/// Gets or sets whether the contract has any client signatures to display.
 		/// </summary>
 		[ObservableProperty]
@@ -312,11 +357,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			this.ArchivingOptional = null;
 			this.ArchivingRequired = null;
 			this.CanActAsTemplate = null;
+			this.TemplateId = null;
+			this.ContentSchemaDigest = null;
+			this.ContentSchemaHashFunction = null;
+			this.LocalName = null;
+			this.Namespace = null;
 			this.Roles = null;
 			this.Parts = null;
 			this.Parameters = null;
 			this.HumanReadableText = null;
-			this.MachineReadableText = null;
 			this.ClientSignatures = null;
 			this.ServerSignatures = null;
 			this.HasPhotos = false;
@@ -324,7 +373,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			this.HasParts = false;
 			this.HasParameters = false;
 			this.HasHumanReadableText = false;
-			this.HasMachineReadableText = false;
 			this.HasClientSignatures = false;
 			this.HasServerSignatures = false;
 			this.CanDeleteContract = false;
@@ -360,6 +408,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				this.ArchivingOptional = this.Contract.ArchiveOptional;
 				this.ArchivingRequired = this.Contract.ArchiveRequired;
 				this.CanActAsTemplate = this.Contract.CanActAsTemplate;
+				this.TemplateId = this.Contract.TemplateId;
+				this.ContentSchemaDigest = this.Contract.ContentSchemaDigest;
+				this.ContentSchemaHashFunction = this.Contract.ContentSchemaHashFunction.ToString();
+				this.LocalName = this.Contract.ForMachinesLocalName;
+				this.Namespace = this.Contract.ForMachinesNamespace;
 
 				if (this.Contract.ClientSignatures is not null)
 				{
@@ -508,35 +561,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 				this.HumanReadableText = HumanReadableTextLayout;
 
-				// Machine readable text
-
-				TapGestureRecognizer OpenContractId = new();
-				OpenContractId.Tapped += this.ContractId_Tapped;
-
-				TapGestureRecognizer OpenLink = new();
-				OpenLink.Tapped += this.Link_Tapped;
-
-				TapGestureRecognizer CopyToClipboard = new();
-				CopyToClipboard.Tapped += this.CopyToClipboard_Tapped;
-
-				VerticalStackLayout MachineReadableTextLayout = [];
-				AddKeyValueLabelPair(MachineReadableTextLayout, ServiceRef.Localizer[nameof(AppResources.ContractId)],
-					this.Contract.ContractId, false, Constants.UriSchemes.IotSc + ":" + this.Contract.ContractId,
-					CopyToClipboard);
-
-				if (!string.IsNullOrEmpty(this.Contract.TemplateId))
-				{
-					AddKeyValueLabelPair(MachineReadableTextLayout, ServiceRef.Localizer[nameof(AppResources.TemplateId)],
-						this.Contract.TemplateId, false, OpenContractId);
-				}
-
-				AddKeyValueLabelPair(MachineReadableTextLayout, ServiceRef.Localizer[nameof(AppResources.Digest)], Convert.ToBase64String(this.Contract.ContentSchemaDigest), false, CopyToClipboard);
-				AddKeyValueLabelPair(MachineReadableTextLayout, ServiceRef.Localizer[nameof(AppResources.HashFunction)], this.Contract.ContentSchemaHashFunction.ToString(), false, CopyToClipboard);
-				AddKeyValueLabelPair(MachineReadableTextLayout, ServiceRef.Localizer[nameof(AppResources.LocalName)], this.Contract.ForMachinesLocalName, false, CopyToClipboard);
-				AddKeyValueLabelPair(MachineReadableTextLayout, ServiceRef.Localizer[nameof(AppResources.Namespace)], this.Contract.ForMachinesNamespace, false, OpenLink);
-
-				this.MachineReadableText = MachineReadableTextLayout;
-
 				// Client signatures
 				if (this.Contract.ClientSignatures is not null)
 				{
@@ -586,7 +610,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				this.HasParts = this.Parts?.Children.Count > 0;
 				this.HasParameters = this.Parameters?.Children.Count > 0;
 				this.HasHumanReadableText = this.HumanReadableText?.Children.Count > 0;
-				this.HasMachineReadableText = this.MachineReadableText?.Children.Count > 0;
 				this.HasClientSignatures = this.ClientSignatures?.Children.Count > 0;
 				this.HasServerSignatures = this.ServerSignatures?.Children.Count > 0;
 
@@ -625,14 +648,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			return " (" + min.ToString(CultureInfo.InvariantCulture) + " - " + max.ToString(CultureInfo.InvariantCulture) + ")";
 		}
 
-		private static void AddKeyValueLabelPair(VerticalStackLayout Container, string Key,
-			string Value)
+		private static void AddKeyValueLabelPair(VerticalStackLayout Container, string Key, string Value)
 		{
 			AddKeyValueLabelPair(Container, Key, Value, false, string.Empty, null);
 		}
 
-		private static void AddKeyValueLabelPair(VerticalStackLayout Container, string Key,
-			string Value, bool IsHtml, TapGestureRecognizer TapGestureRecognizer)
+		private static void AddKeyValueLabelPair(VerticalStackLayout Container, string Key, string Value, bool IsHtml,
+			TapGestureRecognizer TapGestureRecognizer)
 		{
 			AddKeyValueLabelPair(Container, Key, Value, IsHtml, Value, TapGestureRecognizer);
 		}
@@ -919,6 +941,28 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			{
 				this.SetIsBusy(false);
 			}
+		}
+
+		/// <summary>
+		/// Opens a contract.
+		/// </summary>
+		/// <param name="Item">Item clicked.</param>
+		[RelayCommand]
+		private async Task OpenContract(object Item)
+		{
+			if (Item is string ContractId)
+				await App.OpenUrlAsync(Constants.UriSchemes.IotSc + ":" + ContractId);
+		}
+
+		/// <summary>
+		/// Opens a link.
+		/// </summary>
+		/// <param name="Item">Item clicked.</param>
+		[RelayCommand]
+		private async Task OpenLink(object Item)
+		{
+			if (Item is string Url)
+				await App.OpenUrlAsync(Url);
 		}
 
 		#region ILinkableView

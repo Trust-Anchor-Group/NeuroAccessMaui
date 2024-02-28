@@ -147,11 +147,65 @@
 					</VerticalStackLayout>
 				</Frame>
 
-				<Frame Style="{StaticResource FrameSet}" IsVisible="{Binding Path=HasMachineReadableText}">
+				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout>
 						<Label Text="{l:Localize MachineReadableText}" Style="{StaticResource SectionTitleLabel}"/>
 						<Label Text="{l:Localize MachineReadableInfoText}" Style="{StaticResource InfoLabel}"/>
-						<ContentView Content="{Binding Path=MachineReadableText}"/>
+						<Grid VerticalOptions="StartAndExpand" RowSpacing="0">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="*" />
+							</Grid.ColumnDefinitions>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="{Binding ContractId, Converter={converters:AutoIfNonEmpty}}" />
+								<RowDefinition Height="{Binding TemplateId, Converter={converters:AutoIfNonEmpty}}" />
+								<RowDefinition Height="{Binding ContentSchemaDigest, Converter={converters:AutoIfNonEmpty}}" />
+								<RowDefinition Height="{Binding ContentSchemaHashFunction, Converter={converters:AutoIfNonEmpty}}" />
+								<RowDefinition Height="{Binding LocalName, Converter={converters:AutoIfNonEmpty}}" />
+								<RowDefinition Height="{Binding Namespace, Converter={converters:AutoIfNonEmpty}}" />
+							</Grid.RowDefinitions>
+							<Label Grid.Row="0" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize ContractId}" />
+							<Label Grid.Row="0" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ClickableValueLabel}" Text="{Binding ContractId}">
+								<Label.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding ContractId}" />
+								</Label.GestureRecognizers>
+							</Label>
+							<!--    -->
+							<Label Grid.Row="1" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize TemplateId}" />
+							<Label Grid.Row="1" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ClickableValueLabel}" Text="{Binding TemplateId}">
+								<Label.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding OpenContractCommand}" CommandParameter="{Binding TemplateId}" />
+								</Label.GestureRecognizers>
+							</Label>
+							<!--    -->
+							<Label Grid.Row="2" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Digest}" />
+							<Label Grid.Row="2" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ClickableValueLabel}" Text="{Binding ContentSchemaDigest, Converter={converters:BinaryToBase64}}">
+								<Label.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding ContentSchemaDigest}" />
+								</Label.GestureRecognizers>
+							</Label>
+							<!--    -->
+							<Label Grid.Row="3" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize HashFunction}" />
+							<Label Grid.Row="3" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ClickableValueLabel}" Text="{Binding ContentSchemaHashFunction}">
+								<Label.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding ContentSchemaHashFunction}" />
+								</Label.GestureRecognizers>
+							</Label>
+							<!--    -->
+							<Label Grid.Row="4" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize LocalName}" />
+							<Label Grid.Row="4" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ClickableValueLabel}" Text="{Binding LocalName}">
+								<Label.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding LocalName}" />
+								</Label.GestureRecognizers>
+							</Label>
+							<!--    -->
+							<Label Grid.Row="5" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Namespace}" />
+							<Label Grid.Row="5" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ClickableValueLabel}" Text="{Binding Namespace}">
+								<Label.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding OpenLinkCommand}" CommandParameter="{Binding Namespace}" />
+								</Label.GestureRecognizers>
+							</Label>
+						</Grid>
 						<controls:TextButton LabelData="{l:Localize ShowDetails}" Margin="{StaticResource SmallBottomMargins}"
 													Command="{Binding Path=ShowDetailsCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
 													IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"/>
