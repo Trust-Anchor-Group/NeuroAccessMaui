@@ -678,8 +678,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		{
 			try
 			{
-				if (Sender is not Entry Entry || !this.parametersByName.TryGetValue(Entry.StyleId, out ParameterInfo? ParameterInfo))
+				if (Sender is not Entry Entry ||
+					Entry.Parent is not Border Border ||
+					Border.Parent is not CompositeEntry CompositeEntry ||
+					string.IsNullOrEmpty(CompositeEntry.StyleId) ||
+					!this.parametersByName.TryGetValue(CompositeEntry.StyleId, out ParameterInfo? ParameterInfo))
+				{
 					return;
+				}
 
 				if (ParameterInfo.Parameter is StringParameter SP)
 				{
