@@ -287,10 +287,10 @@ namespace NeuroAccessMaui
 					typeof(HttpxClient).Assembly);              // Support for HTTP over XMPP (HTTPX) URI Scheme.
 			}
 
-			EndpointSecurity.SetCiphers(new Type[]
-			{
+			EndpointSecurity.SetCiphers(
+			[
 				typeof(Edwards448Endpoint)
-			}, false);
+			], false);
 
 			// Create Services
 
