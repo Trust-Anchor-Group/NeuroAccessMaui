@@ -447,9 +447,6 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature
 				this.EMail = this.RequestorIdentity[Constants.XmppProperties.EMail];
 				this.DeviceId = this.RequestorIdentity[Constants.XmppProperties.DeviceId];
 				this.IsApproved = this.RequestorIdentity.State == IdentityState.Approved;
-
-				this.QrCodeWidth = 250;
-				this.QrCodeHeight = 250;
 			}
 			else
 			{

@@ -191,9 +191,6 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 				this.PhoneNr = this.LegalIdentity[Constants.XmppProperties.Phone];
 				this.EMail = this.LegalIdentity[Constants.XmppProperties.EMail];
 				this.DeviceId = this.LegalIdentity[Constants.XmppProperties.DeviceId];
-
-				this.QrCodeWidth = 250;
-				this.QrCodeHeight = 250;
 			}
 			else
 			{

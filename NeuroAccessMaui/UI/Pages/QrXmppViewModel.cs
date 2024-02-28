@@ -21,6 +21,12 @@ namespace NeuroAccessMaui.UI.Pages
 		/// <param name="Uri">URI to encode in QR-code.</param>
 		public void GenerateQrCode(string Uri)
 		{
+			if (this.QrCodeWidth == 0 || this.QrCodeHeight == 0)
+			{
+				this.QrCodeWidth = Constants.QrCode.DefaultImageWidth;
+				this.QrCodeHeight = Constants.QrCode.DefaultImageHeight;
+			}
+
 			byte[] Bin = Services.UI.QR.QrCode.GeneratePng(Uri, this.QrCodeWidth, this.QrCodeHeight);
 			this.QrCode = ImageSource.FromStream(() => new MemoryStream(Bin));
 			this.QrCodeBin = Bin;

@@ -550,8 +550,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				{
 					MainThread.BeginInvokeOnMainThread(async () =>
 					{
-						this.QrCodeWidth = Constants.QrCode.DefaultImageWidth;
-						this.QrCodeHeight = Constants.QrCode.DefaultImageHeight;
 						this.GenerateQrCode(Uri);
 
 						if (this.shareQrCode is not null)
@@ -644,8 +642,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				{
 					MainThread.BeginInvokeOnMainThread(async () =>
 					{
-						this.QrCodeWidth = Constants.QrCode.DefaultImageWidth;
-						this.QrCodeHeight = Constants.QrCode.DefaultImageHeight;
 						this.GenerateQrCode(this.Uri);
 
 						if (this.shareQrCode is not null)
