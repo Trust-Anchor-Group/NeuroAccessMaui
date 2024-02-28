@@ -235,8 +235,11 @@ namespace NeuroAccessMaui.UI.Controls
 			switch (PropertyName)
 			{
 				case nameof(this.BackgroundColor):
-					this.innerEntry.BackgroundColor = this.BackgroundColor;
-					this.innerBorder.BackgroundColor = this.BackgroundColor;
+					if (this.innerEntry is not null)
+						this.innerEntry.BackgroundColor = this.BackgroundColor;
+
+					if (this.innerBorder is not null)
+						this.innerBorder.BackgroundColor = this.BackgroundColor;
 					break;
 			}
 		}

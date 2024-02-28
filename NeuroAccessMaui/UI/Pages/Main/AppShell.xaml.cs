@@ -46,6 +46,7 @@ using NeuroAccessMaui.UI.Pages.Wallet.SendPayment;
 using NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenDetails;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenEvents;
+using Waher.Events;
 
 namespace NeuroAccessMaui.UI.Pages.Main
 {
@@ -53,10 +54,19 @@ namespace NeuroAccessMaui.UI.Pages.Main
 	{
 		public AppShell()
 		{
-			this.InitializeComponent();
-			this.RegisterRoutes();
-
-			ServiceRef.TagProfile.SetTheme();
+			try
+			{
+				this.InitializeComponent();
+				this.RegisterRoutes();
+			}
+			catch (Exception ex)
+			{
+#if DEBUG
+				ex = Log.UnnestException(ex);
+				App.SendAlert(ex.Message, "text/plain").Wait();
+#endif
+				throw new ArgumentException("Unable to start app.", ex);
+			}
 		}
 
 		private void RegisterRoutes()

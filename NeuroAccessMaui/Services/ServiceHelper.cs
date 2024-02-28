@@ -1,4 +1,6 @@
-﻿namespace NeuroAccessMaui.Services
+﻿using Waher.Events;
+
+namespace NeuroAccessMaui.Services
 {
 	public static class ServiceHelper
 	{
@@ -14,6 +16,7 @@
 			catch (Exception ex)
 			{
 #if DEBUG
+				ex = Log.UnnestException(ex);
 				App.SendAlert(ex.Message, "text/plain").Wait();
 #endif
 				throw new ArgumentException("Service not found: " + typeof(T).FullName);
