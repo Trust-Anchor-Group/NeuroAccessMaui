@@ -1349,23 +1349,23 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		{
 			try
 			{
-				if (Sender is not TextButton CalcButton)
+				if (Sender is not Button CalcButton)
 					return;
 
 				if (!this.parametersByName.TryGetValue(CalcButton.StyleId, out ParameterInfo? ParameterInfo))
 					return;
 
-				if (ParameterInfo.Control is not Entry Entry)
+				if (ParameterInfo.Control is not CompositeEntry Entry)
 					return;
 
-				if (CalcButton.LabelData == "🕑")  // TODO: SVG icon
+				if (CalcButton.Text == "🕑")  // TODO: SVG icon
 				{
-					DurationNavigationArgs Args = new(Entry);
+					DurationNavigationArgs Args = new(Entry.Entry);
 					await ServiceRef.UiService.GoToAsync(nameof(DurationPage), Args, BackMethod.Pop);
 				}
 				else
 				{
-					CalculatorNavigationArgs Args = new(Entry);
+					CalculatorNavigationArgs Args = new(Entry.Entry);
 					await ServiceRef.UiService.GoToAsync(nameof(CalculatorPage), Args, BackMethod.Pop);
 				}
 			}
