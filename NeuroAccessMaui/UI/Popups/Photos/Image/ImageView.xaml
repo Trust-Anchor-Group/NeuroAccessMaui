@@ -12,7 +12,7 @@
 			 BackgroundColor="{DynamicResource HeadingBackgroundTranslucent}"
 			 Opacity="0" HorizontalOptions="Center" VerticalOptions="Center">
 		<Grid>
-			<StackLayout Orientation="Vertical" Margin="0">
+			<VerticalStackLayout Margin="0">
 				<CarouselView x:Name="CarouselView"
                                   IsSwipeEnabled="{Binding Path=IsSwipeEnabled}"
                                   HorizontalOptions="FillAndExpand"
@@ -37,7 +37,7 @@
 						</OnPlatform>
 					</IndicatorView.Margin>
 				</IndicatorView>
-			</StackLayout>
+			</VerticalStackLayout>
 			<!-- Close button -->
 			<Grid Style="{StaticResource PopupGrid}">
 				<Grid.GestureRecognizers>

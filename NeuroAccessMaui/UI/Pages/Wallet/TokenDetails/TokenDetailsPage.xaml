@@ -24,7 +24,7 @@
 
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
-						<StackLayout Margin="{StaticResource DefaultMargin}">
+						<VerticalStackLayout Margin="{StaticResource DefaultMargin}">
 							<Label Text="{l:Localize TokenDetails}" Margin="{StaticResource SmallTopMargins}"
 									 VerticalOptions="Start"/>
 							<Label Text="{l:Localize TokenDetailsDescription}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"/>
@@ -327,7 +327,7 @@
 							<controls:TextButton LabelData="{l:Localize ViewEvents}" Margin="{StaticResource SmallBottomMargins}"
 														Command="{Binding Path=ViewEventsCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
 														IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"/>
-						</StackLayout>
+						</VerticalStackLayout>
 					</VerticalStackLayout>
 				</Frame>
 			</VerticalStackLayout>

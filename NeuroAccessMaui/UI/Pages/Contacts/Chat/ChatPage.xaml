@@ -140,11 +140,11 @@
 				<controls:FadeView.FrontView>
 					<mct:Expander Direction="Up" IsExpanded="{Binding IsButtonExpanded}">
 						<mct:Expander.Header>
-							<StackLayout BackgroundColor="White">
+							<VerticalStackLayout BackgroundColor="White">
 								<Button Text="…" Command="{Binding ExpandButtonsCommand}" Style="{StaticResource UnicodeCharacterButtonNoRoundedCorners}"/>
-							</StackLayout>
+							</VerticalStackLayout>
 						</mct:Expander.Header>
-						<StackLayout Orientation="Vertical" Spacing="5" Margin="{StaticResource SmallBottomMargins}" BackgroundColor="Transparent">
+						<VerticalStackLayout Spacing="5" Margin="{StaticResource SmallBottomMargins}" BackgroundColor="Transparent">
 							<Button Text="🎤" Command="{Binding RecordAudioCommand}" Style="{StaticResource UnicodeCharacterButtonNoRoundedCorners}"/>
 							<Button Text="📷" Command="{Binding TakePhotoCommand}" Style="{StaticResource UnicodeCharacterButtonNoRoundedCorners}"/>
 							<Button Text="📎" Command="{Binding EmbedFileCommand}" Style="{StaticResource UnicodeCharacterButtonNoRoundedCorners}"/>
@@ -153,7 +153,7 @@
 							<Button Text="💵" Command="{Binding EmbedMoneyCommand}" Style="{StaticResource UnicodeCharacterButtonNoRoundedCorners}"/>
 							<Button Text="✻" Command="{Binding EmbedTokenCommand}" Style="{StaticResource UnicodeCharacterButtonNoRoundedCorners}"/>
 							<Button Text="📟︎" Command="{Binding EmbedThingCommand}" Style="{StaticResource UnicodeCharacterButtonNoRoundedCorners}"/>
-						</StackLayout>
+						</VerticalStackLayout>
 					</mct:Expander>
 				</controls:FadeView.FrontView>
 				<controls:FadeView.BackView>

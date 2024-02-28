@@ -29,26 +29,26 @@
 						<!-- TAGS -->
 						<Label Text="{l:Localize InformationAboutThing}" Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"/>
 						<Label Text="{l:Localize InformationAboutThingText}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"/>
-						<StackLayout x:Name="TagLayout" Orientation="Vertical" BindableLayout.ItemsSource="{Binding Path=Tags}" VerticalOptions="StartAndExpand" Margin="{StaticResource DefaultMargin}">
+						<VerticalStackLayout x:Name="TagLayout" BindableLayout.ItemsSource="{Binding Path=Tags}" VerticalOptions="StartAndExpand" Margin="{StaticResource DefaultMargin}">
 							<BindableLayout.ItemTemplate>
 								<DataTemplate x:DataType="things:HumanReadableTag">
-									<StackLayout Orientation="Horizontal">
+									<HorizontalStackLayout>
 										<Label Text="{Binding Path=LocalizedName}" Style="{StaticResource KeyLabel}" LineBreakMode="WordWrap" WidthRequest="100"/>
 										<Label LineBreakMode="WordWrap" Text="{Binding Path=LocalizedValue}" Style="{StaticResource ClickableValueLabel}">
 											<Label.GestureRecognizers>
 												<TapGestureRecognizer Command="{Binding Path=BindingContext.ClickCommand, Source={x:Reference TagLayout}}" CommandParameter="{Binding}" />
 											</Label.GestureRecognizers>
 										</Label>
-									</StackLayout>
+									</HorizontalStackLayout>
 								</DataTemplate>
 							</BindableLayout.ItemTemplate>
-						</StackLayout>
+						</VerticalStackLayout>
 						<!-- NOTIFICATIONS -->
 						<Label Text="{l:Localize Notifications}" Margin="{StaticResource SmallTopMargins}"
 					   VerticalOptions="Start" IsVisible="{Binding HasNotifications}"/>
 						<Label Text="{l:Localize NotificationsText}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"
 					   IsVisible="{Binding HasNotifications}"/>
-						<StackLayout x:Name="Notifications" Orientation="Vertical" BindableLayout.ItemsSource="{Binding Path=Notifications}" VerticalOptions="StartAndExpand" Margin="{StaticResource DefaultMargin}">
+						<VerticalStackLayout x:Name="Notifications" BindableLayout.ItemsSource="{Binding Path=Notifications}" VerticalOptions="StartAndExpand" Margin="{StaticResource DefaultMargin}">
 							<BindableLayout.ItemTemplate>
 								<DataTemplate x:DataType="model2:EventModel">
 									<Grid ColumnDefinitions="auto,*,auto" RowDefinitions="auto,auto" Padding="5,5,5,5">
@@ -72,7 +72,7 @@
 									</Grid>
 								</DataTemplate>
 							</BindableLayout.ItemTemplate>
-						</StackLayout>
+						</VerticalStackLayout>
 						<!-- BUTTONS -->
 						<controls:TextButton LabelData="{l:Localize ReadSensor}" Command="{Binding Path=ReadSensorCommand}"
 													IsEnabled="{Binding Path=IsConnected}" IsVisible="{Binding IsSensor}"

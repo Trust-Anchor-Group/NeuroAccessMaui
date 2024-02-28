@@ -24,7 +24,7 @@
 
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
-						<StackLayout Margin="{StaticResource DefaultMargin}"
+						<VerticalStackLayout Margin="{StaticResource DefaultMargin}"
                          BackgroundColor="{AppThemeBinding Light={StaticResource PageBackgroundColorLightTheme}, Dark={StaticResource PageBackgroundColorDarkTheme}}">
 							<Label Text="{l:Localize RequestPayment}" Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"/>
 							<Label Text="{l:Localize RequestPaymentDescription}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"/>
@@ -69,7 +69,7 @@
 							<controls:TextButton x:Name="ShareExternalButton" LabelData="{l:Localize OtherApp}" Command="{Binding Path=ShareExternalCommand}"
 														IsVisible="{Binding Path=HasQrCode}" Margin="{StaticResource SmallBottomMargins}"
 														Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
-						</StackLayout>
+						</VerticalStackLayout>
 					</VerticalStackLayout>
 				</Frame>
 			</VerticalStackLayout>

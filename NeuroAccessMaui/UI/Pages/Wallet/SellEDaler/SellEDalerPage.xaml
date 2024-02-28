@@ -24,7 +24,7 @@
 
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
-						<StackLayout Margin="{StaticResource DefaultMargin}"
+						<VerticalStackLayout Margin="{StaticResource DefaultMargin}"
                          BackgroundColor="{AppThemeBinding Light={StaticResource PageBackgroundColorLightTheme}, Dark={StaticResource PageBackgroundColorDarkTheme}}">
 							<Label Text="{l:Localize SellEDaler}" Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"/>
 							<Label Text="{l:Localize SellEDalerDescription}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"/>
@@ -38,7 +38,7 @@
 							</Grid>
 							<controls:TextButton LabelData="{l:Localize Sell}" Command="{Binding Path=SellCommand}"
 														Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
-						</StackLayout>
+						</VerticalStackLayout>
 					</VerticalStackLayout>
 				</Frame>
 			</VerticalStackLayout>

@@ -30,22 +30,21 @@
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout>
 						<Grid ColumnDefinitions="*" RowDefinitions="auto,*,auto,auto">
-							<StackLayout Grid.Column="0" Grid.Row="0" Orientation="Vertical"
-						 BindableLayout.ItemsSource="{Binding Instructions}">
+							<VerticalStackLayout Grid.Column="0" Grid.Row="0" BindableLayout.ItemsSource="{Binding Instructions}">
 								<BindableLayout.ItemTemplate>
 									<DataTemplate>
 										<Label Text="{Binding .}" LineBreakMode="WordWrap"/>
 									</DataTemplate>
 								</BindableLayout.ItemTemplate>
-							</StackLayout>
+							</VerticalStackLayout>
 							<CarouselView Grid.Column="0" Grid.Row="1" ItemsSource="{Binding Pages}" IndicatorView="IndicatorView" IsSwipeEnabled="{Binding MultiplePages}">
 								<CarouselView.ItemTemplate>
 									<DataTemplate x:DataType="model2:PageModel">
 										<ScrollView Orientation="Vertical">
-											<StackLayout Orientation="Vertical" Padding="10">
+											<VerticalStackLayout Padding="10">
 												<Label Text="{Binding Label}" IsVisible="{Binding HasLabel}" LineBreakMode="WordWrap"/>
 												<ContentView Content="{Binding Content}"/>
-											</StackLayout>
+											</VerticalStackLayout>
 										</ScrollView>
 									</DataTemplate>
 								</CarouselView.ItemTemplate>

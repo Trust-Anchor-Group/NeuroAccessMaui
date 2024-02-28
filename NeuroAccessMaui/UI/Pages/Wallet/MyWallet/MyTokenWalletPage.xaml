@@ -113,7 +113,7 @@
 					</Grid>
 				</Frame>
 
-				<StackLayout Grid.Row="1" Margin="{StaticResource DefaultMargin}" >
+				<VerticalStackLayout Grid.Row="1" Margin="{StaticResource DefaultMargin}">
 					<controls:LoadingCollectionView VerticalOptions="StartAndExpand" SelectionMode="Single"
                                                RemainingItemsThreshold="1" ItemSizingStrategy="MeasureFirstItem"
                                                Style="{StaticResource MyWalletView}"
@@ -124,7 +124,7 @@
 							<GridItemsLayout Orientation="Vertical" VerticalItemSpacing="12"/>
 						</CollectionView.ItemsLayout>
 					</controls:LoadingCollectionView>
-				</StackLayout>
+				</VerticalStackLayout>
 			</Grid>
 		</ScrollView>
 	</Grid>

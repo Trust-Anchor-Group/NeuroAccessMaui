@@ -32,20 +32,20 @@
 								 HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Style="{StaticResource ValueLabel}"
 								 IsVisible="{Binding Ended}"/>
 						<Label Grid.Column="0" Grid.Row="2" Text="{l:Localize CurrentVariables}" Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"/>
-						<StackLayout Grid.Column="0" Grid.Row="3" Orientation="Vertical" BindableLayout.ItemsSource="{Binding Path=Variables}">
+						<VerticalStackLayout Grid.Column="0" Grid.Row="3" BindableLayout.ItemsSource="{Binding Path=Variables}">
 							<BindableLayout.ItemTemplate>
 								<DataTemplate x:DataType="viewmodel:VariableModel">
-									<StackLayout Orientation="Vertical">
+									<VerticalStackLayout>
 										<Label Text="{Binding Path=Name}" Style="{StaticResource KeyLabel}"/>
 										<Label LineBreakMode="NoWrap" Text="{Binding Path=AsScript}" Style="{StaticResource ValueLabel}">
 											<Label.GestureRecognizers>
 												<TapGestureRecognizer Command="{Binding CopyToClipboardCommand}"/>
 											</Label.GestureRecognizers>
 										</Label>
-									</StackLayout>
+									</VerticalStackLayout>
 								</DataTemplate>
 							</BindableLayout.ItemTemplate>
-						</StackLayout>
+						</VerticalStackLayout>
 					</Grid>
 				</Frame>
 			</VerticalStackLayout>

@@ -81,7 +81,7 @@
 					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
 						<Label Text="{l:Localize SensorDataText}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"/>
 						<Label Text="{Binding Path=Status}" Style="{StaticResource InfoLabel}" VerticalOptions="Center" IsVisible="{Binding Path=HasStatus}"/>
-						<StackLayout x:Name="SensorData" VerticalOptions="StartAndExpand" HorizontalOptions="StartAndExpand"
+						<VerticalStackLayout x:Name="SensorData" VerticalOptions="StartAndExpand" HorizontalOptions="StartAndExpand"
 							 BindableLayout.ItemsSource="{Binding SensorData}"
 							 BindableLayout.ItemTemplateSelector="{StaticResource ItemStyleSelector}"/>
 					</VerticalStackLayout>

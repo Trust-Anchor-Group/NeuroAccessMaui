@@ -49,7 +49,7 @@
 								</Label.GestureRecognizers>
 							</Label>
 						</Grid>
-						<StackLayout x:Name="CallerLayout" Orientation="Vertical" BindableLayout.ItemsSource="{Binding Path=CallerTags}" VerticalOptions="StartAndExpand" Margin="{StaticResource DefaultMargin}">
+						<VerticalStackLayout x:Name="CallerLayout" BindableLayout.ItemsSource="{Binding Path=CallerTags}" VerticalOptions="StartAndExpand" Margin="{StaticResource DefaultMargin}">
 							<BindableLayout.ItemTemplate>
 								<DataTemplate x:DataType="things:HumanReadableTag">
 									<Grid ColumnDefinitions="*,*" RowDefinitions="auto">
@@ -62,7 +62,7 @@
 									</Grid>
 								</DataTemplate>
 							</BindableLayout.ItemTemplate>
-						</StackLayout>
+						</VerticalStackLayout>
 						<controls:TextButton LabelData="{l:Localize AddContact}" Command="{Binding Path=AddContactCommand}"
 													IsVisible="{Binding CallerInContactsList, Converter={StaticResource InvertedBoolConverter}}"
 													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
@@ -73,7 +73,7 @@
 						<Label Text="{l:Localize InformationAboutThing}" Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"/>
 						<Label Text="{l:Localize InformationAboutThingText}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"
 					   HorizontalOptions="Start"/>
-						<StackLayout x:Name="TagLayout" Orientation="Vertical" BindableLayout.ItemsSource="{Binding Path=Tags}" VerticalOptions="StartAndExpand" Margin="{StaticResource DefaultMargin}">
+						<VerticalStackLayout x:Name="TagLayout" BindableLayout.ItemsSource="{Binding Path=Tags}" VerticalOptions="StartAndExpand" Margin="{StaticResource DefaultMargin}">
 							<BindableLayout.ItemTemplate>
 								<DataTemplate x:DataType="things:HumanReadableTag">
 									<Grid ColumnDefinitions="*,*" RowDefinitions="auto">
@@ -86,11 +86,11 @@
 									</Grid>
 								</DataTemplate>
 							</BindableLayout.ItemTemplate>
-						</StackLayout>
+						</VerticalStackLayout>
 						<!-- Parameter Names -->
 						<Label Text="{l:Localize Parameters}" Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"/>
 						<Label Text="{l:Localize PermitParametersText}" LineBreakMode="WordWrap" Style="{StaticResource InfoLabel}"/>
-						<StackLayout x:Name="ParameterLayout" Orientation="Vertical" BindableLayout.ItemsSource="{Binding Path=Parameters}" VerticalOptions="StartAndExpand">
+						<VerticalStackLayout x:Name="ParameterLayout" BindableLayout.ItemsSource="{Binding Path=Parameters}" VerticalOptions="StartAndExpand">
 							<BindableLayout.ItemTemplate>
 								<DataTemplate x:DataType="viewmodel2:FieldReference">
 									<Grid ColumnDefinitions="auto,*" RowDefinitions="auto">
@@ -100,7 +100,7 @@
 									</Grid>
 								</DataTemplate>
 							</BindableLayout.ItemTemplate>
-						</StackLayout>
+						</VerticalStackLayout>
 						<controls:TextButton LabelData="{l:Localize All}" Command="{Binding Path=AllParametersCommand}"
 													Margin="{StaticResource SmallTopBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
 						<controls:TextButton LabelData="{l:Localize None}" Command="{Binding Path=NoParametersCommand}"
