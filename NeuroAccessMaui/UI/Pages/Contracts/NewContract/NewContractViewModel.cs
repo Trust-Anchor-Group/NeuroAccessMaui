@@ -654,10 +654,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				if (ParameterInfo?.Parameter is DateParameter DP)
 				{
 					if (e.NewDate is not null)
-					{
 						DP.Value = e.NewDate;
-						Picker.BackgroundColor = ControlBgColor.ToColor(true);
-					}
 					else
 					{
 						Picker.BackgroundColor = ControlBgColor.ToColor(false);
@@ -727,14 +724,16 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				else
 					Ok = false;
 
-				Color? BgColor = ControlBgColor.ToColor(Ok);
-
-				Entry.BackgroundColor = BgColor;
-				Border.BackgroundColor = BgColor;
-				CompositeEntry.BackgroundColor = BgColor;
-
 				if (!Ok)
+				{
+					Color? BgColor = ControlBgColor.ToColor(Ok);
+
+					Entry.BackgroundColor = BgColor;
+					Border.BackgroundColor = BgColor;
+					CompositeEntry.BackgroundColor = BgColor;
+
 					return;
+				}
 
 				await this.ValidateParameters();
 				await this.PopulateHumanReadableText();
@@ -766,6 +765,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 		private async Task ValidateParameters()
 		{
+			ContractsClient ContractsClient = ServiceRef.XmppService.ContractsClient;
 			Variables Variables = [];
 			bool Ok = true;
 
@@ -783,7 +783,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				{
 					// Calculation parameters might only execute on the server. So, if they fail in the client, allow user to propose contract anyway.
 
-					Valid = await P.Parameter.IsParameterValid(Variables, ServiceRef.XmppService.ContractsClient) || P.Control is null;
+					Valid = await P.Parameter.IsParameterValid(Variables, ContractsClient) || P.Control is null;
 				}
 				catch (Exception)
 				{

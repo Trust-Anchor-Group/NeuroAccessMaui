@@ -1,4 +1,6 @@
-﻿using System.Windows.Input;
+﻿using System.Runtime.CompilerServices;
+using System.Windows.Input;
+using Android.Media.Audiofx;
 using Microsoft.Maui.Controls.Shapes;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Core;
@@ -113,6 +115,12 @@ namespace NeuroAccessMaui.UI.Controls
 			this.innerEntry.Placeholder = NewValue;
 		}
 
+		public void OnBackgroundColorPropertyChanged(Color _, Color NewValue)
+		{
+			this.innerEntry.BackgroundColor = NewValue;
+			this.innerBorder.BackgroundColor = NewValue;
+		}
+
 		public Style BorderStyle
 		{
 			get => (Style)this.GetValue(BorderDataElement.BorderStyleProperty);
@@ -211,7 +219,29 @@ namespace NeuroAccessMaui.UI.Controls
 			}
 		}
 
+		/// <summary>
+		/// Embedded Entry control
+		/// </summary>
 		public Entry Entry => this.innerEntry;
+
+		/// <summary>
+		/// Embedded Border encapsulating the Entry
+		/// </summary>
+		public Border Border => this.innerBorder;
+
+		/// <inheritdoc/>
+		protected override void OnPropertyChanged(string PropertyName)
+		{
+			base.OnPropertyChanged(PropertyName);
+
+			switch (PropertyName)
+			{
+				case nameof(this.BackgroundColor):
+					this.innerEntry.BackgroundColor = this.BackgroundColor;
+					this.innerBorder.BackgroundColor = this.BackgroundColor;
+					break;
+			}
+		}
 
 		/// <summary>
 		/// Occurs when the user finalizes the text in an entry with the return key.
@@ -242,7 +272,8 @@ namespace NeuroAccessMaui.UI.Controls
 				HorizontalOptions = LayoutOptions.Fill,
 				IsReadOnly = this.IsReadOnly,
 				IsPassword = this.IsPassword,
-				Placeholder = this.Placeholder
+				Placeholder = this.Placeholder,
+				BackgroundColor = this.BackgroundColor
 			};
 
 			this.innerEntry.Completed += this.InnerEntry_Completed;
@@ -270,7 +301,7 @@ namespace NeuroAccessMaui.UI.Controls
 			{
 				StrokeThickness = 2,
 				Content = this.PathData is null ? this.innerEntry : this.innerGrid,
-				BackgroundColor = Colors.Transparent
+				BackgroundColor = this.BackgroundColor
 			};
 
 			this.Content = this.innerBorder;
