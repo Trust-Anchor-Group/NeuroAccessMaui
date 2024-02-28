@@ -76,7 +76,7 @@
 								<Label Grid.Column="1" Grid.Row="4" Text="{Binding TokenIdMethod}" Style="{StaticResource ValueLabel}"/>
 
 								<Label Grid.Column="0" Grid.Row="5" Text="{l:Localize TokenVisibility}" Style="{StaticResource KeyLabel}"/>
-								<Label Grid.Column="1" Grid.Row="5" Text="{Binding Visibility}" Style="{StaticResource ValueLabel}"/>
+								<Label Grid.Column="1" Grid.Row="5" Text="{Binding Visibility, Converter={converters:LocalizedState}}" Style="{StaticResource ValueLabel}"/>
 
 								<Label Grid.Column="0" Grid.Row="6" Text="{l:Localize Ordinal}" Style="{StaticResource KeyLabel}"/>
 								<Label Grid.Column="1" Grid.Row="6" Style="{StaticResource ValueLabel}">

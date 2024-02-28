@@ -39,6 +39,16 @@ namespace NeuroAccessMaui.UI.Converters
 					case ContractState.Deleted: return ServiceRef.Localizer[nameof(AppResources.Deleted)];
 				}
 			}
+			else if (Value is ContractVisibility ContractVisibility)
+			{
+				switch (ContractVisibility)
+				{
+					case ContractVisibility.CreatorAndParts: return ServiceRef.Localizer[nameof(AppResources.ContractVisibility_CreatorAndParts)];
+					case ContractVisibility.DomainAndParts: return ServiceRef.Localizer[nameof(AppResources.ContractVisibility_DomainAndParts)];
+					case ContractVisibility.Public: return ServiceRef.Localizer[nameof(AppResources.ContractVisibility_Public)];
+					case ContractVisibility.PublicSearchable: return ServiceRef.Localizer[nameof(AppResources.ContractVisibility_PublicSearchable)];
+				}
+			}
 			else if (Value is XmppState XmppState)
 			{
 				switch (XmppState)
