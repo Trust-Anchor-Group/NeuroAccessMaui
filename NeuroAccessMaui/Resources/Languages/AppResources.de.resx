@@ -1914,7 +1914,70 @@
   <data name="MachineReadableInfoText" xml:space="preserve">
     <value>Nachfolgend finden Sie eine Übersicht über die maschinenlesbaren Daten, die in den Vertrag eingebettet sind.</value>
   </data>
+  <data name="Approved" xml:space="preserve">
+    <value>Gebilligt</value>
+  </data>
+  <data name="Authenticating" xml:space="preserve">
+    <value>Beglaubigend</value>
+  </data>
+  <data name="BeingSigned" xml:space="preserve">
+    <value>Signiert werden</value>
+  </data>
+  <data name="Binding" xml:space="preserve">
+    <value>Verbindlich</value>
+  </data>
+  <data name="Compromised" xml:space="preserve">
+    <value>Kompromittiert</value>
+  </data>
+  <data name="Connected" xml:space="preserve">
+    <value>Verbunden</value>
+  </data>
+  <data name="Connecting" xml:space="preserve">
+    <value>Verbindend</value>
+  </data>
   <data name="ContractIdCopiedSuccessfully" xml:space="preserve">
     <value>Ein Link zum Vertrag wurde in die Zwischenablage kopiert.</value>
+  </data>
+  <data name="Deleted" xml:space="preserve">
+    <value>Gelöscht</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Fehler</value>
+  </data>
+  <data name="Failed" xml:space="preserve">
+    <value>Misslungen</value>
+  </data>
+  <data name="FetchingRoster" xml:space="preserve">
+    <value>Abrufen des Dienstplans</value>
+  </data>
+  <data name="Obsoleted" xml:space="preserve">
+    <value>Veraltet</value>
+  </data>
+  <data name="Offline" xml:space="preserve">
+    <value>Offline</value>
+  </data>
+  <data name="Proposed" xml:space="preserve">
+    <value>Vorgeschlagen</value>
+  </data>
+  <data name="Registering" xml:space="preserve">
+    <value>Einschreibend</value>
+  </data>
+  <data name="RequestingSession" xml:space="preserve">
+    <value>Sitzung anfordern</value>
+  </data>
+  <data name="SettingPresence" xml:space="preserve">
+    <value>Festlegen der Präsenz</value>
+  </data>
+  <data name="Signed" xml:space="preserve">
+    <value>Gezeichnet</value>
+  </data>
+  <data name="StartingEncryption" xml:space="preserve">
+    <value>Verschlüsselung starten</value>
+  </data>
+  <data name="StreamNegotiation" xml:space="preserve">
+    <value>Stream-Aushandlung</value>
+  </data>
+  <data name="StreamOpened" xml:space="preserve">
+    <value>Stream geöffnet</value>
   </data>
 </root>

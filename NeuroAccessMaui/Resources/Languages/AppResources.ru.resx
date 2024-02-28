@@ -1914,7 +1914,70 @@
   <data name="MachineReadableInfoText" xml:space="preserve">
     <value>Ниже приведен обзор машиночитаемых данных, встроенных в договор.</value>
   </data>
+  <data name="Approved" xml:space="preserve">
+    <value>Одобренный</value>
+  </data>
+  <data name="Authenticating" xml:space="preserve">
+    <value>Проверки подлинности</value>
+  </data>
+  <data name="BeingSigned" xml:space="preserve">
+    <value>Подписывается</value>
+  </data>
+  <data name="Binding" xml:space="preserve">
+    <value>Связывание</value>
+  </data>
+  <data name="Compromised" xml:space="preserve">
+    <value>Скомпрометированы</value>
+  </data>
+  <data name="Connected" xml:space="preserve">
+    <value>Связанный</value>
+  </data>
+  <data name="Connecting" xml:space="preserve">
+    <value>Соединительный</value>
+  </data>
   <data name="ContractIdCopiedSuccessfully" xml:space="preserve">
     <value>Ссылка на контракт была скопирована в буфер обмена.</value>
+  </data>
+  <data name="Deleted" xml:space="preserve">
+    <value>Уничтоженный</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Ошибка</value>
+  </data>
+  <data name="Failed" xml:space="preserve">
+    <value>Неудавшийся</value>
+  </data>
+  <data name="FetchingRoster" xml:space="preserve">
+    <value>Получение списка</value>
+  </data>
+  <data name="Obsoleted" xml:space="preserve">
+    <value>Устарело</value>
+  </data>
+  <data name="Offline" xml:space="preserve">
+    <value>Автономный</value>
+  </data>
+  <data name="Proposed" xml:space="preserve">
+    <value>Предложенный</value>
+  </data>
+  <data name="Registering" xml:space="preserve">
+    <value>Регистрирующий</value>
+  </data>
+  <data name="RequestingSession" xml:space="preserve">
+    <value>Запрос сеанса</value>
+  </data>
+  <data name="SettingPresence" xml:space="preserve">
+    <value>Настройка присутствия</value>
+  </data>
+  <data name="Signed" xml:space="preserve">
+    <value>Подписанный</value>
+  </data>
+  <data name="StartingEncryption" xml:space="preserve">
+    <value>Запуск шифрования</value>
+  </data>
+  <data name="StreamNegotiation" xml:space="preserve">
+    <value>Согласование потоковой передачи</value>
+  </data>
+  <data name="StreamOpened" xml:space="preserve">
+    <value>Трансляция открыта</value>
   </data>
 </root>

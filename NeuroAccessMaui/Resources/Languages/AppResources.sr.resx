@@ -1914,7 +1914,70 @@
   <data name="MachineReadableInfoText" xml:space="preserve">
     <value>Pregled podataka čitljivih na računaru ugrađenih u ugovor prikazan je ispod.</value>
   </data>
+  <data name="Approved" xml:space="preserve">
+    <value>Odobrio</value>
+  </data>
+  <data name="Authenticating" xml:space="preserve">
+    <value>Potvrda identiteta</value>
+  </data>
+  <data name="BeingSigned" xml:space="preserve">
+    <value>Potpisujem</value>
+  </data>
+  <data name="Binding" xml:space="preserve">
+    <value>Povezivanje</value>
+  </data>
+  <data name="Compromised" xml:space="preserve">
+    <value>Kompromitovan</value>
+  </data>
+  <data name="Connected" xml:space="preserve">
+    <value>Povezan sa</value>
+  </data>
+  <data name="Connecting" xml:space="preserve">
+    <value>Povezivanje</value>
+  </data>
   <data name="ContractIdCopiedSuccessfully" xml:space="preserve">
     <value>Veza sa ugovorom je kopirana u ostavu.</value>
+  </data>
+  <data name="Deleted" xml:space="preserve">
+    <value>Izbrisane</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Greška</value>
+  </data>
+  <data name="Failed" xml:space="preserve">
+    <value>Nije uspelo</value>
+  </data>
+  <data name="FetchingRoster" xml:space="preserve">
+    <value>Prenošenje spiska</value>
+  </data>
+  <data name="Obsoleted" xml:space="preserve">
+    <value>Zastarelo</value>
+  </data>
+  <data name="Offline" xml:space="preserve">
+    <value>Vanmrežne</value>
+  </data>
+  <data name="Proposed" xml:space="preserve">
+    <value>Predložio</value>
+  </data>
+  <data name="Registering" xml:space="preserve">
+    <value>Registrovanje</value>
+  </data>
+  <data name="RequestingSession" xml:space="preserve">
+    <value>Zahtevanje sesije</value>
+  </data>
+  <data name="SettingPresence" xml:space="preserve">
+    <value>Postavljanje prisustva</value>
+  </data>
+  <data name="Signed" xml:space="preserve">
+    <value>Potpisao</value>
+  </data>
+  <data name="StartingEncryption" xml:space="preserve">
+    <value>Pokretanje šifrovanja</value>
+  </data>
+  <data name="StreamNegotiation" xml:space="preserve">
+    <value>Potočno pregovaranje</value>
+  </data>
+  <data name="StreamOpened" xml:space="preserve">
+    <value>Tok je otvoren</value>
   </data>
 </root>

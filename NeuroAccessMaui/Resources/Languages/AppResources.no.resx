@@ -1914,7 +1914,70 @@
   <data name="MachineReadableInfoText" xml:space="preserve">
     <value>En oversikt over maskinlesbare data innebygd i kontrakten er vist nedenfor.</value>
   </data>
+  <data name="Approved" xml:space="preserve">
+    <value>Godkjent</value>
+  </data>
+  <data name="Authenticating" xml:space="preserve">
+    <value>Godkjenne</value>
+  </data>
+  <data name="BeingSigned" xml:space="preserve">
+    <value>Blir signert</value>
+  </data>
+  <data name="Binding" xml:space="preserve">
+    <value>Binding</value>
+  </data>
+  <data name="Compromised" xml:space="preserve">
+    <value>Kompromittert</value>
+  </data>
+  <data name="Connected" xml:space="preserve">
+    <value>Tilkoblet</value>
+  </data>
+  <data name="Connecting" xml:space="preserve">
+    <value>Koble</value>
+  </data>
   <data name="ContractIdCopiedSuccessfully" xml:space="preserve">
     <value>En lenke til kontrakten ble kopiert til utklippstavlen.</value>
+  </data>
+  <data name="Deleted" xml:space="preserve">
+    <value>Slettet</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Feil</value>
+  </data>
+  <data name="Failed" xml:space="preserve">
+    <value>Mislyktes</value>
+  </data>
+  <data name="FetchingRoster" xml:space="preserve">
+    <value>Henter spillerstall</value>
+  </data>
+  <data name="Obsoleted" xml:space="preserve">
+    <value>Foreldet</value>
+  </data>
+  <data name="Offline" xml:space="preserve">
+    <value>Frakoblet</value>
+  </data>
+  <data name="Proposed" xml:space="preserve">
+    <value>Foreslått</value>
+  </data>
+  <data name="Registering" xml:space="preserve">
+    <value>Registrere</value>
+  </data>
+  <data name="RequestingSession" xml:space="preserve">
+    <value>Ber om økt</value>
+  </data>
+  <data name="SettingPresence" xml:space="preserve">
+    <value>Angi tilstedeværelse</value>
+  </data>
+  <data name="Signed" xml:space="preserve">
+    <value>Signert</value>
+  </data>
+  <data name="StartingEncryption" xml:space="preserve">
+    <value>Starte kryptering</value>
+  </data>
+  <data name="StreamNegotiation" xml:space="preserve">
+    <value>Strøm forhandling</value>
+  </data>
+  <data name="StreamOpened" xml:space="preserve">
+    <value>Strømmen åpnet</value>
   </data>
 </root>

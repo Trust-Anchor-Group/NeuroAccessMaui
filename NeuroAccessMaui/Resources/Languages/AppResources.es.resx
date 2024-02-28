@@ -1914,7 +1914,70 @@
   <data name="MachineReadableInfoText" xml:space="preserve">
     <value>A continuación se muestra una descripción general de los datos legibles por máquina incorporados en el contrato.</value>
   </data>
+  <data name="Approved" xml:space="preserve">
+    <value>Aprobado</value>
+  </data>
+  <data name="Authenticating" xml:space="preserve">
+    <value>Autenticación</value>
+  </data>
+  <data name="BeingSigned" xml:space="preserve">
+    <value>Estar firmado</value>
+  </data>
+  <data name="Binding" xml:space="preserve">
+    <value>Encuadernación</value>
+  </data>
+  <data name="Compromised" xml:space="preserve">
+    <value>Comprometido</value>
+  </data>
+  <data name="Connected" xml:space="preserve">
+    <value>Conexo</value>
+  </data>
+  <data name="Connecting" xml:space="preserve">
+    <value>Conectivo</value>
+  </data>
   <data name="ContractIdCopiedSuccessfully" xml:space="preserve">
     <value>Se copió un enlace al contrato en el portapapeles.</value>
+  </data>
+  <data name="Deleted" xml:space="preserve">
+    <value>Borrado</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Failed" xml:space="preserve">
+    <value>Fracasado</value>
+  </data>
+  <data name="FetchingRoster" xml:space="preserve">
+    <value>Obtención de la lista</value>
+  </data>
+  <data name="Obsoleted" xml:space="preserve">
+    <value>Obsoleto</value>
+  </data>
+  <data name="Offline" xml:space="preserve">
+    <value>Sin conexión</value>
+  </data>
+  <data name="Proposed" xml:space="preserve">
+    <value>Propuesto</value>
+  </data>
+  <data name="Registering" xml:space="preserve">
+    <value>Registrar</value>
+  </data>
+  <data name="RequestingSession" xml:space="preserve">
+    <value>Solicitud de sesión</value>
+  </data>
+  <data name="SettingPresence" xml:space="preserve">
+    <value>Establecimiento de la presencia</value>
+  </data>
+  <data name="Signed" xml:space="preserve">
+    <value>Fichado</value>
+  </data>
+  <data name="StartingEncryption" xml:space="preserve">
+    <value>Inicio del cifrado</value>
+  </data>
+  <data name="StreamNegotiation" xml:space="preserve">
+    <value>Negociación de flujos</value>
+  </data>
+  <data name="StreamOpened" xml:space="preserve">
+    <value>Transmisión abierta</value>
   </data>
 </root>

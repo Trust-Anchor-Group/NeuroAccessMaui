@@ -1914,7 +1914,70 @@
   <data name="MachineReadableInfoText" xml:space="preserve">
     <value>Alla on yleiskatsaus sopimukseen upotetuista koneellisesti luettavista tiedoista.</value>
   </data>
+  <data name="Approved" xml:space="preserve">
+    <value>Hyväksytty</value>
+  </data>
+  <data name="Authenticating" xml:space="preserve">
+    <value>Todennetaan</value>
+  </data>
+  <data name="BeingSigned" xml:space="preserve">
+    <value>Allekirjoitetaan</value>
+  </data>
+  <data name="Binding" xml:space="preserve">
+    <value>Sitova</value>
+  </data>
+  <data name="Compromised" xml:space="preserve">
+    <value>Vaarantunut</value>
+  </data>
+  <data name="Connected" xml:space="preserve">
+    <value>Yhdistetty</value>
+  </data>
+  <data name="Connecting" xml:space="preserve">
+    <value>Kytkeminen</value>
+  </data>
   <data name="ContractIdCopiedSuccessfully" xml:space="preserve">
     <value>Linkki sopimukseen kopioitiin leikepöydälle.</value>
+  </data>
+  <data name="Deleted" xml:space="preserve">
+    <value>Poistaa</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Virhe</value>
+  </data>
+  <data name="Failed" xml:space="preserve">
+    <value>Epäonnistunut</value>
+  </data>
+  <data name="FetchingRoster" xml:space="preserve">
+    <value>Työvuorolistan hakeminen</value>
+  </data>
+  <data name="Obsoleted" xml:space="preserve">
+    <value>Vanhentunut</value>
+  </data>
+  <data name="Offline" xml:space="preserve">
+    <value>Offline</value>
+  </data>
+  <data name="Proposed" xml:space="preserve">
+    <value>Ehdotettu</value>
+  </data>
+  <data name="Registering" xml:space="preserve">
+    <value>Rekisteröinti</value>
+  </data>
+  <data name="RequestingSession" xml:space="preserve">
+    <value>Istunnon pyytäminen</value>
+  </data>
+  <data name="SettingPresence" xml:space="preserve">
+    <value>Tavoitettavuuden asettaminen</value>
+  </data>
+  <data name="Signed" xml:space="preserve">
+    <value>Allekirjoitettu</value>
+  </data>
+  <data name="StartingEncryption" xml:space="preserve">
+    <value>Salauksen aloittaminen</value>
+  </data>
+  <data name="StreamNegotiation" xml:space="preserve">
+    <value>Stream-neuvottelut</value>
+  </data>
+  <data name="StreamOpened" xml:space="preserve">
+    <value>Striimi avattu</value>
   </data>
 </root>
