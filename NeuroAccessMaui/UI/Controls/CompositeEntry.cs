@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using System.Windows.Input;
-using Android.Media.Audiofx;
+﻿using System.Windows.Input;
 using Microsoft.Maui.Controls.Shapes;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Core;
