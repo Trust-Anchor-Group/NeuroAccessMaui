@@ -141,7 +141,9 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 					new Uri("https://" + Constants.Domains.IdDomain + "/ID/SendVerificationMessage.ws"),
 					new Dictionary<string, object>()
 					{
-							{ "EMail", this.EmailText }
+						{ "EMail", this.EmailText },
+						{ "AppName", Constants.Application.Name },
+						{ "Language", CultureInfo.CurrentCulture.TwoLetterISOLanguageName }
 					}, new KeyValuePair<string, string>("Accept", "application/json"));
 
 
@@ -160,8 +162,8 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 							new Uri("https://" + Constants.Domains.IdDomain + "/ID/VerifyNumber.ws"),
 							new Dictionary<string, object>()
 							{
-									{ "EMail", this.EmailText },
-									{ "Code", int.Parse(Code, NumberStyles.None, CultureInfo.InvariantCulture) }
+								{ "EMail", this.EmailText },
+								{ "Code", int.Parse(Code, NumberStyles.None, CultureInfo.InvariantCulture) }
 							}, new KeyValuePair<string, string>("Accept", "application/json"));
 
 
@@ -218,7 +220,9 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 					new Uri("https://" + Constants.Domains.IdDomain + "/ID/SendVerificationMessage.ws"),
 					new Dictionary<string, object>()
 					{
-							{ "EMail", this.EmailText }
+						{ "EMail", this.EmailText },
+						{ "AppName", Constants.Application.Name },
+						{ "Language", CultureInfo.CurrentCulture.TwoLetterISOLanguageName }
 					}, new KeyValuePair<string, string>("Accept", "application/json"));
 
 				if (SendResult is Dictionary<string, object> SendResponse &&

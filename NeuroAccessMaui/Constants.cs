@@ -16,6 +16,17 @@
 		public const int MaxRenderedImageDimensionInPixels = 800;
 
 		/// <summary>
+		/// Application-related constants.
+		/// </summary>
+		public static class Application
+		{
+			/// <summary>
+			/// Name of application
+			/// </summary>
+			public const string Name = "Neuro-Access";
+		}
+
+		/// <summary>
 		/// Authentication constants
 		/// </summary>
 		public static class Security
