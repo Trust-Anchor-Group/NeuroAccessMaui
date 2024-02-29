@@ -529,7 +529,7 @@
     <value>Bienvenue!</value>
   </data>
   <data name="OnboardingPurposePageDetails" xml:space="preserve">
-    <value>Choisissez dans quel contexte vous avez l’intention d’utiliser le Neuro-Access</value>
+    <value>Choisissez dans quel contexte vous avez l’intention d’utiliser Neuro-Access</value>
   </data>
   <data name="OnboardingPhonePageTitle" xml:space="preserve">
     <value>C’est parti !</value>

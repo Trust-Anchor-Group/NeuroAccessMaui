@@ -2572,7 +2572,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Choose in what context you intend to use the Neuro-Access.
+        ///   Looks up a localized string similar to Choose in what context you intend to use Neuro-Access.
         /// </summary>
         internal static string OnboardingPurposePageDetails {
             get {
