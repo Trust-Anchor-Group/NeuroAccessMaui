@@ -1980,4 +1980,13 @@
   <data name="StreamOpened" xml:space="preserve">
     <value>Stream opened</value>
   </data>
+  <data name="AreYouSureYouWantToSignAs" xml:space="preserve">
+    <value>Are you sure you want to sign this contract as {0}?</value>
+  </data>
+  <data name="AreYouSureYouWantToObsoleteContract" xml:space="preserve">
+    <value>Are you sure you want to obsolete this contract?</value>
+  </data>
+  <data name="AreYouSureYouWantToDeleteContract" xml:space="preserve">
+    <value>Are you sure you want to delete this contract?</value>
+  </data>
 </root>

@@ -340,6 +340,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete this contract?.
+        /// </summary>
+        internal static string AreYouSureYouWantToDeleteContract {
+            get {
+                return ResourceManager.GetString("AreYouSureYouWantToDeleteContract", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to obsolete this contract?.
+        /// </summary>
+        internal static string AreYouSureYouWantToObsoleteContract {
+            get {
+                return ResourceManager.GetString("AreYouSureYouWantToObsoleteContract", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to remove this contact from your list of contacts?.
         /// </summary>
         internal static string AreYouSureYouWantToRemoveContact {
@@ -399,6 +417,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string AreYouSureYouWantToSendThisIdApplication {
             get {
                 return ResourceManager.GetString("AreYouSureYouWantToSendThisIdApplication", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to sign this contract as {0}?.
+        /// </summary>
+        internal static string AreYouSureYouWantToSignAs {
+            get {
+                return ResourceManager.GetString("AreYouSureYouWantToSignAs", resourceCulture);
             }
         }
         

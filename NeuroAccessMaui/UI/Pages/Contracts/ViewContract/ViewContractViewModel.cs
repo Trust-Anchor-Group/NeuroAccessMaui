@@ -729,17 +729,23 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 			try
 			{
-				if (!await App.AuthenticateUser(true))
-					return;
-
-				if (Sender is Button button && !string.IsNullOrEmpty(button.StyleId))
+				if (Sender is Button Button && !string.IsNullOrEmpty(Button.StyleId))
 				{
+					string Role = Button.StyleId;
+
+					if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToSignAs), Role]))
+						return;
+
+					if (!await App.AuthenticateUser(true))
+						return;
+
 					this.skipContractEvent = DateTime.Now;
 
-					Contract contract = await ServiceRef.XmppService.SignContract(this.Contract, button.StyleId, false);
-					await this.ContractUpdated(contract);
+					Contract Contract = await ServiceRef.XmppService.SignContract(this.Contract, Role, false);
+					await this.ContractUpdated(Contract);
 
-					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)], ServiceRef.Localizer[nameof(AppResources.ContractSuccessfullySigned)]);
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+						ServiceRef.Localizer[nameof(AppResources.ContractSuccessfullySigned)]);
 				}
 			}
 			catch (Exception ex)
@@ -867,6 +873,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 			try
 			{
+				if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToObsoleteContract)]))
+					return;
+
 				if (!await App.AuthenticateUser(true))
 					return;
 
@@ -895,6 +904,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 			try
 			{
+				if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToDeleteContract)]))
+					return;
+
 				if (!await App.AuthenticateUser(true))
 					return;
 

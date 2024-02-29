@@ -1980,4 +1980,13 @@
   <data name="StreamOpened" xml:space="preserve">
     <value>Flux ouvert</value>
   </data>
+  <data name="AreYouSureYouWantToSignAs" xml:space="preserve">
+    <value>Êtes-vous sûr de vouloir signer ce contrat en tant que {0} ?</value>
+  </data>
+  <data name="AreYouSureYouWantToObsoleteContract" xml:space="preserve">
+    <value>Êtes-vous sûr de vouloir rendre ce contrat obsolète ?</value>
+  </data>
+  <data name="AreYouSureYouWantToDeleteContract" xml:space="preserve">
+    <value>Êtes-vous sûr de vouloir supprimer ce contrat ?</value>
+  </data>
 </root>
