@@ -1989,4 +1989,40 @@
   <data name="AreYouSureYouWantToDeleteContract" xml:space="preserve">
     <value>Želite li zaista da izbrišete ovaj ugovor?</value>
   </data>
+  <data name="ClientSignatureInformationInfoText" xml:space="preserve">
+    <value>Slede informacije vezane za potpis klijenta.</value>
+  </data>
+  <data name="IdentityInformation" xml:space="preserve">
+    <value>Informacije o identitetu</value>
+  </data>
+  <data name="IdentityInformationInfoText" xml:space="preserve">
+    <value>Slede lični podaci registrovani za stranku koja je potpisala ugovor.</value>
+  </data>
+  <data name="Network" xml:space="preserve">
+    <value>Mrežne</value>
+  </data>
+  <data name="Role" xml:space="preserve">
+    <value>Ulogu</value>
+  </data>
+  <data name="Signature" xml:space="preserve">
+    <value>Potpis</value>
+  </data>
+  <data name="Timestamp" xml:space="preserve">
+    <value>Vremenska oznaka</value>
+  </data>
+  <data name="Transferable" xml:space="preserve">
+    <value>Prenosivo</value>
+  </data>
+  <data name="Provider" xml:space="preserve">
+    <value>Dobavljača</value>
+  </data>
+  <data name="ServerSignatureInformationInfoText" xml:space="preserve">
+    <value>Slede informacije vezane za potpis servera.</value>
+  </data>
+  <data name="SignatureInformation" xml:space="preserve">
+    <value>Informacije o potpisu</value>
+  </data>
+  <data name="ServerInformation" xml:space="preserve">
+    <value>Informacije o serveru</value>
+  </data>
 </root>

@@ -1989,4 +1989,40 @@
   <data name="AreYouSureYouWantToDeleteContract" xml:space="preserve">
     <value>Are you sure you want to delete this contract?</value>
   </data>
+  <data name="ClientSignatureInformationInfoText" xml:space="preserve">
+    <value>The following is information related to a client signature.</value>
+  </data>
+  <data name="IdentityInformation" xml:space="preserve">
+    <value>Identity information</value>
+  </data>
+  <data name="IdentityInformationInfoText" xml:space="preserve">
+    <value>The following is personal information registered for the party who signed the contract.</value>
+  </data>
+  <data name="Network" xml:space="preserve">
+    <value>Network</value>
+  </data>
+  <data name="Role" xml:space="preserve">
+    <value>Role</value>
+  </data>
+  <data name="Signature" xml:space="preserve">
+    <value>Signature</value>
+  </data>
+  <data name="Timestamp" xml:space="preserve">
+    <value>Time stamp</value>
+  </data>
+  <data name="Transferable" xml:space="preserve">
+    <value>Transferable</value>
+  </data>
+  <data name="Provider" xml:space="preserve">
+    <value>Provider</value>
+  </data>
+  <data name="ServerSignatureInformationInfoText" xml:space="preserve">
+    <value>The following is information related to a server signature.</value>
+  </data>
+  <data name="SignatureInformation" xml:space="preserve">
+    <value>Signature information</value>
+  </data>
+  <data name="ServerInformation" xml:space="preserve">
+    <value>Server Information</value>
+  </data>
 </root>

@@ -1989,4 +1989,40 @@
   <data name="AreYouSureYouWantToDeleteContract" xml:space="preserve">
     <value>Er du sikker på at du vil slette denne kontrakten?</value>
   </data>
+  <data name="ClientSignatureInformationInfoText" xml:space="preserve">
+    <value>Følgende er informasjon relatert til en klientsignatur.</value>
+  </data>
+  <data name="IdentityInformation" xml:space="preserve">
+    <value>Identitetsinformasjon</value>
+  </data>
+  <data name="IdentityInformationInfoText" xml:space="preserve">
+    <value>Følgende er personopplysninger registrert på den som har signert kontrakten.</value>
+  </data>
+  <data name="Network" xml:space="preserve">
+    <value>Nettverk</value>
+  </data>
+  <data name="Role" xml:space="preserve">
+    <value>Rolle</value>
+  </data>
+  <data name="Signature" xml:space="preserve">
+    <value>Underskrift</value>
+  </data>
+  <data name="Timestamp" xml:space="preserve">
+    <value>Tidsangivelse</value>
+  </data>
+  <data name="Transferable" xml:space="preserve">
+    <value>Overførbar</value>
+  </data>
+  <data name="Provider" xml:space="preserve">
+    <value>Leverandør</value>
+  </data>
+  <data name="ServerSignatureInformationInfoText" xml:space="preserve">
+    <value>Følgende er informasjon relatert til en serversignatur.</value>
+  </data>
+  <data name="SignatureInformation" xml:space="preserve">
+    <value>Informasjon om signatur</value>
+  </data>
+  <data name="ServerInformation" xml:space="preserve">
+    <value>Serverinformasjon</value>
+  </data>
 </root>

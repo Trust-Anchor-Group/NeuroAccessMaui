@@ -754,6 +754,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The following is information related to a client signature..
+        /// </summary>
+        internal static string ClientSignatureInformationInfoText {
+            get {
+                return ResourceManager.GetString("ClientSignatureInformationInfoText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Client Signatures.
         /// </summary>
         internal static string ClientSignatures {
@@ -1861,6 +1870,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Identity information.
+        /// </summary>
+        internal static string IdentityInformation {
+            get {
+                return ResourceManager.GetString("IdentityInformation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The following is personal information registered for the party who signed the contract..
+        /// </summary>
+        internal static string IdentityInformationInfoText {
+            get {
+                return ResourceManager.GetString("IdentityInformationInfoText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Response to identity request.
         /// </summary>
         internal static string IdentityResponse {
@@ -2325,6 +2352,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string Negative {
             get {
                 return ResourceManager.GetString("Negative", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Network.
+        /// </summary>
+        internal static string Network {
+            get {
+                return ResourceManager.GetString("Network", resourceCulture);
             }
         }
         
@@ -3562,6 +3598,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Provider.
+        /// </summary>
+        internal static string Provider {
+            get {
+                return ResourceManager.GetString("Provider", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Approve service provider.
         /// </summary>
         internal static string ProviderSectionApproveOption {
@@ -4102,6 +4147,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Role.
+        /// </summary>
+        internal static string Role {
+            get {
+                return ResourceManager.GetString("Role", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Roles.
         /// </summary>
         internal static string Roles {
@@ -4552,6 +4606,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Server Information.
+        /// </summary>
+        internal static string ServerInformation {
+            get {
+                return ResourceManager.GetString("ServerInformation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The following is information related to a server signature..
+        /// </summary>
+        internal static string ServerSignatureInformationInfoText {
+            get {
+                return ResourceManager.GetString("ServerSignatureInformationInfoText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Server Signatures.
         /// </summary>
         internal static string ServerSignatures {
@@ -4638,6 +4710,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string SignAsRole {
             get {
                 return ResourceManager.GetString("SignAsRole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Signature.
+        /// </summary>
+        internal static string Signature {
+            get {
+                return ResourceManager.GetString("Signature", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Signature information.
+        /// </summary>
+        internal static string SignatureInformation {
+            get {
+                return ResourceManager.GetString("SignatureInformation", resourceCulture);
             }
         }
         
@@ -4957,6 +5047,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Time stamp.
+        /// </summary>
+        internal static string Timestamp {
+            get {
+                return ResourceManager.GetString("Timestamp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to To.
         /// </summary>
         internal static string To {
@@ -5061,6 +5160,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string TransactionAccepted {
             get {
                 return ResourceManager.GetString("TransactionAccepted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transferable.
+        /// </summary>
+        internal static string Transferable {
+            get {
+                return ResourceManager.GetString("Transferable", resourceCulture);
             }
         }
         

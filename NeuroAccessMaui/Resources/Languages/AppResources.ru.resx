@@ -1989,4 +1989,40 @@
   <data name="AreYouSureYouWantToDeleteContract" xml:space="preserve">
     <value>Вы уверены, что хотите удалить этот контракт?</value>
   </data>
+  <data name="ClientSignatureInformationInfoText" xml:space="preserve">
+    <value>Ниже приведена информация, связанная с подписью клиента.</value>
+  </data>
+  <data name="IdentityInformation" xml:space="preserve">
+    <value>Идентификационная информация</value>
+  </data>
+  <data name="IdentityInformationInfoText" xml:space="preserve">
+    <value>Ниже приведена личная информация, зарегистрированная на стороне, подписавшей договор.</value>
+  </data>
+  <data name="Network" xml:space="preserve">
+    <value>Сеть</value>
+  </data>
+  <data name="Role" xml:space="preserve">
+    <value>Роль</value>
+  </data>
+  <data name="Signature" xml:space="preserve">
+    <value>Подпись</value>
+  </data>
+  <data name="Timestamp" xml:space="preserve">
+    <value>Отметка времени</value>
+  </data>
+  <data name="Transferable" xml:space="preserve">
+    <value>Переводный</value>
+  </data>
+  <data name="Provider" xml:space="preserve">
+    <value>Поставщик</value>
+  </data>
+  <data name="ServerSignatureInformationInfoText" xml:space="preserve">
+    <value>Ниже приведены сведения, относящиеся к сигнатуре сервера.</value>
+  </data>
+  <data name="SignatureInformation" xml:space="preserve">
+    <value>Информация о подписи</value>
+  </data>
+  <data name="ServerInformation" xml:space="preserve">
+    <value>Информация о сервере</value>
+  </data>
 </root>

@@ -24,12 +24,12 @@
 											 PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
 				<Label Style="{StaticResource PageTitleLabel}" Text="{l:Localize IdentityInformation}"/>
-				<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize IdentityInformationInfoText}"/>
 
 				<!-- Personal Information -->
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 						<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize PersonalInformation}"/>
+						<Label Text="{l:Localize IdentityInformationInfoText}"/>
 
 						<Grid VerticalOptions="StartAndExpand" RowSpacing="0">
 							<Grid.ColumnDefinitions>
@@ -177,20 +177,28 @@
 								<RowDefinition Height="Auto" />
 							</Grid.RowDefinitions>
 
-							<Label Grid.Row="0" Grid.Column="0" Text="{l:Localize Role}" Style="{StaticResource KeyLabel}" Margin="{StaticResource SmallTopMargins}"/>
+							<Label Grid.Row="0" Grid.Column="0" Text="{l:Localize Role}" Style="{StaticResource KeyLabel}" Margin="{StaticResource SmallRightTopMargins}"/>
 							<Label Grid.Row="0" Grid.Column="1" Text="{Binding Path=Role}" Style="{StaticResource ValueLabel}" Margin="{StaticResource SmallTopMargins}"/>
 							<!-- -->
-							<Label Grid.Row="1" Grid.Column="0" Text="{l:Localize Timestamp}" Style="{StaticResource KeyLabel}" Margin="{StaticResource SmallTopMargins}"/>
+							<Label Grid.Row="1" Grid.Column="0" Text="{l:Localize Timestamp}" Style="{StaticResource KeyLabel}" Margin="{StaticResource SmallRightTopMargins}"/>
 							<Label Grid.Row="1" Grid.Column="1" Text="{Binding Path=Timestamp}" Style="{StaticResource ValueLabel}" Margin="{StaticResource SmallTopMargins}"/>
 							<!-- -->
-							<Label Grid.Row="2" Grid.Column="0" Text="{l:Localize Transferable}" Style="{StaticResource KeyLabel}" Margin="{StaticResource SmallTopMargins}"/>
+							<Label Grid.Row="2" Grid.Column="0" Text="{l:Localize Transferable}" Style="{StaticResource KeyLabel}" Margin="{StaticResource SmallRightTopMargins}"/>
 							<Label Grid.Row="2" Grid.Column="1" Text="{Binding Path=IsTransferable}" Style="{StaticResource ValueLabel}" Margin="{StaticResource SmallTopMargins}"/>
 							<!-- -->
-							<Label Grid.Row="3" Grid.Column="0" Text="{l:Localize Network}" Style="{StaticResource KeyLabel}" Margin="{StaticResource SmallTopMargins}"/>
-							<Label Grid.Row="3" Grid.Column="1" Text="{Binding Path=BareJid}" Style="{StaticResource ValueLabel}" Margin="{StaticResource SmallTopMargins}"/>
+							<Label Grid.Row="3" Grid.Column="0" Text="{l:Localize Network}" Style="{StaticResource KeyLabel}" Margin="{StaticResource SmallRightTopMargins}"/>
+							<Label Grid.Row="3" Grid.Column="1" Text="{Binding Path=BareJid}" Style="{StaticResource ClickableValueLabel}" Margin="{StaticResource SmallTopMargins}">
+								<Label.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding BareJid}" />
+								</Label.GestureRecognizers>
+							</Label>
 							<!-- -->
-							<Label Grid.Row="4" Grid.Column="0" Text="{l:Localize Signature}" Style="{StaticResource KeyLabel}" Margin="{StaticResource SmallTopMargins}"/>
-							<Label Grid.Row="4" Grid.Column="1" Text="{Binding Path=Signature}" Style="{StaticResource ValueLabel}" Margin="{StaticResource SmallTopMargins}"/>
+							<Label Grid.Row="4" Grid.Column="0" Text="{l:Localize Signature}" Style="{StaticResource KeyLabel}" Margin="{StaticResource SmallRightTopMargins}"/>
+							<Label Grid.Row="4" Grid.Column="1" Text="{Binding Path=Signature}" Style="{StaticResource ClickableValueLabel}" Margin="{StaticResource SmallTopMargins}">
+								<Label.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding Signature}" />
+								</Label.GestureRecognizers>
+							</Label>
 						</Grid>
 					</VerticalStackLayout>
 				</Frame>

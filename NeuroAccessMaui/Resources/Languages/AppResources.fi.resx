@@ -1989,4 +1989,40 @@
   <data name="AreYouSureYouWantToDeleteContract" xml:space="preserve">
     <value>Haluatko varmasti poistaa tämän sopimuksen?</value>
   </data>
+  <data name="ClientSignatureInformationInfoText" xml:space="preserve">
+    <value>Seuraavassa on asiakkaan allekirjoitukseen liittyviä tietoja.</value>
+  </data>
+  <data name="IdentityInformation" xml:space="preserve">
+    <value>Henkilöllisyystiedot</value>
+  </data>
+  <data name="IdentityInformationInfoText" xml:space="preserve">
+    <value>Seuraavassa on henkilötietoja, jotka on rekisteröity sopimuksen allekirjoittaneelle osapuolelle.</value>
+  </data>
+  <data name="Network" xml:space="preserve">
+    <value>Verkko</value>
+  </data>
+  <data name="Role" xml:space="preserve">
+    <value>Rooli</value>
+  </data>
+  <data name="Signature" xml:space="preserve">
+    <value>Allekirjoitus</value>
+  </data>
+  <data name="Timestamp" xml:space="preserve">
+    <value>Aikaleima</value>
+  </data>
+  <data name="Transferable" xml:space="preserve">
+    <value>Siirrettävä</value>
+  </data>
+  <data name="Provider" xml:space="preserve">
+    <value>Toimittaja</value>
+  </data>
+  <data name="ServerSignatureInformationInfoText" xml:space="preserve">
+    <value>Seuraavassa on palvelimen allekirjoitukseen liittyviä tietoja.</value>
+  </data>
+  <data name="SignatureInformation" xml:space="preserve">
+    <value>Allekirjoituksen tiedot</value>
+  </data>
+  <data name="ServerInformation" xml:space="preserve">
+    <value>Palvelimen tiedot</value>
+  </data>
 </root>

@@ -1989,4 +1989,40 @@
   <data name="AreYouSureYouWantToDeleteContract" xml:space="preserve">
     <value>Är du säker på att du vill ta bort det här avtalet?</value>
   </data>
+  <data name="ClientSignatureInformationInfoText" xml:space="preserve">
+    <value>Följande är information som rör en klientsignatur.</value>
+  </data>
+  <data name="IdentityInformation" xml:space="preserve">
+    <value>Uppgifter om identitet</value>
+  </data>
+  <data name="IdentityInformationInfoText" xml:space="preserve">
+    <value>Följande är personuppgifter som registreras för den part som undertecknat avtalet.</value>
+  </data>
+  <data name="Network" xml:space="preserve">
+    <value>Nätverk</value>
+  </data>
+  <data name="Role" xml:space="preserve">
+    <value>Roll</value>
+  </data>
+  <data name="Signature" xml:space="preserve">
+    <value>Underskrift</value>
+  </data>
+  <data name="Timestamp" xml:space="preserve">
+    <value>Tidstämpel</value>
+  </data>
+  <data name="Transferable" xml:space="preserve">
+    <value>Överförbar</value>
+  </data>
+  <data name="Provider" xml:space="preserve">
+    <value>Familjeförsörjare</value>
+  </data>
+  <data name="ServerSignatureInformationInfoText" xml:space="preserve">
+    <value>Följande är information relaterad till en serversignatur.</value>
+  </data>
+  <data name="SignatureInformation" xml:space="preserve">
+    <value>Information om underskrift</value>
+  </data>
+  <data name="ServerInformation" xml:space="preserve">
+    <value>Information om servern</value>
+  </data>
 </root>

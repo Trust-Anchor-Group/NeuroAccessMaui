@@ -23,11 +23,12 @@
 											 PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
 				<Label Style="{StaticResource PageTitleLabel}" Text="{l:Localize SignatureInformation}"/>
-				<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize ServerSignatureInformationInfoText}"/>
 
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-						<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize PersonalInformation}"/>
+						<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize ServerInformation}"/>
+
+						<Label Text="{l:Localize ServerSignatureInformationInfoText}"/>
 
 						<Grid VerticalOptions="StartAndExpand" RowSpacing="0">
 							<Grid.ColumnDefinitions>
@@ -46,7 +47,11 @@
 							<Label Grid.Row="1" Grid.Column="1" Style="{StaticResource ValueLabel}" Text="{Binding Path=Timestamp}" />
 
 							<Label Grid.Row="2" Grid.Column="0" Style="{StaticResource KeyLabel}" Text="{l:Localize Signature}" />
-							<Label Grid.Row="2" Grid.Column="1" Style="{StaticResource ValueLabel}" Text="{Binding Path=Signature}" />
+							<Label Grid.Row="2" Grid.Column="1" Style="{StaticResource ClickableValueLabel}" Text="{Binding Path=Signature}">
+								<Label.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding Signature}" />
+								</Label.GestureRecognizers>
+							</Label>
 						</Grid>
 					</VerticalStackLayout>
 				</Frame>

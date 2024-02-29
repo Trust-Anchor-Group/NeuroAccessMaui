@@ -1,5 +1,7 @@
 ﻿using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using Waher.Networking.XMPP.Contracts;
 
@@ -65,6 +67,30 @@ namespace NeuroAccessMaui.UI.Pages.Signatures.ServerSignature
 				this.Provider = Constants.NotAvailableValue;
 				this.Timestamp = Constants.NotAvailableValue;
 				this.Signature = Constants.NotAvailableValue;
+			}
+		}
+
+		/// <summary>
+		/// Copies Item to clipboard
+		/// </summary>
+		[RelayCommand]
+		private static async Task Copy(object Item)
+		{
+			try
+			{
+				if (Item is string Label)
+					await Clipboard.SetTextAsync(Label);
+				else
+					await Clipboard.SetTextAsync(Item?.ToString() ?? string.Empty);
+
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+					ServiceRef.Localizer[nameof(AppResources.TagValueCopiedToClipboard)]);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 	}
