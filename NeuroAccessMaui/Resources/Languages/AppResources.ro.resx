@@ -1230,8 +1230,8 @@
   <data name="Days" xml:space="preserve">
     <value>Zile</value>
   </data>
-  <data name="Digest" xml:space="preserve">
-    <value>Digera</value>
+  <data name="SchemaDigest" xml:space="preserve">
+    <value>Rezumatul schemei</value>
   </data>
   <data name="Duration" xml:space="preserve">
     <value>Durată</value>

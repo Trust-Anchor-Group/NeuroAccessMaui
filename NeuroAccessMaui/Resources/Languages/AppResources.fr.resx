@@ -1230,8 +1230,8 @@
   <data name="Days" xml:space="preserve">
     <value>Jours</value>
   </data>
-  <data name="Digest" xml:space="preserve">
-    <value>Digérer</value>
+  <data name="SchemaDigest" xml:space="preserve">
+    <value>Résumé de schéma</value>
   </data>
   <data name="Duration" xml:space="preserve">
     <value>Durée</value>

@@ -1230,8 +1230,8 @@
   <data name="Days" xml:space="preserve">
     <value>Dani</value>
   </data>
-  <data name="Digest" xml:space="preserve">
-    <value>Digest</value>
+  <data name="SchemaDigest" xml:space="preserve">
+    <value>Varenje šeme</value>
   </data>
   <data name="Duration" xml:space="preserve">
     <value>Trajanje</value>

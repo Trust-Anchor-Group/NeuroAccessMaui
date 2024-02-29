@@ -70,15 +70,30 @@ namespace NeuroAccessMaui.Services.UI.QR
 		/// </summary>
 		/// <param name="Url">URL to open.</param>
 		/// <returns>If URL was handled.</returns>
-		public static async Task<bool> OpenUrl(string Url)
+		public static Task<bool> OpenUrl(string Url)
+		{
+			return OpenUrl(Url, true);
+		}
+
+		/// <summary>
+		/// Scans a QR Code, and depending on the actual result, takes different actions.
+		/// This typically means navigating to an appropriate page.
+		/// </summary>
+		/// <param name="Url">URL to open.</param>
+		/// <param name="ShowErrorIfUnable">If an error message should be displayed, in case the URI could not be opened.</param>
+		/// <returns>If URL was handled.</returns>
+		public static async Task<bool> OpenUrl(string Url, bool ShowErrorIfUnable)
 		{
 			try
 			{
 				if (!System.Uri.TryCreate(Url, UriKind.Absolute, out Uri? Uri))
 				{
-					await ServiceRef.UiService.DisplayAlert(
-						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-						ServiceRef.Localizer[nameof(AppResources.CodeNotRecognized)]);
+					if (ShowErrorIfUnable)
+					{
+						await ServiceRef.UiService.DisplayAlert(
+							ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+							ServiceRef.Localizer[nameof(AppResources.CodeNotRecognized)]);
+					}
 
 					return false;
 				}
@@ -87,18 +102,24 @@ namespace NeuroAccessMaui.Services.UI.QR
 
 				if (Opener is null)
 				{
-					await ServiceRef.UiService.DisplayAlert(
-						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-						ServiceRef.Localizer[nameof(AppResources.CodeNotRecognized)]);
+					if (ShowErrorIfUnable)
+					{
+						await ServiceRef.UiService.DisplayAlert(
+							ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+							ServiceRef.Localizer[nameof(AppResources.CodeNotRecognized)]);
+					}
 
 					return false;
 				}
 
-				if (!await Opener.TryOpenLink(Uri))
+				if (!await Opener.TryOpenLink(Uri, false))
 				{
-					await ServiceRef.UiService.DisplayAlert(
-						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-						ServiceRef.Localizer[nameof(AppResources.UnableToOpenLink)] + " " + Uri.ToString());
+					if (ShowErrorIfUnable)
+					{
+						await ServiceRef.UiService.DisplayAlert(
+							ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+							ServiceRef.Localizer[nameof(AppResources.UnableToOpenLink)] + " " + Uri.ToString());
+					}
 
 					return false;
 				}
@@ -108,7 +129,10 @@ namespace NeuroAccessMaui.Services.UI.QR
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiService.DisplayException(ex);
+
+				if (ShowErrorIfUnable)
+					await ServiceRef.UiService.DisplayException(ex);
+
 				return false;
 			}
 		}

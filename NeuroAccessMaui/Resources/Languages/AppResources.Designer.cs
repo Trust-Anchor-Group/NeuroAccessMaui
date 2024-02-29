@@ -1294,15 +1294,6 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Digest.
-        /// </summary>
-        internal static string Digest {
-            get {
-                return ResourceManager.GetString("Digest", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Do you want to disown the thing? This will remove the thing from your list of things, and will permit another to claim the device as theirs..
         /// </summary>
         internal static string DisownThingQuestion {
@@ -4143,6 +4134,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string ScanQrCodeLabel {
             get {
                 return ResourceManager.GetString("ScanQrCodeLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Schema Digest.
+        /// </summary>
+        internal static string SchemaDigest {
+            get {
+                return ResourceManager.GetString("SchemaDigest", resourceCulture);
             }
         }
         

@@ -33,8 +33,9 @@ namespace NeuroAccessMaui.Links
 		/// Tries to open a link
 		/// </summary>
 		/// <param name="Link">Link to open</param>
+		/// <param name="ShowErrorIfUnable">If an error message should be displayed, in case the URI could not be opened.</param>
 		/// <returns>If the link was opened.</returns>
-		public async Task<bool> TryOpenLink(Uri Link)
+		public async Task<bool> TryOpenLink(Uri Link, bool ShowErrorIfUnable)
 		{
 			Dictionary<CaseInsensitiveString, object> Parameters = [];
 

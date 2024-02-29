@@ -27,16 +27,19 @@ namespace NeuroAccessMaui.Links
 		}
 
 		/// <inheritdoc/>
-		public async Task<bool> TryOpenLink(Uri Link)
+		public async Task<bool> TryOpenLink(Uri Link, bool ShowErrorIfUnable)
 		{
-			if (await Launcher.TryOpenAsync(Link.OriginalString))
+			if (await Launcher.TryOpenAsync(Link))
 				return true;
 			else
 			{
-				await ServiceRef.UiService.DisplayAlert(
-					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-					ServiceRef.Localizer[nameof(AppResources.QrCodeNotUnderstood)] +
-					Environment.NewLine + Environment.NewLine + Link.OriginalString);
+				if (ShowErrorIfUnable)
+				{
+					await ServiceRef.UiService.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						ServiceRef.Localizer[nameof(AppResources.QrCodeNotUnderstood)] +
+						Environment.NewLine + Environment.NewLine + Link.OriginalString);
+				}
 
 				return false;
 			}

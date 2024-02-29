@@ -27,7 +27,7 @@ namespace NeuroAccessMaui.Links
 		}
 
 		/// <inheritdoc/>
-		public async Task<bool> TryOpenLink(Uri Link)
+		public async Task<bool> TryOpenLink(Uri Link, bool ShowErrorIfUnable)
 		{
 			string? LegalId = Constants.UriSchemes.RemoveScheme(Link.OriginalString);
 			if (LegalId is null)

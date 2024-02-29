@@ -1230,8 +1230,8 @@
   <data name="Days" xml:space="preserve">
     <value>Дни недели</value>
   </data>
-  <data name="Digest" xml:space="preserve">
-    <value>Переваривать</value>
+  <data name="SchemaDigest" xml:space="preserve">
+    <value>Дайджест схемы</value>
   </data>
   <data name="Duration" xml:space="preserve">
     <value>Длительность</value>

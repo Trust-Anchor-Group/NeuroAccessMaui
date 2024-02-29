@@ -1230,8 +1230,8 @@
   <data name="Days" xml:space="preserve">
     <value>Dage</value>
   </data>
-  <data name="Digest" xml:space="preserve">
-    <value>Fordøje</value>
+  <data name="SchemaDigest" xml:space="preserve">
+    <value>Skemaoversigt</value>
   </data>
   <data name="Duration" xml:space="preserve">
     <value>Varighed</value>

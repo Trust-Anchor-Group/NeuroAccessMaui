@@ -214,13 +214,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		/// Local name of machine-readable part
 		/// </summary>
 		[ObservableProperty]
-		private string? localName;
+		private string? machineLocalName;
 
 		/// <summary>
 		/// Namespace of machine-readable part
 		/// </summary>
 		[ObservableProperty]
-		private string? @namespace;
+		private string? machineNamespace;
 
 		/// <summary>
 		/// Contains proposed role, if a proposal, null if not a proposal.
@@ -360,8 +360,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			this.TemplateId = null;
 			this.ContentSchemaDigest = null;
 			this.ContentSchemaHashFunction = null;
-			this.LocalName = null;
-			this.Namespace = null;
+			this.MachineLocalName = null;
+			this.MachineNamespace = null;
 			this.Roles = null;
 			this.Parts = null;
 			this.Parameters = null;
@@ -411,8 +411,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				this.TemplateId = this.Contract.TemplateId;
 				this.ContentSchemaDigest = this.Contract.ContentSchemaDigest;
 				this.ContentSchemaHashFunction = this.Contract.ContentSchemaHashFunction.ToString();
-				this.LocalName = this.Contract.ForMachinesLocalName;
-				this.Namespace = this.Contract.ForMachinesNamespace;
+				this.MachineLocalName = this.Contract.ForMachinesLocalName;
+				this.MachineNamespace = this.Contract.ForMachinesNamespace;
 
 				if (this.Contract.ClientSignatures is not null)
 				{
@@ -931,6 +931,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 							ServiceRef.Localizer[nameof(AppResources.TagValueCopiedToClipboard)]);
 					}
 				}
+				else
+				{
+					await Clipboard.SetTextAsync(Item?.ToString() ?? string.Empty);
+					await ServiceRef.UiService.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+						ServiceRef.Localizer[nameof(AppResources.TagValueCopiedToClipboard)]);
+				}
 			}
 			catch (Exception ex)
 			{
@@ -948,7 +955,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		/// </summary>
 		/// <param name="Item">Item clicked.</param>
 		[RelayCommand]
-		private async Task OpenContract(object Item)
+		private static async Task OpenContract(object Item)
 		{
 			if (Item is string ContractId)
 				await App.OpenUrlAsync(Constants.UriSchemes.IotSc + ":" + ContractId);
@@ -962,7 +969,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		private async Task OpenLink(object Item)
 		{
 			if (Item is string Url)
-				await App.OpenUrlAsync(Url);
+			{
+				if (!await App.OpenUrlAsync(Url, false))
+					await this.Copy(Url);
+			}
+			else
+				await this.Copy(Item);
 		}
 
 		#region ILinkableView

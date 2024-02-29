@@ -428,7 +428,7 @@ namespace NeuroAccessMaui
 
 				if (!BackgroundStart)
 				{
-					await this.SendErrorReportFromPreviousRun();
+					await SendErrorReportFromPreviousRun();
 					Token.ThrowIfCancellationRequested();
 				}
 
@@ -745,7 +745,7 @@ namespace NeuroAccessMaui
 			});
 		}
 
-		private async Task SendErrorReportFromPreviousRun()
+		private static async Task SendErrorReportFromPreviousRun()
 		{
 			if (ServiceRef.LogService is not null)
 			{
@@ -907,7 +907,18 @@ namespace NeuroAccessMaui
 		/// <returns>If URL is processed or not.</returns>
 		public static Task<bool> OpenUrlAsync(string Url)
 		{
-			return QrCode.OpenUrl(Url);
+			return OpenUrlAsync(Url, true);
+		}
+
+		/// <summary>
+		/// Opens an URL in the application.
+		/// </summary>
+		/// <param name="Url">URL</param>
+		/// <param name="ShowErrorIfUnable">If an error message should be displayed, in case the URI could not be opened.</param>
+		/// <returns>If URL is processed or not.</returns>
+		public static Task<bool> OpenUrlAsync(string Url, bool ShowErrorIfUnable)
+		{
+			return QrCode.OpenUrl(Url, ShowErrorIfUnable);
 		}
 
 		/// <summary>

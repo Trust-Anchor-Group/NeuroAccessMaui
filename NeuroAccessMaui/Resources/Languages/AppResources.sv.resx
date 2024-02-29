@@ -1230,8 +1230,8 @@
   <data name="Days" xml:space="preserve">
     <value>Dagar</value>
   </data>
-  <data name="Digest" xml:space="preserve">
-    <value>Smälta</value>
+  <data name="SchemaDigest" xml:space="preserve">
+    <value>Sammandrag av schema</value>
   </data>
   <data name="Duration" xml:space="preserve">
     <value>Varaktighet</value>
