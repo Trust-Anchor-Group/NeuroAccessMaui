@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using Waher.Networking.XMPP.Contracts;
-
+using NeuroAccessMaui.Services;
+using NeuroAccessMaui.UI.Popups.Image;
 namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 {
 	/// <summary>
@@ -21,7 +22,6 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 		/// <inheritdoc/>
 		protected override Task OnDisappearingAsync()
 		{
-			this.PhotoViewer.HidePhotos();
 			return base.OnDisappearingAsync();
 		}
 
@@ -31,9 +31,12 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 			{
 				Attachment[]? Attachments = PetitionContractViewModel.RequestorIdentity?.Attachments;
 				if (Attachments is null)
-					this.PhotoViewer.HidePhotos();
-				else
-					this.PhotoViewer.ShowPhotos(Attachments);
+					return;
+
+				ImagesPopup imagesPopup = new();
+				ImagesViewModel imagesViewModel = new();
+				ServiceRef.UiService.PushAsync(imagesPopup, imagesViewModel);
+				imagesViewModel.LoadPhotos(Attachments);
 			}
 		}
 	}
