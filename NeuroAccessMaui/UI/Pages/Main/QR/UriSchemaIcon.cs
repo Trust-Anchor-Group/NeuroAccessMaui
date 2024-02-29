@@ -26,5 +26,13 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		/// Background color of displayed icon.
 		/// </summary>
 		public Color BackgroundColor => this.parentViewModel.IconBackgroundColor;
+
+		/// <summary>
+		/// Called when background color has changed.
+		/// </summary>
+		internal void BackgroundColorChanged()
+		{
+			this.OnPropertyChanged(nameof(this.BackgroundColor));
+		}
 	}
 }
