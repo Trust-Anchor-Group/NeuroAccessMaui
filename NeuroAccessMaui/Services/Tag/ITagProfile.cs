@@ -155,12 +155,12 @@ namespace NeuroAccessMaui.Services.Tag
 		string LocalPassword { set; }
 
 		/// <summary>
-		/// A hashed version of the user's <see cref="Password"/>.
+		/// A hashed version of the user's <see cref="LocalPassword"/>.
 		/// </summary>
 		string? LocalPasswordHash { get; }
 
 		/// <summary>
-		/// Indicates if the user has a <see cref="Password"/>.
+		/// Indicates if the user has a <see cref="LocalPassword"/>.
 		/// </summary>
 		bool HasLocalPassword { get; }
 
