@@ -176,19 +176,6 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 						if (!this.initializing && Enum.TryParse(this.DisplayMode, out AppTheme Theme) && Theme != CurrentDisplayMode)
 						{
 							ServiceRef.TagProfile.SetTheme(Theme);
-
-							if (!this.RestartNeeded)
-							{
-								// TODO: When changing Theme, menu items in the flyout menu are not styled correctly. The foreground color
-								// is not updated. According to info currently available, a future version of Maui allows you to fix this
-								// with a stylable FlyoutForegroundColor, which does not exist in the currently used version.
-
-								this.RestartNeeded = true;
-								await ServiceRef.UiService.DisplayAlert(
-									ServiceRef.Localizer[nameof(AppResources.Message)],
-									ServiceRef.Localizer[nameof(AppResources.RestartNeededDueToThemeChange)],
-									ServiceRef.Localizer[nameof(AppResources.Ok)]);
-							}
 						}
 						break;
 
