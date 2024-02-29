@@ -244,19 +244,19 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		/// Holds Xaml code for visually representing a contract's roles.
 		/// </summary>
 		[ObservableProperty]
-		private VerticalStackLayout? roles;
+		private Grid? roles;
 
 		/// <summary>
 		/// Holds Xaml code for visually representing a contract's parts.
 		/// </summary>
 		[ObservableProperty]
-		private VerticalStackLayout? parts;
+		private Grid? parts;
 
 		/// <summary>
 		/// Holds Xaml code for visually representing a contract's parameters.
 		/// </summary>
 		[ObservableProperty]
-		private VerticalStackLayout? parameters;
+		private Grid? parameters;
 
 		/// <summary>
 		/// Holds Xaml code for visually representing a contract's human readable text section.
@@ -268,13 +268,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		/// Holds Xaml code for visually representing a contract's client signatures.
 		/// </summary>
 		[ObservableProperty]
-		private VerticalStackLayout? clientSignatures;
+		private Grid? clientSignatures;
 
 		/// <summary>
 		/// Holds Xaml code for visually representing a contract's server signatures.
 		/// </summary>
 		[ObservableProperty]
-		private VerticalStackLayout? serverSignatures;
+		private Grid? serverSignatures;
 
 		/// <summary>
 		/// Gets the list of photos associated with the contract.
@@ -416,23 +416,23 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 				if (this.Contract.ClientSignatures is not null)
 				{
-					foreach (ClientSignature signature in this.Contract.ClientSignatures)
+					foreach (ClientSignature Signature in this.Contract.ClientSignatures)
 					{
-						if (signature.LegalId == ServiceRef.TagProfile.LegalIdentity!.Id)
+						if (Signature.LegalId == ServiceRef.TagProfile.LegalIdentity!.Id)
 							HasSigned = true;
 
-						if (!NrSignatures.TryGetValue(signature.Role, out int count))
+						if (!NrSignatures.TryGetValue(Signature.Role, out int count))
 							count = 0;
 
-						NrSignatures[signature.Role] = count + 1;
+						NrSignatures[Signature.Role] = count + 1;
 
-						if (string.Equals(signature.BareJid, ServiceRef.XmppService.BareJid, StringComparison.OrdinalIgnoreCase))
+						if (string.Equals(Signature.BareJid, ServiceRef.XmppService.BareJid, StringComparison.OrdinalIgnoreCase))
 						{
 							if (this.Contract.Roles is not null)
 							{
 								foreach (Role Role in this.Contract.Roles)
 								{
-									if (Role.Name == signature.Role)
+									if (Role.Name == Signature.Role)
 									{
 										if (Role.CanRevoke)
 										{
@@ -456,7 +456,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 				if (this.Contract.Roles is not null)
 				{
-					VerticalStackLayout RolesLayout = [];
+					Grid RolesLayout = new()
+					{
+						ColumnDefinitions =
+						[
+							new ColumnDefinition(GridLength.Auto),
+							new ColumnDefinition(GridLength.Star)
+						]
+					};
 
 					foreach (Role Role in this.Contract.Roles)
 					{
@@ -485,7 +492,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 				// Parts
 
-				VerticalStackLayout PartsLayout = [];
+				Grid PartsLayout = new()
+				{
+					ColumnDefinitions =
+					[
+						new ColumnDefinition(GridLength.Auto),
+							new ColumnDefinition(GridLength.Star)
+					]
+				};
 
 				if (this.Contract.SignAfter.HasValue)
 					AddKeyValueLabelPair(PartsLayout, ServiceRef.Localizer[nameof(AppResources.SignAfter)], this.Contract.SignAfter.Value.ToString(CultureInfo.CurrentCulture));
@@ -524,7 +538,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 				if (this.Contract.Parameters is not null)
 				{
-					VerticalStackLayout ParametersLayout = [];
+					Grid ParametersLayout = new()
+					{
+						ColumnDefinitions =
+						[
+							new ColumnDefinition(GridLength.Auto),
+							new ColumnDefinition(GridLength.Star)
+						]
+					};
 
 					foreach (Parameter Parameter in this.Contract.Parameters)
 					{
@@ -564,32 +585,46 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				// Client signatures
 				if (this.Contract.ClientSignatures is not null)
 				{
-					VerticalStackLayout clientSignaturesLayout = [];
+					Grid ClientSignaturesLayout = new()
+					{
+						ColumnDefinitions =
+						[
+							new ColumnDefinition(GridLength.Auto),
+							new ColumnDefinition(GridLength.Star)
+						]
+					};
 					TapGestureRecognizer openClientSignature = new();
 					openClientSignature.Tapped += this.ClientSignature_Tapped;
 
-					foreach (ClientSignature signature in this.Contract.ClientSignatures)
+					foreach (ClientSignature Signature in this.Contract.ClientSignatures)
 					{
-						string Sign = Convert.ToBase64String(signature.DigitalSignature);
+						string Sign = Convert.ToBase64String(Signature.DigitalSignature);
 						StringBuilder sb = new();
-						sb.Append(signature.LegalId);
+						sb.Append(Signature.LegalId);
 						sb.Append(", ");
-						sb.Append(signature.BareJid);
+						sb.Append(Signature.BareJid);
 						sb.Append(", ");
-						sb.Append(signature.Timestamp.ToString(CultureInfo.CurrentCulture));
+						sb.Append(Signature.Timestamp.ToString(CultureInfo.CurrentCulture));
 						sb.Append(", ");
 						sb.Append(Sign);
 
-						AddKeyValueLabelPair(clientSignaturesLayout, signature.Role, sb.ToString(), false, Sign, openClientSignature);
+						AddKeyValueLabelPair(ClientSignaturesLayout, Signature.Role, sb.ToString(), false, Sign, openClientSignature);
 					}
 
-					this.ClientSignatures = clientSignaturesLayout;
+					this.ClientSignatures = ClientSignaturesLayout;
 				}
 
 				// Server signature
 				if (this.Contract.ServerSignature is not null)
 				{
-					VerticalStackLayout serverSignaturesLayout = [];
+					Grid ServerSignaturesLayout = new()
+					{
+						ColumnDefinitions =
+						[
+							new ColumnDefinition(GridLength.Auto),
+							new ColumnDefinition(GridLength.Star)
+						]
+					};
 
 					TapGestureRecognizer openServerSignature = new();
 					openServerSignature.Tapped += this.ServerSignature_Tapped;
@@ -599,8 +634,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 					sb.Append(", ");
 					sb.Append(Convert.ToBase64String(this.Contract.ServerSignature.DigitalSignature));
 
-					AddKeyValueLabelPair(serverSignaturesLayout, this.Contract.Provider, sb.ToString(), false, this.Contract.ContractId, openServerSignature);
-					this.ServerSignatures = serverSignaturesLayout;
+					AddKeyValueLabelPair(ServerSignaturesLayout, this.Contract.Provider, sb.ToString(), false, this.Contract.ContractId, openServerSignature);
+					this.ServerSignatures = ServerSignaturesLayout;
 				}
 
 				this.CanDeleteContract = !this.isReadOnly && !this.Contract.IsLegallyBinding(true);
@@ -648,42 +683,43 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			return " (" + min.ToString(CultureInfo.InvariantCulture) + " - " + max.ToString(CultureInfo.InvariantCulture) + ")";
 		}
 
-		private static void AddKeyValueLabelPair(VerticalStackLayout Container, string Key, string Value)
+		private static void AddKeyValueLabelPair(Grid Container, string Key, string Value)
 		{
 			AddKeyValueLabelPair(Container, Key, Value, false, string.Empty, null);
 		}
 
-		private static void AddKeyValueLabelPair(VerticalStackLayout Container, string Key, string Value, bool IsHtml,
+		private static void AddKeyValueLabelPair(Grid Container, string Key, string Value, bool IsHtml,
 			TapGestureRecognizer TapGestureRecognizer)
 		{
 			AddKeyValueLabelPair(Container, Key, Value, IsHtml, Value, TapGestureRecognizer);
 		}
 
-		private static void AddKeyValueLabelPair(VerticalStackLayout Container, string Key,
+		private static void AddKeyValueLabelPair(Grid Container, string Key,
 			string Value, bool IsHtml, string StyleId, TapGestureRecognizer? TapGestureRecognizer)
 		{
-			HorizontalStackLayout layout = new()
+			int Row = Container.RowDefinitions.Count;
+
+			Container.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
+
+			Label KeyLabel = new()
 			{
-				StyleId = StyleId
+				Text = Key,
+				Style = AppStyles.KeyLabel
 			};
 
-			Container.Children.Add(layout);
-
-			layout.Children.Add(new Label
-			{
-				Text = Key + ":",
-				Style = AppStyles.KeyLabel
-			});
-
-			layout.Children.Add(new Label
+			Label ValueLabel = new()
 			{
 				Text = Value,
 				TextType = IsHtml ? TextType.Html : TextType.Text,
+				StyleId = StyleId,
 				Style = IsHtml ? AppStyles.FormattedValueLabel : TapGestureRecognizer is null ? AppStyles.ValueLabel : AppStyles.ClickableValueLabel
-			});
+			};
+
+			Container.Add(KeyLabel, 0, Row);
+			Container.Add(ValueLabel, 1, Row);
 
 			if (TapGestureRecognizer is not null)
-				layout.GestureRecognizers.Add(TapGestureRecognizer);
+				ValueLabel.GestureRecognizers.Add(TapGestureRecognizer);
 		}
 
 		private async void SignButton_Clicked(object? Sender, EventArgs e)
