@@ -893,7 +893,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				if (e.Ok)
 				{
 					await e.PUT(Bin, "text/xml", (int)Constants.Timeouts.UploadFile.TotalMilliseconds);
-					await App.OpenUrlAsync(e.GetUrl);
+					if (!await App.OpenUrlAsync(e.GetUrl, false))
+						await this.Copy(e.GetUrl);
 				}
 				else
 					await ServiceRef.UiService.DisplayException(e.StanzaError ?? new Exception(e.ErrorText));
