@@ -476,14 +476,16 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 							(!NrSignatures.TryGetValue(Role.Name, out int count) || count < Role.MaxCount) &&
 							(!this.IsProposal || Role.Name == this.Role))
 						{
-							Button button = new()
+							Button Button = new()
 							{
 								Text = ServiceRef.Localizer[nameof(AppResources.SignAsRole), Role.Name],
 								StyleId = Role.Name
 							};
 
-							button.Clicked += this.SignButton_Clicked;
-							RolesLayout.Children.Add(button);
+							Button.Clicked += this.SignButton_Clicked;
+							RolesLayout.Add(Button, 0, RolesLayout.RowDefinitions.Count);
+
+							Grid.SetColumnSpan(Button, 2);
 						}
 					}
 
@@ -497,7 +499,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 					ColumnDefinitions =
 					[
 						new ColumnDefinition(GridLength.Auto),
-							new ColumnDefinition(GridLength.Star)
+						new ColumnDefinition(GridLength.Star)
 					]
 				};
 
@@ -759,9 +761,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		{
 			try
 			{
-				if (Sender is VerticalStackLayout Layout && !string.IsNullOrEmpty(Layout.StyleId))
+				if (Sender is Label Label && !string.IsNullOrEmpty(Label.StyleId))
 				{
-					await ServiceRef.ContractOrchestratorService.OpenLegalIdentity(Layout.StyleId,
+					await ServiceRef.ContractOrchestratorService.OpenLegalIdentity(Label.StyleId,
 						ServiceRef.Localizer[nameof(AppResources.PurposeReviewContract)]);
 				}
 			}
@@ -776,9 +778,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		{
 			try
 			{
-				if (Sender is VerticalStackLayout Layout && !string.IsNullOrEmpty(Layout.StyleId))
+				if (Sender is Label Label && !string.IsNullOrEmpty(Label.StyleId))
 				{
-					await ServiceRef.ContractOrchestratorService.OpenContract(Layout.StyleId,
+					await ServiceRef.ContractOrchestratorService.OpenContract(Label.StyleId,
 						ServiceRef.Localizer[nameof(AppResources.PurposeReviewContract)], null);
 				}
 			}
@@ -793,8 +795,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		{
 			try
 			{
-				if (Sender is VerticalStackLayout Layout && !string.IsNullOrEmpty(Layout.StyleId))
-					await App.OpenUrlAsync(Layout.StyleId);
+				if (Sender is Label Label && !string.IsNullOrEmpty(Label.StyleId))
+					await App.OpenUrlAsync(Label.StyleId);
 			}
 			catch (Exception ex)
 			{
@@ -807,9 +809,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		{
 			try
 			{
-				if (Sender is VerticalStackLayout Layout && !string.IsNullOrEmpty(Layout.StyleId))
+				if (Sender is Label Label && !string.IsNullOrEmpty(Label.StyleId))
 				{
-					await Clipboard.SetTextAsync(Layout.StyleId);
+					await Clipboard.SetTextAsync(Label.StyleId);
 					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)], ServiceRef.Localizer[nameof(AppResources.TagValueCopiedToClipboard)]);
 				}
 			}
@@ -824,9 +826,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		{
 			try
 			{
-				if (Sender is VerticalStackLayout layout && !string.IsNullOrEmpty(layout.StyleId))
+				if (Sender is Label Label && !string.IsNullOrEmpty(Label.StyleId))
 				{
-					string sign = layout.StyleId;
+					string sign = Label.StyleId;
 					ClientSignature? signature = this.Contract?.ClientSignatures.FirstOrDefault(x => sign == Convert.ToBase64String(x.DigitalSignature));
 					if (signature is not null)
 					{
@@ -849,7 +851,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		{
 			try
 			{
-				if (Sender is VerticalStackLayout layout && !string.IsNullOrEmpty(layout.StyleId))
+				if (Sender is Label Label && !string.IsNullOrEmpty(Label.StyleId))
 				{
 					await ServiceRef.UiService.GoToAsync(nameof(ServerSignaturePage),
 						  new ServerSignatureNavigationArgs(this.Contract));
