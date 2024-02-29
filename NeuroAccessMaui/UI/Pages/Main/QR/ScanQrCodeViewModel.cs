@@ -112,7 +112,15 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		private void CountDownEventHandler(object? sender, EventArgs e)
 		{
 			this.countDownTimer?.Stop();
+			this.OnBackgroundColorChanged();
+		}
+
+		private void OnBackgroundColorChanged()
+		{
 			this.OnPropertyChanged(nameof(this.IconBackgroundColor));
+
+			foreach (UriSchemaIcon Icon in this.Icons)
+				Icon.BackgroundColorChanged();
 		}
 
 		public void LocalizationManagerEventHandler(object? sender, PropertyChangedEventArgs e)
@@ -130,13 +138,13 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		{
 			this.ScannedText = ScannedText ?? string.Empty;
 			this.countDownTimer?.Stop();
-			this.OnPropertyChanged(nameof(this.IconBackgroundColor));
+			this.OnBackgroundColorChanged();
 
 			if (this.CanOpenScanned)
 				return this.TrySetResultAndClosePage(this.ScannedText!.Trim());
 
 			this.countDownTimer?.Start();
-			this.OnPropertyChanged(nameof(this.IconBackgroundColor));
+			this.OnBackgroundColorChanged();
 
 			return Task.CompletedTask;
 		}
