@@ -6,9 +6,9 @@
 	public enum AuthenticationMethod
 	{
 		/// <summary>
-		/// The PIN code defined during onboarding.
+		/// The password defined during onboarding.
 		/// </summary>
-		Pin,
+		Password,
 
 		/// <summary>
 		/// The device's Fingerprint sensor.

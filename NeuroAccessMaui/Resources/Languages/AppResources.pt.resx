@@ -141,65 +141,65 @@
   <data name="TagNotEngraved" xml:space="preserve">
     <value>Não é possível gravar a tag com link para {0}.</value>
   </data>
-  <data name="PinChanged" xml:space="preserve">
-    <value>O PIN foi alterado com êxito.</value>
+  <data name="PasswordChanged" xml:space="preserve">
+    <value>A senha foi alterada com êxito.</value>
   </data>
   <data name="UnableToChangePassword" xml:space="preserve">
     <value>Não é possível alterar a senha da rede.</value>
   </data>
-  <data name="PinIsInvalid" xml:space="preserve">
-    <value>O PIN é inválido. Você tem {0} tentativas restantes.</value>
+  <data name="PasswordIsInvalid" xml:space="preserve">
+    <value>A senha é inválida. Você tem {0} tentativas restantes.</value>
   </data>
-  <data name="PinsDoNotMatch" xml:space="preserve">
-    <value>PINs não coincidem</value>
+  <data name="PasswordsDoNotMatch" xml:space="preserve">
+    <value>As senhas não coincidem</value>
   </data>
-  <data name="PinIsInvalidAplicationBlockedForever" xml:space="preserve">
-    <value>As tentativas de entrada de PIN são excedidas. Seu aplicativo foi bloqueado para sempre</value>
+  <data name="PasswordIsInvalidAplicationBlockedForever" xml:space="preserve">
+    <value>Você excedeu o número de tentativas de fornecer sua senha. Seu aplicativo foi bloqueado para sempre</value>
   </data>
-  <data name="PinIsInvalidAplicationBlocked" xml:space="preserve">
-    <value>As tentativas de entrada de PIN são excedidas. Seu aplicativo foi bloqueado até {0}.</value>
+  <data name="PasswordIsInvalidAplicationBlocked" xml:space="preserve">
+    <value>Você excedeu o número de tentativas de fornecer sua senha. Seu aplicativo foi bloqueado até {0}.</value>
   </data>
-  <data name="PinIsInvalidAplicationBlockedTillTomorrow" xml:space="preserve">
-    <value>As tentativas de entrada de PIN são excedidas. Seu aplicativo foi bloqueado até amanhã às {0}.</value>
+  <data name="PasswordIsInvalidAplicationBlockedTillTomorrow" xml:space="preserve">
+    <value>Você excedeu o número de tentativas de fornecer sua senha. Seu aplicativo foi bloqueado até amanhã às {0}.</value>
   </data>
-  <data name="PinIsInvalidAplicationBlockedForOneWeek" xml:space="preserve">
-    <value>As tentativas de entrada de PIN são excedidas. Seu aplicativo foi bloqueado por uma semana</value>
+  <data name="PasswordIsInvalidAplicationBlockedForOneWeek" xml:space="preserve">
+    <value>Você excedeu o número de tentativas de fornecer sua senha. Seu aplicativo foi bloqueado por uma semana</value>
   </data>
-  <data name="PinTooShort" xml:space="preserve">
-    <value>O comprimento do PIN deve ter pelo menos {0} caracteres.</value>
+  <data name="PasswordTooShort" xml:space="preserve">
+    <value>O comprimento da senha deve ter pelo menos {0} caracteres.</value>
   </data>
-  <data name="PinContainsName" xml:space="preserve">
-    <value>Um PIN não deve conter nenhuma palavra dos nomes de identidade.</value>
+  <data name="PasswordContainsName" xml:space="preserve">
+    <value>Uma senha não deve conter nenhuma palavra dos nomes de identidade.</value>
   </data>
-  <data name="PinContainsPersonalNumber" xml:space="preserve">
-    <value>Um PIN não deve conter o número pessoal de identidade.</value>
+  <data name="PasswordContainsPersonalNumber" xml:space="preserve">
+    <value>Uma senha não deve conter o número pessoal de identidade.</value>
   </data>
-  <data name="PinContainsAddress" xml:space="preserve">
-    <value>Um PIN não deve conter nenhuma palavra das linhas de endereço de identidade.</value>
+  <data name="PasswordContainsAddress" xml:space="preserve">
+    <value>Uma senha não deve conter nenhuma palavra das linhas de endereço de identidade.</value>
   </data>
-  <data name="PinContainsEMail" xml:space="preserve">
-    <value>Um PIN não deve conter o endereço de email de identidade.</value>
+  <data name="PasswordContainsEMail" xml:space="preserve">
+    <value>Uma senha não deve conter o endereço de email de identidade.</value>
   </data>
-  <data name="PinContainsPhoneNumber" xml:space="preserve">
-    <value>Um PIN não deve conter o número de telefone de identidade.</value>
+  <data name="PasswordContainsPhoneNumber" xml:space="preserve">
+    <value>Uma senha não deve conter o número de telefone de identidade.</value>
   </data>
-  <data name="PinWithNotEnoughDigitsLettersSigns" xml:space="preserve">
+  <data name="PasswordWithNotEnoughDigitsLettersSigns" xml:space="preserve">
     <value>Pelo menos {0} letras, dígitos ou símbolos devem ser usados.</value>
   </data>
-  <data name="PinWithNotEnoughDigitsOrSigns" xml:space="preserve">
+  <data name="PasswordWithNotEnoughDigitsOrSigns" xml:space="preserve">
     <value>Você também deve usar pelo menos {0} dígitos ou símbolos.</value>
   </data>
-  <data name="PinWithNotEnoughLettersOrDigits" xml:space="preserve">
+  <data name="PasswordWithNotEnoughLettersOrDigits" xml:space="preserve">
     <value>Você também deve usar pelo menos {0} letras ou dígitos.</value>
   </data>
-  <data name="PinWithNotEnoughLettersOrSigns" xml:space="preserve">
+  <data name="PasswordWithNotEnoughLettersOrSigns" xml:space="preserve">
     <value>Você também deve usar pelo menos {0} letras ou símbolos.</value>
   </data>
-  <data name="PinWithTooManyIdenticalSymbols" xml:space="preserve">
-    <value>Um PIN não deve conter mais de {0} símbolos idênticos.</value>
+  <data name="PasswordWithTooManyIdenticalSymbols" xml:space="preserve">
+    <value>Uma senha não deve conter mais de {0} símbolos idênticos.</value>
   </data>
-  <data name="PinWithTooManySequencedSymbols" xml:space="preserve">
-    <value>Um PIN não deve conter mais de {0} símbolos sequenciados, por exemplo, "12" ou "ab".</value>
+  <data name="PasswordWithTooManySequencedSymbols" xml:space="preserve">
+    <value>Uma senha não deve conter mais de {0} símbolos sequenciados, por exemplo, "12" ou "ab".</value>
   </data>
   <data name="ThereIsNoNetwork" xml:space="preserve">
     <value>Não há rede</value>
@@ -561,11 +561,11 @@
   <data name="OnboardingAccountPageDetails" xml:space="preserve">
     <value>Introduza o nome que pretende utilizar para a sua conta</value>
   </data>
-  <data name="OnboardingDefinePinPageTitle" xml:space="preserve">
-    <value>Criar um código PIN</value>
+  <data name="OnboardingDefinePasswordPageTitle" xml:space="preserve">
+    <value>Criar uma senha</value>
   </data>
-  <data name="OnboardingDefinePinPageDetails" xml:space="preserve">
-    <value>Para aumentar a segurança de sua Neuro-Identidade e informações confidenciais, recomendamos adicionar uma camada extra de proteção criando um PIN ou senha</value>
+  <data name="OnboardingDefinePasswordPageDetails" xml:space="preserve">
+    <value>Para aumentar a segurança de sua Neuro-Identidade e informações confidenciais, recomendamos adicionar uma camada extra de proteção criando uma senha</value>
   </data>
   <data name="AccountSectionTitle" xml:space="preserve">
     <value>Digite o nome da conta</value>
@@ -678,14 +678,14 @@
   <data name="TestOtpUsed" xml:space="preserve">
     <value>Um código OTP temporário foi usado. O aplicativo deixará de funcionar em cerca de uma semana. Você terá que reinstalar o aplicativo para usá-lo novamente.</value>
   </data>
-  <data name="DefinePinSectionTitle1" xml:space="preserve">
-    <value>Inserir novo pino</value>
+  <data name="DefinePasswordSectionTitle1" xml:space="preserve">
+    <value>Digite uma nova senha</value>
   </data>
-  <data name="DefinePinSectionTitle2" xml:space="preserve">
-    <value>Confirmar pin</value>
+  <data name="DefinePasswordSectionTitle2" xml:space="preserve">
+    <value>Confirmar senha</value>
   </data>
-  <data name="CreatePin" xml:space="preserve">
-    <value>Criar Pin</value>
+  <data name="CreatePassword" xml:space="preserve">
+    <value>Criar senha</value>
   </data>
   <data name="ScanQrCodeLabel" xml:space="preserve">
     <value>Digitalize o código QR com sua câmera.</value>
@@ -720,8 +720,8 @@
   <data name="Enter" xml:space="preserve">
     <value>Entrar</value>
   </data>
-  <data name="EnterPin" xml:space="preserve">
-    <value>Digite o PIN</value>
+  <data name="EnterPassword" xml:space="preserve">
+    <value>Digite a senha</value>
   </data>
   <data name="FirstName" xml:space="preserve">
     <value>Nome próprio</value>
@@ -846,14 +846,14 @@
   <data name="Change" xml:space="preserve">
     <value>Mudar</value>
   </data>
-  <data name="ChangePin" xml:space="preserve">
-    <value>Alterar código PIN</value>
+  <data name="ChangePassword" xml:space="preserve">
+    <value>Alterar senha</value>
   </data>
-  <data name="ChangePinDescription" xml:space="preserve">
-    <value>Escolha outro código PIN para se identificar. Alterar seu código PIN também criará uma nova senha aleatória para a rede de comunicação subjacente.</value>
+  <data name="ChangePasswordDescription" xml:space="preserve">
+    <value>Escolha outra senha para se identificar. Alterar sua senha também criará uma nova senha aleatória para a rede de comunicação subjacente.</value>
   </data>
-  <data name="ConfirmNewPin" xml:space="preserve">
-    <value>Confirme o novo PIN:</value>
+  <data name="ConfirmNewPassword" xml:space="preserve">
+    <value>Confirme a nova senha:</value>
   </data>
   <data name="DarkMode" xml:space="preserve">
     <value>Modo escuro</value>
@@ -861,11 +861,11 @@
   <data name="DisplaySettings" xml:space="preserve">
     <value>Configurações de exibição</value>
   </data>
-  <data name="EnterCurrentPin" xml:space="preserve">
-    <value>Insira o PIN atual:</value>
+  <data name="EnterCurrentPassword" xml:space="preserve">
+    <value>Digite a senha atual:</value>
   </data>
-  <data name="EnterNewPin" xml:space="preserve">
-    <value>Insira o novo PIN:</value>
+  <data name="EnterNewPassword" xml:space="preserve">
+    <value>Digite a nova senha:</value>
   </data>
   <data name="IdentitySettings" xml:space="preserve">
     <value>Configurações de identidade</value>
@@ -886,7 +886,7 @@
     <value>Relatar como comprometido</value>
   </data>
   <data name="ReportAsCompromizedDescription" xml:space="preserve">
-    <value>Denuncie se o aplicativo, PIN ou telefone foi comprometido, hackeado ou roubado.</value>
+    <value>Denuncie se o aplicativo, senha ou telefone foi comprometido, hackeado ou roubado.</value>
   </data>
   <data name="RestartNeededDueToThemeChange" xml:space="preserve">
     <value>Uma reinicialização do aplicativo é necessária, para que o novo tema seja exibido corretamente. Ao fechar a caixa de diálogo, o aplicativo será fechado automaticamente. Ao reiniciar o aplicativo, o novo tema será selecionado.</value>
@@ -918,8 +918,8 @@
   <data name="Fingerprint" xml:space="preserve">
     <value>Impressão digital</value>
   </data>
-  <data name="PinCode" xml:space="preserve">
-    <value>Código PIN</value>
+  <data name="Password" xml:space="preserve">
+    <value>Senha</value>
   </data>
   <data name="Application" xml:space="preserve">
     <value>Aplicação</value>

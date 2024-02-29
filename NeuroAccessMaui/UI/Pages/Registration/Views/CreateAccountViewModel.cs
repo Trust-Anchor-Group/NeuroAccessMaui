@@ -51,7 +51,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				if (LegalIdentity.State == IdentityState.Approved)
 				{
 					if (Shell.Current.CurrentState.Location.OriginalString == Constants.Pages.RegistrationPage)
-						GoToRegistrationStep(RegistrationStep.DefinePin);
+						GoToRegistrationStep(RegistrationStep.DefinePassword);
 				}
 				else if (LegalIdentity.IsDiscarded())
 				{

@@ -141,65 +141,65 @@
   <data name="TagNotEngraved" xml:space="preserve">
     <value>Kan ikke gravere tagg med kobling til {0}.</value>
   </data>
-  <data name="PinChanged" xml:space="preserve">
-    <value>PIN-koden er endret.</value>
+  <data name="PasswordChanged" xml:space="preserve">
+    <value>Passordet er endret.</value>
   </data>
   <data name="UnableToChangePassword" xml:space="preserve">
     <value>Kan ikke endre nettverkspassord.</value>
   </data>
-  <data name="PinIsInvalid" xml:space="preserve">
-    <value>PIN-koden er ugyldig. Du har {0} gjenværende forsøk.</value>
+  <data name="PasswordIsInvalid" xml:space="preserve">
+    <value>Passordet er ugyldig. Du har {0} gjenværende forsøk.</value>
   </data>
-  <data name="PinsDoNotMatch" xml:space="preserve">
-    <value>PIN-koder samsvarer ikke</value>
+  <data name="PasswordsDoNotMatch" xml:space="preserve">
+    <value>Passordene stemmer ikke overens</value>
   </data>
-  <data name="PinIsInvalidAplicationBlockedForever" xml:space="preserve">
-    <value>Innskriving av PIN-kodeforsøk overskrides. Søknaden din har blitt blokkert for alltid</value>
+  <data name="PasswordIsInvalidAplicationBlockedForever" xml:space="preserve">
+    <value>Du har overskredet antall forsøk på å oppgi passordet ditt. Søknaden din har blitt blokkert for alltid</value>
   </data>
-  <data name="PinIsInvalidAplicationBlocked" xml:space="preserve">
-    <value>Innskriving av PIN-kodeforsøk overskrides. Søknaden din er blokkert til {0}.</value>
+  <data name="PasswordIsInvalidAplicationBlocked" xml:space="preserve">
+    <value>Du har overskredet antall forsøk på å oppgi passordet ditt. Søknaden din er blokkert til {0}.</value>
   </data>
-  <data name="PinIsInvalidAplicationBlockedTillTomorrow" xml:space="preserve">
-    <value>Innskriving av PIN-kodeforsøk overskrides. Søknaden din er blokkert til i morgen klokken {0}.</value>
+  <data name="PasswordIsInvalidAplicationBlockedTillTomorrow" xml:space="preserve">
+    <value>Du har overskredet antall forsøk på å oppgi passordet ditt. Søknaden din er blokkert til i morgen klokken {0}.</value>
   </data>
-  <data name="PinIsInvalidAplicationBlockedForOneWeek" xml:space="preserve">
-    <value>Innskriving av PIN-kodeforsøk overskrides. Søknaden din har vært sperret i én uke</value>
+  <data name="PasswordIsInvalidAplicationBlockedForOneWeek" xml:space="preserve">
+    <value>Du har overskredet antall forsøk på å oppgi passordet ditt. Søknaden din har vært sperret i én uke</value>
   </data>
-  <data name="PinTooShort" xml:space="preserve">
-    <value>PIN-koden må være minst {0} tegn.</value>
+  <data name="PasswordTooShort" xml:space="preserve">
+    <value>Passordlengden må være minst {0} tegn.</value>
   </data>
-  <data name="PinContainsName" xml:space="preserve">
-    <value>En PIN-kode må ikke inneholde ord fra identitetsnavnene.</value>
+  <data name="PasswordContainsName" xml:space="preserve">
+    <value>Et passord må ikke inneholde noe ord fra identitetsnavnene.</value>
   </data>
-  <data name="PinContainsPersonalNumber" xml:space="preserve">
-    <value>En PIN-kode må ikke inneholde personnummeret for identiteten.</value>
+  <data name="PasswordContainsPersonalNumber" xml:space="preserve">
+    <value>Et passord må ikke inneholde personnummeret for identiteten.</value>
   </data>
-  <data name="PinContainsAddress" xml:space="preserve">
-    <value>En PIN-kode må ikke inneholde ord fra adresselinjene for identitet.</value>
+  <data name="PasswordContainsAddress" xml:space="preserve">
+    <value>Et passord må ikke inneholde ord fra adresselinjene for identitet.</value>
   </data>
-  <data name="PinContainsEMail" xml:space="preserve">
-    <value>En PIN-kode må ikke inneholde identitetens e-postadresse.</value>
+  <data name="PasswordContainsEMail" xml:space="preserve">
+    <value>Et passord må ikke inneholde identitetens e-postadresse.</value>
   </data>
-  <data name="PinContainsPhoneNumber" xml:space="preserve">
-    <value>En PIN-kode må ikke inneholde telefonnummeret til identiteten.</value>
+  <data name="PasswordContainsPhoneNumber" xml:space="preserve">
+    <value>Et passord må ikke inneholde telefonnummeret til identiteten.</value>
   </data>
-  <data name="PinWithNotEnoughDigitsLettersSigns" xml:space="preserve">
+  <data name="PasswordWithNotEnoughDigitsLettersSigns" xml:space="preserve">
     <value>Minst {0} bokstaver, sifre eller symboler må brukes.</value>
   </data>
-  <data name="PinWithNotEnoughDigitsOrSigns" xml:space="preserve">
+  <data name="PasswordWithNotEnoughDigitsOrSigns" xml:space="preserve">
     <value>Du må også bruke minst {0} sifre eller symboler.</value>
   </data>
-  <data name="PinWithNotEnoughLettersOrDigits" xml:space="preserve">
+  <data name="PasswordWithNotEnoughLettersOrDigits" xml:space="preserve">
     <value>Du må også bruke minst {0} bokstaver eller sifre.</value>
   </data>
-  <data name="PinWithNotEnoughLettersOrSigns" xml:space="preserve">
+  <data name="PasswordWithNotEnoughLettersOrSigns" xml:space="preserve">
     <value>Du må også bruke minst {0} bokstaver eller symboler.</value>
   </data>
-  <data name="PinWithTooManyIdenticalSymbols" xml:space="preserve">
-    <value>En PIN-kode må ikke inneholde mer enn {0} identiske symboler.</value>
+  <data name="PasswordWithTooManyIdenticalSymbols" xml:space="preserve">
+    <value>Et passord må ikke inneholde mer enn {0} identiske symboler.</value>
   </data>
-  <data name="PinWithTooManySequencedSymbols" xml:space="preserve">
-    <value>En PIN-kode må ikke inneholde mer enn {0} sekvenserte symboler, for eksempel "12" eller "ab".</value>
+  <data name="PasswordWithTooManySequencedSymbols" xml:space="preserve">
+    <value>Et passord må ikke inneholde mer enn {0} sekvenserte symboler, for eksempel "12" eller "ab".</value>
   </data>
   <data name="ThereIsNoNetwork" xml:space="preserve">
     <value>Det er ikke noe nettverk</value>
@@ -561,11 +561,11 @@
   <data name="OnboardingAccountPageDetails" xml:space="preserve">
     <value>Skriv inn navnet du vil bruke for kontoen</value>
   </data>
-  <data name="OnboardingDefinePinPageTitle" xml:space="preserve">
-    <value>Opprett en PIN-kode</value>
+  <data name="OnboardingDefinePasswordPageTitle" xml:space="preserve">
+    <value>Opprett et passord</value>
   </data>
-  <data name="OnboardingDefinePinPageDetails" xml:space="preserve">
-    <value>For å forbedre sikkerheten til din nevroidentitet og sensitiv informasjon, anbefaler vi at du legger til et ekstra lag med beskyttelse ved å opprette en PIN-kode eller et passord</value>
+  <data name="OnboardingDefinePasswordPageDetails" xml:space="preserve">
+    <value>For å forbedre sikkerheten til din nevroidentitet og sensitiv informasjon, anbefaler vi å legge til et ekstra lag med beskyttelse ved å opprette et passord</value>
   </data>
   <data name="AccountSectionTitle" xml:space="preserve">
     <value>Skriv inn kontonavnet</value>
@@ -678,14 +678,14 @@
   <data name="TestOtpUsed" xml:space="preserve">
     <value>En midlertidig OTP-kode er brukt. Søknaden slutter å fungere om en uke. Du må installere programmet på nytt for å bruke det igjen.</value>
   </data>
-  <data name="DefinePinSectionTitle1" xml:space="preserve">
-    <value>Skriv inn ny pin</value>
+  <data name="DefinePasswordSectionTitle1" xml:space="preserve">
+    <value>Skriv inn nytt passord</value>
   </data>
-  <data name="DefinePinSectionTitle2" xml:space="preserve">
-    <value>Bekreft PIN-koden</value>
+  <data name="DefinePasswordSectionTitle2" xml:space="preserve">
+    <value>Bekreft passord</value>
   </data>
-  <data name="CreatePin" xml:space="preserve">
-    <value>Opprett Pin</value>
+  <data name="CreatePassword" xml:space="preserve">
+    <value>Opprett passord</value>
   </data>
   <data name="ScanQrCodeLabel" xml:space="preserve">
     <value>Skann QR-koden med kameraet.</value>
@@ -720,8 +720,8 @@
   <data name="Enter" xml:space="preserve">
     <value>Komme inn</value>
   </data>
-  <data name="EnterPin" xml:space="preserve">
-    <value>Angi PIN-kode</value>
+  <data name="EnterPassword" xml:space="preserve">
+    <value>Skriv inn passord</value>
   </data>
   <data name="FirstName" xml:space="preserve">
     <value>Fornavn</value>
@@ -846,14 +846,14 @@
   <data name="Change" xml:space="preserve">
     <value>Forandre</value>
   </data>
-  <data name="ChangePin" xml:space="preserve">
-    <value>Endre PIN-kode</value>
+  <data name="ChangePassword" xml:space="preserve">
+    <value>Endre passord</value>
   </data>
-  <data name="ChangePinDescription" xml:space="preserve">
-    <value>Velg en annen PIN-kode for å identifisere deg. Hvis du endrer PIN-koden, opprettes det også et nytt tilfeldig passord for det underliggende kommunikasjonsnettverket.</value>
+  <data name="ChangePasswordDescription" xml:space="preserve">
+    <value>Velg et annet passord for å identifisere deg. Hvis du endrer passordet ditt, opprettes det også et nytt tilfeldig passord for det underliggende kommunikasjonsnettverket.</value>
   </data>
-  <data name="ConfirmNewPin" xml:space="preserve">
-    <value>Bekreft ny PIN-kode:</value>
+  <data name="ConfirmNewPassword" xml:space="preserve">
+    <value>Bekreft nytt passord:</value>
   </data>
   <data name="DarkMode" xml:space="preserve">
     <value>Mørk modus</value>
@@ -861,11 +861,11 @@
   <data name="DisplaySettings" xml:space="preserve">
     <value>Innstillinger for skjerm</value>
   </data>
-  <data name="EnterCurrentPin" xml:space="preserve">
-    <value>Angi gjeldende PIN-kode:</value>
+  <data name="EnterCurrentPassword" xml:space="preserve">
+    <value>Skriv inn gjeldende passord:</value>
   </data>
-  <data name="EnterNewPin" xml:space="preserve">
-    <value>Angi ny PIN-kode:</value>
+  <data name="EnterNewPassword" xml:space="preserve">
+    <value>Skriv inn nytt passord:</value>
   </data>
   <data name="IdentitySettings" xml:space="preserve">
     <value>Identitetsinnstillinger</value>
@@ -886,7 +886,7 @@
     <value>Rapport som kompromittert</value>
   </data>
   <data name="ReportAsCompromizedDescription" xml:space="preserve">
-    <value>Rapporter om app, PIN-kode eller telefon har blitt kompromittert, hacket eller stjålet.</value>
+    <value>Rapporter om app, passord eller telefon har blitt kompromittert, hacket eller stjålet.</value>
   </data>
   <data name="RestartNeededDueToThemeChange" xml:space="preserve">
     <value>En omstart av appen er nødvendig for at det nye temaet skal vises riktig. Når du lukker dialogboksen, lukkes appen automatisk. Når du starter appen på nytt, velges det nye temaet.</value>
@@ -918,8 +918,8 @@
   <data name="Fingerprint" xml:space="preserve">
     <value>Fingeravtrykk</value>
   </data>
-  <data name="PinCode" xml:space="preserve">
-    <value>PIN-kode</value>
+  <data name="Password" xml:space="preserve">
+    <value>Passord</value>
   </data>
   <data name="Application" xml:space="preserve">
     <value>Søknad</value>

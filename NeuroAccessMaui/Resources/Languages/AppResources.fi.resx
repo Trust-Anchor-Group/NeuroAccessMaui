@@ -141,65 +141,65 @@
   <data name="TagNotEngraved" xml:space="preserve">
     <value>Tunnisteeseen ei voi kaivertaa linkkiä {0}.</value>
   </data>
-  <data name="PinChanged" xml:space="preserve">
-    <value>PIN-koodin vaihtaminen onnistui.</value>
+  <data name="PasswordChanged" xml:space="preserve">
+    <value>Salasanan vaihtaminen onnistui.</value>
   </data>
   <data name="UnableToChangePassword" xml:space="preserve">
     <value>Verkon salasanaa ei voi vaihtaa.</value>
   </data>
-  <data name="PinIsInvalid" xml:space="preserve">
-    <value>PIN-koodi on virheellinen. Sinulla on {0} jäljellä olevaa yritystä.</value>
+  <data name="PasswordIsInvalid" xml:space="preserve">
+    <value>Salasana on virheellinen. Sinulla on {0} jäljellä olevaa yritystä.</value>
   </data>
-  <data name="PinsDoNotMatch" xml:space="preserve">
-    <value>PIN-koodit eivät täsmää</value>
+  <data name="PasswordsDoNotMatch" xml:space="preserve">
+    <value>Salasanat eivät täsmää</value>
   </data>
-  <data name="PinIsInvalidAplicationBlockedForever" xml:space="preserve">
-    <value>PIN-koodin syöttöyritykset jätetään pois. Hakemuksesi on estetty ikuisesti</value>
+  <data name="PasswordIsInvalidAplicationBlockedForever" xml:space="preserve">
+    <value>Olet ylittänyt salasanan antamisyritysten määrän. Hakemuksesi on estetty ikuisesti</value>
   </data>
-  <data name="PinIsInvalidAplicationBlocked" xml:space="preserve">
-    <value>PIN-koodin syöttöyritykset jätetään pois. Hakemuksesi on estetty {0} asti.</value>
+  <data name="PasswordIsInvalidAplicationBlocked" xml:space="preserve">
+    <value>Olet ylittänyt salasanan antamisyritysten määrän. Hakemuksesi on estetty {0} asti.</value>
   </data>
-  <data name="PinIsInvalidAplicationBlockedTillTomorrow" xml:space="preserve">
-    <value>PIN-koodin syöttöyritykset jätetään pois. Hakemuksesi on estetty huomiseen klo {0} asti.</value>
+  <data name="PasswordIsInvalidAplicationBlockedTillTomorrow" xml:space="preserve">
+    <value>Olet ylittänyt salasanan antamisyritysten määrän. Hakemuksesi on estetty huomiseen klo {0} asti.</value>
   </data>
-  <data name="PinIsInvalidAplicationBlockedForOneWeek" xml:space="preserve">
-    <value>PIN-koodin syöttöyritykset jätetään pois. Hakemuksesi on estetty viikon ajan</value>
+  <data name="PasswordIsInvalidAplicationBlockedForOneWeek" xml:space="preserve">
+    <value>Olet ylittänyt salasanan antamisyritysten määrän. Hakemuksesi on estetty viikon ajan</value>
   </data>
-  <data name="PinTooShort" xml:space="preserve">
-    <value>PIN-koodin pituuden on oltava vähintään {0} merkkiä.</value>
+  <data name="PasswordTooShort" xml:space="preserve">
+    <value>Salasanan pituuden on oltava vähintään {0} merkkiä.</value>
   </data>
-  <data name="PinContainsName" xml:space="preserve">
-    <value>PIN-koodi ei saa sisältää mitään sanaa henkilöllisistä nimistä.</value>
+  <data name="PasswordContainsName" xml:space="preserve">
+    <value>Salasana ei saa sisältää mitään sanaa henkilöllisistä nimistä.</value>
   </data>
-  <data name="PinContainsPersonalNumber" xml:space="preserve">
-    <value>PIN-koodi ei saa sisältää henkilöllisyyden henkilönumeroa.</value>
+  <data name="PasswordContainsPersonalNumber" xml:space="preserve">
+    <value>Salasana ei saa sisältää henkilöllisyyttä.</value>
   </data>
-  <data name="PinContainsAddress" xml:space="preserve">
-    <value>PIN-koodi ei saa sisältää mitään sanaa tunnistetietojen osoiteriveiltä.</value>
+  <data name="PasswordContainsAddress" xml:space="preserve">
+    <value>Salasana ei saa sisältää mitään sanaa tunnistetietojen osoiteriveiltä.</value>
   </data>
-  <data name="PinContainsEMail" xml:space="preserve">
-    <value>PIN-koodi ei saa sisältää henkilöllisyyden sähköpostiosoitetta.</value>
+  <data name="PasswordContainsEMail" xml:space="preserve">
+    <value>Salasana ei saa sisältää henkilöllisyyden sähköpostiosoitetta.</value>
   </data>
-  <data name="PinContainsPhoneNumber" xml:space="preserve">
-    <value>PIN-koodi ei saa sisältää henkilöllisyyden puhelinnumeroa.</value>
+  <data name="PasswordContainsPhoneNumber" xml:space="preserve">
+    <value>Salasana ei saa sisältää henkilöllisyyttä.</value>
   </data>
-  <data name="PinWithNotEnoughDigitsLettersSigns" xml:space="preserve">
+  <data name="PasswordWithNotEnoughDigitsLettersSigns" xml:space="preserve">
     <value>Vähintään {0} kirjaimia, numeroita tai symboleja on käytettävä.</value>
   </data>
-  <data name="PinWithNotEnoughDigitsOrSigns" xml:space="preserve">
+  <data name="PasswordWithNotEnoughDigitsOrSigns" xml:space="preserve">
     <value>Sinun on myös käytettävä vähintään {0} numeroa tai symbolia.</value>
   </data>
-  <data name="PinWithNotEnoughLettersOrDigits" xml:space="preserve">
+  <data name="PasswordWithNotEnoughLettersOrDigits" xml:space="preserve">
     <value>Sinun on myös käytettävä vähintään {0} kirjainta tai numeroa.</value>
   </data>
-  <data name="PinWithNotEnoughLettersOrSigns" xml:space="preserve">
+  <data name="PasswordWithNotEnoughLettersOrSigns" xml:space="preserve">
     <value>Sinun on myös käytettävä vähintään {0} kirjaimia tai symboleja.</value>
   </data>
-  <data name="PinWithTooManyIdenticalSymbols" xml:space="preserve">
-    <value>PIN-koodi saa sisältää enintään {0} identtistä symbolia.</value>
+  <data name="PasswordWithTooManyIdenticalSymbols" xml:space="preserve">
+    <value>Salasanassa saa olla enintään {0} identtistä symbolia.</value>
   </data>
-  <data name="PinWithTooManySequencedSymbols" xml:space="preserve">
-    <value>PIN-koodi saa sisältää enintään {0} peräkkäistä symbolia, esimerkiksi "12" tai "ab".</value>
+  <data name="PasswordWithTooManySequencedSymbols" xml:space="preserve">
+    <value>Salasana saa sisältää enintään {0} peräkkäistä symbolia, esimerkiksi "12" tai "ab".</value>
   </data>
   <data name="ThereIsNoNetwork" xml:space="preserve">
     <value>Verkkoa ei ole</value>
@@ -561,11 +561,11 @@
   <data name="OnboardingAccountPageDetails" xml:space="preserve">
     <value>Kirjoita nimi, jota haluat käyttää tililläsi</value>
   </data>
-  <data name="OnboardingDefinePinPageTitle" xml:space="preserve">
-    <value>PIN-koodin luominen</value>
+  <data name="OnboardingDefinePasswordPageTitle" xml:space="preserve">
+    <value>Luo salasana</value>
   </data>
-  <data name="OnboardingDefinePinPageDetails" xml:space="preserve">
-    <value>Neuroidentiteetin ja arkaluonteisten tietojen turvallisuuden parantamiseksi suosittelemme lisäämään ylimääräisen suojauskerroksen luomalla PIN-koodin tai salasanan</value>
+  <data name="OnboardingDefinePasswordPageDetails" xml:space="preserve">
+    <value>Neuroidentiteetin ja arkaluonteisten tietojen turvallisuuden parantamiseksi suosittelemme lisäämään ylimääräisen suojauskerroksen luomalla salasanan</value>
   </data>
   <data name="AccountSectionTitle" xml:space="preserve">
     <value>Kirjoita tilin nimi</value>
@@ -678,14 +678,14 @@
   <data name="TestOtpUsed" xml:space="preserve">
     <value>Väliaikaista OTP-koodia on käytetty. Sovellus lakkaa toimimasta noin viikon kuluttua. Sinun on asennettava sovellus uudelleen, jotta voit käyttää sitä uudelleen.</value>
   </data>
-  <data name="DefinePinSectionTitle1" xml:space="preserve">
-    <value>Anna uusi nasta</value>
+  <data name="DefinePasswordSectionTitle1" xml:space="preserve">
+    <value>Anna uusi salasana</value>
   </data>
-  <data name="DefinePinSectionTitle2" xml:space="preserve">
-    <value>Vahvista PIN-koodi</value>
+  <data name="DefinePasswordSectionTitle2" xml:space="preserve">
+    <value>Vahvista salasana</value>
   </data>
-  <data name="CreatePin" xml:space="preserve">
-    <value>Luo Pin-lisäys</value>
+  <data name="CreatePassword" xml:space="preserve">
+    <value>Luo salasana</value>
   </data>
   <data name="ScanQrCodeLabel" xml:space="preserve">
     <value>Skannaa QR-koodi kamerallasi.</value>
@@ -720,8 +720,8 @@
   <data name="Enter" xml:space="preserve">
     <value>Astua</value>
   </data>
-  <data name="EnterPin" xml:space="preserve">
-    <value>Anna PIN-koodi</value>
+  <data name="EnterPassword" xml:space="preserve">
+    <value>Anna salasana</value>
   </data>
   <data name="FirstName" xml:space="preserve">
     <value>Etunimi</value>
@@ -846,14 +846,14 @@
   <data name="Change" xml:space="preserve">
     <value>Muuttaa</value>
   </data>
-  <data name="ChangePin" xml:space="preserve">
-    <value>PIN-koodin vaihtaminen</value>
+  <data name="ChangePassword" xml:space="preserve">
+    <value>Vaihda salasana</value>
   </data>
-  <data name="ChangePinDescription" xml:space="preserve">
-    <value>Valitse toinen PIN-koodi tunnistautuaksesi. PIN-koodin vaihtaminen luo myös uuden satunnaisen salasanan taustalla olevalle viestintäverkolle.</value>
+  <data name="ChangePasswordDescription" xml:space="preserve">
+    <value>Valitse toinen salasana tunnistaaksesi itsesi. Salasanan vaihtaminen luo myös uuden satunnaisen salasanan taustalla olevalle viestintäverkolle.</value>
   </data>
-  <data name="ConfirmNewPin" xml:space="preserve">
-    <value>Vahvista uusi PIN-koodi:</value>
+  <data name="ConfirmNewPassword" xml:space="preserve">
+    <value>Vahvista uusi salasana:</value>
   </data>
   <data name="DarkMode" xml:space="preserve">
     <value>Tumma tila</value>
@@ -861,11 +861,11 @@
   <data name="DisplaySettings" xml:space="preserve">
     <value>Näytön asetukset</value>
   </data>
-  <data name="EnterCurrentPin" xml:space="preserve">
-    <value>Anna nykyinen PIN-koodi:</value>
+  <data name="EnterCurrentPassword" xml:space="preserve">
+    <value>Anna nykyinen salasana:</value>
   </data>
-  <data name="EnterNewPin" xml:space="preserve">
-    <value>Anna uusi PIN-koodi:</value>
+  <data name="EnterNewPassword" xml:space="preserve">
+    <value>Anna uusi salasana:</value>
   </data>
   <data name="IdentitySettings" xml:space="preserve">
     <value>Identiteetin asetukset</value>
@@ -886,7 +886,7 @@
     <value>Ilmoita vaarantuneeksi</value>
   </data>
   <data name="ReportAsCompromizedDescription" xml:space="preserve">
-    <value>Ilmoita, jos sovellus, PIN-koodi tai puhelin on vaarantunut, hakkeroitu tai varastettu.</value>
+    <value>Ilmoita, jos sovellus, salasana tai puhelin on vaarantunut, hakkeroitu tai varastettu.</value>
   </data>
   <data name="RestartNeededDueToThemeChange" xml:space="preserve">
     <value>Sovellus on käynnistettävä uudelleen, jotta uusi teema näkyy oikein. Kun valintaikkuna suljetaan, sovellus sulkeutuu automaattisesti. Kun käynnistät sovelluksen uudelleen, uusi teema valitaan.</value>
@@ -918,8 +918,8 @@
   <data name="Fingerprint" xml:space="preserve">
     <value>Sormenjälki</value>
   </data>
-  <data name="PinCode" xml:space="preserve">
-    <value>PIN-koodi</value>
+  <data name="Password" xml:space="preserve">
+    <value>Salasana</value>
   </data>
   <data name="Application" xml:space="preserve">
     <value>Sovellus</value>

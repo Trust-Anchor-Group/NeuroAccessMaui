@@ -62,7 +62,7 @@
 						<views:ValidateEmailView x:Name="ValidateEmailView" x:FactoryMethod="Create" mct:StateView.StateKey="ValidateEmail" />
 						<views:ChooseProviderView x:Name="ChooseProviderView" x:FactoryMethod="Create" mct:StateView.StateKey="ChooseProvider" />
 						<views:CreateAccountView x:Name="CreateAccountView" x:FactoryMethod="Create" mct:StateView.StateKey="CreateAccount" />
-						<views:DefinePinView x:Name="DefinePinView" x:FactoryMethod="Create" mct:StateView.StateKey="DefinePin" />
+						<views:DefinePasswordView x:Name="DefinePasswordView" x:FactoryMethod="Create" mct:StateView.StateKey="DefinePassword" />
 					</mct:StateContainer.StateViews>
 
 					<!-- default state, should not occur -->

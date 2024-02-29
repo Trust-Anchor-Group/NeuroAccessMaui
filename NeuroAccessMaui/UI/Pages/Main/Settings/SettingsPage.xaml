@@ -92,12 +92,12 @@
 					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 						<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize SecuritySettings}"/>
 
-						<!-- Change PIN -->
-						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding ChangePinCommand}">
+						<!-- Change Password -->
+						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding ChangePasswordCommand}">
 							<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True">
 								<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
-									<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize ChangePin}" InputTransparent="True"/>
-									<Label Style="{StaticResource KeyLabel}" Text="{l:Localize ChangePinDescription}" InputTransparent="True"/>
+									<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize ChangePassword}" InputTransparent="True"/>
+									<Label Style="{StaticResource KeyLabel}" Text="{l:Localize ChangePasswordDescription}" InputTransparent="True"/>
 								</VerticalStackLayout>
 							</Frame>
 						</controls:TemplatedButton>
@@ -110,8 +110,8 @@
 										RadioButtonGroup.GroupName="AuthenticationMethod"
 										RadioButtonGroup.SelectedValue="{Binding AuthenticationMethod}">
 									<Image Grid.Column="0" Grid.Row="0" Source="{AppThemeBinding Light=pin_code_light, Dark=pin_code_dark}"/>
-									<Label Grid.Column="1" Grid.Row="0" Style="{StaticResource KeyLabel}" Text="{l:Localize PinCode}"/>
-									<RadioButton Grid.Column="2" Grid.Row="0" x:Name="UsePinCode" x:FieldModifier="public" Value="Pin"/>
+									<Label Grid.Column="1" Grid.Row="0" Style="{StaticResource KeyLabel}" Text="{l:Localize Password}"/>
+									<RadioButton Grid.Column="2" Grid.Row="0" x:Name="UsePassword" x:FieldModifier="public" Value="Password"/>
 
 									<Image Grid.Column="0" Grid.Row="1" Source="{AppThemeBinding Light=fingerprint_light, Dark=fingerprint_dark}"
 											 IsVisible="{Binding CanUseFingerprint}"/>

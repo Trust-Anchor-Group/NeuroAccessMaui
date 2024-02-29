@@ -5,7 +5,7 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.UI.Pages.Identity.TransferIdentity;
-using NeuroAccessMaui.UI.Pages.Main.ChangePin;
+using NeuroAccessMaui.UI.Pages.Main.ChangePassword;
 using NeuroAccessMaui.UI.Popups.Settings;
 using System.ComponentModel;
 using System.Security.Cryptography;
@@ -89,7 +89,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			this.RevokeCommand.NotifyCanExecuteChanged();
 			this.CompromiseCommand.NotifyCanExecuteChanged();
 			this.TransferCommand.NotifyCanExecuteChanged();
-			this.ChangePinCommand.NotifyCanExecuteChanged();
+			this.ChangePasswordCommand.NotifyCanExecuteChanged();
 		}
 
 		#region Properties
@@ -231,13 +231,13 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 
 									switch (Enum.Parse<AuthenticationMethod>(this.AuthenticationMethod))
 									{
-										case AuthenticationMethod.Pin:
+										case AuthenticationMethod.Password:
 											this.Page.Fingerprint.IsChecked = false;
-											this.Page.UsePinCode.IsChecked = true;
+											this.Page.UsePassword.IsChecked = true;
 											break;
 
 										case AuthenticationMethod.Fingerprint:
-											this.Page.UsePinCode.IsChecked = false;
+											this.Page.UsePassword.IsChecked = false;
 											this.Page.Fingerprint.IsChecked = true;
 											break;
 									}
@@ -258,12 +258,12 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		#region Commands
 
 		[RelayCommand(CanExecute = nameof(CanExecuteCommands))]
-		internal static async Task ChangePin()
+		internal static async Task ChangePassword()
 		{
 			try
 			{
 				await App.CheckUserBlocking();
-				await ServiceRef.UiService.GoToAsync(nameof(ChangePinPage));
+				await ServiceRef.UiService.GoToAsync(nameof(ChangePasswordPage));
 			}
 			catch (Exception ex)
 			{
@@ -371,8 +371,8 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 
 			try
 			{
-				string? Pin = await App.InputPin();
-				if (Pin is null)
+				string? Password = await App.InputPassword();
+				if (Password is null)
 					return;
 
 				if (!await ServiceRef.UiService.DisplayAlert(
@@ -398,17 +398,17 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 						await ServiceRef.XmppService.ExportSigningKeys(Output);
 
 						Output.WriteStartElement("Pin");
-						Output.WriteAttributeString("pin", Pin);
+						Output.WriteAttributeString("pin", Password);
 						Output.WriteEndElement();
 
 						Output.WriteStartElement("Account", ContractsClient.NamespaceOnboarding);
 						Output.WriteAttributeString("domain", ServiceRef.TagProfile.Domain);
 						Output.WriteAttributeString("userName", ServiceRef.TagProfile.Account);
-						Output.WriteAttributeString("password", ServiceRef.TagProfile.PasswordHash);
+						Output.WriteAttributeString("password", ServiceRef.TagProfile.XmppPasswordHash);
 
-						if (!string.IsNullOrEmpty(ServiceRef.TagProfile.PasswordHashMethod))
+						if (!string.IsNullOrEmpty(ServiceRef.TagProfile.XmppPasswordHashMethod))
 						{
-							Output.WriteAttributeString("passwordMethod", ServiceRef.TagProfile.PasswordHashMethod);
+							Output.WriteAttributeString("passwordMethod", ServiceRef.TagProfile.XmppPasswordHashMethod);
 						}
 
 						Output.WriteEndElement();

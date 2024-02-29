@@ -11,7 +11,7 @@ using NeuroAccessMaui.UI.Pages.Identity.TransferIdentity;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Main;
 using NeuroAccessMaui.UI.Pages.Main.Calculator;
-using NeuroAccessMaui.UI.Pages.Main.ChangePin;
+using NeuroAccessMaui.UI.Pages.Main.ChangePassword;
 using NeuroAccessMaui.UI.Pages.Main.Duration;
 using NeuroAccessMaui.UI.Pages.Main.QR;
 using NeuroAccessMaui.UI.Pages.Main.Settings;
@@ -51,8 +51,8 @@ using NeuroAccessMaui.UI.Pages.Wallet.SendPayment;
 using NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenDetails;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenEvents;
+using NeuroAccessMaui.UI.Popups.Password;
 using NeuroAccessMaui.UI.Popups.Photos.Image;
-using NeuroAccessMaui.UI.Popups.Pin;
 using NeuroAccessMaui.UI.Popups.Tokens.AddTextNote;
 using NeuroAccessMaui.UI.Popups.Xmpp.RemoveSubscription;
 using NeuroAccessMaui.UI.Popups.Xmpp.ReportOrBlock;
@@ -87,7 +87,7 @@ namespace NeuroAccessMaui.UI
 			// Main
 			Builder.Services.AddTransient<AppShell>();
 			Builder.Services.AddTransient<CalculatorPage, CalculatorViewModel>();
-			Builder.Services.AddTransient<ChangePinPage, ChangePinViewModel>();
+			Builder.Services.AddTransient<ChangePasswordPage, ChangePasswordViewModel>();
 			Builder.Services.AddTransient<DurationPage, DurationViewModel>();
 			Builder.Services.AddTransient<MainPage, MainViewModel>();
 			Builder.Services.AddTransient<ScanQrCodePage, ScanQrCodeViewModel>();
@@ -120,7 +120,7 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<ValidateEmailView, ValidateEmailViewModel>();
 			Builder.Services.AddTransient<ChooseProviderView, ChooseProviderViewModel>();
 			Builder.Services.AddTransient<CreateAccountView, CreateAccountViewModel>();
-			Builder.Services.AddTransient<DefinePinView, DefinePinViewModel>();
+			Builder.Services.AddTransient<DefinePasswordView, DefinePasswordViewModel>();
 
 			// Signatures
 			Builder.Services.AddTransient<ClientSignaturePage, ClientSignatureViewModel>();

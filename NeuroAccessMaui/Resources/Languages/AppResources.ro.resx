@@ -141,65 +141,65 @@
   <data name="TagNotEngraved" xml:space="preserve">
     <value>Nu se poate grava eticheta cu link către {0}.</value>
   </data>
-  <data name="PinChanged" xml:space="preserve">
-    <value>Codul PIN a fost modificat cu succes.</value>
+  <data name="PasswordChanged" xml:space="preserve">
+    <value>Parola a fost schimbată cu succes.</value>
   </data>
   <data name="UnableToChangePassword" xml:space="preserve">
     <value>Imposibil de schimbat parola de rețea.</value>
   </data>
-  <data name="PinIsInvalid" xml:space="preserve">
-    <value>Codul PIN nu este valid. Aveți {0} încercări rămase.</value>
+  <data name="PasswordIsInvalid" xml:space="preserve">
+    <value>Parola nu este validă. Aveți {0} încercări rămase.</value>
   </data>
-  <data name="PinsDoNotMatch" xml:space="preserve">
-    <value>PIN-urile nu se potrivesc</value>
+  <data name="PasswordsDoNotMatch" xml:space="preserve">
+    <value>Parolele nu se potrivesc</value>
   </data>
-  <data name="PinIsInvalidAplicationBlockedForever" xml:space="preserve">
-    <value>Încercările de introducere a codului PIN sunt eliminate. Aplicația dvs. a fost blocată pentru totdeauna</value>
+  <data name="PasswordIsInvalidAplicationBlockedForever" xml:space="preserve">
+    <value>Ați depășit numărul de încercări de a furniza parola. Aplicația dvs. a fost blocată pentru totdeauna</value>
   </data>
-  <data name="PinIsInvalidAplicationBlocked" xml:space="preserve">
-    <value>Încercările de introducere a codului PIN sunt eliminate. Aplicația dvs. a fost blocată până {0}.</value>
+  <data name="PasswordIsInvalidAplicationBlocked" xml:space="preserve">
+    <value>Ați depășit numărul de încercări de a furniza parola. Aplicația dvs. a fost blocată până la {0}.</value>
   </data>
-  <data name="PinIsInvalidAplicationBlockedTillTomorrow" xml:space="preserve">
-    <value>Încercările de introducere a codului PIN sunt eliminate. Cererea dumneavoastră a fost blocată până mâine la ora {0}.</value>
+  <data name="PasswordIsInvalidAplicationBlockedTillTomorrow" xml:space="preserve">
+    <value>Ați depășit numărul de încercări de a furniza parola. Cererea dumneavoastră a fost blocată până mâine la ora {0}.</value>
   </data>
-  <data name="PinIsInvalidAplicationBlockedForOneWeek" xml:space="preserve">
-    <value>Încercările de introducere a codului PIN sunt eliminate. Aplicația dvs. a fost blocată timp de o săptămână</value>
+  <data name="PasswordIsInvalidAplicationBlockedForOneWeek" xml:space="preserve">
+    <value>Ați depășit numărul de încercări de a furniza parola. Aplicația dvs. a fost blocată timp de o săptămână</value>
   </data>
-  <data name="PinTooShort" xml:space="preserve">
-    <value>Lungimea codului PIN trebuie să fie de cel puțin {0} caractere.</value>
+  <data name="PasswordTooShort" xml:space="preserve">
+    <value>Lungimea parolei trebuie să fie de cel puțin {0} caractere.</value>
   </data>
-  <data name="PinContainsName" xml:space="preserve">
-    <value>Un cod PIN nu trebuie să conțină niciun cuvânt din numele de identitate.</value>
+  <data name="PasswordContainsName" xml:space="preserve">
+    <value>O parolă nu trebuie să conțină niciun cuvânt din numele de identitate.</value>
   </data>
-  <data name="PinContainsPersonalNumber" xml:space="preserve">
-    <value>Un cod PIN nu trebuie să conțină codul numeric personal.</value>
+  <data name="PasswordContainsPersonalNumber" xml:space="preserve">
+    <value>O parolă nu trebuie să conțină codul numeric personal.</value>
   </data>
-  <data name="PinContainsAddress" xml:space="preserve">
-    <value>Un cod PIN nu trebuie să conțină niciun cuvânt din rândurile adresei de identitate.</value>
+  <data name="PasswordContainsAddress" xml:space="preserve">
+    <value>O parolă nu trebuie să conțină niciun cuvânt din liniile adresei de identitate.</value>
   </data>
-  <data name="PinContainsEMail" xml:space="preserve">
-    <value>Un cod PIN nu trebuie să conțină adresa de e-mail de identitate.</value>
+  <data name="PasswordContainsEMail" xml:space="preserve">
+    <value>O parolă nu trebuie să conțină adresa de e-mail de identitate.</value>
   </data>
-  <data name="PinContainsPhoneNumber" xml:space="preserve">
-    <value>Un cod PIN nu trebuie să conțină numărul de telefon de identitate.</value>
+  <data name="PasswordContainsPhoneNumber" xml:space="preserve">
+    <value>O parolă nu trebuie să conțină numărul de telefon de identitate.</value>
   </data>
-  <data name="PinWithNotEnoughDigitsLettersSigns" xml:space="preserve">
+  <data name="PasswordWithNotEnoughDigitsLettersSigns" xml:space="preserve">
     <value>Trebuie utilizate cel puțin {0} litere, cifre sau simboluri.</value>
   </data>
-  <data name="PinWithNotEnoughDigitsOrSigns" xml:space="preserve">
+  <data name="PasswordWithNotEnoughDigitsOrSigns" xml:space="preserve">
     <value>De asemenea, trebuie să utilizați cel puțin {0} cifre sau simboluri.</value>
   </data>
-  <data name="PinWithNotEnoughLettersOrDigits" xml:space="preserve">
+  <data name="PasswordWithNotEnoughLettersOrDigits" xml:space="preserve">
     <value>De asemenea, trebuie să utilizați cel puțin {0} litere sau cifre.</value>
   </data>
-  <data name="PinWithNotEnoughLettersOrSigns" xml:space="preserve">
+  <data name="PasswordWithNotEnoughLettersOrSigns" xml:space="preserve">
     <value>De asemenea, trebuie să utilizați cel puțin {0} litere sau simboluri.</value>
   </data>
-  <data name="PinWithTooManyIdenticalSymbols" xml:space="preserve">
-    <value>Un cod PIN nu trebuie să conțină mai mult de {0} de simboluri identice.</value>
+  <data name="PasswordWithTooManyIdenticalSymbols" xml:space="preserve">
+    <value>O parolă nu trebuie să conțină mai mult de {0} simboluri identice.</value>
   </data>
-  <data name="PinWithTooManySequencedSymbols" xml:space="preserve">
-    <value>Un cod PIN nu trebuie să conțină mai mult de {0} simboluri secvențiale, de exemplu "12" sau "ab".</value>
+  <data name="PasswordWithTooManySequencedSymbols" xml:space="preserve">
+    <value>O parolă nu trebuie să conțină mai mult de {0} simboluri secvențiale, de exemplu "12" sau "ab".</value>
   </data>
   <data name="ThereIsNoNetwork" xml:space="preserve">
     <value>Nu există rețea</value>
@@ -561,11 +561,11 @@
   <data name="OnboardingAccountPageDetails" xml:space="preserve">
     <value>Introduceți numele pe care doriți să îl utilizați pentru contul dvs.</value>
   </data>
-  <data name="OnboardingDefinePinPageTitle" xml:space="preserve">
-    <value>Crearea unui cod PIN</value>
+  <data name="OnboardingDefinePasswordPageTitle" xml:space="preserve">
+    <value>Creați o parolă</value>
   </data>
-  <data name="OnboardingDefinePinPageDetails" xml:space="preserve">
-    <value>Pentru a îmbunătăți securitatea neuro-identității și a informațiilor sensibile, vă recomandăm să adăugați un strat suplimentar de protecție prin crearea unui cod PIN sau a unei parole</value>
+  <data name="OnboardingDefinePasswordPageDetails" xml:space="preserve">
+    <value>Pentru a spori securitatea neuro-identității și a informațiilor sensibile, vă recomandăm să adăugați un strat suplimentar de protecție prin crearea unei parole</value>
   </data>
   <data name="AccountSectionTitle" xml:space="preserve">
     <value>Introduceți numele contului</value>
@@ -678,14 +678,14 @@
   <data name="TestOtpUsed" xml:space="preserve">
     <value>A fost utilizat un cod OTP temporar. Aplicația nu va mai funcționa în aproximativ o săptămână. Va trebui să reinstalați aplicația pentru a o utiliza din nou.</value>
   </data>
-  <data name="DefinePinSectionTitle1" xml:space="preserve">
-    <value>Introduceți codul PIN nou</value>
+  <data name="DefinePasswordSectionTitle1" xml:space="preserve">
+    <value>Introduceți o parolă nouă</value>
   </data>
-  <data name="DefinePinSectionTitle2" xml:space="preserve">
-    <value>Confirmați pinul</value>
+  <data name="DefinePasswordSectionTitle2" xml:space="preserve">
+    <value>Confirmare parolă</value>
   </data>
-  <data name="CreatePin" xml:space="preserve">
-    <value>Creează un Pin</value>
+  <data name="CreatePassword" xml:space="preserve">
+    <value>Creare parolă</value>
   </data>
   <data name="ScanQrCodeLabel" xml:space="preserve">
     <value>Scanați codul QR cu camera dvs.</value>
@@ -720,8 +720,8 @@
   <data name="Enter" xml:space="preserve">
     <value>Intra</value>
   </data>
-  <data name="EnterPin" xml:space="preserve">
-    <value>Introduceți codul PIN</value>
+  <data name="EnterPassword" xml:space="preserve">
+    <value>Introdu parola</value>
   </data>
   <data name="FirstName" xml:space="preserve">
     <value>Prenume</value>
@@ -846,14 +846,14 @@
   <data name="Change" xml:space="preserve">
     <value>Schimbare</value>
   </data>
-  <data name="ChangePin" xml:space="preserve">
-    <value>Schimbați codul PIN</value>
+  <data name="ChangePassword" xml:space="preserve">
+    <value>Schimbați parola</value>
   </data>
-  <data name="ChangePinDescription" xml:space="preserve">
-    <value>Alegeți un alt cod PIN pentru a vă identifica. Schimbarea codului PIN va crea, de asemenea, o nouă parolă aleatorie pentru rețeaua de comunicații subiacentă.</value>
+  <data name="ChangePasswordDescription" xml:space="preserve">
+    <value>Alegeți o altă parolă pentru a vă identifica. Schimbarea parolei va crea, de asemenea, o nouă parolă aleatorie pentru rețeaua de comunicații subiacentă.</value>
   </data>
-  <data name="ConfirmNewPin" xml:space="preserve">
-    <value>Confirmați noul cod PIN:</value>
+  <data name="ConfirmNewPassword" xml:space="preserve">
+    <value>Confirmați noua parolă:</value>
   </data>
   <data name="DarkMode" xml:space="preserve">
     <value>Modul întunecat</value>
@@ -861,11 +861,11 @@
   <data name="DisplaySettings" xml:space="preserve">
     <value>Setări de afișare</value>
   </data>
-  <data name="EnterCurrentPin" xml:space="preserve">
-    <value>Introduceți codul PIN curent:</value>
+  <data name="EnterCurrentPassword" xml:space="preserve">
+    <value>Introduceți parola curentă:</value>
   </data>
-  <data name="EnterNewPin" xml:space="preserve">
-    <value>Introduceți noul cod PIN:</value>
+  <data name="EnterNewPassword" xml:space="preserve">
+    <value>Introduceți o parolă nouă:</value>
   </data>
   <data name="IdentitySettings" xml:space="preserve">
     <value>Setări de identitate</value>
@@ -886,7 +886,7 @@
     <value>Raportați ca fiind compromis</value>
   </data>
   <data name="ReportAsCompromizedDescription" xml:space="preserve">
-    <value>Raportați dacă aplicația, codul PIN sau telefonul au fost compromise, sparte sau furate.</value>
+    <value>Raportați dacă aplicația, parola sau telefonul au fost compromise, sparte sau furate.</value>
   </data>
   <data name="RestartNeededDueToThemeChange" xml:space="preserve">
     <value>Este necesară o repornire a aplicației, pentru ca noua temă să fie afișată corect. La închiderea dialogului, aplicația se va închide automat. La repornirea aplicației, va fi selectată noua temă.</value>
@@ -918,8 +918,8 @@
   <data name="Fingerprint" xml:space="preserve">
     <value>Amprentă digitală</value>
   </data>
-  <data name="PinCode" xml:space="preserve">
-    <value>Codul PIN</value>
+  <data name="Password" xml:space="preserve">
+    <value>Parolă</value>
   </data>
   <data name="Application" xml:space="preserve">
     <value>Aplicație</value>

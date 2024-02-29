@@ -89,7 +89,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 				return (ServiceRef.TagProfile.Step > RegistrationStep.RequestPurpose) &&
 					// Disable the back button after the accpunt was created
 					string.IsNullOrEmpty(ServiceRef.TagProfile?.Account ?? string.Empty)
-					&& (ServiceRef.TagProfile?.Step < RegistrationStep.DefinePin);
+					&& (ServiceRef.TagProfile?.Step < RegistrationStep.DefinePassword);
 			}
 		}
 

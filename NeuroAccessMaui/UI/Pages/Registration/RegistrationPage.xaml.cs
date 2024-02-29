@@ -24,7 +24,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 				this.ValidateEmailView,
 				this.ChooseProviderView,
 				this.CreateAccountView,
-				this.DefinePinView,
+				this.DefinePasswordView,
 			]);
 
 			// We need to register this handlere before the LoadingView is initialised

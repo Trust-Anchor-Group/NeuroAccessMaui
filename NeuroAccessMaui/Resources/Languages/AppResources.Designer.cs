@@ -583,20 +583,20 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Change PIN-code.
+        ///   Looks up a localized string similar to Change Password.
         /// </summary>
-        internal static string ChangePin {
+        internal static string ChangePassword {
             get {
-                return ResourceManager.GetString("ChangePin", resourceCulture);
+                return ResourceManager.GetString("ChangePassword", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Choose another PIN-code to identify yourself. Changing your PIN-code will also create a new random password for the underlying communication network..
+        ///   Looks up a localized string similar to Choose another password to identify yourself. Changing your password will also create a new random password for the underlying communication network..
         /// </summary>
-        internal static string ChangePinDescription {
+        internal static string ChangePasswordDescription {
             get {
-                return ResourceManager.GetString("ChangePinDescription", resourceCulture);
+                return ResourceManager.GetString("ChangePasswordDescription", resourceCulture);
             }
         }
         
@@ -799,11 +799,11 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Confirm new PIN:.
+        ///   Looks up a localized string similar to Confirm new password:.
         /// </summary>
-        internal static string ConfirmNewPin {
+        internal static string ConfirmNewPassword {
             get {
-                return ResourceManager.GetString("ConfirmNewPin", resourceCulture);
+                return ResourceManager.GetString("ConfirmNewPassword", resourceCulture);
             }
         }
         
@@ -1186,11 +1186,11 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create Pin.
+        ///   Looks up a localized string similar to Create Password.
         /// </summary>
-        internal static string CreatePin {
+        internal static string CreatePassword {
             get {
-                return ResourceManager.GetString("CreatePin", resourceCulture);
+                return ResourceManager.GetString("CreatePassword", resourceCulture);
             }
         }
         
@@ -1231,20 +1231,20 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter new pin.
+        ///   Looks up a localized string similar to Enter new password.
         /// </summary>
-        internal static string DefinePinSectionTitle1 {
+        internal static string DefinePasswordSectionTitle1 {
             get {
-                return ResourceManager.GetString("DefinePinSectionTitle1", resourceCulture);
+                return ResourceManager.GetString("DefinePasswordSectionTitle1", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Confirm pin.
+        ///   Looks up a localized string similar to Confirm password.
         /// </summary>
-        internal static string DefinePinSectionTitle2 {
+        internal static string DefinePasswordSectionTitle2 {
             get {
-                return ResourceManager.GetString("DefinePinSectionTitle2", resourceCulture);
+                return ResourceManager.GetString("DefinePasswordSectionTitle2", resourceCulture);
             }
         }
         
@@ -1402,29 +1402,29 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter current PIN:.
+        ///   Looks up a localized string similar to Enter current password:.
         /// </summary>
-        internal static string EnterCurrentPin {
+        internal static string EnterCurrentPassword {
             get {
-                return ResourceManager.GetString("EnterCurrentPin", resourceCulture);
+                return ResourceManager.GetString("EnterCurrentPassword", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter new PIN:.
+        ///   Looks up a localized string similar to Enter new password:.
         /// </summary>
-        internal static string EnterNewPin {
+        internal static string EnterNewPassword {
             get {
-                return ResourceManager.GetString("EnterNewPin", resourceCulture);
+                return ResourceManager.GetString("EnterNewPassword", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter PIN.
+        ///   Looks up a localized string similar to Enter password.
         /// </summary>
-        internal static string EnterPin {
+        internal static string EnterPassword {
             get {
-                return ResourceManager.GetString("EnterPin", resourceCulture);
+                return ResourceManager.GetString("EnterPassword", resourceCulture);
             }
         }
         
@@ -2500,20 +2500,20 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to To enhance the security of your Neuro-Identity and sensitive information, we recommend adding an extra layer of protection by creating a PIN or password.
+        ///   Looks up a localized string similar to To enhance the security of your Neuro-Identity and sensitive information, we recommend adding an extra layer of protection by creating a password.
         /// </summary>
-        internal static string OnboardingDefinePinPageDetails {
+        internal static string OnboardingDefinePasswordPageDetails {
             get {
-                return ResourceManager.GetString("OnboardingDefinePinPageDetails", resourceCulture);
+                return ResourceManager.GetString("OnboardingDefinePasswordPageDetails", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create a PIN code.
+        ///   Looks up a localized string similar to Create a password.
         /// </summary>
-        internal static string OnboardingDefinePinPageTitle {
+        internal static string OnboardingDefinePasswordPageTitle {
             get {
-                return ResourceManager.GetString("OnboardingDefinePinPageTitle", resourceCulture);
+                return ResourceManager.GetString("OnboardingDefinePasswordPageTitle", resourceCulture);
             }
         }
         
@@ -2838,6 +2838,186 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string PartsInTheContract {
             get {
                 return ResourceManager.GetString("PartsInTheContract", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password.
+        /// </summary>
+        internal static string Password {
+            get {
+                return ResourceManager.GetString("Password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password has been successfully changed..
+        /// </summary>
+        internal static string PasswordChanged {
+            get {
+                return ResourceManager.GetString("PasswordChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A password must not contain any word from the identity address lines..
+        /// </summary>
+        internal static string PasswordContainsAddress {
+            get {
+                return ResourceManager.GetString("PasswordContainsAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A password must not contain the identity e-mail address..
+        /// </summary>
+        internal static string PasswordContainsEMail {
+            get {
+                return ResourceManager.GetString("PasswordContainsEMail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A password must not contain any word from the identity names..
+        /// </summary>
+        internal static string PasswordContainsName {
+            get {
+                return ResourceManager.GetString("PasswordContainsName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A password must not contain the identity personal number..
+        /// </summary>
+        internal static string PasswordContainsPersonalNumber {
+            get {
+                return ResourceManager.GetString("PasswordContainsPersonalNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A password must not contain the identity phone number..
+        /// </summary>
+        internal static string PasswordContainsPhoneNumber {
+            get {
+                return ResourceManager.GetString("PasswordContainsPhoneNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password is invalid. You have {0} remaining attempts..
+        /// </summary>
+        internal static string PasswordIsInvalid {
+            get {
+                return ResourceManager.GetString("PasswordIsInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have exceeded the number of attempts to provide your password. Your application has been blocked till {0}..
+        /// </summary>
+        internal static string PasswordIsInvalidAplicationBlocked {
+            get {
+                return ResourceManager.GetString("PasswordIsInvalidAplicationBlocked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have exceeded the number of attempts to provide your password. Your application has been blocked forever.
+        /// </summary>
+        internal static string PasswordIsInvalidAplicationBlockedForever {
+            get {
+                return ResourceManager.GetString("PasswordIsInvalidAplicationBlockedForever", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have exceeded the number of attempts to provide your password. Your application has been blocked for one week.
+        /// </summary>
+        internal static string PasswordIsInvalidAplicationBlockedForOneWeek {
+            get {
+                return ResourceManager.GetString("PasswordIsInvalidAplicationBlockedForOneWeek", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have exceeded the number of attempts to provide your password. Your application has been blocked till tomorrow at {0}..
+        /// </summary>
+        internal static string PasswordIsInvalidAplicationBlockedTillTomorrow {
+            get {
+                return ResourceManager.GetString("PasswordIsInvalidAplicationBlockedTillTomorrow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Passwords do not match.
+        /// </summary>
+        internal static string PasswordsDoNotMatch {
+            get {
+                return ResourceManager.GetString("PasswordsDoNotMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password length must be at least {0} characters..
+        /// </summary>
+        internal static string PasswordTooShort {
+            get {
+                return ResourceManager.GetString("PasswordTooShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to At least {0} letters, digits or symbols must be used..
+        /// </summary>
+        internal static string PasswordWithNotEnoughDigitsLettersSigns {
+            get {
+                return ResourceManager.GetString("PasswordWithNotEnoughDigitsLettersSigns", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You must also use at least {0} digits or symbols..
+        /// </summary>
+        internal static string PasswordWithNotEnoughDigitsOrSigns {
+            get {
+                return ResourceManager.GetString("PasswordWithNotEnoughDigitsOrSigns", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You must also use at least {0} letters or digits..
+        /// </summary>
+        internal static string PasswordWithNotEnoughLettersOrDigits {
+            get {
+                return ResourceManager.GetString("PasswordWithNotEnoughLettersOrDigits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You must also use at least {0} letters or symbols..
+        /// </summary>
+        internal static string PasswordWithNotEnoughLettersOrSigns {
+            get {
+                return ResourceManager.GetString("PasswordWithNotEnoughLettersOrSigns", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A password must not contain more than {0} identical symbols..
+        /// </summary>
+        internal static string PasswordWithTooManyIdenticalSymbols {
+            get {
+                return ResourceManager.GetString("PasswordWithTooManyIdenticalSymbols", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A password must not contain more than {0} sequenced symbols, e.g. &quot;12&quot; or &quot;ab&quot;..
+        /// </summary>
+        internal static string PasswordWithTooManySequencedSymbols {
+            get {
+                return ResourceManager.GetString("PasswordWithTooManySequencedSymbols", resourceCulture);
             }
         }
         
@@ -3292,186 +3472,6 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PIN has been successfully changed..
-        /// </summary>
-        internal static string PinChanged {
-            get {
-                return ResourceManager.GetString("PinChanged", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to PIN code.
-        /// </summary>
-        internal static string PinCode {
-            get {
-                return ResourceManager.GetString("PinCode", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A PIN must not contain any word from the identity address lines..
-        /// </summary>
-        internal static string PinContainsAddress {
-            get {
-                return ResourceManager.GetString("PinContainsAddress", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A PIN must not contain the identity e-mail address..
-        /// </summary>
-        internal static string PinContainsEMail {
-            get {
-                return ResourceManager.GetString("PinContainsEMail", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A PIN must not contain any word from the identity names..
-        /// </summary>
-        internal static string PinContainsName {
-            get {
-                return ResourceManager.GetString("PinContainsName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A PIN must not contain the identity personal number..
-        /// </summary>
-        internal static string PinContainsPersonalNumber {
-            get {
-                return ResourceManager.GetString("PinContainsPersonalNumber", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A PIN must not contain the identity phone number..
-        /// </summary>
-        internal static string PinContainsPhoneNumber {
-            get {
-                return ResourceManager.GetString("PinContainsPhoneNumber", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to PIN is invalid. You have {0} remaining attempts..
-        /// </summary>
-        internal static string PinIsInvalid {
-            get {
-                return ResourceManager.GetString("PinIsInvalid", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to PIN attempts entering is exceded. Your application has been blocked till {0}..
-        /// </summary>
-        internal static string PinIsInvalidAplicationBlocked {
-            get {
-                return ResourceManager.GetString("PinIsInvalidAplicationBlocked", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to PIN attempts entering is exceded. Your application has been blocked forever.
-        /// </summary>
-        internal static string PinIsInvalidAplicationBlockedForever {
-            get {
-                return ResourceManager.GetString("PinIsInvalidAplicationBlockedForever", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to PIN attempts entering is exceded. Your application has been blocked for one week.
-        /// </summary>
-        internal static string PinIsInvalidAplicationBlockedForOneWeek {
-            get {
-                return ResourceManager.GetString("PinIsInvalidAplicationBlockedForOneWeek", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to PIN attempts entering is exceded. Your application has been blocked till tomorrow at {0}..
-        /// </summary>
-        internal static string PinIsInvalidAplicationBlockedTillTomorrow {
-            get {
-                return ResourceManager.GetString("PinIsInvalidAplicationBlockedTillTomorrow", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to PINs do not match.
-        /// </summary>
-        internal static string PinsDoNotMatch {
-            get {
-                return ResourceManager.GetString("PinsDoNotMatch", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to PIN length must be at least {0} characters..
-        /// </summary>
-        internal static string PinTooShort {
-            get {
-                return ResourceManager.GetString("PinTooShort", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to At least {0} letters, digits or symbols must be used..
-        /// </summary>
-        internal static string PinWithNotEnoughDigitsLettersSigns {
-            get {
-                return ResourceManager.GetString("PinWithNotEnoughDigitsLettersSigns", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to You must also use at least {0} digits or symbols..
-        /// </summary>
-        internal static string PinWithNotEnoughDigitsOrSigns {
-            get {
-                return ResourceManager.GetString("PinWithNotEnoughDigitsOrSigns", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to You must also use at least {0} letters or digits..
-        /// </summary>
-        internal static string PinWithNotEnoughLettersOrDigits {
-            get {
-                return ResourceManager.GetString("PinWithNotEnoughLettersOrDigits", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to You must also use at least {0} letters or symbols..
-        /// </summary>
-        internal static string PinWithNotEnoughLettersOrSigns {
-            get {
-                return ResourceManager.GetString("PinWithNotEnoughLettersOrSigns", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A PIN must not contain more than {0} identical symbols..
-        /// </summary>
-        internal static string PinWithTooManyIdenticalSymbols {
-            get {
-                return ResourceManager.GetString("PinWithTooManyIdenticalSymbols", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A PIN must not contain more than {0} sequenced symbols, e.g. &quot;12&quot; or &quot;ab&quot;..
-        /// </summary>
-        internal static string PinWithTooManySequencedSymbols {
-            get {
-                return ResourceManager.GetString("PinWithTooManySequencedSymbols", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Please review all information above, and check the corresponding check boxes if the information is correct. This must be done before you can approve the information..
         /// </summary>
         internal static string PleaseReviewAndCheckAllCheckboxes {
@@ -3895,7 +3895,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Report if App, PIN or phone has been compromised, hacked or stolen..
+        ///   Looks up a localized string similar to Report if App, password or phone has been compromised, hacked or stolen..
         /// </summary>
         internal static string ReportAsCompromizedDescription {
             get {

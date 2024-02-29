@@ -150,7 +150,7 @@ namespace NeuroAccessMaui.Services
 		public string? PinHash { get; set; }
 
 		/// <summary>
-		/// Set to true if the PIN should be used.
+		/// Set to true if the password should be used.
 		/// </summary>
 		[DefaultValue(false)]
 		public bool UsePin { get; set; }
@@ -206,7 +206,7 @@ namespace NeuroAccessMaui.Services
 		/// <summary>
 		/// How the user authenticates itself with the App.
 		/// </summary>
-		[DefaultValue(AuthenticationMethod.Pin)]
-		public AuthenticationMethod AuthenticationMethod { get; set; } = AuthenticationMethod.Pin;
+		[DefaultValue(AuthenticationMethod.Password)]
+		public AuthenticationMethod AuthenticationMethod { get; set; } = AuthenticationMethod.Password;
 	}
 }

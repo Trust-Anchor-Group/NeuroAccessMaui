@@ -21,24 +21,24 @@
 		public static class Security
 		{
 			/// <summary>
-			/// Minimum length for PIN Code
+			/// Minimum length for password
 			/// </summary>
-			public const int MinPinLength = 8;
+			public const int MinPasswordLength = 8;
 
 			/// <summary>
-			/// Minimum number of symbols from at least two character classes (digits, letters, other) in a PIN.
+			/// Minimum number of symbols from at least two character classes (digits, letters, other) in a password.
 			/// </summary>
-			public const int MinPinSymbolsFromDifferentClasses = 2;
+			public const int MinPasswordSymbolsFromDifferentClasses = 2;
 
 			/// <summary>
-			/// Maximum number of identical symbols in a PIN.
+			/// Maximum number of identical symbols in a password.
 			/// </summary>
-			public const int MaxPinIdenticalSymbols = 2;
+			public const int MaxPasswordIdenticalSymbols = 2;
 
 			/// <summary>
-			/// Maximum number of sequenced symbols in a PIN.
+			/// Maximum number of sequenced symbols in a password.
 			/// </summary>
-			public const int MaxPinSequencedSymbols = 2;
+			public const int MaxPasswordSequencedSymbols = 2;
 
 			/// <summary>
 			/// Maximum number of seconds screen recording is allowed.
@@ -618,9 +618,9 @@
 		}
 
 		/// <summary>
-		/// Constants for PIN
+		/// Constants for Password
 		/// </summary>
-		public static class Pin
+		public static class Password
 		{
 
 			/// <summary>
@@ -629,19 +629,19 @@
 			public const int PossibleInactivityInMinutes = 5;
 
 			/// <summary>
-			/// Maximum pin enetring attempts, first interval
+			/// Maximum password enetring attempts, first interval
 			/// </summary>
-			public const int FirstMaxPinAttempts = 5;
+			public const int FirstMaxPasswordAttempts = 5;
 
 			/// <summary>
-			/// First Block in hours after <see cref="FirstMaxPinAttempts"/> attempts
+			/// First Block in hours after <see cref="FirstMaxPasswordAttempts"/> attempts
 			/// </summary>
 			public const int FirstBlockInHours = 1;
 
 			/// <summary>
-			/// Maximum pin enetring attempts, second interval
+			/// Maximum password enetring attempts, second interval
 			/// </summary>
-			public const int SecondMaxPinAttempts = 2;
+			public const int SecondMaxPasswordAttempts = 2;
 
 			/// <summary>
 			/// Second Block in hours after 3 attempts
@@ -649,9 +649,9 @@
 			public const int SecondBlockInHours = 24;
 
 			/// <summary>
-			/// Maximum pin enetring attempts, third interval
+			/// Maximum password enetring attempts, third interval
 			/// </summary>
-			public const int ThirdMaxPinAttempts = 2;
+			public const int ThirdMaxPasswordAttempts = 2;
 
 			/// <summary>
 			/// Third Block in hours after 3 attempts
@@ -659,9 +659,9 @@
 			public const int ThirdBlockInHours = 7 * 24;
 
 			/// <summary>
-			/// Key for pin attempt counter
+			/// Key for password attempt counter
 			/// </summary>
-			public const string CurrentPinAttemptCounter = "CurrentPinAttemptCounter";
+			public const string CurrentPasswordAttemptCounter = "CurrentPasswordAttemptCounter";
 
 			/// <summary>
 			/// Log Object ID

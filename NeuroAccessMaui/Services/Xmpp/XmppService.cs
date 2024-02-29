@@ -118,8 +118,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 					this.domainName = ServiceRef.TagProfile.Domain;
 					this.accountName = ServiceRef.TagProfile.Account;
-					this.passwordHash = ServiceRef.TagProfile.PasswordHash;
-					this.passwordHashMethod = ServiceRef.TagProfile.PasswordHashMethod;
+					this.passwordHash = ServiceRef.TagProfile.XmppPasswordHash;
+					this.passwordHashMethod = ServiceRef.TagProfile.XmppPasswordHashMethod;
 
 					string? HostName;
 					int PortNumber;
@@ -348,10 +348,10 @@ namespace NeuroAccessMaui.Services.Xmpp
 			if (this.accountName != ServiceRef.TagProfile.Account)
 				return false;
 
-			if (this.passwordHash != ServiceRef.TagProfile.PasswordHash)
+			if (this.passwordHash != ServiceRef.TagProfile.XmppPasswordHash)
 				return false;
 
-			if (this.passwordHashMethod != ServiceRef.TagProfile.PasswordHashMethod)
+			if (this.passwordHashMethod != ServiceRef.TagProfile.XmppPasswordHashMethod)
 				return false;
 
 			if (this.contractsClient?.ComponentAddress != ServiceRef.TagProfile.LegalJid)
@@ -647,7 +647,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 					this.RecreateReconnectTimer();
 
-					if (string.IsNullOrEmpty(ServiceRef.TagProfile.PasswordHashMethod))
+					if (string.IsNullOrEmpty(ServiceRef.TagProfile.XmppPasswordHashMethod))
 					{
 						ServiceRef.TagProfile.SetAccount(ServiceRef.TagProfile.Account ?? string.Empty,
 							this.xmppClient?.PasswordHash ?? string.Empty,

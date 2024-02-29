@@ -48,8 +48,8 @@ namespace NeuroAccessMaui.Services.Tag
 		private string? phoneNumber;
 		private string? eMail;
 		private string? account;
-		private string? passwordHash;
-		private string? passwordHashMethod;
+		private string? xmppPasswordHash;
+		private string? xmppPasswordHashMethod;
 		private string? legalJid;
 		private string? registryJid;
 		private string? provisioningJid;
@@ -57,7 +57,7 @@ namespace NeuroAccessMaui.Services.Tag
 		private string? logJid;
 		private string? eDalerJid;
 		private string? neuroFeaturesJid;
-		private string? pinHash;
+		private string? localPasswordHash;
 		private long httpFileUploadMaxSize;
 		private bool supportsPushNotification;
 		private int nrReviews;
@@ -117,8 +117,8 @@ namespace NeuroAccessMaui.Services.Tag
 				EMail = this.EMail,
 				DefaultXmppConnectivity = this.DefaultXmppConnectivity,
 				Account = this.Account,
-				PasswordHash = this.PasswordHash,
-				PasswordHashMethod = this.PasswordHashMethod,
+				PasswordHash = this.XmppPasswordHash,
+				PasswordHashMethod = this.XmppPasswordHashMethod,
 				LegalJid = this.LegalJid,
 				RegistryJid = this.RegistryJid,
 				ProvisioningJid = this.ProvisioningJid,
@@ -128,7 +128,7 @@ namespace NeuroAccessMaui.Services.Tag
 				EDalerJid = this.EDalerJid,
 				NeuroFeaturesJid = this.NeuroFeaturesJid,
 				SupportsPushNotification = this.SupportsPushNotification,
-				PinHash = this.PinHash,
+				PinHash = this.LocalPasswordHash,
 				IsTest = this.IsTest,
 				Purpose = this.Purpose,
 				TestOtpTimestamp = this.TestOtpTimestamp,
@@ -166,8 +166,8 @@ namespace NeuroAccessMaui.Services.Tag
 				this.InitialDefaultXmppConnectivity = configuration.InitialDefaultXmppConnectivity;
 				this.DefaultXmppConnectivity = configuration.DefaultXmppConnectivity;
 				this.Account = configuration.Account;
-				this.PasswordHash = configuration.PasswordHash;
-				this.PasswordHashMethod = configuration.PasswordHashMethod;
+				this.XmppPasswordHash = configuration.PasswordHash;
+				this.XmppPasswordHashMethod = configuration.PasswordHashMethod;
 				this.LegalJid = configuration.LegalJid;
 				this.RegistryJid = configuration.RegistryJid;
 				this.ProvisioningJid = configuration.ProvisioningJid;
@@ -177,7 +177,7 @@ namespace NeuroAccessMaui.Services.Tag
 				this.EDalerJid = configuration.EDalerJid;
 				this.NeuroFeaturesJid = configuration.NeuroFeaturesJid;
 				this.SupportsPushNotification = configuration.SupportsPushNotification;
-				this.PinHash = configuration.PinHash;
+				this.LocalPasswordHash = configuration.PinHash;
 				this.IsTest = configuration.IsTest;
 				this.Purpose = configuration.Purpose;
 				this.TestOtpTimestamp = configuration.TestOtpTimestamp;
@@ -448,33 +448,33 @@ namespace NeuroAccessMaui.Services.Tag
 		}
 
 		/// <summary>
-		/// A hash of the current password.
+		/// A hash of the current XMPP password.
 		/// </summary>
-		public string? PasswordHash
+		public string? XmppPasswordHash
 		{
-			get => this.passwordHash;
+			get => this.xmppPasswordHash;
 			private set
 			{
-				if (!string.Equals(this.passwordHash, value, StringComparison.Ordinal))
+				if (!string.Equals(this.xmppPasswordHash, value, StringComparison.Ordinal))
 				{
-					this.passwordHash = value;
-					this.FlagAsDirty(nameof(this.PasswordHash));
+					this.xmppPasswordHash = value;
+					this.FlagAsDirty(nameof(this.XmppPasswordHash));
 				}
 			}
 		}
 
 		/// <summary>
-		/// The hash method used for hashing the password.
+		/// The hash method used for hashing the XMPP password.
 		/// </summary>
-		public string? PasswordHashMethod
+		public string? XmppPasswordHashMethod
 		{
-			get => this.passwordHashMethod;
+			get => this.xmppPasswordHashMethod;
 			private set
 			{
-				if (!string.Equals(this.passwordHashMethod, value, StringComparison.Ordinal))
+				if (!string.Equals(this.xmppPasswordHashMethod, value, StringComparison.Ordinal))
 				{
-					this.passwordHashMethod = value;
-					this.FlagAsDirty(nameof(this.PasswordHashMethod));
+					this.xmppPasswordHashMethod = value;
+					this.FlagAsDirty(nameof(this.XmppPasswordHashMethod));
 				}
 			}
 		}
@@ -644,35 +644,35 @@ namespace NeuroAccessMaui.Services.Tag
 		}
 
 		/// <summary>
-		/// The user's PIN value.
+		/// The user's password.
 		/// </summary>
-		public string Pin
+		public string LocalPassword
 		{
-			set => this.PinHash = this.ComputePinHash(value);
+			set => this.LocalPasswordHash = this.ComputePasswordHash(value);
 		}
 
 		/// <summary>
-		/// A hashed version of the user's <see cref="Pin"/>.
+		/// A hashed version of the user's <see cref="LocalPassword"/>.
 		/// </summary>
-		public string? PinHash
+		public string? LocalPasswordHash
 		{
-			get => this.pinHash;
+			get => this.localPasswordHash;
 			private set
 			{
-				if (!string.Equals(this.pinHash, value, StringComparison.Ordinal))
+				if (!string.Equals(this.localPasswordHash, value, StringComparison.Ordinal))
 				{
-					this.pinHash = value;
-					this.FlagAsDirty(nameof(this.PinHash));
+					this.localPasswordHash = value;
+					this.FlagAsDirty(nameof(this.LocalPasswordHash));
 				}
 			}
 		}
 
 		/// <summary>
-		/// Indicates if the user has a <see cref="Pin"/>.
+		/// Indicates if the user has a <see cref="LocalPassword"/>.
 		/// </summary>
-		public bool HasPin
+		public bool HasLocalPassword
 		{
-			get => !string.IsNullOrEmpty(this.PinHash);
+			get => !string.IsNullOrEmpty(this.LocalPasswordHash);
 		}
 
 		/// <summary>
@@ -955,8 +955,8 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <param name="ClientPasswordHashMethod">The hash method used when hashing the password.</param>
 		public void SetAccount(string AccountName, string ClientPasswordHash, string ClientPasswordHashMethod)
 		{
-			this.PasswordHash = ClientPasswordHash;
-			this.PasswordHashMethod = ClientPasswordHashMethod;
+			this.XmppPasswordHash = ClientPasswordHash;
+			this.XmppPasswordHashMethod = ClientPasswordHashMethod;
 			this.ApiKey = string.Empty;
 			this.ApiSecret = string.Empty;
 
@@ -973,8 +973,8 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <param name="Identity">The new identity.</param>
 		public async Task SetAccountAndLegalIdentity(string AccountName, string ClientPasswordHash, string ClientPasswordHashMethod, LegalIdentity Identity)
 		{
-			this.PasswordHash = ClientPasswordHash;
-			this.PasswordHashMethod = ClientPasswordHashMethod;
+			this.XmppPasswordHash = ClientPasswordHash;
+			this.XmppPasswordHashMethod = ClientPasswordHashMethod;
 			this.ApiKey = string.Empty;
 			this.ApiSecret = string.Empty;
 
@@ -989,8 +989,8 @@ namespace NeuroAccessMaui.Services.Tag
 		/// </summary>
 		public void ClearAccount()
 		{
-			this.PasswordHash = string.Empty;
-			this.PasswordHashMethod = string.Empty;
+			this.XmppPasswordHash = string.Empty;
+			this.XmppPasswordHashMethod = string.Empty;
 			this.LegalJid = string.Empty;
 			this.RegistryJid = null;
 			this.ProvisioningJid = null;
@@ -1072,7 +1072,7 @@ namespace NeuroAccessMaui.Services.Tag
 		#endregion
 
 		/// <inheritdoc/>
-		public string ComputePinHash(string Pin)
+		public string ComputePasswordHash(string Password)
 		{
 			StringBuilder sb = new();
 
@@ -1084,7 +1084,7 @@ namespace NeuroAccessMaui.Services.Tag
 			sb.Append(':');
 			sb.Append(this.legalJid);
 			sb.Append(':');
-			sb.Append(Pin);
+			sb.Append(Password);
 
 			string s = sb.ToString();
 			byte[] Data = Encoding.UTF8.GetBytes(s);
@@ -1106,8 +1106,8 @@ namespace NeuroAccessMaui.Services.Tag
 			this.phoneNumber = string.Empty;
 			this.eMail = string.Empty;
 			this.account = string.Empty;
-			this.passwordHash = string.Empty;
-			this.passwordHashMethod = string.Empty;
+			this.xmppPasswordHash = string.Empty;
+			this.xmppPasswordHashMethod = string.Empty;
 			this.legalJid = string.Empty;
 			this.registryJid = string.Empty;
 			this.provisioningJid = string.Empty;
@@ -1115,7 +1115,7 @@ namespace NeuroAccessMaui.Services.Tag
 			this.logJid = string.Empty;
 			this.eDalerJid = string.Empty;
 			this.neuroFeaturesJid = string.Empty;
-			this.pinHash = string.Empty;
+			this.localPasswordHash = string.Empty;
 			this.httpFileUploadMaxSize = 0;
 			this.isTest = false;
 			this.TestOtpTimestamp = null;
@@ -1128,14 +1128,14 @@ namespace NeuroAccessMaui.Services.Tag
 		}
 
 		/// <inheritdoc/>
-		public PinStrength ValidatePinStrength(string? Pin)
+		public PasswordStrength ValidatePasswordStrength(string? Password)
 		{
-			if (Pin is null)
+			if (Password is null)
 			{
-				return PinStrength.NotEnoughDigitsLettersSigns;
+				return PasswordStrength.NotEnoughDigitsLettersSigns;
 			}
 
-			Pin = Pin.Normalize();
+			Password = Password.Normalize();
 
 			int DigitsCount = 0;
 			int LettersCount = 0;
@@ -1143,25 +1143,25 @@ namespace NeuroAccessMaui.Services.Tag
 
 			Dictionary<int, int> DistinctSymbolsCount = [];
 
-			int[] SlidingWindow = new int[Constants.Security.MaxPinSequencedSymbols + 1];
+			int[] SlidingWindow = new int[Constants.Security.MaxPasswordSequencedSymbols + 1];
 			SlidingWindow.Initialize();
 
-			for (int i = 0; i < Pin.Length;)
+			for (int i = 0; i < Password.Length;)
 			{
-				if (char.IsDigit(Pin, i))
+				if (char.IsDigit(Password, i))
 					DigitsCount++;
-				else if (char.IsLetter(Pin, i))
+				else if (char.IsLetter(Password, i))
 					LettersCount++;
 				else
 					SignsCount++;
 
-				int Symbol = char.ConvertToUtf32(Pin, i);
+				int Symbol = char.ConvertToUtf32(Password, i);
 
 				if (DistinctSymbolsCount.TryGetValue(Symbol, out int SymbolCount))
 				{
 					DistinctSymbolsCount[Symbol] = ++SymbolCount;
-					if (SymbolCount > Constants.Security.MaxPinIdenticalSymbols)
-						return PinStrength.TooManyIdenticalSymbols;
+					if (SymbolCount > Constants.Security.MaxPasswordIdenticalSymbols)
+						return PasswordStrength.TooManyIdenticalSymbols;
 				}
 				else
 					DistinctSymbolsCount.Add(Symbol, 1);
@@ -1176,9 +1176,9 @@ namespace NeuroAccessMaui.Services.Tag
 					SlidingWindowDifferences[j] = SlidingWindow[j + 1] - SlidingWindow[j];
 
 				if (SlidingWindowDifferences.All(difference => difference == 1))
-					return PinStrength.TooManySequencedSymbols;
+					return PasswordStrength.TooManySequencedSymbols;
 
-				if (char.IsSurrogate(Pin, i))
+				if (char.IsSurrogate(Password, i))
 					i += 2;
 				else
 					i += 1;
@@ -1188,14 +1188,14 @@ namespace NeuroAccessMaui.Services.Tag
 			{
 				const StringComparison Comparison = StringComparison.CurrentCultureIgnoreCase;
 
-				if (LegalIdentity[Constants.XmppProperties.PersonalNumber] is string PersonalNumber && PersonalNumber != "" && Pin.Contains(PersonalNumber, Comparison))
-					return PinStrength.ContainsPersonalNumber;
+				if (LegalIdentity[Constants.XmppProperties.PersonalNumber] is string PersonalNumber && PersonalNumber != "" && Password.Contains(PersonalNumber, Comparison))
+					return PasswordStrength.ContainsPersonalNumber;
 
-				if (LegalIdentity[Constants.XmppProperties.Phone] is string Phone && !string.IsNullOrEmpty(Phone) && Pin.Contains(Phone, Comparison))
-					return PinStrength.ContainsPhoneNumber;
+				if (LegalIdentity[Constants.XmppProperties.Phone] is string Phone && !string.IsNullOrEmpty(Phone) && Password.Contains(Phone, Comparison))
+					return PasswordStrength.ContainsPhoneNumber;
 
-				if (LegalIdentity[Constants.XmppProperties.EMail] is string EMail && !string.IsNullOrEmpty(EMail) && Pin.Contains(EMail, Comparison))
-					return PinStrength.ContainsEMail;
+				if (LegalIdentity[Constants.XmppProperties.EMail] is string EMail && !string.IsNullOrEmpty(EMail) && Password.Contains(EMail, Comparison))
+					return PasswordStrength.ContainsEMail;
 
 				IEnumerable<string> NameWords = new string[]
 				{
@@ -1206,8 +1206,8 @@ namespace NeuroAccessMaui.Services.Tag
 				.SelectMany(PropertyKey => LegalIdentity[PropertyKey] is string PropertyValue ? PropertyValueSplitRegex().Split(PropertyValue) : Enumerable.Empty<string>())
 				.Where(Word => Word?.GetUnicodeLength() > 2);
 
-				if (NameWords.Any(NameWord => Pin.Contains(NameWord, Comparison)))
-					return PinStrength.ContainsName;
+				if (NameWords.Any(NameWord => Password.Contains(NameWord, Comparison)))
+					return PasswordStrength.ContainsName;
 
 				IEnumerable<string> AddressWords = new string[]
 				{
@@ -1217,30 +1217,30 @@ namespace NeuroAccessMaui.Services.Tag
 				.SelectMany(PropertyKey => LegalIdentity[PropertyKey] is string PropertyValue ? PropertyValueSplitRegex().Split(PropertyValue) : Enumerable.Empty<string>())
 				.Where(Word => Word?.GetUnicodeLength() > 2);
 
-				if (AddressWords.Any(AddressWord => Pin.Contains(AddressWord, Comparison)))
-					return PinStrength.ContainsAddress;
+				if (AddressWords.Any(AddressWord => Password.Contains(AddressWord, Comparison)))
+					return PasswordStrength.ContainsAddress;
 			}
 
-			const int MinDigitsCount = Constants.Security.MinPinSymbolsFromDifferentClasses;
-			const int MinLettersCount = Constants.Security.MinPinSymbolsFromDifferentClasses;
-			const int MinSignsCount = Constants.Security.MinPinSymbolsFromDifferentClasses;
+			const int MinDigitsCount = Constants.Security.MinPasswordSymbolsFromDifferentClasses;
+			const int MinLettersCount = Constants.Security.MinPasswordSymbolsFromDifferentClasses;
+			const int MinSignsCount = Constants.Security.MinPasswordSymbolsFromDifferentClasses;
 
 			if (DigitsCount < MinDigitsCount && LettersCount < MinLettersCount && SignsCount < MinSignsCount)
-				return PinStrength.NotEnoughDigitsLettersSigns;
+				return PasswordStrength.NotEnoughDigitsLettersSigns;
 
 			if (DigitsCount >= MinDigitsCount && LettersCount < MinLettersCount && SignsCount < MinSignsCount)
-				return PinStrength.NotEnoughLettersOrSigns;
+				return PasswordStrength.NotEnoughLettersOrSigns;
 
 			if (DigitsCount < MinDigitsCount && LettersCount >= MinLettersCount && SignsCount < MinSignsCount)
-				return PinStrength.NotEnoughDigitsOrSigns;
+				return PasswordStrength.NotEnoughDigitsOrSigns;
 
 			if (DigitsCount < MinDigitsCount && LettersCount < MinLettersCount && SignsCount >= MinSignsCount)
-				return PinStrength.NotEnoughLettersOrDigits;
+				return PasswordStrength.NotEnoughLettersOrDigits;
 
-			if (DigitsCount + LettersCount + SignsCount < Constants.Security.MinPinLength)
-				return PinStrength.TooShort;
+			if (DigitsCount + LettersCount + SignsCount < Constants.Security.MinPasswordLength)
+				return PasswordStrength.TooShort;
 
-			return PinStrength.Strong;
+			return PasswordStrength.Strong;
 		}
 
 		[GeneratedRegex(@"\p{Zs}+")]

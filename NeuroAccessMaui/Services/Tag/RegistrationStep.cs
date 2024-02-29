@@ -31,9 +31,9 @@
 		CreateAccount = 4,
 
 		/// <summary>
-		/// Create a PIN code
+		/// Create a password
 		/// </summary>
-		DefinePin = 5,
+		DefinePassword = 5,
 
 		/// <summary>
 		/// Profile is completed.

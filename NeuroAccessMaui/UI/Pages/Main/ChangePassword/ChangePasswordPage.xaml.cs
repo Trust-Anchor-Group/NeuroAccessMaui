@@ -2,18 +2,18 @@ using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 
-namespace NeuroAccessMaui.UI.Pages.Main.ChangePin
+namespace NeuroAccessMaui.UI.Pages.Main.ChangePassword
 {
 	/// <summary>
-	/// Allows the user to change its PIN.
+	/// Allows the user to change its password.
 	/// </summary>
-	public partial class ChangePinPage
+	public partial class ChangePasswordPage
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ChangePinPage"/> class.
+		/// Initializes a new instance of the <see cref="ChangePasswordPage"/> class.
 		/// </summary>
 		/// <param name="ViewModel">View model.</param>
-		public ChangePinPage(ChangePinViewModel ViewModel)
+		public ChangePasswordPage(ChangePasswordViewModel ViewModel)
 			: base()
 		{
 			this.InitializeComponent();
@@ -23,7 +23,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.ChangePin
 		/// <inheritdoc/>
 		protected override void OnLoaded()
 		{
-			this.OldPinEntry.Focus();
+			this.OldPasswordEntry.Focus();
 			base.OnLoaded();
 		}
 

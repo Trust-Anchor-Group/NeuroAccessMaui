@@ -23,7 +23,7 @@ using NeuroAccessMaui.Services.UI.QR;
 using NeuroAccessMaui.Services.Xmpp;
 using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.UI.Pages.Main;
-using NeuroAccessMaui.UI.Popups.Pin;
+using NeuroAccessMaui.UI.Popups.Password;
 using NeuroFeatures;
 using Waher.Content;
 using Waher.Content.Images;
@@ -71,7 +71,7 @@ namespace NeuroAccessMaui
 		private static bool configLoaded = false;
 		private static bool defaultInstantiated = false;
 		private static DateTime savedStartTime = DateTime.MinValue;
-		private static bool displayedPinPopup = false;
+		private static bool displayedPasswordPopup = false;
 		private static int startupCounter = 0;
 		private readonly LoginAuditor loginAuditor;
 		private Timer? autoSaveTimer;
@@ -122,12 +122,12 @@ namespace NeuroAccessMaui
 
 				LoginInterval[] LoginIntervals =
 					[
-						new LoginInterval(Constants.Pin.FirstMaxPinAttempts, TimeSpan.FromHours(Constants.Pin.FirstBlockInHours)),
-						new LoginInterval(Constants.Pin.SecondMaxPinAttempts, TimeSpan.FromHours(Constants.Pin.SecondBlockInHours)),
-						new LoginInterval(Constants.Pin.ThirdMaxPinAttempts, TimeSpan.FromHours(Constants.Pin.ThirdBlockInHours))
+						new LoginInterval(Constants.Password.FirstMaxPasswordAttempts, TimeSpan.FromHours(Constants.Password.FirstBlockInHours)),
+						new LoginInterval(Constants.Password.SecondMaxPasswordAttempts, TimeSpan.FromHours(Constants.Password.SecondBlockInHours)),
+						new LoginInterval(Constants.Password.ThirdMaxPasswordAttempts, TimeSpan.FromHours(Constants.Password.ThirdBlockInHours))
 					];
 
-				this.loginAuditor = new LoginAuditor(Constants.Pin.LogAuditorObjectID, LoginIntervals);
+				this.loginAuditor = new LoginAuditor(Constants.Password.LogAuditorObjectID, LoginIntervals);
 				this.startupCancellation = new CancellationTokenSource();
 				this.initCompleted = this.Init(BackgroundStart);
 			}
@@ -911,28 +911,29 @@ namespace NeuroAccessMaui
 		}
 
 		/// <summary>
-		/// Asks the user to input its PIN. PIN is verified before being returned.
+		/// Asks the user to input its password. Password is verified before being returned.
 		/// </summary>
-		/// <returns>PIN, if the user has provided the correct PIN. Empty string, if PIN is not configured, null if operation is cancelled.</returns>
-		public static async Task<string?> InputPin()
+		/// <returns>Password, if the user has provided the correct password. Empty string, if password is not configured,
+		/// null if operation is cancelled.</returns>
+		public static async Task<string?> InputPassword()
 		{
 			ITagProfile Profile = ServiceRef.TagProfile;
-			if (!Profile.HasPin)
+			if (!Profile.HasLocalPassword)
 				return string.Empty;
 
-			return await InputPin(Profile);
+			return await InputPassword(Profile);
 		}
 
-		private static async Task<string?> InputPin(ITagProfile Profile)
+		private static async Task<string?> InputPassword(ITagProfile Profile)
 		{
-			displayedPinPopup = true;
+			displayedPasswordPopup = true;
 
 			try
 			{
-				if (!Profile.HasPin)
+				if (!Profile.HasLocalPassword)
 					return string.Empty;
 
-				string? result = await ServiceRef.UiService.PushAsync<CheckPinPopup, CheckPinViewModel, string>();
+				string? result = await ServiceRef.UiService.PushAsync<CheckPasswordPopup, CheckPasswordViewModel, string>();
 				await CheckUserBlocking();
 				return result;
 			}
@@ -942,7 +943,7 @@ namespace NeuroAccessMaui
 			}
 			finally
 			{
-				displayedPinPopup = false;
+				displayedPasswordPopup = false;
 			}
 		}
 
@@ -969,20 +970,20 @@ namespace NeuroAccessMaui
 
 		private static async Task<bool> AuthenticateUserMainThread(bool Force = false)
 		{
-			bool NeedToVerifyPin = IsInactivitySafeIntervalPassed();
-			if (!Force && !NeedToVerifyPin)
+			bool NeedToVerifyPassword = IsInactivitySafeIntervalPassed();
+			if (!Force && !NeedToVerifyPassword)
 				return true;
 
 			switch (ServiceRef.TagProfile.AuthenticationMethod)
 			{
-				case AuthenticationMethod.Pin:
-					if (!ServiceRef.TagProfile.HasPin)
+				case AuthenticationMethod.Password:
+					if (!ServiceRef.TagProfile.HasLocalPassword)
 						return true;
 
-					if (displayedPinPopup)
+					if (displayedPasswordPopup)
 						return false;
 
-					return await InputPin(ServiceRef.TagProfile) is not null;
+					return await InputPassword(ServiceRef.TagProfile) is not null;
 
 				case AuthenticationMethod.Fingerprint:
 					if (!ServiceRef.PlatformSpecific.SupportsFingerprintAuthentication)
@@ -1014,7 +1015,7 @@ namespace NeuroAccessMaui
 		/// </summary>
 		public static async Task CheckUserBlocking()
 		{
-			DateTime? DateTimeForLogin = await appInstance!.loginAuditor.GetEarliestLoginOpportunity(Constants.Pin.RemoteEndpoint, Constants.Pin.Protocol);
+			DateTime? DateTimeForLogin = await appInstance!.loginAuditor.GetEarliestLoginOpportunity(Constants.Password.RemoteEndpoint, Constants.Password.Protocol);
 
 			if (DateTimeForLogin.HasValue)
 			{
@@ -1022,24 +1023,24 @@ namespace NeuroAccessMaui
 				string MessageAlert;
 
 				if (DateTimeForLogin == DateTime.MaxValue)
-					MessageAlert = ServiceRef.Localizer[nameof(AppResources.PinIsInvalidAplicationBlockedForever)];
+					MessageAlert = ServiceRef.Localizer[nameof(AppResources.PasswordIsInvalidAplicationBlockedForever)];
 				else
 				{
 					DateTime LocalDateTime = DateTimeForLogin.Value.ToLocalTime();
 					if (DateTimeForLogin.Value.ToShortDateString() == DateTime.Today.ToShortDateString())
 					{
 						string DateString = LocalDateTime.ToShortTimeString();
-						MessageAlert = ServiceRef.Localizer[nameof(AppResources.PinIsInvalidAplicationBlocked), DateString];
+						MessageAlert = ServiceRef.Localizer[nameof(AppResources.PasswordIsInvalidAplicationBlocked), DateString];
 					}
 					else if (DateTimeForLogin.Value.ToShortDateString() == DateTime.Today.AddDays(1).ToShortDateString())
 					{
 						string DateString = LocalDateTime.ToShortTimeString();
-						MessageAlert = ServiceRef.Localizer[nameof(AppResources.PinIsInvalidAplicationBlockedTillTomorrow), DateString];
+						MessageAlert = ServiceRef.Localizer[nameof(AppResources.PasswordIsInvalidAplicationBlockedTillTomorrow), DateString];
 					}
 					else
 					{
 						string DateString = LocalDateTime.ToString("yyyy-MM-dd, 'at' HH:mm", CultureInfo.InvariantCulture);
-						MessageAlert = ServiceRef.Localizer[nameof(AppResources.PinIsInvalidAplicationBlocked), DateString];
+						MessageAlert = ServiceRef.Localizer[nameof(AppResources.PasswordIsInvalidAplicationBlocked), DateString];
 					}
 				}
 
@@ -1049,14 +1050,15 @@ namespace NeuroAccessMaui
 		}
 
 		/// <summary>
-		/// Check the PIN and reset the blocking counters if it matches
+		/// Check the Password and reset the blocking counters if it matches
 		/// </summary>
-		public static async Task<bool> CheckPinAndUnblockUser(string Pin)
+		/// <param name="Password">Password to check.</param>
+		public static async Task<bool> CheckPasswordAndUnblockUser(string Password)
 		{
-			if (Pin is null)
+			if (Password is null)
 				return false;
 
-			if (ServiceRef.TagProfile.ComputePinHash(Pin) == ServiceRef.TagProfile.PinHash)
+			if (ServiceRef.TagProfile.ComputePasswordHash(Password) == ServiceRef.TagProfile.LocalPasswordHash)
 			{
 				await UserAuthenticationSuccessful();
 				return true;
@@ -1071,19 +1073,19 @@ namespace NeuroAccessMaui
 		private static async Task UserAuthenticationSuccessful()
 		{
 			SetStartInactivityTime();
-			SetCurrentPinCounter(0);
-			await appInstance!.loginAuditor.UnblockAndReset(Constants.Pin.RemoteEndpoint);
+			SetCurrentPasswordCounter(0);
+			await appInstance!.loginAuditor.UnblockAndReset(Constants.Password.RemoteEndpoint);
 		}
 
 		private static async Task UserAuthenticationFailed()
 		{
-			await appInstance!.loginAuditor.ProcessLoginFailure(Constants.Pin.RemoteEndpoint,
-				Constants.Pin.Protocol, DateTime.Now, Constants.Pin.Reason);
+			await appInstance!.loginAuditor.ProcessLoginFailure(Constants.Password.RemoteEndpoint,
+				Constants.Password.Protocol, DateTime.Now, Constants.Password.Reason);
 
-			long PinAttemptCounter = await GetCurrentPinCounter();
+			long PasswordAttemptCounter = await GetCurrentPasswordCounter();
 
-			PinAttemptCounter++;
-			SetCurrentPinCounter(PinAttemptCounter);
+			PasswordAttemptCounter++;
+			SetCurrentPasswordCounter(PasswordAttemptCounter);
 		}
 
 		/// <summary>
@@ -1100,23 +1102,23 @@ namespace NeuroAccessMaui
 		/// <returns>True if 5 minutes has been passed and False if has not been passed</returns>
 		private static bool IsInactivitySafeIntervalPassed()
 		{
-			return DateTime.Now.Subtract(savedStartTime).TotalMinutes > Constants.Pin.PossibleInactivityInMinutes;
+			return DateTime.Now.Subtract(savedStartTime).TotalMinutes > Constants.Password.PossibleInactivityInMinutes;
 		}
 
 		/// <summary>
-		/// Obtains the value for CurrentPinCounter
+		/// Obtains the value for CurrentPasswordCounter
 		/// </summary>
-		internal static async Task<long> GetCurrentPinCounter()
+		internal static async Task<long> GetCurrentPasswordCounter()
 		{
-			return await ServiceRef.SettingsService.RestoreLongState(Constants.Pin.CurrentPinAttemptCounter);
+			return await ServiceRef.SettingsService.RestoreLongState(Constants.Password.CurrentPasswordAttemptCounter);
 		}
 
 		/// <summary>
-		/// Saves that the value for CurrentPinCounter
+		/// Saves that the value for CurrentPasswordCounter
 		/// </summary>
-		private static async void SetCurrentPinCounter(long CurrentPinAttemptCounter)
+		private static async void SetCurrentPasswordCounter(long CurrentPasswordAttemptCounter)
 		{
-			await ServiceRef.SettingsService.SaveState(Constants.Pin.CurrentPinAttemptCounter, CurrentPinAttemptCounter);
+			await ServiceRef.SettingsService.SaveState(Constants.Password.CurrentPasswordAttemptCounter, CurrentPasswordAttemptCounter);
 		}
 
 		/// <summary>

@@ -9,7 +9,7 @@ using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
 using NeuroAccessMaui.UI.Pages.Identity.TransferIdentity;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Main.Calculator;
-using NeuroAccessMaui.UI.Pages.Main.ChangePin;
+using NeuroAccessMaui.UI.Pages.Main.ChangePassword;
 using NeuroAccessMaui.UI.Pages.Main.Duration;
 using NeuroAccessMaui.UI.Pages.Main.QR;
 using NeuroAccessMaui.UI.Pages.Main.Settings;
@@ -28,7 +28,6 @@ using NeuroAccessMaui.UI.Pages.Things.MyThings;
 using NeuroAccessMaui.UI.Pages.Things.ReadSensor;
 using NeuroAccessMaui.UI.Pages.Things.ViewClaimThing;
 using NeuroAccessMaui.UI.Pages.Things.ViewThing;
-using NeuroAccessMaui.UI.Pages.Wallet;
 using NeuroAccessMaui.UI.Pages.Wallet.AccountEvent;
 using NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler;
 using NeuroAccessMaui.UI.Pages.Wallet.EDalerReceived;
@@ -91,7 +90,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 
 			// Main
 			Routing.RegisterRoute(nameof(CalculatorPage), typeof(CalculatorPage));
-			Routing.RegisterRoute(nameof(ChangePinPage), typeof(ChangePinPage));
+			Routing.RegisterRoute(nameof(ChangePasswordPage), typeof(ChangePasswordPage));
 			Routing.RegisterRoute(nameof(DurationPage), typeof(DurationPage));
 			Routing.RegisterRoute(nameof(ScanQrCodePage), typeof(ScanQrCodePage));
 			Routing.RegisterRoute(nameof(SettingsPage), typeof(SettingsPage));

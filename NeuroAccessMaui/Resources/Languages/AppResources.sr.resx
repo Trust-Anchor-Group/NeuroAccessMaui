@@ -141,65 +141,65 @@
   <data name="TagNotEngraved" xml:space="preserve">
     <value>Nije moguće ugravirati oznaku sa vezom do {0}.</value>
   </data>
-  <data name="PinChanged" xml:space="preserve">
-    <value>PIN je uspešno promenjen.</value>
+  <data name="PasswordChanged" xml:space="preserve">
+    <value>Lozinka je uspešno promenjena.</value>
   </data>
   <data name="UnableToChangePassword" xml:space="preserve">
     <value>Nije moguće promeniti mrežnu lozinku.</value>
   </data>
-  <data name="PinIsInvalid" xml:space="preserve">
-    <value>PIN je nevažeći. Imate {0} pokušaja.</value>
+  <data name="PasswordIsInvalid" xml:space="preserve">
+    <value>Lozinka je nevažeća. Imate {0} pokušaja.</value>
   </data>
-  <data name="PinsDoNotMatch" xml:space="preserve">
-    <value>PIN-ovi se ne podudaraju</value>
+  <data name="PasswordsDoNotMatch" xml:space="preserve">
+    <value>Lozinke se ne podudaraju</value>
   </data>
-  <data name="PinIsInvalidAplicationBlockedForever" xml:space="preserve">
-    <value>Pokušaji unošenja PIN-a su izusti. Vaša prijava je zauvek blokirana</value>
+  <data name="PasswordIsInvalidAplicationBlockedForever" xml:space="preserve">
+    <value>Premašili ste broj pokušaja da navedete lozinku. Vaša prijava je zauvek blokirana</value>
   </data>
-  <data name="PinIsInvalidAplicationBlocked" xml:space="preserve">
-    <value>Pokušaji unošenja PIN-a su izusti. Vaša prijava je blokirana do {0}.</value>
+  <data name="PasswordIsInvalidAplicationBlocked" xml:space="preserve">
+    <value>Premašili ste broj pokušaja da navedete lozinku. Vaša prijava je blokirana do {0}.</value>
   </data>
-  <data name="PinIsInvalidAplicationBlockedTillTomorrow" xml:space="preserve">
-    <value>Pokušaji unošenja PIN-a su izusti. Vaša prijava je blokirana do sutra u {0}.</value>
+  <data name="PasswordIsInvalidAplicationBlockedTillTomorrow" xml:space="preserve">
+    <value>Premašili ste broj pokušaja da navedete lozinku. Vaša prijava je blokirana do sutra u {0}.</value>
   </data>
-  <data name="PinIsInvalidAplicationBlockedForOneWeek" xml:space="preserve">
-    <value>Pokušaji unošenja PIN-a su izusti. Vaša prijava je blokirana već nedelju dana</value>
+  <data name="PasswordIsInvalidAplicationBlockedForOneWeek" xml:space="preserve">
+    <value>Premašili ste broj pokušaja da navedete lozinku. Vaša prijava je blokirana već nedelju dana</value>
   </data>
-  <data name="PinTooShort" xml:space="preserve">
-    <value>Dužina PIN-a mora biti {0} znakova.</value>
+  <data name="PasswordTooShort" xml:space="preserve">
+    <value>Dužina lozinke mora biti najmanje {0} znakova.</value>
   </data>
-  <data name="PinContainsName" xml:space="preserve">
-    <value>PIN ne sme da sadrži nijednu reč iz imena identiteta.</value>
+  <data name="PasswordContainsName" xml:space="preserve">
+    <value>Lozinka ne sme da sadrži nijednu reč iz imena identiteta.</value>
   </data>
-  <data name="PinContainsPersonalNumber" xml:space="preserve">
-    <value>PIN ne sme da sadrži lični broj identiteta.</value>
+  <data name="PasswordContainsPersonalNumber" xml:space="preserve">
+    <value>Lozinka ne sme da sadrži lični broj identiteta.</value>
   </data>
-  <data name="PinContainsAddress" xml:space="preserve">
-    <value>PIN ne sme da sadrži nijednu reč iz redova adrese identiteta.</value>
+  <data name="PasswordContainsAddress" xml:space="preserve">
+    <value>Lozinka ne sme da sadrži nijednu reč iz redova adrese identiteta.</value>
   </data>
-  <data name="PinContainsEMail" xml:space="preserve">
-    <value>PIN ne sme da sadrži e-adresu identiteta.</value>
+  <data name="PasswordContainsEMail" xml:space="preserve">
+    <value>Lozinka ne sme da sadrži e-adresu identiteta.</value>
   </data>
-  <data name="PinContainsPhoneNumber" xml:space="preserve">
-    <value>PIN ne sme da sadrži broj telefona identiteta.</value>
+  <data name="PasswordContainsPhoneNumber" xml:space="preserve">
+    <value>Lozinka ne sme da sadrži broj telefona identiteta.</value>
   </data>
-  <data name="PinWithNotEnoughDigitsLettersSigns" xml:space="preserve">
+  <data name="PasswordWithNotEnoughDigitsLettersSigns" xml:space="preserve">
     <value>Najmanje se {0} moraju koristiti pojedinačna slova, cifre ili simboli.</value>
   </data>
-  <data name="PinWithNotEnoughDigitsOrSigns" xml:space="preserve">
+  <data name="PasswordWithNotEnoughDigitsOrSigns" xml:space="preserve">
     <value>Takođe morate da koristite najmanje {0} cifre ili simbole.</value>
   </data>
-  <data name="PinWithNotEnoughLettersOrDigits" xml:space="preserve">
+  <data name="PasswordWithNotEnoughLettersOrDigits" xml:space="preserve">
     <value>Takođe morate da koristite najmanje {0} ili cifara.</value>
   </data>
-  <data name="PinWithNotEnoughLettersOrSigns" xml:space="preserve">
+  <data name="PasswordWithNotEnoughLettersOrSigns" xml:space="preserve">
     <value>Takođe morate da koristite najmanje {0} ili simbola.</value>
   </data>
-  <data name="PinWithTooManyIdenticalSymbols" xml:space="preserve">
-    <value>PIN ne sme da sadrži više {0} identiиnih simbola.</value>
+  <data name="PasswordWithTooManyIdenticalSymbols" xml:space="preserve">
+    <value>Lozinka ne sme da sadrži više {0} identičnih simbola.</value>
   </data>
-  <data name="PinWithTooManySequencedSymbols" xml:space="preserve">
-    <value>PIN ne sme da sadrži više {0} za sekvence, npr.</value>
+  <data name="PasswordWithTooManySequencedSymbols" xml:space="preserve">
+    <value>Lozinka ne sme da sadrži više {0} za sekvence, npr.</value>
   </data>
   <data name="ThereIsNoNetwork" xml:space="preserve">
     <value>Ne postoji mreža</value>
@@ -561,11 +561,11 @@
   <data name="OnboardingAccountPageDetails" xml:space="preserve">
     <value>Unesite ime koje želite da koristite za svoj nalog</value>
   </data>
-  <data name="OnboardingDefinePinPageTitle" xml:space="preserve">
-    <value>Kreiranje PIN koda</value>
+  <data name="OnboardingDefinePasswordPageTitle" xml:space="preserve">
+    <value>Kreiranje lozinke</value>
   </data>
-  <data name="OnboardingDefinePinPageDetails" xml:space="preserve">
-    <value>Da biste poboljšali bezbednost svog Neuro-Identiteta i osetljivih informacija, preporučujemo dodavanje dodatnog sloja zaštite kreiranjem PIN-a ili lozinke</value>
+  <data name="OnboardingDefinePasswordPageDetails" xml:space="preserve">
+    <value>Da biste poboljšali bezbednost vašeg Neuro-Identiteta i osetljivih informacija, preporučujemo dodavanje dodatnog sloja zaštite kreiranjem lozinke</value>
   </data>
   <data name="AccountSectionTitle" xml:space="preserve">
     <value>Unesite ime naloga</value>
@@ -678,14 +678,14 @@
   <data name="TestOtpUsed" xml:space="preserve">
     <value>Korišćena je privremena OTP šifra. Aplikacija će prestati da radi za oko nedelju dana. Moraćete ponovo da instalirate aplikaciju da biste je ponovo koristili.</value>
   </data>
-  <data name="DefinePinSectionTitle1" xml:space="preserve">
-    <value>Unesite novi pin</value>
+  <data name="DefinePasswordSectionTitle1" xml:space="preserve">
+    <value>Unesite novu lozinku</value>
   </data>
-  <data name="DefinePinSectionTitle2" xml:space="preserve">
-    <value>Potvrda pin-a</value>
+  <data name="DefinePasswordSectionTitle2" xml:space="preserve">
+    <value>Potvrda lozinke</value>
   </data>
-  <data name="CreatePin" xml:space="preserve">
-    <value>Kreiraj pin</value>
+  <data name="CreatePassword" xml:space="preserve">
+    <value>Kreiraj lozinku</value>
   </data>
   <data name="ScanQrCodeLabel" xml:space="preserve">
     <value>Skenirajte QR-kod kamerom.</value>
@@ -720,8 +720,8 @@
   <data name="Enter" xml:space="preserve">
     <value>Ući</value>
   </data>
-  <data name="EnterPin" xml:space="preserve">
-    <value>Unesite PIN</value>
+  <data name="EnterPassword" xml:space="preserve">
+    <value>Unesite lozinku</value>
   </data>
   <data name="FirstName" xml:space="preserve">
     <value>Ime</value>
@@ -846,14 +846,14 @@
   <data name="Change" xml:space="preserve">
     <value>Promenite</value>
   </data>
-  <data name="ChangePin" xml:space="preserve">
-    <value>Promeni PIN kôd</value>
+  <data name="ChangePassword" xml:space="preserve">
+    <value>Promeni lozinku</value>
   </data>
-  <data name="ChangePinDescription" xml:space="preserve">
-    <value>Odaberite drugi PIN-kôd da biste se identifikovali. Promena PIN koda će takođe kreirati novu nasumičnu lozinku za osnovnu komunikacionu mrežu.</value>
+  <data name="ChangePasswordDescription" xml:space="preserve">
+    <value>Odaberite drugu lozinku da biste se identifikovali. Promena lozinke će takođe kreirati novu nasumičnu lozinku za osnovnu komunikacionu mrežu.</value>
   </data>
-  <data name="ConfirmNewPin" xml:space="preserve">
-    <value>Potvrdi novi PIN:</value>
+  <data name="ConfirmNewPassword" xml:space="preserve">
+    <value>Potvrdite novu lozinku:</value>
   </data>
   <data name="DarkMode" xml:space="preserve">
     <value>Tamni režim</value>
@@ -861,11 +861,11 @@
   <data name="DisplaySettings" xml:space="preserve">
     <value>Postavke ekrana</value>
   </data>
-  <data name="EnterCurrentPin" xml:space="preserve">
-    <value>Unesite trenutni PIN:</value>
+  <data name="EnterCurrentPassword" xml:space="preserve">
+    <value>Unesite trenutnu lozinku:</value>
   </data>
-  <data name="EnterNewPin" xml:space="preserve">
-    <value>Unesite novi PIN:</value>
+  <data name="EnterNewPassword" xml:space="preserve">
+    <value>Unesite novu lozinku:</value>
   </data>
   <data name="IdentitySettings" xml:space="preserve">
     <value>Postavke identiteta</value>
@@ -886,7 +886,7 @@
     <value>Izveštaj kao kompromitovan</value>
   </data>
   <data name="ReportAsCompromizedDescription" xml:space="preserve">
-    <value>Prijavite da li su aplikacija, PIN ili telefon kompromitovani, hakovani ili ukradeni.</value>
+    <value>Prijavite da li su aplikacija, lozinka ili telefon kompromitovani, hakovani ili ukradeni.</value>
   </data>
   <data name="RestartNeededDueToThemeChange" xml:space="preserve">
     <value>Potrebno je ponovno pokretanje aplikacije da bi nova tema bila ispravno prikazana. Kada zatvorite dijalog, aplikacija će se automatski zatvoriti. Kada ponovo pokrenete aplikaciju, nova tema će biti izabrana.</value>
@@ -918,8 +918,8 @@
   <data name="Fingerprint" xml:space="preserve">
     <value>Otisaka prstiju</value>
   </data>
-  <data name="PinCode" xml:space="preserve">
-    <value>PIN kôd</value>
+  <data name="Password" xml:space="preserve">
+    <value>Lozinku</value>
   </data>
   <data name="Application" xml:space="preserve">
     <value>Aplikacije</value>

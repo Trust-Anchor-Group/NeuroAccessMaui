@@ -247,6 +247,9 @@
 	  <Compile Update="UI\Pages\Applications\Applications\ApplicationsPage.xaml.cs">
 	    <DependentUpon>ApplicationsPage.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="UI\Pages\Main\ChangePassword\ChangePasswordPage.xaml.cs">
+	    <DependentUpon>ChangePasswordPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="UI\Pages\Main\Settings\SettingsPage.xaml.cs">
 	    <DependentUpon>SettingsPage.xaml</DependentUpon>
 	  </Compile>
@@ -289,6 +292,9 @@
 	  <Compile Update="UI\Pages\Petitions\PetitionSignature\PetitionSignaturePage.xaml.cs">
 	    <DependentUpon>PetitionSignaturePage.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="UI\Pages\Registration\Views\DefinePasswordView.xaml.cs">
+	    <DependentUpon>DefinePasswordView.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="UI\Pages\Registration\Views\RequestPurposeView.xaml.cs">
 	    <DependentUpon>RequestPurposeView.xaml</DependentUpon>
 	  </Compile>
@@ -301,11 +307,8 @@
 	  <Compile Update="UI\Popups\Image\ImagesPopup.xaml.cs">
 	    <DependentUpon>ImagesPopup.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="UI\Popups\Pin\CheckPinPopup.xaml.cs">
-	    <DependentUpon>CheckPinPopup.xaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="UI\Popups\Pin\CheckPinPopup.xaml.cs">
-	    <DependentUpon>CheckPinPopup.xaml</DependentUpon>
+	  <Compile Update="UI\Popups\Password\CheckPasswordPopup.xaml.cs">
+	    <DependentUpon>CheckPasswordPopup.xaml</DependentUpon>
 	  </Compile>
 	  <Compile Update="UI\Popups\SelectPhoneCodePopup.xaml.cs">
 	    <DependentUpon>SelectPhoneCodePopup.xaml</DependentUpon>
@@ -496,7 +499,7 @@
 	  <MauiXaml Update="UI\Popups\Photos\Image\ImageView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="UI\Popups\Pin\CheckPinPopup.xaml">
+	  <MauiXaml Update="UI\Popups\Password\CheckPasswordPopup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="UI\Popups\Settings\SelectLanguagePopup.xaml">

@@ -85,14 +85,14 @@ namespace NeuroAccessMaui.Services.Tag
 		string? Account { get; }
 
 		/// <summary>
-		/// A hash of the current password.
+		/// A hash of the current XMPP password.
 		/// </summary>
-		string? PasswordHash { get; }
+		string? XmppPasswordHash { get; }
 
 		/// <summary>
-		/// The hash method used for hashing the password.
+		/// The hash method used for hashing the XMPP password.
 		/// </summary>
-		string? PasswordHashMethod { get; }
+		string? XmppPasswordHashMethod { get; }
 
 		/// <summary>
 		/// The Jabber Legal JID for this user/profile.
@@ -150,19 +150,19 @@ namespace NeuroAccessMaui.Services.Tag
 		bool FileUploadIsSupported { get; }
 
 		/// <summary>
-		/// The user's PIN value.
+		/// The user's password.
 		/// </summary>
-		string Pin { set; }
+		string LocalPassword { set; }
 
 		/// <summary>
-		/// A hashed version of the user's <see cref="Pin"/>.
+		/// A hashed version of the user's <see cref="Password"/>.
 		/// </summary>
-		string? PinHash { get; }
+		string? LocalPasswordHash { get; }
 
 		/// <summary>
-		/// Indicates if the user has a <see cref="Pin"/>.
+		/// Indicates if the user has a <see cref="Password"/>.
 		/// </summary>
-		bool HasPin { get; }
+		bool HasLocalPassword { get; }
 
 		/// <summary>
 		/// How the user authenticates itself with the App.
@@ -364,11 +364,11 @@ namespace NeuroAccessMaui.Services.Tag
 		void SetFileUploadParameters(string httpFileUploadJid, long maxSize);
 
 		/// <summary>
-		/// Computes a hash of the specified PIN.
+		/// Computes a hash of the specified password.
 		/// </summary>
-		/// <param name="Pin">The PIN whose hash to compute.</param>
+		/// <param name="Password">The password whose hash to compute.</param>
 		/// <returns>Hash Digest</returns>
-		string ComputePinHash(string Pin);
+		string ComputePasswordHash(string Password);
 
 		/// <summary>
 		/// Clears the entire profile.
@@ -376,11 +376,11 @@ namespace NeuroAccessMaui.Services.Tag
 		void ClearAll();
 
 		/// <summary>
-		/// Validates if the <paramref name="Pin"/> is strong enough.
+		/// Validates if the <paramref name="Password"/> is strong enough.
 		/// </summary>
-		/// <param name="Pin">PIN to validate.</param>
-		/// <returns>A <see cref="PinStrength"/> value indicating if the <paramref name="Pin"/> is strong enough.</returns>
-		PinStrength ValidatePinStrength(string? Pin);
+		/// <param name="Password">Password to validate.</param>
+		/// <returns>A <see cref="PasswordStrength"/> value indicating if the <paramref name="Password"/> is strong enough.</returns>
+		PasswordStrength ValidatePasswordStrength(string? Password);
 
 		/// <summary>
 		/// Sets the preferred theme.
