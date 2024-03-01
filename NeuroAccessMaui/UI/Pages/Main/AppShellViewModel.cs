@@ -23,7 +23,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		/// </summary>
 		/// <returns></returns>
 		[RelayCommand]
-		private async Task Close()
+		private static async Task Close()
 		{
 			try
 			{
@@ -40,7 +40,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		/// Views the user's ID.
 		/// </summary>
 		[RelayCommand]
-		private async Task ViewId()
+		private static async Task ViewId()
 		{
 			try
 			{
@@ -56,7 +56,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		/// Shows the settings page.
 		/// </summary>
 		[RelayCommand]
-		private async Task ShowSettings()
+		private static async Task ShowSettings()
 		{
 			try
 			{
@@ -72,7 +72,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		/// Shows the applications page.
 		/// </summary>
 		[RelayCommand]
-		private async Task ShowApplications()
+		private static async Task ShowApplications()
 		{
 			try
 			{
