@@ -1344,10 +1344,10 @@ namespace NeuroAccessMaui.Services.Tag
 		private static partial Regex PropertyValueSplitRegex();
 
 		/// <summary>
-		/// Method called when a <see cref="ContractReference"/> has been created or updated.
+		/// Checks if Tag Profile properties need to be changed, with regards to a current <see cref="ContractReference"/> object instance.
 		/// </summary>
 		/// <param name="Reference">Contract reference.</param>
-		public void NewContractReference(ContractReference Reference)
+		public void CheckContractReference(ContractReference Reference)
 		{
 			this.HasContractReferences = true;
 

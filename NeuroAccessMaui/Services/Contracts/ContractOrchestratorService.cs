@@ -556,12 +556,15 @@ namespace NeuroAccessMaui.Services.Contracts
 				ContractReference Ref = await Database.FindFirstDeleteRest<ContractReference>(
 					new FilterFieldEqualTo("ContractId", Contract.ContractId));
 
-				if (Ref is not null && (Ref.Updated != Contract.Updated || !Ref.ContractLoaded))
+				if (Ref is not null)
 				{
-					await Ref.SetContract(Contract);
-					await Database.Update(Ref);
+					if (Ref.Updated != Contract.Updated || !Ref.ContractLoaded)
+					{
+						await Ref.SetContract(Contract);
+						await Database.Update(Ref);
+					}
 
-					ServiceRef.TagProfile.NewContractReference(Ref);
+					ServiceRef.TagProfile.CheckContractReference(Ref);
 				}
 
 				MainThread.BeginInvokeOnMainThread(async () =>
@@ -578,7 +581,7 @@ namespace NeuroAccessMaui.Services.Contracts
 							await Ref.SetContract(Contract);
 							await Database.Insert(Ref);
 
-							ServiceRef.TagProfile.NewContractReference(Ref);
+							ServiceRef.TagProfile.CheckContractReference(Ref);
 						}
 
 						NewContractNavigationArgs e = new(Contract, ParameterValues);

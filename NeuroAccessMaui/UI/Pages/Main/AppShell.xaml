@@ -27,6 +27,14 @@
 				 Shell.FlyoutItemIsVisible="{Binding CanShowMyContractsCommand, Mode=TwoWay}"
 				 IconImageSource="{AppThemeBinding Light=contract_light, Dark=contract_dark}"/>
 
+	<MenuItem Text="{l:Localize CreateContract}" Command="{Binding CreateContractCommand}" StyleId="MenuItemLabel"
+				 Shell.FlyoutItemIsVisible="{Binding CanShowCreateContractCommand, Mode=TwoWay}"
+				 IconImageSource="{AppThemeBinding Light=contract_light, Dark=contract_dark}"/>
+
+	<MenuItem Text="{l:Localize CreateToken}" Command="{Binding CreateTokenCommand}" StyleId="MenuItemLabel"
+				 Shell.FlyoutItemIsVisible="{Binding CanShowCreateTokenCommand, Mode=TwoWay}"
+				 IconImageSource="{AppThemeBinding Light=token_light, Dark=token_dark}"/>
+
 	<MenuItem Text="{l:Localize Applications}" Command="{Binding ShowApplicationsCommand}" StyleId="MenuItemLabel"
 				 IconImageSource="{AppThemeBinding Light=neuro_access_light, Dark=neuro_access_dark}"/>
 

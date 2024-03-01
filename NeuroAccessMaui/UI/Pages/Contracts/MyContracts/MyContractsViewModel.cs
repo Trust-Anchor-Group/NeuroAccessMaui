@@ -246,7 +246,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 									await Ref.SetContract(Contract);
 									await Database.Insert(Ref);
 
-									ServiceRef.TagProfile.NewContractReference(Ref);
+									ServiceRef.TagProfile.CheckContractReference(Ref);
 
 									if (Ref.IsTokenCreationTemplate)
 									{

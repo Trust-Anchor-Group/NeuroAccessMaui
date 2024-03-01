@@ -47,6 +47,8 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		private void UpdateProperties()
 		{
 			this.CanShowMyContractsCommand = ServiceRef.TagProfile.HasContractReferences;
+			this.CanShowCreateContractCommand = ServiceRef.TagProfile.HasContractTemplateReferences;
+			this.CanShowCreateTokenCommand = ServiceRef.TagProfile.HasContractTokenCreationTemplatesReferences;
 		}
 
 		/// <summary>
@@ -116,7 +118,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		}
 
 		/// <summary>
-		/// If the My Contracts commands should be displayed.
+		/// If the My Contracts command should be displayed.
 		/// </summary>
 		[ObservableProperty]
 		private bool canShowMyContractsCommand;
@@ -127,6 +129,46 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			try
 			{
 				MyContractsNavigationArgs Args = new(ContractsListMode.Contracts);
+				await ServiceRef.UiService.GoToAsync(nameof(MyContractsPage), Args, BackMethod.Pop);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
+		}
+
+		/// <summary>
+		/// If the Create Contract command should be displayed.
+		/// </summary>
+		[ObservableProperty]
+		private bool canShowCreateContractCommand;
+
+		[RelayCommand]
+		private static async Task CreateContract()
+		{
+			try
+			{
+				MyContractsNavigationArgs Args = new(ContractsListMode.ContractTemplates);
+				await ServiceRef.UiService.GoToAsync(nameof(MyContractsPage), Args, BackMethod.Pop);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
+		}
+
+		/// <summary>
+		/// If the Create Token command should be displayed.
+		/// </summary>
+		[ObservableProperty]
+		private bool canShowCreateTokenCommand;
+
+		[RelayCommand]
+		private static async Task CreateToken()
+		{
+			try
+			{
+				MyContractsNavigationArgs Args = new(ContractsListMode.TokenCreationTemplates);
 				await ServiceRef.UiService.GoToAsync(nameof(MyContractsPage), Args, BackMethod.Pop);
 			}
 			catch (Exception ex)

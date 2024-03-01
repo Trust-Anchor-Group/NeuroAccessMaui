@@ -1213,6 +1213,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create Contract.
+        /// </summary>
+        internal static string CreateContract {
+            get {
+                return ResourceManager.GetString("CreateContract", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Created.
         /// </summary>
         internal static string Created {
@@ -1227,6 +1236,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string CreatePassword {
             get {
                 return ResourceManager.GetString("CreatePassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create Token.
+        /// </summary>
+        internal static string CreateToken {
+            get {
+                return ResourceManager.GetString("CreateToken", resourceCulture);
             }
         }
         

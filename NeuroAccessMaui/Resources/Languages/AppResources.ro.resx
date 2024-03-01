@@ -2031,4 +2031,10 @@
   <data name="NoContractsFound" xml:space="preserve">
     <value>Nu s-au găsit contracte.</value>
   </data>
+  <data name="CreateContract" xml:space="preserve">
+    <value>Creare contract</value>
+  </data>
+  <data name="CreateToken" xml:space="preserve">
+    <value>Creați token</value>
+  </data>
 </root>

@@ -2031,4 +2031,10 @@
   <data name="NoContractsFound" xml:space="preserve">
     <value>Aucun contrat n’a été trouvé.</value>
   </data>
+  <data name="CreateContract" xml:space="preserve">
+    <value>Créer un contrat</value>
+  </data>
+  <data name="CreateToken" xml:space="preserve">
+    <value>Créer un jeton</value>
+  </data>
 </root>

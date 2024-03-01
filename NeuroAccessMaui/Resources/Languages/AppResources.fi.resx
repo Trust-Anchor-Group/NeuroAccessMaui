@@ -2031,4 +2031,10 @@
   <data name="NoContractsFound" xml:space="preserve">
     <value>Sopimuksia ei löytynyt.</value>
   </data>
+  <data name="CreateContract" xml:space="preserve">
+    <value>Luo sopimus</value>
+  </data>
+  <data name="CreateToken" xml:space="preserve">
+    <value>Luo tunnus</value>
+  </data>
 </root>

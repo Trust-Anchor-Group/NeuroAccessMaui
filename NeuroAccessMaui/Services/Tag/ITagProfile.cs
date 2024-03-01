@@ -410,10 +410,10 @@ namespace NeuroAccessMaui.Services.Tag
 		void SetTheme();
 
 		/// <summary>
-		/// Method called when a <see cref="ContractReference"/> has been created or updated.
+		/// Checks if Tag Profile properties need to be changed, with regards to a current <see cref="ContractReference"/> object instance.
 		/// </summary>
 		/// <param name="Reference">Contract reference.</param>
-		void NewContractReference(ContractReference Reference);
+		void CheckContractReference(ContractReference Reference);
 
 		/// <summary>
 		/// Event raised when properties have been changed.

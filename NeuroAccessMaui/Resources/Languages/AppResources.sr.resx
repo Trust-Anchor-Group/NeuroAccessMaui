@@ -2031,4 +2031,10 @@
   <data name="NoContractsFound" xml:space="preserve">
     <value>Ugovori nisu pronađeni.</value>
   </data>
+  <data name="CreateContract" xml:space="preserve">
+    <value>Kreiraj ugovor</value>
+  </data>
+  <data name="CreateToken" xml:space="preserve">
+    <value>Kreiraj simbol</value>
+  </data>
 </root>
