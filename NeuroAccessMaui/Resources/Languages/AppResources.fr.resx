@@ -2025,4 +2025,10 @@
   <data name="ServerInformation" xml:space="preserve">
     <value>Informations sur le serveur</value>
   </data>
+  <data name="MyContracts" xml:space="preserve">
+    <value>Mes contrats</value>
+  </data>
+  <data name="NoContractsFound" xml:space="preserve">
+    <value>Aucun contrat n’a été trouvé.</value>
+  </data>
 </root>

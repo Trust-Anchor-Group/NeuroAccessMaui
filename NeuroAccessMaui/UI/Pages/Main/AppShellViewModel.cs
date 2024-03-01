@@ -1,6 +1,9 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Applications.Applications;
+using NeuroAccessMaui.UI.Pages.Contracts.MyContracts;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Main.Settings;
 
@@ -16,6 +19,34 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		/// </summary>
 		public AppShellViewModel()
 		{
+		}
+
+		/// <inheritdoc/>
+		protected override Task OnInitialize()
+		{
+			this.UpdateProperties();
+
+			ServiceRef.TagProfile.OnPropertiesChanged += this.TagProfile_OnPropertiesChanged;
+
+			return base.OnInitialize();
+		}
+
+		/// <inheritdoc/>
+		protected override Task OnDispose()
+		{
+			ServiceRef.TagProfile.OnPropertiesChanged -= this.TagProfile_OnPropertiesChanged;
+
+			return base.OnDispose();
+		}
+
+		private void TagProfile_OnPropertiesChanged(object? sender, EventArgs e)
+		{
+			this.UpdateProperties();
+		}
+
+		private void UpdateProperties()
+		{
+			this.CanShowMyContractsCommand = ServiceRef.TagProfile.HasContractReferences;
 		}
 
 		/// <summary>
@@ -77,6 +108,26 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			try
 			{
 				await ServiceRef.UiService.GoToAsync(nameof(ApplicationsPage));
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
+		}
+
+		/// <summary>
+		/// If the My Contracts commands should be displayed.
+		/// </summary>
+		[ObservableProperty]
+		private bool canShowMyContractsCommand;
+
+		[RelayCommand]
+		private static async Task ShowMyContracts()
+		{
+			try
+			{
+				MyContractsNavigationArgs Args = new(ContractsListMode.Contracts);
+				await ServiceRef.UiService.GoToAsync(nameof(MyContractsPage), Args, BackMethod.Pop);
 			}
 			catch (Exception ex)
 			{

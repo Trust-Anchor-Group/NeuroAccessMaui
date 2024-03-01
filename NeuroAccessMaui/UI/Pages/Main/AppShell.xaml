@@ -23,6 +23,10 @@
 	<MenuItem Text="{l:Localize ViewId}" Command="{Binding ViewIdCommand}" StyleId="MenuItemLabel"
 				 IconImageSource="{AppThemeBinding Light=view_id_light, Dark=view_id_dark}"/>
 
+	<MenuItem Text="{l:Localize MyContracts}" Command="{Binding ShowMyContractsCommand}" StyleId="MenuItemLabel"
+				 Shell.FlyoutItemIsVisible="{Binding CanShowMyContractsCommand, Mode=TwoWay}"
+				 IconImageSource="{AppThemeBinding Light=contract_light, Dark=contract_dark}"/>
+
 	<MenuItem Text="{l:Localize Applications}" Command="{Binding ShowApplicationsCommand}" StyleId="MenuItemLabel"
 				 IconImageSource="{AppThemeBinding Light=neuro_access_light, Dark=neuro_access_dark}"/>
 

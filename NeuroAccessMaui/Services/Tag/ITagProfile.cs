@@ -414,5 +414,10 @@ namespace NeuroAccessMaui.Services.Tag
 		/// </summary>
 		/// <param name="Reference">Contract reference.</param>
 		void NewContractReference(ContractReference Reference);
+
+		/// <summary>
+		/// Event raised when properties have been changed.
+		/// </summary>
+		event EventHandler OnPropertiesChanged;
 	}
 }

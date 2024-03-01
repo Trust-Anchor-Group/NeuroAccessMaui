@@ -2320,6 +2320,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to My Contracts.
+        /// </summary>
+        internal static string MyContracts {
+            get {
+                return ResourceManager.GetString("MyContracts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
         internal static string Name {
@@ -2442,6 +2451,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string NoContactsFound {
             get {
                 return ResourceManager.GetString("NoContactsFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No contracts found..
+        /// </summary>
+        internal static string NoContractsFound {
+            get {
+                return ResourceManager.GetString("NoContractsFound", resourceCulture);
             }
         }
         

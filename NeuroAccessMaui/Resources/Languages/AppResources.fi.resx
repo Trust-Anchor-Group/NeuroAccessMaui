@@ -2025,4 +2025,10 @@
   <data name="ServerInformation" xml:space="preserve">
     <value>Palvelimen tiedot</value>
   </data>
+  <data name="MyContracts" xml:space="preserve">
+    <value>Omat sopimukset</value>
+  </data>
+  <data name="NoContractsFound" xml:space="preserve">
+    <value>Sopimuksia ei löytynyt.</value>
+  </data>
 </root>

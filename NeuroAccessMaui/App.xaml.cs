@@ -457,6 +457,8 @@ namespace NeuroAccessMaui
 				await ServiceRef.ThingRegistryOrchestratorService.Load(isResuming, Token);
 				await ServiceRef.NeuroWalletOrchestratorService.Load(isResuming, Token);
 				await ServiceRef.NotificationService.Load(isResuming, Token);
+
+				AppShell.AppLoaded();
 			}
 			catch (OperationCanceledException)
 			{

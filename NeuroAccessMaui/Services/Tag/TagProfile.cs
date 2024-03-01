@@ -949,7 +949,21 @@ namespace NeuroAccessMaui.Services.Tag
 		public void ResetIsDirty()
 		{
 			this.IsDirty = false;
+
+			try
+			{
+				this.OnPropertiesChanged?.Invoke(this, EventArgs.Empty);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
 		}
+
+		/// <summary>
+		/// Event raised when properties have been changed.
+		/// </summary>
+		public event EventHandler OnPropertiesChanged;
 
 		#endregion
 

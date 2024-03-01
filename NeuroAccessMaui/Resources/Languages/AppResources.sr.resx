@@ -2025,4 +2025,10 @@
   <data name="ServerInformation" xml:space="preserve">
     <value>Informacije o serveru</value>
   </data>
+  <data name="MyContracts" xml:space="preserve">
+    <value>Moji ugovori</value>
+  </data>
+  <data name="NoContractsFound" xml:space="preserve">
+    <value>Ugovori nisu pronađeni.</value>
+  </data>
 </root>

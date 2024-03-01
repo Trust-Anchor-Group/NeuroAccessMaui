@@ -137,5 +137,19 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			Routing.RegisterRoute(nameof(TokenDetailsPage), typeof(TokenDetailsPage));
 			Routing.RegisterRoute(nameof(TokenEventsPage), typeof(TokenEventsPage));
 		}
+
+		/// <summary>
+		/// Method called when app has been started and loaded.
+		/// </summary>
+		public static void AppLoaded()
+		{
+			if (Current is AppShell AppShell && AppShell.BindingContext is AppShellViewModel ViewModel)
+			{
+				MainThread.BeginInvokeOnMainThread(async () =>
+				{
+					await ViewModel.DoInitialize();
+				});
+			}
+		}
 	}
 }
