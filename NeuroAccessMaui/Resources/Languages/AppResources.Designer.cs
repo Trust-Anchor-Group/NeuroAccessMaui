@@ -1042,7 +1042,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Below is a list of contracts that you have created or signed. Click on a contract for more information about it..
+        ///   Looks up a localized string similar to Below is a list of contracts that you have created or signed, organized by category. Tap on a category to expand. Tap on a contract to view it..
         /// </summary>
         internal static string ContractsInfoText {
             get {
@@ -1069,7 +1069,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Below is a list of contract templates that you have used. Click on a template to create a new contract based on that template..
+        ///   Looks up a localized string similar to Below is a list of contract templates that you have used, organized by category. Tap on a category to expand. Tap on a template to create a new contract based on that template..
         /// </summary>
         internal static string ContractTemplatesInfoText {
             get {
@@ -5119,7 +5119,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Below is a list of token templates that you have used or can use to create new tokens. Click on a template to create a new contract based on that template. Once the contract has been signed and approved, the corresponding token or tokens will be created..
+        ///   Looks up a localized string similar to Below is a list of token templates that you have used, organized by category. Tap on a category to expand. Tap on a template to create a new contract based on that template. Once the contract has been signed and approved, the corresponding token or tokens will be created..
         /// </summary>
         internal static string TokenCreationTemplatesInfoText {
             get {

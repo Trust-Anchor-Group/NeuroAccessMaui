@@ -1198,7 +1198,7 @@
     <value>Contracts</value>
   </data>
   <data name="ContractsInfoText" xml:space="preserve">
-    <value>Below is a list of contracts that you have created or signed. Click on a contract for more information about it.</value>
+    <value>Below is a list of contracts that you have created or signed, organized by category. Tap on a category to expand. Tap on a contract to view it.</value>
   </data>
   <data name="ContractSuccessfullySigned" xml:space="preserve">
     <value>Contract successfully signed.</value>
@@ -1207,7 +1207,7 @@
     <value>Contract Templates</value>
   </data>
   <data name="ContractTemplatesInfoText" xml:space="preserve">
-    <value>Below is a list of contract templates that you have used. Click on a template to create a new contract based on that template.</value>
+    <value>Below is a list of contract templates that you have used, organized by category. Tap on a category to expand. Tap on a template to create a new contract based on that template.</value>
   </data>
   <data name="ContractVisibilityMustBeSelected" xml:space="preserve">
     <value>Select contract visibility first, and then try again.</value>
@@ -1348,7 +1348,7 @@
     <value>Token Templates</value>
   </data>
   <data name="TokenCreationTemplatesInfoText" xml:space="preserve">
-    <value>Below is a list of token templates that you have used or can use to create new tokens. Click on a template to create a new contract based on that template. Once the contract has been signed and approved, the corresponding token or tokens will be created.</value>
+    <value>Below is a list of token templates that you have used, organized by category. Tap on a category to expand. Tap on a template to create a new contract based on that template. Once the contract has been signed and approved, the corresponding token or tokens will be created.</value>
   </data>
   <data name="TokenRemoved" xml:space="preserve">
     <value>A token has been removed from your wallet.</value>

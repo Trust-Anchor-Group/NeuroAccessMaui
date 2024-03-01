@@ -1198,7 +1198,7 @@
     <value>Kontrakt</value>
   </data>
   <data name="ContractsInfoText" xml:space="preserve">
-    <value>Nedan finns en lista över avtal som du har skapat eller signerat. Klicka på ett kontrakt för mer information om det.</value>
+    <value>Nedan finns en lista över avtal som du har skapat eller signerat, ordnade efter kategori. Tryck på en kategori för att expandera. Tryck på ett avtal för att se det.</value>
   </data>
   <data name="ContractSuccessfullySigned" xml:space="preserve">
     <value>Kontraktet har undertecknats.</value>
@@ -1207,7 +1207,7 @@
     <value>Mallar för avtal</value>
   </data>
   <data name="ContractTemplatesInfoText" xml:space="preserve">
-    <value>Nedan finns en lista över avtalsmallar som du har använt. Klicka på en mall för att skapa ett nytt avtal baserat på den mallen.</value>
+    <value>Nedan finns en lista över avtalsmallar som du har använt, ordnade efter kategori. Tryck på en kategori för att expandera. Tryck på en mall för att skapa ett nytt avtal baserat på den mallen.</value>
   </data>
   <data name="ContractVisibilityMustBeSelected" xml:space="preserve">
     <value>Välj avtalssynlighet först och försök sedan igen.</value>
@@ -1348,7 +1348,7 @@
     <value>Mallar för token</value>
   </data>
   <data name="TokenCreationTemplatesInfoText" xml:space="preserve">
-    <value>Nedan visas en lista över tokenmallar som du har använt eller kan använda för att skapa nya token. Klicka på en mall för att skapa ett nytt avtal baserat på den mallen. När kontraktet har undertecknats och godkänts skapas motsvarande token eller tokens.</value>
+    <value>Nedan visas en lista över tokenmallar som du har använt, ordnade efter kategori. Tryck på en kategori för att expandera. Tryck på en mall för att skapa ett nytt avtal baserat på den mallen. När kontraktet har undertecknats och godkänts skapas motsvarande token eller tokens.</value>
   </data>
   <data name="TokenRemoved" xml:space="preserve">
     <value>En token har tagits bort från din plånbok.</value>

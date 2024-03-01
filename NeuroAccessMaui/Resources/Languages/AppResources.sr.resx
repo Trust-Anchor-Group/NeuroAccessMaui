@@ -1198,7 +1198,7 @@
     <value>Ugovore</value>
   </data>
   <data name="ContractsInfoText" xml:space="preserve">
-    <value>Ispod je lista ugovora koje ste kreirali ili potpisali. Kliknite na ugovor za više informacija o njemu.</value>
+    <value>Ispod je lista ugovora koje ste kreirali ili potpisali, organizovane po kategorijama. Dodirnite kategoriju da biste se razvili. Dodirnite ugovor da biste ga videli.</value>
   </data>
   <data name="ContractSuccessfullySigned" xml:space="preserve">
     <value>Ugovor je uspešno potpisan.</value>
@@ -1207,7 +1207,7 @@
     <value>Predlošci ugovora</value>
   </data>
   <data name="ContractTemplatesInfoText" xml:space="preserve">
-    <value>Ispod je lista predložaka ugovora koje ste koristili. Kliknite na predložak da biste kreirali novi ugovor zasnovan na tom predlošku.</value>
+    <value>Ispod je lista predložaka ugovora koje ste koristili, organizovanih po kategorijama. Dodirnite kategoriju da biste se razvili. Dodirnite predložak da biste kreirali novi ugovor zasnovan na tom predlošku.</value>
   </data>
   <data name="ContractVisibilityMustBeSelected" xml:space="preserve">
     <value>Prvo izaberite vidljivost ugovora, a zatim pokušajte ponovo.</value>
@@ -1348,7 +1348,7 @@
     <value>Predlošci simbola</value>
   </data>
   <data name="TokenCreationTemplatesInfoText" xml:space="preserve">
-    <value>Ispod je lista predložaka simbola koje ste koristili ili koje možete da koristite za kreiranje novih tokena. Kliknite na predložak da biste kreirali novi ugovor zasnovan na tom predlošku. Kada ugovor bude potpisan i odobren, biće kreiran odgovarajući simbol ili simboli.</value>
+    <value>Ispod je lista predložaka simbola koje ste koristili, organizovanih po kategorijama. Dodirnite kategoriju da biste se razvili. Dodirnite predložak da biste kreirali novi ugovor zasnovan na tom predlošku. Kada ugovor bude potpisan i odobren, biće kreiran odgovarajući simbol ili simboli.</value>
   </data>
   <data name="TokenRemoved" xml:space="preserve">
     <value>Simbol je uklonjen iz vašeg novčanika.</value>

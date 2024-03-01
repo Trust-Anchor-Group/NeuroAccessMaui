@@ -1198,7 +1198,7 @@
     <value>Kontrakter</value>
   </data>
   <data name="ContractsInfoText" xml:space="preserve">
-    <value>Nedenfor er en liste over kontrakter, som du har oprettet eller underskrevet. Klik på en kontrakt for at få flere oplysninger om den.</value>
+    <value>Nedenfor er en liste over kontrakter, som du har oprettet eller underskrevet, organiseret efter kategori. Tryk på en kategori for at udvide. Tryk på en kontrakt for at se den.</value>
   </data>
   <data name="ContractSuccessfullySigned" xml:space="preserve">
     <value>Kontrakt underskrevet med succes.</value>
@@ -1207,7 +1207,7 @@
     <value>Kontrakt skabeloner</value>
   </data>
   <data name="ContractTemplatesInfoText" xml:space="preserve">
-    <value>Nedenfor er en liste over kontraktskabeloner, som du har brugt. Klik på en skabelon for at oprette en ny kontrakt baseret på skabelonen.</value>
+    <value>Nedenfor er en liste over kontraktskabeloner, som du har brugt, organiseret efter kategori. Tryk på en kategori for at udvide. Tryk på en skabelon for at oprette en ny kontrakt baseret på den skabelon.</value>
   </data>
   <data name="ContractVisibilityMustBeSelected" xml:space="preserve">
     <value>Vælg først kontraktsynlighed, og prøv derefter igen.</value>
@@ -1348,7 +1348,7 @@
     <value>Token skabeloner</value>
   </data>
   <data name="TokenCreationTemplatesInfoText" xml:space="preserve">
-    <value>Nedenfor er en liste over tokenskabeloner, som du har brugt eller kan bruge til at oprette nye tokens. Klik på en skabelon for at oprette en ny kontrakt baseret på skabelonen. Når kontrakten er underskrevet og godkendt, oprettes det eller de tilsvarende tokens.</value>
+    <value>Nedenfor er en liste over tokenskabeloner, som du har brugt, organiseret efter kategori. Tryk på en kategori for at udvide. Tryk på en skabelon for at oprette en ny kontrakt baseret på den skabelon. Når kontrakten er underskrevet og godkendt, oprettes det eller de tilsvarende tokens.</value>
   </data>
   <data name="TokenRemoved" xml:space="preserve">
     <value>Et token er blevet fjernet fra din tegnebog.</value>

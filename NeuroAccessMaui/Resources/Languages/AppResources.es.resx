@@ -1198,7 +1198,7 @@
     <value>Contratos</value>
   </data>
   <data name="ContractsInfoText" xml:space="preserve">
-    <value>A continuación se muestra una lista de los contratos que ha creado o firmado. Haga clic en un contrato para obtener más información al respecto.</value>
+    <value>A continuación se muestra una lista de los contratos que ha creado o firmado, organizados por categoría. Toque una categoría para expandirla. Pulsa en un contrato para verlo.</value>
   </data>
   <data name="ContractSuccessfullySigned" xml:space="preserve">
     <value>Contrato firmado con éxito.</value>
@@ -1207,7 +1207,7 @@
     <value>Plantillas de contrato</value>
   </data>
   <data name="ContractTemplatesInfoText" xml:space="preserve">
-    <value>A continuación se muestra una lista de las plantillas de contrato que ha utilizado. Haga clic en una plantilla para crear un nuevo contrato basado en esa plantilla.</value>
+    <value>A continuación se muestra una lista de las plantillas de contrato que ha utilizado, organizadas por categoría. Toque una categoría para expandirla. Toque una plantilla para crear un nuevo contrato basado en esa plantilla.</value>
   </data>
   <data name="ContractVisibilityMustBeSelected" xml:space="preserve">
     <value>Seleccione primero la visibilidad del contrato y, a continuación, vuelva a intentarlo.</value>
@@ -1348,7 +1348,7 @@
     <value>Plantillas de token</value>
   </data>
   <data name="TokenCreationTemplatesInfoText" xml:space="preserve">
-    <value>A continuación se muestra una lista de plantillas de tokens que ha utilizado o puede utilizar para crear nuevos tokens. Haga clic en una plantilla para crear un nuevo contrato basado en esa plantilla. Una vez firmado y aprobado el contrato, se creará el token o tokens correspondientes.</value>
+    <value>A continuación se muestra una lista de plantillas de tokens que ha utilizado, organizadas por categoría. Toque una categoría para expandirla. Toque una plantilla para crear un nuevo contrato basado en esa plantilla. Una vez firmado y aprobado el contrato, se creará el token o tokens correspondientes.</value>
   </data>
   <data name="TokenRemoved" xml:space="preserve">
     <value>Se ha eliminado un token de su billetera.</value>

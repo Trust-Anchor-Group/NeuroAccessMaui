@@ -1198,7 +1198,7 @@
     <value>Contracte</value>
   </data>
   <data name="ContractsInfoText" xml:space="preserve">
-    <value>Mai jos este o listă de contracte pe care le-ați creat sau semnat. Faceți clic pe un contract pentru mai multe informații despre acesta.</value>
+    <value>Mai jos este o listă de contracte pe care le-ați creat sau semnat, organizate pe categorii. Atingeți o categorie pentru a vă extinde. Atingeți un contract pentru a-l vizualiza.</value>
   </data>
   <data name="ContractSuccessfullySigned" xml:space="preserve">
     <value>Contract semnat cu succes.</value>
@@ -1207,7 +1207,7 @@
     <value>Șabloane de contract</value>
   </data>
   <data name="ContractTemplatesInfoText" xml:space="preserve">
-    <value>Mai jos este o listă de șabloane de contract pe care le-ați utilizat. Faceți clic pe un șablon pentru a crea un nou contract bazat pe acel șablon.</value>
+    <value>Mai jos este o listă de șabloane de contract pe care le-ați utilizat, organizate pe categorii. Atingeți o categorie pentru a vă extinde. Atingeți un șablon pentru a crea un nou contract bazat pe șablonul respectiv.</value>
   </data>
   <data name="ContractVisibilityMustBeSelected" xml:space="preserve">
     <value>Selectați mai întâi vizibilitatea contractului, apoi încercați din nou.</value>
@@ -1348,7 +1348,7 @@
     <value>Șabloane de jetoane</value>
   </data>
   <data name="TokenCreationTemplatesInfoText" xml:space="preserve">
-    <value>Mai jos este o listă de șabloane de tokenuri pe care le-ați utilizat sau le puteți utiliza pentru a crea tokenuri noi. Faceți clic pe un șablon pentru a crea un nou contract bazat pe acel șablon. Odată ce contractul a fost semnat și aprobat, token-ul sau jetoanele corespunzătoare vor fi create.</value>
+    <value>Mai jos este o listă de șabloane de jetoane pe care le-ați utilizat, organizate pe categorii. Atingeți o categorie pentru a vă extinde. Atingeți un șablon pentru a crea un nou contract bazat pe șablonul respectiv. Odată ce contractul a fost semnat și aprobat, token-ul sau jetoanele corespunzătoare vor fi create.</value>
   </data>
   <data name="TokenRemoved" xml:space="preserve">
     <value>Un token a fost eliminat din portofel.</value>

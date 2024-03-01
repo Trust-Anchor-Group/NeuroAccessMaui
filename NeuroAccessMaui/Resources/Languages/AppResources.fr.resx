@@ -1198,7 +1198,7 @@
     <value>Contrats</value>
   </data>
   <data name="ContractsInfoText" xml:space="preserve">
-    <value>Vous trouverez ci-dessous une liste des contrats que vous avez créés ou signés. Cliquez sur un contrat pour plus d’informations à son sujet.</value>
+    <value>Vous trouverez ci-dessous une liste des contrats que vous avez créés ou signés, classés par catégorie. Appuyez sur une catégorie pour l’agrandir. Appuyez sur un contrat pour l’afficher.</value>
   </data>
   <data name="ContractSuccessfullySigned" xml:space="preserve">
     <value>Signature du contrat avec succès.</value>
@@ -1207,7 +1207,7 @@
     <value>Modèles de contrat</value>
   </data>
   <data name="ContractTemplatesInfoText" xml:space="preserve">
-    <value>Vous trouverez ci-dessous une liste des modèles de contrat que vous avez utilisés. Cliquez sur un modèle pour créer un nouveau contrat basé sur ce modèle.</value>
+    <value>Vous trouverez ci-dessous une liste des modèles de contrat que vous avez utilisés, organisés par catégorie. Appuyez sur une catégorie pour l’agrandir. Appuyez sur un modèle pour créer un nouveau contrat basé sur ce modèle.</value>
   </data>
   <data name="ContractVisibilityMustBeSelected" xml:space="preserve">
     <value>Sélectionnez d’abord la visibilité du contrat, puis réessayez.</value>
@@ -1348,7 +1348,7 @@
     <value>Modèles de jetons</value>
   </data>
   <data name="TokenCreationTemplatesInfoText" xml:space="preserve">
-    <value>Vous trouverez ci-dessous une liste de modèles de jetons que vous avez utilisés ou que vous pouvez utiliser pour créer de nouveaux jetons. Cliquez sur un modèle pour créer un nouveau contrat basé sur ce modèle. Une fois le contrat signé et approuvé, le ou les tokens correspondants seront créés.</value>
+    <value>Vous trouverez ci-dessous une liste des modèles de jetons que vous avez utilisés, organisés par catégorie. Appuyez sur une catégorie pour l’agrandir. Appuyez sur un modèle pour créer un nouveau contrat basé sur ce modèle. Une fois le contrat signé et approuvé, le ou les tokens correspondants seront créés.</value>
   </data>
   <data name="TokenRemoved" xml:space="preserve">
     <value>Un token a été supprimé de votre portefeuille.</value>

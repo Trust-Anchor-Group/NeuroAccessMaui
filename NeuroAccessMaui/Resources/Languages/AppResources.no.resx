@@ -1198,7 +1198,7 @@
     <value>Kontrakter</value>
   </data>
   <data name="ContractsInfoText" xml:space="preserve">
-    <value>Nedenfor er en liste over kontrakter du har opprettet eller signert. Klikk på en kontrakt for mer informasjon om den.</value>
+    <value>Nedenfor er en liste over kontrakter du har opprettet eller signert, organisert etter kategori. Trykk på en kategori for å utvide. Trykk på en kontrakt for å se den.</value>
   </data>
   <data name="ContractSuccessfullySigned" xml:space="preserve">
     <value>Kontrakten er signert.</value>
@@ -1207,7 +1207,7 @@
     <value>Kontrakt Maler</value>
   </data>
   <data name="ContractTemplatesInfoText" xml:space="preserve">
-    <value>Nedenfor er en liste over kontraktmaler du har brukt. Klikk på en mal for å opprette en ny kontrakt basert på den malen.</value>
+    <value>Nedenfor er en liste over kontraktmaler du har brukt, organisert etter kategori. Trykk på en kategori for å utvide. Trykk på en mal for å opprette en ny kontrakt basert på den malen.</value>
   </data>
   <data name="ContractVisibilityMustBeSelected" xml:space="preserve">
     <value>Velg kontraktsynlighet først, og prøv deretter på nytt.</value>
@@ -1348,7 +1348,7 @@
     <value>Token Maler</value>
   </data>
   <data name="TokenCreationTemplatesInfoText" xml:space="preserve">
-    <value>Nedenfor er en liste over tokenmaler som du har brukt eller kan bruke til å opprette nye tokens. Klikk på en mal for å opprette en ny kontrakt basert på den malen. Når kontrakten er signert og godkjent, vil tilsvarende token eller tokens bli opprettet.</value>
+    <value>Nedenfor er en liste over tokenmaler du har brukt, organisert etter kategori. Trykk på en kategori for å utvide. Trykk på en mal for å opprette en ny kontrakt basert på den malen. Når kontrakten er signert og godkjent, vil tilsvarende token eller tokens bli opprettet.</value>
   </data>
   <data name="TokenRemoved" xml:space="preserve">
     <value>Et token har blitt fjernet fra lommeboken din.</value>

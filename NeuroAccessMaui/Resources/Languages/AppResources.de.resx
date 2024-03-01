@@ -1198,7 +1198,7 @@
     <value>Verträge</value>
   </data>
   <data name="ContractsInfoText" xml:space="preserve">
-    <value>Nachfolgend finden Sie eine Liste der Verträge, die Sie erstellt oder unterzeichnet haben. Klicken Sie auf einen Vertrag, um weitere Informationen darüber zu erhalten.</value>
+    <value>Nachfolgend finden Sie eine Liste der Verträge, die Sie erstellt oder unterzeichnet haben, geordnet nach Kategorien. Tippen Sie auf eine Kategorie, um sie zu erweitern. Tippen Sie auf einen Vertrag, um ihn anzuzeigen.</value>
   </data>
   <data name="ContractSuccessfullySigned" xml:space="preserve">
     <value>Der Vertrag wurde erfolgreich unterzeichnet.</value>
@@ -1207,7 +1207,7 @@
     <value>Vertragsvorlagen</value>
   </data>
   <data name="ContractTemplatesInfoText" xml:space="preserve">
-    <value>Nachfolgend finden Sie eine Liste der Vertragsvorlagen, die Sie verwendet haben. Klicken Sie auf eine Vorlage, um einen neuen Vertrag basierend auf dieser Vorlage zu erstellen.</value>
+    <value>Nachfolgend finden Sie eine Liste der von Ihnen verwendeten Vertragsvorlagen, geordnet nach Kategorien. Tippen Sie auf eine Kategorie, um sie zu erweitern. Tippen Sie auf eine Vorlage, um einen neuen Vertrag basierend auf dieser Vorlage zu erstellen.</value>
   </data>
   <data name="ContractVisibilityMustBeSelected" xml:space="preserve">
     <value>Wählen Sie zuerst die Vertragssichtbarkeit aus, und versuchen Sie es dann erneut.</value>
@@ -1348,7 +1348,7 @@
     <value>Token-Vorlagen</value>
   </data>
   <data name="TokenCreationTemplatesInfoText" xml:space="preserve">
-    <value>Nachfolgend finden Sie eine Liste der Tokenvorlagen, die Sie zum Erstellen neuer Token verwendet haben oder verwenden können. Klicken Sie auf eine Vorlage, um einen neuen Vertrag basierend auf dieser Vorlage zu erstellen. Sobald der Vertrag unterschrieben und genehmigt wurde, werden die entsprechenden Token erstellt.</value>
+    <value>Nachfolgend finden Sie eine Liste der von Ihnen verwendeten Tokenvorlagen, geordnet nach Kategorie. Tippen Sie auf eine Kategorie, um sie zu erweitern. Tippen Sie auf eine Vorlage, um einen neuen Vertrag basierend auf dieser Vorlage zu erstellen. Sobald der Vertrag unterschrieben und genehmigt wurde, werden die entsprechenden Token erstellt.</value>
   </data>
   <data name="TokenRemoved" xml:space="preserve">
     <value>Ein Token wurde aus Ihrer Wallet entfernt.</value>

@@ -1198,7 +1198,7 @@
     <value>Contratos</value>
   </data>
   <data name="ContractsInfoText" xml:space="preserve">
-    <value>Abaixo está uma lista de contratos que você criou ou assinou. Clique em um contrato para obter mais informações sobre ele.</value>
+    <value>Abaixo está uma lista de contratos que você criou ou assinou, organizados por categoria. Toque em uma categoria para expandir. Toque em um contrato para visualizá-lo.</value>
   </data>
   <data name="ContractSuccessfullySigned" xml:space="preserve">
     <value>Contrato assinado com sucesso.</value>
@@ -1207,7 +1207,7 @@
     <value>Modelos de Contrato</value>
   </data>
   <data name="ContractTemplatesInfoText" xml:space="preserve">
-    <value>Abaixo está uma lista de modelos de contrato que você usou. Clique em um modelo para criar um novo contrato com base nesse modelo.</value>
+    <value>Abaixo está uma lista de modelos de contrato que você usou, organizados por categoria. Toque em uma categoria para expandir. Toque em um modelo para criar um novo contrato com base nesse modelo.</value>
   </data>
   <data name="ContractVisibilityMustBeSelected" xml:space="preserve">
     <value>Selecione a visibilidade do contrato primeiro e tente novamente.</value>
@@ -1348,7 +1348,7 @@
     <value>Modelos de token</value>
   </data>
   <data name="TokenCreationTemplatesInfoText" xml:space="preserve">
-    <value>Abaixo está uma lista de modelos de token que você usou ou pode usar para criar novos tokens. Clique em um modelo para criar um novo contrato com base nesse modelo. Uma vez que o contrato tenha sido assinado e aprovado, o token ou tokens correspondentes serão criados.</value>
+    <value>Abaixo está uma lista de modelos de token que você usou, organizados por categoria. Toque em uma categoria para expandir. Toque em um modelo para criar um novo contrato com base nesse modelo. Uma vez que o contrato tenha sido assinado e aprovado, o token ou tokens correspondentes serão criados.</value>
   </data>
   <data name="TokenRemoved" xml:space="preserve">
     <value>Um token foi removido da sua carteira.</value>

@@ -1198,7 +1198,7 @@
     <value>Sopimukset</value>
   </data>
   <data name="ContractsInfoText" xml:space="preserve">
-    <value>Alla on luettelo sopimuksista, jotka olet luonut tai allekirjoittanut. Napsauta sopimusta saadaksesi lisätietoja siitä.</value>
+    <value>Alla on luettelo luomistasi tai allekirjoittamistasi sopimuksista luokittain. Napauta luokkaa laajentaaksesi. Napauta sopimusta nähdäksesi sen.</value>
   </data>
   <data name="ContractSuccessfullySigned" xml:space="preserve">
     <value>Sopimus allekirjoitettiin onnistuneesti.</value>
@@ -1207,7 +1207,7 @@
     <value>Sopimuspohjat</value>
   </data>
   <data name="ContractTemplatesInfoText" xml:space="preserve">
-    <value>Alla on luettelo käyttämistäsi sopimusmalleista. Napsauta mallia luodaksesi uuden sopimuksen kyseisen mallin perusteella.</value>
+    <value>Alla on luettelo käyttämistäsi sopimusmalleista luokittain. Napauta luokkaa laajentaaksesi. Napauta mallia luodaksesi uuden sopimuksen kyseisen mallin perusteella.</value>
   </data>
   <data name="ContractVisibilityMustBeSelected" xml:space="preserve">
     <value>Valitse ensin sopimuksen näkyvyys ja yritä sitten uudelleen.</value>
@@ -1348,7 +1348,7 @@
     <value>Token-mallit</value>
   </data>
   <data name="TokenCreationTemplatesInfoText" xml:space="preserve">
-    <value>Alla on luettelo tunnusmalleista, joita olet käyttänyt tai voit käyttää uusien tunnusten luomiseen. Napsauta mallia luodaksesi uuden sopimuksen kyseisen mallin perusteella. Kun sopimus on allekirjoitettu ja hyväksytty, vastaava tunnus tai tunnukset luodaan.</value>
+    <value>Alla on luettelo käyttämistäsi tunnusmalleista luokittain. Napauta luokkaa laajentaaksesi. Napauta mallia luodaksesi uuden sopimuksen kyseisen mallin perusteella. Kun sopimus on allekirjoitettu ja hyväksytty, vastaava tunnus tai tunnukset luodaan.</value>
   </data>
   <data name="TokenRemoved" xml:space="preserve">
     <value>Token on poistettu lompakostasi.</value>
