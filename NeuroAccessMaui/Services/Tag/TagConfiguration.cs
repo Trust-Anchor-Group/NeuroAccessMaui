@@ -1,4 +1,5 @@
-﻿using NeuroAccessMaui.Services.Tag;
+﻿using NeuroAccessMaui.Services.Contracts;
+using NeuroAccessMaui.Services.Tag;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence.Attributes;
 
@@ -17,15 +18,27 @@ namespace NeuroAccessMaui.Services
 		[ObjectId]
 		public string? ObjectId { get; set; }
 
+		/// <summary>
+		/// If the initially selected domain uses default XMPP connectivity
+		/// </summary>
 		[DefaultValue(false)]
 		public bool InitialDefaultXmppConnectivity { get; set; }
 
+		/// <summary>
+		/// Initially selected domain
+		/// </summary>
 		[DefaultValueNull]
 		public string? InitialDomain { get; set; }
 
+		/// <summary>
+		/// Initially selected API Key
+		/// </summary>
 		[DefaultValueNull]
 		public string? InitialApiKey { get; set; }
 
+		/// <summary>
+		/// Initially selected API Secret
+		/// </summary>
 		[DefaultValueNull]
 		public string? InitialApiSecret { get; set; }
 
@@ -208,5 +221,23 @@ namespace NeuroAccessMaui.Services
 		/// </summary>
 		[DefaultValue(AuthenticationMethod.Password)]
 		public AuthenticationMethod AuthenticationMethod { get; set; } = AuthenticationMethod.Password;
+
+		/// <summary>
+		/// If there exist <see cref="ContractReference"/> objects created.
+		/// </summary>
+		[DefaultValue(false)]
+		public bool HasContractReferences { get; set; }
+
+		/// <summary>
+		/// If there exist <see cref="ContractReference"/> objects created, referencing contract templates.
+		/// </summary>
+		[DefaultValue(false)]
+		public bool HasContractTemplateReferences { get; set; }
+
+		/// <summary>
+		/// If there exist <see cref="ContractReference"/> objects created, referencing contract templates for the creation of tokens.
+		/// </summary>
+		[DefaultValue(false)]
+		public bool HasContractTokenCreationTemplatesReferences { get; set; }
 	}
 }

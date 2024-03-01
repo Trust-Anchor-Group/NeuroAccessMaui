@@ -560,6 +560,8 @@ namespace NeuroAccessMaui.Services.Contracts
 				{
 					await Ref.SetContract(Contract);
 					await Database.Update(Ref);
+
+					ServiceRef.TagProfile.NewContractReference(Ref);
 				}
 
 				MainThread.BeginInvokeOnMainThread(async () =>
@@ -575,6 +577,8 @@ namespace NeuroAccessMaui.Services.Contracts
 
 							await Ref.SetContract(Contract);
 							await Database.Insert(Ref);
+
+							ServiceRef.TagProfile.NewContractReference(Ref);
 						}
 
 						NewContractNavigationArgs e = new(Contract, ParameterValues);

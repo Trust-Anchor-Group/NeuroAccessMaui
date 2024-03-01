@@ -1,4 +1,5 @@
-﻿using NeuroAccessMaui.Services.Storage;
+﻿using NeuroAccessMaui.Services.Contracts;
+using NeuroAccessMaui.Services.Storage;
 using System.ComponentModel;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Runtime.Inventory;
@@ -205,6 +206,21 @@ namespace NeuroAccessMaui.Services.Tag
 		AppTheme? Theme { get; }
 
 		/// <summary>
+		/// If there exist <see cref="ContractReference"/> objects created.
+		/// </summary>
+		bool HasContractReferences { get; set; }
+
+		/// <summary>
+		/// If there exist <see cref="ContractReference"/> objects created, referencing contract templates.
+		/// </summary>
+		bool HasContractTemplateReferences { get; set; }
+
+		/// <summary>
+		/// If there exist <see cref="ContractReference"/> objects created, referencing contract templates for the creation of tokens.
+		/// </summary>
+		bool HasContractTokenCreationTemplatesReferences { get; set; }
+
+		/// <summary>
 		/// Returns <c>true</c> if the current <see cref="ITagProfile"/> has changed values and need saving, <c>false</c> otherwise.
 		/// </summary>
 		bool IsDirty { get; }
@@ -218,8 +234,8 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <summary>
 		/// Copies values from the <see cref="TagConfiguration"/> to this instance.
 		/// </summary>
-		/// <param name="configuration"></param>
-		void FromConfiguration(TagConfiguration configuration);
+		/// <param name="Configuration">Configuration object.</param>
+		void FromConfiguration(TagConfiguration Configuration);
 
 		/// <summary>
 		/// Changes the current onboarding step.
@@ -392,5 +408,11 @@ namespace NeuroAccessMaui.Services.Tag
 		/// Sets the preferred theme.
 		/// </summary>
 		void SetTheme();
+
+		/// <summary>
+		/// Method called when a <see cref="ContractReference"/> has been created or updated.
+		/// </summary>
+		/// <param name="Reference">Contract reference.</param>
+		void NewContractReference(ContractReference Reference);
 	}
 }

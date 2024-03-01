@@ -225,33 +225,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 
 						foreach (ContractReference Ref in ContractReferences)
 						{
-							if (!Ref.IsTokenCreationTemplate.HasValue)
-							{
-								if (!Ref.IsTemplate)
-									Ref.IsTokenCreationTemplate = false;
-								else
-								{
-									try
-									{
-										Contract = await Ref.GetContract();
-										if (Contract is null)
-											continue;
-									}
-									catch (Exception ex)
-									{
-										ServiceRef.LogService.LogException(ex);
-										continue;
-									}
-
-									Ref.IsTokenCreationTemplate =
-										Contract.ForMachinesLocalName == "Create" &&
-										Contract.ForMachinesNamespace == NeuroFeaturesClient.NamespaceNeuroFeatures;
-								}
-
-								await Database.Update(Ref);
-							}
-
-							if (Ref.IsTokenCreationTemplate.Value && Ref.ContractId is not null)
+							if (Ref.IsTokenCreationTemplate && Ref.ContractId is not null)
 							{
 								ContractIds[Ref.ContractId] = true;
 								TokenCreationTemplates.AddLast(Ref);
@@ -273,7 +247,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 									await Ref.SetContract(Contract);
 									await Database.Insert(Ref);
 
-									if (Ref.IsTokenCreationTemplate.HasValue && Ref.IsTokenCreationTemplate.Value)
+									ServiceRef.TagProfile.NewContractReference(Ref);
+
+									if (Ref.IsTokenCreationTemplate)
 									{
 										ContractIds[Ref.ContractId] = true;
 										TokenCreationTemplates.AddLast(Ref);

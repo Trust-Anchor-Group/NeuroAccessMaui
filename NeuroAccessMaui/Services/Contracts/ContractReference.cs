@@ -23,7 +23,6 @@ namespace NeuroAccessMaui.Services.Contracts
 		/// </summary>
 		public ContractReference()
 		{
-			this.IsTokenCreationTemplate = null;
 		}
 
 		/// <summary>
@@ -80,8 +79,8 @@ namespace NeuroAccessMaui.Services.Contracts
 		/// <summary>
 		/// If the contract represents a token creation template
 		/// </summary>
-		[DefaultValueNull]
-		public bool? IsTokenCreationTemplate { get; set; }
+		[DefaultValue(false)]
+		public bool IsTokenCreationTemplate { get; set; }
 
 		/// <summary>
 		/// Contract state
@@ -142,6 +141,7 @@ namespace NeuroAccessMaui.Services.Contracts
 				this.Loaded = DateTime.UtcNow;
 
 				this.IsTokenCreationTemplate =
+					this.IsTemplate &&
 					Contract.ForMachinesLocalName == "Create" &&
 					Contract.ForMachinesNamespace == NeuroFeaturesClient.NamespaceNeuroFeatures;
 

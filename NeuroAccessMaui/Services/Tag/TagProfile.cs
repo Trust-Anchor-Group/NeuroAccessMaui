@@ -1,5 +1,6 @@
 ﻿using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Storage;
 using System.ComponentModel;
 using System.Text;
@@ -10,7 +11,12 @@ using Waher.Security;
 
 namespace NeuroAccessMaui.Services.Tag
 {
-	/// <inheritdoc/>
+	/// <summary>
+	/// The TAG Profile is the heart of the digital identity for a specific user/device.
+	/// Use this instance to add and make a profile more complete.
+	/// The TAG Profile holds relevant data connected to not only where the user is in the registration process,
+	/// but also Xmpp identifiers.
+	/// </summary>
 	[Singleton]
 	public partial class TagProfile : ITagProfile
 	{
@@ -67,9 +73,12 @@ namespace NeuroAccessMaui.Services.Tag
 		private RegistrationStep step = RegistrationStep.RequestPurpose;
 		private AppTheme? theme;
 		private AuthenticationMethod authenticationMethod;
-		private bool suppressPropertyChangedEvents;
+		private bool loadingProperties;
 		private bool initialDefaultXmppConnectivity;
 		private bool defaultXmppConnectivity;
+		private bool hasContractReferences;
+		private bool hasContractTemplateReferences;
+		private bool hasContractTokenCreationTemplatesReferences;
 
 		/// <summary>
 		/// Creates an instance of a <see cref="TagProfile"/>.
@@ -97,7 +106,7 @@ namespace NeuroAccessMaui.Services.Tag
 		}
 
 		/// <summary>
-		/// Converts the current instance into a <see cref="TagConfiguration"/> object for serialization.
+		/// Converts the current <see cref="ITagProfile"/> to a <see cref="TagConfiguration"/> object that can be persisted to the <see cref="IStorageService"/>.
 		/// </summary>
 		/// <returns>Configuration object</returns>
 		public TagConfiguration ToConfiguration()
@@ -137,64 +146,71 @@ namespace NeuroAccessMaui.Services.Tag
 				NrReviews = this.NrReviews,
 				Step = this.Step,
 				Theme = this.Theme,
-				AuthenticationMethod = this.AuthenticationMethod
+				AuthenticationMethod = this.AuthenticationMethod,
+				HasContractReferences = this.HasContractReferences,
+				HasContractTemplateReferences = this.HasContractTemplateReferences,
+				HasContractTokenCreationTemplatesReferences = this.HasContractTokenCreationTemplatesReferences
 			};
 
 			return Clone;
 		}
 
 		/// <summary>
-		/// Parses an instance of a <see cref="TagConfiguration"/> object to update this instance's properties.
+		/// Copies values from the <see cref="TagConfiguration"/> to this instance.
 		/// </summary>
-		/// <param name="configuration"></param>
-		public void FromConfiguration(TagConfiguration configuration)
+		/// <param name="Configuration">Configuration object.</param>
+		public void FromConfiguration(TagConfiguration Configuration)
 		{
 			try
 			{
-				this.suppressPropertyChangedEvents = true;
+				this.loadingProperties = true;
+				this.IsDirty = false;
 
-				this.objectId = configuration.ObjectId;
-				this.InitialDomain = configuration.InitialDomain;
-				this.InitialApiKey = configuration.InitialApiKey;
-				this.InitialApiSecret = configuration.InitialApiSecret;
-				this.Domain = configuration.Domain;
-				this.ApiKey = configuration.ApiKey;
-				this.ApiSecret = configuration.ApiSecret;
-				this.SelectedCountry = configuration.SelectedCountry;
-				this.PhoneNumber = configuration.PhoneNumber;
-				this.EMail = configuration.EMail;
-				this.InitialDefaultXmppConnectivity = configuration.InitialDefaultXmppConnectivity;
-				this.DefaultXmppConnectivity = configuration.DefaultXmppConnectivity;
-				this.Account = configuration.Account;
-				this.XmppPasswordHash = configuration.PasswordHash;
-				this.XmppPasswordHashMethod = configuration.PasswordHashMethod;
-				this.LegalJid = configuration.LegalJid;
-				this.RegistryJid = configuration.RegistryJid;
-				this.ProvisioningJid = configuration.ProvisioningJid;
-				this.HttpFileUploadJid = configuration.HttpFileUploadJid;
-				this.HttpFileUploadMaxSize = configuration.HttpFileUploadMaxSize;
-				this.LogJid = configuration.LogJid;
-				this.EDalerJid = configuration.EDalerJid;
-				this.NeuroFeaturesJid = configuration.NeuroFeaturesJid;
-				this.SupportsPushNotification = configuration.SupportsPushNotification;
-				this.LocalPasswordHash = configuration.PinHash;
-				this.IsTest = configuration.IsTest;
-				this.Purpose = configuration.Purpose;
-				this.TestOtpTimestamp = configuration.TestOtpTimestamp;
-				this.identityApplication = configuration.IdentityApplication;
-				this.nrReviews = configuration.NrReviews;
-				this.Theme = configuration.Theme;
-				this.AuthenticationMethod = configuration.AuthenticationMethod;
+				this.objectId = Configuration.ObjectId;
+				this.InitialDomain = Configuration.InitialDomain;
+				this.InitialApiKey = Configuration.InitialApiKey;
+				this.InitialApiSecret = Configuration.InitialApiSecret;
+				this.Domain = Configuration.Domain;
+				this.ApiKey = Configuration.ApiKey;
+				this.ApiSecret = Configuration.ApiSecret;
+				this.SelectedCountry = Configuration.SelectedCountry;
+				this.PhoneNumber = Configuration.PhoneNumber;
+				this.EMail = Configuration.EMail;
+				this.InitialDefaultXmppConnectivity = Configuration.InitialDefaultXmppConnectivity;
+				this.DefaultXmppConnectivity = Configuration.DefaultXmppConnectivity;
+				this.Account = Configuration.Account;
+				this.XmppPasswordHash = Configuration.PasswordHash;
+				this.XmppPasswordHashMethod = Configuration.PasswordHashMethod;
+				this.LegalJid = Configuration.LegalJid;
+				this.RegistryJid = Configuration.RegistryJid;
+				this.ProvisioningJid = Configuration.ProvisioningJid;
+				this.HttpFileUploadJid = Configuration.HttpFileUploadJid;
+				this.HttpFileUploadMaxSize = Configuration.HttpFileUploadMaxSize;
+				this.LogJid = Configuration.LogJid;
+				this.EDalerJid = Configuration.EDalerJid;
+				this.NeuroFeaturesJid = Configuration.NeuroFeaturesJid;
+				this.SupportsPushNotification = Configuration.SupportsPushNotification;
+				this.LocalPasswordHash = Configuration.PinHash;
+				this.IsTest = Configuration.IsTest;
+				this.Purpose = Configuration.Purpose;
+				this.TestOtpTimestamp = Configuration.TestOtpTimestamp;
+				this.identityApplication = Configuration.IdentityApplication;
+				this.nrReviews = Configuration.NrReviews;
+				this.Theme = Configuration.Theme;
+				this.AuthenticationMethod = Configuration.AuthenticationMethod;
+				this.HasContractReferences = Configuration.HasContractReferences;
+				this.HasContractTemplateReferences = Configuration.HasContractTemplateReferences;
+				this.HasContractTokenCreationTemplatesReferences = Configuration.HasContractTokenCreationTemplatesReferences;
 
-				this.SetLegalIdentityInternal(configuration.LegalIdentity);
+				this.SetLegalIdentityInternal(Configuration.LegalIdentity);
 
 				this.SetTheme();
 				// Do this last, as listeners will read the other properties when the event is fired.
-				this.GoToStep(configuration.Step);
+				this.GoToStep(Configuration.Step);
 			}
 			finally
 			{
-				this.suppressPropertyChangedEvents = false;
+				this.loadingProperties = false;
 			}
 		}
 
@@ -495,7 +511,9 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// The Thing Registry JID
+		/// </summary>
 		public string? RegistryJid
 		{
 			get => this.registryJid;
@@ -509,7 +527,9 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// The XMPP server's provisioning Jid.
+		/// </summary>
 		public string? ProvisioningJid
 		{
 			get => this.provisioningJid;
@@ -571,7 +591,9 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// The XMPP server's eDaler service JID.
+		/// </summary>
 		public string? EDalerJid
 		{
 			get => this.eDalerJid;
@@ -585,7 +607,9 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// The XMPP server's Neuro-Features service JID.
+		/// </summary>
 		public string? NeuroFeaturesJid
 		{
 			get => this.neuroFeaturesJid;
@@ -599,7 +623,9 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// If Push Notification is supported by server.
+		/// </summary>
 		public bool SupportsPushNotification
 		{
 			get => this.supportsPushNotification;
@@ -609,6 +635,54 @@ namespace NeuroAccessMaui.Services.Tag
 				{
 					this.supportsPushNotification = value;
 					this.FlagAsDirty(nameof(this.SupportsPushNotification));
+				}
+			}
+		}
+
+		/// <summary>
+		/// If there exist <see cref="ContractReference"/> objects created.
+		/// </summary>
+		public bool HasContractReferences
+		{
+			get => this.hasContractReferences;
+			set
+			{
+				if (this.hasContractReferences != value)
+				{
+					this.hasContractReferences = value;
+					this.FlagAsDirty(nameof(this.HasContractReferences));
+				}
+			}
+		}
+
+		/// <summary>
+		/// If there exist <see cref="ContractReference"/> objects created, referencing contract templates.
+		/// </summary>
+		public bool HasContractTemplateReferences
+		{
+			get => this.hasContractTemplateReferences;
+			set
+			{
+				if (this.hasContractTemplateReferences != value)
+				{
+					this.hasContractTemplateReferences = value;
+					this.FlagAsDirty(nameof(this.HasContractTemplateReferences));
+				}
+			}
+		}
+
+		/// <summary>
+		/// If there exist <see cref="ContractReference"/> objects created, referencing contract templates for the creation of tokens.
+		/// </summary>
+		public bool HasContractTokenCreationTemplatesReferences
+		{
+			get => this.hasContractTokenCreationTemplatesReferences;
+			set
+			{
+				if (this.hasContractTokenCreationTemplatesReferences != value)
+				{
+					this.hasContractTokenCreationTemplatesReferences = value;
+					this.FlagAsDirty(nameof(this.hasContractTokenCreationTemplatesReferences));
 				}
 			}
 		}
@@ -862,10 +936,11 @@ namespace NeuroAccessMaui.Services.Tag
 
 		private void FlagAsDirty(string PropertyName)
 		{
-			this.IsDirty = true;
-
-			if (!this.suppressPropertyChangedEvents)
+			if (!this.loadingProperties)
+			{
+				this.IsDirty = true;
 				this.OnChanged(new PropertyChangedEventArgs(PropertyName));
+			}
 		}
 
 		/// <summary>
@@ -1071,7 +1146,11 @@ namespace NeuroAccessMaui.Services.Tag
 
 		#endregion
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Computes a hash of the specified password.
+		/// </summary>
+		/// <param name="Password">The password whose hash to compute.</param>
+		/// <returns>Hash Digest</returns>
 		public string ComputePasswordHash(string Password)
 		{
 			StringBuilder sb = new();
@@ -1127,7 +1206,11 @@ namespace NeuroAccessMaui.Services.Tag
 			this.IsDirty = true;
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Validates if the <paramref name="Password"/> is strong enough.
+		/// </summary>
+		/// <param name="Password">Password to validate.</param>
+		/// <returns>A <see cref="PasswordStrength"/> value indicating if the <paramref name="Password"/> is strong enough.</returns>
 		public PasswordStrength ValidatePasswordStrength(string? Password)
 		{
 			if (Password is null)
@@ -1245,5 +1328,20 @@ namespace NeuroAccessMaui.Services.Tag
 
 		[GeneratedRegex(@"\p{Zs}+")]
 		private static partial Regex PropertyValueSplitRegex();
+
+		/// <summary>
+		/// Method called when a <see cref="ContractReference"/> has been created or updated.
+		/// </summary>
+		/// <param name="Reference">Contract reference.</param>
+		public void NewContractReference(ContractReference Reference)
+		{
+			this.HasContractReferences = true;
+
+			if (Reference.IsTemplate)
+				this.HasContractTemplateReferences = true;
+
+			if (Reference.IsTokenCreationTemplate)
+				this.HasContractTokenCreationTemplatesReferences = true;
+		}
 	}
 }

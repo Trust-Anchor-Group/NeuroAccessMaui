@@ -3036,6 +3036,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 				await Ref.SetContract(Contract);
 				await Database.Update(Ref);
 			}
+
+			ServiceRef.TagProfile.NewContractReference(Ref);
 		}
 
 		/// <summary>
