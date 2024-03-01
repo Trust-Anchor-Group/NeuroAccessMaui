@@ -1,5 +1,4 @@
-﻿using NeuroAccessMaui.Services;
-using NeuroAccessMaui.UI.Pages.Applications.Applications;
+﻿using NeuroAccessMaui.UI.Pages.Applications.Applications;
 using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
@@ -56,6 +55,8 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			try
 			{
 				this.InitializeComponent();
+				this.BindingContext = new AppShellViewModel();
+
 				this.RegisterRoutes();
 			}
 			catch (Exception ex)
@@ -135,56 +136,6 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			Routing.RegisterRoute(nameof(ServiceProvidersPage), typeof(ServiceProvidersPage));
 			Routing.RegisterRoute(nameof(TokenDetailsPage), typeof(TokenDetailsPage));
 			Routing.RegisterRoute(nameof(TokenEventsPage), typeof(TokenEventsPage));
-		}
-
-		private async void Close_Clicked(object sender, EventArgs e)
-		{
-			try
-			{
-				Current.FlyoutIsPresented = false;
-				await App.Stop();
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-			}
-		}
-
-		private async void ViewId_Clicked(object sender, EventArgs e)
-		{
-			// Note: Implementing as FlyoutItem only instantiates view one time.
-			try
-			{
-				await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage));
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-			}
-		}
-
-		private async void Settings_Clicked(object sender, EventArgs e)
-		{
-			try
-			{
-				await ServiceRef.UiService.GoToAsync(nameof(SettingsPage));
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-			}
-		}
-
-		private async void Applications_Clicked(object sender, EventArgs e)
-		{
-			try
-			{
-				await ServiceRef.UiService.GoToAsync(nameof(ApplicationsPage));
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-			}
 		}
 	}
 }

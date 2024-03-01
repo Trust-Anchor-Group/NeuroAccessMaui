@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Shell x:Class="NeuroAccessMaui.UI.Pages.Main.AppShell"
+		 x:DataType="viewmodel:AppShellViewModel"
 		 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 		 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 		 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
@@ -19,16 +20,16 @@
 					  FlyoutItemIsVisible="false"
 					  Route="MainPage" />
 
-	<MenuItem Text="{l:Localize ViewId}" Clicked="ViewId_Clicked" StyleId="MenuItemLabel"
+	<MenuItem Text="{l:Localize ViewId}" Command="{Binding ViewIdCommand}" StyleId="MenuItemLabel"
 				 IconImageSource="{AppThemeBinding Light=view_id_light, Dark=view_id_dark}"/>
 
-	<MenuItem Text="{l:Localize Applications}" Clicked="Applications_Clicked" StyleId="MenuItemLabel"
+	<MenuItem Text="{l:Localize Applications}" Command="{Binding ShowApplicationsCommand}" StyleId="MenuItemLabel"
 				 IconImageSource="{AppThemeBinding Light=neuro_access_light, Dark=neuro_access_dark}"/>
 
-	<MenuItem Text="{l:Localize Settings}" Clicked="Settings_Clicked" StyleId="MenuItemLabel"
+	<MenuItem Text="{l:Localize Settings}" Command="{Binding ShowSettingsCommand}" StyleId="MenuItemLabel"
 				 IconImageSource="{AppThemeBinding Light=settings_light, Dark=settings_dark}"/>
 
-	<MenuItem Text="{l:Localize Close}" Clicked="Close_Clicked" StyleId="MenuItemLabel"
+	<MenuItem Text="{l:Localize Close}" Command="{Binding CloseCommand}" StyleId="MenuItemLabel"
 				 IconImageSource="{AppThemeBinding Light=close_light, Dark=close_dark}" />
 
 	<VisualElement.Behaviors>
