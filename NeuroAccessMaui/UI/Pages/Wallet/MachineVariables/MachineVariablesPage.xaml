@@ -23,7 +23,7 @@
 				<Label Text="{l:Localize Variables}" Style="{StaticResource PageTitleLabel}"/>
 
 				<Frame Style="{StaticResource FrameSet}">
-					<Grid ColumnDefinitions="*" RowDefinitions="auto,auto,auto,*" Margin="{StaticResource DefaultMargin}">
+					<Grid ColumnDefinitions="*" RowDefinitions="auto,auto,auto,*" Margin="{StaticResource SmallMargins}">
 						<Label Grid.Column="0" Grid.Row="0" Text="{l:Localize CurrentState}" Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"/>
 						<Label Grid.Column="0" Grid.Row="1" Text="{Binding CurrentState}" Margin="{StaticResource SmallMargins}" VerticalOptions="Start"
 								 HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Style="{StaticResource ValueLabel}"

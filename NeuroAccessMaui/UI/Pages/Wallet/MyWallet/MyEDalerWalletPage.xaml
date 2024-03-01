@@ -125,7 +125,7 @@
 					</Grid>
 				</Frame>
 
-				<VerticalStackLayout Grid.Row="1" Margin="{StaticResource DefaultMargin}">
+				<VerticalStackLayout Grid.Row="1" Margin="{StaticResource SmallMargins}">
 					<controls:LoadingCollectionView x:Name="PaymentItemsCollection" IsGrouped="True"
 															  VerticalOptions="StartAndExpand" SelectionMode="Single"
                                                Style="{StaticResource MyWalletView}"

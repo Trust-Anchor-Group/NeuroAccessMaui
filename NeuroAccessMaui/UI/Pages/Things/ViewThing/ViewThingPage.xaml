@@ -29,7 +29,7 @@
 						<!-- TAGS -->
 						<Label Text="{l:Localize InformationAboutThing}" Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"/>
 						<Label Text="{l:Localize InformationAboutThingText}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"/>
-						<VerticalStackLayout x:Name="TagLayout" BindableLayout.ItemsSource="{Binding Path=Tags}" VerticalOptions="StartAndExpand" Margin="{StaticResource DefaultMargin}">
+						<VerticalStackLayout x:Name="TagLayout" BindableLayout.ItemsSource="{Binding Path=Tags}" VerticalOptions="StartAndExpand" Margin="{StaticResource SmallMargins}">
 							<BindableLayout.ItemTemplate>
 								<DataTemplate x:DataType="things:HumanReadableTag">
 									<HorizontalStackLayout>
@@ -48,7 +48,7 @@
 					   VerticalOptions="Start" IsVisible="{Binding HasNotifications}"/>
 						<Label Text="{l:Localize NotificationsText}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"
 					   IsVisible="{Binding HasNotifications}"/>
-						<VerticalStackLayout x:Name="Notifications" BindableLayout.ItemsSource="{Binding Path=Notifications}" VerticalOptions="StartAndExpand" Margin="{StaticResource DefaultMargin}">
+						<VerticalStackLayout x:Name="Notifications" BindableLayout.ItemsSource="{Binding Path=Notifications}" VerticalOptions="StartAndExpand" Margin="{StaticResource SmallMargins}">
 							<BindableLayout.ItemTemplate>
 								<DataTemplate x:DataType="model2:EventModel">
 									<Grid ColumnDefinitions="auto,*,auto" RowDefinitions="auto,auto" Padding="5,5,5,5">

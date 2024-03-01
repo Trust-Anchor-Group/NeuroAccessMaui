@@ -24,7 +24,7 @@
 						 TextColor="{AppThemeBinding Light={StaticResource SelectedForegroundLight}, Dark={StaticResource SelectedForegroundDark}}">
 					<Label.FormattedText>
 						<FormattedString>
-							<Span Text="{Binding Path=Category}" TextColor="{StaticResource HeadingForeground}"/>
+							<Span Text="{Binding Path=Category}" TextColor="{AppThemeBinding Light={StaticResource SelectedForegroundLight}, Dark={StaticResource SelectedForegroundDark}}"/>
 							<Span Text=" (" TextColor="{AppThemeBinding Light={StaticResource ClickableDark}, Dark={StaticResource ClickableLight}}"/>
 							<Span Text="{Binding Path=NrContracts}"
 									TextColor="{AppThemeBinding Light={StaticResource ClickableDark}, Dark={StaticResource ClickableLight}}"/>
@@ -58,7 +58,7 @@
 				<Frame Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" CornerRadius="12" Margin="2" Padding="8,3,8,3"
 					   IsVisible="{Binding HasEvents}" HorizontalOptions="End" VerticalOptions="Center"
 					   Style="{StaticResource AlertFrame}">
-					<Label FontSize="Caption" TextColor="{StaticResource HeadingForeground}"
+					<Label FontSize="Caption" TextColor="{AppThemeBinding Light={StaticResource SelectedForegroundLight}, Dark={StaticResource SelectedForegroundDark}}"
 						   Text="{Binding NrEvents}" Padding="1"/>
 				</Frame>
 			</Grid>
@@ -106,8 +106,8 @@
 						<Label Style="{StaticResource AlertLabel}" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center"
 								 VerticalOptions="Start" IsVisible="{Binding Path=ShowContractsMissing}" Text="{l:Localize NoContractsFound}" />
 						<ActivityIndicator x:Name="Loading" IsVisible="{Binding Path=IsBusy}" IsRunning="{Binding Path=IsBusy}"
-                           HorizontalOptions="Center" VerticalOptions="Center" Margin="{StaticResource DefaultMargin}"
-                           Style="{StaticResource AccentIndicator}"/>
+												 HorizontalOptions="Center" VerticalOptions="Center" Margin="{StaticResource SmallMargins}"
+												 Color="{AppThemeBinding Light={StaticResource AccentForegroundLight}, Dark={StaticResource AccentForegroundDark}}"/>
 
 						<!-- CollectionView's IsVisible used to be bound to IsIdle, but there seems to be a race condition somewhere because this led
 		the CollectionView not appearing sometimes on iOS. Always showing it seems to be OK because it is empty before contracts are loaded anyway. -->

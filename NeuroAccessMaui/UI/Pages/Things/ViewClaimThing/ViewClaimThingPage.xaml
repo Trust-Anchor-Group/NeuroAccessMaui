@@ -27,7 +27,7 @@
 					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
 						<Label Text="{l:Localize InformationAboutThing}" Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"/>
 						<Label Text="{l:Localize InformationAboutClaimedThingText}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"/>
-						<VerticalStackLayout x:Name="TagLayout" BindableLayout.ItemsSource="{Binding Path=Tags}" VerticalOptions="StartAndExpand" Margin="{StaticResource DefaultMargin}">
+						<VerticalStackLayout x:Name="TagLayout" BindableLayout.ItemsSource="{Binding Path=Tags}" VerticalOptions="StartAndExpand" Margin="{StaticResource SmallMargins}">
 							<BindableLayout.ItemTemplate>
 								<DataTemplate x:DataType="things:HumanReadableTag">
 									<HorizontalStackLayout>

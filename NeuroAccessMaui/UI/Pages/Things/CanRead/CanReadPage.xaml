@@ -48,7 +48,7 @@
 								</Label.GestureRecognizers>
 							</Label>
 						</Grid>
-						<VerticalStackLayout x:Name="CallerLayout" BindableLayout.ItemsSource="{Binding Path=CallerTags}" VerticalOptions="StartAndExpand" Margin="{StaticResource DefaultMargin}">
+						<VerticalStackLayout x:Name="CallerLayout" BindableLayout.ItemsSource="{Binding Path=CallerTags}" VerticalOptions="StartAndExpand" Margin="{StaticResource SmallMargins}">
 							<BindableLayout.ItemTemplate>
 								<DataTemplate x:DataType="things:HumanReadableTag">
 									<Grid ColumnDefinitions="*,*" RowDefinitions="auto">
@@ -72,7 +72,7 @@
 						<Label Text="{l:Localize InformationAboutThing}" Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"/>
 						<Label Text="{l:Localize InformationAboutThingText}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"
 					   HorizontalOptions="Start"/>
-						<VerticalStackLayout x:Name="TagLayout" BindableLayout.ItemsSource="{Binding Path=Tags}" VerticalOptions="StartAndExpand" Margin="{StaticResource DefaultMargin}">
+						<VerticalStackLayout x:Name="TagLayout" BindableLayout.ItemsSource="{Binding Path=Tags}" VerticalOptions="StartAndExpand" Margin="{StaticResource SmallMargins}">
 							<BindableLayout.ItemTemplate>
 								<DataTemplate x:DataType="things:HumanReadableTag">
 									<Grid ColumnDefinitions="*,*" RowDefinitions="auto">

@@ -24,7 +24,7 @@
 
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
-						<VerticalStackLayout Margin="{StaticResource DefaultMargin}">
+						<VerticalStackLayout Margin="{StaticResource SmallMargins}">
 							<Label Text="{l:Localize TokenDetails}" Margin="{StaticResource SmallTopMargins}"
 									 VerticalOptions="Start"/>
 							<Label Text="{l:Localize TokenDetailsDescription}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"/>

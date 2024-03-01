@@ -494,6 +494,10 @@
 		<Setter Property="Margin" Value="{StaticResource SmallMargins}" />
 	</Style>
 
+	<Style ApplyToDerivedTypes="True" TargetType="Frame" x:Key="AlertFrame" >
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource AlertLight}, Dark={StaticResource AlertDark}}" />
+	</Style>
+
 	<Style ApplyToDerivedTypes="True" TargetType="Frame" x:Key="ShellFrame">
 	</Style>
 

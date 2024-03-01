@@ -280,7 +280,7 @@
 				<Label Text="{l:Localize TokenEvents}" Style="{StaticResource PageTitleLabel}"/>
 
 				<Frame Style="{StaticResource FrameSet}">
-					<Grid ColumnDefinitions="*" RowDefinitions="auto,auto,*,auto" Margin="{StaticResource DefaultMargin}">
+					<Grid ColumnDefinitions="*" RowDefinitions="auto,auto,*,auto" Margin="{StaticResource SmallMargins}">
 						<Label Grid.Column="0" Grid.Row="0" Text="{l:Localize TokenEvents}" Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"/>
 						<Label Grid.Column="0" Grid.Row="1" Text="{l:Localize TokenEventsDescription}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"/>
 						<ListView Grid.Column="0" Grid.Row="2" HasUnevenRows="True" SeparatorVisibility="None" VerticalOptions="StartAndExpand"

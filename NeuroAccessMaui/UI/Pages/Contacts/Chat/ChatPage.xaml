@@ -60,7 +60,7 @@
                                              DefaultTemplate="{StaticResource OtherItems}"/>
 	</VisualElement.Resources>
 
-	<Grid x:Name="ContainerView" Margin="{StaticResource DefaultMargin}">
+	<Grid x:Name="ContainerView" Margin="{StaticResource SmallMargins}">
 		<Grid RowDefinitions="*,auto">
 			<controls:LoadingCollectionView x:Name="CollectionView" SelectionMode="Single" Rotation="180"
 													  VerticalOptions="StartAndExpand" ItemSizingStrategy="MeasureAllItems"
