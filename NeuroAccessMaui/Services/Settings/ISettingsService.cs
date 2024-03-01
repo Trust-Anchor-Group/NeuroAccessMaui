@@ -3,151 +3,151 @@
 namespace NeuroAccessMaui.Services.Settings
 {
 	/// <summary>
-	/// Handles common UI settings that need to be persisted during sessions.
+	/// Handles common runtime settings that need to be persisted during sessions.
 	/// </summary>
 	[DefaultImplementation(typeof(SettingsService))]
 	public interface ISettingsService
 	{
 		/// <summary>
-		/// Saves state with the given key.
+		/// Saves State with the given key.
 		/// </summary>
-		/// <param name="key">The key to use.</param>
-		/// <param name="state">The state to save.</param>
-		Task SaveState(string key, string state);
+		/// <param name="Key">The key to use.</param>
+		/// <param name="State">The State to save.</param>
+		Task SaveState(string Key, string State);
 
 		/// <summary>
-		/// Saves state with the given key.
+		/// Saves State with the given key.
 		/// </summary>
-		/// <param name="key">The key to use.</param>
-		/// <param name="state">The state to save.</param>
-		Task SaveState(string key, long state);
+		/// <param name="Key">The key to use.</param>
+		/// <param name="State">The State to save.</param>
+		Task SaveState(string Key, long State);
 
 		/// <summary>
-		/// Saves state with the given key.
+		/// Saves State with the given key.
 		/// </summary>
-		/// <param name="key">The key to use.</param>
-		/// <param name="state">The state to save.</param>
-		Task SaveState(string key, double state);
+		/// <param name="Key">The key to use.</param>
+		/// <param name="State">The State to save.</param>
+		Task SaveState(string Key, double State);
 
 		/// <summary>
-		/// Saves state with the given key.
+		/// Saves State with the given key.
 		/// </summary>
-		/// <param name="key">The key to use.</param>
-		/// <param name="state">The state to save.</param>
-		Task SaveState(string key, bool state);
+		/// <param name="Key">The key to use.</param>
+		/// <param name="State">The State to save.</param>
+		Task SaveState(string Key, bool State);
 
 		/// <summary>
-		/// Saves state with the given key.
+		/// Saves State with the given key.
 		/// </summary>
-		/// <param name="key">The key to use.</param>
-		/// <param name="state">The state to save.</param>
-		Task SaveState(string key, DateTime state);
+		/// <param name="Key">The key to use.</param>
+		/// <param name="State">The State to save.</param>
+		Task SaveState(string Key, DateTime State);
 
 		/// <summary>
-		/// Saves state with the given key.
+		/// Saves State with the given key.
 		/// </summary>
-		/// <param name="key">The key to use.</param>
-		/// <param name="state">The state to save.</param>
-		Task SaveState(string key, TimeSpan state);
+		/// <param name="Key">The key to use.</param>
+		/// <param name="State">The State to save.</param>
+		Task SaveState(string Key, TimeSpan State);
 
 		/// <summary>
-		/// Saves state with the given key.
+		/// Saves State with the given key.
 		/// </summary>
-		/// <param name="key">The key to use.</param>
-		/// <param name="state">The state to save.</param>
-		Task SaveState(string key, Enum state);
+		/// <param name="Key">The key to use.</param>
+		/// <param name="State">The State to save.</param>
+		Task SaveState(string Key, Enum State);
 
 		/// <summary>
-		/// Saves state with the given key.
+		/// Saves State with the given key.
 		/// </summary>
-		/// <param name="key">The key to use.</param>
-		/// <param name="state">The state to save.</param>
-		Task SaveState(string key, object state);
+		/// <param name="Key">The key to use.</param>
+		/// <param name="State">The State to save.</param>
+		Task SaveState(string Key, object State);
 
 		/// <summary>
-		/// Restores state for the specified key.
+		/// Restores State for the specified key.
 		/// </summary>
-		/// <param name="key">The state id.</param>
-		/// <param name="defaultValueIfNotFound">The default value to use if the state isn't found.</param>
+		/// <param name="Key">The State id.</param>
+		/// <param name="DefaultValueIfNotFound">The default value to use if the State isn't found.</param>
 		/// <returns>Value corresponding to the key.</returns>
-		Task<string?> RestoreStringState(string key, string? defaultValueIfNotFound = default);
+		Task<string?> RestoreStringState(string Key, string? DefaultValueIfNotFound = default);
 
 		/// <summary>
-		/// Restores state for the specified key.
+		/// Restores State for the specified key.
 		/// </summary>
-		/// <param name="key">The state id.</param>
-		/// <param name="defaultValueIfNotFound">The default value to use if the state isn't found.</param>
+		/// <param name="Key">The State id.</param>
+		/// <param name="DefaultValueIfNotFound">The default value to use if the State isn't found.</param>
 		/// <returns>Value corresponding to the key.</returns>
-		Task<long> RestoreLongState(string key, long defaultValueIfNotFound = default);
+		Task<long> RestoreLongState(string Key, long DefaultValueIfNotFound = default);
 
 		/// <summary>
-		/// Restores state for the specified key.
+		/// Restores State for the specified key.
 		/// </summary>
-		/// <param name="key">The state id.</param>
-		/// <param name="defaultValueIfNotFound">The default value to use if the state isn't found.</param>
+		/// <param name="Key">The State id.</param>
+		/// <param name="DefaultValueIfNotFound">The default value to use if the State isn't found.</param>
 		/// <returns>Value corresponding to the key.</returns>
-		Task<double> RestoreDoubleState(string key, double defaultValueIfNotFound = default);
+		Task<double> RestoreDoubleState(string Key, double DefaultValueIfNotFound = default);
 
 		/// <summary>
-		/// Restores state for the specified key.
+		/// Restores State for the specified key.
 		/// </summary>
-		/// <param name="key">The state id.</param>
-		/// <param name="defaultValueIfNotFound">The default value to use if the state isn't found.</param>
+		/// <param name="Key">The State id.</param>
+		/// <param name="DefaultValueIfNotFound">The default value to use if the State isn't found.</param>
 		/// <returns>Value corresponding to the key.</returns>
-		Task<bool> RestoreBoolState(string key, bool defaultValueIfNotFound = default);
+		Task<bool> RestoreBoolState(string Key, bool DefaultValueIfNotFound = default);
 
 		/// <summary>
-		/// Restores state for the specified key.
+		/// Restores State for the specified key.
 		/// </summary>
-		/// <param name="key">The state id.</param>
-		/// <param name="defaultValueIfNotFound">The default value to use if the state isn't found.</param>
+		/// <param name="Key">The State id.</param>
+		/// <param name="DefaultValueIfNotFound">The default value to use if the State isn't found.</param>
 		/// <returns>Value corresponding to the key.</returns>
-		Task<DateTime> RestoreDateTimeState(string key, DateTime defaultValueIfNotFound = default);
+		Task<DateTime> RestoreDateTimeState(string Key, DateTime DefaultValueIfNotFound = default);
 
 		/// <summary>
-		/// Restores state for the specified key.
+		/// Restores State for the specified key.
 		/// </summary>
-		/// <param name="key">The state id.</param>
-		/// <param name="defaultValueIfNotFound">The default value to use if the state isn't found.</param>
+		/// <param name="Key">The State id.</param>
+		/// <param name="DefaultValueIfNotFound">The default value to use if the State isn't found.</param>
 		/// <returns>Value corresponding to the key.</returns>
-		Task<TimeSpan> RestoreTimeSpanState(string key, TimeSpan defaultValueIfNotFound = default);
+		Task<TimeSpan> RestoreTimeSpanState(string Key, TimeSpan DefaultValueIfNotFound = default);
 
 		/// <summary>
-		/// Restores state for the specified key.
+		/// Restores State for the specified key.
 		/// </summary>
-		/// <param name="key">The state id.</param>
-		/// <param name="defaultValueIfNotFound">The default value to use if the state isn't found.</param>
+		/// <param name="Key">The State id.</param>
+		/// <param name="DefaultValueIfNotFound">The default value to use if the State isn't found.</param>
 		/// <returns>Value corresponding to the key.</returns>
-		Task<Enum?> RestoreEnumState(string key, Enum? defaultValueIfNotFound = default);
+		Task<Enum?> RestoreEnumState(string Key, Enum? DefaultValueIfNotFound = default);
 
 		/// <summary>
-		/// Restores state for the specified key.
+		/// Restores State for the specified key.
 		/// </summary>
-		/// <typeparam name="T">The state type.</typeparam>
-		/// <param name="key">The state id.</param>
-		/// <param name="defaultValueIfNotFound">The default value to use if the state isn't found.</param>
+		/// <typeparam name="T">The State type.</typeparam>
+		/// <param name="Key">The State id.</param>
+		/// <param name="DefaultValueIfNotFound">The default value to use if the State isn't found.</param>
 		/// <returns>Value corresponding to the key.</returns>
-		Task<T?> RestoreState<T>(string key, T? defaultValueIfNotFound = default);
+		Task<T?> RestoreState<T>(string Key, T? DefaultValueIfNotFound = default);
 
 		/// <summary>
-		/// Returns any states whose key matches the specified predicate.
+		/// Returns any States whose key matches the specified predicate.
 		/// </summary>
-		/// <typeparam name="T">The state type.</typeparam>
-		/// <param name="keyPrefix">The string value the key should start with, like "Foo". Do not include wildcards.</param>
-		/// <returns>a list of matching states.</returns>
-		Task<IEnumerable<(string key, T value)>> RestoreStateWhereKeyStartsWith<T>(string keyPrefix);
+		/// <typeparam name="T">The State type.</typeparam>
+		/// <param name="KeyPrefix">The string value the key should start with, like "Foo". Do not include wildcards.</param>
+		/// <returns>a list of matching States.</returns>
+		Task<IEnumerable<(string Key, T value)>> RestoreStateWhereKeyStartsWith<T>(string KeyPrefix);
 
 		/// <summary>
-		/// Removes a given state.
+		/// Removes a given State.
 		/// </summary>
-		/// <param name="key">The state identifier.</param>
-		Task RemoveState(string key);
+		/// <param name="Key">The State identifier.</param>
+		Task RemoveState(string Key);
 
 		/// <summary>
-		/// Removes any states whose key matches the specified predicate.
+		/// Removes any States whose key matches the specified predicate.
 		/// </summary>
-		/// <param name="keyPrefix">The string value the key should start with, like "Foo". Do not include wildcards.</param>
-		Task RemoveStateWhereKeyStartsWith(string keyPrefix);
+		/// <param name="KeyPrefix">The string value the key should start with, like "Foo". Do not include wildcards.</param>
+		Task RemoveStateWhereKeyStartsWith(string KeyPrefix);
 
 		/// <summary>
 		/// Waits for initialization of the storage service to be completed.

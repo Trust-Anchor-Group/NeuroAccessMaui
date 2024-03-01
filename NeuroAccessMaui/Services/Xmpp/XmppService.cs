@@ -1137,7 +1137,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			if (!Deleted)
 				return;
 
-			string CodesGenerated = await RuntimeSettings.GetAsync("TransferId.CodesSent", string.Empty);
+			string CodesGenerated = await RuntimeSettings.GetAsync(Constants.Settings.TransferIdCodeSent, string.Empty);
 			string[] Codes = CodesGenerated.Split(CommonTypes.CRLF, StringSplitOptions.RemoveEmptyEntries);
 
 			if (Array.IndexOf<string>(Codes, Code) < 0)
@@ -1152,7 +1152,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			this.xmppConnected = false;
 
 			ServiceRef.TagProfile.ClearAll();
-			await RuntimeSettings.SetAsync("TransferId.CodesSent", string.Empty);
+			await RuntimeSettings.SetAsync(Constants.Settings.TransferIdCodeSent, string.Empty);
 			await Database.Provider.Flush();
 
 			await App.SetRegistrationPageAsync();
@@ -1164,14 +1164,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Code">Transfer Code</param>
 		public async Task AddTransferCode(string Code)
 		{
-			string CodesGenerated = await RuntimeSettings.GetAsync("TransferId.CodesSent", string.Empty);
+			string CodesGenerated = await RuntimeSettings.GetAsync(Constants.Settings.TransferIdCodeSent, string.Empty);
 
 			if (string.IsNullOrEmpty(CodesGenerated))
 				CodesGenerated = Code;
 			else
 				CodesGenerated += "\r\n" + Code;
 
-			await RuntimeSettings.SetAsync("TransferId.CodesSent", CodesGenerated);
+			await RuntimeSettings.SetAsync(Constants.Settings.TransferIdCodeSent, CodesGenerated);
 			await Database.Provider.Flush();
 		}
 

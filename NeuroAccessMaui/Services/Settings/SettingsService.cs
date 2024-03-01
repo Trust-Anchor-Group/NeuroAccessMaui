@@ -4,31 +4,42 @@ using Waher.Runtime.Settings;
 
 namespace NeuroAccessMaui.Services.Settings
 {
+	/// <summary>
+	/// Handles common runtime settings that need to be persisted during sessions.
+	/// </summary>
 	[Singleton]
 	internal sealed class SettingsService : ISettingsService
 	{
 		private const string wildCard = "*";
 
+		/// <summary>
+		/// Handles common runtime settings that need to be persisted during sessions.
+		/// </summary>
 		public SettingsService()
 		{
 		}
 
-		private static string FormatKey(string keyPrefix)
+		private static string FormatKey(string KeyPrefix)
 		{
-			if (string.IsNullOrWhiteSpace(keyPrefix))
+			if (string.IsNullOrWhiteSpace(KeyPrefix))
 				return wildCard;
 
-			if (!keyPrefix.EndsWith(wildCard, StringComparison.InvariantCultureIgnoreCase))
-				keyPrefix += wildCard;
+			if (!KeyPrefix.EndsWith(wildCard, StringComparison.InvariantCultureIgnoreCase))
+				KeyPrefix += wildCard;
 
-			return keyPrefix;
+			return KeyPrefix;
 		}
 
-		public async Task SaveState(string key, string state)
+		/// <summary>
+		/// Saves State with the given key.
+		/// </summary>
+		/// <param name="Key">The key to use.</param>
+		/// <param name="State">The State to save.</param>
+		public async Task SaveState(string Key, string State)
 		{
 			try
 			{
-				await RuntimeSettings.SetAsync(key, state);
+				await RuntimeSettings.SetAsync(Key, State);
 				await Database.Provider.Flush();
 			}
 			catch (Exception e)
@@ -37,11 +48,16 @@ namespace NeuroAccessMaui.Services.Settings
 			}
 		}
 
-		public async Task SaveState(string key, long state)
+		/// <summary>
+		/// Saves State with the given key.
+		/// </summary>
+		/// <param name="Key">The key to use.</param>
+		/// <param name="State">The State to save.</param>
+		public async Task SaveState(string Key, long State)
 		{
 			try
 			{
-				await RuntimeSettings.SetAsync(key, state);
+				await RuntimeSettings.SetAsync(Key, State);
 				await Database.Provider.Flush();
 			}
 			catch (Exception e)
@@ -50,11 +66,16 @@ namespace NeuroAccessMaui.Services.Settings
 			}
 		}
 
-		public async Task SaveState(string key, double state)
+		/// <summary>
+		/// Saves State with the given key.
+		/// </summary>
+		/// <param name="Key">The key to use.</param>
+		/// <param name="State">The State to save.</param>
+		public async Task SaveState(string Key, double State)
 		{
 			try
 			{
-				await RuntimeSettings.SetAsync(key, state);
+				await RuntimeSettings.SetAsync(Key, State);
 				await Database.Provider.Flush();
 			}
 			catch (Exception e)
@@ -63,11 +84,16 @@ namespace NeuroAccessMaui.Services.Settings
 			}
 		}
 
-		public async Task SaveState(string key, bool state)
+		/// <summary>
+		/// Saves State with the given key.
+		/// </summary>
+		/// <param name="Key">The key to use.</param>
+		/// <param name="State">The State to save.</param>
+		public async Task SaveState(string Key, bool State)
 		{
 			try
 			{
-				await RuntimeSettings.SetAsync(key, state);
+				await RuntimeSettings.SetAsync(Key, State);
 				await Database.Provider.Flush();
 			}
 			catch (Exception e)
@@ -76,11 +102,16 @@ namespace NeuroAccessMaui.Services.Settings
 			}
 		}
 
-		public async Task SaveState(string key, DateTime state)
+		/// <summary>
+		/// Saves State with the given key.
+		/// </summary>
+		/// <param name="Key">The key to use.</param>
+		/// <param name="State">The State to save.</param>
+		public async Task SaveState(string Key, DateTime State)
 		{
 			try
 			{
-				await RuntimeSettings.SetAsync(key, state);
+				await RuntimeSettings.SetAsync(Key, State);
 				await Database.Provider.Flush();
 			}
 			catch (Exception e)
@@ -89,11 +120,16 @@ namespace NeuroAccessMaui.Services.Settings
 			}
 		}
 
-		public async Task SaveState(string key, TimeSpan state)
+		/// <summary>
+		/// Saves State with the given key.
+		/// </summary>
+		/// <param name="Key">The key to use.</param>
+		/// <param name="State">The State to save.</param>
+		public async Task SaveState(string Key, TimeSpan State)
 		{
 			try
 			{
-				await RuntimeSettings.SetAsync(key, state);
+				await RuntimeSettings.SetAsync(Key, State);
 				await Database.Provider.Flush();
 			}
 			catch (Exception e)
@@ -102,11 +138,16 @@ namespace NeuroAccessMaui.Services.Settings
 			}
 		}
 
-		public async Task SaveState(string key, Enum state)
+		/// <summary>
+		/// Saves State with the given key.
+		/// </summary>
+		/// <param name="Key">The key to use.</param>
+		/// <param name="State">The State to save.</param>
+		public async Task SaveState(string Key, Enum State)
 		{
 			try
 			{
-				await RuntimeSettings.SetAsync(key, state);
+				await RuntimeSettings.SetAsync(Key, State);
 				await Database.Provider.Flush();
 			}
 			catch (Exception e)
@@ -115,11 +156,16 @@ namespace NeuroAccessMaui.Services.Settings
 			}
 		}
 
-		public async Task SaveState(string key, object state)
+		/// <summary>
+		/// Saves State with the given key.
+		/// </summary>
+		/// <param name="Key">The key to use.</param>
+		/// <param name="State">The State to save.</param>
+		public async Task SaveState(string Key, object State)
 		{
 			try
 			{
-				await RuntimeSettings.SetAsync(key, state);
+				await RuntimeSettings.SetAsync(Key, State);
 				await Database.Provider.Flush();
 			}
 			catch (Exception e)
@@ -128,9 +174,15 @@ namespace NeuroAccessMaui.Services.Settings
 			}
 		}
 
-		public async Task<IEnumerable<(string key, T value)>> RestoreStateWhereKeyStartsWith<T>(string keyPrefix)
+		/// <summary>
+		/// Returns any States whose key matches the specified predicate.
+		/// </summary>
+		/// <typeparam name="T">The State type.</typeparam>
+		/// <param name="KeyPrefix">The string value the key should start with, like "Foo". Do not include wildcards.</param>
+		/// <returns>a list of matching States.</returns>
+		public async Task<IEnumerable<(string Key, T value)>> RestoreStateWhereKeyStartsWith<T>(string KeyPrefix)
 		{
-			if (string.IsNullOrWhiteSpace(keyPrefix))
+			if (string.IsNullOrWhiteSpace(KeyPrefix))
 			{
 				return Array.Empty<(string, T)>();
 			}
@@ -139,13 +191,13 @@ namespace NeuroAccessMaui.Services.Settings
 
 			try
 			{
-				keyPrefix = FormatKey(keyPrefix);
-				Dictionary<string, object> existingStates = (await RuntimeSettings.GetWhereKeyLikeAsync(keyPrefix, wildCard));
+				KeyPrefix = FormatKey(KeyPrefix);
+				Dictionary<string, object> existingStates = (await RuntimeSettings.GetWhereKeyLikeAsync(KeyPrefix, wildCard));
 
 				foreach (KeyValuePair<string, object> State in existingStates)
 				{
-					if (State.Value is T typedValue)
-						matches.Add((State.Key, typedValue));
+					if (State.Value is T TypedValue)
+						matches.Add((State.Key, TypedValue));
 				}
 			}
 			catch (Exception e)
@@ -156,11 +208,17 @@ namespace NeuroAccessMaui.Services.Settings
 			return matches;
 		}
 
-		public async Task<string?> RestoreStringState(string key, string? defaultValueIfNotFound = default)
+		/// <summary>
+		/// Restores State for the specified key.
+		/// </summary>
+		/// <param name="Key">The State id.</param>
+		/// <param name="DefaultValueIfNotFound">The default value to use if the State isn't found.</param>
+		/// <returns>Value corresponding to the key.</returns>
+		public async Task<string?> RestoreStringState(string Key, string? DefaultValueIfNotFound = default)
 		{
 			try
 			{
-				string? str = await RuntimeSettings.GetAsync(key, defaultValueIfNotFound);
+				string? str = await RuntimeSettings.GetAsync(Key, DefaultValueIfNotFound);
 				str = str?.Trim('"');
 				return str;
 			}
@@ -169,125 +227,172 @@ namespace NeuroAccessMaui.Services.Settings
 				ServiceRef.LogService.LogException(e);
 			}
 
-			return defaultValueIfNotFound;
+			return DefaultValueIfNotFound;
 		}
 
-		public async Task<long> RestoreLongState(string key, long defaultValueIfNotFound = default)
+		/// <summary>
+		/// Restores State for the specified key.
+		/// </summary>
+		/// <param name="Key">The State id.</param>
+		/// <param name="DefaultValueIfNotFound">The default value to use if the State isn't found.</param>
+		/// <returns>Value corresponding to the key.</returns>
+		public async Task<long> RestoreLongState(string Key, long DefaultValueIfNotFound = default)
 		{
 			try
 			{
-				return await RuntimeSettings.GetAsync(key, defaultValueIfNotFound);
+				return await RuntimeSettings.GetAsync(Key, DefaultValueIfNotFound);
 			}
 			catch (Exception e)
 			{
 				ServiceRef.LogService.LogException(e);
 			}
 
-			return defaultValueIfNotFound;
+			return DefaultValueIfNotFound;
 		}
 
-		public async Task<double> RestoreDoubleState(string key, double defaultValueIfNotFound = default)
+		/// <summary>
+		/// Restores State for the specified key.
+		/// </summary>
+		/// <param name="Key">The State id.</param>
+		/// <param name="DefaultValueIfNotFound">The default value to use if the State isn't found.</param>
+		/// <returns>Value corresponding to the key.</returns>
+		public async Task<double> RestoreDoubleState(string Key, double DefaultValueIfNotFound = default)
 		{
 			try
 			{
-				return await RuntimeSettings.GetAsync(key, defaultValueIfNotFound);
+				return await RuntimeSettings.GetAsync(Key, DefaultValueIfNotFound);
 			}
 			catch (Exception e)
 			{
 				ServiceRef.LogService.LogException(e);
 			}
 
-			return defaultValueIfNotFound;
+			return DefaultValueIfNotFound;
 		}
 
-		public async Task<bool> RestoreBoolState(string key, bool defaultValueIfNotFound = default)
+		/// <summary>
+		/// Restores State for the specified key.
+		/// </summary>
+		/// <param name="Key">The State id.</param>
+		/// <param name="DefaultValueIfNotFound">The default value to use if the State isn't found.</param>
+		/// <returns>Value corresponding to the key.</returns>
+		public async Task<bool> RestoreBoolState(string Key, bool DefaultValueIfNotFound = default)
 		{
 			try
 			{
-				return await RuntimeSettings.GetAsync(key, defaultValueIfNotFound);
+				return await RuntimeSettings.GetAsync(Key, DefaultValueIfNotFound);
 			}
 			catch (Exception e)
 			{
 				ServiceRef.LogService.LogException(e);
 			}
 
-			return defaultValueIfNotFound;
+			return DefaultValueIfNotFound;
 		}
 
-		public async Task<DateTime> RestoreDateTimeState(string key, DateTime defaultValueIfNotFound = default)
+		/// <summary>
+		/// Restores State for the specified key.
+		/// </summary>
+		/// <param name="Key">The State id.</param>
+		/// <param name="DefaultValueIfNotFound">The default value to use if the State isn't found.</param>
+		/// <returns>Value corresponding to the key.</returns>
+		public async Task<DateTime> RestoreDateTimeState(string Key, DateTime DefaultValueIfNotFound = default)
 		{
 			try
 			{
-				return await RuntimeSettings.GetAsync(key, defaultValueIfNotFound);
+				return await RuntimeSettings.GetAsync(Key, DefaultValueIfNotFound);
 			}
 			catch (Exception e)
 			{
 				ServiceRef.LogService.LogException(e);
 			}
 
-			return defaultValueIfNotFound;
+			return DefaultValueIfNotFound;
 		}
 
-		public async Task<TimeSpan> RestoreTimeSpanState(string key, TimeSpan defaultValueIfNotFound = default)
+		/// <summary>
+		/// Restores State for the specified key.
+		/// </summary>
+		/// <param name="Key">The State id.</param>
+		/// <param name="DefaultValueIfNotFound">The default value to use if the State isn't found.</param>
+		/// <returns>Value corresponding to the key.</returns>
+		public async Task<TimeSpan> RestoreTimeSpanState(string Key, TimeSpan DefaultValueIfNotFound = default)
 		{
 			try
 			{
-				return await RuntimeSettings.GetAsync(key, defaultValueIfNotFound);
+				return await RuntimeSettings.GetAsync(Key, DefaultValueIfNotFound);
 			}
 			catch (Exception e)
 			{
 				ServiceRef.LogService.LogException(e);
 			}
 
-			return defaultValueIfNotFound;
+			return DefaultValueIfNotFound;
 		}
 
-		public async Task<Enum?> RestoreEnumState(string key, Enum? defaultValueIfNotFound = default)
+		/// <summary>
+		/// Restores State for the specified key.
+		/// </summary>
+		/// <param name="Key">The State id.</param>
+		/// <param name="DefaultValueIfNotFound">The default value to use if the State isn't found.</param>
+		/// <returns>Value corresponding to the key.</returns>
+		public async Task<Enum?> RestoreEnumState(string Key, Enum? DefaultValueIfNotFound = default)
 		{
 			try
 			{
-				return await RuntimeSettings.GetAsync(key, defaultValueIfNotFound);
+				return await RuntimeSettings.GetAsync(Key, DefaultValueIfNotFound);
 			}
 			catch (Exception e)
 			{
 				ServiceRef.LogService.LogException(e);
 			}
 
-			return defaultValueIfNotFound;
+			return DefaultValueIfNotFound;
 		}
 
-		public async Task<T?> RestoreState<T>(string key, T? defaultValueIfNotFound = default)
+		/// <summary>
+		/// Restores State for the specified key.
+		/// </summary>
+		/// <typeparam name="T">The State type.</typeparam>
+		/// <param name="Key">The State id.</param>
+		/// <param name="DefaultValueIfNotFound">The default value to use if the State isn't found.</param>
+		/// <returns>Value corresponding to the key.</returns>
+		public async Task<T?> RestoreState<T>(string Key, T? DefaultValueIfNotFound = default)
 		{
-			if (string.IsNullOrWhiteSpace(key))
-				return defaultValueIfNotFound;
+			if (string.IsNullOrWhiteSpace(Key))
+				return DefaultValueIfNotFound;
 
 			try
 			{
-				object existingState = await RuntimeSettings.GetAsync(key, (object?)null);
+				object existingState = await RuntimeSettings.GetAsync(Key, (object?)null);
 
-				if (existingState is T typedValue)
-					return typedValue;
+				if (existingState is T TypedValue)
+					return TypedValue;
 
-				return defaultValueIfNotFound;
+				return DefaultValueIfNotFound;
 			}
 			catch (Exception e)
 			{
 				ServiceRef.LogService.LogException(e);
 			}
 
-			return defaultValueIfNotFound;
+			return DefaultValueIfNotFound;
 		}
 
-		public async Task RemoveState(string key)
+		/// <summary>
+		/// Removes a given State.
+		/// </summary>
+		/// <param name="Key">The State identifier.</param>
+		public async Task RemoveState(string Key)
 		{
-			if (string.IsNullOrWhiteSpace(key))
+			if (string.IsNullOrWhiteSpace(Key))
 			{
 				return;
 			}
 
 			try
 			{
-				await RuntimeSettings.DeleteAsync(key);
+				await RuntimeSettings.DeleteAsync(Key);
 				await Database.Provider.Flush();
 			}
 			catch (Exception e)
@@ -296,17 +401,21 @@ namespace NeuroAccessMaui.Services.Settings
 			}
 		}
 
-		public async Task RemoveStateWhereKeyStartsWith(string keyPrefix)
+		/// <summary>
+		/// Removes any States whose key matches the specified predicate.
+		/// </summary>
+		/// <param name="KeyPrefix">The string value the key should start with, like "Foo". Do not include wildcards.</param>
+		public async Task RemoveStateWhereKeyStartsWith(string KeyPrefix)
 		{
-			if (string.IsNullOrWhiteSpace(keyPrefix))
+			if (string.IsNullOrWhiteSpace(KeyPrefix))
 			{
 				return;
 			}
 
 			try
 			{
-				keyPrefix = FormatKey(keyPrefix);
-				await RuntimeSettings.DeleteWhereKeyLikeAsync(keyPrefix, wildCard);
+				KeyPrefix = FormatKey(KeyPrefix);
+				await RuntimeSettings.DeleteWhereKeyLikeAsync(KeyPrefix, wildCard);
 				await Database.Provider.Flush();
 			}
 			catch (Exception e)
@@ -315,6 +424,10 @@ namespace NeuroAccessMaui.Services.Settings
 			}
 		}
 
+		/// <summary>
+		/// Waits for initialization of the storage service to be completed.
+		/// </summary>
+		/// <returns>If storage service is OK, or failed to initialize.</returns>
 		public Task<bool> WaitInitDone()
 		{
 			return ServiceRef.StorageService.WaitInitDone();

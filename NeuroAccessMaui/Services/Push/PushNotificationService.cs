@@ -75,8 +75,8 @@ namespace NeuroAccessMaui.Services.Push
 
 		private static async Task<bool> ForceTokenReport(TokenInformation TokenInformation)
 		{
-			string OldToken = await RuntimeSettings.GetAsync("PUSH.TOKEN", string.Empty);
-			DateTime ReportDate = await RuntimeSettings.GetAsync("PUSH.REPORT_DATE", DateTime.MinValue);
+			string OldToken = await RuntimeSettings.GetAsync(Constants.Settings.PushNotificationToken, string.Empty);
+			DateTime ReportDate = await RuntimeSettings.GetAsync(Constants.Settings.PushNotificationReportDate, DateTime.MinValue);
 
 			return (DateTime.UtcNow.Subtract(ReportDate).TotalDays > 7) || (TokenInformation.Token != OldToken);
 		}
@@ -107,7 +107,7 @@ namespace NeuroAccessMaui.Services.Push
 					bool ForceReport = await ForceTokenReport(TokenInformation);
 
 					string Version = AppInfo.VersionString + "." + AppInfo.BuildString;
-					string PrevVersion = await RuntimeSettings.GetAsync("PUSH.CONFIG_VERSION", string.Empty);
+					string PrevVersion = await RuntimeSettings.GetAsync(Constants.Settings.PushNotificationConfigurationVersion, string.Empty);
 					bool IsVersionChanged = Version != PrevVersion;
 
 					if (IsVersionChanged || ForceReport)
@@ -120,15 +120,15 @@ namespace NeuroAccessMaui.Services.Push
 							ClientType ClientType = TokenInformation.ClientType;
 							await ServiceRef.XmppService.ReportNewPushNotificationToken(Token, Service, ClientType);
 
-							await RuntimeSettings.SetAsync("PUSH.TOKEN", TokenInformation.Token);
-							await RuntimeSettings.SetAsync("PUSH.REPORT_DATE", DateTime.UtcNow);
+							await RuntimeSettings.SetAsync(Constants.Settings.PushNotificationToken, TokenInformation.Token);
+							await RuntimeSettings.SetAsync(Constants.Settings.PushNotificationReportDate, DateTime.UtcNow);
 						}
 					}
 
 					if (IsVersionChanged)
 					{
 						// it will force the rules update if somehing goes wrong.
-						await RuntimeSettings.SetAsync("PUSH.CONFIG_VERSION", string.Empty);
+						await RuntimeSettings.SetAsync(Constants.Settings.PushNotificationConfigurationVersion, string.Empty);
 						await ServiceRef.XmppService.ClearPushNotificationRules();
 
 						#region Message Rules
@@ -467,7 +467,7 @@ namespace NeuroAccessMaui.Services.Push
 
 						#endregion
 
-						await RuntimeSettings.SetAsync("PUSH.CONFIG_VERSION", Version);
+						await RuntimeSettings.SetAsync(Constants.Settings.PushNotificationConfigurationVersion, Version);
 					}
 				}
 			}

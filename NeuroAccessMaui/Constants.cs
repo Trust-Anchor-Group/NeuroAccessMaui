@@ -851,5 +851,31 @@
 			public const int DefaultImageHeight = 250;
 		}
 
+		/// <summary>
+		/// Runtime setting key names.
+		/// </summary>
+		public static class Settings
+		{
+			/// <summary>
+			/// Push-notification configuration version.
+			/// </summary>
+			public const string PushNotificationConfigurationVersion = "PUSH.CONFIG_VERSION";
+
+			/// <summary>
+			/// When push-notification token was reported.
+			/// </summary>
+			public const string PushNotificationReportDate = "PUSH.REPORT_DATE";
+
+			/// <summary>
+			/// Push-notification token.
+			/// </summary>
+			public const string PushNotificationToken = "PUSH.TOKEN";
+
+			/// <summary>
+			/// Transfer ID code
+			/// </summary>
+			public const string TransferIdCodeSent = "TransferId.CodesSent";
+		}
+
 	}
 }
