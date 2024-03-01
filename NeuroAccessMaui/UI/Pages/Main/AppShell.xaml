@@ -7,7 +7,6 @@
 		 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main"
 		 xmlns:main="clr-namespace:NeuroAccessMaui.UI.Pages.Main"
 		 xmlns:registration="clr-namespace:NeuroAccessMaui.UI.Pages.Registration"
-		 xmlns:identity="clr-namespace:NeuroAccessMaui.UI.Pages.Identity"
 		 FlyoutBehavior="Flyout"
 		 FlyoutHeaderBehavior="Scroll"
 		 FlyoutBackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
