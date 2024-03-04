@@ -5,6 +5,8 @@ using System.Text;
 using System.Xml;
 using Waher.Persistence.Attributes;
 using NeuroAccessMaui.Services.UI;
+using Microsoft.Maui.Controls.Shapes;
+using NeuroAccessMaui.UI;
 
 namespace NeuroAccessMaui.Services.Notification.Wallet
 {
@@ -116,9 +118,9 @@ namespace NeuroAccessMaui.Services.Notification.Wallet
 		/// Gets an icon for the category of event.
 		/// </summary>
 		/// <returns>Icon</returns>
-		public override Task<string> GetCategoryIcon()
+		public override Task<Geometry> GetCategoryIcon()
 		{
-			return Task.FromResult("✻");	// TODO: SVG icon
+			return Task.FromResult(Geometries.TokenIconPath);
 		}
 
 		/// <summary>

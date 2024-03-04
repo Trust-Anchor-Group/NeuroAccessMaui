@@ -53,19 +53,20 @@
 								<DataTemplate x:DataType="model2:EventModel">
 									<Grid ColumnDefinitions="auto,*,auto" RowDefinitions="auto,auto" Padding="5,5,5,5">
 										<Label Grid.Column="0" Grid.Row="0" LineBreakMode="NoWrap" Padding="5,2,5,0"
-									   Text="{Binding Path=Received, Converter={converters:DateToString}}"
-									   HorizontalOptions="Center" VerticalOptions="Center"/>
+												 Text="{Binding Path=Received, Converter={converters:DateToString}}"
+												 HorizontalOptions="Center" VerticalOptions="Center"/>
 										<Label Grid.Column="0" Grid.Row="1" LineBreakMode="NoWrap" Padding="5,0,5,2"
-									   Text="{Binding Path=Received, Converter={converters:TimeToString}}"
-									   HorizontalOptions="Center" VerticalOptions="Center"/>
+												 Text="{Binding Path=Received, Converter={converters:TimeToString}}"
+												 HorizontalOptions="Center" VerticalOptions="Center"/>
 										<Label Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" LineBreakMode="CharacterWrap" TextType="Text"
-									   HorizontalTextAlignment="Start" VerticalTextAlignment="Center" Padding="5,2,5,2"
-									   Text="{Binding Path=Description}" Style="{StaticResource ClickableValueLabel}"/>
-										<Label Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" LineBreakMode="NoWrap" Padding="5,2,5,0"
-									   Text="{Binding Path=Icon}" HorizontalOptions="Center" VerticalOptions="Center"/>
+												 HorizontalTextAlignment="Start" VerticalTextAlignment="Center" Padding="5,2,5,2"
+												 Text="{Binding Path=Description}" Style="{StaticResource ClickableValueLabel}"/>
+										<Path Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" HorizontalOptions="Center" VerticalOptions="Center"
+												Data="{Binding Icon}" HeightRequest="16" WidthRequest="16" Aspect="Uniform"
+												Fill="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}"/>
 										<Label Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" LineBreakMode="NoWrap" Padding="5,2,5,0"
-									   Text="•" FontSize="50" HorizontalOptions="End" VerticalOptions="Center"
-									   Style="{StaticResource AlertLabel}"/>
+												 Text="•" FontSize="50" HorizontalOptions="End" VerticalOptions="Center"
+												 Style="{StaticResource AlertLabel}"/>
 										<Grid.GestureRecognizers>
 											<TapGestureRecognizer Command="{Binding ClickedCommand}" CommandParameter="{Binding .}"/>
 										</Grid.GestureRecognizers>

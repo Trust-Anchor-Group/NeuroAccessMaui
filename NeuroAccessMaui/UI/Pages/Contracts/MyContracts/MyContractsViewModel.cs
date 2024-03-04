@@ -12,6 +12,7 @@ using NeuroAccessMaui.Resources.Languages;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using NeuroAccessMaui.Services.UI;
+using Microsoft.Maui.Controls.Shapes;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 {
@@ -336,7 +337,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 					{
 						foreach (NotificationEvent Event in P.Value)
 						{
-							string Icon = await Event.GetCategoryIcon();
+							Geometry Icon = await Event.GetCategoryIcon();
 							string Description = await Event.GetDescription();
 
 							NewCategories.Add(new EventModel(Event.Received, Icon, Description, Event));

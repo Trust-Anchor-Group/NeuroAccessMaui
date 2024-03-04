@@ -1,4 +1,6 @@
-﻿using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
+﻿using Microsoft.Maui.Controls.Shapes;
+using NeuroAccessMaui.UI;
+using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 using System.Text;
 using System.Xml;
 using Waher.Networking.XMPP.Contracts;
@@ -134,9 +136,9 @@ namespace NeuroAccessMaui.Services.Notification.Contracts
 		/// Gets an icon for the category of event.
 		/// </summary>
 		/// <returns>Icon</returns>
-		public override Task<string> GetCategoryIcon()
+		public override Task<Geometry> GetCategoryIcon()
 		{
-			return Task.FromResult("¶");	// TODO: SVG icon
+			return Task.FromResult(Geometries.ContractPath);
 		}
 
 		/// <summary>

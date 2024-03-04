@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.Controls.Shapes;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Notification;
 
@@ -12,7 +13,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 	/// <param name="Icon">Icon of event.</param>
 	/// <param name="Description">Description of event.</param>
 	/// <param name="Event">Notification event object.</param>
-	public partial class EventModel(DateTime Received, string Icon, string Description, NotificationEvent Event) : ObservableObject, IUniqueItem
+	public partial class EventModel(DateTime Received, Geometry Icon, string Description, NotificationEvent Event) : ObservableObject, IUniqueItem
 	{
 		/// <summary>
 		/// When event was received.
@@ -22,7 +23,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 		/// <summary>
 		/// Icon of event.
 		/// </summary>
-		public string Icon { get; } = Icon;
+		public Geometry Icon { get; } = Icon;
 
 		/// <summary>
 		/// Description of event.

@@ -1,4 +1,7 @@
-﻿namespace NeuroAccessMaui.Services.Notification.Wallet
+﻿using Microsoft.Maui.Controls.Shapes;
+using NeuroAccessMaui.UI;
+
+namespace NeuroAccessMaui.Services.Notification.Wallet
 {
 	/// <summary>
 	/// Abstract base class for wallet notification events.
@@ -33,9 +36,9 @@
 		/// Gets an icon for the category of event.
 		/// </summary>
 		/// <returns>Money Icon</returns>
-		public override Task<string> GetCategoryIcon()
+		public override Task<Geometry> GetCategoryIcon()
 		{
-			return Task.FromResult("💵");	// TODO: SVG icon
+			return Task.FromResult(Geometries.MoneyPath);
 		}
 	}
 }

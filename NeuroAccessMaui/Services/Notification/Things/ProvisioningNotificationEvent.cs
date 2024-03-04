@@ -1,4 +1,6 @@
-﻿using NeuroAccessMaui.Services.Notification.Xmpp;
+﻿using Microsoft.Maui.Controls.Shapes;
+using NeuroAccessMaui.Services.Notification.Xmpp;
+using NeuroAccessMaui.UI;
 using Waher.Networking.XMPP.Provisioning;
 
 namespace NeuroAccessMaui.Services.Notification.Things
@@ -55,9 +57,9 @@ namespace NeuroAccessMaui.Services.Notification.Things
 		/// Gets an icon for the category of event.
 		/// </summary>
 		/// <returns>Icon</returns>
-		public override Task<string> GetCategoryIcon()
+		public override Task<Geometry> GetCategoryIcon()
 		{
-			return Task.FromResult("📟︎");      // TODO: SVG Icon
+			return Task.FromResult(Geometries.ThingPath);
 		}
 	}
 }

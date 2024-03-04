@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using EDaler;
 using EDaler.Uris;
+using Microsoft.Maui.Controls.Shapes;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
@@ -751,7 +752,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 							{
 								if (TokenEvent is TokenRemovedNotificationEvent)
 								{
-									string Icon = await TokenEvent.GetCategoryIcon();
+									Geometry Icon = await TokenEvent.GetCategoryIcon();
 									string Description = await TokenEvent.GetDescription();
 
 									NewTokens.Add(new EventModel(TokenEvent.Received, Icon, Description, TokenEvent));

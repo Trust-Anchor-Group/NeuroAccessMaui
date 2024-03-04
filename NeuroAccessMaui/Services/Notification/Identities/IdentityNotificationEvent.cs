@@ -1,8 +1,10 @@
 ﻿using System.Text;
 using System.Xml;
+using Microsoft.Maui.Controls.Shapes;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.UI.Photos;
+using NeuroAccessMaui.UI;
 using Waher.Networking.XMPP.Contracts;
 
 namespace NeuroAccessMaui.Services.Notification.Identities
@@ -157,9 +159,9 @@ namespace NeuroAccessMaui.Services.Notification.Identities
 		/// Gets an icon for the category of event.
 		/// </summary>
 		/// <returns>Icon</returns>
-		public override Task<string> GetCategoryIcon()
+		public override Task<Geometry> GetCategoryIcon()
 		{
-			return Task.FromResult("🆔");	// TODO: SVG Icon
+			return Task.FromResult(Geometries.PersonPath);
 		}
 
 		/// <summary>
