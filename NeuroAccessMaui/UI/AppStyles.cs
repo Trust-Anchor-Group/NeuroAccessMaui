@@ -28,6 +28,8 @@ namespace NeuroAccessMaui.UI
 		private static Style? regularCompositeEntry;
 		private static Style? regularCompositeEntryBorder;
 		private static Style? unicodeCharacterButton;
+		private static Style? imageOnlyButton;
+		private static Style? transparentImageButton;
 
 		static AppStyles()
 		{
@@ -276,6 +278,30 @@ namespace NeuroAccessMaui.UI
 			{
 				unicodeCharacterButton ??= TryGetResource<Style>("UnicodeCharacterButtonNoRoundedCorners");  // TODO: Remove NoRoundedCorners
 				return unicodeCharacterButton!;
+			}
+		}
+
+		/// <summary>
+		/// Style for buttons containing only an image.
+		/// </summary>
+		public static Style ImageOnlyButton
+		{
+			get
+			{
+				imageOnlyButton ??= TryGetResource<Style>("ImageOnlyButton");
+				return imageOnlyButton!;
+			}
+		}
+
+		/// <summary>
+		/// Style for transparent image buttons.
+		/// </summary>
+		public static Style TransparentImageButton
+		{
+			get
+			{
+				transparentImageButton ??= TryGetResource<Style>("TransparentImageButton");
+				return transparentImageButton!;
 			}
 		}
 
