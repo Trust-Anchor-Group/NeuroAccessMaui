@@ -169,6 +169,10 @@
 	  <None Remove="Resources\Images\fingerprint_dark.svg" />
 	  <None Remove="Resources\Images\fingerprint_light.svg" />
 	  <None Remove="Resources\Images\flyout_header.svg" />
+	  <None Remove="Resources\Images\folder_closed_dark.svg" />
+	  <None Remove="Resources\Images\folder_closed_light.svg" />
+	  <None Remove="Resources\Images\folder_open_dark.svg" />
+	  <None Remove="Resources\Images\folder_open_light.svg" />
 	  <None Remove="Resources\Images\light_mode_dark.svg" />
 	  <None Remove="Resources\Images\light_mode_light.svg" />
 	  <None Remove="Resources\Images\microphone_dark.svg" />

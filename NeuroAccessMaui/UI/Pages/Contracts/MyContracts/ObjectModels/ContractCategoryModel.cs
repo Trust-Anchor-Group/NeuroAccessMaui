@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using Microsoft.Maui.Controls.Shapes;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 {
@@ -56,6 +57,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 		/// <summary>
 		/// Symbol used for the category.
 		/// </summary>
-		public string Symbol => this.expanded ? "🗁" : "🗀";	// TODO: SVG symbols
+		public Geometry Symbol => this.expanded ? Geometries.FolderOpenPath : Geometries.FolderClosedPath;
 	}
 }

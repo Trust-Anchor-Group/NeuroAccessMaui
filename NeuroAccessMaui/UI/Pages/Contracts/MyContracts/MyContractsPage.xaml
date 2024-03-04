@@ -38,9 +38,9 @@
 					<Label FontSize="Caption" Text="{Binding NrEvents}" Padding="1"
 							 TextColor="{AppThemeBinding Light={StaticResource SelectedForegroundLight}, Dark={StaticResource SelectedForegroundDark}}" />
 				</Frame>
-				<Label Grid.Column="1" Grid.Row="0" FontSize="Medium" Margin="1,1,1,1" TextType="Text" Text="{Binding Path=Symbol}" 
-						 TextColor="{AppThemeBinding Light={StaticResource SelectedForegroundLight}, Dark={StaticResource SelectedForegroundDark}}"
-						 HorizontalOptions="End" VerticalOptions="Center"/>
+				<Path Grid.Column="1" Grid.Row="0" HorizontalOptions="End" VerticalOptions="Center"
+						Data="{Binding Symbol}" HeightRequest="16" WidthRequest="16" Aspect="Uniform"
+						Fill="{AppThemeBinding Light={StaticResource SelectedForegroundLight}, Dark={StaticResource SelectedForegroundDark}}"/>
 			</Grid>
 		</DataTemplate>
 
