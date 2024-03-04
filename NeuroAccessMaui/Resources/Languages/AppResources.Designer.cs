@@ -4129,15 +4129,6 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A restart of the App is needed, for the new theme to be properly displayed. When closing the dialog, the App will automatically close. When restarting the App, the new theme will be selected..
-        /// </summary>
-        internal static string RestartNeededDueToThemeChange {
-            get {
-                return ResourceManager.GetString("RestartNeededDueToThemeChange", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to You have now approved the information provided by {0}. Your review may be used to approve the identity application..
         /// </summary>
         internal static string ReviewApproved {
@@ -4687,7 +4678,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to What is a service provider?.
+        ///   Looks up a localized string similar to A Service Provider provides connectivity for the App, brokers requests, and ensures the information provided by the client is correct..
         /// </summary>
         internal static string ServiceProviderInfo {
             get {
@@ -5538,6 +5529,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string WarningTitle {
             get {
                 return ResourceManager.GetString("WarningTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What is a service provider?.
+        /// </summary>
+        internal static string WhatIsAServiceProvider {
+            get {
+                return ResourceManager.GetString("WhatIsAServiceProvider", resourceCulture);
             }
         }
         

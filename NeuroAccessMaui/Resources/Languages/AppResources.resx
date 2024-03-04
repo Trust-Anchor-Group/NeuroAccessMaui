@@ -652,7 +652,7 @@
     <value>Undo selection</value>
   </data>
   <data name="ServiceProviderInfo" xml:space="preserve">
-    <value>What is a service provider?</value>
+    <value>A Service Provider provides connectivity for the App, brokers requests, and ensures the information provided by the client is correct.</value>
   </data>
   <data name="QrPageTitleScanInvitation" xml:space="preserve">
     <value>Scan invitation</value>
@@ -887,9 +887,6 @@
   </data>
   <data name="ReportAsCompromizedDescription" xml:space="preserve">
     <value>Report if App, password or phone has been compromised, hacked or stolen.</value>
-  </data>
-  <data name="RestartNeededDueToThemeChange" xml:space="preserve">
-    <value>A restart of the App is needed, for the new theme to be properly displayed. When closing the dialog, the App will automatically close. When restarting the App, the new theme will be selected.</value>
   </data>
   <data name="RevokeIdentity" xml:space="preserve">
     <value>Revoke Identity</value>
@@ -2036,5 +2033,8 @@
   </data>
   <data name="CreateToken" xml:space="preserve">
     <value>Create Token</value>
+  </data>
+  <data name="WhatIsAServiceProvider" xml:space="preserve">
+    <value>What is a service provider?</value>
   </data>
 </root>

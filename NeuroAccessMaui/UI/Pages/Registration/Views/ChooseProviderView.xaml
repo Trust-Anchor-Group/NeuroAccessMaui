@@ -164,7 +164,7 @@
 						VerticalOptions="Center"
 						FontFamily="HaasGroteskRegular"
 						FontSize="14"
-						Text="{l:Localize ServiceProviderInfo}"
+						Text="{l:Localize WhatIsAServiceProvider}"
 						TextColor="{AppThemeBinding Light={StaticResource NormalInfoForegroundLight},
 													Dark={StaticResource NormalInfoForegroundDark}}" />
 				</HorizontalStackLayout>

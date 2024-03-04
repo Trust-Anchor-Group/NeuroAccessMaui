@@ -186,7 +186,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		[RelayCommand]
 		private static void ServiceProviderInfo()
 		{
-			string title = ServiceRef.Localizer[nameof(AppResources.ServiceProviderInfo)];
+			string title = ServiceRef.Localizer[nameof(AppResources.WhatIsAServiceProvider)];
 			string message = ServiceRef.Localizer[nameof(AppResources.ServiceProviderInfo)];
 			ShowInfoPopup infoPage = new(title, message);
 			ServiceRef.UiService.PushAsync(infoPage);
