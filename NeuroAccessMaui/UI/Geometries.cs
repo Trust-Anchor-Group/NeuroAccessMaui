@@ -1,10 +1,17 @@
-﻿using System.IO;
-using Microsoft.Maui.Controls.Shapes;
+﻿using Microsoft.Maui.Controls.Shapes;
 
 namespace NeuroAccessMaui.UI
 {
-	public class Geometries
+	/// <summary>
+	/// Static class containing SVG Paths for symbols used in the app.
+	///
+	/// To view or edit an SVG Path, you can use online tools such as: https://yqnn.github.io/svg-path-editor/
+	/// </summary>
+	public static class Geometries
 	{
+		/// <summary>
+		/// Curved lines used for the app background.
+		/// </summary>
 		public static readonly Geometry CurvedLinesPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M-475.991 759.984C-475.991 759.984 -652.77 348.961 -281.049 373.456C90.6695 397.951 -163.291 -204.647 309.288 76.6778C781.869 358.006 536.859 -174.054 879.665 106.678
@@ -61,11 +68,17 @@ namespace NeuroAccessMaui.UI
 			M-310.672 919.893C-310.672 919.893 -267.557 427.994 6.15899 594.625C279.872 761.253 333.642 283.927 454.909 686.198C584.815 1117.12 784.063 213.963 947.642 534.714
 			""");
 
+		/// <summary>
+		/// Back arrow
+		/// </summary>
 		public static readonly Geometry BackButtonPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M16 7H3.83L9.42 1.41L8 0L0 8L8 16L9.41 14.59L3.83 9H16V7Z
 			""");
 
+		/// <summary>
+		/// Language selection.
+		/// </summary>
 		public static readonly Geometry LanguageSelectButtonPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M10.49 0C4.97 0 0.5 4.48 0.5 10C0.5 15.52 4.97 20 10.49 20C16.02 20 20.5 15.52 20.5 10C20.5 4.48 16.02 0 10.49 0Z
@@ -80,6 +93,9 @@ namespace NeuroAccessMaui.UI
 			M14.86 12C14.94 11.34 15 10.68 15 10C15 9.32 14.94 8.66 14.86 8H18.24C18.4 8.64 18.5 9.31 18.5 10C18.5 10.69 18.4 11.36 18.24 12H14.86Z
 			""");
 
+		/// <summary>
+		/// Information circle
+		/// </summary>
 		public static readonly Geometry InfoCirclePath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M9 5H11V7H9V5Z
@@ -88,16 +104,25 @@ namespace NeuroAccessMaui.UI
 			M10 18C5.59 18 2 14.41 2 10C2 5.59 5.59 2 10 2C14.41 2 18 5.59 18 10C18 14.41 14.41 18 10 18Z
 			""");
 
+		/// <summary>
+		/// Circle
+		/// </summary>
 		public static readonly Geometry CirclePath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M10 18C5.59 18 2 14.41 2 10C2 5.59 5.59 2 10 2C14.41 2 18 5.59 18 10C18 14.41 14.41 18 10 18Z
 			""");
 
+		/// <summary>
+		/// Drop-down arrow
+		/// </summary>
 		public static readonly Geometry DropDownArrowPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M0.333496 0.5L5.3335 5.5L10.3335 0.5H0.333496Z
 			""");
 
+		/// <summary>
+		/// E-Mail
+		/// </summary>
 		public static readonly Geometry EmailIconPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M20 2C20 0.9 19.1 0 18 0H2C0.9 0 0 0.9 0 2V14C0 15.1 0.9 16 2 16H18C19.1 16 20 15.1 20 14V2Z
@@ -105,6 +130,9 @@ namespace NeuroAccessMaui.UI
 			M18 14H2V4L10 9L18 4V14Z
 			""");
 
+		/// <summary>
+		/// Account
+		/// </summary>
 		public static readonly Geometry AccountIconPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M8 2C9.1 2 10 2.9 10 4C10 5.1 9.1 6 8 6C6.9 6 6 5.1 6 4C6 2.9 6.9 2 8 2Z
@@ -113,6 +141,9 @@ namespace NeuroAccessMaui.UI
 			M8 10C5.33 10 0 11.34 0 14V16H16V14C16 11.34 10.67 10 8 10Z
 			""");
 
+		/// <summary>
+		/// Take photo
+		/// </summary>
 		public static readonly Geometry CameraPhotoButtonPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M18 2H14.83L13 0H7L5.17 2H2C0.9 2 0 2.9 0 4V16C0 17.1 0.9 18 2 18H18C19.1 18 20 17.1 20 16V4C20 2.9 19.1 2 18 2Z
@@ -121,6 +152,9 @@ namespace NeuroAccessMaui.UI
 			M10 13C8.35 13 7 11.65 7 10C7 8.35 8.35 7 10 7C11.65 7 13 8.35 13 10C13 11.65 11.65 13 10 13Z
 			""");
 
+		/// <summary>
+		/// Camera
+		/// </summary>
 		public static readonly Geometry CameraImageButtonPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M16 2V16H2V2H16Z
@@ -128,6 +162,9 @@ namespace NeuroAccessMaui.UI
 			M11.14 8.86L8.14 12.73L6 10.14L3 14H15L11.14 8.86Z
 			""");
 
+		/// <summary>
+		/// Torch
+		/// </summary>
 		public static readonly Geometry CameraTorchButtonPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M12 0H0V6L2 9V20H10V9L12 6V0Z
@@ -136,6 +173,9 @@ namespace NeuroAccessMaui.UI
 			M6 13.5C6.82843 13.5 7.5 12.8284 7.5 12C7.5 11.1716 6.82843 10.5 6 10.5C5.17157 10.5 4.5 11.1716 4.5 12C4.5 12.8284 5.17157 13.5 6 13.5Z
 			""");
 
+		/// <summary>
+		/// Switch side
+		/// </summary>
 		public static readonly Geometry CameraSwitchButtonPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M7 10C7 11.66 8.34 13 10 13C11.66 13 13 11.66 13 10C13 8.34 11.66 7 10 7C8.34 7 7 8.34 7 10Z
@@ -143,12 +183,22 @@ namespace NeuroAccessMaui.UI
 			M14 12V14H16.91C15.53 16.39 12.95 18 10 18C6.28 18 3.15 15.44 2.26 12H0.2C1.13 16.56 5.16 20 10 20C13.27 20 16.18 18.42 18 15.99V18H20V12H14Z
 			""");
 
+		/// <summary>
+		/// Trash can
+		/// </summary>
 		public static readonly Geometry TrashCanButtonPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M14 1.41049L12.59 0.000488281L7 5.59049L1.41 0.000488281L0 1.41049L5.59 7.00049L0 12.5905L1.41 14.0005L7 8.41049L12.59 14.0005L14 12.5905L8.41 7.00049L14 1.41049Z
 			""");
 
+		/// <summary>
+		/// Default user icon color
+		/// </summary>
 		public static readonly Color UserColor = Colors.Red;
+
+		/// <summary>
+		/// User symbol for QR codes
+		/// </summary>
 		public static readonly Geometry UserIconPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M128 21.3335C69.1202 21.3335 21.3335 69.1202 21.3335 128C21.3335 186.88 69.1202 234.667 128 234.667C186.88 234.667 234.667 186.88 234.667 128C234.667 69.1202 186.88 21.3335 128 21.3335Z
@@ -156,7 +206,14 @@ namespace NeuroAccessMaui.UI
 			M128 204.8C101.333 204.8 77.7602 191.147 64.0002 170.453C64.3202 149.227 106.667 137.6 128 137.6C149.227 137.6 191.68 149.227 192 170.453C178.24 191.147 154.667 204.8 128 204.8Z
 			""");
 
+		/// <summary>
+		/// Default onboarding icon color
+		/// </summary>
 		public static readonly Color OnboardingColor = Colors.Green;
+
+		/// <summary>
+		/// Onboarding symbol for QR codes
+		/// </summary>
 		public static readonly Geometry OnboardingIconPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M181.523 136.57H76.6327C68.3914 136.57 61.6484 143.313 61.6484 151.554V181.523C61.6484 189.764 68.3914 196.507 76.6327 196.507H181.523C189.764 196.507 196.507 189.764 196.507 181.523V151.554C196.507 143.313 189.764 136.57 181.523 136.57Z
@@ -165,14 +222,28 @@ namespace NeuroAccessMaui.UI
 			M91.617 106.601C83.3756 106.601 76.6327 99.8583 76.6327 91.617C76.6327 83.3756 83.3756 76.6327 91.617 76.6327C99.8583 76.6327 106.601 83.3756 106.601 91.617C106.601 99.8583 99.8583 106.601 91.617 106.601Z
 			""");
 
+		/// <summary>
+		/// Default eDaler icon color
+		/// </summary>
 		public static readonly Color EDalerColor = Colors.Goldenrod;
+
+		/// <summary>
+		/// eDaler symbol for QR codes
+		/// </summary>
 		public static readonly Geometry EDalerIconPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M24.6263 16.4401C23.3663 16.4401 22.1063 16.4401 20.8463 16.4401C20.7206 16.44 20.5948 16.4401 20.4395 16.4401V51.4389H20.9223C24.8438 51.4389 28.7656 51.4428 32.6871 51.4358C33.5212 51.4344 34.3558 51.4085 35.189 51.3681C37.4651 51.2581 39.6652 50.7828 41.772 49.9128C45.1668 48.511 47.8677 46.2772 49.6567 43.0516C52.1445 38.5658 52.5325 33.7874 51.288 28.8799C50.035 23.9385 47.0312 20.3848 42.3972 18.2388C39.5603 16.9252 36.548 16.4476 33.4461 16.4435C31.2191 16.4405 28.9924 16.44 26.7654 16.44C26.0525 16.44 25.3391 16.44 24.6263 16.4401Z
 			M29.0057 23.7511C29.0906 23.7458 29.1635 23.7367 29.2363 23.7376C29.766 23.7444 30.2963 23.7432 30.8267 23.742C32.0051 23.7392 33.1835 23.7365 34.3556 23.8212C38.7074 24.1359 42.1845 26.6075 43.0292 31.4776C43.4386 33.8372 43.3465 36.1684 42.4712 38.415C41.2914 41.4435 38.9755 43.1121 35.8589 43.7698C34.4877 44.0592 33.0964 44.0526 31.7052 44.0495C30.8097 44.0475 29.914 44.0495 28.989 44.0495V37.1036H40.4938V30.4922H29.0057V23.7514V23.7511Z
 			""");
 
+		/// <summary>
+		/// Default encrypted icon color
+		/// </summary>
 		public static readonly Color Aes256Color = Colors.SlateGray;
+
+		/// <summary>
+		/// Encrypted symbol for QR codes
+		/// </summary>
 		public static readonly Geometry Aes256IconPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M44.2122 28.1067H42.5456V24.7733C42.5456 20.1733 38.8122 16.44 34.2122 16.44C29.6122 16.44 25.8789 20.1733 25.8789 24.7733V28.1067H24.2122C22.3789 28.1067 20.8789 29.6067 20.8789 31.44V48.1067C20.8789 49.94 22.3789 51.44 24.2122 51.44H44.2122C46.0456 51.44 47.5456 49.94 47.5456 48.1067V31.44C47.5456 29.6067 46.0456 28.1067 44.2122 28.1067Z
@@ -180,14 +251,28 @@ namespace NeuroAccessMaui.UI
 			M29.2122 28.1067V24.7733C29.2122 22.0067 31.4456 19.7733 34.2122 19.7733C36.9789 19.7733 39.2122 22.0067 39.2122 24.7733V28.1067H29.2122Z
 			""");
 
+		/// <summary>
+		/// Default signature icon color
+		/// </summary>
 		public static readonly Color SignatureColor = Colors.SlateGray;
+
+		/// <summary>
+		/// Signature symbol for QR codes
+		/// </summary>
 		public static readonly Geometry SignatureIconPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M34.1818 29.2727C32.6909 25.0364 28.6545 22 23.9091 22C17.8909 22 13 26.8909 13 32.9091C13 38.9273 17.8909 43.8182 23.9091 43.8182C28.6545 43.8182 32.6909 40.7818 34.1818 36.5455H42.0909V43.8182H49.3636V36.5455H53V29.2727H34.1818Z
 			M23.9091 36.5455C21.9091 36.5455 20.2727 34.9091 20.2727 32.9091C20.2727 30.9091 21.9091 29.2727 23.9091 29.2727C25.9091 29.2727 27.5455 30.9091 27.5455 32.9091C27.5455 34.9091 25.9091 36.5455 23.9091 36.5455Z
 			""");
 
+		/// <summary>
+		/// Default contract icon color
+		/// </summary>
 		public static readonly Color ContractColor = Colors.RoyalBlue;
+
+		/// <summary>
+		/// Contract symbol for QR codes
+		/// </summary>
 		public static readonly Geometry ContractIconPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M34.3809 61.44C49.5687 61.44 61.8809 49.1278 61.8809 33.94C61.8809 18.7522 49.5687 6.44 34.3809 6.44C19.193 6.44 6.88086 18.7522 6.88086 33.94C6.88086 49.1278 19.193 61.44 34.3809 61.44Z
@@ -197,7 +282,14 @@ namespace NeuroAccessMaui.UI
 			M39.2931 19.065V28.69H48.9184L39.2931 19.065Z
 			""");
 
+		/// <summary>
+		/// Default things icon color
+		/// </summary>
 		public static readonly Color ThingsColor = Colors.DarkOrchid;
+
+		/// <summary>
+		/// Things symbol for QR codes
+		/// </summary>
 		public static readonly Geometry ThingsIconPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M33.5 61C48.6878 61 61 48.6878 61 33.5C61 18.3122 48.6878 6 33.5 6C18.3122 6 6 18.3122 6 33.5C6 48.6878 18.3122 61 33.5 61Z
@@ -208,7 +300,14 @@ namespace NeuroAccessMaui.UI
 			M44.597 35.142C43.995 35.044 43.553 34.54 43.553 33.939C43.553 33.19 44.198 32.594 44.929 32.711C46.7099 33.001 48.3546 33.8436 49.6305 35.1195C50.9064 36.3954 51.749 38.0401 52.039 39.821C52.161 40.546 51.56 41.196 50.823 41.196H50.811C50.209 41.196 49.712 40.748 49.607 40.152C49.3927 38.9013 48.7958 37.7478 47.8985 36.8505C47.0012 35.9532 45.8477 35.3563 44.597 35.142Z
 			""");
 
+		/// <summary>
+		/// Default token icon color
+		/// </summary>
 		public static readonly Color TokenColor = Colors.LightSeaGreen;
+
+		/// <summary>
+		/// Token symbol for QR codes
+		/// </summary>
 		public static readonly Geometry TokenIconPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M37.1248 33.9083C37.1248 36.5422 34.2731 38.1878 31.9928 36.8719C30.9346 36.261 30.2824 35.1302 30.2824 33.9083C30.2824 31.2752 33.1334 29.6288 35.414 30.9455C36.4722 31.5566 37.1248 32.6862 37.1248 33.9083Z
@@ -218,6 +317,9 @@ namespace NeuroAccessMaui.UI
 			M6 33.4999C6 48.6881 18.3119 61 33.5001 61C48.6884 61 61 48.6881 61 33.4999C61 18.3116 48.6884 6 33.5001 6C18.3119 6 6 18.3116 6 33.4999Z
 			""");
 
+		/// <summary>
+		/// Approve provider
+		/// </summary>
 		public static readonly Geometry ApproveProviderIconPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M19 5V2H17V5H14V7H17V10H19V7H22V5H19Z
@@ -227,6 +329,9 @@ namespace NeuroAccessMaui.UI
 			M14 14H2V13.22C2 12.84 2.2 12.5 2.52 12.34C3.71 11.73 5.63 11 8 11C10.37 11 12.29 11.73 13.48 12.34C13.8 12.5 14 12.84 14 13.22V14Z
 			""");
 
+		/// <summary>
+		/// Change provider
+		/// </summary>
 		public static readonly Geometry ChangeProviderIconPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M24 6.5H21.6V2.9H18V0.5H24V6.5Z
@@ -239,16 +344,25 @@ namespace NeuroAccessMaui.UI
 			M7.38462 9.73077C6.36923 9.73077 5.53846 8.9 5.53846 7.88462C5.53846 6.86923 6.36923 6.03846 7.38462 6.03846C8.4 6.03846 9.23077 6.86923 9.23077 7.88462C9.23077 8.9 8.4 9.73077 7.38462 9.73077Z
 			""");
 
+		/// <summary>
+		/// Arrow up
+		/// </summary>
 		public static readonly Geometry ArrowUpPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M10.59 7.70508L6 3.12508L1.41 7.70508L0 6.29508L6 0.295078L12 6.29508L10.59 7.70508Z
 			""");
 
+		/// <summary>
+		/// Arrow down
+		/// </summary>
 		public static readonly Geometry ArrowDownPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M1.41 0.294922L6 4.87492L10.59 0.294922L12 1.70492L6 7.70492L0 1.70492L1.41 0.294922Z
 			""");
 
+		/// <summary>
+		/// Calculator button glyph
+		/// </summary>
 		public static readonly Geometry CalculatorPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3Z
@@ -267,6 +381,9 @@ namespace NeuroAccessMaui.UI
 			M14.09 10.95L15.5 9.54L16.91 10.95L17.97 9.89L16.56 8.47L17.97 7.06L16.91 6L15.5 7.41L14.09 6L13.03 7.06L14.44 8.47L13.03 9.89L14.09 10.95Z
 			""");
 
+		/// <summary>
+		/// Duration button glyph
+		/// </summary>
 		public static readonly Geometry DurationPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M11.99 2C6.47 2 2 6.48 2 12C2 17.52 6.47 22 11.99 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 11.99 2Z
@@ -274,6 +391,9 @@ namespace NeuroAccessMaui.UI
 			M12.5 7H11V13L16.25 16.15L17 14.92L12.5 12.25V7Z
 			""");
 
+		/// <summary>
+		/// Contract button glyph
+		/// </summary>
 		public static readonly Geometry ContractPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M14 2H6C4.9 2 4.01 2.9 4.01 4L4 20C4 21.1 4.89 22 5.99 22H18C19.1 22 20 21.1 20 20V8L14 2Z
@@ -282,17 +402,26 @@ namespace NeuroAccessMaui.UI
 			M13 9V3.5L18.5 9H13Z
 			""");
 
+		/// <summary>
+		/// Person button glyph
+		/// </summary>
 		public static readonly Geometry PersonPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12Z
 			M12 14C9.33 14 4 15.34 4 18V19C4 19.55 4.45 20 5 20H19C19.55 20 20 19.55 20 19V18C20 15.34 14.67 14 12 14Z
 			""");
 
+		/// <summary>
+		/// Attachment button glyph
+		/// </summary>
 		public static readonly Geometry AttachmentPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M16 6V17.5C16 19.71 14.21 21.5 12 21.5C9.79 21.5 8 19.71 8 17.5V5C8 3.62 9.12 2.5 10.5 2.5C11.88 2.5 13 3.62 13 5V15.5C13 16.05 12.55 16.5 12 16.5C11.45 16.5 11 16.05 11 15.5V6H9.5V15.5C9.5 16.88 10.62 18 12 18C13.38 18 14.5 16.88 14.5 15.5V5C14.5 2.79 12.71 1 10.5 1C8.29 1 6.5 2.79 6.5 5V17.5C6.5 20.54 8.96 23 12 23C15.04 23 17.5 20.54 17.5 17.5V6H16Z
 			""");
 
+		/// <summary>
+		/// Camera button glyph
+		/// </summary>
 		public static readonly Geometry CameraPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M14.12 5L15.95 7H20V19H4V7H8.05L9.88 5H14.12Z
@@ -301,6 +430,9 @@ namespace NeuroAccessMaui.UI
 			M12 8C9.24 8 7 10.24 7 13C7 15.76 9.24 18 12 18C14.76 18 17 15.76 17 13C17 10.24 14.76 8 12 8Z
 			""");
 
+		/// <summary>
+		/// Microphone button glyph
+		/// </summary>
 		public static readonly Geometry MicrophonePath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M12 14.5C13.66 14.5 15 13.16 15 11.5V5.5C15 3.84 13.66 2.5 12 2.5C10.34 2.5 9 3.84 9 5.5V11.5C9 13.16 10.34 14.5 12 14.5Z
@@ -309,11 +441,17 @@ namespace NeuroAccessMaui.UI
 			M17 11.5C17 14.26 14.76 16.5 12 16.5C9.24 16.5 7 14.26 7 11.5H5C5 15.03 7.61 17.93 11 18.42V21.5H13V18.42C16.39 17.93 19 15.03 19 11.5H17Z
 			""");
 
+		/// <summary>
+		/// Money button glyph
+		/// </summary>
 		public static readonly Geometry MoneyPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M12.3902 10.9C10.1202 10.31 9.39016 9.7 9.39016 8.75C9.39016 7.66 10.4002 6.9 12.0902 6.9C13.8702 6.9 14.5302 7.75 14.5902 9H16.8002C16.7302 7.28 15.6802 5.7 13.5902 5.19V3H10.5902V5.16C8.65016 5.58 7.09016 6.84 7.09016 8.77C7.09016 11.08 9.00016 12.23 11.7902 12.9C14.2902 13.5 14.7902 14.38 14.7902 15.31C14.7902 16 14.3002 17.1 12.0902 17.1C10.0302 17.1 9.22016 16.18 9.11016 15H6.91016C7.03016 17.19 8.67016 18.42 10.5902 18.83V21H13.5902V18.85C15.5402 18.48 17.0902 17.35 17.0902 15.3C17.0902 12.46 14.6602 11.49 12.3902 10.9Z
 			""");
 
+		/// <summary>
+		/// Token button glyph
+		/// </summary>
 		public static readonly Geometry TokenPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M12.97 2.67785C12.37 2.33785 11.63 2.33785 11.03 2.67785L4.03 6.56785L9.1 9.37785C9.83 8.61785 10.86 8.13785 12 8.13785C13.14 8.13785 14.17 8.61785 14.9 9.37785L19.97 6.55785L12.97 2.67785Z
@@ -322,6 +460,9 @@ namespace NeuroAccessMaui.UI
 			M13 21.5779V16.0079C14.73 15.5679 16 13.9979 16 12.1379C16 11.7879 15.96 11.4479 15.87 11.1279L21 8.27785V15.9579C21 16.6879 20.61 17.3579 19.97 17.7079L13 21.5779Z
 			""");
 
+		/// <summary>
+		/// Thing button glyph
+		/// </summary>
 		public static readonly Geometry ThingPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M12.11 3.80902V2.07883H13.8402V0.348633H1.72874C0.777128 0.348633 -0.00146484 1.12722 -0.00146484 2.07883V15.9204C-0.00146484 16.872 0.777128 17.6506 1.72874 17.6506H13.8402V15.9204H10.3538C11.4179 15.1331 12.11 13.8788 12.11 12.46V8.13451H3.45895V12.46C3.45895 13.8788 4.15968 15.1331 5.21511 15.9204H1.72874V2.07883H3.45895V3.80902C3.45895 4.28483 3.84824 4.67412 4.32405 4.67412H11.2449C11.7207 4.67412 12.11 4.28483 12.11 3.80902Z
@@ -329,11 +470,17 @@ namespace NeuroAccessMaui.UI
 			M14.6027 5.84298C14.6027 6.18744 14.8594 6.47786 15.2004 6.50825C18.0743 6.78855 20.3639 9.07816 20.651 11.952C20.6847 12.2965 20.9752 12.5599 21.3196 12.5599C21.7181 12.5599 22.0356 12.2154 21.995 11.8169C21.6438 8.31158 18.8544 5.52216 15.3456 5.16758C14.9505 5.12367 14.6027 5.43774 14.6027 5.84298ZM14.6027 11.0841V12.077C14.6027 12.3404 14.8154 12.5531 15.0789 12.5531H16.0717C16.3892 12.5531 16.6289 12.2458 16.531 11.9385C16.3317 11.3138 15.8387 10.8207 15.2106 10.6181C14.9134 10.5303 14.6027 10.7667 14.6027 11.0841ZM14.6027 8.56486C14.6027 8.8958 14.8458 9.17272 15.1768 9.22675C16.585 9.46652 17.6927 10.5742 17.9325 11.9824C17.9899 12.31 18.2634 12.5565 18.5944 12.5565H18.6011C19.0064 12.5565 19.3373 12.1985 19.2698 11.8C18.9489 9.79747 17.3651 8.21365 15.3592 7.88945C14.9573 7.82529 14.6027 8.15286 14.6027 8.56486Z
 			""");
 
+		/// <summary>
+		/// Cancel button glyph
+		/// </summary>
 		public static readonly Geometry CancelPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z
 			""");
 
+		/// <summary>
+		/// Ellipsis button glyph
+		/// </summary>
 		public static readonly Geometry EllipsisPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M6 10C4.9 10 4 10.9 4 12C4 13.1 4.9 14 6 14C7.1 14 8 13.1 8 12C8 10.9 7.1 10 6 10Z
@@ -341,6 +488,9 @@ namespace NeuroAccessMaui.UI
 			M12 10C10.9 10 10 10.9 10 12C10 13.1 10.9 14 12 14C13.1 14 14 13.1 14 12C14 10.9 13.1 10 12 10Z
 			""");
 
+		/// <summary>
+		/// Send button glyph
+		/// </summary>
 		public static readonly Geometry SendPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M3.51 6.03L11.02 9.25L3.5 8.25L3.51 6.03Z
@@ -348,12 +498,18 @@ namespace NeuroAccessMaui.UI
 			M1.51 3L1.5 10L16.5 12L1.5 14L1.51 21L22.5 12L1.51 3Z
 			""");
 
+		/// <summary>
+		/// Open folder
+		/// </summary>
 		public static readonly Geometry FolderOpenPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M2 16C1.45 16 0.979167 15.8042 0.5875 15.4125C0.195833 15.0208 0 14.55 0 14V2C0 1.45 0.195833 0.979167 0.5875 0.5875C0.979167 0.195833 1.45 0 2 0H8L10 2H18C18.55 2 19.0208 2.19583 19.4125 2.5875C19.8042 2.97917 20 3.45 20 4H9.175L7.175 2H2V14L4.4 6H21.5L18.925 14.575C18.7917 15.0083 18.5458 15.3542 18.1875 15.6125C17.8292 15.8708 17.4333 16 17 16H2Z
 			M4.1 14H17L18.8 8H5.9L4.1 14Z
 			""");
 
+		/// <summary>
+		/// Closed folder
+		/// </summary>
 		public static readonly Geometry FolderClosedPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M9.17 6L11.17 8H20V18H4V6H9.17Z
