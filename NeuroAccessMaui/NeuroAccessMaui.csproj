@@ -154,6 +154,10 @@
 	  <None Remove="Resources\Images\close_light.svg" />
 	  <None Remove="Resources\Images\contract_dark.svg" />
 	  <None Remove="Resources\Images\contract_light.svg" />
+	  <None Remove="Resources\Images\create_contract_dark.svg" />
+	  <None Remove="Resources\Images\create_contract_light.svg" />
+	  <None Remove="Resources\Images\create_token_dark.svg" />
+	  <None Remove="Resources\Images\create_token_light.svg" />
 	  <None Remove="Resources\Images\dark_mode_dark.svg" />
 	  <None Remove="Resources\Images\dark_mode_light.svg" />
 	  <None Remove="Resources\Images\delete_dark.svg" />
