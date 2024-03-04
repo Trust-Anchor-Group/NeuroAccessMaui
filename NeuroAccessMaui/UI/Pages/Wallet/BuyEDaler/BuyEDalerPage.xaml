@@ -31,8 +31,9 @@
 									 BackgroundColor="{Binding Path=AmountOk, Converter={converters:ControlBgColor}}"
 									 Placeholder="{Binding Path=Currency}"/>
 
-							<Button Grid.Column="1" Grid.Row="0" Text="∑" Style="{StaticResource UnicodeCharacterButtonNoRoundedCorners}"
-									  Command="{Binding OpenCalculatorCommand}" CommandParameter="AmountText" />
+							<controls:ImageButton Grid.Column="1" Grid.Row="0" PathData="{x:Static ui:Geometries.CalculatorPath}"
+														 Style="{StaticResource ImageOnlyButton}" Command="{Binding OpenCalculatorCommand}"
+														 CommandParameter="AmountText" />
 						</Grid>
 						<controls:TextButton LabelData="{l:Localize Buy}" Command="{Binding Path=BuyCommand}"
 													Margin="{StaticResource SmallBottomMargins}"/>
