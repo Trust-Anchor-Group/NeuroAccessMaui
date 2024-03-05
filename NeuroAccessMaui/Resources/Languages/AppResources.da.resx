@@ -652,7 +652,7 @@
     <value>Fortryde markering</value>
   </data>
   <data name="ServiceProviderInfo" xml:space="preserve">
-    <value>Hvad er en tjenesteudbyder?</value>
+    <value>En tjenesteudbyder leverer forbindelse til appen, mæglere anmoder og sikrer, at oplysningerne fra klienten er korrekte.</value>
   </data>
   <data name="QrPageTitleScanInvitation" xml:space="preserve">
     <value>Invitation til scanning</value>
@@ -887,9 +887,6 @@
   </data>
   <data name="ReportAsCompromizedDescription" xml:space="preserve">
     <value>Rapportér, om app, adgangskode eller telefon er blevet kompromitteret, hacket eller stjålet.</value>
-  </data>
-  <data name="RestartNeededDueToThemeChange" xml:space="preserve">
-    <value>En genstart af appen er nødvendig, for at det nye tema vises korrekt. Når du lukker dialogen, lukkes appen automatisk. Når du genstarter appen, vælges det nye tema.</value>
   </data>
   <data name="RevokeIdentity" xml:space="preserve">
     <value>Tilbagekald identitet</value>
@@ -2036,5 +2033,47 @@
   </data>
   <data name="CreateToken" xml:space="preserve">
     <value>Opret token</value>
+  </data>
+  <data name="WhatIsAServiceProvider" xml:space="preserve">
+    <value>Hvad er en tjenesteudbyder?</value>
+  </data>
+  <data name="PresenceSubscriptionReceived1" xml:space="preserve">
+    <value>Du har modtaget et tilstedeværelsesabonnement fra:</value>
+  </data>
+  <data name="PresenceSubscriptionReceived2" xml:space="preserve">
+    <value>Hvis du accepterer denne anmodning, kan de se din online tilstedeværelse.</value>
+  </data>
+  <data name="PresenceSubscriptionReceived3" xml:space="preserve">
+    <value>Hvis du afviser denne anmodning, vil de blive underrettet om, at du ikke accepterer denne anmodning.</value>
+  </data>
+  <data name="PresenceSubscriptionReceived4" xml:space="preserve">
+    <value>Du kan også ignorere anmodningen ved at lukke dialogen uden at returnere et svar.</value>
+  </data>
+  <data name="PresenceSubscriptionReceived5" xml:space="preserve">
+    <value>Hvad vil du gøre?</value>
+  </data>
+  <data name="PresenceSubscriptionRequest" xml:space="preserve">
+    <value>Anmodning om abonnement på tilstedeværelse</value>
+  </data>
+  <data name="PresenceSubscriptionRequestSent" xml:space="preserve">
+    <value>Der er sendt en anmodning om abonnement på tilstedeværelse. Når modtageren accepterer anmodningen, opdateres kontaktstatussen.</value>
+  </data>
+  <data name="PresenceUnsubscriptionRequestSent" xml:space="preserve">
+    <value>Der er sendt en anmodning om at afmelde sig tilstedeværelsesmeddelelse.</value>
+  </data>
+  <data name="RemoveSubscription" xml:space="preserve">
+    <value>Fjern abonnement?</value>
+  </data>
+  <data name="RemoveSubscription1" xml:space="preserve">
+    <value>Du har stadig en godkendt abonnementsanmodning fra:</value>
+  </data>
+  <data name="RemoveSubscription2" xml:space="preserve">
+    <value>Vil du også tilbagekalde denne tilladelse?</value>
+  </data>
+  <data name="RemoveSubscriptionFrom1" xml:space="preserve">
+    <value>Vil du fjerne tilstedeværelsesabonnementet fra {0}?</value>
+  </data>
+  <data name="UnsubscribeFrom" xml:space="preserve">
+    <value>Afmeld dig</value>
   </data>
 </root>

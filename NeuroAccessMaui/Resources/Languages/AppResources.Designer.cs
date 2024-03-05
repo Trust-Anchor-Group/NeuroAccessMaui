@@ -3571,6 +3571,78 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You have received a presence subscription from:.
+        /// </summary>
+        internal static string PresenceSubscriptionReceived1 {
+            get {
+                return ResourceManager.GetString("PresenceSubscriptionReceived1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you accept this request, they can see your online presence..
+        /// </summary>
+        internal static string PresenceSubscriptionReceived2 {
+            get {
+                return ResourceManager.GetString("PresenceSubscriptionReceived2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you reject this request, they will be notified that you do not consent to this request..
+        /// </summary>
+        internal static string PresenceSubscriptionReceived3 {
+            get {
+                return ResourceManager.GetString("PresenceSubscriptionReceived3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can also ignore the request by closing the dialog without returning a response..
+        /// </summary>
+        internal static string PresenceSubscriptionReceived4 {
+            get {
+                return ResourceManager.GetString("PresenceSubscriptionReceived4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What do you want to do?.
+        /// </summary>
+        internal static string PresenceSubscriptionReceived5 {
+            get {
+                return ResourceManager.GetString("PresenceSubscriptionReceived5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Presence Subscription Request.
+        /// </summary>
+        internal static string PresenceSubscriptionRequest {
+            get {
+                return ResourceManager.GetString("PresenceSubscriptionRequest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A presence subscription request has been sent. When the recipient accepts the request, the contact status will be updated..
+        /// </summary>
+        internal static string PresenceSubscriptionRequestSent {
+            get {
+                return ResourceManager.GetString("PresenceSubscriptionRequestSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A request to unsibscribe from presence notification has been sent..
+        /// </summary>
+        internal static string PresenceUnsubscriptionRequestSent {
+            get {
+                return ResourceManager.GetString("PresenceUnsubscriptionRequestSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Present.
         /// </summary>
         internal static string Present {
@@ -3958,11 +4030,47 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Remove Subscription?.
+        /// </summary>
+        internal static string RemoveSubscription {
+            get {
+                return ResourceManager.GetString("RemoveSubscription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You still have an approved subscription request from:.
+        /// </summary>
+        internal static string RemoveSubscription1 {
+            get {
+                return ResourceManager.GetString("RemoveSubscription1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to revoke this permission also?.
+        /// </summary>
+        internal static string RemoveSubscription2 {
+            get {
+                return ResourceManager.GetString("RemoveSubscription2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do you want to remove the presence subscription from {0}?.
         /// </summary>
         internal static string RemoveSubscriptionFrom {
             get {
                 return ResourceManager.GetString("RemoveSubscriptionFrom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to remove the presence subscription from {0}?.
+        /// </summary>
+        internal static string RemoveSubscriptionFrom1 {
+            get {
+                return ResourceManager.GetString("RemoveSubscriptionFrom1", resourceCulture);
             }
         }
         
@@ -5403,6 +5511,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string UnrecognizedEventType {
             get {
                 return ResourceManager.GetString("UnrecognizedEventType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unsubscribe from.
+        /// </summary>
+        internal static string UnsubscribeFrom {
+            get {
+                return ResourceManager.GetString("UnsubscribeFrom", resourceCulture);
             }
         }
         

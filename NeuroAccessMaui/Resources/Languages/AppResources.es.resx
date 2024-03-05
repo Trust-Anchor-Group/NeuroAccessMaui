@@ -652,7 +652,7 @@
     <value>Deshacer selección</value>
   </data>
   <data name="ServiceProviderInfo" xml:space="preserve">
-    <value>¿Qué es un proveedor de servicios?</value>
+    <value>Un proveedor de servicios proporciona conectividad para la aplicación, intermedia las solicitudes y se asegura de que la información proporcionada por el cliente sea correcta.</value>
   </data>
   <data name="QrPageTitleScanInvitation" xml:space="preserve">
     <value>Invitación de escaneo</value>
@@ -887,9 +887,6 @@
   </data>
   <data name="ReportAsCompromizedDescription" xml:space="preserve">
     <value>Informe si la aplicación, la contraseña o el teléfono se han visto comprometidos, pirateados o robados.</value>
-  </data>
-  <data name="RestartNeededDueToThemeChange" xml:space="preserve">
-    <value>Es necesario reiniciar la aplicación para que el nuevo tema se muestre correctamente. Al cerrar el cuadro de diálogo, la aplicación se cerrará automáticamente. Al reiniciar la aplicación, se seleccionará el nuevo tema.</value>
   </data>
   <data name="RevokeIdentity" xml:space="preserve">
     <value>Revocar identidad</value>
@@ -2036,5 +2033,47 @@
   </data>
   <data name="CreateToken" xml:space="preserve">
     <value>Crear token</value>
+  </data>
+  <data name="WhatIsAServiceProvider" xml:space="preserve">
+    <value>¿Qué es un proveedor de servicios?</value>
+  </data>
+  <data name="PresenceSubscriptionReceived1" xml:space="preserve">
+    <value>Ha recibido una suscripción de presencia de:</value>
+  </data>
+  <data name="PresenceSubscriptionReceived2" xml:space="preserve">
+    <value>Si acepta esta solicitud, podrán ver su presencia en línea.</value>
+  </data>
+  <data name="PresenceSubscriptionReceived3" xml:space="preserve">
+    <value>Si rechaza esta solicitud, se les notificará que no da su consentimiento a esta solicitud.</value>
+  </data>
+  <data name="PresenceSubscriptionReceived4" xml:space="preserve">
+    <value>También puede ignorar la solicitud cerrando el cuadro de diálogo sin devolver una respuesta.</value>
+  </data>
+  <data name="PresenceSubscriptionReceived5" xml:space="preserve">
+    <value>¿Qué quieres hacer?</value>
+  </data>
+  <data name="PresenceSubscriptionRequest" xml:space="preserve">
+    <value>Solicitud de suscripción de presencia</value>
+  </data>
+  <data name="PresenceSubscriptionRequestSent" xml:space="preserve">
+    <value>Se ha enviado una solicitud de suscripción de presencia. Cuando el destinatario acepte la solicitud, se actualizará el estado del contacto.</value>
+  </data>
+  <data name="PresenceUnsubscriptionRequestSent" xml:space="preserve">
+    <value>Se ha enviado una solicitud para darse de baja de la notificación de presencia.</value>
+  </data>
+  <data name="RemoveSubscription" xml:space="preserve">
+    <value>¿Eliminar la suscripción?</value>
+  </data>
+  <data name="RemoveSubscription1" xml:space="preserve">
+    <value>Todavía tiene una solicitud de suscripción aprobada de:</value>
+  </data>
+  <data name="RemoveSubscription2" xml:space="preserve">
+    <value>¿Desea revocar también este permiso?</value>
+  </data>
+  <data name="RemoveSubscriptionFrom1" xml:space="preserve">
+    <value>¿Desea eliminar la suscripción de presencia de {0}?</value>
+  </data>
+  <data name="UnsubscribeFrom" xml:space="preserve">
+    <value>Darse de baja de</value>
   </data>
 </root>

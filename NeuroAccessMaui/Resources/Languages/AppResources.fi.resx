@@ -652,7 +652,7 @@
     <value>Kumoa valinta</value>
   </data>
   <data name="ServiceProviderInfo" xml:space="preserve">
-    <value>Mikä on palveluntarjoaja?</value>
+    <value>Palveluntarjoaja tarjoaa yhteyden sovellukseen, välittää pyynnöt ja varmistaa, että asiakkaan antamat tiedot ovat oikein.</value>
   </data>
   <data name="QrPageTitleScanInvitation" xml:space="preserve">
     <value>Skannaa kutsu</value>
@@ -887,9 +887,6 @@
   </data>
   <data name="ReportAsCompromizedDescription" xml:space="preserve">
     <value>Ilmoita, jos sovellus, salasana tai puhelin on vaarantunut, hakkeroitu tai varastettu.</value>
-  </data>
-  <data name="RestartNeededDueToThemeChange" xml:space="preserve">
-    <value>Sovellus on käynnistettävä uudelleen, jotta uusi teema näkyy oikein. Kun valintaikkuna suljetaan, sovellus sulkeutuu automaattisesti. Kun käynnistät sovelluksen uudelleen, uusi teema valitaan.</value>
   </data>
   <data name="RevokeIdentity" xml:space="preserve">
     <value>Henkilöllisyyden peruuttaminen</value>
@@ -2036,5 +2033,47 @@
   </data>
   <data name="CreateToken" xml:space="preserve">
     <value>Luo tunnus</value>
+  </data>
+  <data name="WhatIsAServiceProvider" xml:space="preserve">
+    <value>Mikä on palveluntarjoaja?</value>
+  </data>
+  <data name="PresenceSubscriptionReceived1" xml:space="preserve">
+    <value>Olet saanut tavoitettavuustilauksen seuraavilta tahoilta:</value>
+  </data>
+  <data name="PresenceSubscriptionReceived2" xml:space="preserve">
+    <value>Jos hyväksyt tämän pyynnön, he voivat nähdä online-läsnäolosi.</value>
+  </data>
+  <data name="PresenceSubscriptionReceived3" xml:space="preserve">
+    <value>Jos hylkäät tämän pyynnön, heille ilmoitetaan, että et hyväksy pyyntöä.</value>
+  </data>
+  <data name="PresenceSubscriptionReceived4" xml:space="preserve">
+    <value>Voit myös ohittaa pyynnön sulkemalla valintaikkunan palauttamatta vastausta.</value>
+  </data>
+  <data name="PresenceSubscriptionReceived5" xml:space="preserve">
+    <value>Mitä haluat tehdä?</value>
+  </data>
+  <data name="PresenceSubscriptionRequest" xml:space="preserve">
+    <value>Tavoitettavuus-tilauspyyntö</value>
+  </data>
+  <data name="PresenceSubscriptionRequestSent" xml:space="preserve">
+    <value>Tavoitettavuustilauspyyntö on lähetetty. Kun vastaanottaja hyväksyy pyynnön, yhteystiedon tila päivitetään.</value>
+  </data>
+  <data name="PresenceUnsubscriptionRequestSent" xml:space="preserve">
+    <value>Pyyntö poistaa läsnäoloilmoitus on lähetetty.</value>
+  </data>
+  <data name="RemoveSubscription" xml:space="preserve">
+    <value>Poistetaanko tilaus?</value>
+  </data>
+  <data name="RemoveSubscription1" xml:space="preserve">
+    <value>Sinulla on edelleen hyväksytty tilauspyyntö seuraavilta tahoilta:</value>
+  </data>
+  <data name="RemoveSubscription2" xml:space="preserve">
+    <value>Haluatko peruuttaa myös tämän luvan?</value>
+  </data>
+  <data name="RemoveSubscriptionFrom1" xml:space="preserve">
+    <value>Haluatko poistaa tavoitettavuustilauksen {0}:stä?</value>
+  </data>
+  <data name="UnsubscribeFrom" xml:space="preserve">
+    <value>Peruuta tilaus</value>
   </data>
 </root>

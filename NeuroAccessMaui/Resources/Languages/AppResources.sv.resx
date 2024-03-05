@@ -652,7 +652,7 @@
     <value>Ångra markering</value>
   </data>
   <data name="ServiceProviderInfo" xml:space="preserve">
-    <value>Vad är en tjänsteleverantör?</value>
+    <value>En tjänsteleverantör tillhandahåller anslutning för appen, förmedlar förfrågningar och ser till att informationen som tillhandahålls av kunden är korrekt.</value>
   </data>
   <data name="QrPageTitleScanInvitation" xml:space="preserve">
     <value>Skanna inbjudan</value>
@@ -887,9 +887,6 @@
   </data>
   <data name="ReportAsCompromizedDescription" xml:space="preserve">
     <value>Rapportera om appen, lösenordet eller telefonen har äventyrats, hackats eller stulits.</value>
-  </data>
-  <data name="RestartNeededDueToThemeChange" xml:space="preserve">
-    <value>En omstart av appen krävs för att det nya temat ska visas korrekt. När du stänger dialogrutan stängs appen automatiskt. När du startar om appen kommer det nya temat att väljas.</value>
   </data>
   <data name="RevokeIdentity" xml:space="preserve">
     <value>Återkalla identitet</value>
@@ -2036,5 +2033,47 @@
   </data>
   <data name="CreateToken" xml:space="preserve">
     <value>Skapa token</value>
+  </data>
+  <data name="WhatIsAServiceProvider" xml:space="preserve">
+    <value>Vad är en tjänsteleverantör?</value>
+  </data>
+  <data name="PresenceSubscriptionReceived1" xml:space="preserve">
+    <value>Du har fått en närvaroprenumeration från:</value>
+  </data>
+  <data name="PresenceSubscriptionReceived2" xml:space="preserve">
+    <value>Om du accepterar denna begäran kan de se din onlinenärvaro.</value>
+  </data>
+  <data name="PresenceSubscriptionReceived3" xml:space="preserve">
+    <value>Om du avvisar denna begäran kommer de att meddelas om att du inte samtycker till denna begäran.</value>
+  </data>
+  <data name="PresenceSubscriptionReceived4" xml:space="preserve">
+    <value>Du kan också ignorera begäran genom att stänga dialogrutan utan att returnera något svar.</value>
+  </data>
+  <data name="PresenceSubscriptionReceived5" xml:space="preserve">
+    <value>Vad vill du göra?</value>
+  </data>
+  <data name="PresenceSubscriptionRequest" xml:space="preserve">
+    <value>Begäran om närvaroprenumeration</value>
+  </data>
+  <data name="PresenceSubscriptionRequestSent" xml:space="preserve">
+    <value>En begäran om närvaroprenumeration har skickats. När mottagaren accepterar begäran uppdateras kontaktstatusen.</value>
+  </data>
+  <data name="PresenceUnsubscriptionRequestSent" xml:space="preserve">
+    <value>En begäran om att avregistrera från närvaroavisering har skickats.</value>
+  </data>
+  <data name="RemoveSubscription" xml:space="preserve">
+    <value>Ta bort prenumeration?</value>
+  </data>
+  <data name="RemoveSubscription1" xml:space="preserve">
+    <value>Du har fortfarande en godkänd prenumerationsbegäran från:</value>
+  </data>
+  <data name="RemoveSubscription2" xml:space="preserve">
+    <value>Vill du också återkalla detta tillstånd?</value>
+  </data>
+  <data name="RemoveSubscriptionFrom1" xml:space="preserve">
+    <value>Vill du ta bort närvaroprenumerationen från {0}?</value>
+  </data>
+  <data name="UnsubscribeFrom" xml:space="preserve">
+    <value>Avsluta prenumeration på</value>
   </data>
 </root>

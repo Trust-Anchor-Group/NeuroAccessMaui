@@ -652,7 +652,7 @@
     <value>Anularea selecției</value>
   </data>
   <data name="ServiceProviderInfo" xml:space="preserve">
-    <value>Ce este un furnizor de servicii?</value>
+    <value>Un furnizor de servicii oferă conectivitate pentru aplicație, brokeri și se asigură că informațiile furnizate de client sunt corecte.</value>
   </data>
   <data name="QrPageTitleScanInvitation" xml:space="preserve">
     <value>Invitație la scanare</value>
@@ -887,9 +887,6 @@
   </data>
   <data name="ReportAsCompromizedDescription" xml:space="preserve">
     <value>Raportați dacă aplicația, parola sau telefonul au fost compromise, sparte sau furate.</value>
-  </data>
-  <data name="RestartNeededDueToThemeChange" xml:space="preserve">
-    <value>Este necesară o repornire a aplicației, pentru ca noua temă să fie afișată corect. La închiderea dialogului, aplicația se va închide automat. La repornirea aplicației, va fi selectată noua temă.</value>
   </data>
   <data name="RevokeIdentity" xml:space="preserve">
     <value>Revocarea identității</value>
@@ -2036,5 +2033,47 @@
   </data>
   <data name="CreateToken" xml:space="preserve">
     <value>Creați token</value>
+  </data>
+  <data name="WhatIsAServiceProvider" xml:space="preserve">
+    <value>Ce este un furnizor de servicii?</value>
+  </data>
+  <data name="PresenceSubscriptionReceived1" xml:space="preserve">
+    <value>Ați primit un abonament de prezență de la:</value>
+  </data>
+  <data name="PresenceSubscriptionReceived2" xml:space="preserve">
+    <value>Dacă acceptați această solicitare, ei vă pot vedea prezența online.</value>
+  </data>
+  <data name="PresenceSubscriptionReceived3" xml:space="preserve">
+    <value>Dacă respingeți această solicitare, aceștia vor fi notificați că nu sunteți de acord cu această solicitare.</value>
+  </data>
+  <data name="PresenceSubscriptionReceived4" xml:space="preserve">
+    <value>De asemenea, puteți ignora solicitarea închizând caseta de dialog fără a returna un răspuns.</value>
+  </data>
+  <data name="PresenceSubscriptionReceived5" xml:space="preserve">
+    <value>Ce vrei să faci?</value>
+  </data>
+  <data name="PresenceSubscriptionRequest" xml:space="preserve">
+    <value>Solicitare abonament prezență</value>
+  </data>
+  <data name="PresenceSubscriptionRequestSent" xml:space="preserve">
+    <value>A fost trimisă o solicitare de abonament de prezență. Când destinatarul acceptă solicitarea, starea contactului va fi actualizată.</value>
+  </data>
+  <data name="PresenceUnsubscriptionRequestSent" xml:space="preserve">
+    <value>A fost trimisă o cerere de anulare a notificării prezenței.</value>
+  </data>
+  <data name="RemoveSubscription" xml:space="preserve">
+    <value>Eliminați abonamentul?</value>
+  </data>
+  <data name="RemoveSubscription1" xml:space="preserve">
+    <value>Aveți în continuare o solicitare de abonare aprobată de la:</value>
+  </data>
+  <data name="RemoveSubscription2" xml:space="preserve">
+    <value>Doriți să revocați și această permisiune?</value>
+  </data>
+  <data name="RemoveSubscriptionFrom1" xml:space="preserve">
+    <value>Doriți să eliminați abonamentul de prezență din {0}?</value>
+  </data>
+  <data name="UnsubscribeFrom" xml:space="preserve">
+    <value>Dezabonare de la</value>
   </data>
 </root>

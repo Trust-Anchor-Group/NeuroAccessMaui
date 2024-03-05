@@ -652,7 +652,7 @@
     <value>Отмена выбора</value>
   </data>
   <data name="ServiceProviderInfo" xml:space="preserve">
-    <value>Кто такой поставщик услуг?</value>
+    <value>Поставщик услуг обеспечивает подключение к Приложению, посредничает в запросах и обеспечивает правильность информации, предоставленной клиентом.</value>
   </data>
   <data name="QrPageTitleScanInvitation" xml:space="preserve">
     <value>Сканирование приглашения</value>
@@ -887,9 +887,6 @@
   </data>
   <data name="ReportAsCompromizedDescription" xml:space="preserve">
     <value>Сообщайте, если приложение, пароль или телефон были скомпрометированы, взломаны или украдены.</value>
-  </data>
-  <data name="RestartNeededDueToThemeChange" xml:space="preserve">
-    <value>Для правильного отображения новой темы необходим перезапуск приложения. При закрытии диалогового окна приложение автоматически закроется. При перезапуске приложения будет выбрана новая тема.</value>
   </data>
   <data name="RevokeIdentity" xml:space="preserve">
     <value>Отзыв удостоверения</value>
@@ -2036,5 +2033,47 @@
   </data>
   <data name="CreateToken" xml:space="preserve">
     <value>Создать токен</value>
+  </data>
+  <data name="WhatIsAServiceProvider" xml:space="preserve">
+    <value>Кто такой поставщик услуг?</value>
+  </data>
+  <data name="PresenceSubscriptionReceived1" xml:space="preserve">
+    <value>Вы получили подписку на присутствие от:</value>
+  </data>
+  <data name="PresenceSubscriptionReceived2" xml:space="preserve">
+    <value>Если вы примете этот запрос, они смогут увидеть ваше присутствие в Интернете.</value>
+  </data>
+  <data name="PresenceSubscriptionReceived3" xml:space="preserve">
+    <value>Если вы отклоните этот запрос, они будут уведомлены о том, что вы не согласны с этим запросом.</value>
+  </data>
+  <data name="PresenceSubscriptionReceived4" xml:space="preserve">
+    <value>Вы также можете проигнорировать запрос, закрыв диалоговое окно без ответа.</value>
+  </data>
+  <data name="PresenceSubscriptionReceived5" xml:space="preserve">
+    <value>Что Вы хотите делать?</value>
+  </data>
+  <data name="PresenceSubscriptionRequest" xml:space="preserve">
+    <value>Запрос на подписку на присутствие</value>
+  </data>
+  <data name="PresenceSubscriptionRequestSent" xml:space="preserve">
+    <value>Отправлен запрос на подписку на присутствие. Когда получатель примет запрос, статус контакта обновится.</value>
+  </data>
+  <data name="PresenceUnsubscriptionRequestSent" xml:space="preserve">
+    <value>Отправлен запрос на отмену уведомления о присутствии.</value>
+  </data>
+  <data name="RemoveSubscription" xml:space="preserve">
+    <value>Удалить подписку?</value>
+  </data>
+  <data name="RemoveSubscription1" xml:space="preserve">
+    <value>У вас все еще есть одобренный запрос на подписку от:</value>
+  </data>
+  <data name="RemoveSubscription2" xml:space="preserve">
+    <value>Вы также хотите отозвать это разрешение?</value>
+  </data>
+  <data name="RemoveSubscriptionFrom1" xml:space="preserve">
+    <value>Вы хотите удалить подписку на присутствие из {0}?</value>
+  </data>
+  <data name="UnsubscribeFrom" xml:space="preserve">
+    <value>Отписаться от</value>
   </data>
 </root>

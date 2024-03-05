@@ -652,7 +652,7 @@
     <value>Opozovi izbor</value>
   </data>
   <data name="ServiceProviderInfo" xml:space="preserve">
-    <value>Šta je dobavljač usluga?</value>
+    <value>Dobavljač usluga obezbeđuje mogućnost povezivanja za aplikaciju, zahteva brokere i obezbeđuje da su informacije koje je obezbedio klijent tačne.</value>
   </data>
   <data name="QrPageTitleScanInvitation" xml:space="preserve">
     <value>Pozivnica za skeniranje</value>
@@ -887,9 +887,6 @@
   </data>
   <data name="ReportAsCompromizedDescription" xml:space="preserve">
     <value>Prijavite da li su aplikacija, lozinka ili telefon kompromitovani, hakovani ili ukradeni.</value>
-  </data>
-  <data name="RestartNeededDueToThemeChange" xml:space="preserve">
-    <value>Potrebno je ponovno pokretanje aplikacije da bi nova tema bila ispravno prikazana. Kada zatvorite dijalog, aplikacija će se automatski zatvoriti. Kada ponovo pokrenete aplikaciju, nova tema će biti izabrana.</value>
   </data>
   <data name="RevokeIdentity" xml:space="preserve">
     <value>Opoziv identiteta</value>
@@ -2036,5 +2033,47 @@
   </data>
   <data name="CreateToken" xml:space="preserve">
     <value>Kreiraj simbol</value>
+  </data>
+  <data name="WhatIsAServiceProvider" xml:space="preserve">
+    <value>Šta je dobavljač usluga?</value>
+  </data>
+  <data name="PresenceSubscriptionReceived1" xml:space="preserve">
+    <value>Pretplatu na prisustvo dobili ste od:</value>
+  </data>
+  <data name="PresenceSubscriptionReceived2" xml:space="preserve">
+    <value>Ako prihvatite ovaj zahtev, oni mogu da vide vaše prisustvo na mreži.</value>
+  </data>
+  <data name="PresenceSubscriptionReceived3" xml:space="preserve">
+    <value>Ako odbijete ovaj zahtev, biće obavešteni da ne pristajete na ovaj zahtev.</value>
+  </data>
+  <data name="PresenceSubscriptionReceived4" xml:space="preserve">
+    <value>Zahtev možete zanemariti i zatvaranjem dijaloga bez uzvraćanja odgovora.</value>
+  </data>
+  <data name="PresenceSubscriptionReceived5" xml:space="preserve">
+    <value>Šta želite da uradite?</value>
+  </data>
+  <data name="PresenceSubscriptionRequest" xml:space="preserve">
+    <value>Zahtev za pretplatu na prisustvo</value>
+  </data>
+  <data name="PresenceSubscriptionRequestSent" xml:space="preserve">
+    <value>Poslat je zahtev za pretplatu na prisustvo. Kada primalac prihvati zahtev, status kontakta će biti ažuriran.</value>
+  </data>
+  <data name="PresenceUnsubscriptionRequestSent" xml:space="preserve">
+    <value>Poslat je zahtev za otkazivanje pretplate sa obaveštenja o prisustvu.</value>
+  </data>
+  <data name="RemoveSubscription" xml:space="preserve">
+    <value>Želite li da uklonite pretplatu?</value>
+  </data>
+  <data name="RemoveSubscription1" xml:space="preserve">
+    <value>Još uvek imate odobren zahtev za pretplatu od:</value>
+  </data>
+  <data name="RemoveSubscription2" xml:space="preserve">
+    <value>Želite li da opozovete i ovu dozvolu?</value>
+  </data>
+  <data name="RemoveSubscriptionFrom1" xml:space="preserve">
+    <value>Želite li da uklonite pretplatu na prisustvo iz {0}?</value>
+  </data>
+  <data name="UnsubscribeFrom" xml:space="preserve">
+    <value>Otkaži pretplatu sa</value>
   </data>
 </root>

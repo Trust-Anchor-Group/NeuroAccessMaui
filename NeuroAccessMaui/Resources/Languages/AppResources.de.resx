@@ -652,7 +652,7 @@
     <value>Auswahl rückgängig machen</value>
   </data>
   <data name="ServiceProviderInfo" xml:space="preserve">
-    <value>Was ist ein Dienstleister?</value>
+    <value>Ein Dienstanbieter stellt die Konnektivität für die App bereit, vermittelt Anfragen und stellt sicher, dass die vom Kunden bereitgestellten Informationen korrekt sind.</value>
   </data>
   <data name="QrPageTitleScanInvitation" xml:space="preserve">
     <value>Einladung scannen</value>
@@ -887,9 +887,6 @@
   </data>
   <data name="ReportAsCompromizedDescription" xml:space="preserve">
     <value>Melden Sie, wenn eine App, ein Passwort oder ein Telefon kompromittiert, gehackt oder gestohlen wurde.</value>
-  </data>
-  <data name="RestartNeededDueToThemeChange" xml:space="preserve">
-    <value>Ein Neustart der App ist erforderlich, damit das neue Theme korrekt angezeigt wird. Beim Schließen des Dialogs wird die App automatisch geschlossen. Beim Neustart der App wird das neue Theme ausgewählt.</value>
   </data>
   <data name="RevokeIdentity" xml:space="preserve">
     <value>Identität widerrufen</value>
@@ -2036,5 +2033,47 @@
   </data>
   <data name="CreateToken" xml:space="preserve">
     <value>Token erstellen</value>
+  </data>
+  <data name="WhatIsAServiceProvider" xml:space="preserve">
+    <value>Was ist ein Dienstleister?</value>
+  </data>
+  <data name="PresenceSubscriptionReceived1" xml:space="preserve">
+    <value>Sie haben ein Präsenzabonnement erhalten von:</value>
+  </data>
+  <data name="PresenceSubscriptionReceived2" xml:space="preserve">
+    <value>Wenn Sie diese Anfrage akzeptieren, können sie Ihre Online-Präsenz sehen.</value>
+  </data>
+  <data name="PresenceSubscriptionReceived3" xml:space="preserve">
+    <value>Wenn Sie diese Anfrage ablehnen, werden sie benachrichtigt, dass Sie dieser Anfrage nicht zustimmen.</value>
+  </data>
+  <data name="PresenceSubscriptionReceived4" xml:space="preserve">
+    <value>Sie können die Anforderung auch ignorieren, indem Sie das Dialogfeld schließen, ohne eine Antwort zurückzugeben.</value>
+  </data>
+  <data name="PresenceSubscriptionReceived5" xml:space="preserve">
+    <value>Was möchten Sie tun?</value>
+  </data>
+  <data name="PresenceSubscriptionRequest" xml:space="preserve">
+    <value>Präsenz-Abonnement-Anfrage</value>
+  </data>
+  <data name="PresenceSubscriptionRequestSent" xml:space="preserve">
+    <value>Es wurde eine Anwesenheitsabonnementanforderung gesendet. Wenn der Empfänger die Anfrage annimmt, wird der Kontaktstatus aktualisiert.</value>
+  </data>
+  <data name="PresenceUnsubscriptionRequestSent" xml:space="preserve">
+    <value>Es wurde eine Anforderung gesendet, die Anwesenheitsbenachrichtigung aufzuheben.</value>
+  </data>
+  <data name="RemoveSubscription" xml:space="preserve">
+    <value>Abonnement entfernen?</value>
+  </data>
+  <data name="RemoveSubscription1" xml:space="preserve">
+    <value>Sie haben noch eine genehmigte Abonnementanfrage von:</value>
+  </data>
+  <data name="RemoveSubscription2" xml:space="preserve">
+    <value>Möchten Sie auch diese Erlaubnis widerrufen?</value>
+  </data>
+  <data name="RemoveSubscriptionFrom1" xml:space="preserve">
+    <value>Möchten Sie das Anwesenheitsabonnement aus {0} entfernen?</value>
+  </data>
+  <data name="UnsubscribeFrom" xml:space="preserve">
+    <value>Abmelden von</value>
   </data>
 </root>

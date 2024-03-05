@@ -652,7 +652,7 @@
     <value>Annuler la sélection</value>
   </data>
   <data name="ServiceProviderInfo" xml:space="preserve">
-    <value>Qu’est-ce qu’un prestataire de services ?</value>
+    <value>Un fournisseur de services fournit la connectivité à l’application, négocie les demandes et s’assure que les informations fournies par le client sont correctes.</value>
   </data>
   <data name="QrPageTitleScanInvitation" xml:space="preserve">
     <value>Numériser l’invitation</value>
@@ -887,9 +887,6 @@
   </data>
   <data name="ReportAsCompromizedDescription" xml:space="preserve">
     <value>Signalez si l’application, le mot de passe ou le téléphone a été compromis, piraté ou volé.</value>
-  </data>
-  <data name="RestartNeededDueToThemeChange" xml:space="preserve">
-    <value>Un redémarrage de l’application est nécessaire pour que le nouveau thème s’affiche correctement. Lors de la fermeture de la boîte de dialogue, l’application se ferme automatiquement. Lors du redémarrage de l’application, le nouveau thème sera sélectionné.</value>
   </data>
   <data name="RevokeIdentity" xml:space="preserve">
     <value>Révoquer l’identité</value>
@@ -2036,5 +2033,47 @@
   </data>
   <data name="CreateToken" xml:space="preserve">
     <value>Créer un jeton</value>
+  </data>
+  <data name="WhatIsAServiceProvider" xml:space="preserve">
+    <value>Qu’est-ce qu’un prestataire de services ?</value>
+  </data>
+  <data name="PresenceSubscriptionReceived1" xml:space="preserve">
+    <value>Vous avez reçu un abonnement de présence de la part de :</value>
+  </data>
+  <data name="PresenceSubscriptionReceived2" xml:space="preserve">
+    <value>Si vous acceptez cette demande, ils peuvent voir votre présence en ligne.</value>
+  </data>
+  <data name="PresenceSubscriptionReceived3" xml:space="preserve">
+    <value>Si vous refusez cette demande, ils seront informés que vous ne consentez pas à cette demande.</value>
+  </data>
+  <data name="PresenceSubscriptionReceived4" xml:space="preserve">
+    <value>Vous pouvez également ignorer la demande en fermant la boîte de dialogue sans renvoyer de réponse.</value>
+  </data>
+  <data name="PresenceSubscriptionReceived5" xml:space="preserve">
+    <value>Tu veux faire quoi?</value>
+  </data>
+  <data name="PresenceSubscriptionRequest" xml:space="preserve">
+    <value>Demande d’abonnement de présence</value>
+  </data>
+  <data name="PresenceSubscriptionRequestSent" xml:space="preserve">
+    <value>Une demande d’abonnement de présence a été envoyée. Lorsque le destinataire accepte la demande, le statut du contact est mis à jour.</value>
+  </data>
+  <data name="PresenceUnsubscriptionRequestSent" xml:space="preserve">
+    <value>Une demande de désinscription de la notification de présence a été envoyée.</value>
+  </data>
+  <data name="RemoveSubscription" xml:space="preserve">
+    <value>Supprimer l’abonnement ?</value>
+  </data>
+  <data name="RemoveSubscription1" xml:space="preserve">
+    <value>Vous avez encore une demande d’abonnement approuvée de la part de :</value>
+  </data>
+  <data name="RemoveSubscription2" xml:space="preserve">
+    <value>Voulez-vous également révoquer cette autorisation ?</value>
+  </data>
+  <data name="RemoveSubscriptionFrom1" xml:space="preserve">
+    <value>Voulez-vous supprimer l’abonnement de présence de {0} ?</value>
+  </data>
+  <data name="UnsubscribeFrom" xml:space="preserve">
+    <value>Se désabonner de</value>
   </data>
 </root>
