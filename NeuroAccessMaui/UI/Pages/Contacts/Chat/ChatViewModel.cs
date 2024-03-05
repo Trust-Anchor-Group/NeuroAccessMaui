@@ -51,28 +51,20 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		/// <summary>
 		/// Creates an instance of the <see cref="ChatViewModel"/> class.
 		/// </summary>
-		protected internal ChatViewModel()
+		/// <param name="Args">Navigation arguments</param>
+		protected internal ChatViewModel(ChatNavigationArgs? Args)
 			: base()
 		{
+			this.LegalId = Args?.LegalId ?? string.Empty;
+			this.BareJid = Args?.BareJid ?? string.Empty;
+			this.FriendlyName = Args?.FriendlyName ?? string.Empty;
+			this.UniqueId = Args?.UniqueId;
 		}
 
 		/// <inheritdoc/>
 		protected override async Task OnInitialize()
 		{
 			await base.OnInitialize();
-
-			if (ServiceRef.UiService.TryGetArgs(out ChatNavigationArgs? args, this.UniqueId))
-			{
-				this.LegalId = args.LegalId;
-				this.BareJid = args.BareJid;
-				this.FriendlyName = args.FriendlyName;
-			}
-			else
-			{
-				this.LegalId = string.Empty;
-				this.BareJid = string.Empty;
-				this.FriendlyName = string.Empty;
-			}
 
 			await this.ExecuteLoadMessagesAsync(false);
 

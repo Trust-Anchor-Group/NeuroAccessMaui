@@ -517,10 +517,10 @@ namespace NeuroAccessMaui.Services.UI
 			{
 				if (Args is not null)
 				{
-					string? UniqueId = Args.GetUniqueId();
+					string? UniqueId = Args.UniqueId;
 
 					if (!string.IsNullOrEmpty(UniqueId))
-						PageName += UniqueId;
+						PageName += "?UniqueId=" + UniqueId;
 
 					this.navigationArgsMap[PageName] = Args;
 				}
@@ -532,7 +532,7 @@ namespace NeuroAccessMaui.Services.UI
 		private NavigationArgs? TryGetArgs(string Route, string? UniqueId)
 		{
 			if (!string.IsNullOrEmpty(UniqueId))
-				Route += UniqueId;
+				Route += "?UniqueId=" + UniqueId;
 
 			if (TryGetPageName(Route, out string? PageName) &&
 				this.navigationArgsMap.TryGetValue(PageName, out NavigationArgs? Args))

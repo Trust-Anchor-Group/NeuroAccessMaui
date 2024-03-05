@@ -1,4 +1,6 @@
-﻿namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
+﻿using NeuroAccessMaui.Services;
+
+namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 {
 	/// <summary>
 	/// A page that displays a list of the current user's contacts.
@@ -22,7 +24,7 @@
 		/// </summary>
 		public ChatPage()
 		{
-			this.ContentPageModel = new ChatViewModel();
+			this.ContentPageModel = new ChatViewModel(ServiceRef.UiService.PopLatestArgs<ChatNavigationArgs>());
 			this.InitializeComponent();
 		}
 
