@@ -2028,11 +2028,8 @@
   <data name="NoContractsFound" xml:space="preserve">
     <value>Ugovori nisu pronađeni.</value>
   </data>
-  <data name="CreateContract" xml:space="preserve">
-    <value>Kreiraj ugovor</value>
-  </data>
-  <data name="CreateToken" xml:space="preserve">
-    <value>Kreiraj simbol</value>
+  <data name="NewToken" xml:space="preserve">
+    <value>Novi simbol</value>
   </data>
   <data name="WhatIsAServiceProvider" xml:space="preserve">
     <value>Šta je dobavljač usluga?</value>
@@ -2072,6 +2069,21 @@
   </data>
   <data name="RemoveSubscriptionFrom1" xml:space="preserve">
     <value>Želite li da uklonite pretplatu na prisustvo iz {0}?</value>
+  </data>
+  <data name="SubscribeTo" xml:space="preserve">
+    <value>Pretplatite se na</value>
+  </data>
+  <data name="SubscribeToPresence" xml:space="preserve">
+    <value>Da se pretplatim na prisustvo?</value>
+  </data>
+  <data name="SubscribeToPresence1" xml:space="preserve">
+    <value>Želite li da se pretplatite na prisustvo:</value>
+  </data>
+  <data name="SubscribeToPresence2" xml:space="preserve">
+    <value>Pretplatom na prisustvo nekoga, a ako prihvati, bićete obavešteni o njegovom onlajn prisustvu.</value>
+  </data>
+  <data name="SubscribeToPresence3" xml:space="preserve">
+    <value>Šta želite da uradite?</value>
   </data>
   <data name="UnsubscribeFrom" xml:space="preserve">
     <value>Otkaži pretplatu sa</value>

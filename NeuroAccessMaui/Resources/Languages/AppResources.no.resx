@@ -2028,11 +2028,8 @@
   <data name="NoContractsFound" xml:space="preserve">
     <value>Ingen kontrakter funnet.</value>
   </data>
-  <data name="CreateContract" xml:space="preserve">
-    <value>Opprett kontrakt</value>
-  </data>
-  <data name="CreateToken" xml:space="preserve">
-    <value>Opprett token</value>
+  <data name="NewToken" xml:space="preserve">
+    <value>Nytt token</value>
   </data>
   <data name="WhatIsAServiceProvider" xml:space="preserve">
     <value>Hva er en tjenesteleverandør?</value>
@@ -2072,6 +2069,21 @@
   </data>
   <data name="RemoveSubscriptionFrom1" xml:space="preserve">
     <value>Vil du fjerne tilstedeværelsesabonnementet fra {0}?</value>
+  </data>
+  <data name="SubscribeTo" xml:space="preserve">
+    <value>Abonner på</value>
+  </data>
+  <data name="SubscribeToPresence" xml:space="preserve">
+    <value>Abonnere på tilstedeværelse?</value>
+  </data>
+  <data name="SubscribeToPresence1" xml:space="preserve">
+    <value>Ønsker du å abonnere på tilstedeværelsen av:</value>
+  </data>
+  <data name="SubscribeToPresence2" xml:space="preserve">
+    <value>Ved å abonnere på tilstedeværelsen av noen, og hvis de godtar, vil du bli varslet om deres online tilstedeværelse.</value>
+  </data>
+  <data name="SubscribeToPresence3" xml:space="preserve">
+    <value>Hva vil du gjøre?</value>
   </data>
   <data name="UnsubscribeFrom" xml:space="preserve">
     <value>Avslutt abonnementet på</value>

@@ -2028,11 +2028,8 @@
   <data name="NoContractsFound" xml:space="preserve">
     <value>No se han encontrado contratos.</value>
   </data>
-  <data name="CreateContract" xml:space="preserve">
-    <value>Crear contrato</value>
-  </data>
-  <data name="CreateToken" xml:space="preserve">
-    <value>Crear token</value>
+  <data name="NewToken" xml:space="preserve">
+    <value>Nuevo token</value>
   </data>
   <data name="WhatIsAServiceProvider" xml:space="preserve">
     <value>¿Qué es un proveedor de servicios?</value>
@@ -2072,6 +2069,21 @@
   </data>
   <data name="RemoveSubscriptionFrom1" xml:space="preserve">
     <value>¿Desea eliminar la suscripción de presencia de {0}?</value>
+  </data>
+  <data name="SubscribeTo" xml:space="preserve">
+    <value>Suscríbete a</value>
+  </data>
+  <data name="SubscribeToPresence" xml:space="preserve">
+    <value>¿Suscribirse a la presencia?</value>
+  </data>
+  <data name="SubscribeToPresence1" xml:space="preserve">
+    <value>¿Quieres suscribirte a la presencia de:</value>
+  </data>
+  <data name="SubscribeToPresence2" xml:space="preserve">
+    <value>Al suscribirse a la presencia de alguien, y si acepta, se le notificará de su presencia en línea.</value>
+  </data>
+  <data name="SubscribeToPresence3" xml:space="preserve">
+    <value>¿Qué quieres hacer?</value>
   </data>
   <data name="UnsubscribeFrom" xml:space="preserve">
     <value>Darse de baja de</value>

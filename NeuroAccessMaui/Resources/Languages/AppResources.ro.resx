@@ -2028,11 +2028,8 @@
   <data name="NoContractsFound" xml:space="preserve">
     <value>Nu s-au găsit contracte.</value>
   </data>
-  <data name="CreateContract" xml:space="preserve">
-    <value>Creare contract</value>
-  </data>
-  <data name="CreateToken" xml:space="preserve">
-    <value>Creați token</value>
+  <data name="NewToken" xml:space="preserve">
+    <value>Token nou</value>
   </data>
   <data name="WhatIsAServiceProvider" xml:space="preserve">
     <value>Ce este un furnizor de servicii?</value>
@@ -2072,6 +2069,21 @@
   </data>
   <data name="RemoveSubscriptionFrom1" xml:space="preserve">
     <value>Doriți să eliminați abonamentul de prezență din {0}?</value>
+  </data>
+  <data name="SubscribeTo" xml:space="preserve">
+    <value>Abonează-te la</value>
+  </data>
+  <data name="SubscribeToPresence" xml:space="preserve">
+    <value>Abonează-te la prezență?</value>
+  </data>
+  <data name="SubscribeToPresence1" xml:space="preserve">
+    <value>Doriți să vă abonați la prezența:</value>
+  </data>
+  <data name="SubscribeToPresence2" xml:space="preserve">
+    <value>Abonându-vă la prezența cuiva și dacă acceptă, veți fi notificat despre prezența sa online.</value>
+  </data>
+  <data name="SubscribeToPresence3" xml:space="preserve">
+    <value>Ce vrei să faci?</value>
   </data>
   <data name="UnsubscribeFrom" xml:space="preserve">
     <value>Dezabonare de la</value>

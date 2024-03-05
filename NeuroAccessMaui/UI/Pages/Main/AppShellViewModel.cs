@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Applications.Applications;
+using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Main.Settings;
@@ -27,6 +28,9 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			this.UpdateProperties();
 
 			ServiceRef.TagProfile.OnPropertiesChanged += this.TagProfile_OnPropertiesChanged;
+			ServiceRef.XmppService.OnRosterItemAdded += this.XmppService_OnRosterItemAdded;
+			ServiceRef.XmppService.OnRosterItemRemoved += this.XmppService_OnRosterItemRemoved;
+			ServiceRef.XmppService.ConnectionStateChanged += this.XmppService_ConnectionStateChanged;
 
 			return base.OnInitialize();
 		}
@@ -35,6 +39,9 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		protected override Task OnDispose()
 		{
 			ServiceRef.TagProfile.OnPropertiesChanged -= this.TagProfile_OnPropertiesChanged;
+			ServiceRef.XmppService.OnRosterItemAdded -= this.XmppService_OnRosterItemAdded;
+			ServiceRef.XmppService.OnRosterItemRemoved -= this.XmppService_OnRosterItemRemoved;
+			ServiceRef.XmppService.ConnectionStateChanged -= this.XmppService_ConnectionStateChanged;
 
 			return base.OnDispose();
 		}
@@ -44,11 +51,34 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			this.UpdateProperties();
 		}
 
+		private Task XmppService_ConnectionStateChanged(object Sender, Waher.Networking.XMPP.XmppState NewState)
+		{
+			if (NewState == Waher.Networking.XMPP.XmppState.Connected)
+				this.UpdateProperties();
+
+			return Task.CompletedTask;
+		}
+
+		private Task XmppService_OnRosterItemRemoved(object Sender, Waher.Networking.XMPP.RosterItem Item)
+		{
+			this.UpdateProperties();
+
+			return Task.CompletedTask;
+		}
+
+		private Task XmppService_OnRosterItemAdded(object Sender, Waher.Networking.XMPP.RosterItem Item)
+		{
+			this.UpdateProperties();
+
+			return Task.CompletedTask;
+		}
+
 		private void UpdateProperties()
 		{
 			this.CanShowMyContractsCommand = ServiceRef.TagProfile.HasContractReferences;
 			this.CanShowCreateContractCommand = ServiceRef.TagProfile.HasContractTemplateReferences;
 			this.CanShowCreateTokenCommand = ServiceRef.TagProfile.HasContractTokenCreationTemplatesReferences;
+			this.CanShowContactsCommand = ServiceRef.XmppService.Roster is not null && ServiceRef.XmppService.Roster.Length > 0;
 		}
 
 		/// <summary>
@@ -170,6 +200,26 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			{
 				MyContractsNavigationArgs Args = new(ContractsListMode.TokenCreationTemplates);
 				await ServiceRef.UiService.GoToAsync(nameof(MyContractsPage), Args, BackMethod.Pop);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
+		}
+
+		/// <summary>
+		/// If the Contacts command should be displayed.
+		/// </summary>
+		[ObservableProperty]
+		private bool canShowContactsCommand;
+
+		[RelayCommand]
+		private static async Task ShowContacts()
+		{
+			try
+			{
+				ContactListNavigationArgs Args = new();
+				await ServiceRef.UiService.GoToAsync(nameof(MyContactsPage), Args, BackMethod.Pop);
 			}
 			catch (Exception ex)
 			{

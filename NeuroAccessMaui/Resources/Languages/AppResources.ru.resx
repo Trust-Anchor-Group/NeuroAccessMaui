@@ -2028,11 +2028,8 @@
   <data name="NoContractsFound" xml:space="preserve">
     <value>Контракты не найдены.</value>
   </data>
-  <data name="CreateContract" xml:space="preserve">
-    <value>Создать контракт</value>
-  </data>
-  <data name="CreateToken" xml:space="preserve">
-    <value>Создать токен</value>
+  <data name="NewToken" xml:space="preserve">
+    <value>Новый токен</value>
   </data>
   <data name="WhatIsAServiceProvider" xml:space="preserve">
     <value>Кто такой поставщик услуг?</value>
@@ -2072,6 +2069,21 @@
   </data>
   <data name="RemoveSubscriptionFrom1" xml:space="preserve">
     <value>Вы хотите удалить подписку на присутствие из {0}?</value>
+  </data>
+  <data name="SubscribeTo" xml:space="preserve">
+    <value>Подписаться на</value>
+  </data>
+  <data name="SubscribeToPresence" xml:space="preserve">
+    <value>Подписаться на присутствие?</value>
+  </data>
+  <data name="SubscribeToPresence1" xml:space="preserve">
+    <value>Хотите подписаться на наличие:</value>
+  </data>
+  <data name="SubscribeToPresence2" xml:space="preserve">
+    <value>Подписавшись на присутствие кого-либо, и если он согласится, вы получите уведомление об их присутствии в Интернете.</value>
+  </data>
+  <data name="SubscribeToPresence3" xml:space="preserve">
+    <value>Что Вы хотите делать?</value>
   </data>
   <data name="UnsubscribeFrom" xml:space="preserve">
     <value>Отписаться от</value>

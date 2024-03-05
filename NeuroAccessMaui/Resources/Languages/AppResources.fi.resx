@@ -2028,11 +2028,8 @@
   <data name="NoContractsFound" xml:space="preserve">
     <value>Sopimuksia ei löytynyt.</value>
   </data>
-  <data name="CreateContract" xml:space="preserve">
-    <value>Luo sopimus</value>
-  </data>
-  <data name="CreateToken" xml:space="preserve">
-    <value>Luo tunnus</value>
+  <data name="NewToken" xml:space="preserve">
+    <value>Uusi tunnus</value>
   </data>
   <data name="WhatIsAServiceProvider" xml:space="preserve">
     <value>Mikä on palveluntarjoaja?</value>
@@ -2072,6 +2069,21 @@
   </data>
   <data name="RemoveSubscriptionFrom1" xml:space="preserve">
     <value>Haluatko poistaa tavoitettavuustilauksen {0}:stä?</value>
+  </data>
+  <data name="SubscribeTo" xml:space="preserve">
+    <value>Tilata</value>
+  </data>
+  <data name="SubscribeToPresence" xml:space="preserve">
+    <value>Tilaa tavoitettavuustiedot?</value>
+  </data>
+  <data name="SubscribeToPresence1" xml:space="preserve">
+    <value>Haluatko tilata läsnäolon:</value>
+  </data>
+  <data name="SubscribeToPresence2" xml:space="preserve">
+    <value>Tilaamalla jonkun läsnäolon ja jos hän hyväksyy sen, sinulle ilmoitetaan hänen online-läsnäolostaan.</value>
+  </data>
+  <data name="SubscribeToPresence3" xml:space="preserve">
+    <value>Mitä haluat tehdä?</value>
   </data>
   <data name="UnsubscribeFrom" xml:space="preserve">
     <value>Peruuta tilaus</value>
