@@ -15,7 +15,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 	{
 		private const int defaultIconHeight = 150;
 
-		private readonly bool useShellNavigationService = NavigationArgs is null;
 		private ServiceProvidersNavigationArgs? navigationArgs = NavigationArgs;
 
 		/// <summary>
