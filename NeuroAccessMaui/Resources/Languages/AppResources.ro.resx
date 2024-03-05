@@ -2034,6 +2034,9 @@
   <data name="WhatIsAServiceProvider" xml:space="preserve">
     <value>Ce este un furnizor de servicii?</value>
   </data>
+  <data name="MyTokens" xml:space="preserve">
+    <value>Jetoanele mele</value>
+  </data>
   <data name="PresenceSubscriptionReceived1" xml:space="preserve">
     <value>Ați primit un abonament de prezență de la:</value>
   </data>
@@ -2084,6 +2087,12 @@
   </data>
   <data name="SubscribeToPresence3" xml:space="preserve">
     <value>Ce vrei să faci?</value>
+  </data>
+  <data name="Things" xml:space="preserve">
+    <value>Lucruri</value>
+  </data>
+  <data name="ThingsDescription" xml:space="preserve">
+    <value>Mai jos sunt toate lucrurile dvs. și lucrurile din agenda dvs. Faceți clic pe oricare pentru a interacționa cu acel lucru.</value>
   </data>
   <data name="UnsubscribeFrom" xml:space="preserve">
     <value>Dezabonare de la</value>

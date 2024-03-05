@@ -2034,6 +2034,9 @@
   <data name="WhatIsAServiceProvider" xml:space="preserve">
     <value>Šta je dobavljač usluga?</value>
   </data>
+  <data name="MyTokens" xml:space="preserve">
+    <value>Moji tokeni</value>
+  </data>
   <data name="PresenceSubscriptionReceived1" xml:space="preserve">
     <value>Pretplatu na prisustvo dobili ste od:</value>
   </data>
@@ -2084,6 +2087,12 @@
   </data>
   <data name="SubscribeToPresence3" xml:space="preserve">
     <value>Šta želite da uradite?</value>
+  </data>
+  <data name="Things" xml:space="preserve">
+    <value>Stvari</value>
+  </data>
+  <data name="ThingsDescription" xml:space="preserve">
+    <value>U nastavku su sve vaše stvari i stvari u vašoj kontakt knjizi. Kliknite na bilo koju interakciju sa tom stvari.</value>
   </data>
   <data name="UnsubscribeFrom" xml:space="preserve">
     <value>Otkaži pretplatu sa</value>

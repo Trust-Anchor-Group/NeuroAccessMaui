@@ -15,11 +15,11 @@
 
 	<VisualElement.Resources>
 		<ResourceDictionary>
-			<Style TargetType="ContentView" >
+			<Style TargetType="ContentView">
 				<Setter Property="BackgroundColor" Value="Transparent" />
 			</Style>
 			<Style TargetType="Label">
-				<Setter Property="TextColor" Value="{StaticResource ForegroundColorLightTheme}" />
+				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
 			</Style>
 		</ResourceDictionary>
 		<DataTemplate x:Key="EmptyMessage" x:DataType="viewmodel:ChatMessage">
@@ -76,25 +76,28 @@
 
 			<Grid x:Name="ControlGrid" ColumnDefinitions="*,40" Grid.Row="1" Margin="{StaticResource SmallTopMargins}">
 				<Frame CornerRadius="5" Padding="5,5,5,5"
-					   BorderColor="{AppThemeBinding Light={StaticResource ForegroundColorLightTheme}, Dark={StaticResource ForegroundColorDarkTheme}}">
+						 BorderColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}">
+						 <!--
 					<Frame.Behaviors>
-						<behaviors:SetFocusOnTappedBehavior SetFocusTo="EditorControl" BindingContext="{Binding BindingContext, Source={x:Reference ControlGrid}}"/>
+						<behaviors:SetFocusOnTappedBehavior SetFocusTo="EditorControl"/>
 					</Frame.Behaviors>
-
+-->
 					<Grid ColumnDefinitions="*" RowDefinitions="auto">
 						<Grid ColumnDefinitions="*,auto" ColumnSpacing="0"
-							  IsVisible="{Binding IsRecordingAudio, Converter={StaticResource InvertedBoolConverter}}">
+								IsVisible="{Binding IsRecordingAudio, Converter={StaticResource InvertedBoolConverter}}">
 							<Editor x:Name="EditorControl" HorizontalOptions="FillAndExpand" MinimumHeightRequest="40"
-									IsEnabled="{Binding IsRecordingAudio, Converter={StaticResource InvertedBoolConverter}}"
-									Text="{Binding MarkdownInput}" Keyboard="Chat" AutoSize="TextChanges"
-									Unfocused="OnEditorControlUnfocused"/>
+									  IsEnabled="{Binding IsRecordingAudio, Converter={StaticResource InvertedBoolConverter}}"
+									  Text="{Binding MarkdownInput}" Keyboard="Chat" AutoSize="TextChanges"
+									  Unfocused="OnEditorControlUnfocused"/>
 
 							<controls:ImageButton Grid.Column="1" Margin="{StaticResource SmallLeftMargins}"
 														 PathData="{x:Static ui:Geometries.CancelPath}" Style="{StaticResource ImageOnlyButton}"
 														 IsVisible="{Binding Path=IsWriting}" Command="{Binding CancelCommand}">
+								<!--
 								<controls:ImageButton.Behaviors>
 									<behaviors:UnfocusOnClickedBehavior UnfocusControl="EditorControl"/>
 								</controls:ImageButton.Behaviors>
+										 -->
 							</controls:ImageButton>
 						</Grid>
 						<!--
@@ -160,9 +163,11 @@
 				<controls:FadeView.BackView>
 					<controls:ImageButton PathData="{x:Static ui:Geometries.SendPath}" Command="{Binding SendCommand}"
 												 Style="{StaticResource ImageOnlyButton}">
+							  <!--
 						<controls:ImageButton.Behaviors>
 							<behaviors:UnfocusOnClickedBehavior UnfocusControl="EditorControl"/>
 						</controls:ImageButton.Behaviors>
+							  -->
 					</controls:ImageButton>
 				</controls:FadeView.BackView>
 			</controls:FadeView>

@@ -617,7 +617,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			{
 				ChatNavigationArgs Args = new(LegalId, BareJid, FriendlyName);
 
-				await ServiceRef.UiService.GoToAsync(nameof(ChatPage), Args, BackMethod.Inherited, BareJid);
+				if (OperatingSystem.IsIOS())
+					await ServiceRef.UiService.GoToAsync(nameof(ChatPageIos), Args, BackMethod.Inherited, BareJid);
+				else
+					await ServiceRef.UiService.GoToAsync(nameof(ChatPage), Args, BackMethod.Inherited, BareJid);
 			}
 			catch (Exception ex)
 			{
@@ -696,7 +699,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 
 				ChatNavigationArgs ChatArgs = new(Contact.Contact);
 
-				await ServiceRef.UiService.GoToAsync(nameof(ChatPage), ChatArgs, BackMethod.Inherited, Contact.BareJid);
+				if (OperatingSystem.IsIOS())
+					await ServiceRef.UiService.GoToAsync(nameof(ChatPageIos), ChatArgs, BackMethod.Inherited, Contact.BareJid);
+				else
+					await ServiceRef.UiService.GoToAsync(nameof(ChatPage), ChatArgs, BackMethod.Inherited, Contact.BareJid);
 			}
 		}
 

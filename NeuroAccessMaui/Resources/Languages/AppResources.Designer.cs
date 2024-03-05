@@ -2329,6 +2329,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to My Tokens.
+        /// </summary>
+        internal static string MyTokens {
+            get {
+                return ResourceManager.GetString("MyTokens", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
         internal static string Name {
@@ -5196,6 +5205,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string ThingRegistryServiceNotFound {
             get {
                 return ResourceManager.GetString("ThingRegistryServiceNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Things.
+        /// </summary>
+        internal static string Things {
+            get {
+                return ResourceManager.GetString("Things", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Below are all your things, and things in your contact book. Click on any to interact with that thing..
+        /// </summary>
+        internal static string ThingsDescription {
+            get {
+                return ResourceManager.GetString("ThingsDescription", resourceCulture);
             }
         }
         

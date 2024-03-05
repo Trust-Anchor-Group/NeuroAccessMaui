@@ -2034,6 +2034,9 @@
   <data name="WhatIsAServiceProvider" xml:space="preserve">
     <value>Hva er en tjenesteleverandør?</value>
   </data>
+  <data name="MyTokens" xml:space="preserve">
+    <value>Mine tokens</value>
+  </data>
   <data name="PresenceSubscriptionReceived1" xml:space="preserve">
     <value>Du har mottatt et tilstedeværelsesabonnement fra:</value>
   </data>
@@ -2084,6 +2087,12 @@
   </data>
   <data name="SubscribeToPresence3" xml:space="preserve">
     <value>Hva vil du gjøre?</value>
+  </data>
+  <data name="Things" xml:space="preserve">
+    <value>Ting</value>
+  </data>
+  <data name="ThingsDescription" xml:space="preserve">
+    <value>Nedenfor er alle tingene dine, og ting i kontaktboken din. Klikk på hvilken som helst for å samhandle med den tingen.</value>
   </data>
   <data name="UnsubscribeFrom" xml:space="preserve">
     <value>Avslutt abonnementet på</value>

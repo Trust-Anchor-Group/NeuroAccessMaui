@@ -469,21 +469,16 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 				this.Messages.Insert(0, ChatMessage.Empty);
 		}
 
-		/// <summary>
-		/// The command to bind to for sending user input
-		/// </summary>
-		[RelayCommand(CanExecute = nameof(CanExecuteSendMessage))]
-		private Task Send()
-		{
-			return this.ExecuteSendMessage();
-		}
-
 		private bool CanExecuteSendMessage()
 		{
 			return this.IsConnected && (!string.IsNullOrEmpty(this.MarkdownInput) || this.IsRecordingAudio);
 		}
 
-		private async Task ExecuteSendMessage()
+		/// <summary>
+		/// The command to bind to for sending user input
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(CanExecuteSendMessage))]
+		private async Task Send()
 		{
 			if (this.IsRecordingAudio)
 			{

@@ -18,7 +18,7 @@
 		</DataTemplate>
 
 		<DataTemplate x:Key="PendingPaymentTemplate" x:DataType="objectmodel:PendingPaymentItem">
-			<Grid ColumnDefinitions="2*,*" RowDefinitions="auto,auto" >
+			<Grid ColumnDefinitions="2*,*" RowDefinitions="auto,auto">
 				<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=FriendlyName}" Style="{StaticResource KeyLabel}" LineBreakMode="TailTruncation" FontAttributes="Bold" FontSize="18"/>
 				<Label Grid.Column="0" Grid.Row="1" Text="{Binding Path=ExpiresStr}" Style="{StaticResource KeyLabel}" LineBreakMode="TailTruncation" FontAttributes="Italic"/>
 				<Label Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" LineBreakMode="TailTruncation" TextColor="{StaticResource PendingColor}" HorizontalTextAlignment="End">
@@ -38,7 +38,7 @@
 		</DataTemplate>
 
 		<DataTemplate x:Key="AccountEventTemplate" x:DataType="objectmodel:AccountEventItem">
-			<Grid ColumnDefinitions="2*,*" RowDefinitions="auto,auto,auto" >
+			<Grid ColumnDefinitions="2*,*" RowDefinitions="auto,auto,auto">
 				<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=FriendlyName}" Style="{StaticResource KeyLabel}" LineBreakMode="TailTruncation" FontAttributes="Bold" FontSize="18"/>
 				<Label Grid.Row="0" Grid.Column="1" FontSize="50" Padding="0,-25,0,-25"
 					   Text="•"  HorizontalOptions="Start" VerticalOptions="Center" IsVisible="{Binding New}"
@@ -99,7 +99,7 @@
 							</Label.FormattedText>
 						</Label>
 						<Label Grid.Row="2" HorizontalOptions="Start" TextColor="{StaticResource PendingColor}"
-                               IsVisible="{Binding Path=PendingAmount, Converter={converters:GreaterThanZero}}" BackgroundColor="Transparent" >
+                               IsVisible="{Binding Path=PendingAmount, Converter={converters:GreaterThanZero}}" BackgroundColor="Transparent">
 							<Label.FormattedText>
 								<FormattedString>
 									<Span Text="(-"/>
@@ -111,7 +111,7 @@
 							</Label.FormattedText>
 						</Label>
 						<Label Grid.Row="2" HorizontalOptions="End" TextColor="{StaticResource PendingColor}"
-                               IsVisible="{Binding Path=ReservedAmount, Converter={converters:GreaterThanZero}}" BackgroundColor="Transparent" >
+                               IsVisible="{Binding Path=ReservedAmount, Converter={converters:GreaterThanZero}}" BackgroundColor="Transparent">
 							<Label.FormattedText>
 								<FormattedString>
 									<Span Text="(+"/>

@@ -258,7 +258,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 						ContactInfo Contact = await ContactInfo.FindByBareJid(Source);
 						ChatNavigationArgs Args = new(Contact?.LegalId, Contact?.BareJid ?? Source, Contact?.FriendlyName ?? Source);
 
-						await ServiceRef.UiService.GoToAsync(nameof(ChatPage), Args, BackMethod.Inherited, Contact?.BareJid ?? Source);
+						if (OperatingSystem.IsIOS())
+							await ServiceRef.UiService.GoToAsync(nameof(ChatPageIos), Args, BackMethod.Inherited, Contact?.BareJid ?? Source);
+						else
+							await ServiceRef.UiService.GoToAsync(nameof(ChatPage), Args, BackMethod.Inherited, Contact?.BareJid ?? Source);
 						return;
 					}
 				}

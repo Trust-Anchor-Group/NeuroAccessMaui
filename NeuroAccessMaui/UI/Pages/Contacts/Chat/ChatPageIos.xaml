@@ -15,11 +15,11 @@
 
 	<VisualElement.Resources>
 		<ResourceDictionary>
-			<Style TargetType="ContentView" >
+			<Style TargetType="ContentView">
 				<Setter Property="BackgroundColor" Value="Transparent" />
 			</Style>
 			<Style TargetType="Label">
-				<Setter Property="TextColor" Value="{StaticResource ForegroundColorLightTheme}" />
+				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
 			</Style>
 		</ResourceDictionary>
 		<DataTemplate x:Key="EmptyMessage" x:DataType="viewmodel:ChatMessage">
@@ -31,8 +31,8 @@
 			<ViewCell>
 				<Grid ColumnDefinitions="auto,*" ColumnSpacing="0">
 					<Frame Grid.Column="0" Rotation="180" BackgroundColor="{StaticResource SendMessageBackground}"
-						   Padding="5" CornerRadius="5" BorderColor="{StaticResource SendMessageBorder}" HasShadow="False"
-						   Margin="{StaticResource SmallTopMargins}">
+						    Padding="5" CornerRadius="5" BorderColor="{StaticResource SendMessageBorder}" HasShadow="False"
+						    Margin="{StaticResource SmallTopMargins}">
 						<ContentView Content="{Binding Path=ParsedXaml}" />
 					</Frame>
 					<Grid Grid.Column="1" BackgroundColor="Transparent"/>
@@ -75,24 +75,24 @@
 		<Grid RowDefinitions="*,auto">
 			<controls:LoadingListView x:Name="CollectionView" SelectionMode="Single" Rotation="180"
 											  VerticalOptions="StartAndExpand" HasUnevenRows="True" SeparatorVisibility="None"
-											  ItemsSource="{Binding Path=Messages}" ItemTemplate="{StaticResource MessageStyleSelector}"
+											  ItemsSource="{Binding Messages}" ItemTemplate="{StaticResource MessageStyleSelector}"
 											  ItemSelectedCommand="{Binding Path=MessageSelectedCommand}" LoadMoreCommand="{Binding LoadMoreMessagesCommand}">
 			</controls:LoadingListView>
 
 			<Grid x:Name="ControlGrid" ColumnDefinitions="*,40" Grid.Row="1" Margin="{StaticResource SmallTopMargins}">
 				<Frame CornerRadius="5" Padding="5,5,5,5"
-					   BorderColor="{AppThemeBinding Light={StaticResource ForegroundColorLightTheme}, Dark={StaticResource ForegroundColorDarkTheme}}">
+						 BorderColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}">
 					<Frame.Behaviors>
-						<behaviors:SetFocusOnTappedBehavior SetFocusTo="EditorControl" BindingContext="{Binding BindingContext, Source={x:Reference ControlGrid}}"/>
+						<behaviors:SetFocusOnTappedBehavior SetFocusTo="EditorControl"/>
 					</Frame.Behaviors>
 
 					<Grid ColumnDefinitions="*" RowDefinitions="auto">
 						<Grid ColumnDefinitions="*,auto" ColumnSpacing="0"
-							  IsVisible="{Binding IsRecordingAudio, Converter={StaticResource InvertedBoolConverter}}">
+								IsVisible="{Binding IsRecordingAudio, Converter={StaticResource InvertedBoolConverter}}">
 							<Editor x:Name="EditorControl" HorizontalOptions="FillAndExpand" MinimumHeightRequest="40"
-									IsEnabled="{Binding IsRecordingAudio, Converter={StaticResource InvertedBoolConverter}}"
-									Text="{Binding MarkdownInput}" Keyboard="Chat" AutoSize="TextChanges"
-									Unfocused="OnEditorControlUnfocused"/>
+									  IsEnabled="{Binding IsRecordingAudio, Converter={StaticResource InvertedBoolConverter}}"
+									  Text="{Binding MarkdownInput}" Keyboard="Chat" AutoSize="TextChanges"
+									  Unfocused="OnEditorControlUnfocused"/>
 
 							<controls:ImageButton Grid.Column="1" Margin="{StaticResource SmallLeftMargins}"
 														 PathData="{x:Static ui:Geometries.CancelPath}" Style="{StaticResource ImageOnlyButton}"

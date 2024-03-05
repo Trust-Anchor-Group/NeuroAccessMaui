@@ -2034,6 +2034,9 @@
   <data name="WhatIsAServiceProvider" xml:space="preserve">
     <value>Кто такой поставщик услуг?</value>
   </data>
+  <data name="MyTokens" xml:space="preserve">
+    <value>Мои токены</value>
+  </data>
   <data name="PresenceSubscriptionReceived1" xml:space="preserve">
     <value>Вы получили подписку на присутствие от:</value>
   </data>
@@ -2084,6 +2087,12 @@
   </data>
   <data name="SubscribeToPresence3" xml:space="preserve">
     <value>Что Вы хотите делать?</value>
+  </data>
+  <data name="Things" xml:space="preserve">
+    <value>Пожитки</value>
+  </data>
+  <data name="ThingsDescription" xml:space="preserve">
+    <value>Ниже перечислены все ваши вещи и вещи в вашей контактной книге. Нажмите на любой из них, чтобы взаимодействовать с этой вещью.</value>
   </data>
   <data name="UnsubscribeFrom" xml:space="preserve">
     <value>Отписаться от</value>

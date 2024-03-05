@@ -371,7 +371,10 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 										{
 											ChatNavigationArgs ChatArgs = new(Contact.Contact);
 
-											await ServiceRef.UiService.GoToAsync(nameof(ChatPage), ChatArgs, BackMethod.Inherited, Contact.BareJid);
+											if (OperatingSystem.IsIOS())
+												await ServiceRef.UiService.GoToAsync(nameof(ChatPageIos), ChatArgs, BackMethod.Inherited, Contact.BareJid);
+											else
+												await ServiceRef.UiService.GoToAsync(nameof(ChatPage), ChatArgs, BackMethod.Inherited, Contact.BareJid);
 										}
 
 										break;

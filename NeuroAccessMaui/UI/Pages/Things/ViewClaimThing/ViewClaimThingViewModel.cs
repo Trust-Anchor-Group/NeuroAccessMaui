@@ -166,7 +166,10 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 								ContactInfo Info = await ContactInfo.FindByBareJid(Value);
 								if (Info is not null)
 								{
-									await ServiceRef.UiService.GoToAsync(nameof(ChatPage), new ChatNavigationArgs(Info));
+									if (OperatingSystem.IsIOS())
+										await ServiceRef.UiService.GoToAsync(nameof(ChatPageIos), new ChatNavigationArgs(Info));
+									else
+										await ServiceRef.UiService.GoToAsync(nameof(ChatPage), new ChatNavigationArgs(Info));
 									return;
 								}
 
@@ -186,7 +189,11 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 								else
 								{
 									string FriendlyName = await ContactInfo.GetFriendlyName(Value);
-									await ServiceRef.UiService.GoToAsync(nameof(ChatPage), new ChatNavigationArgs(string.Empty, Value, FriendlyName));
+
+									if (OperatingSystem.IsIOS())
+										await ServiceRef.UiService.GoToAsync(nameof(ChatPageIos), new ChatNavigationArgs(string.Empty, Value, FriendlyName));
+									else
+										await ServiceRef.UiService.GoToAsync(nameof(ChatPage), new ChatNavigationArgs(string.Empty, Value, FriendlyName));
 									return;
 								}
 							}

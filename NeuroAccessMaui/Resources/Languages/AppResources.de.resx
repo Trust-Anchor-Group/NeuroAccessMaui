@@ -2034,6 +2034,9 @@
   <data name="WhatIsAServiceProvider" xml:space="preserve">
     <value>Was ist ein Dienstleister?</value>
   </data>
+  <data name="MyTokens" xml:space="preserve">
+    <value>Meine Token</value>
+  </data>
   <data name="PresenceSubscriptionReceived1" xml:space="preserve">
     <value>Sie haben ein Präsenzabonnement erhalten von:</value>
   </data>
@@ -2084,6 +2087,12 @@
   </data>
   <data name="SubscribeToPresence3" xml:space="preserve">
     <value>Was möchten Sie tun?</value>
+  </data>
+  <data name="Things" xml:space="preserve">
+    <value>Dinge</value>
+  </data>
+  <data name="ThingsDescription" xml:space="preserve">
+    <value>Unten finden Sie alle Ihre Sachen und Dinge in Ihrem Kontaktbuch. Klicken Sie auf irgendeinen, um mit diesem Ding zu interagieren.</value>
   </data>
   <data name="UnsubscribeFrom" xml:space="preserve">
     <value>Abmelden von</value>

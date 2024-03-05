@@ -2034,6 +2034,9 @@
   <data name="WhatIsAServiceProvider" xml:space="preserve">
     <value>Qu’est-ce qu’un prestataire de services ?</value>
   </data>
+  <data name="MyTokens" xml:space="preserve">
+    <value>Mes jetons</value>
+  </data>
   <data name="PresenceSubscriptionReceived1" xml:space="preserve">
     <value>Vous avez reçu un abonnement de présence de la part de :</value>
   </data>
@@ -2084,6 +2087,12 @@
   </data>
   <data name="SubscribeToPresence3" xml:space="preserve">
     <value>Tu veux faire quoi?</value>
+  </data>
+  <data name="Things" xml:space="preserve">
+    <value>Choses</value>
+  </data>
+  <data name="ThingsDescription" xml:space="preserve">
+    <value>Vous trouverez ci-dessous toutes vos affaires et celles de votre carnet d’adresses. Cliquez sur n’importe lequel pour interagir avec cette chose.</value>
   </data>
   <data name="UnsubscribeFrom" xml:space="preserve">
     <value>Se désabonner de</value>

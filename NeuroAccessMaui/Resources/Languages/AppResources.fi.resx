@@ -2034,6 +2034,9 @@
   <data name="WhatIsAServiceProvider" xml:space="preserve">
     <value>Mikä on palveluntarjoaja?</value>
   </data>
+  <data name="MyTokens" xml:space="preserve">
+    <value>Omat tunnukset</value>
+  </data>
   <data name="PresenceSubscriptionReceived1" xml:space="preserve">
     <value>Olet saanut tavoitettavuustilauksen seuraavilta tahoilta:</value>
   </data>
@@ -2084,6 +2087,12 @@
   </data>
   <data name="SubscribeToPresence3" xml:space="preserve">
     <value>Mitä haluat tehdä?</value>
+  </data>
+  <data name="Things" xml:space="preserve">
+    <value>Tavarat</value>
+  </data>
+  <data name="ThingsDescription" xml:space="preserve">
+    <value>Alla on kaikki asiat ja yhteystietokirjassasi olevat asiat. Napsauta mitä tahansa ollaksesi vuorovaikutuksessa kyseisen asian kanssa.</value>
   </data>
   <data name="UnsubscribeFrom" xml:space="preserve">
     <value>Peruuta tilaus</value>
