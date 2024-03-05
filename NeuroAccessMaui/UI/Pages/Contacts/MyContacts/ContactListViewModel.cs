@@ -119,6 +119,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 			NotificationEvent[]? Events;
 
 			this.Contacts.Clear();
+			this.ShowContactsMissing = Sorted.Count == 0;
 
 			foreach (CaseInsensitiveString Category in ServiceRef.NotificationService.GetCategories(NotificationEventType.Contacts))
 			{
@@ -170,8 +171,6 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 
 				Contacts2.Add(Contact);
 			}
-
-			this.ShowContactsMissing = Sorted.Count == 0;
 		}
 
 		private static void Add(SortedDictionary<CaseInsensitiveString, ContactInfo> Sorted, CaseInsensitiveString Name, ContactInfo Info)
