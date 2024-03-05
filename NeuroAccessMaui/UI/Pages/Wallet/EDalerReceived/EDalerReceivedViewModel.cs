@@ -14,57 +14,48 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.EDalerReceived
 		/// <summary>
 		/// Creates an instance of the <see cref="EDalerReceivedViewModel"/> class.
 		/// </summary>
-		public EDalerReceivedViewModel()
+		/// <param name="Args">Navigation arguments</param>
+		public EDalerReceivedViewModel(EDalerBalanceNavigationArgs? Args)
 			: base()
 		{
-		}
+			this.Amount = Args?.Balance?.Amount;
+			this.Currency = Args?.Balance?.Currency;
+			this.Timestamp = Args?.Balance?.Timestamp;
 
-		/// <inheritdoc/>
-		protected override async Task OnInitialize()
-		{
-			await base.OnInitialize();
-
-			if (ServiceRef.UiService.TryGetArgs(out EDalerBalanceNavigationArgs? args))
+			if (Args?.Balance?.Event is null)
 			{
-				this.Amount = args.Balance?.Amount;
-				this.Currency = args.Balance?.Currency;
-				this.Timestamp = args.Balance?.Timestamp;
-
-				if (args.Balance?.Event is null)
-				{
-					this.HasId = false;
-					this.HasFrom = false;
-					this.HasMessage = false;
-					this.HasChange = false;
-				}
-				else
-				{
-					this.Id = args.Balance?.Event?.TransactionId;
-					this.From = args.Balance?.Event?.Remote;
-					this.Message = args.Balance?.Event?.Message;
-					this.Change = args.Balance?.Event?.Change;
-
-					this.HasId = true;
-					this.HasFrom = true;
-					this.HasMessage = true;
-					this.HasChange = true;
-				}
-
-				StringBuilder Url = new();
-
-				Url.Append("https://");
-				Url.Append(ServiceRef.TagProfile.Domain);
-				Url.Append("/Images/eDalerFront200.png");
-
-				this.EDalerFrontGlyph = Url.ToString();
-
-				Url.Clear();
-				Url.Append("https://");
-				Url.Append(ServiceRef.TagProfile.Domain);
-				Url.Append("/Images/eDalerBack200.png");
-
-				this.EDalerBackGlyph = Url.ToString();
+				this.HasId = false;
+				this.HasFrom = false;
+				this.HasMessage = false;
+				this.HasChange = false;
 			}
+			else
+			{
+				this.Id = Args.Balance?.Event?.TransactionId;
+				this.From = Args.Balance?.Event?.Remote;
+				this.Message = Args.Balance?.Event?.Message;
+				this.Change = Args.Balance?.Event?.Change;
+
+				this.HasId = true;
+				this.HasFrom = true;
+				this.HasMessage = true;
+				this.HasChange = true;
+			}
+
+			StringBuilder Url = new();
+
+			Url.Append("https://");
+			Url.Append(ServiceRef.TagProfile.Domain);
+			Url.Append("/Images/eDalerFront200.png");
+
+			this.EDalerFrontGlyph = Url.ToString();
+
+			Url.Clear();
+			Url.Append("https://");
+			Url.Append(ServiceRef.TagProfile.Domain);
+			Url.Append("/Images/eDalerBack200.png");
+
+			this.EDalerBackGlyph = Url.ToString();
 		}
 
 		#region Properties

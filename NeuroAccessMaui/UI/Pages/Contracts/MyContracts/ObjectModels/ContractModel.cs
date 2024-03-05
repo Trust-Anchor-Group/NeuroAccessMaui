@@ -24,7 +24,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 		private readonly Contract contract;
 		private NotificationEvent[] events;
 
-
 		private ContractModel(string ContractId, DateTime Timestamp, Contract Contract, string Category, string Name, NotificationEvent[] Events)
 		{
 			this.contract = Contract;

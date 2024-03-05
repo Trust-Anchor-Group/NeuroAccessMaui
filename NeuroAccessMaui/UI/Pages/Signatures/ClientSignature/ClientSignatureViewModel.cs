@@ -14,26 +14,26 @@ namespace NeuroAccessMaui.UI.Pages.Signatures.ClientSignature
 	/// </summary>
 	public partial class ClientSignatureViewModel : BaseViewModel, ILinkableView
 	{
-		private Waher.Networking.XMPP.Contracts.ClientSignature? clientSignature;
-		private LegalIdentity? identity;
+		private readonly Waher.Networking.XMPP.Contracts.ClientSignature? clientSignature;
+		private readonly LegalIdentity? identity;
 
 		/// <summary>
 		/// Creates an instance of the <see cref="ClientSignatureViewModel"/> class.
 		/// </summary>
-		protected internal ClientSignatureViewModel()
+		/// <param name="Args">Navigation arguments</param>
+		protected internal ClientSignatureViewModel(ClientSignatureNavigationArgs? Args)
 		{
+			if (Args is not null)
+			{
+				this.clientSignature = Args.Signature;
+				this.identity = Args.Identity;
+			}
 		}
 
 		/// <inheritdoc/>
 		protected override async Task OnInitialize()
 		{
 			await base.OnInitialize();
-
-			if (ServiceRef.UiService.TryGetArgs(out ClientSignatureNavigationArgs? args))
-			{
-				this.clientSignature = args.Signature;
-				this.identity = args.Identity;
-			}
 
 			this.AssignProperties();
 		}

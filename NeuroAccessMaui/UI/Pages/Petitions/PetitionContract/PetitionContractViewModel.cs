@@ -15,32 +15,33 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 	/// </summary>
 	public partial class PetitionContractViewModel : BaseViewModel
 	{
-		private string? requestorFullJid;
-		private string? petitionId;
+		private readonly string? requestorFullJid;
+		private readonly string? petitionId;
 		private readonly PhotosLoader photosLoader;
 
 		/// <summary>
 		/// Creates a new instance of the <see cref="PetitionContractViewModel"/> class.
 		/// </summary>
-		protected internal PetitionContractViewModel()
+		/// <param name="Args">Navigation arguments.</param>
+		protected internal PetitionContractViewModel(PetitionContractNavigationArgs? Args)
 		{
 			this.Photos = [];
 			this.photosLoader = new PhotosLoader(this.Photos);
+
+			if (Args is not null)
+			{
+				this.RequestorIdentity = Args.RequestorIdentity;
+				this.requestorFullJid = Args.RequestorFullJid;
+				this.RequestedContract = Args.RequestedContract;
+				this.petitionId = Args.PetitionId;
+				this.Purpose = Args.Purpose;
+			}
 		}
 
 		/// <inheritdoc/>
 		protected override async Task OnInitialize()
 		{
 			await base.OnInitialize();
-
-			if (ServiceRef.UiService.TryGetArgs(out PetitionContractNavigationArgs? args))
-			{
-				this.RequestorIdentity = args.RequestorIdentity;
-				this.requestorFullJid = args.RequestorFullJid;
-				this.RequestedContract = args.RequestedContract;
-				this.petitionId = args.PetitionId;
-				this.Purpose = args.Purpose;
-			}
 
 			this.AssignProperties();
 

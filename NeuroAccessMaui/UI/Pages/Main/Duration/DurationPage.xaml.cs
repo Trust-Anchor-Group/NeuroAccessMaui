@@ -1,4 +1,6 @@
-﻿namespace NeuroAccessMaui.UI.Pages.Main.Duration
+﻿using NeuroAccessMaui.Services;
+
+namespace NeuroAccessMaui.UI.Pages.Main.Duration
 {
 	/// <summary>
 	/// A page that allows the user to duration the value of a numerical input field.
@@ -9,11 +11,10 @@
 		/// <summary>
 		/// A page that allows the user to duration the value of a numerical input field.
 		/// </summary>
-		/// <param name="ViewModel">View model.</param>
-		public DurationPage(DurationViewModel ViewModel)
+		public DurationPage()
 		{
 			this.InitializeComponent();
-			this.ContentPageModel = ViewModel;
+			this.ContentPageModel = new DurationViewModel(ServiceRef.UiService.PopLatestArgs<DurationNavigationArgs>());
 		}
 	}
 }

@@ -1,4 +1,5 @@
-﻿using Waher.Persistence;
+﻿using NeuroAccessMaui.Services;
+using Waher.Persistence;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 {
@@ -13,7 +14,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// </summary>
 		public NewContractPage()
 		{
-			this.ContentPageModel = new NewContractViewModel(this);
+			this.ContentPageModel = new NewContractViewModel(this, ServiceRef.UiService.PopLatestArgs<NewContractNavigationArgs>());
 			this.InitializeComponent();
 		}
 

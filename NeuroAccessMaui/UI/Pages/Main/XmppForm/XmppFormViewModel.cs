@@ -14,24 +14,19 @@ namespace NeuroAccessMaui.UI.Pages.Main.XmppForm
 	/// </summary>
 	public partial class XmppFormViewModel : XmppViewModel
 	{
-		private DataForm? form;
+		private readonly DataForm? form;
 		private bool responseSent;
 
 		/// <summary>
 		/// Creates an instance of the <see cref="XmppFormViewModel"/> class.
 		/// </summary>
-		public XmppFormViewModel()
+		/// <param name="Args">Navigation arguments.</param>
+		public XmppFormViewModel(XmppFormNavigationArgs? Args)
 			: base()
 		{
 			this.Pages = [];
-		}
 
-		/// <inheritdoc/>
-		protected override async Task OnInitialize()
-		{
-			await base.OnInitialize();
-
-			if (ServiceRef.UiService.TryGetArgs(out XmppFormNavigationArgs? Args))
+			if (Args is not null)
 			{
 				this.form = Args.Form;
 				this.responseSent = false;

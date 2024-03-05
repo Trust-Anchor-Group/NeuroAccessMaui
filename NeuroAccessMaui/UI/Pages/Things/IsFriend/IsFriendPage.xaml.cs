@@ -1,4 +1,6 @@
-﻿namespace NeuroAccessMaui.UI.Pages.Things.IsFriend
+﻿using NeuroAccessMaui.Services;
+
+namespace NeuroAccessMaui.UI.Pages.Things.IsFriend
 {
 	/// <summary>
 	/// A page that asks the user if a remote entity is allowed to connect to a device.
@@ -11,7 +13,7 @@
 		/// </summary>
 		public IsFriendPage()
 		{
-			this.ContentPageModel = new IsFriendViewModel();
+			this.ContentPageModel = new IsFriendViewModel(ServiceRef.UiService.PopLatestArgs<IsFriendNavigationArgs>());
 			this.InitializeComponent();
 		}
 	}

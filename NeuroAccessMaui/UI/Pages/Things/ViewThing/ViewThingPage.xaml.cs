@@ -1,4 +1,6 @@
-﻿namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
+﻿using NeuroAccessMaui.Services;
+
+namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 {
 	/// <summary>
 	/// A page that displays information about a thing and allows the user to interact with it.
@@ -11,7 +13,7 @@
 		/// </summary>
 		public ViewThingPage()
 		{
-			this.ContentPageModel = new ViewThingViewModel();
+			this.ContentPageModel = new ViewThingViewModel(ServiceRef.UiService.PopLatestArgs<ViewThingNavigationArgs>());
 			this.InitializeComponent();
 		}
 	}

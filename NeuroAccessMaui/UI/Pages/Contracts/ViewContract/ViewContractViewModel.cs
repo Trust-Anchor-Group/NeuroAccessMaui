@@ -23,31 +23,26 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 	/// </summary>
 	public partial class ViewContractViewModel : QrXmppViewModel
 	{
-		private bool isReadOnly;
+		private readonly bool isReadOnly;
 		private readonly PhotosLoader photosLoader;
 		private DateTime skipContractEvent = DateTime.MinValue;
 
 		/// <summary>
 		/// Creates an instance of the <see cref="ViewContractViewModel"/> class.
 		/// </summary>
-		protected internal ViewContractViewModel()
+		/// <param name="Args">Navigation arguments.</param>
+		protected internal ViewContractViewModel(ViewContractNavigationArgs? Args)
 		{
 			this.Photos = [];
 			this.photosLoader = new PhotosLoader(this.Photos);
-		}
 
-		/// <inheritdoc/>
-		protected override async Task OnInitialize()
-		{
-			await base.OnInitialize();
-
-			if (ServiceRef.UiService.TryGetArgs(out ViewContractNavigationArgs? args))
+			if (Args is not null)
 			{
-				this.Contract = args.Contract;
-				this.isReadOnly = args.IsReadOnly;
-				this.Role = args.Role;
+				this.Contract = Args.Contract;
+				this.isReadOnly = Args.IsReadOnly;
+				this.Role = Args.Role;
 				this.IsProposal = !string.IsNullOrEmpty(this.Role);
-				this.Proposal = string.IsNullOrEmpty(args.Proposal) ? ServiceRef.Localizer[nameof(AppResources.YouHaveReceivedAProposal)] : args.Proposal;
+				this.Proposal = string.IsNullOrEmpty(Args.Proposal) ? ServiceRef.Localizer[nameof(AppResources.YouHaveReceivedAProposal)] : Args.Proposal;
 			}
 			else
 			{
@@ -56,6 +51,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				this.Role = null;
 				this.IsProposal = false;
 			}
+		}
+
+		/// <inheritdoc/>
+		protected override async Task OnInitialize()
+		{
+			await base.OnInitialize();
 
 			ServiceRef.XmppService.ContractUpdated += this.ContractsClient_ContractUpdatedOrSigned;
 			ServiceRef.XmppService.ContractSigned += this.ContractsClient_ContractUpdatedOrSigned;

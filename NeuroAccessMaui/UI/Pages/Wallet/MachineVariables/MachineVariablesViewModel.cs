@@ -14,29 +14,30 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineVariables
 		/// <summary>
 		/// The view model to bind to for when displaying information about the current state of a state-machine.
 		/// </summary>
-		public MachineVariablesViewModel()
+		/// <param name="Args">Navigation arguments</param>
+		public MachineVariablesViewModel(MachineVariablesNavigationArgs? Args)
 			: base()
 		{
 			this.Variables = [];
+
+			if (Args is not null)
+			{
+				this.Running = Args.Running;
+				this.Ended = Args.Ended;
+				this.CurrentState = Args.CurrentState;
+
+				if (Args.Variables is not null)
+				{
+					foreach (Variable Variable in Args.Variables)
+						this.Variables.Add(new VariableModel(Variable.Name, Variable.ValueObject));
+				}
+			}
 		}
 
 		/// <inheritdoc/>
 		protected override async Task OnInitialize()
 		{
 			await base.OnInitialize();
-
-			if (ServiceRef.UiService.TryGetArgs(out MachineVariablesNavigationArgs? args))
-			{
-				this.Running = args.Running;
-				this.Ended = args.Ended;
-				this.CurrentState = args.CurrentState;
-
-				if (args.Variables is not null)
-				{
-					foreach (Variable Variable in args.Variables)
-						this.Variables.Add(new VariableModel(Variable.Name, Variable.ValueObject));
-				}
-			}
 
 			ServiceRef.XmppService.NeuroFeatureVariablesUpdated += this.Wallet_VariablesUpdated;
 			ServiceRef.XmppService.NeuroFeatureStateUpdated += this.Wallet_StateUpdated;

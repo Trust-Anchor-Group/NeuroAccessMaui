@@ -1,4 +1,6 @@
-﻿namespace NeuroAccessMaui.UI.Pages.Wallet.RequestPayment
+﻿using NeuroAccessMaui.Services;
+
+namespace NeuroAccessMaui.UI.Pages.Wallet.RequestPayment
 {
 	/// <summary>
 	/// A page that displays information about eDaler received.
@@ -11,7 +13,7 @@
 		/// </summary>
 		public RequestPaymentPage()
 		{
-			this.ContentPageModel = new RequestPaymentViewModel(this);
+			this.ContentPageModel = new RequestPaymentViewModel(this, ServiceRef.UiService.PopLatestArgs<EDalerBalanceNavigationArgs>());
 			this.InitializeComponent();
 		}
 

@@ -19,19 +19,14 @@ namespace NeuroAccessMaui.UI.Pages.Main.Calculator
 		/// <summary>
 		/// Creates an instance of the <see cref="CalculatorViewModel"/> class.
 		/// </summary>
-		public CalculatorViewModel()
+		/// <param name="Args">Navigation arguments.</param>
+		public CalculatorViewModel(CalculatorNavigationArgs? Args)
 			: base()
 		{
 			this.Stack = [];
 			this.MemoryItems = [];
-		}
 
-		/// <inheritdoc/>
-		protected override async Task OnInitialize()
-		{
-			await base.OnInitialize();
-
-			if (ServiceRef.UiService.TryGetArgs(out CalculatorNavigationArgs? Args))
+			if (Args is not null)
 			{
 				this.Entry = Args.Entry;
 				this.ViewModel = Args.ViewModel;
@@ -43,7 +38,6 @@ namespace NeuroAccessMaui.UI.Pages.Main.Calculator
 					this.Value = this.ViewModel.GetValue(this.Property)?.ToString() ?? string.Empty;
 				else
 					this.Value = string.Empty;
-
 			}
 
 			this.DecimalSeparator = NumberFormatInfo.CurrentInfo.NumberDecimalSeparator;

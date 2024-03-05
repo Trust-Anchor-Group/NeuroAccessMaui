@@ -15,7 +15,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 		/// </summary>
 		public PetitionContractPage()
 		{
-			this.ContentPageModel = new PetitionContractViewModel();
+			this.ContentPageModel = new PetitionContractViewModel(ServiceRef.UiService.PopLatestArgs<PetitionContractNavigationArgs>());
 			this.InitializeComponent();
 		}
 

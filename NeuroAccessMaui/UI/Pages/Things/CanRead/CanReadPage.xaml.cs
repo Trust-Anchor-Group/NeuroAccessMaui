@@ -1,4 +1,6 @@
-﻿namespace NeuroAccessMaui.UI.Pages.Things.CanRead
+﻿using NeuroAccessMaui.Services;
+
+namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 {
 	/// <summary>
 	/// A page that asks the user if a remote entity is allowed to read the device.
@@ -11,7 +13,7 @@
 		/// </summary>
 		public CanReadPage()
 		{
-			this.ContentPageModel = new CanReadViewModel();
+			this.ContentPageModel = new CanReadViewModel(ServiceRef.UiService.PopLatestArgs<CanReadNavigationArgs>());
 			this.InitializeComponent();
 		}
 	}

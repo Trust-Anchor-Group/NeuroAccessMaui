@@ -13,27 +13,18 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.SellEDaler
 	/// </summary>
 	public partial class SellEDalerViewModel : XmppViewModel
 	{
-		private TaskCompletionSource<decimal?>? result;
+		private readonly TaskCompletionSource<decimal?>? result;
 		private bool sellButtonPressed = false;
 
 		/// <summary>
 		/// Creates an instance of the <see cref="SellEDalerViewModel"/> class.
 		/// </summary>
-		public SellEDalerViewModel()
+		/// <param name="Args">Navigation arguments</param>
+		public SellEDalerViewModel(SellEDalerNavigationArgs? Args)
 			: base()
 		{
-		}
-
-		/// <inheritdoc/>
-		protected override async Task OnInitialize()
-		{
-			await base.OnInitialize();
-
-			if (ServiceRef.UiService.TryGetArgs(out SellEDalerNavigationArgs? Args))
-			{
-				this.Currency = Args.Currency;
-				this.result = Args.Result;
-			}
+			this.Currency = Args?.Currency;
+			this.result = Args?.Result;
 
 			this.Amount = 0;
 			this.AmountText = string.Empty;

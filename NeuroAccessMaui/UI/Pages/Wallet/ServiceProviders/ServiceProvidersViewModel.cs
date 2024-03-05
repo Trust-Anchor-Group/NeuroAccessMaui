@@ -1,8 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using NeuroAccessMaui.Services;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Windows.Input;
 using IServiceProvider = Waher.Networking.XMPP.Contracts.IServiceProvider;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
@@ -10,35 +8,27 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 	/// <summary>
 	/// The view model to bind to for when displaying a list of service providers.
 	/// </summary>
-	/// <param name="NavigationArgs">Navigation arguments.</param>
-	public partial class ServiceProvidersViewModel(ServiceProvidersNavigationArgs? NavigationArgs) : XmppViewModel()
+	public partial class ServiceProvidersViewModel : XmppViewModel
 	{
 		private const int defaultIconHeight = 150;
 
-		private ServiceProvidersNavigationArgs? navigationArgs = NavigationArgs;
+		private readonly ServiceProvidersNavigationArgs? navigationArgs;
 
 		/// <summary>
 		/// Creates an instance of the <see cref="ServiceProvidersViewModel"/> class.
 		/// </summary>
-		public ServiceProvidersViewModel()
-			: this(ServiceRef.UiService.PopLatestArgs<ServiceProvidersNavigationArgs>())
+		/// <param name="Args">Navigation arguments.</param>
+		public ServiceProvidersViewModel(ServiceProvidersNavigationArgs? Args)
+			: base()
 		{
-		}
+			this.navigationArgs = Args;
 
-		/// <inheritdoc/>
-		protected override async Task OnInitialize()
-		{
-			await base.OnInitialize();
-
-			if (this.navigationArgs is null && ServiceRef.UiService.TryGetArgs(out ServiceProvidersNavigationArgs? Args))
-				this.navigationArgs = Args;
-
-			this.Title = this.navigationArgs?.Title;
-			this.Description = this.navigationArgs?.Description;
-
-			if (this.navigationArgs is not null)
+			if (Args is not null)
 			{
-				foreach (IServiceProvider ServiceProvider in this.navigationArgs.ServiceProviders)
+				this.Title = Args.Title;
+				this.Description = Args.Description;
+
+				foreach (IServiceProvider ServiceProvider in Args.ServiceProviders)
 					this.ServiceProviders.Add(new ServiceProviderViewModel(ServiceProvider, defaultIconHeight, this));
 			}
 		}

@@ -33,16 +33,42 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 	public partial class ViewThingViewModel : XmppViewModel, ILinkableView
 	{
 		private readonly Dictionary<string, PresenceEventArgs> presences = new(StringComparer.InvariantCultureIgnoreCase);
-		private ContactInfo? thing;
+		private readonly ViewThingNavigationArgs? navigationArguments;
+		private readonly ContactInfo? thing;
 
 		/// <summary>
 		/// Creates an instance of the <see cref="ViewThingViewModel"/> class.
 		/// </summary>
-		protected internal ViewThingViewModel()
+		/// <param name="Args">Navigation arguments</param>
+		protected internal ViewThingViewModel(ViewThingNavigationArgs? Args)
 			: base()
 		{
+			this.navigationArguments = Args;
+			this.thing = Args?.Thing;
+
 			this.Tags = [];
 			this.Notifications = [];
+
+			if (this.thing?.MetaData is not null)
+			{
+				foreach (Property Tag in this.thing.MetaData)
+					this.Tags.Add(new HumanReadableTag(Tag));
+			}
+
+			this.InContacts = !string.IsNullOrEmpty(this.thing?.ObjectId);
+			this.IsOwner = this.thing?.Owner ?? false;
+			this.IsSensor = this.thing?.IsSensor ?? false;
+			this.IsActuator = this.thing?.IsActuator ?? false;
+			this.IsConcentrator = this.thing?.IsConcentrator ?? false;
+			this.IsNodeInConcentrator = !string.IsNullOrEmpty(this.thing?.NodeId) || !string.IsNullOrEmpty(this.thing?.SourceId) || !string.IsNullOrEmpty(this.thing?.Partition);
+			this.SupportsSensorEvents = this.thing?.SupportsSensorEvents ?? false;
+
+			this.InContactsAndNotOwner = this.InContacts && !this.IsOwner;
+			this.NotInContacts = !this.InContacts;
+			this.IsConnectedAndOwner = this.IsConnected && this.IsOwner;
+			this.IsConnectedAndSensor = this.IsConnected && this.IsSensor;
+			this.IsConnectedAndActuator = this.IsConnected && this.IsActuator;
+			this.IsConnectedAndNotConcentrator = this.IsConnected && !this.IsConcentrator;
 		}
 
 		/// <inheritdoc/>
@@ -50,55 +76,28 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.UiService.TryGetArgs(out ViewThingNavigationArgs? args))
+			if (this.navigationArguments?.Events is not null)
 			{
-				this.thing = args.Thing;
+				this.Notifications.Clear();
 
-				if (this.thing?.MetaData is not null)
+				int c = 0;
+
+				foreach (NotificationEvent Event in this.navigationArguments.Events)
 				{
-					this.Tags.Clear();
+					this.Notifications.Add(new EventModel(Event.Received,
+						await Event.GetCategoryIcon(),
+						await Event.GetDescription(),
+						Event));
 
-					foreach (Property Tag in this.thing.MetaData)
-						this.Tags.Add(new HumanReadableTag(Tag));
+					if (Event.Type == NotificationEventType.Contacts)
+						c++;
 				}
 
-				if (args.Events is not null)
-				{
-					this.Notifications.Clear();
-
-					int c = 0;
-
-					foreach (NotificationEvent Event in args.Events)
-					{
-						this.Notifications.Add(new EventModel(Event.Received,
-							await Event.GetCategoryIcon(),
-							await Event.GetDescription(),
-							Event));
-
-						if (Event.Type == NotificationEventType.Contacts)
-							c++;
-					}
-
-					this.NrPendingChatMessages = c;
-					this.HasPendingChatMessages = c > 0;
-				}
-
-				this.InContacts = !string.IsNullOrEmpty(this.thing?.ObjectId);
-				this.IsOwner = this.thing?.Owner ?? false;
-				this.IsSensor = this.thing?.IsSensor ?? false;
-				this.IsActuator = this.thing?.IsActuator ?? false;
-				this.IsConcentrator = this.thing?.IsConcentrator ?? false;
-				this.IsNodeInConcentrator = !string.IsNullOrEmpty(this.thing?.NodeId) || !string.IsNullOrEmpty(this.thing?.SourceId) || !string.IsNullOrEmpty(this.thing?.Partition);
-				this.SupportsSensorEvents = this.thing?.SupportsSensorEvents ?? false;
-				this.HasNotifications = this.Notifications.Count > 0;
-
-				this.InContactsAndNotOwner = this.InContacts && !this.IsOwner;
-				this.NotInContacts = !this.InContacts;
-				this.IsConnectedAndOwner = this.IsConnected && this.IsOwner;
-				this.IsConnectedAndSensor = this.IsConnected && this.IsSensor;
-				this.IsConnectedAndActuator = this.IsConnected && this.IsActuator;
-				this.IsConnectedAndNotConcentrator = this.IsConnected && !this.IsConcentrator;
+				this.NrPendingChatMessages = c;
+				this.HasPendingChatMessages = c > 0;
 			}
+
+			this.HasNotifications = this.Notifications.Count > 0;
 
 			await this.CalcThingIsOnline();
 

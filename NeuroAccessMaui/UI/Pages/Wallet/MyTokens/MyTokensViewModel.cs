@@ -12,26 +12,15 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 	/// <summary>
 	/// The view model to bind to for when displaying my tokens.
 	/// </summary>
-	public partial class MyTokensViewModel : XmppViewModel
+	/// <param name="Args">Navigation arguments</param>
+	public partial class MyTokensViewModel(MyTokensNavigationArgs? Args) : XmppViewModel()
 	{
-		private MyTokensNavigationArgs? navigationArgs;
-
-		/// <summary>
-		/// Creates an instance of the <see cref="MyTokensViewModel"/> class.
-		/// </summary>
-		public MyTokensViewModel()
-			: base()
-		{
-			this.Tokens = [];
-		}
+		private readonly MyTokensNavigationArgs? navigationArgs = Args;
 
 		/// <inheritdoc/>
 		protected override async Task OnInitialize()
 		{
 			await base.OnInitialize();
-
-			if (ServiceRef.UiService.TryGetArgs(out MyTokensNavigationArgs? Args))
-				this.navigationArgs = Args;
 
 			try
 			{
@@ -141,7 +130,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 		/// <summary>
 		/// Holds a list of tokens
 		/// </summary>
-		public ObservableCollection<TokenItem> Tokens { get; }
+		public ObservableCollection<TokenItem> Tokens { get; } = [];
 
 		#endregion
 

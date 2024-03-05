@@ -25,22 +25,16 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 		/// <summary>
 		/// Creates an instance of the <see cref="ViewClaimThingViewModel"/> class.
 		/// </summary>
-		public ViewClaimThingViewModel()
+		/// <param name="Args">Navigation arguments</param>
+		public ViewClaimThingViewModel(ViewClaimThingNavigationArgs? Args)
 			: base()
 		{
+			this.Uri = Args?.Uri;
 			this.Tags = [];
-		}
 
-		/// <inheritdoc/>
-		protected override async Task OnInitialize()
-		{
-			await base.OnInitialize();
-
-			if (ServiceRef.UiService.TryGetArgs(out ViewClaimThingNavigationArgs? args) && args.Uri is not null)
+			if (this.Uri is not null)
 			{
-				this.Uri = args.Uri;
-
-				if (ServiceRef.XmppService.TryDecodeIoTDiscoClaimURI(args.Uri, out MetaDataTag[]? Tags))
+				if (ServiceRef.XmppService.TryDecodeIoTDiscoClaimURI(this.Uri, out MetaDataTag[]? Tags))
 				{
 					this.RegistryJid = null;
 
@@ -181,7 +175,8 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 										Info = await ContactInfo.FindByLegalId(Value);
 										if (Info?.LegalIdentity is not null)
 										{
-											await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Info.LegalIdentity));
+											await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage),
+												new ViewIdentityNavigationArgs(Info.LegalIdentity));
 											return;
 										}
 									}

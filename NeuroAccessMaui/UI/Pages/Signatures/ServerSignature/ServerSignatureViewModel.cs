@@ -12,22 +12,22 @@ namespace NeuroAccessMaui.UI.Pages.Signatures.ServerSignature
 	/// </summary>
 	public partial class ServerSignatureViewModel : BaseViewModel
 	{
-		private Contract? contract;
+		private readonly Contract? contract;
 
 		/// <summary>
 		/// Creates an instance of the <see cref="ServerSignatureViewModel"/> class.
 		/// </summary>
-		protected internal ServerSignatureViewModel()
+		/// <param name="Args">Navigation arguments</param>
+		protected internal ServerSignatureViewModel(ServerSignatureNavigationArgs? Args)
 		{
+			if (Args is not null)
+				this.contract = Args.Contract;
 		}
 
 		/// <inheritdoc/>
 		protected override async Task OnInitialize()
 		{
 			await base.OnInitialize();
-
-			if (ServiceRef.UiService.TryGetArgs(out ServerSignatureNavigationArgs? args))
-				this.contract = args.Contract;
 
 			this.AssignProperties();
 		}

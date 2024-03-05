@@ -13,11 +13,11 @@ namespace NeuroAccessMaui.UI.Pages.Main.VerifyCode
 		/// <summary>
 		/// Creates a new instance of the <see cref="VerifyCodePage"/> class.
 		/// </summary>
-		public VerifyCodePage(VerifyCodeNavigationArgs? NavigationArgs)
+		public VerifyCodePage()
 		{
 			this.InitializeComponent();
 
-			VerifyCodeViewModel ViewModel = new(NavigationArgs);
+			VerifyCodeViewModel ViewModel = new(ServiceRef.UiService.PopLatestArgs<VerifyCodeNavigationArgs>());
 			this.ContentPageModel = ViewModel;
 
 			this.innerLabels = [
@@ -30,17 +30,6 @@ namespace NeuroAccessMaui.UI.Pages.Main.VerifyCode
 				];
 
 			this.InnerCodeEntry.Text = string.Empty;
-		}
-
-		/// <summary>
-		/// Creates a new instance of the <see cref="VerifyCodePage"/> class.
-		/// </summary>
-		/// <remarks>
-		/// A parameterless constructor is required for shell routing system (it uses <c>Activator.CreateInstance</c>).
-		/// </remarks>
-		public VerifyCodePage()
-			: this(ServiceRef.UiService.PopLatestArgs<VerifyCodeNavigationArgs>())
-		{
 		}
 
 		/// <inheritdoc/>

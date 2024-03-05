@@ -14,9 +14,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport
 		/// <summary>
 		/// The view model to bind to for when displaying information about the current state of a state-machine.
 		/// </summary>
-		public MachineReportViewModel()
+		/// <param name="Args">Navigation arguments</param>
+		public MachineReportViewModel(MachineReportNavigationArgs? Args)
 			: base()
 		{
+			this.TokenReport = Args?.Report;
 		}
 
 		/// <inheritdoc/>
@@ -24,17 +26,12 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.UiService.TryGetArgs(out MachineReportNavigationArgs? args))
+			if (this.TokenReport is null)
+				this.Title = string.Empty;
+			else
 			{
-				this.TokenReport = args.Report;
-
-				if (this.TokenReport is null)
-					this.Title = string.Empty;
-				else
-				{
-					this.Title = await this.TokenReport.GetTitle();
-					await this.TokenReport.GenerateReport(this);
-				}
+				this.Title = await this.TokenReport.GetTitle();
+				await this.TokenReport.GenerateReport(this);
 			}
 
 			ServiceRef.XmppService.NeuroFeatureVariablesUpdated += this.Wallet_VariablesUpdated;

@@ -1,4 +1,6 @@
-﻿namespace NeuroAccessMaui.UI.Pages.Things.MyThings
+﻿using NeuroAccessMaui.Services;
+
+namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 {
 	/// <summary>
 	/// A page that displays a list of the current user's things.
@@ -11,7 +13,7 @@
 		/// </summary>
 		public MyThingsPage()
 		{
-			this.ContentPageModel = new MyThingsViewModel();
+			this.ContentPageModel = new MyThingsViewModel(ServiceRef.UiService.PopLatestArgs<MyThingsNavigationArgs>());
 			this.InitializeComponent();
 		}
 	}

@@ -19,16 +19,35 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 	public partial class PetitionPeerReviewViewModel : QrXmppViewModel
 	{
 		private readonly PhotosLoader photosLoader;
-		private string? requestorFullJid;
-		private string? requestedIdentityId;
-		private string? petitionId;
+		private readonly string? requestorFullJid;
+		private readonly string? requestedIdentityId;
+		private readonly string? petitionId;
+		private readonly string? bareJid;
 
 		/// <summary>
 		/// Creates a new instance of the <see cref="PetitionPeerReviewViewModel"/> class.
 		/// </summary>
-		public PetitionPeerReviewViewModel()
+		/// <param name="Args">Navigation arguments.</param>
+		public PetitionPeerReviewViewModel(PetitionPeerReviewNavigationArgs? Args)
 		{
 			this.photosLoader = new PhotosLoader(this.Photos);
+
+			if (Args is not null)
+			{
+				this.RequestorIdentity = Args.RequestorIdentity;
+				this.requestorFullJid = Args.RequestorFullJid;
+				this.requestedIdentityId = Args.RequestedIdentityId;
+				this.petitionId = Args.PetitionId;
+				this.Purpose = Args.Purpose;
+				this.ContentToSign = Args.ContentToSign;
+
+				if (!string.IsNullOrEmpty(this.requestorFullJid))
+					this.bareJid = XmppClient.GetBareJID(this.requestorFullJid);
+				else if (Args.RequestorIdentity is not null)
+					this.bareJid = Args.RequestorIdentity.GetJid();
+				else
+					this.bareJid = string.Empty;
+			}
 		}
 
 		/// <summary>
@@ -56,25 +75,9 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.UiService.TryGetArgs(out PetitionPeerReviewNavigationArgs? Args))
+			if (!string.IsNullOrEmpty(this.bareJid))
 			{
-				this.RequestorIdentity = Args.RequestorIdentity;
-				this.requestorFullJid = Args.RequestorFullJid;
-				this.requestedIdentityId = Args.RequestedIdentityId;
-				this.petitionId = Args.PetitionId;
-				this.Purpose = Args.Purpose;
-				this.ContentToSign = Args.ContentToSign;
-
-				string BareJid;
-
-				if (!string.IsNullOrEmpty(this.requestorFullJid))
-					BareJid = XmppClient.GetBareJID(this.requestorFullJid);
-				else if (Args.RequestorIdentity is not null)
-					BareJid = Args.RequestorIdentity.GetJid();
-				else
-					BareJid = string.Empty;
-
-				ContactInfo Info = await ContactInfo.FindByBareJid(BareJid);
+				ContactInfo Info = await ContactInfo.FindByBareJid(this.bareJid);
 
 				if (this.RequestorIdentity is not null &&
 					Info is not null &&

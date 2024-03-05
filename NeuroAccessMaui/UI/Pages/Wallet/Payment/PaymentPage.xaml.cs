@@ -1,4 +1,6 @@
-﻿namespace NeuroAccessMaui.UI.Pages.Wallet.Payment
+﻿using NeuroAccessMaui.Services;
+
+namespace NeuroAccessMaui.UI.Pages.Wallet.Payment
 {
 	/// <summary>
 	/// A page that allows the user to realize payments.
@@ -11,7 +13,7 @@
 		/// </summary>
 		public PaymentPage()
 		{
-			this.ContentPageModel = new EDalerUriViewModel(this);
+			this.ContentPageModel = new EDalerUriViewModel(this, ServiceRef.UiService.PopLatestArgs<EDalerUriNavigationArgs>());
 			this.InitializeComponent();
 		}
 

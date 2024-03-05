@@ -1,4 +1,6 @@
-﻿namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
+﻿using NeuroAccessMaui.Services;
+
+namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 {
 	/// <summary>
 	/// A page that allows the user to view the contents of its eDaler wallet, pending payments and recent account events.
@@ -11,7 +13,7 @@
 		/// </summary>
 		public MyEDalerWalletPage()
 		{
-			this.ContentPageModel = new MyWalletViewModel();
+			this.ContentPageModel = new MyWalletViewModel(ServiceRef.UiService.PopLatestArgs<WalletNavigationArgs>());
 			this.InitializeComponent();
 		}
 	}

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using NeuroAccessMaui.Services;
 
 namespace NeuroAccessMaui.UI.Pages.Signatures.ServerSignature
 {
@@ -13,7 +14,7 @@ namespace NeuroAccessMaui.UI.Pages.Signatures.ServerSignature
         /// </summary>
 		public ServerSignaturePage()
 		{
-			this.ContentPageModel = new ServerSignatureViewModel();
+			this.ContentPageModel = new ServerSignatureViewModel(ServiceRef.UiService.PopLatestArgs<ServerSignatureNavigationArgs>());
 			this.InitializeComponent();
 		}
 	}

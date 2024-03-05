@@ -17,26 +17,21 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature
 	public partial class PetitionSignatureViewModel : QrXmppViewModel
 	{
 		private readonly PhotosLoader photosLoader;
-		private string? requestorFullJid;
-		private string? signatoryIdentityId;
-		private string? petitionId;
-		private byte[]? contentToSign;
+		private readonly string? requestorFullJid;
+		private readonly string? signatoryIdentityId;
+		private readonly string? petitionId;
+		private readonly byte[]? contentToSign;
 
 		/// <summary>
 		/// Creates a new instance of the <see cref="PetitionSignatureViewModel"/> class.
 		/// </summary>
-		public PetitionSignatureViewModel()
+		/// <param name="Args">Navigation arguments</param>
+		public PetitionSignatureViewModel(PetitionSignatureNavigationArgs? Args)
 			: base()
 		{
 			this.photosLoader = new PhotosLoader(this.Photos);
-		}
 
-		/// <inheritdoc/>
-		protected override async Task OnInitialize()
-		{
-			await base.OnInitialize();
-
-			if (ServiceRef.UiService.TryGetArgs(out PetitionSignatureNavigationArgs? Args))
+			if (Args is not null)
 			{
 				this.RequestorIdentity = Args.RequestorIdentity;
 				this.requestorFullJid = Args.RequestorFullJid;
@@ -45,6 +40,12 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature
 				this.petitionId = Args.PetitionId;
 				this.Purpose = Args.Purpose;
 			}
+		}
+
+		/// <inheritdoc/>
+		protected override async Task OnInitialize()
+		{
+			await base.OnInitialize();
 
 			this.AssignProperties();
 

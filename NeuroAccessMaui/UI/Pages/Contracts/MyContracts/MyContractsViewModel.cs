@@ -22,32 +22,24 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 	public partial class MyContractsViewModel : BaseViewModel
 	{
 		private readonly Dictionary<string, Contract> contractsMap = [];
-		private ContractsListMode contractsListMode;
-		private TaskCompletionSource<Contract?>? selection;
+		private readonly ContractsListMode contractsListMode;
+		private readonly TaskCompletionSource<Contract?>? selection;
 		private Contract? selectedContract = null;
 
 		/// <summary>
 		/// Creates an instance of the <see cref="MyContractsViewModel"/> class.
 		/// </summary>
-		protected internal MyContractsViewModel()
+		/// <param name="Args">Navigation arguments.</param>
+		protected internal MyContractsViewModel(MyContractsNavigationArgs? Args)
 		{
 			this.IsBusy = true;
 			this.Action = SelectContractAction.ViewContract;
-		}
 
-		/// <inheritdoc/>
-		protected override async Task OnInitialize()
-		{
-			await base.OnInitialize();
-
-			this.IsBusy = true;
-			this.ShowContractsMissing = false;
-
-			if (ServiceRef.UiService.TryGetArgs(out MyContractsNavigationArgs? args))
+			if (Args is not null)
 			{
-				this.contractsListMode = args.Mode;
-				this.Action = args.Action;
-				this.selection = args.Selection;
+				this.contractsListMode = Args.Mode;
+				this.Action = Args.Action;
+				this.selection = Args.Selection;
 
 				switch (this.contractsListMode)
 				{
@@ -67,6 +59,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 						break;
 				}
 			}
+		}
+
+		/// <inheritdoc/>
+		protected override async Task OnInitialize()
+		{
+			await base.OnInitialize();
+
+			this.IsBusy = true;
+			this.ShowContractsMissing = false;
 
 			await this.LoadContracts();
 

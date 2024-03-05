@@ -1,4 +1,6 @@
-﻿namespace NeuroAccessMaui.UI.Pages.Wallet.IssueEDaler
+﻿using NeuroAccessMaui.Services;
+
+namespace NeuroAccessMaui.UI.Pages.Wallet.IssueEDaler
 {
 	/// <summary>
 	/// A page that allows the user to receive newly issued eDaler.
@@ -11,7 +13,7 @@
 		/// </summary>
 		public IssueEDalerPage()
 		{
-			this.ContentPageModel = new EDalerUriViewModel(null);
+			this.ContentPageModel = new EDalerUriViewModel(null, ServiceRef.UiService.PopLatestArgs<EDalerUriNavigationArgs>());
 			this.InitializeComponent();
 		}
 	}

@@ -1,4 +1,6 @@
-﻿namespace NeuroAccessMaui.UI.Pages.Things.CanControl
+﻿using NeuroAccessMaui.Services;
+
+namespace NeuroAccessMaui.UI.Pages.Things.CanControl
 {
 	/// <summary>
 	/// A page that asks the user if a remote entity is allowed to control the device.
@@ -11,7 +13,7 @@
 		/// </summary>
 		public CanControlPage()
 		{
-			this.ContentPageModel = new CanControlViewModel();
+			this.ContentPageModel = new CanControlViewModel(ServiceRef.UiService.PopLatestArgs<CanControlNavigationArgs>());
 			this.InitializeComponent();
 		}
 	}

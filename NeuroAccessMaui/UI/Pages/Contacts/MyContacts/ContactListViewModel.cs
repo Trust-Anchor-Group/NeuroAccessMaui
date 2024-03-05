@@ -27,19 +27,35 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 	public partial class ContactListViewModel : BaseViewModel
 	{
 		private readonly Dictionary<CaseInsensitiveString, List<ContactInfoModel>> byBareJid;
-		private TaskCompletionSource<ContactInfoModel?>? selection;
+		private readonly TaskCompletionSource<ContactInfoModel?>? selection;
+		private readonly ContactListNavigationArgs? navigationArguments;
 
 		/// <summary>
 		/// Creates an instance of the <see cref="ContactListViewModel"/> class.
 		/// </summary>
-		protected internal ContactListViewModel()
+		/// <param name="Args">Navigation arguments.</param>
+		protected internal ContactListViewModel(ContactListNavigationArgs? Args)
 		{
+			this.navigationArguments = Args;
 			this.Contacts = [];
 			this.byBareJid = [];
 
-			this.Description = ServiceRef.Localizer[nameof(AppResources.ContactsDescription)];
-			this.Action = SelectContactAction.ViewIdentity;
-			this.selection = null;
+			if (Args is not null)
+			{
+				this.Description = Args.Description;
+				this.Action = Args.Action;
+				this.selection = Args.Selection;
+				this.CanScanQrCode = Args.CanScanQrCode;
+				this.AllowAnonymous = Args.AllowAnonymous;
+				this.AnonymousText = string.IsNullOrEmpty(Args.AnonymousText) ?
+					ServiceRef.Localizer[nameof(AppResources.Anonymous)] : Args.AnonymousText;
+			}
+			else
+			{
+				this.Description = ServiceRef.Localizer[nameof(AppResources.ContactsDescription)];
+				this.Action = SelectContactAction.ViewIdentity;
+				this.selection = null;
+			}
 		}
 
 		/// <inheritdoc/>
@@ -47,18 +63,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.UiService.TryGetArgs(out ContactListNavigationArgs? args))
-			{
-				this.Description = args.Description;
-				this.Action = args.Action;
-				this.selection = args.Selection;
-				this.CanScanQrCode = args.CanScanQrCode;
-				this.AllowAnonymous = args.AllowAnonymous;
-				this.AnonymousText = string.IsNullOrEmpty(args.AnonymousText) ?
-					ServiceRef.Localizer[nameof(AppResources.Anonymous)] : args.AnonymousText;
-			}
-
-			await this.UpdateContactList(args?.Contacts);
+			await this.UpdateContactList(this.navigationArguments?.Contacts);
 
 			ServiceRef.XmppService.OnPresence += this.Xmpp_OnPresence;
 			ServiceRef.NotificationService.OnNewNotification += this.NotificationService_OnNewNotification;

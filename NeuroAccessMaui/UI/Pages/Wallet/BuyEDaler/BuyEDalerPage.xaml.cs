@@ -1,4 +1,6 @@
-﻿namespace NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler
+﻿using NeuroAccessMaui.Services;
+
+namespace NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler
 {
 	/// <summary>
 	/// A page that allows the user to buy eDaler.
@@ -11,7 +13,7 @@
 		/// </summary>
 		public BuyEDalerPage()
 		{
-			this.ContentPageModel = new BuyEDalerViewModel();
+			this.ContentPageModel = new BuyEDalerViewModel(ServiceRef.UiService.PopLatestArgs<BuyEDalerNavigationArgs>());
 			this.InitializeComponent();
 		}
 	}

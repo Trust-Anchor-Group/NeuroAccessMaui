@@ -12,17 +12,18 @@ namespace NeuroAccessMaui.UI.Pages.Main.VerifyCode
 	/// </summary>
 	public partial class VerifyCodeViewModel : BaseViewModel
 	{
-		private VerifyCodeNavigationArgs? navigationArgs;
+		private readonly VerifyCodeNavigationArgs? navigationArgs;
 
 		/// <summary>
 		/// Creates a new instance of the <see cref="VerifyCodeViewModel"/> class.
 		/// </summary>
-		public VerifyCodeViewModel(VerifyCodeNavigationArgs? NavigationArgs)
+		/// <param name="Args">Navigation arguments.</param>
+		public VerifyCodeViewModel(VerifyCodeNavigationArgs? Args)
 		{
-			this.navigationArgs = NavigationArgs;
+			this.navigationArgs = Args;
 
-			if (NavigationArgs is not null)
-				this.CodeVerification = NavigationArgs.CodeVerification;
+			if (Args is not null)
+				this.CodeVerification = Args.CodeVerification;
 		}
 
 		/// <inheritdoc />
@@ -31,14 +32,6 @@ namespace NeuroAccessMaui.UI.Pages.Main.VerifyCode
 			await base.OnInitialize();
 
 			LocalizationManager.Current.PropertyChanged += this.LocalizationManagerEventHandler;
-
-			if ((this.navigationArgs is null) && ServiceRef.UiService.TryGetArgs(out VerifyCodeNavigationArgs? Args))
-			{
-				this.navigationArgs = Args;
-
-				if (Args is not null)
-					this.CodeVerification = Args.CodeVerification;
-			}
 
 			if (this.CodeVerification is not null)
 				this.CodeVerification.CountDownTimer.Tick += this.CountDownEventHandler;

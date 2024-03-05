@@ -17,18 +17,18 @@ namespace NeuroAccessMaui.UI.Pages.Identity.TransferIdentity
 		/// <summary>
 		/// Creates an instance of the <see cref="TransferIdentityViewModel"/> class.
 		/// </summary>
-		public TransferIdentityViewModel()
+		/// <param name="Args">Navigation arguments.</param>
+		public TransferIdentityViewModel(TransferIdentityNavigationArgs? Args)
 			: base()
 		{
+			if (Args is not null)
+				this.Uri = Args.Uri;
 		}
 
 		/// <inheritdoc/>
 		protected override async Task OnInitialize()
 		{
 			await base.OnInitialize();
-
-			if (ServiceRef.UiService.TryGetArgs(out TransferIdentityNavigationArgs? Args))
-				this.Uri = Args.Uri;
 
 			if (this.Uri is not null)
 			{
