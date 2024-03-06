@@ -136,7 +136,7 @@
                                                LoadMoreCommand="{Binding LoadMoreAccountEventsCommand}">
 						<CollectionView.GroupHeaderTemplate>
 							<DataTemplate x:DataType="base:IUniqueItem">
-								<Frame BackgroundColor="{StaticResource LightGrayColor}" CornerRadius="8" Padding="5" Margin="0" HasShadow="False">
+								<Frame BackgroundColor="{AppThemeBinding Light={StaticResource NormalEditPlaceholderLight}, Dark={StaticResource NormalEditPlaceholderDark}}" CornerRadius="8" Padding="5" Margin="0" HasShadow="False">
 									<Label Text="{Binding LocalisedName}" Style="{StaticResource KeyLabel}"
 									   HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"
 									   LineBreakMode="TailTruncation" FontSize="18" />
