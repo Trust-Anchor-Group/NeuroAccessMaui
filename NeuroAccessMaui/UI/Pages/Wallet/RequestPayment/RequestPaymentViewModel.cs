@@ -208,11 +208,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.RequestPayment
 					await Task.Delay(100);  // Otherwise, page doesn't show properly. (Underlying timing issue. TODO: Find better solution.)
 
 					ChatNavigationArgs ChatArgs = new(Contact.Contact);
-
-					if (OperatingSystem.IsIOS())
-						await ServiceRef.UiService.GoToAsync(nameof(ChatPageIos), ChatArgs, BackMethod.Inherited, Contact.BareJid);
-					else
-						await ServiceRef.UiService.GoToAsync(nameof(ChatPage), ChatArgs, BackMethod.Inherited, Contact.BareJid);
+					await ServiceRef.UiService.GoToAsync(nameof(ChatPage), ChatArgs, BackMethod.Inherited, Contact.BareJid);
 				}
 			}
 			catch (Exception ex)

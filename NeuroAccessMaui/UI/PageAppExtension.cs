@@ -51,7 +51,6 @@ using NeuroAccessMaui.UI.Pages.Wallet.SendPayment;
 using NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenDetails;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenEvents;
-using NeuroAccessMaui.UI.Popups.Password;
 using NeuroAccessMaui.UI.Popups.Photos.Image;
 using NeuroAccessMaui.UI.Popups.Tokens.AddTextNote;
 using NeuroAccessMaui.UI.Popups.Xmpp.RemoveSubscription;
@@ -72,7 +71,6 @@ namespace NeuroAccessMaui.UI
 
 			// Contacts
 			Builder.Services.AddTransient<ChatPage, ChatViewModel>();
-			Builder.Services.AddTransient<ChatPageIos, ChatViewModel>();
 			Builder.Services.AddTransient<MyContactsPage, ContactListViewModel>();
 
 			// Contracts

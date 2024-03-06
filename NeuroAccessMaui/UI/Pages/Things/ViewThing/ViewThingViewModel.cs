@@ -690,10 +690,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 				string FriendlyName = this.thing.FriendlyName;
 				ChatNavigationArgs Args = new(LegalId, this.thing.BareJid, FriendlyName);
 
-				if (OperatingSystem.IsIOS())
-					await ServiceRef.UiService.GoToAsync(nameof(ChatPageIos), Args, BackMethod.Inherited, this.thing.BareJid);
-				else
-					await ServiceRef.UiService.GoToAsync(nameof(ChatPage), Args, BackMethod.Inherited, this.thing.BareJid);
+				await ServiceRef.UiService.GoToAsync(nameof(ChatPage), Args, BackMethod.Inherited, this.thing.BareJid);
 			}
 			catch (Exception ex)
 			{

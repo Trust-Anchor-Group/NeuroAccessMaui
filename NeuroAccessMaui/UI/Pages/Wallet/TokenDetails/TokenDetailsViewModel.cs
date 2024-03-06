@@ -618,11 +618,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			try
 			{
 				ChatNavigationArgs Args = new(LegalId, BareJid, FriendlyName);
-
-				if (OperatingSystem.IsIOS())
-					await ServiceRef.UiService.GoToAsync(nameof(ChatPageIos), Args, BackMethod.Inherited, BareJid);
-				else
-					await ServiceRef.UiService.GoToAsync(nameof(ChatPage), Args, BackMethod.Inherited, BareJid);
+				await ServiceRef.UiService.GoToAsync(nameof(ChatPage), Args, BackMethod.Inherited, BareJid);
 			}
 			catch (Exception ex)
 			{
@@ -700,11 +696,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 				await Task.Delay(100);  // Otherwise, page doesn't show properly. (Underlying timing issue. TODO: Find better solution.)
 
 				ChatNavigationArgs ChatArgs = new(Contact.Contact);
-
-				if (OperatingSystem.IsIOS())
-					await ServiceRef.UiService.GoToAsync(nameof(ChatPageIos), ChatArgs, BackMethod.Inherited, Contact.BareJid);
-				else
-					await ServiceRef.UiService.GoToAsync(nameof(ChatPage), ChatArgs, BackMethod.Inherited, Contact.BareJid);
+				await ServiceRef.UiService.GoToAsync(nameof(ChatPage), ChatArgs, BackMethod.Inherited, Contact.BareJid);
 			}
 		}
 

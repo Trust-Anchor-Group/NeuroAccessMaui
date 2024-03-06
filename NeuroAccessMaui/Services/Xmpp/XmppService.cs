@@ -1638,7 +1638,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 			MainThread.BeginInvokeOnMainThread(async () =>
 			{
-				if ((ServiceRef.UiService.CurrentPage is ChatPage || ServiceRef.UiService.CurrentPage is ChatPageIos) &&
+				if (ServiceRef.UiService.CurrentPage is ChatPage &&
 					ServiceRef.UiService.CurrentPage.BindingContext is ChatViewModel ChatViewModel &&
 					string.Equals(ChatViewModel.BareJid, RemoteBareJid, StringComparison.OrdinalIgnoreCase))
 				{
