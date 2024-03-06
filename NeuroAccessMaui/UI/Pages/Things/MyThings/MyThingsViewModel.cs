@@ -28,7 +28,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 		/// Creates an instance of the <see cref="MyThingsViewModel"/> class.
 		/// </summary>
 		/// <param name="Args">Navigation arguments</param>
-		protected internal MyThingsViewModel(MyThingsNavigationArgs? Args)
+		public MyThingsViewModel(MyThingsNavigationArgs? Args)
 		{
 			this.result = Args?.ThingToShare;
 		}

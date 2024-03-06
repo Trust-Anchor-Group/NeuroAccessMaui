@@ -23,7 +23,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 		/// Creates a new instance of the <see cref="PetitionContractViewModel"/> class.
 		/// </summary>
 		/// <param name="Args">Navigation arguments.</param>
-		protected internal PetitionContractViewModel(PetitionContractNavigationArgs? Args)
+		public PetitionContractViewModel(PetitionContractNavigationArgs? Args)
 		{
 			this.Photos = [];
 			this.photosLoader = new PhotosLoader(this.Photos);

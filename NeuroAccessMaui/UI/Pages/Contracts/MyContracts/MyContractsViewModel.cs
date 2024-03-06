@@ -30,7 +30,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		/// Creates an instance of the <see cref="MyContractsViewModel"/> class.
 		/// </summary>
 		/// <param name="Args">Navigation arguments.</param>
-		protected internal MyContractsViewModel(MyContractsNavigationArgs? Args)
+		public MyContractsViewModel(MyContractsNavigationArgs? Args)
 		{
 			this.IsBusy = true;
 			this.Action = SelectContractAction.ViewContract;

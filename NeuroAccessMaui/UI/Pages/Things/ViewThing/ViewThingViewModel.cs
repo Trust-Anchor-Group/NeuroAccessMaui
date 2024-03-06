@@ -40,7 +40,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 		/// Creates an instance of the <see cref="ViewThingViewModel"/> class.
 		/// </summary>
 		/// <param name="Args">Navigation arguments</param>
-		protected internal ViewThingViewModel(ViewThingNavigationArgs? Args)
+		public ViewThingViewModel(ViewThingNavigationArgs? Args)
 			: base()
 		{
 			this.navigationArguments = Args;

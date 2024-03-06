@@ -31,7 +31,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 		/// Creates an instance of the <see cref="CanReadViewModel"/> class.
 		/// </summary>
 		/// <param name="Args">Navigation arguments</param>
-		protected internal CanReadViewModel(CanReadNavigationArgs? Args)
+		public CanReadViewModel(CanReadNavigationArgs? Args)
 			: base()
 		{
 			this.navigationArguments = Args;

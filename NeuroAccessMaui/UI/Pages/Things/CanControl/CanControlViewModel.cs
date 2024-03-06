@@ -30,7 +30,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanControl
 		/// Creates an instance of the <see cref="CanControlViewModel"/> class.
 		/// </summary>
 		/// <param name="Args">Navigation arguments</param>
-		protected internal CanControlViewModel(CanControlNavigationArgs? Args)
+		public CanControlViewModel(CanControlNavigationArgs? Args)
 			: base()
 		{
 			this.navigationArguments = Args;

@@ -18,7 +18,7 @@ namespace NeuroAccessMaui.UI.Pages.Signatures.ServerSignature
 		/// Creates an instance of the <see cref="ServerSignatureViewModel"/> class.
 		/// </summary>
 		/// <param name="Args">Navigation arguments</param>
-		protected internal ServerSignatureViewModel(ServerSignatureNavigationArgs? Args)
+		public ServerSignatureViewModel(ServerSignatureNavigationArgs? Args)
 		{
 			if (Args is not null)
 				this.contract = Args.Contract;

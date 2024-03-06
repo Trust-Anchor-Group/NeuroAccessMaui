@@ -34,7 +34,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 		/// Creates an instance of the <see cref="ContactListViewModel"/> class.
 		/// </summary>
 		/// <param name="Args">Navigation arguments.</param>
-		protected internal ContactListViewModel(ContactListNavigationArgs? Args)
+		public ContactListViewModel(ContactListNavigationArgs? Args)
 		{
 			this.navigationArguments = Args;
 			this.Contacts = [];

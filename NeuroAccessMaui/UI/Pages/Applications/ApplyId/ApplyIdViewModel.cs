@@ -808,7 +808,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		/// <param name="Rotation">Rotation to use, to display the image correctly.</param>
 		/// <param name="saveLocalCopy">Set to <c>true</c> to save a local copy, <c>false</c> otherwise.</param>
 		/// <param name="showAlert">Set to <c>true</c> to show an alert if photo is too large; <c>false</c> otherwise.</param>
-		protected internal async Task AddPhoto(byte[] Bin, string ContentType, int Rotation, bool saveLocalCopy, bool showAlert)
+		public async Task AddPhoto(byte[] Bin, string ContentType, int Rotation, bool saveLocalCopy, bool showAlert)
 		{
 			if (Bin.Length > ServiceRef.TagProfile.HttpFileUploadMaxSize)
 			{
@@ -847,7 +847,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		/// <param name="InputStream">Stream containing the photo.</param>
 		/// <param name="FilePath">The full path to the file.</param>
 		/// <param name="SaveLocalCopy">Set to <c>true</c> to save a local copy, <c>false</c> otherwise.</param>
-		protected internal async Task AddPhoto(Stream InputStream, string FilePath, bool SaveLocalCopy)
+		public async Task AddPhoto(Stream InputStream, string FilePath, bool SaveLocalCopy)
 		{
 			SKData? ImageData = null;
 

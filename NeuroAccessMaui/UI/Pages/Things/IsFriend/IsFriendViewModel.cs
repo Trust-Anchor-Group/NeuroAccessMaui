@@ -25,7 +25,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.IsFriend
 		/// Creates an instance of the <see cref="IsFriendViewModel"/> class.
 		/// </summary>
 		/// <param name="Args">Navigation arguments</param>
-		protected internal IsFriendViewModel(IsFriendNavigationArgs? Args)
+		public IsFriendViewModel(IsFriendNavigationArgs? Args)
 			: base()
 		{
 			this.navigationArguments = Args;

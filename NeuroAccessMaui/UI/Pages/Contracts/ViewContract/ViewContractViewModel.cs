@@ -31,7 +31,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		/// Creates an instance of the <see cref="ViewContractViewModel"/> class.
 		/// </summary>
 		/// <param name="Args">Navigation arguments.</param>
-		protected internal ViewContractViewModel(ViewContractNavigationArgs? Args)
+		public ViewContractViewModel(ViewContractNavigationArgs? Args)
 		{
 			this.Photos = [];
 			this.photosLoader = new PhotosLoader(this.Photos);
