@@ -397,7 +397,7 @@ namespace NeuroAccessMaui.Services.Settings
 			}
 			catch (Exception ex)
 			{
-				ServiceRef.LogService.LogException(e);
+				ServiceRef.LogService.LogException(ex);
 			}
 		}
 
