@@ -156,9 +156,9 @@ namespace NeuroAccessMaui.Services.Storage
 					this.databaseProvider = null;
 				}
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				ServiceRef.LogService.LogException(e);
+				ServiceRef.LogService.LogException(ex);
 			}
 		}
 

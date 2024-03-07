@@ -992,9 +992,9 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 				if (RemoveFileOnDisc && File.Exists(this.localPhotoFileName))
 					File.Delete(this.localPhotoFileName);
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				ServiceRef.LogService.LogException(e);
+				ServiceRef.LogService.LogException(ex);
 			}
 		}
 

@@ -42,9 +42,9 @@ namespace NeuroAccessMaui.Services.Settings
 				await RuntimeSettings.SetAsync(Key, State);
 				await Database.Provider.Flush();
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				ServiceRef.LogService.LogException(e);
+				ServiceRef.LogService.LogException(ex);
 			}
 		}
 
@@ -60,9 +60,9 @@ namespace NeuroAccessMaui.Services.Settings
 				await RuntimeSettings.SetAsync(Key, State);
 				await Database.Provider.Flush();
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				ServiceRef.LogService.LogException(e);
+				ServiceRef.LogService.LogException(ex);
 			}
 		}
 
@@ -78,9 +78,9 @@ namespace NeuroAccessMaui.Services.Settings
 				await RuntimeSettings.SetAsync(Key, State);
 				await Database.Provider.Flush();
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				ServiceRef.LogService.LogException(e);
+				ServiceRef.LogService.LogException(ex);
 			}
 		}
 
@@ -96,9 +96,9 @@ namespace NeuroAccessMaui.Services.Settings
 				await RuntimeSettings.SetAsync(Key, State);
 				await Database.Provider.Flush();
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				ServiceRef.LogService.LogException(e);
+				ServiceRef.LogService.LogException(ex);
 			}
 		}
 
@@ -114,9 +114,9 @@ namespace NeuroAccessMaui.Services.Settings
 				await RuntimeSettings.SetAsync(Key, State);
 				await Database.Provider.Flush();
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				ServiceRef.LogService.LogException(e);
+				ServiceRef.LogService.LogException(ex);
 			}
 		}
 
@@ -132,9 +132,9 @@ namespace NeuroAccessMaui.Services.Settings
 				await RuntimeSettings.SetAsync(Key, State);
 				await Database.Provider.Flush();
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				ServiceRef.LogService.LogException(e);
+				ServiceRef.LogService.LogException(ex);
 			}
 		}
 
@@ -150,9 +150,9 @@ namespace NeuroAccessMaui.Services.Settings
 				await RuntimeSettings.SetAsync(Key, State);
 				await Database.Provider.Flush();
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				ServiceRef.LogService.LogException(e);
+				ServiceRef.LogService.LogException(ex);
 			}
 		}
 
@@ -168,9 +168,9 @@ namespace NeuroAccessMaui.Services.Settings
 				await RuntimeSettings.SetAsync(Key, State);
 				await Database.Provider.Flush();
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				ServiceRef.LogService.LogException(e);
+				ServiceRef.LogService.LogException(ex);
 			}
 		}
 
@@ -200,9 +200,9 @@ namespace NeuroAccessMaui.Services.Settings
 						matches.Add((State.Key, TypedValue));
 				}
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				ServiceRef.LogService.LogException(e);
+				ServiceRef.LogService.LogException(ex);
 			}
 
 			return matches;
@@ -222,9 +222,9 @@ namespace NeuroAccessMaui.Services.Settings
 				str = str?.Trim('"');
 				return str;
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				ServiceRef.LogService.LogException(e);
+				ServiceRef.LogService.LogException(ex);
 			}
 
 			return DefaultValueIfNotFound;
@@ -242,9 +242,9 @@ namespace NeuroAccessMaui.Services.Settings
 			{
 				return await RuntimeSettings.GetAsync(Key, DefaultValueIfNotFound);
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				ServiceRef.LogService.LogException(e);
+				ServiceRef.LogService.LogException(ex);
 			}
 
 			return DefaultValueIfNotFound;
@@ -262,9 +262,9 @@ namespace NeuroAccessMaui.Services.Settings
 			{
 				return await RuntimeSettings.GetAsync(Key, DefaultValueIfNotFound);
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				ServiceRef.LogService.LogException(e);
+				ServiceRef.LogService.LogException(ex);
 			}
 
 			return DefaultValueIfNotFound;
@@ -282,9 +282,9 @@ namespace NeuroAccessMaui.Services.Settings
 			{
 				return await RuntimeSettings.GetAsync(Key, DefaultValueIfNotFound);
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				ServiceRef.LogService.LogException(e);
+				ServiceRef.LogService.LogException(ex);
 			}
 
 			return DefaultValueIfNotFound;
@@ -302,9 +302,9 @@ namespace NeuroAccessMaui.Services.Settings
 			{
 				return await RuntimeSettings.GetAsync(Key, DefaultValueIfNotFound);
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				ServiceRef.LogService.LogException(e);
+				ServiceRef.LogService.LogException(ex);
 			}
 
 			return DefaultValueIfNotFound;
@@ -322,9 +322,9 @@ namespace NeuroAccessMaui.Services.Settings
 			{
 				return await RuntimeSettings.GetAsync(Key, DefaultValueIfNotFound);
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				ServiceRef.LogService.LogException(e);
+				ServiceRef.LogService.LogException(ex);
 			}
 
 			return DefaultValueIfNotFound;
@@ -342,9 +342,9 @@ namespace NeuroAccessMaui.Services.Settings
 			{
 				return await RuntimeSettings.GetAsync(Key, DefaultValueIfNotFound);
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				ServiceRef.LogService.LogException(e);
+				ServiceRef.LogService.LogException(ex);
 			}
 
 			return DefaultValueIfNotFound;
@@ -371,9 +371,9 @@ namespace NeuroAccessMaui.Services.Settings
 
 				return DefaultValueIfNotFound;
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				ServiceRef.LogService.LogException(e);
+				ServiceRef.LogService.LogException(ex);
 			}
 
 			return DefaultValueIfNotFound;
@@ -395,7 +395,7 @@ namespace NeuroAccessMaui.Services.Settings
 				await RuntimeSettings.DeleteAsync(Key);
 				await Database.Provider.Flush();
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(e);
 			}
@@ -418,9 +418,9 @@ namespace NeuroAccessMaui.Services.Settings
 				await RuntimeSettings.DeleteWhereKeyLikeAsync(KeyPrefix, wildCard);
 				await Database.Provider.Flush();
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				ServiceRef.LogService.LogException(e);
+				ServiceRef.LogService.LogException(ex);
 			}
 		}
 
