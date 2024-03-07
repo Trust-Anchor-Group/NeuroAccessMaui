@@ -30,6 +30,8 @@ namespace NeuroAccessMaui.UI
 		private static Style? unicodeCharacterButton;
 		private static Style? imageOnlyButton;
 		private static Style? transparentImageButton;
+		private static Style? sendFrame;
+		private static Style? receiveFrame;
 
 		static AppStyles()
 		{
@@ -302,6 +304,30 @@ namespace NeuroAccessMaui.UI
 			{
 				transparentImageButton ??= TryGetResource<Style>("TransparentImageButton");
 				return transparentImageButton!;
+			}
+		}
+
+		/// <summary>
+		/// Style for send frames
+		/// </summary>
+		public static Style SendFrame
+		{
+			get
+			{
+				sendFrame ??= TryGetResource<Style>("SendFrame");
+				return sendFrame!;
+			}
+		}
+
+		/// <summary>
+		/// Style for receive frames
+		/// </summary>
+		public static Style ReceiveFrame
+		{
+			get
+			{
+				receiveFrame ??= TryGetResource<Style>("ReceiveFrame");
+				return receiveFrame!;
 			}
 		}
 

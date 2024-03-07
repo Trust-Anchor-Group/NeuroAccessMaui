@@ -11,11 +11,6 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 	public enum MessageType
 	{
 		/// <summary>
-		/// An empty transparent bubble, used to fix an issue on iOS
-		/// </summary>
-		Empty,
-
-		/// <summary>
 		/// Message sent by the user
 		/// </summary>
 		Sent,
@@ -35,21 +30,6 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 	[Index("RemoteBareJid", "RemoteObjectId")]
 	public class ChatMessage : IUniqueItem
 	{
-		/// <summary>
-		/// A chat message which is always the latest one and is of type <see cref="MessageType.Empty"/>.
-		/// </summary>
-		/// 
-		/// <remarks>
-		/// Because <see cref="Empty"/> has its <see cref="Created"/> and <see cref="Updated"/> properties set to <see cref="DateTime.MaxValue"/>,
-		/// once it is inserted into chat messages collection at position 0, it will remain at this position forever and no new chat
-		/// messages can lift it up in the chat history.
-		/// </remarks>
-		public static ChatMessage Empty => new()
-		{
-			Created = DateTime.MaxValue,
-			Updated = DateTime.MaxValue,
-		};
-
 		private string? objectId = null;
 		private CaseInsensitiveString? remoteBareJid = null;
 		private DateTime created = DateTime.MinValue;
@@ -68,7 +48,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		/// </summary>
 		public ChatMessage()
 		{
-			this.MessageType = MessageType.Empty;
+			this.MessageType = MessageType.Received;
 			this.Updated = DateTime.MinValue;
 
 			this.XmppUriClicked = new Command(async Parameter => await this.ExecuteUriClicked(Parameter, UriScheme.Xmpp));
@@ -183,16 +163,6 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		{
 			this.chatView = View;
 
-			if (this.MessageType == MessageType.Empty)
-			{
-				this.parsedXaml = new VerticalStackLayout()
-				{
-					Spacing = 0
-				};
-
-				return;
-			}
-
 			if (!string.IsNullOrEmpty(this.markdown))
 			{
 				this.parsedXaml = await this.markdown.MarkdownToParsedXaml();
@@ -207,17 +177,21 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 				};
 
 				if (!string.IsNullOrEmpty(this.html))
+				{
 					Layout.Children.Add(new Label()
 					{
 						Text = this.html,
 						TextType = TextType.Html
 					});
+				}
 				else if (!string.IsNullOrEmpty(this.plainText))
+				{
 					Layout.Children.Add(new Label()
 					{
 						Text = this.plainText,
 						TextType = TextType.Text
 					});
+				}
 
 				this.parsedXaml = Layout;
 			}
@@ -277,6 +251,12 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 				return;
 
 			await App.OpenUrlAsync(Url);
+		}
+
+		/// <inheritdoc/>
+		public override string ToString()
+		{
+			return this.created.ToString();
 		}
 
 	}

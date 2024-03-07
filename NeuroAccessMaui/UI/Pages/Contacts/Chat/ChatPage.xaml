@@ -12,72 +12,17 @@
 							 xmlns:behaviors="clr-namespace:NeuroAccessMaui.UI.Behaviors"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contacts.Chat">
-
-	<VisualElement.Resources>
-		<ResourceDictionary>
-			<Style TargetType="ContentView">
-				<Setter Property="BackgroundColor" Value="Transparent" />
-			</Style>
-			<Style TargetType="Label">
-				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
-			</Style>
-		</ResourceDictionary>
-		<DataTemplate x:Key="EmptyMessage" x:DataType="viewmodel:ChatMessage">
-			<ContentView Content="{Binding Path=ParsedXaml}" HeightRequest="1"/>
-		</DataTemplate>
-		<DataTemplate x:Key="SentMessage" x:DataType="viewmodel:ChatMessage">
-			<Grid ColumnDefinitions="auto,*" ColumnSpacing="0">
-				<Frame Grid.Column="0" Rotation="180" BackgroundColor="{StaticResource SendMessageBackground}"
-					   Padding="5" CornerRadius="5" BorderColor="{StaticResource SendMessageBorder}" HasShadow="False">
-					<ContentView Content="{Binding Path=ParsedXaml}" />
-				</Frame>
-				<Grid Grid.Column="1" BackgroundColor="Transparent"/>
-			</Grid>
-		</DataTemplate>
-		<DataTemplate x:Key="ReceivedMessage" x:DataType="viewmodel:ChatMessage">
-			<Grid ColumnDefinitions="*,auto" ColumnSpacing="0">
-				<Grid Grid.Column="0" BackgroundColor="Transparent"/>
-				<Frame Grid.Column="1" Rotation="180" BackgroundColor="{StaticResource RecivedMessageBackground}"
-					   Padding="5" CornerRadius="5" BorderColor="{StaticResource RecivedMessageBorder}" HasShadow="False">
-					<ContentView Content="{Binding Path=ParsedXaml}" />
-				</Frame>
-			</Grid>
-		</DataTemplate>
-		<DataTemplate x:Key="OtherItems" x:DataType="viewmodel:ChatMessage">
-			<Grid ColumnDefinitions="*,auto,*" ColumnSpacing="0">
-				<Grid Grid.Column="0" BackgroundColor="Transparent"/>
-				<Frame Grid.Column="1" Rotation="180" BackgroundColor="{StaticResource OtherMessageBackground}"
-					   Padding="5" CornerRadius="5" BorderColor="{StaticResource OtherMessageBorder}" HasShadow="False">
-					<ContentView Content="{Binding Path=ParsedXaml}" />
-				</Frame>
-				<Grid Grid.Column="1" BackgroundColor="Transparent"/>
-			</Grid>
-		</DataTemplate>
-		<viewmodel:MessageTypeTemplateSelector x:Key="MessageStyleSelector"
-                                             EmptyTemplate="{StaticResource EmptyMessage}"
-                                             SentTemplate="{StaticResource SentMessage}"
-                                             ReceivedTemplate="{StaticResource ReceivedMessage}"
-                                             DefaultTemplate="{StaticResource OtherItems}"/>
-	</VisualElement.Resources>
-
 	<Grid x:Name="ContainerView" Margin="{StaticResource SmallMargins}">
 		<Grid RowDefinitions="*,auto">
-			<controls:LoadingCollectionView x:Name="CollectionView" SelectionMode="Single" Rotation="180"
-													  VerticalOptions="StartAndExpand" ItemSizingStrategy="MeasureAllItems"
-													  ItemsUpdatingScrollMode="KeepScrollOffset" RemainingItemsThreshold="1"
-													  ItemsSource="{Binding Path=Messages}"
-													  ItemTemplate="{StaticResource MessageStyleSelector}"
-													  ItemSelectedCommand="{Binding Path=MessageSelectedCommand}"
-													  LoadMoreCommand="{Binding LoadMoreMessagesCommand}">
-				<CollectionView.ItemsLayout>
-					<GridItemsLayout Orientation="Vertical" VerticalItemSpacing="12"/>
-				</CollectionView.ItemsLayout>
-			</controls:LoadingCollectionView>
+			<ScrollView x:Name="ScrollView" x:FieldModifier="public">
+				<VerticalStackLayout x:Name="Messages" x:FieldModifier="public" VerticalOptions="Fill" HorizontalOptions="Fill">
+				</VerticalStackLayout>
+			</ScrollView>
 
 			<Grid x:Name="ControlGrid" ColumnDefinitions="*,40" Grid.Row="1" Margin="{StaticResource SmallTopMargins}">
 				<Frame CornerRadius="5" Padding="5,5,5,5"
 						 BorderColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}">
-						 <!--
+					<!--
 					<Frame.Behaviors>
 						<behaviors:SetFocusOnTappedBehavior SetFocusTo="EditorControl"/>
 					</Frame.Behaviors>
@@ -87,8 +32,7 @@
 								IsVisible="{Binding IsRecordingAudio, Converter={StaticResource InvertedBoolConverter}}">
 							<Editor x:Name="EditorControl" HorizontalOptions="FillAndExpand" MinimumHeightRequest="40"
 									  IsEnabled="{Binding IsRecordingAudio, Converter={StaticResource InvertedBoolConverter}}"
-									  Text="{Binding MarkdownInput}" Keyboard="Chat" AutoSize="TextChanges"
-									  Unfocused="OnEditorControlUnfocused"/>
+									  Text="{Binding MarkdownInput}" Keyboard="Chat" AutoSize="TextChanges"/>
 
 							<controls:ImageButton Grid.Column="1" Margin="{StaticResource SmallLeftMargins}"
 														 PathData="{x:Static ui:Geometries.CancelPath}" Style="{StaticResource ImageOnlyButton}"
@@ -163,7 +107,7 @@
 				<controls:FadeView.BackView>
 					<controls:ImageButton PathData="{x:Static ui:Geometries.SendPath}" Command="{Binding SendCommand}"
 												 Style="{StaticResource ImageOnlyButton}">
-							  <!--
+						<!--
 						<controls:ImageButton.Behaviors>
 							<behaviors:UnfocusOnClickedBehavior UnfocusControl="EditorControl"/>
 						</controls:ImageButton.Behaviors>

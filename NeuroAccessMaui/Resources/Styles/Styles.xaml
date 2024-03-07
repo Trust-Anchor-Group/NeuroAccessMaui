@@ -543,4 +543,18 @@
 		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#10808080, Dark=#10808080}" />
 	</Style>
 
+	<Style x:Key="SendFrame" ApplyToDerivedTypes="True" TargetType="Frame">
+		<Setter Property="BackgroundColor" Value="{StaticResource SendMessageBackground}" />
+		<Setter Property="BorderColor" Value="{StaticResource SendMessageBorder}"/>
+		<Setter Property="HorizontalOptions" Value="Start"/>
+		<Setter Property="Margin" Value="{StaticResource SmallMargins}"/>
+	</Style>
+
+	<Style x:Key="ReceiveFrame" ApplyToDerivedTypes="True" TargetType="Frame">
+		<Setter Property="BackgroundColor" Value="{StaticResource ReceiveMessageBackground}" />
+		<Setter Property="BorderColor" Value="{StaticResource ReceiveMessageBorder}"/>
+		<Setter Property="HorizontalOptions" Value="End"/>
+		<Setter Property="Margin" Value="{StaticResource SmallMargins}"/>
+	</Style>
+
 </ResourceDictionary>

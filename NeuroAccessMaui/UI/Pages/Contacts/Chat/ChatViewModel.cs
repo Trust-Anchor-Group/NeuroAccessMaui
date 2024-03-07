@@ -9,6 +9,7 @@ using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.QR;
 using NeuroAccessMaui.UI.Converters;
+using NeuroAccessMaui.UI.Pages.Contacts.Chat.Controls;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts;
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
@@ -22,7 +23,6 @@ using NeuroAccessMaui.UI.Pages.Wallet.TokenDetails;
 using NeuroAccessMaui.UI.Popups.Xmpp.SubscribeTo;
 using NeuroFeatures;
 using SkiaSharp;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Security.Cryptography;
@@ -46,15 +46,31 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 	/// </summary>
 	public partial class ChatViewModel : XmppViewModel, IChatView, ILinkableView
 	{
+		private readonly SortedDictionary<string, LinkedListNode<MessageRecord>> messagesByObjectId = [];
+		private readonly LinkedList<MessageRecord> messages = [];
+		private readonly LinkedList<MessageFrame> frames = [];
+		private readonly ChatPage page;
+		private readonly object synchObject = new();
 		private TaskCompletionSource<bool> waitUntilBound = new();
+
+		private class MessageRecord(ChatMessage Message, LinkedListNode<MessageFrame> FrameNode)
+		{
+			public ChatMessage Message = Message;
+			public LinkedListNode<MessageFrame> FrameNode = FrameNode;
+
+			public DateTime Created => this.Message.Created;
+			public MessageType MessageType => this.Message.MessageType;
+		}
 
 		/// <summary>
 		/// Creates an instance of the <see cref="ChatViewModel"/> class.
 		/// </summary>
+		/// <param name="Page">Reference to chat page.</param>
 		/// <param name="Args">Navigation arguments</param>
-		protected internal ChatViewModel(ChatNavigationArgs? Args)
+		public ChatViewModel(ChatPage Page, ChatNavigationArgs? Args)
 			: base()
 		{
+			this.page = Page;
 			this.LegalId = Args?.LegalId ?? string.Empty;
 			this.BareJid = Args?.BareJid ?? string.Empty;
 			this.FriendlyName = Args?.FriendlyName ?? string.Empty;
@@ -66,9 +82,12 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		{
 			await base.OnInitialize();
 
-			await this.ExecuteLoadMessagesAsync(false);
+			IView? Last = await this.LoadMessagesAsync(false);
 
 			this.waitUntilBound.TrySetResult(true);
+
+			if (Last is Element LastElement)
+				await this.page.ScrollView.ScrollToAsync(LastElement, ScrollToPosition.End, false);
 
 			await ServiceRef.NotificationService.DeleteEvents(NotificationEventType.Contacts, this.BareJid);
 		}
@@ -223,52 +242,139 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		}
 
 		/// <summary>
-		/// Holds the list of chat messages to display.
-		/// </summary>
-		public ObservableCollection<ChatMessage> Messages { get; } = [];
-
-		/// <summary>
 		/// External message has been received
 		/// </summary>
 		/// <param name="Message">Message</param>
-		public async Task MessageAddedAsync(ChatMessage Message)
+		public Task MessageAddedAsync(ChatMessage Message)
 		{
+			MainThread.BeginInvokeOnMainThread(async () =>
+			{
+				IView? View = await this.MessageAddedMainThread(Message, false);
+
+				if (View is Element Element)
+					await this.page.ScrollView.ScrollToAsync(Element, ScrollToPosition.End, true);
+			});
+			return Task.CompletedTask;
+		}
+
+		private async Task<IView?> MessageAddedMainThread(ChatMessage Message, bool Historic)
+		{
+			TaskCompletionSource<IView?> Result = new();
+
 			try
 			{
-				await Message.GenerateXaml(this);
+				await Message.GenerateXaml(this);   // Makes sure XAML is generated
+
+				lock (this.synchObject)
+				{
+					LinkedListNode<MessageRecord>? MessageNode = Historic ? this.messages.Last : this.messages.First;
+					LinkedListNode<MessageFrame>? FrameNode;
+					MessageFrame? Frame;
+					MessageRecord Rec;
+					IView? View;
+					int i;
+
+					if (MessageNode is null)
+					{
+						Frame = MessageFrame.Create(Message);
+						View = Frame.AddLast(Message);
+						this.page.Messages.Add(Frame);
+
+						FrameNode = this.frames.AddLast(Frame);
+
+						Rec = new(Message, FrameNode);
+						MessageNode = this.messages.AddLast(Rec);
+					}
+					else if (Historic)
+					{
+						while (MessageNode is not null && Message.Created > MessageNode.Value.Created)
+							MessageNode = MessageNode.Next;
+
+						if (MessageNode is null)
+						{
+							FrameNode = this.frames.Last!;
+
+							if (FrameNode.Value.MessageType != Message.MessageType)
+							{
+								FrameNode = this.frames.AddLast(MessageFrame.Create(Message));
+								this.page.Messages.Add(FrameNode.Value);
+							}
+
+							View = FrameNode.Value.AddLast(Message);
+
+							Rec = new(Message, FrameNode);
+							MessageNode = this.messages.AddLast(Rec);
+						}
+						else
+						{
+							View = null;
+							// TODO
+						}
+					}
+					else
+					{
+						while (MessageNode is not null && Message.Created < MessageNode.Value.Created)
+							MessageNode = MessageNode.Previous;
+
+						if (MessageNode is null)
+						{
+							FrameNode = this.frames.First!;
+
+							if (FrameNode.Value.MessageType != Message.MessageType)
+							{
+								FrameNode = this.frames.AddFirst(MessageFrame.Create(Message));
+								this.page.Messages.Insert(0, FrameNode.Value);
+							}
+
+							View = FrameNode.Value.AddFirst(Message);
+
+							Rec = new(Message, FrameNode);
+							MessageNode = this.messages.AddFirst(Rec);
+						}
+						else
+						{
+							View = null;
+							// TODO
+						}
+					}
+
+					Result.TrySetResult(View);
+
+					{
+
+
+						//else if (MessageNode.Value.ParsedXaml is IView PrevMessageXaml &&
+						//	(i = this.page.Messages.IndexOf(PrevMessageXaml)) >= 0)
+						//{
+						//	if (MessageNode.Value.ObjectId == Message.ObjectId)
+						//	{
+						//		this.page.Messages.RemoveAt(i);
+						//		this.page.Messages.Insert(i, MessageXaml);
+						//
+						//		MessageNode.Value = Message;
+						//	}
+						//	else
+						//	{
+						//		this.page.Messages.Insert(i + 1, MessageXaml);
+						//		MessageNode = this.messages.AddAfter(MessageNode, Message);
+						//	}
+						//}
+						//else
+						//{
+						//	MessageNode = this.messages.AddLast(Message);
+						//	this.page.Messages.Children.Add(MessageXaml);
+						//}
+					}
+
+					this.messagesByObjectId[Message.ObjectId ?? string.Empty] = MessageNode;
+				}
 			}
 			catch (Exception ex)
 			{
-				ServiceRef.LogService.LogException(ex);
-				return;
+				Result.TrySetException(ex);
 			}
 
-			MainThread.BeginInvokeOnMainThread(() =>
-			{
-				try
-				{
-					int i = 0;
-
-					for (; i < this.Messages.Count; i++)
-					{
-						ChatMessage Item = this.Messages[i];
-
-						if (Item.Created <= Message.Created)
-							break;
-					}
-
-					if (i >= this.Messages.Count)
-						this.Messages.Add(Message);
-					else if (this.Messages[i].ObjectId != Message.ObjectId)
-						this.Messages.Insert(i, Message);
-
-					this.EnsureFirstMessageIsEmpty();
-				}
-				catch (Exception ex)
-				{
-					ServiceRef.LogService.LogException(ex);
-				}
-			});
+			return await Result.Task;
 		}
 
 		/// <summary>
@@ -287,21 +393,29 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 				return;
 			}
 
+			if (Message.ParsedXaml is not IView MessageXaml || string.IsNullOrEmpty(Message.ObjectId))
+				return;
+
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
 				try
 				{
-					for (int i = 0; i < this.Messages.Count; i++)
+					lock (this.synchObject)
 					{
-						ChatMessage Item = this.Messages[i];
+						int i;
 
-						if (Item.ObjectId == Message.ObjectId)
+						if (this.messagesByObjectId.TryGetValue(Message.ObjectId, out LinkedListNode<MessageRecord>? Node) &&
+							Node.Value.Message.ParsedXaml is IView PrevMessageXaml &&
+							PrevMessageXaml.Parent is VerticalStackLayout Parent &&
+							(i = Parent.IndexOf(PrevMessageXaml)) >= 0)
 						{
-							this.Messages[i] = Message;
-							break;
-						}
+							Parent.RemoveAt(i);
+							Parent.Insert(i, MessageXaml);
 
-						this.EnsureFirstMessageIsEmpty();
+							Node.Value.Message = Message;
+
+							// TODO: Update XAML
+						}
 					}
 				}
 				catch (Exception ex)
@@ -311,49 +425,61 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			});
 		}
 
-		private async Task ExecuteLoadMessagesAsync(bool LoadMore = true)
+		private async Task<IView?> LoadMessagesAsync(bool LoadMore = true)
 		{
 			IEnumerable<ChatMessage>? Messages = null;
 			int c = Constants.BatchSizes.MessageBatchSize;
+			DateTime LastTime;
+			ChatMessage[] A;
 
 			try
 			{
 				this.ExistsMoreMessages = false;
 
-				DateTime LastTime = LoadMore ? this.Messages[^1].Created : DateTime.MaxValue;
-
-				Messages = await Database.Find<ChatMessage>(0, Constants.BatchSizes.MessageBatchSize,
-					new FilterAnd(
-						new FilterFieldEqualTo("RemoteBareJid", this.BareJid),
-						new FilterFieldLesserThan("Created", LastTime)), "-Created");
-
-				foreach (ChatMessage Message in Messages)
+				lock (this.synchObject)
 				{
-					await Message.GenerateXaml(this);
-					c--;
+					LastTime = LoadMore && this.messages.First is not null ? this.messages.First.Value.Created : DateTime.MaxValue;
 				}
+
+				Messages = await Database.Find<ChatMessage>(0, Constants.BatchSizes.MessageBatchSize, new FilterAnd(
+					new FilterFieldEqualTo("RemoteBareJid", this.BareJid),
+					new FilterFieldLesserThan("Created", LastTime)), "-Created");
+
+				A = [.. Messages];
+				c -= A.Length;
+
+				if (!LoadMore)
+					Array.Reverse(A);
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
 				this.ExistsMoreMessages = false;
-				return;
+				return null;
 			}
 
-			MainThread.BeginInvokeOnMainThread(() =>
+			TaskCompletionSource<IView?> Result = new();
+
+			MainThread.BeginInvokeOnMainThread(async () =>
 			{
 				try
 				{
-					this.MergeObservableCollections(LoadMore, Messages.ToList());
+					IView? Last = null;
+
+					foreach (ChatMessage Message in A)
+						Last = await this.MessageAddedMainThread(Message, true);
+
 					this.ExistsMoreMessages = c <= 0;
-					this.EnsureFirstMessageIsEmpty();
+
+					Result.TrySetResult(Last);
 				}
 				catch (Exception ex)
 				{
-					ServiceRef.LogService.LogException(ex);
-					this.ExistsMoreMessages = false;
+					Result.TrySetException(ex);
 				}
 			});
+
+			return await Result.Task;
 		}
 
 		/// <summary>
@@ -375,90 +501,14 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		/// The command to bind to for loading more messages.
 		/// </summary>
 		[RelayCommand(CanExecute = nameof(CanExecuteLoadMoreMessages))]
-		private Task LoadMoreMessages()
+		private Task<IView?> LoadMoreMessages()
 		{
-			return this.LoadMoreMessages(true);
+			return this.LoadMessagesAsync(true);
 		}
 
 		private bool CanExecuteLoadMoreMessages()
 		{
-			return this.ExistsMoreMessages && this.Messages.Count > 0;
-		}
-
-		private async Task LoadMoreMessages(bool LoadMore)
-		{
-			IEnumerable<ChatMessage>? Messages = null;
-			int c = Constants.BatchSizes.MessageBatchSize;
-
-			try
-			{
-				this.ExistsMoreMessages = false;
-
-				DateTime LastTime = LoadMore ? this.Messages[^1].Created : DateTime.MaxValue;
-
-				Messages = await Database.Find<ChatMessage>(0, Constants.BatchSizes.MessageBatchSize,
-					new FilterAnd(
-						new FilterFieldEqualTo("RemoteBareJid", this.BareJid),
-						new FilterFieldLesserThan("Created", LastTime)), "-Created");
-
-				foreach (ChatMessage Message in Messages)
-				{
-					await Message.GenerateXaml(this);
-					c--;
-				}
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-				this.ExistsMoreMessages = false;
-				return;
-			}
-
-			MainThread.BeginInvokeOnMainThread(() =>
-			{
-				try
-				{
-					this.MergeObservableCollections(LoadMore, Messages.ToList());
-					this.ExistsMoreMessages = c <= 0;
-					this.EnsureFirstMessageIsEmpty();
-				}
-				catch (Exception ex)
-				{
-					ServiceRef.LogService.LogException(ex);
-					this.ExistsMoreMessages = false;
-				}
-			});
-		}
-
-		private void MergeObservableCollections(bool LoadMore, List<ChatMessage> NewMessages)
-		{
-			if (LoadMore || (this.Messages.Count == 0))
-			{
-				foreach (ChatMessage Message in NewMessages)
-					this.Messages.Add(Message);
-				return;
-			}
-
-			List<ChatMessage> RemoveItems = this.Messages.Where(oel => NewMessages.All(nel => nel.UniqueName != oel.UniqueName)).ToList();
-
-			foreach (ChatMessage Message in RemoveItems)
-				this.Messages.Remove(Message);
-
-			for (int i = 0; i < NewMessages.Count; i++)
-			{
-				ChatMessage Item = NewMessages[i];
-
-				if (i >= this.Messages.Count)
-					this.Messages.Add(Item);
-				else if (this.Messages[i].UniqueName != Item.UniqueName)
-					this.Messages.Insert(i, Item);
-			}
-		}
-
-		private void EnsureFirstMessageIsEmpty()
-		{
-			if (this.Messages.Count > 0 && this.Messages[0].MessageType != MessageType.Empty)
-				this.Messages.Insert(0, ChatMessage.Empty);
+			return this.ExistsMoreMessages && this.page.Messages.Count > 0;
 		}
 
 		private bool CanExecuteSendMessage()

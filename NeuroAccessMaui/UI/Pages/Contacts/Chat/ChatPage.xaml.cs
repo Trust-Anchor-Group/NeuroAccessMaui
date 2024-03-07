@@ -24,13 +24,8 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		/// </summary>
 		public ChatPage()
 		{
-			this.ContentPageModel = new ChatViewModel(ServiceRef.UiService.PopLatestArgs<ChatNavigationArgs>());
+			this.ContentPageModel = new ChatViewModel(this, ServiceRef.UiService.PopLatestArgs<ChatNavigationArgs>());
 			this.InitializeComponent();
-		}
-
-		private void OnEditorControlUnfocused(object? Sender, FocusEventArgs e)
-		{
-			this.CollectionView.SelectedItem = null;
 		}
 	}
 }

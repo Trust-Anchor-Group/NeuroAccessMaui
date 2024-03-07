@@ -103,10 +103,7 @@
 	<Color x:Key="SendMessageBackground">LightYellow</Color>
 	<Color x:Key="SendMessageBorder">Yellow</Color>
 
-	<Color x:Key="RecivedMessageBackground">LightBlue</Color>
-	<Color x:Key="RecivedMessageBorder">SkyBlue</Color>
-
-	<Color x:Key="OtherMessageBackground">LightSalmon</Color>
-	<Color x:Key="OtherMessageBorder">Salmon</Color>
+	<Color x:Key="ReceiveMessageBackground">LightBlue</Color>
+	<Color x:Key="ReceiveMessageBorder">SkyBlue</Color>
 
 </ResourceDictionary>
