@@ -52,6 +52,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		private readonly ChatPage page;
 		private readonly object synchObject = new();
 		private TaskCompletionSource<bool> waitUntilBound = new();
+		private IView? scrollTo;
 
 		private class MessageRecord(ChatMessage Message, LinkedListNode<MessageFrame> FrameNode)
 		{
@@ -75,6 +76,8 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			this.BareJid = Args?.BareJid ?? string.Empty;
 			this.FriendlyName = Args?.FriendlyName ?? string.Empty;
 			this.UniqueId = Args?.UniqueId;
+
+			this.page.OnAfterAppearing += this.Page_OnAfterAppearing;
 		}
 
 		/// <inheritdoc/>
@@ -82,12 +85,9 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		{
 			await base.OnInitialize();
 
-			IView? Last = await this.LoadMessagesAsync(false);
+			this.scrollTo = await this.LoadMessagesAsync(false);
 
 			this.waitUntilBound.TrySetResult(true);
-
-			if (Last is Element LastElement)
-				await this.page.ScrollView.ScrollToAsync(LastElement, ScrollToPosition.End, false);
 
 			await ServiceRef.NotificationService.DeleteEvents(NotificationEventType.Contacts, this.BareJid);
 		}
@@ -98,6 +98,17 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			await base.OnDispose();
 
 			this.waitUntilBound = new TaskCompletionSource<bool>();
+		}
+
+		private async Task Page_OnAfterAppearing(object Sender, EventArgs e)
+		{
+			if (this.scrollTo is Element ScrollToElement)
+			{
+				await Task.Delay(100);	// TODO: Why is this necessary? ScrollToAsync does not scroll to end element without it...
+
+				await this.page.ScrollView.ScrollToAsync(ScrollToElement, ScrollToPosition.End, false);
+				this.scrollTo = null;
+			}
 		}
 
 		/// <summary>
