@@ -12,15 +12,29 @@
 							 xmlns:behaviors="clr-namespace:NeuroAccessMaui.UI.Behaviors"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contacts.Chat">
-	<Grid x:Name="ContainerView" Margin="{StaticResource SmallMargins}">
+	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+
+		<controls:Background/>
+
 		<Grid RowDefinitions="*,auto">
 			<ScrollView x:Name="ScrollView" x:FieldModifier="public">
-				<VerticalStackLayout x:Name="Messages" x:FieldModifier="public" VerticalOptions="Fill" HorizontalOptions="Fill">
+				<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+					<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
+											 Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+
+					<Label Style="{StaticResource PageTitleLabel}" Text="{Binding FriendlyName}"/>
+
+					<Frame Style="{StaticResource FrameSet}">
+						<VerticalStackLayout x:Name="Messages" x:FieldModifier="public" VerticalOptions="Fill" HorizontalOptions="Fill">
+						</VerticalStackLayout>
+					</Frame>
+
+					<Label x:Name="Bottom" x:FieldModifier="public" Text=""/>
 				</VerticalStackLayout>
 			</ScrollView>
 
-			<Grid x:Name="ControlGrid" ColumnDefinitions="*,40" Grid.Row="1" Margin="{StaticResource SmallTopMargins}">
-				<Frame CornerRadius="5" Padding="5,5,5,5"
+			<Grid x:Name="ControlGrid" ColumnDefinitions="*,auto" RowDefinitions="auto" Grid.Row="1" Margin="{StaticResource SmallTopMargins}">
+				<Frame Grid.Column="0" Grid.Row="0" CornerRadius="5" Padding="5,5,5,5"
 						 BorderColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}">
 					<!--
 					<Frame.Behaviors>

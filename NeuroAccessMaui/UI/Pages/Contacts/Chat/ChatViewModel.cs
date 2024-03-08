@@ -102,11 +102,11 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 
 		private async Task Page_OnAfterAppearing(object Sender, EventArgs e)
 		{
-			if (this.scrollTo is Element ScrollToElement)
+			if (this.scrollTo is Element)
 			{
 				await Task.Delay(100);	// TODO: Why is this necessary? ScrollToAsync does not scroll to end element without it...
 
-				await this.page.ScrollView.ScrollToAsync(ScrollToElement, ScrollToPosition.End, false);
+				await this.page.ScrollView.ScrollToAsync(this.page.Bottom, ScrollToPosition.End, false);
 				this.scrollTo = null;
 			}
 		}
@@ -262,8 +262,8 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			{
 				IView? View = await this.MessageAddedMainThread(Message, false);
 
-				if (View is Element Element)
-					await this.page.ScrollView.ScrollToAsync(Element, ScrollToPosition.End, true);
+				if (View is Element)
+					await this.page.ScrollView.ScrollToAsync(this.page.Bottom, ScrollToPosition.End, true);
 			});
 			return Task.CompletedTask;
 		}
