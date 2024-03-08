@@ -5,7 +5,7 @@ namespace NeuroAccessMaui.UI.Behaviors
 	/// <summary>
 	/// Used for moving focus to the next UI component when a button has been clicked.
 	/// </summary>
-	public class SetFocusOnClickedBehavior : Behavior<Button>
+	public class SetFocusOnClickedBehavior : Behavior<View>
 	{
 		/// <summary>
 		/// The view to move focus to.
@@ -14,17 +14,25 @@ namespace NeuroAccessMaui.UI.Behaviors
 		public View? SetFocusTo { get; set; }
 
 		/// <inheritdoc/>
-		protected override void OnAttachedTo(Button Button)
+		protected override void OnAttachedTo(View View)
 		{
-			Button.Clicked += this.Button_Clicked;
-			base.OnAttachedTo(Button);
+			if (View is Controls.ImageButton ImageButton)
+				ImageButton.Clicked += this.Button_Clicked;
+			else if (View is Button Button)
+				Button.Clicked += this.Button_Clicked;
+
+			base.OnAttachedTo(View);
 		}
 
 		/// <inheritdoc/>
-		protected override void OnDetachingFrom(Button Button)
+		protected override void OnDetachingFrom(View View)
 		{
-			Button.Clicked -= this.Button_Clicked;
-			base.OnDetachingFrom(Button);
+			if (View is Controls.ImageButton ImageButton)
+				ImageButton.Clicked -= this.Button_Clicked;
+			else if (View is Button Button)
+				Button.Clicked -= this.Button_Clicked;
+
+			base.OnDetachingFrom(View);
 		}
 
 		private void Button_Clicked(object? Sender, EventArgs e)
@@ -43,9 +51,7 @@ namespace NeuroAccessMaui.UI.Behaviors
 				Element.Focus();
 
 				if (Element is Entry Entry && Entry.Text is not null)
-				{
 					Entry.CursorPosition = Entry.Text.Length;
-				}
 			}
 		}
 	}

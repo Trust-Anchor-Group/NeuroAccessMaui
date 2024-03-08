@@ -5,7 +5,7 @@ namespace NeuroAccessMaui.UI.Behaviors
 	/// <summary>
 	/// Used for moving focus to the next UI component when a button has been clicked.
 	/// </summary>
-	public class ScrollToClickedBehavior : Behavior<Button>
+	public class ScrollToClickedBehavior : Behavior<View>
 	{
 		/// <summary>
 		/// The view to move focus to.
@@ -29,17 +29,25 @@ namespace NeuroAccessMaui.UI.Behaviors
 		}
 
 		/// <inheritdoc/>
-		protected override void OnAttachedTo(Button Button)
+		protected override void OnAttachedTo(View View)
 		{
-			Button.Clicked += this.Button_Clicked;
-			base.OnAttachedTo(Button);
+			if (View is Controls.ImageButton ImageButton)
+				ImageButton.Clicked += this.Button_Clicked;
+			else if (View is Button Button)
+				Button.Clicked += this.Button_Clicked;
+
+			base.OnAttachedTo(View);
 		}
 
 		/// <inheritdoc/>
-		protected override void OnDetachingFrom(Button Button)
+		protected override void OnDetachingFrom(View View)
 		{
-			Button.Clicked -= this.Button_Clicked;
-			base.OnDetachingFrom(Button);
+			if (View is Controls.ImageButton ImageButton)
+				ImageButton.Clicked -= this.Button_Clicked;
+			else if (View is Button Button)
+				Button.Clicked -= this.Button_Clicked;
+
+			base.OnDetachingFrom(View);
 		}
 
 		private void Button_Clicked(object? Sender, EventArgs e)

@@ -58,13 +58,15 @@ namespace NeuroAccessMaui.UI.Controls
 			{
 				HeightRequest = 24,
 				WidthRequest = 24,
-				Aspect = Stretch.Uniform
+				Aspect = Stretch.Uniform,
+				Style = this.PathStyle
 			};
 
 			this.innerBorder = new()
 			{
 				StrokeThickness = 2,
-				Content = this.innerPath
+				Content = this.innerPath,
+				Style = this.BorderStyle
 			};
 
 			this.Content = this.innerBorder;
