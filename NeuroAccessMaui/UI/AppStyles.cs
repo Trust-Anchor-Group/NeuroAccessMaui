@@ -12,6 +12,7 @@ namespace NeuroAccessMaui.UI
 		private static readonly SortedDictionary<string, bool> missingStyles = [];
 		private static Timer? timer = null;
 
+		private static ControlTemplate? radioButtonTemplate;
 		private static Thickness? smallBottomMargins;
 		private static Thickness? smallTopMargins;
 		private static Thickness? smallLeftMargins;
@@ -89,6 +90,18 @@ namespace NeuroAccessMaui.UI
 			}
 
 			ServiceRef.LogService.LogAlert(sb.ToString());
+		}
+
+		/// <summary>
+		/// Template for radio buttons
+		/// </summary>
+		public static ControlTemplate RadioButtonTemplate
+		{
+			get
+			{
+				radioButtonTemplate ??= TryGetResource<ControlTemplate>("RadioButtonTemplate");
+				return radioButtonTemplate!;
+			}
 		}
 
 		/// <summary>
@@ -258,7 +271,7 @@ namespace NeuroAccessMaui.UI
 				return regularCompositeEntry!;
 			}
 		}
-
+ 
 		/// <summary>
 		/// Style for borders in a regular composte entry control.
 		/// </summary>
