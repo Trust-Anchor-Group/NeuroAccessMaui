@@ -25,12 +25,12 @@
 				<Label Style="{StaticResource PageTitleLabel}" Text="{l:Localize Settings}"/>
 
 				<!-- Display Settings -->
-				<Frame Style="{StaticResource FrameSet}">
+				<Border Style="{StaticResource BorderSet}">
 					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 						<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize DisplaySettings}"/>
 
 						<!-- Display Mode -->
-						<Frame Style="{StaticResource FrameSubSet}">
+						<Border Style="{StaticResource BorderSubSet}">
 							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 								<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize SelectDisplayMode}"/>
 								<Grid RowDefinitions="auto,auto" ColumnDefinitions="auto,*,auto"
@@ -45,65 +45,65 @@
 									<RadioButton Grid.Column="2" Grid.Row="1" x:Name="DarkMode" Value="Dark"/>
 								</Grid>
 							</VerticalStackLayout>
-						</Frame>
+						</Border>
 
 						<!-- Language options -->
 						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding ChangeLanguageCommand}">
-							<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True">
+							<Border Style="{StaticResource BorderSubSet}" InputTransparent="True">
 								<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
 									<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize LanguageOptions}" InputTransparent="True"/>
 									<Label Style="{StaticResource KeyLabel}" Text="{l:Localize LanguageOptionsDescription}" InputTransparent="True"/>
 								</VerticalStackLayout>
-							</Frame>
+							</Border>
 						</controls:TemplatedButton>
 					</VerticalStackLayout>
-				</Frame>
+				</Border>
 
 				<!-- Identity Settings -->
-				<Frame Style="{StaticResource FrameSet}">
+				<Border Style="{StaticResource BorderSet}">
 					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 						<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize IdentitySettings}"/>
 
 						<!-- Compromized -->
 						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding CompromiseCommand}">
-							<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True">
+							<Border Style="{StaticResource BorderSubSet}" InputTransparent="True">
 								<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
 									<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize ReportAsCompromized}" InputTransparent="True"/>
 									<Label Style="{StaticResource KeyLabel}" Text="{l:Localize ReportAsCompromizedDescription}" InputTransparent="True"/>
 								</VerticalStackLayout>
-							</Frame>
+							</Border>
 						</controls:TemplatedButton>
 
 						<!-- Revoke -->
 						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding RevokeCommand}">
-							<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True">
+							<Border Style="{StaticResource BorderSubSet}" InputTransparent="True">
 								<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
 									<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize RevokeIdentity}" InputTransparent="True"/>
 									<Label Style="{StaticResource KeyLabel}" Text="{l:Localize RevokeIdentityDescription}" InputTransparent="True"/>
 								</VerticalStackLayout>
-							</Frame>
+							</Border>
 						</controls:TemplatedButton>
 
 					</VerticalStackLayout>
-				</Frame>
+				</Border>
 
 				<!-- Security Settings -->
-				<Frame Style="{StaticResource FrameSet}">
+				<Border Style="{StaticResource BorderSet}">
 					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 						<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize SecuritySettings}"/>
 
 						<!-- Change Password -->
 						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding ChangePasswordCommand}">
-							<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True">
+							<Border Style="{StaticResource BorderSubSet}" InputTransparent="True">
 								<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
 									<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize ChangePassword}" InputTransparent="True"/>
 									<Label Style="{StaticResource KeyLabel}" Text="{l:Localize ChangePasswordDescription}" InputTransparent="True"/>
 								</VerticalStackLayout>
-							</Frame>
+							</Border>
 						</controls:TemplatedButton>
 
 						<!-- Local Authentication -->
-						<Frame Style="{StaticResource FrameSubSet}" IsVisible="{Binding CanUseAlternativeAuthenticationMethods}">
+						<Border Style="{StaticResource BorderSubSet}" IsVisible="{Binding CanUseAlternativeAuthenticationMethods}">
 							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 								<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize AuthenticationMethod}"/>
 								<Grid RowDefinitions="auto,auto" ColumnDefinitions="auto,*,auto"
@@ -121,10 +121,10 @@
 													 IsVisible="{Binding CanUseFingerprint}"/>
 								</Grid>
 							</VerticalStackLayout>
-						</Frame>
+						</Border>
 
 						<!-- Screen Capture -->
-						<Frame Style="{StaticResource FrameSubSet}" IsVisible="{Binding CanProhibitScreenCapture}">
+						<Border Style="{StaticResource BorderSubSet}" IsVisible="{Binding CanProhibitScreenCapture}">
 							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 								<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize ScreenRecording}"/>
 								<Grid RowDefinitions="auto,auto" ColumnDefinitions="*,auto"
@@ -137,10 +137,10 @@
 									<RadioButton Grid.Column="1" Grid.Row="1" x:Name="ProhibitRecording" Value="Prohibited"/>
 								</Grid>
 							</VerticalStackLayout>
-						</Frame>
+						</Border>
 
 					</VerticalStackLayout>
-				</Frame>
+				</Border>
 
 			</VerticalStackLayout>
 		</ScrollView>
