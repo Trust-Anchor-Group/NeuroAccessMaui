@@ -1,4 +1,6 @@
-﻿namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
+﻿using NeuroAccessMaui.Services;
+
+namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 {
 	/// <summary>
 	/// A page that displays a list of the current user's contacts.
@@ -11,7 +13,7 @@
 		/// </summary>
 		public MyContactsPage()
 		{
-			this.ContentPageModel = new ContactListViewModel();
+			this.ContentPageModel = new ContactListViewModel(ServiceRef.UiService.PopLatestArgs<ContactListNavigationArgs>());
 			this.InitializeComponent();
 		}
 	}

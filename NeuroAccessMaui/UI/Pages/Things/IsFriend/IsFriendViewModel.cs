@@ -18,33 +18,31 @@ namespace NeuroAccessMaui.UI.Pages.Things.IsFriend
 	/// </summary>
 	public partial class IsFriendViewModel : XmppViewModel
 	{
-		private NotificationEvent? @event;
+		private readonly NotificationEvent? @event;
+		private readonly IsFriendNavigationArgs? navigationArguments;
 
 		/// <summary>
 		/// Creates an instance of the <see cref="IsFriendViewModel"/> class.
 		/// </summary>
-		protected internal IsFriendViewModel()
+		/// <param name="Args">Navigation arguments</param>
+		public IsFriendViewModel(IsFriendNavigationArgs? Args)
 			: base()
 		{
+			this.navigationArguments = Args;
+
 			this.Tags = [];
 			this.CallerTags = [];
 			this.RuleRanges = [];
-		}
 
-		/// <inheritdoc/>
-		protected override async Task OnInitialize()
-		{
-			await base.OnInitialize();
-
-			if (ServiceRef.UiService.TryGetArgs(out IsFriendNavigationArgs? args))
+			if (Args is not null)
 			{
-				this.@event = args.Event;
-				this.BareJid = args.BareJid;
-				this.FriendlyName = args.FriendlyName;
-				this.RemoteJid = args.RemoteJid;
-				this.RemoteFriendlyName = args.RemoteFriendlyName;
-				this.Key = args.Key;
-				this.ProvisioningService = args.ProvisioningService;
+				this.@event = Args.Event;
+				this.BareJid = Args.BareJid;
+				this.FriendlyName = Args.FriendlyName;
+				this.RemoteJid = Args.RemoteJid;
+				this.RemoteFriendlyName = Args.RemoteFriendlyName;
+				this.Key = Args.Key;
+				this.ProvisioningService = Args.ProvisioningService;
 
 				if (this.FriendlyName == this.BareJid)
 					this.FriendlyName = ServiceRef.Localizer[nameof(AppResources.NotAvailable)];
@@ -52,7 +50,16 @@ namespace NeuroAccessMaui.UI.Pages.Things.IsFriend
 				this.RemoteFriendlyNameAvailable = this.RemoteFriendlyName != this.RemoteJid;
 				if (!this.RemoteFriendlyNameAvailable)
 					this.RemoteFriendlyName = ServiceRef.Localizer[nameof(AppResources.NotAvailable)];
+			}
+		}
 
+		/// <inheritdoc/>
+		protected override async Task OnInitialize()
+		{
+			await base.OnInitialize();
+
+			if (this.navigationArguments is not null)
+			{
 				this.Tags.Clear();
 				this.CallerTags.Clear();
 

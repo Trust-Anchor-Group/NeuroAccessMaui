@@ -7,9 +7,9 @@
 
 	<Style x:Key="ImageOnlyButtonBorder" ApplyToDerivedTypes="False" TargetType="Border">
 		<Setter Property="BackgroundColor" Value="Transparent" />
-		<Setter Property="Padding">
-			<Thickness Right="{StaticResource MediumSpacing}" Bottom="{StaticResource MediumSpacing}" />
-		</Setter>
+		<Setter Property="Padding" Value="{StaticResource SmallSpacing}"/>
+		<Setter Property="HorizontalOptions" Value="Center"/>
+		<Setter Property="VerticalOptions" Value="Center"/>
 	</Style>
 
 	<Style x:Key="ImageOnlyButtonPath" ApplyToDerivedTypes="False" TargetType="Path">

@@ -77,7 +77,6 @@ namespace NeuroAccessMaui.UI.Pages.Main
 
 			// Contacts
 			Routing.RegisterRoute(nameof(ChatPage), typeof(ChatPage));
-			Routing.RegisterRoute(nameof(ChatPageIos), typeof(ChatPageIos));
 			Routing.RegisterRoute(nameof(MyContactsPage), typeof(MyContactsPage));
 
 			// Contracts

@@ -963,7 +963,7 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <summary>
 		/// Event raised when properties have been changed.
 		/// </summary>
-		public event EventHandler OnPropertiesChanged;
+		public event EventHandler? OnPropertiesChanged;
 
 		#endregion
 

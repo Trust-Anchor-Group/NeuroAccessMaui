@@ -28,18 +28,13 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 		/// <summary>
 		/// Creates an instance of the <see cref="ViewIdentityViewModel"/> class.
 		/// </summary>
-		public ViewIdentityViewModel()
+		/// <param name="Args">Navigation arguments.</param>
+		public ViewIdentityViewModel(ViewIdentityNavigationArgs? Args)
 			: base()
 		{
 			this.photosLoader = new PhotosLoader(this.Photos);
-		}
 
-		/// <inheritdoc/>
-		protected override async Task OnInitialize()
-		{
-			await base.OnInitialize();
-
-			if (ServiceRef.UiService.TryGetArgs(out ViewIdentityNavigationArgs? Args))
+			if (Args is not null)
 			{
 				this.LegalIdentity = Args.Identity ?? ServiceRef.TagProfile.LegalIdentity;
 				this.requestorIdentity = Args.RequestorIdentity;
@@ -49,6 +44,12 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 				this.Purpose = Args.Purpose;
 				this.contentToSign = Args.ContentToSign;
 			}
+		}
+
+		/// <inheritdoc/>
+		protected override async Task OnInitialize()
+		{
+			await base.OnInitialize();
 
 			if (this.LegalIdentity is null)
 			{

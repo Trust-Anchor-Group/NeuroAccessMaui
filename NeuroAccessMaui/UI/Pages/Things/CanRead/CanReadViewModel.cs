@@ -13,6 +13,7 @@ using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Provisioning;
 using Waher.Persistence;
+using Waher.Script.Functions.ComplexNumbers;
 using Waher.Things;
 using Waher.Things.SensorData;
 
@@ -23,45 +24,43 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 	/// </summary>
 	public partial class CanReadViewModel : XmppViewModel
 	{
-		private NotificationEvent? @event;
+		private readonly NotificationEvent? @event;
+		private readonly CanReadNavigationArgs? navigationArguments;
 
 		/// <summary>
 		/// Creates an instance of the <see cref="CanReadViewModel"/> class.
 		/// </summary>
-		protected internal CanReadViewModel()
+		/// <param name="Args">Navigation arguments</param>
+		public CanReadViewModel(CanReadNavigationArgs? Args)
 			: base()
 		{
+			this.navigationArguments = Args;
+				
 			this.Tags = [];
 			this.CallerTags = [];
 			this.Fields = [];
 			this.RuleRanges = [];
-		}
 
-		/// <inheritdoc/>
-		protected override async Task OnInitialize()
-		{
-			await base.OnInitialize();
-
-			if (ServiceRef.UiService.TryGetArgs(out CanReadNavigationArgs? args))
+			if (Args is not null)
 			{
-				this.@event = args.Event;
-				this.BareJid = args.BareJid;
-				this.FriendlyName = args.FriendlyName;
-				this.RemoteJid = args.RemoteJid;
-				this.RemoteFriendlyName = args.RemoteFriendlyName;
-				this.Key = args.Key;
-				this.ProvisioningService = args.ProvisioningService;
-				this.FieldTypes = args.FieldTypes;
-				this.NodeId = args.NodeId;
-				this.SourceId = args.SourceId;
-				this.PartitionId = args.PartitionId;
+				this.@event = Args.Event;
+				this.BareJid = Args.BareJid;
+				this.FriendlyName = Args.FriendlyName;
+				this.RemoteJid = Args.RemoteJid;
+				this.RemoteFriendlyName = Args.RemoteFriendlyName;
+				this.Key = Args.Key;
+				this.ProvisioningService = Args.ProvisioningService;
+				this.FieldTypes = Args.FieldTypes;
+				this.NodeId = Args.NodeId;
+				this.SourceId = Args.SourceId;
+				this.PartitionId = Args.PartitionId;
 
-				this.PermitMomentary = args.FieldTypes.HasFlag(FieldType.Momentary);
-				this.PermitIdentity = args.FieldTypes.HasFlag(FieldType.Identity);
-				this.PermitStatus = args.FieldTypes.HasFlag(FieldType.Status);
-				this.PermitComputed = args.FieldTypes.HasFlag(FieldType.Computed);
-				this.PermitPeak = args.FieldTypes.HasFlag(FieldType.Peak);
-				this.PermitHistorical = args.FieldTypes.HasFlag(FieldType.Historical);
+				this.PermitMomentary = Args.FieldTypes.HasFlag(FieldType.Momentary);
+				this.PermitIdentity = Args.FieldTypes.HasFlag(FieldType.Identity);
+				this.PermitStatus = Args.FieldTypes.HasFlag(FieldType.Status);
+				this.PermitComputed = Args.FieldTypes.HasFlag(FieldType.Computed);
+				this.PermitPeak = Args.FieldTypes.HasFlag(FieldType.Peak);
+				this.PermitHistorical = Args.FieldTypes.HasFlag(FieldType.Historical);
 
 				if (this.FriendlyName == this.BareJid)
 					this.FriendlyName = ServiceRef.Localizer[nameof(AppResources.NotAvailable)];
@@ -69,7 +68,16 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 				this.RemoteFriendlyNameAvailable = this.RemoteFriendlyName != this.RemoteJid;
 				if (!this.RemoteFriendlyNameAvailable)
 					this.RemoteFriendlyName = ServiceRef.Localizer[nameof(AppResources.NotAvailable)];
+			}
+		}
 
+		/// <inheritdoc/>
+		protected override async Task OnInitialize()
+		{
+			await base.OnInitialize();
+
+			if (this.navigationArguments is not null)
+			{
 				this.Tags.Clear();
 				this.CallerTags.Clear();
 
@@ -88,25 +96,25 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 						this.CallerTags.Add(new HumanReadableTag(Tag));
 				}
 
-				if (args.UserTokens is not null && args.UserTokens.Length > 0)
+				if (this.navigationArguments.UserTokens is not null && this.navigationArguments.UserTokens.Length > 0)
 				{
-					foreach (ProvisioningToken Token in args.UserTokens)
+					foreach (ProvisioningToken Token in this.navigationArguments.UserTokens)
 						this.CallerTags.Add(new HumanReadableTag(new Property(ServiceRef.Localizer[nameof(AppResources.User)], Token.FriendlyName ?? Token.Token)));
 
 					this.HasUser = true;
 				}
 
-				if (args.ServiceTokens is not null && args.ServiceTokens.Length > 0)
+				if (this.navigationArguments.ServiceTokens is not null && this.navigationArguments.ServiceTokens.Length > 0)
 				{
-					foreach (ProvisioningToken Token in args.ServiceTokens)
+					foreach (ProvisioningToken Token in this.navigationArguments.ServiceTokens)
 						this.CallerTags.Add(new HumanReadableTag(new Property(ServiceRef.Localizer[nameof(AppResources.Service)], Token.FriendlyName ?? Token.Token)));
 
 					this.HasService = true;
 				}
 
-				if (args.DeviceTokens is not null && args.DeviceTokens.Length > 0)
+				if (this.navigationArguments.DeviceTokens is not null && this.navigationArguments.DeviceTokens.Length > 0)
 				{
-					foreach (ProvisioningToken Token in args.DeviceTokens)
+					foreach (ProvisioningToken Token in this.navigationArguments.DeviceTokens)
 						this.CallerTags.Add(new HumanReadableTag(new Property(ServiceRef.Localizer[nameof(AppResources.Device)], Token.FriendlyName ?? Token.Token)));
 
 					this.HasDevice = true;
@@ -115,20 +123,20 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 				this.Fields.Clear();
 
 				SortedDictionary<string, bool> PermittedFields = [];
-				string[]? AllFields = args.AllFields;
+				string[]? AllFields = this.navigationArguments.AllFields;
 
 				if (AllFields is null && !string.IsNullOrEmpty(this.BareJid))
 				{
 					AllFields = await CanReadNotificationEvent.GetAvailableFieldNames(this.BareJid, new ThingReference(this.NodeId, this.SourceId, this.PartitionId));
 
-					if (AllFields is not null && args.Event is not null)
+					if (AllFields is not null && this.navigationArguments.Event is not null)
 					{
-						args.Event.AllFields = AllFields;
-						await Database.Update(args.Event);
+						this.navigationArguments.Event.AllFields = AllFields;
+						await Database.Update(this.navigationArguments.Event);
 					}
 				}
 
-				bool AllFieldsPermitted = args.Fields is null;
+				bool AllFieldsPermitted = this.navigationArguments.Fields is null;
 
 				if (AllFields is not null)
 				{
@@ -136,9 +144,9 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 						PermittedFields[Field] = AllFieldsPermitted;
 				}
 
-				if (!AllFieldsPermitted && args?.Fields is not null)
+				if (!AllFieldsPermitted && this.navigationArguments?.Fields is not null)
 				{
-					foreach (string Field in args.Fields)
+					foreach (string Field in this.navigationArguments.Fields)
 						PermittedFields[Field] = true;
 				}
 

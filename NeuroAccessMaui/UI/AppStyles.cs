@@ -12,6 +12,7 @@ namespace NeuroAccessMaui.UI
 		private static readonly SortedDictionary<string, bool> missingStyles = [];
 		private static Timer? timer = null;
 
+		private static ControlTemplate? radioButtonTemplate;
 		private static Thickness? smallBottomMargins;
 		private static Thickness? smallTopMargins;
 		private static Thickness? smallLeftMargins;
@@ -28,6 +29,10 @@ namespace NeuroAccessMaui.UI
 		private static Style? regularCompositeEntry;
 		private static Style? regularCompositeEntryBorder;
 		private static Style? unicodeCharacterButton;
+		private static Style? imageOnlyButton;
+		private static Style? transparentImageButton;
+		private static Style? sendFrame;
+		private static Style? receiveFrame;
 
 		static AppStyles()
 		{
@@ -85,6 +90,18 @@ namespace NeuroAccessMaui.UI
 			}
 
 			ServiceRef.LogService.LogAlert(sb.ToString());
+		}
+
+		/// <summary>
+		/// Template for radio buttons
+		/// </summary>
+		public static ControlTemplate RadioButtonTemplate
+		{
+			get
+			{
+				radioButtonTemplate ??= TryGetResource<ControlTemplate>("RadioButtonTemplate");
+				return radioButtonTemplate!;
+			}
 		}
 
 		/// <summary>
@@ -254,7 +271,7 @@ namespace NeuroAccessMaui.UI
 				return regularCompositeEntry!;
 			}
 		}
-
+ 
 		/// <summary>
 		/// Style for borders in a regular composte entry control.
 		/// </summary>
@@ -276,6 +293,54 @@ namespace NeuroAccessMaui.UI
 			{
 				unicodeCharacterButton ??= TryGetResource<Style>("UnicodeCharacterButtonNoRoundedCorners");  // TODO: Remove NoRoundedCorners
 				return unicodeCharacterButton!;
+			}
+		}
+
+		/// <summary>
+		/// Style for buttons containing only an image.
+		/// </summary>
+		public static Style ImageOnlyButton
+		{
+			get
+			{
+				imageOnlyButton ??= TryGetResource<Style>("ImageOnlyButton");
+				return imageOnlyButton!;
+			}
+		}
+
+		/// <summary>
+		/// Style for transparent image buttons.
+		/// </summary>
+		public static Style TransparentImageButton
+		{
+			get
+			{
+				transparentImageButton ??= TryGetResource<Style>("TransparentImageButton");
+				return transparentImageButton!;
+			}
+		}
+
+		/// <summary>
+		/// Style for send frames
+		/// </summary>
+		public static Style SendFrame
+		{
+			get
+			{
+				sendFrame ??= TryGetResource<Style>("SendFrame");
+				return sendFrame!;
+			}
+		}
+
+		/// <summary>
+		/// Style for receive frames
+		/// </summary>
+		public static Style ReceiveFrame
+		{
+			get
+			{
+				receiveFrame ??= TryGetResource<Style>("ReceiveFrame");
+				return receiveFrame!;
 			}
 		}
 

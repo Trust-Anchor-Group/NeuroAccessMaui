@@ -62,7 +62,7 @@
 		/// <summary>
 		/// An unique view identifier used to search the args of similar view types.
 		/// </summary>
-		public string? GetUniqueId() => this.uniqueId;
+		public string? UniqueId => this.uniqueId;
 
 		/// <summary>
 		/// Is the navigation animated

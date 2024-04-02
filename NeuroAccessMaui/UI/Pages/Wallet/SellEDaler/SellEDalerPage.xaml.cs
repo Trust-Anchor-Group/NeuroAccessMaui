@@ -1,4 +1,6 @@
-﻿namespace NeuroAccessMaui.UI.Pages.Wallet.SellEDaler
+﻿using NeuroAccessMaui.Services;
+
+namespace NeuroAccessMaui.UI.Pages.Wallet.SellEDaler
 {
 	/// <summary>
 	/// A page that allows the user to sell eDaler.
@@ -11,7 +13,7 @@
 		/// </summary>
 		public SellEDalerPage()
 		{
-			this.ContentPageModel = new SellEDalerViewModel();
+			this.ContentPageModel = new SellEDalerViewModel(ServiceRef.UiService.PopLatestArgs<SellEDalerNavigationArgs>());
 			this.InitializeComponent();
 		}
 	}

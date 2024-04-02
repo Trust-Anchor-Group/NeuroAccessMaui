@@ -1,4 +1,6 @@
-﻿namespace NeuroAccessMaui.UI.Pages.Wallet.PaymentAcceptance
+﻿using NeuroAccessMaui.Services;
+
+namespace NeuroAccessMaui.UI.Pages.Wallet.PaymentAcceptance
 {
 	/// <summary>
 	/// A page that allows the user to accept an offline payment.
@@ -11,7 +13,7 @@
 		/// </summary>
 		public PaymentAcceptancePage()
 		{
-			this.ContentPageModel = new EDalerUriViewModel(null);
+			this.ContentPageModel = new EDalerUriViewModel(null, ServiceRef.UiService.PopLatestArgs<EDalerUriNavigationArgs>());
 			this.InitializeComponent();
 		}
 	}

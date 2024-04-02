@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using NeuroAccessMaui.Services;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 {
@@ -13,7 +14,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		/// </summary>
 		public TokenDetailsPage()
 		{
-			this.ContentPageModel = new TokenDetailsViewModel(this);
+			this.ContentPageModel = new TokenDetailsViewModel(this, ServiceRef.UiService.PopLatestArgs<TokenDetailsNavigationArgs>());
 			this.InitializeComponent();
 		}
 

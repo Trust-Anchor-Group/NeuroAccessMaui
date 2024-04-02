@@ -1,4 +1,6 @@
-﻿namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
+﻿using NeuroAccessMaui.Services;
+
+namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 {
 	/// <summary>
 	/// A page that displays a specific claim thing.
@@ -11,7 +13,7 @@
 		/// </summary>
 		public ViewClaimThingPage()
 		{
-			this.ContentPageModel = new ViewClaimThingViewModel();
+			this.ContentPageModel = new ViewClaimThingViewModel(ServiceRef.UiService.PopLatestArgs<ViewClaimThingNavigationArgs>());
 			this.InitializeComponent();
 		}
 	}

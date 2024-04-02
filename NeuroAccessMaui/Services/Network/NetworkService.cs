@@ -192,18 +192,18 @@ namespace NeuroAccessMaui.Services.Network
 						ServiceRef.Localizer[nameof(AppResources.RequestWasCancelled)]);
 				}
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
 				string message;
 
-				thrownException = e;
+				thrownException = ex;
 
-				if (e is XmppException xe && xe.Stanza is not null)
+				if (ex is XmppException xe && xe.Stanza is not null)
 					message = xe.Stanza.InnerText;
 				else
-					message = e.Message;
+					message = ex.Message;
 
-				ServiceRef.LogService.LogException(e, GetParameter(memberName));
+				ServiceRef.LogService.LogException(ex, GetParameter(memberName));
 
 				if (displayAlert)
 				{

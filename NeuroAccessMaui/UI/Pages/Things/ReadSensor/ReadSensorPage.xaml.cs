@@ -1,4 +1,7 @@
-﻿namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor
+﻿using NeuroAccessMaui.Services;
+using NeuroAccessMaui.UI.Pages.Things.ViewThing;
+
+namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor
 {
 	/// <summary>
 	/// A page that displays sensor data from a sensor.
@@ -11,7 +14,7 @@
 		/// </summary>
 		public ReadSensorPage()
 		{
-			this.ContentPageModel = new ReadSensorViewModel();
+			this.ContentPageModel = new ReadSensorViewModel(ServiceRef.UiService.PopLatestArgs<ViewThingNavigationArgs>());
 			this.InitializeComponent();
 		}
 	}

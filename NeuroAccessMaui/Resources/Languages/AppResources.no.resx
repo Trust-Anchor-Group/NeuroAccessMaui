@@ -652,7 +652,7 @@
     <value>Angre merking</value>
   </data>
   <data name="ServiceProviderInfo" xml:space="preserve">
-    <value>Hva er en tjenesteleverandør?</value>
+    <value>En tjenesteleverandør gir tilkobling til appen, meglerforespørsler og sikrer at informasjonen fra klienten er riktig.</value>
   </data>
   <data name="QrPageTitleScanInvitation" xml:space="preserve">
     <value>Skann invitasjon</value>
@@ -887,9 +887,6 @@
   </data>
   <data name="ReportAsCompromizedDescription" xml:space="preserve">
     <value>Rapporter om app, passord eller telefon har blitt kompromittert, hacket eller stjålet.</value>
-  </data>
-  <data name="RestartNeededDueToThemeChange" xml:space="preserve">
-    <value>En omstart av appen er nødvendig for at det nye temaet skal vises riktig. Når du lukker dialogboksen, lukkes appen automatisk. Når du starter appen på nytt, velges det nye temaet.</value>
   </data>
   <data name="RevokeIdentity" xml:space="preserve">
     <value>Tilbakekall identitet</value>
@@ -2031,10 +2028,73 @@
   <data name="NoContractsFound" xml:space="preserve">
     <value>Ingen kontrakter funnet.</value>
   </data>
-  <data name="CreateContract" xml:space="preserve">
-    <value>Opprett kontrakt</value>
+  <data name="NewToken" xml:space="preserve">
+    <value>Nytt token</value>
   </data>
-  <data name="CreateToken" xml:space="preserve">
-    <value>Opprett token</value>
+  <data name="WhatIsAServiceProvider" xml:space="preserve">
+    <value>Hva er en tjenesteleverandør?</value>
+  </data>
+  <data name="MyTokens" xml:space="preserve">
+    <value>Mine tokens</value>
+  </data>
+  <data name="PresenceSubscriptionReceived1" xml:space="preserve">
+    <value>Du har mottatt et tilstedeværelsesabonnement fra:</value>
+  </data>
+  <data name="PresenceSubscriptionReceived2" xml:space="preserve">
+    <value>Hvis du godtar denne forespørselen, kan de se tilstedeværelsen din på nettet.</value>
+  </data>
+  <data name="PresenceSubscriptionReceived3" xml:space="preserve">
+    <value>Hvis du avviser denne forespørselen, vil de bli varslet om at du ikke samtykker til denne forespørselen.</value>
+  </data>
+  <data name="PresenceSubscriptionReceived4" xml:space="preserve">
+    <value>Du kan også ignorere forespørselen ved å lukke dialogboksen uten å returnere et svar.</value>
+  </data>
+  <data name="PresenceSubscriptionReceived5" xml:space="preserve">
+    <value>Hva vil du gjøre?</value>
+  </data>
+  <data name="PresenceSubscriptionRequest" xml:space="preserve">
+    <value>Forespørsel om tilstedeværelsesabonnement</value>
+  </data>
+  <data name="PresenceSubscriptionRequestSent" xml:space="preserve">
+    <value>En forespørsel om tilstedeværelsesabonnement er sendt. Når mottakeren godtar forespørselen, oppdateres kontaktstatusen.</value>
+  </data>
+  <data name="PresenceUnsubscriptionRequestSent" xml:space="preserve">
+    <value>Det er sendt en forespørsel om å melde seg av tilstedeværelse.</value>
+  </data>
+  <data name="RemoveSubscription" xml:space="preserve">
+    <value>Fjerne abonnement?</value>
+  </data>
+  <data name="RemoveSubscription1" xml:space="preserve">
+    <value>Du har fortsatt en godkjent abonnementsforespørsel fra:</value>
+  </data>
+  <data name="RemoveSubscription2" xml:space="preserve">
+    <value>Vil du tilbakekalle denne tillatelsen også?</value>
+  </data>
+  <data name="RemoveSubscriptionFrom1" xml:space="preserve">
+    <value>Vil du fjerne tilstedeværelsesabonnementet fra {0}?</value>
+  </data>
+  <data name="SubscribeTo" xml:space="preserve">
+    <value>Abonner på</value>
+  </data>
+  <data name="SubscribeToPresence" xml:space="preserve">
+    <value>Abonnere på tilstedeværelse?</value>
+  </data>
+  <data name="SubscribeToPresence1" xml:space="preserve">
+    <value>Ønsker du å abonnere på tilstedeværelsen av:</value>
+  </data>
+  <data name="SubscribeToPresence2" xml:space="preserve">
+    <value>Ved å abonnere på tilstedeværelsen av noen, og hvis de godtar, vil du bli varslet om deres online tilstedeværelse.</value>
+  </data>
+  <data name="SubscribeToPresence3" xml:space="preserve">
+    <value>Hva vil du gjøre?</value>
+  </data>
+  <data name="Things" xml:space="preserve">
+    <value>Ting</value>
+  </data>
+  <data name="ThingsDescription" xml:space="preserve">
+    <value>Nedenfor er alle tingene dine, og ting i kontaktboken din. Klikk på hvilken som helst for å samhandle med den tingen.</value>
+  </data>
+  <data name="UnsubscribeFrom" xml:space="preserve">
+    <value>Avslutt abonnementet på</value>
   </data>
 </root>

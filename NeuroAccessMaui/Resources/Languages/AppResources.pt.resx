@@ -652,7 +652,7 @@
     <value>Desfazer seleção</value>
   </data>
   <data name="ServiceProviderInfo" xml:space="preserve">
-    <value>O que é um prestador de serviços?</value>
+    <value>Um provedor de serviços fornece conectividade para o aplicativo, intermedeia solicitações e garante que as informações fornecidas pelo cliente estejam corretas.</value>
   </data>
   <data name="QrPageTitleScanInvitation" xml:space="preserve">
     <value>Convite de varredura</value>
@@ -887,9 +887,6 @@
   </data>
   <data name="ReportAsCompromizedDescription" xml:space="preserve">
     <value>Denuncie se o aplicativo, senha ou telefone foi comprometido, hackeado ou roubado.</value>
-  </data>
-  <data name="RestartNeededDueToThemeChange" xml:space="preserve">
-    <value>Uma reinicialização do aplicativo é necessária, para que o novo tema seja exibido corretamente. Ao fechar a caixa de diálogo, o aplicativo será fechado automaticamente. Ao reiniciar o aplicativo, o novo tema será selecionado.</value>
   </data>
   <data name="RevokeIdentity" xml:space="preserve">
     <value>Revogar identidade</value>
@@ -2031,10 +2028,73 @@
   <data name="NoContractsFound" xml:space="preserve">
     <value>Nenhum contrato encontrado.</value>
   </data>
-  <data name="CreateContract" xml:space="preserve">
-    <value>Criar contrato</value>
+  <data name="NewToken" xml:space="preserve">
+    <value>Novo Token</value>
   </data>
-  <data name="CreateToken" xml:space="preserve">
-    <value>Criar Token</value>
+  <data name="WhatIsAServiceProvider" xml:space="preserve">
+    <value>O que é um prestador de serviços?</value>
+  </data>
+  <data name="MyTokens" xml:space="preserve">
+    <value>Meus Tokens</value>
+  </data>
+  <data name="PresenceSubscriptionReceived1" xml:space="preserve">
+    <value>Você recebeu uma assinatura de presença de:</value>
+  </data>
+  <data name="PresenceSubscriptionReceived2" xml:space="preserve">
+    <value>Se você aceitar essa solicitação, eles poderão ver sua presença on-line.</value>
+  </data>
+  <data name="PresenceSubscriptionReceived3" xml:space="preserve">
+    <value>Se você rejeitar essa solicitação, eles serão notificados de que você não concorda com essa solicitação.</value>
+  </data>
+  <data name="PresenceSubscriptionReceived4" xml:space="preserve">
+    <value>Você também pode ignorar a solicitação fechando a caixa de diálogo sem retornar uma resposta.</value>
+  </data>
+  <data name="PresenceSubscriptionReceived5" xml:space="preserve">
+    <value>O que você quer fazer?</value>
+  </data>
+  <data name="PresenceSubscriptionRequest" xml:space="preserve">
+    <value>Solicitação de assinatura de presença</value>
+  </data>
+  <data name="PresenceSubscriptionRequestSent" xml:space="preserve">
+    <value>Uma solicitação de assinatura de presença foi enviada. Quando o destinatário aceitar a solicitação, o status do contato será atualizado.</value>
+  </data>
+  <data name="PresenceUnsubscriptionRequestSent" xml:space="preserve">
+    <value>Uma solicitação para cancelar a notificação de presença foi enviada.</value>
+  </data>
+  <data name="RemoveSubscription" xml:space="preserve">
+    <value>Remover assinatura?</value>
+  </data>
+  <data name="RemoveSubscription1" xml:space="preserve">
+    <value>Você ainda tem uma solicitação de assinatura aprovada de:</value>
+  </data>
+  <data name="RemoveSubscription2" xml:space="preserve">
+    <value>Deseja revogar essa permissão também?</value>
+  </data>
+  <data name="RemoveSubscriptionFrom1" xml:space="preserve">
+    <value>Deseja remover a assinatura de presença do {0}?</value>
+  </data>
+  <data name="SubscribeTo" xml:space="preserve">
+    <value>Assine</value>
+  </data>
+  <data name="SubscribeToPresence" xml:space="preserve">
+    <value>Subscrever presença?</value>
+  </data>
+  <data name="SubscribeToPresence1" xml:space="preserve">
+    <value>Você deseja se inscrever para a presença de:</value>
+  </data>
+  <data name="SubscribeToPresence2" xml:space="preserve">
+    <value>Ao assinar a presença de alguém, e se ele aceitar, você será notificado de sua presença on-line.</value>
+  </data>
+  <data name="SubscribeToPresence3" xml:space="preserve">
+    <value>O que você quer fazer?</value>
+  </data>
+  <data name="Things" xml:space="preserve">
+    <value>Coisas</value>
+  </data>
+  <data name="ThingsDescription" xml:space="preserve">
+    <value>Abaixo estão todas as suas coisas e coisas em seu catálogo de contatos. Clique em qualquer um para interagir com essa coisa.</value>
+  </data>
+  <data name="UnsubscribeFrom" xml:space="preserve">
+    <value>Cancelar inscrição de</value>
   </data>
 </root>

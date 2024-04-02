@@ -11,10 +11,9 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		/// <summary>
 		/// Creates a new instance of the <see cref="PetitionPeerReviewPage"/> class.
 		/// </summary>
-		public PetitionPeerReviewPage(PetitionPeerReviewViewModel ViewModel)
+		public PetitionPeerReviewPage()
 		{
-			this.InitializeComponent();
-			this.ContentPageModel = ViewModel;
+			PetitionPeerReviewViewModel ViewModel = new(ServiceRef.UiService.PopLatestArgs<PetitionPeerReviewNavigationArgs>());
 
 			ViewModel.AddView(ReviewStep.Photo, this.PhotoView);
 			ViewModel.AddView(ReviewStep.Name, this.NameView);
@@ -27,6 +26,9 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 			ViewModel.AddView(ReviewStep.Consent, this.ConsentView);
 			ViewModel.AddView(ReviewStep.Authenticate, this.AuthenticateView);
 			ViewModel.AddView(ReviewStep.Approved, this.ApprovedView);
+
+			this.InitializeComponent();
+			this.ContentPageModel = ViewModel;
 
 			StateContainer.SetCurrentState(this.GridWithAnimation, nameof(ReviewStep.Photo));
 

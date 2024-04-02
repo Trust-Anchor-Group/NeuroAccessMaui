@@ -57,9 +57,9 @@ namespace NeuroAccessMaui.Services.UI.Photos
 				this.attachmentIds.Clear();
 				this.photos.Clear();
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				ServiceRef.LogService.LogException(e);
+				ServiceRef.LogService.LogException(ex);
 			}
 		}
 

@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using EDaler;
 using EDaler.Uris;
+using Microsoft.Maui.Controls.Shapes;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
@@ -29,8 +30,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 	/// <summary>
 	/// The view model to bind to for when displaying the wallet.
 	/// </summary>
-	public partial class MyWalletViewModel() : XmppViewModel()
+	/// <param name="Args">Navigation arguments</param>
+	public partial class MyWalletViewModel(WalletNavigationArgs? Args) : XmppViewModel()
 	{
+		private readonly WalletNavigationArgs? navigationArguments = Args;
 		private DateTime lastEDalerEvent;
 		private DateTime lastTokenEvent;
 		private bool hasMoreTokens;
@@ -45,13 +48,13 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			this.EDalerFrontGlyph = "https://" + ServiceRef.TagProfile.Domain + "/Images/eDalerFront200.png";
 			this.EDalerBackGlyph = "https://" + ServiceRef.TagProfile.Domain + "/Images/eDalerBack200.png";
 
-			if (ServiceRef.UiService.TryGetArgs(out WalletNavigationArgs? args))
+			if (this.navigationArguments is not null)
 			{
 				SortedDictionary<CaseInsensitiveString, NotificationEvent[]> NotificationEvents = this.GetNotificationEvents();
 
-				await this.AssignProperties(args.Balance,
-					args.PendingAmount, args.PendingCurrency, args.PendingPayments, args.Events, args.More,
-					ServiceRef.XmppService.LastEDalerEvent, NotificationEvents);
+				await this.AssignProperties(this.navigationArguments.Balance, this.navigationArguments.PendingAmount,
+					this.navigationArguments.PendingCurrency, this.navigationArguments.PendingPayments, this.navigationArguments.Events,
+					this.navigationArguments.More, ServiceRef.XmppService.LastEDalerEvent, NotificationEvents);
 			}
 
 			ServiceRef.XmppService.EDalerBalanceUpdated += this.Wallet_BalanceUpdated;
@@ -751,7 +754,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 							{
 								if (TokenEvent is TokenRemovedNotificationEvent)
 								{
-									string Icon = await TokenEvent.GetCategoryIcon();
+									Geometry Icon = await TokenEvent.GetCategoryIcon();
 									string Description = await TokenEvent.GetDescription();
 
 									NewTokens.Add(new EventModel(TokenEvent.Received, Icon, Description, TokenEvent));

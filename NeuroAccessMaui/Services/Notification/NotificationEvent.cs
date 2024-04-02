@@ -1,4 +1,5 @@
-﻿using Waher.Persistence;
+﻿using Microsoft.Maui.Controls.Shapes;
+using Waher.Persistence;
 using Waher.Persistence.Attributes;
 
 namespace NeuroAccessMaui.Services.Notification
@@ -41,7 +42,7 @@ namespace NeuroAccessMaui.Services.Notification
 		/// Gets an icon for the category of event.
 		/// </summary>
 		/// <returns>Unicode icon.</returns>
-		public abstract Task<string> GetCategoryIcon();
+		public abstract Task<Geometry> GetCategoryIcon();
 
 		/// <summary>
 		/// Gets a descriptive text for the event.

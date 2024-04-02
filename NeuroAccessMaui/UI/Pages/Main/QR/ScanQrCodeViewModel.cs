@@ -10,32 +10,18 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 	/// <summary>
 	/// The view model to bind to when scanning a QR code.
 	/// </summary>
-	public partial class ScanQrCodeViewModel(ScanQrCodeNavigationArgs? NavigationArgs) : BaseViewModel
+	public partial class ScanQrCodeViewModel : BaseViewModel
 	{
+		private readonly ScanQrCodeNavigationArgs? navigationArgs;
 		private IDispatcherTimer? countDownTimer;
-		private ScanQrCodeNavigationArgs? navigationArgs = NavigationArgs;
 
-		/// <inheritdoc />
-		protected override async Task OnInitialize()
+		/// <summary>
+		/// The view model to bind to when scanning a QR code.
+		/// </summary>
+		/// <param name="Args">Navigation arguments.</param>
+		public ScanQrCodeViewModel(ScanQrCodeNavigationArgs? Args)
 		{
-			await base.OnInitialize();
-
-			LocalizationManager.Current.PropertyChanged += this.LocalizationManagerEventHandler;
-
-			if (App.Current is not null)
-			{
-				this.countDownTimer = App.Current.Dispatcher.CreateTimer();
-				this.countDownTimer.Interval = TimeSpan.FromMilliseconds(500);
-				this.countDownTimer.Tick += this.CountDownEventHandler;
-			}
-
-			if ((this.navigationArgs is null) && ServiceRef.UiService.TryGetArgs(out ScanQrCodeNavigationArgs? Args))
-			{
-				this.navigationArgs = Args;
-				this.OnPropertyChanged(nameof(this.HasAllowedSchemas));
-				this.OnPropertyChanged(nameof(this.LocalizedQrPageTitle));
-			}
-
+			this.navigationArgs = Args;
 			if (this.navigationArgs is not null &&
 				this.navigationArgs.AllowedSchemas is not null &&
 				this.navigationArgs.AllowedSchemas.Length > 0 &&
@@ -85,9 +71,21 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 
 				if (this.Icons.Count == 0)
 					this.Icons.Add(new UriSchemaIcon(Geometries.SignatureIconPath, Geometries.SignatureColor, this));
+			}
+		}
 
-				this.OnPropertyChanged(nameof(this.SingleIcon));
-				this.OnPropertyChanged(nameof(this.MultipleIcons));
+		/// <inheritdoc />
+		protected override async Task OnInitialize()
+		{
+			await base.OnInitialize();
+
+			LocalizationManager.Current.PropertyChanged += this.LocalizationManagerEventHandler;
+
+			if (App.Current is not null)
+			{
+				this.countDownTimer = App.Current.Dispatcher.CreateTimer();
+				this.countDownTimer.Interval = TimeSpan.FromMilliseconds(500);
+				this.countDownTimer.Tick += this.CountDownEventHandler;
 			}
 		}
 
@@ -141,8 +139,16 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 			this.OnBackgroundColorChanged();
 
 			if (this.CanOpenScanned)
-				return this.TrySetResultAndClosePage(this.ScannedText!.Trim());
-
+			{
+				// This is a fix for a crash that occurs when the user scans a QR code before the page is fully loaded.
+				// This is a temporary fix until the root cause is found.
+				// The crash seem to occur because the page and the navigationArgs is null.
+				// TODO: Instead of Delay, check if the page is fully loaded / Make this event based? 
+				return Task.Delay(1000).ContinueWith((_) =>
+				{
+					return this.TrySetResultAndClosePage(this.ScannedText!.Trim());
+				});
+			}
 			this.countDownTimer?.Start();
 			this.OnBackgroundColorChanged();
 

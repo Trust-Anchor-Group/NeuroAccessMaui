@@ -19,18 +19,11 @@ namespace NeuroAccessMaui.UI.Pages.Main.Duration
 		/// <summary>
 		/// Creates an instance of the <see cref="DurationViewModel"/> class.
 		/// </summary>
-		public DurationViewModel()
+		/// <param name="Args">Navigation arguments.</param>
+		public DurationViewModel(DurationNavigationArgs? Args)
 			: base()
 		{
-		}
-
-		/// <inheritdoc/>
-		protected override async Task OnInitialize()
-		{
-			await base.OnInitialize();
-
-			if (ServiceRef.UiService.TryGetArgs(out DurationNavigationArgs? Args))
-				this.Entry = Args.Entry;
+			this.Entry = Args?.Entry;
 		}
 
 		/// <inheritdoc/>

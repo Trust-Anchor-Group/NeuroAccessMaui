@@ -1,4 +1,6 @@
-﻿namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
+﻿using NeuroAccessMaui.Services;
+
+namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 {
 	/// <summary>
 	/// A page that allows the user to view its tokens.
@@ -11,7 +13,7 @@
 		/// </summary>
 		public MyTokensPage()
 		{
-			this.ContentPageModel = new MyTokensViewModel();
+			this.ContentPageModel = new MyTokensViewModel(ServiceRef.UiService.PopLatestArgs<MyTokensNavigationArgs>());
 			this.InitializeComponent();
 		}
 	}

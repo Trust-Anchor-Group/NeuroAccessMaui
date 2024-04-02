@@ -18,80 +18,92 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 	/// <summary>
 	/// The view model to bind to for when displaying the contents of an eDaler URI.
 	/// </summary>
-	public partial class EDalerUriViewModel(IShareQrCode? ShareQrCode) : QrXmppViewModel()
+	public partial class EDalerUriViewModel : QrXmppViewModel
 	{
-		private readonly IShareQrCode? shareQrCode = ShareQrCode;
-		private TaskCompletionSource<string?>? uriToSend = null;
+		private readonly EDalerUriNavigationArgs? navigationArguments;
+		private readonly IShareQrCode? shareQrCode;
+		private readonly TaskCompletionSource<string?>? uriToSend = null;
+
+		/// <summary>
+		/// The view model to bind to for when displaying the contents of an eDaler URI.
+		/// </summary>
+		/// <param name="ShareQrCode">Interface for pages with a share button.</param>
+		/// <param name="Args">Navigation arguments</param>
+		public EDalerUriViewModel(IShareQrCode? ShareQrCode, EDalerUriNavigationArgs? Args)
+			: base()
+		{
+			this.navigationArguments = Args;
+			this.shareQrCode = ShareQrCode;
+
+			this.uriToSend = Args?.UriToSend;
+			this.FriendlyName = Args?.FriendlyName;
+
+			if (Args?.Uri is not null)
+			{
+				this.Uri = Args.Uri.UriString;
+				this.Id = Args.Uri.Id;
+				this.Amount = Args.Uri.Amount;
+				this.AmountExtra = Args.Uri.AmountExtra;
+				this.Currency = Args.Uri.Currency;
+				this.Created = Args.Uri.Created;
+				this.Expires = Args.Uri.Expires;
+				this.ExpiresStr = this.Expires.ToShortDateString();
+				this.From = Args.Uri.From;
+				this.FromType = Args.Uri.FromType;
+				this.To = Args.Uri.To;
+				this.ToType = Args.Uri.ToType;
+				this.ToPreset = !string.IsNullOrEmpty(Args.Uri.To);
+				this.Complete = Args.Uri.Complete;
+			}
+
+			this.NotPaid = true;
+
+			this.AmountText = !this.Amount.HasValue || this.Amount.Value <= 0 ? string.Empty : MoneyToString.ToString(this.Amount.Value);
+			this.AmountOk = CommonTypes.TryParse(this.AmountText, out decimal d) && d > 0;
+			this.AmountPreset = !string.IsNullOrEmpty(this.AmountText) && this.AmountOk;
+			this.AmountAndCurrency = this.AmountText + " " + this.Currency;
+
+			this.AmountExtraText = this.AmountExtra.HasValue ? MoneyToString.ToString(this.AmountExtra.Value) : string.Empty;
+			this.AmountExtraOk = !this.AmountExtra.HasValue || this.AmountExtra.Value >= 0;
+			this.AmountExtraPreset = this.AmountExtra.HasValue;
+			this.AmountExtraAndCurrency = this.AmountExtraText + " " + this.Currency;
+
+			StringBuilder Url = new();
+
+			Url.Append("https://");
+			Url.Append(this.From);
+			Url.Append("/Images/eDalerFront200.png");
+
+			this.EDalerFrontGlyph = Url.ToString();
+
+			Url.Clear();
+			Url.Append("https://");
+			Url.Append(ServiceRef.TagProfile.Domain);
+			Url.Append("/Images/eDalerBack200.png");
+			this.EDalerBackGlyph = Url.ToString();
+		}
 
 		/// <inheritdoc/>
 		protected override async Task OnInitialize()
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.UiService.TryGetArgs(out EDalerUriNavigationArgs? Args))
+			if (this.navigationArguments is not null)
 			{
-				this.uriToSend = Args.UriToSend;
-				this.FriendlyName = Args.FriendlyName;
-
-				if (Args.Uri is not null)
+				if (this.navigationArguments.Uri?.EncryptedMessage is not null)
 				{
-					this.Uri = Args.Uri.UriString;
-					this.Id = Args.Uri.Id;
-					this.Amount = Args.Uri.Amount;
-					this.AmountExtra = Args.Uri.AmountExtra;
-					this.Currency = Args.Uri.Currency;
-					this.Created = Args.Uri.Created;
-					this.Expires = Args.Uri.Expires;
-					this.ExpiresStr = this.Expires.ToShortDateString();
-					this.From = Args.Uri.From;
-					this.FromType = Args.Uri.FromType;
-					this.To = Args.Uri.To;
-					this.ToType = Args.Uri.ToType;
-					this.ToPreset = !string.IsNullOrEmpty(Args.Uri.To);
-					this.Complete = Args.Uri.Complete;
-				}
-
-				this.RemoveQrCode();
-				this.NotPaid = true;
-
-				this.AmountText = !this.Amount.HasValue || this.Amount.Value <= 0 ? string.Empty : MoneyToString.ToString(this.Amount.Value);
-				this.AmountOk = CommonTypes.TryParse(this.AmountText, out decimal d) && d > 0;
-				this.AmountPreset = !string.IsNullOrEmpty(this.AmountText) && this.AmountOk;
-				this.AmountAndCurrency = this.AmountText + " " + this.Currency;
-
-				this.AmountExtraText = this.AmountExtra.HasValue ? MoneyToString.ToString(this.AmountExtra.Value) : string.Empty;
-				this.AmountExtraOk = !this.AmountExtra.HasValue || this.AmountExtra.Value >= 0;
-				this.AmountExtraPreset = this.AmountExtra.HasValue;
-				this.AmountExtraAndCurrency = this.AmountExtraText + " " + this.Currency;
-
-				StringBuilder Url = new();
-
-				Url.Append("https://");
-				Url.Append(this.From);
-				Url.Append("/Images/eDalerFront200.png");
-
-				this.EDalerFrontGlyph = Url.ToString();
-
-				Url.Clear();
-				Url.Append("https://");
-				Url.Append(ServiceRef.TagProfile.Domain);
-				Url.Append("/Images/eDalerBack200.png");
-				this.EDalerBackGlyph = Url.ToString();
-
-				if (Args.Uri?.EncryptedMessage is not null)
-				{
-					if (Args.Uri.EncryptionPublicKey is null)
-						this.Message = Encoding.UTF8.GetString(Args.Uri.EncryptedMessage);
+					if (this.navigationArguments.Uri.EncryptionPublicKey is null)
+						this.Message = Encoding.UTF8.GetString(this.navigationArguments.Uri.EncryptedMessage);
 					else
 					{
-						this.Message = await ServiceRef.XmppService.TryDecryptMessage(Args.Uri.EncryptedMessage,
-						Args.Uri.EncryptionPublicKey, Args.Uri.Id, Args.Uri.From);
+						this.Message = await ServiceRef.XmppService.TryDecryptMessage(this.navigationArguments.Uri.EncryptedMessage,
+						this.navigationArguments.Uri.EncryptionPublicKey, this.navigationArguments.Uri.Id, this.navigationArguments.Uri.From);
 					}
 					this.HasMessage = !string.IsNullOrEmpty(this.Message);
 				}
 
 				this.MessagePreset = !string.IsNullOrEmpty(this.Message);
-				this.CanEncryptMessage = Args.Uri?.ToType == EntityType.LegalId;
+				this.CanEncryptMessage = this.navigationArguments.Uri?.ToType == EntityType.LegalId;
 				this.EncryptMessage = this.CanEncryptMessage;
 			}
 		}

@@ -15,12 +15,18 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 	/// </summary>
 	public partial class TokenEventsViewModel : BaseViewModel
 	{
+		private readonly TokenEventsNavigationArgs? navigationArguments;
+
 		/// <summary>
 		/// Creates an instance of the <see cref="TokenEventsViewModel"/> class.
 		/// </summary>
-		public TokenEventsViewModel()
+		/// <param name="Args">Navigation arguments</param>
+		public TokenEventsViewModel(TokenEventsNavigationArgs? Args)
 			: base()
 		{
+			this.navigationArguments = Args;
+			this.TokenId = Args?.TokenId;
+
 			this.Events = [];
 		}
 
@@ -29,15 +35,13 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.UiService.TryGetArgs(out TokenEventsNavigationArgs? args))
+			if (this.navigationArguments is not null)
 			{
-				this.TokenId = args.TokenId;
-
 				this.Events.Clear();
 
-				if (args.Events is not null)
+				if (this.navigationArguments.Events is not null)
 				{
-					foreach (TokenEvent Event in args.Events)
+					foreach (TokenEvent Event in this.navigationArguments.Events)
 					{
 						EventItem Item = EventItem.Create(Event);
 						await Item.DoBind();

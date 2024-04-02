@@ -12,10 +12,10 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity
 		/// <summary>
 		/// Creates a new instance of the <see cref="PetitionIdentityPage"/> class.
 		/// </summary>
-		public PetitionIdentityPage(PetitionIdentityViewModel ViewModel)
+		public PetitionIdentityPage()
 		{
 			this.InitializeComponent();
-			this.ContentPageModel = ViewModel;
+			this.ContentPageModel = new PetitionIdentityViewModel(ServiceRef.UiService.PopLatestArgs<PetitionIdentityNavigationArgs>());
 		}
 
 		/// <inheritdoc/>

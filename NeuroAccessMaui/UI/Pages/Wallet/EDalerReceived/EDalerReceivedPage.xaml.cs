@@ -1,4 +1,6 @@
-﻿namespace NeuroAccessMaui.UI.Pages.Wallet.EDalerReceived
+﻿using NeuroAccessMaui.Services;
+
+namespace NeuroAccessMaui.UI.Pages.Wallet.EDalerReceived
 {
 	/// <summary>
 	/// A page that displays information about eDaler received.
@@ -11,7 +13,7 @@
 		/// </summary>
 		public EDalerReceivedPage()
 		{
-			this.ContentPageModel = new EDalerReceivedViewModel();
+			this.ContentPageModel = new EDalerReceivedViewModel(ServiceRef.UiService.PopLatestArgs<EDalerBalanceNavigationArgs>());
 			this.InitializeComponent();
 		}
 	}

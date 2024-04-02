@@ -1,4 +1,6 @@
-﻿namespace NeuroAccessMaui.UI.Pages.Wallet.PendingPayment
+﻿using NeuroAccessMaui.Services;
+
+namespace NeuroAccessMaui.UI.Pages.Wallet.PendingPayment
 {
 	/// <summary>
 	/// A page that allows the user to view information about a pending payment.
@@ -11,7 +13,7 @@
 		/// </summary>
 		public PendingPaymentPage()
 		{
-			this.ContentPageModel = new EDalerUriViewModel(this);
+			this.ContentPageModel = new EDalerUriViewModel(this, ServiceRef.UiService.PopLatestArgs<EDalerUriNavigationArgs>());
 			this.InitializeComponent();
 		}
 

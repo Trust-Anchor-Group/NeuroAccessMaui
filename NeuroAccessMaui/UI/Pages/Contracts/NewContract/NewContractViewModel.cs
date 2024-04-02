@@ -30,33 +30,32 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 	/// <summary>
 	/// The view model to bind to when displaying a new contract view or page.
 	/// </summary>
-	/// <remarks>
-	/// Creates an instance of the <see cref="NewContractViewModel"/> class.
-	/// </remarks>
-	/// <param name="Page">Page displaying the view.</param>
-	public partial class NewContractViewModel(NewContractPage Page) : BaseViewModel, ILinkableView
+	public partial class NewContractViewModel : BaseViewModel, ILinkableView
 	{
 		private static readonly string partSettingsPrefix = typeof(NewContractViewModel).FullName + ".Part_";
 
 		private readonly SortedDictionary<CaseInsensitiveString, ParameterInfo> parametersByName = [];
 		private readonly LinkedList<ParameterInfo> parametersInOrder = new();
-		private Dictionary<CaseInsensitiveString, object> presetParameterValues = [];
-		private CaseInsensitiveString[]? suppressedProposalIds;
+		private readonly Dictionary<CaseInsensitiveString, object> presetParameterValues = [];
+		private readonly CaseInsensitiveString[]? suppressedProposalIds;
+		private readonly string? templateId;
 		private Contract? template;
-		private string? templateId;
 		private bool saveStateWhileScanning;
 		private Contract? stateTemplateWhileScanning;
 		private readonly Dictionary<CaseInsensitiveString, string> partsToAdd = [];
-		private readonly NewContractPage page = Page;
+		private readonly NewContractPage page;
+		private readonly ContractVisibility? initialVisibility = null;
 
-		/// <inheritdoc/>
-		protected override async Task OnInitialize()
+		/// <summary>
+		/// The view model to bind to when displaying a new contract view or page.
+		/// </summary>
+		/// <param name="Page">Page displaying the view.</param>
+		/// <param name="Args">Navigation arguments.</param>
+		public NewContractViewModel(NewContractPage Page, NewContractNavigationArgs? Args)
 		{
-			await base.OnInitialize();
+			this.page = Page;
 
-			ContractVisibility? Visibility = null;
-
-			if (ServiceRef.UiService.TryGetArgs(out NewContractNavigationArgs? Args))
+			if (Args is not null)
 			{
 				this.template = Args.Template;
 				this.suppressedProposalIds = Args.SuppressedProposalLegalIds;
@@ -65,7 +64,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					this.presetParameterValues = Args.ParameterValues;
 
 				if (Args.SetVisibility)
-					Visibility = Args.Template?.Visibility;
+					this.initialVisibility = Args.Template?.Visibility;
 
 				if (this.template is not null)
 					this.template.FormatParameterDisplay += this.Template_FormatParameterDisplay;
@@ -85,8 +84,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			this.ContractVisibilityItems.Add(new ContractVisibilityModel(ContractVisibility.DomainAndParts, ServiceRef.Localizer[nameof(AppResources.ContractVisibility_DomainAndParts)]));
 			this.ContractVisibilityItems.Add(new ContractVisibilityModel(ContractVisibility.Public, ServiceRef.Localizer[nameof(AppResources.ContractVisibility_Public)]));
 			this.ContractVisibilityItems.Add(new ContractVisibilityModel(ContractVisibility.PublicSearchable, ServiceRef.Localizer[nameof(AppResources.ContractVisibility_PublicSearchable)]));
+		}
 
-			await this.PopulateTemplateForm(Visibility);
+		/// <inheritdoc/>
+		protected override async Task OnInitialize()
+		{
+			await base.OnInitialize();
+
+			await this.PopulateTemplateForm(this.initialVisibility);
 		}
 
 		/// <inheritdoc/>
@@ -1187,15 +1192,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						Margin = AppStyles.SmallBottomMargins
 					};
 
-					string? CalculatorButtonType = null;
-
-					if (Parameter is NumericalParameter NumericalParameter)
-						CalculatorButtonType = "∑";  // TODO: SVG icon
-
-					if (Parameter is DurationParameter DurationParameter)
-						CalculatorButtonType = "🕑";  // TODO: SVG icon
-
-					if (CalculatorButtonType is not null)
+					if (Parameter is NumericalParameter || Parameter is DurationParameter)
 					{
 						Grid Grid = new()
 						{
@@ -1227,14 +1224,19 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						Entry.VerticalOptions = LayoutOptions.Center;
 						Grid.Add(Entry, 0, 0);
 
-						Button CalcButton = new()
+						Controls.ImageButton CalcButton = new()
 						{
-							Text = CalculatorButtonType,
 							StyleId = Parameter.Name,
-							Style = AppStyles.UnicodeCharacterButton
+							Style = AppStyles.ImageOnlyButton,
+							PathData = Parameter is NumericalParameter ? Geometries.CalculatorPath : Geometries.DurationPath,
+							HorizontalOptions = LayoutOptions.Center,
+							VerticalOptions = LayoutOptions.Center
 						};
 
-						CalcButton.Clicked += this.CalcButton_Clicked;
+						if (Parameter is NumericalParameter)
+							CalcButton.Clicked += this.CalcButton_Clicked;
+						else
+							CalcButton.Clicked += this.DurationButton_Clicked;
 
 						Grid.Add(CalcButton, 1, 0);
 
@@ -1349,7 +1351,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		{
 			try
 			{
-				if (Sender is not Button CalcButton)
+				if (Sender is not Controls.ImageButton CalcButton)
 					return;
 
 				if (!this.parametersByName.TryGetValue(CalcButton.StyleId, out ParameterInfo? ParameterInfo))
@@ -1358,16 +1360,30 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				if (ParameterInfo.Control is not CompositeEntry Entry)
 					return;
 
-				if (CalcButton.Text == "🕑")  // TODO: SVG icon
-				{
-					DurationNavigationArgs Args = new(Entry.Entry);
-					await ServiceRef.UiService.GoToAsync(nameof(DurationPage), Args, BackMethod.Pop);
-				}
-				else
-				{
-					CalculatorNavigationArgs Args = new(Entry.Entry);
-					await ServiceRef.UiService.GoToAsync(nameof(CalculatorPage), Args, BackMethod.Pop);
-				}
+				CalculatorNavigationArgs Args = new(Entry.Entry);
+				await ServiceRef.UiService.GoToAsync(nameof(CalculatorPage), Args, BackMethod.Pop);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
+		}
+
+		private async void DurationButton_Clicked(object? Sender, EventArgs e)
+		{
+			try
+			{
+				if (Sender is not Controls.ImageButton CalcButton)
+					return;
+
+				if (!this.parametersByName.TryGetValue(CalcButton.StyleId, out ParameterInfo? ParameterInfo))
+					return;
+
+				if (ParameterInfo.Control is not CompositeEntry Entry)
+					return;
+
+				DurationNavigationArgs Args = new(Entry.Entry);
+				await ServiceRef.UiService.GoToAsync(nameof(DurationPage), Args, BackMethod.Pop);
 			}
 			catch (Exception ex)
 			{

@@ -201,9 +201,9 @@ namespace NeuroAccessMaui.Services.UI
 #endif
 				return BlurredScreen;
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				ServiceRef.LogService.LogException(e);
+				ServiceRef.LogService.LogException(ex);
 				return null;
 			}
 		}
@@ -262,9 +262,9 @@ namespace NeuroAccessMaui.Services.UI
 
 					this.EndLoad(true);
 				}
-				catch (Exception e)
+				catch (Exception ex)
 				{
-					ServiceRef.LogService.LogException(e);
+					ServiceRef.LogService.LogException(ex);
 					this.EndLoad(false);
 				}
 			}
@@ -287,9 +287,9 @@ namespace NeuroAccessMaui.Services.UI
 						Application.PropertyChanging -= this.OnApplicationPropertyChanging;
 					}
 				}
-				catch (Exception e)
+				catch (Exception ex)
 				{
-					ServiceRef.LogService.LogException(e);
+					ServiceRef.LogService.LogException(ex);
 				}
 
 				this.EndUnload();
@@ -330,11 +330,11 @@ namespace NeuroAccessMaui.Services.UI
 					this.isNavigating = true;
 					await Shell.Current.GoToAsync(Route, NavigationArgs.Animated);
 				}
-				catch (Exception e)
+				catch (Exception ex)
 				{
-					e = Log.UnnestException(e);
-					ServiceRef.LogService.LogException(e);
-					string ExtraInfo = Environment.NewLine + e.Message;
+					ex = Log.UnnestException(ex);
+					ServiceRef.LogService.LogException(ex);
+					string ExtraInfo = Environment.NewLine + ex.Message;
 
 					await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
@@ -370,9 +370,9 @@ namespace NeuroAccessMaui.Services.UI
 						await Shell.Current.GoToAsync(Constants.Pages.MainPage);
 				}
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				ServiceRef.LogService.LogException(e);
+				ServiceRef.LogService.LogException(ex);
 
 				await ServiceRef.UiService.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
@@ -517,10 +517,10 @@ namespace NeuroAccessMaui.Services.UI
 			{
 				if (Args is not null)
 				{
-					string? UniqueId = Args.GetUniqueId();
+					string? UniqueId = Args.UniqueId;
 
 					if (!string.IsNullOrEmpty(UniqueId))
-						PageName += UniqueId;
+						PageName += "?UniqueId=" + UniqueId;
 
 					this.navigationArgsMap[PageName] = Args;
 				}
@@ -532,7 +532,7 @@ namespace NeuroAccessMaui.Services.UI
 		private NavigationArgs? TryGetArgs(string Route, string? UniqueId)
 		{
 			if (!string.IsNullOrEmpty(UniqueId))
-				Route += UniqueId;
+				Route += "?UniqueId=" + UniqueId;
 
 			if (TryGetPageName(Route, out string? PageName) &&
 				this.navigationArgsMap.TryGetValue(PageName, out NavigationArgs? Args))

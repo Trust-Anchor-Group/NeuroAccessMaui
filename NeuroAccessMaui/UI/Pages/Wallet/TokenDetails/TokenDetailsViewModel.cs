@@ -33,8 +33,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 	/// The view model to bind to for when displaying the contents of a token.
 	/// </summary>
 	/// <param name="Page">Page hosting details.</param>
-	public partial class TokenDetailsViewModel(TokenDetailsPage Page) : QrXmppViewModel()
+	/// <param name="Args">Navigation arguments.</param>
+	public partial class TokenDetailsViewModel(TokenDetailsPage Page, TokenDetailsNavigationArgs? Args) : QrXmppViewModel()
 	{
+		private readonly TokenDetailsNavigationArgs? navigationArguments = Args;
 		private readonly TokenDetailsPage page = Page;
 
 		/// <inheritdoc/>
@@ -42,58 +44,58 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		{
 			await base.OnInitialize();
 
-			if (ServiceRef.UiService.TryGetArgs(out TokenDetailsNavigationArgs? args))
+			if (this.navigationArguments is not null)
 			{
-				this.Created = args.Token?.Created;
-				this.Updated = args.Token?.Updated;
-				this.Expires = args.Token?.Expires;
-				this.ArchiveRequired = args.Token?.ArchiveRequired;
-				this.ArchiveOptional = args.Token?.ArchiveOptional;
-				this.SignatureTimestamp = args.Token?.SignatureTimestamp;
-				this.Signature = args.Token?.Signature;
-				this.DefinitionSchemaDigest = args.Token?.DefinitionSchemaDigest;
-				this.DefinitionSchemaHashFunction = args.Token?.DefinitionSchemaHashFunction;
-				this.CreatorCanDestroy = args.Token?.CreatorCanDestroy ?? false;
-				this.OwnerCanDestroyBatch = args.Token?.OwnerCanDestroyBatch ?? false;
-				this.OwnerCanDestroyIndividual = args.Token?.OwnerCanDestroyIndividual ?? false;
-				this.CertifierCanDestroy = args.Token?.CertifierCanDestroy ?? false;
-				this.FriendlyName = args.Token?.FriendlyName;
-				this.Category = args.Token?.Category;
-				this.Description = args.Token?.Description is null ? null : await args.Token.Description.MarkdownToParsedXaml();
-				this.GlyphContentType = args.Token?.GlyphContentType;
-				this.Ordinal = args.Token?.Ordinal;
-				this.Value = args.Token?.Value;
-				this.TokenIdMethod = args.Token?.TokenIdMethod;
-				this.TokenId = args.Token?.TokenId;
-				this.ShortTokenId = args.Token?.ShortTokenId;
-				this.Visibility = args.Token?.Visibility;
-				this.Creator = args.Token?.Creator;
-				this.CreatorFriendlyName = await ContactInfo.GetFriendlyName(args.Token?.Creator);
-				this.CreatorJid = args.Token?.CreatorJid;
-				this.Owner = args.Token?.Owner;
-				this.OwnerFriendlyName = await ContactInfo.GetFriendlyName(args.Token?.Owner);
-				this.OwnerJid = args.Token?.OwnerJid;
-				this.BatchSize = args.Token?.BatchSize;
-				this.TrustProvider = args.Token?.TrustProvider;
-				this.TrustProviderFriendlyName = await ContactInfo.GetFriendlyName(args.Token?.TrustProvider);
-				this.TrustProviderJid = args.Token?.TrustProviderJid;
-				this.Currency = args.Token?.Currency;
-				this.Reference = args.Token?.Reference;
-				this.Definition = args.Token?.Definition;
-				this.DefinitionNamespace = args.Token?.DefinitionNamespace;
-				this.CreationContract = args.Token?.CreationContract;
-				this.OwnershipContract = args.Token?.OwnershipContract;
-				this.GlyphImage = args.Token?.GlyphImage;
-				this.HasGlyphImage = args.Token?.HasGlyphImage ?? false;
-				this.GlyphWidth = args.Token?.GlyphWidth;
-				this.GlyphHeight = args.Token?.GlyphHeight;
-				this.TokenXml = args.Token?.Token.ToXml();
+				this.Created = this.navigationArguments.Token?.Created;
+				this.Updated = this.navigationArguments.Token?.Updated;
+				this.Expires = this.navigationArguments.Token?.Expires;
+				this.ArchiveRequired = this.navigationArguments.Token?.ArchiveRequired;
+				this.ArchiveOptional = this.navigationArguments.Token?.ArchiveOptional;
+				this.SignatureTimestamp = this.navigationArguments.Token?.SignatureTimestamp;
+				this.Signature = this.navigationArguments.Token?.Signature;
+				this.DefinitionSchemaDigest = this.navigationArguments.Token?.DefinitionSchemaDigest;
+				this.DefinitionSchemaHashFunction = this.navigationArguments.Token?.DefinitionSchemaHashFunction;
+				this.CreatorCanDestroy = this.navigationArguments.Token?.CreatorCanDestroy ?? false;
+				this.OwnerCanDestroyBatch = this.navigationArguments.Token?.OwnerCanDestroyBatch ?? false;
+				this.OwnerCanDestroyIndividual = this.navigationArguments.Token?.OwnerCanDestroyIndividual ?? false;
+				this.CertifierCanDestroy = this.navigationArguments.Token?.CertifierCanDestroy ?? false;
+				this.FriendlyName = this.navigationArguments.Token?.FriendlyName;
+				this.Category = this.navigationArguments.Token?.Category;
+				this.Description = this.navigationArguments.Token?.Description is null ? null : await this.navigationArguments.Token.Description.MarkdownToParsedXaml();
+				this.GlyphContentType = this.navigationArguments.Token?.GlyphContentType;
+				this.Ordinal = this.navigationArguments.Token?.Ordinal;
+				this.Value = this.navigationArguments.Token?.Value;
+				this.TokenIdMethod = this.navigationArguments.Token?.TokenIdMethod;
+				this.TokenId = this.navigationArguments.Token?.TokenId;
+				this.ShortTokenId = this.navigationArguments.Token?.ShortTokenId;
+				this.Visibility = this.navigationArguments.Token?.Visibility;
+				this.Creator = this.navigationArguments.Token?.Creator;
+				this.CreatorFriendlyName = await ContactInfo.GetFriendlyName(this.navigationArguments.Token?.Creator);
+				this.CreatorJid = this.navigationArguments.Token?.CreatorJid;
+				this.Owner = this.navigationArguments.Token?.Owner;
+				this.OwnerFriendlyName = await ContactInfo.GetFriendlyName(this.navigationArguments.Token?.Owner);
+				this.OwnerJid = this.navigationArguments.Token?.OwnerJid;
+				this.BatchSize = this.navigationArguments.Token?.BatchSize;
+				this.TrustProvider = this.navigationArguments.Token?.TrustProvider;
+				this.TrustProviderFriendlyName = await ContactInfo.GetFriendlyName(this.navigationArguments.Token?.TrustProvider);
+				this.TrustProviderJid = this.navigationArguments.Token?.TrustProviderJid;
+				this.Currency = this.navigationArguments.Token?.Currency;
+				this.Reference = this.navigationArguments.Token?.Reference;
+				this.Definition = this.navigationArguments.Token?.Definition;
+				this.DefinitionNamespace = this.navigationArguments.Token?.DefinitionNamespace;
+				this.CreationContract = this.navigationArguments.Token?.CreationContract;
+				this.OwnershipContract = this.navigationArguments.Token?.OwnershipContract;
+				this.GlyphImage = this.navigationArguments.Token?.GlyphImage;
+				this.HasGlyphImage = this.navigationArguments.Token?.HasGlyphImage ?? false;
+				this.GlyphWidth = this.navigationArguments.Token?.GlyphWidth;
+				this.GlyphHeight = this.navigationArguments.Token?.GlyphHeight;
+				this.TokenXml = this.navigationArguments.Token?.Token.ToXml();
 				this.IsMyToken = string.Equals(this.OwnerJid, ServiceRef.XmppService.BareJid, StringComparison.OrdinalIgnoreCase);
-				this.HasStateMachine = args.Token?.HasStateMachine ?? false;
+				this.HasStateMachine = this.navigationArguments.Token?.HasStateMachine ?? false;
 
-				if (!string.IsNullOrEmpty(args.Token?.Reference))
+				if (!string.IsNullOrEmpty(this.navigationArguments.Token?.Reference))
 				{
-					if (Uri.TryCreate(args.Token?.Reference, UriKind.Absolute, out Uri? RefUri) &&
+					if (Uri.TryCreate(this.navigationArguments.Token?.Reference, UriKind.Absolute, out Uri? RefUri) &&
 						RefUri.Scheme.ToLower(CultureInfo.InvariantCulture) is string s &&
 						(s == "http" || s == "https"))
 					{
@@ -101,25 +103,25 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 					}
 				}
 
-				if (args.Token?.Tags is not null)
+				if (this.navigationArguments.Token?.Tags is not null)
 				{
-					foreach (TokenTag Tag in args.Token.Tags)
+					foreach (TokenTag Tag in this.navigationArguments.Token.Tags)
 						this.page.AddLink(this, Tag.Name, Tag.Value?.ToString() ?? string.Empty);   // TODO: Replace with grouped collection, when this works in Maui.
 				}
 
 				if (this.TokenId is not null)
 					this.GenerateQrCode(Constants.UriSchemes.CreateTokenUri(this.TokenId));
 
-				await this.Populate(ServiceRef.Localizer[nameof(AppResources.Witness)], string.Empty, args.Token?.Witness, null, this.Witnesses);
-				await this.Populate(ServiceRef.Localizer[nameof(AppResources.Certifier)], ServiceRef.Localizer[nameof(AppResources.CertifierJid)], args.Token?.Certifier, args.Token?.CertifierJids, this.Certifiers);
-				await this.Populate(ServiceRef.Localizer[nameof(AppResources.Valuator)], string.Empty, args.Token?.Valuator, null, this.Valuators);
-				await this.Populate(ServiceRef.Localizer[nameof(AppResources.Assessor)], string.Empty, args.Token?.Assessor, null, this.Assessors);
+				await this.Populate(ServiceRef.Localizer[nameof(AppResources.Witness)], string.Empty, this.navigationArguments.Token?.Witness, null, this.Witnesses);
+				await this.Populate(ServiceRef.Localizer[nameof(AppResources.Certifier)], ServiceRef.Localizer[nameof(AppResources.CertifierJid)], this.navigationArguments.Token?.Certifier, this.navigationArguments.Token?.CertifierJids, this.Certifiers);
+				await this.Populate(ServiceRef.Localizer[nameof(AppResources.Valuator)], string.Empty, this.navigationArguments.Token?.Valuator, null, this.Valuators);
+				await this.Populate(ServiceRef.Localizer[nameof(AppResources.Assessor)], string.Empty, this.navigationArguments.Token?.Assessor, null, this.Assessors);
 
 				this.Tags.Clear();
 
-				if (args.Token?.Tags is not null)
+				if (this.navigationArguments.Token?.Tags is not null)
 				{
-					foreach (TokenTag Tag in args.Token.Tags)
+					foreach (TokenTag Tag in this.navigationArguments.Token.Tags)
 						this.Tags.Add(Tag);
 				}
 
@@ -616,7 +618,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			try
 			{
 				ChatNavigationArgs Args = new(LegalId, BareJid, FriendlyName);
-
 				await ServiceRef.UiService.GoToAsync(nameof(ChatPage), Args, BackMethod.Inherited, BareJid);
 			}
 			catch (Exception ex)
@@ -695,7 +696,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 				await Task.Delay(100);  // Otherwise, page doesn't show properly. (Underlying timing issue. TODO: Find better solution.)
 
 				ChatNavigationArgs ChatArgs = new(Contact.Contact);
-
 				await ServiceRef.UiService.GoToAsync(nameof(ChatPage), ChatArgs, BackMethod.Inherited, Contact.BareJid);
 			}
 		}

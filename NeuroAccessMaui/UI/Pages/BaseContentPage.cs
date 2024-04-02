@@ -4,6 +4,7 @@ using NeuroAccessMaui.UI.Pages.Registration;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using Waher.Events;
+using Waher.Networking;
 
 namespace NeuroAccessMaui.UI.Pages
 {
@@ -71,7 +72,7 @@ namespace NeuroAccessMaui.UI.Pages
 			try
 			{
 				base.OnAppearing();
-
+				
 				await this.OnAppearingAsync();
 			}
 			catch (Exception ex)
@@ -86,22 +87,37 @@ namespace NeuroAccessMaui.UI.Pages
 		protected virtual async Task OnAppearingAsync()
 		{
 			BaseViewModel ViewModel = this.ViewModel<BaseViewModel>();
+			bool DoAppearing = !ViewModel.IsAppearing;
 
-			if (!ViewModel.IsAppearing)
+			if (DoAppearing)
 			{
+				EventHandlerAsync? BeforeAppearing = this.OnBeforeAppearing;
+
+				if (BeforeAppearing is not null)
+				{
+					try
+					{
+						await BeforeAppearing(this, EventArgs.Empty);
+					}
+					catch (Exception ex)
+					{
+						ServiceRef.LogService.LogException(ex);
+					}
+				}
+
 				try
 				{
 					await ViewModel.DoAppearing();
 				}
-				catch (Exception e)
+				catch (Exception ex)
 				{
-					e = Log.UnnestException(e);
-					ServiceRef.LogService.LogException(e);
+					ex = Log.UnnestException(ex);
+					ServiceRef.LogService.LogException(ex);
 
 					string Message = ServiceRef.Localizer[nameof(AppResources.FailedToBindViewModelForPage),
 						ViewModel.GetType().FullName ?? string.Empty, this.GetType().FullName ?? string.Empty];
 
-					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], Message + Environment.NewLine + e.Message);
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], Message + Environment.NewLine + ex.Message);
 				}
 			}
 
@@ -110,17 +126,44 @@ namespace NeuroAccessMaui.UI.Pages
 				if (await ServiceRef.SettingsService.WaitInitDone())
 					await ViewModel.RestoreState();
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				e = Log.UnnestException(e);
-				ServiceRef.LogService.LogException(e);
+				ex = Log.UnnestException(ex);
+				ServiceRef.LogService.LogException(ex);
 
 				string Message = ServiceRef.Localizer[nameof(AppResources.FailedToRestoreViewModelStateForPage),
 					ViewModel.GetType().FullName ?? string.Empty, this.GetType().FullName ?? string.Empty];
 
-				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], Message + Environment.NewLine + e.Message);
+				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], Message + Environment.NewLine + ex.Message);
+			}
+
+			if (DoAppearing)
+			{
+				EventHandlerAsync? AfterAppearing = this.OnAfterAppearing;
+
+				if (AfterAppearing is not null)
+				{
+					try
+					{
+						await AfterAppearing(this, EventArgs.Empty);
+					}
+					catch (Exception ex)
+					{
+						ServiceRef.LogService.LogException(ex);
+					}
+				}
 			}
 		}
+
+		/// <summary>
+		/// Event raised before page appears
+		/// </summary>
+		public event EventHandlerAsync? OnBeforeAppearing = null;
+
+		/// <summary>
+		/// Event raised after page appears
+		/// </summary>
+		public event EventHandlerAsync? OnAfterAppearing = null;
 
 		/// <inheritdoc />
 		protected sealed override async void OnDisappearing()
@@ -150,17 +193,17 @@ namespace NeuroAccessMaui.UI.Pages
 					if (await ServiceRef.SettingsService.WaitInitDone())
 						await ViewModel.SaveState();
 				}
-				catch (Exception e)
+				catch (Exception ex)
 				{
-					e = Log.UnnestException(e);
-					ServiceRef.LogService.LogException(e);
+					ex = Log.UnnestException(ex);
+					ServiceRef.LogService.LogException(ex);
 
 					string msg = ServiceRef.Localizer[nameof(AppResources.FailedToSaveViewModelStateForPage),
 						ViewModel.GetType().FullName ?? string.Empty, this.GetType().FullName ?? string.Empty];
 
 					await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-						msg + Environment.NewLine + e.Message);
+						msg + Environment.NewLine + ex.Message);
 				}
 			}
 
@@ -168,17 +211,17 @@ namespace NeuroAccessMaui.UI.Pages
 			{
 				await ViewModel.DoDisappearing();
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				e = Log.UnnestException(e);
-				ServiceRef.LogService.LogException(e);
+				ex = Log.UnnestException(ex);
+				ServiceRef.LogService.LogException(ex);
 
 				string msg = ServiceRef.Localizer[nameof(AppResources.FailedToUnbindViewModelForPage),
 					ViewModel.GetType().FullName ?? string.Empty, this.GetType().FullName ?? string.Empty];
 
 				await ServiceRef.UiService.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-					msg + Environment.NewLine + e.Message);
+					msg + Environment.NewLine + ex.Message);
 			}
 		}
 

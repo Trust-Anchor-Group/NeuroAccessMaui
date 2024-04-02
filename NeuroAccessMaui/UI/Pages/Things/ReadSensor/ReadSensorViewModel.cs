@@ -22,28 +22,23 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor
 	/// </summary>
 	public partial class ReadSensorViewModel : XmppViewModel
 	{
-		private ContactInfo? thing;
-		private ThingReference? thingRef;
+		private readonly ContactInfo? thing;
+		private readonly ThingReference? thingRef;
 		private SensorDataClientRequest? request;
 
 		/// <summary>
 		/// Creates an instance of the <see cref="ReadSensorViewModel"/> class.
 		/// </summary>
-		protected internal ReadSensorViewModel()
+		/// <param name="Args">Navigation arguments</param>
+		public ReadSensorViewModel(ViewThingNavigationArgs? Args)
 			: base()
 		{
+			this.thing = Args?.Thing;
+
 			this.SensorData = [];
-		}
 
-		/// <inheritdoc/>
-		protected override async Task OnInitialize()
-		{
-			await base.OnInitialize();
-
-			if (ServiceRef.UiService.TryGetArgs(out ViewThingNavigationArgs? args) && args.Thing is not null)
+			if (this.thing is not null)
 			{
-				this.thing = args.Thing;
-
 				if (string.IsNullOrEmpty(this.thing.NodeId) && string.IsNullOrEmpty(this.thing.SourceId) && string.IsNullOrEmpty(this.thing.Partition))
 					this.thingRef = null;
 				else
@@ -59,6 +54,12 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor
 
 				this.SupportsSensorEvents = this.thing.SupportsSensorEvents ?? false;
 			}
+		}
+
+		/// <inheritdoc/>
+		protected override async Task OnInitialize()
+		{
+			await base.OnInitialize();
 
 			this.CalcThingIsOnline();
 

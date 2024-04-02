@@ -13,28 +13,18 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler
 	/// </summary>
 	public partial class BuyEDalerViewModel : XmppViewModel
 	{
-		private TaskCompletionSource<decimal?>? result;
+		private readonly TaskCompletionSource<decimal?>? result;
 		private bool buyButtonPressed = false;
 
 		/// <summary>
 		/// Creates an instance of the <see cref="BuyEDalerViewModel"/> class.
 		/// </summary>
-		public BuyEDalerViewModel()
+		/// <param name="Args">Navigation arguments</param>
+		public BuyEDalerViewModel(BuyEDalerNavigationArgs? Args)
 			: base()
 		{
-		}
-
-		/// <inheritdoc/>
-		protected override async Task OnInitialize()
-		{
-			await base.OnInitialize();
-
-			if (ServiceRef.UiService.TryGetArgs(out BuyEDalerNavigationArgs? Args))
-			{
-				this.Currency = Args.Currency;
-				this.result = Args.Result;
-			}
-
+			this.Currency = Args?.Currency;
+			this.result = Args?.Result;
 			this.Amount = 0;
 			this.AmountText = string.Empty;
 			this.AmountOk = false;

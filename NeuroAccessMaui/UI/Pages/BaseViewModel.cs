@@ -238,7 +238,7 @@ namespace NeuroAccessMaui.UI.Pages
 		/// <summary>
 		/// Method called when view is appearing on the screen.
 		/// </summary>
-		public async Task DoAppearing()
+		public virtual async Task DoAppearing()
 		{
 			if (!this.IsInitialized)
 				await this.DoInitialize();

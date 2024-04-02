@@ -1,4 +1,6 @@
-﻿namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
+﻿using NeuroAccessMaui.Services;
+
+namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 {
 	/// <summary>
 	/// A page that allows the user to view information about a token.
@@ -11,7 +13,7 @@
 		/// </summary>
 		public TokenEventsPage()
 		{
-			this.ContentPageModel = new TokenEventsViewModel();
+			this.ContentPageModel = new TokenEventsViewModel(ServiceRef.UiService.PopLatestArgs<TokenEventsNavigationArgs>());
 			this.InitializeComponent();
 		}
 	}

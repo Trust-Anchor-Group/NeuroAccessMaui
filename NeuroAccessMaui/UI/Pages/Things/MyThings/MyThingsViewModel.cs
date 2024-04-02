@@ -27,19 +27,16 @@ namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 		/// <summary>
 		/// Creates an instance of the <see cref="MyThingsViewModel"/> class.
 		/// </summary>
-		protected internal MyThingsViewModel()
+		/// <param name="Args">Navigation arguments</param>
+		public MyThingsViewModel(MyThingsNavigationArgs? Args)
 		{
+			this.result = Args?.ThingToShare;
 		}
 
 		/// <inheritdoc/>
 		protected override async Task OnInitialize()
 		{
 			await base.OnInitialize();
-
-			if (ServiceRef.UiService.TryGetArgs(out MyThingsNavigationArgs? Args))
-				this.result = Args.ThingToShare;
-			else
-				this.result = null;
 
 			ServiceRef.XmppService.OnPresence += this.Xmpp_OnPresence;
 			ServiceRef.NotificationService.OnNewNotification += this.NotificationService_OnNewNotification;

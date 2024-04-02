@@ -18,24 +18,20 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity
 	public partial class PetitionIdentityViewModel : BaseViewModel
 	{
 		private readonly PhotosLoader photosLoader;
-		private string? requestorFullJid;
-		private string? requestedIdentityId;
-		private string? petitionId;
+		private readonly string? requestorFullJid;
+		private readonly string? requestedIdentityId;
+		private readonly string? petitionId;
+		private readonly string? bareJid;
 
 		/// <summary>
 		/// Creates a new instance of the <see cref="PetitionIdentityViewModel"/> class.
 		/// </summary>
-		public PetitionIdentityViewModel()
+		/// <param name="Args">Navigation arguments.</param>
+		public PetitionIdentityViewModel(PetitionIdentityNavigationArgs? Args)
 		{
 			this.photosLoader = new PhotosLoader(this.Photos);
-		}
 
-		/// <inheritdoc/>
-		protected override async Task OnInitialize()
-		{
-			await base.OnInitialize();
-
-			if (ServiceRef.UiService.TryGetArgs(out PetitionIdentityNavigationArgs? Args))
+			if (Args is not null)
 			{
 				this.RequestorIdentity = Args.RequestorIdentity;
 				this.requestorFullJid = Args.RequestorFullJid;
@@ -43,16 +39,23 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity
 				this.petitionId = Args.PetitionId;
 				this.Purpose = Args.Purpose;
 
-				string BareJid;
-
 				if (!string.IsNullOrEmpty(this.requestorFullJid))
-					BareJid = XmppClient.GetBareJID(this.requestorFullJid);
+					this.bareJid = XmppClient.GetBareJID(this.requestorFullJid);
 				else if (Args.RequestorIdentity is not null)
-					BareJid = Args.RequestorIdentity.GetJid();
+					this.bareJid = Args.RequestorIdentity.GetJid();
 				else
-					BareJid = string.Empty;
+					this.bareJid = string.Empty;
+			}
+		}
 
-				ContactInfo Info = await ContactInfo.FindByBareJid(BareJid);
+		/// <inheritdoc/>
+		protected override async Task OnInitialize()
+		{
+			await base.OnInitialize();
+
+			if (!string.IsNullOrEmpty(this.bareJid))
+			{
+				ContactInfo Info = await ContactInfo.FindByBareJid(this.bareJid);
 
 				if (this.RequestorIdentity is not null &&
 					Info is not null &&

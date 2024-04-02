@@ -17,14 +17,11 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		/// <summary>
 		/// Creates a new instance of the <see cref="ScanQrCodePage"/> class.
 		/// </summary>
-		/// <param name="NavigationArgs">
-		/// Navigation arguments, which are manually passed to the constructor when Shell navigation is not available, namely during on-boarding.
-		/// </param>
-		public ScanQrCodePage(ScanQrCodeNavigationArgs? NavigationArgs)
+		public ScanQrCodePage()
 		{
 			this.InitializeComponent();
 
-			ScanQrCodeViewModel ViewModel = new(NavigationArgs);
+			ScanQrCodeViewModel ViewModel = new(ServiceRef.UiService.PopLatestArgs<ScanQrCodeNavigationArgs>());
 			this.ContentPageModel = ViewModel;
 
 			this.LinkEntry.Entry.Keyboard = Keyboard.Url;
@@ -45,17 +42,6 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 			ViewModel.DoSwitchMode(true);
 		}
 
-		/// <summary>
-		/// Creates a new instance of the <see cref="ScanQrCodePage"/> class.
-		/// </summary>
-		/// <remarks>
-		/// A parameterless constructor is required for shell routing system (it uses <c>Activator.CreateInstance</c>).
-		/// </remarks>
-		public ScanQrCodePage()
-			: this(ServiceRef.UiService.PopLatestArgs<ScanQrCodeNavigationArgs>())
-		{
-		}
-
 		/// <inheritdoc/>
 		protected override async Task OnAppearingAsync()
 		{
@@ -63,7 +49,6 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 
 			this.CameraBarcodeReaderView.IsDetecting = true;
 			WeakReferenceMessenger.Default.Register<KeyboardSizeMessage>(this, this.HandleKeyboardSizeMessage);
-
 		}
 
 		/// <inheritdoc/>

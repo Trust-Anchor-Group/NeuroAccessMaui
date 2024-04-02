@@ -33,9 +33,9 @@ namespace NeuroAccessMaui.Services.AttachmentCache
 
 					this.EndLoad(true);
 				}
-				catch (Exception e)
+				catch (Exception ex)
 				{
-					ServiceRef.LogService.LogException(e);
+					ServiceRef.LogService.LogException(ex);
 					this.EndLoad(false);
 				}
 			}
@@ -73,9 +73,9 @@ namespace NeuroAccessMaui.Services.AttachmentCache
 
 				return (File.ReadAllBytes(Entry.LocalFileName), Entry.ContentType);
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				ServiceRef.LogService.LogException(e);
+				ServiceRef.LogService.LogException(ex);
 				return (null, string.Empty);
 			}
 		}

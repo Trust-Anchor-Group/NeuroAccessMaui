@@ -1,4 +1,6 @@
-﻿namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport
+﻿using NeuroAccessMaui.Services;
+
+namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport
 {
 	/// <summary>
 	/// A page that allows the user to view a state-machine report.
@@ -11,7 +13,7 @@
 		/// </summary>
 		public MachineReportPage()
 		{
-			this.ContentPageModel = new MachineReportViewModel();
+			this.ContentPageModel = new MachineReportViewModel(ServiceRef.UiService.PopLatestArgs<MachineReportNavigationArgs>());
 			this.InitializeComponent();
 		}
 	}

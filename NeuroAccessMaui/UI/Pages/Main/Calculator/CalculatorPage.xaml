@@ -25,7 +25,7 @@
 				<Label.FormattedText>
 					<FormattedString>
 						<Span Text="{Binding Value}"/>
-						<Span Text="|" TextColor="{StaticResource GrayColor}" FontSize="35"/>
+						<Span Text="|" TextColor="{AppThemeBinding Light={StaticResource NormalEditPlaceholderLight}, Dark={StaticResource NormalEditPlaceholderDark}}" FontSize="35"/>
 					</FormattedString>
 				</Label.FormattedText>
 			</Label>

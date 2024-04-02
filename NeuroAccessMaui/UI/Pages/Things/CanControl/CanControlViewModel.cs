@@ -23,37 +23,35 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanControl
 	/// </summary>
 	public partial class CanControlViewModel : XmppViewModel
 	{
-		private NotificationEvent? @event;
+		private readonly NotificationEvent? @event;
+		private readonly CanControlNavigationArgs? navigationArguments;
 
 		/// <summary>
 		/// Creates an instance of the <see cref="CanControlViewModel"/> class.
 		/// </summary>
-		protected internal CanControlViewModel()
+		/// <param name="Args">Navigation arguments</param>
+		public CanControlViewModel(CanControlNavigationArgs? Args)
 			: base()
 		{
+			this.navigationArguments = Args;
+
 			this.Tags = [];
 			this.CallerTags = [];
 			this.Parameters = [];
 			this.RuleRanges = [];
-		}
 
-		/// <inheritdoc/>
-		protected override async Task OnInitialize()
-		{
-			await base.OnInitialize();
-
-			if (ServiceRef.UiService.TryGetArgs(out CanControlNavigationArgs? args))
+			if (Args is not null)
 			{
-				this.@event = args.Event;
-				this.BareJid = args.BareJid;
-				this.FriendlyName = args.FriendlyName;
-				this.RemoteJid = args.RemoteJid;
-				this.RemoteFriendlyName = args.RemoteFriendlyName;
-				this.Key = args.Key;
-				this.ProvisioningService = args.ProvisioningService;
-				this.NodeId = args.NodeId;
-				this.SourceId = args.SourceId;
-				this.PartitionId = args.PartitionId;
+				this.@event = Args.Event;
+				this.BareJid = Args.BareJid;
+				this.FriendlyName = Args.FriendlyName;
+				this.RemoteJid = Args.RemoteJid;
+				this.RemoteFriendlyName = Args.RemoteFriendlyName;
+				this.Key = Args.Key;
+				this.ProvisioningService = Args.ProvisioningService;
+				this.NodeId = Args.NodeId;
+				this.SourceId = Args.SourceId;
+				this.PartitionId = Args.PartitionId;
 
 				if (this.FriendlyName == this.BareJid)
 					this.FriendlyName = ServiceRef.Localizer[nameof(AppResources.NotAvailable)];
@@ -61,7 +59,16 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanControl
 				this.RemoteFriendlyNameAvailable = this.RemoteFriendlyName != this.RemoteJid;
 				if (!this.RemoteFriendlyNameAvailable)
 					this.RemoteFriendlyName = ServiceRef.Localizer[nameof(AppResources.NotAvailable)];
+			}
+		}
 
+		/// <inheritdoc/>
+		protected override async Task OnInitialize()
+		{
+			await base.OnInitialize();
+
+			if (this.navigationArguments is not null)
+			{
 				this.Tags.Clear();
 				this.CallerTags.Clear();
 
@@ -80,25 +87,25 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanControl
 						this.CallerTags.Add(new HumanReadableTag(Tag));
 				}
 
-				if (args.UserTokens is not null && args.UserTokens.Length > 0)
+				if (this.navigationArguments.UserTokens is not null && this.navigationArguments.UserTokens.Length > 0)
 				{
-					foreach (ProvisioningToken Token in args.UserTokens)
+					foreach (ProvisioningToken Token in this.navigationArguments.UserTokens)
 						this.CallerTags.Add(new HumanReadableTag(new Property(ServiceRef.Localizer[nameof(AppResources.User)], Token.FriendlyName ?? Token.Token)));
 
 					this.HasUser = true;
 				}
 
-				if (args.ServiceTokens is not null && args.ServiceTokens.Length > 0)
+				if (this.navigationArguments.ServiceTokens is not null && this.navigationArguments.ServiceTokens.Length > 0)
 				{
-					foreach (ProvisioningToken Token in args.ServiceTokens)
+					foreach (ProvisioningToken Token in this.navigationArguments.ServiceTokens)
 						this.CallerTags.Add(new HumanReadableTag(new Property(ServiceRef.Localizer[nameof(AppResources.Service)], Token.FriendlyName ?? Token.Token)));
 
 					this.HasService = true;
 				}
 
-				if (args.DeviceTokens is not null && args.DeviceTokens.Length > 0)
+				if (this.navigationArguments.DeviceTokens is not null && this.navigationArguments.DeviceTokens.Length > 0)
 				{
-					foreach (ProvisioningToken Token in args.DeviceTokens)
+					foreach (ProvisioningToken Token in this.navigationArguments.DeviceTokens)
 						this.CallerTags.Add(new HumanReadableTag(new Property(ServiceRef.Localizer[nameof(AppResources.Device)], Token.FriendlyName ?? Token.Token)));
 
 					this.HasDevice = true;
@@ -107,21 +114,21 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanControl
 				this.Parameters.Clear();
 
 				SortedDictionary<string, bool> PermittedParameters = [];
-				string[]? AllParameters = args.AllParameters;
+				string[]? AllParameters = this.navigationArguments.AllParameters;
 
 				if (AllParameters is null && !string.IsNullOrEmpty(this.BareJid))
 				{
 					AllParameters = await CanControlNotificationEvent.GetAvailableParameterNames(this.BareJid,
 						new ThingReference(this.NodeId, this.SourceId, this.PartitionId));
 
-					if (AllParameters is not null && args?.Event is not null)
+					if (AllParameters is not null && this.navigationArguments?.Event is not null)
 					{
-						args.Event.AllParameters = AllParameters;
-						await Database.Update(args.Event);
+						this.navigationArguments.Event.AllParameters = AllParameters;
+						await Database.Update(this.navigationArguments.Event);
 					}
 				}
 
-				bool AllParametersPermitted = args?.Parameters is null;
+				bool AllParametersPermitted = this.navigationArguments?.Parameters is null;
 
 				if (AllParameters is not null)
 				{
@@ -129,9 +136,9 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanControl
 						PermittedParameters[Parameter] = AllParametersPermitted;
 				}
 
-				if (!AllParametersPermitted && args?.Parameters is not null)
+				if (!AllParametersPermitted && this.navigationArguments?.Parameters is not null)
 				{
-					foreach (string Parameter in args.Parameters)
+					foreach (string Parameter in this.navigationArguments.Parameters)
 						PermittedParameters[Parameter] = true;
 				}
 

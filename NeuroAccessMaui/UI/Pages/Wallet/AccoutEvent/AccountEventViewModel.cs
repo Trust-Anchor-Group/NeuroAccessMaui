@@ -13,31 +13,25 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.AccountEvent
 		/// <summary>
 		/// Creates an instance of the <see cref="AccountEventViewModel"/> class.
 		/// </summary>
-		public AccountEventViewModel()
+		/// <param name="Args">Navigation arguments</param>
+		public AccountEventViewModel(AccountEventNavigationArgs? Args)
 			: base()
 		{
-		}
-
-		/// <inheritdoc/>
-		protected override async Task OnInitialize()
-		{
-			await base.OnInitialize();
-
-			if (ServiceRef.UiService.TryGetArgs(out AccountEventNavigationArgs? args))
+			if (Args is not null)
 			{
-				this.Remote = args.Event?.Remote;
-				this.FriendlyName = args.Event?.FriendlyName;
-				this.Timestamp = args.Event?.Timestamp;
-				this.TimestampStr = args.Event?.TimestampStr;
-				this.Change = args.Event?.Change;
-				this.ChangeColor = args.Event?.TextColor;
-				this.Balance = args.Event?.Balance;
-				this.Reserved = args.Event?.Reserved;
-				this.Message = args.Event?.Message;
-				this.HasMessage = args.Event?.HasMessage ?? false;
+				this.Remote = Args.Event?.Remote;
+				this.FriendlyName = Args.Event?.FriendlyName;
+				this.Timestamp = Args.Event?.Timestamp;
+				this.TimestampStr = Args.Event?.TimestampStr;
+				this.Change = Args.Event?.Change;
+				this.ChangeColor = Args.Event?.TextColor;
+				this.Balance = Args.Event?.Balance;
+				this.Reserved = Args.Event?.Reserved;
+				this.Message = Args.Event?.Message;
+				this.HasMessage = Args.Event?.HasMessage ?? false;
 				this.MessageIsUri = this.HasMessage && Uri.TryCreate(this.Message, UriKind.Absolute, out _);
-				this.Id = args.Event?.TransactionId.ToString();
-				this.Currency = args.Event?.Currency;
+				this.Id = Args.Event?.TransactionId.ToString();
+				this.Currency = Args.Event?.Currency;
 
 				this.ChangeText = this.Change is null ? string.Empty : MoneyToString.ToString(this.Change.Value);
 				this.ChangeAndCurrency = this.ChangeText + " " + this.Currency;

@@ -2028,13 +2028,73 @@
   <data name="NoContractsFound" xml:space="preserve">
     <value>No contracts found.</value>
   </data>
-  <data name="CreateContract" xml:space="preserve">
-    <value>Create Contract</value>
-  </data>
-  <data name="CreateToken" xml:space="preserve">
-    <value>Create Token</value>
+  <data name="NewToken" xml:space="preserve">
+    <value>New Token</value>
   </data>
   <data name="WhatIsAServiceProvider" xml:space="preserve">
     <value>What is a service provider?</value>
+  </data>
+  <data name="MyTokens" xml:space="preserve">
+    <value>My Tokens</value>
+  </data>
+  <data name="PresenceSubscriptionReceived1" xml:space="preserve">
+    <value>You have received a presence subscription from:</value>
+  </data>
+  <data name="PresenceSubscriptionReceived2" xml:space="preserve">
+    <value>If you accept this request, they can see your online presence.</value>
+  </data>
+  <data name="PresenceSubscriptionReceived3" xml:space="preserve">
+    <value>If you reject this request, they will be notified that you do not consent to this request.</value>
+  </data>
+  <data name="PresenceSubscriptionReceived4" xml:space="preserve">
+    <value>You can also ignore the request by closing the dialog without returning a response.</value>
+  </data>
+  <data name="PresenceSubscriptionReceived5" xml:space="preserve">
+    <value>What do you want to do?</value>
+  </data>
+  <data name="PresenceSubscriptionRequest" xml:space="preserve">
+    <value>Presence Subscription Request</value>
+  </data>
+  <data name="PresenceSubscriptionRequestSent" xml:space="preserve">
+    <value>A presence subscription request has been sent. When the recipient accepts the request, the contact status will be updated.</value>
+  </data>
+  <data name="PresenceUnsubscriptionRequestSent" xml:space="preserve">
+    <value>A request to unsibscribe from presence notification has been sent.</value>
+  </data>
+  <data name="RemoveSubscription" xml:space="preserve">
+    <value>Remove Subscription?</value>
+  </data>
+  <data name="RemoveSubscription1" xml:space="preserve">
+    <value>You still have an approved subscription request from:</value>
+  </data>
+  <data name="RemoveSubscription2" xml:space="preserve">
+    <value>Do you want to revoke this permission also?</value>
+  </data>
+  <data name="RemoveSubscriptionFrom1" xml:space="preserve">
+    <value>Do you want to remove the presence subscription from {0}?</value>
+  </data>
+  <data name="SubscribeTo" xml:space="preserve">
+    <value>Subscribe to</value>
+  </data>
+  <data name="SubscribeToPresence" xml:space="preserve">
+    <value>Subscribe to presence?</value>
+  </data>
+  <data name="SubscribeToPresence1" xml:space="preserve">
+    <value>Do you want to subscribe to the presence of:</value>
+  </data>
+  <data name="SubscribeToPresence2" xml:space="preserve">
+    <value>By subscribing to the presence of someone, and if they accept, you will be notified of their online presence.</value>
+  </data>
+  <data name="SubscribeToPresence3" xml:space="preserve">
+    <value>What do you want to do?</value>
+  </data>
+  <data name="Things" xml:space="preserve">
+    <value>Things</value>
+  </data>
+  <data name="ThingsDescription" xml:space="preserve">
+    <value>Below are all your things, and things in your contact book. Click on any to interact with that thing.</value>
+  </data>
+  <data name="UnsubscribeFrom" xml:space="preserve">
+    <value>Unsubscribe from</value>
   </data>
 </root>

@@ -16,17 +16,21 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.RequestPayment
 	/// <summary>
 	/// The view model to bind to for requesting a payment.
 	/// </summary>
-	public partial class RequestPaymentViewModel(RequestPaymentPage page) : QrXmppViewModel()
+	public partial class RequestPaymentViewModel : QrXmppViewModel
 	{
-		private readonly RequestPaymentPage page = page;
+		private readonly RequestPaymentPage page;
 
-		/// <inheritdoc/>
-		protected override async Task OnInitialize()
+		/// <summary>
+		/// The view model to bind to for requesting a payment.
+		/// </summary>
+		/// <param name="Page">Page reference</param>
+		/// <param name="Args">Navigation arguments</param>
+		public RequestPaymentViewModel(RequestPaymentPage Page, EDalerBalanceNavigationArgs? Args)
+			: base()
 		{
-			await base.OnInitialize();
+			this.page = Page;
 
-			if (ServiceRef.UiService.TryGetArgs(out EDalerBalanceNavigationArgs? Args))
-				this.Currency = Args.Balance?.Currency;
+			this.Currency = Args?.Balance?.Currency;
 
 			this.Amount = 0;
 			this.AmountText = string.Empty;
@@ -204,7 +208,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.RequestPayment
 					await Task.Delay(100);  // Otherwise, page doesn't show properly. (Underlying timing issue. TODO: Find better solution.)
 
 					ChatNavigationArgs ChatArgs = new(Contact.Contact);
-
 					await ServiceRef.UiService.GoToAsync(nameof(ChatPage), ChatArgs, BackMethod.Inherited, Contact.BareJid);
 				}
 			}
