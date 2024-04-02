@@ -161,7 +161,10 @@ namespace NeuroAccessMaui.Services.UI.QR
 
 			await ServiceRef.UiService.GoToAsync(nameof(ScanQrCodePage), NavigationArgs, BackMethod.Pop);
 
-			return await NavigationArgs.QrCodeScanned!.Task;
+			if (NavigationArgs.QrCodeScanned is null)
+				return null;
+			else
+				return await NavigationArgs.QrCodeScanned.Task;
 		}
 
 		/// <summary>
