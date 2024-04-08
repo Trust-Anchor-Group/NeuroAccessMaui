@@ -140,14 +140,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 
 			if (this.CanOpenScanned)
 			{
-				// This is a fix for a crash that occurs when the user scans a QR code before the page is fully loaded.
-				// This is a temporary fix until the root cause is found.
-				// The crash seem to occur because the page and the navigationArgs is null.
-				// TODO: Instead of Delay, check if the page is fully loaded / Make this event based? 
-				return Task.Delay(1000).ContinueWith((_) =>
-				{
-					return this.TrySetResultAndClosePage(this.ScannedText!.Trim());
-				});
+				return this.TrySetResultAndClosePage(this.ScannedText!.Trim());
 			}
 			this.countDownTimer?.Start();
 			this.OnBackgroundColorChanged();
