@@ -1,13 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using CoreGraphics;
 using Foundation;
-using Mopups.Services;
-using NeuroAccessMaui.Resources.Languages;
-using NeuroAccessMaui.Services;
-using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI;
 using UIKit;
-using Waher.Runtime.Inventory;
+
 
 namespace NeuroAccessMaui
 {
@@ -27,20 +23,26 @@ namespace NeuroAccessMaui
 			// https://github.com/dotnet/maui/issues/19478
 			this.RadioButtonTemplateWorkaround();
 
-			#warning Try removing this when the Mopups package is updated to 1.3.1
-			// TODO: This is a temporary workaround to fix the issue with the first popup causing a crash when sleeping the app
-			// This is a known issue with the Mopup library and might be fixed in 1.3.1
-			MopupService.Instance.Popped += ActivateWindowOnPopupPop;
-
 			return app;
 		}
 
-		private static void ActivateWindowOnPopupPop(object? Sender, EventArgs e)
+		// At the time of writing 8/4/2024
+		// There is a bug with the Mopups library that causes the app to crash because the windows lifecycle events are not properly managed.
+		// https://github.com/LuckyDucko/Mopups/issues/95
+		// https://github.com/dotnet/maui/issues/20408
+		// Here we handle those events manually to prevent the app from crashing.
+		// Might not be needed in future versions of MAUI/Mopups
+		public override void OnActivated(UIApplication application)
 		{
-			Current.OnActivated(UIApplication.SharedApplication);
-			MopupService.Instance.Popped -= ActivateWindowOnPopupPop;
+			(application.ConnectedScenes.AnyObject as UIWindowScene)?.Windows.FirstOrDefault()?.MakeKeyWindow();
+			base.OnActivated(application);
 		}
 
+		public override void OnResignActivation(UIApplication application)
+		{
+			(application.ConnectedScenes.AnyObject as UIWindowScene)?.Windows.FirstOrDefault()?.MakeKeyWindow();
+			base.OnResignActivation(application);
+		}
 		private void RadioButtonTemplateWorkaround()
 		{
 			Microsoft.Maui.Handlers.RadioButtonHandler.Mapper.AppendToMapping("TemplateWorkaround", (h, v) =>
