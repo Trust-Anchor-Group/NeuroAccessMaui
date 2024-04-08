@@ -22,7 +22,7 @@
 
 		<!-- Versions -->
 		<ApplicationDisplayVersion>2.0.2</ApplicationDisplayVersion>
-		<ApplicationVersion>17</ApplicationVersion>
+		<ApplicationVersion>27</ApplicationVersion>
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">13.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">13.1</SupportedOSPlatformVersion>
@@ -46,7 +46,8 @@
 		<CodesignKey>Apple Development: Peter Waher (WF549ZKBZ2)</CodesignKey>
 		<CodesignProvision>VS: com.trustanchorgroup.NeuroAccess Development</CodesignProvision>
 		<PublishTrimmed>True</PublishTrimmed>
-	  </PropertyGroup>
+		<RuntimeIdentifiers>ios-arm64</RuntimeIdentifiers>
+	</PropertyGroup>
   
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
