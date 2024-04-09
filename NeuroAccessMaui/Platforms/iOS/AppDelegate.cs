@@ -27,21 +27,35 @@ namespace NeuroAccessMaui
 		}
 
 		// At the time of writing 8/4/2024
-		// There is a bug with the Mopups library that causes the app to crash because the windows lifecycle events are not properly managed.
+		// There is a bug with the MAUI/Mopups library that causes the app to crash because the windows lifecycle events are not properly managed.
 		// https://github.com/LuckyDucko/Mopups/issues/95
 		// https://github.com/dotnet/maui/issues/20408
 		// Here we handle those events manually to prevent the app from crashing.
 		// Might not be needed in future versions of MAUI/Mopups
+		// By ensuring we have a KeyWindow when the app is activated or resigns solves this issue.
 		public override void OnActivated(UIApplication application)
 		{
-			(application.ConnectedScenes.AnyObject as UIWindowScene)?.Windows.FirstOrDefault()?.MakeKeyWindow();
+			this.EnsureKeyWindow();
 			base.OnActivated(application);
 		}
 
 		public override void OnResignActivation(UIApplication application)
 		{
-			(application.ConnectedScenes.AnyObject as UIWindowScene)?.Windows.FirstOrDefault()?.MakeKeyWindow();
+			this.EnsureKeyWindow();
 			base.OnResignActivation(application);
+		}
+
+		private void EnsureKeyWindow()
+		{
+			if (UIDevice.CurrentDevice.CheckSystemVersion(13, 0))
+			{
+				UIApplication.SharedApplication.ConnectedScenes
+					 .OfType<UIWindowScene>()
+					 .SelectMany(s => s.Windows)
+					 .FirstOrDefault()?.MakeKeyWindow();
+			}
+			else
+				UIApplication.SharedApplication.Windows.FirstOrDefault()?.MakeKeyWindow();
 		}
 		private void RadioButtonTemplateWorkaround()
 		{
