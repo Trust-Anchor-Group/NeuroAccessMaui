@@ -433,10 +433,10 @@
     <value>Inget ID valt.</value>
   </data>
   <data name="PeerReviewAccepted" xml:space="preserve">
-    <value>Referentgranskning accepterad</value>
+    <value>Attest accepterad</value>
   </data>
   <data name="PeerReviewRejected" xml:space="preserve">
-    <value>Referentgranskning avvisad</value>
+    <value>Attest avvisad</value>
   </data>
   <data name="SignaturePetitionDenied" xml:space="preserve">
     <value>Underskriftsansökan avslogs.</value>
@@ -457,16 +457,16 @@
     <value>En förfrågan har skickats till identitetens ägare. Om ägaren godkänner förfrågan kommer identitetsinformationen att visas på skärmen.</value>
   </data>
   <data name="APetitionHasBeenSentToYourPeer" xml:space="preserve">
-    <value>En förfrågan har skickats till din referent</value>
+    <value>En förfrågan har skickats till din attestant</value>
   </data>
   <data name="APeerReviewYouhaveRequestedHasBeenAccepted" xml:space="preserve">
-    <value>En referentgranskning som du begärde har godkänts.</value>
+    <value>En attest som du begärde har godkänts.</value>
   </data>
   <data name="APeerYouRequestedToReviewHasBeenRejectedDueToSignatureError" xml:space="preserve">
-    <value>En referentgranskning som du begärde har avvisats på grund av ett signaturfel.</value>
+    <value>En attest som du begärde har avvisats på grund av ett signaturfel.</value>
   </data>
   <data name="APeerYouRequestedToReviewHasRejected" xml:space="preserve">
-    <value>En referent som du bad att granska din ansökan har avslagit.</value>
+    <value>En attestant som du bad att granska din ansökan har avslagit.</value>
   </data>
   <data name="UnableToGetAccessToYourPrivateKeys" xml:space="preserve">
     <value>Programmet kunde inte få åtkomst till identitetens privata nycklar. Det innebär vanligtvis att identiteten har ändrats utanför appens omfång. Det kan också vara ett resultat av korrupt data. Du kan prova en av två saker: Tryck på Fortsätt-knappen för att fortsätta, utan de privata nycklarna. Du får tillgång till appen, men kan inte signera något. Du kan sedan välja att ansöka om en ny identitet från huvudmenyn, med nya privata nycklar. Du kan också försöka reparera databasen genom att trycka på knappen Reparera. I det senare fallet stängs appen, och nästa gång appen öppnas görs ett reparationsförsök.</value>
@@ -952,7 +952,7 @@
     <value>E-post</value>
   </data>
   <data name="FeaturedReviewers" xml:space="preserve">
-    <value>Utvalda Referenser</value>
+    <value>Utvalda attestanter</value>
   </data>
   <data name="FingerprintDescription" xml:space="preserve">
     <value>Skanna ditt fingeravtryck.</value>
@@ -985,7 +985,7 @@
     <value>Följande organisationsinformation har inkluderats i ansökan om organisations-ID.</value>
   </data>
   <data name="PeerReviewDescription" xml:space="preserve">
-    <value>Referent-granskning är aktiverad. På så sätt kan du be referenter (personer med redan godkända digitala ID:n) att granska din ansökan och godkänna den.</value>
+    <value>Attestering är aktiverad. På så sätt kan du efterfråga personer med godkända digitala ID:n och tjänster att granska din ansökan och godkänna den.</value>
   </data>
   <data name="PersonalId" xml:space="preserve">
     <value>Personligt ID</value>
@@ -1012,7 +1012,7 @@
     <value>Följande bilder har inkluderats i ansökan.</value>
   </data>
   <data name="QrPageTitleScanPeerId" xml:space="preserve">
-    <value>Skanna referentens ID</value>
+    <value>Skanna attestantens ID</value>
   </data>
   <data name="RevokeApplication" xml:space="preserve">
     <value>Återkalla ansökan</value>
@@ -1054,16 +1054,16 @@
     <value>Rikta kameran mot en QR-kod med någon av ovanstående symboler</value>
   </data>
   <data name="RequestReview" xml:space="preserve">
-    <value>Begär granskning</value>
+    <value>Begär attestering</value>
   </data>
   <data name="RequestReviewFromAPeer" xml:space="preserve">
-    <value>Be en annan användare att granska din ansökan.</value>
+    <value>Be en annan användare att attestera din ansökan.</value>
   </data>
   <data name="SelectServiceProviderPeerReview" xml:space="preserve">
-    <value>Välj vart du vill skicka granskningsbegäran.</value>
+    <value>Välj vart du vill skicka en attestbegäran.</value>
   </data>
   <data name="NrPeerReviews" xml:space="preserve">
-    <value>Antal referentgranskningar:</value>
+    <value>Antal attesteringar:</value>
   </data>
   <data name="BirthDate" xml:space="preserve">
     <value>Födelsedatum</value>
@@ -1096,7 +1096,7 @@
     <value>Autentisera och signera</value>
   </data>
   <data name="ConcludeReview" xml:space="preserve">
-    <value>Avsluta granskningen av</value>
+    <value>Avsluta granskning av</value>
   </data>
   <data name="HideInformation" xml:space="preserve">
     <value>Dölj information</value>
@@ -1105,10 +1105,10 @@
     <value>Not</value>
   </data>
   <data name="PeerReviewAcknowledgeResponsibilityText" xml:space="preserve">
-    <value>Jag bekräftar att jag är ansvarig för den information jag lämnar i denna granskning av den angivna informationen.</value>
+    <value>Jag bekräftar att jag är ansvarig för den information jag lämnar i denna attest av den angivna informationen.</value>
   </data>
   <data name="PeerReviewAuthenticationText" xml:space="preserve">
-    <value>Genom att autentisera mig och underteckna granskningen bekräftar jag härmed att identitetsinformationen som skickas av {0} är korrekt.</value>
+    <value>Genom att autentisera mig och signera denna granskning bekräftar jag härmed att identitetsinformationen som skickas av {0} är korrekt.</value>
   </data>
   <data name="PeerReviewBirthDateText" xml:space="preserve">
     <value>Födelsedatumet är korrekt.</value>
@@ -1294,7 +1294,7 @@
     <value>Förslag</value>
   </data>
   <data name="PurposeReviewContract" xml:space="preserve">
-    <value>Granska kontrak där du är en del.</value>
+    <value>Granska kontrakt där du är en del.</value>
   </data>
   <data name="RequestToAccessContract" xml:space="preserve">
     <value>Begär om att få tillgång till kontrakt</value>
