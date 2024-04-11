@@ -655,9 +655,14 @@ namespace NeuroAccessMaui.Services.UI
 			if (this.viewModelStack.Count == 0)
 				return;
 
-			BasePopupViewModel? vm = this.viewModelStack.Pop();
-			vm?.OnPop();
-			await MopupService.Instance.PopAsync();
+			this.viewModelStack.Pop()?.OnPop();
+			try {
+				await MopupService.Instance.PopAsync();
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
 		}
 
 		#endregion
