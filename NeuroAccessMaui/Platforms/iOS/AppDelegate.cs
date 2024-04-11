@@ -18,8 +18,8 @@ namespace NeuroAccessMaui
 			this.RegisterKeyBoardObserver();
 			MauiApp app = MauiProgram.CreateMauiApp();
 			#warning Remove this line when the issue with the RadioButton control template is fixed in a future version of MAUI https://github.com/dotnet/maui/issues/19478
-
-			// TODO: This is a temporary workaround to fix the issue with RadioButton control template making the buttons unclickable on IOS
+			
+			// TODO: This is a temporary workaround to fix the issue with custom RadioButton control templates not responding to taps on IOS
 			// https://github.com/dotnet/maui/issues/19478
 			this.RadioButtonTemplateWorkaround();
 
@@ -27,10 +27,9 @@ namespace NeuroAccessMaui
 		}
 
 		// At the time of writing 8/4/2024
-		// There is a bug with the MAUI/Mopups library that causes the app to crash because the windows lifecycle events are not properly managed.
+		// There is a bug with the MAUI/Mopups library that causes the app to crash because some of the apps lifecycle events are not forwarded properly
 		// https://github.com/LuckyDucko/Mopups/issues/95
 		// https://github.com/dotnet/maui/issues/20408
-		// Here we handle those events manually to prevent the app from crashing.
 		// Might not be needed in future versions of MAUI/Mopups
 		// By ensuring we have a KeyWindow when the app is activated or resigns solves this issue.
 		public override void OnActivated(UIApplication application)
