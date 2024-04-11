@@ -1,4 +1,6 @@
-﻿using NeuroAccessMaui.Resources.Languages;
+﻿using Mopups.Services;
+using NeuroAccessMaui.Resources.Languages;
+using Waher.Script.Operators.Membership;
 
 namespace NeuroAccessMaui.Services.UI.Tasks
 {
@@ -43,24 +45,26 @@ namespace NeuroAccessMaui.Services.UI.Tasks
 		{
 			bool Result;
 
+			Page? displayedPage = ServiceRef.UiService.PopupStack.LastOrDefault() ?? App.Current?.MainPage;
+
 			if (!string.IsNullOrWhiteSpace(this.Accept) && !string.IsNullOrWhiteSpace(this.Cancel))
 			{
-				Result = await (Application.Current?.MainPage?.DisplayAlert(this.Title, this.Message, this.Accept, this.Cancel) ??
+				Result = await (displayedPage?.DisplayAlert(this.Title, this.Message, this.Accept, this.Cancel) ??
 					Task.FromResult(false));
 			}
 			else if (!string.IsNullOrWhiteSpace(this.Cancel))
 			{
-				await (Application.Current?.MainPage?.DisplayAlert(this.Title, this.Message, this.Cancel) ?? Task.CompletedTask);
+				await (displayedPage?.DisplayAlert(this.Title, this.Message, this.Cancel) ?? Task.CompletedTask);
 				Result = true;
 			}
 			else if (!string.IsNullOrWhiteSpace(this.Accept))
 			{
-				await (Application.Current?.MainPage?.DisplayAlert(this.Title, this.Message, this.Accept) ?? Task.CompletedTask);
+				await (displayedPage?.DisplayAlert(this.Title, this.Message, this.Accept) ?? Task.CompletedTask);
 				Result = true;
 			}
 			else
 			{
-				await (Application.Current?.MainPage?.DisplayAlert(this.Title, this.Message,
+				await (displayedPage?.DisplayAlert(this.Title, this.Message,
 					ServiceRef.Localizer[nameof(AppResources.Ok)]) ?? Task.CompletedTask);
 
 				Result = true;
