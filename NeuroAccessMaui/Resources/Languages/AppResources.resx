@@ -175,7 +175,7 @@
     <value>A password must not contain the identity personal number.</value>
   </data>
   <data name="PasswordContainsAddress" xml:space="preserve">
-    <value>A password must not contain any word from the identity address lines.</value>
+    <value>A password must not contain any word from the identity address.</value>
   </data>
   <data name="PasswordContainsEMail" xml:space="preserve">
     <value>A password must not contain the identity e-mail address.</value>
@@ -232,13 +232,13 @@
     <value>Disconnected</value>
   </data>
   <data name="XmppState_Registering" xml:space="preserve">
-    <value>Registering with broker</value>
+    <value>Registering with Service Provider</value>
   </data>
   <data name="XmppState_RequestingSession" xml:space="preserve">
     <value>Requesting session</value>
   </data>
   <data name="XmppState_SettingPresence" xml:space="preserve">
-    <value>Setting presence</value>
+    <value>Registering presence</value>
   </data>
   <data name="XmppState_StartingEncryption" xml:space="preserve">
     <value>Encrypting connection</value>
@@ -250,13 +250,13 @@
     <value>Stream established</value>
   </data>
   <data name="YourLegalIdentity" xml:space="preserve">
-    <value>Your legal identity</value>
+    <value>Your identity</value>
   </data>
   <data name="YourLegalIdentityHasBeenCompromised" xml:space="preserve">
-    <value>Your legal identity has been marked as compromised. You have therefore been redirected to create a new account.</value>
+    <value>Your identity has been marked compromised. You have therefore been redirected to create a new account.</value>
   </data>
   <data name="YourLegalIdentityHasBeenObsoleted" xml:space="preserve">
-    <value>Your legal identity has been marked obsolete. You have therefore been redirected to create a new account.</value>
+    <value>Your identity has been marked obsolete. You have therefore been redirected to create a new account.</value>
   </data>
   <data name="ClientMessageAuthenticationTimeout" xml:space="preserve">
     <value>Response not returned within configured time.</value>
@@ -394,7 +394,7 @@
     <value>You have been invited to create an account on {0}. Press OK, and enter the name of the account you wish to create.</value>
   </data>
   <data name="ThisCodeCannotBeClaimedAtThisTime" xml:space="preserve">
-    <value>This code represents a Tag ID invitation, and cannot be claimed at this time.</value>
+    <value>This code represents a Neuro-Access invitation, and cannot be claimed at this time.</value>
   </data>
   <data name="DomainDoesNotFollowEncryptionPolicy" xml:space="preserve">
     <value>{0} does not follow the ubiquitous encryption policy</value>
@@ -427,10 +427,10 @@
     <value>Invalid TAG Signature URI.</value>
   </data>
   <data name="LegalIdNotApproved" xml:space="preserve">
-    <value>Legal ID not approved.</value>
+    <value>ID not approved.</value>
   </data>
   <data name="NoLegalIdSelected" xml:space="preserve">
-    <value>No Legal ID selected.</value>
+    <value>No ID selected.</value>
   </data>
   <data name="PeerReviewAccepted" xml:space="preserve">
     <value>Peer review accepted</value>
@@ -448,7 +448,7 @@
     <value>Petition to view contract was denied.</value>
   </data>
   <data name="PetitionToViewLegalIdentityWasDenied" xml:space="preserve">
-    <value>Petition to view legal identity was denied.</value>
+    <value>Petition to view identity was denied.</value>
   </data>
   <data name="APetitionHasBeenSentToTheContract" xml:space="preserve">
     <value>A petition has been sent to the parts of the contract. If any of the parts accepts the petition, the contract information will be displayed on the screen.</value>
@@ -469,7 +469,7 @@
     <value>A peer you requested to review your application, has rejected to approve it.</value>
   </data>
   <data name="UnableToGetAccessToYourPrivateKeys" xml:space="preserve">
-    <value>The application was unable to get access to the private keys of the identity. This typically means the identity has been changed outside of the scope of the app. It can also be a result of a corruption of data. You can try one of two things. Press the Continue button, to continue, without the private keys. You get access to the app, but cannot sign anything. You can then choose to reapply for a new identity from the main menu, with new private keys. You can also try to repair the database, by pressing the Repair button. In the latter case, the app is closed, and the next time the app is opened, a repair-procedure is first attempted.</value>
+    <value>The application was unable to get access to the private keys of the identity. This typically means the identity has been changed outside of the scope of the app. It can also be a result of a corruption of data. You can try one of two things: Press the Continue button, to continue, without the private keys. You get access to the app, but cannot sign anything. You can then choose to reapply for a new identity from the main menu, with new private keys. You can also try to repair the database, by pressing the Repair button. In the latter case, the app is closed, and the next time the app is opened, a repair-procedure is first attempted.</value>
   </data>
   <data name="FailedToClosePage" xml:space="preserve">
     <value>Failed to close page</value>
@@ -487,7 +487,7 @@
     <value>Please review all information above, and check the corresponding check boxes if the information is correct. This must be done before you can approve the information.</value>
   </data>
   <data name="YouNeedToCheckCarefullyReviewed" xml:space="preserve">
-    <value>You need to check the box you have carefully reviewed all corresponding information above.</value>
+    <value>You need to check the box if you have carefully reviewed all corresponding information above.</value>
   </data>
   <data name="YouNeedToApproveToAssociate" xml:space="preserve">
     <value>You need to approve to associate your personal information with the identity you review. When third parties review the information in the identity, they will have access to the identity of the reviewers, for transparency.</value>
@@ -496,22 +496,22 @@
     <value>Are you sure you want to remove this contact from your list of contacts?</value>
   </data>
   <data name="AreYouSureYouWantToReportYourLegalIdentityAsCompromized" xml:space="preserve">
-    <value>Are you sure you want to report your legal identity as compromised, stolen or hacked?</value>
+    <value>Are you sure you want to report your identity as compromised, stolen or hacked?</value>
   </data>
   <data name="AreYouSureYouWantToRevokeYourLegalIdentity" xml:space="preserve">
-    <value>Are you sure you want to revoke your legal identity from the application?</value>
+    <value>Are you sure you want to revoke your identity from the application?</value>
   </data>
   <data name="AreYouSureYouWantToTransferYourLegalIdentity" xml:space="preserve">
-    <value>Are you sure you want to transfer your legal identity from the application to another? The identity will be removed from this device once completed. Also make sure no-one else can see your screen during the process.</value>
+    <value>Are you sure you want to transfer your identity from this device to another? The identity will be removed from this device once completed. Also make sure no-one else can see your screen during the process.</value>
   </data>
   <data name="UnexpectedResponse" xml:space="preserve">
     <value>An unexpected response was received.</value>
   </data>
   <data name="FileUploadServiceNotFound" xml:space="preserve">
-    <value>No file upload service found on broker.</value>
+    <value>No file upload service found on the Service Provider.</value>
   </data>
   <data name="LegalServiceNotFound" xml:space="preserve">
-    <value>No legal service found on broker.</value>
+    <value>No legal service found on the Service Provider.</value>
   </data>
   <data name="FailedToBindViewModelForPage" xml:space="preserve">
     <value>Failed to bind viewmodel {0} for page {1}</value>
@@ -565,7 +565,7 @@
     <value>Create a password</value>
   </data>
   <data name="OnboardingDefinePasswordPageDetails" xml:space="preserve">
-    <value>To enhance the security of your Neuro-Identity and sensitive information, we recommend adding an extra layer of protection by creating a password</value>
+    <value>To enhance the security of your identity and sensitive information, you must start by creating a password</value>
   </data>
   <data name="AccountSectionTitle" xml:space="preserve">
     <value>Enter the account name</value>
@@ -577,28 +577,28 @@
     <value>Choose access purpose </value>
   </data>
   <data name="PurposeEducational" xml:space="preserve">
-    <value>Educational use</value>
+    <value>Education</value>
   </data>
   <data name="PurposeEducationalDescription" xml:space="preserve">
-    <value>This option allows you to use Tag ID for educational purposes. You can use the app to sign or access resources as a private person, either as an educator, or as a student. The account may be limited in time. The account may also be removed when no longer used. Check with the service provider for more information.</value>
+    <value>This option allows you to use Neuro-Access for educational purposes. You can use the app to sign or access resources as a private person, either as an educator, or as a student. The account may be limited in time. The account may also be removed when no longer used. Check with the service provider for more information.</value>
   </data>
   <data name="PurposeExperimental" xml:space="preserve">
-    <value>Experimental use</value>
+    <value>Development</value>
   </data>
   <data name="PurposeExperimentalDescription" xml:space="preserve">
-    <value>This option allows you to use Tag ID for experimental purposes. You can use the app to sign or access resources as a private person, with the goal of learning the technology and for what purposes it can be used. The account may be limited in time. The account may also be removed when no longer used. Check with the service provider for more information.</value>
+    <value>This option allows you to use Neuro-Access for development purposes. You can use the app to sign or access resources as a private person, with the goal of learning the technology and for what purposes it can be used. The account may be limited in time. The account may also be removed when no longer used. Check with the service provider for more information.</value>
   </data>
   <data name="PurposePersonal" xml:space="preserve">
     <value>Personal use</value>
   </data>
   <data name="PurposePersonalDescription" xml:space="preserve">
-    <value>This option allows you to use Tag ID for personal purposes. You can use the app to sign or access resources as a private person. Certain operations may incur costs, depending on the service provider you choose. Check with the service provider for more information.</value>
+    <value>This option allows you to use Neuro-Access for personal purposes. You can use the app to sign or access resources as a private person. Certain operations may incur costs, depending on the service provider you choose. Check with the service provider for more information.</value>
   </data>
   <data name="PurposeWork" xml:space="preserve">
-    <value>Work use</value>
+    <value>Professional use</value>
   </data>
   <data name="PurposeWorkDescription" xml:space="preserve">
-    <value>This option allows you to use Tag ID for work purposes. This includes work not for profit in organizations. You can use the app to sign or access resources as a representative of an organization. Certain operations may incur costs, depending on the service provider you choose. Check with the service provider for more information.</value>
+    <value>This option allows you to use Neuro-Access for professional purposes. This includes work in not-for-profit organizations. You can use the app to sign or access resources as a representative of an organization. Certain operations may incur costs, depending on the service provider you choose. Check with the service provider for more information.</value>
   </data>
   <data name="PhoneSectionTitle" xml:space="preserve">
     <value>Enter phone number</value>
@@ -616,7 +616,7 @@
     <value>Network seems to be missing. Please check your configuration and coverage and try again.</value>
   </data>
   <data name="SendEmailWarning" xml:space="preserve">
-    <value>A code has been sent in an e-mail message to your e-mail adderss. If you don't receive it, please also check your spam folder.</value>
+    <value>A code has been sent to your e-mail adderss. If you don't receive it, please also check your spam folder.</value>
   </data>
   <data name="SwitchingToTestPhoneNumberNotAllowed" xml:space="preserve">
     <value>Changing the phone number to a test one is not allowed.</value>
@@ -733,7 +733,7 @@
     <value>Last name(s)</value>
   </data>
   <data name="LegalId" xml:space="preserve">
-    <value>Legal ID</value>
+    <value>Identity</value>
   </data>
   <data name="MiddleNames" xml:space="preserve">
     <value>Middle name(s)</value>
@@ -823,7 +823,7 @@
     <value>Neuro-ID</value>
   </data>
   <data name="Technical" xml:space="preserve">
-    <value>Technical</value>
+    <value>Technical information</value>
   </data>
   <data name="Home" xml:space="preserve">
     <value>Home</value>
@@ -835,13 +835,13 @@
     <value>Allow recording (max 1 hour)</value>
   </data>
   <data name="AreYouSureYouWantToReportYourLegalIdentityAsCompromized1" xml:space="preserve">
-    <value>Are you sure you want to report your legal identity as compromised, stolen or hacked?</value>
+    <value>Are you sure you want to report your identity as compromised, stolen or hacked?</value>
   </data>
   <data name="AreYouSureYouWantToRevokeYourLegalIdentity1" xml:space="preserve">
-    <value>Are you sure you want to revoke your legal identity from the application?</value>
+    <value>Are you sure you want to revoke your identity from the device?</value>
   </data>
   <data name="AreYouSureYouWantToTransferYourLegalIdentity1" xml:space="preserve">
-    <value>Are you sure you want to transfer your legal identity from the application to another? The identity will be removed from this device once completed. Also make sure no-one else can see your screen during the process.</value>
+    <value>Are you sure you want to transfer your identity from the device to another? The identity will be removed from this device once completed. Also make sure no-one else can see your screen during the process.</value>
   </data>
   <data name="Change" xml:space="preserve">
     <value>Change</value>
@@ -880,7 +880,7 @@
     <value>Light mode</value>
   </data>
   <data name="ProhibitRecording" xml:space="preserve">
-    <value>Prohibit recording</value>
+    <value>Prohibit screen recording</value>
   </data>
   <data name="ReportAsCompromized" xml:space="preserve">
     <value>Report as Compromised</value>
@@ -928,7 +928,7 @@
     <value>Are you sure you want to revoke the current ID application?</value>
   </data>
   <data name="AreYouSureYouWantToSendThisIdApplication" xml:space="preserve">
-    <value>Are you sure you want to send this ID Application? Sending an ID application will obsolete your current ID.</value>
+    <value>Are you sure you want to send a new ID Application? Sending an ID application will obsolete your current ID.</value>
   </data>
   <data name="ConsentDescription" xml:space="preserve">
     <value>I consent to the processing of the personal information provided in this application, for the purposes of validating and approving the application.</value>
@@ -985,7 +985,7 @@
     <value>The following organizational information has been included in the application for an Organizational ID.</value>
   </data>
   <data name="PeerReviewDescription" xml:space="preserve">
-    <value>Peer reviews are enabled. This allows you to request peers (people with already approved digital IDs) to review your application and collaboratively approve it.</value>
+    <value>Peer reviews are enabled. This allows you to request peers (people with already approved digital IDs) to review your application and approve it.</value>
   </data>
   <data name="PersonalId" xml:space="preserve">
     <value>Personal ID</value>
@@ -1012,7 +1012,7 @@
     <value>The following images have been included in the application.</value>
   </data>
   <data name="QrPageTitleScanPeerId" xml:space="preserve">
-    <value>Scan ID of peer</value>
+    <value>Scan the peers ID</value>
   </data>
   <data name="RevokeApplication" xml:space="preserve">
     <value>Revoke Application</value>
@@ -1306,7 +1306,7 @@
     <value>seconds</value>
   </data>
   <data name="SelectedContactCannotBeAdded" xml:space="preserve">
-    <value>The selected contact cannot be added. It does not have a Legal ID registered.</value>
+    <value>The selected contact cannot be added. It does not have an identity registered.</value>
   </data>
   <data name="Send" xml:space="preserve">
     <value>Send</value>
@@ -1408,7 +1408,7 @@
     <value>Message from:</value>
   </data>
   <data name="NeuroFeaturesServiceNotFound" xml:space="preserve">
-    <value>No Neuro-Features service found on broker.</value>
+    <value>No Neuro-Features service found on the Service Provider.</value>
   </data>
   <data name="PetitionFrom" xml:space="preserve">
     <value>Petition from:</value>
@@ -1441,7 +1441,7 @@
     <value>No control service found.</value>
   </data>
   <data name="EDalerServiceNotFound" xml:space="preserve">
-    <value>No eDaler service found on broker.</value>
+    <value>No eDaler service found on the Service Provider.</value>
   </data>
   <data name="GettingOptionsCancelled" xml:space="preserve">
     <value>Getting available options was cancelled.</value>
@@ -1465,7 +1465,7 @@
     <value>No personal eventing service found.</value>
   </data>
   <data name="ProvisioningServiceNotFound" xml:space="preserve">
-    <value>No provisioning service found on broker.</value>
+    <value>No provisioning service found on the Service Provider.</value>
   </data>
   <data name="PushNotificationServiceNotFound" xml:space="preserve">
     <value>No push-notification service found.</value>
@@ -1486,7 +1486,7 @@
     <value>Response to signature request</value>
   </data>
   <data name="ThingRegistryServiceNotFound" xml:space="preserve">
-    <value>No thing registry service found on broker.</value>
+    <value>No thing registry service found on the Service Provider.</value>
   </data>
   <data name="UnableToGetListOfMyDevices" xml:space="preserve">
     <value>Unable to get list of my devices.</value>
@@ -1765,7 +1765,7 @@
     <value>Taking a photo is not supported on this device</value>
   </data>
   <data name="TheSpecifiedCodeIsNotALegalIdentity" xml:space="preserve">
-    <value>You need to scan a different type of QR Code, one that represents a legal identity</value>
+    <value>You need to scan a different type of QR Code, one that represents a Neuro-Access identity</value>
   </data>
   <data name="ThingDisowned" xml:space="preserve">
     <value>This has been successfully disowned. It can now be claimed by a new owner.</value>
@@ -1882,7 +1882,7 @@
     <value>Access to Identity</value>
   </data>
   <data name="PetitionIdentityInformationText" xml:space="preserve">
-    <value>A petition for the personal data of your legal identity has been received. Review the information below and choose how you wish to respond.</value>
+    <value>A petition for the personal data of your identity has been received. Review the information below and choose how you wish to respond.</value>
   </data>
   <data name="PetitionSignature" xml:space="preserve">
     <value>Signature requested</value>
