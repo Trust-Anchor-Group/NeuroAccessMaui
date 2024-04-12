@@ -21,7 +21,7 @@
 									 HeightRequest="{Binding IconHeight}" WidthRequest="{Binding IconWidth}"
 									 MinimumHeightRequest="{Binding IconHeight}" MinimumWidthRequest="{Binding IconWidth}"/>
 						</Border>
-						<Label Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" LineBreakMode="CharacterWrap"
+						<Label Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" LineBreakMode="WordWrap"
 							    TextType="Text" Text="{Binding Path=Name}" Style="{StaticResource InfoLabel}"/>
 					</Grid>
 				</Frame>

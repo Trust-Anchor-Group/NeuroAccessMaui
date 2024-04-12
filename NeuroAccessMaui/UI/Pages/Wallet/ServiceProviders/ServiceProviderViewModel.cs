@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using NeuroAccessMaui.Services;
 using IServiceProvider = Waher.Networking.XMPP.Contracts.IServiceProvider;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
@@ -72,6 +73,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 			}
 		}
 
+		private bool hasRun = false;
+
 		/// <summary>
 		/// Icon URL Source
 		/// </summary>
@@ -79,20 +82,57 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 		{
 			get
 			{
-				if (this.iconSource is null)
+				if (this.iconSource == null && !this.hasRun)
 				{
-					if (this.IconUrl.StartsWith("resource://", StringComparison.Ordinal))
-						this.iconSource = ImageSource.FromResource(this.IconUrl[11..]);
-					else if (this.IconUrl.StartsWith("file://", StringComparison.Ordinal))
+					//Load the icon
+					Task.Run(this.UpdateIconUrlSourceAsync);
+					this.hasRun = true;
+				}
+				return this.iconSource;
+			}
+		}
+
+		public async Task UpdateIconUrlSourceAsync()
+		{
+			if (this.iconSource != null) return; // Already loaded or loading
+
+			try
+			{
+				//Check if URI is SVG
+				bool isSvg = this.IconUrl.EndsWith(".svg", StringComparison.OrdinalIgnoreCase);
+
+				if (this.IconUrl.StartsWith("resource://", StringComparison.Ordinal))
+					this.iconSource = ImageSource.FromResource(this.IconUrl[11..]);
+				else if (this.IconUrl.StartsWith("file://", StringComparison.Ordinal))
+				{
+					if(isSvg)
+						this.iconSource = this.IconUrl[7..^4];
+					else
 						this.iconSource = this.IconUrl[7..];
-					else if (Uri.TryCreate(this.IconUrl, UriKind.Absolute, out Uri? ParsedUri))
+				}
+				else if (Uri.TryCreate(this.IconUrl, UriKind.Absolute, out Uri? ParsedUri))
+				{
+					if(isSvg)
+						this.iconSource = await ServiceRef.UiService.ConvertSvgUriToImageSource(this.IconUrl);
+					else
 						this.iconSource = ImageSource.FromUri(ParsedUri);
+				}
+				else
+				{
+					//if it is an SVG, remove the extension
+					//Maui does not inheritly support SVGs, but can implicitly convert them to png
+					if(isSvg)
+						this.iconSource = ImageSource.FromFile(this.IconUrl[..^4]);
 					else
 						this.iconSource = ImageSource.FromFile(this.IconUrl);
 				}
-
-				return this.iconSource;
 			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message);
+			}
+
+			MainThread.BeginInvokeOnMainThread(() => this.OnPropertyChanged(nameof(this.IconUrlSource)));
 		}
 
 		/// <summary>
