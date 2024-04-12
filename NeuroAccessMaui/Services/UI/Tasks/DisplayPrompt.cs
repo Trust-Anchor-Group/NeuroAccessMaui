@@ -43,17 +43,19 @@ namespace NeuroAccessMaui.Services.UI.Tasks
 		{
 			string? Result;
 
-			if (Application.Current?.MainPage is null)
+			Page? displayedPage = ServiceRef.UiService.PopupStack.LastOrDefault() ?? App.Current?.MainPage;
+
+			if (displayedPage is null)
 				Result = null;
 			else if (!string.IsNullOrWhiteSpace(this.Accept) && !string.IsNullOrWhiteSpace(this.Cancel))
-				Result = await Application.Current.MainPage.DisplayPromptAsync(this.Title, this.Message, this.Accept, this.Cancel);
+				Result = await displayedPage.DisplayPromptAsync(this.Title, this.Message, this.Accept, this.Cancel);
 			else if (!string.IsNullOrWhiteSpace(this.Cancel))
-				Result = await Application.Current.MainPage.DisplayPromptAsync(this.Title, this.Message, this.Cancel);
+				Result = await displayedPage.DisplayPromptAsync(this.Title, this.Message, this.Cancel);
 			else if (!string.IsNullOrWhiteSpace(this.Accept))
-				Result = await Application.Current.MainPage.DisplayPromptAsync(this.Title, this.Message, this.Accept);
+				Result = await displayedPage.DisplayPromptAsync(this.Title, this.Message, this.Accept);
 			else
 			{
-				Result = await Application.Current.MainPage.DisplayPromptAsync(this.Title, this.Message,
+				Result = await displayedPage.DisplayPromptAsync(this.Title, this.Message,
 					ServiceRef.Localizer[nameof(AppResources.Ok)]);
 			}
 
