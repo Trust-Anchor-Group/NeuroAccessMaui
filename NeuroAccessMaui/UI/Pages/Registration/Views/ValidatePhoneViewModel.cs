@@ -218,7 +218,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 					return;
 				}
 
-				string FullPhoneNumber = $"+{this.SelectedCountry.DialCode}{this.PhoneNumber}";
+				string FullPhoneNumber = $"+{this.SelectedCountry.DialCode}{this.PhoneNumber.TrimStart('0')}";
 
 				object SendResult = await InternetContent.PostAsync(
 					new Uri("https://" + Constants.Domains.IdDomain + "/ID/SendVerificationMessage.ws"),
