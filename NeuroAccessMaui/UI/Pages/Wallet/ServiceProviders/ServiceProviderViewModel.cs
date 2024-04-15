@@ -129,7 +129,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.Message);
+				ServiceRef.LogService.LogException(ex);
 			}
 
 			MainThread.BeginInvokeOnMainThread(() => this.OnPropertyChanged(nameof(this.IconUrlSource)));
