@@ -34,20 +34,24 @@
 
 							<!-- Apply for Personal ID -->
 							<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding ApplyPersonalIdCommand}">
-								<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True">
+								<Frame Style="{StaticResource ClickableFrameSubSet}" InputTransparent="True">
 									<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
-										<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize PersonalId}" InputTransparent="True"/>
-										<Label Style="{StaticResource KeyLabel}" Text="{l:Localize PersonalIdDescription}" InputTransparent="True"/>
+										<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize PersonalId}" InputTransparent="True"
+												 TextColor="{AppThemeBinding Light={StaticResource EnabledFilledButtonForegroundLight}, Dark={StaticResource EnabledFilledButtonForegroundDark}}"/>
+										<Label Style="{StaticResource KeyLabel}" Text="{l:Localize PersonalIdDescription}" InputTransparent="True"
+											    TextColor="{AppThemeBinding Light={StaticResource EnabledFilledButtonForegroundLight}, Dark={StaticResource EnabledFilledButtonForegroundDark}}"/>
 									</VerticalStackLayout>
 								</Frame>
 							</controls:TemplatedButton>
 
 							<!-- Apply for Organizational ID -->
 							<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding ApplyOrganizationalIdCommand}">
-								<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True">
+								<Frame Style="{StaticResource ClickableFrameSubSet}" InputTransparent="True">
 									<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
-										<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize OrganizationalId}" InputTransparent="True"/>
-										<Label Style="{StaticResource KeyLabel}" Text="{l:Localize OrganizationalIdDescription}" InputTransparent="True"/>
+										<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize OrganizationalId}" InputTransparent="True"
+												 TextColor="{AppThemeBinding Light={StaticResource EnabledFilledButtonForegroundLight}, Dark={StaticResource EnabledFilledButtonForegroundDark}}"/>
+										<Label Style="{StaticResource KeyLabel}" Text="{l:Localize OrganizationalIdDescription}" InputTransparent="True"
+											    TextColor="{AppThemeBinding Light={StaticResource EnabledFilledButtonForegroundLight}, Dark={StaticResource EnabledFilledButtonForegroundDark}}"/>
 									</VerticalStackLayout>
 								</Frame>
 							</controls:TemplatedButton>
@@ -59,10 +63,12 @@
 
 							<!-- View Identity Application -->
 							<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding ViewIdApplicationCommand}">
-								<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True">
+								<Frame Style="{StaticResource ClickableFrameSubSet}" InputTransparent="True">
 									<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
-										<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize ViewIdApplication}" InputTransparent="True"/>
-										<Label Style="{StaticResource KeyLabel}" Text="{l:Localize ViewIdApplicationDescription}" InputTransparent="True"/>
+										<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize ViewIdApplication}" InputTransparent="True"
+												 TextColor="{AppThemeBinding Light={StaticResource EnabledFilledButtonForegroundLight}, Dark={StaticResource EnabledFilledButtonForegroundDark}}"/>
+										<Label Style="{StaticResource KeyLabel}" Text="{l:Localize ViewIdApplicationDescription}" InputTransparent="True"
+												 TextColor="{AppThemeBinding Light={StaticResource EnabledFilledButtonForegroundLight}, Dark={StaticResource EnabledFilledButtonForegroundDark}}"/>
 									</VerticalStackLayout>
 								</Frame>
 							</controls:TemplatedButton>

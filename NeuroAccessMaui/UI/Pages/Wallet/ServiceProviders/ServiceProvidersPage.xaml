@@ -14,7 +14,7 @@
 	<VisualElement.Resources>
 		<DataTemplate x:Key="ShowImageAndText" x:DataType="viewmodel:ServiceProviderViewModel">
 			<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding SelectServiceProviderCommand}">
-				<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True">
+				<Frame Style="{StaticResource ClickableFrameSubSet}" InputTransparent="True">
 					<Grid ColumnDefinitions="auto,*" RowDefinitions="auto">
 						<Border Grid.Column="0" Style="{StaticResource OutlinedImageButtonBorder}" Padding="0">
 							<Image Source="{Binding IconUrlSource}" Aspect="AspectFill"
@@ -22,14 +22,15 @@
 									 MinimumHeightRequest="{Binding IconHeight}" MinimumWidthRequest="{Binding IconWidth}"/>
 						</Border>
 						<Label Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" LineBreakMode="CharacterWrap"
-							    TextType="Text" Text="{Binding Path=Name}" Style="{StaticResource InfoLabel}"/>
+							    TextType="Text" Text="{Binding Path=Name}" Style="{StaticResource InfoLabel}"
+								 TextColor="{AppThemeBinding Light={StaticResource EnabledFilledButtonForegroundLight}, Dark={StaticResource EnabledFilledButtonForegroundDark}}"/>
 					</Grid>
 				</Frame>
 			</controls:TemplatedButton>
 		</DataTemplate>
 		<DataTemplate x:Key="ShowImage" x:DataType="viewmodel:ServiceProviderViewModel">
 			<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding SelectServiceProviderCommand}">
-				<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True" HorizontalOptions="Center">
+				<Frame Style="{StaticResource ClickableFrameSubSet}" InputTransparent="True" HorizontalOptions="Center">
 					<Border Grid.Column="0" Style="{StaticResource OutlinedImageButtonBorder}" Padding="0">
 						<Image Source="{Binding IconUrlSource}" Aspect="AspectFill"
 								 HeightRequest="{Binding IconHeight}" WidthRequest="{Binding IconWidth}" 
@@ -40,16 +41,17 @@
 		</DataTemplate>
 		<DataTemplate x:Key="ShowText" x:DataType="viewmodel:ServiceProviderViewModel">
 			<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding SelectServiceProviderCommand}">
-				<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True" HorizontalOptions="Center">
+				<Frame Style="{StaticResource ClickableFrameSubSet}" InputTransparent="True" HorizontalOptions="Center">
 					<Label HorizontalOptions="Center" VerticalOptions="Center" LineBreakMode="CharacterWrap"
 							 TextType="Text" Text="{Binding Path=Name}" Style="{StaticResource InfoLabel}"
-							 HeightRequest="150" MinimumHeightRequest="150"/>
+							 HeightRequest="150" MinimumHeightRequest="150"
+							 TextColor="{AppThemeBinding Light={StaticResource EnabledFilledButtonForegroundLight}, Dark={StaticResource EnabledFilledButtonForegroundDark}}"/>
 				</Frame>
 			</controls:TemplatedButton>
 		</DataTemplate>
 		<DataTemplate x:Key="ShowNothing" x:DataType="viewmodel:ServiceProviderViewModel">
 			<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding SelectServiceProviderCommand}">
-				<Frame Style="{StaticResource FrameSubSet}" InputTransparent="True"/>
+				<Frame Style="{StaticResource ClickableFrameSubSet}" InputTransparent="True"/>
 			</controls:TemplatedButton>
 		</DataTemplate>
 		<viewmodel:ServiceTemplateSelector x:Key="TemplateSelector"

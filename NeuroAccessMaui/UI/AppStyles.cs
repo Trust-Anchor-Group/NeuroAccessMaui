@@ -26,6 +26,7 @@ namespace NeuroAccessMaui.UI
 		private static Style? filledTextButton;
 		private static Style? frameSet;
 		private static Style? frameSubSet;
+		private static Style? clickableFrameSubSet;
 		private static Style? regularCompositeEntry;
 		private static Style? regularCompositeEntryBorder;
 		private static Style? unicodeCharacterButton;
@@ -257,6 +258,18 @@ namespace NeuroAccessMaui.UI
 			{
 				frameSubSet ??= TryGetResource<Style>("FrameSubSet");
 				return frameSubSet!;
+			}
+		}
+
+		/// <summary>
+		/// Style for clickable frame subsets.
+		/// </summary>
+		public static Style ClickableFrameSubSet
+		{
+			get
+			{
+				clickableFrameSubSet ??= TryGetResource<Style>("ClickableFrameSubSet");
+				return clickableFrameSubSet!;
 			}
 		}
 
