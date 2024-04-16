@@ -217,8 +217,10 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 						ServiceRef.Localizer[nameof(AppResources.NetworkSeemsToBeMissing)]);
 					return;
 				}
+				string FullPhoneNumber = $"+{this.SelectedCountry.DialCode}{this.PhoneNumber}";
 
-				string FullPhoneNumber = $"+{this.SelectedCountry.DialCode}{this.PhoneNumber.TrimStart('0')}";
+				if(this.SelectedCountry.DialCode == "46") //If swedish phone nr
+					FullPhoneNumber = $"+{this.SelectedCountry.DialCode}{this.PhoneNumber.TrimStart('0')}";
 
 				object SendResult = await InternetContent.PostAsync(
 					new Uri("https://" + Constants.Domains.IdDomain + "/ID/SendVerificationMessage.ws"),
