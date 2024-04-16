@@ -38,6 +38,43 @@
 				<Label Style="{StaticResource PageTitleLabel}" Text="{l:Localize PersonalId}" IsVisible="{Binding Organizational, Converter={StaticResource InvertedBoolConverter}}"/>
 				<Label Style="{StaticResource PageTitleLabel}" Text="{l:Localize OrganizationalId}" IsVisible="{Binding Organizational}"/>
 
+
+				<!-- Application Sent -->
+				<Frame Style="{StaticResource FrameSet}" IsVisible="{Binding ApplicationSent}">
+					<Grid>
+						<VerticalStackLayout>
+							<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize Application}"/>
+							<Label Style="{StaticResource InfoLabel}" Text="{l:Localize IdApplicationSentDescription}"/>
+							<Label Style="{StaticResource InfoLabel}" Text="{l:Localize PeerReviewDescription}" IsVisible="{Binding PeerReview}"/>
+							<Label Style="{StaticResource InfoLabel}" IsVisible="{Binding PeerReview}">
+								<Label.FormattedText>
+									<FormattedString>
+										<Span Text="{l:Localize NrPeerReviews}"/>
+										<Span Text=" "/>
+										<Span Text="{Binding NrReviews}" FontAttributes="Bold"/>
+										<Span Text=" / "/>
+										<Span Text="{Binding NrReviewers}"/>
+									</FormattedString>
+								</Label.FormattedText>
+							</Label>
+
+							<ActivityIndicator VerticalOptions="Center" HorizontalOptions="Center"
+													 IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" />
+
+							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+								<controls:TextButton Command="{Binding ScanQrCodeCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+															LabelData="{l:Localize QrScanCode}" IsVisible="{Binding PeerReview}" />
+
+								<controls:TextButton Command="{Binding RequestReviewCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+															LabelData="{l:Localize FeaturedReviewers}" IsVisible="{Binding FeaturedPeerReviewers}" />
+
+								<controls:TextButton Command="{Binding RevokeApplicationCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+															LabelData="{l:Localize RevokeApplication}" />
+							</VerticalStackLayout>
+						</VerticalStackLayout>
+					</Grid>
+				</Frame>
+
 				<!-- Photos -->
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
@@ -442,10 +479,10 @@
 					</VerticalStackLayout>
 				</Frame>
 
-				<!-- Application -->
-				<Frame Style="{StaticResource FrameSet}">
+				<!-- Apply -->
+				<Frame Style="{StaticResource FrameSet}" IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
 					<Grid>
-						<VerticalStackLayout Spacing="{StaticResource LargeSpacing}" IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
+						<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
 							<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize Application}"/>
 							<Label Style="{StaticResource InfoLabel}" Text="{l:Localize IdApplicationDescription}"/>
 
@@ -475,37 +512,6 @@
 														IsVisible="{Binding IsApplying, Converter={StaticResource InvertedBoolConverter}}"
 														LabelData="{l:Localize SendApplication}" />
 
-						</VerticalStackLayout>
-
-						<VerticalStackLayout IsVisible="{Binding ApplicationSent}">
-							<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize Application}"/>
-							<Label Style="{StaticResource InfoLabel}" Text="{l:Localize IdApplicationSentDescription}"/>
-							<Label Style="{StaticResource InfoLabel}" Text="{l:Localize PeerReviewDescription}" IsVisible="{Binding PeerReview}"/>
-							<Label Style="{StaticResource InfoLabel}" IsVisible="{Binding PeerReview}">
-								<Label.FormattedText>
-									<FormattedString>
-										<Span Text="{l:Localize NrPeerReviews}"/>
-										<Span Text=" "/>
-										<Span Text="{Binding NrReviews}" FontAttributes="Bold"/>
-										<Span Text=" / "/>
-										<Span Text="{Binding NrReviewers}"/>
-									</FormattedString>
-								</Label.FormattedText>
-							</Label>
-
-							<ActivityIndicator VerticalOptions="Center" HorizontalOptions="Center"
-													 IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" />
-
-							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
-								<controls:TextButton Command="{Binding ScanQrCodeCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
-															LabelData="{l:Localize QrScanCode}" IsVisible="{Binding PeerReview}" />
-
-								<controls:TextButton Command="{Binding RequestReviewCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
-															LabelData="{l:Localize FeaturedReviewers}" IsVisible="{Binding FeaturedPeerReviewers}" />
-
-								<controls:TextButton Command="{Binding RevokeApplicationCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
-															LabelData="{l:Localize RevokeApplication}" />
-							</VerticalStackLayout>
 						</VerticalStackLayout>
 					</Grid>
 				</Frame>
