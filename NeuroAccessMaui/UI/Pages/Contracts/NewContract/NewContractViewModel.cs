@@ -946,7 +946,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					return;
 				}
 
-				if (!await App.AuthenticateUser(true))
+				if (!await App.AuthenticateUser(AuthenticationPurpose.ProposeContract, true))
 					return;
 
 				Created = await ServiceRef.XmppService.CreateContract(this.templateId, [.. Parts], this.template.Parameters,

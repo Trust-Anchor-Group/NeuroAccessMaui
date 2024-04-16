@@ -225,7 +225,7 @@ namespace NeuroAccessMaui.Services.Contracts
 
 					if (Identity is not null)
 					{
-						if (!await App.AuthenticateUser(true))
+						if (!await App.AuthenticateUser(AuthenticationPurpose.PetitionForSignatureReceived, true))
 							return;
 
 						await ServiceRef.UiService.GoToAsync(nameof(PetitionSignaturePage), new PetitionSignatureNavigationArgs(
@@ -640,7 +640,7 @@ namespace NeuroAccessMaui.Services.Contracts
 
 			string IdRef = ServiceRef.TagProfile.LegalIdentity?.Id ?? string.Empty;
 
-			if (!await App.AuthenticateUser())
+			if (!await App.AuthenticateUser(AuthenticationPurpose.TagSignature))
 				return;
 
 			StringBuilder Xml = new();

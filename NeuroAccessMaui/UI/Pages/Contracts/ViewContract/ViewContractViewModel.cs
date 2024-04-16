@@ -739,7 +739,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 					if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToSignAs), Role]))
 						return;
 
-					if (!await App.AuthenticateUser(true))
+					if (!await App.AuthenticateUser(AuthenticationPurpose.SignContract, true))
 						return;
 
 					this.skipContractEvent = DateTime.Now;
@@ -879,7 +879,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToObsoleteContract)]))
 					return;
 
-				if (!await App.AuthenticateUser(true))
+				if (!await App.AuthenticateUser(AuthenticationPurpose.ObsoleteContract, true))
 					return;
 
 				this.skipContractEvent = DateTime.Now;
@@ -910,7 +910,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToDeleteContract)]))
 					return;
 
-				if (!await App.AuthenticateUser(true))
+				if (!await App.AuthenticateUser(AuthenticationPurpose.DeleteContract, true))
 					return;
 
 				this.skipContractEvent = DateTime.Now;

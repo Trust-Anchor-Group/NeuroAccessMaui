@@ -640,7 +640,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToSendThisIdApplication)]))
 				return;
 
-			if (!await App.AuthenticateUser(true))
+			if (!await App.AuthenticateUser(AuthenticationPurpose.SignApplication, true))
 				return;
 
 			try
@@ -700,7 +700,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToRevokeTheCurrentIdApplication)]))
 				return;
 
-			if (!await App.AuthenticateUser(true))
+			if (!await App.AuthenticateUser(AuthenticationPurpose.RevokeApplication, true))
 				return;
 
 			try

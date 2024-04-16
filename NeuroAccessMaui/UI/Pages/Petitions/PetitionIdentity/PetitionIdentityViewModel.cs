@@ -129,7 +129,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity
 		[RelayCommand]
 		private async Task Accept()
 		{
-			if (!await App.AuthenticateUser())
+			if (!await App.AuthenticateUser(AuthenticationPurpose.PetitionIdentity))
 				return;
 
 			bool Succeeded = await ServiceRef.NetworkService.TryRequest(() =>

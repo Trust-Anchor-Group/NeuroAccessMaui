@@ -116,7 +116,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 				if (ServiceRef.TagProfile.IdentityApplication is null)
 					return;
 
-				if (!await App.AuthenticateUser())
+				if (!await App.AuthenticateUser(AuthenticationPurpose.ViewId))
 					return;
 
 				await ServiceRef.UiService.GoToAsync(nameof(ApplyIdPage));
@@ -133,7 +133,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 		{
 			try
 			{
-				if (!await App.AuthenticateUser())
+				if (!await App.AuthenticateUser(AuthenticationPurpose.ApplyForPersonalId))
 					return;
 
 				await ServiceRef.UiService.GoToAsync(nameof(ApplyIdPage), new ApplyIdNavigationArgs(true, false));
@@ -150,7 +150,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 		{
 			try
 			{
-				if (!await App.AuthenticateUser())
+				if (!await App.AuthenticateUser(AuthenticationPurpose.ApplyForOrganizationalId))
 					return;
 
 				await ServiceRef.UiService.GoToAsync(nameof(ApplyIdPage), new ApplyIdNavigationArgs(false, false));
