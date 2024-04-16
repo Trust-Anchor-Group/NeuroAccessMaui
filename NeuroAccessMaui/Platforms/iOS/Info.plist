@@ -38,6 +38,8 @@
 	<string>Neuro-Access needs access the NFC reader, to be able to read NFC tags containing references to IDs, contracts, tokens, things, etc.</string>
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>Neuro-Access needs access to Bluetooth, allowing you to connect with other Neuro-Access apps, and exchange information with other users.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Neuro-Access needs access to Face ID to authenticate you in order to protect your digital ID.</string>
 	<key>CFBundleLocalizations</key>
 	<array>
 		<string>en</string>
@@ -54,7 +56,7 @@
 		<string>ru</string>
 	</array>
 	<key>CFBundleShortVersionString</key>
-	<string>2.0.2</string>
+	<string>2.0.4</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleURLTypes</key>
