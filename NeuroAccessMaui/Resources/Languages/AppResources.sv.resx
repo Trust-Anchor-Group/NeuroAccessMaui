@@ -913,7 +913,7 @@
     <value>Autentiseringsmetod</value>
   </data>
   <data name="Fingerprint" xml:space="preserve">
-    <value>Fingeravtryck</value>
+    <value>Biometrisk</value>
   </data>
   <data name="Password" xml:space="preserve">
     <value>Lösenord</value>
@@ -955,7 +955,7 @@
     <value>Utvalda attestanter</value>
   </data>
   <data name="FingerprintDescription" xml:space="preserve">
-    <value>Skanna ditt fingeravtryck.</value>
+    <value>Skanna för att autentisera.</value>
   </data>
   <data name="FingerprintTitle" xml:space="preserve">
     <value>Autentisering krävs</value>
