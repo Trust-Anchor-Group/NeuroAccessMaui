@@ -20,7 +20,7 @@
 				<Thickness Left="{StaticResource LargeSpacing}" Top="{StaticResource LargeSpacing}" Right="{StaticResource LargeSpacing}" />
 			</Grid.Padding>
 
-			<controls:ImageButton IsVisible="{Binding CanGoToPrev}" Command="{Binding GoToPrevCommand}" Style="{StaticResource ImageOnlyButton}" />
+			<controls:ImageButton IsVisible="{Binding CanGoToPrev}" Command="{Binding GoToPrevCommand}" Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
 			<controls:TemplatedButton x:Name="LanguageButton" VerticalOptions="Start" HorizontalOptions="End" Command="{Binding ChangeLanguageCommand}">
 				<VerticalStackLayout>
