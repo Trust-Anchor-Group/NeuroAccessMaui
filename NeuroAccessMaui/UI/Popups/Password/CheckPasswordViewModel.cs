@@ -2,13 +2,14 @@
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.UI.Pages.Registration.Views;
 
 namespace NeuroAccessMaui.UI.Popups.Password
 {
 	/// <summary>
 	/// View model for page letting the user enter a password to be verified with the password defined by the user earlier.
 	/// </summary>
-	public partial class CheckPasswordViewModel : ReturningPopupViewModel<string>
+	public partial class CheckPasswordViewModel(AuthenticationPurpose purpose) : ReturningPopupViewModel<string>
 	{
 		/// <summary>
 		/// Password text entry
@@ -21,6 +22,11 @@ namespace NeuroAccessMaui.UI.Popups.Password
 		/// If password can be entered
 		/// </summary>
 		public bool CanEnterPassword => !string.IsNullOrEmpty(this.PasswordText);
+
+		/// <summary>
+		/// The purpose of the authentication request.
+		/// </summary>
+		public AuthenticationPurpose PurposeInfo { get ; } = purpose;
 
 		/// <summary>
 		/// Enters the password provided by the user.
