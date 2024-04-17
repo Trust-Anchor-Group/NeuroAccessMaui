@@ -430,7 +430,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 					return;
 				}
 
-				if (!await App.AuthenticateUser(true))
+				if (!await App.AuthenticateUser(AuthenticationPurpose.DeleteRules, true))
 					return;
 
 				TaskCompletionSource<bool> Result = new();
@@ -480,7 +480,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 					return;
 				}
 
-				if (!await App.AuthenticateUser(true))
+				if (!await App.AuthenticateUser(AuthenticationPurpose.DisownThing, true))
 					return;
 
 				(bool Succeeded, bool Done) = await ServiceRef.NetworkService.TryRequest(() =>
@@ -527,7 +527,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 
 			try
 			{
-				if (!await App.AuthenticateUser())
+				if (!await App.AuthenticateUser(AuthenticationPurpose.AddToListOfThings))
 					return;
 
 				RosterItem? Item = ServiceRef.XmppService.GetRosterItem(this.thing.BareJid);
@@ -577,7 +577,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 
 			try
 			{
-				if (!await App.AuthenticateUser())
+				if (!await App.AuthenticateUser(AuthenticationPurpose.RemoveFromListOfThings))
 					return;
 
 				if (this.InContacts)

@@ -10,7 +10,6 @@ namespace NeuroAccessMaui.UI.Popups.Password
 	/// </summary>
 	public partial class CheckPasswordViewModel : ReturningPopupViewModel<string>
 	{
-
 		/// <summary>
 		/// Password text entry
 		/// </summary>

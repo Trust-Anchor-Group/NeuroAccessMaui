@@ -96,7 +96,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 		[RelayCommand]
 		private async Task Accept()
 		{
-			if (!await App.AuthenticateUser(true))
+			if (!await App.AuthenticateUser(AuthenticationPurpose.AcceptPetitionRequest, true))
 				return;
 
 			bool succeeded = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.SendPetitionContractResponse(

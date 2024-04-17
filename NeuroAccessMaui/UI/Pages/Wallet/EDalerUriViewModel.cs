@@ -414,7 +414,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				if (this.Uri is null)
 					return;
 
-				if (!await App.AuthenticateUser(true))
+				if (!await App.AuthenticateUser(AuthenticationPurpose.AcceptEDalerUri, true))
 					return;
 
 				(bool succeeded, Transaction? Transaction) = await ServiceRef.NetworkService.TryRequest(
@@ -452,7 +452,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 					return;
 				}
 
-				if (!await App.AuthenticateUser(true))
+				if (!await App.AuthenticateUser(AuthenticationPurpose.PayOnline, true))
 					return;
 
 				string Uri;
@@ -536,7 +536,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				return;
 			}
 
-			if (!await App.AuthenticateUser(true))
+			if (!await App.AuthenticateUser(AuthenticationPurpose.PayOffline, true))
 				return;
 
 			try
@@ -615,7 +615,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 
 			try
 			{
-				if (!await App.AuthenticateUser())
+				if (!await App.AuthenticateUser(AuthenticationPurpose.SubmitEDalerUri))
 					return;
 
 				(bool succeeded, Transaction? Transaction) = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.SendEDalerUri(this.Uri));
@@ -645,7 +645,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 			if (this.Uri is null)
 				return;
 
-			if (!await App.AuthenticateUser(true))
+			if (!await App.AuthenticateUser(AuthenticationPurpose.ShowUriAsQr, true))
 				return;
 
 			try
@@ -686,7 +686,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				return;
 			}
 
-			if (!await App.AuthenticateUser(true))
+			if (!await App.AuthenticateUser(AuthenticationPurpose.SendPayment, true))
 				return;
 
 			try

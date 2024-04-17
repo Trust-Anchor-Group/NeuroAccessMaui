@@ -388,7 +388,7 @@ namespace NeuroAccessMaui
 			if (!this.initCompleted.Wait(60000))
 				throw new Exception("Initialization did not complete in time.");
 
-			if (!await AuthenticateUser())
+			if (!await AuthenticateUser(AuthenticationPurpose.Start))
 				await Stop();
 		}
 
@@ -408,7 +408,7 @@ namespace NeuroAccessMaui
 		{
 			await this.DoResume(false);
 
-			if (!await AuthenticateUser())
+			if (!await AuthenticateUser(AuthenticationPurpose.Resume))
 				await Stop();
 		}
 
@@ -926,18 +926,19 @@ namespace NeuroAccessMaui
 		/// <summary>
 		/// Asks the user to input its password. Password is verified before being returned.
 		/// </summary>
+		/// <param name="Purpose">Purpose for requesting the user to authenticate itself.</param>
 		/// <returns>Password, if the user has provided the correct password. Empty string, if password is not configured,
 		/// null if operation is cancelled.</returns>
-		public static async Task<string?> InputPassword()
+		public static async Task<string?> InputPassword(AuthenticationPurpose Purpose)
 		{
 			ITagProfile Profile = ServiceRef.TagProfile;
 			if (!Profile.HasLocalPassword)
 				return string.Empty;
 
-			return await InputPassword(Profile);
+			return await InputPassword(Purpose, Profile);
 		}
 
-		private static async Task<string?> InputPassword(ITagProfile Profile)
+		private static async Task<string?> InputPassword(AuthenticationPurpose Purpose, ITagProfile Profile)
 		{
 			displayedPasswordPopup = true;
 
@@ -945,6 +946,9 @@ namespace NeuroAccessMaui
 			{
 				if (!Profile.HasLocalPassword)
 					return string.Empty;
+
+				// TODO: Populate view model with purpose
+				// TODO: Display localized purpose string.
 
 				string? result = await ServiceRef.UiService.PushAsync<CheckPasswordPopup, CheckPasswordViewModel, string>();
 				await CheckUserBlocking();
@@ -963,25 +967,27 @@ namespace NeuroAccessMaui
 		/// <summary>
 		/// Authenticates the user using the configured authentication method.
 		/// </summary>
+		/// <param name="Purpose">Purpose for requesting the user to authenticate itself.</param>
+		/// <param name="Force">If authentication is strictly required.</param>
 		/// <returns>If the user has been successfully authenticated.</returns>
-		public static Task<bool> AuthenticateUser(bool Force = false)
+		public static Task<bool> AuthenticateUser(AuthenticationPurpose Purpose, bool Force = false)
 		{
 			if (MainThread.IsMainThread)
-				return AuthenticateUserMainThread(Force);
+				return AuthenticateUserMainThread(Purpose, Force);
 			else
 			{
 				TaskCompletionSource<bool> Result = new();
 
 				MainThread.BeginInvokeOnMainThread(async () =>
 				{
-					Result.TrySetResult(await AuthenticateUserMainThread(Force));
+					Result.TrySetResult(await AuthenticateUserMainThread(Purpose, Force));
 				});
 
 				return Result.Task;
 			}
 		}
 
-		private static async Task<bool> AuthenticateUserMainThread(bool Force = false)
+		private static async Task<bool> AuthenticateUserMainThread(AuthenticationPurpose Purpose, bool Force = false)
 		{
 			bool NeedToVerifyPassword = IsInactivitySafeIntervalPassed();
 			if (!Force && !NeedToVerifyPassword)
@@ -996,7 +1002,7 @@ namespace NeuroAccessMaui
 					if (displayedPasswordPopup)
 						return false;
 
-					return await InputPassword(ServiceRef.TagProfile) is not null;
+					return await InputPassword(Purpose, ServiceRef.TagProfile) is not null;
 
 				case AuthenticationMethod.Fingerprint:
 					if (!ServiceRef.PlatformSpecific.SupportsFingerprintAuthentication)

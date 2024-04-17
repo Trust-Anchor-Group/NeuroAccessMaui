@@ -199,7 +199,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 							this.AuthenticationMethod != this.ApprovedAuthenticationMethod &&
 							Enum.TryParse(this.AuthenticationMethod, out AuthenticationMethod AuthenticationMethod))
 						{
-							if (await App.AuthenticateUser(true))
+							if (await App.AuthenticateUser(AuthenticationPurpose.ChangeAuthenticationMethod, true))
 							{
 								ServiceRef.TagProfile.AuthenticationMethod = AuthenticationMethod;
 								this.ApprovedAuthenticationMethod = this.AuthenticationMethod;
@@ -263,7 +263,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			if (!ServiceRef.PlatformSpecific.CanProhibitScreenCapture)
 				return;
 
-			if (!await App.AuthenticateUser())
+			if (!await App.AuthenticateUser(AuthenticationPurpose.PermitScreenCapture))
 				return;
 
 			ServiceRef.PlatformSpecific.ProhibitScreenCapture = false;
@@ -274,7 +274,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			if (!ServiceRef.PlatformSpecific.CanProhibitScreenCapture)
 				return;
 
-			if (!await App.AuthenticateUser())
+			if (!await App.AuthenticateUser(AuthenticationPurpose.ProhibitScreenCapture))
 				return;
 
 			ServiceRef.PlatformSpecific.ProhibitScreenCapture = true;
@@ -300,7 +300,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 				if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToRevokeYourLegalIdentity)]))
 					return;
 
-				if (!await App.AuthenticateUser(true))
+				if (!await App.AuthenticateUser(AuthenticationPurpose.RevokeIdentity, true))
 					return;
 
 				(bool succeeded, LegalIdentity? RevokedIdentity) = await ServiceRef.NetworkService.TryRequest(
@@ -330,7 +330,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 				if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToReportYourLegalIdentityAsCompromized)]))
 					return;
 
-				if (!await App.AuthenticateUser(true))
+				if (!await App.AuthenticateUser(AuthenticationPurpose.ReportAsCompromized, true))
 					return;
 
 				(bool succeeded, LegalIdentity? CompromisedIdentity) = await ServiceRef.NetworkService.TryRequest(
@@ -357,7 +357,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 
 			try
 			{
-				string? Password = await App.InputPassword();
+				string? Password = await App.InputPassword(AuthenticationPurpose.TransferIdentity);
 				if (Password is null)
 					return;
 
