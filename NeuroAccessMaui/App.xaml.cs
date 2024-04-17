@@ -941,16 +941,15 @@ namespace NeuroAccessMaui
 		private static async Task<string?> InputPassword(AuthenticationPurpose Purpose, ITagProfile Profile)
 		{
 			displayedPasswordPopup = true;
-
 			try
 			{
 				if (!Profile.HasLocalPassword)
 					return string.Empty;
 
-				// TODO: Populate view model with purpose
 				// TODO: Display localized purpose string.
+				CheckPasswordViewModel ViewModel = new(Purpose);
 
-				string? result = await ServiceRef.UiService.PushAsync<CheckPasswordPopup, CheckPasswordViewModel, string>();
+				string? result = await ServiceRef.UiService.PushAsync<CheckPasswordPopup, CheckPasswordViewModel, string>(ViewModel);
 				await CheckUserBlocking();
 				return result;
 			}
