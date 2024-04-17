@@ -33,12 +33,14 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			await this.SetDomainName();
 
 			ServiceRef.TagProfile.Changed += this.TagProfile_Changed;
+			LocalizationManager.Current.PropertyChanged += this.Localization_Changed;
 		}
 
 		/// <inheritdoc />
 		protected override async Task OnDispose()
 		{
 			ServiceRef.TagProfile.Changed -= this.TagProfile_Changed;
+			LocalizationManager.Current.PropertyChanged -= this.Localization_Changed;
 
 			await base.OnDispose();
 		}
@@ -132,6 +134,11 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		{
 			if (this.DomainName != ServiceRef.TagProfile.Domain)
 				await this.SetDomainName();
+		}
+
+		private async void Localization_Changed(object? Sender, PropertyChangedEventArgs e)
+		{
+			await this.SetDomainName();
 		}
 
 		private async Task SetDomainName()
