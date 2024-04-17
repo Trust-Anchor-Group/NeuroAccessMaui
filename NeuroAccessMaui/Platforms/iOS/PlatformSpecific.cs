@@ -1,4 +1,4 @@
-﻿using Foundation;
+using Foundation;
 using LocalAuthentication;
 using NeuroAccessMaui.Services.Push;
 using ObjCRuntime;
@@ -66,7 +66,56 @@ namespace NeuroAccessMaui.Services
 		/// </summary>
 		public string? GetDeviceId()
 		{
-			return UIDevice.CurrentDevice.IdentifierForVendor.ToString();
+
+			string ServiceName = AppInfo.PackageName; 
+			const string AccountName = "DeviceIdentifier"; //Basically the key
+
+			// Define the search criteria for the SecRecord
+			SecRecord searchRecord = new (SecKind.GenericPassword)
+			{
+				Service = ServiceName,
+				Account = AccountName
+			};
+
+			// Try to retrieve the existing device identifier from the Keychain
+			SecRecord? existingRecord = SecKeyChain.QueryAsRecord(searchRecord, out SecStatusCode resultCode);
+
+			if (resultCode == SecStatusCode.Success && existingRecord is not null && existingRecord?.ValueData is not null)
+			{
+				// If the record exists, return the identifier
+				return existingRecord.ValueData.ToString(NSStringEncoding.UTF8);
+			}
+			else
+			{
+				// No existing record found, create a new device identifier
+				string identifier = UIDevice.CurrentDevice.IdentifierForVendor.ToString();
+
+				// Define the SecRecord for storing the new identifier
+				SecRecord newRecord = new (SecKind.GenericPassword)
+				{
+					Service = ServiceName,
+					Account = AccountName,
+					Label = "Persistent Device Identifier for Vendor",
+					ValueData = NSData.FromString(identifier),
+					Accessible = SecAccessible.WhenUnlockedThisDeviceOnly,
+					Synchronizable = false
+				};
+
+				// Sanity check: Remove any existing record, which should not exist
+				SecKeyChain.Remove(newRecord);
+
+				// Add the new item to the Keychain
+				SecStatusCode addResult = SecKeyChain.Add(newRecord);
+				if (addResult == SecStatusCode.Success)
+				{
+					return identifier; // Return the newly stored identifier
+				}
+				else
+				{
+					// Should we handle this another way?
+					return identifier;
+				}
+        	}
 		}
 
 		/// <summary>
