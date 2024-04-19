@@ -6,7 +6,8 @@ using System.Diagnostics.CodeAnalysis;
 using UIKit;
 using Waher.Events;
 using Waher.Networking.XMPP.Push;
-
+using Security;
+using System.Text;
 namespace NeuroAccessMaui.Services
 {
 	/// <summary>
@@ -62,60 +63,84 @@ namespace NeuroAccessMaui.Services
 		}
 
 		/// <summary>
-		/// Gets the ID of the device
+		/// Gets A persistent ID of the device
+		/// Fetches the device ID from the keychain, or creates a new one if it doesn't exist.
+		/// Errors results in an alert and the application closing.
 		/// </summary>
 		public string? GetDeviceId()
 		{
-
-			string ServiceName = AppInfo.PackageName; 
-			const string AccountName = "DeviceIdentifier"; //Basically the key
-
-			// Define the search criteria for the SecRecord
-			SecRecord searchRecord = new (SecKind.GenericPassword)
+			try 
 			{
-				Service = ServiceName,
-				Account = AccountName
-			};
+				string ServiceName = AppInfo.PackageName; 
+				const string AccountName = "DeviceIdentifier"; //Basically the key
 
-			// Try to retrieve the existing device identifier from the Keychain
-			SecRecord? existingRecord = SecKeyChain.QueryAsRecord(searchRecord, out SecStatusCode resultCode);
-
-			if (resultCode == SecStatusCode.Success && existingRecord is not null && existingRecord?.ValueData is not null)
-			{
-				// If the record exists, return the identifier
-				return existingRecord.ValueData.ToString(NSStringEncoding.UTF8);
-			}
-			else
-			{
-				// No existing record found, create a new device identifier
-				string identifier = UIDevice.CurrentDevice.IdentifierForVendor.ToString();
-
-				// Define the SecRecord for storing the new identifier
-				SecRecord newRecord = new (SecKind.GenericPassword)
+				// Define the search criteria for the SecRecord
+				SecRecord searchRecord = new (SecKind.GenericPassword)
 				{
 					Service = ServiceName,
-					Account = AccountName,
-					Label = "Persistent Device Identifier for Vendor",
-					ValueData = NSData.FromString(identifier),
-					Accessible = SecAccessible.WhenUnlockedThisDeviceOnly,
-					Synchronizable = false
+					Account = AccountName
 				};
 
-				// Sanity check: Remove any existing record, which should not exist
-				SecKeyChain.Remove(newRecord);
-
-				// Add the new item to the Keychain
-				SecStatusCode addResult = SecKeyChain.Add(newRecord);
-				if (addResult == SecStatusCode.Success)
+				// Try to retrieve the existing device identifier from the Keychain
+				SecRecord? existingRecord = SecKeyChain.QueryAsRecord(searchRecord, out SecStatusCode resultCode);
+				if (resultCode == SecStatusCode.Success && existingRecord is not null && existingRecord?.ValueData is not null)
 				{
-					return identifier; // Return the newly stored identifier
+					// If the record exists, return the identifier
+					return existingRecord.ValueData.ToString(NSStringEncoding.UTF8);
+				}
+				else if(resultCode == SecStatusCode.ItemNotFound)
+				{
+					// No existing record found, create a new device identifier
+					string identifier = UIDevice.CurrentDevice.IdentifierForVendor.ToString();
+
+					// Define the SecRecord for storing the new identifier
+					SecRecord newRecord = new (SecKind.GenericPassword)
+					{
+						Service = ServiceName,
+						Account = AccountName,
+						Label = "Persistent Device Identifier for Vendor",
+						ValueData = NSData.FromString(identifier),
+						Accessible = SecAccessible.WhenUnlockedThisDeviceOnly,
+						Synchronizable = false
+					};
+
+					// Sanity check: Remove any existing record, which should not exist
+					SecKeyChain.Remove(newRecord);
+
+					// Add the new item to the Keychain
+					SecStatusCode addResult = SecKeyChain.Add(newRecord);
+					if (addResult == SecStatusCode.Success)
+						return identifier; // Return the newly stored identifier
+						
+					throw new Exception($"Unable to store device identifier in Keychain - Code: {addResult} - Description: {SecStatusCodeExtensions.GetStatusDescription(addResult)}");
 				}
 				else
+					throw new Exception($"Unable to retrieve device identifier from Keychain - Code: {resultCode} - Description: {SecStatusCodeExtensions.GetStatusDescription(resultCode)}");
+			}
+			catch(Exception ex)
+			{
+				try
 				{
-					// Should we handle this another way?
-					return identifier;
+					///TODO: Show a message to the user
+					///TODO: The problem is that the app has not loaded the UI yet, so we can't show an alert.
+
+					StringBuilder msg = new();
+
+					msg.Append(ex.Message);
+					msg.AppendLine();
+					msg.AppendLine("```");
+					msg.AppendLine(ex.StackTrace);
+					msg.AppendLine("```");
+
+					App.SendAlert(msg.ToString(), "text/plain").Wait();
+					this.CloseApplication().Wait();
 				}
-        	}
+				catch (Exception)
+				{
+					Environment.Exit(0);
+				}
+			}	
+			return null;
 		}
 
 		/// <summary>
