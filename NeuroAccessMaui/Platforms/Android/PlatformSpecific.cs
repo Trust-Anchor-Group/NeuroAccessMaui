@@ -141,10 +141,22 @@ namespace NeuroAccessMaui.Services
 			ContentResolver? ContentResolver = Android.App.Application.Context.ContentResolver;
 
 			if (ContentResolver is not null)
+			{
 				return Android.Provider.Settings.Secure.GetString(ContentResolver, Android.Provider.Settings.Secure.AndroidId);
+			}
+			try 
+			{ 
+				App.SendAlert("Unable to get AndroidID, ContentResolver was null", "text/plain").Wait();
+				this.CloseApplication().Wait();
+			} 
+			catch (Exception) 
+			{
+				System.Environment.Exit(0);
+			}
 
 			return null;
 		}
+
 
 		/// <summary>
 		/// Closes the application
