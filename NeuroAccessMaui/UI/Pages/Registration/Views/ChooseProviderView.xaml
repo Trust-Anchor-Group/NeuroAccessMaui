@@ -102,6 +102,7 @@
 						VerticalOptions="Center"
 						FontFamily="SpaceGroteskMedium"
 						FontSize="24"
+						LineBreakMode="WordWrap"
 						Text="{x:Binding LocalizedName}"
 						TextColor="{AppThemeBinding Light={StaticResource AccentForegroundLight},
 													Dark={StaticResource AccentForegroundDark}}" />

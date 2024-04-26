@@ -110,6 +110,9 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<AuthenticateView, EmptyViewModel>();
 			Builder.Services.AddTransient<ApprovedView, EmptyViewModel>();
 
+			Builder.Services.AddTransient<PetitionPeerReviewNavigationArgs>();
+
+
 			// Registration
 			Builder.Services.AddTransient<RegistrationPage, RegistrationViewModel>();
 			Builder.Services.AddTransient<LoadingView, LoadingViewModel>();

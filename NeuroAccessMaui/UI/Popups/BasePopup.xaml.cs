@@ -1,4 +1,4 @@
-﻿using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services;
 
 namespace NeuroAccessMaui.UI.Popups
 {
@@ -59,7 +59,7 @@ namespace NeuroAccessMaui.UI.Popups
 		/// Called when the back button on the client is pressed
 		/// </summary>
 		/// <remarks>All derived methods should return base.OnBackgroundClicked()</remarks>
-		/// <returns>True</returns>
+		/// <returns>True, in order to signal for mopups that this is handled manually</returns>
 		protected override bool OnBackButtonPressed()
 		{
 			ServiceRef.UiService.PopAsync();
@@ -70,7 +70,7 @@ namespace NeuroAccessMaui.UI.Popups
 		/// Called when the background is pressed.
 		/// </summary>
 		/// <remarks>All derived methods should return base.OnBackgroundClicked()</remarks>
-		/// <returns>True</returns>
+		/// <returns>True, in order to signal for mopups that this is handled manually</returns>
 		protected override bool OnBackgroundClicked()
 		{
 			ServiceRef.UiService.PopAsync();

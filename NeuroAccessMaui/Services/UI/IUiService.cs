@@ -1,4 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
+using Mopups.Pages;
 using NeuroAccessMaui.UI.Popups;
 using Waher.Runtime.Inventory;
 
@@ -118,6 +120,11 @@ namespace NeuroAccessMaui.Services.UI
 		#endregion
 
 		#region Popups
+		
+		/// <summary>
+		/// The current stack of popup pages.
+		/// </summary>
+		public ReadOnlyCollection<PopupPage?> PopupStack { get; }
 
 		/// <summary>
 		/// Pushes a popup onto the current view
@@ -227,5 +234,15 @@ namespace NeuroAccessMaui.Services.UI
 		Task PopAsync();
 
 		#endregion
+	
+	    #region Images
+		/// <summary>
+		/// Fetches a SVG and converts it to a PNG image source.
+		/// </summary>
+		/// <param name="svgUri">A string uri to the svg resource</param>
+		/// <returns>An image Source representing the SVG file or null</returns>
+		public Task<ImageSource?> ConvertSvgUriToImageSource(string svgUri);
+
+		#endregion		
 	}
 }

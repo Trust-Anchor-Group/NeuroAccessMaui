@@ -156,7 +156,7 @@
 								<RowDefinition Height="{Binding OrgArea, Converter={converters:AutoIfNonEmpty}}" />
 								<RowDefinition Height="{Binding OrgCity, Converter={converters:AutoIfNonEmpty}}" />
 								<RowDefinition Height="{Binding OrgRegion, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding OrgCountry, Converter={converters:AutoIfNonEmpty}}" />
+								<RowDefinition Height="{Binding OrgCountryCode, Converter={converters:AutoIfNonEmpty}}" />
 							</Grid.RowDefinitions>
 
 							<Label Grid.Row="0" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize OrgName}" />

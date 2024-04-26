@@ -913,7 +913,7 @@
     <value>Autentiseringsmetod</value>
   </data>
   <data name="Fingerprint" xml:space="preserve">
-    <value>Fingeravtryck</value>
+    <value>Biometrisk</value>
   </data>
   <data name="Password" xml:space="preserve">
     <value>Lösenord</value>
@@ -955,7 +955,7 @@
     <value>Utvalda attestanter</value>
   </data>
   <data name="FingerprintDescription" xml:space="preserve">
-    <value>Skanna ditt fingeravtryck.</value>
+    <value>Skanna för att autentisera.</value>
   </data>
   <data name="FingerprintTitle" xml:space="preserve">
     <value>Autentisering krävs</value>
@@ -994,10 +994,10 @@
     <value>Ansök om ett nytt digitalt Personligt ID. ID:t kommer att innehålla din personliga information och kan användas för att validera din personliga identitet, samt få tillgång till tjänster som kräver en verifierad personlig identitet.</value>
   </data>
   <data name="PersonalInformationDescription" xml:space="preserve">
-    <value>Följande personuppgifter kommer att ingå i ansökan om ett Personligt ID.</value>
+    <value>Följande personuppgifter kommer att ingå i ansökan om ett personligt ID.</value>
   </data>
   <data name="PersonalInformationSentDescription" xml:space="preserve">
-    <value>Följande personuppgifter har inkluderats i ansökan om personbeteckning.</value>
+    <value>Följande personuppgifter har inkluderats i ansökan om ett personlig ID.</value>
   </data>
   <data name="PhoneNr" xml:space="preserve">
     <value>Telefonnummer</value>

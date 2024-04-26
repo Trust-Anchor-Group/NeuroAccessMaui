@@ -913,7 +913,7 @@
     <value>Authentication method</value>
   </data>
   <data name="Fingerprint" xml:space="preserve">
-    <value>Fingerprint</value>
+    <value>Biometric</value>
   </data>
   <data name="Password" xml:space="preserve">
     <value>Password</value>
@@ -955,7 +955,7 @@
     <value>Featured Reviewers</value>
   </data>
   <data name="FingerprintDescription" xml:space="preserve">
-    <value>Scan your finger print.</value>
+    <value>Scan to authenticate</value>
   </data>
   <data name="FingerprintTitle" xml:space="preserve">
     <value>Authentication Required</value>

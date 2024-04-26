@@ -13,6 +13,8 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		/// </summary>
 		public PetitionPeerReviewPage()
 		{
+			this.InitializeComponent();
+			
 			PetitionPeerReviewViewModel ViewModel = new(ServiceRef.UiService.PopLatestArgs<PetitionPeerReviewNavigationArgs>());
 
 			ViewModel.AddView(ReviewStep.Photo, this.PhotoView);
@@ -27,7 +29,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 			ViewModel.AddView(ReviewStep.Authenticate, this.AuthenticateView);
 			ViewModel.AddView(ReviewStep.Approved, this.ApprovedView);
 
-			this.InitializeComponent();
+			
 			this.ContentPageModel = ViewModel;
 
 			StateContainer.SetCurrentState(this.GridWithAnimation, nameof(ReviewStep.Photo));

@@ -29,7 +29,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 				this.Description = Args.Description;
 
 				foreach (IServiceProvider ServiceProvider in Args.ServiceProviders)
+				{
 					this.ServiceProviders.Add(new ServiceProviderViewModel(ServiceProvider, defaultIconHeight, this));
+				}
 			}
 		}
 
@@ -112,7 +114,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 		/// <param name="ServiceProvider">Service provider selected.</param>
 		internal async Task SelectServiceProvider(ServiceProviderViewModel ServiceProvider)
 		{
-			await this.TrySetResultAndClosePage(ServiceProvider.ServiceProvider);
+			await MainThread.InvokeOnMainThreadAsync(async () =>
+			{
+				await this.TrySetResultAndClosePage(ServiceProvider.ServiceProvider);
+			});
 		}
 	}
 }

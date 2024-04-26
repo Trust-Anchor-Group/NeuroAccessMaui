@@ -2,13 +2,16 @@
 
 using IdApp.Cv;
 using IdApp.Cv.ColorModels;
+using Mopups.Pages;
 using Mopups.Services;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.UI.Tasks;
 using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.UI.Popups;
 using SkiaSharp;
+using Svg.Skia;
 using System.Collections.Concurrent;
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Waher.Events;
@@ -26,7 +29,7 @@ namespace NeuroAccessMaui.Services.UI
 	{
 		private readonly Dictionary<string, NavigationArgs> navigationArgsMap = [];
 		private readonly ConcurrentQueue<UiTask> taskQueue = new();
-		private readonly Stack<BasePopupViewModel?> viewModelStack = new();
+		private readonly Stack<PopupPage?> popupStack = new();
 		private NavigationArgs? latestArguments = null;
 		private bool isExecutingUiTasks = false;
 		private bool isNavigating = false;
@@ -546,6 +549,11 @@ namespace NeuroAccessMaui.Services.UI
 		#endregion
 
 		#region Popups
+		
+		/// <summary>
+		/// The current stack of popup pages.
+		/// </summary>
+		public ReadOnlyCollection<PopupPage?> PopupStack => new(this.popupStack.ToList());
 
 		/// <inheritdoc/>
 		public Task PushAsync<TPage, TViewModel>() where TPage : BasePopup, new() where TViewModel : BasePopupViewModel, new()
@@ -553,7 +561,8 @@ namespace NeuroAccessMaui.Services.UI
 			TPage page = new();
 			TViewModel viewModel = new();
 			page.ViewModel = viewModel;
-			this.viewModelStack.Push(viewModel);
+			
+			this.popupStack.Push(page);
 			return MopupService.Instance.PushAsync(page);
 		}
 
@@ -561,7 +570,8 @@ namespace NeuroAccessMaui.Services.UI
 		public Task PushAsync<TPage, TViewModel>(TPage page, TViewModel viewModel) where TPage : BasePopup where TViewModel : BasePopupViewModel
 		{
 			page.ViewModel = viewModel;
-			this.viewModelStack.Push(viewModel);
+			
+			this.popupStack.Push(page);
 			return MopupService.Instance.PushAsync(page);
 		}
 
@@ -570,7 +580,8 @@ namespace NeuroAccessMaui.Services.UI
 		{
 			TViewModel viewModel = new();
 			page.ViewModel = viewModel;
-			this.viewModelStack.Push(viewModel);
+			
+			this.popupStack.Push(page);
 			return MopupService.Instance.PushAsync(page);
 		}
 
@@ -581,9 +592,8 @@ namespace NeuroAccessMaui.Services.UI
 			{
 				ViewModel = viewModel
 			};
-
-			this.viewModelStack.Push(viewModel);
-
+			
+			this.popupStack.Push(page);
 			return MopupService.Instance.PushAsync(page);
 		}
 
@@ -591,8 +601,7 @@ namespace NeuroAccessMaui.Services.UI
 		public Task PushAsync<TPage>() where TPage : BasePopup, new()
 		{
 			TPage page = new();
-			BasePopupViewModel? viewModel = page.ViewModel;
-			this.viewModelStack.Push(viewModel ?? null);
+			this.popupStack.Push(page);
 			return MopupService.Instance.PushAsync(page);
 		}
 
@@ -600,7 +609,7 @@ namespace NeuroAccessMaui.Services.UI
 		public Task PushAsync<TPage>(TPage page) where TPage : BasePopup
 		{
 			BasePopupViewModel? viewModel = page.ViewModel;
-			this.viewModelStack.Push(viewModel ?? null);
+			this.popupStack.Push(page);
 			return MopupService.Instance.PushAsync(page);
 		}
 
@@ -610,7 +619,8 @@ namespace NeuroAccessMaui.Services.UI
 			TPage page = new();
 			TViewModel viewModel = new();
 			page.ViewModel = viewModel;
-			this.viewModelStack.Push(viewModel);
+			
+			this.popupStack.Push(page);
 			await MopupService.Instance.PushAsync(page);
 			return await viewModel.Result;
 		}
@@ -619,7 +629,8 @@ namespace NeuroAccessMaui.Services.UI
 		public async Task<TReturn?> PushAsync<TPage, TViewModel, TReturn>(TPage page, TViewModel viewModel) where TPage : BasePopup where TViewModel : ReturningPopupViewModel<TReturn>
 		{
 			page.ViewModel = viewModel;
-			this.viewModelStack.Push(viewModel);
+			
+			this.popupStack.Push(page);
 			await MopupService.Instance.PushAsync(page);
 			return await viewModel.Result;
 		}
@@ -630,7 +641,8 @@ namespace NeuroAccessMaui.Services.UI
 		{
 			TViewModel viewModel = new();
 			page.ViewModel = viewModel;
-			this.viewModelStack.Push(viewModel);
+			
+			this.popupStack.Push(page);
 			await MopupService.Instance.PushAsync(page);
 			return await viewModel.Result;
 		}
@@ -642,8 +654,8 @@ namespace NeuroAccessMaui.Services.UI
 			{
 				ViewModel = viewModel
 			};
-
-			this.viewModelStack.Push(viewModel);
+			
+			this.popupStack.Push(page);
 			await MopupService.Instance.PushAsync(page);
 
 			return await viewModel.Result;
@@ -652,11 +664,13 @@ namespace NeuroAccessMaui.Services.UI
 		/// <inheritdoc/>
 		public async Task PopAsync()
 		{
-			if (this.viewModelStack.Count == 0)
+			if(this.popupStack.Count == 0)
 				return;
-
-			this.viewModelStack.Pop()?.OnPop();
 			try {
+				object? vm = this.popupStack.Pop()?.BindingContext;
+				if (vm is not null)
+					(vm as BasePopupViewModel)?.OnPop();
+
 				await MopupService.Instance.PopAsync();
 			}
 			catch (Exception ex)
@@ -665,6 +679,46 @@ namespace NeuroAccessMaui.Services.UI
 			}
 		}
 
+		#endregion
+
+		#region Image
+		/// <inheritdoc/>  
+		public async Task<ImageSource?> ConvertSvgUriToImageSource(string svgUri)
+		{
+			try 
+			{
+				//Fetch image
+				using HttpClient httpClient = new();
+				using HttpResponseMessage response = await httpClient.GetAsync(svgUri);
+				if (!response.IsSuccessStatusCode)
+					return null;
+
+				// Load SVG image
+				byte[] contentBytes = await response.Content.ReadAsByteArrayAsync();
+				SKSvg svg = new();
+				using (MemoryStream stream = new(contentBytes))
+				{
+					svg.Load(stream);
+				}
+
+				//Check that the svg was parsed correct
+				if(svg.Picture is null)
+					return null;
+
+				using (MemoryStream stream = new())
+				{
+					if(svg.Picture.ToImage(stream, SKColor.Parse("#00FFFFFF"),SKEncodedImageFormat.Png,100, 1, 1, SKColorType.Rgba8888, SKAlphaType.Premul, SKColorSpace.CreateSrgb()))
+						return ImageSource.FromStream(() => new MemoryStream(stream.ToArray()));
+					return null;
+				}
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				return null;
+			}
+
+		}
 		#endregion
 	}
 }
