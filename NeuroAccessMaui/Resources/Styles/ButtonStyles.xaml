@@ -62,6 +62,23 @@
 		<Setter Property="PathStyle" Value="{StaticResource TransparentImageButtonPath}" />
 	</Style>
 
+	<Style x:Key="FilledImageButtonBorder" ApplyToDerivedTypes="False" TargetType="Border">
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource EnabledFilledButtonBackgroundLight}, Dark={StaticResource EnabledFilledButtonBackgroundDark}}" />
+		<Setter Property="Padding" Value="{StaticResource MediumMargins}" />
+		<Setter Property="StrokeShape">
+			<RoundRectangle CornerRadius="{StaticResource MediumCornerRadius}" />
+		</Setter>
+	</Style>
+
+	<Style x:Key="FilledImageButtonPath" ApplyToDerivedTypes="False" TargetType="Path">
+		<Setter Property="Fill" Value="{StaticResource PrimaryBackgroundLight}" />
+	</Style>
+
+	<Style x:Key="FilledImageButton" ApplyToDerivedTypes="False" TargetType="controls:ImageButton">
+		<Setter Property="BorderStyle" Value="{StaticResource FilledImageButtonBorder}" />
+		<Setter Property="PathStyle" Value="{StaticResource FilledImageButtonPath}" />
+	</Style>
+
 	<Style x:Key="TransparentTextButtonBorder" ApplyToDerivedTypes="False" TargetType="Border">
 		<Setter Property="BackgroundColor" Value="#33F5F6F7" />
 		<Setter Property="Padding" Value="{StaticResource ButtonMediumMargins}" />
