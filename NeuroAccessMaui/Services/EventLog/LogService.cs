@@ -1,4 +1,5 @@
-﻿using NeuroAccessMaui.Resources.Languages;
+﻿using System.Diagnostics;
+using NeuroAccessMaui.Resources.Languages;
 using Waher.Events;
 using Waher.Events.XMPP;
 using Waher.Persistence.Exceptions;
@@ -70,6 +71,7 @@ namespace NeuroAccessMaui.Services.EventLog
 		{
 			ex = Log.UnnestException(ex);
 
+			Debug.WriteLine(ex.ToString());
 			Log.Critical(ex, string.Empty, this.bareJid, this.GetParameters(extraParameters).ToArray());
 
 			if (ex is InconsistencyException && !this.repairRequested)

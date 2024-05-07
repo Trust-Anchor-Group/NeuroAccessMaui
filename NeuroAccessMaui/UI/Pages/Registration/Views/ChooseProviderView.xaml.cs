@@ -17,7 +17,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			this.ContentViewModel = ViewModel;
 			this.viewModel = ViewModel;
 		}
-
+/*
 		[RelayCommand]
 		public void SelectButton(object Control)
 		{
@@ -49,5 +49,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				}
 			}
 		}
+		*/
 	}
 }

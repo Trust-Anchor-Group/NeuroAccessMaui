@@ -70,7 +70,7 @@ namespace NeuroAccessMaui.Services.Tag
 		private bool isTest;
 		private PurposeUse purpose;
 		private DateTime? testOtpTimestamp;
-		private RegistrationStep step = RegistrationStep.RequestPurpose;
+		private RegistrationStep step = RegistrationStep.ValidatePhone;
 		private AppTheme? theme;
 		private AuthenticationMethod authenticationMethod;
 		private bool loadingProperties;

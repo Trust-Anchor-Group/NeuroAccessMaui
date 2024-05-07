@@ -1,4 +1,5 @@
-using NeuroAccessMaui.Services;
+﻿using NeuroAccessMaui.Services;
+using NeuroAccessMaui.UI.Pages.Wallet.MachineReport.Reports;
 
 namespace NeuroAccessMaui.UI.Popups
 {
@@ -38,6 +39,7 @@ namespace NeuroAccessMaui.UI.Popups
 		{
 			this.useDefaultBackground = useDefaultBackground;
 			this.InitializeComponent();
+			this.BackgroundColor = AppColors.PrimaryBackground;
 		}
 
 		/// <summary>
@@ -46,12 +48,13 @@ namespace NeuroAccessMaui.UI.Popups
 		protected static async void PopAsync()
 		{
 			await ServiceRef.UiService.PopAsync();
+		
 		}
 
 		protected override void OnAppearing()
 		{
-			if (this.useDefaultBackground)
-				this.LoadScreenshotAsync();
+			//if (this.useDefaultBackground)
+			//	this.LoadScreenshotAsync();
 			base.OnAppearing();
 		}
 
