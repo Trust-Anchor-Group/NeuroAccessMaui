@@ -143,7 +143,6 @@ namespace NeuroAccessMaui
 
 			if (!BackgroundStart)
 			{
-				Console.WriteLine("App constructor");
 				this.InitializeComponent();
 				Current!.UserAppTheme = AppTheme.Unspecified;
 
@@ -386,7 +385,6 @@ namespace NeuroAccessMaui
 				this.OnResume();
 				return;
 			}
-			Console.WriteLine("OnStart");
 
 			if (!this.initCompleted.Wait(60000))
 				throw new Exception("Initialization did not complete in time.");
