@@ -9,8 +9,6 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
 using ZXing.Net.Maui.Controls;
-using DotNet.Meteor.HotReload.Plugin;
-
 
 #if ANDROID
 using Microsoft.Maui.Controls.Compatibility.Platform.Android;
@@ -60,7 +58,6 @@ namespace NeuroAccessMaui
 			//Builder.Services.AddLogging();
 #if DEBUG
 			Builder.Logging.AddDebug();
-			Builder.EnableHotReload();
 #endif
 
 			instance = Builder.Build();
