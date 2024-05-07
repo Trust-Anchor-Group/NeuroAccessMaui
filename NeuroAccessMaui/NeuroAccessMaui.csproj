@@ -52,16 +52,11 @@
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
 	  <DebugSymbols>False</DebugSymbols>
 	  <PublishTrimmed>True</PublishTrimmed>
-	  <ApplicationId>com.tag.NeuroAccess</ApplicationId>
 	  <RunAOTCompilation>True</RunAOTCompilation>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
-		<DebugSymbols>True</DebugSymbols>
-		<PublishTrimmed>False</PublishTrimmed>
-		<ApplicationId>com.tag.NeuroAccess</ApplicationId>
 		<RunAOTCompilation>False</RunAOTCompilation>
-		<EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
@@ -71,16 +66,6 @@
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
 	  <UseInterpreter>False</UseInterpreter>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android34.0|AnyCPU'">
-	  <PublishTrimmed>False</PublishTrimmed>
-	  <ApplicationId>com.tag.NeuroAccess</ApplicationId>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android34.0|AnyCPU'">
-	  <PublishTrimmed>True</PublishTrimmed>
-	  <ApplicationId>com.tag.NeuroAccess</ApplicationId>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -194,6 +179,8 @@
 	  <None Remove="Resources\Images\money_light.svg" />
 	  <None Remove="Resources\Images\neuro_access_dark.svg" />
 	  <None Remove="Resources\Images\neuro_access_light.svg" />
+	  <None Remove="Resources\Images\neuro_assets_icon_dark.svg" />
+	  <None Remove="Resources\Images\neuro_assets_icon_light.svg" />
 	  <None Remove="Resources\Images\person_dark.svg" />
 	  <None Remove="Resources\Images\person_light.svg" />
 	  <None Remove="Resources\Images\photo_placeholder.svg" />
@@ -234,11 +221,10 @@
 		<PackageReference Include="CommunityToolkit.Maui" Version="7.0.1" />
 		<PackageReference Include="CommunityToolkit.Maui.Markup" Version="4.0.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
-		<PackageReference Include="DotNetMeteor.HotReload.Plugin" Version="3.*"/>
 		<PackageReference Include="EDaler" Version="2.5.1" />
-		<PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.2" />
+		<PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.4" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
-		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.7" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.21" />
 		<PackageReference Include="Mopups" Version="1.3.1" />
 		<PackageReference Include="NeuroFeatures" Version="1.3.0" />
 		<PackageReference Include="Plugin.Fingerprint" Version="3.0.0-beta.1" />
@@ -572,6 +558,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="8.0.7" />
+	  <PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="8.0.21" />
 	</ItemGroup>
 </Project>
