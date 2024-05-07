@@ -60,6 +60,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 			switch (e.PropertyName)
 			{
+				/*
 				case nameof(this.SelectedButton):
 					if ((this.SelectedButton is not null) && (this.SelectedButton.Button == ButtonType.Change))
 					{
@@ -70,7 +71,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 						});
 					}
 					break;
-
+				*/
 				case nameof(this.IsBusy):
 					this.ContinueCommand.NotifyCanExecuteChanged();
 					this.ScanQrCodeCommand.NotifyCanExecuteChanged();
@@ -113,6 +114,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		/// </summary>
 		public static bool IsAccountCreated => !string.IsNullOrEmpty(ServiceRef.TagProfile.Account);
 
+/*
 		/// <summary>
 		/// Holds the list of buttons to display.
 		/// </summary>
@@ -129,7 +131,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(ContinueCommand))]
 		private ButtonInfo? selectedButton;
-
+*/
 		private async void TagProfile_Changed(object? Sender, PropertyChangedEventArgs e)
 		{
 			if (this.DomainName != ServiceRef.TagProfile.Domain)
@@ -182,21 +184,31 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 		public bool CanScanQrCode => !this.IsBusy;
 
-		public bool CanContinue => !this.IsBusy && (this.SelectedButton is not null) && (this.SelectedButton.Button == ButtonType.Approve);
+		public bool CanContinue => !this.IsBusy;
+		//&& (this.SelectedButton is not null) && (this.SelectedButton.Button == ButtonType.Approve);
 
-		[RelayCommand(CanExecute = nameof(CanContinue))]
+		[RelayCommand]
 		private void Continue()
 		{
 			GoToRegistrationStep(RegistrationStep.CreateAccount);
 		}
 
 		[RelayCommand]
-		private static void ServiceProviderInfo()
+		private static async Task ServiceProviderInfo()
 		{
 			string title = ServiceRef.Localizer[nameof(AppResources.WhatIsAServiceProvider)];
 			string message = ServiceRef.Localizer[nameof(AppResources.ServiceProviderInfo)];
 			ShowInfoPopup infoPage = new(title, message);
-			ServiceRef.UiService.PushAsync(infoPage);
+			await ServiceRef.UiService.PushAsync(infoPage);
+		}
+
+		[RelayCommand]
+		private async Task SelectedServiceProviderInfo()
+		{
+			string title = this.LocalizedName;
+			string message = this.LocalizedDescription;
+			ShowInfoPopup infoPage = new(title, message);
+			await ServiceRef.UiService.PushAsync(infoPage);
 		}
 
 		[RelayCommand]
@@ -208,6 +220,14 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		[RelayCommand(CanExecute = nameof(CanScanQrCode))]
 		private async Task ScanQrCode()
 		{
+			Console.WriteLine(this.DomainName);
+			Console.WriteLine(this.LocalizedName);
+			Console.WriteLine(this.LocalizedDescription);
+			await this.SetDomainName();
+			Console.WriteLine(this.DomainName);
+			Console.WriteLine(this.LocalizedName);
+			Console.WriteLine(this.LocalizedDescription);
+
 			string? Url = await Services.UI.QR.QrCode.ScanQrCode(nameof(AppResources.QrPageTitleScanInvitation),
 				[Constants.UriSchemes.Onboarding]);
 
@@ -580,7 +600,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		}
 		*/
 	}
-
+/*
 	public enum ButtonType
 	{
 		Approve = 0,
@@ -636,4 +656,5 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			}
 		}
 	}
+	*/
 }

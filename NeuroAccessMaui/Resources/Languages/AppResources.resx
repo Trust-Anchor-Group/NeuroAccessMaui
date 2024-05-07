@@ -532,7 +532,7 @@
     <value>Choose in what context you intend to use Neuro-Access</value>
   </data>
   <data name="OnboardingPhonePageTitle" xml:space="preserve">
-    <value>Let's get started</value>
+    <value>Welcome to Neuro-Access</value>
   </data>
   <data name="OnboardingPhonePageDetails" xml:space="preserve">
     <value>To get verified, you need to enter your phone number</value>
@@ -550,7 +550,7 @@
     <value>Please enter verification code sent to {0}</value>
   </data>
   <data name="OnboardingProviderPageTitle" xml:space="preserve">
-    <value>Selected provider</value>
+    <value>Your service provider</value>
   </data>
   <data name="OnboardingProviderPageDetails" xml:space="preserve">
     <value>Domain:</value>

@@ -532,7 +532,7 @@
     <value>Välj i vilket sammanhang du tänker använda Neuro-Access</value>
   </data>
   <data name="OnboardingPhonePageTitle" xml:space="preserve">
-    <value>Nu sätter vi igång</value>
+    <value>Välkommen till Neuro-Access</value>
   </data>
   <data name="OnboardingPhonePageDetails" xml:space="preserve">
     <value>För att bli verifierad måste du ange ditt telefonnummer</value>
@@ -550,7 +550,7 @@
     <value>Ange verifieringskoden som skickades till {0}</value>
   </data>
   <data name="OnboardingProviderPageTitle" xml:space="preserve">
-    <value>Vald leverantör</value>
+    <value>Din tjänsteleverantör</value>
   </data>
   <data name="OnboardingProviderPageDetails" xml:space="preserve">
     <value>Domän:</value>

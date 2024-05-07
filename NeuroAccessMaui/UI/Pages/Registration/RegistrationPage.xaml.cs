@@ -19,7 +19,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 
 			ViewModel.SetPagesContainer([
 				this.LoadingView,
-				this.RequestPurposeView,
+				//this.RequestPurposeView,
 				this.ValidatePhoneView,
 				this.ValidateEmailView,
 				this.ChooseProviderView,

@@ -79,14 +79,12 @@
 				<Thickness Left="{StaticResource LargeSpacing}" Top="{StaticResource LargeSpacing}" Right="{StaticResource LargeSpacing}" />
 			</Grid.Padding>
 			<controls:ImageButton Command="{Binding GoBackCommand}" Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+			<Image HorizontalOptions="Center" Source="{AppThemeBinding Light=neuro_assets_icon_dark, Dark=neuro_assets_icon_light}" WidthRequest="50" HeightRequest="50" />
+
 		</Grid>
 
 		<ScrollView Grid.Row="1">
 			<Grid RowDefinitions="auto,auto" Padding="{StaticResource LargeMargins}" RowSpacing="{StaticResource LargeSpacing}">
-
-				<VerticalStackLayout Grid.Row="0" Spacing="{StaticResource LargeSpacing}">
-					<Image HorizontalOptions="Center" Source="{AppThemeBinding Light=neuro_access_logo_light.png, Dark=neuro_access_logo_dark.png}" />
-				</VerticalStackLayout>
 
 				<Grid Grid.Row="1" RowDefinitions="auto,auto" RowSpacing="{StaticResource LargeSpacing}">
 					<VerticalStackLayout Grid.Row="0" Spacing="{StaticResource LargeSpacing}">

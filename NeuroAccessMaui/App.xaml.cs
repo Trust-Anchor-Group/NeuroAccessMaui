@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Diagnostics;
+using System.Globalization;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
@@ -142,6 +143,7 @@ namespace NeuroAccessMaui
 
 			if (!BackgroundStart)
 			{
+				Console.WriteLine("App constructor");
 				this.InitializeComponent();
 				Current!.UserAppTheme = AppTheme.Unspecified;
 
@@ -384,6 +386,7 @@ namespace NeuroAccessMaui
 				this.OnResume();
 				return;
 			}
+			Console.WriteLine("OnStart");
 
 			if (!this.initCompleted.Wait(60000))
 				throw new Exception("Initialization did not complete in time.");
