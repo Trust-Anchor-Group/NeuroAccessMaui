@@ -21,8 +21,8 @@
 		<ApplicationIdGuid>2a4dd0f3-35d6-48a3-a76d-1fa94e567eee</ApplicationIdGuid>
 
 		<!-- Versions -->
-		<ApplicationDisplayVersion>2.0.4</ApplicationDisplayVersion>
-		<ApplicationVersion>34</ApplicationVersion>
+		<ApplicationDisplayVersion>2.0.5</ApplicationDisplayVersion>
+		<ApplicationVersion>38</ApplicationVersion>
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">13.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">13.1</SupportedOSPlatformVersion>
@@ -50,9 +50,9 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
-	  <DebugSymbols>False</DebugSymbols>
-	  <PublishTrimmed>True</PublishTrimmed>
-	  <RunAOTCompilation>True</RunAOTCompilation>
+		<DebugSymbols>False</DebugSymbols>
+		<PublishTrimmed>True</PublishTrimmed>
+		<RunAOTCompilation>True</RunAOTCompilation>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
@@ -60,12 +60,12 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
-	  <UseInterpreter>True</UseInterpreter>
-	  <RunAOTCompilation>True</RunAOTCompilation>
+		<UseInterpreter>True</UseInterpreter>
+		<RunAOTCompilation>True</RunAOTCompilation>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
-	  <UseInterpreter>False</UseInterpreter>
+		<UseInterpreter>False</UseInterpreter>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -118,102 +118,102 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Remove="Platforms\iOS\IOSHelpers.cs" />
-	  <Compile Remove="Platforms\iOS\Security\BlurProtectionManager.cs" />
-	  <Compile Remove="Platforms\iOS\Security\ScreenRecordingProtectionManager.cs" />
-	  <Compile Remove="Platforms\iOS\Security\ScreenSecurity.ios.cs" />
-	  <Compile Remove="Platforms\iOS\Security\ScreenshotProtectionManager.cs" />
+		<Compile Remove="Platforms\iOS\IOSHelpers.cs" />
+		<Compile Remove="Platforms\iOS\Security\BlurProtectionManager.cs" />
+		<Compile Remove="Platforms\iOS\Security\ScreenRecordingProtectionManager.cs" />
+		<Compile Remove="Platforms\iOS\Security\ScreenSecurity.ios.cs" />
+		<Compile Remove="Platforms\iOS\Security\ScreenshotProtectionManager.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiFont Remove="Resources\Fonts\NHaasGroteskTXPro-65Md.ttf" />
-	  <MauiFont Remove="Resources\Fonts\SpaceGrotesk-Light.ttf" />
-	  <MauiFont Remove="Resources\Fonts\SpaceGrotesk-SemiBold.ttf" />
+		<MauiFont Remove="Resources\Fonts\NHaasGroteskTXPro-65Md.ttf" />
+		<MauiFont Remove="Resources\Fonts\SpaceGrotesk-Light.ttf" />
+		<MauiFont Remove="Resources\Fonts\SpaceGrotesk-SemiBold.ttf" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="Resources\Images\arrow_down_dark.svg" />
-	  <None Remove="Resources\Images\arrow_down_light.svg" />
-	  <None Remove="Resources\Images\arrow_up_dark.svg" />
-	  <None Remove="Resources\Images\arrow_up_light.svg" />
-	  <None Remove="Resources\Images\attachment_dark.svg" />
-	  <None Remove="Resources\Images\attachment_light.svg" />
-	  <None Remove="Resources\Images\calculator_dark.svg" />
-	  <None Remove="Resources\Images\calculator_light.svg" />
-	  <None Remove="Resources\Images\camera_dark.svg" />
-	  <None Remove="Resources\Images\camera_light.svg" />
-	  <None Remove="Resources\Images\cancel_dark.svg" />
-	  <None Remove="Resources\Images\cancel_light.svg" />
-	  <None Remove="Resources\Images\close_dark.svg" />
-	  <None Remove="Resources\Images\close_light.svg" />
-	  <None Remove="Resources\Images\contract_dark.svg" />
-	  <None Remove="Resources\Images\contract_light.svg" />
-	  <None Remove="Resources\Images\create_contract_dark.svg" />
-	  <None Remove="Resources\Images\create_contract_light.svg" />
-	  <None Remove="Resources\Images\create_token_dark.svg" />
-	  <None Remove="Resources\Images\create_token_light.svg" />
-	  <None Remove="Resources\Images\dark_mode_dark.svg" />
-	  <None Remove="Resources\Images\dark_mode_light.svg" />
-	  <None Remove="Resources\Images\delete_dark.svg" />
-	  <None Remove="Resources\Images\delete_light.svg" />
-	  <None Remove="Resources\Images\dots_horizontal_dark.svg" />
-	  <None Remove="Resources\Images\dots_horizontal_light.svg" />
-	  <None Remove="Resources\Images\dots_vertical_dark.svg" />
-	  <None Remove="Resources\Images\dots_vertical_light.svg" />
-	  <None Remove="Resources\Images\duration_dark.svg" />
-	  <None Remove="Resources\Images\duration_light.svg" />
-	  <None Remove="Resources\Images\face_id_dark.svg" />
-	  <None Remove="Resources\Images\face_id_light.svg" />
-	  <None Remove="Resources\Images\fingerprint_dark.svg" />
-	  <None Remove="Resources\Images\fingerprint_light.svg" />
-	  <None Remove="Resources\Images\flyout_header.svg" />
-	  <None Remove="Resources\Images\folder_closed_dark.svg" />
-	  <None Remove="Resources\Images\folder_closed_light.svg" />
-	  <None Remove="Resources\Images\folder_open_dark.svg" />
-	  <None Remove="Resources\Images\folder_open_light.svg" />
-	  <None Remove="Resources\Images\light_mode_dark.svg" />
-	  <None Remove="Resources\Images\light_mode_light.svg" />
-	  <None Remove="Resources\Images\microphone_dark.svg" />
-	  <None Remove="Resources\Images\microphone_light.svg" />
-	  <None Remove="Resources\Images\money_dark.svg" />
-	  <None Remove="Resources\Images\money_light.svg" />
-	  <None Remove="Resources\Images\neuro_access_dark.svg" />
-	  <None Remove="Resources\Images\neuro_access_light.svg" />
-	  <None Remove="Resources\Images\neuro_assets_icon_dark.svg" />
-	  <None Remove="Resources\Images\neuro_assets_icon_light.svg" />
-	  <None Remove="Resources\Images\person_dark.svg" />
-	  <None Remove="Resources\Images\person_light.svg" />
-	  <None Remove="Resources\Images\photo_placeholder.svg" />
-	  <None Remove="Resources\Images\pin_code_dark.svg" />
-	  <None Remove="Resources\Images\pin_code_light.svg" />
-	  <None Remove="Resources\Images\qr_person.svg" />
-	  <None Remove="Resources\Images\radiobutton_checked_dark.svg" />
-	  <None Remove="Resources\Images\radiobutton_checked_light.svg" />
-	  <None Remove="Resources\Images\radiobutton_unchecked_dark.svg" />
-	  <None Remove="Resources\Images\radiobutton_unchecked_light.svg" />
-	  <None Remove="Resources\Images\send_dark.svg" />
-	  <None Remove="Resources\Images\send_light.svg" />
-	  <None Remove="Resources\Images\settings_dark.svg" />
-	  <None Remove="Resources\Images\settings_light.svg" />
-	  <None Remove="Resources\Images\thing_dark.svg" />
-	  <None Remove="Resources\Images\thing_light.svg" />
-	  <None Remove="Resources\Images\token_dark.svg" />
-	  <None Remove="Resources\Images\token_light.svg" />
-	  <None Remove="Resources\Images\view_id_dark.svg" />
-	  <None Remove="Resources\Images\view_id_light.svg" />
-	  <None Remove="Services\Data\PersonalNumbers\PersonalNumberSchemes.xml" />
+		<None Remove="Resources\Images\arrow_down_dark.svg" />
+		<None Remove="Resources\Images\arrow_down_light.svg" />
+		<None Remove="Resources\Images\arrow_up_dark.svg" />
+		<None Remove="Resources\Images\arrow_up_light.svg" />
+		<None Remove="Resources\Images\attachment_dark.svg" />
+		<None Remove="Resources\Images\attachment_light.svg" />
+		<None Remove="Resources\Images\calculator_dark.svg" />
+		<None Remove="Resources\Images\calculator_light.svg" />
+		<None Remove="Resources\Images\camera_dark.svg" />
+		<None Remove="Resources\Images\camera_light.svg" />
+		<None Remove="Resources\Images\cancel_dark.svg" />
+		<None Remove="Resources\Images\cancel_light.svg" />
+		<None Remove="Resources\Images\close_dark.svg" />
+		<None Remove="Resources\Images\close_light.svg" />
+		<None Remove="Resources\Images\contract_dark.svg" />
+		<None Remove="Resources\Images\contract_light.svg" />
+		<None Remove="Resources\Images\create_contract_dark.svg" />
+		<None Remove="Resources\Images\create_contract_light.svg" />
+		<None Remove="Resources\Images\create_token_dark.svg" />
+		<None Remove="Resources\Images\create_token_light.svg" />
+		<None Remove="Resources\Images\dark_mode_dark.svg" />
+		<None Remove="Resources\Images\dark_mode_light.svg" />
+		<None Remove="Resources\Images\delete_dark.svg" />
+		<None Remove="Resources\Images\delete_light.svg" />
+		<None Remove="Resources\Images\dots_horizontal_dark.svg" />
+		<None Remove="Resources\Images\dots_horizontal_light.svg" />
+		<None Remove="Resources\Images\dots_vertical_dark.svg" />
+		<None Remove="Resources\Images\dots_vertical_light.svg" />
+		<None Remove="Resources\Images\duration_dark.svg" />
+		<None Remove="Resources\Images\duration_light.svg" />
+		<None Remove="Resources\Images\face_id_dark.svg" />
+		<None Remove="Resources\Images\face_id_light.svg" />
+		<None Remove="Resources\Images\fingerprint_dark.svg" />
+		<None Remove="Resources\Images\fingerprint_light.svg" />
+		<None Remove="Resources\Images\flyout_header.svg" />
+		<None Remove="Resources\Images\folder_closed_dark.svg" />
+		<None Remove="Resources\Images\folder_closed_light.svg" />
+		<None Remove="Resources\Images\folder_open_dark.svg" />
+		<None Remove="Resources\Images\folder_open_light.svg" />
+		<None Remove="Resources\Images\light_mode_dark.svg" />
+		<None Remove="Resources\Images\light_mode_light.svg" />
+		<None Remove="Resources\Images\microphone_dark.svg" />
+		<None Remove="Resources\Images\microphone_light.svg" />
+		<None Remove="Resources\Images\money_dark.svg" />
+		<None Remove="Resources\Images\money_light.svg" />
+		<None Remove="Resources\Images\neuro_access_dark.svg" />
+		<None Remove="Resources\Images\neuro_access_light.svg" />
+		<None Remove="Resources\Images\neuro_assets_icon_dark.svg" />
+		<None Remove="Resources\Images\neuro_assets_icon_light.svg" />
+		<None Remove="Resources\Images\person_dark.svg" />
+		<None Remove="Resources\Images\person_light.svg" />
+		<None Remove="Resources\Images\photo_placeholder.svg" />
+		<None Remove="Resources\Images\pin_code_dark.svg" />
+		<None Remove="Resources\Images\pin_code_light.svg" />
+		<None Remove="Resources\Images\qr_person.svg" />
+		<None Remove="Resources\Images\radiobutton_checked_dark.svg" />
+		<None Remove="Resources\Images\radiobutton_checked_light.svg" />
+		<None Remove="Resources\Images\radiobutton_unchecked_dark.svg" />
+		<None Remove="Resources\Images\radiobutton_unchecked_light.svg" />
+		<None Remove="Resources\Images\send_dark.svg" />
+		<None Remove="Resources\Images\send_light.svg" />
+		<None Remove="Resources\Images\settings_dark.svg" />
+		<None Remove="Resources\Images\settings_light.svg" />
+		<None Remove="Resources\Images\thing_dark.svg" />
+		<None Remove="Resources\Images\thing_light.svg" />
+		<None Remove="Resources\Images\token_dark.svg" />
+		<None Remove="Resources\Images\token_light.svg" />
+		<None Remove="Resources\Images\view_id_dark.svg" />
+		<None Remove="Resources\Images\view_id_light.svg" />
+		<None Remove="Services\Data\PersonalNumbers\PersonalNumberSchemes.xml" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Include="Services\Data\PersonalNumbers\PersonalNumberSchemes.xml" />
+		<EmbeddedResource Include="Services\Data\PersonalNumbers\PersonalNumberSchemes.xml" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Include="Platforms\iOS\IOSHelpers.cs" />
-	  <None Include="Platforms\iOS\Security\BlurProtectionManager.cs" />
-	  <None Include="Platforms\iOS\Security\ScreenRecordingProtectionManager.cs" />
-	  <None Include="Platforms\iOS\Security\ScreenSecurity.ios.cs" />
-	  <None Include="Platforms\iOS\Security\ScreenshotProtectionManager.cs" />
+		<None Include="Platforms\iOS\IOSHelpers.cs" />
+		<None Include="Platforms\iOS\Security\BlurProtectionManager.cs" />
+		<None Include="Platforms\iOS\Security\ScreenRecordingProtectionManager.cs" />
+		<None Include="Platforms\iOS\Security\ScreenSecurity.ios.cs" />
+		<None Include="Platforms\iOS\Security\ScreenshotProtectionManager.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -271,293 +271,293 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="Resources\Languages\AppResources.Designer.cs">
-	    <DesignTime>True</DesignTime>
-	    <AutoGen>True</AutoGen>
-	    <DependentUpon>AppResources.resx</DependentUpon>
-	  </Compile>
-	  <Compile Update="UI\Pages\Applications\ApplyId\ApplyIdPage.xaml.cs">
-	    <DependentUpon>ApplyIdPage.xaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="UI\Pages\Applications\Applications\ApplicationsPage.xaml.cs">
-	    <DependentUpon>ApplicationsPage.xaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="UI\Pages\Main\ChangePassword\ChangePasswordPage.xaml.cs">
-	    <DependentUpon>ChangePasswordPage.xaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="UI\Pages\Main\Settings\SettingsPage.xaml.cs">
-	    <DependentUpon>SettingsPage.xaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="UI\Pages\Petitions\PetitionPeerReview\PetitionPeerReviewPage.xaml.cs">
-	    <DependentUpon>PetitionPeerReviewPage.xaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\NameView.xaml.cs">
-	    <DependentUpon>NameView.xaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\NationalityView.xaml.cs">
-	    <DependentUpon>NationalityView.xaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\BirthDateView.xaml.cs">
-	    <DependentUpon>BirthDateView.xaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\GenderView.xaml.cs">
-	    <DependentUpon>GenderView.xaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\PnrView.xaml.cs">
-	    <DependentUpon>PnrView.xaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\PersonalAddressInfoView.xaml.cs">
-	    <DependentUpon>PersonalAddressInfoView.xaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\OrganizationalInfoView.xaml.cs">
-	    <DependentUpon>OrganizationalInfoView.xaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\ConsentView.xaml.cs">
-	    <DependentUpon>ConsentView.xaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\AuthenticateView.xaml.cs">
-	    <DependentUpon>AuthenticateView.xaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\ApprovedView.xaml.cs">
-	    <DependentUpon>ApprovedView.xaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\PhotoView.xaml.cs">
-	    <DependentUpon>PhotoView.xaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="UI\Pages\Petitions\PetitionSignature\PetitionSignaturePage.xaml.cs">
-	    <DependentUpon>PetitionSignaturePage.xaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="UI\Pages\Registration\Views\DefinePasswordView.xaml.cs">
-	    <DependentUpon>DefinePasswordView.xaml</DependentUpon>
-	  </Compile>
-	  <!--<Compile Update="UI\Pages\Registration\Views\RequestPurposeView.xaml.cs">
+		<Compile Update="Resources\Languages\AppResources.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>AppResources.resx</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Pages\Applications\ApplyId\ApplyIdPage.xaml.cs">
+			<DependentUpon>ApplyIdPage.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Pages\Applications\Applications\ApplicationsPage.xaml.cs">
+			<DependentUpon>ApplicationsPage.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Pages\Main\ChangePassword\ChangePasswordPage.xaml.cs">
+			<DependentUpon>ChangePasswordPage.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Pages\Main\Settings\SettingsPage.xaml.cs">
+			<DependentUpon>SettingsPage.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Pages\Petitions\PetitionPeerReview\PetitionPeerReviewPage.xaml.cs">
+			<DependentUpon>PetitionPeerReviewPage.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\NameView.xaml.cs">
+			<DependentUpon>NameView.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\NationalityView.xaml.cs">
+			<DependentUpon>NationalityView.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\BirthDateView.xaml.cs">
+			<DependentUpon>BirthDateView.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\GenderView.xaml.cs">
+			<DependentUpon>GenderView.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\PnrView.xaml.cs">
+			<DependentUpon>PnrView.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\PersonalAddressInfoView.xaml.cs">
+			<DependentUpon>PersonalAddressInfoView.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\OrganizationalInfoView.xaml.cs">
+			<DependentUpon>OrganizationalInfoView.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\ConsentView.xaml.cs">
+			<DependentUpon>ConsentView.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\AuthenticateView.xaml.cs">
+			<DependentUpon>AuthenticateView.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\ApprovedView.xaml.cs">
+			<DependentUpon>ApprovedView.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\PhotoView.xaml.cs">
+			<DependentUpon>PhotoView.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Pages\Petitions\PetitionSignature\PetitionSignaturePage.xaml.cs">
+			<DependentUpon>PetitionSignaturePage.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Pages\Registration\Views\DefinePasswordView.xaml.cs">
+			<DependentUpon>DefinePasswordView.xaml</DependentUpon>
+		</Compile>
+		<!--<Compile Update="UI\Pages\Registration\Views\RequestPurposeView.xaml.cs">
 	    <DependentUpon>RequestPurposeView.xaml</DependentUpon>
 	  </Compile> -->
-	  <Compile Update="UI\Pages\Wallet\MyWallet\MyEDalerWalletPage.xaml.cs">
-	    <DependentUpon>MyEDalerWalletPage.xaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="UI\Pages\Wallet\MyWallet\MyTokenWalletPage.xaml.cs">
-	    <DependentUpon>MyTokenWalletPage.xaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="UI\Popups\Image\ImagesPopup.xaml.cs">
-	    <DependentUpon>ImagesPopup.xaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="UI\Popups\Password\CheckPasswordPopup.xaml.cs">
-	    <DependentUpon>CheckPasswordPopup.xaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="UI\Popups\SelectPhoneCodePopup.xaml.cs">
-	    <DependentUpon>SelectPhoneCodePopup.xaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="UI\Popups\Settings\SelectLanguagePopup.xaml.cs">
-	    <DependentUpon>SelectLanguagePopup.xaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="UI\Popups\Info\ShowInfoPopup.xaml.cs">
-	    <DependentUpon>ShowInfoPopup.xaml</DependentUpon>
-	  </Compile>
+		<Compile Update="UI\Pages\Wallet\MyWallet\MyEDalerWalletPage.xaml.cs">
+			<DependentUpon>MyEDalerWalletPage.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Pages\Wallet\MyWallet\MyTokenWalletPage.xaml.cs">
+			<DependentUpon>MyTokenWalletPage.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Popups\Image\ImagesPopup.xaml.cs">
+			<DependentUpon>ImagesPopup.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Popups\Password\CheckPasswordPopup.xaml.cs">
+			<DependentUpon>CheckPasswordPopup.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Popups\SelectPhoneCodePopup.xaml.cs">
+			<DependentUpon>SelectPhoneCodePopup.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Popups\Settings\SelectLanguagePopup.xaml.cs">
+			<DependentUpon>SelectLanguagePopup.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Popups\Info\ShowInfoPopup.xaml.cs">
+			<DependentUpon>ShowInfoPopup.xaml</DependentUpon>
+		</Compile>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Update="Resources\Languages\AppResources.resx">
-	    <Generator>ResXFileCodeGenerator</Generator>
-	    <LastGenOutput>AppResources.Designer.cs</LastGenOutput>
-	  </EmbeddedResource>
+		<EmbeddedResource Update="Resources\Languages\AppResources.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>AppResources.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\IdApp.Cv\IdApp.Cv.csproj" />
-	  <ProjectReference Include="..\IdApp.Nfc\IdApp.Nfc.csproj" />
+		<ProjectReference Include="..\IdApp.Cv\IdApp.Cv.csproj" />
+		<ProjectReference Include="..\IdApp.Nfc\IdApp.Nfc.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="Resources\Styles\PickerStyles.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Applications\ApplyId\ApplyIdPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Applications\Applications\ApplicationsPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Contacts\Chat\ChatPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Contacts\MyContacts\MyContactsPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Contracts\MyContracts\MyContractsPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Contracts\NewContract\NewContractPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Contracts\ViewContract\ViewContractPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Main\Calculator\CalculatorPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Main\Duration\DurationPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Main\Settings\SettingsPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Main\XmppForm\XmppFormPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Petitions\PetitionContract\PetitionContractPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\PetitionPeerReviewPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\NameView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\NationalityView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\BirthDateView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\GenderView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\PnrView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\PersonalAddressInfoView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\OrganizationalInfoView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\ConsentView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\AuthenticateView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\ApprovedView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\PhotoView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Signatures\ClientSignature\ClientSignaturePage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Signatures\ServerSignature\ServerSignaturePage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Things\CanControl\CanControlPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Things\CanRead\CanReadPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Things\IsFriend\IsFriendPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Things\MyThings\MyThingsPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Things\ReadSensor\ReadSensorPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Things\ViewClaimThing\ViewClaimThingPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Things\ViewThing\ViewThingPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Wallet\AccoutEvent\AccountEventPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Wallet\BuyEDaler\BuyEDalerPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Wallet\EDalerReceived\EDalerReceivedPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Wallet\IssueEDaler\IssueEDalerPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Wallet\MachineReport\MachineReportPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Wallet\MachineVariables\MachineVariablesPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Wallet\MyTokens\MyTokensPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Wallet\MyWallet\MyEDalerWalletPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Wallet\MyWallet\MyTokenWalletPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Wallet\PaymentAcceptance\PaymentAcceptancePage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Wallet\Payment\PaymentPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Wallet\PendingPayment\PendingPaymentPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Wallet\RequestPayment\RequestPaymentPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Wallet\SellEDaler\SellEDalerPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Wallet\SendPayment\SendPaymentPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Wallet\ServiceProviders\ServiceProvidersPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Wallet\TokenDetails\TokenDetailsPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Pages\Wallet\TokenEvents\TokenEventsPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Popups\Image\ImagesPopup.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Popups\Photos\Image\ImageView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Popups\Password\CheckPasswordPopup.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Popups\Settings\SelectLanguagePopup.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Popups\Tokens\AddTextNote\AddTextNotePopup.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Popups\Xmpp\RemoveSubscription\RemoveSubscriptionPopup.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Popups\Xmpp\ReportOrBlock\ReportOrBlockPopup.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Popups\Xmpp\ReportType\ReportTypePopup.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Popups\Xmpp\SubscribeTo\SubscribeToPopup.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="UI\Popups\Xmpp\SubscriptionRequest\SubscriptionRequestPopup.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
+		<MauiXaml Update="Resources\Styles\PickerStyles.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Applications\ApplyId\ApplyIdPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Applications\Applications\ApplicationsPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Contacts\Chat\ChatPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Contacts\MyContacts\MyContactsPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Contracts\MyContracts\MyContractsPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Contracts\NewContract\NewContractPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Contracts\ViewContract\ViewContractPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Main\Calculator\CalculatorPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Main\Duration\DurationPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Main\Settings\SettingsPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Main\XmppForm\XmppFormPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Petitions\PetitionContract\PetitionContractPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\PetitionPeerReviewPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\NameView.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\NationalityView.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\BirthDateView.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\GenderView.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\PnrView.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\PersonalAddressInfoView.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\OrganizationalInfoView.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\ConsentView.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\AuthenticateView.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\ApprovedView.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\PhotoView.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Signatures\ClientSignature\ClientSignaturePage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Signatures\ServerSignature\ServerSignaturePage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Things\CanControl\CanControlPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Things\CanRead\CanReadPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Things\IsFriend\IsFriendPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Things\MyThings\MyThingsPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Things\ReadSensor\ReadSensorPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Things\ViewClaimThing\ViewClaimThingPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Things\ViewThing\ViewThingPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Wallet\AccoutEvent\AccountEventPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Wallet\BuyEDaler\BuyEDalerPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Wallet\EDalerReceived\EDalerReceivedPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Wallet\IssueEDaler\IssueEDalerPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Wallet\MachineReport\MachineReportPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Wallet\MachineVariables\MachineVariablesPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Wallet\MyTokens\MyTokensPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Wallet\MyWallet\MyEDalerWalletPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Wallet\MyWallet\MyTokenWalletPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Wallet\PaymentAcceptance\PaymentAcceptancePage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Wallet\Payment\PaymentPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Wallet\PendingPayment\PendingPaymentPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Wallet\RequestPayment\RequestPaymentPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Wallet\SellEDaler\SellEDalerPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Wallet\SendPayment\SendPaymentPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Wallet\ServiceProviders\ServiceProvidersPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Wallet\TokenDetails\TokenDetailsPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Wallet\TokenEvents\TokenEventsPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Popups\Image\ImagesPopup.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Popups\Photos\Image\ImageView.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Popups\Password\CheckPasswordPopup.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Popups\Settings\SelectLanguagePopup.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Popups\Tokens\AddTextNote\AddTextNotePopup.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Popups\Xmpp\RemoveSubscription\RemoveSubscriptionPopup.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Popups\Xmpp\ReportOrBlock\ReportOrBlockPopup.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Popups\Xmpp\ReportType\ReportTypePopup.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Popups\Xmpp\SubscribeTo\SubscribeToPopup.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Popups\Xmpp\SubscriptionRequest\SubscriptionRequestPopup.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="8.0.21" />
+		<PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="8.0.21" />
 	</ItemGroup>
 </Project>
