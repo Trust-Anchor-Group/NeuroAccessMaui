@@ -30,7 +30,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		protected override async Task OnInitialize()
 		{
 			await base.OnInitialize();
-			await this.SetDomainName();
 
 			ServiceRef.TagProfile.Changed += this.TagProfile_Changed;
 			LocalizationManager.Current.PropertyChanged += this.Localization_Changed;
@@ -114,24 +113,24 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		/// </summary>
 		public static bool IsAccountCreated => !string.IsNullOrEmpty(ServiceRef.TagProfile.Account);
 
-/*
-		/// <summary>
-		/// Holds the list of buttons to display.
-		/// </summary>
-		public Collection<ButtonInfo> Buttons { get; } =
-			[
-				new(ButtonType.Approve),
-				new(ButtonType.Change),
-			];
+		/*
+				/// <summary>
+				/// Holds the list of buttons to display.
+				/// </summary>
+				public Collection<ButtonInfo> Buttons { get; } =
+					[
+						new(ButtonType.Approve),
+						new(ButtonType.Change),
+					];
 
 
-		/// <summary>
-		/// The selected Button
-		/// </summary>
-		[ObservableProperty]
-		[NotifyCanExecuteChangedFor(nameof(ContinueCommand))]
-		private ButtonInfo? selectedButton;
-*/
+				/// <summary>
+				/// The selected Button
+				/// </summary>
+				[ObservableProperty]
+				[NotifyCanExecuteChangedFor(nameof(ContinueCommand))]
+				private ButtonInfo? selectedButton;
+		*/
 		private async void TagProfile_Changed(object? Sender, PropertyChangedEventArgs e)
 		{
 			if (this.DomainName != ServiceRef.TagProfile.Domain)
@@ -165,8 +164,8 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 				object Result = await InternetContent.GetAsync(DomainInfo,
 					new KeyValuePair<string, string>("Accept", "application/json"),
-					new KeyValuePair<string, string>("Accept-Language", AcceptLanguage));
-
+					new KeyValuePair<string, string>("Accept-Language", AcceptLanguage),
+					new KeyValuePair<string, string>("Accept-Encoding", "0"));
 				if (Result is Dictionary<string, object> Response)
 				{
 					if (Response.TryGetValue("humanReadableName", out object? Obj) && Obj is string LocalizedName)
@@ -220,14 +219,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		[RelayCommand(CanExecute = nameof(CanScanQrCode))]
 		private async Task ScanQrCode()
 		{
-			Console.WriteLine(this.DomainName);
-			Console.WriteLine(this.LocalizedName);
-			Console.WriteLine(this.LocalizedDescription);
-			await this.SetDomainName();
-			Console.WriteLine(this.DomainName);
-			Console.WriteLine(this.LocalizedName);
-			Console.WriteLine(this.LocalizedDescription);
-
 			string? Url = await Services.UI.QR.QrCode.ScanQrCode(nameof(AppResources.QrPageTitleScanInvitation),
 				[Constants.UriSchemes.Onboarding]);
 
@@ -600,61 +591,61 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		}
 		*/
 	}
-/*
-	public enum ButtonType
-	{
-		Approve = 0,
-		Change = 1,
-	}
-
-	public partial class ButtonInfo : ObservableObject
-	{
-		public ButtonInfo(ButtonType Button)
+	/*
+		public enum ButtonType
 		{
-			this.Button = Button;
-
-			LocalizationManager.CurrentCultureChanged += this.OnCurrentCultureChanged;
+			Approve = 0,
+			Change = 1,
 		}
 
-		~ButtonInfo()
+		public partial class ButtonInfo : ObservableObject
 		{
-			LocalizationManager.CurrentCultureChanged -= this.OnCurrentCultureChanged;
-		}
-
-		private void OnCurrentCultureChanged(object? Sender, CultureInfo Culture)
-		{
-			this.OnPropertyChanged(nameof(this.LocalizedName));
-			//!!! not implemented yet
-			// this.OnPropertyChanged(nameof(this.LocalizedDescription));
-		}
-
-		public ButtonType Button { get; set; }
-
-		public string LocalizedName
-		{
-			get
+			public ButtonInfo(ButtonType Button)
 			{
-				return this.Button switch
+				this.Button = Button;
+
+				LocalizationManager.CurrentCultureChanged += this.OnCurrentCultureChanged;
+			}
+
+			~ButtonInfo()
+			{
+				LocalizationManager.CurrentCultureChanged -= this.OnCurrentCultureChanged;
+			}
+
+			private void OnCurrentCultureChanged(object? Sender, CultureInfo Culture)
+			{
+				this.OnPropertyChanged(nameof(this.LocalizedName));
+				//!!! not implemented yet
+				// this.OnPropertyChanged(nameof(this.LocalizedDescription));
+			}
+
+			public ButtonType Button { get; set; }
+
+			public string LocalizedName
+			{
+				get
 				{
-					ButtonType.Approve => ServiceRef.Localizer[nameof(AppResources.ProviderSectionApproveOption)],
-					ButtonType.Change => ServiceRef.Localizer[nameof(AppResources.ProviderSectionChangeOption)],
-					_ => throw new NotImplementedException(),
-				};
+					return this.Button switch
+					{
+						ButtonType.Approve => ServiceRef.Localizer[nameof(AppResources.ProviderSectionApproveOption)],
+						ButtonType.Change => ServiceRef.Localizer[nameof(AppResources.ProviderSectionChangeOption)],
+						_ => throw new NotImplementedException(),
+					};
+				}
+			}
+
+			public Geometry ImageData
+			{
+				get
+				{
+					return this.Button switch
+					{
+						ButtonType.Approve => Geometries.ApproveProviderIconPath,
+						ButtonType.Change => Geometries.ChangeProviderIconPath,
+						_ => throw new NotImplementedException(),
+					};
+				}
 			}
 		}
-
-		public Geometry ImageData
-		{
-			get
-			{
-				return this.Button switch
-				{
-					ButtonType.Approve => Geometries.ApproveProviderIconPath,
-					ButtonType.Change => Geometries.ChangeProviderIconPath,
-					_ => throw new NotImplementedException(),
-				};
-			}
-		}
-	}
-	*/
+		*/
 }
