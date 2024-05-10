@@ -21,6 +21,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			await base.OnInitialize();
 
 			LocalizationManager.Current.PropertyChanged += this.LocalizationManagerEventHandler;
+			this.Percentage = 60;
 		}
 
 		/// <inheritdoc/>
@@ -49,6 +50,10 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		[NotifyPropertyChangedFor(nameof(PasswordsMatch))]
 		[NotifyCanExecuteChangedFor(nameof(ContinueCommand))]
 		private string? passwordText2;
+
+
+		[ObservableProperty]
+		private double percentage;
 
 		/// <summary>
 		/// Gets the value indicating how strong the <see cref="PasswordText1"/> is.

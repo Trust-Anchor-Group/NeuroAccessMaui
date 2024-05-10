@@ -4,8 +4,15 @@ namespace NeuroAccessMaui.UI.Behaviors
 {
     public class WidthPercentageBehavior : Behavior<View>
     {
-        public static BindableProperty PercentageProperty = BindableProperty.Create(
+        public static readonly BindableProperty PercentageProperty = BindableProperty.Create(
             nameof(Percentage),
+            typeof(double),
+            typeof(WidthPercentageBehavior),
+            0.0,
+            propertyChanged: OnPercentagePropertyChanged);
+
+        public static readonly BindableProperty AdditionalPaddingProperty = BindableProperty.Create(
+            nameof(AdditionalPadding),
             typeof(double),
             typeof(WidthPercentageBehavior),
             0.0,
@@ -15,6 +22,12 @@ namespace NeuroAccessMaui.UI.Behaviors
         {
             get => (double)this.GetValue(PercentageProperty);
             set => this.SetValue(PercentageProperty, value);
+        }
+
+        public double AdditionalPadding
+        {
+            get => (double)this.GetValue(AdditionalPaddingProperty);
+            set => this.SetValue(AdditionalPaddingProperty, value);
         }
 
         private View? associatedObject;
@@ -47,6 +60,7 @@ namespace NeuroAccessMaui.UI.Behaviors
 
         private void AttachToParent()
         {
+            Percentage = 100;
             if (associatedObject?.Parent is Layout parent)
             {
                 parent.SizeChanged += OnParentSizeChanged;
@@ -74,26 +88,38 @@ namespace NeuroAccessMaui.UI.Behaviors
 
         private void UpdateWidth()
         {
-            if (associatedObject == null || associatedObject.Parent == null) return;
+            if (this.associatedObject == null || this.associatedObject.Parent == null) return;
 
             double parentWidth = 0;
-            if (associatedObject.Parent is Border border)
+            double horizontalPadding = 0;
+
+
+            // Determine the type of the parent and extract the relevant measurements.
+            if (this.associatedObject.Parent is Border border)
             {
-                parentWidth = border.Width - border.Padding.HorizontalThickness;
+                parentWidth = border.Bounds.Width;
+                horizontalPadding = border.Padding.HorizontalThickness;
             }
-            else if (associatedObject.Parent is Layout layout)
+            else if (this.associatedObject.Parent is Layout layout)
             {
-                parentWidth = layout.Width;
+                parentWidth = layout.Bounds.Width;
+                horizontalPadding = layout.Padding.HorizontalThickness; 
             }
 
-            if (parentWidth > 0)
+            // Subtract the horizontal padding from the parent's width to get the usable width.
+            double usableWidth = parentWidth - horizontalPadding - this.AdditionalPadding;
+
+            Console.WriteLine($"Parent Width: {parentWidth}, Usable Width: {usableWidth}");
+            if (usableWidth > 0)
             {
-                associatedObject.WidthRequest = parentWidth * Percentage / 100;
+				// Apply the percentage to the usable width.
+				this.associatedObject.WidthRequest = usableWidth * (this.Percentage / 100);
             }
         }
 
         private static void OnPercentagePropertyChanged(BindableObject bindable, object oldValue, object newValue)
         {
+            Console.WriteLine("Percentage changed");
             if (bindable is WidthPercentageBehavior behavior)
             {
                 behavior.UpdateWidth();
