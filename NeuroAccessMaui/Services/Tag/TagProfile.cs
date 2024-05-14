@@ -1,4 +1,4 @@
-﻿using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Storage;
@@ -1212,7 +1212,7 @@ namespace NeuroAccessMaui.Services.Tag
 			this.httpFileUploadMaxSize = 0;
 			this.isTest = false;
 			this.TestOtpTimestamp = null;
-			this.step = RegistrationStep.RequestPurpose;
+			this.step = RegistrationStep.ValidatePhone;
 			this.defaultXmppConnectivity = false;
 			this.nrReviews = 0;
 			this.supportsPushNotification = false;
