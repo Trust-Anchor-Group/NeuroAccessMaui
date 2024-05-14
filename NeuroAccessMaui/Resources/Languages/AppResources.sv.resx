@@ -525,12 +525,6 @@
   <data name="FailedToUnbindViewModelForPage" xml:space="preserve">
     <value>Det gick inte att koppla bort viewmodel {0} för sida {1}</value>
   </data>
-  <data name="OnboardingPurposePageTitle" xml:space="preserve">
-    <value>Välkommen!</value>
-  </data>
-  <data name="OnboardingPurposePageDetails" xml:space="preserve">
-    <value>Välj i vilket sammanhang du tänker använda Neuro-Access</value>
-  </data>
   <data name="OnboardingPhonePageTitle" xml:space="preserve">
     <value>Välkommen till Neuro-Access</value>
   </data>
@@ -572,33 +566,6 @@
   </data>
   <data name="Create" xml:space="preserve">
     <value>Skapa</value>
-  </data>
-  <data name="PurposesSectionTitle" xml:space="preserve">
-    <value>Välj åtkomstsyfte </value>
-  </data>
-  <data name="PurposeEducational" xml:space="preserve">
-    <value>Utbildningssyfte</value>
-  </data>
-  <data name="PurposeEducationalDescription" xml:space="preserve">
-    <value>Med det här alternativet kan du använda Neuro-Access i utbildningssyfte. Du kan använda appen för att signera eller komma åt resurser som privatperson, antingen som lärare eller som elev. Kontot kan vara tidsbegränsat. Kontot kan också tas bort när det inte längre används. Kontakta tjänsteleverantören för mer information.</value>
-  </data>
-  <data name="PurposeExperimental" xml:space="preserve">
-    <value>Utvecklingssyfte</value>
-  </data>
-  <data name="PurposeExperimentalDescription" xml:space="preserve">
-    <value>Med det här alternativet kan du använda Neuro-Access i utvecklingssyfte. Du kan använda appen för att signera eller komma åt resurser som privatperson, med målet att lära dig tekniken och för vilka ändamål den kan användas. Kontot kan vara tidsbegränsat. Kontot kan också tas bort när det inte längre används. Kontakta tjänsteleverantören för mer information.</value>
-  </data>
-  <data name="PurposePersonal" xml:space="preserve">
-    <value>Personligt bruk</value>
-  </data>
-  <data name="PurposePersonalDescription" xml:space="preserve">
-    <value>Med det här alternativet kan du använda Neuro-Access för personliga ändamål. Du kan använda appen för att signera eller komma åt resurser som privatperson. Vissa funktioner kan medföra kostnader, beroende på vilken tjänsteleverantör du väljer. Kontakta tjänsteleverantören för mer information.</value>
-  </data>
-  <data name="PurposeWork" xml:space="preserve">
-    <value>Professionellt bruk</value>
-  </data>
-  <data name="PurposeWorkDescription" xml:space="preserve">
-    <value>Med det här alternativet kan du använda Neuro-Access för professionella ändamål. Detta inkluderar även arbete i icke-vinstdrivande organisationer. Du kan använda appen för att signera eller komma åt resurser som representant för en organisation. Vissa funktioner kan medföra kostnader, beroende på vilken tjänsteleverantör du väljer. Kontakta tjänsteleverantören för mer information.</value>
   </data>
   <data name="PhoneSectionTitle" xml:space="preserve">
     <value>Ange telefonnummer</value>
