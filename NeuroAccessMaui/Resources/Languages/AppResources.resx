@@ -201,6 +201,15 @@
   <data name="PasswordWithTooManySequencedSymbols" xml:space="preserve">
     <value>A password must not contain more than {0} sequenced symbols, e.g. "12" or "ab".</value>
   </data>
+  <data name="PasswordWeakSecurity" xml:space="preserve">
+    <value>Weak security</value>
+  </data>
+  <data name="PasswordMediumSecurity" xml:space="preserve">
+    <value>Medium security</value>
+  </data>
+  <data name="PasswordStrongSecurity" xml:space="preserve">
+    <value>Strong security</value>
+  </data>
   <data name="ThereIsNoNetwork" xml:space="preserve">
     <value>There is no network</value>
   </data>

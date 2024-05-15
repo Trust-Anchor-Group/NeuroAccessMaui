@@ -201,6 +201,15 @@
   <data name="PasswordWithTooManySequencedSymbols" xml:space="preserve">
     <value>Ett lösenord får inte innehålla mer än {0} sekvenserade symboler, t.ex. "12" eller "ab".</value>
   </data>
+  <data name="PasswordWeakSecurity" xml:space="preserve">
+    <value>Svag säkerhet</value>
+  </data>
+  <data name="PasswordMediumSecurity" xml:space="preserve">
+    <value>Lagom säkerhet</value>
+  </data>
+  <data name="PasswordStrongSecurity" xml:space="preserve">
+    <value>Stark säkerhet</value>
+  </data>
   <data name="ThereIsNoNetwork" xml:space="preserve">
     <value>Det finns inget nätverk</value>
   </data>
