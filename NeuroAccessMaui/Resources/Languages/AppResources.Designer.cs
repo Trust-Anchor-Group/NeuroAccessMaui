@@ -367,7 +367,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to report your legal identity as compromised, stolen or hacked?.
+        ///   Looks up a localized string similar to Are you sure you want to report your identity as compromised, stolen or hacked?.
         /// </summary>
         internal static string AreYouSureYouWantToReportYourLegalIdentityAsCompromized {
             get {
@@ -376,7 +376,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to report your legal identity as compromised, stolen or hacked?.
+        ///   Looks up a localized string similar to Are you sure you want to report your identity as compromised, stolen or hacked?.
         /// </summary>
         internal static string AreYouSureYouWantToReportYourLegalIdentityAsCompromized1 {
             get {
@@ -394,7 +394,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to revoke your legal identity from the application?.
+        ///   Looks up a localized string similar to Are you sure you want to revoke your identity from the application?.
         /// </summary>
         internal static string AreYouSureYouWantToRevokeYourLegalIdentity {
             get {
@@ -403,7 +403,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to revoke your legal identity from the application?.
+        ///   Looks up a localized string similar to Are you sure you want to revoke your identity from the device?.
         /// </summary>
         internal static string AreYouSureYouWantToRevokeYourLegalIdentity1 {
             get {
@@ -412,7 +412,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to send this ID Application? Sending an ID application will obsolete your current ID..
+        ///   Looks up a localized string similar to Are you sure you want to send a new ID Application? Sending an ID application will obsolete your current ID..
         /// </summary>
         internal static string AreYouSureYouWantToSendThisIdApplication {
             get {
@@ -430,7 +430,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to transfer your legal identity from the application to another? The identity will be removed from this device once completed. Also make sure no-one else can see your screen during the process..
+        ///   Looks up a localized string similar to Are you sure you want to transfer your identity from this device to another? The identity will be removed from this device once completed. Also make sure no-one else can see your screen during the process..
         /// </summary>
         internal static string AreYouSureYouWantToTransferYourLegalIdentity {
             get {
@@ -439,7 +439,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to transfer your legal identity from the application to another? The identity will be removed from this device once completed. Also make sure no-one else can see your screen during the process..
+        ///   Looks up a localized string similar to Are you sure you want to transfer your identity from the device to another? The identity will be removed from this device once completed. Also make sure no-one else can see your screen during the process..
         /// </summary>
         internal static string AreYouSureYouWantToTransferYourLegalIdentity1 {
             get {
@@ -1375,7 +1375,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No eDaler service found on broker..
+        ///   Looks up a localized string similar to No eDaler service found on the Service Provider..
         /// </summary>
         internal static string EDalerServiceNotFound {
             get {
@@ -1654,7 +1654,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No file upload service found on broker..
+        ///   Looks up a localized string similar to No file upload service found on the Service Provider..
         /// </summary>
         internal static string FileUploadServiceNotFound {
             get {
@@ -1663,7 +1663,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fingerprint.
+        ///   Looks up a localized string similar to Biometric.
         /// </summary>
         internal static string Fingerprint {
             get {
@@ -1672,7 +1672,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Scan your finger print..
+        ///   Looks up a localized string similar to Scan to authenticate.
         /// </summary>
         internal static string FingerprintDescription {
             get {
@@ -2122,7 +2122,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Legal ID.
+        ///   Looks up a localized string similar to Identity.
         /// </summary>
         internal static string LegalId {
             get {
@@ -2131,7 +2131,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Legal ID not approved..
+        ///   Looks up a localized string similar to ID not approved..
         /// </summary>
         internal static string LegalIdNotApproved {
             get {
@@ -2140,7 +2140,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No legal service found on broker..
+        ///   Looks up a localized string similar to No legal service found on the Service Provider..
         /// </summary>
         internal static string LegalServiceNotFound {
             get {
@@ -2419,7 +2419,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No Neuro-Features service found on broker..
+        ///   Looks up a localized string similar to No Neuro-Features service found on the Service Provider..
         /// </summary>
         internal static string NeuroFeaturesServiceNotFound {
             get {
@@ -2482,7 +2482,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No Legal ID selected..
+        ///   Looks up a localized string similar to No ID selected..
         /// </summary>
         internal static string NoLegalIdSelected {
             get {
@@ -2590,7 +2590,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to To enhance the security of your Neuro-Identity and sensitive information, we recommend adding an extra layer of protection by creating a password.
+        ///   Looks up a localized string similar to To enhance the security of your identity and sensitive information, you must start by creating a password.
         /// </summary>
         internal static string OnboardingDefinePasswordPageDetails {
             get {
@@ -2635,7 +2635,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Let&apos;s get started.
+        ///   Looks up a localized string similar to Welcome to Neuro-Access.
         /// </summary>
         internal static string OnboardingPhonePageTitle {
             get {
@@ -2653,29 +2653,11 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Selected provider.
+        ///   Looks up a localized string similar to Your service provider.
         /// </summary>
         internal static string OnboardingProviderPageTitle {
             get {
                 return ResourceManager.GetString("OnboardingProviderPageTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Choose in what context you intend to use Neuro-Access.
-        /// </summary>
-        internal static string OnboardingPurposePageDetails {
-            get {
-                return ResourceManager.GetString("OnboardingPurposePageDetails", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Welcome!.
-        /// </summary>
-        internal static string OnboardingPurposePageTitle {
-            get {
-                return ResourceManager.GetString("OnboardingPurposePageTitle", resourceCulture);
             }
         }
         
@@ -2950,7 +2932,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A password must not contain any word from the identity address lines..
+        ///   Looks up a localized string similar to A password must not contain any word from the identity address..
         /// </summary>
         internal static string PasswordContainsAddress {
             get {
@@ -3040,6 +3022,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Medium security.
+        /// </summary>
+        internal static string PasswordMediumSecurity {
+            get {
+                return ResourceManager.GetString("PasswordMediumSecurity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Passwords do not match.
         /// </summary>
         internal static string PasswordsDoNotMatch {
@@ -3049,11 +3040,29 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Strong security.
+        /// </summary>
+        internal static string PasswordStrongSecurity {
+            get {
+                return ResourceManager.GetString("PasswordStrongSecurity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Password length must be at least {0} characters..
         /// </summary>
         internal static string PasswordTooShort {
             get {
                 return ResourceManager.GetString("PasswordTooShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Weak security.
+        /// </summary>
+        internal static string PasswordWeakSecurity {
+            get {
+                return ResourceManager.GetString("PasswordWeakSecurity", resourceCulture);
             }
         }
         
@@ -3211,7 +3220,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Peer reviews are enabled. This allows you to request peers (people with already approved digital IDs) to review your application and collaboratively approve it..
+        ///   Looks up a localized string similar to Peer reviews are enabled. This allows you to request peers (people with already approved digital IDs) to review your application and approve it..
         /// </summary>
         internal static string PeerReviewDescription {
             get {
@@ -3400,7 +3409,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A petition for the personal data of your legal identity has been received. Review the information below and choose how you wish to respond..
+        ///   Looks up a localized string similar to A petition for the personal data of your identity has been received. Review the information below and choose how you wish to respond..
         /// </summary>
         internal static string PetitionIdentityInformationText {
             get {
@@ -3445,7 +3454,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Petition to view legal identity was denied..
+        ///   Looks up a localized string similar to Petition to view identity was denied..
         /// </summary>
         internal static string PetitionToViewLegalIdentityWasDenied {
             get {
@@ -3670,7 +3679,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Prohibit recording.
+        ///   Looks up a localized string similar to Prohibit screen recording.
         /// </summary>
         internal static string ProhibitRecording {
             get {
@@ -3742,7 +3751,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No provisioning service found on broker..
+        ///   Looks up a localized string similar to No provisioning service found on the Service Provider..
         /// </summary>
         internal static string ProvisioningServiceNotFound {
             get {
@@ -3756,60 +3765,6 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string Purpose {
             get {
                 return ResourceManager.GetString("Purpose", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Educational use.
-        /// </summary>
-        internal static string PurposeEducational {
-            get {
-                return ResourceManager.GetString("PurposeEducational", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to This option allows you to use Tag ID for educational purposes. You can use the app to sign or access resources as a private person, either as an educator, or as a student. The account may be limited in time. The account may also be removed when no longer used. Check with the service provider for more information..
-        /// </summary>
-        internal static string PurposeEducationalDescription {
-            get {
-                return ResourceManager.GetString("PurposeEducationalDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Experimental use.
-        /// </summary>
-        internal static string PurposeExperimental {
-            get {
-                return ResourceManager.GetString("PurposeExperimental", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to This option allows you to use Tag ID for experimental purposes. You can use the app to sign or access resources as a private person, with the goal of learning the technology and for what purposes it can be used. The account may be limited in time. The account may also be removed when no longer used. Check with the service provider for more information..
-        /// </summary>
-        internal static string PurposeExperimentalDescription {
-            get {
-                return ResourceManager.GetString("PurposeExperimentalDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Personal use.
-        /// </summary>
-        internal static string PurposePersonal {
-            get {
-                return ResourceManager.GetString("PurposePersonal", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to This option allows you to use Tag ID for personal purposes. You can use the app to sign or access resources as a private person. Certain operations may incur costs, depending on the service provider you choose. Check with the service provider for more information..
-        /// </summary>
-        internal static string PurposePersonalDescription {
-            get {
-                return ResourceManager.GetString("PurposePersonalDescription", resourceCulture);
             }
         }
         
@@ -3828,33 +3783,6 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string PurposeReviewToken {
             get {
                 return ResourceManager.GetString("PurposeReviewToken", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Choose access purpose .
-        /// </summary>
-        internal static string PurposesSectionTitle {
-            get {
-                return ResourceManager.GetString("PurposesSectionTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Work use.
-        /// </summary>
-        internal static string PurposeWork {
-            get {
-                return ResourceManager.GetString("PurposeWork", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to This option allows you to use Tag ID for work purposes. This includes work not for profit in organizations. You can use the app to sign or access resources as a representative of an organization. Certain operations may incur costs, depending on the service provider you choose. Check with the service provider for more information..
-        /// </summary>
-        internal static string PurposeWorkDescription {
-            get {
-                return ResourceManager.GetString("PurposeWorkDescription", resourceCulture);
             }
         }
         
@@ -3895,7 +3823,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Scan ID of peer.
+        ///   Looks up a localized string similar to Scan the peers ID.
         /// </summary>
         internal static string QrPageTitleScanPeerId {
             get {
@@ -4435,7 +4363,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The selected contact cannot be added. It does not have a Legal ID registered..
+        ///   Looks up a localized string similar to The selected contact cannot be added. It does not have an identity registered..
         /// </summary>
         internal static string SelectedContactCannotBeAdded {
             get {
@@ -4570,7 +4498,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A code has been sent in an e-mail message to your e-mail adderss. If you don&apos;t receive it, please also check your spam folder..
+        ///   Looks up a localized string similar to A code has been sent to your e-mail adderss. If you don&apos;t receive it, please also check your spam folder..
         /// </summary>
         internal static string SendEmailWarning {
             get {
@@ -5128,7 +5056,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Technical.
+        ///   Looks up a localized string similar to Technical information.
         /// </summary>
         internal static string Technical {
             get {
@@ -5182,7 +5110,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You need to scan a different type of QR Code, one that represents a legal identity.
+        ///   Looks up a localized string similar to You need to scan a different type of QR Code, one that represents a Neuro-Access identity.
         /// </summary>
         internal static string TheSpecifiedCodeIsNotALegalIdentity {
             get {
@@ -5200,7 +5128,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No thing registry service found on broker..
+        ///   Looks up a localized string similar to No thing registry service found on the Service Provider..
         /// </summary>
         internal static string ThingRegistryServiceNotFound {
             get {
@@ -5227,7 +5155,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This code represents a Tag ID invitation, and cannot be claimed at this time..
+        ///   Looks up a localized string similar to This code represents a Neuro-Access invitation, and cannot be claimed at this time..
         /// </summary>
         internal static string ThisCodeCannotBeClaimedAtThisTime {
             get {
@@ -5425,7 +5353,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The application was unable to get access to the private keys of the identity. This typically means the identity has been changed outside of the scope of the app. It can also be a result of a corruption of data. You can try one of two things. Press the Continue button, to continue, without the private keys. You get access to the app, but cannot sign anything. You can then choose to reapply for a new identity from the main menu, with new private keys. You can also try to repair the database, by pressing the R [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to The application was unable to get access to the private keys of the identity. This typically means the identity has been changed outside of the scope of the app. It can also be a result of a corruption of data. You can try one of two things: Press the Continue button, to continue, without the private keys. You get access to the app, but cannot sign anything. You can then choose to reapply for a new identity from the main menu, with new private keys. You can also try to repair the database, by pressing the R [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string UnableToGetAccessToYourPrivateKeys {
             get {
@@ -5803,7 +5731,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Registering with broker.
+        ///   Looks up a localized string similar to Registering with Service Provider.
         /// </summary>
         internal static string XmppState_Registering {
             get {
@@ -5821,7 +5749,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Setting presence.
+        ///   Looks up a localized string similar to Registering presence.
         /// </summary>
         internal static string XmppState_SettingPresence {
             get {
@@ -5929,7 +5857,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You need to check the box you have carefully reviewed all corresponding information above..
+        ///   Looks up a localized string similar to You need to check the box if you have carefully reviewed all corresponding information above..
         /// </summary>
         internal static string YouNeedToCheckCarefullyReviewed {
             get {
@@ -5956,7 +5884,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your legal identity.
+        ///   Looks up a localized string similar to Your identity.
         /// </summary>
         internal static string YourLegalIdentity {
             get {
@@ -5965,7 +5893,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your legal identity has been marked as compromised. You have therefore been redirected to create a new account..
+        ///   Looks up a localized string similar to Your identity has been marked compromised. You have therefore been redirected to create a new account..
         /// </summary>
         internal static string YourLegalIdentityHasBeenCompromised {
             get {
@@ -5974,7 +5902,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your legal identity has been marked obsolete. You have therefore been redirected to create a new account..
+        ///   Looks up a localized string similar to Your identity has been marked obsolete. You have therefore been redirected to create a new account..
         /// </summary>
         internal static string YourLegalIdentityHasBeenObsoleted {
             get {
