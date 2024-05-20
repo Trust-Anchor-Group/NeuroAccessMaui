@@ -177,8 +177,14 @@ namespace NeuroAccessMaui.Services
 		/// <summary>
 		/// Purpose for using the app
 		/// </summary>
+		#if DEBUG
+		[DefaultValue(PurposeUse.Experimental)]
+		public PurposeUse Purpose { get; set; } = PurposeUse.Experimental;
+		#else
 		[DefaultValue(PurposeUse.Personal)]
 		public PurposeUse Purpose { get; set; } = PurposeUse.Personal;
+		#endif
+		
 
 		/// <summary>
 		/// Set to current timestamp if the user used a Test OTP Code.
