@@ -21,7 +21,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			await base.OnInitialize();
 
 			LocalizationManager.Current.PropertyChanged += this.LocalizationManagerEventHandler;
-			this.Percentage = 60;
 		}
 
 		/// <inheritdoc/>
@@ -38,9 +37,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		}
 
 		[ObservableProperty]
-		[NotifyPropertyChangedFor(nameof(IsPassword1NotValid))]
-		[NotifyPropertyChangedFor(nameof(IsPassword2NotValid))]
-		[NotifyPropertyChangedFor(nameof(LocalizedValidationError))]
 		[NotifyPropertyChangedFor(nameof(PasswordsMatch))]
 		[NotifyCanExecuteChangedFor(nameof(ContinueCommand))]
 		private string? passwordText1;
@@ -53,7 +49,59 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 
 		[ObservableProperty]
-		private double percentage;
+		private double securityBar1Percentage;
+
+		[ObservableProperty]
+		private double securityBar2Percentage;
+
+		[ObservableProperty]
+		private double securityBar3Percentage;
+
+		[ObservableProperty]
+		private Color securityTextColor = AppColors.WeakPasswordForeground;
+
+		[ObservableProperty]
+		private string securityText = ServiceRef.Localizer[nameof(AppResources.PasswordWeakSecurity)];
+
+		[ObservableProperty]
+		private string toggleNumericPasswordText = "Create numeric PIN";
+
+		partial void OnPasswordText1Changed(string? value)
+		{
+			double Score = ServiceRef.TagProfile.CalculatePasswordScore(this.PasswordText1);
+
+			const double low = Constants.Security.MediumSecurityPasswordEntropyThreshold;
+			const double medium = Constants.Security.HighSecurityPasswordEntropyThreshold;
+			const double high = Constants.Security.MaxSecurityPasswordEntropyThreshold;
+			
+			this.SecurityBar1Percentage = (Math.Min(Score, low) / low) * 100.0;
+			this.SecurityBar2Percentage = Math.Max((Math.Min(Score - low, medium - low) / (medium - low) * 100.0), 0);
+			this.SecurityBar3Percentage = Math.Max((Math.Min(Score - medium, high - medium) / (high - medium) * 100.0), 0);
+
+			if(Score >= medium)
+			{
+				this.SecurityTextColor = AppColors.StrongPasswordForeground;
+				this.SecurityText = ServiceRef.Localizer[nameof(AppResources.PasswordStrongSecurity)];
+			}
+			else if(Score >= low)
+			{
+				this.SecurityTextColor = AppColors.MediumPasswordForeground;
+				this.SecurityText = ServiceRef.Localizer[nameof(AppResources.PasswordMediumSecurity)];
+			}
+			else
+			{
+				this.SecurityTextColor = AppColors.WeakPasswordForeground;
+				this.SecurityText = ServiceRef.Localizer[nameof(AppResources.PasswordWeakSecurity)];
+			}
+		}
+
+		[RelayCommand]
+		private void ValidatePassword()
+		{
+			this.OnPropertyChanged(nameof(this.PasswordStrength));
+			this.OnPropertyChanged(nameof(this.LocalizedValidationError));
+			this.OnPropertyChanged(nameof(this.IsPassword1NotValid));
+		}
 
 		/// <summary>
 		/// Gets the value indicating how strong the <see cref="PasswordText1"/> is.
@@ -118,6 +166,20 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		}
 
 		public bool CanContinue => this.PasswordStrength == PasswordStrength.Strong && this.PasswordsMatch;
+
+
+		[ObservableProperty]
+		private Keyboard keyboardType = Keyboard.Default;
+
+		[RelayCommand]
+		private void ToggleNumericPassword()
+		{
+			PasswordText1 = string.Empty;
+			PasswordText2 = string.Empty;
+			this.ToggleNumericPasswordText = ServiceRef.TagProfile.IsNumericPassword ? "Create alphanumeric password" : "Create numeric PIN";
+			KeyboardType = Keyboard.Numeric;
+		}
+
 
 		[RelayCommand(CanExecute = nameof(CanContinue))]
 		private void Continue()
