@@ -49,6 +49,11 @@
 		private static Color? errorBackgroundLight;
 		private static Color? clickableDark;
 		private static Color? clickableLight;
+		private static Color? weakPasswordForeground;
+		private static Color? mediumPasswordForeground;
+		private static Color? strongPasswordForeground;
+
+		
 
 		/// <summary>
 		/// Primary foreground color.
@@ -490,5 +495,64 @@
 			}
 		}
 
+		/// <summary>
+		/// Weak password foreground color.
+		/// </summary>
+		public static Color WeakPasswordForeground
+		{
+			get
+			{
+				if (Application.Current?.RequestedTheme == AppTheme.Dark)
+				{
+					weakPasswordForeground ??= AppStyles.TryGetResource<Color>("WeakPasswordBarForegroundDark");
+					return weakPasswordForeground!;
+				}
+				else
+				{
+					weakPasswordForeground ??= AppStyles.TryGetResource<Color>("WeakPasswordBarForegroundLight");
+					return weakPasswordForeground!;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Medium password foreground color.
+		/// </summary>
+		public static Color MediumPasswordForeground
+		{
+			get
+			{
+				if (Application.Current?.RequestedTheme == AppTheme.Dark)
+				{
+					mediumPasswordForeground ??= AppStyles.TryGetResource<Color>("MediumPasswordBarForegroundDark");
+					return mediumPasswordForeground!;
+				}
+				else
+				{
+					mediumPasswordForeground ??= AppStyles.TryGetResource<Color>("MediumPasswordBarForegroundLight");
+					return mediumPasswordForeground!;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Strong password foreground color.
+		/// </summary>
+		public static Color StrongPasswordForeground
+		{
+			get
+			{
+				if (Application.Current?.RequestedTheme == AppTheme.Dark)
+				{
+					strongPasswordForeground ??= AppStyles.TryGetResource<Color>("StrongPasswordBarForegroundDark");
+					return strongPasswordForeground!;
+				}
+				else
+				{
+					strongPasswordForeground ??= AppStyles.TryGetResource<Color>("StrongPasswordBarForegroundLight");
+					return strongPasswordForeground!;
+				}
+			}
+		}
 	}
 }
