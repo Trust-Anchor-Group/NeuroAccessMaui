@@ -34,17 +34,33 @@
 			/// <summary>
 			/// Minimum length for password
 			/// </summary>
-			public const int MinPasswordLength = 8;
+			public const int MinPasswordLength = 6;
+
+			/// <summary>
+			/// A password entropty value equal to or higher than this is considered medium security.
+			/// </summary>
+			public const double MediumSecurityPasswordEntropyThreshold = 40.0;
+
+
+			/// <summary>
+			/// A password entropty value equal to or higher than this is considered high security.
+			/// </summary>
+			public const double HighSecurityPasswordEntropyThreshold = 55.0;
+
+			/// <summary>
+			/// A password entropty value equal to or higher than this is considered to be of the highest security.
+			/// </summary>
+			public const double MaxSecurityPasswordEntropyThreshold = 70.0;
 
 			/// <summary>
 			/// Minimum number of symbols from at least two character classes (digits, letters, other) in a password.
 			/// </summary>
-			public const int MinPasswordSymbolsFromDifferentClasses = 2;
+			public const int MinPasswordSymbolsFromDifferentClasses = 0;
 
 			/// <summary>
 			/// Maximum number of identical symbols in a password.
 			/// </summary>
-			public const int MaxPasswordIdenticalSymbols = 2;
+			public const int MaxPasswordIdenticalSymbols = 6;
 
 			/// <summary>
 			/// Maximum number of sequenced symbols in a password.
