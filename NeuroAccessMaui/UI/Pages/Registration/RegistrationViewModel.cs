@@ -120,10 +120,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 						NewStep = RegistrationStep.ValidatePhone;
 						break;
 
-					case RegistrationStep.ValidatePhone:
-						NewStep = RegistrationStep.RequestPurpose;
-						break;
-
 					default: // Should not happen. Something forgotten? 
 						throw new NotImplementedException();
 				}
