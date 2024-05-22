@@ -610,7 +610,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Change Password.
+        ///   Looks up a localized string similar to Change PIN.
         /// </summary>
         internal static string ChangePassword {
             get {
@@ -619,7 +619,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Choose another password to identify yourself. Changing your password will also create a new random password for the underlying communication network..
+        ///   Looks up a localized string similar to Choose another PIN to identify yourself. Changing your PIN will also create a new random password for the underlying communication network..
         /// </summary>
         internal static string ChangePasswordDescription {
             get {
@@ -835,7 +835,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Confirm new password:.
+        ///   Looks up a localized string similar to Confirm new PIN:.
         /// </summary>
         internal static string ConfirmNewPassword {
             get {
@@ -1222,7 +1222,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create Password.
+        ///   Looks up a localized string similar to Create PIN.
         /// </summary>
         internal static string CreatePassword {
             get {
@@ -1267,7 +1267,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter new password.
+        ///   Looks up a localized string similar to Enter new pin.
         /// </summary>
         internal static string DefinePasswordSectionTitle1 {
             get {
@@ -1276,7 +1276,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Confirm password.
+        ///   Looks up a localized string similar to Confirm pin.
         /// </summary>
         internal static string DefinePasswordSectionTitle2 {
             get {
@@ -1429,7 +1429,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter current password:.
+        ///   Looks up a localized string similar to Enter current pin:.
         /// </summary>
         internal static string EnterCurrentPassword {
             get {
@@ -1438,7 +1438,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter new password:.
+        ///   Looks up a localized string similar to Enter new pin:.
         /// </summary>
         internal static string EnterNewPassword {
             get {
@@ -1447,7 +1447,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter password.
+        ///   Looks up a localized string similar to Enter pin.
         /// </summary>
         internal static string EnterPassword {
             get {
@@ -2590,16 +2590,25 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to To enhance the security of your identity and sensitive information, you must start by creating a password.
+        ///   Looks up a localized string similar to Create alphanumeric PIN.
         /// </summary>
-        internal static string OnboardingDefinePasswordPageDetails {
+        internal static string OnboardingDefinePasswordCreateAlphanumeric {
             get {
-                return ResourceManager.GetString("OnboardingDefinePasswordPageDetails", resourceCulture);
+                return ResourceManager.GetString("OnboardingDefinePasswordCreateAlphanumeric", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create a password.
+        ///   Looks up a localized string similar to Create numeric PIN.
+        /// </summary>
+        internal static string OnboardingDefinePasswordCreateNumeric {
+            get {
+                return ResourceManager.GetString("OnboardingDefinePasswordCreateNumeric", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create a PIN code.
         /// </summary>
         internal static string OnboardingDefinePasswordPageTitle {
             get {
@@ -2914,7 +2923,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Password.
+        ///   Looks up a localized string similar to PIN.
         /// </summary>
         internal static string Password {
             get {
@@ -2923,7 +2932,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Password has been successfully changed..
+        ///   Looks up a localized string similar to PIN has been successfully changed..
         /// </summary>
         internal static string PasswordChanged {
             get {
@@ -2932,7 +2941,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A password must not contain any word from the identity address..
+        ///   Looks up a localized string similar to A PIN must not contain any word from the identity address..
         /// </summary>
         internal static string PasswordContainsAddress {
             get {
@@ -2941,7 +2950,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A password must not contain the identity e-mail address..
+        ///   Looks up a localized string similar to A PIN must not contain the identity e-mail address..
         /// </summary>
         internal static string PasswordContainsEMail {
             get {
@@ -2950,7 +2959,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A password must not contain any word from the identity names..
+        ///   Looks up a localized string similar to A PIN must not contain any word from the identity names..
         /// </summary>
         internal static string PasswordContainsName {
             get {
@@ -2959,7 +2968,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A password must not contain the identity personal number..
+        ///   Looks up a localized string similar to A PIN must not contain the identity personal number..
         /// </summary>
         internal static string PasswordContainsPersonalNumber {
             get {
@@ -2968,7 +2977,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A password must not contain the identity phone number..
+        ///   Looks up a localized string similar to A PIN must not contain the identity phone number..
         /// </summary>
         internal static string PasswordContainsPhoneNumber {
             get {
@@ -2977,7 +2986,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Password is invalid. You have {0} remaining attempts..
+        ///   Looks up a localized string similar to PIN is invalid. You have {0} remaining attempts..
         /// </summary>
         internal static string PasswordIsInvalid {
             get {
@@ -2986,7 +2995,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You have exceeded the number of attempts to provide your password. Your application has been blocked till {0}..
+        ///   Looks up a localized string similar to You have exceeded the number of attempts to provide your PIN. Your application has been blocked till {0}..
         /// </summary>
         internal static string PasswordIsInvalidAplicationBlocked {
             get {
@@ -2995,7 +3004,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You have exceeded the number of attempts to provide your password. Your application has been blocked forever.
+        ///   Looks up a localized string similar to You have exceeded the number of attempts to provide your PIN. Your application has been blocked forever.
         /// </summary>
         internal static string PasswordIsInvalidAplicationBlockedForever {
             get {
@@ -3004,7 +3013,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You have exceeded the number of attempts to provide your password. Your application has been blocked for one week.
+        ///   Looks up a localized string similar to You have exceeded the number of attempts to provide your PIN. Your application has been blocked for one week.
         /// </summary>
         internal static string PasswordIsInvalidAplicationBlockedForOneWeek {
             get {
@@ -3013,7 +3022,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You have exceeded the number of attempts to provide your password. Your application has been blocked till tomorrow at {0}..
+        ///   Looks up a localized string similar to You have exceeded the number of attempts to provide your PIN. Your application has been blocked till tomorrow at {0}..
         /// </summary>
         internal static string PasswordIsInvalidAplicationBlockedTillTomorrow {
             get {
@@ -3031,7 +3040,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Passwords do not match.
+        ///   Looks up a localized string similar to PINs do not match.
         /// </summary>
         internal static string PasswordsDoNotMatch {
             get {
@@ -3049,7 +3058,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Password length must be at least {0} characters..
+        ///   Looks up a localized string similar to PIN length must be at least {0} characters..
         /// </summary>
         internal static string PasswordTooShort {
             get {
@@ -3103,7 +3112,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A password must not contain more than {0} identical symbols..
+        ///   Looks up a localized string similar to A PIN must not contain more than {0} identical symbols..
         /// </summary>
         internal static string PasswordWithTooManyIdenticalSymbols {
             get {
@@ -3112,7 +3121,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A password must not contain more than {0} sequenced symbols, e.g. &quot;12&quot; or &quot;ab&quot;..
+        ///   Looks up a localized string similar to A PIN must not contain more than {0} sequenced symbols, e.g. &quot;12&quot; or &quot;ab&quot;..
         /// </summary>
         internal static string PasswordWithTooManySequencedSymbols {
             get {
@@ -4030,7 +4039,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Report if App, password or phone has been compromised, hacked or stolen..
+        ///   Looks up a localized string similar to Report if App, PIN or phone has been compromised, hacked or stolen..
         /// </summary>
         internal static string ReportAsCompromizedDescription {
             get {

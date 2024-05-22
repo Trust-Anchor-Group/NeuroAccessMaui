@@ -142,46 +142,46 @@
     <value>Det går inte att gravera taggen med länk till {0}.</value>
   </data>
   <data name="PasswordChanged" xml:space="preserve">
-    <value>Lösenordet har ändrats.</value>
+    <value>PIN-koden har ändrats.</value>
   </data>
   <data name="UnableToChangePassword" xml:space="preserve">
     <value>Det går inte att ändra nätverkslösenordet.</value>
   </data>
   <data name="PasswordIsInvalid" xml:space="preserve">
-    <value>Lösenordet är ogiltigt. Du har {0} försök kvar.</value>
+    <value>PIN-koden är ogiltigt. Du har {0} försök kvar.</value>
   </data>
   <data name="PasswordsDoNotMatch" xml:space="preserve">
-    <value>Lösenorden stämmer inte överens</value>
+    <value>PIN koderna stämmer inte överens</value>
   </data>
   <data name="PasswordIsInvalidAplicationBlockedForever" xml:space="preserve">
-    <value>Lösenordsförsök överskridna. Ansökan har blockerats permanent.</value>
+    <value>Pinförsök överskridna. Ansökan har blockerats permanent.</value>
   </data>
   <data name="PasswordIsInvalidAplicationBlocked" xml:space="preserve">
-    <value>Lösenordsförsök överskridna. Ansökan har blockerats till och med {0}.</value>
+    <value>Pinförsök överskridna. Ansökan har blockerats till och med {0}.</value>
   </data>
   <data name="PasswordIsInvalidAplicationBlockedTillTomorrow" xml:space="preserve">
-    <value>Lösenordsförsök överskridna. Ansökan har blockerats till imorgon kl. {0}.</value>
+    <value>Pinförsök överskridna. Ansökan har blockerats till imorgon kl. {0}.</value>
   </data>
   <data name="PasswordIsInvalidAplicationBlockedForOneWeek" xml:space="preserve">
-    <value>Lösenordsförsök överskridna. Ansökan har blockerats i en vecka.</value>
+    <value>Pinförsök överskridna. Ansökan har blockerats i en vecka.</value>
   </data>
   <data name="PasswordTooShort" xml:space="preserve">
-    <value>Lösenordets längd måste vara minst {0} tecken.</value>
+    <value>PIN-koden måste innehålla minst {0} tecken.</value>
   </data>
   <data name="PasswordContainsName" xml:space="preserve">
-    <value>Ett lösenord får inte innehålla något ord från identitetsnamnen.</value>
+    <value>PIN-koden får inte innehålla något ord från identitetsnamnen.</value>
   </data>
   <data name="PasswordContainsPersonalNumber" xml:space="preserve">
-    <value>Ett lösenord får inte innehålla identitetens personnummer.</value>
+    <value>PIN-koden får inte innehålla identitetens personnummer.</value>
   </data>
   <data name="PasswordContainsAddress" xml:space="preserve">
-    <value>Ett lösenord får inte innehålla något ord från identitetsadressen.</value>
+    <value>PIN-koden får inte innehålla något ord från identitetsadressen.</value>
   </data>
   <data name="PasswordContainsEMail" xml:space="preserve">
-    <value>Ett lösenord får inte innehålla identitetens e-postadress.</value>
+    <value>PIN-koden får inte innehålla identitetens e-postadress.</value>
   </data>
   <data name="PasswordContainsPhoneNumber" xml:space="preserve">
-    <value>Ett lösenord får inte innehålla identitetens telefonnummer.</value>
+    <value>PIN-koden får inte innehålla identitetens telefonnummer.</value>
   </data>
   <data name="PasswordWithNotEnoughDigitsLettersSigns" xml:space="preserve">
     <value>Minst {0} bokstäver, siffror eller symboler måste användas.</value>
@@ -196,16 +196,16 @@
     <value>Du måste också använda minst {0} bokstäver eller symboler.</value>
   </data>
   <data name="PasswordWithTooManyIdenticalSymbols" xml:space="preserve">
-    <value>Ett lösenord får inte innehålla mer än {0} identiska symboler.</value>
+    <value>Ett PIN får inte innehålla mer än {0} identiska symboler.</value>
   </data>
   <data name="PasswordWithTooManySequencedSymbols" xml:space="preserve">
-    <value>Ett lösenord får inte innehålla mer än {0} sekvenserade symboler, t.ex. "12" eller "ab".</value>
+    <value>Ett PIN får inte innehålla mer än {0} sekvenserade symboler, t.ex. "12" eller "ab".</value>
   </data>
   <data name="PasswordWeakSecurity" xml:space="preserve">
     <value>Svag säkerhet</value>
   </data>
   <data name="PasswordMediumSecurity" xml:space="preserve">
-    <value>Lagom säkerhet</value>
+    <value>Mellan säkerhet</value>
   </data>
   <data name="PasswordStrongSecurity" xml:space="preserve">
     <value>Stark säkerhet</value>
@@ -565,10 +565,7 @@
     <value>Ange det namn du vill använda för ditt konto</value>
   </data>
   <data name="OnboardingDefinePasswordPageTitle" xml:space="preserve">
-    <value>Skapa ett lösenord</value>
-  </data>
-  <data name="OnboardingDefinePasswordPageDetails" xml:space="preserve">
-    <value>För att förbättra säkerheten för identiteten och känslig information, måste du börja med att skapa ett lösenord</value>
+    <value>Skapa en PIN kod</value>
   </data>
   <data name="AccountSectionTitle" xml:space="preserve">
     <value>Ange kontonamnet</value>
@@ -655,13 +652,13 @@
     <value>En tillfällig OTP-kod har använts. Applikationen kommer sluta fungera om ungefär en vecka. Du måste ominstallera programmet för att använda det igen.</value>
   </data>
   <data name="DefinePasswordSectionTitle1" xml:space="preserve">
-    <value>Ange nytt lösenord</value>
+    <value>Ange nytt pin</value>
   </data>
   <data name="DefinePasswordSectionTitle2" xml:space="preserve">
-    <value>Bekräfta lösenord</value>
+    <value>Bekräfta pin</value>
   </data>
   <data name="CreatePassword" xml:space="preserve">
-    <value>Skapa lösenord</value>
+    <value>Skapa pin</value>
   </data>
   <data name="ScanQrCodeLabel" xml:space="preserve">
     <value>Skanna QR-koden med din kamera.</value>
@@ -697,7 +694,7 @@
     <value>Bekräfta</value>
   </data>
   <data name="EnterPassword" xml:space="preserve">
-    <value>Ange lösenord</value>
+    <value>Ange pin</value>
   </data>
   <data name="FirstName" xml:space="preserve">
     <value>Förnamn</value>
@@ -823,13 +820,13 @@
     <value>Ändring</value>
   </data>
   <data name="ChangePassword" xml:space="preserve">
-    <value>Ändra lösenord</value>
+    <value>Ändra PIN</value>
   </data>
   <data name="ChangePasswordDescription" xml:space="preserve">
-    <value>Välj ett annat lösenord för att identifiera dig. Om du ändrar ditt lösenord skapas också ett nytt slumpmässigt lösenord för det underliggande kommunikationsnätverket.</value>
+    <value>Välj en annan PIN-kod för att identifiera dig. Om du ändrar ditt PIN skapas också ett nytt slumpmässigt lösenord för det underliggande kommunikationsnätverket.</value>
   </data>
   <data name="ConfirmNewPassword" xml:space="preserve">
-    <value>Bekräfta nytt lösenord:</value>
+    <value>Bekräfta nytt pin:</value>
   </data>
   <data name="DarkMode" xml:space="preserve">
     <value>Mörkt läge</value>
@@ -838,10 +835,10 @@
     <value>Display-inställningar</value>
   </data>
   <data name="EnterCurrentPassword" xml:space="preserve">
-    <value>Ange aktuellt lösenord:</value>
+    <value>Ange nuvarande pin:</value>
   </data>
   <data name="EnterNewPassword" xml:space="preserve">
-    <value>Ange nytt lösenord:</value>
+    <value>Ange nytt pin:</value>
   </data>
   <data name="IdentitySettings" xml:space="preserve">
     <value>Identitetsinställningar</value>
@@ -862,7 +859,7 @@
     <value>Rapportera som komprometterad</value>
   </data>
   <data name="ReportAsCompromizedDescription" xml:space="preserve">
-    <value>Rapportera om appen, lösenordet eller telefonen har komprometterats, hackats eller stulits.</value>
+    <value>Rapportera om appen, pinkoden eller telefonen har komprometterats, hackats eller stulits.</value>
   </data>
   <data name="RevokeIdentity" xml:space="preserve">
     <value>Spärra identitet</value>
@@ -892,7 +889,7 @@
     <value>Biometrisk</value>
   </data>
   <data name="Password" xml:space="preserve">
-    <value>Lösenord</value>
+    <value>PIN</value>
   </data>
   <data name="Application" xml:space="preserve">
     <value>Ansökan</value>
