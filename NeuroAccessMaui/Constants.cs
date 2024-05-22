@@ -37,20 +37,19 @@
 			public const int MinPasswordLength = 6;
 
 			/// <summary>
-			/// A password entropty value equal to or higher than this is considered medium security.
+			/// A password score value equal to or higher than this is considered medium security.
 			/// </summary>
-			public const double MediumSecurityPasswordEntropyThreshold = 40.0;
-
-
-			/// <summary>
-			/// A password entropty value equal to or higher than this is considered high security.
-			/// </summary>
-			public const double HighSecurityPasswordEntropyThreshold = 55.0;
+			public const double MediumSecurityScoreThreshold = 40.0;
 
 			/// <summary>
-			/// A password entropty value equal to or higher than this is considered to be of the highest security.
+			/// A password score value equal to or higher than this is considered high security.
 			/// </summary>
-			public const double MaxSecurityPasswordEntropyThreshold = 70.0;
+			public const double HighSecurityPasswordScoreThreshold = 55.0;
+
+			/// <summary>
+			/// A password score value equal to or higher than this is considered to be of the highest security.
+			/// </summary>
+			public const double MaxSecurityPasswordScoreThreshold = 70.0;
 
 			/// <summary>
 			/// Minimum number of symbols from at least two character classes (digits, letters, other) in a password.
@@ -65,7 +64,7 @@
 			/// <summary>
 			/// Maximum number of sequenced symbols in a password.
 			/// </summary>
-			public const int MaxPasswordSequencedSymbols = 2;
+			public const int MaxPasswordSequencedSymbols = 3;
 
 			/// <summary>
 			/// Maximum number of seconds screen recording is allowed.
