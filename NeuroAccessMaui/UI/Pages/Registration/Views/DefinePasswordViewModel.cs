@@ -70,20 +70,20 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		{
 			double Score = ServiceRef.TagProfile.CalculatePasswordScore(this.PasswordText1);
 
-			const double low = Constants.Security.MediumSecurityPasswordEntropyThreshold;
-			const double medium = Constants.Security.HighSecurityPasswordEntropyThreshold;
-			const double high = Constants.Security.MaxSecurityPasswordEntropyThreshold;
-			
+			const double low = Constants.Security.MediumSecurityScoreThreshold;
+			const double medium = Constants.Security.HighSecurityPasswordScoreThreshold;
+			const double high = Constants.Security.MaxSecurityPasswordScoreThreshold;
+
 			this.SecurityBar1Percentage = (Math.Min(Score, low) / low) * 100.0;
 			this.SecurityBar2Percentage = Math.Max((Math.Min(Score - low, medium - low) / (medium - low) * 100.0), 0);
 			this.SecurityBar3Percentage = Math.Max((Math.Min(Score - medium, high - medium) / (high - medium) * 100.0), 0);
 
-			if(Score >= medium)
+			if (Score >= medium)
 			{
 				this.SecurityTextColor = AppColors.StrongPasswordForeground;
 				this.SecurityText = ServiceRef.Localizer[nameof(AppResources.PasswordStrongSecurity)];
 			}
-			else if(Score >= low)
+			else if (Score >= low)
 			{
 				this.SecurityTextColor = AppColors.MediumPasswordForeground;
 				this.SecurityText = ServiceRef.Localizer[nameof(AppResources.PasswordMediumSecurity)];
@@ -125,7 +125,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		/// <summary>
 		/// If First Password entry is not valid.
 		/// </summary>
-		public bool IsPassword1NotValid => !string.IsNullOrEmpty(this.PasswordText1) &&  this.PasswordStrength != PasswordStrength.Strong;
+		public bool IsPassword1NotValid => !string.IsNullOrEmpty(this.PasswordText1) && this.PasswordStrength != PasswordStrength.Strong;
 
 		/// <summary>
 		/// If Second Password entry is not valid.
@@ -171,13 +171,25 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		[ObservableProperty]
 		private Keyboard keyboardType = Keyboard.Default;
 
+		[ObservableProperty]
+		private string toggleKeyboardTypeText = ServiceRef.Localizer[nameof(AppResources.OnboardingDefinePasswordCreateNumeric)];
+
 		[RelayCommand]
 		private void ToggleNumericPassword()
 		{
-			PasswordText1 = string.Empty;
-			PasswordText2 = string.Empty;
-			this.ToggleNumericPasswordText = ServiceRef.TagProfile.IsNumericPassword ? "Create alphanumeric password" : "Create numeric PIN";
-			KeyboardType = Keyboard.Numeric;
+			this.PasswordText1 = string.Empty;
+			this.PasswordText2 = string.Empty;
+
+			if (this.KeyboardType == Keyboard.Numeric)
+			{
+				this.KeyboardType = Keyboard.Default;
+				this.ToggleKeyboardTypeText = ServiceRef.Localizer[nameof(AppResources.OnboardingDefinePasswordCreateNumeric)];
+			}
+			else
+			{
+				this.KeyboardType = Keyboard.Numeric;
+				this.ToggleKeyboardTypeText = ServiceRef.Localizer[nameof(AppResources.OnboardingDefinePasswordCreateAlphanumeric)];
+			}
 		}
 
 
