@@ -10,6 +10,8 @@ using System.ComponentModel;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
+using CommunityToolkit.Mvvm.Messaging;
+using NeuroAccessMaui.UI.Pages.Registration;
 using Waher.Content.Xml;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
@@ -244,18 +246,47 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		#region Commands
 
 		[RelayCommand(CanExecute = nameof(CanExecuteCommands))]
-		internal static async Task ChangePassword()
+		internal async Task ChangePassword()
 		{
 			try
 			{
+				//Authenticate user
 				await App.CheckUserBlocking();
-				await ServiceRef.UiService.GoToAsync(nameof(ChangePasswordPage));
+				if (await App.AuthenticateUser(AuthenticationPurpose.ChangePassword, true) == false)
+					return;
+
+				//Update the network password
+				string NewNetworkPassword = ServiceRef.CryptoService.CreateRandomPassword();
+				if (!await ServiceRef.XmppService.ChangePassword(NewNetworkPassword))
+				{
+					await ServiceRef.UiService.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						ServiceRef.Localizer[nameof(AppResources.UnableToChangePassword)]);
+					return;
+				}
+				ServiceRef.TagProfile.SetAccount(ServiceRef.TagProfile.Account!, NewNetworkPassword, string.Empty);
+
+				//Update the local password
+				GoToRegistrationStep(RegistrationStep.DefinePassword);
+				await App.SetRegistrationPageAsync();
+
+				WeakReferenceMessenger.Default.Register<RegistrationPageMessage>(this, this.HandleRegistrationPageMessage);
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
 				await ServiceRef.UiService.DisplayException(ex);
 			}
+		}
+
+		private async void HandleRegistrationPageMessage(object recipient, RegistrationPageMessage msg)
+		{
+			if (msg.Step != RegistrationStep.Complete)
+				return;
+			await ServiceRef.UiService.DisplayAlert(
+				ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+				ServiceRef.Localizer[nameof(AppResources.PasswordChanged)]);
+			WeakReferenceMessenger.Default.Unregister<RegistrationPageMessage>(this);
 		}
 
 		private static async Task PermitScreenCapture()
