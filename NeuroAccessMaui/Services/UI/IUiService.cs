@@ -65,6 +65,9 @@ namespace NeuroAccessMaui.Services.UI
 
 		#region Navigation
 
+		// TEMP 
+		Task WaitForNavigationToCompleteAsync();
+
 		/// <summary>
 		/// Navigates the AppShell to the specified route, with page arguments to match.
 		/// </summary>
@@ -120,7 +123,7 @@ namespace NeuroAccessMaui.Services.UI
 		#endregion
 
 		#region Popups
-		
+
 		/// <summary>
 		/// The current stack of popup pages.
 		/// </summary>
@@ -234,8 +237,8 @@ namespace NeuroAccessMaui.Services.UI
 		Task PopAsync();
 
 		#endregion
-	
-	    #region Images
+
+		#region Images
 		/// <summary>
 		/// Fetches a SVG and converts it to a PNG image source.
 		/// </summary>
@@ -243,6 +246,6 @@ namespace NeuroAccessMaui.Services.UI
 		/// <returns>An image Source representing the SVG file or null</returns>
 		public Task<ImageSource?> ConvertSvgUriToImageSource(string svgUri);
 
-		#endregion		
+		#endregion
 	}
 }

@@ -47,6 +47,9 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		{
 			await base.OnAppearingAsync();
 
+			// TEMP 
+			await ServiceRef.UiService.WaitForNavigationToCompleteAsync();
+
 			this.CameraBarcodeReaderView.IsDetecting = true;
 			WeakReferenceMessenger.Default.Register<KeyboardSizeMessage>(this, this.HandleKeyboardSizeMessage);
 		}
