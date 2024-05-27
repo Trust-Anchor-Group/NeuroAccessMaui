@@ -2070,4 +2070,10 @@
   <data name="UnsubscribeFrom" xml:space="preserve">
     <value>Avsluta prenumeration på</value>
   </data>
+  <data name="OnboardingDefinePasswordCreateAlphanumeric" xml:space="preserve">
+    <value>Skapa alfanumerisk PIN</value>
+  </data>
+  <data name="OnboardingDefinePasswordCreateNumeric" xml:space="preserve">
+    <value>Skapa numerisk PIN</value>
+  </data>
 </root>
