@@ -31,9 +31,14 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			await base.OnDispose();
 		}
 
+		/// <summary>
+		/// EventHandler for localization change
+		/// </summary>
 		public void LocalizationManagerEventHandler(object? sender, PropertyChangedEventArgs e)
 		{
 			this.OnPropertyChanged(nameof(this.LocalizedValidationError));
+			this.UpdateToggleKeyboardText();
+			this.UpdateSecurityScore();
 		}
 
 		[ObservableProperty]
@@ -64,9 +69,23 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		private string securityText = ServiceRef.Localizer[nameof(AppResources.PasswordWeakSecurity)];
 
 		[ObservableProperty]
-		private string toggleNumericPasswordText = "Create numeric PIN";
+		private string toggleNumericPasswordText = ServiceRef.Localizer[nameof(AppResources.OnboardingDefinePasswordCreateNumeric)];
+
+		[ObservableProperty]
+		private Keyboard keyboardType = Keyboard.Default;
+
+		[ObservableProperty]
+		private string toggleKeyboardTypeText = ServiceRef.Localizer[nameof(AppResources.OnboardingDefinePasswordCreateNumeric)];
+
+
+
 
 		partial void OnPasswordText1Changed(string? value)
+		{
+			this.UpdateSecurityScore();
+		}
+
+		private void UpdateSecurityScore()
 		{
 			double Score = ServiceRef.TagProfile.CalculatePasswordScore(this.PasswordText1);
 
@@ -168,11 +187,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		public bool CanContinue => this.PasswordStrength == PasswordStrength.Strong && this.PasswordsMatch;
 
 
-		[ObservableProperty]
-		private Keyboard keyboardType = Keyboard.Default;
 
-		[ObservableProperty]
-		private string toggleKeyboardTypeText = ServiceRef.Localizer[nameof(AppResources.OnboardingDefinePasswordCreateNumeric)];
 
 		[RelayCommand]
 		private void ToggleNumericPassword()
@@ -180,16 +195,18 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			this.PasswordText1 = string.Empty;
 			this.PasswordText2 = string.Empty;
 
-			if (this.KeyboardType == Keyboard.Numeric)
-			{
-				this.KeyboardType = Keyboard.Default;
+			this.KeyboardType = this.KeyboardType == Keyboard.Numeric ? Keyboard.Default : Keyboard.Numeric;
+
+			this.UpdateToggleKeyboardText();
+		}
+
+		private void UpdateToggleKeyboardText()
+		{
+			Console.WriteLine("DEBUG");
+			if (this.KeyboardType == Keyboard.Default)
 				this.ToggleKeyboardTypeText = ServiceRef.Localizer[nameof(AppResources.OnboardingDefinePasswordCreateNumeric)];
-			}
 			else
-			{
-				this.KeyboardType = Keyboard.Numeric;
 				this.ToggleKeyboardTypeText = ServiceRef.Localizer[nameof(AppResources.OnboardingDefinePasswordCreateAlphanumeric)];
-			}
 		}
 
 
