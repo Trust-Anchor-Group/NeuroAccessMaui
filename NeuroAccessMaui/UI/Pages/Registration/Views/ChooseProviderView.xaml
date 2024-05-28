@@ -10,7 +10,7 @@
 									xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Registration"
 									xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
 									xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
-
+<!--
 	<VisualElement.Resources>
 		<DataTemplate x:Key="SelectButtonDataTemplate" x:DataType="viewmodel:ButtonInfo">
 			<Border
@@ -83,10 +83,13 @@
 			</Border>
 		</DataTemplate>
 	</VisualElement.Resources>
-
-	<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
-
-		<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+-->
+	<Grid VerticalOptions="FillAndExpand">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+		<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" VerticalOptions="Center" Grid.Row="0">
 			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 				<Label
 					HorizontalOptions="Center"
@@ -115,11 +118,15 @@
 						Data="{x:Static ui:Geometries.InfoCirclePath}"
 						Fill="{AppThemeBinding Light={StaticResource NormalInfoForegroundLight},
 											   Dark={StaticResource NormalInfoForegroundDark}}" />
+					<HorizontalStackLayout.GestureRecognizers>
+						<TapGestureRecognizer
+							Command="{x:Binding SelectedServiceProviderInfoCommand}" />
+					</HorizontalStackLayout.GestureRecognizers>
 
 				</HorizontalStackLayout>
 			</VerticalStackLayout>
 
-
+<!--
 			<VerticalStackLayout Spacing="0">
 				<Label
 					HorizontalOptions="Center"
@@ -136,7 +143,9 @@
 				HorizontalTextAlignment="Center"
 				IsVisible="{x:Binding HasLocalizedDescription}"
 				Text="{x:Binding LocalizedDescription}" />
+-->
 		</VerticalStackLayout>
+<!--	
 
 		<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 			<Label
@@ -171,26 +180,52 @@
 				</HorizontalStackLayout>
 			</controls:TemplatedButton>
 		</VerticalStackLayout>
+-->
+		<VerticalStackLayout Spacing="{StaticResource LargeSpacing}" VerticalOptions="Center" Grid.Row="1">
 
-		<controls:TemplatedButton
-			HorizontalOptions="Center"
-			Command="{x:Binding UndoSelectionCommand}">
-			<HorizontalStackLayout Spacing="{StaticResource SmallSpacing}">
-				<Label
-					VerticalOptions="Center"
-					FontFamily="HaasGroteskRegular"
-					FontSize="18"
-					Text="{l:Localize UndoSelection}"
-					TextColor="{AppThemeBinding Light={StaticResource AccentForegroundLight},
-												Dark={StaticResource AccentForegroundDark}}" />
-			</HorizontalStackLayout>
-		</controls:TemplatedButton>
+			<controls:TemplatedButton
+				HorizontalOptions="Center"
+				Command="{x:Binding ServiceProviderInfoCommand}">
+				<HorizontalStackLayout Spacing="{StaticResource SmallSpacing}">
+					<Path
+						VerticalOptions="Center"
+						HeightRequest="20"
+						WidthRequest="20"
+						Aspect="Uniform"
+						Data="{x:Static ui:Geometries.InfoCirclePath}"
+						Fill="{AppThemeBinding Light={StaticResource NormalInfoForegroundLight},
+											Dark={StaticResource NormalInfoForegroundDark}}" />
 
-		<controls:TextButton
-			Command="{Binding ContinueCommand}"
-			Style="{StaticResource FilledTextButton}"
-			LabelData="{l:Localize Continue}" />
-	</VerticalStackLayout>
+					<Label
+						VerticalOptions="Center"
+						FontFamily="HaasGroteskRegular"
+						FontSize="14"
+						Text="{l:Localize WhatIsAServiceProvider}"
+						TextColor="{AppThemeBinding Light={StaticResource NormalInfoForegroundLight},
+													Dark={StaticResource NormalInfoForegroundDark}}" />
+				</HorizontalStackLayout>
+			</controls:TemplatedButton>
+				
+			<controls:TemplatedButton
+				HorizontalOptions="Center"
+				Command="{x:Binding ScanQrCodeCommand}">
+				<HorizontalStackLayout Spacing="{StaticResource SmallSpacing}">
+					<Label
+						VerticalOptions="Center"
+						FontFamily="HaasGroteskRegular"
+						FontSize="18"
+						Text="{l:Localize Change}"
+						TextColor="{AppThemeBinding Light={StaticResource AccentForegroundLight},
+													Dark={StaticResource AccentForegroundDark}}" />
+				</HorizontalStackLayout>
+			</controls:TemplatedButton>
+
+			<controls:TextButton
+				Command="{Binding ContinueCommand}"
+				Style="{StaticResource FilledTextButton}"
+				LabelData="{l:Localize Continue}" />
+		</VerticalStackLayout>
+	</Grid>
 
 	<!--
 	<VisualElement.Resources>

@@ -20,9 +20,12 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		public ScanQrCodePage()
 		{
 			this.InitializeComponent();
-
-			ScanQrCodeViewModel ViewModel = new(ServiceRef.UiService.PopLatestArgs<ScanQrCodeNavigationArgs>());
+			
+			ScanQrCodeNavigationArgs? args = ServiceRef.UiService.PopLatestArgs<ScanQrCodeNavigationArgs>();
+			ScanQrCodeViewModel ViewModel = new(args);
 			this.ContentPageModel = ViewModel;
+
+			this.navigationComplete = args?.NavigationCompletionSource;
 
 			this.LinkEntry.Entry.Keyboard = Keyboard.Url;
 			this.LinkEntry.Entry.IsSpellCheckEnabled = false;
@@ -30,22 +33,27 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 
 			StateContainer.SetCurrentState(this.GridWithAnimation, "AutomaticScan");
 
+			this.CameraBarcodeReaderView.IsDetecting = false;
 			this.CameraBarcodeReaderView.Options = new BarcodeReaderOptions
 			{
 				Formats = BarcodeFormats.TwoDimensional,
 				AutoRotate = true,
 				TryHarder = true,
 				TryInverted = true,
-				Multiple = false
+				Multiple = false,
 			};
 
 			ViewModel.DoSwitchMode(true);
 		}
 
+
 		/// <inheritdoc/>
 		protected override async Task OnAppearingAsync()
 		{
 			await base.OnAppearingAsync();
+
+			if(this.navigationComplete is not null)
+				await this.navigationComplete.Task;
 
 			this.CameraBarcodeReaderView.IsDetecting = true;
 			WeakReferenceMessenger.Default.Register<KeyboardSizeMessage>(this, this.HandleKeyboardSizeMessage);
@@ -59,6 +67,8 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 
 			await base.OnDisappearingAsync();
 		}
+
+		private TaskCompletionSource<bool>? navigationComplete;
 
 		private async void HandleKeyboardSizeMessage(object Recipient, KeyboardSizeMessage Message)
 		{

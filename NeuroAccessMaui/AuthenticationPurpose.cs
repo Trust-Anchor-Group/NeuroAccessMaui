@@ -188,6 +188,11 @@
 		/// <summary>
 		/// Apply for a new Personal ID
 		/// </summary>
-		ApplyForPersonalId
+		ApplyForPersonalId,
+
+		/// <summary>
+		/// Change password
+		/// </summary>
+		ChangePassword
 	}
 }

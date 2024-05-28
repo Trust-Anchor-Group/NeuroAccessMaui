@@ -6,11 +6,6 @@
 	public enum RegistrationStep
 	{
 		/// <summary>
-		/// Request one of <see cref="PurposeUse" />
-		/// </summary>
-		RequestPurpose = 0,
-
-		/// <summary>
 		/// Validate the phone number 
 		/// </summary>
 		ValidatePhone = 1,

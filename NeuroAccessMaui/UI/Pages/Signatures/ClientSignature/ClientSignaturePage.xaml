@@ -51,7 +51,7 @@
 								<RowDefinition Height="{Binding NationalityCode, Converter={converters:AutoIfNonEmpty}}" />
 								<RowDefinition Height="{Binding Gender, Converter={converters:AutoIfNonEmpty}}" />
 								<RowDefinition Height="{Binding BirthDate, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding HasPhotos, Converter={converters:AutoIfNonEmpty}}" />
+								<!--<RowDefinition Height="{Binding HasPhotos, Converter={converters:AutoIfNonEmpty}}" />-->
 							</Grid.RowDefinitions>
 							<Label Grid.Row="0" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize FirstName}" />
 							<Label Grid.Row="0" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding FirstName}" />

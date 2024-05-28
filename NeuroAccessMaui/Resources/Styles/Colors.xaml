@@ -52,7 +52,8 @@
 	<Color x:Key="DisabledFilledButtonForegroundLight">#7B7F83</Color>
 
 	<Color x:Key="EnabledFilledButtonBackgroundDark">#50998C</Color>
-	<Color x:Key="EnabledFilledButtonForegroundDark">#161617</Color>
+	<!-- Original: <Color x:Key="EnabledFilledButtonForegroundDark">#161617</Color> -->
+	<Color x:Key="EnabledFilledButtonForegroundDark">#F5F6F7</Color>
 	<Color x:Key="DisabledFilledButtonBackgroundDark">#252526</Color>
 	<Color x:Key="DisabledFilledButtonForegroundDark">#666667</Color>
 
@@ -111,5 +112,22 @@
 
 	<Color x:Key="ReceiveMessageBackgroundDark">#206060</Color>
 	<Color x:Key="ReceiveMessageBorderDark">#308080</Color>
+
+	<!-- Password -->
+	<Color x:Key="WeakPasswordBarBackgroundLight">#33F2495C</Color>
+	<Color x:Key="WeakPasswordBarBackgroundDark">#55FF7585</Color>
+	<Color x:Key="WeakPasswordBarForegroundLight">#F2495C</Color>
+	<Color x:Key="WeakPasswordBarForegroundDark">#FF7585</Color>
+
+	<Color x:Key="MediumPasswordBarBackgroundLight">#33F75606</Color>
+	<Color x:Key="MediumPasswordBarBackgroundDark">#55FFA172</Color>
+	<Color x:Key="MediumPasswordBarForegroundLight">#F98317</Color>
+	<Color x:Key="MediumPasswordBarForegroundDark">#FFA172</Color>
+
+	<Color x:Key="StrongPasswordBarBackgroundLight">#333E776D</Color>
+	<Color x:Key="StrongPasswordBarBackgroundDark">#5550998C</Color>
+	<Color x:Key="StrongPasswordBarForegroundLight">#3E776D</Color>
+	<Color x:Key="StrongPasswordBarForegroundDark">#50998C</Color>
+
 
 </ResourceDictionary>

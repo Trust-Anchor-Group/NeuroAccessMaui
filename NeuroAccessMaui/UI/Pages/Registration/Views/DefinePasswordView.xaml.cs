@@ -1,3 +1,4 @@
+
 namespace NeuroAccessMaui.UI.Pages.Registration.Views
 {
 	public partial class DefinePasswordView

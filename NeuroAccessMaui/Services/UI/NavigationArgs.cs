@@ -8,6 +8,20 @@
 		private NavigationArgs? parentArgs = null;
 		private BackMethod backMethod = BackMethod.Inherited;
 		private string? uniqueId = null;
+		
+		/// <summary>
+		/// The completion source for the navigation task.
+		/// Will return true when the navigation and transitions are completed.
+		/// </summary>
+		public readonly TaskCompletionSource<bool> NavigationCompletionSource = new ();
+
+		/// <summary>
+		/// Returns the task for <see cref="NavigationCompletionSource"/>
+		/// </summary>
+		public Task GetNavigationCompletionTask()
+		{
+			return this.NavigationCompletionSource.Task;
+		}
 
 		/// <summary>
 		/// Sets the reference to the main parent's <see cref="NavigationArgs"/>.

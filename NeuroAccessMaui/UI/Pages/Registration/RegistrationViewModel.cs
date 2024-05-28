@@ -86,7 +86,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		{
 			get
 			{
-				return (ServiceRef.TagProfile.Step > RegistrationStep.RequestPurpose) &&
+				return (ServiceRef.TagProfile.Step > RegistrationStep.ValidatePhone) &&
 					// Disable the back button after the accpunt was created
 					string.IsNullOrEmpty(ServiceRef.TagProfile?.Account ?? string.Empty)
 					&& (ServiceRef.TagProfile?.Step < RegistrationStep.DefinePassword);
@@ -118,10 +118,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 
 					case RegistrationStep.ValidateEmail:
 						NewStep = RegistrationStep.ValidatePhone;
-						break;
-
-					case RegistrationStep.ValidatePhone:
-						NewStep = RegistrationStep.RequestPurpose;
 						break;
 
 					default: // Should not happen. Something forgotten? 

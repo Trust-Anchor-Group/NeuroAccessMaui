@@ -1,4 +1,5 @@
 ﻿using System.Windows.Input;
+using CommunityToolkit.Maui.Markup;
 using Microsoft.Maui.Controls.Shapes;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Core;
@@ -12,6 +13,32 @@ namespace NeuroAccessMaui.UI.Controls
 		private readonly Grid innerGrid;
 		private readonly PathShape innerPath;
 		private readonly Entry innerEntry;
+
+		public static readonly BindableProperty FocusedCommandProperty = BindableProperty.Create(
+			nameof(FocusedCommand),
+			typeof(ICommand),
+			typeof(CompositeEntry));
+
+		public ICommand FocusedCommand
+		{
+			get => (ICommand)this.GetValue(FocusedCommandProperty);
+			set => this.SetValue(FocusedCommandProperty, value);
+		}
+
+		public static readonly BindableProperty UnfocusedCommandProperty = BindableProperty.Create(
+			nameof(UnfocusedCommand),
+			typeof(ICommand),
+			typeof(CompositeEntry));
+
+		public ICommand UnfocusedCommand
+		{
+			get => (ICommand)this.GetValue(UnfocusedCommandProperty);
+			set => this.SetValue(UnfocusedCommandProperty, value);
+		}
+
+
+		/// <summary>Bindable property for <see cref="Keyboard"/>.</summary>
+		public static readonly BindableProperty KeyboardProperty = Entry.KeyboardProperty;
 
 		/// <summary>Bindable property for <see cref="BorderStyle"/>.</summary>
 		public static readonly BindableProperty BorderStyleProperty = BorderDataElement.BorderStyleProperty;
@@ -117,6 +144,13 @@ namespace NeuroAccessMaui.UI.Controls
 		{
 			this.innerEntry.BackgroundColor = NewValue;
 			this.innerBorder.BackgroundColor = NewValue;
+		}
+
+
+		public Keyboard Keyboard
+		{
+			get => (Keyboard)this.GetValue(KeyboardProperty);
+			set => this.SetValue(KeyboardProperty, value);
 		}
 
 		public Style BorderStyle
@@ -274,7 +308,8 @@ namespace NeuroAccessMaui.UI.Controls
 				IsReadOnly = this.IsReadOnly,
 				IsPassword = this.IsPassword,
 				Placeholder = this.Placeholder,
-				BackgroundColor = this.BackgroundColor
+				BackgroundColor = this.BackgroundColor,
+				Keyboard = this.Keyboard
 			};
 
 			this.innerEntry.Completed += this.InnerEntry_Completed;
@@ -308,6 +343,27 @@ namespace NeuroAccessMaui.UI.Controls
 			this.Content = this.innerBorder;
 
 			this.innerEntry.SetBinding(Entry.TextProperty, new Binding(EntryDataProperty.PropertyName, source: this, mode: BindingMode.TwoWay));
+			this.innerEntry.SetBinding(Entry.KeyboardProperty, new Binding(KeyboardProperty.PropertyName, source: this));
+			this.innerEntry.SetBinding(Entry.AutomationIdProperty, new Binding(AutomationIdProperty.PropertyName, source: this));
+
+			this.innerEntry.Focused += this.OnEntryFocused;
+			this.innerEntry.Unfocused += this.OnEntryUnfocused;
+		}		
+
+		private void OnEntryFocused(object? sender, FocusEventArgs e)
+		{
+			if (this.FocusedCommand?.CanExecute(e) ?? false)
+			{
+				this.FocusedCommand.Execute(e);
+			}
+		}
+
+		private void OnEntryUnfocused(object? sender, FocusEventArgs e)
+		{
+			if (this.UnfocusedCommand?.CanExecute(e) ?? false)
+			{
+				this.UnfocusedCommand.Execute(e);
+			}
 		}
 
 		private void InnerEntry_Completed(object? sender, EventArgs e)

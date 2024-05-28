@@ -177,8 +177,14 @@ namespace NeuroAccessMaui.Services
 		/// <summary>
 		/// Purpose for using the app
 		/// </summary>
+		#if DEBUG
+		[DefaultValue(PurposeUse.Experimental)]
+		public PurposeUse Purpose { get; set; } = PurposeUse.Experimental;
+		#else
 		[DefaultValue(PurposeUse.Personal)]
 		public PurposeUse Purpose { get; set; } = PurposeUse.Personal;
+		#endif
+		
 
 		/// <summary>
 		/// Set to current timestamp if the user used a Test OTP Code.
@@ -207,8 +213,8 @@ namespace NeuroAccessMaui.Services
 		/// <summary>
 		/// Current step in the registration process.
 		/// </summary>
-		[DefaultValue(RegistrationStep.RequestPurpose)]
-		public RegistrationStep Step { get; set; } = RegistrationStep.RequestPurpose;
+		[DefaultValue(RegistrationStep.ValidatePhone)]
+		public RegistrationStep Step { get; set; } = RegistrationStep.ValidatePhone;
 
 		/// <summary>
 		/// Currently selected theme.

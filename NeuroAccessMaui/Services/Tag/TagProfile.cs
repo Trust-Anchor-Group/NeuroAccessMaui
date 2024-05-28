@@ -70,7 +70,7 @@ namespace NeuroAccessMaui.Services.Tag
 		private bool isTest;
 		private PurposeUse purpose;
 		private DateTime? testOtpTimestamp;
-		private RegistrationStep step = RegistrationStep.RequestPurpose;
+		private RegistrationStep step = RegistrationStep.ValidatePhone;
 		private AppTheme? theme;
 		private AuthenticationMethod authenticationMethod;
 		private bool loadingProperties;
@@ -750,6 +750,26 @@ namespace NeuroAccessMaui.Services.Tag
 		}
 
 		/// <summary>
+		/// Indicates if the password is numeric.
+		/// </summary>
+		public bool IsNumericPassword
+		{
+			get
+			{
+				if (string.IsNullOrEmpty(this.LocalPasswordHash))
+					return false;
+
+				foreach (char ch in this.LocalPasswordHash)
+				{
+					if (ch < '0' || ch > '9')
+						return false;
+				}
+
+				return true;
+			}
+		}
+
+		/// <summary>
 		/// How the user authenticates itself with the App.
 		/// </summary>
 		public AuthenticationMethod AuthenticationMethod
@@ -1212,7 +1232,7 @@ namespace NeuroAccessMaui.Services.Tag
 			this.httpFileUploadMaxSize = 0;
 			this.isTest = false;
 			this.TestOtpTimestamp = null;
-			this.step = RegistrationStep.RequestPurpose;
+			this.step = RegistrationStep.ValidatePhone;
 			this.defaultXmppConnectivity = false;
 			this.nrReviews = 0;
 			this.supportsPushNotification = false;
@@ -1338,6 +1358,49 @@ namespace NeuroAccessMaui.Services.Tag
 				return PasswordStrength.TooShort;
 
 			return PasswordStrength.Strong;
+		}
+
+
+		/// <summary>
+		/// Returns a score for the password, which is based on the number of bits of security the password provides.
+		/// The higher the score, the more secure the password. It does not account for patterns, dictionary words, etc.
+		/// </summary>
+		/// <param name="Password">Password to check.</param>
+		/// <returns>The password score</returns>
+		public double CalculatePasswordScore(string? Password)
+		{
+			if (string.IsNullOrEmpty(Password))
+				return 0;
+
+			Password = Password.Normalize();
+
+			int DigitsCount = 0;
+			int LettersCount = 0;
+			int SignsCount = 0;
+
+			for (int i = 0; i < Password.Length;)
+			{
+				if (char.IsDigit(Password, i))
+					DigitsCount++;
+				else if (char.IsLetter(Password, i))
+					LettersCount++;
+				else
+					SignsCount++;
+
+				if (char.IsSurrogate(Password, i))
+					i += 2;
+				else
+					i += 1;
+			}
+
+			double score = 0;
+			if(DigitsCount > 0)
+				score += Math.Log(10, 2) * DigitsCount;
+			if(LettersCount > 0)
+				score += Math.Log(50, 2) * LettersCount;
+			if(SignsCount > 0)
+				score += Math.Log(96, 2) * SignsCount;
+			return score;
 		}
 
 		[GeneratedRegex(@"\p{Zs}+")]

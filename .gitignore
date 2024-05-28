@@ -31,6 +31,7 @@ bld/
 [Oo]bj/
 [Ll]og/
 [Ll]ogs/
+Build/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
@@ -396,3 +397,9 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# MAC DS_Store files
+**/.DS_Store
+
+# Meteor
+.meteor/

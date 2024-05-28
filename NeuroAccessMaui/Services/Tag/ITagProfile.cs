@@ -166,6 +166,11 @@ namespace NeuroAccessMaui.Services.Tag
 		bool HasLocalPassword { get; }
 
 		/// <summary>
+		/// Indicates if the password is numeric.
+		/// </summary>
+		bool IsNumericPassword { get; }
+
+		/// <summary>
 		/// How the user authenticates itself with the App.
 		/// </summary>
 		AuthenticationMethod AuthenticationMethod { get; set; }
@@ -397,6 +402,15 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <param name="Password">Password to validate.</param>
 		/// <returns>A <see cref="PasswordStrength"/> value indicating if the <paramref name="Password"/> is strong enough.</returns>
 		PasswordStrength ValidatePasswordStrength(string? Password);
+
+
+		/// <summary>
+		/// Returns a score for the password, which is based on the number of bits of security the password provides.
+		/// The higher the score, the more secure the password. It does not account for patterns, dictionary words, etc.
+		/// </summary>
+		/// <param name="Password">Password to check.</param>
+		/// <returns>The password score</returns>
+		double CalculatePasswordScore(string? Password);
 
 		/// <summary>
 		/// Sets the preferred theme.

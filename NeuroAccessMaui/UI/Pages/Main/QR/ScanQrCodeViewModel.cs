@@ -138,9 +138,9 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 			this.countDownTimer?.Stop();
 			this.OnBackgroundColorChanged();
 
-			if (this.CanOpenScanned)
+			if (this.CanOpen(ScannedText))
 			{
-				return this.TrySetResultAndClosePage(this.ScannedText!.Trim());
+				return this.TrySetResultAndClosePage(ScannedText!.Trim());
 			}
 			this.countDownTimer?.Start();
 			this.OnBackgroundColorChanged();

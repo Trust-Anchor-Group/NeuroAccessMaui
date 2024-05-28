@@ -20,7 +20,7 @@
 
 				<Grid Padding="{StaticResource LargeMargins}">
 					<VerticalStackLayout VerticalOptions="Start" Spacing="{StaticResource LargeSpacing}">
-						<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{StaticResource TransparentImageButton}"
+						<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{StaticResource FilledImageButton}"
 													 PathData="{x:Static ui:Geometries.BackButtonPath}" />
 						<Label HorizontalOptions="Center" HorizontalTextAlignment="Center" Style="{StaticResource PageTitleLabel}"
 								 Text="{Binding LocalizedQrPageTitle}" TextColor="{StaticResource PrimaryBackgroundLight}" />
@@ -53,21 +53,21 @@
 						<HorizontalStackLayout HorizontalOptions="Center" Spacing="{StaticResource LargeSpacing}">
 							<controls:ImageButton
 								Command="{Binding PickPhotoCommand, Source={x:Reference ThisPage}}"
-								Style="{StaticResource TransparentImageButton}"
+								Style="{StaticResource FilledImageButton}"
 								PathData="{x:Static ui:Geometries.CameraImageButtonPath}" />
 
 							<controls:ImageButton
 								Command="{Binding SwitchTorchCommand, Source={x:Reference ThisPage}}"
-								Style="{StaticResource TransparentImageButton}"
+								Style="{StaticResource FilledImageButton}"
 								PathData="{x:Static ui:Geometries.CameraTorchButtonPath}" />
 
 							<controls:ImageButton
 								Command="{Binding SwitchCameraCommand, Source={x:Reference ThisPage}}"
-								Style="{StaticResource TransparentImageButton}"
+								Style="{StaticResource FilledImageButton}"
 								PathData="{x:Static ui:Geometries.CameraSwitchButtonPath}" />
 						</HorizontalStackLayout>
 
-						<controls:TextButton Command="{Binding Path=SwitchModeCommand, Source={x:Reference ThisPage}}" Style="{StaticResource TransparentTextButton}"
+						<controls:TextButton Command="{Binding Path=SwitchModeCommand, Source={x:Reference ThisPage}}" Style="{StaticResource FilledTextButton}"
 													LabelData="{l:Localize QrEnterManually}" />
 					</VerticalStackLayout>
 				</Grid>

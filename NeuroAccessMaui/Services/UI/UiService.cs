@@ -12,6 +12,7 @@ using SkiaSharp;
 using Svg.Skia;
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Waher.Events;
@@ -243,6 +244,8 @@ namespace NeuroAccessMaui.Services.UI
 
 		#region Navigation
 
+
+
 		/// <inheritdoc/>
 		public Page CurrentPage => Shell.Current.CurrentPage;
 
@@ -271,6 +274,7 @@ namespace NeuroAccessMaui.Services.UI
 					this.EndLoad(false);
 				}
 			}
+
 
 			return Task.CompletedTask;
 		}
@@ -321,7 +325,7 @@ namespace NeuroAccessMaui.Services.UI
 
 				// Create a default navigation arguments if Args are null
 				NavigationArgs NavigationArgs = Args ?? new();
-
+		
 				NavigationArgs.SetBackArguments(ParentArgs, BackMethod, UniqueId);
 				this.PushArgs(Route, NavigationArgs);
 
@@ -346,6 +350,7 @@ namespace NeuroAccessMaui.Services.UI
 				finally
 				{
 					this.isNavigating = false;
+					NavigationArgs.NavigationCompletionSource.TrySetResult(true);
 				}
 			});
 		}
@@ -549,7 +554,7 @@ namespace NeuroAccessMaui.Services.UI
 		#endregion
 
 		#region Popups
-		
+
 		/// <summary>
 		/// The current stack of popup pages.
 		/// </summary>
@@ -561,7 +566,7 @@ namespace NeuroAccessMaui.Services.UI
 			TPage page = new();
 			TViewModel viewModel = new();
 			page.ViewModel = viewModel;
-			
+
 			this.popupStack.Push(page);
 			return MopupService.Instance.PushAsync(page);
 		}
@@ -570,7 +575,7 @@ namespace NeuroAccessMaui.Services.UI
 		public Task PushAsync<TPage, TViewModel>(TPage page, TViewModel viewModel) where TPage : BasePopup where TViewModel : BasePopupViewModel
 		{
 			page.ViewModel = viewModel;
-			
+
 			this.popupStack.Push(page);
 			return MopupService.Instance.PushAsync(page);
 		}
@@ -580,7 +585,7 @@ namespace NeuroAccessMaui.Services.UI
 		{
 			TViewModel viewModel = new();
 			page.ViewModel = viewModel;
-			
+
 			this.popupStack.Push(page);
 			return MopupService.Instance.PushAsync(page);
 		}
@@ -592,7 +597,7 @@ namespace NeuroAccessMaui.Services.UI
 			{
 				ViewModel = viewModel
 			};
-			
+
 			this.popupStack.Push(page);
 			return MopupService.Instance.PushAsync(page);
 		}
@@ -619,7 +624,7 @@ namespace NeuroAccessMaui.Services.UI
 			TPage page = new();
 			TViewModel viewModel = new();
 			page.ViewModel = viewModel;
-			
+
 			this.popupStack.Push(page);
 			await MopupService.Instance.PushAsync(page);
 			return await viewModel.Result;
@@ -629,7 +634,7 @@ namespace NeuroAccessMaui.Services.UI
 		public async Task<TReturn?> PushAsync<TPage, TViewModel, TReturn>(TPage page, TViewModel viewModel) where TPage : BasePopup where TViewModel : ReturningPopupViewModel<TReturn>
 		{
 			page.ViewModel = viewModel;
-			
+
 			this.popupStack.Push(page);
 			await MopupService.Instance.PushAsync(page);
 			return await viewModel.Result;
@@ -641,7 +646,7 @@ namespace NeuroAccessMaui.Services.UI
 		{
 			TViewModel viewModel = new();
 			page.ViewModel = viewModel;
-			
+
 			this.popupStack.Push(page);
 			await MopupService.Instance.PushAsync(page);
 			return await viewModel.Result;
@@ -654,7 +659,7 @@ namespace NeuroAccessMaui.Services.UI
 			{
 				ViewModel = viewModel
 			};
-			
+
 			this.popupStack.Push(page);
 			await MopupService.Instance.PushAsync(page);
 
@@ -664,9 +669,10 @@ namespace NeuroAccessMaui.Services.UI
 		/// <inheritdoc/>
 		public async Task PopAsync()
 		{
-			if(this.popupStack.Count == 0)
+			if (this.popupStack.Count == 0)
 				return;
-			try {
+			try
+			{
 				object? vm = this.popupStack.Pop()?.BindingContext;
 				if (vm is not null)
 					(vm as BasePopupViewModel)?.OnPop();
@@ -685,7 +691,7 @@ namespace NeuroAccessMaui.Services.UI
 		/// <inheritdoc/>  
 		public async Task<ImageSource?> ConvertSvgUriToImageSource(string svgUri)
 		{
-			try 
+			try
 			{
 				//Fetch image
 				using HttpClient httpClient = new();
@@ -702,12 +708,12 @@ namespace NeuroAccessMaui.Services.UI
 				}
 
 				//Check that the svg was parsed correct
-				if(svg.Picture is null)
+				if (svg.Picture is null)
 					return null;
 
 				using (MemoryStream stream = new())
 				{
-					if(svg.Picture.ToImage(stream, SKColor.Parse("#00FFFFFF"),SKEncodedImageFormat.Png,100, 1, 1, SKColorType.Rgba8888, SKAlphaType.Premul, SKColorSpace.CreateSrgb()))
+					if (svg.Picture.ToImage(stream, SKColor.Parse("#00FFFFFF"), SKEncodedImageFormat.Png, 100, 1, 1, SKColorType.Rgba8888, SKAlphaType.Premul, SKColorSpace.CreateSrgb()))
 						return ImageSource.FromStream(() => new MemoryStream(stream.ToArray()));
 					return null;
 				}
