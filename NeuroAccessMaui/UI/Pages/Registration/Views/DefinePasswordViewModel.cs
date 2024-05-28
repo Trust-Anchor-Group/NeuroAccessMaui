@@ -72,10 +72,10 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		private string toggleNumericPasswordText = ServiceRef.Localizer[nameof(AppResources.OnboardingDefinePasswordCreateNumeric)];
 
 		[ObservableProperty]
-		private Keyboard keyboardType = Keyboard.Default;
+		private Keyboard keyboardType = Keyboard.Numeric;
 
 		[ObservableProperty]
-		private string toggleKeyboardTypeText = ServiceRef.Localizer[nameof(AppResources.OnboardingDefinePasswordCreateNumeric)];
+		private string toggleKeyboardTypeText = ServiceRef.Localizer[nameof(AppResources.OnboardingDefinePasswordCreateAlphanumeric)];
 
 
 
@@ -202,7 +202,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 		private void UpdateToggleKeyboardText()
 		{
-			Console.WriteLine("DEBUG");
 			if (this.KeyboardType == Keyboard.Default)
 				this.ToggleKeyboardTypeText = ServiceRef.Localizer[nameof(AppResources.OnboardingDefinePasswordCreateNumeric)];
 			else
