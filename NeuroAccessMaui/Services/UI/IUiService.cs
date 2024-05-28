@@ -65,9 +65,6 @@ namespace NeuroAccessMaui.Services.UI
 
 		#region Navigation
 
-		// TEMP 
-		Task WaitForNavigationToCompleteAsync();
-
 		/// <summary>
 		/// Navigates the AppShell to the specified route, with page arguments to match.
 		/// </summary>

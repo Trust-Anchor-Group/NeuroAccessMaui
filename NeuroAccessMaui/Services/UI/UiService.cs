@@ -313,18 +313,9 @@ namespace NeuroAccessMaui.Services.UI
 			return this.GoToAsync<NavigationArgs>(Route, null, BackMethod, UniqueId);
 		}
 
-		// TEMP 
-		private TaskCompletionSource<bool>? navigationCompletionSource;
-		public Task WaitForNavigationToCompleteAsync()
-		{
-			return this.navigationCompletionSource?.Task ?? Task.CompletedTask;
-		}
-
 		/// <inheritdoc/>
 		public async Task GoToAsync<TArgs>(string Route, TArgs? Args, BackMethod BackMethod = BackMethod.Inherited, string? UniqueId = null) where TArgs : NavigationArgs, new()
 		{
-			this.navigationCompletionSource = new TaskCompletionSource<bool>();
-			Stopwatch stopwatch = new Stopwatch();
 			await MainThread.InvokeOnMainThreadAsync(async () =>
 			{
 				ServiceRef.PlatformSpecific.HideKeyboard();
@@ -334,7 +325,7 @@ namespace NeuroAccessMaui.Services.UI
 
 				// Create a default navigation arguments if Args are null
 				NavigationArgs NavigationArgs = Args ?? new();
-
+		
 				NavigationArgs.SetBackArguments(ParentArgs, BackMethod, UniqueId);
 				this.PushArgs(Route, NavigationArgs);
 
@@ -343,14 +334,8 @@ namespace NeuroAccessMaui.Services.UI
 
 				try
 				{
-					Console.WriteLine("Navigating to: " + Route);
 					this.isNavigating = true;
-					stopwatch.Start();
-
 					await Shell.Current.GoToAsync(Route, NavigationArgs.Animated);
-
-					stopwatch.Stop();
-					this.navigationCompletionSource?.SetResult(true);
 				}
 				catch (Exception ex)
 				{
@@ -365,9 +350,7 @@ namespace NeuroAccessMaui.Services.UI
 				finally
 				{
 					this.isNavigating = false;
-					this.navigationCompletionSource = null;
-					Console.WriteLine("Navigated to: " + Route);
-					Console.WriteLine("Navigation time: " + stopwatch.ElapsedMilliseconds + "ms");
+					NavigationArgs.NavigationCompletionSource.TrySetResult(true);
 				}
 			});
 		}
