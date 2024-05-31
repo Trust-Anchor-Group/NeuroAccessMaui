@@ -4,6 +4,7 @@ using Android.Content;
 using Android.Content.PM;
 using Android.Nfc;
 using Android.OS;
+using Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;
 
 namespace NeuroAccessMaui
 {
@@ -17,7 +18,6 @@ namespace NeuroAccessMaui
 			DataSchemes = ["iotid", "iotdisco", "iotsc", "tagsign", "obinfo", "edaler", "nfeat", "xmpp", "aes256", "neuroaccess"])]
 	public class MainActivity : MauiAppCompatActivity
 	{
-
 		protected override void OnPostCreate(Bundle? savedInstanceState)
 		{
 			try
@@ -26,18 +26,21 @@ namespace NeuroAccessMaui
 			}
 			catch (Exception ex)
 			{
-					StringBuilder msg = new();
+				StringBuilder msg = new();
 
-					msg.AppendLine("An error occurred in the Android MainActivity.OnPostCreate method.");
-					msg.AppendLine("Exception message:");
-					msg.Append(ex.Message);
-					msg.AppendLine();
-					msg.AppendLine("```");
-					msg.AppendLine(ex.StackTrace);
-					msg.AppendLine("```");
+				msg.AppendLine("An error occurred in the Android MainActivity.OnPostCreate method.");
+				msg.AppendLine("Exception message:");
+				msg.Append(ex.Message);
+				msg.AppendLine();
+				msg.AppendLine("```");
+				msg.AppendLine(ex.StackTrace);
+				msg.AppendLine("```");
 
-					App.SendAlert(msg.ToString(), "text/plain").Wait();
+				App.SendAlert(msg.ToString(), "text/plain").Wait();
 			}
+
+			App.Current?.On<Microsoft.Maui.Controls.PlatformConfiguration.Android>().UseWindowSoftInputModeAdjust(WindowSoftInputModeAdjust.Resize);
+
 		}
 	}
 }
