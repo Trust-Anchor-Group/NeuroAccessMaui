@@ -36,10 +36,7 @@ namespace NeuroAccessMaui.Services
 		/// <param name="FileName">Filename of image file.</param>
 		void ShareImage(byte[] PngFile, string Message, string Title, string FileName);
 
-		/// <summary>
-		/// Force hide the keyboard
-		/// </summary>
-		void HideKeyboard();
+
 
 		/// <summary>
 		/// Make a blurred screenshot
@@ -68,5 +65,26 @@ namespace NeuroAccessMaui.Services
 		/// </summary>
 		/// <returns>Token information.</returns>
 		Task<TokenInformation> GetPushNotificationToken();
+
+		#region Keyboard
+		/// <summary>
+		/// Force hide the keyboard
+		/// </summary>
+		void HideKeyboard();
+
+		/// <summary>
+		/// Event that is triggered when the keyboard is shown
+		/// </summary>
+		event EventHandler KeyboardShown;
+		/// <summary>
+		/// Event that is triggered when the keyboard is hidden
+		/// </summary>
+		event EventHandler KeyboardHidden;
+		/// <summary>
+		/// Event that is triggered when the keyboard size changes
+		/// </summary>
+		event EventHandler<KeyboardSizeMessage> KeyboardSizeChanged;
+
+		#endregion
 	}
 }
