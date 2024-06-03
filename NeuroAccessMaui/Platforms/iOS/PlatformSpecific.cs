@@ -397,5 +397,11 @@ namespace NeuroAccessMaui.Services
 			return await Task.FromResult(TokenInformation);
 		}
 
+		#region Keyboard
+		public event EventHandler KeyboardShown;
+		public event EventHandler KeyboardHidden;
+		public event EventHandler<KeyboardSizeMessage> KeyboardSizeChanged;
+		#endregion
+
 	}
 }
