@@ -14,34 +14,81 @@
 							 Shell.FlyoutBehavior="Flyout"
 							 Shell.NavBarIsVisible="True">
 
-	<Grid x:Name="TheMainGrid"
+	<AbsoluteLayout>
+		<Grid x:Name="TheMainGrid"
 			RowDefinitions="auto,*,auto"
 			ColumnDefinitions="*"
-			BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+			BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}"
+			AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
 
-		<controls:Background Grid.RowSpan="3" />
+			<controls:Background Grid.RowSpan="3" />
 
-		<Grid Grid.Row="1"
+			<Grid Grid.Row="1"
 				RowDefinitions="auto,*"
 				Padding="{StaticResource LargeMargins}"
 				RowSpacing="{StaticResource LargeSpacing}">
 
-			<VerticalStackLayout Grid.Row="0" Spacing="{StaticResource LargeSpacing}">
-				<Image HorizontalOptions="Center" Source="{AppThemeBinding Light=neuro_access_logo_light.png, Dark=neuro_access_logo_dark.png}" />
-			</VerticalStackLayout>
+				<VerticalStackLayout Grid.Row="0" Spacing="{StaticResource LargeSpacing}">
+					<Image HorizontalOptions="Center" Source="{AppThemeBinding Light=neuro_access_logo_light.png, Dark=neuro_access_logo_dark.png}" />
+				</VerticalStackLayout>
 
-			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Grid.Row="1" VerticalOptions="End">
-				<controls:TextButton Command="{Binding ScanQrCodeCommand}" Style="{StaticResource FilledTextButton}" LabelData="{l:Localize QrScanCode}" />
-				<Label Text="{l:Localize ScanQrCodeLabel}" HorizontalTextAlignment="Center" LineBreakMode="WordWrap" Style="{StaticResource InfoLabel}" />
-			</VerticalStackLayout>
+				<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Grid.Row="1" VerticalOptions="End">
+					<controls:TextButton Command="{Binding ScanQrCodeCommand}" Style="{StaticResource FilledTextButton}" LabelData="{l:Localize QrScanCode}" />
+					<Label Text="{l:Localize ScanQrCodeLabel}" HorizontalTextAlignment="Center" LineBreakMode="WordWrap" Style="{StaticResource InfoLabel}" />
+				</VerticalStackLayout>
 
-		</Grid>
+			</Grid>
 
-		<controls:ImageButton Grid.Row="2" Command="{Binding Path=ViewIdCommand}" PathData="{x:Static ui:Geometries.ArrowUpPath}"
+			<controls:ImageButton Grid.Row="2" Command="{Binding Path=ViewIdCommand}" PathData="{x:Static ui:Geometries.ArrowUpPath}"
 									 Style="{StaticResource ExpanderButton}"/>
 
-		<Grid.GestureRecognizers>
-			<SwipeGestureRecognizer Direction="Up" Swiped="SwipeGestureRecognizer_Swiped"/>
-		</Grid.GestureRecognizers>
-	</Grid>
+			<Grid.GestureRecognizers>
+				<SwipeGestureRecognizer Direction="Up" Swiped="SwipeGestureRecognizer_Swiped"/>
+			</Grid.GestureRecognizers>
+		</Grid>
+		<Border AbsoluteLayout.LayoutBounds="0,1,1,110"
+		        AbsoluteLayout.LayoutFlags="PositionProportional,WidthProportional"
+		        BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}"
+		        VerticalOptions="Fill"
+		        HorizontalOptions="Fill"
+		        Margin="0" Padding="15,0">
+			<Border.StrokeShape>
+				<RoundRectangle CornerRadius="20,20,0,0"/>
+			</Border.StrokeShape>
+			<Border.Shadow>
+				<Shadow Brush="{AppThemeBinding Light={StaticResource SecondaryForegroundLight}, Dark={StaticResource SecondaryForegroundDark}}"
+				        Opacity="0.3"
+				        Offset="0,-5"
+				        Radius="2"/>
+			</Border.Shadow>
+			<!-- Bottom Buttons -->
+			<Grid HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+
+				<!-- Scan QR Button -->
+				<controls:TemplatedButton Grid.Column="0" Command="{x:Binding ScanQrCodeCommand}">
+					<Border Style="{StaticResource ClickableBorderStrong}" InputTransparent="True" HorizontalOptions="Fill">
+						<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
+							<Image Grid.Column="0" Source="{AppThemeBinding Light=light_mode_dark, Dark=light_mode_dark}"  Margin="{StaticResource SmallRightMargins}"/>
+							<Label Grid.Column="1" Style="{StaticResource FilledTextButtonLabel}" Text="Scan QR" FontSize="17"/>
+						</Grid>
+					</Border>
+				</controls:TemplatedButton>
+
+				<!-- Show ID Button -->
+				<controls:TemplatedButton Grid.Column="1" Command="{x:Binding ViewIdCommand}">
+					<Border Style="{StaticResource ClickableBorderStrong}"  InputTransparent="True" HorizontalOptions="Fill">
+						<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
+							<Image Grid.Column="0" Source="{AppThemeBinding Light=light_mode_dark, Dark=light_mode_dark}" Margin="{StaticResource SmallRightMargins}"/>
+							<Label Grid.Column="1" Style="{StaticResource FilledTextButtonLabel}" Text="Show ID" FontSize="17" />
+						</Grid>
+					</Border>
+				</controls:TemplatedButton>
+			</Grid>
+
+		</Border>
+	</AbsoluteLayout>
 </base:BaseContentPage>
