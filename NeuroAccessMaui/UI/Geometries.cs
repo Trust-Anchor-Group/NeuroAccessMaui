@@ -10,6 +10,27 @@ namespace NeuroAccessMaui.UI
 	public static class Geometries
 	{
 		/// <summary>
+		/// Show ID button icon
+		/// </summary>
+		public static readonly Geometry ShowIdIconPath = GeometryConverter.ParseStringToPathGeometry(
+			"""
+			M18 9H14V10.5H18V9Z
+			M18 12H14V13.5H18V12Z
+			M9 12C9.82843 12 10.5 11.3284 10.5 10.5C10.5 9.67157 9.82843 9 9 9C8.17157 9 7.5 9.67157 7.5 10.5C7.5 11.3284 8.17157 12 9 12Z
+			M11.08 13.18C10.44 12.9 9.74 12.75 9 12.75C8.26 12.75 7.56 12.9 6.92 13.18C6.36 13.42 6 13.96 6 14.57V15H12V14.57C12 13.96 11.64 13.42 11.08 13.18Z
+			M3.5 4C2.67157 4 2 4.67157 2 5.5V17.5C2 18.3284 2.67157 19 3.5 19H20.5C21.3284 19 22 18.3284 22 17.5V5.5C22 4.67157 21.3284 4 20.5 4H3.5ZM20 6H4V17H20V6Z
+			""");
+
+
+		/// <summary>
+		/// Scan QR code button icon
+		/// </summary>
+		public static readonly Geometry ScanQrIconPath = GeometryConverter.ParseStringToPathGeometry(
+			"""
+			M9.5 6.5V9.5H6.5V6.5H9.5ZM11 5H5V11H11V5ZM9.5 14.5V17.5H6.5V14.5H9.5ZM11 13H5V19H11V13ZM17.5 6.5V9.5H14.5V6.5H17.5ZM19 5H13V11H19V5ZM13 13H14.5V14.5H13V13ZM14.5 14.5H16V16H14.5V14.5ZM16 13H17.5V14.5H16V13ZM13 16H14.5V17.5H13V16ZM14.5 17.5H16V19H14.5V17.5ZM16 16H17.5V17.5H16V16ZM17.5 14.5H19V16H17.5V14.5ZM17.5 17.5H19V19H17.5V17.5ZM22 7H20V4H17V2H22V7ZM22 22V17H20V20H17V22H22ZM2 22H7V20H4V17H2V22ZM2 2V7H4V4H7V2H2Z
+			""");
+
+		/// <summary>
 		/// Curved lines used for the app background.
 		/// </summary>
 		public static readonly Geometry CurvedLinesPath = GeometryConverter.ParseStringToPathGeometry(
