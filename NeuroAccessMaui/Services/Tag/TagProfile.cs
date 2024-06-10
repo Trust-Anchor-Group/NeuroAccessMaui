@@ -66,6 +66,7 @@ namespace NeuroAccessMaui.Services.Tag
 		private string? localPasswordHash;
 		private long httpFileUploadMaxSize;
 		private bool supportsPushNotification;
+		private bool isNumericPassword;
 		private int nrReviews;
 		private bool isTest;
 		private PurposeUse purpose;
@@ -138,6 +139,7 @@ namespace NeuroAccessMaui.Services.Tag
 				NeuroFeaturesJid = this.NeuroFeaturesJid,
 				SupportsPushNotification = this.SupportsPushNotification,
 				PinHash = this.LocalPasswordHash,
+				IsNumericPassword = this.IsNumericPassword,
 				IsTest = this.IsTest,
 				Purpose = this.Purpose,
 				TestOtpTimestamp = this.TestOtpTimestamp,
@@ -191,6 +193,7 @@ namespace NeuroAccessMaui.Services.Tag
 				this.NeuroFeaturesJid = Configuration.NeuroFeaturesJid;
 				this.SupportsPushNotification = Configuration.SupportsPushNotification;
 				this.LocalPasswordHash = Configuration.PinHash;
+				this.IsNumericPassword = Configuration.IsNumericPassword;
 				this.IsTest = Configuration.IsTest;
 				this.Purpose = Configuration.Purpose;
 				this.TestOtpTimestamp = Configuration.TestOtpTimestamp;
@@ -722,7 +725,11 @@ namespace NeuroAccessMaui.Services.Tag
 		/// </summary>
 		public string LocalPassword
 		{
-			set => this.LocalPasswordHash = this.ComputePasswordHash(value);
+			set 
+			{
+				this.LocalPasswordHash = this.ComputePasswordHash(value);
+				this.IsNumericPassword = value.IsDigits();
+			}
 		}
 
 		/// <summary>
@@ -754,18 +761,15 @@ namespace NeuroAccessMaui.Services.Tag
 		/// </summary>
 		public bool IsNumericPassword
 		{
-			get
+			get => this.isNumericPassword;
+			private set 
 			{
-				if (string.IsNullOrEmpty(this.LocalPasswordHash))
-					return false;
-
-				foreach (char ch in this.LocalPasswordHash)
+				if (this.isNumericPassword != value)
 				{
-					if (ch < '0' || ch > '9')
-						return false;
+					this.isNumericPassword = value;
+					this.FlagAsDirty(nameof(this.IsNumericPassword));
 				}
 
-				return true;
 			}
 		}
 
@@ -1420,5 +1424,6 @@ namespace NeuroAccessMaui.Services.Tag
 			if (Reference.IsTokenCreationTemplate)
 				this.HasContractTokenCreationTemplatesReferences = true;
 		}
+
 	}
 }

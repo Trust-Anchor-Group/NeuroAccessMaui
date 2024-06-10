@@ -103,6 +103,12 @@ namespace NeuroAccessMaui.Services
 		public string? PasswordHashMethod { get; set; }
 
 		/// <summary>
+		/// Is the password numeric?
+		/// </summary>
+		[DefaultValueNull]		
+		public bool IsNumericPassword { get; set; }
+
+		/// <summary>
 		/// Legal Jabber Id
 		/// </summary>
 		[DefaultValueNull]

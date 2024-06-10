@@ -168,7 +168,7 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <summary>
 		/// Indicates if the password is numeric.
 		/// </summary>
-		bool IsNumericPassword { get; }
+		bool IsNumericPassword { get;}
 
 		/// <summary>
 		/// How the user authenticates itself with the App.
