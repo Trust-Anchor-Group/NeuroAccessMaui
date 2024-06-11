@@ -65,8 +65,8 @@
 	<Color x:Key="DisabledTransparentButtonBackgroundLight">#DEE0E2</Color>
 	<Color x:Key="DisabledTransparentButtonForegroundLight">#7B7F83</Color>
 
-	<Color x:Key="EnabledTransparentButtonBackgroundDark">#3350998C</Color>
-	<Color x:Key="EnabledTransparentButtonForegroundDark">#3E776D</Color>
+	<Color x:Key="EnabledTransparentButtonBackgroundDark">#FF313133</Color>
+	<Color x:Key="EnabledTransparentButtonForegroundDark">#E5FFFFFF</Color>
 	<Color x:Key="DisabledTransparentButtonBackgroundDark">#252526</Color>
 	<Color x:Key="DisabledTransparentButtonForegroundDark">#666667</Color>
 
