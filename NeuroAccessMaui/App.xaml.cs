@@ -389,8 +389,8 @@ namespace NeuroAccessMaui
 			if (!this.initCompleted.Wait(60000))
 				throw new Exception("Initialization did not complete in time.");
 
-			if (!await AuthenticateUser(AuthenticationPurpose.Start))
-				await Stop();
+			//if (!await AuthenticateUser(AuthenticationPurpose.Start))
+			//	await Stop();
 		}
 
 		/// <summary>
@@ -409,8 +409,8 @@ namespace NeuroAccessMaui
 		{
 			await this.DoResume(false);
 
-			if (!await AuthenticateUser(AuthenticationPurpose.Resume))
-				await Stop();
+			//if (!await AuthenticateUser(AuthenticationPurpose.Resume))
+			//	await Stop();
 		}
 
 		private async Task PerformStartup(bool isResuming, bool BackgroundStart)
