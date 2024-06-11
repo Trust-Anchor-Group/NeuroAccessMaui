@@ -37,36 +37,6 @@
 
 						<Label Style="{StaticResource InfoLabel}" Text="{Binding Path=Purpose}" />
 
-						<Label HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="Large" Text="{l:Localize LegalId}"
-								 Style="{StaticResource SectionTitleLabel}" />
-
-						<VerticalStackLayout Margin="{StaticResource LargeMargins}" Spacing="{StaticResource SmallSpacing}"
-													HorizontalOptions="Center" VerticalOptions="Center" 
-													IsVisible="{Binding FirstPhotoSource, Converter={converters:OnlyShowNonEmpty}}">
-							<Border Style="{StaticResource OutlinedImageButtonBorder}" Padding="0">
-								<Image Source="{Binding FirstPhotoSource}" Rotation="{Binding FirstPhotoRotation}"
-										 WidthRequest="250" Aspect="AspectFit" HorizontalOptions="Center" Margin="0"/>
-							</Border>
-							<VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="0">
-								<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding FullName}" HorizontalOptions="Center" Margin="0" Padding="0" />
-								<Label Style="{StaticResource InfoLabel}" Text="{Binding PersonalNumber}" HorizontalOptions="Center" Margin="0" Padding="0" />
-							</VerticalStackLayout>
-						</VerticalStackLayout>
-
-						<Image x:Name="QrCode" Source="{Binding QrCode}" IsVisible="{Binding HasQrCode}" WidthRequest="{Binding QrCodeWidth}"
-								 HeightRequest="{Binding QrCodeHeight}" HorizontalOptions="Center">
-							<Image.GestureRecognizers>
-								<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding LegalId}" />
-							</Image.GestureRecognizers>
-						</Image>
-
-						<HorizontalStackLayout HorizontalOptions="Center" Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource SmallBottomMargins}">
-							<Path VerticalOptions="Center" HeightRequest="20" WidthRequest="20" Aspect="Uniform"
-									Data="{x:Static ui:Geometries.CirclePath}"
-									Fill="{Binding State, Converter={converters:IdentityStateToColor}}" />
-
-							<Label Style="{StaticResource ValueLabel}" Text="{Binding State, Converter={converters:LocalizedState}}" />
-						</HorizontalStackLayout>
 					</VerticalStackLayout>
 				</Frame>
 
