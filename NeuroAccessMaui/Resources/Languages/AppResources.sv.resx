@@ -1644,6 +1644,12 @@
   <data name="ScanQRCode" xml:space="preserve">
     <value>Skanna QR-kod</value>
   </data>
+  <data name="ScanQRShort" xml:space="preserve">
+    <value>Skanna QR</value>
+  </data>
+  <data name="ShowIDShort" xml:space="preserve">
+    <value>Visa ID</value>
+  </data>
   <data name="SelectContactToPay" xml:space="preserve">
     <value>Nedan finns alla kontakter i din kontaktbok. Välj den kontakt som du vill göra betalningen till.</value>
   </data>

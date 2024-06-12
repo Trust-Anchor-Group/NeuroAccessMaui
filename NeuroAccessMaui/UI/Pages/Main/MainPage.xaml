@@ -72,7 +72,7 @@
 							      Data="{x:Static ui:Geometries.ScanQrIconPath}"
 							      Style="{StaticResource TransparentTemplateButtonPath}"
 							      />
-							<Label Grid.Column="1" Style="{StaticResource TransparentTemplateButtonLabel}" Margin="{StaticResource SmallLeftMargins}"  Text="Scan QR"/>
+							<Label Grid.Column="1" Style="{StaticResource TransparentTemplateButtonLabel}" Margin="{StaticResource SmallLeftMargins}"  Text="{l:Localize ScanQRShort}"/>
 						</Grid>
 					</Border>
 				</controls:TemplatedButton>
@@ -85,7 +85,7 @@
 							      Data="{x:Static ui:Geometries.ShowIdIconPath}"
 							      Style="{StaticResource FilledTemplateButtonPath}"
 							/>
-							<Label Grid.Column="1" Style="{StaticResource FilledTemplateButtonLabel}" Margin="{StaticResource SmallLeftMargins}" Text="Show ID" />
+							<Label Grid.Column="1" Style="{StaticResource FilledTemplateButtonLabel}" Margin="{StaticResource SmallLeftMargins}" Text="{l:Localize ShowIDShort}" />
 						</Grid>
 					</Border>
 				</controls:TemplatedButton>

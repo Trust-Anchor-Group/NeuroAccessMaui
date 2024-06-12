@@ -1644,6 +1644,12 @@
   <data name="ScanQRCode" xml:space="preserve">
     <value>Scan QR Code</value>
   </data>
+  <data name="ScanQRShort" xml:space="preserve">
+    <value>Scan QR</value>
+  </data>
+  <data name="ShowIDShort" xml:space="preserve">
+    <value>Show ID</value>
+  </data>
   <data name="SelectContactToPay" xml:space="preserve">
     <value>Below are all contacts in your contact book. Select the contact to whom you want to make the payment.</value>
   </data>
