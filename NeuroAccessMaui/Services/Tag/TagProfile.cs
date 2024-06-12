@@ -2,6 +2,7 @@
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Storage;
+using NeuroAccessMaui.UI;
 using System.ComponentModel;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -1178,8 +1179,17 @@ namespace NeuroAccessMaui.Services.Tag
 		/// </summary>
 		public void SetTheme()
 		{
-			if (Application.Current is not null && this.Theme.HasValue)
-				Application.Current.UserAppTheme = this.Theme.Value;
+				if (Application.Current is null || !this.Theme.HasValue)
+					return;
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
+					Application.Current.UserAppTheme = this.Theme.Value;
+
+					CommunityToolkit.Maui.Core.Platform.StatusBar.SetStyle(this.Theme.Value == AppTheme.Dark ? 
+						CommunityToolkit.Maui.Core.StatusBarStyle.LightContent : CommunityToolkit.Maui.Core.StatusBarStyle.DarkContent);
+					CommunityToolkit.Maui.Core.Platform.StatusBar.SetColor(AppColors.PrimaryBackground);
+
+				});
 		}
 
 		#endregion
