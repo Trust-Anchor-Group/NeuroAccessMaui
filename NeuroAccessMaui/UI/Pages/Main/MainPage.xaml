@@ -42,21 +42,7 @@
 				<SwipeGestureRecognizer Direction="Up" Swiped="SwipeGestureRecognizer_Swiped"/>
 			</Grid.GestureRecognizers>
 		</Grid>
-		<Border AbsoluteLayout.LayoutBounds="0,1,1,110"
-		        AbsoluteLayout.LayoutFlags="PositionProportional,WidthProportional"
-		        BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}"
-		        VerticalOptions="Fill"
-		        HorizontalOptions="Fill"
-		        Margin="0" Padding="15,0">
-			<Border.StrokeShape>
-				<RoundRectangle CornerRadius="20,20,0,0"/>
-			</Border.StrokeShape>
-			<Border.Shadow>
-				<Shadow Brush="{AppThemeBinding Light={StaticResource SecondaryForegroundLight}, Dark={StaticResource SecondaryForegroundDark}}"
-				        Opacity="0.3"
-				        Offset="0,-5"
-				        Radius="2"/>
-			</Border.Shadow>
+		<Border Style="{StaticResource BottomBarBorder}">
 			<!-- Bottom Buttons -->
 			<Grid HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
 				<Grid.ColumnDefinitions>

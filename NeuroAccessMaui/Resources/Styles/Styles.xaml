@@ -590,4 +590,28 @@
 		<Setter Property="Padding" Value="{StaticResource SmallLeftRightMargins}"/>
 	</Style>
 
+
+	<Style x:Key="BottomBarBorder" TargetType="Border">
+            <Setter Property="AbsoluteLayout.LayoutBounds" Value="0,1,1,110" />
+            <Setter Property="AbsoluteLayout.LayoutFlags" Value="PositionProportional,WidthProportional" />
+            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}" />
+            <Setter Property="VerticalOptions" Value="Fill" />
+            <Setter Property="HorizontalOptions" Value="Fill" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="Padding" Value="{StaticResource MediumMargins}" />
+            <Setter Property="StrokeShape">
+                <Setter.Value>
+                    <RoundRectangle CornerRadius="20,20,0,0" />
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Shadow">
+                <Setter.Value>
+                    <Shadow Brush="{AppThemeBinding Light={StaticResource SecondaryForegroundLight}, Dark={StaticResource SecondaryForegroundDark}}"
+                            Opacity="0.3"
+                            Offset="0,-5"
+                            Radius="2"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
 </ResourceDictionary>
