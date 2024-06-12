@@ -225,7 +225,7 @@ namespace NeuroAccessMaui.Services.Contracts
 
 					if (Identity is not null)
 					{
-						if (!await App.AuthenticateUser(AuthenticationPurpose.PetitionForSignatureReceived, true))
+						if (!await App.AuthenticateUser(AuthenticationPurpose.PetitionForSignatureReceived))
 							return;
 
 						await ServiceRef.UiService.GoToAsync(nameof(PetitionSignaturePage), new PetitionSignatureNavigationArgs(
