@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
@@ -22,6 +21,7 @@ using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.QR;
 using NeuroAccessMaui.Services.Xmpp;
+using NeuroAccessMaui.UI;
 using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.UI.Pages.Main;
 using NeuroAccessMaui.UI.Popups.Password;
@@ -144,8 +144,10 @@ namespace NeuroAccessMaui
 			if (!BackgroundStart)
 			{
 				this.InitializeComponent();
-				Current!.UserAppTheme = AppTheme.Unspecified;
-
+				//Current!.UserAppTheme = AppTheme.Unspecified;
+				AppTheme? currentTheme = ServiceRef.TagProfile.Theme;
+				ServiceRef.TagProfile.SetTheme(currentTheme ?? AppTheme.Light);
+	
 				// Start page
 				try
 				{
@@ -389,8 +391,8 @@ namespace NeuroAccessMaui
 			if (!this.initCompleted.Wait(60000))
 				throw new Exception("Initialization did not complete in time.");
 
-			if (!await AuthenticateUser(AuthenticationPurpose.Start))
-				await Stop();
+			//if (!await AuthenticateUser(AuthenticationPurpose.Start))
+			//	await Stop();
 		}
 
 		/// <summary>
@@ -409,8 +411,8 @@ namespace NeuroAccessMaui
 		{
 			await this.DoResume(false);
 
-			if (!await AuthenticateUser(AuthenticationPurpose.Resume))
-				await Stop();
+			//if (!await AuthenticateUser(AuthenticationPurpose.Resume))
+			//	await Stop();
 		}
 
 		private async Task PerformStartup(bool isResuming, bool BackgroundStart)
@@ -434,7 +436,6 @@ namespace NeuroAccessMaui
 				}
 
 				await ServiceRef.StorageService.Init(Token);
-
 				if (!configLoaded)
 				{
 					await this.CreateOrRestoreConfiguration();

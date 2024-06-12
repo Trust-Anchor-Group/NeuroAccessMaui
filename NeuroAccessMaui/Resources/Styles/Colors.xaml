@@ -5,15 +5,29 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
 	<!-- Pages -->
-	<Color x:Key="PrimaryBackgroundLight">#F5F6F7</Color>
-	<Color x:Key="PrimaryForegroundLight">#181F25</Color>
-	<Color x:Key="SecondaryBackgroundLight">#FCFCFC</Color>
-	<Color x:Key="SecondaryForegroundLight">#181F25</Color>
+	<Color x:Key="PrimaryBackgroundLight">#FFF5F6F7</Color>
+	<Color x:Key="PrimaryForegroundLight">#FF181F25</Color>
+	<Color x:Key="SecondaryBackgroundLight">#FFFCFCFC</Color>
+	<Color x:Key="SecondaryForegroundLight">#FF181F25</Color>
 
-	<Color x:Key="PrimaryBackgroundDark">#161617</Color>
-	<Color x:Key="PrimaryForegroundDark">#E7E7E7</Color>
+	<Color x:Key="PrimaryBackgroundDark">#FF161617</Color>
+	<Color x:Key="PrimaryForegroundDark">#E5FFFFFF</Color>
 	<Color x:Key="SecondaryBackgroundDark">#3E3E40</Color>
 	<Color x:Key="SecondaryForegroundDark">#EBEBEC</Color>
+
+	<Color x:Key="Elevation1BackgroundLight">#FFFCFCFC</Color>
+	<Color x:Key="Elevation2BackgroundLight">#FFF5F6F7</Color>
+	<Color x:Key="Elevation1ForegroundLight">#FF181F25</Color>
+	<Color x:Key="Elevation2ForegroundLight">#FF181F25</Color>
+
+	<Color x:Key="Elevation1BackgroundDark">#FF313133</Color>
+	<Color x:Key="Elevation2BackgroundDark">#FF3E3E40</Color>
+	<Color x:Key="Elevation1ForegroundDark">#E5FFFFFF</Color>
+	<Color x:Key="Elevation2ForegroundDark">#E5FFFFFF</Color>
+
+
+	<Color x:Key="AccentBackgroundLight">#1A4F7EAC</Color>
+	<Color x:Key="AccentBackgroundDark">#1A4F7EAC</Color>
 
 	<Color x:Key="AccentForegroundLight">#4F7EAC</Color>
 	<Color x:Key="AccentForegroundDark">#4F7EAC</Color>
@@ -45,6 +59,17 @@
 	<Color x:Key="NormalInfoForegroundDark">#787879</Color>
 	<Color x:Key="SelectedInfoForegroundDark">#161617</Color>
 
+	<!-- Transparent Buttons -->
+	<Color x:Key="EnabledTransparentButtonBackgroundLight">#333E776D</Color>
+	<Color x:Key="EnabledTransparentButtonForegroundLight">#3E776D</Color>
+	<Color x:Key="DisabledTransparentButtonBackgroundLight">#DEE0E2</Color>
+	<Color x:Key="DisabledTransparentButtonForegroundLight">#7B7F83</Color>
+
+	<Color x:Key="EnabledTransparentButtonBackgroundDark">#FF313133</Color>
+	<Color x:Key="EnabledTransparentButtonForegroundDark">#E5FFFFFF</Color>
+	<Color x:Key="DisabledTransparentButtonBackgroundDark">#252526</Color>
+	<Color x:Key="DisabledTransparentButtonForegroundDark">#666667</Color>
+
 	<!-- Filled Buttons -->
 	<Color x:Key="EnabledFilledButtonBackgroundLight">#3E776D</Color>
 	<Color x:Key="EnabledFilledButtonForegroundLight">#F5F6F7</Color>
@@ -52,10 +77,10 @@
 	<Color x:Key="DisabledFilledButtonForegroundLight">#7B7F83</Color>
 
 	<Color x:Key="EnabledFilledButtonBackgroundDark">#50998C</Color>
-	<!-- Original: <Color x:Key="EnabledFilledButtonForegroundDark">#161617</Color> -->
 	<Color x:Key="EnabledFilledButtonForegroundDark">#F5F6F7</Color>
 	<Color x:Key="DisabledFilledButtonBackgroundDark">#252526</Color>
 	<Color x:Key="DisabledFilledButtonForegroundDark">#666667</Color>
+
 
 	<!-- Outlined Buttons -->
 	<Color x:Key="EnabledOutlinedButtonBackgroundLight">Transparent</Color>

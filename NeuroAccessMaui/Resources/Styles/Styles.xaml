@@ -503,7 +503,6 @@
 	</Style>
 
 	<Style ApplyToDerivedTypes="True" TargetType="Border" x:Key="BorderSet">
-		<!-- In MAUI, 'HasShadow' is not a direct property of 'Border', so we might need to use 'BoxShadow' instead -->
 		<Setter Property="Shadow">
 			<Setter.Value>
 				<Shadow Offset="0,0" Radius="4" Opacity="0.8"/>

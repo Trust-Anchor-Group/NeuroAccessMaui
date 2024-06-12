@@ -148,5 +148,22 @@ namespace NeuroAccessMaui.Extensions
 				return Result;
 		}
 
+		/// <summary>
+		/// determines if a string consists of digits only
+		/// </summary>
+		/// <param name="s"></param>
+		/// <returns>True if all chars are digits otherwise false</returns>
+		public static bool IsDigits (this string s)
+		{
+			if (string.IsNullOrEmpty(s))
+				return false;
+			foreach (char c in s)
+			{
+				if (!char.IsDigit(c))
+					return false;
+			}
+			return true;
+		}
+
 	}
 }

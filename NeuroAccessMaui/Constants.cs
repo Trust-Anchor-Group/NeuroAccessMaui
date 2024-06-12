@@ -859,11 +859,11 @@
 			/// <summary>
 			/// The default width to use when generating QR Code images.
 			/// </summary>
-			public const int DefaultImageWidth = 250;
+			public const int DefaultImageWidth = 230;
 			/// <summary>
 			/// The default height to use when generating QR Code images.
 			/// </summary>
-			public const int DefaultImageHeight = 250;
+			public const int DefaultImageHeight = 230;
 		}
 
 		/// <summary>
