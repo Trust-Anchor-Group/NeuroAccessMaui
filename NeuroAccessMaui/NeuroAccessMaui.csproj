@@ -361,7 +361,7 @@
 		<EmbeddedResource Update="Resources\Languages\AppResources.resx">
 			<Generator>MSBuild:Compile</Generator>
 			<LastGenOutput>AppResources.Designer.cs</LastGenOutput>
-			<StronglyTypedFileName>$(IntermediateOutputPath)\AppResources.Designer.cs</StronglyTypedFileName>
+			<StronglyTypedFileName>Resources\Languages\AppResources.Designer.cs</StronglyTypedFileName>
 	      	<StronglyTypedLanguage>CSharp</StronglyTypedLanguage>
 			<StronglyTypedNamespace>NeuroAccessMaui.Resources.Languages</StronglyTypedNamespace>
 			<StronglyTypedClassName>AppResources</StronglyTypedClassName>
