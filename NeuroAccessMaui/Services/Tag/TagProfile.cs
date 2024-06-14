@@ -1183,11 +1183,17 @@ namespace NeuroAccessMaui.Services.Tag
 					return;
 				MainThread.BeginInvokeOnMainThread(() =>
 				{
+					try
+					{
 					Application.Current.UserAppTheme = this.Theme.Value;
-
 					CommunityToolkit.Maui.Core.Platform.StatusBar.SetStyle(this.Theme.Value == AppTheme.Dark ? 
 						CommunityToolkit.Maui.Core.StatusBarStyle.LightContent : CommunityToolkit.Maui.Core.StatusBarStyle.DarkContent);
 					CommunityToolkit.Maui.Core.Platform.StatusBar.SetColor(AppColors.PrimaryBackground);
+					}
+					catch (Exception)
+					{
+						return;
+					}
 
 				});
 		}
