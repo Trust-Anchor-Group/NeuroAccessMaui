@@ -42,6 +42,10 @@
 	<Color x:Key="DeletedBorderDark">#40A00000</Color>
 	<Color x:Key="DeletedBackgroundDark">#20A00000</Color>
 
+	<!-- Text -->
+	<Color x:Key="MutedTextLight">#80181F25</Color>
+	<Color x:Key="MutedTextDark">#80FFFFFF</Color>
+
 	<!-- List Items -->
 	<Color x:Key="NormalBackgroundLight">#F5F6F7</Color>
 	<Color x:Key="NormalForegroundLight">#181F25</Color>
