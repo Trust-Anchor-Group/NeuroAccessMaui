@@ -14,36 +14,29 @@
 							 Shell.FlyoutBehavior="Flyout"
 							 Shell.NavBarIsVisible="True">
 
-	<AbsoluteLayout>
-		<Grid x:Name="TheMainGrid"
-			RowDefinitions="auto,*"
-			ColumnDefinitions="*"
-			BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}"
-			AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
+	<Grid x:Name="TheMainGrid"
+		  RowDefinitions="*, auto"
+		  ColumnDefinitions="*"
+		  BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
 
-			<controls:Background Grid.RowSpan="3" />
+		<controls:Background/>
 
-			<Grid Grid.Row="1"
-				RowDefinitions="auto,*"
-				Padding="{StaticResource LargeMargins}"
-				RowSpacing="{StaticResource LargeSpacing}">
-
-				<VerticalStackLayout Grid.Row="0" Spacing="{StaticResource LargeSpacing}">
-					<Image HorizontalOptions="Center" Source="{AppThemeBinding Light=neuro_access_logo_light.png, Dark=neuro_access_logo_dark.png}" />
-				</VerticalStackLayout>
+		<!-- Main Content -->
+		<VerticalStackLayout Grid.Row="0"
+			  Padding="{StaticResource LargeMargins}"
+			  Spacing="{StaticResource LargeSpacing}"
+			  VerticalOptions="Fill" >
 
 
+			<Image VerticalOptions="Center" HorizontalOptions="Center" Source="{AppThemeBinding Light=neuro_access_logo_light.png, Dark=neuro_access_logo_dark.png}" />
 
-			</Grid>
-
-
-
-			<Grid.GestureRecognizers>
+			<VerticalStackLayout.GestureRecognizers>
 				<SwipeGestureRecognizer Direction="Up" Swiped="SwipeGestureRecognizer_Swiped"/>
-			</Grid.GestureRecognizers>
-		</Grid>
-		<Border Style="{StaticResource BottomBarBorder}">
-			<!-- Bottom Buttons -->
+			</VerticalStackLayout.GestureRecognizers>
+		</VerticalStackLayout>
+
+		<!-- Bottom Bar -->
+		<Border Grid.Row="1" Style="{StaticResource BottomBarBorder}">
 			<Grid HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*" />
@@ -55,9 +48,9 @@
 					<Border Style="{StaticResource TransparentTemplateButtonBorder}" InputTransparent="True" HorizontalOptions="Fill">
 						<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
 							<Path VerticalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
-							      Data="{x:Static ui:Geometries.ScanQrIconPath}"
-							      Style="{StaticResource TransparentTemplateButtonPath}"
-							      />
+								  Data="{x:Static ui:Geometries.ScanQrIconPath}"
+								  Style="{StaticResource TransparentTemplateButtonPath}"
+								  />
 							<Label Grid.Column="1" Style="{StaticResource TransparentTemplateButtonLabel}" Margin="{StaticResource SmallLeftMargins}"  Text="{l:Localize ScanQRShort}"/>
 						</Grid>
 					</Border>
@@ -68,15 +61,14 @@
 					<Border Style="{StaticResource FilledTemplateButtonBorder}"  InputTransparent="True" HorizontalOptions="Fill">
 						<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
 							<Path VerticalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
-							      Data="{x:Static ui:Geometries.ShowIdIconPath}"
-							      Style="{StaticResource FilledTemplateButtonPath}"
+								  Data="{x:Static ui:Geometries.ShowIdIconPath}"
+								  Style="{StaticResource FilledTemplateButtonPath}"
 							/>
 							<Label Grid.Column="1" Style="{StaticResource FilledTemplateButtonLabel}" Margin="{StaticResource SmallLeftMargins}" Text="{l:Localize ShowIDShort}" />
 						</Grid>
 					</Border>
 				</controls:TemplatedButton>
 			</Grid>
-
 		</Border>
-	</AbsoluteLayout>
+	</Grid>
 </base:BaseContentPage>
