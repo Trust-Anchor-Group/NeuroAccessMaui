@@ -79,12 +79,21 @@
 	<Style x:Key="KeyLabel" ApplyToDerivedTypes="False" TargetType="Label">
 		<Setter Property="FontSize" Value="14" />
 		<Setter Property="Margin" Value="10" />
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource MutedTextLight}, Dark={StaticResource MutedTextDark}}"/>
+		<Setter Property="FontFamily" Value="HaasGroteskBold"/>
 	</Style>
 
 	<Style x:Key="ValueLabel" ApplyToDerivedTypes="False" TargetType="Label">
 		<Setter Property="FontSize" Value="14" />
 		<Setter Property="Margin" Value="10" />
-		<Setter Property="FontAttributes" Value="Bold" />
+		<Setter Property="HorizontalTextAlignment" Value="End" />
+		<Setter Property="FontFamily" Value="HaasGroteskRegular"/>
+	</Style>
+
+	<Style x:Key="ItemDescriptionLabel" ApplyToDerivedTypes="False" TargetType="Label">
+		<Setter Property="FontSize" Value="14" />
+		<Setter Property="Margin" Value="10" />
+		<Setter Property="FontFamily" Value="HaasGroteskRegular"/>
 	</Style>
 
 	<Style x:Key="FormattedValueLabel" ApplyToDerivedTypes="False" TargetType="Label">
@@ -96,6 +105,7 @@
 		<Setter Property="FontSize" Value="14" />
 		<Setter Property="Margin" Value="10" />
 		<Setter Property="FontAttributes" Value="Bold" />
+		<Setter Property="HorizontalTextAlignment" Value="End" />
 		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ClickableLight}, Dark={StaticResource ClickableDark}}"/>
 	</Style>
 
