@@ -12,13 +12,15 @@
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature"
 							 xmlns:photos="clr-namespace:NeuroAccessMaui.Services.UI.Photos">
-	<AbsoluteLayout>
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}"
-				AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
+	<Grid x:Name="TheMainGrid"
+		  RowDefinitions="*, auto"
+		  ColumnDefinitions="*"
+		  BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+
 
 		<controls:Background/>
 
-		<ScrollView>
+		<ScrollView Grid.Row="0">
 			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
 
 				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{StaticResource ImageOnlyButton}"
@@ -26,7 +28,7 @@
 
 				<Label Style="{StaticResource PageTitleLabel}" Text="{l:Localize Petition}"/>
 
-				<!-- Photo and QR-code -->
+				<!-- Info -->
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout>
 
@@ -37,6 +39,15 @@
 								 Style="{StaticResource SectionTitleLabel}" />
 
 						<Label Style="{StaticResource InfoLabel}" Text="{Binding Path=Purpose}" />
+
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="auto" />
+								<ColumnDefinition Width="*" />
+							</Grid.ColumnDefinitions>
+							<Label Grid.Column="0" Grid.Row="0" Style="{StaticResource KeyLabel}" Text="From" />
+							<Label Grid.Column="1" Grid.Row="0" Style="{StaticResource ValueLabel}" Text="{Binding DisplayName}" />
+						</Grid>
 
 					</VerticalStackLayout>
 				</Frame>
@@ -283,8 +294,7 @@
 				</VerticalStackLayout>
 			</VerticalStackLayout>
 		</ScrollView>
-	</Grid>
-		<Border Style="{StaticResource BottomBarBorder}">
+		<Border Grid.Row="1" Style="{StaticResource BottomBarBorder}">
 			<!-- Bottom Buttons -->
 			<Grid HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
 				<Grid.ColumnDefinitions>
@@ -300,5 +310,5 @@
 			</Grid>
 
 		</Border>
-	</AbsoluteLayout>
+	</Grid>
 </base:BaseContentPage>

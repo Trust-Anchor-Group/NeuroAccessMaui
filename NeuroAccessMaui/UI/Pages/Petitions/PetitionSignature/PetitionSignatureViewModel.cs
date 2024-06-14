@@ -30,16 +30,16 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature
 			: base()
 		{
 			this.photosLoader = new PhotosLoader(this.Photos);
+			
+			if (Args is null)
+				return;
 
-			if (Args is not null)
-			{
-				this.RequestorIdentity = Args.RequestorIdentity;
-				this.requestorFullJid = Args.RequestorFullJid;
-				this.signatoryIdentityId = Args.SignatoryIdentityId;
-				this.contentToSign = Args.ContentToSign;
-				this.petitionId = Args.PetitionId;
-				this.Purpose = Args.Purpose;
-			}
+			this.RequestorIdentity = Args.RequestorIdentity;
+			this.requestorFullJid = Args.RequestorFullJid;
+			this.signatoryIdentityId = Args.SignatoryIdentityId;
+			this.contentToSign = Args.ContentToSign;
+			this.petitionId = Args.PetitionId;
+			this.Purpose = Args.Purpose;
 		}
 
 		/// <inheritdoc/>
@@ -116,6 +116,9 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature
 		// Full name of requesting entity.
 		public string FullName => ContactInfo.GetFullName(this.FirstName, this.MiddleNames, this.LastNames);
 
+		// The display name of the identity. If organization name is available, it is used, otherwise the full name.
+		public string? DisplayName => this.HasOrg ? this.OrgName : this.FullName;
+
 		#region Properties
 
 		/// <summary>
@@ -171,6 +174,8 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature
 		/// </summary>
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(FullName))]
+		[NotifyPropertyChangedFor(nameof(DisplayName))]
+
 		private string? firstName;
 
 		/// <summary>
@@ -178,6 +183,8 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature
 		/// </summary>
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(FullName))]
+		[NotifyPropertyChangedFor(nameof(DisplayName))]
+
 		private string? middleNames;
 
 		/// <summary>
@@ -185,6 +192,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature
 		/// </summary>
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(FullName))]
+		[NotifyPropertyChangedFor(nameof(DisplayName))]
 		private string? lastNames;
 
 		/// <summary>
@@ -257,6 +265,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature
 		/// The legal identity's organization name property
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(DisplayName))]
 		private string? orgName;
 
 		/// <summary>
@@ -323,6 +332,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature
 		/// If organization information is available.
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(DisplayName))]
 		private bool hasOrg;
 
 		/// <summary>
