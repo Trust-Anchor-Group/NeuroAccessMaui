@@ -23,31 +23,39 @@
 		<ScrollView Grid.Row="0">
 			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
 
-				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{StaticResource ImageOnlyButton}"
-											 PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-				<Label Style="{StaticResource PageTitleLabel}" Text="{l:Localize Petition}"/>
+				<Grid RowDefinitions="auto" ColumnDefinitions="*">
+
+
+					<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{StaticResource ImageOnlyButton}"
+					                      PathData="{x:Static ui:Geometries.BackButtonPath}" />
+					<Image HorizontalOptions="Center" VerticalOptions="Start" Source="{AppThemeBinding Light=neuro_assets_icon_dark, Dark=neuro_assets_icon_light}" WidthRequest="50" HeightRequest="50" />
+
+
+				</Grid>
 
 				<!-- Info -->
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout>
+						<Label Style="{StaticResource PageTitleLabel}" HorizontalTextAlignment="Center" Text="{l:Localize Petition}"/>
 
-						<Label HorizontalOptions="Center" VerticalOptions="CenterAndExpand" Text="{l:Localize PetitionSignatureInformationText}"
-								 Style="{StaticResource InfoLabel}" />
-
-						<Label HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="Large" Text="{l:Localize Purpose}"
-								 Style="{StaticResource SectionTitleLabel}" />
-
-						<Label Style="{StaticResource InfoLabel}" Text="{Binding Path=Purpose}" />
-
+						<Label HorizontalTextAlignment="Start" Text="{l:Localize PetitionSignatureInformationText}"
+						       Style="{StaticResource ValueLabel}" />
 						<Grid>
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="auto" />
 								<ColumnDefinition Width="*" />
 							</Grid.ColumnDefinitions>
-							<Label Grid.Column="0" Grid.Row="0" Style="{StaticResource KeyLabel}" Text="From" />
+							<Label Grid.Column="0" Grid.Row="0" Style="{StaticResource KeyLabel}" Text="{l:Localize From}" />
 							<Label Grid.Column="1" Grid.Row="0" Style="{StaticResource ValueLabel}" Text="{Binding DisplayName}" />
 						</Grid>
+
+						<Label Text="{l:Localize Purpose}"
+								 Style="{StaticResource KeyLabel}" Margin="{StaticResource SmallLeftTopMargins}" />
+
+						<Label Style="{StaticResource ValueLabel}" Margin="{StaticResource SmallMargins}" HorizontalTextAlignment="Start" Text="{Binding Path=Purpose}" />
+
+
 
 					</VerticalStackLayout>
 				</Frame>
@@ -56,9 +64,9 @@
 				<Frame Style="{StaticResource FrameSet}">
 					<mct:Expander>
 						<mct:Expander.Header>
-							<HorizontalStackLayout HorizontalOptions="Center">
-								<Label Style="{StaticResource SectionTitleLabel}" FontSize="Medium" Text="Advanced Information" />
-								<Image HeightRequest="24" WidthRequest="24" Margin="{StaticResource SmallLeftMargins}">
+							<HorizontalStackLayout HorizontalOptions="Center" Margin="{StaticResource SmallMargins}">
+								<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize Details}" />
+								<Image HeightRequest="16" WidthRequest="16" Margin="{StaticResource SmallLeftMargins}">
 									<Image.Triggers>
 										<DataTrigger TargetType="Image" Binding="{Binding Source={RelativeSource AncestorType={x:Type mct:Expander}}, Path=IsExpanded}" Value="True">
 											<Setter Property="Source" Value="{AppThemeBinding Light=arrow_up_light, Dark=arrow_up_dark}" />
@@ -284,19 +292,12 @@
 					</mct:Expander>
 				</Frame>
 
-
-				<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource SmallSpacing}">
-					<Label HorizontalOptions="Center" VerticalOptions="CenterAndExpand" Text="{l:Localize Options}"
-							 FontSize="Large" Style="{StaticResource SectionTitleLabel}"/>
-
-					<controls:TextButton x:Name="IgnoreButton" LabelData="{l:Localize Ignore}" Command="{Binding IgnoreCommand}"
-												Style="{StaticResource FilledTextButton}" />
-				</VerticalStackLayout>
 			</VerticalStackLayout>
 		</ScrollView>
+
 		<Border Grid.Row="1" Style="{StaticResource BottomBarBorder}">
 			<!-- Bottom Buttons -->
-			<Grid HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
+			<Grid HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand" ColumnSpacing="{StaticResource SmallSpacing}">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*" />
 					<ColumnDefinition Width="*" />
