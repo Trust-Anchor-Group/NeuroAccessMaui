@@ -2082,4 +2082,7 @@
   <data name="OnboardingDefinePasswordCreateNumeric" xml:space="preserve">
     <value>Skapa numerisk PIN</value>
   </data>
+  <data name="Details" xml:space="preserve">
+    <value>Detaljer</value>
+  </data>
 </root>
