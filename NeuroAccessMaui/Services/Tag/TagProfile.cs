@@ -726,7 +726,7 @@ namespace NeuroAccessMaui.Services.Tag
 		/// </summary>
 		public string LocalPassword
 		{
-			set 
+			set
 			{
 				this.LocalPasswordHash = this.ComputePasswordHash(value);
 				this.IsNumericPassword = value.IsDigits();
@@ -763,7 +763,7 @@ namespace NeuroAccessMaui.Services.Tag
 		public bool IsNumericPassword
 		{
 			get => this.isNumericPassword;
-			private set 
+			private set
 			{
 				if (this.isNumericPassword != value)
 				{
@@ -1179,23 +1179,23 @@ namespace NeuroAccessMaui.Services.Tag
 		/// </summary>
 		public void SetTheme()
 		{
-				if (Application.Current is null || !this.Theme.HasValue)
-					return;
-				MainThread.BeginInvokeOnMainThread(() =>
+			if (Application.Current is null || !this.Theme.HasValue)
+				return;
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				try
 				{
-					try
-					{
 					Application.Current.UserAppTheme = this.Theme.Value;
-					CommunityToolkit.Maui.Core.Platform.StatusBar.SetStyle(this.Theme.Value == AppTheme.Dark ? 
+					CommunityToolkit.Maui.Core.Platform.StatusBar.SetStyle(this.Theme.Value == AppTheme.Dark ?
 						CommunityToolkit.Maui.Core.StatusBarStyle.LightContent : CommunityToolkit.Maui.Core.StatusBarStyle.DarkContent);
 					CommunityToolkit.Maui.Core.Platform.StatusBar.SetColor(AppColors.PrimaryBackground);
-					}
-					catch (Exception)
-					{
-						return;
-					}
+				}
+				catch (Exception)
+				{
+					return;
+				}
 
-				});
+			});
 		}
 
 		#endregion
@@ -1414,11 +1414,11 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 
 			double score = 0;
-			if(DigitsCount > 0)
+			if (DigitsCount > 0)
 				score += Math.Log(10, 2) * DigitsCount;
-			if(LettersCount > 0)
+			if (LettersCount > 0)
 				score += Math.Log(50, 2) * LettersCount;
-			if(SignsCount > 0)
+			if (SignsCount > 0)
 				score += Math.Log(96, 2) * SignsCount;
 			return score;
 		}
