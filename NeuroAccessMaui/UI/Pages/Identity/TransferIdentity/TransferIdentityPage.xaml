@@ -29,7 +29,7 @@
 					<VerticalStackLayout>
 						<Label Text="{l:Localize TransferIdentityInformationText}" Style="{StaticResource InfoLabel}" Margin="{StaticResource SmallBottomMargins}" />
 						<Image x:Name="QrCode" Source="{Binding Path=QrCode}" HorizontalOptions="CenterAndExpand" Margin="0"
-                       WidthRequest="{Binding Path=QrCodeWidth, Mode=OneTime}" HeightRequest="{Binding Path=QrCodeHeight, Mode=OneTime}">
+                       WidthRequest="240" HeightRequest="240">
 							<Image.GestureRecognizers>
 								<TapGestureRecognizer Command="{Binding CopyUriToClipboardCommand}"/>
 							</Image.GestureRecognizers>

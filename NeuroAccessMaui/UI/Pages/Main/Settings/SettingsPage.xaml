@@ -139,6 +139,8 @@
 							</VerticalStackLayout>
 						</Border>
 
+						<controls:TextButton Style="{StaticResource FilledTextButton}" Command="{Binding TransferCommand}" LabelData="Transfer"></controls:TextButton>
+
 					</VerticalStackLayout>
 				</Border>
 
