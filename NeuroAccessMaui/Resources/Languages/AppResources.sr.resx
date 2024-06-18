@@ -136,52 +136,52 @@
     <value>Odbio</value>
   </data>
   <data name="TagEngraved" xml:space="preserve">
-    <value>Oznaka ugravirana sa linkom ka {0}.</value>
+    <value>Tag ugraviran sa linkom ka {0}.</value>
   </data>
   <data name="TagNotEngraved" xml:space="preserve">
     <value>Nije moguće ugravirati oznaku sa vezom do {0}.</value>
   </data>
   <data name="PasswordChanged" xml:space="preserve">
-    <value>Lozinka je uspešno promenjena.</value>
+    <value>PIN je uspešno promenjen.</value>
   </data>
   <data name="UnableToChangePassword" xml:space="preserve">
     <value>Nije moguće promeniti mrežnu lozinku.</value>
   </data>
   <data name="PasswordIsInvalid" xml:space="preserve">
-    <value>Lozinka je nevažeća. Imate {0} pokušaja.</value>
+    <value>PIN je nevažeći. Imate {0} pokušaja.</value>
   </data>
   <data name="PasswordsDoNotMatch" xml:space="preserve">
-    <value>Lozinke se ne podudaraju</value>
+    <value>PIN-ovi se ne podudaraju</value>
   </data>
   <data name="PasswordIsInvalidAplicationBlockedForever" xml:space="preserve">
-    <value>Premašili ste broj pokušaja da navedete lozinku. Vaša prijava je zauvek blokirana</value>
+    <value>Premašili ste broj pokušaja da obezbedite PIN. Vaša prijava je zauvek blokirana</value>
   </data>
   <data name="PasswordIsInvalidAplicationBlocked" xml:space="preserve">
-    <value>Premašili ste broj pokušaja da navedete lozinku. Vaša prijava je blokirana do {0}.</value>
+    <value>Premašili ste broj pokušaja da obezbedite PIN. Vaša prijava je blokirana do {0}.</value>
   </data>
   <data name="PasswordIsInvalidAplicationBlockedTillTomorrow" xml:space="preserve">
-    <value>Premašili ste broj pokušaja da navedete lozinku. Vaša prijava je blokirana do sutra u {0}.</value>
+    <value>Premašili ste broj pokušaja da obezbedite PIN. Vaša prijava je blokirana do sutra u {0}.</value>
   </data>
   <data name="PasswordIsInvalidAplicationBlockedForOneWeek" xml:space="preserve">
-    <value>Premašili ste broj pokušaja da navedete lozinku. Vaša prijava je blokirana već nedelju dana</value>
+    <value>Premašili ste broj pokušaja da obezbedite PIN. Vaša prijava je blokirana već nedelju dana</value>
   </data>
   <data name="PasswordTooShort" xml:space="preserve">
-    <value>Dužina lozinke mora biti najmanje {0} znakova.</value>
+    <value>Dužina PIN-a mora biti {0} znakova.</value>
   </data>
   <data name="PasswordContainsName" xml:space="preserve">
-    <value>Lozinka ne sme da sadrži nijednu reč iz imena identiteta.</value>
+    <value>PIN ne sme da sadrži nijednu reč iz imena identiteta.</value>
   </data>
   <data name="PasswordContainsPersonalNumber" xml:space="preserve">
-    <value>Lozinka ne sme da sadrži lični broj identiteta.</value>
+    <value>PIN ne sme da sadrži lični broj identiteta.</value>
   </data>
   <data name="PasswordContainsAddress" xml:space="preserve">
-    <value>Lozinka ne sme da sadrži nijednu reč iz redova adrese identiteta.</value>
+    <value>PIN ne sme da sadrži nijednu reč sa adrese identiteta.</value>
   </data>
   <data name="PasswordContainsEMail" xml:space="preserve">
-    <value>Lozinka ne sme da sadrži e-adresu identiteta.</value>
+    <value>PIN ne sme da sadrži e-adresu identiteta.</value>
   </data>
   <data name="PasswordContainsPhoneNumber" xml:space="preserve">
-    <value>Lozinka ne sme da sadrži broj telefona identiteta.</value>
+    <value>PIN ne sme da sadrži broj telefona identiteta.</value>
   </data>
   <data name="PasswordWithNotEnoughDigitsLettersSigns" xml:space="preserve">
     <value>Najmanje se {0} moraju koristiti pojedinačna slova, cifre ili simboli.</value>
@@ -196,10 +196,19 @@
     <value>Takođe morate da koristite najmanje {0} ili simbola.</value>
   </data>
   <data name="PasswordWithTooManyIdenticalSymbols" xml:space="preserve">
-    <value>Lozinka ne sme da sadrži više {0} identičnih simbola.</value>
+    <value>PIN ne sme da sadrži više {0} identiиnih simbola.</value>
   </data>
   <data name="PasswordWithTooManySequencedSymbols" xml:space="preserve">
-    <value>Lozinka ne sme da sadrži više {0} za sekvence, npr.</value>
+    <value>PIN ne sme da sadrži više {0} za sekvence, npr.</value>
+  </data>
+  <data name="PasswordWeakSecurity" xml:space="preserve">
+    <value>Slabo obezbeđenje</value>
+  </data>
+  <data name="PasswordMediumSecurity" xml:space="preserve">
+    <value>Srednja bezbednost</value>
+  </data>
+  <data name="PasswordStrongSecurity" xml:space="preserve">
+    <value>Jaka bezbednost</value>
   </data>
   <data name="ThereIsNoNetwork" xml:space="preserve">
     <value>Ne postoji mreža</value>
@@ -232,13 +241,13 @@
     <value>Prekinuta</value>
   </data>
   <data name="XmppState_Registering" xml:space="preserve">
-    <value>Registracija kod brokera</value>
+    <value>Registracija kod dobavljača usluga</value>
   </data>
   <data name="XmppState_RequestingSession" xml:space="preserve">
     <value>Zahtevanje sesije</value>
   </data>
   <data name="XmppState_SettingPresence" xml:space="preserve">
-    <value>Postavljanje prisustva</value>
+    <value>Registrovanje prisustva</value>
   </data>
   <data name="XmppState_StartingEncryption" xml:space="preserve">
     <value>Veza šifrovanja</value>
@@ -250,13 +259,13 @@
     <value>Uspostavljen tok</value>
   </data>
   <data name="YourLegalIdentity" xml:space="preserve">
-    <value>Vaš pravni identitet</value>
+    <value>Vaš identitet</value>
   </data>
   <data name="YourLegalIdentityHasBeenCompromised" xml:space="preserve">
-    <value>Vaš pravni identitet je označen kao kompromitovan. Zbog toga ste preusmereni da kreirate novi nalog.</value>
+    <value>Vaš identitet je označen kao kompromitovan. Zbog toga ste preusmereni da kreirate novi nalog.</value>
   </data>
   <data name="YourLegalIdentityHasBeenObsoleted" xml:space="preserve">
-    <value>Vaš pravni identitet je označen kao zastareo. Zbog toga ste preusmereni da kreirate novi nalog.</value>
+    <value>Vaš identitet je označen kao zastareo. Zbog toga ste preusmereni da kreirate novi nalog.</value>
   </data>
   <data name="ClientMessageAuthenticationTimeout" xml:space="preserve">
     <value>Odgovor nije vraćen u okviru konfigurisanog vremena.</value>
@@ -394,7 +403,7 @@
     <value>Pozvani ste da kreirate nalog na {0}. Kliknite na dugme "U redu" i unesite ime naloga koji želite da kreirate.</value>
   </data>
   <data name="ThisCodeCannotBeClaimedAtThisTime" xml:space="preserve">
-    <value>Ovaj kôd predstavlja poziv za ID oznake i trenutno se ne može tražiti.</value>
+    <value>Ovaj kôd predstavlja neuro-pristupni poziv i trenutno se ne može tražiti.</value>
   </data>
   <data name="DomainDoesNotFollowEncryptionPolicy" xml:space="preserve">
     <value>{0} ne sledi sveprisutne smernice šifrovanja</value>
@@ -427,10 +436,10 @@
     <value>Nevažeći URI potpisa TAG.</value>
   </data>
   <data name="LegalIdNotApproved" xml:space="preserve">
-    <value>Pravna ID nije odobrena.</value>
+    <value>ID nije odobren.</value>
   </data>
   <data name="NoLegalIdSelected" xml:space="preserve">
-    <value>Nije izabran pravni ID.</value>
+    <value>Nije izabran ID.</value>
   </data>
   <data name="PeerReviewAccepted" xml:space="preserve">
     <value>Vršnjačka recenzija je prihvaćena</value>
@@ -448,13 +457,13 @@
     <value>Peticija za viđenje ugovora je odbijena.</value>
   </data>
   <data name="PetitionToViewLegalIdentityWasDenied" xml:space="preserve">
-    <value>Peticija za viđenje pravnog identiteta je odbijena.</value>
+    <value>Peticija za viđenje identiteta je odbijena.</value>
   </data>
   <data name="APetitionHasBeenSentToTheContract" xml:space="preserve">
     <value>Delovima ugovora poslata je peticija. Ako bilo koji deo prihvati peticiju, informacije o ugovoru će biti prikazane na ekranu.</value>
   </data>
   <data name="APetitionHasBeenSentToTheOwner" xml:space="preserve">
-    <value>Vlasniku identiteta poslata je peticija. Ako vlasnik prihvati peticiju, informacije o identitetu će biti prikazane na ekranu.</value>
+    <value>Vlasniku identiteta je poslata peticija. Ako vlasnik prihvati peticiju, informacije o identitetu će biti prikazane na ekranu.</value>
   </data>
   <data name="APetitionHasBeenSentToYourPeer" xml:space="preserve">
     <value>Vaša vršnjakinja je poslata peticija</value>
@@ -469,7 +478,7 @@
     <value>Vršnjak kojeg ste tražili da pregleda vašu aplikaciju, odbio je da je odobri.</value>
   </data>
   <data name="UnableToGetAccessToYourPrivateKeys" xml:space="preserve">
-    <value>Aplikacija nije mogla da dobije pristup privatnim ključevima identiteta. To obično znači da je identitet promenjen izvan opsega aplikacije. To takođe može biti rezultat oštećenja podataka. Možeš da probaš jednu od dve stvari. Pritisnite dugme Nastavi, da biste nastavili bez privatnih tastera. Dobijate pristup aplikaciji, ali ne možete ništa da potpišete. Zatim možete odabrati da ponovo primenite novi identitet iz glavnog menija, sa novim privatnim ključevima. Bazu podataka možete da pokušate i tako što ćete pritisnuti dugme "Popravi". U ovom drugom slučaju, aplikacija je zatvorena, a sledeći put kada se aplikacija otvori, prvo se pokuša procedura popravke.</value>
+    <value>Aplikacija nije mogla da dobije pristup privatnim ključevima identiteta. To obično znači da je identitet promenjen izvan opsega aplikacije. To takođe može biti rezultat oštećenja podataka. Možete da pokušate jednu od dve stvari: pritisnite dugme "Nastavi", da biste nastavili, bez privatnih tastera. Dobijate pristup aplikaciji, ali ne možete ništa da potpišete. Zatim možete odabrati da ponovo primenite novi identitet iz glavnog menija, sa novim privatnim ključevima. Bazu podataka takođe možete da pokušate da popravite tako što ćete pritisnuti dugme "Popravi". U ovom drugom slučaju, aplikacija je zatvorena, a sledeći put kada se aplikacija otvori, prvo se pokuša procedura popravke.</value>
   </data>
   <data name="FailedToClosePage" xml:space="preserve">
     <value>Zatvaranje stranice nije uspelo</value>
@@ -487,7 +496,7 @@
     <value>Pregledajte sve gorenavedene informacije i proverite odgovarajuća polja za potvrdu ako su informacije tačne. Ovo morate da uradite da biste mogli da odobrite informacije.</value>
   </data>
   <data name="YouNeedToCheckCarefullyReviewed" xml:space="preserve">
-    <value>Potrebno je da proverite polje koje ste pažljivo pregledali sve gorenavedene odgovarajuće informacije.</value>
+    <value>Potrebno je da potvrdite izbor u polju za potvrdu ako ste pažljivo pregledali sve gorenavedene odgovarajuće informacije.</value>
   </data>
   <data name="YouNeedToApproveToAssociate" xml:space="preserve">
     <value>Potrebno je da odobrite povezivanje ličnih informacija sa identitetom koji pregledate. Kada treća lica pregledaju informacije u identitetu, imaće pristup identitetu redaktora, radi transparentnosti.</value>
@@ -496,22 +505,22 @@
     <value>Želite li zaista da uklonite ovaj kontakt sa liste kontakata?</value>
   </data>
   <data name="AreYouSureYouWantToReportYourLegalIdentityAsCompromized" xml:space="preserve">
-    <value>Želite li zaista da prijavite svoj pravni identitet kao kompromitovan, ukraden ili hakovan?</value>
+    <value>Želite li zaista da prijavite svoj identitet kao kompromitovan, ukraden ili hakovan?</value>
   </data>
   <data name="AreYouSureYouWantToRevokeYourLegalIdentity" xml:space="preserve">
-    <value>Želite li zaista da opozovete svoj pravni identitet iz aplikacije?</value>
+    <value>Želite li zaista da opozovete identitet iz aplikacije?</value>
   </data>
   <data name="AreYouSureYouWantToTransferYourLegalIdentity" xml:space="preserve">
-    <value>Želite li zaista da prenesete svoj pravni identitet iz aplikacije u drugi? Identitet će biti uklonjen sa ovog uređaja kada se dovrši. Takođe se uverite da niko drugi ne može da vidi ekran tokom procesa.</value>
+    <value>Želite li zaista da prenesete svoj identitet sa ovog uređaja na drugi? Identitet će biti uklonjen sa ovog uređaja kada se dovrši. Takođe se uverite da niko drugi ne može da vidi ekran tokom procesa.</value>
   </data>
   <data name="UnexpectedResponse" xml:space="preserve">
     <value>Primljen je neočekivani odgovor.</value>
   </data>
   <data name="FileUploadServiceNotFound" xml:space="preserve">
-    <value>Nije pronađena nijedna usluga otpremanja datoteka na brokeru.</value>
+    <value>Nije pronađena nijedna usluga otpremanja datoteka u dobavljaču usluga.</value>
   </data>
   <data name="LegalServiceNotFound" xml:space="preserve">
-    <value>Nije pronađena pravna usluga na brokeru.</value>
+    <value>Na dobavljaču usluga nije pronađena pravna usluga.</value>
   </data>
   <data name="FailedToBindViewModelForPage" xml:space="preserve">
     <value>Povezivanje viewmodel {0} za {1}</value>
@@ -520,19 +529,13 @@
     <value>Vraćanje stanja u prethodno stanje za viewmodel {0} za stranicu {1}</value>
   </data>
   <data name="FailedToSaveViewModelStateForPage" xml:space="preserve">
-    <value>Čuvanje stanja za viewmodel za {0} stranice nije uspelo {1}</value>
+    <value>Čuvanje stanja za viewmodel za {0} za stranicu {1}</value>
   </data>
   <data name="FailedToUnbindViewModelForPage" xml:space="preserve">
     <value>Nije uspelo otpojaиanje viewmodel {0} za stranicu {1}</value>
   </data>
-  <data name="OnboardingPurposePageTitle" xml:space="preserve">
-    <value>Dobrodošli!</value>
-  </data>
-  <data name="OnboardingPurposePageDetails" xml:space="preserve">
-    <value>Odaberite u kom kontekstu nameravate da koristite Neuro-Access</value>
-  </data>
   <data name="OnboardingPhonePageTitle" xml:space="preserve">
-    <value>Da počnemo</value>
+    <value>Dobrodošli u Neuro-Access</value>
   </data>
   <data name="OnboardingPhonePageDetails" xml:space="preserve">
     <value>Da biste se proverili, potrebno je da unesete svoj broj telefona</value>
@@ -550,7 +553,7 @@
     <value>Unesite verifikacioni kôd poslat {0}</value>
   </data>
   <data name="OnboardingProviderPageTitle" xml:space="preserve">
-    <value>Izabrani dobavljač</value>
+    <value>Vaš dobavljač usluga</value>
   </data>
   <data name="OnboardingProviderPageDetails" xml:space="preserve">
     <value>Domena:</value>
@@ -562,43 +565,13 @@
     <value>Unesite ime koje želite da koristite za svoj nalog</value>
   </data>
   <data name="OnboardingDefinePasswordPageTitle" xml:space="preserve">
-    <value>Kreiranje lozinke</value>
-  </data>
-  <data name="OnboardingDefinePasswordPageDetails" xml:space="preserve">
-    <value>Da biste poboljšali bezbednost vašeg Neuro-Identiteta i osetljivih informacija, preporučujemo dodavanje dodatnog sloja zaštite kreiranjem lozinke</value>
+    <value>Kreiranje PIN koda</value>
   </data>
   <data name="AccountSectionTitle" xml:space="preserve">
     <value>Unesite ime naloga</value>
   </data>
   <data name="Create" xml:space="preserve">
     <value>Kreirate</value>
-  </data>
-  <data name="PurposesSectionTitle" xml:space="preserve">
-    <value>Odaberite svrhu pristupa </value>
-  </data>
-  <data name="PurposeEducational" xml:space="preserve">
-    <value>Edukativna upotreba</value>
-  </data>
-  <data name="PurposeEducationalDescription" xml:space="preserve">
-    <value>Ova opcija vam omogućava da koristite ID oznake u edukativne svrhe. Aplikaciju možete da koristite za potpisivanje ili pristup resursima kao privatno lice, bilo kao edukator ili kao student. Nalog je možda ograničen na vreme. Nalog se takođe može ukloniti kada se više ne koristi. Za više informacija obratite se dobavljaču usluga.</value>
-  </data>
-  <data name="PurposeExperimental" xml:space="preserve">
-    <value>Eksperimentalna upotreba</value>
-  </data>
-  <data name="PurposeExperimentalDescription" xml:space="preserve">
-    <value>Ova opcija vam omogućava da koristite ID oznake u eksperimentalne svrhe. Aplikaciju možete da koristite za potpisivanje ili pristup resursima kao privatno lice, sa ciljem da naučite tehnologiju i u koje svrhe može da se koristi. Nalog je možda ograničen na vreme. Nalog se takođe može ukloniti kada se više ne koristi. Za više informacija obratite se dobavljaču usluga.</value>
-  </data>
-  <data name="PurposePersonal" xml:space="preserve">
-    <value>Lična upotreba</value>
-  </data>
-  <data name="PurposePersonalDescription" xml:space="preserve">
-    <value>Ova opcija vam omogućava da koristite ID oznake u lične svrhe. Aplikaciju možete da koristite za potpisivanje ili pristup resursima kao privatno lice. Određene operacije mogu naneti troškove, u zavisnosti od dobavljača usluga kojeg odaberete. Za više informacija obratite se dobavljaču usluga.</value>
-  </data>
-  <data name="PurposeWork" xml:space="preserve">
-    <value>Upotreba na poslu</value>
-  </data>
-  <data name="PurposeWorkDescription" xml:space="preserve">
-    <value>Ova opcija vam omogućava da koristite ID oznake u radne svrhe. To uključuje rad ne za profit u organizacijama. Aplikaciju možete da koristite za potpisivanje ili pristup resursima kao predstavnik organizacije. Određene operacije mogu naneti troškove, u zavisnosti od dobavljača usluga kojeg odaberete. Za više informacija obratite se dobavljaču usluga.</value>
   </data>
   <data name="PhoneSectionTitle" xml:space="preserve">
     <value>Unesite broj telefona</value>
@@ -613,10 +586,10 @@
     <value>Potrebna je minimalna dužina 4</value>
   </data>
   <data name="NetworkSeemsToBeMissing" xml:space="preserve">
-    <value>Izgleda da nedostaje mreža. Proverite konfiguraciju i pokrivenost i pokušajte ponovo.</value>
+    <value>Izgleda da mreža nedostaje. Proverite konfiguraciju i pokrivenost i pokušajte ponovo.</value>
   </data>
   <data name="SendEmailWarning" xml:space="preserve">
-    <value>Šifra je poslata u e-poruci dodavačima e-pošte. Ako je ne primite, proverite i fasciklu za bezvrednu pošte.</value>
+    <value>Šifra je poslata vašim dodacima e-pošte. Ako je ne primite, proverite i fasciklu za bezvrednu pošte.</value>
   </data>
   <data name="SwitchingToTestPhoneNumberNotAllowed" xml:space="preserve">
     <value>Promena broja telefona u test jedan nije dozvoljena.</value>
@@ -679,13 +652,13 @@
     <value>Korišćena je privremena OTP šifra. Aplikacija će prestati da radi za oko nedelju dana. Moraćete ponovo da instalirate aplikaciju da biste je ponovo koristili.</value>
   </data>
   <data name="DefinePasswordSectionTitle1" xml:space="preserve">
-    <value>Unesite novu lozinku</value>
+    <value>Unesite novi pin</value>
   </data>
   <data name="DefinePasswordSectionTitle2" xml:space="preserve">
-    <value>Potvrda lozinke</value>
+    <value>Potvrda pin-a</value>
   </data>
   <data name="CreatePassword" xml:space="preserve">
-    <value>Kreiraj lozinku</value>
+    <value>Kreiraj PIN</value>
   </data>
   <data name="ScanQrCodeLabel" xml:space="preserve">
     <value>Skenirajte QR-kod kamerom.</value>
@@ -721,7 +694,7 @@
     <value>Ući</value>
   </data>
   <data name="EnterPassword" xml:space="preserve">
-    <value>Unesite lozinku</value>
+    <value>Unesite pin</value>
   </data>
   <data name="FirstName" xml:space="preserve">
     <value>Ime</value>
@@ -733,7 +706,7 @@
     <value>Prezimena</value>
   </data>
   <data name="LegalId" xml:space="preserve">
-    <value>Pravni ID</value>
+    <value>Identitet</value>
   </data>
   <data name="MiddleNames" xml:space="preserve">
     <value>Srednja imena</value>
@@ -823,7 +796,7 @@
     <value>Neuro-ID</value>
   </data>
   <data name="Technical" xml:space="preserve">
-    <value>Tehničke</value>
+    <value>Tehničke informacije</value>
   </data>
   <data name="Home" xml:space="preserve">
     <value>Kuжi</value>
@@ -835,25 +808,25 @@
     <value>Dozvoli snimanje (maksimalno 1 sat)</value>
   </data>
   <data name="AreYouSureYouWantToReportYourLegalIdentityAsCompromized1" xml:space="preserve">
-    <value>Želite li zaista da prijavite svoj pravni identitet kao kompromitovan, ukraden ili hakovan?</value>
+    <value>Želite li zaista da prijavite svoj identitet kao kompromitovan, ukraden ili hakovan?</value>
   </data>
   <data name="AreYouSureYouWantToRevokeYourLegalIdentity1" xml:space="preserve">
-    <value>Želite li zaista da opozovete svoj pravni identitet iz aplikacije?</value>
+    <value>Želite li zaista da opozovete identitet sa uređaja?</value>
   </data>
   <data name="AreYouSureYouWantToTransferYourLegalIdentity1" xml:space="preserve">
-    <value>Želite li zaista da prenesete svoj pravni identitet iz aplikacije u drugi? Identitet će biti uklonjen sa ovog uređaja kada se dovrši. Takođe se uverite da niko drugi ne može da vidi ekran tokom procesa.</value>
+    <value>Želite li zaista da prenesete identitet sa uređaja na drugi? Identitet će biti uklonjen sa ovog uređaja kada se dovrši. Takođe se uverite da niko drugi ne može da vidi ekran tokom procesa.</value>
   </data>
   <data name="Change" xml:space="preserve">
     <value>Promenite</value>
   </data>
   <data name="ChangePassword" xml:space="preserve">
-    <value>Promeni lozinku</value>
+    <value>Promeni PIN</value>
   </data>
   <data name="ChangePasswordDescription" xml:space="preserve">
-    <value>Odaberite drugu lozinku da biste se identifikovali. Promena lozinke će takođe kreirati novu nasumičnu lozinku za osnovnu komunikacionu mrežu.</value>
+    <value>Odaberite drugi PIN da biste se identifikovali. Promena PIN koda će takođe kreirati novu nasumičnu lozinku za osnovnu komunikacionu mrežu.</value>
   </data>
   <data name="ConfirmNewPassword" xml:space="preserve">
-    <value>Potvrdite novu lozinku:</value>
+    <value>Potvrdi novi PIN:</value>
   </data>
   <data name="DarkMode" xml:space="preserve">
     <value>Tamni režim</value>
@@ -862,10 +835,10 @@
     <value>Postavke ekrana</value>
   </data>
   <data name="EnterCurrentPassword" xml:space="preserve">
-    <value>Unesite trenutnu lozinku:</value>
+    <value>Unesite trenutni pin:</value>
   </data>
   <data name="EnterNewPassword" xml:space="preserve">
-    <value>Unesite novu lozinku:</value>
+    <value>Unesite novi pin:</value>
   </data>
   <data name="IdentitySettings" xml:space="preserve">
     <value>Postavke identiteta</value>
@@ -880,13 +853,13 @@
     <value>Režim osvetljenja</value>
   </data>
   <data name="ProhibitRecording" xml:space="preserve">
-    <value>Zabrani snimanje</value>
+    <value>Zabrani snimanje ekrana</value>
   </data>
   <data name="ReportAsCompromized" xml:space="preserve">
     <value>Izveštaj kao kompromitovan</value>
   </data>
   <data name="ReportAsCompromizedDescription" xml:space="preserve">
-    <value>Prijavite da li su aplikacija, lozinka ili telefon kompromitovani, hakovani ili ukradeni.</value>
+    <value>Prijavite da li su aplikacija, PIN ili telefon kompromitovani, hakovani ili ukradeni.</value>
   </data>
   <data name="RevokeIdentity" xml:space="preserve">
     <value>Opoziv identiteta</value>
@@ -913,10 +886,10 @@
     <value>Metod potvrde identiteta</value>
   </data>
   <data name="Fingerprint" xml:space="preserve">
-    <value>Otisaka prstiju</value>
+    <value>Biometrijski</value>
   </data>
   <data name="Password" xml:space="preserve">
-    <value>Lozinku</value>
+    <value>PIN</value>
   </data>
   <data name="Application" xml:space="preserve">
     <value>Aplikacije</value>
@@ -928,7 +901,7 @@
     <value>Želite li zaista da opozovete trenutnu ID aplikaciju?</value>
   </data>
   <data name="AreYouSureYouWantToSendThisIdApplication" xml:space="preserve">
-    <value>Želite li zaista da pošaljete ovu ID aplikaciju? Slanje ID aplikacije će zastareli vaš trenutni ID.</value>
+    <value>Želite li zaista da pošaljete novu ID aplikaciju? Slanje ID aplikacije će zastareli vaš trenutni ID.</value>
   </data>
   <data name="ConsentDescription" xml:space="preserve">
     <value>Pristajem na obradu ličnih podataka navedenih u ovoj aplikaciji, u svrhu provere valjanosti i odobravanja aplikacije.</value>
@@ -955,7 +928,7 @@
     <value>Istaknuti redaktori</value>
   </data>
   <data name="FingerprintDescription" xml:space="preserve">
-    <value>Skeniraj otisak prsta.</value>
+    <value>Skeniranje za potvrdu identiteta</value>
   </data>
   <data name="FingerprintTitle" xml:space="preserve">
     <value>Potrebna je potvrda identiteta</value>
@@ -985,7 +958,7 @@
     <value>Sledeće organizacione informacije su uključene u aplikaciju za organizacioni ID.</value>
   </data>
   <data name="PeerReviewDescription" xml:space="preserve">
-    <value>Vršnjačke recenzije su omogućene. Ovo vam omogućava da zahtevate od vršnjaka (osoba sa već odobrenim digitalnim ID-ovima) da pregledaju vašu aplikaciju i saradnički je odobre.</value>
+    <value>Vršnjačke recenzije su omogućene. Ovo vam omogućava da zatražite od vršnjaka (osoba sa već odobrenim digitalnim ID-ovima) da pregledaju vašu aplikaciju i odobre je.</value>
   </data>
   <data name="PersonalId" xml:space="preserve">
     <value>Lična lična id</value>
@@ -1012,7 +985,7 @@
     <value>Sledeće slike su uključene u aplikaciju.</value>
   </data>
   <data name="QrPageTitleScanPeerId" xml:space="preserve">
-    <value>ID skeniranja ravnopravnog uređaja</value>
+    <value>Skeniraj ID ravnopravnih</value>
   </data>
   <data name="RevokeApplication" xml:space="preserve">
     <value>Opozivanje aplikacije</value>
@@ -1306,7 +1279,7 @@
     <value>Sekundi</value>
   </data>
   <data name="SelectedContactCannotBeAdded" xml:space="preserve">
-    <value>Nije moguće dodati izabrani kontakt. Nema registrovan pravni ID.</value>
+    <value>Nije moguće dodati izabrani kontakt. Nema registrovan identitet.</value>
   </data>
   <data name="Send" xml:space="preserve">
     <value>Poљalji</value>
@@ -1408,7 +1381,7 @@
     <value>Poruka od:</value>
   </data>
   <data name="NeuroFeaturesServiceNotFound" xml:space="preserve">
-    <value>Nije pronađena usluga neuro-karakteristika na brokeru.</value>
+    <value>Usluga neuro-funkcija nije pronađena na dobavljaču usluga.</value>
   </data>
   <data name="PetitionFrom" xml:space="preserve">
     <value>Peticija od:</value>
@@ -1441,7 +1414,7 @@
     <value>Nije pronađena nijedna kontrolna usluga.</value>
   </data>
   <data name="EDalerServiceNotFound" xml:space="preserve">
-    <value>Nije pronađena eDaler usluga na brokeru.</value>
+    <value>Usluga eDaler nije pronađena na dobavljaču usluga.</value>
   </data>
   <data name="GettingOptionsCancelled" xml:space="preserve">
     <value>Dobijanje dostupnih opcija je otkazano.</value>
@@ -1465,7 +1438,7 @@
     <value>Nije pronađena usluga ličnog događaja.</value>
   </data>
   <data name="ProvisioningServiceNotFound" xml:space="preserve">
-    <value>Nije pronađena usluga pružanja na brokeru.</value>
+    <value>Usluga pružanja usluga nije pronađena na dobavljaču usluga.</value>
   </data>
   <data name="PushNotificationServiceNotFound" xml:space="preserve">
     <value>Nije pronađena usluga push-obaveštavanja.</value>
@@ -1486,7 +1459,7 @@
     <value>Odgovor na zahtev za potpis</value>
   </data>
   <data name="ThingRegistryServiceNotFound" xml:space="preserve">
-    <value>Nije pronađena usluga registratora kod brokera.</value>
+    <value>Usluga registratora nije pronađena kod dobavljača usluga.</value>
   </data>
   <data name="UnableToGetListOfMyDevices" xml:space="preserve">
     <value>Nije moguće dobiti listu mojih uređaja.</value>
@@ -1671,6 +1644,12 @@
   <data name="ScanQRCode" xml:space="preserve">
     <value>Skeniraj QR kôd</value>
   </data>
+  <data name="ScanQRShort" xml:space="preserve">
+    <value>Skeniraj QR</value>
+  </data>
+  <data name="ShowIDShort" xml:space="preserve">
+    <value>Prikaži ID</value>
+  </data>
   <data name="SelectContactToPay" xml:space="preserve">
     <value>Ispod su svi kontakti u vašoj knjizi kontakata. Izaberite kontakt kome želite da izvršite uplatu.</value>
   </data>
@@ -1717,7 +1696,7 @@
     <value>Trenutna</value>
   </data>
   <data name="SensorDataHeaderOther" xml:space="preserve">
-    <value>Drugo __________</value>
+    <value>Drugi</value>
   </data>
   <data name="SensorDataHeaderPeak" xml:space="preserve">
     <value>Vrhunac</value>
@@ -1765,7 +1744,7 @@
     <value>Fotografisanje nije podržano na ovom uređaju</value>
   </data>
   <data name="TheSpecifiedCodeIsNotALegalIdentity" xml:space="preserve">
-    <value>Potrebno je da skenirate drugi tip QR koda, onaj koji predstavlja pravni identitet</value>
+    <value>Potrebno je da skenirate drugi tip QR koda, onaj koji predstavlja Neuro-Access identitet</value>
   </data>
   <data name="ThingDisowned" xml:space="preserve">
     <value>Ovo se uspešno odreklo. Sada ga može tražiti novi vlasnik.</value>
@@ -1882,7 +1861,7 @@
     <value>Pristup identitetu</value>
   </data>
   <data name="PetitionIdentityInformationText" xml:space="preserve">
-    <value>Primljena je peticija za lične podatke vašeg pravnog identiteta. Pregledajte dole navedene informacije i odaberite način na koji želite da odgovorite.</value>
+    <value>Primljena je peticija za lične podatke vašeg identiteta. Pregledajte dole navedene informacije i odaberite način na koji želite da odgovorite.</value>
   </data>
   <data name="PetitionSignature" xml:space="preserve">
     <value>Zahteva se potpis</value>
@@ -2096,5 +2075,14 @@
   </data>
   <data name="UnsubscribeFrom" xml:space="preserve">
     <value>Otkaži pretplatu sa</value>
+  </data>
+  <data name="OnboardingDefinePasswordCreateAlphanumeric" xml:space="preserve">
+    <value>Kreiraj alfanumerički PIN</value>
+  </data>
+  <data name="OnboardingDefinePasswordCreateNumeric" xml:space="preserve">
+    <value>Kreiranje numeričkog PIN koda</value>
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value>Detalje</value>
   </data>
 </root>

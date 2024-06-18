@@ -118,10 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="NSCameraUsageDescription" xml:space="preserve">
-    <value>Neuro-Access a besoin d’accéder à l’appareil photo pour prendre des photos pour votre identité numérique, et lorsque vous voulez qu’il scanne des codes QR.</value>
+    <value>Neuro-Access a besoin d’accéder à l’appareil photo pour prendre des photos pour votre identité numérique et quand vous le souhaitez pour scanner les codes QR.</value>
   </data>
   <data name="NSPhotoLibraryAddUsageDescription" xml:space="preserve">
-    <value>Neuro-Access doit être en mesure d’ajouter des photos à vos galeries, si vous souhaitez enregistrer les photos que vous prenez pour une utilisation ultérieure.</value>
+    <value>Neuro-Access doit être en mesure d’ajouter des photos à vos galeries, si vous souhaitez enregistrer des photos que vous prenez pour une utilisation ultérieure.</value>
   </data>
   <data name="NSPhotoLibraryUsageDescription" xml:space="preserve">
     <value>Neuro-Access a besoin d’accéder à la galerie de photos pour que vous puissiez sélectionner une photo de profil pour votre pièce d’identité, obtenir des codes QR d’autres applications ou partager des images avec des contacts dans les chats.</value>
