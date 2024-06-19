@@ -5,6 +5,7 @@
 	/// </summary>
 	public enum RegistrationStep
 	{
+
 		/// <summary>
 		/// Validate the phone number 
 		/// </summary>
@@ -33,6 +34,16 @@
 		/// <summary>
 		/// Profile is completed.
 		/// </summary>
-		Complete = 6
+		Complete = 6,
+
+		/// <summary>
+		/// Enable biometric authentication
+		/// </summary>
+		Biometrics = 7,
+
+		/// <summary>
+		/// Finalize profile creation
+		/// </summary>
+		Finalize = 8
 	}
 }
