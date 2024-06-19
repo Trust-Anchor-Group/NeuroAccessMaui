@@ -567,6 +567,18 @@
   <data name="OnboardingDefinePasswordPageTitle" xml:space="preserve">
     <value>Skapa en PIN kod</value>
   </data>
+  <data name="OnboardingFinalizePageTitle" xml:space="preserve">
+    <value>Klar!</value>
+  </data>
+  <data name="OnboardingFinalizePageDetails" xml:space="preserve">
+    <value>Du kan nu börja använda Neuro-Access</value>
+  </data>
+  <data name="OnboardingBiometricsPageTitle" xml:space="preserve">
+    <value>Nästan klar</value>
+  </data>
+  <data name="OnboardingBiometricsPageDetails" xml:space="preserve">
+    <value>Neuro-Access fungerar bättre tillsammans med {0} eller {1}. Skulle du vilja aktivera biometrisk autentisering? Detta går att ändra senare i inställningar</value>
+  </data>
   <data name="AccountSectionTitle" xml:space="preserve">
     <value>Ange kontonamnet</value>
   </data>
@@ -2084,5 +2096,17 @@
   </data>
   <data name="Details" xml:space="preserve">
     <value>Detaljer</value>
+  </data>
+  <data name="Later" xml:space="preserve">
+    <value>Senare</value>
+  </data>
+  <data name="Enable" xml:space="preserve">
+    <value>Aktivera</value>
+  </data>
+  <data name="FaceRecognition" xml:space="preserve">
+    <value>Ansiktsigenkänning</value>
+  </data>
+  <data name="FingerprintRecognition" xml:space="preserve">
+    <value>Fingeravtrycksigenkänning</value>
   </data>
 </root>
