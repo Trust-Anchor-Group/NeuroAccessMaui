@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseRegistrationView x:Name="ThisPage"
+									x:Class="NeuroAccessMaui.UI.Pages.Registration.Views.FinalizeView"
+									x:DataType="viewmodel:FinalizeViewModel"
+									xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+									xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+									xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+									xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+									xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+									xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Registration"
+									xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
+									xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
+	<Grid RowSpacing="{StaticResource LargeSpacing}" RowDefinitions="*, auto">
+		<ScrollView Grid.Row="0" >
+			<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+				<Label
+					Style="{StaticResource PageTitleLabel}"
+					Text="{l:Localize OnboardingFinalizePageTitle}"
+					HorizontalTextAlignment="Center"
+					Margin="{StaticResource LargeBottomMargins}"/>
+				<Border Style="{StaticResource BorderSet}" Padding="{StaticResource LargeMargins}">
+					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}" VerticalOptions="Center" HorizontalOptions="Center">
+						
+						<!-- Checkmark Circle -->
+						<Frame WidthRequest="150" HeightRequest="150" HasShadow="False" CornerRadius="75" 
+							BackgroundColor="{AppThemeBinding Light={StaticResource EnabledTransparentButtonBackgroundLight}, Dark={StaticResource EnabledTransparentButtonBackgroundDark}}" HorizontalOptions="Center">
+							<Path
+								VerticalOptions="Center"
+								HorizontalOptions="Center"
+								HeightRequest="75"
+								WidthRequest="75"
+								Aspect="Uniform"
+								Data="{x:Static ui:Geometries.SuccessCheckmarkPath}"
+								Fill="{AppThemeBinding Light={StaticResource EnabledFilledButtonBackgroundLight}, Dark={StaticResource EnabledFilledButtonBackgroundDark}}" />
+						</Frame>
+						
+						
+						<!-- Text -->
+						<Border Style="{StaticResource AccentInfoBorder}" Padding="{StaticResource MediumMargins}">
+							<Label Style="{StaticResource AccentInfoLabel}"
+									Text="{l:Localize OnboardingFinalizePageDetails}" />
+						</Border>
+					</VerticalStackLayout>
+				</Border>
+			</VerticalStackLayout>
+		</ScrollView>
+        <controls:TextButton
+            VerticalOptions="End"
+            Command="{Binding ContinueCommand}"
+            Style="{StaticResource FilledTextButton}"
+            LabelData="{l:Localize Continue}"
+            Grid.Row="1" />
+	</Grid>
+</base:BaseRegistrationView>
