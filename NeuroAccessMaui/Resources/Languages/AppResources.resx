@@ -577,7 +577,7 @@
     <value>Almost done</value>
   </data>
   <data name="OnboardingBiometricsPageDetails" xml:space="preserve">
-    <value>Neuro-Access works best when using {0} or {1}. Would you like to enable this feature? This can also be changed in the settings later</value>
+    <value>Neuro-Access works best when using {0}. Would you like to enable this feature? This can also be changed in the settings later</value>
   </data>
   <data name="AccountSectionTitle" xml:space="preserve">
     <value>Enter the account name</value>
@@ -2103,10 +2103,25 @@
   <data name="Enable" xml:space="preserve">
     <value>Enable</value>
   </data>
-  <data name="FaceRecognition" xml:space="preserve">
-    <value>Face recognition</value>
+  <data name="BiometricAuthentication" xml:space="preserve">
+    <value>Biometric authentication</value>
   </data>
-  <data name="FingerprintRecognition" xml:space="preserve">
-    <value>Fingerprint scanning</value>
+  <data name="FaceId" xml:space="preserve">
+    <value>Face ID</value>
+  </data>
+  <data name="TouchId" xml:space="preserve">
+    <value>Touch ID</value>
+  </data>
+  <data name="WhatIsX" xml:space="preserve">
+    <value>What is {0}?</value>
+  </data>
+  <data name="BiometricAuthenticationInfo" xml:space="preserve">
+    <value>Biometric authentication uses your unique physical features, like your face or fingerprint, to ensure it's really you. It provides a simple and secure way to access Neuro-Access.</value>
+  </data>
+  <data name="FaceIdInfo" xml:space="preserve">
+    <value>Face ID recognizes your face to ensure it's really you, providing a simple and secure way to access Neuro-Access.</value>
+  </data>
+  <data name="TouchIdInfo" xml:space="preserve">
+    <value>Touch ID uses your fingerprint to ensure it's really you, providing a quick and secure way to access Neuro-Access.</value>
   </data>
 </root>

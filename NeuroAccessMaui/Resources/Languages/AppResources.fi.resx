@@ -567,6 +567,18 @@
   <data name="OnboardingDefinePasswordPageTitle" xml:space="preserve">
     <value>PIN-koodin luominen</value>
   </data>
+  <data name="OnboardingFinalizePageTitle" xml:space="preserve">
+    <value>Menestys!</value>
+  </data>
+  <data name="OnboardingFinalizePageDetails" xml:space="preserve">
+    <value>Voit nyt aloittaa Neuro-Accessin käytön</value>
+  </data>
+  <data name="OnboardingBiometricsPageTitle" xml:space="preserve">
+    <value>Melkein valmis</value>
+  </data>
+  <data name="OnboardingBiometricsPageDetails" xml:space="preserve">
+    <value>Neuro-Access toimii parhaiten {0} käytettäessä. Haluatko ottaa tämän ominaisuuden käyttöön? Tätä voidaan muuttaa myös asetuksissa myöhemmin</value>
+  </data>
   <data name="AccountSectionTitle" xml:space="preserve">
     <value>Kirjoita tilin nimi</value>
   </data>
@@ -589,7 +601,7 @@
     <value>Verkko näyttää puuttuvan. Tarkista kokoonpano ja kattavuus ja yritä uudelleen.</value>
   </data>
   <data name="SendEmailWarning" xml:space="preserve">
-    <value>Sähköpostin lisääjille on lähetetty koodi. Jos et saa sitä, tarkista myös roskapostikansiosi.</value>
+    <value>Sähköpostiosoitteeseesi on lähetetty koodi. Jos et saa sitä, tarkista myös roskapostikansiosi.</value>
   </data>
   <data name="SwitchingToTestPhoneNumberNotAllowed" xml:space="preserve">
     <value>Puhelinnumeron muuttaminen testinumeroksi ei ole sallittua.</value>
@@ -2084,5 +2096,32 @@
   </data>
   <data name="Details" xml:space="preserve">
     <value>Tiedot</value>
+  </data>
+  <data name="Later" xml:space="preserve">
+    <value>Myöhemmin</value>
+  </data>
+  <data name="Enable" xml:space="preserve">
+    <value>Ottaa käyttöön</value>
+  </data>
+  <data name="BiometricAuthentication" xml:space="preserve">
+    <value>Biometrinen todennus</value>
+  </data>
+  <data name="FaceId" xml:space="preserve">
+    <value>Kasvojen tunnus</value>
+  </data>
+  <data name="TouchId" xml:space="preserve">
+    <value>Kosketa tunnusta</value>
+  </data>
+  <data name="WhatIsX" xml:space="preserve">
+    <value>Mikä on {0}?</value>
+  </data>
+  <data name="BiometricAuthenticationInfo" xml:space="preserve">
+    <value>Biometrinen todennus käyttää ainutlaatuisia fyysisiä ominaisuuksiasi, kuten kasvojasi tai sormenjälkeäsi, varmistaakseen, että kyseessä todella olet sinä. Se tarjoaa yksinkertaisen ja turvallisen tavan käyttää Neuro-Accessia.</value>
+  </data>
+  <data name="FaceIdInfo" xml:space="preserve">
+    <value>Face ID tunnistaa kasvosi varmistaakseen, että ne todella olet sinä, ja tarjoaa yksinkertaisen ja turvallisen tavan käyttää Neuro-Accessia.</value>
+  </data>
+  <data name="TouchIdInfo" xml:space="preserve">
+    <value>Touch ID käyttää sormenjälkeäsi varmistaakseen, että kyseessä todella olet sinä, tarjoten nopean ja turvallisen tavan käyttää Neuro-Accessia.</value>
   </data>
 </root>

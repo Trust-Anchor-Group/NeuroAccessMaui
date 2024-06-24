@@ -69,13 +69,13 @@ namespace NeuroAccessMaui.Services
 		/// </summary>
 		public string? GetDeviceId()
 		{
-			try 
+			try
 			{
-				string ServiceName = AppInfo.PackageName; 
+				string ServiceName = AppInfo.PackageName;
 				const string AccountName = "DeviceIdentifier"; //Basically the key
 
 				// Define the search criteria for the SecRecord
-				SecRecord searchRecord = new (SecKind.GenericPassword)
+				SecRecord searchRecord = new(SecKind.GenericPassword)
 				{
 					Service = ServiceName,
 					Account = AccountName
@@ -88,13 +88,13 @@ namespace NeuroAccessMaui.Services
 					// If the record exists, return the identifier
 					return existingRecord.ValueData.ToString(NSStringEncoding.UTF8);
 				}
-				else if(resultCode == SecStatusCode.ItemNotFound)
+				else if (resultCode == SecStatusCode.ItemNotFound)
 				{
 					// No existing record found, create a new device identifier
 					string identifier = UIDevice.CurrentDevice.IdentifierForVendor.ToString();
 
 					// Define the SecRecord for storing the new identifier
-					SecRecord newRecord = new (SecKind.GenericPassword)
+					SecRecord newRecord = new(SecKind.GenericPassword)
 					{
 						Service = ServiceName,
 						Account = AccountName,
@@ -111,13 +111,13 @@ namespace NeuroAccessMaui.Services
 					SecStatusCode addResult = SecKeyChain.Add(newRecord);
 					if (addResult == SecStatusCode.Success)
 						return identifier; // Return the newly stored identifier
-						
+
 					throw new Exception($"Unable to store device identifier in Keychain - Code: {addResult} - Description: {SecStatusCodeExtensions.GetStatusDescription(addResult)}");
 				}
 				else
 					throw new Exception($"Unable to retrieve device identifier from Keychain - Code: {resultCode} - Description: {SecStatusCodeExtensions.GetStatusDescription(resultCode)}");
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				try
 				{
@@ -139,7 +139,7 @@ namespace NeuroAccessMaui.Services
 				{
 					Environment.Exit(0);
 				}
-			}	
+			}
 			return null;
 		}
 
@@ -247,6 +247,35 @@ namespace NeuroAccessMaui.Services
 					ServiceRef.LogService.LogException(ex);
 					return false;
 				}
+			}
+		}
+
+		/// <summary>
+		/// Gets the biometric method supported by the device.
+		/// Can return Face, Fingerprint, Unknown, or None.
+		/// </summary>
+		/// <returns>The BiometricMethod which is preferred/supported on this device</returns>
+		public BiometricMethod GetBiometricMethod()
+		{
+			if (!this.HasLocalAuthenticationContext)
+				return BiometricMethod.None;
+
+			try
+			{
+				if (!this.localAuthenticationContext.CanEvaluatePolicy(LAPolicy.DeviceOwnerAuthenticationWithBiometrics, out _))
+					return BiometricMethod.None;
+
+				return this.localAuthenticationContext.BiometryType switch
+				{
+					LABiometryType.FaceId => BiometricMethod.FaceId,
+					LABiometryType.TouchId => BiometricMethod.TouchId,
+					_ => BiometricMethod.Unknown
+				};
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				return BiometricMethod.Unknown;
 			}
 		}
 

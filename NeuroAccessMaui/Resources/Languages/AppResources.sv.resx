@@ -577,7 +577,7 @@
     <value>Nästan klar</value>
   </data>
   <data name="OnboardingBiometricsPageDetails" xml:space="preserve">
-    <value>Neuro-Access fungerar bättre tillsammans med {0} eller {1}. Skulle du vilja aktivera biometrisk autentisering? Detta går att ändra senare i inställningar</value>
+    <value>Neuro-Access fungerar bäst med {0}. Vill du aktivera den här funktionen? Detta kan också ändras i inställningarna senare.</value>
   </data>
   <data name="AccountSectionTitle" xml:space="preserve">
     <value>Ange kontonamnet</value>
@@ -2103,10 +2103,25 @@
   <data name="Enable" xml:space="preserve">
     <value>Aktivera</value>
   </data>
-  <data name="FaceRecognition" xml:space="preserve">
-    <value>Ansiktsigenkänning</value>
+  <data name="BiometricAuthentication" xml:space="preserve">
+    <value>Biometrisk autentisering</value>
   </data>
-  <data name="FingerprintRecognition" xml:space="preserve">
-    <value>Fingeravtrycksigenkänning</value>
+  <data name="FaceId" xml:space="preserve">
+    <value>Face ID</value>
+  </data>
+  <data name="TouchId" xml:space="preserve">
+    <value>Touch ID</value>
+  </data>
+  <data name="WhatIsX" xml:space="preserve">
+    <value>What is {0}?</value>
+  </data>
+  <data name="BiometricAuthenticationInfo" xml:space="preserve">
+    <value>Biometrisk autentisering använder dina unika fysiska egenskaper, som ditt ansikte eller fingeravtryck, för att säkerställa att det verkligen är du. Det ger ett enkelt och säkert sätt att komma åt Neuro-Access.</value>
+  </data>
+  <data name="FaceIdInfo" xml:space="preserve">
+    <value>Face ID känner igen ditt ansikte för att säkerställa att det verkligen är du, vilket ger ett enkelt och säkert sätt att komma åt Neuro-Access.</value>
+  </data>
+  <data name="TouchIdInfo" xml:space="preserve">
+    <value>Touch ID använder ditt fingeravtryck för att säkerställa att det verkligen är du, vilket ger ett snabbt och säkert sätt att komma åt Neuro-Access.</value>
   </data>
 </root>

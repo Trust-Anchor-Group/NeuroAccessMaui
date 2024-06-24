@@ -567,6 +567,18 @@
   <data name="OnboardingDefinePasswordPageTitle" xml:space="preserve">
     <value>Erstellen eines PIN-Codes</value>
   </data>
+  <data name="OnboardingFinalizePageTitle" xml:space="preserve">
+    <value>Erfolg!</value>
+  </data>
+  <data name="OnboardingFinalizePageDetails" xml:space="preserve">
+    <value>Sie können Neuro-Access jetzt verwenden</value>
+  </data>
+  <data name="OnboardingBiometricsPageTitle" xml:space="preserve">
+    <value>Fast fertig</value>
+  </data>
+  <data name="OnboardingBiometricsPageDetails" xml:space="preserve">
+    <value>Neuro-Access funktioniert am besten, wenn Sie {0} verwenden. Möchten Sie diese Funktion aktivieren? Dies kann auch nachträglich in den Einstellungen geändert werden</value>
+  </data>
   <data name="AccountSectionTitle" xml:space="preserve">
     <value>Geben Sie den Kontonamen ein</value>
   </data>
@@ -2084,5 +2096,32 @@
   </data>
   <data name="Details" xml:space="preserve">
     <value>Details</value>
+  </data>
+  <data name="Later" xml:space="preserve">
+    <value>Später</value>
+  </data>
+  <data name="Enable" xml:space="preserve">
+    <value>Ermöglichen</value>
+  </data>
+  <data name="BiometricAuthentication" xml:space="preserve">
+    <value>Biometrische Authentifizierung</value>
+  </data>
+  <data name="FaceId" xml:space="preserve">
+    <value>Gesichts-ID</value>
+  </data>
+  <data name="TouchId" xml:space="preserve">
+    <value>Touch-ID</value>
+  </data>
+  <data name="WhatIsX" xml:space="preserve">
+    <value>Was ist {0}?</value>
+  </data>
+  <data name="BiometricAuthenticationInfo" xml:space="preserve">
+    <value>Die biometrische Authentifizierung verwendet Ihre einzigartigen physischen Merkmale wie Ihr Gesicht oder Ihren Fingerabdruck, um sicherzustellen, dass Sie es wirklich sind. Es bietet eine einfache und sichere Möglichkeit, auf Neuro-Access zuzugreifen.</value>
+  </data>
+  <data name="FaceIdInfo" xml:space="preserve">
+    <value>Face ID erkennt Ihr Gesicht, um sicherzustellen, dass Sie es wirklich sind, und bietet eine einfache und sichere Möglichkeit, auf Neuro-Access zuzugreifen.</value>
+  </data>
+  <data name="TouchIdInfo" xml:space="preserve">
+    <value>Touch ID verwendet Ihren Fingerabdruck, um sicherzustellen, dass Sie es wirklich sind, und bietet eine schnelle und sichere Möglichkeit, auf Neuro-Access zuzugreifen.</value>
   </data>
 </root>

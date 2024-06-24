@@ -567,6 +567,18 @@
   <data name="OnboardingDefinePasswordPageTitle" xml:space="preserve">
     <value>Crear un código PIN</value>
   </data>
+  <data name="OnboardingFinalizePageTitle" xml:space="preserve">
+    <value>¡Éxito!</value>
+  </data>
+  <data name="OnboardingFinalizePageDetails" xml:space="preserve">
+    <value>Ahora puede comenzar a usar Neuro-Access</value>
+  </data>
+  <data name="OnboardingBiometricsPageTitle" xml:space="preserve">
+    <value>Casi listo</value>
+  </data>
+  <data name="OnboardingBiometricsPageDetails" xml:space="preserve">
+    <value>Neuro-Access funciona mejor cuando se usa {0}. ¿Le gustaría habilitar esta función? Esto también se puede cambiar en la configuración más adelante</value>
+  </data>
   <data name="AccountSectionTitle" xml:space="preserve">
     <value>Introduzca el nombre de la cuenta</value>
   </data>
@@ -589,7 +601,7 @@
     <value>Parece que falta la red. Compruebe la configuración y la cobertura e inténtelo de nuevo.</value>
   </data>
   <data name="SendEmailWarning" xml:space="preserve">
-    <value>Se ha enviado un código a sus usuarios de correo electrónico. Si no lo recibes, revisa también tu carpeta de correo no deseado.</value>
+    <value>Se ha enviado un código a su dirección de correo electrónico. Si no lo recibes, revisa también tu carpeta de correo no deseado.</value>
   </data>
   <data name="SwitchingToTestPhoneNumberNotAllowed" xml:space="preserve">
     <value>No se permite cambiar el número de teléfono a uno de prueba.</value>
@@ -2084,5 +2096,32 @@
   </data>
   <data name="Details" xml:space="preserve">
     <value>Detalles</value>
+  </data>
+  <data name="Later" xml:space="preserve">
+    <value>Más tarde</value>
+  </data>
+  <data name="Enable" xml:space="preserve">
+    <value>Habilitar</value>
+  </data>
+  <data name="BiometricAuthentication" xml:space="preserve">
+    <value>Autenticación biométrica</value>
+  </data>
+  <data name="FaceId" xml:space="preserve">
+    <value>Identificación facial</value>
+  </data>
+  <data name="TouchId" xml:space="preserve">
+    <value>Identificación táctil</value>
+  </data>
+  <data name="WhatIsX" xml:space="preserve">
+    <value>¿Qué es {0}?</value>
+  </data>
+  <data name="BiometricAuthenticationInfo" xml:space="preserve">
+    <value>La autenticación biométrica utiliza tus características físicas únicas, como tu rostro o huella dactilar, para garantizar que realmente eres tú. Proporciona una forma sencilla y segura de acceder a Neuro-Access.</value>
+  </data>
+  <data name="FaceIdInfo" xml:space="preserve">
+    <value>Face ID reconoce tu rostro para asegurarse de que realmente eres tú, lo que proporciona una forma sencilla y segura de acceder a Neuro-Access.</value>
+  </data>
+  <data name="TouchIdInfo" xml:space="preserve">
+    <value>Touch ID utiliza tu huella dactilar para asegurarte de que realmente eres tú, lo que proporciona una forma rápida y segura de acceder a Neuro-Access.</value>
   </data>
 </root>

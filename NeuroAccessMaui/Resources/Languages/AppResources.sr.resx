@@ -567,6 +567,18 @@
   <data name="OnboardingDefinePasswordPageTitle" xml:space="preserve">
     <value>Kreiranje PIN koda</value>
   </data>
+  <data name="OnboardingFinalizePageTitle" xml:space="preserve">
+    <value>Uspeh!</value>
+  </data>
+  <data name="OnboardingFinalizePageDetails" xml:space="preserve">
+    <value>Sada možete da počnete da koristite Neuro-Access</value>
+  </data>
+  <data name="OnboardingBiometricsPageTitle" xml:space="preserve">
+    <value>Zamalo da završim</value>
+  </data>
+  <data name="OnboardingBiometricsPageDetails" xml:space="preserve">
+    <value>Neuro-Access najbolje funkcioniše kada se koriste {0}. Želite li da omogućite ovu funkciju? Ovo se kasnije može promeniti i u postavkama</value>
+  </data>
   <data name="AccountSectionTitle" xml:space="preserve">
     <value>Unesite ime naloga</value>
   </data>
@@ -589,7 +601,7 @@
     <value>Izgleda da mreža nedostaje. Proverite konfiguraciju i pokrivenost i pokušajte ponovo.</value>
   </data>
   <data name="SendEmailWarning" xml:space="preserve">
-    <value>Šifra je poslata vašim dodacima e-pošte. Ako je ne primite, proverite i fasciklu za bezvrednu pošte.</value>
+    <value>Šifra je poslata na vašu e-adresu. Ako je ne primite, proverite i fasciklu za bezvrednu pošte.</value>
   </data>
   <data name="SwitchingToTestPhoneNumberNotAllowed" xml:space="preserve">
     <value>Promena broja telefona u test jedan nije dozvoljena.</value>
@@ -2084,5 +2096,32 @@
   </data>
   <data name="Details" xml:space="preserve">
     <value>Detalje</value>
+  </data>
+  <data name="Later" xml:space="preserve">
+    <value>Kasnije</value>
+  </data>
+  <data name="Enable" xml:space="preserve">
+    <value>Omogući</value>
+  </data>
+  <data name="BiometricAuthentication" xml:space="preserve">
+    <value>Biometrijska potvrda identiteta</value>
+  </data>
+  <data name="FaceId" xml:space="preserve">
+    <value>Face ID</value>
+  </data>
+  <data name="TouchId" xml:space="preserve">
+    <value>ID dodira</value>
+  </data>
+  <data name="WhatIsX" xml:space="preserve">
+    <value>Šta je {0}?</value>
+  </data>
+  <data name="BiometricAuthenticationInfo" xml:space="preserve">
+    <value>Biometrijska potvrda identiteta koristi vaše jedinstvene fizičke karakteristike, kao što su vaše lice ili otisak prsta, da bi se uverila da ste to zaista vi. Omogućava jednostavan i bezbedan način pristupa neuro-pristupu.</value>
+  </data>
+  <data name="FaceIdInfo" xml:space="preserve">
+    <value>Face ID prepoznaje vaše lice kako bi se uverio da ste to zaista vi, pružajući jednostavan i bezbedan način pristupa neuro-pristupu.</value>
+  </data>
+  <data name="TouchIdInfo" xml:space="preserve">
+    <value>Touch ID koristi vaš otisak prsta da se uveri da ste to zaista vi, obezbeđujući brz i bezbedan način pristupa neuro-pristupu.</value>
   </data>
 </root>

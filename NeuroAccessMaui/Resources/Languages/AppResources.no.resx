@@ -567,6 +567,18 @@
   <data name="OnboardingDefinePasswordPageTitle" xml:space="preserve">
     <value>Opprett en PIN-kode</value>
   </data>
+  <data name="OnboardingFinalizePageTitle" xml:space="preserve">
+    <value>Suksess!</value>
+  </data>
+  <data name="OnboardingFinalizePageDetails" xml:space="preserve">
+    <value>Du kan nå begynne å bruke Neuro-Access</value>
+  </data>
+  <data name="OnboardingBiometricsPageTitle" xml:space="preserve">
+    <value>Nesten ferdig</value>
+  </data>
+  <data name="OnboardingBiometricsPageDetails" xml:space="preserve">
+    <value>Neuro-Access fungerer best når du bruker {0}. Vil du aktivere denne funksjonen? Dette kan også endres i innstillingene senere</value>
+  </data>
   <data name="AccountSectionTitle" xml:space="preserve">
     <value>Skriv inn kontonavnet</value>
   </data>
@@ -589,7 +601,7 @@
     <value>Nettverk ser ut til å mangle. Kontroller konfigurasjonen og dekningen, og prøv på nytt.</value>
   </data>
   <data name="SendEmailWarning" xml:space="preserve">
-    <value>En kode er sendt til din e-post adderss. Hvis du ikke mottar den, kan du også sjekke spam-mappen din.</value>
+    <value>En kode er sendt til din e-postadresse. Hvis du ikke mottar den, kan du også sjekke spam-mappen din.</value>
   </data>
   <data name="SwitchingToTestPhoneNumberNotAllowed" xml:space="preserve">
     <value>Det er ikke tillatt å endre telefonnummeret til en test.</value>
@@ -2084,5 +2096,32 @@
   </data>
   <data name="Details" xml:space="preserve">
     <value>Detaljer</value>
+  </data>
+  <data name="Later" xml:space="preserve">
+    <value>Senere</value>
+  </data>
+  <data name="Enable" xml:space="preserve">
+    <value>Aktivere</value>
+  </data>
+  <data name="BiometricAuthentication" xml:space="preserve">
+    <value>Biometrisk autentisering</value>
+  </data>
+  <data name="FaceId" xml:space="preserve">
+    <value>Face ID</value>
+  </data>
+  <data name="TouchId" xml:space="preserve">
+    <value>Trykk på ID</value>
+  </data>
+  <data name="WhatIsX" xml:space="preserve">
+    <value>Hva er {0}?</value>
+  </data>
+  <data name="BiometricAuthenticationInfo" xml:space="preserve">
+    <value>Biometrisk autentisering bruker dine unike fysiske egenskaper, som ansikt eller fingeravtrykk, for å sikre at det virkelig er deg. Det gir en enkel og sikker måte å få tilgang til Neuro-Access på.</value>
+  </data>
+  <data name="FaceIdInfo" xml:space="preserve">
+    <value>Face ID gjenkjenner ansiktet ditt for å sikre at det virkelig er deg, og gir en enkel og sikker måte å få tilgang til Neuro-Access på.</value>
+  </data>
+  <data name="TouchIdInfo" xml:space="preserve">
+    <value>Touch ID bruker fingeravtrykket ditt for å sikre at det virkelig er deg, noe som gir en rask og sikker måte å få tilgang til Neuro-Access på.</value>
   </data>
 </root>

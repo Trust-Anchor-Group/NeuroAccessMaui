@@ -567,6 +567,18 @@
   <data name="OnboardingDefinePasswordPageTitle" xml:space="preserve">
     <value>Crearea unui cod PIN</value>
   </data>
+  <data name="OnboardingFinalizePageTitle" xml:space="preserve">
+    <value>Succes!</value>
+  </data>
+  <data name="OnboardingFinalizePageDetails" xml:space="preserve">
+    <value>Acum puteți începe să utilizați Neuro-Access</value>
+  </data>
+  <data name="OnboardingBiometricsPageTitle" xml:space="preserve">
+    <value>Aproape gata</value>
+  </data>
+  <data name="OnboardingBiometricsPageDetails" xml:space="preserve">
+    <value>Neuro-Access funcționează cel mai bine atunci când utilizați {0}. Doriți să activați această caracteristică? Acest lucru poate fi, de asemenea, modificat în setări mai târziu</value>
+  </data>
   <data name="AccountSectionTitle" xml:space="preserve">
     <value>Introduceți numele contului</value>
   </data>
@@ -589,7 +601,7 @@
     <value>Rețeaua pare să lipsească. Verificați configurația și acoperirea și încercați din nou.</value>
   </data>
   <data name="SendEmailWarning" xml:space="preserve">
-    <value>Un cod a fost trimis adderilor dvs. Dacă nu îl primiți, vă rugăm să verificați și folderul de spam.</value>
+    <value>Un cod a fost trimis la adresa dvs. Dacă nu îl primiți, vă rugăm să verificați și folderul de spam.</value>
   </data>
   <data name="SwitchingToTestPhoneNumberNotAllowed" xml:space="preserve">
     <value>Schimbarea numărului de telefon într-unul de test nu este permisă.</value>
@@ -2084,5 +2096,32 @@
   </data>
   <data name="Details" xml:space="preserve">
     <value>Detalii</value>
+  </data>
+  <data name="Later" xml:space="preserve">
+    <value>Mai târziu</value>
+  </data>
+  <data name="Enable" xml:space="preserve">
+    <value>Activa</value>
+  </data>
+  <data name="BiometricAuthentication" xml:space="preserve">
+    <value>Autentificare biometrică</value>
+  </data>
+  <data name="FaceId" xml:space="preserve">
+    <value>Face ID</value>
+  </data>
+  <data name="TouchId" xml:space="preserve">
+    <value>ID-ul tactil</value>
+  </data>
+  <data name="WhatIsX" xml:space="preserve">
+    <value>Ce este {0}?</value>
+  </data>
+  <data name="BiometricAuthenticationInfo" xml:space="preserve">
+    <value>Autentificarea biometrică utilizează caracteristicile fizice unice, cum ar fi fața sau amprenta, pentru a se asigura că ești cu adevărat tu. Oferă o modalitate simplă și sigură de a accesa Neuro-Access.</value>
+  </data>
+  <data name="FaceIdInfo" xml:space="preserve">
+    <value>Face ID îți recunoaște fața pentru a te asigura că ești cu adevărat tu, oferind o modalitate simplă și sigură de a accesa Neuro-Access.</value>
+  </data>
+  <data name="TouchIdInfo" xml:space="preserve">
+    <value>Touch ID îți folosește amprenta pentru a se asigura că ești cu adevărat tu, oferind o modalitate rapidă și sigură de a accesa Neuro-Access.</value>
   </data>
 </root>
