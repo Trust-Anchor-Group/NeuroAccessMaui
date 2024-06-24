@@ -53,6 +53,12 @@ namespace NeuroAccessMaui.Services
 		bool SupportsFingerprintAuthentication { get; }
 
 		/// <summary>
+		/// Gets the biometric method supported by the device.
+		/// </summary>
+		/// <returns>The BiometricMethod which is preferred/supported on this device</returns>
+		BiometricMethod GetBiometricMethod();
+
+		/// <summary>
 		/// Authenticates the user using the fingerprint sensor.
 		/// </summary>
 		/// <param name="Title">Title of authentication dialog.</param>
