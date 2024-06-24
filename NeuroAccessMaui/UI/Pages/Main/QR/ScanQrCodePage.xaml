@@ -15,7 +15,7 @@
 	<Grid x:Name="GridWithAnimation">
 		<mct:StateContainer.StateViews>
 			<Grid mct:StateView.StateKey="AutomaticScan">
-				<zxing:CameraBarcodeReaderView x:Name="CameraBarcodeReaderView" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"
+				<zxing:CameraBarcodeReaderView x:Name="CameraBarcodeReaderView" x:FieldModifier="public" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"
 														 BarcodesDetected="CameraBarcodeReaderView_BarcodesDetected" />
 
 				<Grid Padding="{StaticResource LargeMargins}">
@@ -40,7 +40,7 @@
 									</DataTemplate>
 								</BindableLayout.ItemTemplate>
 							</FlexLayout>
-																		
+
 							<Label HorizontalOptions="Center" HorizontalTextAlignment="Center" Style="{StaticResource SectionTitleLabel}"
 									 Text="{l:Localize QrSectionTitleSingular}" TextColor="{StaticResource PrimaryBackgroundLight}"
 									 IsVisible="{Binding SingleIcon}"/>
