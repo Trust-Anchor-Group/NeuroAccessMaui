@@ -1,10 +1,16 @@
-﻿using CommunityToolkit.Maui.Layouts;
+﻿using System.Reflection;
+using Android.Graphics;
+using AndroidX.Camera.Core;
+using AndroidX.Camera.Core.Impl;
+using CommunityToolkit.Maui.Layouts;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Java.Nio;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 using NeuroAccessMaui.Services;
 using ZXing.Net.Maui;
+using ZXing.Net.Maui.Controls;
 using ZXing.Net.Maui.Readers;
 
 namespace NeuroAccessMaui.UI.Pages.Main.QR
@@ -20,7 +26,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		public ScanQrCodePage()
 		{
 			this.InitializeComponent();
-			
+
 			ScanQrCodeNavigationArgs? args = ServiceRef.UiService.PopLatestArgs<ScanQrCodeNavigationArgs>();
 			ScanQrCodeViewModel ViewModel = new(args);
 			this.ContentPageModel = ViewModel;
@@ -52,7 +58,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		{
 			await base.OnAppearingAsync();
 
-			if(this.navigationComplete is not null)
+			if (this.navigationComplete is not null)
 				await this.navigationComplete.Task;
 
 			this.CameraBarcodeReaderView.IsDetecting = true;
@@ -62,11 +68,61 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		/// <inheritdoc/>
 		protected override async Task OnDisappearingAsync()
 		{
-			this.CameraBarcodeReaderView.IsDetecting = false;
+			await MainThread.InvokeOnMainThreadAsync(this.CloseCamera);
+
+
 			WeakReferenceMessenger.Default.Unregister<KeyboardSizeMessage>(this);
 
 			await base.OnDisappearingAsync();
 		}
+
+		/// <summary>
+		/// As the camera is not closed properly by the 3rd party framework, we need to close it manually using reflection.
+		/// This is a problem on certain android phones where facial recognition is used.
+		/// https://github.com/Redth/ZXing.Net.Maui/issues/38
+		/// </summary>
+		/// TODO: Check if the camera is closed properly by the 3rd party framework and remove this method if it is.
+		private async Task CloseCamera()
+		{
+			try
+			{
+				this.CameraBarcodeReaderView.IsDetecting = false;
+#if ANDROID
+				ICameraInternal? preview = await this.GetCameraPreview(this.CameraBarcodeReaderView);
+				preview?.Close();
+#endif
+			}
+			catch (Exception e)
+			{
+				ServiceRef.LogService.LogException(e);
+			}
+		}
+
+		/// <summary>
+		/// Android specific method to get the camera preview from the 3rd party framework using reflection.
+		/// https://github.com/Redth/ZXing.Net.Maui/issues/164   
+		/// </summary>
+		/// <param name="cameraBarcodeReaderView">The camera view in use</param>
+		/// <returns>The Camera preview</returns>
+		private async Task<ICameraInternal?> GetCameraPreview(CameraBarcodeReaderView cameraBarcodeReaderView)
+		{
+
+			PermissionStatus status = await Permissions.CheckStatusAsync<Permissions.Camera>();
+			if (status == PermissionStatus.Denied)
+				return null;
+
+			BindingFlags bindingFlags = BindingFlags.NonPublic | BindingFlags.Instance;
+			PropertyInfo? strongHandlerProperty = typeof(CameraBarcodeReaderView).GetProperty("StrongHandler", bindingFlags);
+			CameraBarcodeReaderViewHandler? cameraBarcodeReaderViewHandler = strongHandlerProperty?.GetValue(cameraBarcodeReaderView) as CameraBarcodeReaderViewHandler;
+			FieldInfo? manageField = typeof(CameraBarcodeReaderViewHandler).GetField("cameraManager", bindingFlags);
+			object? cameraManager = manageField?.GetValue(cameraBarcodeReaderViewHandler);
+			FieldInfo? cameraPreviewField = typeof(CameraBarcodeReaderViewHandler).Assembly.GetType("ZXing.Net.Maui.CameraManager")?.GetField("cameraPreview", bindingFlags);
+			Preview? preview = cameraPreviewField?.GetValue(cameraManager) as Preview;
+
+			return preview?.Camera;
+		}
+
+
 
 		private TaskCompletionSource<bool>? navigationComplete;
 
@@ -162,26 +218,96 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		}
 
 		[RelayCommand]
-		private static async Task PickPhoto()
+		private async Task PickPhoto()
 		{
-			FileResult? Result = await MediaPicker.PickPhotoAsync();
-			if (Result is null)
+			FileResult? result = await MediaPicker.PickPhotoAsync();
+			if (result is null)
 				return;
 
-			byte[] Bin = File.ReadAllBytes(Result.FullPath);
-
-			PixelBufferHolder Data = new()
-			{
-				//!!! System dependent code. Not implemented yet
 #if ANDROID
-#else
+			// For Android, convert the picked image to a Bitmap and then to pixel data
+			Console.WriteLine($"Picked photo {result.FullPath}");
+			await using Stream stream = await result.OpenReadAsync();
+			Bitmap? bitmap = await BitmapFactory.DecodeStreamAsync(stream);
+			Console.WriteLine($"Loaded photo {result.FullPath}");
+
+			if (bitmap != null)
+			{
+				int width = bitmap.Width;
+				int height = bitmap.Height;
+				int[] pixels = new int[width * height];
+				bitmap.GetPixels(pixels, 0, width, 0, 0, width, height);
+
+				// Convert pixel data to ByteBuffer
+				var byteBuffer = ByteBuffer.Allocate(pixels.Length * sizeof(int));
+				Console.WriteLine($"{pixels.Length * sizeof(int)} : buffer: {byteBuffer.Capacity()}");
+				byteBuffer.AsIntBuffer().Put(pixels);
+				byteBuffer.Flip();
+
+				// Initialize PixelBufferHolder
+				PixelBufferHolder data = new PixelBufferHolder
+				{
+					Size = new Size(width, height),
+					Data = byteBuffer
+				};
+
+				ZXingBarcodeReader reader = new ZXingBarcodeReader();
+				BarcodeReaderOptions options = new BarcodeReaderOptions()
+				{
+					AutoRotate = true,
+					TryHarder = true,
+					TryInverted = true,
+					Formats = BarcodeFormat.QrCode,
+					Multiple = false
+				};
+				reader.Options = options;
+
+				BarcodeResult[]? scanned = reader.Decode(data);
+				if (scanned != null)
+				{
+					foreach (BarcodeResult item in scanned)
+					{
+						Console.WriteLine($"Barcode found: {item.Value}");
+					}
+				}
+				else
+				{
+					Console.WriteLine("No barcode found");
+				}
+			}
+#elif IOS
+        // For iOS, use the UIImage class and convert it to pixel data
+        using (var stream = await result.OpenReadAsync())
+        {
+            var image = UIImage.LoadFromData(NSData.FromStream(stream));
+            if (image != null)
+            {
+                var cgImage = image.CGImage;
+                var width = cgImage.Width;
+                var height = cgImage.Height;
+                var colorSpace = CGColorSpace.CreateDeviceRGB();
+                var rawData = new byte[height * width * 4];
+                var context = new CGBitmapContext(rawData, width, height, 8, width * 4, colorSpace, CGBitmapFlags.PremultipliedLast | CGBitmapFlags.ByteOrder32Big);
+
+                context.DrawImage(new CGRect(0, 0, width, height), cgImage);
+
+                var luminanceSource = new RGBLuminanceSource(rawData, width, height);
+                var binaryBitmap = new BinaryBitmap(new HybridBinarizer(luminanceSource));
+                var reader = new ZXing.BarcodeReader();
+
+                var result = reader.Decode(binaryBitmap);
+                if (result != null)
+                {
+                    // Display the barcode result
+                    Debug.WriteLine($"Barcode found: {result.Text}");
+                }
+                else
+                {
+                    Debug.WriteLine("No barcode found");
+                }
+            }
+        }
 #endif
-			};
-
-			if (ServiceRef.BarcodeReader is not ZXingBarcodeReader BarcodeReader)
-				return;
-
-			BarcodeReader.Decode(Data);
 		}
 
 		private async void CameraBarcodeReaderView_BarcodesDetected(object sender, BarcodeDetectionEventArgs e)
