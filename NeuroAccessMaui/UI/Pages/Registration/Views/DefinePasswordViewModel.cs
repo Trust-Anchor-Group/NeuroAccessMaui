@@ -220,7 +220,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			if(ServiceRef.PlatformSpecific.SupportsFingerprintAuthentication && isFirstPassword)
 				GoToRegistrationStep(RegistrationStep.Biometrics);
 			else
-				GoToRegistrationStep(RegistrationStep.Biometrics);
+				GoToRegistrationStep(RegistrationStep.Complete);
 
 			if (ServiceRef.TagProfile.TestOtpTimestamp is not null)
 			{
