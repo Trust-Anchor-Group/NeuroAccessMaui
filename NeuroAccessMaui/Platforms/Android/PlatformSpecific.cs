@@ -144,12 +144,12 @@ namespace NeuroAccessMaui.Services
 			{
 				return Android.Provider.Settings.Secure.GetString(ContentResolver, Android.Provider.Settings.Secure.AndroidId);
 			}
-			try 
-			{ 
+			try
+			{
 				App.SendAlert("Unable to get AndroidID, ContentResolver was null", "text/plain").Wait();
 				this.CloseApplication().Wait();
-			} 
-			catch (Exception) 
+			}
+			catch (Exception)
 			{
 				System.Environment.Exit(0);
 			}
@@ -467,6 +467,30 @@ namespace NeuroAccessMaui.Services
 					return false;
 				}
 			}
+		}
+
+		/// <summary>
+		/// Gets the biometric method supported by the device.
+		/// Currently on android, you cannot determine if the device will use fingerprint or face recognition.
+		/// Unknown is returned if the device supports biometric authentication, but the method is unknown.
+		/// </summary>
+		/// <returns>The BiometricMethod which is preferred/supported on this device</returns>
+		public BiometricMethod GetBiometricMethod()
+		{
+			if (Build.VERSION.SdkInt < BuildVersionCodes.M)
+				return BiometricMethod.None;
+
+			Context Context = Android.App.Application.Context;
+
+			if (Context.CheckCallingOrSelfPermission(Manifest.Permission.UseBiometric) != Permission.Granted &&
+				 Context.CheckCallingOrSelfPermission(Manifest.Permission.UseFingerprint) != Permission.Granted)
+			{
+				return BiometricMethod.None;
+			}
+
+			BiometricManager Manager = BiometricManager.From(Context);
+			const int Level = BiometricManager.Authenticators.BiometricWeak;
+			return Manager.CanAuthenticate(Level) == BiometricManager.BiometricSuccess ? BiometricMethod.Unknown : BiometricMethod.None;
 		}
 
 		/// <summary>

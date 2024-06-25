@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseRegistrationView x:Name="ThisPage"
+									x:Class="NeuroAccessMaui.UI.Pages.Registration.Views.BiometricsView"
+									x:DataType="viewmodel:BiometricsViewModel"
+									xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+									xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+									xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+									xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+									xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+									xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Registration"
+									xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
+									xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
+	<Grid RowSpacing="{StaticResource LargeSpacing}" RowDefinitions="*, auto">
+		<VerticalStackLayout Grid.Row="0" VerticalOptions="Center"  Spacing="{StaticResource LargeSpacing}">
+			<Label
+				Style="{StaticResource PageTitleLabel}"
+				Text="{l:Localize OnboardingBiometricsPageTitle}"
+				HorizontalTextAlignment="Center"
+				Margin="{StaticResource LargeBottomMargins}"/>
+
+			<!-- Touch Circle -->
+			<HorizontalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="{StaticResource LargeSpacing}" Margin="{StaticResource LargeBottomMargins}">
+				<Frame
+					WidthRequest="{Binding AuthenticationBackgroundSize}"
+					HeightRequest="{Binding AuthenticationBackgroundSize}"
+					HasShadow="False"
+					CornerRadius="{Binding AuthenticationBackgroundCornerRadius}"
+					BackgroundColor="{AppThemeBinding Light={StaticResource EnabledTransparentButtonBackgroundLight}, Dark={StaticResource EnabledTransparentButtonBackgroundDark}}"
+					HorizontalOptions="Center"
+					IsVisible="{Binding IsFingerprint}">
+					<Path
+						VerticalOptions="Center"
+						HorizontalOptions="Center"
+						HeightRequest="{Binding AuthenticationIconSize}"
+						WidthRequest="{Binding AuthenticationIconSize}"
+						Aspect="Uniform"
+						Data="{x:Static ui:Geometries.FingerprintPath}"
+						Fill="{AppThemeBinding Light={StaticResource EnabledFilledButtonBackgroundLight}, Dark={StaticResource EnabledFilledButtonBackgroundDark}}" />
+				</Frame>
+
+				<Frame
+					WidthRequest="{Binding AuthenticationBackgroundSize}"
+					HeightRequest="{Binding AuthenticationBackgroundSize}"
+					HasShadow="False"
+					CornerRadius="{Binding AuthenticationBackgroundCornerRadius}"
+					BackgroundColor="{AppThemeBinding Light={StaticResource EnabledTransparentButtonBackgroundLight}, Dark={StaticResource EnabledTransparentButtonBackgroundDark}}"
+					HorizontalOptions="Center"
+					IsVisible="{Binding IsFace}">
+					<Path
+						VerticalOptions="Center"
+						HorizontalOptions="Center"
+						HeightRequest="{Binding AuthenticationIconSize}"
+						WidthRequest="{Binding AuthenticationIconSize}"
+						Aspect="Uniform"
+						Data="{x:Static ui:Geometries.FacePath}"
+						Fill="{AppThemeBinding Light={StaticResource EnabledFilledButtonBackgroundLight}, Dark={StaticResource EnabledFilledButtonBackgroundDark}}" />
+				</Frame>
+			</HorizontalStackLayout>
+
+
+			<!-- Text -->
+			<Label Style="{StaticResource SectionTitleLabel}"
+					Text="{Binding DetailText}" 
+					FontSize="16"
+					HorizontalOptions="Center"
+					/>
+		</VerticalStackLayout>
+		<Grid HorizontalOptions="Fill" VerticalOptions="End" Grid.Row="1">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="*"></RowDefinition>
+				<RowDefinition Height="*"></RowDefinition>
+			</Grid.RowDefinitions>
+
+			<controls:TemplatedButton
+				Grid.Row ="0" Grid.ColumnSpan="2"
+				Margin="{StaticResource LargeBottomMargins}"
+				HorizontalOptions="Center"
+				Command="{x:Binding ShowBiometricsInfoCommand}">
+				<HorizontalStackLayout Spacing="{StaticResource SmallSpacing}">
+					<Path
+						VerticalOptions="Center"
+						HeightRequest="20"
+						WidthRequest="20"
+						Aspect="Uniform"
+						Data="{x:Static ui:Geometries.InfoCirclePath}"
+						Fill="{AppThemeBinding Light={StaticResource NormalInfoForegroundLight},
+											Dark={StaticResource NormalInfoForegroundDark}}" />
+
+					<Label
+						VerticalOptions="Center"
+						FontFamily="HaasGroteskRegular"
+						FontSize="14"
+						Text="{Binding WhatIsX}"
+						TextColor="{AppThemeBinding Light={StaticResource NormalInfoForegroundLight},
+													Dark={StaticResource NormalInfoForegroundDark}}" />
+				</HorizontalStackLayout>
+			</controls:TemplatedButton>
+
+			<!-- Later Button -->
+			<controls:TemplatedButton Grid.Row ="1" Grid.Column="0" Command="{x:Binding LaterCommand}" VerticalOptions="End">
+				<Border Style="{StaticResource TransparentTemplateButtonBorder}" InputTransparent="True" HorizontalOptions="Fill">
+					<Label Style="{StaticResource TransparentTemplateButtonLabel}" HorizontalOptions="Center" Text="{l:Localize Later}"/>
+				</Border>
+			</controls:TemplatedButton>
+
+			<!-- Enable button -->
+			<controls:TemplatedButton Grid.Row ="1" Grid.Column="1" Command="{x:Binding EnableCommand}" VerticalOptions="End">
+				<Border Style="{StaticResource FilledTemplateButtonBorder}"  InputTransparent="True" HorizontalOptions="Fill">
+					<Label Style="{StaticResource FilledTemplateButtonLabel}" HorizontalOptions="Center"  Text="{l:Localize Enable}" />
+				</Border>
+			</controls:TemplatedButton>
+		</Grid>
+	</Grid>
+</base:BaseRegistrationView>

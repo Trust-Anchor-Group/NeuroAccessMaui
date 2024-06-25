@@ -212,9 +212,15 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		[RelayCommand(CanExecute = nameof(CanContinue))]
 		private void Continue()
 		{
-			ServiceRef.TagProfile.LocalPassword = this.PasswordText1!;
+			ServiceRef.PlatformSpecific.HideKeyboard();
 
-			GoToRegistrationStep(RegistrationStep.Complete);
+			bool isFirstPassword = string.IsNullOrEmpty(ServiceRef.TagProfile.LocalPasswordHash); //Wheter or not to go to the Finalize view
+
+			ServiceRef.TagProfile.LocalPassword = this.PasswordText1!;
+			if(ServiceRef.PlatformSpecific.SupportsFingerprintAuthentication && isFirstPassword)
+				GoToRegistrationStep(RegistrationStep.Biometrics);
+			else
+				GoToRegistrationStep(RegistrationStep.Complete);
 
 			if (ServiceRef.TagProfile.TestOtpTimestamp is not null)
 			{

@@ -509,6 +509,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Biometric authentication.
+        /// </summary>
+        internal static string BiometricAuthentication {
+            get {
+                return ResourceManager.GetString("BiometricAuthentication", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Biometric authentication uses your unique physical features, like your face or fingerprint, to ensure it&apos;s really you. It provides a simple and secure way to access Neuro-Access..
+        /// </summary>
+        internal static string BiometricAuthenticationInfo {
+            get {
+                return ResourceManager.GetString("BiometricAuthenticationInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Birth Date.
         /// </summary>
         internal static string BirthDate {
@@ -1418,6 +1436,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enable.
+        /// </summary>
+        internal static string Enable {
+            get {
+                return ResourceManager.GetString("Enable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Encrypted Payment.
         /// </summary>
         internal static string EncryptedPayment {
@@ -1558,6 +1585,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string ExpiresAt {
             get {
                 return ResourceManager.GetString("ExpiresAt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Face ID.
+        /// </summary>
+        internal static string FaceId {
+            get {
+                return ResourceManager.GetString("FaceId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Face ID recognizes your face to ensure it&apos;s really you, providing a simple and secure way to access Neuro-Access..
+        /// </summary>
+        internal static string FaceIdInfo {
+            get {
+                return ResourceManager.GetString("FaceIdInfo", resourceCulture);
             }
         }
         
@@ -2120,6 +2165,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Later.
+        /// </summary>
+        internal static string Later {
+            get {
+                return ResourceManager.GetString("Later", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Latitude.
         /// </summary>
         internal static string Latitude {
@@ -2597,6 +2651,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Neuro-Access works best when using {0}. Would you like to enable this feature? This can also be changed in the settings later.
+        /// </summary>
+        internal static string OnboardingBiometricsPageDetails {
+            get {
+                return ResourceManager.GetString("OnboardingBiometricsPageDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Almost done.
+        /// </summary>
+        internal static string OnboardingBiometricsPageTitle {
+            get {
+                return ResourceManager.GetString("OnboardingBiometricsPageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create alphanumeric PIN.
         /// </summary>
         internal static string OnboardingDefinePasswordCreateAlphanumeric {
@@ -2638,6 +2710,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string OnboardingEmailPageTitle {
             get {
                 return ResourceManager.GetString("OnboardingEmailPageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can now start using Neuro-Access.
+        /// </summary>
+        internal static string OnboardingFinalizePageDetails {
+            get {
+                return ResourceManager.GetString("OnboardingFinalizePageDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Success!.
+        /// </summary>
+        internal static string OnboardingFinalizePageTitle {
+            get {
+                return ResourceManager.GetString("OnboardingFinalizePageTitle", resourceCulture);
             }
         }
         
@@ -4523,7 +4613,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A code has been sent to your e-mail adderss. If you don&apos;t receive it, please also check your spam folder..
+        ///   Looks up a localized string similar to A code has been sent to your e-mail address. If you don&apos;t receive it, please also check your spam folder..
         /// </summary>
         internal static string SendEmailWarning {
             get {
@@ -5297,6 +5387,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Touch ID.
+        /// </summary>
+        internal static string TouchId {
+            get {
+                return ResourceManager.GetString("TouchId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Touch ID uses your fingerprint to ensure it&apos;s really you, providing a quick and secure way to access Neuro-Access..
+        /// </summary>
+        internal static string TouchIdInfo {
+            get {
+                return ResourceManager.GetString("TouchIdInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to To user, regardless of source.
         /// </summary>
         internal static string ToUser {
@@ -5680,6 +5788,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string WhatIsAServiceProvider {
             get {
                 return ResourceManager.GetString("WhatIsAServiceProvider", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What is {0}?.
+        /// </summary>
+        internal static string WhatIsX {
+            get {
+                return ResourceManager.GetString("WhatIsX", resourceCulture);
             }
         }
         
