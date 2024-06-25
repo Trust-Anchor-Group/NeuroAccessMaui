@@ -10,6 +10,20 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		{
 		}
 
+		/// <summary>
+		/// Gets the size of the background for the checkmark.
+		/// </summary>
+		public double CheckmarkBackgroundSize => 120.0;
+
+		/// <summary>
+		/// Gets the size of the background for the checkmark.
+		/// </summary>
+		public double CheckmarkBackgroundCornerRadius => this.CheckmarkBackgroundSize / 2;
+		/// <summary>
+		/// Gets the size of the icon for the checkmark.
+		/// </summary>
+		public double CheckmarkIconSize => 60.0;
+
         [RelayCommand]
 		private void Continue()
 		{

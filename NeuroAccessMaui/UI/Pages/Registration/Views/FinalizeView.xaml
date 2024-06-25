@@ -11,39 +11,40 @@
 									xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
 									xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
 	<Grid RowSpacing="{StaticResource LargeSpacing}" RowDefinitions="*, auto">
-		<ScrollView Grid.Row="0" >
+		<VerticalStackLayout Grid.Row="0" VerticalOptions="Center"  Spacing="{StaticResource LargeSpacing}">
 			<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
 				<Label
 					Style="{StaticResource PageTitleLabel}"
 					Text="{l:Localize OnboardingFinalizePageTitle}"
 					HorizontalTextAlignment="Center"
 					Margin="{StaticResource LargeBottomMargins}"/>
-				<Border Style="{StaticResource BorderSet}" Padding="{StaticResource LargeMargins}">
-					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}" VerticalOptions="Center" HorizontalOptions="Center">
 						
-						<!-- Checkmark Circle -->
-						<Frame WidthRequest="150" HeightRequest="150" HasShadow="False" CornerRadius="75" 
-							BackgroundColor="{AppThemeBinding Light={StaticResource EnabledTransparentButtonBackgroundLight}, Dark={StaticResource EnabledTransparentButtonBackgroundDark}}" HorizontalOptions="Center">
-							<Path
-								VerticalOptions="Center"
-								HorizontalOptions="Center"
-								HeightRequest="75"
-								WidthRequest="75"
-								Aspect="Uniform"
-								Data="{x:Static ui:Geometries.SuccessCheckmarkPath}"
-								Fill="{AppThemeBinding Light={StaticResource EnabledFilledButtonBackgroundLight}, Dark={StaticResource EnabledFilledButtonBackgroundDark}}" />
-						</Frame>
-						
-						
-						<!-- Text -->
-						<Border Style="{StaticResource AccentInfoBorder}" Padding="{StaticResource MediumMargins}">
-							<Label Style="{StaticResource AccentInfoLabel}"
-									Text="{l:Localize OnboardingFinalizePageDetails}" />
-						</Border>
-					</VerticalStackLayout>
-				</Border>
+				<!-- Checkmark Circle -->
+				<Frame
+					WidthRequest="{Binding CheckmarkBackgroundSize}"
+					HeightRequest="{Binding CheckmarkBackgroundSize}"
+					HasShadow="False"
+					CornerRadius="{Binding CheckmarkBackgroundCornerRadius}"
+					BackgroundColor="{AppThemeBinding Light={StaticResource EnabledTransparentButtonBackgroundLight}, Dark={StaticResource EnabledTransparentButtonBackgroundDark}}"
+					HorizontalOptions="Center">
+					<Path
+						VerticalOptions="Center"
+						HorizontalOptions="Center"
+						HeightRequest="{Binding CheckmarkIconSize}"
+						WidthRequest="{Binding CheckmarkIconSize}"
+						Aspect="Uniform"
+						Data="{x:Static ui:Geometries.SuccessCheckmarkPath}"
+						Fill="{AppThemeBinding Light={StaticResource EnabledFilledButtonBackgroundLight}, Dark={StaticResource EnabledFilledButtonBackgroundDark}}" />
+				</Frame>
+				<!-- Text -->
+				<Label Style="{StaticResource SectionTitleLabel}"
+						Text="{l:Localize OnboardingFinalizePageDetails}" 
+						FontSize="16"
+						HorizontalOptions="Center"/>
+					
+	
 			</VerticalStackLayout>
-		</ScrollView>
+		</VerticalStackLayout>
         <controls:TextButton
             VerticalOptions="End"
             Command="{Binding ContinueCommand}"
