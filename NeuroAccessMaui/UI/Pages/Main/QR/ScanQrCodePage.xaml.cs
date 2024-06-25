@@ -1,17 +1,20 @@
-﻿using System.Reflection;
-using Android.Graphics;
-using AndroidX.Camera.Core;
-using AndroidX.Camera.Core.Impl;
+﻿
 using CommunityToolkit.Maui.Layouts;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using Java.Nio;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 using NeuroAccessMaui.Services;
 using ZXing.Net.Maui;
+#if ANDROID
+using Android.Graphics;
+using AndroidX.Camera.Core;
+using AndroidX.Camera.Core.Impl;
+using Java.Nio;
+using System.Reflection;
 using ZXing.Net.Maui.Controls;
 using ZXing.Net.Maui.Readers;
+#endif
 
 namespace NeuroAccessMaui.UI.Pages.Main.QR
 {
@@ -97,7 +100,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 				ServiceRef.LogService.LogException(e);
 			}
 		}
-
+#if ANDROID
 		/// <summary>
 		/// Android specific method to get the camera preview from the 3rd party framework using reflection.
 		/// https://github.com/Redth/ZXing.Net.Maui/issues/164   
@@ -121,7 +124,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 
 			return preview?.Camera;
 		}
-
+#endif
 
 
 		private TaskCompletionSource<bool>? navigationComplete;
@@ -276,37 +279,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 				}
 			}
 #elif IOS
-        // For iOS, use the UIImage class and convert it to pixel data
-        using (var stream = await result.OpenReadAsync())
-        {
-            var image = UIImage.LoadFromData(NSData.FromStream(stream));
-            if (image != null)
-            {
-                var cgImage = image.CGImage;
-                var width = cgImage.Width;
-                var height = cgImage.Height;
-                var colorSpace = CGColorSpace.CreateDeviceRGB();
-                var rawData = new byte[height * width * 4];
-                var context = new CGBitmapContext(rawData, width, height, 8, width * 4, colorSpace, CGBitmapFlags.PremultipliedLast | CGBitmapFlags.ByteOrder32Big);
-
-                context.DrawImage(new CGRect(0, 0, width, height), cgImage);
-
-                var luminanceSource = new RGBLuminanceSource(rawData, width, height);
-                var binaryBitmap = new BinaryBitmap(new HybridBinarizer(luminanceSource));
-                var reader = new ZXing.BarcodeReader();
-
-                var result = reader.Decode(binaryBitmap);
-                if (result != null)
-                {
-                    // Display the barcode result
-                    Debug.WriteLine($"Barcode found: {result.Text}");
-                }
-                else
-                {
-                    Debug.WriteLine("No barcode found");
-                }
-            }
-        }
+			return;
 #endif
 		}
 
