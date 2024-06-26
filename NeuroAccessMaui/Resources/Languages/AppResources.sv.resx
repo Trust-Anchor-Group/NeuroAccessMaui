@@ -2085,4 +2085,13 @@
   <data name="Details" xml:space="preserve">
     <value>Detaljer</value>
   </data>
+  <data name="TransferIdentity" xml:space="preserve">
+    <value>Överför Identitet</value>
+  </data>
+  <data name="TransferIdentityDescription" xml:space="preserve">
+    <value>Överför din nuvarande identitet till en annan enhet.</value>
+  </data>
+  <data name="TransferIdentityPageDetails" xml:space="preserve">
+    <value>På din andra enhet, verifiera ditt telefonnummer och epost. Sedan på sidan där du får välja tjänsteleverantör tryck på ändra knappen och skanna denna QR-kod. Detta kommer ta bort identiteten från denna enhet.</value>
+  </data>
 </root>

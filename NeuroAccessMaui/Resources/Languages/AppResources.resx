@@ -2085,4 +2085,13 @@
   <data name="Details" xml:space="preserve">
     <value>Details</value>
   </data>
+  <data name="TransferIdentity" xml:space="preserve">
+    <value>Transfer Identity</value>
+  </data>
+  <data name="TransferIdentityDescription" xml:space="preserve">
+    <value>Transfer your current identity to another device.</value>
+  </data>
+  <data name="TransferIdentityPageDetails" xml:space="preserve">
+    <value>On your other device continue with the onboarding until you reach the service provider page. Press the change button and scan this QR. Doing this will remove the identity from this device.</value>
+  </data>
 </root>
