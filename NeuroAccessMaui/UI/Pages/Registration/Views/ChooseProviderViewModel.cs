@@ -320,7 +320,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 					bool AccountDone = false;
 					XmlElement? LegalIdDefinition = null;
-					//string? Pin = null;
+					string? Pin = null;
 
 					while (ToProcess.First is not null)
 					{
@@ -343,8 +343,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 								break;
 
 							case "Account":
-								//!!! not implemented yet
-								/*
 								string UserName = XML.Attribute(E, "userName");
 								string Password = XML.Attribute(E, "password");
 								string PasswordMethod = XML.Attribute(E, "passwordMethod");
@@ -355,7 +353,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 								string ApiKeyBak = ServiceRef.TagProfile.ApiKey;
 								string ApiSecretBak = ServiceRef.TagProfile.ApiSecret;
 
-								await this.SelectDomain(Domain, string.Empty, string.Empty);
+								await SelectDomain(Domain, string.Empty, string.Empty);
 
 								if (!await this.ConnectToAccount(UserName, Password, PasswordMethod, string.Empty, LegalIdDefinition, Pin))
 								{
@@ -364,24 +362,18 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 								}
 
 								LegalIdDefinition = null;
-								this.AccountName = UserName;
 								AccountDone = true;
-								*/
 								break;
 
 							case "LegalId":
-								//!!! not implemented yet
-								// LegalIdDefinition = E;
+								LegalIdDefinition = E;
 								break;
 
 							case "Pin":
-								//!!! not implemented yet
-								// Pin = XML.Attribute(E, "pin");
+								Pin = XML.Attribute(E, "pin");
 								break;
 
 							case "Transfer":
-								//!!! not implemented yet
-								/*
 								foreach (XmlNode N in E.ChildNodes)
 								{
 									if (N is XmlElement E2)
@@ -389,7 +381,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 										ToProcess.AddLast(E2);
 									}
 								}
-								*/
 								break;
 
 							default:
@@ -439,9 +430,8 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			ServiceRef.TagProfile.SetDomain(Domain, DefaultConnectivity, Key, Secret);
 		}
 
-		//!!! not implemented yet
-		/*
-		private async Task<bool> ConnectToAccount(string AccountName, string Password, string PasswordMethod, string LegalIdentityJid, XmlElement LegalIdDefinition, string Pin)
+
+		private async Task<bool> ConnectToAccount(string AccountName, string Password, string PasswordMethod, string LegalIdentityJid, XmlElement? LegalIdDefinition, string Pin)
 		{
 			try
 			{
@@ -508,6 +498,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 								}
 							}
 
+							/*
 							if (approvedIdentity is not null)
 							{
 								this.LegalIdentity = approvedIdentity;
@@ -515,14 +506,15 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 							else if (createdIdentity is not null)
 							{
 								this.LegalIdentity = createdIdentity;
-							}
+							}*/
+							LegalIdentity? selectedIdentity = approvedIdentity ?? createdIdentity;
 
 							string SelectedId;
 
-							if (this.LegalIdentity is not null)
+							if (selectedIdentity is not null)
 							{
-								ServiceRef.TagProfile.SetAccountAndLegalIdentity(AccountName, client.PasswordHash, client.PasswordHashMethod, this.LegalIdentity);
-								SelectedId = this.LegalIdentity.Id;
+								await ServiceRef.TagProfile.SetAccountAndLegalIdentity(AccountName, client.PasswordHash, client.PasswordHashMethod, selectedIdentity);
+								SelectedId = selectedIdentity.Id;
 							}
 							else
 							{
@@ -532,7 +524,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 							if (!string.IsNullOrEmpty(Pin))
 							{
-								ServiceRef.TagProfile.SetPin(Pin);
+								ServiceRef.TagProfile.LocalPassword = Pin;
 							}
 
 							foreach (LegalIdentity Identity in Identities)
@@ -563,13 +555,13 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 				(string hostName, int portNumber, bool isIpAddress) = await ServiceRef.NetworkService.LookupXmppHostnameAndPort(ServiceRef.TagProfile.Domain);
 
-				(bool succeeded, string errorMessage) = await ServiceRef.XmppService.TryConnectAndConnectToAccount(ServiceRef.TagProfile.Domain,
+				(bool succeeded, string errorMessage, string[]? alternatives) = await ServiceRef.XmppService.TryConnectAndConnectToAccount(ServiceRef.TagProfile.Domain,
 					isIpAddress, hostName, portNumber, AccountName, Password, PasswordMethod, Constants.LanguageCodes.Default,
 					typeof(App).Assembly, OnConnected);
 
 				if (!succeeded)
 				{
-					await ServiceRef.UiSerializer.DisplayAlert(
+					await ServiceRef.UiService.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						errorMessage,
 					ServiceRef.Localizer[nameof(AppResources.Ok)]);
@@ -581,7 +573,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			{
 				ServiceRef.LogService.LogException(ex);
 
-				await ServiceRef.UiSerializer.DisplayAlert(
+				await ServiceRef.UiService.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 					ServiceRef.Localizer[nameof(AppResources.UnableToConnectTo), ServiceRef.TagProfile.Domain],
 					ServiceRef.Localizer[nameof(AppResources.Ok)]);
@@ -589,7 +581,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 			return false;
 		}
-		*/
 	}
 	/*
 		public enum ButtonType

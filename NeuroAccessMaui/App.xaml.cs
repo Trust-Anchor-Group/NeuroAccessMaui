@@ -147,7 +147,7 @@ namespace NeuroAccessMaui
 				//Current!.UserAppTheme = AppTheme.Unspecified;
 				AppTheme? currentTheme = ServiceRef.TagProfile.Theme;
 				ServiceRef.TagProfile.SetTheme(currentTheme ?? AppTheme.Light);
-	
+
 				// Start page
 				try
 				{
@@ -996,6 +996,21 @@ namespace NeuroAccessMaui
 
 			switch (ServiceRef.TagProfile.AuthenticationMethod)
 			{
+				case AuthenticationMethod.Fingerprint:
+					if (!ServiceRef.PlatformSpecific.SupportsFingerprintAuthentication)
+						ServiceRef.TagProfile.AuthenticationMethod = AuthenticationMethod.Password;
+
+					if (await ServiceRef.PlatformSpecific.AuthenticateUserFingerprint(
+							 ServiceRef.Localizer[nameof(AppResources.FingerprintTitle)],
+							 null,
+							 ServiceRef.Localizer[nameof(AppResources.FingerprintDescription)],
+							 ServiceRef.Localizer[nameof(AppResources.Cancel)],
+							 null))
+					{
+						await UserAuthenticationSuccessful();
+						return true;
+					}
+					goto case AuthenticationMethod.Password;
 				case AuthenticationMethod.Password:
 					if (!ServiceRef.TagProfile.HasLocalPassword)
 						return true;
@@ -1004,27 +1019,6 @@ namespace NeuroAccessMaui
 						return false;
 
 					return await InputPassword(Purpose, ServiceRef.TagProfile) is not null;
-
-				case AuthenticationMethod.Fingerprint:
-					if (!ServiceRef.PlatformSpecific.SupportsFingerprintAuthentication)
-						return false;
-
-					if (await ServiceRef.PlatformSpecific.AuthenticateUserFingerprint(
-						ServiceRef.Localizer[nameof(AppResources.FingerprintTitle)],
-						null,
-						ServiceRef.Localizer[nameof(AppResources.FingerprintDescription)],
-						ServiceRef.Localizer[nameof(AppResources.Cancel)],
-						null))
-					{
-						await UserAuthenticationSuccessful();
-						return true;
-					}
-					else
-					{
-						await UserAuthenticationFailed();
-						return false;
-					}
-
 				default:
 					return false;
 			}

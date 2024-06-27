@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -2123,5 +2123,14 @@
   </data>
   <data name="TouchIdInfo" xml:space="preserve">
     <value>Touch ID använder ditt fingeravtryck för att säkerställa att det verkligen är du, vilket ger ett snabbt och säkert sätt att komma åt Neuro-Access.</value>
+  </data>
+  <data name="TransferIdentity" xml:space="preserve">
+    <value>Överför Identitet</value>
+  </data>
+  <data name="TransferIdentityDescription" xml:space="preserve">
+    <value>Överför din nuvarande identitet till en annan enhet.</value>
+  </data>
+  <data name="TransferIdentityPageDetails" xml:space="preserve">
+    <value>På din andra enhet, verifiera ditt telefonnummer och epost. Sedan på sidan där du får välja tjänsteleverantör tryck på ändra knappen och skanna denna QR-kod. Detta kommer ta bort identiteten från denna enhet.</value>
   </data>
 </root>
