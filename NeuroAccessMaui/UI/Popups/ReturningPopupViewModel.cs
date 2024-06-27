@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NeuroAccessMaui.Services;
 
 namespace NeuroAccessMaui.UI.Popups
 {
@@ -12,12 +13,5 @@ namespace NeuroAccessMaui.UI.Popups
 
 		public Task<TReturn?> Result => this.result.Task;
 
-		public override void OnPop()
-		{
-			if (!this.Result.IsCompleted)
-			{
-				this.result.TrySetResult(default(TReturn?));
-			}
-		}
 	}
 }

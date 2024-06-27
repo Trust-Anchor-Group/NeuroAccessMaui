@@ -2124,4 +2124,13 @@
   <data name="TouchIdInfo" xml:space="preserve">
     <value>Touch ID uses your fingerprint to ensure it's really you, providing a quick and secure way to access Neuro-Access.</value>
   </data>
+  <data name="TransferIdentity" xml:space="preserve">
+    <value>Transfer Identity</value>
+  </data>
+  <data name="TransferIdentityDescription" xml:space="preserve">
+    <value>Transfer your current identity to another device.</value>
+  </data>
+  <data name="TransferIdentityPageDetails" xml:space="preserve">
+    <value>On your other device continue with the onboarding until you reach the service provider page. Press the change button and scan this QR. Doing this will remove the identity from this device.</value>
+  </data>
 </root>

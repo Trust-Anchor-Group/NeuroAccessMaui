@@ -84,6 +84,16 @@
 							</Border>
 						</controls:TemplatedButton>
 
+						<!-- Transfer -->
+						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding TransferCommand}">
+							<Border Style="{StaticResource BorderSubSet}" InputTransparent="True">
+								<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
+									<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize TransferIdentity}" InputTransparent="True"/>
+									<Label Style="{StaticResource ItemDescriptionLabel}" Text="{l:Localize TransferIdentityDescription}" InputTransparent="True"/>
+								</VerticalStackLayout>
+							</Border>
+						</controls:TemplatedButton>
+
 					</VerticalStackLayout>
 				</Border>
 
@@ -138,8 +148,6 @@
 								</Grid>
 							</VerticalStackLayout>
 						</Border>
-
-						<controls:TextButton Style="{StaticResource FilledTextButton}" Command="{Binding TransferCommand}" LabelData="Transfer"></controls:TextButton>
 
 					</VerticalStackLayout>
 				</Border>
