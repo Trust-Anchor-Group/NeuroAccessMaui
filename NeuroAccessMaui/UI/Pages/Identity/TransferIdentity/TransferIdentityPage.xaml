@@ -23,13 +23,13 @@
 				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{StaticResource ImageOnlyButton}"
 											 PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-				<Label Style="{StaticResource PageTitleLabel}" Text="{l:Localize TransferId}"/>
+				<Label Style="{StaticResource PageTitleLabel}" Text="{l:Localize TransferIdentity}"/>
 
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout>
-						<Label Text="{l:Localize TransferIdentityInformationText}" Style="{StaticResource InfoLabel}" Margin="{StaticResource SmallBottomMargins}" />
+						<Label Text="{l:Localize TransferIdentityPageDetails}" Style="{StaticResource InfoLabel}" Margin="{StaticResource SmallBottomMargins}" />
 						<Image x:Name="QrCode" Source="{Binding Path=QrCode}" HorizontalOptions="CenterAndExpand" Margin="0"
-                       WidthRequest="{Binding Path=QrCodeWidth, Mode=OneTime}" HeightRequest="{Binding Path=QrCodeHeight, Mode=OneTime}">
+                       WidthRequest="240" HeightRequest="240">
 							<Image.GestureRecognizers>
 								<TapGestureRecognizer Command="{Binding CopyUriToClipboardCommand}"/>
 							</Image.GestureRecognizers>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseRegistrationView x:Name="ThisPage"
+									x:Class="NeuroAccessMaui.UI.Pages.Registration.Views.FinalizeView"
+									x:DataType="viewmodel:FinalizeViewModel"
+									xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+									xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+									xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+									xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+									xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+									xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Registration"
+									xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
+									xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
+	<Grid RowSpacing="{StaticResource LargeSpacing}" RowDefinitions="*, auto">
+		<VerticalStackLayout Grid.Row="0" VerticalOptions="Center"  Spacing="{StaticResource LargeSpacing}">
+			<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+				<Label
+					Style="{StaticResource PageTitleLabel}"
+					Text="{l:Localize OnboardingFinalizePageTitle}"
+					HorizontalTextAlignment="Center"
+					Margin="{StaticResource LargeBottomMargins}"/>
+						
+				<!-- Checkmark Circle -->
+				<Frame
+					WidthRequest="{Binding CheckmarkBackgroundSize}"
+					HeightRequest="{Binding CheckmarkBackgroundSize}"
+					HasShadow="False"
+					CornerRadius="{Binding CheckmarkBackgroundCornerRadius}"
+					BackgroundColor="{AppThemeBinding Light={StaticResource EnabledTransparentButtonBackgroundLight}, Dark={StaticResource EnabledTransparentButtonBackgroundDark}}"
+					HorizontalOptions="Center">
+					<Path
+						VerticalOptions="Center"
+						HorizontalOptions="Center"
+						HeightRequest="{Binding CheckmarkIconSize}"
+						WidthRequest="{Binding CheckmarkIconSize}"
+						Aspect="Uniform"
+						Data="{x:Static ui:Geometries.SuccessCheckmarkPath}"
+						Fill="{AppThemeBinding Light={StaticResource EnabledFilledButtonBackgroundLight}, Dark={StaticResource EnabledFilledButtonBackgroundDark}}" />
+				</Frame>
+				<!-- Text -->
+				<Label Style="{StaticResource SectionTitleLabel}"
+						Text="{l:Localize OnboardingFinalizePageDetails}" 
+						FontSize="16"
+						HorizontalOptions="Center"/>
+					
+	
+			</VerticalStackLayout>
+		</VerticalStackLayout>
+        <controls:TextButton
+            VerticalOptions="End"
+            Command="{Binding ContinueCommand}"
+            Style="{StaticResource FilledTextButton}"
+            LabelData="{l:Localize Continue}"
+            Grid.Row="1" />
+	</Grid>
+</base:BaseRegistrationView>

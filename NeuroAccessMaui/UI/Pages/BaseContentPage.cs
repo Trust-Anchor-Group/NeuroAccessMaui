@@ -43,8 +43,22 @@ namespace NeuroAccessMaui.UI.Pages
 			: base()
 		{
 			this.On<iOS>().SetUseSafeArea(true);
+			this.SetBackgroundColor();
+			Microsoft.Maui.Controls.Application.Current!.RequestedThemeChanged += this.OnRequestedThemeChanged;
+
 
 			this.Loaded += this.BaseContentPage_Loaded;
+		}
+
+		private void OnRequestedThemeChanged(object? sender, AppThemeChangedEventArgs e)
+		{
+			// Update the background color when the theme changes
+			this.SetBackgroundColor();
+		}
+
+		private void SetBackgroundColor()
+		{
+			this.BackgroundColor = AppColors.PrimaryBackground;
 		}
 
 		private void BaseContentPage_Loaded(object? sender, EventArgs e)

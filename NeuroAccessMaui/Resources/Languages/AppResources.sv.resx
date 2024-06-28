@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -566,6 +566,18 @@
   </data>
   <data name="OnboardingDefinePasswordPageTitle" xml:space="preserve">
     <value>Skapa en PIN kod</value>
+  </data>
+  <data name="OnboardingFinalizePageTitle" xml:space="preserve">
+    <value>Klar!</value>
+  </data>
+  <data name="OnboardingFinalizePageDetails" xml:space="preserve">
+    <value>Du kan nu börja använda Neuro-Access</value>
+  </data>
+  <data name="OnboardingBiometricsPageTitle" xml:space="preserve">
+    <value>Nästan klar</value>
+  </data>
+  <data name="OnboardingBiometricsPageDetails" xml:space="preserve">
+    <value>Neuro-Access fungerar bäst med {0}. Vill du aktivera den här funktionen? Detta kan också ändras i inställningarna senare.</value>
   </data>
   <data name="AccountSectionTitle" xml:space="preserve">
     <value>Ange kontonamnet</value>
@@ -1644,6 +1656,12 @@
   <data name="ScanQRCode" xml:space="preserve">
     <value>Skanna QR-kod</value>
   </data>
+  <data name="ScanQRShort" xml:space="preserve">
+    <value>Skanna QR</value>
+  </data>
+  <data name="ShowIDShort" xml:space="preserve">
+    <value>Visa ID</value>
+  </data>
   <data name="SelectContactToPay" xml:space="preserve">
     <value>Nedan finns alla kontakter i din kontaktbok. Välj den kontakt som du vill göra betalningen till.</value>
   </data>
@@ -2075,5 +2093,44 @@
   </data>
   <data name="OnboardingDefinePasswordCreateNumeric" xml:space="preserve">
     <value>Skapa numerisk PIN</value>
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value>Detaljer</value>
+  </data>
+  <data name="Later" xml:space="preserve">
+    <value>Senare</value>
+  </data>
+  <data name="Enable" xml:space="preserve">
+    <value>Aktivera</value>
+  </data>
+  <data name="BiometricAuthentication" xml:space="preserve">
+    <value>Biometrisk autentisering</value>
+  </data>
+  <data name="FaceId" xml:space="preserve">
+    <value>Face ID</value>
+  </data>
+  <data name="TouchId" xml:space="preserve">
+    <value>Touch ID</value>
+  </data>
+  <data name="WhatIsX" xml:space="preserve">
+    <value>What is {0}?</value>
+  </data>
+  <data name="BiometricAuthenticationInfo" xml:space="preserve">
+    <value>Biometrisk autentisering använder dina unika fysiska egenskaper, som ditt ansikte eller fingeravtryck, för att säkerställa att det verkligen är du. Det ger ett enkelt och säkert sätt att komma åt Neuro-Access.</value>
+  </data>
+  <data name="FaceIdInfo" xml:space="preserve">
+    <value>Face ID känner igen ditt ansikte för att säkerställa att det verkligen är du, vilket ger ett enkelt och säkert sätt att komma åt Neuro-Access.</value>
+  </data>
+  <data name="TouchIdInfo" xml:space="preserve">
+    <value>Touch ID använder ditt fingeravtryck för att säkerställa att det verkligen är du, vilket ger ett snabbt och säkert sätt att komma åt Neuro-Access.</value>
+  </data>
+  <data name="TransferIdentity" xml:space="preserve">
+    <value>Överför Identitet</value>
+  </data>
+  <data name="TransferIdentityDescription" xml:space="preserve">
+    <value>Överför din nuvarande identitet till en annan enhet.</value>
+  </data>
+  <data name="TransferIdentityPageDetails" xml:space="preserve">
+    <value>På din andra enhet, verifiera ditt telefonnummer och epost. Sedan på sidan där du får välja tjänsteleverantör tryck på ändra knappen och skanna denna QR-kod. Detta kommer ta bort identiteten från denna enhet.</value>
   </data>
 </root>

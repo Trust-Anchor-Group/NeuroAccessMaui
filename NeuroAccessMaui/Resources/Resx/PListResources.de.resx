@@ -118,13 +118,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="NSCameraUsageDescription" xml:space="preserve">
-    <value>Neuro-Access benötigt Zugriff auf die Kamera, um Fotos für Ihre digitale ID aufzunehmen und QR-Codes zu scannen.</value>
+    <value>Neuro-Access benötigt Zugriff auf die Kamera, um Fotos für Ihre digitale ID aufzunehmen und wenn Sie möchten, um QR-Codes zu scannen.</value>
   </data>
   <data name="NSPhotoLibraryAddUsageDescription" xml:space="preserve">
-    <value>Neuro-Access muss in der Lage sein, Fotos zu Ihren Galerien hinzuzufügen, wenn Sie Fotos, die Sie aufgenommen haben, für die spätere Verwendung speichern möchten.</value>
+    <value>Neuro-Access muss in der Lage sein, Fotos zu Ihren Galerien hinzuzufügen, wenn Sie aufgenommene Fotos für die spätere Verwendung speichern möchten.</value>
   </data>
   <data name="NSPhotoLibraryUsageDescription" xml:space="preserve">
-    <value>Neuro-Access benötigt Zugriff auf die Fotogalerie, damit Sie ein Profilfoto für Ihren Ausweis auswählen, QR-Codes aus anderen Apps abrufen oder Bilder mit Kontakten in Chats teilen können.</value>
+    <value>Neuro-Access benötigt Zugriff auf die Fotogalerie, damit Sie ein Profilfoto für Ihren Ausweis auswählen, QR-Codes von anderen Apps abrufen oder Bilder mit Kontakten in Chats teilen können.</value>
   </data>
   <data name="NFCReaderUsageDescription" xml:space="preserve">
     <value>Neuro-Access benötigt Zugriff auf den NFC-Tag, um NDEF-Nachrichten in die Anwendung einzulesen.</value>
