@@ -1,4 +1,4 @@
-﻿using NeuroAccessMaui.Services.Push;
+using NeuroAccessMaui.Services.Push;
 
 namespace NeuroAccessMaui.Services
 {
