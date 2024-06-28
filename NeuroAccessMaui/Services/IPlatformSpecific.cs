@@ -81,15 +81,15 @@ namespace NeuroAccessMaui.Services
 		/// <summary>
 		/// Event that is triggered when the keyboard is shown
 		/// </summary>
-		event EventHandler KeyboardShown;
+		event EventHandler<KeyboardSizeMessage>? KeyboardShown;
 		/// <summary>
 		/// Event that is triggered when the keyboard is hidden
 		/// </summary>
-		event EventHandler KeyboardHidden;
+		event EventHandler<KeyboardSizeMessage>? KeyboardHidden;
 		/// <summary>
 		/// Event that is triggered when the keyboard size changes
 		/// </summary>
-		event EventHandler<KeyboardSizeMessage> KeyboardSizeChanged;
+		event EventHandler<KeyboardSizeMessage>? KeyboardSizeChanged;
 
 		#endregion
 	}
