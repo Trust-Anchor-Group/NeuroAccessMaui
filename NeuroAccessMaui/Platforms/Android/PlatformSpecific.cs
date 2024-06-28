@@ -619,9 +619,9 @@ namespace NeuroAccessMaui.Services
 		#region Keyboard
 
 		/// <inheritdoc />
-		public event EventHandler? KeyboardShown;
+		public event EventHandler<KeyboardSizeMessage>? KeyboardShown;
 		/// <inheritdoc />
-		public event EventHandler? KeyboardHidden;
+		public event EventHandler<KeyboardSizeMessage>? KeyboardHidden;
 		/// <summary>
 		///	Fired when the keyboard size changes.
 		/// </summary>>
@@ -630,7 +630,7 @@ namespace NeuroAccessMaui.Services
 		/// </remarks>
 		public event EventHandler<KeyboardSizeMessage>? KeyboardSizeChanged;
 
-		private Android.App.Activity? activity;
+		private Activity? activity;
 		private Android.Views.View? rootView;
 		private int lastKeyboardHeight = 0;
 		private Handler? initializeKeyboardHandler;
@@ -642,8 +642,7 @@ namespace NeuroAccessMaui.Services
 				return;
 			InputMethodManager? inputMethodManager = this.activity.GetSystemService(Context.InputMethodService) as InputMethodManager;
 			inputMethodManager?.HideSoftInputFromWindow(this.rootView.WindowToken, HideSoftInputFlags.None);
-			Activity.Window?.DecorView.ClearFocus();
-
+			this.activity.Window?.DecorView.ClearFocus();
 		}
 
 		private void InitializeKeyboard()
@@ -678,8 +677,6 @@ namespace NeuroAccessMaui.Services
 
 		private void OnGlobalLayout(object? sender, EventArgs e)
 		{
-			Debug.WriteLine("OnGlobalLayout");
-
 			Rect r = new();
 			this.rootView!.GetWindowVisibleDisplayFrame(r);
 
@@ -704,16 +701,13 @@ namespace NeuroAccessMaui.Services
 			// This is a heuristic, and may need to be adjusted.
 			// I really don't like this solution, but android doesn't provide a better way to detect the keyboard at the time of writing.
 			// Checking keyboardheight > 0 is not enough, because the keyboardheight is not garanteed to be accurate on all devices and circumstances
+			
 			if (keypadHeight > availableScreenHeight * 0.15)
 			{
-				if (this.lastKeyboardHeight != keypadHeight)
-				{
 					this.lastKeyboardHeight = keypadHeight;
 					this.KeyboardSizeChanged?.Invoke(this, new KeyboardSizeMessage(keypadHeight));
 					WeakReferenceMessenger.Default.Send(new KeyboardSizeMessage(keypadHeight));
-				}
-				else
-					this.KeyboardShown?.Invoke(this, EventArgs.Empty);
+					this.KeyboardShown?.Invoke(this, new KeyboardSizeMessage(keypadHeight));
 			}
 			else
 			{
@@ -723,7 +717,7 @@ namespace NeuroAccessMaui.Services
 				this.lastKeyboardHeight = 0;
 				this.KeyboardSizeChanged?.Invoke(this, new KeyboardSizeMessage(0));
 				WeakReferenceMessenger.Default.Send(new KeyboardSizeMessage(0));
-				this.KeyboardHidden?.Invoke(this, EventArgs.Empty);
+				this.KeyboardHidden?.Invoke(this, new KeyboardSizeMessage(0));
 			}
 		}
 		#endregion
