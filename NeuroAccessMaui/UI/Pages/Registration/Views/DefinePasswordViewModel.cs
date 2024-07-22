@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.Controls.Shapes;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
@@ -51,6 +52,12 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		[NotifyPropertyChangedFor(nameof(PasswordsMatch))]
 		[NotifyCanExecuteChangedFor(nameof(ContinueCommand))]
 		private string? passwordText2;
+
+
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(PasswordVisibilityPathData))]
+
+		private bool isPasswordHidden = true;
 
 
 		[ObservableProperty]
@@ -115,12 +122,23 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		}
 
 		[RelayCommand]
+		private void TogglePasswordVisibility()
+		{
+			this.IsPasswordHidden = !this.IsPasswordHidden;
+		}
+
+		[RelayCommand]
 		private void ValidatePassword()
 		{
 			this.OnPropertyChanged(nameof(this.PasswordStrength));
 			this.OnPropertyChanged(nameof(this.LocalizedValidationError));
 			this.OnPropertyChanged(nameof(this.IsPassword1NotValid));
 		}
+
+		/// <summary>
+		/// Gets the path data for the password visibility icon depending if the password is hidden or not.
+		/// </summary>
+		public Geometry PasswordVisibilityPathData => this.IsPasswordHidden ? Geometries.VisibilityOnPath : Geometries.VisibilityOffPath;
 
 		/// <summary>
 		/// Gets the value indicating how strong the <see cref="PasswordText1"/> is.
