@@ -1,6 +1,4 @@
 ﻿using System.Windows.Input;
-using AuthenticationServices;
-using CommunityToolkit.Maui.Markup;
 using Microsoft.Maui.Controls.Shapes;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Core;
@@ -53,17 +51,17 @@ namespace NeuroAccessMaui.UI.Controls
 		/// Bindable property for the command to be executed when the PathData is clicked.
 		/// </summary>
 		public static readonly BindableProperty PathClickedCommandProperty = BindableProperty.Create(
-            nameof(PathClickedCommand),
-            typeof(ICommand),
-            typeof(CompositeEntry));
+				nameof(PathClickedCommand),
+				typeof(ICommand),
+				typeof(CompositeEntry));
 		/// <summary>
 		/// Gets or sets the command to be executed when the PathData is clicked.
 		/// </summary>
-        public ICommand PathClickedCommand
-        {
-            get => (ICommand)this.GetValue(PathClickedCommandProperty);
-            set => this.SetValue(PathClickedCommandProperty, value);
-        }
+		public ICommand PathClickedCommand
+		{
+			get => (ICommand)this.GetValue(PathClickedCommandProperty);
+			set => this.SetValue(PathClickedCommandProperty, value);
+		}
 
 		/// <summary>
 		/// Bindable property for the Clickable PathData to be displayed.
@@ -438,7 +436,7 @@ namespace NeuroAccessMaui.UI.Controls
 
 			this.innerEntry.Focused += this.OnEntryFocused;
 			this.innerEntry.Unfocused += this.OnEntryUnfocused;
-		}		
+		}
 
 		private void OnEntryFocused(object? sender, FocusEventArgs e)
 		{
