@@ -2124,4 +2124,13 @@
   <data name="TouchIdInfo" xml:space="preserve">
     <value>Touch ID koristi vaš otisak prsta da se uveri da ste to zaista vi, obezbeđujući brz i bezbedan način pristupa neuro-pristupu.</value>
   </data>
+  <data name="TransferIdentity" xml:space="preserve">
+    <value>Prenesi identitet</value>
+  </data>
+  <data name="TransferIdentityDescription" xml:space="preserve">
+    <value>Prenesite trenutni identitet na drugi uređaj.</value>
+  </data>
+  <data name="TransferIdentityPageDetails" xml:space="preserve">
+    <value>Na drugom uređaju nastavite sa ukrcavanje dok ne dođete do stranice dobavljača usluga. Pritisnite dugme "Promeni" i skenirajte ovaj QR. Ako to uradite, uklonićete identitet sa ovog uređaja.</value>
+  </data>
 </root>

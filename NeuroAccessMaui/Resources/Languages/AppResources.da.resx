@@ -2124,4 +2124,13 @@
   <data name="TouchIdInfo" xml:space="preserve">
     <value>Touch ID bruger dit fingeraftryk til at sikre, at det virkelig er dig, hvilket giver en hurtig og sikker måde at få adgang til Neuro-Access på.</value>
   </data>
+  <data name="TransferIdentity" xml:space="preserve">
+    <value>Overfør identitet</value>
+  </data>
+  <data name="TransferIdentityDescription" xml:space="preserve">
+    <value>Overfør din nuværende identitet til en anden enhed.</value>
+  </data>
+  <data name="TransferIdentityPageDetails" xml:space="preserve">
+    <value>På din anden enhed skal du fortsætte med onboardingen, indtil du kommer til tjenesteudbydersiden. Tryk på skiftknappen, og scan denne QR. Hvis du gør dette, fjernes identiteten fra denne enhed.</value>
+  </data>
 </root>

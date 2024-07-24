@@ -2124,4 +2124,13 @@
   <data name="TouchIdInfo" xml:space="preserve">
     <value>Touch ID käyttää sormenjälkeäsi varmistaakseen, että kyseessä todella olet sinä, tarjoten nopean ja turvallisen tavan käyttää Neuro-Accessia.</value>
   </data>
+  <data name="TransferIdentity" xml:space="preserve">
+    <value>Siirrä henkilöllisyys</value>
+  </data>
+  <data name="TransferIdentityDescription" xml:space="preserve">
+    <value>Siirrä nykyinen henkilöllisyytesi toiseen laitteeseen.</value>
+  </data>
+  <data name="TransferIdentityPageDetails" xml:space="preserve">
+    <value>Jatka toisella laitteellasi käyttöönottoa, kunnes pääset palveluntarjoajasivulle. Paina muutospainiketta ja skannaa tämä QR. Tämä poistaa identiteetin tästä laitteesta.</value>
+  </data>
 </root>
