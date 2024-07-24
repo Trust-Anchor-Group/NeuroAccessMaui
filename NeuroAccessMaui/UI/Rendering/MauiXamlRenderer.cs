@@ -1828,7 +1828,7 @@ namespace NeuroAccessMaui.UI.Rendering
 				else
 				{
 					this.XmlOutput.WriteStartElement("ContentView");
-					this.XmlOutput.WriteAttributeString("Padding", null, "TableCell");
+					this.XmlOutput.WriteAttributeString("Style", null, "{StaticResource TableCell}");
 
 					this.XmlOutput.WriteStartElement("VerticalStackLayout");
 					await E.Render(this);
