@@ -130,7 +130,7 @@ namespace NeuroAccessMaui.Services.Crypto
 		public async Task InitializeJwtFactory()
 		{
 			KeyValuePair<byte[], byte[]> Keys = await this.GetCustomKey("factory.jwt");
-			this.jwtFactory = new JwtFactory(Keys.Key);
+			this.jwtFactory = JwtFactory.CreateHmacSha256(Keys.Key);
 		}
 
 		/// <summary>
