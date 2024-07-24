@@ -221,7 +221,7 @@
 		<PackageReference Include="CommunityToolkit.Maui" Version="7.0.1" />
 		<PackageReference Include="CommunityToolkit.Maui.Markup" Version="4.0.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
-		<PackageReference Include="DotNetMeteor.HotReload.Plugin" Version="3.*"/>
+		<PackageReference Include="DotNetMeteor.HotReload.Plugin" Version="3.*" />
 		<PackageReference Include="EDaler" Version="2.5.1" />
 		<PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.4" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
@@ -282,6 +282,9 @@
 		</Compile>
 		<Compile Update="UI\Pages\Applications\Applications\ApplicationsPage.xaml.cs">
 			<DependentUpon>ApplicationsPage.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Pages\Contracts\NewContract\NewContractPage2.xaml.cs">
+		  <DependentUpon>NewContractPage2.xaml</DependentUpon>
 		</Compile>
 		<Compile Update="UI\Pages\Main\ChangePassword\ChangePasswordPage.xaml.cs">
 			<DependentUpon>ChangePasswordPage.xaml</DependentUpon>
@@ -391,6 +394,9 @@
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Contracts\MyContracts\MyContractsPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Contracts\NewContract\NewContractPage2.xaml">
+		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Contracts\NewContract\NewContractPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
