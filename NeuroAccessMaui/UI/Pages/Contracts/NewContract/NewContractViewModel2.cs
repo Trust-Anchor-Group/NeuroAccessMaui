@@ -25,6 +25,7 @@ using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.EventArguments;
 using Waher.Persistence;
 using Waher.Script;
+using PropertyChangingEventArgs = System.ComponentModel.PropertyChangingEventArgs;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 {
@@ -33,7 +34,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 	/// </summary>
 	public partial class NewContractViewModel2 : BaseViewModel, ILinkableView
 	{
-		private static readonly string partSettingsPrefix = typeof(NewContractViewModel).FullName + ".Part_";
+		private static readonly string partSettingsPrefix = typeof(NewContractViewModel2).FullName + ".Part_";
+
+		[ObservableProperty]
+		private ObservableCollection<ParameterInfo2> parameters = [];
 
 		private readonly SortedDictionary<CaseInsensitiveString, ParameterInfo> parametersByName = [];
 		private readonly LinkedList<ParameterInfo> parametersInOrder = new();
@@ -86,6 +90,47 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		{
 			await base.OnInitialize();
 
+			foreach (Parameter P in this.template.Parameters)
+			{
+				if (P is BooleanParameter BP)
+				{
+					BooleanParameterInfo BPI = new(BP);
+					this.Parameters.Add(BPI);
+				}
+				else if (P is DateParameter DP)
+				{
+					DateParameterInfo DPI = new(DP);
+					this.Parameters.Add(DPI);
+				}
+				else if (P is DurationParameter DuraP)
+				{
+					DurationParameterInfo DPI = new(DuraP);
+					this.Parameters.Add(DPI);
+				}
+				else if (P is StringParameter SP)
+				{
+					StringParameterInfo SPI = new(SP);
+					this.Parameters.Add(SPI);
+				}
+				else if (P is NumericalParameter NP)
+				{
+					NumericalParameterInfo NPI = new(NP);
+					this.Parameters.Add(NPI);
+				}
+				else if (P is TimeParameter TP)
+				{
+					TimeParameterInfo TPI = new(TP);
+					this.Parameters.Add(TPI);
+				}
+				this.Parameters.Last().PropertyChanged += this.Parameter_PropertyChanged;
+			}
+
+		}
+
+		async void Parameter_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+		{
+			Console.WriteLine(e.PropertyName);
+			await this.ValidateParameters();
 		}
 
 		/// <inheritdoc/>
@@ -131,7 +176,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			try
 			{
 				base.OnPropertyChanged(e);
-
+				Console.WriteLine(e.PropertyName);
+				await this.ValidateParameters();
 			}
 			catch (Exception ex)
 			{
@@ -139,7 +185,20 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			}
 		}
 
+		private async Task ValidateParameters()
+		{
+			ContractsClient Client = ServiceRef.XmppService.ContractsClient;
+			Variables v = [];
+			foreach (ParameterInfo2 P in this.Parameters)
+			{
+				P.Parameter.Populate(v);
+			}
 
+			foreach (ParameterInfo2 P in this.Parameters)
+			{
+				P.Error = !await P.Parameter.IsParameterValid(v, Client);
+			}
+		}
 		/// <summary>
 		/// Gets or sets whether the visibility items should be shown to the user or not.
 		/// </summary>
@@ -169,12 +228,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		private VerticalStackLayout? roles;
 
 		/// <summary>
-		/// Holds Xaml code for visually representing a contract's parameters.
-		/// </summary>
-		[ObservableProperty]
-		private VerticalStackLayout? parameters;
-
-		/// <summary>
 		/// Holds Xaml code for visually representing a contract's human readable text section.
 		/// </summary>
 		[ObservableProperty]
@@ -192,12 +245,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		[ObservableProperty]
 		private bool hasParameters;
 
-		/// <summary>
-		/// Gets or sets whether the contract has parameters.
-		/// </summary>
-		[ObservableProperty]
-		[NotifyCanExecuteChangedFor(nameof(ProposeCommand))]
-		private bool parametersOk;
 
 		/// <summary>
 		/// Gets or sets whether the contract is comprised of human readable text.

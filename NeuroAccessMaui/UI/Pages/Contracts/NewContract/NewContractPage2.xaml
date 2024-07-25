@@ -1,24 +1,91 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <base:BaseContentPage x:Name="ThisPage"
 							 x:Class="NeuroAccessMaui.UI.Pages.Contracts.NewContract.NewContractPage2"
-							 x:DataType="viewmodel:NewContractViewModel"
+							 x:DataType="viewmodel:NewContractViewModel2"
 							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+							 xmlns:local="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel"
 							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
 							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
-							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract">
+							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract"
+							 HideSoftInputOnTapped="True">
 
+	<ContentPage.Resources>
+		<Style x:Key="ErrorStyle" TargetType="VisualElement" x:DataType="local:ParameterInfo2">
+			<Setter Property="BackgroundColor" Value="Transparent" />
+			<Style.Triggers>
+				<DataTrigger TargetType="VisualElement" Binding="{Binding Error}" Value="True">
+					<Setter Property="BackgroundColor" Value="Red" />
+				</DataTrigger>
+			</Style.Triggers>
+		</Style>
+
+		<DataTemplate x:Key="BooleanTemplate" x:DataType="local:BooleanParameterInfo">
+			<StackLayout Orientation="Vertical" Style="{StaticResource ErrorStyle}">
+				<Label Text="{Binding Name}" />
+				<Switch IsToggled="{Binding BooleanValue, Mode=TwoWay}" />
+			</StackLayout>
+		</DataTemplate>
+		<DataTemplate x:Key="DateTemplate" x:DataType="local:DateParameterInfo">
+			<StackLayout Orientation="Vertical" Style="{StaticResource ErrorStyle}">
+				<Label Text="{Binding Name}" />
+				<DatePicker Date="{Binding DateValue, Mode=TwoWay}" />
+			</StackLayout>
+		</DataTemplate>
+		<DataTemplate x:Key="NumericalTemplate" x:DataType="local:NumericalParameterInfo">
+			<StackLayout Orientation="Vertical" Style="{StaticResource ErrorStyle}">
+				<Label Text="{Binding Name}" />
+				<Entry Text="{Binding DecimalValue, Mode=TwoWay}" Placeholder="{Binding Guide}" />
+			</StackLayout>
+		</DataTemplate>
+		<DataTemplate x:Key="StringTemplate" x:DataType="local:StringParameterInfo">
+			<StackLayout Orientation="Vertical" Style="{StaticResource ErrorStyle}">
+				<Label Text="{Binding Name}" />
+				<Entry Text="{Binding StringValue, Mode=TwoWay}" Placeholder="{Binding Guide}" />
+			</StackLayout>
+		</DataTemplate>
+		<DataTemplate x:Key="TimeTemplate" x:DataType="local:TimeParameterInfo">
+			<StackLayout Orientation="Vertical" Style="{StaticResource ErrorStyle}">
+				<Label Text="{Binding Name}" />
+				<TimePicker Time="{Binding TimeSpanValue, Mode=TwoWay}" />
+			</StackLayout>
+		</DataTemplate>
+		<DataTemplate x:Key="DurationTemplate" x:DataType="local:DurationParameterInfo">
+			<StackLayout Orientation="Vertical" Style="{StaticResource ErrorStyle}">
+				<Label Text="{Binding Name}" />
+				<Entry Text="{Binding DurationParameterValue, Mode=TwoWay}" Placeholder="{Binding Guide}" />
+			</StackLayout>
+		</DataTemplate>
+		<!-- Default template for unhandled parameter types -->
+		<DataTemplate x:Key="DefaultTemplate" x:DataType="local:ParameterInfo2">
+			<StackLayout Orientation="Vertical">
+				<Label Text="{Binding Name}" />
+			</StackLayout>
+		</DataTemplate>
+
+		<local:ParameterTemplateSelector x:Key="ParameterTemplateSelector"
+		                                 BooleanTemplate="{StaticResource BooleanTemplate}"
+		                                 DateTemplate="{StaticResource DateTemplate}"
+													NumericalTemplate="{StaticResource NumericalTemplate}"
+													StringTemplate="{StaticResource StringTemplate}"
+													TimeTemplate="{StaticResource TimeTemplate}"
+													DurationTemplate="{StaticResource DurationTemplate}"
+		                                 DefaultTemplate="{StaticResource DefaultTemplate}" />
+	</ContentPage.Resources>
 	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
 
 		<controls:Background/>
 
 		<ScrollView>
 			<VerticalStackLayout>
-				<Label Text="TEST"/>
+				<CollectionView ItemsSource="{Binding Parameters}"
+				                ItemTemplate="{StaticResource ParameterTemplateSelector}"
+				                VerticalOptions="FillAndExpand"
+				                HorizontalOptions="FillAndExpand" />
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>
