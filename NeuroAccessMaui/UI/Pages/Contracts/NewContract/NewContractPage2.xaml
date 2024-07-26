@@ -70,12 +70,13 @@
 		<local:ParameterTemplateSelector x:Key="ParameterTemplateSelector"
 		                                 BooleanTemplate="{StaticResource BooleanTemplate}"
 		                                 DateTemplate="{StaticResource DateTemplate}"
-													NumericalTemplate="{StaticResource NumericalTemplate}"
-													StringTemplate="{StaticResource StringTemplate}"
-													TimeTemplate="{StaticResource TimeTemplate}"
-													DurationTemplate="{StaticResource DurationTemplate}"
+										 NumericalTemplate="{StaticResource NumericalTemplate}"
+										 StringTemplate="{StaticResource StringTemplate}"
+										 TimeTemplate="{StaticResource TimeTemplate}"
+										 DurationTemplate="{StaticResource DurationTemplate}"
 		                                 DefaultTemplate="{StaticResource DefaultTemplate}" />
 	</ContentPage.Resources>
+	
 	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
 
 		<controls:Background/>

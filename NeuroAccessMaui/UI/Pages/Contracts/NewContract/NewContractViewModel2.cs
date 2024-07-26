@@ -19,13 +19,10 @@ using NeuroAccessMaui.UI.Pages.Main.Duration;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
-using Waher.Content;
 using Waher.Content.Xml;
 using Waher.Networking.XMPP.Contracts;
-using Waher.Networking.XMPP.Contracts.EventArguments;
 using Waher.Persistence;
 using Waher.Script;
-using PropertyChangingEventArgs = System.ComponentModel.PropertyChangingEventArgs;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 {
@@ -38,6 +35,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 		[ObservableProperty]
 		private ObservableCollection<ParameterInfo2> parameters = [];
+
+		[ObservableProperty]
+		private ObservableCollection<RoleInfo> roles = [];
 
 		private readonly SortedDictionary<CaseInsensitiveString, ParameterInfo> parametersByName = [];
 		private readonly LinkedList<ParameterInfo> parametersInOrder = new();
@@ -89,59 +89,68 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		protected override async Task OnInitialize()
 		{
 			await base.OnInitialize();
-
-			foreach (Parameter P in this.template.Parameters)
+			try 
 			{
-				if (P is BooleanParameter BP)
-				{
-					BooleanParameterInfo BPI = new(BP);
-					this.Parameters.Add(BPI);
-				}
-				else if (P is DateParameter DP)
-				{
-					DateParameterInfo DPI = new(DP);
-					this.Parameters.Add(DPI);
-				}
-				else if (P is DurationParameter DuraP)
-				{
-					DurationParameterInfo DPI = new(DuraP);
-					this.Parameters.Add(DPI);
-				}
-				else if (P is StringParameter SP)
-				{
-					StringParameterInfo SPI = new(SP);
-					this.Parameters.Add(SPI);
-				}
-				else if (P is NumericalParameter NP)
-				{
-					NumericalParameterInfo NPI = new(NP);
-					this.Parameters.Add(NPI);
-				}
-				else if (P is TimeParameter TP)
-				{
-					TimeParameterInfo TPI = new(TP);
-					this.Parameters.Add(TPI);
-				}
-				this.Parameters.Last().PropertyChanged += this.Parameter_PropertyChanged;
-			}
+				await this.InitializeParametersAsync();
+				await this.ValidateParametersAsync();
 
+				await this.InitializeRolesAsync();
+			} catch (Exception ex) {
+				ServiceRef.LogService.LogException(ex);
+			}
 		}
+
 
 		async void Parameter_PropertyChanged(object? sender, PropertyChangedEventArgs e)
 		{
-			Console.WriteLine(e.PropertyName);
-			await this.ValidateParameters();
+			await this.ValidateParametersAsync();
+		}
+
+
+
+		private async Task InitializeParametersAsync()
+		{
+			//Wrap the parameters in a ParameterInfo object
+			foreach (Parameter P in this.template.Parameters)
+			{
+				ParameterInfo2? PI = P switch {
+					BooleanParameter BoolP => new BooleanParameterInfo(BoolP),
+					DateParameter DP => new DateParameterInfo(DP),
+					DurationParameter DuraP => new DurationParameterInfo(DuraP),
+					StringParameter SP => new StringParameterInfo(SP),
+					NumericalParameter NP => new NumericalParameterInfo(NP),
+					TimeParameter TP => new TimeParameterInfo(TP),
+					_ => new ParameterInfo2(P)
+				};
+
+				if(PI is not null)
+				{
+					await PI.InitalizeWithContractAsync(this.template);
+					if(this.presetParameterValues.TryGetValue(P.Name, out object? Value))
+						PI.Value = Value;
+					else
+						this.presetParameterValues.Remove(P.Name);
+					PI.PropertyChanged += this.Parameter_PropertyChanged;
+					this.Parameters.Add(PI);
+				}
+			}
+		}
+
+		private async Task InitializeRolesAsync()
+		{
+			foreach (Role R in this.template.Roles)
+			{
+				RoleInfo RI = new(R);
+				await RI.InitalizeWithContractAsync(this.template);
+				this.Roles.Add(new RoleInfo(R));
+			}
 		}
 
 		/// <inheritdoc/>
 		protected override async Task OnDispose()
 		{
-
 			await base.OnDispose();
 		}
-
-
-
 		#region Properties
 
 
@@ -163,29 +172,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		[ObservableProperty]
 		private ContractVisibilityModel? selectedContractVisibilityItem;
 
-		/// <inheritdoc/>
-		protected override void OnPropertyChanging(PropertyChangingEventArgs e)
-		{
-			base.OnPropertyChanging(e);
 
-		}
-
-		/// <inheritdoc/>
-		protected override async void OnPropertyChanged(PropertyChangedEventArgs e)
-		{
-			try
-			{
-				base.OnPropertyChanged(e);
-				Console.WriteLine(e.PropertyName);
-				await this.ValidateParameters();
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-			}
-		}
-
-		private async Task ValidateParameters()
+		private async Task ValidateParametersAsync()
 		{
 			ContractsClient Client = ServiceRef.XmppService.ContractsClient;
 			Variables v = [];
@@ -221,11 +209,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		[ObservableProperty]
 		private string? selectedRole;
 
-		/// <summary>
-		/// Holds Xaml code for visually representing a contract's roles.
-		/// </summary>
-		[ObservableProperty]
-		private VerticalStackLayout? roles;
+
 
 		/// <summary>
 		/// Holds Xaml code for visually representing a contract's human readable text section.
@@ -315,7 +299,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					else
 						P.Value.Parameter.ObjectValue?.ToString();
 				}
-
 				return Url.ToString();
 			}
 		}
