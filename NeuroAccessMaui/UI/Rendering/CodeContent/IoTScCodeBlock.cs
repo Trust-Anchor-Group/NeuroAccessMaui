@@ -51,7 +51,7 @@ namespace NeuroAccessMaui.UI.Rendering.CodeContent
 				};
 				Doc.LoadXml(sb.ToString());
 
-				ParsedContract Parsed = await Contract.Parse(Doc.DocumentElement, ServiceRef.XmppService.ContractsClient);
+				ParsedContract Parsed = await Contract.Parse(Doc.DocumentElement, ServiceRef.XmppService.ContractsClient, false);
 				if (Parsed is null)
 					return false;
 

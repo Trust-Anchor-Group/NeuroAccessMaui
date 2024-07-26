@@ -1341,7 +1341,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 								break;
 
 							case UriScheme.IotSc:
-								ParsedContract ParsedContract = await Contract.Parse(Doc.DocumentElement, ServiceRef.XmppService.ContractsClient);
+								ParsedContract ParsedContract = await Contract.Parse(Doc.DocumentElement, ServiceRef.XmppService.ContractsClient, true);
 								ViewContractNavigationArgs ViewContractArgs = new(ParsedContract.Contract, false);
 
 								await ServiceRef.UiService.GoToAsync(nameof(ViewContractPage), ViewContractArgs, BackMethod.Pop);
