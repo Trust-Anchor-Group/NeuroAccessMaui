@@ -1,29 +1,65 @@
 ﻿using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
+using NeuroAccessMaui.Extensions;
 using Waher.Content;
 using Waher.Networking.XMPP.Contracts;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
 {
 	/// <summary>
-	/// Contains information about a parameter.
+	/// An observable object that wraps a <see cref="Waher.Networking.XMPP.Contracts.Parameter"/> object.
+	/// This allows for easier binding in the UI.
 	/// </summary>
 	public class ParameterInfo2 : ObservableObject
 	{
-		protected ParameterInfo2(Parameter parameter)
+		public ParameterInfo2(Parameter parameter)
 		{
 			this.Parameter = parameter;
 		}
 
+		/// <summary>
+		/// Initializes the parameter in regards to a contract.
+		/// E.g Sets the description of the parameter, with the contract language.
+		/// </summary>
+		/// <param name="contract"></param>
+		/// <returns></returns>
+		public async Task InitalizeWithContractAsync(Contract contract)
+		{
+			this.Description = await contract.ToPlainText(this.Parameter.Descriptions, contract.DeviceLanguage());
+		}
+
+		/// <summary>
+		/// The wrapped parameter object
+		/// </summary>
 		public Parameter Parameter { get; }
+		/// <summary>
+		/// The name of the parameter
+		/// </summary>
 		public string Name => this.Parameter.Name;
+		/// <summary>
+		/// The label of the parameter
+		/// </summary>
 		public string Guide => this.Parameter.Guide;
 
+		private string description = string.Empty;
+		/// <summary>
+		/// The localized description of the parameter
+		/// Has to be initialized with <see cref="InitalizeWithContractAsync(Contract)"/>
+		/// </summary>
+		public string Description
+		{
+			get => this.description;
+			private set => this.SetProperty(ref this.description, value);
+		}
+
 		private bool error;
+		/// <summary>
+		/// If the parameter has an validation error
+		/// </summary>
 		public bool Error
 		{
-			get => error;
-			set => SetProperty(ref error, value);
+			get => this.error;
+			set => this.SetProperty(ref this.error, value);
 		}
 
 		private Duration durationValue = Duration.Zero;
@@ -63,11 +99,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
 			get => this.value;
 			set
 			{
-				Console.WriteLine("SET BOOL");
 				if (value is bool boolValue)
 				{
-					Console.WriteLine("SET BOOL 2");
-
 					this.Parameter.SetValue(boolValue);
 					this.SetProperty(ref this.value, boolValue);
 				}
@@ -76,8 +109,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
 
 		public bool BooleanValue
 		{
-			get => (bool)Value;
-			set => Value = value;
+			get => (bool)this.Value;
+			set => this.Value = value;
 		}
 	}
 
@@ -105,8 +138,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
 
 		public DateTime DateValue
 		{
-			get => (DateTime)Value;
-			set => Value = value;
+			get => (DateTime)this.Value;
+			set => this.Value = value;
 		}
 	}
 
@@ -134,8 +167,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
 
 		public decimal DecimalValue
 		{
-			get => (decimal)Value;
-			set => Value = value;
+			get => (decimal)this.Value;
+			set => this.Value = value;
 		}
 	}
 
@@ -163,8 +196,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
 
 		public string StringValue
 		{
-			get => (string)Value;
-			set => Value = value;
+			get => (string)this.Value;
+			set => this.Value = value;
 		}
 	}
 
@@ -192,8 +225,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
 
 		public TimeSpan TimeSpanValue
 		{
-			get => (TimeSpan)Value;
-			set => Value = value;
+			get => (TimeSpan)this.Value;
+			set => this.Value = value;
 		}
 	}
 
@@ -221,8 +254,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
 
 		public Duration DurationParameterValue
 		{
-			get => (Duration)Value;
-			set => Value = value;
+			get => (Duration)this.Value;
+			set => this.Value = value;
 		}
 	}
 }
