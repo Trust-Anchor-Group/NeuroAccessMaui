@@ -1794,8 +1794,7 @@ namespace NeuroAccessMaui.UI.Rendering
 				E = CurrentRow[Column];
 				if (E is null)
 					continue;
-
-				TextAlignment = Element.Alignments[Column];
+				TextAlignment = Element.ColumnAlignments[Column];
 				ColSpan = Column + 1;
 				while (ColSpan < NrColumns && CurrentRow[ColSpan] is null)
 					ColSpan++;
