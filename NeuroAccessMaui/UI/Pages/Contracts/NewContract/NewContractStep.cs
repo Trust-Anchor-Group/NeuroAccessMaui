@@ -1,22 +1,42 @@
 namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 {
-    /// <summary>
-    /// The different steps of creating a new contract.
-    /// </summary>
-    public enum NewContractStep
-    {
-        Overview = 10,
-        Loading = 20,
-        Parameters = 30,
-        Parts = 40,
+	/// <summary>
+	/// The different steps of creating a new contract.
+	/// </summary>
+	public enum NewContractStep
+	{
+		/// <summary>
+		/// The overview step.
+		/// </summary>
+		Overview = 10,
+		/// <summary>
+		/// Loading screen.
+		/// </summary>
+		Loading = 20,
+		/// <summary>
+		/// Edit parameters.
+		/// </summary>
+		Parameters = 30,
+		/// <summary>
+		/// Edit parts.
+		/// </summary>
+		Parts = 40,
+		/// <summary>
+		/// Edit attachments.
+		/// </summary>
+		Attachment = 50,
+		/// <summary>
+		/// Preview the contract.
+		/// </summary>
+		Preview = 60,
+		/// <summary>
+		/// The final step.
+		/// </summary>
+		Final = 70
 
-        Preview = 50,
-
-        Final = 60
-        
-        
 
 
-        
-    }
+
+
+	}
 }

@@ -89,7 +89,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		protected override async Task OnInitialize()
 		{
 			await base.OnInitialize();
-			try 
+			try
 			{
 				await this.InitializeParametersAsync();
 				await this.ValidateParametersAsync();
@@ -99,7 +99,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				string hrt = await this.template.ToMauiXaml(this.template.DeviceLanguage());
 				this.HumanReadableText = new VerticalStackLayout().LoadFromXaml(hrt);
 
-			} catch (Exception ex) {
+			}
+			catch (Exception ex)
+			{
 				ServiceRef.LogService.LogException(ex);
 			}
 		}
@@ -117,7 +119,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			//Wrap the parameters in a ParameterInfo object
 			foreach (Parameter P in this.template.Parameters)
 			{
-				ParameterInfo2? PI = P switch {
+				ParameterInfo2? PI = P switch
+				{
 					BooleanParameter BoolP => new BooleanParameterInfo(BoolP),
 					DateParameter DP => new DateParameterInfo(DP),
 					DurationParameter DuraP => new DurationParameterInfo(DuraP),
@@ -127,10 +130,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					_ => new ParameterInfo2(P)
 				};
 
-				if(PI is not null)
+				if (PI is not null)
 				{
 					await PI.InitalizeWithContractAsync(this.template);
-					if(this.presetParameterValues.TryGetValue(P.Name, out object? Value))
+					if (this.presetParameterValues.TryGetValue(P.Name, out object? Value))
 						PI.Value = Value;
 					else
 						this.presetParameterValues.Remove(P.Name);
@@ -244,7 +247,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 		#endregion
 
+		#region Commands
 
+		[RelayCommand]
+		private async Task Test()
+		{
+			return;
+		}
+
+		#endregion
 
 		#region ILinkableView
 

@@ -380,6 +380,9 @@
 		<MauiXaml Update="Resources\Styles\PickerStyles.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
+		<MauiXaml Update="Resources\Templates\ParameterInfo.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Applications\ApplyId\ApplyIdPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>

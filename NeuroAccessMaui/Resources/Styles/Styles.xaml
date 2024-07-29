@@ -625,7 +625,7 @@
 		</Setter>
 		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource AccentBackgroundLight}, Dark={StaticResource AccentBackgroundDark}}" />
 	</Style>
-	
+
 	<Style x:Key="AccentInfoLabel" ApplyToDerivedTypes="False" TargetType="Label">
 		<Setter Property="FontSize" Value="14" />
 		<Setter Property="FontFamily" Value="HaasGroteskBold"/>
