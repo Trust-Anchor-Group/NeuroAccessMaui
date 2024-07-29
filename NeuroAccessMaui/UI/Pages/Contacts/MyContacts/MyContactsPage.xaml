@@ -22,7 +22,7 @@
 
 				<Frame Grid.Row="0" Grid.Column="0" CornerRadius="12" Margin="2" Padding="8,3,8,3" IsVisible="{Binding HasEvents}"
 								   HorizontalOptions="End" VerticalOptions="Center" Style="{StaticResource AlertFrame}">
-					<Label FontSize="Caption" TextColor="{StaticResource HeadingForeground}" Text="{Binding NrEvents}" Padding="1"/>
+					<Label Style="{StaticResource AlertLabel}" Text="{Binding NrEvents}" Padding="1"/>
 				</Frame>
 
 				<Ellipse Grid.Column="1" Grid.Row="0" WidthRequest="25" HeightRequest="25"
