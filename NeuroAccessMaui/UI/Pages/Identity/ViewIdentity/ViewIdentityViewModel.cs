@@ -71,11 +71,10 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 			{
 				ContactInfo? Info = this.BareJid is null ? null : await ContactInfo.FindByBareJid(this.BareJid);
 
-				if (Info is not null &&
-					this.LegalIdentity is not null &&
+				if ((Info is not null) &&
 					(Info.LegalIdentity is null ||
 					(Info.LegalId != this.LegalId &&
-					Info.LegalIdentity.Created < this.LegalIdentity.Created &&
+					Info.LegalIdentity.Created < this.LegalIdentity!.Created &&
 					this.LegalIdentity.State == IdentityState.Approved)))
 				{
 					Info.LegalId = this.LegalId;
@@ -85,6 +84,11 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 					await Database.Update(Info);
 					await Database.Provider.Flush();
 				}
+				
+				this.CanAddContact = Info is null;
+				this.CanRemoveContact = Info is not null;
+
+				this.NotifyCommandsCanExecuteChanged();
 			}
 
 			ServiceRef.TagProfile.Changed += this.TagProfile_Changed;
@@ -618,7 +622,20 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 		/// Gets or sets whether the identity is for review or not. This property has its inverse in <see cref="IsForReview"/>.
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(IsThirdPartyAndNotForReview))]
 		private bool thirdParty;
+
+		[ObservableProperty]
+		private bool canAddContact = false;
+
+		[ObservableProperty]
+
+		private bool canRemoveContact = false;
+
+		/// <summary>
+		/// Gets wheter the identity is a third party and not for review.
+		/// </summary>
+		public bool IsThirdPartyAndNotForReview => this.ThirdParty && !this.IsForReview;
 
 		/// <summary>
 		/// Gets or sets whether the identity is a personal identity.
@@ -928,6 +945,8 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 
 		private void NotifyCommandsCanExecuteChanged()
 		{
+			this.AddContactCommand.NotifyCanExecuteChanged();
+			this.RemoveContactCommand.NotifyCanExecuteChanged();
 			this.ApproveCommand.NotifyCanExecuteChanged();
 			this.RejectCommand.NotifyCanExecuteChanged();
 		}
@@ -966,6 +985,99 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 							ServiceRef.Localizer[nameof(AppResources.TagValueCopiedToClipboard)]);
 					}
 				}
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
+			}
+			finally
+			{
+				this.SetIsBusy(false);
+			}
+		}
+
+		[RelayCommand(CanExecute = nameof(CanRemoveContact))]
+		private async Task RemoveContact()
+		{
+			if (this.LegalIdentity is null)
+				return;
+			try
+			{
+				if (!await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer["Confirm"], ServiceRef.Localizer["AreYouSureYouWantToRemoveContact"], ServiceRef.Localizer["Yes"], ServiceRef.Localizer["Cancel"]))
+					return;
+
+				string BareJid = this.LegalIdentity.GetJid();
+
+				ContactInfo Info = await ContactInfo.FindByBareJid(BareJid);
+				if (Info is not null)
+				{
+					await Database.Delete(Info);
+					await ServiceRef.AttachmentCacheService.MakeTemporary(Info.LegalId);
+					await Database.Provider.Flush();
+				}
+
+				RosterItem? Item = ServiceRef.XmppService.GetRosterItem(BareJid);
+				if (Item is not null)
+					ServiceRef.XmppService.RemoveRosterItem(BareJid);
+
+				this.CanAddContact = true;
+				this.CanRemoveContact = false;
+				this.NotifyCommandsCanExecuteChanged();
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
+			}
+		}
+
+		[RelayCommand(CanExecute = nameof(CanAddContact))]
+		private async Task AddContact()
+		{
+			if (this.LegalIdentity is null)
+				return;
+
+
+			try
+			{
+				this.SetIsBusy(true);
+
+				string FriendlyName = ContactInfo.GetFriendlyName(this.LegalIdentity);
+				string BareJid = this.LegalIdentity.GetJid();
+
+				RosterItem? Item = ServiceRef.XmppService.GetRosterItem(BareJid);
+				if (Item is null)
+					ServiceRef.XmppService.AddRosterItem(new RosterItem(BareJid, FriendlyName));
+
+				ContactInfo Info = await ContactInfo.FindByBareJid(BareJid);
+				if (Info is null)
+				{
+					Info = new ContactInfo()
+					{
+						BareJid = BareJid,
+						LegalId = this.LegalIdentity.Id,
+						LegalIdentity = this.LegalIdentity,
+						FriendlyName = FriendlyName,
+						IsThing = false
+					};
+
+					await Database.Insert(Info);
+				}
+				else
+				{
+					Info.LegalId = this.LegalIdentity.Id;
+					Info.LegalIdentity = this.LegalIdentity;
+					Info.FriendlyName = FriendlyName;
+
+					await Database.Update(Info);
+				}
+				await ServiceRef.AttachmentCacheService.MakePermanent(this.LegalId!);
+				await Database.Provider.Flush();
+				this.CanAddContact = false;
+				this.CanRemoveContact = true;
+				this.NotifyCommandsCanExecuteChanged();
+
 			}
 			catch (Exception ex)
 			{
