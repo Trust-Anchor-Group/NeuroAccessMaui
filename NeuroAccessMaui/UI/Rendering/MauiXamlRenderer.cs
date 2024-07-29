@@ -1,4 +1,4 @@
-﻿using SkiaSharp;
+using SkiaSharp;
 using System.Globalization;
 using System.Text;
 using System.Xml;
@@ -1794,6 +1794,7 @@ namespace NeuroAccessMaui.UI.Rendering
 				E = CurrentRow[Column];
 				if (E is null)
 					continue;
+
 				TextAlignment = Element.ColumnAlignments[Column];
 				ColSpan = Column + 1;
 				while (ColSpan < NrColumns && CurrentRow[ColSpan] is null)

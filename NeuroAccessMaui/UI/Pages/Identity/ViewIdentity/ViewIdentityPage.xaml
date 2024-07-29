@@ -260,7 +260,24 @@
 									<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding DeviceId}" />
 								</Label.GestureRecognizers>
 							</Label>
+
 						</Grid>
+					</VerticalStackLayout>
+				</Frame>
+				<Frame Style="{StaticResource FrameSet}">
+					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+							<controls:TextButton
+												Style="{StaticResource FilledTextButton}" 
+												LabelData="{l:Localize AddContact}" 
+												Command="{Binding AddContactCommand}" 
+												IsVisible="{Binding CanAddContact}" 
+												IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
+							<controls:TextButton
+												Style="{StaticResource FilledTextButton}" 
+												LabelData="{l:Localize RemoveContact}" 
+												Command="{Binding RemoveContactCommand}" 
+												IsVisible="{Binding CanRemoveContact}" 
+												IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
 					</VerticalStackLayout>
 				</Frame>
 			</VerticalStackLayout>
