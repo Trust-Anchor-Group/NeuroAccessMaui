@@ -87,7 +87,11 @@
 				                ItemTemplate="{StaticResource ParameterTemplateSelector}"
 				                VerticalOptions="FillAndExpand"
 				                HorizontalOptions="FillAndExpand" />
+				<ContentView Content="{Binding Path=HumanReadableText}" Margin="{StaticResource SmallTopMargins}" />
+
 			</VerticalStackLayout>
+
+			
 		</ScrollView>
 	</Grid>
 </base:BaseContentPage>

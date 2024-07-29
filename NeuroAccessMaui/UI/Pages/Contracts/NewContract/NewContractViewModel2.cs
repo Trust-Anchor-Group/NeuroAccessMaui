@@ -95,6 +95,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				await this.ValidateParametersAsync();
 
 				await this.InitializeRolesAsync();
+				//Testing generating human readable text
+				string hrt = await this.template.ToMauiXaml(this.template.DeviceLanguage());
+				this.HumanReadableText = new VerticalStackLayout().LoadFromXaml(hrt);
+
 			} catch (Exception ex) {
 				ServiceRef.LogService.LogException(ex);
 			}
@@ -154,7 +158,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		#region Properties
 
 
-
+		[ObservableProperty]
+		private VerticalStackLayout? humanReadableText;
 		/// <summary>
 		/// Gets or sets whether this contract is a template or not.
 		/// </summary>
@@ -211,11 +216,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 
 
-		/// <summary>
-		/// Holds Xaml code for visually representing a contract's human readable text section.
-		/// </summary>
-		[ObservableProperty]
-		private VerticalStackLayout? humanReadableText;
 
 		/// <summary>
 		/// Gets or sets whether the contract has roles.
