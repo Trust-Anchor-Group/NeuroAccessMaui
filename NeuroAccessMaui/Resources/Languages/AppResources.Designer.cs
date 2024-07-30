@@ -5441,6 +5441,33 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Transfer Identity.
+        /// </summary>
+        internal static string TransferIdentity {
+            get {
+                return ResourceManager.GetString("TransferIdentity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transfer your current identity to another device..
+        /// </summary>
+        internal static string TransferIdentityDescription {
+            get {
+                return ResourceManager.GetString("TransferIdentityDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to On your other device continue with the onboarding until you reach the service provider page. Press the change button and scan this QR. Doing this will remove the identity from this device..
+        /// </summary>
+        internal static string TransferIdentityPageDetails {
+            get {
+                return ResourceManager.GetString("TransferIdentityPageDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to access invitation information..
         /// </summary>
         internal static string UnableToAccessInvitation {
