@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Waher.Events;
+using Waher.Events.Persistence;
 using Waher.Persistence;
 using Waher.Persistence.Files;
 using Waher.Persistence.Serialization;
@@ -8,11 +9,12 @@ using Waher.Runtime.Inventory;
 namespace NeuroAccessMaui.Services.Storage
 {
 	[Singleton]
-	internal sealed class StorageService : IStorageService
+	internal sealed class StorageService : IStorageService, IDisposable
 	{
 		private readonly LinkedList<TaskCompletionSource<bool>> tasksWaiting = new();
 		private readonly string dataFolder;
 		private FilesProvider? databaseProvider;
+		private PersistedEventLog? persistedEventLog;
 		private bool? initialized = null;
 		private bool started = false;
 
@@ -59,6 +61,7 @@ namespace NeuroAccessMaui.Services.Storage
 				if (this.databaseProvider is not null)
 				{
 					Database.Register(this.databaseProvider, false);
+					Log.Register(this.persistedEventLog = new PersistedEventLog(90));
 					this.InitDone(true);
 					return;
 				}
@@ -89,6 +92,7 @@ namespace NeuroAccessMaui.Services.Storage
 					if (!Database.HasProvider)
 					{
 						Database.Register(this.databaseProvider, false);
+						Log.Register(this.persistedEventLog = new PersistedEventLog(90));
 						this.InitDone(true);
 						return;
 					}
@@ -148,6 +152,13 @@ namespace NeuroAccessMaui.Services.Storage
 
 			try
 			{
+				if (this.persistedEventLog is not null)
+				{
+					Log.Unregister(this.persistedEventLog);
+					this.persistedEventLog.Dispose();
+					this.persistedEventLog = null;
+				}
+
 				if (this.databaseProvider is not null)
 				{
 					Database.Register(new NullDatabaseProvider(), false);
@@ -168,6 +179,18 @@ namespace NeuroAccessMaui.Services.Storage
 
 			return FilesProvider.CreateAsync(this.dataFolder, "Default", 8192, 10000, 8192, Encoding.UTF8,
 				(int)Constants.Timeouts.Database.TotalMilliseconds, ServiceRef.CryptoService.GetCustomKey);
+		}
+
+		/// <summary>
+		/// <see cref="IDisposable.Dispose"/>
+		/// </summary>
+		public void Dispose()
+		{
+			this.persistedEventLog?.Dispose();
+			this.persistedEventLog = null;
+
+			this.databaseProvider?.Dispose();
+			this.databaseProvider = null;
 		}
 
 		#endregion
