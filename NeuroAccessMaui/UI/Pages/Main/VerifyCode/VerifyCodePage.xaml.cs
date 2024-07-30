@@ -57,10 +57,11 @@ namespace NeuroAccessMaui.UI.Pages.Main.VerifyCode
 				{
 					Thickness SafeInsets = this.On<iOS>().SafeAreaInsets();
 					Bottom = SafeInsets.Bottom;
+					Thickness Margin = new(0, 0, 0, Message.KeyboardSize - Bottom);
+					this.TheMainGrid.Margin = Margin;
 				}
 
-				Thickness Margin = new(0, 0, 0, Message.KeyboardSize - Bottom);
-				this.TheMainGrid.Margin = Margin;
+
 			});
 		}
 
