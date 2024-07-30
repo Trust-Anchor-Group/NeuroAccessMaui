@@ -9,37 +9,44 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
 	/// An observable object that wraps a <see cref="Waher.Networking.XMPP.Contracts.Role"/> object.
 	/// This allows for easier binding in the UI.
 	/// </summary>
-	public class RoleInfo : ObservableObject
-    {
-        public RoleInfo(Role role)
-        {
-            this.Role = role;
-        }
+	public class PartInfo : ObservableObject
+	{
+		public PartInfo(Role role)
+		{
+			this.Role = role;
+			this.Part = new Part
+			{
+				Role = role.Name
+			};
+		}
 
 		/// <summary>
 		/// Initializes the role in regards to a contract.
 		/// E.g Sets the description of the role, with the contract language.
 		/// </summary>
 		/// <param name="contract"></param>
-		/// <returns></returns>
-		public async Task InitalizeWithContractAsync(Contract contract)
+		public async Task InitializeWithContractAsync(Contract contract)
 		{
 			this.Description = await contract.ToPlainText(this.Role.Descriptions, contract.DeviceLanguage());
+			Part part;
 		}
+
+		public Part Part { get; }
+
 
 		/// <summary>
 		/// The wrapped Role object
 		/// </summary>
 		public Role Role { get; }
 
-        /// <summary>
-        /// The name of the role
-        /// </summary>
-        public string Name => this.Role.Name;
+		/// <summary>
+		/// The name of the role
+		/// </summary>
+		public string Name => this.Role.Name;
 
 		/// <summary>
 		/// The localized description of the role
-		/// Has to be initialized with <see cref="InitalizeWithContractAsync(Contract)"/>
+		/// Has to be initialized with <see cref="InitializeWithContractAsync"/>
 		/// </summary>
 		public string Description
 		{
@@ -48,14 +55,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
 		}
 		private string description = string.Empty;
 
-        /// <summary>
-        /// Largest amount of signatures of this role required for a legally binding contract.    
-        /// /// </summary>
-        public int MaxCount => this.Role.MaxCount;
+		/// <summary>
+		/// Largest amount of signatures of this role required for a legally binding contract.    
+		/// /// </summary>
+		public int MaxCount => this.Role.MaxCount;
 
-        /// <summary>
-        /// Smallest amount of signatures of this role required for a legally binding contract.    
-        /// /// </summary>
-        public int MinCount => this.Role.MinCount;
+		/// <summary>
+		/// Smallest amount of signatures of this role required for a legally binding contract.    
+		/// /// </summary>
+		public int MinCount => this.Role.MinCount;
 	}
 }
