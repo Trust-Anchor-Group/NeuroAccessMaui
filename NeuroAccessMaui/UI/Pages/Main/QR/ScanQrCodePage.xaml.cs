@@ -138,10 +138,11 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 				{
 					Thickness SafeInsets = this.On<iOS>().SafeAreaInsets();
 					Bottom = SafeInsets.Bottom;
+
+					Thickness Margin = new(0, 0, 0, Message.KeyboardSize - Bottom);
+					this.ManualScanGrid.Margin = Margin;
 				}
 
-				Thickness Margin = new(0, 0, 0, Message.KeyboardSize - Bottom);
-				this.ManualScanGrid.Margin = Margin;
 			});
 		}
 

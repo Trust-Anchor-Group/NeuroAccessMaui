@@ -125,10 +125,11 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 				{
 					Thickness SafeInsets = this.On<iOS>().SafeAreaInsets();
 					Bottom = SafeInsets.Bottom;
+					Thickness Margin = new(0, 0, 0, Message.KeyboardSize - Bottom);
+					this.TheMainGrid.Margin = Margin;
 				}
 
-				Thickness Margin = new(0, 0, 0, Message.KeyboardSize - Bottom);
-				this.TheMainGrid.Margin = Margin;
+
 			});
 		}
 	}
