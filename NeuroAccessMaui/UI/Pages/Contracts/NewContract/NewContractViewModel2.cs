@@ -37,7 +37,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		private ObservableCollection<ParameterInfo2> parameters = [];
 
 		[ObservableProperty]
-		private ObservableCollection<RoleInfo> roles = [];
+		private ObservableCollection<PartInfo> parts = [];
 
 		private readonly SortedDictionary<CaseInsensitiveString, ParameterInfo> parametersByName = [];
 		private readonly LinkedList<ParameterInfo> parametersInOrder = new();
@@ -99,6 +99,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				string hrt = await this.template.ToMauiXaml(this.template.DeviceLanguage());
 				this.HumanReadableText = new VerticalStackLayout().LoadFromXaml(hrt);
 
+
 			}
 			catch (Exception ex)
 			{
@@ -132,7 +133,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 				if (PI is not null)
 				{
-					await PI.InitalizeWithContractAsync(this.template);
+					await PI.InitializeWithContractAsync(this.template);
 					if (this.presetParameterValues.TryGetValue(P.Name, out object? Value))
 						PI.Value = Value;
 					else
@@ -147,9 +148,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		{
 			foreach (Role R in this.template.Roles)
 			{
-				RoleInfo RI = new(R);
-				await RI.InitalizeWithContractAsync(this.template);
-				this.Roles.Add(new RoleInfo(R));
+				PartInfo RI = new(R);
+				await RI.InitializeWithContractAsync(this.template);
+				this.Parts.Add(new PartInfo(R));
 			}
 		}
 

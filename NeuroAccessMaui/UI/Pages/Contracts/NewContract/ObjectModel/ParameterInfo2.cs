@@ -23,7 +23,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
 		/// </summary>
 		/// <param name="contract"></param>
 		/// <returns></returns>
-		public async Task InitalizeWithContractAsync(Contract contract)
+		public async Task InitializeWithContractAsync(Contract contract)
 		{
 			this.Description = await contract.ToPlainText(this.Parameter.Descriptions, contract.DeviceLanguage());
 		}
@@ -36,15 +36,16 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
 		/// The name of the parameter
 		/// </summary>
 		public string Name => this.Parameter.Name;
+
 		/// <summary>
 		/// The label of the parameter
 		/// </summary>
-		public string Guide => this.Parameter.Guide;
+		public string Guide => string.IsNullOrEmpty(this.Parameter.Guide) ? this.Name : this.Parameter.Guide;
 
 		private string description = string.Empty;
 		/// <summary>
 		/// The localized description of the parameter
-		/// Has to be initialized with <see cref="InitalizeWithContractAsync(Contract)"/>
+		/// Has to be initialized with <see cref="InitializeWithContractAsync"/>
 		/// </summary>
 		public string Description
 		{
@@ -62,25 +63,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
 			set => this.SetProperty(ref this.error, value);
 		}
 
-		private Duration durationValue = Duration.Zero;
-
 		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
 		{
 			base.OnPropertyChanged(e);
 		}
 
-		/// <summary>
-		/// Duration object
-		/// </summary>
-		public Duration DurationValue
-		{
-			get => this.durationValue;
-			set
-			{
-				this.durationValue = value;
-				this.OnPropertyChanged();
-			}
-		}
 
 		public virtual object Value { get; set; }
 	}
@@ -109,7 +96,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
 
 		public bool BooleanValue
 		{
-			get => (bool)this.Value;
+			get => this.value;
 			set => this.Value = value;
 		}
 	}
@@ -138,7 +125,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
 
 		public DateTime DateValue
 		{
-			get => (DateTime)this.Value;
+			get => this.value;
 			set => this.Value = value;
 		}
 	}
@@ -167,7 +154,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
 
 		public decimal DecimalValue
 		{
-			get => (decimal)this.Value;
+			get => this.value;
 			set => this.Value = value;
 		}
 	}
@@ -196,7 +183,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
 
 		public string StringValue
 		{
-			get => (string)this.Value;
+			get => this.value;
 			set => this.Value = value;
 		}
 	}
@@ -225,7 +212,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
 
 		public TimeSpan TimeSpanValue
 		{
-			get => (TimeSpan)this.Value;
+			get => this.value;
 			set => this.Value = value;
 		}
 	}
@@ -254,7 +241,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
 
 		public Duration DurationParameterValue
 		{
-			get => (Duration)this.Value;
+			get => this.value;
 			set => this.Value = value;
 		}
 	}

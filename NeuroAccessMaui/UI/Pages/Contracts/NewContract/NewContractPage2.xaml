@@ -33,17 +33,32 @@
 		<controls:Background/>
 
 		<!-- Main Content -->
-		<VerticalStackLayout Grid.Row="0"
-								  Padding="{StaticResource LargeMargins}"
-								  Spacing="{StaticResource LargeSpacing}"
-								  VerticalOptions="Fill" >
-			<CollectionView ItemsSource="{Binding Parameters}"
-			                ItemTemplate="{StaticResource ParameterTemplateSelector}"
-			                VerticalOptions="FillAndExpand"
-			                HorizontalOptions="FillAndExpand" />
-			<ContentView Content="{Binding Path=HumanReadableText}" Margin="{StaticResource SmallTopMargins}" />
+		<ScrollView>
 
-		</VerticalStackLayout>
+			<VerticalStackLayout Grid.Row="0"
+									  Padding="{StaticResource LargeMargins}"
+									  Spacing="{StaticResource LargeSpacing}"
+									  VerticalOptions="Fill" >
+				<CollectionView ItemsSource="{Binding Parameters}"
+				                ItemTemplate="{StaticResource ParameterTemplateSelector}"
+				                SelectionMode="None"
+									 IsGrouped="False"
+				                VerticalOptions="FillAndExpand"
+				                HorizontalOptions="FillAndExpand" />
+
+				<CollectionView ItemsSource="{Binding Parts}" SelectionMode="None" IsGrouped="False">
+					<CollectionView.ItemTemplate>
+						<DataTemplate x:DataType="local:PartInfo">
+							<VerticalStackLayout Padding="10">
+								<Label Text="{Binding Name}" FontSize="20" />
+								<Label Text="{Binding Description}" FontSize="14" />
+							</VerticalStackLayout>
+						</DataTemplate>
+					</CollectionView.ItemTemplate>
+				</CollectionView>
+				<ContentView Content="{Binding Path=HumanReadableText}" Margin="{StaticResource SmallTopMargins}" />
+			</VerticalStackLayout>
+		</ScrollView>
 
 		<!-- Bottom Bar -->
 		<Border Grid.Row="1" Style="{StaticResource BottomBarBorder}">

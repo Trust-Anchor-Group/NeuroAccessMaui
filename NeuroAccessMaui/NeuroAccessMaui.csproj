@@ -574,4 +574,8 @@
 	<ItemGroup>
 		<PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="8.0.21" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="UI\Pages\Contracts\NewContract\Views\" />
+	</ItemGroup>
 </Project>
