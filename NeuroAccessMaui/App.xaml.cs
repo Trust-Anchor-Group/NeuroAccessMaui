@@ -379,7 +379,7 @@ namespace NeuroAccessMaui
 		}
 
 		/// <inheritdoc/>
-		protected override async void OnStart()
+		protected override /*async*/ void OnStart()
 		{
 			if (this.onStartResumesApplication)
 			{
@@ -775,7 +775,7 @@ namespace NeuroAccessMaui
 					Msg.AppendLine(StackTrace);
 					Msg.AppendLine("```");
 
-					Log.Alert(Msg.ToString(), Tags.ToArray());
+					Log.Alert(Msg.ToString(), [.. Tags]);
 
 					try
 					{

@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System.Globalization;
+using System.Windows.Input;
 using NeuroAccessMaui.Extensions;
 using Waher.Persistence;
 using Waher.Persistence.Attributes;
@@ -256,7 +257,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		/// <inheritdoc/>
 		public override string ToString()
 		{
-			return this.created.ToString();
+			return this.created.ToString(CultureInfo.CurrentCulture);
 		}
 
 	}
