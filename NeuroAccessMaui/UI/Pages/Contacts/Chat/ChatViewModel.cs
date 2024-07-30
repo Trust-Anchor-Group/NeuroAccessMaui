@@ -283,7 +283,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 					MessageFrame? Frame;
 					MessageRecord Rec;
 					IView? View;
-					int i;
+					// int i;
 
 					if (MessageNode is null)
 					{

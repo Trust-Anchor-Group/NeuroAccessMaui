@@ -96,7 +96,8 @@ namespace NeuroAccessMaui.UI.Popups.Password
 			this.IsPasswordHidden = !this.IsPasswordHidden;
 		}
 	}
-	///TODO: remove or implement this
+
+	// TODO: remove or implement this
 	/* Recover password
 	 	try
 	   {
