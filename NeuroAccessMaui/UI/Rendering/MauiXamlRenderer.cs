@@ -526,7 +526,6 @@ namespace NeuroAccessMaui.UI.Rendering
 						this.XmlOutput.WriteStartElement("Label");
 						this.XmlOutput.WriteAttributeString("LineBreakMode", "WordWrap");
 						this.XmlOutput.WriteAttributeString("TextColor", "Red");
-						this.XmlOutput.WriteAttributeString("LineBreakMode", "WordWrap");
 						this.XmlOutput.WriteValue(ex3.Message);
 						this.XmlOutput.WriteEndElement();
 						this.XmlOutput.WriteEndElement();
@@ -540,7 +539,6 @@ namespace NeuroAccessMaui.UI.Rendering
 					this.XmlOutput.WriteStartElement("Label");
 					this.XmlOutput.WriteAttributeString("LineBreakMode", "WordWrap");
 					this.XmlOutput.WriteAttributeString("TextColor", "Red");
-					this.XmlOutput.WriteAttributeString("LineBreakMode", "WordWrap");
 					this.XmlOutput.WriteValue(ex.Message);
 					this.XmlOutput.WriteEndElement();
 
@@ -1710,10 +1708,10 @@ namespace NeuroAccessMaui.UI.Rendering
 			this.XmlOutput.WriteEndElement();
 
 			for (Row = 0, NrRows = Element.Headers.Length; Row < NrRows; Row++, RowNr++)
-				await this.Render(Element.Headers[Row], RowNr, true, Element);
+				await this.Render(Element.Headers[Row], Element.HeaderCellAlignments[Row], RowNr, true, Element);
 
 			for (Row = 0, NrRows = Element.Rows.Length; Row < NrRows; Row++, RowNr++)
-				await this.Render(Element.Rows[Row], RowNr, false, Element);
+				await this.Render(Element.Rows[Row], Element.RowCellAlignments[Row], RowNr, false, Element);
 
 			this.XmlOutput.WriteEndElement();
 			this.XmlOutput.WriteEndElement();
@@ -1778,24 +1776,25 @@ namespace NeuroAccessMaui.UI.Rendering
 			public string? Hyperlink;
 		}
 
-		private async Task Render(MarkdownElement[] CurrentRow, int RowNr, bool Bold, Table Element)
+		private async Task Render(MarkdownElement[] CurrentRow, Waher.Content.Markdown.Model.TextAlignment?[] CellAlignments,
+			int RowNr, bool Bold, Table Element)
 		{
 			MarkdownElement E;
 			Waher.Content.Markdown.Model.TextAlignment TextAlignment;
 			int Column;
-			int NrColumns;
+			int NrColumns = Element.Columns;
 			int ColSpan;
 			StateBackup Bak = this.Backup();
 
 			this.ClearState();
 
-			for (Column = 0, NrColumns = CurrentRow.Length; Column < NrColumns; Column++)
+			for (Column = 0; Column < NrColumns; Column++)
 			{
 				E = CurrentRow[Column];
 				if (E is null)
 					continue;
 
-				TextAlignment = Element.Alignments[Column];
+				TextAlignment = CellAlignments[Column] ?? Element.ColumnAlignments[Column];
 				ColSpan = Column + 1;
 				while (ColSpan < NrColumns && CurrentRow[ColSpan] is null)
 					ColSpan++;
