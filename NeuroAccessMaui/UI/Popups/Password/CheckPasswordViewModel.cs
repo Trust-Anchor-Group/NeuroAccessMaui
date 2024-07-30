@@ -75,7 +75,8 @@ namespace NeuroAccessMaui.UI.Popups.Password
 			this.result.TrySetResult(null);
 		}
 	}
-	///TODO: remove or implement this
+
+	// TODO: remove or implement this
 	/* Recover password
 	 	try
 	   {
