@@ -103,14 +103,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
 
 	public class DateParameterInfo : ParameterInfo2
 	{
-		private DateTime value;
+		private DateTime? value;
 
 		public DateParameterInfo(DateParameter parameter) : base(parameter)
 		{
-			this.value = parameter.ObjectValue is DateTime dateTime ? dateTime : DateTime.Now;
+			this.value = parameter.ObjectValue as DateTime?;
 		}
 
-		public override object Value
+		public override object? Value
 		{
 			get => this.value;
 			set
@@ -123,11 +123,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
 			}
 		}
 
-		public DateTime DateValue
+		public DateTime? DateValue
 		{
 			get => this.value;
 			set => this.Value = value;
 		}
+		
 	}
 
 	public class NumericalParameterInfo : ParameterInfo2
