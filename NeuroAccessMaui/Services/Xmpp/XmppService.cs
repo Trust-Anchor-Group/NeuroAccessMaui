@@ -30,6 +30,7 @@ using Waher.Content.Html;
 using Waher.Content.Markdown;
 using Waher.Content.Xml;
 using Waher.Events;
+using Waher.Events.Filter;
 using Waher.Events.XMPP;
 using Waher.Networking.Sniffers;
 using Waher.Networking.XMPP;
@@ -92,7 +93,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private DateTime xmppLastStateChange = DateTime.MinValue;
 		private readonly InMemorySniffer? sniffer = new(250);
 		private bool isCreatingClient;
-		private XmppEventSink? xmppEventSink;
+		private EventFilter? xmppFilteredEventSink;
 		private string? token = null;
 		private DateTime tokenCreated = DateTime.MinValue;
 
@@ -184,7 +185,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 					this.xmppClient.RegisterMessageHandler("Delivered", ContractsClient.NamespaceOnboarding, this.TransferIdDelivered, true);
 					this.xmppClient.RegisterMessageHandler("clientMessage", ContractsClient.NamespaceLegalIdentities, this.ClientMessage, true);
 
-					this.xmppEventSink = new XmppEventSink("XMPP Event Sink", this.xmppClient, ServiceRef.TagProfile.LogJid, false);
+					this.xmppFilteredEventSink = new EventFilter("XMPP Event Filter",
+						new XmppEventSink("XMPP Event Sink", this.xmppClient, ServiceRef.TagProfile.LogJid, false),
+						EventType.Error);
 
 					// Add extensions before connecting
 
@@ -282,11 +285,12 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 			await this.OnConnectionStateChanged(XmppState.Offline);
 
-			if (this.xmppEventSink is not null)
+			if (this.xmppFilteredEventSink is not null)
 			{
-				ServiceRef.LogService.RemoveListener(this.xmppEventSink);
-				this.xmppEventSink.Dispose();
-				this.xmppEventSink = null;
+				ServiceRef.LogService.RemoveListener(this.xmppFilteredEventSink);
+				this.xmppFilteredEventSink.SecondarySink.Dispose();
+				this.xmppFilteredEventSink.Dispose();
+				this.xmppFilteredEventSink = null;
 			}
 
 			this.contractsClient?.Dispose();
@@ -392,11 +396,12 @@ namespace NeuroAccessMaui.Services.Xmpp
 			this.reconnectTimer?.Dispose();
 			this.reconnectTimer = null;
 
-			if (this.xmppEventSink is not null)
+			if (this.xmppFilteredEventSink is not null)
 			{
-				ServiceRef.LogService.RemoveListener(this.xmppEventSink);
-				this.xmppEventSink.Dispose();
-				this.xmppEventSink = null;
+				ServiceRef.LogService.RemoveListener(this.xmppFilteredEventSink);
+				this.xmppFilteredEventSink.SecondarySink.Dispose();
+				this.xmppFilteredEventSink.Dispose();
+				this.xmppFilteredEventSink = null;
 			}
 
 			this.contractsClient?.Dispose();
@@ -464,7 +469,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 				this.reconnectTimer.Dispose();
 				this.sniffer.Dispose();
 				this.xmppClient.Dispose();
-				this.xmppEventSink.Dispose();
+				this.xmppFilteredEventSink.SecondarySink.Dispose();
+				this.xmppFilteredEventSink.Dispose();
 			}
 
 			this.isDisposed = true;
@@ -702,7 +708,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 							this.pushNotificationClient = new PushNotificationClient(this.xmppClient);
 					}
 
-					ServiceRef.LogService.AddListener(this.xmppEventSink!);
+					ServiceRef.LogService.AddListener(this.xmppFilteredEventSink!);
 
 					await ServiceRef.PushNotificationService.CheckPushNotificationToken();
 					break;
