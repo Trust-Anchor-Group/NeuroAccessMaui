@@ -42,9 +42,10 @@
 				<CollectionView ItemsSource="{Binding Parameters}"
 				                ItemTemplate="{StaticResource ParameterTemplateSelector}"
 				                SelectionMode="None"
-									 IsGrouped="False"
 				                VerticalOptions="FillAndExpand"
-				                HorizontalOptions="FillAndExpand" />
+				                HorizontalOptions="FillAndExpand"
+									 ItemSizingStrategy="MeasureAllItems"
+				                />
 
 				<CollectionView ItemsSource="{Binding Parts}" SelectionMode="None" IsGrouped="False">
 					<CollectionView.ItemTemplate>

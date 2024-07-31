@@ -2,7 +2,9 @@
 <?xaml-comp compile="true" ?>
 <ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-	                    xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel">
+	                    xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel"
+	                    xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+	                    xmlns:extended="clr-namespace:NeuroAccessMaui.UI.Controls.Extended">
 
 	<Style x:Key="ErrorStyle" TargetType="VisualElement" x:DataType="objectModel:ParameterInfo2">
 		<Setter Property="BackgroundColor" Value="Transparent" />
@@ -13,33 +15,77 @@
 		</Style.Triggers>
 	</Style>
 
+	<Style x:Key="CompositeEntryParameterStyle"
+	       TargetType="controls:CompositeEntry"
+	       BasedOn="{StaticResource RegularCompositeEntry}"
+	       x:DataType="objectModel:ParameterInfo2">
+		<Style.Triggers>
+			<DataTrigger TargetType="controls:CompositeEntry" Binding="{Binding Error}" Value="True">
+				<Setter Property="BackgroundColor" Value="Red" />
+			</DataTrigger>
+		</Style.Triggers>
+	</Style>
+
+	<Style x:Key="ParameterItemTitleLabel"
+	       TargetType="Label"
+	       BasedOn="{StaticResource BoldItemTitleLabel}">
+		<Setter Property="HorizontalTextAlignment" Value="Start"/>
+		<Setter Property="LineBreakMode" Value="WordWrap"/>
+	</Style>
+
 	<DataTemplate x:Key="BooleanParameterTemplate" x:DataType="objectModel:BooleanParameterInfo">
-		<StackLayout Orientation="Vertical" Style="{StaticResource ErrorStyle}">
-			<Label Text="{Binding Name}" />
-			<Switch IsToggled="{Binding BooleanValue, Mode=TwoWay}" />
-		</StackLayout>
+		<Grid ColumnDefinitions="auto, *"
+		      RowDefinitions="*"
+		      Margin="{StaticResource MediumBottomMargins}">
+			<Label Style="{StaticResource ParameterItemTitleLabel}"
+			       Grid.Column="1"
+			       Text="{Binding Guide}" />
+			<CheckBox Grid.Column="0" Grid.Row="0" VerticalOptions="Center"
+			          IsChecked="{Binding BooleanValue}"
+			          Margin="{StaticResource SmallRightMargins}"/>
+		</Grid>
 	</DataTemplate>
 	<DataTemplate x:Key="DateParameterTemplate" x:DataType="objectModel:DateParameterInfo">
-		<StackLayout Orientation="Vertical" Style="{StaticResource ErrorStyle}">
-			<Label Text="{Binding Name}" />
-			<DatePicker Date="{Binding DateValue, Mode=TwoWay}" />
-		</StackLayout>
+		<Grid ColumnDefinitions="*"
+		      RowDefinitions="auto, *"
+		      Margin="{StaticResource MediumBottomMargins}">
+			<Label Grid.Row="0" Text="{Binding Guide}"
+			       Style="{StaticResource ParameterItemTitleLabel}"/>
+			<Border Grid.Row="1"
+			        StrokeThickness="2"
+			        Style="{StaticResource RegularCompositeEntryBorder}"
+			        Margin="{StaticResource SmallBottomMargins}">
+				<extended:ExtendedDatePicker NullableDate="{Binding DateValue}"
+				                             Placeholder="{Binding Guide}" />
+			</Border>
+		</Grid>
+
 	</DataTemplate>
 	<DataTemplate x:Key="NumericalParameterTemplate" x:DataType="objectModel:NumericalParameterInfo">
-		<StackLayout Orientation="Vertical" Style="{StaticResource ErrorStyle}">
-			<Label Text="{Binding Name}" />
-			<Entry Text="{Binding DecimalValue, Mode=TwoWay}" Placeholder="{Binding Guide}" />
-		</StackLayout>
+		<Grid RowDefinitions="auto, *" ColumnDefinitions="*"
+		      Margin="{StaticResource MediumBottomMargins}">
+
+			<Label Grid.Row="0" Text="{Binding Guide}"
+			       Style="{StaticResource ParameterItemTitleLabel}"/>
+			<controls:CompositeEntry Grid.Row="1" Style="{StaticResource RegularCompositeEntry}"
+			                         EntryData="{Binding Value}"/>
+		</Grid>
 	</DataTemplate>
 	<DataTemplate x:Key="StringParameterTemplate" x:DataType="objectModel:StringParameterInfo">
-		<StackLayout Orientation="Vertical" Style="{StaticResource ErrorStyle}">
-			<Label Text="{Binding Name}" />
-			<Entry Text="{Binding StringValue, Mode=TwoWay}" Placeholder="{Binding Guide}" />
-		</StackLayout>
+		<Grid RowDefinitions="auto, *" ColumnDefinitions="*"
+		      Margin="{StaticResource MediumBottomMargins}">
+
+			<Label Grid.Row="0" Text="{Binding Guide}"
+			       Style="{StaticResource ParameterItemTitleLabel}"/>
+			<controls:CompositeEntry Grid.Row="1" Style="{StaticResource RegularCompositeEntry}"
+			                         EntryData="{Binding Value}"
+			                         EntryHint="{Binding Guide}"/>
+		</Grid>
 	</DataTemplate>
 	<DataTemplate x:Key="TimeParameterTemplate" x:DataType="objectModel:TimeParameterInfo">
 		<StackLayout Orientation="Vertical" Style="{StaticResource ErrorStyle}">
-			<Label Text="{Binding Name}" />
+			<Label Text="{Binding Name}"
+			       Style="{StaticResource ParameterItemTitleLabel}" />
 			<TimePicker Time="{Binding TimeSpanValue, Mode=TwoWay}" />
 		</StackLayout>
 	</DataTemplate>
