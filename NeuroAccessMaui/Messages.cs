@@ -1,4 +1,5 @@
 ﻿using NeuroAccessMaui.Services.Tag;
+using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
 
 namespace NeuroAccessMaui
 {
@@ -11,6 +12,17 @@ namespace NeuroAccessMaui
 		/// Transition to this step
 		/// </summary>
 		public RegistrationStep Step { get; } = Step;
+	}
+
+	/// <summary>
+	/// NewContractPage view change message
+	/// </summary>
+	public class NewContractPageMessage(NewContractStep NewState)
+	{
+		/// <summary>
+		/// The new state to transition to
+		/// </summary>
+		public NewContractStep NewState { get; } = NewState;
 	}
 
 	/// <summary>
