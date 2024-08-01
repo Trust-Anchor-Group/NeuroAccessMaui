@@ -18,11 +18,15 @@ using NeuroAccessMaui.UI.Pages.Main.Calculator;
 using NeuroAccessMaui.UI.Pages.Main.Duration;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Text;
+using CommunityToolkit.Maui.Layouts;
+using CommunityToolkit.Mvvm.Messaging;
 using Waher.Content.Xml;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;
 using Waher.Script;
+using static Microsoft.Maui.Controls.Device;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 {
@@ -38,6 +42,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 		[ObservableProperty]
 		private ObservableCollection<PartInfo> parts = [];
+
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(TestCommand))]
+		bool canStateChange;
+
+		[ObservableProperty]
+		string currentState = "Loading";
 
 		private readonly SortedDictionary<CaseInsensitiveString, ParameterInfo> parametersByName = [];
 		private readonly LinkedList<ParameterInfo> parametersInOrder = new();
@@ -99,6 +110,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				string hrt = await this.template.ToMauiXaml(this.template.DeviceLanguage());
 				this.HumanReadableText = new VerticalStackLayout().LoadFromXaml(hrt);
 
+				await this.GoToState(NewContractStep.Overview);
 
 			}
 			catch (Exception ex)
@@ -154,6 +166,20 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			}
 		}
 
+		private async Task GoToState(NewContractStep NewStep)
+		{
+			string NewState = NewStep.ToString();
+
+			if (NewState == this.CurrentState)
+				return;
+
+			while (!this.CanStateChange)
+				await Task.Delay(100);
+
+			WeakReferenceMessenger.Default.Send(new NewContractPageMessage(NewStep));
+		}
+
+
 		/// <inheritdoc/>
 		protected override async Task OnDispose()
 		{
@@ -194,6 +220,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			foreach (ParameterInfo2 P in this.Parameters)
 			{
 				P.Error = !await P.Parameter.IsParameterValid(v, Client);
+				P.ErrorText = P.Parameter.ErrorText;
 			}
 		}
 		/// <summary>
@@ -250,10 +277,37 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 		#region Commands
 
-		[RelayCommand]
+		[RelayCommand(CanExecute = nameof(CanStateChange))]
+		public async Task Back()
+		{
+			try
+			{
+				NewContractStep CurrentStep = (NewContractStep)Enum.Parse(typeof(NewContractStep), this.CurrentState);
+
+				switch (CurrentStep)
+				{
+					case NewContractStep.Overview:
+						await base.GoBack();
+						break;
+					default:
+						await this.GoToState(NewContractStep.Overview);
+						break;
+				}
+			}
+			catch (Exception e)
+			{
+				ServiceRef.LogService.LogException(e);
+			}
+
+
+
+		}
+
+		[RelayCommand(CanExecute = nameof(CanStateChange))]
 		private async Task Test()
 		{
-			return;
+			await this.GoToState(NewContractStep.Loading);
+			await this.GoToState(NewContractStep.Parameters);
 		}
 
 		#endregion

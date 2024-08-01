@@ -12,6 +12,7 @@
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract"
+							 xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views"
 							 HideSoftInputOnTapped="True">
 
 	<ContentPage.Resources>
@@ -33,19 +34,27 @@
 		<controls:Background/>
 
 		<!-- Main Content -->
-		<ScrollView>
+		<ScrollView Grid.Row="0">
 
-			<VerticalStackLayout Grid.Row="0"
+			<VerticalStackLayout
 									  Padding="{StaticResource LargeMargins}"
 									  Spacing="{StaticResource LargeSpacing}"
 									  VerticalOptions="Fill" >
-				<CollectionView ItemsSource="{Binding Parameters}"
-				                ItemTemplate="{StaticResource ParameterTemplateSelector}"
-				                SelectionMode="None"
-				                VerticalOptions="FillAndExpand"
-				                HorizontalOptions="FillAndExpand"
-									 ItemSizingStrategy="MeasureAllItems"
-				                />
+				<Grid x:Name="StateGrid"
+				      mct:StateContainer.CurrentState="{Binding CurrentState, Mode=OneWayToSource}"
+				      mct:StateContainer.CanStateChange="{Binding CanStateChange, Mode=OneWayToSource}"
+				      >
+
+					<mct:StateContainer.StateViews>
+						<views:OverviewView x:Name="OverviewView" mct:StateView.StateKey="Overview" />
+						<views:LoadingView x:Name="LoadingView" mct:StateView.StateKey="Loading" />
+						<views:ParametersView x:Name="ParametersView" mct:StateView.StateKey="Parameters" />
+						<views:PartsView x:Name="PartsView" mct:StateView.StateKey="Parts" />
+					</mct:StateContainer.StateViews>
+
+					<!-- default state, should not occur -->
+					<Label VerticalTextAlignment="Center" HorizontalTextAlignment="Center" Text="Something went wrong!" />
+				</Grid>
 
 				<CollectionView ItemsSource="{Binding Parts}" SelectionMode="None" IsGrouped="False">
 					<CollectionView.ItemTemplate>
@@ -58,6 +67,7 @@
 					</CollectionView.ItemTemplate>
 				</CollectionView>
 				<ContentView Content="{Binding Path=HumanReadableText}" Margin="{StaticResource SmallTopMargins}" />
+
 			</VerticalStackLayout>
 		</ScrollView>
 
@@ -70,7 +80,7 @@
 				</Grid.ColumnDefinitions>
 
 				<!-- Scan QR Button -->
-				<controls:TemplatedButton Grid.Column="0" Command="{x:Binding TestCommand}">
+				<controls:TemplatedButton Grid.Column="0" Command="{x:Binding BackCommand}">
 					<Border Style="{StaticResource TransparentTemplateButtonBorder}" InputTransparent="True" HorizontalOptions="Fill">
 						<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
 							<Path VerticalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
