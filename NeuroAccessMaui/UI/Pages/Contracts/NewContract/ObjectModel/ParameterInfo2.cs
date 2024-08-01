@@ -63,6 +63,17 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
 			set => this.SetProperty(ref this.error, value);
 		}
 
+		private string errorText = string.Empty;
+
+		/// <summary>
+		/// Error text to display if the parameter has an validation error
+		/// </summary>
+		public string ErrorText
+		{
+			get => this.errorText;
+			set => this.SetProperty(ref this.errorText, value);
+		}
+
 		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
 		{
 			base.OnPropertyChanged(e);
