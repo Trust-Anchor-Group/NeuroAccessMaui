@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<views:BaseNewContractView x:Name="ThisPage"
+                           x:Class="NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views.ParametersView"
+                           x:DataType="base:NewContractViewModel2"
+                           xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                           xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views"
+                           xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract"
+                           xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel">
+	<ContentView.Resources>
+		<objectModel:ParameterTemplateSelector x:Key="ParameterTemplateSelector"
+		                                 BooleanTemplate="{StaticResource BooleanParameterTemplate}"
+		                                 DateTemplate="{StaticResource DateParameterTemplate}"
+		                                 NumericalTemplate="{StaticResource NumericalParameterTemplate}"
+		                                 StringTemplate="{StaticResource StringParameterTemplate}"
+		                                 TimeTemplate="{StaticResource TimeParameterTemplate}"
+		                                 DurationTemplate="{StaticResource DurationParameterTemplate}"
+		                                 DefaultTemplate="{StaticResource DefaultParameterTemplate}" />
+	</ContentView.Resources>
+
+	<CollectionView ItemsSource="{Binding Parameters}"
+	                ItemTemplate="{StaticResource ParameterTemplateSelector}"
+	                SelectionMode="None"
+	                VerticalOptions="FillAndExpand"
+	                HorizontalOptions="FillAndExpand"
+	                ItemSizingStrategy="MeasureAllItems"/>
+
+</views:BaseNewContractView>
