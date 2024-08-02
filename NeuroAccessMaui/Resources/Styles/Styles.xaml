@@ -505,10 +505,10 @@
 	<Style ApplyToDerivedTypes="True" TargetType="Border" x:Key="BorderSet">
 		<Setter Property="Shadow">
 			<Setter.Value>
-				<Shadow Offset="0,0" Radius="4" Opacity="0.8"/>
+				<Shadow Offset="0,0" Radius="4" Opacity="0.5"/>
 			</Setter.Value>
 		</Setter>
-		<!-- Shadow Radius and Brush are not directly applicable to 'Border', managed through 'BoxShadow' instead -->
+		<!-- Shadow Radius and Brush are not directly applicable to 'Border', managed through 'Shadow' Property instead -->
 		<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource SecondaryBackgroundLight}, Dark={StaticResource SecondaryBackgroundDark}}" />
 		<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource SecondaryBackgroundLight}, Dark={StaticResource SecondaryBackgroundDark}}" />
 		<Setter Property="StrokeShape" Value="RoundRectangle 8" />
@@ -517,7 +517,6 @@
 	</Style>
 
 	<Style ApplyToDerivedTypes="True" TargetType="Border" x:Key="BorderSubSet">
-		<!-- To disable the shadow in 'Border', you can set the 'BoxShadow' to 'null' or omit it -->
 		<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}" />
 		<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}" />
 		<Setter Property="StrokeShape" Value="RoundRectangle 8" />
