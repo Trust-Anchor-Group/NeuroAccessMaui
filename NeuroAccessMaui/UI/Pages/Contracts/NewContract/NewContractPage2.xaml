@@ -27,51 +27,57 @@
 	</ContentPage.Resources>
 
 	<Grid x:Name="TheMainGrid"
-	  RowDefinitions="*, auto"
+	  RowDefinitions="auto, *"
 	  ColumnDefinitions="*"
 	  BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
 
-		<controls:Background/>
+		<controls:Background Grid.RowSpan="2"/>
 
+		<!-- Top Bar -->
+		<Grid Grid.Row="0" RowDefinitions="auto" ColumnDefinitions="*" Margin="{StaticResource LargeBottomMargins}">
+			<Grid.Padding>
+				<Thickness Left="{StaticResource LargeSpacing}" Top="{StaticResource LargeSpacing}" Right="{StaticResource LargeSpacing}" />
+			</Grid.Padding>
+
+			<controls:ImageButton IsVisible="{Binding CanStateChange}" Command="{Binding GoBackCommand}" Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+
+			<Image HorizontalOptions="Center" VerticalOptions="Start" Source="{AppThemeBinding Light=neuro_assets_icon_dark, Dark=neuro_assets_icon_light}" WidthRequest="50" HeightRequest="50" />
+		</Grid>
 		<!-- Main Content -->
-		<ScrollView Grid.Row="0">
+		<Grid x:Name="StateGrid"
+			Grid.Row="1"
+			mct:StateContainer.CurrentState="{Binding CurrentState, Mode=OneWayToSource}" 
+			mct:StateContainer.CanStateChange="{Binding CanStateChange, Mode=OneWayToSource}" >
 
-			<VerticalStackLayout
-									  Padding="{StaticResource LargeMargins}"
-									  Spacing="{StaticResource LargeSpacing}"
-									  VerticalOptions="Fill" >
-				<Grid x:Name="StateGrid"
-				      mct:StateContainer.CurrentState="{Binding CurrentState, Mode=OneWayToSource}"
-				      mct:StateContainer.CanStateChange="{Binding CanStateChange, Mode=OneWayToSource}"
-				      >
+			<mct:StateContainer.StateViews>
+				<views:OverviewView x:Name="OverviewView" mct:StateView.StateKey="Overview" />
+				<views:LoadingView x:Name="LoadingView" mct:StateView.StateKey="Loading" />
+				<views:ParametersView x:Name="ParametersView" mct:StateView.StateKey="Parameters" />
+				<views:PartsView x:Name="PartsView" mct:StateView.StateKey="Parts" />
+			</mct:StateContainer.StateViews>
 
-					<mct:StateContainer.StateViews>
-						<views:OverviewView x:Name="OverviewView" mct:StateView.StateKey="Overview" />
-						<views:LoadingView x:Name="LoadingView" mct:StateView.StateKey="Loading" />
-						<views:ParametersView x:Name="ParametersView" mct:StateView.StateKey="Parameters" />
-						<views:PartsView x:Name="PartsView" mct:StateView.StateKey="Parts" />
-					</mct:StateContainer.StateViews>
-
-					<!-- default state, should not occur -->
-					<Label VerticalTextAlignment="Center" HorizontalTextAlignment="Center" Text="Something went wrong!" />
-				</Grid>
-
-				<CollectionView ItemsSource="{Binding Parts}" SelectionMode="None" IsGrouped="False">
-					<CollectionView.ItemTemplate>
-						<DataTemplate x:DataType="local:PartInfo">
-							<VerticalStackLayout Padding="10">
-								<Label Text="{Binding Name}" FontSize="20" />
-								<Label Text="{Binding Description}" FontSize="14" />
-							</VerticalStackLayout>
-						</DataTemplate>
-					</CollectionView.ItemTemplate>
-				</CollectionView>
-				<ContentView Content="{Binding Path=HumanReadableText}" Margin="{StaticResource SmallTopMargins}" />
-
+			<!-- default state, should not occur -->
+			<VerticalStackLayout>
+			<Label VerticalTextAlignment="Center" HorizontalTextAlignment="Center" Text="Something went wrong!" />
+			<CollectionView ItemsSource="{Binding Parts}" SelectionMode="None" IsGrouped="False">
+				<CollectionView.ItemTemplate>
+					<DataTemplate x:DataType="local:PartInfo">
+						<VerticalStackLayout Padding="10">
+							<Label Text="{Binding Name}" FontSize="20" />
+							<Label Text="{Binding Description}" FontSize="14" />
+						</VerticalStackLayout>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
+			<ContentView Content="{Binding Path=HumanReadableText}" Margin="{StaticResource SmallTopMargins}" />
 			</VerticalStackLayout>
-		</ScrollView>
+		</Grid>
 
-		<!-- Bottom Bar -->
+
+
+
+
+<!-- 
 		<Border Grid.Row="1" Style="{StaticResource BottomBarBorder}">
 			<Grid HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
 				<Grid.ColumnDefinitions>
@@ -79,7 +85,6 @@
 					<ColumnDefinition Width="*" />
 				</Grid.ColumnDefinitions>
 
-				<!-- Scan QR Button -->
 				<controls:TemplatedButton Grid.Column="0" Command="{x:Binding BackCommand}">
 					<Border Style="{StaticResource TransparentTemplateButtonBorder}" InputTransparent="True" HorizontalOptions="Fill">
 						<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
@@ -92,7 +97,6 @@
 					</Border>
 				</controls:TemplatedButton>
 
-				<!-- Show ID Button -->
 				<controls:TemplatedButton Grid.Column="1" Command="{x:Binding TestCommand}">
 					<Border Style="{StaticResource FilledTemplateButtonBorder}"  InputTransparent="True" HorizontalOptions="Fill">
 						<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
@@ -106,23 +110,22 @@
 				</controls:TemplatedButton>
 			</Grid>
 		</Border>
+
+	
+<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+    <controls:Background/>
+
+    <ScrollView>
+        <VerticalStackLayout>
+            <CollectionView ItemsSource="{Binding Parameters}"
+                            ItemTemplate="{StaticResource ParameterTemplateSelector}"
+                            VerticalOptions="FillAndExpand"
+                            HorizontalOptions="FillAndExpand" />
+            <ContentView Content="{Binding Path=HumanReadableText}" Margin="{StaticResource SmallTopMargins}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</Grid>
+-->
 	</Grid>
-	<!--
 
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
-		<controls:Background/>
-
-		<ScrollView>
-			<VerticalStackLayout>
-				<CollectionView ItemsSource="{Binding Parameters}"
-				                ItemTemplate="{StaticResource ParameterTemplateSelector}"
-				                VerticalOptions="FillAndExpand"
-				                HorizontalOptions="FillAndExpand" />
-				<ContentView Content="{Binding Path=HumanReadableText}" Margin="{StaticResource SmallTopMargins}" />
-
-			</VerticalStackLayout>
-
-
-		</ScrollView>
-	</Grid> -->
 </base:BaseContentPage>
