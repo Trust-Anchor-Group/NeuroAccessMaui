@@ -1,8 +1,6 @@
 ﻿using CommunityToolkit.Maui.Layouts;
-using CommunityToolkit.Mvvm.Messaging;
 using NeuroAccessMaui.Services;
 using Waher.Persistence;
-using Waher.Runtime.Profiling.Events;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 {
@@ -13,6 +11,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 	public partial class NewContractPage2 : IContractOptionsPage
 	{
 		/// <summary>
+		/// Helper property to access the view model.
+		/// </summary>
+		public NewContractViewModel2? ViewModel => this.ContentPageModel as NewContractViewModel2;
+
+		/// <summary>
 		/// Creates a new instance of the <see cref="NewContractPage"/> class.
 		/// </summary>
 		public NewContractPage2()
@@ -20,33 +23,16 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			this.ContentPageModel = new NewContractViewModel2(this, ServiceRef.UiService.PopLatestArgs<NewContractNavigationArgs>());
 			this.InitializeComponent();
 
-			WeakReferenceMessenger.Default.Register<NewContractPageMessage>(this, this.HandleNewContractPageMessage);
-			StateContainer.SetCurrentState(this.StateGrid, NewContractStep.Loading.ToString());
-		}
-
-		~NewContractPage2()
-		{
-			WeakReferenceMessenger.Default.Unregister<NewContractPageMessage>(this);
-		}
-
-		private async void HandleNewContractPageMessage(object Recipient, NewContractPageMessage Message)
-		{
-			await this.Dispatcher.DispatchAsync(async () =>
+			if(this.ViewModel is NewContractViewModel2 ViewModel)
 			{
-				try
-				{
-					string OldState = StateContainer.GetCurrentState(this.StateGrid);
-					string NewState = Message.NewState.ToString();
+				ViewModel.StateObject = this.StateGrid;
+			}
+			else
+			{
+				ServiceRef.LogService.LogAlert("NewContractPage2,ViewModel is not of type NewContractViewModel2. Cannot set StateObject.");
+			}
 
-					await StateContainer.ChangeStateWithAnimation(this.StateGrid, NewState, CancellationToken.None);
-
-
-				}
-				catch (System.Exception ex)
-				{
-					ServiceRef.LogService.LogException(ex);
-				}
-			});
+			StateContainer.SetCurrentState(this.StateGrid, NewContractStep.Loading.ToString());
 		}
 
 
