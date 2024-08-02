@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
@@ -18,15 +17,13 @@ using NeuroAccessMaui.UI.Pages.Main.Calculator;
 using NeuroAccessMaui.UI.Pages.Main.Duration;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Text;
-using CommunityToolkit.Maui.Layouts;
 using CommunityToolkit.Mvvm.Messaging;
 using Waher.Content.Xml;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;
 using Waher.Script;
-using static Microsoft.Maui.Controls.Device;
+using CommunityToolkit.Maui.Layouts;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 {
@@ -45,10 +42,20 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(TestCommand))]
+		[NotifyCanExecuteChangedFor(nameof(BackCommand))]
+
 		bool canStateChange;
 
 		[ObservableProperty]
 		string currentState = "Loading";
+
+		[ObservableProperty]
+		string contractName = string.Empty;
+
+		/// <summary>
+		/// The state object containing all views
+		/// </summary>
+		public BindableObject StateObject { get; set; }
 
 		private readonly SortedDictionary<CaseInsensitiveString, ParameterInfo> parametersByName = [];
 		private readonly LinkedList<ParameterInfo> parametersInOrder = new();
@@ -109,6 +116,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				//Testing generating human readable text
 				string hrt = await this.template.ToMauiXaml(this.template.DeviceLanguage());
 				this.HumanReadableText = new VerticalStackLayout().LoadFromXaml(hrt);
+
+				this.ContractName = await ContractModel.GetCategory(this.template) ?? string.Empty;
 
 				await this.GoToState(NewContractStep.Overview);
 
@@ -176,7 +185,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			while (!this.CanStateChange)
 				await Task.Delay(100);
 
-			WeakReferenceMessenger.Default.Send(new NewContractPageMessage(NewStep));
+			await MainThread.InvokeOnMainThreadAsync(async () =>
+			{
+				await StateContainer.ChangeStateWithAnimation(this.StateObject, NewState);
+			});
 		}
 
 
