@@ -2124,4 +2124,13 @@
   <data name="TouchIdInfo" xml:space="preserve">
     <value>Touch ID îți folosește amprenta pentru a se asigura că ești cu adevărat tu, oferind o modalitate rapidă și sigură de a accesa Neuro-Access.</value>
   </data>
+  <data name="TransferIdentity" xml:space="preserve">
+    <value>Transfer identitate</value>
+  </data>
+  <data name="TransferIdentityDescription" xml:space="preserve">
+    <value>Transferați-vă identitatea curentă pe un alt dispozitiv.</value>
+  </data>
+  <data name="TransferIdentityPageDetails" xml:space="preserve">
+    <value>Pe celălalt dispozitiv, continuați cu înscrierea până când ajungeți la pagina furnizorului de servicii. Apăsați butonul de modificare și scanați acest QR. Acest lucru va elimina identitatea de pe acest dispozitiv.</value>
+  </data>
 </root>

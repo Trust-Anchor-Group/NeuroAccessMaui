@@ -92,11 +92,15 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 					break;
 
 				case nameof(this.AccountText):
+					if(this.AccountText.Length > 0 && char.IsWhiteSpace(this.AccountText.Last()))
+						this.AccountText = this.AccountText.Trim();
 					this.AccountIsNotValid = false;
 					this.AlternativeNames = [];
 					break;
 			}
 		}
+
+
 
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(CreateAccountCommand))]

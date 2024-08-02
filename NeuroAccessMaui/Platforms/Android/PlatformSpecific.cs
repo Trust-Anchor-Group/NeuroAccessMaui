@@ -1,4 +1,4 @@
-﻿using Android;
+using Android;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
@@ -12,11 +12,15 @@ using Android.Views.InputMethods;
 using AndroidX.Biometric;
 using AndroidX.Fragment.App;
 using AndroidX.Lifecycle;
+using CommunityToolkit.Mvvm.Messaging;
+
 //using Firebase.Messaging;	// TODO: Firebase
 using Java.Util.Concurrent;
 using NeuroAccessMaui.Services.Push;
 using Waher.Events;
 using Waher.Networking.XMPP.Push;
+using Debug = System.Diagnostics.Debug;
+using Rect = Android.Graphics.Rect;
 
 namespace NeuroAccessMaui.Services
 {
@@ -32,6 +36,7 @@ namespace NeuroAccessMaui.Services
 		/// </summary>
 		public PlatformSpecific()
 		{
+			this.InitializeKeyboard();
 		}
 
 		/// <summary>
@@ -210,26 +215,6 @@ namespace NeuroAccessMaui.Services
 			}
 		}
 
-		/// <summary>
-		/// Force hide the keyboard
-		/// </summary>
-		public void HideKeyboard()
-		{
-			Context Context = Platform.AppContext;
-			InputMethodManager? InputMethodManager = Context.GetSystemService(Context.InputMethodService) as InputMethodManager;
-
-			if (InputMethodManager is not null)
-			{
-				Activity? Activity = Platform.CurrentActivity;
-
-				if (Activity is not null)
-				{
-					IBinder? Token = Activity.CurrentFocus?.WindowToken;
-					InputMethodManager.HideSoftInputFromWindow(Token, HideSoftInputFlags.None);
-					Activity.Window?.DecorView.ClearFocus();
-				}
-			}
-		}
 
 		/// <summary>
 		/// Make a blurred screenshot
@@ -631,5 +616,113 @@ namespace NeuroAccessMaui.Services
 			return Task.FromResult(TokenInformation);
 		}
 
+		#region Keyboard
+
+		/// <inheritdoc />
+		public event EventHandler<KeyboardSizeMessage>? KeyboardShown;
+		/// <inheritdoc />
+		public event EventHandler<KeyboardSizeMessage>? KeyboardHidden;
+		/// <summary>
+		///	Fired when the keyboard size changes.
+		/// </summary>>
+		/// <remarks>
+		///	On Android, the keyboard size is not constantly updated, but only when the keyboard is shown or hidden.
+		/// </remarks>
+		public event EventHandler<KeyboardSizeMessage>? KeyboardSizeChanged;
+
+		private Activity? activity;
+		private Android.Views.View? rootView;
+		private int lastKeyboardHeight = 0;
+		private Handler? initializeKeyboardHandler;
+
+		/// <inheritdoc/>
+		public void HideKeyboard()
+		{
+			if (this.activity is null || this.rootView is null)
+				return;
+			InputMethodManager? inputMethodManager = this.activity.GetSystemService(Context.InputMethodService) as InputMethodManager;
+			inputMethodManager?.HideSoftInputFromWindow(this.rootView.WindowToken, HideSoftInputFlags.None);
+			this.activity.Window?.DecorView.ClearFocus();
+		}
+
+		private void InitializeKeyboard()
+		{
+			this.activity = Platform.CurrentActivity;
+			try
+			{
+				this.initializeKeyboardHandler = new Handler(Looper.MainLooper!);
+				this.CheckRootView();
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
+		}
+
+		private void CheckRootView()
+		{
+			this.activity = Platform.CurrentActivity;
+
+			if (this.activity?.Window?.DecorView.RootView?.ViewTreeObserver is null)
+			{
+				this.initializeKeyboardHandler?.PostDelayed(this.CheckRootView, 100);
+				return;
+			}
+			this.activity = Platform.CurrentActivity;
+			this.rootView = this.activity!.Window!.DecorView.RootView;
+			this.rootView!.ViewTreeObserver!.GlobalLayout += this.OnGlobalLayout;
+		}
+
+
+
+		private void OnGlobalLayout(object? sender, EventArgs e)
+		{
+			Rect r = new();
+			this.rootView!.GetWindowVisibleDisplayFrame(r);
+
+			int screenHeight = this.rootView.RootView!.Height;
+			int statusBarHeight = 0;
+			int actionBarHeight = 0;
+
+			// if this succeeds, we can calculate an exact keyboard height
+			Android.Views.View? contentView = this.rootView.FindViewById(Android.Views.Window.IdAndroidContent);
+			if (contentView is not null)
+			{
+				statusBarHeight = r.Top - contentView.Top;
+				actionBarHeight = r.Bottom - contentView.Bottom;
+			}
+
+			// Calculate the height of the keyboard (if the above fails, the keyboardsize will include the size of the action and status bar)
+			int availableScreenHeight = screenHeight - statusBarHeight - actionBarHeight;
+			int visibleHeight = r.Height();
+			int keypadHeight = availableScreenHeight - visibleHeight; // height of the keyboard, but is not garanteed to be the actual keyboard height it might include other things such as the action bar.
+
+			// Assume keyboard is shown if more than 15% of the available screen height is used.
+			// This is a heuristic, and may need to be adjusted.
+			// I really don't like this solution, but android doesn't provide a better way to detect the keyboard at the time of writing.
+			// Checking keyboardheight > 0 is not enough, because the keyboardheight is not garanteed to be accurate on all devices and circumstances
+			
+			if (keypadHeight > availableScreenHeight * 0.15)
+			{
+					this.lastKeyboardHeight = keypadHeight;
+					this.KeyboardSizeChanged?.Invoke(this, new KeyboardSizeMessage(keypadHeight));
+					WeakReferenceMessenger.Default.Send(new KeyboardSizeMessage(keypadHeight));
+					this.KeyboardShown?.Invoke(this, new KeyboardSizeMessage(keypadHeight));
+			}
+			else
+			{
+				if (this.lastKeyboardHeight == 0)
+					return;
+
+				this.lastKeyboardHeight = 0;
+				this.KeyboardSizeChanged?.Invoke(this, new KeyboardSizeMessage(0));
+				WeakReferenceMessenger.Default.Send(new KeyboardSizeMessage(0));
+				this.KeyboardHidden?.Invoke(this, new KeyboardSizeMessage(0));
+			}
+		}
+		#endregion
+
 	}
+
+
 }

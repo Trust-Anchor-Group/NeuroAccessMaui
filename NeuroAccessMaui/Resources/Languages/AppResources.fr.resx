@@ -2124,4 +2124,13 @@
   <data name="TouchIdInfo" xml:space="preserve">
     <value>Touch ID utilise votre empreinte digitale pour s’assurer qu’il s’agit bien de vous, offrant ainsi un moyen rapide et sécurisé d’accéder à Neuro-Access.</value>
   </data>
+  <data name="TransferIdentity" xml:space="preserve">
+    <value>Transférer l’identité</value>
+  </data>
+  <data name="TransferIdentityDescription" xml:space="preserve">
+    <value>Transférez votre identité actuelle vers un autre appareil.</value>
+  </data>
+  <data name="TransferIdentityPageDetails" xml:space="preserve">
+    <value>Sur votre autre appareil, poursuivez l’intégration jusqu’à ce que vous atteigniez la page du fournisseur de services. Appuyez sur le bouton de changement et scannez ce QR. Cela supprimera l’identité de cet appareil.</value>
+  </data>
 </root>

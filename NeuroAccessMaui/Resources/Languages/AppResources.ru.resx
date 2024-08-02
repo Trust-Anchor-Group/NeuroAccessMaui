@@ -2124,4 +2124,13 @@
   <data name="TouchIdInfo" xml:space="preserve">
     <value>Touch ID использует ваш отпечаток пальца, чтобы убедиться, что это действительно вы, обеспечивая быстрый и безопасный способ доступа к Neuro-Access.</value>
   </data>
+  <data name="TransferIdentity" xml:space="preserve">
+    <value>Перенос удостоверения</value>
+  </data>
+  <data name="TransferIdentityDescription" xml:space="preserve">
+    <value>Перенесите текущее удостоверение на другое устройство.</value>
+  </data>
+  <data name="TransferIdentityPageDetails" xml:space="preserve">
+    <value>На другом устройстве продолжайте подключение, пока не дойдете до страницы поставщика услуг. Нажмите кнопку «Изменить» и отсканируйте этот QR-код. Это приведет к удалению удостоверения с этого устройства.</value>
+  </data>
 </root>

@@ -8,6 +8,7 @@ using Waher.Events;
 using Waher.Networking.XMPP.Push;
 using Security;
 using System.Text;
+using CommunityToolkit.Mvvm.Messaging;
 namespace NeuroAccessMaui.Services
 {
 	/// <summary>
@@ -23,6 +24,8 @@ namespace NeuroAccessMaui.Services
 		/// </summary>
 		public PlatformSpecific()
 		{
+			NSNotificationCenter.DefaultCenter.AddObserver(UIKeyboard.WillShowNotification, this.OnKeyboardWillShow);
+            NSNotificationCenter.DefaultCenter.AddObserver(UIKeyboard.WillHideNotification, this.OnKeyboardWillHide);
 		}
 
 		/// <summary>
@@ -41,6 +44,9 @@ namespace NeuroAccessMaui.Services
 		{
 			if (this.isDisposed)
 				return;
+
+			NSNotificationCenter.DefaultCenter.RemoveObserver(UIKeyboard.WillShowNotification);
+			NSNotificationCenter.DefaultCenter.RemoveObserver(UIKeyboard.WillHideNotification);
 
 			if (Disposing)
 				this.DisposeLocalAuthenticationContext();
@@ -191,12 +197,6 @@ namespace NeuroAccessMaui.Services
 			}
 		}
 
-		/// <summary>
-		/// Force hide the keyboard
-		/// </summary>
-		public void HideKeyboard()
-		{
-		}
 
 		/// <summary>
 		/// Make a blurred screenshot
@@ -396,6 +396,39 @@ namespace NeuroAccessMaui.Services
 
 			return await Task.FromResult(TokenInformation);
 		}
+
+		#region Keyboard
+		public event EventHandler<KeyboardSizeMessage>? KeyboardShown;
+		public event EventHandler<KeyboardSizeMessage>? KeyboardHidden;
+		public event EventHandler<KeyboardSizeMessage>? KeyboardSizeChanged;
+
+		/// <summary>
+		/// Force hide the keyboard
+		/// </summary>
+		public void HideKeyboard()
+		{
+			AppDelegate.GetKeyWindow()?.EndEditing(true);
+		}
+
+		private void OnKeyboardWillShow(NSNotification notification)
+        {
+            CoreGraphics.CGRect keyboardFrame = UIKeyboard.FrameEndFromNotification(notification);
+			float keyboardHeight = (float)keyboardFrame.Height;
+			KeyboardShown?.Invoke(this, new KeyboardSizeMessage(keyboardHeight));
+            KeyboardSizeChanged?.Invoke(this, new KeyboardSizeMessage(keyboardHeight));
+			WeakReferenceMessenger.Default.Send(new KeyboardSizeMessage(keyboardHeight));
+        }
+
+        private void OnKeyboardWillHide(NSNotification notification)
+        {
+			float keyboardHeight = 0;
+			KeyboardShown?.Invoke(this, new KeyboardSizeMessage(keyboardHeight));
+            KeyboardSizeChanged?.Invoke(this, new KeyboardSizeMessage(keyboardHeight));
+			WeakReferenceMessenger.Default.Send(new KeyboardSizeMessage(keyboardHeight));
+        }
+
+	
+		#endregion
 
 	}
 }

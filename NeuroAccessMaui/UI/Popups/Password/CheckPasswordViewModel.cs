@@ -3,6 +3,7 @@ using System.Security.Cryptography;
 using System.Text;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.Controls.Shapes;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Pages.Registration.Views;
@@ -23,6 +24,20 @@ namespace NeuroAccessMaui.UI.Popups.Password
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(EnterPasswordCommand))]
 		private string passwordText = string.Empty;
+
+		/// <summary>
+		/// If password is hidden
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(PasswordVisibilityPathData))]
+
+		private bool isPasswordHidden = true;
+
+		/// <summary>
+		/// The path data for the password visibility icon
+		/// </summary>
+		public Geometry PasswordVisibilityPathData => this.IsPasswordHidden ? Geometries.VisibilityOnPath : Geometries.VisibilityOffPath;
+
 
 		/// <summary>
 		/// If password can be entered
@@ -73,6 +88,12 @@ namespace NeuroAccessMaui.UI.Popups.Password
 		{
 			await ServiceRef.UiService.PopAsync();
 			this.result.TrySetResult(null);
+		}
+
+		[RelayCommand]
+		private void TogglePasswordVisibility()
+		{
+			this.IsPasswordHidden = !this.IsPasswordHidden;
 		}
 	}
 

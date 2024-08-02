@@ -1,5 +1,4 @@
 ﻿using System.Windows.Input;
-using CommunityToolkit.Maui.Markup;
 using Microsoft.Maui.Controls.Shapes;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Core;
@@ -12,28 +11,80 @@ namespace NeuroAccessMaui.UI.Controls
 		private readonly Border innerBorder;
 		private readonly Grid innerGrid;
 		private readonly PathShape innerPath;
+		private readonly PathShape clickablePath;
 		private readonly Entry innerEntry;
 
+		/// <summary>
+		/// Bindable property for the command to be executed when the Entry gains focus.
+		/// </summary>
 		public static readonly BindableProperty FocusedCommandProperty = BindableProperty.Create(
 			nameof(FocusedCommand),
 			typeof(ICommand),
 			typeof(CompositeEntry));
 
+		/// <summary>
+		/// Gets or sets the command to be executed when the Entry gains focus.
+		/// </summary>
 		public ICommand FocusedCommand
 		{
 			get => (ICommand)this.GetValue(FocusedCommandProperty);
 			set => this.SetValue(FocusedCommandProperty, value);
 		}
-
+		/// <summary>
+		/// Bindable property for the command to be executed when the Entry loses focus.
+		/// </summary>
 		public static readonly BindableProperty UnfocusedCommandProperty = BindableProperty.Create(
 			nameof(UnfocusedCommand),
 			typeof(ICommand),
 			typeof(CompositeEntry));
 
+		/// <summary>
+		/// Gets or sets the command to be executed when the Entry loses focus.
+		/// </summary>
 		public ICommand UnfocusedCommand
 		{
 			get => (ICommand)this.GetValue(UnfocusedCommandProperty);
 			set => this.SetValue(UnfocusedCommandProperty, value);
+		}
+
+		/// <summary>
+		/// Bindable property for the command to be executed when the PathData is clicked.
+		/// </summary>
+		public static readonly BindableProperty PathClickedCommandProperty = BindableProperty.Create(
+				nameof(PathClickedCommand),
+				typeof(ICommand),
+				typeof(CompositeEntry));
+		/// <summary>
+		/// Gets or sets the command to be executed when the PathData is clicked.
+		/// </summary>
+		public ICommand PathClickedCommand
+		{
+			get => (ICommand)this.GetValue(PathClickedCommandProperty);
+			set => this.SetValue(PathClickedCommandProperty, value);
+		}
+
+		/// <summary>
+		/// Bindable property for the Clickable PathData to be displayed.
+		/// </summary>
+		public static readonly BindableProperty ClickablePathDataProperty = BindableProperty.Create(
+			nameof(ClickablePathData),
+			typeof(Geometry),
+			typeof(CompositeEntry),
+			defaultValue: null,
+			propertyChanged: (bindable, oldValue, newValue) =>
+			{
+				if (bindable is CompositeEntry compositeEntry)
+				{
+					compositeEntry.OnClickablePathDataPropertyChanged((Geometry)oldValue, (Geometry)newValue);
+				}
+			});
+		/// <summary>
+		/// Gets or sets the Clickable PathData to be displayed.
+		/// </summary>
+		public Geometry ClickablePathData
+		{
+			get => (Geometry)this.GetValue(ClickablePathDataProperty);
+			set => this.SetValue(ClickablePathDataProperty, value);
 		}
 
 
@@ -80,7 +131,7 @@ namespace NeuroAccessMaui.UI.Controls
 
 		public void OnStackSpacingPropertyChanged(double OldValue, double NewValue)
 		{
-			this.innerGrid.ColumnSpacing = this.innerPath.IsVisible ? NewValue : 0;
+			this.innerGrid.ColumnSpacing = (this.innerPath.IsVisible || this.clickablePath.IsVisible) ? NewValue : 0;
 		}
 
 		public void OnPathDataPropertyChanged(Geometry OldValue, Geometry NewValue)
@@ -90,7 +141,7 @@ namespace NeuroAccessMaui.UI.Controls
 			if (NewValue is null)
 			{
 				this.innerPath.IsVisible = false;
-				this.innerGrid.ColumnSpacing = 0;
+				this.innerGrid.ColumnSpacing = (this.innerPath.IsVisible || this.clickablePath.IsVisible) ? this.innerGrid.ColumnSpacing : 0;
 			}
 			else
 			{
@@ -99,9 +150,26 @@ namespace NeuroAccessMaui.UI.Controls
 			}
 		}
 
+		public void OnClickablePathDataPropertyChanged(Geometry OldValue, Geometry NewValue)
+		{
+			this.clickablePath.Data = NewValue;
+
+			if (NewValue is null)
+			{
+				this.clickablePath.IsVisible = false;
+				this.innerGrid.ColumnSpacing = (this.innerPath.IsVisible || this.clickablePath.IsVisible) ? this.innerGrid.ColumnSpacing : 0;
+			}
+			else
+			{
+				this.clickablePath.IsVisible = true;
+				this.innerGrid.ColumnSpacing = this.StackSpacing;
+			}
+		}
+
 		public void OnPathStylePropertyChanged(Style OldValue, Style NewValue)
 		{
 			this.innerPath.Style = NewValue;
+			this.clickablePath.Style = NewValue;
 		}
 
 		public void OnEntryDataPropertyChanged(string OldValue, string NewValue)
@@ -301,6 +369,23 @@ namespace NeuroAccessMaui.UI.Controls
 				Aspect = Stretch.Uniform
 			};
 
+			this.clickablePath = new()
+			{
+				VerticalOptions = LayoutOptions.Center,
+				IsVisible = this.ClickablePathData is not null,
+				HeightRequest = 24,
+				WidthRequest = 24,
+				Aspect = Stretch.Uniform
+			};
+
+			TapGestureRecognizer tapGestureRecognizer = new();
+			tapGestureRecognizer.Tapped += (s, e) =>
+			{
+				if (this.PathClickedCommand?.CanExecute(null) ?? false)
+					this.PathClickedCommand.Execute(null);
+			};
+			this.clickablePath.GestureRecognizers.Add(tapGestureRecognizer);
+
 			this.innerEntry = new()
 			{
 				VerticalOptions = LayoutOptions.Center,
@@ -321,6 +406,7 @@ namespace NeuroAccessMaui.UI.Controls
 				[
 					new() { Width = GridLength.Auto },
 					new() { Width = GridLength.Star },
+					new() { Width = GridLength.Auto },
 				],
 				RowDefinitions =
 				[
@@ -330,13 +416,15 @@ namespace NeuroAccessMaui.UI.Controls
 
 			this.innerGrid.Add(this.innerPath, 0, 0);
 
-			if (this.PathData is not null)
-				this.innerGrid.Add(this.innerEntry, 1, 0);
+			this.innerGrid.Add(this.innerEntry, 1, 0);
+
+			this.innerGrid.Add(this.clickablePath, 2, 0);
+
 
 			this.innerBorder = new()
 			{
 				StrokeThickness = 2,
-				Content = this.PathData is null ? this.innerEntry : this.innerGrid,
+				Content = this.innerGrid,
 				BackgroundColor = this.BackgroundColor
 			};
 
@@ -348,7 +436,7 @@ namespace NeuroAccessMaui.UI.Controls
 
 			this.innerEntry.Focused += this.OnEntryFocused;
 			this.innerEntry.Unfocused += this.OnEntryUnfocused;
-		}		
+		}
 
 		private void OnEntryFocused(object? sender, FocusEventArgs e)
 		{
