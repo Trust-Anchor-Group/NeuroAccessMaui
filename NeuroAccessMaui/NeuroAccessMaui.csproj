@@ -289,6 +289,18 @@
 		<Compile Update="UI\Pages\Contracts\NewContract\NewContractPage2.xaml.cs">
 		  <DependentUpon>NewContractPage2.xaml</DependentUpon>
 		</Compile>
+		<Compile Update="UI\Pages\Contracts\NewContract\Views\LoadingView.xaml.cs">
+		  <DependentUpon>%(Filename)</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Pages\Contracts\NewContract\Views\PartsView.xaml.cs">
+		  <DependentUpon>PartsView.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Pages\Contracts\NewContract\Views\ParametersView.xaml.cs">
+		  <DependentUpon>ParametersView.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Pages\Contracts\NewContract\Views\OverviewView.xaml.cs">
+		  <DependentUpon>OverviewView.xaml</DependentUpon>
+		</Compile>
 		<Compile Update="UI\Pages\Main\ChangePassword\ChangePasswordPage.xaml.cs">
 			<DependentUpon>ChangePasswordPage.xaml</DependentUpon>
 		</Compile>
@@ -406,6 +418,18 @@
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Contracts\NewContract\NewContractPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Contracts\NewContract\Views\LoadingView.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Contracts\NewContract\Views\PartsView.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Contracts\NewContract\Views\ParametersView.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Contracts\NewContract\Views\OverviewView.xaml">
+		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Contracts\ViewContract\ViewContractPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
