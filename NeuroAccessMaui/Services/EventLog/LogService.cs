@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using NeuroAccessMaui.Resources.Languages;
 using Waher.Events;
+using Waher.Events.Filter;
 using Waher.Events.XMPP;
 using Waher.Persistence.Exceptions;
 using Waher.Runtime.Inventory;
@@ -21,8 +22,8 @@ namespace NeuroAccessMaui.Services.EventLog
 		/// <param name="EventSink">The listener to add.</param>
 		public void AddListener(IEventSink EventSink)
 		{
-			if (EventSink is XmppEventSink xmppEventSink)
-				this.bareJid = xmppEventSink.Client?.BareJID ?? string.Empty;
+			if (EventSink is EventFilter EventFilter && EventFilter.SecondarySink is XmppEventSink XmppEventSink)
+				this.bareJid = XmppEventSink.Client?.BareJID ?? string.Empty;
 
 			foreach (IEventSink Sink in Log.Sinks)
 			{
@@ -50,7 +51,7 @@ namespace NeuroAccessMaui.Services.EventLog
 		/// <param name="Tags">Tags to log together with message.</param>
 		public void LogWarning(string Message, params KeyValuePair<string, object?>[] Tags)
 		{
-			Log.Warning(Message, string.Empty, this.bareJid, this.GetParameters(Tags).ToArray());
+			Log.Warning(Message, string.Empty, this.bareJid, [.. this.GetParameters(Tags)]);
 		}
 
 		/// <summary>
@@ -72,7 +73,7 @@ namespace NeuroAccessMaui.Services.EventLog
 			ex = Log.UnnestException(ex);
 
 			Debug.WriteLine(ex.ToString());
-			Log.Critical(ex, string.Empty, this.bareJid, this.GetParameters(extraParameters).ToArray());
+			Log.Critical(ex, string.Empty, this.bareJid, [.. this.GetParameters(extraParameters)]);
 
 			if (ex is InconsistencyException && !this.repairRequested)
 			{
@@ -88,7 +89,7 @@ namespace NeuroAccessMaui.Services.EventLog
 		/// <param name="Tags">Tags to log together with message.</param>
 		public void LogAlert(string Message, params KeyValuePair<string, object?>[] Tags)
 		{
-			Log.Alert(Message, string.Empty, this.bareJid, this.GetParameters(Tags).ToArray());
+			Log.Alert(Message, string.Empty, this.bareJid, [.. this.GetParameters(Tags)]);
 		}
 
 		private static async Task RestartForRepair()

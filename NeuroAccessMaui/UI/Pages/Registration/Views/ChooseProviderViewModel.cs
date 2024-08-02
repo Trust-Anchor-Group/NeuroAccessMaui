@@ -348,16 +348,16 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 								string PasswordMethod = XML.Attribute(E, "passwordMethod");
 								Domain = XML.Attribute(E, "domain");
 
-								string DomainBak = ServiceRef.TagProfile.Domain;
-								bool DefaultConnectivityBak = ServiceRef.TagProfile.DefaultXmppConnectivity;
-								string ApiKeyBak = ServiceRef.TagProfile.ApiKey;
-								string ApiSecretBak = ServiceRef.TagProfile.ApiSecret;
+								string DomainBak = ServiceRef.TagProfile?.Domain ?? string.Empty;
+								bool DefaultConnectivityBak = ServiceRef.TagProfile?.DefaultXmppConnectivity ?? false;
+								string ApiKeyBak = ServiceRef.TagProfile?.ApiKey ?? string.Empty;
+								string ApiSecretBak = ServiceRef.TagProfile?.ApiSecret ?? string.Empty;
 
 								await SelectDomain(Domain, string.Empty, string.Empty);
 
-								if (!await this.ConnectToAccount(UserName, Password, PasswordMethod, string.Empty, LegalIdDefinition, Pin))
+								if (!await this.ConnectToAccount(UserName, Password, PasswordMethod, string.Empty, LegalIdDefinition, Pin ?? string.Empty))
 								{
-									ServiceRef.TagProfile.SetDomain(DomainBak, DefaultConnectivityBak, ApiKeyBak, ApiSecretBak);
+									ServiceRef.TagProfile?.SetDomain(DomainBak, DefaultConnectivityBak, ApiKeyBak, ApiSecretBak);
 									throw new Exception("Invalid account.");
 								}
 
@@ -438,8 +438,8 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				async Task OnConnected(XmppClient client)
 				{
 					DateTime now = DateTime.Now;
-					LegalIdentity createdIdentity = null;
-					LegalIdentity approvedIdentity = null;
+					LegalIdentity? createdIdentity = null;
+					LegalIdentity? approvedIdentity = null;
 
 					bool serviceDiscoverySucceeded;
 
@@ -474,7 +474,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 							{
 								try
 								{
-									if ((string.IsNullOrEmpty(LegalIdentityJid) || string.Compare(LegalIdentityJid, Identity.Id, true) == 0) &&
+									if ((string.IsNullOrEmpty(LegalIdentityJid) || string.Compare(LegalIdentityJid, Identity.Id, StringComparison.OrdinalIgnoreCase) == 0) &&
 										Identity.HasClientSignature &&
 										Identity.HasClientPublicKey &&
 										Identity.From <= now &&
@@ -553,18 +553,20 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 					}
 				}
 
-				(string hostName, int portNumber, bool isIpAddress) = await ServiceRef.NetworkService.LookupXmppHostnameAndPort(ServiceRef.TagProfile.Domain);
+				(string hostName, int portNumber, bool isIpAddress) = await ServiceRef.NetworkService.LookupXmppHostnameAndPort(
+					ServiceRef.TagProfile?.Domain ?? string.Empty);
 
-				(bool succeeded, string errorMessage, string[]? alternatives) = await ServiceRef.XmppService.TryConnectAndConnectToAccount(ServiceRef.TagProfile.Domain,
+				(bool succeeded, string? errorMessage, string[]? alternatives) = await ServiceRef.XmppService.TryConnectAndConnectToAccount(
+					ServiceRef.TagProfile?.Domain ?? string.Empty,
 					isIpAddress, hostName, portNumber, AccountName, Password, PasswordMethod, Constants.LanguageCodes.Default,
 					typeof(App).Assembly, OnConnected);
 
 				if (!succeeded)
 				{
 					await ServiceRef.UiService.DisplayAlert(
-					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-						errorMessage,
-					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						errorMessage ?? string.Empty,
+						ServiceRef.Localizer[nameof(AppResources.Ok)]);
 				}
 
 				return succeeded;
@@ -575,7 +577,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 				await ServiceRef.UiService.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-					ServiceRef.Localizer[nameof(AppResources.UnableToConnectTo), ServiceRef.TagProfile.Domain],
+					ServiceRef.Localizer[nameof(AppResources.UnableToConnectTo), ServiceRef.TagProfile?.Domain ?? string.Empty],
 					ServiceRef.Localizer[nameof(AppResources.Ok)]);
 			}
 

@@ -264,7 +264,7 @@
 						</Grid>
 					</VerticalStackLayout>
 				</Frame>
-				<Frame Style="{StaticResource FrameSet}">
+				<Frame Style="{StaticResource FrameSet}" IsVisible="{Binding IsThirdPartyAndNotForReview}">
 					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 							<controls:TextButton
 												Style="{StaticResource FilledTextButton}" 

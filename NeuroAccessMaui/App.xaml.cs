@@ -21,7 +21,6 @@ using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.QR;
 using NeuroAccessMaui.Services.Xmpp;
-using NeuroAccessMaui.UI;
 using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.UI.Pages.Main;
 using NeuroAccessMaui.UI.Popups.Password;
@@ -31,6 +30,7 @@ using Waher.Content.Images;
 using Waher.Content.Markdown;
 using Waher.Content.Xml;
 using Waher.Events;
+using Waher.Events.Persistence;
 using Waher.Networking.DNS;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Avatar;
@@ -262,6 +262,7 @@ namespace NeuroAccessMaui
 					typeof(ObjectSerializer).Assembly,          // Indexes general serializers
 					typeof(FilesProvider).Assembly,             // Indexes special serializers
 					typeof(RuntimeSettings).Assembly,           // Allows for persistence of settings in the object database
+					typeof(PersistedEvent).Assembly,            // Persistence of events logged internally
 					typeof(InternetContent).Assembly,           // Common Content-Types
 					typeof(ImageCodec).Assembly,                // Common Image Content-Types
 					typeof(MarkdownDocument).Assembly,          // Markdown object model
@@ -379,7 +380,7 @@ namespace NeuroAccessMaui
 		}
 
 		/// <inheritdoc/>
-		protected override async void OnStart()
+		protected override /*async*/ void OnStart()
 		{
 			if (this.onStartResumesApplication)
 			{
@@ -775,7 +776,7 @@ namespace NeuroAccessMaui
 					Msg.AppendLine(StackTrace);
 					Msg.AppendLine("```");
 
-					Log.Alert(Msg.ToString(), Tags.ToArray());
+					Log.Alert(Msg.ToString(), [.. Tags]);
 
 					try
 					{
