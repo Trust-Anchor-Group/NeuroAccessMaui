@@ -15,17 +15,6 @@ namespace NeuroAccessMaui
 	}
 
 	/// <summary>
-	/// NewContractPage view change message
-	/// </summary>
-	public class NewContractPageMessage(NewContractStep NewState)
-	{
-		/// <summary>
-		/// The new state to transition to
-		/// </summary>
-		public NewContractStep NewState { get; } = NewState;
-	}
-
-	/// <summary>
 	/// Keyboard size change message
 	/// </summary>
 	public class KeyboardSizeMessage(float KeyboardSize)
