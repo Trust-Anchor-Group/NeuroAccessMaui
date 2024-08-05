@@ -6,7 +6,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 	/// <summary>
 	/// A page that allows the user to create a new contract.
 	/// </summary>
-	[XamlCompilation(XamlCompilationOptions.Compile)]
+	[XamlCompilation(XamlCompilationOptions.Skip)]
 	public partial class NewContractPage : IContractOptionsPage
 	{
 		/// <summary>
