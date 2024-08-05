@@ -681,10 +681,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			try
 			{
 				if (Sender is not Entry Entry ||
-					Entry.Parent is not Border Border ||
-					Border.Parent is not CompositeEntry CompositeEntry ||
-					string.IsNullOrEmpty(CompositeEntry.StyleId) ||
-					!this.parametersByName.TryGetValue(CompositeEntry.StyleId, out ParameterInfo? ParameterInfo))
+					!this.parametersByName.TryGetValue(Entry.StyleId, out ParameterInfo? ParameterInfo))
 				{
 					return;
 				}
@@ -734,8 +731,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					Color? BgColor = ControlBgColor.ToColor(Ok);
 
 					Entry.BackgroundColor = BgColor;
-					Border.BackgroundColor = BgColor;
-					CompositeEntry.BackgroundColor = BgColor;
+					CompositeEntry? compositeEntry = this.parametersByName[Entry.StyleId].Control as CompositeEntry;
+					if (compositeEntry is not null)
+					{
+						compositeEntry.BackgroundColor = BgColor;
+						compositeEntry.Border.BackgroundColor = BgColor;
+					}
+					//Border.BackgroundColor = BgColor;
+					//CompositeEntry.BackgroundColor = BgColor;
 
 					return;
 				}
@@ -1046,6 +1049,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			{
 				foreach (Role Role in this.template.Roles)
 				{
+
 					this.AvailableRoles.Add(Role.Name);
 
 					VerticalStackLayout RoleLayout =
@@ -1191,6 +1195,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						Style = AppStyles.RegularCompositeEntry,
 						Margin = AppStyles.SmallBottomMargins
 					};
+					Entry.Entry.StyleId = Parameter.Name;
 
 					if (Parameter is NumericalParameter || Parameter is DurationParameter)
 					{
