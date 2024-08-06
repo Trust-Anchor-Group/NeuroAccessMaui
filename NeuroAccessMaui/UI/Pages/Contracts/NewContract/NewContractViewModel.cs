@@ -45,6 +45,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		private readonly Dictionary<CaseInsensitiveString, string> partsToAdd = [];
 		private readonly NewContractPage page;
 		private readonly ContractVisibility? initialVisibility = null;
+		private Timer? populateTimer = null;
 
 		/// <summary>
 		/// The view model to bind to when displaying a new contract view or page.
@@ -744,12 +745,23 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				}
 
 				await this.ValidateParameters();
-				await this.PopulateHumanReadableText();
+				if (this.populateTimer is not null)
+					this.populateTimer.Dispose();
+
+				this.populateTimer = new Timer(this.PopulateTimer_Callback, null, 3000, Timeout.Infinite);
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
 			}
+		}
+
+		private async void PopulateTimer_Callback(object? obj)
+		{
+			this.populateTimer?.Dispose();
+
+			this.populateTimer = null;
+			await this.PopulateHumanReadableText();
 		}
 
 		private async void Parameter_CheckedChanged(object? Sender, CheckedChangedEventArgs e)
@@ -1340,8 +1352,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			if (this.template is not null)
 				Populate(humanReadableTextLayout, await this.template.ToMauiXaml(this.template.DeviceLanguage()));
 
+
 			this.HumanReadableText = humanReadableTextLayout;
 			this.HasHumanReadableText = humanReadableTextLayout.Children.Count > 0;
+
+
 		}
 
 		private bool CanPropose()

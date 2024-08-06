@@ -9,6 +9,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 	[XamlCompilation(XamlCompilationOptions.Skip)]
 	public partial class NewContractPage : IContractOptionsPage
 	{
+
+		public ScrollView? ScrollView;
 		/// <summary>
 		/// Creates a new instance of the <see cref="NewContractPage"/> class.
 		/// </summary>
@@ -16,6 +18,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		{
 			this.ContentPageModel = new NewContractViewModel(this, ServiceRef.UiService.PopLatestArgs<NewContractNavigationArgs>());
 			this.InitializeComponent();
+			this.ScrollView = this.MainScrollView;
 		}
 
 		/// <summary>

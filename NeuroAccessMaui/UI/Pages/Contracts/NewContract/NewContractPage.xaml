@@ -23,7 +23,7 @@
 
 		<controls:Background/>
 
-		<ScrollView>
+		<ScrollView x:Name="MainScrollView">
 			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
 				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
 											 Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
@@ -32,8 +32,11 @@
 
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+
 						<ContentView Content="{Binding Path=HumanReadableText}" Margin="{StaticResource SmallBottomMargins}" />
+
 					</VerticalStackLayout>
+
 				</Frame>
 
 				<Frame Style="{StaticResource FrameSet}">
