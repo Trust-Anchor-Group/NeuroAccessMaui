@@ -30,7 +30,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 	/// <summary>
 	/// The view model to bind to when displaying a new contract view or page.
 	/// </summary>
-	public partial class NewContractViewModel : BaseViewModel, ILinkableView
+	public partial class NewContractViewModel : BaseViewModel, ILinkableView, IDisposable
 	{
 		private static readonly string partSettingsPrefix = typeof(NewContractViewModel).FullName + ".Part_";
 
@@ -87,13 +87,45 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			this.ContractVisibilityItems.Add(new ContractVisibilityModel(ContractVisibility.PublicSearchable, ServiceRef.Localizer[nameof(AppResources.ContractVisibility_PublicSearchable)]));
 		}
 
+			/// <summary>
+		/// <see cref="IDisposable.Dispose"/>
+		/// </summary>
+		public void Dispose()
+		{
+			this.Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		/// <summary>
+		/// <see cref="IDisposable.Dispose"/>
+		/// </summary>
+		protected virtual void Dispose(bool Disposing)
+		{
+			if(this.populateTimer is not null)
+			{
+				try
+				{
+					this.populateTimer.Dispose();
+				}
+				catch(Exception ex)
+				{
+					//Normal operation
+				}
+				finally
+				{
+					this.populateTimer = null;
+				}
+			}
+		}
+
 		/// <inheritdoc/>
 		protected override async Task OnInitialize()
 		{
 			await base.OnInitialize();
-
+			await Task.Delay(1);
 			await this.PopulateTemplateForm(this.initialVisibility);
 		}
+
 
 		/// <inheritdoc/>
 		protected override async Task OnDispose()
@@ -371,7 +403,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			this.CanAddParts = false;
 			this.VisibilityIsEnabled = false;
-		}
+		} 
 
 		private void RemoveRole(string Role, string LegalId)
 		{
@@ -746,8 +778,20 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 				await this.ValidateParameters();
 				if (this.populateTimer is not null)
-					this.populateTimer.Dispose();
-
+				{
+					try
+					{
+						this.populateTimer.Dispose();
+					}
+					catch(Exception ex)
+					{
+						//Normal operation
+					}
+					finally
+					{
+						this.populateTimer = null;
+					}
+				}
 				this.populateTimer = new Timer(this.PopulateTimer_Callback, null, 3000, Timeout.Infinite);
 			}
 			catch (Exception ex)
@@ -1050,7 +1094,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			if (this.template is null)
 				return;
-
 			await this.PopulateHumanReadableText();
 
 			this.HasRoles = (this.template.Roles?.Length ?? 0) > 0;
@@ -1345,8 +1388,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 		private async Task PopulateHumanReadableText()
 		{
-			this.HumanReadableText = null;
-
 			VerticalStackLayout humanReadableTextLayout = [];
 
 			if (this.template is not null)
