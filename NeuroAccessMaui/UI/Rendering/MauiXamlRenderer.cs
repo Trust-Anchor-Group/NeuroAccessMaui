@@ -1677,6 +1677,8 @@ namespace NeuroAccessMaui.UI.Rendering
 			int Row, NrRows;
 			int RowNr = 0;
 
+			this.XmlOutput.WriteStartElement("ScrollView");
+			this.XmlOutput.WriteAttributeString("Orientation", "Horizontal");
 			this.XmlOutput.WriteStartElement("ContentView");
 			this.XmlOutput.WriteAttributeString("Padding", SmallMargins(false, false, true, true));
 
@@ -1715,6 +1717,8 @@ namespace NeuroAccessMaui.UI.Rendering
 
 			this.XmlOutput.WriteEndElement();
 			this.XmlOutput.WriteEndElement();
+			this.XmlOutput.WriteEndElement();
+
 		}
 
 		private void ClearState()
