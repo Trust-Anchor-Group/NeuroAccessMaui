@@ -6,16 +6,24 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 	/// <summary>
 	/// A page that allows the user to create a new contract.
 	/// </summary>
-	[XamlCompilation(XamlCompilationOptions.Compile)]
+	[XamlCompilation(XamlCompilationOptions.Skip)]
 	public partial class NewContractPage : IContractOptionsPage
 	{
+
+		public ScrollView? ScrollView;
 		/// <summary>
 		/// Creates a new instance of the <see cref="NewContractPage"/> class.
 		/// </summary>
 		public NewContractPage()
 		{
-			this.ContentPageModel = new NewContractViewModel(this, ServiceRef.UiService.PopLatestArgs<NewContractNavigationArgs>());
 			this.InitializeComponent();
+			this.ContentPageModel = new NewContractViewModel(this, ServiceRef.UiService.PopLatestArgs<NewContractNavigationArgs>());
+			this.ScrollView = this.MainScrollView;
+
+			Unloaded += (object? sender, EventArgs e) =>
+			{
+				(this.ContentPageModel as IDisposable)?.Dispose();
+			};
 		}
 
 		/// <summary>

@@ -117,7 +117,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature
 		public string FullName => ContactInfo.GetFullName(this.FirstName, this.MiddleNames, this.LastNames);
 
 		// The display name of the identity. If organization name is available, it is used, otherwise the full name.
-		public string? DisplayName => this.HasOrg ? this.OrgName : this.FullName;
+		public string? DisplayName => string.IsNullOrEmpty(this.Domain) ? (this.HasOrg ? this.OrgName : this.FullName) : this.Domain;
 
 		#region Properties
 
@@ -194,6 +194,10 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature
 		[NotifyPropertyChangedFor(nameof(FullName))]
 		[NotifyPropertyChangedFor(nameof(DisplayName))]
 		private string? lastNames;
+
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(DisplayName))]
+		private string? domain;
 
 		/// <summary>
 		/// Personal number of the identity
@@ -410,6 +414,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature
 				this.CountryCode = this.RequestorIdentity[Constants.XmppProperties.Country];
 				this.NationalityCode = this.RequestorIdentity[Constants.XmppProperties.Nationality];
 				this.Gender = this.RequestorIdentity[Constants.XmppProperties.Gender];
+				this.Domain = this.RequestorIdentity[Constants.XmppProperties.Domain];
 
 				string BirthDayStr = this.RequestorIdentity[Constants.XmppProperties.BirthDay];
 				string BirthMonthStr = this.RequestorIdentity[Constants.XmppProperties.BirthMonth];

@@ -17,23 +17,30 @@
 			<converters:OnlyShowNonEmpty/>
 			<converters:ControlBgColor/>
 		</converters:ConversionSequence>
+		<mct:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+
 	</VisualElement.Resources>
 
 	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
 
 		<controls:Background/>
 
-		<ScrollView>
+		<ScrollView x:Name="MainScrollView">
 			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
 				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
 											 Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
 				<Label Text="{l:Localize NewContract}" Style="{StaticResource PageTitleLabel}"/>
-
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
-						<ContentView Content="{Binding Path=HumanReadableText}" Margin="{StaticResource SmallBottomMargins}" />
+
+						<ContentView Content="{Binding Path=HumanReadableText}" IsVisible="{Binding HasHumanReadableText}" Margin="{StaticResource SmallBottomMargins}" />
+						<ActivityIndicator VerticalOptions="Center"
+							 HorizontalOptions="Center"
+							 IsVisible="{Binding HasHumanReadableText,Converter={StaticResource InvertedBoolConverter}}"
+							 IsRunning="true" />
 					</VerticalStackLayout>
+
 				</Frame>
 
 				<Frame Style="{StaticResource FrameSet}">
