@@ -16,9 +16,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// </summary>
 		public NewContractPage()
 		{
-			this.ContentPageModel = new NewContractViewModel(this, ServiceRef.UiService.PopLatestArgs<NewContractNavigationArgs>());
 			this.InitializeComponent();
+			this.ContentPageModel = new NewContractViewModel(this, ServiceRef.UiService.PopLatestArgs<NewContractNavigationArgs>());
 			this.ScrollView = this.MainScrollView;
+
+			Unloaded += (object? sender, EventArgs e) =>
+			{
+				(this.ContentPageModel as IDisposable)?.Dispose();
+			};
 		}
 
 		/// <summary>
