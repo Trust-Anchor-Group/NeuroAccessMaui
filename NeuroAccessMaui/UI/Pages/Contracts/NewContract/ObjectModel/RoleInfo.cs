@@ -9,9 +9,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
 	/// An observable object that wraps a <see cref="Waher.Networking.XMPP.Contracts.Role"/> object.
 	/// This allows for easier binding in the UI.
 	/// </summary>
-	public class PartInfo : ObservableObject
+	public class RoleInfo : ObservableObject
 	{
-		public PartInfo(Role role)
+		public RoleInfo(Role role)
 		{
 			this.Role = role;
 			this.Part = new Part
