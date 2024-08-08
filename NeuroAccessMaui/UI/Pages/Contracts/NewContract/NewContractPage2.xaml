@@ -53,23 +53,13 @@
 				<views:OverviewView x:Name="OverviewView" mct:StateView.StateKey="Overview" />
 				<views:LoadingView x:Name="LoadingView" mct:StateView.StateKey="Loading" />
 				<views:ParametersView x:Name="ParametersView" mct:StateView.StateKey="Parameters" />
-				<views:PartsView x:Name="PartsView" mct:StateView.StateKey="Parts" />
+				<views:RolesView x:Name="RolesView" mct:StateView.StateKey="Roles" />
 			</mct:StateContainer.StateViews>
 
 			<!-- default state, should not occur -->
 			<VerticalStackLayout>
 			<Label VerticalTextAlignment="Center" HorizontalTextAlignment="Center" Text="Something went wrong!" />
-			<CollectionView ItemsSource="{Binding Parts}" SelectionMode="None" IsGrouped="False">
-				<CollectionView.ItemTemplate>
-					<DataTemplate x:DataType="local:PartInfo">
-						<VerticalStackLayout Padding="10">
-							<Label Text="{Binding Name}" FontSize="20" />
-							<Label Text="{Binding Description}" FontSize="14" />
-						</VerticalStackLayout>
-					</DataTemplate>
-				</CollectionView.ItemTemplate>
-			</CollectionView>
-			<ContentView Content="{Binding Path=HumanReadableText}" Margin="{StaticResource SmallTopMargins}" />
+
 			</VerticalStackLayout>
 		</Grid>
 

@@ -19,7 +19,7 @@
 		                                 DefaultTemplate="{StaticResource DefaultParameterTemplate}" />
 	</ContentView.Resources>
 
-	<CollectionView ItemsSource="{Binding Parameters}"
+	<CollectionView ItemsSource="{Binding Path=ContractInfo.Parameters}"
 	                ItemTemplate="{StaticResource ParameterTemplateSelector}"
 	                SelectionMode="None"
 	                VerticalOptions="FillAndExpand"

@@ -18,7 +18,7 @@
                 <Border Style="{StaticResource BorderSet}" Margin="0">
                   <VerticalStackLayout>
                     <Border Style="{StaticResource BorderSubSet}">
-                      <Label Text="{Binding ContractName}" Style="{StaticResource PageTitleLabel}" HorizontalTextAlignment="Center" Margin="{StaticResource LargeBottomMargins}"/>
+                      <Label Text="{Binding Path=ContractInfo.Category}" Style="{StaticResource PageTitleLabel}" HorizontalTextAlignment="Center" Margin="{StaticResource LargeBottomMargins}"/>
                     </Border>
                     <Border Style="{StaticResource BorderSubSet}">
                       <controls:TemplatedButton>

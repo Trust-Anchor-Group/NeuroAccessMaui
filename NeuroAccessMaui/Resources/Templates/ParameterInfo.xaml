@@ -39,7 +39,7 @@
 		      Margin="{StaticResource MediumBottomMargins}">
 			<Label Style="{StaticResource ParameterItemTitleLabel}"
 			       Grid.Column="1"
-			       Text="{Binding Guide}" />
+			       Text="{Binding Label}" />
 			<CheckBox Grid.Column="0" Grid.Row="0" VerticalOptions="Center"
 			          IsChecked="{Binding BooleanValue}"
 			          Margin="{StaticResource SmallRightMargins}"/>
@@ -49,7 +49,7 @@
 		<Grid ColumnDefinitions="*"
 		      RowDefinitions="auto, *"
 		      Margin="{StaticResource MediumBottomMargins}">
-			<Label Grid.Row="0" Text="{Binding Guide}"
+			<Label Grid.Row="0" Text="{Binding Label}"
 			       Style="{StaticResource ParameterItemTitleLabel}"/>
 			<Border Grid.Row="1"
 			        StrokeThickness="2"
@@ -65,7 +65,7 @@
 		<Grid RowDefinitions="auto, *" ColumnDefinitions="*"
 		      Margin="{StaticResource MediumBottomMargins}">
 
-			<Label Grid.Row="0" Text="{Binding Guide}"
+			<Label Grid.Row="0" Text="{Binding Label}"
 			       Style="{StaticResource ParameterItemTitleLabel}"/>
 			<controls:CompositeEntry Grid.Row="1" Style="{StaticResource RegularCompositeEntry}"
 			                         EntryData="{Binding Value}"/>
@@ -75,7 +75,7 @@
 		<Grid RowDefinitions="auto, *" ColumnDefinitions="*"
 		      Margin="{StaticResource MediumBottomMargins}">
 
-			<Label Grid.Row="0" Text="{Binding Guide}"
+			<Label Grid.Row="0" Text="{Binding Label}"
 			       Style="{StaticResource ParameterItemTitleLabel}"/>
 			<controls:CompositeEntry Grid.Row="1" Style="{StaticResource RegularCompositeEntry}"
 			                         EntryData="{Binding Value}"
@@ -92,7 +92,7 @@
 	<DataTemplate x:Key="DurationParameterTemplate" x:DataType="objectModel:DurationParameterInfo">
 		<StackLayout Orientation="Vertical" Style="{StaticResource ErrorStyle}">
 			<Label Text="{Binding Name}" />
-			<Entry Text="{Binding DurationParameterValue, Mode=TwoWay}" Placeholder="{Binding Guide}" />
+			<Entry Text="{Binding DurationValue, Mode=TwoWay}" Placeholder="{Binding Guide}" />
 		</StackLayout>
 	</DataTemplate>
 	<!-- Default template for unhandled parameter types -->

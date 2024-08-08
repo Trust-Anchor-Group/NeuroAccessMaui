@@ -35,27 +35,45 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		private static readonly string partSettingsPrefix = typeof(NewContractViewModel2).FullName + ".Part_";
 
 		[ObservableProperty]
+		private ContractInfo? contractInfo;
+
+		/// <summary>
+		/// The parameters of the contract.
+		/// </summary>
+		[ObservableProperty]
 		private ObservableCollection<ParameterInfo2> parameters = [];
 
+		/// <summary>
+		/// The parts of the contract.
+		/// </summary>
 		[ObservableProperty]
-		private ObservableCollection<PartInfo> parts = [];
+		private ObservableCollection<RoleInfo> parts = [];
 
+		/// <summary>
+		/// If the view state can be changed. I.e. if the view is not currently in a state of transition.
+		/// </summary>
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(TestCommand))]
 		[NotifyCanExecuteChangedFor(nameof(BackCommand))]
-
 		bool canStateChange;
 
+		/// <summary>
+		/// The current state of the view
+		/// </summary>
 		[ObservableProperty]
 		string currentState = "Loading";
 
+		/// <summary>
+		/// The name of the contract
+		/// </summary>
 		[ObservableProperty]
 		string contractName = string.Empty;
 
 		/// <summary>
 		/// The state object containing all views
+		/// Is set by the view
 		/// </summary>
-		public BindableObject StateObject { get; set; }
+		public BindableObject? StateObject { get; set; }
 
 		private readonly SortedDictionary<CaseInsensitiveString, ParameterInfo> parametersByName = [];
 		private readonly LinkedList<ParameterInfo> parametersInOrder = new();
@@ -109,21 +127,24 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			await base.OnInitialize();
 			try
 			{
+				this.ContractInfo = await ContractInfo.CreateAsync(this.template);
+				/*
 				await this.InitializeParametersAsync();
 				await this.ValidateParametersAsync();
-
 				await this.InitializeRolesAsync();
 				//Testing generating human readable text
-				string hrt = await this.template.ToMauiXaml(this.template.DeviceLanguage());
-				this.HumanReadableText = new VerticalStackLayout().LoadFromXaml(hrt);
+
 
 				this.ContractName = await ContractModel.GetCategory(this.template) ?? string.Empty;
-
+*/
+				string hrt = await this.template.ToMauiXaml(this.template.DeviceLanguage());
+				this.HumanReadableText = new VerticalStackLayout().LoadFromXaml(hrt);
 				await this.GoToState(NewContractStep.Overview);
 
 			}
 			catch (Exception ex)
 			{
+				Console.WriteLine(ex);
 				ServiceRef.LogService.LogException(ex);
 			}
 		}
@@ -136,47 +157,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 
 
-		private async Task InitializeParametersAsync()
-		{
-			//Wrap the parameters in a ParameterInfo object
-			foreach (Parameter P in this.template.Parameters)
-			{
-				ParameterInfo2? PI = P switch
-				{
-					BooleanParameter BoolP => new BooleanParameterInfo(BoolP),
-					DateParameter DP => new DateParameterInfo(DP),
-					DurationParameter DuraP => new DurationParameterInfo(DuraP),
-					StringParameter SP => new StringParameterInfo(SP),
-					NumericalParameter NP => new NumericalParameterInfo(NP),
-					TimeParameter TP => new TimeParameterInfo(TP),
-					_ => new ParameterInfo2(P)
-				};
 
-				if (PI is not null)
-				{
-					await PI.InitializeWithContractAsync(this.template);
-					if (this.presetParameterValues.TryGetValue(P.Name, out object? Value))
-						PI.Value = Value;
-					else
-						this.presetParameterValues.Remove(P.Name);
-					PI.PropertyChanged += this.Parameter_PropertyChanged;
-					this.Parameters.Add(PI);
-				}
-			}
-		}
-
-		private async Task InitializeRolesAsync()
-		{
-			foreach (Role R in this.template.Roles)
-			{
-				PartInfo RI = new(R);
-				await RI.InitializeWithContractAsync(this.template);
-				this.Parts.Add(new PartInfo(R));
-			}
-		}
 
 		private async Task GoToState(NewContractStep NewStep)
 		{
+			if(this.StateObject is null)
+			{
+				return;
+			}
+
 			string NewState = NewStep.ToString();
 
 			if (NewState == this.CurrentState)
@@ -213,6 +202,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// </summary>
 		public ObservableCollection<ContractVisibilityModel> ContractVisibilityItems { get; } = [];
 
+
 		/// <summary>
 		/// The selected contract visibility item, if any.
 		/// </summary>
@@ -220,6 +210,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		private ContractVisibilityModel? selectedContractVisibilityItem;
 
 
+		/// <summary>
+		/// Validates the parameters of the contract and updates the error state of the parameters.
+		/// </summary>
+		/// <returns></returns>
 		private async Task ValidateParametersAsync()
 		{
 			ContractsClient Client = ServiceRef.XmppService.ContractsClient;

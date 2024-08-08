@@ -18,9 +18,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// </summary>
 		Parameters = 30,
 		/// <summary>
-		/// Edit parts.
+		/// Edit roles.
 		/// </summary>
-		Parts = 40,
+		Roles = 40,
 		/// <summary>
 		/// Edit attachments.
 		/// </summary>
