@@ -45,10 +45,10 @@
 				</Grid.GestureRecognizers>
 				<Ellipse StrokeThickness="2" WidthRequest="32" HeightRequest="32" HorizontalOptions="Center" VerticalOptions="Center">
 					<Ellipse.Fill>
-						<SolidColorBrush Color="{AppThemeBinding Light={StaticResource PageBackgroundColorLightTheme}, Dark={StaticResource PageBackgroundColorDarkTheme}}"/>
+						<SolidColorBrush Color="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}"/>
 					</Ellipse.Fill>
 					<Ellipse.Stroke>
-						<SolidColorBrush Color="{AppThemeBinding Light={StaticResource HeadingBackgroundLightTheme}, Dark={StaticResource HeadingBackgroundDarkTheme}}"/>
+						<SolidColorBrush Color="{AppThemeBinding Light={StaticResource SecondaryBackgroundLight}, Dark={StaticResource SecondaryBackgroundDark}}"/>
 					</Ellipse.Stroke>
 				</Ellipse>
 				<Label Style="{StaticResource PopupCloseButton}"/>

@@ -158,5 +158,7 @@
 	<Color x:Key="StrongPasswordBarForegroundLight">#3E776D</Color>
 	<Color x:Key="StrongPasswordBarForegroundDark">#50998C</Color>
 
+	<Color x:Key="HeadingForeground">White</Color>
+
 
 </ResourceDictionary>
