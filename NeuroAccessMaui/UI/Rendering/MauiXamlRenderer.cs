@@ -1564,7 +1564,7 @@ namespace NeuroAccessMaui.UI.Rendering
 
 			if (this.Hyperlink is not null)
 			{
-				this.XmlOutput.WriteAttributeString("TextColor", "{StaticResource HyperlinkColor}");
+				this.XmlOutput.WriteAttributeString("TextColor", "{AppThemeBinding Light={StaticResource AccentForegroundLight}, Dark={StaticResource AccentForegroundDark}}");
 
 				this.XmlOutput.WriteStartElement("Span.GestureRecognizers");
 				this.XmlOutput.WriteStartElement("TapGestureRecognizer");
@@ -1677,6 +1677,8 @@ namespace NeuroAccessMaui.UI.Rendering
 			int Row, NrRows;
 			int RowNr = 0;
 
+			this.XmlOutput.WriteStartElement("ScrollView");
+			this.XmlOutput.WriteAttributeString("Orientation", "Horizontal");
 			this.XmlOutput.WriteStartElement("ContentView");
 			this.XmlOutput.WriteAttributeString("Padding", SmallMargins(false, false, true, true));
 
@@ -1715,6 +1717,8 @@ namespace NeuroAccessMaui.UI.Rendering
 
 			this.XmlOutput.WriteEndElement();
 			this.XmlOutput.WriteEndElement();
+			this.XmlOutput.WriteEndElement();
+
 		}
 
 		private void ClearState()

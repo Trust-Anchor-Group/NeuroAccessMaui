@@ -30,7 +30,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 	/// <summary>
 	/// The view model to bind to when displaying a new contract view or page.
 	/// </summary>
-	public partial class NewContractViewModel : BaseViewModel, ILinkableView
+	public partial class NewContractViewModel : BaseViewModel, ILinkableView, IDisposable
 	{
 		private static readonly string partSettingsPrefix = typeof(NewContractViewModel).FullName + ".Part_";
 
@@ -45,6 +45,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		private readonly Dictionary<CaseInsensitiveString, string> partsToAdd = [];
 		private readonly NewContractPage page;
 		private readonly ContractVisibility? initialVisibility = null;
+		private Timer? populateTimer = null;
 
 		/// <summary>
 		/// The view model to bind to when displaying a new contract view or page.
@@ -86,13 +87,45 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			this.ContractVisibilityItems.Add(new ContractVisibilityModel(ContractVisibility.PublicSearchable, ServiceRef.Localizer[nameof(AppResources.ContractVisibility_PublicSearchable)]));
 		}
 
+			/// <summary>
+		/// <see cref="IDisposable.Dispose"/>
+		/// </summary>
+		public void Dispose()
+		{
+			this.Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		/// <summary>
+		/// <see cref="IDisposable.Dispose"/>
+		/// </summary>
+		protected virtual void Dispose(bool Disposing)
+		{
+			if(this.populateTimer is not null)
+			{
+				try
+				{
+					this.populateTimer.Dispose();
+				}
+				catch(Exception ex)
+				{
+					//Normal operation
+				}
+				finally
+				{
+					this.populateTimer = null;
+				}
+			}
+		}
+
 		/// <inheritdoc/>
 		protected override async Task OnInitialize()
 		{
 			await base.OnInitialize();
-
+			await Task.Delay(1);
 			await this.PopulateTemplateForm(this.initialVisibility);
 		}
+
 
 		/// <inheritdoc/>
 		protected override async Task OnDispose()
@@ -370,7 +403,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			this.CanAddParts = false;
 			this.VisibilityIsEnabled = false;
-		}
+		} 
 
 		private void RemoveRole(string Role, string LegalId)
 		{
@@ -681,10 +714,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			try
 			{
 				if (Sender is not Entry Entry ||
-					Entry.Parent is not Border Border ||
-					Border.Parent is not CompositeEntry CompositeEntry ||
-					string.IsNullOrEmpty(CompositeEntry.StyleId) ||
-					!this.parametersByName.TryGetValue(CompositeEntry.StyleId, out ParameterInfo? ParameterInfo))
+					!this.parametersByName.TryGetValue(Entry.StyleId, out ParameterInfo? ParameterInfo))
 				{
 					return;
 				}
@@ -734,19 +764,48 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					Color? BgColor = ControlBgColor.ToColor(Ok);
 
 					Entry.BackgroundColor = BgColor;
-					Border.BackgroundColor = BgColor;
-					CompositeEntry.BackgroundColor = BgColor;
+					CompositeEntry? compositeEntry = this.parametersByName[Entry.StyleId].Control as CompositeEntry;
+					if (compositeEntry is not null)
+					{
+						compositeEntry.BackgroundColor = BgColor;
+						compositeEntry.Border.BackgroundColor = BgColor;
+					}
+					//Border.BackgroundColor = BgColor;
+					//CompositeEntry.BackgroundColor = BgColor;
 
 					return;
 				}
 
 				await this.ValidateParameters();
-				await this.PopulateHumanReadableText();
+				if (this.populateTimer is not null)
+				{
+					try
+					{
+						this.populateTimer.Dispose();
+					}
+					catch(Exception ex)
+					{
+						//Normal operation
+					}
+					finally
+					{
+						this.populateTimer = null;
+					}
+				}
+				this.populateTimer = new Timer(this.PopulateTimer_Callback, null, 3000, Timeout.Infinite);
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
 			}
+		}
+
+		private async void PopulateTimer_Callback(object? obj)
+		{
+			this.populateTimer?.Dispose();
+
+			this.populateTimer = null;
+			await this.PopulateHumanReadableText();
 		}
 
 		private async void Parameter_CheckedChanged(object? Sender, CheckedChangedEventArgs e)
@@ -1035,7 +1094,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			if (this.template is null)
 				return;
-
 			await this.PopulateHumanReadableText();
 
 			this.HasRoles = (this.template.Roles?.Length ?? 0) > 0;
@@ -1046,6 +1104,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			{
 				foreach (Role Role in this.template.Roles)
 				{
+
 					this.AvailableRoles.Add(Role.Name);
 
 					VerticalStackLayout RoleLayout =
@@ -1191,6 +1250,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						Style = AppStyles.RegularCompositeEntry,
 						Margin = AppStyles.SmallBottomMargins
 					};
+					Entry.Entry.StyleId = Parameter.Name;
 
 					if (Parameter is NumericalParameter || Parameter is DurationParameter)
 					{
@@ -1328,15 +1388,16 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 		private async Task PopulateHumanReadableText()
 		{
-			this.HumanReadableText = null;
-
 			VerticalStackLayout humanReadableTextLayout = [];
 
 			if (this.template is not null)
 				Populate(humanReadableTextLayout, await this.template.ToMauiXaml(this.template.DeviceLanguage()));
 
+
 			this.HumanReadableText = humanReadableTextLayout;
 			this.HasHumanReadableText = humanReadableTextLayout.Children.Count > 0;
+
+
 		}
 
 		private bool CanPropose()

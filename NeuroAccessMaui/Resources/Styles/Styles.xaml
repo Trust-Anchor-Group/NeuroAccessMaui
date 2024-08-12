@@ -625,11 +625,18 @@
 		</Setter>
 		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource AccentBackgroundLight}, Dark={StaticResource AccentBackgroundDark}}" />
 	</Style>
-	
+
 	<Style x:Key="AccentInfoLabel" ApplyToDerivedTypes="False" TargetType="Label">
 		<Setter Property="FontSize" Value="14" />
 		<Setter Property="FontFamily" Value="HaasGroteskBold"/>
 		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource AccentForegroundLight}, Dark={StaticResource AccentForegroundDark}}" />
+	</Style>
+
+
+	<!-- TEMPORARY FOR PORTING -->
+	<Style x:Key="IndicatorViewStyle" ApplyToDerivedTypes="False" TargetType="IndicatorView">
+		<Setter Property="SelectedIndicatorColor"  Value="{AppThemeBinding Light={StaticResource AccentForegroundLight}, Dark={StaticResource AccentBackgroundDark}}" />
+
 	</Style>
 
 </ResourceDictionary>
