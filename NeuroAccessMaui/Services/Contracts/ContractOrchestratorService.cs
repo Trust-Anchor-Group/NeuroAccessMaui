@@ -7,6 +7,7 @@ using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature;
+using NeuroFeatures;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
@@ -38,6 +39,7 @@ namespace NeuroAccessMaui.Services.Contracts
 				ServiceRef.XmppService.PetitionedIdentityResponseReceived += this.Contracts_PetitionedIdentityResponseReceived;
 				ServiceRef.XmppService.PetitionedPeerReviewIdResponseReceived += this.Contracts_PetitionedPeerReviewResponseReceived;
 				ServiceRef.XmppService.SignaturePetitionResponseReceived += this.Contracts_SignaturePetitionResponseReceived;
+				ServiceRef.XmppService.ContractProposalReceived += this.Contracts_ContractProposalRecieved;
 
 				this.EndLoad(true);
 			}
@@ -56,6 +58,7 @@ namespace NeuroAccessMaui.Services.Contracts
 				ServiceRef.XmppService.PetitionedIdentityResponseReceived -= this.Contracts_PetitionedIdentityResponseReceived;
 				ServiceRef.XmppService.PetitionedPeerReviewIdResponseReceived -= this.Contracts_PetitionedPeerReviewResponseReceived;
 				ServiceRef.XmppService.SignaturePetitionResponseReceived -= this.Contracts_SignaturePetitionResponseReceived;
+				ServiceRef.XmppService.ContractProposalReceived -= this.Contracts_ContractProposalRecieved;
 
 				this.EndUnload();
 			}
@@ -340,6 +343,21 @@ namespace NeuroAccessMaui.Services.Contracts
 			}
 		}
 
+		private async Task Contracts_ContractProposalRecieved(object? sender, ContractProposalEventArgs e)
+		{
+			try 
+			{
+				Contract Contract = await ServiceRef.XmppService.GetContract(e.ContractId);
+				
+				await ServiceRef.UiService.GoToAsync(nameof(ViewContractPage), new ViewContractNavigationArgs(
+							Contract, false, e.Role, e.MessageText));
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
+		}
+
 		private Task Contracts_ConnectionStateChanged(object _, XmppState NewState)
 		{
 			try
@@ -580,7 +598,14 @@ namespace NeuroAccessMaui.Services.Contracts
 
 							ServiceRef.TagProfile.CheckContractReference(Ref);
 						}
+						if(Contract.ForMachinesNamespace ==  NeuroFeaturesClient.NamespaceNeuroFeatures)
+						{
+							
+							CreationAttributesEventArgs creationAttr = await ServiceRef.XmppService.GetNeuroFeatureCreationAttributes();
+							ParameterValues ??= new Dictionary<CaseInsensitiveString, object>();
+							ParameterValues.Add(new CaseInsensitiveString("TrustProvider"), creationAttr.TrustProviderId);
 
+						}
 						NewContractNavigationArgs e = new(Contract, ParameterValues);
 
 						await ServiceRef.UiService.GoToAsync(nameof(NewContractPage), e, BackMethod.CurrentPage);
