@@ -1,7 +1,6 @@
 ﻿
-using Microsoft.Maui.Controls;
 
-namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
+namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 {
 
 	/// <summary>
@@ -23,12 +22,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
 		{
 			return item switch
 			{
-				BooleanParameterInfo => this.BooleanTemplate ?? this.DefaultTemplate,
-				DateParameterInfo => this.DateTemplate ?? this.DefaultTemplate,
-				DurationParameterInfo => this.DurationTemplate ?? this.DefaultTemplate,
-				StringParameterInfo => this.StringTemplate ?? this.DefaultTemplate,
-				NumericalParameterInfo => this.NumericalTemplate ?? this.DefaultTemplate,
-				TimeParameterInfo => this.TimeTemplate ?? this.DefaultTemplate,
+				ObservableBooleanParameter => this.BooleanTemplate ?? this.DefaultTemplate,
+				ObservableDateParameter => this.DateTemplate ?? this.DefaultTemplate,
+				ObservableDurationParameter => this.DurationTemplate ?? this.DefaultTemplate,
+				ObservableStringParameter => this.StringTemplate ?? this.DefaultTemplate,
+				ObservableNumericalParameter => this.NumericalTemplate ?? this.DefaultTemplate,
+				ObservableTimeParameter => this.TimeTemplate ?? this.DefaultTemplate,
 				// Add other parameter type checks here...
 				_ => this.DefaultTemplate
 			};

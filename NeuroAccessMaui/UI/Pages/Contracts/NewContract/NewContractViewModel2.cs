@@ -3,27 +3,18 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
-using NeuroAccessMaui.Services.Contacts;
-using NeuroAccessMaui.Services.UI;
-using NeuroAccessMaui.Services.UI.QR;
-using NeuroAccessMaui.UI.Controls;
 using NeuroAccessMaui.UI.Controls.Extended;
-using NeuroAccessMaui.UI.Converters;
-using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel;
-using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
-using NeuroAccessMaui.UI.Pages.Main.Calculator;
-using NeuroAccessMaui.UI.Pages.Main.Duration;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
-using CommunityToolkit.Mvvm.Messaging;
 using Waher.Content.Xml;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;
 using Waher.Script;
 using CommunityToolkit.Maui.Layouts;
+using NeuroAccessMaui.UI.Pages.Contracts.ObjectModel;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 {
@@ -35,19 +26,19 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		private static readonly string partSettingsPrefix = typeof(NewContractViewModel2).FullName + ".Part_";
 
 		[ObservableProperty]
-		private ContractInfo? contractInfo;
+		private ObservableContract? contract;
 
 		/// <summary>
 		/// The parameters of the contract.
 		/// </summary>
 		[ObservableProperty]
-		private ObservableCollection<ParameterInfo2> parameters = [];
+		private ObservableCollection<ObservableParameter> parameters = [];
 
 		/// <summary>
 		/// The parts of the contract.
 		/// </summary>
 		[ObservableProperty]
-		private ObservableCollection<RoleInfo> parts = [];
+		private ObservableCollection<ObservableRole> parts = [];
 
 		/// <summary>
 		/// If the view state can be changed. I.e. if the view is not currently in a state of transition.
@@ -127,7 +118,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			await base.OnInitialize();
 			try
 			{
-				this.ContractInfo = await ContractInfo.CreateAsync(this.template);
+				this.Contract = await ObservableContract.CreateAsync(this.template);
 				/*
 				await this.InitializeParametersAsync();
 				await this.ValidateParametersAsync();
@@ -218,14 +209,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		{
 			ContractsClient Client = ServiceRef.XmppService.ContractsClient;
 			Variables v = [];
-			foreach (ParameterInfo2 P in this.Parameters)
+			foreach (ObservableParameter P in this.Parameters)
 			{
 				P.Parameter.Populate(v);
 			}
 
-			foreach (ParameterInfo2 P in this.Parameters)
+			foreach (ObservableParameter P in this.Parameters)
 			{
-				P.Error = !await P.Parameter.IsParameterValid(v, Client);
+				P.HasError = !await P.Parameter.IsParameterValid(v, Client);
 				P.ErrorText = P.Parameter.ErrorText;
 			}
 		}

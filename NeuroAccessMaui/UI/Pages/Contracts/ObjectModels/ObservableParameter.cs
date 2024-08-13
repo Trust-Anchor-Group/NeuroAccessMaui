@@ -5,16 +5,15 @@ using NeuroAccessMaui.Services;
 using Waher.Content;
 using Waher.Networking.XMPP.Contracts;
 
-namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
+namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 {
 	/// <summary>
 	/// An observable object that wraps a <see cref="Waher.Networking.XMPP.Contracts.Parameter"/> object.
 	/// This allows for easier binding in the UI.
-	/// Must be either Initialized with <see cref="CreateAsync"/> or <see cref="InitializeAsync"/>
 	/// </summary>
-	public class ParameterInfo2 : ObservableObject
+	public class ObservableParameter : ObservableObject
 	{
-		protected ParameterInfo2(Parameter parameter)
+		protected ObservableParameter(Parameter parameter)
 		{
 			this.Parameter = parameter;
 		}
@@ -22,7 +21,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
 		/// <summary>
 		/// Initializes the parameter in regards to a contract.
 		/// </summary>
-		public async Task InitializeAsync(Contract contract)
+		private async Task InitializeAsync(Contract contract)
 		{
 			try
 			{
@@ -35,23 +34,23 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
 		}
 
 		/// <summary>
-		///  Creates a new instance of <see cref="ParameterInfo2"/> based on the type of the parameter.
+		///  Creates a new instance of <see cref="ObservableParameter"/> based on the type of the parameter.
 		/// </summary>
 		/// <param name="parameter">The parameter to wrap</param>
 		/// <param name="contract">The contract that</param>
 		/// <returns></returns>
-		public static async Task<ParameterInfo2> CreateAsync(Parameter parameter, Contract contract)
+		public static async Task<ObservableParameter> CreateAsync(Parameter parameter, Contract contract)
 		{
 			
-			ParameterInfo2 parameterInfo = parameter switch
+			ObservableParameter parameterInfo = parameter switch
 			{
-				BooleanParameter booleanParameter => new BooleanParameterInfo(booleanParameter),
-				DateParameter dateParameter => new DateParameterInfo(dateParameter),
-				NumericalParameter numericalParameter => new NumericalParameterInfo(numericalParameter),
-				StringParameter stringParameter => new StringParameterInfo(stringParameter),
-				TimeParameter timeParameter => new TimeParameterInfo(timeParameter),
-				DurationParameter durationParameter => new DurationParameterInfo(durationParameter),
-				_ => new ParameterInfo2(parameter)
+				BooleanParameter booleanParameter => new ObservableBooleanParameter(booleanParameter),
+				DateParameter dateParameter => new ObservableDateParameter(dateParameter),
+				NumericalParameter numericalParameter => new ObservableNumericalParameter(numericalParameter),
+				StringParameter stringParameter => new ObservableStringParameter(stringParameter),
+				TimeParameter timeParameter => new ObservableTimeParameter(timeParameter),
+				DurationParameter durationParameter => new ObservableDurationParameter(durationParameter),
+				_ => new ObservableParameter(parameter)
 
 			};
 			await parameterInfo.InitializeAsync(contract);
@@ -105,14 +104,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
 		/// <summary>
 		/// If the parameter has an validation error
 		/// </summary>
-		public bool Error
+		public bool HasError
 		{
-			get => this.error;
-			set => this.SetProperty(ref this.error, value);
+			get => this.hasError;
+			set => this.SetProperty(ref this.hasError, value);
 		}
-		private bool error;
+		private bool hasError;
 
-		private string errorText = string.Empty;
 
 		/// <summary>
 		/// Error text to display if the parameter has an validation error
@@ -122,11 +120,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
 			get => this.errorText;
 			set => this.SetProperty(ref this.errorText, value);
 		}
+		private string errorText = string.Empty;
 
-		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-		}
+
+
 
 
 		private object? value;
@@ -147,12 +144,17 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
 					}
 			}
 		}
+
+		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+		{
+			base.OnPropertyChanged(e);
+		}
 	}
 
-	public sealed class BooleanParameterInfo : ParameterInfo2
+	public sealed class ObservableBooleanParameter : ObservableParameter
 	{
 
-		public BooleanParameterInfo(BooleanParameter parameter) : base(parameter)
+		public ObservableBooleanParameter(BooleanParameter parameter) : base(parameter)
 		{
 			this.Value = parameter.ObjectValue is true;
 		}
@@ -163,9 +165,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
 		}
 	}
 
-	public class DateParameterInfo : ParameterInfo2
+	public class ObservableDateParameter : ObservableParameter
 	{
-		public DateParameterInfo(DateParameter parameter) : base(parameter)
+		public ObservableDateParameter(DateParameter parameter) : base(parameter)
 		{
 			this.Value = parameter.ObjectValue as DateTime?;
 		}
@@ -178,9 +180,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
 		
 	}
 
-	public class NumericalParameterInfo : ParameterInfo2
+	public class ObservableNumericalParameter : ObservableParameter
 	{
-		public NumericalParameterInfo(NumericalParameter parameter) : base(parameter)
+		public ObservableNumericalParameter(NumericalParameter parameter) : base(parameter)
 		{
 			this.Value = parameter.ObjectValue is decimal decimalValue ? decimalValue : 0;
 		}
@@ -193,10 +195,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
 		}
 	}
 
-	public class StringParameterInfo : ParameterInfo2
+	public class ObservableStringParameter : ObservableParameter
 	{
 
-		public StringParameterInfo(StringParameter parameter) : base(parameter)
+		public ObservableStringParameter(StringParameter parameter) : base(parameter)
 		{
 			this.Value = parameter.ObjectValue as string ?? string.Empty;
 		}
@@ -208,9 +210,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
 		}
 	}
 
-	public class TimeParameterInfo : ParameterInfo2
+	public class ObservableTimeParameter : ObservableParameter
 	{
-		public TimeParameterInfo(TimeParameter parameter) : base(parameter)
+		public ObservableTimeParameter(TimeParameter parameter) : base(parameter)
 		{
 			this.Value = parameter.ObjectValue is TimeSpan timeSpan ? timeSpan : TimeSpan.Zero;
 		}
@@ -224,9 +226,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel
 		}
 	}
 
-	public class DurationParameterInfo : ParameterInfo2
+	public class ObservableDurationParameter : ObservableParameter
 	{
-		public DurationParameterInfo(DurationParameter parameter) : base(parameter)
+		public ObservableDurationParameter(DurationParameter parameter) : base(parameter)
 		{
 			this.Value = parameter.ObjectValue is Duration duration ? duration : Duration.Zero;
 		}
