@@ -91,7 +91,7 @@ namespace NeuroAccessMaui.UI.Pages
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 			}
 		}
 
@@ -189,7 +189,7 @@ namespace NeuroAccessMaui.UI.Pages
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 			}
 		}
 
@@ -313,7 +313,7 @@ namespace NeuroAccessMaui.UI.Pages
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 			}
 		}
 
