@@ -179,7 +179,7 @@ namespace NeuroAccessMaui.Services.Push
 						Content.Append("',");
 						Content.Append("'content_available':true}");
 
-						await ServiceRef.XmppService.AddPushNotificationRule(MessageType.Normal, "petitionIdentityMsg", ContractsClient.NamespaceLegalIdentities,
+						await ServiceRef.XmppService.AddPushNotificationRule(MessageType.Normal, "petitionIdentityMsg", ContractsClient.NamespaceLegalIdentitiesCurrent,
 							Constants.PushChannels.Petitions, "Stanza", string.Empty, Content.ToString());
 
 						// Push Notification Rule, for Contract Petition requests when offline.
@@ -200,7 +200,7 @@ namespace NeuroAccessMaui.Services.Push
 						Content.Append("',");
 						Content.Append("'content_available':true}");
 
-						await ServiceRef.XmppService.AddPushNotificationRule(MessageType.Normal, "petitionContractMsg", ContractsClient.NamespaceSmartContracts,
+						await ServiceRef.XmppService.AddPushNotificationRule(MessageType.Normal, "petitionContractMsg", ContractsClient.NamespaceSmartContractsCurrent,
 							Constants.PushChannels.Petitions, "Stanza", string.Empty, Content.ToString());
 
 						// Push Notification Rule, for Signature Petition requests when offline.
@@ -221,7 +221,7 @@ namespace NeuroAccessMaui.Services.Push
 						Content.Append("',");
 						Content.Append("'content_available':true}");
 
-						await ServiceRef.XmppService.AddPushNotificationRule(MessageType.Normal, "petitionSignatureMsg", ContractsClient.NamespaceLegalIdentities,
+						await ServiceRef.XmppService.AddPushNotificationRule(MessageType.Normal, "petitionSignatureMsg", ContractsClient.NamespaceLegalIdentitiesCurrent,
 							Constants.PushChannels.Petitions, "Stanza", string.Empty, Content.ToString());
 
 						#endregion
@@ -241,7 +241,7 @@ namespace NeuroAccessMaui.Services.Push
 						Content.Append("',");
 						Content.Append("'content_available':true}");
 
-						await ServiceRef.XmppService.AddPushNotificationRule(MessageType.Normal, "identity", ContractsClient.NamespaceLegalIdentities,
+						await ServiceRef.XmppService.AddPushNotificationRule(MessageType.Normal, "identity", ContractsClient.NamespaceLegalIdentitiesCurrent,
 							Constants.PushChannels.Identities, "Stanza", string.Empty, Content.ToString());
 
 						#endregion
@@ -261,7 +261,7 @@ namespace NeuroAccessMaui.Services.Push
 						Content.Append("',");
 						Content.Append("'content_available':true}");
 
-						await ServiceRef.XmppService.AddPushNotificationRule(MessageType.Normal, "contractCreated", ContractsClient.NamespaceSmartContracts,
+						await ServiceRef.XmppService.AddPushNotificationRule(MessageType.Normal, "contractCreated", ContractsClient.NamespaceSmartContractsCurrent,
 							Constants.PushChannels.Contracts, "Stanza", string.Empty, Content.ToString());
 
 						// Push Notification Rule, for Contract Signature events when offline.
@@ -278,7 +278,7 @@ namespace NeuroAccessMaui.Services.Push
 						Content.Append("',");
 						Content.Append("'content_available':true}");
 
-						await ServiceRef.XmppService.AddPushNotificationRule(MessageType.Normal, "contractSigned", ContractsClient.NamespaceSmartContracts,
+						await ServiceRef.XmppService.AddPushNotificationRule(MessageType.Normal, "contractSigned", ContractsClient.NamespaceSmartContractsCurrent,
 							Constants.PushChannels.Contracts, "Stanza", string.Empty, Content.ToString());
 
 						// Push Notification Rule, for Contract Update events when offline.
@@ -294,7 +294,7 @@ namespace NeuroAccessMaui.Services.Push
 						Content.Append("',");
 						Content.Append("'content_available':true}");
 
-						await ServiceRef.XmppService.AddPushNotificationRule(MessageType.Normal, "contractUpdated", ContractsClient.NamespaceSmartContracts,
+						await ServiceRef.XmppService.AddPushNotificationRule(MessageType.Normal, "contractUpdated", ContractsClient.NamespaceSmartContractsCurrent,
 							Constants.PushChannels.Contracts, "Stanza", string.Empty, Content.ToString());
 
 						// Push Notification Rule, for Contract Deletion events when offline.
@@ -310,7 +310,7 @@ namespace NeuroAccessMaui.Services.Push
 						Content.Append("',");
 						Content.Append("'content_available':true}");
 
-						await ServiceRef.XmppService.AddPushNotificationRule(MessageType.Normal, "contractDeleted", ContractsClient.NamespaceSmartContracts,
+						await ServiceRef.XmppService.AddPushNotificationRule(MessageType.Normal, "contractDeleted", ContractsClient.NamespaceSmartContractsCurrent,
 							Constants.PushChannels.Contracts, "Stanza", string.Empty, Content.ToString());
 
 						// Push Notification Rule, for Contract Proposal events when offline.
@@ -328,7 +328,7 @@ namespace NeuroAccessMaui.Services.Push
 						Content.Append("',");
 						Content.Append("'content_available':true}");
 
-						await ServiceRef.XmppService.AddPushNotificationRule(MessageType.Normal, "contractProposal", ContractsClient.NamespaceSmartContracts,
+						await ServiceRef.XmppService.AddPushNotificationRule(MessageType.Normal, "contractProposal", ContractsClient.NamespaceSmartContractsCurrent,
 							Constants.PushChannels.Contracts, "Stanza", string.Empty, Content.ToString());
 
 						#endregion
@@ -418,7 +418,7 @@ namespace NeuroAccessMaui.Services.Push
 						Content.Append("',");
 						Content.Append("'content_available':true}");
 
-						await ServiceRef.XmppService.AddPushNotificationRule(MessageType.Normal, "isFriend", ProvisioningClient.NamespaceProvisioningOwner,
+						await ServiceRef.XmppService.AddPushNotificationRule(MessageType.Normal, "isFriend", ProvisioningClient.NamespaceProvisioningOwnerCurrent,
 							Constants.PushChannels.Provisioning, "Stanza", string.Empty, Content.ToString());
 
 						// Push Notification Rule, for readout requests from things when offline.
@@ -440,7 +440,7 @@ namespace NeuroAccessMaui.Services.Push
 						Content.Append("',");
 						Content.Append("'content_available':true}");
 
-						await ServiceRef.XmppService.AddPushNotificationRule(MessageType.Normal, "canRead", ProvisioningClient.NamespaceProvisioningOwner,
+						await ServiceRef.XmppService.AddPushNotificationRule(MessageType.Normal, "canRead", ProvisioningClient.NamespaceProvisioningOwnerCurrent,
 							Constants.PushChannels.Provisioning, "Stanza", string.Empty, Content.ToString());
 
 						// Push Notification Rule, for control requests from things when offline.
@@ -462,7 +462,7 @@ namespace NeuroAccessMaui.Services.Push
 						Content.Append("',");
 						Content.Append("'content_available':true}");
 
-						await ServiceRef.XmppService.AddPushNotificationRule(MessageType.Normal, "canControl", ProvisioningClient.NamespaceProvisioningOwner,
+						await ServiceRef.XmppService.AddPushNotificationRule(MessageType.Normal, "canControl", ProvisioningClient.NamespaceProvisioningOwnerCurrent,
 							Constants.PushChannels.Provisioning, "Stanza", string.Empty, Content.ToString());
 
 						#endregion
