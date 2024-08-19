@@ -289,14 +289,13 @@ namespace NeuroAccessMaui
 					typeof(GraphEncoder).Assembly,              // Indexes content script functions
 					typeof(XmppServerlessMessaging).Assembly,   // Indexes End-to-End encryption mechanisms
 					typeof(HttpxClient).Assembly);              // Support for HTTP over XMPP (HTTPX) URI Scheme.
-
-				// Register Exceptions that should generate Alert events instead of Critical events (i.e. one type higher).
-				Log.RegisterAlertExceptionType(true,
-					typeof(OutOfMemoryException),
-					typeof(StackOverflowException),
-					typeof(AccessViolationException),
-					typeof(InsufficientMemoryException));
 			}
+			// Register Exceptions that should generate Alert events instead of Critical events (i.e. one type higher). 
+			Log.RegisterAlertExceptionType(true, 
+				typeof(OutOfMemoryException), 
+				typeof(StackOverflowException), 
+				typeof(AccessViolationException), 
+				typeof(InsufficientMemoryException)); 
 
 			EndpointSecurity.SetCiphers(
 			[
@@ -703,7 +702,7 @@ namespace NeuroAccessMaui
 			}
 		}
 
-		private async void CurrentDomain_UnhandledException(object? _, UnhandledExceptionEventArgs e)
+		private async void CurrentDomain_UnhandledException(object? Sender, UnhandledExceptionEventArgs e)
 		{
 			try
 			{
@@ -811,12 +810,13 @@ namespace NeuroAccessMaui
 
 				StringContent content = new(message);
 				content.Headers.ContentType = MediaTypeHeaderValue.Parse(contentType);
-
+			#if !DEBUG
 				await client.PostAsync("https://lab.tagroot.io/Alert.ws", content);
+			#endif
 			}
 			catch (Exception ex)
 			{
-				Log.Exception(ex);
+				Log.Critical(ex);
 			}
 		}
 
