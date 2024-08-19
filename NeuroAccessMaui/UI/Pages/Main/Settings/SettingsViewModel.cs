@@ -340,6 +340,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 				if (succeeded && RevokedIdentity is not null)
 				{
 					await ServiceRef.TagProfile.RevokeLegalIdentity(RevokedIdentity);
+					GoToRegistrationStep(RegistrationStep.ValidatePhone);
 					await App.SetRegistrationPageAsync();
 				}
 			}
