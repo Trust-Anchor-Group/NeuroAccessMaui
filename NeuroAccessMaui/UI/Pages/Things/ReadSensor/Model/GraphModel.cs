@@ -234,7 +234,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor.Model
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 			}
 		}
 
@@ -246,7 +246,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor.Model
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 			}
 		}
 

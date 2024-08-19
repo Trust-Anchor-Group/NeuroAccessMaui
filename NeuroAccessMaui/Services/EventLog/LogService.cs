@@ -73,7 +73,7 @@ namespace NeuroAccessMaui.Services.EventLog
 			ex = Log.UnnestException(ex);
 
 			Debug.WriteLine(ex.ToString());
-			Log.Critical(ex, string.Empty, this.bareJid, [.. this.GetParameters(extraParameters)]);
+			Log.Exception(ex, string.Empty, this.bareJid, [.. this.GetParameters(extraParameters)]);
 
 			if (ex is InconsistencyException && !this.repairRequested)
 			{

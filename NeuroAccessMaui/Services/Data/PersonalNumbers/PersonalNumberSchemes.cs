@@ -82,7 +82,7 @@ namespace NeuroAccessMaui.Services.Data.PersonalNumbers
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 			}
 		}
 
