@@ -13,7 +13,7 @@
 				<ResourceDictionary Source="Resources/Styles/LabelStyles.xaml" />
 				<ResourceDictionary Source="Resources/Styles/ButtonStyles.xaml" />
 				<ResourceDictionary Source="Resources/Styles/EntryStyles.xaml" />
-				<ResourceDictionary Source="Resources/Templates/ParameterInfo.xaml" />
+				<ResourceDictionary Source="Resources/Templates/ObservableParameter.xaml" />
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</Application.Resources>
