@@ -242,14 +242,14 @@
 		<PackageReference Include="Waher.Events.Filter" Version="1.0.1" />
 		<PackageReference Include="Waher.Events.Persistence" Version="1.1.0" />
 		<PackageReference Include="Waher.Events.XMPP" Version="1.2.5" />
-		<PackageReference Include="Waher.Networking" Version="2.2.6" />
+		<PackageReference Include="Waher.Networking" Version="2.2.7" />
 		<PackageReference Include="Waher.Networking.DNS" Version="2.0.4" />
 		<PackageReference Include="Waher.Networking.PeerToPeer" Version="2.0.1" />
 		<PackageReference Include="Waher.Networking.UPnP" Version="2.0.3" />
-		<PackageReference Include="Waher.Networking.XMPP" Version="3.1.0" />
+		<PackageReference Include="Waher.Networking.XMPP" Version="3.1.1" />
 		<PackageReference Include="Waher.Networking.XMPP.Avatar" Version="2.2.2" />
 		<PackageReference Include="Waher.Networking.XMPP.Concentrator" Version="3.1.0" />
-		<PackageReference Include="Waher.Networking.XMPP.Contracts" Version="3.0.0" />
+		<PackageReference Include="Waher.Networking.XMPP.Contracts" Version="3.0.1" />
 		<PackageReference Include="Waher.Networking.XMPP.Control" Version="3.0.0" />
 		<PackageReference Include="Waher.Networking.XMPP.HTTPX" Version="3.0.0" />
 		<PackageReference Include="Waher.Networking.XMPP.Mail" Version="2.0.1" />
