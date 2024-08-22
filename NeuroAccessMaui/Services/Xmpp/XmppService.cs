@@ -1,4 +1,6 @@
-﻿using EDaler;
+﻿//#define DEBUG_REMOTE
+
+using EDaler;
 using EDaler.Uris;
 using Mopups.Services;
 using NeuroAccessMaui.Extensions;
@@ -96,6 +98,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private EventFilter? xmppFilteredEventSink;
 		private string? token = null;
 		private DateTime tokenCreated = DateTime.MinValue;
+#if DEBUG_REMOTE
+		private const string debugRecipient = "";     // TODO: Set JID of recipient of debug messages.
+		private RemoteSnifferFilter? debugSniffer = null;
+		private EventFilter? debugEventSink = null;
+#endif
 
 		#region Creation / Destruction
 
@@ -158,6 +165,34 @@ namespace NeuroAccessMaui.Services.Xmpp
 						this.xmppClient = new XmppClient(HostName, PortNumber, this.accountName, this.passwordHash, this.passwordHashMethod,
 							Constants.LanguageCodes.Default, AppAssembly, this.sniffer);
 					}
+
+#if DEBUG_REMOTE
+					if (!string.IsNullOrEmpty(debugRecipient))
+					{
+						this.debugSniffer = new RemoteSnifferFilter(new RemoteSniffer(debugRecipient, DateTime.MaxValue,
+							this.xmppClient, this.xmppClient, ConcentratorServer.NamespaceConcentratorCurrent));
+						this.xmppClient.Add(this.debugSniffer);
+
+						if (this.debugEventSink is not null)
+						{
+							Log.Unregister(this.debugEventSink);
+							this.debugEventSink?.Dispose();
+							this.debugEventSink = null;
+						}
+
+						this.debugEventSink = new EventFilter("Debug Event Filter",
+							new XmppEventSink("Debug Event Sink", this.xmppClient, debugRecipient, false),
+							EventType.Informational, (Event) =>
+							{
+								if (this.xmppClient is null || this.xmppClient.State != XmppState.Connected)
+									return false;
+
+								return string.IsNullOrEmpty(Event.StackTrace) || !Event.StackTrace.Contains("XmppEventSink");
+							});
+
+						Log.Register(this.debugEventSink);
+					}
+#endif
 
 					this.xmppClient.RequestRosterOnStartup = false;
 					this.xmppClient.TrustServer = !IsIpAddress;
@@ -278,6 +313,77 @@ namespace NeuroAccessMaui.Services.Xmpp
 			}
 		}
 
+#if DEBUG_REMOTE
+		private class RemoteSnifferFilter(RemoteSniffer Sniffer) : SnifferBase
+		{
+			private readonly RemoteSniffer sniffer = Sniffer;
+
+			public override Task Error(DateTime Timestamp, string Error)
+			{
+				if (this.sniffer.Client.State == XmppState.Connected)
+					return this.sniffer.Error(Timestamp, Error);
+				else
+					return Task.CompletedTask;
+			}
+
+			public override Task Exception(DateTime Timestamp, string Exception)
+			{
+				if (this.sniffer.Client.State == XmppState.Connected)
+					return this.sniffer.Exception(Timestamp, Exception);
+				else
+					return Task.CompletedTask;
+			}
+
+			public override Task Information(DateTime Timestamp, string Comment)
+			{
+				if (this.sniffer.Client.State == XmppState.Connected)
+					return this.sniffer.Information(Timestamp, Comment);
+				else
+					return Task.CompletedTask;
+			}
+
+			public override Task ReceiveBinary(DateTime Timestamp, byte[] Data)
+			{
+				if (this.sniffer.Client.State == XmppState.Connected)
+					return this.sniffer.ReceiveBinary(Timestamp, Data);
+				else
+					return Task.CompletedTask;
+			}
+
+			public override Task ReceiveText(DateTime Timestamp, string Text)
+			{
+				if (this.sniffer.Client.State == XmppState.Connected && !Text.Contains("<sniff "))
+					return this.sniffer.ReceiveText(Timestamp, Text);
+				else
+					return Task.CompletedTask;
+			}
+
+			public override Task TransmitBinary(DateTime Timestamp, byte[] Data)
+			{
+				if (this.sniffer.Client.State == XmppState.Connected)
+					return this.sniffer.TransmitBinary(Timestamp, Data);
+				else
+					return Task.CompletedTask;
+			}
+
+			public override Task Warning(DateTime Timestamp, string Warning)
+			{
+				if (this.sniffer.Client.State == XmppState.Connected)
+					return this.sniffer.Warning(Timestamp, Warning);
+				else
+					return Task.CompletedTask;
+			}
+
+			public override Task TransmitText(DateTime Timestamp, string Text)
+			{
+				if (this.sniffer.Client.State == XmppState.Connected && !Text.Contains("<sniff "))
+					return this.sniffer.TransmitText(Timestamp, Text);
+				else
+					return Task.CompletedTask;
+			}
+		}
+#endif
+
 		private async Task DestroyXmppClient()
 		{
 			this.reconnectTimer?.Dispose();
@@ -329,6 +435,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 			this.abuseClient?.Dispose();
 			this.abuseClient = null;
 
+#if DEBUG_REMOTE
+			if (this.debugEventSink is not null)
+			{
+				Log.Unregister(this.debugEventSink);
+				this.debugEventSink?.Dispose();
+				this.debugEventSink = null;
+			}
+#endif
 			this.xmppClient?.Dispose();
 			this.xmppClient = null;
 		}
