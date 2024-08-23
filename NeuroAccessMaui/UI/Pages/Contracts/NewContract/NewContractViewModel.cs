@@ -87,7 +87,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			this.ContractVisibilityItems.Add(new ContractVisibilityModel(ContractVisibility.PublicSearchable, ServiceRef.Localizer[nameof(AppResources.ContractVisibility_PublicSearchable)]));
 		}
 
-			/// <summary>
+		/// <summary>
 		/// <see cref="IDisposable.Dispose"/>
 		/// </summary>
 		public void Dispose()
@@ -101,13 +101,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// </summary>
 		protected virtual void Dispose(bool Disposing)
 		{
-			if(this.populateTimer is not null)
+			if (this.populateTimer is not null)
 			{
 				try
 				{
 					this.populateTimer.Dispose();
 				}
-				catch(Exception ex)
+				catch (Exception)
 				{
 					//Normal operation
 				}
@@ -403,7 +403,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			this.CanAddParts = false;
 			this.VisibilityIsEnabled = false;
-		} 
+		}
 
 		private void RemoveRole(string Role, string LegalId)
 		{
@@ -783,7 +783,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					{
 						this.populateTimer.Dispose();
 					}
-					catch(Exception ex)
+					catch (Exception)
 					{
 						//Normal operation
 					}
