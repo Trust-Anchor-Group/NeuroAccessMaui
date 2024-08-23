@@ -253,7 +253,7 @@
 		<PackageReference Include="Waher.Networking.XMPP.Control" Version="3.0.0" />
 		<PackageReference Include="Waher.Networking.XMPP.HTTPX" Version="3.0.0" />
 		<PackageReference Include="Waher.Networking.XMPP.Mail" Version="2.0.1" />
-		<PackageReference Include="Waher.Networking.XMPP.P2P" Version="3.0.0" />
+		<PackageReference Include="Waher.Networking.XMPP.P2P" Version="3.0.1" />
 		<PackageReference Include="Waher.Networking.XMPP.PEP" Version="2.0.5" />
 		<PackageReference Include="Waher.Networking.XMPP.Provisioning" Version="3.0.0" />
 		<PackageReference Include="Waher.Networking.XMPP.PubSub" Version="2.0.7" />
