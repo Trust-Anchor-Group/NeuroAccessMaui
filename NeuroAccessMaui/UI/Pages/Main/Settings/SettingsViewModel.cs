@@ -1,20 +1,19 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.UI.Pages.Identity.TransferIdentity;
-using NeuroAccessMaui.UI.Pages.Main.ChangePassword;
 using NeuroAccessMaui.UI.Popups.Settings;
 using System.ComponentModel;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
-using CommunityToolkit.Mvvm.Messaging;
-using NeuroAccessMaui.UI.Pages.Registration;
 using Waher.Content.Xml;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Networking.XMPP.StanzaErrors;
 
 namespace NeuroAccessMaui.UI.Pages.Main.Settings
 {
@@ -334,12 +333,25 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 				if (!await App.AuthenticateUser(AuthenticationPurpose.RevokeIdentity, true))
 					return;
 
-				(bool succeeded, LegalIdentity? RevokedIdentity) = await ServiceRef.NetworkService.TryRequest(
-					() => ServiceRef.XmppService.ObsoleteLegalIdentity(ServiceRef.TagProfile.LegalIdentity.Id));
-
-				if (succeeded && RevokedIdentity is not null)
+				(bool succeeded, LegalIdentity? RevokedIdentity) = await ServiceRef.NetworkService.TryRequest(async () =>
 				{
-					await ServiceRef.TagProfile.RevokeLegalIdentity(RevokedIdentity);
+					try
+					{
+						return await ServiceRef.XmppService.ObsoleteLegalIdentity(ServiceRef.TagProfile.LegalIdentity.Id);
+					}
+					catch (ForbiddenException)
+					{
+						return null;
+					}
+				});
+
+				if (succeeded)
+				{
+					if (RevokedIdentity is not null)
+						await ServiceRef.TagProfile.RevokeLegalIdentity(RevokedIdentity);
+					else
+						await ServiceRef.TagProfile.ClearLegalIdentity();
+
 					await App.SetRegistrationPageAsync();
 				}
 			}
