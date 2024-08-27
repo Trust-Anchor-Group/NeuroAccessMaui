@@ -147,10 +147,34 @@
 		<Setter Property="StrokeShape">
 			<RoundRectangle CornerRadius="{StaticResource MediumCornerRadius}" />
 		</Setter>
+		<Setter Property="VisualStateManager.VisualStateGroups">
+			<VisualStateGroupList>
+				<VisualStateGroup x:Name="CommonStates">
+					<VisualState x:Name="Normal" />
+					<VisualState x:Name="Disabled">
+						<VisualState.Setters>
+							<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource DisabledFilledButtonBackgroundLight}, Dark={StaticResource DisabledFilledButtonBackgroundDark}}" />
+						</VisualState.Setters>
+					</VisualState>
+				</VisualStateGroup>
+			</VisualStateGroupList>
+		</Setter>
 	</Style>
 
 	<Style x:Key="FilledImageButtonPath" ApplyToDerivedTypes="False" TargetType="Path">
 		<Setter Property="Fill" Value="{StaticResource PrimaryBackgroundLight}" />
+		<Setter Property="VisualStateManager.VisualStateGroups">
+			<VisualStateGroupList>
+				<VisualStateGroup x:Name="CommonStates">
+					<VisualState x:Name="Normal" />
+					<VisualState x:Name="Disabled">
+						<VisualState.Setters>
+							<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource DisabledFilledButtonForegroundLight}, Dark={StaticResource DisabledFilledButtonForegroundDark}}" />
+						</VisualState.Setters>
+					</VisualState>
+				</VisualStateGroup>
+			</VisualStateGroupList>
+		</Setter>
 	</Style>
 
 	<Style x:Key="FilledImageButton" ApplyToDerivedTypes="False" TargetType="controls:ImageButton">
