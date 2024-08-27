@@ -15,6 +15,7 @@ using NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel;
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
 using NeuroAccessMaui.UI.Pages.Main.Calculator;
 using NeuroAccessMaui.UI.Pages.Main.Duration;
+using NeuroFeatures;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
@@ -1144,6 +1145,16 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			}
 
 			this.Roles = RolesLayout;
+			if(this.template?.Roles is not null)
+			{
+				/// Assign the TrustProvider role in the contract
+				foreach (Role Role in this.template!.Roles)
+				{
+					CreationAttributesEventArgs attr = await ServiceRef.XmppService.GetNeuroFeatureCreationAttributes();
+					if(Role.Name == "TrustProvider")
+						await this.AddRole(Role.Name, attr.TrustProviderId);
+				}
+			}
 
 			VerticalStackLayout ParametersLayout = [];
 

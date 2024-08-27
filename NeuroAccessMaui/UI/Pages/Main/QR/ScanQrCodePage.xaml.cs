@@ -221,7 +221,9 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 				this.CameraBarcodeReaderView.IsTorchOn = true;
 		}
 
-		[RelayCommand]
+		/// Disable the command for now, as it is not working properly <summary>
+		private bool CanPickPhoto() => false;
+		[RelayCommand (CanExecute = nameof(CanPickPhoto))]
 		private async Task PickPhoto()
 		{
 			FileResult? result = await MediaPicker.PickPhotoAsync();

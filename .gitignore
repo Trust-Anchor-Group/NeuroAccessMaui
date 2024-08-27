@@ -403,3 +403,13 @@ FodyWeavers.xsd
 
 # Meteor
 .meteor/
+
+# Build
+Build/
+build/
+
+# vs code
+*/.vscode/
+
+#specific files
+NeuroAccessMaui/NeuroAccessMaui.generated.sln

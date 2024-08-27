@@ -25,7 +25,7 @@
 
 				<Frame Style="{StaticResource FrameSet}">
 					<controls:LoadingCollectionView VerticalOptions="StartAndExpand" SelectionMode="Single" RemainingItemsThreshold="1"
-                                       ItemSizingStrategy="MeasureFirstItem" BackgroundColor="{StaticResource PageBackgroundColor}"
+                                       ItemSizingStrategy="MeasureFirstItem" BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}"
                                        ItemsSource="{Binding Path=Tokens}" LoadMoreCommand="{Binding LoadMoreTokensCommand}">
 						<CollectionView.ItemsLayout>
 							<GridItemsLayout Orientation="Vertical" VerticalItemSpacing="12"/>

@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using NeuroAccessMaui.Resources.Languages;
@@ -351,7 +351,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 						await ServiceRef.TagProfile.RevokeLegalIdentity(RevokedIdentity);
 					else
 						await ServiceRef.TagProfile.ClearLegalIdentity();
-
+					GoToRegistrationStep(RegistrationStep.ValidatePhone);
 					await App.SetRegistrationPageAsync();
 				}
 			}

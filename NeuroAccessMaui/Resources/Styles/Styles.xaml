@@ -633,10 +633,19 @@
 	</Style>
 
 
-	<!-- TEMPORARY FOR PORTING -->
+	<!-- TEMPORARY FOR PORTING FROM ID APP-->
 	<Style x:Key="IndicatorViewStyle" ApplyToDerivedTypes="False" TargetType="IndicatorView">
 		<Setter Property="SelectedIndicatorColor"  Value="{AppThemeBinding Light={StaticResource AccentForegroundLight}, Dark={StaticResource AccentBackgroundDark}}" />
 
+	</Style>
+
+	<Style x:Key="MyWalletView" TargetType="BoxView">
+		<Setter Property="BackgroundColor"  Value="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}" />
+	</Style>
+	<Style x:Key="MyWalletFrame" TargetType="Frame">
+		<Setter Property="BorderColor"  Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
+		<Setter Property="CornerRadius"  Value="6" />
+		<Setter Property="Margin"  Value="5" />
 	</Style>
 
 </ResourceDictionary>

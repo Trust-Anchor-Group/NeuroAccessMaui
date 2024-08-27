@@ -35,7 +35,7 @@
 														 Style="{StaticResource ImageOnlyButton}" Command="{Binding OpenCalculatorCommand}"
 														 CommandParameter="AmountText" />
 						</Grid>
-						<controls:TextButton LabelData="{l:Localize Buy}" Command="{Binding Path=BuyCommand}"
+						<controls:TextButton LabelData="{l:Localize Buy}" Command="{Binding Path=BuyCommand}" Style="{StaticResource FilledTextButton}"
 													Margin="{StaticResource SmallBottomMargins}"/>
 					</VerticalStackLayout>
 				</Frame>
