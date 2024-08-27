@@ -18,15 +18,15 @@ This documentation provides information you need to get started with the project
   - [Project Structure](Content/architecture.md#project-structure)
   - [MVVM Pattern](Content/architecture.md#mvvm-pattern)
   - [Dependency Injection](Content/architecture.md#dependency-injection)
+- [Dependencies](Content/dependencies.md)
 - [Features](features.md)
+  - [UI Components](features.md#services)
   - [UI Components](features.md#ui-components)
   - [Navigation](features.md#navigation)
   - [Data Binding](features.md#data-binding)
   - [Platform-Specific Code](features.md#platform-specific-code)
 - [API Reference](api_reference.md)
-  - [Public APIs](api_reference.md#public-apis)
-  - [ViewModels](api_reference.md#viewmodels)
-  - [Services](api_reference.md#services)
+  - Work in progress
 - [Deployment](deployment.md)
   - [Build and Release Process](deployment.md#build-and-release-process)
   - [Publishing to App Stores](deployment.md#publishing-to-app-stores)
@@ -38,10 +38,9 @@ This documentation provides information you need to get started with the project
   - [Branching Strategy](contributing.md#branching-strategy)
   - [How to Contribute](contributing.md#how-to-contribute)
   - [Code of Conduct](contributing.md#code-of-conduct)
-  - [Style Guide](contributing.md#style-guide)
+  - [Coding Guidelines](contributing.md#style-guide)
   - [Issue Reporting](contributing.md#issue-reporting)
-- [Changelog](changelog.md)
 
 # Licence
 
-TBD
+WORK IN PROGRESS

@@ -1,13 +1,12 @@
 # Project Architecture
 
-This document provides an overview of the architecture of **Neuro-Access**. It covers the project structure, the implementation of the MVVM pattern, the use of dependency injection, and details about the core services and repositories.
+This document provides an overview of the architecture of **Neuro-Access**. It covers the project structure, the MVVM pattern, the use of dependency injection.
 
 ## Table of Contents
 
 - [Project Structure](#project-structure)
 - [MVVM Pattern](#mvvm-pattern)
 - [Dependency Injection](#dependency-injection)
-- [Services and Repositories](#services-and-repositories)
 
 ## Project Structure
 
@@ -84,7 +83,7 @@ NeuroAccessMaui/
 
 ### Model
 
-The **Model** represents the application's data and business logic. Models are typically plain C# classes that encapsulate the data and methods to manipulate that data. They do not interact directly with the UI or the ViewModel.
+> The **Model** represents the application's data and business logic. Models are typically plain C# classes that encapsulate the data and methods to manipulate that data. They do not interact directly with the UI or the ViewModel.
 
 Example Model:
 
@@ -99,14 +98,31 @@ public class User
 
 ### View
 
-The **View** is the XAML-based UI layer. It defines the layout and appearance of the application but contains minimal code-behind logic. The View is bound to a ViewModel using data binding.
+> The **View** is the XAML-based UI layer. It defines the layout and appearance of the application but also has associated code-behind logic defined in a xaml.cs file. The View is bound to a ViewModel using data binding.
 
-Example View (XAML):
+Example MAUI Page (XAML):
 
 ```xml
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="YourProjectName.Views.MainPage">
+             x:Class="ExampleProject.Views.MainPage">
+    <StackLayout>
+        <Label Text="{Binding WelcomeMessage}" 
+               VerticalOptions="CenterAndExpand" 
+               HorizontalOptions="CenterAndExpand" />
+    </StackLayout>
+</ContentPage>
+```
+
+> In **Neuro-Access** a base class for pages and views are provided which enables better functionality together with it's corresponding ViewModel
+
+Example Neuro-Access Page (XAML):
+
+```xml
+<base:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ExampleProject.Views.MainPage">
     <StackLayout>
         <Label Text="{Binding WelcomeMessage}" 
                VerticalOptions="CenterAndExpand" 
@@ -117,9 +133,9 @@ Example View (XAML):
 
 ### ViewModel
 
-The **ViewModel** acts as the intermediary between the View and the Model. It handles the presentation logic and data binding, exposing data and commands that the View can bind to. ViewModels implement `INotifyPropertyChanged` to notify the View of changes.
+> The **ViewModel** acts as the intermediary between the View and the Model. It handles the presentation logic and data binding, exposing data and commands that the View can bind to. ViewModels implement `INotifyPropertyChanged` to notify the View of changes.
 
-Example ViewModel:
+Example MAUI ViewModel:
 
 ```csharp
 public class MainPageViewModel : INotifyPropertyChanged
@@ -138,7 +154,7 @@ public class MainPageViewModel : INotifyPropertyChanged
 
     public MainPageViewModel()
     {
-        WelcomeMessage = "Welcome to Your Project Name!";
+        WelcomeMessage = "Welcome to Your ExampleProject!";
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
@@ -150,11 +166,13 @@ public class MainPageViewModel : INotifyPropertyChanged
 }
 ```
 
+> Just like the views **Neuro-Access** uses a base class **BaseViewModel**
+
 ---
 
 ### Using the .NET MAUI Community Toolkit
 
-**Your Project Name** leverages the .NET MAUI Community Toolkit to simplify the implementation of the MVVM pattern. The toolkit provides a variety of utilities and attributes that reduce boilerplate code and make the codebase more maintainable.
+**Neuro-Access** leverages the .NET MAUI Community Toolkit to simplify the implementation of the MVVM pattern. The toolkit provides a variety of utilities and attributes that reduce boilerplate code and make the codebase more maintainable.
 
 #### Observable Properties with `[ObservableProperty]`
 
