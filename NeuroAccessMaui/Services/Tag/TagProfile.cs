@@ -851,7 +851,9 @@ namespace NeuroAccessMaui.Services.Tag
 		public async Task SetLegalIdentity(LegalIdentity? Identity, bool RemoveOldAttachments)
 		{
 			bool ScanIdUnlocked =
+				this.legalIdentity is not null &&
 				!this.legalIdentity.HasApprovedPersonalInformation() &&
+				Identity is not null &&
 				Identity.HasApprovedPersonalInformation();
 
 			Attachment[]? OldAttachments = this.SetLegalIdentityInternal(Identity);

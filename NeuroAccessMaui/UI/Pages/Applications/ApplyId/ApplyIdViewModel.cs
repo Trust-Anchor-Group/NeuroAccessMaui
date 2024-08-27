@@ -16,6 +16,7 @@ using SkiaSharp;
 using Waher.Content;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Networking.XMPP.StanzaErrors;
 using IServiceProvider = Waher.Networking.XMPP.Contracts.IServiceProvider;
 
 namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
@@ -708,7 +709,15 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 				this.SetIsBusy(true);
 				this.IsRevoking = true; // Will be cleared from event-handle.
 
-				await ServiceRef.XmppService.ObsoleteLegalIdentity(Application.Id);
+				try
+				{
+					await ServiceRef.XmppService.ObsoleteLegalIdentity(Application.Id);
+				}
+				catch (ForbiddenException)
+				{
+					// Ignore. Application may have been rejected or elapsed outside of the
+					// scope of the app.
+				}
 
 				await ServiceRef.TagProfile.SetIdentityApplication(null, true);
 				this.ApplicationSent = false;
