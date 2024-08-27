@@ -2,6 +2,12 @@
 
 This guide will help you set up your development environment, run the project, and understand the basic configuration options.
 
+## Table of Contents
+
+- [Prerequisites](#prerequisites)
+- [Setting Up the Development Environment](#setting-up-the-development-environment)
+- [Running the Project](#running-the-project)
+
 ## Prerequisites
 
 Before you begin, ensure you have met the following requirements:
@@ -33,8 +39,8 @@ Depending on your IDE, please see the following guides from Microsoft
 First, clone the project repository to your local machine using Git:
 
 ```bash
-git clone https://github.com/yourusername/yourprojectname.git
-cd yourprojectname
+git clone https://github.com/trust-anchor-group/NeuroAccessMaui.git
+cd NeuroAccessMaui
 ```
 
 ### 3. Install Dependencies
@@ -63,6 +69,8 @@ Build the project to ensure everything is set up correctly:
 dotnet build
 ```
 
+Note: On the IOS playform you need to setup valid Provisioning profiles and Signing identities.
+
 ## Running the Project
 
 Once your environment is set up, you can run the project on your desired platform.
@@ -75,7 +83,7 @@ To run the project on an Android device or emulator:
 dotnet build -t:Run -f net6.0-android
 ```
 
-Or, use the "Run" button in Visual Studio, ensuring the Android emulator is selected.
+Or, use the "Run" button in Visual Studio, ensuring the Android emulator or device is selected.
 
 ### 2. Run on iOS
 
@@ -85,7 +93,7 @@ To run the project on an iOS device or simulator (macOS only):
 dotnet build -t:Run -f net6.0-ios
 ```
 
-Or, use the "Run" button in Visual Studio, ensuring the iOS simulator is selected.
+Or, use the "Run" button in Visual Studio, ensuring the iOS simulator or device is selected.
 
 ### Platform-Specific Configurations
 

@@ -53,10 +53,10 @@ NeuroAccessMaui/
 - **MainPage.xaml & MainPage.xaml.cs**: The main page of the application, providing the initial UI and interaction logic. It serves as the starting point for the application's navigation.
 - **MauiProgram.cs**: This file contains the setup and configuration logic for the application, including the registration of services and middleware using dependency injection.
 
-- **Exceptions/**: Contains custom exception classes that handle specific error conditions within the application, improving error management and debugging.
-- **Extensions/**: Includes extension methods that enhance existing classes and interfaces, promoting code reuse and cleaner syntax across the application.
+- **Exceptions/**: Contains custom exception classes that handle specific error conditions within the application.
+- **Extensions/**: Includes extension methods that enhance existing classes.
 - **Helpers/**: Utility classes and helper functions.
-- **Links/**: Contains implementation for handling different links to resources, that the app can handle.
+- **Links/**: Contains implementation for handling different links to resources.
 
 - **Platforms/**: Contains platform-specific code for Android and iOS. This folder includes device-specific implementations and platform-related assets.
   
@@ -68,13 +68,13 @@ NeuroAccessMaui/
 - **Services/**: This folder includes service classes responsible for handling business logic, data retrieval, API communication, and other core functionalities of the application.
 
 - **UI/**: Contains the user interface components and related logic, organized into subfolders for better maintainability:
-  - **Behaviours/**: Custom behaviors that can be attached to UI elements to enhance their functionality without altering their original code.
-  - **Controls/**: Custom controls that encapsulate complex UI logic into reusable components.
+  - **Behaviours/**: Custom behaviors that can be attached to UI elements.
+  - **Controls/**: Custom controls.
   - **Converters/**: Value converters used in data binding to transform data between the ViewModel and the View.
-  - **Pages/**: Contains XAML pages and their associated code-behind files. It’s further organized into subfolders such as:
+  - **Pages/**: Contains XAML pages and their associated code-behind files, aswell as their ViewModels. It’s further organized into subfolders such as:
     - **Main/**: Includes the primary pages of the application, including the main navigation shell and the initial landing page (e.g., `AppShell.xaml`, `MainPage.xaml`).
-  - **Popups/**: Custom popup components used for displaying modal dialogs, notifications, or transient UI elements.
-  - **Rendering/**: Contains custom renderers that modify or extend the appearance and behavior of native controls on specific platforms.
+  - **Popups/**: Contains views and view-models for different custom popups.
+  - **Rendering/**: Contains renderers which translate different sources to Maui XAML code.
 
 ---
 
@@ -277,74 +277,6 @@ public class DataService : IDataService
             new User { Id = 1, Name = "John Doe", Email = "john@example.com" },
             new User { Id = 2, Name = "Jane Doe", Email = "jane@example.com" }
         };
-    }
-}
-```
-
-### Repositories
-
-Repositories abstract data access logic, allowing for a clean separation between business logic and data persistence.
-
-### Example Repository
-
-```csharp
-public interface IUserRepository
-{
-    Task<IEnumerable<User>> GetAllUsersAsync();
-}
-
-public class UserRepository : IUserRepository
-{
-    private readonly IDataService _dataService;
-
-    public UserRepository(IDataService dataService)
-    {
-        _dataService = dataService;
-    }
-
-    public async Task<IEnumerable<User>> GetAllUsersAsync()
-    {
-        return await _dataService.GetUsersAsync();
-    }
-}
-```
-
-### Using Services and Repositories
-
-ViewModels typically interact with repositories to fetch and manipulate data:
-
-```csharp
-public class UsersViewModel : INotifyPropertyChanged
-{
-    private readonly IUserRepository _userRepository;
-    private IEnumerable<User> _users;
-
-    public IEnumerable<User> Users
-    {
-        get => _users;
-        private set
-        {
-            _users = value;
-            OnPropertyChanged(nameof(Users));
-        }
-    }
-
-    public UsersViewModel(IUserRepository userRepository)
-    {
-        _userRepository = userRepository;
-        LoadUsers();
-    }
-
-    private async void LoadUsers()
-    {
-        Users = await _userRepository.GetAllUsersAsync();
-    }
-
-    public event PropertyChangedEventHandler PropertyChanged;
-
-    protected virtual void OnPropertyChanged(string propertyName)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
 ```
