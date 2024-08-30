@@ -78,7 +78,7 @@ The [SettingsService](../NeuroAccessMaui/Services/Settings/ISettingsService.cs) 
 [BaseViewModel](../NeuroAccessMaui/UI/Pages/BaseViewModel.cs) class has a helper method for this callled `GetSettingsKey`:
 
 ```csharp
-this.SettingsService.SaveState(GetSettingsKey(nameof(FirstName)), this.FirstName);
+ServiceRef.SettingsService.SaveState(GetSettingsKey(nameof(FirstName)), this.FirstName);
 ```
 
 It's easy to work with, and as you can see, refactor friendly as it doesn't use string literals anywhere.
