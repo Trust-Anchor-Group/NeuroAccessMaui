@@ -19,7 +19,7 @@ This documentation provides information you need to get started with the project
   - [MVVM Pattern](Content/architecture.md#mvvm-pattern)
   - [Dependency Injection](Content/architecture.md#dependency-injection-and-dependency-resolution)
 - [Dependencies](Content/dependencies.md) TBA
-- [Services](services.md)
+- [Services](Content/services.md)
 - [Navigation](navigation.md) TBA
 - [Platform-Specific Code](features.md#platform-specific-code) TBA
 - [API Reference](api_reference.md) TBA
