@@ -35,7 +35,8 @@ This documentation provides information you need to get started with the project
   - [How to Contribute](Content/contributing.md#how-to-contribute)
   - [Coding Guidelines](Content/contributing.md#style-guide)
   - [Issue Reporting](Content/contributing.md#issue-reporting)
+- [License](LICENSE)
 
-# Licence
 
-Coming Soon
+
+
