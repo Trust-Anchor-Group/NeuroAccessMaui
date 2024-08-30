@@ -18,15 +18,15 @@ This documentation provides information you need to get started with the project
   - [Project Structure](Content/architecture.md#project-structure)
   - [MVVM Pattern](Content/architecture.md#mvvm-pattern)
   - [Dependency Injection](Content/architecture.md#dependency-injection-and-dependency-resolution)
-- [Dependencies](Content/dependencies.md) TBA
+- [Dependencies](Content/dependencies.md) Coming Soon
 - [Services](Content/services.md)
-- [Navigation](navigation.md) TBA
-- [Platform-Specific Code](features.md#platform-specific-code) TBA
-- [API Reference](api_reference.md) TBA
-- [Deployment](deployment.md) TBA
+- [Navigation](navigation.md) Coming Soon
+- [Platform-Specific Code](features.md#platform-specific-code) Coming Soon
+- [API Reference](api_reference.md) Coming Soon
+- [Deployment](deployment.md) Coming Soon
   - [Build and Release Process](deployment.md#build-and-release-process)
   - [Publishing to App Stores](deployment.md#publishing-to-app-stores)
-- [Troubleshooting](troubleshooting.md) TBA
+- [Troubleshooting](troubleshooting.md) Coming Soon
   - [Common Issues](troubleshooting.md#common-issues)
   - [Debugging Tips](troubleshooting.md#debugging-tips)
   - [FAQ](troubleshooting.md#faq)
@@ -38,4 +38,4 @@ This documentation provides information you need to get started with the project
 
 # Licence
 
-TBA
+Coming Soon
