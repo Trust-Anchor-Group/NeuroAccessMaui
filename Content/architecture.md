@@ -6,7 +6,7 @@ This document provides an overview of the architecture of **Neuro-Access**. It c
 
 - [Project Structure](#project-structure)
 - [MVVM Pattern](#mvvm-pattern)
-- [Dependency Injection](#dependency-injection)
+- [Dependency Injection](#dependency-injection-and-dependency-resolution)
 
 ## Project Structure
 
@@ -105,7 +105,7 @@ Example MAUI Page (XAML):
 ```xml
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="ExampleProject.Views.MainPage">
+             x:Class="ExampleProject.Views.ExamplePage">
     <StackLayout>
         <Label Text="{Binding WelcomeMessage}" 
                VerticalOptions="CenterAndExpand" 
@@ -113,8 +113,11 @@ Example MAUI Page (XAML):
     </StackLayout>
 </ContentPage>
 ```
+### BaseContentPage / BaseContentView
 
-> In **Neuro-Access** a base class for pages and views are provided which enables better functionality together with it's corresponding ViewModel
+> In **Neuro-Access** a base class for pages and views are provided which enables it's corresponding viewModel to access specific lifecycle methods usually only accessable by the view, such as OnAppearing, OnLoaded, etc...
+
+Note: The ViewModel needs to inherit from **BaseViewModel**
 
 Example Neuro-Access Page (XAML):
 
@@ -122,7 +125,7 @@ Example Neuro-Access Page (XAML):
 <base:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="ExampleProject.Views.MainPage">
+             x:Class="ExampleProject.Views.ExamplePage">
     <StackLayout>
         <Label Text="{Binding WelcomeMessage}" 
                VerticalOptions="CenterAndExpand" 
@@ -138,7 +141,7 @@ Example Neuro-Access Page (XAML):
 Example MAUI ViewModel:
 
 ```csharp
-public class MainPageViewModel : INotifyPropertyChanged
+public class ExampleViewModel : INotifyPropertyChanged
 {
     private string welcomeMessage;
     
@@ -152,7 +155,7 @@ public class MainPageViewModel : INotifyPropertyChanged
         }
     }
 
-    public MainPageViewModel()
+    public ExampleViewModel()
     {
         WelcomeMessage = "Welcome to Your ExampleProject!";
     }
@@ -165,8 +168,13 @@ public class MainPageViewModel : INotifyPropertyChanged
     }
 }
 ```
+### BaseViewModel
 
-> Just like the views **Neuro-Access** uses a base class **BaseViewModel**
+> Just like how views and pages has a custom base class for it's ViewModels, **BaseViewModel** provides extra helper methods and utilities
+
+See [BaseViewModel](../NeuroAccessMaui/UI/Pages/BaseViewModel.cs)
+
+Note: This base class is not needed for the app to work properly, but is recommended as long as the view/page is using BaseContentPage/BaseContentPage
 
 ---
 
@@ -181,12 +189,12 @@ The `[ObservableProperty]` attribute provided by the MAUI Community Toolkit allo
 **Example ViewModel using `[ObservableProperty]`:**
 
 ```csharp
-public partial class MainPageViewModel : INotifyPropertyChanged
+public partial class ExampleViewModel : BaseViewModel
 {
     [ObservableProperty]
     private string welcomeMessage;
 
-    public MainPageViewModel()
+    public ExampleViewModel()
     {
         WelcomeMessage = "Welcome to Your Project Name!";
     }
@@ -202,14 +210,14 @@ The `[RelayCommand]` attribute allows you to easily define commands in your View
 **Example ViewModel using `[RelayCommand]`:**
 
 ```csharp
-public partial class MainPageViewModel : INotifyPropertyChanged
+public partial class ExampleViewModel : BaseViewModel
 {
     [ObservableProperty]
     private string welcomeMessage;
 
-    public MainPageViewModel()
+    public ExampleViewModel()
     {
-        WelcomeMessage = "Welcome to Your Project Name!";
+        WelcomeMessage = "Welcome to Your ExampleProject!";
     }
 
     [RelayCommand]
@@ -223,13 +231,15 @@ public partial class MainPageViewModel : INotifyPropertyChanged
 In this example, the `UpdateMessage` method is automatically exposed as an `ICommand` property named `UpdateMessageCommand`, which can be bound to buttons or other interactive elements in the UI.
 
 
-## Dependency Injection
+## Dependency Injection and Dependency Resolution
 
-**Neuro-Access** utilizes dependency injection (DI) to manage the creation and lifecycle of objects, promoting loose coupling and testability.
+**Neuro-Access** utilizes a combination of the built in dependency injection (DI) of.NET MAUI and a custom implementation for dependency resolution called `Types`.
+
+Note: As a rule of thumb dependency injection is used for injecting ViewModels into their corresponding views, while dependency resolution is used for services
 
 ### Setting Up Dependency Injection
 
-In **MauiProgram.cs**, services are registered within the `MauiProgram.CreateMauiApp()` method:
+In **MauiProgram.cs**, you can register classes to .NET MAUIs dependency system in the `MauiProgram.CreateMauiApp()` method:
 
 ```csharp
 public static class MauiProgram
@@ -244,60 +254,105 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
             });
 
-        // Register services
-        builder.Services.AddSingleton<MainPageViewModel>();
-        builder.Services.AddSingleton<MainPage>();
-
-        builder.Services.AddTransient<IDataService, DataService>();
+        // Register pages and its corrensponding viewmodel
+        builder.Services.AddTransient<ExamplePage, ExamplePageViewModel>();
 
         return builder.Build();
     }
 }
 ```
-
 ### Injecting Dependencies
 
-Dependencies are injected into classes using constructor injection:
+In the following example: `ExamplePageViewModel` would be injected into the constructor of ExamplePage automatically
 
 ```csharp
-public class MainPage : ContentPage
+public partial class ExamplePage : BaseContentPage
 {
-    private readonly MainPageViewModel _viewModel;
-
-    public MainPage(MainPageViewModel viewModel)
+    public MainPage(BaseViewModel viewModel)
     {
         InitializeComponent();
-        BindingContext = _viewModel = viewModel;
+        BindingContext = viewModel;
     }
 }
 ```
 
-## Services and Repositories
+### Setting up dependency resolution
 
-Services in **Neuro-Access** encapsulate the application's core logic, such as data access, API communication, and business rules.
+**Neuro-Access** uses a custom light-weight `Inversion of Control` implementation for dependency resolution called `Types`.
+The reason for this is that the built-in `DependencyService` is just a service locator, not a dependency injection container.
+It is rather limited, therefore swapping it out for `Types` is recommended. In order to specify how types should be resolved you can use
+two attributes:
 
-### Example Service
+1. `DefaultImplementationAttribute` - specifies which class is the default implementation of a certain interface.
+
+**Example:**
 
 ```csharp
-public interface IDataService
-{
-    Task<IEnumerable<User>> GetUsersAsync();
-}
+[DefaultImplementation(typeof(AttachmentCacheService))]
+public interface IAttachmentCacheService : ILoadableService
+```
 
-public class DataService : IDataService
+2. `SingletonAttribute` - specifies that there should only be one shared instance of this implementation.
+
+**Example:**
+
+``` csharp
+[Singleton]
+internal sealed class AttachmentCacheService : LoadableService, IAttachmentCacheService
+```
+
+The two attributes can be used in combination on an interface and its implementation.
+
+If you need to register types to resolve, make that call to `Types.Initialize` _before_ the call to `Types.Instantiate<T>()`, like this:
+
+```csharp
+Assembly appAssembly = this.GetType().Assembly;
+
+if (!Types.IsInitialized)
 {
-    public async Task<IEnumerable<User>> GetUsersAsync()
-    {
-        // Simulate fetching data from a remote API or database
-        await Task.Delay(1000);
-        return new List<User>
-        {
-            new User { Id = 1, Name = "John Doe", Email = "john@example.com" },
-            new User { Id = 2, Name = "Jane Doe", Email = "jane@example.com" }
-        };
-    }
+    // Define the scope and reach of Runtime.Inventory (Script, Serialization, Persistence, IoC, etc.):
+    Types.Initialize(
+        appAssembly,                                // Allows for objects defined in this assembly, to be instantiated and persisted.
+        typeof(Database).Assembly,                  // Indexes default attributes
+        typeof(ObjectSerializer).Assembly,          // Indexes general serializers
+        typeof(FilesProvider).Assembly,             // Indexes special serializers
+        typeof(RuntimeSettings).Assembly,           // Allows for persistence of settings in the object database
+        typeof(XmppClient).Assembly,                // Serialization of general XMPP objects
+        typeof(ContractsClient).Assembly,           // Serialization of XMPP objects related to digital identities and smart contracts
+        typeof(Expression).Assembly,                // Indexes basic script functions
+        typeof(MarkdownDocument).Assembly,          // Indexes basic Markdown interfaces
+        typeof(XmppServerlessMessaging).Assembly,   // Indexes End-to-End encryption mechanisms
+        typeof(TagConfiguration).Assembly,          // Indexes persistable objects
+        typeof(RegistrationStep).Assembly);         // Indexes persistable objects
 }
 ```
+
+Configure `Types` in the [App.xaml.cs](../NeuroAccessMaui/App.xaml.cs) constructor to be the default resolver like this:
+
+``` csharp
+public App()
+{
+    ...
+
+    // Set the IoC to be the default dependency resolver
+    DependencyResolver.ResolveUsing(type =>
+	{
+        if (Types.GetType(type.FullName) is null)
+	        return null;	// Type not managed by Runtime.Inventory. Xamarin.Forms resolves this using its default mechanism.
+        return Types.Instantiate(true, type);
+    });
+}
+```
+
+That's all you need to do. And when you need to resolve components later in the code, invoke the built-in `DependencyService` as usual:
+
+```csharp
+    var myService = DependencyService.Resolve<IMyService>();
+```
+
+This will invoke the lightweight IoC implementation 'under the hood'.
+
+Services can also be accessed using the `ServiceRef` class which contains static references to resolved services in the app. You can read more [here](services.md)
 
 ---
 
