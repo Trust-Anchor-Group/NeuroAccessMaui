@@ -26,9 +26,9 @@ We use a **Git Flow** branching strategy to manage the development process effic
 
 1. Create a new branch from `dev` for your feature or bugfix.
 2. Work on your branch, commit regularly, and push your changes.
-3. Create a pull request (PR) against `develop` once your work is complete.
-4. Your PR will be reviewed, and after approval, it will be merged into `develop`.
-5. Merge `develop` into `main` when ready for a new release.
+3. Create a pull request (PR) against `dev` once your work is complete.
+4. Your PR will be reviewed, and after approval, it will be merged into `dev`.
+5. Merge `dev` into `main` when ready for a new release.
 
 ## How to Contribute
 
@@ -41,7 +41,7 @@ We use a **Git Flow** branching strategy to manage the development process effic
    ```
 3. **Set Up Upstream**: Set the original repository as the upstream to keep your fork updated:
    ```bash
-   git remote add upstream https://github.com/NeuroAccess/NeuroAccessMaui.git
+   git remote add upstream https://github.com/trust-anchor-group/NeuroAccessMaui.git
    ```
 
 ### Submitting a Pull Request
