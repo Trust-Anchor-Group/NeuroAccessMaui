@@ -85,15 +85,25 @@
 								 IsVisible="{Binding ApplicationSent}"/>
 						<Grid RowDefinitions="auto,auto,auto,*" ColumnDefinitions="*,auto,auto,*"
 								ColumnSpacing="{StaticResource SmallSpacing}" RowSpacing="{StaticResource SmallSpacing}">
-							<Border Grid.Column="1" Grid.Row="0" Grid.RowSpan="4" Padding="{StaticResource SmallMargins}"
+							<Border Grid.Column="1" Grid.Row="0" Grid.RowSpan="4" WidthRequest="200" HeightRequest="200" 
 									  Style="{StaticResource OutlinedImageButtonBorder}"
+									  Margin="0"
+									  Padding="0"
+									  VerticalOptions="Start"
 									  BackgroundColor="{Binding HasPhoto, Converter={converters:ControlBgColor}}">
-								<Grid>
-									<Image Source="{Binding Image}" Rotation="{Binding ImageRotation}"
-											 Aspect="AspectFit" WidthRequest="200" HeightRequest="200" IsVisible="{Binding HasPhoto}"/>
-									<Image Source="photo_placeholder" Aspect="Center" WidthRequest="200"
-											 IsVisible="{Binding HasPhoto, Converter={StaticResource InvertedBoolConverter}}"/>
-								</Grid>
+								<Image Aspect="AspectFill">
+									<Image.Triggers>
+										<DataTrigger TargetType="Image" Binding="{Binding HasPhoto}" Value="True">
+											<Setter Property="Source" Value="{Binding Image}" />
+											<Setter Property="Aspect" Value="AspectFill" />
+
+										</DataTrigger>
+										<DataTrigger TargetType="Image" Binding="{Binding HasPhoto}" Value="False">
+											<Setter Property="Source" Value="photo_placeholder" />
+											<Setter Property="Aspect" Value="Center" />
+										</DataTrigger>
+									</Image.Triggers>
+								</Image>
 							</Border>
 
 							<controls:ImageButton Grid.Column="2" Grid.Row="0" Command="{Binding TakePhotoCommand}"
