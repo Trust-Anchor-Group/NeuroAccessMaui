@@ -654,7 +654,7 @@ namespace NeuroAccessMaui.Services.Contracts
 			if (i < 0)
 				throw new InvalidOperationException(ServiceRef.Localizer[nameof(AppResources.InvalidTagSignatureId)]);
 
-			string JID = Request[..i];
+			string JID = System.Web.HttpUtility.UrlDecode(Request[..i]);
 			string Key = Request[(i + 1)..];
 
 			LegalIdentity ID = (ServiceRef.TagProfile.LegalIdentity)
