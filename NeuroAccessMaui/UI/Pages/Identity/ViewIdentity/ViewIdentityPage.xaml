@@ -30,9 +30,9 @@
 						<VerticalStackLayout Margin="{StaticResource LargeMargins}" Spacing="{StaticResource SmallSpacing}"
 													HorizontalOptions="Center" VerticalOptions="Center"
 													IsVisible="{Binding FirstPhotoSource, Converter={converters:OnlyShowNonEmpty}}">
-							<Border Style="{StaticResource OutlinedImageButtonBorder}" Padding="0">
+							<Border Style="{StaticResource OutlinedImageButtonBorder}" Padding="0" WidthRequest="200">
 								<Image Source="{Binding FirstPhotoSource}" Rotation="{Binding FirstPhotoRotation}"
-										 WidthRequest="250" Aspect="AspectFit" HorizontalOptions="Center" Margin="0"/>
+										 Aspect="AspectFill" HorizontalOptions="Center" Margin="0"/>
 							</Border>
 							<VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="0">
 								<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding FullName}" HorizontalOptions="Center" Margin="0" Padding="0" />
@@ -62,7 +62,7 @@
 					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 						<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize PersonalInformation}"/>
 
-						<Grid VerticalOptions="StartAndExpand" RowSpacing="0">
+						<Grid VerticalOptions="StartAndExpand" RowSpacing="{StaticResource SmallSpacing}">
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="Auto" />
 								<ColumnDefinition Width="*" />
