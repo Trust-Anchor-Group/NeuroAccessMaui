@@ -168,7 +168,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 						case SelectContractAction.ViewContract:
 							if (this.contractsListMode == ContractsListMode.Contracts)
 							{
-								ViewContractNavigationArgs Args = new(Contract, false);
+								Contract updatedContract = await ServiceRef.XmppService.GetContract(ContractId);
+								ViewContractNavigationArgs Args = new(updatedContract, false);
 
 								await ServiceRef.UiService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop);
 							}
