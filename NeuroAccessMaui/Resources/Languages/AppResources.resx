@@ -2133,4 +2133,16 @@
   <data name="TransferIdentityPageDetails" xml:space="preserve">
     <value>On your other device continue with the onboarding until you reach the service provider page. Press the change button and scan this QR. Doing this will remove the identity from this device.</value>
   </data>
+  <data name="AppVersion" xml:space="preserve">
+    <value>Version Number</value>
+  </data>
+  <data name="BuildNumber" xml:space="preserve">
+    <value>Build Number</value>
+  </data>
+  <data name="Platform" xml:space="preserve">
+    <value>Platform</value>
+  </data>
+  <data name="HardwareInfo" xml:space="preserve">
+    <value>Hardware</value>
+  </data>
 </root>

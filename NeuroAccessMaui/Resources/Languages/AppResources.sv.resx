@@ -2133,4 +2133,16 @@
   <data name="TransferIdentityPageDetails" xml:space="preserve">
     <value>På din andra enhet, verifiera ditt telefonnummer och epost. Sedan på sidan där du får välja tjänsteleverantör tryck på ändra knappen och skanna denna QR-kod. Detta kommer ta bort identiteten från denna enhet.</value>
   </data>
+  <data name="AppVersion" xml:space="preserve">
+    <value>Versionsnummer</value>
+  </data>
+  <data name="BuildNumber" xml:space="preserve">
+    <value>Byggnummer</value>
+  </data>
+  <data name="Platform" xml:space="preserve">
+    <value>Plattform</value>
+  </data>
+  <data name="HardwareInfo" xml:space="preserve">
+    <value>Hårdvara</value>
+  </data>
 </root>

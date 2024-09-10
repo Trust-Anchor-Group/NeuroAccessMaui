@@ -311,6 +311,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Version Number.
+        /// </summary>
+        internal static string AppVersion {
+            get {
+                return ResourceManager.GetString("AppVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Archiving (optional).
         /// </summary>
         internal static string Archiving_Optional {
@@ -541,6 +550,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string Building {
             get {
                 return ResourceManager.GetString("Building", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Build Number.
+        /// </summary>
+        internal static string BuildNumber {
+            get {
+                return ResourceManager.GetString("BuildNumber", resourceCulture);
             }
         }
         
@@ -1810,6 +1828,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string GettingOptionsCancelled {
             get {
                 return ResourceManager.GetString("GettingOptionsCancelled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hardware.
+        /// </summary>
+        internal static string HardwareInfo {
+            get {
+                return ResourceManager.GetString("HardwareInfo", resourceCulture);
             }
         }
         
@@ -3673,6 +3700,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string PickPhotoOfYourself {
             get {
                 return ResourceManager.GetString("PickPhotoOfYourself", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Platform.
+        /// </summary>
+        internal static string Platform {
+            get {
+                return ResourceManager.GetString("Platform", resourceCulture);
             }
         }
         
