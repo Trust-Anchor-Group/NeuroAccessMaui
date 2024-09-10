@@ -530,7 +530,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 							};
 
 							Button.Clicked += this.SignButton_Clicked;
-							PartsLayout.Children.Add(Button);
+							PartsLayout.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
+
+							PartsLayout.Add(Button, 0, PartsLayout.RowDefinitions.Count - 1);
 						}
 					}
 				}
