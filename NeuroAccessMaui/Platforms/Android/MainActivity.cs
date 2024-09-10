@@ -5,6 +5,7 @@ using Android.Content.PM;
 using Android.Nfc;
 using Android.OS;
 using Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;
+using NeuroAccessMaui.Services;
 
 namespace NeuroAccessMaui
 {
@@ -42,5 +43,30 @@ namespace NeuroAccessMaui
 			App.Current?.On<Microsoft.Maui.Controls.PlatformConfiguration.Android>().UseWindowSoftInputModeAdjust(WindowSoftInputModeAdjust.Resize);
 
 		}
+
+		protected override void OnNewIntent(Intent? Intent)
+		{
+			try
+			{
+				if(Intent is null)
+					return;
+				switch (Intent.Action)
+				{
+					case Intent.ActionView:
+						string? Url = Intent!.Data?.ToString();
+						if (string.IsNullOrEmpty(Url))
+							return;
+						App.OpenUrlSync(Url!);
+						break;
+					default:
+						break;
+				}
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
+		}
+
 	}
 }
