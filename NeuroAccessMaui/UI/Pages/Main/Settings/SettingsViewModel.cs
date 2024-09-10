@@ -45,6 +45,14 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 				this.ApprovedAuthenticationMethod = this.AuthenticationMethod;
 
 				this.DisplayMode = CurrentDisplayMode.ToString();
+
+				// App and Hardware information
+				this.VersionNumber = AppInfo.VersionString;
+				this.BuildNumber = AppInfo.BuildString;
+				this.DeviceManufactorer = DeviceInfo.Manufacturer.ToString();
+				this.DeviceModel = DeviceInfo.Model.ToString();
+				this.DevicePlatform = DeviceInfo.Platform.ToString();
+				this.DeviceVersion = DeviceInfo.Version.ToString();
 			}
 			finally
 			{
@@ -141,6 +149,42 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		/// </summary>
 		[ObservableProperty]
 		private string approvedAuthenticationMethod;
+
+		/// <summary>
+		/// Version number of the app.
+		/// </summary>
+		[ObservableProperty]
+		private string versionNumber;
+
+		/// <summary>
+		/// Build number of the app.
+		/// </summary>
+		[ObservableProperty]
+		private string buildNumber;
+
+		/// <summary>
+		/// Manufactor or brand of used device.
+		/// </summary>
+		[ObservableProperty]
+		private string deviceManufactorer;
+
+		/// <summary>
+		/// The model of used device.
+		/// </summary>
+		[ObservableProperty]
+		private string deviceModel;
+
+		/// <summary>
+		/// Platform or operating system of used device.
+		/// </summary>
+		[ObservableProperty]
+		private string devicePlatform;
+
+		/// <summary>
+		/// Version of device operating system.
+		/// </summary>
+		[ObservableProperty]
+		private string deviceVersion;
 
 		/// <summary>
 		/// Current display mode
