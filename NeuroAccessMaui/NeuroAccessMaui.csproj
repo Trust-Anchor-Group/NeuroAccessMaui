@@ -69,6 +69,11 @@
 		<UseInterpreter>False</UseInterpreter>
 	</PropertyGroup>
 
+	<!-- Build Time-->
+	<PropertyGroup>
+		<SourceRevisionId>build$([System.DateTime]::UtcNow.ToString("yyyy-MM-dd HH:mm:ss"))</SourceRevisionId>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<!-- App Icon -->
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconcolor.svg" Color="LightGray" />
