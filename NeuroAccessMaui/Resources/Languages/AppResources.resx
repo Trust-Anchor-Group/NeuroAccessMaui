@@ -2145,4 +2145,16 @@
   <data name="HardwareInfo" xml:space="preserve">
     <value>Hardware</value>
   </data>
+  <data name="OnboardingGetStartedTitle" xml:space="preserve">
+    <value>Welcome to Neuro-Access</value>
+  </data> 
+  <data name="OnboardingGetStartedDetails" xml:space="preserve">
+    <value>Lets get you started</value>
+  </data>
+  <data name="CreateNewAccount">
+    <value>Create new account</value>
+  </data>
+  <data name="IAlreadyHaveAnAccount">
+    <value>I already have an account</value>
+  </data>
 </root>

@@ -1255,6 +1255,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create new account.
+        /// </summary>
+        internal static string CreateNewAccount {
+            get {
+                return ResourceManager.GetString("CreateNewAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create PIN.
         /// </summary>
         internal static string CreatePassword {
@@ -1899,6 +1908,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string HumanReadableText {
             get {
                 return ResourceManager.GetString("HumanReadableText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I already have an account.
+        /// </summary>
+        internal static string IAlreadyHaveAnAccount {
+            get {
+                return ResourceManager.GetString("IAlreadyHaveAnAccount", resourceCulture);
             }
         }
         
@@ -2754,6 +2772,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string OnboardingFinalizePageTitle {
             get {
                 return ResourceManager.GetString("OnboardingFinalizePageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lets get you started.
+        /// </summary>
+        internal static string OnboardingGetStartedDetails {
+            get {
+                return ResourceManager.GetString("OnboardingGetStartedDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Welcome to Neuro-Access.
+        /// </summary>
+        internal static string OnboardingGetStartedTitle {
+            get {
+                return ResourceManager.GetString("OnboardingGetStartedTitle", resourceCulture);
             }
         }
         
