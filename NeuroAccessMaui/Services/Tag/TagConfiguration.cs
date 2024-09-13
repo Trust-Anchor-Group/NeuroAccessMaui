@@ -219,8 +219,8 @@ namespace NeuroAccessMaui.Services
 		/// <summary>
 		/// Current step in the registration process.
 		/// </summary>
-		[DefaultValue(RegistrationStep.ValidatePhone)]
-		public RegistrationStep Step { get; set; } = RegistrationStep.ValidatePhone;
+		[DefaultValue(RegistrationStep.GetStarted)]
+		public RegistrationStep Step { get; set; } = RegistrationStep.GetStarted;
 
 		/// <summary>
 		/// Currently selected theme.

@@ -6,44 +6,46 @@
 	public enum RegistrationStep
 	{
 
+		GetStarted = 10,
+
 		/// <summary>
 		/// Validate the phone number 
 		/// </summary>
-		ValidatePhone = 1,
+		ValidatePhone = 20,
 
 		/// <summary>
 		/// Validate the email address
 		/// </summary>
-		ValidateEmail = 2,
+		ValidateEmail = 30,
 
 		/// <summary>
 		/// Choose the provider on which to create an account
 		/// </summary>
-		ChooseProvider = 3,
+		ChooseProvider = 40,
 
 		/// <summary>
 		/// Create a new account
 		/// </summary>
-		CreateAccount = 4,
+		CreateAccount = 50,
 
 		/// <summary>
 		/// Create a password
 		/// </summary>
-		DefinePassword = 5,
+		DefinePassword = 60,
 
 		/// <summary>
 		/// Profile is completed.
 		/// </summary>
-		Complete = 6,
+		Complete = 70,
 
 		/// <summary>
 		/// Enable biometric authentication
 		/// </summary>
-		Biometrics = 7,
+		Biometrics = 80,
 
 		/// <summary>
 		/// Finalize profile creation
 		/// </summary>
-		Finalize = 8
+		Finalize = 90
 	}
 }

@@ -72,7 +72,7 @@ namespace NeuroAccessMaui.Services.Tag
 		private bool isTest;
 		private PurposeUse purpose;
 		private DateTime? testOtpTimestamp;
-		private RegistrationStep step = RegistrationStep.ValidatePhone;
+		private RegistrationStep step;
 		private AppTheme? theme;
 		private AuthenticationMethod authenticationMethod;
 		private bool loadingProperties;
@@ -1254,7 +1254,7 @@ namespace NeuroAccessMaui.Services.Tag
 			this.httpFileUploadMaxSize = 0;
 			this.isTest = false;
 			this.TestOtpTimestamp = null;
-			this.step = RegistrationStep.ValidatePhone;
+			this.step = RegistrationStep.GetStarted;
 			this.defaultXmppConnectivity = false;
 			this.nrReviews = 0;
 			this.supportsPushNotification = false;
