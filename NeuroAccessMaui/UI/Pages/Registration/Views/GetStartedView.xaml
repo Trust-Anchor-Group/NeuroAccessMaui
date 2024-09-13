@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseRegistrationView x:Name="ThisPage"
+									x:Class="NeuroAccessMaui.UI.Pages.Registration.Views.GetStartedView"
+									x:DataType="viewmodel:GetStartedViewModel"
+									xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+									xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+									xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+									xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+									xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+									xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Registration"
+									xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
+									xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
+
+	<Grid RowSpacing="{StaticResource LargeSpacing}" RowDefinitions="*, auto">
+		<VerticalStackLayout Spacing="{StaticResource MediumSpacing}" Grid.Row="0" VerticalOptions="Center">
+			<Label
+				Style="{StaticResource PageTitleLabel}"
+				Text="{l:Localize OnboardingGetStartedTitle}" />
+
+			<Label
+				Margin="{StaticResource LargeBottomMargins}"
+				Text="{l:Localize OnboardingGetStartedDetails}" />
+
+			<controls:TextButton
+				Command="{Binding NewAccountCommand}"
+				Style="{StaticResource TransparentTextButton}"
+				LabelData="{l:Localize CreateNewAccount}" />
+			
+			<controls:TextButton
+				Command="{Binding ExistingAccountCommand}"
+				Style="{StaticResource FilledTextButton}"
+				LabelData="{l:Localize IAlreadyHaveAnAccount}" />
+
+		</VerticalStackLayout>
+		
+		<VerticalStackLayout Spacing="{StaticResource MediumSpacing}" Grid.Row="1">
+			<Border Style="{StaticResource AccentInfoBorder}" Padding="{StaticResource SmallMargins}">
+				<Grid ColumnDefinitions="auto, *">
+					<Path Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center"
+						Data="{x:Static ui:Geometries.InfoCirclePath}" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
+						Fill="{AppThemeBinding Light={StaticResource AccentForegroundLight}, Dark={StaticResource AccentForegroundDark}}"/>
+					<Label Grid.Column="1" Style ="{StaticResource AccentInfoLabel}" Margin="{StaticResource SmallLeftMargins}" Text="If you have received an invitation, transfer or recovery code you can scan it below" />
+
+				</Grid>
+			</Border>
+
+			<controls:TemplatedButton Command="{x:Binding ScanQrCodeCommand}">
+				<Border Style="{StaticResource TransparentTemplateButtonBorder}" InputTransparent="True" HorizontalOptions="Fill">
+					<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
+						<Path VerticalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
+								Data="{x:Static ui:Geometries.ScanQrIconPath}"
+								Style="{StaticResource TransparentTemplateButtonPath}"
+								/>
+						<Label Grid.Column="1" Style="{StaticResource TransparentTemplateButtonLabel}" Margin="{StaticResource SmallLeftMargins}"  Text="{l:Localize ScanQRShort}"/>
+					</Grid>
+				</Border>
+			</controls:TemplatedButton>
+		</VerticalStackLayout>
+	</Grid>
+</base:BaseRegistrationView>
