@@ -71,6 +71,16 @@ namespace NeuroAccessMaui.Services.Tag
 		string? SelectedCountry { get; }
 
 		/// <summary>
+		/// User's first name(s).
+		/// </summary>
+		string? FirstName { get; set; }
+
+		/// <summary>
+		/// User's last name(s).
+		/// </summary>
+		string? LastName { get; set; }
+
+		/// <summary>
 		/// Verified phone number.
 		/// </summary>
 		string? PhoneNumber { get; }
@@ -168,7 +178,7 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <summary>
 		/// Indicates if the password is numeric.
 		/// </summary>
-		bool IsNumericPassword { get;}
+		bool IsNumericPassword { get; }
 
 		/// <summary>
 		/// How the user authenticates itself with the App.
@@ -428,6 +438,12 @@ namespace NeuroAccessMaui.Services.Tag
 		/// </summary>
 		/// <param name="Reference">Contract reference.</param>
 		void CheckContractReference(ContractReference Reference);
+
+		/// <summary>
+		/// Generates a username based on FirstName and LastName.
+		/// </summary>
+		/// <returns>Generated username or empty string if one could not be generated</returns>
+		string GenerateUsername();
 
 		/// <summary>
 		/// Event raised when properties have been changed.

@@ -4,6 +4,7 @@ using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Storage;
 using NeuroAccessMaui.UI;
 using System.ComponentModel;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using Waher.Networking.XMPP.Contracts;
@@ -52,6 +53,8 @@ namespace NeuroAccessMaui.Services.Tag
 		private string? apiKey;
 		private string? apiSecret;
 		private string? selectedCountry;
+		private string? firstName;
+		private string? lastName;
 		private string? phoneNumber;
 		private string? eMail;
 		private string? account;
@@ -124,6 +127,8 @@ namespace NeuroAccessMaui.Services.Tag
 				ApiKey = this.ApiKey,
 				ApiSecret = this.ApiSecret,
 				SelectedCountry = this.SelectedCountry,
+				FirstName = this.FirstName,
+				LastName = this.LastName,
 				PhoneNumber = this.PhoneNumber,
 				EMail = this.EMail,
 				DefaultXmppConnectivity = this.DefaultXmppConnectivity,
@@ -177,6 +182,8 @@ namespace NeuroAccessMaui.Services.Tag
 				this.ApiKey = Configuration.ApiKey;
 				this.ApiSecret = Configuration.ApiSecret;
 				this.SelectedCountry = Configuration.SelectedCountry;
+				this.FirstName = Configuration.FirstName;
+				this.LastName = Configuration.LastName;
 				this.PhoneNumber = Configuration.PhoneNumber;
 				this.EMail = Configuration.EMail;
 				this.InitialDefaultXmppConnectivity = Configuration.InitialDefaultXmppConnectivity;
@@ -415,6 +422,38 @@ namespace NeuroAccessMaui.Services.Tag
 				{
 					this.selectedCountry = value;
 					this.FlagAsDirty(nameof(this.SelectedCountry));
+				}
+			}
+		}
+
+		/// <summary>
+		/// User's first name(s).
+		/// </summary>
+		public string? FirstName
+		{
+			get => this.firstName;
+			set
+			{
+				if (!string.Equals(this.firstName, value, StringComparison.Ordinal))
+				{
+					this.firstName = value;
+					this.FlagAsDirty(nameof(this.FirstName));
+				}
+			}
+		}
+
+		/// <summary>
+		/// User's last name(s).
+		/// </summary>
+		public string? LastName
+		{
+			get => this.lastName;
+			set
+			{
+				if (!string.Equals(this.lastName, value, StringComparison.Ordinal))
+				{
+					this.lastName = value;
+					this.FlagAsDirty(nameof(this.LastName));
 				}
 			}
 		}
@@ -1443,5 +1482,161 @@ namespace NeuroAccessMaui.Services.Tag
 				this.HasContractTokenCreationTemplatesReferences = true;
 		}
 
+		/// <summary>
+		/// Generates a username based on FirstName and LastName.
+		/// </summary>
+		/// <returns>Generated username or empty string if failed</returns>
+		public string GenerateUsername()
+		{
+			if (string.IsNullOrWhiteSpace(this.FirstName) || string.IsNullOrWhiteSpace(this.LastName))
+				return string.Empty;
+
+			string processedFirstName = ProcessFirstName(this.FirstName);
+
+			string processedLastName = ProcessLastName(this.LastName);
+
+			string username = $"{processedFirstName}.{processedLastName}";
+
+			if (string.IsNullOrWhiteSpace(username))
+				return string.Empty;
+
+			//Add random 4 digit number to the username
+			StringBuilder sb = new(4);
+			for (int i = 0; i < 4; i++)
+			{
+				int digit = RandomNumberGenerator.GetInt32(0, 10);
+				sb.Append(digit);
+			}
+
+			// Combine and return the username
+			return $"{processedFirstName}.{processedLastName}.{sb.ToString()}";
+		}
+
+		private static string ProcessFirstName(string name)
+		{
+			// Normalize and convert to lowercase
+			name = name.Normalize(NormalizationForm.FormC).ToLowerInvariant();
+
+			// Split first names by spaces
+			string[] nameParts = name.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+			List<string> processedParts = [];
+
+			foreach (string part in nameParts)
+			{
+				// Replace invalid characters with underscores
+				string processedPart = ReplaceInvalidUsernameCharacters(part);
+
+				if (!string.IsNullOrEmpty(processedPart))
+					processedParts.Add(processedPart);
+			}
+
+			if (processedParts.Count == 0)
+				return string.Empty;
+
+			// Join parts with dots
+			return string.Join(".", processedParts);
+		}
+
+		private static string ProcessLastName(string name)
+		{
+			// Normalize and convert to lowercase
+			name = name.Normalize(NormalizationForm.FormC).ToLowerInvariant();
+
+			// Split last names by spaces
+			string[] nameParts = name.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+			StringBuilder initials = new();
+
+			foreach (string part in nameParts)
+			{
+				// Replace invalid characters with underscores
+				string processedPart = ReplaceInvalidUsernameCharacters(part);
+
+				if (!string.IsNullOrEmpty(processedPart))
+				{
+					// Take the first character
+					initials.Append(processedPart[0]);
+				}
+			}
+
+			return initials.ToString();
+		}
+
+		private static string ReplaceInvalidUsernameCharacters(string input)
+		{
+			StringBuilder sb = new(input.Length);
+			foreach (char ch in input)
+			{
+				switch (ch)
+				{
+					// From XMPP spec (RFC 6122):
+					case '"':
+					case '&':
+					case '\'':
+					case '/':
+					case ':':
+					case '<':
+					case '>':
+					case '@':
+					// Disallow space
+					case ' ':
+					// Invalid as file name characters (for file sniffers, etc.)
+					case '|':
+					case '\0':
+					case '\u0001':
+					case '\u0002':
+					case '\u0003':
+					case '\u0004':
+					case '\u0005':
+					case '\u0006':
+					case '\a':
+					case '\b':
+					case '\t':
+					case '\n':
+					case '\v':
+					case '\f':
+					case '\r':
+					case '\u000e':
+					case '\u000f':
+					case '\u0010':
+					case '\u0011':
+					case '\u0012':
+					case '\u0013':
+					case '\u0014':
+					case '\u0015':
+					case '\u0016':
+					case '\u0017':
+					case '\u0018':
+					case '\u0019':
+					case '\u001a':
+					case '\u001b':
+					case '\u001c':
+					case '\u001d':
+					case '\u001e':
+					case '\u001f':
+					case '*':
+					case '?':
+					case '\\':
+						sb.Append('_');
+						break;
+					default:
+						sb.Append(ch);
+						break;
+				}
+			}
+
+			string result = sb.ToString();
+			// Collapse multiple underscores into one
+			result = Regex.Replace(result, @"_+", "_");
+
+			// Trim leading and trailing underscores
+			result = result.Trim('_');
+
+			return result;
+		}
+
 	}
+
 }
+

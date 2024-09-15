@@ -67,6 +67,18 @@ namespace NeuroAccessMaui.Services
 		public string? SelectedCountry { get; set; }
 
 		/// <summary>
+		/// User's first name(s).
+		/// </summary>
+		[DefaultValueNull]
+		public string? FirstName { get; set; }
+
+		/// <summary>
+		/// User's last name(s).
+		/// </summary>
+		[DefaultValueNull]
+		public string? LastName { get; set; }
+
+		/// <summary>
 		/// Verified Phone Number
 		/// </summary>
 		[DefaultValueNull]
@@ -105,7 +117,7 @@ namespace NeuroAccessMaui.Services
 		/// <summary>
 		/// Is the password numeric?
 		/// </summary>
-		[DefaultValueNull]		
+		[DefaultValueNull]
 		public bool IsNumericPassword { get; set; }
 
 		/// <summary>
@@ -183,14 +195,14 @@ namespace NeuroAccessMaui.Services
 		/// <summary>
 		/// Purpose for using the app
 		/// </summary>
-		#if DEBUG
+#if DEBUG
 		[DefaultValue(PurposeUse.Experimental)]
 		public PurposeUse Purpose { get; set; } = PurposeUse.Experimental;
-		#else
+#else
 		[DefaultValue(PurposeUse.Personal)]
 		public PurposeUse Purpose { get; set; } = PurposeUse.Personal;
-		#endif
-		
+#endif
+
 
 		/// <summary>
 		/// Set to current timestamp if the user used a Test OTP Code.

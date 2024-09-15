@@ -5,8 +5,15 @@
 	/// </summary>
 	public enum RegistrationStep
 	{
-
+		/// <summary>
+		/// First step in the registration process
+		/// </summary>
 		GetStarted = 10,
+
+		/// <summary>
+		/// Enter your name
+		/// </summary>
+		NameEntry = 15,
 
 		/// <summary>
 		/// Validate the phone number 
