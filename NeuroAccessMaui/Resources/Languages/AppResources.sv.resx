@@ -2157,4 +2157,16 @@
   <data name="IAlreadyHaveAnAccount">
     <value>Jag har redan ett konto</value>
   </data>
+  <data name="OnboardingGetStartedQrInfo">
+    <value>Har du fått en inbjudan, överförings- eller återställningskod? Skanna den nedan</value>
+  </data>
+  <data name="OnboardingNameEntryTitle" xml:space="preserve">
+    <value>Hur vill du bli tilltalad?</value>
+  </data> 
+  <data name="OnboardingNameEntryDetails" xml:space="preserve">
+    <value>Ange namnet du vill använda i appen. Det kan vara ditt riktiga namn eller ett smeknamn</value>
+  </data>
+  <data name="UseNickname" xml:space="preserve">
+    <value>Jag vill använda ett smeknamn</value>
+  </data>
 </root>

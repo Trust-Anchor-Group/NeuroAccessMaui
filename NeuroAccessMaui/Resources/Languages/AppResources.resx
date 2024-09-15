@@ -2157,4 +2157,16 @@
   <data name="IAlreadyHaveAnAccount">
     <value>I already have an account</value>
   </data>
+  <data name="OnboardingGetStartedQrInfo">
+    <value>Received an invite, transfer, or recovery code? Scan it below</value>
+  </data>
+  <data name="OnboardingNameEntryTitle" xml:space="preserve">
+    <value>How Should We Address You?</value>
+  </data> 
+  <data name="OnboardingNameEntryDetails" xml:space="preserve">
+    <value>Enter the name you'd like to use in the app. It can be your real name or a nickname</value>
+  </data>
+  <data name="UseNickname" xml:space="preserve">
+    <value>I'd like to use a nickname</value>
+  </data>
 </root>
