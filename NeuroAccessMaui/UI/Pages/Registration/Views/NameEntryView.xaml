@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseRegistrationView x:Name="ThisPage"
+                           x:Class="NeuroAccessMaui.UI.Pages.Registration.Views.NameEntryView"
+                           x:DataType="viewmodel:NameEntryViewModel"
+                           xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                           xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+                           xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+                           xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+                           xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Registration"
+                           xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
+                           xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
+
+	<Grid RowDefinitions="*, auto" RowSpacing="{StaticResource LargeSpacing}">
+		<VerticalStackLayout Spacing="{StaticResource LargeSpacing}" VerticalOptions="Center" Grid.Row="0">
+			<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
+				<!-- Title and Detail -->
+				<Label Style="{StaticResource PageTitleLabel}" Text="{l:Localize OnboardingNameEntryTitle}" />
+				<Label Text="{l:Localize OnboardingNameEntryDetails}" />
+
+				<!-- Checkbox with Label -->
+				<Grid ColumnDefinitions="Auto,*" VerticalOptions="Center">
+					<CheckBox IsChecked="{Binding IsUsingNickname}" VerticalOptions="Center" Color="{AppThemeBinding Light={StaticResource EnabledFilledButtonBackgroundLight}, Dark={StaticResource PrimaryForegroundDark}}"/>
+					<Label Text="{l:Localize UseNickname}" VerticalOptions="Center" Margin="5,0,0,0" Grid.Column="1" />
+				</Grid>
+
+				<!-- Input Fields -->
+				<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" IsVisible="{Binding IsUsingNickname, Converter={StaticResource InvertedBoolConverter}}">
+					<!-- First Name -->
+					<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize FirstName}" />
+					<controls:CompositeEntry x:Name="FirstNameEntry" Style="{StaticResource RegularCompositeEntry}"
+                                             EntryData="{Binding FirstName}" Placeholder="{l:Localize FirstName}" />
+
+					<!-- Last Name -->
+					<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize LastNames}" />
+					<controls:CompositeEntry x:Name="LastNameEntry" Style="{StaticResource RegularCompositeEntry}"
+                                             EntryData="{Binding LastName}" Placeholder="{l:Localize LastNames}" />
+				</VerticalStackLayout>
+			</VerticalStackLayout>
+
+			<!-- Nickname -->
+			<StackLayout IsVisible="{Binding IsUsingNickname}">
+				<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize Nickname}" />
+				<controls:CompositeEntry x:Name="NicknameEntry" Style="{StaticResource RegularCompositeEntry}"
+				                         EntryData="{Binding Nickname}" Placeholder="{l:Localize Nickname}" />
+			</StackLayout>
+		</VerticalStackLayout>
+		<!-- Create Account Button -->
+		<controls:TextButton Grid.Row="1" Command="{Binding CreateAccountCommand}" Style="{StaticResource FilledTextButton}"
+		                     LabelData="{l:Localize Continue}" />
+	</Grid>
+</base:BaseRegistrationView>

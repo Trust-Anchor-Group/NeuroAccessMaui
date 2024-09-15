@@ -23,12 +23,12 @@
 
 			<controls:TextButton
 				Command="{Binding NewAccountCommand}"
-				Style="{StaticResource TransparentTextButton}"
+				Style="{StaticResource FilledTextButton}"
 				LabelData="{l:Localize CreateNewAccount}" />
 			
 			<controls:TextButton
 				Command="{Binding ExistingAccountCommand}"
-				Style="{StaticResource FilledTextButton}"
+				Style="{StaticResource  TransparentTextButton}"
 				LabelData="{l:Localize IAlreadyHaveAnAccount}" />
 
 		</VerticalStackLayout>
@@ -39,7 +39,7 @@
 					<Path Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center"
 						Data="{x:Static ui:Geometries.InfoCirclePath}" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
 						Fill="{AppThemeBinding Light={StaticResource AccentForegroundLight}, Dark={StaticResource AccentForegroundDark}}"/>
-					<Label Grid.Column="1" Style ="{StaticResource AccentInfoLabel}" Margin="{StaticResource SmallLeftMargins}" Text="If you have received an invitation, transfer or recovery code you can scan it below" />
+					<Label Grid.Column="1" Style ="{StaticResource AccentInfoLabel}" Margin="{StaticResource SmallLeftMargins}" Text="{l:Localize OnboardingGetStartedQrInfo}" />
 
 				</Grid>
 			</Border>

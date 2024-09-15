@@ -11,23 +11,18 @@ using Waher.Networking.XMPP.Contracts;
 
 namespace NeuroAccessMaui.UI.Pages.Registration.Views
 {
-	public partial class GetStartedViewModel : BaseRegistrationViewModel
+	public partial class GetStartedViewModel() : BaseRegistrationViewModel(RegistrationStep.GetStarted)
 	{
-		public GetStartedViewModel()
-			: base(RegistrationStep.GetStarted)
+		[RelayCommand]
+		private void NewAccount()
 		{
+			GoToRegistrationStep(RegistrationStep.NameEntry);
 		}
 
 		[RelayCommand]
-		private async Task NewAccount()
-		{
-
-		}
+		private async Task ExistingAccount() { }
 
 		[RelayCommand]
-		private async Task ExistingAccount(){}
-
-		[RelayCommand]
-		private async Task ScanQrCode(){}
+		private async Task ScanQrCode() { }
 	}
 }
