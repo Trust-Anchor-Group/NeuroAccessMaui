@@ -122,6 +122,7 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<ChooseProviderView, ChooseProviderViewModel>();
 			Builder.Services.AddTransient<CreateAccountView, CreateAccountViewModel>();
 			Builder.Services.AddTransient<GetStartedView, GetStartedViewModel>();
+			Builder.Services.AddTransient<NameEntryView, NameEntryViewModel>();
 			Builder.Services.AddTransient<DefinePasswordView, DefinePasswordViewModel>();
 			Builder.Services.AddTransient<BiometricsView, BiometricsViewModel>();
 			Builder.Services.AddTransient<FinalizeView, FinalizeViewModel>();
