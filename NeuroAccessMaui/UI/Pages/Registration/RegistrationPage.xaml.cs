@@ -21,6 +21,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 				this.LoadingView,
 				//this.RequestPurposeView,
 				this.GetStartedView,
+				this.NameEntryView,
 				this.ValidatePhoneView,
 				this.ValidateEmailView,
 				this.ChooseProviderView,

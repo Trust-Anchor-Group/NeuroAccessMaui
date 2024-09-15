@@ -63,6 +63,7 @@
 						<views:LoadingView x:Name="LoadingView" x:FactoryMethod="Create" mct:StateView.StateKey="Loading" />
 						<!-- <views:RequestPurposeView x:Name="RequestPurposeView" x:FactoryMethod="Create" mct:StateView.StateKey="RequestPurpose" /> -->
 						<views:GetStartedView x:Name="GetStartedView" x:FactoryMethod="Create" mct:StateView.StateKey="GetStarted" />
+						<views:NameEntryView x:Name="NameEntryView" x:FactoryMethod="Create" mct:StateView.StateKey="NameEntry" />
 						<views:ValidatePhoneView x:Name="ValidatePhoneView" x:FactoryMethod="Create" mct:StateView.StateKey="ValidatePhone" />
 						<views:ValidateEmailView x:Name="ValidateEmailView" x:FactoryMethod="Create" mct:StateView.StateKey="ValidateEmail" />
 						<views:ChooseProviderView x:Name="ChooseProviderView" x:FactoryMethod="Create" mct:StateView.StateKey="ChooseProvider" />

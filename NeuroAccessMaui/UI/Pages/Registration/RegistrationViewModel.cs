@@ -86,7 +86,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		{
 			get
 			{
-				return (ServiceRef.TagProfile.Step > RegistrationStep.ValidatePhone) &&
+				return (ServiceRef.TagProfile.Step > RegistrationStep.GetStarted) &&
 					// Disable the back button after the accpunt was created
 					string.IsNullOrEmpty(ServiceRef.TagProfile?.Account ?? string.Empty)
 					&& (ServiceRef.TagProfile?.Step < RegistrationStep.DefinePassword);
@@ -107,6 +107,9 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 
 				switch (this.CurrentStep)
 				{
+					case RegistrationStep.NameEntry:
+						NewStep = RegistrationStep.GetStarted;
+						break;
 					case RegistrationStep.CreateAccount:
 						ServiceRef.TagProfile.ClearAccount();
 						NewStep = RegistrationStep.ChooseProvider;
