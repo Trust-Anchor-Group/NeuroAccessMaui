@@ -453,6 +453,9 @@
 		<MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\PhotoView.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Registration\Views\NameEntryView.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Signatures\ClientSignature\ClientSignaturePage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
