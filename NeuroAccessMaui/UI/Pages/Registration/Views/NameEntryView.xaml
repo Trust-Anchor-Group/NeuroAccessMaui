@@ -18,12 +18,6 @@
 				<Label Style="{StaticResource PageTitleLabel}" Text="{l:Localize OnboardingNameEntryTitle}" />
 				<Label Text="{l:Localize OnboardingNameEntryDetails}" />
 
-				<!-- Checkbox with Label -->
-				<Grid ColumnDefinitions="Auto,*" VerticalOptions="Center">
-					<CheckBox IsChecked="{Binding IsUsingNickname}" VerticalOptions="Center" Color="{AppThemeBinding Light={StaticResource EnabledFilledButtonBackgroundLight}, Dark={StaticResource PrimaryForegroundDark}}"/>
-					<Label Text="{l:Localize UseNickname}" VerticalOptions="Center" Margin="5,0,0,0" Grid.Column="1" />
-				</Grid>
-
 				<!-- Input Fields -->
 				<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" IsVisible="{Binding IsUsingNickname, Converter={StaticResource InvertedBoolConverter}}">
 					<!-- First Name -->
@@ -44,9 +38,18 @@
 				<controls:CompositeEntry x:Name="NicknameEntry" Style="{StaticResource RegularCompositeEntry}"
 				                         EntryData="{Binding Nickname}" Placeholder="{l:Localize Nickname}" />
 			</StackLayout>
+
+			<!-- Checkbox with Label -->
+			<Grid ColumnDefinitions="Auto,*" VerticalOptions="Center" HorizontalOptions="Center">
+				<CheckBox IsChecked="{Binding IsUsingNickname}" VerticalOptions="Center" Color="{AppThemeBinding Light={StaticResource EnabledFilledButtonBackgroundLight}, Dark={StaticResource PrimaryForegroundDark}}"/>
+				<Label Text="{l:Localize UseNickname}" VerticalOptions="Center" Margin="5,0,0,0" Grid.Column="1" />
+			</Grid>
+
 		</VerticalStackLayout>
 		<!-- Create Account Button -->
-		<controls:TextButton Grid.Row="1" Command="{Binding CreateAccountCommand}" Style="{StaticResource FilledTextButton}"
-		                     LabelData="{l:Localize Continue}" />
+		<VerticalStackLayout  Grid.Row="1">
+			<controls:TextButton Command="{Binding CreateAccountCommand}" Style="{StaticResource FilledTextButton}"
+			                     LabelData="{l:Localize Continue}" />
+		</VerticalStackLayout>
 	</Grid>
 </base:BaseRegistrationView>

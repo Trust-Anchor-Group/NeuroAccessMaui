@@ -63,16 +63,12 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		[RelayCommand(CanExecute = nameof(CanCreateAccount))]
 		private void CreateAccount()
 		{
-			// Existing code...
-
 			if (this.IsUsingNickname)
 			{
-				// Use nickname for account creation
-				//	ServiceRef.TagProfile.FriendlyName = this.Nickname;
+				ServiceRef.TagProfile.FriendlyName = this.Nickname;
 			}
 			else
 			{
-				// Use first and last name for account creation
 				ServiceRef.TagProfile.FirstName = this.FirstName;
 				ServiceRef.TagProfile.LastName = this.LastName;
 			}
