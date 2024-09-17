@@ -9,7 +9,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Runtime.Inventory;
-using Waher.Runtime.Settings.HostSettingObjects;
 using Waher.Security;
 
 namespace NeuroAccessMaui.Services.Tag
