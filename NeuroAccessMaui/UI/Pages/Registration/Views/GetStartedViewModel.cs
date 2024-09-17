@@ -20,9 +20,12 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		}
 
 		[RelayCommand]
-		private async Task ExistingAccount() { }
+		private void ExistingAccount() { }
 
 		[RelayCommand]
-		private async Task ScanQrCode() { }
+		private async Task ScanQrCode()
+		{
+			GoToRegistrationStep(RegistrationStep.ChooseProvider);
+		}
 	}
 }
