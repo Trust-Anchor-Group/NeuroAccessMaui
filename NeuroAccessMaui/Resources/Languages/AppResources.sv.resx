@@ -559,10 +559,10 @@
     <value>Domän:</value>
   </data>
   <data name="OnboardingAccountPageTitle" xml:space="preserve">
-    <value>Skapa konto</value>
+    <value>Skapar konto...</value>
   </data>
   <data name="OnboardingAccountPageDetails" xml:space="preserve">
-    <value>Ange det namn du vill använda för ditt konto</value>
+    <value>Vänligen vänta medan vi förbereder allt åt dig</value>
   </data>
   <data name="OnboardingDefinePasswordPageTitle" xml:space="preserve">
     <value>Skapa en PIN kod</value>
@@ -578,9 +578,6 @@
   </data>
   <data name="OnboardingBiometricsPageDetails" xml:space="preserve">
     <value>Neuro-Access fungerar bäst med {0}. Vill du aktivera den här funktionen? Detta kan också ändras i inställningarna senare.</value>
-  </data>
-  <data name="AccountSectionTitle" xml:space="preserve">
-    <value>Ange kontonamnet</value>
   </data>
   <data name="Create" xml:space="preserve">
     <value>Skapa</value>

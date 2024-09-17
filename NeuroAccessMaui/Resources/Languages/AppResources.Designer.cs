@@ -113,15 +113,6 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter the account name.
-        /// </summary>
-        internal static string AccountSectionTitle {
-            get {
-                return ResourceManager.GetString("AccountSectionTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to This account name already exists.
         /// </summary>
         internal static string AccountValidationAlreadyExists {
@@ -2678,7 +2669,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter the name you want to use for your account.
+        ///   Looks up a localized string similar to Please wait while we set things up for you.
         /// </summary>
         internal static string OnboardingAccountPageDetails {
             get {
@@ -2687,7 +2678,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create account.
+        ///   Looks up a localized string similar to Createing Account....
         /// </summary>
         internal static string OnboardingAccountPageTitle {
             get {

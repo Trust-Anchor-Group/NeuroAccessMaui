@@ -559,10 +559,10 @@
     <value>Domain:</value>
   </data>
   <data name="OnboardingAccountPageTitle" xml:space="preserve">
-    <value>Create account</value>
+    <value>Createing Account...</value>
   </data>
   <data name="OnboardingAccountPageDetails" xml:space="preserve">
-    <value>Enter the name you want to use for your account</value>
+    <value>Please wait while we set things up for you</value>
   </data>
   <data name="OnboardingDefinePasswordPageTitle" xml:space="preserve">
     <value>Create a PIN code</value>
@@ -578,9 +578,6 @@
   </data>
   <data name="OnboardingBiometricsPageDetails" xml:space="preserve">
     <value>Neuro-Access works best when using {0}. Would you like to enable this feature? This can also be changed in the settings later</value>
-  </data>
-  <data name="AccountSectionTitle" xml:space="preserve">
-    <value>Enter the account name</value>
   </data>
   <data name="Create" xml:space="preserve">
     <value>Create</value>
