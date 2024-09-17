@@ -11,12 +11,12 @@
 									xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
 									xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
 
-	<Grid>
+	<Grid VerticalOptions="Center">
 		<VerticalStackLayout VerticalOptions="Center" IsVisible="{Binding IsAccountCreated}">
 			<ActivityIndicator VerticalOptions="Center" IsVisible="true" IsRunning="true" />
 		</VerticalStackLayout>
-		 
-		<VerticalStackLayout Spacing="{StaticResource LargeSpacing}"
+
+		<VerticalStackLayout Spacing="{StaticResource LargeSpacing}" VerticalOptions="Center"
 									IsVisible="{Binding IsAccountCreated, Converter={StaticResource InvertedBoolConverter}}">
 
 			<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
@@ -24,49 +24,9 @@
 				<Label Style="{StaticResource PageTitleLabel}" Text="{l:Localize OnboardingAccountPageTitle}" />
 				<Label Text="{l:Localize OnboardingAccountPageDetails}" />
 
-				<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-					<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize AccountSectionTitle}" />
-
-					<controls:CompositeEntry x:Name="AccountEntry" Style="{StaticResource RegularCompositeEntry}"
-													 EntryData="{Binding AccountText}" PathData="{x:Static ui:Geometries.AccountIconPath}" />
-
-					<Grid RowDefinitions="auto" ColumnDefinitions="auto,*" HorizontalOptions="Center" ColumnSpacing="{StaticResource SmallSpacing}"
-							IsVisible="{Binding AccountIsNotValid}">
-
-						<Path Grid.Column="0"
-								VerticalOptions="Center"
-								HeightRequest="20"
-								WidthRequest="20"
-								Aspect="Uniform"
-								Data="{x:Static ui:Geometries.InfoCirclePath}"
-								Fill="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
-
-						<Label Grid.Column="1" VerticalOptions="Center" Text="{l:Localize AccountValidationAlreadyExists}"
-								 TextColor="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
-					</Grid>
-				</VerticalStackLayout>
-
-				<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" IsVisible="{Binding HasAlternativeNames}">
-					<Label Text="{l:Localize AccountAvailableAlternatives}" />
-					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" BindableLayout.ItemsSource="{Binding AlternativeNames}">
-						<BindableLayout.ItemTemplate>
-							<DataTemplate>
-								<Border>
-									<Border.GestureRecognizers>
-										<TapGestureRecognizer Command="{Binding BindingContext.SelectNameCommand, Source={x:Reference ThisPage}}"
-																	 CommandParameter="{Binding}" />
-									</Border.GestureRecognizers>
-
-									<Label HorizontalOptions="Center" Text="{Binding}"
-											 TextColor="{AppThemeBinding Light={StaticResource AccentForegroundLight}, Dark={StaticResource AccentForegroundDark}}" />
-								</Border>
-							</DataTemplate>
-						</BindableLayout.ItemTemplate>
-					</VerticalStackLayout>
-				</VerticalStackLayout>
 			</VerticalStackLayout>
+			<ActivityIndicator VerticalOptions="Center" IsVisible="true" IsRunning="true" />
 
-			<controls:TextButton Command="{Binding CreateAccountCommand}" Style="{StaticResource FilledTextButton}" LabelData="{l:Localize Create}" />
 		</VerticalStackLayout>
 	</Grid>
 </base:BaseRegistrationView>

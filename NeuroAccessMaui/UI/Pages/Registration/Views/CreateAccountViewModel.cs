@@ -44,7 +44,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			if (string.IsNullOrEmpty(ServiceRef.TagProfile.Account))
 				return;
 
-			this.OnPropertyChanged(nameof(IsAccountCreated));
+			this.OnPropertyChanged(nameof(this.IsAccountCreated));
 
 			if (ServiceRef.TagProfile.LegalIdentity is LegalIdentity LegalIdentity)
 			{
@@ -92,7 +92,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 					break;
 
 				case nameof(this.AccountText):
-					if(this.AccountText.Length > 0 && char.IsWhiteSpace(this.AccountText.Last()))
+					if (this.AccountText.Length > 0 && char.IsWhiteSpace(this.AccountText.Last()))
 						this.AccountText = this.AccountText.Trim();
 					this.AccountIsNotValid = false;
 					this.AlternativeNames = [];
