@@ -81,6 +81,11 @@ namespace NeuroAccessMaui.Services.Tag
 		string? LastName { get; set; }
 
 		/// <summary>
+		/// User's friendly name.
+		/// </summary>
+		string? FriendlyName { get; set; }
+
+		/// <summary>
 		/// Verified phone number.
 		/// </summary>
 		string? PhoneNumber { get; }

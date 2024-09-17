@@ -79,6 +79,12 @@ namespace NeuroAccessMaui.Services
 		public string? LastName { get; set; }
 
 		/// <summary>
+		/// User's friendly name.
+		/// </summary>
+		[DefaultValueNull]
+		public string? FriendlyName { get; set; }
+
+		/// <summary>
 		/// Verified Phone Number
 		/// </summary>
 		[DefaultValueNull]

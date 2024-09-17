@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Runtime.Inventory;
+using Waher.Runtime.Settings.HostSettingObjects;
 using Waher.Security;
 
 namespace NeuroAccessMaui.Services.Tag
@@ -55,6 +56,7 @@ namespace NeuroAccessMaui.Services.Tag
 		private string? selectedCountry;
 		private string? firstName;
 		private string? lastName;
+		private string? friendlyName;
 		private string? phoneNumber;
 		private string? eMail;
 		private string? account;
@@ -129,6 +131,7 @@ namespace NeuroAccessMaui.Services.Tag
 				SelectedCountry = this.SelectedCountry,
 				FirstName = this.FirstName,
 				LastName = this.LastName,
+				FriendlyName = this.FriendlyName,
 				PhoneNumber = this.PhoneNumber,
 				EMail = this.EMail,
 				DefaultXmppConnectivity = this.DefaultXmppConnectivity,
@@ -184,6 +187,7 @@ namespace NeuroAccessMaui.Services.Tag
 				this.SelectedCountry = Configuration.SelectedCountry;
 				this.FirstName = Configuration.FirstName;
 				this.LastName = Configuration.LastName;
+				this.FriendlyName = Configuration.FriendlyName;
 				this.PhoneNumber = Configuration.PhoneNumber;
 				this.EMail = Configuration.EMail;
 				this.InitialDefaultXmppConnectivity = Configuration.InitialDefaultXmppConnectivity;
@@ -217,7 +221,10 @@ namespace NeuroAccessMaui.Services.Tag
 
 				this.SetTheme();
 				// Do this last, as listeners will read the other properties when the event is fired.
-				this.GoToStep(Configuration.Step);
+				if (this.Step == RegistrationStep.CreateAccount)
+					this.GoToStep(RegistrationStep.ValidatePhone);
+				else
+					this.GoToStep(Configuration.Step);
 			}
 			finally
 			{
@@ -454,6 +461,19 @@ namespace NeuroAccessMaui.Services.Tag
 				{
 					this.lastName = value;
 					this.FlagAsDirty(nameof(this.LastName));
+				}
+			}
+		}
+
+		public string? FriendlyName
+		{
+			get => this.friendlyName;
+			set
+			{
+				if (!string.Equals(this.friendlyName, value, StringComparison.Ordinal))
+				{
+					this.friendlyName = value;
+					this.FlagAsDirty(nameof(this.FriendlyName));
 				}
 			}
 		}
@@ -1488,14 +1508,19 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <returns>Generated username or empty string if failed</returns>
 		public string GenerateUsername()
 		{
-			if (string.IsNullOrWhiteSpace(this.FirstName) || string.IsNullOrWhiteSpace(this.LastName))
-				return string.Empty;
+			string? username = this.FriendlyName;
+			if (string.IsNullOrWhiteSpace(username))
+			{
+				if (string.IsNullOrWhiteSpace(this.FirstName) || string.IsNullOrWhiteSpace(this.LastName))
+					return string.Empty;
 
-			string processedFirstName = ProcessFirstName(this.FirstName);
-
-			string processedLastName = ProcessLastName(this.LastName);
-
-			string username = $"{processedFirstName}.{processedLastName}";
+				username = $"{ProcessFirstName(this.FirstName)}.{ProcessLastName(this.LastName)}";
+			}
+			else
+			{
+				// Process the username with the same rules as the first name(s)
+				username = ProcessFirstName(username);
+			}
 
 			if (string.IsNullOrWhiteSpace(username))
 				return string.Empty;
@@ -1509,7 +1534,7 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 
 			// Combine and return the username
-			return $"{processedFirstName}.{processedLastName}.{sb.ToString()}";
+			return $"{username}.{sb.ToString()}";
 		}
 
 		private static string ProcessFirstName(string name)
@@ -1524,7 +1549,7 @@ namespace NeuroAccessMaui.Services.Tag
 
 			foreach (string part in nameParts)
 			{
-				// Replace invalid characters with underscores
+				// Replace invalid characters
 				string processedPart = ReplaceInvalidUsernameCharacters(part);
 
 				if (!string.IsNullOrEmpty(processedPart))
