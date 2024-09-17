@@ -110,13 +110,12 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 					case RegistrationStep.NameEntry:
 						NewStep = RegistrationStep.GetStarted;
 						break;
-					case RegistrationStep.CreateAccount:
-						ServiceRef.TagProfile.ClearAccount();
-						NewStep = RegistrationStep.ChooseProvider;
+					case RegistrationStep.ValidatePhone:
+						NewStep = RegistrationStep.GetStarted;
 						break;
 
 					case RegistrationStep.ChooseProvider:
-						NewStep = RegistrationStep.ValidateEmail;
+						NewStep = RegistrationStep.GetStarted;
 						break;
 
 					case RegistrationStep.ValidateEmail:

@@ -301,7 +301,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 									ServiceRef.TagProfile.SetDomain(VerifyDomain, DefaultConnectivity, VerifyKey, VerifySecret);
 								}
 								if(VerifyIsTemporary)
-									GoToRegistrationStep(RegistrationStep.ChooseProvider);
+									GoToRegistrationStep(RegistrationStep.CreateAccount);
 								else
 									GoToRegistrationStep(RegistrationStep.ValidateEmail);
 							}
