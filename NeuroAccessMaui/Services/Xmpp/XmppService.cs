@@ -2904,6 +2904,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private void RegisterContractsEventHandlers()
 		{
+			this.ContractsClient.EnableE2eEncryption(true);
+
 			this.ContractsClient.IdentityUpdated += this.ContractsClient_IdentityUpdated;
 			this.ContractsClient.PetitionForIdentityReceived += this.ContractsClient_PetitionForIdentityReceived;
 			this.ContractsClient.PetitionedIdentityResponseReceived += this.ContractsClient_PetitionedIdentityResponseReceived;
