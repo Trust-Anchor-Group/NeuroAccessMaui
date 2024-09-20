@@ -1033,7 +1033,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 							ServiceRef.Localizer[nameof(AppResources.Cancel)]);
 
 						if (!string.IsNullOrEmpty(Proposal))
-							ServiceRef.XmppService.SendContractProposal(Created.ContractId, Part.Role, Info.BareJid, Proposal);
+							await ServiceRef.XmppService.SendContractProposal(Created, Part.Role, Info.BareJid, Proposal);
 					}
 				}
 			}
