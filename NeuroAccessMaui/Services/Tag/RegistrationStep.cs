@@ -53,6 +53,11 @@
 		/// <summary>
 		/// Finalize profile creation
 		/// </summary>
-		Finalize = 90
+		Finalize = 90,
+
+		/// <summary>
+		/// Contact support
+		/// </summary>
+		ContactSupport = 100
 	}
 }

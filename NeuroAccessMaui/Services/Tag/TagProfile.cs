@@ -1524,16 +1524,9 @@ namespace NeuroAccessMaui.Services.Tag
 			if (string.IsNullOrWhiteSpace(username))
 				return string.Empty;
 
-			//Add random 4 digit number to the username
-			StringBuilder sb = new(4);
-			for (int i = 0; i < 4; i++)
-			{
-				int digit = RandomNumberGenerator.GetInt32(0, 10);
-				sb.Append(digit);
-			}
 
 			// Combine and return the username
-			return $"{username}.{sb.ToString()}";
+			return username;
 		}
 
 		private static string ProcessFirstName(string name)
