@@ -71,6 +71,7 @@
 						<views:DefinePasswordView x:Name="DefinePasswordView" x:FactoryMethod="Create" mct:StateView.StateKey="DefinePassword" />
 						<views:BiometricsView x:Name="BiometricsView" x:FactoryMethod="Create" mct:StateView.StateKey="Biometrics" />
 						<views:FinalizeView x:Name="FinalizeView" x:FactoryMethod="Create" mct:StateView.StateKey="Finalize" />
+						<views:ContactSupportView x:Name="ContactSupportView" x:FactoryMethod="Create" mct:StateView.StateKey="ContactSupport"/>
 					</mct:StateContainer.StateViews>
 
 					<!-- default state, should not occur -->

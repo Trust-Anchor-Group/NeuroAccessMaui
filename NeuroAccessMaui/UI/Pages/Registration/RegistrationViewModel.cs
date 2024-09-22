@@ -94,6 +94,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 						return string.IsNullOrEmpty(ServiceRef.TagProfile.Account); // Disable the back button if account is already created
 					case RegistrationStep.NameEntry:
 					case RegistrationStep.ChooseProvider:
+					case RegistrationStep.ContactSupport:
 						return true;
 					case RegistrationStep.GetStarted:
 					case RegistrationStep.CreateAccount:
@@ -120,7 +121,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 				await this.registrationSteps[this.CurrentStep].DoClearProperties();
 
 				RegistrationStep NewStep = ServiceRef.TagProfile.Step;
-
 				switch (this.CurrentStep)
 				{
 					case RegistrationStep.NameEntry:
@@ -135,10 +135,14 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 					case RegistrationStep.ChooseProvider:
 						NewStep = RegistrationStep.GetStarted;
 						break;
+					case RegistrationStep.ContactSupport:
+						NewStep = RegistrationStep.GetStarted;
+						break;
 
 					default: // Should not happen. Something forgotten? 
 						throw new NotImplementedException();
 				}
+				ServiceRef.PlatformSpecific.HideKeyboard();
 
 				GoToRegistrationStep(NewStep);
 			}
