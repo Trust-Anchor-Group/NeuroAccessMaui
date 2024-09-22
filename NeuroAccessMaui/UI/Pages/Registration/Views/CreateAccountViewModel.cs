@@ -17,6 +17,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		public CreateAccountViewModel()
 			: base(RegistrationStep.CreateAccount)
 		{
+			this.ShowEntry = false;
 		}
 
 		/// <inheritdoc />
@@ -38,14 +39,12 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		}
 
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(this.ShowLoading))]
 		private bool showEntry;
 
-		partial void OnShowEntryChanged(bool value)
-		{
-			this.OnPropertyChanged(nameof(this.ShowLoading));
-		}
-
 		public bool ShowLoading => !this.ShowEntry;
+
+		private bool hasGeneratedUsername = false;
 
 		/// <inheritdoc />
 		public override async Task DoAssignProperties()
@@ -57,14 +56,25 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 				if (!this.HasAlternativeNames)
 				{
-					string generatedUsername = ServiceRef.TagProfile.GenerateUsername();
-					if (string.IsNullOrEmpty(generatedUsername))
+					if (this.hasGeneratedUsername)
 					{
 						this.ShowEntry = true;
 						return;
 					}
 
+					string generatedUsername = ServiceRef.TagProfile.GenerateUsername();
+					if (string.IsNullOrEmpty(generatedUsername))
+					{
+						// Generate a new GUID
+						Guid guid = Guid.NewGuid();
+
+						// Convert the GUID to a string without hyphens
+						generatedUsername = guid.ToString("N");
+					}
+
 					this.AccountText = generatedUsername;
+					this.hasGeneratedUsername = true;
+
 				}
 				else
 				{

@@ -13,7 +13,7 @@
 
 	<Grid VerticalOptions="Center">
 		<VerticalStackLayout Spacing="{StaticResource LargeSpacing}" VerticalOptions="Center"
-									IsVisible="{Binding ShowLoading, Converter={StaticResource InvertedBoolConverter}}">
+									IsVisible="{Binding ShowLoading}">
 
 			<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
 
