@@ -2904,6 +2904,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private void RegisterContractsEventHandlers()
 		{
+			this.ContractsClient.EnableE2eEncryption(true);
+
 			this.ContractsClient.IdentityUpdated += this.ContractsClient_IdentityUpdated;
 			this.ContractsClient.PetitionForIdentityReceived += this.ContractsClient_PetitionForIdentityReceived;
 			this.ContractsClient.PetitionedIdentityResponseReceived += this.ContractsClient_PetitionedIdentityResponseReceived;
@@ -3229,13 +3231,13 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// Sends a contract proposal to a recipient.
 		/// </summary>
-		/// <param name="ContractId">ID of proposed contract.</param>
+		/// <param name="Contract">Proposed contract.</param>
 		/// <param name="Role">Proposed role of recipient.</param>
 		/// <param name="To">Recipient Address (Bare or Full JID).</param>
 		/// <param name="Message">Optional message included in message.</param>
-		public void SendContractProposal(string ContractId, string Role, string To, string Message)
+		public Task SendContractProposal(Contract Contract, string Role, string To, string Message)
 		{
-			this.ContractsClient.SendContractProposal(ContractId, Role, To, Message);
+			return this.ContractsClient.SendContractProposal(Contract, Role, To, Message);
 		}
 
 		#endregion

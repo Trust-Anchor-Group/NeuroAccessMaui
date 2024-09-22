@@ -1035,7 +1035,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 							ServiceRef.Localizer[nameof(AppResources.Cancel)]);
 
 						if (!string.IsNullOrEmpty(Proposal))
-							ServiceRef.XmppService.SendContractProposal(Created.ContractId, Part.Role, Info.BareJid, Proposal);
+							await ServiceRef.XmppService.SendContractProposal(Created, Part.Role, Info.BareJid, Proposal);
 					}
 				}
 			}
@@ -1149,7 +1149,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			this.Roles = RolesLayout;
 			if(this.template?.Roles is not null)
 			{
-				/// Assign the TrustProvider role in the contract
+				// Assign the TrustProvider role in the contract
 				foreach (Role Role in this.template!.Roles)
 				{
 					CreationAttributesEventArgs attr = await ServiceRef.XmppService.GetNeuroFeatureCreationAttributes();
