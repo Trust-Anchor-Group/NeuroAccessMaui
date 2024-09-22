@@ -535,10 +535,10 @@
     <value>Failed to unbind viewmodel {0} for page {1}</value>
   </data>
   <data name="OnboardingPhonePageTitle" xml:space="preserve">
-    <value>Welcome to Neuro-Access</value>
+    <value>Please verify phone number</value>
   </data>
   <data name="OnboardingPhonePageDetails" xml:space="preserve">
-    <value>To get verified, you need to enter your phone number</value>
+    <value>We’ll send you a verification code</value>
   </data>
   <data name="OnboardingEmailPageTitle" xml:space="preserve">
     <value>Please verify email</value>
@@ -559,7 +559,7 @@
     <value>Domain:</value>
   </data>
   <data name="OnboardingAccountPageTitle" xml:space="preserve">
-    <value>Createing Account...</value>
+    <value>Creating Account...</value>
   </data>
   <data name="OnboardingAccountPageDetails" xml:space="preserve">
     <value>Please wait while we set things up for you</value>

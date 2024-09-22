@@ -535,10 +535,10 @@
     <value>Det gick inte att koppla bort viewmodel {0} för sida {1}</value>
   </data>
   <data name="OnboardingPhonePageTitle" xml:space="preserve">
-    <value>Välkommen till Neuro-Access</value>
+    <value>Verifiera telefonnummer</value>
   </data>
   <data name="OnboardingPhonePageDetails" xml:space="preserve">
-    <value>För att bli verifierad måste du ange ditt telefonnummer</value>
+    <value>Vi skickar en verifieringskod till dig</value>
   </data>
   <data name="OnboardingEmailPageTitle" xml:space="preserve">
     <value>Verifiera e-postadressen</value>

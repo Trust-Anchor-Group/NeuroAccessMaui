@@ -2678,7 +2678,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Createing Account....
+        ///   Looks up a localized string similar to Creating Account....
         /// </summary>
         internal static string OnboardingAccountPageTitle {
             get {
@@ -2813,7 +2813,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to To get verified, you need to enter your phone number.
+        ///   Looks up a localized string similar to We’ll send you a verification code.
         /// </summary>
         internal static string OnboardingPhonePageDetails {
             get {
@@ -2822,7 +2822,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Welcome to Neuro-Access.
+        ///   Looks up a localized string similar to Please verify phone number.
         /// </summary>
         internal static string OnboardingPhonePageTitle {
             get {
