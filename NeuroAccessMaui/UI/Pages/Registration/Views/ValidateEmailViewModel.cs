@@ -171,7 +171,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 							VerifyResponse.TryGetValue("Status", out Obj) && Obj is bool VerifyStatus && VerifyStatus)
 						{
 							ServiceRef.TagProfile.EMail = this.EmailText;
-							GoToRegistrationStep(RegistrationStep.ChooseProvider);
+							GoToRegistrationStep(RegistrationStep.CreateAccount);
 						}
 						else
 						{

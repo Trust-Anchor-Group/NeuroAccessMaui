@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
@@ -36,29 +37,55 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			await base.OnDispose();
 		}
 
+		[ObservableProperty]
+		private bool showEntry;
+
+		partial void OnShowEntryChanged(bool value)
+		{
+			this.OnPropertyChanged(nameof(this.ShowLoading));
+		}
+
+		public bool ShowLoading => !this.ShowEntry;
+
 		/// <inheritdoc />
 		public override async Task DoAssignProperties()
 		{
 			await base.DoAssignProperties();
 
-			if (string.IsNullOrEmpty(ServiceRef.TagProfile.Account))
-				return;
-
-			this.OnPropertyChanged(nameof(this.IsAccountCreated));
-
-			if (ServiceRef.TagProfile.LegalIdentity is LegalIdentity LegalIdentity)
+			while (!this.IsAccountCreated && !this.ShowEntry)
 			{
-				if (LegalIdentity.State == IdentityState.Approved)
+
+				if (!this.HasAlternativeNames)
 				{
-					if (Shell.Current.CurrentState.Location.OriginalString == Constants.Pages.RegistrationPage)
-						GoToRegistrationStep(RegistrationStep.DefinePassword);
+					string generatedUsername = ServiceRef.TagProfile.GenerateUsername();
+					if (string.IsNullOrEmpty(generatedUsername))
+					{
+						this.ShowEntry = true;
+						return;
+					}
+
+					this.AccountText = generatedUsername;
 				}
-				else if (LegalIdentity.IsDiscarded())
+				else
 				{
-					await ServiceRef.TagProfile.ClearLegalIdentity();
-					GoToRegistrationStep(RegistrationStep.ValidatePhone);
+					Random rand = new();
+					// Assign the randomly selected name to AccountText
+					this.AccountText = this.AlternativeNames[rand.Next(0, this.AlternativeNames.Count)];
+				}
+
+				if (this.CreateAccountCommand.CanExecute(null))
+					await this.CreateAccountCommand.ExecuteAsync(null);
+				else
+				{
+					this.ShowEntry = true;
+					return;
 				}
 			}
+
+			if (this.CreateIdentityCommand.CanExecute(null))
+				await this.CreateIdentityCommand.ExecuteAsync(null);
+
+			await this.CheckAndHandleIdentityApplicationAsync();
 		}
 
 		private Task XmppService_ConnectionStateChanged(object _, XmppState NewState)
@@ -67,8 +94,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			{
 				MainThread.BeginInvokeOnMainThread(async () =>
 				{
-					if (this.CreateIdentityCommand.CanExecute(null))
-						await this.CreateIdentityCommand.ExecuteAsync(null);
+					await this.DoAssignProperties();
 				});
 			}
 
@@ -77,7 +103,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 		private async Task XmppContracts_LegalIdentityChanged(object _, LegalIdentityEventArgs e)
 		{
-			await this.DoAssignProperties();
+			await this.CheckAndHandleIdentityApplicationAsync();
 		}
 
 		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
@@ -92,15 +118,12 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 					break;
 
 				case nameof(this.AccountText):
-					if (this.AccountText.Length > 0 && char.IsWhiteSpace(this.AccountText.Last()))
-						this.AccountText = this.AccountText.Trim();
+					this.AccountText = this.AccountText.Trim();
 					this.AccountIsNotValid = false;
 					this.AlternativeNames = [];
 					break;
 			}
 		}
-
-
 
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(CreateAccountCommand))]
@@ -148,65 +171,26 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		/// </summary>
 		public bool HasAlternativeNames => this.AlternativeNames.Count > 0;
 
-		public bool CanCreateAccount => !this.IsBusy && !this.AccountIsNotValid && (this.AccountText.Length > 0);
+		public bool CanCreateAccount => !this.IsBusy && !this.AccountIsNotValid && (this.AccountText.Length > 0) && !this.IsAccountCreated;
 
-		public bool CanCreateIdentity => !this.IsBusy && IsAccountCreated && !IsLegalIdentityCreated && IsXmppConnected;
+		public bool CanCreateIdentity => this.IsAccountCreated && !IsLegalIdentityCreated && this.IsXmppConnected;
 
 		[RelayCommand(CanExecute = nameof(CanCreateAccount))]
 		private async Task CreateAccount()
 		{
 			this.IsBusy = true;
 
-			try
+			bool success = await this.TryCreateAccount();
+
+			if (success)
 			{
-				string PasswordToUse = ServiceRef.CryptoService.CreateRandomPassword();
+				if (this.CreateIdentityCommand.CanExecute(null))
+					await this.CreateIdentityCommand.ExecuteAsync(null);
 
-				(string HostName, int PortNumber, bool IsIpAddress) = await ServiceRef.NetworkService.LookupXmppHostnameAndPort(ServiceRef.TagProfile.Domain!);
-
-				async Task OnConnected(XmppClient Client)
-				{
-					if (ServiceRef.TagProfile.NeedsUpdating())
-						await ServiceRef.XmppService.DiscoverServices(Client);
-
-					ServiceRef.TagProfile.SetAccount(this.AccountText, Client.PasswordHash, Client.PasswordHashMethod);
-
-					this.OnPropertyChanged(nameof(IsAccountCreated));
-				}
-
-				(bool Succeeded, string? ErrorMessage, string[]? Alternatives) = await ServiceRef.XmppService.TryConnectAndCreateAccount(ServiceRef.TagProfile.Domain!,
-					IsIpAddress, HostName, PortNumber, this.AccountText, PasswordToUse, Constants.LanguageCodes.Default,
-					ServiceRef.TagProfile.ApiKey ?? string.Empty, ServiceRef.TagProfile.ApiSecret ?? string.Empty,
-					typeof(App).Assembly, OnConnected);
-
-				if (Succeeded)
-				{
-					if (this.CreateIdentityCommand.CanExecute(null))
-						await this.CreateIdentityCommand.ExecuteAsync(null);
-				}
-				else if (Alternatives is not null)
-				{
-					this.AccountIsNotValid = true;
-					this.AlternativeNames = new(Alternatives);
-				}
-				else if (ErrorMessage is not null)
-				{
-					await ServiceRef.UiService.DisplayAlert(
-					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ErrorMessage,
-					ServiceRef.Localizer[nameof(AppResources.Ok)]);
-				}
+				await this.CheckAndHandleIdentityApplicationAsync();
 			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
 
-				await ServiceRef.UiService.DisplayAlert(
-					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message,
-					ServiceRef.Localizer[nameof(AppResources.Ok)]);
-			}
-			finally
-			{
-				this.IsBusy = false;
-			}
+			this.IsBusy = false;
 		}
 
 		[RelayCommand]
@@ -219,8 +203,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		[RelayCommand(CanExecute = nameof(CanCreateIdentity))]
 		private async Task CreateIdentity()
 		{
-			this.IsBusy = true;
-
 			try
 			{
 				RegisterIdentityModel IdentityModel = CreateRegisterModel();
@@ -237,16 +219,84 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				ServiceRef.LogService.LogException(ex);
 				await ServiceRef.UiService.DisplayException(ex);
 			}
-			finally
-			{
-				this.IsBusy = false;
-			}
 		}
 
 		[RelayCommand]
 		private static async Task ValidateIdentity()
 		{
 			await Task.CompletedTask;
+		}
+
+
+		private async Task<bool> TryCreateAccount()
+		{
+
+			try
+			{
+				string PasswordToUse = ServiceRef.CryptoService.CreateRandomPassword();
+
+				(string HostName, int PortNumber, bool IsIpAddress) = await ServiceRef.NetworkService.LookupXmppHostnameAndPort(ServiceRef.TagProfile.Domain!);
+
+				async Task OnConnected(XmppClient Client)
+				{
+					if (ServiceRef.TagProfile.NeedsUpdating())
+						await ServiceRef.XmppService.DiscoverServices(Client);
+
+					ServiceRef.TagProfile.SetAccount(this.AccountText, Client.PasswordHash, Client.PasswordHashMethod);
+
+					this.OnPropertyChanged(nameof(this.IsAccountCreated));
+				}
+
+				(bool Succeeded, string? ErrorMessage, string[]? Alternatives) = await ServiceRef.XmppService.TryConnectAndCreateAccount(ServiceRef.TagProfile.Domain!,
+					IsIpAddress, HostName, PortNumber, this.AccountText, PasswordToUse, Constants.LanguageCodes.Default,
+					ServiceRef.TagProfile.ApiKey ?? string.Empty, ServiceRef.TagProfile.ApiSecret ?? string.Empty,
+					typeof(App).Assembly, OnConnected);
+
+				if (Succeeded)
+					return true;
+
+				if (Alternatives is not null)
+				{
+					this.AccountIsNotValid = true;
+					this.AlternativeNames = new(Alternatives);
+				}
+				else if (ErrorMessage is not null)
+				{
+					await ServiceRef.UiService.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ErrorMessage,
+						ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				}
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message,
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+			}
+
+			return false;
+		}
+
+		private async Task CheckAndHandleIdentityApplicationAsync()
+		{
+			this.IsBusy = true;
+			if (ServiceRef.TagProfile.LegalIdentity is LegalIdentity LegalIdentity)
+			{
+				if (LegalIdentity.State == IdentityState.Approved)
+				{
+					if (Shell.Current.CurrentState.Location.OriginalString == Constants.Pages.RegistrationPage)
+						GoToRegistrationStep(RegistrationStep.DefinePassword);
+				}
+				else if (LegalIdentity.IsDiscarded())
+				{
+					await ServiceRef.TagProfile.ClearLegalIdentity();
+					/// TODO: Show error message
+					GoToRegistrationStep(RegistrationStep.ValidatePhone);
+				}
+			}
+			this.IsBusy = true;
 		}
 
 		private static RegisterIdentityModel CreateRegisterModel()

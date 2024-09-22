@@ -12,12 +12,8 @@
 									xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
 
 	<Grid VerticalOptions="Center">
-		<VerticalStackLayout VerticalOptions="Center" IsVisible="{Binding IsAccountCreated}">
-			<ActivityIndicator VerticalOptions="Center" IsVisible="true" IsRunning="true" />
-		</VerticalStackLayout>
-
 		<VerticalStackLayout Spacing="{StaticResource LargeSpacing}" VerticalOptions="Center"
-									IsVisible="{Binding IsAccountCreated, Converter={StaticResource InvertedBoolConverter}}">
+									IsVisible="{Binding ShowLoading, Converter={StaticResource InvertedBoolConverter}}">
 
 			<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
 

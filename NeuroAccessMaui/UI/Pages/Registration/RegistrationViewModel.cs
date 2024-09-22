@@ -86,10 +86,26 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		{
 			get
 			{
-				return (ServiceRef.TagProfile.Step > RegistrationStep.GetStarted) &&
-					// Disable the back button after the accpunt was created
-					string.IsNullOrEmpty(ServiceRef.TagProfile?.Account ?? string.Empty)
-					&& (ServiceRef.TagProfile?.Step < RegistrationStep.DefinePassword);
+				switch (ServiceRef.TagProfile.Step)
+				{
+
+					case RegistrationStep.ValidatePhone:
+					case RegistrationStep.ValidateEmail:
+						return string.IsNullOrEmpty(ServiceRef.TagProfile.Account); // Disable the back button if account is already created
+					case RegistrationStep.NameEntry:
+					case RegistrationStep.ChooseProvider:
+						return true;
+					case RegistrationStep.GetStarted:
+					case RegistrationStep.CreateAccount:
+					case RegistrationStep.DefinePassword:
+					case RegistrationStep.Complete:
+					case RegistrationStep.Biometrics:
+					case RegistrationStep.Finalize:
+					default:
+						return false;
+
+
+				}
 			}
 		}
 
@@ -113,13 +129,11 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 					case RegistrationStep.ValidatePhone:
 						NewStep = RegistrationStep.GetStarted;
 						break;
-
-					case RegistrationStep.ChooseProvider:
+					case RegistrationStep.ValidateEmail:
 						NewStep = RegistrationStep.GetStarted;
 						break;
-
-					case RegistrationStep.ValidateEmail:
-						NewStep = RegistrationStep.ValidatePhone;
+					case RegistrationStep.ChooseProvider:
+						NewStep = RegistrationStep.GetStarted;
 						break;
 
 					default: // Should not happen. Something forgotten? 
