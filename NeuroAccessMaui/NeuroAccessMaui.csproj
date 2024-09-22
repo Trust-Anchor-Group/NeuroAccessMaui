@@ -340,6 +340,9 @@
 		<Compile Update="UI\Pages\Registration\Views\DefinePasswordView.xaml.cs">
 			<DependentUpon>DefinePasswordView.xaml</DependentUpon>
 		</Compile>
+		<Compile Update="UI\Pages\Registration\Views\ContactSupportView.xaml.cs">
+		  <DependentUpon>ContactSupportView.xaml</DependentUpon>
+		</Compile>
 		<!--<Compile Update="UI\Pages\Registration\Views\RequestPurposeView.xaml.cs">
 	    <DependentUpon>RequestPurposeView.xaml</DependentUpon>
 	  </Compile> -->
@@ -457,6 +460,9 @@
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\PhotoView.xaml">
 			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Registration\Views\ContactSupportView.xaml">
+		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Registration\Views\NameEntryView.xaml">
 		  <Generator>MSBuild:Compile</Generator>
