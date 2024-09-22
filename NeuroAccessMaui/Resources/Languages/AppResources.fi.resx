@@ -535,10 +535,10 @@
     <value>Viewmodel-{0} sidoksen poistaminen sivulta {1} epäonnistui</value>
   </data>
   <data name="OnboardingPhonePageTitle" xml:space="preserve">
-    <value>Tervetuloa Neuro-Accessiin</value>
+    <value>Vahvista puhelinnumero</value>
   </data>
   <data name="OnboardingPhonePageDetails" xml:space="preserve">
-    <value>Jotta saat vahvistuksen, sinun on annettava puhelinnumerosi</value>
+    <value>Lähetämme sinulle vahvistuskoodin</value>
   </data>
   <data name="OnboardingEmailPageTitle" xml:space="preserve">
     <value>Vahvista sähköpostiosoite</value>
@@ -559,10 +559,10 @@
     <value>Alue:</value>
   </data>
   <data name="OnboardingAccountPageTitle" xml:space="preserve">
-    <value>Luo tili</value>
+    <value>Tilin luominen...</value>
   </data>
   <data name="OnboardingAccountPageDetails" xml:space="preserve">
-    <value>Kirjoita nimi, jota haluat käyttää tililläsi</value>
+    <value>Odota, kunnes järjestämme asiat sinulle</value>
   </data>
   <data name="OnboardingDefinePasswordPageTitle" xml:space="preserve">
     <value>PIN-koodin luominen</value>
@@ -578,9 +578,6 @@
   </data>
   <data name="OnboardingBiometricsPageDetails" xml:space="preserve">
     <value>Neuro-Access toimii parhaiten {0} käytettäessä. Haluatko ottaa tämän ominaisuuden käyttöön? Tätä voidaan muuttaa myös asetuksissa myöhemmin</value>
-  </data>
-  <data name="AccountSectionTitle" xml:space="preserve">
-    <value>Kirjoita tilin nimi</value>
   </data>
   <data name="Create" xml:space="preserve">
     <value>Luoda</value>
@@ -623,6 +620,9 @@
   </data>
   <data name="EmailValidationFormat" xml:space="preserve">
     <value>Anna kelvollinen sähköpostiosoite</value>
+  </data>
+  <data name="PhoneValidationFormat" xml:space="preserve">
+    <value>Anna kelvollinen puhelinnumero</value>
   </data>
   <data name="ProviderSectionTitle" xml:space="preserve">
     <value>Valitse yksi vaihtoehto</value>
@@ -2132,5 +2132,50 @@
   </data>
   <data name="TransferIdentityPageDetails" xml:space="preserve">
     <value>Jatka toisella laitteellasi käyttöönottoa, kunnes pääset palveluntarjoajasivulle. Paina muutospainiketta ja skannaa tämä QR. Tämä poistaa identiteetin tästä laitteesta.</value>
+  </data>
+  <data name="AppVersion" xml:space="preserve">
+    <value>Versionumero</value>
+  </data>
+  <data name="BuildNumber" xml:space="preserve">
+    <value>Koontiversion numero</value>
+  </data>
+  <data name="Platform" xml:space="preserve">
+    <value>Lava</value>
+  </data>
+  <data name="HardwareInfo" xml:space="preserve">
+    <value>Laitteisto</value>
+  </data>
+  <data name="OnboardingGetStartedTitle" xml:space="preserve">
+    <value>Tervetuloa Neuro-Accessiin</value>
+  </data>
+  <data name="OnboardingGetStartedDetails" xml:space="preserve">
+    <value>Näin pääset alkuun</value>
+  </data>
+  <data name="CreateNewAccount" xml:space="preserve">
+    <value>Luo uusi tili</value>
+  </data>
+  <data name="IAlreadyHaveAnAccount" xml:space="preserve">
+    <value>Minulla on jo tili</value>
+  </data>
+  <data name="OnboardingGetStartedQrInfo" xml:space="preserve">
+    <value>Saitko kutsu-, siirto- tai palautuskoodin? Skannaa se alla</value>
+  </data>
+  <data name="OnboardingNameEntryTitle" xml:space="preserve">
+    <value>Miten meidän pitäisi puhua sinulle?</value>
+  </data>
+  <data name="OnboardingNameEntryDetails" xml:space="preserve">
+    <value>Kirjoita nimi, jota haluat käyttää sovelluksessa. Se voi olla oikea nimesi tai lempinimesi</value>
+  </data>
+  <data name="UseNickname" xml:space="preserve">
+    <value>Haluaisin käyttää lempinimeä</value>
+  </data>
+  <data name="UseRealName" xml:space="preserve">
+    <value>Haluaisin käyttää oikeaa nimeäni</value>
+  </data>
+  <data name="BeAnonymous" xml:space="preserve">
+    <value>Haluan pysyä nimettömänä</value>
+  </data>
+  <data name="Nickname" xml:space="preserve">
+    <value>Lempinimi</value>
   </data>
 </root>

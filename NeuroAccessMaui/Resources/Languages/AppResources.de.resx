@@ -535,10 +535,10 @@
     <value>Die Bindung der Viewmodel-{0} für Seite {1} konnte nicht aufgehoben werden</value>
   </data>
   <data name="OnboardingPhonePageTitle" xml:space="preserve">
-    <value>Willkommen bei Neuro-Access</value>
+    <value>Bitte bestätigen Sie die Telefonnummer</value>
   </data>
   <data name="OnboardingPhonePageDetails" xml:space="preserve">
-    <value>Um verifiziert zu werden, müssen Sie Ihre Telefonnummer eingeben</value>
+    <value>Wir senden Ihnen einen Verifizierungscode</value>
   </data>
   <data name="OnboardingEmailPageTitle" xml:space="preserve">
     <value>Bitte bestätigen Sie Ihre E-Mail-Adresse</value>
@@ -559,10 +559,10 @@
     <value>Domäne:</value>
   </data>
   <data name="OnboardingAccountPageTitle" xml:space="preserve">
-    <value>Konto erstellen</value>
+    <value>Konto erstellen...</value>
   </data>
   <data name="OnboardingAccountPageDetails" xml:space="preserve">
-    <value>Geben Sie den Namen ein, den Sie für Ihr Konto verwenden möchten</value>
+    <value>Bitte warten Sie, während wir alles für Sie eingerichtet haben</value>
   </data>
   <data name="OnboardingDefinePasswordPageTitle" xml:space="preserve">
     <value>Erstellen eines PIN-Codes</value>
@@ -578,9 +578,6 @@
   </data>
   <data name="OnboardingBiometricsPageDetails" xml:space="preserve">
     <value>Neuro-Access funktioniert am besten, wenn Sie {0} verwenden. Möchten Sie diese Funktion aktivieren? Dies kann auch nachträglich in den Einstellungen geändert werden</value>
-  </data>
-  <data name="AccountSectionTitle" xml:space="preserve">
-    <value>Geben Sie den Kontonamen ein</value>
   </data>
   <data name="Create" xml:space="preserve">
     <value>Schaffen</value>
@@ -623,6 +620,9 @@
   </data>
   <data name="EmailValidationFormat" xml:space="preserve">
     <value>Bitte geben Sie eine gültige E-Mail-Adresse ein</value>
+  </data>
+  <data name="PhoneValidationFormat" xml:space="preserve">
+    <value>Bitte geben Sie eine gültige Telefonnummer ein.</value>
   </data>
   <data name="ProviderSectionTitle" xml:space="preserve">
     <value>Wählen Sie eine Option</value>
@@ -2132,5 +2132,50 @@
   </data>
   <data name="TransferIdentityPageDetails" xml:space="preserve">
     <value>Fahren Sie auf Ihrem anderen Gerät mit dem Onboarding fort, bis Sie die Seite des Dienstanbieters erreichen. Drücken Sie die Änderungstaste und scannen Sie diesen QR. Dadurch wird die Identität von diesem Gerät entfernt.</value>
+  </data>
+  <data name="AppVersion" xml:space="preserve">
+    <value>Versionsnummer</value>
+  </data>
+  <data name="BuildNumber" xml:space="preserve">
+    <value>Build-Nummer</value>
+  </data>
+  <data name="Platform" xml:space="preserve">
+    <value>Bahnsteig</value>
+  </data>
+  <data name="HardwareInfo" xml:space="preserve">
+    <value>Hardware</value>
+  </data>
+  <data name="OnboardingGetStartedTitle" xml:space="preserve">
+    <value>Willkommen bei Neuro-Access</value>
+  </data>
+  <data name="OnboardingGetStartedDetails" xml:space="preserve">
+    <value>Lass uns anfangen</value>
+  </data>
+  <data name="CreateNewAccount" xml:space="preserve">
+    <value>Neues Konto erstellen</value>
+  </data>
+  <data name="IAlreadyHaveAnAccount" xml:space="preserve">
+    <value>Ich habe bereits ein Konto</value>
+  </data>
+  <data name="OnboardingGetStartedQrInfo" xml:space="preserve">
+    <value>Haben Sie einen Einladungs-, Überweisungs- oder Wiederherstellungscode erhalten? Scannen Sie es unten</value>
+  </data>
+  <data name="OnboardingNameEntryTitle" xml:space="preserve">
+    <value>Wie sollen wir Sie ansprechen?</value>
+  </data>
+  <data name="OnboardingNameEntryDetails" xml:space="preserve">
+    <value>Geben Sie den Namen ein, den Sie in der App verwenden möchten. Es kann Ihr richtiger Name oder ein Spitzname sein</value>
+  </data>
+  <data name="UseNickname" xml:space="preserve">
+    <value>Ich möchte einen Spitznamen verwenden</value>
+  </data>
+  <data name="UseRealName" xml:space="preserve">
+    <value>Ich möchte meinen richtigen Namen verwenden</value>
+  </data>
+  <data name="BeAnonymous" xml:space="preserve">
+    <value>Ich möchte anonym bleiben</value>
+  </data>
+  <data name="Nickname" xml:space="preserve">
+    <value>Spitzname</value>
   </data>
 </root>

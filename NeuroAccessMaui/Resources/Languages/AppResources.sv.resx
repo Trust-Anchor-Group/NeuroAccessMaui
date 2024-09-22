@@ -621,6 +621,9 @@
   <data name="EmailValidationFormat" xml:space="preserve">
     <value>Ange en giltig e-postadress</value>
   </data>
+  <data name="PhoneValidationFormat" xml:space="preserve">
+    <value>Ange ett giltigt telefonnummer</value>
+  </data>
   <data name="ProviderSectionTitle" xml:space="preserve">
     <value>Välj ett alternativ</value>
   </data>
@@ -2165,5 +2168,14 @@
   </data>
   <data name="UseNickname" xml:space="preserve">
     <value>Jag vill använda ett smeknamn</value>
+  </data>
+  <data name="UseRealName" xml:space="preserve">
+    <value>Jag vill använda mitt riktiga namn</value>
+  </data>
+  <data name="BeAnonymous" xml:space="preserve">
+    <value>Jag vill vara anonym</value>
+  </data>
+  <data name="Nickname" xml:space="preserve">
+    <value>Smeknamn</value>
   </data>
 </root>

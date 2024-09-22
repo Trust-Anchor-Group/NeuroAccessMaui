@@ -621,6 +621,9 @@
   <data name="EmailValidationFormat" xml:space="preserve">
     <value>Please enter a valid email</value>
   </data>
+  <data name="PhoneValidationFormat" xml:space="preserve">
+    <value>Please enter a valid phone number</value>
+  </data>
   <data name="ProviderSectionTitle" xml:space="preserve">
     <value>Choose one option</value>
   </data>
@@ -2165,5 +2168,14 @@
   </data>
   <data name="UseNickname" xml:space="preserve">
     <value>I'd like to use a nickname</value>
+  </data>
+  <data name="UseRealName" xml:space="preserve">
+    <value>I'd like to use my real name</value>
+  </data>
+  <data name="BeAnonymous" xml:space="preserve">
+    <value>I'd like to be anonymous</value>
+  </data>
+  <data name="Nickname" xml:space="preserve">
+    <value>Nickname</value>
   </data>
 </root>

@@ -535,10 +535,10 @@
     <value>Nije uspelo otpojaиanje viewmodel {0} za stranicu {1}</value>
   </data>
   <data name="OnboardingPhonePageTitle" xml:space="preserve">
-    <value>Dobrodošli u Neuro-Access</value>
+    <value>Molimo Vas da potvrdite broj telefona</value>
   </data>
   <data name="OnboardingPhonePageDetails" xml:space="preserve">
-    <value>Da biste se proverili, potrebno je da unesete svoj broj telefona</value>
+    <value>Poslaćemo vam verifikacioni kod</value>
   </data>
   <data name="OnboardingEmailPageTitle" xml:space="preserve">
     <value>Proverite e-poštu</value>
@@ -559,10 +559,10 @@
     <value>Domena:</value>
   </data>
   <data name="OnboardingAccountPageTitle" xml:space="preserve">
-    <value>Kreiraj nalog</value>
+    <value>Kreiranje naloga...</value>
   </data>
   <data name="OnboardingAccountPageDetails" xml:space="preserve">
-    <value>Unesite ime koje želite da koristite za svoj nalog</value>
+    <value>Molimo vas da sačekate dok ne podesite stvari za vas</value>
   </data>
   <data name="OnboardingDefinePasswordPageTitle" xml:space="preserve">
     <value>Kreiranje PIN koda</value>
@@ -578,9 +578,6 @@
   </data>
   <data name="OnboardingBiometricsPageDetails" xml:space="preserve">
     <value>Neuro-Access najbolje funkcioniše kada se koriste {0}. Želite li da omogućite ovu funkciju? Ovo se kasnije može promeniti i u postavkama</value>
-  </data>
-  <data name="AccountSectionTitle" xml:space="preserve">
-    <value>Unesite ime naloga</value>
   </data>
   <data name="Create" xml:space="preserve">
     <value>Kreirate</value>
@@ -623,6 +620,9 @@
   </data>
   <data name="EmailValidationFormat" xml:space="preserve">
     <value>Unesite važeću e-poruku</value>
+  </data>
+  <data name="PhoneValidationFormat" xml:space="preserve">
+    <value>Molimo Vas da unesete važeći broj telefona</value>
   </data>
   <data name="ProviderSectionTitle" xml:space="preserve">
     <value>Odaberite jednu opciju</value>
@@ -2132,5 +2132,50 @@
   </data>
   <data name="TransferIdentityPageDetails" xml:space="preserve">
     <value>Na drugom uređaju nastavite sa ukrcavanje dok ne dođete do stranice dobavljača usluga. Pritisnite dugme "Promeni" i skenirajte ovaj QR. Ako to uradite, uklonićete identitet sa ovog uređaja.</value>
+  </data>
+  <data name="AppVersion" xml:space="preserve">
+    <value>Broj verzije</value>
+  </data>
+  <data name="BuildNumber" xml:space="preserve">
+    <value>Broj izrade</value>
+  </data>
+  <data name="Platform" xml:space="preserve">
+    <value>Platforme</value>
+  </data>
+  <data name="HardwareInfo" xml:space="preserve">
+    <value>Hardver</value>
+  </data>
+  <data name="OnboardingGetStartedTitle" xml:space="preserve">
+    <value>Dobrodošli u Neuro-Access</value>
+  </data>
+  <data name="OnboardingGetStartedDetails" xml:space="preserve">
+    <value>Hajde da počneš</value>
+  </data>
+  <data name="CreateNewAccount" xml:space="preserve">
+    <value>Kreiraj novi nalog</value>
+  </data>
+  <data name="IAlreadyHaveAnAccount" xml:space="preserve">
+    <value>Već imam nalog</value>
+  </data>
+  <data name="OnboardingGetStartedQrInfo" xml:space="preserve">
+    <value>Dobio poziv, prenos ili kod za oporavak? Skenirajte ga ispod</value>
+  </data>
+  <data name="OnboardingNameEntryTitle" xml:space="preserve">
+    <value>Kako da vam se obratimo?</value>
+  </data>
+  <data name="OnboardingNameEntryDetails" xml:space="preserve">
+    <value>Unesite ime koje želite da koristite u aplikaciji. To može biti vaše pravo ime ili nadimak</value>
+  </data>
+  <data name="UseNickname" xml:space="preserve">
+    <value>Želeo bih da koristim nadimak</value>
+  </data>
+  <data name="UseRealName" xml:space="preserve">
+    <value>Voleo bih da koristim svoje pravo ime</value>
+  </data>
+  <data name="BeAnonymous" xml:space="preserve">
+    <value>Voleo bih da budem anoniman</value>
+  </data>
+  <data name="Nickname" xml:space="preserve">
+    <value>Nadimak</value>
   </data>
 </root>

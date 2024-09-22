@@ -535,10 +535,10 @@
     <value>Не удалось отвязать {0} модели представления для {1} страницы</value>
   </data>
   <data name="OnboardingPhonePageTitle" xml:space="preserve">
-    <value>Добро пожаловать в Neuro-Access</value>
+    <value>Пожалуйста, подтвердите номер телефона</value>
   </data>
   <data name="OnboardingPhonePageDetails" xml:space="preserve">
-    <value>Чтобы пройти верификацию, нужно ввести свой номер телефона</value>
+    <value>Мы вышлем вам код подтверждения</value>
   </data>
   <data name="OnboardingEmailPageTitle" xml:space="preserve">
     <value>Пожалуйста, подтвердите адрес электронной почты</value>
@@ -559,10 +559,10 @@
     <value>Домен:</value>
   </data>
   <data name="OnboardingAccountPageTitle" xml:space="preserve">
-    <value>Создать аккаунт</value>
+    <value>Создание учетной записи...</value>
   </data>
   <data name="OnboardingAccountPageDetails" xml:space="preserve">
-    <value>Введите имя, которое вы хотите использовать для своей учетной записи</value>
+    <value>Пожалуйста, подождите, пока мы все настроим для вас</value>
   </data>
   <data name="OnboardingDefinePasswordPageTitle" xml:space="preserve">
     <value>Создание PIN-кода</value>
@@ -578,9 +578,6 @@
   </data>
   <data name="OnboardingBiometricsPageDetails" xml:space="preserve">
     <value>Neuro-Access лучше всего работает при использовании {0}. Хотите включить эту функцию? Это также можно изменить в настройках позже</value>
-  </data>
-  <data name="AccountSectionTitle" xml:space="preserve">
-    <value>Введите имя учетной записи</value>
   </data>
   <data name="Create" xml:space="preserve">
     <value>Создавать</value>
@@ -623,6 +620,9 @@
   </data>
   <data name="EmailValidationFormat" xml:space="preserve">
     <value>Пожалуйста, введите действительный адрес электронной почты</value>
+  </data>
+  <data name="PhoneValidationFormat" xml:space="preserve">
+    <value>Пожалуйста, введите действующий номер телефона</value>
   </data>
   <data name="ProviderSectionTitle" xml:space="preserve">
     <value>Выберите один вариант</value>
@@ -2132,5 +2132,50 @@
   </data>
   <data name="TransferIdentityPageDetails" xml:space="preserve">
     <value>На другом устройстве продолжайте подключение, пока не дойдете до страницы поставщика услуг. Нажмите кнопку «Изменить» и отсканируйте этот QR-код. Это приведет к удалению удостоверения с этого устройства.</value>
+  </data>
+  <data name="AppVersion" xml:space="preserve">
+    <value>Номер версии</value>
+  </data>
+  <data name="BuildNumber" xml:space="preserve">
+    <value>Номер сборки</value>
+  </data>
+  <data name="Platform" xml:space="preserve">
+    <value>Платформа</value>
+  </data>
+  <data name="HardwareInfo" xml:space="preserve">
+    <value>Скобяные изделия</value>
+  </data>
+  <data name="OnboardingGetStartedTitle" xml:space="preserve">
+    <value>Добро пожаловать в Neuro-Access</value>
+  </data>
+  <data name="OnboardingGetStartedDetails" xml:space="preserve">
+    <value>Давайте начнем</value>
+  </data>
+  <data name="CreateNewAccount" xml:space="preserve">
+    <value>Создать новую учетную запись</value>
+  </data>
+  <data name="IAlreadyHaveAnAccount" xml:space="preserve">
+    <value>У меня уже есть учетная запись</value>
+  </data>
+  <data name="OnboardingGetStartedQrInfo" xml:space="preserve">
+    <value>Получили приглашение, код для переноса или восстановления? Отсканируйте его ниже</value>
+  </data>
+  <data name="OnboardingNameEntryTitle" xml:space="preserve">
+    <value>Как мы должны к вам обратиться?</value>
+  </data>
+  <data name="OnboardingNameEntryDetails" xml:space="preserve">
+    <value>Введите имя, которое вы хотите использовать в приложении. Это может быть ваше настоящее имя или никнейм</value>
+  </data>
+  <data name="UseNickname" xml:space="preserve">
+    <value>Я хочу использовать псевдоним</value>
+  </data>
+  <data name="UseRealName" xml:space="preserve">
+    <value>Я хочу использовать свое настоящее имя</value>
+  </data>
+  <data name="BeAnonymous" xml:space="preserve">
+    <value>Я хотел бы остаться анонимным</value>
+  </data>
+  <data name="Nickname" xml:space="preserve">
+    <value>Прозвище</value>
   </data>
 </root>

@@ -535,10 +535,10 @@
     <value>Ophævelsen af ophævelsen af viewmodel-{0} for side {1}</value>
   </data>
   <data name="OnboardingPhonePageTitle" xml:space="preserve">
-    <value>Velkommen til Neuro-Access</value>
+    <value>Bekræft venligst telefonnummeret</value>
   </data>
   <data name="OnboardingPhonePageDetails" xml:space="preserve">
-    <value>For at blive bekræftet skal du indtaste dit telefonnummer</value>
+    <value>Vi sender dig en bekræftelseskode</value>
   </data>
   <data name="OnboardingEmailPageTitle" xml:space="preserve">
     <value>Bekræft venligst e-mail</value>
@@ -559,10 +559,10 @@
     <value>Domæne:</value>
   </data>
   <data name="OnboardingAccountPageTitle" xml:space="preserve">
-    <value>Opret konto</value>
+    <value>Oprettelse af konto...</value>
   </data>
   <data name="OnboardingAccountPageDetails" xml:space="preserve">
-    <value>Indtast det navn, du vil bruge til din konto</value>
+    <value>Vent venligst, mens vi sætter tingene op for dig</value>
   </data>
   <data name="OnboardingDefinePasswordPageTitle" xml:space="preserve">
     <value>Opret en pinkode</value>
@@ -578,9 +578,6 @@
   </data>
   <data name="OnboardingBiometricsPageDetails" xml:space="preserve">
     <value>Neuro-Access fungerer bedst, når du bruger {0}. Vil du aktivere denne funktion? Dette kan også ændres i indstillingerne senere</value>
-  </data>
-  <data name="AccountSectionTitle" xml:space="preserve">
-    <value>Indtast kontonavnet</value>
   </data>
   <data name="Create" xml:space="preserve">
     <value>Skabe</value>
@@ -623,6 +620,9 @@
   </data>
   <data name="EmailValidationFormat" xml:space="preserve">
     <value>Indtast en gyldig e-mail</value>
+  </data>
+  <data name="PhoneValidationFormat" xml:space="preserve">
+    <value>Indtast venligst et gyldigt telefonnummer</value>
   </data>
   <data name="ProviderSectionTitle" xml:space="preserve">
     <value>Vælg en mulighed</value>
@@ -2132,5 +2132,50 @@
   </data>
   <data name="TransferIdentityPageDetails" xml:space="preserve">
     <value>På din anden enhed skal du fortsætte med onboardingen, indtil du kommer til tjenesteudbydersiden. Tryk på skiftknappen, og scan denne QR. Hvis du gør dette, fjernes identiteten fra denne enhed.</value>
+  </data>
+  <data name="AppVersion" xml:space="preserve">
+    <value>Versionsnummer</value>
+  </data>
+  <data name="BuildNumber" xml:space="preserve">
+    <value>Byg nummer</value>
+  </data>
+  <data name="Platform" xml:space="preserve">
+    <value>Perron</value>
+  </data>
+  <data name="HardwareInfo" xml:space="preserve">
+    <value>Hardware</value>
+  </data>
+  <data name="OnboardingGetStartedTitle" xml:space="preserve">
+    <value>Velkommen til Neuro-Access</value>
+  </data>
+  <data name="OnboardingGetStartedDetails" xml:space="preserve">
+    <value>Lad os komme i gang</value>
+  </data>
+  <data name="CreateNewAccount" xml:space="preserve">
+    <value>Opret ny konto</value>
+  </data>
+  <data name="IAlreadyHaveAnAccount" xml:space="preserve">
+    <value>Jeg har allerede en konto</value>
+  </data>
+  <data name="OnboardingGetStartedQrInfo" xml:space="preserve">
+    <value>Har du modtaget en invitations-, overførsels- eller gendannelseskode? Scan det nedenfor</value>
+  </data>
+  <data name="OnboardingNameEntryTitle" xml:space="preserve">
+    <value>Hvordan skal vi henvende os til dig?</value>
+  </data>
+  <data name="OnboardingNameEntryDetails" xml:space="preserve">
+    <value>Indtast det navn, du vil bruge i appen. Det kan være dit rigtige navn eller et kaldenavn</value>
+  </data>
+  <data name="UseNickname" xml:space="preserve">
+    <value>Jeg vil gerne bruge et kaldenavn</value>
+  </data>
+  <data name="UseRealName" xml:space="preserve">
+    <value>Jeg vil gerne bruge mit rigtige navn</value>
+  </data>
+  <data name="BeAnonymous" xml:space="preserve">
+    <value>Jeg vil gerne være anonym</value>
+  </data>
+  <data name="Nickname" xml:space="preserve">
+    <value>Kælenavn</value>
   </data>
 </root>

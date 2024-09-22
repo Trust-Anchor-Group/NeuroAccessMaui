@@ -491,6 +491,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to I&apos;d like to be anonymous.
+        /// </summary>
+        internal static string BeAnonymous {
+            get {
+                return ResourceManager.GetString("BeAnonymous", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Being signed.
         /// </summary>
         internal static string BeingSigned {
@@ -2552,6 +2561,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Nickname.
+        /// </summary>
+        internal static string Nickname {
+            get {
+                return ResourceManager.GetString("Nickname", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No.
         /// </summary>
         internal static string No {
@@ -3682,6 +3700,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string PhoneValidationDigits {
             get {
                 return ResourceManager.GetString("PhoneValidationDigits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a valid phone number.
+        /// </summary>
+        internal static string PhoneValidationFormat {
+            get {
+                return ResourceManager.GetString("PhoneValidationFormat", resourceCulture);
             }
         }
         
@@ -5797,6 +5824,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string User {
             get {
                 return ResourceManager.GetString("User", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I&apos;d like to use my real name.
+        /// </summary>
+        internal static string UseRealName {
+            get {
+                return ResourceManager.GetString("UseRealName", resourceCulture);
             }
         }
         

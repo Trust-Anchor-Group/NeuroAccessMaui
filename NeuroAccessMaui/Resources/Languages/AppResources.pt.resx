@@ -535,10 +535,10 @@
     <value>Falha ao desvincular {0} viewmodel para {1} de página</value>
   </data>
   <data name="OnboardingPhonePageTitle" xml:space="preserve">
-    <value>Bem-vindo ao Neuro-Access</value>
+    <value>Por favor, verifique o número de telefone</value>
   </data>
   <data name="OnboardingPhonePageDetails" xml:space="preserve">
-    <value>Para ser verificado, você precisa digitar seu número de telefone</value>
+    <value>Enviaremos um código de verificação</value>
   </data>
   <data name="OnboardingEmailPageTitle" xml:space="preserve">
     <value>Por favor, verifique o e-mail</value>
@@ -559,10 +559,10 @@
     <value>Domínio:</value>
   </data>
   <data name="OnboardingAccountPageTitle" xml:space="preserve">
-    <value>Criar conta</value>
+    <value>Criando conta...</value>
   </data>
   <data name="OnboardingAccountPageDetails" xml:space="preserve">
-    <value>Introduza o nome que pretende utilizar para a sua conta</value>
+    <value>Por favor, aguarde enquanto preparamos as coisas para você</value>
   </data>
   <data name="OnboardingDefinePasswordPageTitle" xml:space="preserve">
     <value>Criar um código PIN</value>
@@ -578,9 +578,6 @@
   </data>
   <data name="OnboardingBiometricsPageDetails" xml:space="preserve">
     <value>O Neuro-Access funciona melhor ao usar {0}. Gostaria de ativar esse recurso? Isso também pode ser alterado nas configurações mais tarde</value>
-  </data>
-  <data name="AccountSectionTitle" xml:space="preserve">
-    <value>Digite o nome da conta</value>
   </data>
   <data name="Create" xml:space="preserve">
     <value>Criar</value>
@@ -623,6 +620,9 @@
   </data>
   <data name="EmailValidationFormat" xml:space="preserve">
     <value>Por favor, insira um e-mail válido</value>
+  </data>
+  <data name="PhoneValidationFormat" xml:space="preserve">
+    <value>Insira um número de telefone válido</value>
   </data>
   <data name="ProviderSectionTitle" xml:space="preserve">
     <value>Escolha uma opção</value>
@@ -2132,5 +2132,50 @@
   </data>
   <data name="TransferIdentityPageDetails" xml:space="preserve">
     <value>No outro dispositivo, continue com a integração até chegar à página do provedor de serviços. Pressione o botão de alteração e digitalize este QR. Fazer isso removerá a identidade deste dispositivo.</value>
+  </data>
+  <data name="AppVersion" xml:space="preserve">
+    <value>Número da versão</value>
+  </data>
+  <data name="BuildNumber" xml:space="preserve">
+    <value>Número da compilação</value>
+  </data>
+  <data name="Platform" xml:space="preserve">
+    <value>Plataforma</value>
+  </data>
+  <data name="HardwareInfo" xml:space="preserve">
+    <value>Hardware</value>
+  </data>
+  <data name="OnboardingGetStartedTitle" xml:space="preserve">
+    <value>Bem-vindo ao Neuro-Access</value>
+  </data>
+  <data name="OnboardingGetStartedDetails" xml:space="preserve">
+    <value>Vamos começar</value>
+  </data>
+  <data name="CreateNewAccount" xml:space="preserve">
+    <value>Criar nova conta</value>
+  </data>
+  <data name="IAlreadyHaveAnAccount" xml:space="preserve">
+    <value>Já tenho uma conta</value>
+  </data>
+  <data name="OnboardingGetStartedQrInfo" xml:space="preserve">
+    <value>Recebeu um código de convite, transferência ou recuperação? Digitalize abaixo</value>
+  </data>
+  <data name="OnboardingNameEntryTitle" xml:space="preserve">
+    <value>Como devemos nos dirigir a você?</value>
+  </data>
+  <data name="OnboardingNameEntryDetails" xml:space="preserve">
+    <value>Digite o nome que você gostaria de usar no aplicativo. Pode ser seu nome verdadeiro ou um apelido</value>
+  </data>
+  <data name="UseNickname" xml:space="preserve">
+    <value>Eu gostaria de usar um apelido</value>
+  </data>
+  <data name="UseRealName" xml:space="preserve">
+    <value>Eu gostaria de usar meu nome verdadeiro</value>
+  </data>
+  <data name="BeAnonymous" xml:space="preserve">
+    <value>Eu gostaria de ser anônimo</value>
+  </data>
+  <data name="Nickname" xml:space="preserve">
+    <value>Apelido</value>
   </data>
 </root>
