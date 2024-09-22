@@ -25,7 +25,10 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		}
 
 		[RelayCommand]
-		private void ExistingAccount() { }
+		private void ExistingAccount()
+		{
+			GoToRegistrationStep(RegistrationStep.ContactSupport);
+		}
 
 		public bool CanScanQrCode => !this.IsBusy;
 
