@@ -4,80 +4,67 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Tag;
-using Waher.Networking.XMPP;
 
 namespace NeuroAccessMaui.UI.Pages.Registration.Views
 {
 	public partial class NameEntryViewModel : BaseRegistrationViewModel
 	{
 		public NameEntryViewModel()
-			 : base(RegistrationStep.NameEntry) // Ensure this step is defined
+			  : base(RegistrationStep.NameEntry)
 		{
+			// Set default selection if needed
+			this.SelectedNameOption = NameOption.RealName;
 		}
-
-		protected override async Task OnInitialize()
-		{
-			await base.OnInitialize();
-		}
-
-		protected override async Task OnDispose()
-		{
-			await base.OnDispose();
-		}
-
-		public override async Task DoAssignProperties()
-		{
-			await base.DoAssignProperties();
-		}
-
 
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(CreateAccountCommand))]
-		private bool isUsingNickname;
+		private NameOption selectedNameOption;
 
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(CreateAccountCommand))]
-		private string firstName;
+		private string? firstName;
 
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(CreateAccountCommand))]
-		private string lastName;
+		private string? lastName;
 
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(CreateAccountCommand))]
-		private string nickname;
+		private string? nickname;
 
 		public bool CanCreateAccount()
 		{
-			if (this.IsUsingNickname)
+			switch (this.SelectedNameOption)
 			{
-				return !string.IsNullOrWhiteSpace(this.Nickname);
-			}
-			else
-			{
-				return !string.IsNullOrWhiteSpace(this.FirstName) && !string.IsNullOrWhiteSpace(this.LastName);
+				case NameOption.RealName:
+					return !string.IsNullOrWhiteSpace(FirstName) && !string.IsNullOrWhiteSpace(LastName);
+				case NameOption.Nickname:
+					return !string.IsNullOrWhiteSpace(Nickname);
+				case NameOption.Anonymous:
+					return true; // No input needed
+				default:
+					return false;
 			}
 		}
-
 
 		[RelayCommand(CanExecute = nameof(CanCreateAccount))]
 		private void CreateAccount()
 		{
-			if (this.IsUsingNickname)
+			switch (this.SelectedNameOption)
 			{
-				ServiceRef.TagProfile.FriendlyName = this.Nickname;
-			}
-			else
-			{
-				ServiceRef.TagProfile.FirstName = this.FirstName;
-				ServiceRef.TagProfile.LastName = this.LastName;
+				case NameOption.RealName:
+					ServiceRef.TagProfile.FirstName = this.FirstName;
+					ServiceRef.TagProfile.LastName = this.LastName;
+					break;
+				case NameOption.Nickname:
+					ServiceRef.TagProfile.FriendlyName = this.Nickname;
+					break;
+				case NameOption.Anonymous:
+					// Do nothing
+					break;
 			}
 
 			GoToRegistrationStep(RegistrationStep.ValidatePhone);
 		}
-
-
-
 	}
 }
-
