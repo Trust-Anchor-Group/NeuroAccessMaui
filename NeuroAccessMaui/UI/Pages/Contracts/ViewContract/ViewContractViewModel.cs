@@ -643,7 +643,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 					this.ServerSignatures = ServerSignaturesLayout;
 				}
 
-				this.CanDeleteContract = !this.isReadOnly && !this.Contract.IsLegallyBinding(true);
+				this.CanDeleteContract = !this.isReadOnly && !await this.Contract.IsLegallyBinding(true, ServiceRef.XmppService.ContractsClient);
 				this.CanObsoleteContract = this.CanDeleteContract || CanObsolete;
 
 				this.HasRoles = this.Roles?.Children.Count > 0;
