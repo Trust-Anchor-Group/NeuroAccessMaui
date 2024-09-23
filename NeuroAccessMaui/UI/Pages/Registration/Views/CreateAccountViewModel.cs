@@ -38,14 +38,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			await base.OnDispose();
 		}
 
-		[ObservableProperty]
-		[NotifyPropertyChangedFor(nameof(this.ShowLoading))]
-		private bool showEntry;
-
-		public bool ShowLoading => !this.ShowEntry;
-
-		private bool hasGeneratedUsername = false;
-
 		/// <inheritdoc />
 		public override async Task DoAssignProperties()
 		{
@@ -135,6 +127,26 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			}
 		}
 
+		/// <summary>
+		/// If the manual account entry should be shown.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(this.ShowLoading))]
+		private bool showEntry;
+
+		/// <summary>
+		/// If the loading indicator should be shown.
+		/// </summary>
+		public bool ShowLoading => !this.ShowEntry;
+
+		/// <summary>
+		/// If we already generated a username.
+		/// </summary>
+		private bool hasGeneratedUsername = false;
+
+		/// <summary>
+		/// If the account is not valid.
+		/// </summary>
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(CreateAccountCommand))]
 		bool accountIsNotValid;
@@ -181,10 +193,22 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		/// </summary>
 		public bool HasAlternativeNames => this.AlternativeNames.Count > 0;
 
+		/// <summary>
+		/// If we can create an account.
+		/// </summary>
 		public bool CanCreateAccount => !this.IsBusy && !this.AccountIsNotValid && (this.AccountText.Length > 0) && !this.IsAccountCreated;
 
+		/// <summary>
+		/// If we can create an identity.
+		/// </summary>
 		public bool CanCreateIdentity => this.IsAccountCreated && !IsLegalIdentityCreated && this.IsXmppConnected;
 
+		/// <summary>
+		/// Create an account
+		/// If successful, it will also create an identity.
+		/// Otherwise, it will return
+		/// </summary>
+		/// <returns></returns>
 		[RelayCommand(CanExecute = nameof(CanCreateAccount))]
 		private async Task CreateAccount()
 		{
@@ -203,6 +227,9 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			this.IsBusy = false;
 		}
 
+		/// <summary>
+		/// Select a name from the list of alternative names.
+		/// </summary>
 		[RelayCommand]
 		private void SelectName(object Control)
 		{
@@ -210,6 +237,9 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				this.AccountText = AccountText;
 		}
 
+		/// <summary>
+		/// Try to create an identity.
+		/// </summary>
 		[RelayCommand(CanExecute = nameof(CanCreateIdentity))]
 		private async Task CreateIdentity()
 		{
@@ -238,6 +268,10 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		}
 
 
+		/// <summary>
+		/// Try to create an account.
+		/// </summary>
+		/// <returns>If operation was successful or not</returns>
 		private async Task<bool> TryCreateAccount()
 		{
 
