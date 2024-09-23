@@ -831,7 +831,7 @@ namespace NeuroAccessMaui
 			StringBuilder Xml = new();
 
 			using XmlDatabaseExport Output = new(Xml, true, 256);
-			await Database.Export(Output);
+			await ServiceRef.StorageService.Export(Output);
 
 			string AppDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 			FileName = Path.Combine(AppDataFolder, FileName);

@@ -6,6 +6,7 @@ using Waher.Content.Xml;
 using Waher.Events;
 using Waher.Persistence;
 using Waher.Persistence.Serialization;
+using Waher.Runtime.Settings;
 
 namespace NeuroAccessMaui.Services
 {
@@ -14,7 +15,7 @@ namespace NeuroAccessMaui.Services
 	/// </summary>
 	/// <param name="Output">XML output is directed to this XML writer.</param>
 	/// <param name="BinaryDataSizeLimit">Size limit of binary data fields. If larger, only a byte count will be presented.</param>
-	public class XmlDatabaseExport(XmlWriter Output, int BinaryDataSizeLimit) : IDatabaseExport, IDisposable
+	public class XmlDatabaseExport(XmlWriter Output, int BinaryDataSizeLimit) : IDatabaseExportFilter, IDisposable
 	{
 		private readonly XmlWriter output = Output;
 		private readonly int binaryDataSizeLimit = BinaryDataSizeLimit;
@@ -32,21 +33,38 @@ namespace NeuroAccessMaui.Services
 			this.disposeWriter = true;
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Is called when export of database is started.
+		/// </summary>
 		public Task StartDatabase()
 		{
 			this.output.WriteStartElement("Database");
 			return Task.CompletedTask;
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Is called when export of database is finished.
+		/// </summary>
 		public Task EndDatabase()
 		{
 			this.output.WriteEndElement();
 			return Task.CompletedTask;
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// If a collection can be exported.
+		/// </summary>
+		/// <param name="CollectionName">Name of collection</param>
+		/// <returns>If the collection can be exported.</returns>
+		public bool CanExportCollection(string CollectionName)
+		{
+			return true;
+		}
+
+		/// <summary>
+		/// Is called when a collection is started.
+		/// </summary>
+		/// <param name="CollectionName">Name of collection</param>
 		public Task StartCollection(string CollectionName)
 		{
 			this.output.WriteStartElement("Collection");
@@ -54,21 +72,29 @@ namespace NeuroAccessMaui.Services
 			return Task.CompletedTask;
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Is called when a collection is finished.
+		/// </summary>
 		public Task EndCollection()
 		{
 			this.output.WriteEndElement();
 			return Task.CompletedTask;
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Is called when an index in a collection is started.
+		/// </summary>
 		public Task StartIndex()
 		{
 			this.output.WriteStartElement("Index");
 			return Task.CompletedTask;
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Is called when a field in an index is reported.
+		/// </summary>
+		/// <param name="FieldName">Name of field.</param>
+		/// <param name="Ascending">If the field is sorted using ascending sort order.</param>
 		public Task ReportIndexField(string FieldName, bool Ascending)
 		{
 			this.output.WriteStartElement("Index");
@@ -78,14 +104,43 @@ namespace NeuroAccessMaui.Services
 			return Task.CompletedTask;
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Is called when an index in a collection is finished.
+		/// </summary>
 		public Task EndIndex()
 		{
 			this.output.WriteEndElement();
 			return Task.CompletedTask;
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// If an object can be exported.
+		/// </summary>
+		/// <param name="Object">Object to be exported.</param>
+		/// <returns>If the object can be exported.</returns>
+		public bool CanExportObject(GenericObject Object)
+		{
+			if (Object.CollectionName != "Settings")
+				return true;
+
+			if (!Object.TryGetFieldValue("Key", out object Value) || Value is not string Key)
+				return true;
+
+			if (Key.StartsWith(ServiceRef.XmppService.ContractsClient.ContractKeySettingsPrefix, StringComparison.Ordinal) ||
+				Key.StartsWith(ServiceRef.XmppService.ContractsClient.KeySettingsPrefix, StringComparison.Ordinal))
+			{
+				return false;
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		/// Is called when an object is started.
+		/// </summary>
+		/// <param name="ObjectId">ID of object.</param>
+		/// <param name="TypeName">Type name of object.</param>
+		/// <returns>Object ID of object, after optional mapping.</returns>
 		public Task<string> StartObject(string ObjectId, string TypeName)
 		{
 			this.output.WriteStartElement("Obj");
@@ -94,7 +149,11 @@ namespace NeuroAccessMaui.Services
 			return Task.FromResult<string>(ObjectId);
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Is called when a property is reported.
+		/// </summary>
+		/// <param name="PropertyName">Property name.</param>
+		/// <param name="PropertyValue">Property value.</param>
 		public async Task ReportProperty(string? PropertyName, object? PropertyValue)
 		{
 			if (PropertyValue is null)
@@ -445,21 +504,29 @@ namespace NeuroAccessMaui.Services
 			}
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Is called when an object is finished.
+		/// </summary>
 		public Task EndObject()
 		{
 			this.output.WriteEndElement();
 			return Task.CompletedTask;
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Is called when an error is reported.
+		/// </summary>
+		/// <param name="Message">Error message.</param>
 		public Task ReportError(string Message)
 		{
 			this.output.WriteElementString("Error", Message);
 			return Task.CompletedTask;
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Is called when an exception has occurred.
+		/// </summary>
+		/// <param name="Exception">Exception object.</param>
 		public async Task ReportException(Exception Exception)
 		{
 			this.output.WriteStartElement("Exception");
