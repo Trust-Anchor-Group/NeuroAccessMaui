@@ -5963,6 +5963,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Why is this data collected?.
+        /// </summary>
+        internal static string WhyIsThisDataCollected {
+            get {
+                return ResourceManager.GetString("WhyIsThisDataCollected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The name you provide will be used to generate a unique network identifier for your account. This identifier is used by other clients and brokers in order to communicate with you. This means that the data you provide here can be visible for clients and network operators of whom you communicate. The anonymous option will make sure your identifier is in the form of a GUID (Globally Unique Identifier) and is not based on any personal information..
+        /// </summary>
+        internal static string WhyIsThisDataCollectedInfo {
+            get {
+                return ResourceManager.GetString("WhyIsThisDataCollectedInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Witness.
         /// </summary>
         internal static string Witness {

@@ -2178,4 +2178,10 @@
   <data name="Nickname" xml:space="preserve">
     <value>Nickname</value>
   </data>
+  <data name="WhyIsThisDataCollected" xml:space="preserve">
+    <value>Why is this data collected?</value>
+  </data>
+  <data name="WhyIsThisDataCollectedInfo" xml:space="preserve">
+    <value>The name you provide will be used to generate a unique network identifier for your account. This identifier is used by other clients and brokers in order to communicate with you. This means that the data you provide here can be visible for clients and network operators of whom you communicate. The anonymous option will make sure your identifier is in the form of a GUID (Globally Unique Identifier) and is not based on any personal information.</value>
+  </data>
 </root>

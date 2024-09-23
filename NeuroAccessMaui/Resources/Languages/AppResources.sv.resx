@@ -2178,4 +2178,11 @@
   <data name="Nickname" xml:space="preserve">
     <value>Smeknamn</value>
   </data>
+  <data name="WhyIsThisDataCollected" xml:space="preserve">
+    <value>Varför samlas dessa uppgifter in?</value>
+  </data>
+  <data name="WhyIsThisDataCollectedInfo" xml:space="preserve">
+    <value>
+      Namnet du anger kommer att användas för att generera en unik nätverksidentifierare för ditt konto. Denna identifierare används av andra klienter och mäklare för att kommunicera med dig. Detta innebär att de uppgifter du anger här kan vara synliga för klienter och nätverksoperatörer som du kommunicerar med. Det anonyma alternativet säkerställer att din identifierare har formen av en GUID (Globally Unique Identifier) och inte är baserad på någon personlig information.</value>
+  </data>
 </root>
