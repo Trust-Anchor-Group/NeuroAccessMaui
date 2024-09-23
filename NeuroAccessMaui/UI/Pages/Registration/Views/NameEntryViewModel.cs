@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Tag;
+using NeuroAccessMaui.UI.Popups.Info;
 
 namespace NeuroAccessMaui.UI.Pages.Registration.Views
 {
@@ -31,6 +32,12 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(CreateAccountCommand))]
 		private string? nickname;
+
+		partial void OnSelectedNameOptionChanged(NameOption value)
+		{
+			// Clear values when switching between options
+			this.FirstName = this.LastName = this.Nickname = string.Empty;
+		}
 
 		public bool CanCreateAccount()
 		{
@@ -65,6 +72,15 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			}
 
 			GoToRegistrationStep(RegistrationStep.ValidatePhone);
+		}
+
+		[RelayCommand]
+		private async Task ShowDataInfo()
+		{
+			string title = ServiceRef.Localizer[nameof(AppResources.WhyIsThisDataCollected)];
+			string message = ServiceRef.Localizer[nameof(AppResources.WhyIsThisDataCollectedInfo)];
+			ShowInfoPopup infoPage = new(title, message);
+			await ServiceRef.UiService.PushAsync(infoPage);
 		}
 	}
 }

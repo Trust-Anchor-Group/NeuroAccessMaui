@@ -72,9 +72,31 @@
 		</ScrollView>
 
 		<!-- Continue Button -->
-		<VerticalStackLayout Grid.Row="1">
+		<VerticalStackLayout Grid.Row="1" Spacing="{StaticResource MediumSpacing}">
+			<controls:TemplatedButton
+				HorizontalOptions="Center"
+				Command="{x:Binding ShowDataInfoCommand}">
+				<HorizontalStackLayout Spacing="{StaticResource SmallSpacing}">
+					<Path
+						VerticalOptions="Center"
+						HeightRequest="20"
+						WidthRequest="20"
+						Aspect="Uniform"
+						Data="{x:Static ui:Geometries.InfoCirclePath}"
+						Fill="{AppThemeBinding Light={StaticResource NormalInfoForegroundLight},
+											Dark={StaticResource NormalInfoForegroundDark}}" />
+
+					<Label
+						VerticalOptions="Center"
+						FontFamily="HaasGroteskRegular"
+						FontSize="14"
+						Text="{l:Localize WhyIsThisDataCollected}"
+						TextColor="{AppThemeBinding Light={StaticResource NormalInfoForegroundLight},
+													Dark={StaticResource NormalInfoForegroundDark}}" />
+				</HorizontalStackLayout>
+			</controls:TemplatedButton>
 			<controls:TextButton Command="{Binding CreateAccountCommand}" Style="{StaticResource FilledTextButton}"
-                                 LabelData="{l:Localize Continue}" />
+			                     LabelData="{l:Localize Continue}" />
 		</VerticalStackLayout>
 	</Grid>
 </base:BaseRegistrationView>
