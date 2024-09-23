@@ -1,6 +1,4 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
-using CoreGraphics;
-using Foundation;
+﻿using Foundation;
 using NeuroAccessMaui.UI;
 using UIKit;
 
@@ -18,7 +16,7 @@ namespace NeuroAccessMaui
 
 			// TODO: This is a temporary workaround to fix the issue with custom RadioButton control templates not responding to taps on IOS
 			// https://github.com/dotnet/maui/issues/19478
-			this.RadioButtonTemplateWorkaround();
+			RadioButtonTemplateWorkaround();
 
 			return app;
 		}
@@ -31,17 +29,17 @@ namespace NeuroAccessMaui
 		// By ensuring we have a KeyWindow when the app is activated or resigns solves this issue.
 		public override void OnActivated(UIApplication application)
 		{
-			this.EnsureKeyWindow();
+			EnsureKeyWindow();
 			base.OnActivated(application);
 		}
 
 		public override void OnResignActivation(UIApplication application)
 		{
-			this.EnsureKeyWindow();
+			EnsureKeyWindow();
 			base.OnResignActivation(application);
 		}
 
-		private void EnsureKeyWindow()
+		private static void EnsureKeyWindow()
 		{
 			if (GetKeyWindow() is null)
 				return;
@@ -82,7 +80,8 @@ namespace NeuroAccessMaui
 			else
 				return UIApplication.SharedApplication.KeyWindow;
 		}
-		private void RadioButtonTemplateWorkaround()
+
+		private static void RadioButtonTemplateWorkaround()
 		{
 			Microsoft.Maui.Handlers.RadioButtonHandler.Mapper.AppendToMapping("TemplateWorkaround", (h, v) =>
 			{

@@ -1095,6 +1095,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			if (this.template is null)
 				return;
+
 			await this.PopulateHumanReadableText();
 
 			this.HasRoles = (this.template.Roles?.Length ?? 0) > 0;
@@ -1161,7 +1162,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			this.parametersByName.Clear();
 			this.parametersInOrder.Clear();
 
-			foreach (Parameter Parameter in this.template.Parameters)
+			foreach (Parameter Parameter in this.template!.Parameters)
 			{
 				if (Parameter is BooleanParameter BP)
 				{
