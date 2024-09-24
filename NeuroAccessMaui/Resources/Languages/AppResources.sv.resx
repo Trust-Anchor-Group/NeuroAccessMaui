@@ -570,9 +570,6 @@
   <data name="OnboardingFinalizePageTitle" xml:space="preserve">
     <value>Klar!</value>
   </data>
-  <data name="OnboardingFinalizePageDetails" xml:space="preserve">
-    <value>Du kan nu börja använda Neuro-Access</value>
-  </data>
   <data name="OnboardingBiometricsPageTitle" xml:space="preserve">
     <value>Nästan klar</value>
   </data>
@@ -2184,5 +2181,20 @@
   <data name="WhyIsThisDataCollectedInfo" xml:space="preserve">
     <value>
       Namnet du anger kommer att användas för att generera en unik nätverksidentifierare för ditt konto. Denna identifierare används av andra klienter och mäklare för att kommunicera med dig. Detta innebär att de uppgifter du anger här kan vara synliga för klienter och nätverksoperatörer som du kommunicerar med. Det anonyma alternativet säkerställer att din identifierare har formen av en GUID (Globally Unique Identifier) och inte är baserad på någon personlig information.</value>
+  </data>
+  <data name="OnboardingContactSupportTitle" xml:space="preserve">
+    <value>Återställ konto</value>
+  </data>
+  <data name="OnboardingContactSupportDetails" xml:space="preserve">
+    <value>Ange ditt telefonnummer och din e-postadress för att begära kontotåterställning. Vi kommer att kontakta dig med instruktioner för att hjälpa dig att återfå åtkomst.</value>
+  </data>
+  <data name="OnboardingContactSupportInfo" xml:space="preserve">
+    <value>Om du redan har tillgång till ditt konto på en annan enhet, gå till Inställningar → Överför ID för att generera en QR-kod. Skanna sedan den QR-koden på föregående sida</value>
+  </data>
+  <data name="AccountDetails" xml:space="preserve">
+    <value>Kontouppgifter</value>
+  </data>
+  <data name="ServiceProvider" xml:space="preserve">
+    <value>Tjänsteleverantör</value>
   </data>
 </root>

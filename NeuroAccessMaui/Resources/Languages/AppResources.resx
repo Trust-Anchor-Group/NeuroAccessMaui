@@ -570,9 +570,6 @@
   <data name="OnboardingFinalizePageTitle" xml:space="preserve">
     <value>Success!</value>
   </data>
-  <data name="OnboardingFinalizePageDetails" xml:space="preserve">
-    <value>You can now start using Neuro-Access</value>
-  </data>
   <data name="OnboardingBiometricsPageTitle" xml:space="preserve">
     <value>Almost done</value>
   </data>
@@ -2183,5 +2180,20 @@
   </data>
   <data name="WhyIsThisDataCollectedInfo" xml:space="preserve">
     <value>The name you provide will be used to generate a unique network identifier for your account. This identifier is used by other clients and brokers in order to communicate with you. This means that the data you provide here can be visible for clients and network operators of whom you communicate. The anonymous option will make sure your identifier is in the form of a GUID (Globally Unique Identifier) and is not based on any personal information.</value>
+  </data>
+  <data name="OnboardingContactSupportTitle" xml:space="preserve">
+    <value>Recover Account</value>
+  </data>
+  <data name="OnboardingContactSupportDetails" xml:space="preserve">
+    <value>Enter your phone and email to request account recovery. We'll contact you with instructions to help you regain access.</value>
+  </data>
+  <data name="OnboardingContactSupportInfo" xml:space="preserve">
+    <value>If you already have access to your account on another device, go to Settings → Transfer ID to generate a QR code. Then, scan that QR code on the previous page.</value>
+  </data>
+  <data name="AccountDetails" xml:space="preserve">
+    <value>Account Details</value>
+  </data>
+  <data name="ServiceProvider" xml:space="preserve">
+    <value>Service Provider</value>
   </data>
 </root>
