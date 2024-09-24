@@ -4,6 +4,90 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
+	<!-- Light Mode-->
+	<!-- Stroke, Icons, and Text-->
+	<Color x:Key="OffBlackLight">#181f25</Color>
+	<Color x:Key="OffBlack50Light">#80181f25</Color>
+	<Color x:Key="OffWhiteLight">#f5f5f7</Color>
+	<Color x:Key="AccentActiveLight">#3e776d</Color>
+	<Color x:Key="RedErrorLight">#F2495c</Color>
+	<Color x:Key="BlueLink">#4f7eac</Color>
+
+	<!-- Body, Backgrounds-->
+	<Color x:Key="BackgroundOffWhiteLight">#F5f6f7</Color>
+	<Color x:Key="BodyWhiteLight">#Fcfcfc</Color>
+	<Color x:Key="BodyContrastGrayLight">#e9ebed</Color>
+
+	<!-- Fill -->
+	<Color x:Key="AccentActiveLight">#3e776d</Color>
+	<Color x:Key="Accent20Light">#333E776D</Color>
+	<Color x:Key="Accent2Hold">#0B6858</Color>
+	<Color x:Key="GreyInactiveLight">#DEE0E2</Color>
+	<Color x:Key="Blue20AffirmLight">#334375B0</Color>
+	<Color x:Key="BlueLight">#4375B0</Color>
+	<Color x:Key="BlueDarkLight">#1E4E86</Color>
+	<Color x:Key="OrangeLight">#DD7C35</Color>
+	<Color x:Key="Orange20Light">#33DD7C35</Color>
+	<Color x:Key="Red20WarningLight">#33FF7585</Color>
+	<Color x:Key="RedWarningLight">#F2495C</Color>
+	<Color x:Key="WhiteLight">#F5F6F7</Color>
+	<Color x:Key="ButtonBackgroundLight">#33F4F5F7</Color>
+
+	<!-- Pop ups -->
+	<Color x:Key="PopUpBodyWhiteLight">#FCFCFC</Color>
+	<Color x:Key="PopUpBackgroundLight">#DFE6E6E8</Color>
+
+	<!-- Dark Mode -->
+	<!-- Stroke, Icons, and Text-->
+	<Color x:Key="OffWhiteDark">#e5FFFFFF</Color>
+	<Color x:Key="OffWhite50Dark">#80FFFFFF</Color>
+	<Color x:Key="OffWhite30Dark">#4DFFFFFF</Color>
+	<Color x:Key="OffBlackDark">#181F25</Color>
+	<Color x:Key="AccentActiveDark">#50998C</Color>
+	<Color x:Key="RedErrorDark">#F2495C</Color>
+	<Color x:Key="BlueLinkDark">#8FADCC</Color>
+	<Color x:Key="BlueDarkDark">#5F8AB6</Color>
+
+	<!-- Body, Backgrounds-->
+	<Color x:Key="BackgroundOffBlackDark">#161617</Color>
+
+	<!-- Fill -->
+	<Color x:Key="AccentActiveDark">#0B6858</Color>
+	<Color x:Key="Accent20Dark">#3350998C</Color>
+	<Color x:Key="Accent2HoldDark">#628C85</Color>
+	<Color x:Key="GrayInactiveDark">#DEE0E2</Color>
+	<Color x:Key="Blue20AffirmDark">#338FADCC</Color>
+	<Color x:Key="BlueDark">#8FADCC</Color>
+	<Color x:Key="Red20WarningDark">#33FF7585</Color>
+	<Color x:Key="RedWarningDark">#F2495C</Color>
+	<Color x:Key="ButtonBackgroundDark">#33F4F5F7</Color>
+
+	<!-- Pop ups -->
+	<Color x:Key="PopUpElevation1Dark">#252526</Color>
+	<Color x:Key="PopUpElevation2Dark">#313133</Color>
+	<Color x:Key="PopUpElevation3Dark">#3E3E40</Color>
+	<Color x:Key="PopUpElevation4Dark">#4A4A4D</Color>
+	<Color x:Key="PopUpBackgroundDark">#DFE6E6E8</Color>
+
+	<!-- Neuro Colors -->
+	<!-- Light Mode -->
+	<Color x:Key="NeuroBlackLight">#181F25</Color>
+	<Color x:Key="NeuroGreenLight">#3E776D</Color>
+	<Color x:Key="NeuroBlueLight">#4375B0</Color>
+	<Color x:Key="NeuroPurpleLight">#A87AB0</Color>
+	<Color x:Key="NeuroOrangeLight">#F75606</Color>
+	<Color x:Key="NeuroYellowLight">#FFBB00</Color>
+
+	<!-- Dark Mode -->
+	<Color x:Key="NeuroWhiteDark">#E7E7E7</Color>
+	<Color x:Key="NeuroGreenDark">#50998C</Color>
+	<Color x:Key="NeuroBlueDark">#5F8AB6</Color>
+	<Color x:Key="NeuroPurleDark">#A87AB0</Color>
+	<Color x:Key="NeuroOrangeDark">#F75606</Color>
+	<Color x:Key="NeuroYellowDark">#FFBB00</Color>
+
+
+	<!-- Old -->
 	<!-- Pages -->
 	<Color x:Key="PrimaryBackgroundLight">#FFF5F6F7</Color>
 	<Color x:Key="PrimaryForegroundLight">#FF181F25</Color>
