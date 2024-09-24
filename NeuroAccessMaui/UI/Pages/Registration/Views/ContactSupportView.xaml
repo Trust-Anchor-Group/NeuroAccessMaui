@@ -13,6 +13,13 @@
 
 	<Grid RowSpacing="{StaticResource LargeSpacing}" RowDefinitions="*, auto">
 		<VerticalStackLayout Spacing="{StaticResource MediumSpacing}" Grid.Row="0" VerticalOptions="Center">
+            <Label
+				Style="{StaticResource PageTitleLabel}"
+				Text="{l:Localize OnboardingContactSupportTitle}" />
+
+			<Label
+				Margin="{StaticResource LargeBottomMargins}"
+				Text="{l:Localize OnboardingContactSupportDetails}" />
 
 			<!-- Email Section -->
 			<Label
@@ -132,6 +139,16 @@
 				<Label Grid.Column="1" VerticalOptions="Center" Text="{Binding PhoneValidationError}"
                        TextColor="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
 			</Grid>
+
+            <Border Style="{StaticResource AccentInfoBorder}" Padding="{StaticResource SmallMargins}">
+				<Grid ColumnDefinitions="auto, *">
+					<Path Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center"
+						Data="{x:Static ui:Geometries.InfoCirclePath}" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
+						Fill="{AppThemeBinding Light={StaticResource AccentForegroundLight}, Dark={StaticResource AccentForegroundDark}}"/>
+					<Label Grid.Column="1" Style ="{StaticResource AccentInfoLabel}" Margin="{StaticResource SmallLeftMargins}" Text="{l:Localize OnboardingContactSupportInfo}" />
+
+				</Grid>
+			</Border>
 		</VerticalStackLayout>
 
 		<!-- Send Codes Button -->
