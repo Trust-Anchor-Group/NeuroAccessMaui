@@ -302,12 +302,12 @@
 					<ColumnDefinition Width="*" />
 					<ColumnDefinition Width="*" />
 				</Grid.ColumnDefinitions>
-				
-				<controls:TextButton Grid.Column="0" x:Name="DeclineButton" LabelData="{l:Localize Decline}" Command="{Binding DeclineCommand}"
-												Style="{StaticResource FilledTextButtonDecline}" />
 
-				<controls:TextButton Grid.Column="1" x:Name="AcceptButton" LabelData="{l:Localize Accept}" Command="{Binding AcceptCommand}"
+				<controls:TextButton Grid.Column="0" x:Name="AcceptButton" LabelData="{l:Localize Accept}" Command="{Binding AcceptCommand}"
 												Style="{StaticResource FilledTextButton}" />
+				
+				<controls:TextButton Grid.Column="1" x:Name="DeclineButton" LabelData="{l:Localize Decline}" Command="{Binding DeclineCommand}"
+												Style="{StaticResource FilledTextButtonDecline}" />
 			</Grid>
 
 		</Border>
