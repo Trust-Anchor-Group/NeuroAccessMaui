@@ -11,13 +11,15 @@
 									xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
 									xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
 	<Grid RowSpacing="{StaticResource LargeSpacing}" RowDefinitions="*, auto">
+		<Grid RowSpacing="{StaticResource LargeSpacing}" RowDefinitions="*, auto">
+
 		<VerticalStackLayout Grid.Row="0" VerticalOptions="Center"  Spacing="{StaticResource LargeSpacing}">
 			<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
 				<Label
 					Style="{StaticResource PageTitleLabel}"
 					Text="{l:Localize OnboardingFinalizePageTitle}"
 					HorizontalTextAlignment="Center"
-					Margin="{StaticResource LargeBottomMargins}"/>
+					/>
 						
 				<!-- Checkmark Circle -->
 				<Frame
@@ -26,7 +28,8 @@
 					HasShadow="False"
 					CornerRadius="{Binding CheckmarkBackgroundCornerRadius}"
 					BackgroundColor="{AppThemeBinding Light={StaticResource EnabledTransparentButtonBackgroundLight}, Dark={StaticResource EnabledTransparentButtonBackgroundDark}}"
-					HorizontalOptions="Center">
+					HorizontalOptions="Center"
+					Margin="{StaticResource LargeBottomMargins}">
 					<Path
 						VerticalOptions="Center"
 						HorizontalOptions="Center"
@@ -36,15 +39,39 @@
 						Data="{x:Static ui:Geometries.SuccessCheckmarkPath}"
 						Fill="{AppThemeBinding Light={StaticResource EnabledFilledButtonBackgroundLight}, Dark={StaticResource EnabledFilledButtonBackgroundDark}}" />
 				</Frame>
-				<!-- Text -->
-				<Label Style="{StaticResource SectionTitleLabel}"
-						Text="{l:Localize OnboardingFinalizePageDetails}" 
-						FontSize="16"
-						HorizontalOptions="Center"/>
-					
-	
+				
 			</VerticalStackLayout>
 		</VerticalStackLayout>
+
+			<!-- Text -->
+			<VerticalStackLayout Grid.Row="1" Spacing="{StaticResource MediumSpacing}">
+				<Label Style="{StaticResource SectionTitleLabel}"
+						Text="{l:Localize AccountDetails}" 
+						FontSize="16"
+						HorizontalOptions="Start"/>
+				<VerticalStackLayout>
+					<Label Style="{StaticResource KeyLabel}"
+						Text="{l:Localize NetworkID}"
+						Margin="0"/>
+					<Label Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ClickableValueLabel}" Text="{Binding NetworkID}" LineBreakMode="CharacterWrap" HorizontalTextAlignment="Start">
+						<Label.GestureRecognizers>
+							<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding NetworkID}" />
+						</Label.GestureRecognizers>
+					</Label>
+				</VerticalStackLayout>
+				
+				<VerticalStackLayout>
+					<Label Style="{StaticResource KeyLabel}"
+						Text="{l:Localize ServiceProvider}"
+						Margin="0"/>
+					<Label Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ClickableValueLabel}" Text="{Binding DomainName}" LineBreakMode="CharacterWrap" HorizontalTextAlignment="Start">
+						<Label.GestureRecognizers>
+							<TapGestureRecognizer Command="{Binding ServiceProviderInfoCommand}"/>
+						</Label.GestureRecognizers>
+					</Label>
+				</VerticalStackLayout>
+			</VerticalStackLayout>
+		</Grid>
         <controls:TextButton
             VerticalOptions="End"
             Command="{Binding ContinueCommand}"
