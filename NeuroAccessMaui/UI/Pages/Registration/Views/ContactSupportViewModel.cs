@@ -83,14 +83,16 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		private bool phoneIsValid;
 
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(CanSendCode))]
 		private string emailText = string.Empty;
 
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(CanSendCode))]
 		private string phoneText = string.Empty;
 
-		public string EmailValidationError => !EmailIsValid ? ServiceRef.Localizer[nameof(AppResources.EmailValidationFormat)] : string.Empty;
+		public string EmailValidationError => !this.EmailIsValid ? ServiceRef.Localizer[nameof(AppResources.EmailValidationFormat)] : string.Empty;
 
-		public string PhoneValidationError => !PhoneIsValid ? ServiceRef.Localizer[nameof(AppResources.PhoneValidationDigits)] : string.Empty;
+		public string PhoneValidationError => !this.PhoneIsValid ? ServiceRef.Localizer[nameof(AppResources.PhoneValidationDigits)] : string.Empty;
 
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(LocalizedSendCodeText))]
@@ -101,7 +103,10 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		[ObservableProperty]
 		private IDispatcherTimer? countDownTimer;
 
-		public bool CanSendCode => this.EmailIsValid && this.PhoneIsValid && !this.IsBusy && (this.CountDownSeconds <= 0);
+		public bool CanSendCode => this.EmailIsValid && this.PhoneIsValid && 
+									!this.IsBusy && 
+									(this.CountDownSeconds <= 0) &&
+									!string.IsNullOrEmpty(this.EmailText) && !string.IsNullOrEmpty(this.PhoneText);
 
 		[ObservableProperty]
 		ISO_3166_Country selectedCountry = ISO_3166_1.DefaultCountry;
