@@ -19,7 +19,7 @@
 	<Color x:Key="BodyContrastGrayLight">#e9ebed</Color>
 
 	<!-- Fill -->
-	<Color x:Key="AccentActiveLight">#3e776d</Color>
+	<Color x:Key="AccentActiveFillLight">#3e776d</Color>
 	<Color x:Key="Accent20Light">#333E776D</Color>
 	<Color x:Key="Accent2Hold">#0B6858</Color>
 	<Color x:Key="GreyInactiveLight">#DEE0E2</Color>
@@ -52,7 +52,7 @@
 	<Color x:Key="BackgroundOffBlackDark">#161617</Color>
 
 	<!-- Fill -->
-	<Color x:Key="AccentActiveDark">#0B6858</Color>
+	<Color x:Key="AccentActiveFillDark">#0B6858</Color>
 	<Color x:Key="Accent20Dark">#3350998C</Color>
 	<Color x:Key="Accent2HoldDark">#628C85</Color>
 	<Color x:Key="GrayInactiveDark">#DEE0E2</Color>

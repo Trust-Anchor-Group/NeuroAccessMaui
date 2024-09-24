@@ -307,7 +307,7 @@
 												Style="{StaticResource FilledTextButton}" />
 
 				<controls:TextButton Grid.Column="1" x:Name="DeclineButton" LabelData="{l:Localize Decline}" Command="{Binding DeclineCommand}"
-												Style="{StaticResource FilledTextButton}" />
+												Style="{StaticResource FilledTextButtonDecline}" />
 			</Grid>
 
 		</Border>
