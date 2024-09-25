@@ -2145,9 +2145,6 @@
   <data name="OnboardingGetStartedTitle" xml:space="preserve">
     <value>Välkommen till Neuro-Access</value>
   </data> 
-  <data name="OnboardingGetStartedDetails" xml:space="preserve">
-    <value>Låt oss börja</value>
-  </data>
   <data name="CreateNewAccount">
     <value>Skapa nytt konto</value>
   </data>

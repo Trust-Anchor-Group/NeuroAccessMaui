@@ -2812,15 +2812,6 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Lets get you started.
-        /// </summary>
-        internal static string OnboardingGetStartedDetails {
-            get {
-                return ResourceManager.GetString("OnboardingGetStartedDetails", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Received an invite, transfer, or recovery code? Scan it below.
         /// </summary>
         internal static string OnboardingGetStartedQrInfo {
