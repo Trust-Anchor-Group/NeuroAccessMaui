@@ -38,6 +38,17 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler
 			await base.OnDispose();
 		}
 
+		partial void OnAmountTextChanged(string? value)
+		{
+			if (CommonTypes.TryParse(this.AmountText, out decimal d) && d > 0)
+			{
+				this.Amount = d;
+				this.AmountOk = true;
+			}
+			else
+				this.AmountOk = false;
+		}
+
 		#region Properties
 
 		/// <summary>
@@ -50,6 +61,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler
 		/// If <see cref="Amount"/> is OK.
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(this.AmountEntryValid))]
+		[NotifyCanExecuteChangedFor(nameof(BuyCommand))]
 		private bool amountOk;
 
 		/// <summary>
@@ -58,23 +71,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler
 		[ObservableProperty]
 		private string? amountText;
 
-		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-
-			switch (e.PropertyName)
-			{
-				case nameof(this.AmountText):
-					if (CommonTypes.TryParse(this.AmountText, out decimal d) && d > 0)
-					{
-						this.Amount = d;
-						this.AmountOk = true;
-					}
-					else
-						this.AmountOk = false;
-					break;
-			}
-		}
+		/// <summary>
+		/// If amount entry should show an error
+		/// </summary>
+		public bool AmountEntryValid => this.AmountOk || string.IsNullOrEmpty(this.AmountText);
 
 		/// <summary>
 		/// Currency of <see cref="Amount"/>.
