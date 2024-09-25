@@ -1,6 +1,6 @@
-﻿using IdApp.Nfc;
-using IdApp.Nfc.Extensions;
-using IdApp.Nfc.Records;
+﻿using NeuroAccess.Nfc;
+using NeuroAccess.Nfc.Extensions;
+using NeuroAccess.Nfc.Records;
 using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.UI;
@@ -153,56 +153,56 @@ namespace NeuroAccessMaui.Services.Nfc
 							// TODO: Open NFC view
 						}
 					}
-					//else if (Interface is INfcAInterface NfcA)
-					//{
-					//	byte[] Atqa = await NfcA.GetAtqa();
-					//	short Sqk = await NfcA.GetSqk();
-					//
-					//	// TODO
-					//}
-					//else if (Interface is INfcBInterface NfcB)
-					//{
-					//	byte[] ApplicationData = await NfcB.GetApplicationData();
-					//	byte[] ProtocolInfo = await NfcB.GetProtocolInfo();
-					//
-					//	// TODO
-					//}
-					//else if (Interface is INfcFInterface NfcF)
-					//{
-					//	byte[] Manufacturer = await NfcF.GetManufacturer();
-					//	byte[] SystemCode = await NfcF.GetSystemCode();
-					//
-					//	// TODO
-					//}
-					//else if (Interface is INfcVInterface NfcV)
-					//{
-					//	sbyte DsfId = await NfcV.GetDsfId();
-					//	short ResponseFlags = await NfcV.GetResponseFlags();
-					//
-					//	// TODO
-					//}
-					//else if (Interface is INfcBarcodeInterface Barcode)
-					//{
-					//	byte[] Data = await Barcode.ReadAllData();
-					//
-					//	// TODO
-					//}
-					//else if (Interface is INdefFormatableInterface NdefFormatable)
-					//{
-					//	// TODO
-					//}
-					//else if (Interface is IMifareUltralightInterface MifareUltralight)
-					//{
-					//	byte[] Data = await MifareUltralight.ReadAllData();
-					//
-					//	// TODO
-					//}
-					//else if (Interface is IMifareClassicInterface MifareClassic)
-					//{
-					//	byte[] Data = await MifareClassic.ReadAllData();
-					//
-					//	// TODO
-					//}
+					else if (Interface is INfcAInterface NfcA)
+					{
+						byte[] Atqa = await NfcA.GetAtqa();
+						short Sqk = await NfcA.GetSqk();
+					
+						// TODO
+					}
+					else if (Interface is INfcBInterface NfcB)
+					{
+						byte[] ApplicationData = await NfcB.GetApplicationData();
+						byte[] ProtocolInfo = await NfcB.GetProtocolInfo();
+					
+						// TODO
+					}
+					else if (Interface is INfcFInterface NfcF)
+					{
+						byte[] Manufacturer = await NfcF.GetManufacturer();
+						byte[] SystemCode = await NfcF.GetSystemCode();
+					
+						// TODO
+					}
+					else if (Interface is INfcVInterface NfcV)
+					{
+						sbyte DsfId = await NfcV.GetDsfId();
+						short ResponseFlags = await NfcV.GetResponseFlags();
+					
+						// TODO
+					}
+					else if (Interface is INfcBarcodeInterface Barcode)
+					{
+						byte[] Data = await Barcode.ReadAllData();
+					
+						// TODO
+					}
+					else if (Interface is INdefFormatableInterface NdefFormatable)
+					{
+						// TODO
+					}
+					else if (Interface is IMifareUltralightInterface MifareUltralight)
+					{
+						byte[] Data = await MifareUltralight.ReadAllData();
+					
+						// TODO
+					}
+					else if (Interface is IMifareClassicInterface MifareClassic)
+					{
+						byte[] Data = await MifareClassic.ReadAllData();
+					
+						// TODO
+					}
 				}
 			}
 			catch (Exception ex)
