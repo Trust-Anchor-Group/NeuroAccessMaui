@@ -2133,4 +2133,16 @@
   <data name="TransferIdentityPageDetails" xml:space="preserve">
     <value>На другом устройстве продолжайте подключение, пока не дойдете до страницы поставщика услуг. Нажмите кнопку «Изменить» и отсканируйте этот QR-код. Это приведет к удалению удостоверения с этого устройства.</value>
   </data>
+  <data name="Buy" xml:space="preserve">
+    <value>Покупать</value>
+  </data>
+  <data name="BuyEDalerDescription" xml:space="preserve">
+    <value>Укажите сумму eDaler, которую вы хотите купить ниже, и нажмите кнопку «Купить». Может быть открыта веб-страница, где вам нужно заполнить дополнительную информацию для платежного процессора, чтобы подтвердить вашу заявку.</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Количество:</value>
+  </data>
+  <data name="Wallet" xml:space="preserve">
+    <value>Бумажник</value>
+  </data>
 </root>

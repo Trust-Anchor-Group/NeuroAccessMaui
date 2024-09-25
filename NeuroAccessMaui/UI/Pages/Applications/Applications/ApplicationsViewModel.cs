@@ -1,8 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using EDaler;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
+using NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 
@@ -31,7 +33,13 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 
 			this.IdentityApplicationSent = ServiceRef.TagProfile.IdentityApplication is not null;
 
+			this.HasWallet = ServiceRef.TagProfile.HasWallet;
+			this.HasLegalIdentity = ServiceRef.TagProfile.LegalIdentity is not null &&
+				ServiceRef.TagProfile.LegalIdentity.State == IdentityState.Approved;
+
 			ServiceRef.XmppService.IdentityApplicationChanged += this.XmppService_IdentityApplicationChanged;
+			ServiceRef.XmppService.LegalIdentityChanged += this.XmppService_LegalIdentityChanged;
+			ServiceRef.TagProfile.OnPropertiesChanged += this.TagProfile_OnPropertiesChanged;
 
 			await base.OnInitialize();
 			this.NotifyCommandsCanExecuteChanged();
@@ -40,6 +48,8 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 		protected override Task OnDispose()
 		{
 			ServiceRef.XmppService.IdentityApplicationChanged -= this.XmppService_IdentityApplicationChanged;
+			ServiceRef.XmppService.LegalIdentityChanged -= this.XmppService_LegalIdentityChanged;
+			ServiceRef.TagProfile.OnPropertiesChanged -= this.TagProfile_OnPropertiesChanged;
 
 			return base.OnDispose();
 		}
@@ -52,6 +62,25 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 			});
 
 			return Task.CompletedTask;
+		}
+
+		private Task XmppService_LegalIdentityChanged(object Sender, LegalIdentityEventArgs e)
+		{
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				this.HasLegalIdentity = ServiceRef.TagProfile.LegalIdentity is not null &&
+					ServiceRef.TagProfile.LegalIdentity.State == IdentityState.Approved;
+			});
+
+			return Task.CompletedTask;
+		}
+
+		private void TagProfile_OnPropertiesChanged(object? sender, EventArgs e)
+		{
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				this.HasWallet = ServiceRef.TagProfile.HasWallet;
+			});
 		}
 
 		protected override async Task OnAppearing()
@@ -89,6 +118,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 		{
 			this.ApplyPersonalIdCommand.NotifyCanExecuteChanged();
 			this.ApplyOrganizationalIdCommand.NotifyCanExecuteChanged();
+			this.BuyEDalerCommand.NotifyCanExecuteChanged();
 		}
 
 		#region Properties
@@ -103,6 +133,18 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 		/// </summary>
 		[ObservableProperty]
 		private bool identityApplicationSent;
+
+		/// <summary>
+		/// If the user has an approved legal identity.
+		/// </summary>
+		[ObservableProperty]
+		private bool hasLegalIdentity;
+
+		/// <summary>
+		/// If the user has a wallet.
+		/// </summary>
+		[ObservableProperty]
+		private bool hasWallet;
 
 		#endregion
 
@@ -154,6 +196,30 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 					return;
 
 				await ServiceRef.UiService.GoToAsync(nameof(ApplyIdPage), new ApplyIdNavigationArgs(false, false));
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
+			}
+		}
+
+		[RelayCommand(CanExecute = nameof(CanExecuteCommands))]
+		private async Task BuyEDaler()
+		{
+			try
+			{
+				if (!await App.AuthenticateUser(AuthenticationPurpose.ApplyForOrganizationalId))
+					return;
+
+				Balance Balance = await ServiceRef.XmppService.GetEDalerBalance();
+				TaskCompletionSource<decimal?> Result = new();
+
+				await ServiceRef.UiService.GoToAsync(nameof(BuyEDalerPage), new BuyEDalerNavigationArgs(Balance.Currency, Result));
+
+				decimal? Amount = await Result.Task;
+				if (Amount is not null)
+					ServiceRef.TagProfile.HasWallet = true;
 			}
 			catch (Exception ex)
 			{

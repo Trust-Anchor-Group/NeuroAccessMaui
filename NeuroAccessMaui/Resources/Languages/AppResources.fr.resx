@@ -2133,4 +2133,16 @@
   <data name="TransferIdentityPageDetails" xml:space="preserve">
     <value>Sur votre autre appareil, poursuivez l’intégration jusqu’à ce que vous atteigniez la page du fournisseur de services. Appuyez sur le bouton de changement et scannez ce QR. Cela supprimera l’identité de cet appareil.</value>
   </data>
+  <data name="Buy" xml:space="preserve">
+    <value>Acheter</value>
+  </data>
+  <data name="BuyEDalerDescription" xml:space="preserve">
+    <value>Indiquez la quantité d’eDaler que vous souhaitez acheter ci-dessous et appuyez sur le bouton Acheter. Une page Web peut être ouverte où vous devez remplir des informations supplémentaires pour que le processeur de paiement valide votre demande.</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Quantité:</value>
+  </data>
+  <data name="Wallet" xml:space="preserve">
+    <value>Portefeuille</value>
+  </data>
 </root>

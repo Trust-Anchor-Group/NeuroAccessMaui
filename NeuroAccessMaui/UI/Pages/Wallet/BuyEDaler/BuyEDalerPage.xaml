@@ -27,9 +27,12 @@
 						<Label Text="{l:Localize BuyEDalerDescription}" VerticalOptions="Start"/>
 						<Label Text="{l:Localize Amount}"/>
 						<Grid ColumnDefinitions="*,auto" RowDefinitions="auto" Padding="0" Margin="0" ColumnSpacing="0" RowSpacing="0">
-							<Entry Grid.Column="0" Grid.Row="0" Text="{Binding Path=AmountText}"
-									 BackgroundColor="{Binding Path=AmountOk, Converter={converters:ControlBgColor}}"
-									 Placeholder="{Binding Path=Currency}"/>
+
+							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntryNoRoundedCorners}"
+							                         Grid.Column="0" Grid.Row="0" Keyboard="Numeric"
+							                         EntryData="{Binding Path=AmountText}"
+							                         BackgroundColor="{Binding AmountOk, Converter={converters:ControlBgColor}}"
+							                         Placeholder="{Binding Path=Currency}"/>
 
 							<controls:ImageButton Grid.Column="1" Grid.Row="0" PathData="{x:Static ui:Geometries.CalculatorPath}"
 														 Style="{StaticResource ImageOnlyButton}" Command="{Binding OpenCalculatorCommand}"

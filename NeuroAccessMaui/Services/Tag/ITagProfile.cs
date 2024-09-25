@@ -226,6 +226,11 @@ namespace NeuroAccessMaui.Services.Tag
 		bool HasContractTokenCreationTemplatesReferences { get; set; }
 
 		/// <summary>
+		/// If the user has a wallet.
+		/// </summary>
+		bool HasWallet { get; set; }
+
+		/// <summary>
 		/// Returns <c>true</c> if the current <see cref="ITagProfile"/> has changed values and need saving, <c>false</c> otherwise.
 		/// </summary>
 		bool IsDirty { get; }

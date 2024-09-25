@@ -7,6 +7,7 @@ using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Main.Settings;
+using NeuroAccessMaui.UI.Pages.Wallet.MyWallet;
 
 namespace NeuroAccessMaui.UI.Pages.Main
 {
@@ -221,6 +222,26 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			{
 				ContactListNavigationArgs Args = new();
 				await ServiceRef.UiService.GoToAsync(nameof(MyContactsPage), Args, BackMethod.Pop);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
+		}
+
+		/// <summary>
+		/// If the Wallet command should be displayed.
+		/// </summary>
+		[ObservableProperty]
+		private bool canShowWalletCommand;
+
+		[RelayCommand]
+		private static async Task ShowWallet()
+		{
+			try
+			{
+				WalletNavigationArgs Args = new();
+				await ServiceRef.UiService.GoToAsync(nameof(MyEDalerWalletPage), Args, BackMethod.Pop);
 			}
 			catch (Exception ex)
 			{

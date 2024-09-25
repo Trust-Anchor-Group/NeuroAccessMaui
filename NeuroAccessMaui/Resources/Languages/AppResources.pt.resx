@@ -2133,4 +2133,16 @@
   <data name="TransferIdentityPageDetails" xml:space="preserve">
     <value>No outro dispositivo, continue com a integração até chegar à página do provedor de serviços. Pressione o botão de alteração e digitalize este QR. Fazer isso removerá a identidade deste dispositivo.</value>
   </data>
+  <data name="Buy" xml:space="preserve">
+    <value>Comprar</value>
+  </data>
+  <data name="BuyEDalerDescription" xml:space="preserve">
+    <value>Forneça a quantidade de eDaler que você deseja comprar abaixo e pressione o botão Comprar. Uma página da Web pode ser aberta onde você deve preencher mais informações para o processador de pagamento validar seu requst.</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Quantidade:</value>
+  </data>
+  <data name="Wallet" xml:space="preserve">
+    <value>Carteira</value>
+  </data>
 </root>

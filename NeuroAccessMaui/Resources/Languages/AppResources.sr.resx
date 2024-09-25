@@ -2133,4 +2133,16 @@
   <data name="TransferIdentityPageDetails" xml:space="preserve">
     <value>Na drugom uređaju nastavite sa ukrcavanje dok ne dođete do stranice dobavljača usluga. Pritisnite dugme "Promeni" i skenirajte ovaj QR. Ako to uradite, uklonićete identitet sa ovog uređaja.</value>
   </data>
+  <data name="Buy" xml:space="preserve">
+    <value>Kupi</value>
+  </data>
+  <data name="BuyEDalerDescription" xml:space="preserve">
+    <value>Navedite količinu eDalera koju želite da kupite ispod i pritisnite dugme Kupi. Web stranica može biti otvorena tamo gde morate da popunite dodatne informacije za procesor plaćanja da biste proverili valjanost ponovnog korišćenja.</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Iznos:</value>
+  </data>
+  <data name="Wallet" xml:space="preserve">
+    <value>Novиanik</value>
+  </data>
 </root>

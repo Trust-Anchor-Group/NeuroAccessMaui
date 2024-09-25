@@ -2133,4 +2133,22 @@
   <data name="TransferIdentityPageDetails" xml:space="preserve">
     <value>On your other device continue with the onboarding until you reach the service provider page. Press the change button and scan this QR. Doing this will remove the identity from this device.</value>
   </data>
+  <data name="CreateWallet" xml:space="preserve">
+    <value>Create Wallet</value>
+  </data>
+  <data name="CreateWalletDescription" xml:space="preserve">
+    <value>You create a wallet by putting some money in it. This money is called eDaler, and can be transferred to others, online or offline, or be used to purchase services offered.</value>
+  </data>
+  <data name="Buy" xml:space="preserve">
+    <value>Buy</value>
+  </data>
+  <data name="BuyEDalerDescription" xml:space="preserve">
+    <value>Provide the amount of eDaler do you want to buy below, and press the Buy button. A web page may be opened where you have to fill in further information for the payment processor to validate your requst.</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Amount:</value>
+  </data>
+  <data name="Wallet" xml:space="preserve">
+    <value>Wallet</value>
+  </data>
 </root>
