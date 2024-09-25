@@ -445,12 +445,6 @@ namespace NeuroAccessMaui.Services.Tag
 		void CheckContractReference(ContractReference Reference);
 
 		/// <summary>
-		/// Generates a username based on FirstName and LastName or nickname.
-		/// </summary>
-		/// <returns>Generated username or empty string if one could not be generated</returns>
-		string GenerateUsername();
-
-		/// <summary>
 		/// Event raised when properties have been changed.
 		/// </summary>
 		event EventHandler OnPropertiesChanged;
