@@ -15,6 +15,7 @@
 	<base:BaseRegistrationView.Resources>
 		<converters:EnumToBoolean x:Key="EnumToBooleanConverter" />
 		<converters:EnumToVisibility x:Key="EnumToVisibilityConverter" />
+		<converters:OnlyShowNonEmpty x:Key="OnlyShowNonEmpty" />
 	</base:BaseRegistrationView.Resources>
 
 	<Grid RowDefinitions="*, auto" RowSpacing="{StaticResource LargeSpacing}">
@@ -24,49 +25,42 @@
 				<Label Style="{StaticResource PageTitleLabel}" Text="{l:Localize OnboardingNameEntryTitle}" />
 				<Label Text="{l:Localize OnboardingNameEntryDetails}" />
 
-				<!-- Radio Button Group with Labels -->
-				<Grid RowDefinitions="auto,auto,auto" ColumnDefinitions="auto,*"
-                      RadioButtonGroup.GroupName="NameOptions"
-                      RadioButtonGroup.SelectedValue="{Binding SelectedNameOption}"
-                      RowSpacing="{StaticResource MediumSpacing}">
-					<!-- Real Name Option -->
-					<Label Grid.Row="0" Grid.Column="1" Text="{l:Localize UseRealName}" Margin="{StaticResource SmallLeftMargins}"  VerticalOptions="Center" Style="{StaticResource SectionTitleLabel}" />
-					<RadioButton Grid.Row="0" Grid.Column="0"
-					             IsChecked="{Binding SelectedNameOption, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static base:NameOption.RealName}}"
-					             Value="{x:Static base:NameOption.RealName}" />
-
-					<!-- Nickname Option -->
-					<Label Grid.Row="1" Grid.Column="1" Text="{l:Localize UseNickname}" Margin="{StaticResource SmallLeftMargins}"  VerticalOptions="Center" Style="{StaticResource SectionTitleLabel}" />
-					<RadioButton Grid.Row="1" Grid.Column="0"
-					             IsChecked="{Binding SelectedNameOption, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static base:NameOption.Nickname}}"
-					             Value="{x:Static base:NameOption.Nickname}" />
-
-					<!-- Anonymous Option -->
-					<Label Grid.Row="2" Grid.Column="1" Text="{l:Localize BeAnonymous}" Margin="{StaticResource SmallLeftMargins}"  VerticalOptions="Center" Style="{StaticResource SectionTitleLabel}" />
-					<RadioButton Grid.Row="2" Grid.Column="0"
-					             IsChecked="{Binding SelectedNameOption, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static base:NameOption.Anonymous}}"
-									 Value="{x:Static base:NameOption.Anonymous}" />
-
-
-				</Grid>
-
-				<!-- Real Name Inputs -->
-				<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" IsVisible="{Binding SelectedNameOption, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static base:NameOption.RealName}}">
-					<!-- First Name -->
-					<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize FirstName}" />
-					<controls:CompositeEntry x:Name="FirstNameEntry" Style="{StaticResource RegularCompositeEntry}"
-                                             EntryData="{Binding FirstName}" Placeholder="{l:Localize FirstName}" />
-					<!-- Last Name -->
-					<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize LastNames}" />
-					<controls:CompositeEntry x:Name="LastNameEntry" Style="{StaticResource RegularCompositeEntry}"
-                                             EntryData="{Binding LastName}" Placeholder="{l:Localize LastNames}" />
-				</VerticalStackLayout>
 
 				<!-- Nickname Input -->
-				<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" IsVisible="{Binding SelectedNameOption, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static base:NameOption.Nickname}}">
+				<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 					<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize Nickname}" />
 					<controls:CompositeEntry x:Name="NicknameEntry" Style="{StaticResource RegularCompositeEntry}"
-                                             EntryData="{Binding Nickname}" Placeholder="{l:Localize Nickname}" />
+                                             EntryData="{Binding Username}" Placeholder="{l:Localize Nickname}" />
+
+					<Grid RowDefinitions="auto" ColumnDefinitions="auto,*" HorizontalOptions="Center" 
+						ColumnSpacing="{StaticResource SmallSpacing}"
+						IsVisible="{Binding UsernameIsValid, Converter={StaticResource InvertedBoolConverter}}">
+
+						<Path Grid.Column="0"
+								VerticalOptions="Center"
+								HeightRequest="20"
+								WidthRequest="20"
+								Aspect="Uniform"
+								Data="{x:Static ui:Geometries.InfoCirclePath}"
+								Fill="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
+
+						<Label Grid.Column="1" VerticalOptions="Center" Text="{l:Localize AccountValidationAlreadyExists}"
+									TextColor="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
+					</Grid>
+
+					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" IsVisible="{Binding AlternativeName, Converter={StaticResource OnlyShowNonEmpty}}">
+						<Label Text="{l:Localize AccountAvailableAlternatives}" />
+
+						<Border>
+							<Border.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding SelectNameCommand}"
+														CommandParameter="{Binding AlternativeName}" />
+							</Border.GestureRecognizers>
+
+							<Label HorizontalOptions="Center" Text="{Binding AlternativeName}" 
+										TextColor="{AppThemeBinding Light={StaticResource AccentForegroundLight}, Dark={StaticResource AccentForegroundDark}}" />
+						</Border>
+					</VerticalStackLayout>
 				</VerticalStackLayout>
 			</VerticalStackLayout>
 		</ScrollView>
