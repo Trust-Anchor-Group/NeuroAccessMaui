@@ -20,11 +20,9 @@ namespace NeuroAccessMaui.AndroidPlatform.Nfc
 		/// <summary>
 		/// Reads all data from the interface
 		/// </summary>
-		public async Task<byte[]> ReadAllData()
+		public Task<byte[]> ReadAllData()
 		{
-			await this.OpenIfClosed();
-
-			return this.nfcBarcode.GetBarcode() ?? throw UnableToReadDataFromDevice();
+			return Task.FromResult(this.nfcBarcode.GetBarcode() ?? throw UnableToReadDataFromDevice());
 		}
 	}
 }

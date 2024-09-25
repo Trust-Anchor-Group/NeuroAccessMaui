@@ -24,7 +24,7 @@ namespace NeuroAccess.Nfc
 		Task<INdefRecord[]> GetMessage();
 
 		/// <summary>
-		/// Sets the message (with recorsd) on the NDEF tag.
+		/// Sets the message (with records) on the NDEF tag.
 		/// </summary>
 		/// <param name="Items">Items to encode</param>
 		/// <returns>If the items could be encoded and written to the tag.</returns>

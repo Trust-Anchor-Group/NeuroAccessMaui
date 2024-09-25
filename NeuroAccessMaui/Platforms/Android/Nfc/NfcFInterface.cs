@@ -17,19 +17,17 @@ namespace NeuroAccessMaui.AndroidPlatform.Nfc
 		/// <summary>
 		/// Return the Manufacturer bytes from tag discovery.
 		/// </summary>
-		public async Task<byte[]> GetManufacturer()
+		public Task<byte[]> GetManufacturer()
 		{
-			await this.OpenIfClosed();
-			return this.nfcF.GetManufacturer() ?? throw UnableToReadDataFromDevice();
+			return Task.FromResult(this.nfcF.GetManufacturer() ?? throw UnableToReadDataFromDevice());
 		}
 
 		/// <summary>
 		/// Return the System Code bytes from tag discovery.
 		/// </summary>
-		public async Task<byte[]> GetSystemCode()
+		public Task<byte[]> GetSystemCode()
 		{
-			await this.OpenIfClosed();
-			return this.nfcF.GetSystemCode() ?? throw UnableToReadDataFromDevice();
+			return Task.FromResult(this.nfcF.GetSystemCode() ?? throw UnableToReadDataFromDevice());
 		}
 	}
 }

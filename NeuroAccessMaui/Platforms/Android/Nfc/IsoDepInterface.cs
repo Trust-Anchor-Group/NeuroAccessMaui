@@ -17,19 +17,17 @@ namespace NeuroAccessMaui.AndroidPlatform.Nfc
 		/// <summary>
 		/// Return the higher layer response bytes for NfcB tags.
 		/// </summary>
-		public async Task<byte[]> GetHighLayerResponse()
+		public Task<byte[]> GetHighLayerResponse()
 		{
-			await this.OpenIfClosed();
-			return this.isoDep.GetHiLayerResponse() ?? throw UnableToReadDataFromDevice();
+			return Task.FromResult(this.isoDep.GetHiLayerResponse() ?? throw UnableToReadDataFromDevice());
 		}
 
 		/// <summary>
 		/// Return the ISO-DEP historical bytes for NfcA tags.
 		/// </summary>
-		public async Task<byte[]> GetHistoricalBytes()
+		public Task<byte[]> GetHistoricalBytes()
 		{
-			await this.OpenIfClosed();
-			return this.isoDep.GetHistoricalBytes() ?? throw UnableToReadDataFromDevice();
+			return Task.FromResult(this.isoDep.GetHistoricalBytes() ?? throw UnableToReadDataFromDevice());
 		}
 
 		/// <summary>
@@ -39,7 +37,6 @@ namespace NeuroAccessMaui.AndroidPlatform.Nfc
 		/// <returns>Response</returns>
 		public async Task<byte[]> ExecuteCommand(byte[] Command)
 		{
-			await this.OpenIfClosed();
 			return await this.isoDep.TransceiveAsync(Command) ?? throw UnableToReadDataFromDevice();
 		}
 	}

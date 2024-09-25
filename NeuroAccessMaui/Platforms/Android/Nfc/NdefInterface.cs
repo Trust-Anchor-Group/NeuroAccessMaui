@@ -22,28 +22,24 @@ namespace NeuroAccessMaui.AndroidPlatform.Nfc
 		/// <summary>
 		/// If the TAG can be made read-only
 		/// </summary>
-		public async Task<bool> CanMakeReadOnly()
+		public Task<bool> CanMakeReadOnly()
 		{
-			await this.OpenIfClosed();
-			return this.ndef.CanMakeReadOnly();
+			return Task.FromResult(this.ndef.CanMakeReadOnly());
 		}
 
 		/// <summary>
 		/// If the TAG is writable
 		/// </summary>
-		public async Task<bool> IsWritable()
+		public Task<bool> IsWritable()
 		{
-			await this.OpenIfClosed();
-			return this.ndef.IsWritable;
+			return Task.FromResult(this.ndef.IsWritable);
 		}
 
 		/// <summary>
 		/// Gets the message (with records) of the NDEF tag.
 		/// </summary>
-		public async Task<INdefRecord[]> GetMessage()
+		public Task<INdefRecord[]> GetMessage()
 		{
-			await this.OpenIfClosed();
-
 			NdefMessage? Message = this.ndef.NdefMessage ?? throw UnableToReadDataFromDevice();
 			NdefRecord[]? Records = Message.GetRecords() ?? throw UnableToReadDataFromDevice();
 			List<INdefRecord> Result = [];
@@ -82,11 +78,11 @@ namespace NeuroAccessMaui.AndroidPlatform.Nfc
 				}
 			}
 
-			return [.. Result];
+			return Task.FromResult<INdefRecord[]>([.. Result]);
 		}
 
 		/// <summary>
-		/// Sets the message (with recorsd) on the NDEF tag.
+		/// Sets the message (with records) on the NDEF tag.
 		/// </summary>
 		/// <param name="Items">Items to encode</param>
 		/// <returns>If the items could be encoded and written to the tag.</returns>
@@ -94,37 +90,7 @@ namespace NeuroAccessMaui.AndroidPlatform.Nfc
 		{
 			try
 			{
-				await this.OpenIfClosed();
-
-				List<NdefRecord> Records = [];
-
-				foreach (object Item in Items)
-				{
-					if (Item is Uri Uri)
-					{
-						if (Uri.IsAbsoluteUri)
-							Records.Add(NdefRecord.CreateUri(Uri.AbsoluteUri) ?? throw new IOException("Unable to create URI record."));
-						else
-							return false;
-					}
-					else if (Item is string s)
-						Records.Add(NdefRecord.CreateTextRecord(null, s) ?? throw new IOException("Unable to create text record."));
-					else
-					{
-						if (Item is not KeyValuePair<byte[], string> Mime)
-						{
-							if (!InternetContent.Encodes(Item, out Grade _, out IContentEncoder Encoder))
-								return false;
-
-							Mime = await Encoder.EncodeAsync(Item, Encoding.UTF8);
-						}
-
-						Records.Add(NdefRecord.CreateMime(Mime.Value, Mime.Key) ?? throw new IOException("Unable to create MIME record."));
-					}
-				}
-
-				NdefMessage Message = new(Records.ToArray());
-
+				NdefMessage Message = await CreateMessage(Items);
 				await this.ndef.WriteNdefMessageAsync(Message);
 
 				return true;
@@ -134,5 +100,47 @@ namespace NeuroAccessMaui.AndroidPlatform.Nfc
 				return false;
 			}
 		}
+
+		/// <summary>
+		/// Creates an NDEF Message.
+		/// </summary>
+		/// <param name="Items">Items to encode.</param>
+		/// <returns>Message object.</returns>
+		/// <exception cref="ArgumentException">If an item could not be encoded.</exception>
+		public static async Task<NdefMessage> CreateMessage(params object[] Items)
+		{
+			List<NdefRecord> Records = [];
+
+			foreach (object Item in Items)
+			{
+				if (Item is null)
+					continue;
+
+				if (Item is Uri Uri)
+				{
+					if (Uri.IsAbsoluteUri)
+						Records.Add(NdefRecord.CreateUri(Uri.AbsoluteUri) ?? throw new ArgumentException("Unable to create URI record.", nameof(Items)));
+					else
+						throw new ArgumentException("URI not absolute.", nameof(Items));
+				}
+				else if (Item is string s)
+					Records.Add(NdefRecord.CreateTextRecord(null, s) ?? throw new ArgumentException("Unable to create text record.", nameof(Items)));
+				else
+				{
+					if (Item is not KeyValuePair<byte[], string> Mime)
+					{
+						if (!InternetContent.Encodes(Item, out Grade _, out IContentEncoder Encoder))
+							throw new ArgumentException("Unable to encode objects of type " + Item.GetType().FullName + ".", nameof(Items));
+
+						Mime = await Encoder.EncodeAsync(Item, Encoding.UTF8);
+					}
+
+					Records.Add(NdefRecord.CreateMime(Mime.Value, Mime.Key) ?? throw new ArgumentException("Unable to create MIME record.", nameof(Items)));
+				}
+			}
+
+			return new(Records.ToArray());
+		}
+
 	}
 }

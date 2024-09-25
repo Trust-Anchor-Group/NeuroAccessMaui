@@ -17,19 +17,17 @@ namespace NeuroAccessMaui.AndroidPlatform.Nfc
 		/// <summary>
 		/// Gets Application Data from the interface.
 		/// </summary>
-		public async Task<byte[]> GetApplicationData()
+		public Task<byte[]> GetApplicationData()
 		{
-			await this.OpenIfClosed();
-			return this.nfcB.GetApplicationData() ?? throw UnableToReadDataFromDevice();
+			return Task.FromResult(this.nfcB.GetApplicationData() ?? throw UnableToReadDataFromDevice());
 		}
 
 		/// <summary>
 		/// Gets Protocol Information from the interface.
 		/// </summary>
-		public async Task<byte[]> GetProtocolInfo()
+		public Task<byte[]> GetProtocolInfo()
 		{
-			await this.OpenIfClosed();
-			return this.nfcB.GetProtocolInfo() ?? throw UnableToReadDataFromDevice();
+			return Task.FromResult(this.nfcB.GetProtocolInfo() ?? throw UnableToReadDataFromDevice());
 		}
 	}
 }

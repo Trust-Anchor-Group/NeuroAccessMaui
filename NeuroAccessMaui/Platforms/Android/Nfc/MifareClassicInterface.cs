@@ -19,8 +19,6 @@ namespace NeuroAccessMaui.AndroidPlatform.Nfc
 		/// </summary>
 		public async Task<byte[]> ReadAllData()
 		{
-			await this.OpenIfClosed();
-
 			//MifareClassicType Type = this.mifareClassic.Type;
 			int BlockCount = this.mifareClassic.BlockCount;
 			//int SectorCount = this.mifareClassic.SectorCount;

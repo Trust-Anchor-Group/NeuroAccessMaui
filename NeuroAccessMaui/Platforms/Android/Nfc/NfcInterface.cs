@@ -46,9 +46,9 @@ namespace NeuroAccessMaui.AndroidPlatform.Nfc
 		}
 
 		/// <summary>
-		/// Closes the interface
+		/// Closes the interface, if connected.
 		/// </summary>
-		public void Close()
+		public void CloseIfOpen()
 		{
 			if (this.technology.IsConnected)
 				this.technology.Close();
@@ -73,7 +73,7 @@ namespace NeuroAccessMaui.AndroidPlatform.Nfc
 
 			if (Disposing)
 			{
-				this.Close();
+				this.CloseIfOpen();
 				this.technology.Dispose();
 				this.tag.Dispose();
 			}

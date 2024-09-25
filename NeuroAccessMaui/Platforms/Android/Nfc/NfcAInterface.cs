@@ -17,19 +17,17 @@ namespace NeuroAccessMaui.AndroidPlatform.Nfc
 		/// <summary>
 		/// Return the ATQA/SENS_RES bytes from tag discovery.
 		/// </summary>
-		public async Task<byte[]> GetAtqa()
+		public Task<byte[]> GetAtqa()
 		{
-			await this.OpenIfClosed();
-			return this.nfcA.GetAtqa() ?? throw UnableToReadDataFromDevice();
+			return Task.FromResult(this.nfcA.GetAtqa() ?? throw UnableToReadDataFromDevice());
 		}
 
 		/// <summary>
 		/// Return the SAK/SEL_RES bytes from tag discovery.
 		/// </summary>
-		public async Task<short> GetSqk()
+		public Task<short> GetSqk()
 		{
-			await this.OpenIfClosed();
-			return this.nfcA.Sak;
+			return Task.FromResult(this.nfcA.Sak);
 		}
 	}
 }

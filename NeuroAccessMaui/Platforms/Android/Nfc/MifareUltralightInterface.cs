@@ -19,8 +19,6 @@ namespace NeuroAccessMaui.AndroidPlatform.Nfc
 		/// </summary>
 		public async Task<byte[]> ReadAllData()
 		{
-			await this.OpenIfClosed();
-
 			MifareUltralightType Type = this.mifareUltralight.Type;
 			int TotalBytes = Type switch
 			{

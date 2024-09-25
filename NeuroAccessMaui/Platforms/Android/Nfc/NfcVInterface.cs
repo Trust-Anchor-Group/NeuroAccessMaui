@@ -20,19 +20,17 @@ namespace NeuroAccessMaui.AndroidPlatform.Nfc
 		/// <summary>
 		/// Return the DSF ID bytes from tag discovery.
 		/// </summary>
-		public async Task<sbyte> GetDsfId()
+		public Task<sbyte> GetDsfId()
 		{
-			await this.OpenIfClosed();
-			return this.nfcV.DsfId;
+			return Task.FromResult(this.nfcV.DsfId);
 		}
 
 		/// <summary>
 		/// Return the Response Flag bytes from tag discovery.
 		/// </summary>
-		public async Task<short> GetResponseFlags()
+		public Task<short> GetResponseFlags()
 		{
-			await this.OpenIfClosed();
-			return this.nfcV.ResponseFlags;
+			return Task.FromResult((short)this.nfcV.ResponseFlags);
 		}
 	}
 }

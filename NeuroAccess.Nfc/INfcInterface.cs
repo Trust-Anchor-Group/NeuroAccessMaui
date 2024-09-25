@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace NeuroAccess.Nfc
 {
@@ -14,5 +15,16 @@ namespace NeuroAccess.Nfc
 		{
 			get;
 		}
+
+		/// <summary>
+		/// Connects the interface, if not connected.
+		/// </summary>
+		/// <returns></returns>
+		Task OpenIfClosed();
+
+		/// <summary>
+		/// Closes the interface, if connected.
+		/// </summary>
+		void CloseIfOpen();
 	}
 }
