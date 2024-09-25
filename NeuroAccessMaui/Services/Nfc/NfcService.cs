@@ -33,9 +33,6 @@ namespace NeuroAccessMaui.Services.Nfc
 		{
 			try
 			{
-				if (!await App.AuthenticateUser(AuthenticationPurpose.NfcTagDetected))
-					return;
-
 				string TagId = Hashes.BinaryToString(Tag.ID).ToUpper(CultureInfo.InvariantCulture);
 				NfcTagReference TagReference = await NfcTagReference.FindByTagId(TagId);
 
@@ -96,6 +93,9 @@ namespace NeuroAccessMaui.Services.Nfc
 								if (LinkableView.HasMedia)
 									Items.Add(new KeyValuePair<byte[], string>(LinkableView.Media!, LinkableView.MediaContentType!));
 
+								if (!await App.AuthenticateUser(AuthenticationPurpose.NfcTagDetected))
+									return;
+
 								bool Ok = await Ndef.SetMessage([.. Items]);
 
 								if (!Ok && LinkableView.HasMedia)
@@ -144,6 +144,9 @@ namespace NeuroAccessMaui.Services.Nfc
 								{
 									if (!string.IsNullOrEmpty(Constants.UriSchemes.GetScheme(UriRecord.Uri)))
 									{
+										if (!await App.AuthenticateUser(AuthenticationPurpose.NfcTagDetected))
+											return;
+
 										if (await App.OpenUrlAsync(UriRecord.Uri))
 											return;
 									}
