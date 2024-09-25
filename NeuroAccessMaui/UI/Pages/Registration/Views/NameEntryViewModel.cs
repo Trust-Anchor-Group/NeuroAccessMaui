@@ -7,6 +7,8 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.UI.Popups.Info;
+using Waher.Networking.XMPP;
+using Waher.Script.Operators.Membership;
 
 namespace NeuroAccessMaui.UI.Pages.Registration.Views
 {
@@ -17,12 +19,39 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		{
 		}
 
-		[ObservableProperty]
-		private string? username;
+		/// <inheritdoc />
+		public override async Task DoAssignProperties()
+		{
+			await base.DoAssignProperties();
+
+			if(string.IsNullOrEmpty(ServiceRef.TagProfile.Account))
+				GoToRegistrationStep(RegistrationStep.ValidatePhone);
+		}
+
+		/// <inheritdoc />
+		protected override async Task OnInitialize()
+		{
+			await base.OnInitialize();
+
+			ServiceRef.XmppService.ConnectionStateChanged += this.XmppService_ConnectionStateChanged;
+		}
+
+		/// <inheritdoc />
+		protected override async Task OnDispose()
+		{
+			ServiceRef.XmppService.ConnectionStateChanged -= this.XmppService_ConnectionStateChanged;
+
+			await base.OnDispose();
+		}
+
+		private Task XmppService_ConnectionStateChanged(object _, XmppState NewState)
+		{
+			this.OnPropertyChanged(nameof(this.IsXmppConnected));
+			return Task.CompletedTask;
+		}
 
 		[ObservableProperty]
-		private string? alternativeName;
-		
+		private string? username;
 
 		partial void OnUsernameChanged(string? value)
 		{
@@ -31,14 +60,69 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		}
 
 		[ObservableProperty]
-		private bool usernameIsValid = false;
+		private string? alternativeName;
 
-		public bool CanCreateAccount => this.UsernameIsValid && !string.IsNullOrEmpty(this.Username);
+		[ObservableProperty]
+		private bool usernameIsValid;
+
+		/// <summary>
+		/// If App is connected to the XMPP network.
+		/// </summary>
+		public bool IsXmppConnected => ServiceRef.XmppService.State == XmppState.Connected;
+
+		public bool CanCreateAccount => this.UsernameIsValid && !string.IsNullOrEmpty(this.Username) && !string.IsNullOrEmpty(this.AlternativeName) && this.IsXmppConnected;
 
 		[RelayCommand(CanExecute = nameof(CanCreateAccount))]
-		private void CreateAccount()
+		private async Task CreateAccount()
 		{
+			try
+			{
+				string? account = this.Username;
 
+				if(string.IsNullOrEmpty(account))
+					return;
+				string PasswordToUse = ServiceRef.CryptoService.CreateRandomPassword();
+
+				(string HostName, int PortNumber, bool IsIpAddress) = await ServiceRef.NetworkService.LookupXmppHostnameAndPort(ServiceRef.TagProfile.Domain!);
+
+				async Task OnConnected(XmppClient Client)
+				{
+					if (ServiceRef.TagProfile.NeedsUpdating())
+						await ServiceRef.XmppService.DiscoverServices(Client);
+
+					ServiceRef.TagProfile.SetAccount(account, Client.PasswordHash, Client.PasswordHashMethod);
+
+					GoToRegistrationStep(RegistrationStep.ValidatePhone);
+				}
+
+				(bool Succeeded, string? ErrorMessage, string[]? Alternatives) = await ServiceRef.XmppService.TryConnectAndCreateAccount(ServiceRef.TagProfile.Domain!,
+					IsIpAddress, HostName, PortNumber, account, PasswordToUse, Constants.LanguageCodes.Default,
+					ServiceRef.TagProfile.ApiKey ?? string.Empty, ServiceRef.TagProfile.ApiSecret ?? string.Empty,
+					typeof(App).Assembly, OnConnected);
+
+				if (Succeeded)
+					return;
+				if (Alternatives is not null && Alternatives.Length > 0)
+				{
+					Random rnd = new Random();
+					//Set alternative name to random alternative
+					this.AlternativeName = Alternatives[rnd.Next(0, Alternatives.Length)];
+				}
+				else if (ErrorMessage is not null)
+				{
+					await ServiceRef.UiService.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ErrorMessage,
+						ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				}
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message,
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+			}
 
 			GoToRegistrationStep(RegistrationStep.ValidatePhone);
 		}
@@ -50,6 +134,15 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			string message = ServiceRef.Localizer[nameof(AppResources.WhyIsThisDataCollectedInfo)];
 			ShowInfoPopup infoPage = new(title, message);
 			await ServiceRef.UiService.PushAsync(infoPage);
+		}
+
+		[RelayCommand]
+		private void SelectName(string? name)
+		{
+			if(string.IsNullOrEmpty(name))
+				return;
+			this.Username = name;
+			this.AlternativeName = string.Empty;
 		}
 
 			/// <summary>
