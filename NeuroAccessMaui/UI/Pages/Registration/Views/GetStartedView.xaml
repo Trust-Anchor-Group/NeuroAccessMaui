@@ -17,10 +17,6 @@
 				Style="{StaticResource PageTitleLabel}"
 				Text="{l:Localize OnboardingGetStartedTitle}" />
 
-			<Label
-				Margin="{StaticResource LargeBottomMargins}"
-				Text="{l:Localize OnboardingGetStartedDetails}" />
-
 			<controls:TextButton
 				Command="{Binding NewAccountCommand}"
 				Style="{StaticResource FilledTextButton}"
@@ -30,7 +26,7 @@
 				Command="{Binding ExistingAccountCommand}"
 				Style="{StaticResource  TransparentTextButton}"
 				LabelData="{l:Localize IAlreadyHaveAnAccount}" />
-
+		
 		</VerticalStackLayout>
 		
 		<VerticalStackLayout Spacing="{StaticResource MediumSpacing}" Grid.Row="1">
