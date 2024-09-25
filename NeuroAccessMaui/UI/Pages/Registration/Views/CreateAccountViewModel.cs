@@ -54,7 +54,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 						return;
 					}
 
-					string generatedUsername = ServiceRef.TagProfile.GenerateUsername();
+					string generatedUsername = "";
 					if (string.IsNullOrEmpty(generatedUsername))
 					{
 						// Generate a new GUID
