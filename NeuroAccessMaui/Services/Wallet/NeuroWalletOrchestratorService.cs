@@ -60,6 +60,9 @@ namespace NeuroAccessMaui.Services.Wallet
 
 		private async Task Wallet_BalanceUpdated(object? Sender, BalanceEventArgs e)
 		{
+			if (e.Balance.Amount > 0 && !ServiceRef.TagProfile.HasWallet)
+				ServiceRef.TagProfile.HasWallet = true;
+
 			await ServiceRef.NotificationService.NewEvent(new BalanceNotificationEvent(e));
 		}
 
