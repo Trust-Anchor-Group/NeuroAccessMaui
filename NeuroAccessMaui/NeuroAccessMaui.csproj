@@ -260,8 +260,9 @@
 		<PackageReference Include="Waher.Networking.XMPP.PubSub" Version="2.0.8" />
 		<PackageReference Include="Waher.Networking.XMPP.Push" Version="2.0.0" />
 		<PackageReference Include="Waher.Networking.XMPP.Sensor" Version="3.0.1" />
-		<PackageReference Include="Waher.Persistence" Version="1.11.0" />
+		<PackageReference Include="Waher.Persistence" Version="1.11.1" />
 		<PackageReference Include="Waher.Persistence.FilesLW" Version="1.11.8" />
+		<PackageReference Include="Waher.Persistence.XmlLedger" Version="1.0.1" />
 		<PackageReference Include="Waher.Runtime.Inventory" Version="1.1.7" />
 		<PackageReference Include="Waher.Runtime.Profiling" Version="1.0.9" />
 		<PackageReference Include="Waher.Runtime.Settings" Version="1.1.1" />
