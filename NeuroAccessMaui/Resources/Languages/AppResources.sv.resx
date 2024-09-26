@@ -2151,4 +2151,10 @@
   <data name="Wallet" xml:space="preserve">
     <value>Plånbok</value>
   </data>
+  <data name="OpenWllet" xml:space="preserve">
+    <value>Öppna plånbok</value>
+  </data>
+  <data name="OpenWalletDescription" xml:space="preserve">
+    <value>Öppna din eDaler-plånbok för att visa aktuellt saldo och se senaste transaktioner.</value>
+  </data>
 </root>

@@ -2840,6 +2840,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Open Wallet.
+        /// </summary>
+        internal static string OpenWallet {
+            get {
+                return ResourceManager.GetString("OpenWallet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open your eDaler wallet, to display current balance and view latest transactions..
+        /// </summary>
+        internal static string OpenWalletDescription {
+            get {
+                return ResourceManager.GetString("OpenWalletDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The operator {0} does not support registration of new accounts.
         /// </summary>
         internal static string OperatorDoesNotSupportRegisteringNewAccounts {

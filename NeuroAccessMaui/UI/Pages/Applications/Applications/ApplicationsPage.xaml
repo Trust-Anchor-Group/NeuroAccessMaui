@@ -97,6 +97,19 @@
 								</Frame>
 							</controls:TemplatedButton>
 
+							<!-- Go to wallet -->
+							<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding OpenWalletCommand}"
+																		IsVisible="{Binding HasWallet}">
+								<Frame Style="{StaticResource ClickableFrameSubSet}" InputTransparent="True">
+									<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
+										<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize OpenWallet}" InputTransparent="True"
+												 TextColor="{AppThemeBinding Light={StaticResource EnabledFilledButtonForegroundLight}, Dark={StaticResource EnabledFilledButtonForegroundDark}}"/>
+										<Label Style="{StaticResource KeyLabel}" Text="{l:Localize CreateWalletDescription}" InputTransparent="True"
+											    TextColor="{AppThemeBinding Light={StaticResource EnabledFilledButtonForegroundLight}, Dark={StaticResource EnabledFilledButtonForegroundDark}}"/>
+									</VerticalStackLayout>
+								</Frame>
+							</controls:TemplatedButton>
+
 						</VerticalStackLayout>
 					</Grid>
 				</Frame>
