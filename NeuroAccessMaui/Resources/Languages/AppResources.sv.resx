@@ -2151,10 +2151,28 @@
   <data name="Wallet" xml:space="preserve">
     <value>Plånbok</value>
   </data>
+  <data name="OpenWalletDescription" xml:space="preserve">
+    <value>Öppna din eDaler-plånbok för att visa aktuellt saldo och se senaste transaktioner.</value>
+  </data>
   <data name="OpenWllet" xml:space="preserve">
     <value>Öppna plånbok</value>
   </data>
-  <data name="OpenWalletDescription" xml:space="preserve">
-    <value>Öppna din eDaler-plånbok för att visa aktuellt saldo och se senaste transaktioner.</value>
+  <data name="AccountEventDescription" xml:space="preserve">
+    <value>Nedan kan du se information om en kontohändelse.</value>
+  </data>
+  <data name="Balance" xml:space="preserve">
+    <value>Balans:</value>
+  </data>
+  <data name="OpenMessageLink" xml:space="preserve">
+    <value>Öppna meddelandelänken</value>
+  </data>
+  <data name="RemoteParty" xml:space="preserve">
+    <value>Andra parten:</value>
+  </data>
+  <data name="Reserved" xml:space="preserve">
+    <value>Reserverat:</value>
+  </data>
+  <data name="TransactionId" xml:space="preserve">
+    <value>Transaktions-ID:</value>
   </data>
 </root>

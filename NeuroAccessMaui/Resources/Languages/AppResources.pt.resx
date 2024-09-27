@@ -2145,4 +2145,22 @@
   <data name="Wallet" xml:space="preserve">
     <value>Carteira</value>
   </data>
+  <data name="AccountEventDescription" xml:space="preserve">
+    <value>Abaixo você pode ver informações sobre um único evento de conta.</value>
+  </data>
+  <data name="Balance" xml:space="preserve">
+    <value>Equilíbrio:</value>
+  </data>
+  <data name="OpenMessageLink" xml:space="preserve">
+    <value>Link de mensagem aberto</value>
+  </data>
+  <data name="RemoteParty" xml:space="preserve">
+    <value>Festa Remota:</value>
+  </data>
+  <data name="Reserved" xml:space="preserve">
+    <value>Reservado:</value>
+  </data>
+  <data name="TransactionId" xml:space="preserve">
+    <value>ID da transação:</value>
+  </data>
 </root>

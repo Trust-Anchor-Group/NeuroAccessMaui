@@ -2145,4 +2145,22 @@
   <data name="Wallet" xml:space="preserve">
     <value>Novиanik</value>
   </data>
+  <data name="AccountEventDescription" xml:space="preserve">
+    <value>U nastavku možete videti informacije o jednom događaju naloga.</value>
+  </data>
+  <data name="Balance" xml:space="preserve">
+    <value>Saldo:</value>
+  </data>
+  <data name="OpenMessageLink" xml:space="preserve">
+    <value>Otvori vezu poruke</value>
+  </data>
+  <data name="RemoteParty" xml:space="preserve">
+    <value>Udaljena žurka:</value>
+  </data>
+  <data name="Reserved" xml:space="preserve">
+    <value>Rezervisana:</value>
+  </data>
+  <data name="TransactionId" xml:space="preserve">
+    <value>ID transakcije:</value>
+  </data>
 </root>

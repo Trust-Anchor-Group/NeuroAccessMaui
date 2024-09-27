@@ -2145,4 +2145,22 @@
   <data name="Wallet" xml:space="preserve">
     <value>Lommebok</value>
   </data>
+  <data name="AccountEventDescription" xml:space="preserve">
+    <value>Nedenfor kan du se informasjon om én enkelt kontohendelse.</value>
+  </data>
+  <data name="Balance" xml:space="preserve">
+    <value>Balanse:</value>
+  </data>
+  <data name="OpenMessageLink" xml:space="preserve">
+    <value>Åpne melding-kobling</value>
+  </data>
+  <data name="RemoteParty" xml:space="preserve">
+    <value>Ekstern fest:</value>
+  </data>
+  <data name="Reserved" xml:space="preserve">
+    <value>Reservert:</value>
+  </data>
+  <data name="TransactionId" xml:space="preserve">
+    <value>Transaksjons-ID:</value>
+  </data>
 </root>
