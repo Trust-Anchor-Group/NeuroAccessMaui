@@ -1060,7 +1060,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 						ErrorMessage = ServiceRef.Localizer[nameof(AppResources.OperatorDoesNotSupportRegisteringNewAccounts), Domain];
 				}
 				else if (Operation == ConnectOperation.ConnectAndCreateAccount)
-					ErrorMessage = ServiceRef.Localizer[nameof(AppResources.AccountNameAlreadyTaken), this.accountName ?? string.Empty];
+					ErrorMessage = ServiceRef.Localizer[nameof(AppResources.UsernameNameAlreadyTaken), this.accountName ?? string.Empty];
 				else if (Operation == ConnectOperation.ConnectToAccount)
 					ErrorMessage = ServiceRef.Localizer[nameof(AppResources.InvalidUsernameOrPassword), this.accountName ?? string.Empty];
 				else
