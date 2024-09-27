@@ -368,7 +368,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 					int i = s2.IndexOf('<');
 					if (i > 0)
-						s2 = s2.Substring(i);
+						s2 = s2[i..];
 
 					string[] Rows = s.Replace("\r\n", "\n").Replace('\r', '\n').Split('\n');
 
@@ -2980,7 +2980,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private void RegisterContractsEventHandlers()
 		{
-			this.ContractsClient.EnableE2eEncryption(true);
+			this.ContractsClient.EnableE2eEncryption(true, false);
 
 			this.ContractsClient.IdentityUpdated += this.ContractsClient_IdentityUpdated;
 			this.ContractsClient.PetitionForIdentityReceived += this.ContractsClient_PetitionForIdentityReceived;
