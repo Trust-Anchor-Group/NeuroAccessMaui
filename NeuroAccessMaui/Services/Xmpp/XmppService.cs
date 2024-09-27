@@ -2648,13 +2648,13 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// Adds a legal identity.
 		/// </summary>
 		/// <param name="Model">The model holding all the values needed.</param>
-		/// <param name="ObsoleteExistingIDsAndKeys">If existing keys and IDs are to be obsoleted.</param>
+		/// <param name="GenerateNewKeys">If new keys should be generated.</param>
 		/// <param name="Attachments">The physical attachments to upload.</param>
 		/// <returns>Legal Identity</returns>
-		public async Task<LegalIdentity> AddLegalIdentity(RegisterIdentityModel Model, bool ObsoleteExistingIDsAndKeys,
+		public async Task<LegalIdentity> AddLegalIdentity(RegisterIdentityModel Model, bool GenerateNewKeys,
 			params LegalIdentityAttachment[] Attachments)
 		{
-			if (ObsoleteExistingIDsAndKeys)
+			if (GenerateNewKeys)
 				await this.ContractsClient.GenerateNewKeys();
 
 			LegalIdentity Identity = await this.ContractsClient.ApplyAsync(Model.ToProperties(ServiceRef.XmppService));
@@ -2723,22 +2723,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// Checks if the client has access to the private keys of the specified legal identity.
 		/// </summary>
-		/// <param name="legalIdentityId">The id of the legal identity.</param>
-		/// <param name="client">The Xmpp client instance. Can be null, in that case the default one is used.</param>
+		/// <param name="LegalIdentityId">The id of the legal identity.</param>
 		/// <returns>If private keys are available.</returns>
-		public async Task<bool> HasPrivateKey(CaseInsensitiveString legalIdentityId, XmppClient? client = null)
+		public Task<bool> HasPrivateKey(CaseInsensitiveString LegalIdentityId)
 		{
-			if (client is null)
-				return await this.ContractsClient.HasPrivateKey(legalIdentityId);
-			else
-			{
-				using ContractsClient cc = new(client, ServiceRef.TagProfile.LegalJid);
-
-				if (!await cc.LoadKeys(false))
-					return false;
-
-				return await cc.HasPrivateKey(legalIdentityId);
-			}
+			return this.ContractsClient.HasPrivateKey(LegalIdentityId);
 		}
 
 		/// <summary>
