@@ -2151,10 +2151,28 @@
   <data name="Wallet" xml:space="preserve">
     <value>Billetera</value>
   </data>
+  <data name="OpenWalletDescription" xml:space="preserve">
+    <value>Abra su billetera eDaler para mostrar el saldo actual y ver las últimas transacciones.</value>
+  </data>
   <data name="OpenWllet" xml:space="preserve">
     <value>Abrir Billetera</value>
   </data>
-  <data name="OpenWalletDescription" xml:space="preserve">
-    <value>Abra su billetera eDaler para mostrar el saldo actual y ver las últimas transacciones.</value>
+  <data name="AccountEventDescription" xml:space="preserve">
+    <value>A continuación puede ver información sobre un evento de una sola cuenta.</value>
+  </data>
+  <data name="Balance" xml:space="preserve">
+    <value>Equilibrar:</value>
+  </data>
+  <data name="OpenMessageLink" xml:space="preserve">
+    <value>Abrir enlace de mensaje</value>
+  </data>
+  <data name="RemoteParty" xml:space="preserve">
+    <value>Parte remota:</value>
+  </data>
+  <data name="Reserved" xml:space="preserve">
+    <value>Reservado:</value>
+  </data>
+  <data name="TransactionId" xml:space="preserve">
+    <value>ID de transacción:</value>
   </data>
 </root>

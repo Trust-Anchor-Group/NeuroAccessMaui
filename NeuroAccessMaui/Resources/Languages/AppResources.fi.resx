@@ -2145,4 +2145,22 @@
   <data name="Wallet" xml:space="preserve">
     <value>Lompakko</value>
   </data>
+  <data name="AccountEventDescription" xml:space="preserve">
+    <value>Alla näet tietoja yhden tilin tapahtumasta.</value>
+  </data>
+  <data name="Balance" xml:space="preserve">
+    <value>Vaaka:</value>
+  </data>
+  <data name="OpenMessageLink" xml:space="preserve">
+    <value>Avaa viestilinkki</value>
+  </data>
+  <data name="RemoteParty" xml:space="preserve">
+    <value>Etäjuhlat:</value>
+  </data>
+  <data name="Reserved" xml:space="preserve">
+    <value>Varattu:</value>
+  </data>
+  <data name="TransactionId" xml:space="preserve">
+    <value>Tapahtuman tunnus:</value>
+  </data>
 </root>

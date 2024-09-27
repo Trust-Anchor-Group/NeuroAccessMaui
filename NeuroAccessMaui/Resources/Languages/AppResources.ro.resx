@@ -2145,4 +2145,22 @@
   <data name="Wallet" xml:space="preserve">
     <value>Portofel</value>
   </data>
+  <data name="AccountEventDescription" xml:space="preserve">
+    <value>Mai jos puteți vedea informații despre un singur eveniment din cont.</value>
+  </data>
+  <data name="Balance" xml:space="preserve">
+    <value>Echilibru:</value>
+  </data>
+  <data name="OpenMessageLink" xml:space="preserve">
+    <value>Deschideți linkul mesajului</value>
+  </data>
+  <data name="RemoteParty" xml:space="preserve">
+    <value>Petrecere la distanță:</value>
+  </data>
+  <data name="Reserved" xml:space="preserve">
+    <value>Rezervat:</value>
+  </data>
+  <data name="TransactionId" xml:space="preserve">
+    <value>ID-ul tranzacției:</value>
+  </data>
 </root>

@@ -2145,4 +2145,22 @@
   <data name="Wallet" xml:space="preserve">
     <value>Tegnebog</value>
   </data>
+  <data name="AccountEventDescription" xml:space="preserve">
+    <value>Nedenfor kan du se oplysninger om en enkelt kontohændelse.</value>
+  </data>
+  <data name="Balance" xml:space="preserve">
+    <value>Saldo:</value>
+  </data>
+  <data name="OpenMessageLink" xml:space="preserve">
+    <value>Åbn meddelelseslink</value>
+  </data>
+  <data name="RemoteParty" xml:space="preserve">
+    <value>Fjernfest:</value>
+  </data>
+  <data name="Reserved" xml:space="preserve">
+    <value>Reserveret:</value>
+  </data>
+  <data name="TransactionId" xml:space="preserve">
+    <value>Transaktions-id:</value>
+  </data>
 </root>
