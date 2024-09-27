@@ -124,6 +124,9 @@ namespace NeuroAccessMaui.UI.Controls
 		/// <summary>Bindable property for <see cref="Placeholder"/>.</summary>
 		public static readonly BindableProperty PlaceholderProperty = InputView.PlaceholderProperty;
 
+		/// <summary>Bindable property for <see cref="TextColor"/>.</summary>
+		public static readonly BindableProperty TextColorProperty = InputView.TextColorProperty;
+
 		public void OnBorderStylePropertyChanged(Style OldValue, Style NewValue)
 		{
 			this.innerBorder.Style = NewValue;
@@ -208,10 +211,15 @@ namespace NeuroAccessMaui.UI.Controls
 			this.innerEntry.Placeholder = NewValue;
 		}
 
-		public void OnBackgroundColorPropertyChanged(Color _, Color NewValue)
+		public void OnBackgroundColorPropertyChanged(Color? _, Color? NewValue)
 		{
 			this.innerEntry.BackgroundColor = NewValue;
 			this.innerBorder.BackgroundColor = NewValue;
+		}
+
+		public void OnTextColorPropertyChanged(Color? _, Color? NewValue)
+		{
+			this.innerEntry.TextColor = NewValue;
 		}
 
 
@@ -319,6 +327,12 @@ namespace NeuroAccessMaui.UI.Controls
 			}
 		}
 
+		public Color? TextColor
+		{
+			get => (Color?)this.GetValue(InputView.TextColorProperty);
+			set => this.SetValue(InputView.TextColorProperty, value);
+		}
+
 		/// <summary>
 		/// Embedded Entry control
 		/// </summary>
@@ -342,6 +356,11 @@ namespace NeuroAccessMaui.UI.Controls
 
 					if (this.innerBorder is not null)
 						this.innerBorder.BackgroundColor = this.BackgroundColor;
+					break;
+
+				case nameof(this.TextColor):
+					if (this.innerEntry is not null)
+						this.innerEntry.TextColor = this.TextColor;
 					break;
 			}
 		}
@@ -394,6 +413,7 @@ namespace NeuroAccessMaui.UI.Controls
 				IsPassword = this.IsPassword,
 				Placeholder = this.Placeholder,
 				BackgroundColor = this.BackgroundColor,
+				TextColor = this.TextColor,
 				Keyboard = this.Keyboard
 			};
 
