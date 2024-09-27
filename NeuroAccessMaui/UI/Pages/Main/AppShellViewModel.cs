@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using EDaler;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Applications.Applications;
@@ -237,16 +238,22 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		private bool canShowWalletCommand;
 
 		[RelayCommand]
-		private static async Task ShowWallet()
+		internal static async Task ShowWallet()
 		{
 			try
 			{
-				WalletNavigationArgs Args = new();
+				Balance Balance = await ServiceRef.XmppService.GetEDalerBalance();
+				(decimal PendingAmount, string PendingCurrency, PendingPayment[] PendingPayments) = await ServiceRef.XmppService.GetPendingEDalerPayments();
+				(AccountEvent[] Events, bool More) = await ServiceRef.XmppService.GetEDalerAccountEvents(Constants.BatchSizes.AccountEventBatchSize);
+
+				WalletNavigationArgs Args = new(Balance, PendingAmount, PendingCurrency, PendingPayments, Events, More);
+
 				await ServiceRef.UiService.GoToAsync(nameof(MyEDalerWalletPage), Args, BackMethod.Pop);
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 	}
