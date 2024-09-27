@@ -1,10 +1,22 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using EDaler;
 using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.UI;
+using NeuroAccessMaui.Services.Wallet;
 using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
+using NeuroAccessMaui.UI.Pages.Contracts;
+using NeuroAccessMaui.UI.Pages.Wallet;
+using NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler;
+using NeuroAccessMaui.UI.Pages.Wallet.MyWallet;
+using NeuroAccessMaui.UI.Pages.Wallet.RequestPayment;
+using NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders;
+using NeuroFeatures;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Persistence;
 
 namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 {
@@ -31,7 +43,13 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 
 			this.IdentityApplicationSent = ServiceRef.TagProfile.IdentityApplication is not null;
 
+			this.HasWallet = ServiceRef.TagProfile.HasWallet;
+			this.HasLegalIdentity = ServiceRef.TagProfile.LegalIdentity is not null &&
+				ServiceRef.TagProfile.LegalIdentity.State == IdentityState.Approved;
+
 			ServiceRef.XmppService.IdentityApplicationChanged += this.XmppService_IdentityApplicationChanged;
+			ServiceRef.XmppService.LegalIdentityChanged += this.XmppService_LegalIdentityChanged;
+			ServiceRef.TagProfile.OnPropertiesChanged += this.TagProfile_OnPropertiesChanged;
 
 			await base.OnInitialize();
 			this.NotifyCommandsCanExecuteChanged();
@@ -40,6 +58,8 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 		protected override Task OnDispose()
 		{
 			ServiceRef.XmppService.IdentityApplicationChanged -= this.XmppService_IdentityApplicationChanged;
+			ServiceRef.XmppService.LegalIdentityChanged -= this.XmppService_LegalIdentityChanged;
+			ServiceRef.TagProfile.OnPropertiesChanged -= this.TagProfile_OnPropertiesChanged;
 
 			return base.OnDispose();
 		}
@@ -52,6 +72,25 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 			});
 
 			return Task.CompletedTask;
+		}
+
+		private Task XmppService_LegalIdentityChanged(object Sender, LegalIdentityEventArgs e)
+		{
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				this.HasLegalIdentity = ServiceRef.TagProfile.LegalIdentity is not null &&
+					ServiceRef.TagProfile.LegalIdentity.State == IdentityState.Approved;
+			});
+
+			return Task.CompletedTask;
+		}
+
+		private void TagProfile_OnPropertiesChanged(object? sender, EventArgs e)
+		{
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				this.HasWallet = ServiceRef.TagProfile.HasWallet;
+			});
 		}
 
 		protected override async Task OnAppearing()
@@ -89,6 +128,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 		{
 			this.ApplyPersonalIdCommand.NotifyCanExecuteChanged();
 			this.ApplyOrganizationalIdCommand.NotifyCanExecuteChanged();
+			this.BuyEDalerCommand.NotifyCanExecuteChanged();
 		}
 
 		#region Properties
@@ -103,6 +143,18 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 		/// </summary>
 		[ObservableProperty]
 		private bool identityApplicationSent;
+
+		/// <summary>
+		/// If the user has an approved legal identity.
+		/// </summary>
+		[ObservableProperty]
+		private bool hasLegalIdentity;
+
+		/// <summary>
+		/// If the user has a wallet.
+		/// </summary>
+		[ObservableProperty]
+		private bool hasWallet;
 
 		#endregion
 
@@ -154,6 +206,117 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 					return;
 
 				await ServiceRef.UiService.GoToAsync(nameof(ApplyIdPage), new ApplyIdNavigationArgs(false, false));
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
+			}
+		}
+
+		[RelayCommand(CanExecute = nameof(CanExecuteCommands))]
+		private async Task BuyEDaler()
+		{
+			try
+			{
+				IBuyEDalerServiceProvider[] ServiceProviders = await ServiceRef.XmppService.GetServiceProvidersForBuyingEDalerAsync();
+				Balance Balance = await ServiceRef.XmppService.GetEDalerBalance();
+
+				if (ServiceProviders.Length == 0)
+				{
+					EDalerBalanceNavigationArgs Args = new(Balance);
+					await ServiceRef.UiService.GoToAsync(nameof(RequestPaymentPage), Args, BackMethod.CurrentPage);
+				}
+				else
+				{
+					List<IBuyEDalerServiceProvider> ServiceProviders2 = [];
+
+					ServiceProviders2.AddRange(ServiceProviders);
+					ServiceProviders2.Add(new EmptyBuyEDalerServiceProvider());
+
+					ServiceProvidersNavigationArgs e = new(ServiceProviders2.ToArray(),
+						ServiceRef.Localizer[nameof(AppResources.BuyEDaler)],
+						ServiceRef.Localizer[nameof(AppResources.SelectServiceProviderBuyEDaler)]);
+
+					await ServiceRef.UiService.GoToAsync(nameof(ServiceProvidersPage), e, BackMethod.Pop);
+					if (e.ServiceProvider is null)
+						return;
+
+					IBuyEDalerServiceProvider? ServiceProvider = (IBuyEDalerServiceProvider?)(await e.ServiceProvider.Task);
+					if (ServiceProvider is null)
+						return;
+
+					if (!await App.AuthenticateUser(AuthenticationPurpose.ApplyForOrganizationalId))
+						return;
+
+					if (string.IsNullOrEmpty(ServiceProvider.Id))
+					{
+						EDalerBalanceNavigationArgs Args = new(Balance);
+						await ServiceRef.UiService.GoToAsync(nameof(RequestPaymentPage), Args, BackMethod.CurrentPage);
+					}
+					else if (string.IsNullOrEmpty(ServiceProvider.BuyEDalerTemplateContractId))
+					{
+						TaskCompletionSource<decimal?> Result = new();
+						BuyEDalerNavigationArgs Args = new(Balance?.Currency, Result);
+
+						await ServiceRef.UiService.GoToAsync(nameof(BuyEDalerPage), Args, BackMethod.CurrentPage);
+
+						decimal? Amount = await Result.Task;
+						if (!Amount.HasValue)
+							return;
+
+						if (Amount.Value > 0)
+						{
+							PaymentTransaction Transaction = await ServiceRef.XmppService.InitiateBuyEDaler(ServiceProvider.Id, ServiceProvider.Type,
+								Amount.Value, Balance?.Currency);
+
+							Amount = await Transaction.Wait();
+
+							if (Amount.HasValue && Amount.Value > 0)
+							{
+								ServiceRef.TagProfile.HasWallet = true;
+								await this.OpenWallet();
+							}
+						}
+					}
+					else
+					{
+						CreationAttributesEventArgs e2 = await ServiceRef.XmppService.GetNeuroFeatureCreationAttributes();
+						Dictionary<CaseInsensitiveString, object> Parameters = new()
+							{
+								{ "Visibility", "CreatorAndParts" },
+								{ "Role", "Buyer" },
+								{ "Currency", Balance?.Currency ?? e2.Currency },
+								{ "TrustProvider", e2.TrustProviderId }
+							};
+
+						await ServiceRef.ContractOrchestratorService.OpenContract(ServiceProvider.BuyEDalerTemplateContractId,
+							ServiceRef.Localizer[nameof(AppResources.BuyEDaler)], Parameters);
+
+						OptionsTransaction OptionsTransaction = await ServiceRef.XmppService.InitiateBuyEDalerGetOptions(ServiceProvider.Id, ServiceProvider.Type);
+						IDictionary<CaseInsensitiveString, object>[] Options = await OptionsTransaction.Wait();
+
+						if (ServiceRef.UiService.CurrentPage is IContractOptionsPage ContractOptionsPage)
+							MainThread.BeginInvokeOnMainThread(async () => await ContractOptionsPage.ShowContractOptions(Options));
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
+			}
+		}
+
+		[RelayCommand(CanExecute = nameof(CanExecuteCommands))]
+		private async Task OpenWallet()
+		{
+			try
+			{
+				if (!await App.AuthenticateUser(AuthenticationPurpose.ApplyForOrganizationalId))
+					return;
+
+				await ServiceRef.UiService.GoToAsync(nameof(MyEDalerWalletPage), new WalletNavigationArgs());
 			}
 			catch (Exception ex)
 			{

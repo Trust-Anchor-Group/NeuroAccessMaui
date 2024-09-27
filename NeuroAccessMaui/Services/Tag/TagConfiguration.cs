@@ -251,5 +251,11 @@ namespace NeuroAccessMaui.Services
 		/// </summary>
 		[DefaultValue(false)]
 		public bool HasContractTokenCreationTemplatesReferences { get; set; }
+
+		/// <summary>
+		/// If the user has a wallet.
+		/// </summary>
+		[DefaultValue(false)]
+		public bool HasWallet { get; set; }
 	}
 }

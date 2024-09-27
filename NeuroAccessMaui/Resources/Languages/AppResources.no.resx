@@ -2133,4 +2133,16 @@
   <data name="TransferIdentityPageDetails" xml:space="preserve">
     <value>Fortsett med innføringen på den andre enheten til du kommer til tjenesteleverandørsiden. Trykk på endringsknappen og skann denne QR-en. Hvis du gjør dette, fjernes identiteten fra denne enheten.</value>
   </data>
+  <data name="Buy" xml:space="preserve">
+    <value>Kjøpe</value>
+  </data>
+  <data name="BuyEDalerDescription" xml:space="preserve">
+    <value>Oppgi hvor mye eDaler du vil kjøpe nedenfor, og trykk på Kjøp-knappen. En nettside kan åpnes der du må fylle ut ytterligere informasjon for betalingsprosessoren for å validere kravet ditt.</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Beløp:</value>
+  </data>
+  <data name="Wallet" xml:space="preserve">
+    <value>Lommebok</value>
+  </data>
 </root>

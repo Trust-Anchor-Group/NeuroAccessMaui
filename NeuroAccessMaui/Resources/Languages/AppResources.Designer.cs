@@ -194,6 +194,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Amount:.
+        /// </summary>
+        internal static string Amount {
+            get {
+                return ResourceManager.GetString("Amount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Anonymous.
         /// </summary>
         internal static string Anonymous {
@@ -545,11 +554,29 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Buy.
+        /// </summary>
+        internal static string Buy {
+            get {
+                return ResourceManager.GetString("Buy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Buy eDaler..
         /// </summary>
         internal static string BuyEDaler {
             get {
                 return ResourceManager.GetString("BuyEDaler", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Provide the amount of eDaler do you want to buy below, and press the Buy button. A web page may be opened where you have to fill in further information for the payment processor to validate your requst..
+        /// </summary>
+        internal static string BuyEDalerDescription {
+            get {
+                return ResourceManager.GetString("BuyEDalerDescription", resourceCulture);
             }
         }
         
@@ -1243,6 +1270,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string CreatePassword {
             get {
                 return ResourceManager.GetString("CreatePassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create Wallet.
+        /// </summary>
+        internal static string CreateWallet {
+            get {
+                return ResourceManager.GetString("CreateWallet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You create a wallet by putting some money in it. This money is called eDaler, and can be transferred to others, online or offline, or be used to purchase services offered..
+        /// </summary>
+        internal static string CreateWalletDescription {
+            get {
+                return ResourceManager.GetString("CreateWalletDescription", resourceCulture);
             }
         }
         
@@ -2791,6 +2836,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string Open {
             get {
                 return ResourceManager.GetString("Open", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Wallet.
+        /// </summary>
+        internal static string OpenWallet {
+            get {
+                return ResourceManager.GetString("OpenWallet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open your eDaler wallet, to display current balance and view latest transactions..
+        /// </summary>
+        internal static string OpenWalletDescription {
+            get {
+                return ResourceManager.GetString("OpenWalletDescription", resourceCulture);
             }
         }
         
@@ -5797,6 +5860,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string Visibility {
             get {
                 return ResourceManager.GetString("Visibility", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wallet.
+        /// </summary>
+        internal static string Wallet {
+            get {
+                return ResourceManager.GetString("Wallet", resourceCulture);
             }
         }
         

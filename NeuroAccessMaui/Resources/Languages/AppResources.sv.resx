@@ -2133,4 +2133,28 @@
   <data name="TransferIdentityPageDetails" xml:space="preserve">
     <value>På din andra enhet, verifiera ditt telefonnummer och epost. Sedan på sidan där du får välja tjänsteleverantör tryck på ändra knappen och skanna denna QR-kod. Detta kommer ta bort identiteten från denna enhet.</value>
   </data>
+  <data name="CreateWallet" xml:space="preserve">
+    <value>Skapa plånbok</value>
+  </data>
+  <data name="CreateWalletDescription" xml:space="preserve">
+    <value>Du skapar en plånbok genom att lägga lite pengar i den. Dessa pengar kallas eDaler och kan överföras till andra, online eller offline, eller användas för att köpa tjänster som erbjuds.</value>
+  </data>
+  <data name="Buy" xml:space="preserve">
+    <value>Köp</value>
+  </data>
+  <data name="BuyEDalerDescription" xml:space="preserve">
+    <value>Ange det belopp av eDaler du vill köpa nedan, och tryck sedan på Köp-knappen. En webb-sida kan komma att öppnas där du behöver fylla in ytterligare information så att betalningsleverantören kan validera din förfrågan.</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Belopp:</value>
+  </data>
+  <data name="Wallet" xml:space="preserve">
+    <value>Plånbok</value>
+  </data>
+  <data name="OpenWllet" xml:space="preserve">
+    <value>Öppna plånbok</value>
+  </data>
+  <data name="OpenWalletDescription" xml:space="preserve">
+    <value>Öppna din eDaler-plånbok för att visa aktuellt saldo och se senaste transaktioner.</value>
+  </data>
 </root>
