@@ -370,16 +370,33 @@ namespace NeuroAccessMaui.Services.Xmpp
 					if (i > 0)
 						s2 = s2.Substring(i);
 
+					string[] Rows = s.Replace("\r\n", "\n").Replace('\r', '\n').Split('\n');
+
 					if (s2.StartsWith("<New", StringComparison.OrdinalIgnoreCase))
-						await Sniffer.TransmitText(s);
+					{
+						foreach (string Row in Rows)
+							await Sniffer.TransmitText(Row);
+					}
 					else if (s2.StartsWith("<Update", StringComparison.OrdinalIgnoreCase))
-						await Sniffer.ReceiveText(s);
+					{
+						foreach (string Row in Rows)
+							await Sniffer.ReceiveText(Row);
+					}
 					else if (s2.StartsWith("<Delete", StringComparison.OrdinalIgnoreCase))
-						await Sniffer.Error(s);
+					{
+						foreach (string Row in Rows)
+							await Sniffer.Error(Row);
+					}
 					else if (s2.StartsWith("<Clear", StringComparison.OrdinalIgnoreCase))
-						await Sniffer.Warning(s);
+					{
+						foreach (string Row in Rows)
+							await Sniffer.Warning(Row);
+					}
 					else
-						await Sniffer.Information(s);
+					{
+						foreach (string Row in Rows)
+							await Sniffer.Information(Row);
+					}
 				}
 				catch (Exception)
 				{
