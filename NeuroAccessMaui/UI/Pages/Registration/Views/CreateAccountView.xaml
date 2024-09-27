@@ -12,8 +12,7 @@
 									xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
 
 	<Grid VerticalOptions="Center">
-		<VerticalStackLayout Spacing="{StaticResource LargeSpacing}" VerticalOptions="Center"
-									IsVisible="{Binding ShowLoading}">
+		<VerticalStackLayout Spacing="{StaticResource LargeSpacing}" VerticalOptions="Center">
 
 			<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
 

@@ -13,30 +13,26 @@
                            xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters">
 
 	<base:BaseRegistrationView.Resources>
-		<converters:EnumToBoolean x:Key="EnumToBooleanConverter" />
-		<converters:EnumToVisibility x:Key="EnumToVisibilityConverter" />
 		<converters:OnlyShowNonEmpty x:Key="OnlyShowNonEmpty" />
 	</base:BaseRegistrationView.Resources>
 
 	<Grid RowDefinitions="*, auto" RowSpacing="{StaticResource LargeSpacing}">
-		<ScrollView Grid.Row="0">
-			<VerticalStackLayout Spacing="{StaticResource LargeSpacing}" VerticalOptions="Center">
-				<!-- Title and Detail -->
-				<Label Style="{StaticResource PageTitleLabel}" Text="{l:Localize OnboardingNameEntryTitle}" />
-				<Label Text="{l:Localize OnboardingNameEntryDetails}" />
+		<VerticalStackLayout Spacing="{StaticResource LargeSpacing}" VerticalOptions="Center" Grid.Row="0">
+			<!-- Title and Detail -->
+			<Label Style="{StaticResource PageTitleLabel}" Text="{l:Localize OnboardingNameEntryTitle}" />
 
 
-				<!-- Nickname Input -->
-				<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-					<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize Nickname}" />
-					<controls:CompositeEntry x:Name="NicknameEntry" Style="{StaticResource RegularCompositeEntry}"
-                                             EntryData="{Binding Username}" Placeholder="{l:Localize Nickname}" />
-
-					<Grid RowDefinitions="auto" ColumnDefinitions="auto,*" HorizontalOptions="Center" 
+			<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
+				<!-- Input 
+				<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize Nickname}" />-->
+				<controls:CompositeEntry x:Name="NicknameEntry" Style="{StaticResource RegularCompositeEntry}"
+                                             EntryData="{Binding Username}" EntryHint="{l:Localize Username}" />
+				<!-- Validation -->
+				<Grid RowDefinitions="*,*" ColumnDefinitions="auto,*" HorizontalOptions="Center" 
 						ColumnSpacing="{StaticResource SmallSpacing}"
-						IsVisible="{Binding UsernameIsValid, Converter={StaticResource InvertedBoolConverter}}">
+						IsVisible="{Binding LocalizedValidationMessage, Converter={StaticResource OnlyShowNonEmpty}}">
 
-						<Path Grid.Column="0"
+					<Path Grid.Column="0"  Grid.Row="0"
 								VerticalOptions="Center"
 								HeightRequest="20"
 								WidthRequest="20"
@@ -44,51 +40,38 @@
 								Data="{x:Static ui:Geometries.InfoCirclePath}"
 								Fill="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
 
-						<Label Grid.Column="1" VerticalOptions="Center" Text="{l:Localize AccountValidationAlreadyExists}"
+					<Label Grid.Column="1" Grid.Row="0" VerticalOptions="Center" Text="{Binding LocalizedValidationMessage}"
 									TextColor="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
-					</Grid>
+					<Grid  Grid.Row="1" Grid.Column="1" ColumnDefinitions="auto, *" IsVisible="{Binding AlternativeName, Converter={StaticResource OnlyShowNonEmpty}}">
+						<Label HorizontalOptions="Start" Text="{l:Localize Alternative}" Grid.Column="0"
+						       TextColor="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
 
-					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" IsVisible="{Binding AlternativeName, Converter={StaticResource OnlyShowNonEmpty}}">
-						<Label Text="{l:Localize AccountAvailableAlternatives}" />
 
-						<Border>
-							<Border.GestureRecognizers>
+
+						<Label Grid.Column="1" Text="{Binding AlternativeName}" TextDecorations="Underline" LineBreakMode="CharacterWrap" TextColor="{AppThemeBinding Light={StaticResource AccentForegroundLight}, Dark={StaticResource AccentForegroundDark}}">
+							<Label.GestureRecognizers>
 								<TapGestureRecognizer Command="{Binding SelectNameCommand}"
-														CommandParameter="{Binding AlternativeName}" />
-							</Border.GestureRecognizers>
+								                      CommandParameter="{Binding AlternativeName}" />
+							</Label.GestureRecognizers>
+						</Label>
+					</Grid>
+				</Grid>
+				<!--  -->
 
-							<Label HorizontalOptions="Center" Text="{Binding AlternativeName}" 
-										TextColor="{AppThemeBinding Light={StaticResource AccentForegroundLight}, Dark={StaticResource AccentForegroundDark}}" />
-						</Border>
-					</VerticalStackLayout>
-				</VerticalStackLayout>
 			</VerticalStackLayout>
-		</ScrollView>
+		</VerticalStackLayout>
 
 		<!-- Continue Button -->
 		<VerticalStackLayout Grid.Row="1" Spacing="{StaticResource MediumSpacing}">
-			<controls:TemplatedButton
-				HorizontalOptions="Center"
-				Command="{x:Binding ShowDataInfoCommand}">
-				<HorizontalStackLayout Spacing="{StaticResource SmallSpacing}">
-					<Path
-						VerticalOptions="Center"
-						HeightRequest="20"
-						WidthRequest="20"
-						Aspect="Uniform"
-						Data="{x:Static ui:Geometries.InfoCirclePath}"
-						Fill="{AppThemeBinding Light={StaticResource NormalInfoForegroundLight},
-											Dark={StaticResource NormalInfoForegroundDark}}" />
+			<Border Style="{StaticResource AccentInfoBorder}" Padding="{StaticResource SmallMargins}">
+				<Grid ColumnDefinitions="auto, *">
+					<Path Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center"
+					      Data="{x:Static ui:Geometries.InfoCirclePath}" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
+					      Fill="{AppThemeBinding Light={StaticResource AccentForegroundLight}, Dark={StaticResource AccentForegroundDark}}"/>
+					<Label Grid.Column="1" Style ="{StaticResource AccentInfoLabel}" Margin="{StaticResource SmallLeftMargins}" Text="{l:Localize OnboardingNameEntryDetails}" />
 
-					<Label
-						VerticalOptions="Center"
-						FontFamily="HaasGroteskRegular"
-						FontSize="14"
-						Text="{l:Localize WhyIsThisDataCollected}"
-						TextColor="{AppThemeBinding Light={StaticResource NormalInfoForegroundLight},
-													Dark={StaticResource NormalInfoForegroundDark}}" />
-				</HorizontalStackLayout>
-			</controls:TemplatedButton>
+				</Grid>
+			</Border>
 			<controls:TextButton Command="{Binding CreateAccountCommand}" Style="{StaticResource FilledTextButton}"
 			                     LabelData="{l:Localize Continue}" />
 		</VerticalStackLayout>

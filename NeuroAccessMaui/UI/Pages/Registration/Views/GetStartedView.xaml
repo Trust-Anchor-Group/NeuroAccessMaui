@@ -29,28 +29,6 @@
 		
 		</VerticalStackLayout>
 		
-		<VerticalStackLayout Spacing="{StaticResource MediumSpacing}" Grid.Row="1">
-			<Border Style="{StaticResource AccentInfoBorder}" Padding="{StaticResource SmallMargins}">
-				<Grid ColumnDefinitions="auto, *">
-					<Path Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center"
-						Data="{x:Static ui:Geometries.InfoCirclePath}" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
-						Fill="{AppThemeBinding Light={StaticResource AccentForegroundLight}, Dark={StaticResource AccentForegroundDark}}"/>
-					<Label Grid.Column="1" Style ="{StaticResource AccentInfoLabel}" Margin="{StaticResource SmallLeftMargins}" Text="{l:Localize OnboardingGetStartedQrInfo}" />
 
-				</Grid>
-			</Border>
-
-			<controls:TemplatedButton Command="{x:Binding ScanQrCodeCommand}">
-				<Border Style="{StaticResource TransparentTemplateButtonBorder}" InputTransparent="True" HorizontalOptions="Fill">
-					<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
-						<Path VerticalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
-								Data="{x:Static ui:Geometries.ScanQrIconPath}"
-								Style="{StaticResource TransparentTemplateButtonPath}"
-								/>
-						<Label Grid.Column="1" Style="{StaticResource TransparentTemplateButtonLabel}" Margin="{StaticResource SmallLeftMargins}"  Text="{l:Localize ScanQRShort}"/>
-					</Grid>
-				</Border>
-			</controls:TemplatedButton>
-		</VerticalStackLayout>
 	</Grid>
 </base:BaseRegistrationView>

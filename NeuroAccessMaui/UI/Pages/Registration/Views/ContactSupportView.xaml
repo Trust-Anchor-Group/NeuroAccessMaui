@@ -9,153 +9,174 @@
                            xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
                            xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Registration"
                            xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
-                           xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
+                           xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+                           xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters">
 
-	<Grid RowSpacing="{StaticResource LargeSpacing}" RowDefinitions="*, auto">
-		<VerticalStackLayout Spacing="{StaticResource MediumSpacing}" Grid.Row="0" VerticalOptions="Center">
-            <Label
-				Style="{StaticResource PageTitleLabel}"
-				Text="{l:Localize OnboardingContactSupportTitle}" />
+	<base:BaseRegistrationView.Resources>
+		<converters:OnlyShowNonEmpty x:Key="OnlyShowNonEmpty" />
+	</base:BaseRegistrationView.Resources>
+	<Grid>
+		<Grid RowSpacing="{StaticResource LargeSpacing}" RowDefinitions="*, auto">
+			<VerticalStackLayout Spacing="{StaticResource MediumSpacing}" Grid.Row="0" VerticalOptions="Center">
+				<Label
+					Style="{StaticResource PageTitleLabel}"
+					Text="{l:Localize OnboardingContactSupportTitle}" />
 
-			<Label
-				Margin="{StaticResource LargeBottomMargins}"
-				Text="{l:Localize OnboardingContactSupportDetails}" />
+				<Label
+					Margin="{StaticResource LargeBottomMargins}"
+					Text="{l:Localize OnboardingContactSupportDetails}" />
 
-			<!-- Email Section -->
-			<Label
-                Style="{StaticResource SectionTitleLabel}"
-                Text="{l:Localize EmailSectionTitle}" />
+				<!-- Email Section -->
+				<Label
+	                Style="{StaticResource SectionTitleLabel}"
+	                Text="{l:Localize EmailSectionTitle}" />
 
-			<controls:CompositeEntry x:Name="EmailEntry"
-                                     Style="{StaticResource RegularCompositeEntry}"
-                                     EntryData="{Binding EmailText}"
-                                     PathData="{x:Static ui:Geometries.EmailIconPath}">
-				<controls:CompositeEntry.Behaviors>
-					<mct:TextValidationBehavior x:Name="EmailValidator"
-                                                Flags="ValidateOnValueChanged"
-                                                IsValid="{Binding EmailIsValid}"
-                                                RegexPattern="^$|^[\w\d](\w|\d|[_\.-][\w\d])*@(\w|\d|[\.-][\w\d]+)+$"
-                                                ValuePropertyName="EntryData" />
-				</controls:CompositeEntry.Behaviors>
-			</controls:CompositeEntry>
+				<controls:CompositeEntry x:Name="EmailEntry"
+	                                     Style="{StaticResource RegularCompositeEntry}"
+	                                     EntryData="{Binding EmailText}"
+	                                     PathData="{x:Static ui:Geometries.EmailIconPath}">
+					<controls:CompositeEntry.Behaviors>
+						<mct:TextValidationBehavior x:Name="EmailValidator"
+	                                                Flags="ValidateOnValueChanged"
+	                                                IsValid="{Binding EmailIsValid}"
+	                                                RegexPattern="^$|^[\w\d](\w|\d|[_\.-][\w\d])*@(\w|\d|[\.-][\w\d]+)+$"
+	                                                ValuePropertyName="EntryData" />
+					</controls:CompositeEntry.Behaviors>
+				</controls:CompositeEntry>
 
-			<!-- Email Validation Error -->
-			<Grid
-                RowDefinitions="auto"
-                ColumnDefinitions="auto,*"
-                HorizontalOptions="Center"
-                ColumnSpacing="{StaticResource SmallSpacing}"
-                IsVisible="{Binding IsNotValid, Source={x:Reference EmailValidator}}">
-
-				<Path Grid.Column="0"
-                      VerticalOptions="Center"
-                      HeightRequest="20"
-                      WidthRequest="20"
-                      Aspect="Uniform"
-                      Data="{x:Static ui:Geometries.InfoCirclePath}"
-                      Fill="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
-
-				<Label Grid.Column="1" VerticalOptions="Center" Text="{Binding EmailValidationError}"
-                       TextColor="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
-			</Grid>
-
-			<!-- Phone Section -->
-			<Label
-                Style="{StaticResource SectionTitleLabel}"
-                Text="{l:Localize PhoneSectionTitle}" />
-
-			<Border
-                Padding="{StaticResource EditMediumMargins}"
-                Style="{StaticResource ItemOuterBorder}"
-                BackgroundColor="{AppThemeBinding Light={StaticResource NormalEditBackgroundLight},
-                                                    Dark={StaticResource NormalEditBackgroundDark}}"
-                Stroke="{AppThemeBinding Light={StaticResource NormalEditForegroundLight},
-                                          Dark={StaticResource NormalEditForegroundDark}}">
-
+				<!-- Email Validation Error -->
 				<Grid
-                    RowDefinitions="auto"
-                    ColumnDefinitions="auto,*"
-                    ColumnSpacing="{StaticResource MediumSpacing}">
-					<!-- Country Code Selector -->
-					<HorizontalStackLayout
-                        Grid.Column="0"
-                        VerticalOptions="FillAndExpand"
-                        Spacing="{StaticResource SmallSpacing}">
-						<HorizontalStackLayout.GestureRecognizers>
-							<TapGestureRecognizer Command="{Binding SelectPhoneCodeCommand}" />
-						</HorizontalStackLayout.GestureRecognizers>
+	                RowDefinitions="auto"
+	                ColumnDefinitions="auto,*"
+	                HorizontalOptions="Center"
+	                ColumnSpacing="{StaticResource SmallSpacing}"
+	                IsVisible="{Binding EmailValidationError, Converter={StaticResource OnlyShowNonEmpty}}">
 
-						<Label
-                            VerticalOptions="Center"
-                            Text="{Binding SelectedCountry.DialCode}" />
+					<Path Grid.Column="0"
+	                      VerticalOptions="Center"
+	                      HeightRequest="20"
+	                      WidthRequest="20"
+	                      Aspect="Uniform"
+	                      Data="{x:Static ui:Geometries.InfoCirclePath}"
+	                      Fill="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
 
-						<Path
-                            VerticalOptions="Center"
-                            HeightRequest="5"
-                            WidthRequest="10"
-                            Aspect="Uniform"
-                            Data="{x:Static ui:Geometries.DropDownArrowPath}"
-                            Fill="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
-                                                    Dark={StaticResource PrimaryForegroundDark}}" />
-					</HorizontalStackLayout>
-
-					<!-- Phone Entry -->
-					<Entry
-                        Grid.Column="1"
-                        VerticalOptions="Center"
-                        IsSpellCheckEnabled="False"
-                        Keyboard="Telephone"
-                        Text="{Binding PhoneText}">
-						<Entry.Behaviors>
-							<mct:MultiValidationBehavior x:Name="PhoneValidator"
-                                                         Flags="ValidateOnValueChanged"
-                                                         IsValid="{Binding PhoneIsValid}">
-								<mct:CharactersValidationBehavior
-                                    RegexPattern="^\d*$" />
-								<mct:TextValidationBehavior
-                                    RegexPattern="^$|^\d{4,}$" />
-							</mct:MultiValidationBehavior>
-						</Entry.Behaviors>
-					</Entry>
+					<Label Grid.Column="1" VerticalOptions="Center" Text="{Binding EmailValidationError}"
+	                       TextColor="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
 				</Grid>
-			</Border>
 
-			<!-- Phone Validation Error -->
-			<Grid
-                RowDefinitions="auto"
-                ColumnDefinitions="auto,*"
-                HorizontalOptions="Center"
-                ColumnSpacing="{StaticResource SmallSpacing}"
-                IsVisible="{Binding IsNotValid, Source={x:Reference PhoneValidator}}">
+				<!-- Phone Section -->
+				<Label
+	                Style="{StaticResource SectionTitleLabel}"
+	                Text="{l:Localize PhoneSectionTitle}" />
 
-				<Path Grid.Column="0"
-                      VerticalOptions="Center"
-                      HeightRequest="20"
-                      WidthRequest="20"
-                      Aspect="Uniform"
-                      Data="{x:Static ui:Geometries.InfoCirclePath}"
-                      Fill="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
+				<Border
+	                Padding="{StaticResource EditMediumMargins}"
+	                Style="{StaticResource ItemOuterBorder}"
+	                BackgroundColor="{AppThemeBinding Light={StaticResource NormalEditBackgroundLight},
+	                                                    Dark={StaticResource NormalEditBackgroundDark}}"
+	                Stroke="{AppThemeBinding Light={StaticResource NormalEditForegroundLight},
+	                                          Dark={StaticResource NormalEditForegroundDark}}">
 
-				<Label Grid.Column="1" VerticalOptions="Center" Text="{Binding PhoneValidationError}"
-                       TextColor="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
-			</Grid>
+					<Grid
+	                    RowDefinitions="auto"
+	                    ColumnDefinitions="auto,*"
+	                    ColumnSpacing="{StaticResource MediumSpacing}">
+						<!-- Country Code Selector -->
+						<HorizontalStackLayout
+	                        Grid.Column="0"
+	                        VerticalOptions="FillAndExpand"
+	                        Spacing="{StaticResource SmallSpacing}">
+							<HorizontalStackLayout.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding SelectPhoneCodeCommand}" />
+							</HorizontalStackLayout.GestureRecognizers>
 
-            <Border Style="{StaticResource AccentInfoBorder}" Padding="{StaticResource SmallMargins}">
-				<Grid ColumnDefinitions="auto, *">
-					<Path Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center"
-						Data="{x:Static ui:Geometries.InfoCirclePath}" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
-						Fill="{AppThemeBinding Light={StaticResource AccentForegroundLight}, Dark={StaticResource AccentForegroundDark}}"/>
-					<Label Grid.Column="1" Style ="{StaticResource AccentInfoLabel}" Margin="{StaticResource SmallLeftMargins}" Text="{l:Localize OnboardingContactSupportInfo}" />
+							<Label
+	                            VerticalOptions="Center"
+	                            Text="{Binding SelectedCountry.DialCode}" />
 
+							<Path
+	                            VerticalOptions="Center"
+	                            HeightRequest="5"
+	                            WidthRequest="10"
+	                            Aspect="Uniform"
+	                            Data="{x:Static ui:Geometries.DropDownArrowPath}"
+	                            Fill="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
+	                                                    Dark={StaticResource PrimaryForegroundDark}}" />
+						</HorizontalStackLayout>
+
+						<!-- Phone Entry -->
+						<Entry
+	                        Grid.Column="1"
+	                        VerticalOptions="Center"
+	                        IsSpellCheckEnabled="False"
+	                        Keyboard="Telephone"
+	                        Text="{Binding PhoneText}">
+							<Entry.Behaviors>
+								<mct:MultiValidationBehavior x:Name="PhoneValidator"
+	                                                         Flags="ValidateOnValueChanged"
+	                                                         IsValid="{Binding PhoneIsValid}">
+									<mct:CharactersValidationBehavior
+	                                    RegexPattern="^\d*$" />
+									<mct:TextValidationBehavior
+	                                    RegexPattern="^$|^\d{4,}$" />
+								</mct:MultiValidationBehavior>
+							</Entry.Behaviors>
+						</Entry>
+					</Grid>
+				</Border>
+
+				<!-- Phone Validation Error -->
+				<Grid
+	                RowDefinitions="auto"
+	                ColumnDefinitions="auto,*"
+	                HorizontalOptions="Center"
+	                ColumnSpacing="{StaticResource SmallSpacing}"
+	                IsVisible="{Binding PhoneValidationError, Converter={StaticResource OnlyShowNonEmpty}}">
+
+					<Path Grid.Column="0"
+	                      VerticalOptions="Center"
+	                      HeightRequest="20"
+	                      WidthRequest="20"
+	                      Aspect="Uniform"
+	                      Data="{x:Static ui:Geometries.InfoCirclePath}"
+	                      Fill="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
+
+					<Label Grid.Column="1" VerticalOptions="Center" Text="{Binding PhoneValidationError}"
+	                       TextColor="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
 				</Grid>
-			</Border>
-		</VerticalStackLayout>
+				<!-- Send Codes Button -->
+				<controls:TextButton
+		            Command="{Binding SendCommand}"
+		            Style="{StaticResource FilledTextButton}"
+		            LabelData="{Binding LocalizedSendCodeText}" />
 
-		<!-- Send Codes Button -->
-		<controls:TextButton
-            Grid.Row="1"
-            Command="{Binding SendCodeCommand}"
-            Style="{StaticResource FilledTextButton}"
-            LabelData="{Binding LocalizedSendCodeText}" />
+			</VerticalStackLayout>
+
+			<!-- Scan QR Button -->
+			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Grid.Row="1">
+				<Border Style="{StaticResource AccentInfoBorder}" Padding="{StaticResource SmallMargins}">
+					<Grid ColumnDefinitions="auto, *">
+						<Path Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center"
+						      Data="{x:Static ui:Geometries.InfoCirclePath}" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
+						      Fill="{AppThemeBinding Light={StaticResource AccentForegroundLight}, Dark={StaticResource AccentForegroundDark}}"/>
+						<Label Grid.Column="1" Style ="{StaticResource AccentInfoLabel}" Margin="{StaticResource SmallLeftMargins}" Text="{l:Localize OnboardingGetStartedQrInfo}" />
+
+					</Grid>
+				</Border>
+
+				<controls:TemplatedButton Command="{x:Binding ScanQrCodeCommand}">
+					<Border Style="{StaticResource TransparentTemplateButtonBorder}" InputTransparent="True" Margin="0">
+						<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
+							<Path VerticalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
+							      Data="{x:Static ui:Geometries.ScanQrIconPath}"
+							      Style="{StaticResource TransparentTemplateButtonPath}"
+							/>
+							<Label Grid.Column="1" Style="{StaticResource TransparentTemplateButtonLabel}" Margin="{StaticResource SmallLeftMargins}"  Text="{l:Localize ScanQRShort}"/>
+						</Grid>
+					</Border>
+				</controls:TemplatedButton>
+			</VerticalStackLayout>
+		</Grid>
+
 	</Grid>
 </base:BaseRegistrationView>

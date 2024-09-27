@@ -1,14 +1,11 @@
-﻿using System.ComponentModel;
-using System.Text;
+﻿using System.Text;
 using System.Text.RegularExpressions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Tag;
-using NeuroAccessMaui.UI.Popups.Info;
 using Waher.Networking.XMPP;
-using Waher.Script.Operators.Membership;
 
 namespace NeuroAccessMaui.UI.Pages.Registration.Views
 {
@@ -24,8 +21,8 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		{
 			await base.DoAssignProperties();
 
-			if(string.IsNullOrEmpty(ServiceRef.TagProfile.Account))
-				GoToRegistrationStep(RegistrationStep.ValidatePhone);
+			if (!string.IsNullOrEmpty(ServiceRef.TagProfile.Account))
+				GoToRegistrationStep(RegistrationStep.CreateAccount);
 		}
 
 		/// <inheritdoc />
@@ -47,6 +44,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		private Task XmppService_ConnectionStateChanged(object _, XmppState NewState)
 		{
 			this.OnPropertyChanged(nameof(this.IsXmppConnected));
+			this.CreateAccountCommand.NotifyCanExecuteChanged();
 			return Task.CompletedTask;
 		}
 
@@ -56,30 +54,49 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		partial void OnUsernameChanged(string? value)
 		{
 			this.UsernameIsValid = IsValidUsernameString(value);
-			this.OnPropertyChanged(nameof(CanCreateAccount));
+			this.OnPropertyChanged(nameof(this.CanCreateAccount));
+
+			if (this.UsernameIsValid)
+			{
+				this.AlternativeName = string.Empty;
+				this.LocalizedValidationMessage = string.Empty;
+			}
+			else
+			{
+				this.LocalizedValidationMessage = ServiceRef.Localizer[nameof(AppResources.InvalidUsernameCharacters)];
+				this.AlternativeName = this.GenerateUsername(this.Username);
+			}
+			this.CreateAccountCommand.NotifyCanExecuteChanged();
+
+			Console.WriteLine(this.UsernameIsValid +"&&"+ !string.IsNullOrEmpty(this.Username) + "&&" + string.IsNullOrEmpty(this.AlternativeName) + "&&" + this.IsXmppConnected);
 		}
 
 		[ObservableProperty]
 		private string? alternativeName;
 
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(CreateAccountCommand))]
 		private bool usernameIsValid;
+
+		[ObservableProperty]
+		private string? localizedValidationMessage;
 
 		/// <summary>
 		/// If App is connected to the XMPP network.
 		/// </summary>
 		public bool IsXmppConnected => ServiceRef.XmppService.State == XmppState.Connected;
 
-		public bool CanCreateAccount => this.UsernameIsValid && !string.IsNullOrEmpty(this.Username) && !string.IsNullOrEmpty(this.AlternativeName) && this.IsXmppConnected;
+		public bool CanCreateAccount => this.UsernameIsValid && !string.IsNullOrEmpty(this.Username) && string.IsNullOrEmpty(this.AlternativeName) && !this.IsBusy;
 
 		[RelayCommand(CanExecute = nameof(CanCreateAccount))]
 		private async Task CreateAccount()
 		{
+			this.IsBusy = true;
 			try
 			{
 				string? account = this.Username;
 
-				if(string.IsNullOrEmpty(account))
+				if (string.IsNullOrEmpty(account))
 					return;
 				string PasswordToUse = ServiceRef.CryptoService.CreateRandomPassword();
 
@@ -92,7 +109,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 					ServiceRef.TagProfile.SetAccount(account, Client.PasswordHash, Client.PasswordHashMethod);
 
-					GoToRegistrationStep(RegistrationStep.ValidatePhone);
+					GoToRegistrationStep(RegistrationStep.CreateAccount);
 				}
 
 				(bool Succeeded, string? ErrorMessage, string[]? Alternatives) = await ServiceRef.XmppService.TryConnectAndCreateAccount(ServiceRef.TagProfile.Domain!,
@@ -101,12 +118,16 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 					typeof(App).Assembly, OnConnected);
 
 				if (Succeeded)
-					return;
+				{
+					this.IsBusy = false;
+				}
 				if (Alternatives is not null && Alternatives.Length > 0)
 				{
 					Random rnd = new Random();
 					//Set alternative name to random alternative
+					this.UsernameIsValid = false;
 					this.AlternativeName = Alternatives[rnd.Next(0, Alternatives.Length)];
+					this.LocalizedValidationMessage = ServiceRef.Localizer[nameof(AppResources.UsernameNameAlreadyTaken)];
 				}
 				else if (ErrorMessage is not null)
 				{
@@ -124,69 +145,62 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 					ServiceRef.Localizer[nameof(AppResources.Ok)]);
 			}
 
-			GoToRegistrationStep(RegistrationStep.ValidatePhone);
+			this.IsBusy = false;
 		}
 
-		[RelayCommand]
-		private async Task ShowDataInfo()
-		{
-			string title = ServiceRef.Localizer[nameof(AppResources.WhyIsThisDataCollected)];
-			string message = ServiceRef.Localizer[nameof(AppResources.WhyIsThisDataCollectedInfo)];
-			ShowInfoPopup infoPage = new(title, message);
-			await ServiceRef.UiService.PushAsync(infoPage);
-		}
 
 		[RelayCommand]
 		private void SelectName(string? name)
 		{
-			if(string.IsNullOrEmpty(name))
+			if (string.IsNullOrEmpty(name))
 				return;
 			this.Username = name;
 			this.AlternativeName = string.Empty;
 		}
 
-			/// <summary>
+		/// <summary>
 		/// Generates a username based on a source string.
 		/// </summary>
 		/// <param name="source">The source string to generate the username from.</param>
 		/// <returns>Generated username or empty string if failed</returns>
 		public string GenerateUsername(string? source)
 		{
-			if(string.IsNullOrEmpty(source))
+			if (string.IsNullOrWhiteSpace(source))
 				return string.Empty;
+
 			// Normalize and convert to lowercase
-			string username = source.Normalize(NormalizationForm.FormC).ToLowerInvariant();
+			string normalizedSource = source.Normalize(NormalizationForm.FormC).ToLowerInvariant();
 
-			// Split first names by spaces
-			string[] nameParts = username.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+			// Split the source by spaces and process each part
+			IEnumerable<string?> processedParts = normalizedSource
+				.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+				.Select(ReplaceInvalidUsernameCharacters)
+				.Where(processedPart => !string.IsNullOrEmpty(processedPart));
 
-			List<string> processedParts = [];
-
-			foreach (string part in nameParts)
-			{
-				// Replace invalid characters
-				string processedPart = ReplaceInvalidUsernameCharacters(part);
-
-				if (!string.IsNullOrEmpty(processedPart))
-					processedParts.Add(processedPart);
-			}
-
-			if (processedParts.Count == 0)
+			if (!processedParts.Any())
 				return string.Empty;
 
 			// Join parts with dots
 			string result = string.Join(".", processedParts);
-			return Regex.Replace(result, @".+", ".");
+
+			// Generate 4 random digits
+			string randomDigits = new Random().Next(0, 10000).ToString("D4");
+			result += randomDigits;
+
+			// Replace multiple dots with a single dot
+			result = Regex.Replace(result, @"\.+", ".");
+
+			return result;
 		}
+
 
 		internal static bool IsValidUsernameString(string? input)
 		{
-			if (string.IsNullOrWhiteSpace(input))
-				return false;
-
-			foreach (Rune rune in input.EnumerateRunes())
+			if (string.IsNullOrEmpty(input))
+				return true;
+			foreach (char c in input)
 			{
-				switch (rune.Value)
+				switch (c)
 				{
 					// From XMPP spec (RFC 6122):
 					case '"':
@@ -237,19 +251,17 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 					case '?':
 					case '\\':
 						return false;
-					default:
-						return true;
 				}
 			}
-			return false;
+			return true;
 		}
 
 		private static string ReplaceInvalidUsernameCharacters(string input)
 		{
 			StringBuilder sb = new(input.Length);
-			foreach (Rune rune in input.EnumerateRunes())
+			foreach (char c in input)
 			{
-				switch (rune.Value)
+				switch (c)
 				{
 					// From XMPP spec (RFC 6122):
 					case '"':
@@ -301,7 +313,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 					case '\\':
 						break;
 					default:
-						sb.Append(rune.ToString());
+						sb.Append(c);
 						break;
 				}
 			}
