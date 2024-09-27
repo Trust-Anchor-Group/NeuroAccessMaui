@@ -509,6 +509,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 		#region Legal Identities
 
 		/// <summary>
+		/// Generates new keys
+		/// </summary>
+		Task GenerateNewKeys();
+
+		/// <summary>
 		/// Gets important attributes for a successful ID Application.
 		/// </summary>
 		/// <returns>ID Application attributes.</returns>

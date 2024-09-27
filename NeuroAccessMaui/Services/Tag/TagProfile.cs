@@ -1161,7 +1161,7 @@ namespace NeuroAccessMaui.Services.Tag
 		public async Task CompromiseLegalIdentity(LegalIdentity CompromisedIdentity)
 		{
 			await this.SetLegalIdentity(CompromisedIdentity, true);
-			await ServiceRef.XmppService.ContractsClient.GenerateNewKeys();
+			await ServiceRef.XmppService.GenerateNewKeys();
 		}
 
 		/// <summary>

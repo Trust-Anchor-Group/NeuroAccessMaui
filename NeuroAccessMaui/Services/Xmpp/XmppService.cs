@@ -268,7 +268,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 								throw new Exception("Regeneration of keys not permitted at this time.");
 							}
 
-							await this.contractsClient.GenerateNewKeys();
+							await this.GenerateNewKeys();
 						}
 					}
 
@@ -2636,6 +2636,17 @@ namespace NeuroAccessMaui.Services.Xmpp
 		#region Legal Identities
 
 		/// <summary>
+		/// Generates new keys
+		/// </summary>
+		public async Task GenerateNewKeys()
+		{
+			await this.ContractsClient.GenerateNewKeys();
+
+			if (this.ContractsClient.Client.State == XmppState.Connected)
+				await this.ContractsClient.Client.SetPresenceAsync(Availability.Online);
+		}
+
+		/// <summary>
 		/// Gets important attributes for a successful ID Application.
 		/// </summary>
 		/// <returns>ID Application attributes.</returns>
@@ -2655,7 +2666,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			params LegalIdentityAttachment[] Attachments)
 		{
 			if (GenerateNewKeys)
-				await this.ContractsClient.GenerateNewKeys();
+				await this.GenerateNewKeys();
 
 			LegalIdentity Identity = await this.ContractsClient.ApplyAsync(Model.ToProperties(ServiceRef.XmppService));
 
