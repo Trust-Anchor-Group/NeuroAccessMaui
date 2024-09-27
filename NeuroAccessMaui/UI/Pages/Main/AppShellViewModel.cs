@@ -80,6 +80,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			this.CanShowCreateContractCommand = ServiceRef.TagProfile.HasContractTemplateReferences;
 			this.CanShowCreateTokenCommand = ServiceRef.TagProfile.HasContractTokenCreationTemplatesReferences;
 			this.CanShowContactsCommand = ServiceRef.XmppService.Roster is not null && ServiceRef.XmppService.Roster.Length > 0;
+			this.CanShowWalletCommand = ServiceRef.TagProfile.HasWallet;
 		}
 
 		/// <summary>
