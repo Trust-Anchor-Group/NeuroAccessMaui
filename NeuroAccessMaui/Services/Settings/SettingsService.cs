@@ -21,13 +21,18 @@ namespace NeuroAccessMaui.Services.Settings
 
 		private static string FormatKey(string KeyPrefix)
 		{
-			if (string.IsNullOrWhiteSpace(KeyPrefix))
-				return wildCard;
+			AssertNonEmptyPRefix(KeyPrefix);
 
 			if (!KeyPrefix.EndsWith(wildCard, StringComparison.InvariantCultureIgnoreCase))
 				KeyPrefix += wildCard;
 
 			return KeyPrefix;
+		}
+
+		private static void AssertNonEmptyPRefix(string KeyPrefix)
+		{
+			if (string.IsNullOrWhiteSpace(KeyPrefix))
+				throw new ArgumentException("Empty key prefix not permitted.", nameof(KeyPrefix));
 		}
 
 		/// <summary>
@@ -182,17 +187,12 @@ namespace NeuroAccessMaui.Services.Settings
 		/// <returns>a list of matching States.</returns>
 		public async Task<IEnumerable<(string Key, T value)>> RestoreStateWhereKeyStartsWith<T>(string KeyPrefix)
 		{
-			if (string.IsNullOrWhiteSpace(KeyPrefix))
-			{
-				return Array.Empty<(string, T)>();
-			}
-
 			List<(string, T)> matches = [];
 
 			try
 			{
-				KeyPrefix = FormatKey(KeyPrefix);
-				Dictionary<string, object> existingStates = (await RuntimeSettings.GetWhereKeyLikeAsync(KeyPrefix, wildCard));
+				KeyPrefix = FormatKey(KeyPrefix);	// Asserts KeyPrefix is not empty.
+				Dictionary<string, object> existingStates = await RuntimeSettings.GetWhereKeyLikeAsync(KeyPrefix, wildCard);
 
 				foreach (KeyValuePair<string, object> State in existingStates)
 				{
@@ -218,9 +218,7 @@ namespace NeuroAccessMaui.Services.Settings
 		{
 			try
 			{
-				string? str = await RuntimeSettings.GetAsync(Key, DefaultValueIfNotFound);
-				str = str?.Trim('"');
-				return str;
+				return await RuntimeSettings.GetAsync(Key, DefaultValueIfNotFound);
 			}
 			catch (Exception ex)
 			{
@@ -385,10 +383,7 @@ namespace NeuroAccessMaui.Services.Settings
 		/// <param name="Key">The State identifier.</param>
 		public async Task RemoveState(string Key)
 		{
-			if (string.IsNullOrWhiteSpace(Key))
-			{
-				return;
-			}
+			AssertNonEmptyPRefix(Key);
 
 			try
 			{
@@ -407,14 +402,9 @@ namespace NeuroAccessMaui.Services.Settings
 		/// <param name="KeyPrefix">The string value the key should start with, like "Foo". Do not include wildcards.</param>
 		public async Task RemoveStateWhereKeyStartsWith(string KeyPrefix)
 		{
-			if (string.IsNullOrWhiteSpace(KeyPrefix))
-			{
-				return;
-			}
-
 			try
 			{
-				KeyPrefix = FormatKey(KeyPrefix);
+				KeyPrefix = FormatKey(KeyPrefix);	// Asserts KeyPrefix is not empty.
 				await RuntimeSettings.DeleteWhereKeyLikeAsync(KeyPrefix, wildCard);
 				await Database.Provider.Flush();
 			}
