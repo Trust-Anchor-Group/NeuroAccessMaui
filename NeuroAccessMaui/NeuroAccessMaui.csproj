@@ -250,11 +250,11 @@
 		<PackageReference Include="Waher.Networking.XMPP" Version="3.2.0" />
 		<PackageReference Include="Waher.Networking.XMPP.Avatar" Version="2.2.3" />
 		<PackageReference Include="Waher.Networking.XMPP.Concentrator" Version="3.2.1" />
-		<PackageReference Include="Waher.Networking.XMPP.Contracts" Version="3.2.2" />
+		<PackageReference Include="Waher.Networking.XMPP.Contracts" Version="3.2.3" />
 		<PackageReference Include="Waher.Networking.XMPP.Control" Version="3.0.1" />
 		<PackageReference Include="Waher.Networking.XMPP.HTTPX" Version="3.1.0" />
 		<PackageReference Include="Waher.Networking.XMPP.Mail" Version="2.0.2" />
-		<PackageReference Include="Waher.Networking.XMPP.P2P" Version="3.1.0" />
+		<PackageReference Include="Waher.Networking.XMPP.P2P" Version="3.1.1" />
 		<PackageReference Include="Waher.Networking.XMPP.PEP" Version="2.0.6" />
 		<PackageReference Include="Waher.Networking.XMPP.Provisioning" Version="3.0.1" />
 		<PackageReference Include="Waher.Networking.XMPP.PubSub" Version="2.0.8" />
