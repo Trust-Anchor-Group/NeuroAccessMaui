@@ -417,8 +417,8 @@
   <data name="OperatorDoesNotSupportRegisteringNewAccounts" xml:space="preserve">
     <value>The operator {0} does not support registration of new accounts</value>
   </data>
-  <data name="AccountNameAlreadyTaken" xml:space="preserve">
-    <value>Account name {0} is already taken. Choose another.</value>
+  <data name="UsernameNameAlreadyTaken" xml:space="preserve">
+    <value>Username already exists. Please try another.</value>
   </data>
   <data name="InvalidUsernameOrPassword" xml:space="preserve">
     <value>Invalid username or password</value>
@@ -650,12 +650,6 @@
   </data>
   <data name="QrScanUri" xml:space="preserve">
     <value>URI:</value>
-  </data>
-  <data name="AccountValidationAlreadyExists" xml:space="preserve">
-    <value>This account name already exists</value>
-  </data>
-  <data name="AccountAvailableAlternatives" xml:space="preserve">
-    <value>The following names are still available:</value>
   </data>
   <data name="TestOtpUsed" xml:space="preserve">
     <value>A temporary OTP code has been used. The application will stop working in about a week. You'll have to reinstall the application to use it again.</value>
@@ -2155,10 +2149,10 @@
     <value>Received an invite, transfer, or recovery code? Scan it below</value>
   </data>
   <data name="OnboardingNameEntryTitle" xml:space="preserve">
-    <value>How Should We Address You?</value>
+    <value>Choose Your Username</value>
   </data> 
   <data name="OnboardingNameEntryDetails" xml:space="preserve">
-    <value>Enter the name you'd like to use in the app. It can be your real name or a nickname</value>
+    <value>Your username is permanent and cannot be changed later</value>
   </data>
   <data name="UseNickname" xml:space="preserve">
     <value>I'd like to use a nickname</value>
@@ -2171,12 +2165,6 @@
   </data>
   <data name="Nickname" xml:space="preserve">
     <value>Nickname</value>
-  </data>
-  <data name="WhyIsThisDataCollected" xml:space="preserve">
-    <value>Why is this data collected?</value>
-  </data>
-  <data name="WhyIsThisDataCollectedInfo" xml:space="preserve">
-    <value>The name you provide will be used to generate a unique network identifier for your account. This identifier is used by other clients and brokers in order to communicate with you. This means that the data you provide here can be visible for clients and network operators of whom you communicate. The anonymous option will make sure your identifier is in the form of a GUID (Globally Unique Identifier) and is not based on any personal information.</value>
   </data>
   <data name="OnboardingContactSupportTitle" xml:space="preserve">
     <value>Recover Account</value>
@@ -2192,5 +2180,17 @@
   </data>
   <data name="ServiceProvider" xml:space="preserve">
     <value>Service Provider</value>
+  </data>
+  <data name="Alternative" xml:space="preserve">
+    <value>Alternative: </value>
+  </data>
+  <data name="InvalidUsernameCharacters" xml:space="preserve">
+    <value>Username contains invalid characters.</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="SendSeconds" xml:space="preserve">
+    <value>Send ({0})</value>
   </data>
 </root>

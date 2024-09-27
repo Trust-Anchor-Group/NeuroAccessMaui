@@ -417,8 +417,8 @@
   <data name="OperatorDoesNotSupportRegisteringNewAccounts" xml:space="preserve">
     <value>Operater {0} ne podržava registraciju novih računa</value>
   </data>
-  <data name="AccountNameAlreadyTaken" xml:space="preserve">
-    <value>Ime naloga {0} je već zauzeto. Odaberite drugu.</value>
+  <data name="UsernameNameAlreadyTaken" xml:space="preserve">
+    <value>Korisničko ime već postoji. Molimo vas da probate drugu.</value>
   </data>
   <data name="InvalidUsernameOrPassword" xml:space="preserve">
     <value>Nevažeće korisničko ime ili lozinka</value>
@@ -570,9 +570,6 @@
   <data name="OnboardingFinalizePageTitle" xml:space="preserve">
     <value>Uspeh!</value>
   </data>
-  <data name="OnboardingFinalizePageDetails" xml:space="preserve">
-    <value>Sada možete da počnete da koristite Neuro-Access</value>
-  </data>
   <data name="OnboardingBiometricsPageTitle" xml:space="preserve">
     <value>Zamalo da završim</value>
   </data>
@@ -653,12 +650,6 @@
   </data>
   <data name="QrScanUri" xml:space="preserve">
     <value>URI:</value>
-  </data>
-  <data name="AccountValidationAlreadyExists" xml:space="preserve">
-    <value>Ime ovog naloga već postoji</value>
-  </data>
-  <data name="AccountAvailableAlternatives" xml:space="preserve">
-    <value>Sledeća imena su još uvek dostupna:</value>
   </data>
   <data name="TestOtpUsed" xml:space="preserve">
     <value>Korišćena je privremena OTP šifra. Aplikacija će prestati da radi za oko nedelju dana. Moraćete ponovo da instalirate aplikaciju da biste je ponovo koristili.</value>
@@ -2148,9 +2139,6 @@
   <data name="OnboardingGetStartedTitle" xml:space="preserve">
     <value>Dobrodošli u Neuro-Access</value>
   </data>
-  <data name="OnboardingGetStartedDetails" xml:space="preserve">
-    <value>Hajde da počneš</value>
-  </data>
   <data name="CreateNewAccount" xml:space="preserve">
     <value>Kreiraj novi nalog</value>
   </data>
@@ -2161,10 +2149,10 @@
     <value>Dobio poziv, prenos ili kod za oporavak? Skenirajte ga ispod</value>
   </data>
   <data name="OnboardingNameEntryTitle" xml:space="preserve">
-    <value>Kako da vam se obratimo?</value>
+    <value>Izaberite svoje korisničko ime</value>
   </data>
   <data name="OnboardingNameEntryDetails" xml:space="preserve">
-    <value>Unesite ime koje želite da koristite u aplikaciji. To može biti vaše pravo ime ili nadimak</value>
+    <value>Vaše korisničko ime je trajno i ne može se kasnije promeniti</value>
   </data>
   <data name="UseNickname" xml:space="preserve">
     <value>Želeo bih da koristim nadimak</value>
@@ -2177,5 +2165,32 @@
   </data>
   <data name="Nickname" xml:space="preserve">
     <value>Nadimak</value>
+  </data>
+  <data name="OnboardingContactSupportTitle" xml:space="preserve">
+    <value>Oporavak naloga</value>
+  </data>
+  <data name="OnboardingContactSupportDetails" xml:space="preserve">
+    <value>Unesite svoj telefon i e-mail da zatraži oporavak naloga. Kontaktiraćemo vas sa uputstvima koja će vam pomoći da povratite pristup.</value>
+  </data>
+  <data name="OnboardingContactSupportInfo" xml:space="preserve">
+    <value>Ako već imate pristup svom nalogu na drugom uređaju, idite na Settings → Transfer ID da biste generisali KR kod. Zatim skenirajte taj KR kod na prethodnoj stranici.</value>
+  </data>
+  <data name="AccountDetails" xml:space="preserve">
+    <value>Detalji o nalogu</value>
+  </data>
+  <data name="ServiceProvider" xml:space="preserve">
+    <value>Pružalac usluga</value>
+  </data>
+  <data name="Alternative" xml:space="preserve">
+    <value>Alternativne: </value>
+  </data>
+  <data name="InvalidUsernameCharacters" xml:space="preserve">
+    <value>Korisničko ime sadrži nevažeće znakove.</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Korisničko ime</value>
+  </data>
+  <data name="SendSeconds" xml:space="preserve">
+    <value>Pošalji ({0})</value>
   </data>
 </root>

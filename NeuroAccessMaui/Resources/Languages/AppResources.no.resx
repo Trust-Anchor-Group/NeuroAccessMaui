@@ -417,8 +417,8 @@
   <data name="OperatorDoesNotSupportRegisteringNewAccounts" xml:space="preserve">
     <value>Operatøren {0} støtter ikke registrering av nye kontoer</value>
   </data>
-  <data name="AccountNameAlreadyTaken" xml:space="preserve">
-    <value>Kontonavnet {0} allerede er tatt. Velg en annen.</value>
+  <data name="UsernameNameAlreadyTaken" xml:space="preserve">
+    <value>Brukernavnet finnes allerede. Prøv en annen.</value>
   </data>
   <data name="InvalidUsernameOrPassword" xml:space="preserve">
     <value>Ugyldig brukernavn eller passord</value>
@@ -570,9 +570,6 @@
   <data name="OnboardingFinalizePageTitle" xml:space="preserve">
     <value>Suksess!</value>
   </data>
-  <data name="OnboardingFinalizePageDetails" xml:space="preserve">
-    <value>Du kan nå begynne å bruke Neuro-Access</value>
-  </data>
   <data name="OnboardingBiometricsPageTitle" xml:space="preserve">
     <value>Nesten ferdig</value>
   </data>
@@ -653,12 +650,6 @@
   </data>
   <data name="QrScanUri" xml:space="preserve">
     <value>URI:</value>
-  </data>
-  <data name="AccountValidationAlreadyExists" xml:space="preserve">
-    <value>Dette kontonavnet finnes allerede</value>
-  </data>
-  <data name="AccountAvailableAlternatives" xml:space="preserve">
-    <value>Følgende navn er fortsatt tilgjengelige:</value>
   </data>
   <data name="TestOtpUsed" xml:space="preserve">
     <value>En midlertidig OTP-kode er brukt. Søknaden slutter å fungere om en uke. Du må installere programmet på nytt for å bruke det igjen.</value>
@@ -2148,9 +2139,6 @@
   <data name="OnboardingGetStartedTitle" xml:space="preserve">
     <value>Velkommen til Neuro-Access</value>
   </data>
-  <data name="OnboardingGetStartedDetails" xml:space="preserve">
-    <value>La deg komme i gang</value>
-  </data>
   <data name="CreateNewAccount" xml:space="preserve">
     <value>Opprett ny konto</value>
   </data>
@@ -2161,10 +2149,10 @@
     <value>Har du mottatt en invitasjons-, overførings- eller gjenopprettingskode? Skann den nedenfor</value>
   </data>
   <data name="OnboardingNameEntryTitle" xml:space="preserve">
-    <value>Hvordan skal vi henvende oss til deg?</value>
+    <value>Velg ditt brukernavn</value>
   </data>
   <data name="OnboardingNameEntryDetails" xml:space="preserve">
-    <value>Skriv inn navnet du vil bruke i appen. Det kan være ditt virkelige navn eller et kallenavn</value>
+    <value>Brukernavnet ditt er permanent og kan ikke endres senere</value>
   </data>
   <data name="UseNickname" xml:space="preserve">
     <value>Jeg vil gjerne bruke et kallenavn</value>
@@ -2177,5 +2165,32 @@
   </data>
   <data name="Nickname" xml:space="preserve">
     <value>Kallenavn</value>
+  </data>
+  <data name="OnboardingContactSupportTitle" xml:space="preserve">
+    <value>Gjenopprett konto</value>
+  </data>
+  <data name="OnboardingContactSupportDetails" xml:space="preserve">
+    <value>Skriv inn telefonen og e-postadressen din for å be om kontogjenoppretting. Vi kontakter deg med instruksjoner for å hjelpe deg med å få tilgang igjen.</value>
+  </data>
+  <data name="OnboardingContactSupportInfo" xml:space="preserve">
+    <value>Hvis du allerede har tilgang til kontoen din på en annen enhet, går du til Innstillinger → overførings-ID for å generere en QR-kode. Skann deretter QR-koden på forrige side.</value>
+  </data>
+  <data name="AccountDetails" xml:space="preserve">
+    <value>Kontodetaljer</value>
+  </data>
+  <data name="ServiceProvider" xml:space="preserve">
+    <value>Tjenesteyter</value>
+  </data>
+  <data name="Alternative" xml:space="preserve">
+    <value>Alternativ: </value>
+  </data>
+  <data name="InvalidUsernameCharacters" xml:space="preserve">
+    <value>Brukernavnet inneholder ugyldige tegn.</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Brukernavn</value>
+  </data>
+  <data name="SendSeconds" xml:space="preserve">
+    <value>Sende ({0})</value>
   </data>
 </root>

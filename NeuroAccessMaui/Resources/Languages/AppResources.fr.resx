@@ -417,8 +417,8 @@
   <data name="OperatorDoesNotSupportRegisteringNewAccounts" xml:space="preserve">
     <value>L’opérateur ne prend pas en charge l’enregistrement de nouveaux comptes {0}</value>
   </data>
-  <data name="AccountNameAlreadyTaken" xml:space="preserve">
-    <value>Le nom du compte {0} est déjà pris. Choisissez-en un autre.</value>
+  <data name="UsernameNameAlreadyTaken" xml:space="preserve">
+    <value>Le nom d’utilisateur existe déjà. Veuillez en essayer un autre.</value>
   </data>
   <data name="InvalidUsernameOrPassword" xml:space="preserve">
     <value>Nom d’utilisateur ou mot de passe non valide</value>
@@ -570,9 +570,6 @@
   <data name="OnboardingFinalizePageTitle" xml:space="preserve">
     <value>Succès!</value>
   </data>
-  <data name="OnboardingFinalizePageDetails" xml:space="preserve">
-    <value>Vous pouvez maintenant commencer à utiliser Neuro-Access</value>
-  </data>
   <data name="OnboardingBiometricsPageTitle" xml:space="preserve">
     <value>Presque terminé</value>
   </data>
@@ -653,12 +650,6 @@
   </data>
   <data name="QrScanUri" xml:space="preserve">
     <value>URI:</value>
-  </data>
-  <data name="AccountValidationAlreadyExists" xml:space="preserve">
-    <value>Ce nom de compte existe déjà</value>
-  </data>
-  <data name="AccountAvailableAlternatives" xml:space="preserve">
-    <value>Les noms suivants sont toujours disponibles :</value>
   </data>
   <data name="TestOtpUsed" xml:space="preserve">
     <value>Un code OTP temporaire a été utilisé. L’application cessera de fonctionner dans environ une semaine. Vous devrez réinstaller l’application pour l’utiliser à nouveau.</value>
@@ -2148,9 +2139,6 @@
   <data name="OnboardingGetStartedTitle" xml:space="preserve">
     <value>Bienvenue à Neuro-Accès</value>
   </data>
-  <data name="OnboardingGetStartedDetails" xml:space="preserve">
-    <value>Commençons</value>
-  </data>
   <data name="CreateNewAccount" xml:space="preserve">
     <value>Créer un nouveau compte</value>
   </data>
@@ -2161,10 +2149,10 @@
     <value>Vous avez reçu un code d’invitation, de transfert ou de récupération ? Scannez-le ci-dessous</value>
   </data>
   <data name="OnboardingNameEntryTitle" xml:space="preserve">
-    <value>Comment devrions-nous nous adresser à vous ?</value>
+    <value>Choisissez votre nom d’utilisateur</value>
   </data>
   <data name="OnboardingNameEntryDetails" xml:space="preserve">
-    <value>Entrez le nom que vous souhaitez utiliser dans l’application. Il peut s’agir de votre vrai nom ou d’un pseudo</value>
+    <value>Votre nom d’utilisateur est permanent et ne peut pas être modifié par la suite</value>
   </data>
   <data name="UseNickname" xml:space="preserve">
     <value>J’aimerais utiliser un pseudo</value>
@@ -2177,5 +2165,32 @@
   </data>
   <data name="Nickname" xml:space="preserve">
     <value>Surnom</value>
+  </data>
+  <data name="OnboardingContactSupportTitle" xml:space="preserve">
+    <value>Récupérer le compte</value>
+  </data>
+  <data name="OnboardingContactSupportDetails" xml:space="preserve">
+    <value>Entrez votre téléphone et votre adresse e-mail pour demander la récupération du compte. Nous vous contacterons pour vous donner des instructions afin de vous aider à retrouver l’accès.</value>
+  </data>
+  <data name="OnboardingContactSupportInfo" xml:space="preserve">
+    <value>Si vous avez déjà accès à votre compte sur un autre appareil, accédez à Paramètres → Transfert d’ID pour générer un code QR. Ensuite, scannez ce code QR sur la page précédente.</value>
+  </data>
+  <data name="AccountDetails" xml:space="preserve">
+    <value>Détails du compte</value>
+  </data>
+  <data name="ServiceProvider" xml:space="preserve">
+    <value>Fournisseur de services</value>
+  </data>
+  <data name="Alternative" xml:space="preserve">
+    <value>Alternatif: </value>
+  </data>
+  <data name="InvalidUsernameCharacters" xml:space="preserve">
+    <value>Le nom d’utilisateur contient des caractères non valides.</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Nom d’utilisateur</value>
+  </data>
+  <data name="SendSeconds" xml:space="preserve">
+    <value>Envoyer ({0})</value>
   </data>
 </root>

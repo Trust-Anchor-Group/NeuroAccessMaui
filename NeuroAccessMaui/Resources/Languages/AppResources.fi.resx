@@ -417,8 +417,8 @@
   <data name="OperatorDoesNotSupportRegisteringNewAccounts" xml:space="preserve">
     <value>Operaattori ei {0} tue uusien tilien rekisteröintiä</value>
   </data>
-  <data name="AccountNameAlreadyTaken" xml:space="preserve">
-    <value>Tilin nimi{0} on jo otettu. Valitse toinen.</value>
+  <data name="UsernameNameAlreadyTaken" xml:space="preserve">
+    <value>Käyttäjätunnus on jo olemassa. Kokeile toista.</value>
   </data>
   <data name="InvalidUsernameOrPassword" xml:space="preserve">
     <value>Virheellinen käyttäjänimi tai salasana</value>
@@ -570,9 +570,6 @@
   <data name="OnboardingFinalizePageTitle" xml:space="preserve">
     <value>Menestys!</value>
   </data>
-  <data name="OnboardingFinalizePageDetails" xml:space="preserve">
-    <value>Voit nyt aloittaa Neuro-Accessin käytön</value>
-  </data>
   <data name="OnboardingBiometricsPageTitle" xml:space="preserve">
     <value>Melkein valmis</value>
   </data>
@@ -653,12 +650,6 @@
   </data>
   <data name="QrScanUri" xml:space="preserve">
     <value>URI:</value>
-  </data>
-  <data name="AccountValidationAlreadyExists" xml:space="preserve">
-    <value>Tämä tilin nimi on jo olemassa</value>
-  </data>
-  <data name="AccountAvailableAlternatives" xml:space="preserve">
-    <value>Seuraavat nimet ovat edelleen käytettävissä:</value>
   </data>
   <data name="TestOtpUsed" xml:space="preserve">
     <value>Väliaikaista OTP-koodia on käytetty. Sovellus lakkaa toimimasta noin viikon kuluttua. Sinun on asennettava sovellus uudelleen, jotta voit käyttää sitä uudelleen.</value>
@@ -2148,9 +2139,6 @@
   <data name="OnboardingGetStartedTitle" xml:space="preserve">
     <value>Tervetuloa Neuro-Accessiin</value>
   </data>
-  <data name="OnboardingGetStartedDetails" xml:space="preserve">
-    <value>Näin pääset alkuun</value>
-  </data>
   <data name="CreateNewAccount" xml:space="preserve">
     <value>Luo uusi tili</value>
   </data>
@@ -2161,10 +2149,10 @@
     <value>Saitko kutsu-, siirto- tai palautuskoodin? Skannaa se alla</value>
   </data>
   <data name="OnboardingNameEntryTitle" xml:space="preserve">
-    <value>Miten meidän pitäisi puhua sinulle?</value>
+    <value>Valitse käyttäjänimesi</value>
   </data>
   <data name="OnboardingNameEntryDetails" xml:space="preserve">
-    <value>Kirjoita nimi, jota haluat käyttää sovelluksessa. Se voi olla oikea nimesi tai lempinimesi</value>
+    <value>Käyttäjänimesi on pysyvä, eikä sitä voi muuttaa myöhemmin</value>
   </data>
   <data name="UseNickname" xml:space="preserve">
     <value>Haluaisin käyttää lempinimeä</value>
@@ -2177,5 +2165,32 @@
   </data>
   <data name="Nickname" xml:space="preserve">
     <value>Lempinimi</value>
+  </data>
+  <data name="OnboardingContactSupportTitle" xml:space="preserve">
+    <value>Palauta tili</value>
+  </data>
+  <data name="OnboardingContactSupportDetails" xml:space="preserve">
+    <value>Anna puhelimesi ja sähköpostiosoitteesi pyytääksesi tilin palauttamista. Otamme sinuun yhteyttä ja annamme ohjeet, joiden avulla voit saada käyttöoikeuden takaisin.</value>
+  </data>
+  <data name="OnboardingContactSupportInfo" xml:space="preserve">
+    <value>Jos voit jo käyttää tiliäsi toisella laitteella, luo QR-koodi siirtymällä kohtaan Asetukset → Siirtotunnus. Skannaa sitten QR-koodi edelliseltä sivulta.</value>
+  </data>
+  <data name="AccountDetails" xml:space="preserve">
+    <value>Tilin tiedot</value>
+  </data>
+  <data name="ServiceProvider" xml:space="preserve">
+    <value>Palveluntarjoaja</value>
+  </data>
+  <data name="Alternative" xml:space="preserve">
+    <value>Vaihtoehtoinen: </value>
+  </data>
+  <data name="InvalidUsernameCharacters" xml:space="preserve">
+    <value>Käyttäjänimi sisältää virheellisiä merkkejä.</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Käyttäjänimi</value>
+  </data>
+  <data name="SendSeconds" xml:space="preserve">
+    <value>Lähetä ({0})</value>
   </data>
 </root>

@@ -417,8 +417,8 @@
   <data name="OperatorDoesNotSupportRegisteringNewAccounts" xml:space="preserve">
     <value>Operatören {0} stöder inte registrering av nya konton</value>
   </data>
-  <data name="AccountNameAlreadyTaken" xml:space="preserve">
-    <value>Kontonamnet {0} är redan upptaget. Välj en annan.</value>
+  <data name="UsernameNameAlreadyTaken" xml:space="preserve">
+    <value>Användarnamnet är redan upptaget. Vänligen försök med ett annat.</value>
   </data>
   <data name="InvalidUsernameOrPassword" xml:space="preserve">
     <value>Ogiltigt användarnamn eller lösenord</value>
@@ -650,12 +650,6 @@
   </data>
   <data name="QrScanUri" xml:space="preserve">
     <value>URI:</value>
-  </data>
-  <data name="AccountValidationAlreadyExists" xml:space="preserve">
-    <value>Det här kontonamnet finns redan</value>
-  </data>
-  <data name="AccountAvailableAlternatives" xml:space="preserve">
-    <value>Följande namn är fortfarande tillgängliga:</value>
   </data>
   <data name="TestOtpUsed" xml:space="preserve">
     <value>En tillfällig OTP-kod har använts. Applikationen kommer sluta fungera om ungefär en vecka. Du måste ominstallera programmet för att använda det igen.</value>
@@ -2155,10 +2149,10 @@
     <value>Har du fått en inbjudan, överförings- eller återställningskod? Skanna den nedan</value>
   </data>
   <data name="OnboardingNameEntryTitle" xml:space="preserve">
-    <value>Hur vill du bli tilltalad?</value>
+    <value>Välj ditt användarnamn</value>
   </data> 
   <data name="OnboardingNameEntryDetails" xml:space="preserve">
-    <value>Ange namnet du vill använda i appen. Det kan vara ditt riktiga namn eller ett smeknamn</value>
+    <value>Ditt användarnamn är permanent och kan inte ändras senare</value>
   </data>
   <data name="UseNickname" xml:space="preserve">
     <value>Jag vill använda ett smeknamn</value>
@@ -2171,13 +2165,6 @@
   </data>
   <data name="Nickname" xml:space="preserve">
     <value>Smeknamn</value>
-  </data>
-  <data name="WhyIsThisDataCollected" xml:space="preserve">
-    <value>Varför samlas dessa uppgifter in?</value>
-  </data>
-  <data name="WhyIsThisDataCollectedInfo" xml:space="preserve">
-    <value>
-      Namnet du anger kommer att användas för att generera en unik nätverksidentifierare för ditt konto. Denna identifierare används av andra klienter och mäklare för att kommunicera med dig. Detta innebär att de uppgifter du anger här kan vara synliga för klienter och nätverksoperatörer som du kommunicerar med. Det anonyma alternativet säkerställer att din identifierare har formen av en GUID (Globally Unique Identifier) och inte är baserad på någon personlig information.</value>
   </data>
   <data name="OnboardingContactSupportTitle" xml:space="preserve">
     <value>Återställ konto</value>
@@ -2193,5 +2180,17 @@
   </data>
   <data name="ServiceProvider" xml:space="preserve">
     <value>Tjänsteleverantör</value>
+  </data>
+  <data name="Alternative" xml:space="preserve">
+    <value>Alternativ: </value>
+  </data>
+  <data name="InvalidUsernameCharacters" xml:space="preserve">
+    <value>Användarnamnet innehåller ogiltiga tecken.</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Användarnamn</value>
+  </data>
+  <data name="SendSeconds" xml:space="preserve">
+    <value>Skicka ({0})</value>
   </data>
 </root>

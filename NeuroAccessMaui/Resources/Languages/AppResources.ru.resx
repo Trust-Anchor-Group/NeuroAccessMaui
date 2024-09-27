@@ -417,8 +417,8 @@
   <data name="OperatorDoesNotSupportRegisteringNewAccounts" xml:space="preserve">
     <value>Оператор {0} не поддерживает регистрацию новых аккаунтов</value>
   </data>
-  <data name="AccountNameAlreadyTaken" xml:space="preserve">
-    <value>Имя учетной записи {0} уже занято. Выберите другой.</value>
+  <data name="UsernameNameAlreadyTaken" xml:space="preserve">
+    <value>Имя пользователя уже существует. Пожалуйста, попробуйте другой.</value>
   </data>
   <data name="InvalidUsernameOrPassword" xml:space="preserve">
     <value>Неверное имя пользователя или пароль</value>
@@ -570,9 +570,6 @@
   <data name="OnboardingFinalizePageTitle" xml:space="preserve">
     <value>Успех!</value>
   </data>
-  <data name="OnboardingFinalizePageDetails" xml:space="preserve">
-    <value>Теперь вы можете начать использовать Neuro-Access</value>
-  </data>
   <data name="OnboardingBiometricsPageTitle" xml:space="preserve">
     <value>Почти готово</value>
   </data>
@@ -653,12 +650,6 @@
   </data>
   <data name="QrScanUri" xml:space="preserve">
     <value>УРИ:</value>
-  </data>
-  <data name="AccountValidationAlreadyExists" xml:space="preserve">
-    <value>Это имя учетной записи уже существует</value>
-  </data>
-  <data name="AccountAvailableAlternatives" xml:space="preserve">
-    <value>По-прежнему доступны следующие имена:</value>
   </data>
   <data name="TestOtpUsed" xml:space="preserve">
     <value>Использован временный OTP-код. Приложение перестанет работать примерно через неделю. Вам придется переустановить приложение, чтобы использовать его снова.</value>
@@ -2148,9 +2139,6 @@
   <data name="OnboardingGetStartedTitle" xml:space="preserve">
     <value>Добро пожаловать в Neuro-Access</value>
   </data>
-  <data name="OnboardingGetStartedDetails" xml:space="preserve">
-    <value>Давайте начнем</value>
-  </data>
   <data name="CreateNewAccount" xml:space="preserve">
     <value>Создать новую учетную запись</value>
   </data>
@@ -2161,10 +2149,10 @@
     <value>Получили приглашение, код для переноса или восстановления? Отсканируйте его ниже</value>
   </data>
   <data name="OnboardingNameEntryTitle" xml:space="preserve">
-    <value>Как мы должны к вам обратиться?</value>
+    <value>Выберите имя пользователя</value>
   </data>
   <data name="OnboardingNameEntryDetails" xml:space="preserve">
-    <value>Введите имя, которое вы хотите использовать в приложении. Это может быть ваше настоящее имя или никнейм</value>
+    <value>Ваше имя пользователя является постоянным и не может быть изменено позже</value>
   </data>
   <data name="UseNickname" xml:space="preserve">
     <value>Я хочу использовать псевдоним</value>
@@ -2177,5 +2165,32 @@
   </data>
   <data name="Nickname" xml:space="preserve">
     <value>Прозвище</value>
+  </data>
+  <data name="OnboardingContactSupportTitle" xml:space="preserve">
+    <value>Восстановить учетную запись</value>
+  </data>
+  <data name="OnboardingContactSupportDetails" xml:space="preserve">
+    <value>Введите свой телефон и электронную почту, чтобы запросить восстановление учетной записи. Мы свяжемся с вами и предоставим инструкции по восстановлению доступа.</value>
+  </data>
+  <data name="OnboardingContactSupportInfo" xml:space="preserve">
+    <value>Если у вас уже есть доступ к учетной записи на другом устройстве, перейдите в «Настройки» → «Transfer ID», чтобы сгенерировать QR-код. Затем отсканируйте QR-код на предыдущей странице.</value>
+  </data>
+  <data name="AccountDetails" xml:space="preserve">
+    <value>Реквизиты учетной записи</value>
+  </data>
+  <data name="ServiceProvider" xml:space="preserve">
+    <value>Поставщик услуг</value>
+  </data>
+  <data name="Alternative" xml:space="preserve">
+    <value>Альтернатива: </value>
+  </data>
+  <data name="InvalidUsernameCharacters" xml:space="preserve">
+    <value>Имя пользователя содержит недопустимые символы.</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Имя пользователя</value>
+  </data>
+  <data name="SendSeconds" xml:space="preserve">
+    <value>Отправить ({0})</value>
   </data>
 </root>
