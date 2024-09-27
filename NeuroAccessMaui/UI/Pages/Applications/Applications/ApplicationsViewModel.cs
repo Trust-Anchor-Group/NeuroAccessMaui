@@ -8,6 +8,7 @@ using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.Wallet;
 using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
 using NeuroAccessMaui.UI.Pages.Contracts;
+using NeuroAccessMaui.UI.Pages.Main;
 using NeuroAccessMaui.UI.Pages.Wallet;
 using NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet;
@@ -309,20 +310,9 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 		}
 
 		[RelayCommand(CanExecute = nameof(CanExecuteCommands))]
-		private async Task OpenWallet()
+		private Task OpenWallet()
 		{
-			try
-			{
-				if (!await App.AuthenticateUser(AuthenticationPurpose.ApplyForOrganizationalId))
-					return;
-
-				await ServiceRef.UiService.GoToAsync(nameof(MyEDalerWalletPage), new WalletNavigationArgs());
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiService.DisplayException(ex);
-			}
+			return AppShellViewModel.ShowWallet();
 		}
 
 		#endregion
