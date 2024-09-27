@@ -1,6 +1,6 @@
 ﻿//#define DEBUG_XMPP_REMOTE
 //#define DEBUG_LOG_REMOTE
-#define DEBUG_DB_REMOTE
+//#define DEBUG_DB_REMOTE
 
 using EDaler;
 using EDaler.Uris;
