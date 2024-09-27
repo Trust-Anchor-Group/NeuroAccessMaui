@@ -10,23 +10,11 @@ namespace NeuroAccessMaui.Services.Settings
 	[Singleton]
 	internal sealed class SettingsService : ISettingsService
 	{
-		private const string wildCard = "*";
-
 		/// <summary>
 		/// Handles common runtime settings that need to be persisted during sessions.
 		/// </summary>
 		public SettingsService()
 		{
-		}
-
-		private static string FormatKey(string KeyPrefix)
-		{
-			AssertNonEmptyPRefix(KeyPrefix);
-
-			if (!KeyPrefix.EndsWith(wildCard, StringComparison.InvariantCultureIgnoreCase))
-				KeyPrefix += wildCard;
-
-			return KeyPrefix;
 		}
 
 		private static void AssertNonEmptyPRefix(string KeyPrefix)
@@ -177,35 +165,6 @@ namespace NeuroAccessMaui.Services.Settings
 			{
 				ServiceRef.LogService.LogException(ex);
 			}
-		}
-
-		/// <summary>
-		/// Returns any States whose key matches the specified predicate.
-		/// </summary>
-		/// <typeparam name="T">The State type.</typeparam>
-		/// <param name="KeyPrefix">The string value the key should start with, like "Foo". Do not include wildcards.</param>
-		/// <returns>a list of matching States.</returns>
-		public async Task<IEnumerable<(string Key, T value)>> RestoreStateWhereKeyStartsWith<T>(string KeyPrefix)
-		{
-			List<(string, T)> matches = [];
-
-			try
-			{
-				KeyPrefix = FormatKey(KeyPrefix);	// Asserts KeyPrefix is not empty.
-				Dictionary<string, object> existingStates = await RuntimeSettings.GetWhereKeyLikeAsync(KeyPrefix, wildCard);
-
-				foreach (KeyValuePair<string, object> State in existingStates)
-				{
-					if (State.Value is T TypedValue)
-						matches.Add((State.Key, TypedValue));
-				}
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-			}
-
-			return matches;
 		}
 
 		/// <summary>
@@ -388,24 +347,6 @@ namespace NeuroAccessMaui.Services.Settings
 			try
 			{
 				await RuntimeSettings.DeleteAsync(Key);
-				await Database.Provider.Flush();
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-			}
-		}
-
-		/// <summary>
-		/// Removes any States whose key matches the specified predicate.
-		/// </summary>
-		/// <param name="KeyPrefix">The string value the key should start with, like "Foo". Do not include wildcards.</param>
-		public async Task RemoveStateWhereKeyStartsWith(string KeyPrefix)
-		{
-			try
-			{
-				KeyPrefix = FormatKey(KeyPrefix);	// Asserts KeyPrefix is not empty.
-				await RuntimeSettings.DeleteWhereKeyLikeAsync(KeyPrefix, wildCard);
 				await Database.Provider.Flush();
 			}
 			catch (Exception ex)
