@@ -1158,9 +1158,10 @@ namespace NeuroAccessMaui.Services.Tag
 		/// Sets the current <see cref="LegalIdentity"/> to the compromised identity, and reverses the <see cref="Step"/> property.
 		/// </summary>
 		/// <param name="CompromisedIdentity">The compromised identity to use.</param>
-		public Task CompromiseLegalIdentity(LegalIdentity CompromisedIdentity)
+		public async Task CompromiseLegalIdentity(LegalIdentity CompromisedIdentity)
 		{
-			return this.SetLegalIdentity(CompromisedIdentity, true);
+			await this.SetLegalIdentity(CompromisedIdentity, true);
+			await ServiceRef.XmppService.ContractsClient.GenerateNewKeys();
 		}
 
 		/// <summary>
