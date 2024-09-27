@@ -13,62 +13,33 @@
 	<Grid RowSpacing="{StaticResource LargeSpacing}" RowDefinitions="*, auto">
 		<Grid RowSpacing="{StaticResource LargeSpacing}" RowDefinitions="*, auto">
 
-		<VerticalStackLayout Grid.Row="0" VerticalOptions="Center"  Spacing="{StaticResource LargeSpacing}">
-			<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
-				<Label
-					Style="{StaticResource PageTitleLabel}"
-					Text="{l:Localize OnboardingFinalizePageTitle}"
-					HorizontalTextAlignment="Center"
-					/>
-						
-				<!-- Checkmark Circle -->
-				<Frame
-					WidthRequest="{Binding CheckmarkBackgroundSize}"
-					HeightRequest="{Binding CheckmarkBackgroundSize}"
-					HasShadow="False"
-					CornerRadius="{Binding CheckmarkBackgroundCornerRadius}"
-					BackgroundColor="{AppThemeBinding Light={StaticResource EnabledTransparentButtonBackgroundLight}, Dark={StaticResource EnabledTransparentButtonBackgroundDark}}"
-					HorizontalOptions="Center"
-					Margin="{StaticResource LargeBottomMargins}">
-					<Path
-						VerticalOptions="Center"
+			<VerticalStackLayout Grid.Row="0" VerticalOptions="Center"  Spacing="{StaticResource LargeSpacing}">
+				<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+					<Label
+						Style="{StaticResource PageTitleLabel}"
+						Text="{l:Localize OnboardingFinalizePageTitle}"
+						HorizontalTextAlignment="Center"
+						/>
+							
+					<!-- Checkmark Circle -->
+					<Frame
+						WidthRequest="{Binding CheckmarkBackgroundSize}"
+						HeightRequest="{Binding CheckmarkBackgroundSize}"
+						HasShadow="False"
+						CornerRadius="{Binding CheckmarkBackgroundCornerRadius}"
+						BackgroundColor="{AppThemeBinding Light={StaticResource EnabledTransparentButtonBackgroundLight}, Dark={StaticResource EnabledTransparentButtonBackgroundDark}}"
 						HorizontalOptions="Center"
-						HeightRequest="{Binding CheckmarkIconSize}"
-						WidthRequest="{Binding CheckmarkIconSize}"
-						Aspect="Uniform"
-						Data="{x:Static ui:Geometries.SuccessCheckmarkPath}"
-						Fill="{AppThemeBinding Light={StaticResource EnabledFilledButtonBackgroundLight}, Dark={StaticResource EnabledFilledButtonBackgroundDark}}" />
-				</Frame>
-				
-			</VerticalStackLayout>
-		</VerticalStackLayout>
-
-			<!-- Text -->
-			<VerticalStackLayout Grid.Row="1" Spacing="{StaticResource MediumSpacing}">
-				<Label Style="{StaticResource SectionTitleLabel}"
-						Text="{l:Localize AccountDetails}" 
-						FontSize="16"
-						HorizontalOptions="Start"/>
-				<VerticalStackLayout>
-					<Label Style="{StaticResource KeyLabel}"
-						Text="{l:Localize NetworkID}"
-						Margin="0"/>
-					<Label Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ClickableValueLabel}" Text="{Binding NetworkID}" LineBreakMode="CharacterWrap" HorizontalTextAlignment="Start">
-						<Label.GestureRecognizers>
-							<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding NetworkID}" />
-						</Label.GestureRecognizers>
-					</Label>
-				</VerticalStackLayout>
-				
-				<VerticalStackLayout>
-					<Label Style="{StaticResource KeyLabel}"
-						Text="{l:Localize ServiceProvider}"
-						Margin="0"/>
-					<Label Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ClickableValueLabel}" Text="{Binding DomainName}" LineBreakMode="CharacterWrap" HorizontalTextAlignment="Start">
-						<Label.GestureRecognizers>
-							<TapGestureRecognizer Command="{Binding ServiceProviderInfoCommand}"/>
-						</Label.GestureRecognizers>
-					</Label>
+						Margin="{StaticResource LargeBottomMargins}">
+						<Path
+							VerticalOptions="Center"
+							HorizontalOptions="Center"
+							HeightRequest="{Binding CheckmarkIconSize}"
+							WidthRequest="{Binding CheckmarkIconSize}"
+							Aspect="Uniform"
+							Data="{x:Static ui:Geometries.SuccessCheckmarkPath}"
+							Fill="{AppThemeBinding Light={StaticResource EnabledFilledButtonBackgroundLight}, Dark={StaticResource EnabledFilledButtonBackgroundDark}}" />
+					</Frame>
+					
 				</VerticalStackLayout>
 			</VerticalStackLayout>
 		</Grid>
