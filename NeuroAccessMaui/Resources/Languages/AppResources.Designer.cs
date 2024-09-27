@@ -113,6 +113,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Account Events.
+        /// </summary>
+        internal static string AccountEventItem {
+            get {
+                return ResourceManager.GetString("AccountEventItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Account name {0} is already taken. Choose another..
         /// </summary>
         internal static string AccountNameAlreadyTaken {
@@ -3502,6 +3511,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string PeerReviewRejected {
             get {
                 return ResourceManager.GetString("PeerReviewRejected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pending Payments.
+        /// </summary>
+        internal static string PendingPaymentItem {
+            get {
+                return ResourceManager.GetString("PendingPaymentItem", resourceCulture);
             }
         }
         

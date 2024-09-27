@@ -2175,4 +2175,10 @@
   <data name="TransactionId" xml:space="preserve">
     <value>ID de transacción:</value>
   </data>
+  <data name="AccountEventItem" xml:space="preserve">
+    <value>Eventos de la cuenta</value>
+  </data>
+  <data name="PendingPaymentItem" xml:space="preserve">
+    <value>Pagos pendientes</value>
+  </data>
 </root>

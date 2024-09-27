@@ -2163,4 +2163,10 @@
   <data name="TransactionId" xml:space="preserve">
     <value>ID-ul tranzacției:</value>
   </data>
+  <data name="AccountEventItem" xml:space="preserve">
+    <value>Evenimente cont</value>
+  </data>
+  <data name="PendingPaymentItem" xml:space="preserve">
+    <value>Plăți în așteptare</value>
+  </data>
 </root>
