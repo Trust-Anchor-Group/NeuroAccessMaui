@@ -366,6 +366,10 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 					this.sb.Clear();
 
+					int i = s2.IndexOf('<');
+					if (i > 0)
+						s2 = s2.Substring(i);
+
 					if (s2.StartsWith("<New", StringComparison.OrdinalIgnoreCase))
 						await Sniffer.TransmitText(s);
 					else if (s2.StartsWith("<Update", StringComparison.OrdinalIgnoreCase))
@@ -645,7 +649,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			this.isDisposed = true;
 		}
 		*/
-#endregion
+		#endregion
 
 		#region Lifecycle
 
