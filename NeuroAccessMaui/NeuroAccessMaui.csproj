@@ -379,7 +379,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\IdApp.Cv\IdApp.Cv.csproj" />
-		<ProjectReference Include="..\IdApp.Nfc\IdApp.Nfc.csproj" />
+		<ProjectReference Include="..\NeuroAccess.Nfc\NeuroAccess.Nfc.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

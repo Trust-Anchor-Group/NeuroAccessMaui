@@ -1545,8 +1545,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 		public void SendMessage(QoSLevel QoS, Waher.Networking.XMPP.MessageType Type, string Id, string To, string CustomXml, string Body,
 			string Subject, string Language, string ThreadId, string ParentThreadId, DeliveryEventHandler? DeliveryCallback, object? State)
 		{
-			this.XmppClient.SendMessage(QoS, Type, Id, To, CustomXml, Body, Subject, Language, ThreadId, ParentThreadId, DeliveryCallback, State);
-			// TODO: End-to-End encryption
+			this.ContractsClient.LocalE2eEndpoint.SendMessage(this.XmppClient, E2ETransmission.NormalIfNotE2E,
+				QoS, Type, Id, To, CustomXml, Body, Subject, Language, ThreadId, ParentThreadId, DeliveryCallback, State);
 		}
 
 		private Task XmppClient_OnNormalMessage(object? Sender, MessageEventArgs e)
