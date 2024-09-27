@@ -353,7 +353,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 				try
 				{
 					string s = this.sb.ToString();
-					if (string.IsNullOrEmpty(s))
+					string s2 = s.TrimStart();
+					if (string.IsNullOrEmpty(s2))
 						return;
 
 					if (ServiceRef.XmppService is not XmppService Service)
@@ -365,13 +366,13 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 					this.sb.Clear();
 
-					if (s.StartsWith("<New", StringComparison.OrdinalIgnoreCase))
+					if (s2.StartsWith("<New", StringComparison.OrdinalIgnoreCase))
 						await Sniffer.TransmitText(s);
-					else if (s.StartsWith("<Update", StringComparison.OrdinalIgnoreCase))
+					else if (s2.StartsWith("<Update", StringComparison.OrdinalIgnoreCase))
 						await Sniffer.ReceiveText(s);
-					else if (s.StartsWith("<Delete", StringComparison.OrdinalIgnoreCase))
+					else if (s2.StartsWith("<Delete", StringComparison.OrdinalIgnoreCase))
 						await Sniffer.Error(s);
-					else if (s.StartsWith("<Clear", StringComparison.OrdinalIgnoreCase))
+					else if (s2.StartsWith("<Clear", StringComparison.OrdinalIgnoreCase))
 						await Sniffer.Warning(s);
 					else
 						await Sniffer.Information(s);
