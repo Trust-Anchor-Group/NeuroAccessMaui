@@ -2163,4 +2163,10 @@
   <data name="TransactionId" xml:space="preserve">
     <value>Tapahtuman tunnus:</value>
   </data>
+  <data name="AccountEventItem" xml:space="preserve">
+    <value>Tilin tapahtumat</value>
+  </data>
+  <data name="PendingPaymentItem" xml:space="preserve">
+    <value>Odottavat maksut</value>
+  </data>
 </root>

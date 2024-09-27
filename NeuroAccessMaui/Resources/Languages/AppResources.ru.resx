@@ -2163,4 +2163,10 @@
   <data name="TransactionId" xml:space="preserve">
     <value>Идентификатор транзакции:</value>
   </data>
+  <data name="AccountEventItem" xml:space="preserve">
+    <value>События аккаунта</value>
+  </data>
+  <data name="PendingPaymentItem" xml:space="preserve">
+    <value>Ожидающие платежи</value>
+  </data>
 </root>

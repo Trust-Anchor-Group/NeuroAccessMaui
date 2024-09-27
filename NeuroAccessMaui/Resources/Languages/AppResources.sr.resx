@@ -2163,4 +2163,10 @@
   <data name="TransactionId" xml:space="preserve">
     <value>ID transakcije:</value>
   </data>
+  <data name="AccountEventItem" xml:space="preserve">
+    <value>Događaji naloga</value>
+  </data>
+  <data name="PendingPaymentItem" xml:space="preserve">
+    <value>Neobrađene uplate</value>
+  </data>
 </root>

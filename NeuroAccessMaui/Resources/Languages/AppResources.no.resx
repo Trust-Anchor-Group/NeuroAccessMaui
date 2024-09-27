@@ -2163,4 +2163,10 @@
   <data name="TransactionId" xml:space="preserve">
     <value>Transaksjons-ID:</value>
   </data>
+  <data name="AccountEventItem" xml:space="preserve">
+    <value>Hendelser på kontoen</value>
+  </data>
+  <data name="PendingPaymentItem" xml:space="preserve">
+    <value>Ventende betalinger</value>
+  </data>
 </root>
