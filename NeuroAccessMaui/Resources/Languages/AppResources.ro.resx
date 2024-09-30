@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -2192,5 +2192,41 @@
   </data>
   <data name="SendSeconds" xml:space="preserve">
     <value>Trimite ({0})</value>
+  </data>
+  <data name="Buy" xml:space="preserve">
+    <value>Cumpăra</value>
+  </data>
+  <data name="BuyEDalerDescription" xml:space="preserve">
+    <value>Furnizați cantitatea de eDaler pe care doriți să o cumpărați de mai jos și apăsați butonul Cumpărați. Se poate deschide o pagină web unde trebuie să completați informații suplimentare pentru ca procesatorul de plăți să vă valideze requst-ul.</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Sumă:</value>
+  </data>
+  <data name="Wallet" xml:space="preserve">
+    <value>Portofel</value>
+  </data>
+  <data name="AccountEventDescription" xml:space="preserve">
+    <value>Mai jos puteți vedea informații despre un singur eveniment din cont.</value>
+  </data>
+  <data name="Balance" xml:space="preserve">
+    <value>Echilibru:</value>
+  </data>
+  <data name="OpenMessageLink" xml:space="preserve">
+    <value>Deschideți linkul mesajului</value>
+  </data>
+  <data name="RemoteParty" xml:space="preserve">
+    <value>Petrecere la distanță:</value>
+  </data>
+  <data name="Reserved" xml:space="preserve">
+    <value>Rezervat:</value>
+  </data>
+  <data name="TransactionId" xml:space="preserve">
+    <value>ID-ul tranzacției:</value>
+  </data>
+  <data name="AccountEventItem" xml:space="preserve">
+    <value>Evenimente cont</value>
+  </data>
+  <data name="PendingPaymentItem" xml:space="preserve">
+    <value>Plăți în așteptare</value>
   </data>
 </root>

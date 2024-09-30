@@ -2193,4 +2193,55 @@
   <data name="SendSeconds" xml:space="preserve">
     <value>Send ({0})</value>
   </data>
+  <data name="CreateWallet" xml:space="preserve">
+    <value>Create Wallet</value>
+  </data>
+  <data name="CreateWalletDescription" xml:space="preserve">
+    <value>You create a wallet by putting some money in it. This money is called eDaler, and can be transferred to others, online or offline, or be used to purchase services offered.</value>
+  </data>
+  <data name="Buy" xml:space="preserve">
+    <value>Buy</value>
+  </data>
+  <data name="BuyEDalerDescription" xml:space="preserve">
+    <value>Provide the amount of eDaler do you want to buy below, and press the Buy button. A web page may be opened where you have to fill in further information for the payment processor to validate your requst.</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Amount:</value>
+  </data>
+  <data name="Wallet" xml:space="preserve">
+    <value>Wallet</value>
+  </data>
+  <data name="OpenWallet" xml:space="preserve">
+    <value>Open Wallet</value>
+  </data>
+  <data name="OpenWalletDescription" xml:space="preserve">
+    <value>Open your eDaler wallet, to display current balance and view latest transactions.</value>
+  </data>
+  <data name="OpenWllet" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AccountEventDescription" xml:space="preserve">
+    <value>Below you can see information about a single account event.</value>
+  </data>
+  <data name="Balance" xml:space="preserve">
+    <value>Balance:</value>
+  </data>
+  <data name="OpenMessageLink" xml:space="preserve">
+    <value>Open Message Link</value>
+  </data>
+  <data name="RemoteParty" xml:space="preserve">
+    <value>Remote Party:</value>
+  </data>
+  <data name="Reserved" xml:space="preserve">
+    <value>Reserved:</value>
+  </data>
+  <data name="TransactionId" xml:space="preserve">
+    <value>Transaction ID:</value>
+  </data>
+  <data name="AccountEventItem" xml:space="preserve">
+    <value>Account Events</value>
+  </data>
+  <data name="PendingPaymentItem" xml:space="preserve">
+    <value>Pending Payments</value>
+  </data>
 </root>

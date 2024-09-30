@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -2192,5 +2192,41 @@
   </data>
   <data name="SendSeconds" xml:space="preserve">
     <value>Envoyer ({0})</value>
+  </data>
+  <data name="Buy" xml:space="preserve">
+    <value>Acheter</value>
+  </data>
+  <data name="BuyEDalerDescription" xml:space="preserve">
+    <value>Indiquez la quantité d’eDaler que vous souhaitez acheter ci-dessous et appuyez sur le bouton Acheter. Une page Web peut être ouverte où vous devez remplir des informations supplémentaires pour que le processeur de paiement valide votre demande.</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Quantité:</value>
+  </data>
+  <data name="Wallet" xml:space="preserve">
+    <value>Portefeuille</value>
+  </data>
+  <data name="AccountEventDescription" xml:space="preserve">
+    <value>Vous trouverez ci-dessous des informations sur un événement de compte unique.</value>
+  </data>
+  <data name="Balance" xml:space="preserve">
+    <value>Balance:</value>
+  </data>
+  <data name="OpenMessageLink" xml:space="preserve">
+    <value>Ouvrir le lien du message</value>
+  </data>
+  <data name="RemoteParty" xml:space="preserve">
+    <value>Partie à distance :</value>
+  </data>
+  <data name="Reserved" xml:space="preserve">
+    <value>Réservé:</value>
+  </data>
+  <data name="TransactionId" xml:space="preserve">
+    <value>ID de transaction :</value>
+  </data>
+  <data name="AccountEventItem" xml:space="preserve">
+    <value>Evénements de compte</value>
+  </data>
+  <data name="PendingPaymentItem" xml:space="preserve">
+    <value>Paiements en attente</value>
   </data>
 </root>

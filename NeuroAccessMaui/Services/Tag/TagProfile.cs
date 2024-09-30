@@ -85,6 +85,7 @@ namespace NeuroAccessMaui.Services.Tag
 		private bool hasContractReferences;
 		private bool hasContractTemplateReferences;
 		private bool hasContractTokenCreationTemplatesReferences;
+		private bool hasWallet;
 
 		/// <summary>
 		/// Creates an instance of a <see cref="TagProfile"/>.
@@ -159,7 +160,8 @@ namespace NeuroAccessMaui.Services.Tag
 				AuthenticationMethod = this.AuthenticationMethod,
 				HasContractReferences = this.HasContractReferences,
 				HasContractTemplateReferences = this.HasContractTemplateReferences,
-				HasContractTokenCreationTemplatesReferences = this.HasContractTokenCreationTemplatesReferences
+				HasContractTokenCreationTemplatesReferences = this.HasContractTokenCreationTemplatesReferences,
+				HasWallet = this.HasWallet
 			};
 
 			return Clone;
@@ -215,6 +217,7 @@ namespace NeuroAccessMaui.Services.Tag
 				this.HasContractReferences = Configuration.HasContractReferences;
 				this.HasContractTemplateReferences = Configuration.HasContractTemplateReferences;
 				this.HasContractTokenCreationTemplatesReferences = Configuration.HasContractTokenCreationTemplatesReferences;
+				this.HasWallet = Configuration.HasWallet;
 
 				this.SetLegalIdentityInternal(Configuration.LegalIdentity);
 
@@ -744,7 +747,23 @@ namespace NeuroAccessMaui.Services.Tag
 				if (this.hasContractTokenCreationTemplatesReferences != value)
 				{
 					this.hasContractTokenCreationTemplatesReferences = value;
-					this.FlagAsDirty(nameof(this.hasContractTokenCreationTemplatesReferences));
+					this.FlagAsDirty(nameof(this.HasContractTokenCreationTemplatesReferences));
+				}
+			}
+		}
+
+		/// <summary>
+		/// If the user has a wallet.
+		/// </summary>
+		public bool HasWallet
+		{
+			get => this.hasWallet;
+			set
+			{
+				if (this.hasWallet != value)
+				{
+					this.hasWallet = value;
+					this.FlagAsDirty(nameof(this.HasWallet));
 				}
 			}
 		}
@@ -1197,9 +1216,10 @@ namespace NeuroAccessMaui.Services.Tag
 		/// Sets the current <see cref="LegalIdentity"/> to the compromised identity, and reverses the <see cref="Step"/> property.
 		/// </summary>
 		/// <param name="CompromisedIdentity">The compromised identity to use.</param>
-		public Task CompromiseLegalIdentity(LegalIdentity CompromisedIdentity)
+		public async Task CompromiseLegalIdentity(LegalIdentity CompromisedIdentity)
 		{
-			return this.SetLegalIdentity(CompromisedIdentity, true);
+			await this.SetLegalIdentity(CompromisedIdentity, true);
+			await ServiceRef.XmppService.GenerateNewKeys();
 		}
 
 		/// <summary>

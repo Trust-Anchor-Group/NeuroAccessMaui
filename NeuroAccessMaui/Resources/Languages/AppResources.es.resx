@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -2192,5 +2192,53 @@
   </data>
   <data name="SendSeconds" xml:space="preserve">
     <value>Enviar ({0})</value>
+  </data>
+  <data name="CreateWallet" xml:space="preserve">
+    <value>Crear Billetera</value>
+  </data>
+  <data name="CreateWalletDescription" xml:space="preserve">
+    <value>Creas una billetera colocando dinero en ella. Este dinero se llama eDaler y puede transferirse a otras personas, en línea o fuera de línea, o usarse para comprar los servicios ofrecidos.</value>
+  </data>
+  <data name="Buy" xml:space="preserve">
+    <value>Comprar</value>
+  </data>
+  <data name="BuyEDalerDescription" xml:space="preserve">
+    <value>Proporcione la cantidad de eDaler que desea comprar a continuación y presione el botón Comprar. Se puede abrir una página web donde debe completar más información para que el procesador de pagos valide su requisito.</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Importe:</value>
+  </data>
+  <data name="Wallet" xml:space="preserve">
+    <value>Billetera</value>
+  </data>
+  <data name="OpenWalletDescription" xml:space="preserve">
+    <value>Abra su billetera eDaler para mostrar el saldo actual y ver las últimas transacciones.</value>
+  </data>
+  <data name="OpenWllet" xml:space="preserve">
+    <value>Abrir Billetera</value>
+  </data>
+  <data name="AccountEventDescription" xml:space="preserve">
+    <value>A continuación puede ver información sobre un evento de una sola cuenta.</value>
+  </data>
+  <data name="Balance" xml:space="preserve">
+    <value>Equilibrar:</value>
+  </data>
+  <data name="OpenMessageLink" xml:space="preserve">
+    <value>Abrir enlace de mensaje</value>
+  </data>
+  <data name="RemoteParty" xml:space="preserve">
+    <value>Parte remota:</value>
+  </data>
+  <data name="Reserved" xml:space="preserve">
+    <value>Reservado:</value>
+  </data>
+  <data name="TransactionId" xml:space="preserve">
+    <value>ID de transacción:</value>
+  </data>
+  <data name="AccountEventItem" xml:space="preserve">
+    <value>Eventos de la cuenta</value>
+  </data>
+  <data name="PendingPaymentItem" xml:space="preserve">
+    <value>Pagos pendientes</value>
   </data>
 </root>

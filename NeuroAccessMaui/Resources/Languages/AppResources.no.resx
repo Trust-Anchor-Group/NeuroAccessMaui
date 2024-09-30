@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -2192,5 +2192,41 @@
   </data>
   <data name="SendSeconds" xml:space="preserve">
     <value>Sende ({0})</value>
+  </data>
+  <data name="Buy" xml:space="preserve">
+    <value>Kjøpe</value>
+  </data>
+  <data name="BuyEDalerDescription" xml:space="preserve">
+    <value>Oppgi hvor mye eDaler du vil kjøpe nedenfor, og trykk på Kjøp-knappen. En nettside kan åpnes der du må fylle ut ytterligere informasjon for betalingsprosessoren for å validere kravet ditt.</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Beløp:</value>
+  </data>
+  <data name="Wallet" xml:space="preserve">
+    <value>Lommebok</value>
+  </data>
+  <data name="AccountEventDescription" xml:space="preserve">
+    <value>Nedenfor kan du se informasjon om én enkelt kontohendelse.</value>
+  </data>
+  <data name="Balance" xml:space="preserve">
+    <value>Balanse:</value>
+  </data>
+  <data name="OpenMessageLink" xml:space="preserve">
+    <value>Åpne melding-kobling</value>
+  </data>
+  <data name="RemoteParty" xml:space="preserve">
+    <value>Ekstern fest:</value>
+  </data>
+  <data name="Reserved" xml:space="preserve">
+    <value>Reservert:</value>
+  </data>
+  <data name="TransactionId" xml:space="preserve">
+    <value>Transaksjons-ID:</value>
+  </data>
+  <data name="AccountEventItem" xml:space="preserve">
+    <value>Hendelser på kontoen</value>
+  </data>
+  <data name="PendingPaymentItem" xml:space="preserve">
+    <value>Ventende betalinger</value>
   </data>
 </root>

@@ -602,7 +602,7 @@ namespace NeuroAccessMaui.Services.Contracts
 						{
 							
 							CreationAttributesEventArgs creationAttr = await ServiceRef.XmppService.GetNeuroFeatureCreationAttributes();
-							ParameterValues ??= new Dictionary<CaseInsensitiveString, object>();
+							ParameterValues ??= [];
 							ParameterValues.Add(new CaseInsensitiveString("TrustProvider"), creationAttr.TrustProviderId);
 
 						}

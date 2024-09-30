@@ -11,7 +11,6 @@ using NeuroAccessMaui.Services.UI.Photos;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Registration;
 using NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders;
-using NeuroAccessMaui.UI.Popups;
 using SkiaSharp;
 using Waher.Content;
 using Waher.Networking.XMPP;
@@ -651,8 +650,11 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 				this.SetIsBusy(true);
 				this.IsApplying = true;
 
+				bool HasIdWithPrivateKey = ServiceRef.TagProfile.LegalIdentity is not null &&
+					await ServiceRef.XmppService.HasPrivateKey(ServiceRef.TagProfile.LegalIdentity.Id);
+
 				(bool Succeeded, LegalIdentity? AddedIdentity) = await ServiceRef.NetworkService.TryRequest(() =>
-					ServiceRef.XmppService.AddLegalIdentity(this, false, Photos));
+					ServiceRef.XmppService.AddLegalIdentity(this, !HasIdWithPrivateKey, Photos));
 
 				if (Succeeded && AddedIdentity is not null)
 				{

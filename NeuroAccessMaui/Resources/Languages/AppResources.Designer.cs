@@ -104,6 +104,51 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Below you can see information about a single account event..
+        /// </summary>
+        internal static string AccountEventDescription {
+            get {
+                return ResourceManager.GetString("AccountEventDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Account Events.
+        /// </summary>
+        internal static string AccountEventItem {
+            get {
+                return ResourceManager.GetString("AccountEventItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Account name {0} is already taken. Choose another..
+        /// </summary>
+        internal static string AccountNameAlreadyTaken {
+            get {
+                return ResourceManager.GetString("AccountNameAlreadyTaken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter the account name.
+        /// </summary>
+        internal static string AccountSectionTitle {
+            get {
+                return ResourceManager.GetString("AccountSectionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This account name already exists.
+        /// </summary>
+        internal static string AccountValidationAlreadyExists {
+            get {
+                return ResourceManager.GetString("AccountValidationAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add Contact.
         /// </summary>
         internal static string AddContact {
@@ -172,6 +217,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string Altitude {
             get {
                 return ResourceManager.GetString("Altitude", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Amount:.
+        /// </summary>
+        internal static string Amount {
+            get {
+                return ResourceManager.GetString("Amount", resourceCulture);
             }
         }
         
@@ -473,6 +527,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Balance:.
+        /// </summary>
+        internal static string Balance {
+            get {
+                return ResourceManager.GetString("Balance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Balance updated..
         /// </summary>
         internal static string BalanceUpdated {
@@ -554,11 +617,29 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Buy.
+        /// </summary>
+        internal static string Buy {
+            get {
+                return ResourceManager.GetString("Buy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Buy eDaler..
         /// </summary>
         internal static string BuyEDaler {
             get {
                 return ResourceManager.GetString("BuyEDaler", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Provide the amount of eDaler do you want to buy below, and press the Buy button. A web page may be opened where you have to fill in further information for the payment processor to validate your requst..
+        /// </summary>
+        internal static string BuyEDalerDescription {
+            get {
+                return ResourceManager.GetString("BuyEDalerDescription", resourceCulture);
             }
         }
         
@@ -1261,6 +1342,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string CreatePassword {
             get {
                 return ResourceManager.GetString("CreatePassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create Wallet.
+        /// </summary>
+        internal static string CreateWallet {
+            get {
+                return ResourceManager.GetString("CreateWallet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You create a wallet by putting some money in it. This money is called eDaler, and can be transferred to others, online or offline, or be used to purchase services offered..
+        /// </summary>
+        internal static string CreateWalletDescription {
+            get {
+                return ResourceManager.GetString("CreateWalletDescription", resourceCulture);
             }
         }
         
@@ -2903,6 +3002,42 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Open Message Link.
+        /// </summary>
+        internal static string OpenMessageLink {
+            get {
+                return ResourceManager.GetString("OpenMessageLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Wallet.
+        /// </summary>
+        internal static string OpenWallet {
+            get {
+                return ResourceManager.GetString("OpenWallet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open your eDaler wallet, to display current balance and view latest transactions..
+        /// </summary>
+        internal static string OpenWalletDescription {
+            get {
+                return ResourceManager.GetString("OpenWalletDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string OpenWllet {
+            get {
+                return ResourceManager.GetString("OpenWllet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The operator {0} does not support registration of new accounts.
         /// </summary>
         internal static string OperatorDoesNotSupportRegisteringNewAccounts {
@@ -3511,6 +3646,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string PeerReviewRejected {
             get {
                 return ResourceManager.GetString("PeerReviewRejected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pending Payments.
+        /// </summary>
+        internal static string PendingPaymentItem {
+            get {
+                return ResourceManager.GetString("PendingPaymentItem", resourceCulture);
             }
         }
         
@@ -4181,6 +4325,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Remote Party:.
+        /// </summary>
+        internal static string RemoteParty {
+            get {
+                return ResourceManager.GetString("RemoteParty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remove Contact.
         /// </summary>
         internal static string RemoveContact {
@@ -4393,6 +4546,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string ResendCodeSeconds {
             get {
                 return ResourceManager.GetString("ResendCodeSeconds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reserved:.
+        /// </summary>
+        internal static string Reserved {
+            get {
+                return ResourceManager.GetString("Reserved", resourceCulture);
             }
         }
         
@@ -5576,6 +5738,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Transaction ID:.
+        /// </summary>
+        internal static string TransactionId {
+            get {
+                return ResourceManager.GetString("TransactionId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Transferable.
         /// </summary>
         internal static string Transferable {
@@ -5977,6 +6148,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string Visibility {
             get {
                 return ResourceManager.GetString("Visibility", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wallet.
+        /// </summary>
+        internal static string Wallet {
+            get {
+                return ResourceManager.GetString("Wallet", resourceCulture);
             }
         }
         

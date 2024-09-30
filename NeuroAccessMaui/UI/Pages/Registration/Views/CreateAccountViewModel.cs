@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -84,12 +84,12 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		/// <summary>
 		/// If App is connected to the XMPP network.
 		/// </summary>
-		public bool IsXmppConnected => ServiceRef.XmppService.State == XmppState.Connected;
+		public static bool IsXmppConnected => ServiceRef.XmppService.State == XmppState.Connected;
 
 		/// <summary>
 		/// If App has an XMPP account defined.
 		/// </summary>
-		public bool IsAccountCreated => !string.IsNullOrEmpty(ServiceRef.TagProfile.Account);
+		public static bool IsAccountCreated => !string.IsNullOrEmpty(ServiceRef.TagProfile.Account);
 
 		/// <summary>
 		/// If Legal ID has been created.
