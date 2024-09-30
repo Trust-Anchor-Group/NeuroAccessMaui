@@ -21,9 +21,43 @@ using Waher.Networking.XMPP.Contracts;
 
 namespace NeuroAccessMaui.UI.Pages.Registration.Views
 {
-	public partial class ContactSupportViewModel() : BaseRegistrationViewModel(RegistrationStep.ContactSupport), ICodeVerification
+	public partial class ContactSupportViewModel : BaseRegistrationViewModel, ICodeVerification
 	{
 
+        public ContactSupportViewModel() : base(RegistrationStep.ContactSupport)
+        {
+			this.SupportEmail = "neuro-access@trustanchorgroup.com"; 
+        }
+
+        [ObservableProperty]
+        private string supportEmail;
+
+        [RelayCommand]
+        private async Task ContactSupport()
+        {
+            string email = this.SupportEmail;
+            string subject = ServiceRef.Localizer[nameof(AppResources.SupportEmailSubject)];
+
+            string mailtoUri = $"mailto:{email}?subject={Uri.EscapeDataString(subject)}";
+
+            try
+            {
+                if(!await Launcher.OpenAsync(new Uri(mailtoUri)))
+				{
+					await ServiceRef.UiService.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						ServiceRef.Localizer[nameof(AppResources.EmailClientNotAvailable), this.SupportEmail],
+						ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				}
+            }
+            catch (Exception)
+            {
+                await ServiceRef.UiService.DisplayAlert(
+                    ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+                    ServiceRef.Localizer[nameof(AppResources.EmailClientNotAvailable), this.SupportEmail],
+                    ServiceRef.Localizer[nameof(AppResources.Ok)]);
+            }
+        }
 		protected override async Task OnInitialize()
 		{
 			await base.OnInitialize();

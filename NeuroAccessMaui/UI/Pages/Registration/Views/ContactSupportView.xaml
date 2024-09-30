@@ -21,12 +21,63 @@
 				<Label
 					Style="{StaticResource PageTitleLabel}"
 					Text="{l:Localize OnboardingContactSupportTitle}" />
+            <!-- Part 1 -->
+            <Label
+                Text="{l:Localize OnboardingContactSupportDetailsPart1}" />
 
-				<Label
-					Margin="{StaticResource LargeBottomMargins}"
-					Text="{l:Localize OnboardingContactSupportDetails}" />
+            <!-- Bullet Points -->
+			<StackLayout Spacing="{StaticResource SmallSpacing}">
+				<Label>
+					<Label.FormattedText>
+						<FormattedString>
+							<Span Text="• " />
+							<Span Text="{l:Localize OnboardingContactSupportDetailsBullet1}" />
+						</FormattedString>
+					</Label.FormattedText>
+				</Label>
+				<Label>
+					<Label.FormattedText>
+						<FormattedString>
+							<Span Text="• " />
+							<Span Text="{l:Localize OnboardingContactSupportDetailsBullet2}" />
+						</FormattedString>
+					</Label.FormattedText>
+				</Label>
+				<Label>
+					<Label.FormattedText>
+						<FormattedString>
+							<Span Text="• " />
+							<Span Text="{l:Localize OnboardingContactSupportDetailsBullet3}" />
+						</FormattedString>
+					</Label.FormattedText>
+				</Label>
+				<Label>
+					<Label.FormattedText>
+						<FormattedString>
+							<Span Text="• " />
+							<Span Text="{l:Localize OnboardingContactSupportDetailsBullet4}" />
+						</FormattedString>
+					</Label.FormattedText>
+				</Label>
+			</StackLayout>
+            <Label>
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="{l:Localize OnboardingContactSupportDetailsPart2}" />
+                        <Span Text=" " />
+                        <Span Text="{Binding SupportEmail}"
+                              TextColor="Blue"
+                              TextDecorations="Underline">
+                            <Span.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ContactSupportCommand}" />
+                            </Span.GestureRecognizers>
+                        </Span>
+                        <Span Text="{l:Localize OnboardingContactSupportDetailsPart3}" />
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
 
-				<!-- Email Section -->
+				<!-- Email Section 
 				<Label
 	                Style="{StaticResource SectionTitleLabel}"
 	                Text="{l:Localize EmailSectionTitle}" />
@@ -44,7 +95,6 @@
 					</controls:CompositeEntry.Behaviors>
 				</controls:CompositeEntry>
 
-				<!-- Email Validation Error -->
 				<Grid
 	                RowDefinitions="auto"
 	                ColumnDefinitions="auto,*"
@@ -64,7 +114,6 @@
 	                       TextColor="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
 				</Grid>
 
-				<!-- Phone Section -->
 				<Label
 	                Style="{StaticResource SectionTitleLabel}"
 	                Text="{l:Localize PhoneSectionTitle}" />
@@ -81,7 +130,6 @@
 	                    RowDefinitions="auto"
 	                    ColumnDefinitions="auto,*"
 	                    ColumnSpacing="{StaticResource MediumSpacing}">
-						<!-- Country Code Selector -->
 						<HorizontalStackLayout
 	                        Grid.Column="0"
 	                        VerticalOptions="FillAndExpand"
@@ -104,7 +152,6 @@
 	                                                    Dark={StaticResource PrimaryForegroundDark}}" />
 						</HorizontalStackLayout>
 
-						<!-- Phone Entry -->
 						<Entry
 	                        Grid.Column="1"
 	                        VerticalOptions="Center"
@@ -125,7 +172,6 @@
 					</Grid>
 				</Border>
 
-				<!-- Phone Validation Error -->
 				<Grid
 	                RowDefinitions="auto"
 	                ColumnDefinitions="auto,*"
@@ -144,12 +190,11 @@
 					<Label Grid.Column="1" VerticalOptions="Center" Text="{Binding PhoneValidationError}"
 	                       TextColor="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
 				</Grid>
-				<!-- Send Codes Button -->
 				<controls:TextButton
 		            Command="{Binding SendCommand}"
 		            Style="{StaticResource FilledTextButton}"
 		            LabelData="{Binding LocalizedSendCodeText}" />
-
+-->
 			</VerticalStackLayout>
 
 			<!-- Scan QR Button -->
