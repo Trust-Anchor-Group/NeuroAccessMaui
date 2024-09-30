@@ -108,7 +108,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		/// <summary>
 		/// If we can create an identity.
 		/// </summary>
-		public bool CanCreateIdentity => this.IsAccountCreated && !IsLegalIdentityCreated && this.IsXmppConnected;
+		public bool CanCreateIdentity => IsAccountCreated && !IsLegalIdentityCreated && IsXmppConnected;
 
 
 		/// <summary>
