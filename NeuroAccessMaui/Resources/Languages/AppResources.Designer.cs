@@ -3055,15 +3055,6 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string OpenWllet {
-            get {
-                return ResourceManager.GetString("OpenWllet", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The operator {0} does not support registration of new accounts.
         /// </summary>
         internal static string OperatorDoesNotSupportRegisteringNewAccounts {

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -124,16 +124,16 @@
     <value>Godkänd</value>
   </data>
   <data name="IdentityState_Compromised" xml:space="preserve">
-    <value>Äventyras</value>
+    <value>Komprometterad</value>
   </data>
   <data name="IdentityState_Created" xml:space="preserve">
     <value>Skapad</value>
   </data>
   <data name="IdentityState_Obsoleted" xml:space="preserve">
-    <value>Föråldrad</value>
+    <value>Utgången</value>
   </data>
   <data name="IdentityState_Rejected" xml:space="preserve">
-    <value>Avvisad</value>
+    <value>Nekad</value>
   </data>
   <data name="TagEngraved" xml:space="preserve">
     <value>Tagg Graverad med länk till {0}.</value>
@@ -148,43 +148,43 @@
     <value>Det går inte att ändra nätverkslösenordet.</value>
   </data>
   <data name="PasswordIsInvalid" xml:space="preserve">
-    <value>PIN-koden är ogiltig. Du har {0} återstående försök.</value>
+    <value>PIN-koden är ogiltigt. Du har {0} försök kvar.</value>
   </data>
   <data name="PasswordsDoNotMatch" xml:space="preserve">
-    <value>PIN-koderna stämmer inte överens</value>
+    <value>PIN koderna stämmer inte överens</value>
   </data>
   <data name="PasswordIsInvalidAplicationBlockedForever" xml:space="preserve">
-    <value>Du har överskridit antalet försök att ange din PIN-kod. Ditt program har blockerats för alltid</value>
+    <value>Pinförsök överskridna. Ansökan har blockerats permanent.</value>
   </data>
   <data name="PasswordIsInvalidAplicationBlocked" xml:space="preserve">
-    <value>Du har överskridit antalet försök att ange din PIN-kod. Din ansökan har varit blockerad till {0}.</value>
+    <value>Pinförsök överskridna. Ansökan har blockerats till och med {0}.</value>
   </data>
   <data name="PasswordIsInvalidAplicationBlockedTillTomorrow" xml:space="preserve">
-    <value>Du har överskridit antalet försök att ange din PIN-kod. Din ansökan har blockerats till imorgon klockan {0}.</value>
+    <value>Pinförsök överskridna. Ansökan har blockerats till imorgon kl. {0}.</value>
   </data>
   <data name="PasswordIsInvalidAplicationBlockedForOneWeek" xml:space="preserve">
-    <value>Du har överskridit antalet försök att ange din PIN-kod. Din ansökan har varit blockerad i en vecka</value>
+    <value>Pinförsök överskridna. Ansökan har blockerats i en vecka.</value>
   </data>
   <data name="PasswordTooShort" xml:space="preserve">
-    <value>PIN-kodens längd måste vara minst {0} tecken.</value>
+    <value>PIN-koden måste innehålla minst {0} tecken.</value>
   </data>
   <data name="PasswordContainsName" xml:space="preserve">
-    <value>En PIN-kod får inte innehålla något ord från identitetsnamnen.</value>
+    <value>PIN-koden får inte innehålla något ord från identitetsnamnen.</value>
   </data>
   <data name="PasswordContainsPersonalNumber" xml:space="preserve">
-    <value>En PIN-kod får inte innehålla identitetens personnummer.</value>
+    <value>PIN-koden får inte innehålla identitetens personnummer.</value>
   </data>
   <data name="PasswordContainsAddress" xml:space="preserve">
-    <value>En PIN-kod får inte innehålla något ord från identitetsadressen.</value>
+    <value>PIN-koden får inte innehålla något ord från identitetsadressen.</value>
   </data>
   <data name="PasswordContainsEMail" xml:space="preserve">
-    <value>En PIN-kod får inte innehålla e-postadressen för identitet.</value>
+    <value>PIN-koden får inte innehålla identitetens e-postadress.</value>
   </data>
   <data name="PasswordContainsPhoneNumber" xml:space="preserve">
-    <value>En PIN-kod får inte innehålla identitetsnumret.</value>
+    <value>PIN-koden får inte innehålla identitetens telefonnummer.</value>
   </data>
   <data name="PasswordWithNotEnoughDigitsLettersSigns" xml:space="preserve">
-    <value>Minst {0} bokstäver, siffror eller symboler ska användas.</value>
+    <value>Minst {0} bokstäver, siffror eller symboler måste användas.</value>
   </data>
   <data name="PasswordWithNotEnoughDigitsOrSigns" xml:space="preserve">
     <value>Du måste också använda minst {0} siffror eller symboler.</value>
@@ -196,16 +196,16 @@
     <value>Du måste också använda minst {0} bokstäver eller symboler.</value>
   </data>
   <data name="PasswordWithTooManyIdenticalSymbols" xml:space="preserve">
-    <value>En PIN-kod får inte innehålla mer än {0} identiska symboler.</value>
+    <value>Ett PIN får inte innehålla mer än {0} identiska symboler.</value>
   </data>
   <data name="PasswordWithTooManySequencedSymbols" xml:space="preserve">
-    <value>En PIN-kod får inte innehålla mer än {0} sekvenserade symboler, t.ex. "12" eller "ab".</value>
+    <value>Ett PIN får inte innehålla mer än {0} sekvenserade symboler, t.ex. "12" eller "ab".</value>
   </data>
   <data name="PasswordWeakSecurity" xml:space="preserve">
     <value>Svag säkerhet</value>
   </data>
   <data name="PasswordMediumSecurity" xml:space="preserve">
-    <value>Medelhög säkerhet</value>
+    <value>Mellan säkerhet</value>
   </data>
   <data name="PasswordStrongSecurity" xml:space="preserve">
     <value>Stark säkerhet</value>
@@ -220,16 +220,16 @@
     <value>Begäran avbröts</value>
   </data>
   <data name="XmppState_Authenticating" xml:space="preserve">
-    <value>Autentisera nätverksidentitet</value>
+    <value>Autentiserar nätverksidentitet</value>
   </data>
   <data name="XmppState_Binding" xml:space="preserve">
-    <value>Bindande anslutning</value>
+    <value>Binder anslutning</value>
   </data>
   <data name="XmppState_Connected" xml:space="preserve">
     <value>Ansluten</value>
   </data>
   <data name="XmppState_Connecting" xml:space="preserve">
-    <value>Upprätta anslutning</value>
+    <value>Upprättar anslutning</value>
   </data>
   <data name="XmppState_Error" xml:space="preserve">
     <value>Fel vid anslutning</value>
@@ -241,19 +241,19 @@
     <value>Bortkopplad</value>
   </data>
   <data name="XmppState_Registering" xml:space="preserve">
-    <value>Registrering hos tjänsteleverantören</value>
+    <value>Registrerar dig hos tjänsteleverantören</value>
   </data>
   <data name="XmppState_RequestingSession" xml:space="preserve">
     <value>Begär session</value>
   </data>
   <data name="XmppState_SettingPresence" xml:space="preserve">
-    <value>Registrera närvaro</value>
+    <value>Ställer in närvaro</value>
   </data>
   <data name="XmppState_StartingEncryption" xml:space="preserve">
-    <value>Kryptera anslutning</value>
+    <value>Krypterar anslutning</value>
   </data>
   <data name="XmppState_StreamNegotiation" xml:space="preserve">
-    <value>Förhandlingskanal</value>
+    <value>Förhandlar ström</value>
   </data>
   <data name="XmppState_StreamOpened" xml:space="preserve">
     <value>Ström upprättad</value>
@@ -262,10 +262,10 @@
     <value>Din identitet</value>
   </data>
   <data name="YourLegalIdentityHasBeenCompromised" xml:space="preserve">
-    <value>Din identitet har markerats som komprometterad. Du har därför omdirigerats för att skapa ett nytt konto.</value>
+    <value>Din identitet har markerats som komprometterad. Du har omdirigerats för att skapa ett nytt konto.</value>
   </data>
   <data name="YourLegalIdentityHasBeenObsoleted" xml:space="preserve">
-    <value>Din identitet har markerats som föråldrad. Du har därför omdirigerats för att skapa ett nytt konto.</value>
+    <value>Din identitet har markerats som Utgången. Du har omdirigerats för att skapa ett nytt konto.</value>
   </data>
   <data name="ClientMessageAuthenticationTimeout" xml:space="preserve">
     <value>Svaret returnerades inte inom konfigurerad tid.</value>
@@ -280,7 +280,7 @@
     <value>Förnamn ej verifierat.</value>
   </data>
   <data name="ClientMessageLastNameNotVerified" xml:space="preserve">
-    <value>Efternamnet är inte verifierat.</value>
+    <value>Efternamnet ej verifierat.</value>
   </data>
   <data name="ClientMessageNotValid" xml:space="preserve">
     <value>Identiteten är inte giltig.</value>
@@ -310,7 +310,7 @@
     <value>Ofullständig</value>
   </data>
   <data name="Close" xml:space="preserve">
-    <value>Stänga</value>
+    <value>Stäng</value>
   </data>
   <data name="Confirm" xml:space="preserve">
     <value>Bekräfta</value>
@@ -322,7 +322,7 @@
     <value>Varning</value>
   </data>
   <data name="SuccessTitle" xml:space="preserve">
-    <value>Framgång</value>
+    <value>Lyckat</value>
   </data>
   <data name="Information" xml:space="preserve">
     <value>Information</value>
@@ -331,7 +331,7 @@
     <value>Meddelande</value>
   </data>
   <data name="Ok" xml:space="preserve">
-    <value>OKEJ</value>
+    <value>Ok</value>
   </data>
   <data name="Yes" xml:space="preserve">
     <value>Ja</value>
@@ -346,7 +346,7 @@
     <value>Kopiera till Urklipp</value>
   </data>
   <data name="Continue" xml:space="preserve">
-    <value>Fortsätta</value>
+    <value>Fortsätt</value>
   </data>
   <data name="SendCode" xml:space="preserve">
     <value>Skicka kod</value>
@@ -361,7 +361,7 @@
     <value>Skicka igen ({0})</value>
   </data>
   <data name="Verify" xml:space="preserve">
-    <value>Kontrollera</value>
+    <value>Verifiera</value>
   </data>
   <data name="Repair" xml:space="preserve">
     <value>Reparera</value>
@@ -382,7 +382,7 @@
     <value>Skannad QR-kod</value>
   </data>
   <data name="QrCodeNotUnderstood" xml:space="preserve">
-    <value>Koden förstås inte</value>
+    <value>Koden förstås ej</value>
   </data>
   <data name="CodeNotRecognized" xml:space="preserve">
     <value>Koden känns inte igen.</value>
@@ -400,13 +400,13 @@
     <value>Det går inte att komma åt inbjudningsinformationen.</value>
   </data>
   <data name="InvitedToCreateAccountOnDomain" xml:space="preserve">
-    <value>Du har blivit inbjuden att skapa ett konto på {0}. Tryck på OK och ange namnet på det konto du vill skapa.</value>
+    <value>Du har blivit inbjuden att skapa ett konto på {0}. Tryck på Ok och ange namnet på det konto du vill skapa.</value>
   </data>
   <data name="ThisCodeCannotBeClaimedAtThisTime" xml:space="preserve">
-    <value>Den här koden representerar en Neuro-Access-inbjudan och kan inte begäras just nu.</value>
+    <value>Den här koden representerar en Neuro-Access-inbjudan och kan inte användas just nu.</value>
   </data>
   <data name="DomainDoesNotFollowEncryptionPolicy" xml:space="preserve">
-    <value>{0} följer inte den allestädes närvarande krypteringspolicyn</value>
+    <value>{0} följer inte den närvarande krypteringspolicyn</value>
   </data>
   <data name="DomainIsNotAValidOperator" xml:space="preserve">
     <value>{0} är inte en giltig operator</value>
@@ -418,7 +418,7 @@
     <value>Operatören {0} stöder inte registrering av nya konton</value>
   </data>
   <data name="UsernameNameAlreadyTaken" xml:space="preserve">
-    <value>Användarnamnet finns redan. Försök med en annan.</value>
+    <value>Användarnamnet är redan upptaget. Vänligen försök med ett annat.</value>
   </data>
   <data name="InvalidUsernameOrPassword" xml:space="preserve">
     <value>Ogiltigt användarnamn eller lösenord</value>
@@ -436,49 +436,49 @@
     <value>Ogiltig URI för taggsignatur.</value>
   </data>
   <data name="LegalIdNotApproved" xml:space="preserve">
-    <value>ID ej godkänt.</value>
+    <value>ID ej godkännt.</value>
   </data>
   <data name="NoLegalIdSelected" xml:space="preserve">
-    <value>Inget ID har valts.</value>
+    <value>Inget ID valt.</value>
   </data>
   <data name="PeerReviewAccepted" xml:space="preserve">
-    <value>Peer review accepteras</value>
+    <value>Attest accepterad</value>
   </data>
   <data name="PeerReviewRejected" xml:space="preserve">
-    <value>Peer review avvisades</value>
+    <value>Attest avvisad</value>
   </data>
   <data name="SignaturePetitionDenied" xml:space="preserve">
     <value>Underskriftsansökan avslogs.</value>
   </data>
   <data name="PetitionSent" xml:space="preserve">
-    <value>Framställning skickad</value>
+    <value>Förfrågan skickad</value>
   </data>
   <data name="PetitionToViewContractWasDenied" xml:space="preserve">
-    <value>Begäran om att få se kontraktet avslogs.</value>
+    <value>Förfrågan om att se kontraktet avslogs.</value>
   </data>
   <data name="PetitionToViewLegalIdentityWasDenied" xml:space="preserve">
-    <value>Begäran om att få se identiteten avslogs.</value>
+    <value>Förfrågan om att se identiteten avslogs.</value>
   </data>
   <data name="APetitionHasBeenSentToTheContract" xml:space="preserve">
-    <value>En petition har skickats till de delar av kontraktet som gäller. Om någon av parterna godkänner framställningen kommer avtalsinformationen att visas på skärmen.</value>
+    <value>En förfrågan har skickats till kontraktets parter. Om någon av parterna godkänner förfrågan kommer avtalsinformationen visas på skärmen.</value>
   </data>
   <data name="APetitionHasBeenSentToTheOwner" xml:space="preserve">
-    <value>En petition har skickats till ägaren av identiteten. Om ägaren godkänner framställningen kommer identitetsinformationen att visas på skärmen.</value>
+    <value>En förfrågan har skickats till identitetens ägare. Om ägaren godkänner förfrågan kommer identitetsinformationen att visas på skärmen.</value>
   </data>
   <data name="APetitionHasBeenSentToYourPeer" xml:space="preserve">
-    <value>En petition har skickats till din kamrat</value>
+    <value>En förfrågan har skickats till din attestant</value>
   </data>
   <data name="APeerReviewYouhaveRequestedHasBeenAccepted" xml:space="preserve">
-    <value>En peer review som du begärde har godkänts.</value>
+    <value>En attest som du begärde har godkänts.</value>
   </data>
   <data name="APeerYouRequestedToReviewHasBeenRejectedDueToSignatureError" xml:space="preserve">
-    <value>En peer review som du begärde har avvisats på grund av ett signaturfel.</value>
+    <value>En attest som du begärde har avvisats på grund av ett signaturfel.</value>
   </data>
   <data name="APeerYouRequestedToReviewHasRejected" xml:space="preserve">
-    <value>En peer som du bad om att få granska din ansökan har avslagit ansökan om att godkänna den.</value>
+    <value>En attestant som du bad att granska din ansökan har avslagit.</value>
   </data>
   <data name="UnableToGetAccessToYourPrivateKeys" xml:space="preserve">
-    <value>Programmet kunde inte få åtkomst till de privata nycklarna för identiteten. Det innebär vanligtvis att identiteten har ändrats utanför appens omfång. Det kan också vara ett resultat av en korruption av data. Du kan prova en av två saker: Tryck på knappen Fortsätt för att fortsätta, utan de privata nycklarna. Du får tillgång till appen, men kan inte signera något. Du kan sedan välja att ansöka om en ny identitet från huvudmenyn, med nya privata nycklar. Du kan också försöka reparera databasen genom att trycka på knappen Reparera. I det senare fallet stängs appen, och nästa gång appen öppnas görs ett första försök att reparera.</value>
+    <value>Programmet kunde inte få åtkomst till identitetens privata nycklar. Det innebär vanligtvis att identiteten har ändrats utanför appens omfång. Det kan också vara ett resultat av korrupt data. Du kan prova en av två saker: Tryck på Fortsätt-knappen för att fortsätta, utan de privata nycklarna. Du får tillgång till appen, men kan inte signera något. Du kan sedan välja att ansöka om en ny identitet från huvudmenyn, med nya privata nycklar. Du kan också försöka reparera databasen genom att trycka på knappen Reparera. I det senare fallet stängs appen, och nästa gång appen öppnas görs ett reparationsförsök.</value>
   </data>
   <data name="FailedToClosePage" xml:space="preserve">
     <value>Det gick inte att stänga sidan</value>
@@ -496,10 +496,10 @@
     <value>Läs igenom all information ovan och markera motsvarande kryssrutor om informationen är korrekt. Detta måste göras innan du kan godkänna informationen.</value>
   </data>
   <data name="YouNeedToCheckCarefullyReviewed" xml:space="preserve">
-    <value>Du måste kryssa i rutan om du noggrant har granskat all motsvarande information ovan.</value>
+    <value>Du måste kryssa i rutan om du noggrant granskat all motsvarande information ovan.</value>
   </data>
   <data name="YouNeedToApproveToAssociate" xml:space="preserve">
-    <value>Du måste godkänna att dina personuppgifter kopplas till den identitet du granskar. När tredje part granskar informationen i identiteten kommer de att ha tillgång till granskarnas identitet, för transparens.</value>
+    <value>Du måste godkänna att dina personuppgifter kopplas till den identitet du granskar. När tredje parter granskar informationen i identiteten kommer de att ha tillgång till granskarnas identitet, för transparens.</value>
   </data>
   <data name="AreYouSureYouWantToRemoveContact" xml:space="preserve">
     <value>Är du säker på att du vill ta bort den här kontakten från din kontaktlista?</value>
@@ -511,19 +511,19 @@
     <value>Är du säker på att du vill återkalla din identitet från programmet?</value>
   </data>
   <data name="AreYouSureYouWantToTransferYourLegalIdentity" xml:space="preserve">
-    <value>Är du säker på att du vill överföra din identitet från den här enheten till en annan? Identiteten kommer att tas bort från den här enheten när den är klar. Se också till att ingen annan kan se din skärm under processen.</value>
+    <value>Är du säker på att du vill överföra din identitet från denna enhet till en annan? Identiteten kommer att tas bort från den här enheten när processen slutförs. Se också till att ingen annan kan se din skärm under processen.</value>
   </data>
   <data name="UnexpectedResponse" xml:space="preserve">
-    <value>Ett oväntat svar inkom.</value>
+    <value>Ett oväntat svar togs emot.</value>
   </data>
   <data name="FileUploadServiceNotFound" xml:space="preserve">
-    <value>Ingen filuppladdningstjänst hittades hos Tjänsteleverantören.</value>
+    <value>Ingen filuppladdningstjänst hittades hos tjänsteleverantören.</value>
   </data>
   <data name="LegalServiceNotFound" xml:space="preserve">
-    <value>Ingen juridisk tjänst hittades hos Tjänsteleverantören.</value>
+    <value>Ingen juridisk tjänst hittades hos tjänsteleverantören.</value>
   </data>
   <data name="FailedToBindViewModelForPage" xml:space="preserve">
-    <value>Det gick inte att binda viewmodel-{0} för sida {1}</value>
+    <value>Det gick inte att binda viewmodel {0} för sida {1}</value>
   </data>
   <data name="FailedToRestoreViewModelStateForPage" xml:space="preserve">
     <value>Det gick inte att återställa tillståndet för viewmodel {0} för sida {1}</value>
@@ -532,10 +532,10 @@
     <value>Det gick inte att spara tillståndet för viewmodel {0} för sidan {1}</value>
   </data>
   <data name="FailedToUnbindViewModelForPage" xml:space="preserve">
-    <value>Det gick inte att koppla bort viewmodel-{0} för sida {1}</value>
+    <value>Det gick inte att koppla bort viewmodel {0} för sida {1}</value>
   </data>
   <data name="OnboardingPhonePageTitle" xml:space="preserve">
-    <value>Vänligen verifiera telefonnumret</value>
+    <value>Verifiera telefonnummer</value>
   </data>
   <data name="OnboardingPhonePageDetails" xml:space="preserve">
     <value>Vi skickar en verifieringskod till dig</value>
@@ -550,7 +550,7 @@
     <value>Ange kod</value>
   </data>
   <data name="OnboardingVerifyCodePageDetails" xml:space="preserve">
-    <value>Ange verifieringskoden som skickats till {0}</value>
+    <value>Ange verifieringskoden som skickades till {0}</value>
   </data>
   <data name="OnboardingProviderPageTitle" xml:space="preserve">
     <value>Din tjänsteleverantör</value>
@@ -559,22 +559,22 @@
     <value>Domän:</value>
   </data>
   <data name="OnboardingAccountPageTitle" xml:space="preserve">
-    <value>Skapa konto...</value>
+    <value>Skapar konto...</value>
   </data>
   <data name="OnboardingAccountPageDetails" xml:space="preserve">
-    <value>Vänta medan vi ställer in saker och ting åt dig</value>
+    <value>Vänligen vänta medan vi förbereder allt åt dig</value>
   </data>
   <data name="OnboardingDefinePasswordPageTitle" xml:space="preserve">
-    <value>Skapa en PIN-kod</value>
+    <value>Skapa en PIN kod</value>
   </data>
   <data name="OnboardingFinalizePageTitle" xml:space="preserve">
-    <value>Framgång!</value>
+    <value>Klar!</value>
   </data>
   <data name="OnboardingBiometricsPageTitle" xml:space="preserve">
     <value>Nästan klar</value>
   </data>
   <data name="OnboardingBiometricsPageDetails" xml:space="preserve">
-    <value>Neuro-Access fungerar bäst när du använder {0}. Vill du aktivera den här funktionen? Detta kan också ändras i inställningarna senare</value>
+    <value>Neuro-Access fungerar bäst med {0}. Vill du aktivera den här funktionen? Detta kan också ändras i inställningarna senare.</value>
   </data>
   <data name="Create" xml:space="preserve">
     <value>Skapa</value>
@@ -595,7 +595,7 @@
     <value>Nätverk verkar saknas. Kontrollera din konfiguration och täckning och försök igen.</value>
   </data>
   <data name="SendEmailWarning" xml:space="preserve">
-    <value>En kod har skickats till din e-postadress. Om du inte får det, kontrollera även din skräppostmapp.</value>
+    <value>En kod har skickats till din e-postadress. Om du inte kan se den, kontrollera även din skräppost.</value>
   </data>
   <data name="SwitchingToTestPhoneNumberNotAllowed" xml:space="preserve">
     <value>Det är inte tillåtet att ändra telefonnumret till ett testnummer.</value>
@@ -604,7 +604,7 @@
     <value>Koden var inte korrekt.</value>
   </data>
   <data name="SomethingWentWrongWhenSendingEmailCode" xml:space="preserve">
-    <value>Något gick fel när en verifieringskod skickades till det här e-postmeddelandet.</value>
+    <value>Något gick fel när en verifieringskod skickades till den här e-postadressen.</value>
   </data>
   <data name="SomethingWentWrongWhenSendingPhoneCode" xml:space="preserve">
     <value>Något gick fel när en verifieringskod skickades till det här telefonnumret.</value>
@@ -631,10 +631,10 @@
     <value>Byt tjänsteleverantör</value>
   </data>
   <data name="UndoSelection" xml:space="preserve">
-    <value>Ångra markering</value>
+    <value>Ångra val</value>
   </data>
   <data name="ServiceProviderInfo" xml:space="preserve">
-    <value>En tjänsteleverantör tillhandahåller anslutning för appen, förmedlar förfrågningar och ser till att informationen som tillhandahålls av kunden är korrekt.</value>
+    <value>En tjänsteleverantör tillhandahåller anslutning för appen, mäklar förfrågningar, och försäkrar att informationen tillhandahållen av kunden är korrekt.</value>
   </data>
   <data name="QrPageTitleScanInvitation" xml:space="preserve">
     <value>Skanna inbjudan</value>
@@ -652,16 +652,16 @@
     <value>URI:</value>
   </data>
   <data name="TestOtpUsed" xml:space="preserve">
-    <value>En tillfällig OTP-kod har använts. Applikationen slutar fungera om ungefär en vecka. Du måste installera om programmet för att kunna använda det igen.</value>
+    <value>En tillfällig OTP-kod har använts. Applikationen kommer sluta fungera om ungefär en vecka. Du måste ominstallera programmet för att använda det igen.</value>
   </data>
   <data name="DefinePasswordSectionTitle1" xml:space="preserve">
-    <value>Ange ny pinkod</value>
+    <value>Ange nytt pin</value>
   </data>
   <data name="DefinePasswordSectionTitle2" xml:space="preserve">
-    <value>Bekräfta stift</value>
+    <value>Bekräfta pin</value>
   </data>
   <data name="CreatePassword" xml:space="preserve">
-    <value>Skapa PIN-kod</value>
+    <value>Skapa pin</value>
   </data>
   <data name="ScanQrCodeLabel" xml:space="preserve">
     <value>Skanna QR-koden med din kamera.</value>
@@ -679,7 +679,7 @@
     <value>Område</value>
   </data>
   <data name="Cancel" xml:space="preserve">
-    <value>Annullera</value>
+    <value>Avbryt</value>
   </data>
   <data name="City" xml:space="preserve">
     <value>Stad</value>
@@ -691,19 +691,19 @@
     <value>Skapad</value>
   </data>
   <data name="Decline" xml:space="preserve">
-    <value>Tillbakagång</value>
+    <value>Neka</value>
   </data>
   <data name="Enter" xml:space="preserve">
-    <value>Inträda</value>
+    <value>Bekräfta</value>
   </data>
   <data name="EnterPassword" xml:space="preserve">
-    <value>Ange stift</value>
+    <value>Ange pin</value>
   </data>
   <data name="FirstName" xml:space="preserve">
     <value>Förnamn</value>
   </data>
   <data name="Ignore" xml:space="preserve">
-    <value>Bortse från</value>
+    <value>Ignorera</value>
   </data>
   <data name="LastNames" xml:space="preserve">
     <value>Efternamn</value>
@@ -721,7 +721,7 @@
     <value>Organisationens adress</value>
   </data>
   <data name="OrgAddress2" xml:space="preserve">
-    <value>Organisationsadress (rad 2)</value>
+    <value>Organisationens adress (rad 2)</value>
   </data>
   <data name="OrganizationInformation" xml:space="preserve">
     <value>Information om organisationen</value>
@@ -730,10 +730,10 @@
     <value>Område för organisation</value>
   </data>
   <data name="OrgCity" xml:space="preserve">
-    <value>Organisation Stad</value>
+    <value>Organisationens Stad</value>
   </data>
   <data name="OrgCountry" xml:space="preserve">
-    <value>Organisationsland</value>
+    <value>Organisationens land</value>
   </data>
   <data name="OrgDepartment" xml:space="preserve">
     <value>Avdelning</value>
@@ -745,13 +745,13 @@
     <value>Organisationsnummer</value>
   </data>
   <data name="OrgRegion" xml:space="preserve">
-    <value>Organisation Region</value>
+    <value>Organisationens region</value>
   </data>
   <data name="OrgRole" xml:space="preserve">
     <value>Roll</value>
   </data>
   <data name="OrgZipCode" xml:space="preserve">
-    <value>Organisation Postnummer</value>
+    <value>Organisationens postnummer</value>
   </data>
   <data name="PersonalNumber" xml:space="preserve">
     <value>Personnummer</value>
@@ -775,7 +775,7 @@
     <value>Begärande enhet</value>
   </data>
   <data name="State" xml:space="preserve">
-    <value>Stat</value>
+    <value>Tillstånd</value>
   </data>
   <data name="Updated" xml:space="preserve">
     <value>Uppdaterad</value>
@@ -787,7 +787,7 @@
     <value>Information om organisationen</value>
   </data>
   <data name="PersonalInformation" xml:space="preserve">
-    <value>Personuppgift</value>
+    <value>Personuppgifter</value>
   </data>
   <data name="Expires" xml:space="preserve">
     <value>Upphör</value>
@@ -808,28 +808,28 @@
     <value>ID</value>
   </data>
   <data name="AllowRecording" xml:space="preserve">
-    <value>Tillåt inspelning (max 1 timme)</value>
+    <value>Tillåt skärminspelning (max 1 timme)</value>
   </data>
   <data name="AreYouSureYouWantToReportYourLegalIdentityAsCompromized1" xml:space="preserve">
     <value>Är du säker på att du vill rapportera din identitet som komprometterad, stulen eller hackad?</value>
   </data>
   <data name="AreYouSureYouWantToRevokeYourLegalIdentity1" xml:space="preserve">
-    <value>Är du säker på att du vill återkalla din identitet från enheten?</value>
+    <value>Är du säker på att du vill spärra din identitet från enheten?</value>
   </data>
   <data name="AreYouSureYouWantToTransferYourLegalIdentity1" xml:space="preserve">
     <value>Är du säker på att du vill överföra din identitet från enheten till en annan? Identiteten kommer att tas bort från den här enheten när den är klar. Se också till att ingen annan kan se din skärm under processen.</value>
   </data>
   <data name="Change" xml:space="preserve">
-    <value>Förändring</value>
+    <value>Ändring</value>
   </data>
   <data name="ChangePassword" xml:space="preserve">
-    <value>Ändra PIN-kod</value>
+    <value>Ändra PIN</value>
   </data>
   <data name="ChangePasswordDescription" xml:space="preserve">
-    <value>Välj en annan PIN-kod för att identifiera dig. Om du ändrar din PIN-kod skapas också ett nytt slumpmässigt lösenord för det underliggande kommunikationsnätverket.</value>
+    <value>Välj en annan PIN-kod för att identifiera dig. Om du ändrar ditt PIN skapas också ett nytt slumpmässigt lösenord för det underliggande kommunikationsnätverket.</value>
   </data>
   <data name="ConfirmNewPassword" xml:space="preserve">
-    <value>Bekräfta ny PIN-kod:</value>
+    <value>Bekräfta nytt pin:</value>
   </data>
   <data name="DarkMode" xml:space="preserve">
     <value>Mörkt läge</value>
@@ -838,19 +838,19 @@
     <value>Display-inställningar</value>
   </data>
   <data name="EnterCurrentPassword" xml:space="preserve">
-    <value>Ange aktuell pinkod:</value>
+    <value>Ange nuvarande pin:</value>
   </data>
   <data name="EnterNewPassword" xml:space="preserve">
-    <value>Ange ny pinkod:</value>
+    <value>Ange nytt pin:</value>
   </data>
   <data name="IdentitySettings" xml:space="preserve">
-    <value>Inställningar för identitet</value>
+    <value>Identitetsinställningar</value>
   </data>
   <data name="LanguageOptions" xml:space="preserve">
-    <value>Språkliga alternativ</value>
+    <value>Språkval</value>
   </data>
   <data name="LanguageOptionsDescription" xml:space="preserve">
-    <value>Välj önskat språk.</value>
+    <value>Välj språk.</value>
   </data>
   <data name="LightMode" xml:space="preserve">
     <value>Ljust läge</value>
@@ -862,13 +862,13 @@
     <value>Rapportera som komprometterad</value>
   </data>
   <data name="ReportAsCompromizedDescription" xml:space="preserve">
-    <value>Rapportera om appen, PIN-koden eller telefonen har utsatts för intrång, hackats eller stulits.</value>
+    <value>Rapportera om appen, pinkoden eller telefonen har komprometterats, hackats eller stulits.</value>
   </data>
   <data name="RevokeIdentity" xml:space="preserve">
-    <value>Återkalla identitet</value>
+    <value>Spärra identitet</value>
   </data>
   <data name="RevokeIdentityDescription" xml:space="preserve">
-    <value>Återkalla den aktuella identiteten från appen och ansök om en ny.</value>
+    <value>Spärra den aktuella identiteten från appen och ansök om en ny.</value>
   </data>
   <data name="ScreenRecording" xml:space="preserve">
     <value>Skärminspelning</value>
@@ -889,22 +889,22 @@
     <value>Autentiseringsmetod</value>
   </data>
   <data name="Fingerprint" xml:space="preserve">
-    <value>Biometriska</value>
+    <value>Biometrisk</value>
   </data>
   <data name="Password" xml:space="preserve">
-    <value>KNAPPNÅL</value>
+    <value>PIN</value>
   </data>
   <data name="Application" xml:space="preserve">
-    <value>Tillämpning</value>
+    <value>Ansökan</value>
   </data>
   <data name="Applications" xml:space="preserve">
-    <value>Program</value>
+    <value>Ansökningar</value>
   </data>
   <data name="AreYouSureYouWantToRevokeTheCurrentIdApplication" xml:space="preserve">
     <value>Är du säker på att du vill återkalla den aktuella ID-ansökan?</value>
   </data>
   <data name="AreYouSureYouWantToSendThisIdApplication" xml:space="preserve">
-    <value>Är du säker på att du vill skicka en ny ID-ansökan? Om du skickar en ID-ansökan kommer din nuvarande ID-handling att bli föråldrad.</value>
+    <value>Är du säker på att du vill skicka en ny ID-ansökan? Om du skickar en ny ID-ansökan blir ditt nuvarande ID ogiltigt.</value>
   </data>
   <data name="ConsentDescription" xml:space="preserve">
     <value>Jag samtycker till behandlingen av de personuppgifter som lämnas i denna ansökan, i syfte att validera och godkänna ansökan.</value>
@@ -916,7 +916,7 @@
     <value>Följande kontaktuppgifter kommer att finnas med i ansökan. Den här informationen hämtas från registreringsprocessen.</value>
   </data>
   <data name="ContactInformationSentDescription" xml:space="preserve">
-    <value>Följande kontaktuppgifter har angetts i ansökan om personbeteckning.</value>
+    <value>Följande kontaktuppgifter har inkluderats i ansökan om ett personligt ID.</value>
   </data>
   <data name="CorrectDescription" xml:space="preserve">
     <value>Jag bekräftar att informationen ovan är både aktuell och korrekt.</value>
@@ -928,22 +928,22 @@
     <value>E-post</value>
   </data>
   <data name="FeaturedReviewers" xml:space="preserve">
-    <value>Utvalda recensenter</value>
+    <value>Utvalda attestanter</value>
   </data>
   <data name="FingerprintDescription" xml:space="preserve">
-    <value>Skanna för att autentisera</value>
+    <value>Skanna för att autentisera.</value>
   </data>
   <data name="FingerprintTitle" xml:space="preserve">
     <value>Autentisering krävs</value>
   </data>
   <data name="IdApplicationDescription" xml:space="preserve">
-    <value>Genom att skicka in en ny ID-ansökan bekräftar jag härmed att alla uppgifter som lämnats är korrekta och aktuella. Applikationen kommer att föråldra alla aktuella identiteter som är registrerade i appen.</value>
+    <value>Genom att skicka in en ny ID-ansökan bekräftar jag härmed att alla uppgifter som lämnats är korrekta och aktuella. Applikationen kommer att ersätta alla aktuella identiteter som är registrerade i appen.</value>
   </data>
   <data name="IdApplicationSentDescription" xml:space="preserve">
-    <value>En ansökan om ny legitimation har skickats in. Väntar på att ansökan ska granskas. Du kan gå tillbaka till den här sidan för att granska statusen för programmet.</value>
+    <value>En ansökan om ett nytt ID har skickats. Ansökan håller på att granskas. Du kan komma tillbaka till den här sidan för att se status på ansökan.</value>
   </data>
   <data name="IdentityApplications" xml:space="preserve">
-    <value>Identitets program</value>
+    <value>Identitetsansökan</value>
   </data>
   <data name="NeuroAccessAccount" xml:space="preserve">
     <value>Neuro-Access-konto</value>
@@ -961,19 +961,19 @@
     <value>Följande organisationsinformation har inkluderats i ansökan om organisations-ID.</value>
   </data>
   <data name="PeerReviewDescription" xml:space="preserve">
-    <value>Kollegiala granskningar är aktiverade. På så sätt kan du be kollegor (personer med redan godkända digitala ID:n) att granska din ansökan och godkänna den.</value>
+    <value>Attestering är aktiverad. På så sätt kan du efterfråga personer med godkända digitala ID:n och tjänster att granska din ansökan och godkänna den.</value>
   </data>
   <data name="PersonalId" xml:space="preserve">
     <value>Personligt ID</value>
   </data>
   <data name="PersonalIdDescription" xml:space="preserve">
-    <value>Ansök om ett nytt digitalt personnummer. ID:t kommer att innehålla din personliga information och kan användas för att validera din personliga identitet, samt få tillgång till tjänster som kräver en verifierad personlig identitet.</value>
+    <value>Ansök om ett nytt digitalt Personligt ID. ID:t kommer att innehålla din personliga information och kan användas för att validera din personliga identitet, samt få tillgång till tjänster som kräver en verifierad personlig identitet.</value>
   </data>
   <data name="PersonalInformationDescription" xml:space="preserve">
-    <value>Följande personuppgifter kommer att ingå i ansökan om personbeteckning.</value>
+    <value>Följande personuppgifter kommer att ingå i ansökan om ett personligt ID.</value>
   </data>
   <data name="PersonalInformationSentDescription" xml:space="preserve">
-    <value>Följande personuppgifter har inkluderats i ansökan om personbeteckning.</value>
+    <value>Följande personuppgifter har inkluderats i ansökan om ett personlig ID.</value>
   </data>
   <data name="PhoneNr" xml:space="preserve">
     <value>Telefonnummer</value>
@@ -982,13 +982,13 @@
     <value>Foto</value>
   </data>
   <data name="PhotosDescription" xml:space="preserve">
-    <value>Lägg gärna till en bild där du lätt kan identifieras.</value>
+    <value>Lägg till en bild där du lätt kan identifieras.</value>
   </data>
   <data name="PhotosSentDescription" xml:space="preserve">
     <value>Följande bilder har inkluderats i ansökan.</value>
   </data>
   <data name="QrPageTitleScanPeerId" xml:space="preserve">
-    <value>Genomsök peers-ID:t</value>
+    <value>Skanna attestantens ID</value>
   </data>
   <data name="RevokeApplication" xml:space="preserve">
     <value>Återkalla ansökan</value>
@@ -997,7 +997,7 @@
     <value>Skicka ansökan</value>
   </data>
   <data name="ViewIdApplication" xml:space="preserve">
-    <value>Visa ID-program</value>
+    <value>Visa ID-ansökan</value>
   </data>
   <data name="ViewIdApplicationDescription" xml:space="preserve">
     <value>En ID-ansökan väntar på granskning. Du kan se status för ansökan här.</value>
@@ -1009,10 +1009,10 @@
     <value>Bilden är för stor</value>
   </data>
   <data name="FailedToLoadPhoto" xml:space="preserve">
-    <value>Det gick inte att ladda fotot</value>
+    <value>Misslyckades med att läsa in fotot</value>
   </data>
   <data name="PickPhotoOfYourself" xml:space="preserve">
-    <value>Välj ett foto av dig själv</value>
+    <value>Välj ett foto på dig</value>
   </data>
   <data name="Rejected" xml:space="preserve">
     <value>Avvisad</value>
@@ -1030,28 +1030,28 @@
     <value>Rikta kameran mot en QR-kod med någon av ovanstående symboler</value>
   </data>
   <data name="RequestReview" xml:space="preserve">
-    <value>Begär granskning</value>
+    <value>Begär attestering</value>
   </data>
   <data name="RequestReviewFromAPeer" xml:space="preserve">
-    <value>Be en annan användare att granska ditt program.</value>
+    <value>Be en annan användare att attestera din ansökan.</value>
   </data>
   <data name="SelectServiceProviderPeerReview" xml:space="preserve">
-    <value>Välj vart du vill skicka granskningsbegäran.</value>
+    <value>Välj vart du vill skicka en attestbegäran.</value>
   </data>
   <data name="NrPeerReviews" xml:space="preserve">
-    <value>Antal referentgranskningar:</value>
+    <value>Antal attesteringar:</value>
   </data>
   <data name="BirthDate" xml:space="preserve">
     <value>Födelsedatum</value>
   </data>
   <data name="Female" xml:space="preserve">
-    <value>Kvinnlig</value>
+    <value>Kvinna</value>
   </data>
   <data name="Gender" xml:space="preserve">
-    <value>Genus</value>
+    <value>Kön</value>
   </data>
   <data name="Male" xml:space="preserve">
-    <value>Manlig</value>
+    <value>Man</value>
   </data>
   <data name="Nationality" xml:space="preserve">
     <value>Nationalitet</value>
@@ -1066,13 +1066,13 @@
     <value>Välj nationalitet</value>
   </data>
   <data name="RequestForReview" xml:space="preserve">
-    <value>Begäran om omprövning</value>
+    <value>Begäran om granskning</value>
   </data>
   <data name="AuthenticateAndSign" xml:space="preserve">
     <value>Autentisera och signera</value>
   </data>
   <data name="ConcludeReview" xml:space="preserve">
-    <value>Avsluta granskningen av</value>
+    <value>Avsluta granskning av</value>
   </data>
   <data name="HideInformation" xml:space="preserve">
     <value>Dölj information</value>
@@ -1081,10 +1081,10 @@
     <value>Not</value>
   </data>
   <data name="PeerReviewAcknowledgeResponsibilityText" xml:space="preserve">
-    <value>Jag bekräftar att jag är ansvarig för den information jag tillhandahåller i denna granskning av den tillhandahållna informationen.</value>
+    <value>Jag bekräftar att jag är ansvarig för den information jag lämnar i denna attest av den angivna informationen.</value>
   </data>
   <data name="PeerReviewAuthenticationText" xml:space="preserve">
-    <value>Genom att autentisera mig och underteckna recensionen bekräftar jag härmed att identitetsinformationen som skickas av {0} är korrekt.</value>
+    <value>Genom att autentisera mig och signera denna granskning bekräftar jag härmed att identitetsinformationen som skickas av {0} är korrekt.</value>
   </data>
   <data name="PeerReviewBirthDateText" xml:space="preserve">
     <value>Födelsedatumet är korrekt.</value>
@@ -1093,10 +1093,10 @@
     <value>Jag bekräftar att de uppgifter som {0} lämnat är korrekta.</value>
   </data>
   <data name="PeerReviewConsentProcessingText" xml:space="preserve">
-    <value>Jag samtycker till att min identitet associeras som granskare med den granskade identiteten. När du granskar en identitet kan granskarnas identitet också ses.</value>
+    <value>Jag samtycker till att min identitet kopplas som granskare till den granskade identiteten. Vid granskning av ett identitet kan även granskarnas identitet visas.</value>
   </data>
   <data name="PeerReviewGenderText" xml:space="preserve">
-    <value>Könet är korrekt.</value>
+    <value>Kön är korrekt.</value>
   </data>
   <data name="PeerReviewNameText" xml:space="preserve">
     <value>Det fullständiga namnet är korrekt.</value>
@@ -1120,7 +1120,7 @@
     <value>Avvisa</value>
   </data>
   <data name="ReviewApproved" xml:space="preserve">
-    <value>Du har nu godkänt den information som {0} lämnar. Din granskning kan användas för att godkänna identitetsansökan.</value>
+    <value>Du har nu godkänt den information som lämnats av {0}. Din granskning kan användas för att godkänna identitetsansökan.</value>
   </data>
   <data name="ReviewNote" xml:space="preserve">
     <value>Om du misstänker att någon av de uppgifter som lämnats inte är korrekta bör du avvisa informationen.</value>
@@ -1129,7 +1129,7 @@
     <value>Visa information igen</value>
   </data>
   <data name="UnableToSignReview" xml:space="preserve">
-    <value>Det gick inte att signera recensionen.</value>
+    <value>Det gick inte att signera granskningen.</value>
   </data>
   <data name="DeviceID" xml:space="preserve">
     <value>Enhets-ID</value>
@@ -1138,7 +1138,7 @@
     <value>Lägg till kontakt i kontrakt</value>
   </data>
   <data name="AddPart" xml:space="preserve">
-    <value>Lägg till artikel</value>
+    <value>Lägg till part</value>
   </data>
   <data name="Archiving_Optional" xml:space="preserve">
     <value>Arkivering (valfritt)</value>
@@ -1153,13 +1153,13 @@
     <value>Det går inte att utföra beräkningen.</value>
   </data>
   <data name="CanActAsTemplate" xml:space="preserve">
-    <value>Kan fungera som mall</value>
+    <value>Kan användas som mall</value>
   </data>
   <data name="ContractHasBeenDeleted" xml:space="preserve">
     <value>Kontraktet har tagits bort.</value>
   </data>
   <data name="ContractHasBeenObsoleted" xml:space="preserve">
-    <value>Kontraktet har föråldrats.</value>
+    <value>Kontraktet är utgånget.</value>
   </data>
   <data name="ContractId" xml:space="preserve">
     <value>Kontrakt-ID</value>
@@ -1171,25 +1171,25 @@
     <value>Kontrakt</value>
   </data>
   <data name="ContractsInfoText" xml:space="preserve">
-    <value>Nedan finns en lista över avtal som du har skapat eller signerat, ordnade efter kategori. Tryck på en kategori för att expandera. Tryck på ett avtal för att se det.</value>
+    <value>Nedan finns en lista över kontrakt som du har skapat eller signerat, ordnade efter kategori. Tryck på en kategori för att expandera. Tryck på ett avtal för att se det.</value>
   </data>
   <data name="ContractSuccessfullySigned" xml:space="preserve">
     <value>Kontraktet har undertecknats.</value>
   </data>
   <data name="ContractTemplates" xml:space="preserve">
-    <value>Mallar för avtal</value>
+    <value>Mallar för kontrakt</value>
   </data>
   <data name="ContractTemplatesInfoText" xml:space="preserve">
-    <value>Nedan finns en lista över avtalsmallar som du har använt, ordnade efter kategori. Tryck på en kategori för att expandera. Tryck på en mall för att skapa ett nytt avtal baserat på den mallen.</value>
+    <value>Nedan finns en lista över kontraktsmallar som du har använt, ordnade efter kategori. Tryck på en kategori för att expandera. Tryck på en mall för att skapa ett nytt avtal baserat på den mallen.</value>
   </data>
   <data name="ContractVisibilityMustBeSelected" xml:space="preserve">
-    <value>Välj avtalssynlighet först och försök sedan igen.</value>
+    <value>Välj kontraktets synlighet först och försök sedan igen.</value>
   </data>
   <data name="ContractVisibility_CreatorAndParts" xml:space="preserve">
-    <value>Skapare och delar</value>
+    <value>Skapare och parter</value>
   </data>
   <data name="ContractVisibility_DomainAndParts" xml:space="preserve">
-    <value>Domän och delar</value>
+    <value>Domän och parter</value>
   </data>
   <data name="ContractVisibility_Public" xml:space="preserve">
     <value>Offentligt, ej sökbart</value>
@@ -1201,16 +1201,16 @@
     <value>dag</value>
   </data>
   <data name="Days" xml:space="preserve">
-    <value>Dagar</value>
+    <value>dagar</value>
   </data>
   <data name="SchemaDigest" xml:space="preserve">
-    <value>Sammandrag av schema</value>
+    <value>Sammanställning av scheman</value>
   </data>
   <data name="Duration" xml:space="preserve">
-    <value>Varaktighet</value>
+    <value>Giltighetstid</value>
   </data>
   <data name="EnterProposal" xml:space="preserve">
-    <value>Ange den text som ska ingå i förslaget som ska {0}, eller lämna tomt om ett förslag inte ska skickas.</value>
+    <value>Ange den text som ska ingå i förfrågan till {0}, eller lämna tomt om en förfrågan inte ska skickas.</value>
   </data>
   <data name="EnterValidValue" xml:space="preserve">
     <value>Ange först ett giltigt värde.</value>
@@ -1219,10 +1219,10 @@
     <value>Du måste ange ett värde först.</value>
   </data>
   <data name="ExpiredEDalerUri" xml:space="preserve">
-    <value>Denna eDaler-kod har upphört att gälla.</value>
+    <value>Denna eDaler-kod har har gått ut.</value>
   </data>
   <data name="ForInclusionInContract" xml:space="preserve">
-    <value>För inkludering som en del av ett kontrakt.</value>
+    <value>För att ingå som en del av ett kontrakt.</value>
   </data>
   <data name="From" xml:space="preserve">
     <value>Från</value>
@@ -1234,7 +1234,7 @@
     <value>timme</value>
   </data>
   <data name="Hours" xml:space="preserve">
-    <value>Timmar</value>
+    <value>timmar</value>
   </data>
   <data name="InvalidEDalerUri" xml:space="preserve">
     <value>Ogiltig eDaler-URI: {0}</value>
@@ -1246,7 +1246,7 @@
     <value>minut</value>
   </data>
   <data name="Minutes" xml:space="preserve">
-    <value>protokoll</value>
+    <value>minuter</value>
   </data>
   <data name="Mode" xml:space="preserve">
     <value>Läge</value>
@@ -1255,7 +1255,7 @@
     <value>månad</value>
   </data>
   <data name="Months" xml:space="preserve">
-    <value>Månader</value>
+    <value>månader</value>
   </data>
   <data name="Namespace" xml:space="preserve">
     <value>Namnområde</value>
@@ -1270,25 +1270,25 @@
     <value>Förslag</value>
   </data>
   <data name="PurposeReviewContract" xml:space="preserve">
-    <value>Granska avtal där du är en del.</value>
+    <value>Granska kontrakt där du är en del.</value>
   </data>
   <data name="RequestToAccessContract" xml:space="preserve">
-    <value>Begäran om att få tillgång till avtal</value>
+    <value>Begär om att få tillgång till kontrakt</value>
   </data>
   <data name="Second" xml:space="preserve">
-    <value>andra</value>
+    <value>sekund</value>
   </data>
   <data name="Seconds" xml:space="preserve">
-    <value>Sekunder</value>
+    <value>sekunder</value>
   </data>
   <data name="SelectedContactCannotBeAdded" xml:space="preserve">
-    <value>Det går inte att lägga till den valda kontakten. Den har ingen identitet registrerad.</value>
+    <value>Det går inte att lägga till det valda kontakten. Den har ingen identitet registrerat.</value>
   </data>
   <data name="Send" xml:space="preserve">
-    <value>Sända</value>
+    <value>Skicka</value>
   </data>
   <data name="SignAfter" xml:space="preserve">
-    <value>Logga efter</value>
+    <value>Signera efter</value>
   </data>
   <data name="SignAsRole" xml:space="preserve">
     <value>Signera som {0}</value>
@@ -1297,16 +1297,16 @@
     <value>Signera innan</value>
   </data>
   <data name="StateChangedTo" xml:space="preserve">
-    <value>Staten har ändrats till {0}</value>
+    <value>Tillstånd har ändrats till {0}</value>
   </data>
   <data name="TemplateId" xml:space="preserve">
     <value>Mall-ID</value>
   </data>
   <data name="TheContractRequiresAtLeast_AddMoreParts" xml:space="preserve">
-    <value>Kontraktet kräver minst {0} eller några delar av rollen {1}. Lägg till fler delar i kontraktet och försök igen.</value>
+    <value>Kontraktet kräver som minst {0} part(er) av rollen {1}. Lägg till parter till kontraktet och försök igen.</value>
   </data>
   <data name="TheContractRequiresAtMost_RemoveParts" xml:space="preserve">
-    <value>Kontraktet kräver högst {0} eller flera delar av rollen {1}. Ta bort några av delarna från kontraktet och försök igen.</value>
+    <value>Kontraktet kräver som mest {0} part(er) av rollen {1}. Ta bort parter från kontraktet och försök igen.</value>
   </data>
   <data name="To" xml:space="preserve">
     <value>Till</value>
@@ -1318,10 +1318,10 @@
     <value>Token har lagts till</value>
   </data>
   <data name="TokenCreationTemplates" xml:space="preserve">
-    <value>Mallar för token</value>
+    <value>Mallar för tokens</value>
   </data>
   <data name="TokenCreationTemplatesInfoText" xml:space="preserve">
-    <value>Nedan visas en lista över tokenmallar som du har använt, ordnade efter kategori. Tryck på en kategori för att expandera. Tryck på en mall för att skapa ett nytt avtal baserat på den mallen. När kontraktet har undertecknats och godkänts skapas motsvarande token eller tokens.</value>
+    <value>Nedan visas en lista över tokenmallar som du har använt, ordnade efter kategori. Tryck på en kategori för att expandera. Tryck på en mall för att skapa ett nytt kontrakt baserat på den mallen. När kontraktet har undertecknats och godkänts skapas motsvarande token eller tokens.</value>
   </data>
   <data name="TokenRemoved" xml:space="preserve">
     <value>En token har tagits bort från din plånbok.</value>
@@ -1366,7 +1366,7 @@
     <value>Ett kontrakt har undertecknats.</value>
   </data>
   <data name="ContractUpdated" xml:space="preserve">
-    <value>Ett avtal har uppdaterats.</value>
+    <value>Ett kontakt har uppdaterats.</value>
   </data>
   <data name="ControlRequest" xml:space="preserve">
     <value>Begäran om kontroll</value>
@@ -1384,7 +1384,7 @@
     <value>Meddelande från:</value>
   </data>
   <data name="NeuroFeaturesServiceNotFound" xml:space="preserve">
-    <value>Ingen Neuro-Features-tjänst hittades hos Tjänsteleverantören.</value>
+    <value>Ingen Neuro-Features-tjänst hittades hos tjänsteleverantören.</value>
   </data>
   <data name="PetitionFrom" xml:space="preserve">
     <value>Framställning från:</value>
@@ -1393,13 +1393,13 @@
     <value>Begäran om avläsning</value>
   </data>
   <data name="UnableToGetHistory" xml:space="preserve">
-    <value>Det går inte att hämta historikrapporten.</value>
+    <value>Det gick inte att hämta historikrapporten.</value>
   </data>
   <data name="UnableToGetPresent" xml:space="preserve">
     <value>Det gick inte att få aktuell rapport.</value>
   </data>
   <data name="UnableToGetProfiling" xml:space="preserve">
-    <value>Det går inte att få profileringsrapport.</value>
+    <value>Det gick inte att få profileringsrapport.</value>
   </data>
   <data name="UnableToGetStateDiagram" xml:space="preserve">
     <value>Det gick inte att hämta tillståndsdiagramrapporten.</value>
@@ -1423,7 +1423,7 @@
     <value>Att få tillgängliga alternativ avbröts.</value>
   </data>
   <data name="IdentityResponse" xml:space="preserve">
-    <value>Svar på identitetsförfrågan</value>
+    <value>Svar på identitetsansökan</value>
   </data>
   <data name="IdentityReviewRequest" xml:space="preserve">
     <value>Begäran om granskning av identitet</value>
@@ -1432,7 +1432,7 @@
     <value>Inga saker hittades.</value>
   </data>
   <data name="PaymentCancelled" xml:space="preserve">
-    <value>Annullerad betalning</value>
+    <value>Betalningen avbruten</value>
   </data>
   <data name="PaymentFailed" xml:space="preserve">
     <value>Betalningen misslyckades</value>
@@ -1441,7 +1441,7 @@
     <value>Ingen personlig fälttävlanstjänst hittades.</value>
   </data>
   <data name="ProvisioningServiceNotFound" xml:space="preserve">
-    <value>Ingen provisioneringstjänst hittades hos tjänsteleverantören.</value>
+    <value>Ingen etableringstjänst hittades på asynkron meddelandekö.</value>
   </data>
   <data name="PushNotificationServiceNotFound" xml:space="preserve">
     <value>Ingen tjänst för push-meddelanden hittades.</value>
@@ -1453,22 +1453,22 @@
     <value>Begär signatur</value>
   </data>
   <data name="RequestToAccessIdentity" xml:space="preserve">
-    <value>Begäran om åtkomst till identitet</value>
+    <value>Begär åtkomst till identitet</value>
   </data>
   <data name="SensorServiceNotFound" xml:space="preserve">
     <value>Ingen sensortjänst hittades.</value>
   </data>
   <data name="SignatureResponse" xml:space="preserve">
-    <value>Svar på begäran om underskrift</value>
+    <value>Svar på begäran till underskrift</value>
   </data>
   <data name="ThingRegistryServiceNotFound" xml:space="preserve">
-    <value>Ingen sak registertjänst hittades på tjänsteleverantören.</value>
+    <value>Ingen sak registertjänst hittades hos tjänsteleverantören.</value>
   </data>
   <data name="UnableToGetListOfMyDevices" xml:space="preserve">
-    <value>Det går inte att hämta en lista över mina enheter.</value>
+    <value>Det gick inte att hämta en lista över mina enheter.</value>
   </data>
   <data name="UnableToGetOptions" xml:space="preserve">
-    <value>Det går inte att få tillgängliga alternativ.</value>
+    <value>Det gick inte att få tillgängliga alternativ.</value>
   </data>
   <data name="Altitude" xml:space="preserve">
     <value>Höjd</value>
@@ -1480,10 +1480,10 @@
     <value>Lägenhet</value>
   </data>
   <data name="APetitionHasBeenSentForEncryption" xml:space="preserve">
-    <value>Kryptering kan endast utföras om du har tillgång till mottagarens identitet. En begäran om denna identitet har därför skickats till den berörda mottagaren. Om mottagaren accepterar framställningen får du identiteten och kan skicka betalningen med ett krypterat meddelande när du försöker igen. Du kan också välja att skicka ett okrypterat meddelande med betalningen.</value>
+    <value>Kryptering kan endast utföras om du har tillgång till mottagarens identitet. En begäran av denna identitet har därför skickats till den berörda mottagaren. Om mottagaren accepterar begäran får du identiteten och kan skicka betalningen med ett krypterat meddelande när du försöker igen. Du kan också välja att skicka ett okrypterat meddelande med betalningen.</value>
   </data>
   <data name="Assessor" xml:space="preserve">
-    <value>Bisittare</value>
+    <value>Utvärderare</value>
   </data>
   <data name="Building" xml:space="preserve">
     <value>Byggnad</value>
@@ -1504,19 +1504,19 @@
     <value>Klass</value>
   </data>
   <data name="Contacts" xml:space="preserve">
-    <value>Kontakter</value>
+    <value>Kontakt</value>
   </data>
   <data name="ContactsDescription" xml:space="preserve">
-    <value>Nedan finns alla kontakter i din kontaktbok. Klicka på valfri för att interagera med den kontakten.</value>
+    <value>Nedan finns alla kontakter i din kontaktbok. Klicka på valfri för att interagera med kontakten.</value>
   </data>
   <data name="ContractProposal" xml:space="preserve">
     <value>Förslag till kontrakt</value>
   </data>
   <data name="ContractResponse" xml:space="preserve">
-    <value>Svar på avtalsförfrågan</value>
+    <value>Svar på kontraktförfrågan</value>
   </data>
   <data name="ContractSignatureReceived" xml:space="preserve">
-    <value>Undertecknande av kontrakt mottaget</value>
+    <value>Kontraktsignatur mottagen</value>
   </data>
   <data name="ContractUpdateReceived" xml:space="preserve">
     <value>Kontraktet uppdaterat</value>
@@ -1525,10 +1525,10 @@
     <value>Vill du ta bort alla etableringsregler för saken? Genom att göra det kommer saken att be dig igen om att alla nya händelser ska lära sig vad den har rätt att göra.</value>
   </data>
   <data name="Device" xml:space="preserve">
-    <value>Apparat</value>
+    <value>Enhet</value>
   </data>
   <data name="DisownThingQuestion" xml:space="preserve">
-    <value>Vill du förneka saken? Detta kommer att ta bort saken från din lista över saker och kommer att tillåta en annan att göra anspråk på enheten som sin.</value>
+    <value>Vill du ta bort saken? Detta kommer att ta bort saken från din lista över saker och kommer att tillåta en annan att göra anspråk på enheten som sin.</value>
   </data>
   <data name="EncryptedPayment" xml:space="preserve">
     <value>Krypterad betalning</value>
@@ -1552,7 +1552,7 @@
     <value>Allmän information</value>
   </data>
   <data name="History" xml:space="preserve">
-    <value>Historia</value>
+    <value>Historik</value>
   </data>
   <data name="InvalidNeuroFeatureToken" xml:space="preserve">
     <value>Ogiltig Neuro-Feature-token.</value>
@@ -1561,7 +1561,7 @@
     <value>Nyckel</value>
   </data>
   <data name="Latitude" xml:space="preserve">
-    <value>Breddgrad</value>
+    <value>Latitud</value>
   </data>
   <data name="Longitude" xml:space="preserve">
     <value>Longitud</value>
@@ -1591,7 +1591,7 @@
     <value>Ej tillgänglig</value>
   </data>
   <data name="NoteCopiedToClipboard" xml:space="preserve">
-    <value>Anteckning kopierad till Urklipp.</value>
+    <value>Anteckning kopierad till urklipp.</value>
   </data>
   <data name="Payment" xml:space="preserve">
     <value>Betalning</value>
@@ -1609,7 +1609,7 @@
     <value>Välj foto</value>
   </data>
   <data name="Present" xml:space="preserve">
-    <value>Gåva</value>
+    <value>Presentera</value>
   </data>
   <data name="ProductInformation" xml:space="preserve">
     <value>Produktinformation</value>
@@ -1657,7 +1657,7 @@
     <value>Nedan finns alla kontakter i din kontaktbok. Välj den kontakt som du vill göra betalningen till.</value>
   </data>
   <data name="SelectFromWhomToRequestPayment" xml:space="preserve">
-    <value>Välj från vem du vill begära betalning.</value>
+    <value>Välj vem du vill begära betalning ifrån.</value>
   </data>
   <data name="SelectingAPhotoIsNotSupported" xml:space="preserve">
     <value>Det går inte att välja ett foto på den här enheten</value>
@@ -1699,7 +1699,7 @@
     <value>Tillfällig</value>
   </data>
   <data name="SensorDataHeaderOther" xml:space="preserve">
-    <value>Andra __________</value>
+    <value>Övrigt __________</value>
   </data>
   <data name="SensorDataHeaderPeak" xml:space="preserve">
     <value>Topp</value>
@@ -1726,10 +1726,10 @@
     <value>Tjänst</value>
   </data>
   <data name="Share" xml:space="preserve">
-    <value>Aktie</value>
+    <value>Andel</value>
   </data>
   <data name="StateDiagram" xml:space="preserve">
-    <value>Tillstånd Diagram</value>
+    <value>Tillståndsdiagram</value>
   </data>
   <data name="StreetName" xml:space="preserve">
     <value>Gatunamn</value>
@@ -1747,7 +1747,7 @@
     <value>Det går inte att ta ett foto på den här enheten</value>
   </data>
   <data name="TheSpecifiedCodeIsNotALegalIdentity" xml:space="preserve">
-    <value>Du måste skanna en annan typ av QR-kod, en som representerar en Neuro-Access-identitet</value>
+    <value>Du måste skanna en annan typ av QR-kod, en som representerar en Neuro-Access identitet</value>
   </data>
   <data name="ThingDisowned" xml:space="preserve">
     <value>Detta har framgångsrikt förnekats. Den kan nu tas i anspråk av en ny ägare.</value>
@@ -1771,13 +1771,13 @@
     <value>Transaktionen har accepterats och behandlats.</value>
   </data>
   <data name="UnableToClaimThing" xml:space="preserve">
-    <value>Det går inte att göra anspråk på saken</value>
+    <value>Misslyckades göra anspråk på saken</value>
   </data>
   <data name="UnableToProcessEDalerUri" xml:space="preserve">
-    <value>Det går inte att bearbeta eDaler-kod.</value>
+    <value>Misslyckades att bearbeta eDaler-kod.</value>
   </data>
   <data name="UnableToRespond" xml:space="preserve">
-    <value>Det går inte att svara på begäran.</value>
+    <value>Misslyckades att svara på begäran.</value>
   </data>
   <data name="UnrecognizedEventType" xml:space="preserve">
     <value>Okänd händelsetyp:</value>
@@ -1786,10 +1786,10 @@
     <value>Användare</value>
   </data>
   <data name="UserSignedAs" xml:space="preserve">
-    <value>{0} undertecknade som {1}.</value>
+    <value>{0} signerade som {1}.</value>
   </data>
   <data name="Valuator" xml:space="preserve">
-    <value>Värdering</value>
+    <value>Värderare</value>
   </data>
   <data name="Version" xml:space="preserve">
     <value>Version</value>
@@ -1834,40 +1834,40 @@
     <value>Nedan följer lite allmän information om kontraktet.</value>
   </data>
   <data name="HumanReadableText" xml:space="preserve">
-    <value>Läsbar text</value>
+    <value>Människoläsbar text</value>
   </data>
   <data name="MachineReadableText" xml:space="preserve">
     <value>Maskinläsbar information</value>
   </data>
   <data name="ObsoleteContract" xml:space="preserve">
-    <value>Föråldrat avtal</value>
+    <value>Utgånget avtal</value>
   </data>
   <data name="ParametersInfoText" xml:space="preserve">
     <value>Kontraktsparametrar visas nedan, tillsammans med deras motsvarande värden.</value>
   </data>
   <data name="Parts" xml:space="preserve">
-    <value>Delar</value>
+    <value>Parter</value>
   </data>
   <data name="PartsInfoText" xml:space="preserve">
-    <value>De (förväntade) delarna som definierats för kontraktet listas nedan.</value>
+    <value>De (förväntade) parterna som definierats för kontraktet listas nedan.</value>
   </data>
   <data name="PartsInTheContract" xml:space="preserve">
-    <value>Delar i kontraktet</value>
+    <value>Parter i kontraktet</value>
   </data>
   <data name="PetitionContract" xml:space="preserve">
     <value>Tillgång till avtal</value>
   </data>
   <data name="PetitionContractInformationText" xml:space="preserve">
-    <value>En begäran om personuppgifterna i ett av dina avtal har mottagits. Läs igenom informationen nedan och välj hur du vill svara.</value>
+    <value>En förfrågan om personuppgifterna i ett av dina avtal har mottagits. Läs igenom informationen nedan och välj hur du vill svara.</value>
   </data>
   <data name="PetitionIdentity" xml:space="preserve">
     <value>Tillgång till identitet</value>
   </data>
   <data name="PetitionIdentityInformationText" xml:space="preserve">
-    <value>En begäran om att få tillgång till personuppgifter om din identitet har mottagits. Läs igenom informationen nedan och välj hur du vill svara.</value>
+    <value>En förfrågan om personuppgifter från din identitet har mottagits. Läs igenom informationen nedan och välj hur du vill svara.</value>
   </data>
   <data name="PetitionSignature" xml:space="preserve">
-    <value>Underskrift begärd</value>
+    <value>Begäran om underskrift skickad</value>
   </data>
   <data name="RemoveContact" xml:space="preserve">
     <value>Ta bort kontakt</value>
@@ -1879,7 +1879,7 @@
     <value>Nedan kan du se de olika roller som definierats för kontraktet. Om mer än en del antas för en roll kommer detta nummer att visas i beskrivningen av rollen.</value>
   </data>
   <data name="ServerSignatures" xml:space="preserve">
-    <value>Signaturer för server</value>
+    <value>Serversignaturer</value>
   </data>
   <data name="ServerSignaturesInfoText" xml:space="preserve">
     <value>Kontraktets integritet skyddas av serversignaturen som visas nedan.</value>
@@ -1891,7 +1891,7 @@
     <value>Visa kontrakt</value>
   </data>
   <data name="MachineReadableInfoText" xml:space="preserve">
-    <value>En översikt över de maskinläsbara data som är inbäddade i avtalet visas nedan.</value>
+    <value>En översikt över den maskinläsbara datan i kontraktet visas nedan.</value>
   </data>
   <data name="Approved" xml:space="preserve">
     <value>Godkänd</value>
@@ -1900,19 +1900,19 @@
     <value>Autentisering</value>
   </data>
   <data name="BeingSigned" xml:space="preserve">
-    <value>Att bli undertecknad</value>
+    <value>Signeras</value>
   </data>
   <data name="Binding" xml:space="preserve">
     <value>Bindande</value>
   </data>
   <data name="Compromised" xml:space="preserve">
-    <value>Äventyras</value>
+    <value>Komprometterad</value>
   </data>
   <data name="Connected" xml:space="preserve">
     <value>Ansluten</value>
   </data>
   <data name="Connecting" xml:space="preserve">
-    <value>Ansluta</value>
+    <value>Ansluter</value>
   </data>
   <data name="ContractIdCopiedSuccessfully" xml:space="preserve">
     <value>En länk till avtalet kopierades till Urklipp.</value>
@@ -1927,31 +1927,31 @@
     <value>Misslyckades</value>
   </data>
   <data name="FetchingRoster" xml:space="preserve">
-    <value>Hämtar laguppställning</value>
+    <value>Hämtar kontaktlista</value>
   </data>
   <data name="Obsoleted" xml:space="preserve">
-    <value>Föråldrad</value>
+    <value>Utgången</value>
   </data>
   <data name="Offline" xml:space="preserve">
     <value>Offline</value>
   </data>
   <data name="Proposed" xml:space="preserve">
-    <value>Föreslagit</value>
+    <value>Föreslaget</value>
   </data>
   <data name="Registering" xml:space="preserve">
-    <value>Registrera</value>
+    <value>Registrering</value>
   </data>
   <data name="RequestingSession" xml:space="preserve">
     <value>Begär session</value>
   </data>
   <data name="SettingPresence" xml:space="preserve">
-    <value>Ställa in närvaro</value>
+    <value>Ställer in närvaro</value>
   </data>
   <data name="Signed" xml:space="preserve">
-    <value>Undertecknad</value>
+    <value>Signerad</value>
   </data>
   <data name="StartingEncryption" xml:space="preserve">
-    <value>Starta kryptering</value>
+    <value>Startar kryptering</value>
   </data>
   <data name="StreamNegotiation" xml:space="preserve">
     <value>Strömma förhandling</value>
@@ -1960,10 +1960,10 @@
     <value>Stream öppnad</value>
   </data>
   <data name="AreYouSureYouWantToSignAs" xml:space="preserve">
-    <value>Är du säker på att du vill underteckna detta kontrakt som {0}?</value>
+    <value>Är du säker på att du vill signera detta kontrakt som {0}?</value>
   </data>
   <data name="AreYouSureYouWantToObsoleteContract" xml:space="preserve">
-    <value>Är du säker på att du vill att detta avtal ska bli föråldrat?</value>
+    <value>Är du säker på att du vill att detta avtal ska bli utgånget?</value>
   </data>
   <data name="AreYouSureYouWantToDeleteContract" xml:space="preserve">
     <value>Är du säker på att du vill ta bort det här avtalet?</value>
@@ -1975,7 +1975,7 @@
     <value>Uppgifter om identitet</value>
   </data>
   <data name="IdentityInformationInfoText" xml:space="preserve">
-    <value>Följande är personuppgifter som registreras för den part som undertecknat avtalet.</value>
+    <value>Följande är personuppgifter som registreras för den part som signerat avtalet.</value>
   </data>
   <data name="Network" xml:space="preserve">
     <value>Nätverk</value>
@@ -1984,7 +1984,7 @@
     <value>Roll</value>
   </data>
   <data name="Signature" xml:space="preserve">
-    <value>Underskrift</value>
+    <value>Signatur</value>
   </data>
   <data name="Timestamp" xml:space="preserve">
     <value>Tidstämpel</value>
@@ -1993,13 +1993,13 @@
     <value>Överförbar</value>
   </data>
   <data name="Provider" xml:space="preserve">
-    <value>Familjeförsörjare</value>
+    <value>Leverantör</value>
   </data>
   <data name="ServerSignatureInformationInfoText" xml:space="preserve">
     <value>Följande är information relaterad till en serversignatur.</value>
   </data>
   <data name="SignatureInformation" xml:space="preserve">
-    <value>Information om underskrift</value>
+    <value>Information om signatur</value>
   </data>
   <data name="ServerInformation" xml:space="preserve">
     <value>Information om servern</value>
@@ -2017,7 +2017,7 @@
     <value>Vad är en tjänsteleverantör?</value>
   </data>
   <data name="MyTokens" xml:space="preserve">
-    <value>Mina polletter</value>
+    <value>Mina token</value>
   </data>
   <data name="PresenceSubscriptionReceived1" xml:space="preserve">
     <value>Du har fått en närvaroprenumeration från:</value>
@@ -2041,13 +2041,13 @@
     <value>En begäran om närvaroprenumeration har skickats. När mottagaren accepterar begäran uppdateras kontaktstatusen.</value>
   </data>
   <data name="PresenceUnsubscriptionRequestSent" xml:space="preserve">
-    <value>En begäran om att avregistrera från närvaroavisering har skickats.</value>
+    <value>En begäran om att avregistrera från närvaroprenumeration har skickats.</value>
   </data>
   <data name="RemoveSubscription" xml:space="preserve">
     <value>Ta bort prenumeration?</value>
   </data>
   <data name="RemoveSubscription1" xml:space="preserve">
-    <value>Du har fortfarande en godkänd prenumerationsbegäran från:</value>
+    <value>Du har fortfarande en godkänd prenumerationsförfrågan från:</value>
   </data>
   <data name="RemoveSubscription2" xml:space="preserve">
     <value>Vill du också återkalla detta tillstånd?</value>
@@ -2071,7 +2071,7 @@
     <value>Vad vill du göra?</value>
   </data>
   <data name="Things" xml:space="preserve">
-    <value>Pinaler</value>
+    <value>Saker</value>
   </data>
   <data name="ThingsDescription" xml:space="preserve">
     <value>Nedan finns alla dina saker och saker i din kontaktbok. Klicka på valfri för att interagera med den saken.</value>
@@ -2080,10 +2080,10 @@
     <value>Avsluta prenumeration på</value>
   </data>
   <data name="OnboardingDefinePasswordCreateAlphanumeric" xml:space="preserve">
-    <value>Skapa alfanumerisk PIN-kod</value>
+    <value>Skapa alfanumerisk PIN</value>
   </data>
   <data name="OnboardingDefinePasswordCreateNumeric" xml:space="preserve">
-    <value>Skapa numerisk PIN-kod</value>
+    <value>Skapa numerisk PIN</value>
   </data>
   <data name="Details" xml:space="preserve">
     <value>Detaljer</value>
@@ -2092,19 +2092,19 @@
     <value>Senare</value>
   </data>
   <data name="Enable" xml:space="preserve">
-    <value>Möjliggöra</value>
+    <value>Aktivera</value>
   </data>
   <data name="BiometricAuthentication" xml:space="preserve">
     <value>Biometrisk autentisering</value>
   </data>
   <data name="FaceId" xml:space="preserve">
-    <value>Ansikts-ID</value>
+    <value>Face ID</value>
   </data>
   <data name="TouchId" xml:space="preserve">
     <value>Touch ID</value>
   </data>
   <data name="WhatIsX" xml:space="preserve">
-    <value>Vad är {0}?</value>
+    <value>What is {0}?</value>
   </data>
   <data name="BiometricAuthenticationInfo" xml:space="preserve">
     <value>Biometrisk autentisering använder dina unika fysiska egenskaper, som ditt ansikte eller fingeravtryck, för att säkerställa att det verkligen är du. Det ger ett enkelt och säkert sätt att komma åt Neuro-Access.</value>
@@ -2116,13 +2116,13 @@
     <value>Touch ID använder ditt fingeravtryck för att säkerställa att det verkligen är du, vilket ger ett snabbt och säkert sätt att komma åt Neuro-Access.</value>
   </data>
   <data name="TransferIdentity" xml:space="preserve">
-    <value>Överför identitet</value>
+    <value>Överför Identitet</value>
   </data>
   <data name="TransferIdentityDescription" xml:space="preserve">
     <value>Överför din nuvarande identitet till en annan enhet.</value>
   </data>
   <data name="TransferIdentityPageDetails" xml:space="preserve">
-    <value>På din andra enhet fortsätter du med registreringen tills du kommer till sidan för tjänsteleverantörer. Tryck på ändringsknappen och skanna den här QR-koden. Om du gör detta tas identiteten bort från den här enheten.</value>
+    <value>På din andra enhet, verifiera ditt telefonnummer och epost. Sedan på sidan där du får välja tjänsteleverantör tryck på ändra knappen och skanna denna QR-kod. Detta kommer ta bort identiteten från denna enhet.</value>
   </data>
   <data name="AppVersion" xml:space="preserve">
     <value>Versionsnummer</value>
@@ -2138,24 +2138,24 @@
   </data>
   <data name="OnboardingGetStartedTitle" xml:space="preserve">
     <value>Välkommen till Neuro-Access</value>
-  </data>
-  <data name="CreateNewAccount" xml:space="preserve">
+  </data> 
+  <data name="CreateNewAccount">
     <value>Skapa nytt konto</value>
   </data>
-  <data name="IAlreadyHaveAnAccount" xml:space="preserve">
+  <data name="IAlreadyHaveAnAccount">
     <value>Jag har redan ett konto</value>
   </data>
-  <data name="OnboardingGetStartedQrInfo" xml:space="preserve">
-    <value>Har du fått en inbjudan, överföring eller återställningskod? Skanna den nedan</value>
+  <data name="OnboardingGetStartedQrInfo">
+    <value>Har du fått en inbjudan, överförings- eller återställningskod? Skanna den nedan</value>
   </data>
   <data name="OnboardingNameEntryTitle" xml:space="preserve">
     <value>Välj ditt användarnamn</value>
-  </data>
+  </data> 
   <data name="OnboardingNameEntryDetails" xml:space="preserve">
     <value>Ditt användarnamn är permanent och kan inte ändras senare</value>
   </data>
   <data name="UseNickname" xml:space="preserve">
-    <value>Jag skulle vilja använda ett smeknamn</value>
+    <value>Jag vill använda ett smeknamn</value>
   </data>
   <data name="UseRealName" xml:space="preserve">
     <value>Jag vill använda mitt riktiga namn</value>
@@ -2167,10 +2167,10 @@
     <value>Smeknamn</value>
   </data>
   <data name="OnboardingContactSupportTitle" xml:space="preserve">
-    <value>Återställa konto</value>
+    <value>Återställ konto</value>
   </data>
   <data name="AccountDetails" xml:space="preserve">
-    <value>Uppgifter om kontot</value>
+    <value>Kontouppgifter</value>
   </data>
   <data name="ServiceProvider" xml:space="preserve">
     <value>Tjänsteleverantör</value>
@@ -2191,13 +2191,13 @@
     <value>Skapa plånbok</value>
   </data>
   <data name="CreateWalletDescription" xml:space="preserve">
-    <value>Du skapar en plånbok genom att lägga lite pengar i den. Dessa pengar kallas eDaler, och kan överföras till andra, online eller offline, eller användas för att köpa tjänster som erbjuds.</value>
+    <value>Du skapar en plånbok genom att lägga lite pengar i den. Dessa pengar kallas eDaler och kan överföras till andra, online eller offline, eller användas för att köpa tjänster som erbjuds.</value>
   </data>
   <data name="Buy" xml:space="preserve">
-    <value>Köpa</value>
+    <value>Köp</value>
   </data>
   <data name="BuyEDalerDescription" xml:space="preserve">
-    <value>Ange hur mycket eDaler du vill köpa nedan och tryck på knappen Köp. En webbsida kan öppnas där du måste fylla i ytterligare information för att betalningsbehandlaren ska kunna validera din begäran.</value>
+    <value>Ange det belopp av eDaler du vill köpa nedan, och tryck sedan på Köp-knappen. En webb-sida kan komma att öppnas där du behöver fylla in ytterligare information så att betalningsleverantören kan validera din förfrågan.</value>
   </data>
   <data name="Amount" xml:space="preserve">
     <value>Belopp:</value>
@@ -2209,37 +2209,34 @@
     <value>Öppna plånbok</value>
   </data>
   <data name="OpenWalletDescription" xml:space="preserve">
-    <value>Öppna din eDaler-plånbok för att visa aktuellt saldo och se de senaste transaktionerna.</value>
-  </data>
-  <data name="OpenWllet" xml:space="preserve">
-    <value />
+    <value>Öppna din eDaler-plånbok för att visa aktuellt saldo och se senaste transaktioner.</value>
   </data>
   <data name="AccountEventDescription" xml:space="preserve">
-    <value>Nedan kan du se information om en enskild kontohändelse.</value>
+    <value>Nedan kan du se information om en kontohändelse.</value>
   </data>
   <data name="Balance" xml:space="preserve">
     <value>Balans:</value>
   </data>
   <data name="OpenMessageLink" xml:space="preserve">
-    <value>Öppna meddelandelänk</value>
+    <value>Öppna meddelandelänken</value>
   </data>
   <data name="RemoteParty" xml:space="preserve">
-    <value>Fest på distans:</value>
+    <value>Andra parten:</value>
   </data>
   <data name="Reserved" xml:space="preserve">
-    <value>Reserverad:</value>
+    <value>Reserverat:</value>
   </data>
   <data name="TransactionId" xml:space="preserve">
     <value>Transaktions-ID:</value>
   </data>
   <data name="AccountEventItem" xml:space="preserve">
-    <value>Konto Händelser</value>
+    <value>Kontohändelser</value>
   </data>
   <data name="PendingPaymentItem" xml:space="preserve">
     <value>Väntande betalningar</value>
   </data>
   <data name="OnboardingContactSupportDetailsPart1" xml:space="preserve">
-    <value>Om du har tillgång till ditt konto på en annan enhet, följ dessa steg:</value>
+    <value>Om du har tillgång till ditt konto på en annan enhet, vänligen följ dessa steg:</value>
   </data>
   <data name="OnboardingContactSupportDetailsBullet1" xml:space="preserve">
     <value>Öppna appen på din andra enhet.</value>
@@ -2254,15 +2251,15 @@
     <value>Använd den här enheten för att skanna QR-koden och överföra ditt konto.</value>
   </data>
   <data name="OnboardingContactSupportDetailsPart2" xml:space="preserve">
-    <value>Om du inte har tillgång till ditt konto kan du kontakta vårt supportteam på</value>
+    <value>Om du inte har tillgång till ditt konto, vänligen kontakta vårt supportteam på</value>
   </data>
   <data name="OnboardingContactSupportDetailsPart3" xml:space="preserve">
     <value>.</value>
   </data>
   <data name="SupportEmailSubject" xml:space="preserve">
-    <value>Återställa konto</value>
+    <value>Återställ konto</value>
   </data>
   <data name="EmailClientNotAvailable" xml:space="preserve">
-    <value>Det går inte att öppna e-postklienten. Skicka ett e-postmeddelande till {0}.</value>
+    <value>Kunde inte öppna e-postklienten. Vänligen skicka ett e-postmeddelande till {0}.</value>
   </data>
 </root>
