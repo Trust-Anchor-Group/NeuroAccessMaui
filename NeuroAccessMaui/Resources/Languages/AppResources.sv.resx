@@ -2169,12 +2169,6 @@
   <data name="OnboardingContactSupportTitle" xml:space="preserve">
     <value>Återställ konto</value>
   </data>
-  <data name="OnboardingContactSupportDetails" xml:space="preserve">
-    <value>Ange ditt telefonnummer och din e-postadress för att begära kontotåterställning. Vi kommer att kontakta dig med instruktioner för att hjälpa dig att återfå åtkomst.</value>
-  </data>
-  <data name="OnboardingContactSupportInfo" xml:space="preserve">
-    <value>Om du redan har tillgång till ditt konto på en annan enhet, gå till Inställningar → Överför ID för att generera en QR-kod. Skanna sedan den QR-koden på föregående sida</value>
-  </data>
   <data name="AccountDetails" xml:space="preserve">
     <value>Kontouppgifter</value>
   </data>
@@ -2240,5 +2234,32 @@
   </data>
   <data name="PendingPaymentItem" xml:space="preserve">
     <value>Väntande betalningar</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsPart1" xml:space="preserve">
+    <value>Om du har tillgång till ditt konto på en annan enhet, vänligen följ dessa steg:</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet1" xml:space="preserve">
+    <value>Öppna appen på din andra enhet.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet2" xml:space="preserve">
+    <value>Gå till Inställningar → Överför identitet.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet3" xml:space="preserve">
+    <value>En QR-kod kommer att visas på den enheten.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet4" xml:space="preserve">
+    <value>Använd den här enheten för att skanna QR-koden och överföra ditt konto.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsPart2" xml:space="preserve">
+    <value>Om du inte har tillgång till ditt konto, vänligen kontakta vårt supportteam på</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsPart3" xml:space="preserve">
+    <value>.</value>
+  </data>
+  <data name="SupportEmailSubject" xml:space="preserve">
+    <value>Återställ konto</value>
+  </data>
+  <data name="EmailClientNotAvailable" xml:space="preserve">
+    <value>Kunde inte öppna e-postklienten. Vänligen skicka ett e-postmeddelande till {0}.</value>
   </data>
 </root>

@@ -2169,12 +2169,6 @@
   <data name="OnboardingContactSupportTitle" xml:space="preserve">
     <value>Recover Account</value>
   </data>
-  <data name="OnboardingContactSupportDetails" xml:space="preserve">
-    <value>Enter your phone and email to request account recovery. We'll contact you with instructions to help you regain access.</value>
-  </data>
-  <data name="OnboardingContactSupportInfo" xml:space="preserve">
-    <value>If you already have access to your account on another device, go to Settings → Transfer ID to generate a QR code. Then, scan that QR code on the previous page.</value>
-  </data>
   <data name="AccountDetails" xml:space="preserve">
     <value>Account Details</value>
   </data>
@@ -2243,5 +2237,32 @@
   </data>
   <data name="PendingPaymentItem" xml:space="preserve">
     <value>Pending Payments</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsPart1" xml:space="preserve">
+    <value>If you have access to your account on another device, please follow these steps:</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet1" xml:space="preserve">
+    <value>Open the app on your other device.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet2" xml:space="preserve">
+    <value>Go to Settings → Transfer Identity.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet3" xml:space="preserve">
+    <value>A QR code will appear on that device.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet4" xml:space="preserve">
+    <value>Use this device to scan the QR code and transfer your account.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsPart2" xml:space="preserve">
+    <value>If you do not have access to your account, please contact our support team at</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsPart3" xml:space="preserve">
+    <value>.</value>
+  </data>
+  <data name="SupportEmailSubject" xml:space="preserve">
+    <value>Recover Account</value>
+  </data>
+  <data name="EmailClientNotAvailable" xml:space="preserve">
+    <value>Unable to open email client. Please send an email to {0}.</value>
   </data>
 </root>
