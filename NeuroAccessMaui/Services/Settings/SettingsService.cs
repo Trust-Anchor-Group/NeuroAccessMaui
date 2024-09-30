@@ -10,8 +10,6 @@ namespace NeuroAccessMaui.Services.Settings
 	[Singleton]
 	internal sealed class SettingsService : ISettingsService
 	{
-		private const string wildCard = "*";
-
 		/// <summary>
 		/// Handles common runtime settings that need to be persisted during sessions.
 		/// </summary>
@@ -19,15 +17,10 @@ namespace NeuroAccessMaui.Services.Settings
 		{
 		}
 
-		private static string FormatKey(string KeyPrefix)
+		private static void AssertNonEmptyPRefix(string KeyPrefix)
 		{
 			if (string.IsNullOrWhiteSpace(KeyPrefix))
-				return wildCard;
-
-			if (!KeyPrefix.EndsWith(wildCard, StringComparison.InvariantCultureIgnoreCase))
-				KeyPrefix += wildCard;
-
-			return KeyPrefix;
+				throw new ArgumentException("Empty key prefix not permitted.", nameof(KeyPrefix));
 		}
 
 		/// <summary>
@@ -175,40 +168,6 @@ namespace NeuroAccessMaui.Services.Settings
 		}
 
 		/// <summary>
-		/// Returns any States whose key matches the specified predicate.
-		/// </summary>
-		/// <typeparam name="T">The State type.</typeparam>
-		/// <param name="KeyPrefix">The string value the key should start with, like "Foo". Do not include wildcards.</param>
-		/// <returns>a list of matching States.</returns>
-		public async Task<IEnumerable<(string Key, T value)>> RestoreStateWhereKeyStartsWith<T>(string KeyPrefix)
-		{
-			if (string.IsNullOrWhiteSpace(KeyPrefix))
-			{
-				return Array.Empty<(string, T)>();
-			}
-
-			List<(string, T)> matches = [];
-
-			try
-			{
-				KeyPrefix = FormatKey(KeyPrefix);
-				Dictionary<string, object> existingStates = (await RuntimeSettings.GetWhereKeyLikeAsync(KeyPrefix, wildCard));
-
-				foreach (KeyValuePair<string, object> State in existingStates)
-				{
-					if (State.Value is T TypedValue)
-						matches.Add((State.Key, TypedValue));
-				}
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-			}
-
-			return matches;
-		}
-
-		/// <summary>
 		/// Restores State for the specified key.
 		/// </summary>
 		/// <param name="Key">The State id.</param>
@@ -218,9 +177,7 @@ namespace NeuroAccessMaui.Services.Settings
 		{
 			try
 			{
-				string? str = await RuntimeSettings.GetAsync(Key, DefaultValueIfNotFound);
-				str = str?.Trim('"');
-				return str;
+				return await RuntimeSettings.GetAsync(Key, DefaultValueIfNotFound);
 			}
 			catch (Exception ex)
 			{
@@ -385,37 +342,11 @@ namespace NeuroAccessMaui.Services.Settings
 		/// <param name="Key">The State identifier.</param>
 		public async Task RemoveState(string Key)
 		{
-			if (string.IsNullOrWhiteSpace(Key))
-			{
-				return;
-			}
+			AssertNonEmptyPRefix(Key);
 
 			try
 			{
 				await RuntimeSettings.DeleteAsync(Key);
-				await Database.Provider.Flush();
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-			}
-		}
-
-		/// <summary>
-		/// Removes any States whose key matches the specified predicate.
-		/// </summary>
-		/// <param name="KeyPrefix">The string value the key should start with, like "Foo". Do not include wildcards.</param>
-		public async Task RemoveStateWhereKeyStartsWith(string KeyPrefix)
-		{
-			if (string.IsNullOrWhiteSpace(KeyPrefix))
-			{
-				return;
-			}
-
-			try
-			{
-				KeyPrefix = FormatKey(KeyPrefix);
-				await RuntimeSettings.DeleteWhereKeyLikeAsync(KeyPrefix, wildCard);
 				await Database.Provider.Flush();
 			}
 			catch (Exception ex)

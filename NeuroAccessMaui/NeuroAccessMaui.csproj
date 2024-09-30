@@ -241,7 +241,7 @@
 		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
 		<PackageReference Include="Waher.Content" Version="2.6.12" />
 		<PackageReference Include="Waher.Content.Images" Version="2.1.8" />
-		<PackageReference Include="Waher.Content.Markdown" Version="3.1.1" />
+		<PackageReference Include="Waher.Content.Markdown" Version="3.1.2" />
 		<PackageReference Include="Waher.Content.QR" Version="2.1.0" />
 		<PackageReference Include="Waher.Content.Xml" Version="2.3.2" />
 		<PackageReference Include="Waher.Events" Version="1.2.1" />
@@ -254,26 +254,27 @@
 		<PackageReference Include="Waher.Networking.UPnP" Version="2.0.4" />
 		<PackageReference Include="Waher.Networking.XMPP" Version="3.2.0" />
 		<PackageReference Include="Waher.Networking.XMPP.Avatar" Version="2.2.3" />
-		<PackageReference Include="Waher.Networking.XMPP.Concentrator" Version="3.2.0" />
-		<PackageReference Include="Waher.Networking.XMPP.Contracts" Version="3.2.2" />
+		<PackageReference Include="Waher.Networking.XMPP.Concentrator" Version="3.2.1" />
+		<PackageReference Include="Waher.Networking.XMPP.Contracts" Version="3.2.3" />
 		<PackageReference Include="Waher.Networking.XMPP.Control" Version="3.0.1" />
 		<PackageReference Include="Waher.Networking.XMPP.HTTPX" Version="3.1.0" />
 		<PackageReference Include="Waher.Networking.XMPP.Mail" Version="2.0.2" />
-		<PackageReference Include="Waher.Networking.XMPP.P2P" Version="3.1.0" />
+		<PackageReference Include="Waher.Networking.XMPP.P2P" Version="3.1.1" />
 		<PackageReference Include="Waher.Networking.XMPP.PEP" Version="2.0.6" />
 		<PackageReference Include="Waher.Networking.XMPP.Provisioning" Version="3.0.1" />
 		<PackageReference Include="Waher.Networking.XMPP.PubSub" Version="2.0.8" />
 		<PackageReference Include="Waher.Networking.XMPP.Push" Version="2.0.0" />
 		<PackageReference Include="Waher.Networking.XMPP.Sensor" Version="3.0.1" />
-		<PackageReference Include="Waher.Persistence" Version="1.10.2" />
+		<PackageReference Include="Waher.Persistence" Version="1.11.1" />
 		<PackageReference Include="Waher.Persistence.FilesLW" Version="1.11.8" />
-		<PackageReference Include="Waher.Runtime.Inventory" Version="1.1.6" />
+		<PackageReference Include="Waher.Persistence.XmlLedger" Version="1.0.1" />
+		<PackageReference Include="Waher.Runtime.Inventory" Version="1.1.7" />
 		<PackageReference Include="Waher.Runtime.Profiling" Version="1.0.9" />
 		<PackageReference Include="Waher.Runtime.Settings" Version="1.1.1" />
 		<PackageReference Include="Waher.Runtime.Temporary" Version="1.0.1" />
 		<PackageReference Include="Waher.Runtime.Text" Version="1.1.4" />
 		<PackageReference Include="Waher.Script" Version="2.6.10" />
-		<PackageReference Include="Waher.Script.Content" Version="2.1.5" />
+		<PackageReference Include="Waher.Script.Content" Version="2.1.6" />
 		<PackageReference Include="Waher.Security" Version="1.0.8" />
 		<PackageReference Include="Waher.Security.JWS" Version="1.1.2" />
 		<PackageReference Include="Waher.Security.JWT" Version="1.4.1" />

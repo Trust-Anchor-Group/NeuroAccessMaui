@@ -2133,4 +2133,40 @@
   <data name="TransferIdentityPageDetails" xml:space="preserve">
     <value>На другом устройстве продолжайте подключение, пока не дойдете до страницы поставщика услуг. Нажмите кнопку «Изменить» и отсканируйте этот QR-код. Это приведет к удалению удостоверения с этого устройства.</value>
   </data>
+  <data name="Buy" xml:space="preserve">
+    <value>Покупать</value>
+  </data>
+  <data name="BuyEDalerDescription" xml:space="preserve">
+    <value>Укажите сумму eDaler, которую вы хотите купить ниже, и нажмите кнопку «Купить». Может быть открыта веб-страница, где вам нужно заполнить дополнительную информацию для платежного процессора, чтобы подтвердить вашу заявку.</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Количество:</value>
+  </data>
+  <data name="Wallet" xml:space="preserve">
+    <value>Бумажник</value>
+  </data>
+  <data name="AccountEventDescription" xml:space="preserve">
+    <value>Ниже вы можете увидеть информацию о событии одной учетной записи.</value>
+  </data>
+  <data name="Balance" xml:space="preserve">
+    <value>Равновесие:</value>
+  </data>
+  <data name="OpenMessageLink" xml:space="preserve">
+    <value>Открыть ссылку на сообщение</value>
+  </data>
+  <data name="RemoteParty" xml:space="preserve">
+    <value>Удаленная вечеринка:</value>
+  </data>
+  <data name="Reserved" xml:space="preserve">
+    <value>Скрытный:</value>
+  </data>
+  <data name="TransactionId" xml:space="preserve">
+    <value>Идентификатор транзакции:</value>
+  </data>
+  <data name="AccountEventItem" xml:space="preserve">
+    <value>События аккаунта</value>
+  </data>
+  <data name="PendingPaymentItem" xml:space="preserve">
+    <value>Ожидающие платежи</value>
+  </data>
 </root>
