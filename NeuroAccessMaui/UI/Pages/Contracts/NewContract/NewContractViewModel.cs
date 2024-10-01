@@ -1225,7 +1225,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					{
 						StyleId = Parameter.Name,
 						NullableDate = Parameter.ObjectValue as DateTime?,
-						Placeholder = Parameter.Guide
+						Placeholder = Parameter.Guide,
+						TextColor = AppColors.NormalEditForeground,
 					};
 
 					Border.Content = Picker;

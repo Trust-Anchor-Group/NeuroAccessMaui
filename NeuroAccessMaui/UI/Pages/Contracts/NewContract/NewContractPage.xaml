@@ -53,7 +53,8 @@
 							<Picker Title="{l:Localize SelectWhoShouldHaveAccessToThisContract}"
 									  ItemsSource="{Binding Path=ContractVisibilityItems}"
 									  SelectedItem="{Binding Path=SelectedContractVisibilityItem, Mode=TwoWay}"
-									  BackgroundColor="{Binding SelectedContractVisibilityItem, Mode=OneWay, Converter={StaticResource OkIfSelected}}"/>
+									  BackgroundColor="{Binding SelectedContractVisibilityItem, Mode=OneWay, Converter={StaticResource OkIfSelected}}"
+									  TextColor="{AppThemeBinding Light={StaticResource NormalEditForegroundLight}, Dark={StaticResource NormalEditForegroundDark}}"/>
 						</Border>
 
 						<Label Text="{l:Localize YourRole}" HorizontalOptions="Start" />
@@ -64,7 +65,8 @@
 									  ItemsSource="{Binding Path=AvailableRoles}"
 									  SelectedItem="{Binding Path=SelectedRole, Mode=TwoWay}"
 									  IsEnabled="{Binding Path=HasRoles}"
-									  BackgroundColor="{Binding SelectedRole, Mode=OneWay, Converter={StaticResource OkIfSelected}}"/>
+									  BackgroundColor="{Binding SelectedRole, Mode=OneWay, Converter={StaticResource OkIfSelected}}"
+									  TextColor="{AppThemeBinding Light={StaticResource NormalEditForegroundLight}, Dark={StaticResource NormalEditForegroundDark}}"/>
 						</Border>
 						<ContentView Content="{Binding Path=Roles}" />
 					</VerticalStackLayout>
