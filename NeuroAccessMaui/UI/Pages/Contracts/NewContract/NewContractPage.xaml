@@ -47,7 +47,7 @@
 					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 						<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize PartsInTheContract}"/>
 						<Label Text="{l:Localize Visibility}" HorizontalOptions="Start" />
-						<Border StrokeThickness="2" Style="{StaticResource RegularCompositeEntryBorderNoRoundedCorners}"
+						<Border StrokeThickness="2" Style="{StaticResource RegularCompositeEntryBorder}"
 								  Margin="{StaticResource MediumBottomMargins}"
 								  BackgroundColor="{Binding SelectedContractVisibilityItem, Mode=OneWay, Converter={StaticResource OkIfSelected}}">
 							<Picker Title="{l:Localize SelectWhoShouldHaveAccessToThisContract}"
@@ -57,7 +57,7 @@
 						</Border>
 
 						<Label Text="{l:Localize YourRole}" HorizontalOptions="Start" />
-						<Border StrokeThickness="2" Style="{StaticResource RegularCompositeEntryBorderNoRoundedCorners}"
+						<Border StrokeThickness="2" Style="{StaticResource RegularCompositeEntryBorder}"
 								  Margin="{StaticResource MediumBottomMargins}"
 								  BackgroundColor="{Binding SelectedRole, Mode=OneWay, Converter={StaticResource OkIfSelected}}">
 							<Picker Title="{l:Localize SelectYourRoleInThisContract}"
@@ -78,7 +78,7 @@
 				</Frame>
 
 				<controls:TextButton LabelData="{l:Localize Propose}" Command="{Binding Path=ProposeCommand}"
-											Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+											Style="{StaticResource FilledTextButton}"
 											Margin="{StaticResource SmallTopBottomMargins}"/>
 			</VerticalStackLayout>
 		</ScrollView>

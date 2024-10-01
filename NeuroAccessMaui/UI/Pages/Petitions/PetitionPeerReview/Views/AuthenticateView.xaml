@@ -31,10 +31,10 @@
 		<VerticalStackLayout HeightRequest="{StaticResource MediumSpacing}"/>
 
 		<Grid ColumnDefinitions="*,*" RowDefinitions="auto" ColumnSpacing="{StaticResource SmallSpacing}">
-			<controls:TextButton Command="{Binding DeclineCommand}" Style="{StaticResource OutlinedTextButtonNoRoundedCorners}"
+			<controls:TextButton Command="{Binding DeclineCommand}" Style="{StaticResource OutlinedTextButton}"
 										LabelData="{l:Localize Reject}" Grid.Column="0" />
 
-			<controls:TextButton Command="{Binding AuthenticateReviewerCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+			<controls:TextButton Command="{Binding AuthenticateReviewerCommand}" Style="{StaticResource FilledTextButton}"
 										LabelData="{l:Localize AuthenticateAndSign}" Grid.Column="1"/>
 		</Grid>
 	</VerticalStackLayout>

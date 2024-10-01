@@ -286,7 +286,7 @@
 						<ListView Grid.Column="0" Grid.Row="2" HasUnevenRows="True" SeparatorVisibility="None" VerticalOptions="StartAndExpand"
                     ItemsSource="{Binding Path=Events}" ItemTemplate="{StaticResource EventStyleSelector}"/>
 						<controls:TextButton Grid.Column="0" Grid.Row="3" LabelData="{l:Localize AddNote}" Margin="{StaticResource SmallBottomMargins}"
-													Command="{Binding Path=AddNoteCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+													Command="{Binding Path=AddNoteCommand}" Style="{StaticResource FilledTextButton}"
 													IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
 					</Grid>
 				</Frame>

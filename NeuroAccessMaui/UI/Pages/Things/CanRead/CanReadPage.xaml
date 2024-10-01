@@ -64,10 +64,10 @@
 						</VerticalStackLayout>
 						<controls:TextButton LabelData="{l:Localize AddContact}" Command="{Binding Path=AddContactCommand}"
 													IsVisible="{Binding CallerInContactsList, Converter={StaticResource InvertedBoolConverter}}"
-													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
+													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButton}"/>
 						<controls:TextButton LabelData="{l:Localize RemoveContact}" Command="{Binding Path=RemoveContactCommand}"
 													IsVisible="{Binding CallerInContactsList}" Margin="{StaticResource SmallBottomMargins}"
-													Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
+													Style="{StaticResource FilledTextButton}"/>
 						<!-- Thing -->
 						<Label Text="{l:Localize InformationAboutThing}" Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"/>
 						<Label Text="{l:Localize InformationAboutThingText}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"
@@ -120,9 +120,9 @@
 									 Margin="{StaticResource SmallLeftMargins}"/>
 						</Grid>
 						<controls:TextButton LabelData="{l:Localize All}" Command="{Binding Path=AllFieldTypesCommand}"
-													Margin="{StaticResource SmallTopBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
+													Margin="{StaticResource SmallTopBottomMargins}" Style="{StaticResource FilledTextButton}"/>
 						<controls:TextButton LabelData="{l:Localize None}" Command="{Binding Path=NoFieldTypesCommand}"
-													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
+													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButton}"/>
 						<!-- Field Names -->
 						<Label Text="{l:Localize Fields}" Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"/>
 						<Label Text="{l:Localize PermitFieldsText}" LineBreakMode="WordWrap" Style="{StaticResource InfoLabel}"/>
@@ -138,9 +138,9 @@
 							</BindableLayout.ItemTemplate>
 						</VerticalStackLayout>
 						<controls:TextButton LabelData="{l:Localize All}" Command="{Binding Path=AllFieldsCommand}"
-													Margin="{StaticResource SmallTopBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
+													Margin="{StaticResource SmallTopBottomMargins}" Style="{StaticResource FilledTextButton}"/>
 						<controls:TextButton LabelData="{l:Localize None}" Command="{Binding Path=NoFieldsCommand}"
-													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
+													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButton}"/>
 						<!-- Range -->
 						<Label Text="{l:Localize Range}" Margin="{StaticResource SmallTopMargins}"
 					   VerticalOptions="Start"/>
@@ -153,11 +153,11 @@
 						<Label Text="{l:Localize Options}" Margin="{StaticResource SmallTopMargins}"
 					   VerticalOptions="Start"/>
 						<controls:TextButton LabelData="{l:Localize Accept}" Command="{Binding Path=AcceptCommand}"
-													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
+													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButton}"/>
 						<controls:TextButton LabelData="{l:Localize Reject}" Command="{Binding Path=RejectCommand}"
-													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
+													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButton}"/>
 						<controls:TextButton LabelData="{l:Localize Ignore}" Command="{Binding Path=IgnoreCommand}"
-													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
+													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButton}"/>
 					</VerticalStackLayout>
 				</Frame>
 			</VerticalStackLayout>

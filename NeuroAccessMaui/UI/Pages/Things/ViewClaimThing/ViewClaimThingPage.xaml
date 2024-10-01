@@ -48,7 +48,7 @@
 						<!-- BUTTONS -->
 						<controls:TextButton LabelData="{l:Localize ClaimThing}" Command="{Binding Path=ClaimThingCommand}"
 													IsEnabled="{Binding Path=CanClaimThing}" Margin="{StaticResource SmallBottomMargins}"
-													Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
+													Style="{StaticResource FilledTextButton}"/>
 					</VerticalStackLayout>
 				</Frame>
 			</VerticalStackLayout>
