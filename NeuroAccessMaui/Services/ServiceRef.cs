@@ -1,4 +1,8 @@
-﻿using Microsoft.Extensions.Localization;
+﻿using System.Diagnostics;
+using System.Dynamic;
+using System.Globalization;
+using System.Reflection;
+using Microsoft.Extensions.Localization;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.AttachmentCache;
 using NeuroAccessMaui.Services.Contracts;
@@ -231,8 +235,72 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				localizer ??= LocalizationManager.GetStringLocalizer<AppResources>();
+				localizer ??= new LocalizerReportingMissingStrings(LocalizationManager.GetStringLocalizer<AppResources>());
 				return localizer;
+			}
+		}
+
+		/// <summary>
+		/// Localizer, that reports missing strings to the operator of the corrected broker, via the event log.
+		/// </summary>
+		/// <param name="Localizer">Base localizer.</param>
+		private class LocalizerReportingMissingStrings(IStringLocalizer Localizer) : IStringLocalizer
+		{
+			private readonly IStringLocalizer localizer = Localizer;
+
+			public LocalizedString this[string Name]
+			{
+				get
+				{
+					LocalizedString Result = this.localizer[Name];
+					if (Result is not null && !Result.ResourceNotFound)
+						return Result;
+
+					StackTrace Trace = new();
+					Type Caller = typeof(ServiceRef);
+					int i, c = Trace.FrameCount;
+					Assembly ThisAssembly = typeof(App).Assembly;
+
+					for (i = 1; i < c; i++)
+					{
+						Type? T = Trace.GetFrame(i)?.GetMethod()?.DeclaringType;
+						if (T is null)
+							continue;
+
+						if (T.Assembly.FullName == ThisAssembly.FullName)
+						{
+							if (T == typeof(LocalizerReportingMissingStrings))
+								continue;
+
+							if (T.IsConstructedGenericType)
+								T = T.GetGenericTypeDefinition();
+
+							Caller = T;
+							break;
+						}
+					}
+
+					LocalizeExtension.ReportMissingString(Name, Caller);
+
+					return new LocalizedString(Name, Name, true);
+				}
+			}
+
+			public LocalizedString this[string Name, params object[] Arguments]
+			{
+				get
+				{
+					LocalizedString Result = this[Name];
+					if (Result.ResourceNotFound)
+						return Result;
+
+					return new LocalizedString(Name, string.Format(CultureInfo.CurrentCulture, Result.Value, Arguments));
+				}
+			}
+
+			public IEnumerable<LocalizedString> GetAllStrings(bool includeParentCultures)
+			{
+				return this.localizer.GetAllStrings(includeParentCultures);
 			}
 		}
 

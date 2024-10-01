@@ -2133,4 +2133,40 @@
   <data name="TransferIdentityPageDetails" xml:space="preserve">
     <value>Na drugom uređaju nastavite sa ukrcavanje dok ne dođete do stranice dobavljača usluga. Pritisnite dugme "Promeni" i skenirajte ovaj QR. Ako to uradite, uklonićete identitet sa ovog uređaja.</value>
   </data>
+  <data name="Buy" xml:space="preserve">
+    <value>Kupi</value>
+  </data>
+  <data name="BuyEDalerDescription" xml:space="preserve">
+    <value>Navedite količinu eDalera koju želite da kupite ispod i pritisnite dugme Kupi. Web stranica može biti otvorena tamo gde morate da popunite dodatne informacije za procesor plaćanja da biste proverili valjanost ponovnog korišćenja.</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Iznos:</value>
+  </data>
+  <data name="Wallet" xml:space="preserve">
+    <value>Novиanik</value>
+  </data>
+  <data name="AccountEventDescription" xml:space="preserve">
+    <value>U nastavku možete videti informacije o jednom događaju naloga.</value>
+  </data>
+  <data name="Balance" xml:space="preserve">
+    <value>Saldo:</value>
+  </data>
+  <data name="OpenMessageLink" xml:space="preserve">
+    <value>Otvori vezu poruke</value>
+  </data>
+  <data name="RemoteParty" xml:space="preserve">
+    <value>Udaljena žurka:</value>
+  </data>
+  <data name="Reserved" xml:space="preserve">
+    <value>Rezervisana:</value>
+  </data>
+  <data name="TransactionId" xml:space="preserve">
+    <value>ID transakcije:</value>
+  </data>
+  <data name="AccountEventItem" xml:space="preserve">
+    <value>Događaji naloga</value>
+  </data>
+  <data name="PendingPaymentItem" xml:space="preserve">
+    <value>Neobrađene uplate</value>
+  </data>
 </root>

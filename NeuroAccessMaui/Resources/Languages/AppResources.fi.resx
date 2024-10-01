@@ -2133,4 +2133,40 @@
   <data name="TransferIdentityPageDetails" xml:space="preserve">
     <value>Jatka toisella laitteellasi käyttöönottoa, kunnes pääset palveluntarjoajasivulle. Paina muutospainiketta ja skannaa tämä QR. Tämä poistaa identiteetin tästä laitteesta.</value>
   </data>
+  <data name="Buy" xml:space="preserve">
+    <value>Ostaa</value>
+  </data>
+  <data name="BuyEDalerDescription" xml:space="preserve">
+    <value>Anna alta haluamasi määrä eDaleria ja paina Osta-painiketta. Verkkosivu voidaan avata, jossa sinun on täytettävä lisätietoja maksujen käsittelijälle vahvistaaksesi pyyntösi.</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Määrä:</value>
+  </data>
+  <data name="Wallet" xml:space="preserve">
+    <value>Lompakko</value>
+  </data>
+  <data name="AccountEventDescription" xml:space="preserve">
+    <value>Alla näet tietoja yhden tilin tapahtumasta.</value>
+  </data>
+  <data name="Balance" xml:space="preserve">
+    <value>Vaaka:</value>
+  </data>
+  <data name="OpenMessageLink" xml:space="preserve">
+    <value>Avaa viestilinkki</value>
+  </data>
+  <data name="RemoteParty" xml:space="preserve">
+    <value>Etäjuhlat:</value>
+  </data>
+  <data name="Reserved" xml:space="preserve">
+    <value>Varattu:</value>
+  </data>
+  <data name="TransactionId" xml:space="preserve">
+    <value>Tapahtuman tunnus:</value>
+  </data>
+  <data name="AccountEventItem" xml:space="preserve">
+    <value>Tilin tapahtumat</value>
+  </data>
+  <data name="PendingPaymentItem" xml:space="preserve">
+    <value>Odottavat maksut</value>
+  </data>
 </root>

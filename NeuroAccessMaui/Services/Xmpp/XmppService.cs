@@ -1,4 +1,6 @@
-﻿//#define DEBUG_REMOTE
+﻿//#define DEBUG_XMPP_REMOTE
+//#define DEBUG_LOG_REMOTE
+//#define DEBUG_DB_REMOTE
 
 using EDaler;
 using EDaler.Uris;
@@ -53,6 +55,7 @@ using Waher.Networking.XMPP.ServiceDiscovery;
 using Waher.Networking.XMPP.StanzaErrors;
 using Waher.Persistence;
 using Waher.Persistence.Filters;
+using Waher.Persistence.XmlLedger;
 using Waher.Runtime.Inventory;
 using Waher.Runtime.Settings;
 using Waher.Runtime.Temporary;
@@ -98,9 +101,13 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private EventFilter? xmppFilteredEventSink;
 		private string? token = null;
 		private DateTime tokenCreated = DateTime.MinValue;
-#if DEBUG_REMOTE
+#if DEBUG_XMPP_REMOTE || DEBUG_LOG_REMOTE || DEBUG_DB_REMOTE
 		private const string debugRecipient = "";     // TODO: Set JID of recipient of debug messages.
-		private RemoteSnifferFilter? debugSniffer = null;
+#endif
+#if DEBUG_XMPP_REMOTE || DEBUG_DB_REMOTE
+		private RemoteSniffer? debugSniffer = null;
+#endif
+#if DEBUG_LOG_REMOTE
 		private EventFilter? debugEventSink = null;
 #endif
 
@@ -166,13 +173,18 @@ namespace NeuroAccessMaui.Services.Xmpp
 							Constants.LanguageCodes.Default, AppAssembly, this.sniffer);
 					}
 
-#if DEBUG_REMOTE
+#if DEBUG_XMPP_REMOTE || DEBUG_LOG_REMOTE || DEBUG_DB_REMOTE
 					if (!string.IsNullOrEmpty(debugRecipient))
 					{
-						this.debugSniffer = new RemoteSnifferFilter(new RemoteSniffer(debugRecipient, DateTime.MaxValue,
-							this.xmppClient, this.xmppClient, ConcentratorServer.NamespaceConcentratorCurrent));
+#endif
+#if DEBUG_XMPP_REMOTE || DEBUG_DB_REMOTE
+						this.debugSniffer = new RemoteSniffer(debugRecipient, DateTime.MaxValue, this.xmppClient, this.xmppClient,
+							ConcentratorServer.NamespaceConcentratorCurrent);
+#endif
+#if DEBUG_XMPP_REMOTE
 						this.xmppClient.Add(this.debugSniffer);
-
+#endif
+#if DEBUG_LOG_REMOTE
 						if (this.debugEventSink is not null)
 						{
 							Log.Unregister(this.debugEventSink);
@@ -191,6 +203,19 @@ namespace NeuroAccessMaui.Services.Xmpp
 							});
 
 						Log.Register(this.debugEventSink);
+#endif
+#if DEBUG_DB_REMOTE
+						if (!Ledger.HasProvider)
+						{
+							XmlFileLedger XmlFileLedger = new(new RemoteLedgerWriter());
+							Ledger.Register(XmlFileLedger);
+
+							await XmlFileLedger.Start();
+
+							Ledger.StartListeningToDatabaseEvents();
+						}
+#endif
+#if DEBUG_XMPP_REMOTE || DEBUG_LOG_REMOTE || DEBUG_DB_REMOTE
 					}
 #endif
 
@@ -243,7 +268,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 								throw new Exception("Regeneration of keys not permitted at this time.");
 							}
 
-							await this.contractsClient.GenerateNewKeys();
+							await this.GenerateNewKeys();
 						}
 					}
 
@@ -313,74 +338,122 @@ namespace NeuroAccessMaui.Services.Xmpp
 			}
 		}
 
-#if DEBUG_REMOTE
-		private class RemoteSnifferFilter(RemoteSniffer Sniffer) : SnifferBase
+#if DEBUG_DB_REMOTE
+		private class RemoteLedgerWriter()
+			: TextWriter(CultureInfo.CurrentCulture)
 		{
-			private readonly RemoteSniffer sniffer = Sniffer;
+			private readonly StringBuilder sb = new();
 
-			public override Task Error(DateTime Timestamp, string Error)
+			public override Encoding Encoding => Encoding.Unicode;
+			public override void Flush() => this.FlushAsync().Wait();
+			public override Task FlushAsync(CancellationToken cancellationToken) => this.FlushAsync();
+
+			public override async Task FlushAsync()
 			{
-				if (this.sniffer.Client.State == XmppState.Connected)
-					return this.sniffer.Error(Timestamp, Error);
-				else
-					return Task.CompletedTask;
+				try
+				{
+					string s = this.sb.ToString();
+					string s2 = s.TrimStart();
+					if (string.IsNullOrEmpty(s2))
+						return;
+
+					if (ServiceRef.XmppService is not XmppService Service)
+						return;
+
+					RemoteSniffer? Sniffer = Service.debugSniffer;
+					if (Sniffer is null)
+						return;
+
+					this.sb.Clear();
+
+					int i = s2.IndexOf('<');
+					if (i > 0)
+						s2 = s2[i..];
+
+					string[] Rows = s.Replace("\r\n", "\n").Replace('\r', '\n').Split('\n');
+
+					if (s2.StartsWith("<New", StringComparison.OrdinalIgnoreCase))
+					{
+						foreach (string Row in Rows)
+							await Sniffer.TransmitText(Row);
+					}
+					else if (s2.StartsWith("<Update", StringComparison.OrdinalIgnoreCase))
+					{
+						foreach (string Row in Rows)
+							await Sniffer.ReceiveText(Row);
+					}
+					else if (s2.StartsWith("<Delete", StringComparison.OrdinalIgnoreCase))
+					{
+						foreach (string Row in Rows)
+							await Sniffer.Error(Row);
+					}
+					else if (s2.StartsWith("<Clear", StringComparison.OrdinalIgnoreCase))
+					{
+						foreach (string Row in Rows)
+							await Sniffer.Warning(Row);
+					}
+					else
+					{
+						foreach (string Row in Rows)
+							await Sniffer.Information(Row);
+					}
+				}
+				catch (Exception)
+				{
+					// Ignore
+				}
 			}
 
-			public override Task Exception(DateTime Timestamp, string Exception)
-			{
-				if (this.sniffer.Client.State == XmppState.Connected)
-					return this.sniffer.Exception(Timestamp, Exception);
-				else
-					return Task.CompletedTask;
-			}
-
-			public override Task Information(DateTime Timestamp, string Comment)
-			{
-				if (this.sniffer.Client.State == XmppState.Connected)
-					return this.sniffer.Information(Timestamp, Comment);
-				else
-					return Task.CompletedTask;
-			}
-
-			public override Task ReceiveBinary(DateTime Timestamp, byte[] Data)
-			{
-				if (this.sniffer.Client.State == XmppState.Connected)
-					return this.sniffer.ReceiveBinary(Timestamp, Data);
-				else
-					return Task.CompletedTask;
-			}
-
-			public override Task ReceiveText(DateTime Timestamp, string Text)
-			{
-				if (this.sniffer.Client.State == XmppState.Connected && !Text.Contains("<sniff "))
-					return this.sniffer.ReceiveText(Timestamp, Text);
-				else
-					return Task.CompletedTask;
-			}
-
-			public override Task TransmitBinary(DateTime Timestamp, byte[] Data)
-			{
-				if (this.sniffer.Client.State == XmppState.Connected)
-					return this.sniffer.TransmitBinary(Timestamp, Data);
-				else
-					return Task.CompletedTask;
-			}
-
-			public override Task Warning(DateTime Timestamp, string Warning)
-			{
-				if (this.sniffer.Client.State == XmppState.Connected)
-					return this.sniffer.Warning(Timestamp, Warning);
-				else
-					return Task.CompletedTask;
-			}
-
-			public override Task TransmitText(DateTime Timestamp, string Text)
-			{
-				if (this.sniffer.Client.State == XmppState.Connected && !Text.Contains("<sniff "))
-					return this.sniffer.TransmitText(Timestamp, Text);
-				else
-					return Task.CompletedTask;
-			}
+			public override void Write(char value) => this.sb.Append(value);
+			public override void Write(char[]? buffer) => this.sb.Append(buffer);
+			public override void Write(char[] buffer, int index, int count) => this.sb.Append(new string(buffer, index, count));
+			public override void Write(ReadOnlySpan<char> buffer) => this.sb.Append(new string(buffer));
+			public override void Write(bool value) => this.sb.Append(value);
+			public override void Write(int value) => this.sb.Append(value);
+			public override void Write(uint value) => this.sb.Append(value);
+			public override void Write(long value) => this.sb.Append(value);
+			public override void Write(ulong value) => this.sb.Append(value);
+			public override void Write(float value) => this.sb.Append(value);
+			public override void Write(double value) => this.sb.Append(value);
+			public override void Write(decimal value) => this.sb.Append(value);
+			public override void Write(string? value) => this.sb.Append(value);
+			public override void Write(object? value) => this.sb.Append(value);
+			public override void Write(StringBuilder? value) => this.sb.Append(value);
+			public override void Write([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, object? arg0) => this.sb.Append(string.Format(this.FormatProvider, format, arg0));
+			public override void Write([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, object? arg0, object? arg1) => this.sb.Append(string.Format(this.FormatProvider, format, arg0, arg1));
+			public override void Write([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, object? arg0, object? arg1, object? arg2) => this.sb.Append(string.Format(this.FormatProvider, format, arg0, arg1, arg2));
+			public override void Write([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, params object?[] arg) => this.sb.Append(string.Format(this.FormatProvider, format, arg));
+			public override Task WriteAsync(char value) { this.sb.Append(value); return Task.CompletedTask; }
+			public override Task WriteAsync(string? value) { this.sb.Append(value); return Task.CompletedTask; }
+			public override Task WriteAsync(StringBuilder? value, CancellationToken cancellationToken = default) { this.sb.Append(value); return Task.CompletedTask; }
+			public override Task WriteAsync(char[] buffer, int index, int count) { this.sb.Append(new string(buffer, index, count)); return Task.CompletedTask; }
+			public override Task WriteAsync(ReadOnlyMemory<char> buffer, CancellationToken cancellationToken = default) { this.sb.Append(buffer); return Task.CompletedTask; }
+			public override void WriteLine() => this.sb.AppendLine(string.Empty);
+			public override void WriteLine(char value) => this.sb.AppendLine(value.ToString());
+			public override void WriteLine(char[]? buffer) => this.sb.AppendLine(new string(buffer));
+			public override void WriteLine(char[] buffer, int index, int count) => this.sb.AppendLine(new string(buffer, index, count));
+			public override void WriteLine(ReadOnlySpan<char> buffer) => this.sb.AppendLine(new string(buffer));
+			public override void WriteLine(bool value) => this.sb.AppendLine(value.ToString());
+			public override void WriteLine(int value) => this.sb.AppendLine(value.ToString(CultureInfo.CurrentCulture));
+			public override void WriteLine(uint value) => this.sb.AppendLine(value.ToString(CultureInfo.CurrentCulture));
+			public override void WriteLine(long value) => this.sb.AppendLine(value.ToString(CultureInfo.CurrentCulture));
+			public override void WriteLine(ulong value) => this.sb.AppendLine(value.ToString(CultureInfo.CurrentCulture));
+			public override void WriteLine(float value) => this.sb.AppendLine(value.ToString(CultureInfo.CurrentCulture));
+			public override void WriteLine(double value) => this.sb.AppendLine(value.ToString(CultureInfo.CurrentCulture));
+			public override void WriteLine(decimal value) => this.sb.AppendLine(value.ToString(CultureInfo.CurrentCulture));
+			public override void WriteLine(string? value) => this.sb.AppendLine(value?.ToString());
+			public override void WriteLine(StringBuilder? value) => this.sb.AppendLine(value?.ToString());
+			public override void WriteLine(object? value) => this.sb.AppendLine(value?.ToString());
+			public override void WriteLine([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, object? arg0) => this.sb.AppendLine(string.Format(this.FormatProvider, format, arg0));
+			public override void WriteLine([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, object? arg0, object? arg1) => this.sb.AppendLine(string.Format(this.FormatProvider, format, arg0, arg1));
+			public override void WriteLine([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, object? arg0, object? arg1, object? arg2) => this.sb.AppendLine(string.Format(this.FormatProvider, format, arg0, arg1, arg2));
+			public override void WriteLine([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, params object?[] arg) => this.sb.AppendLine(string.Format(this.FormatProvider, format, arg));
+			public override Task WriteLineAsync(char value) { this.sb.AppendLine(value.ToString()); return Task.CompletedTask; }
+			public override Task WriteLineAsync(string? value) { this.sb.AppendLine(value); return Task.CompletedTask; }
+			public override Task WriteLineAsync(StringBuilder? value, CancellationToken cancellationToken = default) { this.sb.AppendLine(value?.ToString()); return Task.CompletedTask; }
+			public override Task WriteLineAsync(char[] buffer, int index, int count) { this.sb.AppendLine(new string(buffer, index, count)); return Task.CompletedTask; }
+			public override Task WriteLineAsync(ReadOnlyMemory<char> buffer, CancellationToken cancellationToken = default) { this.sb.AppendLine(new string(buffer.Span)); return Task.CompletedTask; }
+			public override Task WriteLineAsync() { this.sb.AppendLine(string.Empty); return Task.CompletedTask; }
 		}
 #endif
 
@@ -435,7 +508,10 @@ namespace NeuroAccessMaui.Services.Xmpp
 			this.abuseClient?.Dispose();
 			this.abuseClient = null;
 
-#if DEBUG_REMOTE
+#if DEBUG_DB_REMOTE
+			this.debugSniffer = null;
+#endif
+#if DEBUG_LOG_REMOTE
 			if (this.debugEventSink is not null)
 			{
 				Log.Unregister(this.debugEventSink);
@@ -1545,8 +1621,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 		public void SendMessage(QoSLevel QoS, Waher.Networking.XMPP.MessageType Type, string Id, string To, string CustomXml, string Body,
 			string Subject, string Language, string ThreadId, string ParentThreadId, DeliveryEventHandler? DeliveryCallback, object? State)
 		{
-			this.XmppClient.SendMessage(QoS, Type, Id, To, CustomXml, Body, Subject, Language, ThreadId, ParentThreadId, DeliveryCallback, State);
-			// TODO: End-to-End encryption
+			this.ContractsClient.LocalE2eEndpoint.SendMessage(this.XmppClient, E2ETransmission.NormalIfNotE2E,
+				QoS, Type, Id, To, CustomXml, Body, Subject, Language, ThreadId, ParentThreadId, DeliveryCallback, State);
 		}
 
 		private Task XmppClient_OnNormalMessage(object? Sender, MessageEventArgs e)
@@ -2560,6 +2636,17 @@ namespace NeuroAccessMaui.Services.Xmpp
 		#region Legal Identities
 
 		/// <summary>
+		/// Generates new keys
+		/// </summary>
+		public async Task GenerateNewKeys()
+		{
+			await this.ContractsClient.GenerateNewKeys();
+
+			if (this.ContractsClient.Client.State == XmppState.Connected)
+				await this.ContractsClient.Client.SetPresenceAsync(Availability.Online);
+		}
+
+		/// <summary>
 		/// Gets important attributes for a successful ID Application.
 		/// </summary>
 		/// <returns>ID Application attributes.</returns>
@@ -2572,14 +2659,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// Adds a legal identity.
 		/// </summary>
 		/// <param name="Model">The model holding all the values needed.</param>
-		/// <param name="ObsoleteExistingIDsAndKeys">If existing keys and IDs are to be obsoleted.</param>
+		/// <param name="GenerateNewKeys">If new keys should be generated.</param>
 		/// <param name="Attachments">The physical attachments to upload.</param>
 		/// <returns>Legal Identity</returns>
-		public async Task<LegalIdentity> AddLegalIdentity(RegisterIdentityModel Model, bool ObsoleteExistingIDsAndKeys,
+		public async Task<LegalIdentity> AddLegalIdentity(RegisterIdentityModel Model, bool GenerateNewKeys,
 			params LegalIdentityAttachment[] Attachments)
 		{
-			if (ObsoleteExistingIDsAndKeys)
-				await this.ContractsClient.GenerateNewKeys();
+			if (GenerateNewKeys)
+				await this.GenerateNewKeys();
 
 			LegalIdentity Identity = await this.ContractsClient.ApplyAsync(Model.ToProperties(ServiceRef.XmppService));
 
@@ -2647,22 +2734,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// Checks if the client has access to the private keys of the specified legal identity.
 		/// </summary>
-		/// <param name="legalIdentityId">The id of the legal identity.</param>
-		/// <param name="client">The Xmpp client instance. Can be null, in that case the default one is used.</param>
+		/// <param name="LegalIdentityId">The id of the legal identity.</param>
 		/// <returns>If private keys are available.</returns>
-		public async Task<bool> HasPrivateKey(CaseInsensitiveString legalIdentityId, XmppClient? client = null)
+		public Task<bool> HasPrivateKey(CaseInsensitiveString LegalIdentityId)
 		{
-			if (client is null)
-				return await this.ContractsClient.HasPrivateKey(legalIdentityId);
-			else
-			{
-				using ContractsClient cc = new(client, ServiceRef.TagProfile.LegalJid);
-
-				if (!await cc.LoadKeys(false))
-					return false;
-
-				return await cc.HasPrivateKey(legalIdentityId);
-			}
+			return this.ContractsClient.HasPrivateKey(LegalIdentityId);
 		}
 
 		/// <summary>
@@ -2904,7 +2980,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private void RegisterContractsEventHandlers()
 		{
-			this.ContractsClient.EnableE2eEncryption(true);
+			this.ContractsClient.EnableE2eEncryption(true, false);
 
 			this.ContractsClient.IdentityUpdated += this.ContractsClient_IdentityUpdated;
 			this.ContractsClient.PetitionForIdentityReceived += this.ContractsClient_PetitionForIdentityReceived;

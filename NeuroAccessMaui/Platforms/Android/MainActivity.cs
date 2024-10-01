@@ -1,11 +1,14 @@
-﻿using System.Text;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
 using Android.Nfc;
+using Android.Nfc.Tech;
 using Android.OS;
 using Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;
-using NeuroAccessMaui.Services;
+using NeuroAccess.Nfc;
+using NeuroAccessMaui.AndroidPlatform.Nfc;
+using NeuroAccessMaui.Services.Nfc;
+using System.Text;
 
 namespace NeuroAccessMaui
 {
@@ -19,11 +22,15 @@ namespace NeuroAccessMaui
 			DataSchemes = ["iotid", "iotdisco", "iotsc", "tagsign", "obinfo", "edaler", "nfeat", "xmpp", "aes256", "neuroaccess"])]
 	public class MainActivity : MauiAppCompatActivity
 	{
+		private static NfcAdapter? nfcAdapter = null;
+
 		protected override void OnPostCreate(Bundle? savedInstanceState)
 		{
 			try
 			{
 				base.OnPostCreate(savedInstanceState);
+
+				nfcAdapter = NfcAdapter.GetDefaultAdapter(this);
 			}
 			catch (Exception ex)
 			{
@@ -44,29 +51,141 @@ namespace NeuroAccessMaui
 
 		}
 
-		protected override void OnNewIntent(Intent? Intent)
+		protected override void OnResume()
 		{
+			base.OnResume();
+
+			if (nfcAdapter is not null)
+			{
+				Intent Intent = new Intent(this, this.GetType()).AddFlags(ActivityFlags.SingleTop);
+
+				PendingIntent? PendingIntent = PendingIntent.GetActivity(this, 0, Intent, PendingIntentFlags.Mutable);
+				nfcAdapter.EnableForegroundDispatch(this, PendingIntent, null, null);
+			}
+
+			this.RemoveAllNotifications();
+		}
+
+		protected override void OnPause()
+		{
+			base.OnPause();
+			nfcAdapter?.DisableForegroundDispatch(this);
+		}
+
+		protected override async void OnNewIntent(Intent? Intent)
+		{
+			if (Intent is null)
+				return;
+
 			try
 			{
-				if(Intent is null)
-					return;
 				switch (Intent.Action)
 				{
 					case Intent.ActionView:
-						string? Url = Intent!.Data?.ToString();
-						if (string.IsNullOrEmpty(Url))
-							return;
-						App.OpenUrlSync(Url!);
+						string? Url = Intent?.Data?.ToString();
+						if (!string.IsNullOrEmpty(Url))
+							App.OpenUrlSync(Url);
 						break;
-					default:
+
+					case NfcAdapter.ActionTagDiscovered:
+					case NfcAdapter.ActionNdefDiscovered:
+					case NfcAdapter.ActionTechDiscovered:
+						Tag? Tag = Intent.GetParcelableExtra(NfcAdapter.ExtraTag) as Tag;
+						if (Tag is null)
+							break;
+
+						byte[]? ID = Tag.GetId();
+						if (ID is null)
+							break;
+
+						string[]? TechList = Tag.GetTechList();
+						if (TechList is null)
+							break;
+
+						List<INfcInterface> Interfaces = [];
+
+						foreach (string Tech in TechList)
+						{
+							switch (Tech)
+							{
+								case "android.nfc.tech.IsoDep":
+									IsoDep? IsoDep = IsoDep.Get(Tag);
+									if (IsoDep is not null)
+										Interfaces.Add(new IsoDepInterface(Tag, IsoDep));
+									break;
+
+								case "android.nfc.tech.MifareClassic":
+									MifareClassic? MifareClassic = MifareClassic.Get(Tag);
+									if (MifareClassic is not null)
+										Interfaces.Add(new MifareClassicInterface(Tag, MifareClassic));
+									break;
+
+								case "android.nfc.tech.MifareUltralight":
+									MifareUltralight? MifareUltralight = MifareUltralight.Get(Tag);
+									if (MifareUltralight is not null)
+										Interfaces.Add(new MifareUltralightInterface(Tag, MifareUltralight));
+									break;
+
+								case "android.nfc.tech.Ndef":
+									Ndef? Ndef = Ndef.Get(Tag);
+									if (Ndef is not null)
+										Interfaces.Add(new NdefInterface(Tag, Ndef));
+									break;
+
+								case "android.nfc.tech.NdefFormatable":
+									NdefFormatable? NdefFormatable = NdefFormatable.Get(Tag);
+									if (NdefFormatable is not null)
+										Interfaces.Add(new NdefFormatableInterface(Tag, NdefFormatable));
+									break;
+
+								case "android.nfc.tech.NfcA":
+									NfcA? NfcA = NfcA.Get(Tag);
+									if (NfcA is not null)
+										Interfaces.Add(new NfcAInterface(Tag, NfcA));
+									break;
+
+								case "android.nfc.tech.NfcB":
+									NfcB? NfcB = NfcB.Get(Tag);
+									if (NfcB is not null)
+										Interfaces.Add(new NfcBInterface(Tag, NfcB));
+									break;
+
+								case "android.nfc.tech.NfcBarcode":
+									NfcBarcode? NfcBarcode = NfcBarcode.Get(Tag);
+									if (NfcBarcode is not null)
+										Interfaces.Add(new NfcBarcodeInterface(Tag, NfcBarcode));
+									break;
+
+								case "android.nfc.tech.NfcF":
+									NfcF? NfcF = NfcF.Get(Tag);
+									if (NfcF is not null)
+										Interfaces.Add(new NfcFInterface(Tag, NfcF));
+									break;
+
+								case "android.nfc.tech.NfcV":
+									NfcV? NfcV = NfcV.Get(Tag);
+									if (NfcV is not null)
+										Interfaces.Add(new NfcVInterface(Tag, NfcV));
+									break;
+							}
+						}
+
+						INfcService Service = App.Instantiate<INfcService>();
+						await Service.TagDetected(new NfcTag(ID, [.. Interfaces]));
 						break;
 				}
 			}
 			catch (Exception ex)
 			{
-				ServiceRef.LogService.LogException(ex);
+				Waher.Events.Log.Critical(ex);
+				// TODO: Handle read & connection errors.
 			}
 		}
 
+		private void RemoveAllNotifications()
+		{
+			NotificationManager? Manager = (NotificationManager?)this.GetSystemService(NotificationService);
+			Manager?.CancelAll();
+		}
 	}
 }

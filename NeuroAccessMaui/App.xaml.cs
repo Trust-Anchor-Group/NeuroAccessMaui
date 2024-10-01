@@ -796,7 +796,11 @@ namespace NeuroAccessMaui
 			}
 		}
 
-		internal static async Task SendAlert(string message, string contentType)
+		internal static
+#if !DEBUG
+			async
+#endif
+			Task SendAlert(string message, string contentType)
 		{
 			try
 			{
@@ -810,14 +814,18 @@ namespace NeuroAccessMaui
 
 				StringContent content = new(message);
 				content.Headers.ContentType = MediaTypeHeaderValue.Parse(contentType);
-			#if !DEBUG
+#if !DEBUG
 				await client.PostAsync("https://lab.tagroot.io/Alert.ws", content);
-			#endif
+#endif
 			}
 			catch (Exception ex)
 			{
 				Log.Critical(ex);
 			}
+
+#if DEBUG
+			return Task.CompletedTask;
+#endif
 		}
 
 		/// <summary>
@@ -831,7 +839,7 @@ namespace NeuroAccessMaui
 			StringBuilder Xml = new();
 
 			using XmlDatabaseExport Output = new(Xml, true, 256);
-			await Database.Export(Output);
+			await ServiceRef.StorageService.Export(Output);
 
 			string AppDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 			FileName = Path.Combine(AppDataFolder, FileName);
@@ -897,7 +905,7 @@ namespace NeuroAccessMaui
 			File.WriteAllText(FileName + ".diff.md", DiffMsg);
 		}
 
-		#endregion
+#endregion
 
 		/// <summary>
 		/// Opens an URL in the application.

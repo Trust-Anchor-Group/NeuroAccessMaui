@@ -123,12 +123,12 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		/// <summary>
 		/// If App is connected to the XMPP network.
 		/// </summary>
-		public bool IsXmppConnected => ServiceRef.XmppService.State == XmppState.Connected;
+		public static bool IsXmppConnected => ServiceRef.XmppService.State == XmppState.Connected;
 
 		/// <summary>
 		/// If App has an XMPP account defined.
 		/// </summary>
-		public bool IsAccountCreated => !string.IsNullOrEmpty(ServiceRef.TagProfile.Account);
+		public static bool IsAccountCreated => !string.IsNullOrEmpty(ServiceRef.TagProfile.Account);
 
 		/// <summary>
 		/// If Legal ID has been created.
@@ -150,7 +150,21 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 		public bool CanCreateAccount => !this.IsBusy && !this.AccountIsNotValid && (this.AccountText.Length > 0);
 
-		public bool CanCreateIdentity => !this.IsBusy && IsAccountCreated && !IsLegalIdentityCreated && IsXmppConnected;
+
+/* Unmerged change from project 'NeuroAccessMaui (net8.0-ios)'
+Before:
+		public bool CanCreateIdentity => !this.IsBusy && this.IsAccountCreated && !IsLegalIdentityCreated && this.IsXmppConnected;
+After:
+		public bool CanCreateIdentity => !this.IsBusy && this.IsAccountCreated && !IsLegalIdentityCreated && IsXmppConnected;
+*/
+
+/* Unmerged change from project 'NeuroAccessMaui (net8.0-ios)'
+Before:
+		public bool CanCreateIdentity => !this.IsBusy && this.IsAccountCreated && !IsLegalIdentityCreated && CreateAccountViewModel.IsXmppConnected;
+After:
+		public bool CanCreateIdentity => !this.IsBusy && IsAccountCreated && !IsLegalIdentityCreated && CreateAccountViewModel.IsXmppConnected;
+*/
+		public bool CanCreateIdentity => !this.IsBusy && CreateAccountViewModel.IsAccountCreated && !IsLegalIdentityCreated && CreateAccountViewModel.IsXmppConnected;
 
 		[RelayCommand(CanExecute = nameof(CanCreateAccount))]
 		private async Task CreateAccount()
