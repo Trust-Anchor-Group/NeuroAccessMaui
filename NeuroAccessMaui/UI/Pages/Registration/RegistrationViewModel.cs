@@ -86,10 +86,27 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		{
 			get
 			{
-				return (ServiceRef.TagProfile.Step > RegistrationStep.ValidatePhone) &&
-					// Disable the back button after the accpunt was created
-					string.IsNullOrEmpty(ServiceRef.TagProfile?.Account ?? string.Empty)
-					&& (ServiceRef.TagProfile?.Step < RegistrationStep.DefinePassword);
+				switch (ServiceRef.TagProfile.Step)
+				{
+
+					case RegistrationStep.ValidatePhone:
+					case RegistrationStep.ValidateEmail:
+						return string.IsNullOrEmpty(ServiceRef.TagProfile.Account); // Disable the back button if account is already created
+					case RegistrationStep.NameEntry:
+					case RegistrationStep.ChooseProvider:
+					case RegistrationStep.ContactSupport:
+						return true;
+					case RegistrationStep.GetStarted:
+					case RegistrationStep.CreateAccount:
+					case RegistrationStep.DefinePassword:
+					case RegistrationStep.Complete:
+					case RegistrationStep.Biometrics:
+					case RegistrationStep.Finalize:
+					default:
+						return false;
+
+
+				}
 			}
 		}
 
@@ -104,25 +121,28 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 				await this.registrationSteps[this.CurrentStep].DoClearProperties();
 
 				RegistrationStep NewStep = ServiceRef.TagProfile.Step;
-
 				switch (this.CurrentStep)
 				{
-					case RegistrationStep.CreateAccount:
-						ServiceRef.TagProfile.ClearAccount();
-						NewStep = RegistrationStep.ChooseProvider;
+					case RegistrationStep.NameEntry:
+						NewStep = RegistrationStep.GetStarted;
 						break;
-
-					case RegistrationStep.ChooseProvider:
-						NewStep = RegistrationStep.ValidateEmail;
+					case RegistrationStep.ValidatePhone:
+						NewStep = RegistrationStep.GetStarted;
 						break;
-
 					case RegistrationStep.ValidateEmail:
-						NewStep = RegistrationStep.ValidatePhone;
+						NewStep = RegistrationStep.GetStarted;
+						break;
+					case RegistrationStep.ChooseProvider:
+						NewStep = RegistrationStep.GetStarted;
+						break;
+					case RegistrationStep.ContactSupport:
+						NewStep = RegistrationStep.GetStarted;
 						break;
 
 					default: // Should not happen. Something forgotten? 
 						throw new NotImplementedException();
 				}
+				ServiceRef.PlatformSpecific.HideKeyboard();
 
 				GoToRegistrationStep(NewStep);
 			}

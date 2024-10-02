@@ -417,8 +417,8 @@
   <data name="OperatorDoesNotSupportRegisteringNewAccounts" xml:space="preserve">
     <value>Operatören {0} stöder inte registrering av nya konton</value>
   </data>
-  <data name="AccountNameAlreadyTaken" xml:space="preserve">
-    <value>Kontonamnet {0} är redan upptaget. Välj en annan.</value>
+  <data name="UsernameNameAlreadyTaken" xml:space="preserve">
+    <value>Användarnamnet är redan upptaget. Vänligen försök med ett annat.</value>
   </data>
   <data name="InvalidUsernameOrPassword" xml:space="preserve">
     <value>Ogiltigt användarnamn eller lösenord</value>
@@ -535,10 +535,10 @@
     <value>Det gick inte att koppla bort viewmodel {0} för sida {1}</value>
   </data>
   <data name="OnboardingPhonePageTitle" xml:space="preserve">
-    <value>Välkommen till Neuro-Access</value>
+    <value>Verifiera telefonnummer</value>
   </data>
   <data name="OnboardingPhonePageDetails" xml:space="preserve">
-    <value>För att bli verifierad måste du ange ditt telefonnummer</value>
+    <value>Vi skickar en verifieringskod till dig</value>
   </data>
   <data name="OnboardingEmailPageTitle" xml:space="preserve">
     <value>Verifiera e-postadressen</value>
@@ -559,10 +559,10 @@
     <value>Domän:</value>
   </data>
   <data name="OnboardingAccountPageTitle" xml:space="preserve">
-    <value>Skapa konto</value>
+    <value>Skapar konto...</value>
   </data>
   <data name="OnboardingAccountPageDetails" xml:space="preserve">
-    <value>Ange det namn du vill använda för ditt konto</value>
+    <value>Vänligen vänta medan vi förbereder allt åt dig</value>
   </data>
   <data name="OnboardingDefinePasswordPageTitle" xml:space="preserve">
     <value>Skapa en PIN kod</value>
@@ -570,17 +570,11 @@
   <data name="OnboardingFinalizePageTitle" xml:space="preserve">
     <value>Klar!</value>
   </data>
-  <data name="OnboardingFinalizePageDetails" xml:space="preserve">
-    <value>Du kan nu börja använda Neuro-Access</value>
-  </data>
   <data name="OnboardingBiometricsPageTitle" xml:space="preserve">
     <value>Nästan klar</value>
   </data>
   <data name="OnboardingBiometricsPageDetails" xml:space="preserve">
     <value>Neuro-Access fungerar bäst med {0}. Vill du aktivera den här funktionen? Detta kan också ändras i inställningarna senare.</value>
-  </data>
-  <data name="AccountSectionTitle" xml:space="preserve">
-    <value>Ange kontonamnet</value>
   </data>
   <data name="Create" xml:space="preserve">
     <value>Skapa</value>
@@ -624,6 +618,9 @@
   <data name="EmailValidationFormat" xml:space="preserve">
     <value>Ange en giltig e-postadress</value>
   </data>
+  <data name="PhoneValidationFormat" xml:space="preserve">
+    <value>Ange ett giltigt telefonnummer</value>
+  </data>
   <data name="ProviderSectionTitle" xml:space="preserve">
     <value>Välj ett alternativ</value>
   </data>
@@ -653,12 +650,6 @@
   </data>
   <data name="QrScanUri" xml:space="preserve">
     <value>URI:</value>
-  </data>
-  <data name="AccountValidationAlreadyExists" xml:space="preserve">
-    <value>Det här kontonamnet finns redan</value>
-  </data>
-  <data name="AccountAvailableAlternatives" xml:space="preserve">
-    <value>Följande namn är fortfarande tillgängliga:</value>
   </data>
   <data name="TestOtpUsed" xml:space="preserve">
     <value>En tillfällig OTP-kod har använts. Applikationen kommer sluta fungera om ungefär en vecka. Du måste ominstallera programmet för att använda det igen.</value>
@@ -2145,6 +2136,57 @@
   <data name="HardwareInfo" xml:space="preserve">
     <value>Hårdvara</value>
   </data>
+  <data name="OnboardingGetStartedTitle" xml:space="preserve">
+    <value>Välkommen till Neuro-Access</value>
+  </data> 
+  <data name="CreateNewAccount">
+    <value>Skapa nytt konto</value>
+  </data>
+  <data name="IAlreadyHaveAnAccount">
+    <value>Jag har redan ett konto</value>
+  </data>
+  <data name="OnboardingGetStartedQrInfo">
+    <value>Har du fått en inbjudan, överförings- eller återställningskod? Skanna den nedan</value>
+  </data>
+  <data name="OnboardingNameEntryTitle" xml:space="preserve">
+    <value>Välj ditt användarnamn</value>
+  </data> 
+  <data name="OnboardingNameEntryDetails" xml:space="preserve">
+    <value>Ditt användarnamn är permanent och kan inte ändras senare</value>
+  </data>
+  <data name="UseNickname" xml:space="preserve">
+    <value>Jag vill använda ett smeknamn</value>
+  </data>
+  <data name="UseRealName" xml:space="preserve">
+    <value>Jag vill använda mitt riktiga namn</value>
+  </data>
+  <data name="BeAnonymous" xml:space="preserve">
+    <value>Jag vill vara anonym</value>
+  </data>
+  <data name="Nickname" xml:space="preserve">
+    <value>Smeknamn</value>
+  </data>
+  <data name="OnboardingContactSupportTitle" xml:space="preserve">
+    <value>Återställ konto</value>
+  </data>
+  <data name="AccountDetails" xml:space="preserve">
+    <value>Kontouppgifter</value>
+  </data>
+  <data name="ServiceProvider" xml:space="preserve">
+    <value>Tjänsteleverantör</value>
+  </data>
+  <data name="Alternative" xml:space="preserve">
+    <value>Alternativ: </value>
+  </data>
+  <data name="InvalidUsernameCharacters" xml:space="preserve">
+    <value>Användarnamnet innehåller ogiltiga tecken.</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Användarnamn</value>
+  </data>
+  <data name="SendSeconds" xml:space="preserve">
+    <value>Skicka ({0})</value>
+  </data>
   <data name="CreateWallet" xml:space="preserve">
     <value>Skapa plånbok</value>
   </data>
@@ -2163,11 +2205,11 @@
   <data name="Wallet" xml:space="preserve">
     <value>Plånbok</value>
   </data>
+  <data name="OpenWallet" xml:space="preserve">
+    <value>Öppna plånbok</value>
+  </data>
   <data name="OpenWalletDescription" xml:space="preserve">
     <value>Öppna din eDaler-plånbok för att visa aktuellt saldo och se senaste transaktioner.</value>
-  </data>
-  <data name="OpenWllet" xml:space="preserve">
-    <value>Öppna plånbok</value>
   </data>
   <data name="AccountEventDescription" xml:space="preserve">
     <value>Nedan kan du se information om en kontohändelse.</value>
@@ -2192,5 +2234,32 @@
   </data>
   <data name="PendingPaymentItem" xml:space="preserve">
     <value>Väntande betalningar</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsPart1" xml:space="preserve">
+    <value>Om du har tillgång till ditt konto på en annan enhet, vänligen följ dessa steg:</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet1" xml:space="preserve">
+    <value>Öppna appen på din andra enhet.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet2" xml:space="preserve">
+    <value>Gå till Inställningar → Överför identitet.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet3" xml:space="preserve">
+    <value>En QR-kod kommer att visas på den enheten.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet4" xml:space="preserve">
+    <value>Använd den här enheten för att skanna QR-koden och överföra ditt konto.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsPart2" xml:space="preserve">
+    <value>Om du inte har tillgång till ditt konto, vänligen kontakta vårt supportteam på</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsPart3" xml:space="preserve">
+    <value>.</value>
+  </data>
+  <data name="SupportEmailSubject" xml:space="preserve">
+    <value>Återställ konto</value>
+  </data>
+  <data name="EmailClientNotAvailable" xml:space="preserve">
+    <value>Kunde inte öppna e-postklienten. Vänligen skicka ett e-postmeddelande till {0}.</value>
   </data>
 </root>
