@@ -13,7 +13,7 @@
                            xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters">
 
 	<base:BaseRegistrationView.Resources>
-		<converters:OnlyShowNonEmpty x:Key="OnlyShowNonEmpty" />
+		<mct:IsStringNotNullOrEmptyConverter x:Key="OnlyShowNonEmpty" />
 	</base:BaseRegistrationView.Resources>
 
 	<Grid RowDefinitions="*, auto" RowSpacing="{StaticResource LargeSpacing}">
