@@ -186,6 +186,8 @@ Note: This base class is not needed for the app to work properly, but is recomme
 
 The `[ObservableProperty]` attribute provided by the MAUI Community Toolkit allows you to automatically generate properties that raise `INotifyPropertyChanged` notifications. This simplifies the process of creating observable properties in your ViewModel.
 
+Note: the property defined under `[ObservableProperty]` must start with a lowercase character, and a public property starting with uppercase will be generated. The generated property is the one you access in other parts of the code to modify it.
+
 **Example ViewModel using `[ObservableProperty]`:**
 
 ```csharp
@@ -230,6 +232,7 @@ public partial class ExampleViewModel : BaseViewModel
 
 In this example, the `UpdateMessage` method is automatically exposed as an `ICommand` property named `UpdateMessageCommand`, which can be bound to buttons or other interactive elements in the UI.
 
+---
 
 ## Dependency Injection and Dependency Resolution
 

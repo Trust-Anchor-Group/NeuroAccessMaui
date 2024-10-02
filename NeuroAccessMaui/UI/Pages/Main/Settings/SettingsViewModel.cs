@@ -7,6 +7,8 @@ using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.UI.Pages.Identity.TransferIdentity;
 using NeuroAccessMaui.UI.Popups.Settings;
 using System.ComponentModel;
+using System.Globalization;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
@@ -45,6 +47,15 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 				this.ApprovedAuthenticationMethod = this.AuthenticationMethod;
 
 				this.DisplayMode = CurrentDisplayMode.ToString();
+
+				// App and Hardware information
+				this.VersionNumber = AppInfo.VersionString;
+				this.BuildNumber = AppInfo.BuildString;
+				this.BuildTime = GetBuildTime();
+				this.DeviceManufactorer = DeviceInfo.Manufacturer.ToString();
+				this.DeviceModel = DeviceInfo.Model.ToString();
+				this.DevicePlatform = DeviceInfo.Platform.ToString();
+				this.DeviceVersion = DeviceInfo.Version.ToString();
 			}
 			finally
 			{
@@ -143,6 +154,48 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		private string approvedAuthenticationMethod;
 
 		/// <summary>
+		/// Version number of the app.
+		/// </summary>
+		[ObservableProperty]
+		private string versionNumber;
+
+		/// <summary>
+		/// Build number of the app.
+		/// </summary>
+		[ObservableProperty]
+		private string buildNumber;
+
+		/// <summary>
+		/// Manufactor or brand of used device.
+		/// </summary>
+		[ObservableProperty]
+		private string deviceManufactorer;
+
+		/// <summary>
+		/// The model of used device.
+		/// </summary>
+		[ObservableProperty]
+		private string deviceModel;
+
+		/// <summary>
+		/// Platform or operating system of used device.
+		/// </summary>
+		[ObservableProperty]
+		private string devicePlatform;
+
+		/// <summary>
+		/// Version of device operating system.
+		/// </summary>
+		[ObservableProperty]
+		private string deviceVersion;
+
+		/// <summary>
+		/// Build time of the app.
+		/// </summary>
+		[ObservableProperty]
+		private string buildTime;
+
+		/// <summary>
 		/// Current display mode
 		/// </summary>
 		public static AppTheme CurrentDisplayMode
@@ -238,6 +291,33 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			{
 				ServiceRef.LogService.LogException(ex);
 			}
+		}
+
+		/// <summary>
+		/// Get the build time of the app as a formated string from build information.
+		/// </summary>
+		/// <returns> Build time excrated from assembly data </returns>
+		private static string GetBuildTime()
+		{
+			Assembly assembly = Assembly.GetExecutingAssembly();
+
+			const string BuildVersionMetadataPrefix = "+build";
+
+			AssemblyInformationalVersionAttribute? attribute = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
+			if (attribute?.InformationalVersion != null)
+			{
+				string value = attribute.InformationalVersion;
+
+				int datePosition = value.IndexOf(BuildVersionMetadataPrefix, System.StringComparison.OrdinalIgnoreCase);
+				if (datePosition > 0)
+				{
+					value = value.Substring(datePosition + BuildVersionMetadataPrefix.Length);
+
+					return value;
+				}
+			}
+
+			return string.Empty;
 		}
 
 		#endregion

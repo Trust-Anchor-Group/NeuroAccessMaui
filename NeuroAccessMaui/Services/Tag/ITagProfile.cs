@@ -71,6 +71,21 @@ namespace NeuroAccessMaui.Services.Tag
 		string? SelectedCountry { get; }
 
 		/// <summary>
+		/// User's first name(s).
+		/// </summary>
+		string? FirstName { get; set; }
+
+		/// <summary>
+		/// User's last name(s).
+		/// </summary>
+		string? LastName { get; set; }
+
+		/// <summary>
+		/// User's friendly name.
+		/// </summary>
+		string? FriendlyName { get; set; }
+
+		/// <summary>
 		/// Verified phone number.
 		/// </summary>
 		string? PhoneNumber { get; }
@@ -168,7 +183,7 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <summary>
 		/// Indicates if the password is numeric.
 		/// </summary>
-		bool IsNumericPassword { get;}
+		bool IsNumericPassword { get; }
 
 		/// <summary>
 		/// How the user authenticates itself with the App.

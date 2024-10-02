@@ -1020,6 +1020,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						if (Info is null || string.IsNullOrEmpty(Info.BareJid))
 							continue;
 
+						await ServiceRef.XmppService.ContractsClient.AuthorizeAccessToContractAsync(Created.ContractId, Info.BareJid, true);
+
 						string? Proposal = await ServiceRef.UiService.DisplayPrompt(ServiceRef.Localizer[nameof(AppResources.Proposal)],
 							ServiceRef.Localizer[nameof(AppResources.EnterProposal), Info.FriendlyName],
 							ServiceRef.Localizer[nameof(AppResources.Send)],

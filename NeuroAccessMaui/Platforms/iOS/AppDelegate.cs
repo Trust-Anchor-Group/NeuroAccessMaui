@@ -1,4 +1,5 @@
-﻿using Foundation;
+using Foundation;
+using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI;
 using UIKit;
 
@@ -20,6 +21,31 @@ namespace NeuroAccessMaui
 
 			return app;
 		}
+
+		/// <summary>
+		/// Method is called when an URL with a registered schema is being opened.
+		/// </summary>
+		/// <param name="app">Application</param>
+		/// <param name="url">URL</param>
+		/// <param name="options">Options</param>
+		/// <returns>If URL is handled.</returns>
+		public override bool OpenUrl(UIApplication Application, NSUrl Url, NSDictionary Options)
+		{
+			if (string.IsNullOrEmpty(Url.AbsoluteString))
+				return false;
+
+			try
+			{
+				App.OpenUrlSync(Url.AbsoluteString);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				return false;
+			}
+			return true;
+		}
+
 
 		// At the time of writing 8/4/2024
 		// There is a bug with the MAUI/Mopups library that causes the app to crash because some of the apps lifecycle events are not forwarded properly

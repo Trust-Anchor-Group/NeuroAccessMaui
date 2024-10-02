@@ -23,7 +23,7 @@ Before you begin, ensure you have met the following requirements:
 - **Xcode**: For iOS development, Xcode is required. You can install it from the Mac App Store.
 - **Emulators/Simulators**: You may need Android Emulators or iOS Simulators for testing the application without physical devices.
 - **Extensions**: If you are using VS Code the following extensions are recommended
-  - TO BE WRITTEN
+  - TBA
 
 ## Setting Up the Development Environment
 
