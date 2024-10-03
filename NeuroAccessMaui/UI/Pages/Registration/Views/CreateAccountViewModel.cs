@@ -65,6 +65,8 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		{
 			MainThread.BeginInvokeOnMainThread(async () =>
 			{
+				this.OnPropertyChanged(nameof(IsLegalIdentityCreated));
+				this.CreateIdentityCommand.NotifyCanExecuteChanged();
 				await this.DoAssignProperties();
 			});
 		}

@@ -67,8 +67,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				this.AlternativeName = this.GenerateUsername(this.Username);
 			}
 			this.CreateAccountCommand.NotifyCanExecuteChanged();
-
-			Console.WriteLine(this.UsernameIsValid +"&&"+ !string.IsNullOrEmpty(this.Username) + "&&" + string.IsNullOrEmpty(this.AlternativeName) + "&&" + this.IsXmppConnected);
 		}
 
 		[ObservableProperty]

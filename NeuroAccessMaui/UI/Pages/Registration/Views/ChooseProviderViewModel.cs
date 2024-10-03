@@ -189,7 +189,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		[RelayCommand]
 		private void Continue()
 		{
-			GoToRegistrationStep(RegistrationStep.CreateAccount);
+			GoToRegistrationStep(RegistrationStep.ValidatePhone);
 		}
 
 		[RelayCommand]

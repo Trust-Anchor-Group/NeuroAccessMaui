@@ -281,10 +281,9 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 								//!!! The old code for existing accounts. Should be implemented somehow else
 								//!!! if (this.IsRevalidating)
-								if (false)
-								{
-								}
-								else
+
+
+								if (string.IsNullOrEmpty(ServiceRef.TagProfile.Domain))
 								{
 									bool DefaultConnectivity;
 
