@@ -22,7 +22,7 @@
 
 		<!-- Versions -->
 		<ApplicationDisplayVersion>2.2.0</ApplicationDisplayVersion>
-		<ApplicationVersion>70</ApplicationVersion>
+		<ApplicationVersion>93</ApplicationVersion>
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">13.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">13.1</SupportedOSPlatformVersion>
@@ -30,6 +30,7 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
+		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">13.0</TargetPlatformMinVersion>
 		<PublishTrimmed>False</PublishTrimmed>
 		<PublishAot>False</PublishAot>
 		<Title>Neuro-Access</Title>
@@ -46,28 +47,31 @@
 		<CodesignKey>Apple Development: Maximiliam Berggren (6C6VB862B9)</CodesignKey>
 		<CodesignProvision>Neuro-Access Development Profile</CodesignProvision>
 		<PublishTrimmed>True</PublishTrimmed>
-		<RuntimeIdentifiers>ios-arm64</RuntimeIdentifiers>
+
+		<UseInterpreter>False</UseInterpreter>
+		<MtouchLink>SdkOnly</MtouchLink>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
 		<DebugSymbols>False</DebugSymbols>
-		<PublishTrimmed>True</PublishTrimmed>
+		<PublishTrimmed>True</PublishTrimmed> 
 		<RunAOTCompilation>True</RunAOTCompilation>
 	</PropertyGroup>
+
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
 		<RunAOTCompilation>False</RunAOTCompilation>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
-		<UseInterpreter>True</UseInterpreter>
-		<RunAOTCompilation>True</RunAOTCompilation>
-		<MtouchDebug>True</MtouchDebug>
+	<PropertyGroup>
+		<NoSymbolStrip Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">True</NoSymbolStrip>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
-		<UseInterpreter>False</UseInterpreter>
-	</PropertyGroup>
+	<Target Name="DoNotLinkWithBrowserEngineKit" AfterTargets="_ComputeLinkNativeExecutableInputs">
+		<ItemGroup>
+			<_NativeExecutableFrameworks Remove="BrowserEngineKit" />
+		</ItemGroup>
+	</Target>
 
 	<!-- Build Time-->
 	<PropertyGroup>
