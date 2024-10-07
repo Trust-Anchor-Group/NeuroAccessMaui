@@ -761,8 +761,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					CompositeEntry? compositeEntry = this.parametersByName[Entry.StyleId].Control as CompositeEntry;
 					if (compositeEntry is not null)
 					{
-						compositeEntry.BackgroundColor = BgColor;
-						compositeEntry.Border.BackgroundColor = BgColor;
+						compositeEntry.BgColor = BgColor;
 					}
 					//Border.BackgroundColor = BgColor;
 					//CompositeEntry.BackgroundColor = BgColor;
@@ -1214,22 +1213,22 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				{
 					Populate(ParametersLayout, await Parameter.ToMauiXaml(this.template.DeviceLanguage(), this.template));
 
-					Border Border = new()
-					{
-						StrokeThickness = 2,
-						Style = AppStyles.RegularCompositeEntryBorder,
-						Margin = AppStyles.SmallBottomMargins
-					};
-
 					ExtendedDatePicker Picker = new()
 					{
 						StyleId = Parameter.Name,
 						NullableDate = Parameter.ObjectValue as DateTime?,
 						Placeholder = Parameter.Guide,
-						TextColor = AppColors.NormalEditForeground,
+						TextColor = AppColors.NormalEditForeground
 					};
 
-					Border.Content = Picker;
+					Border Border = new()
+					{
+						Content = Picker,
+						StrokeThickness = 2,
+						Style = AppStyles.RegularCompositeEntryBorder,
+						Margin = AppStyles.SmallBottomMargins
+					};
+
 					ParametersLayout.Children.Add(Border);
 
 					Picker.NullableDateSelected += this.Parameter_DateChanged;
@@ -1252,11 +1251,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 					CompositeEntry Entry = new()
 					{
-						StyleId = Parameter.Name,
-						EntryData = Parameter.ObjectValue?.ToString() ?? string.Empty,
-						Placeholder = Parameter.Guide,
 						Style = AppStyles.RegularCompositeEntry,
-						Margin = AppStyles.SmallBottomMargins
+						EntryData = Parameter.ObjectValue?.ToString() ?? string.Empty,
+						Placeholder = Parameter.Guide
 					};
 					Entry.Entry.StyleId = Parameter.Name;
 
@@ -1290,7 +1287,16 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						};
 
 						Entry.VerticalOptions = LayoutOptions.Center;
-						Grid.Add(Entry, 0, 0);
+
+						Border border = new()
+                  {
+                        Content = Entry,
+                        StrokeThickness = 2,
+                        Style = AppStyles.RegularCompositeEntryBorder,
+								Margin = AppStyles.SmallBottomMargins
+						};
+
+						Grid.Add(border, 0, 0);
 
 						Controls.ImageButton CalcButton = new()
 						{
@@ -1312,7 +1318,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					}
 					else
 					{
-						ParametersLayout.Children.Add(Entry);
+						Border border = new()
+						{
+							Content = Entry,
+							StrokeThickness = 2,
+							Style = AppStyles.RegularCompositeEntryBorder,
+							Margin = AppStyles.SmallBottomMargins
+						};
+
+						ParametersLayout.Children.Add(border);
 					}
 
 					Entry.Entry.TextChanged += this.Parameter_TextChanged;

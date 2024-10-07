@@ -130,6 +130,25 @@ namespace NeuroAccessMaui.UI.Controls
 			set => this.SetValue(BorderStyleProperty, value);
 		}
 
+		public static readonly BindableProperty BgColorProperty = BindableProperty.Create(
+			 nameof(BgColor),
+			 typeof(Color),
+			 typeof(CompositeEntry),
+			 defaultValue: null,
+			 propertyChanged: (bindable, oldValue, newValue) =>
+			 {
+				 ((CompositeEntry)bindable).OnBgColorPropertyChanged((Color)oldValue, (Color)newValue);
+			 });
+
+		/// <summary>
+		/// Gets or sets the style for the Border.
+		/// </summary>
+		public Color BgColor
+		{
+			get => (Color)this.GetValue(BgColorProperty);
+			set => this.SetValue(BgColorProperty, value);
+		}
+
 		/// <summary>
 		/// Bindable property for the spacing between elements in the stack.
 		/// </summary>
@@ -419,7 +438,7 @@ namespace NeuroAccessMaui.UI.Controls
 			{
 				VerticalOptions = LayoutOptions.Center,
 				HorizontalOptions = LayoutOptions.Fill,
-				BackgroundColor = this.BackgroundColor,
+				BackgroundColor = this.BgColor,
 				TextColor = this.TextColor
 			};
 
@@ -448,7 +467,7 @@ namespace NeuroAccessMaui.UI.Controls
 			{
 				StrokeThickness = 2,
 				Content = this.innerGrid,
-				BackgroundColor = this.BackgroundColor
+				BackgroundColor = this.BgColor
 			};
 
 			this.Content = this.innerBorder;
@@ -536,6 +555,12 @@ namespace NeuroAccessMaui.UI.Controls
 		private void OnTextColorPropertyChanged(Color oldValue, Color newValue)
 		{
 			this.innerEntry.TextColor = newValue;
+		}
+
+		private void OnBgColorPropertyChanged(Color oldValue, Color newValue)
+		{
+			this.innerEntry.BackgroundColor = newValue;
+			this.innerBorder.BackgroundColor = newValue;
 		}
 
 		private void OnEntryFocused(object sender, FocusEventArgs e)
