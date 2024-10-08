@@ -761,7 +761,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					CompositeEntry? compositeEntry = this.parametersByName[Entry.StyleId].Control as CompositeEntry;
 					if (compositeEntry is not null)
 					{
-						compositeEntry.BgColor = BgColor;
+						compositeEntry.BackgroundColor = BgColor;
+						compositeEntry.Border.BackgroundColor = BgColor;
 					}
 					//Border.BackgroundColor = BgColor;
 					//CompositeEntry.BackgroundColor = BgColor;
@@ -1218,13 +1219,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						StyleId = Parameter.Name,
 						NullableDate = Parameter.ObjectValue as DateTime?,
 						Placeholder = Parameter.Guide,
-						TextColor = AppColors.NormalEditForeground
+						TextColor = AppColors.NormalEditForeground,
 					};
 
 					Border Border = new()
 					{
 						Content = Picker,
-						StrokeThickness = 2,
 						Style = AppStyles.RegularCompositeEntryBorder,
 						Margin = AppStyles.SmallBottomMargins
 					};
@@ -1282,7 +1282,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 							RowSpacing = 0,
 							ColumnSpacing = 8,
 							Padding = new Thickness(0),
-							Margin = new Thickness(0),
+							Margin = new Thickness(1),
 							VerticalOptions = LayoutOptions.Center
 						};
 
@@ -1291,7 +1291,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						Border border = new()
                   {
                         Content = Entry,
-                        StrokeThickness = 2,
+                        StrokeThickness = 0,
                         Style = AppStyles.RegularCompositeEntryBorder,
 								Margin = AppStyles.SmallBottomMargins
 						};
@@ -1321,7 +1321,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						Border border = new()
 						{
 							Content = Entry,
-							StrokeThickness = 2,
+							StrokeThickness = 0,
 							Style = AppStyles.RegularCompositeEntryBorder,
 							Margin = AppStyles.SmallBottomMargins
 						};
