@@ -1,5 +1,6 @@
 ﻿using System.Windows.Input;
 using Microsoft.Maui.Controls.Shapes;
+using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using PathShape = Microsoft.Maui.Controls.Shapes.Path;
 
@@ -446,6 +447,7 @@ namespace NeuroAccessMaui.UI.Controls
 
 			this.innerGrid = new Grid
 			{
+				Padding = AppStyles.SmallLeftRightMargins,
 				HorizontalOptions = LayoutOptions.Fill,
 				ColumnDefinitions =
 					 {
@@ -485,6 +487,9 @@ namespace NeuroAccessMaui.UI.Controls
 			// Handle focus events
 			this.innerEntry.Focused += this.OnEntryFocused;
 			this.innerEntry.Unfocused += this.OnEntryUnfocused;
+
+			this.innerPath.Margin = this.innerPath.IsVisible ? new Thickness(0, 0, this.StackSpacing, 0) : new Thickness(0);
+			this.clickablePath.Margin = this.clickablePath.IsVisible ? new Thickness(this.StackSpacing, 0, 0, 0) : new Thickness(0);
 		}
 
 		private void OnKeyboardPropertyChanged(Keyboard oldValue, Keyboard newValue)
@@ -499,21 +504,28 @@ namespace NeuroAccessMaui.UI.Controls
 
 		private void OnStackSpacingPropertyChanged(double oldValue, double newValue)
 		{
-			this.innerGrid.ColumnSpacing = (this.innerPath.IsVisible || this.clickablePath.IsVisible) ? newValue : 0;
+			if (this.innerPath.IsVisible)
+			{
+				this.innerPath.Margin = new Thickness(0, 0, newValue, 0);
+			}
+			if (this.clickablePath.IsVisible)
+			{
+				this.clickablePath.Margin = new Thickness(newValue, 0, 0, 0);
+			}
 		}
 
 		private void OnPathDataPropertyChanged(Geometry oldValue, Geometry newValue)
 		{
 			this.innerPath.Data = newValue;
 			this.innerPath.IsVisible = newValue != null;
-			this.innerGrid.ColumnSpacing = (this.innerPath.IsVisible || this.clickablePath.IsVisible) ? this.StackSpacing : 0;
+			this.innerPath.Margin = this.innerPath.IsVisible ? new Thickness(0, 0, this.StackSpacing, 0) : new Thickness(0);
 		}
 
 		private void OnClickablePathDataPropertyChanged(Geometry oldValue, Geometry newValue)
 		{
 			this.clickablePath.Data = newValue;
 			this.clickablePath.IsVisible = newValue != null;
-			this.innerGrid.ColumnSpacing = (this.innerPath.IsVisible || this.clickablePath.IsVisible) ? this.StackSpacing : 0;
+			this.clickablePath.Margin = this.clickablePath.IsVisible ? new Thickness(this.StackSpacing, 0, 0, 0) : new Thickness(0);
 		}
 
 		private void OnPathStylePropertyChanged(Style oldValue, Style newValue)
