@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFrameworks>net8.0-ios;net8.0-android</TargetFrameworks>
@@ -72,6 +72,11 @@
 			<_NativeExecutableFrameworks Remove="BrowserEngineKit" />
 		</ItemGroup>
 	</Target>
+
+	<!-- Build Time-->
+	<PropertyGroup>
+		<SourceRevisionId>build$([System.DateTime]::UtcNow.ToString("yyyy-MM-dd HH:mm:ss"))</SourceRevisionId>
+	</PropertyGroup>
 
 	<!-- Build Time-->
 	<PropertyGroup>
