@@ -1,178 +1,88 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Globalization;
+﻿using System.ComponentModel;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Maui.Controls.Shapes;
+using Mopups.Services;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Data;
 using NeuroAccessMaui.Services.Localization;
 using NeuroAccessMaui.Services.Tag;
-using NeuroAccessMaui.UI.Popups.Info;
+using NeuroAccessMaui.UI.Popups;
 using Waher.Content;
+using System.Globalization;
+using NeuroAccessMaui.Services.UI;
+using NeuroAccessMaui.UI.Pages.Main.VerifyCode;
 using Waher.Content.Xml;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 
 namespace NeuroAccessMaui.UI.Pages.Registration.Views
 {
-	public partial class ChooseProviderViewModel : BaseRegistrationViewModel
+	public partial class ContactSupportViewModel : BaseRegistrationViewModel, ICodeVerification
 	{
-		public ChooseProviderViewModel()
-			: base(RegistrationStep.ChooseProvider)
-		{
-		}
 
-		/// <inheritdoc />
+        public ContactSupportViewModel() : base(RegistrationStep.ContactSupport)
+        {
+			this.SupportEmail = "neuro-access@trustanchorgroup.com"; 
+        }
+
+        [ObservableProperty]
+        private string supportEmail;
+
+        [RelayCommand]
+        private async Task ContactSupport()
+        {
+            string email = this.SupportEmail;
+            string subject = ServiceRef.Localizer[nameof(AppResources.SupportEmailSubject)];
+
+            string mailtoUri = $"mailto:{email}?subject={Uri.EscapeDataString(subject)}";
+
+            try
+            {
+                if(!await Launcher.OpenAsync(new Uri(mailtoUri)))
+				{
+					await ServiceRef.UiService.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						ServiceRef.Localizer[nameof(AppResources.EmailClientNotAvailable), this.SupportEmail],
+						ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				}
+            }
+            catch (Exception)
+            {
+                await ServiceRef.UiService.DisplayAlert(
+                    ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+                    ServiceRef.Localizer[nameof(AppResources.EmailClientNotAvailable), this.SupportEmail],
+                    ServiceRef.Localizer[nameof(AppResources.Ok)]);
+            }
+        }
 		protected override async Task OnInitialize()
 		{
 			await base.OnInitialize();
 
-			ServiceRef.TagProfile.Changed += this.TagProfile_Changed;
-			LocalizationManager.Current.PropertyChanged += this.Localization_Changed;
-		}
+			LocalizationManager.Current.PropertyChanged += this.LocalizationManagerEventHandler;
 
-		/// <inheritdoc />
-		protected override async Task OnDispose()
-		{
-			ServiceRef.TagProfile.Changed -= this.TagProfile_Changed;
-			LocalizationManager.Current.PropertyChanged -= this.Localization_Changed;
-
-			await base.OnDispose();
-		}
-
-		/// <inheritdoc />
-		public override async Task DoAssignProperties()
-		{
-			await base.DoAssignProperties();
-
-			if (IsAccountCreated)
-				GoToRegistrationStep(RegistrationStep.CreateAccount);
-		}
-
-		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-
-			switch (e.PropertyName)
+			if (App.Current is not null)
 			{
-				/*
-				case nameof(this.SelectedButton):
-					if ((this.SelectedButton is not null) && (this.SelectedButton.Button == ButtonType.Change))
-					{
-						MainThread.BeginInvokeOnMainThread(() =>
-						{
-							if (this.ScanQrCodeCommand.CanExecute(null))
-								this.ScanQrCodeCommand.Execute(null);
-						});
-					}
-					break;
-				*/
-				case nameof(this.IsBusy):
-					this.ContinueCommand.NotifyCanExecuteChanged();
-					this.ScanQrCodeCommand.NotifyCanExecuteChanged();
-					break;
+				this.CountDownTimer = App.Current.Dispatcher.CreateTimer();
+				this.CountDownTimer.Interval = TimeSpan.FromMilliseconds(1000);
+				this.CountDownTimer.Tick += this.CountDownEventHandler;
 			}
-		}
-
-		/// <summary>
-		/// The localized intro text to display to the user for explaining what 'choose account' is for.
-		/// </summary>
-		[ObservableProperty]
-		private string domainName = string.Empty;
-
-		/// <summary>
-		/// The localized intro text to display to the user for explaining what 'choose account' is for.
-		/// </summary>
-		[ObservableProperty]
-		[NotifyPropertyChangedFor(nameof(HasLocalizedName))]
-		private string localizedName = string.Empty;
-
-		/// <summary>
-		/// The localized intro text to display to the user for explaining what 'choose account' is for.
-		/// </summary>
-		[ObservableProperty]
-		[NotifyPropertyChangedFor(nameof(HasLocalizedDescription))]
-		private string localizedDescription = string.Empty;
-
-		/// <summary>
-		/// The localized intro text to display to the user for explaining what 'choose account' is for.
-		/// </summary>
-		public bool HasLocalizedName => this.LocalizedName.Length > 0;
-
-		/// <summary>
-		/// The localized intro text to display to the user for explaining what 'choose account' is for.
-		/// </summary>
-		public bool HasLocalizedDescription => this.LocalizedDescription.Length > 0;
-
-		/// <summary>
-		/// If App has an XMPP account defined.
-		/// </summary>
-		public static bool IsAccountCreated => !string.IsNullOrEmpty(ServiceRef.TagProfile.Account);
-
-		/*
-				/// <summary>
-				/// Holds the list of buttons to display.
-				/// </summary>
-				public Collection<ButtonInfo> Buttons { get; } =
-					[
-						new(ButtonType.Approve),
-						new(ButtonType.Change),
-					];
-
-
-				/// <summary>
-				/// The selected Button
-				/// </summary>
-				[ObservableProperty]
-				[NotifyCanExecuteChangedFor(nameof(ContinueCommand))]
-				private ButtonInfo? selectedButton;
-		*/
-		private async void TagProfile_Changed(object? Sender, PropertyChangedEventArgs e)
-		{
-			if (this.DomainName != ServiceRef.TagProfile.Domain)
-				await this.SetDomainName();
-		}
-
-		private async void Localization_Changed(object? Sender, PropertyChangedEventArgs e)
-		{
-			await this.SetDomainName();
-		}
-
-		private async Task SetDomainName()
-		{
-			if (string.IsNullOrEmpty(ServiceRef.TagProfile.Domain))
-			{
-				this.DomainName = string.Empty;
-				this.LocalizedName = string.Empty;
-				this.LocalizedDescription = string.Empty;
-				return;
-			}
-
-			this.DomainName = ServiceRef.TagProfile.Domain;
 
 			try
 			{
-				Uri DomainInfo = new("https://" + this.DomainName + "/Agent/Account/DomainInfo");
-				string AcceptLanguage = App.SelectedLanguage.TwoLetterISOLanguageName;
+				object Result = await InternetContent.PostAsync(
+					new Uri("https://" + Constants.Domains.IdDomain + "/ID/CountryCode.ws"), string.Empty,
+					new KeyValuePair<string, string>("Accept", "application/json"));
 
-				if (AcceptLanguage != "en")
-					AcceptLanguage += ";q=1,en;q=0.9";
-
-				object Result = await InternetContent.GetAsync(DomainInfo,
-					new KeyValuePair<string, string>("Accept", "application/json"),
-					new KeyValuePair<string, string>("Accept-Language", AcceptLanguage),
-					new KeyValuePair<string, string>("Accept-Encoding", "0"));
-				if (Result is Dictionary<string, object> Response)
+				if ((Result is Dictionary<string, object> Response) &&
+					 Response.TryGetValue("CountryCode", out object? cc) &&
+					 (cc is string CountryCode))
 				{
-					if (Response.TryGetValue("humanReadableName", out object? Obj) && Obj is string LocalizedName)
-						this.LocalizedName = LocalizedName;
-
-					if (Response.TryGetValue("humanReadableDescription", out Obj) && Obj is string LocalizedDescription)
-						this.LocalizedDescription = LocalizedDescription;
+					if (ISO_3166_1.TryGetCountryByCode(CountryCode, out ISO_3166_Country? Country))
+						this.SelectedCountry = Country;
 				}
 			}
 			catch (Exception ex)
@@ -181,40 +91,215 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			}
 		}
 
+		public void LocalizationManagerEventHandler(object? sender, PropertyChangedEventArgs e)
+		{
+			this.OnPropertyChanged(nameof(this.LocalizedSendCodeText));
+		}
+
+		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+		{
+			base.OnPropertyChanged(e);
+
+			if (e.PropertyName == nameof(this.IsBusy))
+				this.SendCommand.NotifyCanExecuteChanged();
+		}
+
+
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(CanSend))]
+		[NotifyPropertyChangedFor(nameof(EmailValidationError))]
+		[NotifyCanExecuteChangedFor(nameof(this.SendCommand))]
+		private bool emailIsValid;
+
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(CanSend))]
+		[NotifyPropertyChangedFor(nameof(PhoneValidationError))]
+		[NotifyCanExecuteChangedFor(nameof(this.SendCommand))]
+		private bool phoneIsValid;
+
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(CanSend))]
+		[NotifyCanExecuteChangedFor(nameof(this.SendCommand))]
+		private string emailText = string.Empty;
+
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(CanSend))]
+		[NotifyCanExecuteChangedFor(nameof(this.SendCommand))]
+		private string phoneText = string.Empty;
+
+		public string EmailValidationError => !this.EmailIsValid ? ServiceRef.Localizer[nameof(AppResources.EmailValidationFormat)] : string.Empty;
+
+		public string PhoneValidationError => !this.PhoneIsValid ? ServiceRef.Localizer[nameof(AppResources.PhoneValidationDigits)] : string.Empty;
+
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(LocalizedSendCodeText))]
+		[NotifyCanExecuteChangedFor(nameof(SendCommand))]
+		[NotifyCanExecuteChangedFor(nameof(ResendCodeCommand))]
+		private int countDownSeconds;
+
+		[ObservableProperty]
+		private IDispatcherTimer? countDownTimer;
+
+		public bool CanSend => this.EmailIsValid && this.PhoneIsValid &&
+									!this.IsBusy &&
+									(this.CountDownSeconds <= 0) &&
+									!string.IsNullOrEmpty(this.EmailText) && !string.IsNullOrEmpty(this.PhoneText);
+
+		[ObservableProperty]
+		ISO_3166_Country selectedCountry = ISO_3166_1.DefaultCountry;
+
+
+		[ObservableProperty]
+		private string? localizedPhoneValidationError;
+		public string LocalizedSendCodeText
+		{
+			get
+			{
+				if (this.CountDownSeconds > 0)
+					return ServiceRef.Localizer[nameof(AppResources.SendSeconds), this.CountDownSeconds];
+
+				return ServiceRef.Localizer[nameof(AppResources.Send)];
+			}
+		}
+
+
+
+		[RelayCommand]
+		private async Task SelectPhoneCode()
+		{
+			SelectPhoneCodePopup Page = new();
+			await MopupService.Instance.PushAsync(Page);
+
+			ISO_3166_Country? Result = await Page.Result;
+
+			if (Result is not null)
+				this.SelectedCountry = Result;
+
+			return;
+		}
+		public bool CanResendCode => this.CountDownSeconds <= 0;
+
+		[RelayCommand(CanExecute = nameof(this.CanSend))]
+		private async Task Send()
+		{
+			IsBusy = true;
+			try
+			{
+				if (!ServiceRef.NetworkService.IsOnline)
+				{
+					await ServiceRef.UiService.DisplayAlert(
+						 ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						 ServiceRef.Localizer[nameof(AppResources.NetworkSeemsToBeMissing)]);
+					return;
+				}
+
+				string fullPhoneNumber = $"+{SelectedCountry.DialCode}{PhoneText}";
+
+				if (SelectedCountry.DialCode == "46") // Adjust for Swedish numbers
+					fullPhoneNumber = $"+{SelectedCountry.DialCode}{PhoneText.TrimStart('0')}";
+
+				// Send phone verification code
+				object phoneSendResult = await InternetContent.PostAsync(
+					 new Uri("https://" + Constants.Domains.IdDomain + "/ID/SendVerificationMessage.ws"),
+					 new Dictionary<string, object>
+					 {
+					 { "Nr", fullPhoneNumber },
+					 { "AppName", Constants.Application.Name },
+					 { "Language", CultureInfo.CurrentCulture.TwoLetterISOLanguageName }
+					 }, new KeyValuePair<string, string>("Accept", "application/json"));
+
+
+				bool phoneSent = phoneSendResult is Dictionary<string, object> phoneResponse &&
+									  phoneResponse.TryGetValue("Status", out var phoneObj) &&
+									  phoneObj is bool phoneStatus && phoneStatus;
+
+				if (phoneSent)
+				{
+					StartTimer();
+
+					// Navigate to VerifyCodePage for phone code
+					if (!await this.VerifyCodeAsync(fullPhoneNumber, isEmail: false))
+					{
+						return;
+					}
+
+					// Verification successful - DO STUFF
+				}
+
+
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiService.DisplayAlert(
+					 ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message,
+					 ServiceRef.Localizer[nameof(AppResources.Ok)]);
+			}
+			finally
+			{
+				this.IsBusy = false;
+			}
+		}
+
+		[RelayCommand(CanExecute = nameof(CanResendCode))]
+		private async Task ResendCode()
+		{
+
+		}
+
+		private async Task<bool> VerifyCodeAsync(string identifier, bool isEmail)
+		{
+			VerifyCodeNavigationArgs navigationArgs = new(this, identifier);
+			await ServiceRef.UiService.GoToAsync(nameof(VerifyCodePage), navigationArgs, BackMethod.Pop);
+			string? code = await navigationArgs.VarifyCode!.Task;
+
+			if (!string.IsNullOrEmpty(code))
+			{
+				var parameters = new Dictionary<string, object>
+				{
+					{ isEmail ? "EMail" : "Nr", identifier },
+					{ "Code", int.Parse(code, NumberStyles.None, CultureInfo.InvariantCulture) }
+				};
+
+				object verifyResult = await InternetContent.PostAsync(
+					new Uri("https://" + Constants.Domains.IdDomain + "/ID/VerifyNumber.ws"),
+					parameters, new KeyValuePair<string, string>("Accept", "application/json"));
+
+				bool verified = verifyResult is Dictionary<string, object> verifyResponse &&
+									 verifyResponse.TryGetValue("Status", out var obj) &&
+									 obj is bool status && status;
+
+				return verified;
+			}
+
+			return false;
+		}
+
+
+		private void StartTimer()
+		{
+			if (this.CountDownTimer is not null)
+			{
+				this.CountDownSeconds = 300;
+
+				if (!this.CountDownTimer.IsRunning)
+					this.CountDownTimer.Start();
+			}
+		}
+
+		private void CountDownEventHandler(object? sender, EventArgs e)
+		{
+			if (this.CountDownTimer is not null)
+			{
+				if (this.CountDownSeconds > 0)
+					this.CountDownSeconds--;
+				else
+					this.CountDownTimer.Stop();
+			}
+		}
+
 		public bool CanScanQrCode => !this.IsBusy;
 
-		public bool CanContinue => !this.IsBusy;
-		//&& (this.SelectedButton is not null) && (this.SelectedButton.Button == ButtonType.Approve);
-
-		[RelayCommand]
-		private void Continue()
-		{
-			GoToRegistrationStep(RegistrationStep.ValidatePhone);
-		}
-
-		[RelayCommand]
-		private static async Task ServiceProviderInfo()
-		{
-			string title = ServiceRef.Localizer[nameof(AppResources.WhatIsAServiceProvider)];
-			string message = ServiceRef.Localizer[nameof(AppResources.ServiceProviderInfo)];
-			ShowInfoPopup infoPage = new(title, message);
-			await ServiceRef.UiService.PushAsync(infoPage);
-		}
-
-		[RelayCommand]
-		private async Task SelectedServiceProviderInfo()
-		{
-			string title = this.LocalizedName;
-			string message = this.LocalizedDescription;
-			ShowInfoPopup infoPage = new(title, message);
-			await ServiceRef.UiService.PushAsync(infoPage);
-		}
-
-		[RelayCommand]
-		private static void UndoSelection()
-		{
-			ServiceRef.TagProfile.UndoDomainSelection();
-		}
 
 		[RelayCommand(CanExecute = nameof(CanScanQrCode))]
 		private async Task ScanQrCode()
@@ -286,6 +371,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						ServiceRef.Localizer[nameof(AppResources.UnableToAccessInvitation)],
 						ServiceRef.Localizer[nameof(AppResources.Ok)]);
+					this.IsBusy = false;
 					return;
 				}
 
@@ -388,11 +474,17 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 						}
 					}
 
-					if (LegalIdDefinition is not null)
+					if (AccountDone && LegalIdDefinition is not null)
+					{
 						await ServiceRef.XmppService.ImportSigningKeys(LegalIdDefinition);
-
-					if (AccountDone)
-						GoToRegistrationStep(RegistrationStep.CreateAccount);
+						GoToRegistrationStep(RegistrationStep.Finalize);
+					}
+					else if (AccountDone)
+					{
+						GoToRegistrationStep(RegistrationStep.ValidatePhone);
+					}
+					else
+						GoToRegistrationStep(RegistrationStep.ChooseProvider);
 				}
 				catch (Exception ex)
 				{
@@ -402,8 +494,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						ServiceRef.Localizer[nameof(AppResources.InvalidInvitationCode)],
 						ServiceRef.Localizer[nameof(AppResources.Ok)]);
-
-					return;
 				}
 			}
 			finally
@@ -568,7 +658,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 						errorMessage ?? string.Empty,
 						ServiceRef.Localizer[nameof(AppResources.Ok)]);
 				}
-
 				return succeeded;
 			}
 			catch (Exception ex)
@@ -584,61 +673,4 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			return false;
 		}
 	}
-	/*
-		public enum ButtonType
-		{
-			Approve = 0,
-			Change = 1,
-		}
-
-		public partial class ButtonInfo : ObservableObject
-		{
-			public ButtonInfo(ButtonType Button)
-			{
-				this.Button = Button;
-
-				LocalizationManager.CurrentCultureChanged += this.OnCurrentCultureChanged;
-			}
-
-			~ButtonInfo()
-			{
-				LocalizationManager.CurrentCultureChanged -= this.OnCurrentCultureChanged;
-			}
-
-			private void OnCurrentCultureChanged(object? Sender, CultureInfo Culture)
-			{
-				this.OnPropertyChanged(nameof(this.LocalizedName));
-				//!!! not implemented yet
-				// this.OnPropertyChanged(nameof(this.LocalizedDescription));
-			}
-
-			public ButtonType Button { get; set; }
-
-			public string LocalizedName
-			{
-				get
-				{
-					return this.Button switch
-					{
-						ButtonType.Approve => ServiceRef.Localizer[nameof(AppResources.ProviderSectionApproveOption)],
-						ButtonType.Change => ServiceRef.Localizer[nameof(AppResources.ProviderSectionChangeOption)],
-						_ => throw new NotImplementedException(),
-					};
-				}
-			}
-
-			public Geometry ImageData
-			{
-				get
-				{
-					return this.Button switch
-					{
-						ButtonType.Approve => Geometries.ApproveProviderIconPath,
-						ButtonType.Change => Geometries.ChangeProviderIconPath,
-						_ => throw new NotImplementedException(),
-					};
-				}
-			}
-		}
-		*/
 }

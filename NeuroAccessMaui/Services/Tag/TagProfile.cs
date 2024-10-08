@@ -4,6 +4,7 @@ using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Storage;
 using NeuroAccessMaui.UI;
 using System.ComponentModel;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using Waher.Networking.XMPP.Contracts;
@@ -52,6 +53,9 @@ namespace NeuroAccessMaui.Services.Tag
 		private string? apiKey;
 		private string? apiSecret;
 		private string? selectedCountry;
+		private string? firstName;
+		private string? lastName;
+		private string? friendlyName;
 		private string? phoneNumber;
 		private string? eMail;
 		private string? account;
@@ -72,7 +76,7 @@ namespace NeuroAccessMaui.Services.Tag
 		private bool isTest;
 		private PurposeUse purpose;
 		private DateTime? testOtpTimestamp;
-		private RegistrationStep step = RegistrationStep.ValidatePhone;
+		private RegistrationStep step;
 		private AppTheme? theme;
 		private AuthenticationMethod authenticationMethod;
 		private bool loadingProperties;
@@ -125,6 +129,9 @@ namespace NeuroAccessMaui.Services.Tag
 				ApiKey = this.ApiKey,
 				ApiSecret = this.ApiSecret,
 				SelectedCountry = this.SelectedCountry,
+				FirstName = this.FirstName,
+				LastName = this.LastName,
+				FriendlyName = this.FriendlyName,
 				PhoneNumber = this.PhoneNumber,
 				EMail = this.EMail,
 				DefaultXmppConnectivity = this.DefaultXmppConnectivity,
@@ -179,6 +186,9 @@ namespace NeuroAccessMaui.Services.Tag
 				this.ApiKey = Configuration.ApiKey;
 				this.ApiSecret = Configuration.ApiSecret;
 				this.SelectedCountry = Configuration.SelectedCountry;
+				this.FirstName = Configuration.FirstName;
+				this.LastName = Configuration.LastName;
+				this.FriendlyName = Configuration.FriendlyName;
 				this.PhoneNumber = Configuration.PhoneNumber;
 				this.EMail = Configuration.EMail;
 				this.InitialDefaultXmppConnectivity = Configuration.InitialDefaultXmppConnectivity;
@@ -213,7 +223,10 @@ namespace NeuroAccessMaui.Services.Tag
 
 				this.SetTheme();
 				// Do this last, as listeners will read the other properties when the event is fired.
-				this.GoToStep(Configuration.Step);
+				if (Configuration.Step > RegistrationStep.GetStarted && Configuration.Step <= RegistrationStep.CreateAccount)
+					this.GoToStep(RegistrationStep.ValidatePhone);
+				else
+					this.GoToStep(Configuration.Step);
 			}
 			finally
 			{
@@ -418,6 +431,51 @@ namespace NeuroAccessMaui.Services.Tag
 				{
 					this.selectedCountry = value;
 					this.FlagAsDirty(nameof(this.SelectedCountry));
+				}
+			}
+		}
+
+		/// <summary>
+		/// User's first name(s).
+		/// </summary>
+		public string? FirstName
+		{
+			get => this.firstName;
+			set
+			{
+				if (!string.Equals(this.firstName, value, StringComparison.Ordinal))
+				{
+					this.firstName = value;
+					this.FlagAsDirty(nameof(this.FirstName));
+				}
+			}
+		}
+
+		/// <summary>
+		/// User's last name(s).
+		/// </summary>
+		public string? LastName
+		{
+			get => this.lastName;
+			set
+			{
+				if (!string.Equals(this.lastName, value, StringComparison.Ordinal))
+				{
+					this.lastName = value;
+					this.FlagAsDirty(nameof(this.LastName));
+				}
+			}
+		}
+
+		public string? FriendlyName
+		{
+			get => this.friendlyName;
+			set
+			{
+				if (!string.Equals(this.friendlyName, value, StringComparison.Ordinal))
+				{
+					this.friendlyName = value;
+					this.FlagAsDirty(nameof(this.FriendlyName));
 				}
 			}
 		}
@@ -1274,7 +1332,7 @@ namespace NeuroAccessMaui.Services.Tag
 			this.httpFileUploadMaxSize = 0;
 			this.isTest = false;
 			this.TestOtpTimestamp = null;
-			this.step = RegistrationStep.ValidatePhone;
+			this.step = RegistrationStep.GetStarted;
 			this.defaultXmppConnectivity = false;
 			this.nrReviews = 0;
 			this.supportsPushNotification = false;
@@ -1463,5 +1521,9 @@ namespace NeuroAccessMaui.Services.Tag
 				this.HasContractTokenCreationTemplatesReferences = true;
 		}
 
+	
+
 	}
+
 }
+

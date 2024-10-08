@@ -24,13 +24,14 @@ namespace NeuroAccessMaui
 	{
 		private static NfcAdapter? nfcAdapter = null;
 
-		protected override void OnPostCreate(Bundle? savedInstanceState)
+		protected override async void OnPostCreate(Bundle? savedInstanceState)
 		{
 			try
 			{
 				base.OnPostCreate(savedInstanceState);
-
+				await this.HandleIntent(this.Intent);
 				nfcAdapter = NfcAdapter.GetDefaultAdapter(this);
+
 			}
 			catch (Exception ex)
 			{
@@ -74,6 +75,12 @@ namespace NeuroAccessMaui
 
 		protected override async void OnNewIntent(Intent? Intent)
 		{
+			base.OnNewIntent(Intent);
+			await this.HandleIntent(Intent);
+		}
+
+		async Task HandleIntent(Intent? Intent)
+		{
 			if (Intent is null)
 				return;
 
@@ -83,6 +90,7 @@ namespace NeuroAccessMaui
 				{
 					case Intent.ActionView:
 						string? Url = Intent?.Data?.ToString();
+						Console.WriteLine(Url);
 						if (!string.IsNullOrEmpty(Url))
 							App.OpenUrlSync(Url);
 						break;
