@@ -1,213 +1,64 @@
 ﻿using System.Windows.Input;
+using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.Shapes;
-using NeuroAccessMaui.Services;
-using PathShape = Microsoft.Maui.Controls.Shapes.Path;
 
 namespace NeuroAccessMaui.UI.Controls
 {
+	/// <summary>
+	/// A customizable entry control that allows setting views on the left and right sides of the entry.
+	/// </summary>
 	public class CompositeEntry : ContentView
 	{
-		private readonly Border innerBorder;
-		private readonly Grid innerGrid;
-		private readonly PathShape innerPath;
-		private readonly PathShape clickablePath;
-		private readonly Entry innerEntry;
+		#region Bindable Properties
 
 		/// <summary>
-		/// Bindable property for the command to be executed when the Entry gains focus.
+		/// Bindable property for the view displayed on the left side of the entry.
 		/// </summary>
-		public static readonly BindableProperty FocusedCommandProperty = BindableProperty.Create(
-			 nameof(FocusedCommand),
-			 typeof(ICommand),
-			 typeof(CompositeEntry));
-
-		/// <summary>
-		/// Gets or sets the command to be executed when the Entry gains focus.
-		/// </summary>
-		public ICommand FocusedCommand
-		{
-			get => (ICommand)this.GetValue(FocusedCommandProperty);
-			set => this.SetValue(FocusedCommandProperty, value);
-		}
-
-		/// <summary>
-		/// Bindable property for the command to be executed when the Entry loses focus.
-		/// </summary>
-		public static readonly BindableProperty UnfocusedCommandProperty = BindableProperty.Create(
-			 nameof(UnfocusedCommand),
-			 typeof(ICommand),
-			 typeof(CompositeEntry));
-
-		/// <summary>
-		/// Gets or sets the command to be executed when the Entry loses focus.
-		/// </summary>
-		public ICommand UnfocusedCommand
-		{
-			get => (ICommand)this.GetValue(UnfocusedCommandProperty);
-			set => this.SetValue(UnfocusedCommandProperty, value);
-		}
-
-		/// <summary>
-		/// Bindable property for the command to be executed when the clickable PathData is tapped.
-		/// </summary>
-		public static readonly BindableProperty PathClickedCommandProperty = BindableProperty.Create(
-			 nameof(PathClickedCommand),
-			 typeof(ICommand),
-			 typeof(CompositeEntry));
-
-		/// <summary>
-		/// Gets or sets the command to be executed when the clickable PathData is tapped.
-		/// </summary>
-		public ICommand PathClickedCommand
-		{
-			get => (ICommand)this.GetValue(PathClickedCommandProperty);
-			set => this.SetValue(PathClickedCommandProperty, value);
-		}
-
-		/// <summary>
-		/// Bindable property for the clickable PathData to be displayed.
-		/// </summary>
-		public static readonly BindableProperty ClickablePathDataProperty = BindableProperty.Create(
-			 nameof(ClickablePathData),
-			 typeof(Geometry),
+		public static readonly BindableProperty LeftViewProperty = BindableProperty.Create(
+			 nameof(LeftView),
+			 typeof(View),
 			 typeof(CompositeEntry),
-			 defaultValue: null,
-			 propertyChanged: (bindable, oldValue, newValue) =>
-			 {
-				 ((CompositeEntry)bindable).OnClickablePathDataPropertyChanged((Geometry)oldValue, (Geometry)newValue);
-			 });
+			 propertyChanged: OnLeftViewPropertyChanged);
 
 		/// <summary>
-		/// Gets or sets the clickable PathData to be displayed.
+		/// Gets or sets the view displayed on the left side of the entry.
 		/// </summary>
-		public Geometry ClickablePathData
+		public View LeftView
 		{
-			get => (Geometry)this.GetValue(ClickablePathDataProperty);
-			set => this.SetValue(ClickablePathDataProperty, value);
+			get => (View)this.GetValue(LeftViewProperty);
+			set => this.SetValue(LeftViewProperty, value);
 		}
 
 		/// <summary>
-		/// Bindable property for the Keyboard type.
+		/// Bindable property for the view displayed on the right side of the entry.
 		/// </summary>
-		public static readonly BindableProperty KeyboardProperty = BindableProperty.Create(
-			 nameof(Keyboard),
-			 typeof(Keyboard),
+		public static readonly BindableProperty RightViewProperty = BindableProperty.Create(
+			 nameof(RightView),
+			 typeof(View),
 			 typeof(CompositeEntry),
-			 defaultValue: Keyboard.Default,
-			 propertyChanged: (bindable, oldValue, newValue) =>
-			 {
-				 ((CompositeEntry)bindable).OnKeyboardPropertyChanged((Keyboard)oldValue, (Keyboard)newValue);
-			 });
+			 propertyChanged: OnRightViewPropertyChanged);
 
 		/// <summary>
-		/// Gets or sets the Keyboard type for the Entry.
+		/// Gets or sets the view displayed on the right side of the entry.
 		/// </summary>
-		public Keyboard Keyboard
+		public View RightView
 		{
-			get => (Keyboard)this.GetValue(KeyboardProperty);
-			set => this.SetValue(KeyboardProperty, value);
+			get => (View)this.GetValue(RightViewProperty);
+			set => this.SetValue(RightViewProperty, value);
 		}
 
 		/// <summary>
-		/// Bindable property for the border style.
-		/// </summary>
-		public static readonly BindableProperty BorderStyleProperty = BindableProperty.Create(
-			 nameof(BorderStyle),
-			 typeof(Style),
-			 typeof(CompositeEntry),
-			 defaultValue: null,
-			 propertyChanged: (bindable, oldValue, newValue) =>
-			 {
-				 ((CompositeEntry)bindable).OnBorderStylePropertyChanged((Style)oldValue, (Style)newValue);
-			 });
-
-		/// <summary>
-		/// Gets or sets the style for the Border.
-		/// </summary>
-		public Style BorderStyle
-		{
-			get => (Style)this.GetValue(BorderStyleProperty);
-			set => this.SetValue(BorderStyleProperty, value);
-		}
-
-		/// <summary>
-		/// Bindable property for the spacing between elements in the stack.
-		/// </summary>
-		public static readonly BindableProperty StackSpacingProperty = BindableProperty.Create(
-			 nameof(StackSpacing),
-			 typeof(double),
-			 typeof(CompositeEntry),
-			 defaultValue: 0.0,
-			 propertyChanged: (bindable, oldValue, newValue) =>
-			 {
-				 ((CompositeEntry)bindable).OnStackSpacingPropertyChanged((double)oldValue, (double)newValue);
-			 });
-
-		/// <summary>
-		/// Gets or sets the spacing between elements in the stack.
-		/// </summary>
-		public double StackSpacing
-		{
-			get => (double)this.GetValue(StackSpacingProperty);
-			set => this.SetValue(StackSpacingProperty, value);
-		}
-
-		/// <summary>
-		/// Bindable property for the PathData to be displayed.
-		/// </summary>
-		public static readonly BindableProperty PathDataProperty = BindableProperty.Create(
-			 nameof(PathData),
-			 typeof(Geometry),
-			 typeof(CompositeEntry),
-			 defaultValue: null,
-			 propertyChanged: (bindable, oldValue, newValue) =>
-			 {
-				 ((CompositeEntry)bindable).OnPathDataPropertyChanged((Geometry)oldValue, (Geometry)newValue);
-			 });
-
-		/// <summary>
-		/// Gets or sets the PathData to be displayed.
-		/// </summary>
-		public Geometry PathData
-		{
-			get => (Geometry)this.GetValue(PathDataProperty);
-			set => this.SetValue(PathDataProperty, value);
-		}
-
-		/// <summary>
-		/// Bindable property for the Path style.
-		/// </summary>
-		public static readonly BindableProperty PathStyleProperty = BindableProperty.Create(
-			 nameof(PathStyle),
-			 typeof(Style),
-			 typeof(CompositeEntry),
-			 defaultValue: null,
-			 propertyChanged: (bindable, oldValue, newValue) =>
-			 {
-				 ((CompositeEntry)bindable).OnPathStylePropertyChanged((Style)oldValue, (Style)newValue);
-			 });
-
-		/// <summary>
-		/// Gets or sets the style for the Path.
-		/// </summary>
-		public Style PathStyle
-		{
-			get => (Style)this.GetValue(PathStyleProperty);
-			set => this.SetValue(PathStyleProperty, value);
-		}
-
-		/// <summary>
-		/// Bindable property for the Entry data.
+		/// Bindable property for the text displayed in the entry.
 		/// </summary>
 		public static readonly BindableProperty EntryDataProperty = BindableProperty.Create(
 			 nameof(EntryData),
 			 typeof(string),
 			 typeof(CompositeEntry),
-			 defaultValue: string.Empty,
-			 defaultBindingMode: BindingMode.TwoWay);
+			 default(string),
+			 BindingMode.TwoWay);
 
 		/// <summary>
-		/// Gets or sets the data for the Entry.
+		/// Gets or sets the text displayed in the entry.
 		/// </summary>
 		public string EntryData
 		{
@@ -216,130 +67,16 @@ namespace NeuroAccessMaui.UI.Controls
 		}
 
 		/// <summary>
-		/// Bindable property for the Entry hint (placeholder).
-		/// </summary>
-		public static readonly BindableProperty EntryHintProperty = BindableProperty.Create(
-			 nameof(EntryHint),
-			 typeof(string),
-			 typeof(CompositeEntry),
-			 defaultValue: string.Empty,
-			 propertyChanged: (bindable, oldValue, newValue) =>
-			 {
-				 ((CompositeEntry)bindable).OnEntryHintPropertyChanged((string)oldValue, (string)newValue);
-			 });
-
-		/// <summary>
-		/// Gets or sets the hint (placeholder) for the Entry.
-		/// </summary>
-		public string EntryHint
-		{
-			get => (string)this.GetValue(EntryHintProperty);
-			set => this.SetValue(EntryHintProperty, value);
-		}
-
-		/// <summary>
-		/// Bindable property for the Entry style.
-		/// </summary>
-		public static readonly BindableProperty EntryStyleProperty = BindableProperty.Create(
-			 nameof(EntryStyle),
-			 typeof(Style),
-			 typeof(CompositeEntry),
-			 defaultValue: null,
-			 propertyChanged: (bindable, oldValue, newValue) =>
-			 {
-				 ((CompositeEntry)bindable).OnEntryStylePropertyChanged((Style)oldValue, (Style)newValue);
-			 });
-
-		/// <summary>
-		/// Gets or sets the style for the Entry.
-		/// </summary>
-		public Style EntryStyle
-		{
-			get => (Style)this.GetValue(EntryStyleProperty);
-			set => this.SetValue(EntryStyleProperty, value);
-		}
-
-		/// <summary>
-		/// Bindable property for the return command.
-		/// </summary>
-		public static readonly BindableProperty ReturnCommandProperty = BindableProperty.Create(
-			 nameof(ReturnCommand),
-			 typeof(ICommand),
-			 typeof(CompositeEntry),
-			 defaultValue: null,
-			 propertyChanged: (bindable, oldValue, newValue) =>
-			 {
-				 ((CompositeEntry)bindable).OnReturnCommandPropertyChanged((ICommand)oldValue, (ICommand)newValue);
-			 });
-
-		/// <summary>
-		/// Gets or sets the command executed when the return key is pressed.
-		/// </summary>
-		public ICommand ReturnCommand
-		{
-			get => (ICommand)this.GetValue(ReturnCommandProperty);
-			set => this.SetValue(ReturnCommandProperty, value);
-		}
-
-		/// <summary>
-		/// Bindable property for IsPassword.
-		/// </summary>
-		public static readonly BindableProperty IsPasswordProperty = BindableProperty.Create(
-			 nameof(IsPassword),
-			 typeof(bool),
-			 typeof(CompositeEntry),
-			 defaultValue: false,
-			 propertyChanged: (bindable, oldValue, newValue) =>
-			 {
-				 ((CompositeEntry)bindable).OnIsPasswordPropertyChanged((bool)oldValue, (bool)newValue);
-			 });
-
-		/// <summary>
-		/// Gets or sets whether the Entry should mask the input.
-		/// </summary>
-		public bool IsPassword
-		{
-			get => (bool)this.GetValue(IsPasswordProperty);
-			set => this.SetValue(IsPasswordProperty, value);
-		}
-
-		/// <summary>
-		/// Bindable property for IsReadOnly.
-		/// </summary>
-		public static readonly BindableProperty IsReadOnlyProperty = BindableProperty.Create(
-			 nameof(IsReadOnly),
-			 typeof(bool),
-			 typeof(CompositeEntry),
-			 defaultValue: false,
-			 propertyChanged: (bindable, oldValue, newValue) =>
-			 {
-				 ((CompositeEntry)bindable).OnIsReadOnlyPropertyChanged((bool)oldValue, (bool)newValue);
-			 });
-
-		/// <summary>
-		/// Gets or sets whether the Entry is read-only.
-		/// </summary>
-		public bool IsReadOnly
-		{
-			get => (bool)this.GetValue(IsReadOnlyProperty);
-			set => this.SetValue(IsReadOnlyProperty, value);
-		}
-
-		/// <summary>
-		/// Bindable property for the Entry placeholder.
+		/// Bindable property for the placeholder text displayed when the entry is empty.
 		/// </summary>
 		public static readonly BindableProperty PlaceholderProperty = BindableProperty.Create(
 			 nameof(Placeholder),
 			 typeof(string),
 			 typeof(CompositeEntry),
-			 defaultValue: string.Empty,
-			 propertyChanged: (bindable, oldValue, newValue) =>
-			 {
-				 ((CompositeEntry)bindable).OnPlaceholderPropertyChanged((string)oldValue, (string)newValue);
-			 });
+			 default(string));
 
 		/// <summary>
-		/// Gets or sets the placeholder text for the Entry.
+		/// Gets or sets the placeholder text displayed when the entry is empty.
 		/// </summary>
 		public string Placeholder
 		{
@@ -348,20 +85,69 @@ namespace NeuroAccessMaui.UI.Controls
 		}
 
 		/// <summary>
-		/// Bindable property for the Entry text color.
+		/// Bindable property indicating whether the entry is used for password input.
+		/// </summary>
+		public static readonly BindableProperty IsPasswordProperty = BindableProperty.Create(
+			 nameof(IsPassword),
+			 typeof(bool),
+			 typeof(CompositeEntry),
+			 false);
+
+		/// <summary>
+		/// Gets or sets a value indicating whether the entry is used for password input.
+		/// </summary>
+		public bool IsPassword
+		{
+			get => (bool)this.GetValue(IsPasswordProperty);
+			set => this.SetValue(IsPasswordProperty, value);
+		}
+
+		/// <summary>
+		/// Bindable property for the style applied to the entry.
+		/// </summary>
+		public static readonly BindableProperty EntryStyleProperty = BindableProperty.Create(
+			 nameof(EntryStyle),
+			 typeof(Style),
+			 typeof(CompositeEntry));
+
+		/// <summary>
+		/// Gets or sets the style applied to the entry.
+		/// </summary>
+		public Style EntryStyle
+		{
+			get => (Style)this.GetValue(EntryStyleProperty);
+			set => this.SetValue(EntryStyleProperty, value);
+		}
+
+		/// <summary>
+		/// Bindable property for the keyboard type used by the entry.
+		/// </summary>
+		public static readonly BindableProperty KeyboardProperty = BindableProperty.Create(
+			 nameof(Keyboard),
+			 typeof(Keyboard),
+			 typeof(CompositeEntry),
+			 Keyboard.Default);
+
+		/// <summary>
+		/// Gets or sets the keyboard type used by the entry.
+		/// </summary>
+		public Keyboard Keyboard
+		{
+			get => (Keyboard)this.GetValue(KeyboardProperty);
+			set => this.SetValue(KeyboardProperty, value);
+		}
+
+		/// <summary>
+		/// Bindable property for the text color of the entry.
 		/// </summary>
 		public static readonly BindableProperty TextColorProperty = BindableProperty.Create(
 			 nameof(TextColor),
 			 typeof(Color),
 			 typeof(CompositeEntry),
-			 defaultValue: Colors.Black,
-			 propertyChanged: (bindable, oldValue, newValue) =>
-			 {
-				 ((CompositeEntry)bindable).OnTextColorPropertyChanged((Color)oldValue, (Color)newValue);
-			 });
+			 Colors.Black);
 
 		/// <summary>
-		/// Gets or sets the text color for the Entry.
+		/// Gets or sets the text color of the entry.
 		/// </summary>
 		public Color TextColor
 		{
@@ -370,205 +156,380 @@ namespace NeuroAccessMaui.UI.Controls
 		}
 
 		/// <summary>
+		/// Bindable property for the command executed when the entry gains focus.
+		/// </summary>
+		public static readonly BindableProperty FocusedCommandProperty = BindableProperty.Create(
+			 nameof(FocusedCommand),
+			 typeof(ICommand),
+			 typeof(CompositeEntry));
+
+		/// <summary>
+		/// Gets or sets the command executed when the entry gains focus.
+		/// </summary>
+		public ICommand FocusedCommand
+		{
+			get => (ICommand)this.GetValue(FocusedCommandProperty);
+			set => this.SetValue(FocusedCommandProperty, value);
+		}
+
+		/// <summary>
+		/// Bindable property for the command executed when the entry loses focus.
+		/// </summary>
+		public static readonly BindableProperty UnfocusedCommandProperty = BindableProperty.Create(
+			 nameof(UnfocusedCommand),
+			 typeof(ICommand),
+			 typeof(CompositeEntry));
+
+		/// <summary>
+		/// Gets or sets the command executed when the entry loses focus.
+		/// </summary>
+		public ICommand UnfocusedCommand
+		{
+			get => (ICommand)this.GetValue(UnfocusedCommandProperty);
+			set => this.SetValue(UnfocusedCommandProperty, value);
+		}
+
+		/// <summary>
+		/// Bindable property for the style applied to the border.
+		/// </summary>
+		public static readonly BindableProperty BorderStyleProperty = BindableProperty.Create(
+			  nameof(BorderStyle),
+			  typeof(Style),
+			  typeof(CompositeEntry),
+			  default(Style),
+			  propertyChanged: OnBorderStylePropertyChanged);
+
+		/// <summary>
+		/// Gets or sets the style applied to the border.
+		/// </summary>
+		public Style BorderStyle
+		{
+			get => (Style)this.GetValue(BorderStyleProperty);
+			set => this.SetValue(BorderStyleProperty, value);
+		}
+
+		/// <summary>
+		/// Bindable property indicating whether the entry data is valid.
+		/// </summary>
+		public static readonly BindableProperty IsValidProperty = BindableProperty.Create(
+			 nameof(IsValid),
+			 typeof(bool),
+			 typeof(CompositeEntry),
+			 true);
+
+		/// <summary>
+		/// Gets or sets a value indicating whether the entry data is valid.
+		/// </summary>
+		public bool IsValid
+		{
+			get => (bool)this.GetValue(IsValidProperty);
+			set => this.SetValue(IsValidProperty, value);
+		}
+
+		/// <summary>
+		/// Bindable property indicating whether spell check is enabled.
+		/// </summary>
+		public static readonly BindableProperty IsSpellCheckEnabledProperty = BindableProperty.Create(
+			 nameof(IsSpellCheckEnabled),
+			 typeof(bool),
+			 typeof(CompositeEntry),
+			 true);
+
+		/// <summary>
+		/// Gets or sets a value indicating whether spell check is enabled.
+		/// </summary>
+		public bool IsSpellCheckEnabled
+		{
+			get => (bool)this.GetValue(IsSpellCheckEnabledProperty);
+			set => this.SetValue(IsSpellCheckEnabledProperty, value);
+		}
+
+		/// <summary>
+		/// Bindable property indicating whether text prediction is enabled.
+		/// </summary>
+		public static readonly BindableProperty IsTextPredictionEnabledProperty = BindableProperty.Create(
+			 nameof(IsTextPredictionEnabled),
+			 typeof(bool),
+			 typeof(CompositeEntry),
+			 true);
+
+		/// <summary>
+		/// Gets or sets a value indicating whether text prediction is enabled.
+		/// </summary>
+		public bool IsTextPredictionEnabled
+		{
+			get => (bool)this.GetValue(IsTextPredictionEnabledProperty);
+			set => this.SetValue(IsTextPredictionEnabledProperty, value);
+		}
+
+		/// <summary>
+		/// Bindable property indicating whether Read Only is enabled.
+		/// </summary>
+		public static readonly BindableProperty IsReadOnlyProperty = BindableProperty.Create(
+			 nameof(IsReadOnly),
+			 typeof(bool),
+			 typeof(CompositeEntry),
+			 false);
+
+		/// <summary>
+		/// Gets or sets a value indicating whether text prediction is enabled.
+		/// </summary>
+		public bool IsReadOnly
+		{
+			get => (bool)this.GetValue(IsReadOnlyProperty);
+			set => this.SetValue(IsReadOnlyProperty, value);
+		}
+
+		#endregion
+
+		#region Fields
+
+		private readonly Entry innerEntry;
+		private readonly Grid mainGrid;
+		private readonly Border border;
+
+		#endregion
+
+		#region Events
+
+		/// <summary>
 		/// Occurs when the user finalizes the text in an entry with the return key.
 		/// </summary>
-		public event EventHandler Completed;
+		public event EventHandler? Completed;
 
 		/// <summary>
-		/// Embedded Entry control.
+		/// Occurs when the entry gains focus.
 		/// </summary>
-		public Entry Entry => this.innerEntry;
+		public new event EventHandler<FocusEventArgs>? Focused;
 
 		/// <summary>
-		/// Embedded Border encapsulating the Entry.
+		/// Occurs when the entry loses focus.
 		/// </summary>
-		public Border Border => this.innerBorder;
+		public new event EventHandler<FocusEventArgs>? Unfocused;
+
+		#endregion
+
+		#region Constructor
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="CompositeEntry"/> class.
 		/// </summary>
 		public CompositeEntry()
 		{
-			this.innerPath = new PathShape
-			{
-				VerticalOptions = LayoutOptions.Center,
-				IsVisible = this.PathData != null,
-				HeightRequest = 24,
-				WidthRequest = 24,
-				Aspect = Stretch.Uniform
-			};
-
-			this.clickablePath = new PathShape
-			{
-				VerticalOptions = LayoutOptions.Center,
-				IsVisible = this.ClickablePathData != null,
-				HeightRequest = 24,
-				WidthRequest = 24,
-				Aspect = Stretch.Uniform
-			};
-
-			TapGestureRecognizer tapGestureRecognizer = new TapGestureRecognizer();
-			tapGestureRecognizer.Tapped += (s, e) =>
-			{
-				if (this.PathClickedCommand?.CanExecute(null) ?? false)
-					this.PathClickedCommand.Execute(null);
-			};
-			this.clickablePath.GestureRecognizers.Add(tapGestureRecognizer);
-
+			// Initialize the inner Entry
 			this.innerEntry = new Entry
 			{
 				VerticalOptions = LayoutOptions.Center,
 				HorizontalOptions = LayoutOptions.Fill,
-				BackgroundColor = this.BackgroundColor,
-				TextColor = this.TextColor
+				BackgroundColor = Colors.Transparent
 			};
 
-			this.innerEntry.Completed += this.InnerEntry_Completed;
-
-			this.innerGrid = new Grid
-			{
-				HorizontalOptions = LayoutOptions.Fill,
-				ColumnDefinitions =
-					 {
-						  new ColumnDefinition { Width = GridLength.Auto },
-						  new ColumnDefinition { Width = GridLength.Star },
-						  new ColumnDefinition { Width = GridLength.Auto },
-					 },
-				RowDefinitions =
-					 {
-						  new RowDefinition { Height = GridLength.Auto },
-					 }
-			};
-
-			this.innerGrid.Add(this.innerPath, 0, 0);
-			this.innerGrid.Add(this.innerEntry, 1, 0);
-			this.innerGrid.Add(this.clickablePath, 2, 0);
-
-			this.innerBorder = new Border
-			{
-				StrokeThickness = 2,
-				Content = this.innerGrid,
-				BackgroundColor = this.BackgroundColor
-			};
-
-			this.Content = this.innerBorder;
-
-			// Bind Entry properties to the CompositeEntry properties
+			// Set up bindings for the Entry
 			this.innerEntry.SetBinding(Entry.TextProperty, new Binding(nameof(this.EntryData), source: this, mode: BindingMode.TwoWay));
-			this.innerEntry.SetBinding(Entry.KeyboardProperty, new Binding(nameof(this.Keyboard), source: this));
 			this.innerEntry.SetBinding(Entry.PlaceholderProperty, new Binding(nameof(this.Placeholder), source: this));
 			this.innerEntry.SetBinding(Entry.IsPasswordProperty, new Binding(nameof(this.IsPassword), source: this));
-			this.innerEntry.SetBinding(Entry.IsReadOnlyProperty, new Binding(nameof(this.IsReadOnly), source: this));
-			this.innerEntry.SetBinding(Entry.ReturnCommandProperty, new Binding(nameof(this.ReturnCommand), source: this));
+			this.innerEntry.SetBinding(Entry.KeyboardProperty, new Binding(nameof(this.Keyboard), source: this));
 			this.innerEntry.SetBinding(Entry.StyleProperty, new Binding(nameof(this.EntryStyle), source: this));
 			this.innerEntry.SetBinding(Entry.TextColorProperty, new Binding(nameof(this.TextColor), source: this));
-
-			// Handle focus events
+			this.innerEntry.SetBinding(InputView.IsSpellCheckEnabledProperty, new Binding(nameof(this.IsSpellCheckEnabled), source: this));
+			this.innerEntry.SetBinding(InputView.IsTextPredictionEnabledProperty, new Binding(nameof(this.IsTextPredictionEnabled), source: this));
+			this.innerEntry.SetBinding(Entry.IsReadOnlyProperty, new Binding(nameof(this.IsReadOnly), source: this));
+			// Handle events
+			this.innerEntry.Completed += this.OnEntryCompleted;
 			this.innerEntry.Focused += this.OnEntryFocused;
 			this.innerEntry.Unfocused += this.OnEntryUnfocused;
+
+			// Initialize the main Grid
+			this.mainGrid = new Grid
+			{
+				ColumnDefinitions =
+					 {
+						  new ColumnDefinition { Width = GridLength.Auto },    // Left view
+                    new ColumnDefinition { Width = GridLength.Star },    // Entry
+                    new ColumnDefinition { Width = GridLength.Auto }     // Right view
+                },
+				VerticalOptions = LayoutOptions.Center,
+				HorizontalOptions = LayoutOptions.Fill
+			};
+
+			// Add the Entry to the Grid
+			this.mainGrid.Add(this.innerEntry, 1, 0);
+
+			// Set Left and Right Views if they are not null
+			if (this.LeftView != null)
+			{
+				this.mainGrid.Add(this.LeftView, 0, 0);
+			}
+			if (this.RightView != null)
+			{
+				this.mainGrid.Add(this.RightView, 2, 0);
+			}
+
+			// Initialize the Border
+			this.border = new Border
+			{
+				Content = this.mainGrid,
+				BackgroundColor = Colors.Transparent
+			};
+
+			this.border.SetBinding(Border.StyleProperty, new Binding(nameof(this.BorderStyle), source: this));
+
+			// Set the Content of the control
+			this.Content = this.border;
 		}
 
-		private void OnKeyboardPropertyChanged(Keyboard oldValue, Keyboard newValue)
+		#endregion
+
+		#region Property Overrides
+
+		/// <summary>
+		/// Gets or sets a user-defined value to uniquely identify the element.
+		/// This is forwarded to the inner Entry control.
+		/// </summary>
+		public new string StyleId
 		{
-			this.innerEntry.Keyboard = newValue;
+			get => this.innerEntry.StyleId;
+			set => this.innerEntry.StyleId = value;
 		}
 
-		private void OnBorderStylePropertyChanged(Style oldValue, Style newValue)
+		public new string AutomationId
 		{
-			this.innerBorder.Style = newValue;
+			get => this.innerEntry.AutomationId;
+			set => this.innerEntry.AutomationId = value;
 		}
 
-		private void OnStackSpacingPropertyChanged(double oldValue, double newValue)
+		#endregion
+
+		#region Methods
+
+		/// <summary>
+		/// Focuses the Entry.
+		/// </summary>
+		public new bool Focus()
 		{
-			this.innerGrid.ColumnSpacing = (this.innerPath.IsVisible || this.clickablePath.IsVisible) ? newValue : 0;
+			return this.innerEntry.Focus();
 		}
 
-		private void OnPathDataPropertyChanged(Geometry oldValue, Geometry newValue)
+		/// <summary>
+		/// Unfocuses the Entry.
+		/// </summary>
+		public new void Unfocus()
 		{
-			this.innerPath.Data = newValue;
-			this.innerPath.IsVisible = newValue != null;
-			this.innerGrid.ColumnSpacing = (this.innerPath.IsVisible || this.clickablePath.IsVisible) ? this.StackSpacing : 0;
+			this.innerEntry.Unfocus();
 		}
 
-		private void OnClickablePathDataPropertyChanged(Geometry oldValue, Geometry newValue)
+		#endregion
+
+		#region Property Changed Callbacks
+
+		/// <summary>
+		/// Called when the <see cref="LeftView"/> property changes.
+		/// </summary>
+		/// <param name="bindable">The bindable object.</param>
+		/// <param name="oldValue">The old value of the property.</param>
+		/// <param name="newValue">The new value of the property.</param>
+		private static void OnLeftViewPropertyChanged(BindableObject bindable, object oldValue, object newValue)
 		{
-			this.clickablePath.Data = newValue;
-			this.clickablePath.IsVisible = newValue != null;
-			this.innerGrid.ColumnSpacing = (this.innerPath.IsVisible || this.clickablePath.IsVisible) ? this.StackSpacing : 0;
+			CompositeEntry control = (CompositeEntry)bindable;
+			control.UpdateLeftView((View)oldValue, (View)newValue);
 		}
 
-		private void OnPathStylePropertyChanged(Style oldValue, Style newValue)
+		/// <summary>
+		/// Updates the left view in the grid.
+		/// </summary>
+		/// <param name="oldView">The old view.</param>
+		/// <param name="newView">The new view.</param>
+		private void UpdateLeftView(View oldView, View newView)
 		{
-			this.innerPath.Style = newValue;
-			this.clickablePath.Style = newValue;
+			if (oldView != null)
+			{
+				this.mainGrid.Remove(oldView);
+			}
+			if (newView != null)
+			{
+				this.mainGrid.Add(newView, 0, 0);
+			}
 		}
 
-		private void OnEntryHintPropertyChanged(string oldValue, string newValue)
+		/// <summary>
+		/// Called when the <see cref="RightView"/> property changes.
+		/// </summary>
+		/// <param name="bindable">The bindable object.</param>
+		/// <param name="oldValue">The old value of the property.</param>
+		/// <param name="newValue">The new value of the property.</param>
+		private static void OnRightViewPropertyChanged(BindableObject bindable, object oldValue, object newValue)
 		{
-			this.innerEntry.Placeholder = newValue;
+			CompositeEntry control = (CompositeEntry)bindable;
+			control.UpdateRightView((View)oldValue, (View)newValue);
 		}
 
-		private void OnEntryStylePropertyChanged(Style oldValue, Style newValue)
+		/// <summary>
+		/// Updates the right view in the grid.
+		/// </summary>
+		/// <param name="oldView">The old view.</param>
+		/// <param name="newView">The new view.</param>
+		private void UpdateRightView(View oldView, View newView)
 		{
-			this.innerEntry.Style = newValue;
+			if (oldView != null)
+			{
+				this.mainGrid.Remove(oldView);
+			}
+			if (newView != null)
+			{
+				this.mainGrid.Add(newView, 2, 0);
+			}
 		}
 
-		private void OnReturnCommandPropertyChanged(ICommand oldValue, ICommand newValue)
+		/// <summary>
+		/// Called when the <see cref="BorderStyle"/> property changes.
+		/// </summary>
+		private static void OnBorderStylePropertyChanged(BindableObject bindable, object oldValue, object newValue)
 		{
-			this.innerEntry.ReturnCommand = newValue;
+			CompositeEntry control = (CompositeEntry)bindable;
+			control.border.Style = (Style)newValue;
 		}
 
-		private void OnIsPasswordPropertyChanged(bool oldValue, bool newValue)
+		#endregion
+
+		#region Event Handlers
+
+		/// <summary>
+		/// Handles the <see cref="Entry.Completed"/> event.
+		/// Executes the <see cref="Completed"/> event.
+		/// </summary>
+		private void OnEntryCompleted(object? sender, EventArgs e)
 		{
-			this.innerEntry.IsPassword = newValue;
+			Completed?.Invoke(this, e);
 		}
 
-		private void OnIsReadOnlyPropertyChanged(bool oldValue, bool newValue)
+		/// <summary>
+		/// Handles the <see cref="Entry.Focused"/> event.
+		/// Executes the <see cref="FocusedCommand"/> if it can execute.
+		/// </summary>
+		private void OnEntryFocused(object? sender, FocusEventArgs e)
 		{
-			this.innerEntry.IsReadOnly = newValue;
-		}
+			Focused?.Invoke(this, e);
 
-		private void OnPlaceholderPropertyChanged(string oldValue, string newValue)
-		{
-			this.innerEntry.Placeholder = newValue;
-		}
-
-		private void OnTextColorPropertyChanged(Color oldValue, Color newValue)
-		{
-			this.innerEntry.TextColor = newValue;
-		}
-
-		private void OnEntryFocused(object sender, FocusEventArgs e)
-		{
 			if (this.FocusedCommand?.CanExecute(e) ?? false)
 			{
 				this.FocusedCommand.Execute(e);
 			}
 		}
 
-		private void OnEntryUnfocused(object sender, FocusEventArgs e)
+		/// <summary>
+		/// Handles the <see cref="Entry.Unfocused"/> event.
+		/// Executes the <see cref="UnfocusedCommand"/> if it can execute.
+		/// </summary>
+		private void OnEntryUnfocused(object? sender, FocusEventArgs e)
 		{
+			Unfocused?.Invoke(this, e);
+
 			if (this.UnfocusedCommand?.CanExecute(e) ?? false)
 			{
 				this.UnfocusedCommand.Execute(e);
 			}
 		}
 
-		private void InnerEntry_Completed(object sender, EventArgs e)
-		{
-			try
-			{
-				this.Completed?.Invoke(sender, e);
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-			}
-		}
-
-		public override string ToString()
-		{
-			return this.innerEntry.Text;
-		}
+		#endregion
 	}
 }

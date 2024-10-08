@@ -82,16 +82,12 @@
 	<Style x:Key="RegularCompositeEntryEntry" ApplyToDerivedTypes="False" TargetType="Entry" />
 
 	<Style x:Key="RegularCompositeEntry" ApplyToDerivedTypes="False" TargetType="controls:CompositeEntry">
-		<Setter Property="StackSpacing" Value="{StaticResource SmallSpacing}" />
 		<Setter Property="BorderStyle" Value="{StaticResource RegularCompositeEntryBorder}" />
-		<Setter Property="PathStyle" Value="{StaticResource RegularCompositeEntryPath}" />
 		<Setter Property="EntryStyle" Value="{StaticResource RegularCompositeEntryEntry}" />
 	</Style>
 
 	<Style x:Key="RegularCompositeEntryNoRoundedCorners" ApplyToDerivedTypes="False" TargetType="controls:CompositeEntry">
-		<Setter Property="StackSpacing" Value="{StaticResource SmallSpacing}" />
 		<Setter Property="BorderStyle" Value="{StaticResource RegularCompositeEntryBorderNoRoundedCorners}" />
-		<Setter Property="PathStyle" Value="{StaticResource RegularCompositeEntryPath}" />
 		<Setter Property="EntryStyle" Value="{StaticResource RegularCompositeEntryEntry}" />
 	</Style>
 
