@@ -55,7 +55,7 @@
 						</Grid>
 						<!-- BUTTONS -->
 						<controls:TextButton LabelData="{l:Localize Send}" Command="{Binding Path=SendPaymentCommand}"
-													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
+													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButton}"/>
 					</VerticalStackLayout>
 				</Frame>
 			</VerticalStackLayout>

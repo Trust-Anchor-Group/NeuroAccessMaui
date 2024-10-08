@@ -44,10 +44,10 @@
 		</Grid>
 
 		<Grid ColumnDefinitions="*,*" RowDefinitions="auto" ColumnSpacing="{StaticResource SmallSpacing}">
-			<controls:TextButton Command="{Binding DeclineCommand}" Style="{StaticResource OutlinedTextButtonNoRoundedCorners}"
+			<controls:TextButton Command="{Binding DeclineCommand}" Style="{StaticResource OutlinedTextButton}"
 										LabelData="{l:Localize Reject}" Grid.Column="0" />
 
-			<controls:TextButton Command="{Binding AcceptNationalityCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+			<controls:TextButton Command="{Binding AcceptNationalityCommand}" Style="{StaticResource FilledTextButton}"
 										LabelData="{l:Localize Continue}" Grid.Column="1" />
 		</Grid>
 	</VerticalStackLayout>

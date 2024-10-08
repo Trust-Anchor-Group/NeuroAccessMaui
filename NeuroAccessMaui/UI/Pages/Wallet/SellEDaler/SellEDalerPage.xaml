@@ -38,7 +38,7 @@
 															 Style="{StaticResource ImageOnlyButton}"/>
 							</Grid>
 							<controls:TextButton LabelData="{l:Localize Sell}" Command="{Binding Path=SellCommand}"
-														Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
+														Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButton}"/>
 						</VerticalStackLayout>
 					</VerticalStackLayout>
 				</Frame>

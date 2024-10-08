@@ -17,6 +17,7 @@ namespace NeuroAccessMaui.UI
 		private static Thickness? smallTopMargins;
 		private static Thickness? smallLeftMargins;
 		private static Thickness? smallRightMargins;
+		private static Thickness? smallLeftRightMargins;
 		private static Style? sectionTitleLabelStyle;
 		private static Style? keyLabel;
 		private static Style? valueLabel;
@@ -154,6 +155,18 @@ namespace NeuroAccessMaui.UI
 		}
 
 		/// <summary>
+		/// Medium margins for edit controls
+		/// </summary>
+		public static Thickness SmallLeftRightMargins
+		{
+			get
+			{
+				smallLeftRightMargins ??= TryGetResource<Thickness>("SmallLeftRightMargins");
+				return smallLeftRightMargins.Value;
+			}
+		}
+
+		/// <summary>
 		/// Style of section title labels
 		/// </summary>
 		public static Style SectionTitleLabel
@@ -232,7 +245,7 @@ namespace NeuroAccessMaui.UI
 		{
 			get
 			{
-				filledTextButton ??= TryGetResource<Style>("FilledTextButtonNoRoundedCorners");	// TODO: Remove NoRoundedCorners
+				filledTextButton ??= TryGetResource<Style>("FilledTextButton");
 				return filledTextButton!;
 			}
 		}
@@ -280,7 +293,7 @@ namespace NeuroAccessMaui.UI
 		{
 			get
 			{
-				regularCompositeEntry ??= TryGetResource<Style>("RegularCompositeEntryNoRoundedCorners"); // TODO: Remove NoRoundedCorners
+				regularCompositeEntry ??= TryGetResource<Style>("RegularCompositeEntry");  
 				return regularCompositeEntry!;
 			}
 		}
@@ -292,7 +305,7 @@ namespace NeuroAccessMaui.UI
 		{
 			get
 			{
-				regularCompositeEntryBorder ??= TryGetResource<Style>("RegularCompositeEntryBorderNoRoundedCorners");	// TODO: Remove NoRoundedCorners
+				regularCompositeEntryBorder ??= TryGetResource<Style>("RegularCompositeEntryBorder");	 
 				return regularCompositeEntryBorder!;
 			}
 		}
@@ -304,7 +317,7 @@ namespace NeuroAccessMaui.UI
 		{
 			get
 			{
-				unicodeCharacterButton ??= TryGetResource<Style>("UnicodeCharacterButtonNoRoundedCorners");  // TODO: Remove NoRoundedCorners
+				unicodeCharacterButton ??= TryGetResource<Style>("UnicodeCharacterButton");   
 				return unicodeCharacterButton!;
 			}
 		}

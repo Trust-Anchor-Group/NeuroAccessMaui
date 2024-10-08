@@ -62,9 +62,9 @@
 									
 						</CollectionView>
 							  
-						<controls:TextButton LabelData="{Binding AnonymousText}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+						<controls:TextButton LabelData="{Binding AnonymousText}" Style="{StaticResource FilledTextButton}"
 													Command="{Binding AnonymousCommand}" IsVisible="{Binding AllowAnonymous}"/>
-						<controls:TextButton LabelData="{l:Localize ScanQRCode}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+						<controls:TextButton LabelData="{l:Localize ScanQRCode}" Style="{StaticResource FilledTextButton}"
 													Command="{Binding ScanQrCodeCommand}" IsVisible="{Binding CanScanQrCode}"/>
 					</VerticalStackLayout>
 				</Frame>
