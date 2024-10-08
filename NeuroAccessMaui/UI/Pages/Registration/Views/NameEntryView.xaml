@@ -26,7 +26,7 @@
 				<!-- Input 
 				<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize Nickname}" />-->
 				<controls:CompositeEntry x:Name="NicknameEntry" Style="{StaticResource RegularCompositeEntry}"
-                                             EntryData="{Binding Username}" EntryHint="{l:Localize Username}" />
+                                             EntryData="{Binding Username}" Placeholder="{l:Localize Username}" />
 				<!-- Validation -->
 				<Grid RowDefinitions="*,*" ColumnDefinitions="auto,*" HorizontalOptions="Center" 
 						ColumnSpacing="{StaticResource SmallSpacing}"
