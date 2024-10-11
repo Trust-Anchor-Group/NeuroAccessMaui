@@ -63,16 +63,9 @@
 	<Style x:Key="RegularCompositeEntryBorder" ApplyToDerivedTypes="False" TargetType="Border">
 		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource NormalEditBackgroundLight}, Dark={StaticResource NormalEditBackgroundDark}}" />
 		<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource NormalEditForegroundLight}, Dark={StaticResource NormalEditForegroundDark}}" />
-		<Setter Property="Padding" Value="{StaticResource EditMediumMargins}" />
 		<Setter Property="StrokeShape">
 			<RoundRectangle CornerRadius="{StaticResource SmallCornerRadius}" />
 		</Setter>
-	</Style>
-
-	<Style x:Key="RegularCompositeEntryBorderNoRoundedCorners" ApplyToDerivedTypes="False" TargetType="Border">
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource NormalEditBackgroundLight}, Dark={StaticResource NormalEditBackgroundDark}}" />
-		<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource NormalEditForegroundLight}, Dark={StaticResource NormalEditForegroundDark}}" />
-		<Setter Property="Padding" Value="{StaticResource EditMediumMargins}" />
 	</Style>
 
 	<Style x:Key="RegularCompositeEntryPath" ApplyToDerivedTypes="False" TargetType="Path">
@@ -84,13 +77,6 @@
 	<Style x:Key="RegularCompositeEntry" ApplyToDerivedTypes="False" TargetType="controls:CompositeEntry">
 		<Setter Property="StackSpacing" Value="{StaticResource SmallSpacing}" />
 		<Setter Property="BorderStyle" Value="{StaticResource RegularCompositeEntryBorder}" />
-		<Setter Property="PathStyle" Value="{StaticResource RegularCompositeEntryPath}" />
-		<Setter Property="EntryStyle" Value="{StaticResource RegularCompositeEntryEntry}" />
-	</Style>
-
-	<Style x:Key="RegularCompositeEntryNoRoundedCorners" ApplyToDerivedTypes="False" TargetType="controls:CompositeEntry">
-		<Setter Property="StackSpacing" Value="{StaticResource SmallSpacing}" />
-		<Setter Property="BorderStyle" Value="{StaticResource RegularCompositeEntryBorderNoRoundedCorners}" />
 		<Setter Property="PathStyle" Value="{StaticResource RegularCompositeEntryPath}" />
 		<Setter Property="EntryStyle" Value="{StaticResource RegularCompositeEntryEntry}" />
 	</Style>

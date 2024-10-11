@@ -57,16 +57,16 @@
 						<!-- BUTTONS -->
 						<controls:TextButton LabelData="{l:Localize PayOnline}" Command="{Binding Path=PayOnlineCommand}"
 													IsEnabled="{Binding Path=NotPaid}" Margin="{StaticResource SmallBottomMargins}" IsVisible="{Binding ToPreset}"
-													Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
+													Style="{StaticResource FilledTextButton}"/>
 						<controls:TextButton LabelData="{l:Localize PayOffline}" Command="{Binding Path=GenerateQrCodeCommand}"
-													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
+													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButton}"/>
 						<Image x:Name="QrCode" BackgroundColor="{StaticResource HeadingForeground}" Source="{Binding Path=QrCode}" 
                        IsVisible="{Binding Path=HasQrCode}" WidthRequest="{Binding Path=QrCodeWidth}" 
                        HeightRequest="{Binding Path=QrCodeHeight}" HorizontalOptions="Center" VerticalOptions="Start" 
                        Margin="0" />
 						<controls:TextButton x:Name="ShareButton" LabelData="{l:Localize Share}" Command="{Binding Path=ShareCommand}"
 													IsVisible="{Binding Path=HasQrCode}" Margin="{StaticResource SmallBottomMargins}"
-													Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
+													Style="{StaticResource FilledTextButton}"/>
 					</VerticalStackLayout>
 				</Frame>
 			</VerticalStackLayout>

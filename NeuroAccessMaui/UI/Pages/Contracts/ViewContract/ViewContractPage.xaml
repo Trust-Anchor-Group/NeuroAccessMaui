@@ -207,7 +207,7 @@
 							</Label>
 						</Grid>
 						<controls:TextButton LabelData="{l:Localize ShowDetails}" Margin="{StaticResource SmallTopBottomMargins}"
-													Command="{Binding Path=ShowDetailsCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+													Command="{Binding Path=ShowDetailsCommand}" Style="{StaticResource FilledTextButton}"
 													IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"/>
 					</VerticalStackLayout>
 				</Frame>
@@ -228,10 +228,10 @@
 					</VerticalStackLayout>
 				</Frame>
 
-				<controls:TextButton LabelData="{l:Localize ObsoleteContract}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+				<controls:TextButton LabelData="{l:Localize ObsoleteContract}" Style="{StaticResource FilledTextButton}"
 											Command="{Binding Path=ObsoleteContractCommand}" IsVisible="{Binding Path=CanObsoleteContract}"
 											Margin="{StaticResource SmallTopBottomMargins}"/>
-				<controls:TextButton LabelData="{l:Localize DeleteContract}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+				<controls:TextButton LabelData="{l:Localize DeleteContract}" Style="{StaticResource FilledTextButton}"
 											Command="{Binding Path=DeleteContractCommand}" IsVisible="{Binding Path=CanDeleteContract}"
 											Margin="{StaticResource SmallBottomMargins}"/>
 			</VerticalStackLayout>

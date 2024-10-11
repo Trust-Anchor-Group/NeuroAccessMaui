@@ -55,7 +55,7 @@
 							</Grid>
 							<!-- BUTTONS -->
 							<controls:TextButton LabelData="{l:Localize GenerateQrCode}" Command="{Binding Path=GenerateQrCodeCommand}"
-														Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
+														Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButton}"/>
 							<Image x:Name="QrCode" BackgroundColor="{StaticResource HeadingForeground}" Source="{Binding Path=QrCode}" 
                        IsVisible="{Binding Path=HasQrCode}" WidthRequest="{Binding Path=QrCodeWidth}" 
                        HeightRequest="{Binding Path=QrCodeHeight}" HorizontalOptions="Center" VerticalOptions="Start" 
@@ -67,10 +67,10 @@
 					   IsVisible="{Binding Path=HasQrCode}" />
 							<controls:TextButton x:Name="ShareContactButton" LabelData="{l:Localize Contact}" Command="{Binding Path=ShareContactCommand}"
 														IsVisible="{Binding Path=HasQrCode}" Margin="{StaticResource SmallBottomMargins}"
-														Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
+														Style="{StaticResource FilledTextButton}"/>
 							<controls:TextButton x:Name="ShareExternalButton" LabelData="{l:Localize OtherApp}" Command="{Binding Path=ShareExternalCommand}"
 														IsVisible="{Binding Path=HasQrCode}" Margin="{StaticResource SmallBottomMargins}"
-														Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
+														Style="{StaticResource FilledTextButton}"/>
 						</VerticalStackLayout>
 					</VerticalStackLayout>
 				</Frame>

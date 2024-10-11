@@ -62,7 +62,7 @@
 									</OnPlatform>
 								</IndicatorView.Margin>
 							</IndicatorView>
-							<controls:TextButton Grid.Column="0" Grid.Row="3" LabelData="{l:Localize Submit}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+							<controls:TextButton Grid.Column="0" Grid.Row="3" LabelData="{l:Localize Submit}" Style="{StaticResource FilledTextButton}"
 														Command="{Binding SubmitCommand}" IsEnabled="{Binding IsFormOk}" Margin="{StaticResource SmallMargins}"/>
 						</Grid>
 					</VerticalStackLayout>
