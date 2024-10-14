@@ -142,46 +142,46 @@
     <value>Невозможно выгравировать бирку со ссылкой на {0}.</value>
   </data>
   <data name="PasswordChanged" xml:space="preserve">
-    <value>PIN-код был успешно изменен.</value>
+    <value>Пароль был успешно изменен.</value>
   </data>
   <data name="UnableToChangePassword" xml:space="preserve">
-    <value>Невозможно изменить сетевой пароль.</value>
+    <value>Не удается изменить сетевой пароль.</value>
   </data>
   <data name="PasswordIsInvalid" xml:space="preserve">
-    <value>PIN-код недействителен. У вас осталось {0} попыток.</value>
+    <value>Пароль недействителен. У вас осталось {0} попыток.</value>
   </data>
   <data name="PasswordsDoNotMatch" xml:space="preserve">
-    <value>PIN-коды не совпадают</value>
+    <value>Пароли не совпадают</value>
   </data>
   <data name="PasswordIsInvalidAplicationBlockedForever" xml:space="preserve">
-    <value>Вы превысили количество попыток предоставления PIN-кода. Ваша заявка заблокирована навсегда</value>
+    <value>Вы превысили количество попыток ввести пароль. Ваша заявка заблокирована навсегда</value>
   </data>
   <data name="PasswordIsInvalidAplicationBlocked" xml:space="preserve">
-    <value>Вы превысили количество попыток предоставления PIN-кода. Ваша заявка заблокирована до {0}.</value>
+    <value>Вы превысили количество попыток ввести пароль. Ваша заявка заблокирована до {0}.</value>
   </data>
   <data name="PasswordIsInvalidAplicationBlockedTillTomorrow" xml:space="preserve">
-    <value>Вы превысили количество попыток предоставления PIN-кода. Ваша заявка заблокирована до завтрашнего {0}.</value>
+    <value>Вы превысили количество попыток ввести пароль. Ваша заявка заблокирована до завтрашнего {0}.</value>
   </data>
   <data name="PasswordIsInvalidAplicationBlockedForOneWeek" xml:space="preserve">
-    <value>Вы превысили количество попыток предоставления PIN-кода. Ваша заявка заблокирована на одну неделю</value>
+    <value>Вы превысили количество попыток ввести пароль. Ваша заявка заблокирована на одну неделю</value>
   </data>
   <data name="PasswordTooShort" xml:space="preserve">
-    <value>Длина PIN-кода должна быть не менее {0} символов.</value>
+    <value>Длина пароля должна быть не менее {0} символов.</value>
   </data>
   <data name="PasswordContainsName" xml:space="preserve">
-    <value>PIN-код не должен содержать ни одного слова из имен удостоверений.</value>
+    <value>Пароль не должен содержать ни одного слова из имен идентификации.</value>
   </data>
   <data name="PasswordContainsPersonalNumber" xml:space="preserve">
-    <value>PIN-код не должен содержать персональный номер, удостоверяющий личность.</value>
+    <value>Пароль не должен содержать персональный номер, удостоверяющий личность.</value>
   </data>
   <data name="PasswordContainsAddress" xml:space="preserve">
-    <value>PIN-код не должен содержать ни одного слова из идентификационного адреса.</value>
+    <value>Пароль не должен содержать ни одного слова из адресных строк идентификации.</value>
   </data>
   <data name="PasswordContainsEMail" xml:space="preserve">
-    <value>PIN-код не должен содержать идентификационный адрес электронной почты.</value>
+    <value>Пароль не должен содержать идентификационный адрес электронной почты.</value>
   </data>
   <data name="PasswordContainsPhoneNumber" xml:space="preserve">
-    <value>PIN-код не должен содержать идентификационный номер телефона.</value>
+    <value>Пароль не должен содержать идентификационный номер телефона.</value>
   </data>
   <data name="PasswordWithNotEnoughDigitsLettersSigns" xml:space="preserve">
     <value>Должно быть использовано не менее {0} букв, цифр или символов.</value>
@@ -196,10 +196,10 @@
     <value>Также необходимо использовать не менее {0} букв или символов.</value>
   </data>
   <data name="PasswordWithTooManyIdenticalSymbols" xml:space="preserve">
-    <value>PIN-код не должен содержать более {0} одинаковых символов.</value>
+    <value>Пароль не должен содержать более {0} одинаковых символов.</value>
   </data>
   <data name="PasswordWithTooManySequencedSymbols" xml:space="preserve">
-    <value>PIN-код не должен содержать более {0} последовательных символов, например, "12" или "ab".</value>
+    <value>Пароль не должен содержать более {0} последовательных символов, например, "12" или "ab".</value>
   </data>
   <data name="PasswordWeakSecurity" xml:space="preserve">
     <value>Слабая безопасность</value>
@@ -208,7 +208,7 @@
     <value>Средний уровень безопасности</value>
   </data>
   <data name="PasswordStrongSecurity" xml:space="preserve">
-    <value>Надежная защита</value>
+    <value>Надежная безопасность</value>
   </data>
   <data name="ThereIsNoNetwork" xml:space="preserve">
     <value>Сети нет</value>
@@ -241,13 +241,13 @@
     <value>Бессвязный</value>
   </data>
   <data name="XmppState_Registering" xml:space="preserve">
-    <value>Регистрация у поставщика услуг</value>
+    <value>Регистрация у брокера</value>
   </data>
   <data name="XmppState_RequestingSession" xml:space="preserve">
     <value>Запрос сеанса</value>
   </data>
   <data name="XmppState_SettingPresence" xml:space="preserve">
-    <value>Регистрация присутствия</value>
+    <value>Настройка присутствия</value>
   </data>
   <data name="XmppState_StartingEncryption" xml:space="preserve">
     <value>Шифрование соединения</value>
@@ -259,13 +259,13 @@
     <value>Поток установлен</value>
   </data>
   <data name="YourLegalIdentity" xml:space="preserve">
-    <value>Ваша личность</value>
+    <value>Ваша юридическая личность</value>
   </data>
   <data name="YourLegalIdentityHasBeenCompromised" xml:space="preserve">
     <value>Ваша личность была помечена как скомпрометированная. Таким образом, вы были перенаправлены на создание новой учетной записи.</value>
   </data>
   <data name="YourLegalIdentityHasBeenObsoleted" xml:space="preserve">
-    <value>Ваша личность была помечена как устаревшая. Таким образом, вы были перенаправлены на создание новой учетной записи.</value>
+    <value>Ваша юридическая личность была помечена как устаревшая. Таким образом, вы были перенаправлены на создание новой учетной записи.</value>
   </data>
   <data name="ClientMessageAuthenticationTimeout" xml:space="preserve">
     <value>Ответ не возвращен в течение заданного времени.</value>
@@ -403,10 +403,10 @@
     <value>Вам было предложено создать учетную запись на {0}. Нажмите OK и введите имя учетной записи, которую вы хотите создать.</value>
   </data>
   <data name="ThisCodeCannotBeClaimedAtThisTime" xml:space="preserve">
-    <value>Этот код представляет собой приглашение Neuro-Access и в настоящее время не может быть востребован.</value>
+    <value>Этот код представляет собой приглашение с идентификатором тега, и в настоящее время его нельзя запросить.</value>
   </data>
   <data name="DomainDoesNotFollowEncryptionPolicy" xml:space="preserve">
-    <value>{0} не придерживается повсеместной политики шифрования</value>
+    <value>{0} не следует повсеместной политике шифрования</value>
   </data>
   <data name="DomainIsNotAValidOperator" xml:space="preserve">
     <value>{0} не является допустимым оператором</value>
@@ -417,8 +417,8 @@
   <data name="OperatorDoesNotSupportRegisteringNewAccounts" xml:space="preserve">
     <value>Оператор {0} не поддерживает регистрацию новых аккаунтов</value>
   </data>
-  <data name="AccountNameAlreadyTaken" xml:space="preserve">
-    <value>Имя учетной записи {0} уже занято. Выберите другой.</value>
+  <data name="UsernameNameAlreadyTaken" xml:space="preserve">
+    <value>Имя пользователя уже существует. Пожалуйста, попробуйте другой.</value>
   </data>
   <data name="InvalidUsernameOrPassword" xml:space="preserve">
     <value>Неверное имя пользователя или пароль</value>
@@ -439,7 +439,7 @@
     <value>Удостоверение личности не утверждено.</value>
   </data>
   <data name="NoLegalIdSelected" xml:space="preserve">
-    <value>Идентификатор не выбран.</value>
+    <value>Юридический идентификатор не выбран.</value>
   </data>
   <data name="PeerReviewAccepted" xml:space="preserve">
     <value>Рецензирование принято</value>
@@ -457,7 +457,7 @@
     <value>Ходатайство о пересмотре договора было отклонено.</value>
   </data>
   <data name="PetitionToViewLegalIdentityWasDenied" xml:space="preserve">
-    <value>Ходатайство об ознакомлении с удостоверением личности было отклонено.</value>
+    <value>Ходатайство о предоставлении удостоверения личности было отклонено.</value>
   </data>
   <data name="APetitionHasBeenSentToTheContract" xml:space="preserve">
     <value>По частям договора направлено ходатайство. Если какая-либо из сторон примет петицию, на экране отобразится информация о договоре.</value>
@@ -478,7 +478,7 @@
     <value>Коллега, которого вы попросили рассмотреть вашу заявку, отклонил ее.</value>
   </data>
   <data name="UnableToGetAccessToYourPrivateKeys" xml:space="preserve">
-    <value>Приложению не удалось получить доступ к закрытым ключам удостоверения. Обычно это означает, что удостоверение было изменено за пределами приложения. Это также может быть результатом повреждения данных. Вы можете попробовать одно из двух: Нажмите кнопку «Продолжить», чтобы продолжить, без закрытых ключей. Вы получаете доступ к приложению, но не можете ничего подписывать. Затем вы можете повторно подать заявку на получение нового удостоверения в главном меню с новыми закрытыми ключами. Вы также можете попробовать восстановить базу данных, нажав кнопку Восстановить. В последнем случае приложение закрывается, и при следующем открытии приложения сначала предпринимается попытка восстановления.</value>
+    <value>Приложению не удалось получить доступ к закрытым ключам удостоверения. Обычно это означает, что удостоверение было изменено за пределами приложения. Это также может быть результатом повреждения данных. Вы можете попробовать одно из двух. Нажмите кнопку «Продолжить», чтобы продолжить, без закрытых ключей. Вы получаете доступ к приложению, но не можете ничего подписывать. Затем вы можете повторно подать заявку на получение нового удостоверения в главном меню с новыми закрытыми ключами. Вы также можете попробовать восстановить базу данных, нажав кнопку Восстановить. В последнем случае приложение закрывается, и при следующем открытии приложения сначала предпринимается попытка восстановления.</value>
   </data>
   <data name="FailedToClosePage" xml:space="preserve">
     <value>Не удалось закрыть страницу</value>
@@ -496,7 +496,7 @@
     <value>Пожалуйста, ознакомьтесь со всей приведенной выше информацией и установите соответствующие флажки, если информация верна. Это необходимо сделать до того, как вы сможете утвердить информацию.</value>
   </data>
   <data name="YouNeedToCheckCarefullyReviewed" xml:space="preserve">
-    <value>Вам нужно поставить галочку, если вы внимательно ознакомились со всей соответствующей информацией выше.</value>
+    <value>Вам необходимо поставить галочку, вы внимательно ознакомились со всей соответствующей информацией выше.</value>
   </data>
   <data name="YouNeedToApproveToAssociate" xml:space="preserve">
     <value>Вам необходимо подтвердить, чтобы связать ваши персональные данные с удостоверением, которое вы проверяете. Когда третьи лица просматривают информацию, содержащуюся в удостоверении, они будут иметь доступ к удостоверениям проверяющих для прозрачности.</value>
@@ -508,19 +508,19 @@
     <value>Вы уверены, что хотите сообщить о том, что ваша личность скомпрометирована, украдена или взломана?</value>
   </data>
   <data name="AreYouSureYouWantToRevokeYourLegalIdentity" xml:space="preserve">
-    <value>Вы уверены, что хотите отозвать свою личность из приложения?</value>
+    <value>Вы уверены, что хотите отозвать свою юридическую личность из заявления?</value>
   </data>
   <data name="AreYouSureYouWantToTransferYourLegalIdentity" xml:space="preserve">
-    <value>Вы уверены, что хотите перенести свою личность с этого устройства на другое? После завершения идентификация будет удалена с этого устройства. Также убедитесь, что никто другой не может видеть ваш экран во время процесса.</value>
+    <value>Вы уверены, что хотите перенести свою юридическую личность из приложения в другое? После завершения идентификация будет удалена с этого устройства. Также убедитесь, что никто другой не может видеть ваш экран во время процесса.</value>
   </data>
   <data name="UnexpectedResponse" xml:space="preserve">
     <value>Был получен неожиданный ответ.</value>
   </data>
   <data name="FileUploadServiceNotFound" xml:space="preserve">
-    <value>Поставщик услуг не нашел службу загрузки файлов.</value>
+    <value>На брокере не найден сервис загрузки файлов.</value>
   </data>
   <data name="LegalServiceNotFound" xml:space="preserve">
-    <value>Поставщик услуг не нашел юридической услуги.</value>
+    <value>Юридическая услуга у брокера не найдена.</value>
   </data>
   <data name="FailedToBindViewModelForPage" xml:space="preserve">
     <value>Не удалось привязать {0} viewmodel для {1} страницы</value>
@@ -535,7 +535,7 @@
     <value>Не удалось отвязать {0} модели представления для {1} страницы</value>
   </data>
   <data name="OnboardingPhonePageTitle" xml:space="preserve">
-    <value>Добро пожаловать в Neuro-Access</value>
+    <value>Давайте начнем</value>
   </data>
   <data name="OnboardingPhonePageDetails" xml:space="preserve">
     <value>Чтобы пройти верификацию, нужно ввести свой номер телефона</value>
@@ -553,7 +553,7 @@
     <value>Пожалуйста, введите код подтверждения, отправленный на {0}</value>
   </data>
   <data name="OnboardingProviderPageTitle" xml:space="preserve">
-    <value>Ваш поставщик услуг</value>
+    <value>Выбранный провайдер</value>
   </data>
   <data name="OnboardingProviderPageDetails" xml:space="preserve">
     <value>Домен:</value>
@@ -565,22 +565,16 @@
     <value>Введите имя, которое вы хотите использовать для своей учетной записи</value>
   </data>
   <data name="OnboardingDefinePasswordPageTitle" xml:space="preserve">
-    <value>Создание PIN-кода</value>
+    <value>Придумайте пароль</value>
   </data>
   <data name="OnboardingFinalizePageTitle" xml:space="preserve">
     <value>Успех!</value>
   </data>
-  <data name="OnboardingFinalizePageDetails" xml:space="preserve">
-    <value>Теперь вы можете начать использовать Neuro-Access</value>
-  </data>
   <data name="OnboardingBiometricsPageTitle" xml:space="preserve">
-    <value>Почти готово</value>
+    <value>Почти сделано</value>
   </data>
   <data name="OnboardingBiometricsPageDetails" xml:space="preserve">
-    <value>Neuro-Access лучше всего работает при использовании {0}. Хотите включить эту функцию? Это также можно изменить в настройках позже</value>
-  </data>
-  <data name="AccountSectionTitle" xml:space="preserve">
-    <value>Введите имя учетной записи</value>
+    <value>Neuro-Access лучше всего работает при использовании {0}. Хотели бы вы включить эту функцию? Это также можно изменить в настройках позже</value>
   </data>
   <data name="Create" xml:space="preserve">
     <value>Создавать</value>
@@ -601,7 +595,7 @@
     <value>Сеть, похоже, отсутствует. Проверьте конфигурацию и покрытие и повторите попытку.</value>
   </data>
   <data name="SendEmailWarning" xml:space="preserve">
-    <value>На ваш адрес электронной почты был отправлен код. Если вы не получили его, проверьте папку со спамом.</value>
+    <value>Код был отправлен в сообщении электронной почты на адрес электронной почты. Если вы не получили его, проверьте папку со спамом.</value>
   </data>
   <data name="SwitchingToTestPhoneNumberNotAllowed" xml:space="preserve">
     <value>Смена номера телефона на тестовый не допускается.</value>
@@ -623,6 +617,9 @@
   </data>
   <data name="EmailValidationFormat" xml:space="preserve">
     <value>Пожалуйста, введите действительный адрес электронной почты</value>
+  </data>
+  <data name="PhoneValidationFormat" xml:space="preserve">
+    <value>Пожалуйста, введите действующий номер телефона</value>
   </data>
   <data name="ProviderSectionTitle" xml:space="preserve">
     <value>Выберите один вариант</value>
@@ -654,23 +651,17 @@
   <data name="QrScanUri" xml:space="preserve">
     <value>УРИ:</value>
   </data>
-  <data name="AccountValidationAlreadyExists" xml:space="preserve">
-    <value>Это имя учетной записи уже существует</value>
-  </data>
-  <data name="AccountAvailableAlternatives" xml:space="preserve">
-    <value>По-прежнему доступны следующие имена:</value>
-  </data>
   <data name="TestOtpUsed" xml:space="preserve">
     <value>Использован временный OTP-код. Приложение перестанет работать примерно через неделю. Вам придется переустановить приложение, чтобы использовать его снова.</value>
   </data>
   <data name="DefinePasswordSectionTitle1" xml:space="preserve">
-    <value>Введите новый пин-код</value>
+    <value>Введите новый пароль</value>
   </data>
   <data name="DefinePasswordSectionTitle2" xml:space="preserve">
-    <value>Подтвердите PIN-код</value>
+    <value>Подтвердите пароль</value>
   </data>
   <data name="CreatePassword" xml:space="preserve">
-    <value>Создать PIN-код</value>
+    <value>Создать пароль</value>
   </data>
   <data name="ScanQrCodeLabel" xml:space="preserve">
     <value>Отсканируйте QR-код с помощью камеры.</value>
@@ -706,7 +697,7 @@
     <value>Входить</value>
   </data>
   <data name="EnterPassword" xml:space="preserve">
-    <value>Введите пин-код</value>
+    <value>Введите пароль</value>
   </data>
   <data name="FirstName" xml:space="preserve">
     <value>Имя</value>
@@ -718,7 +709,7 @@
     <value>Фамилия (имена)</value>
   </data>
   <data name="LegalId" xml:space="preserve">
-    <value>Тождество</value>
+    <value>Удостоверение личности</value>
   </data>
   <data name="MiddleNames" xml:space="preserve">
     <value>Отчество (отчества)</value>
@@ -808,7 +799,7 @@
     <value>Нейро-ИД</value>
   </data>
   <data name="Technical" xml:space="preserve">
-    <value>Техническая информация</value>
+    <value>Технический</value>
   </data>
   <data name="Home" xml:space="preserve">
     <value>Дом</value>
@@ -823,22 +814,22 @@
     <value>Вы уверены, что хотите сообщить о том, что ваша личность скомпрометирована, украдена или взломана?</value>
   </data>
   <data name="AreYouSureYouWantToRevokeYourLegalIdentity1" xml:space="preserve">
-    <value>Вы уверены, что хотите отозвать свою личность с устройства?</value>
+    <value>Вы уверены, что хотите отозвать свою юридическую личность из заявления?</value>
   </data>
   <data name="AreYouSureYouWantToTransferYourLegalIdentity1" xml:space="preserve">
-    <value>Вы уверены, что хотите перенести свою личность с одного устройства на другое? После завершения идентификация будет удалена с этого устройства. Также убедитесь, что никто другой не может видеть ваш экран во время процесса.</value>
+    <value>Вы уверены, что хотите перенести свою юридическую личность из приложения в другое? После завершения идентификация будет удалена с этого устройства. Также убедитесь, что никто другой не может видеть ваш экран во время процесса.</value>
   </data>
   <data name="Change" xml:space="preserve">
     <value>Менять</value>
   </data>
   <data name="ChangePassword" xml:space="preserve">
-    <value>Изменить PIN-код</value>
+    <value>Смена пароля</value>
   </data>
   <data name="ChangePasswordDescription" xml:space="preserve">
-    <value>Выберите другой PIN-код, чтобы идентифицировать себя. Изменение PIN-кода также приведет к созданию нового случайного пароля для базовой коммуникационной сети.</value>
+    <value>Выберите другой пароль для идентификации. Изменение пароля также приведет к созданию нового случайного пароля для базовой коммуникационной сети.</value>
   </data>
   <data name="ConfirmNewPassword" xml:space="preserve">
-    <value>Подтвердите новый PIN-код:</value>
+    <value>Подтвердите новый пароль:</value>
   </data>
   <data name="DarkMode" xml:space="preserve">
     <value>Тёмная версия</value>
@@ -847,10 +838,10 @@
     <value>Настройки дисплея</value>
   </data>
   <data name="EnterCurrentPassword" xml:space="preserve">
-    <value>Введите текущий пин-код:</value>
+    <value>Введите текущий пароль:</value>
   </data>
   <data name="EnterNewPassword" xml:space="preserve">
-    <value>Введите новый пин-код:</value>
+    <value>Введите новый пароль:</value>
   </data>
   <data name="IdentitySettings" xml:space="preserve">
     <value>Настройки удостоверения</value>
@@ -865,13 +856,13 @@
     <value>Светлый режим</value>
   </data>
   <data name="ProhibitRecording" xml:space="preserve">
-    <value>Запретить запись экрана</value>
+    <value>Запретить запись</value>
   </data>
   <data name="ReportAsCompromized" xml:space="preserve">
     <value>Сообщить о компрометации</value>
   </data>
   <data name="ReportAsCompromizedDescription" xml:space="preserve">
-    <value>Сообщайте о том, что приложение, PIN-код или телефон были скомпрометированы, взломаны или украдены.</value>
+    <value>Сообщайте, если приложение, пароль или телефон были скомпрометированы, взломаны или украдены.</value>
   </data>
   <data name="RevokeIdentity" xml:space="preserve">
     <value>Отзыв удостоверения</value>
@@ -898,10 +889,10 @@
     <value>Метод проверки подлинности</value>
   </data>
   <data name="Fingerprint" xml:space="preserve">
-    <value>Биометрический</value>
+    <value>Отпечаток пальца</value>
   </data>
   <data name="Password" xml:space="preserve">
-    <value>БУЛАВКА</value>
+    <value>Пароль</value>
   </data>
   <data name="Application" xml:space="preserve">
     <value>Приложение</value>
@@ -913,7 +904,7 @@
     <value>Вы уверены, что хотите отозвать текущее заявление на получение удостоверения личности?</value>
   </data>
   <data name="AreYouSureYouWantToSendThisIdApplication" xml:space="preserve">
-    <value>Вы уверены, что хотите отправить новое заявление на получение удостоверения личности? При отправке заявления на получение удостоверения личности ваше текущее удостоверение личности устареет.</value>
+    <value>Вы уверены, что хотите отправить это заявление на получение удостоверения личности? При отправке заявления на получение удостоверения личности ваше текущее удостоверение личности устареет.</value>
   </data>
   <data name="ConsentDescription" xml:space="preserve">
     <value>Я даю согласие на обработку персональных данных, предоставленных в этом заявлении, в целях проверки и одобрения заявки.</value>
@@ -940,7 +931,7 @@
     <value>Избранные рецензенты</value>
   </data>
   <data name="FingerprintDescription" xml:space="preserve">
-    <value>Сканирование для проверки подлинности</value>
+    <value>Отсканируйте отпечаток пальца.</value>
   </data>
   <data name="FingerprintTitle" xml:space="preserve">
     <value>Требуется аутентификация</value>
@@ -970,13 +961,13 @@
     <value>В заявку на получение идентификатора организации включены следующие организационные сведения.</value>
   </data>
   <data name="PeerReviewDescription" xml:space="preserve">
-    <value>Рецензирование включено. Это позволяет вам просить одноранговых узлов (людей с уже утвержденными цифровыми удостоверениями) рассмотреть вашу заявку и утвердить ее.</value>
+    <value>Рецензирование включено. Это позволяет запрашивать одноранговых узлов (людей с уже утвержденными цифровыми удостоверениями) для проверки вашего приложения и его совместного утверждения.</value>
   </data>
   <data name="PersonalId" xml:space="preserve">
     <value>Личный идентификатор</value>
   </data>
   <data name="PersonalIdDescription" xml:space="preserve">
-    <value>Подайте заявку на получение нового цифрового удостоверения личности. Удостоверение личности будет содержать вашу личную информацию и может быть использовано для подтверждения вашей личности, а также для получения доступа к услугам, требующим подтвержденной личности.</value>
+    <value>Подайте заявку на получение нового цифрового удостоверения личности. Идентификатор будет содержать вашу личную информацию и может быть использован для подтверждения вашей личности, а также для получения доступа к услугам, требующим подтвержденной личности.</value>
   </data>
   <data name="PersonalInformationDescription" xml:space="preserve">
     <value>Следующая личная информация будет включена в заявление на получение удостоверения личности.</value>
@@ -997,7 +988,7 @@
     <value>В приложение включены следующие изображения.</value>
   </data>
   <data name="QrPageTitleScanPeerId" xml:space="preserve">
-    <value>Сканирование идентификатора одноранговых узлов</value>
+    <value>Идентификатор сканирования однорангового узла</value>
   </data>
   <data name="RevokeApplication" xml:space="preserve">
     <value>Отозвать заявление</value>
@@ -1291,7 +1282,7 @@
     <value>товары второго сорта</value>
   </data>
   <data name="SelectedContactCannotBeAdded" xml:space="preserve">
-    <value>Выбранный контакт не может быть добавлен. У него нет зарегистрированной личности.</value>
+    <value>Выбранный контакт не может быть добавлен. У него не зарегистрировано юридическое удостоверение личности.</value>
   </data>
   <data name="Send" xml:space="preserve">
     <value>Отправить</value>
@@ -1393,7 +1384,7 @@
     <value>Сообщение от:</value>
   </data>
   <data name="NeuroFeaturesServiceNotFound" xml:space="preserve">
-    <value>Услуга Neuro-Features не найдена у Поставщика услуг.</value>
+    <value>Сервис Neuro-Features не найден у брокера.</value>
   </data>
   <data name="PetitionFrom" xml:space="preserve">
     <value>Петиция от:</value>
@@ -1426,7 +1417,7 @@
     <value>Служба управления не найдена.</value>
   </data>
   <data name="EDalerServiceNotFound" xml:space="preserve">
-    <value>Услуга eDaler не найдена у Поставщика услуг.</value>
+    <value>Сервис eDaler не найден у брокера.</value>
   </data>
   <data name="GettingOptionsCancelled" xml:space="preserve">
     <value>Получение доступных опций было отменено.</value>
@@ -1450,7 +1441,7 @@
     <value>Услуга персонального троеборья не найдена.</value>
   </data>
   <data name="ProvisioningServiceNotFound" xml:space="preserve">
-    <value>Поставщик услуг не нашел службу подготовки.</value>
+    <value>Служба подготовки не найдена у брокера.</value>
   </data>
   <data name="PushNotificationServiceNotFound" xml:space="preserve">
     <value>Сервис push-уведомлений не найден.</value>
@@ -1471,7 +1462,7 @@
     <value>Ответ на запрос подписи</value>
   </data>
   <data name="ThingRegistryServiceNotFound" xml:space="preserve">
-    <value>У поставщика услуг ничего не найдено.</value>
+    <value>Ничего не нашлось на брокере.</value>
   </data>
   <data name="UnableToGetListOfMyDevices" xml:space="preserve">
     <value>Не могу получить список своих устройств.</value>
@@ -1657,7 +1648,7 @@
     <value>Отсканировать QR-код</value>
   </data>
   <data name="ScanQRShort" xml:space="preserve">
-    <value>Сканировать QR-код</value>
+    <value>Сканирование QR</value>
   </data>
   <data name="ShowIDShort" xml:space="preserve">
     <value>Показать ID</value>
@@ -1756,7 +1747,7 @@
     <value>Фотосъемка на этом устройстве не поддерживается</value>
   </data>
   <data name="TheSpecifiedCodeIsNotALegalIdentity" xml:space="preserve">
-    <value>Вам нужно отсканировать QR-код другого типа, который представляет собой удостоверение Neuro-Access</value>
+    <value>Вам нужно отсканировать QR-код другого типа, который представляет собой юридическое лицо</value>
   </data>
   <data name="ThingDisowned" xml:space="preserve">
     <value>От этого успешно открещиваются. Теперь на него может претендовать новый владелец.</value>
@@ -1873,7 +1864,7 @@
     <value>Доступ к удостоверениям</value>
   </data>
   <data name="PetitionIdentityInformationText" xml:space="preserve">
-    <value>Получено ходатайство о предоставлении персональных данных, удостоверяющих вашу личность. Ознакомьтесь с приведенной ниже информацией и выберите, как вы хотите ответить.</value>
+    <value>Получено ходатайство о предоставлении персональных данных вашей личности. Ознакомьтесь с приведенной ниже информацией и выберите, как вы хотите ответить.</value>
   </data>
   <data name="PetitionSignature" xml:space="preserve">
     <value>Требуется подпись</value>
@@ -2107,30 +2098,171 @@
     <value>Биометрическая аутентификация</value>
   </data>
   <data name="FaceId" xml:space="preserve">
-    <value>Идентификация лица</value>
+    <value>Face ID</value>
   </data>
   <data name="TouchId" xml:space="preserve">
-    <value>Сенсорный идентификатор</value>
+    <value>Touch ID</value>
   </data>
   <data name="WhatIsX" xml:space="preserve">
     <value>Что такое {0}?</value>
   </data>
   <data name="BiometricAuthenticationInfo" xml:space="preserve">
-    <value>Биометрическая аутентификация использует ваши уникальные физические признаки, такие как лицо или отпечаток пальца, чтобы убедиться, что это действительно вы. Он предоставляет простой и безопасный способ доступа к Neuro-Access.</value>
+    <value>Биометрическая аутентификация использует ваши уникальные физические данные, такие как лицо или отпечаток пальца, чтобы убедиться, что это действительно вы. Он предоставляет простой и безопасный способ доступа к Neuro-Access.</value>
   </data>
   <data name="FaceIdInfo" xml:space="preserve">
     <value>Face ID распознает ваше лицо, чтобы убедиться, что это действительно вы, обеспечивая простой и безопасный способ доступа к Neuro-Access.</value>
   </data>
   <data name="TouchIdInfo" xml:space="preserve">
-    <value>Touch ID использует ваш отпечаток пальца, чтобы убедиться, что это действительно вы, обеспечивая быстрый и безопасный способ доступа к Neuro-Access.</value>
+    <value>Touch ID использует отпечаток пальца, чтобы убедиться, что это действительно вы, обеспечивая быстрый и безопасный способ доступа к Neuro-Access.</value>
   </data>
   <data name="TransferIdentity" xml:space="preserve">
-    <value>Перенос удостоверения</value>
+    <value>Передача удостоверения личности</value>
   </data>
   <data name="TransferIdentityDescription" xml:space="preserve">
-    <value>Перенесите текущее удостоверение на другое устройство.</value>
+    <value>Перенесите свою текущую личность на другое устройство.</value>
   </data>
   <data name="TransferIdentityPageDetails" xml:space="preserve">
-    <value>На другом устройстве продолжайте подключение, пока не дойдете до страницы поставщика услуг. Нажмите кнопку «Изменить» и отсканируйте этот QR-код. Это приведет к удалению удостоверения с этого устройства.</value>
+    <value>На другом устройстве продолжайте процесс подключения, пока не дойдете до страницы поставщика услуг. Нажмите кнопку «Изменить» и отсканируйте этот QR-код. Это приведет к удалению личности с этого устройства.</value>
+  </data>
+  <data name="AppVersion" xml:space="preserve">
+    <value>Номер версии</value>
+  </data>
+  <data name="BuildNumber" xml:space="preserve">
+    <value>Номер сборки</value>
+  </data>
+  <data name="Platform" xml:space="preserve">
+    <value>Платформа</value>
+  </data>
+  <data name="HardwareInfo" xml:space="preserve">
+    <value>Скобяные изделия</value>
+  </data>
+  <data name="OnboardingGetStartedTitle" xml:space="preserve">
+    <value>Добро пожаловать в Neuro-Access</value>
+  </data>
+  <data name="CreateNewAccount" xml:space="preserve">
+    <value>Создать новую учетную запись</value>
+  </data>
+  <data name="IAlreadyHaveAnAccount" xml:space="preserve">
+    <value>У меня уже есть учетная запись</value>
+  </data>
+  <data name="OnboardingGetStartedQrInfo" xml:space="preserve">
+    <value>Получили приглашение, код для переноса или восстановления? Отсканируйте его ниже</value>
+  </data>
+  <data name="OnboardingNameEntryTitle" xml:space="preserve">
+    <value>Выберите имя пользователя</value>
+  </data>
+  <data name="OnboardingNameEntryDetails" xml:space="preserve">
+    <value>Ваше имя пользователя является постоянным и не может быть изменено позже</value>
+  </data>
+  <data name="UseNickname" xml:space="preserve">
+    <value>Я хочу использовать псевдоним</value>
+  </data>
+  <data name="UseRealName" xml:space="preserve">
+    <value>Я хочу использовать свое настоящее имя</value>
+  </data>
+  <data name="BeAnonymous" xml:space="preserve">
+    <value>Я хотел бы остаться анонимным</value>
+  </data>
+  <data name="Nickname" xml:space="preserve">
+    <value>Прозвище</value>
+  </data>
+  <data name="OnboardingContactSupportTitle" xml:space="preserve">
+    <value>Восстановить учетную запись</value>
+  </data>
+  <data name="AccountDetails" xml:space="preserve">
+    <value>Реквизиты учетной записи</value>
+  </data>
+  <data name="ServiceProvider" xml:space="preserve">
+    <value>Поставщик услуг</value>
+  </data>
+  <data name="Alternative" xml:space="preserve">
+    <value>Альтернатива: </value>
+  </data>
+  <data name="InvalidUsernameCharacters" xml:space="preserve">
+    <value>Имя пользователя содержит недопустимые символы.</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Имя пользователя</value>
+  </data>
+  <data name="SendSeconds" xml:space="preserve">
+    <value>Отправить ({0})</value>
+  </data>
+  <data name="CreateWallet" xml:space="preserve">
+    <value>Создать кошелек</value>
+  </data>
+  <data name="CreateWalletDescription" xml:space="preserve">
+    <value>Вы создаете кошелек, положив на него немного денег. Эти деньги называются eDaler и могут быть переведены другим лицам, онлайн или офлайн, или использованы для покупки предлагаемых услуг.</value>
+  </data>
+  <data name="Buy" xml:space="preserve">
+    <value>Покупать</value>
+  </data>
+  <data name="BuyEDalerDescription" xml:space="preserve">
+    <value>Укажите ниже количество eDaler, которое вы хотите купить, и нажмите кнопку «Купить». Может быть открыта веб-страница, на которой вам нужно будет ввести дополнительную информацию, чтобы платежная система подтвердила ваш запрос.</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Количество:</value>
+  </data>
+  <data name="Wallet" xml:space="preserve">
+    <value>Бумажник</value>
+  </data>
+  <data name="OpenWallet" xml:space="preserve">
+    <value>Открыть кошелек</value>
+  </data>
+  <data name="OpenWalletDescription" xml:space="preserve">
+    <value>Откройте свой кошелек eDaler, чтобы отобразить текущий баланс и просмотреть последние транзакции.</value>
+  </data>
+  <data name="OpenWllet" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AccountEventDescription" xml:space="preserve">
+    <value>Ниже вы можете увидеть информацию о событии одного аккаунта.</value>
+  </data>
+  <data name="Balance" xml:space="preserve">
+    <value>Равновесие:</value>
+  </data>
+  <data name="OpenMessageLink" xml:space="preserve">
+    <value>Открыть ссылку на сообщение</value>
+  </data>
+  <data name="RemoteParty" xml:space="preserve">
+    <value>Удаленная вечеринка:</value>
+  </data>
+  <data name="Reserved" xml:space="preserve">
+    <value>Скрытный:</value>
+  </data>
+  <data name="TransactionId" xml:space="preserve">
+    <value>ID транзакции:</value>
+  </data>
+  <data name="AccountEventItem" xml:space="preserve">
+    <value>События учетной записи</value>
+  </data>
+  <data name="PendingPaymentItem" xml:space="preserve">
+    <value>Ожидающие платежи</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsPart1" xml:space="preserve">
+    <value>Если у вас есть доступ к учетной записи на другом устройстве, выполните следующие действия:</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet1" xml:space="preserve">
+    <value>Откройте приложение на другом устройстве.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet2" xml:space="preserve">
+    <value>Перейдите в «Настройки» → «Перенести удостоверение».</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet3" xml:space="preserve">
+    <value>На этом устройстве появится QR-код.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet4" xml:space="preserve">
+    <value>Используйте это устройство для сканирования QR-кода и переноса учетной записи.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsPart2" xml:space="preserve">
+    <value>Если у вас нет доступа к учетной записи, обратитесь в нашу службу поддержки по адресу</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsPart3" xml:space="preserve">
+    <value>.</value>
+  </data>
+  <data name="SupportEmailSubject" xml:space="preserve">
+    <value>Восстановить учетную запись</value>
+  </data>
+  <data name="EmailClientNotAvailable" xml:space="preserve">
+    <value>Не удается открыть почтовый клиент. Пожалуйста, отправьте электронное письмо по адресу {0}.</value>
   </data>
 </root>

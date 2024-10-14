@@ -8,13 +8,50 @@
             "name": ".NET Meteor Debugger",
             "type": "dotnet-meteor.debugger",
             "request": "launch",
-            "preLaunchTask": "dotnet-meteor: Build"
+            "preLaunchTask": "dotnet-meteor: Build",
+            "justMyCode": false,
+            "suppressJITOptimizations": true,
+            "symbolOptions": {
+                "searchPaths": [
+                    "https://symbols.nuget.org/download/symbols"
+                ],
+                "searchMicrosoftSymbolServer": true,
+                "searchNuGetOrgSymbolServer": true,
+                "cachePath": "/symcache",
+                "moduleFilter": {
+                    "mode": "loadAllButExcluded",
+                    "excludedModules": []
+                }
+            },
+            "sourceLinkOptions": {
+                "https://raw.githubusercontent.com/*": { "enabled": true },
+                "*": { "enabled": false }
+            }
         },
         {
             "name": ".NET MAUI",
             "type": "maui",
             "request": "launch",
-            "preLaunchTask": "maui: Build"
+            "preLaunchTask": "maui: Build",
+            "justMyCode": false,
+            "suppressJITOptimizations": true,
+            "symbolOptions": {
+                "searchPaths": [
+                    "https://symbols.nuget.org/download/symbols"
+                ],
+                "searchMicrosoftSymbolServer": true,
+                "searchNuGetOrgSymbolServer": true,
+                "cachePath": "$HOME/.dotnet/symbolcache",
+                "moduleFilter": {
+                    "mode": "loadAllButExcluded",
+                    "excludedModules": []
+                }
+            },
+            "sourceLinkOptions": {
+                "https://raw.githubusercontent.com/*": { "enabled": true },
+                "*": { "enabled": false }
+            }
+        
         }
     ]
 }

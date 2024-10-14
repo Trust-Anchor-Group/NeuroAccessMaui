@@ -509,6 +509,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 		#region Legal Identities
 
 		/// <summary>
+		/// Generates new keys
+		/// </summary>
+		Task GenerateNewKeys();
+
+		/// <summary>
 		/// Gets important attributes for a successful ID Application.
 		/// </summary>
 		/// <returns>ID Application attributes.</returns>
@@ -518,10 +523,10 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// Adds a legal identity.
 		/// </summary>
 		/// <param name="Model">The model holding all the values needed.</param>
-		/// <param name="ObsoleteExistingIDsAndKeys">If existing keys and IDs are to be obsoleted.</param>
+		/// <param name="GenerateNewKeys">If new keys should be generated.</param>
 		/// <param name="Attachments">The physical attachments to upload.</param>
 		/// <returns>Legal Identity</returns>
-		Task<LegalIdentity> AddLegalIdentity(RegisterIdentityModel Model, bool ObsoleteExistingIDsAndKeys, params LegalIdentityAttachment[] Attachments);
+		Task<LegalIdentity> AddLegalIdentity(RegisterIdentityModel Model, bool GenerateNewKeys, params LegalIdentityAttachment[] Attachments);
 
 		/// <summary>
 		/// Returns a list of legal identities.
@@ -548,9 +553,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// Checks if the client has access to the private keys of the specified legal identity.
 		/// </summary>
 		/// <param name="legalIdentityId">The id of the legal identity.</param>
-		/// <param name="client">The Xmpp client instance. Can be null, in that case the default one is used.</param>
 		/// <returns>If private keys are available.</returns>
-		Task<bool> HasPrivateKey(CaseInsensitiveString legalIdentityId, XmppClient? client = null);
+		Task<bool> HasPrivateKey(CaseInsensitiveString legalIdentityId);
 
 		/// <summary>
 		/// Marks the legal identity as obsolete.
@@ -754,11 +758,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// Sends a contract proposal to a recipient.
 		/// </summary>
-		/// <param name="ContractId">ID of proposed contract.</param>
+		/// <param name="Contract">Proposed contract.</param>
 		/// <param name="Role">Proposed role of recipient.</param>
 		/// <param name="To">Recipient Address (Bare or Full JID).</param>
 		/// <param name="Message">Optional message included in message.</param>
-		void SendContractProposal(string ContractId, string Role, string To, string Message);
+		Task SendContractProposal(Contract Contract, string Role, string To, string Message);
 
 		#endregion
 

@@ -100,7 +100,7 @@ namespace NeuroAccessMaui.Extensions
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 
 				VerticalStackLayout Layout = [];
 

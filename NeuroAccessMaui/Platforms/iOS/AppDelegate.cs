@@ -1,6 +1,5 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
-using CoreGraphics;
 using Foundation;
+using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI;
 using UIKit;
 
@@ -18,10 +17,35 @@ namespace NeuroAccessMaui
 
 			// TODO: This is a temporary workaround to fix the issue with custom RadioButton control templates not responding to taps on IOS
 			// https://github.com/dotnet/maui/issues/19478
-			this.RadioButtonTemplateWorkaround();
+			RadioButtonTemplateWorkaround();
 
 			return app;
 		}
+
+		/// <summary>
+		/// Method is called when an URL with a registered schema is being opened.
+		/// </summary>
+		/// <param name="app">Application</param>
+		/// <param name="url">URL</param>
+		/// <param name="options">Options</param>
+		/// <returns>If URL is handled.</returns>
+		public override bool OpenUrl(UIApplication Application, NSUrl Url, NSDictionary Options)
+		{
+			if (string.IsNullOrEmpty(Url.AbsoluteString))
+				return false;
+
+			try
+			{
+				App.OpenUrlSync(Url.AbsoluteString);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				return false;
+			}
+			return true;
+		}
+
 
 		// At the time of writing 8/4/2024
 		// There is a bug with the MAUI/Mopups library that causes the app to crash because some of the apps lifecycle events are not forwarded properly
@@ -31,17 +55,17 @@ namespace NeuroAccessMaui
 		// By ensuring we have a KeyWindow when the app is activated or resigns solves this issue.
 		public override void OnActivated(UIApplication application)
 		{
-			this.EnsureKeyWindow();
+			EnsureKeyWindow();
 			base.OnActivated(application);
 		}
 
 		public override void OnResignActivation(UIApplication application)
 		{
-			this.EnsureKeyWindow();
+			EnsureKeyWindow();
 			base.OnResignActivation(application);
 		}
 
-		private void EnsureKeyWindow()
+		private static void EnsureKeyWindow()
 		{
 			if (GetKeyWindow() is null)
 				return;
@@ -82,7 +106,8 @@ namespace NeuroAccessMaui
 			else
 				return UIApplication.SharedApplication.KeyWindow;
 		}
-		private void RadioButtonTemplateWorkaround()
+
+		private static void RadioButtonTemplateWorkaround()
 		{
 			Microsoft.Maui.Handlers.RadioButtonHandler.Mapper.AppendToMapping("TemplateWorkaround", (h, v) =>
 			{

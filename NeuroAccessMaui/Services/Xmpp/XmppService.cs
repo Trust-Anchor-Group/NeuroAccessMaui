@@ -1,4 +1,8 @@
-﻿using EDaler;
+﻿//#define DEBUG_XMPP_REMOTE
+//#define DEBUG_LOG_REMOTE
+//#define DEBUG_DB_REMOTE
+
+using EDaler;
 using EDaler.Uris;
 using Mopups.Services;
 using NeuroAccessMaui.Extensions;
@@ -51,6 +55,7 @@ using Waher.Networking.XMPP.ServiceDiscovery;
 using Waher.Networking.XMPP.StanzaErrors;
 using Waher.Persistence;
 using Waher.Persistence.Filters;
+using Waher.Persistence.XmlLedger;
 using Waher.Runtime.Inventory;
 using Waher.Runtime.Settings;
 using Waher.Runtime.Temporary;
@@ -96,6 +101,15 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private EventFilter? xmppFilteredEventSink;
 		private string? token = null;
 		private DateTime tokenCreated = DateTime.MinValue;
+#if DEBUG_XMPP_REMOTE || DEBUG_LOG_REMOTE || DEBUG_DB_REMOTE
+		private const string debugRecipient = "";     // TODO: Set JID of recipient of debug messages.
+#endif
+#if DEBUG_XMPP_REMOTE || DEBUG_DB_REMOTE
+		private RemoteSniffer? debugSniffer = null;
+#endif
+#if DEBUG_LOG_REMOTE
+		private EventFilter? debugEventSink = null;
+#endif
 
 		#region Creation / Destruction
 
@@ -159,6 +173,52 @@ namespace NeuroAccessMaui.Services.Xmpp
 							Constants.LanguageCodes.Default, AppAssembly, this.sniffer);
 					}
 
+#if DEBUG_XMPP_REMOTE || DEBUG_LOG_REMOTE || DEBUG_DB_REMOTE
+					if (!string.IsNullOrEmpty(debugRecipient))
+					{
+#endif
+#if DEBUG_XMPP_REMOTE || DEBUG_DB_REMOTE
+						this.debugSniffer = new RemoteSniffer(debugRecipient, DateTime.MaxValue, this.xmppClient, this.xmppClient,
+							ConcentratorServer.NamespaceConcentratorCurrent);
+#endif
+#if DEBUG_XMPP_REMOTE
+						this.xmppClient.Add(this.debugSniffer);
+#endif
+#if DEBUG_LOG_REMOTE
+						if (this.debugEventSink is not null)
+						{
+							Log.Unregister(this.debugEventSink);
+							this.debugEventSink?.Dispose();
+							this.debugEventSink = null;
+						}
+
+						this.debugEventSink = new EventFilter("Debug Event Filter",
+							new XmppEventSink("Debug Event Sink", this.xmppClient, debugRecipient, false),
+							EventType.Informational, (Event) =>
+							{
+								if (this.xmppClient is null || this.xmppClient.State != XmppState.Connected)
+									return false;
+
+								return string.IsNullOrEmpty(Event.StackTrace) || !Event.StackTrace.Contains("XmppEventSink");
+							});
+
+						Log.Register(this.debugEventSink);
+#endif
+#if DEBUG_DB_REMOTE
+						if (!Ledger.HasProvider)
+						{
+							XmlFileLedger XmlFileLedger = new(new RemoteLedgerWriter());
+							Ledger.Register(XmlFileLedger);
+
+							await XmlFileLedger.Start();
+
+							Ledger.StartListeningToDatabaseEvents();
+						}
+#endif
+#if DEBUG_XMPP_REMOTE || DEBUG_LOG_REMOTE || DEBUG_DB_REMOTE
+					}
+#endif
+
 					this.xmppClient.RequestRosterOnStartup = false;
 					this.xmppClient.TrustServer = !IsIpAddress;
 					this.xmppClient.AllowCramMD5 = false;
@@ -183,7 +243,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 					this.xmppClient.OnPresence += this.XmppClient_OnPresence;
 
 					this.xmppClient.RegisterMessageHandler("Delivered", ContractsClient.NamespaceOnboarding, this.TransferIdDelivered, true);
-					this.xmppClient.RegisterMessageHandler("clientMessage", ContractsClient.NamespaceLegalIdentities, this.ClientMessage, true);
+					this.xmppClient.RegisterMessageHandler("clientMessage", ContractsClient.NamespaceLegalIdentitiesCurrent, this.ClientMessage, true);
 
 					this.xmppFilteredEventSink = new EventFilter("XMPP Event Filter",
 						new XmppEventSink("XMPP Event Sink", this.xmppClient, ServiceRef.TagProfile.LogJid, false),
@@ -208,7 +268,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 								throw new Exception("Regeneration of keys not permitted at this time.");
 							}
 
-							await this.contractsClient.GenerateNewKeys();
+							await this.GenerateNewKeys();
 						}
 					}
 
@@ -278,6 +338,125 @@ namespace NeuroAccessMaui.Services.Xmpp
 			}
 		}
 
+#if DEBUG_DB_REMOTE
+		private class RemoteLedgerWriter()
+			: TextWriter(CultureInfo.CurrentCulture)
+		{
+			private readonly StringBuilder sb = new();
+
+			public override Encoding Encoding => Encoding.Unicode;
+			public override void Flush() => this.FlushAsync().Wait();
+			public override Task FlushAsync(CancellationToken cancellationToken) => this.FlushAsync();
+
+			public override async Task FlushAsync()
+			{
+				try
+				{
+					string s = this.sb.ToString();
+					string s2 = s.TrimStart();
+					if (string.IsNullOrEmpty(s2))
+						return;
+
+					if (ServiceRef.XmppService is not XmppService Service)
+						return;
+
+					RemoteSniffer? Sniffer = Service.debugSniffer;
+					if (Sniffer is null)
+						return;
+
+					this.sb.Clear();
+
+					int i = s2.IndexOf('<');
+					if (i > 0)
+						s2 = s2[i..];
+
+					string[] Rows = s.Replace("\r\n", "\n").Replace('\r', '\n').Split('\n');
+
+					if (s2.StartsWith("<New", StringComparison.OrdinalIgnoreCase))
+					{
+						foreach (string Row in Rows)
+							await Sniffer.TransmitText(Row);
+					}
+					else if (s2.StartsWith("<Update", StringComparison.OrdinalIgnoreCase))
+					{
+						foreach (string Row in Rows)
+							await Sniffer.ReceiveText(Row);
+					}
+					else if (s2.StartsWith("<Delete", StringComparison.OrdinalIgnoreCase))
+					{
+						foreach (string Row in Rows)
+							await Sniffer.Error(Row);
+					}
+					else if (s2.StartsWith("<Clear", StringComparison.OrdinalIgnoreCase))
+					{
+						foreach (string Row in Rows)
+							await Sniffer.Warning(Row);
+					}
+					else
+					{
+						foreach (string Row in Rows)
+							await Sniffer.Information(Row);
+					}
+				}
+				catch (Exception)
+				{
+					// Ignore
+				}
+			}
+
+			public override void Write(char value) => this.sb.Append(value);
+			public override void Write(char[]? buffer) => this.sb.Append(buffer);
+			public override void Write(char[] buffer, int index, int count) => this.sb.Append(new string(buffer, index, count));
+			public override void Write(ReadOnlySpan<char> buffer) => this.sb.Append(new string(buffer));
+			public override void Write(bool value) => this.sb.Append(value);
+			public override void Write(int value) => this.sb.Append(value);
+			public override void Write(uint value) => this.sb.Append(value);
+			public override void Write(long value) => this.sb.Append(value);
+			public override void Write(ulong value) => this.sb.Append(value);
+			public override void Write(float value) => this.sb.Append(value);
+			public override void Write(double value) => this.sb.Append(value);
+			public override void Write(decimal value) => this.sb.Append(value);
+			public override void Write(string? value) => this.sb.Append(value);
+			public override void Write(object? value) => this.sb.Append(value);
+			public override void Write(StringBuilder? value) => this.sb.Append(value);
+			public override void Write([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, object? arg0) => this.sb.Append(string.Format(this.FormatProvider, format, arg0));
+			public override void Write([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, object? arg0, object? arg1) => this.sb.Append(string.Format(this.FormatProvider, format, arg0, arg1));
+			public override void Write([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, object? arg0, object? arg1, object? arg2) => this.sb.Append(string.Format(this.FormatProvider, format, arg0, arg1, arg2));
+			public override void Write([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, params object?[] arg) => this.sb.Append(string.Format(this.FormatProvider, format, arg));
+			public override Task WriteAsync(char value) { this.sb.Append(value); return Task.CompletedTask; }
+			public override Task WriteAsync(string? value) { this.sb.Append(value); return Task.CompletedTask; }
+			public override Task WriteAsync(StringBuilder? value, CancellationToken cancellationToken = default) { this.sb.Append(value); return Task.CompletedTask; }
+			public override Task WriteAsync(char[] buffer, int index, int count) { this.sb.Append(new string(buffer, index, count)); return Task.CompletedTask; }
+			public override Task WriteAsync(ReadOnlyMemory<char> buffer, CancellationToken cancellationToken = default) { this.sb.Append(buffer); return Task.CompletedTask; }
+			public override void WriteLine() => this.sb.AppendLine(string.Empty);
+			public override void WriteLine(char value) => this.sb.AppendLine(value.ToString());
+			public override void WriteLine(char[]? buffer) => this.sb.AppendLine(new string(buffer));
+			public override void WriteLine(char[] buffer, int index, int count) => this.sb.AppendLine(new string(buffer, index, count));
+			public override void WriteLine(ReadOnlySpan<char> buffer) => this.sb.AppendLine(new string(buffer));
+			public override void WriteLine(bool value) => this.sb.AppendLine(value.ToString());
+			public override void WriteLine(int value) => this.sb.AppendLine(value.ToString(CultureInfo.CurrentCulture));
+			public override void WriteLine(uint value) => this.sb.AppendLine(value.ToString(CultureInfo.CurrentCulture));
+			public override void WriteLine(long value) => this.sb.AppendLine(value.ToString(CultureInfo.CurrentCulture));
+			public override void WriteLine(ulong value) => this.sb.AppendLine(value.ToString(CultureInfo.CurrentCulture));
+			public override void WriteLine(float value) => this.sb.AppendLine(value.ToString(CultureInfo.CurrentCulture));
+			public override void WriteLine(double value) => this.sb.AppendLine(value.ToString(CultureInfo.CurrentCulture));
+			public override void WriteLine(decimal value) => this.sb.AppendLine(value.ToString(CultureInfo.CurrentCulture));
+			public override void WriteLine(string? value) => this.sb.AppendLine(value?.ToString());
+			public override void WriteLine(StringBuilder? value) => this.sb.AppendLine(value?.ToString());
+			public override void WriteLine(object? value) => this.sb.AppendLine(value?.ToString());
+			public override void WriteLine([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, object? arg0) => this.sb.AppendLine(string.Format(this.FormatProvider, format, arg0));
+			public override void WriteLine([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, object? arg0, object? arg1) => this.sb.AppendLine(string.Format(this.FormatProvider, format, arg0, arg1));
+			public override void WriteLine([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, object? arg0, object? arg1, object? arg2) => this.sb.AppendLine(string.Format(this.FormatProvider, format, arg0, arg1, arg2));
+			public override void WriteLine([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, params object?[] arg) => this.sb.AppendLine(string.Format(this.FormatProvider, format, arg));
+			public override Task WriteLineAsync(char value) { this.sb.AppendLine(value.ToString()); return Task.CompletedTask; }
+			public override Task WriteLineAsync(string? value) { this.sb.AppendLine(value); return Task.CompletedTask; }
+			public override Task WriteLineAsync(StringBuilder? value, CancellationToken cancellationToken = default) { this.sb.AppendLine(value?.ToString()); return Task.CompletedTask; }
+			public override Task WriteLineAsync(char[] buffer, int index, int count) { this.sb.AppendLine(new string(buffer, index, count)); return Task.CompletedTask; }
+			public override Task WriteLineAsync(ReadOnlyMemory<char> buffer, CancellationToken cancellationToken = default) { this.sb.AppendLine(new string(buffer.Span)); return Task.CompletedTask; }
+			public override Task WriteLineAsync() { this.sb.AppendLine(string.Empty); return Task.CompletedTask; }
+		}
+#endif
+
 		private async Task DestroyXmppClient()
 		{
 			this.reconnectTimer?.Dispose();
@@ -329,6 +508,17 @@ namespace NeuroAccessMaui.Services.Xmpp
 			this.abuseClient?.Dispose();
 			this.abuseClient = null;
 
+#if DEBUG_DB_REMOTE
+			this.debugSniffer = null;
+#endif
+#if DEBUG_LOG_REMOTE
+			if (this.debugEventSink is not null)
+			{
+				Log.Unregister(this.debugEventSink);
+				this.debugEventSink?.Dispose();
+				this.debugEventSink = null;
+			}
+#endif
 			this.xmppClient?.Dispose();
 			this.xmppClient = null;
 		}
@@ -618,13 +808,13 @@ namespace NeuroAccessMaui.Services.Xmpp
 				this.TagProfile_StepChanged(Sender, new EventArgs());
 		}
 
-		private Task XmppClient_Error(object? Sender, Exception e)
+		private Task XmppClient_Error(object? _, Exception e)
 		{
 			this.LatestError = e.Message;
 			return Task.CompletedTask;
 		}
 
-		private Task XmppClient_ConnectionError(object? Sender, Exception e)
+		private Task XmppClient_ConnectionError(object? _, Exception e)
 		{
 			if (e is ObjectDisposedException)
 				this.LatestConnectionError = ServiceRef.Localizer[nameof(AppResources.UnableToConnect)];
@@ -946,7 +1136,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 						ErrorMessage = ServiceRef.Localizer[nameof(AppResources.OperatorDoesNotSupportRegisteringNewAccounts), Domain];
 				}
 				else if (Operation == ConnectOperation.ConnectAndCreateAccount)
-					ErrorMessage = ServiceRef.Localizer[nameof(AppResources.AccountNameAlreadyTaken), this.accountName ?? string.Empty];
+					ErrorMessage = ServiceRef.Localizer[nameof(AppResources.UsernameNameAlreadyTaken), this.accountName ?? string.Empty];
 				else if (Operation == ConnectOperation.ConnectToAccount)
 					ErrorMessage = ServiceRef.Localizer[nameof(AppResources.InvalidUsernameOrPassword), this.accountName ?? string.Empty];
 				else
@@ -1093,15 +1283,15 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 			lock (SynchObject)
 			{
-				if (itemResponse.HasFeature(ContractsClient.NamespaceLegalIdentities))
+				if (itemResponse.HasAnyFeature(ContractsClient.NamespacesLegalIdentities))
 					ServiceRef.TagProfile.LegalJid = Item.JID;
 
-				if (itemResponse.HasFeature(ThingRegistryClient.NamespaceDiscovery))
+				if (itemResponse.HasAnyFeature(ThingRegistryClient.NamespacesDiscovery))
 					ServiceRef.TagProfile.RegistryJid = Item.JID;
 
-				if (itemResponse.HasFeature(ProvisioningClient.NamespaceProvisioningDevice) &&
-					itemResponse.HasFeature(ProvisioningClient.NamespaceProvisioningOwner) &&
-					itemResponse.HasFeature(ProvisioningClient.NamespaceProvisioningToken))
+				if (itemResponse.HasAnyFeature(ProvisioningClient.NamespacesProvisioningDevice) &&
+					itemResponse.HasAnyFeature(ProvisioningClient.NamespacesProvisioningOwner) &&
+					itemResponse.HasAnyFeature(ProvisioningClient.NamespacesProvisioningToken))
 				{
 					ServiceRef.TagProfile.ProvisioningJid = Item.JID;
 				}
@@ -1195,7 +1385,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 			foreach (XmlNode N in e.Presence.ChildNodes)
 			{
-				if (N is XmlElement E && E.LocalName == "identity" && E.NamespaceURI == ContractsClient.NamespaceLegalIdentities)
+				if (N is XmlElement E && E.LocalName == "identity" && E.NamespaceURI == ContractsClient.NamespaceLegalIdentitiesCurrent)
 				{
 					RemoteIdentity = LegalIdentity.Parse(E);
 					if (RemoteIdentity is not null)
@@ -1431,8 +1621,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 		public void SendMessage(QoSLevel QoS, Waher.Networking.XMPP.MessageType Type, string Id, string To, string CustomXml, string Body,
 			string Subject, string Language, string ThreadId, string ParentThreadId, DeliveryEventHandler? DeliveryCallback, object? State)
 		{
-			this.XmppClient.SendMessage(QoS, Type, Id, To, CustomXml, Body, Subject, Language, ThreadId, ParentThreadId, DeliveryCallback, State);
-			// TODO: End-to-End encryption
+			this.ContractsClient.LocalE2eEndpoint.SendMessage(this.XmppClient, E2ETransmission.NormalIfNotE2E,
+				QoS, Type, Id, To, CustomXml, Body, Subject, Language, ThreadId, ParentThreadId, DeliveryCallback, State);
 		}
 
 		private Task XmppClient_OnNormalMessage(object? Sender, MessageEventArgs e)
@@ -1461,7 +1651,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 					{
 						if (N2 is XmlElement E2 &&
 							E2.LocalName == "identity" &&
-							E2.NamespaceURI == ContractsClient.NamespaceLegalIdentities)
+							E2.NamespaceURI == ContractsClient.NamespaceLegalIdentitiesCurrent)
 						{
 							RemoteIdentity = LegalIdentity.Parse(E2);
 							break;
@@ -2446,6 +2636,17 @@ namespace NeuroAccessMaui.Services.Xmpp
 		#region Legal Identities
 
 		/// <summary>
+		/// Generates new keys
+		/// </summary>
+		public async Task GenerateNewKeys()
+		{
+			await this.ContractsClient.GenerateNewKeys();
+
+			if (this.ContractsClient.Client.State == XmppState.Connected)
+				await this.ContractsClient.Client.SetPresenceAsync(Availability.Online);
+		}
+
+		/// <summary>
 		/// Gets important attributes for a successful ID Application.
 		/// </summary>
 		/// <returns>ID Application attributes.</returns>
@@ -2458,14 +2659,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// Adds a legal identity.
 		/// </summary>
 		/// <param name="Model">The model holding all the values needed.</param>
-		/// <param name="ObsoleteExistingIDsAndKeys">If existing keys and IDs are to be obsoleted.</param>
+		/// <param name="GenerateNewKeys">If new keys should be generated.</param>
 		/// <param name="Attachments">The physical attachments to upload.</param>
 		/// <returns>Legal Identity</returns>
-		public async Task<LegalIdentity> AddLegalIdentity(RegisterIdentityModel Model, bool ObsoleteExistingIDsAndKeys,
+		public async Task<LegalIdentity> AddLegalIdentity(RegisterIdentityModel Model, bool GenerateNewKeys,
 			params LegalIdentityAttachment[] Attachments)
 		{
-			if (ObsoleteExistingIDsAndKeys)
-				await this.ContractsClient.GenerateNewKeys();
+			if (GenerateNewKeys)
+				await this.GenerateNewKeys();
 
 			LegalIdentity Identity = await this.ContractsClient.ApplyAsync(Model.ToProperties(ServiceRef.XmppService));
 
@@ -2533,22 +2734,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// Checks if the client has access to the private keys of the specified legal identity.
 		/// </summary>
-		/// <param name="legalIdentityId">The id of the legal identity.</param>
-		/// <param name="client">The Xmpp client instance. Can be null, in that case the default one is used.</param>
+		/// <param name="LegalIdentityId">The id of the legal identity.</param>
 		/// <returns>If private keys are available.</returns>
-		public async Task<bool> HasPrivateKey(CaseInsensitiveString legalIdentityId, XmppClient? client = null)
+		public Task<bool> HasPrivateKey(CaseInsensitiveString LegalIdentityId)
 		{
-			if (client is null)
-				return await this.ContractsClient.HasPrivateKey(legalIdentityId);
-			else
-			{
-				using ContractsClient cc = new(client, ServiceRef.TagProfile.LegalJid);
-
-				if (!await cc.LoadKeys(false))
-					return false;
-
-				return await cc.HasPrivateKey(legalIdentityId);
-			}
+			return this.ContractsClient.HasPrivateKey(LegalIdentityId);
 		}
 
 		/// <summary>
@@ -2790,6 +2980,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private void RegisterContractsEventHandlers()
 		{
+			this.ContractsClient.EnableE2eEncryption(true, false);
+
 			this.ContractsClient.IdentityUpdated += this.ContractsClient_IdentityUpdated;
 			this.ContractsClient.PetitionForIdentityReceived += this.ContractsClient_PetitionForIdentityReceived;
 			this.ContractsClient.PetitionedIdentityResponseReceived += this.ContractsClient_PetitionedIdentityResponseReceived;
@@ -3115,13 +3307,13 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// Sends a contract proposal to a recipient.
 		/// </summary>
-		/// <param name="ContractId">ID of proposed contract.</param>
+		/// <param name="Contract">Proposed contract.</param>
 		/// <param name="Role">Proposed role of recipient.</param>
 		/// <param name="To">Recipient Address (Bare or Full JID).</param>
 		/// <param name="Message">Optional message included in message.</param>
-		public void SendContractProposal(string ContractId, string Role, string To, string Message)
+		public Task SendContractProposal(Contract Contract, string Role, string To, string Message)
 		{
-			this.ContractsClient.SendContractProposal(ContractId, Role, To, Message);
+			return this.ContractsClient.SendContractProposal(Contract, Role, To, Message);
 		}
 
 		#endregion
@@ -3837,7 +4029,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			Client.SellEDalerError += this.NeuroWallet_SellEDalerError;
 		}
 
-		private async Task EDalerClient_BalanceUpdated(object? Sender, BalanceEventArgs e)
+		private async Task EDalerClient_BalanceUpdated(object? _, BalanceEventArgs e)
 		{
 			this.lastBalance = e.Balance;
 			this.lastEDalerEvent = DateTime.Now;
@@ -4112,7 +4304,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			await Wallet.Transaction.OpenUrl(e.ClientUrl);
 		}
 
-		private Task NeuroWallet_BuyEDalerOptionsCompleted(object? Sender, PaymentOptionsEventArgs e)
+		private Task NeuroWallet_BuyEDalerOptionsCompleted(object? _, PaymentOptionsEventArgs e)
 		{
 			this.BuyEDalerGetOptionsCompleted(e.TransactionId, e.Options);
 			return Task.CompletedTask;
@@ -4139,7 +4331,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				OptionsTransaction.Completed(Options);
 		}
 
-		private Task NeuroWallet_BuyEDalerOptionsError(object? Sender, PaymentErrorEventArgs e)
+		private Task NeuroWallet_BuyEDalerOptionsError(object? _, PaymentErrorEventArgs e)
 		{
 			this.BuyEDalerGetOptionsFailed(e.TransactionId, e.Message);
 			return Task.CompletedTask;
@@ -4233,7 +4425,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			await Wallet.Transaction.OpenUrl(e.ClientUrl);
 		}
 
-		private Task NeuroWallet_BuyEDalerCompleted(object? Sender, PaymentCompletedEventArgs e)
+		private Task NeuroWallet_BuyEDalerCompleted(object? _, PaymentCompletedEventArgs e)
 		{
 			this.BuyEDalerCompleted(e.TransactionId, e.Amount, e.Currency);
 			return Task.CompletedTask;
@@ -4261,7 +4453,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				PaymentTransaction.Completed(Amount, Currency);
 		}
 
-		private Task NeuroWallet_BuyEDalerError(object? Sender, PaymentErrorEventArgs e)
+		private Task NeuroWallet_BuyEDalerError(object? _, PaymentErrorEventArgs e)
 		{
 			this.BuyEDalerFailed(e.TransactionId, e.Message);
 			return Task.CompletedTask;
@@ -4355,7 +4547,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			await Wallet.Transaction.OpenUrl(e.ClientUrl);
 		}
 
-		private Task NeuroWallet_SellEDalerOptionsCompleted(object? Sender, PaymentOptionsEventArgs e)
+		private Task NeuroWallet_SellEDalerOptionsCompleted(object? _, PaymentOptionsEventArgs e)
 		{
 			this.SellEDalerGetOptionsCompleted(e.TransactionId, e.Options);
 			return Task.CompletedTask;
@@ -4382,7 +4574,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				OptionsTransaction.Completed(Options);
 		}
 
-		private Task NeuroWallet_SellEDalerOptionsError(object? Sender, PaymentErrorEventArgs e)
+		private Task NeuroWallet_SellEDalerOptionsError(object? _, PaymentErrorEventArgs e)
 		{
 			this.SellEDalerGetOptionsFailed(e.TransactionId, e.Message);
 			return Task.CompletedTask;
@@ -4470,7 +4662,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			await Wallet.Transaction.OpenUrl(e.ClientUrl);
 		}
 
-		private Task NeuroWallet_SellEDalerError(object? Sender, PaymentErrorEventArgs e)
+		private Task NeuroWallet_SellEDalerError(object? _, PaymentErrorEventArgs e)
 		{
 			this.SellEDalerFailed(e.TransactionId, e.Message);
 			return Task.CompletedTask;
@@ -4496,7 +4688,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			Transaction.ErrorReported(Message);
 		}
 
-		private Task NeuroWallet_SellEDalerCompleted(object? Sender, PaymentCompletedEventArgs e)
+		private Task NeuroWallet_SellEDalerCompleted(object? _, PaymentCompletedEventArgs e)
 		{
 			this.SellEDalerCompleted(e.TransactionId, e.Amount, e.Currency);
 			return Task.CompletedTask;
@@ -4604,7 +4796,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// </summary>
 		public event NeuroFeatures.TokenEventHandler? NeuroFeatureAdded;
 
-		private async Task NeuroFeaturesClient_VariablesUpdated(object? Sender, VariablesUpdatedEventArgs e)
+		private async Task NeuroFeaturesClient_VariablesUpdated(object? _, VariablesUpdatedEventArgs e)
 		{
 			VariablesUpdatedEventHandler? h = this.NeuroFeatureVariablesUpdated;
 			if (h is not null)
@@ -4625,7 +4817,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// </summary>
 		public event VariablesUpdatedEventHandler? NeuroFeatureVariablesUpdated;
 
-		private async Task NeuroFeaturesClient_StateUpdated(object? Sender, NewStateEventArgs e)
+		private async Task NeuroFeaturesClient_StateUpdated(object? _, NewStateEventArgs e)
 		{
 			NewStateEventHandler? h = this.NeuroFeatureStateUpdated;
 			if (h is not null)

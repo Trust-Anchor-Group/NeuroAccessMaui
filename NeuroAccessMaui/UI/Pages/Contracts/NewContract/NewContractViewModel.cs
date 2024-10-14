@@ -15,6 +15,7 @@ using NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel;
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
 using NeuroAccessMaui.UI.Pages.Main.Calculator;
 using NeuroAccessMaui.UI.Pages.Main.Duration;
+using NeuroFeatures;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
@@ -32,8 +33,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 	/// </summary>
 	public partial class NewContractViewModel : BaseViewModel, ILinkableView, IDisposable
 	{
-		private static readonly string partSettingsPrefix = typeof(NewContractViewModel).FullName + ".Part_";
-
 		private readonly SortedDictionary<CaseInsensitiveString, ParameterInfo> parametersByName = [];
 		private readonly LinkedList<ParameterInfo> parametersInOrder = new();
 		private readonly Dictionary<CaseInsensitiveString, object> presetParameterValues = [];
@@ -42,7 +41,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		private Contract? template;
 		private bool saveStateWhileScanning;
 		private Contract? stateTemplateWhileScanning;
-		private readonly Dictionary<CaseInsensitiveString, string> partsToAdd = [];
+		private readonly Dictionary<CaseInsensitiveString, string> parts = [];
 		private readonly NewContractPage page;
 		private readonly ContractVisibility? initialVisibility = null;
 		private Timer? populateTimer = null;
@@ -87,7 +86,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			this.ContractVisibilityItems.Add(new ContractVisibilityModel(ContractVisibility.PublicSearchable, ServiceRef.Localizer[nameof(AppResources.ContractVisibility_PublicSearchable)]));
 		}
 
-			/// <summary>
+		/// <summary>
 		/// <see cref="IDisposable.Dispose"/>
 		/// </summary>
 		public void Dispose()
@@ -101,13 +100,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// </summary>
 		protected virtual void Dispose(bool Disposing)
 		{
-			if(this.populateTimer is not null)
+			if (this.populateTimer is not null)
 			{
 				try
 				{
 					this.populateTimer.Dispose();
 				}
-				catch(Exception ex)
+				catch (Exception)
 				{
 					//Normal operation
 				}
@@ -141,7 +140,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			{
 				await ServiceRef.SettingsService.RemoveState(this.GetSettingsKey(nameof(this.SelectedContractVisibilityItem)));
 				await ServiceRef.SettingsService.RemoveState(this.GetSettingsKey(nameof(this.SelectedRole)));
-				await ServiceRef.SettingsService.RemoveStateWhereKeyStartsWith(partSettingsPrefix);
+				await ServiceRef.SettingsService.RemoveState(this.GetSettingsKey(nameof(this.Parts)));
 			}
 
 			await base.OnDispose();
@@ -168,67 +167,39 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			else
 				await ServiceRef.SettingsService.RemoveState(this.GetSettingsKey(nameof(this.SelectedRole)));
 
-			if (this.HasPartsToAdd)
-			{
-				foreach (KeyValuePair<CaseInsensitiveString, string> part in this.GetPartsToAdd())
-				{
-					string settingsKey = partSettingsPrefix + part.Key;
-					await ServiceRef.SettingsService.SaveState(settingsKey, part.Value);
-				}
-			}
+			if (this.HasParts)
+				await ServiceRef.SettingsService.SaveState(this.GetSettingsKey(nameof(this.Parts)), this.Parts);
 			else
-				await ServiceRef.SettingsService.RemoveStateWhereKeyStartsWith(partSettingsPrefix);
+				await ServiceRef.SettingsService.RemoveState(this.GetSettingsKey(nameof(this.Parts)));
 
-			this.partsToAdd.Clear();
+			this.parts.Clear();
 		}
 
-		private bool HasPartsToAdd => this.partsToAdd.Count > 0;
-
-		private KeyValuePair<CaseInsensitiveString, string>[] GetPartsToAdd()
-		{
-			int i = 0;
-			int c = this.partsToAdd.Count;
-			KeyValuePair<CaseInsensitiveString, string>[] Result = new KeyValuePair<CaseInsensitiveString, string>[c];
-
-			foreach (KeyValuePair<CaseInsensitiveString, string> Part in this.partsToAdd)
-				Result[i++] = Part;
-
-			return Result;
-		}
+		private bool HasParts => this.parts.Count > 0;
 
 		/// <inheritdoc/>
 		protected override async Task DoRestoreState()
 		{
 			if (this.saveStateWhileScanning)
 			{
-				Enum? e = await ServiceRef.SettingsService.RestoreEnumState(this.GetSettingsKey(nameof(this.SelectedContractVisibilityItem)));
-				if (e is not null)
+				Enum? LastVisibility = await ServiceRef.SettingsService.RestoreEnumState(this.GetSettingsKey(nameof(this.SelectedContractVisibilityItem)));
+				if (LastVisibility is ContractVisibility ContractVisibility)
+					this.SelectedContractVisibilityItem = this.ContractVisibilityItems.FirstOrDefault(x => x.Visibility == ContractVisibility);
+
+				string? LastRole = await ServiceRef.SettingsService.RestoreStringState(this.GetSettingsKey(nameof(this.SelectedRole)));
+				string? SelectedRole = this.AvailableRoles.FirstOrDefault(x => x.Equals(LastRole, StringComparison.Ordinal));
+
+				if (!string.IsNullOrWhiteSpace(SelectedRole))
+					this.SelectedRole = SelectedRole;
+
+				Dictionary<string, object>? LastParts = await ServiceRef.SettingsService.RestoreState<Dictionary<string, object>>(this.GetSettingsKey(nameof(this.Parts)));
+				if (LastParts is not null)
+					this.Parts = LastParts;
+
+				if (this.HasParts)
 				{
-					ContractVisibility cv = (ContractVisibility)e;
-					this.SelectedContractVisibilityItem = this.ContractVisibilityItems.FirstOrDefault(x => x.Visibility == cv);
-				}
-
-				string? selectedRole = await ServiceRef.SettingsService.RestoreStringState(this.GetSettingsKey(nameof(this.SelectedRole)));
-				string? matchingRole = this.AvailableRoles.FirstOrDefault(x => x.Equals(selectedRole, StringComparison.Ordinal));
-
-				if (!string.IsNullOrWhiteSpace(matchingRole))
-					this.SelectedRole = matchingRole;
-
-				List<(string key, string value)> settings = (await ServiceRef.SettingsService.RestoreStateWhereKeyStartsWith<string>(partSettingsPrefix)).ToList();
-				if (settings.Count > 0)
-				{
-					this.partsToAdd.Clear();
-					foreach ((string key, string value) in settings)
-					{
-						string part = key[partSettingsPrefix.Length..];
-						this.partsToAdd[part] = value;
-					}
-				}
-
-				if (this.HasPartsToAdd)
-				{
-					foreach (KeyValuePair<CaseInsensitiveString, string> part in this.GetPartsToAdd())
-						await this.AddRole(part.Key, part.Value);
+					foreach (KeyValuePair<CaseInsensitiveString, string> Part in this.parts)
+						await this.AddRole(Part.Key, Part.Value);
 				}
 
 				await this.DeleteState();
@@ -242,7 +213,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		{
 			await ServiceRef.SettingsService.RemoveState(this.GetSettingsKey(nameof(this.SelectedContractVisibilityItem)));
 			await ServiceRef.SettingsService.RemoveState(this.GetSettingsKey(nameof(this.SelectedRole)));
-			await ServiceRef.SettingsService.RemoveStateWhereKeyStartsWith(partSettingsPrefix);
+			await ServiceRef.SettingsService.RemoveState(this.GetSettingsKey(nameof(this.Parts)));
 		}
 
 		#region Properties
@@ -382,6 +353,30 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		[ObservableProperty]
 		private bool canAddParts;
 
+		/// <summary>
+		/// Parts dictionary that can be persisted in the object database.
+		/// </summary>
+		public Dictionary<string, object> Parts
+		{
+			get
+			{
+				Dictionary<string, object> Result = [];
+
+				foreach (KeyValuePair<CaseInsensitiveString, string> Part in this.parts)
+					Result[Part.Key.Value] = Part.Value;
+
+				return Result;
+			}
+
+			set
+			{
+				this.parts.Clear();
+
+				foreach (KeyValuePair<string, object> P in value)
+					this.parts[P.Key] = P.Value?.ToString() ?? string.Empty;
+			}
+		}
+
 		#endregion
 
 		private void ClearTemplate(bool propertiesOnly)
@@ -403,7 +398,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			this.CanAddParts = false;
 			this.VisibilityIsEnabled = false;
-		} 
+		}
 
 		private void RemoveRole(string Role, string LegalId)
 		{
@@ -666,11 +661,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ServiceRef.Localizer[nameof(AppResources.SelectedContactCannotBeAdded)]);
 					else
 					{
-						this.partsToAdd[Button.StyleId] = LegalId;
-						string settingsKey = partSettingsPrefix + Button.StyleId;
-						await ServiceRef.SettingsService.SaveState(settingsKey, LegalId);
+						this.parts[Button.StyleId] = LegalId;
+						await ServiceRef.SettingsService.SaveState(this.GetSettingsKey(nameof(this.Parts)), this.Parts);
 
-						foreach (KeyValuePair<CaseInsensitiveString, string> part in this.GetPartsToAdd())
+						foreach (KeyValuePair<CaseInsensitiveString, string> part in this.parts)
 							await this.AddRole(part.Key, part.Value);
 					}
 				}
@@ -783,7 +777,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					{
 						this.populateTimer.Dispose();
 					}
-					catch(Exception ex)
+					catch (Exception)
 					{
 						//Normal operation
 					}
@@ -1026,13 +1020,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						if (Info is null || string.IsNullOrEmpty(Info.BareJid))
 							continue;
 
+						await ServiceRef.XmppService.ContractsClient.AuthorizeAccessToContractAsync(Created.ContractId, Info.BareJid, true);
+
 						string? Proposal = await ServiceRef.UiService.DisplayPrompt(ServiceRef.Localizer[nameof(AppResources.Proposal)],
 							ServiceRef.Localizer[nameof(AppResources.EnterProposal), Info.FriendlyName],
 							ServiceRef.Localizer[nameof(AppResources.Send)],
 							ServiceRef.Localizer[nameof(AppResources.Cancel)]);
 
 						if (!string.IsNullOrEmpty(Proposal))
-							ServiceRef.XmppService.SendContractProposal(Created.ContractId, Part.Role, Info.BareJid, Proposal);
+							await ServiceRef.XmppService.SendContractProposal(Created, Part.Role, Info.BareJid, Proposal);
 					}
 				}
 			}
@@ -1094,6 +1090,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			if (this.template is null)
 				return;
+
 			await this.PopulateHumanReadableText();
 
 			this.HasRoles = (this.template.Roles?.Length ?? 0) > 0;
@@ -1144,13 +1141,23 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			}
 
 			this.Roles = RolesLayout;
+			if (this.template?.Roles is not null)
+			{
+				// Assign the TrustProvider role in the contract
+				foreach (Role Role in this.template!.Roles)
+				{
+					CreationAttributesEventArgs attr = await ServiceRef.XmppService.GetNeuroFeatureCreationAttributes();
+					if (Role.Name == "TrustProvider")
+						await this.AddRole(Role.Name, attr.TrustProviderId);
+				}
+			}
 
 			VerticalStackLayout ParametersLayout = [];
 
 			this.parametersByName.Clear();
 			this.parametersInOrder.Clear();
 
-			foreach (Parameter Parameter in this.template.Parameters)
+			foreach (Parameter Parameter in this.template!.Parameters)
 			{
 				if (Parameter is BooleanParameter BP)
 				{

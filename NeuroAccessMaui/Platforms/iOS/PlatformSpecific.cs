@@ -384,7 +384,7 @@ namespace NeuroAccessMaui.Services
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 			}
 
 			TokenInformation TokenInformation = new()

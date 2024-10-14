@@ -530,7 +530,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 							};
 
 							Button.Clicked += this.SignButton_Clicked;
-							PartsLayout.Children.Add(Button);
+							PartsLayout.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
+
+							PartsLayout.Add(Button, 0, PartsLayout.RowDefinitions.Count - 1);
 						}
 					}
 				}
@@ -641,7 +643,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 					this.ServerSignatures = ServerSignaturesLayout;
 				}
 
-				this.CanDeleteContract = !this.isReadOnly && !this.Contract.IsLegallyBinding(true);
+				this.CanDeleteContract = !this.isReadOnly && !await this.Contract.IsLegallyBinding(true, ServiceRef.XmppService.ContractsClient);
 				this.CanObsoleteContract = this.CanDeleteContract || CanObsolete;
 
 				this.HasRoles = this.Roles?.Children.Count > 0;

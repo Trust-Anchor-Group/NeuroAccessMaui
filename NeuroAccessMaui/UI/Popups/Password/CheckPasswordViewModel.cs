@@ -15,8 +15,13 @@ namespace NeuroAccessMaui.UI.Popups.Password
 	/// <summary>
 	/// View model for page letting the user enter a password to be verified with the password defined by the user earlier.
 	/// </summary>
-	public partial class CheckPasswordViewModel(AuthenticationPurpose purpose) : ReturningPopupViewModel<string>
+	public partial class CheckPasswordViewModel : ReturningPopupViewModel<string>
 	{
+		public CheckPasswordViewModel(AuthenticationPurpose purpose)
+		{
+			this.PurposeInfo = purpose;
+			this.IsPasswordHidden = true;
+		}
 
 		/// <summary>
 		/// Password text entry
@@ -30,8 +35,7 @@ namespace NeuroAccessMaui.UI.Popups.Password
 		/// </summary>
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(PasswordVisibilityPathData))]
-
-		private bool isPasswordHidden = true;
+		private bool isPasswordHidden;
 
 		/// <summary>
 		/// The path data for the password visibility icon
@@ -47,7 +51,7 @@ namespace NeuroAccessMaui.UI.Popups.Password
 		/// <summary>
 		/// The purpose of the authentication request.
 		/// </summary>
-		public AuthenticationPurpose PurposeInfo { get; } = purpose;
+		public AuthenticationPurpose PurposeInfo { get; }
 
 		/// <summary>
 		/// Enters the password provided by the user.

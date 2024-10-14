@@ -67,6 +67,24 @@ namespace NeuroAccessMaui.Services
 		public string? SelectedCountry { get; set; }
 
 		/// <summary>
+		/// User's first name(s).
+		/// </summary>
+		[DefaultValueNull]
+		public string? FirstName { get; set; }
+
+		/// <summary>
+		/// User's last name(s).
+		/// </summary>
+		[DefaultValueNull]
+		public string? LastName { get; set; }
+
+		/// <summary>
+		/// User's friendly name.
+		/// </summary>
+		[DefaultValueNull]
+		public string? FriendlyName { get; set; }
+
+		/// <summary>
 		/// Verified Phone Number
 		/// </summary>
 		[DefaultValueNull]
@@ -105,7 +123,7 @@ namespace NeuroAccessMaui.Services
 		/// <summary>
 		/// Is the password numeric?
 		/// </summary>
-		[DefaultValueNull]		
+		[DefaultValueNull]
 		public bool IsNumericPassword { get; set; }
 
 		/// <summary>
@@ -183,14 +201,14 @@ namespace NeuroAccessMaui.Services
 		/// <summary>
 		/// Purpose for using the app
 		/// </summary>
-		#if DEBUG
+#if DEBUG
 		[DefaultValue(PurposeUse.Experimental)]
 		public PurposeUse Purpose { get; set; } = PurposeUse.Experimental;
-		#else
+#else
 		[DefaultValue(PurposeUse.Personal)]
 		public PurposeUse Purpose { get; set; } = PurposeUse.Personal;
-		#endif
-		
+#endif
+
 
 		/// <summary>
 		/// Set to current timestamp if the user used a Test OTP Code.
@@ -219,8 +237,8 @@ namespace NeuroAccessMaui.Services
 		/// <summary>
 		/// Current step in the registration process.
 		/// </summary>
-		[DefaultValue(RegistrationStep.ValidatePhone)]
-		public RegistrationStep Step { get; set; } = RegistrationStep.ValidatePhone;
+		[DefaultValue(RegistrationStep.GetStarted)]
+		public RegistrationStep Step { get; set; } = RegistrationStep.GetStarted;
 
 		/// <summary>
 		/// Currently selected theme.
@@ -251,5 +269,11 @@ namespace NeuroAccessMaui.Services
 		/// </summary>
 		[DefaultValue(false)]
 		public bool HasContractTokenCreationTemplatesReferences { get; set; }
+
+		/// <summary>
+		/// If the user has a wallet.
+		/// </summary>
+		[DefaultValue(false)]
+		public bool HasWallet { get; set; }
 	}
 }

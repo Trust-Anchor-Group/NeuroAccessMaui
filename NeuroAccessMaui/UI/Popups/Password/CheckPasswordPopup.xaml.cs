@@ -10,13 +10,17 @@ namespace NeuroAccessMaui.UI.Popups.Password
 		public CheckPasswordPopup()
 		{
 			this.InitializeComponent();
-			this.PasswordEntry.Keyboard = ServiceRef.TagProfile.IsNumericPassword ? Keyboard.Telephone : Keyboard.Default;
+			this.PasswordEntry.Keyboard = ServiceRef.TagProfile.IsNumericPassword ? Keyboard.Numeric : Keyboard.Default;
+
 		}
 
 		protected override void OnAppearing()
 		{
-			this.PasswordEntry.Focus();
 			base.OnAppearing();
+
+			this.PasswordEntry.Focus();
 		}
+
+
 	}
 }

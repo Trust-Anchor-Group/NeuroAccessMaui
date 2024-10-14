@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Peter Waher</Authors>
+    <Company>Trust Anchor Group AB</Company>
+    <Product>IdApp</Product>
+    <Description>NFC Abstraction Layer for the TAG ID App</Description>
+    <Copyright>Copyright © Trust Anchor Group 2022-2024. All rights reserved.</Copyright>
+    <RepositoryUrl>https://github.com/Trust-Anchor-Group/IdApp</RepositoryUrl>
+    <NeutralLanguage>English</NeutralLanguage>
+    <AssemblyVersion>1.0.0</AssemblyVersion>
+    <FileVersion>1.0.0</FileVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Waher.Content" Version="2.6.12" />
+    <PackageReference Include="Waher.Security" Version="1.0.8" />
+  </ItemGroup>
+
+</Project>

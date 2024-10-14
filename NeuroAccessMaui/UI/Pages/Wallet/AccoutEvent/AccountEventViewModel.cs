@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Converters;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.AccountEvent
@@ -24,7 +23,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.AccountEvent
 				this.Timestamp = Args.Event?.Timestamp;
 				this.TimestampStr = Args.Event?.TimestampStr;
 				this.Change = Args.Event?.Change;
-				this.ChangeColor = Args.Event?.TextColor;
 				this.Balance = Args.Event?.Balance;
 				this.Reserved = Args.Event?.Reserved;
 				this.Message = Args.Event?.Message;
@@ -51,12 +49,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.AccountEvent
 		/// </summary>
 		[ObservableProperty]
 		private decimal? change;
-
-		/// <summary>
-		/// Color of <see cref="Change"/> field.
-		/// </summary>
-		[ObservableProperty]
-		private Color? changeColor;
 
 		/// <summary>
 		/// <see cref="Change"/> as text.

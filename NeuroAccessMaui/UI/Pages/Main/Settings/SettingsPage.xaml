@@ -152,6 +152,47 @@
 					</VerticalStackLayout>
 				</Border>
 
+				<!-- Version Information -->
+				<Border Style="{StaticResource BorderSet}">
+					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+						<Label Style="{StaticResource SectionTitleLabel}" Text="Version"/>
+
+						<Border Style="{StaticResource BorderSubSet}">
+							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+								<VerticalStackLayout>
+									<Label Style="{StaticResource SectionTitleLabel}" VerticalOptions="Center" Text="{l:Localize AppVersion}"/>
+									<Label Style="{StaticResource ItemDescriptionLabel}" Text="{Binding VersionNumber}"/>
+								</VerticalStackLayout>
+
+								<VerticalStackLayout>
+									<Label Style="{StaticResource SectionTitleLabel}" VerticalOptions="Center" Text="{l:Localize BuildNumber}"/>
+									<HorizontalStackLayout>
+										<Label Style="{StaticResource ItemDescriptionLabel}" Text="{Binding BuildNumber}"/>
+										<Label Style="{StaticResource ItemDescriptionLabel}" Text="{Binding BuildTime}"/>
+									</HorizontalStackLayout>
+								</VerticalStackLayout>
+
+								<VerticalStackLayout>
+									<Label Style="{StaticResource SectionTitleLabel}" VerticalOptions="Center" Text="{l:Localize Platform}"/>
+									<HorizontalStackLayout>
+										<Label Style="{StaticResource ItemDescriptionLabel}" Text="{Binding DevicePlatform}"/>
+										<Label Style="{StaticResource ItemDescriptionLabel}" Text="{Binding DeviceVersion}"/>
+									</HorizontalStackLayout>
+								</VerticalStackLayout>
+
+								<VerticalStackLayout>
+									<Label Style="{StaticResource SectionTitleLabel}" VerticalOptions="Center" Text="{l:Localize HardwareInfo}"/>
+									<HorizontalStackLayout>
+										<Label Style="{StaticResource ItemDescriptionLabel}" Text="{Binding DeviceManufactorer}"/>
+										<Label Style="{StaticResource ItemDescriptionLabel}" Text="{Binding DeviceModel}"/>
+									</HorizontalStackLayout>
+								</VerticalStackLayout>
+							</VerticalStackLayout>
+						</Border>
+							  
+					</VerticalStackLayout>
+				</Border>
+
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>

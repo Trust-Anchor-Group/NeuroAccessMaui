@@ -4,6 +4,7 @@ using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Storage;
 using NeuroAccessMaui.UI;
 using System.ComponentModel;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using Waher.Networking.XMPP.Contracts;
@@ -52,6 +53,9 @@ namespace NeuroAccessMaui.Services.Tag
 		private string? apiKey;
 		private string? apiSecret;
 		private string? selectedCountry;
+		private string? firstName;
+		private string? lastName;
+		private string? friendlyName;
 		private string? phoneNumber;
 		private string? eMail;
 		private string? account;
@@ -72,7 +76,7 @@ namespace NeuroAccessMaui.Services.Tag
 		private bool isTest;
 		private PurposeUse purpose;
 		private DateTime? testOtpTimestamp;
-		private RegistrationStep step = RegistrationStep.ValidatePhone;
+		private RegistrationStep step;
 		private AppTheme? theme;
 		private AuthenticationMethod authenticationMethod;
 		private bool loadingProperties;
@@ -81,6 +85,7 @@ namespace NeuroAccessMaui.Services.Tag
 		private bool hasContractReferences;
 		private bool hasContractTemplateReferences;
 		private bool hasContractTokenCreationTemplatesReferences;
+		private bool hasWallet;
 
 		/// <summary>
 		/// Creates an instance of a <see cref="TagProfile"/>.
@@ -124,6 +129,9 @@ namespace NeuroAccessMaui.Services.Tag
 				ApiKey = this.ApiKey,
 				ApiSecret = this.ApiSecret,
 				SelectedCountry = this.SelectedCountry,
+				FirstName = this.FirstName,
+				LastName = this.LastName,
+				FriendlyName = this.FriendlyName,
 				PhoneNumber = this.PhoneNumber,
 				EMail = this.EMail,
 				DefaultXmppConnectivity = this.DefaultXmppConnectivity,
@@ -152,7 +160,8 @@ namespace NeuroAccessMaui.Services.Tag
 				AuthenticationMethod = this.AuthenticationMethod,
 				HasContractReferences = this.HasContractReferences,
 				HasContractTemplateReferences = this.HasContractTemplateReferences,
-				HasContractTokenCreationTemplatesReferences = this.HasContractTokenCreationTemplatesReferences
+				HasContractTokenCreationTemplatesReferences = this.HasContractTokenCreationTemplatesReferences,
+				HasWallet = this.HasWallet
 			};
 
 			return Clone;
@@ -177,6 +186,9 @@ namespace NeuroAccessMaui.Services.Tag
 				this.ApiKey = Configuration.ApiKey;
 				this.ApiSecret = Configuration.ApiSecret;
 				this.SelectedCountry = Configuration.SelectedCountry;
+				this.FirstName = Configuration.FirstName;
+				this.LastName = Configuration.LastName;
+				this.FriendlyName = Configuration.FriendlyName;
 				this.PhoneNumber = Configuration.PhoneNumber;
 				this.EMail = Configuration.EMail;
 				this.InitialDefaultXmppConnectivity = Configuration.InitialDefaultXmppConnectivity;
@@ -205,12 +217,16 @@ namespace NeuroAccessMaui.Services.Tag
 				this.HasContractReferences = Configuration.HasContractReferences;
 				this.HasContractTemplateReferences = Configuration.HasContractTemplateReferences;
 				this.HasContractTokenCreationTemplatesReferences = Configuration.HasContractTokenCreationTemplatesReferences;
+				this.HasWallet = Configuration.HasWallet;
 
 				this.SetLegalIdentityInternal(Configuration.LegalIdentity);
 
 				this.SetTheme();
 				// Do this last, as listeners will read the other properties when the event is fired.
-				this.GoToStep(Configuration.Step);
+				if (Configuration.Step > RegistrationStep.GetStarted && Configuration.Step <= RegistrationStep.CreateAccount)
+					this.GoToStep(RegistrationStep.ValidatePhone);
+				else
+					this.GoToStep(Configuration.Step);
 			}
 			finally
 			{
@@ -415,6 +431,51 @@ namespace NeuroAccessMaui.Services.Tag
 				{
 					this.selectedCountry = value;
 					this.FlagAsDirty(nameof(this.SelectedCountry));
+				}
+			}
+		}
+
+		/// <summary>
+		/// User's first name(s).
+		/// </summary>
+		public string? FirstName
+		{
+			get => this.firstName;
+			set
+			{
+				if (!string.Equals(this.firstName, value, StringComparison.Ordinal))
+				{
+					this.firstName = value;
+					this.FlagAsDirty(nameof(this.FirstName));
+				}
+			}
+		}
+
+		/// <summary>
+		/// User's last name(s).
+		/// </summary>
+		public string? LastName
+		{
+			get => this.lastName;
+			set
+			{
+				if (!string.Equals(this.lastName, value, StringComparison.Ordinal))
+				{
+					this.lastName = value;
+					this.FlagAsDirty(nameof(this.LastName));
+				}
+			}
+		}
+
+		public string? FriendlyName
+		{
+			get => this.friendlyName;
+			set
+			{
+				if (!string.Equals(this.friendlyName, value, StringComparison.Ordinal))
+				{
+					this.friendlyName = value;
+					this.FlagAsDirty(nameof(this.FriendlyName));
 				}
 			}
 		}
@@ -686,7 +747,23 @@ namespace NeuroAccessMaui.Services.Tag
 				if (this.hasContractTokenCreationTemplatesReferences != value)
 				{
 					this.hasContractTokenCreationTemplatesReferences = value;
-					this.FlagAsDirty(nameof(this.hasContractTokenCreationTemplatesReferences));
+					this.FlagAsDirty(nameof(this.HasContractTokenCreationTemplatesReferences));
+				}
+			}
+		}
+
+		/// <summary>
+		/// If the user has a wallet.
+		/// </summary>
+		public bool HasWallet
+		{
+			get => this.hasWallet;
+			set
+			{
+				if (this.hasWallet != value)
+				{
+					this.hasWallet = value;
+					this.FlagAsDirty(nameof(this.HasWallet));
 				}
 			}
 		}
@@ -851,7 +928,9 @@ namespace NeuroAccessMaui.Services.Tag
 		public async Task SetLegalIdentity(LegalIdentity? Identity, bool RemoveOldAttachments)
 		{
 			bool ScanIdUnlocked =
+				this.legalIdentity is not null &&
 				!this.legalIdentity.HasApprovedPersonalInformation() &&
+				Identity is not null &&
 				Identity.HasApprovedPersonalInformation();
 
 			Attachment[]? OldAttachments = this.SetLegalIdentityInternal(Identity);
@@ -1137,9 +1216,10 @@ namespace NeuroAccessMaui.Services.Tag
 		/// Sets the current <see cref="LegalIdentity"/> to the compromised identity, and reverses the <see cref="Step"/> property.
 		/// </summary>
 		/// <param name="CompromisedIdentity">The compromised identity to use.</param>
-		public Task CompromiseLegalIdentity(LegalIdentity CompromisedIdentity)
+		public async Task CompromiseLegalIdentity(LegalIdentity CompromisedIdentity)
 		{
-			return this.SetLegalIdentity(CompromisedIdentity, true);
+			await this.SetLegalIdentity(CompromisedIdentity, true);
+			await ServiceRef.XmppService.GenerateNewKeys();
 		}
 
 		/// <summary>
@@ -1252,7 +1332,7 @@ namespace NeuroAccessMaui.Services.Tag
 			this.httpFileUploadMaxSize = 0;
 			this.isTest = false;
 			this.TestOtpTimestamp = null;
-			this.step = RegistrationStep.ValidatePhone;
+			this.step = RegistrationStep.GetStarted;
 			this.defaultXmppConnectivity = false;
 			this.nrReviews = 0;
 			this.supportsPushNotification = false;
@@ -1441,5 +1521,9 @@ namespace NeuroAccessMaui.Services.Tag
 				this.HasContractTokenCreationTemplatesReferences = true;
 		}
 
+	
+
 	}
+
 }
+

@@ -131,10 +131,10 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 					if (!this.InContacts)
 						return;
 
-					this.thing.IsSensor = e.HasFeature(SensorClient.NamespaceSensorData);
-					this.thing.SupportsSensorEvents = e.HasFeature(SensorClient.NamespaceSensorEvents);
-					this.thing.IsActuator = e.HasFeature(ControlClient.NamespaceControl);
-					this.thing.IsConcentrator = e.HasFeature(ConcentratorServer.NamespaceConcentrator);
+					this.thing.IsSensor = e.HasAnyFeature(SensorClient.NamespacesSensorData);
+					this.thing.SupportsSensorEvents = e.HasAnyFeature(SensorClient.NamespacesSensorEvents);
+					this.thing.IsActuator = e.HasAnyFeature(ControlClient.NamespacesControl);
+					this.thing.IsConcentrator = e.HasAnyFeature(ConcentratorServer.NamespacesConcentrator);
 
 					if (this.InContacts && !string.IsNullOrEmpty(this.thing.ObjectId))
 						await Database.Update(this.thing);

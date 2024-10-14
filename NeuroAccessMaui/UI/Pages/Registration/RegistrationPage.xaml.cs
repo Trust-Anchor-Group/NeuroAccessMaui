@@ -4,6 +4,7 @@ using Microsoft.Maui.Controls.PlatformConfiguration;
 using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Tag;
+using Waher.Runtime.Settings.HostSettingObjects;
 
 namespace NeuroAccessMaui.UI.Pages.Registration
 {
@@ -16,17 +17,19 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		{
 			this.InitializeComponent();
 			this.ContentPageModel = ViewModel;
-
 			ViewModel.SetPagesContainer([
 				this.LoadingView,
 				//this.RequestPurposeView,
+				this.GetStartedView,
+				this.NameEntryView,
 				this.ValidatePhoneView,
 				this.ValidateEmailView,
 				this.ChooseProviderView,
 				this.CreateAccountView,
 				this.DefinePasswordView,
 				this.BiometricsView,
-				this.FinalizeView
+				this.FinalizeView,
+				this.ContactSupportView
 			]);
 
 			// We need to register this handlere before the LoadingView is initialised

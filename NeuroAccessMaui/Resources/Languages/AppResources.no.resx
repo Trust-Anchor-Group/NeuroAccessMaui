@@ -142,46 +142,46 @@
     <value>Kan ikke gravere tagg med kobling til {0}.</value>
   </data>
   <data name="PasswordChanged" xml:space="preserve">
-    <value>PIN-koden er endret.</value>
+    <value>Passordet er endret.</value>
   </data>
   <data name="UnableToChangePassword" xml:space="preserve">
     <value>Kan ikke endre nettverkspassord.</value>
   </data>
   <data name="PasswordIsInvalid" xml:space="preserve">
-    <value>PIN-koden er ugyldig. Du har {0} gjenværende forsøk.</value>
+    <value>Passordet er ugyldig. Du har {0} gjenværende forsøk.</value>
   </data>
   <data name="PasswordsDoNotMatch" xml:space="preserve">
-    <value>PIN-koder samsvarer ikke</value>
+    <value>Passordene stemmer ikke overens</value>
   </data>
   <data name="PasswordIsInvalidAplicationBlockedForever" xml:space="preserve">
-    <value>Du har overskredet antall forsøk på å oppgi PIN-koden din. Søknaden din har blitt blokkert for alltid</value>
+    <value>Du har overskredet antall forsøk på å oppgi passordet ditt. Søknaden din har blitt blokkert for alltid</value>
   </data>
   <data name="PasswordIsInvalidAplicationBlocked" xml:space="preserve">
-    <value>Du har overskredet antall forsøk på å oppgi PIN-koden din. Søknaden din er blokkert til {0}.</value>
+    <value>Du har overskredet antall forsøk på å oppgi passordet ditt. Søknaden din er blokkert til {0}.</value>
   </data>
   <data name="PasswordIsInvalidAplicationBlockedTillTomorrow" xml:space="preserve">
-    <value>Du har overskredet antall forsøk på å oppgi PIN-koden din. Søknaden din er blokkert til i morgen klokken {0}.</value>
+    <value>Du har overskredet antall forsøk på å oppgi passordet ditt. Søknaden din er blokkert til i morgen klokken {0}.</value>
   </data>
   <data name="PasswordIsInvalidAplicationBlockedForOneWeek" xml:space="preserve">
-    <value>Du har overskredet antall forsøk på å oppgi PIN-koden din. Søknaden din har vært sperret i én uke</value>
+    <value>Du har overskredet antall forsøk på å oppgi passordet ditt. Søknaden din har vært sperret i én uke</value>
   </data>
   <data name="PasswordTooShort" xml:space="preserve">
-    <value>PIN-koden må være minst {0} tegn.</value>
+    <value>Passordlengden må være minst {0} tegn.</value>
   </data>
   <data name="PasswordContainsName" xml:space="preserve">
-    <value>En PIN-kode må ikke inneholde ord fra identitetsnavnene.</value>
+    <value>Et passord må ikke inneholde noe ord fra identitetsnavnene.</value>
   </data>
   <data name="PasswordContainsPersonalNumber" xml:space="preserve">
-    <value>En PIN-kode må ikke inneholde personnummeret for identiteten.</value>
+    <value>Et passord må ikke inneholde personnummeret for identiteten.</value>
   </data>
   <data name="PasswordContainsAddress" xml:space="preserve">
-    <value>En PIN-kode må ikke inneholde noe ord fra identitetsadressen.</value>
+    <value>Et passord må ikke inneholde ord fra adresselinjene for identitet.</value>
   </data>
   <data name="PasswordContainsEMail" xml:space="preserve">
-    <value>En PIN-kode må ikke inneholde identitetens e-postadresse.</value>
+    <value>Et passord må ikke inneholde identitetens e-postadresse.</value>
   </data>
   <data name="PasswordContainsPhoneNumber" xml:space="preserve">
-    <value>En PIN-kode må ikke inneholde telefonnummeret til identiteten.</value>
+    <value>Et passord må ikke inneholde telefonnummeret til identiteten.</value>
   </data>
   <data name="PasswordWithNotEnoughDigitsLettersSigns" xml:space="preserve">
     <value>Minst {0} bokstaver, sifre eller symboler må brukes.</value>
@@ -196,10 +196,10 @@
     <value>Du må også bruke minst {0} bokstaver eller symboler.</value>
   </data>
   <data name="PasswordWithTooManyIdenticalSymbols" xml:space="preserve">
-    <value>En PIN-kode må ikke inneholde mer enn {0} identiske symboler.</value>
+    <value>Et passord må ikke inneholde mer enn {0} identiske symboler.</value>
   </data>
   <data name="PasswordWithTooManySequencedSymbols" xml:space="preserve">
-    <value>En PIN-kode må ikke inneholde mer enn {0} sekvenserte symboler, for eksempel "12" eller "ab".</value>
+    <value>Et passord må ikke inneholde mer enn {0} sekvenserte symboler, for eksempel "12" eller "ab".</value>
   </data>
   <data name="PasswordWeakSecurity" xml:space="preserve">
     <value>Svak sikkerhet</value>
@@ -241,13 +241,13 @@
     <value>Frakoplet</value>
   </data>
   <data name="XmppState_Registering" xml:space="preserve">
-    <value>Registrering hos tjenesteleverandør</value>
+    <value>Registrering hos megler</value>
   </data>
   <data name="XmppState_RequestingSession" xml:space="preserve">
     <value>Ber om økt</value>
   </data>
   <data name="XmppState_SettingPresence" xml:space="preserve">
-    <value>Registrere tilstedeværelse</value>
+    <value>Angi tilstedeværelse</value>
   </data>
   <data name="XmppState_StartingEncryption" xml:space="preserve">
     <value>Kryptere tilkobling</value>
@@ -259,13 +259,13 @@
     <value>Strøm etablert</value>
   </data>
   <data name="YourLegalIdentity" xml:space="preserve">
-    <value>Din identitet</value>
+    <value>Din juridiske identitet</value>
   </data>
   <data name="YourLegalIdentityHasBeenCompromised" xml:space="preserve">
-    <value>Identiteten din er merket som kompromittert. Du har derfor blitt omdirigert til å opprette en ny konto.</value>
+    <value>Den juridiske identiteten din er merket som kompromittert. Du har derfor blitt omdirigert til å opprette en ny konto.</value>
   </data>
   <data name="YourLegalIdentityHasBeenObsoleted" xml:space="preserve">
-    <value>Identiteten din er merket som foreldet. Du har derfor blitt omdirigert til å opprette en ny konto.</value>
+    <value>Din juridiske identitet er merket som foreldet. Du har derfor blitt omdirigert til å opprette en ny konto.</value>
   </data>
   <data name="ClientMessageAuthenticationTimeout" xml:space="preserve">
     <value>Svaret returneres ikke innen konfigurert tid.</value>
@@ -343,7 +343,7 @@
     <value>(Meg)</value>
   </data>
   <data name="CopyToClipboard" xml:space="preserve">
-    <value>Kopiere til utklippstavle</value>
+    <value>Kopiere til utklippstavlen</value>
   </data>
   <data name="Continue" xml:space="preserve">
     <value>Fortsette</value>
@@ -403,7 +403,7 @@
     <value>Du har blitt invitert til å opprette en konto på {0}. Trykk OK, og skriv inn navnet på kontoen du vil opprette.</value>
   </data>
   <data name="ThisCodeCannotBeClaimedAtThisTime" xml:space="preserve">
-    <value>Denne koden representerer en Neuro-Access-invitasjon, og kan ikke hentes på dette tidspunktet.</value>
+    <value>Denne koden representerer en invitasjon til tagg-ID og kan ikke gjøres krav på for øyeblikket.</value>
   </data>
   <data name="DomainDoesNotFollowEncryptionPolicy" xml:space="preserve">
     <value>{0} følger ikke den allestedsnærværende krypteringspolitikken</value>
@@ -417,8 +417,8 @@
   <data name="OperatorDoesNotSupportRegisteringNewAccounts" xml:space="preserve">
     <value>Operatøren {0} støtter ikke registrering av nye kontoer</value>
   </data>
-  <data name="AccountNameAlreadyTaken" xml:space="preserve">
-    <value>Kontonavnet {0} allerede er tatt. Velg en annen.</value>
+  <data name="UsernameNameAlreadyTaken" xml:space="preserve">
+    <value>Brukernavnet finnes allerede. Prøv en annen.</value>
   </data>
   <data name="InvalidUsernameOrPassword" xml:space="preserve">
     <value>Ugyldig brukernavn eller passord</value>
@@ -436,10 +436,10 @@
     <value>Ugyldig URI for TAG-signatur.</value>
   </data>
   <data name="LegalIdNotApproved" xml:space="preserve">
-    <value>ID ikke godkjent.</value>
+    <value>Juridisk ID ikke godkjent.</value>
   </data>
   <data name="NoLegalIdSelected" xml:space="preserve">
-    <value>Ingen ID valgt.</value>
+    <value>Ingen juridisk ID valgt.</value>
   </data>
   <data name="PeerReviewAccepted" xml:space="preserve">
     <value>Fagfellevurdering akseptert</value>
@@ -457,10 +457,10 @@
     <value>Begjæring om å se kontrakt ble avslått.</value>
   </data>
   <data name="PetitionToViewLegalIdentityWasDenied" xml:space="preserve">
-    <value>Begjæring om å vise identitet ble avslått.</value>
+    <value>Begjæring om å vise juridisk identitet ble avslått.</value>
   </data>
   <data name="APetitionHasBeenSentToTheContract" xml:space="preserve">
-    <value>Det er sendt ut en begjæring til de delene av kontrakten. Hvis noen av delene godtar anmodningen, vil kontraktinformasjonen vises på skjermen.</value>
+    <value>Det er sendt ut en begjæring til kontraktsdelene. Hvis noen av delene godtar forespørselen, vil kontraktinformasjonen vises på skjermen.</value>
   </data>
   <data name="APetitionHasBeenSentToTheOwner" xml:space="preserve">
     <value>Det er sendt en begjæring til eieren av identiteten. Hvis eieren godtar petisjonen, vises identitetsinformasjonen på skjermen.</value>
@@ -469,7 +469,7 @@
     <value>Det er sendt en underskriftskampanje til din likeperson</value>
   </data>
   <data name="APeerReviewYouhaveRequestedHasBeenAccepted" xml:space="preserve">
-    <value>En fagfellevurdering du ba om har blitt akseptert.</value>
+    <value>En fagfellevurdering du ba om, er akseptert.</value>
   </data>
   <data name="APeerYouRequestedToReviewHasBeenRejectedDueToSignatureError" xml:space="preserve">
     <value>En fagfellevurdering du ba om, har blitt avvist på grunn av en signaturfeil.</value>
@@ -478,7 +478,7 @@
     <value>En kollega du har bedt om å få se søknaden din på, har avslått å godkjenne den.</value>
   </data>
   <data name="UnableToGetAccessToYourPrivateKeys" xml:space="preserve">
-    <value>Applikasjonen fikk ikke tilgang til de private nøklene til identiteten. Dette betyr vanligvis at identiteten er endret utenfor appens omfang. Det kan også være et resultat av korrupsjon av data. Du kan prøve en av to ting: Trykk på Fortsett-knappen for å fortsette, uten de private nøklene. Du får tilgang til appen, men kan ikke signere noe. Du kan da velge å søke om ny identitet fra hovedmenyen, med nye private nøkler. Du kan også prøve å reparere databasen ved å trykke på Reparer-knappen. I sistnevnte tilfelle lukkes appen, og neste gang appen åpnes, blir det først forsøkt en reparasjonsprosedyre.</value>
+    <value>Applikasjonen fikk ikke tilgang til de private nøklene til identiteten. Dette betyr vanligvis at identiteten er endret utenfor omfanget av appen. Det kan også være et resultat av korrupsjon av data. Du kan prøve en av to ting. Trykk på Fortsett-knappen for å fortsette, uten de private nøklene. Du får tilgang til appen, men kan ikke signere noe. Du kan da velge å søke om ny identitet fra hovedmenyen, med nye private nøkler. Du kan også prøve å reparere databasen ved å trykke på Reparer-knappen. I sistnevnte tilfelle lukkes appen, og neste gang appen åpnes, blir det først forsøkt en reparasjonsprosedyre.</value>
   </data>
   <data name="FailedToClosePage" xml:space="preserve">
     <value>Kunne ikke lukke siden</value>
@@ -496,7 +496,7 @@
     <value>Se gjennom all informasjonen ovenfor, og merk av i de tilhørende avmerkingsboksene hvis informasjonen er riktig. Dette må gjøres før du kan godkjenne opplysningene.</value>
   </data>
   <data name="YouNeedToCheckCarefullyReviewed" xml:space="preserve">
-    <value>Du må merke av i boksen hvis du nøye har gjennomgått all tilsvarende informasjon ovenfor.</value>
+    <value>Du må merke av i boksen du har nøye gjennomgått all tilsvarende informasjon ovenfor.</value>
   </data>
   <data name="YouNeedToApproveToAssociate" xml:space="preserve">
     <value>Du må godkjenne å knytte personopplysningene dine til identiteten du anmelder. Når tredjeparter gjennomgår informasjonen i identiteten, vil de ha tilgang til identiteten til korrekturleserne, for åpenhet.</value>
@@ -505,22 +505,22 @@
     <value>Er du sikker på at du vil fjerne denne kontakten fra listen over kontakter?</value>
   </data>
   <data name="AreYouSureYouWantToReportYourLegalIdentityAsCompromized" xml:space="preserve">
-    <value>Er du sikker på at du vil rapportere identiteten din som kompromittert, stjålet eller hacket?</value>
+    <value>Er du sikker på at du vil rapportere den juridiske identiteten din som kompromittert, stjålet eller hacket?</value>
   </data>
   <data name="AreYouSureYouWantToRevokeYourLegalIdentity" xml:space="preserve">
-    <value>Er du sikker på at du vil tilbakekalle identiteten din fra søknaden?</value>
+    <value>Er du sikker på at du vil tilbakekalle din juridiske identitet fra søknaden?</value>
   </data>
   <data name="AreYouSureYouWantToTransferYourLegalIdentity" xml:space="preserve">
-    <value>Er du sikker på at du vil overføre identiteten din fra denne enheten til en annen? Identiteten vil bli fjernet fra denne enheten når den er fullført. Sørg også for at ingen andre kan se skjermen din under prosessen.</value>
+    <value>Er du sikker på at du vil overføre din juridiske identitet fra søknaden til en annen? Identiteten vil bli fjernet fra denne enheten når den er fullført. Sørg også for at ingen andre kan se skjermen din under prosessen.</value>
   </data>
   <data name="UnexpectedResponse" xml:space="preserve">
     <value>Et uventet svar ble mottatt.</value>
   </data>
   <data name="FileUploadServiceNotFound" xml:space="preserve">
-    <value>Finner ingen filopplastingstjeneste hos tjenesteleverandøren.</value>
+    <value>Ingen filopplastingstjeneste funnet på megler.</value>
   </data>
   <data name="LegalServiceNotFound" xml:space="preserve">
-    <value>Ingen juridisk tjeneste funnet på tjenesteleverandøren.</value>
+    <value>Ingen juridisk tjeneste funnet på megler.</value>
   </data>
   <data name="FailedToBindViewModelForPage" xml:space="preserve">
     <value>Kan ikke binde viewmodel-{0} for side {1}</value>
@@ -535,7 +535,7 @@
     <value>Kan ikke oppheve bindingen av viewmodel-{0} for side {1}</value>
   </data>
   <data name="OnboardingPhonePageTitle" xml:space="preserve">
-    <value>Velkommen til Neuro-Access</value>
+    <value>La oss komme i gang</value>
   </data>
   <data name="OnboardingPhonePageDetails" xml:space="preserve">
     <value>For å bli bekreftet, må du oppgi telefonnummeret ditt</value>
@@ -553,7 +553,7 @@
     <value>Skriv inn bekreftelseskoden som er sendt til {0}</value>
   </data>
   <data name="OnboardingProviderPageTitle" xml:space="preserve">
-    <value>Din tjenesteleverandør</value>
+    <value>Valgt leverandør</value>
   </data>
   <data name="OnboardingProviderPageDetails" xml:space="preserve">
     <value>Domene:</value>
@@ -565,22 +565,16 @@
     <value>Skriv inn navnet du vil bruke for kontoen</value>
   </data>
   <data name="OnboardingDefinePasswordPageTitle" xml:space="preserve">
-    <value>Opprett en PIN-kode</value>
+    <value>Opprett et passord</value>
   </data>
   <data name="OnboardingFinalizePageTitle" xml:space="preserve">
     <value>Suksess!</value>
-  </data>
-  <data name="OnboardingFinalizePageDetails" xml:space="preserve">
-    <value>Du kan nå begynne å bruke Neuro-Access</value>
   </data>
   <data name="OnboardingBiometricsPageTitle" xml:space="preserve">
     <value>Nesten ferdig</value>
   </data>
   <data name="OnboardingBiometricsPageDetails" xml:space="preserve">
     <value>Neuro-Access fungerer best når du bruker {0}. Vil du aktivere denne funksjonen? Dette kan også endres i innstillingene senere</value>
-  </data>
-  <data name="AccountSectionTitle" xml:space="preserve">
-    <value>Skriv inn kontonavnet</value>
   </data>
   <data name="Create" xml:space="preserve">
     <value>Skape</value>
@@ -601,7 +595,7 @@
     <value>Nettverk ser ut til å mangle. Kontroller konfigurasjonen og dekningen, og prøv på nytt.</value>
   </data>
   <data name="SendEmailWarning" xml:space="preserve">
-    <value>En kode er sendt til din e-postadresse. Hvis du ikke mottar den, kan du også sjekke spam-mappen din.</value>
+    <value>Det er sendt en kode i en e-postmelding til e-postadderne. Hvis du ikke mottar den, kan du også sjekke spam-mappen din.</value>
   </data>
   <data name="SwitchingToTestPhoneNumberNotAllowed" xml:space="preserve">
     <value>Det er ikke tillatt å endre telefonnummeret til en test.</value>
@@ -623,6 +617,9 @@
   </data>
   <data name="EmailValidationFormat" xml:space="preserve">
     <value>Skriv inn en gyldig e-postadresse</value>
+  </data>
+  <data name="PhoneValidationFormat" xml:space="preserve">
+    <value>Vennligst skriv inn et gyldig telefonnummer</value>
   </data>
   <data name="ProviderSectionTitle" xml:space="preserve">
     <value>Velg ett alternativ</value>
@@ -654,26 +651,20 @@
   <data name="QrScanUri" xml:space="preserve">
     <value>URI:</value>
   </data>
-  <data name="AccountValidationAlreadyExists" xml:space="preserve">
-    <value>Dette kontonavnet finnes allerede</value>
-  </data>
-  <data name="AccountAvailableAlternatives" xml:space="preserve">
-    <value>Følgende navn er fortsatt tilgjengelige:</value>
-  </data>
   <data name="TestOtpUsed" xml:space="preserve">
     <value>En midlertidig OTP-kode er brukt. Søknaden slutter å fungere om en uke. Du må installere programmet på nytt for å bruke det igjen.</value>
   </data>
   <data name="DefinePasswordSectionTitle1" xml:space="preserve">
-    <value>Skriv inn ny pinne</value>
+    <value>Skriv inn nytt passord</value>
   </data>
   <data name="DefinePasswordSectionTitle2" xml:space="preserve">
-    <value>Bekreft PIN-koden</value>
+    <value>Bekreft passord</value>
   </data>
   <data name="CreatePassword" xml:space="preserve">
-    <value>Opprett PIN-kode</value>
+    <value>Opprett passord</value>
   </data>
   <data name="ScanQrCodeLabel" xml:space="preserve">
-    <value>Skann QR-koden med kameraet ditt.</value>
+    <value>Skann QR-koden med kameraet.</value>
   </data>
   <data name="Accept" xml:space="preserve">
     <value>Godta</value>
@@ -706,7 +697,7 @@
     <value>Komme inn</value>
   </data>
   <data name="EnterPassword" xml:space="preserve">
-    <value>Skriv inn pin</value>
+    <value>Skriv inn passord</value>
   </data>
   <data name="FirstName" xml:space="preserve">
     <value>Fornavn</value>
@@ -718,7 +709,7 @@
     <value>Etternavn(er)</value>
   </data>
   <data name="LegalId" xml:space="preserve">
-    <value>Identitet</value>
+    <value>Juridisk ID</value>
   </data>
   <data name="MiddleNames" xml:space="preserve">
     <value>Mellomnavn(er)</value>
@@ -808,7 +799,7 @@
     <value>Nevro-ID</value>
   </data>
   <data name="Technical" xml:space="preserve">
-    <value>Teknisk informasjon</value>
+    <value>Teknisk</value>
   </data>
   <data name="Home" xml:space="preserve">
     <value>Hjem</value>
@@ -820,25 +811,25 @@
     <value>Tillat opptak (maks 1 time)</value>
   </data>
   <data name="AreYouSureYouWantToReportYourLegalIdentityAsCompromized1" xml:space="preserve">
-    <value>Er du sikker på at du vil rapportere identiteten din som kompromittert, stjålet eller hacket?</value>
+    <value>Er du sikker på at du vil rapportere den juridiske identiteten din som kompromittert, stjålet eller hacket?</value>
   </data>
   <data name="AreYouSureYouWantToRevokeYourLegalIdentity1" xml:space="preserve">
-    <value>Er du sikker på at du vil tilbakekalle identiteten din fra enheten?</value>
+    <value>Er du sikker på at du vil tilbakekalle din juridiske identitet fra søknaden?</value>
   </data>
   <data name="AreYouSureYouWantToTransferYourLegalIdentity1" xml:space="preserve">
-    <value>Er du sikker på at du vil overføre identiteten din fra enheten til en annen? Identiteten vil bli fjernet fra denne enheten når den er fullført. Sørg også for at ingen andre kan se skjermen din under prosessen.</value>
+    <value>Er du sikker på at du vil overføre din juridiske identitet fra søknaden til en annen? Identiteten vil bli fjernet fra denne enheten når den er fullført. Sørg også for at ingen andre kan se skjermen din under prosessen.</value>
   </data>
   <data name="Change" xml:space="preserve">
     <value>Forandre</value>
   </data>
   <data name="ChangePassword" xml:space="preserve">
-    <value>Endre PIN-kode</value>
+    <value>Endre passord</value>
   </data>
   <data name="ChangePasswordDescription" xml:space="preserve">
-    <value>Velg en annen PIN-kode for å identifisere deg. Hvis du endrer PIN-koden, opprettes det også et nytt tilfeldig passord for det underliggende kommunikasjonsnettverket.</value>
+    <value>Velg et annet passord for å identifisere deg. Hvis du endrer passordet ditt, opprettes det også et nytt tilfeldig passord for det underliggende kommunikasjonsnettverket.</value>
   </data>
   <data name="ConfirmNewPassword" xml:space="preserve">
-    <value>Bekreft ny PIN-kode:</value>
+    <value>Bekreft nytt passord:</value>
   </data>
   <data name="DarkMode" xml:space="preserve">
     <value>Mørk modus</value>
@@ -847,10 +838,10 @@
     <value>Innstillinger for skjerm</value>
   </data>
   <data name="EnterCurrentPassword" xml:space="preserve">
-    <value>Angi gjeldende PIN-kode:</value>
+    <value>Skriv inn gjeldende passord:</value>
   </data>
   <data name="EnterNewPassword" xml:space="preserve">
-    <value>Skriv inn ny pin:</value>
+    <value>Skriv inn nytt passord:</value>
   </data>
   <data name="IdentitySettings" xml:space="preserve">
     <value>Identitetsinnstillinger</value>
@@ -865,13 +856,13 @@
     <value>Lys, modus</value>
   </data>
   <data name="ProhibitRecording" xml:space="preserve">
-    <value>Forby skjermopptak</value>
+    <value>Forby opptak</value>
   </data>
   <data name="ReportAsCompromized" xml:space="preserve">
     <value>Rapport som kompromittert</value>
   </data>
   <data name="ReportAsCompromizedDescription" xml:space="preserve">
-    <value>Rapporter om app, PIN-kode eller telefon har blitt kompromittert, hacket eller stjålet.</value>
+    <value>Rapporter om app, passord eller telefon har blitt kompromittert, hacket eller stjålet.</value>
   </data>
   <data name="RevokeIdentity" xml:space="preserve">
     <value>Tilbakekall identitet</value>
@@ -898,10 +889,10 @@
     <value>Godkjenningsmetode</value>
   </data>
   <data name="Fingerprint" xml:space="preserve">
-    <value>Biometrisk</value>
+    <value>Fingeravtrykk</value>
   </data>
   <data name="Password" xml:space="preserve">
-    <value>KNAPPENÅL</value>
+    <value>Passord</value>
   </data>
   <data name="Application" xml:space="preserve">
     <value>Søknad</value>
@@ -913,7 +904,7 @@
     <value>Er du sikker på at du vil tilbakekalle gjeldende ID-søknad?</value>
   </data>
   <data name="AreYouSureYouWantToSendThisIdApplication" xml:space="preserve">
-    <value>Er du sikker på at du vil sende en ny ID-søknad? Å sende en ID-søknad vil forelde din nåværende ID.</value>
+    <value>Er du sikker på at du vil sende denne ID-søknaden? Å sende en ID-søknad vil forelde din nåværende ID.</value>
   </data>
   <data name="ConsentDescription" xml:space="preserve">
     <value>Jeg samtykker til behandling av personopplysningene som er oppgitt i denne søknaden, med det formål å validere og godkjenne søknaden.</value>
@@ -940,7 +931,7 @@
     <value>Utvalgte anmeldere</value>
   </data>
   <data name="FingerprintDescription" xml:space="preserve">
-    <value>Skann for å godkjenne</value>
+    <value>Skann fingeravtrykket.</value>
   </data>
   <data name="FingerprintTitle" xml:space="preserve">
     <value>Godkjenning kreves</value>
@@ -949,7 +940,7 @@
     <value>Ved å sende inn en ny ID-søknad bekrefter jeg herved at all informasjon som er gitt er korrekt og aktuell. Applikasjonen vil forelde enhver nåværende identitet som er registrert i appen.</value>
   </data>
   <data name="IdApplicationSentDescription" xml:space="preserve">
-    <value>Det er sendt ut søknad om ny ID. Venter på at søknaden skal bli vurdert. Du kan gå tilbake til denne siden for å se statusen for programmet.</value>
+    <value>Det er sendt ut søknad om ny ID. Venter på at søknaden skal bli vurdert. Du kan komme tilbake til denne siden for å se statusen for søknaden.</value>
   </data>
   <data name="IdentityApplications" xml:space="preserve">
     <value>Identitetssøknader</value>
@@ -964,19 +955,19 @@
     <value>Søk om en ny digital organisasjons-ID. ID-en vil inneholde din personlige informasjon, tilhørende organisasjonsinformasjon og din rolle i organisasjonen. Den kan brukes til å validere din personlige identitet og din rolle i organisasjonen, samt få tilgang til tjenester som krever en verifisert organisasjonsidentitet.</value>
   </data>
   <data name="OrganizationalInformationDescription" xml:space="preserve">
-    <value>Følgende organisasjonsinformasjon inkluderes i søknaden om en organisasjons-ID.</value>
+    <value>Følgende organisasjonsinformasjon vil bli inkludert i søknaden om en organisasjons-ID.</value>
   </data>
   <data name="OrganizationalInformationSentDescription" xml:space="preserve">
     <value>Følgende organisasjonsinformasjon er inkludert i søknaden om en organisasjons-ID.</value>
   </data>
   <data name="PeerReviewDescription" xml:space="preserve">
-    <value>Fagfellevurderinger er aktivert. Dette gjør at du kan be noder (personer med allerede godkjente digitale IDer) om å gjennomgå søknaden din og godkjenne den.</value>
+    <value>Fagfellevurderinger er aktivert. Dette gjør at du kan be noder (personer med allerede godkjente digitale ID-er) om å gjennomgå søknaden din og samarbeide om å godkjenne den.</value>
   </data>
   <data name="PersonalId" xml:space="preserve">
     <value>Personlig ID</value>
   </data>
   <data name="PersonalIdDescription" xml:space="preserve">
-    <value>Søk om ny digital person-ID. ID-en vil inneholde dine personlige opplysninger og kan brukes til å validere din personlige identitet, samt få tilgang til tjenester som krever en verifisert personlig identitet.</value>
+    <value>Søk om ny digital person-ID. ID-en vil inneholde dine personlige opplysninger og kan brukes til å validere din personlige identitet, samt få tilgang til tjenester som krever en bekreftet personlig identitet.</value>
   </data>
   <data name="PersonalInformationDescription" xml:space="preserve">
     <value>Følgende personopplysninger vil inngå i søknaden om person-ID.</value>
@@ -997,7 +988,7 @@
     <value>Følgende bilder er inkludert i søknaden.</value>
   </data>
   <data name="QrPageTitleScanPeerId" xml:space="preserve">
-    <value>Skann node-ID-en</value>
+    <value>Skann-ID for node</value>
   </data>
   <data name="RevokeApplication" xml:space="preserve">
     <value>Tilbakekall søknad</value>
@@ -1066,7 +1057,7 @@
     <value>Nasjonalitet</value>
   </data>
   <data name="Other" xml:space="preserve">
-    <value>Annen</value>
+    <value>Annet __________</value>
   </data>
   <data name="SelectGender" xml:space="preserve">
     <value>Velg kjønn</value>
@@ -1291,7 +1282,7 @@
     <value>Sekunder</value>
   </data>
   <data name="SelectedContactCannotBeAdded" xml:space="preserve">
-    <value>Den valgte kontakten kan ikke legges til. Den har ikke en identitet registrert.</value>
+    <value>Den valgte kontakten kan ikke legges til. Den har ikke en juridisk ID registrert.</value>
   </data>
   <data name="Send" xml:space="preserve">
     <value>Sende</value>
@@ -1393,7 +1384,7 @@
     <value>Melding fra:</value>
   </data>
   <data name="NeuroFeaturesServiceNotFound" xml:space="preserve">
-    <value>Ingen nevrofunksjonstjeneste funnet hos tjenesteleverandøren.</value>
+    <value>Ingen Neuro-Features-tjeneste funnet på megler.</value>
   </data>
   <data name="PetitionFrom" xml:space="preserve">
     <value>Opprop fra:</value>
@@ -1426,7 +1417,7 @@
     <value>Ingen kontrolltjeneste funnet.</value>
   </data>
   <data name="EDalerServiceNotFound" xml:space="preserve">
-    <value>Finner ingen eDaler-tjeneste hos Tjenesteyter.</value>
+    <value>Ingen eDaler-tjeneste funnet på megler.</value>
   </data>
   <data name="GettingOptionsCancelled" xml:space="preserve">
     <value>Tilgjengelige alternativer ble kansellert.</value>
@@ -1450,7 +1441,7 @@
     <value>Ingen personlig feltritttjeneste funnet.</value>
   </data>
   <data name="ProvisioningServiceNotFound" xml:space="preserve">
-    <value>Finner ingen provisjonstjeneste hos tjenesteyteren.</value>
+    <value>Ingen provisjonstjeneste funnet på megler.</value>
   </data>
   <data name="PushNotificationServiceNotFound" xml:space="preserve">
     <value>Ingen push-varslingstjeneste funnet.</value>
@@ -1471,7 +1462,7 @@
     <value>Svar på forespørsel om underskrift</value>
   </data>
   <data name="ThingRegistryServiceNotFound" xml:space="preserve">
-    <value>Ingen ting registertjeneste funnet på tjenesteleverandøren.</value>
+    <value>Ingen ting registertjeneste funnet på megler.</value>
   </data>
   <data name="UnableToGetListOfMyDevices" xml:space="preserve">
     <value>Kan ikke få en liste over enhetene mine.</value>
@@ -1708,7 +1699,7 @@
     <value>Øyeblikkelig</value>
   </data>
   <data name="SensorDataHeaderOther" xml:space="preserve">
-    <value>Annen</value>
+    <value>Annet __________</value>
   </data>
   <data name="SensorDataHeaderPeak" xml:space="preserve">
     <value>Topp</value>
@@ -1756,7 +1747,7 @@
     <value>Å ta et bilde støttes ikke på denne enheten</value>
   </data>
   <data name="TheSpecifiedCodeIsNotALegalIdentity" xml:space="preserve">
-    <value>Du må skanne en annen type QR-kode, en som representerer en Neuro-Access-identitet</value>
+    <value>Du må skanne en annen type QR-kode, en som representerer en juridisk identitet</value>
   </data>
   <data name="ThingDisowned" xml:space="preserve">
     <value>Dette har blitt forkastet. Det kan nå kreves av en ny eier.</value>
@@ -1873,7 +1864,7 @@
     <value>Tilgang til identitet</value>
   </data>
   <data name="PetitionIdentityInformationText" xml:space="preserve">
-    <value>En begjæring om personopplysningene til identiteten din er mottatt. Se gjennom informasjonen nedenfor, og velg hvordan du vil svare.</value>
+    <value>En begjæring om personopplysninger om din juridiske identitet er mottatt. Se gjennom informasjonen nedenfor, og velg hvordan du vil svare.</value>
   </data>
   <data name="PetitionSignature" xml:space="preserve">
     <value>Ber om signatur</value>
@@ -2089,10 +2080,10 @@
     <value>Avslutt abonnementet på</value>
   </data>
   <data name="OnboardingDefinePasswordCreateAlphanumeric" xml:space="preserve">
-    <value>Opprette alfanumerisk PIN-kode</value>
+    <value>Opprett alfanumerisk PIN-kode</value>
   </data>
   <data name="OnboardingDefinePasswordCreateNumeric" xml:space="preserve">
-    <value>Opprette numerisk PIN-kode</value>
+    <value>Opprett numerisk PIN-kode</value>
   </data>
   <data name="Details" xml:space="preserve">
     <value>Detaljer</value>
@@ -2107,7 +2098,7 @@
     <value>Biometrisk autentisering</value>
   </data>
   <data name="FaceId" xml:space="preserve">
-    <value>Face ID</value>
+    <value>Ansikts-ID</value>
   </data>
   <data name="TouchId" xml:space="preserve">
     <value>Trykk på ID</value>
@@ -2116,21 +2107,162 @@
     <value>Hva er {0}?</value>
   </data>
   <data name="BiometricAuthenticationInfo" xml:space="preserve">
-    <value>Biometrisk autentisering bruker dine unike fysiske egenskaper, som ansikt eller fingeravtrykk, for å sikre at det virkelig er deg. Det gir en enkel og sikker måte å få tilgang til Neuro-Access på.</value>
+    <value>Biometrisk autentisering bruker dine unike fysiske egenskaper, som ansiktet ditt eller fingeravtrykket, for å sikre at det virkelig er deg. Det gir en enkel og sikker måte å få tilgang til Neuro-Access på.</value>
   </data>
   <data name="FaceIdInfo" xml:space="preserve">
     <value>Face ID gjenkjenner ansiktet ditt for å sikre at det virkelig er deg, og gir en enkel og sikker måte å få tilgang til Neuro-Access på.</value>
   </data>
   <data name="TouchIdInfo" xml:space="preserve">
-    <value>Touch ID bruker fingeravtrykket ditt for å sikre at det virkelig er deg, noe som gir en rask og sikker måte å få tilgang til Neuro-Access på.</value>
+    <value>Touch ID bruker fingeravtrykket ditt for å sikre at det virkelig er deg, og gir en rask og sikker måte å få tilgang til Neuro-Access på.</value>
   </data>
   <data name="TransferIdentity" xml:space="preserve">
-    <value>Overføre identitet</value>
+    <value>Overfør identitet</value>
   </data>
   <data name="TransferIdentityDescription" xml:space="preserve">
     <value>Overfør din nåværende identitet til en annen enhet.</value>
   </data>
   <data name="TransferIdentityPageDetails" xml:space="preserve">
-    <value>Fortsett med innføringen på den andre enheten til du kommer til tjenesteleverandørsiden. Trykk på endringsknappen og skann denne QR-en. Hvis du gjør dette, fjernes identiteten fra denne enheten.</value>
+    <value>Fortsett med pålastingen på den andre enheten til du kommer til tjenesteleverandørsiden. Trykk på endringsknappen og skann denne QR. Hvis du gjør dette, fjernes identiteten fra denne enheten.</value>
+  </data>
+  <data name="AppVersion" xml:space="preserve">
+    <value>Versjonsnummer</value>
+  </data>
+  <data name="BuildNumber" xml:space="preserve">
+    <value>Bygg nummer</value>
+  </data>
+  <data name="Platform" xml:space="preserve">
+    <value>Plattform</value>
+  </data>
+  <data name="HardwareInfo" xml:space="preserve">
+    <value>Maskinvare</value>
+  </data>
+  <data name="OnboardingGetStartedTitle" xml:space="preserve">
+    <value>Velkommen til Neuro-Access</value>
+  </data>
+  <data name="CreateNewAccount" xml:space="preserve">
+    <value>Opprett ny konto</value>
+  </data>
+  <data name="IAlreadyHaveAnAccount" xml:space="preserve">
+    <value>Jeg har allerede en konto</value>
+  </data>
+  <data name="OnboardingGetStartedQrInfo" xml:space="preserve">
+    <value>Har du mottatt en invitasjons-, overførings- eller gjenopprettingskode? Skann den nedenfor</value>
+  </data>
+  <data name="OnboardingNameEntryTitle" xml:space="preserve">
+    <value>Velg ditt brukernavn</value>
+  </data>
+  <data name="OnboardingNameEntryDetails" xml:space="preserve">
+    <value>Brukernavnet ditt er permanent og kan ikke endres senere</value>
+  </data>
+  <data name="UseNickname" xml:space="preserve">
+    <value>Jeg vil gjerne bruke et kallenavn</value>
+  </data>
+  <data name="UseRealName" xml:space="preserve">
+    <value>Jeg vil gjerne bruke mitt virkelige navn</value>
+  </data>
+  <data name="BeAnonymous" xml:space="preserve">
+    <value>Jeg vil gjerne være anonym</value>
+  </data>
+  <data name="Nickname" xml:space="preserve">
+    <value>Kallenavn</value>
+  </data>
+  <data name="OnboardingContactSupportTitle" xml:space="preserve">
+    <value>Gjenopprett konto</value>
+  </data>
+  <data name="AccountDetails" xml:space="preserve">
+    <value>Kontodetaljer</value>
+  </data>
+  <data name="ServiceProvider" xml:space="preserve">
+    <value>Tjenesteyter</value>
+  </data>
+  <data name="Alternative" xml:space="preserve">
+    <value>Alternativ: </value>
+  </data>
+  <data name="InvalidUsernameCharacters" xml:space="preserve">
+    <value>Brukernavnet inneholder ugyldige tegn.</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Brukernavn</value>
+  </data>
+  <data name="SendSeconds" xml:space="preserve">
+    <value>Sende ({0})</value>
+  </data>
+  <data name="CreateWallet" xml:space="preserve">
+    <value>Opprett lommebok</value>
+  </data>
+  <data name="CreateWalletDescription" xml:space="preserve">
+    <value>Du lager en lommebok ved å legge litt penger i den. Disse pengene kalles eDaler, og kan overføres til andre, online eller offline, eller brukes til å kjøpe tjenester som tilbys.</value>
+  </data>
+  <data name="Buy" xml:space="preserve">
+    <value>Kjøpe</value>
+  </data>
+  <data name="BuyEDalerDescription" xml:space="preserve">
+    <value>Oppgi hvor mye eDaler du ønsker å kjøpe nedenfor, og trykk på Kjøp-knappen. En nettside kan åpnes der du må fylle ut ytterligere informasjon for at betalingsbehandleren skal kunne validere forespørselen din.</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Beløp:</value>
+  </data>
+  <data name="Wallet" xml:space="preserve">
+    <value>Lommebok</value>
+  </data>
+  <data name="OpenWallet" xml:space="preserve">
+    <value>Åpne Lommebok</value>
+  </data>
+  <data name="OpenWalletDescription" xml:space="preserve">
+    <value>Åpne eDaler-lommeboken din for å vise gjeldende saldo og se siste transaksjoner.</value>
+  </data>
+  <data name="OpenWllet" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AccountEventDescription" xml:space="preserve">
+    <value>Nedenfor kan du se informasjon om én enkelt kontohendelse.</value>
+  </data>
+  <data name="Balance" xml:space="preserve">
+    <value>Balanse:</value>
+  </data>
+  <data name="OpenMessageLink" xml:space="preserve">
+    <value>Åpne meldingslenke</value>
+  </data>
+  <data name="RemoteParty" xml:space="preserve">
+    <value>Ekstern fest:</value>
+  </data>
+  <data name="Reserved" xml:space="preserve">
+    <value>Reservert:</value>
+  </data>
+  <data name="TransactionId" xml:space="preserve">
+    <value>Transaksjons-ID:</value>
+  </data>
+  <data name="AccountEventItem" xml:space="preserve">
+    <value>Konto-hendelser</value>
+  </data>
+  <data name="PendingPaymentItem" xml:space="preserve">
+    <value>Ventende betalinger</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsPart1" xml:space="preserve">
+    <value>Hvis du har tilgang til kontoen din på en annen enhet, følg disse trinnene:</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet1" xml:space="preserve">
+    <value>Åpne appen på den andre enheten din.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet2" xml:space="preserve">
+    <value>Gå til Innstillinger → Overfør identitet.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet3" xml:space="preserve">
+    <value>En QR-kode vises på den enheten.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet4" xml:space="preserve">
+    <value>Bruk denne enheten til å skanne QR-koden og overføre kontoen din.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsPart2" xml:space="preserve">
+    <value>Hvis du ikke har tilgang til kontoen din, vennligst kontakt vårt supportteam på</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsPart3" xml:space="preserve">
+    <value>.</value>
+  </data>
+  <data name="SupportEmailSubject" xml:space="preserve">
+    <value>Gjenopprett konto</value>
+  </data>
+  <data name="EmailClientNotAvailable" xml:space="preserve">
+    <value>Kan ikke åpne e-postklienten. Send en e-post til {0}.</value>
   </data>
 </root>

@@ -11,11 +11,11 @@ using NeuroAccessMaui.Services.UI.Photos;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Registration;
 using NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders;
-using NeuroAccessMaui.UI.Popups;
 using SkiaSharp;
 using Waher.Content;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Networking.XMPP.StanzaErrors;
 using IServiceProvider = Waher.Networking.XMPP.Contracts.IServiceProvider;
 
 namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
@@ -650,8 +650,11 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 				this.SetIsBusy(true);
 				this.IsApplying = true;
 
+				bool HasIdWithPrivateKey = ServiceRef.TagProfile.LegalIdentity is not null &&
+					await ServiceRef.XmppService.HasPrivateKey(ServiceRef.TagProfile.LegalIdentity.Id);
+
 				(bool Succeeded, LegalIdentity? AddedIdentity) = await ServiceRef.NetworkService.TryRequest(() =>
-					ServiceRef.XmppService.AddLegalIdentity(this, false, Photos));
+					ServiceRef.XmppService.AddLegalIdentity(this, !HasIdWithPrivateKey, Photos));
 
 				if (Succeeded && AddedIdentity is not null)
 				{
@@ -708,7 +711,15 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 				this.SetIsBusy(true);
 				this.IsRevoking = true; // Will be cleared from event-handle.
 
-				await ServiceRef.XmppService.ObsoleteLegalIdentity(Application.Id);
+				try
+				{
+					await ServiceRef.XmppService.ObsoleteLegalIdentity(Application.Id);
+				}
+				catch (ForbiddenException)
+				{
+					// Ignore. Application may have been rejected or elapsed outside of the
+					// scope of the app.
+				}
 
 				await ServiceRef.TagProfile.SetIdentityApplication(null, true);
 				this.ApplicationSent = false;
