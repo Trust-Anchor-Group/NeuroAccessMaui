@@ -7,236 +7,244 @@ using Waher.Networking.XMPP.Contracts;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 {
-	/// <summary>
-	/// An observable object that wraps a <see cref="Waher.Networking.XMPP.Contracts.Parameter"/> object.
-	/// This allows for easier binding in the UI.
-	/// </summary>
-	public class ObservableParameter : ObservableObject
-	{
-		protected ObservableParameter(Parameter parameter)
-		{
-			this.Parameter = parameter;
-		}
+    /// <summary>
+    /// An observable object that wraps a <see cref="Waher.Networking.XMPP.Contracts.Parameter"/> object.
+    /// This allows for easier binding in the UI.
+    /// </summary>
+    public class ObservableParameter : ObservableObject
+    {
+        #region Constructor
+        protected ObservableParameter(Parameter parameter)
+        {
+            this.Parameter = parameter;
+        }
+        #endregion
 
-		/// <summary>
-		/// Initializes the parameter in regards to a contract.
-		/// </summary>
-		private async Task InitializeAsync(Contract contract)
-		{
-			try
-			{
-				this.Description = await contract.ToPlainText(this.Parameter.Descriptions, contract.DeviceLanguage());
-			}
-			catch (Exception e)
-			{
-				ServiceRef.LogService.LogException(e);
-			}
-		}
+        #region Initialization
+        /// <summary>
+        /// Initializes the parameter in regards to a contract.
+        /// </summary>
+        private async Task InitializeAsync(Contract contract)
+        {
+            try
+            {
+                this.Description = await contract.ToPlainText(this.Parameter.Descriptions, contract.DeviceLanguage());
+            }
+            catch (Exception e)
+            {
+                ServiceRef.LogService.LogException(e);
+            }
+        }
 
-		/// <summary>
-		///  Creates a new instance of <see cref="ObservableParameter"/> based on the type of the parameter.
-		/// </summary>
-		/// <param name="parameter">The parameter to wrap</param>
-		/// <param name="contract">The contract that</param>
-		/// <returns></returns>
-		public static async Task<ObservableParameter> CreateAsync(Parameter parameter, Contract contract)
-		{
-			
-			ObservableParameter parameterInfo = parameter switch
-			{
-				BooleanParameter booleanParameter => new ObservableBooleanParameter(booleanParameter),
-				DateParameter dateParameter => new ObservableDateParameter(dateParameter),
-				NumericalParameter numericalParameter => new ObservableNumericalParameter(numericalParameter),
-				StringParameter stringParameter => new ObservableStringParameter(stringParameter),
-				TimeParameter timeParameter => new ObservableTimeParameter(timeParameter),
-				DurationParameter durationParameter => new ObservableDurationParameter(durationParameter),
-				_ => new ObservableParameter(parameter)
+        /// <summary>
+        ///  Creates a new instance of <see cref="ObservableParameter"/> based on the type of the parameter.
+        /// </summary>
+        /// <param name="parameter">The parameter to wrap</param>
+        /// <param name="contract">The contract that</param>
+        /// <returns></returns>
+        public static async Task<ObservableParameter> CreateAsync(Parameter parameter, Contract contract)
+        {
+            ObservableParameter parameterInfo = parameter switch
+            {
+                BooleanParameter booleanParameter => new ObservableBooleanParameter(booleanParameter),
+                DateParameter dateParameter => new ObservableDateParameter(dateParameter),
+                NumericalParameter numericalParameter => new ObservableNumericalParameter(numericalParameter),
+                StringParameter stringParameter => new ObservableStringParameter(stringParameter),
+                TimeParameter timeParameter => new ObservableTimeParameter(timeParameter),
+                DurationParameter durationParameter => new ObservableDurationParameter(durationParameter),
+                _ => new ObservableParameter(parameter)
+            };
 
-			};
-			await parameterInfo.InitializeAsync(contract);
-			return parameterInfo;
-		}
+            await parameterInfo.InitializeAsync(contract);
+            return parameterInfo;
+        }
+        #endregion
 
-		/// <summary>
-		/// The wrapped parameter object
-		/// </summary>
-		public Parameter Parameter { get; private set; }
+        #region Properties
+        /// <summary>
+        /// The wrapped parameter object
+        /// </summary>
+        public Parameter Parameter { get; private set; }
 
-		/// <summary>
-		/// The name of the parameter
-		/// </summary>
-		public string Name => this.Parameter.Name;
+        /// <summary>
+        /// The name of the parameter
+        /// </summary>
+        public string Name => this.Parameter.Name;
 
-		/// <summary>
-		/// The Guide of the parameter
-		/// </summary>
-		public string Guide => string.IsNullOrEmpty(this.Parameter.Guide) ? this.Name : this.Parameter.Guide;
+        /// <summary>
+        /// The Guide of the parameter
+        /// </summary>
+        public string Guide => string.IsNullOrEmpty(this.Parameter.Guide) ? this.Name : this.Parameter.Guide;
 
-		public string Label { 
-			get {
-				if (string.IsNullOrEmpty(this.Description))
-				{
-					if(string.IsNullOrEmpty(this.Guide))
-					{
-						return this.Name;
-					}
-					return this.Guide;
-				}
-				return this.Description;
-			}
-		}
+        /// <summary>
+        /// Label that determines the displayed text for the parameter.
+        /// </summary>
+        public string Label
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(this.Description))
+                {
+                    if (string.IsNullOrEmpty(this.Guide))
+                    {
+                        return this.Name;
+                    }
+                    return this.Guide;
+                }
+                return this.Description;
+            }
+        }
 
-		/// <summary>
-		/// The localized description of the parameter
-		/// </summary>
-		public string Description
-		{
-			get => this.description;
-			private set
-			{
-				if(this.SetProperty(ref this.description, value))
-					this.OnPropertyChanged(nameof(this.Label));
+        /// <summary>
+        /// The localized description of the parameter
+        /// </summary>
+        public string Description
+        {
+            get => this.description;
+            private set
+            {
+                if (this.SetProperty(ref this.description, value))
+                    this.OnPropertyChanged(nameof(this.Label));
+            }
+        }
+        private string description = string.Empty;
 
-			}
-		}
-		private string description = string.Empty;
+        /// <summary>
+        /// If the parameter has a validation error
+        /// </summary>
+        public bool HasError
+        {
+            get => this.hasError;
+            set => this.SetProperty(ref this.hasError, value);
+        }
+        private bool hasError;
 
-		/// <summary>
-		/// If the parameter has an validation error
-		/// </summary>
-		public bool HasError
-		{
-			get => this.hasError;
-			set => this.SetProperty(ref this.hasError, value);
-		}
-		private bool hasError;
+        /// <summary>
+        /// Error text to display if the parameter has a validation error
+        /// </summary>
+        public string ErrorText
+        {
+            get => this.errorText;
+            set => this.SetProperty(ref this.errorText, value);
+        }
+        private string errorText = string.Empty;
 
+        /// <summary>
+        /// The value of the parameter
+        /// </summary>
+        private object? value;
+        public object? Value
+        {
+            get => this.value;
+            set
+            {
+                if (this.SetProperty(ref this.value, value))
+                {
+                    try
+                    {
+                        if (value is not null)
+                            this.Parameter.SetValue(value);
+                    }
+                    catch (Exception e)
+                    {
+                        ServiceRef.LogService.LogException(e);
+                    }
+                }
+            }
+        }
+        #endregion
 
-		/// <summary>
-		/// Error text to display if the parameter has an validation error
-		/// </summary>
-		public string ErrorText
-		{
-			get => this.errorText;
-			set => this.SetProperty(ref this.errorText, value);
-		}
-		private string errorText = string.Empty;
+        #region Property Change Handling
+        protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+        {
+            base.OnPropertyChanged(e);
+        }
+        #endregion
+    }
 
+    #region ObservableParameter Subclasses
+    public sealed class ObservableBooleanParameter : ObservableParameter
+    {
+        public ObservableBooleanParameter(BooleanParameter parameter) : base(parameter)
+        {
+            this.Value = parameter.ObjectValue is true;
+        }
 
+        public bool BooleanValue
+        {
+            get => this.Value as bool? ?? false;
+            set => this.Value = value;
+        }
+    }
 
+    public class ObservableDateParameter : ObservableParameter
+    {
+        public ObservableDateParameter(DateParameter parameter) : base(parameter)
+        {
+            this.Value = parameter.ObjectValue as DateTime?;
+        }
 
+        public DateTime? DateValue
+        {
+            get => this.Value as DateTime?;
+            set => this.Value = value;
+        }
+    }
 
-		private object? value;
-		public object? Value 
-		{ 
-			get => this.value; 
-			set			
-			{
-					this.SetProperty(ref this.value, value);
-					try
-					{
-						if(value is not null)
-							this.Parameter.SetValue(value);
-					}
-					catch (Exception e)
-					{
-						ServiceRef.LogService.LogException(e);
-					}
-			}
-		}
+    public class ObservableNumericalParameter : ObservableParameter
+    {
+        public ObservableNumericalParameter(NumericalParameter parameter) : base(parameter)
+        {
+            this.Value = parameter.ObjectValue is decimal decimalValue ? decimalValue : 0;
+        }
 
-		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-		}
-	}
+        public decimal DecimalValue
+        {
+            get => this.Value as decimal? ?? 0;
+            set => this.Value = value;
+        }
+    }
 
-	public sealed class ObservableBooleanParameter : ObservableParameter
-	{
+    public class ObservableStringParameter : ObservableParameter
+    {
+        public ObservableStringParameter(StringParameter parameter) : base(parameter)
+        {
+            this.Value = parameter.ObjectValue as string ?? string.Empty;
+        }
 
-		public ObservableBooleanParameter(BooleanParameter parameter) : base(parameter)
-		{
-			this.Value = parameter.ObjectValue is true;
-		}
-		public bool BooleanValue
-		{
-			get => this.Value as bool? ?? false;
-			set => this.Value = value;
-		}
-	}
+        public string StringValue
+        {
+            get => this.Value as string ?? string.Empty;
+            set => this.Value = value;
+        }
+    }
 
-	public class ObservableDateParameter : ObservableParameter
-	{
-		public ObservableDateParameter(DateParameter parameter) : base(parameter)
-		{
-			this.Value = parameter.ObjectValue as DateTime?;
-		}
+    public class ObservableTimeParameter : ObservableParameter
+    {
+        public ObservableTimeParameter(TimeParameter parameter) : base(parameter)
+        {
+            this.Value = parameter.ObjectValue is TimeSpan timeSpan ? timeSpan : TimeSpan.Zero;
+        }
 
-		public DateTime? DateValue
-		{
-			get => this.Value as DateTime?;
-			set => this.Value = value;
-		}
-		
-	}
+        public TimeSpan TimeSpanValue
+        {
+            get => this.Value as TimeSpan? ?? TimeSpan.Zero;
+            set => this.Value = value;
+        }
+    }
 
-	public class ObservableNumericalParameter : ObservableParameter
-	{
-		public ObservableNumericalParameter(NumericalParameter parameter) : base(parameter)
-		{
-			this.Value = parameter.ObjectValue is decimal decimalValue ? decimalValue : 0;
-		}
+    public class ObservableDurationParameter : ObservableParameter
+    {
+        public ObservableDurationParameter(DurationParameter parameter) : base(parameter)
+        {
+            this.Value = parameter.ObjectValue is Duration duration ? duration : Duration.Zero;
+        }
 
-
-		public decimal DecimalValue
-		{
-			get => this.Value as decimal? ?? 0;
-			set => this.Value = value;
-		}
-	}
-
-	public class ObservableStringParameter : ObservableParameter
-	{
-
-		public ObservableStringParameter(StringParameter parameter) : base(parameter)
-		{
-			this.Value = parameter.ObjectValue as string ?? string.Empty;
-		}
-
-		public string StringValue
-		{
-			get => this.Value as string ?? string.Empty;
-			set => this.Value = value;
-		}
-	}
-
-	public class ObservableTimeParameter : ObservableParameter
-	{
-		public ObservableTimeParameter(TimeParameter parameter) : base(parameter)
-		{
-			this.Value = parameter.ObjectValue is TimeSpan timeSpan ? timeSpan : TimeSpan.Zero;
-		}
-
-
-
-		public TimeSpan TimeSpanValue
-		{
-			get => this.Value as TimeSpan? ?? TimeSpan.Zero;
-			set => this.Value = value;
-		}
-	}
-
-	public class ObservableDurationParameter : ObservableParameter
-	{
-		public ObservableDurationParameter(DurationParameter parameter) : base(parameter)
-		{
-			this.Value = parameter.ObjectValue is Duration duration ? duration : Duration.Zero;
-		}
-
-		public Duration DurationValue
-		{
-			get => this.Value as Duration? ?? Duration.Zero;
-			set => this.Value = value;
-		}
-	}
+        public Duration DurationValue
+        {
+            get => this.Value as Duration? ?? Duration.Zero;
+            set => this.Value = value;
+        }
+    }
+    #endregion
 }
