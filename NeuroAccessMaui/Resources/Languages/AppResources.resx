@@ -2262,4 +2262,70 @@
   <data name="EmailClientNotAvailable" xml:space="preserve">
     <value>Unable to open email client. Please send an email to {0}.</value>
   </data>
+  <data name="ClaimThing" xml:space="preserve">
+    <value>Claim Thing</value>
+  </data>
+  <data name="InformationAboutClaimedThingText" xml:space="preserve">
+    <value>The following information is made available about the thing whose code you scanned. Choose if you want to attempt to claim this thing as yours, and also if you want to make it publicly searchable in the Thing Registry.</value>
+  </data>
+  <data name="InformationAboutThing" xml:space="preserve">
+    <value>Information about thing</value>
+  </data>
+  <data name="InformationAboutThingText" xml:space="preserve">
+    <value>The following information is locally available about the thing. Options to interact with the device are presented below.</value>
+  </data>
+  <data name="MakeThingPublic" xml:space="preserve">
+    <value>Make thing public</value>
+  </data>
+  <data name="Thing" xml:space="preserve">
+    <value>Thing</value>
+  </data>
+  <data name="Chat" xml:space="preserve">
+    <value>Chat</value>
+  </data>
+  <data name="ConnectToDevice" xml:space="preserve">
+    <value>Connect to Device</value>
+  </data>
+  <data name="DisconnectFromDevice" xml:space="preserve">
+    <value>Disconnect from Device</value>
+  </data>
+  <data name="DeleteRules" xml:space="preserve">
+    <value>Delete Rules</value>
+  </data>
+  <data name="DisownThing" xml:space="preserve">
+    <value>Disown Thing</value>
+  </data>
+  <data name="ContractCouldNotBeFound" xml:space="preserve">
+    <value>Contract could not be found or has been deleted.</value>
+  </data>
+  <data name="PaymentDescription" xml:space="preserve">
+    <value>Enter the amount to pay to the recipient below. Once done, you can choose to either pay online (if connected) or offline, by clicking on the corresponding button.</value>
+  </data>
+  <data name="EncryptMessage" xml:space="preserve">
+    <value>Encrypt message</value>
+  </data>
+  <data name="SendPayment" xml:space="preserve">
+    <value>Send Payment</value>
+  </data>
+  <data name="ReferencedID" xml:space="preserve">
+    <value>Referenced ID</value>
+  </data>
+  <data name="ControlActuator" xml:space="preserve">
+    <value>Control Actuator</value>
+  </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>Notifications</value>
+  </data>
+  <data name="NotificationsText" xml:space="preserve">
+    <value>Below you can see a list of notifications resulting from interactions with the thing. Press on each one to display more information and options available.</value>
+  </data>
+  <data name="SensorDataText" xml:space="preserve">
+    <value>Below is information and sensor data available to you, in accordance with your access privileges.</value>
+  </data>
+  <data name="SensorData" xml:space="preserve">
+    <value>Sensor Data</value>
+  </data>
+  <data name="ReadSensor" xml:space="preserve">
+    <value>Read Sensor</value>
+  </data>
 </root>

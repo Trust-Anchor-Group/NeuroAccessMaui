@@ -2262,4 +2262,70 @@
   <data name="EmailClientNotAvailable" xml:space="preserve">
     <value>Kunde inte öppna e-postklienten. Vänligen skicka ett e-postmeddelande till {0}.</value>
   </data>
+  <data name="ClaimThing" xml:space="preserve">
+    <value>Anspråk på sak</value>
+  </data>
+  <data name="InformationAboutClaimedThingText" xml:space="preserve">
+    <value>Följande information har gjorts tillgänglig om saken vars kod du skannade. Välj om du vill göra anspråk på denna sak som din, och också om du vill göra den publikt sökbar i sakregistret.</value>
+  </data>
+  <data name="InformationAboutThing" xml:space="preserve">
+    <value>Information om sak</value>
+  </data>
+  <data name="InformationAboutThingText" xml:space="preserve">
+    <value>Följande information har gjorts tillgänglig om saken. Alternativ för interaktion med saker presenteras nedan.</value>
+  </data>
+  <data name="MakeThingPublic" xml:space="preserve">
+    <value>Gör saken publik</value>
+  </data>
+  <data name="Thing" xml:space="preserve">
+    <value>Sak</value>
+  </data>
+  <data name="Chat" xml:space="preserve">
+    <value>Chatt</value>
+  </data>
+  <data name="ConnectToDevice" xml:space="preserve">
+    <value>Anslut till enhet</value>
+  </data>
+  <data name="DisconnectFromDevice" xml:space="preserve">
+    <value>Koppla från enhet</value>
+  </data>
+  <data name="DeleteRules" xml:space="preserve">
+    <value>Radera regler</value>
+  </data>
+  <data name="DisownThing" xml:space="preserve">
+    <value>Säg upp ägarskap</value>
+  </data>
+  <data name="ContractCouldNotBeFound" xml:space="preserve">
+    <value>Kontraktet kunde inte hittas eller blivit borttaget.</value>
+  </data>
+  <data name="PaymentDescription" xml:space="preserve">
+    <value>Ange belopped att betala till motagaren nedan. När du är klar, kan du välja att betala antingen online (om ansluten) eller offline, genom att klicka på motsvarande knapp.</value>
+  </data>
+  <data name="EncryptMessage" xml:space="preserve">
+    <value>Kryptera meddelandet</value>
+  </data>
+  <data name="SendPayment" xml:space="preserve">
+    <value>Skicka betalning</value>
+  </data>
+  <data name="ReferencedID" xml:space="preserve">
+    <value>Refererade ID</value>
+  </data>
+  <data name="ControlActuator" xml:space="preserve">
+    <value>Kontrollera Ställdon</value>
+  </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>Notifieringar</value>
+  </data>
+  <data name="NotificationsText" xml:space="preserve">
+    <value>Nedan kan du se en lista av notifieringar från interaktioner med sasken. Tryck på var och en för att visa mer information och tillgängliga alternativ.</value>
+  </data>
+  <data name="SensorDataText" xml:space="preserve">
+    <value>Nedan visas information om sensordata som är tillgänglig för dig, i enlighet med dina åtkomstprivilegier.</value>
+  </data>
+  <data name="SensorData" xml:space="preserve">
+    <value>Sensordata</value>
+  </data>
+  <data name="ReadSensor" xml:space="preserve">
+    <value>Läs Sensor</value>
+  </data>
 </root>
