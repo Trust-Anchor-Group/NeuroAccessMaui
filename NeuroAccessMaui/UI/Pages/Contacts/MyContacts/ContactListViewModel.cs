@@ -95,8 +95,8 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 			{
 				Jids[Info.BareJid] = true;
 
-				//	if (Info.IsThing.HasValue && Info.IsThing.Value)        // Include those with IsThing=null
-				//		continue;
+				if (Info.IsThing.HasValue && Info.IsThing.Value)        // Include those with IsThing=null
+					continue;
 
 				if (Info.AllowSubscriptionFrom.HasValue && !Info.AllowSubscriptionFrom.Value)
 					continue;
