@@ -90,7 +90,6 @@ namespace NeuroAccessMaui
 				{
 					case Intent.ActionView:
 						string? Url = Intent?.Data?.ToString();
-						Console.WriteLine(Url);
 						if (!string.IsNullOrEmpty(Url))
 							App.OpenUrlSync(Url);
 						break;
