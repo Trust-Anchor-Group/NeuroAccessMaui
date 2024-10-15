@@ -29,20 +29,30 @@
 						<!-- TAGS -->
 						<Label Text="{l:Localize InformationAboutThing}" Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"/>
 						<Label Text="{l:Localize InformationAboutThingText}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"/>
-						<VerticalStackLayout x:Name="TagLayout" BindableLayout.ItemsSource="{Binding Path=Tags}" VerticalOptions="StartAndExpand" Margin="{StaticResource SmallMargins}">
-							<BindableLayout.ItemTemplate>
-								<DataTemplate x:DataType="things:HumanReadableTag">
-									<HorizontalStackLayout>
-										<Label Text="{Binding Path=LocalizedName}" Style="{StaticResource KeyLabel}" LineBreakMode="WordWrap" WidthRequest="100"/>
-										<Label LineBreakMode="WordWrap" Text="{Binding Path=LocalizedValue}" Style="{StaticResource ClickableValueLabel}">
-											<Label.GestureRecognizers>
-												<TapGestureRecognizer Command="{Binding Path=BindingContext.ClickCommand, Source={x:Reference TagLayout}}" CommandParameter="{Binding}" />
-											</Label.GestureRecognizers>
-										</Label>
-									</HorizontalStackLayout>
-								</DataTemplate>
-							</BindableLayout.ItemTemplate>
-						</VerticalStackLayout>
+						<Frame Style="{StaticResource FrameSubSet}" Margin="0" Padding="0">
+							<VerticalStackLayout x:Name="TagLayout" BindableLayout.ItemsSource="{Binding Path=Tags}" VerticalOptions="StartAndExpand" Margin="{StaticResource SmallMargins}">
+								<BindableLayout.ItemTemplate>
+									<DataTemplate x:DataType="things:HumanReadableTag">
+										<Grid ColumnDefinitions="120, *">
+											<Label Grid.Column="0"
+													Text="{Binding Path=LocalizedName}"
+													Style="{StaticResource KeyLabel}"
+													LineBreakMode="WordWrap"/>
+											<Label Grid.Column="1"
+													Style="{StaticResource ClickableValueLabel}"
+													LineBreakMode="TailTruncation"
+													Text="{Binding Path=LocalizedValue}">
+												<Label.GestureRecognizers>
+													<TapGestureRecognizer Command="{Binding Path=BindingContext.ClickCommand, Source={x:Reference TagLayout}}"
+													  CommandParameter="{Binding}" />
+												</Label.GestureRecognizers>
+											</Label>
+										</Grid>
+									</DataTemplate>
+								</BindableLayout.ItemTemplate>
+							</VerticalStackLayout>
+						</Frame>
+
 						<!-- NOTIFICATIONS -->
 						<Label Text="{l:Localize Notifications}" Margin="{StaticResource SmallTopMargins}"
 					   VerticalOptions="Start" IsVisible="{Binding HasNotifications}"/>
@@ -79,14 +89,14 @@
 													IsEnabled="{Binding Path=IsConnected}" IsVisible="{Binding IsSensor}"
 													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
 						<controls:TextButton LabelData="{l:Localize ControlActuator}" Command="{Binding Path=ControlActuatorCommand}"
-													IsEnabled="{Binding Path=IsConnected}" IsVisible="{Binding IsActuator}"
+													IsEnabled="False" IsVisible="{Binding IsActuator}"
 													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
 						<Grid ColumnDefinitions="*" RowDefinitions="auto" Padding="0" Margin="0" ColumnSpacing="0" RowSpacing="0">
 							<controls:TextButton LabelData="{l:Localize Chat}" Command="{Binding Path=ChatCommand}" IsEnabled="{Binding Path=IsConnected}"
 														IsVisible="{Binding IsNodeInConcentrator, Converter={StaticResource InvertedBoolConverter}}"
 														Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
 							<Frame Grid.Row="0" Grid.Column="0" CornerRadius="12" Padding="8,3,8,3" IsVisible="{Binding HasPendingChatMessages}"
-						   HorizontalOptions="End" VerticalOptions="Center" Margin="{StaticResource DefaultLeftRightAndBottomMargin}"
+						   HorizontalOptions="End" VerticalOptions="Center" Margin="{StaticResource SmallLeftRightMargins}"
 						   Style="{StaticResource AlertFrame}">
 								<Label FontSize="Caption" TextColor="{StaticResource HeadingForeground}" Text="{Binding NrPendingChatMessages}" Padding="1"/>
 							</Frame>
