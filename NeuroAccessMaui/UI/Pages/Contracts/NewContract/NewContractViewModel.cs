@@ -1141,16 +1141,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			}
 
 			this.Roles = RolesLayout;
-			if (this.template?.Roles is not null)
-			{
-				// Assign the TrustProvider role in the contract
-				foreach (Role Role in this.template!.Roles)
-				{
-					CreationAttributesEventArgs attr = await ServiceRef.XmppService.GetNeuroFeatureCreationAttributes();
-					if (Role.Name == "TrustProvider")
-						await this.AddRole(Role.Name, attr.TrustProviderId);
-				}
-			}
 
 			VerticalStackLayout ParametersLayout = [];
 
