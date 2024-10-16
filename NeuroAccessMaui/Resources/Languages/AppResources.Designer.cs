@@ -1031,7 +1031,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Contract could not be found or has been deleted..
+        ///   Looks up a localized string similar to Contract could not be found, it could have been deleted. Would you like to remove the reference?.
         /// </summary>
         internal static string ContractCouldNotBeFound {
             get {

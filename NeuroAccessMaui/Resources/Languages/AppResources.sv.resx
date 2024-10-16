@@ -1353,6 +1353,9 @@
   <data name="AccessRequest" xml:space="preserve">
     <value>Begäran om åtkomst</value>
   </data>
+  <data name="AccessRequestText2" xml:space="preserve">
+    <value>En förfrågan om att komma åt en av dina saker har mottagits. Välj hur du vill att saken ska svara på denna typ av förfrågan.</value>
+  </data>
   <data name="ContractCreated" xml:space="preserve">
     <value>Ett kontrakt har skapats.</value>
   </data>
@@ -1490,6 +1493,12 @@
   </data>
   <data name="BuyEDaler" xml:space="preserve">
     <value>Köp eDaler.</value>
+  </data>
+  <data name="Caller" xml:space="preserve">
+    <value>Anropare</value>
+  </data>
+  <data name="CallerAddress" xml:space="preserve">
+    <value>Anroparens Address</value>
   </data>
   <data name="CallerOnly" xml:space="preserve">
     <value>Endast uppringare</value>
@@ -2327,5 +2336,14 @@
   </data>
   <data name="ReadSensor" xml:space="preserve">
     <value>Läs Sensor</value>
+  </data>
+  <data name="Range" xml:space="preserve">
+    <value>Räckvidd</value>
+  </data>
+  <data name="RangeText" xml:space="preserve">
+    <value>Applicera denna regel på:</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Skicka in</value>
   </data>
 </root>

@@ -1407,6 +1407,9 @@
   <data name="AccessRequestText" xml:space="preserve">
     <value>{0} želi da se poveže sa uređajem {1}.</value>
   </data>
+  <data name="AccessRequestText2" xml:space="preserve">
+    <value>Pozivalac je zatražio pristup jednoj od vaših stvari. Izaberite kako želite da stvar odgovori na ovu vrstu zahteva.</value>
+  </data>
   <data name="ConcentratorServiceNotFound" xml:space="preserve">
     <value>Nije pronađena nijedna usluga koncentratora.</value>
   </data>
@@ -1490,6 +1493,12 @@
   </data>
   <data name="BuyEDaler" xml:space="preserve">
     <value>Kupi eDaler.</value>
+  </data>
+  <data name="Caller" xml:space="preserve">
+    <value>Pozivalac</value>
+  </data>
+  <data name="CallerAddress" xml:space="preserve">
+    <value>Adresa pozivaoca</value>
   </data>
   <data name="CallerOnly" xml:space="preserve">
     <value>Samo pozivalac</value>
@@ -2296,7 +2305,7 @@
     <value>Odreći se stvari</value>
   </data>
   <data name="ContractCouldNotBeFound" xml:space="preserve">
-    <value>Ugovor nije pronađen ili je izbrisan.</value>
+    <value>Ugovor nije mogao biti pronađen, mogao je biti izbrisan. Da li želite da uklonite referencu?</value>
   </data>
   <data name="PaymentDescription" xml:space="preserve">
     <value>Unesite iznos koji treba da platite primaocu ispod. Kada završite, možete da izaberete da platite online (ako je povezan) ili offline, klikom na odgovarajuće dugme.</value>
@@ -2327,5 +2336,14 @@
   </data>
   <data name="ReadSensor" xml:space="preserve">
     <value>Pročitajte senzor</value>
+  </data>
+  <data name="Range" xml:space="preserve">
+    <value>Opseg</value>
+  </data>
+  <data name="RangeText" xml:space="preserve">
+    <value>Primenite ovo pravilo na:</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Prosleđivanje</value>
   </data>
 </root>

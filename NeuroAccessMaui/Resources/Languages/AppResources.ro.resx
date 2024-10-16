@@ -1407,6 +1407,9 @@
   <data name="AccessRequestText" xml:space="preserve">
     <value>{0} dorește să se conecteze la dispozitivul dvs. {1}.</value>
   </data>
+  <data name="AccessRequestText2" xml:space="preserve">
+    <value>Un apelant a solicitat acces la unul dintre lucrurile dvs. Selectați cum doriți ca lucrul să răspundă la acest tip de solicitare.</value>
+  </data>
   <data name="ConcentratorServiceNotFound" xml:space="preserve">
     <value>Nu s-a găsit niciun serviciu de concentrator.</value>
   </data>
@@ -1490,6 +1493,12 @@
   </data>
   <data name="BuyEDaler" xml:space="preserve">
     <value>Cumpărați eDaler.</value>
+  </data>
+  <data name="Caller" xml:space="preserve">
+    <value>Apelant</value>
+  </data>
+  <data name="CallerAddress" xml:space="preserve">
+    <value>Adresa apelantului</value>
   </data>
   <data name="CallerOnly" xml:space="preserve">
     <value>Doar apelant</value>
@@ -2296,7 +2305,7 @@
     <value>Dezaprobă lucrul</value>
   </data>
   <data name="ContractCouldNotBeFound" xml:space="preserve">
-    <value>Contractul nu a putut fi găsit sau a fost șters.</value>
+    <value>Contractul nu a putut fi găsit, ar fi putut fi șters. Doriți să eliminați referința?</value>
   </data>
   <data name="PaymentDescription" xml:space="preserve">
     <value>Introduceți suma de plătit destinatarului mai jos. După ce ați terminat, puteți alege fie să plătiți online (dacă sunteți conectat), fie offline, făcând clic pe butonul corespunzător.</value>
@@ -2327,5 +2336,14 @@
   </data>
   <data name="ReadSensor" xml:space="preserve">
     <value>Citiți senzorul</value>
+  </data>
+  <data name="Range" xml:space="preserve">
+    <value>Gama</value>
+  </data>
+  <data name="RangeText" xml:space="preserve">
+    <value>Aplicați această regulă pentru:</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Prezinte</value>
   </data>
 </root>

@@ -1407,6 +1407,9 @@
   <data name="AccessRequestText" xml:space="preserve">
     <value>{0} quiere conectarse a su dispositivo {1}.</value>
   </data>
+  <data name="AccessRequestText2" xml:space="preserve">
+    <value>La persona que llama ha solicitado acceso a una de tus cosas. Seleccione cómo desea que la cosa responda a este tipo de solicitud.</value>
+  </data>
   <data name="ConcentratorServiceNotFound" xml:space="preserve">
     <value>No se encontró ningún servicio de concentrador.</value>
   </data>
@@ -1490,6 +1493,12 @@
   </data>
   <data name="BuyEDaler" xml:space="preserve">
     <value>Compra eDaler.</value>
+  </data>
+  <data name="Caller" xml:space="preserve">
+    <value>Llamador</value>
+  </data>
+  <data name="CallerAddress" xml:space="preserve">
+    <value>Dirección de la persona que llama</value>
   </data>
   <data name="CallerOnly" xml:space="preserve">
     <value>Solo persona que llama</value>
@@ -2296,7 +2305,7 @@
     <value>Repudiar cosa</value>
   </data>
   <data name="ContractCouldNotBeFound" xml:space="preserve">
-    <value>El contrato no se ha podido encontrar o se ha eliminado.</value>
+    <value>No se pudo encontrar el contrato, se podría haber eliminado. ¿Desea eliminar la referencia?</value>
   </data>
   <data name="PaymentDescription" xml:space="preserve">
     <value>Ingrese el monto a pagar al destinatario a continuación. Una vez hecho esto, puede elegir pagar en línea (si está conectado) o fuera de línea, haciendo clic en el botón correspondiente.</value>
@@ -2327,5 +2336,14 @@
   </data>
   <data name="ReadSensor" xml:space="preserve">
     <value>Sensor de lectura</value>
+  </data>
+  <data name="Range" xml:space="preserve">
+    <value>Gama</value>
+  </data>
+  <data name="RangeText" xml:space="preserve">
+    <value>Aplique esta regla a:</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Enviar</value>
   </data>
 </root>

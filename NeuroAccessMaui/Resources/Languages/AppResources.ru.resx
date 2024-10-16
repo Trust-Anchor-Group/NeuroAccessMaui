@@ -1407,6 +1407,9 @@
   <data name="AccessRequestText" xml:space="preserve">
     <value>{0} хочет подключиться к вашему устройству {1}.</value>
   </data>
+  <data name="AccessRequestText2" xml:space="preserve">
+    <value>Звонящий запросил доступ к одной из ваших вещей. Выберите, как бы вы хотели, чтобы вещь реагировала на данный тип запроса.</value>
+  </data>
   <data name="ConcentratorServiceNotFound" xml:space="preserve">
     <value>Обслуживание концентратора не найдено.</value>
   </data>
@@ -1490,6 +1493,12 @@
   </data>
   <data name="BuyEDaler" xml:space="preserve">
     <value>Купить eDaler.</value>
+  </data>
+  <data name="Caller" xml:space="preserve">
+    <value>Посетитель</value>
+  </data>
+  <data name="CallerAddress" xml:space="preserve">
+    <value>Адрес вызывающего абонента</value>
   </data>
   <data name="CallerOnly" xml:space="preserve">
     <value>Только вызывающий абонент</value>
@@ -2296,7 +2305,7 @@
     <value>Отречься от вещи</value>
   </data>
   <data name="ContractCouldNotBeFound" xml:space="preserve">
-    <value>Договор не удалось найти или он был удален.</value>
+    <value>Договор найти не удалось, его можно было удалить. Хотели бы вы удалить ссылку?</value>
   </data>
   <data name="PaymentDescription" xml:space="preserve">
     <value>Введите сумму для выплаты получателю ниже. После этого вы можете выбрать оплату онлайн (если подключено) или офлайн, нажав на соответствующую кнопку.</value>
@@ -2327,5 +2336,14 @@
   </data>
   <data name="ReadSensor" xml:space="preserve">
     <value>Датчик считывания</value>
+  </data>
+  <data name="Range" xml:space="preserve">
+    <value>Диапазон</value>
+  </data>
+  <data name="RangeText" xml:space="preserve">
+    <value>Примените это правило к:</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Отправить</value>
   </data>
 </root>

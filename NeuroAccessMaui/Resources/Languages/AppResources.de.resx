@@ -1407,6 +1407,9 @@
   <data name="AccessRequestText" xml:space="preserve">
     <value>{0} möchte {1} eine Verbindung zu Ihrem Gerät herstellen.</value>
   </data>
+  <data name="AccessRequestText2" xml:space="preserve">
+    <value>Ein Anrufer hat Zugang zu einem Ihrer Sachen angefordert. Wählen Sie aus, wie das Ding auf diese Art von Anfrage reagieren soll.</value>
+  </data>
   <data name="ConcentratorServiceNotFound" xml:space="preserve">
     <value>Kein Konzentrator-Service gefunden.</value>
   </data>
@@ -1490,6 +1493,12 @@
   </data>
   <data name="BuyEDaler" xml:space="preserve">
     <value>Kaufen Sie eDaler.</value>
+  </data>
+  <data name="Caller" xml:space="preserve">
+    <value>Anrufer</value>
+  </data>
+  <data name="CallerAddress" xml:space="preserve">
+    <value>Adresse des Anrufers</value>
   </data>
   <data name="CallerOnly" xml:space="preserve">
     <value>Nur Anrufer</value>
@@ -2296,7 +2305,7 @@
     <value>Sache verleugnen</value>
   </data>
   <data name="ContractCouldNotBeFound" xml:space="preserve">
-    <value>Der Vertrag konnte nicht gefunden werden oder wurde gelöscht.</value>
+    <value>Der Vertrag konnte nicht gefunden werden, er hätte gelöscht werden können. Möchten Sie den Verweis entfernen?</value>
   </data>
   <data name="PaymentDescription" xml:space="preserve">
     <value>Geben Sie unten den Betrag ein, der an den Empfänger gezahlt werden soll. Sobald Sie fertig sind, können Sie wählen, ob Sie entweder online (falls verbunden) oder offline bezahlen möchten, indem Sie auf die entsprechende Schaltfläche klicken.</value>
@@ -2327,5 +2336,14 @@
   </data>
   <data name="ReadSensor" xml:space="preserve">
     <value>Sensor auslesen</value>
+  </data>
+  <data name="Range" xml:space="preserve">
+    <value>Bereich</value>
+  </data>
+  <data name="RangeText" xml:space="preserve">
+    <value>Wenden Sie diese Regel auf Folgendes an:</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Senden</value>
   </data>
 </root>

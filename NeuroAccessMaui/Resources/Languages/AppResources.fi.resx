@@ -1407,6 +1407,9 @@
   <data name="AccessRequestText" xml:space="preserve">
     <value>{0} haluaa muodostaa yhteyden laitteeseesi {1}.</value>
   </data>
+  <data name="AccessRequestText2" xml:space="preserve">
+    <value>Soittaja on pyytänyt käyttöoikeutta johonkin sisältöösi. Valitse, miten haluat asian vastaavan tämäntyyppiseen pyyntöön.</value>
+  </data>
   <data name="ConcentratorServiceNotFound" xml:space="preserve">
     <value>Keskitinpalvelua ei löytynyt.</value>
   </data>
@@ -1490,6 +1493,12 @@
   </data>
   <data name="BuyEDaler" xml:space="preserve">
     <value>Osta eDaler.</value>
+  </data>
+  <data name="Caller" xml:space="preserve">
+    <value>Soittaja</value>
+  </data>
+  <data name="CallerAddress" xml:space="preserve">
+    <value>Soittajan osoite</value>
   </data>
   <data name="CallerOnly" xml:space="preserve">
     <value>Vain soittaja</value>
@@ -2296,7 +2305,7 @@
     <value>Hylkää asia</value>
   </data>
   <data name="ContractCouldNotBeFound" xml:space="preserve">
-    <value>Sopimusta ei löytynyt tai se on poistettu.</value>
+    <value>Sopimusta ei löytynyt, se olisi voitu poistaa. Haluatko poistaa viitteen?</value>
   </data>
   <data name="PaymentDescription" xml:space="preserve">
     <value>Kirjoita vastaanottajalle maksettava summa alle. Kun olet valmis, voit maksaa joko verkossa (jos yhdistetty) tai offline-tilassa napsauttamalla vastaavaa painiketta.</value>
@@ -2327,5 +2336,14 @@
   </data>
   <data name="ReadSensor" xml:space="preserve">
     <value>Lue anturi</value>
+  </data>
+  <data name="Range" xml:space="preserve">
+    <value>Etäisyys</value>
+  </data>
+  <data name="RangeText" xml:space="preserve">
+    <value>Käytä tätä sääntöä:</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Alistua</value>
   </data>
 </root>

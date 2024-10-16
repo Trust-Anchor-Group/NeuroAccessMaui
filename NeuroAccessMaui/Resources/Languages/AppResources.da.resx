@@ -1407,6 +1407,9 @@
   <data name="AccessRequestText" xml:space="preserve">
     <value>{0} vil oprette forbindelse til din enhed {1}.</value>
   </data>
+  <data name="AccessRequestText2" xml:space="preserve">
+    <value>En opkalder har anmodet om adgang til en af dine ting. Vælg, hvordan du ønsker, at tingen skal reagere på denne type anmodning.</value>
+  </data>
   <data name="ConcentratorServiceNotFound" xml:space="preserve">
     <value>Ingen koncentratortjeneste fundet.</value>
   </data>
@@ -1490,6 +1493,12 @@
   </data>
   <data name="BuyEDaler" xml:space="preserve">
     <value>Køb eDaler.</value>
+  </data>
+  <data name="Caller" xml:space="preserve">
+    <value>Opkalds</value>
+  </data>
+  <data name="CallerAddress" xml:space="preserve">
+    <value>Opkaldsadresse</value>
   </data>
   <data name="CallerOnly" xml:space="preserve">
     <value>Kun opkalder</value>
@@ -2296,7 +2305,7 @@
     <value>Fornægtelse af ting</value>
   </data>
   <data name="ContractCouldNotBeFound" xml:space="preserve">
-    <value>Kontrakten kunne ikke findes eller er blevet slettet.</value>
+    <value>Kontrakten kunne ikke findes, den kunne have været slettet. Vil du fjerne referencen?</value>
   </data>
   <data name="PaymentDescription" xml:space="preserve">
     <value>Indtast det beløb, der skal betales til modtageren nedenfor. Når du er færdig, kan du vælge enten at betale online (hvis du er tilsluttet) eller offline ved at klikke på den tilsvarende knap.</value>
@@ -2327,5 +2336,14 @@
   </data>
   <data name="ReadSensor" xml:space="preserve">
     <value>Læs sensor</value>
+  </data>
+  <data name="Range" xml:space="preserve">
+    <value>Interval</value>
+  </data>
+  <data name="RangeText" xml:space="preserve">
+    <value>Anvend denne regel på:</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Indsende</value>
   </data>
 </root>
