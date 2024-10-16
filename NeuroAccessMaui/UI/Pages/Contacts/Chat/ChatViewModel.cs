@@ -157,9 +157,9 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		{
 			if (this.scrollTo is Element)
 			{
-				await Task.Delay(100);  // TODO: Why is this necessary? ScrollToAsync does not scroll to end element without it...
+			//	await Task.Delay(100);  // TODO: Why is this necessary? ScrollToAsync does not scroll to end element without it...
 
-				await this.page.ScrollView.ScrollToAsync(this.page.Bottom, ScrollToPosition.End, false);
+			//	await this.page.ScrollView.ScrollToAsync(this.page.Bottom, ScrollToPosition.End, false);
 				this.scrollTo = null;
 			}
 		}
@@ -316,7 +316,12 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 				IView? View = await this.MessageAddedMainThread(Message, true);
 
 				if (View is Element)
-					await this.page.ScrollView.ScrollToAsync(this.page.Bottom, ScrollToPosition.End, true);
+				{
+       				await Task.Delay(25);
+					double x = this.page.ScrollView.ScrollX;
+					double y = this.page.ScrollView.ContentSize.Height;
+					await this.page.ScrollView.ScrollToAsync(x, y, true);	
+				}
 			});
 			return Task.CompletedTask;
 		}
