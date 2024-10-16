@@ -2296,7 +2296,7 @@
     <value>Disown Thing</value>
   </data>
   <data name="ContractCouldNotBeFound" xml:space="preserve">
-    <value>Contract could not be found or has been deleted.</value>
+    <value>Contract could not be found, it could have been deleted. Would you like to remove the reference?</value>
   </data>
   <data name="PaymentDescription" xml:space="preserve">
     <value>Enter the amount to pay to the recipient below. Once done, you can choose to either pay online (if connected) or offline, by clicking on the corresponding button.</value>

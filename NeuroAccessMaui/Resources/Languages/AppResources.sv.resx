@@ -2296,7 +2296,7 @@
     <value>Säg upp ägarskap</value>
   </data>
   <data name="ContractCouldNotBeFound" xml:space="preserve">
-    <value>Kontraktet kunde inte hittas eller blivit borttaget.</value>
+    <value>Kontraktet kunde inte hittas, det kan ha blivit borttaget. Skulle du vilja ta bort referensen?</value>
   </data>
   <data name="PaymentDescription" xml:space="preserve">
     <value>Ange belopped att betala till motagaren nedan. När du är klar, kan du välja att betala antingen online (om ansluten) eller offline, genom att klicka på motsvarande knapp.</value>
