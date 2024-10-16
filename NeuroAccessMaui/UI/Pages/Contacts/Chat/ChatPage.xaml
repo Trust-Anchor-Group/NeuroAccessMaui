@@ -46,7 +46,7 @@
 								IsVisible="{Binding IsRecordingAudio, Converter={StaticResource InvertedBoolConverter}}">
 							<Editor x:Name="EditorControl" HorizontalOptions="FillAndExpand" MinimumHeightRequest="40"
 									  IsEnabled="{Binding IsRecordingAudio, Converter={StaticResource InvertedBoolConverter}}"
-									  Text="{Binding MarkdownInput}" Keyboard="Chat" AutoSize="TextChanges"/>
+									  Text="{Binding MarkdownInput}" Keyboard="Chat" AutoSize="TextChanges" TextColor="{AppThemeBinding Light={StaticResource NormalEditForegroundLight}, Dark={StaticResource NormalEditForegroundDark}}"/>
 
 							<controls:ImageButton Grid.Column="1" Margin="{StaticResource SmallLeftMargins}"
 														 PathData="{x:Static ui:Geometries.CancelPath}" Style="{StaticResource ImageOnlyButton}"
