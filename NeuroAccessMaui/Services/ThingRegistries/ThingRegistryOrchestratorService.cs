@@ -45,8 +45,6 @@ namespace NeuroAccessMaui.Services.ThingRegistries
 				await ServiceRef.UiService.GoToAsync(nameof(ViewClaimThingPage), new ViewClaimThingNavigationArgs(Uri));
 			});
 
-			ServiceRef.TagProfile.HasThing = true;
-
 			return Task.CompletedTask;
 		}
 
@@ -87,8 +85,6 @@ namespace NeuroAccessMaui.Services.ThingRegistries
 								RegistryJid = RegistryJid,
 								SubscribeTo = null
 							};
-
-							ServiceRef.TagProfile.HasThing = true;
 
 							await ServiceRef.UiService.GoToAsync(nameof(ViewThingPage), new ViewThingNavigationArgs(ContactInfo,
 								MyThingsViewModel.GetNotificationEvents(ContactInfo) ?? []));
@@ -152,8 +148,6 @@ namespace NeuroAccessMaui.Services.ThingRegistries
 
 					await Database.Update(Info);
 				}
-
-				ServiceRef.TagProfile.HasThing = true;
 
 				ViewThingNavigationArgs Args = new(Info, MyThingsViewModel.GetNotificationEvents(Info) ?? []);
 
