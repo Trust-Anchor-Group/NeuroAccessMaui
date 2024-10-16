@@ -476,6 +476,11 @@
 		<Setter Property="Offset" Value="0,0" />
 	</Style>
 
+	<Style ApplyToDerivedTypes="False" TargetType="Frame">
+		<Setter Property="HasShadow" Value="False" />
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}" />
+	</Style>
+
 	<Style ApplyToDerivedTypes="True" TargetType="Frame" x:Key="FrameSet">
 		<Setter Property="HasShadow" Value="True" />
 		<Setter Property="Shadow.Radius" Value="8" />
