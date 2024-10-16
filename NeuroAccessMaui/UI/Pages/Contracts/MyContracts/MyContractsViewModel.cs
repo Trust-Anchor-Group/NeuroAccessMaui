@@ -177,12 +177,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 								}
 								catch (ItemNotFoundException)
 								{
-									await Database.FindDelete<ContractReference>(new FilterFieldEqualTo("ContractId", ContractId));
-									//TODO: LET user decidice if contract should be removed
-									await ServiceRef.UiService.DisplayAlert(
+									if(await ServiceRef.UiService.DisplayAlert(
 										ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ServiceRef.Localizer[nameof(AppResources.ContractCouldNotBeFound)],
-										ServiceRef.Localizer[nameof(AppResources.Ok)]);
-									await this.LoadContracts();
+										ServiceRef.Localizer[nameof(AppResources.Yes)],
+										ServiceRef.Localizer[nameof(AppResources.No)]))
+									{
+										await Database.FindDelete<ContractReference>(new FilterFieldEqualTo("ContractId", ContractId));
+										await this.LoadContracts();
+									}
 								}
 								catch (Exception ex)
 								{
