@@ -26,11 +26,18 @@
 <Grid RowDefinitions="*, auto" ColumnDefinitions="*">
         <ScrollView Grid.Row="0" >
             <VerticalStackLayout Padding="{StaticResource LargeMargins}" Spacing="{StaticResource MediumSpacing}">
-					<VerticalStackLayout BindableLayout.ItemsSource="{Binding Path=Contract.Parameters}"
-										 BindableLayout.ItemTemplateSelector="{StaticResource ParameterTemplateSelector}">
-					</VerticalStackLayout>
+					<!-- Parameters -->
+				<CollectionView
+						 ItemsSource="{Binding Path=Contract.Parameters}"
+						 ItemTemplate="{StaticResource ParameterTemplateSelector}"
+						 HorizontalOptions="Fill"
+						 VerticalOptions="Start" ItemSizingStrategy="MeasureAllItems">
+					<CollectionView.ItemsLayout>
+						<LinearItemsLayout Orientation="Vertical" ItemSpacing="{StaticResource LargeSpacing}" />
+					</CollectionView.ItemsLayout>
+				</CollectionView>
 
-                <controls:TemplatedButton VerticalOptions="Start" >
+				<controls:TemplatedButton VerticalOptions="Start" >
                     <Border Style="{StaticResource TransparentTemplateButtonBorder}"  Padding="{StaticResource SmallMargins}" Margin="0" VerticalOptions="Center">
                         <Grid ColumnDefinitions="auto,*,auto" >
                             <Border Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Center"  Style="{StaticResource FilledTemplateButtonBorder}">
