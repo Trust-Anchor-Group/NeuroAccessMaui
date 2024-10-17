@@ -30,20 +30,20 @@
 	       TargetType="Label"
 	       BasedOn="{StaticResource BoldItemTitleLabel}">
 		<Setter Property="HorizontalTextAlignment" Value="Start"/>
-		<Setter Property="VerticalTextAlignment" Value="Center"/>
+		<Setter Property="VerticalTextAlignment" Value="End"/>
 		<Setter Property="LineBreakMode" Value="WordWrap"/>
-		<Setter Property="VerticalOptions" Value="Center"/>
+		<Setter Property="VerticalOptions" Value="End"/>
 	</Style>
 
 	<DataTemplate x:Key="BooleanParameterTemplate" x:DataType="objectModel:ObservableBooleanParameter">
-		<HorizontalStackLayout>
-			<CheckBox 
-			          IsChecked="{Binding BooleanValue}"
-			          Margin="{StaticResource SmallRightMargins}"/>
-			<Label VerticalOptions="Center" VerticalTextAlignment="Center" LineBreakMode="WordWrap"
-			       Text="{Binding Label}" />
+			<Grid ColumnDefinitions="auto, *">
+			<CheckBox Grid.Column="0" 
+			         IsChecked="{Binding BooleanValue}"
+			         Margin="{StaticResource SmallRightMargins}" />
+			<Label Grid.Column="1" VerticalTextAlignment="Center" LineBreakMode="WordWrap"
+			      Text="{Binding Label}" />
 
-		</HorizontalStackLayout>
+		</Grid>
 	</DataTemplate>
 
 	<DataTemplate x:Key="DateParameterTemplate" x:DataType="objectModel:ObservableDateParameter">
@@ -60,25 +60,50 @@
 		</VerticalStackLayout>
 
 	</DataTemplate>
+
 	<DataTemplate x:Key="NumericalParameterTemplate" x:DataType="objectModel:ObservableNumericalParameter">
-		<VerticalStackLayout HorizontalOptions="Fill" VerticalOptions="Start">
-			<Label Text="{Binding Label}" VerticalOptions="Center" VerticalTextAlignment="Center"
-			       />
-			<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}"
-			                         EntryData="{Binding Value}" VerticalOptions="Start"/>
-		</VerticalStackLayout>
+		<ContentView>
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
+
+				<Label Text="{Binding Label}"
+               Grid.Row="0"
+               Margin="0"
+               Padding="0"
+					VerticalOptions="End"/>
+
+				<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}"
+                                 EntryData="{Binding Value}"
+                                 Grid.Row="1"
+                                 />
+			</Grid>
+		</ContentView>
 	</DataTemplate>
 
 	<DataTemplate x:Key="StringParameterTemplate" x:DataType="objectModel:ObservableStringParameter">
-		<VerticalStackLayout Margin="{StaticResource MediumBottomMargins}">
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+			</Grid.RowDefinitions>
+
 			<Label Text="{Binding Label}"
-			       Style="{StaticResource ParameterItemTitleLabel}"/>
+               Grid.Row="0"
+               />
+
 			<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}"
-			                         EntryData="{Binding Value}"
-			                         EntryHint="{Binding Guide}"/>
-		</VerticalStackLayout>
+                                 EntryData="{Binding Value}"
+                                 EntryHint="{Binding Guide}"
+                                 Grid.Row="1"
+                                 Margin="0"
+                                 Padding="0"/>
+		</Grid>
 	</DataTemplate>
-	
+
+
 	<DataTemplate x:Key="TimeParameterTemplate" x:DataType="objectModel:ObservableTimeParameter">
 		<StackLayout Orientation="Vertical" Style="{StaticResource ErrorStyle}">
 			<Label Text="{Binding Name}"
