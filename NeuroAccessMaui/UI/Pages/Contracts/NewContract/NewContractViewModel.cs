@@ -107,11 +107,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		#endregion
 
 		#region Methods
-
 		/// <inheritdoc/>
-		protected override async Task OnInitialize()
+		protected override async Task OnAppearing()
 		{
-			await base.OnInitialize();
+			await base.OnAppearing();
 
 			if (this.args is null || this.args?.Template is null)
 			{
@@ -126,6 +125,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 				string hrt = await this.Contract.Contract.ToMauiXaml(this.Contract.Contract.DeviceLanguage());
 				this.HumanReadableText = new VerticalStackLayout().LoadFromXaml(hrt);
+
+				Console.WriteLine("ViewModel");
+
 				await this.GoToState(NewContractStep.Overview);
 			}
 			catch (Exception ex)
@@ -145,14 +147,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 		/// <summary>
 		/// Navigates to the specified state.
+		/// Can only navigate when <see cref="CanStateChange"/> is true.
+		/// Otherwise it stalls until it can navigate.
 		/// </summary>
 		/// <param name="newStep">The new step to navigate to.</param>
 		private async Task GoToState(NewContractStep newStep)
 		{
 			if (this.StateObject is null)
-			{
 				return;
-			}
 
 			string newState = newStep.ToString();
 
@@ -173,19 +175,29 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// </summary>
 		private async Task ValidateParametersAsync()
 		{
+			if (this.Contract is null)
+				return;
+
 			ContractsClient client = ServiceRef.XmppService.ContractsClient;
 
-			// Populate the parameters
-			Variables v = new();
-			foreach (ObservableParameter p in this.Parameters)
+			try
 			{
-				p.Parameter.Populate(v);
-			}
+				// Populate the parameters
+				Variables v = new();
+				foreach (ObservableParameter p in this.Contract.Parameters)
+				{
+					p.Parameter.Populate(v);
+				}
 
-			foreach (ObservableParameter p in this.Parameters)
+				foreach (ObservableParameter p in this.Contract.Parameters)
+				{
+					p.IsValid = await p.Parameter.IsParameterValid(v, client);
+					p.ValidationText = p.Parameter.ErrorText;
+				}
+			}
+			catch (Exception ex)
 			{
-				p.IsValid = await p.Parameter.IsParameterValid(v, client);
-				p.ValidationText = p.Parameter.ErrorText;
+				ServiceRef.LogService.LogException(ex);
 			}
 		}
 
@@ -210,9 +222,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						break;
 				}
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				ServiceRef.LogService.LogException(e);
+				ServiceRef.LogService.LogException(ex);
 			}
 		}
 
@@ -227,6 +239,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 		#region Event Handlers
 
+		/// <summary>
+		/// Event handler for when a parameter changes.
+		/// Validates the parameter.
+		/// </summary>
 		private async void Parameter_PropertyChanged(object? sender, PropertyChangedEventArgs e)
 		{
 			await this.ValidateParametersAsync();
@@ -252,7 +268,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 				url.Append(Constants.UriSchemes.IotSc);
 				url.Append(':');
-				url.Append(this.template?.ContractId);
+				//	url.Append(this.template?.ContractId);
 
 				// TODO: Define and initialize 'parametersByName' if necessary
 				// foreach (KeyValuePair<CaseInsensitiveString, ParameterInfo> p in this.parametersByName)
@@ -292,7 +308,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		}
 
 		/// <inheritdoc/>
-		public Task<string> Title => ContractModel.GetName(this.template);
+		public Task<string> Title => ContractModel.GetName(this.Contract.Contract);
 
 		/// <inheritdoc/>
 		public bool HasMedia => false;
