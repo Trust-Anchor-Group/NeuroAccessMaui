@@ -46,18 +46,18 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		{
 			this.Category = await ContractModel.GetCategory(this.Contract) ?? string.Empty;
 
-			foreach (Parameter param in this.Contract.Parameters)
+			foreach (Parameter param in this.Contract.Parameters ?? Enumerable.Empty<Parameter>())
 			{
 				ObservableParameter observableParam = await ObservableParameter.CreateAsync(param, this.Contract);
 				this.Parameters.Add(observableParam);
 			}
 
-			foreach (Role role in this.Contract.Roles)
+			foreach (Role role in this.Contract.Roles ?? Enumerable.Empty<Role>())
 			{
 				this.Roles.Add(new ObservableRole(role));
 			}
 
-			foreach (Part part in this.Contract.Parts)
+			foreach (Part part in this.Contract.Parts ?? Enumerable.Empty<Part>())
 			{
 				this.Roles
 					.FirstOrDefault(r => r.Name == part.Role)?
