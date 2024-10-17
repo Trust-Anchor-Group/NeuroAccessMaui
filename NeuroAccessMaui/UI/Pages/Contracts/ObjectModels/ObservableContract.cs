@@ -8,30 +8,30 @@ using Waher.Networking.XMPP.Contracts;
 namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 {
 	/// <summary>
-	/// An observable object that wraps a <see cref="Waher.Networking.XMPP.Contracts.Contract"/> object.
+	/// An observable object that wraps a <see cref="Contract"/> object.
 	/// This allows for easier binding in the UI.
-	/// Either create instances with <see cref="CreateAsync"/> or initiailize with <see cref="InitializeAsync"/>
+	/// Either create instances with <see cref="CreateAsync"/> or initialize with <see cref="InitializeAsync"/>.
 	/// </summary>
 	public class ObservableContract : ObservableObject
 	{
+
 		#region Constructors and Destructor
+
 		private ObservableContract(Contract contract)
 		{
 			this.Contract = contract;
-			this.RegisterEventHandlers();
+			this.Parameters.CollectionChanged += this.Parameters_CollectionChanged;
+			this.Roles.CollectionChanged += this.Roles_CollectionChanged;
 		}
 
-	    ~ObservableContract()
-		{
-			this.UnregisterEventHandlers();
-		}
 		#endregion
 
 		#region Initialization
+
 		/// <summary>
 		/// Creates a new instance of <see cref="ObservableContract"/> and initializes the roles and parameters.
 		/// </summary>
-		/// <param name="contract">The Contract object to wrap</param>
+		/// <param name="contract">The Contract object to wrap.</param>
 		public static async Task<ObservableContract> CreateAsync(Contract contract)
 		{
 			ObservableContract contractWrapper = new(contract);
@@ -48,46 +48,27 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 			foreach (Parameter param in this.Contract.Parameters)
 			{
-				this.Parameters.Add(await ObservableParameter.CreateAsync(param, this.Contract));
+				ObservableParameter observableParam = await ObservableParameter.CreateAsync(param, this.Contract);
+				this.Parameters.Add(observableParam);
+			}
+
+			foreach (Role role in this.Contract.Roles)
+			{
+				this.Roles.Add(new ObservableRole(role));
+			}
+
+			foreach (Part part in this.Contract.Parts)
+			{
+				this.Roles
+					.FirstOrDefault(r => r.Name == part.Role)?
+					.AddPart(part);
 			}
 		}
-		#endregion
 
-		#region Event Handlers Registration/Unregistration
-		private void RegisterEventHandlers()
-		{
-			foreach (ObservableParameter param in this.Parameters)
-			{
-				param.PropertyChanged += this.Parameter_OnPropertyChanged;
-			}
-
-			foreach (ObservableRole role in this.Roles)
-			{
-				role.PropertyChanged += this.Role_OnPropertyChanged;
-			}
-
-			this.Parameters.CollectionChanged += this.Parameters_CollectionChanged;
-			this.Roles.CollectionChanged += this.Roles_CollectionChanged;
-		}
-
-		private void UnregisterEventHandlers()
-		{
-			foreach (ObservableParameter param in this.Parameters)
-			{
-				param.PropertyChanged -= this.Parameter_OnPropertyChanged;
-			}
-
-			foreach (ObservableRole role in this.Roles)
-			{
-				role.PropertyChanged -= this.Role_OnPropertyChanged;
-			}
-
-			this.Parameters.CollectionChanged -= this.Parameters_CollectionChanged;
-			this.Roles.CollectionChanged -= this.Roles_CollectionChanged;
-		}
 		#endregion
 
 		#region Collection Changed Handlers
+
 		private void Parameters_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
 		{
 			if (e.Action == NotifyCollectionChangedAction.Add && e.NewItems != null)
@@ -123,74 +104,61 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				}
 			}
 		}
+
 		#endregion
 
-		#region Property Change Handlers
+		#region Property Changed Handlers
+
+		/// <summary>
+		/// Occurs when a property value of any parameter changes.
+		/// </summary>
 		public event PropertyChangedEventHandler? ParameterChanged;
+
 		private void Parameter_OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
 		{
 			this.ParameterChanged?.Invoke(sender, e);
 		}
 
+		/// <summary>
+		/// Occurs when a property value of any role changes.
+		/// </summary>
 		public event PropertyChangedEventHandler? RoleChanged;
+
 		private void Role_OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
 		{
 			this.RoleChanged?.Invoke(sender, e);
 		}
 
-		protected override void OnPropertyChanging(System.ComponentModel.PropertyChangingEventArgs e)
-		{
-			if (e.PropertyName == nameof(this.Parameters) || e.PropertyName == nameof(this.Roles))
-			{
-				this.UnregisterEventHandlers();
-			}
-		}
-
-		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
-		{
-			if (e.PropertyName == nameof(this.Parameters) || e.PropertyName == nameof(this.Roles))
-			{
-				this.RegisterEventHandlers();
-			}
-			base.OnPropertyChanged(e);
-		}
 		#endregion
 
 		#region Properties
+
 		/// <summary>
-		/// The wrapped contract object
+		/// The wrapped contract object.
 		/// </summary>
 		public Contract Contract { get; }
 
 		/// <summary>
-		/// The Parameters of the contract
+		/// The parameters of the contract.
 		/// </summary>
-		private ObservableCollection<ObservableParameter> parameters = new();
-		public ObservableCollection<ObservableParameter> Parameters
-		{
-			get => this.parameters;
-			private set => this.SetProperty(ref this.parameters, value);
-		}
+		public ObservableCollection<ObservableParameter> Parameters => this.parameters;
+		private readonly ObservableCollection<ObservableParameter> parameters = [];
 
 		/// <summary>
-		/// The Roles of the contract
+		/// The roles of the contract.
 		/// </summary>
-		private ObservableCollection<ObservableRole> roles = new();
-		public ObservableCollection<ObservableRole> Roles
-		{
-			get => this.roles;
-			private set => this.SetProperty(ref this.roles, value);
-		}
+		public ObservableCollection<ObservableRole> Roles => this.roles;
+		private readonly ObservableCollection<ObservableRole> roles = [];
 
 		/// <summary>
-		/// The Category of the contract
+		/// The category of the contract.
 		/// </summary>
-		private string category = string.Empty;
 		public string Category
 		{
 			get => this.category;
 			private set => this.SetProperty(ref this.category, value);
 		}
+		private string category = string.Empty;
 
 		/// <summary>
 		/// The contract state.
@@ -206,6 +174,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// Whether the contract is a template.
 		/// </summary>
 		public bool IsTemplate => this.Contract.PartsMode == ContractParts.TemplateOnly;
+
 		#endregion
 	}
 }
