@@ -81,7 +81,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 
 			// Contracts
 			Routing.RegisterRoute(nameof(MyContractsPage), typeof(MyContractsPage));
-			Routing.RegisterRoute(nameof(NewContractPage), typeof(NewContractPage2));
+			Routing.RegisterRoute(nameof(NewContractPage), typeof(NewContractPage));
 			Routing.RegisterRoute(nameof(ViewContractPage), typeof(ViewContractPage));
 
 			// Identity

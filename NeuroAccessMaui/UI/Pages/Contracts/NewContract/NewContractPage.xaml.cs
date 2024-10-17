@@ -1,4 +1,6 @@
-﻿using NeuroAccessMaui.Services;
+﻿using CommunityToolkit.Maui.Layouts;
+using CommunityToolkit.Mvvm.Messaging;
+using NeuroAccessMaui.Services;
 using Waher.Persistence;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
@@ -6,25 +8,35 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 	/// <summary>
 	/// A page that allows the user to create a new contract.
 	/// </summary>
-	[XamlCompilation(XamlCompilationOptions.Skip)]
+	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class NewContractPage : IContractOptionsPage
 	{
 
-		public ScrollView? ScrollView;
 		/// <summary>
 		/// Creates a new instance of the <see cref="NewContractPage"/> class.
 		/// </summary>
-		public NewContractPage()
+		public NewContractPage(BaseViewModel ViewModel)
 		{
+			this.BindingContext = ViewModel;
 			this.InitializeComponent();
-			this.ContentPageModel = new NewContractViewModel(this, ServiceRef.UiService.PopLatestArgs<NewContractNavigationArgs>());
-			this.ScrollView = this.MainScrollView;
 
-			Unloaded += (object? sender, EventArgs e) =>
+			if (this.BindingContext is NewContractViewModel VM)
 			{
-				(this.ContentPageModel as IDisposable)?.Dispose();
-			};
+				VM.StateObject.SetBinding(;
+			}
+			else
+			{
+				ServiceRef.LogService.LogAlert("NewContractPage,ViewModel is not of type NewContractViewModel. Cannot set StateObject.");
+			}
+
+			StateContainer.SetCurrentState(this.StateGrid, NewContractStep.Loading.ToString());
+
+			WeakReferenceMessenger.Default.Register<ContractOptionsMessage>(this, async (sender, message) =>
+			{
+				await this.ShowContractOptions(message.Options);
+			});
 		}
+
 
 		/// <summary>
 		/// Method called (from main thread) when contract options are made available.

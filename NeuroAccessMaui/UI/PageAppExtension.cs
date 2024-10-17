@@ -76,7 +76,6 @@ namespace NeuroAccessMaui.UI
 			// Contracts
 			Builder.Services.AddTransient<MyContractsPage, MyContractsViewModel>();
 			Builder.Services.AddTransient<NewContractPage, NewContractViewModel>();
-			Builder.Services.AddTransient<NewContractPage2, NewContractViewModel2>();
 			Builder.Services.AddTransient<ViewContractPage, ViewContractViewModel>();
 
 			// Identity

@@ -2,7 +2,7 @@
 
 <views:BaseNewContractView x:Name="ThisPage"
                            x:Class="NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views.ParametersView"
-                           x:DataType="base:NewContractViewModel2"
+                           x:DataType="base:NewContractViewModel"
                            xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                            xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views"
