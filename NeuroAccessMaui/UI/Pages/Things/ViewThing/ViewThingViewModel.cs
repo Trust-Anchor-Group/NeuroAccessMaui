@@ -113,6 +113,15 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 				await this.CheckCapabilities();
 		}
 
+		protected override Task XmppService_ConnectionStateChanged(object? _, XmppState NewState)
+		{
+			base.XmppService_ConnectionStateChanged(_, NewState);
+
+			MainThread.BeginInvokeOnMainThread(async () => await this.CalcThingIsOnline());
+
+			return Task.CompletedTask;
+		}
+
 		private async Task CheckCapabilities()
 		{
 			if (this.InContacts &&
@@ -353,12 +362,14 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 		/// Gets or sets whether the thing is a sensor
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ReadSensorCommand))]
 		private bool isSensor;
 
 		/// <summary>
 		/// Gets or sets whether the thing is an actuator
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ControlActuatorCommand))]
 		private bool isActuator;
 
 		/// <summary>
@@ -760,6 +771,8 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 			{
 				try
 				{
+					await this.CalcThingIsOnline();
+
 					switch (e.Event.Type)
 					{
 						case NotificationEventType.Contacts:
