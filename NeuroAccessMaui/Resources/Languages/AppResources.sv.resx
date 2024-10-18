@@ -2346,4 +2346,49 @@
   <data name="Submit" xml:space="preserve">
     <value>Skicka in</value>
   </data>
+  <data name="InformationAboutCallerText" xml:space="preserve">
+    <value>Följande information finns tillgänglig om anroparen:</value>
+  </data>
+  <data name="FriendlyName" xml:space="preserve">
+    <value>Vänligt namn</value>
+  </data>
+  <data name="ReadoutRequestText2" xml:space="preserve">
+    <value>En förfrågan om att läsa sensordata från en av dina saker har mottagits. Välj hur du vill att saken ska svara på denna typ av förfrågan.</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>Alla</value>
+  </data>
+  <data name="ComputedValues" xml:space="preserve">
+    <value>Beräknade värden</value>
+  </data>
+  <data name="FieldTypes" xml:space="preserve">
+    <value>Fälttyper</value>
+  </data>
+  <data name="HistoricalValues" xml:space="preserve">
+    <value>Historiska värden</value>
+  </data>
+  <data name="IdentityValues" xml:space="preserve">
+    <value>Identitetsvärden</value>
+  </data>
+  <data name="MomentaryValues" xml:space="preserve">
+    <value>Momentana värden</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>Inga</value>
+  </data>
+  <data name="PeakValues" xml:space="preserve">
+    <value>Extremvärden</value>
+  </data>
+  <data name="PermitFieldTypesText" xml:space="preserve">
+    <value>Välj vilka typer av fält (övergripande kategorier) som åtkomst ska beviljas till, om förfrågan accepteras.</value>
+  </data>
+  <data name="StatusValues" xml:space="preserve">
+    <value>Statusvärden</value>
+  </data>
+  <data name="Fields" xml:space="preserve">
+    <value>Fält</value>
+  </data>
+  <data name="PermitFieldsText" xml:space="preserve">
+    <value>Välj vilka fält som åtkomst ska beviljas till, om förfrågan accepteras.</value>
+  </data>
 </root>

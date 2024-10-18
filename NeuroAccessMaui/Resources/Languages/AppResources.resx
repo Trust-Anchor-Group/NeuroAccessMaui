@@ -2346,4 +2346,49 @@
   <data name="Submit" xml:space="preserve">
     <value>Submit</value>
   </data>
+  <data name="InformationAboutCallerText" xml:space="preserve">
+    <value>The following information is available about the caller:</value>
+  </data>
+  <data name="FriendlyName" xml:space="preserve">
+    <value>Friendly Name</value>
+  </data>
+  <data name="ReadoutRequestText2" xml:space="preserve">
+    <value>A caller has requested sensor data from one of your things. Select how you wish the thing should respond to this type of request.</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="ComputedValues" xml:space="preserve">
+    <value>Computed Values</value>
+  </data>
+  <data name="FieldTypes" xml:space="preserve">
+    <value>Field Types</value>
+  </data>
+  <data name="HistoricalValues" xml:space="preserve">
+    <value>Historical Values</value>
+  </data>
+  <data name="IdentityValues" xml:space="preserve">
+    <value>Identity Values</value>
+  </data>
+  <data name="MomentaryValues" xml:space="preserve">
+    <value>Momentary Values</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="PeakValues" xml:space="preserve">
+    <value>Peak Values</value>
+  </data>
+  <data name="PermitFieldTypesText" xml:space="preserve">
+    <value>Choose the field types (broad categories) to permit access to, if request is accepted.</value>
+  </data>
+  <data name="StatusValues" xml:space="preserve">
+    <value>Status Values</value>
+  </data>
+  <data name="Fields" xml:space="preserve">
+    <value>Fields</value>
+  </data>
+  <data name="PermitFieldsText" xml:space="preserve">
+    <value>Choose the fields to permit access to, if request is accepted.</value>
+  </data>
 </root>
