@@ -148,7 +148,7 @@
 					   HorizontalOptions="Start"/>
 						<Picker SelectedIndex="{Binding SelectedRuleRangeIndex}" ItemsSource="{Binding RuleRanges}"
 						Margin="{StaticResource SmallBottomMargins}"
-						BackgroundColor="{AppThemeBinding Dark={StaticResource PageBackgroundColorDarkTheme}, Default={StaticResource PageBackgroundColor}}"/>
+						BackgroundColor="{AppThemeBinding Dark={StaticResource PrimaryBackgroundDark}, Light={StaticResource PrimaryBackgroundLight}}"/>
 						<!-- BUTTONS -->
 						<Label Text="{l:Localize Options}" Margin="{StaticResource SmallTopMargins}"
 					   VerticalOptions="Start"/>
