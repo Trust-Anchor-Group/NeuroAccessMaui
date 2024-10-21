@@ -28,7 +28,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		{
 			try
 			{
-				this.Description = await contract.ToPlainText(this.Parameter.Descriptions, contract.DeviceLanguage());
+				string UntrimmedDescription = await contract.ToPlainText(this.Parameter.Descriptions, contract.DeviceLanguage());
+				this.Description = UntrimmedDescription.Trim();
 			}
 			catch (Exception e)
 			{
@@ -117,7 +118,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			get => this.isValid;
 			set => this.SetProperty(ref this.isValid, value);
 		}
-		private bool isValid;
+		private bool isValid = true;
 
 		/// <summary>
 		/// Validation error text
@@ -195,12 +196,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 	{
 		public ObservableNumericalParameter(NumericalParameter parameter) : base(parameter)
 		{
-			this.Value = parameter.ObjectValue is decimal decimalValue ? decimalValue : 0;
+			this.Value = parameter.ObjectValue is decimal decimalValue ? decimalValue : null;
 		}
 
-		public decimal DecimalValue
+		public decimal? DecimalValue
 		{
-			get => this.Value as decimal? ?? 0;
+			get => this.Value as decimal?;
 			set => this.Value = value;
 		}
 	}
