@@ -36,7 +36,6 @@
 		<Setter Property="VerticalTextAlignment" Value="End"/>
 		<Setter Property="FontSize" Value="14"/>
 		<Setter Property="LineBreakMode" Value="WordWrap"/>
-		<Setter Property="MaxLines" Value="5"/>
 	</Style>
 
 	<!-- Refactored DataTemplates -->
@@ -136,11 +135,12 @@
 
 	<!-- DefaultParameterTemplate -->
 	<DataTemplate x:Key="DefaultParameterTemplate" x:DataType="objectModel:ObservableParameter">
-		<Grid>
-			<Label Text="{Binding Name}"
+		<Grid RowDefinitions="Auto, Auto">
+			<Label Text="{Binding Name}" Grid.Row="0"
                    Style="{StaticResource ParameterItemTitleLabel}"
                    VerticalOptions="Center"
                    VerticalTextAlignment="Center" />
+			<Label Text="{Binding Value}" Grid.Row="1"></Label>
 		</Grid>
 	</DataTemplate>
 </ResourceDictionary>
