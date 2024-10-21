@@ -136,7 +136,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		private object? value;
 		public object? Value
 		{
-			get => this.value;
+			get => this.Parameter.StringValue;
 			set
 			{
 				if (this.SetProperty(ref this.value, value))
