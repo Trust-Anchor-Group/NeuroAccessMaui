@@ -1,4 +1,6 @@
-﻿namespace NeuroAccessMaui.UI.Pages.Main
+﻿using NeuroAccessMaui.Services;
+
+namespace NeuroAccessMaui.UI.Pages.Main
 {
 	public partial class MainPage
 	{

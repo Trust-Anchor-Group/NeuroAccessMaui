@@ -47,6 +47,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 		protected override async Task OnAppearing()
 		{
 			await base.OnAppearing();
+			this.SelectedThing = null;
 
 			if (this.result is not null && this.result.Task.IsCompleted)
 				await this.GoBack();

@@ -53,6 +53,8 @@ namespace NeuroAccessMaui.Links
 				return false;
 			}
 
+			ServiceRef.TagProfile.HasThing = true;
+
 			return true;
 		}
 	}

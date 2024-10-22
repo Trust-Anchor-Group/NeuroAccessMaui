@@ -5,7 +5,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 	/// <summary>
 	/// A page that displays a list of the current user's contacts.
 	/// </summary>
-	[XamlCompilation(XamlCompilationOptions.Compile)]
+	[XamlCompilation(XamlCompilationOptions.Skip)]
 	public partial class ChatPage
 	{
 		/// <inheritdoc/>

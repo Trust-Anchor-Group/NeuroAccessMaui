@@ -2,13 +2,16 @@
 using CommunityToolkit.Mvvm.Input;
 using EDaler;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Applications.Applications;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Main.Settings;
+using NeuroAccessMaui.UI.Pages.Things.MyThings;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet;
+using Waher.Persistence;
 
 namespace NeuroAccessMaui.UI.Pages.Main
 {
@@ -82,6 +85,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			this.CanShowCreateTokenCommand = ServiceRef.TagProfile.HasContractTokenCreationTemplatesReferences;
 			this.CanShowContactsCommand = ServiceRef.XmppService.Roster is not null && ServiceRef.XmppService.Roster.Length > 0;
 			this.CanShowWalletCommand = ServiceRef.TagProfile.HasWallet;
+			this.CanShowThingsCommand = ServiceRef.TagProfile.HasThing;
 		}
 
 		/// <summary>
@@ -110,7 +114,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		{
 			try
 			{
-				if(await App.AuthenticateUser(AuthenticationPurpose.ViewId))
+				if (await App.AuthenticateUser(AuthenticationPurpose.ViewId))
 					await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage));
 			}
 			catch (Exception ex)
@@ -254,6 +258,22 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			{
 				ServiceRef.LogService.LogException(ex);
 				await ServiceRef.UiService.DisplayException(ex);
+			}
+		}
+
+		[ObservableProperty]
+		private bool canShowThingsCommand;
+
+		[RelayCommand]
+		private static async Task ShowThings()
+		{
+			try
+			{
+				await ServiceRef.UiService.GoToAsync(nameof(MyThingsPage));
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
 			}
 		}
 	}

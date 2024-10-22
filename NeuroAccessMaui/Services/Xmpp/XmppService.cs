@@ -3133,7 +3133,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		public async Task<Contract> DeleteContract(CaseInsensitiveString ContractId)
 		{
 			Contract Contract = await this.ContractsClient.DeleteContractAsync(ContractId);
-			await UpdateContractReference(Contract);
+			await Database.FindDelete<ContractReference>(new FilterFieldEqualTo("ContractId", Contract.ContractId));
 			return Contract;
 		}
 

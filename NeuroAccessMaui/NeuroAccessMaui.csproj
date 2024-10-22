@@ -21,8 +21,8 @@
 		<ApplicationIdGuid>2a4dd0f3-35d6-48a3-a76d-1fa94e567eee</ApplicationIdGuid>
 
 		<!-- Versions -->
-		<ApplicationDisplayVersion>2.2.0</ApplicationDisplayVersion>
-		<ApplicationVersion>93</ApplicationVersion>
+		<ApplicationDisplayVersion>2.2.2</ApplicationDisplayVersion>
+		<ApplicationVersion>106</ApplicationVersion>
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">13.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">13.1</SupportedOSPlatformVersion>
@@ -48,7 +48,7 @@
 		<CodesignProvision>Neuro-Access Development Profile</CodesignProvision>
 		<PublishTrimmed>True</PublishTrimmed>
 
-		<UseInterpreter>False</UseInterpreter>
+		<UseInterpreter>True</UseInterpreter>
 		<MtouchLink>SdkOnly</MtouchLink>
 	</PropertyGroup>
 
