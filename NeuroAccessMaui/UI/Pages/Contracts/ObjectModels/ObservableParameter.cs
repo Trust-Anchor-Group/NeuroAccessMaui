@@ -9,7 +9,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 {
 	/// <summary>
 	/// An observable object that wraps a <see cref="Waher.Networking.XMPP.Contracts.Parameter"/> object.
-	/// This allows for easier binding in the UI.
+	/// This allows for easier binding in the UI. Must be instantiated with <see cref="CreateAsync"/>.
 	/// </summary>
 	public class ObservableParameter : ObservableObject
 	{
@@ -35,13 +35,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			{
 				ServiceRef.LogService.LogException(e);
 			}
+			Console.WriteLine(this.Parameter.GetType().Name);
 		}
 
 		/// <summary>
 		///  Creates a new instance of <see cref="ObservableParameter"/> based on the type of the parameter.
 		/// </summary>
-		/// <param name="parameter">The parameter to wrap</param>
-		/// <param name="contract">The contract that</param>
+		/// <param name="parameter">The parameter object to wrap</param>
+		/// <param name="contract">The contract of which the parameter is part of</param>
 		/// <returns></returns>
 		public static async Task<ObservableParameter> CreateAsync(Parameter parameter, Contract contract)
 		{
@@ -53,6 +54,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				StringParameter stringParameter => new ObservableStringParameter(stringParameter),
 				TimeParameter timeParameter => new ObservableTimeParameter(timeParameter),
 				DurationParameter durationParameter => new ObservableDurationParameter(durationParameter),
+				RoleParameter roleParameter => new ObservableRoleParameter(roleParameter),
+				CalcParameter calcParameter => new ObservableCalcParameter(calcParameter),
 				_ => new ObservableParameter(parameter)
 			};
 
@@ -247,5 +250,33 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			set => this.Value = value;
 		}
 	}
-	#endregion
+
+	public class ObservableRoleParameter : ObservableParameter
+	{
+		public ObservableRoleParameter(RoleParameter parameter) : base(parameter)
+		{
+			this.Value = parameter.ObjectValue as string ?? string.Empty;
+		}
+
+		public string RoleValue
+		{
+			get => this.Value as string ?? string.Empty;
+			set => this.Value = value;
+		}
+	}
+
+	public class ObservableCalcParameter : ObservableParameter
+	{
+		public ObservableCalcParameter(CalcParameter parameter) : base(parameter)
+		{
+			this.Value = parameter.ObjectValue as decimal? ?? null;
+		}
+
+		public decimal? CalcValue
+		{
+			get => this.Value as decimal?;
+			set => this.Value = value;
+		}
+	}
 }
+#endregion
