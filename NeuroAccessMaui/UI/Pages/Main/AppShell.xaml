@@ -43,6 +43,10 @@
 				 Shell.FlyoutItemIsVisible="{Binding CanShowWalletCommand, Mode=TwoWay}"
 				 IconImageSource="{AppThemeBinding Light=money_light, Dark=money_dark}"/>
 
+	<MenuItem Text="{l:Localize Things}" Command="{Binding ShowThingsCommand}" StyleId="MenuItemLabel"
+				 Shell.FlyoutItemIsVisible="{Binding CanShowThingsCommand, Mode=TwoWay}"
+				 IconImageSource="{AppThemeBinding Light=thing_light, Dark=thing_dark}"/>
+
 	<MenuItem Text="{l:Localize Applications}" Command="{Binding ShowApplicationsCommand}" StyleId="MenuItemLabel"
 				 IconImageSource="{AppThemeBinding Light=neuro_access_light, Dark=neuro_access_dark}"/>
 

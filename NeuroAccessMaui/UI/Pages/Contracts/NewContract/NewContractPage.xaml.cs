@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Maui.Layouts;
+using CommunityToolkit.Maui.Layouts;
 using NeuroAccessMaui.Services;
 using Waher.Persistence;
 
