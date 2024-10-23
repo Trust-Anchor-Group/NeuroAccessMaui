@@ -470,15 +470,21 @@
 	</Style>
 
 	<Style ApplyToDerivedTypes="True" TargetType="Shadow">
-		<Setter Property="Radius" Value="16" />
+		<Setter Property="Radius" Value="8" />
 		<Setter Property="Opacity" Value="0.8" />
 		<Setter Property="Brush" Value="{AppThemeBinding Light={StaticResource PrimaryBackgroundDark}, Dark={StaticResource PrimaryBackgroundLight}}" />
 		<Setter Property="Offset" Value="0,0" />
 	</Style>
 
+	<Style ApplyToDerivedTypes="False" TargetType="Frame">
+		<Setter Property="HasShadow" Value="False" />
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}" />
+	</Style>
+
 	<Style ApplyToDerivedTypes="True" TargetType="Frame" x:Key="FrameSet">
 		<Setter Property="HasShadow" Value="True" />
 		<Setter Property="Shadow.Radius" Value="8" />
+		<Setter Property="Shadow.Opacity" Value="0.8" />
 		<Setter Property="Shadow.Brush" Value="{AppThemeBinding Light={StaticResource PrimaryBackgroundDark}, Dark={StaticResource PrimaryBackgroundLight}}" />
 		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SecondaryBackgroundLight}, Dark={StaticResource SecondaryBackgroundDark}}" />
 		<Setter Property="CornerRadius" Value="8" />

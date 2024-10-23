@@ -29,6 +29,7 @@ namespace NeuroAccessMaui.Services.UI.QR
 			{
 				AllowedSchemas.Add(Constants.UriSchemes.IotId);
 				AllowedSchemas.Add(Constants.UriSchemes.IotSc);
+				AllowedSchemas.Add(Constants.UriSchemes.IotDisco);
 
 				// TODO:
 				// AllowedSchemas.Add(Constants.UriSchemes.IotDisco);
@@ -267,8 +268,8 @@ namespace NeuroAccessMaui.Services.UI.QR
 		private static readonly SKColor fgLight = SKColors.White;
 		private static readonly SKColor bgLight = SKColors.Black;
 
-		private static readonly SKColor fgDark = SKColors.LightGray;		// NOTE: You cannot switch light and dark areas; many QR decoders will
-		private static readonly SKColor bgDark = SKColors.Black;				//       fail to decode such codes. You can make it less bright however.
+		private static readonly SKColor fgDark = SKColors.LightGray;      // NOTE: You cannot switch light and dark areas; many QR decoders will
+		private static readonly SKColor bgDark = SKColors.Black;          //       fail to decode such codes. You can make it less bright however.
 
 		private static readonly CustomColoring userCodeLight = new(userPath,
 			256, 256, SKColors.Red, fgLight, bgLight, fgLight,
