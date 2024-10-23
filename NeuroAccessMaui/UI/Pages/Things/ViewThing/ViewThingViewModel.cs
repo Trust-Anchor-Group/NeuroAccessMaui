@@ -196,12 +196,16 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 			else
 			{
 				this.IsThingOnline = this.IsOnline(this.thing.BareJid);
-
 				if (this.IsThingOnline)
 					await this.CheckCapabilities();
 			}
 		}
 
+		async partial void OnInContactsChanged(bool value)
+		{
+			Console.WriteLine("INCONTACTS CAHGNED");
+			await this.CheckCapabilities();
+		}
 		private bool IsOnline(string BareJid)
 		{
 			if (this.presences.TryGetValue(BareJid, out PresenceEventArgs? e))
@@ -221,7 +225,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 			else
 			{
 				if (this.presences.TryGetValue(this.thing.BareJid, out PresenceEventArgs? e))
-					return (e?.IsOnline == false) ? e.From : null;
+					return (e?.IsOnline == true) ? e.From : null;
 
 				RosterItem? Item = ServiceRef.XmppService.GetRosterItem(this.thing.BareJid);
 
@@ -317,24 +321,30 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 		/// If the device is in the contact list, but the user is not the owner.
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(RemoveFromListCommand))]
+		[NotifyCanExecuteChangedFor(nameof(AddToListCommand))]
 		private bool inContactsAndNotOwner;
 
 		/// <summary>
 		/// If the user is the owner, and the app is connected.
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(DeleteRulesCommand))]
+		[NotifyCanExecuteChangedFor(nameof(DisownThingCommand))]
 		private bool isConnectedAndOwner;
 
 		/// <summary>
 		/// If the app is connected, and the device is a sensor.
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ReadSensorCommand))]
 		private bool isConnectedAndSensor;
 
 		/// <summary>
 		/// If the app is connected, and the device is an actuator.
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ControlActuatorCommand))]
 		private bool isConnectedAndActuator;
 
 		/// <summary>
@@ -593,19 +603,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 					if (ServiceRef.XmppService.GetRosterItem(this.thing.BareJid) is not null)
 						ServiceRef.XmppService.RemoveRosterItem(this.thing.BareJid);
 
-					MainThread.BeginInvokeOnMainThread(() =>
-					{
-						this.thing.ObjectId = null;
-						this.thing.IsActuator = null;
-						this.thing.IsSensor = null;
-						this.thing.IsConcentrator = null;
-
-						this.IsConcentrator = false;
-						this.IsSensor = false;
-						this.IsActuator = false;
-
-						this.InContacts = false;
-					});
+					await this.GoBack();
 				}
 			}
 			catch (Exception ex)
