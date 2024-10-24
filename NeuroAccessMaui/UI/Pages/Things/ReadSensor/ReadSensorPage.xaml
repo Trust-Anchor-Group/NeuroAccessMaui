@@ -55,7 +55,10 @@
 		</DataTemplate>
 
 		<DataTemplate x:Key="GraphModelTemplate" x:DataType="model:GraphModel">
-			<Image Source="{Binding Image}" IsVisible="{Binding HasImage}"/>
+			<!-- workaround to make the images display on IOS, without a fixed height the layouts does not update properly -->
+			<VerticalStackLayout HeightRequest="200">
+				<Image Source="{Binding Image}" IsVisible="{Binding HasImage}" />
+			</VerticalStackLayout>
 		</DataTemplate>
 
 		<viewmodel:SensorDataTemplateSelector x:Key="ItemStyleSelector"
@@ -70,7 +73,7 @@
 
 		<controls:Background/>
 
-		<Grid RowDefinitions="auto, *" Margin="{StaticResource MediumMargins}">
+		<Grid RowDefinitions="auto, *" Margin="{StaticResource MediumMargins}"> 
 			<controls:ImageButton Grid.Row="0" Grid.Column="0" HorizontalOptions="Start" Command="{Binding GoBackCommand}"
 											 Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
@@ -80,7 +83,7 @@
 					<Label Grid.Row="0"  Text="{l:Localize SensorDataText}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"/>
 					<Label Grid.Row="1" Text="{Binding Path=Status}" Style="{StaticResource InfoLabel}" VerticalOptions="Center" IsVisible="{Binding Path=HasStatus}"/>
 					<Frame Style="{StaticResource FrameSubSet}" Grid.Row="2">
-					<CollectionView x:Name="SensorDataCollection"
+					<CollectionView x:Name="SensorData"
 											 ItemsSource="{Binding SensorData}"
 											 ItemTemplate="{StaticResource ItemStyleSelector}"
 											 ItemSizingStrategy="MeasureAllItems"
