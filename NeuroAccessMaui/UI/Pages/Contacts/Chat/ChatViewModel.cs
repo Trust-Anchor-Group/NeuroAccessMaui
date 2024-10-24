@@ -328,6 +328,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 
 		private async Task<IView?> MessageAddedMainThread(ChatMessage Message, bool Historic)
 		{
+			this.HasMessages = true;
 
 			TaskCompletionSource<IView?> Result = new();
 
@@ -500,7 +501,6 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			int c = Constants.BatchSizes.MessageBatchSize;
 			DateTime LastTime;
 			ChatMessage[] A;
-			Console.WriteLine("LoadMessagesAsync START");
 
 			try
 			{
@@ -535,12 +535,10 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 				try
 				{
 					IView? Last = null;
-					Console.WriteLine("LoadMessagesAsync MAIN THREAD: " + MainThread.IsMainThread);
 
 					int i = 0;
 					foreach (ChatMessage Message in A)
 					{
-						Console.WriteLine("LoadMessagesAsync Message: " + i++);
 						Last = await this.MessageAddedMainThread(Message, true);
 					}
 					this.ExistsMoreMessages = c <= 0;
@@ -552,9 +550,11 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 					Result.TrySetException(ex);
 				}
 			});
-			Console.WriteLine("LoadMessagesAsync DONE");
 			return await Result.Task;
 		}
+
+		[ObservableProperty]
+		private bool hasMessages = false;
 
 		/// <summary>
 		/// If the button is expanded
