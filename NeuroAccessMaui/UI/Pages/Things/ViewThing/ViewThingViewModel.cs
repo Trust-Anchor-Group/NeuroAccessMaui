@@ -200,19 +200,28 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 
 		private async Task CalcThingIsOnline()
 		{
+
 			if (this.thing is null)
-				this.IsThingOnline = false;
+				MainThread.BeginInvokeOnMainThread(()=>this.IsThingOnline = false);
 			else
 			{
-				this.IsThingOnline = this.IsOnline(this.thing.BareJid);
-				if (this.IsThingOnline)
-					await this.CheckCapabilities();
+				try
+				{
+					await MainThread.InvokeOnMainThreadAsync(() => this.IsThingOnline = this.IsOnline(this.thing.BareJid));
+					if (this.IsThingOnline)
+						await this.CheckCapabilities();
+				}
+				catch (Exception ex)
+				{
+					ServiceRef.LogService.LogException(ex);
+					await ServiceRef.UiService.DisplayException(ex);
+				}
+
 			}
 		}
 
 		async partial void OnInContactsChanged(bool value)
 		{
-			Console.WriteLine("INCONTACTS CAHGNED");
 			await this.CheckCapabilities();
 		}
 		private bool IsOnline(string BareJid)
@@ -266,18 +275,22 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 		/// Gets or sets whether the thing is in the contact list.
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(RemoveFromListCommand))]
+		[NotifyCanExecuteChangedFor(nameof(AddToListCommand))]
 		private bool inContacts;
 
 		/// <summary>
 		/// Gets or sets whether the thing is in the contact list.
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(RemoveFromListCommand))]
+		[NotifyCanExecuteChangedFor(nameof(AddToListCommand))]
 		private bool notInContacts;
 
 		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
 		{
 			base.OnPropertyChanged(e);
-
+			MainThread.BeginInvokeOnMainThread(() =>{
 			switch (e.PropertyName)
 			{
 				case nameof(this.InContacts):
@@ -318,6 +331,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 					this.IsConnectedAndNotConcentrator = this.IsConnected && !this.IsConcentrator;
 					break;
 			}
+			});
 		}
 
 		/// <summary>
@@ -545,7 +559,6 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 		{
 			if (this.thing is null)
 				return;
-
 			try
 			{
 				if (!await App.AuthenticateUser(AuthenticationPurpose.AddToListOfThings))
@@ -564,20 +577,23 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 						ServiceRef.TagProfile.LegalIdentity.Serialize(Xml, true, true, true, true, true, true, true);
 						IdXml = Xml.ToString();
 					}
-
 					ServiceRef.XmppService.RequestPresenceSubscription(this.thing.BareJid);
+					MainThread.BeginInvokeOnMainThread(() => this.NotInContacts = false);
 				}
 				else
 				{
-					if (!this.InContacts)
-					{
-						if (string.IsNullOrEmpty(this.thing.ObjectId))
-							await Database.Insert(this.thing);
+					await MainThread.InvokeOnMainThreadAsync(async ()=>{
+						if (!this.InContacts)
+						{
+							if (string.IsNullOrEmpty(this.thing.ObjectId))
+								await Database.Insert(this.thing);
 
-						this.InContacts = true;
-					}
+							this.InContacts = true;
+						}
 
-					await this.CalcThingIsOnline();
+						await this.CalcThingIsOnline();
+					});
+
 				}
 			}
 			catch (Exception ex)
