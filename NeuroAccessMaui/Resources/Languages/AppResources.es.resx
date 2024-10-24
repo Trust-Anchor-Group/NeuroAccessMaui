@@ -2391,4 +2391,13 @@
   <data name="PermitFieldsText" xml:space="preserve">
     <value>Elija los campos a los que permitir el acceso, si se acepta la solicitud.</value>
   </data>
+  <data name="ARequestHasBeenSentToTheOwner" xml:space="preserve">
+    <value>Se ha enviado una solicitud al propietario del dispositivo.</value>
+</data>
+<data name="ControlRequestText2" xml:space="preserve">
+  <value>Una persona que llama ha solicitado controlar una de sus cosas. Seleccione cómo desea que la cosa responda a este tipo de solicitud.</value>
+</data>
+<data name="PermitParametersText" xml:space="preserve">
+  <value>Elija los parámetros a los que desea permitir el acceso, si se acepta la solicitud.</value>
+</data>
 </root>

@@ -2346,4 +2346,58 @@
   <data name="Submit" xml:space="preserve">
     <value>Отправить</value>
   </data>
+  <data name="InformationAboutCallerText" xml:space="preserve">
+    <value>О звонящем абоненте доступна следующая информация:</value>
+  </data>
+  <data name="FriendlyName" xml:space="preserve">
+    <value>Понятное имя</value>
+  </data>
+  <data name="ReadoutRequestText2" xml:space="preserve">
+    <value>Звонящий запросил данные датчика у одного из ваших устройств. Выберите, как бы вы хотели, чтобы вещь реагировала на данный тип запроса.</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>Все</value>
+  </data>
+  <data name="ComputedValues" xml:space="preserve">
+    <value>Вычисляемые значения</value>
+  </data>
+  <data name="FieldTypes" xml:space="preserve">
+    <value>Типы полей</value>
+  </data>
+  <data name="HistoricalValues" xml:space="preserve">
+    <value>Исторические ценности</value>
+  </data>
+  <data name="IdentityValues" xml:space="preserve">
+    <value>Ценности идентичности</value>
+  </data>
+  <data name="MomentaryValues" xml:space="preserve">
+    <value>Сиюминутные ценности</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>Никакой</value>
+  </data>
+  <data name="PeakValues" xml:space="preserve">
+    <value>Пиковые значения</value>
+  </data>
+  <data name="PermitFieldTypesText" xml:space="preserve">
+    <value>Выберите типы полей (широкие категории), к которым будет разрешен доступ, если запрос будет принят.</value>
+  </data>
+  <data name="StatusValues" xml:space="preserve">
+    <value>Значения статуса</value>
+  </data>
+  <data name="Fields" xml:space="preserve">
+    <value>Поля</value>
+  </data>
+  <data name="PermitFieldsText" xml:space="preserve">
+    <value>Выберите поля, к которым будет разрешен доступ, если запрос будет принят.</value>
+  </data>
+  <data name="ARequestHasBeenSentToTheOwner" xml:space="preserve">
+    <value>Владельцу устройства отправлен запрос.</value>
+  </data>
+  <data name="ControlRequestText2" xml:space="preserve">
+    <value>Звонящий попросил проконтролировать одну из ваших вещей. Выберите, как бы вы хотели, чтобы вещь реагировала на данный тип запроса.</value>
+  </data>
+  <data name="PermitParametersText" xml:space="preserve">
+    <value>Выберите параметры, к которым будет разрешен доступ, если запрос будет принят.</value>
+  </data>
 </root>

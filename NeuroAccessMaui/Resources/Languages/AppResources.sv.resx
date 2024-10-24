@@ -2391,4 +2391,13 @@
   <data name="PermitFieldsText" xml:space="preserve">
     <value>Välj vilka fält som åtkomst ska beviljas till, om förfrågan accepteras.</value>
   </data>
+  <data name="ARequestHasBeenSentToTheOwner" xml:space="preserve">
+    <value>En begäran har skickats till ägaren av enheten.</value>
+</data>
+<data name="ControlRequestText2" xml:space="preserve">
+  <value>En förfrågan om att styra en av dina saker har mottagits. Välj hur du vill att saken ska svara på denna typ av förfrågan.</value>
+</data>
+<data name="PermitParametersText" xml:space="preserve">
+  <value>Välj vilka parametrar som åtkomst ska beviljas till, om förfrågan accepteras.</value>
+</data>
 </root>
