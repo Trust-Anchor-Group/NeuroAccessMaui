@@ -287,10 +287,22 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 		[NotifyCanExecuteChangedFor(nameof(AddToListCommand))]
 		private bool notInContacts;
 
+
 		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
 		{
 			base.OnPropertyChanged(e);
 			MainThread.BeginInvokeOnMainThread(() =>{
+
+			switch(e.PropertyName)
+			{
+				case nameof(this.IsBusy):
+					this.ReadSensorCommand.NotifyCanExecuteChanged();
+					this.ControlActuatorCommand.NotifyCanExecuteChanged();
+					this.ChatCommand.NotifyCanExecuteChanged();
+					break;
+			}
+
+			//This looks a bit cursed
 			switch (e.PropertyName)
 			{
 				case nameof(this.InContacts):
@@ -578,6 +590,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 						IdXml = Xml.ToString();
 					}
 					ServiceRef.XmppService.RequestPresenceSubscription(this.thing.BareJid);
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],ServiceRef.Localizer[nameof(AppResources.ARequestHasBeenSentToTheOwner)]);
 					MainThread.BeginInvokeOnMainThread(() => this.NotInContacts = false);
 				}
 				else
@@ -639,27 +652,37 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
+		private bool CanReadSensor => !this.IsBusy && this.IsConnectedAndSensor;
 
 		/// <summary>
 		/// The command to bind to for reading a sensor
 		/// </summary>
-		[RelayCommand(CanExecute = nameof(IsConnectedAndSensor))]
+		[RelayCommand(CanExecute = nameof(CanReadSensor))]
 		private async Task ReadSensor()
 		{
+			await MainThread.InvokeOnMainThreadAsync(() => this.SetIsBusy(true));
+
 			if (this.thing is null)
 				return;
 
 			ViewThingNavigationArgs Args = new(this.thing, MyThingsViewModel.GetNotificationEvents(this.thing) ?? []);
 
 			await ServiceRef.UiService.GoToAsync(nameof(ReadSensorPage), Args, BackMethod.Pop);
+
+			await MainThread.InvokeOnMainThreadAsync(() => this.SetIsBusy(false));
+
 		}
+
+		private bool CanControlActuator => !this.IsBusy && this.IsConnectedAndActuator;
 
 		/// <summary>
 		/// The command to bind to for controlling an actuator
 		/// </summary>
-		[RelayCommand(CanExecute = nameof(IsConnectedAndActuator))]
+		[RelayCommand(CanExecute = nameof(CanControlActuator))]
 		private async Task ControlActuator()
 		{
+			await MainThread.InvokeOnMainThreadAsync(() => this.SetIsBusy(true));
+
 			if (this.thing is null)
 				return;
 
@@ -695,17 +718,24 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 				});
 			}
 			else
+			{
 				ServiceRef.UiService.DisplayException(e.StanzaError ?? new Exception("Unable to get control form."));
-
+			}
+			MainThread.BeginInvokeOnMainThread(() => this.SetIsBusy(false));
 			return Task.CompletedTask;
 		}
+
+
+		private bool CanChat => !this.IsBusy && this.IsConnectedAndNotConcentrator;
 
 		/// <summary>
 		/// The command to bind to for chatting with a thing
 		/// </summary>
-		[RelayCommand(CanExecute = nameof(IsConnectedAndNotConcentrator))]
+		[RelayCommand(CanExecute = nameof(CanChat))]
 		private async Task Chat()
 		{
+			await MainThread.InvokeOnMainThreadAsync(() => this.SetIsBusy(true));
+
 			if (this.thing is null)
 				return;
 
@@ -720,6 +750,11 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 			catch (Exception ex)
 			{
 				await ServiceRef.UiService.DisplayException(ex);
+			}
+			finally
+			{
+				await MainThread.InvokeOnMainThreadAsync(() => this.SetIsBusy(false));
+
 			}
 		}
 
