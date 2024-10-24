@@ -89,7 +89,7 @@
 													IsEnabled="{Binding Path=IsConnected}" IsVisible="{Binding IsSensor}"
 													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
 						<controls:TextButton LabelData="{l:Localize ControlActuator}" Command="{Binding Path=ControlActuatorCommand}"
-													IsEnabled="False" IsVisible="{Binding IsActuator}"
+													IsEnabled="{Binding Path=IsConnected}" IsVisible="{Binding IsActuator}"
 													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
 						<Grid ColumnDefinitions="*" RowDefinitions="auto" Padding="0" Margin="0" ColumnSpacing="0" RowSpacing="0">
 							<controls:TextButton LabelData="{l:Localize Chat}" Command="{Binding Path=ChatCommand}" IsEnabled="{Binding Path=IsConnected}"
