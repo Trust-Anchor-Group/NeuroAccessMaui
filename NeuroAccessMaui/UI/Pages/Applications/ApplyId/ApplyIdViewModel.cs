@@ -6,6 +6,7 @@ using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Data;
+using NeuroAccessMaui.Services.Data.PersonalNumbers;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.Photos;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
@@ -649,6 +650,9 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 
 				this.SetIsBusy(true);
 				this.IsApplying = true;
+				NumberInformation Info = await PersonalNumberSchemes.Validate(this.CountryCode!, this.PersonalNumber!);
+				this.PersonalNumber = Info.PersonalNumber;
+
 
 				bool HasIdWithPrivateKey = ServiceRef.TagProfile.LegalIdentity is not null &&
 					await ServiceRef.XmppService.HasPrivateKey(ServiceRef.TagProfile.LegalIdentity.Id);
