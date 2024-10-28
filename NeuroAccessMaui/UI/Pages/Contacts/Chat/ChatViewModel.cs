@@ -38,7 +38,6 @@ using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.HttpFileUpload;
 using Waher.Persistence;
 using Waher.Persistence.Filters;
-using Waher.Runtime.Threading;
 
 namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 {
@@ -154,7 +153,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			this.waitUntilBound = new TaskCompletionSource<bool>();
 		}
 
-		private async Task Page_OnAfterAppearing(object Sender, EventArgs e)
+		private Task Page_OnAfterAppearing(object Sender, EventArgs e)
 		{
 			if (this.scrollTo is Element)
 			{
@@ -163,6 +162,8 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			//	await this.page.ScrollView.ScrollToAsync(this.page.Bottom, ScrollToPosition.End, false);
 				this.scrollTo = null;
 			}
+
+			return Task.CompletedTask;
 		}
 
 		/// <summary>
@@ -542,11 +543,9 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 				{
 					IView? Last = null;
 
-					int i = 0;
 					foreach (ChatMessage Message in A)
-					{
 						Last = await this.MessageAddedMainThread(Message, true);
-					}
+
 					this.ExistsMoreMessages = c <= 0;
 
 					Result.TrySetResult(Last);
@@ -556,6 +555,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 					Result.TrySetException(ex);
 				}
 			});
+
 			return await Result.Task;
 		}
 
