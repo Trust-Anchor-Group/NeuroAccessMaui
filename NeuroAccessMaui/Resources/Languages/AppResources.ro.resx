@@ -2346,4 +2346,58 @@
   <data name="Submit" xml:space="preserve">
     <value>Prezinte</value>
   </data>
+  <data name="InformationAboutCallerText" xml:space="preserve">
+    <value>Următoarele informații sunt disponibile despre apelant:</value>
+  </data>
+  <data name="FriendlyName" xml:space="preserve">
+    <value>Nume prietenos</value>
+  </data>
+  <data name="ReadoutRequestText2" xml:space="preserve">
+    <value>Un apelant a solicitat date de senzor de la unul dintre lucrurile dvs. Selectați cum doriți ca lucrul să răspundă la acest tip de solicitare.</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>Tot</value>
+  </data>
+  <data name="ComputedValues" xml:space="preserve">
+    <value>Valori calculate</value>
+  </data>
+  <data name="FieldTypes" xml:space="preserve">
+    <value>Tipuri de câmpuri</value>
+  </data>
+  <data name="HistoricalValues" xml:space="preserve">
+    <value>Valori istorice</value>
+  </data>
+  <data name="IdentityValues" xml:space="preserve">
+    <value>Valori identitare</value>
+  </data>
+  <data name="MomentaryValues" xml:space="preserve">
+    <value>Valori de moment</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>Niciunul</value>
+  </data>
+  <data name="PeakValues" xml:space="preserve">
+    <value>Valori de vârf</value>
+  </data>
+  <data name="PermitFieldTypesText" xml:space="preserve">
+    <value>Alegeți tipurile de câmpuri (categorii largi) la care să permiteți accesul, dacă cererea este acceptată.</value>
+  </data>
+  <data name="StatusValues" xml:space="preserve">
+    <value>Valori de stare</value>
+  </data>
+  <data name="Fields" xml:space="preserve">
+    <value>Câmpuri</value>
+  </data>
+  <data name="PermitFieldsText" xml:space="preserve">
+    <value>Alegeți câmpurile la care să permiteți accesul, dacă solicitarea este acceptată.</value>
+  </data>
+  <data name="ARequestHasBeenSentToTheOwner" xml:space="preserve">
+    <value>A fost trimisă o solicitare proprietarului dispozitivului.</value>
+  </data>
+  <data name="ControlRequestText2" xml:space="preserve">
+    <value>Un apelant a cerut să controleze unul dintre lucrurile tale. Selectați cum doriți ca lucrul să răspundă la acest tip de solicitare.</value>
+  </data>
+  <data name="PermitParametersText" xml:space="preserve">
+    <value>Alegeți parametrii la care să permiteți accesul, dacă cererea este acceptată.</value>
+  </data>
 </root>

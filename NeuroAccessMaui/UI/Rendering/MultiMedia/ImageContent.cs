@@ -53,7 +53,8 @@ namespace NeuroAccessMaui.UI.Rendering.Multimedia
 		public static async Task OutputMauiXaml(XmlWriter Output, Waher.Content.Emoji.IImageSource Source)
 		{
 			Source = await CheckDataUri(Source);
-
+			Output.WriteStartElement("ScrollView");
+			Output.WriteAttributeString("Orientation", "Horizontal");
 			Output.WriteStartElement("Image");
 			Output.WriteAttributeString("Source", Source.Url);
 
@@ -64,7 +65,7 @@ namespace NeuroAccessMaui.UI.Rendering.Multimedia
 				Output.WriteAttributeString("HeightRequest", Source.Height.Value.ToString(CultureInfo.InvariantCulture));
 
 			// TODO: Tooltip
-
+			Output.WriteEndElement();
 			Output.WriteEndElement();
 		}
 	}

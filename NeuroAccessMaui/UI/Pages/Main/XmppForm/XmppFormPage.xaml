@@ -17,57 +17,47 @@
 	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
 
 		<controls:Background/>
+			<Grid RowDefinitions="auto, auto, *" RowSpacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
 
-		<ScrollView>
-			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
-
-				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{StaticResource ImageOnlyButton}"
+				<controls:ImageButton Grid.Row="0" HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{StaticResource ImageOnlyButton}"
 											 PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-				<Label Style="{StaticResource PageTitleLabel}" Text="{Binding Title}"/>
-
-				<!-- Photo and QR-code -->
-				<Frame Style="{StaticResource FrameSet}">
-					<VerticalStackLayout>
-						<Grid ColumnDefinitions="*" RowDefinitions="auto,*,auto,auto">
-							<VerticalStackLayout Grid.Column="0" Grid.Row="0" BindableLayout.ItemsSource="{Binding Instructions}">
+				<Label Grid.Row="1" Style="{StaticResource PageTitleLabel}" Text="{Binding Title}"/>
+				<Frame Grid.Row="2" Style="{StaticResource FrameSet}">
+						<Grid RowDefinitions="auto,*,auto" HorizontalOptions="Fill" >
+							<VerticalStackLayout Grid.Row="0" BindableLayout.ItemsSource="{Binding Instructions}">
 								<BindableLayout.ItemTemplate>
 									<DataTemplate>
-										<Label Text="{Binding .}" LineBreakMode="WordWrap"/>
+										<Label Text="{Binding .}" LineBreakMode="WordWrap" VerticalOptions="Center"/>
 									</DataTemplate>
 								</BindableLayout.ItemTemplate>
 							</VerticalStackLayout>
-							<CarouselView Grid.Column="0" Grid.Row="1" ItemsSource="{Binding Pages}" IndicatorView="IndicatorView" IsSwipeEnabled="{Binding MultiplePages}">
-								<CarouselView.ItemTemplate>
+
+							<CollectionView Grid.Row="1" ItemsSource="{Binding Pages}" SelectionMode="None">
+								<CollectionView.ItemsLayout>
+									<LinearItemsLayout Orientation="Vertical" />
+								</CollectionView.ItemsLayout>
+								<CollectionView.ItemTemplate>
 									<DataTemplate x:DataType="model2:PageModel">
-										<ScrollView Orientation="Vertical">
-											<VerticalStackLayout Padding="10">
-												<Label Text="{Binding Label}" IsVisible="{Binding HasLabel}" LineBreakMode="WordWrap"/>
-												<ContentView Content="{Binding Content}"/>
-											</VerticalStackLayout>
-										</ScrollView>
+										<Grid RowDefinitions="auto, auto">
+											<Label Grid.Row="0"
+												Text="{Binding Label}"
+												IsVisible="{Binding HasLabel}"
+												LineBreakMode="WordWrap"
+												/>
+											<ContentView Grid.Row="1"
+														Content="{Binding Content}"
+														/>
+										</Grid>
 									</DataTemplate>
-								</CarouselView.ItemTemplate>
-							</CarouselView>
-							<IndicatorView Grid.Column="0" Grid.Row="2" IsVisible="{Binding MultiplePages}"
-						   x:Name="IndicatorView"
-						   HorizontalOptions="Fill"
-						   IndicatorColor="{StaticResource HeadingForeground}"
-						   Padding="0,12,0,0"
-						   BackgroundColor="{StaticResource HeadingBackground}"
-						   Style="{StaticResource IndicatorViewStyle}">
-								<IndicatorView.Margin>
-									<OnPlatform x:TypeArguments="Thickness">
-										<On Platform="iOS" Value="0,-1,0,0"/>
-									</OnPlatform>
-								</IndicatorView.Margin>
-							</IndicatorView>
-							<controls:TextButton Grid.Column="0" Grid.Row="3" LabelData="{l:Localize Submit}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+								</CollectionView.ItemTemplate>
+							</CollectionView>
+
+							<controls:TextButton Grid.Row="3" LabelData="{l:Localize Submit}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
 														Command="{Binding SubmitCommand}" IsEnabled="{Binding IsFormOk}" Margin="{StaticResource SmallMargins}"/>
 						</Grid>
-					</VerticalStackLayout>
 				</Frame>
-			</VerticalStackLayout>
-		</ScrollView>
+
+			</Grid>
 	</Grid>
 </base:BaseContentPage>
