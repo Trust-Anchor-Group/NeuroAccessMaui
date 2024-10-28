@@ -2346,4 +2346,58 @@
   <data name="Submit" xml:space="preserve">
     <value>Envoyer</value>
   </data>
+  <data name="InformationAboutCallerText" xml:space="preserve">
+    <value>Les informations suivantes sont disponibles sur l’appelant :</value>
+  </data>
+  <data name="FriendlyName" xml:space="preserve">
+    <value>Nom convivial</value>
+  </data>
+  <data name="ReadoutRequestText2" xml:space="preserve">
+    <value>Un appelant a demandé des données de capteur à l’un de vos objets. Sélectionnez la façon dont vous souhaitez que l’objet réponde à ce type de demande.</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>Tout</value>
+  </data>
+  <data name="ComputedValues" xml:space="preserve">
+    <value>Valeurs calculées</value>
+  </data>
+  <data name="FieldTypes" xml:space="preserve">
+    <value>Types de champs</value>
+  </data>
+  <data name="HistoricalValues" xml:space="preserve">
+    <value>Valeurs historiques</value>
+  </data>
+  <data name="IdentityValues" xml:space="preserve">
+    <value>Valeurs identitaires</value>
+  </data>
+  <data name="MomentaryValues" xml:space="preserve">
+    <value>Valeurs momentanées</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>Aucun</value>
+  </data>
+  <data name="PeakValues" xml:space="preserve">
+    <value>Valeurs maximales</value>
+  </data>
+  <data name="PermitFieldTypesText" xml:space="preserve">
+    <value>Choisissez les types de champs (grandes catégories) auxquels vous autorisez l’accès, si la demande est acceptée.</value>
+  </data>
+  <data name="StatusValues" xml:space="preserve">
+    <value>Valeurs d’état</value>
+  </data>
+  <data name="Fields" xml:space="preserve">
+    <value>Champs</value>
+  </data>
+  <data name="PermitFieldsText" xml:space="preserve">
+    <value>Choisissez les champs auxquels autoriser l’accès, si la demande est acceptée.</value>
+  </data>
+  <data name="ARequestHasBeenSentToTheOwner" xml:space="preserve">
+    <value>Une demande a été envoyée au propriétaire de l’appareil.</value>
+  </data>
+  <data name="ControlRequestText2" xml:space="preserve">
+    <value>Un appelant a demandé à contrôler l’un de vos objets. Sélectionnez la façon dont vous souhaitez que l’objet réponde à ce type de demande.</value>
+  </data>
+  <data name="PermitParametersText" xml:space="preserve">
+    <value>Choisissez les paramètres auxquels autoriser l’accès, si la demande est acceptée.</value>
+  </data>
 </root>

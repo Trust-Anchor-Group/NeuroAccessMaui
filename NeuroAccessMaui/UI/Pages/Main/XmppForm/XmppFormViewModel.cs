@@ -39,8 +39,9 @@ namespace NeuroAccessMaui.UI.Pages.Main.XmppForm
 				if (this.form?.HasPages ?? false)
 				{
 					foreach (Layout.Page P in this.form.Pages)
-						this.Pages.Add(new PageModel(this, P));
-
+					{
+							this.Pages.Add(new PageModel(this, P));
+					}
 					this.MultiplePages = this.form.Pages.Length > 1;
 				}
 				else

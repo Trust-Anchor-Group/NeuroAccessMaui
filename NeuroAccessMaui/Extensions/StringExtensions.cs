@@ -1,4 +1,5 @@
-﻿using NeuroAccessMaui.UI.Rendering;
+﻿using NeuroAccessMaui.Services;
+using NeuroAccessMaui.UI.Rendering;
 using Waher.Content.Markdown;
 using Waher.Events;
 
@@ -100,8 +101,7 @@ namespace NeuroAccessMaui.Extensions
 			}
 			catch (Exception ex)
 			{
-				Log.Exception(ex);
-
+				ServiceRef.LogService.LogException(ex);
 				VerticalStackLayout Layout = [];
 
 				Layout.Children.Add(new Label()
