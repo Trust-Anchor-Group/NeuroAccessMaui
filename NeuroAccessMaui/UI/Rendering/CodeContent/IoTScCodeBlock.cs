@@ -31,6 +31,11 @@ namespace NeuroAccessMaui.UI.Rendering.CodeContent
 		public MarkdownDocument? Document => this.document;
 
 		/// <summary>
+		/// If script is evaluated for this type of code block.
+		/// </summary>
+		public bool EvaluatesScript => false;
+
+		/// <summary>
 		/// Generates Maui XAML
 		/// </summary>
 		public async Task<bool> RenderMauiXaml(MauiXamlRenderer Renderer, string[] Rows, string Language, int Indent, MarkdownDocument Document)
