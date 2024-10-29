@@ -202,7 +202,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 		{
 
 			if (this.thing is null)
-				MainThread.BeginInvokeOnMainThread(()=>this.IsThingOnline = false);
+				MainThread.BeginInvokeOnMainThread(() => this.IsThingOnline = false);
 			else
 			{
 				try
@@ -228,10 +228,16 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 		{
 			if (this.presences.TryGetValue(BareJid, out PresenceEventArgs? e))
 				return e.IsOnline;
-
-			RosterItem? Item = ServiceRef.XmppService?.GetRosterItem(BareJid);
-			if (Item is not null && Item.HasLastPresence)
-				return Item.LastPresence.IsOnline;
+			try
+			{
+				RosterItem? Item = ServiceRef.XmppService?.GetRosterItem(BareJid);
+				if (Item is not null && Item.HasLastPresence)
+					return Item.LastPresence.IsOnline;
+			}
+			catch (Exception)
+			{
+				//ignore
+			}
 
 			return false;
 		}
@@ -245,12 +251,20 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 				if (this.presences.TryGetValue(this.thing.BareJid, out PresenceEventArgs? e))
 					return (e?.IsOnline == true) ? e.From : null;
 
-				RosterItem? Item = ServiceRef.XmppService.GetRosterItem(this.thing.BareJid);
+				try
+				{
+					RosterItem? Item = ServiceRef.XmppService.GetRosterItem(this.thing.BareJid);
 
-				if (Item is null || !Item.HasLastPresence || !Item.LastPresence.IsOnline)
+					if (Item is null || !Item.HasLastPresence || !Item.LastPresence.IsOnline)
+						return null;
+					else
+						return Item.LastPresenceFullJid;
+				}
+				catch (Exception)
+				{
 					return null;
-				else
-					return Item.LastPresenceFullJid;
+				}
+
 			}
 		}
 
@@ -291,58 +305,59 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
 		{
 			base.OnPropertyChanged(e);
-			MainThread.BeginInvokeOnMainThread(() =>{
-
-			switch(e.PropertyName)
+			MainThread.BeginInvokeOnMainThread(() =>
 			{
-				case nameof(this.IsBusy):
-					this.ReadSensorCommand.NotifyCanExecuteChanged();
-					this.ControlActuatorCommand.NotifyCanExecuteChanged();
-					this.ChatCommand.NotifyCanExecuteChanged();
-					break;
-			}
 
-			//This looks a bit cursed
-			switch (e.PropertyName)
-			{
-				case nameof(this.InContacts):
-				case nameof(this.IsOwner):
-					this.InContactsAndNotOwner = this.InContacts && !this.IsOwner;
-					this.NotInContacts = !this.InContacts;
-					break;
-			}
+				switch (e.PropertyName)
+				{
+					case nameof(this.IsBusy):
+						this.ReadSensorCommand.NotifyCanExecuteChanged();
+						this.ControlActuatorCommand.NotifyCanExecuteChanged();
+						this.ChatCommand.NotifyCanExecuteChanged();
+						break;
+				}
 
-			switch (e.PropertyName)
-			{
-				case nameof(this.IsConnected):
-				case nameof(this.IsOwner):
-					this.IsConnectedAndOwner = this.IsConnected && this.IsOwner;
-					break;
-			}
+				//This looks a bit cursed
+				switch (e.PropertyName)
+				{
+					case nameof(this.InContacts):
+					case nameof(this.IsOwner):
+						this.InContactsAndNotOwner = this.InContacts && !this.IsOwner;
+						this.NotInContacts = !this.InContacts;
+						break;
+				}
 
-			switch (e.PropertyName)
-			{
-				case nameof(this.IsConnected):
-				case nameof(this.IsSensor):
-					this.IsConnectedAndSensor = this.IsConnected && this.IsSensor;
-					break;
-			}
+				switch (e.PropertyName)
+				{
+					case nameof(this.IsConnected):
+					case nameof(this.IsOwner):
+						this.IsConnectedAndOwner = this.IsConnected && this.IsOwner;
+						break;
+				}
 
-			switch (e.PropertyName)
-			{
-				case nameof(this.IsConnected):
-				case nameof(this.IsActuator):
-					this.IsConnectedAndActuator = this.IsConnected && this.IsActuator;
-					break;
-			}
+				switch (e.PropertyName)
+				{
+					case nameof(this.IsConnected):
+					case nameof(this.IsSensor):
+						this.IsConnectedAndSensor = this.IsConnected && this.IsSensor;
+						break;
+				}
 
-			switch (e.PropertyName)
-			{
-				case nameof(this.IsConnected):
-				case nameof(this.IsConcentrator):
-					this.IsConnectedAndNotConcentrator = this.IsConnected && !this.IsConcentrator;
-					break;
-			}
+				switch (e.PropertyName)
+				{
+					case nameof(this.IsConnected):
+					case nameof(this.IsActuator):
+						this.IsConnectedAndActuator = this.IsConnected && this.IsActuator;
+						break;
+				}
+
+				switch (e.PropertyName)
+				{
+					case nameof(this.IsConnected):
+					case nameof(this.IsConcentrator):
+						this.IsConnectedAndNotConcentrator = this.IsConnected && !this.IsConcentrator;
+						break;
+				}
 			});
 		}
 
@@ -590,12 +605,13 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 						IdXml = Xml.ToString();
 					}
 					ServiceRef.XmppService.RequestPresenceSubscription(this.thing.BareJid);
-					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],ServiceRef.Localizer[nameof(AppResources.ARequestHasBeenSentToTheOwner)]);
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)], ServiceRef.Localizer[nameof(AppResources.ARequestHasBeenSentToTheOwner)]);
 					MainThread.BeginInvokeOnMainThread(() => this.NotInContacts = false);
 				}
 				else
 				{
-					await MainThread.InvokeOnMainThreadAsync(async ()=>{
+					await MainThread.InvokeOnMainThreadAsync(async () =>
+					{
 						if (!this.InContacts)
 						{
 							if (string.IsNullOrEmpty(this.thing.ObjectId))
