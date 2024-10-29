@@ -44,8 +44,8 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 			if (this.CreateIdentityCommand.CanExecute(null))
 				await this.CreateIdentityCommand.ExecuteAsync(null);
-
-			await this.CheckAndHandleIdentityApplicationAsync();
+			if (ServiceRef.TagProfile.Step != RegistrationStep.Complete)
+				await this.CheckAndHandleIdentityApplicationAsync();
 		}
 
 		private Task XmppService_ConnectionStateChanged(object _, XmppState NewState)
