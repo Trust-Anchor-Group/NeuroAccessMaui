@@ -282,6 +282,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 							break;
 						}
 					}
+
 					ContactInfo Info = await ContactInfo.FindByBareJid(e.JID, e.Node.SourceId, e.Node.Partition, e.Node.NodeId);
 					if (Info is null)
 					{
@@ -310,6 +311,8 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 					}
 
 					await Database.Provider.Flush();
+
+					ServiceRef.XmppService.RequestPresenceSubscription(Info.BareJid);
 
 					await ServiceRef.UiService.GoToAsync(nameof(ViewThingPage), new ViewThingNavigationArgs(Info, []), Services.UI.BackMethod.Pop2);
 				}
