@@ -27,7 +27,10 @@ namespace NeuroAccessMaui.UI.Pages
 				this.QrCodeHeight = Constants.QrCode.DefaultImageHeight;
 			}
 
-			byte[] Bin = Services.UI.QR.QrCode.GeneratePng(Uri, this.QrCodeWidth, this.QrCodeHeight);
+			if (this.QrResolutionScale == 0)
+				this.QrResolutionScale = Constants.QrCode.DefaultResolutionScale;
+
+			byte[] Bin = Services.UI.QR.QrCode.GeneratePng(Uri, this.QrCodeWidth * this.QrResolutionScale, this.QrCodeHeight * this.QrResolutionScale);
 			this.QrCode = ImageSource.FromStream(() => new MemoryStream(Bin));
 			this.QrCodeBin = Bin;
 			this.QrCodeContentType = Constants.MimeTypes.Png;
@@ -80,6 +83,14 @@ namespace NeuroAccessMaui.UI.Pages
 		private int qrCodeHeight;
 
 		/// <summary>
+		/// The scale factor to apply to the QR Code image resolution.
+		/// A value of 1 generates images at the default width and height.
+		/// For example, a value of 2 generates QR Code images at twice the default width and height (480x480).
+		/// </summary>
+		[ObservableProperty]
+		private int qrResolutionScale;
+
+		/// <summary>
 		/// Binary encoding of QR Code
 		/// </summary>
 		[ObservableProperty]
@@ -90,6 +101,8 @@ namespace NeuroAccessMaui.UI.Pages
 		/// </summary>
 		[ObservableProperty]
 		private string? qrCodeContentType;
+
+
 
 		#endregion
 
