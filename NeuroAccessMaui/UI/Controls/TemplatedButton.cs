@@ -1,4 +1,5 @@
 ﻿using System.Windows.Input;
+using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Core;
 
 namespace NeuroAccessMaui.UI.Controls
@@ -68,15 +69,35 @@ namespace NeuroAccessMaui.UI.Controls
 			remove => this.onClickedEventManager.RemoveEventHandler(value);
 		}
 
-		private void OnTapped(object? Sender, EventArgs e)
+		private async void OnTapped(object? Sender, EventArgs e)
 		{
-			this.Animate("Blink", new Animation()
+			try
 			{
-				{ 0, 0.5, new((value) => this.Scale = value, 1, 0.95, Easing.CubicOut) },
-				{ 0.5, 1, new((value) => this.Scale = value, 0.95, 1, Easing.CubicOut) },
-			});
+				// Change visual state to "Pressed"
+				VisualStateManager.GoToState(this, ButtonElement.PressedVisualState);
 
-			ButtonElement.ElementClicked(this, this);
+				// Initialize TaskCompletionSource to await animation
+				TaskCompletionSource<bool> AnimationTask = new();
+
+				// Start the animation
+				this.Animate("Blink", new Animation()
+				{
+					{ 0, 0.5, new((value) => this.Scale = value, 1, 0.95, Easing.CubicOut) },
+					{ 0.5, 1, new((value) => this.Scale = value, 0.95, 1, Easing.CubicOut) },
+				},
+				finished: (value, isCompleted) => AnimationTask.SetResult(isCompleted));
+
+				// Await the animation's completion
+				await AnimationTask.Task;
+
+				VisualStateManager.GoToState(this, VisualStateManager.CommonStates.Normal);
+
+				ButtonElement.ElementClicked(this, this);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
 		}
 	}
 }
