@@ -3,6 +3,203 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 						  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 						  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
+
+	<!-- Common -->
+	<Style x:Key="ButtonBorderBase" ApplyToDerivedTypes="True" TargetType="Border">
+		<Setter Property="Stroke" Value="Transparent"/>
+		<Setter Property="Padding" Value="{StaticResource ButtonMediumMargins}" />
+		<Setter Property="StrokeShape">
+			<RoundRectangle CornerRadius="{StaticResource SmallCornerRadius}" />
+		</Setter>
+	</Style>
+
+	<Style x:Key="ButtonDisabledBorder" TargetType="Border" BasedOn="{StaticResource PrimaryButtonBorderBase}">
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource GrayInactiveLight}, Dark={StaticResource GrayInactiveDark}}" />
+	</Style>
+
+	<Style x:Key="ButtonDisabledLabel" TargetType="Label">
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource OffBlack50Light}, Dark={StaticResource OffWhite30Dark}}" />
+	</Style>
+
+	<Style x:Key="PathDisabled" TargetType="Path">
+		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource OffBlack50Light}, Dark={StaticResource OffWhite30Dark}}" />
+	</Style>
+
+	<!-- Primary -->
+	<Style x:Key="PrimaryButton" TargetType="controls:TextButton">
+		<Setter Property="VisualStateManager.VisualStateGroups">
+			<VisualStateGroupList>
+				<VisualStateGroup x:Name="CommonStates">
+					<VisualState x:Name="Normal">
+						<VisualState.Setters>
+							<Setter Property="BorderStyle" Value="{StaticResource PrimaryButtonActiveBorder}" />
+							<Setter Property="LabelStyle" Value="{StaticResource PrimaryButtonActiveLabel}" />
+						</VisualState.Setters>
+					</VisualState>
+					<VisualState x:Name="Disabled">
+						<VisualState.Setters>
+							<Setter Property="BorderStyle" Value="{StaticResource ButtonDisabledBorder}" />
+							<Setter Property="LabelStyle" Value="{StaticResource ButtonDisabledLabel}" />
+						</VisualState.Setters>
+					</VisualState>
+				</VisualStateGroup>
+			</VisualStateGroupList>
+		</Setter>
+	</Style>
+
+	<Style x:Key="PrimaryButtonActiveBorder" TargetType="Border" BasedOn="{StaticResource ButtonBorderBase}">
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource AccentActiveLight}, Dark={StaticResource AccentActiveDark}}" />
+	</Style>
+
+	<Style x:Key="PrimaryButtonActiveLabel" TargetType="Label">
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource OffWhiteLight}, Dark={StaticResource OffWhiteDark}}" />
+	</Style>
+
+	<Style x:Key="PrimaryPath" TargetType="Path">
+		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource OffWhiteLight}, Dark={StaticResource OffWhiteDark}}" />
+	</Style>
+
+	<!-- Secondary -->
+	<Style x:Key="SecondaryButton" TargetType="controls:TextButton">
+		<Setter Property="VisualStateManager.VisualStateGroups">
+			<VisualStateGroupList>
+				<VisualStateGroup x:Name="CommonStates">
+					<VisualState x:Name="Normal">
+						<VisualState.Setters>
+							<Setter Property="BorderStyle" Value="{StaticResource SecondaryButtonActiveBorder}" />
+							<Setter Property="LabelStyle" Value="{StaticResource SecondaryButtonActiveLabel}" />
+						</VisualState.Setters>
+					</VisualState>
+					<VisualState x:Name="Disabled">
+						<VisualState.Setters>
+							<Setter Property="BorderStyle" Value="{StaticResource ButtonDisabledBorder}" />
+							<Setter Property="LabelStyle" Value="{StaticResource ButtonDisabledLabel}" />
+						</VisualState.Setters>
+					</VisualState>
+				</VisualStateGroup>
+			</VisualStateGroupList>
+		</Setter>
+	</Style>
+
+	<Style x:Key="SecondaryButtonActiveBorder" TargetType="Border" BasedOn="{StaticResource ButtonBorderBase}">
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource AccentActiveLight}, Dark={StaticResource AccentActiveDark}}" />
+		<Setter Property="Stroke" Value="{AppThemeBinding Light='Transparent', Dark='White'}"/>
+	</Style>
+
+	<Style x:Key="SecondaryButtonActiveLabel" TargetType="Label">
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource AccentActiveLight}, Dark={StaticResource OffWhiteDark}}" />
+	</Style>
+
+	<Style x:Key="SecondaryPath" TargetType="Path">
+		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource AccentActiveLight}, Dark={StaticResource OffWhiteDark}}" />
+	</Style>
+
+	<!-- Tertiary -->
+	<Style x:Key="TertiaryButton" TargetType="controls:TextButton">
+		<Setter Property="VisualStateManager.VisualStateGroups">
+			<VisualStateGroupList>
+				<VisualStateGroup x:Name="CommonStates">
+					<VisualState x:Name="Normal">
+						<VisualState.Setters>
+							<Setter Property="BorderStyle" Value="{StaticResource TertiaryButtonActiveBorder}" />
+							<Setter Property="LabelStyle" Value="{StaticResource TertiaryButtonActiveLabel}" />
+						</VisualState.Setters>
+					</VisualState>
+					<VisualState x:Name="Disabled">
+						<VisualState.Setters>
+							<Setter Property="BorderStyle" Value="{StaticResource ButtonDisabledBorder}" />
+							<Setter Property="LabelStyle" Value="{StaticResource ButtonDisabledLabel}" />
+						</VisualState.Setters>
+					</VisualState>
+				</VisualStateGroup>
+			</VisualStateGroupList>
+		</Setter>
+	</Style>
+
+	<Style x:Key="TertiaryButtonActiveBorder" TargetType="Border" BasedOn="{StaticResource ButtonBorderBase}">
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource WhiteLight}, Dark={StaticResource BackgroundOffBlackDark}}" />
+	</Style>
+
+	<Style x:Key="TertiaryButtonActiveLabel" TargetType="Label">
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource AccentActiveLight}, Dark={StaticResource AccentActiveDark}}" />
+	</Style>
+
+	<Style x:Key="TertiaryPath" TargetType="Path">
+		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource AccentActiveLight}, Dark={StaticResource AccentActiveDark}}" />
+	</Style>
+
+	<!-- Gray -->
+	<Style x:Key="GrayButton" TargetType="controls:TextButton">
+		<Setter Property="VisualStateManager.VisualStateGroups">
+			<VisualStateGroupList>
+				<VisualStateGroup x:Name="CommonStates">
+					<VisualState x:Name="Normal">
+						<VisualState.Setters>
+							<Setter Property="BorderStyle" Value="{StaticResource GrayButtonActiveBorder}" />
+							<Setter Property="LabelStyle" Value="{StaticResource GrayButtonActiveLabel}" />
+						</VisualState.Setters>
+					</VisualState>
+					<VisualState x:Name="Disabled">
+						<VisualState.Setters>
+							<Setter Property="BorderStyle" Value="{StaticResource ButtonDisabledBorder}" />
+							<Setter Property="LabelStyle" Value="{StaticResource ButtonDisabledLabel}" />
+						</VisualState.Setters>
+					</VisualState>
+				</VisualStateGroup>
+			</VisualStateGroupList>
+		</Setter>
+	</Style>
+
+	<Style x:Key="GrayButtonActiveBorder" TargetType="Border" BasedOn="{StaticResource ButtonBorderBase}">
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ButtonBackgroundLight}, Dark={StaticResource ButtonBackgroundDark}}" />
+	</Style>
+
+	<Style x:Key="GrayButtonActiveLabel" TargetType="Label">
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource OffWhiteLight}, Dark={StaticResource OffWhiteDark}}" />
+	</Style>
+
+	<Style x:Key="GrayPath" TargetType="Path">
+		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource OffWhiteLight}, Dark={StaticResource OffWhiteDark}}" />
+	</Style>
+
+	<!-- Red -->
+	<Style x:Key="RedButton" TargetType="controls:TextButton">
+		<Setter Property="VisualStateManager.VisualStateGroups">
+			<VisualStateGroupList>
+				<VisualStateGroup x:Name="CommonStates">
+					<VisualState x:Name="Normal">
+						<VisualState.Setters>
+							<Setter Property="BorderStyle" Value="{StaticResource RedButtonActiveBorder}" />
+							<Setter Property="LabelStyle" Value="{StaticResource RedButtonActiveLabel}" />
+						</VisualState.Setters>
+					</VisualState>
+					<VisualState x:Name="Disabled">
+						<VisualState.Setters>
+							<Setter Property="BorderStyle" Value="{StaticResource ButtonDisabledBorder}" />
+							<Setter Property="LabelStyle" Value="{StaticResource ButtonDisabledLabel}" />
+						</VisualState.Setters>
+					</VisualState>
+				</VisualStateGroup>
+			</VisualStateGroupList>
+		</Setter>
+	</Style>
+
+	<Style x:Key="RedButtonActiveBorder" TargetType="Border" BasedOn="{StaticResource ButtonBorderBase}">
+		<Setter Property="Stroke" Value="{AppThemeBinding Light='Transparent', Dark={StaticResource RedErrorDark}}"/>
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Red20WarningLight}, Dark={StaticResource Elevation2BackgroundDark}}" />
+	</Style>
+
+	<Style x:Key="RedButtonActiveLabel" TargetType="Label">
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedErrorDark}}" />
+	</Style>
+
+	<Style x:Key="RedPath" TargetType="Path">
+		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedErrorDark}}" />
+	</Style>
+
+	
+
+	<!-- Old -->
 	<!-- Template Styles -->
 	<Style ApplyToDerivedTypes="True" TargetType="Border" x:Key="FilledTemplateButtonBorder">
 		<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource EnabledFilledButtonBackgroundLight}, Dark={StaticResource EnabledFilledButtonBackgroundDark}}" />
