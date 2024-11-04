@@ -219,7 +219,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				}
 				string FullPhoneNumber = $"+{this.SelectedCountry.DialCode}{this.PhoneNumber}";
 
-				if(this.SelectedCountry.DialCode == "46") //If swedish phone nr
+				if (this.SelectedCountry.DialCode == "46") //TODO: Make this more generic for other countries
 					FullPhoneNumber = $"+{this.SelectedCountry.DialCode}{this.PhoneNumber.TrimStart('0')}";
 
 				object SendResult = await InternetContent.PostAsync(
@@ -281,10 +281,9 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 								//!!! The old code for existing accounts. Should be implemented somehow else
 								//!!! if (this.IsRevalidating)
-								if (false)
-								{
-								}
-								else
+
+
+								if (string.IsNullOrEmpty(ServiceRef.TagProfile.Domain))
 								{
 									bool DefaultConnectivity;
 
@@ -300,8 +299,8 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 									ServiceRef.TagProfile.SetDomain(VerifyDomain, DefaultConnectivity, VerifyKey, VerifySecret);
 								}
-								if(VerifyIsTemporary)
-									GoToRegistrationStep(RegistrationStep.ChooseProvider);
+								if (VerifyIsTemporary)
+									GoToRegistrationStep(RegistrationStep.NameEntry);
 								else
 									GoToRegistrationStep(RegistrationStep.ValidateEmail);
 							}
@@ -350,6 +349,9 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				}
 
 				string FullPhoneNumber = $"+{this.SelectedCountry.DialCode}{this.PhoneNumber}";
+
+				if (this.SelectedCountry.DialCode == "46") //If swedish phone nr
+					FullPhoneNumber = $"+{this.SelectedCountry.DialCode}{this.PhoneNumber.TrimStart('0')}";
 
 				object SendResult = await InternetContent.PostAsync(
 					new Uri("https://" + Constants.Domains.IdDomain + "/ID/SendVerificationMessage.ws"),

@@ -130,24 +130,10 @@ namespace NeuroAccessMaui.Services.Settings
 		Task<T?> RestoreState<T>(string Key, T? DefaultValueIfNotFound = default);
 
 		/// <summary>
-		/// Returns any States whose key matches the specified predicate.
-		/// </summary>
-		/// <typeparam name="T">The State type.</typeparam>
-		/// <param name="KeyPrefix">The string value the key should start with, like "Foo". Do not include wildcards.</param>
-		/// <returns>a list of matching States.</returns>
-		Task<IEnumerable<(string Key, T value)>> RestoreStateWhereKeyStartsWith<T>(string KeyPrefix);
-
-		/// <summary>
 		/// Removes a given State.
 		/// </summary>
 		/// <param name="Key">The State identifier.</param>
 		Task RemoveState(string Key);
-
-		/// <summary>
-		/// Removes any States whose key matches the specified predicate.
-		/// </summary>
-		/// <param name="KeyPrefix">The string value the key should start with, like "Foo". Do not include wildcards.</param>
-		Task RemoveStateWhereKeyStartsWith(string KeyPrefix);
 
 		/// <summary>
 		/// Waits for initialization of the storage service to be completed.

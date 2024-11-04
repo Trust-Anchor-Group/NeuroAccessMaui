@@ -14,7 +14,7 @@ namespace NeuroAccessMaui.Services
 	/// </summary>
 	/// <param name="Output">XML output is directed to this XML writer.</param>
 	/// <param name="BinaryDataSizeLimit">Size limit of binary data fields. If larger, only a byte count will be presented.</param>
-	public class XmlDatabaseExport(XmlWriter Output, int BinaryDataSizeLimit) : IDatabaseExport, IDisposable
+	public class XmlDatabaseExport(XmlWriter Output, int BinaryDataSizeLimit) : IDatabaseExportFilter, IDisposable
 	{
 		private readonly XmlWriter output = Output;
 		private readonly int binaryDataSizeLimit = BinaryDataSizeLimit;
@@ -32,70 +32,136 @@ namespace NeuroAccessMaui.Services
 			this.disposeWriter = true;
 		}
 
-		/// <inheritdoc/>
-		public Task StartDatabase()
+		/// <summary>
+		/// Is called when export of database is started.
+		/// </summary>
+		/// <returns>If export can continue.</returns>
+		public Task<bool> StartDatabase()
 		{
 			this.output.WriteStartElement("Database");
-			return Task.CompletedTask;
+			return Task.FromResult(true);
 		}
 
-		/// <inheritdoc/>
-		public Task EndDatabase()
+		/// <summary>
+		/// Is called when export of database is finished.
+		/// </summary>
+		/// <returns>If export can continue.</returns>
+		public Task<bool> EndDatabase()
 		{
 			this.output.WriteEndElement();
-			return Task.CompletedTask;
+			return Task.FromResult(true);
 		}
 
-		/// <inheritdoc/>
-		public Task StartCollection(string CollectionName)
+		/// <summary>
+		/// If a collection can be exported.
+		/// </summary>
+		/// <param name="CollectionName">Name of collection</param>
+		/// <returns>If the collection can be exported.</returns>
+		public bool CanExportCollection(string CollectionName)
+		{
+			return true;
+		}
+
+		/// <summary>
+		/// Is called when a collection is started.
+		/// </summary>
+		/// <param name="CollectionName">Name of collection</param>
+		/// <returns>If export can continue.</returns>
+		public Task<bool> StartCollection(string CollectionName)
 		{
 			this.output.WriteStartElement("Collection");
 			this.output.WriteAttributeString("name", CollectionName);
-			return Task.CompletedTask;
+			return Task.FromResult(true);
 		}
 
-		/// <inheritdoc/>
-		public Task EndCollection()
+		/// <summary>
+		/// Is called when a collection is finished.
+		/// </summary>
+		/// <returns>If export can continue.</returns>
+		public Task<bool> EndCollection()
 		{
 			this.output.WriteEndElement();
-			return Task.CompletedTask;
+			return Task.FromResult(true);
 		}
 
-		/// <inheritdoc/>
-		public Task StartIndex()
+		/// <summary>
+		/// Is called when an index in a collection is started.
+		/// </summary>
+		/// <returns>If export can continue.</returns>
+		public Task<bool> StartIndex()
 		{
 			this.output.WriteStartElement("Index");
-			return Task.CompletedTask;
+			return Task.FromResult(true);
 		}
 
-		/// <inheritdoc/>
-		public Task ReportIndexField(string FieldName, bool Ascending)
+		/// <summary>
+		/// Is called when a field in an index is reported.
+		/// </summary>
+		/// <param name="FieldName">Name of field.</param>
+		/// <param name="Ascending">If the field is sorted using ascending sort order.</param>
+		/// <returns>If export can continue.</returns>
+		public Task<bool> ReportIndexField(string FieldName, bool Ascending)
 		{
 			this.output.WriteStartElement("Index");
 			this.output.WriteAttributeString("field", FieldName);
 			this.output.WriteAttributeString("asc", CommonTypes.Encode(Ascending));
 			this.output.WriteEndElement();
-			return Task.CompletedTask;
+			return Task.FromResult(true);
 		}
 
-		/// <inheritdoc/>
-		public Task EndIndex()
+		/// <summary>
+		/// Is called when an index in a collection is finished.
+		/// </summary>
+		/// <returns>If export can continue.</returns>
+		public Task<bool> EndIndex()
 		{
 			this.output.WriteEndElement();
-			return Task.CompletedTask;
+			return Task.FromResult(true);
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// If an object can be exported.
+		/// </summary>
+		/// <param name="Object">Object to be exported.</param>
+		/// <returns>If the object can be exported.</returns>
+		public bool CanExportObject(GenericObject Object)
+		{
+			if (Object.CollectionName != "Settings")
+				return true;
+
+			if (!Object.TryGetFieldValue("Key", out object Value) || Value is not string Key)
+				return true;
+
+			if (Key.StartsWith(ServiceRef.XmppService.ContractsClient.ContractKeySettingsPrefix, StringComparison.Ordinal) ||
+				Key.StartsWith(ServiceRef.XmppService.ContractsClient.KeySettingsPrefix, StringComparison.Ordinal))
+			{
+				return false;
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		/// Is called when an object is started.
+		/// </summary>
+		/// <param name="ObjectId">ID of object.</param>
+		/// <param name="TypeName">Type name of object.</param>
+		/// <returns>Object ID of object, after optional mapping. null means export cannot continue</returns>
 		public Task<string> StartObject(string ObjectId, string TypeName)
 		{
 			this.output.WriteStartElement("Obj");
 			this.output.WriteAttributeString("id", ObjectId);
 			this.output.WriteAttributeString("type", TypeName);
-			return Task.FromResult<string>(ObjectId);
+			return Task.FromResult(ObjectId);
 		}
 
-		/// <inheritdoc/>
-		public async Task ReportProperty(string? PropertyName, object? PropertyValue)
+		/// <summary>
+		/// Is called when a property is reported.
+		/// </summary>
+		/// <param name="PropertyName">Property name.</param>
+		/// <param name="PropertyValue">Property value.</param>
+		/// <returns>If export can continue.</returns>
+		public async Task<bool> ReportProperty(string? PropertyName, object? PropertyValue)
 		{
 			if (PropertyValue is null)
 			{
@@ -443,24 +509,37 @@ namespace NeuroAccessMaui.Services
 						throw new Exception("Unhandled property value type: " + PropertyValue.GetType().FullName);
 				}
 			}
+
+			return true;
 		}
 
-		/// <inheritdoc/>
-		public Task EndObject()
+		/// <summary>
+		/// Is called when an object is finished.
+		/// </summary>
+		/// <returns>If export can continue.</returns>
+		public Task<bool> EndObject()
 		{
 			this.output.WriteEndElement();
-			return Task.CompletedTask;
+			return Task.FromResult(true);
 		}
 
-		/// <inheritdoc/>
-		public Task ReportError(string Message)
+		/// <summary>
+		/// Is called when an error is reported.
+		/// </summary>
+		/// <param name="Message">Error message.</param>
+		/// <returns>If export can continue.</returns>
+		public Task<bool> ReportError(string Message)
 		{
 			this.output.WriteElementString("Error", Message);
-			return Task.CompletedTask;
+			return Task.FromResult(true);
 		}
 
-		/// <inheritdoc/>
-		public async Task ReportException(Exception Exception)
+		/// <summary>
+		/// Is called when an exception has occurred.
+		/// </summary>
+		/// <param name="Exception">Exception object.</param>
+		/// <returns>If export can continue.</returns>
+		public async Task<bool> ReportException(Exception Exception)
 		{
 			this.output.WriteStartElement("Exception");
 			this.output.WriteAttributeString("message", Exception.Message);
@@ -475,6 +554,8 @@ namespace NeuroAccessMaui.Services
 				await this.ReportException(Exception.InnerException);
 
 			this.output.WriteEndElement();
+
+			return true;
 		}
 
 		/// <summary>

@@ -291,11 +291,11 @@ namespace NeuroAccessMaui
 					typeof(HttpxClient).Assembly);              // Support for HTTP over XMPP (HTTPX) URI Scheme.
 			}
 			// Register Exceptions that should generate Alert events instead of Critical events (i.e. one type higher). 
-			Log.RegisterAlertExceptionType(true, 
-				typeof(OutOfMemoryException), 
-				typeof(StackOverflowException), 
-				typeof(AccessViolationException), 
-				typeof(InsufficientMemoryException)); 
+			Log.RegisterAlertExceptionType(true,
+				typeof(OutOfMemoryException),
+				typeof(StackOverflowException),
+				typeof(AccessViolationException),
+				typeof(InsufficientMemoryException));
 
 			EndpointSecurity.SetCiphers(
 			[
@@ -796,6 +796,7 @@ namespace NeuroAccessMaui
 			}
 		}
 
+
 		internal static async Task SendAlert(string message, string contentType)
 		{
 			try
@@ -810,9 +811,7 @@ namespace NeuroAccessMaui
 
 				StringContent content = new(message);
 				content.Headers.ContentType = MediaTypeHeaderValue.Parse(contentType);
-			#if !DEBUG
 				await client.PostAsync("https://lab.tagroot.io/Alert.ws", content);
-			#endif
 			}
 			catch (Exception ex)
 			{
@@ -831,7 +830,7 @@ namespace NeuroAccessMaui
 			StringBuilder Xml = new();
 
 			using XmlDatabaseExport Output = new(Xml, true, 256);
-			await Database.Export(Output);
+			await ServiceRef.StorageService.Export(Output);
 
 			string AppDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 			FileName = Path.Combine(AppDataFolder, FileName);

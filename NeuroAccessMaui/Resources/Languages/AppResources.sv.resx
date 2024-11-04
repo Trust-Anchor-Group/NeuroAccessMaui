@@ -417,8 +417,8 @@
   <data name="OperatorDoesNotSupportRegisteringNewAccounts" xml:space="preserve">
     <value>Operatören {0} stöder inte registrering av nya konton</value>
   </data>
-  <data name="AccountNameAlreadyTaken" xml:space="preserve">
-    <value>Kontonamnet {0} är redan upptaget. Välj en annan.</value>
+  <data name="UsernameNameAlreadyTaken" xml:space="preserve">
+    <value>Användarnamnet är redan upptaget. Vänligen försök med ett annat.</value>
   </data>
   <data name="InvalidUsernameOrPassword" xml:space="preserve">
     <value>Ogiltigt användarnamn eller lösenord</value>
@@ -535,10 +535,10 @@
     <value>Det gick inte att koppla bort viewmodel {0} för sida {1}</value>
   </data>
   <data name="OnboardingPhonePageTitle" xml:space="preserve">
-    <value>Välkommen till Neuro-Access</value>
+    <value>Verifiera telefonnummer</value>
   </data>
   <data name="OnboardingPhonePageDetails" xml:space="preserve">
-    <value>För att bli verifierad måste du ange ditt telefonnummer</value>
+    <value>Vi skickar en verifieringskod till dig</value>
   </data>
   <data name="OnboardingEmailPageTitle" xml:space="preserve">
     <value>Verifiera e-postadressen</value>
@@ -559,10 +559,10 @@
     <value>Domän:</value>
   </data>
   <data name="OnboardingAccountPageTitle" xml:space="preserve">
-    <value>Skapa konto</value>
+    <value>Skapar konto...</value>
   </data>
   <data name="OnboardingAccountPageDetails" xml:space="preserve">
-    <value>Ange det namn du vill använda för ditt konto</value>
+    <value>Vänligen vänta medan vi förbereder allt åt dig</value>
   </data>
   <data name="OnboardingDefinePasswordPageTitle" xml:space="preserve">
     <value>Skapa en PIN kod</value>
@@ -570,17 +570,11 @@
   <data name="OnboardingFinalizePageTitle" xml:space="preserve">
     <value>Klar!</value>
   </data>
-  <data name="OnboardingFinalizePageDetails" xml:space="preserve">
-    <value>Du kan nu börja använda Neuro-Access</value>
-  </data>
   <data name="OnboardingBiometricsPageTitle" xml:space="preserve">
     <value>Nästan klar</value>
   </data>
   <data name="OnboardingBiometricsPageDetails" xml:space="preserve">
     <value>Neuro-Access fungerar bäst med {0}. Vill du aktivera den här funktionen? Detta kan också ändras i inställningarna senare.</value>
-  </data>
-  <data name="AccountSectionTitle" xml:space="preserve">
-    <value>Ange kontonamnet</value>
   </data>
   <data name="Create" xml:space="preserve">
     <value>Skapa</value>
@@ -624,6 +618,9 @@
   <data name="EmailValidationFormat" xml:space="preserve">
     <value>Ange en giltig e-postadress</value>
   </data>
+  <data name="PhoneValidationFormat" xml:space="preserve">
+    <value>Ange ett giltigt telefonnummer</value>
+  </data>
   <data name="ProviderSectionTitle" xml:space="preserve">
     <value>Välj ett alternativ</value>
   </data>
@@ -653,12 +650,6 @@
   </data>
   <data name="QrScanUri" xml:space="preserve">
     <value>URI:</value>
-  </data>
-  <data name="AccountValidationAlreadyExists" xml:space="preserve">
-    <value>Det här kontonamnet finns redan</value>
-  </data>
-  <data name="AccountAvailableAlternatives" xml:space="preserve">
-    <value>Följande namn är fortfarande tillgängliga:</value>
   </data>
   <data name="TestOtpUsed" xml:space="preserve">
     <value>En tillfällig OTP-kod har använts. Applikationen kommer sluta fungera om ungefär en vecka. Du måste ominstallera programmet för att använda det igen.</value>
@@ -1362,6 +1353,9 @@
   <data name="AccessRequest" xml:space="preserve">
     <value>Begäran om åtkomst</value>
   </data>
+  <data name="AccessRequestText2" xml:space="preserve">
+    <value>En förfrågan om att komma åt en av dina saker har mottagits. Välj hur du vill att saken ska svara på denna typ av förfrågan.</value>
+  </data>
   <data name="ContractCreated" xml:space="preserve">
     <value>Ett kontrakt har skapats.</value>
   </data>
@@ -1499,6 +1493,12 @@
   </data>
   <data name="BuyEDaler" xml:space="preserve">
     <value>Köp eDaler.</value>
+  </data>
+  <data name="Caller" xml:space="preserve">
+    <value>Anropare</value>
+  </data>
+  <data name="CallerAddress" xml:space="preserve">
+    <value>Anroparens Address</value>
   </data>
   <data name="CallerOnly" xml:space="preserve">
     <value>Endast uppringare</value>
@@ -2145,4 +2145,259 @@
   <data name="HardwareInfo" xml:space="preserve">
     <value>Hårdvara</value>
   </data>
+  <data name="OnboardingGetStartedTitle" xml:space="preserve">
+    <value>Välkommen till Neuro-Access</value>
+  </data> 
+  <data name="CreateNewAccount">
+    <value>Skapa nytt konto</value>
+  </data>
+  <data name="IAlreadyHaveAnAccount">
+    <value>Jag har redan ett konto</value>
+  </data>
+  <data name="OnboardingGetStartedQrInfo">
+    <value>Har du fått en inbjudan, överförings- eller återställningskod? Skanna den nedan</value>
+  </data>
+  <data name="OnboardingNameEntryTitle" xml:space="preserve">
+    <value>Välj ditt användarnamn</value>
+  </data> 
+  <data name="OnboardingNameEntryDetails" xml:space="preserve">
+    <value>Ditt användarnamn är permanent och kan inte ändras senare</value>
+  </data>
+  <data name="UseNickname" xml:space="preserve">
+    <value>Jag vill använda ett smeknamn</value>
+  </data>
+  <data name="UseRealName" xml:space="preserve">
+    <value>Jag vill använda mitt riktiga namn</value>
+  </data>
+  <data name="BeAnonymous" xml:space="preserve">
+    <value>Jag vill vara anonym</value>
+  </data>
+  <data name="Nickname" xml:space="preserve">
+    <value>Smeknamn</value>
+  </data>
+  <data name="OnboardingContactSupportTitle" xml:space="preserve">
+    <value>Återställ konto</value>
+  </data>
+  <data name="AccountDetails" xml:space="preserve">
+    <value>Kontouppgifter</value>
+  </data>
+  <data name="ServiceProvider" xml:space="preserve">
+    <value>Tjänsteleverantör</value>
+  </data>
+  <data name="Alternative" xml:space="preserve">
+    <value>Alternativ: </value>
+  </data>
+  <data name="InvalidUsernameCharacters" xml:space="preserve">
+    <value>Användarnamnet innehåller ogiltiga tecken.</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Användarnamn</value>
+  </data>
+  <data name="SendSeconds" xml:space="preserve">
+    <value>Skicka ({0})</value>
+  </data>
+  <data name="CreateWallet" xml:space="preserve">
+    <value>Skapa plånbok</value>
+  </data>
+  <data name="CreateWalletDescription" xml:space="preserve">
+    <value>Du skapar en plånbok genom att lägga lite pengar i den. Dessa pengar kallas eDaler och kan överföras till andra, online eller offline, eller användas för att köpa tjänster som erbjuds.</value>
+  </data>
+  <data name="Buy" xml:space="preserve">
+    <value>Köp</value>
+  </data>
+  <data name="BuyEDalerDescription" xml:space="preserve">
+    <value>Ange det belopp av eDaler du vill köpa nedan, och tryck sedan på Köp-knappen. En webb-sida kan komma att öppnas där du behöver fylla in ytterligare information så att betalningsleverantören kan validera din förfrågan.</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Belopp:</value>
+  </data>
+  <data name="Wallet" xml:space="preserve">
+    <value>Plånbok</value>
+  </data>
+  <data name="OpenWallet" xml:space="preserve">
+    <value>Öppna plånbok</value>
+  </data>
+  <data name="OpenWalletDescription" xml:space="preserve">
+    <value>Öppna din eDaler-plånbok för att visa aktuellt saldo och se senaste transaktioner.</value>
+  </data>
+  <data name="AccountEventDescription" xml:space="preserve">
+    <value>Nedan kan du se information om en kontohändelse.</value>
+  </data>
+  <data name="Balance" xml:space="preserve">
+    <value>Balans:</value>
+  </data>
+  <data name="OpenMessageLink" xml:space="preserve">
+    <value>Öppna meddelandelänken</value>
+  </data>
+  <data name="RemoteParty" xml:space="preserve">
+    <value>Andra parten:</value>
+  </data>
+  <data name="Reserved" xml:space="preserve">
+    <value>Reserverat:</value>
+  </data>
+  <data name="TransactionId" xml:space="preserve">
+    <value>Transaktions-ID:</value>
+  </data>
+  <data name="AccountEventItem" xml:space="preserve">
+    <value>Kontohändelser</value>
+  </data>
+  <data name="PendingPaymentItem" xml:space="preserve">
+    <value>Väntande betalningar</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsPart1" xml:space="preserve">
+    <value>Om du har tillgång till ditt konto på en annan enhet, vänligen följ dessa steg:</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet1" xml:space="preserve">
+    <value>Öppna appen på din andra enhet.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet2" xml:space="preserve">
+    <value>Gå till Inställningar → Överför identitet.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet3" xml:space="preserve">
+    <value>En QR-kod kommer att visas på den enheten.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet4" xml:space="preserve">
+    <value>Använd den här enheten för att skanna QR-koden och överföra ditt konto.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsPart2" xml:space="preserve">
+    <value>Om du inte har tillgång till ditt konto, vänligen kontakta vårt supportteam på</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsPart3" xml:space="preserve">
+    <value>.</value>
+  </data>
+  <data name="SupportEmailSubject" xml:space="preserve">
+    <value>Återställ konto</value>
+  </data>
+  <data name="EmailClientNotAvailable" xml:space="preserve">
+    <value>Kunde inte öppna e-postklienten. Vänligen skicka ett e-postmeddelande till {0}.</value>
+  </data>
+  <data name="ClaimThing" xml:space="preserve">
+    <value>Anspråk på sak</value>
+  </data>
+  <data name="InformationAboutClaimedThingText" xml:space="preserve">
+    <value>Följande information har gjorts tillgänglig om saken vars kod du skannade. Välj om du vill göra anspråk på denna sak som din, och också om du vill göra den publikt sökbar i sakregistret.</value>
+  </data>
+  <data name="InformationAboutThing" xml:space="preserve">
+    <value>Information om sak</value>
+  </data>
+  <data name="InformationAboutThingText" xml:space="preserve">
+    <value>Följande information har gjorts tillgänglig om saken. Alternativ för interaktion med saker presenteras nedan.</value>
+  </data>
+  <data name="MakeThingPublic" xml:space="preserve">
+    <value>Gör saken publik</value>
+  </data>
+  <data name="Thing" xml:space="preserve">
+    <value>Sak</value>
+  </data>
+  <data name="Chat" xml:space="preserve">
+    <value>Chatt</value>
+  </data>
+  <data name="ConnectToDevice" xml:space="preserve">
+    <value>Anslut till enhet</value>
+  </data>
+  <data name="DisconnectFromDevice" xml:space="preserve">
+    <value>Koppla från enhet</value>
+  </data>
+  <data name="DeleteRules" xml:space="preserve">
+    <value>Radera regler</value>
+  </data>
+  <data name="DisownThing" xml:space="preserve">
+    <value>Säg upp ägarskap</value>
+  </data>
+  <data name="ContractCouldNotBeFound" xml:space="preserve">
+    <value>Kontraktet kunde inte hittas, det kan ha blivit borttaget. Skulle du vilja ta bort referensen?</value>
+  </data>
+  <data name="PaymentDescription" xml:space="preserve">
+    <value>Ange belopped att betala till motagaren nedan. När du är klar, kan du välja att betala antingen online (om ansluten) eller offline, genom att klicka på motsvarande knapp.</value>
+  </data>
+  <data name="EncryptMessage" xml:space="preserve">
+    <value>Kryptera meddelandet</value>
+  </data>
+  <data name="SendPayment" xml:space="preserve">
+    <value>Skicka betalning</value>
+  </data>
+  <data name="ReferencedID" xml:space="preserve">
+    <value>Refererade ID</value>
+  </data>
+  <data name="ControlActuator" xml:space="preserve">
+    <value>Kontrollera Ställdon</value>
+  </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>Notifieringar</value>
+  </data>
+  <data name="NotificationsText" xml:space="preserve">
+    <value>Nedan kan du se en lista av notifieringar från interaktioner med sasken. Tryck på var och en för att visa mer information och tillgängliga alternativ.</value>
+  </data>
+  <data name="SensorDataText" xml:space="preserve">
+    <value>Nedan visas information om sensordata som är tillgänglig för dig, i enlighet med dina åtkomstprivilegier.</value>
+  </data>
+  <data name="SensorData" xml:space="preserve">
+    <value>Sensordata</value>
+  </data>
+  <data name="ReadSensor" xml:space="preserve">
+    <value>Läs Sensor</value>
+  </data>
+  <data name="Range" xml:space="preserve">
+    <value>Räckvidd</value>
+  </data>
+  <data name="RangeText" xml:space="preserve">
+    <value>Applicera denna regel på:</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Skicka in</value>
+  </data>
+  <data name="InformationAboutCallerText" xml:space="preserve">
+    <value>Följande information finns tillgänglig om anroparen:</value>
+  </data>
+  <data name="FriendlyName" xml:space="preserve">
+    <value>Vänligt namn</value>
+  </data>
+  <data name="ReadoutRequestText2" xml:space="preserve">
+    <value>En förfrågan om att läsa sensordata från en av dina saker har mottagits. Välj hur du vill att saken ska svara på denna typ av förfrågan.</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>Alla</value>
+  </data>
+  <data name="ComputedValues" xml:space="preserve">
+    <value>Beräknade värden</value>
+  </data>
+  <data name="FieldTypes" xml:space="preserve">
+    <value>Fälttyper</value>
+  </data>
+  <data name="HistoricalValues" xml:space="preserve">
+    <value>Historiska värden</value>
+  </data>
+  <data name="IdentityValues" xml:space="preserve">
+    <value>Identitetsvärden</value>
+  </data>
+  <data name="MomentaryValues" xml:space="preserve">
+    <value>Momentana värden</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>Inga</value>
+  </data>
+  <data name="PeakValues" xml:space="preserve">
+    <value>Extremvärden</value>
+  </data>
+  <data name="PermitFieldTypesText" xml:space="preserve">
+    <value>Välj vilka typer av fält (övergripande kategorier) som åtkomst ska beviljas till, om förfrågan accepteras.</value>
+  </data>
+  <data name="StatusValues" xml:space="preserve">
+    <value>Statusvärden</value>
+  </data>
+  <data name="Fields" xml:space="preserve">
+    <value>Fält</value>
+  </data>
+  <data name="PermitFieldsText" xml:space="preserve">
+    <value>Välj vilka fält som åtkomst ska beviljas till, om förfrågan accepteras.</value>
+  </data>
+  <data name="ARequestHasBeenSentToTheOwner" xml:space="preserve">
+    <value>En begäran har skickats till ägaren av enheten.</value>
+</data>
+<data name="ControlRequestText2" xml:space="preserve">
+  <value>En förfrågan om att styra en av dina saker har mottagits. Välj hur du vill att saken ska svara på denna typ av förfrågan.</value>
+</data>
+<data name="PermitParametersText" xml:space="preserve">
+  <value>Välj vilka parametrar som åtkomst ska beviljas till, om förfrågan accepteras.</value>
+</data>
 </root>

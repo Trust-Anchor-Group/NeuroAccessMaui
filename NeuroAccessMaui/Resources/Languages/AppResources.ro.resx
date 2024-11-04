@@ -417,8 +417,8 @@
   <data name="OperatorDoesNotSupportRegisteringNewAccounts" xml:space="preserve">
     <value>Operatorul {0} nu acceptă înregistrarea de conturi noi</value>
   </data>
-  <data name="AccountNameAlreadyTaken" xml:space="preserve">
-    <value>Numele contului {0} este deja luat. Alegeți altul.</value>
+  <data name="UsernameNameAlreadyTaken" xml:space="preserve">
+    <value>Numele de utilizator există deja. Vă rugăm să încercați altul.</value>
   </data>
   <data name="InvalidUsernameOrPassword" xml:space="preserve">
     <value>Nume de utilizator sau parolă nevalide</value>
@@ -535,10 +535,10 @@
     <value>Nu s-a reușit dezlegarea {0} modelului de vizualizare pentru pagina {1}</value>
   </data>
   <data name="OnboardingPhonePageTitle" xml:space="preserve">
-    <value>Bine ați venit la Neuro-Access</value>
+    <value>Vă rugăm să verificați numărul de telefon</value>
   </data>
   <data name="OnboardingPhonePageDetails" xml:space="preserve">
-    <value>Pentru a fi confirmat, trebuie să introduceți numărul de telefon</value>
+    <value>Vă vom trimite un cod de verificare</value>
   </data>
   <data name="OnboardingEmailPageTitle" xml:space="preserve">
     <value>Vă rugăm să verificați e-mailul</value>
@@ -559,10 +559,10 @@
     <value>Domeniu:</value>
   </data>
   <data name="OnboardingAccountPageTitle" xml:space="preserve">
-    <value>Creează cont</value>
+    <value>Crearea contului...</value>
   </data>
   <data name="OnboardingAccountPageDetails" xml:space="preserve">
-    <value>Introduceți numele pe care doriți să îl utilizați pentru contul dvs.</value>
+    <value>Vă rugăm să așteptați în timp ce configurăm lucrurile pentru dvs.</value>
   </data>
   <data name="OnboardingDefinePasswordPageTitle" xml:space="preserve">
     <value>Crearea unui cod PIN</value>
@@ -570,17 +570,11 @@
   <data name="OnboardingFinalizePageTitle" xml:space="preserve">
     <value>Succes!</value>
   </data>
-  <data name="OnboardingFinalizePageDetails" xml:space="preserve">
-    <value>Acum puteți începe să utilizați Neuro-Access</value>
-  </data>
   <data name="OnboardingBiometricsPageTitle" xml:space="preserve">
     <value>Aproape gata</value>
   </data>
   <data name="OnboardingBiometricsPageDetails" xml:space="preserve">
     <value>Neuro-Access funcționează cel mai bine atunci când utilizați {0}. Doriți să activați această caracteristică? Acest lucru poate fi, de asemenea, modificat în setări mai târziu</value>
-  </data>
-  <data name="AccountSectionTitle" xml:space="preserve">
-    <value>Introduceți numele contului</value>
   </data>
   <data name="Create" xml:space="preserve">
     <value>Crea</value>
@@ -624,6 +618,9 @@
   <data name="EmailValidationFormat" xml:space="preserve">
     <value>Vă rugăm să introduceți un e-mail valid</value>
   </data>
+  <data name="PhoneValidationFormat" xml:space="preserve">
+    <value>Vă rugăm să introduceți un număr de telefon valid</value>
+  </data>
   <data name="ProviderSectionTitle" xml:space="preserve">
     <value>Alegeți o opțiune</value>
   </data>
@@ -653,12 +650,6 @@
   </data>
   <data name="QrScanUri" xml:space="preserve">
     <value>URI:</value>
-  </data>
-  <data name="AccountValidationAlreadyExists" xml:space="preserve">
-    <value>Acest nume de cont există deja</value>
-  </data>
-  <data name="AccountAvailableAlternatives" xml:space="preserve">
-    <value>Următoarele nume sunt încă disponibile:</value>
   </data>
   <data name="TestOtpUsed" xml:space="preserve">
     <value>A fost utilizat un cod OTP temporar. Aplicația nu va mai funcționa în aproximativ o săptămână. Va trebui să reinstalați aplicația pentru a o utiliza din nou.</value>
@@ -1416,6 +1407,9 @@
   <data name="AccessRequestText" xml:space="preserve">
     <value>{0} dorește să se conecteze la dispozitivul dvs. {1}.</value>
   </data>
+  <data name="AccessRequestText2" xml:space="preserve">
+    <value>Un apelant a solicitat acces la unul dintre lucrurile dvs. Selectați cum doriți ca lucrul să răspundă la acest tip de solicitare.</value>
+  </data>
   <data name="ConcentratorServiceNotFound" xml:space="preserve">
     <value>Nu s-a găsit niciun serviciu de concentrator.</value>
   </data>
@@ -1499,6 +1493,12 @@
   </data>
   <data name="BuyEDaler" xml:space="preserve">
     <value>Cumpărați eDaler.</value>
+  </data>
+  <data name="Caller" xml:space="preserve">
+    <value>Apelant</value>
+  </data>
+  <data name="CallerAddress" xml:space="preserve">
+    <value>Adresa apelantului</value>
   </data>
   <data name="CallerOnly" xml:space="preserve">
     <value>Doar apelant</value>
@@ -2132,5 +2132,272 @@
   </data>
   <data name="TransferIdentityPageDetails" xml:space="preserve">
     <value>Pe celălalt dispozitiv, continuați cu înscrierea până când ajungeți la pagina furnizorului de servicii. Apăsați butonul de modificare și scanați acest QR. Acest lucru va elimina identitatea de pe acest dispozitiv.</value>
+  </data>
+  <data name="AppVersion" xml:space="preserve">
+    <value>Numărul versiunii</value>
+  </data>
+  <data name="BuildNumber" xml:space="preserve">
+    <value>Numărul versiunii</value>
+  </data>
+  <data name="Platform" xml:space="preserve">
+    <value>Peron</value>
+  </data>
+  <data name="HardwareInfo" xml:space="preserve">
+    <value>Hardware</value>
+  </data>
+  <data name="OnboardingGetStartedTitle" xml:space="preserve">
+    <value>Bine ați venit la Neuro-Access</value>
+  </data>
+  <data name="CreateNewAccount" xml:space="preserve">
+    <value>Creați un cont nou</value>
+  </data>
+  <data name="IAlreadyHaveAnAccount" xml:space="preserve">
+    <value>Am deja un cont</value>
+  </data>
+  <data name="OnboardingGetStartedQrInfo" xml:space="preserve">
+    <value>Ați primit un cod de invitație, transfer sau recuperare? Scanați-l mai jos</value>
+  </data>
+  <data name="OnboardingNameEntryTitle" xml:space="preserve">
+    <value>Alege-ți numele de utilizator</value>
+  </data>
+  <data name="OnboardingNameEntryDetails" xml:space="preserve">
+    <value>Numele tău de utilizator este permanent și nu poate fi schimbat ulterior</value>
+  </data>
+  <data name="UseNickname" xml:space="preserve">
+    <value>Aș dori să folosesc o poreclă</value>
+  </data>
+  <data name="UseRealName" xml:space="preserve">
+    <value>Aș dori să-mi folosesc numele real</value>
+  </data>
+  <data name="BeAnonymous" xml:space="preserve">
+    <value>Aș vrea să fiu anonim</value>
+  </data>
+  <data name="Nickname" xml:space="preserve">
+    <value>Poreclă</value>
+  </data>
+  <data name="OnboardingContactSupportTitle" xml:space="preserve">
+    <value>Recuperați contul</value>
+  </data>
+  <data name="AccountDetails" xml:space="preserve">
+    <value>Detalii cont</value>
+  </data>
+  <data name="ServiceProvider" xml:space="preserve">
+    <value>Furnizor de servicii</value>
+  </data>
+  <data name="Alternative" xml:space="preserve">
+    <value>Alternativ: </value>
+  </data>
+  <data name="InvalidUsernameCharacters" xml:space="preserve">
+    <value>Numele de utilizator conține caractere nevalide.</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Nume de utilizator</value>
+  </data>
+  <data name="SendSeconds" xml:space="preserve">
+    <value>Trimite ({0})</value>
+  </data>
+  <data name="CreateWallet" xml:space="preserve">
+    <value>Creează portofel</value>
+  </data>
+  <data name="CreateWalletDescription" xml:space="preserve">
+    <value>Creezi un portofel punând niște bani în el. Acești bani se numesc eDaler și pot fi transferați către alții, online sau offline, sau pot fi folosiți pentru a achiziționa serviciile oferite.</value>
+  </data>
+  <data name="Buy" xml:space="preserve">
+    <value>Cumpăra</value>
+  </data>
+  <data name="BuyEDalerDescription" xml:space="preserve">
+    <value>Furnizați mai jos suma de eDaler pe care doriți să o cumpărați și apăsați butonul Cumpărați. Se poate deschide o pagină web în care trebuie să completați informații suplimentare pentru ca procesatorul de plăți să vă valideze solicitarea.</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Sumă:</value>
+  </data>
+  <data name="Wallet" xml:space="preserve">
+    <value>Portofel</value>
+  </data>
+  <data name="OpenWallet" xml:space="preserve">
+    <value>Deschide portofelul</value>
+  </data>
+  <data name="OpenWalletDescription" xml:space="preserve">
+    <value>Deschideți portofelul eDaler pentru a afișa soldul curent și a vizualiza cele mai recente tranzacții.</value>
+  </data>
+  <data name="AccountEventDescription" xml:space="preserve">
+    <value>Mai jos puteți vedea informații despre un eveniment cu un singur cont.</value>
+  </data>
+  <data name="Balance" xml:space="preserve">
+    <value>Echilibru:</value>
+  </data>
+  <data name="OpenMessageLink" xml:space="preserve">
+    <value>Deschide linkul mesajului</value>
+  </data>
+  <data name="RemoteParty" xml:space="preserve">
+    <value>Petrecere la distanță:</value>
+  </data>
+  <data name="Reserved" xml:space="preserve">
+    <value>Rezervat:</value>
+  </data>
+  <data name="TransactionId" xml:space="preserve">
+    <value>ID-ul tranzacției:</value>
+  </data>
+  <data name="AccountEventItem" xml:space="preserve">
+    <value>Evenimente de cont</value>
+  </data>
+  <data name="PendingPaymentItem" xml:space="preserve">
+    <value>Plăți în așteptare</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsPart1" xml:space="preserve">
+    <value>Dacă aveți acces la contul dvs. de pe alt dispozitiv, vă rugăm să urmați acești pași:</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet1" xml:space="preserve">
+    <value>Deschideți aplicația pe celălalt dispozitiv.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet2" xml:space="preserve">
+    <value>Accesează Configurări → Transfer identitate.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet3" xml:space="preserve">
+    <value>Pe acel dispozitiv va apărea un cod QR.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet4" xml:space="preserve">
+    <value>Utilizați acest dispozitiv pentru a scana codul QR și a vă transfera contul.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsPart2" xml:space="preserve">
+    <value>Dacă nu aveți acces la contul dvs., vă rugăm să contactați echipa noastră de asistență la</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsPart3" xml:space="preserve">
+    <value>.</value>
+  </data>
+  <data name="SupportEmailSubject" xml:space="preserve">
+    <value>Recuperați contul</value>
+  </data>
+  <data name="EmailClientNotAvailable" xml:space="preserve">
+    <value>Nu se poate deschide clientul de e-mail. Vă rugăm să trimiteți un e-mail la {0}.</value>
+  </data>
+  <data name="ClaimThing" xml:space="preserve">
+    <value>Chestia de revendicare</value>
+  </data>
+  <data name="InformationAboutClaimedThingText" xml:space="preserve">
+    <value>Următoarele informații sunt puse la dispoziție despre lucrul al cărui cod l-ați scanat. Alegeți dacă doriți să încercați să revendicați acest lucru ca fiind al dvs. și, de asemenea, dacă doriți să îl faceți căutabil public în Registrul de lucruri.</value>
+  </data>
+  <data name="InformationAboutThing" xml:space="preserve">
+    <value>Informații despre lucru</value>
+  </data>
+  <data name="InformationAboutThingText" xml:space="preserve">
+    <value>Următoarele informații sunt disponibile la nivel local despre lucru. Opțiunile de interacțiune cu dispozitivul sunt prezentate mai jos.</value>
+  </data>
+  <data name="MakeThingPublic" xml:space="preserve">
+    <value>Faceți lucrurile publice</value>
+  </data>
+  <data name="Thing" xml:space="preserve">
+    <value>Lucru</value>
+  </data>
+  <data name="Chat" xml:space="preserve">
+    <value>Conversație</value>
+  </data>
+  <data name="ConnectToDevice" xml:space="preserve">
+    <value>Conectați-vă la dispozitiv</value>
+  </data>
+  <data name="DisconnectFromDevice" xml:space="preserve">
+    <value>Deconectați-vă de la dispozitiv</value>
+  </data>
+  <data name="DeleteRules" xml:space="preserve">
+    <value>Ștergeți regulile</value>
+  </data>
+  <data name="DisownThing" xml:space="preserve">
+    <value>Dezaprobă lucrul</value>
+  </data>
+  <data name="ContractCouldNotBeFound" xml:space="preserve">
+    <value>Contractul nu a putut fi găsit, ar fi putut fi șters. Doriți să eliminați referința?</value>
+  </data>
+  <data name="PaymentDescription" xml:space="preserve">
+    <value>Introduceți suma de plătit destinatarului mai jos. După ce ați terminat, puteți alege fie să plătiți online (dacă sunteți conectat), fie offline, făcând clic pe butonul corespunzător.</value>
+  </data>
+  <data name="EncryptMessage" xml:space="preserve">
+    <value>Criptați mesajul</value>
+  </data>
+  <data name="SendPayment" xml:space="preserve">
+    <value>Trimite plata</value>
+  </data>
+  <data name="ReferencedID" xml:space="preserve">
+    <value>ID de referință</value>
+  </data>
+  <data name="ControlActuator" xml:space="preserve">
+    <value>Control Actuator</value>
+  </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>Notificări</value>
+  </data>
+  <data name="NotificationsText" xml:space="preserve">
+    <value>Mai jos puteți vedea o listă de notificări rezultate din interacțiunile cu lucrarea. Apăsați pe fiecare pentru a afișa mai multe informații și opțiuni disponibile.</value>
+  </data>
+  <data name="SensorDataText" xml:space="preserve">
+    <value>Mai jos sunt informațiile și datele senzorilor disponibile pentru dvs., în conformitate cu privilegiile dvs. de acces.</value>
+  </data>
+  <data name="SensorData" xml:space="preserve">
+    <value>Date senzor</value>
+  </data>
+  <data name="ReadSensor" xml:space="preserve">
+    <value>Citiți senzorul</value>
+  </data>
+  <data name="Range" xml:space="preserve">
+    <value>Gama</value>
+  </data>
+  <data name="RangeText" xml:space="preserve">
+    <value>Aplicați această regulă pentru:</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Prezinte</value>
+  </data>
+  <data name="InformationAboutCallerText" xml:space="preserve">
+    <value>Următoarele informații sunt disponibile despre apelant:</value>
+  </data>
+  <data name="FriendlyName" xml:space="preserve">
+    <value>Nume prietenos</value>
+  </data>
+  <data name="ReadoutRequestText2" xml:space="preserve">
+    <value>Un apelant a solicitat date de senzor de la unul dintre lucrurile dvs. Selectați cum doriți ca lucrul să răspundă la acest tip de solicitare.</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>Tot</value>
+  </data>
+  <data name="ComputedValues" xml:space="preserve">
+    <value>Valori calculate</value>
+  </data>
+  <data name="FieldTypes" xml:space="preserve">
+    <value>Tipuri de câmpuri</value>
+  </data>
+  <data name="HistoricalValues" xml:space="preserve">
+    <value>Valori istorice</value>
+  </data>
+  <data name="IdentityValues" xml:space="preserve">
+    <value>Valori identitare</value>
+  </data>
+  <data name="MomentaryValues" xml:space="preserve">
+    <value>Valori de moment</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>Niciunul</value>
+  </data>
+  <data name="PeakValues" xml:space="preserve">
+    <value>Valori de vârf</value>
+  </data>
+  <data name="PermitFieldTypesText" xml:space="preserve">
+    <value>Alegeți tipurile de câmpuri (categorii largi) la care să permiteți accesul, dacă cererea este acceptată.</value>
+  </data>
+  <data name="StatusValues" xml:space="preserve">
+    <value>Valori de stare</value>
+  </data>
+  <data name="Fields" xml:space="preserve">
+    <value>Câmpuri</value>
+  </data>
+  <data name="PermitFieldsText" xml:space="preserve">
+    <value>Alegeți câmpurile la care să permiteți accesul, dacă solicitarea este acceptată.</value>
+  </data>
+  <data name="ARequestHasBeenSentToTheOwner" xml:space="preserve">
+    <value>A fost trimisă o solicitare proprietarului dispozitivului.</value>
+  </data>
+  <data name="ControlRequestText2" xml:space="preserve">
+    <value>Un apelant a cerut să controleze unul dintre lucrurile tale. Selectați cum doriți ca lucrul să răspundă la acest tip de solicitare.</value>
+  </data>
+  <data name="PermitParametersText" xml:space="preserve">
+    <value>Alegeți parametrii la care să permiteți accesul, dacă cererea este acceptată.</value>
   </data>
 </root>

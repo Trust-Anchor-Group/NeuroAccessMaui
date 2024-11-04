@@ -1,9 +1,10 @@
-﻿using System.ComponentModel;
+﻿using Microsoft.Extensions.Localization;
+using NeuroAccessMaui.Resources.Languages;
+using System.ComponentModel;
 using System.Globalization;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
-using Microsoft.Extensions.Localization;
-using NeuroAccessMaui.Resources.Languages;
 using Waher.Events;
 
 namespace NeuroAccessMaui.Services.Localization
@@ -61,26 +62,35 @@ namespace NeuroAccessMaui.Services.Localization
 
 			if (ResourcesType.GetRuntimeProperties().FirstOrDefault(pi => pi.Name == this.Path) is null)
 			{
-				lock (missingStrings)
-				{
-					timer?.Dispose();
-					timer = null;
-
-					if (!missingStrings.TryGetValue(ResourcesType, out SortedDictionary<string, bool>? PerId))
-					{
-						PerId = [];
-						missingStrings[ResourcesType] = PerId;
-					}
-
-					PerId[this.Path] = true;
-
-					timer = new Timer(LogAlert, null, 1000, Timeout.Infinite);
-				}
-
+				ReportMissingString(this.Path, ResourcesType);
 				return new Binding("Localizer[STRINGNOTDEFINED]", this.Mode, this.Converter, this.ConverterParameter, this.StringFormat, this);
 			}
 
 			return new Binding($"Localizer[{this.Path}]", this.Mode, this.Converter, this.ConverterParameter, this.StringFormat, this);
+		}
+
+		/// <summary>
+		/// Reports a missing string
+		/// </summary>
+		/// <param name="StringId">String ID without localized value.</param>
+		/// <param name="Type">Type referencing string.</param>
+		public static void ReportMissingString(string StringId, Type Type)
+		{
+			lock (missingStrings)
+			{
+				timer?.Dispose();
+				timer = null;
+
+				if (!missingStrings.TryGetValue(Type, out SortedDictionary<string, bool>? PerId))
+				{
+					PerId = [];
+					missingStrings[Type] = PerId;
+				}
+
+				PerId[StringId] = true;
+
+				timer = new Timer(LogAlert, null, 1000, Timeout.Infinite);
+			}
 		}
 
 		private static void LogAlert(object? _)

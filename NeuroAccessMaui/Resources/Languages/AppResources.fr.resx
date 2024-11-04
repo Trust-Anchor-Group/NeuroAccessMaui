@@ -417,8 +417,8 @@
   <data name="OperatorDoesNotSupportRegisteringNewAccounts" xml:space="preserve">
     <value>L’opérateur ne prend pas en charge l’enregistrement de nouveaux comptes {0}</value>
   </data>
-  <data name="AccountNameAlreadyTaken" xml:space="preserve">
-    <value>Le nom du compte {0} est déjà pris. Choisissez-en un autre.</value>
+  <data name="UsernameNameAlreadyTaken" xml:space="preserve">
+    <value>Le nom d’utilisateur existe déjà. Veuillez en essayer un autre.</value>
   </data>
   <data name="InvalidUsernameOrPassword" xml:space="preserve">
     <value>Nom d’utilisateur ou mot de passe non valide</value>
@@ -535,10 +535,10 @@
     <value>Impossible de dissocier le {0} viewmodel pour la page {1}</value>
   </data>
   <data name="OnboardingPhonePageTitle" xml:space="preserve">
-    <value>Bienvenue à Neuro-Accès</value>
+    <value>Veuillez vérifier le numéro de téléphone</value>
   </data>
   <data name="OnboardingPhonePageDetails" xml:space="preserve">
-    <value>Pour être vérifié, vous devez entrer votre numéro de téléphone</value>
+    <value>Nous vous enverrons un code de vérification</value>
   </data>
   <data name="OnboardingEmailPageTitle" xml:space="preserve">
     <value>Veuillez vérifier l’adresse e-mail</value>
@@ -559,10 +559,10 @@
     <value>Domaine:</value>
   </data>
   <data name="OnboardingAccountPageTitle" xml:space="preserve">
-    <value>Créer un compte</value>
+    <value>Création d’un compte...</value>
   </data>
   <data name="OnboardingAccountPageDetails" xml:space="preserve">
-    <value>Entrez le nom que vous souhaitez utiliser pour votre compte</value>
+    <value>Veuillez patienter pendant que nous configurons les choses pour vous</value>
   </data>
   <data name="OnboardingDefinePasswordPageTitle" xml:space="preserve">
     <value>Créer un code PIN</value>
@@ -570,17 +570,11 @@
   <data name="OnboardingFinalizePageTitle" xml:space="preserve">
     <value>Succès!</value>
   </data>
-  <data name="OnboardingFinalizePageDetails" xml:space="preserve">
-    <value>Vous pouvez maintenant commencer à utiliser Neuro-Access</value>
-  </data>
   <data name="OnboardingBiometricsPageTitle" xml:space="preserve">
     <value>Presque terminé</value>
   </data>
   <data name="OnboardingBiometricsPageDetails" xml:space="preserve">
     <value>Neuro-Access fonctionne mieux lors de l’utilisation de {0}. Souhaitez-vous activer cette fonctionnalité ? Cela peut également être modifié dans les paramètres ultérieurement</value>
-  </data>
-  <data name="AccountSectionTitle" xml:space="preserve">
-    <value>Entrez le nom du compte</value>
   </data>
   <data name="Create" xml:space="preserve">
     <value>Créer</value>
@@ -624,6 +618,9 @@
   <data name="EmailValidationFormat" xml:space="preserve">
     <value>Veuillez saisir une adresse e-mail valide</value>
   </data>
+  <data name="PhoneValidationFormat" xml:space="preserve">
+    <value>Veuillez saisir un numéro de téléphone valide</value>
+  </data>
   <data name="ProviderSectionTitle" xml:space="preserve">
     <value>Choisissez une option</value>
   </data>
@@ -653,12 +650,6 @@
   </data>
   <data name="QrScanUri" xml:space="preserve">
     <value>URI:</value>
-  </data>
-  <data name="AccountValidationAlreadyExists" xml:space="preserve">
-    <value>Ce nom de compte existe déjà</value>
-  </data>
-  <data name="AccountAvailableAlternatives" xml:space="preserve">
-    <value>Les noms suivants sont toujours disponibles :</value>
   </data>
   <data name="TestOtpUsed" xml:space="preserve">
     <value>Un code OTP temporaire a été utilisé. L’application cessera de fonctionner dans environ une semaine. Vous devrez réinstaller l’application pour l’utiliser à nouveau.</value>
@@ -1416,6 +1407,9 @@
   <data name="AccessRequestText" xml:space="preserve">
     <value>{0} souhaite se connecter à votre appareil {1}.</value>
   </data>
+  <data name="AccessRequestText2" xml:space="preserve">
+    <value>Un appelant a demandé l’accès à l’un de vos objets. Sélectionnez la façon dont vous souhaitez que l’objet réponde à ce type de demande.</value>
+  </data>
   <data name="ConcentratorServiceNotFound" xml:space="preserve">
     <value>Aucun service de concentrateur trouvé.</value>
   </data>
@@ -1499,6 +1493,12 @@
   </data>
   <data name="BuyEDaler" xml:space="preserve">
     <value>Acheter eDaler.</value>
+  </data>
+  <data name="Caller" xml:space="preserve">
+    <value>Visiteur</value>
+  </data>
+  <data name="CallerAddress" xml:space="preserve">
+    <value>Adresse de l’appelant</value>
   </data>
   <data name="CallerOnly" xml:space="preserve">
     <value>Appelant uniquement</value>
@@ -2132,5 +2132,272 @@
   </data>
   <data name="TransferIdentityPageDetails" xml:space="preserve">
     <value>Sur votre autre appareil, poursuivez l’intégration jusqu’à ce que vous atteigniez la page du fournisseur de services. Appuyez sur le bouton de changement et scannez ce QR. Cela supprimera l’identité de cet appareil.</value>
+  </data>
+  <data name="AppVersion" xml:space="preserve">
+    <value>Numéro de version</value>
+  </data>
+  <data name="BuildNumber" xml:space="preserve">
+    <value>Numéro de build</value>
+  </data>
+  <data name="Platform" xml:space="preserve">
+    <value>Plateforme</value>
+  </data>
+  <data name="HardwareInfo" xml:space="preserve">
+    <value>Matériel</value>
+  </data>
+  <data name="OnboardingGetStartedTitle" xml:space="preserve">
+    <value>Bienvenue à Neuro-Accès</value>
+  </data>
+  <data name="CreateNewAccount" xml:space="preserve">
+    <value>Créer un nouveau compte</value>
+  </data>
+  <data name="IAlreadyHaveAnAccount" xml:space="preserve">
+    <value>J’ai déjà un compte</value>
+  </data>
+  <data name="OnboardingGetStartedQrInfo" xml:space="preserve">
+    <value>Vous avez reçu un code d’invitation, de transfert ou de récupération ? Scannez-le ci-dessous</value>
+  </data>
+  <data name="OnboardingNameEntryTitle" xml:space="preserve">
+    <value>Choisissez votre nom d’utilisateur</value>
+  </data>
+  <data name="OnboardingNameEntryDetails" xml:space="preserve">
+    <value>Votre nom d’utilisateur est permanent et ne peut pas être modifié par la suite</value>
+  </data>
+  <data name="UseNickname" xml:space="preserve">
+    <value>J’aimerais utiliser un pseudo</value>
+  </data>
+  <data name="UseRealName" xml:space="preserve">
+    <value>J’aimerais utiliser mon vrai nom</value>
+  </data>
+  <data name="BeAnonymous" xml:space="preserve">
+    <value>Je souhaite garder l’anonymat</value>
+  </data>
+  <data name="Nickname" xml:space="preserve">
+    <value>Surnom</value>
+  </data>
+  <data name="OnboardingContactSupportTitle" xml:space="preserve">
+    <value>Récupérer le compte</value>
+  </data>
+  <data name="AccountDetails" xml:space="preserve">
+    <value>Détails du compte</value>
+  </data>
+  <data name="ServiceProvider" xml:space="preserve">
+    <value>Fournisseur de services</value>
+  </data>
+  <data name="Alternative" xml:space="preserve">
+    <value>Alternatif: </value>
+  </data>
+  <data name="InvalidUsernameCharacters" xml:space="preserve">
+    <value>Le nom d’utilisateur contient des caractères non valides.</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Nom d’utilisateur</value>
+  </data>
+  <data name="SendSeconds" xml:space="preserve">
+    <value>Envoyer ({0})</value>
+  </data>
+  <data name="CreateWallet" xml:space="preserve">
+    <value>Créer un portefeuille</value>
+  </data>
+  <data name="CreateWalletDescription" xml:space="preserve">
+    <value>Vous créez un portefeuille en y mettant de l’argent. Cet argent s’appelle eDaler et peut être transféré à d’autres, en ligne ou hors ligne, ou être utilisé pour acheter des services offerts.</value>
+  </data>
+  <data name="Buy" xml:space="preserve">
+    <value>Acheter</value>
+  </data>
+  <data name="BuyEDalerDescription" xml:space="preserve">
+    <value>Indiquez ci-dessous le montant d’eDaler que vous souhaitez acheter et appuyez sur le bouton Acheter. Une page Web peut s’ouvrir où vous devez remplir des informations supplémentaires pour que le processeur de paiement puisse valider votre demande.</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Quantité:</value>
+  </data>
+  <data name="Wallet" xml:space="preserve">
+    <value>Portefeuille</value>
+  </data>
+  <data name="OpenWallet" xml:space="preserve">
+    <value>Ouvrir le portefeuille</value>
+  </data>
+  <data name="OpenWalletDescription" xml:space="preserve">
+    <value>Ouvrez votre portefeuille eDaler pour afficher le solde actuel et consulter les dernières transactions.</value>
+  </data>
+  <data name="AccountEventDescription" xml:space="preserve">
+    <value>Vous trouverez ci-dessous des informations sur un événement de compte unique.</value>
+  </data>
+  <data name="Balance" xml:space="preserve">
+    <value>Balance:</value>
+  </data>
+  <data name="OpenMessageLink" xml:space="preserve">
+    <value>Ouvrir le lien du message</value>
+  </data>
+  <data name="RemoteParty" xml:space="preserve">
+    <value>Soirée à distance :</value>
+  </data>
+  <data name="Reserved" xml:space="preserve">
+    <value>Réservé:</value>
+  </data>
+  <data name="TransactionId" xml:space="preserve">
+    <value>ID de transaction :</value>
+  </data>
+  <data name="AccountEventItem" xml:space="preserve">
+    <value>Événements de compte</value>
+  </data>
+  <data name="PendingPaymentItem" xml:space="preserve">
+    <value>Paiements en attente</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsPart1" xml:space="preserve">
+    <value>Si vous avez accès à votre compte sur un autre appareil, veuillez suivre les étapes suivantes :</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet1" xml:space="preserve">
+    <value>Ouvrez l’application sur votre autre appareil.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet2" xml:space="preserve">
+    <value>Allez dans Paramètres → Transférer l’identité.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet3" xml:space="preserve">
+    <value>Un code QR apparaîtra sur cet appareil.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet4" xml:space="preserve">
+    <value>Utilisez cet appareil pour scanner le code QR et transférer votre compte.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsPart2" xml:space="preserve">
+    <value>Si vous n’avez pas accès à votre compte, veuillez contacter notre équipe d’assistance à l’adresse suivante :</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsPart3" xml:space="preserve">
+    <value>.</value>
+  </data>
+  <data name="SupportEmailSubject" xml:space="preserve">
+    <value>Récupérer le compte</value>
+  </data>
+  <data name="EmailClientNotAvailable" xml:space="preserve">
+    <value>Impossible d’ouvrir le client de messagerie. Veuillez envoyer un e-mail à {0}.</value>
+  </data>
+  <data name="ClaimThing" xml:space="preserve">
+    <value>Revendiquer l’objet</value>
+  </data>
+  <data name="InformationAboutClaimedThingText" xml:space="preserve">
+    <value>Les informations suivantes sont disponibles sur l’objet dont vous avez scanné le code. Choisissez si vous souhaitez tenter de revendiquer cet objet comme étant le vôtre, et également si vous souhaitez le rendre accessible au public dans le registre des objets.</value>
+  </data>
+  <data name="InformationAboutThing" xml:space="preserve">
+    <value>Informations sur l’objet</value>
+  </data>
+  <data name="InformationAboutThingText" xml:space="preserve">
+    <value>Les informations suivantes sont disponibles localement à ce sujet. Les options d’interaction avec l’appareil sont présentées ci-dessous.</value>
+  </data>
+  <data name="MakeThingPublic" xml:space="preserve">
+    <value>Rendre la chose publique</value>
+  </data>
+  <data name="Thing" xml:space="preserve">
+    <value>Chose</value>
+  </data>
+  <data name="Chat" xml:space="preserve">
+    <value>Bavarder</value>
+  </data>
+  <data name="ConnectToDevice" xml:space="preserve">
+    <value>Se connecter à l’appareil</value>
+  </data>
+  <data name="DisconnectFromDevice" xml:space="preserve">
+    <value>Déconnecter de l’appareil</value>
+  </data>
+  <data name="DeleteRules" xml:space="preserve">
+    <value>Supprimer les règles</value>
+  </data>
+  <data name="DisownThing" xml:space="preserve">
+    <value>Renier quelque chose</value>
+  </data>
+  <data name="ContractCouldNotBeFound" xml:space="preserve">
+    <value>Le contrat n’a pas pu être trouvé, il aurait pu être supprimé. Souhaitez-vous supprimer la référence ?</value>
+  </data>
+  <data name="PaymentDescription" xml:space="preserve">
+    <value>Entrez le montant à payer au destinataire ci-dessous. Une fois cela fait, vous pouvez choisir de payer en ligne (si connecté) ou hors ligne, en cliquant sur le bouton correspondant.</value>
+  </data>
+  <data name="EncryptMessage" xml:space="preserve">
+    <value>Chiffrer le message</value>
+  </data>
+  <data name="SendPayment" xml:space="preserve">
+    <value>Envoyer le paiement</value>
+  </data>
+  <data name="ReferencedID" xml:space="preserve">
+    <value>ID référencé</value>
+  </data>
+  <data name="ControlActuator" xml:space="preserve">
+    <value>Actionneur de contrôle</value>
+  </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>Notifications</value>
+  </data>
+  <data name="NotificationsText" xml:space="preserve">
+    <value>Ci-dessous, vous pouvez voir une liste de notifications résultant d’interactions avec l’objet. Appuyez sur chacun d’eux pour afficher plus d’informations et d’options disponibles.</value>
+  </data>
+  <data name="SensorDataText" xml:space="preserve">
+    <value>Vous trouverez ci-dessous les informations et les données des capteurs dont vous disposez, conformément à vos privilèges d’accès.</value>
+  </data>
+  <data name="SensorData" xml:space="preserve">
+    <value>Données du capteur</value>
+  </data>
+  <data name="ReadSensor" xml:space="preserve">
+    <value>Capteur de lecture</value>
+  </data>
+  <data name="Range" xml:space="preserve">
+    <value>Gamme</value>
+  </data>
+  <data name="RangeText" xml:space="preserve">
+    <value>Appliquez cette règle aux éléments suivants :</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Envoyer</value>
+  </data>
+  <data name="InformationAboutCallerText" xml:space="preserve">
+    <value>Les informations suivantes sont disponibles sur l’appelant :</value>
+  </data>
+  <data name="FriendlyName" xml:space="preserve">
+    <value>Nom convivial</value>
+  </data>
+  <data name="ReadoutRequestText2" xml:space="preserve">
+    <value>Un appelant a demandé des données de capteur à l’un de vos objets. Sélectionnez la façon dont vous souhaitez que l’objet réponde à ce type de demande.</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>Tout</value>
+  </data>
+  <data name="ComputedValues" xml:space="preserve">
+    <value>Valeurs calculées</value>
+  </data>
+  <data name="FieldTypes" xml:space="preserve">
+    <value>Types de champs</value>
+  </data>
+  <data name="HistoricalValues" xml:space="preserve">
+    <value>Valeurs historiques</value>
+  </data>
+  <data name="IdentityValues" xml:space="preserve">
+    <value>Valeurs identitaires</value>
+  </data>
+  <data name="MomentaryValues" xml:space="preserve">
+    <value>Valeurs momentanées</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>Aucun</value>
+  </data>
+  <data name="PeakValues" xml:space="preserve">
+    <value>Valeurs maximales</value>
+  </data>
+  <data name="PermitFieldTypesText" xml:space="preserve">
+    <value>Choisissez les types de champs (grandes catégories) auxquels vous autorisez l’accès, si la demande est acceptée.</value>
+  </data>
+  <data name="StatusValues" xml:space="preserve">
+    <value>Valeurs d’état</value>
+  </data>
+  <data name="Fields" xml:space="preserve">
+    <value>Champs</value>
+  </data>
+  <data name="PermitFieldsText" xml:space="preserve">
+    <value>Choisissez les champs auxquels autoriser l’accès, si la demande est acceptée.</value>
+  </data>
+  <data name="ARequestHasBeenSentToTheOwner" xml:space="preserve">
+    <value>Une demande a été envoyée au propriétaire de l’appareil.</value>
+  </data>
+  <data name="ControlRequestText2" xml:space="preserve">
+    <value>Un appelant a demandé à contrôler l’un de vos objets. Sélectionnez la façon dont vous souhaitez que l’objet réponde à ce type de demande.</value>
+  </data>
+  <data name="PermitParametersText" xml:space="preserve">
+    <value>Choisissez les paramètres auxquels autoriser l’accès, si la demande est acceptée.</value>
   </data>
 </root>

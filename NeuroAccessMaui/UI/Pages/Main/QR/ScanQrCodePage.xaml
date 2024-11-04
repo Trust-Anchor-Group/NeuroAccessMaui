@@ -79,7 +79,9 @@
 					<Grid.Padding>
 						<Thickness Left="{StaticResource LargeSpacing}" Top="{StaticResource LargeSpacing}" Right="{StaticResource LargeSpacing}" />
 					</Grid.Padding>
-					<controls:ImageButton Command="{Binding GoBackCommand}" Style="{StaticResource ImageOnlyButton}" />
+					<controls:ImageButton HorizontalOptions="Start" Command="{Binding Path=SwitchModeCommand, Source={x:Reference ThisPage}}"
+													Style="{StaticResource ImageOnlyButton}"
+													PathData="{x:Static ui:Geometries.BackButtonPath}" />
 				</Grid>
 
 				<ScrollView Grid.Row="1">

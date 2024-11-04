@@ -71,6 +71,21 @@ namespace NeuroAccessMaui.Services.Tag
 		string? SelectedCountry { get; }
 
 		/// <summary>
+		/// User's first name(s).
+		/// </summary>
+		string? FirstName { get; set; }
+
+		/// <summary>
+		/// User's last name(s).
+		/// </summary>
+		string? LastName { get; set; }
+
+		/// <summary>
+		/// User's friendly name.
+		/// </summary>
+		string? FriendlyName { get; set; }
+
+		/// <summary>
 		/// Verified phone number.
 		/// </summary>
 		string? PhoneNumber { get; }
@@ -168,7 +183,7 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <summary>
 		/// Indicates if the password is numeric.
 		/// </summary>
-		bool IsNumericPassword { get;}
+		bool IsNumericPassword { get; }
 
 		/// <summary>
 		/// How the user authenticates itself with the App.
@@ -224,6 +239,16 @@ namespace NeuroAccessMaui.Services.Tag
 		/// If there exist <see cref="ContractReference"/> objects created, referencing contract templates for the creation of tokens.
 		/// </summary>
 		bool HasContractTokenCreationTemplatesReferences { get; set; }
+
+		/// <summary>
+		/// If the user has a wallet.
+		/// </summary>
+		bool HasWallet { get; set; }
+
+		/// <summary>
+		/// If the user has a thing.
+		/// </summary>
+		bool HasThing { get; set; }
 
 		/// <summary>
 		/// Returns <c>true</c> if the current <see cref="ITagProfile"/> has changed values and need saving, <c>false</c> otherwise.

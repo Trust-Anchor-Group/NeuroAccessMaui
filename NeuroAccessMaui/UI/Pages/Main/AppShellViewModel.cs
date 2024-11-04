@@ -1,12 +1,17 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using EDaler;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Applications.Applications;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Main.Settings;
+using NeuroAccessMaui.UI.Pages.Things.MyThings;
+using NeuroAccessMaui.UI.Pages.Wallet.MyWallet;
+using Waher.Persistence;
 
 namespace NeuroAccessMaui.UI.Pages.Main
 {
@@ -79,6 +84,8 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			this.CanShowCreateContractCommand = ServiceRef.TagProfile.HasContractTemplateReferences;
 			this.CanShowCreateTokenCommand = ServiceRef.TagProfile.HasContractTokenCreationTemplatesReferences;
 			this.CanShowContactsCommand = ServiceRef.XmppService.Roster is not null && ServiceRef.XmppService.Roster.Length > 0;
+			this.CanShowWalletCommand = ServiceRef.TagProfile.HasWallet;
+			this.CanShowThingsCommand = ServiceRef.TagProfile.HasThing;
 		}
 
 		/// <summary>
@@ -107,7 +114,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		{
 			try
 			{
-				if(await App.AuthenticateUser(AuthenticationPurpose.ViewId))
+				if (await App.AuthenticateUser(AuthenticationPurpose.ViewId))
 					await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage));
 			}
 			catch (Exception ex)
@@ -221,6 +228,48 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			{
 				ContactListNavigationArgs Args = new();
 				await ServiceRef.UiService.GoToAsync(nameof(MyContactsPage), Args, BackMethod.Pop);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
+		}
+
+		/// <summary>
+		/// If the Wallet command should be displayed.
+		/// </summary>
+		[ObservableProperty]
+		private bool canShowWalletCommand;
+
+		[RelayCommand]
+		internal static async Task ShowWallet()
+		{
+			try
+			{
+				Balance Balance = await ServiceRef.XmppService.GetEDalerBalance();
+				(decimal PendingAmount, string PendingCurrency, PendingPayment[] PendingPayments) = await ServiceRef.XmppService.GetPendingEDalerPayments();
+				(AccountEvent[] Events, bool More) = await ServiceRef.XmppService.GetEDalerAccountEvents(Constants.BatchSizes.AccountEventBatchSize);
+
+				WalletNavigationArgs Args = new(Balance, PendingAmount, PendingCurrency, PendingPayments, Events, More);
+
+				await ServiceRef.UiService.GoToAsync(nameof(MyEDalerWalletPage), Args, BackMethod.Pop);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
+			}
+		}
+
+		[ObservableProperty]
+		private bool canShowThingsCommand;
+
+		[RelayCommand]
+		private static async Task ShowThings()
+		{
+			try
+			{
+				await ServiceRef.UiService.GoToAsync(nameof(MyThingsPage));
 			}
 			catch (Exception ex)
 			{

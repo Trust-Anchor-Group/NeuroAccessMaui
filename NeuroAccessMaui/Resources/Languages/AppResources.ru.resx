@@ -417,8 +417,8 @@
   <data name="OperatorDoesNotSupportRegisteringNewAccounts" xml:space="preserve">
     <value>Оператор {0} не поддерживает регистрацию новых аккаунтов</value>
   </data>
-  <data name="AccountNameAlreadyTaken" xml:space="preserve">
-    <value>Имя учетной записи {0} уже занято. Выберите другой.</value>
+  <data name="UsernameNameAlreadyTaken" xml:space="preserve">
+    <value>Имя пользователя уже существует. Пожалуйста, попробуйте другой.</value>
   </data>
   <data name="InvalidUsernameOrPassword" xml:space="preserve">
     <value>Неверное имя пользователя или пароль</value>
@@ -535,10 +535,10 @@
     <value>Не удалось отвязать {0} модели представления для {1} страницы</value>
   </data>
   <data name="OnboardingPhonePageTitle" xml:space="preserve">
-    <value>Добро пожаловать в Neuro-Access</value>
+    <value>Пожалуйста, подтвердите номер телефона</value>
   </data>
   <data name="OnboardingPhonePageDetails" xml:space="preserve">
-    <value>Чтобы пройти верификацию, нужно ввести свой номер телефона</value>
+    <value>Мы вышлем вам код подтверждения</value>
   </data>
   <data name="OnboardingEmailPageTitle" xml:space="preserve">
     <value>Пожалуйста, подтвердите адрес электронной почты</value>
@@ -559,10 +559,10 @@
     <value>Домен:</value>
   </data>
   <data name="OnboardingAccountPageTitle" xml:space="preserve">
-    <value>Создать аккаунт</value>
+    <value>Создание учетной записи...</value>
   </data>
   <data name="OnboardingAccountPageDetails" xml:space="preserve">
-    <value>Введите имя, которое вы хотите использовать для своей учетной записи</value>
+    <value>Пожалуйста, подождите, пока мы все настроим для вас</value>
   </data>
   <data name="OnboardingDefinePasswordPageTitle" xml:space="preserve">
     <value>Создание PIN-кода</value>
@@ -570,17 +570,11 @@
   <data name="OnboardingFinalizePageTitle" xml:space="preserve">
     <value>Успех!</value>
   </data>
-  <data name="OnboardingFinalizePageDetails" xml:space="preserve">
-    <value>Теперь вы можете начать использовать Neuro-Access</value>
-  </data>
   <data name="OnboardingBiometricsPageTitle" xml:space="preserve">
     <value>Почти готово</value>
   </data>
   <data name="OnboardingBiometricsPageDetails" xml:space="preserve">
     <value>Neuro-Access лучше всего работает при использовании {0}. Хотите включить эту функцию? Это также можно изменить в настройках позже</value>
-  </data>
-  <data name="AccountSectionTitle" xml:space="preserve">
-    <value>Введите имя учетной записи</value>
   </data>
   <data name="Create" xml:space="preserve">
     <value>Создавать</value>
@@ -624,6 +618,9 @@
   <data name="EmailValidationFormat" xml:space="preserve">
     <value>Пожалуйста, введите действительный адрес электронной почты</value>
   </data>
+  <data name="PhoneValidationFormat" xml:space="preserve">
+    <value>Пожалуйста, введите действующий номер телефона</value>
+  </data>
   <data name="ProviderSectionTitle" xml:space="preserve">
     <value>Выберите один вариант</value>
   </data>
@@ -653,12 +650,6 @@
   </data>
   <data name="QrScanUri" xml:space="preserve">
     <value>УРИ:</value>
-  </data>
-  <data name="AccountValidationAlreadyExists" xml:space="preserve">
-    <value>Это имя учетной записи уже существует</value>
-  </data>
-  <data name="AccountAvailableAlternatives" xml:space="preserve">
-    <value>По-прежнему доступны следующие имена:</value>
   </data>
   <data name="TestOtpUsed" xml:space="preserve">
     <value>Использован временный OTP-код. Приложение перестанет работать примерно через неделю. Вам придется переустановить приложение, чтобы использовать его снова.</value>
@@ -1416,6 +1407,9 @@
   <data name="AccessRequestText" xml:space="preserve">
     <value>{0} хочет подключиться к вашему устройству {1}.</value>
   </data>
+  <data name="AccessRequestText2" xml:space="preserve">
+    <value>Звонящий запросил доступ к одной из ваших вещей. Выберите, как бы вы хотели, чтобы вещь реагировала на данный тип запроса.</value>
+  </data>
   <data name="ConcentratorServiceNotFound" xml:space="preserve">
     <value>Обслуживание концентратора не найдено.</value>
   </data>
@@ -1499,6 +1493,12 @@
   </data>
   <data name="BuyEDaler" xml:space="preserve">
     <value>Купить eDaler.</value>
+  </data>
+  <data name="Caller" xml:space="preserve">
+    <value>Посетитель</value>
+  </data>
+  <data name="CallerAddress" xml:space="preserve">
+    <value>Адрес вызывающего абонента</value>
   </data>
   <data name="CallerOnly" xml:space="preserve">
     <value>Только вызывающий абонент</value>
@@ -2132,5 +2132,272 @@
   </data>
   <data name="TransferIdentityPageDetails" xml:space="preserve">
     <value>На другом устройстве продолжайте подключение, пока не дойдете до страницы поставщика услуг. Нажмите кнопку «Изменить» и отсканируйте этот QR-код. Это приведет к удалению удостоверения с этого устройства.</value>
+  </data>
+  <data name="AppVersion" xml:space="preserve">
+    <value>Номер версии</value>
+  </data>
+  <data name="BuildNumber" xml:space="preserve">
+    <value>Номер сборки</value>
+  </data>
+  <data name="Platform" xml:space="preserve">
+    <value>Платформа</value>
+  </data>
+  <data name="HardwareInfo" xml:space="preserve">
+    <value>Скобяные изделия</value>
+  </data>
+  <data name="OnboardingGetStartedTitle" xml:space="preserve">
+    <value>Добро пожаловать в Neuro-Access</value>
+  </data>
+  <data name="CreateNewAccount" xml:space="preserve">
+    <value>Создать новую учетную запись</value>
+  </data>
+  <data name="IAlreadyHaveAnAccount" xml:space="preserve">
+    <value>У меня уже есть учетная запись</value>
+  </data>
+  <data name="OnboardingGetStartedQrInfo" xml:space="preserve">
+    <value>Получили приглашение, код для переноса или восстановления? Отсканируйте его ниже</value>
+  </data>
+  <data name="OnboardingNameEntryTitle" xml:space="preserve">
+    <value>Выберите имя пользователя</value>
+  </data>
+  <data name="OnboardingNameEntryDetails" xml:space="preserve">
+    <value>Ваше имя пользователя является постоянным и не может быть изменено позже</value>
+  </data>
+  <data name="UseNickname" xml:space="preserve">
+    <value>Я хочу использовать псевдоним</value>
+  </data>
+  <data name="UseRealName" xml:space="preserve">
+    <value>Я хочу использовать свое настоящее имя</value>
+  </data>
+  <data name="BeAnonymous" xml:space="preserve">
+    <value>Я хотел бы остаться анонимным</value>
+  </data>
+  <data name="Nickname" xml:space="preserve">
+    <value>Прозвище</value>
+  </data>
+  <data name="OnboardingContactSupportTitle" xml:space="preserve">
+    <value>Восстановить учетную запись</value>
+  </data>
+  <data name="AccountDetails" xml:space="preserve">
+    <value>Реквизиты учетной записи</value>
+  </data>
+  <data name="ServiceProvider" xml:space="preserve">
+    <value>Поставщик услуг</value>
+  </data>
+  <data name="Alternative" xml:space="preserve">
+    <value>Альтернатива: </value>
+  </data>
+  <data name="InvalidUsernameCharacters" xml:space="preserve">
+    <value>Имя пользователя содержит недопустимые символы.</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Имя пользователя</value>
+  </data>
+  <data name="SendSeconds" xml:space="preserve">
+    <value>Отправить ({0})</value>
+  </data>
+  <data name="CreateWallet" xml:space="preserve">
+    <value>Создать кошелек</value>
+  </data>
+  <data name="CreateWalletDescription" xml:space="preserve">
+    <value>Вы создаете кошелек, положив на него немного денег. Эти деньги называются eDaler и могут быть переведены другим лицам, онлайн или офлайн, или использованы для покупки предлагаемых услуг.</value>
+  </data>
+  <data name="Buy" xml:space="preserve">
+    <value>Покупать</value>
+  </data>
+  <data name="BuyEDalerDescription" xml:space="preserve">
+    <value>Укажите ниже количество eDaler, которое вы хотите купить, и нажмите кнопку «Купить». Может быть открыта веб-страница, на которой вам нужно будет ввести дополнительную информацию, чтобы платежная система подтвердила ваш запрос.</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Количество:</value>
+  </data>
+  <data name="Wallet" xml:space="preserve">
+    <value>Бумажник</value>
+  </data>
+  <data name="OpenWallet" xml:space="preserve">
+    <value>Открыть кошелек</value>
+  </data>
+  <data name="OpenWalletDescription" xml:space="preserve">
+    <value>Откройте свой кошелек eDaler, чтобы отобразить текущий баланс и просмотреть последние транзакции.</value>
+  </data>
+  <data name="AccountEventDescription" xml:space="preserve">
+    <value>Ниже вы можете увидеть информацию о событии одного аккаунта.</value>
+  </data>
+  <data name="Balance" xml:space="preserve">
+    <value>Равновесие:</value>
+  </data>
+  <data name="OpenMessageLink" xml:space="preserve">
+    <value>Открыть ссылку на сообщение</value>
+  </data>
+  <data name="RemoteParty" xml:space="preserve">
+    <value>Удаленная вечеринка:</value>
+  </data>
+  <data name="Reserved" xml:space="preserve">
+    <value>Скрытный:</value>
+  </data>
+  <data name="TransactionId" xml:space="preserve">
+    <value>ID транзакции:</value>
+  </data>
+  <data name="AccountEventItem" xml:space="preserve">
+    <value>События учетной записи</value>
+  </data>
+  <data name="PendingPaymentItem" xml:space="preserve">
+    <value>Ожидающие платежи</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsPart1" xml:space="preserve">
+    <value>Если у вас есть доступ к учетной записи на другом устройстве, выполните следующие действия:</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet1" xml:space="preserve">
+    <value>Откройте приложение на другом устройстве.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet2" xml:space="preserve">
+    <value>Перейдите в «Настройки» → «Перенести удостоверение».</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet3" xml:space="preserve">
+    <value>На этом устройстве появится QR-код.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet4" xml:space="preserve">
+    <value>Используйте это устройство для сканирования QR-кода и переноса учетной записи.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsPart2" xml:space="preserve">
+    <value>Если у вас нет доступа к учетной записи, обратитесь в нашу службу поддержки по адресу</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsPart3" xml:space="preserve">
+    <value>.</value>
+  </data>
+  <data name="SupportEmailSubject" xml:space="preserve">
+    <value>Восстановить учетную запись</value>
+  </data>
+  <data name="EmailClientNotAvailable" xml:space="preserve">
+    <value>Не удается открыть почтовый клиент. Пожалуйста, отправьте электронное письмо по адресу {0}.</value>
+  </data>
+  <data name="ClaimThing" xml:space="preserve">
+    <value>Претензия</value>
+  </data>
+  <data name="InformationAboutClaimedThingText" xml:space="preserve">
+    <value>Ниже приведена информация о том, код которого вы отсканировали. Выберите, хотите ли вы попытаться заявить эту вещь как вашу, а также хотите ли вы сделать ее доступной для публичного поиска в Реестре вещей.</value>
+  </data>
+  <data name="InformationAboutThing" xml:space="preserve">
+    <value>Информация о вещи</value>
+  </data>
+  <data name="InformationAboutThingText" xml:space="preserve">
+    <value>Следующая информация об этой штуке доступна в локальном доступе. Варианты взаимодействия с устройством представлены ниже.</value>
+  </data>
+  <data name="MakeThingPublic" xml:space="preserve">
+    <value>Сделайте все публичным</value>
+  </data>
+  <data name="Thing" xml:space="preserve">
+    <value>Вещь</value>
+  </data>
+  <data name="Chat" xml:space="preserve">
+    <value>Чат</value>
+  </data>
+  <data name="ConnectToDevice" xml:space="preserve">
+    <value>Подключение к устройству</value>
+  </data>
+  <data name="DisconnectFromDevice" xml:space="preserve">
+    <value>Отключиться от устройства</value>
+  </data>
+  <data name="DeleteRules" xml:space="preserve">
+    <value>Правила удаления</value>
+  </data>
+  <data name="DisownThing" xml:space="preserve">
+    <value>Отречься от вещи</value>
+  </data>
+  <data name="ContractCouldNotBeFound" xml:space="preserve">
+    <value>Договор найти не удалось, его можно было удалить. Хотели бы вы удалить ссылку?</value>
+  </data>
+  <data name="PaymentDescription" xml:space="preserve">
+    <value>Введите сумму для выплаты получателю ниже. После этого вы можете выбрать оплату онлайн (если подключено) или офлайн, нажав на соответствующую кнопку.</value>
+  </data>
+  <data name="EncryptMessage" xml:space="preserve">
+    <value>Шифрование сообщения</value>
+  </data>
+  <data name="SendPayment" xml:space="preserve">
+    <value>Отправить платеж</value>
+  </data>
+  <data name="ReferencedID" xml:space="preserve">
+    <value>Ссылочный идентификатор</value>
+  </data>
+  <data name="ControlActuator" xml:space="preserve">
+    <value>Привод управления</value>
+  </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>Уведомления</value>
+  </data>
+  <data name="NotificationsText" xml:space="preserve">
+    <value>Ниже вы можете увидеть список уведомлений, возникающих в результате взаимодействия с вещью. Нажмите на каждый из них, чтобы отобразить дополнительную информацию и доступные параметры.</value>
+  </data>
+  <data name="SensorDataText" xml:space="preserve">
+    <value>Ниже приведена информация и данные датчиков, доступные вам в соответствии с вашими правами доступа.</value>
+  </data>
+  <data name="SensorData" xml:space="preserve">
+    <value>Данные датчика</value>
+  </data>
+  <data name="ReadSensor" xml:space="preserve">
+    <value>Датчик считывания</value>
+  </data>
+  <data name="Range" xml:space="preserve">
+    <value>Диапазон</value>
+  </data>
+  <data name="RangeText" xml:space="preserve">
+    <value>Примените это правило к:</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Отправить</value>
+  </data>
+  <data name="InformationAboutCallerText" xml:space="preserve">
+    <value>О звонящем абоненте доступна следующая информация:</value>
+  </data>
+  <data name="FriendlyName" xml:space="preserve">
+    <value>Понятное имя</value>
+  </data>
+  <data name="ReadoutRequestText2" xml:space="preserve">
+    <value>Звонящий запросил данные датчика у одного из ваших устройств. Выберите, как бы вы хотели, чтобы вещь реагировала на данный тип запроса.</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>Все</value>
+  </data>
+  <data name="ComputedValues" xml:space="preserve">
+    <value>Вычисляемые значения</value>
+  </data>
+  <data name="FieldTypes" xml:space="preserve">
+    <value>Типы полей</value>
+  </data>
+  <data name="HistoricalValues" xml:space="preserve">
+    <value>Исторические ценности</value>
+  </data>
+  <data name="IdentityValues" xml:space="preserve">
+    <value>Ценности идентичности</value>
+  </data>
+  <data name="MomentaryValues" xml:space="preserve">
+    <value>Сиюминутные ценности</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>Никакой</value>
+  </data>
+  <data name="PeakValues" xml:space="preserve">
+    <value>Пиковые значения</value>
+  </data>
+  <data name="PermitFieldTypesText" xml:space="preserve">
+    <value>Выберите типы полей (широкие категории), к которым будет разрешен доступ, если запрос будет принят.</value>
+  </data>
+  <data name="StatusValues" xml:space="preserve">
+    <value>Значения статуса</value>
+  </data>
+  <data name="Fields" xml:space="preserve">
+    <value>Поля</value>
+  </data>
+  <data name="PermitFieldsText" xml:space="preserve">
+    <value>Выберите поля, к которым будет разрешен доступ, если запрос будет принят.</value>
+  </data>
+  <data name="ARequestHasBeenSentToTheOwner" xml:space="preserve">
+    <value>Владельцу устройства отправлен запрос.</value>
+  </data>
+  <data name="ControlRequestText2" xml:space="preserve">
+    <value>Звонящий попросил проконтролировать одну из ваших вещей. Выберите, как бы вы хотели, чтобы вещь реагировала на данный тип запроса.</value>
+  </data>
+  <data name="PermitParametersText" xml:space="preserve">
+    <value>Выберите параметры, к которым будет разрешен доступ, если запрос будет принят.</value>
   </data>
 </root>

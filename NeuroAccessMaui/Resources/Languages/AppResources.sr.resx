@@ -417,8 +417,8 @@
   <data name="OperatorDoesNotSupportRegisteringNewAccounts" xml:space="preserve">
     <value>Operater {0} ne podržava registraciju novih računa</value>
   </data>
-  <data name="AccountNameAlreadyTaken" xml:space="preserve">
-    <value>Ime naloga {0} je već zauzeto. Odaberite drugu.</value>
+  <data name="UsernameNameAlreadyTaken" xml:space="preserve">
+    <value>Korisničko ime već postoji. Molimo vas da probate drugu.</value>
   </data>
   <data name="InvalidUsernameOrPassword" xml:space="preserve">
     <value>Nevažeće korisničko ime ili lozinka</value>
@@ -535,10 +535,10 @@
     <value>Nije uspelo otpojaиanje viewmodel {0} za stranicu {1}</value>
   </data>
   <data name="OnboardingPhonePageTitle" xml:space="preserve">
-    <value>Dobrodošli u Neuro-Access</value>
+    <value>Molimo Vas da potvrdite broj telefona</value>
   </data>
   <data name="OnboardingPhonePageDetails" xml:space="preserve">
-    <value>Da biste se proverili, potrebno je da unesete svoj broj telefona</value>
+    <value>Poslaćemo vam verifikacioni kod</value>
   </data>
   <data name="OnboardingEmailPageTitle" xml:space="preserve">
     <value>Proverite e-poštu</value>
@@ -559,10 +559,10 @@
     <value>Domena:</value>
   </data>
   <data name="OnboardingAccountPageTitle" xml:space="preserve">
-    <value>Kreiraj nalog</value>
+    <value>Kreiranje naloga...</value>
   </data>
   <data name="OnboardingAccountPageDetails" xml:space="preserve">
-    <value>Unesite ime koje želite da koristite za svoj nalog</value>
+    <value>Molimo vas da sačekate dok ne podesite stvari za vas</value>
   </data>
   <data name="OnboardingDefinePasswordPageTitle" xml:space="preserve">
     <value>Kreiranje PIN koda</value>
@@ -570,17 +570,11 @@
   <data name="OnboardingFinalizePageTitle" xml:space="preserve">
     <value>Uspeh!</value>
   </data>
-  <data name="OnboardingFinalizePageDetails" xml:space="preserve">
-    <value>Sada možete da počnete da koristite Neuro-Access</value>
-  </data>
   <data name="OnboardingBiometricsPageTitle" xml:space="preserve">
     <value>Zamalo da završim</value>
   </data>
   <data name="OnboardingBiometricsPageDetails" xml:space="preserve">
     <value>Neuro-Access najbolje funkcioniše kada se koriste {0}. Želite li da omogućite ovu funkciju? Ovo se kasnije može promeniti i u postavkama</value>
-  </data>
-  <data name="AccountSectionTitle" xml:space="preserve">
-    <value>Unesite ime naloga</value>
   </data>
   <data name="Create" xml:space="preserve">
     <value>Kreirate</value>
@@ -624,6 +618,9 @@
   <data name="EmailValidationFormat" xml:space="preserve">
     <value>Unesite važeću e-poruku</value>
   </data>
+  <data name="PhoneValidationFormat" xml:space="preserve">
+    <value>Molimo Vas da unesete važeći broj telefona</value>
+  </data>
   <data name="ProviderSectionTitle" xml:space="preserve">
     <value>Odaberite jednu opciju</value>
   </data>
@@ -653,12 +650,6 @@
   </data>
   <data name="QrScanUri" xml:space="preserve">
     <value>URI:</value>
-  </data>
-  <data name="AccountValidationAlreadyExists" xml:space="preserve">
-    <value>Ime ovog naloga već postoji</value>
-  </data>
-  <data name="AccountAvailableAlternatives" xml:space="preserve">
-    <value>Sledeća imena su još uvek dostupna:</value>
   </data>
   <data name="TestOtpUsed" xml:space="preserve">
     <value>Korišćena je privremena OTP šifra. Aplikacija će prestati da radi za oko nedelju dana. Moraćete ponovo da instalirate aplikaciju da biste je ponovo koristili.</value>
@@ -1416,6 +1407,9 @@
   <data name="AccessRequestText" xml:space="preserve">
     <value>{0} želi da se poveže sa uređajem {1}.</value>
   </data>
+  <data name="AccessRequestText2" xml:space="preserve">
+    <value>Pozivalac je zatražio pristup jednoj od vaših stvari. Izaberite kako želite da stvar odgovori na ovu vrstu zahteva.</value>
+  </data>
   <data name="ConcentratorServiceNotFound" xml:space="preserve">
     <value>Nije pronađena nijedna usluga koncentratora.</value>
   </data>
@@ -1499,6 +1493,12 @@
   </data>
   <data name="BuyEDaler" xml:space="preserve">
     <value>Kupi eDaler.</value>
+  </data>
+  <data name="Caller" xml:space="preserve">
+    <value>Pozivalac</value>
+  </data>
+  <data name="CallerAddress" xml:space="preserve">
+    <value>Adresa pozivaoca</value>
   </data>
   <data name="CallerOnly" xml:space="preserve">
     <value>Samo pozivalac</value>
@@ -2132,5 +2132,272 @@
   </data>
   <data name="TransferIdentityPageDetails" xml:space="preserve">
     <value>Na drugom uređaju nastavite sa ukrcavanje dok ne dođete do stranice dobavljača usluga. Pritisnite dugme "Promeni" i skenirajte ovaj QR. Ako to uradite, uklonićete identitet sa ovog uređaja.</value>
+  </data>
+  <data name="AppVersion" xml:space="preserve">
+    <value>Broj verzije</value>
+  </data>
+  <data name="BuildNumber" xml:space="preserve">
+    <value>Broj izrade</value>
+  </data>
+  <data name="Platform" xml:space="preserve">
+    <value>Platforme</value>
+  </data>
+  <data name="HardwareInfo" xml:space="preserve">
+    <value>Hardver</value>
+  </data>
+  <data name="OnboardingGetStartedTitle" xml:space="preserve">
+    <value>Dobrodošli u Neuro-Access</value>
+  </data>
+  <data name="CreateNewAccount" xml:space="preserve">
+    <value>Kreiraj novi nalog</value>
+  </data>
+  <data name="IAlreadyHaveAnAccount" xml:space="preserve">
+    <value>Već imam nalog</value>
+  </data>
+  <data name="OnboardingGetStartedQrInfo" xml:space="preserve">
+    <value>Dobio poziv, prenos ili kod za oporavak? Skenirajte ga ispod</value>
+  </data>
+  <data name="OnboardingNameEntryTitle" xml:space="preserve">
+    <value>Izaberite svoje korisničko ime</value>
+  </data>
+  <data name="OnboardingNameEntryDetails" xml:space="preserve">
+    <value>Vaše korisničko ime je trajno i ne može se kasnije promeniti</value>
+  </data>
+  <data name="UseNickname" xml:space="preserve">
+    <value>Želeo bih da koristim nadimak</value>
+  </data>
+  <data name="UseRealName" xml:space="preserve">
+    <value>Voleo bih da koristim svoje pravo ime</value>
+  </data>
+  <data name="BeAnonymous" xml:space="preserve">
+    <value>Voleo bih da budem anoniman</value>
+  </data>
+  <data name="Nickname" xml:space="preserve">
+    <value>Nadimak</value>
+  </data>
+  <data name="OnboardingContactSupportTitle" xml:space="preserve">
+    <value>Oporavak naloga</value>
+  </data>
+  <data name="AccountDetails" xml:space="preserve">
+    <value>Detalji o nalogu</value>
+  </data>
+  <data name="ServiceProvider" xml:space="preserve">
+    <value>Pružalac usluga</value>
+  </data>
+  <data name="Alternative" xml:space="preserve">
+    <value>Alternativne: </value>
+  </data>
+  <data name="InvalidUsernameCharacters" xml:space="preserve">
+    <value>Korisničko ime sadrži nevažeće znakove.</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Korisničko ime</value>
+  </data>
+  <data name="SendSeconds" xml:space="preserve">
+    <value>Pošalji ({0})</value>
+  </data>
+  <data name="CreateWallet" xml:space="preserve">
+    <value>Kreiraj novčanik</value>
+  </data>
+  <data name="CreateWalletDescription" xml:space="preserve">
+    <value>Kreirate novčanik stavljajući nešto novca u njega. Ovaj novac se zove eDaler, i može se preneti drugima, online ili offline, ili se koristi za kupovinu ponuđenih usluga.</value>
+  </data>
+  <data name="Buy" xml:space="preserve">
+    <value>Kupi</value>
+  </data>
+  <data name="BuyEDalerDescription" xml:space="preserve">
+    <value>Navedite iznos eDaler koji želite da kupite ispod, i pritisnite dugme Kupi. Veb stranica može biti otvorena na kojoj morate da popunite dodatne informacije za procesor plaćanja da potvrdi vaš zahtev.</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Iznos:</value>
+  </data>
+  <data name="Wallet" xml:space="preserve">
+    <value>Novиanik</value>
+  </data>
+  <data name="OpenWallet" xml:space="preserve">
+    <value>Otvori novčanik</value>
+  </data>
+  <data name="OpenWalletDescription" xml:space="preserve">
+    <value>Otvorite svoj eDaler novčanik, da biste prikazali trenutni saldo i videli najnovije transakcije.</value>
+  </data>
+  <data name="AccountEventDescription" xml:space="preserve">
+    <value>Ispod možete videti informacije o jednom događaju naloga.</value>
+  </data>
+  <data name="Balance" xml:space="preserve">
+    <value>Saldo:</value>
+  </data>
+  <data name="OpenMessageLink" xml:space="preserve">
+    <value>Otvori link za poruku</value>
+  </data>
+  <data name="RemoteParty" xml:space="preserve">
+    <value>Udaljena stranka:</value>
+  </data>
+  <data name="Reserved" xml:space="preserve">
+    <value>Rezervisana:</value>
+  </data>
+  <data name="TransactionId" xml:space="preserve">
+    <value>ID transakcije:</value>
+  </data>
+  <data name="AccountEventItem" xml:space="preserve">
+    <value>Događaji na računu</value>
+  </data>
+  <data name="PendingPaymentItem" xml:space="preserve">
+    <value>Plaćanja na čekanju</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsPart1" xml:space="preserve">
+    <value>Ako imate pristup svom nalogu na drugom uređaju, sledite ove korake:</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet1" xml:space="preserve">
+    <value>Otvorite aplikaciju na drugom uređaju.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet2" xml:space="preserve">
+    <value>Idi na Podešavanja → prenos identiteta.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet3" xml:space="preserve">
+    <value>Na tom uređaju će se pojaviti KR kod.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet4" xml:space="preserve">
+    <value>Koristite ovaj uređaj za skeniranje KR koda i prenos naloga.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsPart2" xml:space="preserve">
+    <value>Ako nemate pristup svom nalogu, obratite se našem timu za podršku na</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsPart3" xml:space="preserve">
+    <value>.</value>
+  </data>
+  <data name="SupportEmailSubject" xml:space="preserve">
+    <value>Oporavak naloga</value>
+  </data>
+  <data name="EmailClientNotAvailable" xml:space="preserve">
+    <value>Nije moguće otvoriti klijent e-pošte. Molimo Vas da pošaljete e-mail na {0}.</value>
+  </data>
+  <data name="ClaimThing" xml:space="preserve">
+    <value>Tvrdi stvar</value>
+  </data>
+  <data name="InformationAboutClaimedThingText" xml:space="preserve">
+    <value>Sledeće informacije su dostupne o stvari čiji kod ste skenirali. Izaberite da li želite da pokušate da tvrdite da je ova stvar vaša, a takođe i ako želite da je javno pretražite u Registru stvari.</value>
+  </data>
+  <data name="InformationAboutThing" xml:space="preserve">
+    <value>Informacije o stvari</value>
+  </data>
+  <data name="InformationAboutThingText" xml:space="preserve">
+    <value>Sledeće informacije su lokalno dostupne o stvari. Opcije za interakciju sa uređajem su prikazane u nastavku.</value>
+  </data>
+  <data name="MakeThingPublic" xml:space="preserve">
+    <value>Učini stvar javnom</value>
+  </data>
+  <data name="Thing" xml:space="preserve">
+    <value>Stvar</value>
+  </data>
+  <data name="Chat" xml:space="preserve">
+    <value>Razgovor</value>
+  </data>
+  <data name="ConnectToDevice" xml:space="preserve">
+    <value>Povežite se sa uređajem</value>
+  </data>
+  <data name="DisconnectFromDevice" xml:space="preserve">
+    <value>Isključite sa uređaja</value>
+  </data>
+  <data name="DeleteRules" xml:space="preserve">
+    <value>Izbriši pravila</value>
+  </data>
+  <data name="DisownThing" xml:space="preserve">
+    <value>Odreći se stvari</value>
+  </data>
+  <data name="ContractCouldNotBeFound" xml:space="preserve">
+    <value>Ugovor nije mogao biti pronađen, mogao je biti izbrisan. Da li želite da uklonite referencu?</value>
+  </data>
+  <data name="PaymentDescription" xml:space="preserve">
+    <value>Unesite iznos koji treba da platite primaocu ispod. Kada završite, možete da izaberete da platite online (ako je povezan) ili offline, klikom na odgovarajuće dugme.</value>
+  </data>
+  <data name="EncryptMessage" xml:space="preserve">
+    <value>Šifrovanje poruke</value>
+  </data>
+  <data name="SendPayment" xml:space="preserve">
+    <value>Pošalji uplatu</value>
+  </data>
+  <data name="ReferencedID" xml:space="preserve">
+    <value>Referentni ID</value>
+  </data>
+  <data name="ControlActuator" xml:space="preserve">
+    <value>Kontrolni pogon</value>
+  </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>Obaveštenja</value>
+  </data>
+  <data name="NotificationsText" xml:space="preserve">
+    <value>Ispod možete videti listu obaveštenja koja su rezultat interakcije sa stvari. Pritisnite na svakom od njih da biste prikazali više informacija i dostupnih opcija.</value>
+  </data>
+  <data name="SensorDataText" xml:space="preserve">
+    <value>Ispod su informacije i podaci senzora koji su vam dostupni, u skladu sa vašim privilegijama pristupa.</value>
+  </data>
+  <data name="SensorData" xml:space="preserve">
+    <value>Podaci senzora</value>
+  </data>
+  <data name="ReadSensor" xml:space="preserve">
+    <value>Pročitajte senzor</value>
+  </data>
+  <data name="Range" xml:space="preserve">
+    <value>Opseg</value>
+  </data>
+  <data name="RangeText" xml:space="preserve">
+    <value>Primenite ovo pravilo na:</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Prosleđivanje</value>
+  </data>
+  <data name="InformationAboutCallerText" xml:space="preserve">
+    <value>Sledeće informacije su dostupne o pozivaocu:</value>
+  </data>
+  <data name="FriendlyName" xml:space="preserve">
+    <value>Prijateljsko ime</value>
+  </data>
+  <data name="ReadoutRequestText2" xml:space="preserve">
+    <value>Pozivalac je zatražio podatke senzora iz jedne od vaših stvari. Izaberite kako želite da stvar odgovori na ovu vrstu zahteva.</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>Sve</value>
+  </data>
+  <data name="ComputedValues" xml:space="preserve">
+    <value>Izračunate vrednosti</value>
+  </data>
+  <data name="FieldTypes" xml:space="preserve">
+    <value>Vrste polja</value>
+  </data>
+  <data name="HistoricalValues" xml:space="preserve">
+    <value>Istorijske vrednosti</value>
+  </data>
+  <data name="IdentityValues" xml:space="preserve">
+    <value>Vrednosti identiteta</value>
+  </data>
+  <data name="MomentaryValues" xml:space="preserve">
+    <value>Trenutne vrednosti</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>Niko</value>
+  </data>
+  <data name="PeakValues" xml:space="preserve">
+    <value>Maksimalne vrednosti</value>
+  </data>
+  <data name="PermitFieldTypesText" xml:space="preserve">
+    <value>Izaberite tipove polja (široke kategorije) da biste dozvolili pristup, ako je zahtev prihvaćen.</value>
+  </data>
+  <data name="StatusValues" xml:space="preserve">
+    <value>Statusne vrednosti</value>
+  </data>
+  <data name="Fields" xml:space="preserve">
+    <value>Polja</value>
+  </data>
+  <data name="PermitFieldsText" xml:space="preserve">
+    <value>Izaberite polja kojima želite dozvoliti pristup, ako je zahtev prihvaćen.</value>
+  </data>
+  <data name="ARequestHasBeenSentToTheOwner" xml:space="preserve">
+    <value>Zahtev je poslat vlasniku uređaja.</value>
+  </data>
+  <data name="ControlRequestText2" xml:space="preserve">
+    <value>Pozivalac je zatražio da kontroliše jednu od vaših stvari. Izaberite kako želite da stvar odgovori na ovu vrstu zahteva.</value>
+  </data>
+  <data name="PermitParametersText" xml:space="preserve">
+    <value>Izaberite parametre kojima želite dozvoliti pristup, ako je zahtev prihvaćen.</value>
   </data>
 </root>

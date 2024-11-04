@@ -7,6 +7,8 @@ using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.UI.Pages.Identity.TransferIdentity;
 using NeuroAccessMaui.UI.Popups.Settings;
 using System.ComponentModel;
+using System.Globalization;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
@@ -49,6 +51,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 				// App and Hardware information
 				this.VersionNumber = AppInfo.VersionString;
 				this.BuildNumber = AppInfo.BuildString;
+				this.BuildTime = GetBuildTime();
 				this.DeviceManufactorer = DeviceInfo.Manufacturer.ToString();
 				this.DeviceModel = DeviceInfo.Model.ToString();
 				this.DevicePlatform = DeviceInfo.Platform.ToString();
@@ -187,6 +190,12 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		private string deviceVersion;
 
 		/// <summary>
+		/// Build time of the app.
+		/// </summary>
+		[ObservableProperty]
+		private string buildTime;
+
+		/// <summary>
 		/// Current display mode
 		/// </summary>
 		public static AppTheme CurrentDisplayMode
@@ -284,6 +293,33 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			}
 		}
 
+		/// <summary>
+		/// Get the build time of the app as a formated string from build information.
+		/// </summary>
+		/// <returns> Build time excrated from assembly data </returns>
+		private static string GetBuildTime()
+		{
+			Assembly assembly = Assembly.GetExecutingAssembly();
+
+			const string BuildVersionMetadataPrefix = "+build";
+
+			AssemblyInformationalVersionAttribute? attribute = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
+			if (attribute?.InformationalVersion != null)
+			{
+				string value = attribute.InformationalVersion;
+
+				int datePosition = value.IndexOf(BuildVersionMetadataPrefix, System.StringComparison.OrdinalIgnoreCase);
+				if (datePosition > 0)
+				{
+					value = value.Substring(datePosition + BuildVersionMetadataPrefix.Length);
+
+					return value;
+				}
+			}
+
+			return string.Empty;
+		}
+
 		#endregion
 
 		#region Commands
@@ -313,6 +349,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 				GoToRegistrationStep(RegistrationStep.DefinePassword);
 				await App.SetRegistrationPageAsync();
 
+				//Listen for completed event
 				WeakReferenceMessenger.Default.Register<RegistrationPageMessage>(this, this.HandleRegistrationPageMessage);
 			}
 			catch (Exception ex)

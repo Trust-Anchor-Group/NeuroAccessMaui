@@ -13,46 +13,28 @@ namespace NeuroAccessMaui.UI.Pages.Main.XmppForm.Model
 		private readonly XmppFormViewModel model;
 		private readonly DataForm form;
 		private readonly Layout.Page page;
-		private readonly object content;
 
-		/// <summary>
-		/// Page model
-		/// </summary>
-		/// <param name="Model">Parent view model</param>
-		/// <param name="Page">Page object</param>
 		public PageModel(XmppFormViewModel Model, Layout.Page Page)
 		{
 			this.model = Model;
 			this.page = Page;
 			this.form = this.page.Form;
-			this.content = this.BuildContent(Page.Elements);
 		}
 
-		/// <summary>
-		/// Page label
-		/// </summary>
 		public string Label => this.page.Label;
 
-		/// <summary>
-		/// If the page has a label.
-		/// </summary>
 		public bool HasLabel => !string.IsNullOrEmpty(this.page.Label);
 
-		/// <summary>
-		/// Page content
-		/// </summary>
-		public object Content => this.content;
+		public View Content => this.BuildContent(this.page.Elements);
 
 		private VerticalStackLayout BuildContent(Layout.LayoutElement[] Elements)
 		{
-			VerticalStackLayout Result = [];
+			VerticalStackLayout Result = new VerticalStackLayout();
 
 			foreach (Layout.LayoutElement Element in Elements)
 			{
-				object? Content = this.BuildContent(Element);
-
-				if (Content is View View)
-					Result.Children.Add(View);
+				if (this.BuildContent(Element) is View view)
+					Result.Children.Add(view);
 			}
 
 			return Result;

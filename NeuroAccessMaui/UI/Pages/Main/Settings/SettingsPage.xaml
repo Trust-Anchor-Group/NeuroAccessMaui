@@ -166,7 +166,10 @@
 
 								<VerticalStackLayout>
 									<Label Style="{StaticResource SectionTitleLabel}" VerticalOptions="Center" Text="{l:Localize BuildNumber}"/>
-									<Label Style="{StaticResource ItemDescriptionLabel}" Text="{Binding BuildNumber}"/>
+									<HorizontalStackLayout>
+										<Label Style="{StaticResource ItemDescriptionLabel}" Text="{Binding BuildNumber}"/>
+										<Label Style="{StaticResource ItemDescriptionLabel}" Text="{Binding BuildTime}"/>
+									</HorizontalStackLayout>
 								</VerticalStackLayout>
 
 								<VerticalStackLayout>

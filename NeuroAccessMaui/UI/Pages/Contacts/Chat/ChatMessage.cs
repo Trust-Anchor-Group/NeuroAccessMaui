@@ -193,7 +193,6 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 						TextType = TextType.Text
 					});
 				}
-
 				this.parsedXaml = Layout;
 			}
 		}
@@ -206,42 +205,42 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		/// <summary>
 		/// Command executed when a multi-media-link with the xmpp URI scheme is clicked.
 		/// </summary>
-		public ICommand XmppUriClicked { get; }
+		public Command XmppUriClicked { get; }
 
 		/// <summary>
 		/// Command executed when a multi-media-link with the iotid URI scheme is clicked.
 		/// </summary>
-		public ICommand IotIdUriClicked { get; }
+		public Command IotIdUriClicked { get; }
 
 		/// <summary>
 		/// Command executed when a multi-media-link with the iotsc URI scheme is clicked.
 		/// </summary>
-		public ICommand IotScUriClicked { get; }
+		public Command IotScUriClicked { get; }
 
 		/// <summary>
 		/// Command executed when a multi-media-link with the nfeat URI scheme is clicked.
 		/// </summary>
-		public ICommand NeuroFeatureUriClicked { get; }
+		public Command NeuroFeatureUriClicked { get; }
 
 		/// <summary>
 		/// Command executed when a multi-media-link with the iotdisco URI scheme is clicked.
 		/// </summary>
-		public ICommand IotDiscoUriClicked { get; }
+		public Command IotDiscoUriClicked { get; }
 
 		/// <summary>
 		/// Command executed when a multi-media-link with the edaler URI scheme is clicked.
 		/// </summary>
-		public ICommand EDalerUriClicked { get; }
+		public Command EDalerUriClicked { get; }
 
 		/// <summary>
 		/// Command executed when a hyperlink in rendered markdown has been clicked.
 		/// </summary>
-		public ICommand HyperlinkClicked { get; }
+		public Command HyperlinkClicked { get; }
 
 		private Task ExecuteUriClicked(object Parameter, UriScheme Scheme)
 		{
 			if (Parameter is string Uri && this.chatView is not null)
-				return this.chatView.ExecuteUriClicked(this, Uri, Scheme);
+				return this.chatView.ExecuteUriClicked(Uri, Scheme);
 			else
 				return Task.CompletedTask;
 		}

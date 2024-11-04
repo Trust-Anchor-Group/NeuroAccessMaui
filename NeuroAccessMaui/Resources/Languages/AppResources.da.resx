@@ -417,8 +417,8 @@
   <data name="OperatorDoesNotSupportRegisteringNewAccounts" xml:space="preserve">
     <value>Operatøren understøtter {0} ikke registrering af nye konti</value>
   </data>
-  <data name="AccountNameAlreadyTaken" xml:space="preserve">
-    <value>Kontonavn {0} allerede er taget. Vælg en anden.</value>
+  <data name="UsernameNameAlreadyTaken" xml:space="preserve">
+    <value>Brugernavnet findes allerede. Prøv en anden.</value>
   </data>
   <data name="InvalidUsernameOrPassword" xml:space="preserve">
     <value>Ugyldigt brugernavn eller adgangskode</value>
@@ -535,10 +535,10 @@
     <value>Ophævelsen af ophævelsen af viewmodel-{0} for side {1}</value>
   </data>
   <data name="OnboardingPhonePageTitle" xml:space="preserve">
-    <value>Velkommen til Neuro-Access</value>
+    <value>Bekræft venligst telefonnummeret</value>
   </data>
   <data name="OnboardingPhonePageDetails" xml:space="preserve">
-    <value>For at blive bekræftet skal du indtaste dit telefonnummer</value>
+    <value>Vi sender dig en bekræftelseskode</value>
   </data>
   <data name="OnboardingEmailPageTitle" xml:space="preserve">
     <value>Bekræft venligst e-mail</value>
@@ -559,10 +559,10 @@
     <value>Domæne:</value>
   </data>
   <data name="OnboardingAccountPageTitle" xml:space="preserve">
-    <value>Opret konto</value>
+    <value>Oprettelse af konto...</value>
   </data>
   <data name="OnboardingAccountPageDetails" xml:space="preserve">
-    <value>Indtast det navn, du vil bruge til din konto</value>
+    <value>Vent venligst, mens vi sætter tingene op for dig</value>
   </data>
   <data name="OnboardingDefinePasswordPageTitle" xml:space="preserve">
     <value>Opret en pinkode</value>
@@ -570,17 +570,11 @@
   <data name="OnboardingFinalizePageTitle" xml:space="preserve">
     <value>Succes!</value>
   </data>
-  <data name="OnboardingFinalizePageDetails" xml:space="preserve">
-    <value>Du kan nu begynde at bruge Neuro-Access</value>
-  </data>
   <data name="OnboardingBiometricsPageTitle" xml:space="preserve">
     <value>Næsten færdig</value>
   </data>
   <data name="OnboardingBiometricsPageDetails" xml:space="preserve">
     <value>Neuro-Access fungerer bedst, når du bruger {0}. Vil du aktivere denne funktion? Dette kan også ændres i indstillingerne senere</value>
-  </data>
-  <data name="AccountSectionTitle" xml:space="preserve">
-    <value>Indtast kontonavnet</value>
   </data>
   <data name="Create" xml:space="preserve">
     <value>Skabe</value>
@@ -624,6 +618,9 @@
   <data name="EmailValidationFormat" xml:space="preserve">
     <value>Indtast en gyldig e-mail</value>
   </data>
+  <data name="PhoneValidationFormat" xml:space="preserve">
+    <value>Indtast venligst et gyldigt telefonnummer</value>
+  </data>
   <data name="ProviderSectionTitle" xml:space="preserve">
     <value>Vælg en mulighed</value>
   </data>
@@ -653,12 +650,6 @@
   </data>
   <data name="QrScanUri" xml:space="preserve">
     <value>URI:</value>
-  </data>
-  <data name="AccountValidationAlreadyExists" xml:space="preserve">
-    <value>Dette kontonavn findes allerede</value>
-  </data>
-  <data name="AccountAvailableAlternatives" xml:space="preserve">
-    <value>Følgende navne er stadig tilgængelige:</value>
   </data>
   <data name="TestOtpUsed" xml:space="preserve">
     <value>Der er brugt en midlertidig OTP-kode. Ansøgningen stopper med at arbejde om cirka en uge. Du skal geninstallere programmet for at bruge det igen.</value>
@@ -1416,6 +1407,9 @@
   <data name="AccessRequestText" xml:space="preserve">
     <value>{0} vil oprette forbindelse til din enhed {1}.</value>
   </data>
+  <data name="AccessRequestText2" xml:space="preserve">
+    <value>En opkalder har anmodet om adgang til en af dine ting. Vælg, hvordan du ønsker, at tingen skal reagere på denne type anmodning.</value>
+  </data>
   <data name="ConcentratorServiceNotFound" xml:space="preserve">
     <value>Ingen koncentratortjeneste fundet.</value>
   </data>
@@ -1499,6 +1493,12 @@
   </data>
   <data name="BuyEDaler" xml:space="preserve">
     <value>Køb eDaler.</value>
+  </data>
+  <data name="Caller" xml:space="preserve">
+    <value>Opkalds</value>
+  </data>
+  <data name="CallerAddress" xml:space="preserve">
+    <value>Opkaldsadresse</value>
   </data>
   <data name="CallerOnly" xml:space="preserve">
     <value>Kun opkalder</value>
@@ -2132,5 +2132,272 @@
   </data>
   <data name="TransferIdentityPageDetails" xml:space="preserve">
     <value>På din anden enhed skal du fortsætte med onboardingen, indtil du kommer til tjenesteudbydersiden. Tryk på skiftknappen, og scan denne QR. Hvis du gør dette, fjernes identiteten fra denne enhed.</value>
+  </data>
+  <data name="AppVersion" xml:space="preserve">
+    <value>Versionsnummer</value>
+  </data>
+  <data name="BuildNumber" xml:space="preserve">
+    <value>Byg nummer</value>
+  </data>
+  <data name="Platform" xml:space="preserve">
+    <value>Perron</value>
+  </data>
+  <data name="HardwareInfo" xml:space="preserve">
+    <value>Hardware</value>
+  </data>
+  <data name="OnboardingGetStartedTitle" xml:space="preserve">
+    <value>Velkommen til Neuro-Access</value>
+  </data>
+  <data name="CreateNewAccount" xml:space="preserve">
+    <value>Opret ny konto</value>
+  </data>
+  <data name="IAlreadyHaveAnAccount" xml:space="preserve">
+    <value>Jeg har allerede en konto</value>
+  </data>
+  <data name="OnboardingGetStartedQrInfo" xml:space="preserve">
+    <value>Har du modtaget en invitations-, overførsels- eller gendannelseskode? Scan det nedenfor</value>
+  </data>
+  <data name="OnboardingNameEntryTitle" xml:space="preserve">
+    <value>Vælg dit brugernavn</value>
+  </data>
+  <data name="OnboardingNameEntryDetails" xml:space="preserve">
+    <value>Dit brugernavn er permanent og kan ikke ændres senere</value>
+  </data>
+  <data name="UseNickname" xml:space="preserve">
+    <value>Jeg vil gerne bruge et kaldenavn</value>
+  </data>
+  <data name="UseRealName" xml:space="preserve">
+    <value>Jeg vil gerne bruge mit rigtige navn</value>
+  </data>
+  <data name="BeAnonymous" xml:space="preserve">
+    <value>Jeg vil gerne være anonym</value>
+  </data>
+  <data name="Nickname" xml:space="preserve">
+    <value>Kælenavn</value>
+  </data>
+  <data name="OnboardingContactSupportTitle" xml:space="preserve">
+    <value>Gendan konto</value>
+  </data>
+  <data name="AccountDetails" xml:space="preserve">
+    <value>Kontooplysninger</value>
+  </data>
+  <data name="ServiceProvider" xml:space="preserve">
+    <value>Tjenesteudbyder</value>
+  </data>
+  <data name="Alternative" xml:space="preserve">
+    <value>Alternativ: </value>
+  </data>
+  <data name="InvalidUsernameCharacters" xml:space="preserve">
+    <value>Brugernavnet indeholder ugyldige tegn.</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Brugernavn</value>
+  </data>
+  <data name="SendSeconds" xml:space="preserve">
+    <value>Send ({0})</value>
+  </data>
+  <data name="CreateWallet" xml:space="preserve">
+    <value>Opret tegnebog</value>
+  </data>
+  <data name="CreateWalletDescription" xml:space="preserve">
+    <value>Du opretter en tegnebog ved at lægge nogle penge i den. Disse penge kaldes eDaler og kan overføres til andre, online eller offline, eller bruges til at købe tilbudte tjenester.</value>
+  </data>
+  <data name="Buy" xml:space="preserve">
+    <value>Købe</value>
+  </data>
+  <data name="BuyEDalerDescription" xml:space="preserve">
+    <value>Angiv mængden af eDaler, du ønsker at købe nedenfor, og tryk på Køb-knappen. Der kan åbnes en webside, hvor du skal udfylde yderligere oplysninger, så betalingsbehandleren kan validere dit krav.</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Beløb:</value>
+  </data>
+  <data name="Wallet" xml:space="preserve">
+    <value>Tegnebog</value>
+  </data>
+  <data name="OpenWallet" xml:space="preserve">
+    <value>Åbn tegnebog</value>
+  </data>
+  <data name="OpenWalletDescription" xml:space="preserve">
+    <value>Åbn din eDaler-pung for at få vist den aktuelle saldo og se de seneste transaktioner.</value>
+  </data>
+  <data name="AccountEventDescription" xml:space="preserve">
+    <value>Nedenfor kan du se oplysninger om en enkelt kontohændelse.</value>
+  </data>
+  <data name="Balance" xml:space="preserve">
+    <value>Saldo:</value>
+  </data>
+  <data name="OpenMessageLink" xml:space="preserve">
+    <value>Link til åbning af besked</value>
+  </data>
+  <data name="RemoteParty" xml:space="preserve">
+    <value>Fjernfest:</value>
+  </data>
+  <data name="Reserved" xml:space="preserve">
+    <value>Reserveret:</value>
+  </data>
+  <data name="TransactionId" xml:space="preserve">
+    <value>Transaktions-id:</value>
+  </data>
+  <data name="AccountEventItem" xml:space="preserve">
+    <value>Konto-begivenheder</value>
+  </data>
+  <data name="PendingPaymentItem" xml:space="preserve">
+    <value>Afventende betalinger</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsPart1" xml:space="preserve">
+    <value>Hvis du har adgang til din konto på en anden enhed, skal du følge disse trin:</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet1" xml:space="preserve">
+    <value>Åbn appen på din anden enhed.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet2" xml:space="preserve">
+    <value>Gå til Indstillinger → Overfør identitet.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet3" xml:space="preserve">
+    <value>En QR-kode vises på den pågældende enhed.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet4" xml:space="preserve">
+    <value>Brug denne enhed til at scanne QR-koden og overføre din konto.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsPart2" xml:space="preserve">
+    <value>Hvis du ikke har adgang til din konto, bedes du kontakte vores supportteam på</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsPart3" xml:space="preserve">
+    <value>.</value>
+  </data>
+  <data name="SupportEmailSubject" xml:space="preserve">
+    <value>Gendan konto</value>
+  </data>
+  <data name="EmailClientNotAvailable" xml:space="preserve">
+    <value>E-mail-klienten kan ikke åbnes. Send venligst en e-mail til {0}.</value>
+  </data>
+  <data name="ClaimThing" xml:space="preserve">
+    <value>Gør krav på ting</value>
+  </data>
+  <data name="InformationAboutClaimedThingText" xml:space="preserve">
+    <value>Følgende oplysninger er tilgængelige om den ting, hvis kode du scannede. Vælg, om du vil forsøge at gøre krav på denne ting som din, og også om du vil gøre den offentligt søgbar i Thing Registry.</value>
+  </data>
+  <data name="InformationAboutThing" xml:space="preserve">
+    <value>Information om ting</value>
+  </data>
+  <data name="InformationAboutThingText" xml:space="preserve">
+    <value>Følgende oplysninger er lokalt tilgængelige om tinget. Muligheder for at interagere med enheden er præsenteret nedenfor.</value>
+  </data>
+  <data name="MakeThingPublic" xml:space="preserve">
+    <value>Gør ting offentligt</value>
+  </data>
+  <data name="Thing" xml:space="preserve">
+    <value>Ting</value>
+  </data>
+  <data name="Chat" xml:space="preserve">
+    <value>Chatte</value>
+  </data>
+  <data name="ConnectToDevice" xml:space="preserve">
+    <value>Opret forbindelse til enhed</value>
+  </data>
+  <data name="DisconnectFromDevice" xml:space="preserve">
+    <value>Afbryd forbindelsen til enheden</value>
+  </data>
+  <data name="DeleteRules" xml:space="preserve">
+    <value>Slet regler</value>
+  </data>
+  <data name="DisownThing" xml:space="preserve">
+    <value>Fornægtelse af ting</value>
+  </data>
+  <data name="ContractCouldNotBeFound" xml:space="preserve">
+    <value>Kontrakten kunne ikke findes, den kunne have været slettet. Vil du fjerne referencen?</value>
+  </data>
+  <data name="PaymentDescription" xml:space="preserve">
+    <value>Indtast det beløb, der skal betales til modtageren nedenfor. Når du er færdig, kan du vælge enten at betale online (hvis du er tilsluttet) eller offline ved at klikke på den tilsvarende knap.</value>
+  </data>
+  <data name="EncryptMessage" xml:space="preserve">
+    <value>Krypter meddelelse</value>
+  </data>
+  <data name="SendPayment" xml:space="preserve">
+    <value>Send betaling</value>
+  </data>
+  <data name="ReferencedID" xml:space="preserve">
+    <value>Refereret ID</value>
+  </data>
+  <data name="ControlActuator" xml:space="preserve">
+    <value>Kontrolaktuator</value>
+  </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>Meddelelser</value>
+  </data>
+  <data name="NotificationsText" xml:space="preserve">
+    <value>Nedenfor kan du se en liste over meddelelser som følge af interaktioner med tingen. Tryk på hver enkelt for at få vist flere oplysninger og tilgængelige muligheder.</value>
+  </data>
+  <data name="SensorDataText" xml:space="preserve">
+    <value>Nedenfor er oplysninger og sensordata, der er tilgængelige for dig, i overensstemmelse med dine adgangsrettigheder.</value>
+  </data>
+  <data name="SensorData" xml:space="preserve">
+    <value>Sensordata</value>
+  </data>
+  <data name="ReadSensor" xml:space="preserve">
+    <value>Læs sensor</value>
+  </data>
+  <data name="Range" xml:space="preserve">
+    <value>Interval</value>
+  </data>
+  <data name="RangeText" xml:space="preserve">
+    <value>Anvend denne regel på:</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Indsende</value>
+  </data>
+  <data name="InformationAboutCallerText" xml:space="preserve">
+    <value>Følgende oplysninger er tilgængelige om den, der ringer op:</value>
+  </data>
+  <data name="FriendlyName" xml:space="preserve">
+    <value>Brugervenligt navn</value>
+  </data>
+  <data name="ReadoutRequestText2" xml:space="preserve">
+    <value>En opkalder har anmodet om sensordata fra en af dine ting. Vælg, hvordan du ønsker, at tingen skal reagere på denne type anmodning.</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>Al</value>
+  </data>
+  <data name="ComputedValues" xml:space="preserve">
+    <value>Beregnede værdier</value>
+  </data>
+  <data name="FieldTypes" xml:space="preserve">
+    <value>Felttyper</value>
+  </data>
+  <data name="HistoricalValues" xml:space="preserve">
+    <value>Historiske værdier</value>
+  </data>
+  <data name="IdentityValues" xml:space="preserve">
+    <value>Identitetsværdier</value>
+  </data>
+  <data name="MomentaryValues" xml:space="preserve">
+    <value>Øjeblikkelige værdier</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>Ingen</value>
+  </data>
+  <data name="PeakValues" xml:space="preserve">
+    <value>Højeste værdier</value>
+  </data>
+  <data name="PermitFieldTypesText" xml:space="preserve">
+    <value>Vælg de felttyper (brede kategorier), der skal gives adgang til, hvis anmodningen accepteres.</value>
+  </data>
+  <data name="StatusValues" xml:space="preserve">
+    <value>Status værdier</value>
+  </data>
+  <data name="Fields" xml:space="preserve">
+    <value>Felter</value>
+  </data>
+  <data name="PermitFieldsText" xml:space="preserve">
+    <value>Vælg de felter, der skal gives adgang til, hvis anmodningen accepteres.</value>
+  </data>
+  <data name="ARequestHasBeenSentToTheOwner" xml:space="preserve">
+    <value>Der er sendt en anmodning til ejeren af enheden.</value>
+  </data>
+  <data name="ControlRequestText2" xml:space="preserve">
+    <value>En opkalder har anmodet om at styre en af dine ting. Vælg, hvordan du ønsker, at tingen skal reagere på denne type anmodning.</value>
+  </data>
+  <data name="PermitParametersText" xml:space="preserve">
+    <value>Vælg de parametre, der skal gives adgang til, hvis anmodningen accepteres.</value>
   </data>
 </root>

@@ -85,13 +85,17 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		/// https://github.com/Redth/ZXing.Net.Maui/issues/38
 		/// </summary>
 		/// TODO: Check if the camera is closed properly by the 3rd party framework and remove this method if it is.
-		private async Task CloseCamera()
+		private
+#if ANDROID
+			async
+#endif
+			Task CloseCamera()
 		{
 			try
 			{
 				this.CameraBarcodeReaderView.IsDetecting = false;
 #if ANDROID
-				ICameraInternal? preview = await this.GetCameraPreview(this.CameraBarcodeReaderView);
+				ICameraInternal? preview = await GetCameraPreview(this.CameraBarcodeReaderView);
 				preview?.Close();
 #endif
 			}
@@ -99,6 +103,9 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 			{
 				ServiceRef.LogService.LogException(e);
 			}
+#if !ANDROID
+			return Task.CompletedTask;
+#endif
 		}
 #if ANDROID
 		/// <summary>
@@ -107,7 +114,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		/// </summary>
 		/// <param name="cameraBarcodeReaderView">The camera view in use</param>
 		/// <returns>The Camera preview</returns>
-		private async Task<ICameraInternal?> GetCameraPreview(CameraBarcodeReaderView cameraBarcodeReaderView)
+		private static async Task<ICameraInternal?> GetCameraPreview(CameraBarcodeReaderView cameraBarcodeReaderView)
 		{
 
 			PermissionStatus status = await Permissions.CheckStatusAsync<Permissions.Camera>();
@@ -127,7 +134,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 #endif
 
 
-		private TaskCompletionSource<bool>? navigationComplete;
+		private readonly TaskCompletionSource<bool>? navigationComplete;
 
 		private async void HandleKeyboardSizeMessage(object Recipient, KeyboardSizeMessage Message)
 		{
@@ -221,8 +228,11 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 				this.CameraBarcodeReaderView.IsTorchOn = true;
 		}
 
-		/// Disable the command for now, as it is not working properly <summary>
-		private bool CanPickPhoto() => false;
+		/// <summary>
+		/// Disable the command for now, as it is not working properly
+		/// </summary>
+		private static bool CanPickPhoto() => false;
+
 		[RelayCommand (CanExecute = nameof(CanPickPhoto))]
 		private async Task PickPhoto()
 		{
@@ -245,20 +255,20 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 				bitmap.GetPixels(pixels, 0, width, 0, 0, width, height);
 
 				// Convert pixel data to ByteBuffer
-				var byteBuffer = ByteBuffer.Allocate(pixels.Length * sizeof(int));
+				ByteBuffer byteBuffer = ByteBuffer.Allocate(pixels.Length * sizeof(int));
 				Console.WriteLine($"{pixels.Length * sizeof(int)} : buffer: {byteBuffer.Capacity()}");
 				byteBuffer.AsIntBuffer().Put(pixels);
 				byteBuffer.Flip();
 
 				// Initialize PixelBufferHolder
-				PixelBufferHolder data = new PixelBufferHolder
+				PixelBufferHolder data = new()
 				{
 					Size = new Size(width, height),
 					Data = byteBuffer
 				};
 
-				ZXingBarcodeReader reader = new ZXingBarcodeReader();
-				BarcodeReaderOptions options = new BarcodeReaderOptions()
+				ZXingBarcodeReader reader = new();
+				BarcodeReaderOptions options = new()
 				{
 					AutoRotate = true,
 					TryHarder = true,

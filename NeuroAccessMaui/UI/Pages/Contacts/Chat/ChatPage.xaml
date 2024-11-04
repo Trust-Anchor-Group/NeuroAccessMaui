@@ -16,27 +16,28 @@
 
 		<controls:Background/>
 
-		<Grid RowDefinitions="*,auto">
-			<ScrollView Grid.Column="0" Grid.Row="0" x:Name="ScrollView" x:FieldModifier="public">
-				<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
-					<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
+		<Grid RowDefinitions="auto, *, auto" ColumnDefinitions="auto, *" Padding="{StaticResource MediumMargins}">
+			<controls:ImageButton Grid.Column="0" Grid.Row="0" HorizontalOptions="Start" VerticalOptions="Center" Command="{Binding GoBackCommand}"
 											 Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-					<Label Style="{StaticResource PageTitleLabel}" Text="{Binding FriendlyName}"/>
+			<Label Grid.Column="1" Grid.Row="0" Style="{StaticResource PageTitleLabel}" FontSize="24" Text="{Binding FriendlyName}" MaxLines="2" LineBreakMode="TailTruncation" />
 
-					<Frame Style="{StaticResource FrameSet}">
+			<ScrollView Grid.ColumnSpan="2" Grid.Row="1" x:Name="ScrollView" x:FieldModifier="public" Orientation="Vertical">
+				<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}" HorizontalOptions="Fill">
+					
+					<Frame Style="{StaticResource FrameSet}" IsVisible="{Binding HasMessages}">
 						<VerticalStackLayout x:Name="Messages" x:FieldModifier="public" VerticalOptions="Fill" HorizontalOptions="Fill">
 						</VerticalStackLayout>
 					</Frame>
 
-					<Label x:Name="Bottom" x:FieldModifier="public" Text="" HeightRequest="1"/>
+					<Label x:Name="Bottom" x:FieldModifier="public" Text="" HeightRequest="1" HorizontalOptions="Center"/>
 				</VerticalStackLayout>
 			</ScrollView>
 
 			<Grid x:Name="ControlGrid" ColumnDefinitions="*,auto" RowDefinitions="auto" Padding="{StaticResource SmallMargins}"
-					Grid.Column="0" Grid.Row="1">
+					Grid.ColumnSpan="2" Grid.Row="2">
 
-				<Frame Grid.Column="0" Grid.Row="0" CornerRadius="5" Padding="5,2,5,2"
+				<Frame Grid.Column="0" Grid.Row="0" CornerRadius="5" Padding="0"
 						 BorderColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}">
 					<Frame.Behaviors>
 						<behaviors:SetFocusOnTappedBehavior SetFocusTo="EditorControl"/>
@@ -45,8 +46,8 @@
 						<Grid ColumnDefinitions="*,auto" ColumnSpacing="0"
 								IsVisible="{Binding IsRecordingAudio, Converter={StaticResource InvertedBoolConverter}}">
 							<Editor x:Name="EditorControl" HorizontalOptions="FillAndExpand" MinimumHeightRequest="40"
-									  IsEnabled="{Binding IsRecordingAudio, Converter={StaticResource InvertedBoolConverter}}"
-									  Text="{Binding MarkdownInput}" Keyboard="Chat" AutoSize="TextChanges"/>
+									  IsEnabled="{Binding IsRecordingAudio, Converter={StaticResource InvertedBoolConverter}}" BackgroundColor="{AppThemeBinding Light={StaticResource NormalEditBackgroundLight}, Dark={StaticResource NormalEditBackgroundDark}}"
+									  Text="{Binding MarkdownInput}" Keyboard="Chat" AutoSize="TextChanges" TextColor="{AppThemeBinding Light={StaticResource NormalEditForegroundLight}, Dark={StaticResource NormalEditForegroundDark}}"/>
 
 							<controls:ImageButton Grid.Column="1" Margin="{StaticResource SmallLeftMargins}"
 														 PathData="{x:Static ui:Geometries.CancelPath}" Style="{StaticResource ImageOnlyButton}"
@@ -91,38 +92,60 @@
 					</Grid>
 				</Frame>
 
-				<Grid Grid.Column="1" RowDefinitions="0" BackgroundColor="Transparent">
-					<controls:FadeView IsFrontView="{Binding Path=IsWriting, Converter={StaticResource InvertedBoolConverter}}">
-						<controls:FadeView.FrontView>
-							<mct:Expander Direction="Up" IsExpanded="{Binding IsButtonExpanded}">
-								<mct:Expander.Header>
-									<VerticalStackLayout BackgroundColor="Transparent">
-										<controls:ImageButton PathData="{x:Static ui:Geometries.EllipsisPath}" Command="{Binding ExpandButtonsCommand}"
-																	 Style="{StaticResource ImageOnlyButton}"
-																	 IsVisible="{Binding IsButtonExpanded, Converter={StaticResource InvertedBoolConverter}}"/>
-									</VerticalStackLayout>
-								</mct:Expander.Header>
-								<VerticalStackLayout Spacing="5" Margin="{StaticResource SmallBottomMargins}" IsVisible="{Binding IsButtonExpanded}">
-									<controls:ImageButton PathData="{x:Static ui:Geometries.MicrophonePath}" Command="{Binding RecordAudioCommand}" Style="{StaticResource ImageOnlyButton}"/>
-									<controls:ImageButton PathData="{x:Static ui:Geometries.CameraPath}" Command="{Binding TakePhotoCommand}" Style="{StaticResource ImageOnlyButton}"/>
-									<controls:ImageButton PathData="{x:Static ui:Geometries.AttachmentPath}" Command="{Binding EmbedFileCommand}" Style="{StaticResource ImageOnlyButton}"/>
-									<controls:ImageButton PathData="{x:Static ui:Geometries.PersonPath}" Command="{Binding EmbedIdCommand}" Style="{StaticResource ImageOnlyButton}"/>
-									<controls:ImageButton PathData="{x:Static ui:Geometries.ContractPath}" Command="{Binding EmbedContractCommand}" Style="{StaticResource ImageOnlyButton}"/>
-									<controls:ImageButton PathData="{x:Static ui:Geometries.MoneyPath}" Command="{Binding EmbedMoneyCommand}" Style="{StaticResource ImageOnlyButton}"/>
-									<controls:ImageButton PathData="{x:Static ui:Geometries.TokenPath}" Command="{Binding EmbedTokenCommand}" Style="{StaticResource ImageOnlyButton}"/>
-									<controls:ImageButton PathData="{x:Static ui:Geometries.ThingPath}" Command="{Binding EmbedThingCommand}" Style="{StaticResource ImageOnlyButton}"/>
+				<Grid Grid.Column="1" BackgroundColor="Transparent">
+					<!-- First View: Expander with Additional Buttons -->
+					<ContentView IsVisible="{Binding Path=IsWriting, Converter={StaticResource InvertedBoolConverter}}">
+						<mct:Expander Direction="Up" IsExpanded="{Binding IsButtonExpanded}">
+							<mct:Expander.Header>
+								<VerticalStackLayout BackgroundColor="Transparent">
+									<controls:ImageButton PathData="{x:Static ui:Geometries.EllipsisPath}"
+                                          Command="{Binding ExpandButtonsCommand}"
+                                          Style="{StaticResource ImageOnlyButton}"
+                                          IsVisible="{Binding IsButtonExpanded, Converter={StaticResource InvertedBoolConverter}}"/>
 								</VerticalStackLayout>
-							</mct:Expander>
-						</controls:FadeView.FrontView>
-						<controls:FadeView.BackView>
-							<controls:ImageButton PathData="{x:Static ui:Geometries.SendPath}" Command="{Binding SendCommand}"
-														 Style="{StaticResource ImageOnlyButton}">
-								<controls:ImageButton.Behaviors>
-									<behaviors:UnfocusOnClickedBehavior UnfocusControl="EditorControl"/>
-								</controls:ImageButton.Behaviors>
-							</controls:ImageButton>
-						</controls:FadeView.BackView>
-					</controls:FadeView>
+							</mct:Expander.Header>
+							<VerticalStackLayout Spacing="5" Margin="{StaticResource SmallBottomMargins}" IsVisible="{Binding IsButtonExpanded}">
+								<controls:ImageButton PathData="{x:Static ui:Geometries.MicrophonePath}"
+                                      Command="{Binding RecordAudioCommand}"
+                                      Style="{StaticResource ImageOnlyButton}"/>
+								<controls:ImageButton PathData="{x:Static ui:Geometries.CameraPath}"
+                                      Command="{Binding TakePhotoCommand}"
+                                      Style="{StaticResource ImageOnlyButton}"/>
+								<controls:ImageButton PathData="{x:Static ui:Geometries.AttachmentPath}"
+                                      Command="{Binding EmbedFileCommand}"
+                                      Style="{StaticResource ImageOnlyButton}"/>
+								<controls:ImageButton PathData="{x:Static ui:Geometries.PersonPath}"
+                                      Command="{Binding EmbedIdCommand}"
+                                      Style="{StaticResource ImageOnlyButton}"/>
+								<controls:ImageButton PathData="{x:Static ui:Geometries.ContractPath}"
+                                      Command="{Binding EmbedContractCommand}"
+                                      Style="{StaticResource ImageOnlyButton}"/>
+								<controls:ImageButton PathData="{x:Static ui:Geometries.MoneyPath}"
+                                      Command="{Binding EmbedMoneyCommand}"
+                                      Style="{StaticResource ImageOnlyButton}"/>
+								<controls:ImageButton PathData="{x:Static ui:Geometries.TokenPath}"
+                                      Command="{Binding EmbedTokenCommand}"
+                                      Style="{StaticResource ImageOnlyButton}"/>
+								<controls:ImageButton PathData="{x:Static ui:Geometries.ThingPath}"
+                                      Command="{Binding EmbedThingCommand}"
+                                      Style="{StaticResource ImageOnlyButton}"/>
+							</VerticalStackLayout>
+						</mct:Expander>
+					</ContentView>
+
+					<!-- Second View: Send Button -->
+					<ContentView IsVisible="{Binding Path=IsWriting}">
+						<controls:ImageButton PathData="{x:Static ui:Geometries.SendPath}"
+                              Command="{Binding SendCommand}"
+                              Style="{StaticResource ImageOnlyButton}">
+							<controls:ImageButton.Behaviors>
+								<behaviors:UnfocusOnClickedBehavior UnfocusControl="EditorControl"/>
+							</controls:ImageButton.Behaviors>
+							<controls:ImageButton.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding SendCommand}"/>
+							</controls:ImageButton.GestureRecognizers>
+						</controls:ImageButton>
+					</ContentView>
 				</Grid>
 			</Grid>
 		</Grid>

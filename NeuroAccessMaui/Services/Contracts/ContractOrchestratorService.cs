@@ -345,10 +345,10 @@ namespace NeuroAccessMaui.Services.Contracts
 
 		private async Task Contracts_ContractProposalRecieved(object? sender, ContractProposalEventArgs e)
 		{
-			try 
+			try
 			{
 				Contract Contract = await ServiceRef.XmppService.GetContract(e.ContractId);
-				
+
 				await ServiceRef.UiService.GoToAsync(nameof(ViewContractPage), new ViewContractNavigationArgs(
 							Contract, false, e.Role, e.MessageText));
 			}
@@ -598,14 +598,14 @@ namespace NeuroAccessMaui.Services.Contracts
 
 							ServiceRef.TagProfile.CheckContractReference(Ref);
 						}
-						if(Contract.ForMachinesNamespace ==  NeuroFeaturesClient.NamespaceNeuroFeatures)
+						if (Contract.ForMachinesNamespace == NeuroFeaturesClient.NamespaceNeuroFeatures
+						|| Contract.ForMachinesNamespace == Constants.ContractMachineNames.PaymentInstructionsNamespace)
 						{
-							
 							CreationAttributesEventArgs creationAttr = await ServiceRef.XmppService.GetNeuroFeatureCreationAttributes();
-							ParameterValues ??= new Dictionary<CaseInsensitiveString, object>();
+							ParameterValues ??= [];
 							ParameterValues.Add(new CaseInsensitiveString("TrustProvider"), creationAttr.TrustProviderId);
-
 						}
+
 						NewContractNavigationArgs e = new(Contract, ParameterValues);
 
 						await ServiceRef.UiService.GoToAsync(nameof(NewContractPage), e, BackMethod.CurrentPage);

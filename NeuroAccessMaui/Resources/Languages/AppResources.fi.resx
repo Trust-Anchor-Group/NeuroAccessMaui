@@ -417,8 +417,8 @@
   <data name="OperatorDoesNotSupportRegisteringNewAccounts" xml:space="preserve">
     <value>Operaattori ei {0} tue uusien tilien rekisteröintiä</value>
   </data>
-  <data name="AccountNameAlreadyTaken" xml:space="preserve">
-    <value>Tilin nimi{0} on jo otettu. Valitse toinen.</value>
+  <data name="UsernameNameAlreadyTaken" xml:space="preserve">
+    <value>Käyttäjätunnus on jo olemassa. Kokeile toista.</value>
   </data>
   <data name="InvalidUsernameOrPassword" xml:space="preserve">
     <value>Virheellinen käyttäjänimi tai salasana</value>
@@ -535,10 +535,10 @@
     <value>Viewmodel-{0} sidoksen poistaminen sivulta {1} epäonnistui</value>
   </data>
   <data name="OnboardingPhonePageTitle" xml:space="preserve">
-    <value>Tervetuloa Neuro-Accessiin</value>
+    <value>Vahvista puhelinnumero</value>
   </data>
   <data name="OnboardingPhonePageDetails" xml:space="preserve">
-    <value>Jotta saat vahvistuksen, sinun on annettava puhelinnumerosi</value>
+    <value>Lähetämme sinulle vahvistuskoodin</value>
   </data>
   <data name="OnboardingEmailPageTitle" xml:space="preserve">
     <value>Vahvista sähköpostiosoite</value>
@@ -559,10 +559,10 @@
     <value>Alue:</value>
   </data>
   <data name="OnboardingAccountPageTitle" xml:space="preserve">
-    <value>Luo tili</value>
+    <value>Tilin luominen...</value>
   </data>
   <data name="OnboardingAccountPageDetails" xml:space="preserve">
-    <value>Kirjoita nimi, jota haluat käyttää tililläsi</value>
+    <value>Odota, kunnes järjestämme asiat sinulle</value>
   </data>
   <data name="OnboardingDefinePasswordPageTitle" xml:space="preserve">
     <value>PIN-koodin luominen</value>
@@ -570,17 +570,11 @@
   <data name="OnboardingFinalizePageTitle" xml:space="preserve">
     <value>Menestys!</value>
   </data>
-  <data name="OnboardingFinalizePageDetails" xml:space="preserve">
-    <value>Voit nyt aloittaa Neuro-Accessin käytön</value>
-  </data>
   <data name="OnboardingBiometricsPageTitle" xml:space="preserve">
     <value>Melkein valmis</value>
   </data>
   <data name="OnboardingBiometricsPageDetails" xml:space="preserve">
     <value>Neuro-Access toimii parhaiten {0} käytettäessä. Haluatko ottaa tämän ominaisuuden käyttöön? Tätä voidaan muuttaa myös asetuksissa myöhemmin</value>
-  </data>
-  <data name="AccountSectionTitle" xml:space="preserve">
-    <value>Kirjoita tilin nimi</value>
   </data>
   <data name="Create" xml:space="preserve">
     <value>Luoda</value>
@@ -624,6 +618,9 @@
   <data name="EmailValidationFormat" xml:space="preserve">
     <value>Anna kelvollinen sähköpostiosoite</value>
   </data>
+  <data name="PhoneValidationFormat" xml:space="preserve">
+    <value>Anna kelvollinen puhelinnumero</value>
+  </data>
   <data name="ProviderSectionTitle" xml:space="preserve">
     <value>Valitse yksi vaihtoehto</value>
   </data>
@@ -653,12 +650,6 @@
   </data>
   <data name="QrScanUri" xml:space="preserve">
     <value>URI:</value>
-  </data>
-  <data name="AccountValidationAlreadyExists" xml:space="preserve">
-    <value>Tämä tilin nimi on jo olemassa</value>
-  </data>
-  <data name="AccountAvailableAlternatives" xml:space="preserve">
-    <value>Seuraavat nimet ovat edelleen käytettävissä:</value>
   </data>
   <data name="TestOtpUsed" xml:space="preserve">
     <value>Väliaikaista OTP-koodia on käytetty. Sovellus lakkaa toimimasta noin viikon kuluttua. Sinun on asennettava sovellus uudelleen, jotta voit käyttää sitä uudelleen.</value>
@@ -1416,6 +1407,9 @@
   <data name="AccessRequestText" xml:space="preserve">
     <value>{0} haluaa muodostaa yhteyden laitteeseesi {1}.</value>
   </data>
+  <data name="AccessRequestText2" xml:space="preserve">
+    <value>Soittaja on pyytänyt käyttöoikeutta johonkin sisältöösi. Valitse, miten haluat asian vastaavan tämäntyyppiseen pyyntöön.</value>
+  </data>
   <data name="ConcentratorServiceNotFound" xml:space="preserve">
     <value>Keskitinpalvelua ei löytynyt.</value>
   </data>
@@ -1499,6 +1493,12 @@
   </data>
   <data name="BuyEDaler" xml:space="preserve">
     <value>Osta eDaler.</value>
+  </data>
+  <data name="Caller" xml:space="preserve">
+    <value>Soittaja</value>
+  </data>
+  <data name="CallerAddress" xml:space="preserve">
+    <value>Soittajan osoite</value>
   </data>
   <data name="CallerOnly" xml:space="preserve">
     <value>Vain soittaja</value>
@@ -2132,5 +2132,272 @@
   </data>
   <data name="TransferIdentityPageDetails" xml:space="preserve">
     <value>Jatka toisella laitteellasi käyttöönottoa, kunnes pääset palveluntarjoajasivulle. Paina muutospainiketta ja skannaa tämä QR. Tämä poistaa identiteetin tästä laitteesta.</value>
+  </data>
+  <data name="AppVersion" xml:space="preserve">
+    <value>Versionumero</value>
+  </data>
+  <data name="BuildNumber" xml:space="preserve">
+    <value>Koontiversion numero</value>
+  </data>
+  <data name="Platform" xml:space="preserve">
+    <value>Lava</value>
+  </data>
+  <data name="HardwareInfo" xml:space="preserve">
+    <value>Laitteisto</value>
+  </data>
+  <data name="OnboardingGetStartedTitle" xml:space="preserve">
+    <value>Tervetuloa Neuro-Accessiin</value>
+  </data>
+  <data name="CreateNewAccount" xml:space="preserve">
+    <value>Luo uusi tili</value>
+  </data>
+  <data name="IAlreadyHaveAnAccount" xml:space="preserve">
+    <value>Minulla on jo tili</value>
+  </data>
+  <data name="OnboardingGetStartedQrInfo" xml:space="preserve">
+    <value>Saitko kutsu-, siirto- tai palautuskoodin? Skannaa se alla</value>
+  </data>
+  <data name="OnboardingNameEntryTitle" xml:space="preserve">
+    <value>Valitse käyttäjänimesi</value>
+  </data>
+  <data name="OnboardingNameEntryDetails" xml:space="preserve">
+    <value>Käyttäjänimesi on pysyvä, eikä sitä voi muuttaa myöhemmin</value>
+  </data>
+  <data name="UseNickname" xml:space="preserve">
+    <value>Haluaisin käyttää lempinimeä</value>
+  </data>
+  <data name="UseRealName" xml:space="preserve">
+    <value>Haluaisin käyttää oikeaa nimeäni</value>
+  </data>
+  <data name="BeAnonymous" xml:space="preserve">
+    <value>Haluan pysyä nimettömänä</value>
+  </data>
+  <data name="Nickname" xml:space="preserve">
+    <value>Lempinimi</value>
+  </data>
+  <data name="OnboardingContactSupportTitle" xml:space="preserve">
+    <value>Palauta tili</value>
+  </data>
+  <data name="AccountDetails" xml:space="preserve">
+    <value>Tilin tiedot</value>
+  </data>
+  <data name="ServiceProvider" xml:space="preserve">
+    <value>Palveluntarjoaja</value>
+  </data>
+  <data name="Alternative" xml:space="preserve">
+    <value>Vaihtoehtoinen: </value>
+  </data>
+  <data name="InvalidUsernameCharacters" xml:space="preserve">
+    <value>Käyttäjänimi sisältää virheellisiä merkkejä.</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Käyttäjänimi</value>
+  </data>
+  <data name="SendSeconds" xml:space="preserve">
+    <value>Lähetä ({0})</value>
+  </data>
+  <data name="CreateWallet" xml:space="preserve">
+    <value>Luo lompakko</value>
+  </data>
+  <data name="CreateWalletDescription" xml:space="preserve">
+    <value>Luot lompakon laittamalla siihen rahaa. Tätä rahaa kutsutaan nimellä eDaler, ja sitä voidaan siirtää muille, verkossa tai offline-tilassa, tai sitä voidaan käyttää tarjottujen palvelujen ostamiseen.</value>
+  </data>
+  <data name="Buy" xml:space="preserve">
+    <value>Ostaa</value>
+  </data>
+  <data name="BuyEDalerDescription" xml:space="preserve">
+    <value>Anna alla oleva määrä eDaleria, jonka haluat ostaa, ja paina Osta-painiketta. Saatat avata verkkosivun, jossa sinun on täytettävä lisätietoja, jotta maksunkäsittelijä voi vahvistaa vaatimuksesi.</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Määrä:</value>
+  </data>
+  <data name="Wallet" xml:space="preserve">
+    <value>Lompakko</value>
+  </data>
+  <data name="OpenWallet" xml:space="preserve">
+    <value>Avaa Wallet</value>
+  </data>
+  <data name="OpenWalletDescription" xml:space="preserve">
+    <value>Avaa eDaler-lompakkosi näyttääksesi nykyisen saldosi ja nähdäksesi viimeisimmät tapahtumat.</value>
+  </data>
+  <data name="AccountEventDescription" xml:space="preserve">
+    <value>Alla näet tietoja yksittäisestä tilitapahtumasta.</value>
+  </data>
+  <data name="Balance" xml:space="preserve">
+    <value>Vaaka:</value>
+  </data>
+  <data name="OpenMessageLink" xml:space="preserve">
+    <value>Avaa viesti -linkki</value>
+  </data>
+  <data name="RemoteParty" xml:space="preserve">
+    <value>Etäryhmä:</value>
+  </data>
+  <data name="Reserved" xml:space="preserve">
+    <value>Varattu:</value>
+  </data>
+  <data name="TransactionId" xml:space="preserve">
+    <value>Tapahtuman tunnus:</value>
+  </data>
+  <data name="AccountEventItem" xml:space="preserve">
+    <value>Tilin tapahtumat</value>
+  </data>
+  <data name="PendingPaymentItem" xml:space="preserve">
+    <value>Odottavat maksut</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsPart1" xml:space="preserve">
+    <value>Jos voit käyttää tiliäsi toisella laitteella, toimi seuraavasti:</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet1" xml:space="preserve">
+    <value>Avaa sovellus toisella laitteellasi.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet2" xml:space="preserve">
+    <value>Siirry kohtaan Asetukset → Siirrä tunnistetiedot.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet3" xml:space="preserve">
+    <value>Laitteeseen ilmestyy QR-koodi.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsBullet4" xml:space="preserve">
+    <value>Käytä tätä laitetta QR-koodin skannaamiseen ja tilisi siirtämiseen.</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsPart2" xml:space="preserve">
+    <value>Jos sinulla ei ole pääsyä tilillesi, ota yhteyttä tukitiimiimme osoitteessa</value>
+  </data>
+  <data name="OnboardingContactSupportDetailsPart3" xml:space="preserve">
+    <value>.</value>
+  </data>
+  <data name="SupportEmailSubject" xml:space="preserve">
+    <value>Palauta tili</value>
+  </data>
+  <data name="EmailClientNotAvailable" xml:space="preserve">
+    <value>Sähköpostiohjelmaa ei voi avata. Lähetä sähköpostia {0}.</value>
+  </data>
+  <data name="ClaimThing" xml:space="preserve">
+    <value>Vaadi asia</value>
+  </data>
+  <data name="InformationAboutClaimedThingText" xml:space="preserve">
+    <value>Seuraavat tiedot ovat saatavilla asiasta, jonka koodin olet skannannut. Valitse, haluatko yrittää vaatia tätä asiaa omaksesi, ja myös jos haluat tehdä siitä julkisesti haettavan asiarekisterissä.</value>
+  </data>
+  <data name="InformationAboutThing" xml:space="preserve">
+    <value>Tietoa asiasta</value>
+  </data>
+  <data name="InformationAboutThingText" xml:space="preserve">
+    <value>Seuraavat tiedot ovat paikallisesti saatavilla asiasta. Vaihtoehdot vuorovaikutukseen laitteen kanssa on esitetty alla.</value>
+  </data>
+  <data name="MakeThingPublic" xml:space="preserve">
+    <value>Tee asiasta julkinen</value>
+  </data>
+  <data name="Thing" xml:space="preserve">
+    <value>Asia</value>
+  </data>
+  <data name="Chat" xml:space="preserve">
+    <value>Jutella</value>
+  </data>
+  <data name="ConnectToDevice" xml:space="preserve">
+    <value>Yhdistä laitteeseen</value>
+  </data>
+  <data name="DisconnectFromDevice" xml:space="preserve">
+    <value>Katkaise yhteys laitteeseen</value>
+  </data>
+  <data name="DeleteRules" xml:space="preserve">
+    <value>Poista säännöt</value>
+  </data>
+  <data name="DisownThing" xml:space="preserve">
+    <value>Hylkää asia</value>
+  </data>
+  <data name="ContractCouldNotBeFound" xml:space="preserve">
+    <value>Sopimusta ei löytynyt, se olisi voitu poistaa. Haluatko poistaa viitteen?</value>
+  </data>
+  <data name="PaymentDescription" xml:space="preserve">
+    <value>Kirjoita vastaanottajalle maksettava summa alle. Kun olet valmis, voit maksaa joko verkossa (jos yhdistetty) tai offline-tilassa napsauttamalla vastaavaa painiketta.</value>
+  </data>
+  <data name="EncryptMessage" xml:space="preserve">
+    <value>Salaa viesti</value>
+  </data>
+  <data name="SendPayment" xml:space="preserve">
+    <value>Lähetä maksu</value>
+  </data>
+  <data name="ReferencedID" xml:space="preserve">
+    <value>Viitattu tunnus</value>
+  </data>
+  <data name="ControlActuator" xml:space="preserve">
+    <value>Ohjaa toimilaitetta</value>
+  </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>Ilmoitukset</value>
+  </data>
+  <data name="NotificationsText" xml:space="preserve">
+    <value>Alla näet luettelon ilmoituksista, jotka johtuvat vuorovaikutuksesta asian kanssa. Paina kutakin nähdäksesi lisätietoja ja käytettävissä olevia vaihtoehtoja.</value>
+  </data>
+  <data name="SensorDataText" xml:space="preserve">
+    <value>Alla on tietoja ja anturitietoja, jotka ovat käytettävissäsi käyttöoikeuksiesi mukaisesti.</value>
+  </data>
+  <data name="SensorData" xml:space="preserve">
+    <value>Anturin tiedot</value>
+  </data>
+  <data name="ReadSensor" xml:space="preserve">
+    <value>Lue anturi</value>
+  </data>
+  <data name="Range" xml:space="preserve">
+    <value>Etäisyys</value>
+  </data>
+  <data name="RangeText" xml:space="preserve">
+    <value>Käytä tätä sääntöä:</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Alistua</value>
+  </data>
+  <data name="InformationAboutCallerText" xml:space="preserve">
+    <value>Soittajasta on saatavilla seuraavat tiedot:</value>
+  </data>
+  <data name="FriendlyName" xml:space="preserve">
+    <value>Kutsumanimi</value>
+  </data>
+  <data name="ReadoutRequestText2" xml:space="preserve">
+    <value>Soittaja on pyytänyt anturitietoja jostakin asiastasi. Valitse, miten haluat asian vastaavan tämäntyyppiseen pyyntöön.</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>Kaikki</value>
+  </data>
+  <data name="ComputedValues" xml:space="preserve">
+    <value>Lasketut arvot</value>
+  </data>
+  <data name="FieldTypes" xml:space="preserve">
+    <value>Kenttien tyypit</value>
+  </data>
+  <data name="HistoricalValues" xml:space="preserve">
+    <value>Historialliset arvot</value>
+  </data>
+  <data name="IdentityValues" xml:space="preserve">
+    <value>Identiteetin arvot</value>
+  </data>
+  <data name="MomentaryValues" xml:space="preserve">
+    <value>Hetkelliset arvot</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>Ei lainkaan</value>
+  </data>
+  <data name="PeakValues" xml:space="preserve">
+    <value>Huippuarvot</value>
+  </data>
+  <data name="PermitFieldTypesText" xml:space="preserve">
+    <value>Valitse kenttätyypit (laajat luokat), joiden käyttö sallitaan, jos pyyntö hyväksytään.</value>
+  </data>
+  <data name="StatusValues" xml:space="preserve">
+    <value>Tilan arvot</value>
+  </data>
+  <data name="Fields" xml:space="preserve">
+    <value>Fields</value>
+  </data>
+  <data name="PermitFieldsText" xml:space="preserve">
+    <value>Valitse kentät, joihin pääsy sallitaan, jos pyyntö hyväksytään.</value>
+  </data>
+  <data name="ARequestHasBeenSentToTheOwner" xml:space="preserve">
+    <value>Laitteen omistajalle on lähetetty pyyntö.</value>
+  </data>
+  <data name="ControlRequestText2" xml:space="preserve">
+    <value>Soittaja on pyytänyt saada hallita yhtä asioistasi. Valitse, miten haluat asian vastaavan tämäntyyppiseen pyyntöön.</value>
+  </data>
+  <data name="PermitParametersText" xml:space="preserve">
+    <value>Valitse parametrit, joihin pääsy sallitaan, jos pyyntö hyväksytään.</value>
   </data>
 </root>

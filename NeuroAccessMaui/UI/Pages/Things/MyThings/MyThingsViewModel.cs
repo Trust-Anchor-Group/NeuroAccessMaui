@@ -47,6 +47,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 		protected override async Task OnAppearing()
 		{
 			await base.OnAppearing();
+			this.SelectedThing = null;
 
 			if (this.result is not null && this.result.Task.IsCompleted)
 				await this.GoBack();
@@ -196,8 +197,8 @@ namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 
 			if (!ServiceRef.NotificationService.TryGetNotificationEvents(NotificationEventType.Things, Thing.ThingNotificationCategoryKey, out NotificationEvent[]? ThingEvents))
 				ThingEvents = null;
-
-			return ThingEvents is null ? ContactEvents : ContactEvents?.Join(ThingEvents);
+				
+			return ThingEvents is null ? ContactEvents : (ContactEvents?.Join(ThingEvents) ?? ThingEvents);
 		}
 
 		/// <inheritdoc/>
