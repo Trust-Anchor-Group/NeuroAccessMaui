@@ -32,7 +32,7 @@
 								SelectionMode="None" ItemSizingStrategy="MeasureAllItems"
 								>
 					<CollectionView.ItemsLayout>
-						<LinearItemsLayout Orientation="Vertical" ItemSpacing="16" />
+						<LinearItemsLayout Orientation="Vertical" ItemSpacing="0" />
 					</CollectionView.ItemsLayout>
 					<CollectionView.EmptyView>
 						<Label Text="ERROR" />
@@ -103,7 +103,7 @@
 					</Border>
 				</controls:TemplatedButton>
 
-				<controls:TemplatedButton Grid.Column="1" Command="{x:Binding TestCommand}">
+				<controls:TemplatedButton Grid.Column="1" Command="{x:Binding GoToParametersCommand}">
 					<Border Style="{StaticResource FilledTemplateButtonBorder}"  InputTransparent="True" HorizontalOptions="Fill">
 						<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
 							<Path VerticalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
