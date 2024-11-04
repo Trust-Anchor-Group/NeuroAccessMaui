@@ -23,14 +23,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 	/// </summary>
 	public partial class NewContractViewModel : BaseViewModel, ILinkableView
 	{
-		#region Fields
-
-		private static readonly string partSettingsPrefix = typeof(NewContractViewModel).FullName + ".Part_";
-
-		private readonly NewContractNavigationArgs? args;
-
-		#endregion
-
 		#region Constructors
 
 		/// <summary>
@@ -43,18 +35,26 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 		#endregion
 
+		#region Fields
+
+		private static readonly string partSettingsPrefix = typeof(NewContractViewModel).FullName + ".Part_";
+
+		private readonly NewContractNavigationArgs? args;
+
+		#endregion
+
 		#region Properties
 
 		[ObservableProperty]
 		private ObservableContract? contract;
 
 		[ObservableProperty]
-		[NotifyCanExecuteChangedFor(nameof(TestCommand))]
+		[NotifyCanExecuteChangedFor(nameof(GoToParametersCommand))]
 		[NotifyCanExecuteChangedFor(nameof(BackCommand))]
 		private bool canStateChange;
 
 		[ObservableProperty]
-		private string currentState = "Loading";
+		private string currentState = nameof(NewContractStep.Loading);
 
 		[ObservableProperty]
 		private string contractName = string.Empty;
@@ -229,12 +229,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		}
 
 		[RelayCommand(CanExecute = nameof(CanStateChange))]
-		private async Task Test()
+		private async Task GoToParameters()
 		{
 			await this.GoToState(NewContractStep.Loading);
 			await this.GoToState(NewContractStep.Parameters);
 		}
-
 		#endregion
 
 		#region Event Handlers
