@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EDaler;
 using EDaler.Uris;
@@ -153,7 +153,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			this.waitUntilBound = new TaskCompletionSource<bool>();
 		}
 
-		private async Task Page_OnAfterAppearing(object Sender, EventArgs e)
+		private Task Page_OnAfterAppearing(object Sender, EventArgs e)
 		{
 			if (this.scrollTo is Element)
 			{
@@ -162,6 +162,8 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			//	await this.page.ScrollView.ScrollToAsync(this.page.Bottom, ScrollToPosition.End, false);
 				this.scrollTo = null;
 			}
+
+			return Task.CompletedTask;
 		}
 
 		/// <summary>
@@ -309,10 +311,15 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		/// External message has been received
 		/// </summary>
 		/// <param name="Message">Message</param>
-		public Task MessageAddedAsync(ChatMessage Message)
+		public async Task MessageAddedAsync(ChatMessage Message)
 		{
+			if(Message.ParsedXaml is null)
+					await Message.GenerateXaml(this);
+
 			MainThread.BeginInvokeOnMainThread(async () =>
 			{
+
+
 				IView? View = await this.MessageAddedMainThread(Message, true);
 
 				if (View is Element)
@@ -323,17 +330,18 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 					await this.page.ScrollView.ScrollToAsync(x, y, true);	
 				}
 			});
-			return Task.CompletedTask;
 		}
 
 		private async Task<IView?> MessageAddedMainThread(ChatMessage Message, bool Historic)
 		{
+			this.HasMessages = true;
 
 			TaskCompletionSource<IView?> Result = new();
 
 			try
 			{
-				await Message.GenerateXaml(this);   // Makes sure XAML is generated
+				if(Message.ParsedXaml is null)
+					await Message.GenerateXaml(this);   // Makes sure XAML is generated
 
 				lock (this.synchObject)
 				{
@@ -500,7 +508,6 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			int c = Constants.BatchSizes.MessageBatchSize;
 			DateTime LastTime;
 			ChatMessage[] A;
-			Console.WriteLine("LoadMessagesAsync START");
 
 			try
 			{
@@ -535,14 +542,10 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 				try
 				{
 					IView? Last = null;
-					Console.WriteLine("LoadMessagesAsync MAIN THREAD: " + MainThread.IsMainThread);
 
-					int i = 0;
 					foreach (ChatMessage Message in A)
-					{
-						Console.WriteLine("LoadMessagesAsync Message: " + i++);
 						Last = await this.MessageAddedMainThread(Message, true);
-					}
+
 					this.ExistsMoreMessages = c <= 0;
 
 					Result.TrySetResult(Last);
@@ -552,9 +555,12 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 					Result.TrySetException(ex);
 				}
 			});
-			Console.WriteLine("LoadMessagesAsync DONE");
+
 			return await Result.Task;
 		}
+
+		[ObservableProperty]
+		private bool hasMessages = false;
 
 		/// <summary>
 		/// If the button is expanded

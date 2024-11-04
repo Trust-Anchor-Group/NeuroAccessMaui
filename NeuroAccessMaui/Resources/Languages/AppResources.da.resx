@@ -2346,4 +2346,58 @@
   <data name="Submit" xml:space="preserve">
     <value>Indsende</value>
   </data>
+  <data name="InformationAboutCallerText" xml:space="preserve">
+    <value>Følgende oplysninger er tilgængelige om den, der ringer op:</value>
+  </data>
+  <data name="FriendlyName" xml:space="preserve">
+    <value>Brugervenligt navn</value>
+  </data>
+  <data name="ReadoutRequestText2" xml:space="preserve">
+    <value>En opkalder har anmodet om sensordata fra en af dine ting. Vælg, hvordan du ønsker, at tingen skal reagere på denne type anmodning.</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>Al</value>
+  </data>
+  <data name="ComputedValues" xml:space="preserve">
+    <value>Beregnede værdier</value>
+  </data>
+  <data name="FieldTypes" xml:space="preserve">
+    <value>Felttyper</value>
+  </data>
+  <data name="HistoricalValues" xml:space="preserve">
+    <value>Historiske værdier</value>
+  </data>
+  <data name="IdentityValues" xml:space="preserve">
+    <value>Identitetsværdier</value>
+  </data>
+  <data name="MomentaryValues" xml:space="preserve">
+    <value>Øjeblikkelige værdier</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>Ingen</value>
+  </data>
+  <data name="PeakValues" xml:space="preserve">
+    <value>Højeste værdier</value>
+  </data>
+  <data name="PermitFieldTypesText" xml:space="preserve">
+    <value>Vælg de felttyper (brede kategorier), der skal gives adgang til, hvis anmodningen accepteres.</value>
+  </data>
+  <data name="StatusValues" xml:space="preserve">
+    <value>Status værdier</value>
+  </data>
+  <data name="Fields" xml:space="preserve">
+    <value>Felter</value>
+  </data>
+  <data name="PermitFieldsText" xml:space="preserve">
+    <value>Vælg de felter, der skal gives adgang til, hvis anmodningen accepteres.</value>
+  </data>
+  <data name="ARequestHasBeenSentToTheOwner" xml:space="preserve">
+    <value>Der er sendt en anmodning til ejeren af enheden.</value>
+  </data>
+  <data name="ControlRequestText2" xml:space="preserve">
+    <value>En opkalder har anmodet om at styre en af dine ting. Vælg, hvordan du ønsker, at tingen skal reagere på denne type anmodning.</value>
+  </data>
+  <data name="PermitParametersText" xml:space="preserve">
+    <value>Vælg de parametre, der skal gives adgang til, hvis anmodningen accepteres.</value>
+  </data>
 </root>

@@ -22,7 +22,7 @@
 	<Color x:Key="AccentActiveFillLight">#3e776d</Color>
 	<Color x:Key="Accent20Light">#333E776D</Color>
 	<Color x:Key="Accent2Hold">#0B6858</Color>
-	<Color x:Key="GreyInactiveLight">#DEE0E2</Color>
+	<Color x:Key="GrayInactiveLight">#DEE0E2</Color>
 	<Color x:Key="Blue20AffirmLight">#334375B0</Color>
 	<Color x:Key="BlueLight">#4375B0</Color>
 	<Color x:Key="BlueDarkLight">#1E4E86</Color>

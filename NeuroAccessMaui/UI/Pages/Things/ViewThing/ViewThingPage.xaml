@@ -23,12 +23,24 @@
 											 Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
 				<Label Text="{l:Localize Thing}" Style="{StaticResource PageTitleLabel}"/>
-
+					
 				<Frame Style="{StaticResource FrameSet}">
 					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
-						<!-- TAGS -->
-						<Label Text="{l:Localize InformationAboutThing}" Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"/>
-						<Label Text="{l:Localize InformationAboutThingText}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"/>
+						<Label Text="{Binding FriendlyName}" HorizontalTextAlignment="Center" Style="{StaticResource BoldItemTitleLabel}" MaxLines="3" LineBreakMode="TailTruncation"/>
+						<Image x:Name="QrCode" Source="{Binding QrCode}" IsVisible="{Binding HasQrCode}" WidthRequest="{Binding QrCodeWidth}"
+							 HeightRequest="{Binding QrCodeHeight}" HorizontalOptions="Center">
+							<Image.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding CopyQrCommand}" />
+							</Image.GestureRecognizers>
+						</Image>
+					</VerticalStackLayout>
+				</Frame>
+					
+				<Frame Style="{StaticResource FrameSet}">
+					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+						<!-- TAGS 
+						<Label Text="{l:Localize InformationAboutThing}" Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"/> -->
+						<Label Text="{l:Localize InformationAboutThingText}" Style="{StaticResource BoldItemTitleLabel}" LineBreakMode="WordWrap" HorizontalTextAlignment="Start"/>
 						<Frame Style="{StaticResource FrameSubSet}" Margin="0" Padding="0">
 							<VerticalStackLayout x:Name="TagLayout" BindableLayout.ItemsSource="{Binding Path=Tags}" VerticalOptions="StartAndExpand" Margin="{StaticResource SmallMargins}">
 								<BindableLayout.ItemTemplate>
@@ -89,7 +101,7 @@
 													IsEnabled="{Binding Path=IsConnected}" IsVisible="{Binding IsSensor}"
 													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
 						<controls:TextButton LabelData="{l:Localize ControlActuator}" Command="{Binding Path=ControlActuatorCommand}"
-													IsEnabled="False" IsVisible="{Binding IsActuator}"
+													IsEnabled="{Binding Path=IsConnected}" IsVisible="{Binding IsActuator}"
 													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
 						<Grid ColumnDefinitions="*" RowDefinitions="auto" Padding="0" Margin="0" ColumnSpacing="0" RowSpacing="0">
 							<controls:TextButton LabelData="{l:Localize Chat}" Command="{Binding Path=ChatCommand}" IsEnabled="{Binding Path=IsConnected}"

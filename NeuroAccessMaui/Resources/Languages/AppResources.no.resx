@@ -2346,4 +2346,58 @@
   <data name="Submit" xml:space="preserve">
     <value>Forelegge</value>
   </data>
+  <data name="InformationAboutCallerText" xml:space="preserve">
+    <value>Følgende informasjon er tilgjengelig om den som ringer:</value>
+  </data>
+  <data name="FriendlyName" xml:space="preserve">
+    <value>Vennlig navn</value>
+  </data>
+  <data name="ReadoutRequestText2" xml:space="preserve">
+    <value>En innringer har bedt om sensordata fra en av tingene dine. Velg hvordan du ønsker at tingen skal svare på denne typen forespørsel.</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>Alt</value>
+  </data>
+  <data name="ComputedValues" xml:space="preserve">
+    <value>Beregnede verdier</value>
+  </data>
+  <data name="FieldTypes" xml:space="preserve">
+    <value>Felttyper</value>
+  </data>
+  <data name="HistoricalValues" xml:space="preserve">
+    <value>Historiske verdier</value>
+  </data>
+  <data name="IdentityValues" xml:space="preserve">
+    <value>Identitetsverdier</value>
+  </data>
+  <data name="MomentaryValues" xml:space="preserve">
+    <value>Øyeblikkelige verdier</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>Ingen</value>
+  </data>
+  <data name="PeakValues" xml:space="preserve">
+    <value>Toppverdier</value>
+  </data>
+  <data name="PermitFieldTypesText" xml:space="preserve">
+    <value>Velg felttypene (brede kategorier) du vil gi tilgang til, hvis forespørselen aksepteres.</value>
+  </data>
+  <data name="StatusValues" xml:space="preserve">
+    <value>Status-verdier</value>
+  </data>
+  <data name="Fields" xml:space="preserve">
+    <value>Felt</value>
+  </data>
+  <data name="PermitFieldsText" xml:space="preserve">
+    <value>Velg feltene du vil gi tilgang til, hvis forespørselen godtas.</value>
+  </data>
+  <data name="ARequestHasBeenSentToTheOwner" xml:space="preserve">
+    <value>En forespørsel er sendt til eieren av enheten.</value>
+  </data>
+  <data name="ControlRequestText2" xml:space="preserve">
+    <value>En innringer har bedt om å kontrollere en av tingene dine. Velg hvordan du ønsker at tingen skal svare på denne typen forespørsel.</value>
+  </data>
+  <data name="PermitParametersText" xml:space="preserve">
+    <value>Velg parameterne du vil gi tilgang til, hvis forespørselen godtas.</value>
+  </data>
 </root>

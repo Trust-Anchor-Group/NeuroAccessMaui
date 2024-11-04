@@ -19,7 +19,6 @@ using Java.Util.Concurrent;
 using NeuroAccessMaui.Services.Push;
 using Waher.Events;
 using Waher.Networking.XMPP.Push;
-using Debug = System.Diagnostics.Debug;
 using Rect = Android.Graphics.Rect;
 
 namespace NeuroAccessMaui.Services
@@ -503,8 +502,8 @@ namespace NeuroAccessMaui.Services
 			{
 				BiometricPrompt.PromptInfo.Builder Builder = new();
 
-				Builder.SetDeviceCredentialAllowed(false);
-				Builder.SetAllowedAuthenticators((int)Android.Hardware.Biometrics.BiometricManagerAuthenticators.BiometricWeak);
+				Builder.SetAllowedAuthenticators(BiometricManager.Authenticators.BiometricWeak);
+
 				Builder.SetConfirmationRequired(false);
 				Builder.SetTitle(Title);
 				Builder.SetDescription(Description);
@@ -701,13 +700,13 @@ namespace NeuroAccessMaui.Services
 			// This is a heuristic, and may need to be adjusted.
 			// I really don't like this solution, but android doesn't provide a better way to detect the keyboard at the time of writing.
 			// Checking keyboardheight > 0 is not enough, because the keyboardheight is not garanteed to be accurate on all devices and circumstances
-			
+
 			if (keypadHeight > availableScreenHeight * 0.15)
 			{
-					this.lastKeyboardHeight = keypadHeight;
-					this.KeyboardSizeChanged?.Invoke(this, new KeyboardSizeMessage(keypadHeight));
-					WeakReferenceMessenger.Default.Send(new KeyboardSizeMessage(keypadHeight));
-					this.KeyboardShown?.Invoke(this, new KeyboardSizeMessage(keypadHeight));
+				this.lastKeyboardHeight = keypadHeight;
+				this.KeyboardSizeChanged?.Invoke(this, new KeyboardSizeMessage(keypadHeight));
+				WeakReferenceMessenger.Default.Send(new KeyboardSizeMessage(keypadHeight));
+				this.KeyboardShown?.Invoke(this, new KeyboardSizeMessage(keypadHeight));
 			}
 			else
 			{

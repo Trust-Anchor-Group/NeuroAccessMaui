@@ -2346,4 +2346,58 @@
   <data name="Submit" xml:space="preserve">
     <value>Enviar</value>
   </data>
+  <data name="InformationAboutCallerText" xml:space="preserve">
+    <value>La siguiente información está disponible acerca de la persona que llama:</value>
+  </data>
+  <data name="FriendlyName" xml:space="preserve">
+    <value>Nombre descriptivo</value>
+  </data>
+  <data name="ReadoutRequestText2" xml:space="preserve">
+    <value>Una persona que llama ha solicitado datos del sensor de una de sus cosas. Seleccione cómo desea que la cosa responda a este tipo de solicitud.</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>Todo</value>
+  </data>
+  <data name="ComputedValues" xml:space="preserve">
+    <value>Valores calculados</value>
+  </data>
+  <data name="FieldTypes" xml:space="preserve">
+    <value>Tipos de campo</value>
+  </data>
+  <data name="HistoricalValues" xml:space="preserve">
+    <value>Valores históricos</value>
+  </data>
+  <data name="IdentityValues" xml:space="preserve">
+    <value>Valores de identidad</value>
+  </data>
+  <data name="MomentaryValues" xml:space="preserve">
+    <value>Valores momentáneos</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>Ninguno</value>
+  </data>
+  <data name="PeakValues" xml:space="preserve">
+    <value>Valores máximos</value>
+  </data>
+  <data name="PermitFieldTypesText" xml:space="preserve">
+    <value>Elija los tipos de campo (categorías amplias) a los que desea permitir el acceso, si se acepta la solicitud.</value>
+  </data>
+  <data name="StatusValues" xml:space="preserve">
+    <value>Valores de estado</value>
+  </data>
+  <data name="Fields" xml:space="preserve">
+    <value>Campos</value>
+  </data>
+  <data name="PermitFieldsText" xml:space="preserve">
+    <value>Elija los campos a los que permitir el acceso, si se acepta la solicitud.</value>
+  </data>
+  <data name="ARequestHasBeenSentToTheOwner" xml:space="preserve">
+    <value>Se ha enviado una solicitud al propietario del dispositivo.</value>
+</data>
+<data name="ControlRequestText2" xml:space="preserve">
+  <value>Una persona que llama ha solicitado controlar una de sus cosas. Seleccione cómo desea que la cosa responda a este tipo de solicitud.</value>
+</data>
+<data name="PermitParametersText" xml:space="preserve">
+  <value>Elija los parámetros a los que desea permitir el acceso, si se acepta la solicitud.</value>
+</data>
 </root>

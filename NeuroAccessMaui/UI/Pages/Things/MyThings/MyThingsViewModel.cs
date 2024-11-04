@@ -197,8 +197,8 @@ namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 
 			if (!ServiceRef.NotificationService.TryGetNotificationEvents(NotificationEventType.Things, Thing.ThingNotificationCategoryKey, out NotificationEvent[]? ThingEvents))
 				ThingEvents = null;
-
-			return ThingEvents is null ? ContactEvents : ContactEvents?.Join(ThingEvents);
+				
+			return ThingEvents is null ? ContactEvents : (ContactEvents?.Join(ThingEvents) ?? ThingEvents);
 		}
 
 		/// <inheritdoc/>

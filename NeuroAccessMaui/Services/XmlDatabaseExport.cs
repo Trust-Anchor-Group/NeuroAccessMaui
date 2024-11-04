@@ -6,7 +6,6 @@ using Waher.Content.Xml;
 using Waher.Events;
 using Waher.Persistence;
 using Waher.Persistence.Serialization;
-using Waher.Runtime.Settings;
 
 namespace NeuroAccessMaui.Services
 {
@@ -36,19 +35,21 @@ namespace NeuroAccessMaui.Services
 		/// <summary>
 		/// Is called when export of database is started.
 		/// </summary>
-		public Task StartDatabase()
+		/// <returns>If export can continue.</returns>
+		public Task<bool> StartDatabase()
 		{
 			this.output.WriteStartElement("Database");
-			return Task.CompletedTask;
+			return Task.FromResult(true);
 		}
 
 		/// <summary>
 		/// Is called when export of database is finished.
 		/// </summary>
-		public Task EndDatabase()
+		/// <returns>If export can continue.</returns>
+		public Task<bool> EndDatabase()
 		{
 			this.output.WriteEndElement();
-			return Task.CompletedTask;
+			return Task.FromResult(true);
 		}
 
 		/// <summary>
@@ -65,29 +66,32 @@ namespace NeuroAccessMaui.Services
 		/// Is called when a collection is started.
 		/// </summary>
 		/// <param name="CollectionName">Name of collection</param>
-		public Task StartCollection(string CollectionName)
+		/// <returns>If export can continue.</returns>
+		public Task<bool> StartCollection(string CollectionName)
 		{
 			this.output.WriteStartElement("Collection");
 			this.output.WriteAttributeString("name", CollectionName);
-			return Task.CompletedTask;
+			return Task.FromResult(true);
 		}
 
 		/// <summary>
 		/// Is called when a collection is finished.
 		/// </summary>
-		public Task EndCollection()
+		/// <returns>If export can continue.</returns>
+		public Task<bool> EndCollection()
 		{
 			this.output.WriteEndElement();
-			return Task.CompletedTask;
+			return Task.FromResult(true);
 		}
 
 		/// <summary>
 		/// Is called when an index in a collection is started.
 		/// </summary>
-		public Task StartIndex()
+		/// <returns>If export can continue.</returns>
+		public Task<bool> StartIndex()
 		{
 			this.output.WriteStartElement("Index");
-			return Task.CompletedTask;
+			return Task.FromResult(true);
 		}
 
 		/// <summary>
@@ -95,22 +99,24 @@ namespace NeuroAccessMaui.Services
 		/// </summary>
 		/// <param name="FieldName">Name of field.</param>
 		/// <param name="Ascending">If the field is sorted using ascending sort order.</param>
-		public Task ReportIndexField(string FieldName, bool Ascending)
+		/// <returns>If export can continue.</returns>
+		public Task<bool> ReportIndexField(string FieldName, bool Ascending)
 		{
 			this.output.WriteStartElement("Index");
 			this.output.WriteAttributeString("field", FieldName);
 			this.output.WriteAttributeString("asc", CommonTypes.Encode(Ascending));
 			this.output.WriteEndElement();
-			return Task.CompletedTask;
+			return Task.FromResult(true);
 		}
 
 		/// <summary>
 		/// Is called when an index in a collection is finished.
 		/// </summary>
-		public Task EndIndex()
+		/// <returns>If export can continue.</returns>
+		public Task<bool> EndIndex()
 		{
 			this.output.WriteEndElement();
-			return Task.CompletedTask;
+			return Task.FromResult(true);
 		}
 
 		/// <summary>
@@ -140,13 +146,13 @@ namespace NeuroAccessMaui.Services
 		/// </summary>
 		/// <param name="ObjectId">ID of object.</param>
 		/// <param name="TypeName">Type name of object.</param>
-		/// <returns>Object ID of object, after optional mapping.</returns>
+		/// <returns>Object ID of object, after optional mapping. null means export cannot continue</returns>
 		public Task<string> StartObject(string ObjectId, string TypeName)
 		{
 			this.output.WriteStartElement("Obj");
 			this.output.WriteAttributeString("id", ObjectId);
 			this.output.WriteAttributeString("type", TypeName);
-			return Task.FromResult<string>(ObjectId);
+			return Task.FromResult(ObjectId);
 		}
 
 		/// <summary>
@@ -154,7 +160,8 @@ namespace NeuroAccessMaui.Services
 		/// </summary>
 		/// <param name="PropertyName">Property name.</param>
 		/// <param name="PropertyValue">Property value.</param>
-		public async Task ReportProperty(string? PropertyName, object? PropertyValue)
+		/// <returns>If export can continue.</returns>
+		public async Task<bool> ReportProperty(string? PropertyName, object? PropertyValue)
 		{
 			if (PropertyValue is null)
 			{
@@ -502,32 +509,37 @@ namespace NeuroAccessMaui.Services
 						throw new Exception("Unhandled property value type: " + PropertyValue.GetType().FullName);
 				}
 			}
+
+			return true;
 		}
 
 		/// <summary>
 		/// Is called when an object is finished.
 		/// </summary>
-		public Task EndObject()
+		/// <returns>If export can continue.</returns>
+		public Task<bool> EndObject()
 		{
 			this.output.WriteEndElement();
-			return Task.CompletedTask;
+			return Task.FromResult(true);
 		}
 
 		/// <summary>
 		/// Is called when an error is reported.
 		/// </summary>
 		/// <param name="Message">Error message.</param>
-		public Task ReportError(string Message)
+		/// <returns>If export can continue.</returns>
+		public Task<bool> ReportError(string Message)
 		{
 			this.output.WriteElementString("Error", Message);
-			return Task.CompletedTask;
+			return Task.FromResult(true);
 		}
 
 		/// <summary>
 		/// Is called when an exception has occurred.
 		/// </summary>
 		/// <param name="Exception">Exception object.</param>
-		public async Task ReportException(Exception Exception)
+		/// <returns>If export can continue.</returns>
+		public async Task<bool> ReportException(Exception Exception)
 		{
 			this.output.WriteStartElement("Exception");
 			this.output.WriteAttributeString("message", Exception.Message);
@@ -542,6 +554,8 @@ namespace NeuroAccessMaui.Services
 				await this.ReportException(Exception.InnerException);
 
 			this.output.WriteEndElement();
+
+			return true;
 		}
 
 		/// <summary>

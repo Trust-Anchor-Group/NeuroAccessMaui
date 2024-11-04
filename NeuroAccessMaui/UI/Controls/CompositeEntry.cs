@@ -372,7 +372,7 @@ namespace NeuroAccessMaui.UI.Controls
 		/// <summary>
 		/// Occurs when the user finalizes the text in an entry with the return key.
 		/// </summary>
-		public event EventHandler Completed;
+		public event EventHandler? Completed;
 
 		/// <summary>
 		/// Embedded Entry control.
@@ -538,7 +538,7 @@ namespace NeuroAccessMaui.UI.Controls
 			this.innerEntry.TextColor = newValue;
 		}
 
-		private void OnEntryFocused(object sender, FocusEventArgs e)
+		private void OnEntryFocused(object? sender, FocusEventArgs e)
 		{
 			if (this.FocusedCommand?.CanExecute(e) ?? false)
 			{
@@ -546,7 +546,7 @@ namespace NeuroAccessMaui.UI.Controls
 			}
 		}
 
-		private void OnEntryUnfocused(object sender, FocusEventArgs e)
+		private void OnEntryUnfocused(object? sender, FocusEventArgs e)
 		{
 			if (this.UnfocusedCommand?.CanExecute(e) ?? false)
 			{
@@ -554,7 +554,7 @@ namespace NeuroAccessMaui.UI.Controls
 			}
 		}
 
-		private void InnerEntry_Completed(object sender, EventArgs e)
+		private void InnerEntry_Completed(object? sender, EventArgs e)
 		{
 			try
 			{
