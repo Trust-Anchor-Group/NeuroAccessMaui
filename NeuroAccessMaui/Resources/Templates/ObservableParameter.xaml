@@ -16,14 +16,20 @@
 		</Style.Triggers>
 	</Style>
 
+	<Style x:Key="ErrorCompositeEntryborder" TargetType="Border" x:DataType="objectModel:ObservableParameter" BasedOn="{StaticResource RegularCompositeEntryBorder}">
+		<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource RedErrorLight}, Dark={StaticResource RedErrorDark}}"/>
+	</Style>
+
 	<!-- CompositeEntryParameterStyle -->
 	<Style x:Key="CompositeEntryParameterStyle"
        TargetType="controls:CompositeEntry"
        BasedOn="{StaticResource RegularCompositeEntry}"
        x:DataType="objectModel:ObservableParameter">
+
 		<Style.Triggers>
 			<DataTrigger TargetType="controls:CompositeEntry" Binding="{Binding IsValid}" Value="False">
-				<Setter Property="BackgroundColor" Value="Red" />
+				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource RedErrorLight}, Dark={StaticResource RedErrorDark}}" />
+				<Setter Property="BorderStyle" Value="{StaticResource ErrorCompositeEntryborder}"/>
 			</DataTrigger>
 		</Style.Triggers>
 	</Style>
@@ -38,67 +44,91 @@
 		<Setter Property="LineBreakMode" Value="WordWrap"/>
 	</Style>
 
+	<Style x:Key="BorderedContentView" TargetType="ContentView">
+		<Setter Property="ControlTemplate">
+			<Setter.Value>
+				<ControlTemplate>
+					<Border Style="{StaticResource BorderSet}">
+						<ContentPresenter />
+					</Border>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
 	<!-- Refactored DataTemplates -->
 
 	<!-- BooleanParameterTemplate -->
 	<DataTemplate x:Key="BooleanParameterTemplate" x:DataType="objectModel:ObservableBooleanParameter">
-		<Grid ColumnDefinitions="Auto, *">
-			<CheckBox Grid.Column="0" 
-                      IsChecked="{Binding BooleanValue}"
-                      VerticalOptions="Center" HorizontalOptions="Start"
-							 Color="{AppThemeBinding Light={StaticResource EnabledFilledButtonBackgroundLight}, Dark={StaticResource EnabledFilledButtonBackgroundDark}}"
-                      Margin="{StaticResource SmallRightMargins}" />
-			<Label Grid.Column="1"
-                   Text="{Binding Label}"
-                   Style="{StaticResource ParameterItemTitleLabel}"/>
-		</Grid>
+		<ContentView Style="{StaticResource BorderedContentView}">
+				<Grid ColumnDefinitions="Auto, *">
+					<CheckBox Grid.Column="0" 
+									 IsChecked="{Binding BooleanValue}"
+									 VerticalOptions="Center" HorizontalOptions="Start"
+									 Color="{AppThemeBinding Light={StaticResource EnabledFilledButtonBackgroundLight}, Dark={StaticResource EnabledFilledButtonBackgroundDark}}"
+									 Margin="{StaticResource SmallRightMargins}" />
+					<Label Grid.Column="1"
+								 Text="{Binding Label}"
+								 Style="{StaticResource ParameterItemTitleLabel}"/>
+				</Grid>
+		</ContentView>
 	</DataTemplate>
 
 	<!-- DateParameterTemplate -->
 	<DataTemplate x:Key="DateParameterTemplate" x:DataType="objectModel:ObservableDateParameter">
-		<Grid RowDefinitions="Auto, Auto">
-			<Label Grid.Row="0"
-                   Text="{Binding Label}"
-                   Style="{StaticResource ParameterItemTitleLabel}" />
-			<Border Grid.Row="1"
-                    Style="{StaticResource RegularCompositeEntryBorder}"
-                    Margin="{StaticResource SmallBottomMargins}">
-				<extended:ExtendedDatePicker NullableDate="{Binding DateValue}"
-                                             Placeholder="{Binding Guide}"
-                                             VerticalOptions="Center" />
-			</Border>
-		</Grid>
+		<ContentView Style="{StaticResource BorderedContentView}">
+				<Grid RowDefinitions="Auto, Auto">
+					<Label Grid.Row="0"
+								 Text="{Binding Label}"
+								 Style="{StaticResource ParameterItemTitleLabel}" />
+					<Border Grid.Row="1"
+								  Style="{StaticResource RegularCompositeEntryBorder}"
+								  Margin="{StaticResource SmallBottomMargins}">
+						<extended:ExtendedDatePicker NullableDate="{Binding DateValue}"
+																	Placeholder="{Binding Guide}"
+																	VerticalOptions="Center" />
+					</Border>
+				</Grid>
+		</ContentView>
 	</DataTemplate>
 
 	<!-- NumericalParameterTemplate -->
 	<DataTemplate x:Key="NumericalParameterTemplate" x:DataType="objectModel:ObservableNumericalParameter">
-		<Grid RowDefinitions="Auto, Auto">
-			<Label Grid.Row="0"
-               Text="{Binding Label}"
-               Style="{StaticResource ParameterItemTitleLabel}" />
-			<controls:CompositeEntry Grid.Row="1"
-                                 Style="{StaticResource CompositeEntryParameterStyle}"
-                                 EntryData="{Binding DecimalValue}"
-											Placeholder="{Binding Guide}"
-                                 VerticalOptions="Center" />
-		</Grid>
+		<ContentView>
+			<Border Style="{StaticResource BorderSet}" >
+				<Grid RowDefinitions="Auto, Auto">
+					<Label Grid.Row="0"
+							Text="{Binding Label}"
+							Style="{StaticResource ParameterItemTitleLabel}" />
+					<controls:CompositeEntry Grid.Row="1"
+													Style="{StaticResource CompositeEntryParameterStyle}"
+													EntryData="{Binding DecimalValue}"
+													Placeholder="{Binding Guide}"
+													VerticalOptions="Center" />
+				</Grid>
+			</Border>
+		</ContentView>
 	</DataTemplate>
 
 
 	<!-- StringParameterTemplate -->
 	<DataTemplate x:Key="StringParameterTemplate" x:DataType="objectModel:ObservableStringParameter">
-		<Grid RowDefinitions="Auto, Auto">
-			<Label Grid.Row="0"
-                   Text="{Binding Label}"
-                   Style="{StaticResource ParameterItemTitleLabel}"
-/>
-			<controls:CompositeEntry Grid.Row="1"
-                                     Style="{StaticResource CompositeEntryParameterStyle}"
-                                     EntryData="{Binding StringValue}"
-                                     EntryHint="{Binding Guide}"
-                                     VerticalOptions="Center"
-                                      />
-		</Grid>
+		<ContentView>
+			<Border Style="{StaticResource BorderSet}" >
+				<Grid RowDefinitions="Auto, Auto">
+					<Label Grid.Row="0"
+								 Text="{Binding Label}"
+								 Style="{StaticResource ParameterItemTitleLabel}"
+		/>
+					<controls:CompositeEntry Grid.Row="1"
+														 Style="{StaticResource CompositeEntryParameterStyle}"
+														 EntryData="{Binding StringValue}"
+														 EntryHint="{Binding Guide}"
+														 VerticalOptions="Center"
+														  />
+				</Grid>
+			</Border>
+		</ContentView>
 	</DataTemplate>
 
 	<!-- TimeParameterTemplate -->
