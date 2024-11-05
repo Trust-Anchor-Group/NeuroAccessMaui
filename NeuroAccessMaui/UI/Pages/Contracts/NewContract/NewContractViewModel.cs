@@ -762,7 +762,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					if (compositeEntry is not null)
 					{
 						compositeEntry.BackgroundColor = BgColor;
-						compositeEntry.Border.BackgroundColor = BgColor;
 					}
 					//Border.BackgroundColor = BgColor;
 					//CompositeEntry.BackgroundColor = BgColor;
@@ -1247,7 +1246,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						Style = AppStyles.RegularCompositeEntry,
 						Margin = AppStyles.SmallBottomMargins
 					};
-					Entry.Entry.StyleId = Parameter.Name;
+					Entry.StyleId = Parameter.Name;
 
 					if (Parameter is NumericalParameter || Parameter is DurationParameter)
 					{
@@ -1304,7 +1303,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						ParametersLayout.Children.Add(Entry);
 					}
 
-					Entry.Entry.TextChanged += this.Parameter_TextChanged;
+					Entry.TextChanged += this.Parameter_TextChanged;
 
 					ParameterInfo ParameterInfo = new(Parameter, Entry);
 
@@ -1418,7 +1417,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				if (ParameterInfo.Control is not CompositeEntry Entry)
 					return;
 
-				CalculatorNavigationArgs Args = new(Entry.Entry);
+				CalculatorNavigationArgs Args = new(Entry);
 				await ServiceRef.UiService.GoToAsync(nameof(CalculatorPage), Args, BackMethod.Pop);
 			}
 			catch (Exception ex)
@@ -1440,7 +1439,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				if (ParameterInfo.Control is not CompositeEntry Entry)
 					return;
 
-				DurationNavigationArgs Args = new(Entry.Entry);
+				DurationNavigationArgs Args = new(Entry);
 				await ServiceRef.UiService.GoToAsync(nameof(DurationPage), Args, BackMethod.Pop);
 			}
 			catch (Exception ex)
