@@ -190,6 +190,23 @@ namespace NeuroAccessMaui.UI.Controls
 		}
 
 		/// <summary>
+		/// Bindable property for the command executed when the entry returns using enter key.
+		/// </summary>
+		public static readonly BindableProperty ReturnCommandProperty = BindableProperty.Create(
+			 nameof(ReturnCommand),
+			 typeof(ICommand),
+			 typeof(CompositeEntry));
+
+		/// <summary>
+		/// Gets or sets the command executedwhen the entry returns using enter key.
+		/// </summary>
+		public ICommand ReturnCommand
+		{
+			get => (ICommand)this.GetValue(ReturnCommandProperty);
+			set => this.SetValue(ReturnCommandProperty, value);
+		}
+
+		/// <summary>
 		/// Bindable property for the style applied to the border.
 		/// </summary>
 		public static readonly BindableProperty BorderStyleProperty = BindableProperty.Create(
@@ -280,6 +297,20 @@ namespace NeuroAccessMaui.UI.Controls
 			set => this.SetValue(IsReadOnlyProperty, value);
 		}
 
+		// Define the new BackgroundColor property
+		public static new readonly BindableProperty BackgroundColorProperty = BindableProperty.Create(
+			 nameof(BackgroundColor),
+			 typeof(Color),
+			 typeof(CompositeEntry),
+			 Colors.Transparent);
+
+		// Provide a new getter and setter
+		public new Color BackgroundColor
+		{
+			get => (Color)this.GetValue(BackgroundColorProperty);
+			set => this.SetValue(BackgroundColorProperty, value);
+		}
+
 		#endregion
 
 		#region Fields
@@ -296,6 +327,11 @@ namespace NeuroAccessMaui.UI.Controls
 		/// Occurs when the user finalizes the text in an entry with the return key.
 		/// </summary>
 		public event EventHandler? Completed;
+
+		/// <summary>
+		/// Occurs when the text of the entry changes.
+		/// </summary>
+		public event EventHandler<TextChangedEventArgs>? TextChanged;
 
 		/// <summary>
 		/// Occurs when the entry gains focus.
@@ -334,8 +370,10 @@ namespace NeuroAccessMaui.UI.Controls
 			this.innerEntry.SetBinding(InputView.IsSpellCheckEnabledProperty, new Binding(nameof(this.IsSpellCheckEnabled), source: this));
 			this.innerEntry.SetBinding(InputView.IsTextPredictionEnabledProperty, new Binding(nameof(this.IsTextPredictionEnabled), source: this));
 			this.innerEntry.SetBinding(Entry.IsReadOnlyProperty, new Binding(nameof(this.IsReadOnly), source: this));
+
 			// Handle events
 			this.innerEntry.Completed += this.OnEntryCompleted;
+			this.innerEntry.TextChanged += this.OnEntryTextChanged;
 			this.innerEntry.Focused += this.OnEntryFocused;
 			this.innerEntry.Unfocused += this.OnEntryUnfocused;
 
@@ -343,10 +381,10 @@ namespace NeuroAccessMaui.UI.Controls
 			this.mainGrid = new Grid
 			{
 				ColumnDefinitions =
-					 {
-						  new ColumnDefinition { Width = GridLength.Auto },    // Left view
-                    new ColumnDefinition { Width = GridLength.Star },    // Entry
-                    new ColumnDefinition { Width = GridLength.Auto }     // Right view
+				{
+					new ColumnDefinition { Width = GridLength.Auto },    // Left view
+					new ColumnDefinition { Width = GridLength.Star },    // Entry
+					new ColumnDefinition { Width = GridLength.Auto }     // Right view
                 },
 				VerticalOptions = LayoutOptions.Center,
 				HorizontalOptions = LayoutOptions.Fill
@@ -373,6 +411,7 @@ namespace NeuroAccessMaui.UI.Controls
 			};
 
 			this.border.SetBinding(Border.StyleProperty, new Binding(nameof(this.BorderStyle), source: this));
+			this.border.SetBinding(Border.BackgroundColorProperty, new Binding(nameof(this.BackgroundColor), source: this));
 
 			// Set the Content of the control
 			this.Content = this.border;
@@ -428,7 +467,7 @@ namespace NeuroAccessMaui.UI.Controls
 		/// <param name="bindable">The bindable object.</param>
 		/// <param name="oldValue">The old value of the property.</param>
 		/// <param name="newValue">The new value of the property.</param>
-		private static void OnLeftViewPropertyChanged(BindableObject bindable, object oldValue, object newValue)
+		protected static void OnLeftViewPropertyChanged(BindableObject bindable, object oldValue, object newValue)
 		{
 			CompositeEntry control = (CompositeEntry)bindable;
 			control.UpdateLeftView((View)oldValue, (View)newValue);
@@ -493,6 +532,11 @@ namespace NeuroAccessMaui.UI.Controls
 
 		#region Event Handlers
 
+		private void OnEntryTextChanged(object? sender, TextChangedEventArgs e)
+		{
+			TextChanged?.Invoke(this, e);
+		}
+
 		/// <summary>
 		/// Handles the <see cref="Entry.Completed"/> event.
 		/// Executes the <see cref="Completed"/> event.
@@ -500,16 +544,20 @@ namespace NeuroAccessMaui.UI.Controls
 		private void OnEntryCompleted(object? sender, EventArgs e)
 		{
 			Completed?.Invoke(this, e);
+
+			if (this.ReturnCommand?.CanExecute(e) ?? false)
+			{
+				this.ReturnCommand.Execute(e);
+			}
 		}
 
 		/// <summary>
-		/// Handles the <see cref="Entry.Focused"/> event.
+		/// Handles the <see cref="VisualElement.Focused"/> event.
 		/// Executes the <see cref="FocusedCommand"/> if it can execute.
 		/// </summary>
 		private void OnEntryFocused(object? sender, FocusEventArgs e)
 		{
 			Focused?.Invoke(this, e);
-
 			if (this.FocusedCommand?.CanExecute(e) ?? false)
 			{
 				this.FocusedCommand.Execute(e);
@@ -517,7 +565,7 @@ namespace NeuroAccessMaui.UI.Controls
 		}
 
 		/// <summary>
-		/// Handles the <see cref="Entry.Unfocused"/> event.
+		/// Handles the <see cref="VisualElement.Unfocused"/> event.
 		/// Executes the <see cref="UnfocusedCommand"/> if it can execute.
 		/// </summary>
 		private void OnEntryUnfocused(object? sender, FocusEventArgs e)
