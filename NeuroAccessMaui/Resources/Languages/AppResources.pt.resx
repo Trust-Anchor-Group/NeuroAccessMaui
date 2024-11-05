@@ -2400,4 +2400,11 @@
 <data name="PermitParametersText" xml:space="preserve">
   <value>Escolha os parâmetros para permitir o acesso, se a solicitação for aceita.</value>
 </data>
+<data name="SomethingWentWrong" xml:space="preserve">
+  <value>Algo deu errado</value>
+</data>
+<data name="NotCompletedOnboardingError" xml:space="preserve">
+  <value>Parece que você ainda não concluiu o processo de integração. Complete-o para acessar este recurso.</value>
+</data>
+
 </root>

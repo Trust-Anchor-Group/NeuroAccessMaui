@@ -2400,4 +2400,10 @@
   <data name="PermitParametersText" xml:space="preserve">
     <value>Choisissez les paramètres auxquels autoriser l’accès, si la demande est acceptée.</value>
   </data>
+  <data name="SomethingWentWrong" xml:space="preserve">
+    <value>Quelque chose s’est mal passé</value>
+  </data>
+  <data name="NotCompletedOnboardingError" xml:space="preserve">
+    <value>Il semble que vous n’ayez pas encore terminé le processus d’intégration. Veuillez terminer la configuration de votre compte pour accéder à cette fonctionnalité.</value>
+  </data>
 </root>

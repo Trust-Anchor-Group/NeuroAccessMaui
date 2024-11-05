@@ -2400,4 +2400,10 @@
 <data name="PermitParametersText" xml:space="preserve">
   <value>Välj vilka parametrar som åtkomst ska beviljas till, om förfrågan accepteras.</value>
 </data>
+<data name="SomethingWentWrong" xml:space="preserve">
+  <value>Något gick fel</value>
+</data>
+<data name="NotCompletedOnboardingError" xml:space="preserve">
+  <value>Det verkar som att du inte har slutfört onboardingprocessen ännu. Slutför den för att få åtkomst till den här funktionen.</value>
+</data>
 </root>
