@@ -13,6 +13,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using NeuroAccessMaui.Services.UI;
 using Microsoft.Maui.Controls.Shapes;
+using Waher.Networking.XMPP.StanzaErrors;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 {
@@ -168,16 +169,36 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 						case SelectContractAction.ViewContract:
 							if (this.contractsListMode == ContractsListMode.Contracts)
 							{
-								Contract updatedContract = await ServiceRef.XmppService.GetContract(ContractId);
-								ViewContractNavigationArgs Args = new(updatedContract, false);
-
-								await ServiceRef.UiService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop);
+								try
+								{
+									Contract updatedContract = await ServiceRef.XmppService.GetContract(ContractId);
+									ViewContractNavigationArgs Args = new(updatedContract, false);
+									await ServiceRef.UiService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop);
+								}
+								catch (ItemNotFoundException)
+								{
+									if(await ServiceRef.UiService.DisplayAlert(
+										ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ServiceRef.Localizer[nameof(AppResources.ContractCouldNotBeFound)],
+										ServiceRef.Localizer[nameof(AppResources.Yes)],
+										ServiceRef.Localizer[nameof(AppResources.No)]))
+									{
+										await Database.FindDelete<ContractReference>(new FilterFieldEqualTo("ContractId", ContractId));
+										await this.LoadContracts();
+									}
+								}
+								catch (Exception ex)
+								{
+									ServiceRef.LogService.LogException(ex);
+									await ServiceRef.UiService.DisplayAlert(
+										ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message,
+										ServiceRef.Localizer[nameof(AppResources.Ok)]);
+								}
 							}
 							else
 							{
-								NewContractNavigationArgs Args = new(Contract, null);
-
-								await ServiceRef.UiService.GoToAsync(nameof(NewContractPage), Args, BackMethod.CurrentPage);
+								await ServiceRef.ContractOrchestratorService.OpenContract(ContractId, ServiceRef.Localizer[nameof(AppResources.ReferencedID)], null);
+								//NewContractNavigationArgs Args = new(Contract, null);
+								//await ServiceRef.UiService.GoToAsync(nameof(NewContractPage), Args, BackMethod.CurrentPage);
 							}
 							break;
 

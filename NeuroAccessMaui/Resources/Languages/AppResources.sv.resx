@@ -1353,6 +1353,9 @@
   <data name="AccessRequest" xml:space="preserve">
     <value>Begäran om åtkomst</value>
   </data>
+  <data name="AccessRequestText2" xml:space="preserve">
+    <value>En förfrågan om att komma åt en av dina saker har mottagits. Välj hur du vill att saken ska svara på denna typ av förfrågan.</value>
+  </data>
   <data name="ContractCreated" xml:space="preserve">
     <value>Ett kontrakt har skapats.</value>
   </data>
@@ -1490,6 +1493,12 @@
   </data>
   <data name="BuyEDaler" xml:space="preserve">
     <value>Köp eDaler.</value>
+  </data>
+  <data name="Caller" xml:space="preserve">
+    <value>Anropare</value>
+  </data>
+  <data name="CallerAddress" xml:space="preserve">
+    <value>Anroparens Address</value>
   </data>
   <data name="CallerOnly" xml:space="preserve">
     <value>Endast uppringare</value>
@@ -2262,4 +2271,133 @@
   <data name="EmailClientNotAvailable" xml:space="preserve">
     <value>Kunde inte öppna e-postklienten. Vänligen skicka ett e-postmeddelande till {0}.</value>
   </data>
+  <data name="ClaimThing" xml:space="preserve">
+    <value>Anspråk på sak</value>
+  </data>
+  <data name="InformationAboutClaimedThingText" xml:space="preserve">
+    <value>Följande information har gjorts tillgänglig om saken vars kod du skannade. Välj om du vill göra anspråk på denna sak som din, och också om du vill göra den publikt sökbar i sakregistret.</value>
+  </data>
+  <data name="InformationAboutThing" xml:space="preserve">
+    <value>Information om sak</value>
+  </data>
+  <data name="InformationAboutThingText" xml:space="preserve">
+    <value>Följande information har gjorts tillgänglig om saken. Alternativ för interaktion med saker presenteras nedan.</value>
+  </data>
+  <data name="MakeThingPublic" xml:space="preserve">
+    <value>Gör saken publik</value>
+  </data>
+  <data name="Thing" xml:space="preserve">
+    <value>Sak</value>
+  </data>
+  <data name="Chat" xml:space="preserve">
+    <value>Chatt</value>
+  </data>
+  <data name="ConnectToDevice" xml:space="preserve">
+    <value>Anslut till enhet</value>
+  </data>
+  <data name="DisconnectFromDevice" xml:space="preserve">
+    <value>Koppla från enhet</value>
+  </data>
+  <data name="DeleteRules" xml:space="preserve">
+    <value>Radera regler</value>
+  </data>
+  <data name="DisownThing" xml:space="preserve">
+    <value>Säg upp ägarskap</value>
+  </data>
+  <data name="ContractCouldNotBeFound" xml:space="preserve">
+    <value>Kontraktet kunde inte hittas, det kan ha blivit borttaget. Skulle du vilja ta bort referensen?</value>
+  </data>
+  <data name="PaymentDescription" xml:space="preserve">
+    <value>Ange belopped att betala till motagaren nedan. När du är klar, kan du välja att betala antingen online (om ansluten) eller offline, genom att klicka på motsvarande knapp.</value>
+  </data>
+  <data name="EncryptMessage" xml:space="preserve">
+    <value>Kryptera meddelandet</value>
+  </data>
+  <data name="SendPayment" xml:space="preserve">
+    <value>Skicka betalning</value>
+  </data>
+  <data name="ReferencedID" xml:space="preserve">
+    <value>Refererade ID</value>
+  </data>
+  <data name="ControlActuator" xml:space="preserve">
+    <value>Kontrollera Ställdon</value>
+  </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>Notifieringar</value>
+  </data>
+  <data name="NotificationsText" xml:space="preserve">
+    <value>Nedan kan du se en lista av notifieringar från interaktioner med sasken. Tryck på var och en för att visa mer information och tillgängliga alternativ.</value>
+  </data>
+  <data name="SensorDataText" xml:space="preserve">
+    <value>Nedan visas information om sensordata som är tillgänglig för dig, i enlighet med dina åtkomstprivilegier.</value>
+  </data>
+  <data name="SensorData" xml:space="preserve">
+    <value>Sensordata</value>
+  </data>
+  <data name="ReadSensor" xml:space="preserve">
+    <value>Läs Sensor</value>
+  </data>
+  <data name="Range" xml:space="preserve">
+    <value>Räckvidd</value>
+  </data>
+  <data name="RangeText" xml:space="preserve">
+    <value>Applicera denna regel på:</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Skicka in</value>
+  </data>
+  <data name="InformationAboutCallerText" xml:space="preserve">
+    <value>Följande information finns tillgänglig om anroparen:</value>
+  </data>
+  <data name="FriendlyName" xml:space="preserve">
+    <value>Vänligt namn</value>
+  </data>
+  <data name="ReadoutRequestText2" xml:space="preserve">
+    <value>En förfrågan om att läsa sensordata från en av dina saker har mottagits. Välj hur du vill att saken ska svara på denna typ av förfrågan.</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>Alla</value>
+  </data>
+  <data name="ComputedValues" xml:space="preserve">
+    <value>Beräknade värden</value>
+  </data>
+  <data name="FieldTypes" xml:space="preserve">
+    <value>Fälttyper</value>
+  </data>
+  <data name="HistoricalValues" xml:space="preserve">
+    <value>Historiska värden</value>
+  </data>
+  <data name="IdentityValues" xml:space="preserve">
+    <value>Identitetsvärden</value>
+  </data>
+  <data name="MomentaryValues" xml:space="preserve">
+    <value>Momentana värden</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>Inga</value>
+  </data>
+  <data name="PeakValues" xml:space="preserve">
+    <value>Extremvärden</value>
+  </data>
+  <data name="PermitFieldTypesText" xml:space="preserve">
+    <value>Välj vilka typer av fält (övergripande kategorier) som åtkomst ska beviljas till, om förfrågan accepteras.</value>
+  </data>
+  <data name="StatusValues" xml:space="preserve">
+    <value>Statusvärden</value>
+  </data>
+  <data name="Fields" xml:space="preserve">
+    <value>Fält</value>
+  </data>
+  <data name="PermitFieldsText" xml:space="preserve">
+    <value>Välj vilka fält som åtkomst ska beviljas till, om förfrågan accepteras.</value>
+  </data>
+  <data name="ARequestHasBeenSentToTheOwner" xml:space="preserve">
+    <value>En begäran har skickats till ägaren av enheten.</value>
+</data>
+<data name="ControlRequestText2" xml:space="preserve">
+  <value>En förfrågan om att styra en av dina saker har mottagits. Välj hur du vill att saken ska svara på denna typ av förfrågan.</value>
+</data>
+<data name="PermitParametersText" xml:space="preserve">
+  <value>Välj vilka parametrar som åtkomst ska beviljas till, om förfrågan accepteras.</value>
+</data>
 </root>

@@ -55,7 +55,10 @@
 		</DataTemplate>
 
 		<DataTemplate x:Key="GraphModelTemplate" x:DataType="model:GraphModel">
-			<Image Source="{Binding Image}" IsVisible="{Binding HasImage}"/>
+			<!-- workaround to make the images display on IOS, without a fixed height the layouts does not update properly -->
+			<VerticalStackLayout HeightRequest="200">
+				<Image Source="{Binding Image}" IsVisible="{Binding HasImage}" />
+			</VerticalStackLayout>
 		</DataTemplate>
 
 		<viewmodel:SensorDataTemplateSelector x:Key="ItemStyleSelector"
@@ -70,23 +73,28 @@
 
 		<controls:Background/>
 
-		<ScrollView>
-			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
-				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
+		<Grid RowDefinitions="auto, *" Margin="{StaticResource MediumMargins}"> 
+			<controls:ImageButton Grid.Row="0" Grid.Column="0" HorizontalOptions="Start" Command="{Binding GoBackCommand}"
 											 Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-				<Label Text="{l:Localize SensorData}" Style="{StaticResource PageTitleLabel}"/>
-
-				<Frame Style="{StaticResource FrameSet}">
-					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
-						<Label Text="{l:Localize SensorDataText}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"/>
-						<Label Text="{Binding Path=Status}" Style="{StaticResource InfoLabel}" VerticalOptions="Center" IsVisible="{Binding Path=HasStatus}"/>
-						<VerticalStackLayout x:Name="SensorData" VerticalOptions="StartAndExpand" HorizontalOptions="StartAndExpand"
-							 BindableLayout.ItemsSource="{Binding SensorData}"
-							 BindableLayout.ItemTemplateSelector="{StaticResource ItemStyleSelector}"/>
-					</VerticalStackLayout>
-				</Frame>
-			</VerticalStackLayout>
-		</ScrollView>
+			<Label Grid.Row="0" Grid.Column="1" Text="{l:Localize SensorData}" Style="{StaticResource PageTitleLabel}" HorizontalOptions="End" HorizontalTextAlignment="End"/>
+			<Frame Style="{StaticResource FrameSet}" Grid.Row="1">
+				<Grid RowDefinitions="auto, auto, *" RowSpacing="{StaticResource SmallSpacing}" >
+					<Label Grid.Row="0"  Text="{l:Localize SensorDataText}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"/>
+					<Label Grid.Row="1" Text="{Binding Path=Status}" Style="{StaticResource InfoLabel}" VerticalOptions="Center" IsVisible="{Binding Path=HasStatus}"/>
+					<Frame Style="{StaticResource FrameSubSet}" Grid.Row="2">
+					<CollectionView x:Name="SensorData"
+											 ItemsSource="{Binding SensorData}"
+											 ItemTemplate="{StaticResource ItemStyleSelector}"
+											 ItemSizingStrategy="MeasureAllItems"
+											 SelectionMode="None" VerticalScrollBarVisibility="Always">
+						<CollectionView.ItemsLayout>
+							<LinearItemsLayout Orientation="Vertical" ItemSpacing="{StaticResource SmallSpacing}"/>
+						</CollectionView.ItemsLayout>
+						</CollectionView>
+					</Frame>
+				</Grid>
+			</Frame>
+		</Grid>
 	</Grid>
 </base:BaseContentPage>

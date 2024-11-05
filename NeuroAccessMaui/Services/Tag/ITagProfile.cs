@@ -246,6 +246,11 @@ namespace NeuroAccessMaui.Services.Tag
 		bool HasWallet { get; set; }
 
 		/// <summary>
+		/// If the user has a thing.
+		/// </summary>
+		bool HasThing { get; set; }
+
+		/// <summary>
 		/// Returns <c>true</c> if the current <see cref="ITagProfile"/> has changed values and need saving, <c>false</c> otherwise.
 		/// </summary>
 		bool IsDirty { get; }

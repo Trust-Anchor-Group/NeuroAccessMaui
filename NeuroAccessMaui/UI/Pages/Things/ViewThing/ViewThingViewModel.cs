@@ -30,7 +30,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 	/// <summary>
 	/// The view model to bind to when displaying a thing.
 	/// </summary>
-	public partial class ViewThingViewModel : XmppViewModel, ILinkableView
+	public partial class ViewThingViewModel : QrXmppViewModel
 	{
 		private readonly Dictionary<string, PresenceEventArgs> presences = new(StringComparer.InvariantCultureIgnoreCase);
 		private readonly ViewThingNavigationArgs? navigationArguments;
@@ -111,6 +111,18 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 
 			if (this.IsConnected && this.IsThingOnline)
 				await this.CheckCapabilities();
+
+			this.GenerateQrCode(this.Link);
+		}
+
+
+		protected override Task XmppService_ConnectionStateChanged(object? _, XmppState NewState)
+		{
+			base.XmppService_ConnectionStateChanged(_, NewState);
+
+			MainThread.BeginInvokeOnMainThread(async () => await this.CalcThingIsOnline());
+
+			return Task.CompletedTask;
 		}
 
 		private async Task CheckCapabilities()
@@ -126,26 +138,32 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 
 				if (!string.IsNullOrEmpty(FullJid))
 				{
-					ServiceDiscoveryEventArgs e = await ServiceRef.XmppService.SendServiceDiscoveryRequest(FullJid);
-
-					if (!this.InContacts)
-						return;
-
-					this.thing.IsSensor = e.HasAnyFeature(SensorClient.NamespacesSensorData);
-					this.thing.SupportsSensorEvents = e.HasAnyFeature(SensorClient.NamespacesSensorEvents);
-					this.thing.IsActuator = e.HasAnyFeature(ControlClient.NamespacesControl);
-					this.thing.IsConcentrator = e.HasAnyFeature(ConcentratorServer.NamespacesConcentrator);
-
-					if (this.InContacts && !string.IsNullOrEmpty(this.thing.ObjectId))
-						await Database.Update(this.thing);
-
-					MainThread.BeginInvokeOnMainThread(() =>
+					try
 					{
-						this.IsSensor = this.thing.IsSensor ?? false;
-						this.IsActuator = this.thing.IsActuator ?? false;
-						this.IsConcentrator = this.thing.IsConcentrator ?? false;
-						this.SupportsSensorEvents = this.thing.SupportsSensorEvents ?? false;
-					});
+						ServiceDiscoveryEventArgs e = await ServiceRef.XmppService.SendServiceDiscoveryRequest(FullJid);
+						if (!this.InContacts)
+							return;
+
+						this.thing.IsSensor = e.HasAnyFeature(SensorClient.NamespacesSensorData);
+						this.thing.SupportsSensorEvents = e.HasAnyFeature(SensorClient.NamespacesSensorEvents);
+						this.thing.IsActuator = e.HasAnyFeature(ControlClient.NamespacesControl);
+						this.thing.IsConcentrator = e.HasAnyFeature(ConcentratorServer.NamespacesConcentrator);
+
+						if (this.InContacts && !string.IsNullOrEmpty(this.thing.ObjectId))
+							await Database.Update(this.thing);
+
+						MainThread.BeginInvokeOnMainThread(() =>
+						{
+							this.IsSensor = this.thing.IsSensor ?? false;
+							this.IsActuator = this.thing.IsActuator ?? false;
+							this.IsConcentrator = this.thing.IsConcentrator ?? false;
+							this.SupportsSensorEvents = this.thing.SupportsSensorEvents ?? false;
+						});
+					}
+					catch (Exception ex)
+					{
+						ServiceRef.LogService.LogException(ex);
+					}
 				}
 			}
 		}
@@ -176,8 +194,13 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 						if (string.IsNullOrEmpty(this.thing?.ObjectId))
 							await Database.Insert(this.thing);
 
-						this.InContacts = true;
+						MainThread.BeginInvokeOnMainThread(() =>
+						{
+							this.InContacts = true;
+						});
 					}
+
+					await this.CalcThingIsOnline();
 
 					break;
 
@@ -185,31 +208,48 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 					this.presences.Remove(e.FromBareJID);
 					break;
 			}
-
-			MainThread.BeginInvokeOnMainThread(async () => await this.CalcThingIsOnline());
 		}
 
 		private async Task CalcThingIsOnline()
 		{
+
 			if (this.thing is null)
-				this.IsThingOnline = false;
+				MainThread.BeginInvokeOnMainThread(() => this.IsThingOnline = false);
 			else
 			{
-				this.IsThingOnline = this.IsOnline(this.thing.BareJid);
+				try
+				{
+					await MainThread.InvokeOnMainThreadAsync(() => this.IsThingOnline = this.IsOnline(this.thing.BareJid));
+					if (this.IsThingOnline)
+						await this.CheckCapabilities();
+				}
+				catch (Exception ex)
+				{
+					ServiceRef.LogService.LogException(ex);
+					await ServiceRef.UiService.DisplayException(ex);
+				}
 
-				if (this.IsThingOnline)
-					await this.CheckCapabilities();
 			}
 		}
 
+		async partial void OnInContactsChanged(bool value)
+		{
+			await this.CalcThingIsOnline();
+		}
 		private bool IsOnline(string BareJid)
 		{
 			if (this.presences.TryGetValue(BareJid, out PresenceEventArgs? e))
 				return e.IsOnline;
-
-			RosterItem? Item = ServiceRef.XmppService?.GetRosterItem(BareJid);
-			if (Item is not null && Item.HasLastPresence)
-				return Item.LastPresence.IsOnline;
+			try
+			{
+				RosterItem? Item = ServiceRef.XmppService?.GetRosterItem(BareJid);
+				if (Item is not null && Item.HasLastPresence)
+					return Item.LastPresence.IsOnline;
+			}
+			catch (Exception)
+			{
+				//ignore
+			}
 
 			return false;
 		}
@@ -221,14 +261,22 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 			else
 			{
 				if (this.presences.TryGetValue(this.thing.BareJid, out PresenceEventArgs? e))
-					return (e?.IsOnline == false) ? e.From : null;
+					return (e?.IsOnline == true) ? e.From : null;
 
-				RosterItem? Item = ServiceRef.XmppService.GetRosterItem(this.thing.BareJid);
+				try
+				{
+					RosterItem? Item = ServiceRef.XmppService.GetRosterItem(this.thing.BareJid);
 
-				if (Item is null || !Item.HasLastPresence || !Item.LastPresence.IsOnline)
+					if (Item is null || !Item.HasLastPresence || !Item.LastPresence.IsOnline)
+						return null;
+					else
+						return Item.LastPresenceFullJid;
+				}
+				catch (Exception)
+				{
 					return null;
-				else
-					return Item.LastPresenceFullJid;
+				}
+
 			}
 		}
 
@@ -253,59 +301,79 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 		/// Gets or sets whether the thing is in the contact list.
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(RemoveFromListCommand))]
+		[NotifyCanExecuteChangedFor(nameof(AddToListCommand))]
 		private bool inContacts;
 
 		/// <summary>
 		/// Gets or sets whether the thing is in the contact list.
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(RemoveFromListCommand))]
+		[NotifyCanExecuteChangedFor(nameof(AddToListCommand))]
 		private bool notInContacts;
+
 
 		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
 		{
 			base.OnPropertyChanged(e);
-
-			switch (e.PropertyName)
+			MainThread.BeginInvokeOnMainThread(() =>
 			{
-				case nameof(this.InContacts):
-				case nameof(this.IsOwner):
-					this.InContactsAndNotOwner = this.InContacts && !this.IsOwner;
-					this.NotInContacts = !this.InContacts;
-					break;
-			}
 
-			switch (e.PropertyName)
-			{
-				case nameof(this.IsConnected):
-				case nameof(this.IsOwner):
-					this.IsConnectedAndOwner = this.IsConnected && this.IsOwner;
-					break;
-			}
+				switch (e.PropertyName)
+				{
+					case nameof(this.IsBusy):
+						this.ReadSensorCommand.NotifyCanExecuteChanged();
+						this.ControlActuatorCommand.NotifyCanExecuteChanged();
+						this.ChatCommand.NotifyCanExecuteChanged();
+						break;
+				}
 
-			switch (e.PropertyName)
-			{
-				case nameof(this.IsConnected):
-				case nameof(this.IsSensor):
-					this.IsConnectedAndSensor = this.IsConnected && this.IsSensor;
-					break;
-			}
+				//This looks a bit cursed
+				switch (e.PropertyName)
+				{
+					case nameof(this.InContacts):
+					case nameof(this.IsOwner):
+						this.InContactsAndNotOwner = this.InContacts && !this.IsOwner;
+						this.NotInContacts = !this.InContacts;
+						break;
+				}
 
-			switch (e.PropertyName)
-			{
-				case nameof(this.IsConnected):
-				case nameof(this.IsActuator):
-					this.IsConnectedAndActuator = this.IsConnected && this.IsActuator;
-					break;
-			}
+				switch (e.PropertyName)
+				{
+					case nameof(this.IsConnected):
+					case nameof(this.IsOwner):
+						this.IsConnectedAndOwner = this.IsConnected && this.IsOwner;
+						break;
+				}
 
-			switch (e.PropertyName)
-			{
-				case nameof(this.IsConnected):
-				case nameof(this.IsConcentrator):
-					this.IsConnectedAndNotConcentrator = this.IsConnected && !this.IsConcentrator;
-					break;
-			}
+				switch (e.PropertyName)
+				{
+					case nameof(this.IsConnected):
+					case nameof(this.IsSensor):
+						this.IsConnectedAndSensor = this.IsConnected && this.IsSensor;
+						break;
+				}
+
+				switch (e.PropertyName)
+				{
+					case nameof(this.IsConnected):
+					case nameof(this.IsActuator):
+						this.IsConnectedAndActuator = this.IsConnected && this.IsActuator;
+						break;
+				}
+
+				switch (e.PropertyName)
+				{
+					case nameof(this.IsConnected):
+					case nameof(this.IsConcentrator):
+						this.IsConnectedAndNotConcentrator = this.IsConnected && !this.IsConcentrator;
+						break;
+				}
+			});
 		}
+
+		public string? FriendlyName => this.thing?.FriendlyName ?? this.thing?.BareJid ?? string.Empty;
 
 		/// <summary>
 		/// Gets or sets whether the thing is in the contact.
@@ -317,24 +385,30 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 		/// If the device is in the contact list, but the user is not the owner.
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(RemoveFromListCommand))]
+		[NotifyCanExecuteChangedFor(nameof(AddToListCommand))]
 		private bool inContactsAndNotOwner;
 
 		/// <summary>
 		/// If the user is the owner, and the app is connected.
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(DeleteRulesCommand))]
+		[NotifyCanExecuteChangedFor(nameof(DisownThingCommand))]
 		private bool isConnectedAndOwner;
 
 		/// <summary>
 		/// If the app is connected, and the device is a sensor.
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ReadSensorCommand))]
 		private bool isConnectedAndSensor;
 
 		/// <summary>
 		/// If the app is connected, and the device is an actuator.
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ControlActuatorCommand))]
 		private bool isConnectedAndActuator;
 
 		/// <summary>
@@ -353,12 +427,14 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 		/// Gets or sets whether the thing is a sensor
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ReadSensorCommand))]
 		private bool isSensor;
 
 		/// <summary>
 		/// Gets or sets whether the thing is an actuator
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ControlActuatorCommand))]
 		private bool isActuator;
 
 		/// <summary>
@@ -410,6 +486,32 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 				return ViewClaimThing.ViewClaimThingViewModel.LabelClicked(string.Empty, s, s);
 			else
 				return Task.CompletedTask;
+		}
+
+		/// <summary>
+		/// Copies Item to clipboard
+		/// </summary>
+		[RelayCommand]
+		private async Task CopyQr(object Item)
+		{
+			try
+			{
+				this.SetIsBusy(true);
+
+				await Clipboard.SetTextAsync(this.Link);
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+					ServiceRef.Localizer[nameof(AppResources.SuccessTitle)]);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
+			}
+			finally
+			{
+				this.SetIsBusy(false);
+			}
 		}
 
 		/// <summary>
@@ -524,7 +626,6 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 		{
 			if (this.thing is null)
 				return;
-
 			try
 			{
 				if (!await App.AuthenticateUser(AuthenticationPurpose.AddToListOfThings))
@@ -543,10 +644,11 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 						ServiceRef.TagProfile.LegalIdentity.Serialize(Xml, true, true, true, true, true, true, true);
 						IdXml = Xml.ToString();
 					}
-
 					ServiceRef.XmppService.RequestPresenceSubscription(this.thing.BareJid);
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)], ServiceRef.Localizer[nameof(AppResources.ARequestHasBeenSentToTheOwner)]);
+					MainThread.BeginInvokeOnMainThread(() => this.NotInContacts = false);
 				}
-				else
+				await MainThread.InvokeOnMainThreadAsync(async () =>
 				{
 					if (!this.InContacts)
 					{
@@ -557,7 +659,8 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 					}
 
 					await this.CalcThingIsOnline();
-				}
+				});
+
 			}
 			catch (Exception ex)
 			{
@@ -593,19 +696,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 					if (ServiceRef.XmppService.GetRosterItem(this.thing.BareJid) is not null)
 						ServiceRef.XmppService.RemoveRosterItem(this.thing.BareJid);
 
-					MainThread.BeginInvokeOnMainThread(() =>
-					{
-						this.thing.ObjectId = null;
-						this.thing.IsActuator = null;
-						this.thing.IsSensor = null;
-						this.thing.IsConcentrator = null;
-
-						this.IsConcentrator = false;
-						this.IsSensor = false;
-						this.IsActuator = false;
-
-						this.InContacts = false;
-					});
+					await this.GoBack();
 				}
 			}
 			catch (Exception ex)
@@ -614,27 +705,37 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
+		private bool CanReadSensor => !this.IsBusy && this.IsConnectedAndSensor;
 
 		/// <summary>
 		/// The command to bind to for reading a sensor
 		/// </summary>
-		[RelayCommand(CanExecute = nameof(IsConnectedAndSensor))]
+		[RelayCommand(CanExecute = nameof(CanReadSensor))]
 		private async Task ReadSensor()
 		{
+			await MainThread.InvokeOnMainThreadAsync(() => this.SetIsBusy(true));
+
 			if (this.thing is null)
 				return;
 
 			ViewThingNavigationArgs Args = new(this.thing, MyThingsViewModel.GetNotificationEvents(this.thing) ?? []);
 
 			await ServiceRef.UiService.GoToAsync(nameof(ReadSensorPage), Args, BackMethod.Pop);
+
+			await MainThread.InvokeOnMainThreadAsync(() => this.SetIsBusy(false));
+
 		}
+
+		private bool CanControlActuator => !this.IsBusy && this.IsConnectedAndActuator;
 
 		/// <summary>
 		/// The command to bind to for controlling an actuator
 		/// </summary>
-		[RelayCommand(CanExecute = nameof(IsConnectedAndActuator))]
+		[RelayCommand(CanExecute = nameof(CanControlActuator))]
 		private async Task ControlActuator()
 		{
+			await MainThread.InvokeOnMainThreadAsync(() => this.SetIsBusy(true));
+
 			if (this.thing is null)
 				return;
 
@@ -670,17 +771,24 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 				});
 			}
 			else
+			{
 				ServiceRef.UiService.DisplayException(e.StanzaError ?? new Exception("Unable to get control form."));
-
+			}
+			MainThread.BeginInvokeOnMainThread(() => this.SetIsBusy(false));
 			return Task.CompletedTask;
 		}
+
+
+		private bool CanChat => !this.IsBusy && this.IsConnectedAndNotConcentrator;
 
 		/// <summary>
 		/// The command to bind to for chatting with a thing
 		/// </summary>
-		[RelayCommand(CanExecute = nameof(IsConnectedAndNotConcentrator))]
+		[RelayCommand(CanExecute = nameof(CanChat))]
 		private async Task Chat()
 		{
+			await MainThread.InvokeOnMainThreadAsync(() => this.SetIsBusy(true));
+
 			if (this.thing is null)
 				return;
 
@@ -695,6 +803,11 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 			catch (Exception ex)
 			{
 				await ServiceRef.UiService.DisplayException(ex);
+			}
+			finally
+			{
+				await MainThread.InvokeOnMainThreadAsync(() => this.SetIsBusy(false));
+
 			}
 		}
 
@@ -760,6 +873,8 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 			{
 				try
 				{
+					await this.CalcThingIsOnline();
+
 					switch (e.Event.Type)
 					{
 						case NotificationEventType.Contacts:
@@ -823,17 +938,17 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 		/// <summary>
 		/// If the current view is linkable.
 		/// </summary>
-		public bool IsLinkable => true;
+		public override bool IsLinkable => true;
 
 		/// <summary>
 		/// If App links should be encoded with the link.
 		/// </summary>
-		public bool EncodeAppLinks => true;
+		public override bool EncodeAppLinks => true;
 
 		/// <summary>
 		/// Link to the current view
 		/// </summary>
-		public string Link
+		public override string Link
 		{
 			get
 			{
@@ -852,7 +967,6 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 					{
 						foreach (Property P in this.thing.MetaData)
 						{
-							sb.Append(';');
 
 							switch (P.Name.ToUpper(CultureInfo.InvariantCulture))
 							{
@@ -883,10 +997,11 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 									HasRegistry = true;
 									break;
 							}
-
 							sb.Append(Uri.EscapeDataString(P.Name));
 							sb.Append('=');
 							sb.Append(Uri.EscapeDataString(P.Value));
+							sb.Append(';');
+
 						}
 					}
 
@@ -928,22 +1043,22 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 		/// <summary>
 		/// Title of the current view
 		/// </summary>
-		public Task<string> Title => Task.FromResult(this.thing?.FriendlyName ?? string.Empty);
+		public override Task<string> Title => Task.FromResult(this.thing?.FriendlyName ?? string.Empty);
 
 		/// <summary>
 		/// If linkable view has media associated with link.
 		/// </summary>
-		public bool HasMedia => false;
+		public override bool HasMedia => false;
 
 		/// <summary>
 		/// Encoded media, if available.
 		/// </summary>
-		public byte[]? Media => null;
+		public override byte[]? Media => null;
 
 		/// <summary>
 		/// Content-Type of associated media.
 		/// </summary>
-		public string? MediaContentType => null;
+		public override string? MediaContentType => null;
 
 		#endregion
 	}

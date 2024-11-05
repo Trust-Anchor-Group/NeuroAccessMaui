@@ -1407,6 +1407,9 @@
   <data name="AccessRequestText" xml:space="preserve">
     <value>{0} wants to connect to your device {1}.</value>
   </data>
+  <data name="AccessRequestText2" xml:space="preserve">
+    <value>A caller has requested access to one of your things. Select how you wish the thing should respond to this type of request.</value>
+  </data>
   <data name="ConcentratorServiceNotFound" xml:space="preserve">
     <value>No concentrator service found.</value>
   </data>
@@ -1490,6 +1493,12 @@
   </data>
   <data name="BuyEDaler" xml:space="preserve">
     <value>Buy eDaler.</value>
+  </data>
+  <data name="Caller" xml:space="preserve">
+    <value>Caller</value>
+  </data>
+  <data name="CallerAddress" xml:space="preserve">
+    <value>Caller Address</value>
   </data>
   <data name="CallerOnly" xml:space="preserve">
     <value>Caller Only</value>
@@ -2261,5 +2270,134 @@
   </data>
   <data name="EmailClientNotAvailable" xml:space="preserve">
     <value>Unable to open email client. Please send an email to {0}.</value>
+  </data>
+  <data name="ClaimThing" xml:space="preserve">
+    <value>Claim Thing</value>
+  </data>
+  <data name="InformationAboutClaimedThingText" xml:space="preserve">
+    <value>The following information is made available about the thing whose code you scanned. Choose if you want to attempt to claim this thing as yours, and also if you want to make it publicly searchable in the Thing Registry.</value>
+  </data>
+  <data name="InformationAboutThing" xml:space="preserve">
+    <value>Information about thing</value>
+  </data>
+  <data name="InformationAboutThingText" xml:space="preserve">
+    <value>The following information is locally available about the thing. Options to interact with the device are presented below.</value>
+  </data>
+  <data name="MakeThingPublic" xml:space="preserve">
+    <value>Make thing public</value>
+  </data>
+  <data name="Thing" xml:space="preserve">
+    <value>Thing</value>
+  </data>
+  <data name="Chat" xml:space="preserve">
+    <value>Chat</value>
+  </data>
+  <data name="ConnectToDevice" xml:space="preserve">
+    <value>Connect to Device</value>
+  </data>
+  <data name="DisconnectFromDevice" xml:space="preserve">
+    <value>Disconnect from Device</value>
+  </data>
+  <data name="DeleteRules" xml:space="preserve">
+    <value>Delete Rules</value>
+  </data>
+  <data name="DisownThing" xml:space="preserve">
+    <value>Disown Thing</value>
+  </data>
+  <data name="ContractCouldNotBeFound" xml:space="preserve">
+    <value>Contract could not be found, it could have been deleted. Would you like to remove the reference?</value>
+  </data>
+  <data name="PaymentDescription" xml:space="preserve">
+    <value>Enter the amount to pay to the recipient below. Once done, you can choose to either pay online (if connected) or offline, by clicking on the corresponding button.</value>
+  </data>
+  <data name="EncryptMessage" xml:space="preserve">
+    <value>Encrypt message</value>
+  </data>
+  <data name="SendPayment" xml:space="preserve">
+    <value>Send Payment</value>
+  </data>
+  <data name="ReferencedID" xml:space="preserve">
+    <value>Referenced ID</value>
+  </data>
+  <data name="ControlActuator" xml:space="preserve">
+    <value>Control Actuator</value>
+  </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>Notifications</value>
+  </data>
+  <data name="NotificationsText" xml:space="preserve">
+    <value>Below you can see a list of notifications resulting from interactions with the thing. Press on each one to display more information and options available.</value>
+  </data>
+  <data name="SensorDataText" xml:space="preserve">
+    <value>Below is information and sensor data available to you, in accordance with your access privileges.</value>
+  </data>
+  <data name="SensorData" xml:space="preserve">
+    <value>Sensor Data</value>
+  </data>
+  <data name="ReadSensor" xml:space="preserve">
+    <value>Read Sensor</value>
+  </data>
+  <data name="Range" xml:space="preserve">
+    <value>Range</value>
+  </data>
+  <data name="RangeText" xml:space="preserve">
+    <value>Apply this rule to:</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Submit</value>
+  </data>
+  <data name="InformationAboutCallerText" xml:space="preserve">
+    <value>The following information is available about the caller:</value>
+  </data>
+  <data name="FriendlyName" xml:space="preserve">
+    <value>Friendly Name</value>
+  </data>
+  <data name="ReadoutRequestText2" xml:space="preserve">
+    <value>A caller has requested sensor data from one of your things. Select how you wish the thing should respond to this type of request.</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="ComputedValues" xml:space="preserve">
+    <value>Computed Values</value>
+  </data>
+  <data name="FieldTypes" xml:space="preserve">
+    <value>Field Types</value>
+  </data>
+  <data name="HistoricalValues" xml:space="preserve">
+    <value>Historical Values</value>
+  </data>
+  <data name="IdentityValues" xml:space="preserve">
+    <value>Identity Values</value>
+  </data>
+  <data name="MomentaryValues" xml:space="preserve">
+    <value>Momentary Values</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="PeakValues" xml:space="preserve">
+    <value>Peak Values</value>
+  </data>
+  <data name="PermitFieldTypesText" xml:space="preserve">
+    <value>Choose the field types (broad categories) to permit access to, if request is accepted.</value>
+  </data>
+  <data name="StatusValues" xml:space="preserve">
+    <value>Status Values</value>
+  </data>
+  <data name="Fields" xml:space="preserve">
+    <value>Fields</value>
+  </data>
+  <data name="PermitFieldsText" xml:space="preserve">
+    <value>Choose the fields to permit access to, if request is accepted.</value>
+  </data>
+  <data name="ARequestHasBeenSentToTheOwner" xml:space="preserve">
+    <value>A request has been sent to the owner of the device.</value>
+  </data>
+  <data name="ControlRequestText2" xml:space="preserve">
+    <value>A caller has requested to control one of your things. Select how you wish the thing should respond to this type of request.</value>
+  </data>
+  <data name="PermitParametersText" xml:space="preserve">
+    <value>Choose the parameters to permit access to, if request is accepted.</value>
   </data>
 </root>

@@ -275,5 +275,11 @@ namespace NeuroAccessMaui.Services
 		/// </summary>
 		[DefaultValue(false)]
 		public bool HasWallet { get; set; }
+
+		/// <summary>
+		/// If the user has a thing.
+		/// </summary>
+		[DefaultValue(false)]
+		public bool HasThing { get; set; }
 	}
 }

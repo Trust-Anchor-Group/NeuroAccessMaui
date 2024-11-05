@@ -24,40 +24,40 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 	public partial class ContactSupportViewModel : BaseRegistrationViewModel, ICodeVerification
 	{
 
-        public ContactSupportViewModel() : base(RegistrationStep.ContactSupport)
-        {
-			this.SupportEmail = "neuro-access@trustanchorgroup.com"; 
-        }
+		public ContactSupportViewModel() : base(RegistrationStep.ContactSupport)
+		{
+			this.SupportEmail = "neuro-access@trustanchorgroup.com";
+		}
 
-        [ObservableProperty]
-        private string supportEmail;
+		[ObservableProperty]
+		private string supportEmail;
 
-        [RelayCommand]
-        private async Task ContactSupport()
-        {
-            string email = this.SupportEmail;
-            string subject = ServiceRef.Localizer[nameof(AppResources.SupportEmailSubject)];
+		[RelayCommand]
+		private async Task ContactSupport()
+		{
+			string email = this.SupportEmail;
+			string subject = ServiceRef.Localizer[nameof(AppResources.SupportEmailSubject)];
 
-            string mailtoUri = $"mailto:{email}?subject={Uri.EscapeDataString(subject)}";
+			string mailtoUri = $"mailto:{email}?subject={Uri.EscapeDataString(subject)}";
 
-            try
-            {
-                if(!await Launcher.OpenAsync(new Uri(mailtoUri)))
+			try
+			{
+				if (!await Launcher.OpenAsync(new Uri(mailtoUri)))
 				{
 					await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						ServiceRef.Localizer[nameof(AppResources.EmailClientNotAvailable), this.SupportEmail],
 						ServiceRef.Localizer[nameof(AppResources.Ok)]);
 				}
-            }
-            catch (Exception)
-            {
-                await ServiceRef.UiService.DisplayAlert(
-                    ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-                    ServiceRef.Localizer[nameof(AppResources.EmailClientNotAvailable), this.SupportEmail],
-                    ServiceRef.Localizer[nameof(AppResources.Ok)]);
-            }
-        }
+			}
+			catch (Exception)
+			{
+				await ServiceRef.UiService.DisplayAlert(
+					 ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					 ServiceRef.Localizer[nameof(AppResources.EmailClientNotAvailable), this.SupportEmail],
+					 ServiceRef.Localizer[nameof(AppResources.Ok)]);
+			}
+		}
 		protected override async Task OnInitialize()
 		{
 			await base.OnInitialize();
@@ -182,7 +182,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		[RelayCommand(CanExecute = nameof(this.CanSend))]
 		private async Task Send()
 		{
-			IsBusy = true;
+			this.IsBusy = true;
 			try
 			{
 				if (!ServiceRef.NetworkService.IsOnline)
@@ -193,10 +193,10 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 					return;
 				}
 
-				string fullPhoneNumber = $"+{SelectedCountry.DialCode}{PhoneText}";
+				string fullPhoneNumber = $"+{this.SelectedCountry.DialCode}{this.PhoneText}";
 
-				if (SelectedCountry.DialCode == "46") // Adjust for Swedish numbers
-					fullPhoneNumber = $"+{SelectedCountry.DialCode}{PhoneText.TrimStart('0')}";
+				if (this.SelectedCountry.DialCode == "46") // Adjust for Swedish numbers
+					fullPhoneNumber = $"+{this.SelectedCountry.DialCode}{this.PhoneText.TrimStart('0')}";
 
 				// Send phone verification code
 				object phoneSendResult = await InternetContent.PostAsync(
@@ -210,12 +210,12 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 
 				bool phoneSent = phoneSendResult is Dictionary<string, object> phoneResponse &&
-									  phoneResponse.TryGetValue("Status", out var phoneObj) &&
+									  phoneResponse.TryGetValue("Status", out object? phoneObj) &&
 									  phoneObj is bool phoneStatus && phoneStatus;
 
 				if (phoneSent)
 				{
-					StartTimer();
+					this.StartTimer();
 
 					// Navigate to VerifyCodePage for phone code
 					if (!await this.VerifyCodeAsync(fullPhoneNumber, isEmail: false))
@@ -242,9 +242,9 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		}
 
 		[RelayCommand(CanExecute = nameof(CanResendCode))]
-		private async Task ResendCode()
+		private Task ResendCode()
 		{
-
+			return Task.CompletedTask;
 		}
 
 		private async Task<bool> VerifyCodeAsync(string identifier, bool isEmail)
@@ -255,7 +255,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 			if (!string.IsNullOrEmpty(code))
 			{
-				var parameters = new Dictionary<string, object>
+				Dictionary<string, object> parameters = new Dictionary<string, object>
 				{
 					{ isEmail ? "EMail" : "Nr", identifier },
 					{ "Code", int.Parse(code, NumberStyles.None, CultureInfo.InvariantCulture) }
@@ -266,7 +266,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 					parameters, new KeyValuePair<string, string>("Accept", "application/json"));
 
 				bool verified = verifyResult is Dictionary<string, object> verifyResponse &&
-									 verifyResponse.TryGetValue("Status", out var obj) &&
+									 verifyResponse.TryGetValue("Status", out object? obj) &&
 									 obj is bool status && status;
 
 				return verified;

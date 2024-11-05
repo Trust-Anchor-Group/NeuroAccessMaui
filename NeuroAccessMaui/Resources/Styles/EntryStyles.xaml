@@ -79,7 +79,12 @@
 		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
 	</Style>
 
-	<Style x:Key="RegularCompositeEntryEntry" ApplyToDerivedTypes="False" TargetType="Entry" />
+	<Style x:Key="RegularCompositeEntryEntry" ApplyToDerivedTypes="False" TargetType="Entry">
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource NormalEditForegroundLight}, Dark={StaticResource NormalEditForegroundDark}}" />
+		<Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource NormalEditPlaceholderLight}, Dark={StaticResource NormalEditPlaceholderDark}}" />
+		<Setter Property="FontFamily" Value="HaasGroteskRegular" />
+		<Setter Property="FontSize" Value="18" />
+	 </Style>
 
 	<Style x:Key="RegularCompositeEntry" ApplyToDerivedTypes="False" TargetType="controls:CompositeEntry">
 		<Setter Property="BorderStyle" Value="{StaticResource RegularCompositeEntryBorder}" />

@@ -62,7 +62,7 @@
 					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 						<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize PersonalInformation}"/>
 
-						<Grid VerticalOptions="StartAndExpand" RowSpacing="{StaticResource SmallSpacing}">
+						<Grid VerticalOptions="StartAndExpand">
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="Auto" />
 								<ColumnDefinition Width="*" />

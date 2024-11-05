@@ -86,6 +86,7 @@ namespace NeuroAccessMaui.Services.Tag
 		private bool hasContractTemplateReferences;
 		private bool hasContractTokenCreationTemplatesReferences;
 		private bool hasWallet;
+		private bool hasThing;
 
 		/// <summary>
 		/// Creates an instance of a <see cref="TagProfile"/>.
@@ -161,7 +162,8 @@ namespace NeuroAccessMaui.Services.Tag
 				HasContractReferences = this.HasContractReferences,
 				HasContractTemplateReferences = this.HasContractTemplateReferences,
 				HasContractTokenCreationTemplatesReferences = this.HasContractTokenCreationTemplatesReferences,
-				HasWallet = this.HasWallet
+				HasWallet = this.HasWallet,
+				HasThing = this.HasThing
 			};
 
 			return Clone;
@@ -218,6 +220,7 @@ namespace NeuroAccessMaui.Services.Tag
 				this.HasContractTemplateReferences = Configuration.HasContractTemplateReferences;
 				this.HasContractTokenCreationTemplatesReferences = Configuration.HasContractTokenCreationTemplatesReferences;
 				this.HasWallet = Configuration.HasWallet;
+				this.HasThing = Configuration.HasThing;
 
 				this.SetLegalIdentityInternal(Configuration.LegalIdentity);
 
@@ -768,6 +771,19 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 		}
 
+		public bool HasThing
+		{
+			get => this.hasThing;
+			set
+			{
+				if (this.hasThing != value)
+				{
+					this.hasThing = value;
+					this.FlagAsDirty(nameof(this.HasThing));
+				}
+			}
+		}
+
 		/// <summary>
 		/// This profile's current registration step.
 		/// </summary>
@@ -1266,9 +1282,6 @@ namespace NeuroAccessMaui.Services.Tag
 				try
 				{
 					Application.Current.UserAppTheme = this.Theme.Value;
-					CommunityToolkit.Maui.Core.Platform.StatusBar.SetStyle(this.Theme.Value == AppTheme.Dark ?
-						CommunityToolkit.Maui.Core.StatusBarStyle.LightContent : CommunityToolkit.Maui.Core.StatusBarStyle.DarkContent);
-					CommunityToolkit.Maui.Core.Platform.StatusBar.SetColor(AppColors.PrimaryBackground);
 				}
 				catch (Exception)
 				{
@@ -1521,7 +1534,7 @@ namespace NeuroAccessMaui.Services.Tag
 				this.HasContractTokenCreationTemplatesReferences = true;
 		}
 
-	
+
 
 	}
 

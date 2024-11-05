@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EDaler;
 using EDaler.Uris;
@@ -78,7 +78,59 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			this.UniqueId = Args?.UniqueId;
 
 			this.page.OnAfterAppearing += this.Page_OnAfterAppearing;
+
+			this.XmppUriClicked = new Command(async Parameter => await this.ExecuteUriClicked(Parameter as string ?? "", UriScheme.Xmpp));
+			this.IotIdUriClicked = new Command(async Parameter => await this.ExecuteUriClicked(Parameter as string ?? "", UriScheme.IotId));
+			this.IotScUriClicked = new Command(async Parameter => await this.ExecuteUriClicked(Parameter as string ?? "", UriScheme.IotSc));
+			this.NeuroFeatureUriClicked = new Command(async Parameter => await this.ExecuteUriClicked(Parameter as string ?? "", UriScheme.NeuroFeature));
+			this.IotDiscoUriClicked = new Command(async Parameter => await this.ExecuteUriClicked(Parameter as string ?? "", UriScheme.IotDisco));
+			this.EDalerUriClicked = new Command(async Parameter => await this.ExecuteUriClicked(Parameter as string ?? "", UriScheme.EDaler));
+			this.HyperlinkClicked = new Command(async Parameter => await ExecuteHyperlinkClicked(Parameter));
 		}
+
+		/// <summary>
+		/// Command executed when a multi-media-link with the xmpp URI scheme is clicked.
+		/// </summary>
+		public Command XmppUriClicked { get; }
+
+		/// <summary>
+		/// Command executed when a multi-media-link with the iotid URI scheme is clicked.
+		/// </summary>
+		public Command IotIdUriClicked { get; }
+
+		/// <summary>
+		/// Command executed when a multi-media-link with the iotsc URI scheme is clicked.
+		/// </summary>
+		public Command IotScUriClicked { get; }
+
+		/// <summary>
+		/// Command executed when a multi-media-link with the nfeat URI scheme is clicked.
+		/// </summary>
+		public Command NeuroFeatureUriClicked { get; }
+
+		/// <summary>
+		/// Command executed when a multi-media-link with the iotdisco URI scheme is clicked.
+		/// </summary>
+		public Command IotDiscoUriClicked { get; }
+
+		/// <summary>
+		/// Command executed when a multi-media-link with the edaler URI scheme is clicked.
+		/// </summary>
+		public Command EDalerUriClicked { get; }
+
+		/// <summary>
+		/// Command executed when a hyperlink in rendered markdown has been clicked.
+		/// </summary>
+		public Command HyperlinkClicked { get; }
+
+		private static async Task ExecuteHyperlinkClicked(object Parameter)
+		{
+			if (Parameter is not string Url)
+				return;
+
+			await App.OpenUrlAsync(Url);
+		}
+
 
 		/// <inheritdoc/>
 		protected override async Task OnInitialize()
@@ -90,6 +142,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			this.waitUntilBound.TrySetResult(true);
 
 			await ServiceRef.NotificationService.DeleteEvents(NotificationEventType.Contacts, this.BareJid);
+
 		}
 
 		/// <inheritdoc/>
@@ -100,15 +153,17 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			this.waitUntilBound = new TaskCompletionSource<bool>();
 		}
 
-		private async Task Page_OnAfterAppearing(object Sender, EventArgs e)
+		private Task Page_OnAfterAppearing(object Sender, EventArgs e)
 		{
 			if (this.scrollTo is Element)
 			{
-				await Task.Delay(100);	// TODO: Why is this necessary? ScrollToAsync does not scroll to end element without it...
+			//	await Task.Delay(100);  // TODO: Why is this necessary? ScrollToAsync does not scroll to end element without it...
 
-				await this.page.ScrollView.ScrollToAsync(this.page.Bottom, ScrollToPosition.End, false);
+			//	await this.page.ScrollView.ScrollToAsync(this.page.Bottom, ScrollToPosition.End, false);
 				this.scrollTo = null;
 			}
+
+			return Task.CompletedTask;
 		}
 
 		/// <summary>
@@ -256,25 +311,37 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		/// External message has been received
 		/// </summary>
 		/// <param name="Message">Message</param>
-		public Task MessageAddedAsync(ChatMessage Message)
+		public async Task MessageAddedAsync(ChatMessage Message)
 		{
+			if(Message.ParsedXaml is null)
+					await Message.GenerateXaml(this);
+
 			MainThread.BeginInvokeOnMainThread(async () =>
 			{
-				IView? View = await this.MessageAddedMainThread(Message, false);
+
+
+				IView? View = await this.MessageAddedMainThread(Message, true);
 
 				if (View is Element)
-					await this.page.ScrollView.ScrollToAsync(this.page.Bottom, ScrollToPosition.End, true);
+				{
+       				await Task.Delay(25);
+					double x = this.page.ScrollView.ScrollX;
+					double y = this.page.ScrollView.ContentSize.Height;
+					await this.page.ScrollView.ScrollToAsync(x, y, true);	
+				}
 			});
-			return Task.CompletedTask;
 		}
 
 		private async Task<IView?> MessageAddedMainThread(ChatMessage Message, bool Historic)
 		{
+			this.HasMessages = true;
+
 			TaskCompletionSource<IView?> Result = new();
 
 			try
 			{
-				await Message.GenerateXaml(this);   // Makes sure XAML is generated
+				if(Message.ParsedXaml is null)
+					await Message.GenerateXaml(this);   // Makes sure XAML is generated
 
 				lock (this.synchObject)
 				{
@@ -284,9 +351,9 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 					MessageRecord Rec;
 					IView? View;
 					// int i;
-
 					if (MessageNode is null)
 					{
+
 						Frame = MessageFrame.Create(Message);
 						View = Frame.AddLast(Message);
 						this.page.Messages.Add(Frame);
@@ -300,7 +367,6 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 					{
 						while (MessageNode is not null && Message.Created > MessageNode.Value.Created)
 							MessageNode = MessageNode.Next;
-
 						if (MessageNode is null)
 						{
 							FrameNode = this.frames.Last!;
@@ -493,6 +559,9 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			return await Result.Task;
 		}
 
+		[ObservableProperty]
+		private bool hasMessages = false;
+
 		/// <summary>
 		/// If the button is expanded
 		/// </summary>
@@ -670,7 +739,6 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 							await ChatViewModel.MessageUpdatedAsync(Message);
 					}
 				}
-
 				ServiceRef.XmppService.SendMessage(QoSLevel.Unacknowledged, Waher.Networking.XMPP.MessageType.Chat, Message.ObjectId ?? string.Empty,
 					BareJid, Xml.ToString(), Message.PlainText, string.Empty, string.Empty, string.Empty, string.Empty, null, null);
 			}
@@ -1307,10 +1375,9 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		/// <summary>
 		/// Called when a Multi-media URI link using the XMPP URI scheme.
 		/// </summary>
-		/// <param name="Message">Message containing the URI.</param>
 		/// <param name="Uri">URI</param>
 		/// <param name="Scheme">URI Scheme</param>
-		public async Task ExecuteUriClicked(ChatMessage Message, string Uri, UriScheme Scheme)
+		public async Task ExecuteUriClicked(string Uri, UriScheme Scheme)
 		{
 			try
 			{

@@ -1,4 +1,4 @@
-﻿using System.Windows.Input;
+using System.Windows.Input;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.Shapes;
 

@@ -135,7 +135,15 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 				if (string.IsNullOrEmpty(this.contact?.BareJid))
 					return Colors.Transparent;
 
-				RosterItem? Item = ServiceRef.XmppService.GetRosterItem(this.contact?.BareJid);
+				RosterItem? Item = null;
+				try
+				{
+					Item = ServiceRef.XmppService.GetRosterItem(this.contact?.BareJid);
+				}
+				catch (Exception)
+				{
+					return Colors.Transparent;
+				}
 				if (Item is null)
 					return Colors.Transparent;
 
@@ -176,7 +184,17 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 			if (string.IsNullOrEmpty(this.contact?.BareJid))
 				return;
 
-			RosterItem? Item = ServiceRef.XmppService.GetRosterItem(this.contact?.BareJid);
+			RosterItem? Item = null;
+			try
+			{
+				Item = ServiceRef.XmppService.GetRosterItem(this.contact?.BareJid);
+			}
+			catch
+			{
+				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.Error)], ServiceRef.Localizer[nameof(AppResources.NetworkSeemsToBeMissing)], ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				return;
+			}
+
 			bool Subscribed;
 
 			if (Item is null)
@@ -290,7 +308,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 		public void AddEvent(NotificationEvent Event)
 		{
 			if (this.events is null)
-				this.NotificationsUpdated([ Event ]);
+				this.NotificationsUpdated([Event]);
 			else
 			{
 				foreach (NotificationEvent Event2 in this.events)

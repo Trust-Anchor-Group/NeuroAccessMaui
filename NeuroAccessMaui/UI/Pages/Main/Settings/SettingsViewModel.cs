@@ -349,6 +349,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 				GoToRegistrationStep(RegistrationStep.DefinePassword);
 				await App.SetRegistrationPageAsync();
 
+				//Listen for completed event
 				WeakReferenceMessenger.Default.Register<RegistrationPageMessage>(this, this.HandleRegistrationPageMessage);
 			}
 			catch (Exception ex)

@@ -10,6 +10,8 @@ using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
 using ZXing.Net.Maui.Controls;
 using DotNet.Meteor.HotReload.Plugin;
+using Microsoft.Maui.Platform;
+
 
 
 #if ANDROID
@@ -30,7 +32,7 @@ namespace NeuroAccessMaui
 
 			Builder.UseMauiApp<App>();
 #if DEBUG
-            Builder.EnableHotReload();
+			Builder.EnableHotReload();
 #endif
 
 			Builder.ConfigureFonts(fonts =>
@@ -108,6 +110,11 @@ namespace NeuroAccessMaui
 			{
 				handler.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Colors.Transparent.ToAndroid());
 			});
+			ImageHandler.Mapper.PrependToMapping(nameof(Microsoft.Maui.IImage.Source), (handler, view) =>
+			{
+				handler.PlatformView?.Clear();
+			});
+
 #endif
 		}
 	}

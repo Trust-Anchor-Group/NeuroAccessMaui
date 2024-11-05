@@ -21,7 +21,7 @@ namespace IdApp.Cv.Objects
 		public ObjectMap(Matrix<float> M, float Threshold)
 			: base(M.Width, M.Height)
 		{
-			this.image = Image;
+			this.image = this.Image;
 
 			int y, h = M.Height;
 			int x, w = M.Width;
@@ -130,7 +130,7 @@ namespace IdApp.Cv.Objects
 		public ObjectMap(Matrix<int> M, int Threshold)
 			: base(M.Width, M.Height)
 		{
-			this.image = Image;
+			this.image = this.Image;
 
 			int y, h = M.Height;
 			int x, w = M.Width;
@@ -319,9 +319,10 @@ namespace IdApp.Cv.Objects
 
 			return Result.ToArray();
 		}
-
+#pragma warning disable IDE1006 // Naming Styles
 		private static readonly int[] DirectionX = new int[] { 1, 1, 0, -1, -1, -1, 0, 1 };
 		private static readonly int[] DirectionY = new int[] { 0, -1, -1, -1, 0, 1, 1, 1 };
+#pragma warning restore IDE1006 // Naming Styles
 
 		private class Rec
 		{

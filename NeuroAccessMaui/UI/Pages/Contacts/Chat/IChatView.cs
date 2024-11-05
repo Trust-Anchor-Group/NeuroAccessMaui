@@ -44,9 +44,8 @@
 		/// <summary>
 		/// Called when a special Multi-media URI link has been clicked.
 		/// </summary>
-		/// <param name="Message">Message containing the URI.</param>
 		/// <param name="Uri">URI</param>
 		/// <param name="Scheme">URI Scheme</param>
-		Task ExecuteUriClicked(ChatMessage Message, string Uri, UriScheme Scheme);
+		Task ExecuteUriClicked(string Uri, UriScheme Scheme);
 	}
 }

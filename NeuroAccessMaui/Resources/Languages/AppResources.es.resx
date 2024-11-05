@@ -142,13 +142,13 @@
     <value>No se puede grabar la etiqueta con un enlace a {0}.</value>
   </data>
   <data name="PasswordChanged" xml:space="preserve">
-    <value>El PIN se ha cambiado con éxito.</value>
+    <value>El PIN se ha cambiado correctamente.</value>
   </data>
   <data name="UnableToChangePassword" xml:space="preserve">
     <value>No se puede cambiar la contraseña de red.</value>
   </data>
   <data name="PasswordIsInvalid" xml:space="preserve">
-    <value>El PIN no es válido. Tiene {0} intentos restantes.</value>
+    <value>El PIN no es válido. Le quedan {0} intentos.</value>
   </data>
   <data name="PasswordsDoNotMatch" xml:space="preserve">
     <value>Los PIN no coinciden</value>
@@ -157,16 +157,16 @@
     <value>Ha superado el número de intentos de proporcionar su PIN. Su aplicación ha sido bloqueada para siempre</value>
   </data>
   <data name="PasswordIsInvalidAplicationBlocked" xml:space="preserve">
-    <value>Ha superado el número de intentos de proporcionar su PIN. Su aplicación ha sido bloqueada hasta {0}.</value>
+    <value>Ha superado el número de intentos de proporcionar su PIN. Su solicitud ha sido bloqueada hasta {0}.</value>
   </data>
   <data name="PasswordIsInvalidAplicationBlockedTillTomorrow" xml:space="preserve">
     <value>Ha superado el número de intentos de proporcionar su PIN. Su solicitud ha sido bloqueada hasta mañana a las {0}.</value>
   </data>
   <data name="PasswordIsInvalidAplicationBlockedForOneWeek" xml:space="preserve">
-    <value>Ha superado el número de intentos de proporcionar su PIN. Su aplicación ha estado bloqueada durante una semana</value>
+    <value>Ha superado el número de intentos de proporcionar su PIN. Su solicitud ha sido bloqueada durante una semana</value>
   </data>
   <data name="PasswordTooShort" xml:space="preserve">
-    <value>La longitud del PIN debe tener al menos {0} caracteres.</value>
+    <value>La longitud del PIN debe ser de al menos {0} caracteres.</value>
   </data>
   <data name="PasswordContainsName" xml:space="preserve">
     <value>Un PIN no debe contener ninguna palabra de los nombres de identidad.</value>
@@ -262,10 +262,10 @@
     <value>Su identidad</value>
   </data>
   <data name="YourLegalIdentityHasBeenCompromised" xml:space="preserve">
-    <value>Su identidad ha sido marcada como comprometida. Por lo tanto, ha sido redirigido para crear una nueva cuenta.</value>
+    <value>Su identidad ha sido marcada como comprometida. Por lo tanto, se le ha redirigido para crear una nueva cuenta.</value>
   </data>
   <data name="YourLegalIdentityHasBeenObsoleted" xml:space="preserve">
-    <value>Su identidad ha sido marcada como obsoleta. Por lo tanto, ha sido redirigido para crear una nueva cuenta.</value>
+    <value>Su identidad ha sido marcada como obsoleta. Por lo tanto, se le ha redirigido para crear una nueva cuenta.</value>
   </data>
   <data name="ClientMessageAuthenticationTimeout" xml:space="preserve">
     <value>La respuesta no se devuelve dentro del tiempo configurado.</value>
@@ -436,7 +436,7 @@
     <value>URI de firma de TAG no válido.</value>
   </data>
   <data name="LegalIdNotApproved" xml:space="preserve">
-    <value>ID no aprobado.</value>
+    <value>Identificación no aprobada.</value>
   </data>
   <data name="NoLegalIdSelected" xml:space="preserve">
     <value>No se ha seleccionado ningún ID.</value>
@@ -478,7 +478,7 @@
     <value>Un compañero al que le pidió que revisara su solicitud, se ha negado a aprobarla.</value>
   </data>
   <data name="UnableToGetAccessToYourPrivateKeys" xml:space="preserve">
-    <value>La aplicación no pudo obtener acceso a las claves privadas de la identidad. Por lo general, esto significa que la identidad se ha cambiado fuera del ámbito de la aplicación. También puede ser el resultado de una corrupción de datos. Puede intentar una de dos cosas: Presione el botón Continuar, para continuar, sin las claves privadas. Obtienes acceso a la aplicación, pero no puedes firmar nada. A continuación, puede optar por volver a solicitar una nueva identidad desde el menú principal, con nuevas claves privadas. También puede intentar reparar la base de datos, presionando el botón Reparar. En este último caso, la aplicación se cierra y, la próxima vez que se abre la aplicación, primero se intenta un procedimiento de reparación.</value>
+    <value>La aplicación no pudo obtener acceso a las claves privadas de la identidad. Por lo general, esto significa que la identidad se ha cambiado fuera del ámbito de la aplicación. También puede ser el resultado de una corrupción de datos. Puede probar una de estas dos cosas: Presione el botón Continuar para continuar, sin las claves privadas. Tienes acceso a la aplicación, pero no puedes firmar nada. A continuación, puede optar por volver a solicitar una nueva identidad desde el menú principal, con nuevas claves privadas. También puede intentar reparar la base de datos, pulsando el botón Reparar. En este último caso, la aplicación se cierra y, la próxima vez que se abre la aplicación, primero se intenta un procedimiento de reparación.</value>
   </data>
   <data name="FailedToClosePage" xml:space="preserve">
     <value>No se pudo cerrar la página</value>
@@ -517,7 +517,7 @@
     <value>Se recibió una respuesta inesperada.</value>
   </data>
   <data name="FileUploadServiceNotFound" xml:space="preserve">
-    <value>No se ha encontrado ningún servicio de carga de archivos en el Proveedor de servicios.</value>
+    <value>No se ha encontrado ningún servicio de carga de archivos en el proveedor de servicios.</value>
   </data>
   <data name="LegalServiceNotFound" xml:space="preserve">
     <value>No se ha encontrado ningún servicio legal en el Proveedor de Servicios.</value>
@@ -655,7 +655,7 @@
     <value>Se ha utilizado un código OTP temporal. La aplicación dejará de funcionar en aproximadamente una semana. Tendrás que volver a instalar la aplicación para volver a utilizarla.</value>
   </data>
   <data name="DefinePasswordSectionTitle1" xml:space="preserve">
-    <value>Introducir un nuevo pin</value>
+    <value>Introduzca un nuevo pin</value>
   </data>
   <data name="DefinePasswordSectionTitle2" xml:space="preserve">
     <value>Confirmar pin</value>
@@ -697,7 +697,7 @@
     <value>Entrar</value>
   </data>
   <data name="EnterPassword" xml:space="preserve">
-    <value>Introducir pin</value>
+    <value>Introduzca el pin</value>
   </data>
   <data name="FirstName" xml:space="preserve">
     <value>Nombre</value>
@@ -814,7 +814,7 @@
     <value>¿Estás seguro de que quieres denunciar tu identidad como comprometida, robada o hackeada?</value>
   </data>
   <data name="AreYouSureYouWantToRevokeYourLegalIdentity1" xml:space="preserve">
-    <value>¿Estás seguro de que quieres revocar tu identidad desde el dispositivo?</value>
+    <value>¿Estás seguro de que quieres revocar tu identidad del dispositivo?</value>
   </data>
   <data name="AreYouSureYouWantToTransferYourLegalIdentity1" xml:space="preserve">
     <value>¿Estás seguro de que quieres transferir tu identidad del dispositivo a otro? La identidad se eliminará de este dispositivo una vez completada. También asegúrese de que nadie más pueda ver su pantalla durante el proceso.</value>
@@ -841,7 +841,7 @@
     <value>Introduzca el pin actual:</value>
   </data>
   <data name="EnterNewPassword" xml:space="preserve">
-    <value>Introduzca el nuevo pin:</value>
+    <value>Introduzca un nuevo pin:</value>
   </data>
   <data name="IdentitySettings" xml:space="preserve">
     <value>Configuración de identidad</value>
@@ -904,7 +904,7 @@
     <value>¿Está seguro de que desea revocar la solicitud de identificación actual?</value>
   </data>
   <data name="AreYouSureYouWantToSendThisIdApplication" xml:space="preserve">
-    <value>¿Estás seguro de que quieres enviar una nueva Solicitud de DNI? Al enviar una solicitud de identificación, se quedará obsoleto su identificación actual.</value>
+    <value>¿Está seguro de que desea enviar una nueva solicitud de identificación? El envío de una solicitud de identificación dejará obsoleta su identificación actual.</value>
   </data>
   <data name="ConsentDescription" xml:space="preserve">
     <value>Doy mi consentimiento para el tratamiento de la información personal proporcionada en esta solicitud, con el fin de validar y aprobar la solicitud.</value>
@@ -931,13 +931,13 @@
     <value>Revisores destacados</value>
   </data>
   <data name="FingerprintDescription" xml:space="preserve">
-    <value>Escanear para autenticar</value>
+    <value>Escanear para autenticarse</value>
   </data>
   <data name="FingerprintTitle" xml:space="preserve">
     <value>Autenticación requerida</value>
   </data>
   <data name="IdApplicationDescription" xml:space="preserve">
-    <value>Al enviar una nueva solicitud de identificación, confirmo que toda la información proporcionada es correcta y está actualizada. La aplicación dejará obsoleta cualquier identidad actual registrada en la aplicación.</value>
+    <value>Al enviar una nueva solicitud de identificación, confirmo que toda la información proporcionada es correcta y está actualizada. La aplicación dejará obsoleta cualquier identidad actual registrada en la App.</value>
   </data>
   <data name="IdApplicationSentDescription" xml:space="preserve">
     <value>Se ha enviado una solicitud para un nuevo documento de identidad. A la espera de que se revise la solicitud. Puede volver a esta página para revisar el estado de la solicitud.</value>
@@ -1407,6 +1407,9 @@
   <data name="AccessRequestText" xml:space="preserve">
     <value>{0} quiere conectarse a su dispositivo {1}.</value>
   </data>
+  <data name="AccessRequestText2" xml:space="preserve">
+    <value>La persona que llama ha solicitado acceso a una de tus cosas. Seleccione cómo desea que la cosa responda a este tipo de solicitud.</value>
+  </data>
   <data name="ConcentratorServiceNotFound" xml:space="preserve">
     <value>No se encontró ningún servicio de concentrador.</value>
   </data>
@@ -1441,7 +1444,7 @@
     <value>No se ha encontrado ningún servicio de eventos personales.</value>
   </data>
   <data name="ProvisioningServiceNotFound" xml:space="preserve">
-    <value>No se ha encontrado ningún servicio de aprovisionamiento en el Proveedor de Servicios.</value>
+    <value>No se ha encontrado ningún servicio de aprovisionamiento en el proveedor de servicios.</value>
   </data>
   <data name="PushNotificationServiceNotFound" xml:space="preserve">
     <value>No se encontró ningún servicio de notificaciones push.</value>
@@ -1462,7 +1465,7 @@
     <value>Respuesta a la solicitud de firma</value>
   </data>
   <data name="ThingRegistryServiceNotFound" xml:space="preserve">
-    <value>No se encuentra nada del servicio de registro en el proveedor de servicios.</value>
+    <value>No se encontró nada en el servicio de registro en el proveedor de servicios.</value>
   </data>
   <data name="UnableToGetListOfMyDevices" xml:space="preserve">
     <value>No se puede obtener la lista de mis dispositivos.</value>
@@ -1490,6 +1493,12 @@
   </data>
   <data name="BuyEDaler" xml:space="preserve">
     <value>Compra eDaler.</value>
+  </data>
+  <data name="Caller" xml:space="preserve">
+    <value>Llamador</value>
+  </data>
+  <data name="CallerAddress" xml:space="preserve">
+    <value>Dirección de la persona que llama</value>
   </data>
   <data name="CallerOnly" xml:space="preserve">
     <value>Solo persona que llama</value>
@@ -1864,7 +1873,7 @@
     <value>Acceso a la identidad</value>
   </data>
   <data name="PetitionIdentityInformationText" xml:space="preserve">
-    <value>Se ha recibido una petición de los datos personales de su identidad. Revise la siguiente información y elija cómo desea responder.</value>
+    <value>Se ha recibido una petición de los datos personales de su identidad. Revise la información a continuación y elija cómo desea responder.</value>
   </data>
   <data name="PetitionSignature" xml:space="preserve">
     <value>Firma solicitada</value>
@@ -2107,13 +2116,13 @@
     <value>¿Qué es {0}?</value>
   </data>
   <data name="BiometricAuthenticationInfo" xml:space="preserve">
-    <value>La autenticación biométrica utiliza tus características físicas únicas, como tu rostro o tu huella dactilar, para garantizar que realmente eres tú. Proporciona una forma sencilla y segura de acceder a Neuro-Access.</value>
+    <value>La autenticación biométrica utiliza tus características físicas únicas, como tu rostro o huella dactilar, para garantizar que realmente eres tú. Proporciona una forma sencilla y segura de acceder a Neuro-Access.</value>
   </data>
   <data name="FaceIdInfo" xml:space="preserve">
-    <value>Face ID reconoce tu rostro para asegurarse de que realmente eres tú, proporcionando una forma sencilla y segura de acceder a Neuro-Access.</value>
+    <value>Face ID reconoce tu rostro para asegurarse de que realmente eres tú, lo que proporciona una forma sencilla y segura de acceder a Neuro-Access.</value>
   </data>
   <data name="TouchIdInfo" xml:space="preserve">
-    <value>Touch ID utiliza tu huella dactilar para asegurarte de que realmente eres tú, proporcionando una forma rápida y segura de acceder a Neuro-Access.</value>
+    <value>Touch ID utiliza tu huella dactilar para asegurarte de que realmente eres tú, lo que proporciona una forma rápida y segura de acceder a Neuro-Access.</value>
   </data>
   <data name="TransferIdentity" xml:space="preserve">
     <value>Transferir identidad</value>
@@ -2211,9 +2220,6 @@
   <data name="OpenWalletDescription" xml:space="preserve">
     <value>Abra su billetera eDaler para mostrar el saldo actual y ver las últimas transacciones.</value>
   </data>
-  <data name="OpenWllet" xml:space="preserve">
-    <value />
-  </data>
   <data name="AccountEventDescription" xml:space="preserve">
     <value>A continuación, puede ver información sobre un evento de una sola cuenta.</value>
   </data>
@@ -2265,4 +2271,133 @@
   <data name="EmailClientNotAvailable" xml:space="preserve">
     <value>No se puede abrir el cliente de correo electrónico. Por favor, envíe un correo electrónico a {0}.</value>
   </data>
+  <data name="ClaimThing" xml:space="preserve">
+    <value>Cosa de la reclamación</value>
+  </data>
+  <data name="InformationAboutClaimedThingText" xml:space="preserve">
+    <value>La siguiente información está disponible sobre el objeto cuyo código escaneó. Elija si desea intentar reclamar esta cosa como suya y también si desea que se pueda buscar públicamente en el Registro de cosas.</value>
+  </data>
+  <data name="InformationAboutThing" xml:space="preserve">
+    <value>Información sobre la cosa</value>
+  </data>
+  <data name="InformationAboutThingText" xml:space="preserve">
+    <value>La siguiente información está disponible localmente sobre la cosa. A continuación se presentan las opciones para interactuar con el dispositivo.</value>
+  </data>
+  <data name="MakeThingPublic" xml:space="preserve">
+    <value>Hacer algo público</value>
+  </data>
+  <data name="Thing" xml:space="preserve">
+    <value>Cosa</value>
+  </data>
+  <data name="Chat" xml:space="preserve">
+    <value>Charlar</value>
+  </data>
+  <data name="ConnectToDevice" xml:space="preserve">
+    <value>Conectar al dispositivo</value>
+  </data>
+  <data name="DisconnectFromDevice" xml:space="preserve">
+    <value>Desconectar del dispositivo</value>
+  </data>
+  <data name="DeleteRules" xml:space="preserve">
+    <value>Reglas de eliminación</value>
+  </data>
+  <data name="DisownThing" xml:space="preserve">
+    <value>Repudiar cosa</value>
+  </data>
+  <data name="ContractCouldNotBeFound" xml:space="preserve">
+    <value>No se pudo encontrar el contrato, se podría haber eliminado. ¿Desea eliminar la referencia?</value>
+  </data>
+  <data name="PaymentDescription" xml:space="preserve">
+    <value>Ingrese el monto a pagar al destinatario a continuación. Una vez hecho esto, puede elegir pagar en línea (si está conectado) o fuera de línea, haciendo clic en el botón correspondiente.</value>
+  </data>
+  <data name="EncryptMessage" xml:space="preserve">
+    <value>Cifrar mensaje</value>
+  </data>
+  <data name="SendPayment" xml:space="preserve">
+    <value>Enviar pago</value>
+  </data>
+  <data name="ReferencedID" xml:space="preserve">
+    <value>ID referenciado</value>
+  </data>
+  <data name="ControlActuator" xml:space="preserve">
+    <value>Actuador de control</value>
+  </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>Notificaciones</value>
+  </data>
+  <data name="NotificationsText" xml:space="preserve">
+    <value>A continuación puede ver una lista de notificaciones resultantes de las interacciones con la cosa. Pulse sobre cada uno para mostrar más información y opciones disponibles.</value>
+  </data>
+  <data name="SensorDataText" xml:space="preserve">
+    <value>A continuación se muestra la información y los datos de los sensores disponibles para usted, de acuerdo con sus privilegios de acceso.</value>
+  </data>
+  <data name="SensorData" xml:space="preserve">
+    <value>Datos de sensores</value>
+  </data>
+  <data name="ReadSensor" xml:space="preserve">
+    <value>Sensor de lectura</value>
+  </data>
+  <data name="Range" xml:space="preserve">
+    <value>Gama</value>
+  </data>
+  <data name="RangeText" xml:space="preserve">
+    <value>Aplique esta regla a:</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Enviar</value>
+  </data>
+  <data name="InformationAboutCallerText" xml:space="preserve">
+    <value>La siguiente información está disponible acerca de la persona que llama:</value>
+  </data>
+  <data name="FriendlyName" xml:space="preserve">
+    <value>Nombre descriptivo</value>
+  </data>
+  <data name="ReadoutRequestText2" xml:space="preserve">
+    <value>Una persona que llama ha solicitado datos del sensor de una de sus cosas. Seleccione cómo desea que la cosa responda a este tipo de solicitud.</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>Todo</value>
+  </data>
+  <data name="ComputedValues" xml:space="preserve">
+    <value>Valores calculados</value>
+  </data>
+  <data name="FieldTypes" xml:space="preserve">
+    <value>Tipos de campo</value>
+  </data>
+  <data name="HistoricalValues" xml:space="preserve">
+    <value>Valores históricos</value>
+  </data>
+  <data name="IdentityValues" xml:space="preserve">
+    <value>Valores de identidad</value>
+  </data>
+  <data name="MomentaryValues" xml:space="preserve">
+    <value>Valores momentáneos</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>Ninguno</value>
+  </data>
+  <data name="PeakValues" xml:space="preserve">
+    <value>Valores máximos</value>
+  </data>
+  <data name="PermitFieldTypesText" xml:space="preserve">
+    <value>Elija los tipos de campo (categorías amplias) a los que desea permitir el acceso, si se acepta la solicitud.</value>
+  </data>
+  <data name="StatusValues" xml:space="preserve">
+    <value>Valores de estado</value>
+  </data>
+  <data name="Fields" xml:space="preserve">
+    <value>Campos</value>
+  </data>
+  <data name="PermitFieldsText" xml:space="preserve">
+    <value>Elija los campos a los que permitir el acceso, si se acepta la solicitud.</value>
+  </data>
+  <data name="ARequestHasBeenSentToTheOwner" xml:space="preserve">
+    <value>Se ha enviado una solicitud al propietario del dispositivo.</value>
+</data>
+<data name="ControlRequestText2" xml:space="preserve">
+  <value>Una persona que llama ha solicitado controlar una de sus cosas. Seleccione cómo desea que la cosa responda a este tipo de solicitud.</value>
+</data>
+<data name="PermitParametersText" xml:space="preserve">
+  <value>Elija los parámetros a los que desea permitir el acceso, si se acepta la solicitud.</value>
+</data>
 </root>

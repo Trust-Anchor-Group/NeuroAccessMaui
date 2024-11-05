@@ -5,6 +5,7 @@ using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
+using NeuroAccessMaui.UI.Pages.Things.ViewThing;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
@@ -272,6 +273,16 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 					if (Item is null)
 						ServiceRef.XmppService.AddRosterItem(new RosterItem(e.JID, FriendlyName));
 
+					//Remove Key Tag from the list of tags
+					foreach (HumanReadableTag Tag in this.Tags)
+					{
+						if (string.Equals(Tag.Name, Constants.XmppProperties.Key, StringComparison.OrdinalIgnoreCase))
+						{
+							this.Tags.Remove(Tag);
+							break;
+						}
+					}
+
 					ContactInfo Info = await ContactInfo.FindByBareJid(e.JID, e.Node.SourceId, e.Node.Partition, e.Node.NodeId);
 					if (Info is null)
 					{
@@ -300,7 +311,10 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 					}
 
 					await Database.Provider.Flush();
-					await this.GoBack();
+
+					ServiceRef.XmppService.RequestPresenceSubscription(Info.BareJid);
+
+					await ServiceRef.UiService.GoToAsync(nameof(ViewThingPage), new ViewThingNavigationArgs(Info, []), Services.UI.BackMethod.Pop2);
 				}
 				else
 				{
