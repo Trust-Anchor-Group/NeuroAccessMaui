@@ -61,11 +61,13 @@
 	-->
 
 	<Style x:Key="RegularCompositeEntryBorder" ApplyToDerivedTypes="False" TargetType="Border">
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource NormalEditBackgroundLight}, Dark={StaticResource NormalEditBackgroundDark}}" />
-		<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource NormalEditForegroundLight}, Dark={StaticResource NormalEditForegroundDark}}" />
 		<Setter Property="Padding" Value="{StaticResource EditMediumMargins}" />
-		<Setter Property="StrokeShape">
-			<RoundRectangle CornerRadius="{StaticResource SmallCornerRadius}" />
+		<Setter Property="Stroke" Value="Transparent" />
+		<Setter Property="StrokeShape" Value="RoundRectangle 8" />
+		<Setter Property="Shadow">
+			<Setter.Value>
+				<Shadow Offset="0,2" Radius="0" Opacity="1" Brush="{AppThemeBinding Light={StaticResource OffBlack50Light}, Dark={StaticResource OffWhite30Dark}}"/>
+			</Setter.Value>
 		</Setter>
 	</Style>
 
@@ -79,16 +81,26 @@
 		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
 	</Style>
 
+	<Style x:Key="RegularCompositeEntryLabel" ApplyToDerivedTypes="False" TargetType="Label" BasedOn="{StaticResource BoldItemTitleLabel}">
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffWhiteDark}}" />
+		<Setter Property="FontSize" Value="14" />
+		<Setter Property="LineBreakMode" Value="WordWrap" />
+		<Setter Property="VerticalTextAlignment" Value="Center" />
+		<Setter Property="HorizontalTextAlignment" Value="Start" />
+	</Style>
+
 	<Style x:Key="RegularCompositeEntryEntry" ApplyToDerivedTypes="False" TargetType="Entry">
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource NormalEditForegroundLight}, Dark={StaticResource NormalEditForegroundDark}}" />
 		<Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource NormalEditPlaceholderLight}, Dark={StaticResource NormalEditPlaceholderDark}}" />
 		<Setter Property="FontFamily" Value="HaasGroteskRegular" />
 		<Setter Property="FontSize" Value="18" />
 	 </Style>
 
 	<Style x:Key="RegularCompositeEntry" ApplyToDerivedTypes="False" TargetType="controls:CompositeEntry">
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource OffWhiteLight}, Dark={StaticResource PopUpElevation3Dark}}" />
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffWhiteDark}}" />
 		<Setter Property="BorderStyle" Value="{StaticResource RegularCompositeEntryBorder}" />
 		<Setter Property="EntryStyle" Value="{StaticResource RegularCompositeEntryEntry}" />
+		<Setter Property="LabelStyle" Value="{StaticResource RegularCompositeEntryLabel}" />
 	</Style>
 
 	<Style x:Key="RegularCompositeEntryNoRoundedCorners" ApplyToDerivedTypes="False" TargetType="controls:CompositeEntry">
