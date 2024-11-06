@@ -2400,4 +2400,10 @@
   <data name="PermitParametersText" xml:space="preserve">
     <value>Vælg de parametre, der skal gives adgang til, hvis anmodningen accepteres.</value>
   </data>
+  <data name="SomethingWentWrong" xml:space="preserve">
+    <value>Noget gik galt</value>
+  </data>
+  <data name="NotCompletedOnboardingError" xml:space="preserve">
+    <value>Det ser ud til, at du ikke har afsluttet onboarding-processen endnu. Afslut opsætningen af din konto for at få adgang til denne funktion.</value>
+  </data>
 </root>

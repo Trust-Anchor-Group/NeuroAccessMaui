@@ -2400,4 +2400,10 @@
   <data name="PermitParametersText" xml:space="preserve">
     <value>Izaberite parametre kojima želite dozvoliti pristup, ako je zahtev prihvaćen.</value>
   </data>
+  <data name="SomethingWentWrong" xml:space="preserve">
+    <value>Nešto nije u redu</value>
+  </data>
+  <data name="NotCompletedOnboardingError" xml:space="preserve">
+    <value>Izgleda da još niste završili proces uključivanja. Molimo Vas da završite podešavanje naloga da biste pristupili ovoj funkciji.</value>
+  </data>
 </root>
