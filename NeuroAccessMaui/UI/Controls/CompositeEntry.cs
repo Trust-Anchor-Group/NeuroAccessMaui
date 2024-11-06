@@ -1,6 +1,7 @@
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.Shapes;
+using Path = Microsoft.Maui.Controls.Shapes.Path;
 
 namespace NeuroAccessMaui.UI.Controls
 {
@@ -232,7 +233,12 @@ namespace NeuroAccessMaui.UI.Controls
 			 nameof(IsValid),
 			 typeof(bool),
 			 typeof(CompositeEntry),
-			 true);
+			 true,
+			 propertyChanged: (bindable, oldValue, newValue) =>
+			 {
+				 CompositeEntry control = (CompositeEntry)bindable;
+				 control.OnPropertyChanged(nameof(control.ShowValidationLabel));
+			 });
 
 		/// <summary>
 		/// Gets or sets a value indicating whether the entry data is valid.
@@ -304,11 +310,66 @@ namespace NeuroAccessMaui.UI.Controls
 			 typeof(CompositeEntry),
 			 Colors.Transparent);
 
-		// Provide a new getter and setter
 		public new Color BackgroundColor
 		{
 			get => (Color)this.GetValue(BackgroundColorProperty);
 			set => this.SetValue(BackgroundColorProperty, value);
+		}
+
+		/// <summary>
+		/// Bindable property for the label above the entry
+		/// </summary>
+		public static readonly BindableProperty LabelDataProperty = BindableProperty.Create(
+			 nameof(LabelData),
+			 typeof(string),
+			 typeof(CompositeEntry),
+			 default(string),
+			 BindingMode.TwoWay);
+
+		/// <summary>
+		/// Gets or sets the text displayed in the entry.
+		/// </summary>
+		public string LabelData
+		{
+			get => (string)this.GetValue(LabelDataProperty);
+			set => this.SetValue(LabelDataProperty, value);
+		}
+
+				/// <summary>
+		/// Bindable property for the label above the entry
+		/// </summary>
+		public static readonly BindableProperty ValidationDataProperty = BindableProperty.Create(
+			 nameof(ValidationData),
+			 typeof(string),
+			 typeof(CompositeEntry),
+			 default(string),
+			 BindingMode.TwoWay);
+
+		/// <summary>
+		/// Gets or sets the text displayed in the entry.
+		/// </summary>
+		public string ValidationData
+		{
+			get => (string)this.GetValue(ValidationDataProperty);
+			set => this.SetValue(ValidationDataProperty, value);
+		}
+
+
+		/// <summary>
+		/// Bindable property for the style applied to the label above the entry.
+		/// </summary>
+		public static readonly BindableProperty LabelStyleProperty = BindableProperty.Create(
+			 nameof(LabelStyle),
+			 typeof(Style),
+			 typeof(CompositeEntry));
+
+		/// <summary>
+		/// Gets or sets the style applied to the label above the entry.
+		/// </summary>
+		public Style LabelStyle
+		{
+			get => (Style)this.GetValue(LabelStyleProperty);
+			set => this.SetValue(LabelStyleProperty, value);
 		}
 
 		#endregion
@@ -316,9 +377,23 @@ namespace NeuroAccessMaui.UI.Controls
 		#region Fields
 
 		private readonly Entry innerEntry;
-		private readonly Grid mainGrid;
-		private readonly Border border;
 
+		private readonly Grid outerGrid;
+		private readonly Grid validationGrid;
+		private readonly Grid entryGrid;
+		private readonly Border border;
+		private readonly Label topLabel;
+		private readonly Label validationLabel;
+
+		/// <summary>
+		/// If the validation label should be shown.
+		/// </summary>
+		public bool ShowValidationLabel => !this.IsValid && !string.IsNullOrEmpty(this.validationLabel.Text);
+
+		/// <summary>
+		/// If the top label should be shown.
+		/// </summary>
+		public bool ShowTopLabel => !string.IsNullOrEmpty(this.topLabel.Text);
 		#endregion
 
 		#region Events
@@ -377,8 +452,29 @@ namespace NeuroAccessMaui.UI.Controls
 			this.innerEntry.Focused += this.OnEntryFocused;
 			this.innerEntry.Unfocused += this.OnEntryUnfocused;
 
-			// Initialize the main Grid
-			this.mainGrid = new Grid
+			// Initialize the top label
+			this.topLabel = new Label
+			{
+				HorizontalOptions = LayoutOptions.Fill,
+				VerticalTextAlignment = TextAlignment.Center,
+				BackgroundColor = Colors.Transparent,
+				IsVisible = false
+			};
+
+			this.topLabel.SetBinding(Label.TextProperty, new Binding(nameof(this.LabelData), source: this));
+			this.topLabel.SetBinding(Label.StyleProperty, new Binding(nameof(this.LabelStyle), source: this));
+			this.topLabel.SetBinding(Label.IsVisibleProperty, new Binding(nameof(this.ShowTopLabel), source: this));
+
+			this.topLabel.PropertyChanged += (sender, e) =>
+			{
+				if (e.PropertyName == nameof(Label.Text))
+				{
+					this.OnPropertyChanged(nameof(this.ShowTopLabel));
+				}
+			};
+
+			// Initialize the entry Grid
+			this.entryGrid = new Grid
 			{
 				ColumnDefinitions =
 				{
@@ -386,35 +482,105 @@ namespace NeuroAccessMaui.UI.Controls
 					new ColumnDefinition { Width = GridLength.Star },    // Entry
 					new ColumnDefinition { Width = GridLength.Auto }     // Right view
                 },
-				VerticalOptions = LayoutOptions.Center,
-				HorizontalOptions = LayoutOptions.Fill
+				ColumnSpacing = AppStyles.SmallSpacing
 			};
-
 			// Add the Entry to the Grid
-			this.mainGrid.Add(this.innerEntry, 1, 0);
+			this.entryGrid.Add(this.innerEntry, 1, 0);
 
 			// Set Left and Right Views if they are not null
 			if (this.LeftView != null)
 			{
-				this.mainGrid.Add(this.LeftView, 0, 0);
+				this.entryGrid.Add(this.LeftView, 0, 0);
 			}
 			if (this.RightView != null)
 			{
-				this.mainGrid.Add(this.RightView, 2, 0);
+				this.entryGrid.Add(this.RightView, 2, 0);
 			}
 
 			// Initialize the Border
 			this.border = new Border
 			{
-				Content = this.mainGrid,
+				Content = this.entryGrid,
 				BackgroundColor = Colors.Transparent
 			};
 
 			this.border.SetBinding(Border.StyleProperty, new Binding(nameof(this.BorderStyle), source: this));
 			this.border.SetBinding(Border.BackgroundColorProperty, new Binding(nameof(this.BackgroundColor), source: this));
 
+			// Initialize the validation label
+			this.validationLabel = new Label
+			{
+				VerticalTextAlignment = TextAlignment.Center,
+				BackgroundColor = Colors.Transparent,
+			};
+
+			this.validationLabel.PropertyChanged += (sender, e) =>
+			{
+				if (e.PropertyName == nameof(Label.Text))
+				{
+					this.OnPropertyChanged(nameof(this.ShowValidationLabel));
+				}
+			};
+
+			this.validationLabel.SetBinding(Label.TextProperty, new Binding(nameof(this.ValidationData), source: this));
+			this.validationLabel.SetBinding(Label.TextColorProperty, new Binding(nameof(this.TextColor), source: this));
+
+			Path ValidationPath = new Path()
+			{
+				Data = Geometries.ErrorPath,
+				WidthRequest = 20,
+				HeightRequest = 20,
+				VerticalOptions = LayoutOptions.Center,
+				HorizontalOptions = LayoutOptions.Center,
+				Aspect = Microsoft.Maui.Controls.Stretch.Fill
+			};
+			ValidationPath.SetBinding(Path.FillProperty, new Binding(nameof(this.TextColor), source: this));
+
+			// Initialize the validation Grid
+			this.validationGrid = new Grid
+			{
+				ColumnDefinitions =
+				{
+					new ColumnDefinition { Width = GridLength.Auto },
+					new ColumnDefinition { Width = GridLength.Star }
+				},
+				ColumnSpacing = AppStyles.SmallSpacing,
+				HorizontalOptions = LayoutOptions.Center,
+			};
+
+			this.validationGrid.Add(ValidationPath, 0, 0);
+			this.validationGrid.Add(this.validationLabel, 1, 0);
+			this.validationGrid.SetBinding(Grid.IsVisibleProperty, new Binding(nameof(this.ShowValidationLabel), source: this));
+
+			VerticalStackLayout outerLayout = new VerticalStackLayout
+			{
+				Spacing = AppStyles.SmallSpacing,
+				Children =
+				{
+					this.topLabel,
+					this.border,
+					this.validationGrid
+				}
+			};
+			// Initialize the outer Grid
+			this.outerGrid = new Grid
+			{
+				RowDefinitions =
+				{
+					new RowDefinition { Height = GridLength.Auto },
+					new RowDefinition { Height = GridLength.Auto },
+					new RowDefinition { Height = GridLength.Auto }
+				},
+			};
+
+			this.outerGrid.RowSpacing = AppStyles.SmallSpacing;
+
+			this.outerGrid.Add(this.topLabel, 0, 0);
+			this.outerGrid.Add(this.border, 0, 1);
+			this.outerGrid.Add(this.validationGrid, 0, 2);
+
 			// Set the Content of the control
-			this.Content = this.border;
+			this.Content = outerLayout;
 		}
 
 		#endregion
@@ -482,11 +648,11 @@ namespace NeuroAccessMaui.UI.Controls
 		{
 			if (oldView != null)
 			{
-				this.mainGrid.Remove(oldView);
+				this.entryGrid.Remove(oldView);
 			}
 			if (newView != null)
 			{
-				this.mainGrid.Add(newView, 0, 0);
+				this.entryGrid.Add(newView, 0, 0);
 			}
 		}
 
@@ -511,11 +677,11 @@ namespace NeuroAccessMaui.UI.Controls
 		{
 			if (oldView != null)
 			{
-				this.mainGrid.Remove(oldView);
+				this.entryGrid.Remove(oldView);
 			}
 			if (newView != null)
 			{
-				this.mainGrid.Add(newView, 2, 0);
+				this.entryGrid.Add(newView, 2, 0);
 			}
 		}
 
