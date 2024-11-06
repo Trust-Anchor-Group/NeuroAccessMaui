@@ -32,7 +32,6 @@ namespace NeuroAccessMaui.UI.Controls
 
 		public IconEntry() : base()
 		{
-			Grid grid = new Grid();
 			Path iconPath = new Path();
 			iconPath.SetBinding(Path.DataProperty, new Binding(nameof(this.IconPath), source: this));
 			iconPath.SetBinding(Path.FillProperty, new Binding(nameof(this.TextColor), source: this));
@@ -41,10 +40,8 @@ namespace NeuroAccessMaui.UI.Controls
 			iconPath.HorizontalOptions = LayoutOptions.Center;
 			iconPath.WidthRequest = 24;
 			iconPath.HeightRequest = 24;
-
-			grid.Add(iconPath);
-			grid.Padding = AppStyles.SmallRightMargins;
-			this.LeftView = grid;
+			iconPath.Aspect = Microsoft.Maui.Controls.Stretch.Fill;
+			this.LeftView = iconPath;
 		}
 	}
 }
