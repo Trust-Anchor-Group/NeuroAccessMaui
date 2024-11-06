@@ -62,13 +62,13 @@
 													 IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" />
 
 							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
-								<controls:TextButton Command="{Binding ScanQrCodeCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+								<controls:TextButton Command="{Binding ScanQrCodeCommand}" Style="{StaticResource FilledTextButton}"
 															LabelData="{l:Localize QrScanCode}" IsVisible="{Binding PeerReview}" />
 
-								<controls:TextButton Command="{Binding RequestReviewCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+								<controls:TextButton Command="{Binding RequestReviewCommand}" Style="{StaticResource FilledTextButton}"
 															LabelData="{l:Localize FeaturedReviewers}" IsVisible="{Binding FeaturedPeerReviewers}" />
 
-								<controls:TextButton Command="{Binding RevokeApplicationCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+								<controls:TextButton Command="{Binding RevokeApplicationCommand}" Style="{StaticResource FilledTextButton}"
 															LabelData="{l:Localize RevokeApplication}" />
 							</VerticalStackLayout>
 						</VerticalStackLayout>
@@ -518,7 +518,7 @@
 													 IsVisible="{Binding IsApplying}" IsRunning="{Binding IsApplying}" />
 
 							<controls:TextButton x:Name="ApplyButton" Command="{Binding ApplyCommand}"
-														Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+														Style="{StaticResource FilledTextButton}"
 														IsVisible="{Binding IsApplying, Converter={StaticResource InvertedBoolConverter}}"
 														LabelData="{l:Localize SendApplication}" />
 						</VerticalStackLayout>
@@ -542,13 +542,13 @@
 													 IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" />
 
 							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
-								<controls:TextButton Command="{Binding ScanQrCodeCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+								<controls:TextButton Command="{Binding ScanQrCodeCommand}" Style="{StaticResource FilledTextButton}"
 															LabelData="{l:Localize QrScanCode}" IsVisible="{Binding PeerReview}" />
 
-								<controls:TextButton Command="{Binding RequestReviewCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+								<controls:TextButton Command="{Binding RequestReviewCommand}" Style="{StaticResource FilledTextButton}"
 															LabelData="{l:Localize FeaturedReviewers}" IsVisible="{Binding FeaturedPeerReviewers}" />
 
-								<controls:TextButton Command="{Binding RevokeApplicationCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+								<controls:TextButton Command="{Binding RevokeApplicationCommand}" Style="{StaticResource FilledTextButton}"
 															LabelData="{l:Localize RevokeApplication}" />
 							</VerticalStackLayout>
 						</VerticalStackLayout>

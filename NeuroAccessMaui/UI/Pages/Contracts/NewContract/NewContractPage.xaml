@@ -17,7 +17,6 @@
 			<converters:OnlyShowNonEmpty/>
 			<converters:ControlBgColor/>
 		</converters:ConversionSequence>
-		<mct:InvertedBoolConverter x:Key="InvertedBoolConverter" />
 
 	</VisualElement.Resources>
 
@@ -78,7 +77,7 @@
 				</Frame>
 
 				<controls:TextButton LabelData="{l:Localize Propose}" Command="{Binding Path=ProposeCommand}"
-											Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+											Style="{StaticResource FilledTextButton}"
 											Margin="{StaticResource SmallTopBottomMargins}"/>
 			</VerticalStackLayout>
 		</ScrollView>
