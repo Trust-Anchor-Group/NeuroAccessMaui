@@ -2400,4 +2400,10 @@
   <data name="PermitParametersText" xml:space="preserve">
     <value>Valitse parametrit, joihin pääsy sallitaan, jos pyyntö hyväksytään.</value>
   </data>
+  <data name="SomethingWentWrong" xml:space="preserve">
+    <value>Jokin meni pieleen</value>
+  </data>
+  <data name="NotCompletedOnboardingError" xml:space="preserve">
+    <value>Näyttää siltä, että et ole vielä suorittanut perehdytysprosessia. Viimeistele tilisi määrittäminen, jotta voit käyttää tätä ominaisuutta.</value>
+  </data>
 </root>

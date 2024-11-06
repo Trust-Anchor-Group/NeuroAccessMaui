@@ -2400,4 +2400,10 @@
   <data name="PermitParametersText" xml:space="preserve">
     <value>Выберите параметры, к которым будет разрешен доступ, если запрос будет принят.</value>
   </data>
+  <data name="SomethingWentWrong" xml:space="preserve">
+    <value>Что-то пошло не так</value>
+  </data>
+  <data name="NotCompletedOnboardingError" xml:space="preserve">
+    <value>Похоже, вы еще не завершили процесс онбординга. Завершите настройку учетной записи для доступа к этой функции.</value>
+  </data>
 </root>
