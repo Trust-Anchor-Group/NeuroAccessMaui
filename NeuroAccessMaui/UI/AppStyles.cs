@@ -11,7 +11,8 @@ namespace NeuroAccessMaui.UI
 	{
 		private static readonly SortedDictionary<string, bool> missingStyles = [];
 		private static Timer? timer = null;
-
+		
+		private static double? smallSpacing;
 		private static ControlTemplate? radioButtonTemplate;
 		private static Thickness? smallBottomMargins;
 		private static Thickness? smallTopMargins;
@@ -91,6 +92,15 @@ namespace NeuroAccessMaui.UI
 			}
 
 			ServiceRef.LogService.LogAlert(sb.ToString());
+		}
+
+		public static double SmallSpacing
+		{
+			get
+			{
+				smallSpacing ??= TryGetResource<double?>("SmallSpacing");
+				return smallSpacing ?? 0;
+			}
 		}
 
 		/// <summary>
