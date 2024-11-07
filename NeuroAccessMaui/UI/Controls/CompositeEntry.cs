@@ -1,4 +1,4 @@
-﻿using System.Windows.Input;
+using System.Windows.Input;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.Shapes;
 using Path = Microsoft.Maui.Controls.Shapes.Path;
@@ -157,65 +157,13 @@ namespace NeuroAccessMaui.UI.Controls
 		}
 
 		/// <summary>
-		/// Bindable property for the command executed when the entry gains focus.
-		/// </summary>
-		public static readonly BindableProperty FocusedCommandProperty = BindableProperty.Create(
-			 nameof(FocusedCommand),
-			 typeof(ICommand),
-			 typeof(CompositeEntry));
-
-		/// <summary>
-		/// Gets or sets the command executed when the entry gains focus.
-		/// </summary>
-		public ICommand FocusedCommand
-		{
-			get => (ICommand)this.GetValue(FocusedCommandProperty);
-			set => this.SetValue(FocusedCommandProperty, value);
-		}
-
-		/// <summary>
-		/// Bindable property for the command executed when the entry loses focus.
-		/// </summary>
-		public static readonly BindableProperty UnfocusedCommandProperty = BindableProperty.Create(
-			 nameof(UnfocusedCommand),
-			 typeof(ICommand),
-			 typeof(CompositeEntry));
-
-		/// <summary>
-		/// Gets or sets the command executed when the entry loses focus.
-		/// </summary>
-		public ICommand UnfocusedCommand
-		{
-			get => (ICommand)this.GetValue(UnfocusedCommandProperty);
-			set => this.SetValue(UnfocusedCommandProperty, value);
-		}
-
-		/// <summary>
-		/// Bindable property for the command executed when the entry returns using enter key.
-		/// </summary>
-		public static readonly BindableProperty ReturnCommandProperty = BindableProperty.Create(
-			 nameof(ReturnCommand),
-			 typeof(ICommand),
-			 typeof(CompositeEntry));
-
-		/// <summary>
-		/// Gets or sets the command executedwhen the entry returns using enter key.
-		/// </summary>
-		public ICommand ReturnCommand
-		{
-			get => (ICommand)this.GetValue(ReturnCommandProperty);
-			set => this.SetValue(ReturnCommandProperty, value);
-		}
-
-		/// <summary>
 		/// Bindable property for the style applied to the border.
 		/// </summary>
 		public static readonly BindableProperty BorderStyleProperty = BindableProperty.Create(
 			  nameof(BorderStyle),
 			  typeof(Style),
 			  typeof(CompositeEntry),
-			  default(Style),
-			  propertyChanged: OnBorderStylePropertyChanged);
+			  default(Style));
 
 		/// <summary>
 		/// Gets or sets the style applied to the border.
@@ -335,7 +283,7 @@ namespace NeuroAccessMaui.UI.Controls
 			set => this.SetValue(LabelDataProperty, value);
 		}
 
-				/// <summary>
+		/// <summary>
 		/// Bindable property for the label above the entry
 		/// </summary>
 		public static readonly BindableProperty ValidationDataProperty = BindableProperty.Create(
@@ -506,7 +454,6 @@ namespace NeuroAccessMaui.UI.Controls
 
 			this.border.SetBinding(Border.StyleProperty, new Binding(nameof(this.BorderStyle), source: this));
 			this.border.SetBinding(Border.BackgroundColorProperty, new Binding(nameof(this.BackgroundColor), source: this));
-
 			// Initialize the validation label
 			this.validationLabel = new Label
 			{
@@ -684,16 +631,6 @@ namespace NeuroAccessMaui.UI.Controls
 				this.entryGrid.Add(newView, 2, 0);
 			}
 		}
-
-		/// <summary>
-		/// Called when the <see cref="BorderStyle"/> property changes.
-		/// </summary>
-		private static void OnBorderStylePropertyChanged(BindableObject bindable, object oldValue, object newValue)
-		{
-			CompositeEntry control = (CompositeEntry)bindable;
-			control.border.Style = (Style)newValue;
-		}
-
 		#endregion
 
 		#region Event Handlers
@@ -710,11 +647,6 @@ namespace NeuroAccessMaui.UI.Controls
 		private void OnEntryCompleted(object? sender, EventArgs e)
 		{
 			Completed?.Invoke(this, e);
-
-			if (this.ReturnCommand?.CanExecute(e) ?? false)
-			{
-				this.ReturnCommand.Execute(e);
-			}
 		}
 
 		/// <summary>
@@ -724,10 +656,6 @@ namespace NeuroAccessMaui.UI.Controls
 		private void OnEntryFocused(object? sender, FocusEventArgs e)
 		{
 			Focused?.Invoke(this, e);
-			if (this.FocusedCommand?.CanExecute(e) ?? false)
-			{
-				this.FocusedCommand.Execute(e);
-			}
 		}
 
 		/// <summary>
@@ -737,11 +665,6 @@ namespace NeuroAccessMaui.UI.Controls
 		private void OnEntryUnfocused(object? sender, FocusEventArgs e)
 		{
 			Unfocused?.Invoke(this, e);
-
-			if (this.UnfocusedCommand?.CanExecute(e) ?? false)
-			{
-				this.UnfocusedCommand.Execute(e);
-			}
 		}
 
 		#endregion
