@@ -232,7 +232,7 @@ namespace NeuroAccessMaui.UI
 		{
 			get
 			{
-				filledTextButton ??= TryGetResource<Style>("FilledTextButtonNoRoundedCorners");	// TODO: Remove NoRoundedCorners
+				filledTextButton ??= TryGetResource<Style>("FilledTextButton");	// TODO: Remove NoRoundedCorners
 				return filledTextButton!;
 			}
 		}

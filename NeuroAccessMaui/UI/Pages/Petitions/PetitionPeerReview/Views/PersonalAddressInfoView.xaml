@@ -91,7 +91,7 @@
 			<controls:TextButton Command="{Binding DeclineCommand}" Style="{StaticResource OutlinedTextButtonNoRoundedCorners}"
 										LabelData="{l:Localize Reject}" Grid.Column="0" />
 
-			<controls:TextButton Command="{Binding AcceptPersonalAddressInfoCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+			<controls:TextButton Command="{Binding AcceptPersonalAddressInfoCommand}" Style="{StaticResource FilledTextButton}"
 										LabelData="{l:Localize Continue}" Grid.Column="1" />
 		</Grid>
 	</VerticalStackLayout>

@@ -2400,4 +2400,10 @@
 <data name="PermitParametersText" xml:space="preserve">
   <value>Elija los parámetros a los que desea permitir el acceso, si se acepta la solicitud.</value>
 </data>
+<data name="SomethingWentWrong" xml:space="preserve">
+  <value>Algo salió mal</value>
+</data>
+<data name="NotCompletedOnboardingError" xml:space="preserve">
+  <value>Parece que aún no has completado el proceso de inicio. Termínalo para acceder a esta función.</value>
+</data>
 </root>
