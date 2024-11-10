@@ -13,13 +13,12 @@ namespace NeuroAccessMaui.UI.Controls
 		protected ContentView centerContentView;
 		protected ContentView rightContentView;
 		protected Grid validationGrid;
+		protected Border border;
+
+		public bool CanShowValidation => !this.IsValid && !string.IsNullOrEmpty(this.ValidationText);
+		public bool CanShowLabel => !string.IsNullOrEmpty(this.LabelText);
 
 		public CompositeInputView()
-		{
-			this.BuildContent();
-		}
-
-		private void BuildContent()
 		{
 			// Main Grid with 3 rows
 			Grid mainGrid = new Grid
@@ -33,12 +32,10 @@ namespace NeuroAccessMaui.UI.Controls
 			};
 
 			// Row 1: Label
-			this.label = new Label
-			{
-				FontAttributes = FontAttributes.Bold
-			};
+			this.label = new Label();
 			this.label.SetBinding(Label.TextProperty, new Binding(nameof(this.LabelText), source: this));
 			this.label.SetBinding(Label.StyleProperty, new Binding(nameof(this.LabelStyle), source: this));
+			this.label.SetBinding(Label.IsVisibleProperty, new Binding(nameof(this.CanShowLabel), source: this));
 			mainGrid.Add(this.label, 0, 0);
 
 			// Row 2: LeftView, CenterView, RightView
@@ -49,7 +46,8 @@ namespace NeuroAccessMaui.UI.Controls
 					new ColumnDefinition { Width = GridLength.Auto }, // LeftView
 					new ColumnDefinition { Width = GridLength.Star }, // CenterView
 					new ColumnDefinition { Width = GridLength.Auto }  // RightView
-				}
+				},
+				ColumnSpacing = AppStyles.SmallSpacing
 			};
 
 			// LeftView
@@ -67,10 +65,17 @@ namespace NeuroAccessMaui.UI.Controls
 			this.rightContentView.SetBinding(ContentView.ContentProperty, new Binding(nameof(this.RightView), source: this));
 			contentGrid.Add(this.rightContentView, 2, 0);
 
-			mainGrid.Add(contentGrid, 0, 1);
+			this.border = new Border()
+			{
+				Content = contentGrid
+			};
+			this.border.SetBinding(Border.StyleProperty, new Binding(nameof(this.BorderStyle), source: this));
+
+
+			mainGrid.Add(this.border, 0, 1);
 
 			// Row 3: ValidationIcon and ValidationText
-			Grid validationGrid = new Grid
+			this.validationGrid = new Grid
 			{
 				ColumnDefinitions =
 				{
@@ -82,17 +87,23 @@ namespace NeuroAccessMaui.UI.Controls
 			// ValidationIcon
 			Path validationIcon = new();
 			validationIcon.SetBinding(Path.DataProperty, new Binding(nameof(this.ValidationIcon), source: this));
-			validationIcon.SetBinding(IsVisibleProperty, new Binding(nameof(this.IsValid), source: this, converter: new InvertedBoolConverter()));
-			validationGrid.Add(validationIcon, 0, 0);
+			validationIcon.SetBinding(Path.FillProperty, new Binding(nameof(this.ValidationColor), source: this));
+			validationIcon.VerticalOptions = LayoutOptions.Center;
+			this.validationGrid.Add(validationIcon, 0, 0);
 
 			// ValidationText
 			Label validationLabel = new Label();
 			validationLabel.SetBinding(Label.TextProperty, new Binding(nameof(this.ValidationText), source: this));
-			validationLabel.SetBinding(IsVisibleProperty, new Binding(nameof(this.IsValid), source: this, converter: new InvertedBoolConverter()));
-			validationGrid.Add(validationLabel, 1, 0);
+			validationLabel.SetBinding(Label.TextColorProperty, new Binding(nameof(this.ValidationColor), source: this));
+			this.validationGrid.Add(validationLabel, 1, 0);
 
-			mainGrid.Add(validationGrid, 0, 2);
+			this.validationGrid.SetBinding(Grid.IsVisibleProperty, new Binding(nameof(this.CanShowValidation), source: this));
 
+			this.validationGrid.HorizontalOptions = LayoutOptions.Center;
+			this.validationGrid.Margin = AppStyles.SmallTopMargins;
+			this.validationGrid.ColumnSpacing = AppStyles.SmallSpacing;
+
+			mainGrid.Add(this.validationGrid, 0, 2);
 			// Set the Content of the ContentView to the mainGrid
 			this.Content = mainGrid;
 		}
@@ -101,7 +112,7 @@ namespace NeuroAccessMaui.UI.Controls
 		#region Bindable Properties
 		// LabelText Property
 		public static readonly BindableProperty LabelTextProperty =
-			 BindableProperty.Create(nameof(LabelText), typeof(string), typeof(CompositeInputView), string.Empty);
+			 BindableProperty.Create(nameof(LabelText), typeof(string), typeof(CompositeInputView), string.Empty, propertyChanged: OnLabelChanged);
 
 		public string LabelText
 		{
@@ -141,7 +152,7 @@ namespace NeuroAccessMaui.UI.Controls
 
 		// ValidationIcon Property
 		public static readonly BindableProperty ValidationIconProperty =
-			 BindableProperty.Create(nameof(ValidationIcon), typeof(Geometry), typeof(CompositeInputView), null);
+			 BindableProperty.Create(nameof(ValidationIcon), typeof(Geometry), typeof(CompositeInputView), Geometries.ErrorPath);
 
 		public Geometry ValidationIcon
 		{
@@ -151,7 +162,7 @@ namespace NeuroAccessMaui.UI.Controls
 
 		// ValidationText Property
 		public static readonly BindableProperty ValidationTextProperty =
-			 BindableProperty.Create(nameof(ValidationText), typeof(string), typeof(CompositeInputView), string.Empty);
+			 BindableProperty.Create(nameof(ValidationText), typeof(string), typeof(CompositeInputView), string.Empty, propertyChanged: OnValidationChanged);
 
 		public string ValidationText
 		{
@@ -191,7 +202,7 @@ namespace NeuroAccessMaui.UI.Controls
 
 		// IsValid Property
 		public static readonly BindableProperty IsValidProperty =
-			 BindableProperty.Create(nameof(IsValid), typeof(bool), typeof(CompositeInputView), true);
+			 BindableProperty.Create(nameof(IsValid), typeof(bool), typeof(CompositeInputView), true, propertyChanged: OnValidationChanged);
 
 		public bool IsValid
 		{
@@ -215,16 +226,45 @@ namespace NeuroAccessMaui.UI.Controls
 		}
 
 		public static readonly BindableProperty ValidationColorProperty =
-			BindableProperty.Create(nameof(ValidationColor), typeof(Color), typeof(CompositeInputView), Colors.Red);
+			BindableProperty.Create(nameof(ValidationColor), typeof(Color), typeof(CompositeInputView), AppColors.ErrorBackground);
 
 		public Color ValidationColor
 		{
 			get => (Color)this.GetValue(ValidationColorProperty);
 			set => this.SetValue(ValidationColorProperty, value);
 		}
+
+		/// <summary>
+		/// Bindable property for the style applied to the border.
+		/// </summary>
+		public static readonly BindableProperty BorderStyleProperty = BindableProperty.Create(
+			  nameof(BorderStyle),
+			  typeof(Style),
+			  typeof(CompositeInputView),
+			  default(Style));
+
+		/// <summary>
+		/// Gets or sets the style applied to the border.
+		/// </summary>
+		public Style BorderStyle
+		{
+			get => (Style)this.GetValue(BorderStyleProperty);
+			set => this.SetValue(BorderStyleProperty, value);
+		}
+
 		#endregion
 
+		private static void OnValidationChanged(BindableObject bindable, object oldValue, object newValue)
+		{
+			CompositeInputView control = (CompositeInputView)bindable;
+			control.OnPropertyChanged(nameof(CanShowValidation));
+		}
 
+		private static void OnLabelChanged(BindableObject bindable, object oldValue, object newValue)
+		{
+			CompositeInputView control = (CompositeInputView)bindable;
+			control.OnPropertyChanged(nameof(CanShowLabel));
+		}
 
 	}
 }
