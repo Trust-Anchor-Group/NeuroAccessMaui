@@ -601,7 +601,6 @@
 
 
 	<Style x:Key="BottomBarBorder" TargetType="Border">
-		<Setter Property="HeightRequest" Value="110" />
 		<Setter Property="VerticalOptions" Value="End" />
 		<Setter Property="HorizontalOptions" Value="Fill" />
 		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}" />
@@ -615,9 +614,9 @@
 		<Setter Property="Shadow">
 			<Setter.Value>
 				<Shadow Brush="{AppThemeBinding Light={StaticResource SecondaryForegroundLight}, Dark={StaticResource SecondaryForegroundDark}}"
-						Opacity="0.3"
-						Offset="0,-5"
-						Radius="2"/>
+						Opacity=".3"
+						Offset="0,-1"
+						Radius="0"/>
 			</Setter.Value>
 		</Setter>
 	</Style>
