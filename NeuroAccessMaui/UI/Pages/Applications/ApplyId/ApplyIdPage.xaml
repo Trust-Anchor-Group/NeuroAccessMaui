@@ -262,7 +262,7 @@
 								<Label Text="{l:Localize Nationality}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresNationality}"/>
 							</HorizontalStackLayout>
-							<Border StrokeThickness="2" Style="{StaticResource RegularCompositeEntryBorder}"
+							<Border StrokeThickness="2" Style="{StaticResource OutlinedCompositeEntryBorder}"
 									  IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
 								<Picker HorizontalOptions="FillAndExpand" Title="{l:Localize SelectNationality}"
 									  BackgroundColor="{Binding NationalityOk, Converter={converters:ControlBgColor}}"
@@ -282,7 +282,7 @@
 								<Label Text="{l:Localize Gender}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresGender}"/>
 							</HorizontalStackLayout>
-							<Border StrokeThickness="2" Style="{StaticResource RegularCompositeEntryBorder}"
+							<Border StrokeThickness="2" Style="{StaticResource OutlinedCompositeEntryBorder}"
 									  IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
 								<Picker HorizontalOptions="FillAndExpand" Title="{l:Localize SelectGender}"
 										  BackgroundColor="{Binding GenderOk, Converter={converters:ControlBgColor}}"
@@ -302,7 +302,7 @@
 								<Label Text="{l:Localize BirthDate}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresBirthDate}"/>
 							</HorizontalStackLayout>
-							<Border StrokeThickness="2" Style="{StaticResource RegularCompositeEntryBorder}"
+							<Border StrokeThickness="2" Style="{StaticResource OutlinedCompositeEntryBorder}"
 									  IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
 								<DatePicker HorizontalOptions="FillAndExpand" BackgroundColor="{Binding BirthDateOk, Converter={converters:ControlBgColor}}"
 												Date="{Binding BirthDate}" IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"

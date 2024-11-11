@@ -1,5 +1,4 @@
 using System.Windows.Input;
-using CommunityToolkit.Maui.Converters;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.Shapes;
 using Path = Microsoft.Maui.Controls.Shapes.Path;
@@ -209,6 +208,25 @@ namespace NeuroAccessMaui.UI.Controls
 		/// <summary>
 		/// Bindable property for the label above the entry
 		/// </summary>
+		public static readonly BindableProperty LabelDataProperty = BindableProperty.Create(
+			 nameof(LabelData),
+			 typeof(string),
+			 typeof(CompositeEntry),
+			 default(string),
+			 BindingMode.TwoWay);
+
+		/// <summary>
+		/// Gets or sets the text displayed in the entry.
+		/// </summary>
+		public string LabelData
+		{
+			get => (string)this.GetValue(LabelDataProperty);
+			set => this.SetValue(LabelDataProperty, value);
+		}
+
+		/// <summary>
+		/// Bindable property for the label above the entry
+		/// </summary>
 		public static readonly BindableProperty ValidationDataProperty = BindableProperty.Create(
 			 nameof(ValidationData),
 			 typeof(string),
@@ -224,6 +242,7 @@ namespace NeuroAccessMaui.UI.Controls
 			get => (string)this.GetValue(ValidationDataProperty);
 			set => this.SetValue(ValidationDataProperty, value);
 		}
+
 
 		#endregion
 
@@ -290,7 +309,18 @@ namespace NeuroAccessMaui.UI.Controls
 			this.innerEntry.Focused += this.OnEntryFocused;
 			this.innerEntry.Unfocused += this.OnEntryUnfocused;
 
-			this.Content = this.innerEntry;
+			// Initialize the Border
+			this.border = new Border
+			{
+				Content = this.innerEntry,
+				BackgroundColor = Colors.Transparent
+			};
+
+			this.border.SetBinding(Border.StyleProperty, new Binding(nameof(this.BorderStyle), source: this));
+			this.border.SetBinding(Border.BackgroundColorProperty, new Binding(nameof(this.BackgroundColor), source: this));
+			
+			// Set the Content of the control
+			this.Content = this.border;
 		}
 
 		#endregion

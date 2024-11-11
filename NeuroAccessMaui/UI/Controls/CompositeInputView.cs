@@ -247,7 +247,5 @@ namespace NeuroAccessMaui.UI.Controls
 		}
 		#endregion
 
-
-
 	}
 }
