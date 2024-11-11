@@ -7,12 +7,26 @@ namespace NeuroAccessMaui.UI.Controls
 	public partial class CompositeInputView : ContentView
 	{
 
+		#region Fields
 		// UI Elements
 		protected Label label;
 		protected ContentView leftContentView;
 		protected ContentView centerContentView;
 		protected ContentView rightContentView;
 		protected Grid validationGrid;
+		protected Label validationLabel;
+
+		/// <summary>
+		/// If the validation label should be shown.
+		/// </summary>
+		public bool ShowValidationLabel => !this.IsValid && !string.IsNullOrEmpty(this.validationLabel.Text);
+
+		/// <summary>
+		/// If the top label should be shown.
+		/// </summary>
+		public bool ShowLabel => !string.IsNullOrEmpty(this.label.Text);
+
+		#endregion
 
 		public CompositeInputView()
 		{
@@ -39,6 +53,16 @@ namespace NeuroAccessMaui.UI.Controls
 			};
 			this.label.SetBinding(Label.TextProperty, new Binding(nameof(this.LabelText), source: this));
 			this.label.SetBinding(Label.StyleProperty, new Binding(nameof(this.LabelStyle), source: this));
+			this.label.SetBinding(Label.IsVisibleProperty, new Binding(nameof(this.ShowLabel), source: this));
+
+			this.label.PropertyChanged += (sender, e) =>
+			{
+				if (e.PropertyName == nameof(Label.Text))
+				{
+					this.OnPropertyChanged(nameof(this.ShowLabel));
+				}
+			};
+
 			mainGrid.Add(this.label, 0, 0);
 
 			// Row 2: LeftView, CenterView, RightView
@@ -86,17 +110,16 @@ namespace NeuroAccessMaui.UI.Controls
 			validationGrid.Add(validationIcon, 0, 0);
 
 			// ValidationText
-			Label validationLabel = new Label();
-			validationLabel.SetBinding(Label.TextProperty, new Binding(nameof(this.ValidationText), source: this));
-			validationLabel.SetBinding(IsVisibleProperty, new Binding(nameof(this.IsValid), source: this, converter: new InvertedBoolConverter()));
-			validationGrid.Add(validationLabel, 1, 0);
+			this.validationLabel = new Label();
+			this.validationLabel.SetBinding(Label.TextProperty, new Binding(nameof(this.ValidationText), source: this));
+			this.validationLabel.SetBinding(IsVisibleProperty, new Binding(nameof(this.IsValid), source: this, converter: new InvertedBoolConverter()));
+			validationGrid.Add(this.validationLabel, 1, 0);
 
 			mainGrid.Add(validationGrid, 0, 2);
 
 			// Set the Content of the ContentView to the mainGrid
 			this.Content = mainGrid;
 		}
-
 
 		#region Bindable Properties
 		// LabelText Property
