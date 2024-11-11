@@ -11,7 +11,7 @@
 		<Setter Property="FontFamily" Value="HaasGroteskRegular" />
 		<Setter Property="FontSize" Value="18" />
 	</Style>
-
+	
 	<Style x:Key="RegularCompositeEntryBorder" ApplyToDerivedTypes="False" TargetType="Border">
 		<Setter Property="Padding" Value="{StaticResource EditMediumMargins}" />
 		<Setter Property="Stroke" Value="Transparent" />
@@ -23,10 +23,9 @@
 		</Setter>
 	</Style>
 
-	<Style x:Key="RegularCompositeEntryBorderNoRoundedCorners" ApplyToDerivedTypes="False" TargetType="Border">
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource NormalEditBackgroundLight}, Dark={StaticResource NormalEditBackgroundDark}}" />
-		<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource NormalEditForegroundLight}, Dark={StaticResource NormalEditForegroundDark}}" />
-		<Setter Property="Padding" Value="{StaticResource EditMediumMargins}" />
+	<Style x:Key="OutlinedCompositeEntryBorder" ApplyToDerivedTypes="False" TargetType="Border">
+		<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource OffBlack50Light}, Dark={StaticResource OffWhite30Dark}}" />
+		<Setter Property="StrokeShape" Value="RoundRectangle 8" />
 	</Style>
 
 	<Style x:Key="RegularCompositeEntryPath" ApplyToDerivedTypes="False" TargetType="Path">
@@ -47,7 +46,7 @@
 		<Setter Property="FontSize" Value="18" />
 	</Style>
 
-	<Style x:Key="RegularCompositeEntry" ApplyToDerivedTypes="False" TargetType="controls:CompositeEntry">
+	<Style x:Key="RegularCompositeEntry" ApplyToDerivedTypes="True" TargetType="controls:CompositeEntry">
 		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource OffWhiteLight}, Dark={StaticResource PopUpElevation3Dark}}" />
 		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffWhiteDark}}" />
 		<Setter Property="BorderStyle" Value="{StaticResource RegularCompositeEntryBorder}" />
@@ -55,9 +54,8 @@
 		<Setter Property="LabelStyle" Value="{StaticResource RegularCompositeEntryLabel}" />
 	</Style>
 
-	<Style x:Key="RegularCompositeEntryNoRoundedCorners" ApplyToDerivedTypes="False" TargetType="controls:CompositeEntry">
-		<Setter Property="BorderStyle" Value="{StaticResource RegularCompositeEntryBorderNoRoundedCorners}" />
-		<Setter Property="EntryStyle" Value="{StaticResource RegularCompositeEntryEntry}" />
+	<Style x:Key="OutlinedCompositeEntry" ApplyToDerivedTypes="False" TargetType="controls:CompositeEntry" BasedOn="{StaticResource RegularCompositeEntry}">
+		<Setter Property="BorderStyle" Value="{StaticResource OutlinedCompositeEntryBorder}" />
 	</Style>
 
 </ResourceDictionary>
