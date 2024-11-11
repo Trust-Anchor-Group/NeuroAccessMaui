@@ -2400,4 +2400,22 @@
   <data name="PermitParametersText" xml:space="preserve">
     <value>Choose the parameters to permit access to, if request is accepted.</value>
   </data>
+  <data name="PreviewContract" xml:space="preserve">
+    <value>Preview contract</value>
+  </data>
+  <data name="SetParametersTitle" xml:space="preserve">
+    <value>Set parameters</value>
+  </data>
+  <data name="SetParametersDescription" xml:space="preserve">
+    <value>Specify the variables that govern the contract</value>
+  </data>
+  <data name="SelectRolesTitle" xml:space="preserve">
+    <value>Select roles</value>
+  </data>
+  <data name="SelectRolesDescription" xml:space="preserve">
+    <value>Select who can sign as which role</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Back</value>
+  </data>
 </root>
