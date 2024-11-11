@@ -60,7 +60,6 @@
 
 	<!-- BooleanParameterTemplate -->
 	<DataTemplate x:Key="BooleanParameterTemplate" x:DataType="objectModel:ObservableBooleanParameter">
-		<ContentView Style="{StaticResource BorderedContentView}">
 				<Grid ColumnDefinitions="Auto, *">
 					<CheckBox Grid.Column="0" 
 									 IsChecked="{Binding BooleanValue}"
@@ -71,12 +70,10 @@
 								 Text="{Binding Label}"
 								 Style="{StaticResource ParameterItemTitleLabel}"/>
 				</Grid>
-		</ContentView>
 	</DataTemplate>
 
 	<!-- DateParameterTemplate -->
 	<DataTemplate x:Key="DateParameterTemplate" x:DataType="objectModel:ObservableDateParameter">
-		<ContentView Style="{StaticResource BorderedContentView}">
 				<Grid RowDefinitions="Auto, Auto">
 					<Label Grid.Row="0"
 								 Text="{Binding Label}"
@@ -89,13 +86,10 @@
 																	VerticalOptions="Center" />
 					</Border>
 				</Grid>
-		</ContentView>
 	</DataTemplate>
 
 	<!-- NumericalParameterTemplate -->
 	<DataTemplate x:Key="NumericalParameterTemplate" x:DataType="objectModel:ObservableNumericalParameter">
-		<ContentView>
-			<Border Style="{StaticResource BorderSet}" >
 				<Grid RowDefinitions="Auto, Auto">
 					<Label Grid.Row="0"
 							Text="{Binding Label}"
@@ -106,15 +100,11 @@
 													Placeholder="{Binding Guide}"
 													VerticalOptions="Center" />
 				</Grid>
-			</Border>
-		</ContentView>
 	</DataTemplate>
 
 
 	<!-- StringParameterTemplate -->
 	<DataTemplate x:Key="StringParameterTemplate" x:DataType="objectModel:ObservableStringParameter">
-		<ContentView>
-			<Border Style="{StaticResource BorderSet}" >
 				<Grid RowDefinitions="Auto, Auto">
 					<Label Grid.Row="0"
 								 Text="{Binding Label}"
@@ -127,8 +117,6 @@
 														 VerticalOptions="Center"
 														  />
 				</Grid>
-			</Border>
-		</ContentView>
 	</DataTemplate>
 
 	<!-- TimeParameterTemplate -->

@@ -27,78 +27,37 @@
 		<ScrollView Grid.Row="0">
 			<VerticalStackLayout Padding="{StaticResource LargeMargins}" Spacing="{StaticResource MediumSpacing}">
 				<!-- Parameters -->
-				<CollectionView ItemsSource="{Binding Contract.Parameters}"
+				<Border Style="{StaticResource BorderSet}" Margin="0" >
+				<CollectionView HorizontalOptions="Center"
+								ItemsSource="{Binding Contract.Parameters}"
 								ItemTemplate="{StaticResource ParameterTemplateSelector}"
 								SelectionMode="None" ItemSizingStrategy="MeasureAllItems"
 								>
 					<CollectionView.ItemsLayout>
-						<LinearItemsLayout Orientation="Vertical" ItemSpacing="0" />
+						<LinearItemsLayout Orientation="Vertical" ItemSpacing="{StaticResource MediumSpacing}" />
 					</CollectionView.ItemsLayout>
 					<CollectionView.EmptyView>
 						<Label Text="ERROR" />
 					</CollectionView.EmptyView>
 				</CollectionView>
-
-				<controls:TemplatedButton VerticalOptions="Start" >
-					<Border Style="{StaticResource TransparentTemplateButtonBorder}"  Padding="{StaticResource SmallMargins}" Margin="0" VerticalOptions="Center">
-						<Grid ColumnDefinitions="auto,*,auto" >
-							<Border Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Center"  Style="{StaticResource FilledTemplateButtonBorder}">
-								<Path VerticalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
-											Data="{x:Static ui:Geometries.ScanQrIconPath}"
-											Style="{StaticResource FilledTemplateButtonPath}"
-											/>
-							</Border>
-							<VerticalStackLayout Grid.Column="1" HorizontalOptions="Start">
-								<Label Style="{StaticResource TransparentTemplateButtonLabel}" Margin="{StaticResource SmallMargins}"  Text="{l:Localize ScanQRShort}"/>
-								<Label Style="{StaticResource TransparentTemplateButtonLabel}" Margin="{StaticResource SmallMargins}"  Text="{l:Localize ScanQRShort}"/>
-							</VerticalStackLayout>
-
-							<Path Grid.Column="2" HorizontalOptions="End" VerticalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
-											Data="{x:Static ui:Geometries.ScanQrIconPath}"
-											Style="{StaticResource TransparentTemplateButtonPath}"
-											/>
-						</Grid>
-					</Border>
-				</controls:TemplatedButton>
-
-				<controls:TemplatedButton>
-					<Border Style="{StaticResource TransparentTemplateButtonBorder}"  Padding="{StaticResource SmallMargins}" Margin="0" VerticalOptions="Start">
-						<Grid ColumnDefinitions="auto,*,auto" >
-							<Border Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Center"  Style="{StaticResource FilledTemplateButtonBorder}">
-								<Path VerticalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
-											Data="{x:Static ui:Geometries.ScanQrIconPath}"
-											Style="{StaticResource FilledTemplateButtonPath}"
-											/>
-							</Border>
-							<VerticalStackLayout Grid.Column="1" HorizontalOptions="Start">
-								<Label Style="{StaticResource TransparentTemplateButtonLabel}" Margin="{StaticResource SmallMargins}"  Text="{l:Localize ScanQRShort}"/>
-								<Label Style="{StaticResource TransparentTemplateButtonLabel}" Margin="{StaticResource SmallMargins}"  Text="{l:Localize ScanQRShort}"/>
-							</VerticalStackLayout>
-
-							<Path Grid.Column="2" HorizontalOptions="End" VerticalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
-											Data="{x:Static ui:Geometries.ScanQrIconPath}"
-											Style="{StaticResource TransparentTemplateButtonPath}"
-											/>
-						</Grid>
-					</Border>
-				</controls:TemplatedButton>
+				</Border>
 			</VerticalStackLayout>
 		</ScrollView>
 		<Border Grid.Row="1" Style="{StaticResource BottomBarBorder}">
-			<Grid HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
+			<Grid VerticalOptions="Center">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*" />
 					<ColumnDefinition Width="*" />
 				</Grid.ColumnDefinitions>
 
 				<controls:TemplatedButton Grid.Column="0" Command="{x:Binding BackCommand}">
-					<Border Style="{StaticResource TransparentTemplateButtonBorder}" InputTransparent="True" HorizontalOptions="Fill">
-						<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
-							<Path VerticalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
-							  Data="{x:Static ui:Geometries.ScanQrIconPath}"
+					<Border Style="{StaticResource TransparentTemplateButtonBorder}" InputTransparent="True" HorizontalOptions="Fill" >
+						<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center" >
+							<Path VerticalOptions="Center" HeightRequest="16" WidthRequest="16" Aspect="Uniform"
+							  Data="{x:Static ui:Geometries.BackButtonPath}"
 							  Style="{StaticResource TransparentTemplateButtonPath}"
 							  />
-							<Label Grid.Column="1" Style="{StaticResource TransparentTemplateButtonLabel}" Margin="{StaticResource SmallLeftMargins}"  Text="{l:Localize ScanQRShort}"/>
+							<Label Grid.Column="1" Style="{StaticResource TransparentTemplateButtonLabel}" Margin="{StaticResource SmallLeftMargins}"  Text="{l:Localize Back}" />
 						</Grid>
 					</Border>
 				</controls:TemplatedButton>
