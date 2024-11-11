@@ -2400,6 +2400,12 @@
   <data name="PermitParametersText" xml:space="preserve">
     <value>Choose the parameters to permit access to, if request is accepted.</value>
   </data>
+  <data name="SomethingWentWrong" xml:space="preserve">
+    <value>Something went wrong</value>
+  </data>
+  <data name="NotCompletedOnboardingError" xml:space="preserve">
+    <value>It looks like you haven’t completed the onboarding process yet. Please finish setting up your account to access this feature.</value>
+  </data>
   <data name="PreviewContract" xml:space="preserve">
     <value>Preview contract</value>
   </data>

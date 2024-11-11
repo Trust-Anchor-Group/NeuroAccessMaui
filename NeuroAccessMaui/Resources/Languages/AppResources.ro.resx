@@ -2400,4 +2400,10 @@
   <data name="PermitParametersText" xml:space="preserve">
     <value>Alegeți parametrii la care să permiteți accesul, dacă cererea este acceptată.</value>
   </data>
+  <data name="SomethingWentWrong" xml:space="preserve">
+    <value>Ceva nu a mers bine</value>
+  </data>
+  <data name="NotCompletedOnboardingError" xml:space="preserve">
+    <value>Se pare că nu ați finalizat încă procesul de integrare. Vă rugăm să terminați configurarea contului pentru a accesa această funcție.</value>
+  </data>
 </root>
