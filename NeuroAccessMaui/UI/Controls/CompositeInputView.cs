@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Maui.Converters;
+using CommunityToolkit.Maui.Converters;
 using Microsoft.Maui.Controls.Shapes;
 using Path = Microsoft.Maui.Controls.Shapes.Path;
 namespace NeuroAccessMaui.UI.Controls
@@ -7,6 +7,7 @@ namespace NeuroAccessMaui.UI.Controls
 	public partial class CompositeInputView : ContentView
 	{
 
+		#region Fields
 		// UI Elements
 		protected Label label;
 		protected ContentView leftContentView;
@@ -107,7 +108,6 @@ namespace NeuroAccessMaui.UI.Controls
 			// Set the Content of the ContentView to the mainGrid
 			this.Content = mainGrid;
 		}
-
 
 		#region Bindable Properties
 		// LabelText Property
