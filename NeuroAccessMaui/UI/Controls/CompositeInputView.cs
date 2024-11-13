@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using CommunityToolkit.Maui.Converters;
 using Microsoft.Maui.Controls.Shapes;
 using Path = Microsoft.Maui.Controls.Shapes.Path;
@@ -71,6 +72,7 @@ namespace NeuroAccessMaui.UI.Controls
 			{
 				Content = contentGrid
 			};
+			this.border.PropertyChanged += this.OnBorderPropertyChanged;
 			this.border.SetBinding(Border.StrokeProperty, new Binding(nameof(this.BorderStroke), source: this));
 			this.border.SetBinding(Border.StrokeShapeProperty, new Binding(nameof(this.BorderStrokeShape), source: this));
 			this.border.SetBinding(Border.ShadowProperty, new Binding(nameof(this.BorderShadow), source: this));
@@ -322,7 +324,28 @@ namespace NeuroAccessMaui.UI.Controls
 
 		#endregion
 
+		private void OnBorderPropertyChanged(Object? sender, PropertyChangedEventArgs e)
+		{
+			// WORKAROUND FOR ClIPPED SHADOW in certain views
+			if (e.PropertyName == nameof(Border.Shadow))
+			{
+				if (this.BorderShadow is null)
+					return;
 
+				double blurRadius = this.BorderShadow.Radius;
+				double offsetX = this.BorderShadow?.Offset.X ?? 0;
+				double offsetY = this.BorderShadow?.Offset.Y ?? 0;
+
+				// Calculate padding for each side
+				double paddingLeft = blurRadius + (offsetX < 0 ? Math.Abs(offsetX) : 0);
+				double paddingRight = blurRadius + (offsetX > 0 ? offsetX : 0);
+				double paddingTop = blurRadius + (offsetY < 0 ? Math.Abs(offsetY) : 0);
+				double paddingBottom = blurRadius + (offsetY > 0 ? offsetY : 0);
+
+				// Apply the calculated padding
+				this.border.Margin = new Thickness(paddingLeft, paddingTop, paddingRight, paddingBottom);
+			}
+		}
 		private static void OnValidationChanged(BindableObject bindable, object oldValue, object newValue)
 		{
 			CompositeInputView control = (CompositeInputView)bindable;
