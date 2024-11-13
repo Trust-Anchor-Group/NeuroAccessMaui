@@ -51,7 +51,7 @@ namespace NeuroAccessMaui.UI.Controls
 				},
 				ColumnSpacing = AppStyles.SmallSpacing
 			};
-			
+
 			// LeftView
 			this.leftContentView = new ContentView();
 			this.leftContentView.SetBinding(ContentView.ContentProperty, new Binding(nameof(this.LeftView), source: this));
@@ -71,8 +71,11 @@ namespace NeuroAccessMaui.UI.Controls
 			{
 				Content = contentGrid
 			};
-			this.border.SetBinding(Border.StyleProperty, new Binding(nameof(this.BorderStyle), source: this));
-
+			this.border.SetBinding(Border.StrokeProperty, new Binding(nameof(this.BorderStroke), source: this));
+			this.border.SetBinding(Border.StrokeShapeProperty, new Binding(nameof(this.BorderStrokeShape), source: this));
+			this.border.SetBinding(Border.ShadowProperty, new Binding(nameof(this.BorderShadow), source: this));
+			this.border.SetBinding(Border.BackgroundColorProperty, new Binding(nameof(this.BorderBackground), source: this));
+			this.border.SetBinding(Border.PaddingProperty, new Binding(nameof(this.BorderPadding), source: this));
 			mainGrid.Add(this.border, 0, 1);
 
 			// Row 3: ValidationIcon and ValidationText
@@ -234,30 +237,99 @@ namespace NeuroAccessMaui.UI.Controls
 			set => this.SetValue(ValidationColorProperty, value);
 		}
 
-		/// <summary>
-		/// Bindable property for the style applied to the border.
-		/// </summary>
-		public static readonly BindableProperty BorderStyleProperty = BindableProperty.Create(
-			  nameof(BorderStyle),
-			  typeof(Style),
-			  typeof(CompositeInputView),
-			  default(Style));
 
-		/// <summary>
-		/// Gets or sets the style applied to the border.
-		/// </summary>
-		public Style BorderStyle
+
+		#endregion
+
+		#region Border Bindable Properties
+
+		//Border Background Color
+		public static readonly BindableProperty BorderBackgroundProperty =
+			 BindableProperty.Create(
+				  nameof(BorderBackground),
+				  typeof(Color),
+				  typeof(CompositeInputView),
+				  Colors.Transparent);
+		public Color BorderBackground { get => (Color)this.GetValue(BorderBackgroundProperty); set => this.SetValue(BorderBackgroundProperty, value); }
+
+		// Border Stroke Color
+		public static readonly BindableProperty BorderStrokeProperty =
+			 BindableProperty.Create(
+				  nameof(BorderStroke),
+				  typeof(Color),
+				  typeof(CompositeInputView),
+				  Colors.Gray);
+
+		public Color BorderStroke
 		{
-			get => (Style)this.GetValue(BorderStyleProperty);
-			set => this.SetValue(BorderStyleProperty, value);
+			get => (Color)this.GetValue(BorderStrokeProperty);
+			set => this.SetValue(BorderStrokeProperty, value);
+		}
+
+		// Border Stroke Shape
+		public static readonly BindableProperty BorderStrokeShapeProperty =
+			 BindableProperty.Create(
+				  nameof(BorderStrokeShape),
+				  typeof(IShape),
+				  typeof(CompositeInputView),
+				  new Rectangle());
+		public Shape BorderStrokeShape
+		{
+			get => (Shape)this.GetValue(BorderStrokeShapeProperty);
+			set => this.SetValue(BorderStrokeShapeProperty, value);
+		}
+
+		// Border Shadow
+		public static readonly BindableProperty BorderShadowProperty =
+			 BindableProperty.Create(
+				  nameof(BorderShadow),
+				  typeof(Shadow),
+				  typeof(CompositeInputView),
+				  new Shadow());
+		public Shadow BorderShadow
+		{
+			get => (Shadow)this.GetValue(BorderShadowProperty);
+			set => this.SetValue(BorderShadowProperty, value);
+		}
+
+		// Border Padding
+		public static readonly BindableProperty BorderPaddingProperty =
+			 BindableProperty.Create(
+				  nameof(BorderPadding),
+				  typeof(Thickness),
+				  typeof(CompositeInputView),
+				  new Thickness(0));
+
+		public Thickness BorderPadding
+		{
+			get => (Thickness)this.GetValue(BorderPaddingProperty);
+			set => this.SetValue(BorderPaddingProperty, value);
+		}
+
+		// Border Corner Radius
+		public static readonly BindableProperty BorderCornerRadiusProperty =
+			 BindableProperty.Create(
+				  nameof(BorderCornerRadius),
+				  typeof(CornerRadius),
+				  typeof(CompositeInputView),
+				  new CornerRadius(5));
+
+		public CornerRadius BorderCornerRadius
+		{
+			get => (CornerRadius)this.GetValue(BorderCornerRadiusProperty);
+			set => this.SetValue(BorderCornerRadiusProperty, value);
 		}
 
 		#endregion
 
+
 		private static void OnValidationChanged(BindableObject bindable, object oldValue, object newValue)
 		{
 			CompositeInputView control = (CompositeInputView)bindable;
+
+			// Update CanShowValidation
 			control.OnPropertyChanged(nameof(CanShowValidation));
+
 		}
 
 		private static void OnLabelChanged(BindableObject bindable, object oldValue, object newValue)
