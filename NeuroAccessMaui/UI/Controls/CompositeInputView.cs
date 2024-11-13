@@ -51,7 +51,7 @@ namespace NeuroAccessMaui.UI.Controls
 				},
 				ColumnSpacing = AppStyles.SmallSpacing
 			};
-
+			
 			// LeftView
 			this.leftContentView = new ContentView();
 			this.leftContentView.SetBinding(ContentView.ContentProperty, new Binding(nameof(this.LeftView), source: this));

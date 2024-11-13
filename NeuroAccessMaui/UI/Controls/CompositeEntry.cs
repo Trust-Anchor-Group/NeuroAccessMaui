@@ -332,6 +332,7 @@ namespace NeuroAccessMaui.UI.Controls
 		private void OnEntryFocused(object? sender, FocusEventArgs e)
 		{
 			Focused?.Invoke(this, e);
+
 		}
 
 		/// <summary>
