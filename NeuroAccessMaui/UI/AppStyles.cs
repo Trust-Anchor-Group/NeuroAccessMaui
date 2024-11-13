@@ -290,7 +290,7 @@ namespace NeuroAccessMaui.UI
 		{
 			get
 			{
-				regularCompositeEntry ??= TryGetResource<Style>("RegularCompositeEntryNoRoundedCorners"); // TODO: Remove NoRoundedCorners
+				regularCompositeEntry ??= TryGetResource<Style>("RegularCompositeEntry"); // TODO: Remove NoRoundedCorners
 				return regularCompositeEntry!;
 			}
 		}
