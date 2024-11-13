@@ -74,7 +74,7 @@
 					</Grid>
 				</Border>
 
-				<controls:TemplatedButton VerticalOptions="Start" >
+				<controls:TemplatedButton VerticalOptions="Start" Command="{Binding GoToParametersCommand}" >
 					<Border Style="{StaticResource ButtonBorder}" VerticalOptions="Center">
 						<Grid ColumnDefinitions="auto,*,auto" ColumnSpacing="{StaticResource MediumSpacing}">
 							<Border Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Center"  Style="{StaticResource ButtonIconBorder}">
@@ -93,7 +93,7 @@
 					</Border>
 				</controls:TemplatedButton>
 
-				<controls:TemplatedButton VerticalOptions="Start" >
+				<controls:TemplatedButton VerticalOptions="Start" Command="{Binding GoToRolesCommand}" >
 					<Border Style="{StaticResource ButtonBorder}" VerticalOptions="Center">
 						<Grid ColumnDefinitions="auto,*,auto" ColumnSpacing="{StaticResource MediumSpacing}">
 							<Border Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Center"  Style="{StaticResource ButtonIconBorder}">
@@ -117,14 +117,14 @@
 
 		<!-- BOTTOM BAR -->
 		<Border Grid.Row="1" Style="{StaticResource BottomBarBorder}">
-			<Grid HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
+			<Grid HorizontalOptions="Fill" VerticalOptions="Center" ColumnSpacing="{StaticResource SmallSpacing}" Padding="{StaticResource SmallMargins}">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*" />
 					<ColumnDefinition Width="*" />
 				</Grid.ColumnDefinitions>
 
-				<controls:TextButton Grid.Column="0" LabelData="{l:Localize Back}" Command="{Binding GoBackCommand}" />
-				<controls:TextButton Grid.Column="1" LabelData="{l:Localize Create}" Command="{Binding GoBackCommand}" />
+				<controls:TextButton Style="{StaticResource FilledTextButton}" Grid.Column="0" LabelData="{l:Localize Back}" Command="{Binding GoBackCommand}" />
+				<controls:TextButton Style="{StaticResource FilledTextButton}" Grid.Column="1" LabelData="{l:Localize Create}" Command="{Binding GoBackCommand}" />
 <!--
 				<controls:TemplatedButton Grid.Column="0" Command="{x:Binding BackCommand}">
 					<Border Style="{StaticResource TransparentTemplateButtonBorder}" InputTransparent="True" HorizontalOptions="Fill">
