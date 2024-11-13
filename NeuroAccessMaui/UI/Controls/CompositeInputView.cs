@@ -18,6 +18,7 @@ namespace NeuroAccessMaui.UI.Controls
 
 		public bool CanShowValidation => !this.IsValid && !string.IsNullOrEmpty(this.ValidationText);
 		public bool CanShowLabel => !string.IsNullOrEmpty(this.LabelText);
+		#endregion
 
 		public CompositeInputView()
 		{
@@ -71,7 +72,6 @@ namespace NeuroAccessMaui.UI.Controls
 				Content = contentGrid
 			};
 			this.border.SetBinding(Border.StyleProperty, new Binding(nameof(this.BorderStyle), source: this));
-
 
 			mainGrid.Add(this.border, 0, 1);
 
