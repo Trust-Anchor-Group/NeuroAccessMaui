@@ -32,7 +32,7 @@
 	  ColumnDefinitions="*"
 	  BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
 
-		<controls:Background Grid.RowSpan="2"/>
+		<controls:Background Grid.Row ="1"/>
 
 		<!-- Top Bar -->
 		<Grid Grid.Row="0" RowDefinitions="*" ColumnDefinitions="auto,*" Margin="{StaticResource SmallBottomMargins}">

@@ -126,8 +126,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				string hrt = await this.Contract.Contract.ToMauiXaml(this.Contract.Contract.DeviceLanguage());
 				this.HumanReadableText = new VerticalStackLayout().LoadFromXaml(hrt);
 
-				Console.WriteLine("ViewModel");
-
 				await this.GoToState(NewContractStep.Overview);
 			}
 			catch (Exception ex)
@@ -234,6 +232,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			await this.GoToState(NewContractStep.Loading);
 			await this.GoToState(NewContractStep.Parameters);
 		}
+
+		[RelayCommand(CanExecute = nameof(CanStateChange))]
+		private async Task GoToRoles()
+		{
+			await this.GoToState(NewContractStep.Loading);
+			await this.GoToState(NewContractStep.Roles);
+		}
+
 		#endregion
 
 		#region Event Handlers
