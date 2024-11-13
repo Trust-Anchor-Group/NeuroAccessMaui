@@ -447,7 +447,7 @@
 		<Setter Property="Stroke" Value="Transparent" />
 		<Setter Property="Padding" Value="{StaticResource ButtonMediumMargins}" />
 		<Setter Property="StrokeShape">
-			<RoundRectangle CornerRadius="{StaticResource SmallCornerRadius}" />
+			<RoundRectangle CornerRadius="8" />
 		</Setter>
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>

@@ -13,12 +13,54 @@
 	</Style>
 
 	<!-- Composite Input View-->
-	<Style x:Key="RegularCompositeInputViewLabel" ApplyToDerivedTypes="False" TargetType="Label" BasedOn="{StaticResource BoldItemTitleLabel}">
+	<Style x:Key="RegularCompositeInputViewValidationLabel" ApplyToDerivedTypes="False" TargetType="Label" BasedOn="{StaticResource BoldItemTitleLabel}">
 		<Setter Property="FontSize" Value="14" />
 		<Setter Property="FontFamily" Value="SpaceGroteskBold"/>
 		<Setter Property="LineBreakMode" Value="WordWrap" />
 		<Setter Property="VerticalTextAlignment" Value="Center" />
 		<Setter Property="HorizontalTextAlignment" Value="Start" />
+	</Style>
+
+	<Style x:Key="RegularCompositeInputViewLabel" ApplyToDerivedTypes="False" TargetType="Label" BasedOn="{StaticResource BoldItemTitleLabel}">
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffWhiteDark}}" />
+		<Setter Property="FontSize" Value="15" />
+		<Setter Property="FontFamily" Value="SpaceGroteskBold"/>
+		<Setter Property="LineBreakMode" Value="WordWrap" />
+		<Setter Property="VerticalTextAlignment" Value="Center" />
+		<Setter Property="HorizontalTextAlignment" Value="Start" />
+	</Style>
+	<Style x:Key="RegularCompositeInputView" ApplyToDerivedTypes="True" TargetType="controls:CompositeInputView">
+
+		<Setter Property="LabelStyle" Value="{StaticResource RegularCompositeInputViewLabel}" />
+		<Setter Property="ValidationLabelStyle" Value="{StaticResource RegularCompositeInputViewValidationLabel}"/>
+		<Setter Property="ValidationColor" Value="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedWarningDark}}" />
+
+		<Setter Property="BorderPadding" Value="{StaticResource SmallSpacing}" />
+		<Setter Property="BorderBackground" Value="{AppThemeBinding Light={StaticResource OffWhiteLight}, Dark={StaticResource PopUpElevation3Dark}}" />
+		<Setter Property="BorderStroke" Value="Transparent" />
+		<Setter Property="BorderStrokeShape">
+			<Setter.Value>
+				<RoundRectangle CornerRadius="8" />
+			</Setter.Value>
+		</Setter>
+		<Setter Property="BorderShadow">
+			<Setter.Value>
+				<Shadow Offset="0,2" Radius="0" Opacity="1" Brush="{AppThemeBinding Light={StaticResource OffBlack50Light}, Dark={StaticResource OffWhite30Dark}}"/>
+			</Setter.Value>
+		</Setter>
+
+
+		<Style.Triggers>
+			<Trigger TargetType="controls:CompositeInputView"
+							Property="IsValid"
+                     Value="False">
+				<Setter Property="BorderShadow">
+					<Setter.Value>
+						<Shadow Offset="0,2" Radius="0" Opacity="1" Brush="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedWarningDark}}"/>
+					</Setter.Value>
+				</Setter>
+			</Trigger>
+		</Style.Triggers>
 	</Style>
 
 	<!-- Composite Entry -->
@@ -80,7 +122,7 @@
 		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffWhiteDark}}" />
 		<Setter Property="EntryStyle" Value="{StaticResource RegularCompositeEntryEntry}" />
 		<Setter Property="LabelStyle" Value="{StaticResource RegularCompositeEntryLabel}" />
-		<Setter Property="ValidationLabelStyle" Value="{StaticResource RegularCompositeInputViewLabel}"/>
+		<Setter Property="ValidationLabelStyle" Value="{StaticResource RegularCompositeInputViewValidationLabel}"/>
 		<Setter Property="ValidationColor" Value="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedWarningDark}}" />
 
 		<Setter Property="BorderPadding" Value="{StaticResource EditMediumMargins}" />
