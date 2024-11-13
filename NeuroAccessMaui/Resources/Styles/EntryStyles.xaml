@@ -46,6 +46,7 @@
 	<Style x:Key="OutlinedCompositeEntryBorder" ApplyToDerivedTypes="False" TargetType="Border">
 		<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource OffBlack50Light}, Dark={StaticResource OffWhite30Dark}}" />
 		<Setter Property="StrokeShape" Value="RoundRectangle 8" />
+		<Setter Property="Shadow" Value="{x:Null}"/>
 	</Style>
 
 	<Style x:Key="OutlinedInvalidCompositeEntryBorder" ApplyToDerivedTypes="False" TargetType="Border" BasedOn="{StaticResource OutlinedCompositeEntryBorder}">
@@ -77,30 +78,54 @@
 
 	<Style x:Key="RegularCompositeEntry" ApplyToDerivedTypes="True" TargetType="controls:CompositeEntry">
 		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffWhiteDark}}" />
-		<Setter Property="BorderStyle" Value="{StaticResource RegularCompositeEntryBorder}" />
 		<Setter Property="EntryStyle" Value="{StaticResource RegularCompositeEntryEntry}" />
 		<Setter Property="LabelStyle" Value="{StaticResource RegularCompositeEntryLabel}" />
 		<Setter Property="ValidationLabelStyle" Value="{StaticResource RegularCompositeInputViewLabel}"/>
 		<Setter Property="ValidationColor" Value="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedWarningDark}}" />
 
+		<Setter Property="BorderPadding" Value="{StaticResource EditMediumMargins}" />
+		<Setter Property="BorderBackground" Value="{AppThemeBinding Light={StaticResource OffWhiteLight}, Dark={StaticResource PopUpElevation3Dark}}" />
+		<Setter Property="BorderStroke" Value="Transparent" />
+		<Setter Property="BorderStrokeShape">
+			<Setter.Value>
+				<RoundRectangle CornerRadius="8" />
+			</Setter.Value>
+		</Setter>
+		<Setter Property="BorderShadow">
+			<Setter.Value>
+				<Shadow Offset="0,2" Radius="0" Opacity="1" Brush="{AppThemeBinding Light={StaticResource OffBlack50Light}, Dark={StaticResource OffWhite30Dark}}"/>
+			</Setter.Value>
+		</Setter>
+
+
 		<Style.Triggers>
 			<Trigger TargetType="controls:CompositeEntry"
 							Property="IsValid"
                      Value="False">
 				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedWarningDark}}" />
-				<Setter Property="BorderStyle" Value="{StaticResource RegularInvalidCompositeEntryBorder}" />
+				<Setter Property="BorderShadow">
+					<Setter.Value>
+						<Shadow Offset="0,2" Radius="0" Opacity="1" Brush="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedWarningDark}}"/>
+					</Setter.Value>
+				</Setter>
 			</Trigger>
 		</Style.Triggers>
 	</Style>
 
 	<Style x:Key="OutlinedCompositeEntry" ApplyToDerivedTypes="False" TargetType="controls:CompositeEntry" BasedOn="{StaticResource RegularCompositeEntry}">
-		<Setter Property="BorderStyle" Value="{StaticResource OutlinedCompositeEntryBorder}" />
+		<Setter Property="BorderStroke" Value="{AppThemeBinding Light={StaticResource OffBlack50Light}, Dark={StaticResource OffWhite30Dark}}" />
+		<Setter Property="BorderStrokeShape">
+			<Setter.Value>
+				<RoundRectangle CornerRadius="8" />
+			</Setter.Value>
+		</Setter>
+		<Setter Property="BorderShadow" Value="{x:Null}"/>
 		<Style.Triggers>
 			<Trigger TargetType="controls:CompositeEntry"
 							Property="IsValid"
                      Value="False">
 				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedWarningDark}}" />
-				<Setter Property="BorderStyle" Value="{StaticResource OutlinedInvalidCompositeEntryBorder}" />
+				<Setter Property="BorderStroke" Value="{AppThemeBinding Light={StaticResource Red20WarningLight}, Dark={StaticResource RedWarningDark}}" />
 			</Trigger>
 		</Style.Triggers>
 	</Style>
