@@ -118,7 +118,7 @@
 	</Style>
 
 	<Style x:Key="BoldItemTitleLabel" ApplyToDerivedTypes="False" BasedOn="{StaticResource RegularItemTitleLabel}" TargetType="Label">
-		<Setter Property="FontFamily" Value="SpaceGrotesk-Bold" />
+		<Setter Property="FontFamily" Value="SpaceGroteskBold" />
 	</Style>
 
 	<Style x:Key="RequiredFieldMarker" ApplyToDerivedTypes="False" TargetType="Label">

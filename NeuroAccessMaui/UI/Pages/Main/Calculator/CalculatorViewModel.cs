@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.UI.Controls;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
@@ -33,7 +34,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Calculator
 				this.Property = Args.Property;
 
 				if (this.Entry is not null)
-					this.Value = this.Entry.Text;
+					this.Value = this.Entry.EntryData;
 				else if (this.ViewModel is not null && this.Property is not null)
 					this.Value = this.ViewModel.GetValue(this.Property)?.ToString() ?? string.Empty;
 				else
@@ -76,7 +77,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Calculator
 					this.HasValue = !string.IsNullOrEmpty(this.Value);
 
 					if (this.Entry is not null)
-						this.Entry.Text = this.Value;
+						this.Entry.EntryData = this.Value;
 
 					if (this.ViewModel is not null && this.Property is not null)
 						this.ViewModel.SetValue(this.Property, this.Value);
@@ -137,7 +138,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Calculator
 		/// Entry control, if available
 		/// </summary>
 		[ObservableProperty]
-		private Entry? entry;
+		private CompositeEntry? entry;
 
 		/// <summary>
 		/// View model, if available

@@ -1,4 +1,4 @@
-﻿using Microsoft.Maui.Controls.Shapes;
+using Microsoft.Maui.Controls.Shapes;
 
 namespace NeuroAccessMaui.UI
 {
@@ -9,6 +9,12 @@ namespace NeuroAccessMaui.UI
 	/// </summary>
 	public static class Geometries
 	{
+		public static readonly Geometry ErrorPath = GeometryConverter.ParseStringToPathGeometry(
+			"""
+			M9.5 13H11.5V15H9.5V13ZM9.5 5H11.5V11H9.5V5ZM10.49 0C4.97 0 0.5 4.48 0.5 10C0.5 15.52 4.97 20 10.49 20C16.02 20 20.5 15.52 20.5 10C20.5 4.48 16.02 0 10.49 0ZM10.5 18C6.08 18 2.5 14.42 2.5 10C2.5 5.58 6.08 2 10.5 2C14.92 2 18.5 5.58 18.5 10C18.5 14.42 14.92 18 10.5 18Z
+			"""
+		);
+
 		public static readonly Geometry RolesPath = GeometryConverter.ParseStringToPathGeometry(
 			"""
 			M7 8.75C4.66 8.75 0 9.92 0 12.25V14H14V12.25C14 9.92 9.34 8.75 7 8.75ZM2.34 12C3.18 11.42 5.21 10.75 7 10.75C8.79 10.75 10.82 11.42 11.66 12H2.34ZM7 7C8.93 7 10.5 5.43 10.5 3.5C10.5 1.57 8.93 0 7 0C5.07 0 3.5 1.57 3.5 3.5C3.5 5.43 5.07 7 7 7ZM7 2C7.83 2 8.5 2.67 8.5 3.5C8.5 4.33 7.83 5 7 5C6.17 5 5.5 4.33 5.5 3.5C5.5 2.67 6.17 2 7 2ZM14.04 8.81C15.2 9.65 16 10.77 16 12.25V14H20V12.25C20 10.23 16.5 9.08 14.04 8.81ZM13 7C14.93 7 16.5 5.43 16.5 3.5C16.5 1.57 14.93 0 13 0C12.46 0 11.96 0.13 11.5 0.35C12.13 1.24 12.5 2.33 12.5 3.5C12.5 4.67 12.13 5.76 11.5 6.65C11.96 6.87 12.46 7 13 7Z
