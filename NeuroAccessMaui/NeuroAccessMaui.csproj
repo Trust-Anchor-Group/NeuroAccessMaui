@@ -303,6 +303,9 @@
 		<Compile Update="UI\Pages\Contracts\NewContract\NewContractPage.xaml.cs">
 		  <DependentUpon>NewContractPage.xaml</DependentUpon>
 		</Compile>
+		<Compile Update="UI\Pages\Contracts\NewContract\Views\PreviewView.xaml.cs">
+		  <DependentUpon>PreviewView.xaml</DependentUpon>
+		</Compile>
 		<Compile Update="UI\Pages\Contracts\NewContract\Views\LoadingView.xaml.cs">
 		  <DependentUpon>%(Filename)</DependentUpon>
 		</Compile>
@@ -431,6 +434,12 @@
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Contracts\NewContract\NewContractPage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Contracts\NewContract\Views\OverviewItemButton.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Contracts\NewContract\Views\PreviewView.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Contracts\NewContract\Views\LoadingView.xaml">
