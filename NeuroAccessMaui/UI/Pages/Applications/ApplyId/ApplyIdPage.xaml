@@ -302,14 +302,14 @@
 								<Label Text="{l:Localize BirthDate}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresBirthDate}"/>
 							</HorizontalStackLayout>
-							<Border StrokeThickness="2" Style="{StaticResource OutlinedCompositeEntryBorder}"
-									  IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
-								<DatePicker HorizontalOptions="FillAndExpand"
-												BackgroundColor="{Binding BirthDateOk, Converter={converters:ControlBgColor}}"
-												Date="{Binding BirthDate}" IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
-												MinimumDate="{Binding MinBirthDate}" MaximumDate="{Binding MaxBirthDate}"
-												TextColor="{Binding NullIfInvalidBirthDate, Converter={converters:TransparentIfNull}}"/>
-							</Border>
+							<controls:CompositeDatePicker
+											HorizontalOptions="FillAndExpand"
+											IsValid="{Binding BirthDateOk}"
+											Date="{Binding BirthDate}"
+										   IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
+											MinimumDate="{Binding MinBirthDate}"
+											MaximumDate="{Binding MaxBirthDate}"
+											Style="{StaticResource RegularCompositeDatePicker}" />
 							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=BirthDate, Converter={converters:DateToString}}"
 									 IsVisible="{Binding ApplicationSent}"/>
 						</VerticalStackLayout>

@@ -96,8 +96,6 @@
 				<Shadow Offset="0,2" Radius="0" Opacity="1" Brush="{AppThemeBinding Light={StaticResource OffBlack50Light}, Dark={StaticResource OffWhite30Dark}}"/>
 			</Setter.Value>
 		</Setter>
-
-
 		<Style.Triggers>
 			<Trigger TargetType="controls:CompositeEntry"
 							Property="IsValid"

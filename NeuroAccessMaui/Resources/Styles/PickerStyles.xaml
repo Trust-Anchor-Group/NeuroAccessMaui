@@ -5,40 +5,60 @@
 						  xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 						  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
 
-	<Style ApplyToDerivedTypes="True" TargetType="Picker">
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource NormalEditForegroundLight}, Dark={StaticResource NormalEditForegroundDark}}" />
+	<Style x:Key="RegularCompositeInputViewLabel" ApplyToDerivedTypes="False" TargetType="Label" BasedOn="{StaticResource BoldItemTitleLabel}">
+		<Setter Property="FontSize" Value="14" />
+		<Setter Property="FontFamily" Value="SpaceGroteskBold"/>
+		<Setter Property="LineBreakMode" Value="WordWrap" />
+		<Setter Property="VerticalTextAlignment" Value="Center" />
+		<Setter Property="HorizontalTextAlignment" Value="Start" />
+	</Style>
+
+	<Style x:Key="RegularCompositePickerPicker" ApplyToDerivedTypes="False" TargetType="DatePicker">
 		<Setter Property="FontFamily" Value="HaasGroteskRegular" />
 		<Setter Property="FontSize" Value="18" />
 	</Style>
 
-	<Style ApplyToDerivedTypes="True" TargetType="DatePicker">
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource NormalEditForegroundLight}, Dark={StaticResource NormalEditForegroundDark}}" />
-		<Setter Property="FontFamily" Value="HaasGroteskRegular" />
-		<Setter Property="FontSize" Value="18" />
+	<Style x:Key="RegularCompositePickerLabel" ApplyToDerivedTypes="False" TargetType="Label" BasedOn="{StaticResource BoldItemTitleLabel}">
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffWhiteDark}}" />
+		<Setter Property="FontSize" Value="15" />
+		<Setter Property="FontFamily" Value="SpaceGroteskBold"/>
+		<Setter Property="LineBreakMode" Value="WordWrap" />
+		<Setter Property="VerticalTextAlignment" Value="Center" />
+		<Setter Property="HorizontalTextAlignment" Value="Start" />
+	</Style>
+	
+	<Style x:Key="RegularCompositeDatePicker" ApplyToDerivedTypes="True" TargetType="controls:CompositeDatePicker">
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffWhiteDark}}" />
+		<Setter Property="PickerStyle" Value="{StaticResource RegularCompositePickerPicker}" />
+		<Setter Property="LabelStyle" Value="{StaticResource RegularCompositePickerLabel}" />
+		<Setter Property="ValidationLabelStyle" Value="{StaticResource RegularCompositeInputViewLabel}"/>
+		<Setter Property="ValidationColor" Value="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedWarningDark}}" />
+		<Setter Property="Padding" Value="{StaticResource SmallBottomMargins}" />
+		<Setter Property="BorderPadding" Value="{StaticResource EditMediumMargins}" />
+		<Setter Property="BorderBackground" Value="{AppThemeBinding Light={StaticResource OffWhiteLight}, Dark={StaticResource PopUpElevation3Dark}}" />
+		<Setter Property="BorderStroke" Value="Transparent" />
+		<Setter Property="BorderStrokeShape">
+			<Setter.Value>
+				<RoundRectangle CornerRadius="8" />
+			</Setter.Value>
+		</Setter>
+		<Setter Property="BorderShadow">
+			<Setter.Value>
+				<Shadow Offset="0,2" Radius="0" Opacity="1" Brush="{AppThemeBinding Light={StaticResource OffBlack50Light}, Dark={StaticResource OffWhite30Dark}}"/>
+			</Setter.Value>
+		</Setter>
+		<Style.Triggers>
+			<Trigger TargetType="controls:CompositeDatePicker"
+						Property="IsValid"
+                  Value="False">
+				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedWarningDark}}" />
+				<Setter Property="BorderShadow">
+					<Setter.Value>
+						<Shadow Offset="0,2" Radius="0" Opacity="1" Brush="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedWarningDark}}"/>
+					</Setter.Value>
+				</Setter>
+			</Trigger>
+		</Style.Triggers>
 	</Style>
 
-	<!--
-    <Style ApplyToDerivedTypes="True" TargetType="Picker">
-        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
-        <Setter Property="TitleColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray200}}" />
-        <Setter Property="BackgroundColor" Value="Transparent" />
-        <Setter Property="FontFamily" Value="OpenSansRegular"/>
-        <Setter Property="FontSize" Value="14"/>
-        <Setter Property="MinimumHeightRequest" Value="44"/>
-        <Setter Property="MinimumWidthRequest" Value="44"/>
-        <Setter Property="VisualStateManager.VisualStateGroups">
-            <VisualStateGroupList>
-                <VisualStateGroup x:Name="CommonStates">
-                    <VisualState x:Name="Normal" />
-                    <VisualState x:Name="Disabled">
-                        <VisualState.Setters>
-                            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}" />
-                            <Setter Property="TitleColor" Value="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}" />
-                        </VisualState.Setters>
-                    </VisualState>
-                </VisualStateGroup>
-            </VisualStateGroupList>
-        </Setter>
-    </Style>
-	-->
 </ResourceDictionary>

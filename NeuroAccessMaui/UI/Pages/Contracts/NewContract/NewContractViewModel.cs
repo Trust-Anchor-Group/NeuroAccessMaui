@@ -680,7 +680,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		{
 			try
 			{
-				if (Sender is not ExtendedDatePicker Picker || !this.parametersByName.TryGetValue(Picker.StyleId, out ParameterInfo? ParameterInfo))
+				if (Sender is not CompositeDatePicker Picker || !this.parametersByName.TryGetValue(Picker.StyleId, out ParameterInfo? ParameterInfo))
 					return;
 
 				if (ParameterInfo?.Parameter is DateParameter DP)
@@ -1210,7 +1210,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						Margin = AppStyles.SmallBottomMargins
 					};
 
-					ExtendedDatePicker Picker = new()
+					CompositeDatePicker Picker = new()
 					{
 						StyleId = Parameter.Name,
 						NullableDate = Parameter.ObjectValue as DateTime?,
@@ -1491,7 +1491,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						Url.Append(Entry.Text);
 					else if (P.Value.Control is CheckBox CheckBox)
 						Url.Append(CheckBox.IsChecked ? '1' : '0');
-					else if (P.Value.Control is ExtendedDatePicker Picker)
+					else if (P.Value.Control is CompositeDatePicker Picker)
 					{
 						if (P.Value.Parameter is DateParameter)
 							Url.Append(XML.Encode(Picker.Date, true));
@@ -1598,7 +1598,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 									new KeyValuePair<string, object?>("Type", Parameter.Value?.GetType().FullName ?? string.Empty));
 							}
 						}
-						else if (Info.Control is ExtendedDatePicker Picker)
+						else if (Info.Control is CompositeDatePicker Picker)
 						{
 							if (Parameter.Value is DateTime TP)
 								Picker.NullableDate = TP;

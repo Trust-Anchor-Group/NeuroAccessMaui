@@ -13,6 +13,7 @@
 				<ResourceDictionary Source="Resources/Styles/LabelStyles.xaml" />
 				<ResourceDictionary Source="Resources/Styles/ButtonStyles.xaml" />
 				<ResourceDictionary Source="Resources/Styles/EntryStyles.xaml" />
+				<ResourceDictionary Source="Resources/Styles/PickerStyles.xaml" />
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</Application.Resources>
