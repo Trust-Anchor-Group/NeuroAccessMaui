@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:BaseNewContractView x:Name="ThisPage"
+                           x:Class="NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views.PreviewView"
+                           x:DataType="base:NewContractViewModel"
+                           xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                           xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+                           xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+                           xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+                           xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
+                           xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+                           xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views"
+                           xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract">
+
+	<Grid RowDefinitions="*, auto" ColumnDefinitions="*">
+		<Border  Grid.Row="0" Style="{StaticResource BorderSet}" Margin="{StaticResource MediumMargins}">
+
+			<ScrollView >
+				<ContentView  Content="{Binding HumanReadableText}" />
+		</ScrollView>
+		</Border>
+
+
+		<!-- BOTTOM BAR -->
+		<Border Grid.Row="1" Style="{StaticResource BottomBarBorder}">
+			<Grid HorizontalOptions="Fill" VerticalOptions="Center" ColumnSpacing="{StaticResource SmallSpacing}" Padding="{StaticResource SmallMargins}">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+
+				<controls:TextButton Style="{StaticResource FilledTextButton}" Grid.Column="0" LabelData="{l:Localize Back}" Command="{Binding BackCommand}" />
+				<controls:TextButton Style="{StaticResource FilledTextButton}" Grid.Column="1" LabelData="{l:Localize Create}" Command="{Binding BackCommand}" />
+
+			</Grid>
+		</Border>
+	</Grid>
+</views:BaseNewContractView>

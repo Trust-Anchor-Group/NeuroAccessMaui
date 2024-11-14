@@ -28,18 +28,18 @@
 			<VerticalStackLayout Padding="{StaticResource LargeMargins}" Spacing="{StaticResource MediumSpacing}">
 				<!-- Parameters -->
 				<Border Style="{StaticResource BorderSet}" Margin="0" >
-				<CollectionView HorizontalOptions="Center"
+					<CollectionView HorizontalOptions="Center"
 								ItemsSource="{Binding Contract.Parameters}"
 								ItemTemplate="{StaticResource ParameterTemplateSelector}"
 								SelectionMode="None" ItemSizingStrategy="MeasureAllItems"
 								>
-					<CollectionView.ItemsLayout>
-						<LinearItemsLayout Orientation="Vertical" ItemSpacing="{StaticResource MediumSpacing}" />
-					</CollectionView.ItemsLayout>
-					<CollectionView.EmptyView>
-						<Label Text="ERROR" />
-					</CollectionView.EmptyView>
-				</CollectionView>
+						<CollectionView.ItemsLayout>
+							<LinearItemsLayout Orientation="Vertical" ItemSpacing="{StaticResource MediumSpacing}" />
+						</CollectionView.ItemsLayout>
+						<CollectionView.EmptyView>
+							<Label Text="{l:Localize SomethingWentWrong}" />
+						</CollectionView.EmptyView>
+					</CollectionView>
 				</Border>
 			</VerticalStackLayout>
 		</ScrollView>

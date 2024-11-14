@@ -12,12 +12,12 @@
                            xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views"
                            xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract">
 
-    <VerticalStackLayout VerticalOptions="Fill" HorizontalOptions="Fill">
-        	<ActivityIndicator VerticalOptions="Center"
+	<Grid RowDefinitions="*">
+		<ActivityIndicator VerticalOptions="Center"
 								 HorizontalOptions="Center"
 								 IsVisible="true"
 								 IsRunning="true" />
-    </VerticalStackLayout>
+	</Grid>
 
 
 </views:BaseNewContractView>
