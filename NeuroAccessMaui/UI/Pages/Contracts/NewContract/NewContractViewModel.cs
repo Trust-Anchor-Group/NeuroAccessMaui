@@ -60,7 +60,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		private string contractName = string.Empty;
 
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(HasHumanReadableText))]
 		private VerticalStackLayout? humanReadableText;
+
 
 
 
@@ -77,10 +79,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		private bool hasParameters;
 
 		[ObservableProperty]
-		private bool hasHumanReadableText;
-
-		[ObservableProperty]
 		private bool canAddParts;
+
+		/// <summary>
+		/// If HumanReadableText is not empty
+		/// </summary>
+		public bool HasHumanReadableText => this.HumanReadableText is not null;
 
 		/// <summary>
 		/// The state object containing all views. Is set by the view.
@@ -104,6 +108,18 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		[ObservableProperty]
 		private ContractVisibilityModel? selectedContractVisibilityItem;
 
+		/// <summary>
+		/// If the parameters are valid.
+		/// </summary>
+		[ObservableProperty]
+		private bool isParametersOk;
+
+		/// <summary>
+		/// If the roles are valid.
+		/// </summary>
+		[ObservableProperty]
+		private bool isRolesOk;
+
 		#endregion
 
 		#region Methods
@@ -118,13 +134,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				return;
 			}
 
-
 			try
 			{
 				this.Contract = await ObservableContract.CreateAsync(this.args.Template);
-
-				string hrt = await this.Contract.Contract.ToMauiXaml(this.Contract.Contract.DeviceLanguage());
-				this.HumanReadableText = new VerticalStackLayout().LoadFromXaml(hrt);
+				this.Contract.ParameterChanged += this.Parameter_PropertyChanged;
+				await this.ValidateParametersAsync();
 
 				await this.GoToState(NewContractStep.Overview);
 			}
@@ -140,6 +154,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// <inheritdoc/>
 		protected override async Task OnDispose()
 		{
+			if (this.Contract is not null)
+			{
+				this.Contract.ParameterChanged -= this.Parameter_PropertyChanged;
+			}
 			await base.OnDispose();
 		}
 
@@ -187,11 +205,29 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					p.Parameter.Populate(v);
 				}
 
-				foreach (ObservableParameter p in this.Contract.Parameters)
+				await MainThread.InvokeOnMainThreadAsync(async () =>
 				{
-					p.IsValid = await p.Parameter.IsParameterValid(v, client);
-					p.ValidationText = p.Parameter.ErrorText;
-				}
+					try
+					{
+						bool AllOk = true;
+						foreach (ObservableParameter p in this.Contract.Parameters)
+						{
+							if (p.Value is null)
+								p.IsValid = false;
+							else
+								p.IsValid = await p.Parameter.IsParameterValid(v, client);
+							p.ValidationText = p.Parameter.ErrorText;
+
+							if (p.IsValid == false)
+								AllOk = false;
+						}
+						this.IsParametersOk = AllOk;
+					}
+					catch (Exception ex)
+					{
+						ServiceRef.LogService.LogException(ex);
+					}
+				});
 			}
 			catch (Exception ex)
 			{
@@ -238,6 +274,23 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		{
 			await this.GoToState(NewContractStep.Loading);
 			await this.GoToState(NewContractStep.Roles);
+		}
+
+		[RelayCommand(CanExecute = nameof(CanStateChange))]
+		private async Task GoToPreview()
+		{
+			if (this.Contract is null)
+				return;
+
+			await this.GoToState(NewContractStep.Loading);
+
+			string hrt = await this.Contract.Contract.ToMauiXaml(this.Contract.Contract.DeviceLanguage());
+			await MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				this.HumanReadableText = new VerticalStackLayout().LoadFromXaml(hrt);
+			});
+
+			await this.GoToState(NewContractStep.Preview);
 		}
 
 		#endregion
