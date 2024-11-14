@@ -367,18 +367,5 @@ namespace NeuroAccessMaui.UI
 				return receiveFrame!;
 			}
 		}
-
-		/// <summary>
-		/// Style for RegularCompositeDatePicker controls
-		/// </summary>
-		public static Style RegularCompositeDatePicker
-		{
-			get
-			{
-				regularCompositeDatePicker ??= TryGetResource<Style>("RegularCompositeDatePicker");
-				return regularCompositeDatePicker!;
-			}
-		}
-
 	}
 }
