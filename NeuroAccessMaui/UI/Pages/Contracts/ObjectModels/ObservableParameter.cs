@@ -139,21 +139,20 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		private object? value;
 		public object? Value
 		{
-			get => this.Parameter.StringValue;
+			get => this.value;
 			set
 			{
-				if (this.SetProperty(ref this.value, value))
+				try
 				{
-					try
-					{
-						if (value is not null)
-							this.Parameter.SetValue(value);
-					}
-					catch (Exception e)
-					{
-						ServiceRef.LogService.LogException(e);
-					}
+					if (value is not null)
+						this.Parameter.SetValue(value);
 				}
+				catch (Exception e)
+				{
+					ServiceRef.LogService.LogException(e);
+				}
+
+				this.SetProperty(ref this.@value, value);
 			}
 		}
 		#endregion
@@ -161,6 +160,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		#region Property Change Handling
 		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
 		{
+			Console.WriteLine("Property Changed " + e.PropertyName);
 			base.OnPropertyChanged(e);
 		}
 		#endregion

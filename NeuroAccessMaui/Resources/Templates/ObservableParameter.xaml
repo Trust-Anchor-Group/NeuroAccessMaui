@@ -64,7 +64,7 @@
 	<DataTemplate x:Key="NumericalParameterTemplate" x:DataType="objectModel:ObservableNumericalParameter">
 
 		<controls:CompositeEntry	Style="{StaticResource RegularCompositeEntry}"
-												EntryData="{Binding DecimalValue, Mode=TwoWay}"
+												EntryData="{Binding DecimalValue, Converter={StaticResource StringToDecimalConverter}}"
 												Keyboard="Numeric"
 												Placeholder="{Binding Guide}"
 												VerticalOptions="Center"
@@ -90,7 +90,7 @@
 												 IsValid="{Binding IsValid}"
 												 LabelText="{Binding Label}">
 			<controls:CompositeInputView.CenterView>
-				<TimePicker Grid.Row="1"
+				<TimePicker
                         Time="{Binding TimeSpanValue, Mode=TwoWay}"
                         VerticalOptions="Center"
                         Style="{StaticResource ErrorStyle}" />
