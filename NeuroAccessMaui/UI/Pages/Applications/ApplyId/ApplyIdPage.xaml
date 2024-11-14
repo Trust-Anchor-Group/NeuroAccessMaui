@@ -282,17 +282,18 @@
 								<Label Text="{l:Localize Gender}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresGender}"/>
 							</HorizontalStackLayout>
-							<Border StrokeThickness="2" Style="{StaticResource OutlinedCompositeEntryBorder}"
-									  IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
-								<Picker HorizontalOptions="FillAndExpand" Title="{l:Localize SelectGender}"
-										  BackgroundColor="{Binding GenderOk, Converter={converters:ControlBgColor}}"
-										  ItemsSource="{Binding Path=Genders}" SelectedItem="{Binding Path=Gender}"
+							<controls:CompositePicker
+										  HorizontalOptions="FillAndExpand"
+										  Placeholder="{l:Localize SelectGender}"
+										  IsValid="{Binding GenderOk}"
+										  ItemsSource="{Binding Path=Genders}"
+										  SelectedItem="{Binding Path=Gender}"
 										  IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
-									<Picker.ItemDisplayBinding x:DataType="data:ISO_5218_Gender">
-										<Binding Path="Code" Converter="{converters:GenderCodeToSymbolAndLabel}"/>
-									</Picker.ItemDisplayBinding>
-								</Picker>
-							</Border>
+								<controls:CompositePicker.ItemDisplayBinding x:DataType="data:ISO_5218_Gender">
+									<Binding Path="Code" Converter="{converters:GenderCodeToSymbolAndLabel}" />
+								</controls:CompositePicker.ItemDisplayBinding>
+
+							</controls:CompositePicker>
 							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=GenderCode, Converter={StaticResource GenderCodeToSymbolAndLabelHyphenIfEmpty}}"
 									 IsVisible="{Binding ApplicationSent}"/>
 						</VerticalStackLayout>
