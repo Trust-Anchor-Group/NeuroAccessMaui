@@ -31,7 +31,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
             try
             {
                 // Set the description based on the contract language
-                this.Description = await contract.ToPlainText(this.Role.Descriptions, contract.DeviceLanguage());
+                string UntrimmedDescription = await contract.ToPlainText(this.Role.Descriptions, contract.DeviceLanguage());
+                this.Description = UntrimmedDescription.Trim();
 
                 // Add the parts associated with the role
                 foreach (Part part in contract.Parts)
@@ -101,6 +102,16 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
         /// Smallest amount of signatures of this role required for a legally binding contract.
         /// </summary>
         public int MinCount => this.Role.MinCount;
+
+        /// <summary>
+        /// If the role has reached the maximum amount of parts.
+        /// </summary>
+        public bool HasReachedMaxCount => this.Parts.Count >= this.MaxCount;
+
+        /// <summary>
+        /// If the role has reached the minimum amount of parts.
+        /// </summary>
+        public bool HasReachedMinCount => this.Parts.Count >= this.MinCount;
         #endregion
 
         #region Methods
@@ -111,6 +122,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
         public void AddPart(string LegalId)
         {
             this.Parts.Add(new Part { LegalId = LegalId, Role = this.Name });
+            this.OnPropertyChanged(nameof(this.HasReachedMaxCount));
+            this.OnPropertyChanged(nameof(this.HasReachedMinCount));
         }
 
         /// <summary>
@@ -120,6 +133,32 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
         public void AddPart(Part part)
         {
             this.Parts.Add(part);
+            this.OnPropertyChanged(nameof(this.HasReachedMaxCount));
+            this.OnPropertyChanged(nameof(this.HasReachedMinCount));
+        }
+
+        /// <summary>
+        /// Removes a part with a given LegalId from the role.
+        /// </summary>
+        public void RemovePart(string LegalId)
+        {
+            Part? part = this.Parts.FirstOrDefault(p => p.LegalId == LegalId);
+            if (part != null)
+            {
+                this.Parts.Remove(part);
+                this.OnPropertyChanged(nameof(this.HasReachedMaxCount));
+                this.OnPropertyChanged(nameof(this.HasReachedMinCount));
+            }
+        }
+
+        /// <summary>
+        /// Removes a part object from the role.
+        /// </summary>
+        public void RemovePart(Part part)
+        {
+            this.Parts.Remove(part);
+            this.OnPropertyChanged(nameof(this.HasReachedMaxCount));
+            this.OnPropertyChanged(nameof(this.HasReachedMinCount));
         }
         #endregion
     }

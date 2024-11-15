@@ -54,7 +54,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 			foreach (Role role in this.Contract.Roles ?? Enumerable.Empty<Role>())
 			{
-				this.Roles.Add(new ObservableRole(role));
+				ObservableRole observableRole = new(role);
+				await observableRole.InitializeAsync(this.Contract);
+				this.Roles.Add(observableRole);
 			}
 
 			foreach (Part part in this.Contract.Parts ?? Enumerable.Empty<Part>())
