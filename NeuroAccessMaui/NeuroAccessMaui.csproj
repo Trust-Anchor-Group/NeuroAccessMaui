@@ -47,9 +47,23 @@
 		<CodesignKey>Apple Development: Maximiliam Berggren (6C6VB862B9)</CodesignKey>
 		<CodesignProvision>Neuro-Access Development Profile</CodesignProvision>
 		<PublishTrimmed>True</PublishTrimmed>
-		<UseInterpreter>False</UseInterpreter>
+		<UseInterpreter>True</UseInterpreter>
 		<MtouchLink>SdkOnly</MtouchLink>
 		<NoSymbolStrip>True</NoSymbolStrip>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
+		<DebugSymbols>False</DebugSymbols>
+		<PublishTrimmed>True</PublishTrimmed> 
+		<RunAOTCompilation>True</RunAOTCompilation>
+		<UseInterpreter>False</UseInterpreter>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
+		<DebugSymbols>False</DebugSymbols>
+		<PublishTrimmed>True</PublishTrimmed> 
+		<RunAOTCompilation>True</RunAOTCompilation>
+		<UseInterpreter>True</UseInterpreter>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
