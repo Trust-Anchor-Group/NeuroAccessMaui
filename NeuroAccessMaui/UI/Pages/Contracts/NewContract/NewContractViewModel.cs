@@ -3,18 +3,20 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
-using NeuroAccessMaui.UI.Controls.Extended;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel;
 using NeuroAccessMaui.UI.Pages.Contracts.ObjectModel;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
-using Waher.Content.Xml;
 using Waher.Networking.XMPP.Contracts;
-using Waher.Persistence;
 using Waher.Script;
 using CommunityToolkit.Maui.Layouts;
+using Waher.Content;
+using Waher.Persistence;
+using NeuroAccessMaui.Services.Contacts;
+using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
+using NeuroAccessMaui.Services.UI;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 {
@@ -70,6 +72,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		private bool visibilityIsEnabled;
 
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(CanCreate))]
 		private string? selectedRole;
 
 		[ObservableProperty]
@@ -112,13 +115,22 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// If the parameters are valid.
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(CanCreate))]
+		[NotifyCanExecuteChangedFor(nameof(CreateCommand))]
 		private bool isParametersOk;
 
 		/// <summary>
 		/// If the roles are valid.
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(CanCreate))]
+		[NotifyCanExecuteChangedFor(nameof(CreateCommand))]
 		private bool isRolesOk;
+
+		/// <summary>
+		/// If Contract can be created
+		/// </summary>
+		private bool CanCreate => this.IsParametersOk && this.IsRolesOk && !string.IsNullOrEmpty(this.SelectedRole);
 
 		#endregion
 
@@ -137,16 +149,38 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			try
 			{
 				this.Contract = await ObservableContract.CreateAsync(this.args.Template);
-				this.Contract.ParameterChanged += this.Parameter_PropertyChanged;
-				await this.ValidateParametersAsync();
 
+				this.Contract.ParameterChanged += this.Parameter_PropertyChanged;
+
+				if(this.args.ParameterValues is not null)
+				{
+					// Set the parameter values
+					foreach (ObservableParameter p in this.Contract.Parameters)
+					{
+						if (this.args.ParameterValues.TryGetValue(p.Parameter.Name, out object? value))
+							p.Value = value;
+					}
+					// Set Role values
+					foreach (ObservableRole r in this.Contract.Roles)
+					{
+						if(this.args.ParameterValues.TryGetValue(r.Role.Name, out object? roleValue))
+						{
+							if(roleValue is string legalID)
+								r.AddPart(legalID);
+						}
+					}
+				}
+				await this.ValidateParametersAsync();
 				await this.GoToState(NewContractStep.Overview);
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex);
 				ServiceRef.LogService.LogException(ex);
-
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.Error)],
+					ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)],
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				await this.GoBack();
 				// TODO: Handle error, perhaps change to an error state
 			}
 		}
@@ -238,6 +272,80 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		#endregion
 
 		#region Commands
+
+		[RelayCommand(CanExecute = nameof(CanCreate), AllowConcurrentExecutions = false)]
+		private async Task CreateAsync()
+		{
+			if (this.Contract is null)
+				return;
+
+			await this.GoToState(NewContractStep.Loading);
+
+			ContractsClient client = ServiceRef.XmppService.ContractsClient;
+
+			Contract? CreatedContract = null;	
+			List<Part> Parts = [];
+			foreach (ObservableRole Role in this.Contract.Roles)
+			{
+				foreach (Part Part in Role.Parts)
+				{
+					Parts.Add(Part);
+				}
+			}
+
+			try
+			{
+				CreatedContract = await client.CreateContractAsync(
+					this.Contract.Contract.TemplateId, 
+					[.. Parts], 
+					this.Contract.Contract.Parameters, 
+					this.Contract.Contract.Visibility,
+					ContractParts.ExplicitlyDefined,
+					this.Contract.Contract.Duration ?? Duration.FromYears(1),
+					this.Contract.Contract.ArchiveRequired ?? Duration.FromYears(1),
+					this.Contract.Contract.ArchiveOptional ?? Duration.FromYears(1),
+					null, null, false);
+				CreatedContract = await ServiceRef.XmppService.SignContract(CreatedContract, this.SelectedRole!, false);
+
+				foreach (Part Part in Parts)
+				{
+					if (this.args?.SuppressedProposalLegalIds is not null && Array.IndexOf<CaseInsensitiveString>(this.args.SuppressedProposalLegalIds, Part.LegalId) >= 0)
+						continue;
+
+					ContactInfo Info = await ContactInfo.FindByLegalId(Part.LegalId);
+					if (Info is null || string.IsNullOrEmpty(Info.BareJid))
+						continue;
+					
+					await ServiceRef.XmppService.ContractsClient.AuthorizeAccessToContractAsync(CreatedContract.ContractId, Info.BareJid, true);
+
+					string? Proposal = await ServiceRef.UiService.DisplayPrompt(ServiceRef.Localizer[nameof(AppResources.Proposal)],
+						ServiceRef.Localizer[nameof(AppResources.EnterProposal), Info.FriendlyName],
+						ServiceRef.Localizer[nameof(AppResources.Send)],
+						ServiceRef.Localizer[nameof(AppResources.Cancel)]);
+
+					if (!string.IsNullOrEmpty(Proposal))
+						await ServiceRef.XmppService.SendContractProposal(CreatedContract, Part.Role, Info.BareJid, Proposal);
+				}
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
+
+			if(CreatedContract is null)
+			{
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.Error)],
+					ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)],
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				return;
+			}
+
+			ViewContractNavigationArgs Args = new(CreatedContract, false);
+			await ServiceRef.UiService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop2);
+
+		}
+
 
 		[RelayCommand(CanExecute = nameof(CanStateChange))]
 		public async Task Back()
