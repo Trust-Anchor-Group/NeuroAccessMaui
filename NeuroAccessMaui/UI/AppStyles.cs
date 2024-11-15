@@ -367,5 +367,14 @@ namespace NeuroAccessMaui.UI
 				return receiveFrame!;
 			}
 		}
+
+		public static Style RequiredFieldMarker
+		{
+			get
+			{
+				receiveFrame ??= TryGetResource<Style>("RequiredFieldMarker");
+				return receiveFrame!;
+			}
+		}
 	}
 }
