@@ -25,7 +25,7 @@
 
 	<Grid RowDefinitions="*, auto" ColumnDefinitions="*">
 		<ScrollView Grid.Row="0">
-			<VerticalStackLayout Padding="{StaticResource LargeMargins}" Spacing="{StaticResource MediumSpacing}">
+			<VerticalStackLayout Padding="{StaticResource MediumMargins}" Spacing="{StaticResource MediumSpacing}">
 				<!-- Parameters -->
 				<Border Style="{StaticResource BorderSet}" Margin="0" >
 					<CollectionView HorizontalOptions="Center"
