@@ -8,7 +8,7 @@
 	<ContentView.Resources>
 		<Style x:Key="ButtonBorder" TargetType="Border" BasedOn="{StaticResource BorderSet}">
 			<Setter Property="Margin" Value="0"/>
-			<Setter Property="Padding" Value="{StaticResource MediumMargins}" />
+			<Setter Property="Padding" Value="{StaticResource SmallMargins}" />
 		</Style>
 
 		<Style x:Key="ButtonIconBorder" TargetType="Border">
@@ -39,7 +39,7 @@
 		</Style>
 
 		<Style x:Key="ButtonTopLabel" TargetType="Label" BasedOn="{StaticResource BoldItemTitleLabel}">
-			<Setter Property="FontSize" Value="17"/>
+			<Setter Property="FontSize" Value="16"/>
 			<Setter Property="HorizontalTextAlignment" Value="Start"/>
 		</Style>
 		<Style x:Key="ButtonBottomLabel" TargetType="Label" BasedOn="{StaticResource ItemDescriptionLabel}">
@@ -61,7 +61,7 @@
 
 	<controls:TemplatedButton VerticalOptions="Start" Command="{Binding Command, Source={x:Reference This}}">
 		<Border Style="{StaticResource ButtonBorder}" VerticalOptions="Center">
-			<Grid ColumnDefinitions="auto,*,auto" ColumnSpacing="{StaticResource MediumSpacing}">
+			<Grid ColumnDefinitions="auto,*,auto" ColumnSpacing="{StaticResource SmallSpacing}" HeightRequest="80">
 				<!-- Icon Border -->
 				<Border Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Center" Style="{StaticResource ButtonIconBorder}">
 					<Border.Triggers>
