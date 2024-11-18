@@ -114,11 +114,14 @@
 		<Setter Property="VerticalOptions" Value="Center" />
 		<Setter Property="VerticalTextAlignment" Value="Center" />
 		<Setter Property="HorizontalTextAlignment" Value="Center" />
-		<Setter Property="LineBreakMode" Value="TailTruncation" />
+		<Setter Property="LineBreakMode" Value="WordWrap" />
+		<Setter Property="FontSize" Value="15"/>
+
 	</Style>
 
 	<Style x:Key="BoldItemTitleLabel" ApplyToDerivedTypes="False" BasedOn="{StaticResource RegularItemTitleLabel}" TargetType="Label">
 		<Setter Property="FontFamily" Value="SpaceGroteskBold" />
+
 	</Style>
 
 	<Style x:Key="RequiredFieldMarker" ApplyToDerivedTypes="False" TargetType="Label">
