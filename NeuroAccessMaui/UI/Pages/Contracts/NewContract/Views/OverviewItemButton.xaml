@@ -66,7 +66,8 @@
 				<Border Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Center" Style="{StaticResource ButtonIconBorder}">
 					<Border.Triggers>
 						<DataTrigger Binding="{Binding IsOk, Source={x:Reference This}}" TargetType="Border" Value="True">
-							<Setter Property="Style" Value="{StaticResource ButtonIconBorderOk}" />
+							<!-- Set the properties that need to change -->
+							<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource AccentActiveLight}, Dark={StaticResource AccentActiveDark}}" />
 						</DataTrigger>
 					</Border.Triggers>
 					<!-- Icon Path -->
@@ -75,7 +76,7 @@
                           Style="{StaticResource ButtonIconPath}">
 						<Path.Triggers>
 							<DataTrigger Binding="{Binding IsOk, Source={x:Reference This}}" TargetType="Path" Value="True">
-								<Setter Property="Style" Value="{StaticResource ButtonIconPathOk}" />
+								<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource OffWhiteLight}, Dark={StaticResource OffWhiteDark}}" />
 							</DataTrigger>
 						</Path.Triggers>
 					</Path>
@@ -91,18 +92,20 @@
 				<Border Grid.Column="2" VerticalOptions="Center" HorizontalOptions="Center" Style="{StaticResource CheckBoxBorder}">
 					<Border.Triggers>
 						<DataTrigger Binding="{Binding IsOk, Source={x:Reference This}}" TargetType="Border" Value="True">
-							<Setter Property="Style" Value="{StaticResource ButtonIconBorderOk}" />
+							<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource AccentActiveLight}, Dark={StaticResource AccentActiveDark}}" />
 						</DataTrigger>
 					</Border.Triggers>
 					<!-- CheckBox -->
 					<CheckBox HorizontalOptions="Center"
                               VerticalOptions="Center"
                               InputTransparent="True"
-                              IsChecked="{Binding IsOk, Source={x:Reference This}}"
-                              Style="{StaticResource ButtonCheckBox}">
+                              IsChecked="{Binding IsOk, Source={x:Reference This}}">
 						<CheckBox.Triggers>
 							<DataTrigger Binding="{Binding IsOk, Source={x:Reference This}}" TargetType="CheckBox" Value="True">
 								<Setter Property="Style" Value="{StaticResource ButtonCheckBoxOk}" />
+							</DataTrigger>
+							<DataTrigger Binding="{Binding IsOk, Source={x:Reference This}}" TargetType="CheckBox" Value="False">
+								<Setter Property="Style" Value="{StaticResource ButtonCheckBox}" />
 							</DataTrigger>
 						</CheckBox.Triggers>
 					</CheckBox>

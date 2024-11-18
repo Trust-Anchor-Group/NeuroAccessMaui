@@ -47,14 +47,14 @@
 				<!-- Parameters Button -->
 				<views:OverviewItemButton Command="{Binding GoToParametersCommand}"
                              IconData="{x:Static ui:Geometries.ContractEditPath}"
-                             IsOk="{Binding IsParametersOk}"
+                             IsOk="{Binding IsParametersOk, Mode=TwoWay}"
                              TopLabelText="{l:Localize SetParametersTitle}"
                              BottomLabelText="{l:Localize SetParametersDescription}"/>
 
 				<!-- Roles Button -->
 				<views:OverviewItemButton Command="{Binding GoToRolesCommand}"
                              IconData="{x:Static ui:Geometries.RolesPath}"
-                             IsOk="{Binding IsRolesOk}"
+                             IsOk="{Binding IsRolesOk, Mode=TwoWay}"
                              TopLabelText="{l:Localize SelectRolesTitle}"
                              BottomLabelText="{l:Localize SelectRolesDescription}"/>
 

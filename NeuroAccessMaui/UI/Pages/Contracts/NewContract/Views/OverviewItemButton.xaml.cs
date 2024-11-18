@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Microsoft.Maui.Controls.Shapes;
 
@@ -33,7 +34,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views
 		public bool IsOk
 		{
 			get => (bool)this.GetValue(IsOkProperty);
-			set => this.SetValue(IsOkProperty, value);
+			set
+			{
+				Console.WriteLine($"Setting IsOk to {value}");
+				this.SetValue(IsOkProperty, value);
+			}
 		}
 
 		// TopLabelText Property

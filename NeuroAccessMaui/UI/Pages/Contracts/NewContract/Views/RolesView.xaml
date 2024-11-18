@@ -14,57 +14,69 @@
                            xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract"
                            xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ObjectModel"
                            xmlns:xmpp="clr-namespace:Waher.Networking.XMPP.Contracts;assembly=Waher.Networking.XMPP.Contracts">
-                           
-    <ContentPage.Resources>
-        <Style x:Key="RoleTitleLabel" TargetType="Label" BasedOn="{StaticResource BoldItemTitleLabel}">
+
+	<ContentView.Resources>
+		<Style x:Key="RoleTitleLabel" TargetType="Label" BasedOn="{StaticResource BoldItemTitleLabel}">
 			<Setter Property="FontSize" Value="18"/>
 			<Setter Property="HorizontalTextAlignment" Value="Start"/>
 		</Style>
-    </ContentPage.Resources>
-        <!-- Roles Collection -->
-    <CollectionView ItemsSource="{Binding Contract.Roles}" SelectionMode="None" IsGrouped="False" ItemSizingStrategy="MeasureAllItems" Margin="{StaticResource SmallMargins}">
-        <CollectionView.HeaderTemplate>
-            <DataTemplate>
-                <Label Text="Select your role"/>
-            </DataTemplate>
-        </CollectionView.HeaderTemplate>
-        <CollectionView.ItemTemplate>
-            <DataTemplate x:DataType="objectModel:ObservableRole">
-                <Grid>
-                    <Border Style="{StaticResource BorderSet}">
-                        <VerticalStackLayout>
-                            <Label Text="{Binding Name}" Style="{StaticResource RoleTitleLabel}"/>
-                            <Label Text="{Binding Description}" />
-                            <!-- Part Collection -->
-                            <VerticalStackLayout BindableLayout.ItemsSource="{Binding Parts}">
-                                <BindableLayout.ItemTemplate>
-                                    <DataTemplate x:DataType="xmpp:Part">
-                                        <VerticalStackLayout>
-                                            <Label  Text="{Binding LegalId}" />
-                                            <Label Text="{Binding Role}" />
-                                        </VerticalStackLayout>
-                                    </DataTemplate>
-                                </BindableLayout.ItemTemplate>
-                            </VerticalStackLayout>
-                            
-                            <Border Style="{StaticResource BorderSet}" IsVisible="{Binding Path=HasReachedMaxCount, Converter={StaticResource InvertedBoolConverter}}">
-                            <controls:TemplatedButton >
-                                <Border Style="{StaticResource TransparentTemplateButtonBorder}" InputTransparent="True" HorizontalOptions="Fill" >
-                                    <Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center" >
-                                        <Path VerticalOptions="Center" HeightRequest="16" WidthRequest="16" Aspect="Uniform"
-                                        Data="{x:Static ui:Geometries.ApproveProviderIconPath}"
-                                        Style="{StaticResource TransparentTemplateButtonPath}"
-                                        />
-                                        <Label Grid.Column="1" Style="{StaticResource TransparentTemplateButtonLabel}" Margin="{StaticResource SmallLeftMargins}"  Text="Add Contact" />
-                                    </Grid>
-                                </Border>
-                            </controls:TemplatedButton>
-                            </Border>
-                        </VerticalStackLayout>
-                    </Border>
-                </Grid>
-            </DataTemplate>
-        </CollectionView.ItemTemplate>
-    </CollectionView>
+		<Style x:Key="RoleDescriptionLabel" TargetType="Label" BasedOn="{StaticResource ItemDescriptionLabel}">
+			<Setter Property="FontSize" Value="14"/>
+			<Setter Property="Margin" Value="0" />
+			<Setter Property="HorizontalTextAlignment" Value="Start"/>
+			<Setter Property="FontFamily" Value="SpaceGroteskMedium" />
+		</Style>
+	</ContentView.Resources>
+
+	<!-- Roles Collection -->
+	<CollectionView ItemsSource="{Binding Contract.Roles}" SelectionMode="None" IsGrouped="False" ItemSizingStrategy="MeasureAllItems" Margin="{StaticResource SmallMargins}">
+		<CollectionView.Header>
+			<Border Style="{StaticResource BorderSet}" >
+				<VerticalStackLayout>
+					<Label Text="Select your role" Style="{StaticResource RoleTitleLabel}"/>
+					<Picker Title="{l:Localize SelectYourRoleInThisContract}"
+									  ItemsSource="{Binding AvailableRoles}"
+									  SelectedItem="{Binding SelectedRole}">
+						<Picker.ItemDisplayBinding x:DataType="objectModel:ObservableRole">
+							<Binding Path="Name"/>
+						</Picker.ItemDisplayBinding>
+					</Picker>
+				</VerticalStackLayout>
+			</Border>
+		</CollectionView.Header>
+		<CollectionView.ItemTemplate>
+			<DataTemplate x:DataType="objectModel:ObservableRole">
+				<Grid>
+					<Border Style="{StaticResource BorderSet}">
+						<VerticalStackLayout>
+							<Label Text="{Binding Name}" Style="{StaticResource RoleTitleLabel}"/>
+							<Label Text="{Binding Description}" Style="{StaticResource RoleDescriptionLabel}" />
+							<!-- Part Collection -->
+							<VerticalStackLayout BindableLayout.ItemsSource="{Binding Parts}">
+								<BindableLayout.ItemTemplate>
+									<DataTemplate x:DataType="objectModel:ObservablePart">
+										<Border Style="{StaticResource BorderSet}">
+											<VerticalStackLayout>
+												<Label  Text="{Binding FriendlyName}" />
+											</VerticalStackLayout>
+										</Border>
+									</DataTemplate>
+								</BindableLayout.ItemTemplate>
+							</VerticalStackLayout>
+
+							<Border Style="{StaticResource BorderSet}" IsVisible="{Binding Path=HasReachedMaxCount, Converter={StaticResource InvertedBoolConverter}}">
+								<Grid ColumnDefinitions="*,*" ColumnSpacing="{StaticResource SmallSpacing}">
+									<controls:TextButton Grid.Column="0" LabelData="Add Contact" Style="{StaticResource TransparentTextButton}" Command="{Binding AddPartFromContactsCommand}"/>
+									<controls:TextButton Grid.Column="1" LabelData="{l:Localize ScanQRShort}" Style="{StaticResource TransparentTextButton}" Command="{Binding AddPartFromQrCommand}"/>
+
+
+								</Grid>
+							</Border>
+						</VerticalStackLayout>
+					</Border>
+				</Grid>
+			</DataTemplate>
+		</CollectionView.ItemTemplate>
+	</CollectionView>
 
 </views:BaseNewContractView>
