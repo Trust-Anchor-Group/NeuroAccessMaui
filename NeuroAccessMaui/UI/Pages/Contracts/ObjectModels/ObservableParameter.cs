@@ -35,7 +35,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			{
 				ServiceRef.LogService.LogException(e);
 			}
-			Console.WriteLine(this.Parameter.GetType().Name);
 		}
 
 		/// <summary>
@@ -160,7 +159,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		#region Property Change Handling
 		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
 		{
-			Console.WriteLine("Property Changed " + e.PropertyName);
 			base.OnPropertyChanged(e);
 		}
 		#endregion

@@ -61,9 +61,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 			foreach (Part part in this.Contract.Parts ?? Enumerable.Empty<Part>())
 			{
-				this.Roles
-					.FirstOrDefault(r => r.Name == part.Role)?
-					.AddPart(part);
+				ObservableRole? Role = this.Roles.FirstOrDefault(r => r.Name == part.Role);
+				if (Role is not null)
+					await Role.AddPart(part);
 			}
 		}
 
