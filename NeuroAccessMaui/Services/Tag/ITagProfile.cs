@@ -151,6 +151,11 @@ namespace NeuroAccessMaui.Services.Tag
 		string? NeuroFeaturesJid { get; set; }
 
 		/// <summary>
+		/// The XMPP server's Trust Provider ID, if any.
+		/// </summary>
+		string? TrustProviderId { get; set; }
+
+		/// <summary>
 		/// If Push Notification is supported by server.
 		/// </summary>
 		bool SupportsPushNotification { get; set; }
