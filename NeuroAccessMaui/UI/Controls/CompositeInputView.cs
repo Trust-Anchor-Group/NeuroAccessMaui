@@ -2,6 +2,10 @@ using System.ComponentModel;
 using CommunityToolkit.Maui.Converters;
 using Microsoft.Maui.Controls.Shapes;
 using Path = Microsoft.Maui.Controls.Shapes.Path;
+using FormatedString = Microsoft.Maui.Controls.FormattedString;
+using Microsoft.Maui.Graphics.Text;
+using Waher.Networking.XMPP.Contracts.HumanReadable.InlineElements;
+using NeuroAccessMaui.Resources.Languages;
 namespace NeuroAccessMaui.UI.Controls
 {
 
@@ -35,11 +39,18 @@ namespace NeuroAccessMaui.UI.Controls
 			};
 
 			// Row 1: Label
+			HorizontalStackLayout labelLayout = new HorizontalStackLayout();
 			this.label = new Label();
 			this.label.SetBinding(Label.TextProperty, new Binding(nameof(this.LabelText), source: this));
 			this.label.SetBinding(Label.StyleProperty, new Binding(nameof(this.LabelStyle), source: this));
 			this.label.SetBinding(Label.IsVisibleProperty, new Binding(nameof(this.CanShowLabel), source: this));
-			mainGrid.Add(this.label, 0, 0);
+			labelLayout.Children.Add(this.label);
+
+			Label requiredLabel = new Label { Style = AppStyles.RequiredFieldMarker};
+			requiredLabel.SetBinding(Label.IsVisibleProperty, new Binding(nameof(this.Required), source: this));
+			labelLayout.Children.Add(requiredLabel);
+
+			mainGrid.Add(labelLayout, 0, 0);
 
 			// Row 2: LeftView, CenterView, RightView
 			Grid contentGrid = new Grid
@@ -115,6 +126,16 @@ namespace NeuroAccessMaui.UI.Controls
 		}
 
 		#region Bindable Properties
+
+		public static readonly BindableProperty RequiredProperty =
+			BindableProperty.Create(nameof(Required), typeof(bool), typeof(CompositeInputView), false);
+
+		public bool Required
+		{
+			get => (bool)this.GetValue(RequiredProperty);
+			set => this.SetValue(RequiredProperty, value);
+		}
+
 		// LabelText Property
 		public static readonly BindableProperty LabelTextProperty =
 			 BindableProperty.Create(nameof(LabelText), typeof(string), typeof(CompositeInputView), string.Empty, propertyChanged: OnLabelChanged);
@@ -288,6 +309,7 @@ namespace NeuroAccessMaui.UI.Controls
 				  typeof(Shadow),
 				  typeof(CompositeInputView),
 				  new Shadow());
+
 		public Shadow BorderShadow
 		{
 			get => (Shadow)this.GetValue(BorderShadowProperty);

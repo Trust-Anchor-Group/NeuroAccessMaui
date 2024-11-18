@@ -190,11 +190,6 @@ namespace NeuroAccessMaui.UI.Controls
 			set => this.SetValue(BackgroundColorProperty, value);
 		}
 
-
-
-
-
-
 		#endregion
 
 		#region Fields

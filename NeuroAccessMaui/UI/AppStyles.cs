@@ -30,6 +30,7 @@ namespace NeuroAccessMaui.UI
 		private static Style? clickableFrameSubSet;
 		private static Style? regularCompositeEntry;
 		private static Style? regularCompositeEntryBorder;
+		private static Style? regularCompositeDatePicker;
 		private static Style? unicodeCharacterButton;
 		private static Style? imageOnlyButton;
 		private static Style? transparentImageButton;
@@ -367,5 +368,13 @@ namespace NeuroAccessMaui.UI
 			}
 		}
 
+		public static Style RequiredFieldMarker
+		{
+			get
+			{
+				receiveFrame ??= TryGetResource<Style>("RequiredFieldMarker");
+				return receiveFrame!;
+			}
+		}
 	}
 }
