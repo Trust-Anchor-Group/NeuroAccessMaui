@@ -7,6 +7,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views
 		public ParametersView()
 		{
 			this.InitializeComponent();
+
 		}
 	}
 }

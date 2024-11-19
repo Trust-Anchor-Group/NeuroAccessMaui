@@ -23,8 +23,6 @@
 					<VerticalStackLayout>
 						<Border Style="{StaticResource BorderSubSet}">
 							<Label Text="{Binding Path=Contract.Category}" Style="{StaticResource PageTitleLabel}" HorizontalTextAlignment="Center"/>
-
-
 						</Border>
 						<controls:TemplatedButton Command="{Binding GoToPreviewCommand}">
 							<Border Style="{StaticResource BorderSubSet}">
@@ -37,11 +35,18 @@
 								</Grid>
 							</Border>
 						</controls:TemplatedButton>
-						<Picker Title="{l:Localize SelectWhoShouldHaveAccessToThisContract}"
-									  ItemsSource="{Binding Path=ContractVisibilityItems}"
-									  SelectedItem="{Binding Path=SelectedContractVisibilityItem, Mode=TwoWay}"
-									  />
+
+
 					</VerticalStackLayout>
+				</Border>
+				<Border Style="{StaticResource BorderSet}" Margin="0">
+					<controls:CompositePicker
+									LabelText="{l:Localize SelectWhoShouldHaveAccessToThisContract }"
+									Style="{StaticResource RegularCompositePicker}"
+									Margin="{StaticResource SmallMargins}"
+									Placeholder="{l:Localize SelectWhoShouldHaveAccessToThisContract}"
+									ItemsSource="{Binding Path=ContractVisibilityItems}"
+									SelectedItem="{Binding Path=SelectedContractVisibilityItem}" />
 				</Border>
 
 				<!-- Parameters Button -->
@@ -70,7 +75,7 @@
 				</Grid.ColumnDefinitions>
 
 				<controls:TextButton Style="{StaticResource TransparentTextButton}" Grid.Column="0" LabelData="{l:Localize Back}" Command="{Binding BackCommand}" />
-				<controls:TextButton Style="{StaticResource FilledTextButton}" Grid.Column="1" LabelData="{l:Localize Create}" Command="{Binding BackCommand}" />
+				<controls:TextButton Style="{StaticResource FilledTextButton}" Grid.Column="1" LabelData="{l:Localize Create}" Command="{Binding CreateCommand}" />
 
 			</Grid>
 		</Border>

@@ -23,58 +23,25 @@
 	</ContentView.Resources>
 
 
-	<Grid RowDefinitions="*, auto" ColumnDefinitions="*">
-		<ScrollView Grid.Row="0">
-			<VerticalStackLayout Padding="{StaticResource MediumMargins}" Spacing="{StaticResource MediumSpacing}">
-				<!-- Parameters -->
-				<Border Style="{StaticResource BorderSet}" Margin="0" >
-					<CollectionView HorizontalOptions="Center"
-								ItemsSource="{Binding Contract.Parameters}"
+	<!-- Parameters -->
+	<Grid>
+
+		<Border Style="{StaticResource BorderSet}" Margin="{StaticResource MediumMargins}" >
+			<CollectionView HorizontalOptions="Center"
+								ItemsSource="{Binding EditableParameters}"
 								ItemTemplate="{StaticResource ParameterTemplateSelector}"
 								SelectionMode="None" ItemSizingStrategy="MeasureAllItems"
 								>
-						<CollectionView.ItemsLayout>
-							<LinearItemsLayout Orientation="Vertical" ItemSpacing="{StaticResource MediumSpacing}" />
-						</CollectionView.ItemsLayout>
-						<CollectionView.EmptyView>
-							<Label Text="{l:Localize SomethingWentWrong}" />
-						</CollectionView.EmptyView>
-					</CollectionView>
-				</Border>
-			</VerticalStackLayout>
-		</ScrollView>
-		<Border Grid.Row="1" Style="{StaticResource BottomBarBorder}">
-			<Grid VerticalOptions="Center">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="*" />
-				</Grid.ColumnDefinitions>
-
-				<controls:TemplatedButton Grid.Column="0" Command="{x:Binding BackCommand}">
-					<Border Style="{StaticResource TransparentTemplateButtonBorder}" InputTransparent="True" HorizontalOptions="Fill" >
-						<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center" >
-							<Path VerticalOptions="Center" HeightRequest="16" WidthRequest="16" Aspect="Uniform"
-							  Data="{x:Static ui:Geometries.BackButtonPath}"
-							  Style="{StaticResource TransparentTemplateButtonPath}"
-							  />
-							<Label Grid.Column="1" Style="{StaticResource TransparentTemplateButtonLabel}" Margin="{StaticResource SmallLeftMargins}"  Text="{l:Localize Back}" />
-						</Grid>
-					</Border>
-				</controls:TemplatedButton>
-
-				<controls:TemplatedButton Grid.Column="1" Command="{x:Binding GoToParametersCommand}">
-					<Border Style="{StaticResource FilledTemplateButtonBorder}"  InputTransparent="True" HorizontalOptions="Fill">
-						<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
-							<Path VerticalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
-							  Data="{x:Static ui:Geometries.ShowIdIconPath}"
-							  Style="{StaticResource FilledTemplateButtonPath}"
-						/>
-							<Label Grid.Column="1" Style="{StaticResource FilledTemplateButtonLabel}" Margin="{StaticResource SmallLeftMargins}" Text="{l:Localize ShowIDShort}" />
-						</Grid>
-					</Border>
-				</controls:TemplatedButton>
-			</Grid>
+				<CollectionView.ItemsLayout>
+					<LinearItemsLayout Orientation="Vertical" ItemSpacing="{StaticResource MediumSpacing}" />
+				</CollectionView.ItemsLayout>
+				<CollectionView.EmptyView>
+					<Label Text="{l:Localize SomethingWentWrong}" />
+				</CollectionView.EmptyView>
+			</CollectionView>
 		</Border>
 	</Grid>
+
+
 
 </views:BaseNewContractView>

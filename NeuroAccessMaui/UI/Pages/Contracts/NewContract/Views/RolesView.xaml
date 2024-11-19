@@ -31,18 +31,23 @@
 	<!-- Roles Collection -->
 	<CollectionView ItemsSource="{Binding Contract.Roles}" SelectionMode="None" IsGrouped="False" ItemSizingStrategy="MeasureAllItems" Margin="{StaticResource SmallMargins}">
 		<CollectionView.Header>
-			<Border Style="{StaticResource BorderSet}" >
-				<VerticalStackLayout>
-					<Label Text="Select your role" Style="{StaticResource RoleTitleLabel}"/>
-					<Picker Title="{l:Localize SelectYourRoleInThisContract}"
-									  ItemsSource="{Binding AvailableRoles}"
-									  SelectedItem="{Binding SelectedRole}">
-						<Picker.ItemDisplayBinding x:DataType="objectModel:ObservableRole">
-							<Binding Path="Name"/>
-						</Picker.ItemDisplayBinding>
-					</Picker>
-				</VerticalStackLayout>
-			</Border>
+			<Grid>
+				<Border Style="{StaticResource BorderSet}" >
+					<VerticalStackLayout>
+						<Label Text="Select your role" Style="{StaticResource RoleTitleLabel}"/>
+						<controls:CompositePicker
+									Style="{StaticResource RegularCompositePicker}"
+									Placeholder="{l:Localize SelectYourRoleInThisContract}"
+									ItemsSource="{Binding AvailableRoles}"
+									SelectedItem="{Binding SelectedRole}">
+							<controls:CompositePicker.ItemDisplayBinding x:DataType="objectModel:ObservableRole">
+								<Binding Path="Name"/>
+							</controls:CompositePicker.ItemDisplayBinding>
+						</controls:CompositePicker>
+					</VerticalStackLayout>
+				</Border>
+			</Grid>
+
 		</CollectionView.Header>
 		<CollectionView.ItemTemplate>
 			<DataTemplate x:DataType="objectModel:ObservableRole">
@@ -56,9 +61,21 @@
 								<BindableLayout.ItemTemplate>
 									<DataTemplate x:DataType="objectModel:ObservablePart">
 										<Border Style="{StaticResource BorderSet}">
-											<VerticalStackLayout>
-												<Label  Text="{Binding FriendlyName}" />
-											</VerticalStackLayout>
+											<Grid ColumnDefinitions="*, auto">
+												<Label Grid.Column="0" Text="{Binding FriendlyName}" VerticalOptions="Center"/>
+												<controls:TemplatedButton Grid.Column="1"
+																				  IsVisible="{Binding IsThirdParty}"
+																				  Command="{Binding Source={RelativeSource AncestorType={x:Type objectModel:ObservableRole}}, Path=RemovePartCommand}"
+																				 CommandParameter="{Binding .}">
+													<Border WidthRequest="48" HeightRequest="48"  Style="{StaticResource TransparentTemplateButtonBorder}" Padding="{StaticResource SmallMargins}" Margin="0" Background="{AppThemeBinding Light={StaticResource Red20WarningLight}, Dark={StaticResource Red20WarningDark}}" >
+														<Path WidthRequest="24" HeightRequest="24"
+															Fill="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedWarningDark}}"				  
+															Data="{x:Static ui:Geometries.CancelPath}"
+															VerticalOptions="Center" HorizontalOptions="Center"/>
+													</Border>
+												</controls:TemplatedButton>
+
+											</Grid>
 										</Border>
 									</DataTemplate>
 								</BindableLayout.ItemTemplate>
