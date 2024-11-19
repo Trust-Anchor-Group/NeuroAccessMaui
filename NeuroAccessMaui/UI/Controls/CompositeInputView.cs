@@ -38,19 +38,39 @@ namespace NeuroAccessMaui.UI.Controls
 				}
 			};
 
-			// Row 1: Label
-			HorizontalStackLayout labelLayout = new HorizontalStackLayout();
+			// Row 1: Single Label with FormattedText
 			this.label = new Label();
-			this.label.SetBinding(Label.TextProperty, new Binding(nameof(this.LabelText), source: this));
+			FormattedString formattedString = new FormattedString();
+
+			// Span for the main label text
+			Span labelSpan = new Span();
+			labelSpan.SetBinding(Span.TextProperty, new Binding(nameof(this.LabelText), source: this));
+
+			// Inherit styling from the owner label
+			labelSpan.SetBinding(Span.TextColorProperty, new Binding(nameof(this.label.TextColor), source: this.label));
+			labelSpan.SetBinding(Span.FontSizeProperty, new Binding(nameof(this.label.FontSize), source: this.label));
+			labelSpan.SetBinding(Span.FontFamilyProperty, new Binding(nameof(this.label.FontFamily), source: this.label));
+			labelSpan.SetBinding(Span.FontAttributesProperty, new Binding(nameof(this.label.FontAttributes), source: this.label));
+			labelSpan.SetBinding(Span.TextDecorationsProperty, new Binding(nameof(this.label.TextDecorations), source: this.label));
+			labelSpan.SetBinding(Span.CharacterSpacingProperty, new Binding(nameof(this.label.CharacterSpacing), source: this.label));
+			labelSpan.SetBinding(Span.LineHeightProperty, new Binding(nameof(this.label.LineHeight), source: this.label));
+			labelSpan.SetBinding(Span.TextTransformProperty, new Binding(nameof(this.label.TextTransform), source: this.label));
+			labelSpan.SetBinding(Span.BackgroundColorProperty, new Binding(nameof(this.label.BackgroundColor), source: this.label));
+			labelSpan.SetBinding(Span.FontAutoScalingEnabledProperty, new Binding(nameof(this.label.FontAutoScalingEnabled), source: this.label));
+
+			formattedString.Spans.Add(labelSpan);
+
+			// Span for the required marker
+			Span requiredMarkerSpan = new Span();
+			requiredMarkerSpan.SetBinding(Span.TextProperty, new Binding(nameof(this.RequiredMarker), source: this));
+			requiredMarkerSpan.Style = AppStyles.RequiredFieldMarkerSpan;
+			formattedString.Spans.Add(requiredMarkerSpan);
+
+			this.label.FormattedText = formattedString;
 			this.label.SetBinding(Label.StyleProperty, new Binding(nameof(this.LabelStyle), source: this));
 			this.label.SetBinding(Label.IsVisibleProperty, new Binding(nameof(this.CanShowLabel), source: this));
-			labelLayout.Children.Add(this.label);
 
-			Label requiredLabel = new Label { Style = AppStyles.RequiredFieldMarker};
-			requiredLabel.SetBinding(Label.IsVisibleProperty, new Binding(nameof(this.Required), source: this));
-			labelLayout.Children.Add(requiredLabel);
-
-			mainGrid.Add(labelLayout, 0, 0);
+			mainGrid.Add(this.label, 0, 0);
 
 			// Row 2: LeftView, CenterView, RightView
 			Grid contentGrid = new Grid
@@ -128,7 +148,12 @@ namespace NeuroAccessMaui.UI.Controls
 		#region Bindable Properties
 
 		public static readonly BindableProperty RequiredProperty =
-			BindableProperty.Create(nameof(Required), typeof(bool), typeof(CompositeInputView), false);
+			  BindableProperty.Create(
+					 nameof(Required),
+					 typeof(bool),
+					 typeof(CompositeInputView),
+					 false,
+					 propertyChanged: OnRequiredChanged);
 
 		public bool Required
 		{
@@ -200,30 +225,30 @@ namespace NeuroAccessMaui.UI.Controls
 		/// Bindable property for the style applied to the validation label.
 		/// </summary>
 		public static readonly BindableProperty ValidationLabelStyleProperty =
-			BindableProperty.Create(nameof(ValidationLabelStyle), typeof(Style), typeof(CompositeInputView));
+			 BindableProperty.Create(nameof(ValidationLabelStyle), typeof(Style), typeof(CompositeInputView));
 
 		/// <summary>
 		/// Gets or sets the style applied to the validation label.
-		/// </summary>
-		public Style ValidationIconStyle
-		{
-			get => (Style)this.GetValue(ValidationIconStyleProperty);
-			set => this.SetValue(ValidationIconStyleProperty, value);
-		}
-
-		/// <summary>
-		/// Bindable property for the style applied to the label above the entry.
-		/// </summary>
-		public static readonly BindableProperty ValidationIconStyleProperty =
-			BindableProperty.Create(nameof(ValidationIconStyle), typeof(Style), typeof(CompositeInputView));
-
-		/// <summary>
-		/// Gets or sets the style applied to the label above the entry.
 		/// </summary>
 		public Style ValidationLabelStyle
 		{
 			get => (Style)this.GetValue(ValidationLabelStyleProperty);
 			set => this.SetValue(ValidationLabelStyleProperty, value);
+		}
+
+		/// <summary>
+		/// Bindable property for the style applied to the validation icon.
+		/// </summary>
+		public static readonly BindableProperty ValidationIconStyleProperty =
+			 BindableProperty.Create(nameof(ValidationIconStyle), typeof(Style), typeof(CompositeInputView));
+
+		/// <summary>
+		/// Gets or sets the style applied to the validation icon.
+		/// </summary>
+		public Style ValidationIconStyle
+		{
+			get => (Style)this.GetValue(ValidationIconStyleProperty);
+			set => this.SetValue(ValidationIconStyleProperty, value);
 		}
 
 		// IsValid Property
@@ -259,7 +284,7 @@ namespace NeuroAccessMaui.UI.Controls
 			get => (Color)this.GetValue(ValidationColorProperty);
 			set => this.SetValue(ValidationColorProperty, value);
 		}
-
+		public string RequiredMarker => this.Required ? "*" : string.Empty;
 
 
 		#endregion
@@ -293,7 +318,7 @@ namespace NeuroAccessMaui.UI.Controls
 		public static readonly BindableProperty BorderStrokeShapeProperty =
 			 BindableProperty.Create(
 				  nameof(BorderStrokeShape),
-				  typeof(IShape),
+				  typeof(Shape),
 				  typeof(CompositeInputView),
 				  new Rectangle());
 		public Shape BorderStrokeShape
@@ -345,6 +370,12 @@ namespace NeuroAccessMaui.UI.Controls
 		}
 
 		#endregion
+
+		private static void OnRequiredChanged(BindableObject bindable, object oldValue, object newValue)
+		{
+			CompositeInputView control = (CompositeInputView)bindable;
+			control.OnPropertyChanged(nameof(RequiredMarker));
+		}
 
 		private void OnBorderPropertyChanged(Object? sender, PropertyChangedEventArgs e)
 		{

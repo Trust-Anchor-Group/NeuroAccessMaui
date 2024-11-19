@@ -1,4 +1,5 @@
 ﻿using NeuroAccessMaui.UI.Controls.Extended;
+using NeuroAccessMaui.UI.Converters;
 
 namespace NeuroAccessMaui.UI.Controls
 {
@@ -140,7 +141,7 @@ namespace NeuroAccessMaui.UI.Controls
 		/// </summary>
 		public DateTime MinimumDate
 		{
-			get =>(DateTime)this.GetValue(MinimumDateProperty);
+			get => (DateTime)this.GetValue(MinimumDateProperty);
 			set => this.SetValue(MinimumDateProperty, value);
 		}
 
@@ -194,11 +195,11 @@ namespace NeuroAccessMaui.UI.Controls
 
 			this.SetDefaultDate();
 
-			this.picker.SetBinding(DatePicker.DateProperty, new Binding(nameof(this.NullableDate), BindingMode.TwoWay, source: this));
+			this.picker.SetBinding(DatePicker.DateProperty, new Binding(nameof(this.NullableDate), BindingMode.TwoWay, new NullableDateTimeConverter(), source: this));
 			this.picker.SetBinding(DatePicker.MinimumDateProperty, new Binding(nameof(this.MinimumDate), source: this));
 			this.picker.SetBinding(DatePicker.MaximumDateProperty, new Binding(nameof(this.MaximumDate), source: this));
 			this.picker.SetBinding(DatePicker.TextColorProperty, new Binding(nameof(this.TextColor), source: this));
-			
+
 			this.CenterView = this.picker;
 		}
 

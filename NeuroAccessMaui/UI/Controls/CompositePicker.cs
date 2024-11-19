@@ -123,9 +123,9 @@ namespace NeuroAccessMaui.UI.Controls
 		public static readonly BindableProperty SelectedItemProperty =
 			BindableProperty.Create(nameof(SelectedItem), typeof(object), typeof(CompositePicker), null, BindingMode.TwoWay);
 
-		public ISO_5218_Gender SelectedItem
+		public object SelectedItem
 		{
-			get => (ISO_5218_Gender)this.GetValue(SelectedItemProperty);
+			get => (object)this.GetValue(SelectedItemProperty);
 			set => this.SetValue(SelectedItemProperty, value);
 		}
 
