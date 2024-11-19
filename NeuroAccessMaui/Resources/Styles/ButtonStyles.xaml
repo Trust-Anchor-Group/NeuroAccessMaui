@@ -201,7 +201,7 @@
 	<!-- Template Styles -->
 	<Style ApplyToDerivedTypes="True" TargetType="Border" x:Key="FilledTemplateButtonBorder">
 		<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource EnabledFilledButtonBackgroundLight}, Dark={StaticResource EnabledFilledButtonBackgroundDark}}" />
-		<Setter Property="StrokeShape" Value="RoundRectangle 4" />
+		<Setter Property="StrokeShape" Value="RoundRectangle 8" />
 		<Setter Property="Padding" Value="{StaticResource SmallMargins}" />
 		<Setter Property="Margin" Value="{StaticResource SmallMargins}" />
 		<Setter Property="VisualStateManager.VisualStateGroups">
@@ -243,7 +243,7 @@
 
 	<Style ApplyToDerivedTypes="True" TargetType="Border" x:Key="TransparentTemplateButtonBorder">
 		<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource EnabledTransparentButtonBackgroundLight}, Dark={StaticResource EnabledTransparentButtonBackgroundDark}}" />
-		<Setter Property="StrokeShape" Value="RoundRectangle 4" />
+		<Setter Property="StrokeShape" Value="RoundRectangle 8" />
 		<Setter Property="Stroke" Value="{AppThemeBinding Light=Transparent, Dark={StaticResource EnabledTransparentButtonForegroundDark}}"/>
 		<Setter Property="Padding" Value="{StaticResource SmallMargins}" />
 		<Setter Property="Margin" Value="{StaticResource SmallMargins}" />

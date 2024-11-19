@@ -129,6 +129,11 @@
 		<Setter Property="Text" Value="*"/>
 	</Style>
 
+	<Style x:Key="RequiredFieldMarkerSpan" ApplyToDerivedTypes="False" TargetType="Span">
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource AlertLight}, Dark={StaticResource AlertDark}}"/>
+		<Setter Property="Text" Value="*"/>
+	</Style>
+
 	<Style x:Key="AlertLabel" TargetType="Label">
 		<Setter Property="TextColor"  Value="{AppThemeBinding Light={StaticResource AlertLight}, Dark={StaticResource AlertDark}}" />
 	</Style>
