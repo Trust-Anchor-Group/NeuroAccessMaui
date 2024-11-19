@@ -11,7 +11,7 @@ namespace NeuroAccessMaui.UI
 	{
 		private static readonly SortedDictionary<string, bool> missingStyles = [];
 		private static Timer? timer = null;
-		
+
 		private static double? smallSpacing;
 		private static ControlTemplate? radioButtonTemplate;
 		private static Thickness? smallBottomMargins;
@@ -36,6 +36,9 @@ namespace NeuroAccessMaui.UI
 		private static Style? transparentImageButton;
 		private static Style? sendFrame;
 		private static Style? receiveFrame;
+		private static Style? requiredFieldMarker;
+		private static Style? requiredFieldMarkerSpan;
+
 
 		static AppStyles()
 		{
@@ -243,7 +246,7 @@ namespace NeuroAccessMaui.UI
 		{
 			get
 			{
-				filledTextButton ??= TryGetResource<Style>("FilledTextButton");	// TODO: Remove NoRoundedCorners
+				filledTextButton ??= TryGetResource<Style>("FilledTextButton");   // TODO: Remove NoRoundedCorners
 				return filledTextButton!;
 			}
 		}
@@ -295,7 +298,7 @@ namespace NeuroAccessMaui.UI
 				return regularCompositeEntry!;
 			}
 		}
- 
+
 		/// <summary>
 		/// Style for borders in a regular composte entry control.
 		/// </summary>
@@ -303,7 +306,7 @@ namespace NeuroAccessMaui.UI
 		{
 			get
 			{
-				regularCompositeEntryBorder ??= TryGetResource<Style>("RegularCompositeEntryBorder");	// TODO: Remove NoRoundedCorners
+				regularCompositeEntryBorder ??= TryGetResource<Style>("RegularCompositeEntryBorder");  // TODO: Remove NoRoundedCorners
 				return regularCompositeEntryBorder!;
 			}
 		}
@@ -368,12 +371,27 @@ namespace NeuroAccessMaui.UI
 			}
 		}
 
+		/// <summary>
+		/// Style for required field marker labels
+		/// </summary>
 		public static Style RequiredFieldMarker
 		{
 			get
 			{
-				receiveFrame ??= TryGetResource<Style>("RequiredFieldMarker");
-				return receiveFrame!;
+				requiredFieldMarker ??= TryGetResource<Style>("RequiredFieldMarker");
+				return requiredFieldMarker!;
+			}
+		}
+
+		/// <summary>
+		/// Style for required field marker spans
+		/// </summary>
+		public static Style RequiredFieldMarkerSpan
+		{
+			get
+			{
+				requiredFieldMarkerSpan ??= TryGetResource<Style>("RequiredFieldMarkerSpan");
+				return requiredFieldMarkerSpan!;
 			}
 		}
 	}
