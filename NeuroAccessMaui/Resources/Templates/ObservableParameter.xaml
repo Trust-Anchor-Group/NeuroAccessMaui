@@ -49,39 +49,37 @@
 
 	<!-- DateParameterTemplate -->
 	<DataTemplate x:Key="DateParameterTemplate" x:DataType="objectModel:ObservableDateParameter">
-		<controls:CompositeInputView Style="{StaticResource RegularCompositeInputView}"
-												 IsValid="{Binding IsValid}"
-												 LabelText="{Binding Label}">
-			<controls:CompositeInputView.CenterView>
-				<extended:ExtendedDatePicker NullableDate="{Binding DateValue, Mode=TwoWay}"
-																	Placeholder="{Binding Guide}"
-																	VerticalOptions="Center" />
-			</controls:CompositeInputView.CenterView>
-		</controls:CompositeInputView>
+
+		<controls:CompositeDatePicker Style="{StaticResource RegularCompositeDatePicker}"
+													IsValid="{Binding IsValid}"
+													LabelText="{Binding Label}"
+													NullableDate="{Binding DateValue}"
+													Placeholder="{Binding Guide}"
+													VerticalOptions="Center" />
 	</DataTemplate>
 
 	<!-- NumericalParameterTemplate -->
 	<DataTemplate x:Key="NumericalParameterTemplate" x:DataType="objectModel:ObservableNumericalParameter">
 
-		<controls:CompositeEntry	Style="{StaticResource RegularCompositeEntry}"
-												EntryData="{Binding DecimalValue, Converter={StaticResource StringToDecimalConverter}}"
-												Keyboard="Numeric"
-												Placeholder="{Binding Guide}"
-												VerticalOptions="Center"
-												LabelText="{Binding Label}"
-												IsValid="{Binding IsValid}"/>
+		<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}"
+											EntryData="{Binding DecimalValue, Converter={StaticResource StringToDecimalConverter}}"
+											Keyboard="Numeric"
+											Placeholder="{Binding Guide}"
+											VerticalOptions="Center"
+											LabelText="{Binding Label}"
+											IsValid="{Binding IsValid}"/>
 	</DataTemplate>
 
 
 	<!-- StringParameterTemplate -->
 	<DataTemplate x:Key="StringParameterTemplate" x:DataType="objectModel:ObservableStringParameter">
-		<controls:CompositeEntry	Style="{StaticResource RegularCompositeEntry}"
-												EntryData="{Binding StringValue, Mode=TwoWay}"
-												Keyboard="Text"
-												Placeholder="{Binding Guide}"
-												VerticalOptions="Center"
-												LabelText="{Binding Label}"
-												IsValid="{Binding IsValid}" />
+		<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}"
+											EntryData="{Binding StringValue, Mode=TwoWay}"
+											Keyboard="Text"
+											Placeholder="{Binding Guide}"
+											VerticalOptions="Center"
+											LabelText="{Binding Label}"
+											IsValid="{Binding IsValid}" />
 	</DataTemplate>
 
 	<!-- TimeParameterTemplate -->
