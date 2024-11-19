@@ -178,10 +178,18 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		{
 			this.RemovePart(part.LegalId);
 		}
+
+		[RelayCommand]
+		private void RemovePart(ObservablePart? part)
+		{
+			if (part is null)
+				return;
+			this.RemovePart(part.LegalId);
+
+		}
 		#endregion
 
 		#region Commands
-
 		[RelayCommand(AllowConcurrentExecutions = false)]
 		private async Task AddPartFromContacts()
 		{

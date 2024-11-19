@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using Waher.Networking.XMPP.Contracts;
@@ -40,6 +41,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		{
 			try
 			{
+				if (this.IsMe)
+					return ServiceRef.Localizer[nameof(AppResources.Me)];
+
 				if (this.Part.LegalId == ServiceRef.TagProfile.TrustProviderId && !string.IsNullOrEmpty(ServiceRef.TagProfile.Domain))
 					return ServiceRef.TagProfile.Domain;
 
@@ -74,6 +78,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			private set => this.friendlyName = value;
 		}
 		private string? friendlyName = string.Empty;
+
+		public bool IsMe => this.Part.LegalId == ServiceRef.TagProfile.LegalIdentity?.Id;
+		public bool IsThirdParty => !this.IsMe;
 
 		#endregion
 

@@ -177,6 +177,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// </summary>
 		public bool IsTemplate => this.Contract.PartsMode == ContractParts.TemplateOnly;
 
+		public ContractVisibility Visibility => this.Contract.Visibility;
+
 		#endregion
 	}
 }
