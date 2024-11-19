@@ -9,9 +9,10 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
 using ZXing.Net.Maui.Controls;
-using DotNet.Meteor.HotReload.Plugin;
 using Microsoft.Maui.Platform;
-
+#if DEBUG
+using DotNet.Meteor.HotReload.Plugin;
+#endif
 
 
 #if ANDROID
