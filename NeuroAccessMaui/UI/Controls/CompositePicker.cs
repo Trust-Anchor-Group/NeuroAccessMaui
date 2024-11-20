@@ -151,7 +151,6 @@ namespace NeuroAccessMaui.UI.Controls
 			this.picker.SetBinding(Picker.TextColorProperty, new Binding(nameof(this.TextColor), source: this));
 			//this.picker.SetBinding(Picker.FontProperty, new Binding(nameof(this.Font), source: this));
 			this.picker.SetBinding(Picker.HorizontalTextAlignmentProperty, new Binding(nameof(this.XAlign), source: this));
-			this.picker.SetBinding(Picker.BackgroundColorProperty, new Binding(nameof(this.BackgroundColor), source: this));
 			this.picker.SetBinding(Picker.StyleProperty, new Binding(nameof(this.PickerStyle), source: this));
 			this.picker.SetBinding(Picker.SelectedItemProperty, new Binding(nameof(this.SelectedItem), source: this, mode: BindingMode.TwoWay));
 			this.picker.SetBinding(Picker.ItemsSourceProperty, new Binding(nameof(this.ItemsSource), source: this));
