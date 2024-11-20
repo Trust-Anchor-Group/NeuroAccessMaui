@@ -16,11 +16,14 @@
 	<Style x:Key="RegularCompositeDatePickerPicker" ApplyToDerivedTypes="False" TargetType="DatePicker">
 		<Setter Property="FontFamily" Value="HaasGroteskRegular" />
 		<Setter Property="FontSize" Value="18" />
+				<Setter Property="BackgroundColor" Value="Transparent" />
+
 	</Style>
 
 	<Style x:Key="RegularCompositePickerPicker" ApplyToDerivedTypes="False" TargetType="Picker">
 		<Setter Property="FontFamily" Value="HaasGroteskRegular" />
 		<Setter Property="FontSize" Value="18" />
+		<Setter Property="BackgroundColor" Value="Transparent" />
 	</Style>
 
 	<Style x:Key="RegularCompositePickerLabel" ApplyToDerivedTypes="False" TargetType="Label" BasedOn="{StaticResource BoldItemTitleLabel}">
@@ -88,7 +91,7 @@
 			</Setter.Value>
 		</Setter>
 		<Style.Triggers>
-			<Trigger TargetType="controls:CompositeDatePicker"
+			<Trigger TargetType="controls:CompositePicker"
 						Property="IsValid"
                   Value="False">
 				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedWarningDark}}" />
