@@ -1,11 +1,9 @@
-﻿
-
-namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views
+﻿namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views
 {
-	public abstract class BaseNewContractView : BaseContentView
-	{
-		public BaseNewContractView()
-		{
-		}
-	}
+    public class BaseNewContractView : BaseContentView
+    {
+        public BaseNewContractView()
+        {
+        }
+    }
 }
