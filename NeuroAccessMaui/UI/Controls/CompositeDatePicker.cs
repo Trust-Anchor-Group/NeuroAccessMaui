@@ -199,7 +199,7 @@ namespace NeuroAccessMaui.UI.Controls
 			this.picker.SetBinding(DatePicker.MinimumDateProperty, new Binding(nameof(this.MinimumDate), source: this));
 			this.picker.SetBinding(DatePicker.MaximumDateProperty, new Binding(nameof(this.MaximumDate), source: this));
 			this.picker.SetBinding(DatePicker.TextColorProperty, new Binding(nameof(this.TextColor), source: this));
-
+			this.picker.SetBinding(DatePicker.StyleProperty, new Binding(nameof(this.PickerStyle), source: this));
 			this.CenterView = this.picker;
 		}
 
