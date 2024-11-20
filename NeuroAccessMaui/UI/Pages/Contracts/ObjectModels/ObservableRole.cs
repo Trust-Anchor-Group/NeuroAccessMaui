@@ -1,4 +1,6 @@
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
@@ -25,6 +27,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			this.Role = role;
 			this.parts = new ObservableCollection<ObservablePart>();
 		}
+
+
 		#endregion
 
 		#region Initialization
@@ -58,6 +62,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			}
 		}
 		#endregion
+
 
 		#region Properties
 		/// <summary>
@@ -128,7 +133,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// Adds a part with a given LegalId to the role.
 		/// </summary>
 		/// <param name="LegalId"></param>
-		public async Task AddPart(string LegalId)
+		public async Task AddPart(string LegalId, bool Notify = true)
 		{
 			if (this.Parts.Any(p => string.Equals(p.LegalId, LegalId, StringComparison.OrdinalIgnoreCase)))
 				return;
@@ -142,6 +147,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				this.Parts.Add(ObservablePart);
 				this.OnPropertyChanged(nameof(this.HasReachedMaxCount));
 				this.OnPropertyChanged(nameof(this.HasReachedMinCount));
+				if (Notify)
+					this.OnPropertyChanged(nameof(this.Parts));
 			});
 		}
 
@@ -157,7 +164,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// <summary>
 		/// Removes a part with a given LegalId from the role.
 		/// </summary>
-		public void RemovePart(string LegalId)
+		public void RemovePart(string LegalId, bool Notify = true)
 		{
 			ObservablePart? part = this.Parts.FirstOrDefault(p => p.LegalId == LegalId);
 			if (part is not null)
@@ -167,6 +174,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 					this.Parts.Remove(part);
 					this.OnPropertyChanged(nameof(this.HasReachedMaxCount));
 					this.OnPropertyChanged(nameof(this.HasReachedMinCount));
+					if (Notify)
+						this.OnPropertyChanged(nameof(this.Parts));
 				});
 			}
 		}

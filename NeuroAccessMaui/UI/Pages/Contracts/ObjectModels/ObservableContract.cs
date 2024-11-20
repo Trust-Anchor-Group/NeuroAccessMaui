@@ -96,6 +96,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				foreach (ObservableRole role in e.NewItems)
 				{
 					role.PropertyChanged += this.Role_OnPropertyChanged;
+					role.Parts.CollectionChanged += this.Parts_CollectionChanged;
 				}
 			}
 			else if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems != null)
@@ -103,6 +104,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				foreach (ObservableRole role in e.OldItems)
 				{
 					role.PropertyChanged -= this.Role_OnPropertyChanged;
+					role.Parts.CollectionChanged -= this.Parts_CollectionChanged;
 				}
 			}
 		}
@@ -110,6 +112,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		#endregion
 
 		#region Property Changed Handlers
+
+		public event NotifyCollectionChangedEventHandler? PartChanged;
+		private void Parts_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+		{
+			this.PartChanged?.Invoke(sender, e);
+		}
 
 		/// <summary>
 		/// Occurs when a property value of any parameter changes.

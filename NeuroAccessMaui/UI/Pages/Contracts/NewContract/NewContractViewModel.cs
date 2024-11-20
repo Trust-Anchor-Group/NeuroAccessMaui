@@ -136,8 +136,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			this.IsParametersOk
 			&& this.IsRolesOk
 			&& !string.IsNullOrEmpty(this.SelectedRole?.Name ?? string.Empty)
-			&& this.SelectedContractVisibilityItem is not null
-			&& this.SelectedRole is not null;
+			&& this.SelectedContractVisibilityItem is not null;
 
 		#endregion
 
@@ -162,7 +161,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				this.Contract.ParameterChanged += this.Parameter_PropertyChanged;
 				this.Contract.RoleChanged += this.Role_PropertyChanged;
 
-				//this.Contract.Roles.CollectionChanged += this.ContractRoles_CollectionChanged;
 
 				await MainThread.InvokeOnMainThreadAsync(async () =>
 				{
@@ -332,16 +330,20 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				return;
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
+				// Store selected state
+				ObservableRole? previousSelectedRole = this.SelectedRole;
 				this.AvailableRoles.Clear();
 				foreach (ObservableRole Role in this.Contract.Roles)
 				{
-					bool isRoleSelected = this.SelectedRole is not null && Role.Name == this.SelectedRole.Name;
+					bool isRoleSelected = previousSelectedRole is not null && Role.Name == previousSelectedRole.Name;
 					if (isRoleSelected || Role.Parts.Count < Role.MaxCount)
 						this.AvailableRoles.Add(Role);
 				}
 
-				if (this.AvailableRoles.Count == 1)
+				if (this.AvailableRoles.Count == 1 && this.SelectedRole is null)
 					this.SelectedRole = this.AvailableRoles[0];
+				else
+					this.SelectedRole ??= previousSelectedRole;
 			});
 		}
 
@@ -463,6 +465,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			await this.GoToState(NewContractStep.Loading);
 			this.FilterAvailableRoles();
 			await this.GoToState(NewContractStep.Roles);
+
 		}
 
 		private async Task GoToOverview()
@@ -491,15 +494,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 		#region Event Handlers
 
-		private void ContractRoles_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-		{
-			this.FilterAvailableRoles();
-		}
-
 		private void Role_PropertyChanged(object? sender, PropertyChangedEventArgs e)
 		{
 			if (e.PropertyName == nameof(ObservableRole.Parts))
+			{
 				this.FilterAvailableRoles();
+			}
 		}
 
 		/// <summary>
@@ -513,12 +513,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 		partial void OnSelectedRoleChanged(ObservableRole? oldValue, ObservableRole? newValue)
 		{
-			//Fixes losing value when switching view
-			if (newValue is null)
-			{
-				this.SelectedRole = oldValue;
-				return;
-			}
 			MainThread.BeginInvokeOnMainThread(async () =>
 			{
 				string? MyLegalID = ServiceRef.TagProfile.LegalIdentity?.Id;
@@ -530,8 +524,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						ServiceRef.Localizer[nameof(AppResources.Ok)]);
 					return;
 				}
-				oldValue?.RemovePart(MyLegalID);
-				newValue?.AddPart(MyLegalID);
+				oldValue?.RemovePart(MyLegalID, false);
+				newValue?.AddPart(MyLegalID, false);
 			});
 		}
 
