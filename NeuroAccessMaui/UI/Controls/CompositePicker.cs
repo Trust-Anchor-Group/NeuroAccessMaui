@@ -112,7 +112,7 @@ namespace NeuroAccessMaui.UI.Controls
 		}
 
 		public static readonly BindableProperty ItemsSourceProperty =
-			BindableProperty.Create(nameof(ItemsSource), typeof(IList), typeof(CompositePicker), null, propertyChanged: ItemsSourceChanged);
+			BindableProperty.Create(nameof(ItemsSource), typeof(IList), typeof(CompositePicker), null);
 
 		public IList ItemsSource
 		{
@@ -157,14 +157,6 @@ namespace NeuroAccessMaui.UI.Controls
 			this.picker.SetBinding(Picker.ItemsSourceProperty, new Binding(nameof(this.ItemsSource), source: this));
 
 			this.CenterView = this.picker;
-		}
-
-		private static void ItemsSourceChanged(BindableObject bindable, object oldValue, object newValue)
-		{
-			if (bindable is CompositePicker picker)
-			{
-				picker.picker.ItemsSource = picker.ItemsSource;
-			}
 		}
 	}
 }
