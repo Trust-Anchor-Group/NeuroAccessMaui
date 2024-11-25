@@ -436,6 +436,11 @@
 		<Setter Property="BackgroundColor" Value="Transparent" />
 	</Style>
 
+	<Style ApplyToDerivedTypes="True" TargetType="Border" x:Key="RoundedBorder">
+		<Setter Property="StrokeShape" Value="RoundRectangle 8" />
+		<Setter Property="Stroke" Value="{AppThemeBinding Light=Transparent, Dark={StaticResource EnabledTransparentButtonForegroundDark}}"/>
+	</Style>
+
 	<Style x:Key="PopupGrid" ApplyToDerivedTypes="False" TargetType="Grid">
 		<Setter Property="Padding" Value="{StaticResource SmallMargins}" />
 		<Setter Property="HorizontalOptions" Value="Center" />
@@ -619,6 +624,14 @@
 						Radius="0"/>
 			</Setter.Value>
 		</Setter>
+	</Style>
+
+	<Style x:Key="BottomBarLabel" TargetType="Label">
+		<Setter Property="FontFamily" Value="SpaceGroteskBold" />
+		<Setter Property="HorizontalTextAlignment" Value="Start"/>
+		<Setter Property="VerticalTextAlignment" Value="Center"/>
+		<Setter Property="FontSize" Value="14"/>
+		<Setter Property="LineBreakMode" Value="WordWrap"/>
 	</Style>
 
 	<Style x:Key="AccentInfoBorder" ApplyToDerivedTypes="False" TargetType="Border">
