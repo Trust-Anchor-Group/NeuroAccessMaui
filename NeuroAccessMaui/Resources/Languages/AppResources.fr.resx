@@ -2406,4 +2406,43 @@
   <data name="NotCompletedOnboardingError" xml:space="preserve">
     <value>Il semble que vous n’ayez pas encore terminé le processus d’intégration. Veuillez terminer la configuration de votre compte pour accéder à cette fonctionnalité.</value>
   </data>
+  <data name="PreviewContract" xml:space="preserve">
+    <value>Prévisualiser le contrat</value>
+  </data>
+  <data name="SetParametersTitle" xml:space="preserve">
+    <value>Définir les paramètres</value>
+  </data>
+  <data name="SetParametersDescription" xml:space="preserve">
+    <value>Spécifier les variables qui régissent le contrat</value>
+  </data>
+  <data name="SelectRolesTitle" xml:space="preserve">
+    <value>Sélectionner les rôles</value>
+  </data>
+  <data name="SelectRolesDescription" xml:space="preserve">
+    <value>Sélectionner qui peut signer en tant que rôle</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Précédent</value>
+  </data>
+  <data name="SelectedRoleHasReachedMaximumNumberOfParts" xml:space="preserve">
+    <value>Le rôle sélectionné a atteint le nombre maximal de pièces</value>
+  </data>
+  <data name="PetitionIdentitySent" xml:space="preserve">
+    <value>Une demande de consultation de l’ID a été envoyée</value>
+  </data>
+  <data name="IDRequestSent" xml:space="preserve">
+    <value>Demande d’identité envoyée</value>
+  </data>
+  <data name="SelectYourRole" xml:space="preserve">
+    <value>Sélectionnez votre rôle</value>
+  </data>
+  <data name="ReviewContractTitle" xml:space="preserve">
+    <value>Contrat d’examen</value>
+  </data>
+  <data name="ReviewContractDescription" xml:space="preserve">
+    <value>Examinez attentivement les termes du contrat</value>
+  </data>
+  <data name="IHaveReadAndUnderstoodTheContract" xml:space="preserve">
+    <value>J’ai lu et compris les termes de ce contrat</value>
+  </data>
 </root>

@@ -2406,4 +2406,43 @@
   <data name="NotCompletedOnboardingError" xml:space="preserve">
     <value>Se pare că nu ați finalizat încă procesul de integrare. Vă rugăm să terminați configurarea contului pentru a accesa această funcție.</value>
   </data>
+  <data name="PreviewContract" xml:space="preserve">
+    <value>Previzualizați contractul</value>
+  </data>
+  <data name="SetParametersTitle" xml:space="preserve">
+    <value>Setați parametrii</value>
+  </data>
+  <data name="SetParametersDescription" xml:space="preserve">
+    <value>Specificați variabilele care guvernează contractul</value>
+  </data>
+  <data name="SelectRolesTitle" xml:space="preserve">
+    <value>Selectează rolurile</value>
+  </data>
+  <data name="SelectRolesDescription" xml:space="preserve">
+    <value>Selectați cine poate semna ca rol</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Spate</value>
+  </data>
+  <data name="SelectedRoleHasReachedMaximumNumberOfParts" xml:space="preserve">
+    <value>Rolul selectat a atins numărul maxim de piese</value>
+  </data>
+  <data name="PetitionIdentitySent" xml:space="preserve">
+    <value>A fost trimisă o solicitare de vizualizare a ID-ului</value>
+  </data>
+  <data name="IDRequestSent" xml:space="preserve">
+    <value>Solicitare de identificare trimisă</value>
+  </data>
+  <data name="SelectYourRole" xml:space="preserve">
+    <value>Selectează-ți rolul</value>
+  </data>
+  <data name="ReviewContractTitle" xml:space="preserve">
+    <value>Revizuirea contractului</value>
+  </data>
+  <data name="ReviewContractDescription" xml:space="preserve">
+    <value>Revizuiți cu atenție termenii contractului</value>
+  </data>
+  <data name="IHaveReadAndUnderstoodTheContract" xml:space="preserve">
+    <value>Am citit și am înțeles termenii acestui contract</value>
+  </data>
 </root>

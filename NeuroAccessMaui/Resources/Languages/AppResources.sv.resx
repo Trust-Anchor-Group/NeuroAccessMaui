@@ -2406,4 +2406,43 @@
 <data name="NotCompletedOnboardingError" xml:space="preserve">
   <value>Det verkar som att du inte har slutfört onboardingprocessen ännu. Slutför den för att få åtkomst till den här funktionen.</value>
 </data>
+<data name="PreviewContract" xml:space="preserve">
+  <value>Förhandsgranska kontrakt</value>
+</data>
+<data name="SetParametersTitle" xml:space="preserve">
+  <value>Ange parametrar</value>
+</data>
+<data name="SetParametersDescription" xml:space="preserve">
+  <value>Specificera de variabler som styr kontraktet</value>
+</data>
+<data name="SelectRolesTitle" xml:space="preserve">
+  <value>Välj roller</value>
+</data>
+<data name="SelectRolesDescription" xml:space="preserve">
+  <value>Välj vem som kan signera som vilken roll</value>
+</data>
+<data name="Back" xml:space="preserve">
+  <value>Tillbaka</value>
+</data>
+<data name="SelectedRoleHasReachedMaximumNumberOfParts" xml:space="preserve">
+  <value>Den valda rollen har nått det maximala antalet delar</value>
+</data>
+<data name="PetitionIdentitySent" xml:space="preserve">
+  <value>En begäran om att visa ID har skickats</value>
+</data>
+<data name="IDRequestSent" xml:space="preserve">
+  <value>ID-förfrågan skickad</value>
+</data>
+<data name="SelectYourRole" xml:space="preserve">
+  <value>Välj din roll</value>
+</data>
+<data name="ReviewContractTitle" xml:space="preserve">
+  <value>Granska avtalet</value>
+</data>
+<data name="ReviewContractDescription" xml:space="preserve">
+  <value>Granska noggrant kontraktsvillkoren</value>
+</data>
+<data name="IHaveReadAndUnderstoodTheContract" xml:space="preserve">
+  <value>Jag har läst och förstått villkoren i detta kontrakt</value>
+</data>
 </root>
