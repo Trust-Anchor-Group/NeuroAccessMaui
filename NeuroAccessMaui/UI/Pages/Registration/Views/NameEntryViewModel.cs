@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -41,7 +42,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			await base.OnDispose();
 		}
 
-		private Task XmppService_ConnectionStateChanged(object _, XmppState NewState)
+		private Task XmppService_ConnectionStateChanged(object? _, XmppState NewState)
 		{
 			this.OnPropertyChanged(nameof(this.IsXmppConnected));
 			this.CreateAccountCommand.NotifyCanExecuteChanged();
@@ -181,8 +182,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			// Join parts with dots
 			string result = string.Join(".", processedParts);
 
-			// Generate 4 random digits
-			string randomDigits = new Random().Next(0, 10000).ToString("D4");
+			string randomDigits = new Random().Next(0, 10000).ToString("D4", CultureInfo.InvariantCulture);
 			result += randomDigits;
 
 			// Replace multiple dots with a single dot

@@ -32,7 +32,7 @@
 							                         Grid.Column="0" Grid.Row="0" Keyboard="Numeric"
 							                         EntryData="{Binding Path=AmountText}"
 							                         BackgroundColor="{Binding AmountEntryValid, Converter={converters:ControlBgColor}}"
-							                         EntryHint="{Binding Path=Currency}"/>
+							                         Placeholder="{Binding Path=Currency}"/>
 
 							<controls:ImageButton Grid.Column="1" Grid.Row="0" PathData="{x:Static ui:Geometries.CalculatorPath}"
 														 Style="{StaticResource ImageOnlyButton}" Command="{Binding OpenCalculatorCommand}"

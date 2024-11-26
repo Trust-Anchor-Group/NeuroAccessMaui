@@ -46,7 +46,7 @@
 						<controls:CompositeEntry EntryData="{Binding Path=Message}" IsReadOnly="True" IsVisible="{Binding Path=HasMessage}"
 																 Style="{StaticResource RegularCompositeEntryNoRoundedCorners}"/>
 						<controls:TextButton LabelData="{l:Localize OpenMessageLink}" Command="{Binding OpenMessageLinkCommand}"
-													IsVisible="{Binding MessageIsUri}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
+													IsVisible="{Binding MessageIsUri}" Style="{StaticResource FilledTextButton}"/>
 						<Label Text="{l:Localize TransactionId}"/>
 						<controls:CompositeEntry EntryData="{Binding Path=Id}" IsReadOnly="True" Style="{StaticResource RegularCompositeEntryNoRoundedCorners}"/>
 					</VerticalStackLayout>

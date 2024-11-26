@@ -2400,4 +2400,49 @@
   <data name="PermitParametersText" xml:space="preserve">
     <value>Velg parameterne du vil gi tilgang til, hvis forespørselen godtas.</value>
   </data>
+  <data name="SomethingWentWrong" xml:space="preserve">
+    <value>Noe gikk galt</value>
+  </data>
+  <data name="NotCompletedOnboardingError" xml:space="preserve">
+    <value>Det ser ut til at du ikke har fullført onboarding-prosessen ennå. Fullfør konfigureringen av kontoen din for å få tilgang til denne funksjonen.</value>
+  </data>
+  <data name="PreviewContract" xml:space="preserve">
+    <value>Forhåndsvis kontrakt</value>
+  </data>
+  <data name="SetParametersTitle" xml:space="preserve">
+    <value>Angi parametere</value>
+  </data>
+  <data name="SetParametersDescription" xml:space="preserve">
+    <value>Angi variablene som styrer kontrakten</value>
+  </data>
+  <data name="SelectRolesTitle" xml:space="preserve">
+    <value>Velg roller</value>
+  </data>
+  <data name="SelectRolesDescription" xml:space="preserve">
+    <value>Velg hvem som kan signere som hvilken rolle</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Tilbake</value>
+  </data>
+  <data name="SelectedRoleHasReachedMaximumNumberOfParts" xml:space="preserve">
+    <value>Den valgte rollen har nådd maksimalt antall deler</value>
+  </data>
+  <data name="PetitionIdentitySent" xml:space="preserve">
+    <value>En forespørsel om å se ID er sendt</value>
+  </data>
+  <data name="IDRequestSent" xml:space="preserve">
+    <value>ID-forespørsel sendt</value>
+  </data>
+  <data name="SelectYourRole" xml:space="preserve">
+    <value>Velg din rolle</value>
+  </data>
+  <data name="ReviewContractTitle" xml:space="preserve">
+    <value>Gjennomgå kontrakt</value>
+  </data>
+  <data name="ReviewContractDescription" xml:space="preserve">
+    <value>Gå nøye gjennom vilkårene i kontrakten</value>
+  </data>
+  <data name="IHaveReadAndUnderstoodTheContract" xml:space="preserve">
+    <value>Jeg har lest og forstått vilkårene i denne kontrakten</value>
+  </data>
 </root>

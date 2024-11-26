@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<views:BaseNewContractView x:Name="ThisPage"
+                           x:Class="NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views.OverviewView"
+                           x:DataType="base:NewContractViewModel"
+                           xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                           xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+                           xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+                           xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+                           xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
+                           xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+                           xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views"
+                           xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract">
+
+
+
+	<Grid RowDefinitions="*, auto" ColumnDefinitions="*">
+		<ScrollView Grid.Row="0">
+			<VerticalStackLayout Padding="{StaticResource MediumMargins}" Spacing="{StaticResource MediumSpacing}">
+				<!-- TOP Set, name of contract etc -->
+				<Border Style="{StaticResource BorderSet}" Margin="0">
+						<Label Text="{Binding Path=Contract.Category}"
+										 Margin="{StaticResource SmallSpacing}"
+										 Style="{StaticResource PageTitleLabel}"
+										 HorizontalTextAlignment="Center"/>
+				</Border>
+				<Border Style="{StaticResource BorderSet}" Margin="0">
+					<controls:CompositePicker
+									LabelText="{l:Localize SelectWhoShouldHaveAccessToThisContract }"
+									Style="{StaticResource RegularCompositePicker}"
+									Margin="{StaticResource SmallMargins}"
+									Placeholder="{l:Localize SelectWhoShouldHaveAccessToThisContract}"
+									ItemsSource="{Binding Path=ContractVisibilityItems}"
+									SelectedItem="{Binding Path=SelectedContractVisibilityItem}" />
+				</Border>
+
+				<!-- Parameters Button -->
+				<views:OverviewItemButton Command="{Binding GoToParametersCommand}"
+                             IconData="{x:Static ui:Geometries.ContractEditPath}"
+                             IsOk="{Binding IsParametersOk, Mode=TwoWay}"
+                             TopLabelText="{l:Localize SetParametersTitle}"
+                             BottomLabelText="{l:Localize SetParametersDescription}"/>
+
+				<!-- Roles Button -->
+				<views:OverviewItemButton Command="{Binding GoToRolesCommand}"
+                             IconData="{x:Static ui:Geometries.RolesPath}"
+                             IsOk="{Binding IsRolesOk, Mode=TwoWay}"
+                             TopLabelText="{l:Localize SelectRolesTitle}"
+                             BottomLabelText="{l:Localize SelectRolesDescription}"/>
+
+				<views:OverviewItemButton Command="{Binding GoToPreviewCommand}"
+                             IconData="{x:Static ui:Geometries.ContractPath}"
+                             IsOk="{Binding IsContractOk, Mode=TwoWay}"
+                             TopLabelText="{l:Localize ReviewContractTitle}"
+                             BottomLabelText="{l:Localize ReviewContractDescription}"/>
+
+			</VerticalStackLayout>
+		</ScrollView>
+
+		<!-- BOTTOM BAR -->
+		<Border Grid.Row="1" Style="{StaticResource BottomBarBorder}">
+			<Grid HorizontalOptions="Fill" VerticalOptions="Center" ColumnSpacing="{StaticResource SmallSpacing}" Padding="{StaticResource SmallMargins}">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+
+				<controls:TextButton Style="{StaticResource TransparentTextButton}" Grid.Column="0" LabelData="{l:Localize Back}" Command="{Binding BackCommand}" />
+				<controls:TextButton Style="{StaticResource FilledTextButton}" Grid.Column="1" LabelData="{l:Localize Create}" Command="{Binding CreateCommand}" />
+
+			</Grid>
+		</Border>
+	</Grid>
+</views:BaseNewContractView>

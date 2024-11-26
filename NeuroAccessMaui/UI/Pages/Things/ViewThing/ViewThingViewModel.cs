@@ -194,7 +194,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 						if (string.IsNullOrEmpty(this.thing?.ObjectId))
 							await Database.Insert(this.thing);
 
-						MainThread.BeginInvokeOnMainThread(async () =>
+						MainThread.BeginInvokeOnMainThread(() =>
 						{
 							this.InContacts = true;
 						});

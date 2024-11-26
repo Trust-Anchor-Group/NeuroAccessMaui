@@ -8,7 +8,7 @@
 	<!-- Stroke, Icons, and Text-->
 	<Color x:Key="OffBlackLight">#181f25</Color>
 	<Color x:Key="OffBlack50Light">#80181f25</Color>
-	<Color x:Key="OffWhiteLight">#f5f5f7</Color>
+	<Color x:Key="OffWhiteLight">#f5f6f7</Color>
 	<Color x:Key="AccentActiveLight">#3e776d</Color>
 	<Color x:Key="RedErrorLight">#F2495c</Color>
 	<Color x:Key="BlueLink">#4f7eac</Color>

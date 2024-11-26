@@ -61,7 +61,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			return Task.CompletedTask;
 		}
 
-		private async Task XmppContracts_LegalIdentityChanged(object _, LegalIdentityEventArgs e)
+		private Task XmppContracts_LegalIdentityChanged(object _, LegalIdentityEventArgs e)
 		{
 			MainThread.BeginInvokeOnMainThread(async () =>
 			{
@@ -69,6 +69,8 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				this.CreateIdentityCommand.NotifyCanExecuteChanged();
 				await this.DoAssignProperties();
 			});
+
+			return Task.CompletedTask;
 		}
 
 		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
@@ -157,7 +159,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				else if (LegalIdentity.IsDiscarded())
 				{
 					await ServiceRef.TagProfile.ClearLegalIdentity();
-					/// TODO: Show error message
+					// TODO: Show error message
 					GoToRegistrationStep(RegistrationStep.ValidatePhone);
 				}
 			}

@@ -602,6 +602,7 @@ namespace NeuroAccessMaui.Services.Contracts
 						|| Contract.ForMachinesNamespace == Constants.ContractMachineNames.PaymentInstructionsNamespace)
 						{
 							CreationAttributesEventArgs creationAttr = await ServiceRef.XmppService.GetNeuroFeatureCreationAttributes();
+							ServiceRef.TagProfile.TrustProviderId = creationAttr.TrustProviderId;
 							ParameterValues ??= [];
 							ParameterValues.Add(new CaseInsensitiveString("TrustProvider"), creationAttr.TrustProviderId);
 						}

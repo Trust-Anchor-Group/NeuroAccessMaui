@@ -175,6 +175,12 @@ namespace NeuroAccessMaui.Services
 		public string? NeuroFeaturesJid { get; set; }
 
 		/// <summary>
+		/// Trust Provider Id
+		/// </summary>
+		[DefaultValueStringEmpty]
+		public string? TrustProviderId { get; set; }
+
+		/// <summary>
 		/// If Push Notification is supported by server.
 		/// </summary>
 		[DefaultValue(false)]
