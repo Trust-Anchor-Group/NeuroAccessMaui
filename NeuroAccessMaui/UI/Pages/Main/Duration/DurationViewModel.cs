@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.UI.Controls;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
@@ -54,7 +55,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Duration
 		[NotifyPropertyChangedFor(nameof(Minutes))]
 		[NotifyPropertyChangedFor(nameof(Seconds))]
 		[NotifyPropertyChangedFor(nameof(IsNegativeDuration))]
-		private Entry? entry;
+		private CompositeEntry? entry;
 
 		/// <inheritdoc/>
 		protected override void OnPropertyChanged(PropertyChangedEventArgs e)

@@ -36,9 +36,9 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 
 			this.navigationComplete = args?.NavigationCompletionSource;
 
-			this.LinkEntry.Entry.Keyboard = Keyboard.Url;
-			this.LinkEntry.Entry.IsSpellCheckEnabled = false;
-			this.LinkEntry.Entry.IsTextPredictionEnabled = false;
+			this.LinkEntry.Keyboard = Keyboard.Url;
+			this.LinkEntry.IsSpellCheckEnabled = false;
+			this.LinkEntry.IsTextPredictionEnabled = false;
 
 			StateContainer.SetCurrentState(this.GridWithAnimation, "AutomaticScan");
 
@@ -164,7 +164,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 					bool IsAutomaticScan = string.Equals(CurrentState, "AutomaticScan", StringComparison.OrdinalIgnoreCase);
 
 					if (!IsAutomaticScan)
-						this.LinkEntry.Entry.Unfocus();
+						this.LinkEntry.Unfocus();
 					else
 					{
 						this.CameraBarcodeReaderView.IsTorchOn = false;
@@ -183,7 +183,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 					await ViewModel.DoSwitchMode(IsAutomaticScan);
 
 					if (IsAutomaticScan)
-						this.LinkEntry.Entry.Focus();
+						this.LinkEntry.Focus();
 					else
 					{
 						// reinitialize the camera by switching it
@@ -233,7 +233,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		/// </summary>
 		private static bool CanPickPhoto() => false;
 
-		[RelayCommand (CanExecute = nameof(CanPickPhoto))]
+		[RelayCommand(CanExecute = nameof(CanPickPhoto))]
 		private async Task PickPhoto()
 		{
 			FileResult? result = await MediaPicker.PickPhotoAsync();

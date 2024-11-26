@@ -1,4 +1,5 @@
 ﻿using NeuroAccessMaui.Services.Tag;
+using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
 
 namespace NeuroAccessMaui
 {

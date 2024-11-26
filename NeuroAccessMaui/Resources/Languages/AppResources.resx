@@ -2406,4 +2406,43 @@
   <data name="NotCompletedOnboardingError" xml:space="preserve">
     <value>It looks like you haven’t completed the onboarding process yet. Please finish setting up your account to access this feature.</value>
   </data>
+  <data name="PreviewContract" xml:space="preserve">
+    <value>Preview contract</value>
+  </data>
+  <data name="SetParametersTitle" xml:space="preserve">
+    <value>Set parameters</value>
+  </data>
+  <data name="SetParametersDescription" xml:space="preserve">
+    <value>Specify the variables that govern the contract</value>
+  </data>
+  <data name="SelectRolesTitle" xml:space="preserve">
+    <value>Select roles</value>
+  </data>
+  <data name="SelectRolesDescription" xml:space="preserve">
+    <value>Select who can sign as which role</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="SelectedRoleHasReachedMaximumNumberOfParts" xml:space="preserve">
+    <value>The selected role has reached the maximum number of parts</value>
+  </data>
+  <data name="PetitionIdentitySent" xml:space="preserve">
+    <value>A request to view ID has been sent</value>
+  </data>
+  <data name="IDRequestSent" xml:space="preserve">
+    <value>ID request sent</value>
+  </data>
+  <data name="SelectYourRole" xml:space="preserve">
+    <value>Select your role</value>
+  </data>
+  <data name="ReviewContractTitle" xml:space="preserve">
+    <value>Review contract</value>
+  </data>
+  <data name="ReviewContractDescription" xml:space="preserve">
+    <value>Carefully review the terms of the contract</value>
+  </data>
+  <data name="IHaveReadAndUnderstoodTheContract" xml:space="preserve">
+    <value>I have read and understood the terms of this contract</value>
+  </data>
 </root>

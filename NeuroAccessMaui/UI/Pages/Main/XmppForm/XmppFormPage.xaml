@@ -53,7 +53,7 @@
 								</CollectionView.ItemTemplate>
 							</CollectionView>
 
-							<controls:TextButton Grid.Row="3" LabelData="{l:Localize Submit}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+							<controls:TextButton Grid.Row="3" LabelData="{l:Localize Submit}" Style="{StaticResource FilledTextButton}"
 														Command="{Binding SubmitCommand}" IsEnabled="{Binding IsFormOk}" Margin="{StaticResource SmallMargins}"/>
 						</Grid>
 				</Frame>

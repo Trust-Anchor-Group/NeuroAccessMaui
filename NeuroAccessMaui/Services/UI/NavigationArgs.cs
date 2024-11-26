@@ -8,12 +8,12 @@
 		private NavigationArgs? parentArgs = null;
 		private BackMethod backMethod = BackMethod.Inherited;
 		private string? uniqueId = null;
-		
+
 		/// <summary>
 		/// The completion source for the navigation task.
 		/// Will return true when the navigation and transitions are completed.
 		/// </summary>
-		public readonly TaskCompletionSource<bool> NavigationCompletionSource = new ();
+		public readonly TaskCompletionSource<bool> NavigationCompletionSource = new();
 
 		/// <summary>
 		/// Returns the task for <see cref="NavigationCompletionSource"/>
@@ -64,6 +64,9 @@
 
 				case BackMethod.Pop2:
 					return "../..";
+
+				case BackMethod.Pop3:
+					return "../../..";
 
 				case BackMethod.CurrentPage:
 					if (BackMethod == BackMethod.Inherited)

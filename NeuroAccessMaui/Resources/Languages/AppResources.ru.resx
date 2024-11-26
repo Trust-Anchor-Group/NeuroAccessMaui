@@ -2406,4 +2406,43 @@
   <data name="NotCompletedOnboardingError" xml:space="preserve">
     <value>Похоже, вы еще не завершили процесс онбординга. Завершите настройку учетной записи для доступа к этой функции.</value>
   </data>
+  <data name="PreviewContract" xml:space="preserve">
+    <value>Предварительный просмотр контракта</value>
+  </data>
+  <data name="SetParametersTitle" xml:space="preserve">
+    <value>Настройка параметров</value>
+  </data>
+  <data name="SetParametersDescription" xml:space="preserve">
+    <value>Указание переменных, которые управляют контрактом</value>
+  </data>
+  <data name="SelectRolesTitle" xml:space="preserve">
+    <value>Выбор ролей</value>
+  </data>
+  <data name="SelectRolesDescription" xml:space="preserve">
+    <value>Выберите, кто может подписываться как та или иная роль</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Назад</value>
+  </data>
+  <data name="SelectedRoleHasReachedMaximumNumberOfParts" xml:space="preserve">
+    <value>Выбранная роль достигла максимального количества деталей</value>
+  </data>
+  <data name="PetitionIdentitySent" xml:space="preserve">
+    <value>Отправлен запрос на просмотр ID</value>
+  </data>
+  <data name="IDRequestSent" xml:space="preserve">
+    <value>Отправлен запрос на удостоверение личности</value>
+  </data>
+  <data name="SelectYourRole" xml:space="preserve">
+    <value>Выберите свою роль</value>
+  </data>
+  <data name="ReviewContractTitle" xml:space="preserve">
+    <value>Пересмотр контракта</value>
+  </data>
+  <data name="ReviewContractDescription" xml:space="preserve">
+    <value>Внимательно ознакомьтесь с условиями договора</value>
+  </data>
+  <data name="IHaveReadAndUnderstoodTheContract" xml:space="preserve">
+    <value>Я прочитал и понял условия настоящего договора</value>
+  </data>
 </root>
