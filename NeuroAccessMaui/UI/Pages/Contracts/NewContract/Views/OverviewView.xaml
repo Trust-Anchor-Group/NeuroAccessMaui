@@ -20,24 +20,10 @@
 			<VerticalStackLayout Padding="{StaticResource MediumMargins}" Spacing="{StaticResource MediumSpacing}">
 				<!-- TOP Set, name of contract etc -->
 				<Border Style="{StaticResource BorderSet}" Margin="0">
-					<VerticalStackLayout>
-						<Border Style="{StaticResource BorderSubSet}">
-							<Label Text="{Binding Path=Contract.Category}" Style="{StaticResource PageTitleLabel}" HorizontalTextAlignment="Center"/>
-						</Border>
-						<controls:TemplatedButton Command="{Binding GoToPreviewCommand}">
-							<Border Style="{StaticResource BorderSubSet}">
-								<Grid ColumnDefinitions="*, auto">
-									<Label Grid.Column="0" Text="{l:Localize PreviewContract}" Style="{StaticResource TransparentTemplateButtonLabel}" Margin="{StaticResource SmallMargins}" HorizontalOptions="Start"  FontSize="18"/>
-									<Path Grid.Column="1" HorizontalOptions="End" VerticalOptions="Center" HeightRequest="20" WidthRequest="20" Aspect="Uniform"
-                              Data="{x:Static ui:Geometries.BackButtonPath}" Rotation="180"
-                              Style="{StaticResource TransparentTemplateButtonPath}"
-                              />
-								</Grid>
-							</Border>
-						</controls:TemplatedButton>
-
-
-					</VerticalStackLayout>
+						<Label Text="{Binding Path=Contract.Category}"
+										 Margin="{StaticResource SmallSpacing}"
+										 Style="{StaticResource PageTitleLabel}"
+										 HorizontalTextAlignment="Center"/>
 				</Border>
 				<Border Style="{StaticResource BorderSet}" Margin="0">
 					<controls:CompositePicker
@@ -62,6 +48,12 @@
                              IsOk="{Binding IsRolesOk, Mode=TwoWay}"
                              TopLabelText="{l:Localize SelectRolesTitle}"
                              BottomLabelText="{l:Localize SelectRolesDescription}"/>
+
+				<views:OverviewItemButton Command="{Binding GoToPreviewCommand}"
+                             IconData="{x:Static ui:Geometries.ContractPath}"
+                             IsOk="{Binding IsContractOk, Mode=TwoWay}"
+                             TopLabelText="{l:Localize ReviewContractTitle}"
+                             BottomLabelText="{l:Localize ReviewContractDescription}"/>
 
 			</VerticalStackLayout>
 		</ScrollView>

@@ -14,24 +14,22 @@
 
 	<Grid RowDefinitions="*, auto" ColumnDefinitions="*">
 		<Border  Grid.Row="0" Style="{StaticResource BorderSet}" Margin="{StaticResource MediumMargins}">
-
 			<ScrollView >
-				<ContentView  Content="{Binding HumanReadableText}" />
-		</ScrollView>
+				<ContentView Content="{Binding HumanReadableText}" />
+			</ScrollView>
 		</Border>
 
 
 		<!-- BOTTOM BAR -->
 		<Border Grid.Row="1" Style="{StaticResource BottomBarBorder}">
-			<Grid HorizontalOptions="Fill" VerticalOptions="Center" ColumnSpacing="{StaticResource SmallSpacing}" Padding="{StaticResource SmallMargins}">
+			<Grid HorizontalOptions="Center" VerticalOptions="Center" ColumnSpacing="{StaticResource SmallSpacing}" Padding="{StaticResource SmallMargins}">
 				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="auto" />
 					<ColumnDefinition Width="*" />
 				</Grid.ColumnDefinitions>
 
-				<controls:TextButton Style="{StaticResource FilledTextButton}" Grid.Column="0" LabelData="{l:Localize Back}" Command="{Binding BackCommand}" />
-				<controls:TextButton Style="{StaticResource FilledTextButton}" Grid.Column="1" LabelData="{l:Localize Create}" Command="{Binding BackCommand}" />
-
+				<CheckBox Grid.Column="0" IsChecked="{Binding IsContractOk}" Color="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffWhiteDark}}" />
+				<Label Grid.Column="1" Text="{l:Localize IHaveReadAndUnderstoodTheContract}" Style="{StaticResource BottomBarLabel}" />
 			</Grid>
 		</Border>
 	</Grid>
