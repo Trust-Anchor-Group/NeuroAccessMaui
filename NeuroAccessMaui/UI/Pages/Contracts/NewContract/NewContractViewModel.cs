@@ -72,6 +72,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		[NotifyPropertyChangedFor(nameof(CanCreate))]
 		private ObservableRole? selectedRole;
 
+		private ObservableRole? persistingSelectedRole;
+
 		public ObservableCollection<ObservableParameter> EditableParameters { get; set; } = [];
 
 
@@ -130,12 +132,21 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		private bool isRolesOk;
 
 		/// <summary>
+		/// If the user has reviewed the contract and sees it as valid.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(CanCreate))]
+		[NotifyCanExecuteChangedFor(nameof(CreateCommand))]
+		private bool isContractOk;
+
+		/// <summary>
 		/// If Contract can be created
 		/// </summary>
-		private bool CanCreate =>
+		public bool CanCreate =>
 			this.IsParametersOk
 			&& this.IsRolesOk
-			&& !string.IsNullOrEmpty(this.SelectedRole?.Name ?? string.Empty)
+			&& this.IsContractOk
+			&& this.persistingSelectedRole is not null
 			&& this.SelectedContractVisibilityItem is not null;
 
 		#endregion
@@ -157,10 +168,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			{
 				this.Contract = await ObservableContract.CreateAsync(this.args.Template);
 
-
 				this.Contract.ParameterChanged += this.Parameter_PropertyChanged;
-				this.Contract.RoleChanged += this.Role_PropertyChanged;
-
 
 				await MainThread.InvokeOnMainThreadAsync(async () =>
 				{
@@ -218,7 +226,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			if (this.Contract is not null)
 			{
 				this.Contract.ParameterChanged -= this.Parameter_PropertyChanged;
-				this.Contract.RoleChanged -= this.Role_PropertyChanged;
 			}
 			await base.OnDispose();
 		}
@@ -248,6 +255,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			});
 		}
 
+		/// <summary>
+		/// Checks if the contract can be created based on the validity of parameters and roles.
+		/// </summary>
 		private void CheckCanCreate()
 		{
 			if (this.Contract is null)
@@ -323,30 +333,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				ServiceRef.LogService.LogException(ex);
 			}
 		}
-
-		private void FilterAvailableRoles()
-		{
-			if (this.Contract is null)
-				return;
-			MainThread.BeginInvokeOnMainThread(() =>
-			{
-				// Store selected state
-				ObservableRole? previousSelectedRole = this.SelectedRole;
-				this.AvailableRoles.Clear();
-				foreach (ObservableRole Role in this.Contract.Roles)
-				{
-					bool isRoleSelected = previousSelectedRole is not null && Role.Name == previousSelectedRole.Name;
-					if (isRoleSelected || Role.Parts.Count < Role.MaxCount)
-						this.AvailableRoles.Add(Role);
-				}
-
-				if (this.AvailableRoles.Count == 1 && this.SelectedRole is null)
-					this.SelectedRole = this.AvailableRoles[0];
-				else
-					this.SelectedRole ??= previousSelectedRole;
-			});
-		}
-
 		#endregion
 
 		#region Commands
@@ -427,6 +413,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		}
 
 
+		/// <summary>
+		/// A custom back command, similar to inherited GoBack with Views in mind
+		/// </summary>
+		/// <returns></returns>
 		[RelayCommand(CanExecute = nameof(CanStateChange))]
 		public async Task Back()
 		{
@@ -440,6 +430,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					case NewContractStep.Overview:
 						await base.GoBack();
 						break;
+					case NewContractStep.Roles:
+						this.persistingSelectedRole = this.SelectedRole;
+						await this.GoToOverview();
+						break;
 					default:
 						await this.GoToState(NewContractStep.Overview);
 						this.CheckCanCreate();
@@ -452,6 +446,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			}
 		}
 
+		/// <summary>
+		/// Navigates to the parameters view
+		/// </summary>
 		[RelayCommand(CanExecute = nameof(CanStateChange))]
 		private async Task GoToParameters()
 		{
@@ -459,20 +456,49 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			await this.GoToState(NewContractStep.Parameters);
 		}
 
+		/// <summary>
+		/// Navigates to the roles view and restores SelectedRole
+		/// </summary>
 		[RelayCommand(CanExecute = nameof(CanStateChange))]
 		private async Task GoToRoles()
 		{
 			await this.GoToState(NewContractStep.Loading);
-			this.FilterAvailableRoles();
+			//		this.FilterAvailableRoles();
 			await this.GoToState(NewContractStep.Roles);
+			if (this.persistingSelectedRole is not null)
+				this.SelectedRole = this.persistingSelectedRole;
+			else
+			{
+				ObservableRole? AvailableRole = null;
+				foreach (ObservableRole Role in this.Contract?.Roles ?? [])
+				{
+					if (Role.Parts.Count < Role.MaxCount)
+					{
+						if (AvailableRole is null)
+							AvailableRole = Role;
+						else
+							return;
+					}
+				}
+				this.SelectedRole = AvailableRole;
+			}
 
 		}
 
+		/// <summary>
+		/// Navigates to the overview view and performs logic to check if create conditions are met
+		/// </summary>
 		private async Task GoToOverview()
 		{
+			await this.GoToState(NewContractStep.Loading);
+			this.CheckCanCreate();
 			await this.GoToState(NewContractStep.Overview);
 		}
 
+		/// <summary>
+		/// Loads the humand readable part of the contract and navigates to the Preview view
+		/// </summary>
+		/// <returns></returns>
 		[RelayCommand(CanExecute = nameof(CanStateChange))]
 		private async Task GoToPreview()
 		{
@@ -494,14 +520,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 		#region Event Handlers
 
-		private void Role_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-		{
-			if (e.PropertyName == nameof(ObservableRole.Parts))
-			{
-				this.FilterAvailableRoles();
-			}
-		}
-
 		/// <summary>
 		/// Event handler for when a parameter changes.
 		/// Validates the parameter.
@@ -513,6 +531,18 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 		partial void OnSelectedRoleChanged(ObservableRole? oldValue, ObservableRole? newValue)
 		{
+			if (newValue is null)
+				return;
+
+			ObservableRole? MyRole = null;
+			foreach (ObservableRole Role in this.Contract?.Roles ?? [])
+			{
+				foreach (ObservablePart Part in Role.Parts)
+				{
+					if (Part.IsMe)
+						MyRole = Role;
+				}
+			}
 			MainThread.BeginInvokeOnMainThread(async () =>
 			{
 				string? MyLegalID = ServiceRef.TagProfile.LegalIdentity?.Id;
@@ -524,8 +554,20 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						ServiceRef.Localizer[nameof(AppResources.Ok)]);
 					return;
 				}
-				oldValue?.RemovePart(MyLegalID, false);
-				newValue?.AddPart(MyLegalID, false);
+
+				if (newValue.Parts.Count < newValue.MaxCount)
+				{
+					MyRole?.RemovePart(MyLegalID, false);
+					newValue?.AddPart(MyLegalID, false);
+				}
+				else if (MyRole != newValue)
+				{
+					await ServiceRef.UiService.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.Error)],
+						ServiceRef.Localizer[nameof(AppResources.SelectedRoleHasReachedMaximumNumberOfParts)],
+						ServiceRef.Localizer[nameof(AppResources.Ok)]);
+					this.SelectedRole = MyRole;
+				}
 			});
 		}
 
