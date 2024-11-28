@@ -507,10 +507,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			await this.GoToState(NewContractStep.Loading);
 
-			string hrt = await this.Contract.Contract.ToMauiXaml(this.Contract.Contract.DeviceLanguage());
+			//string hrt = await this.Contract.Contract.ToMauiXaml(this.Contract.Contract.DeviceLanguage());
+			VerticalStackLayout hrt = await this.Contract.Contract.ToMaui(this.Contract.Contract.DeviceLanguage());
+
 			await MainThread.InvokeOnMainThreadAsync(() =>
 			{
-				this.HumanReadableText = new VerticalStackLayout().LoadFromXaml(hrt);
+				this.HumanReadableText = hrt;
+				//this.HumanReadableText = new VerticalStackLayout().LoadFromXaml(hrt);
 			});
 
 			await this.GoToState(NewContractStep.Preview);

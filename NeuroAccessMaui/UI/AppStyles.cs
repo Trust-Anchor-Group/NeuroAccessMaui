@@ -18,6 +18,7 @@ namespace NeuroAccessMaui.UI
 		private static Thickness? smallTopMargins;
 		private static Thickness? smallLeftMargins;
 		private static Thickness? smallRightMargins;
+		private static Thickness? smallMargins;
 		private static Style? sectionTitleLabelStyle;
 		private static Style? keyLabel;
 		private static Style? valueLabel;
@@ -163,6 +164,18 @@ namespace NeuroAccessMaui.UI
 			get
 			{
 				smallRightMargins ??= TryGetResource<Thickness>("SmallRightMargins");
+				return smallRightMargins.Value;
+			}
+		}
+
+		/// <summary>
+		/// Small margins
+		/// </summary>
+		public static Thickness SmallMargins
+		{
+			get
+			{
+				smallRightMargins ??= TryGetResource<Thickness>("SmallMargins");
 				return smallRightMargins.Value;
 			}
 		}

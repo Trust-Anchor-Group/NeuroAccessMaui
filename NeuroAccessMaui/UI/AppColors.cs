@@ -43,6 +43,8 @@
 		private static Color? normalEditForegroundLight;
 		private static Color? normalEditBackgroundDark;
 		private static Color? normalEditBackgroundLight;
+		private static Color? normalEditPlaceholderDark;
+		private static Color? normalEditPlaceholderLight;
 		private static Color? alertDark;
 		private static Color? alertLight;
 		private static Color? errorBackgroundDark;
@@ -431,6 +433,26 @@
 				{
 					normalEditBackgroundLight ??= AppStyles.TryGetResource<Color>("NormalEditBackgroundLight");
 					return normalEditBackgroundLight!;
+				}
+			}
+		}
+
+		/// <summary>
+		/// NormalEdit placeholder color.
+		/// </summary>
+		public static Color NormalEditPlaceholder
+		{
+			get
+			{
+				if (Application.Current?.RequestedTheme == AppTheme.Dark)
+				{
+					normalEditBackgroundDark ??= AppStyles.TryGetResource<Color>("NormalEditPlaceholderDark");
+					return normalEditPlaceholderDark!;
+				}
+				else
+				{
+					normalEditBackgroundLight ??= AppStyles.TryGetResource<Color>("NormalEditPlaceholderLight");
+					return normalEditPlaceholderLight!;
 				}
 			}
 		}
