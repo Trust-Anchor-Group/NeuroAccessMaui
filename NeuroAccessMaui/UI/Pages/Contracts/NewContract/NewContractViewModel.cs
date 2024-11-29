@@ -369,7 +369,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					this.Contract.Contract.ArchiveRequired ?? Duration.FromYears(1),
 					this.Contract.Contract.ArchiveOptional ?? Duration.FromYears(1),
 					null, null, false);
-				CreatedContract = await ServiceRef.XmppService.SignContract(CreatedContract, this.SelectedRole!.Name, false);
+				CreatedContract = await ServiceRef.XmppService.SignContract(CreatedContract, this.persistingSelectedRole!.Name, false);
 
 				foreach (Part Part in Parts)
 				{
