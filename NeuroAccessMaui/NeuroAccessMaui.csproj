@@ -332,6 +332,24 @@
 		<Compile Update="UI\Pages\Contracts\NewContract\Views\OverviewView.xaml.cs">
 		  <DependentUpon>OverviewView.xaml</DependentUpon>
 		</Compile>
+		<Compile Update="UI\Pages\Contracts\ViewContract\Views\LoadingView.xaml.cs">
+		  <DependentUpon>%(Filename)</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Pages\Contracts\ViewContract\Views\OverviewItemButton.xaml.cs">
+		  <DependentUpon>%(Filename)</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Pages\Contracts\ViewContract\Views\OverviewView.xaml.cs">
+		  <DependentUpon>%(Filename)</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Pages\Contracts\ViewContract\Views\ParametersView.xaml.cs">
+		  <DependentUpon>%(Filename)</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Pages\Contracts\ViewContract\Views\PreviewView.xaml.cs">
+		  <DependentUpon>%(Filename)</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Pages\Contracts\ViewContract\Views\RolesView.xaml.cs">
+		  <DependentUpon>%(Filename)</DependentUpon>
+		</Compile>
 		<Compile Update="UI\Pages\Main\ChangePassword\ChangePasswordPage.xaml.cs">
 			<DependentUpon>ChangePasswordPage.xaml</DependentUpon>
 		</Compile>
@@ -470,6 +488,24 @@
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Contracts\ViewContract\ViewContractPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Contracts\ViewContract\Views\LoadingView.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Contracts\ViewContract\Views\OverviewItemButton.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Contracts\ViewContract\Views\OverviewView.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Contracts\ViewContract\Views\ParametersView.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Contracts\ViewContract\Views\PreviewView.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Contracts\ViewContract\Views\RolesView.xaml">
+		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Main\Calculator\CalculatorPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
