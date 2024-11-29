@@ -1,4 +1,4 @@
-namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
+namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 {
 	/// <summary>
 	/// The different steps of creating a new contract.
