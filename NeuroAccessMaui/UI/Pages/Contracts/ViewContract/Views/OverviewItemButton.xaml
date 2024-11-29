@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views.OverviewItemButton"
+				 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+             x:Name="This"
+				 >
+	<ContentView.Resources>
+		<Style x:Key="ButtonBorder" TargetType="Border" BasedOn="{StaticResource BorderSet}">
+			<Setter Property="Margin" Value="0"/>
+			<Setter Property="Padding" Value="{StaticResource SmallMargins}" />
+		</Style>
+
+		<Style x:Key="ButtonIconBorder" TargetType="Border">
+			<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource Accent20Light}, Dark={StaticResource Accent20Dark}}" />
+			<Setter Property="StrokeShape" Value="RoundRectangle 8" />
+			<Setter Property="Stroke" Value="Transparent"/>
+			<Setter Property="WidthRequest" Value="48"/>
+			<Setter Property="HeightRequest" Value="48"/>
+		</Style>
+
+		<Style x:Key="ButtonIconBorderOk" TargetType="Border" BasedOn="{StaticResource ButtonIconBorder}">
+			<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource AccentActiveLight}, Dark={StaticResource AccentActiveDark}}" />
+		</Style>
+
+		<Style x:Key="CheckBoxBorder" TargetType="Border" BasedOn="{StaticResource ButtonIconBorder}">
+			<Setter Property="Background" Value="Transparent" />
+		</Style>
+
+		<Style x:Key="ButtonIconPath" TargetType="Path">
+			<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource AccentActiveLight}, Dark={StaticResource AccentActiveDark}}" />
+			<Setter Property="Aspect" Value="Uniform" />
+			<Setter Property="WidthRequest" Value="24"/>
+			<Setter Property="HeightRequest" Value="24"/>
+		</Style>
+
+		<Style x:Key="ButtonIconPathOk" TargetType="Path" BasedOn="{StaticResource ButtonIconPath}">
+			<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource OffWhiteLight}, Dark={StaticResource OffWhiteDark}}" />
+		</Style>
+
+		<Style x:Key="ButtonTopLabel" TargetType="Label" BasedOn="{StaticResource BoldItemTitleLabel}">
+			<Setter Property="FontSize" Value="16"/>
+			<Setter Property="HorizontalTextAlignment" Value="Start"/>
+		</Style>
+		<Style x:Key="ButtonBottomLabel" TargetType="Label" BasedOn="{StaticResource ItemDescriptionLabel}">
+			<Setter Property="FontSize" Value="14"/>
+			<Setter Property="Margin" Value="0" />
+			<Setter Property="HorizontalTextAlignment" Value="Start"/>
+			<Setter Property="FontFamily" Value="SpaceGroteskMedium" />
+		</Style>
+		<Style x:Key="ButtonCheckBox" TargetType="CheckBox">
+			<Setter Property="VerticalOptions" Value="Center"/>
+			<Setter Property="HorizontalOptions" Value="Center" />
+			<Setter Property="Color" Value="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffBlackDark}}"/>
+		</Style>
+
+		<Style x:Key="ButtonCheckBoxOk" TargetType="CheckBox" BasedOn="{StaticResource ButtonCheckBox}">
+			<Setter Property="Color" Value="{AppThemeBinding Light={StaticResource OffWhiteLight}, Dark={StaticResource OffWhiteDark}}"/>
+		</Style>
+	</ContentView.Resources>
+
+	<controls:TemplatedButton VerticalOptions="Start" Command="{Binding Command, Source={x:Reference This}}">
+		<Border Style="{StaticResource ButtonBorder}" VerticalOptions="Center">
+			<Grid ColumnDefinitions="auto,*,auto" ColumnSpacing="{StaticResource SmallSpacing}" HeightRequest="80">
+				<!-- Icon Border -->
+				<Border Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Center" Style="{StaticResource ButtonIconBorder}">
+					<Border.Triggers>
+						<DataTrigger Binding="{Binding IsOk, Source={x:Reference This}}" TargetType="Border" Value="True">
+							<!-- Set the properties that need to change -->
+							<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource AccentActiveLight}, Dark={StaticResource AccentActiveDark}}" />
+						</DataTrigger>
+					</Border.Triggers>
+					<!-- Icon Path -->
+					<Path VerticalOptions="Center"
+                          Data="{Binding IconData, Source={x:Reference This}}"
+                          Style="{StaticResource ButtonIconPath}">
+						<Path.Triggers>
+							<DataTrigger Binding="{Binding IsOk, Source={x:Reference This}}" TargetType="Path" Value="True">
+								<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource OffWhiteLight}, Dark={StaticResource OffWhiteDark}}" />
+							</DataTrigger>
+						</Path.Triggers>
+					</Path>
+				</Border>
+
+				<!-- Labels -->
+				<VerticalStackLayout Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center">
+					<Label Style="{StaticResource ButtonTopLabel}" Text="{Binding TopLabelText, Source={x:Reference This}}"/>
+					<Label Style="{StaticResource ButtonBottomLabel}" Text="{Binding BottomLabelText, Source={x:Reference This}}"/>
+				</VerticalStackLayout>
+
+				<!-- CheckBox Border -->
+				<Border Grid.Column="2" VerticalOptions="Center" HorizontalOptions="Center" Style="{StaticResource CheckBoxBorder}">
+					<Border.Triggers>
+						<DataTrigger Binding="{Binding IsOk, Source={x:Reference This}}" TargetType="Border" Value="True">
+							<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource AccentActiveLight}, Dark={StaticResource AccentActiveDark}}" />
+						</DataTrigger>
+					</Border.Triggers>
+					<!-- CheckBox -->
+					<CheckBox HorizontalOptions="Center"
+                              VerticalOptions="Center"
+                              InputTransparent="True"
+                              IsChecked="{Binding IsOk, Source={x:Reference This}}">
+						<CheckBox.Triggers>
+							<DataTrigger Binding="{Binding IsOk, Source={x:Reference This}}" TargetType="CheckBox" Value="True">
+								<Setter Property="Style" Value="{StaticResource ButtonCheckBoxOk}" />
+							</DataTrigger>
+							<DataTrigger Binding="{Binding IsOk, Source={x:Reference This}}" TargetType="CheckBox" Value="False">
+								<Setter Property="Style" Value="{StaticResource ButtonCheckBox}" />
+							</DataTrigger>
+						</CheckBox.Triggers>
+					</CheckBox>
+				</Border>
+			</Grid>
+		</Border>
+	</controls:TemplatedButton>
+</ContentView>
