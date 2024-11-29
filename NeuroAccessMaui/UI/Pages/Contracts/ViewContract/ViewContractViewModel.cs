@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.UI.Photos;
 using NeuroAccessMaui.UI.Converters;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
@@ -58,6 +59,30 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		private bool isContractOk;
 
 
+
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(HasProposalFriendlyName))]
+		[NotifyPropertyChangedFor(nameof(IsProposal))]
+		private string proposalFriendlyName;
+
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(HasProposalRole))]
+		private string proposalRole;
+
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(HasProposalMessage))]
+		[NotifyPropertyChangedFor(nameof(IsProposal))]
+		private string proposalMessage;
+
+		public bool IsProposal => !string.IsNullOrEmpty(this.ProposalRole) || !string.IsNullOrEmpty(this.ProposalMessage) || !string.IsNullOrEmpty(this.ProposalFriendlyName);
+
+		public bool HasProposalFriendlyName => !string.IsNullOrEmpty(this.ProposalFriendlyName);
+
+		public bool HasProposalRole => !string.IsNullOrEmpty(this.ProposalRole);
+
+		public bool HasProposalMessage => !string.IsNullOrEmpty(this.ProposalMessage);
+
+
 		private readonly ViewContractNavigationArgs? args;
 
 		/// <summary>
@@ -72,15 +97,72 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		/// <inheritdoc/>
 		protected override async Task OnInitialize()
 		{
-			if (this.args is null)
+			await base.OnInitialize();
+			if (this.args is null || this.args.Contract is null)
 			{
 				// TODO: Handle error, perhaps change to an error state
 				return;
 			}
 
+			try
+			{
+				ObservableContract Contract = await ObservableContract.CreateAsync(this.args.Contract);
+				string ProposalFriendlyName = string.Empty;
 
+				// If we have a proposal, try to find the friendly name of the sender and prepare observable properties
+				if(!string.IsNullOrEmpty(this.args.Proposal) && !string.IsNullOrEmpty(this.args.FromJID))
+				{
+					try
+					{
+						ContactInfo? info = await ContactInfo.FindByBareJid(this.args.FromJID);
+						if (!string.IsNullOrEmpty(info?.FriendlyName))
+							ProposalFriendlyName = info.FriendlyName;
+						else
+							ProposalFriendlyName = this.args.FromJID;
+					}
+					catch (Exception ex)
+					{
+						//Ignore, normal opereration
+					}
+				}
 
-			await base.OnInitialize();
+				
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
+					this.Contract = Contract;
+					this.GenerateQrCode(Constants.UriSchemes.CreateSmartContractUri(this.Contract.ContractId));
+					this.ProposalFriendlyName = ProposalFriendlyName;
+					this.ProposalRole = this.args.Role ?? string.Empty;
+					this.ProposalMessage = this.args.Proposal ?? string.Empty;
+				});
+
+				// Prepare displayable parameters
+				foreach (ObservableParameter p in this.Contract!.Parameters)
+				{
+					if (p.Parameter is null)
+						continue;
+
+					if (p.Parameter is BooleanParameter
+						|| p.Parameter is StringParameter
+						|| p.Parameter is NumericalParameter
+						|| p.Parameter is DateParameter
+						|| p.Parameter is TimeParameter
+						|| p.Parameter is DurationParameter
+						|| p.Parameter is DateTimeParameter
+						|| p.Parameter is CalcParameter)
+					{
+						this.DisplayableParameters.Add(p);
+					}
+				}
+
+				await this.GoToState(ViewContractStep.Overview);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)]);
+				await this.GoBack();
+			}
 		}
 
 		/// <inheritdoc/>
