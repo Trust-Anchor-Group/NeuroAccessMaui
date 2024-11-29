@@ -11,230 +11,62 @@
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract"
-							 xmlns:photos="clr-namespace:NeuroAccessMaui.Services.UI.Photos"
-							 xmlns:image="clr-namespace:NeuroAccessMaui.UI.Popups.Photos.Image">
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+							 xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views"
+							 xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ObjectModel"
+							 HideSoftInputOnTapped="True">
 
-		<controls:Background/>
+	<ContentPage.Resources>
+		<objectModel:ParameterTemplateSelector x:Key="ParameterTemplateSelector"
+		                                 BooleanTemplate="{StaticResource BooleanParameterTemplate}"
+		                                 DateTemplate="{StaticResource DateParameterTemplate}"
+		                                 NumericalTemplate="{StaticResource NumericalParameterTemplate}"
+		                                 StringTemplate="{StaticResource StringParameterTemplate}"
+		                                 TimeTemplate="{StaticResource TimeParameterTemplate}"
+		                                 DurationTemplate="{StaticResource DurationParameterTemplate}"
+		                                 DefaultTemplate="{StaticResource DefaultParameterTemplate}" />
+	</ContentPage.Resources>
 
-		<ScrollView>
-			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
-				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-											 Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}"/>
+	<Grid x:Name="TheMainGrid"
+	  RowDefinitions="auto, *"
+	  ColumnDefinitions="*"
+	  BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
 
-				<Label Text="{l:Localize ViewContract}" Style="{StaticResource PageTitleLabel}"/>
+		<controls:Background Grid.Row ="1"/>
 
-				<Frame Style="{StaticResource FrameSet}" IsVisible="{Binding IsProposal}">
-					<VerticalStackLayout>
-						<Label Text="{l:Localize Proposal}" Style="{StaticResource SectionTitleLabel}"/>
-						<Label Text="{Binding Path=Proposal}" Style="{StaticResource InfoLabel}"/>
-					</VerticalStackLayout>
-				</Frame>
+		<!-- Top Bar -->
+		<Grid Grid.Row="0" RowDefinitions="*" ColumnDefinitions="auto,*" Margin="{StaticResource SmallBottomMargins}">
+			<Grid.Padding>
+				<Thickness Left="{StaticResource LargeSpacing}" Top="{StaticResource LargeSpacing}" Right="{StaticResource LargeSpacing}" />
+			</Grid.Padding>
 
-				<Frame Style="{StaticResource FrameSet}">
-					<VerticalStackLayout>
-						<Image x:Name="QrCode" Source="{Binding QrCode}" IsVisible="{Binding HasQrCode}" WidthRequest="{Binding QrCodeWidth}"
-								 HeightRequest="{Binding QrCodeHeight}" HorizontalOptions="Center">
-							<Image.GestureRecognizers>
-								<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding ContractId}" />
-							</Image.GestureRecognizers>
-						</Image>
+			<controls:ImageButton Grid.Row="0" Grid.Column="0" IsVisible="{Binding CanStateChange}" Command="{Binding BackCommand}" Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-						<HorizontalStackLayout HorizontalOptions="Center" Spacing="{StaticResource SmallSpacing}">
-							<Path VerticalOptions="Center" HeightRequest="20" WidthRequest="20" Aspect="Uniform"
-									Data="{x:Static ui:Geometries.CirclePath}"
-									Fill="{Binding State, Converter={converters:ContractStateToColor}}" />
+			<!--	<Image HorizontalOptions="Center" VerticalOptions="Start" Source="{AppThemeBinding Light=neuro_assets_icon_dark, Dark=neuro_assets_icon_light}" WidthRequest="50" HeightRequest="50" />-->
+			<Label Grid.Row="0" Grid.Column="1" Style="{StaticResource PageTitleLabel}" Text="{l:Localize NewContract}" HorizontalTextAlignment="End"/>
+		</Grid>
+		<!-- Main Content -->
+		<Grid x:Name="StateGrid"
+			Grid.Row="1"
+			mct:StateContainer.CurrentState="{Binding CurrentState, Mode=OneWayToSource}" 
+			mct:StateContainer.CanStateChange="{Binding CanStateChange, Mode=OneWayToSource}" >
 
-							<Label Style="{StaticResource ValueLabel}" Text="{Binding State, Converter={converters:LocalizedState}}" />
-						</HorizontalStackLayout>
+			<mct:StateContainer.StateViews>
+				<views:OverviewView x:Name="OverviewView" mct:StateView.StateKey="Overview" />
+				<views:LoadingView x:Name="LoadingView" mct:StateView.StateKey="Loading" />
+				<views:ParametersView x:Name="ParametersView" mct:StateView.StateKey="Parameters" />
+				<views:RolesView x:Name="RolesView" mct:StateView.StateKey="Roles" />
+				<views:PreviewView x:Name="PreviewView" mct:StateView.StateKey="Preview" />
+			</mct:StateContainer.StateViews>
 
-						<ContentView Content="{Binding Path=HumanReadableText}" Margin="{StaticResource SmallBottomMargins}"/>
-					</VerticalStackLayout>
-				</Frame>
+			<!-- default state, should not occur -->
+			<VerticalStackLayout>
+				<Label VerticalTextAlignment="Center" HorizontalTextAlignment="Center" Text="{l:Localize SomethingWentWrong}" />
 
-				<Frame Style="{StaticResource FrameSet}">
-					<VerticalStackLayout>
-						<Label Text="{l:Localize GeneralInformation}" Style="{StaticResource SectionTitleLabel}"/>
-						<Label Text="{l:Localize GeneralInformationInfoText}" Style="{StaticResource InfoLabel}"/>
-						<Grid VerticalOptions="StartAndExpand" RowSpacing="0">
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="{Binding Created, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding Updated, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding Visibility, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding From, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding To, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding Duration, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding ArchivingRequired, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding ArchivingOptional, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding CanActAsTemplate, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding HasPhotos, Converter={converters:AutoIfNonEmpty}}" />
-							</Grid.RowDefinitions>
-							<Label Grid.Row="0" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Created}" />
-							<Label Grid.Row="0" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding Created, Converter={converters:DateToString}}" />
-							<!--    -->
-							<Label Grid.Row="1" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Updated}" />
-							<Label Grid.Row="1" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding Updated, Converter={converters:DateToString}}" />
-							<!--    -->
-							<Label Grid.Row="2" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Visibility}" />
-							<Label Grid.Row="2" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding Visibility, Converter={converters:LocalizedState}}" />
-							<!--    -->
-							<Label Grid.Row="3" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize From}" />
-							<Label Grid.Row="3" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding From, Converter={converters:DateToString}}" />
-							<!--    -->
-							<Label Grid.Row="4" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize To}" />
-							<Label Grid.Row="4" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding To, Converter={converters:DateToString}}" />
-							<!--    -->
-							<Label Grid.Row="5" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Duration}" />
-							<Label Grid.Row="5" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding Duration, Converter={converters:DurationToString}}" />
-							<!--    -->
-							<Label Grid.Row="6" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Archiving_Optional}" />
-							<Label Grid.Row="6" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding ArchivingOptional, Converter={converters:DurationToString}}" />
-							<!--    -->
-							<Label Grid.Row="7" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Archiving_Required}" />
-							<Label Grid.Row="7" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding ArchivingRequired, Converter={converters:DurationToString}}" />
-							<!--    -->
-							<Label Grid.Row="8" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize CanActAsTemplate}" />
-							<Label Grid.Row="8" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding CanActAsTemplate}" />
-
-							<!--    -->
-							<Label Grid.Row="9" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" HorizontalOptions="StartAndExpand" Text="{l:Localize Photos}"
-								 Style="{StaticResource KeyLabel}" IsVisible="{Binding HasPhotos}"/>
-							<ScrollView Grid.Row="9" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" HeightRequest="68" Orientation="Horizontal"
-										IsVisible="{Binding HasPhotos}">
-								<FlexLayout x:Name="PhotosLayout" AlignContent="Center" AlignItems="Center" BindableLayout.ItemsSource="{Binding Photos}"
-											Direction="Row" JustifyContent="Start">
-									<BindableLayout.ItemTemplate>
-										<DataTemplate x:DataType="photos:Photo">
-											<Image Margin="2" Aspect="AspectFill" HeightRequest="64" Rotation="{Binding Rotation}"
-												 Source="{Binding Source}" WidthRequest="64">
-												<Image.GestureRecognizers>
-													<TapGestureRecognizer Tapped="Image_Tapped" />
-												</Image.GestureRecognizers>
-											</Image>
-										</DataTemplate>
-									</BindableLayout.ItemTemplate>
-								</FlexLayout>
-							</ScrollView>
-						</Grid>
-					</VerticalStackLayout>
-				</Frame>
-
-				<Frame Style="{StaticResource FrameSet}" IsVisible="{Binding Path=HasRoles}">
-					<VerticalStackLayout>
-						<Label Text="{l:Localize Roles}" Style="{StaticResource SectionTitleLabel}"/>
-						<Label Text="{l:Localize RolesInfoText}" Style="{StaticResource InfoLabel}"/>
-						<ContentView Content="{Binding Path=Roles}"/>
-					</VerticalStackLayout>
-				</Frame>
-
-				<Frame Style="{StaticResource FrameSet}" IsVisible="{Binding Path=HasParts}">
-					<VerticalStackLayout>
-						<Label Text="{l:Localize Parts}" Style="{StaticResource SectionTitleLabel}"/>
-						<Label Text="{l:Localize PartsInfoText}" Style="{StaticResource InfoLabel}"/>
-						<ContentView Content="{Binding Path=Parts}"/>
-					</VerticalStackLayout>
-				</Frame>
-
-				<Frame Style="{StaticResource FrameSet}" IsVisible="{Binding Path=HasParameters}">
-					<VerticalStackLayout>
-						<Label Text="{l:Localize Parameters}" Style="{StaticResource SectionTitleLabel}"/>
-						<Label Text="{l:Localize ParametersInfoText}" Style="{StaticResource InfoLabel}"/>
-						<ContentView Content="{Binding Path=Parameters}"/>
-					</VerticalStackLayout>
-				</Frame>
-
-				<Frame Style="{StaticResource FrameSet}">
-					<VerticalStackLayout>
-						<Label Text="{l:Localize MachineReadableText}" Style="{StaticResource SectionTitleLabel}"/>
-						<Label Text="{l:Localize MachineReadableInfoText}" Style="{StaticResource InfoLabel}"/>
-						<Grid VerticalOptions="StartAndExpand" RowSpacing="0">
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="{Binding ContractId, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding TemplateId, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding ContentSchemaDigest, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding ContentSchemaHashFunction, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding MachineLocalName, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding MachineNamespace, Converter={converters:AutoIfNonEmpty}}" />
-							</Grid.RowDefinitions>
-							<Label Grid.Row="0" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize ContractId}" />
-							<Label Grid.Row="0" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ClickableValueLabel}" Text="{Binding ContractId}">
-								<Label.GestureRecognizers>
-									<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding ContractId}" />
-								</Label.GestureRecognizers>
-							</Label>
-							<!--    -->
-							<Label Grid.Row="1" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize TemplateId}" />
-							<Label Grid.Row="1" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ClickableValueLabel}" Text="{Binding TemplateId}">
-								<Label.GestureRecognizers>
-									<TapGestureRecognizer Command="{Binding OpenContractCommand}" CommandParameter="{Binding TemplateId}" />
-								</Label.GestureRecognizers>
-							</Label>
-							<!--    -->
-							<Label Grid.Row="2" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize SchemaDigest}" />
-							<Label Grid.Row="2" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ClickableValueLabel}" Text="{Binding ContentSchemaDigest, Converter={converters:BinaryToBase64}}">
-								<Label.GestureRecognizers>
-									<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding ContentSchemaDigest, Converter={converters:BinaryToBase64}}" />
-								</Label.GestureRecognizers>
-							</Label>
-							<!--    -->
-							<Label Grid.Row="3" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize HashFunction}" />
-							<Label Grid.Row="3" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ClickableValueLabel}" Text="{Binding ContentSchemaHashFunction}">
-								<Label.GestureRecognizers>
-									<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding ContentSchemaHashFunction}" />
-								</Label.GestureRecognizers>
-							</Label>
-							<!--    -->
-							<Label Grid.Row="4" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize LocalName}" />
-							<Label Grid.Row="4" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ClickableValueLabel}" Text="{Binding MachineLocalName}">
-								<Label.GestureRecognizers>
-									<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding MachineLocalName}" />
-								</Label.GestureRecognizers>
-							</Label>
-							<!--    -->
-							<Label Grid.Row="5" Grid.Column="0" Margin="{StaticResource SmallRightTopBottomMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Namespace}" />
-							<Label Grid.Row="5" Grid.Column="1" Margin="{StaticResource SmallTopBottomMargins}" Style="{StaticResource ClickableValueLabel}" Text="{Binding MachineNamespace}">
-								<Label.GestureRecognizers>
-									<TapGestureRecognizer Command="{Binding OpenLinkCommand}" CommandParameter="{Binding MachineNamespace}" />
-								</Label.GestureRecognizers>
-							</Label>
-						</Grid>
-						<controls:TextButton LabelData="{l:Localize ShowDetails}" Margin="{StaticResource SmallTopBottomMargins}"
-													Command="{Binding Path=ShowDetailsCommand}" Style="{StaticResource FilledTextButton}"
-													IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"/>
-					</VerticalStackLayout>
-				</Frame>
-
-				<Frame Style="{StaticResource FrameSet}" IsVisible="{Binding Path=HasClientSignatures}">
-					<VerticalStackLayout>
-						<Label Text="{l:Localize ClientSignatures}" Style="{StaticResource SectionTitleLabel}"/>
-						<Label Text="{l:Localize ClientSignaturesInfoText}" Style="{StaticResource InfoLabel}"/>
-						<ContentView Content="{Binding Path=ClientSignatures}"/>
-					</VerticalStackLayout>
-				</Frame>
-
-				<Frame Style="{StaticResource FrameSet}" IsVisible="{Binding Path=HasServerSignatures}">
-					<VerticalStackLayout>
-						<Label Text="{l:Localize ServerSignatures}" Style="{StaticResource SectionTitleLabel}"/>
-						<Label Text="{l:Localize ServerSignaturesInfoText}" Style="{StaticResource InfoLabel}"/>
-						<ContentView Content="{Binding Path=ServerSignatures}"/>
-					</VerticalStackLayout>
-				</Frame>
-
-				<controls:TextButton LabelData="{l:Localize ObsoleteContract}" Style="{StaticResource FilledTextButton}"
-											Command="{Binding Path=ObsoleteContractCommand}" IsVisible="{Binding Path=CanObsoleteContract}"
-											Margin="{StaticResource SmallTopBottomMargins}"/>
-				<controls:TextButton LabelData="{l:Localize DeleteContract}" Style="{StaticResource FilledTextButton}"
-											Command="{Binding Path=DeleteContractCommand}" IsVisible="{Binding Path=CanDeleteContract}"
-											Margin="{StaticResource SmallBottomMargins}"/>
 			</VerticalStackLayout>
-		</ScrollView>
+		</Grid>
+
+
+
 	</Grid>
+
 </base:BaseContentPage>
