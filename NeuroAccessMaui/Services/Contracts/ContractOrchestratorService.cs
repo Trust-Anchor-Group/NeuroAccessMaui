@@ -348,9 +348,9 @@ namespace NeuroAccessMaui.Services.Contracts
 			try
 			{
 				Contract Contract = await ServiceRef.XmppService.GetContract(e.ContractId);
-
+			
 				await ServiceRef.UiService.GoToAsync(nameof(ViewContractPage), new ViewContractNavigationArgs(
-							Contract, false, e.Role, e.MessageText));
+							Contract, false, e.Role, e.MessageText, e.FromBareJID));
 			}
 			catch (Exception ex)
 			{
