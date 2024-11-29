@@ -17,7 +17,6 @@ using Waher.Persistence;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
 using NeuroAccessMaui.Services.UI;
-using System.Collections.Specialized;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 {
@@ -369,7 +368,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					this.Contract.Contract.ArchiveRequired ?? Duration.FromYears(1),
 					this.Contract.Contract.ArchiveOptional ?? Duration.FromYears(1),
 					null, null, false);
-				CreatedContract = await ServiceRef.XmppService.SignContract(CreatedContract, this.SelectedRole!.Name, false);
+				CreatedContract = await ServiceRef.XmppService.SignContract(CreatedContract, this.persistingSelectedRole!.Name, false);
 
 				foreach (Part Part in Parts)
 				{
@@ -405,7 +404,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				await this.GoToOverview();
 				return;
 			}
-
 
 			ViewContractNavigationArgs Args = new(CreatedContract, false);
 			await ServiceRef.UiService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop3);
@@ -508,9 +506,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			await this.GoToState(NewContractStep.Loading);
 
 			string hrt = await this.Contract.Contract.ToMauiXaml(this.Contract.Contract.DeviceLanguage());
+			VerticalStackLayout hrtLayout = new VerticalStackLayout().LoadFromXaml(hrt);
 			await MainThread.InvokeOnMainThreadAsync(() =>
 			{
-				this.HumanReadableText = new VerticalStackLayout().LoadFromXaml(hrt);
+				this.HumanReadableText = hrtLayout;
 			});
 
 			await this.GoToState(NewContractStep.Preview);
