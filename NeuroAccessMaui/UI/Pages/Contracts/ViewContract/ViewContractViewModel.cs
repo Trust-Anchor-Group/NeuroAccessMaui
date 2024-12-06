@@ -36,6 +36,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		public BindableObject? StateObject { get; set; }
 
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(GoToParametersCommand))]
+		[NotifyCanExecuteChangedFor(nameof(BackCommand))]
 		private bool canStateChange;
 
 		[ObservableProperty]
@@ -58,21 +60,23 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		[ObservableProperty]
 		private bool isContractOk;
 
+		[ObservableProperty]
+		private bool canSign;
 
 
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(HasProposalFriendlyName))]
 		[NotifyPropertyChangedFor(nameof(IsProposal))]
-		private string proposalFriendlyName;
+		private string? proposalFriendlyName;
 
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(HasProposalRole))]
-		private string proposalRole;
+		private string? proposalRole;
 
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(HasProposalMessage))]
 		[NotifyPropertyChangedFor(nameof(IsProposal))]
-		private string proposalMessage;
+		private string? proposalMessage;
 
 		public bool IsProposal => !string.IsNullOrEmpty(this.ProposalRole) || !string.IsNullOrEmpty(this.ProposalMessage) || !string.IsNullOrEmpty(this.ProposalFriendlyName);
 
@@ -108,9 +112,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			{
 				ObservableContract Contract = await ObservableContract.CreateAsync(this.args.Contract);
 				string ProposalFriendlyName = string.Empty;
-
 				// If we have a proposal, try to find the friendly name of the sender and prepare observable properties
-				if(!string.IsNullOrEmpty(this.args.Proposal) && !string.IsNullOrEmpty(this.args.FromJID))
+				if (!string.IsNullOrEmpty(this.args.Proposal) && !string.IsNullOrEmpty(this.args.FromJID))
 				{
 					try
 					{
@@ -126,7 +129,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 					}
 				}
 
-				
+
 				MainThread.BeginInvokeOnMainThread(() =>
 				{
 					this.Contract = Contract;
@@ -226,6 +229,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			});
 		}
 
+		/// <summary>
+		/// Navigates to the parameters view
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(CanStateChange))]
+		private async Task GoToParameters()
+		{
+			await this.GoToState(ViewContractStep.Loading);
+			await this.GoToState(ViewContractStep.Parameters);
+		}
 
 		/// <summary>
 		/// The command to bind to when marking a contract as obsolete.
