@@ -13,13 +13,13 @@
                            xmlns:ui="clr-namespace:NeuroAccessMaui.UI" >
 	<ContentView.Resources>
 		<objectModel:ParameterTemplateSelector x:Key="ParameterTemplateSelector"
-		                                 BooleanTemplate="{StaticResource BooleanParameterTemplate}"
-		                                 DateTemplate="{StaticResource DateParameterTemplate}"
-		                                 NumericalTemplate="{StaticResource NumericalParameterTemplate}"
-		                                 StringTemplate="{StaticResource StringParameterTemplate}"
-		                                 TimeTemplate="{StaticResource TimeParameterTemplate}"
-		                                 DurationTemplate="{StaticResource DurationParameterTemplate}"
-		                                 DefaultTemplate="{StaticResource DefaultParameterTemplate}" />
+		                                 BooleanTemplate="{StaticResource BooleanParameterReadOnlyTemplate}"
+		                                 DateTemplate="{StaticResource DateParameterReadOnlyTemplate}"
+		                                 NumericalTemplate="{StaticResource NumericalParameterReadOnlyTemplate}"
+		                                 StringTemplate="{StaticResource StringParameterReadOnlyTemplate}"
+		                                 TimeTemplate="{StaticResource TimeParameterReadOnlyTemplate}"
+		                                 DurationTemplate="{StaticResource DurationParameterReadOnlyTemplate}"
+		                                 DefaultTemplate="{StaticResource DefaultParameterReadOnlyTemplate}" />
 	</ContentView.Resources>
 
 

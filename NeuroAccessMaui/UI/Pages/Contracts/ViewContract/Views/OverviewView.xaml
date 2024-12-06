@@ -11,9 +11,14 @@
                            xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
                            xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
                            xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views"
-                           xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract">
+                           xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract"
+									xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters">
 
-
+	<ContentView.Resources>
+		<ResourceDictionary>
+			<converters:ContractStateToString x:Key="ContractStateToStringConverter" />
+		</ResourceDictionary>
+	</ContentView.Resources>
 
 	<Grid RowDefinitions="*, auto" ColumnDefinitions="*">
 		<ScrollView Grid.Row="0">
@@ -21,16 +26,21 @@
 				<!-- TOP Set, name of contract etc -->
 				<Border Style="{StaticResource BorderSet}" Margin="0">
 					<VerticalStackLayout>
+
+							<Image x:Name="QrCode" Source="{Binding QrCode}" IsVisible="{Binding HasQrCode}" WidthRequest="{Binding QrCodeWidth}"
+								 HeightRequest="{Binding QrCodeHeight}" HorizontalOptions="Center">
+								<Image.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding Contract.ContractId}" />
+								</Image.GestureRecognizers>
+							</Image>
 						<Label Text="{Binding Path=Contract.Category}"
 								Margin="{StaticResource SmallSpacing}"
 								Style="{StaticResource PageTitleLabel}"
 								HorizontalTextAlignment="Center"/>
-						<Image x:Name="QrCode" Source="{Binding QrCode}" IsVisible="{Binding HasQrCode}" WidthRequest="{Binding QrCodeWidth}"
-								 HeightRequest="{Binding QrCodeHeight}" HorizontalOptions="Center">
-							<Image.GestureRecognizers>
-								<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding Contract.ContractId}" />
-							</Image.GestureRecognizers>
-						</Image>
+						<Grid ColumnDefinitions="auto, *">
+							<Label Grid.Column="0" Text="{l:Localize Status}"/>
+							<Label Grid.Column="1" Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"/>
+						</Grid>
 					</VerticalStackLayout>
 
 				</Border>
@@ -39,7 +49,8 @@
 				<views:OverviewItemButton 
                              IconData="{x:Static ui:Geometries.ContractEditPath}"
                              TopLabelText="{l:Localize SetParametersTitle}"
-                             BottomLabelText="{l:Localize SetParametersDescription}"/>
+                             BottomLabelText="{l:Localize SetParametersDescription}"
+									  Command="{Binding GoToParametersCommand}"/>
 
 				<!-- Roles Button -->
 				<views:OverviewItemButton 
