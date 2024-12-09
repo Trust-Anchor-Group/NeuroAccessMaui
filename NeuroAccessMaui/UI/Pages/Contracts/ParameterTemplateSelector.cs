@@ -14,12 +14,22 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		public DataTemplate? StringTemplate { get; set; }
 		public DataTemplate? NumericalTemplate { get; set; }
 		public DataTemplate? TimeTemplate { get; set; }
+		public DataTemplate? ProtectedTemplate { get; set; }
 		public DataTemplate? DefaultTemplate { get; set; }
 
 		// Add other templates if needed
 
 		protected override DataTemplate? OnSelectTemplate(object item, BindableObject container)
 		{
+			ObservableParameter? parameter = item as ObservableParameter;
+			if (parameter is not null)
+			{
+				if (parameter.IsProtected && parameter.CanReadValue)
+				{
+					return this.ProtectedTemplate ?? this.DefaultTemplate;
+				}
+			}
+
 			return item switch
 			{
 				ObservableBooleanParameter => this.BooleanTemplate ?? this.DefaultTemplate,
@@ -28,6 +38,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				ObservableStringParameter => this.StringTemplate ?? this.DefaultTemplate,
 				ObservableNumericalParameter => this.NumericalTemplate ?? this.DefaultTemplate,
 				ObservableTimeParameter => this.TimeTemplate ?? this.DefaultTemplate,
+
 				// Add other parameter type checks here...
 				_ => this.DefaultTemplate
 			};

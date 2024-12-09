@@ -154,6 +154,26 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				this.SetProperty(ref this.@value, value);
 			}
 		}
+
+		/// <summary>
+		/// If the parameter is transient
+		/// </summary>
+		public bool IsTransient => this.Parameter.Protection == ProtectionLevel.Transient;
+
+		/// <summary>
+		/// If the parameter is encrypted
+		/// </summary>
+		public bool IsEncrypted => this.Parameter.Protection == ProtectionLevel.Encrypted;
+
+		/// <summary>
+		/// If the parameter is protected, either encrypted or transient
+		/// </summary>
+		public bool IsProtected => this.IsTransient || this.IsEncrypted;
+
+		/// <summary>
+		/// If the parameter can be read, for example encrypted parameters cannot be read if you don't have the key.
+		/// </summary>
+		public bool CanReadValue => this.Parameter.CanSerializeValue;
 		#endregion
 
 		#region Property Change Handling
