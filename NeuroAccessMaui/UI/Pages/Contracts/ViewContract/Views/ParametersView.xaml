@@ -14,17 +14,18 @@
 	<ContentView.Resources>
 		<objectModel:ParameterTemplateSelector x:Key="ParameterTemplateSelector"
 		                                 BooleanTemplate="{StaticResource BooleanParameterReadOnlyTemplate}"
-		                                 DateTemplate="{StaticResource DateParameterReadOnlyTemplate}"
-		                                 NumericalTemplate="{StaticResource NumericalParameterReadOnlyTemplate}"
-		                                 StringTemplate="{StaticResource StringParameterReadOnlyTemplate}"
+		                                 DateTemplate="{StaticResource DefaultParameterReadOnlyTemplate}"
+		                                 NumericalTemplate="{StaticResource DefaultParameterReadOnlyTemplate}"
+		                                 StringTemplate="{StaticResource DefaultParameterReadOnlyTemplate}"
 		                                 TimeTemplate="{StaticResource TimeParameterReadOnlyTemplate}"
 		                                 DurationTemplate="{StaticResource DurationParameterReadOnlyTemplate}"
+													ProtectedTemplate="{StaticResource DefaultParameterReadOnlyTemplate}"
 		                                 DefaultTemplate="{StaticResource DefaultParameterReadOnlyTemplate}" />
 	</ContentView.Resources>
 
 
 	<!-- Parameters -->
-	<Grid>
+	<Grid RowDefinitions="auto">
 
 		<Border Style="{StaticResource BorderSet}" Margin="{StaticResource MediumMargins}" >
 			<CollectionView HorizontalOptions="Center"

@@ -48,15 +48,15 @@
 				<!-- Parameters Button -->
 				<views:OverviewItemButton 
                              IconData="{x:Static ui:Geometries.ContractEditPath}"
-                             TopLabelText="{l:Localize SetParametersTitle}"
-                             BottomLabelText="{l:Localize SetParametersDescription}"
+                             TopLabelText="{l:Localize ViewParametersTitle}"
+                             BottomLabelText="{l:Localize ViewParametersDescription}"
 									  Command="{Binding GoToParametersCommand}"/>
 
 				<!-- Roles Button -->
 				<views:OverviewItemButton 
                              IconData="{x:Static ui:Geometries.RolesPath}"
-                             TopLabelText="{l:Localize SelectRolesTitle}"
-                             BottomLabelText="{l:Localize SelectRolesDescription}"/>
+                             TopLabelText="{l:Localize ViewRolesTitle}"
+                             BottomLabelText="{l:Localize ViewRolesDescription}"/>
 
 				<views:OverviewItemButton 
                              IconData="{x:Static ui:Geometries.ContractPath}"
