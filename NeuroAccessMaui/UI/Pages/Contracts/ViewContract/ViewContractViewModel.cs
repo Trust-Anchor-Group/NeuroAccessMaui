@@ -35,14 +35,23 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		/// </summary>
 		public BindableObject? StateObject { get; set; }
 
+		/// <summary>
+		/// If the view can change state.
+		/// </summary>
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(GoToParametersCommand))]
 		[NotifyCanExecuteChangedFor(nameof(BackCommand))]
 		private bool canStateChange;
 
+		/// <summary>
+		/// The current state of the view.
+		/// </summary>
 		[ObservableProperty]
 		private string currentState = nameof(NewContractStep.Loading);
 
+		/// <summary>
+		/// The human readable text of the contract.
+		/// </summary>
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(HasHumanReadableText))]
 		private VerticalStackLayout? humanReadableText;
@@ -52,6 +61,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		/// </summary>
 		public bool HasHumanReadableText => this.HumanReadableText is not null;
 
+		/// <summary>
+		/// All parameters that can be displayed / Are supported.
+		/// </summary>
 		public ObservableCollection<ObservableParameter> DisplayableParameters { get; set; } = [];
 
 		/// <summary>
@@ -60,30 +72,53 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		[ObservableProperty]
 		private bool isContractOk;
 
+		/// <summary>
+		/// If the user can sign the contract.
+		/// </summary>
 		[ObservableProperty]
 		private bool canSign;
 
-
+		/// <summary>
+		/// The friednly name of the proposal sender.
+		/// </summary>
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(HasProposalFriendlyName))]
 		[NotifyPropertyChangedFor(nameof(IsProposal))]
 		private string? proposalFriendlyName;
 
+		/// <summary>
+		/// The role of the proposal.
+		/// </summary>
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(HasProposalRole))]
 		private string? proposalRole;
 
+		/// <summary>
+		/// The message of the proposal.
+		/// </summary>
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(HasProposalMessage))]
 		[NotifyPropertyChangedFor(nameof(IsProposal))]
 		private string? proposalMessage;
 
+		/// <summary>
+		/// If we are viewing the contract as a proposal.
+		/// </summary>
 		public bool IsProposal => !string.IsNullOrEmpty(this.ProposalRole) || !string.IsNullOrEmpty(this.ProposalMessage) || !string.IsNullOrEmpty(this.ProposalFriendlyName);
 
+		/// <summary>
+		/// If the proposal sender has a friendly name.
+		/// </summary>
 		public bool HasProposalFriendlyName => !string.IsNullOrEmpty(this.ProposalFriendlyName);
 
+		/// <summary>
+		/// If the proposal has a role.
+		/// </summary>
 		public bool HasProposalRole => !string.IsNullOrEmpty(this.ProposalRole);
 
+		/// <summary>
+		/// If the proposal has a message.
+		/// </summary>
 		public bool HasProposalMessage => !string.IsNullOrEmpty(this.ProposalMessage);
 
 
