@@ -2445,4 +2445,22 @@
 <data name="IHaveReadAndUnderstoodTheContract" xml:space="preserve">
   <value>Li e compreendi os termos deste contrato</value>
 </data>
+<data name="Status" xml:space="preserve">
+    <value>Status</value>
+</data>
+<data name="Encrypted" xml:space="preserve">
+    <value>Criptografado</value>
+</data>
+<data name="ViewParametersTitle" xml:space="preserve">
+    <value>Ver parâmetros</value>
+</data>
+<data name="ViewParametersDescription" xml:space="preserve">
+    <value>Veja as variáveis que regem o contrato</value>
+</data>
+<data name="ViewRolesTitle" xml:space="preserve">
+    <value>Revisar papéis atribuídos</value>
+</data>
+<data name="ViewRolesDescription" xml:space="preserve">
+    <value>Revise os papéis e veja quem assinou cada papel</value>
+</data>
 </root>

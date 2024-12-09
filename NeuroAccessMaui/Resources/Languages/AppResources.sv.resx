@@ -2445,4 +2445,22 @@
 <data name="IHaveReadAndUnderstoodTheContract" xml:space="preserve">
   <value>Jag har läst och förstått villkoren i detta kontrakt</value>
 </data>
+<data name="Status" xml:space="preserve">
+    <value>Status</value>
+</data>
+<data name="Encrypted" xml:space="preserve">
+    <value>Krypterad</value>
+</data>
+<data name="ViewParametersTitle" xml:space="preserve">
+    <value>Visa parametrar</value>
+</data>
+<data name="ViewParametersDescription" xml:space="preserve">
+    <value>Visa de variabler som styr kontraktet</value>
+</data>
+<data name="ViewRolesTitle" xml:space="preserve">
+    <value>Granska tilldelade roller</value>
+</data>
+<data name="ViewRolesDescription" xml:space="preserve">
+    <value>Granska rollerna och se vem som har signerat varje roll</value>
+</data>
 </root>
