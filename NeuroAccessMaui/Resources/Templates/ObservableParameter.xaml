@@ -4,16 +4,62 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                     xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ObjectModel"
                     xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-                    xmlns:extended="clr-namespace:NeuroAccessMaui.UI.Controls.Extended">
+                    xmlns:extended="clr-namespace:NeuroAccessMaui.UI.Controls.Extended"
+						  xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+						  xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization">
 
 	<!-- Styles -->
 	<Style x:Key="ParameterItemTitleLabel"
            TargetType="Label"
            BasedOn="{StaticResource BoldItemTitleLabel}">
-		<Setter Property="HorizontalTextAlignment" Value="Start" />
-		<Setter Property="VerticalTextAlignment" Value="End" />
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffWhiteDark}}" />
 		<Setter Property="FontSize" Value="14" />
+		<Setter Property="FontFamily" Value="SpaceGroteskBold"/>
 		<Setter Property="LineBreakMode" Value="WordWrap" />
+		<Setter Property="VerticalTextAlignment" Value="Center" />
+		<Setter Property="HorizontalTextAlignment" Value="Start" />
+	</Style>
+
+	<Style x:Key="ParameterItemValueLabel"
+       TargetType="Label">
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffWhiteDark}}" />
+		<Setter Property="FontSize" Value="15" />
+		<Setter Property="FontFamily" Value="SpaceGroteskRegular" />
+		<Setter Property="LineBreakMode" Value="WordWrap" />
+		<Setter Property="VerticalTextAlignment" Value="Center" />
+	</Style>
+	<Style x:Key="TransientBorder" TargetType="Border" BasedOn="{StaticResource RoundedBorder}">
+		<Setter Property="BackgroundColor" Value="#268F40D4"/>
+		<Setter Property="Padding" Value="{StaticResource SmallLeftRightMargins}"/>
+	</Style>
+	<Style x:Key="EncryptedBorder" TargetType="Border" BasedOn="{StaticResource TransientBorder}">
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Blue20AffirmLight}, Dark={StaticResource Blue20AffirmDark}}"/>
+	</Style>
+	<Style x:Key="TransientLabel"
+       TargetType="Label">
+		<Setter Property="TextColor" Value="#8F40D4" />
+		<Setter Property="FontSize" Value="15" />
+		<Setter Property="FontFamily" Value="SpaceGroteskRegular" />
+		<Setter Property="LineBreakMode" Value="WordWrap" />
+		<Setter Property="VerticalTextAlignment" Value="Center" />
+		<Setter Property="HorizontalTextAlignment" Value="Center" />
+	</Style>
+	<Style x:Key="EncryptedLabel" TargetType="Label" BasedOn="{StaticResource TransientLabel}">
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource BlueLight}, Dark={StaticResource BlueDark}}" />
+	</Style>
+	<Style x:Key="TransientPath"
+       TargetType="Path">
+		<Setter Property="Fill" Value="#8F40D4" />
+		<Setter Property="VerticalOptions" Value="Center" />
+		<Setter Property="HorizontalOptions" Value="Center" />
+		<Setter Property="Aspect" Value="Uniform"/>
+		<Setter Property="HeightRequest" Value="18"/>
+		<Setter Property="WidthRequest" Value="18"/>
+
+
+	</Style>
+	<Style x:Key="EncryptedPath" TargetType="Path" BasedOn="{StaticResource TransientPath}">
+		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource BlueLight}, Dark={StaticResource BlueDark}}" />
 	</Style>
 
 	<!-- Original DataTemplates -->
@@ -35,16 +81,19 @@
 
 	<!-- Read-only BooleanParameterTemplate -->
 	<DataTemplate x:Key="BooleanParameterReadOnlyTemplate" x:DataType="objectModel:ObservableBooleanParameter">
-		<Grid ColumnDefinitions="Auto, *">
-			<Label Grid.Column="0"
-                   Text="{Binding BooleanValue}"
-                   VerticalOptions="Center"
-                   HorizontalOptions="Start"
-                   Margin="{StaticResource SmallRightMargins}" />
-			<Label Grid.Column="1"
-                   Text="{Binding Label}"
-                   Style="{StaticResource ParameterItemTitleLabel}" />
-		</Grid>
+		<Border Style="{StaticResource BorderSubSet}" Margin="0">
+			<Grid ColumnDefinitions="*,*" ColumnSpacing="{StaticResource SmallSpacing}">
+				<Label Grid.Column="0" Text="{Binding Guide}"
+                   Style="{StaticResource ParameterItemTitleLabel}"
+						 HorizontalTextAlignment="Start"/>
+				<CheckBox Grid.Column="1"
+                      IsChecked="{Binding BooleanValue, Mode=OneTime}"
+                      VerticalOptions="Center"
+                      HorizontalOptions="End"
+                      Color="{AppThemeBinding Light={StaticResource EnabledFilledButtonBackgroundLight}, Dark={StaticResource EnabledFilledButtonBackgroundDark}}"
+							 InputTransparent="True"/>
+			</Grid>
+		</Border>
 	</DataTemplate>
 
 	<!-- DateParameterTemplate -->
@@ -79,12 +128,12 @@
 
 	<!-- Read-only NumericalParameterTemplate -->
 	<DataTemplate x:Key="NumericalParameterReadOnlyTemplate" x:DataType="objectModel:ObservableNumericalParameter">
-		<controls:CompositeInputView Style="{StaticResource RegularCompositeInputView}" LabelText="{Binding Label}">
-			<controls:CompositeInputView.CenterView>
-				<Label Text="{Binding DecimalValue}" />
-			</controls:CompositeInputView.CenterView>
-		</controls:CompositeInputView>
-			
+		<Grid RowDefinitions="*, *">
+			<Label Grid.Row="0"
+                   Text="{Binding Label}"
+                   Style="{StaticResource ParameterItemTitleLabel}" />
+			<Label Grid.Row="1" Text="{Binding DecimalValue}" />
+		</Grid>
 	</DataTemplate>
 
 	<!-- StringParameterTemplate -->
@@ -148,6 +197,34 @@
 		</VerticalStackLayout>
 	</DataTemplate>
 
+	<!-- Unreadable Protected Template -->
+	<DataTemplate x:Key="ProtectedParameterTemplate" x:DataType="objectModel:ObservableParameter">
+		<Border Style="{StaticResource BorderSubSet}" Margin="0">
+			<Grid ColumnDefinitions="*,*" ColumnSpacing="{StaticResource SmallSpacing}">
+				<Label Grid.Column="0" Text="{Binding Guide}"
+                   Style="{StaticResource ParameterItemTitleLabel}"
+						 HorizontalTextAlignment="Start"/>
+				<Grid Grid.Column="1" ColumnDefinitions="auto" HorizontalOptions="End">
+					<Border Style="{StaticResource TransientBorder}" IsVisible="{Binding IsTransient}">
+						<Grid ColumnDefinitions="auto,auto" ColumnSpacing="{StaticResource SmallSpacing}">
+							<Path Grid.Column="0" Style="{StaticResource TransientPath}" Data="{x:Static ui:Geometries.VisibilityOffPath}"/>
+							<Label Grid.Column="1" Text="{l:Localize NotAvailable}"
+								 Style="{StaticResource TransientLabel}"/>
+						</Grid>
+					</Border>
+					<Border Grid.Column="1" Style="{StaticResource EncryptedBorder}" IsVisible="{Binding IsEncrypted}">
+						<Grid ColumnDefinitions="auto,auto" ColumnSpacing="{StaticResource SmallSpacing}">
+							<Path Grid.Column="0" Style="{StaticResource EncryptedPath}" Data="{x:Static ui:Geometries.LockPath}"/>
+							<Label Grid.Column="1" Text="{l:Localize Encrypted}"
+								 Style="{StaticResource EncryptedLabel}"/>
+						</Grid>
+					</Border>
+				</Grid>
+
+			</Grid>
+		</Border>
+	</DataTemplate>
+
 	<!-- DefaultParameterTemplate -->
 	<DataTemplate x:Key="DefaultParameterTemplate" x:DataType="objectModel:ObservableParameter">
 		<Grid RowDefinitions="Auto, Auto">
@@ -162,11 +239,16 @@
 
 	<!-- Read-only DefaultParameterTemplate -->
 	<DataTemplate x:Key="DefaultParameterReadOnlyTemplate" x:DataType="objectModel:ObservableParameter">
-		<VerticalStackLayout>
-			<Label Text="{Binding Name}"
-                   Style="{StaticResource ParameterItemTitleLabel}" />
-			<Label Text="{Binding Value}" />
-		</VerticalStackLayout>
+		<Border Style="{StaticResource BorderSubSet}" Margin="0">
+			<Grid ColumnDefinitions="*,*" ColumnSpacing="{StaticResource SmallSpacing}">
+				<Label Grid.Column="0" Text="{Binding Guide}"
+                   Style="{StaticResource ParameterItemTitleLabel}"
+						 HorizontalTextAlignment="Start"/>
+				<Label Grid.Column="1" Text="{Binding Value}"
+						 HorizontalTextAlignment="End" VerticalTextAlignment="Center"
+						 Style="{StaticResource ParameterItemValueLabel}"/>
+			</Grid>
+		</Border>
 	</DataTemplate>
 
 </ResourceDictionary>
