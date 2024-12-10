@@ -68,6 +68,7 @@ namespace NeuroAccessMaui.Services.Tag
 		private string? logJid;
 		private string? eDalerJid;
 		private string? neuroFeaturesJid;
+		private string? trustProviderId;
 		private string? localPasswordHash;
 		private long httpFileUploadMaxSize;
 		private bool supportsPushNotification;
@@ -147,6 +148,7 @@ namespace NeuroAccessMaui.Services.Tag
 				LogJid = this.LogJid,
 				EDalerJid = this.EDalerJid,
 				NeuroFeaturesJid = this.NeuroFeaturesJid,
+				TrustProviderId = this.TrustProviderId,
 				SupportsPushNotification = this.SupportsPushNotification,
 				PinHash = this.LocalPasswordHash,
 				IsNumericPassword = this.IsNumericPassword,
@@ -206,6 +208,7 @@ namespace NeuroAccessMaui.Services.Tag
 				this.LogJid = Configuration.LogJid;
 				this.EDalerJid = Configuration.EDalerJid;
 				this.NeuroFeaturesJid = Configuration.NeuroFeaturesJid;
+				this.TrustProviderId = Configuration.TrustProviderId;
 				this.SupportsPushNotification = Configuration.SupportsPushNotification;
 				this.LocalPasswordHash = Configuration.PinHash;
 				this.IsNumericPassword = Configuration.IsNumericPassword;
@@ -687,6 +690,19 @@ namespace NeuroAccessMaui.Services.Tag
 				{
 					this.neuroFeaturesJid = value;
 					this.FlagAsDirty(nameof(this.NeuroFeaturesJid));
+				}
+			}
+		}
+
+		public string? TrustProviderId
+		{
+			get => this.trustProviderId;
+			set
+			{
+				if (!string.Equals(this.trustProviderId, value, StringComparison.Ordinal))
+				{
+					this.trustProviderId = value;
+					this.FlagAsDirty(nameof(this.TrustProviderId));
 				}
 			}
 		}

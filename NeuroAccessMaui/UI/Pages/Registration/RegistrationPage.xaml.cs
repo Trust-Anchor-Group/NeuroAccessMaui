@@ -88,7 +88,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 			string NewState = NewStep.ToString();
 
 			if (ServiceRef.PlatformSpecific.CanProhibitScreenCapture)
-				ServiceRef.PlatformSpecific.ProhibitScreenCapture = true;   // Allows user to record onboarding process, for troubleshooting purposes
+				ServiceRef.PlatformSpecific.ProhibitScreenCapture = false;   // Allows user to record onboarding process, for troubleshooting purposes
 
 			await this.Dispatcher.DispatchAsync(async () =>
 			{

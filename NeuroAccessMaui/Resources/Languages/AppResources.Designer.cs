@@ -2948,6 +2948,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to It looks like you haven’t completed the onboarding process yet. Please finish setting up your account to access this feature..
+        /// </summary>
+        internal static string NotCompletedOnboardingError {
+            get {
+                return ResourceManager.GetString("NotCompletedOnboardingError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Note.
         /// </summary>
         internal static string Note {
@@ -5662,6 +5671,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string Signed {
             get {
                 return ResourceManager.GetString("Signed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Something went wrong.
+        /// </summary>
+        internal static string SomethingWentWrong {
+            get {
+                return ResourceManager.GetString("SomethingWentWrong", resourceCulture);
             }
         }
         

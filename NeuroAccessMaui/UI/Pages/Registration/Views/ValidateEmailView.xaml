@@ -29,13 +29,21 @@
 				<controls:CompositeEntry x:Name="EmailEntry"
 					Style="{StaticResource RegularCompositeEntry}"
 					EntryData="{Binding EmailText}"
-					PathData="{x:Static ui:Geometries.EmailIconPath}">
+					IsValid="{Binding EmailIsValid}">
+
+					<controls:CompositeEntry.LeftView>
+						<Path
+								  HeightRequest="24" WidthRequest="24"
+								  Aspect="Uniform"
+								  Data="{x:Static ui:Geometries.EmailIconPath}"
+								  Fill="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}"/>
+					</controls:CompositeEntry.LeftView>
 					<controls:CompositeEntry.Behaviors>
 						<mct:TextValidationBehavior x:Name="EmailValidator"
 							Flags="ValidateOnValueChanged"
 							IsValid="{Binding EmailIsValid}"
 							RegexPattern="^$|^[\w\d](\w|\d|[_\.-][\w\d])*@(\w|\d|[\.-][\w\d]+)+$"
-							ValuePropertyName="EntryData" />
+							ValuePropertyName="EntryData"/>
 					</controls:CompositeEntry.Behaviors>
 				</controls:CompositeEntry>
 

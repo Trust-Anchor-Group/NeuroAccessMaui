@@ -1,4 +1,5 @@
 ﻿using NeuroAccessMaui.Services.UI;
+using NeuroAccessMaui.UI.Controls;
 
 namespace NeuroAccessMaui.UI.Pages.Main.Calculator
 {
@@ -19,7 +20,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Calculator
 		/// Holds navigation parameters for the calculator.
 		/// </summary>
 		/// <param name="Entry">Entry whose value is being calculated.</param>
-		public CalculatorNavigationArgs(Entry? Entry)
+		public CalculatorNavigationArgs(CompositeEntry? Entry)
 		{
 			this.Entry = Entry;
 			this.ViewModel = null;
@@ -41,7 +42,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Calculator
 		/// <summary>
 		/// Entry whose value is being calculated.
 		/// </summary>
-		public Entry? Entry { get; }
+		public CompositeEntry? Entry { get; }
 
 		/// <summary>
 		/// View model containing a bindable property with the value to calculate.

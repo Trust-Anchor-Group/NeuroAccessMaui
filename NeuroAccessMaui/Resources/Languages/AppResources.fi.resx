@@ -2400,4 +2400,49 @@
   <data name="PermitParametersText" xml:space="preserve">
     <value>Valitse parametrit, joihin pääsy sallitaan, jos pyyntö hyväksytään.</value>
   </data>
+  <data name="SomethingWentWrong" xml:space="preserve">
+    <value>Jokin meni pieleen</value>
+  </data>
+  <data name="NotCompletedOnboardingError" xml:space="preserve">
+    <value>Näyttää siltä, että et ole vielä suorittanut perehdytysprosessia. Viimeistele tilisi määrittäminen, jotta voit käyttää tätä ominaisuutta.</value>
+  </data>
+  <data name="PreviewContract" xml:space="preserve">
+    <value>Esikatsele sopimusta</value>
+  </data>
+  <data name="SetParametersTitle" xml:space="preserve">
+    <value>Aseta parametrit</value>
+  </data>
+  <data name="SetParametersDescription" xml:space="preserve">
+    <value>Määritä sopimusta ohjaavat muuttujat</value>
+  </data>
+  <data name="SelectRolesTitle" xml:space="preserve">
+    <value>Valitse roolit</value>
+  </data>
+  <data name="SelectRolesDescription" xml:space="preserve">
+    <value>Valitse, kuka voi allekirjoittaa milläkin roolilla</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Selkä</value>
+  </data>
+  <data name="SelectedRoleHasReachedMaximumNumberOfParts" xml:space="preserve">
+    <value>Valittu rooli on saavuttanut enimmäismäärän osia</value>
+  </data>
+  <data name="PetitionIdentitySent" xml:space="preserve">
+    <value>Henkilötodistuksen tarkastelupyyntö on lähetetty</value>
+  </data>
+  <data name="IDRequestSent" xml:space="preserve">
+    <value>Henkilöllisyystodistus lähetetty</value>
+  </data>
+  <data name="SelectYourRole" xml:space="preserve">
+    <value>Valitse roolisi</value>
+  </data>
+  <data name="ReviewContractTitle" xml:space="preserve">
+    <value>Tarkista sopimus</value>
+  </data>
+  <data name="ReviewContractDescription" xml:space="preserve">
+    <value>Tarkista sopimusehdot huolellisesti</value>
+  </data>
+  <data name="IHaveReadAndUnderstoodTheContract" xml:space="preserve">
+    <value>Olen lukenut ja ymmärtänyt tämän sopimuksen ehdot</value>
+  </data>
 </root>

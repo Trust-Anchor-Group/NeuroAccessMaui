@@ -907,6 +907,12 @@ namespace NeuroAccessMaui
 		{
 			MainThread.BeginInvokeOnMainThread(async () =>
 			{
+				if (ServiceRef.TagProfile.Step != RegistrationStep.Complete)
+				{
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)], ServiceRef.Localizer[nameof(AppResources.NotCompletedOnboardingError)]);
+					return;
+				}
+
 				await QrCode.OpenUrl(Url);
 			});
 		}

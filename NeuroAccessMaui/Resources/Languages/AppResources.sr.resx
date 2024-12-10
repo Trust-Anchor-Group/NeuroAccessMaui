@@ -2400,4 +2400,49 @@
   <data name="PermitParametersText" xml:space="preserve">
     <value>Izaberite parametre kojima želite dozvoliti pristup, ako je zahtev prihvaćen.</value>
   </data>
+  <data name="SomethingWentWrong" xml:space="preserve">
+    <value>Nešto nije u redu</value>
+  </data>
+  <data name="NotCompletedOnboardingError" xml:space="preserve">
+    <value>Izgleda da još niste završili proces uključivanja. Molimo Vas da završite podešavanje naloga da biste pristupili ovoj funkciji.</value>
+  </data>
+  <data name="PreviewContract" xml:space="preserve">
+    <value>Pregled ugovora</value>
+  </data>
+  <data name="SetParametersTitle" xml:space="preserve">
+    <value>Podesite parametre</value>
+  </data>
+  <data name="SetParametersDescription" xml:space="preserve">
+    <value>Navedite varijable koje upravljaju ugovorom</value>
+  </data>
+  <data name="SelectRolesTitle" xml:space="preserve">
+    <value>Izaberite uloge</value>
+  </data>
+  <data name="SelectRolesDescription" xml:space="preserve">
+    <value>Izaberite ko može da potpiše kao koju ulogu</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Povratak</value>
+  </data>
+  <data name="SelectedRoleHasReachedMaximumNumberOfParts" xml:space="preserve">
+    <value>Izabrana uloga je dostigla maksimalan broj delova</value>
+  </data>
+  <data name="PetitionIdentitySent" xml:space="preserve">
+    <value>Zahtev za prikaz ID-a je poslat</value>
+  </data>
+  <data name="IDRequestSent" xml:space="preserve">
+    <value>Zahtev za ličnu kartu poslat</value>
+  </data>
+  <data name="SelectYourRole" xml:space="preserve">
+    <value>Izaberite svoju ulogu</value>
+  </data>
+  <data name="ReviewContractTitle" xml:space="preserve">
+    <value>Ugovor o pregledu</value>
+  </data>
+  <data name="ReviewContractDescription" xml:space="preserve">
+    <value>Pažljivo pregledajte uslove ugovora</value>
+  </data>
+  <data name="IHaveReadAndUnderstoodTheContract" xml:space="preserve">
+    <value>Pročitao sam i razumeo uslove ovog ugovora</value>
+  </data>
 </root>

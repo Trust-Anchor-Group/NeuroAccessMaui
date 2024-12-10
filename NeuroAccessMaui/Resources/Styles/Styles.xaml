@@ -436,6 +436,11 @@
 		<Setter Property="BackgroundColor" Value="Transparent" />
 	</Style>
 
+	<Style ApplyToDerivedTypes="True" TargetType="Border" x:Key="RoundedBorder">
+		<Setter Property="StrokeShape" Value="RoundRectangle 8" />
+		<Setter Property="Stroke" Value="{AppThemeBinding Light=Transparent, Dark={StaticResource EnabledTransparentButtonForegroundDark}}"/>
+	</Style>
+
 	<Style x:Key="PopupGrid" ApplyToDerivedTypes="False" TargetType="Grid">
 		<Setter Property="Padding" Value="{StaticResource SmallMargins}" />
 		<Setter Property="HorizontalOptions" Value="Center" />
@@ -509,21 +514,20 @@
 	</Style>
 
 	<Style ApplyToDerivedTypes="True" TargetType="Border" x:Key="BorderSet">
-		<Setter Property="Shadow">
-			<Setter.Value>
-				<Shadow Offset="0,0" Radius="4" Opacity="0.8"/>
-			</Setter.Value>
-		</Setter>
-		<!-- Shadow Radius and Brush are not directly applicable to 'Border', managed through 'BoxShadow' instead -->
+
 		<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource SecondaryBackgroundLight}, Dark={StaticResource SecondaryBackgroundDark}}" />
 		<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource SecondaryBackgroundLight}, Dark={StaticResource SecondaryBackgroundDark}}" />
 		<Setter Property="StrokeShape" Value="RoundRectangle 8" />
 		<Setter Property="Padding" Value="{StaticResource SmallMargins}" />
 		<Setter Property="Margin" Value="{StaticResource SmallMargins}" />
+		<Setter Property="Shadow">
+			<Setter.Value>
+				<Shadow Brush="{AppThemeBinding Light={StaticResource PrimaryBackgroundDark}, Dark={StaticResource PrimaryBackgroundLight}}" Offset="0,0" Radius="10" Opacity=".25" />
+			</Setter.Value>
+		</Setter>
 	</Style>
 
 	<Style ApplyToDerivedTypes="True" TargetType="Border" x:Key="BorderSubSet">
-		<!-- To disable the shadow in 'Border', you can set the 'BoxShadow' to 'null' or omit it -->
 		<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}" />
 		<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}" />
 		<Setter Property="StrokeShape" Value="RoundRectangle 8" />
@@ -602,7 +606,6 @@
 
 
 	<Style x:Key="BottomBarBorder" TargetType="Border">
-		<Setter Property="HeightRequest" Value="110" />
 		<Setter Property="VerticalOptions" Value="End" />
 		<Setter Property="HorizontalOptions" Value="Fill" />
 		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}" />
@@ -616,11 +619,19 @@
 		<Setter Property="Shadow">
 			<Setter.Value>
 				<Shadow Brush="{AppThemeBinding Light={StaticResource SecondaryForegroundLight}, Dark={StaticResource SecondaryForegroundDark}}"
-						Opacity="0.3"
-						Offset="0,-5"
-						Radius="2"/>
+						Opacity=".3"
+						Offset="0,-1"
+						Radius="0"/>
 			</Setter.Value>
 		</Setter>
+	</Style>
+
+	<Style x:Key="BottomBarLabel" TargetType="Label">
+		<Setter Property="FontFamily" Value="SpaceGroteskBold" />
+		<Setter Property="HorizontalTextAlignment" Value="Start"/>
+		<Setter Property="VerticalTextAlignment" Value="Center"/>
+		<Setter Property="FontSize" Value="14"/>
+		<Setter Property="LineBreakMode" Value="WordWrap"/>
 	</Style>
 
 	<Style x:Key="AccentInfoBorder" ApplyToDerivedTypes="False" TargetType="Border">

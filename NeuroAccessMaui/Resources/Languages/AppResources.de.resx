@@ -2400,4 +2400,49 @@
   <data name="PermitParametersText" xml:space="preserve">
     <value>Wählen Sie die Parameter aus, auf die der Zugriff erlaubt werden soll, wenn die Anforderung akzeptiert wird.</value>
   </data>
+  <data name="SomethingWentWrong" xml:space="preserve">
+    <value>Etwas ist schief gelaufen</value>
+  </data>
+  <data name="NotCompletedOnboardingError" xml:space="preserve">
+    <value>Es sieht so aus, als hätten Sie den Onboarding-Prozess noch nicht abgeschlossen. Bitte schließen Sie die Einrichtung Ihres Kontos ab, um auf diese Funktion zugreifen zu können.</value>
+  </data>
+  <data name="PreviewContract" xml:space="preserve">
+    <value>Vorschau des Vertrags</value>
+  </data>
+  <data name="SetParametersTitle" xml:space="preserve">
+    <value>Parameter einstellen</value>
+  </data>
+  <data name="SetParametersDescription" xml:space="preserve">
+    <value>Angeben der Variablen, die den Vertrag steuern</value>
+  </data>
+  <data name="SelectRolesTitle" xml:space="preserve">
+    <value>Rollen auswählen</value>
+  </data>
+  <data name="SelectRolesDescription" xml:space="preserve">
+    <value>Wählen Sie aus, wer in welcher Rolle signieren kann</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Zurück</value>
+  </data>
+  <data name="SelectedRoleHasReachedMaximumNumberOfParts" xml:space="preserve">
+    <value>Die ausgewählte Rolle hat die maximale Anzahl von Teilen erreicht</value>
+  </data>
+  <data name="PetitionIdentitySent" xml:space="preserve">
+    <value>Es wurde eine Anforderung zum Anzeigen der ID gesendet</value>
+  </data>
+  <data name="IDRequestSent" xml:space="preserve">
+    <value>ID-Anfrage gesendet</value>
+  </data>
+  <data name="SelectYourRole" xml:space="preserve">
+    <value>Wählen Sie Ihre Rolle aus</value>
+  </data>
+  <data name="ReviewContractTitle" xml:space="preserve">
+    <value>Vertrag überprüfen</value>
+  </data>
+  <data name="ReviewContractDescription" xml:space="preserve">
+    <value>Überprüfen Sie die Vertragsbedingungen sorgfältig</value>
+  </data>
+  <data name="IHaveReadAndUnderstoodTheContract" xml:space="preserve">
+    <value>Ich habe die Bedingungen dieses Vertrages gelesen und verstanden</value>
+  </data>
 </root>

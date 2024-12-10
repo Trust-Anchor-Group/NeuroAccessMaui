@@ -32,7 +32,7 @@
 							Padding="{StaticResource SmallSpacing}">
 
 						<controls:TextButton Grid.Column="0" Grid.Row="0" Command="{Binding PlusMinusCommand}"
-													Style="{StaticResource FilledTextButtonNoRoundedCorners}" LabelData="±" />
+													Style="{StaticResource FilledTextButton}" LabelData="±" />
 
 						<Border Style="{StaticResource OutlinedImageButtonBorder}" Padding="0" Grid.Column="1" Grid.Row="0">
 							<Label Style="{StaticResource ValueLabel}" Text="{Binding Value, Converter={converters:DurationToString}}"

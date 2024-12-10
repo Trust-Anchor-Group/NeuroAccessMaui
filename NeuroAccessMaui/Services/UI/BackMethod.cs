@@ -24,6 +24,11 @@
 		/// <summary>
 		/// Pop until the current page is reached
 		/// </summary>
-		CurrentPage = 3
+		CurrentPage = 3,
+
+		/// <summary>
+		/// Pop 3 pages
+		/// </summary>
+		Pop3 = 4
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using NeuroAccessMaui.Services.UI;
+using NeuroAccessMaui.UI.Controls;
 
 namespace NeuroAccessMaui.UI.Pages.Main.Duration
 {
@@ -6,7 +7,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Duration
 	/// Holds navigation parameters for the duration.
 	/// </summary>
 	/// <param name="Entry">Entry whose value is being calculated.</param>
-	public class DurationNavigationArgs(Entry? Entry) : NavigationArgs
+	public class DurationNavigationArgs(CompositeEntry? Entry) : NavigationArgs
 	{
 		/// <summary>
 		/// Holds navigation parameters for the duration.
@@ -19,6 +20,6 @@ namespace NeuroAccessMaui.UI.Pages.Main.Duration
 		/// <summary>
 		/// Entry whose value is being calculated.
 		/// </summary>
-		public Entry? Entry { get; } = Entry;
+		public CompositeEntry? Entry { get; } = Entry;
 	}
 }
