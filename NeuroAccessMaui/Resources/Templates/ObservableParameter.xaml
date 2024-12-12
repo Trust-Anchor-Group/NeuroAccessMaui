@@ -20,11 +20,10 @@
 		<Setter Property="HorizontalTextAlignment" Value="Start" />
 	</Style>
 
-	<Style x:Key="ParameterItemValueLabel"
-       TargetType="Label">
+	<Style x:Key="ParameterItemValueLabel" TargetType="Label">
 		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffWhiteDark}}" />
 		<Setter Property="FontSize" Value="15" />
-		<Setter Property="FontFamily" Value="SpaceGroteskRegular" />
+		<Setter Property="FontFamily" Value="Roboto" />
 		<Setter Property="LineBreakMode" Value="WordWrap" />
 		<Setter Property="VerticalTextAlignment" Value="Center" />
 	</Style>
@@ -108,11 +107,15 @@
 
 	<!-- Read-only DateParameterTemplate -->
 	<DataTemplate x:Key="DateParameterReadOnlyTemplate" x:DataType="objectModel:ObservableDateParameter">
-		<VerticalStackLayout>
-			<Label Text="{Binding Label}"
-                   Style="{StaticResource ParameterItemTitleLabel}" />
-			<Label Text="{Binding DateValue, StringFormat='{}{0:MM/dd/yyyy}'}" />
-		</VerticalStackLayout>
+		<Border Style="{StaticResource BorderSubSet}" Margin="0">
+			<Grid RowDefinitions="*,*" ColumnSpacing="{StaticResource SmallSpacing}">
+				<Label Grid.Row="0" Text="{Binding Guide}"
+                   Style="{StaticResource ParameterItemTitleLabel}"
+						 HorizontalTextAlignment="Start"/>
+				<Label Grid.Row="1" Text="{Binding DateValue, StringFormat='{}{0:MM/dd/yyyy}'}"
+						 Style="{StaticResource ParameterItemValueLabel}"/>
+			</Grid>
+		</Border>
 	</DataTemplate>
 
 	<!-- NumericalParameterTemplate -->
@@ -240,12 +243,11 @@
 	<!-- Read-only DefaultParameterTemplate -->
 	<DataTemplate x:Key="DefaultParameterReadOnlyTemplate" x:DataType="objectModel:ObservableParameter">
 		<Border Style="{StaticResource BorderSubSet}" Margin="0">
-			<Grid ColumnDefinitions="*,*" ColumnSpacing="{StaticResource SmallSpacing}">
-				<Label Grid.Column="0" Text="{Binding Guide}"
+			<Grid RowDefinitions="*,*" ColumnSpacing="{StaticResource SmallSpacing}">
+				<Label Grid.Row="0" Text="{Binding Guide}"
                    Style="{StaticResource ParameterItemTitleLabel}"
 						 HorizontalTextAlignment="Start"/>
-				<Label Grid.Column="1" Text="{Binding Value}"
-						 HorizontalTextAlignment="End" VerticalTextAlignment="Center"
+				<Label Grid.Row="1" Text="{Binding Value}"
 						 Style="{StaticResource ParameterItemValueLabel}"/>
 			</Grid>
 		</Border>
