@@ -39,6 +39,9 @@ namespace NeuroAccessMaui.UI
 		private static Style? receiveFrame;
 		private static Style? requiredFieldMarker;
 		private static Style? requiredFieldMarkerSpan;
+		private static Style? tableCellEven;
+		private static Style? tableCellOdd;
+		private static Style? tableCell;
 
 
 		static AppStyles()
@@ -407,5 +410,42 @@ namespace NeuroAccessMaui.UI
 				return requiredFieldMarkerSpan!;
 			}
 		}
+
+		/// <summary>
+		/// Style for even table cells
+		/// </summary>
+		public static Style TableCellEven
+		{
+			get
+			{
+				tableCellEven ??= TryGetResource<Style>("TableCellEven");
+				return tableCellEven!;
+			}
+		}
+
+		/// <summary>
+		/// Style for odd table cells
+		/// </summary>
+		public static Style TableCellOdd
+		{
+			get
+			{
+				tableCellOdd ??= TryGetResource<Style>("TableCellOdd");
+				return tableCellOdd!;
+			}
+		}
+
+		/// <summary>
+		/// Style for table cells
+		/// </summary>
+		public static Style TableCell
+		{
+			get
+			{
+				tableCell ??= TryGetResource<Style>("TableCell");
+				return tableCell!;
+			}
+		}
+
 	}
 }
