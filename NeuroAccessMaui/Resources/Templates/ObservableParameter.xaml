@@ -23,7 +23,7 @@
 	<Style x:Key="ParameterItemValueLabel" TargetType="Label">
 		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffWhiteDark}}" />
 		<Setter Property="FontSize" Value="15" />
-		<Setter Property="FontFamily" Value="Roboto" />
+		<Setter Property="FontFamily" Value="HaasGroteskRegular" />
 		<Setter Property="LineBreakMode" Value="WordWrap" />
 		<Setter Property="VerticalTextAlignment" Value="Center" />
 	</Style>
@@ -242,7 +242,6 @@
 
 	<!-- Read-only DefaultParameterTemplate -->
 	<DataTemplate x:Key="DefaultParameterReadOnlyTemplate" x:DataType="objectModel:ObservableParameter">
-		<Border Style="{StaticResource BorderSubSet}" Margin="0">
 			<Grid RowDefinitions="*,*" ColumnSpacing="{StaticResource SmallSpacing}">
 				<Label Grid.Row="0" Text="{Binding Guide}"
                    Style="{StaticResource ParameterItemTitleLabel}"
@@ -250,7 +249,6 @@
 				<Label Grid.Row="1" Text="{Binding Value}"
 						 Style="{StaticResource ParameterItemValueLabel}"/>
 			</Grid>
-		</Border>
 	</DataTemplate>
 
 </ResourceDictionary>

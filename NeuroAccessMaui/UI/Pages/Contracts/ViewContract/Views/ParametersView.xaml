@@ -28,18 +28,20 @@
 	<Grid RowDefinitions="auto">
 
 		<Border Style="{StaticResource BorderSet}" Margin="{StaticResource MediumMargins}" >
-			<CollectionView HorizontalOptions="Center"
-								ItemsSource="{Binding DisplayableParameters}"
-								ItemTemplate="{StaticResource ParameterTemplateSelector}"
-								SelectionMode="None" ItemSizingStrategy="MeasureAllItems"
-								>
-				<CollectionView.ItemsLayout>
-					<LinearItemsLayout Orientation="Vertical" ItemSpacing="{StaticResource MediumSpacing}" />
-				</CollectionView.ItemsLayout>
-				<CollectionView.EmptyView>
-					<Label Text="{l:Localize SomethingWentWrong}" />
-				</CollectionView.EmptyView>
-			</CollectionView>
+			<Border Style="{StaticResource BorderSubSet}" Margin="0">
+				<CollectionView HorizontalOptions="Center"
+									ItemsSource="{Binding DisplayableParameters}"
+									ItemTemplate="{StaticResource ParameterTemplateSelector}"
+									SelectionMode="None" ItemSizingStrategy="MeasureAllItems"
+									>
+					<CollectionView.ItemsLayout>
+						<LinearItemsLayout Orientation="Vertical" ItemSpacing="{StaticResource MediumSpacing}" />
+					</CollectionView.ItemsLayout>
+					<CollectionView.EmptyView>
+						<Label Text="{l:Localize SomethingWentWrong}" />
+					</CollectionView.EmptyView>
+				</CollectionView>
+			</Border>	
 		</Border>
 	</Grid>
 
