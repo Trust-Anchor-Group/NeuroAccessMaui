@@ -162,7 +162,7 @@
                                      IsValid="{Binding IsValid}"
                                      LabelText="{Binding Label}">
 			<controls:CompositeInputView.CenterView>
-				<TimePicker Time="{Binding TimeSpanValue, Mode=TwoWay}"
+				<TimePicker Time="{Binding TimeSpanValue, Mode=TwoWay}" BackgroundColor="Transparent" TextColor="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffWhiteDark}}"
                             VerticalOptions="Center" />
 			</controls:CompositeInputView.CenterView>
 		</controls:CompositeInputView>
@@ -182,7 +182,7 @@
 	<!-- DurationParameterTemplate -->
 	<DataTemplate x:Key="DurationParameterTemplate" x:DataType="objectModel:ObservableDurationParameter">
 		<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}"
-                                 EntryData="{Binding DurationValue, Mode=TwoWay}"
+                                 EntryData="{Binding StringValue, Mode=TwoWay}"
                                  Keyboard="Text"
                                  Placeholder="{Binding Guide}"
                                  VerticalOptions="Center"
@@ -270,7 +270,7 @@
             IsValid="{Binding IsValid}"
             LabelText="{l:Localize Time}">
 				<controls:CompositeInputView.CenterView>
-					<TimePicker Time="{Binding SelectedTime, Mode=TwoWay}"
+					<TimePicker Time="{Binding SelectedTime, Mode=TwoWay}" BackgroundColor="Transparent" TextColor="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffWhiteDark}}"
                             VerticalOptions="Center" />
 				</controls:CompositeInputView.CenterView>
 			</controls:CompositeInputView>

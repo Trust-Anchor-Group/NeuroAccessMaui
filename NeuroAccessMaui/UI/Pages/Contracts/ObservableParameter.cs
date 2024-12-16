@@ -263,10 +263,29 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			this.Value = parameter.ObjectValue is Duration duration ? duration : Duration.Zero;
 		}
 
+		public string StringValue 
+		{
+			get => this.Value?.ToString() ?? string.Empty;
+			set
+			{
+				if(Duration.TryParse(value, out Duration duration))
+					this.Value = duration;
+				else
+					this.Value = null;
+			}
+		} 
+
 		public Duration DurationValue
 		{
 			get => this.Value as Duration? ?? Duration.Zero;
-			set => this.Value = value;
+			set
+			{
+				if(Duration.TryParse(value.ToString(), out Duration duration))
+					this.Value = duration;
+				else
+					this.Value = null;
+
+			}
 		}
 	}
 
