@@ -60,19 +60,6 @@
 														<Label Style="{StaticResource RoleDescriptionLabel}" Text="{l:Localize IDRequestSent}" TextColor="{StaticResource OrangeLight}" VerticalOptions="Center"/>
 													</Border>
 												</Grid>
-												<controls:TemplatedButton Grid.Column="1" Grid.RowSpan="2"
-																				  IsVisible="{Binding IsThirdParty}"
-																				  Command="{Binding Source={RelativeSource AncestorType={x:Type objectModel:ObservableRole}}, Path=RemovePartCommand}"
-																				 CommandParameter="{Binding .}">
-													<Border WidthRequest="48" HeightRequest="48"  Style="{StaticResource TransparentTemplateButtonBorder}" Padding="{StaticResource SmallMargins}" Margin="0" Background="{AppThemeBinding Light={StaticResource Red20WarningLight}, Dark={StaticResource Red20WarningDark}}" >
-														<Path WidthRequest="24" HeightRequest="24"
-															Fill="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedWarningDark}}"				  
-															Data="{x:Static ui:Geometries.CancelPath}"
-															VerticalOptions="Center" HorizontalOptions="Center"/>
-													</Border>
-
-												</controls:TemplatedButton>
-
 											</Grid>
 										</Border>
 									</DataTemplate>
@@ -80,10 +67,7 @@
 							</VerticalStackLayout>
 
 							<Border Style="{StaticResource BorderSet}" IsVisible="{Binding Path=HasReachedMaxCount, Converter={StaticResource InvertedBoolConverter}}">
-								<Grid ColumnDefinitions="*,*" ColumnSpacing="{StaticResource SmallSpacing}">
-									<controls:TextButton Grid.Column="0" LabelData="Add Contact" Style="{StaticResource TransparentTextButton}" Command="{Binding AddPartFromContactsCommand}"/>
-									<controls:TextButton Grid.Column="1" LabelData="{l:Localize ScanQRShort}" Style="{StaticResource TransparentTextButton}" Command="{Binding AddPartFromQrCommand}"/>
-								</Grid>
+								<Label Text="{l:Localize None}" Style="{StaticResource RoleDescriptionLabel}" TextColor="{StaticResource AccentActiveLight}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
 							</Border>
 						</VerticalStackLayout>
 					</Border>
