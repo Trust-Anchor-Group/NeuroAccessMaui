@@ -29,7 +29,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// <summary>
 		/// Initializes the part, setting properties which needs to be set asynchronosly
 		/// </summary>
-		/// <param name="contract"></param>
 		public async Task InitializeAsync()
 		{
 			try
@@ -37,10 +36,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				// Set Friendly name before anything can go wrong
 				this.FriendlyName = await this.GetFriendlyNameAsync();
 
-
 				this.identity = await ServiceRef.ContractOrchestratorService.TryGetLegalIdentity(this.LegalId,
-									ServiceRef.Localizer[nameof(AppResources.ForInclusionInContract)]);
-
+											ServiceRef.Localizer[nameof(AppResources.ForInclusionInContract)]);
 
 				MainThread.BeginInvokeOnMainThread(() =>
 				{

@@ -142,14 +142,17 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			ObservablePart ObservablePart = new ObservablePart(Part);
 			await ObservablePart.InitializeAsync();
 
-			await MainThread.InvokeOnMainThreadAsync(() =>
+			TaskCompletionSource TaskCompletionSource = new();
+			MainThread.BeginInvokeOnMainThread(() =>
 			{
 				this.Parts.Add(ObservablePart);
 				this.OnPropertyChanged(nameof(this.HasReachedMaxCount));
 				this.OnPropertyChanged(nameof(this.HasReachedMinCount));
 				if (Notify)
 					this.OnPropertyChanged(nameof(this.Parts));
+				TaskCompletionSource.SetResult();
 			});
+			await TaskCompletionSource.Task;
 		}
 
 		/// <summary>

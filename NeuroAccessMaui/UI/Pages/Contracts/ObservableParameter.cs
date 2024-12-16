@@ -49,6 +49,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			{
 				BooleanParameter booleanParameter => new ObservableBooleanParameter(booleanParameter),
 				DateParameter dateParameter => new ObservableDateParameter(dateParameter),
+				DateTimeParameter dateTimeParameter => new ObservableDateTimeParameter(dateTimeParameter), // <-- Add this line
 				NumericalParameter numericalParameter => new ObservableNumericalParameter(numericalParameter),
 				StringParameter stringParameter => new ObservableStringParameter(stringParameter),
 				TimeParameter timeParameter => new ObservableTimeParameter(timeParameter),
@@ -296,5 +297,61 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			set => this.Value = value;
 		}
 	}
+
+	public class ObservableDateTimeParameter : ObservableParameter
+	{
+		public ObservableDateTimeParameter(DateTimeParameter parameter) : base(parameter)
+		{
+			// Extract initial value from parameter
+			if (parameter.ObjectValue is DateTime dt)
+				this.Value = dt;
+			else
+				this.Value = null;  // or DateTime.MinValue as a fallback
+		}
+
+		/// <summary>
+		/// The DateTime value of the parameter.
+		/// When changed, updates the underlying parameter value.
+		/// </summary>
+		public DateTime? DateTimeValue
+		{
+			get => this.Value as DateTime?;
+			set => this.Value = value;
+		}
+
+		/// <summary>
+		/// Helper to get or set just the Date portion.
+		/// </summary>
+		public DateTime? SelectedDate
+		{
+			get => this.DateTimeValue?.Date;
+			set
+			{
+				if (value.HasValue)
+				{
+					DateTime current = this.DateTimeValue ?? DateTime.MinValue;
+					this.DateTimeValue = new DateTime(value.Value.Year, value.Value.Month, value.Value.Day, current.Hour, current.Minute, current.Second);
+				}
+				else
+				{
+					this.DateTimeValue = null;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Helper to get or set just the Time portion.
+		/// </summary>
+		public TimeSpan SelectedTime
+		{
+			get => this.DateTimeValue?.TimeOfDay ?? TimeSpan.Zero;
+			set
+			{
+				DateTime current = this.DateTimeValue ?? DateTime.MinValue;
+				this.DateTimeValue = current.Date + value;
+			}
+		}
+	}
+
 }
 #endregion

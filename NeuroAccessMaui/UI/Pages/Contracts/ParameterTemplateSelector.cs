@@ -10,6 +10,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 	{
 		public DataTemplate? BooleanTemplate { get; set; }
 		public DataTemplate? DateTemplate { get; set; }
+		public DataTemplate? DateTimeTemplate { get; set; }
 		public DataTemplate? DurationTemplate { get; set; }
 		public DataTemplate? StringTemplate { get; set; }
 		public DataTemplate? NumericalTemplate { get; set; }
@@ -34,12 +35,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			{
 				ObservableBooleanParameter => this.BooleanTemplate ?? this.DefaultTemplate,
 				ObservableDateParameter => this.DateTemplate ?? this.DefaultTemplate,
+				ObservableDateTimeParameter => this.DateTimeTemplate ?? this.DefaultTemplate,
 				ObservableDurationParameter => this.DurationTemplate ?? this.DefaultTemplate,
 				ObservableStringParameter => this.StringTemplate ?? this.DefaultTemplate,
 				ObservableNumericalParameter => this.NumericalTemplate ?? this.DefaultTemplate,
 				ObservableTimeParameter => this.TimeTemplate ?? this.DefaultTemplate,
 
-				// Add other parameter type checks here...
 				_ => this.DefaultTemplate
 			};
 		}
