@@ -444,6 +444,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<MauiXaml Update="Resources\Styles\CompositeInputViewStyles.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="Resources\Styles\PickerStyles.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
