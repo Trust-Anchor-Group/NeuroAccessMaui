@@ -12,9 +12,9 @@
 	<Style x:Key="ParameterItemTitleLabel"
            TargetType="Label"
            BasedOn="{StaticResource BoldItemTitleLabel}">
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffWhiteDark}}" />
-		<Setter Property="FontSize" Value="14" />
-		<Setter Property="FontFamily" Value="SpaceGroteskBold"/>
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource OffBlack50Light}, Dark={StaticResource OffWhiteDark}}" />
+		<Setter Property="FontSize" Value="15" />
+		<Setter Property="FontFamily" Value="SpaceGroteskSemiBold"/>
 		<Setter Property="LineBreakMode" Value="WordWrap" />
 		<Setter Property="VerticalTextAlignment" Value="Center" />
 		<Setter Property="HorizontalTextAlignment" Value="Start" />
@@ -74,25 +74,24 @@
                       Margin="{StaticResource SmallRightMargins}" />
 			<Label Grid.Column="1"
                    Text="{Binding Label}"
-                   Style="{StaticResource ParameterItemTitleLabel}" />
+                   Style="{StaticResource ParameterItemTitleLabel}"
+						 TextColor="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffWhiteDark}}"/>
 		</Grid>
 	</DataTemplate>
 
 	<!-- Read-only BooleanParameterTemplate -->
 	<DataTemplate x:Key="BooleanParameterReadOnlyTemplate" x:DataType="objectModel:ObservableBooleanParameter">
-		<Border Style="{StaticResource BorderSubSet}" Margin="0">
-			<Grid ColumnDefinitions="*,*" ColumnSpacing="{StaticResource SmallSpacing}">
-				<Label Grid.Column="0" Text="{Binding Guide}"
+		<Grid RowDefinitions="*,*" Margin="0">
+			<Label Grid.Row="0" Text="{Binding Guide}"
                    Style="{StaticResource ParameterItemTitleLabel}"
 						 HorizontalTextAlignment="Start"/>
-				<CheckBox Grid.Column="1"
+			<CheckBox Grid.Row="1"
                       IsChecked="{Binding BooleanValue, Mode=OneTime}"
                       VerticalOptions="Center"
-                      HorizontalOptions="End"
-                      Color="{AppThemeBinding Light={StaticResource EnabledFilledButtonBackgroundLight}, Dark={StaticResource EnabledFilledButtonBackgroundDark}}"
+                      HorizontalOptions="Start"
+							 Color="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffWhiteDark}}"
 							 InputTransparent="True"/>
-			</Grid>
-		</Border>
+		</Grid>
 	</DataTemplate>
 
 	<!-- DateParameterTemplate -->
@@ -107,15 +106,13 @@
 
 	<!-- Read-only DateParameterTemplate -->
 	<DataTemplate x:Key="DateParameterReadOnlyTemplate" x:DataType="objectModel:ObservableDateParameter">
-		<Border Style="{StaticResource BorderSubSet}" Margin="0">
-			<Grid RowDefinitions="*,*" ColumnSpacing="{StaticResource SmallSpacing}">
-				<Label Grid.Row="0" Text="{Binding Guide}"
-                   Style="{StaticResource ParameterItemTitleLabel}"
-						 HorizontalTextAlignment="Start"/>
-				<Label Grid.Row="1" Text="{Binding DateValue, StringFormat='{}{0:MM/dd/yyyy}'}"
-						 Style="{StaticResource ParameterItemValueLabel}"/>
-			</Grid>
-		</Border>
+		<Grid RowDefinitions="*,*" ColumnSpacing="{StaticResource SmallSpacing}">
+			<Label Grid.Row="0" Text="{Binding Guide}"
+                  Style="{StaticResource ParameterItemTitleLabel}"
+						HorizontalTextAlignment="Start"/>
+			<Label Grid.Row="1" Text="{Binding DateValue, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter=true}"
+						Style="{StaticResource ParameterItemValueLabel}"/>
+		</Grid>
 	</DataTemplate>
 
 	<!-- NumericalParameterTemplate -->
@@ -161,7 +158,7 @@
 
 	<!-- TimeParameterTemplate -->
 	<DataTemplate x:Key="TimeParameterTemplate" x:DataType="objectModel:ObservableTimeParameter">
-		<controls:CompositeInputView Style="{StaticResource RegularCompositeInputView}"
+		<controls:CompositeInputView Style="{StaticResource BaseCompositeInputView}"
                                      IsValid="{Binding IsValid}"
                                      LabelText="{Binding Label}">
 			<controls:CompositeInputView.CenterView>
@@ -173,11 +170,13 @@
 
 	<!-- Read-only TimeParameterTemplate -->
 	<DataTemplate x:Key="TimeParameterReadOnlyTemplate" x:DataType="objectModel:ObservableTimeParameter">
-		<VerticalStackLayout>
-			<Label Text="{Binding Label}"
-                   Style="{StaticResource ParameterItemTitleLabel}" />
-			<Label Text="{Binding TimeSpanValue, StringFormat='{}{0:hh\\:mm\\:ss}'}" />
-		</VerticalStackLayout>
+		<Grid RowDefinitions="*,*" ColumnSpacing="{StaticResource SmallSpacing}">
+			<Label Grid.Row="0" Text="{Binding Guide}"
+                  Style="{StaticResource ParameterItemTitleLabel}"
+						HorizontalTextAlignment="Start"/>
+			<Label Grid.Row="1" Text="{Binding TimeSpanValue, StringFormat='{}{0:hh\\:mm\\:ss}'}"
+						Style="{StaticResource ParameterItemValueLabel}"/>
+		</Grid>
 	</DataTemplate>
 
 	<!-- DurationParameterTemplate -->
@@ -193,11 +192,13 @@
 
 	<!-- Read-only DurationParameterTemplate -->
 	<DataTemplate x:Key="DurationParameterReadOnlyTemplate" x:DataType="objectModel:ObservableDurationParameter">
-		<VerticalStackLayout>
-			<Label Text="{Binding Label}"
-                   Style="{StaticResource ParameterItemTitleLabel}" />
-			<Label Text="{Binding DurationValue}" />
-		</VerticalStackLayout>
+		<Grid RowDefinitions="*,*" ColumnSpacing="{StaticResource SmallSpacing}">
+			<Label Grid.Row="0" Text="{Binding Guide}"
+                  Style="{StaticResource ParameterItemTitleLabel}"
+						HorizontalTextAlignment="Start"/>
+			<Label Grid.Row="1" Text="{Binding DurationValue}"
+						Style="{StaticResource ParameterItemValueLabel}"/>
+		</Grid>
 	</DataTemplate>
 
 	<!-- Unreadable Protected Template -->
@@ -242,13 +243,50 @@
 
 	<!-- Read-only DefaultParameterTemplate -->
 	<DataTemplate x:Key="DefaultParameterReadOnlyTemplate" x:DataType="objectModel:ObservableParameter">
-			<Grid RowDefinitions="*,*" ColumnSpacing="{StaticResource SmallSpacing}">
-				<Label Grid.Row="0" Text="{Binding Guide}"
-                   Style="{StaticResource ParameterItemTitleLabel}"
-						 HorizontalTextAlignment="Start"/>
-				<Label Grid.Row="1" Text="{Binding Value}"
-						 Style="{StaticResource ParameterItemValueLabel}"/>
-			</Grid>
+		<Grid RowDefinitions="*,*" ColumnSpacing="{StaticResource SmallSpacing}">
+			<Label Grid.Row="0" Text="{Binding Guide}"
+                  Style="{StaticResource ParameterItemTitleLabel}"
+						HorizontalTextAlignment="Start"/>
+			<Label Grid.Row="1" Text="{Binding Value}"
+						Style="{StaticResource ParameterItemValueLabel}"/>
+		</Grid>
+	</DataTemplate>
+
+	<!-- DateTimeParameterTemplate -->
+	<DataTemplate x:Key="DateTimeParameterTemplate" x:DataType="objectModel:ObservableDateTimeParameter">
+		<Grid ColumnDefinitions="*,*" ColumnSpacing="{StaticResource SmallSpacing}">
+			<controls:CompositeDatePicker 
+            Grid.Column="0"
+            Style="{StaticResource RegularCompositeDatePicker}"
+            IsValid="{Binding IsValid}"
+            LabelText="{Binding Label}"
+            NullableDate="{Binding SelectedDate}"
+            Placeholder="{Binding Guide}"
+            VerticalOptions="Center" />
+
+			<controls:CompositeInputView 
+            Grid.Column="1"
+            Style="{StaticResource BaseCompositeInputView}"
+            IsValid="{Binding IsValid}"
+            LabelText="{l:Localize Time}">
+				<controls:CompositeInputView.CenterView>
+					<TimePicker Time="{Binding SelectedTime, Mode=TwoWay}"
+                            VerticalOptions="Center" />
+				</controls:CompositeInputView.CenterView>
+			</controls:CompositeInputView>
+		</Grid>
+	</DataTemplate>
+
+	<!-- DateTimeParameterReadOnlyTemplate -->
+	<DataTemplate x:Key="DateTimeParameterReadOnlyTemplate" x:DataType="objectModel:ObservableDateTimeParameter">
+		<Grid RowDefinitions="*,*" ColumnSpacing="{StaticResource SmallSpacing}">
+			<Label Grid.Row="0" Text="{Binding Guide}"
+               Style="{StaticResource ParameterItemTitleLabel}"
+               HorizontalTextAlignment="Start"/>
+			<Label Grid.Row="1" 
+               Text="{Binding DateTimeValue, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter=false}"
+               Style="{StaticResource ParameterItemValueLabel}"/>
+		</Grid>
 	</DataTemplate>
 
 </ResourceDictionary>
