@@ -13,6 +13,7 @@ using NeuroAccessMaui.UI.Pages.Contracts.ObjectModel;
 using NeuroAccessMaui.UI.Pages.Signatures.ClientSignature;
 using NeuroAccessMaui.UI.Pages.Signatures.ServerSignature;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
@@ -73,12 +74,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		private bool isContractOk;
 
 		/// <summary>
-		/// If the user can sign the contract.
-		/// </summary>
-		[ObservableProperty]
-		private bool canSign;
-
-		/// <summary>
 		/// The friednly name of the proposal sender.
 		/// </summary>
 		[ObservableProperty]
@@ -121,6 +116,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		/// </summary>
 		public bool HasProposalMessage => !string.IsNullOrEmpty(this.ProposalMessage);
 
+		/// <summary>
+		/// String representation of the contract visibility.
+		/// </summary>
 		public string? Visibility => this.Contract?.Visibility switch
 		{
 			ContractVisibility.Public => ServiceRef.Localizer[nameof(AppResources.ContractVisibility_Public)],
@@ -130,6 +128,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			_ => string.Empty
 		};
 
+		/// <summary>
+		/// The list of roles of which I can sign.
+		/// </summary>
+		public ObservableCollection<ObservableRole> SignableRoles { get; set; } = [];
+
+		public bool CanSign => this.SignableRoles.Count > 0 && (this.Contract?.ContractState == ContractState.Approved || this.Contract?.ContractState == ContractState.BeingSigned);
 
 		private readonly ViewContractNavigationArgs? args;
 
@@ -151,6 +155,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				// TODO: Handle error, perhaps change to an error state
 				return;
 			}
+			this.SignableRoles.CollectionChanged += this.SignableRoles_CollectionChanged;
+
 
 			try
 			{
@@ -202,6 +208,22 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 					}
 				}
 
+				// Prepare signable roles
+				if(this.Contract.Contract.PartsMode == ContractParts.Open)
+				{
+					foreach (ObservableRole r in this.Contract!.Roles)
+					{
+						if (!r.HasReachedMaxCount)
+							this.SignableRoles.Add(r);
+					}
+				}
+				else if(this.ProposalRole is not null)
+				{
+					ObservableRole? role = this.Contract.Roles.FirstOrDefault(r => r.Name == this.ProposalRole);
+					if (role is not null && !role.HasReachedMaxCount)
+						this.SignableRoles.Add(role);
+				}
+
 				await this.GoToState(ViewContractStep.Overview);
 			}
 			catch (Exception ex)
@@ -215,8 +237,19 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		/// <inheritdoc/>
 		protected override async Task OnDispose()
 		{
-
+			this.SignableRoles.CollectionChanged -= this.SignableRoles_CollectionChanged;
 			await base.OnDispose();
+		}
+
+		/// <summary>
+		/// Event handler for when the signable roles collection changes.
+		/// </summary>
+		private void SignableRoles_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+		{
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				this.OnPropertyChanged(nameof(this.CanSign));
+			});
 		}
 
 
