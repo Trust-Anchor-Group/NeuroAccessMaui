@@ -40,7 +40,7 @@
 
 			<!-- Proposed -->
 			<DataTemplate x:Key="ProposedTemplate">
-				<Grid>
+				<Grid ColumnDefinitions="auto" HorizontalOptions="End">
 					<Border Style="{StaticResource RoundedBorder}" Padding="8,4,8,4"
                 BackgroundColor="{AppThemeBinding Light={StaticResource Blue20AffirmLight}, Dark={StaticResource Blue20AffirmDark}}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
@@ -52,19 +52,19 @@
 
 			<!-- Rejected -->
 			<DataTemplate x:Key="RejectedTemplate">
-				<Grid>
+				<Grid ColumnDefinitions="auto" HorizontalOptions="End">
 					<Border Style="{StaticResource RoundedBorder}" Padding="8,4,8,4"
-                BackgroundColor="{AppThemeBinding Light={StaticResource Blue20AffirmLight}, Dark={StaticResource Blue20AffirmDark}}">
+                BackgroundColor="{AppThemeBinding Light={StaticResource Red20WarningLight}, Dark={StaticResource Red20WarningDark}}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
                    Style="{StaticResource ItemValueLabel}"
-                   TextColor="{AppThemeBinding Light={StaticResource BlueDarkLight}, Dark={StaticResource BlueDarkDark}}" />
+                   TextColor="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedWarningDark}}" />
 					</Border>
 				</Grid>
 			</DataTemplate>
 
 			<!-- Approved -->
 			<DataTemplate x:Key="ApprovedTemplate">
-				<Grid>
+				<Grid ColumnDefinitions="auto" HorizontalOptions="End">
 					<Border Style="{StaticResource RoundedBorder}" Padding="8,4,8,4"
                 BackgroundColor="{AppThemeBinding Light={StaticResource Blue20AffirmLight}, Dark={StaticResource Blue20AffirmDark}}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
@@ -76,7 +76,7 @@
 
 			<!-- BeingSigned -->
 			<DataTemplate x:Key="BeingSignedTemplate">
-				<Grid>
+				<Grid ColumnDefinitions="auto" HorizontalOptions="End">
 					<Border Style="{StaticResource RoundedBorder}" Padding="8,4,8,4"
                 BackgroundColor="{AppThemeBinding Light={StaticResource Blue20AffirmLight}, Dark={StaticResource Blue20AffirmDark}}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
@@ -100,7 +100,7 @@
 
 			<!-- Failed -->
 			<DataTemplate x:Key="FailedTemplate">
-				<Grid>
+				<Grid ColumnDefinitions="auto" HorizontalOptions="End">
 					<Border Style="{StaticResource RoundedBorder}" Padding="8,4,8,4"
                 BackgroundColor="{AppThemeBinding Light={StaticResource Red20WarningLight}, Dark={StaticResource Red20WarningDark}}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
@@ -112,7 +112,7 @@
 
 			<!-- Obsoleted -->
 			<DataTemplate x:Key="ObsoletedTemplate">
-				<Grid>
+				<Grid ColumnDefinitions="auto" HorizontalOptions="End">
 					<Border Style="{StaticResource RoundedBorder}" Padding="8,4,8,4"
                 BackgroundColor="{AppThemeBinding Light={StaticResource Red20WarningLight}, Dark={StaticResource Red20WarningDark}}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
@@ -124,7 +124,7 @@
 
 			<!-- Deleted -->
 			<DataTemplate x:Key="DeletedTemplate">
-				<Grid>
+				<Grid ColumnDefinitions="auto" HorizontalOptions="End">
 					<Border Style="{StaticResource RoundedBorder}" Padding="8,4,8,4"
                 BackgroundColor="{AppThemeBinding Light={StaticResource Red20WarningLight}, Dark={StaticResource Red20WarningDark}}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
@@ -215,7 +215,19 @@
 		</ScrollView>
 
 		<!-- BOTTOM BAR -->
-		<Border Grid.Row="1" Style="{StaticResource BottomBarBorder}">
+		<Grid Grid.Row="1" RowDefinitions="*,*">
+		<Border Grid.Row="0" Style="{StaticResource BottomBarBorder}" IsVisible="{Binding CanSign}" Padding="0">
+			<Grid HorizontalOptions="Center" VerticalOptions="Center" ColumnSpacing="{StaticResource SmallSpacing}" Padding="{StaticResource SmallMargins}">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="auto" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+
+				<CheckBox Grid.Column="0" IsChecked="{Binding IsContractOk}" Color="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffWhiteDark}}" />
+				<Label Grid.Column="1" Text="{l:Localize IHaveReadAndUnderstoodTheContract}" Style="{StaticResource BottomBarLabel}" />
+			</Grid>
+		</Border>
+		<Border Grid.Row="1" Style="{StaticResource BottomBarBorder}" IsVisible="{Binding CanSign}">
 			<Grid HorizontalOptions="Fill" VerticalOptions="Center" ColumnSpacing="{StaticResource SmallSpacing}" Padding="{StaticResource SmallMargins}">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*" />
@@ -223,9 +235,11 @@
 				</Grid.ColumnDefinitions>
 
 				<controls:TextButton Style="{StaticResource TransparentTextButton}" Grid.Column="0" LabelData="{l:Localize Back}" Command="{Binding BackCommand}" />
-				<controls:TextButton Style="{StaticResource FilledTextButton}" Grid.Column="1" LabelData="{l:Localize Create}"  />
+				<controls:TextButton Style="{StaticResource FilledTextButton}" Grid.Column="1" LabelData="Sign"  />
 
 			</Grid>
 		</Border>
+		</Grid>
+
 	</Grid>
 </views:BaseViewContractView>
