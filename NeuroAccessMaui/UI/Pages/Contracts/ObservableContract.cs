@@ -58,13 +58,25 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				await observableRole.InitializeAsync(this.Contract);
 				this.Roles.Add(observableRole);
 			}
-
-			foreach (Part part in this.Contract.Parts ?? Enumerable.Empty<Part>())
+			if(this.IsTemplate)
 			{
-				ObservableRole? Role = this.Roles.FirstOrDefault(r => r.Name == part.Role);
-				if (Role is not null)
-					await Role.AddPart(part);
+				foreach (Part part in this.Contract.Parts ?? Enumerable.Empty<Part>())
+				{
+					ObservableRole? Role = this.Roles.FirstOrDefault(r => r.Name == part.Role);
+					if (Role is not null)
+						await Role.AddPart(part);
+				}
 			}
+			else
+			{
+				foreach (ClientSignature signature in this.Contract.ClientSignatures ?? Enumerable.Empty<ClientSignature>())
+				{
+					ObservableRole? Role = this.Roles.FirstOrDefault(r => r.Name == signature.Role);
+					if (Role is not null)
+						await Role.AddPart(signature.LegalId);
+				}
+			}
+
 		}
 
 		#endregion
