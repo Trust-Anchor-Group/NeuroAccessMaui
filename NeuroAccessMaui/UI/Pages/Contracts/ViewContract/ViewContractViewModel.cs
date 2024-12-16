@@ -121,6 +121,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		/// </summary>
 		public bool HasProposalMessage => !string.IsNullOrEmpty(this.ProposalMessage);
 
+		public string? Visibility => this.Contract?.Visibility switch
+		{
+			ContractVisibility.Public => ServiceRef.Localizer[nameof(AppResources.ContractVisibility_Public)],
+			ContractVisibility.CreatorAndParts => ServiceRef.Localizer[nameof(AppResources.ContractVisibility_CreatorAndParts)],
+			ContractVisibility.DomainAndParts => ServiceRef.Localizer[nameof(AppResources.ContractVisibility_DomainAndParts)],
+			ContractVisibility.PublicSearchable => ServiceRef.Localizer[nameof(AppResources.ContractVisibility_PublicSearchable)],
+			_ => string.Empty
+		};
+
 
 		private readonly ViewContractNavigationArgs? args;
 
@@ -272,6 +281,16 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		{
 			await this.GoToState(ViewContractStep.Loading);
 			await this.GoToState(ViewContractStep.Parameters);
+		}
+
+		/// <summary>
+		/// Navigates to the parameters view
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(CanStateChange))]
+		private async Task GoToRoles()
+		{
+			await this.GoToState(ViewContractStep.Loading);
+			await this.GoToState(ViewContractStep.Roles);
 		}
 
 		/// <summary>
