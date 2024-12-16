@@ -254,21 +254,20 @@
 
 	<!-- DateTimeParameterTemplate -->
 	<DataTemplate x:Key="DateTimeParameterTemplate" x:DataType="objectModel:ObservableDateTimeParameter">
-		<Grid ColumnDefinitions="*,*" ColumnSpacing="{StaticResource SmallSpacing}">
+		<Grid RowDefinitions="*,*" RowSpacing="{StaticResource SmallSpacing}">
 			<controls:CompositeDatePicker 
-            Grid.Column="0"
-            Style="{StaticResource RegularCompositeDatePicker}"
-            IsValid="{Binding IsValid}"
-            LabelText="{Binding Label}"
-            NullableDate="{Binding SelectedDate}"
-            Placeholder="{Binding Guide}"
-            VerticalOptions="Center" />
+				Grid.Row="0"
+				Style="{StaticResource RegularCompositeDatePicker}"
+				IsValid="{Binding IsValid}"
+				LabelText="{Binding Label}"
+				NullableDate="{Binding SelectedDate}"
+				Placeholder="{Binding Guide}"
+				VerticalOptions="Center" />
 
 			<controls:CompositeInputView 
-            Grid.Column="1"
-            Style="{StaticResource BaseCompositeInputView}"
-            IsValid="{Binding IsValid}"
-            LabelText="{l:Localize Time}">
+				Grid.Row="1"
+				Style="{StaticResource BaseCompositeInputView}"
+				IsValid="{Binding IsValid}">
 				<controls:CompositeInputView.CenterView>
 					<TimePicker Time="{Binding SelectedTime, Mode=TwoWay}" BackgroundColor="Transparent" TextColor="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffWhiteDark}}"
                             VerticalOptions="Center" />
