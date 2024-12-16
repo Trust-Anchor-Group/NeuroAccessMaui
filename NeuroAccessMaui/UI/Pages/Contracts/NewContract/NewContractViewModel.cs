@@ -203,6 +203,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 							|| p.Parameter is StringParameter
 							|| p.Parameter is NumericalParameter
 							|| p.Parameter is DateParameter
+							|| p.Parameter is DateTimeParameter
 							|| p.Parameter is TimeParameter
 							|| p.Parameter is DurationParameter)
 						{
