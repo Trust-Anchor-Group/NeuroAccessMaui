@@ -1,45 +1,49 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
-<?xaml-comp compile="true" ?>
+<?xaml-comp compile="true"?>
 <ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-						  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-						  xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-						  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                    xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+                    xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
 
-	<Style x:Key="RegularCompositeInputViewLabel" ApplyToDerivedTypes="False" TargetType="Label" BasedOn="{StaticResource BoldItemTitleLabel}">
+	<!-- Validation Label style common to composite input views -->
+	<Style x:Key="RegularCompositeInputViewLabel" TargetType="Label" BasedOn="{StaticResource BoldItemTitleLabel}">
 		<Setter Property="FontSize" Value="14" />
-		<Setter Property="FontFamily" Value="SpaceGroteskBold"/>
+		<Setter Property="FontFamily" Value="SpaceGroteskSemiBold" />
 		<Setter Property="LineBreakMode" Value="WordWrap" />
 		<Setter Property="VerticalTextAlignment" Value="Center" />
 		<Setter Property="HorizontalTextAlignment" Value="Start" />
 	</Style>
 
-	<Style x:Key="RegularCompositeDatePickerPicker" ApplyToDerivedTypes="False" TargetType="DatePicker">
-		<Setter Property="FontFamily" Value="HaasGroteskRegular" />
-		<Setter Property="FontSize" Value="18" />
-				<Setter Property="BackgroundColor" Value="Transparent" />
-
-	</Style>
-
-	<Style x:Key="RegularCompositePickerPicker" ApplyToDerivedTypes="False" TargetType="Picker">
+	<!-- DatePicker style used within CompositeDatePicker -->
+	<Style x:Key="RegularCompositeDatePickerPicker" TargetType="DatePicker">
 		<Setter Property="FontFamily" Value="HaasGroteskRegular" />
 		<Setter Property="FontSize" Value="18" />
 		<Setter Property="BackgroundColor" Value="Transparent" />
 	</Style>
 
-	<Style x:Key="RegularCompositePickerLabel" ApplyToDerivedTypes="False" TargetType="Label" BasedOn="{StaticResource BoldItemTitleLabel}">
+	<!-- Picker style used within CompositePicker -->
+	<Style x:Key="RegularCompositePickerPicker" TargetType="Picker">
+		<Setter Property="FontFamily" Value="HaasGroteskRegular" />
+		<Setter Property="FontSize" Value="18" />
+		<Setter Property="BackgroundColor" Value="Transparent" />
+	</Style>
+
+	<!-- Label style used by CompositePicker and CompositeDatePicker -->
+	<Style x:Key="RegularCompositePickerLabel" TargetType="Label" BasedOn="{StaticResource BoldItemTitleLabel}">
 		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffWhiteDark}}" />
 		<Setter Property="FontSize" Value="15" />
-		<Setter Property="FontFamily" Value="SpaceGroteskBold"/>
+		<Setter Property="FontFamily" Value="SpaceGroteskSemiBold" />
 		<Setter Property="LineBreakMode" Value="WordWrap" />
 		<Setter Property="VerticalTextAlignment" Value="Center" />
 		<Setter Property="HorizontalTextAlignment" Value="Start" />
 	</Style>
-	
-	<Style x:Key="RegularCompositeDatePicker" ApplyToDerivedTypes="True" TargetType="controls:CompositeDatePicker">
+
+	<!-- CompositeDatePicker style -->
+	<Style x:Key="RegularCompositeDatePicker" TargetType="controls:CompositeDatePicker" ApplyToDerivedTypes="True">
 		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffWhiteDark}}" />
 		<Setter Property="PickerStyle" Value="{StaticResource RegularCompositeDatePickerPicker}" />
 		<Setter Property="LabelStyle" Value="{StaticResource RegularCompositePickerLabel}" />
-		<Setter Property="ValidationLabelStyle" Value="{StaticResource RegularCompositeInputViewLabel}"/>
+		<Setter Property="ValidationLabelStyle" Value="{StaticResource RegularCompositeInputViewLabel}" />
 		<Setter Property="ValidationColor" Value="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedWarningDark}}" />
 		<Setter Property="Padding" Value="{StaticResource SmallBottomMargins}" />
 		<Setter Property="BorderPadding" Value="{StaticResource EditMediumMargins}" />
@@ -52,29 +56,29 @@
 		</Setter>
 		<Setter Property="BorderShadow">
 			<Setter.Value>
-				<Shadow Offset="0,2" Radius="0" Opacity="1" Brush="{AppThemeBinding Light={StaticResource OffBlack50Light}, Dark={StaticResource OffWhite30Dark}}"/>
+				<Shadow Offset="0,2" Radius="0" Opacity="1"
+                        Brush="{AppThemeBinding Light={StaticResource OffBlack50Light}, Dark={StaticResource OffWhite30Dark}}"/>
 			</Setter.Value>
 		</Setter>
 		<Style.Triggers>
-			<Trigger TargetType="controls:CompositeDatePicker"
-						Property="IsValid"
-                  Value="False">
+			<Trigger TargetType="controls:CompositeDatePicker" Property="IsValid" Value="False">
 				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedWarningDark}}" />
 				<Setter Property="BorderShadow">
 					<Setter.Value>
-						<Shadow Offset="0,2" Radius="0" Opacity="1" Brush="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedWarningDark}}"/>
+						<Shadow Offset="0,2" Radius="0" Opacity="1"
+                                Brush="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedWarningDark}}"/>
 					</Setter.Value>
 				</Setter>
 			</Trigger>
 		</Style.Triggers>
 	</Style>
 
-
-	<Style x:Key="RegularCompositePicker" ApplyToDerivedTypes="True" TargetType="controls:CompositePicker">
+	<!-- CompositePicker style -->
+	<Style x:Key="RegularCompositePicker" TargetType="controls:CompositePicker" ApplyToDerivedTypes="True">
 		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffWhiteDark}}" />
 		<Setter Property="PickerStyle" Value="{StaticResource RegularCompositePickerPicker}" />
 		<Setter Property="LabelStyle" Value="{StaticResource RegularCompositePickerLabel}" />
-		<Setter Property="ValidationLabelStyle" Value="{StaticResource RegularCompositeInputViewLabel}"/>
+		<Setter Property="ValidationLabelStyle" Value="{StaticResource RegularCompositeInputViewLabel}" />
 		<Setter Property="ValidationColor" Value="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedWarningDark}}" />
 		<Setter Property="Padding" Value="{StaticResource SmallBottomMargins}" />
 		<Setter Property="BorderPadding" Value="{StaticResource EditMediumMargins}" />
@@ -87,17 +91,17 @@
 		</Setter>
 		<Setter Property="BorderShadow">
 			<Setter.Value>
-				<Shadow Offset="0,2" Radius="0" Opacity="1" Brush="{AppThemeBinding Light={StaticResource OffBlack50Light}, Dark={StaticResource OffWhite30Dark}}"/>
+				<Shadow Offset="0,2" Radius="0" Opacity="1"
+                        Brush="{AppThemeBinding Light={StaticResource OffBlack50Light}, Dark={StaticResource OffWhite30Dark}}"/>
 			</Setter.Value>
 		</Setter>
 		<Style.Triggers>
-			<Trigger TargetType="controls:CompositePicker"
-						Property="IsValid"
-                  Value="False">
+			<Trigger TargetType="controls:CompositePicker" Property="IsValid" Value="False">
 				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedWarningDark}}" />
 				<Setter Property="BorderShadow">
 					<Setter.Value>
-						<Shadow Offset="0,2" Radius="0" Opacity="1" Brush="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedWarningDark}}"/>
+						<Shadow Offset="0,2" Radius="0" Opacity="1"
+                                Brush="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedWarningDark}}"/>
 					</Setter.Value>
 				</Setter>
 			</Trigger>
