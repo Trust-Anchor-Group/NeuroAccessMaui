@@ -15,12 +15,12 @@
 		<objectModel:ParameterTemplateSelector x:Key="ParameterTemplateSelector"
 		                                 BooleanTemplate="{StaticResource BooleanParameterReadOnlyTemplate}"
 		                                 DateTemplate="{StaticResource DateParameterReadOnlyTemplate}"
-													DateTimeTemplate="{StaticResource DateTimeParameterReadOnlyTemplate}"
+										 DateTimeTemplate="{StaticResource DateTimeParameterReadOnlyTemplate}"
 		                                 NumericalTemplate="{StaticResource DefaultParameterReadOnlyTemplate}"
 		                                 StringTemplate="{StaticResource DefaultParameterReadOnlyTemplate}"
 		                                 TimeTemplate="{StaticResource TimeParameterReadOnlyTemplate}"
 		                                 DurationTemplate="{StaticResource DurationParameterReadOnlyTemplate}"
-													ProtectedTemplate="{StaticResource DefaultParameterReadOnlyTemplate}"
+										 ProtectedTemplate="{StaticResource DefaultParameterReadOnlyTemplate}"
 		                                 DefaultTemplate="{StaticResource DefaultParameterReadOnlyTemplate}" />
 	</ContentView.Resources>
 
