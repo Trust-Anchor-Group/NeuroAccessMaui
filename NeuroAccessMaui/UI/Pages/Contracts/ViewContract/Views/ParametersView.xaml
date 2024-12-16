@@ -14,7 +14,8 @@
 	<ContentView.Resources>
 		<objectModel:ParameterTemplateSelector x:Key="ParameterTemplateSelector"
 		                                 BooleanTemplate="{StaticResource BooleanParameterReadOnlyTemplate}"
-		                                 DateTemplate="{StaticResource DefaultParameterReadOnlyTemplate}"
+		                                 DateTemplate="{StaticResource DateParameterReadOnlyTemplate}"
+													DateTimeTemplate="{StaticResource DateTimeParameterReadOnlyTemplate}"
 		                                 NumericalTemplate="{StaticResource DefaultParameterReadOnlyTemplate}"
 		                                 StringTemplate="{StaticResource DefaultParameterReadOnlyTemplate}"
 		                                 TimeTemplate="{StaticResource TimeParameterReadOnlyTemplate}"
@@ -28,7 +29,6 @@
 	<Grid RowDefinitions="auto">
 
 		<Border Style="{StaticResource BorderSet}" Margin="{StaticResource MediumMargins}" >
-			<Border Style="{StaticResource BorderSubSet}" Margin="0">
 				<CollectionView HorizontalOptions="Center"
 									ItemsSource="{Binding DisplayableParameters}"
 									ItemTemplate="{StaticResource ParameterTemplateSelector}"
@@ -41,7 +41,6 @@
 						<Label Text="{l:Localize SomethingWentWrong}" />
 					</CollectionView.EmptyView>
 				</CollectionView>
-			</Border>	
 		</Border>
 	</Grid>
 
