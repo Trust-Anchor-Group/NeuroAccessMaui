@@ -155,7 +155,6 @@
 	<ItemGroup>
 		<MauiFont Remove="Resources\Fonts\NHaasGroteskTXPro-65Md.ttf" />
 		<MauiFont Remove="Resources\Fonts\SpaceGrotesk-Light.ttf" />
-		<MauiFont Remove="Resources\Fonts\SpaceGrotesk-SemiBold.ttf" />
 	</ItemGroup>
 
 	<ItemGroup>
