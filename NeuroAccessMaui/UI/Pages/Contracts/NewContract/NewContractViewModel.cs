@@ -159,17 +159,23 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			if (this.args is null || this.args?.Template is null)
 			{
-				// TODO: Handle error, perhaps change to an error state
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.Error)],
+					ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)],
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				await this.GoBack();
 				return;
 			}
 
 			try
 			{
 				this.Contract = await ObservableContract.CreateAsync(this.args.Template);
-
 				this.Contract.ParameterChanged += this.Parameter_PropertyChanged;
 
-				await MainThread.InvokeOnMainThreadAsync(async () =>
+
+				TaskCompletionSource<bool> HasInitializedParameters = new();
+
+				MainThread.BeginInvokeOnMainThread(async () =>
 				{
 					if (this.args.ParameterValues is not null)
 					{
@@ -179,15 +185,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 							if (this.args.ParameterValues.TryGetValue(p.Parameter.Name, out object? value))
 								p.Value = value;
 
-							if (p.Parameter is BooleanParameter
-								|| p.Parameter is StringParameter
-								|| p.Parameter is NumericalParameter
-								|| p.Parameter is DateParameter
-								|| p.Parameter is TimeParameter
-								|| p.Parameter is DurationParameter)
-							{
-								this.EditableParameters.Add(p);
-							}
+
 						}
 						// Set Role values
 						foreach (ObservableRole r in this.Contract.Roles)
@@ -199,11 +197,24 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 							}
 						}
 					}
-
+					foreach (ObservableParameter p in this.Contract.Parameters)
+					{
+						if (p.Parameter is BooleanParameter
+							|| p.Parameter is StringParameter
+							|| p.Parameter is NumericalParameter
+							|| p.Parameter is DateParameter
+							|| p.Parameter is TimeParameter
+							|| p.Parameter is DurationParameter)
+						{
+							this.EditableParameters.Add(p);
+						}
+					}
 					this.OnPropertyChanged(nameof(this.HasRoles));
 					this.OnPropertyChanged(nameof(this.HasParameters));
-				});
 
+					HasInitializedParameters.SetResult(true);
+				});
+				await HasInitializedParameters.Task;
 				await this.ValidateParametersAsync();
 				await this.GoToState(NewContractStep.Overview);
 			}
