@@ -2463,4 +2463,19 @@
 <data name="ViewRolesDescription" xml:space="preserve">
     <value>Revisa los roles y verifica quién ha firmado cada uno</value>
 </data>
+<data name="InvitationToSign" xml:space="preserve">
+  <value>Ha sido invitado(a) a firmar este contrato. Asegúrese de verificar y revisar el contrato antes de continuar.</value>
+</data>
+<data name="Title" xml:space="preserve">
+  <value>Título</value>
+</data>
+<data name="Sign" xml:space="preserve">
+  <value>Firmar</value>
+</data>
+<data name="PendingSignature" xml:space="preserve">
+  <value>Firma Pendiente</value>
+</data>
+<data name="ViewSignature" xml:space="preserve">
+  <value>Ver Firma</value>
+</data>
 </root>
