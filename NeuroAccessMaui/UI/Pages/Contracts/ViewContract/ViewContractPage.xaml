@@ -17,51 +17,73 @@
 
 	<ContentPage.Resources>
 		<objectModel:ParameterTemplateSelector x:Key="ParameterTemplateSelector"
-		                                 BooleanTemplate="{StaticResource BooleanParameterTemplate}"
-		                                 DateTemplate="{StaticResource DateParameterTemplate}"
-		                                 NumericalTemplate="{StaticResource NumericalParameterTemplate}"
-		                                 StringTemplate="{StaticResource StringParameterTemplate}"
-		                                 TimeTemplate="{StaticResource TimeParameterTemplate}"
-		                                 DurationTemplate="{StaticResource DurationParameterTemplate}"
-		                                 DefaultTemplate="{StaticResource DefaultParameterTemplate}" />
+															BooleanTemplate="{StaticResource BooleanParameterTemplate}"
+															DateTemplate="{StaticResource DateParameterTemplate}"
+															NumericalTemplate="{StaticResource NumericalParameterTemplate}"
+															StringTemplate="{StaticResource StringParameterTemplate}"
+															TimeTemplate="{StaticResource TimeParameterTemplate}"
+															DurationTemplate="{StaticResource DurationParameterTemplate}"
+															DefaultTemplate="{StaticResource DefaultParameterTemplate}" />
 	</ContentPage.Resources>
 
 	<Grid x:Name="TheMainGrid"
-	  RowDefinitions="auto, *"
-	  ColumnDefinitions="*"
-	  BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+			RowDefinitions="auto, *"
+			ColumnDefinitions="*"
+			BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
 
-		<controls:Background Grid.Row ="1"/>
+		<controls:Background Grid.Row="1" />
 
 		<!-- Top Bar -->
-		<Grid Grid.Row="0" RowDefinitions="*" ColumnDefinitions="auto,*" Margin="{StaticResource SmallBottomMargins}">
+		<Grid Grid.Row="0"
+				RowDefinitions="*"
+				ColumnDefinitions="auto,*"
+				Margin="{StaticResource SmallBottomMargins}">
 			<Grid.Padding>
-				<Thickness Left="{StaticResource LargeSpacing}" Top="{StaticResource LargeSpacing}" Right="{StaticResource LargeSpacing}" />
+				<Thickness Left="{StaticResource LargeSpacing}"
+							  Top="{StaticResource LargeSpacing}"
+							  Right="{StaticResource LargeSpacing}" />
 			</Grid.Padding>
 
-			<controls:ImageButton Grid.Row="0" Grid.Column="0" IsVisible="{Binding CanStateChange}" Command="{Binding BackCommand}" Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+			<controls:ImageButton Grid.Row="0"
+										 Grid.Column="0"
+										 IsVisible="{Binding CanStateChange}"
+										 Command="{Binding BackCommand}"
+										 Style="{StaticResource ImageOnlyButton}"
+										 PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
 			<!--	<Image HorizontalOptions="Center" VerticalOptions="Start" Source="{AppThemeBinding Light=neuro_assets_icon_dark, Dark=neuro_assets_icon_light}" WidthRequest="50" HeightRequest="50" />-->
-			<Label Grid.Row="0" Grid.Column="1" Style="{StaticResource PageTitleLabel}" Text="{l:Localize ViewContract}" HorizontalTextAlignment="End"/>
+			<Label Grid.Row="0"
+					 Grid.Column="1"
+					 Style="{StaticResource PageTitleLabel}"
+					 Text="{l:Localize ViewContract}"
+					 HorizontalTextAlignment="End" />
 		</Grid>
 		<!-- Main Content -->
 		<Grid x:Name="StateGrid"
-			Grid.Row="1"
-			mct:StateContainer.CurrentState="{Binding CurrentState, Mode=OneWayToSource}" 
-			mct:StateContainer.CanStateChange="{Binding CanStateChange, Mode=OneWayToSource}" >
+				Grid.Row="1"
+				mct:StateContainer.CurrentState="{Binding CurrentState, Mode=OneWayToSource}"
+				mct:StateContainer.CanStateChange="{Binding CanStateChange, Mode=OneWayToSource}">
 
 			<mct:StateContainer.StateViews>
-				<views:OverviewView x:Name="OverviewView" mct:StateView.StateKey="Overview" />
-				<views:LoadingView x:Name="LoadingView" mct:StateView.StateKey="Loading" />
-				<views:ParametersView x:Name="ParametersView" mct:StateView.StateKey="Parameters" />
-				<views:RolesView x:Name="RolesView" mct:StateView.StateKey="Roles" />
-				<views:PreviewView x:Name="PreviewView" mct:StateView.StateKey="Preview" />
+				<views:OverviewView x:Name="OverviewView"
+										  mct:StateView.StateKey="Overview" />
+				<views:LoadingView x:Name="LoadingView"
+										 mct:StateView.StateKey="Loading" />
+				<views:ParametersView x:Name="ParametersView"
+											 mct:StateView.StateKey="Parameters" />
+				<views:RolesView x:Name="RolesView"
+									  mct:StateView.StateKey="Roles" />
+				<views:PreviewView x:Name="PreviewView"
+										 mct:StateView.StateKey="Review" />
+				<views:SignView x:Name="SignView"
+									 mct:StateView.StateKey="Sign" />
 			</mct:StateContainer.StateViews>
 
 			<!-- default state, should not occur -->
 			<VerticalStackLayout>
-				<Label VerticalTextAlignment="Center" HorizontalTextAlignment="Center" Text="{l:Localize SomethingWentWrong}" />
-
+				<Label VerticalTextAlignment="Center"
+						 HorizontalTextAlignment="Center"
+						 Text="{l:Localize SomethingWentWrong}" />
 			</VerticalStackLayout>
 		</Grid>
 

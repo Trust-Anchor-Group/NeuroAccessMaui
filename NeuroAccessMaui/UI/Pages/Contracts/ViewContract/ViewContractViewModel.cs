@@ -7,9 +7,11 @@ using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.UI.Photos;
 using NeuroAccessMaui.UI.Converters;
+using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
 using NeuroAccessMaui.UI.Pages.Contracts.ObjectModel;
+using NeuroAccessMaui.UI.Pages.Main.QR;
 using NeuroAccessMaui.UI.Pages.Signatures.ClientSignature;
 using NeuroAccessMaui.UI.Pages.Signatures.ServerSignature;
 using System.Collections.ObjectModel;
@@ -24,10 +26,113 @@ using Waher.Networking.XMPP.HttpFileUpload;
 namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 {
 	/// <summary>
-	/// The view model to bind to for when displaying contracts.
+	/// View model for displaying and managing a contract in the "View Contract" page.
 	/// </summary>
 	public partial class ViewContractViewModel : QrXmppViewModel
 	{
+		#region Fields
+
+		private readonly ViewContractNavigationArgs? args;
+
+		#endregion
+
+		#region Constructor and Initialization
+
+		/// <summary>
+		/// Default constructor. Retrieves navigation arguments and sets up the view model for displaying a contract.
+		/// </summary>
+		public ViewContractViewModel()
+		{
+			this.args = ServiceRef.UiService.PopLatestArgs<ViewContractNavigationArgs>();
+
+			this.XmppUriClicked = new Command(async Parameter => await this.ExecuteUriClicked(Parameter as string ?? "", UriScheme.Xmpp));
+			this.IotIdUriClicked = new Command(async Parameter => await this.ExecuteUriClicked(Parameter as string ?? "", UriScheme.IotId));
+			this.IotScUriClicked = new Command(async Parameter => await this.ExecuteUriClicked(Parameter as string ?? "", UriScheme.IotSc));
+			this.NeuroFeatureUriClicked = new Command(async Parameter => await this.ExecuteUriClicked(Parameter as string ?? "", UriScheme.NeuroFeature));
+			this.IotDiscoUriClicked = new Command(async Parameter => await this.ExecuteUriClicked(Parameter as string ?? "", UriScheme.IotDisco));
+			this.EDalerUriClicked = new Command(async Parameter => await this.ExecuteUriClicked(Parameter as string ?? "", UriScheme.EDaler));
+			this.HyperlinkClicked = new Command(async Parameter => await ExecuteHyperlinkClicked(Parameter));
+		}
+
+		/// <inheritdoc/>
+		protected override async Task OnInitialize()
+		{
+			await base.OnInitialize();
+
+			// No valid contract arguments
+			if (this.args is null || this.args.Contract is null)
+				return; // TODO: Consider changing view state to Error.
+
+			Console.WriteLine("INITIALIZING");
+
+			ServiceRef.XmppService.ContractUpdated += this.ContractsClient_ContractUpdated;
+			ServiceRef.XmppService.ContractSigned += this.ContractsClient_ContractSigned;
+			this.SignableRoles.CollectionChanged += this.SignableRoles_CollectionChanged;
+
+			try
+			{
+				// Create an observable contract wrapper
+				ObservableContract contract = await ObservableContract.CreateAsync(this.args.Contract);
+
+				// If proposal info is available, try to find a friendly name
+				string proposalFriendlyName = await this.ResolveProposalFriendlyName();
+
+				// Update UI properties on the main threadRe
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					this.Contract = contract;
+					this.GenerateQrCode(Constants.UriSchemes.CreateSmartContractUri(this.Contract.ContractId));
+					this.ProposalFriendlyName = proposalFriendlyName;
+					this.ProposalRole = this.args.Role ?? string.Empty;
+					this.ProposalMessage = this.args.Proposal ?? string.Empty;
+				});
+
+				// Prepare displayable parameters
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					this.PrepareDisplayableParameters();
+				});
+
+				// Prepare roles that can be signed
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					this.PrepareSignableRoles();
+				});
+
+				// Move to the initial "Overview" state
+				await this.GoToState(ViewContractStep.Overview);
+			}
+			catch (Exception ex)
+			{
+				// Logging error and informing user
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)]);
+
+				await this.GoBack();
+			}
+		}
+
+
+
+
+		/// <inheritdoc/>
+		protected override async Task OnDispose()
+		{
+			ServiceRef.XmppService.ContractUpdated -= this.ContractsClient_ContractUpdated;
+			ServiceRef.XmppService.ContractSigned -= this.ContractsClient_ContractSigned;
+			this.SignableRoles.CollectionChanged -= this.SignableRoles_CollectionChanged;
+			await base.OnDispose();
+		}
+
+		#endregion
+
+		#region Properties
+
+		/// <summary>
+		/// The current contract displayed by the view model.
+		/// </summary>
 		[ObservableProperty]
 		private ObservableContract? contract;
 
@@ -51,30 +156,30 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		private string currentState = nameof(NewContractStep.Loading);
 
 		/// <summary>
-		/// The human readable text of the contract.
+		/// The human-readable representation of the contract.
 		/// </summary>
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(HasHumanReadableText))]
 		private VerticalStackLayout? humanReadableText;
 
 		/// <summary>
-		/// If HumanReadableText is not empty
+		/// Indicates if the human readable text is present.
 		/// </summary>
 		public bool HasHumanReadableText => this.HumanReadableText is not null;
 
 		/// <summary>
-		/// All parameters that can be displayed / Are supported.
+		/// All parameters that can be displayed and are supported.
 		/// </summary>
-		public ObservableCollection<ObservableParameter> DisplayableParameters { get; set; } = [];
+		public ObservableCollection<ObservableParameter> DisplayableParameters { get; set; } = new();
 
 		/// <summary>
-		/// If the user has reviewed the contract and sees it as valid.
+		/// Indicates if the user has reviewed the contract and deems it valid.
 		/// </summary>
 		[ObservableProperty]
 		private bool isContractOk;
 
 		/// <summary>
-		/// The friednly name of the proposal sender.
+		/// The friendly name of the proposal sender.
 		/// </summary>
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(HasProposalFriendlyName))]
@@ -82,14 +187,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		private string? proposalFriendlyName;
 
 		/// <summary>
-		/// The role of the proposal.
+		/// The role specified in the proposal.
 		/// </summary>
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(HasProposalRole))]
 		private string? proposalRole;
 
 		/// <summary>
-		/// The message of the proposal.
+		/// The message included in the proposal.
 		/// </summary>
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(HasProposalMessage))]
@@ -97,22 +202,25 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		private string? proposalMessage;
 
 		/// <summary>
-		/// If we are viewing the contract as a proposal.
+		/// Indicates whether we are viewing the contract as a proposal.
 		/// </summary>
-		public bool IsProposal => !string.IsNullOrEmpty(this.ProposalRole) || !string.IsNullOrEmpty(this.ProposalMessage) || !string.IsNullOrEmpty(this.ProposalFriendlyName);
+		public bool IsProposal =>
+			!string.IsNullOrEmpty(this.ProposalRole) ||
+			!string.IsNullOrEmpty(this.ProposalMessage) ||
+			!string.IsNullOrEmpty(this.ProposalFriendlyName);
 
 		/// <summary>
-		/// If the proposal sender has a friendly name.
+		/// Indicates if the proposal sender has a friendly name.
 		/// </summary>
 		public bool HasProposalFriendlyName => !string.IsNullOrEmpty(this.ProposalFriendlyName);
 
 		/// <summary>
-		/// If the proposal has a role.
+		/// Indicates if the proposal has a role specified.
 		/// </summary>
 		public bool HasProposalRole => !string.IsNullOrEmpty(this.ProposalRole);
 
 		/// <summary>
-		/// If the proposal has a message.
+		/// Indicates if the proposal has a message.
 		/// </summary>
 		public bool HasProposalMessage => !string.IsNullOrEmpty(this.ProposalMessage);
 
@@ -128,135 +236,69 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			_ => string.Empty
 		};
 
-		/// <summary>
-		/// The list of roles of which I can sign.
-		/// </summary>
-		public ObservableCollection<ObservableRole> SignableRoles { get; set; } = [];
+		#endregion
 
-		public bool CanSign => this.SignableRoles.Count > 0 && (this.Contract?.ContractState == ContractState.Approved || this.Contract?.ContractState == ContractState.BeingSigned);
-
-		private readonly ViewContractNavigationArgs? args;
+		#region Signing
 
 		/// <summary>
-		/// Creates an instance of the <see cref="ViewContractViewModel"/> class.
+		/// A collection of roles that the current user can sign.
 		/// </summary>
-		/// <param name="Args">Navigation arguments.</param>
-		public ViewContractViewModel()
-		{
-			this.args = ServiceRef.UiService.PopLatestArgs<ViewContractNavigationArgs>();
-		}
+		public ObservableCollection<ObservableRole> SignableRoles { get; set; } = new();
 
-		/// <inheritdoc/>
-		protected override async Task OnInitialize()
+		/// <summary>
+		/// Indicates if the user can sign the contract in the current state.
+		/// </summary>
+		public bool CanSign =>
+			this.SignableRoles.Count > 0 &&
+			(this.Contract?.ContractState == ContractState.Approved || this.Contract?.ContractState == ContractState.BeingSigned);
+
+		public bool ReadyToSign =>
+			this.SelectedRole is not null &&
+			this.IsContractOk;
+
+		/// <summary>
+		/// The currently selected role for signing.
+		/// </summary>
+		[ObservableProperty]
+		private ObservableRole? selectedRole;
+
+		/// <summary>
+		/// Invoked when the selected signing role changes.
+		/// Ensures the user is added or removed as a part to the appropriate role.
+		/// </summary>
+		/// <param name="oldValue">Previously selected role.</param>
+		/// <param name="newValue">Newly selected role.</param>
+		async partial void OnSelectedRoleChanged(ObservableRole? oldValue, ObservableRole? newValue)
 		{
-			await base.OnInitialize();
-			if (this.args is null || this.args.Contract is null)
-			{
-				// TODO: Handle error, perhaps change to an error state
+			string? myLegalID = ServiceRef.TagProfile.LegalIdentity?.Id;
+			if (string.IsNullOrEmpty(myLegalID))
 				return;
-			}
-			this.SignableRoles.CollectionChanged += this.SignableRoles_CollectionChanged;
 
+			if (oldValue is not null)
+				oldValue.RemovePart(myLegalID);
 
-			try
-			{
-				ObservableContract Contract = await ObservableContract.CreateAsync(this.args.Contract);
-				string ProposalFriendlyName = string.Empty;
-				// If we have a proposal, try to find the friendly name of the sender and prepare observable properties
-				if (!string.IsNullOrEmpty(this.args.Proposal) && !string.IsNullOrEmpty(this.args.FromJID))
-				{
-					try
-					{
-						ContactInfo? info = await ContactInfo.FindByBareJid(this.args.FromJID);
-						if (!string.IsNullOrEmpty(info?.FriendlyName))
-							ProposalFriendlyName = info.FriendlyName;
-						else
-							ProposalFriendlyName = this.args.FromJID;
-					}
-					catch (Exception ex)
-					{
-						//Ignore, normal opereration
-					}
-				}
-
-
-				MainThread.BeginInvokeOnMainThread(() =>
-				{
-					this.Contract = Contract;
-					this.GenerateQrCode(Constants.UriSchemes.CreateSmartContractUri(this.Contract.ContractId));
-					this.ProposalFriendlyName = ProposalFriendlyName;
-					this.ProposalRole = this.args.Role ?? string.Empty;
-					this.ProposalMessage = this.args.Proposal ?? string.Empty;
-				});
-
-				// Prepare displayable parameters
-				foreach (ObservableParameter p in this.Contract!.Parameters)
-				{
-					if (p.Parameter is null)
-						continue;
-
-					if (p.Parameter is BooleanParameter
-						|| p.Parameter is StringParameter
-						|| p.Parameter is NumericalParameter
-						|| p.Parameter is DateParameter
-						|| p.Parameter is TimeParameter
-						|| p.Parameter is DurationParameter
-						|| p.Parameter is DateTimeParameter
-						|| p.Parameter is CalcParameter)
-					{
-						this.DisplayableParameters.Add(p);
-					}
-				}
-
-				// Prepare signable roles
-				if(this.Contract.Contract.PartsMode == ContractParts.Open)
-				{
-					foreach (ObservableRole r in this.Contract!.Roles)
-					{
-						if (!r.HasReachedMaxCount)
-							this.SignableRoles.Add(r);
-					}
-				}
-				else if(this.ProposalRole is not null)
-				{
-					ObservableRole? role = this.Contract.Roles.FirstOrDefault(r => r.Name == this.ProposalRole);
-					if (role is not null && !role.HasReachedMaxCount)
-						this.SignableRoles.Add(role);
-				}
-
-				await this.GoToState(ViewContractStep.Overview);
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)]);
-				await this.GoBack();
-			}
+			if (newValue is not null)
+				await newValue.AddPart(myLegalID);
 		}
 
-		/// <inheritdoc/>
-		protected override async Task OnDispose()
+		[RelayCommand(AllowConcurrentExecutions = false, CanExecute = nameof(CanSign))]
+		public async Task SignAsync()
 		{
-			this.SignableRoles.CollectionChanged -= this.SignableRoles_CollectionChanged;
-			await base.OnDispose();
+			if (this.Contract is null || this.SelectedRole is null)
+				return;
+
+			Contract? CreatedContract = null;
+			CreatedContract = await ServiceRef.XmppService.SignContract(this.Contract.Contract, this.SelectedRole!.Name, false);
+			await this.RefreshContract(CreatedContract);
 		}
+
+		#endregion
+
+		#region Navigation Commands
 
 		/// <summary>
-		/// Event handler for when the signable roles collection changes.
+		/// Returns to the previous state or page depending on the current step.
 		/// </summary>
-		private void SignableRoles_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-		{
-			MainThread.BeginInvokeOnMainThread(() =>
-			{
-				this.OnPropertyChanged(nameof(this.CanSign));
-			});
-		}
-
-
-		/// <summary>
-		/// A custom back command, similar to inherited GoBack with Views in mind
-		/// </summary>
-		/// <returns></returns>
 		[RelayCommand(CanExecute = nameof(CanStateChange))]
 		public async Task Back()
 		{
@@ -268,9 +310,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				{
 					case ViewContractStep.Loading:
 					case ViewContractStep.Overview:
+						// If we're at Overview or Loading, just go back in navigation
 						await base.GoBack();
 						break;
+
 					default:
+						// Otherwise, return to the Overview state
 						await this.GoToState(ViewContractStep.Overview);
 						break;
 				}
@@ -282,32 +327,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		}
 
 		/// <summary>
-		/// Navigates to the specified state.
-		/// Can only navigate when <see cref="CanStateChange"/> is true.
-		/// Otherwise it stalls until it can navigate.
-		/// </summary>
-		/// <param name="newStep">The new step to navigate to.</param>
-		private async Task GoToState(ViewContractStep newStep)
-		{
-			if (this.StateObject is null)
-				return;
-
-			string newState = newStep.ToString();
-
-			if (newState == this.CurrentState)
-				return;
-
-			while (!this.CanStateChange)
-				await Task.Delay(100);
-
-			await MainThread.InvokeOnMainThreadAsync(async () =>
-			{
-				await StateContainer.ChangeStateWithAnimation(this.StateObject, newState);
-			});
-		}
-
-		/// <summary>
-		/// Navigates to the parameters view
+		/// Navigates to the Parameters state.
 		/// </summary>
 		[RelayCommand(CanExecute = nameof(CanStateChange))]
 		private async Task GoToParameters()
@@ -317,7 +337,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		}
 
 		/// <summary>
-		/// Navigates to the parameters view
+		/// Navigates to the Roles state.
 		/// </summary>
 		[RelayCommand(CanExecute = nameof(CanStateChange))]
 		private async Task GoToRoles()
@@ -327,7 +347,54 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		}
 
 		/// <summary>
-		/// The command to bind to when marking a contract as obsolete.
+		/// Navigates to the Sign state.
+		/// If a proposal role is defined, that role is preselected for signing.
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(CanStateChange))]
+		private async Task GoToSign()
+		{
+			await this.GoToState(ViewContractStep.Loading);
+			await this.GoToState(ViewContractStep.Sign);
+
+			// Preselect the role if there is a proposal role or only one signable role
+			if (!string.IsNullOrEmpty(this.ProposalRole))
+			{
+				this.SelectedRole = this.SignableRoles.FirstOrDefault(r => r.Name == this.ProposalRole);
+			}
+			else if (this.SignableRoles.Count == 1)
+			{
+				this.SelectedRole = this.SignableRoles[0];
+			}
+		}
+
+		/// <summary>
+		/// Loads the humand readable part of the contract and navigates to the Preview view
+		/// </summary>
+		/// <returns></returns>
+		[RelayCommand(CanExecute = nameof(CanStateChange))]
+		private async Task GoToReview()
+		{
+			if (this.Contract is null)
+				return;
+
+			await this.GoToState(ViewContractStep.Loading);
+
+			string hrt = await this.Contract.Contract.ToMauiXaml(this.Contract.Contract.DeviceLanguage());
+			VerticalStackLayout hrtLayout = new VerticalStackLayout().LoadFromXaml(hrt);
+			await MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				this.HumanReadableText = hrtLayout;
+			});
+
+			await this.GoToState(ViewContractStep.Review);
+		}
+
+		#endregion
+
+		#region Contract Management Commands
+
+		/// <summary>
+		/// Marks the current contract as obsolete.
 		/// </summary>
 		[RelayCommand]
 		private async Task ObsoleteContract()
@@ -343,9 +410,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				if (!await App.AuthenticateUser(AuthenticationPurpose.ObsoleteContract, true))
 					return;
 
-				Contract obsoletedContract = await ServiceRef.XmppService.ObsoleteContract(this.Contract.ContractId);
+				await ServiceRef.XmppService.ObsoleteContract(this.Contract.ContractId);
 
-				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)], ServiceRef.Localizer[nameof(AppResources.ContractHasBeenObsoleted)]);
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+					ServiceRef.Localizer[nameof(AppResources.ContractHasBeenObsoleted)]);
 			}
 			catch (Exception ex)
 			{
@@ -355,7 +424,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		}
 
 		/// <summary>
-		/// The command to bind to when deleting a contract.
+		/// Deletes the current contract.
 		/// </summary>
 		[RelayCommand]
 		private async Task DeleteContract()
@@ -371,9 +440,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				if (!await App.AuthenticateUser(AuthenticationPurpose.DeleteContract, true))
 					return;
 
-				Contract deletedContract = await ServiceRef.XmppService.DeleteContract(this.Contract.ContractId);
+				await ServiceRef.XmppService.DeleteContract(this.Contract.ContractId);
 
-				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)], ServiceRef.Localizer[nameof(AppResources.ContractHasBeenDeleted)]);
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+					ServiceRef.Localizer[nameof(AppResources.ContractHasBeenDeleted)]);
 			}
 			catch (Exception ex)
 			{
@@ -383,7 +454,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		}
 
 		/// <summary>
-		/// Command to show machine-readable details of contract.
+		/// Shows machine-readable contract details by uploading them to a server and providing a link.
 		/// </summary>
 		[RelayCommand]
 		private async Task ShowDetails()
@@ -393,17 +464,22 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 			try
 			{
-				byte[] Bin = Encoding.UTF8.GetBytes(this.Contract?.Contract.ForMachines.OuterXml);
-				HttpFileUploadEventArgs e = await ServiceRef.XmppService.RequestUploadSlotAsync(this.Contract.ContractId + ".xml", "text/xml; charset=utf-8", Bin.Length);
+				byte[] bin = Encoding.UTF8.GetBytes(this.Contract.Contract.ForMachines.OuterXml);
+				HttpFileUploadEventArgs e = await ServiceRef.XmppService.RequestUploadSlotAsync(
+					this.Contract.ContractId + ".xml", "text/xml; charset=utf-8", bin.Length);
 
 				if (e.Ok)
 				{
-					await e.PUT(Bin, "text/xml", (int)Constants.Timeouts.UploadFile.TotalMilliseconds);
+					await e.PUT(bin, "text/xml", (int)Constants.Timeouts.UploadFile.TotalMilliseconds);
 					if (!await App.OpenUrlAsync(e.GetUrl, false))
 						await this.Copy(e.GetUrl);
 				}
 				else
-					await ServiceRef.UiService.DisplayException(e.StanzaError ?? new Exception(e.ErrorText));
+				{
+					// Show error if upload slot was not granted
+					await ServiceRef.UiService.DisplayException(
+						e.StanzaError ?? new Exception(e.ErrorText));
+				}
 			}
 			catch (Exception ex)
 			{
@@ -411,28 +487,33 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			}
 		}
 
+		#endregion
+
+		#region Clipboard and Link Commands
+
 		/// <summary>
-		/// Copies Item to clipboard
+		/// Copies the specified item to the clipboard.
+		/// If the item is the contract ID, a success message specific to contract ID copying is shown.
 		/// </summary>
 		[RelayCommand]
-		private async Task Copy(object Item)
+		private async Task Copy(object item)
 		{
 			try
 			{
 				this.SetIsBusy(true);
 
-				if (Item is string Label)
+				if (item is string label)
 				{
-					if (Label == this.Contract?.ContractId)
+					if (label == this.Contract?.ContractId)
 					{
-						await Clipboard.SetTextAsync(Constants.UriSchemes.IotSc + ":" + this.Contract?.ContractId);
+						await Clipboard.SetTextAsync(Constants.UriSchemes.IotSc + ":" + this.Contract.ContractId);
 						await ServiceRef.UiService.DisplayAlert(
 							ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
 							ServiceRef.Localizer[nameof(AppResources.ContractIdCopiedSuccessfully)]);
 					}
 					else
 					{
-						await Clipboard.SetTextAsync(Label);
+						await Clipboard.SetTextAsync(label);
 						await ServiceRef.UiService.DisplayAlert(
 							ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
 							ServiceRef.Localizer[nameof(AppResources.TagValueCopiedToClipboard)]);
@@ -440,7 +521,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				}
 				else
 				{
-					await Clipboard.SetTextAsync(Item?.ToString() ?? string.Empty);
+					await Clipboard.SetTextAsync(item?.ToString() ?? string.Empty);
 					await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
 						ServiceRef.Localizer[nameof(AppResources.TagValueCopiedToClipboard)]);
@@ -458,45 +539,274 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		}
 
 		/// <summary>
-		/// Opens a contract.
+		/// Opens a contract link if it’s a known contract ID, otherwise copies it to the clipboard.
 		/// </summary>
-		/// <param name="Item">Item clicked.</param>
 		[RelayCommand]
-		private static async Task OpenContract(object Item)
+		private static async Task OpenContract(object item)
 		{
-			if (Item is string ContractId)
-				await App.OpenUrlAsync(Constants.UriSchemes.IotSc + ":" + ContractId);
+			if (item is string contractId)
+				await App.OpenUrlAsync(Constants.UriSchemes.IotSc + ":" + contractId);
 		}
 
 		/// <summary>
-		/// Opens a link.
+		/// Opens a link if possible, otherwise copies it to the clipboard.
 		/// </summary>
-		/// <param name="Item">Item clicked.</param>
 		[RelayCommand]
-		private async Task OpenLink(object Item)
+		private async Task OpenLink(object item)
 		{
-			if (Item is string Url)
+			if (item is string url)
 			{
-				if (!await App.OpenUrlAsync(Url, false))
-					await this.Copy(Url);
+				if (!await App.OpenUrlAsync(url, false))
+					await this.Copy(url);
 			}
 			else
-				await this.Copy(Item);
+				await this.Copy(item);
 		}
 
-		#region ILinkableView
+		#endregion
+
+		#region State Navigation Helpers
 
 		/// <summary>
-		/// Link to the current view
+		/// Navigates to the specified state. If <see cref="CanStateChange"/> is false, waits until state change is possible.
 		/// </summary>
+		/// <param name="newStep">The new step to navigate to.</param>
+		private async Task GoToState(ViewContractStep newStep)
+		{
+			if (this.StateObject is null)
+				return;
+
+			string newState = newStep.ToString();
+
+			if (newState == this.CurrentState)
+				return;
+
+			// Wait until the state can change
+			while (!this.CanStateChange)
+				await Task.Delay(100);
+
+			await MainThread.InvokeOnMainThreadAsync(async () =>
+			{
+				await StateContainer.ChangeStateWithAnimation(this.StateObject, newState);
+			});
+		}
+
+		#endregion
+
+		#region Event Handlers
+
+		/// <summary>
+		/// Handles changes in the signable roles collection, triggering UI updates.
+		/// </summary>
+		private void SignableRoles_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+		{
+			MainThread.BeginInvokeOnMainThread(() => this.OnPropertyChanged(nameof(this.CanSign)));
+		}
+
+		private async Task ContractsClient_ContractSigned(object? Sender, ContractSignedEventArgs e)
+		{
+			Console.WriteLine("TEST");
+
+			if (e.ContractId != this.Contract?.ContractId)
+				return;
+
+			//Wait for RefreshContractCommand to finish, before calling it
+			while (!this.RefreshContractCommand.CanExecute(null))
+			{
+				await Task.Delay(100);
+			}
+
+			await this.RefreshContractCommand.ExecuteAsync(null);
+		}
+
+		private async Task ContractsClient_ContractUpdated(object Sender, ContractReferenceEventArgs e)
+		{
+			Console.WriteLine("TEST");
+
+			if (e.ContractId != this.Contract?.ContractId)
+				return;
+
+			//Wait for RefreshContractCommand to finish, before calling it
+			while (!this.RefreshContractCommand.CanExecute(null))
+			{
+				await Task.Delay(100);
+			}
+
+			await this.RefreshContractCommand.ExecuteAsync(null);
+		}
+
+		#endregion
+
+		#region Private Helper Methods
+
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task RefreshContract(Contract? NewContract)
+		{
+			if (this.Contract is null)
+				return;
+
+			Console.WriteLine("TEST");
+
+			try
+			{
+				NewContract ??= await ServiceRef.XmppService.GetContract(this.Contract.ContractId);
+			}
+			catch (Exception)
+			{
+				// Ignore and continue with the current contract
+			}
+
+			if (NewContract is null)
+				return;
+
+			ObservableContract? NewContractWrapper = await ObservableContract.CreateAsync(NewContract);
+
+
+			await MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				this.Contract = NewContractWrapper;
+				this.PrepareDisplayableParameters();
+				this.PrepareSignableRoles();
+			});
+		}
+
+		/// <summary>
+		/// Attempts to resolve the friendly name of the proposal sender if available.
+		/// </summary>
+		private async Task<string> ResolveProposalFriendlyName()
+		{
+			if (string.IsNullOrEmpty(this.args?.Proposal) || string.IsNullOrEmpty(this.args?.FromJID))
+				return string.Empty;
+
+			try
+			{
+				ContactInfo? info = await ContactInfo.FindByBareJid(this.args.FromJID);
+				if (!string.IsNullOrEmpty(info?.FriendlyName))
+					return info.FriendlyName;
+
+				return this.args.FromJID;
+			}
+			catch
+			{
+				// If name cannot be resolved, ignore and just return empty.
+				return string.Empty;
+			}
+		}
+
+		/// <summary>
+		/// Prepares the displayable parameters based on supported parameter types.
+		/// </summary>
+		private void PrepareDisplayableParameters()
+		{
+			this.DisplayableParameters.Clear();
+
+			if (this.Contract?.Parameters is null)
+				return;
+
+			foreach (ObservableParameter p in this.Contract.Parameters)
+			{
+				if (p.Parameter is BooleanParameter
+					|| p.Parameter is StringParameter
+					|| p.Parameter is NumericalParameter
+					|| p.Parameter is DateParameter
+					|| p.Parameter is TimeParameter
+					|| p.Parameter is DurationParameter
+					|| p.Parameter is DateTimeParameter
+					|| p.Parameter is CalcParameter)
+				{
+					this.DisplayableParameters.Add(p);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Prepares the signable roles available to the user based on the contract and proposal conditions.
+		/// </summary>
+		private void PrepareSignableRoles()
+		{
+			this.SignableRoles.Clear();
+
+			// If a proposal role is specified, only allow signing as that role (if available)
+			if (!string.IsNullOrEmpty(this.ProposalRole))
+			{
+				ObservableRole? role = this.Contract?.Roles.FirstOrDefault(r => r.Name == this.ProposalRole);
+				if (role is not null && !role.HasReachedMaxCount)
+					this.SignableRoles.Add(role);
+			}
+			else if (this.Contract?.Contract.PartsMode == ContractParts.Open)
+			{
+				// If contract is open, allow signing any appropriate role
+				foreach (ObservableRole r in this.Contract.Roles)
+				{
+					if (!r.HasReachedMaxCount)
+						this.SignableRoles.Add(r);
+				}
+			}
+		}
+
+		#endregion
+
+		#region ILinkableView Implementation
+
+		/// <inheritdoc/>
 		public override string? Link { get; }
 
-		/// <summary>
-		/// Title of the current view
-		/// </summary>
+		/// <inheritdoc/>
 		public override Task<string> Title => ContractModel.GetName(this.Contract?.Contract);
 
 		#endregion
 
+		#region Markdown Link handelers
+		/// <summary>
+		/// Command executed when a multi-media-link with the xmpp URI scheme is clicked.
+		/// </summary>
+		public Command XmppUriClicked { get; }
+
+		/// <summary>
+		/// Command executed when a multi-media-link with the iotid URI scheme is clicked.
+		/// </summary>
+		public Command IotIdUriClicked { get; }
+
+		/// <summary>
+		/// Command executed when a multi-media-link with the iotsc URI scheme is clicked.
+		/// </summary>
+		public Command IotScUriClicked { get; }
+
+		/// <summary>
+		/// Command executed when a multi-media-link with the nfeat URI scheme is clicked.
+		/// </summary>
+		public Command NeuroFeatureUriClicked { get; }
+
+		/// <summary>
+		/// Command executed when a multi-media-link with the iotdisco URI scheme is clicked.
+		/// </summary>
+		public Command IotDiscoUriClicked { get; }
+
+		/// <summary>
+		/// Command executed when a multi-media-link with the edaler URI scheme is clicked.
+		/// </summary>
+		public Command EDalerUriClicked { get; }
+
+		/// <summary>
+		/// Command executed when a hyperlink in rendered markdown has been clicked.
+		/// </summary>
+		public Command HyperlinkClicked { get; }
+
+		private async Task ExecuteUriClicked(object Parameter, UriScheme Scheme)
+		{
+			if (Parameter is not string Uri)
+				return;
+			await App.OpenUrlAsync(Uri);
+		}
+
+		private async Task ExecuteHyperlinkClicked(object Parameter)
+		{
+			if (Parameter is not string Url)
+				return;
+
+			await App.OpenUrlAsync(Url);
+		}
+
+		#endregion
 	}
 }
