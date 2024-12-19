@@ -2473,9 +2473,12 @@
   <value>Signera</value>
 </data>
 <data name="PendingSignature" xml:space="preserve">
-  <value>Väntande signatur</value>
+  <value>Inväntar signatur</value>
 </data>
 <data name="ViewSignature" xml:space="preserve">
   <value>Visa signatur</value>
+</data>
+<data name="ReviewContractDescription2" xml:space="preserve">
+  <value>Granska kontraktets villkor</value>
 </data>
 </root>

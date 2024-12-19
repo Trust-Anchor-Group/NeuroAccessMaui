@@ -2445,4 +2445,40 @@
   <data name="IHaveReadAndUnderstoodTheContract" xml:space="preserve">
     <value>J’ai lu et compris les termes de ce contrat</value>
   </data>
+  <data name="Status" xml:space="preserve">
+    <value>Statut</value>
+  </data>
+  <data name="Encrypted" xml:space="preserve">
+    <value>Crypté</value>
+  </data>
+  <data name="ViewParametersTitle" xml:space="preserve">
+    <value>Afficher les paramètres</value>
+  </data>
+  <data name="ViewParametersDescription" xml:space="preserve">
+    <value>Afficher les variables qui régissent le contrat</value>
+  </data>
+  <data name="ViewRolesTitle" xml:space="preserve">
+    <value>Examiner les rôles attribués</value>
+  </data>
+  <data name="ViewRolesDescription" xml:space="preserve">
+    <value>Passez en revue les rôles et voyez qui a signé chaque rôle</value>
+  </data>
+  <data name="InvitationToSign" xml:space="preserve">
+    <value>Vous avez été invité à signer ce contrat, assurez-vous de vérifier et d’examiner le contrat avant de procéder</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Titre</value>
+  </data>
+  <data name="Sign" xml:space="preserve">
+    <value>Signe</value>
+  </data>
+  <data name="PendingSignature" xml:space="preserve">
+    <value>Signature en attente</value>
+  </data>
+  <data name="ViewSignature" xml:space="preserve">
+    <value>Voir la signature</value>
+  </data>
+  <data name="ReviewContractDescription2" xml:space="preserve">
+    <value>Examiner les termes du contrat</value>
+  </data>
 </root>

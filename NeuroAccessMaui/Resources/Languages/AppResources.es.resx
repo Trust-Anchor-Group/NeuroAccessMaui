@@ -2478,4 +2478,7 @@
 <data name="ViewSignature" xml:space="preserve">
   <value>Ver Firma</value>
 </data>
+<data name="ReviewContractDescription2" xml:space="preserve">
+  <value>Revise los términos del contrato</value>
+</data>
 </root>

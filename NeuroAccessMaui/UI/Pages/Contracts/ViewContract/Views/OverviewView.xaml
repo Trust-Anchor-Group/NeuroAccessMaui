@@ -280,7 +280,7 @@
 
 				<views:OverviewItemButton IconData="{x:Static ui:Geometries.ContractPath}"
 												  TopLabelText="{l:Localize ReviewContractTitle}"
-												  BottomLabelText="{l:Localize ReviewContractDescription}"
+												  BottomLabelText="{l:Localize ReviewContractDescription2}"
 												  Command="{Binding GoToReviewCommand}" />
 
 			</VerticalStackLayout>
