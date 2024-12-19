@@ -58,7 +58,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				await observableRole.InitializeAsync(this.Contract);
 				this.Roles.Add(observableRole);
 			}
-			if(this.IsTemplate)
+			if (this.IsTemplate)
 			{
 				foreach (Part part in this.Contract.Parts ?? Enumerable.Empty<Part>())
 				{
@@ -73,7 +73,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				{
 					ObservableRole? Role = this.Roles.FirstOrDefault(r => r.Name == signature.Role);
 					if (Role is not null)
-						await Role.AddPart(signature.LegalId);
+						await Role.AddPart(signature);
 				}
 			}
 

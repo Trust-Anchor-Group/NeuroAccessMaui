@@ -13,6 +13,7 @@ using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.Notification.Identities;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
+using NeuroAccessMaui.UI.Pages.Signatures.ClientSignature;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;
 using Waher.Persistence.Filters;
@@ -26,26 +27,45 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			this.Part = part;
 			ServiceRef.XmppService.PetitionedIdentityResponseReceived += this.XmppService_OnPetitionedIdentityResponseReceived;
 		}
+
+		public ObservablePart(Part part, ClientSignature signature)
+		{
+			this.Part = part;
+			ServiceRef.XmppService.PetitionedIdentityResponseReceived += this.XmppService_OnPetitionedIdentityResponseReceived;
+			this.Signature = signature;
+
+		}
 		/// <summary>
 		/// Initializes the part, setting properties which needs to be set asynchronosly
 		/// </summary>
-		public async Task InitializeAsync()
+		public async Task InitializeAsync(bool sendPetition = true)
 		{
 			try
 			{
 				// Set Friendly name before anything can go wrong
 				this.FriendlyName = await this.GetFriendlyNameAsync();
-
-				this.identity = await ServiceRef.ContractOrchestratorService.TryGetLegalIdentity(this.LegalId,
-											ServiceRef.Localizer[nameof(AppResources.ForInclusionInContract)]);
-
-				MainThread.BeginInvokeOnMainThread(() =>
+				if (sendPetition)
+					await this.PetitionIdentityAsync();
+				else
 				{
-					this.OnPropertyChanged(nameof(this.HasIdentity));
-				});
+					try
+					{
+						LegalIdentity Identity = await ServiceRef.XmppService.GetLegalIdentity(this.LegalId);
+						this.identity = Identity;
 
-				// Update the friendly name after the identity might be set
-				this.FriendlyName = await this.GetFriendlyNameAsync();
+						string FriendlyName = await this.GetFriendlyNameAsync();
+
+						MainThread.BeginInvokeOnMainThread(() =>
+						{
+							this.OnPropertyChanged(nameof(this.HasIdentity));
+							this.FriendlyName = FriendlyName;
+						});
+					}
+					catch (Exception)
+					{
+						//Ignore, OK if forbidden or network error
+					}
+				}
 			}
 			catch (Exception e)
 			{
@@ -55,7 +75,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 		private async Task XmppService_OnPetitionedIdentityResponseReceived(object? Sender, LegalIdentityPetitionResponseEventArgs e)
 		{
-			Console.WriteLine(e.Response + " : " + e.RequestedIdentity is not null);
 			if (e.RequestedIdentity is not null && e.RequestedIdentity.Id == this.LegalId)
 			{
 				this.identity = e.RequestedIdentity;
@@ -64,9 +83,30 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				MainThread.BeginInvokeOnMainThread(() =>
 				{
 					this.FriendlyName = FriendlyName;
+					this.HasSentPetition = false;
 					this.OnPropertyChanged(nameof(this.HasIdentity));
+					this.OnPropertyChanged(nameof(this.HasSentPetition));
 				});
 			}
+		}
+
+		private async Task PetitionIdentityAsync()
+		{
+			this.identity = await ServiceRef.ContractOrchestratorService.TryGetLegalIdentity(this.LegalId,
+							ServiceRef.Localizer[nameof(AppResources.ForInclusionInContract)]);
+
+			string FriendlyName = await this.GetFriendlyNameAsync();
+
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+
+				if (this.identity is null)
+					this.HasSentPetition = true;
+				this.OnPropertyChanged(nameof(this.HasIdentity));
+				this.OnPropertyChanged(nameof(this.HasSentPetition));
+				this.FriendlyName = FriendlyName;
+			});
+
 		}
 
 		private async Task<string> GetFriendlyNameAsync()
@@ -88,10 +128,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 				if (info is not null && !string.IsNullOrEmpty(info.BareJid))
 					return info.BareJid;
+
+				if (this.Signature is not null)
+					return this.Signature.BareJid;
 			}
 			catch (Exception e)
 			{
-				//Ignore
+				ServiceRef.LogService.LogException(e);
+				//log and use fallback
 			}
 
 			return this.LegalId;
@@ -103,6 +147,18 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// The wrapped Part object
 		/// </summary>
 		public Part Part { get; }
+
+		private ClientSignature? signature = null;
+		public ClientSignature? Signature
+		{
+			get => this.signature;
+			set
+			{
+				this.SetProperty(ref this.signature, value);
+				this.OnPropertyChanged(nameof(this.HasSigned));
+				this.OpenSignatureCommand.NotifyCanExecuteChanged();
+			}
+		}
 
 		public string LegalId => this.Part.LegalId;
 
@@ -123,20 +179,22 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		}
 		private string? friendlyName = string.Empty;
 
+		public bool HasSentPetition
+		{
+			get => this.hasSentPetition && !this.HasIdentity;
+			private set
+			{
+				this.SetProperty(ref this.hasSentPetition, value);
+			}
+		}
+		private bool hasSentPetition = false;
+
 		public bool IsMe => this.Part.LegalId == ServiceRef.TagProfile.LegalIdentity?.Id;
 		public bool IsThirdParty => !this.IsMe;
 
 		public bool HasIdentity => this.identity is not null;
 
-		public bool HasSigned
-		{
-			get => this.hasSigned;
-			private set
-			{
-				this.SetProperty(ref this.hasSigned, value);
-			}
-		}
-		private bool hasSigned = false;
+		public bool HasSigned => this.Signature is not null;
 
 		#endregion
 
@@ -147,12 +205,30 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		{
 			if (this.identity is null)
 			{
-				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.Petition)], ServiceRef.Localizer[nameof(AppResources.PetitionIdentitySent)], ServiceRef.Localizer[nameof(AppResources.Ok)]);
-				await this.InitializeAsync();
+				try
+				{
+					await this.PetitionIdentityAsync();
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.Petition)], ServiceRef.Localizer[nameof(AppResources.PetitionIdentitySent)], ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				}
+				catch (Exception)
+				{
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.Error)], ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)], ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				}
 			}
 			else
 			{
-				await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(this.identity));
+				await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(this.identity), Services.UI.BackMethod.Pop);
+			}
+		}
+
+		[RelayCommand(AllowConcurrentExecutions = false, CanExecute = nameof(HasSigned))]
+		private async Task OpenSignatureAsync()
+		{
+			if (this.Signature is not null)
+			{
+				await ServiceRef.UiService.GoToAsync(nameof(ClientSignaturePage),
+					new ClientSignatureNavigationArgs(this.Signature, this.identity),
+					Services.UI.BackMethod.Pop);
 			}
 		}
 		#endregion

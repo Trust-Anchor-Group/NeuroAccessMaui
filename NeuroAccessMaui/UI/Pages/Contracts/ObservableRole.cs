@@ -133,15 +133,18 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// Adds a part with a given LegalId to the role.
 		/// </summary>
 		/// <param name="LegalId"></param>
-		public async Task AddPart(string LegalId, bool Notify = true)
+		public async Task AddPart(string LegalId, bool Notify = true, bool AutoPetition = true)
 		{
+			//Check if Part Exists
 			if (this.Parts.Any(p => string.Equals(p.LegalId, LegalId, StringComparison.OrdinalIgnoreCase)))
 				return;
 
+			//Create Part
 			Part Part = new() { LegalId = LegalId, Role = this.Name };
 			ObservablePart ObservablePart = new ObservablePart(Part);
-			await ObservablePart.InitializeAsync();
+			await ObservablePart.InitializeAsync(AutoPetition);
 
+			//Notify changes
 			TaskCompletionSource TaskCompletionSource = new();
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
@@ -158,10 +161,26 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// <summary>
 		/// Adds a part object to the role.
 		/// </summary>
-		/// <param name="part"></param>
 		public async Task AddPart(Part part)
 		{
 			await this.AddPart(part.LegalId);
+		}
+
+		/// <summary>
+		/// Add a part from a signature, or mark the part as signed if it already exists.
+		/// </summary>
+		public async Task AddPart(ClientSignature signature)
+		{
+			await this.AddPart(signature.LegalId, true, false);
+			ObservablePart? Found = this.Parts.FirstOrDefault(p => p.LegalId == signature.LegalId);
+			if (Found is not null)
+			{
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					Found.Signature = signature;
+				});
+				await Found.InitializeAsync(false);
+			}
 		}
 
 		/// <summary>
