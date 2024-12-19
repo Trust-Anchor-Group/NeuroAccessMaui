@@ -615,7 +615,7 @@
 		<Setter Property="HorizontalOptions" Value="Fill" />
 		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}" />
 		<Setter Property="Margin" Value="0" />
-		<Setter Property="Padding" Value="{StaticResource MediumMargins}" />
+		<Setter Property="Padding" Value="{StaticResource SmallMargins}" />
 		<Setter Property="StrokeShape">
 			<Setter.Value>
 				<RoundRectangle CornerRadius="20,20,0,0" />
@@ -650,7 +650,7 @@
 
 	<Style x:Key="AccentInfoLabel" ApplyToDerivedTypes="False" TargetType="Label">
 		<Setter Property="FontSize" Value="14" />
-		<Setter Property="FontFamily" Value="HaasGroteskBold"/>
+		<Setter Property="FontFamily" Value="HaasGroteskMedium"/>
 		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource AccentForegroundLight}, Dark={StaticResource AccentForegroundDark}}" />
 	</Style>
 
