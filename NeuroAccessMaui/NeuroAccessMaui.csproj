@@ -346,6 +346,9 @@
 		<Compile Update="UI\Pages\Contracts\ViewContract\Views\PreviewView.xaml.cs">
 		  <DependentUpon>%(Filename)</DependentUpon>
 		</Compile>
+		<Compile Update="UI\Pages\Contracts\ViewContract\Views\SignView.xaml.cs">
+		  <DependentUpon>SignView.xaml</DependentUpon>
+		</Compile>
 		<Compile Update="UI\Pages\Contracts\ViewContract\Views\RolesView.xaml.cs">
 		  <DependentUpon>%(Filename)</DependentUpon>
 		</Compile>
@@ -504,6 +507,9 @@
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Contracts\ViewContract\Views\PreviewView.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Contracts\ViewContract\Views\SignView.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Contracts\ViewContract\Views\RolesView.xaml">
