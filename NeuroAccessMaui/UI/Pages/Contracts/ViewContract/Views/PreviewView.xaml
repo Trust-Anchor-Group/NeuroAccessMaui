@@ -11,26 +11,11 @@
                            xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
                            xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views"
                            xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract">
-
-	<Grid RowDefinitions="*, auto" ColumnDefinitions="*">
-		<Border  Grid.Row="0" Style="{StaticResource BorderSet}" Margin="{StaticResource MediumMargins}">
+	<Grid RowDefinitions="*" ColumnDefinitions="*">
+		<Border Style="{StaticResource BorderSet}" Margin="{StaticResource MediumMargins}">
 			<ScrollView >
 				<ContentView Content="{Binding HumanReadableText}" />
 			</ScrollView>
-		</Border>
-
-
-		<!-- BOTTOM BAR -->
-		<Border Grid.Row="1" Style="{StaticResource BottomBarBorder}">
-			<Grid HorizontalOptions="Center" VerticalOptions="Center" ColumnSpacing="{StaticResource SmallSpacing}" Padding="{StaticResource SmallMargins}">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="auto" />
-					<ColumnDefinition Width="*" />
-				</Grid.ColumnDefinitions>
-
-				<CheckBox Grid.Column="0" IsChecked="{Binding IsContractOk}" Color="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffWhiteDark}}" />
-				<Label Grid.Column="1" Text="{l:Localize IHaveReadAndUnderstoodTheContract}" Style="{StaticResource BottomBarLabel}" />
-			</Grid>
 		</Border>
 	</Grid>
 </views:BaseViewContractView>

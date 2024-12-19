@@ -1,244 +1,316 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
 <views:BaseViewContractView x:Name="ThisPage"
-                           x:Class="NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views.OverviewView"
-                           x:DataType="base:ViewContractViewModel"
-                           xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-                           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                           xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-                           xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-                           xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-                           xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
-                           xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-                           xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views"
-                           xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract"
-									xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
-									xmlns:contract="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts">
+									 x:Class="NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views.OverviewView"
+									 x:DataType="base:ViewContractViewModel"
+									 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+									 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+									 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+									 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+									 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+									 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
+									 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+									 xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views"
+									 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract"
+									 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+									 xmlns:contract="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts">
 
 	<ContentView.Resources>
 		<ResourceDictionary>
 			<converters:ContractStateToString x:Key="ContractStateToStringConverter" />
 			<Style x:Key="ItemTitleLabel"
-           TargetType="Label"
-           BasedOn="{StaticResource BoldItemTitleLabel}">
-				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource OffBlack50Light}, Dark={StaticResource OffWhiteDark}}" />
-				<Setter Property="FontSize" Value="15" />
-				<Setter Property="FontFamily" Value="SpaceGroteskSemiBold"/>
-				<Setter Property="LineBreakMode" Value="WordWrap" />
-				<Setter Property="VerticalTextAlignment" Value="Center" />
-				<Setter Property="HorizontalTextAlignment" Value="Start" />
+					 TargetType="Label"
+					 BasedOn="{StaticResource BoldItemTitleLabel}">
+				<Setter Property="TextColor"
+						  Value="{AppThemeBinding Light={StaticResource OffBlack50Light}, Dark={StaticResource OffWhiteDark}}" />
+				<Setter Property="FontSize"
+						  Value="15" />
+				<Setter Property="FontFamily"
+						  Value="SpaceGroteskSemiBold" />
+				<Setter Property="LineBreakMode"
+						  Value="WordWrap" />
+				<Setter Property="VerticalTextAlignment"
+						  Value="Center" />
+				<Setter Property="VerticalOptions"
+						  Value="Start" />
+				<Setter Property="HorizontalTextAlignment"
+						  Value="Start" />
 			</Style>
 
-			<Style x:Key="ItemValueLabel" TargetType="Label">
-				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffWhiteDark}}" />
-				<Setter Property="FontSize" Value="15" />
-				<Setter Property="FontFamily" Value="HaasGroteskRegular" />
-				<Setter Property="LineBreakMode" Value="WordWrap" />
-				<Setter Property="VerticalTextAlignment" Value="Center" />
-				<Setter Property="HorizontalTextAlignment" Value="End" />
+			<Style x:Key="ItemValueLabel"
+					 TargetType="Label">
+				<Setter Property="TextColor"
+						  Value="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffWhiteDark}}" />
+				<Setter Property="FontSize"
+						  Value="15" />
+				<Setter Property="FontFamily"
+						  Value="HaasGroteskRegular" />
+				<Setter Property="LineBreakMode"
+						  Value="WordWrap" />
+				<Setter Property="VerticalTextAlignment"
+						  Value="Center" />
+				<Setter Property="HorizontalTextAlignment"
+						  Value="End" />
+				<Setter Property="HorizontalOptions"
+						  Value="End" />
 			</Style>
 
 			<!-- Proposed -->
 			<DataTemplate x:Key="ProposedTemplate">
-				<Grid ColumnDefinitions="auto" HorizontalOptions="End">
-					<Border Style="{StaticResource RoundedBorder}" Padding="8,4,8,4"
-                BackgroundColor="{AppThemeBinding Light={StaticResource Blue20AffirmLight}, Dark={StaticResource Blue20AffirmDark}}">
+				<Grid ColumnDefinitions="auto"
+						HorizontalOptions="End">
+					<Border Style="{StaticResource RoundedBorder}"
+							  Padding="8,4,8,4"
+							  BackgroundColor="{AppThemeBinding Light={StaticResource Blue20AffirmLight}, Dark={StaticResource Blue20AffirmDark}}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
-                   Style="{StaticResource ItemValueLabel}"
-                   TextColor="{AppThemeBinding Light={StaticResource BlueDarkLight}, Dark={StaticResource BlueDarkDark}}" />
+								 Style="{StaticResource ItemValueLabel}"
+								 TextColor="{AppThemeBinding Light={StaticResource BlueDarkLight}, Dark={StaticResource BlueDarkDark}}" />
 					</Border>
 				</Grid>
 			</DataTemplate>
 
 			<!-- Rejected -->
 			<DataTemplate x:Key="RejectedTemplate">
-				<Grid ColumnDefinitions="auto" HorizontalOptions="End">
-					<Border Style="{StaticResource RoundedBorder}" Padding="8,4,8,4"
-                BackgroundColor="{AppThemeBinding Light={StaticResource Red20WarningLight}, Dark={StaticResource Red20WarningDark}}">
+				<Grid ColumnDefinitions="auto"
+						HorizontalOptions="End">
+					<Border Style="{StaticResource RoundedBorder}"
+							  Padding="8,4,8,4"
+							  BackgroundColor="{AppThemeBinding Light={StaticResource Red20WarningLight}, Dark={StaticResource Red20WarningDark}}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
-                   Style="{StaticResource ItemValueLabel}"
-                   TextColor="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedWarningDark}}" />
+								 Style="{StaticResource ItemValueLabel}"
+								 TextColor="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedWarningDark}}" />
 					</Border>
 				</Grid>
 			</DataTemplate>
 
 			<!-- Approved -->
 			<DataTemplate x:Key="ApprovedTemplate">
-				<Grid ColumnDefinitions="auto" HorizontalOptions="End">
-					<Border Style="{StaticResource RoundedBorder}" Padding="8,4,8,4"
-                BackgroundColor="{AppThemeBinding Light={StaticResource Blue20AffirmLight}, Dark={StaticResource Blue20AffirmDark}}">
+				<Grid ColumnDefinitions="auto"
+						HorizontalOptions="End">
+					<Border Style="{StaticResource RoundedBorder}"
+							  Padding="8,4,8,4"
+							  BackgroundColor="{AppThemeBinding Light={StaticResource Blue20AffirmLight}, Dark={StaticResource Blue20AffirmDark}}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
-                   Style="{StaticResource ItemValueLabel}"
-                   TextColor="{AppThemeBinding Light={StaticResource BlueDarkLight}, Dark={StaticResource BlueDarkDark}}" />
+								 Style="{StaticResource ItemValueLabel}"
+								 TextColor="{AppThemeBinding Light={StaticResource BlueDarkLight}, Dark={StaticResource BlueDarkDark}}" />
 					</Border>
 				</Grid>
 			</DataTemplate>
 
 			<!-- BeingSigned -->
 			<DataTemplate x:Key="BeingSignedTemplate">
-				<Grid ColumnDefinitions="auto" HorizontalOptions="End">
-					<Border Style="{StaticResource RoundedBorder}" Padding="8,4,8,4"
-                BackgroundColor="{AppThemeBinding Light={StaticResource Blue20AffirmLight}, Dark={StaticResource Blue20AffirmDark}}">
+				<Grid ColumnDefinitions="auto"
+						HorizontalOptions="End">
+					<Border Style="{StaticResource RoundedBorder}"
+							  Padding="8,4,8,4"
+							  BackgroundColor="{AppThemeBinding Light={StaticResource Blue20AffirmLight}, Dark={StaticResource Blue20AffirmDark}}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
-                   Style="{StaticResource ItemValueLabel}"
-                   TextColor="{AppThemeBinding Light={StaticResource BlueDarkLight}, Dark={StaticResource BlueDarkDark}}" />
+								 Style="{StaticResource ItemValueLabel}"
+								 TextColor="{AppThemeBinding Light={StaticResource BlueDarkLight}, Dark={StaticResource BlueDarkDark}}" />
 					</Border>
 				</Grid>
 			</DataTemplate>
 
 			<!-- Signed -->
 			<DataTemplate x:Key="SignedTemplate">
-				<Grid ColumnDefinitions="auto" HorizontalOptions="End">
-					<Border Style="{StaticResource RoundedBorder}" Padding="8,4,8,4"
-                BackgroundColor="{AppThemeBinding Light={StaticResource Accent20Light}, Dark={StaticResource Accent20Dark}}">
+				<Grid ColumnDefinitions="auto"
+						HorizontalOptions="End">
+					<Border Style="{StaticResource RoundedBorder}"
+							  Padding="8,4,8,4"
+							  BackgroundColor="{AppThemeBinding Light={StaticResource Accent20Light}, Dark={StaticResource Accent20Dark}}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
-                   Style="{StaticResource ItemValueLabel}"
-                   TextColor="{AppThemeBinding Light={StaticResource Accent2Hold}, Dark={StaticResource Accent2HoldDark}}" />
+								 Style="{StaticResource ItemValueLabel}"
+								 TextColor="{AppThemeBinding Light={StaticResource Accent2Hold}, Dark={StaticResource Accent2HoldDark}}" />
 					</Border>
 				</Grid>
 			</DataTemplate>
 
 			<!-- Failed -->
 			<DataTemplate x:Key="FailedTemplate">
-				<Grid ColumnDefinitions="auto" HorizontalOptions="End">
-					<Border Style="{StaticResource RoundedBorder}" Padding="8,4,8,4"
-                BackgroundColor="{AppThemeBinding Light={StaticResource Red20WarningLight}, Dark={StaticResource Red20WarningDark}}">
+				<Grid ColumnDefinitions="auto"
+						HorizontalOptions="End">
+					<Border Style="{StaticResource RoundedBorder}"
+							  Padding="8,4,8,4"
+							  BackgroundColor="{AppThemeBinding Light={StaticResource Red20WarningLight}, Dark={StaticResource Red20WarningDark}}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
-                   Style="{StaticResource ItemValueLabel}"
-                   TextColor="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedWarningDark}}" />
+								 Style="{StaticResource ItemValueLabel}"
+								 TextColor="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedWarningDark}}" />
 					</Border>
 				</Grid>
 			</DataTemplate>
 
 			<!-- Obsoleted -->
 			<DataTemplate x:Key="ObsoletedTemplate">
-				<Grid ColumnDefinitions="auto" HorizontalOptions="End">
-					<Border Style="{StaticResource RoundedBorder}" Padding="8,4,8,4"
-                BackgroundColor="{AppThemeBinding Light={StaticResource Red20WarningLight}, Dark={StaticResource Red20WarningDark}}">
+				<Grid ColumnDefinitions="auto"
+						HorizontalOptions="End">
+					<Border Style="{StaticResource RoundedBorder}"
+							  Padding="8,4,8,4"
+							  BackgroundColor="{AppThemeBinding Light={StaticResource Red20WarningLight}, Dark={StaticResource Red20WarningDark}}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
-                   Style="{StaticResource ItemValueLabel}"
-                   TextColor="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedWarningDark}}" />
+								 Style="{StaticResource ItemValueLabel}"
+								 TextColor="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedWarningDark}}" />
 					</Border>
 				</Grid>
 			</DataTemplate>
 
 			<!-- Deleted -->
 			<DataTemplate x:Key="DeletedTemplate">
-				<Grid ColumnDefinitions="auto" HorizontalOptions="End">
-					<Border Style="{StaticResource RoundedBorder}" Padding="8,4,8,4"
-                BackgroundColor="{AppThemeBinding Light={StaticResource Red20WarningLight}, Dark={StaticResource Red20WarningDark}}">
+				<Grid ColumnDefinitions="auto"
+						HorizontalOptions="End">
+					<Border Style="{StaticResource RoundedBorder}"
+							  Padding="8,4,8,4"
+							  BackgroundColor="{AppThemeBinding Light={StaticResource Red20WarningLight}, Dark={StaticResource Red20WarningDark}}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
-                   Style="{StaticResource ItemValueLabel}"
-                   TextColor="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedWarningDark}}" />
+								 Style="{StaticResource ItemValueLabel}"
+								 TextColor="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedWarningDark}}" />
 					</Border>
 				</Grid>
 			</DataTemplate>
 
 
 			<contract:ContractStateTemplateSelector x:Key="ContractStateSelector"
-				ProposedTemplate="{StaticResource ProposedTemplate}"
-				RejectedTemplate="{StaticResource RejectedTemplate}"
-				ApprovedTemplate="{StaticResource ApprovedTemplate}"
-				BeingSignedTemplate="{StaticResource BeingSignedTemplate}"
-				SignedTemplate="{StaticResource SignedTemplate}"
-				FailedTemplate="{StaticResource FailedTemplate}"
-				ObsoletedTemplate="{StaticResource ObsoletedTemplate}"
-				DeletedTemplate="{StaticResource DeletedTemplate}" />
+																 ProposedTemplate="{StaticResource ProposedTemplate}"
+																 RejectedTemplate="{StaticResource RejectedTemplate}"
+																 ApprovedTemplate="{StaticResource ApprovedTemplate}"
+																 BeingSignedTemplate="{StaticResource BeingSignedTemplate}"
+																 SignedTemplate="{StaticResource SignedTemplate}"
+																 FailedTemplate="{StaticResource FailedTemplate}"
+																 ObsoletedTemplate="{StaticResource ObsoletedTemplate}"
+																 DeletedTemplate="{StaticResource DeletedTemplate}" />
 
 		</ResourceDictionary>
 	</ContentView.Resources>
 
-	<Grid RowDefinitions="*, auto" ColumnDefinitions="*">
+	<Grid RowDefinitions="*, auto"
+			ColumnDefinitions="*">
 		<ScrollView Grid.Row="0">
-			<VerticalStackLayout Padding="{StaticResource MediumMargins}" Spacing="{StaticResource MediumSpacing}">
+			<VerticalStackLayout Padding="{StaticResource MediumMargins}"
+										Spacing="{StaticResource MediumSpacing}">
 				<!-- TOP Set, name of contract etc -->
-				<Border Style="{StaticResource BorderSet}" Margin="0">
+				<Border Style="{StaticResource BorderSet}"
+						  Margin="0">
 					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-							  <!--
+						<Border Style="{StaticResource AccentInfoBorder}"
+								  Padding="{StaticResource SmallMargins}"
+								  IsVisible="{Binding IsProposal}">
+							<Grid ColumnDefinitions="auto, *">
+								<Path Grid.Column="0"
+										HorizontalOptions="Center"
+										VerticalOptions="Center"
+										Data="{x:Static ui:Geometries.InfoCirclePath}"
+										HeightRequest="16"
+										WidthRequest="16"
+										Aspect="Uniform"
+										Fill="{AppThemeBinding Light={StaticResource AccentForegroundLight}, Dark={StaticResource AccentForegroundDark}}" />
+								<Label Grid.Column="1"
+										 Style="{StaticResource AccentInfoLabel}"
+										 VerticalOptions="Start"
+										 VerticalTextAlignment="Start"
+										 Margin="{StaticResource SmallLeftMargins}"
+										 Text="{l:Localize InvitationToSign}" />
+
+							</Grid>
+						</Border>
+						<!--
 						<Label Text="{Binding Path=Contract.Category}"
 								Margin="{StaticResource SmallSpacing}"
 								Style="{StaticResource PageTitleLabel}"
 								HorizontalTextAlignment="Center"/>
 -->
-						<Image x:Name="QrCode" Source="{Binding QrCode}" IsVisible="{Binding HasQrCode}" WidthRequest="{Binding QrCodeWidth}"
-								 HeightRequest="{Binding QrCodeHeight}" HorizontalOptions="Center">
+						<Image x:Name="QrCode"
+								 Source="{Binding QrCode}"
+								 IsVisible="{Binding HasQrCode}"
+								 WidthRequest="{Binding QrCodeWidth}"
+								 HeightRequest="{Binding QrCodeHeight}"
+								 HorizontalOptions="Center">
 							<Image.GestureRecognizers>
-								<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding Contract.ContractId}" />
+								<TapGestureRecognizer Command="{Binding CopyCommand}"
+															 CommandParameter="{Binding Contract.ContractId}" />
 							</Image.GestureRecognizers>
 						</Image>
 
-						<Grid ColumnDefinitions="auto, *">
-							<Label Grid.Column="0" Text="{l:Localize Name}"
-									 Style="{StaticResource ItemTitleLabel}"/>
-							<Label Grid.Column="1" Text="{Binding Path=Contract.Category}"
-									 Style="{StaticResource ItemValueLabel}"/>
-						</Grid>
+						<Border Style="{StaticResource BorderSubSet}"
+								  Margin="0">
+							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+								<Grid ColumnDefinitions="auto, *"
+										ColumnSpacing="{StaticResource MediumSpacing}">
+									<Label Grid.Column="0"
+											 Text="{l:Localize Title}"
+											 Style="{StaticResource ItemTitleLabel}" />
+									<Label Grid.Column="1"
+											 Text="{Binding Path=Contract.Category}"
+											 Style="{StaticResource ItemValueLabel}" />
+								</Grid>
 
-						<Grid ColumnDefinitions="auto, *">
-							<Label Grid.Column="0" Text="{l:Localize Status}"
-									 Style="{StaticResource ItemTitleLabel}"/>
-							<controls:TemplateSelectorContentView Grid.Column="1"
-																			  Item="{Binding Contract}"
-																			  TemplateSelector="{StaticResource ContractStateSelector}"  />
-						</Grid>
+								<Grid ColumnDefinitions="auto, *">
+									<Label Grid.Column="0"
+											 Text="{l:Localize Status}"
+											 Style="{StaticResource ItemTitleLabel}" />
+									<controls:TemplateSelectorContentView Grid.Column="1"
+																					  Item="{Binding Contract}"
+																					  TemplateSelector="{StaticResource ContractStateSelector}" />
+								</Grid>
 
-						<Grid ColumnDefinitions="auto, *">
-							<Label Grid.Column="0" Text="{l:Localize Visibility}"
-									 Style="{StaticResource ItemTitleLabel}"/>
-							<Label Grid.Column="1" Text="{Binding Visibility}"
-									 Style="{StaticResource ItemValueLabel}"/>
-						</Grid>
+								<Grid ColumnDefinitions="auto, *">
+									<Label Grid.Column="0"
+											 Text="{l:Localize Visibility}"
+											 Style="{StaticResource ItemTitleLabel}" />
+									<Label Grid.Column="1"
+											 Text="{Binding Visibility}"
+											 Style="{StaticResource ItemValueLabel}" />
+								</Grid>
+							</VerticalStackLayout>
+
+						</Border>
 					</VerticalStackLayout>
 
 				</Border>
 
 				<!-- Parameters Button -->
-				<views:OverviewItemButton 
-                             IconData="{x:Static ui:Geometries.ContractEditPath}"
-                             TopLabelText="{l:Localize ViewParametersTitle}"
-                             BottomLabelText="{l:Localize ViewParametersDescription}"
-									  Command="{Binding GoToParametersCommand}"/>
+				<views:OverviewItemButton IconData="{x:Static ui:Geometries.ContractEditPath}"
+												  TopLabelText="{l:Localize ViewParametersTitle}"
+												  BottomLabelText="{l:Localize ViewParametersDescription}"
+												  Command="{Binding GoToParametersCommand}" />
 
 				<!-- Roles Button -->
-				<views:OverviewItemButton 
-                             IconData="{x:Static ui:Geometries.RolesPath}"
-                             TopLabelText="{l:Localize ViewRolesTitle}"
-                             BottomLabelText="{l:Localize ViewRolesDescription}"
-									  Command="{Binding GoToRolesCommand}"/>
+				<views:OverviewItemButton IconData="{x:Static ui:Geometries.RolesPath}"
+												  TopLabelText="{l:Localize ViewRolesTitle}"
+												  BottomLabelText="{l:Localize ViewRolesDescription}"
+												  Command="{Binding GoToRolesCommand}" />
 
-				<views:OverviewItemButton 
-                             IconData="{x:Static ui:Geometries.ContractPath}"
-                             TopLabelText="{l:Localize ReviewContractTitle}"
-                             BottomLabelText="{l:Localize ReviewContractDescription}"/>
+				<views:OverviewItemButton IconData="{x:Static ui:Geometries.ContractPath}"
+												  TopLabelText="{l:Localize ReviewContractTitle}"
+												  BottomLabelText="{l:Localize ReviewContractDescription}"
+												  Command="{Binding GoToReviewCommand}" />
 
 			</VerticalStackLayout>
 		</ScrollView>
 
 		<!-- BOTTOM BAR -->
-		<Grid Grid.Row="1" RowDefinitions="*,*">
-		<Border Grid.Row="0" Style="{StaticResource BottomBarBorder}" IsVisible="{Binding CanSign}" Padding="0">
-			<Grid HorizontalOptions="Center" VerticalOptions="Center" ColumnSpacing="{StaticResource SmallSpacing}" Padding="{StaticResource SmallMargins}">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="auto" />
-					<ColumnDefinition Width="*" />
-				</Grid.ColumnDefinitions>
+		<Grid Grid.Row="1"
+				RowDefinitions="*">
+			<Border Style="{StaticResource BottomBarBorder}"
+					  IsVisible="{Binding CanSign}">
+				<Grid HorizontalOptions="Fill"
+						VerticalOptions="Center"
+						ColumnSpacing="{StaticResource SmallSpacing}"
+						Padding="{StaticResource SmallMargins}">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
 
-				<CheckBox Grid.Column="0" IsChecked="{Binding IsContractOk}" Color="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffWhiteDark}}" />
-				<Label Grid.Column="1" Text="{l:Localize IHaveReadAndUnderstoodTheContract}" Style="{StaticResource BottomBarLabel}" />
-			</Grid>
-		</Border>
-		<Border Grid.Row="1" Style="{StaticResource BottomBarBorder}" IsVisible="{Binding CanSign}">
-			<Grid HorizontalOptions="Fill" VerticalOptions="Center" ColumnSpacing="{StaticResource SmallSpacing}" Padding="{StaticResource SmallMargins}">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="*" />
-				</Grid.ColumnDefinitions>
+					<controls:TextButton Style="{StaticResource TransparentTextButton}"
+												Grid.Column="0"
+												LabelData="{l:Localize Back}"
+												Command="{Binding BackCommand}" />
+					<controls:TextButton Style="{StaticResource FilledTextButton}"
+												Grid.Column="1"
+												LabelData="{l:Localize Sign}"
+												Command="{Binding GoToSignCommand}" />
 
-				<controls:TextButton Style="{StaticResource TransparentTextButton}" Grid.Column="0" LabelData="{l:Localize Back}" Command="{Binding BackCommand}" />
-				<controls:TextButton Style="{StaticResource FilledTextButton}" Grid.Column="1" LabelData="Sign"  />
-
-			</Grid>
-		</Border>
+				</Grid>
+			</Border>
 		</Grid>
 
 	</Grid>
