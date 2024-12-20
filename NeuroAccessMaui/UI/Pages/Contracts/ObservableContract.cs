@@ -12,12 +12,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 	/// This allows for easier binding in the UI.
 	/// Either create instances with <see cref="CreateAsync"/> or initialize with <see cref="InitializeAsync"/>.
 	/// </summary>
-	public class ObservableContract : ObservableObject
+	public class ObservableContract : ObservableObject, IDisposable
 	{
 
 		#region Constructors and Destructor
 
-		private ObservableContract(Contract contract)
+		public ObservableContract(Contract contract)
 		{
 			this.Contract = contract;
 			this.Parameters.CollectionChanged += this.Parameters_CollectionChanged;
@@ -42,7 +42,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// <summary>
 		/// Initializes the contract data, such as category and parameters.
 		/// </summary>
-		private async Task InitializeAsync()
+		public async Task InitializeAsync()
 		{
 			this.Category = await ContractModel.GetCategory(this.Contract) ?? string.Empty;
 
@@ -212,6 +212,30 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// </summary>
 		public string TemplateId => this.Contract.TemplateId;
 
+		#endregion
+				private bool disposed = false;
+
+		#region IDisposable Support
+		public void Dispose()
+		{
+			this.Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			if (this.disposed)
+				return;
+
+			if (disposing)
+			{
+				// Unsubscribe from the event to prevent memory leaks
+				this.Parameters.CollectionChanged -= this.Parameters_CollectionChanged;
+				this.Roles.CollectionChanged -= this.Roles_CollectionChanged;
+			}
+
+			this.disposed = true;
+		}
 		#endregion
 	}
 }
