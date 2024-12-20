@@ -51,7 +51,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			this.NeuroFeatureUriClicked = new Command(async Parameter => await this.ExecuteUriClicked(Parameter as string ?? "", UriScheme.NeuroFeature));
 			this.IotDiscoUriClicked = new Command(async Parameter => await this.ExecuteUriClicked(Parameter as string ?? "", UriScheme.IotDisco));
 			this.EDalerUriClicked = new Command(async Parameter => await this.ExecuteUriClicked(Parameter as string ?? "", UriScheme.EDaler));
-			this.HyperlinkClicked = new Command(async Parameter => await ExecuteHyperlinkClicked(Parameter));
+			this.HyperlinkClicked = new Command(async Parameter => await this.ExecuteHyperlinkClicked(Parameter));
 		}
 
 		/// <inheritdoc/>
@@ -289,7 +289,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 			Contract? CreatedContract = null;
 			CreatedContract = await ServiceRef.XmppService.SignContract(this.Contract.Contract, this.SelectedRole!.Name, false);
-			await this.RefreshContract(CreatedContract);
+			await this.RefreshContract(null);
 		}
 
 		#endregion
@@ -605,9 +605,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 		private async Task ContractsClient_ContractSigned(object? Sender, ContractSignedEventArgs e)
 		{
-			Console.WriteLine("TEST");
-
-			if (e.ContractId != this.Contract?.ContractId)
+			if (e.ContractId != this.Contract?.ContractId || e.LegalId == ServiceRef.TagProfile.LegalIdentity?.Id)
 				return;
 
 			//Wait for RefreshContractCommand to finish, before calling it
@@ -621,8 +619,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 		private async Task ContractsClient_ContractUpdated(object Sender, ContractReferenceEventArgs e)
 		{
-			Console.WriteLine("TEST");
-
 			if (e.ContractId != this.Contract?.ContractId)
 				return;
 
@@ -655,19 +651,31 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			{
 				// Ignore and continue with the current contract
 			}
-
-			if (NewContract is null)
+			
+			// If the contract is the same, do nothing
+			if (NewContract is null || NewContract.ServerSignature.Timestamp == this.Contract.Contract.ServerSignature.Timestamp)
 				return;
 
-			ObservableContract? NewContractWrapper = await ObservableContract.CreateAsync(NewContract);
+			ObservableContract? NewContractWrapper = new(NewContract);
 
 
-			await MainThread.InvokeOnMainThreadAsync(() =>
+			ViewContractStep currentStep = (ViewContractStep)Enum.Parse(typeof(ViewContractStep), this.CurrentState);
+			await this.GoToState(ViewContractStep.Loading);
+
+			await MainThread.InvokeOnMainThreadAsync( async () =>
 			{
+				this.SelectedRole = null;
 				this.Contract = NewContractWrapper;
+				await this.Contract.InitializeAsync();
+			});
+
+			await MainThread.InvokeOnMainThreadAsync( () =>
+			{
 				this.PrepareDisplayableParameters();
 				this.PrepareSignableRoles();
 			});
+
+			await this.GoToState(currentStep);
 		}
 
 		/// <summary>
