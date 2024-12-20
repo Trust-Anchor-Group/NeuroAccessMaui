@@ -105,7 +105,6 @@
 
 													<!-- View signature button (if signed) -->
 													<controls:TemplatedButton Command="{Binding OpenSignatureCommand}"
-																					  Style="{StaticResource Template}"
 																					  VerticalOptions="End"
 																					  IsVisible="true"
 																					  Grid.Column="1"
