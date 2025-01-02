@@ -56,7 +56,7 @@
 									 Style="{StaticResource RoleTitleLabel}" />
 							<controls:CompositePicker Style="{StaticResource RegularCompositePicker}"
 															  Placeholder="{l:Localize SelectYourRoleInThisContract}"
-															  ItemsSource="{Binding Contract.Roles}"
+															  ItemsSource="{Binding SignableRoles}"
 															  SelectedItem="{Binding SelectedRole}">
 								<controls:CompositePicker.ItemDisplayBinding x:DataType="objectModel:ObservableRole">
 									<Binding Path="Name" />

@@ -283,6 +283,11 @@
 												  BottomLabelText="{l:Localize ReviewContractDescription2}"
 												  Command="{Binding GoToReviewCommand}" />
 
+				<views:OverviewItemButton IconData="{x:Static ui:Geometries.ContractIconPath}"
+												  TopLabelText="{l:Localize ServerSignatureTitle}"
+												  BottomLabelText="{l:Localize ServerSignatureDescription}"
+												  Command="{Binding OpenServerSignatureCommand}" />
+
 			</VerticalStackLayout>
 		</ScrollView>
 

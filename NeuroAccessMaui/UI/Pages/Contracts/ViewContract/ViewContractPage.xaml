@@ -15,17 +15,6 @@
 							 xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ObjectModel"
 							 HideSoftInputOnTapped="True">
 
-	<ContentPage.Resources>
-		<objectModel:ParameterTemplateSelector x:Key="ParameterTemplateSelector"
-															BooleanTemplate="{StaticResource BooleanParameterTemplate}"
-															DateTemplate="{StaticResource DateParameterTemplate}"
-															NumericalTemplate="{StaticResource NumericalParameterTemplate}"
-															StringTemplate="{StaticResource StringParameterTemplate}"
-															TimeTemplate="{StaticResource TimeParameterTemplate}"
-															DurationTemplate="{StaticResource DurationParameterTemplate}"
-															DefaultTemplate="{StaticResource DefaultParameterTemplate}" />
-	</ContentPage.Resources>
-
 	<Grid x:Name="TheMainGrid"
 			RowDefinitions="auto, *"
 			ColumnDefinitions="*"

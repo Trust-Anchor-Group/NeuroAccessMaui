@@ -16,12 +16,14 @@ using NeuroAccessMaui.UI.Pages.Signatures.ClientSignature;
 using NeuroAccessMaui.UI.Pages.Signatures.ServerSignature;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
 using Waher.Content;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.HttpFileUpload;
+using Waher.Script;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 {
@@ -130,6 +132,16 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 		#region Properties
 
+		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+		{
+			base.OnPropertyChanged(e);
+
+			if (e.PropertyName == nameof(this.IsBusy))
+			{
+				this.OnPropertyChanged(nameof(this.CanSign));
+			}
+		}
+
 		/// <summary>
 		/// The current contract displayed by the view model.
 		/// </summary>
@@ -176,6 +188,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		/// Indicates if the user has reviewed the contract and deems it valid.
 		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(ReadyToSign))]
+		[NotifyCanExecuteChangedFor(nameof(SignCommand))]
 		private bool isContractOk;
 
 		/// <summary>
@@ -249,6 +263,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		/// Indicates if the user can sign the contract in the current state.
 		/// </summary>
 		public bool CanSign =>
+			this.IsBusy == false &&
 			this.SignableRoles.Count > 0 &&
 			(this.Contract?.ContractState == ContractState.Approved || this.Contract?.ContractState == ContractState.BeingSigned);
 
@@ -279,17 +294,31 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 			if (newValue is not null)
 				await newValue.AddPart(myLegalID);
+			this.OnPropertyChanged(nameof(this.ReadyToSign));
+			this.SignCommand.NotifyCanExecuteChanged();
 		}
 
-		[RelayCommand(AllowConcurrentExecutions = false, CanExecute = nameof(CanSign))]
+		[RelayCommand(AllowConcurrentExecutions = false, CanExecute = nameof(ReadyToSign))]
 		public async Task SignAsync()
 		{
 			if (this.Contract is null || this.SelectedRole is null)
 				return;
 
-			Contract? CreatedContract = null;
-			CreatedContract = await ServiceRef.XmppService.SignContract(this.Contract.Contract, this.SelectedRole!.Name, false);
+			await MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				this.SetIsBusy(true);
+			});
+
+			string Role = this.SelectedRole.Name;
+			await this.GoToState(ViewContractStep.Overview);
+			await ServiceRef.XmppService.SignContract(this.Contract.Contract, Role, false);
 			await this.RefreshContract(null);
+
+			await MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				this.SetIsBusy(false);
+			});
+
 		}
 
 		#endregion
@@ -387,6 +416,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			});
 
 			await this.GoToState(ViewContractStep.Review);
+		}
+
+		[RelayCommand]
+		private async Task OpenServerSignatureAsync()
+		{
+			Contract? Contract = this.Contract?.Contract;
+			if (Contract is null)
+				return;
+			await ServiceRef.UiService.GoToAsync(nameof(ServerSignaturePage), new ServerSignatureNavigationArgs(Contract));
 		}
 
 		#endregion
@@ -641,8 +679,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			if (this.Contract is null)
 				return;
 
-			Console.WriteLine("TEST");
-
 			try
 			{
 				NewContract ??= await ServiceRef.XmppService.GetContract(this.Contract.ContractId);
@@ -651,7 +687,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			{
 				// Ignore and continue with the current contract
 			}
-			
+
 			// If the contract is the same, do nothing
 			if (NewContract is null || NewContract.ServerSignature.Timestamp == this.Contract.Contract.ServerSignature.Timestamp)
 				return;
@@ -662,14 +698,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			ViewContractStep currentStep = (ViewContractStep)Enum.Parse(typeof(ViewContractStep), this.CurrentState);
 			await this.GoToState(ViewContractStep.Loading);
 
-			await MainThread.InvokeOnMainThreadAsync( async () =>
+			await MainThread.InvokeOnMainThreadAsync(async () =>
 			{
 				this.SelectedRole = null;
 				this.Contract = NewContractWrapper;
 				await this.Contract.InitializeAsync();
 			});
 
-			await MainThread.InvokeOnMainThreadAsync( () =>
+			await MainThread.InvokeOnMainThreadAsync(() =>
 			{
 				this.PrepareDisplayableParameters();
 				this.PrepareSignableRoles();
@@ -711,8 +747,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			if (this.Contract?.Parameters is null)
 				return;
 
+			Variables Variables = new();
+
 			foreach (ObservableParameter p in this.Contract.Parameters)
 			{
+				p.Parameter.Populate(Variables);
 				if (p.Parameter is BooleanParameter
 					|| p.Parameter is StringParameter
 					|| p.Parameter is NumericalParameter
@@ -725,6 +764,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 					this.DisplayableParameters.Add(p);
 				}
 			}
+
+			//This evaluates all CalcParameters
+			foreach(ObservableParameter p in this.DisplayableParameters)
+			{
+				p.Parameter.IsParameterValid(Variables, ServiceRef.XmppService.ContractsClient); 
+			}
 		}
 
 		/// <summary>
@@ -732,6 +777,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		/// </summary>
 		private void PrepareSignableRoles()
 		{
+			if (this.Contract is null)
+				return;
+
 			this.SignableRoles.Clear();
 
 			// If a proposal role is specified, only allow signing as that role (if available)
@@ -747,6 +795,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				foreach (ObservableRole r in this.Contract.Roles)
 				{
 					if (!r.HasReachedMaxCount)
+						this.SignableRoles.Add(r);
+				}
+			}
+			else
+			{
+				// Add Role of which you are defined as a part
+				foreach (ObservableRole r in this.Contract!.Roles)
+				{
+					if (r.Parts.Any(p => p.IsMe))
 						this.SignableRoles.Add(r);
 				}
 			}
