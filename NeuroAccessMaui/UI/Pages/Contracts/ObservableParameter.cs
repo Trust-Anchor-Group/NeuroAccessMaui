@@ -4,6 +4,8 @@ using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Services;
 using Waher.Content;
 using Waher.Networking.XMPP.Contracts;
+using System.Globalization;
+using System.Text;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 {
@@ -49,7 +51,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			{
 				BooleanParameter booleanParameter => new ObservableBooleanParameter(booleanParameter),
 				DateParameter dateParameter => new ObservableDateParameter(dateParameter),
-				DateTimeParameter dateTimeParameter => new ObservableDateTimeParameter(dateTimeParameter), // <-- Add this line
+				DateTimeParameter dateTimeParameter => new ObservableDateTimeParameter(dateTimeParameter),
 				NumericalParameter numericalParameter => new ObservableNumericalParameter(numericalParameter),
 				StringParameter stringParameter => new ObservableStringParameter(stringParameter),
 				TimeParameter timeParameter => new ObservableTimeParameter(timeParameter),
@@ -153,6 +155,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				}
 
 				this.SetProperty(ref this.@value, value);
+				this.OnPropertyChanged(nameof(this.CanReadValue));
 			}
 		}
 
@@ -174,7 +177,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// <summary>
 		/// If the parameter can be read, for example encrypted parameters cannot be read if you don't have the key.
 		/// </summary>
-		public bool CanReadValue => this.Parameter.CanSerializeValue;
+		/// 
+		public bool CanReadValue => this.IsProtected ? this.Parameter.ObjectValue is not null : this.Parameter.CanSerializeValue;
 		#endregion
 
 		#region Property Change Handling
@@ -263,24 +267,24 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			this.Value = parameter.ObjectValue is Duration duration ? duration : Duration.Zero;
 		}
 
-		public string StringValue 
+		public string StringValue
 		{
 			get => this.Value?.ToString() ?? string.Empty;
 			set
 			{
-				if(Duration.TryParse(value, out Duration duration))
+				if (Duration.TryParse(value, out Duration duration))
 					this.Value = duration;
 				else
 					this.Value = null;
 			}
-		} 
+		}
 
 		public Duration DurationValue
 		{
 			get => this.Value as Duration? ?? Duration.Zero;
 			set
 			{
-				if(Duration.TryParse(value.ToString(), out Duration duration))
+				if (Duration.TryParse(value.ToString(), out Duration duration))
 					this.Value = duration;
 				else
 					this.Value = null;
@@ -307,13 +311,35 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 	{
 		public ObservableCalcParameter(CalcParameter parameter) : base(parameter)
 		{
-			this.Value = parameter.ObjectValue as decimal? ?? null;
+			this.Value = parameter.ObjectValue;
 		}
 
-		public decimal? CalcValue
+		public object? CalcValue
 		{
-			get => this.Value as decimal?;
+			get => this.Value;
 			set => this.Value = value;
+		}
+
+		public string CalcString
+		{
+			get
+			{
+				if (this.Value is null)
+					this.Value = this.Parameter.StringValue;
+
+				CultureInfo culture = CultureInfo.CurrentCulture;
+
+				Console.WriteLine(this.Value.GetType().Name);
+
+				return this.Value switch
+				{
+					decimal decimalValue => decimalValue.ToString("N", culture), // Number format with localization
+					DateTime dateTimeValue => dateTimeValue.ToString("G", culture), // Localized date format
+					TimeSpan timeSpanValue => timeSpanValue.ToString(@"hh\:mm\:ss", culture), // Time format
+					string stringValue => string.IsNullOrEmpty(stringValue) ? "-" : stringValue,
+					_ => this.Value.ToString() ?? string.Empty // Fallback for unknown types
+				};
+			}
 		}
 	}
 
@@ -325,7 +351,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			if (parameter.ObjectValue is DateTime dt)
 				this.Value = dt;
 			else
-				this.Value = null;  // or DateTime.MinValue as a fallback
+				this.Value = parameter.Min;  // or DateTime.MinValue as a fallback
 		}
 
 		/// <summary>
