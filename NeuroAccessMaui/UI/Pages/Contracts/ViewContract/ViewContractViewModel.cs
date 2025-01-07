@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Maui.Layouts;
+using CommunityToolkit.Maui.Layouts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
@@ -424,7 +424,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			Contract? Contract = this.Contract?.Contract;
 			if (Contract is null)
 				return;
-			await ServiceRef.UiService.GoToAsync(nameof(ServerSignaturePage), new ServerSignatureNavigationArgs(Contract));
+			await ServiceRef.UiService.GoToAsync(nameof(ServerSignaturePage), new ServerSignatureNavigationArgs(Contract), Services.UI.BackMethod.Pop);
 		}
 
 		#endregion
