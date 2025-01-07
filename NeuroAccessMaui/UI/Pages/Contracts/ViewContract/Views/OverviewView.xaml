@@ -284,8 +284,8 @@
 												  Command="{Binding GoToReviewCommand}" />
 
 				<views:OverviewItemButton IconData="{x:Static ui:Geometries.ContractIconPath}"
-												  TopLabelText="{l:Localize ServerSignatureTitle}"
-												  BottomLabelText="{l:Localize ServerSignatureDescription}"
+												  TopLabelText="{l:Localize ServerSignatureButtonTitle}"
+												  BottomLabelText="{l:Localize ServerSignatureButtonDescription}"
 												  Command="{Binding OpenServerSignatureCommand}" />
 
 			</VerticalStackLayout>

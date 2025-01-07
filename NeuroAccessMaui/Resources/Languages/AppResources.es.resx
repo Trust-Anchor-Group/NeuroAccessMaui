@@ -2481,4 +2481,10 @@
 <data name="ReviewContractDescription2" xml:space="preserve">
   <value>Revise los términos del contrato</value>
 </data>
+<data name="ServerSignatureButtonTitle" xml:space="preserve">
+  <value>Ver firma del servidor</value>
+</data>
+<data name="ServerSignatureButtonDescription" xml:space="preserve">
+  <value>Ver la firma del servidor, que protege la integridad del contrato</value>
+</data>
 </root>
