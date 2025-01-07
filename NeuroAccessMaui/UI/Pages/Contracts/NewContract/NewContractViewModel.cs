@@ -356,6 +356,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			await this.GoToState(NewContractStep.Loading);
 
+			if(!await App.AuthenticateUser(AuthenticationPurpose.SignContract, true))
+			{
+				await this.GoToOverview();
+				return;
+			}
+
 			ContractsClient client = ServiceRef.XmppService.ContractsClient;
 
 			Contract? CreatedContract = null;
@@ -377,8 +383,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					this.SelectedContractVisibilityItem?.Visibility ?? this.Contract.Visibility,
 					ContractParts.ExplicitlyDefined,
 					this.Contract.Contract.Duration ?? Duration.FromYears(1),
-					this.Contract.Contract.ArchiveRequired ?? Duration.FromYears(1),
-					this.Contract.Contract.ArchiveOptional ?? Duration.FromYears(1),
+					this.Contract.Contract.ArchiveRequired ?? Duration.FromYears(5),
+					this.Contract.Contract.ArchiveOptional ?? Duration.FromYears(5),
 					null, null, false);
 				CreatedContract = await ServiceRef.XmppService.SignContract(CreatedContract, this.persistingSelectedRole!.Name, false);
 
