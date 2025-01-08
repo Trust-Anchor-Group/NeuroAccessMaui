@@ -2487,4 +2487,7 @@
 <data name="ServerSignatureButtonDescription" xml:space="preserve">
   <value>Ver a assinatura do servidor, que protege a integridade do contrato</value>
 </data>
+<data name="Transient" xml:space="preserve">
+  <value>Transitório</value>
+</data>
 </root>

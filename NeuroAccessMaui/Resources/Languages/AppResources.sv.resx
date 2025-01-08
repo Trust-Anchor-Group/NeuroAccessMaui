@@ -2487,4 +2487,7 @@
 <data name="ServerSignatureButtonDescription" xml:space="preserve">
   <value>Visa serversignaturen, som skyddar avtalets integritet</value>
 </data>
+<data name="Transient" xml:space="preserve">
+  <value>Transient</value>
+</data>
 </root>
