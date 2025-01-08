@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using NeuroAccessMaui.Services;
 using Waher.Events;
+using Waher.Script.Content.Functions.InputOutput;
 
 namespace NeuroAccessMaui.UI
 {
@@ -42,11 +43,13 @@ namespace NeuroAccessMaui.UI
 		private static Style? tableCellEven;
 		private static Style? tableCellOdd;
 		private static Style? tableCell;
+		private static Style?[] headers;
 
 
 		static AppStyles()
 		{
 			Log.Terminating += Log_Terminating;
+			headers = new Style[9];
 		}
 
 		private static void Log_Terminating(object? sender, EventArgs e)
@@ -445,6 +448,16 @@ namespace NeuroAccessMaui.UI
 				tableCell ??= TryGetResource<Style>("TableCell");
 				return tableCell!;
 			}
+		}
+
+		/// <summary>
+		/// Get style for header of certain size
+		/// </summary>
+		public static Style GetHeaderStyle(int x)
+		{
+			headers[x - 1] ??= TryGetResource<Style>($"Header{x}");
+
+			return headers[x - 1]!;
 		}
 
 	}
