@@ -6,17 +6,24 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Xml;
 using Waher.Content;
+using Waher.Content.Xml;
 using Waher.Content.Emoji;
 using Waher.Content.Markdown;
 using Waher.Content.Markdown.Model;
 using Waher.Content.Markdown.Model.BlockElements;
 using Waher.Content.Markdown.Model.SpanElements;
 using Waher.Content.Markdown.Rendering;
+using Waher.Content.Markdown.Model.Multimedia;
 using Waher.Events;
 using Waher.Script;
 using Waher.Script.Constants;
 using Waher.Script.Graphs;
 using Waher.Script.Operators.Matrices;
+using Microsoft.Maui.Graphics.Text;
+using Waher.Script.Functions.Analytic;
+using ImageSource = Waher.Content.Emoji.ImageSource;
+using MarkdownContent = Waher.Content.Markdown.MarkdownContent;
+using Svg;
 
 namespace NeuroAccessMaui.UI.Rendering
 {
@@ -184,6 +191,18 @@ namespace NeuroAccessMaui.UI.Rendering
 					break;
 				case "Waher.Content.Markdown.Model.BlockElements.NumberedList":
 					break;
+				case "Waher.Content.Markdown.Model.BlockElements.Sections":
+					break;
+				case "Waher.Content.Markdown.Model.BlockElements.SectionSeparator":
+					break;
+				case "Waher.Content.Markdown.Model.BlockElements.CodeBlock":
+					break;
+				case "Waher.Content.Markdown.Model.SpanElements.InlineCode":
+					break;
+				case "Waher.Content.Markdown.Model.BlockElements.UnnumberedItem":
+					break;
+				case "Waher.Content.Markdown.Model.BlockElements.NumberedItem":
+					break;
 				default:
 					Console.WriteLine(t);
 					break;
@@ -281,45 +300,69 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// <param name="Element">Element being rendered</param>
 		public async Task RenderChildren(MarkdownElementChildren Element)
 		{
-			ContentView Bakup = (ContentView)this.currentElement;
-
-			VerticalStackLayout vsl = new();
-			Bakup.Content = vsl;
-
-			if (!(Element.Children is null))
+			if (this.InLabel && !(Element.Children is null))
 			{
 				foreach (MarkdownElement E in Element.Children)
 				{
-					ContentView cv = new ContentView();
-					this.currentElement = cv;
-					Console.WriteLine(E.GetType().ToString());
 					await E.Render(this);
-					vsl.Add(cv);
 				}
 			}
-			this.currentElement = Bakup; 
+			else
+			{
+				ContentView Bakup = (ContentView)this.currentElement;
+
+				VerticalStackLayout vsl = new();
+				Bakup.Content = vsl;
+
+				if (!(Element.Children is null))
+				{
+					foreach (MarkdownElement E in Element.Children)
+					{
+						ContentView cv = new ContentView();
+						this.currentElement = cv;
+						await E.Render(this);
+						vsl.Add(cv);
+					}
+				}
+				this.currentElement = Bakup; 
+			} 
 		}
 
 		/// <summary>
 		/// Renders the children of <paramref name="Element"/>.
 		/// </summary>
 		/// <param name="Element">Element being rendered</param>
-		public Task RenderChildren(MarkdownElement Element)
+		public async Task RenderChildren(MarkdownElement Element)
 		{
-			VerticalStackLayout vsl = new();
-			this.currentElement = vsl;
+			IEnumerable<MarkdownElement> Children = Element.Children;
 
-			if (!(Element.Children is null))
+			if (this.InLabel && !(Children is null))
 			{
-				foreach (MarkdownElement E in Element.Children)
+				foreach (MarkdownElement E in Children)
 				{
-					E.Render(this);
-					vsl.Add(this.currentElement);
+					await E.Render(this);
 				}
 			}
+			else
+			{
+				ContentView Bakup = (ContentView)this.currentElement;
 
-			this.currentElement = vsl;
-			return Task.CompletedTask;
+				VerticalStackLayout vsl = new();
+				Bakup.Content = vsl;
+
+				if (!(Children is null))
+				{
+					foreach (MarkdownElement E in Children)
+					{
+						ContentView cv = new ContentView();
+						this.currentElement = cv;
+						await E.Render(this);
+						vsl.Add(cv);
+					}
+				}
+
+				this.currentElement = Bakup;
+			}
 		}
 
 		/// <summary>
@@ -339,24 +382,26 @@ namespace NeuroAccessMaui.UI.Rendering
 		internal Task RenderSpan(string Text)
 		{
 			Span span = new Span();
+			FormattedString fs = new();
+			fs.Spans.Add(span);
+			Label label;
 
 			if (!this.InLabel)
 			{
-				Label label = new Label
+				label = new Label
 				{
 					LineBreakMode = LineBreakMode.WordWrap,
 				};
 
-				label.FormattedText.Spans.Add(span);
-
-				ContentView Bakup = (ContentView)this.currentElement;
-				Bakup.Content = label;
-				this.currentElement = Bakup;
+				label.FormattedText = fs;
+				ContentView cv = (ContentView)this.currentElement;
+				cv.Content = label;
+				this.currentElement = cv;
 			}
 			else
 			{
-				Label label = (Label)this.currentElement;
-				label.FormattedText.Spans.Add(span);
+				label = (Label)this.currentElement;
+				label.FormattedText = fs;
 				this.currentElement = label;
 			}
 
@@ -366,7 +411,6 @@ namespace NeuroAccessMaui.UI.Rendering
 				span.Text = TextRenderer.ToSubscript(Text);
 
 			if (this.Bold && this.Italic)
-				//this.XmlOutput.WriteAttributeString("FontAttributes", "Italic, Bold");
 				span.FontAttributes = FontAttributes.Bold | FontAttributes.Italic;
 			else if (this.Bold)
 				span.FontAttributes = FontAttributes.Bold;
@@ -385,7 +429,7 @@ namespace NeuroAccessMaui.UI.Rendering
 
 			if (this.Hyperlink is not null)
 			{
-				span.TextColor = AppColors.AccentForeground;
+				span.TextColor = AppColors.BlueLink;
 
 				span.GestureRecognizers.Add(new TapGestureRecognizer { Command = new Command(async Parameter => await App.OpenUrlAsync(this.Hyperlink))});
 			}
@@ -761,6 +805,8 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// <param name="Element">Element to render</param>
 		public Task Render(SectionSeparator Element)
 		{
+			ContentView Bakup = (ContentView)this.currentElement;
+
 			BoxView separator = new BoxView
 			{
 				HeightRequest = 1,
@@ -769,7 +815,7 @@ namespace NeuroAccessMaui.UI.Rendering
 				Margin = AppStyles.SmallTopMargins + AppStyles.SmallBottomMargins
 			};
 
-			this.currentElement.AddLogicalChild(separator);
+			Bakup.Content = separator;
 
 			return Task.CompletedTask;
 		}
@@ -989,20 +1035,34 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// Renders <paramref name="Element"/>.
 		/// </summary>
 		/// <param name="Element">Element to render</param>
-		public Task Render(MultimediaReference Element)
+		public async Task Render(MultimediaReference Element)
 		{
-			//TODO
-			return Task.CompletedTask;
+			Waher.Content.Markdown.Model.SpanElements.Multimedia Multimedia = Element.Document.GetReference(Element.Label);
+
+			if (Multimedia is not null)
+			{
+				// TODO
+				IMultimediaMauiXamlRenderer Renderer = Multimedia.MultimediaHandler<IMultimediaMauiXamlRenderer>();
+				if (Renderer is not null)
+				{
+					await this.RenderMaui(Multimedia);
+					return;
+				}
+			} 
+			await this.RenderChildren(Element);
 		}
 
 		/// <summary>
 		/// Renders <paramref name="Element"/>.
 		/// </summary>
 		/// <param name="Element">Element to render</param>
-		public Task Render(Waher.Content.Markdown.Model.SpanElements.Multimedia Element)
+		public async Task Render(Waher.Content.Markdown.Model.SpanElements.Multimedia Element)
 		{
-			//TODO
-			return Task.CompletedTask;
+			IMultimediaMauiXamlRenderer Renderer = Element.MultimediaHandler<IMultimediaMauiXamlRenderer>();
+			if (Renderer is null)
+				await this.RenderChildren(Element);
+			else
+				await this.RenderMaui(Element);
 		}
 
 		/// <summary>
@@ -1011,7 +1071,29 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// <param name="Element">Element to render</param>
 		public Task Render(MetaReference Element)
 		{
-			//TODO
+			StringBuilder sb = new();
+			bool FirstOnRow = true;
+
+			if (Element.TryGetMetaData(out KeyValuePair<string, bool>[] Values))
+			{
+				foreach (KeyValuePair<string, bool> P in Values)
+				{
+					if (FirstOnRow)
+						FirstOnRow = false;
+					else
+						sb.Append(' ');
+
+					sb.Append(P.Key);
+					if (P.Value)
+					{
+						sb.Append(Environment.NewLine);
+						FirstOnRow = true;
+					}
+				}
+			}
+
+			this.RenderSpan(sb.ToString());
+
 			return Task.CompletedTask;
 		}
 
@@ -1021,21 +1103,12 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// <param name="Element">Element to render</param>
 		public async Task Render(MarginAligned Element)
 		{
-			View Bakup = this.currentElement;
-
-			VerticalStackLayout vsl = new VerticalStackLayout();
-
-			this.currentElement = vsl;
-
 			Waher.Content.Markdown.Model.TextAlignment Bak = this.Alignment;
 			this.Alignment = Waher.Content.Markdown.Model.TextAlignment.Left;
 
 			await this.RenderChildren(Element);
 
 			this.Alignment = Bak; 
-
-			Bakup.AddLogicalChild(vsl);
-			this.currentElement = Bakup;
 		}
 
 		/// <summary>
@@ -1051,11 +1124,7 @@ namespace NeuroAccessMaui.UI.Rendering
 			if (Multimedia is not null)
 				this.Hyperlink = Multimedia.Items[0].Url;
 
-			View Bakup = this.currentElement;
-
 			await this.RenderChildren(Element);
-
-			this.currentElement = Bakup;
 
 			this.Hyperlink = Bak; 
 		}
@@ -1066,11 +1135,12 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// <param name="Element">Element to render</param>
 		public async Task Render(Link Element)
 		{
-			View Bakup = this.currentElement;
+			string? Bak = this.Hyperlink;
+			this.Hyperlink = Element.Url;
 
 			await this.RenderChildren(Element);
 
-			this.currentElement = Bakup; 
+			this.Hyperlink = Bak;
 		}
 
 		/// <summary>
@@ -1079,11 +1149,11 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// <param name="Element">Element to render</param>
 		public Task Render(LineBreak Element)
 		{
-			View Bakup = this.currentElement;
+			ContentView Bakup = (ContentView) this.currentElement;
 
 			this.RenderSpan(Environment.NewLine);
 
-			Bakup.AddLogicalChild(this.currentElement);
+			Bakup.Content = this.currentElement;
 
 			this.currentElement = Bakup;
 
@@ -1097,16 +1167,10 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// <param name="Element">Element to render</param>
 		public async Task Render(LeftAligned Element)
 		{
-			VerticalStackLayout vsl = new VerticalStackLayout();
-
 			Waher.Content.Markdown.Model.TextAlignment Bak = this.Alignment;
 			this.Alignment = Waher.Content.Markdown.Model.TextAlignment.Left;
 
-			View Bakup = this.currentElement;
-			this.currentElement = vsl;
 			await this.RenderChildren(Element);
-			Bakup.AddLogicalChild(vsl);
-			this.currentElement = Bakup;
 
 			this.Alignment = Bak; 
 		}
@@ -1117,6 +1181,7 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// <param name="Element">Element to render</param>
 		public Task Render(InvisibleBreak Element)
 		{
+			//TODO not?
 			return Task.CompletedTask;
 		}
 
@@ -1124,10 +1189,25 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// Renders <paramref name="Element"/>.
 		/// </summary>
 		/// <param name="Element">Element to render</param>
-		public Task Render(InsertBlocks Element)
+		public async Task Render(InsertBlocks Element)
 		{
-			// TODO
-			return Task.CompletedTask;
+			ContentView Bakup = (ContentView)this.currentElement;
+
+			Bakup.Padding = AppStyles.SmallLeftMargins + AppStyles.SmallTopMargins + AppStyles.SmallBottomMargins;
+
+			Frame frame = new Frame
+			{
+				Padding = AppStyles.SmallLeftMargins + AppStyles.SmallRightMargins,
+				BorderColor = AppColors.InsertedBorder
+			};
+			// TODO: Border thickness
+
+			Bakup.Content = frame;
+			this.currentElement = frame;
+
+			await this.RenderChildren(Element);
+
+			this.currentElement = Bakup;
 		}
 
 
@@ -1153,7 +1233,6 @@ namespace NeuroAccessMaui.UI.Rendering
 		public Task Render(InlineText Element)
 		{
 			this.RenderSpan(Element.Value);
-
 			return Task.CompletedTask;
 		}
 
@@ -1175,7 +1254,16 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// <param name="Element">Element to render</param>
 		public Task Render(InlineHTML Element)
 		{
-			//TODO
+			ContentView cv = (ContentView)this.currentElement;
+
+			Label label = new Label
+			{
+				TextType = TextType.Html,
+				Text = $"<--- {Element.HTML} --->",
+			};
+
+			cv.Content = label;
+
 			return Task.CompletedTask;
 		}
 
@@ -1186,7 +1274,13 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// <param name="Element">Element to render</param>
 		public Task Render(InlineCode Element)
 		{
-			// TODO or maybe not?
+			bool Bak = this.Code;
+			this.Code = true;
+
+			this.RenderSpan(Element.Code);
+
+			this.Code = Bak;
+
 			return Task.CompletedTask;
 		}
 
@@ -1197,12 +1291,7 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// <param name="Element">Element to render</param>
 		public Task Render(HtmlEntityUnicode Element)
 		{
-			ContentView Bakup = (ContentView)(this.currentElement);
-
 			this.RenderSpan(new string((char)Element.Code, 1));
-
-			Bakup.AddLogicalChild(this.currentElement);
-			this.currentElement = Bakup;
 
 			return Task.CompletedTask;
 		}
@@ -1216,10 +1305,7 @@ namespace NeuroAccessMaui.UI.Rendering
 			string s = Waher.Content.Html.HtmlEntity.EntityToCharacter(Element.Entity);
 			if (!string.IsNullOrEmpty(s))
 			{
-				View Bakup = this.currentElement;
 				this.RenderSpan(s);
-				Bakup.AddLogicalChild(this.currentElement);
-				this.currentElement = Bakup;
 			}
 
 			return Task.CompletedTask;
@@ -1229,10 +1315,31 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// Renders <paramref name="Element"/>.
 		/// </summary>
 		/// <param name="Element">Element to render</param>
-		public Task Render(HtmlBlock Element)
+		public async Task Render(HtmlBlock Element)
 		{
-			//TODO
-			return Task.CompletedTask;
+			ContentView Bakup = (ContentView)this.currentElement;
+
+			Thickness margins = AppStyles.SmallTopMargins + AppStyles.SmallBottomMargins;
+			Bakup.Margin = margins;
+
+			Label label = new Label
+			{
+				LineBreakMode = LineBreakMode.WordWrap,
+				HorizontalTextAlignment = this.LabelAlignment(),
+				TextType = TextType.Html,
+			};
+
+			using HtmlRenderer Renderer = new(new HtmlSettings()
+			{
+				XmlEntitiesOnly = true
+			}, this.Document);
+
+			await Renderer.RenderChildren(Element);
+
+			label.Text = Renderer.ToString();
+
+			Bakup.Content = label;
+			this.currentElement = Bakup;
 		}
 
 		/// <summary>
@@ -1249,7 +1356,8 @@ namespace NeuroAccessMaui.UI.Rendering
 				Margin = AppStyles.SmallTopMargins + AppStyles.SmallBottomMargins
 			};
 
-			this.currentElement.AddLogicalChild(BoxView);
+			ContentView cv = (ContentView)this.currentElement;
+			cv.Content = BoxView;
 
 			return Task.CompletedTask;
 		}
@@ -1293,12 +1401,7 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// <param name="Element">Element to render</param>
 		public Task Render(HashTag Element)
 		{
-			View Bakup = this.currentElement;
-
 			this.RenderSpan(Element.Tag);
-
-			Bakup.AddLogicalChild(this.currentElement);
-			this.currentElement = Bakup;
 
 			return Task.CompletedTask;
 		}
@@ -1309,7 +1412,7 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// <param name="Element">Element to render</param>
 		public async Task Render(FootnoteReference Element)
 		{
-			View Bakup = this.currentElement;
+			ContentView Bakup = (ContentView)this.currentElement;
 
 			if (!(this.Document?.TryGetFootnote(Element.Key, out Footnote? Footnote) ?? false))
 				Footnote = null;
@@ -1329,7 +1432,6 @@ namespace NeuroAccessMaui.UI.Rendering
 					Footnote.Referenced = true;
 			}
 
-			Bakup.AddLogicalChild(this.currentElement);
 			this.currentElement = Bakup;
 		}
 
@@ -1339,7 +1441,7 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// <param name="Element">Element to render</param>
 		public async Task Render(EmojiReference Element)
 		{
-			View Bakup = this.currentElement;
+			ContentView Bakup = (ContentView)this.currentElement;
 
 			if (this.InLabel)
 				await this.RenderSpan(Element.Emoji.Unicode);
@@ -1358,7 +1460,6 @@ namespace NeuroAccessMaui.UI.Rendering
 				}
 			}
 
-			Bakup.AddLogicalChild(this.currentElement);
 			this.currentElement = Bakup;
 		}
 
@@ -1368,14 +1469,14 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// <param name="Element">Element to render</param>
 		public Task Render(DetailsReference Element)
 		{
-			View Bakup = this.currentElement;
+			ContentView Bakup = (ContentView)this.currentElement;
 
+			//TODO
 			if (this.Document.Detail is not null)
 				this.RenderDocument(this.Document.Detail, false);
 			else
 				this.Render((MetaReference)Element);
 
-			Bakup.AddLogicalChild(this.currentElement);
 			this.currentElement = Bakup;
 
 			return Task.CompletedTask;
@@ -1385,10 +1486,32 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// Renders <paramref name="Element"/>.
 		/// </summary>
 		/// <param name="Element">Element to render</param>
-		public Task Render(DeleteBlocks Element)
+		public async Task Render(DeleteBlocks Element)
 		{
-			// TODO
-			return Task.CompletedTask;
+			ContentView Bakup = (ContentView)this.currentElement;
+			Bakup.Padding = AppStyles.SmallLeftMargins + AppStyles.SmallTopMargins + AppStyles.SmallRightMargins;
+
+			Frame frame = new Frame
+			{
+				Padding = AppStyles.SmallLeftMargins + AppStyles.SmallRightMargins,
+				BorderColor = AppColors.DeletedBorder
+			};
+			// TODO: Border thickness
+
+			VerticalStackLayout vsl = new VerticalStackLayout();
+
+			foreach (MarkdownElement E in Element.Children)
+			{
+				ContentView cv = new();
+				this.currentElement = cv;
+				await E.Render(this);
+				cv.Content = this.currentElement;
+				vsl.Add(cv);
+			}
+
+			frame.Content = vsl;
+			Bakup.Content = frame;
+			this.currentElement = Bakup;
 		}
 
 		/// <summary>
@@ -1430,32 +1553,133 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// <param name="Element">Element to render</param>
 		public async Task Render(DefinitionList Element)
 		{
-			View Bakup = this.currentElement;
-
 			await this.RenderChildren(Element);
+		}
 
-			Bakup.AddLogicalChild(this.currentElement);
+		/// <summary>
+		/// Renders <paramref name="Element"/>.
+		/// </summary>
+		/// <param name="Element">Element to render</param>
+		public async Task Render(DefinitionDescriptions Element)
+		{
+			ContentView Bakup = (ContentView)this.currentElement;
+
+			MarkdownElement? Last = null;
+
+			foreach (MarkdownElement Description in Element.Children)
+				Last = Description;
+
+			foreach (MarkdownElement Description in Element.Children)
+			{
+				if (Description.InlineSpanElement && !Description.OutsideParagraph)
+				{
+					Bakup.Margin = AppStyles.SmallTopMargins + AppStyles.SmallBottomMargins;
+
+					Label label = new Label
+					{
+						LineBreakMode = LineBreakMode.WordWrap,
+						HorizontalTextAlignment = this.LabelAlignment(),
+						TextType = TextType.Html
+					};
+
+					using (HtmlRenderer Renderer = new(new HtmlSettings()
+					{
+						XmlEntitiesOnly = true
+					}, this.Document))
+					{
+						await Description.Render(Renderer);
+						label.Text = Renderer.ToString();
+					}
+
+					Bakup.Content = label;
+				}
+				else
+				{
+					Bakup.Padding = AppStyles.SmallLeftMargins;
+
+					if (Description == Last)
+						Bakup.Padding += AppStyles.SmallBottomMargins;
+
+					ContentView innerCV = new();
+					this.currentElement = innerCV;
+					await Description.Render(this);
+
+					VerticalStackLayout vsl = new VerticalStackLayout();
+					vsl.Add(innerCV);
+					Bakup.Content = vsl;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Renders <paramref name="Element"/>.
+		/// </summary>
+		/// <param name="Element">Element to render</param>
+		public async Task Render(CodeBlock Element)
+		{
+			ContentView Bakup = (ContentView)this.currentElement;
+
+			VerticalStackLayout vsl = new();
+
+			StringBuilder Output = new();
+			MauiXamlRenderer rend = new(Output, XML.WriterSettings(false, true));
+			ICodeContentMauiXamlRenderer Renderer = Element.CodeContentHandler<ICodeContentMauiXamlRenderer>();
+
+			if (Renderer is not null)
+			{
+				try
+				{
+					// TODO
+					if (await Renderer.RenderMauiXaml(rend, Element.Rows, Element.Language, Element.Indent, Element.Document))
+						return;
+				}
+				catch (Exception ex)
+				{
+					ex = Log.UnnestException(ex);
+
+					if (ex is AggregateException ex2)
+					{
+						foreach (Exception ex3 in ex2.InnerExceptions)
+						{
+							Label label = new Label
+							{
+								LineBreakMode = LineBreakMode.WordWrap,
+								TextColor = AppColors.Alert,
+								Text = ex3.Message
+							};
+
+							vsl.Add(label);
+						}
+					}
+					else
+					{
+						Label label = new Label
+						{
+							LineBreakMode = LineBreakMode.WordWrap,
+							TextColor = AppColors.Alert,
+							Text = ex.Message
+						};
+
+						vsl.Add(label);
+					}
+				}
+			}
+
+			for (int i = Element.Start; i <= Element.End; i++)
+			{
+				Label label = new Label
+				{
+					LineBreakMode = LineBreakMode.NoWrap,
+					HorizontalTextAlignment = this.LabelAlignment(),
+					FontFamily = "Courier New",
+					Text = Element.Rows[i]
+				};
+
+				vsl.Add(label);
+			}
+
+			Bakup.Content = vsl;
 			this.currentElement = Bakup;
-		}
-
-		/// <summary>
-		/// Renders <paramref name="Element"/>.
-		/// </summary>
-		/// <param name="Element">Element to render</param>
-		public Task Render(DefinitionDescriptions Element)
-		{
-			// TODO
-			return Task.CompletedTask;
-		}
-
-		/// <summary>
-		/// Renders <paramref name="Element"/>.
-		/// </summary>
-		/// <param name="Element">Element to render</param>
-		public Task Render(CodeBlock Element)
-		{
-			// TODO
-			return Task.CompletedTask;
 		}
 
 		/// <summary>
@@ -1464,6 +1688,7 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// <param name="Element">Element to render</param>
 		public Task Render(CommentBlock Element)
 		{
+			//TODO not?
 			return Task.CompletedTask;
 		}
 
@@ -1546,16 +1771,10 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// <param name="Element">Element to render</param>
 		public async Task Render(CenterAligned Element)
 		{
-			VerticalStackLayout vsl = new VerticalStackLayout();
-
 			Waher.Content.Markdown.Model.TextAlignment Bak = this.Alignment;
 			this.Alignment = Waher.Content.Markdown.Model.TextAlignment.Center;
 
-			View Bakup = this.currentElement;
-			this.currentElement = vsl;
 			await this.RenderChildren(Element);
-			Bakup.AddLogicalChild(vsl);
-			this.currentElement = Bakup;
 
 			this.Alignment = Bak; 
 		}
@@ -1564,10 +1783,23 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// Renders <paramref name="Element"/>.
 		/// </summary>
 		/// <param name="Element">Element to render</param>
-		public Task Render(BlockQuote Element)
+		public async Task Render(BlockQuote Element)
 		{
-			//TODO
-			return Task.CompletedTask;
+			ContentView Bakup = (ContentView)this.currentElement;
+			Bakup.Padding = AppStyles.SmallLeftMargins + AppStyles.SmallTopMargins + AppStyles.SmallBottomMargins;
+
+			// TODO: Border thickness
+			Frame frame = new Frame
+			{
+				Padding = AppStyles.SmallLeftMargins + AppStyles.SmallRightMargins,
+				BorderColor = AppColors.PrimaryForeground
+			};
+
+			this.currentElement = frame;
+			await this.RenderChildren(Element);
+
+			Bakup.Content = frame;
+			this.currentElement = Bakup;
 		}
 
 		/// <summary>
@@ -1617,6 +1849,8 @@ namespace NeuroAccessMaui.UI.Rendering
 				HorizontalTextAlignment = this.LabelAlignment()
 			};
 
+			this.currentElement = label;
+
 			if (HasLink)
 			{
 				if (this.InLabel)
@@ -1657,6 +1891,7 @@ namespace NeuroAccessMaui.UI.Rendering
 
 				label.Text = Renderer.ToString();
 			}
+
 			Bakup.Content = label;
 			this.currentElement = Bakup;
 		}
@@ -1741,7 +1976,9 @@ namespace NeuroAccessMaui.UI.Rendering
 				Content = image
 			};
 
-			this.verticalStackLayout.Children.Add(scrollView);
+			ContentView cv = (ContentView)this.currentElement;
+			cv.Content = scrollView;
+
 			return Task.CompletedTask;
 		}
 
@@ -1798,8 +2035,111 @@ namespace NeuroAccessMaui.UI.Rendering
 
 		public async Task RenderObject(object? Result, bool AloneInParagraph, Variables Variables)
 		{
-			//TODO
-			return;
+			ContentView Bakup = (ContentView)this.currentElement;
+
+			if (Result is null)
+				return;
+
+			string? s;
+
+			if (Result is XmlDocument Xml)
+				Result = await MarkdownDocument.TransformXml(Xml, Variables);
+			else if (Result is IToMatrix ToMatrix)
+				Result = ToMatrix.ToMatrix();
+
+			if (this.InLabel)
+			{
+				s = Result?.ToString();
+				if (!string.IsNullOrEmpty(s))
+					await this.RenderSpan(Result?.ToString() ?? string.Empty);
+
+				return;
+			}
+
+			if (Result is Graph G)
+			{
+				PixelInformation Pixels = G.CreatePixels(Variables);
+				byte[] Bin = Pixels.EncodeAsPng();
+
+				s = "data:image/png;base64," + Convert.ToBase64String(Bin, 0, Bin.Length);
+
+				await this.OutputMaui(new Waher.Content.Emoji.ImageSource()
+				{
+					Url = s,
+					Width = Pixels.Width,
+					Height = Pixels.Height
+				});
+			}
+			else if (Result is SKImage Img)
+			{
+				using SKData Data = Img.Encode(SKEncodedImageFormat.Png, 100);
+				byte[] Bin = Data.ToArray();
+
+				s = "data:image/png;base64," + Convert.ToBase64String(Bin, 0, Bin.Length);
+
+				await this.OutputMaui(new Waher.Content.Emoji.ImageSource()
+				{
+					Url = s,
+					Width = Img.Width,
+					Height = Img.Height
+				});
+			}
+			else if (Result is MarkdownDocument Doc)
+			{
+				//TODO maybe
+				await this.RenderDocument(Doc, true);   // Does not call ProcessAsyncTasks()
+				Doc.ProcessAsyncTasks();
+			}
+			else if (Result is MarkdownContent Markdown)
+			{
+				Doc = await MarkdownDocument.CreateAsync(Markdown.Markdown);
+				await this.RenderDocument(Doc, true);   // Does not call ProcessAsyncTasks()
+				Doc.ProcessAsyncTasks();
+			}
+			else if (Result is Exception ex)
+			{
+				ex = Log.UnnestException(ex);
+
+				if (ex is AggregateException ex2)
+				{
+					VerticalStackLayout vsl = new();
+
+					foreach (Exception ex3 in ex2.InnerExceptions)
+					{
+						Label label = new Label
+						{
+							LineBreakMode = LineBreakMode.WordWrap,
+							TextColor = AppColors.Alert,
+							Text = ex3.Message
+						};
+
+						vsl.Add(label);
+					}
+					Bakup.Content = vsl;
+				}
+				else
+				{
+					Label label = new Label
+					{
+						LineBreakMode = LineBreakMode.WordWrap,
+						TextColor = AppColors.Alert,
+						Text = ex.Message
+					};
+
+					Bakup.Content = label;
+				}
+			}
+			else
+			{
+				Label label = new Label
+				{
+					LineBreakMode = LineBreakMode.WordWrap,
+					HorizontalTextAlignment = this.LabelAlignment(),
+					Text = Result.ToString()
+				};
+
+				Bakup.Content = label;
+			}
 		}
 
 		/// <summary>
@@ -1839,6 +2179,90 @@ namespace NeuroAccessMaui.UI.Rendering
 				TopMargin = true;
 				BottomMargin = true;
 			}
+		}
+
+		/// <summary>
+		/// Outputs an image to Maui object
+		/// </summary>
+		/// <param name="Source">Image source.</param>
+		private async Task OutputMaui(Waher.Content.Emoji.IImageSource Source)
+		{
+			Source = await CheckDataUri(Source);
+
+			Image image = new Image
+			{
+				Source = Source.Url,
+			};
+
+			ScrollView sv = new ScrollView
+			{
+				Orientation = ScrollOrientation.Horizontal,
+				Content = image
+			};
+
+			if (Source.Width.HasValue)
+				sv.WidthRequest = Source.Width.Value;
+
+			if (Source.Height.HasValue)
+				sv.HeightRequest = Source.Height.Value;
+
+			ContentView cv = (ContentView)this.currentElement;
+
+			cv.Content = sv;
+		}
+
+		private async Task RenderMaui(Waher.Content.Markdown.Model.SpanElements.Multimedia Element)
+		{
+			ContentView Bakup = (ContentView)this.currentElement;
+			VerticalStackLayout vsl = new VerticalStackLayout();
+
+			foreach (MultimediaItem item in Element.Items)
+			{
+				ContentView cv = new();
+				this.currentElement = cv;
+				await this.OutputMaui(new Waher.Content.Emoji.ImageSource()
+				{
+					Url = Element.Document.CheckURL(item.Url, null),
+					Width = item.Width,
+					Height = item.Height,
+				});
+				vsl.Add(cv);
+			}
+			Bakup.Content = vsl;
+			this.currentElement = Bakup;
+		}
+
+		/// <summary>
+		/// Checks a Data URI image, that it contains a decodable image.
+		/// </summary>
+		/// <param name="Source">Image source.</param>
+		public static async Task<Waher.Content.Emoji.IImageSource> CheckDataUri(Waher.Content.Emoji.IImageSource Source)
+		{
+			string Url = Source.Url;
+			int i;
+
+			if (Url.StartsWith("data:", StringComparison.CurrentCultureIgnoreCase) && (i = Url.IndexOf("base64,")) > 0)
+			{
+				int? Width = Source.Width;
+				int? Height = Source.Height;
+				byte[] Data = Convert.FromBase64String(Url.Substring(i + 7));
+				using (SKBitmap Bitmap = SKBitmap.Decode(Data))
+				{
+					Width = Bitmap.Width;
+					Height = Bitmap.Height;
+				}
+
+				Url = await ImageContent.GetTemporaryFile(Data);
+
+				return new ImageSource()
+				{
+					Url = Url,
+					Width = Width,
+					Height = Height
+				};
+			}
+			else
+				return Source;
 		}
 
 		private void ClearState()

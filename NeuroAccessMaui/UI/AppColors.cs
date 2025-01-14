@@ -54,7 +54,9 @@
 		private static Color? weakPasswordForeground;
 		private static Color? mediumPasswordForeground;
 		private static Color? strongPasswordForeground;
-
+		private static Color? blueLink;
+		private static Color? insertedBorder;
+		private static Color? deletedBorder;
 		
 
 		/// <summary>
@@ -573,6 +575,66 @@
 				{
 					strongPasswordForeground ??= AppStyles.TryGetResource<Color>("StrongPasswordBarForegroundLight");
 					return strongPasswordForeground!;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Blue link color
+		/// </summary>
+		public static Color BlueLink
+		{
+			get
+			{
+				if (Application.Current?.RequestedTheme == AppTheme.Dark)
+				{
+					blueLink ??= AppStyles.TryGetResource<Color>("BlueLink");
+					return blueLink!;
+				}
+				else
+				{
+					blueLink ??= AppStyles.TryGetResource<Color>("BlueLinkDark");
+					return BlueLink!;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Inserted Border color
+		/// </summary>
+		public static Color InsertedBorder
+		{
+			get
+			{
+				if (Application.Current?.RequestedTheme == AppTheme.Dark)
+				{
+					insertedBorder ??= AppStyles.TryGetResource<Color>("InsertedBorderLight");
+					return insertedBorder!;
+				}
+				else
+				{
+					insertedBorder ??= AppStyles.TryGetResource<Color>("InsertedBorderDark");
+					return insertedBorder!;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Deleted Border color
+		/// </summary>
+		public static Color DeletedBorder
+		{
+			get
+			{
+				if (Application.Current?.RequestedTheme == AppTheme.Dark)
+				{
+					deletedBorder ??= AppStyles.TryGetResource<Color>("DeletedBorderLight");
+					return deletedBorder!;
+				}
+				else
+				{
+					deletedBorder ??= AppStyles.TryGetResource<Color>("DeletedBorderDark");
+					return deletedBorder!;
 				}
 			}
 		}

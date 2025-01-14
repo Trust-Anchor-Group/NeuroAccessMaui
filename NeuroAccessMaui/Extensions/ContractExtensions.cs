@@ -1,5 +1,6 @@
 ﻿using NeuroAccessMaui.UI.Rendering;
 using Waher.Content.Markdown;
+using Waher.Content.Markdown.Functions;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.HumanReadable;
 
