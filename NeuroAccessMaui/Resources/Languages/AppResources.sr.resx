@@ -1897,7 +1897,7 @@
     <value>Prikaži detalje</value>
   </data>
   <data name="ViewContract" xml:space="preserve">
-    <value>Prikaži ugovor</value>
+    <value>Pogledaj ugovor</value>
   </data>
   <data name="MachineReadableInfoText" xml:space="preserve">
     <value>Pregled podataka čitljivih na računaru ugrađenih u ugovor prikazan je ispod.</value>
@@ -2444,5 +2444,41 @@
   </data>
   <data name="IHaveReadAndUnderstoodTheContract" xml:space="preserve">
     <value>Pročitao sam i razumeo uslove ovog ugovora</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Encrypted" xml:space="preserve">
+    <value>Šifrovane</value>
+  </data>
+  <data name="ViewParametersTitle" xml:space="preserve">
+    <value>Pogledaj parametre</value>
+  </data>
+  <data name="ViewParametersDescription" xml:space="preserve">
+    <value>Pogledajte varijable koje upravljaju ugovorom</value>
+  </data>
+  <data name="ViewRolesTitle" xml:space="preserve">
+    <value>Pregledajte dodeljene uloge</value>
+  </data>
+  <data name="ViewRolesDescription" xml:space="preserve">
+    <value>Pregledajte uloge i pogledajte ko je potpisao svaku ulogu</value>
+  </data>
+  <data name="InvitationToSign" xml:space="preserve">
+    <value>Pozvani ste da potpišete ovaj ugovor, uverite se da verifikujete i pregledate ugovor pre nego što nastavite</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Naslov</value>
+  </data>
+  <data name="Sign" xml:space="preserve">
+    <value>Potpisati</value>
+  </data>
+  <data name="PendingSignature" xml:space="preserve">
+    <value>Potpis na čekanju</value>
+  </data>
+  <data name="ViewSignature" xml:space="preserve">
+    <value>Pogledaj potpis</value>
+  </data>
+  <data name="ReviewContractDescription2" xml:space="preserve">
+    <value>Pregledajte uslove ugovora</value>
   </data>
 </root>

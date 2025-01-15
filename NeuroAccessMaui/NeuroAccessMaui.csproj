@@ -155,7 +155,6 @@
 	<ItemGroup>
 		<MauiFont Remove="Resources\Fonts\NHaasGroteskTXPro-65Md.ttf" />
 		<MauiFont Remove="Resources\Fonts\SpaceGrotesk-Light.ttf" />
-		<MauiFont Remove="Resources\Fonts\SpaceGrotesk-SemiBold.ttf" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -332,6 +331,27 @@
 		<Compile Update="UI\Pages\Contracts\NewContract\Views\OverviewView.xaml.cs">
 		  <DependentUpon>OverviewView.xaml</DependentUpon>
 		</Compile>
+		<Compile Update="UI\Pages\Contracts\ViewContract\Views\LoadingView.xaml.cs">
+		  <DependentUpon>%(Filename)</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Pages\Contracts\ViewContract\Views\OverviewItemButton.xaml.cs">
+		  <DependentUpon>%(Filename)</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Pages\Contracts\ViewContract\Views\OverviewView.xaml.cs">
+		  <DependentUpon>%(Filename)</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Pages\Contracts\ViewContract\Views\ParametersView.xaml.cs">
+		  <DependentUpon>%(Filename)</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Pages\Contracts\ViewContract\Views\PreviewView.xaml.cs">
+		  <DependentUpon>%(Filename)</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Pages\Contracts\ViewContract\Views\SignView.xaml.cs">
+		  <DependentUpon>SignView.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Pages\Contracts\ViewContract\Views\RolesView.xaml.cs">
+		  <DependentUpon>%(Filename)</DependentUpon>
+		</Compile>
 		<Compile Update="UI\Pages\Main\ChangePassword\ChangePasswordPage.xaml.cs">
 			<DependentUpon>ChangePasswordPage.xaml</DependentUpon>
 		</Compile>
@@ -426,6 +446,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<MauiXaml Update="Resources\Styles\CompositeInputViewStyles.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="Resources\Styles\PickerStyles.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
@@ -470,6 +493,27 @@
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Contracts\ViewContract\ViewContractPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Contracts\ViewContract\Views\LoadingView.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Contracts\ViewContract\Views\OverviewItemButton.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Contracts\ViewContract\Views\OverviewView.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Contracts\ViewContract\Views\ParametersView.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Contracts\ViewContract\Views\PreviewView.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Contracts\ViewContract\Views\SignView.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Contracts\ViewContract\Views\RolesView.xaml">
+		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Main\Calculator\CalculatorPage.xaml">
 			<Generator>MSBuild:Compile</Generator>

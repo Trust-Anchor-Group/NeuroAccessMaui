@@ -2445,4 +2445,40 @@
   <data name="IHaveReadAndUnderstoodTheContract" xml:space="preserve">
     <value>Olen lukenut ja ymmärtänyt tämän sopimuksen ehdot</value>
   </data>
+  <data name="Status" xml:space="preserve">
+    <value>Tila</value>
+  </data>
+  <data name="Encrypted" xml:space="preserve">
+    <value>Salattu</value>
+  </data>
+  <data name="ViewParametersTitle" xml:space="preserve">
+    <value>Näytä parametrit</value>
+  </data>
+  <data name="ViewParametersDescription" xml:space="preserve">
+    <value>Sopimusta säätelevien muuttujien tarkasteleminen</value>
+  </data>
+  <data name="ViewRolesTitle" xml:space="preserve">
+    <value>Määritettyjen roolien tarkasteleminen</value>
+  </data>
+  <data name="ViewRolesDescription" xml:space="preserve">
+    <value>Tarkista roolit ja katso, kuka on allekirjoittanut kunkin roolin</value>
+  </data>
+  <data name="InvitationToSign" xml:space="preserve">
+    <value>Sinut on kutsuttu allekirjoittamaan tämä sopimus, muista tarkistaa ja tarkistaa sopimus ennen jatkamista</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Nimike</value>
+  </data>
+  <data name="Sign" xml:space="preserve">
+    <value>Merkki</value>
+  </data>
+  <data name="PendingSignature" xml:space="preserve">
+    <value>Odottaa allekirjoitusta</value>
+  </data>
+  <data name="ViewSignature" xml:space="preserve">
+    <value>Näytä allekirjoitus</value>
+  </data>
+  <data name="ReviewContractDescription2" xml:space="preserve">
+    <value>Tarkista sopimusehdot</value>
+  </data>
 </root>

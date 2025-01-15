@@ -1897,7 +1897,7 @@
     <value>Показать подробности</value>
   </data>
   <data name="ViewContract" xml:space="preserve">
-    <value>Посмотреть контракт</value>
+    <value>Посмотреть договор</value>
   </data>
   <data name="MachineReadableInfoText" xml:space="preserve">
     <value>Ниже приведен обзор машиночитаемых данных, встроенных в договор.</value>
@@ -2444,5 +2444,41 @@
   </data>
   <data name="IHaveReadAndUnderstoodTheContract" xml:space="preserve">
     <value>Я прочитал и понял условия настоящего договора</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Статус</value>
+  </data>
+  <data name="Encrypted" xml:space="preserve">
+    <value>Зашифрованные</value>
+  </data>
+  <data name="ViewParametersTitle" xml:space="preserve">
+    <value>Параметры просмотра</value>
+  </data>
+  <data name="ViewParametersDescription" xml:space="preserve">
+    <value>Просмотр переменных, управляющих контрактом</value>
+  </data>
+  <data name="ViewRolesTitle" xml:space="preserve">
+    <value>Просмотр назначенных ролей</value>
+  </data>
+  <data name="ViewRolesDescription" xml:space="preserve">
+    <value>Просмотрите роли и узнайте, кто подписал каждую роль</value>
+  </data>
+  <data name="InvitationToSign" xml:space="preserve">
+    <value>Вам было предложено подписать этот контракт, обязательно проверьте и просмотрите контракт, прежде чем продолжить.</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Титул</value>
+  </data>
+  <data name="Sign" xml:space="preserve">
+    <value>Знак</value>
+  </data>
+  <data name="PendingSignature" xml:space="preserve">
+    <value>Ожидающая подписи</value>
+  </data>
+  <data name="ViewSignature" xml:space="preserve">
+    <value>Посмотреть подпись</value>
+  </data>
+  <data name="ReviewContractDescription2" xml:space="preserve">
+    <value>Ознакомьтесь с условиями договора</value>
   </data>
 </root>
