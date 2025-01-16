@@ -162,7 +162,8 @@ namespace NeuroAccessMaui.UI.Rendering
 				this.currentElement = new ContentView();
 				this.currentElement.Margin = AppStyles.SmallTopMargins;
 
-				this.LogType(E.GetType().ToString());
+				Console.WriteLine(E.GetType().ToString());
+				//this.LogType(E.GetType().ToString());
 				await E.Render(this);
 
 				this.verticalStackLayout.Add(this.currentElement);
@@ -393,8 +394,8 @@ namespace NeuroAccessMaui.UI.Rendering
 					LineBreakMode = LineBreakMode.WordWrap,
 				};
 
-				label.FormattedText = fs;
 				ContentView cv = (ContentView)this.currentElement;
+				label.FormattedText = fs;
 				cv.Content = label;
 				this.currentElement = cv;
 			}
@@ -406,9 +407,11 @@ namespace NeuroAccessMaui.UI.Rendering
 			}
 
 			if (this.Superscript)
-				span.Text = TextRenderer.ToSuperscript(Text);
+				Text = TextRenderer.ToSuperscript(Text);
 			else if (this.Subscript)
-				span.Text = TextRenderer.ToSubscript(Text);
+				Text = TextRenderer.ToSubscript(Text);
+
+			span.Text = Text;
 
 			if (this.Bold && this.Italic)
 				span.FontAttributes = FontAttributes.Bold | FontAttributes.Italic;
@@ -431,7 +434,8 @@ namespace NeuroAccessMaui.UI.Rendering
 			{
 				span.TextColor = AppColors.BlueLink;
 
-				span.GestureRecognizers.Add(new TapGestureRecognizer { Command = new Command(async Parameter => await App.OpenUrlAsync(this.Hyperlink))});
+				span.GestureRecognizers.Add(new TapGestureRecognizer { CommandParameter=this.Hyperlink ,Command = new Command(async Parameter => await App.OpenUrlAsync(Parameter as string ?? string.Empty))});
+				Console.WriteLine(Text);
 			}
 
 			return Task.CompletedTask;
@@ -1618,7 +1622,6 @@ namespace NeuroAccessMaui.UI.Rendering
 		public async Task Render(CodeBlock Element)
 		{
 			ContentView Bakup = (ContentView)this.currentElement;
-
 			VerticalStackLayout vsl = new();
 
 			StringBuilder Output = new();
@@ -1629,7 +1632,7 @@ namespace NeuroAccessMaui.UI.Rendering
 			{
 				try
 				{
-					// TODO
+					// TODO ?
 					if (await Renderer.RenderMauiXaml(rend, Element.Rows, Element.Language, Element.Indent, Element.Document))
 						return;
 				}

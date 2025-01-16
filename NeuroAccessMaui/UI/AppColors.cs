@@ -594,7 +594,7 @@
 				else
 				{
 					blueLink ??= AppStyles.TryGetResource<Color>("BlueLinkDark");
-					return BlueLink!;
+					return blueLink!;
 				}
 			}
 		}
