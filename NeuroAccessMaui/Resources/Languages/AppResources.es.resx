@@ -2445,4 +2445,49 @@
 <data name="IHaveReadAndUnderstoodTheContract" xml:space="preserve">
   <value>He leído y entendido los términos de este contrato</value>
 </data>
+<data name="Status" xml:space="preserve">
+    <value>Status</value>
+</data>
+<data name="Encrypted" xml:space="preserve">
+    <value>Cifrado</value>
+</data>
+<data name="ViewParametersTitle" xml:space="preserve">
+    <value>Ver parámetros</value>
+</data>
+<data name="ViewParametersDescription" xml:space="preserve">
+    <value>Consulta las variables que rigen el contrato</value>
+</data>
+<data name="ViewRolesTitle" xml:space="preserve">
+    <value>Revisar roles asignados</value>
+</data>
+<data name="ViewRolesDescription" xml:space="preserve">
+    <value>Revisa los roles y verifica quién ha firmado cada uno</value>
+</data>
+<data name="InvitationToSign" xml:space="preserve">
+  <value>Ha sido invitado(a) a firmar este contrato. Asegúrese de verificar y revisar el contrato antes de continuar.</value>
+</data>
+<data name="Title" xml:space="preserve">
+  <value>Título</value>
+</data>
+<data name="Sign" xml:space="preserve">
+  <value>Firmar</value>
+</data>
+<data name="PendingSignature" xml:space="preserve">
+  <value>Firma Pendiente</value>
+</data>
+<data name="ViewSignature" xml:space="preserve">
+  <value>Ver Firma</value>
+</data>
+<data name="ReviewContractDescription2" xml:space="preserve">
+  <value>Revise los términos del contrato</value>
+</data>
+<data name="ServerSignatureButtonTitle" xml:space="preserve">
+  <value>Ver firma del servidor</value>
+</data>
+<data name="ServerSignatureButtonDescription" xml:space="preserve">
+  <value>Ver la firma del servidor, que protege la integridad del contrato</value>
+</data>
+<data name="Transient" xml:space="preserve">
+  <value>Transitorio</value>
+</data>
 </root>

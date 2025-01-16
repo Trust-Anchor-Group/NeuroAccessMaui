@@ -1,0 +1,176 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<views:BaseViewContractView x:Name="ThisPage"
+									 x:Class="NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views.SignView"
+									 x:DataType="base:ViewContractViewModel"
+									 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+									 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+									 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+									 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+									 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+									 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
+									 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+									 xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views"
+									 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract"
+									 xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ObjectModel"
+									 xmlns:xmpp="clr-namespace:Waher.Networking.XMPP.Contracts;assembly=Waher.Networking.XMPP.Contracts">
+
+	<ContentView.Resources>
+		<Style x:Key="RoleTitleLabel"
+				 TargetType="Label"
+				 BasedOn="{StaticResource BoldItemTitleLabel}">
+			<Setter Property="FontSize"
+					  Value="18" />
+			<Setter Property="HorizontalTextAlignment"
+					  Value="Start" />
+		</Style>
+		<Style x:Key="RoleDescriptionLabel"
+				 TargetType="Label"
+				 BasedOn="{StaticResource ItemDescriptionLabel}">
+			<Setter Property="FontSize"
+					  Value="14" />
+			<Setter Property="Margin"
+					  Value="0" />
+			<Setter Property="HorizontalTextAlignment"
+					  Value="Start" />
+			<Setter Property="FontFamily"
+					  Value="SpaceGroteskMedium" />
+		</Style>
+	</ContentView.Resources>
+
+	<Grid RowDefinitions="*, auto"
+			ColumnDefinitions="*">
+
+		<!-- Roles Collection -->
+		<CollectionView Grid.Row="0"
+							 ItemsSource="{Binding SignableRoles}"
+							 SelectionMode="None"
+							 IsGrouped="False"
+							 ItemSizingStrategy="MeasureAllItems"
+							 Margin="{StaticResource SmallMargins}">
+			<CollectionView.Header>
+				<Grid>
+					<Border Style="{StaticResource BorderSet}">
+						<VerticalStackLayout>
+							<Label Text="{l:Localize SelectYourRole}"
+									 Style="{StaticResource RoleTitleLabel}" />
+							<controls:CompositePicker Style="{StaticResource RegularCompositePicker}"
+															  Placeholder="{l:Localize SelectYourRoleInThisContract}"
+															  ItemsSource="{Binding SignableRoles}"
+															  SelectedItem="{Binding SelectedRole}">
+								<controls:CompositePicker.ItemDisplayBinding x:DataType="objectModel:ObservableRole">
+									<Binding Path="Name" />
+								</controls:CompositePicker.ItemDisplayBinding>
+							</controls:CompositePicker>
+						</VerticalStackLayout>
+					</Border>
+				</Grid>
+			</CollectionView.Header>
+			<CollectionView.ItemTemplate>
+				<DataTemplate x:DataType="objectModel:ObservableRole">
+					<Grid>
+						<Border Style="{StaticResource BorderSet}">
+							<VerticalStackLayout>
+								<Label Text="{Binding Name}"
+										 Style="{StaticResource RoleTitleLabel}" />
+								<Label Text="{Binding Description}"
+										 Style="{StaticResource RoleDescriptionLabel}" />
+								<!-- Part Collection -->
+								<VerticalStackLayout BindableLayout.ItemsSource="{Binding Parts}">
+									<BindableLayout.ItemTemplate>
+										<DataTemplate x:DataType="objectModel:ObservablePart">
+											<Border Style="{StaticResource BorderSet}">
+												<Grid ColumnDefinitions="*, auto"
+														RowDefinitions="auto,auto">
+													<controls:TemplatedButton Grid.Column="0"
+																					  Grid.Row="0"
+																					  Command="{Binding OpenIdentityCommand}">
+														<Label Text="{Binding FriendlyName}"
+																 Style="{StaticResource RoleDescriptionLabel}"
+																 VerticalOptions="Center"
+																 HorizontalOptions="Center"
+																 TextColor="{AppThemeBinding Light={StaticResource AccentActiveLight}, Dark={StaticResource AccentActiveDark}}" />
+													</controls:TemplatedButton>
+													<Grid ColumnDefinitions="*, auto, *"
+															Grid.Column="0"
+															Grid.Row="1">
+														<Border Grid.Column="1"
+																  Padding="{StaticResource SmallLeftRightMargins}"
+																  Style="{StaticResource RoundedBorder}"
+																  BackgroundColor="{StaticResource Orange20Light}"
+																  IsVisible="{Binding HasIdentity, Converter={StaticResource InvertedBoolConverter}}">
+															<Label Style="{StaticResource RoleDescriptionLabel}"
+																	 Text="{l:Localize IDRequestSent}"
+																	 TextColor="{StaticResource OrangeLight}"
+																	 VerticalOptions="Center" />
+														</Border>
+													</Grid>
+												</Grid>
+											</Border>
+										</DataTemplate>
+									</BindableLayout.ItemTemplate>
+								</VerticalStackLayout>
+
+								<Border Style="{StaticResource BorderSet}"
+										  IsVisible="{Binding Path=HasReachedMaxCount, Converter={StaticResource InvertedBoolConverter}}">
+									<Label Text="{l:Localize None}"
+											 Style="{StaticResource RoleDescriptionLabel}"
+											 TextColor="{StaticResource AccentActiveLight}"
+											 HorizontalTextAlignment="Center"
+											 VerticalTextAlignment="Center" />
+								</Border>
+							</VerticalStackLayout>
+						</Border>
+					</Grid>
+				</DataTemplate>
+			</CollectionView.ItemTemplate>
+		</CollectionView>
+		<!-- BOTTOM BAR -->
+		<Grid RowDefinitions="auto,auto"
+				Grid.Row="1">
+			<Border Grid.Row="0"
+					  Style="{StaticResource BottomBarBorder}">
+				<Grid HorizontalOptions="Center"
+						VerticalOptions="Center"
+						ColumnSpacing="{StaticResource SmallSpacing}"
+						Padding="{StaticResource SmallMargins}">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="auto" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+
+					<CheckBox Grid.Column="0"
+								 IsChecked="{Binding IsContractOk}"
+								 Color="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffWhiteDark}}" />
+					<Label Grid.Column="1"
+							 Text="{l:Localize IHaveReadAndUnderstoodTheContract}"
+							 Style="{StaticResource BottomBarLabel}" />
+				</Grid>
+			</Border>
+
+			<Border Grid.Row="1"
+					  Style="{StaticResource BottomBarBorder}">
+				<Grid HorizontalOptions="Fill"
+						VerticalOptions="Center"
+						ColumnSpacing="{StaticResource SmallSpacing}"
+						Padding="{StaticResource SmallMargins}">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+
+					<controls:TextButton Style="{StaticResource TransparentTextButton}"
+												Grid.Column="0"
+												LabelData="{l:Localize Back}"
+												Command="{Binding BackCommand}" />
+					<controls:TextButton Style="{StaticResource FilledTextButton}"
+												Grid.Column="1"
+												LabelData="Sign"
+												Command="{Binding SignCommand}" />
+
+				</Grid>
+			</Border>
+		</Grid>
+	</Grid>
+
+</views:BaseViewContractView>

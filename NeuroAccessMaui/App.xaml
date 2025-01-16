@@ -12,6 +12,7 @@
 				<ResourceDictionary Source="Resources/Styles/Styles.xaml" />
 				<ResourceDictionary Source="Resources/Styles/LabelStyles.xaml" />
 				<ResourceDictionary Source="Resources/Styles/ButtonStyles.xaml" />
+				<ResourceDictionary Source="Resources/Styles/CompositeInputViewStyles.xaml" />
 				<ResourceDictionary Source="Resources/Styles/EntryStyles.xaml" />
 				<ResourceDictionary Source="Resources/Templates/ObservableParameter.xaml" />
 				<ResourceDictionary Source="Resources/Styles/PickerStyles.xaml" />

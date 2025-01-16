@@ -230,7 +230,7 @@ namespace NeuroAccessMaui.UI.Pages.Signatures.ClientSignature
 		/// If organization information is available.
 		/// </summary>
 		[ObservableProperty]
-		private bool? hasOrg;
+		private bool hasOrg;
 
 		/// <summary>
 		/// Determines whether the identity is approved or not.

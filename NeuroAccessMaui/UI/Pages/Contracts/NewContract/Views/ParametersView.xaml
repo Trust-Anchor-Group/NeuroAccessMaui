@@ -15,6 +15,7 @@
 		<objectModel:ParameterTemplateSelector x:Key="ParameterTemplateSelector"
 		                                 BooleanTemplate="{StaticResource BooleanParameterTemplate}"
 		                                 DateTemplate="{StaticResource DateParameterTemplate}"
+										 DateTimeTemplate="{StaticResource DateTimeParameterTemplate}"
 		                                 NumericalTemplate="{StaticResource NumericalParameterTemplate}"
 		                                 StringTemplate="{StaticResource StringParameterTemplate}"
 		                                 TimeTemplate="{StaticResource TimeParameterTemplate}"
