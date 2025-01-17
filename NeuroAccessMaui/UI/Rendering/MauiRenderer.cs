@@ -435,7 +435,6 @@ namespace NeuroAccessMaui.UI.Rendering
 				span.TextColor = AppColors.BlueLink;
 
 				span.GestureRecognizers.Add(new TapGestureRecognizer { CommandParameter=this.Hyperlink ,Command = new Command(async Parameter => await App.OpenUrlAsync(Parameter as string ?? string.Empty))});
-				Console.WriteLine(Text);
 			}
 
 			return Task.CompletedTask;
@@ -1258,15 +1257,23 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// <param name="Element">Element to render</param>
 		public Task Render(InlineHTML Element)
 		{
-			ContentView cv = (ContentView)this.currentElement;
-
-			Label label = new Label
+			if (this.currentElement is Label label)
 			{
-				TextType = TextType.Html,
-				Text = $"<--- {Element.HTML} --->",
-			};
+				label.TextType = TextType.Html;
+				label.Text = $"<--- {Element.HTML} --->";
+			}
+			else
+			{
+				ContentView cv = (ContentView)this.currentElement;
 
-			cv.Content = label;
+				Label newLabel = new Label
+				{
+					TextType = TextType.Html,
+					Text = $"<--- {Element.HTML} --->",
+				};
+
+				cv.Content = newLabel;
+			}
 
 			return Task.CompletedTask;
 		}
@@ -1509,7 +1516,6 @@ namespace NeuroAccessMaui.UI.Rendering
 				ContentView cv = new();
 				this.currentElement = cv;
 				await E.Render(this);
-				cv.Content = this.currentElement;
 				vsl.Add(cv);
 			}
 
