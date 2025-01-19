@@ -274,9 +274,10 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 					KeyValuePair<byte[], string> P = await InternetContent.PostAsync(Uri, Encoding.ASCII.GetBytes(Code), "text/plain",
 						new KeyValuePair<string, string>("Accept", "text/plain"));
 
-					object Decoded = await InternetContent.DecodeAsync(P.Value, P.Key, Uri);
+					ContentResponse Decoded = await InternetContent.DecodeAsync(P.Value, P.Key, Uri);
+					Decoded.AssertOk();
 
-					EncryptedStr = (string)Decoded;
+					EncryptedStr = (string)Decoded.Decoded;
 				}
 				catch (Exception ex)
 				{
