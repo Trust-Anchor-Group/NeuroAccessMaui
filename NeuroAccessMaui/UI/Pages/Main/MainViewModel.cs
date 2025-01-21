@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using Android.Content.OM;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
