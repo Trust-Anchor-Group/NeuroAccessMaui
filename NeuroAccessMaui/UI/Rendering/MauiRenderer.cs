@@ -306,7 +306,6 @@ namespace NeuroAccessMaui.UI.Rendering
 			{
 				foreach (MarkdownElement E in Children)
 				{
-					Console.WriteLine(E.GetType().ToString());
 					await E.Render(this);
 				}
 			}
@@ -403,7 +402,7 @@ namespace NeuroAccessMaui.UI.Rendering
 				span.TextDecorations = TextDecorations.Underline;
 
 			if (this.Code)
-				span.FontFamily = "Courier New";
+				span.FontFamily = "SpaceGroteskRegular";
 
 			if (this.Hyperlink is not null)
 			{
@@ -770,15 +769,15 @@ namespace NeuroAccessMaui.UI.Rendering
 		{
 			ContentView Bakup = (ContentView)this.currentElement;
 
-			BoxView separator = new BoxView
+			Rectangle rect = new Rectangle
 			{
+				Fill = Brush.Black,
 				HeightRequest = 1,
-				HorizontalOptions = LayoutOptions.FillAndExpand,
-				Background = AppColors.NormalEditPlaceholder,
-				Margin = AppStyles.SmallTopMargins + AppStyles.SmallBottomMargins,
+				Aspect = Stretch.Fill
 			};
 
-			Bakup.Content = separator;
+			Bakup.Margin = AppStyles.SmallTopMargins + AppStyles.SmallBottomMargins;
+			Bakup.Content = rect;
 
 			return Task.CompletedTask;
 		}
@@ -1640,7 +1639,7 @@ namespace NeuroAccessMaui.UI.Rendering
 				{
 					LineBreakMode = LineBreakMode.NoWrap,
 					HorizontalTextAlignment = this.LabelAlignment(),
-					FontFamily = "Courier New",
+					FontFamily = "SpaceGroteskRegular",
 					Text = Element.Rows[i]
 				};
 
