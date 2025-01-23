@@ -513,7 +513,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			await MainThread.InvokeOnMainThreadAsync(() =>
 			{
 				this.HumanReadableText = hrt;
-				//this.HumanReadableText = new VerticalStackLayout().LoadFromXaml(hrt);
 			});
 
 			await this.GoToState(NewContractStep.Preview);

@@ -181,8 +181,8 @@ namespace NeuroAccessMaui.UI
 		{
 			get
 			{
-				smallRightMargins ??= TryGetResource<Thickness>("SmallMargins");
-				return smallRightMargins.Value;
+				smallMargins ??= TryGetResource<Thickness>("SmallMargins");
+				return smallMargins.Value;
 			}
 		}
 

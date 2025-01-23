@@ -765,7 +765,7 @@ namespace NeuroAccessMaui.UI.Rendering
 		#endregion
 
 		#region Block elements
-
+		
 		/// <summary>
 		/// Renders <paramref name="Element"/>.
 		/// </summary>
