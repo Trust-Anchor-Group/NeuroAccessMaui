@@ -1,4 +1,5 @@
 ﻿using EDaler;
+using EDaler.Events;
 using EDaler.Uris;
 using EDaler.Uris.Incomplete;
 using NeuroAccessMaui.Resources.Languages;
@@ -13,6 +14,7 @@ using NeuroAccessMaui.UI.Pages.Wallet.Payment;
 using NeuroAccessMaui.UI.Pages.Wallet.PaymentAcceptance;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenDetails;
 using NeuroFeatures;
+using NeuroFeatures.EventArguments;
 using Waher.Runtime.Inventory;
 
 namespace NeuroAccessMaui.Services.Wallet

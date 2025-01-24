@@ -22,7 +22,7 @@ namespace NeuroAccessMaui.Services.Content
 		/// <summary>
 		/// URI Schemes handled.
 		/// </summary>
-		public string[] UriSchemes => new string[] { Constants.UriSchemes.Aes256 };
+		public string[] UriSchemes => [Constants.UriSchemes.Aes256];
 
 		/// <summary>
 		/// How well the URI can be managed.
@@ -128,7 +128,10 @@ namespace NeuroAccessMaui.Services.Content
 			if (!TryParse(Uri, out byte[]? Key, out byte[]? IV, out string? ContentType, out Uri? EncryptedUri))
 				throw new ArgumentException("URI not supported.", nameof(Uri));
 
-			byte[] Bin = await InternetContent.GetAsync(EncryptedUri, Certificate, RemoteCertificateValidator, TimeoutMs, AcceptBinary(Headers)) as byte[]
+			ContentResponse Response = await InternetContent.GetAsync(EncryptedUri, Certificate, RemoteCertificateValidator, TimeoutMs, AcceptBinary(Headers));
+			Response.AssertOk();
+
+			byte[] Bin = Response.Decoded as byte[]
 				?? throw new IOException("Expected binary response.");
 
 			Aes Aes = Aes.Create();

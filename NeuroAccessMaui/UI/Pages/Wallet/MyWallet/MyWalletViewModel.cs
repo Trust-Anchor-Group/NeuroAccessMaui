@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EDaler;
+using EDaler.Events;
 using EDaler.Uris;
 using Microsoft.Maui.Controls.Shapes;
 using NeuroAccessMaui.Resources.Languages;
@@ -21,6 +22,7 @@ using NeuroAccessMaui.UI.Pages.Wallet.RequestPayment;
 using NeuroAccessMaui.UI.Pages.Wallet.SellEDaler;
 using NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders;
 using NeuroFeatures;
+using NeuroFeatures.EventArguments;
 using System.Xml;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;

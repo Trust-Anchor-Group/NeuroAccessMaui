@@ -54,7 +54,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport
 			return this.UpdateReport();
 		}
 
-		private Task Wallet_VariablesUpdated(object? Sender, NeuroFeatures.VariablesUpdatedEventArgs e)
+		private Task Wallet_VariablesUpdated(object? Sender, NeuroFeatures.EventArguments.VariablesUpdatedEventArgs e)
 		{
 			return this.UpdateReport();
 		}

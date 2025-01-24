@@ -1,6 +1,7 @@
 ﻿using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Services;
 using NeuroFeatures;
+using NeuroFeatures.EventArguments;
 using System.Text;
 using System.Text.RegularExpressions;
 using Waher.Content;
