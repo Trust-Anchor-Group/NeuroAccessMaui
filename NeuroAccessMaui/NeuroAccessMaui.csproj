@@ -117,6 +117,24 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Services\NewFolder1\**" />
+	  <Compile Remove="Services\NewFolder2\**" />
+	  <Compile Remove="Services\Xmpp\NewFolder\**" />
+	  <EmbeddedResource Remove="Services\NewFolder1\**" />
+	  <EmbeddedResource Remove="Services\NewFolder2\**" />
+	  <EmbeddedResource Remove="Services\Xmpp\NewFolder\**" />
+	  <MauiCss Remove="Services\NewFolder1\**" />
+	  <MauiCss Remove="Services\NewFolder2\**" />
+	  <MauiCss Remove="Services\Xmpp\NewFolder\**" />
+	  <MauiXaml Remove="Services\NewFolder1\**" />
+	  <MauiXaml Remove="Services\NewFolder2\**" />
+	  <MauiXaml Remove="Services\Xmpp\NewFolder\**" />
+	  <None Remove="Services\NewFolder1\**" />
+	  <None Remove="Services\NewFolder2\**" />
+	  <None Remove="Services\Xmpp\NewFolder\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<None Include="Resources\Resx\PListResources.resx" />
 		<None Include="Resources\Resx\PListResources.pt.resx" />
 		<None Include="Resources\Resx\PListResources.es.resx" />
@@ -687,5 +705,9 @@
 
 	<ItemGroup>
 		<PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="8.0.92" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="UI\Pages\Wallet\ServiceProviders\NewFolder\" />
 	</ItemGroup>
 </Project>
