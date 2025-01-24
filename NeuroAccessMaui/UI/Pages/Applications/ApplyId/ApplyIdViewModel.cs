@@ -11,6 +11,7 @@ using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.Photos;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Registration;
+using NeuroAccessMaui.UI.Pages.Utility.Images;
 using NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders;
 using SkiaSharp;
 using Waher.Content;
@@ -806,7 +807,16 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 					return;
 
 				Stream stream = await Result.OpenReadAsync();
-				await this.AddPhoto(stream, Result.FullPath, true);
+
+				byte[]? Bin = stream.ToByteArray();
+
+				TaskCompletionSource<byte[]?> TCS = new();
+				await ServiceRef.UiService.GoToAsync(nameof(ImageCroppingPage), new ImageCroppingNavigationArgs(ImageSource.FromStream(() => new MemoryStream(Bin)), TCS));
+
+				MemoryStream MS = new(await TCS.Task);
+
+
+				await this.AddPhoto(MS, Result.FullPath, true);
 			}
 			catch (Exception ex)
 			{
