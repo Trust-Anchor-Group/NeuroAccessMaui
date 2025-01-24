@@ -600,6 +600,9 @@
 		<MauiXaml Update="UI\Pages\Things\ViewThing\ViewThingPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Utility\Images\ImageCroppingPage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Wallet\AccoutEvent\AccountEventPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
