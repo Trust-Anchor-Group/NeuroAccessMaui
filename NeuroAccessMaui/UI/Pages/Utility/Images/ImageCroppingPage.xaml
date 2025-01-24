@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<base:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Utility.Images"
+							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							 x:Class="NeuroAccessMaui.UI.Pages.Utility.Images.ImageCroppingPage"
+							 x:DataType="viewmodel:ImageCroppingViewModel"
+							 Title="Image Cropping">
+
+	<Grid RowDefinitions="*,Auto"
+			ColumnDefinitions="*">
+
+		<!-- The Cropping Control -->
+		<controls:ImageCropperView x:Name="ImageCropperView"
+											Grid.Row="0"
+											Grid.Column="0"
+											OutputMaxResolution="800,800" />
+
+		<!-- Action Buttons -->
+		<StackLayout Grid.Row="1"
+						 Grid.Column="0"
+						 Orientation="Horizontal"
+						 HorizontalOptions="Center"
+						 VerticalOptions="Center"
+						 Spacing="20"
+						 Padding="20">
+
+			<Button Text="Crop"
+					  Command="{Binding CropCommand}" />
+
+			<Button Text="Cancel"
+					  Command="{Binding CancelCommand}" />
+		</StackLayout>
+	</Grid>
+</base:BaseContentPage>
