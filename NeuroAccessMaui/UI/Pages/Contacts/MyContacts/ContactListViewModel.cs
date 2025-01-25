@@ -18,6 +18,7 @@ using NeuroAccessMaui.UI.Pages.Wallet.Payment;
 using NeuroAccessMaui.UI.Pages.Wallet;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services.UI;
+using Waher.Networking.XMPP.Events;
 
 namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 {

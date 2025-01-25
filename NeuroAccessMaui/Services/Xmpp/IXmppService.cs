@@ -17,6 +17,7 @@ using Waher.Networking;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.EventArguments;
+using Waher.Networking.XMPP.DataForms;
 using Waher.Networking.XMPP.Events;
 using Waher.Networking.XMPP.HttpFileUpload;
 using Waher.Networking.XMPP.PEP.Events;
@@ -57,7 +58,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// An event that triggers whenever the connection state to the XMPP server changes.
 		/// </summary>
-		event EventHandlerAsync<StateChangeEventArgs> ConnectionStateChanged;
+		event EventHandlerAsync<XmppState> ConnectionStateChanged;
 
 		#endregion
 
@@ -217,7 +218,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="State">State object to pass on to the callback method.</param>
 		public void SendMessage(QoSLevel QoS, MessageType Type, string Id, string To, string CustomXml,
 			string Body, string Subject, string Language, string ThreadId, string ParentThreadId,
-			EventHandlerAsync<DeliveryEventArgs> DeliveryCallback, object? State);
+			EventHandlerAsync<DeliveryEventArgs>? DeliveryCallback, object? State);
 
 		#endregion
 
@@ -1117,7 +1118,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Token">Token corresponding to the requested certificate.</param>
 		/// <param name="Callback">Callback method called, when certificate is available.</param>
 		/// <param name="State">State object that will be passed on to the callback method.</param>
-		void GetCertificate(string Token, CertificateCallback Callback, object? State);
+		void GetCertificate(string Token, EventHandlerAsync<CertificateEventArgs> Callback, object? State);
 
 		#endregion
 
@@ -1145,7 +1146,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Callback">Method to call when response is returned.</param>
 		/// <param name="State">State object.</param>
 		/// <param name="Nodes">Node references</param>
-		void GetControlForm(string To, string Language, DataFormResultEventHandler Callback, object? State,
+		void GetControlForm(string To, string Language, EventHandlerAsync<DataFormEventArgs> Callback, object? State,
 			params ThingReference[] Nodes);
 
 		/// <summary>
@@ -1436,7 +1437,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// Event raised when a state-machine has received a new state.
 		/// </summary>
-		event NewStateEventHandler NeuroFeatureStateUpdated;
+		event EventHandlerAsync<NewStateEventArgs>? NeuroFeatureStateUpdated;
 
 		/// <summary>
 		/// Timepoint of last Neuro-Feature token event.

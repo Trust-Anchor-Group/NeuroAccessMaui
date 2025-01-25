@@ -361,11 +361,12 @@ namespace NeuroAccessMaui.Services.Contracts
 			}
 		}
 
-		private Task Contracts_ConnectionStateChanged(object _, StateChangeEventArgs e)
+		private Task Contracts_ConnectionStateChanged(object _, XmppState NewState)
 		{
 			try
 			{
-				if (ServiceRef.XmppService.IsOnline && ServiceRef.TagProfile.IsCompleteOrWaitingForValidation())
+				if (ServiceRef.XmppService.IsOnline &&
+					ServiceRef.TagProfile.IsCompleteOrWaitingForValidation())
 				{
 					if (ServiceRef.TagProfile.LegalIdentity is not null)
 					{

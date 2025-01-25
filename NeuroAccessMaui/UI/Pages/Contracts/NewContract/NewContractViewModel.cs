@@ -95,13 +95,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// <summary>
 		/// A list of valid visibility items to choose from for this contract.
 		/// </summary>
-		public ObservableCollection<ContractVisibilityModel> ContractVisibilityItems { get; } = new()
-		  {
+		public ObservableCollection<ContractVisibilityModel> ContractVisibilityItems { get; } =
+		  [
 				new ContractVisibilityModel(ContractVisibility.CreatorAndParts, ServiceRef.Localizer[nameof(AppResources.ContractVisibility_CreatorAndParts)]),
 				new ContractVisibilityModel(ContractVisibility.DomainAndParts, ServiceRef.Localizer[nameof(AppResources.ContractVisibility_DomainAndParts)]),
 				new ContractVisibilityModel(ContractVisibility.Public, ServiceRef.Localizer[nameof(AppResources.ContractVisibility_Public)]),
 				new ContractVisibilityModel(ContractVisibility.PublicSearchable, ServiceRef.Localizer[nameof(AppResources.ContractVisibility_PublicSearchable)])
-		  };
+		  ];
 
 		/// <summary>
 		/// The selected contract visibility item.
@@ -303,11 +303,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			try
 			{
 				// Populate the parameters
-				Variables v = new();
+				Variables v = [];
+
 				foreach (ObservableParameter p in this.EditableParameters)
-				{
 					p.Parameter.Populate(v);
-				}
 
 				await MainThread.InvokeOnMainThreadAsync(async () =>
 				{
@@ -641,7 +640,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		}
 
 		/// <inheritdoc/>
-		public Task<string> Title => ContractModel.GetName(this.Contract.Contract);
+		public Task<string> Title => ContractModel.GetName(this.Contract?.Contract);
 
 		/// <inheritdoc/>
 		public bool HasMedia => false;

@@ -20,19 +20,12 @@ namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 	/// <summary>
 	/// The view model to bind to when displaying the list of things.
 	/// </summary>
-	public partial class MyThingsViewModel : BaseViewModel
+	/// <param name="Args">Navigation arguments</param>
+	public partial class MyThingsViewModel(MyThingsNavigationArgs? Args)
+		: BaseViewModel
 	{
 		private readonly Dictionary<CaseInsensitiveString, List<ContactInfoModel>> byBareJid = [];
-		private TaskCompletionSource<ContactInfoModel?>? result;
-
-		/// <summary>
-		/// Creates an instance of the <see cref="MyThingsViewModel"/> class.
-		/// </summary>
-		/// <param name="Args">Navigation arguments</param>
-		public MyThingsViewModel(MyThingsNavigationArgs? Args)
-		{
-			this.result = Args?.ThingToShare;
-		}
+		private TaskCompletionSource<ContactInfoModel?>? result = Args?.ThingToShare;
 
 		/// <inheritdoc/>
 		protected override async Task OnInitialize()

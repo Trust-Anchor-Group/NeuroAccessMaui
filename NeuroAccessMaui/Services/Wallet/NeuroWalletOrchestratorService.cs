@@ -26,14 +26,14 @@ namespace NeuroAccessMaui.Services.Wallet
 		{
 		}
 
-		public override Task Load(bool isResuming, CancellationToken cancellationToken)
+		public override Task Load(bool isResuming, CancellationToken CancellationToken)
 		{
-			if (this.BeginLoad(isResuming, cancellationToken))
+			if (this.BeginLoad(isResuming, CancellationToken))
 			{
 				ServiceRef.XmppService.EDalerBalanceUpdated += this.Wallet_BalanceUpdated;
 				ServiceRef.XmppService.NeuroFeatureAdded += this.Wallet_TokenAdded;
 				ServiceRef.XmppService.NeuroFeatureRemoved += this.Wallet_TokenRemoved;
-				ServiceRef.XmppService.NeuroFeatureStateUpdated += this.Wallet_StateUpdated;
+				ServiceRef.XmppService.NeuroFeatureStateUpdated += Wallet_StateUpdated;
 				ServiceRef.XmppService.NeuroFeatureVariablesUpdated += this.Wallet_VariablesUpdated;
 
 				this.EndLoad(true);
@@ -49,7 +49,7 @@ namespace NeuroAccessMaui.Services.Wallet
 				ServiceRef.XmppService.EDalerBalanceUpdated -= this.Wallet_BalanceUpdated;
 				ServiceRef.XmppService.NeuroFeatureAdded -= this.Wallet_TokenAdded;
 				ServiceRef.XmppService.NeuroFeatureRemoved -= this.Wallet_TokenRemoved;
-				ServiceRef.XmppService.NeuroFeatureStateUpdated -= this.Wallet_StateUpdated;
+				ServiceRef.XmppService.NeuroFeatureStateUpdated -= Wallet_StateUpdated;
 				ServiceRef.XmppService.NeuroFeatureVariablesUpdated -= this.Wallet_VariablesUpdated;
 
 				this.EndUnload();
@@ -84,7 +84,7 @@ namespace NeuroAccessMaui.Services.Wallet
 			await ServiceRef.NotificationService.NewEvent(new TokenRemovedNotificationEvent(e));
 		}
 
-		private async Task Wallet_StateUpdated(object? Sender, NewStateEventArgs e)
+		private static async Task Wallet_StateUpdated(object? Sender, NewStateEventArgs e)
 		{
 			await ServiceRef.NotificationService.NewEvent(new StateMachineNewStateNotificationEvent(e));
 		}

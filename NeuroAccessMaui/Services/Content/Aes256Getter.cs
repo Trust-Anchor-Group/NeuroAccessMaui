@@ -98,7 +98,7 @@ namespace NeuroAccessMaui.Services.Content
 		/// <param name="Headers">Additional headers</param>
 		/// <returns>Decrypted and decoded content.</returns>
 		/// <exception cref="ArgumentException">If URI cannot be parsed.</exception>
-		public Task<object> GetAsync(Uri Uri, X509Certificate Certificate, RemoteCertificateEventHandler RemoteCertificateValidator,
+		public Task<ContentResponse> GetAsync(Uri Uri, X509Certificate Certificate, RemoteCertificateEventHandler RemoteCertificateValidator,
 			params KeyValuePair<string, string>[] Headers)
 		{
 			return this.GetAsync(Uri, Certificate, RemoteCertificateValidator, 60000, Headers);
@@ -114,7 +114,7 @@ namespace NeuroAccessMaui.Services.Content
 		/// <param name="Headers">Additional headers</param>
 		/// <returns>Decrypted and decoded content.</returns>
 		/// <exception cref="ArgumentException">If URI cannot be parsed.</exception>
-		public async Task<object> GetAsync(Uri Uri, X509Certificate Certificate, RemoteCertificateEventHandler RemoteCertificateValidator,
+		public async Task<ContentResponse> GetAsync(Uri Uri, X509Certificate Certificate, RemoteCertificateEventHandler RemoteCertificateValidator,
 			int TimeoutMs, params KeyValuePair<string, string>[] Headers)
 		{
 			(string ContentType, byte[] Bin, Uri EncryptedUri) = await GetAndDecrypt(Uri, Certificate, RemoteCertificateValidator, TimeoutMs, Headers);
@@ -172,7 +172,7 @@ namespace NeuroAccessMaui.Services.Content
 		/// <param name="RemoteCertificateValidator">Optional callback method for validating remote certificates.</param>
 		/// <param name="Headers">Optional headers. Interpreted in accordance with the corresponding URI scheme.</param>
 		/// <returns>Content-Type, together with a Temporary file, if resource has been downloaded, or null if resource is data-less.</returns>
-		public Task<KeyValuePair<string, TemporaryStream>> GetTempStreamAsync(Uri Uri, X509Certificate Certificate,
+		public Task<ContentStreamResponse> GetTempStreamAsync(Uri Uri, X509Certificate Certificate,
 			RemoteCertificateEventHandler RemoteCertificateValidator, params KeyValuePair<string, string>[] Headers)
 		{
 			return this.GetTempStreamAsync(Uri, Certificate, RemoteCertificateValidator, 60000, Headers);
@@ -187,7 +187,7 @@ namespace NeuroAccessMaui.Services.Content
 		/// <param name="TimeoutMs">Timeout, in milliseconds. (Default=60000)</param>
 		/// <param name="Headers">Optional headers. Interpreted in accordance with the corresponding URI scheme.</param>
 		/// <returns>Content-Type, together with a Temporary file, if resource has been downloaded, or null if resource is data-less.</returns>
-		public async Task<KeyValuePair<string, TemporaryStream>> GetTempStreamAsync(Uri Uri, X509Certificate Certificate,
+		public async Task<ContentStreamResponse> GetTempStreamAsync(Uri Uri, X509Certificate Certificate,
 			RemoteCertificateEventHandler RemoteCertificateValidator, int TimeoutMs, params KeyValuePair<string, string>[] Headers)
 		{
 			(string ContentType, byte[] Bin, _) = await GetAndDecrypt(Uri, Certificate, RemoteCertificateValidator, TimeoutMs, Headers);
@@ -196,7 +196,7 @@ namespace NeuroAccessMaui.Services.Content
 			await Result.WriteAsync(Bin, 0, Bin.Length);
 			Result.Position = 0;
 
-			return new KeyValuePair<string, TemporaryStream>(ContentType, Result);
+			return new ContentStreamResponse(ContentType, Result);
 		}
 	}
 }

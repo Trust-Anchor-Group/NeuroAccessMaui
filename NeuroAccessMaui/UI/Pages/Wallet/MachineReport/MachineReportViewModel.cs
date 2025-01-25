@@ -49,7 +49,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport
 			return base.OnDispose();
 		}
 
-		private Task Wallet_StateUpdated(object? Sender, NeuroFeatures.NewStateEventArgs e)
+		private Task Wallet_StateUpdated(object? Sender, NeuroFeatures.EventArguments.NewStateEventArgs e)
 		{
 			return this.UpdateReport();
 		}

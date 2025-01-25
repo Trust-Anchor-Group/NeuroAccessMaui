@@ -24,6 +24,7 @@ using NeuroAccessMaui.UI.Popups.Xmpp.SubscribeTo;
 using NeuroAccessMaui.UI.Popups.Xmpp.SubscriptionRequest;
 using NeuroFeatures;
 using NeuroFeatures.EventArguments;
+using NeuroFeatures.Events;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -45,6 +46,7 @@ using Waher.Networking.XMPP.Concentrator;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.EventArguments;
 using Waher.Networking.XMPP.Control;
+using Waher.Networking.XMPP.DataForms;
 using Waher.Networking.XMPP.Events;
 using Waher.Networking.XMPP.HttpFileUpload;
 using Waher.Networking.XMPP.HTTPX;
@@ -76,7 +78,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 	/// goes to sleep, and new clients are created when awoken again.
 	/// </summary>
 	[Singleton]
-	internal sealed class XmppService : LoadableService, IXmppService, IDisposable
+	internal sealed class XmppService : LoadableService, IXmppService, IDisposableAsync
 	{
 		//private bool isDisposed;
 		private XmppClient? xmppClient;
@@ -471,8 +473,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 			if (this.xmppFilteredEventSink is not null)
 			{
 				ServiceRef.LogService.RemoveListener(this.xmppFilteredEventSink);
-				this.xmppFilteredEventSink.SecondarySink.Dispose();
-				this.xmppFilteredEventSink.Dispose();
+				await this.xmppFilteredEventSink.SecondarySink.DisposeAsync();
+				await this.xmppFilteredEventSink.DisposeAsync();
 				this.xmppFilteredEventSink = null;
 			}
 
@@ -523,8 +525,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 				this.debugEventSink = null;
 			}
 #endif
-			this.xmppClient?.Dispose();
-			this.xmppClient = null;
+			if (this.xmppClient is not null)
+			{
+				await this.xmppClient.DisposeAsync();
+				this.xmppClient = null;
+			}
 		}
 
 		private bool XmppStale()
@@ -585,7 +590,16 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// <see cref="IDisposable.Dispose"/>
 		/// </summary>
+		[Obsolete("Use the DisposeAsync method.")]
 		public void Dispose()
+		{
+			this.DisposeAsync().Wait();
+		}
+
+		/// <summary>
+		/// <see cref="IDisposableAsync.DisposeAsync"/>
+		/// </summary>
+		public async Task DisposeAsync()
 		{
 			this.reconnectTimer?.Dispose();
 			this.reconnectTimer = null;
@@ -593,8 +607,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 			if (this.xmppFilteredEventSink is not null)
 			{
 				ServiceRef.LogService.RemoveListener(this.xmppFilteredEventSink);
-				this.xmppFilteredEventSink.SecondarySink.Dispose();
-				this.xmppFilteredEventSink.Dispose();
+				await this.xmppFilteredEventSink.SecondarySink.DisposeAsync();
+				await this.xmppFilteredEventSink.DisposeAsync();
 				this.xmppFilteredEventSink = null;
 			}
 
@@ -634,8 +648,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 			this.abuseClient?.Dispose();
 			this.abuseClient = null;
 
-			this.xmppClient?.Dispose();
-			this.xmppClient = null;
+			if (this.xmppClient is not null)
+			{
+				await this.xmppClient.DisposeAsync();
+				this.xmppClient = null;
+			}
 
 			/*
 			this.Dispose(true);
@@ -925,7 +942,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// An event that triggers whenever the connection state to the XMPP server changes.
 		/// </summary>
-		public event EventHandlerAsync<StateChangedEventArgs> ConnectionStateChanged;
+		public event EventHandlerAsync<XmppState>? ConnectionStateChanged;
 
 		private async Task OnConnectionStateChanged(XmppState NewState)
 		{
@@ -1115,14 +1132,17 @@ namespace NeuroAccessMaui.Services.Xmpp
 			}
 			finally
 			{
-				Client?.Dispose();
-				Client = null;
+				if (Client is not null)
+				{
+					await Client.DisposeAsync();
+					Client = null;
+				}
 			}
 
 			if (!Succeeded && string.IsNullOrEmpty(ErrorMessage))
 			{
 				if (this.sniffer is not null)
-					System.Diagnostics.Debug.WriteLine("Sniffer: ", await this.sniffer.SnifferToText());
+					System.Diagnostics.Debug.WriteLine("Sniffer: ", this.sniffer.SnifferToText());
 
 				if (!StreamNegotiation || IsTimeout)
 					ErrorMessage = ServiceRef.Localizer[nameof(AppResources.CantConnectTo), Domain];
@@ -1233,7 +1253,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			{
 				if (this.sniffer is not null)
 				{
-					string commsDump = await this.sniffer.SnifferToText();
+					string commsDump = this.sniffer.SnifferToText();
 					ServiceRef.LogService.LogException(ex, new KeyValuePair<string, object?>("Sniffer", commsDump));
 				}
 
@@ -1623,7 +1643,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="DeliveryCallback">Callback to call when message has been sent, or failed to be sent.</param>
 		/// <param name="State">State object to pass on to the callback method.</param>
 		public void SendMessage(QoSLevel QoS, Waher.Networking.XMPP.MessageType Type, string Id, string To, string CustomXml, string Body,
-			string Subject, string Language, string ThreadId, string ParentThreadId, EventHandlerAsync<DeliveryEventArgs> DeliveryCallback, object? State)
+			string Subject, string Language, string ThreadId, string ParentThreadId, EventHandlerAsync<DeliveryEventArgs>? DeliveryCallback, object? State)
 		{
 			this.ContractsClient.LocalE2eEndpoint.SendMessage(this.XmppClient, E2ETransmission.NormalIfNotE2E,
 				QoS, Type, Id, To, CustomXml, Body, Subject, Language, ThreadId, ParentThreadId, DeliveryCallback, State);
@@ -1926,7 +1946,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// Event raised when a new presence stanza has been received.
 		/// </summary>
-		public event EventHandlerAsync<PresenceEventArgs> OnPresence;
+		public event EventHandlerAsync<PresenceEventArgs>? OnPresence;
 
 		/// <summary>
 		/// Requests subscription of presence information from a contact.
@@ -2019,7 +2039,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// Event raised when a roster item has been added to the roster.
 		/// </summary>
-		public event EventHandlerAsync<RosterItem> OnRosterItemAdded;
+		public event EventHandlerAsync<RosterItem>? OnRosterItemAdded;
 
 		private async Task XmppClient_OnRosterItemUpdated(object? Sender, RosterItem Item)
 		{
@@ -2038,7 +2058,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// Event raised when a roster item has been updated in the roster.
 		/// </summary>
-		public event EventHandlerAsync<RosterItem> OnRosterItemUpdated;
+		public event EventHandlerAsync<RosterItem>? OnRosterItemUpdated;
 
 		private async Task XmppClient_OnRosterItemRemoved(object? Sender, RosterItem Item)
 		{
@@ -2057,7 +2077,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// Event raised when a roster item has been removed from the roster.
 		/// </summary>
-		public event EventHandlerAsync<RosterItem> OnRosterItemRemoved;
+		public event EventHandlerAsync<RosterItem>? OnRosterItemRemoved;
 
 		#endregion
 
@@ -2208,7 +2228,10 @@ namespace NeuroAccessMaui.Services.Xmpp
 			Url.Append(ServiceRef.TagProfile.Domain);
 			Url.Append(LocalResource);
 
-			return await InternetContent.PostAsync(new Uri(Url.ToString()), Data, Headers);
+			ContentResponse Response = await InternetContent.PostAsync(new Uri(Url.ToString()), Data, Headers);
+			Response.AssertOk();
+
+			return Response.Decoded;
 		}
 
 		#endregion
@@ -2813,12 +2836,12 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// An event that fires when a legal identity changes.
 		/// </summary>
-		public event EventHandlerAsync<LegalIdentityEventArgs> LegalIdentityChanged;
+		public event EventHandlerAsync<LegalIdentityEventArgs>? LegalIdentityChanged;
 
 		/// <summary>
 		/// An event that fires when an ID Application has changed.
 		/// </summary>
-		public event EventHandlerAsync<LegalIdentityEventArgs> IdentityApplicationChanged;
+		public event EventHandlerAsync<LegalIdentityEventArgs>? IdentityApplicationChanged;
 
 		private async Task ContractsClient_IdentityUpdated(object? Sender, LegalIdentityEventArgs e)
 		{
@@ -2898,7 +2921,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// An event that fires when a petition for an identity is received.
 		/// </summary>
-		public event EventHandlerAsync<LegalIdentityPetitionEventArgs> PetitionForIdentityReceived;
+		public event EventHandlerAsync<LegalIdentityPetitionEventArgs>? PetitionForIdentityReceived;
 
 		private async Task ContractsClient_PetitionForIdentityReceived(object? Sender, LegalIdentityPetitionEventArgs e)
 		{
@@ -2916,7 +2939,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// An event that fires when a petitioned identity response is received.
 		/// </summary>
-		public event EventHandlerAsync<LegalIdentityPetitionResponseEventArgs> PetitionedIdentityResponseReceived;
+		public event EventHandlerAsync<LegalIdentityPetitionResponseEventArgs>? PetitionedIdentityResponseReceived;
 
 		private async Task ContractsClient_PetitionedIdentityResponseReceived(object? Sender, LegalIdentityPetitionResponseEventArgs e)
 		{
@@ -3370,7 +3393,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// An event that fires when a petition for peer review is received.
 		/// </summary>
-		public event EventHandlerAsync<SignaturePetitionEventArgs> PetitionForPeerReviewIdReceived;
+		public event EventHandlerAsync<SignaturePetitionEventArgs>? PetitionForPeerReviewIdReceived;
 
 		private async Task ContractsClient_PetitionForPeerReviewIdReceived(object? Sender, SignaturePetitionEventArgs e)
 		{
@@ -3388,7 +3411,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// An event that fires when a petitioned peer review response is received.
 		/// </summary>
-		public event EventHandlerAsync<SignaturePetitionResponseEventArgs> PetitionedPeerReviewIdResponseReceived;
+		public event EventHandlerAsync<SignaturePetitionResponseEventArgs>? PetitionedPeerReviewIdResponseReceived;
 
 		private async Task ContractsClient_PetitionedPeerReviewIdResponseReceived(object? Sender, SignaturePetitionResponseEventArgs e)
 		{
@@ -3489,7 +3512,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// An event that fires when a petition for a signature is received.
 		/// </summary>
-		public event EventHandlerAsync<SignaturePetitionEventArgs> PetitionForSignatureReceived;
+		public event EventHandlerAsync<SignaturePetitionEventArgs>? PetitionForSignatureReceived;
 
 		private async Task ContractsClient_PetitionForSignatureReceived(object? Sender, SignaturePetitionEventArgs e)
 		{
@@ -3507,7 +3530,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// Event raised when a response to a signature petition has been received.
 		/// </summary>
-		public event EventHandlerAsync<SignaturePetitionResponseEventArgs> SignaturePetitionResponseReceived;
+		public event EventHandlerAsync<SignaturePetitionResponseEventArgs>? SignaturePetitionResponseReceived;
 
 		private async Task ContractsClient_PetitionedSignatureResponseReceived(object? Sender, SignaturePetitionResponseEventArgs e)
 		{
@@ -3951,7 +3974,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Token">Token corresponding to the requested certificate.</param>
 		/// <param name="Callback">Callback method called, when certificate is available.</param>
 		/// <param name="State">State object that will be passed on to the callback method.</param>
-		public void GetCertificate(string Token, CertificateCallback Callback, object? State)
+		public void GetCertificate(string Token, EventHandlerAsync<CertificateEventArgs> Callback, object? State)
 		{
 			this.ProvisioningClient.GetCertificate(Token, Callback, State);
 		}
@@ -3964,7 +3987,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Callback">Method to call when response is returned.</param>
 		/// <param name="State">State object.</param>
 		/// <param name="Nodes">Node references</param>
-		public void GetControlForm(string To, string Language, DataFormResultEventHandler Callback, object? State,
+		public void GetControlForm(string To, string Language, EventHandlerAsync<DataFormEventArgs> Callback, object? State,
 			params ThingReference[] Nodes)
 		{
 			this.ControlClient.GetForm(To, Language, Callback, State, Nodes);
@@ -4038,7 +4061,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			this.lastBalance = e.Balance;
 			this.lastEDalerEvent = DateTime.Now;
 
-			EventHandlerAsync<BalanceEventArgs> h = this.EDalerBalanceUpdated;
+			EventHandlerAsync<BalanceEventArgs>? h = this.EDalerBalanceUpdated;
 			if (h is not null)
 			{
 				try
@@ -4055,7 +4078,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// Event raised when balance has been updated
 		/// </summary>
-		public event EventHandlerAsync<BalanceEventArgs> EDalerBalanceUpdated;
+		public event EventHandlerAsync<BalanceEventArgs>? EDalerBalanceUpdated;
 
 		/// <summary>
 		/// Last reported balance
@@ -4758,7 +4781,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		{
 			this.lastTokenEvent = DateTime.Now;
 
-			EventHandlerAsync<NeuroFeatures.EventArguments.TokenEventArgs> h = this.NeuroFeatureRemoved;
+			EventHandlerAsync<NeuroFeatures.EventArguments.TokenEventArgs>? h = this.NeuroFeatureRemoved;
 			if (h is not null)
 			{
 				try
@@ -4775,13 +4798,13 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// Event raised when a token has been removed from the wallet.
 		/// </summary>
-		public event EventHandlerAsync<NeuroFeatures.EventArguments.TokenEventArgs> NeuroFeatureRemoved;
+		public event EventHandlerAsync<NeuroFeatures.EventArguments.TokenEventArgs>? NeuroFeatureRemoved;
 
 		private async Task NeuroFeaturesClient_TokenAdded(object _, NeuroFeatures.EventArguments.TokenEventArgs e)
 		{
 			this.lastTokenEvent = DateTime.Now;
 
-			EventHandlerAsync<NeuroFeatures.EventArguments.TokenEventArgs> h = this.NeuroFeatureAdded;
+			EventHandlerAsync<NeuroFeatures.EventArguments.TokenEventArgs>? h = this.NeuroFeatureAdded;
 			if (h is not null)
 			{
 				try
@@ -4798,11 +4821,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// Event raised when a token has been added to the wallet.
 		/// </summary>
-		public event EventHandlerAsync<NeuroFeatures.EventArguments.TokenEventArgs> NeuroFeatureAdded;
+		public event EventHandlerAsync<NeuroFeatures.EventArguments.TokenEventArgs>? NeuroFeatureAdded;
 
 		private async Task NeuroFeaturesClient_VariablesUpdated(object? _, VariablesUpdatedEventArgs e)
 		{
-			EventHandlerAsync<VariablesUpdatedEventArgs> h = this.NeuroFeatureVariablesUpdated;
+			EventHandlerAsync<VariablesUpdatedEventArgs>? h = this.NeuroFeatureVariablesUpdated;
 			if (h is not null)
 			{
 				try
@@ -4819,11 +4842,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// Event raised when variables have been updated in a state-machine.
 		/// </summary>
-		public event EventHandlerAsync<VariablesUpdatedEventArgs> NeuroFeatureVariablesUpdated;
+		public event EventHandlerAsync<VariablesUpdatedEventArgs>? NeuroFeatureVariablesUpdated;
 
 		private async Task NeuroFeaturesClient_StateUpdated(object? _, NewStateEventArgs e)
 		{
-			NewStateEventHandler? h = this.NeuroFeatureStateUpdated;
+			EventHandlerAsync<NewStateEventArgs>? h = this.NeuroFeatureStateUpdated;
 			if (h is not null)
 			{
 				try
@@ -4840,7 +4863,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>
 		/// Event raised when a state-machine has received a new state.
 		/// </summary>
-		public event NewStateEventHandler? NeuroFeatureStateUpdated;
+		public event EventHandlerAsync<NewStateEventArgs>? NeuroFeatureStateUpdated;
 
 		/// <summary>
 		/// Gets available tokens

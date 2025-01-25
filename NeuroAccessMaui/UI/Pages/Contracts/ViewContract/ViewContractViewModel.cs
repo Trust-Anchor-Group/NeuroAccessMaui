@@ -14,6 +14,7 @@ using System.Reflection;
 using System.Text;
 using Waher.Content;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Networking.XMPP.Contracts.EventArguments;
 using Waher.Networking.XMPP.HttpFileUpload;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
@@ -87,10 +88,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			await base.OnDispose();
 		}
 
-		private void Contract_FormatParameterDisplay(object? Sender, Waher.Networking.XMPP.Contracts.EventArguments.ParameterValueFormattingEventArgs e)
+		private Task Contract_FormatParameterDisplay(object? Sender, ParameterValueFormattingEventArgs e)
 		{
 			if (e.Value is Duration Duration)
 				e.Value = DurationToString.ToString(Duration);
+
+			return Task.CompletedTask;
 		}
 
 		private Task ContractsClient_ContractUpdatedOrSigned(object? Sender, ContractReferenceEventArgs e)

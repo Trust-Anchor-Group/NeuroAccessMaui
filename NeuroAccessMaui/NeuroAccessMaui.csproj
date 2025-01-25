@@ -290,6 +290,7 @@
 		<PackageReference Include="Waher.Persistence.FilesLW" Version="1.14.0" />
 		<PackageReference Include="Waher.Persistence.XmlLedger" Version="1.2.0" />
 		<PackageReference Include="Waher.Runtime.Inventory" Version="1.3.0" />
+		<PackageReference Include="Waher.Runtime.IO" Version="1.0.0" />
 		<PackageReference Include="Waher.Runtime.Profiling" Version="1.0.10" />
 		<PackageReference Include="Waher.Runtime.Settings" Version="1.1.3" />
 		<PackageReference Include="Waher.Runtime.Temporary" Version="1.0.2" />

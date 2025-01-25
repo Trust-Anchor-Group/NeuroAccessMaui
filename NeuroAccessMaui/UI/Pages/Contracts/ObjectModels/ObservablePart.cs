@@ -14,6 +14,7 @@ using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.Notification.Identities;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Networking.XMPP.Contracts.EventArguments;
 using Waher.Persistence;
 using Waher.Persistence.Filters;
 
@@ -26,10 +27,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			this.Part = part;
 			ServiceRef.XmppService.PetitionedIdentityResponseReceived += this.XmppService_OnPetitionedIdentityResponseReceived;
 		}
+
 		/// <summary>
 		/// Initializes the part, setting properties which needs to be set asynchronosly
 		/// </summary>
-		/// <param name="contract"></param>
 		public async Task InitializeAsync()
 		{
 			try
@@ -90,7 +91,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				if (info is not null && !string.IsNullOrEmpty(info.BareJid))
 					return info.BareJid;
 			}
-			catch (Exception e)
+			catch (Exception)
 			{
 				//Ignore
 			}

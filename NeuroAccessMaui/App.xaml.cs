@@ -65,7 +65,7 @@ namespace NeuroAccessMaui
 	/// <summary>
 	/// The Application class, representing an instance of the Neuro-Access app.
 	/// </summary>
-	public partial class App : Application, IDisposable
+	public partial class App : Application, IDisposableAsync
 	{
 		private static readonly TaskCompletionSource<bool> servicesSetup = new();
 		private static readonly TaskCompletionSource<bool> defaultInstantiatedSource = new();
@@ -573,7 +573,7 @@ namespace NeuroAccessMaui
 				}
 
 				// Causes list of singleton instances to be cleared.
-				Log.Terminate();
+				await Log.TerminateAsync();
 			}
 			finally
 			{
@@ -1158,21 +1158,27 @@ namespace NeuroAccessMaui
 		}
 
 		/// <summary>
-		/// <see cref="IDisposable.Dispose"/>
+		/// <see cref="IDisposableAsync.Dispose"/>
 		/// </summary>
 		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+				this.DisposeAsync().Wait();
+		}
+
+		/// <summary>
+		/// <see cref="IDisposableAsync.Dispose"/>
+		/// </summary>
+		public virtual async Task DisposeAsync()
 		{
 			if (this.isDisposed)
 				return;
 
-			if (disposing)
-			{
-				this.loginAuditor.Dispose();
-				this.autoSaveTimer?.Dispose();
-				this.initCompleted.Dispose();
-				this.startupWorker.Dispose();
-				this.startupCancellation.Dispose();
-			}
+			await this.loginAuditor.DisposeAsync();
+			this.autoSaveTimer?.Dispose();
+			this.initCompleted.Dispose();
+			this.startupWorker.Dispose();
+			this.startupCancellation.Dispose();
 
 			this.isDisposed = true;
 		}
