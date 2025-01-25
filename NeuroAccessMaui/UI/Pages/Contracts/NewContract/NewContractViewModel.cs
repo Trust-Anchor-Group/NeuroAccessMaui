@@ -1,23 +1,22 @@
+using CommunityToolkit.Maui.Layouts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Contacts;
+using NeuroAccessMaui.Services.UI;
+using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel;
 using NeuroAccessMaui.UI.Pages.Contracts.ObjectModel;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
+using Waher.Content;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Script;
-using CommunityToolkit.Maui.Layouts;
-using Waher.Content;
 using Waher.Persistence;
-using NeuroAccessMaui.Services.Contacts;
-using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
-using NeuroAccessMaui.Services.UI;
-using System.Collections.Specialized;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 {
@@ -596,7 +595,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			get
 			{
 				StringBuilder url = new();
-				bool first = true;
+				//bool first = true;
 
 				url.Append(Constants.UriSchemes.IotSc);
 				url.Append(':');

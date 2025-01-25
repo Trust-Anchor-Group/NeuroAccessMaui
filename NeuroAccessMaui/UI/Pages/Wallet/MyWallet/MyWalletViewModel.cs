@@ -977,7 +977,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			return Task.CompletedTask;
 		}
 
-		private void NotificationService_OnNewNotification(object? Sender, NotificationEventArgs e)
+		private Task NotificationService_OnNewNotification(object? Sender, NotificationEventArgs e)
 		{
 			if (e.Event.Type == NotificationEventType.Wallet)
 			{
@@ -989,6 +989,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 						this.NrTokenNotifications++;
 				});
 			}
+
+			return Task.CompletedTask;
 		}
 
 	}

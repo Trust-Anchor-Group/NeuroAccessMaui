@@ -3,6 +3,7 @@ using NeuroAccessMaui.Exceptions;
 using NeuroAccessMaui.Resources.Languages;
 using System.ComponentModel;
 using System.Globalization;
+using Waher.Events;
 
 namespace NeuroAccessMaui.Services.Localization
 {
@@ -68,10 +69,10 @@ namespace NeuroAccessMaui.Services.Localization
 				CultureInfo.CurrentCulture = value;
 				CultureInfo.CurrentUICulture = CultureInfo.CurrentCulture = value;
 
-				CurrentCultureChanged?.Invoke(null, value);
+				CurrentCultureChanged.Raise(null, value);
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.CurrentCulture)));
 
-				FlowDirectionChanged?.Invoke(this, FlowDirection);
+				FlowDirectionChanged.Raise(this, FlowDirection);
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FlowDirection)));
 			}
 		}

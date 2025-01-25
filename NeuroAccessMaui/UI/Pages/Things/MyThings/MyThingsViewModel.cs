@@ -298,7 +298,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 			return Task.CompletedTask;
 		}
 
-		private void NotificationService_OnNotificationsDeleted(object? Sender, NotificationEventsArgs e)
+		private Task NotificationService_OnNotificationsDeleted(object? Sender, NotificationEventsArgs e)
 		{
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
@@ -346,9 +346,11 @@ namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 					}
 				}
 			});
+
+			return Task.CompletedTask;
 		}
 
-		private void NotificationService_OnNewNotification(object? Sender, NotificationEventArgs e)
+		private Task NotificationService_OnNewNotification(object? Sender, NotificationEventArgs e)
 		{
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
@@ -398,6 +400,8 @@ namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 					ServiceRef.LogService.LogException(ex);
 				}
 			});
+
+			return Task.CompletedTask;
 		}
 
 	}

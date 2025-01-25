@@ -946,17 +946,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private async Task OnConnectionStateChanged(XmppState NewState)
 		{
-			try
-			{
-				Task? T = this.ConnectionStateChanged?.Invoke(this, NewState);
-
-				if (T is not null)
-					await T;
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-			}
+			await this.ConnectionStateChanged.Raise(this, NewState);
 		}
 
 		#endregion
@@ -1931,16 +1921,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private async Task XmppClient_OnPresence(object? Sender, PresenceEventArgs e)
 		{
-			try
-			{
-				Task? T = this.OnPresence?.Invoke(this, e);
-				if (T is not null)
-					await T;
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-			}
+			await this.OnPresence.Raise(this, e);
 		}
 
 		/// <summary>
@@ -2024,16 +2005,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private async Task XmppClient_OnRosterItemAdded(object? Sender, RosterItem Item)
 		{
-			try
-			{
-				Task? T = this.OnRosterItemAdded?.Invoke(this, Item);
-				if (T is not null)
-					await T;
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-			}
+			await this.OnRosterItemAdded.Raise(this, Item);
 		}
 
 		/// <summary>
@@ -2043,16 +2015,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private async Task XmppClient_OnRosterItemUpdated(object? Sender, RosterItem Item)
 		{
-			try
-			{
-				Task? T = this.OnRosterItemUpdated?.Invoke(this, Item);
-				if (T is not null)
-					await T;
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-			}
+			await this.OnRosterItemUpdated.Raise(this, Item);
 		}
 
 		/// <summary>
@@ -2062,16 +2025,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private async Task XmppClient_OnRosterItemRemoved(object? Sender, RosterItem Item)
 		{
-			try
-			{
-				Task? T = this.OnRosterItemRemoved?.Invoke(this, Item);
-				if (T is not null)
-					await T;
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-			}
+			await this.OnRosterItemRemoved.Raise(this, Item);
 		}
 
 		/// <summary>
@@ -2853,7 +2807,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 						return;
 
 					await ServiceRef.TagProfile.SetLegalIdentity(e.Identity, true);
-					this.LegalIdentityChanged?.Invoke(this, e);
+					await this.LegalIdentityChanged.Raise(this, e);
 
 					if (e.Identity.IsDiscarded() && Shell.Current.CurrentState.Location.OriginalString != Constants.Pages.RegistrationPage)
 					{
@@ -2881,7 +2835,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 					if (e.Identity.IsDiscarded())
 					{
 						await ServiceRef.TagProfile.SetIdentityApplication(null, true);
-						this.IdentityApplicationChanged?.Invoke(this, e);
+						await this.IdentityApplicationChanged.Raise(this, e);
 					}
 					else if (e.Identity.IsApproved())
 					{
@@ -2890,8 +2844,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 						await ServiceRef.TagProfile.SetLegalIdentity(e.Identity, true);
 						await ServiceRef.TagProfile.SetIdentityApplication(null, false);
 
-						this.LegalIdentityChanged?.Invoke(this, e);
-						this.IdentityApplicationChanged?.Invoke(this, e);
+						await this.LegalIdentityChanged.Raise(this, e);
+						await this.IdentityApplicationChanged.Raise(this, e);
 
 						if (ToObsolete is not null && !ToObsolete.IsDiscarded())
 							await this.ObsoleteLegalIdentity(ToObsolete.Id);
@@ -2899,7 +2853,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 					else
 					{
 						await ServiceRef.TagProfile.SetIdentityApplication(e.Identity, false);
-						this.IdentityApplicationChanged?.Invoke(this, e);
+						await this.IdentityApplicationChanged.Raise(this, e);
 					}
 				}
 				else if (ServiceRef.TagProfile.LegalIdentity is null)
@@ -2908,7 +2862,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 						return;
 
 					await ServiceRef.TagProfile.SetLegalIdentity(e.Identity, true);
-					this.LegalIdentityChanged?.Invoke(this, e);
+					await this.LegalIdentityChanged.Raise(this, e);
 				}
 			}
 			catch (Exception ex)
@@ -2925,15 +2879,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private async Task ContractsClient_PetitionForIdentityReceived(object? Sender, LegalIdentityPetitionEventArgs e)
 		{
-			try
-			{
-				this.PetitionForIdentityReceived?.Invoke(this, e);
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiService.DisplayException(ex);
-			}
+			await this.PetitionForIdentityReceived.Raise(this, e);
 		}
 
 		/// <summary>
@@ -2946,7 +2892,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			try
 			{
 				this.EndPetition(e.PetitionId);
-				this.PetitionedIdentityResponseReceived?.Invoke(this, e);
+				await this.PetitionedIdentityResponseReceived.Raise(this, e);
 			}
 			catch (Exception ex)
 			{
@@ -3195,15 +3141,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private async Task ContractsClient_PetitionForContractReceived(object? Sender, ContractPetitionEventArgs e)
 		{
-			try
-			{
-				this.PetitionForContractReceived?.Invoke(this, e);
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiService.DisplayException(ex);
-			}
+			await this.PetitionForContractReceived.Raise(this, e);
 		}
 
 		/// <summary>
@@ -3216,7 +3154,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			try
 			{
 				this.EndPetition(e.PetitionId);
-				this.PetitionedContractResponseReceived?.Invoke(this, e);
+				await this.PetitionedContractResponseReceived.Raise(this, e);
 			}
 			catch (Exception ex)
 			{
@@ -3272,15 +3210,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private async Task ContractsClient_ContractProposalReceived(object? Sender, ContractProposalEventArgs e)
 		{
-			try
-			{
-				this.ContractProposalReceived?.Invoke(this, e);
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiService.DisplayException(ex);
-			}
+			await this.ContractProposalReceived.Raise(this, e);
 		}
 
 		/// <summary>
@@ -3291,15 +3221,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private async Task ContractsClient_ContractUpdated(object? Sender, ContractReferenceEventArgs e)
 		{
 			await this.ContractUpdatedOrSigned(e);
-
-			try
-			{
-				this.ContractUpdated?.Invoke(this, e);
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService?.LogException(ex);
-			}
+			await this.ContractUpdated.Raise(this, e);
 		}
 
 		private Task ContractUpdatedOrSigned(ContractReferenceEventArgs e)
@@ -3320,15 +3242,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private async Task ContractsClient_ContractSigned(object? Sender, ContractSignedEventArgs e)
 		{
 			await this.ContractUpdatedOrSigned(e);
-
-			try
-			{
-				this.ContractSigned?.Invoke(this, e);
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService?.LogException(ex);
-			}
+			await this.ContractSigned.Raise(this, e);
 		}
 
 		/// <summary>
@@ -3397,15 +3311,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private async Task ContractsClient_PetitionForPeerReviewIdReceived(object? Sender, SignaturePetitionEventArgs e)
 		{
-			try
-			{
-				this.PetitionForPeerReviewIdReceived?.Invoke(this, e);
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiService.DisplayException(ex);
-			}
+			await this.PetitionForPeerReviewIdReceived.Raise(this, e);
 		}
 
 		/// <summary>
@@ -3418,7 +3324,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			try
 			{
 				this.EndPetition(e.PetitionId);
-				this.PetitionedPeerReviewIdResponseReceived?.Invoke(this, e);
+				await this.PetitionedPeerReviewIdResponseReceived.Raise(this, e);
 			}
 			catch (Exception ex)
 			{
@@ -3516,15 +3422,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private async Task ContractsClient_PetitionForSignatureReceived(object? Sender, SignaturePetitionEventArgs e)
 		{
-			try
-			{
-				this.PetitionForSignatureReceived?.Invoke(this, e);
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiService.DisplayException(ex);
-			}
+			await this.PetitionForSignatureReceived.Raise(this, e);
 		}
 
 		/// <summary>
@@ -3537,7 +3435,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			try
 			{
 				this.EndPetition(e.PetitionId);
-				this.SignaturePetitionResponseReceived?.Invoke(this, e);
+				await this.SignaturePetitionResponseReceived.Raise(this, e);
 			}
 			catch (Exception ex)
 			{
@@ -4061,18 +3959,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			this.lastBalance = e.Balance;
 			this.lastEDalerEvent = DateTime.Now;
 
-			EventHandlerAsync<BalanceEventArgs>? h = this.EDalerBalanceUpdated;
-			if (h is not null)
-			{
-				try
-				{
-					await h(this, e);
-				}
-				catch (Exception ex)
-				{
-					ServiceRef.LogService.LogException(ex);
-				}
-			}
+			await this.EDalerBalanceUpdated.Raise(this, e);
 		}
 
 		/// <summary>
@@ -4781,18 +4668,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		{
 			this.lastTokenEvent = DateTime.Now;
 
-			EventHandlerAsync<NeuroFeatures.EventArguments.TokenEventArgs>? h = this.NeuroFeatureRemoved;
-			if (h is not null)
-			{
-				try
-				{
-					await h(this, e);
-				}
-				catch (Exception ex)
-				{
-					ServiceRef.LogService.LogException(ex);
-				}
-			}
+			await this.NeuroFeatureRemoved.Raise(this, e);
 		}
 
 		/// <summary>
@@ -4804,18 +4680,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		{
 			this.lastTokenEvent = DateTime.Now;
 
-			EventHandlerAsync<NeuroFeatures.EventArguments.TokenEventArgs>? h = this.NeuroFeatureAdded;
-			if (h is not null)
-			{
-				try
-				{
-					await h(this, e);
-				}
-				catch (Exception ex)
-				{
-					ServiceRef.LogService.LogException(ex);
-				}
-			}
+			await this.NeuroFeatureAdded.Raise(this, e);
 		}
 
 		/// <summary>
@@ -4825,18 +4690,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private async Task NeuroFeaturesClient_VariablesUpdated(object? _, VariablesUpdatedEventArgs e)
 		{
-			EventHandlerAsync<VariablesUpdatedEventArgs>? h = this.NeuroFeatureVariablesUpdated;
-			if (h is not null)
-			{
-				try
-				{
-					await h(this, e);
-				}
-				catch (Exception ex)
-				{
-					ServiceRef.LogService.LogException(ex);
-				}
-			}
+			await this.NeuroFeatureVariablesUpdated.Raise(this, e);
 		}
 
 		/// <summary>
@@ -4846,18 +4700,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private async Task NeuroFeaturesClient_StateUpdated(object? _, NewStateEventArgs e)
 		{
-			EventHandlerAsync<NewStateEventArgs>? h = this.NeuroFeatureStateUpdated;
-			if (h is not null)
-			{
-				try
-				{
-					await h(this, e);
-				}
-				catch (Exception ex)
-				{
-					ServiceRef.LogService.LogException(ex);
-				}
-			}
+			await this.NeuroFeatureStateUpdated.Raise(this, e);
 		}
 
 		/// <summary>

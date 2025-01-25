@@ -441,10 +441,12 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 			return Task.CompletedTask;
 		}
 
-		private void NotificationService_OnNewNotification(object? Sender, NotificationEventArgs e)
+		private Task NotificationService_OnNewNotification(object? Sender, NotificationEventArgs e)
 		{
 			if (e.Event.Type == NotificationEventType.Contacts)
 				this.UpdateNotifications(e.Event.Category ?? string.Empty);
+
+			return Task.CompletedTask;
 		}
 
 		private void UpdateNotifications()
@@ -465,7 +467,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 			}
 		}
 
-		private void NotificationService_OnNotificationsDeleted(object? Sender, NotificationEventsArgs e)
+		private Task NotificationService_OnNotificationsDeleted(object? Sender, NotificationEventsArgs e)
 		{
 			Dictionary<CaseInsensitiveString, bool> Categories = [];
 
@@ -474,6 +476,8 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 
 			foreach (CaseInsensitiveString Category in Categories.Keys)
 				this.UpdateNotifications(Category);
+
+			return Task.CompletedTask;
 		}
 	}
 }
