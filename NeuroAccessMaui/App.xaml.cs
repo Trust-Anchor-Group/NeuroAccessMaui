@@ -815,7 +815,7 @@ namespace NeuroAccessMaui
 			}
 			catch (Exception ex)
 			{
-				Log.Critical(ex);
+				Log.Exception(ex);
 			}
 		}
 
