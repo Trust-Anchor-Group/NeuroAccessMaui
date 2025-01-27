@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using NeuroAccessMaui.UI.Popups.Info;
+using NeuroAccessMaui.UI.Popups.Permission;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.AppPermissions;
 using Waher.Runtime.Inventory;
@@ -32,8 +32,8 @@ namespace NeuroAccessMaui.Services.AppPermissions
 					string title = ServiceRef.Localizer[nameof(AppResources.CameraPermissionTitle)];
 					string description = ServiceRef.Localizer[nameof(AppResources.CameraPermissionDescription)];
 					
-					ShowInfoPopup infoPopUp = new(title, description);
-					await ServiceRef.UiService.PushAsync(infoPopUp);
+					ShowPermissionPopup permissionPopUp = new(title, description);
+					await ServiceRef.UiService.PushAsync(permissionPopUp);
 
 					return false;
 				}
