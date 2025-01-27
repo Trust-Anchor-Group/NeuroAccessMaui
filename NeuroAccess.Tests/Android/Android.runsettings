@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+	<RunConfiguration>
+		<ResultsDirectory>TestResults/Android</ResultsDirectory>
+		<!-- Define the custom RunTarget for Android -->
+		<RunTarget>Android</RunTarget>
+	</RunConfiguration>
+
+	<!-- Define constants for Android compilation -->
+	<TestConstants>
+		<DefineConstants>ANDROID</DefineConstants>
+	</TestConstants>
+</RunSettings>

@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <RootNamespace>NeuroAccess.UiTests</RootNamespace>
+    <Configurations>Debug;Release;Debug-Android;Debug-iOS</Configurations>
+  </PropertyGroup>
+
+  <!-- Define platform-specific constants based on Configuration -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug-Android' Or '$(Configuration)' == 'Release-Android'">
+    <DefineConstants>ANDROID</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug-iOS' Or '$(Configuration)' == 'Release-iOS'">
+    <DefineConstants>IOS</DefineConstants>
+  </PropertyGroup>
+
+  <!-- Shared Files -->
+  <ItemGroup>
+    <Compile Include="Shared\**\*.cs" />
+  </ItemGroup>
+
+  <!-- Platform-Specific Files -->
+  <ItemGroup Condition="'$(Configuration)' == 'Debug-Android' Or '$(Configuration)' == 'Release-Android'">
+    <Compile Include="Android\**\*.cs" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(Configuration)' == 'Debug-iOS' Or '$(Configuration)' == 'Release-iOS'">
+    <Compile Include="iOS\**\*.cs" />
+  </ItemGroup>
+
+  <!-- NuGet Packages -->
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="NUnit" Version="3.14.0" />
+    <PackageReference Include="NUnit.Analyzers" Version="3.9.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
+    <PackageReference Include="Appium.WebDriver" Version="7.0.0" />
+  </ItemGroup>
+
+</Project>
