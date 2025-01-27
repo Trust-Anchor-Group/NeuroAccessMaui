@@ -161,6 +161,7 @@ namespace NeuroAccessMaui.Services.UI.QR
 		public static async Task<string?> ScanQrCode(string? QrTitle, string[] AllowedSchemas)
 		{
 			bool permitted = await ServiceRef.PermissionService.CheckCameraPermission();
+
 			if (!permitted)
 				return null;
 

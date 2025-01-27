@@ -31,7 +31,7 @@ namespace NeuroAccessMaui.Services.AppPermissions
 				{
 					string title = ServiceRef.Localizer[nameof(AppResources.CameraPermissionTitle)];
 					string description = ServiceRef.Localizer[nameof(AppResources.CameraPermissionDescription)];
-
+					
 					ShowInfoPopup infoPopUp = new(title, description);
 					await ServiceRef.UiService.PushAsync(infoPopUp);
 
