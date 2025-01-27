@@ -870,7 +870,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 			return Task.CompletedTask;
 		}
 
-		private void NotificationService_OnNewNotification(object? Sender, NotificationEventArgs e)
+		private Task NotificationService_OnNewNotification(object? Sender, NotificationEventArgs e)
 		{
 			MainThread.BeginInvokeOnMainThread(async () =>
 			{
@@ -915,6 +915,8 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 					ServiceRef.LogService.LogException(ex);
 				}
 			});
+
+			return Task.CompletedTask;
 		}
 
 		private Task Xmpp_OnRosterItemRemoved(object? Sender, RosterItem Item)

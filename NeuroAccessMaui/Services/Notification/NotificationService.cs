@@ -432,7 +432,7 @@ namespace NeuroAccessMaui.Services.Notification
 		/// <summary>
 		/// Event raised when a new notification has been logged.
 		/// </summary>
-		public event EventHandlerAsync<NotificationEventsArgs>? OnNewNotification;
+		public event EventHandlerAsync<NotificationEventArgs>? OnNewNotification;
 
 		/// <summary>
 		/// Event raised when notifications have been deleted.
