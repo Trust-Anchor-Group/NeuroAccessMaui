@@ -193,17 +193,17 @@ namespace NeuroAccessMaui.UI.Rendering
 			int Nr;
 			int Row = 0;
 
-			BoxView boxView = new BoxView
+			BoxView BoxView = new BoxView
 			{
 				HeightRequest = 1,
 				BackgroundColor = AppColors.NormalEditPlaceholder,
-				HorizontalOptions = LayoutOptions.FillAndExpand,
+				HorizontalOptions = LayoutOptions.Fill,
 				Margin = AppStyles.SmallTopMargins + AppStyles.SmallBottomMargins
 			};
 
-			this.verticalStackLayout.Add(boxView);
+			this.verticalStackLayout.Add(BoxView);
 
-			Grid grid = new Grid
+			Grid Grid = new Grid
 			{
 				RowSpacing = 0,
 				ColumnSpacing = 0,
@@ -220,7 +220,7 @@ namespace NeuroAccessMaui.UI.Rendering
 					(this.Document?.TryGetFootnote(Key, out Footnote) ?? false) &&
 					Footnote.Referenced)
 				{
-					grid.AddRowDefinition(new RowDefinition { Height = GridLength.Auto });
+					Grid.AddRowDefinition(new RowDefinition { Height = GridLength.Auto });
 				}
 			}
 
@@ -232,7 +232,7 @@ namespace NeuroAccessMaui.UI.Rendering
 						(this.Document?.TryGetFootnote(Key, out Footnote) ?? false) &&
 						Footnote.Referenced)
 					{
-						ContentView cv = new ContentView
+						ContentView Cv = new ContentView
 						{
 							Margin = AppStyles.SmallMargins,
 							Scale = 0.75,
@@ -243,20 +243,20 @@ namespace NeuroAccessMaui.UI.Rendering
 							},
 						};
 
-						grid.Add(cv, 0, Row);
+						Grid.Add(Cv, 0, Row);
 
-						ContentView cv2 = new ContentView();
-						this.currentElement = cv2;
+						ContentView Cv2 = new ContentView();
+						this.currentElement = Cv2;
 						await this.Render(Footnote);
 
-						grid.Add(cv2, 1, Row);
+						Grid.Add(Cv2, 1, Row);
 
 						Row++;
 					}
 				}
 			}
 
-			this.currentElement = grid;
+			this.currentElement = Grid;
 		}
 
 		/// <summary>
@@ -276,18 +276,18 @@ namespace NeuroAccessMaui.UI.Rendering
 			{
 				ContentView Bakup = (ContentView)this.currentElement;
 
-				VerticalStackLayout vsl = new();
-				vsl.Spacing = 8; // Same size as small margins
-				Bakup.Content = vsl;
+				VerticalStackLayout Vsl = new();
+				Vsl.Spacing = 8; // Same size as small margins
+				Bakup.Content = Vsl;
 
 				if (!(Element.Children is null))
 				{
 					foreach (MarkdownElement E in Element.Children)
 					{
-						ContentView cv = new ContentView();
-						this.currentElement = cv;
+						ContentView Cv = new ContentView();
+						this.currentElement = Cv;
 						await E.Render(this);
-						vsl.Add(cv);
+						Vsl.Add(Cv);
 					}
 				}
 				this.currentElement = Bakup; 
@@ -313,17 +313,17 @@ namespace NeuroAccessMaui.UI.Rendering
 			{
 				ContentView Bakup = (ContentView)this.currentElement;
 
-				VerticalStackLayout vsl = new();
-				Bakup.Content = vsl;
+				VerticalStackLayout Vsl = new();
+				Bakup.Content = Vsl;
 
 				if (!(Children is null))
 				{
 					foreach (MarkdownElement E in Children)
 					{
-						ContentView cv = new ContentView();
-						this.currentElement = cv;
+						ContentView Cv = new ContentView();
+						this.currentElement = Cv;
 						await E.Render(this);
-						vsl.Add(cv);
+						Vsl.Add(Cv);
 					}
 				}
 
@@ -347,68 +347,68 @@ namespace NeuroAccessMaui.UI.Rendering
 
 		internal Task RenderSpan(string Text)
 		{
-			Label label;
-			FormattedString fs;
+			Label Label;
+			FormattedString Fs;
 
 			if (!this.InLabel)
 			{
-				label = new Label
+				Label = new Label
 				{
 					LineBreakMode = LineBreakMode.WordWrap,
 				};
 
-				ContentView cv = (ContentView)this.currentElement;
-				cv.Content = label;
-				this.currentElement = cv;
+				ContentView Cv = (ContentView)this.currentElement;
+				Cv.Content = Label;
+				this.currentElement = Cv;
 			}
 			else
 			{
-				label = (Label)this.currentElement;
-				this.currentElement = label;
+				Label = (Label)this.currentElement;
+				this.currentElement = Label;
 			}
 
-			if (label.FormattedText == null)
+			if (Label.FormattedText == null)
 			{
-				fs = new();
+				Fs = new();
 			}
 			else
 			{
-				fs = label.FormattedText;
+				Fs = Label.FormattedText;
 			}
 
-			Span span = new Span();
-			fs.Spans.Add(span);
-			label.FormattedText = fs;
+			Span Span = new Span();
+			Fs.Spans.Add(Span);
+			Label.FormattedText = Fs;
 
 			if (this.Superscript)
 				Text = TextRenderer.ToSuperscript(Text);
 			else if (this.Subscript)
 				Text = TextRenderer.ToSubscript(Text);
 
-			span.Text = Text;
+			Span.Text = Text;
 
 			if (this.Bold && this.Italic)
-				span.FontAttributes = FontAttributes.Bold | FontAttributes.Italic;
+				Span.FontAttributes = FontAttributes.Bold | FontAttributes.Italic;
 			else if (this.Bold)
-				span.FontAttributes = FontAttributes.Bold;
+				Span.FontAttributes = FontAttributes.Bold;
 			else if (this.Italic)
-				span.FontAttributes = FontAttributes.Italic;
+				Span.FontAttributes = FontAttributes.Italic;
 
 			if (this.StrikeThrough && this.Underline)
-				span.TextDecorations = TextDecorations.Underline | TextDecorations.Strikethrough;
+				Span.TextDecorations = TextDecorations.Underline | TextDecorations.Strikethrough;
 			else if (this.StrikeThrough)
-				span.TextDecorations = TextDecorations.Strikethrough;
+				Span.TextDecorations = TextDecorations.Strikethrough;
 			else if (this.Underline)
-				span.TextDecorations = TextDecorations.Underline;
+				Span.TextDecorations = TextDecorations.Underline;
 
 			if (this.Code)
-				span.FontFamily = "SpaceGroteskRegular";
+				Span.FontFamily = "SpaceGroteskRegular";
 
 			if (this.Hyperlink is not null)
 			{
-				span.TextColor = AppColors.BlueLink;
+				Span.TextColor = AppColors.BlueLink;
 
-				span.GestureRecognizers.Add(new TapGestureRecognizer { CommandParameter=this.Hyperlink ,Command = new Command(async Parameter => await App.OpenUrlAsync(Parameter as string ?? string.Empty))});
+				Span.GestureRecognizers.Add(new TapGestureRecognizer { CommandParameter=this.Hyperlink ,Command = new Command(async Parameter => await App.OpenUrlAsync(Parameter as string ?? string.Empty))});
 			}
 
 			return Task.CompletedTask;
@@ -502,7 +502,7 @@ namespace NeuroAccessMaui.UI.Rendering
 			int Row = 0;
 			bool ParagraphBullet;
 
-			Grid grid = new Grid
+			Grid Grid = new Grid
 			{
 				RowSpacing = 0,
 				ColumnSpacing = 0,
@@ -515,7 +515,7 @@ namespace NeuroAccessMaui.UI.Rendering
 
 			foreach (MarkdownElement _ in Element.Children)
 			{
-				grid.AddRowDefinition(new RowDefinition { Height = GridLength.Auto });
+				Grid.AddRowDefinition(new RowDefinition { Height = GridLength.Auto });
 			}
 
 			foreach (MarkdownElement E in Element.Children)
@@ -528,34 +528,34 @@ namespace NeuroAccessMaui.UI.Rendering
 					{
 						this.RenderContentView(AppStyles.SmallRightMargins);
 
-						ContentView cv = (ContentView)this.currentElement;
+						ContentView Cv = (ContentView)this.currentElement;
 
-						cv.Column(0);
-						cv.Row(Row);
+						Cv.Column(0);
+						Cv.Row(Row);
 
-						cv.Content = (new Label { Text = "✓" });
+						Cv.Content = (new Label { Text = "✓" });
 
-						grid.Add(cv);
+						Grid.Add(Cv);
 					}
 
-					ContentView cv2 = new ContentView();
-					cv2.Column(1);
-					cv2.Row(Row);
+					ContentView Cv2 = new ContentView();
+					Cv2.Column(1);
+					Cv2.Row(Row);
 
-					this.currentElement = cv2;
+					this.currentElement = Cv2;
 
 					if (ParagraphBullet)
 						await E.Render(this);
 					else
 						await this.RenderLabel(TaskItem, false);
 
-					grid.Add(cv2);
+					Grid.Add(Cv2);
 				}
 
 				Row++;
 			}
 
-			Bakup.Content = grid;
+			Bakup.Content = Grid;
 			this.currentElement = Bakup;
 		}
 
@@ -586,7 +586,7 @@ namespace NeuroAccessMaui.UI.Rendering
 			int Row, NrRows;
 			int RowNr = 0;
 
-			Grid grid = new Grid
+			Grid Grid = new Grid
 			{
 				RowSpacing = -2,
 				ColumnSpacing = -2,
@@ -596,35 +596,35 @@ namespace NeuroAccessMaui.UI.Rendering
 
 			for (Column = 0; Column < Element.Columns; Column++)
 			{
-				grid.AddColumnDefinition(new ColumnDefinition { Width = GridLength.Auto });
+				Grid.AddColumnDefinition(new ColumnDefinition { Width = GridLength.Auto });
 			}
 
 			for (Row = 0, NrRows = Element.Rows.Length + Element.Headers.Length; Row < NrRows; Row++)
 			{
-				grid.AddRowDefinition(new RowDefinition { Height = GridLength.Auto });
+				Grid.AddRowDefinition(new RowDefinition { Height = GridLength.Auto });
 			}
 
-			ContentView cv = new ContentView
+			ContentView Cv = new ContentView
 			{
 				Padding = AppStyles.SmallTopMargins + AppStyles.SmallBottomMargins,
-				Content = grid
+				Content = Grid
 			};
 
 			ScrollView sv = new ScrollView
 			{
 				Orientation = ScrollOrientation.Horizontal,
-				Content = cv
+				Content = Cv
 			};
 
 			for (Row = 0, NrRows = Element.Headers.Length; Row < NrRows; Row++, RowNr++)
 			{
-				this.currentElement = grid;
+				this.currentElement = Grid;
 				await this.Render(Element.Headers[Row], Element.HeaderCellAlignments[Row], RowNr, true, Element);
 			}
 
 			for (Row = 0, NrRows = Element.Rows.Length; Row < NrRows; Row++, RowNr++)
 			{
-				this.currentElement = grid;
+				this.currentElement = Grid;
 				await this.Render(Element.Rows[Row], Element.RowCellAlignments[Row], RowNr, false, Element);
 			}
 
@@ -659,46 +659,46 @@ namespace NeuroAccessMaui.UI.Rendering
 
 				ColSpan -= Column;
 
-				Frame frame = new Frame();
+				Frame Frame = new Frame();
 
 				if ((RowNr & 1) == 0)
-					frame.Style = AppStyles.TableCellEven;
+					Frame.Style = AppStyles.TableCellEven;
 
 				else
-					frame.Style = AppStyles.TableCellOdd;
+					Frame.Style = AppStyles.TableCellOdd;
 
-				frame.Column(Column);
-				frame.Row(RowNr);
+				Frame.Column(Column);
+				Frame.Row(RowNr);
 
 				if (ColSpan > 1)
-					frame.ColumnSpan(ColSpan);
+					Frame.ColumnSpan(ColSpan);
 
 				if (E.InlineSpanElement)
 				{
 					this.RenderContentView(TextAlignment, new Thickness(0, 0, 0, 0), AppStyles.TableCell);
 
-					ContentView cv = (ContentView)this.currentElement;
-					this.currentElement = cv;
+					ContentView Cv = (ContentView)this.currentElement;
+					this.currentElement = Cv;
 
 					this.Bold = Bold;
 					await this.RenderLabel(E, true);
 
-					frame.Content = cv;
+					Frame.Content = Cv;
 					this.Bold = false;
 				}
 				else
 				{
-					ContentView cv = new ContentView
+					ContentView Cv = new ContentView
 					{
 						Style = AppStyles.TableCell
 					};
-					this.currentElement = cv;
+					this.currentElement = Cv;
 
 					await E.Render(this);
 
-					frame.Content = cv;
+					Frame.Content = Cv;
 				}
-				Bakup.Add(frame);
+				Bakup.Add(Frame);
 			}
 			this.Restore(Bak);
 
@@ -826,7 +826,7 @@ namespace NeuroAccessMaui.UI.Rendering
 			int Row = 0;
 			bool ParagraphBullet;
 
-			Grid grid = new Grid
+			Grid Grid = new Grid
 			{
 				RowSpacing = 0,
 				ColumnSpacing = 0,
@@ -839,7 +839,7 @@ namespace NeuroAccessMaui.UI.Rendering
 
 			foreach (MarkdownElement _ in Element.Children)
 			{
-				grid.AddRowDefinition(new RowDefinition { Height = GridLength.Auto });
+				Grid.AddRowDefinition(new RowDefinition { Height = GridLength.Auto });
 			}
 
 			foreach (MarkdownElement E in Element.Children)
@@ -851,9 +851,9 @@ namespace NeuroAccessMaui.UI.Rendering
 					ParagraphBullet = !E.InlineSpanElement || E.OutsideParagraph;
 
 					this.RenderContentView(AppStyles.SmallRightMargins);
-					ContentView innerCv = (ContentView)this.currentElement;
-					innerCv.Column(0);
-					innerCv.Row(Row);
+					ContentView InnerCv = (ContentView)this.currentElement;
+					InnerCv.Column(0);
+					InnerCv.Row(Row);
 
 					Label label = new Label();
 
@@ -862,13 +862,13 @@ namespace NeuroAccessMaui.UI.Rendering
 					else
 						label.Text = Expected.ToString(CultureInfo.InvariantCulture) + ".";
 
-					innerCv.Content = label;
-					grid.Add(innerCv);
+					InnerCv.Content = label;
+					Grid.Add(InnerCv);
 
-					ContentView vslContainer = new ContentView();
-					vslContainer.Column(1);
-					vslContainer.Row(Row);
-					this.currentElement = vslContainer;
+					ContentView VslContainer = new ContentView();
+					VslContainer.Column(1);
+					VslContainer.Row(Row);
+					this.currentElement = VslContainer;
 
 					if (ParagraphBullet)
 					{
@@ -879,13 +879,13 @@ namespace NeuroAccessMaui.UI.Rendering
 						await this.RenderLabel(Item, false);
 					}
 
-					grid.Add(vslContainer);
+					Grid.Add(VslContainer);
 				}
 
 				Row++;
 			}
 
-			Bakup.Content = grid;
+			Bakup.Content = Grid;
 			this.currentElement = Bakup;
 		}
 
@@ -920,7 +920,7 @@ namespace NeuroAccessMaui.UI.Rendering
 				};
 				HtmlRenderer? Html = null;
 
-				VerticalStackLayout vsl = new VerticalStackLayout();
+				VerticalStackLayout Vsl = new VerticalStackLayout();
 
 				try
 				{
@@ -946,13 +946,13 @@ namespace NeuroAccessMaui.UI.Rendering
 								Html.Dispose();
 								Html = null;
 
-								vsl.Add(label);
+								Vsl.Add(label);
 							}
 
-							ContentView cv = new ContentView();
-							this.currentElement = cv;
+							ContentView Cv = new ContentView();
+							this.currentElement = Cv;
 							await E.Render(this);
-							vsl.Add(cv);
+							Vsl.Add(Cv);
 						}
 					}
 
@@ -965,7 +965,7 @@ namespace NeuroAccessMaui.UI.Rendering
 							TextType = TextType.Html,
 							Text = Html.ToString()
 						};
-						vsl.Add(label);
+						Vsl.Add(label);
 					}
 				}
 				finally
@@ -973,7 +973,7 @@ namespace NeuroAccessMaui.UI.Rendering
 					Html?.Dispose();
 				}
 
-				Bakup.Content = vsl;
+				Bakup.Content = Vsl;
 				this.currentElement = Bakup;
 			}
 		}
@@ -1134,7 +1134,7 @@ namespace NeuroAccessMaui.UI.Rendering
 		{
 			ContentView Bakup = (ContentView)this.currentElement;
 
-			Border border = new Border
+			Border Border = new Border
 			{
 				Padding = AppStyles.SmallMargins,
 				Stroke = new SolidColorBrush
@@ -1148,14 +1148,14 @@ namespace NeuroAccessMaui.UI.Rendering
 				}
 			};
 
-			Bakup.Content = border;
+			Bakup.Content = Border;
 
-			ContentView cv = new ContentView();
-			this.currentElement = cv;
+			ContentView Cv = new ContentView();
+			this.currentElement = Cv;
 
 			await this.RenderChildren(Element);
 
-			border.Content = cv;
+			Border.Content = Cv;
 			this.currentElement = Bakup;
 		}
 
@@ -1209,7 +1209,7 @@ namespace NeuroAccessMaui.UI.Rendering
 			}
 			else
 			{
-				ContentView cv = (ContentView)this.currentElement;
+				ContentView Cv = (ContentView)this.currentElement;
 
 				Label newLabel = new Label
 				{
@@ -1217,7 +1217,7 @@ namespace NeuroAccessMaui.UI.Rendering
 					Text = $"<--- {Element.HTML} --->",
 				};
 
-				cv.Content = newLabel;
+				Cv.Content = newLabel;
 			}
 
 			return Task.CompletedTask;
@@ -1308,12 +1308,12 @@ namespace NeuroAccessMaui.UI.Rendering
 			{
 				HeightRequest = 1,
 				BackgroundColor = AppColors.NormalEditPlaceholder,
-				HorizontalOptions = LayoutOptions.FillAndExpand,
+				HorizontalOptions = LayoutOptions.Fill,
 				Margin = AppStyles.SmallTopMargins + AppStyles.SmallBottomMargins
 			};
 
-			ContentView cv = (ContentView)this.currentElement;
-			cv.Content = BoxView;
+			ContentView Cv = (ContentView)this.currentElement;
+			Cv.Content = BoxView;
 
 			return Task.CompletedTask;
 		}
@@ -1345,9 +1345,9 @@ namespace NeuroAccessMaui.UI.Rendering
 
 			label.Style = AppStyles.GetHeaderStyle(Level);
 
-			ContentView cv = (ContentView)this.currentElement;
-			cv.Content = label;
-			this.currentElement = cv;
+			ContentView Cv = (ContentView)this.currentElement;
+			Cv.Content = label;
+			this.currentElement = Cv;
 			
 		}
 
@@ -1359,18 +1359,18 @@ namespace NeuroAccessMaui.UI.Rendering
 		{
 			ContentView Bakup = (ContentView)this.currentElement;
 
-			ContentView innerCV = new();
-			this.currentElement = innerCV;
+			ContentView InnerCV = new();
+			this.currentElement = InnerCV;
 
-			Border border = new Border
+			Border Border = new Border
 			{
 				Background = Color.FromArgb("FFFAFAD2"),
-				Content = innerCV
+				Content = InnerCV
 			};
 
 			this.RenderSpan(Element.Tag);
 
-			Bakup.Content = border;
+			Bakup.Content = Border;
 			return Task.CompletedTask;
 		}
 
@@ -1458,7 +1458,7 @@ namespace NeuroAccessMaui.UI.Rendering
 		{
 			ContentView Bakup = (ContentView)this.currentElement;
 
-			Border border = new Border
+			Border Border = new Border
 			{
 				Padding = AppStyles.SmallMargins,
 				Stroke = new SolidColorBrush
@@ -1472,14 +1472,14 @@ namespace NeuroAccessMaui.UI.Rendering
 				}
 			};
 
-			Bakup.Content = border;
+			Bakup.Content = Border;
 
-			ContentView cv = new ContentView();
-			this.currentElement = cv;
+			ContentView Cv = new ContentView();
+			this.currentElement = Cv;
 
 			await this.RenderChildren(Element);
 
-			border.Content = cv;
+			Border.Content = Cv;
 			this.currentElement = Bakup;
 		}
 
@@ -1500,14 +1500,14 @@ namespace NeuroAccessMaui.UI.Rendering
 					Margins += AppStyles.SmallTopMargins;
 
 				this.RenderContentView(Margins);
-				ContentView cv = (ContentView)this.currentElement;
-				this.currentElement = cv;
+				ContentView Cv = (ContentView)this.currentElement;
+				this.currentElement = Cv;
 
 				bool BoldBak = this.Bold;
 				this.Bold = true;
 
 				await this.RenderLabel(Term, true);
-				Bakup.Content = cv;
+				Bakup.Content = Cv;
 				this.Bold = BoldBak;
 
 				Top = false;
@@ -1569,13 +1569,13 @@ namespace NeuroAccessMaui.UI.Rendering
 					if (Description == Last)
 						Bakup.Padding += AppStyles.SmallBottomMargins;
 
-					ContentView innerCV = new();
-					this.currentElement = innerCV;
+					ContentView InnerCV = new();
+					this.currentElement = InnerCV;
 					await Description.Render(this); //TODO?
 
-					VerticalStackLayout vsl = new VerticalStackLayout();
-					vsl.Add(innerCV);
-					Bakup.Content = vsl;
+					VerticalStackLayout Vsl = new VerticalStackLayout();
+					Vsl.Add(InnerCV);
+					Bakup.Content = Vsl;
 				}
 			}
 		}
@@ -1587,7 +1587,7 @@ namespace NeuroAccessMaui.UI.Rendering
 		public async Task Render(CodeBlock Element)
 		{
 			ContentView Bakup = (ContentView)this.currentElement;
-			VerticalStackLayout vsl = new();
+			VerticalStackLayout Vsl = new();
 
 			StringBuilder Output = new();
 			MauiXamlRenderer rend = new(Output, XML.WriterSettings(false, true));
@@ -1616,7 +1616,7 @@ namespace NeuroAccessMaui.UI.Rendering
 								Text = ex3.Message
 							};
 
-							vsl.Add(label);
+							Vsl.Add(label);
 						}
 					}
 					else
@@ -1628,7 +1628,7 @@ namespace NeuroAccessMaui.UI.Rendering
 							Text = ex.Message
 						};
 
-						vsl.Add(label);
+						Vsl.Add(label);
 					}
 				}
 			}
@@ -1643,10 +1643,10 @@ namespace NeuroAccessMaui.UI.Rendering
 					Text = Element.Rows[i]
 				};
 
-				vsl.Add(label);
+				Vsl.Add(label);
 			}
 
-			Bakup.Content = vsl;
+			Bakup.Content = Vsl;
 			this.currentElement = Bakup;
 		}
 
@@ -1671,7 +1671,7 @@ namespace NeuroAccessMaui.UI.Rendering
 			int Row = 0;
 			bool ParagraphBullet;
 
-			Grid grid = new Grid
+			Grid Grid = new Grid
 			{
 				RowSpacing = 0,
 				ColumnSpacing = 0,
@@ -1684,7 +1684,7 @@ namespace NeuroAccessMaui.UI.Rendering
 
 			foreach (MarkdownElement _ in Element.Children)
 			{
-				grid.AddRowDefinition(new RowDefinition { Height = GridLength.Auto });
+				Grid.AddRowDefinition(new RowDefinition { Height = GridLength.Auto });
 			}
 
 			foreach (MarkdownElement E in Element.Children)
@@ -1695,31 +1695,31 @@ namespace NeuroAccessMaui.UI.Rendering
 
 					this.RenderContentView(AppStyles.SmallRightMargins);
 
-					ContentView cv = (ContentView)this.currentElement;
-					cv.Column(0);
-					cv.Row(Row);
+					ContentView Cv = (ContentView)this.currentElement;
+					Cv.Column(0);
+					Cv.Row(Row);
 
 					Label lbl = new Label { Text = "•" };
-					cv.Content = lbl;
-					grid.Add(cv);
+					Cv.Content = lbl;
+					Grid.Add(Cv);
 
-					ContentView vslContainer = new ContentView();
-					vslContainer.Column(1);
-					vslContainer.Row(Row);
-					this.currentElement = vslContainer;
+					ContentView VslContainer = new ContentView();
+					VslContainer.Column(1);
+					VslContainer.Row(Row);
+					this.currentElement = VslContainer;
 
 					if (ParagraphBullet)
 						await E.Render(this);
 					else
 						await this.RenderLabel(Item, false);
 
-					grid.Add(vslContainer);
+					Grid.Add(VslContainer);
 				}
 
 				Row++;
 			}
 
-			Bakup.Content = grid;
+			Bakup.Content = Grid;
 			this.currentElement = Bakup;
 		}
 
@@ -1745,7 +1745,7 @@ namespace NeuroAccessMaui.UI.Rendering
 		{
 			ContentView Bakup = (ContentView)this.currentElement;
 
-			Border border = new Border
+			Border Border = new Border
 			{
 				Padding = AppStyles.SmallMargins,
 				Stroke = new SolidColorBrush
@@ -1759,14 +1759,14 @@ namespace NeuroAccessMaui.UI.Rendering
 				}
 			};
 
-			Bakup.Content = border;
+			Bakup.Content = Border;
 
-			ContentView cv = new ContentView();
-			this.currentElement = cv;
+			ContentView Cv = new ContentView();
+			this.currentElement = Cv;
 
 			await this.RenderChildren(Element);
 
-			border.Content = cv;
+			Border.Content = Cv;
 			this.currentElement = Bakup;
 		}
 
@@ -1944,8 +1944,8 @@ namespace NeuroAccessMaui.UI.Rendering
 				Content = image
 			};
 
-			ContentView cv = (ContentView)this.currentElement;
-			cv.Content = scrollView;
+			ContentView Cv = (ContentView)this.currentElement;
+			Cv.Content = scrollView;
 
 			return Task.CompletedTask;
 		}
@@ -2070,7 +2070,7 @@ namespace NeuroAccessMaui.UI.Rendering
 
 				if (ex is AggregateException ex2)
 				{
-					VerticalStackLayout vsl = new();
+					VerticalStackLayout Vsl = new();
 
 					foreach (Exception ex3 in ex2.InnerExceptions)
 					{
@@ -2081,9 +2081,9 @@ namespace NeuroAccessMaui.UI.Rendering
 							Text = ex3.Message
 						};
 
-						vsl.Add(label);
+						Vsl.Add(label);
 					}
-					Bakup.Content = vsl;
+					Bakup.Content = Vsl;
 				}
 				else
 				{
@@ -2174,29 +2174,29 @@ namespace NeuroAccessMaui.UI.Rendering
 			if (Source.Height.HasValue)
 				sv.HeightRequest = Source.Height.Value;
 
-			ContentView cv = (ContentView)this.currentElement;
+			ContentView Cv = (ContentView)this.currentElement;
 
-			cv.Content = sv;
+			Cv.Content = sv;
 		}
 
 		private async Task RenderMaui(Waher.Content.Markdown.Model.SpanElements.Multimedia Element)
 		{
 			ContentView Bakup = (ContentView)this.currentElement;
-			VerticalStackLayout vsl = new VerticalStackLayout();
+			VerticalStackLayout Vsl = new VerticalStackLayout();
 
 			foreach (MultimediaItem item in Element.Items)
 			{
-				ContentView cv = new();
-				this.currentElement = cv;
+				ContentView Cv = new();
+				this.currentElement = Cv;
 				await this.OutputMaui(new Waher.Content.Emoji.ImageSource()
 				{
 					Url = Element.Document.CheckURL(item.Url, null),
 					Width = item.Width,
 					Height = item.Height,
 				});
-				vsl.Add(cv);
+				Vsl.Add(Cv);
 			}
-			Bakup.Content = vsl;
+			Bakup.Content = Vsl;
 			this.currentElement = Bakup;
 		}
 
