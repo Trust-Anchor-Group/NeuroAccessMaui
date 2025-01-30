@@ -1,13 +1,17 @@
-using NUnit.Framework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
 namespace NeuroAccess.UiTests
 {
+	[TestClass]
 	public class UnitTest1 : BaseTest
 	{
-		[Test]
+		[TestMethod]
+		[TestCategory("Android")]
 		public void Test1()
 		{
 			App.GetScreenshot().SaveAsFile($"{nameof(Test1)}.png");
+
 #if ANDROID
 			Console.WriteLine("Running tests for Android.");
 #elif IOS
@@ -15,7 +19,7 @@ namespace NeuroAccess.UiTests
 #else
 			throw new PlatformNotSupportedException();
 #endif
-			Assert.Pass();
+			Assert.IsTrue(true);
 		}
 	}
 }
