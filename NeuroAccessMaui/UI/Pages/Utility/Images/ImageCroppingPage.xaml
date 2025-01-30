@@ -15,7 +15,8 @@
 		<controls:ImageCropperView x:Name="ImageCropperView"
 											Grid.Row="0"
 											Grid.Column="0"
-											OutputMaxResolution="800,800" />
+											OutputMaxResolution="800,800"
+											CropMode="Aspect"/>
 
 		<!-- Action Buttons -->
 		<StackLayout Grid.Row="1"
