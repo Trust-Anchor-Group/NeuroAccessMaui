@@ -313,6 +313,18 @@ namespace NeuroAccessMaui.UI
 		}
 
 		/// <summary>
+		/// Style for CompositeDatePicker controls.
+		/// </summary>
+		public static Style RegularCompositeDatePicker
+		{
+			get
+			{
+				regularCompositeDatePicker ??= TryGetResource<Style>("RegularCompositeDatePicker");
+				return regularCompositeDatePicker!;
+			}
+		}
+
+		/// <summary>
 		/// Style for buttons containing a single Unicode character.
 		/// </summary>
 		public static Style UnicodeCharacterButton
