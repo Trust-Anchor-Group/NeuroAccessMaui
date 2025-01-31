@@ -1647,6 +1647,9 @@
   <data name="RequestPaymentMessage" xml:space="preserve">
     <value>Запрос на оплату {0} {1}.</value>
   </data>
+  <data name="RequestPaymentDescription" xml:space="preserve">
+    <value>Чтобы запросить платеж у кого-либо, заполните данные о платеже ниже и нажмите кнопку «Сгенерировать QR-код». Сгенерированный код может быть использован другой стороной для формирования платежа на ваш счет.</value>
+  </data>
   <data name="Room" xml:space="preserve">
     <value>Комната</value>
   </data>
@@ -2211,6 +2214,9 @@
   <data name="Amount" xml:space="preserve">
     <value>Количество:</value>
   </data>
+  <data name="AmountExtra" xml:space="preserve">
+    <value>Дополнительная сумма: (по желанию, предложение)</value>
+  </data>
   <data name="Wallet" xml:space="preserve">
     <value>Бумажник</value>
   </data>
@@ -2480,5 +2486,17 @@
   </data>
   <data name="ReviewContractDescription2" xml:space="preserve">
     <value>Ознакомьтесь с условиями договора</value>
+  </data>
+  <data name="ServerSignatureButtonTitle" xml:space="preserve">
+    <value>Просмотр подписи сервера</value>
+  </data>
+  <data name="ServerSignatureButtonDescription" xml:space="preserve">
+    <value>Просмотр подписи сервера, которая защищает целостность контракта</value>
+  </data>
+  <data name="Transient" xml:space="preserve">
+    <value>Преходящий</value>
+  </data>
+  <data name="GenerateQrCode" xml:space="preserve">
+    <value>Сгенерировать QR-код</value>
   </data>
 </root>
