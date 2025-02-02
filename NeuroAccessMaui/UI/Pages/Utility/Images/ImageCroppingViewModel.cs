@@ -26,19 +26,24 @@ namespace NeuroAccessMaui.UI.Pages.Utility.Images
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ImageCroppingViewModel"/> class.
 		/// </summary>
-		/// <param name="args">The navigation args containing the Source image, TCS, etc.</param>
+		/// <param name="args">The navigation args containing the source image, TCS, etc.</param>
 		public ImageCroppingViewModel(ImageCroppingNavigationArgs? args)
 		{
 			this.args = args;
 		}
 
+		/// <summary>
+		/// Called when the page appears.
+		/// Assigns the incoming source to the cropper control.
+		/// </summary>
+		/// <returns>A task representing the asynchronous operation.</returns>
 		protected override Task OnAppearing()
 		{
 			base.OnAppearing();
 
 			if (this.args?.Source is not null && this.ImageCropperView is not null)
 			{
-				// Assign the incoming source to the cropper control
+				// Assign the incoming source to the cropper control.
 				this.ImageCropperView.ImageSource = this.args.Source;
 			}
 
@@ -48,6 +53,7 @@ namespace NeuroAccessMaui.UI.Pages.Utility.Images
 		/// <summary>
 		/// Command to perform the actual crop and return the result.
 		/// </summary>
+		/// <returns>A task representing the asynchronous crop operation.</returns>
 		[RelayCommand]
 		private async Task CropAsync()
 		{
@@ -56,7 +62,7 @@ namespace NeuroAccessMaui.UI.Pages.Utility.Images
 
 			byte[]? croppedResult = await this.ImageCropperView.PerformCropAsync();
 
-			// If a TaskCompletionSource was provided, set the result
+			// If a TaskCompletionSource was provided, set the result.
 			this.args.CompletionSource?.SetResult(croppedResult);
 
 			// Then pop navigation. If using Shell:
@@ -66,12 +72,30 @@ namespace NeuroAccessMaui.UI.Pages.Utility.Images
 		/// <summary>
 		/// Command to cancel cropping and return a null result.
 		/// </summary>
+		/// <returns>A task representing the asynchronous cancel operation.</returns>
 		[RelayCommand]
 		private async Task CancelAsync()
 		{
 			this.args?.CompletionSource?.SetResult(null);
-
 			await this.GoBack();
+		}
+
+		/// <summary>
+		/// Command to rotate the image by 90 degrees.
+		/// </summary>
+		/// <returns>A task representing the asynchronous rotate operation.</returns>
+		[RelayCommand]
+		private Task RotateAsync()
+		{
+			if (this.ImageCropperView is not null)
+			{
+				// Increment the rotation angle by 90 degrees.
+				double newRotation = this.ImageCropperView.RotationAngle + 90;
+				// Normalize the rotation angle to stay within 0-359 degrees.
+				this.ImageCropperView.RotationAngle = newRotation % 360;
+				// The ImageCropperView will re-render using the updated RotationAngle.
+			}
+			return Task.CompletedTask;
 		}
 	}
 }

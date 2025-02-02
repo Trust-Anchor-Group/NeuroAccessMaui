@@ -1,7 +1,12 @@
+using System;
+using System.IO;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Maui.Controls;
 using SkiaSharp;
 using SkiaSharp.Views.Maui;
 using SkiaSharp.Views.Maui.Controls;
-using Waher.Content;
 
 namespace NeuroAccessMaui.UI.Controls
 {
@@ -43,40 +48,64 @@ namespace NeuroAccessMaui.UI.Controls
 	}
 
 	/// <summary>
-	/// A custom view that displays an image with pinch-zoom and pan support, 
-	/// then crops it according to CropMode. The crop shape remains centered in the view, 
+	/// A custom view that displays an image with pinch-zoom, pan, and rotation support,
+	/// then crops it according to CropMode. The crop shape remains centered in the view,
 	/// with some optional margin.
 	/// </summary>
 	public class ImageCropperView : ContentView
 	{
 		// -----------------------------------------------------------
-		// Bindable Properties (same as before)...
+		// Static Fields
 		// -----------------------------------------------------------
 
+		/// <summary>
+		/// A shared HttpClient for downloading images.
+		/// </summary>
+		private static readonly HttpClient SHttpClient = new HttpClient();
+
+		// -----------------------------------------------------------
+		// Bindable Properties
+		// -----------------------------------------------------------
+
+		/// <summary>
+		/// Backing bindable property for OutputMaxResolution.
+		/// </summary>
 		public static readonly BindableProperty OutputMaxResolutionProperty = BindableProperty.Create(
 			 propertyName: nameof(OutputMaxResolution),
 			 returnType: typeof(Size),
 			 declaringType: typeof(ImageCropperView),
 			 defaultValue: new Size(800, 800));
 
+		/// <summary>
+		/// Gets or sets the maximum resolution for the cropped output.
+		/// </summary>
 		public Size OutputMaxResolution
 		{
 			get => (Size)this.GetValue(OutputMaxResolutionProperty);
 			set => this.SetValue(OutputMaxResolutionProperty, value);
 		}
 
+		/// <summary>
+		/// Backing bindable property for InputMaxResolution.
+		/// </summary>
 		public static readonly BindableProperty InputMaxResolutionProperty = BindableProperty.Create(
 			 propertyName: nameof(InputMaxResolution),
 			 returnType: typeof(Size),
 			 declaringType: typeof(ImageCropperView),
 			 defaultValue: new Size(3840, 2160));
 
+		/// <summary>
+		/// Gets or sets the maximum resolution for the input image.
+		/// </summary>
 		public Size InputMaxResolution
 		{
 			get => (Size)this.GetValue(InputMaxResolutionProperty);
 			set => this.SetValue(InputMaxResolutionProperty, value);
 		}
 
+		/// <summary>
+		/// Backing bindable property for ImageSource.
+		/// </summary>
 		public static readonly BindableProperty ImageSourceProperty = BindableProperty.Create(
 			 propertyName: nameof(ImageSource),
 			 returnType: typeof(ImageSource),
@@ -84,58 +113,104 @@ namespace NeuroAccessMaui.UI.Controls
 			 defaultValue: null,
 			 propertyChanged: OnImageSourceChanged);
 
+		/// <summary>
+		/// Gets or sets the image source to display and crop.
+		/// </summary>
 		public ImageSource ImageSource
 		{
 			get => (ImageSource)this.GetValue(ImageSourceProperty);
 			set => this.SetValue(ImageSourceProperty, value);
 		}
 
+		/// <summary>
+		/// Backing bindable property for CropMode.
+		/// </summary>
 		public static readonly BindableProperty CropModeProperty = BindableProperty.Create(
 			 propertyName: nameof(CropMode),
 			 returnType: typeof(CropMode),
 			 declaringType: typeof(ImageCropperView),
 			 defaultValue: CropMode.Square);
 
+		/// <summary>
+		/// Gets or sets the crop mode.
+		/// </summary>
 		public CropMode CropMode
 		{
 			get => (CropMode)this.GetValue(CropModeProperty);
 			set => this.SetValue(CropModeProperty, value);
 		}
 
+		/// <summary>
+		/// Backing bindable property for OutputFormat.
+		/// </summary>
 		public static readonly BindableProperty OutputFormatProperty = BindableProperty.Create(
 			 propertyName: nameof(OutputFormat),
 			 returnType: typeof(CropOutputFormat),
 			 declaringType: typeof(ImageCropperView),
 			 defaultValue: CropOutputFormat.Png);
 
+		/// <summary>
+		/// Gets or sets the output image format.
+		/// </summary>
 		public CropOutputFormat OutputFormat
 		{
 			get => (CropOutputFormat)this.GetValue(OutputFormatProperty);
 			set => this.SetValue(OutputFormatProperty, value);
 		}
 
+		/// <summary>
+		/// Backing bindable property for JpegQuality.
+		/// </summary>
 		public static readonly BindableProperty JpegQualityProperty = BindableProperty.Create(
 			 propertyName: nameof(JpegQuality),
 			 returnType: typeof(int),
 			 declaringType: typeof(ImageCropperView),
 			 defaultValue: 90);
 
+		/// <summary>
+		/// Gets or sets the JPEG quality when encoding as JPEG.
+		/// </summary>
 		public int JpegQuality
 		{
 			get => (int)this.GetValue(JpegQualityProperty);
 			set => this.SetValue(JpegQualityProperty, value);
 		}
 
+		/// <summary>
+		/// Backing bindable property for CropShapeFillPortion.
+		/// </summary>
 		public static readonly BindableProperty CropShapeFillPortionProperty = BindableProperty.Create(
 			 propertyName: nameof(CropShapeFillPortion),
 			 returnType: typeof(float),
 			 declaringType: typeof(ImageCropperView),
 			 defaultValue: 0.9f);
 
+		/// <summary>
+		/// Gets or sets the fraction of the view filled by the crop shape.
+		/// </summary>
 		public float CropShapeFillPortion
 		{
 			get => (float)this.GetValue(CropShapeFillPortionProperty);
 			set => this.SetValue(CropShapeFillPortionProperty, value);
+		}
+
+		/// <summary>
+		/// Backing bindable property for RotationAngle.
+		/// </summary>
+		public static readonly BindableProperty RotationAngleProperty = BindableProperty.Create(
+			 propertyName: nameof(RotationAngle),
+			 returnType: typeof(double),
+			 declaringType: typeof(ImageCropperView),
+			 defaultValue: 0.0,
+			 propertyChanged: OnRotationAngleChanged);
+
+		/// <summary>
+		/// Gets or sets the rotation angle (in degrees) for the image.
+		/// </summary>
+		public double RotationAngle
+		{
+			get => (double)this.GetValue(RotationAngleProperty);
+			set => this.SetValue(RotationAngleProperty, value);
 		}
 
 		// -----------------------------------------------------------
@@ -196,9 +271,12 @@ namespace NeuroAccessMaui.UI.Controls
 		// Constructor
 		// -----------------------------------------------------------
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ImageCropperView"/> class.
+		/// </summary>
 		public ImageCropperView()
 		{
-			Grid root = new Grid
+			Grid Root = new Grid
 			{
 				VerticalOptions = LayoutOptions.Fill,
 				HorizontalOptions = LayoutOptions.Fill
@@ -210,36 +288,33 @@ namespace NeuroAccessMaui.UI.Controls
 				HorizontalOptions = LayoutOptions.Fill
 			};
 
-			// IMPORTANT: Restrict pan gesture to 1 touch point
-			PanGestureRecognizer panGesture = new PanGestureRecognizer
+			// IMPORTANT: Restrict pan gesture to 1 touch point.
+			PanGestureRecognizer PanGesture = new PanGestureRecognizer
 			{
 				TouchPoints = 1
 			};
-			panGesture.PanUpdated += this.OnPan;
+			PanGesture.PanUpdated += this.OnPan;
 
-			// Pinch typically uses 2 touch points
-			PinchGestureRecognizer pinchGesture = new PinchGestureRecognizer
-			{
-				// In some versions of .NET MAUI, 
-				// PinchGesture doesn't have a TouchPoints property, 
-				// but if it does, you can set it to 2. 
-				// TouchPoints = 2
-			};
-			pinchGesture.PinchUpdated += this.OnPinch;
+			// Pinch typically uses 2 touch points.
+			PinchGestureRecognizer PinchGesture = new PinchGestureRecognizer();
+			PinchGesture.PinchUpdated += this.OnPinch;
 
-			this.canvasView.GestureRecognizers.Add(panGesture);
-			this.canvasView.GestureRecognizers.Add(pinchGesture);
+			this.canvasView.GestureRecognizers.Add(PanGesture);
+			this.canvasView.GestureRecognizers.Add(PinchGesture);
 
 			this.canvasView.PaintSurface += this.OnPaintSurface;
-			root.Add(this.canvasView);
+			Root.Add(this.canvasView);
 
-			this.Content = root;
+			this.Content = Root;
 		}
 
 		// -----------------------------------------------------------
 		// Public Methods
 		// -----------------------------------------------------------
 
+		/// <summary>
+		/// Resets the pan, zoom, and rotation transformations to their default values.
+		/// </summary>
 		public void ResetTransformations()
 		{
 			this.scale = 1f;
@@ -252,91 +327,102 @@ namespace NeuroAccessMaui.UI.Controls
 		}
 
 		/// <summary>
-		/// Performs the crop, with the final scaled to OutputMaxResolution, etc.
-		/// (Same as before, unchanged except for your existing logic.)
+		/// Performs the crop, applying pan, zoom, and rotation transformations,
+		/// and resizes the output to <see cref="OutputMaxResolution"/>.
 		/// </summary>
+		/// <returns>A task that represents the asynchronous operation. The task result contains the cropped image as a byte array, or null if an error occurred.</returns>
 		public async Task<byte[]?> PerformCropAsync()
 		{
 			if (this.bitmap == null)
 				return null;
 
-			int viewWidth = (int)this.canvasView.CanvasSize.Width;
-			int viewHeight = (int)this.canvasView.CanvasSize.Height;
-			if (viewWidth <= 0 || viewHeight <= 0)
+			int ViewWidth = (int)this.canvasView.CanvasSize.Width;
+			int ViewHeight = (int)this.canvasView.CanvasSize.Height;
+			if (ViewWidth <= 0 || ViewHeight <= 0)
 				return null;
 
-			// 1) Render the entire image (with transformations) into a temporary surface
-			using SKBitmap tempSurfaceBitmap = new SKBitmap(viewWidth, viewHeight, isOpaque: false);
-			using SKCanvas tempCanvas = new SKCanvas(tempSurfaceBitmap);
-			tempCanvas.Clear(SKColors.Transparent);
+			// 1) Render the entire image (with transformations) into a temporary surface.
+			using SKBitmap TempSurfaceBitmap = new SKBitmap(ViewWidth, ViewHeight, isOpaque: false);
+			using SKCanvas TempCanvas = new SKCanvas(TempSurfaceBitmap);
+			TempCanvas.Clear(SKColors.Transparent);
 
-			tempCanvas.Save();
-			tempCanvas.Translate(this.offsetX, this.offsetY);
-			tempCanvas.Scale(this.scale);
+			float CenterX = ViewWidth / 2f;
+			float CenterY = ViewHeight / 2f;
 
-			SKRect destRect = new SKRect(0, 0, this.bitmap.Width, this.bitmap.Height);
-			tempCanvas.DrawBitmap(this.bitmap, destRect);
+			TempCanvas.Save();
+			TempCanvas.Translate(this.offsetX, this.offsetY);
+			TempCanvas.Scale(this.scale);
+			// Apply rotation about the center of the view.
+			TempCanvas.Translate(CenterX, CenterY);
+			TempCanvas.RotateDegrees((float)this.RotationAngle);
+			TempCanvas.Translate(-CenterX, -CenterY);
 
-			tempCanvas.Restore();
+			SKRect DestRect = new SKRect(0, 0, this.bitmap.Width, this.bitmap.Height);
+			TempCanvas.DrawBitmap(this.bitmap, DestRect);
+			TempCanvas.Restore();
 
-			// 2) Figure out the shape rect, create path, etc. (same as your code)...
-
-			SKRect cropRect = this.ComputeCropShapeRect(viewWidth, viewHeight, this.CropShapeFillPortion);
-			SKPath cropPath = new SKPath();
+			// 2) Create the crop shape based on the selected CropMode.
+			SKRect CropRect = this.ComputeCropShapeRect(ViewWidth, ViewHeight, this.CropShapeFillPortion);
+			SKPath CropPath = new SKPath();
 			switch (this.CropMode)
 			{
 				case CropMode.Circle:
 					{
-						float radius = cropRect.Width / 2f;
-						float cx = cropRect.MidX;
-						float cy = cropRect.MidY;
-						cropPath.AddCircle(cx, cy, radius);
+						float Radius = CropRect.Width / 2f;
+						float Cx = CropRect.MidX;
+						float Cy = CropRect.MidY;
+						CropPath.AddCircle(Cx, Cy, Radius);
 						break;
 					}
 				case CropMode.Square:
 				case CropMode.Aspect:
-					cropPath.AddRect(cropRect);
+					CropPath.AddRect(CropRect);
 					break;
 			}
 
-			using SKBitmap maskedBitmap = new SKBitmap(viewWidth, viewHeight, isOpaque: false);
-			using (SKCanvas maskedCanvas = new SKCanvas(maskedBitmap))
+			// 3) Apply the crop mask.
+			using SKBitmap MaskedBitmap = new SKBitmap(ViewWidth, ViewHeight, isOpaque: false);
+			using (SKCanvas MaskedCanvas = new SKCanvas(MaskedBitmap))
 			{
-				maskedCanvas.Clear(SKColors.Transparent);
-				maskedCanvas.ClipPath(cropPath, SKClipOperation.Intersect, true);
+				MaskedCanvas.Clear(SKColors.Transparent);
+				MaskedCanvas.ClipPath(CropPath, SKClipOperation.Intersect, true);
 
-				maskedCanvas.Save();
-				maskedCanvas.Translate(this.offsetX, this.offsetY);
-				maskedCanvas.Scale(this.scale);
-				maskedCanvas.DrawBitmap(this.bitmap, destRect);
-				maskedCanvas.Restore();
+				MaskedCanvas.Save();
+				MaskedCanvas.Translate(this.offsetX, this.offsetY);
+				MaskedCanvas.Scale(this.scale);
+				MaskedCanvas.Translate(CenterX, CenterY);
+				MaskedCanvas.RotateDegrees((float)this.RotationAngle);
+				MaskedCanvas.Translate(-CenterX, -CenterY);
+				MaskedCanvas.DrawBitmap(this.bitmap, DestRect);
+				MaskedCanvas.Restore();
 			}
 
-			SKRectI boundingBox = SKRectI.Round(cropRect);
-			using SKBitmap cropped = new SKBitmap(boundingBox.Width, boundingBox.Height);
-			using (SKCanvas croppedCanvas = new SKCanvas(cropped))
+			// 4) Extract the bounding box of the crop area.
+			SKRectI BoundingBox = SKRectI.Round(CropRect);
+			using SKBitmap Cropped = new SKBitmap(BoundingBox.Width, BoundingBox.Height);
+			using (SKCanvas CroppedCanvas = new SKCanvas(Cropped))
 			{
-				SKRect dst = new SKRect(0, 0, boundingBox.Width, boundingBox.Height);
-				croppedCanvas.DrawBitmap(maskedBitmap, boundingBox, dst);
+				SKRect Dst = new SKRect(0, 0, BoundingBox.Width, BoundingBox.Height);
+				CroppedCanvas.DrawBitmap(MaskedBitmap, BoundingBox, Dst);
 			}
 
-			// 5) Resize if needed, then encode
-			SKBitmap finalBitmap = ResizeBitmapIfNeeded(cropped,
+			// 5) Resize if needed, then encode.
+			SKBitmap FinalBitmap = ResizeBitmapIfNeeded(Cropped,
 				 (int)this.OutputMaxResolution.Width,
 				 (int)this.OutputMaxResolution.Height);
 
-			using MemoryStream ms = new MemoryStream();
+			using MemoryStream Ms = new MemoryStream();
 			if (this.OutputFormat == CropOutputFormat.Png)
 			{
-				finalBitmap.Encode(ms, SKEncodedImageFormat.Png, 100);
+				FinalBitmap.Encode(Ms, SKEncodedImageFormat.Png, 100);
 			}
 			else
 			{
-				int quality = Math.Max(0, Math.Min(100, this.JpegQuality));
-				finalBitmap.Encode(ms, SKEncodedImageFormat.Jpeg, quality);
+				int Quality = Math.Max(0, Math.Min(100, this.JpegQuality));
+				FinalBitmap.Encode(Ms, SKEncodedImageFormat.Jpeg, Quality);
 			}
 
-			return ms.ToArray();
+			return Ms.ToArray();
 		}
 
 		// -----------------------------------------------------------
@@ -344,11 +430,13 @@ namespace NeuroAccessMaui.UI.Controls
 		// -----------------------------------------------------------
 
 		/// <summary>
-		/// Handle pan with one finger.
+		/// Handles pan gestures (one finger) to update the image offset.
 		/// </summary>
-		private void OnPan(object? sender, PanUpdatedEventArgs e)
+		/// <param name="Sender">The gesture recognizer.</param>
+		/// <param name="E">The pan gesture event arguments.</param>
+		private void OnPan(object? Sender, PanUpdatedEventArgs E)
 		{
-			switch (e.StatusType)
+			switch (E.StatusType)
 			{
 				case GestureStatus.Started:
 					this.startOffsetX = this.offsetX;
@@ -356,53 +444,47 @@ namespace NeuroAccessMaui.UI.Controls
 					break;
 
 				case GestureStatus.Running:
-					this.offsetX = this.startOffsetX + (float)e.TotalX;
-					this.offsetY = this.startOffsetY + (float)e.TotalY;
+					this.offsetX = this.startOffsetX + (float)E.TotalX;
+					this.offsetY = this.startOffsetY + (float)E.TotalY;
 					this.canvasView.InvalidateSurface();
 					break;
 			}
 		}
 
 		/// <summary>
-		/// Handle pinch with two fingers.
-		/// Using the pivot from e.ScaleOrigin to keep the pinch stable and avoid jumpiness.
+		/// Handles pinch gestures to update the image scale and adjust the translation to keep the pinch stable.
 		/// </summary>
-		private void OnPinch(object? sender, PinchGestureUpdatedEventArgs e)
+		/// <param name="Sender">The gesture recognizer.</param>
+		/// <param name="E">The pinch gesture event arguments.</param>
+		private void OnPinch(object? Sender, PinchGestureUpdatedEventArgs E)
 		{
-			switch (e.Status)
+			switch (E.Status)
 			{
 				case GestureStatus.Started:
-					// Record the current scale and the pinch pivot in [0..1, 0..1]
+					// Record the current scale and the pinch pivot in [0..1, 0..1].
 					this.startScale = this.scale;
-					this.pinchPivot = e.ScaleOrigin;
+					this.pinchPivot = E.ScaleOrigin;
 					break;
 
 				case GestureStatus.Running:
-					// Calculate the new scale
-					Console.WriteLine("scale: " + (float)e.Scale);
+					float NewScale = this.startScale * (float)E.Scale;
+					// Ensure the scale stays within sensible limits.
+					NewScale = MathF.Max(0.05f, MathF.Min(NewScale, 20f));
 
-					float newScale = this.startScale * (float)e.Scale;
-					Console.WriteLine("newScale: " + newScale);
+					float OldScale = this.scale;
+					this.scale = NewScale;
 
-					// Ensure scale stays within limits
-					newScale = MathF.Max(0.05f, MathF.Min(newScale, 20f));
+					// Calculate the scaling factor.
+					float ScaleFactor = OldScale != 0 ? (this.scale / OldScale) : 1f;
 
-					// Remember the old scale, then apply the new one
-					float oldScale = this.scale;
-					this.scale = newScale;
+					// Convert pivot from [0..1] to actual pixel coordinates.
+					float PivotX = (float)(this.pinchPivot.X * this.canvasView.CanvasSize.Width);
+					float PivotY = (float)(this.pinchPivot.Y * this.canvasView.CanvasSize.Height);
 
-					// Avoid division by zero
-					float scaleFactor = oldScale != 0 ? (this.scale / oldScale) : 1f;
+					// Adjust the offset so the pinch gesture stays centered on the pivot.
+					this.offsetX = PivotX + (this.offsetX - PivotX) * ScaleFactor;
+					this.offsetY = PivotY + (this.offsetY - PivotY) * ScaleFactor;
 
-					// Convert pivot from [0..1] coords into actual pixel coords
-					float pivotX = (float)(this.pinchPivot.X * this.canvasView.CanvasSize.Width);
-					float pivotY = (float)(this.pinchPivot.Y * this.canvasView.CanvasSize.Height);
-
-					// Use pivot-based translation to keep the zoom centered under fingers
-					this.offsetX = pivotX + (this.offsetX - pivotX) * scaleFactor;
-					this.offsetY = pivotY + (this.offsetY - pivotY) * scaleFactor;
-
-					// Redraw
 					this.canvasView.InvalidateSurface();
 					break;
 
@@ -412,133 +494,184 @@ namespace NeuroAccessMaui.UI.Controls
 			}
 		}
 
-
 		// -----------------------------------------------------------
 		// Paint & Layout
 		// -----------------------------------------------------------
 
-		private void OnPaintSurface(object? sender, SKPaintSurfaceEventArgs e)
+		/// <summary>
+		/// Handles the painting of the canvas, applying pan, zoom, and rotation transformations,
+		/// then drawing the image, crop overlay, and a white outline for the crop shape.
+		/// </summary>
+		/// <param name="Sender">The canvas view.</param>
+		/// <param name="E">The paint surface event arguments.</param>
+		private void OnPaintSurface(object? Sender, SKPaintSurfaceEventArgs E)
 		{
-			SKCanvas canvas = e.Surface.Canvas;
-			canvas.Clear(SKColors.Transparent);
+			SKCanvas Canvas = E.Surface.Canvas;
+			Canvas.Clear(SKColors.Transparent);
 
 			if (this.bitmap == null)
 				return;
 
-			// 1) Draw the transformed image
-			canvas.Save();
-			canvas.Translate(this.offsetX, this.offsetY);
-			canvas.Scale(this.scale);
+			float CenterX = E.Info.Width / 2f;
+			float CenterY = E.Info.Height / 2f;
 
-			SKRect destRect = new SKRect(0, 0, this.bitmap.Width, this.bitmap.Height);
-			canvas.DrawBitmap(this.bitmap, destRect);
-			canvas.Restore();
+			// 1) Draw the transformed image.
+			Canvas.Save();
+			Canvas.Translate(this.offsetX, this.offsetY);
+			Canvas.Scale(this.scale);
+			// Apply rotation about the center of the view.
+			Canvas.Translate(CenterX, CenterY);
+			Canvas.RotateDegrees((float)this.RotationAngle);
+			Canvas.Translate(-CenterX, -CenterY);
+			SKRect DestRect = new SKRect(0, 0, this.bitmap.Width, this.bitmap.Height);
+			Canvas.DrawBitmap(this.bitmap, DestRect);
+			Canvas.Restore();
 
-			// 2) Draw the bounding shape overlay (unchanged)
-			SKRect shapeRect = this.ComputeCropShapeRect(e.Info.Width, e.Info.Height, this.CropShapeFillPortion);
-
-			SKPath path = new SKPath();
+			// 2) Build the crop shape path.
+			SKRect ShapeRect = this.ComputeCropShapeRect(E.Info.Width, E.Info.Height, this.CropShapeFillPortion);
+			SKPath Path = new SKPath();
 			switch (this.CropMode)
 			{
 				case CropMode.Circle:
 					{
-						float radius = shapeRect.Width / 2f;
-						float cx = shapeRect.MidX;
-						float cy = shapeRect.MidY;
-						path.AddCircle(cx, cy, radius);
+						float Radius = ShapeRect.Width / 2f;
+						float Cx = ShapeRect.MidX;
+						float Cy = ShapeRect.MidY;
+						Path.AddCircle(Cx, Cy, Radius);
 						break;
 					}
-				case CropMode.Aspect:
 				case CropMode.Square:
-					path.AddRect(shapeRect);
+				case CropMode.Aspect:
+					Path.AddRect(ShapeRect);
 					break;
 			}
 
-			using SKPaint overlayPaint = new SKPaint
+			// 3) Draw the semi-transparent overlay (mask) outside the crop shape.
+			using (SKPaint OverlayPaint = new SKPaint
 			{
 				Color = new SKColor(0, 0, 0, 100),
 				Style = SKPaintStyle.Fill
-			};
+			})
+			{
+				Canvas.Save();
+				Canvas.ClipPath(Path, SKClipOperation.Difference, true);
+				Canvas.DrawRect(new SKRect(0, 0, E.Info.Width, E.Info.Height), OverlayPaint);
+				Canvas.Restore();
+			}
 
-			canvas.Save();
-			canvas.ClipPath(path, SKClipOperation.Difference, true);
-			canvas.DrawRect(new SKRect(0, 0, e.Info.Width, e.Info.Height), overlayPaint);
-			canvas.Restore();
+			// 4) Draw a white outline along the crop shape.
+			using (SKPaint OutlinePaint = new SKPaint
+			{
+				Color = SKColors.White,
+				Style = SKPaintStyle.Stroke,
+				StrokeWidth = 3, // Adjust the outline thickness as needed.
+				IsAntialias = true
+			})
+			{
+				Canvas.DrawPath(Path, OutlinePaint);
+			}
 		}
 
-		protected override void OnSizeAllocated(double width, double height)
+		/// <summary>
+		/// Overrides the OnSizeAllocated method to set the initial image position when the view is first laid out.
+		/// </summary>
+		/// <param name="Width">The width allocated to the view.</param>
+		/// <param name="Height">The height allocated to the view.</param>
+		protected override void OnSizeAllocated(double Width, double Height)
 		{
-			base.OnSizeAllocated(width, height);
+			base.OnSizeAllocated(Width, Height);
 
-			if (!this.initialPositionSet && width > 0 && height > 0 && this.bitmap != null)
+			if (!this.initialPositionSet && Width > 0 && Height > 0 && this.bitmap != null)
 			{
-				this.SetInitialImagePosition(width, height);
+				this.SetInitialImagePosition(Width, Height);
 				this.initialPositionSet = true;
 				this.canvasView.InvalidateSurface();
 			}
 		}
 
+		/// <summary>
+		/// Sets the initial image position so that the crop shape is centered.
+		/// The image is scaled using MathF.Max so that it at least covers the crop area.
+		/// This method converts the view’s allocated size (in DIPs) to pixels using the display density.
+		/// </summary>
+		/// <param name="width">The width of the view (in DIPs).</param>
+		/// <param name="height">The height of the view (in DIPs).</param>
 		private void SetInitialImagePosition(double width, double height)
 		{
-			SKRect shapeRect = this.ComputeCropShapeRect((float)width, (float)height, this.CropShapeFillPortion);
-			float shapeW = shapeRect.Width;
-			float shapeH = shapeRect.Height;
+			// Get the display density.
+			double density = DeviceDisplay.MainDisplayInfo.Density;
 
-			float bmpW = this.bitmap!.Width;
-			float bmpH = this.bitmap.Height;
+			// Convert the allocated size (in device-independent units) to pixels.
+			float viewWidthPx = (float)(width * density);
+			float viewHeightPx = (float)(height * density);
 
-			float scaleX = shapeW / bmpW;
-			float scaleY = shapeH / bmpH;
+			// Compute the crop shape rectangle based on the view size in pixels.
+			SKRect cropShapeRect = this.ComputeCropShapeRect(viewWidthPx, viewHeightPx, this.CropShapeFillPortion);
+
+			// Determine the center of the crop shape.
+			float cropCenterX = cropShapeRect.MidX;
+			float cropCenterY = cropShapeRect.MidY;
+
+			// Compute scaling factors so that the image covers the crop shape.
+			float scaleX = cropShapeRect.Width / this.bitmap!.Width;
+			float scaleY = cropShapeRect.Height / this.bitmap.Height;
+			// Use MathF.Max to ensure the bitmap covers (or exceeds) the crop area.
 			float newScale = MathF.Max(scaleX, scaleY);
-
 			this.scale = newScale;
 
-			float shapeCX = shapeRect.MidX;
-			float shapeCY = shapeRect.MidY;
+			// Calculate the scaled dimensions of the bitmap.
+			float scaledWidth = this.bitmap.Width * newScale;
+			float scaledHeight = this.bitmap.Height * newScale;
 
-			float imageHalfW = (bmpW * newScale) / 2f;
-			float imageHalfH = (bmpH * newScale) / 2f;
-
-			this.offsetX = shapeCX - imageHalfW;
-			this.offsetY = shapeCY - imageHalfH;
+			// Compute offsets to center the scaled image over the crop shape.
+			this.offsetX = cropCenterX - (scaledWidth / 2f);
+			this.offsetY = cropCenterY - (scaledHeight / 2f);
 		}
 
-		private SKRect ComputeCropShapeRect(float containerWidth, float containerHeight, float marginFactor)
+
+		/// <summary>
+		/// Computes the rectangle for the crop shape based on the container size and margin factor.
+		/// </summary>
+		/// <param name="ContainerWidth">The width of the container.</param>
+		/// <param name="ContainerHeight">The height of the container.</param>
+		/// <param name="MarginFactor">The margin factor (between 0 and 1) for the crop shape.</param>
+		/// <returns>A <see cref="SKRect"/> defining the crop shape.</returns>
+		private SKRect ComputeCropShapeRect(float ContainerWidth, float ContainerHeight, float MarginFactor)
 		{
-			marginFactor = MathF.Max(0.0f, MathF.Min(1.0f, marginFactor));
+			MarginFactor = MathF.Max(0.0f, MathF.Min(1.0f, MarginFactor));
 
 			switch (this.CropMode)
 			{
 				case CropMode.Circle:
 				case CropMode.Square:
 					{
-						float minDim = MathF.Min(containerWidth, containerHeight);
-						float shapeSize = minDim * marginFactor;
+						float MinDim = MathF.Min(ContainerWidth, ContainerHeight);
+						float ShapeSize = MinDim * MarginFactor;
 
-						float left = (containerWidth - shapeSize) / 2f;
-						float top = (containerHeight - shapeSize) / 2f;
-						return new SKRect(left, top, left + shapeSize, top + shapeSize);
+						float Left = (ContainerWidth - ShapeSize) / 2f;
+						float Top = (ContainerHeight - ShapeSize) / 2f;
+						return new SKRect(Left, Top, Left + ShapeSize, Top + ShapeSize);
 					}
 
 				case CropMode.Aspect:
 					{
-						float targetRatio = 1.0f;
+						float TargetRatio = 1.0f;
 						if (this.OutputMaxResolution.Height > 0)
 						{
-							targetRatio = (float)this.OutputMaxResolution.Width / (float)this.OutputMaxResolution.Height;
+							TargetRatio = (float)this.OutputMaxResolution.Width / (float)this.OutputMaxResolution.Height;
 						}
 
-						float shapeWidth = containerWidth * marginFactor;
-						float shapeHeight = shapeWidth / targetRatio;
-						if (shapeHeight > containerHeight * marginFactor)
+						float ShapeWidth = ContainerWidth * MarginFactor;
+						float ShapeHeight = ShapeWidth / TargetRatio;
+						if (ShapeHeight > ContainerHeight * MarginFactor)
 						{
-							shapeHeight = containerHeight * marginFactor;
-							shapeWidth = shapeHeight * targetRatio;
+							ShapeHeight = ContainerHeight * MarginFactor;
+							ShapeWidth = ShapeHeight * TargetRatio;
 						}
 
-						float left = (containerWidth - shapeWidth) / 2f;
-						float top = (containerHeight - shapeHeight) / 2f;
-						return new SKRect(left, top, left + shapeWidth, top + shapeHeight);
+						float Left = (ContainerWidth - ShapeWidth) / 2f;
+						float Top = (ContainerHeight - ShapeHeight) / 2f;
+						return new SKRect(Left, Top, Left + ShapeWidth, Top + ShapeHeight);
 					}
 			}
 
@@ -549,121 +682,175 @@ namespace NeuroAccessMaui.UI.Controls
 		// Bitmap Loading & Resizing
 		// -----------------------------------------------------------
 
-		private static async void OnImageSourceChanged(BindableObject bindable, object oldValue, object newValue)
+		/// <summary>
+		/// Called when the RotationAngle bindable property changes.
+		/// </summary>
+		/// <param name="Bindable">The bindable object.</param>
+		/// <param name="OldValue">The previous angle</param>
+		/// <param name="NewValue">The new angle</param>
+		private static void OnRotationAngleChanged(BindableObject Bindable, object OldValue, object NewValue)
 		{
-			if (bindable is ImageCropperView cropper && newValue is ImageSource newSource)
+			if (Bindable is ImageCropperView Cropper)
 			{
-				cropper.bitmap = await LoadAndResizeBitmapAsync(newSource, cropper.InputMaxResolution);
-				cropper.initialPositionSet = false;
-				cropper.ResetTransformations();
-				cropper.canvasView.InvalidateSurface();
+				Cropper.canvasView.InvalidateSurface();
 			}
 		}
 
-		private static async Task<SKBitmap?> LoadAndResizeBitmapAsync(ImageSource imageSource, Size maxResolution)
+		/// <summary>
+		/// Called when the ImageSource bindable property changes.
+		/// Loads the new image, resizes it if needed, resets transformations,
+		/// and automatically fits the image if the canvas size is already available.
+		/// </summary>
+		/// <param name="Bindable">The bindable object.</param>
+		/// <param name="OldValue">The previous image source.</param>
+		/// <param name="NewValue">The new image source.</param>
+		private static async void OnImageSourceChanged(BindableObject Bindable, object OldValue, object NewValue)
+		{
+			if (Bindable is ImageCropperView Cropper && NewValue is ImageSource NewSource)
+			{
+				// Dispose the previous bitmap if any to avoid memory leaks.
+				Cropper.bitmap?.Dispose();
+				Cropper.bitmap = await LoadAndResizeBitmapAsync(NewSource, Cropper.InputMaxResolution);
+
+				// Reset any previous transformations.
+			//Cropper.ResetTransformations();
+
+				// Always reset the InitialPositionSet flag when a new image is loaded.
+				Cropper.initialPositionSet = false;
+
+				Console.WriteLine("Width: " + Cropper.canvasView.CanvasSize.Width);
+				Console.WriteLine("Height: " + Cropper.canvasView.CanvasSize.Height);
+				// If the canvas size is already available, automatically fit the image.
+				if (Cropper.canvasView.CanvasSize.Width > 0 && Cropper.canvasView.CanvasSize.Height > 0)
+				{
+					Cropper.SetInitialImagePosition(Cropper.canvasView.CanvasSize.Width, Cropper.canvasView.CanvasSize.Height);
+					Cropper.initialPositionSet = true;
+				}
+				else
+				{
+					Cropper.initialPositionSet = false;
+				}
+
+				Cropper.canvasView.InvalidateSurface();
+			}
+		}
+
+		/// <summary>
+		/// Loads and resizes the bitmap from the specified image source.
+		/// </summary>
+		/// <param name="ImageSource">The source of the image.</param>
+		/// <param name="MaxResolution">The maximum allowed resolution.</param>
+		/// <returns>The loaded and potentially resized <see cref="SKBitmap"/>, or null if loading fails.</returns>
+		private static async Task<SKBitmap?> LoadAndResizeBitmapAsync(ImageSource ImageSource, Size MaxResolution)
 		{
 			try
 			{
-				StreamImageSource? streamImageSource = null;
-				switch (imageSource)
+				StreamImageSource? StreamImageSource = null;
+				switch (ImageSource)
 				{
-					case FileImageSource fileSource:
-						if (File.Exists(fileSource.File))
+					case FileImageSource FileSource:
+						if (File.Exists(FileSource.File))
 						{
-							streamImageSource = new StreamImageSource
+							StreamImageSource = new StreamImageSource
 							{
-								Stream = _ => Task.FromResult<Stream>(File.OpenRead(fileSource.File))
+								Stream = _ => Task.FromResult<Stream>(File.OpenRead(FileSource.File))
 							};
 						}
 						break;
-					case UriImageSource uriSource:
+					case UriImageSource UriSource:
 						{
-							using HttpClient httpClient = new HttpClient();
-							HttpResponseMessage response = await httpClient.GetAsync(uriSource.Uri);
-							if (response.IsSuccessStatusCode)
+							HttpResponseMessage Response = await SHttpClient.GetAsync(UriSource.Uri);
+							if (Response.IsSuccessStatusCode)
 							{
-								MemoryStream ms = new MemoryStream();
-								await response.Content.CopyToAsync(ms);
-								ms.Position = 0;
-								streamImageSource = new StreamImageSource
+								MemoryStream Ms = new MemoryStream();
+								await Response.Content.CopyToAsync(Ms);
+								Ms.Position = 0;
+								StreamImageSource = new StreamImageSource
 								{
-									Stream = _ => Task.FromResult<Stream>(ms)
+									Stream = _ => Task.FromResult<Stream>(Ms)
 								};
 							}
 							break;
 						}
-					case StreamImageSource sis:
-						streamImageSource = sis;
+					case StreamImageSource SIS:
+						StreamImageSource = SIS;
 						break;
 				}
 
-				if (streamImageSource == null)
+				if (StreamImageSource == null)
 					return null;
 
-				Stream stream = await streamImageSource.Stream(CancellationToken.None).ConfigureAwait(false);
-				if (stream == null)
+				Stream Stream = await StreamImageSource.Stream(CancellationToken.None).ConfigureAwait(false);
+				if (Stream == null)
 					return null;
 
-				using MemoryStream managedStream = new MemoryStream();
-				await stream.CopyToAsync(managedStream).ConfigureAwait(false);
-				managedStream.Position = 0;
+				using MemoryStream ManagedStream = new MemoryStream();
+				await Stream.CopyToAsync(ManagedStream).ConfigureAwait(false);
+				ManagedStream.Position = 0;
 
-				SKBitmap loadedBitmap = SKBitmap.Decode(managedStream);
-				if (loadedBitmap == null)
+				SKBitmap LoadedBitmap = SKBitmap.Decode(ManagedStream);
+				if (LoadedBitmap == null)
 					return null;
 
-				SKBitmap resized = ResizeBitmapIfNeeded(loadedBitmap,
-					 (int)maxResolution.Width,
-					 (int)maxResolution.Height);
+				SKBitmap Resized = ResizeBitmapIfNeeded(LoadedBitmap,
+					 (int)MaxResolution.Width,
+					 (int)MaxResolution.Height);
 
-				if (resized != loadedBitmap)
+				if (Resized != LoadedBitmap)
 				{
-					loadedBitmap.Dispose();
+					LoadedBitmap.Dispose();
 				}
-				return resized;
+				return Resized;
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				Console.WriteLine($"Error loading bitmap: {ex.Message}");
+				Console.WriteLine($"Error loading bitmap: {Ex.Message}");
 				return null;
 			}
 		}
 
-		private static SKBitmap ResizeBitmapIfNeeded(SKBitmap sourceBitmap, int maxWidth, int maxHeight)
+		/// <summary>
+		/// Resizes the provided bitmap if it exceeds the specified maximum dimensions.
+		/// </summary>
+		/// <param name="SourceBitmap">The source bitmap.</param>
+		/// <param name="MaxWidth">The maximum allowed width.</param>
+		/// <param name="MaxHeight">The maximum allowed height.</param>
+		/// <returns>The original bitmap if no resizing is necessary; otherwise, a new resized bitmap.</returns>
+		private static SKBitmap ResizeBitmapIfNeeded(SKBitmap SourceBitmap, int MaxWidth, int MaxHeight)
 		{
-			if (sourceBitmap is null || maxWidth <= 0 || maxHeight <= 0)
-				return sourceBitmap;
+			if (SourceBitmap is null || MaxWidth <= 0 || MaxHeight <= 0)
+				return SourceBitmap;
 
-			int width = sourceBitmap.Width;
-			int height = sourceBitmap.Height;
+			int Width = SourceBitmap.Width;
+			int Height = SourceBitmap.Height;
 
-			if (width <= maxWidth && height <= maxHeight)
+			if (Width <= MaxWidth && Height <= MaxHeight)
 			{
-				return sourceBitmap;
+				return SourceBitmap;
 			}
 
-			float widthRatio = (float)maxWidth / width;
-			float heightRatio = (float)maxHeight / height;
-			float scale = Math.Min(widthRatio, heightRatio);
+			float WidthRatio = (float)MaxWidth / Width;
+			float HeightRatio = (float)MaxHeight / Height;
+			float Scale = Math.Min(WidthRatio, HeightRatio);
 
-			int newWidth = (int)(width * scale);
-			int newHeight = (int)(height * scale);
+			int NewWidth = (int)(Width * Scale);
+			int NewHeight = (int)(Height * Scale);
 
-			SKBitmap resized = new SKBitmap(newWidth, newHeight, sourceBitmap.ColorType, sourceBitmap.AlphaType);
-			using SKCanvas canvas = new SKCanvas(resized);
+			SKBitmap Resized = new SKBitmap(NewWidth, NewHeight, SourceBitmap.ColorType, SourceBitmap.AlphaType);
+			using SKCanvas Canvas = new SKCanvas(Resized);
 
-			SKPaint paint = new SKPaint
+			using SKPaint Paint = new SKPaint
 			{
 				FilterQuality = SKFilterQuality.High,
 				IsAntialias = true
 			};
 
-			SKRect srcRect = new SKRect(0, 0, width, height);
-			SKRect destRect = new SKRect(0, 0, newWidth, newHeight);
+			SKRect SrcRect = new SKRect(0, 0, Width, Height);
+			SKRect DestRect = new SKRect(0, 0, NewWidth, NewHeight);
 
-			canvas.DrawBitmap(sourceBitmap, srcRect, destRect, paint);
+			Canvas.DrawBitmap(SourceBitmap, SrcRect, DestRect, Paint);
 
-			return resized;
+			return Resized;
 		}
 	}
 }
