@@ -548,6 +548,11 @@
 			/// Reconnect interval
 			/// </summary>
 			public static readonly TimeSpan Reconnect = TimeSpan.FromSeconds(10);
+
+			/// <summary>
+			/// Refresh interval for potentially missed messages
+			/// </summary>
+			public static readonly TimeSpan ForceRefresh = TimeSpan.FromDays(7);
 		}
 
 		/// <summary>
