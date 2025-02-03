@@ -1647,6 +1647,9 @@
   <data name="RequestPaymentMessage" xml:space="preserve">
     <value>Requesting payment of {0} {1}.</value>
   </data>
+  <data name="RequestPaymentDescription" xml:space="preserve">
+    <value>To request payment from someone, fill in the details about the payment below, and click the Generate QR Code button. The generated code can be used by the other party, to generate a payment to your account.</value>
+  </data>
   <data name="Room" xml:space="preserve">
     <value>Room</value>
   </data>
@@ -2211,6 +2214,9 @@
   <data name="Amount" xml:space="preserve">
     <value>Amount:</value>
   </data>
+  <data name="AmountExtra" xml:space="preserve">
+    <value>Amount Extra: (optional, suggestion)</value>
+  </data>
   <data name="Wallet" xml:space="preserve">
     <value>Wallet</value>
   </data>
@@ -2489,5 +2495,8 @@
   </data>
   <data name="Transient" xml:space="preserve">
     <value>Transient</value>
+  </data>
+  <data name="GenerateQrCode" xml:space="preserve">
+    <value>Generate QR Code</value>
   </data>
 </root>
