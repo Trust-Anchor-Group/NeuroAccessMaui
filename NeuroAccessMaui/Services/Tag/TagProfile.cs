@@ -88,6 +88,7 @@ namespace NeuroAccessMaui.Services.Tag
 		private bool hasContractTokenCreationTemplatesReferences;
 		private bool hasWallet;
 		private bool hasThing;
+		private DateTime? lastIdentityUpdate;
 
 		/// <summary>
 		/// Creates an instance of a <see cref="TagProfile"/>.
@@ -165,7 +166,8 @@ namespace NeuroAccessMaui.Services.Tag
 				HasContractTemplateReferences = this.HasContractTemplateReferences,
 				HasContractTokenCreationTemplatesReferences = this.HasContractTokenCreationTemplatesReferences,
 				HasWallet = this.HasWallet,
-				HasThing = this.HasThing
+				HasThing = this.HasThing,
+				LastIdentityUpdate = this.LastIdentityUpdate
 			};
 
 			return Clone;
@@ -224,6 +226,7 @@ namespace NeuroAccessMaui.Services.Tag
 				this.HasContractTokenCreationTemplatesReferences = Configuration.HasContractTokenCreationTemplatesReferences;
 				this.HasWallet = Configuration.HasWallet;
 				this.HasThing = Configuration.HasThing;
+				this.LastIdentityUpdate = Configuration.LastIdentityUpdate ?? DateTime.MinValue;
 
 				this.SetLegalIdentityInternal(Configuration.LegalIdentity);
 
@@ -262,6 +265,15 @@ namespace NeuroAccessMaui.Services.Tag
 		public virtual bool LegalIdentityNeedsUpdating()
 		{
 			return this.legalIdentity?.IsDiscarded() ?? true;
+		}
+
+		/// <summary>
+		/// If the current <see cref="ITagProfile"/> needs to have its legal identity refreshed, because it can have missed offline messages.
+		/// </summary>
+		/// <returns>Returns <c>true</c> if the current <see cref="ITagProfile"/> needs to have its legal identity refreshed, <c>false</c> otherwise.</returns>
+		public virtual bool LegalIdentityNeedsRefreshing()
+		{
+			return (DateTime.UtcNow - this.LastIdentityUpdate) > Constants.Intervals.ForceRefresh;
 		}
 
 		/// <summary>
@@ -800,6 +812,19 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 		}
 
+		public DateTime LastIdentityUpdate
+		{
+			get => this.lastIdentityUpdate ?? DateTime.MinValue;
+			set
+			{
+				if (this.lastIdentityUpdate != value)
+				{
+					this.lastIdentityUpdate = value;
+					this.FlagAsDirty(nameof(this.LastIdentityUpdate));
+				}
+			}
+		}
+
 		/// <summary>
 		/// This profile's current registration step.
 		/// </summary>
@@ -966,6 +991,8 @@ namespace NeuroAccessMaui.Services.Tag
 				Identity.HasApprovedPersonalInformation();
 
 			Attachment[]? OldAttachments = this.SetLegalIdentityInternal(Identity);
+
+			this.LastIdentityUpdate = DateTime.UtcNow;
 
 			if (RemoveOldAttachments)
 				await ServiceRef.AttachmentCacheService.RemoveAttachments(OldAttachments);

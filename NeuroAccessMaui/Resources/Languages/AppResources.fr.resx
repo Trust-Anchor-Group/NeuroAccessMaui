@@ -1647,6 +1647,9 @@
   <data name="RequestPaymentMessage" xml:space="preserve">
     <value>Demande de paiement de {0} {1}.</value>
   </data>
+  <data name="RequestPaymentDescription" xml:space="preserve">
+    <value>Pour demander un paiement à quelqu’un, remplissez les détails du paiement ci-dessous, puis cliquez sur le bouton Générer un code QR. Le code généré peut être utilisé par l’autre partie pour générer un paiement sur votre compte.</value>
+  </data>
   <data name="Room" xml:space="preserve">
     <value>Chambre</value>
   </data>
@@ -2211,6 +2214,9 @@
   <data name="Amount" xml:space="preserve">
     <value>Quantité:</value>
   </data>
+  <data name="AmountExtra" xml:space="preserve">
+    <value>Montant en sus : (facultatif, suggestion)</value>
+  </data>
   <data name="Wallet" xml:space="preserve">
     <value>Portefeuille</value>
   </data>
@@ -2480,5 +2486,17 @@
   </data>
   <data name="ReviewContractDescription2" xml:space="preserve">
     <value>Examiner les termes du contrat</value>
+  </data>
+  <data name="ServerSignatureButtonTitle" xml:space="preserve">
+    <value>Afficher la signature du serveur</value>
+  </data>
+  <data name="ServerSignatureButtonDescription" xml:space="preserve">
+    <value>Afficher la signature du serveur, ce qui protège l’intégrité du contrat</value>
+  </data>
+  <data name="Transient" xml:space="preserve">
+    <value>Éphémère</value>
+  </data>
+  <data name="GenerateQrCode" xml:space="preserve">
+    <value>Générer un code QR</value>
   </data>
 </root>
