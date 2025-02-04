@@ -7,28 +7,23 @@
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
     <RootNamespace>NeuroAccess.UiTests</RootNamespace>
-    <Configurations>Debug;Release;Debug-Android;Debug-iOS</Configurations>
+    <Configurations>Debug;Release;Testing-Android;Testing-iOS</Configurations>
   </PropertyGroup>
 
   <!-- Define platform-specific constants based on Configuration -->
-  <PropertyGroup Condition="'$(Configuration)' == 'Debug-Android' Or '$(Configuration)' == 'Release-Android'">
+  <PropertyGroup Condition="'$(Configuration)' == 'Testing-Android'">
     <DefineConstants>ANDROID</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'Debug-iOS' Or '$(Configuration)' == 'Release-iOS'">
+  <PropertyGroup Condition="'$(Configuration)' == 'Testing-iOS'">
     <DefineConstants>IOS</DefineConstants>
   </PropertyGroup>
 
-  <!-- Shared Files -->
-  <ItemGroup>
-    <Compile Include="Shared\**\*.cs" />
-  </ItemGroup>
-
   <!-- Platform-Specific Files -->
-  <ItemGroup Condition="'$(Configuration)' == 'Debug-Android' Or '$(Configuration)' == 'Release-Android'">
-    <Compile Include="Android\**\*.cs" />
+  <ItemGroup Condition="'$(Configuration)' == 'Testing-Android'">
+	  <Compile Remove="iOS\**\*.cs" />
   </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)' == 'Debug-iOS' Or '$(Configuration)' == 'Release-iOS'">
-    <Compile Include="iOS\**\*.cs" />
+  <ItemGroup Condition="'$(Configuration)' == 'Testing-iOS'">
+	  <Compile Remove="Android\**\*.cs" />
   </ItemGroup>
 
   <!-- NuGet Packages -->

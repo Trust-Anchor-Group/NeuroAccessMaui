@@ -29,9 +29,10 @@ namespace NeuroAccess.UiTests
 				// This is ignored if you use the avd option below
 				PlatformVersion = "14",
 				// The full path to the .apk file to test or the package name if the app is already installed on the device
-				App = "com.tag.NeuroAccess.apk",
+				App = "com.tag.NeuroAccess",
 			};
 			driver = new AndroidDriver(androidOptions);
+		
 		}
 
 		// This will run before each test in the derived classes
