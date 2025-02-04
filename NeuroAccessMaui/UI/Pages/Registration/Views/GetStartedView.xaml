@@ -18,11 +18,13 @@
 				Text="{l:Localize OnboardingGetStartedTitle}" />
 
 			<controls:TextButton
+				AutomationId="GetStarted_CreateAccountButton"
 				Command="{Binding NewAccountCommand}"
 				Style="{StaticResource FilledTextButton}"
 				LabelData="{l:Localize CreateNewAccount}" />
 			
 			<controls:TextButton
+				AutomationId="GetStarted_HaveAccountButton"
 				Command="{Binding ExistingAccountCommand}"
 				Style="{StaticResource  TransparentTextButton}"
 				LabelData="{l:Localize IAlreadyHaveAnAccount}" />
