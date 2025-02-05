@@ -18,12 +18,12 @@ namespace NeuroAccess.UiTests.Shared
 		 public void Test_NavigateTo_GetStartedButtons()
 		{
 
-			var createAccountButton = App.FindElement(By.Id("GetStarted_CreateAccountButton");
+			var createAccountButton = App.FindElement(By.Id("GetStarted_CreateAccountButton"));
 			Assert.IsNotNull(createAccountButton, "Create Account-button not found!");
 			createAccountButton.Click();
 
 			{
-				var haveAccountButton = App.FindElement(By.Id("GetStarted_HaveAccountButton");
+				var haveAccountButton = App.FindElement(By.Id("GetStarted_HaveAccountButton"));
 				Assert.IsNotNull(haveAccountButton, "Have Account-Button not found");
 				haveAccountButton.Click();
 			}
