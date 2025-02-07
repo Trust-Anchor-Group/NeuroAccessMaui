@@ -105,7 +105,6 @@ namespace NeuroAccessMaui.UI.Pages.Utility.Images
 				double newRotation = this.ImageCropperView.RotationAngle + 90;
 				// Normalize the rotation angle to stay within 0-359 degrees.
 				this.ImageCropperView.RotationAngle = newRotation % 360;
-				// The ImageCropperView will re-render using the updated RotationAngle.
 			}
 			return Task.CompletedTask;
 		}

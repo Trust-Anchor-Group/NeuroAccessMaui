@@ -25,7 +25,7 @@
                 Grid.Column="2"
 				Command="{Binding RotateCommand}"
 				Style="{StaticResource FilledImageButton}"
-				PathData="{x:Static ui:Geometries.CameraTorchButtonPath}" />
+				PathData="{x:Static ui:Geometries.FlipCameraPath}" />
 		</Grid>
 
         <!--  Image Cropper  -->

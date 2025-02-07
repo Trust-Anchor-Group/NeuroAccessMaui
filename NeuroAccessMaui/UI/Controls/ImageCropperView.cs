@@ -694,6 +694,7 @@ namespace NeuroAccessMaui.UI.Controls
         {
             if (bindable is ImageCropperView cropper)
             {
+                cropper.ClampTransformations();
                 cropper.canvasView.InvalidateSurface();
             }
         }
