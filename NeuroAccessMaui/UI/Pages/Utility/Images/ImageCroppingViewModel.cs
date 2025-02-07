@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.UI.Controls;
 using System.Threading.Tasks;
+using Waher.Content.QR.Serialization;
 
 namespace NeuroAccessMaui.UI.Pages.Utility.Images
 {
@@ -18,7 +19,7 @@ namespace NeuroAccessMaui.UI.Pages.Utility.Images
 
 		/// <summary>
 		/// A direct reference to the ImageCropperView control,
-		/// so we can call PerformCropAsync.
+		/// so we can call PerformCrop.
 		/// </summary>
 		[ObservableProperty]
 		private ImageCropperView? imageCropperView;
@@ -47,6 +48,11 @@ namespace NeuroAccessMaui.UI.Pages.Utility.Images
 				this.ImageCropperView.ImageSource = this.args.Source;
 			}
 
+			if (this.args?.OutputResolution != null && this.ImageCropperView is not null)
+			{
+				this.ImageCropperView.OutputMaxResolution = this.args.OutputResolution.Value;
+			}
+
 			return Task.CompletedTask;
 		}
 
@@ -59,13 +65,14 @@ namespace NeuroAccessMaui.UI.Pages.Utility.Images
 		{
 			if (this.ImageCropperView is null || this.args is null)
 				return;
-
-			byte[]? croppedResult = await this.ImageCropperView.PerformCropAsync();
-
-			// If a TaskCompletionSource was provided, set the result.
-			this.args.CompletionSource?.SetResult(croppedResult);
-
-			// Then pop navigation. If using Shell:
+				
+			//Run the crop operation on a background thread.
+			await Task.Run(() => 
+			{
+				byte[]? croppedResult = this.ImageCropperView.PerformCrop();
+				this.args.CompletionSource?.TrySetResult(croppedResult);
+			});
+			// Then pop navigation.
 			await this.GoBack();
 		}
 

@@ -58,11 +58,11 @@ namespace NeuroAccessMaui.UI.Controls
     /// </summary>
     public class ImageCropperView : ContentView
     {
-		#warning Replace this with InternetContent
-		/// <summary>
-		/// A shared HttpClient for downloading images.
-		/// </summary>
-		private static readonly HttpClient sHttpClient = new HttpClient();
+#warning Replace this with InternetContent
+        /// <summary>
+        /// A shared HttpClient for downloading images.
+        /// </summary>
+        private static readonly HttpClient sHttpClient = new HttpClient();
 
         #region Bindable Properties
 
@@ -212,6 +212,24 @@ namespace NeuroAccessMaui.UI.Controls
             set => this.SetValue(RotationAngleProperty, value);
         }
 
+        /// <summary>
+        /// Backing store for <see cref="LimitToBounds"/>.
+        /// </summary>
+        public static readonly BindableProperty LimitToBoundsProperty = BindableProperty.Create(
+        propertyName: nameof(LimitToBounds),
+        returnType: typeof(bool),
+        declaringType: typeof(ImageCropperView),
+        defaultValue: true);
+
+        /// <summary>
+        /// When true, prevents moving or zooming the image so that it does not fully cover the crop area.
+        /// </summary>
+        public bool LimitToBounds
+        {
+            get => (bool)this.GetValue(LimitToBoundsProperty);
+            set => this.SetValue(LimitToBoundsProperty, value);
+        }
+
         #endregion
 
         #region Instance Fields
@@ -290,22 +308,21 @@ namespace NeuroAccessMaui.UI.Controls
             };
 
             // Set up pan and pinch gesture recognizers.
-            PanGestureRecognizer panGesture = new PanGestureRecognizer { TouchPoints = 1 };
+            PanGestureRecognizer panGesture = new() { TouchPoints = 1 };
             panGesture.PanUpdated += this.OnPan;
 
-            PinchGestureRecognizer pinchGesture = new PinchGestureRecognizer();
+            PinchGestureRecognizer pinchGesture = new();
             pinchGesture.PinchUpdated += this.OnPinch;
 
             this.canvasView.GestureRecognizers.Add(panGesture);
             this.canvasView.GestureRecognizers.Add(pinchGesture);
 
             // Subscribe to the canvas paint event.
-            this.canvasView.PaintSurface += this.OnPaintSurface;
+            this.canvasView.PaintSurface += this.OnPaintSurface; // No need to unregister as the canvasView has the same lifetime
 
             root.Add(this.canvasView);
             this.Content = root;
         }
-
         #endregion
 
         #region Public Methods
@@ -329,95 +346,105 @@ namespace NeuroAccessMaui.UI.Controls
         /// The resulting cropped image is resized to <see cref="OutputMaxResolution"/>.
         /// </summary>
         /// <returns>A task that returns the cropped image as a byte array, or null if cropping fails.</returns>
-        public Task<byte[]?> PerformCrop()
+        public byte[]? PerformCrop()
         {
-            if (this.bitmap == null)
-                return Task.FromResult<byte[]?>(null);
-
-            int viewWidth = (int)this.canvasView.CanvasSize.Width;
-            int viewHeight = (int)this.canvasView.CanvasSize.Height;
-            if (viewWidth <= 0 || viewHeight <= 0)
-                return Task.FromResult<byte[]?>(null);
-
-            // Render the transformed image to a temporary surface.
-            using SKBitmap tempSurfaceBitmap = new SKBitmap(viewWidth, viewHeight, isOpaque: false);
-            using SKCanvas tempCanvas = new SKCanvas(tempSurfaceBitmap);
-            tempCanvas.Clear(SKColors.Transparent);
-
-            float centerX = viewWidth / 2f;
-            float centerY = viewHeight / 2f;
-
-            tempCanvas.Save();
-            tempCanvas.Translate(this.offsetX, this.offsetY);
-            tempCanvas.Scale(this.scale);
-            tempCanvas.Translate(centerX, centerY);
-            tempCanvas.RotateDegrees((float)this.RotationAngle);
-            tempCanvas.Translate(-centerX, -centerY);
-
-            SKRect destRect = new SKRect(0, 0, this.bitmap.Width, this.bitmap.Height);
-            tempCanvas.DrawBitmap(this.bitmap, destRect);
-            tempCanvas.Restore();
-
-            // Define the crop shape.
-            SKRect cropRect = this.ComputeCropShapeRect(viewWidth, viewHeight, this.CropShapeFillPortion);
-            SKPath cropPath = new SKPath();
-            switch (this.CropMode)
+            try
             {
-                case CropMode.Circle:
-                    {
-                        float radius = cropRect.Width / 2f;
-                        float cx = cropRect.MidX;
-                        float cy = cropRect.MidY;
-                        cropPath.AddCircle(cx, cy, radius);
+                if (this.bitmap == null)
+                    return null;
+
+                int viewWidth = (int)this.canvasView.CanvasSize.Width;
+                int viewHeight = (int)this.canvasView.CanvasSize.Height;
+                if (viewWidth <= 0 || viewHeight <= 0)
+                    return null;
+
+                // Render the transformed image to a temporary surface.
+                using SKBitmap tempSurfaceBitmap = new SKBitmap(viewWidth, viewHeight, isOpaque: false);
+                using SKCanvas tempCanvas = new SKCanvas(tempSurfaceBitmap);
+                tempCanvas.Clear(SKColors.Transparent);
+
+                float centerX = viewWidth / 2f;
+                float centerY = viewHeight / 2f;
+
+                tempCanvas.Save();
+                tempCanvas.Translate(this.offsetX, this.offsetY);
+                tempCanvas.Scale(this.scale);
+                tempCanvas.Translate(centerX, centerY);
+                tempCanvas.RotateDegrees((float)this.RotationAngle);
+                tempCanvas.Translate(-centerX, -centerY);
+
+                SKRect destRect = new SKRect(0, 0, this.bitmap.Width, this.bitmap.Height);
+                tempCanvas.DrawBitmap(this.bitmap, destRect);
+                tempCanvas.Restore();
+
+                // Define the crop shape.
+                SKRect cropRect = this.ComputeCropShapeRect(viewWidth, viewHeight, this.CropShapeFillPortion);
+                SKPath cropPath = new SKPath();
+                switch (this.CropMode)
+                {
+                    case CropMode.Circle:
+                        {
+                            float radius = cropRect.Width / 2f;
+                            float cx = cropRect.MidX;
+                            float cy = cropRect.MidY;
+                            cropPath.AddCircle(cx, cy, radius);
+                            break;
+                        }
+                    case CropMode.Square:
+                    case CropMode.Aspect:
+                        cropPath.AddRect(cropRect);
                         break;
-                    }
-                case CropMode.Square:
-                case CropMode.Aspect:
-                    cropPath.AddRect(cropRect);
-                    break;
-            }
+                }
 
-            // Apply the crop mask.
-            using SKBitmap maskedBitmap = new SKBitmap(viewWidth, viewHeight, isOpaque: false);
-            using (SKCanvas maskedCanvas = new SKCanvas(maskedBitmap))
+                // Apply the crop mask.
+                using SKBitmap maskedBitmap = new SKBitmap(viewWidth, viewHeight, isOpaque: false);
+                using (SKCanvas maskedCanvas = new SKCanvas(maskedBitmap))
+                {
+                    maskedCanvas.Clear(SKColors.Transparent);
+                    maskedCanvas.ClipPath(cropPath, SKClipOperation.Intersect, true);
+
+                    maskedCanvas.Save();
+                    maskedCanvas.Translate(this.offsetX, this.offsetY);
+                    maskedCanvas.Scale(this.scale);
+                    maskedCanvas.Translate(centerX, centerY);
+                    maskedCanvas.RotateDegrees((float)this.RotationAngle);
+                    maskedCanvas.Translate(-centerX, -centerY);
+                    maskedCanvas.DrawBitmap(this.bitmap, destRect);
+                    maskedCanvas.Restore();
+                }
+
+                // Extract the bounding box of the crop area.
+                SKRectI boundingBox = SKRectI.Round(cropRect);
+                using SKBitmap cropped = new SKBitmap(boundingBox.Width, boundingBox.Height);
+                using (SKCanvas croppedCanvas = new SKCanvas(cropped))
+                {
+                    SKRect dst = new SKRect(0, 0, boundingBox.Width, boundingBox.Height);
+                    croppedCanvas.DrawBitmap(maskedBitmap, boundingBox, dst);
+                }
+
+                // Resize the cropped bitmap if needed.
+                SKBitmap finalBitmap = ResizeBitmapIfNeeded(cropped,
+                    (int)this.OutputMaxResolution.Width,
+                    (int)this.OutputMaxResolution.Height);
+
+                // Encode the final bitmap to the specified format.
+                using MemoryStream ms = new MemoryStream();
+                if (this.OutputFormat == CropOutputFormat.Png)
+                {
+                    finalBitmap.Encode(ms, SKEncodedImageFormat.Png, 100);
+                }
+                else
+                {
+                    int quality = Math.Max(0, Math.Min(100, this.JpegQuality));
+                    finalBitmap.Encode(ms, SKEncodedImageFormat.Jpeg, quality);
+                }
+                return ms?.ToArray();
+            }
+            catch (Exception ex)
             {
-                maskedCanvas.Clear(SKColors.Transparent);
-                maskedCanvas.ClipPath(cropPath, SKClipOperation.Intersect, true);
-
-                maskedCanvas.Save();
-                maskedCanvas.Translate(this.offsetX, this.offsetY);
-                maskedCanvas.Scale(this.scale);
-                maskedCanvas.Translate(centerX, centerY);
-                maskedCanvas.RotateDegrees((float)this.RotationAngle);
-                maskedCanvas.Translate(-centerX, -centerY);
-                maskedCanvas.DrawBitmap(this.bitmap, destRect);
-                maskedCanvas.Restore();
+                Console.WriteLine($"Error during cropping: {ex.Message}");
+                return null;
             }
-
-            // Extract the bounding box of the crop area.
-            SKRectI boundingBox = SKRectI.Round(cropRect);
-            using SKBitmap cropped = new SKBitmap(boundingBox.Width, boundingBox.Height);
-            using (SKCanvas croppedCanvas = new SKCanvas(cropped))
-            {
-                SKRect dst = new SKRect(0, 0, boundingBox.Width, boundingBox.Height);
-                croppedCanvas.DrawBitmap(maskedBitmap, boundingBox, dst);
-            }
-
-            SKBitmap finalBitmap = ResizeBitmapIfNeeded(cropped,
-                (int)this.OutputMaxResolution.Width,
-                (int)this.OutputMaxResolution.Height);
-
-            using MemoryStream ms = new MemoryStream();
-            if (this.OutputFormat == CropOutputFormat.Png)
-            {
-                finalBitmap.Encode(ms, SKEncodedImageFormat.Png, 100);
-            }
-            else
-            {
-                int quality = Math.Max(0, Math.Min(100, this.JpegQuality));
-                finalBitmap.Encode(ms, SKEncodedImageFormat.Jpeg, quality);
-            }
-			return Task.FromResult(ms?.ToArray());
         }
 
         #endregion
@@ -442,6 +469,10 @@ namespace NeuroAccessMaui.UI.Controls
                 case GestureStatus.Running:
                     this.offsetX = this.startOffsetX + (float)(e.TotalX * density);
                     this.offsetY = this.startOffsetY + (float)(e.TotalY * density);
+                    if (this.LimitToBounds)
+                    {
+                        this.ClampTransformations();
+                    }
                     this.canvasView.InvalidateSurface();
                     break;
             }
@@ -454,35 +485,39 @@ namespace NeuroAccessMaui.UI.Controls
         /// <param name="e">Pinch gesture event arguments.</param>
         private void OnPinch(object? sender, PinchGestureUpdatedEventArgs e)
         {
-			switch (e.Status)
-			{
-				case GestureStatus.Started:
-					// Record the current offsets and the pinch pivot.
-					this.startOffsetX = this.offsetX;
-					this.startOffsetY = this.offsetY;
-					this.pinchPivot = e.ScaleOrigin;
-					break;
-				case GestureStatus.Running:
-					// Use the incremental scale factor directly.
-					float delta = (float)e.Scale; // e.Scale is the incremental factor.
-					
-					// Update the cumulative scale.
-					this.scale *= delta;
-					
-					// Convert the pinch pivot (relative coordinates) to actual pixels.
-					float pivotX = (float)(this.pinchPivot.X * this.canvasView.CanvasSize.Width);
-					float pivotY = (float)(this.pinchPivot.Y * this.canvasView.CanvasSize.Height);
-					
-					// Adjust offsets to keep the pivot point stable.
-					this.offsetX = pivotX - (pivotX - this.offsetX) * delta;
-					this.offsetY = pivotY - (pivotY - this.offsetY) * delta;
-					
-					this.canvasView.InvalidateSurface();
-					break;
-				case GestureStatus.Completed:
-				case GestureStatus.Canceled:
-					break;
-			}
+            switch (e.Status)
+            {
+                case GestureStatus.Started:
+                    // Record the current offsets and the pinch pivot.
+                    this.startOffsetX = this.offsetX;
+                    this.startOffsetY = this.offsetY;
+                    this.pinchPivot = e.ScaleOrigin;
+                    break;
+                case GestureStatus.Running:
+                    // Use the incremental scale factor directly.
+                    float delta = (float)e.Scale; // e.Scale is the incremental factor.
+
+                    // Update the cumulative scale.
+                    this.scale *= delta;
+
+                    // Convert the pinch pivot (relative coordinates) to actual pixels.
+                    float pivotX = (float)(this.pinchPivot.X * this.canvasView.CanvasSize.Width);
+                    float pivotY = (float)(this.pinchPivot.Y * this.canvasView.CanvasSize.Height);
+
+                    // Adjust offsets to keep the pivot point stable.
+                    this.offsetX = pivotX - (pivotX - this.offsetX) * delta;
+                    this.offsetY = pivotY - (pivotY - this.offsetY) * delta;
+
+                    if (this.LimitToBounds)
+                    {
+                        this.ClampTransformations();
+                    }
+                    this.canvasView.InvalidateSurface();
+                    break;
+                case GestureStatus.Completed:
+                case GestureStatus.Canceled:
+                    break;
+            }
         }
 
         #endregion
@@ -568,7 +603,7 @@ namespace NeuroAccessMaui.UI.Controls
 
             if (!this.initialPositionSet && width > 0 && height > 0 && this.bitmap != null)
             {
-				this.SetInitialImagePosition(width, height);
+                this.SetInitialImagePosition(width, height);
                 this.initialPositionSet = true;
                 this.canvasView.InvalidateSurface();
             }
@@ -814,5 +849,136 @@ namespace NeuroAccessMaui.UI.Controls
         }
 
         #endregion
+
+        /// <summary>
+        /// Clamps the current offset and scale so that the transformed image fully covers the crop area.
+        /// This method enforces a minimum zoom level (scale) and adjusts the translation (offset) accordingly.
+        /// </summary>
+        private void ClampTransformations()
+        {
+            if (!this.LimitToBounds || this.bitmap == null)
+                return;
+
+            SKSize canvasSize = this.canvasView.CanvasSize;
+            if (canvasSize.Width <= 0 || canvasSize.Height <= 0)
+                return;
+
+            float canvasWidth = canvasSize.Width;
+            float canvasHeight = canvasSize.Height;
+            // Compute the crop rectangle (in canvas coordinates).
+            SKRect cropRect = this.ComputeCropShapeRect(canvasWidth, canvasHeight, this.CropShapeFillPortion);
+
+            // -----------------------------------------------------
+            // 1. Enforce a Minimum Scale (Zoom)
+            // -----------------------------------------------------
+            // When the image is rotated, its axis-aligned bounding box is larger than the original.
+            // Compute the bounding box dimensions of the image after rotation (at scale = 1).
+            float angle = (float)this.RotationAngle;
+            float rad = angle * (MathF.PI / 180f);
+            float absCos = MathF.Abs(MathF.Cos(rad));
+            float absSin = MathF.Abs(MathF.Sin(rad));
+
+            float rotatedWidth = this.bitmap.Width * absCos + this.bitmap.Height * absSin;
+            float rotatedHeight = this.bitmap.Width * absSin + this.bitmap.Height * absCos;
+
+            // Compute the minimal scale needed so that the rotated image’s bounding box covers the cropRect.
+            float minScaleX = cropRect.Width / rotatedWidth;
+            float minScaleY = cropRect.Height / rotatedHeight;
+            float minScale = MathF.Max(minScaleX, minScaleY);
+
+            // Enforce the minimum scale.
+            if (this.scale < minScale)
+            {
+                this.scale = minScale;
+            }
+
+            // -----------------------------------------------------
+            // 2. Adjust the Offset (Translation)
+            // -----------------------------------------------------
+            // In OnPaintSurface the image is drawn with:
+            //   canvas.Translate(offsetX, offsetY);
+            //   canvas.Scale(scale);
+            //   canvas.Translate(centerX, centerY);
+            //   canvas.RotateDegrees(RotationAngle);
+            //   canvas.Translate(-centerX, -centerY);
+            //
+            // This is equivalent to transforming any image point p as:
+            //   p' = offset + scale * (center + R*(p - center))
+            // where the canvas center is:
+            SKPoint center = new SKPoint(canvasWidth / 2, canvasHeight / 2);
+
+            // Compute the transformed (but not offset-adjusted) positions of the image corners.
+            float localMinX = float.MaxValue;
+            float localMaxX = float.MinValue;
+            float localMinY = float.MaxValue;
+            float localMaxY = float.MinValue;
+
+            // The four corners of the original image.
+            SKPoint[] corners =
+			[
+                new SKPoint(0, 0),
+                new SKPoint(this.bitmap.Width, 0),
+                new SKPoint(this.bitmap.Width, this.bitmap.Height),
+                new SKPoint(0, this.bitmap.Height)
+            ];
+
+            float cos = MathF.Cos(rad);
+            float sin = MathF.Sin(rad);
+
+            foreach (SKPoint p in corners)
+            {
+                // Compute the vector from the canvas center.
+                SKPoint diff = new SKPoint(p.X - center.X, p.Y - center.Y);
+                // Rotate the vector.
+                SKPoint rotated = new SKPoint(diff.X * cos - diff.Y * sin,
+                                              diff.X * sin + diff.Y * cos);
+                // Apply scaling and add back the canvas center.
+                SKPoint transformedLocal = new SKPoint(
+                    this.scale * (center.X + rotated.X),
+                    this.scale * (center.Y + rotated.Y)
+                );
+
+                localMinX = MathF.Min(localMinX, transformedLocal.X);
+                localMaxX = MathF.Max(localMaxX, transformedLocal.X);
+                localMinY = MathF.Min(localMinY, transformedLocal.Y);
+                localMaxY = MathF.Max(localMaxY, transformedLocal.Y);
+            }
+
+            // The final (drawn) image bounds are the local bounds shifted by the offset.
+            float imageMinX = this.offsetX + localMinX;
+            float imageMaxX = this.offsetX + localMaxX;
+            float imageMinY = this.offsetY + localMinY;
+            float imageMaxY = this.offsetY + localMaxY;
+
+            // Determine the adjustments needed so that the image bounds fully cover the crop area.
+            float deltaX = 0;
+            float deltaY = 0;
+
+            // If the image is too far right (its left edge is right of the crop's left), shift left.
+            if (imageMinX > cropRect.Left)
+            {
+                deltaX = cropRect.Left - imageMinX;
+            }
+            // Or if the image is too far left (its right edge is left of the crop's right), shift right.
+            else if (imageMaxX < cropRect.Right)
+            {
+                deltaX = cropRect.Right - imageMaxX;
+            }
+
+            // Do the same for vertical adjustment.
+            if (imageMinY > cropRect.Top)
+            {
+                deltaY = cropRect.Top - imageMinY;
+            }
+            else if (imageMaxY < cropRect.Bottom)
+            {
+                deltaY = cropRect.Bottom - imageMaxY;
+            }
+
+            this.offsetX += deltaX;
+            this.offsetY += deltaY;
+        }
+
+
     }
 }
