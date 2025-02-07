@@ -1,5 +1,6 @@
 ﻿using NeuroAccessMaui.Services.UI;
-using Microsoft.Maui; // for Size
+using NeuroAccessMaui.UI.Controls; // for Size
+
 
 namespace NeuroAccessMaui.UI.Pages.Utility.Images
 {
@@ -17,11 +18,12 @@ namespace NeuroAccessMaui.UI.Pages.Utility.Images
 		/// <param name="source">The image to be cropped.</param>
 		/// <param name="completionSource">A TaskCompletionSource that can be used to return the cropped image bytes.</param>
 		/// <param name="outputResolution">Optional output resolution for the cropped image.</param>
-		public ImageCroppingNavigationArgs(ImageSource? source, TaskCompletionSource<byte[]?>? completionSource = null, Size? outputResolution = null)
+		public ImageCroppingNavigationArgs(ImageSource? source, TaskCompletionSource<byte[]?>? completionSource = null, Size? outputResolution = null, CropMode cropMode = CropMode.Aspect)
 		{
 			this.Source = source;
 			this.CompletionSource = completionSource;
 			this.OutputResolution = outputResolution;
+			this.CropMode = cropMode;
 		}
 
 		/// <summary>
@@ -38,5 +40,12 @@ namespace NeuroAccessMaui.UI.Pages.Utility.Images
 		/// Optional output resolution for the cropped image.
 		/// </summary>
 		public Size? OutputResolution { get; }
+
+		/// <summary>
+		/// Optional crop mode for the image cropper.
+		/// 
+		/// Defaults to <see cref="CropMode.Aspect"/>.
+		/// </summary>
+		public CropMode CropMode { get; }
 	}
 }

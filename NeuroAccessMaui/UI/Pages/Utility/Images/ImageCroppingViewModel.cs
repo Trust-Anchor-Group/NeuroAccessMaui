@@ -53,6 +53,11 @@ namespace NeuroAccessMaui.UI.Pages.Utility.Images
 				this.ImageCropperView.OutputMaxResolution = this.args.OutputResolution.Value;
 			}
 
+			if (this.args?.CropMode != null && this.ImageCropperView is not null)
+			{
+				this.ImageCropperView.CropMode = this.args.CropMode;
+			}
+
 			return Task.CompletedTask;
 		}
 
