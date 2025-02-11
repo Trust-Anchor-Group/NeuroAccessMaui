@@ -5,6 +5,7 @@
 							xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 							xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 							xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 							xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
 							xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Permission"
 							xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
@@ -29,26 +30,55 @@
 					Spacing="{StaticResource LargeSpacing}">
 
 					<VerticalStackLayout
-						Spacing="{StaticResource SmallSpacing}">
+						Spacing="{StaticResource MediumSpacing}">
 
 						<Label
 							HorizontalTextAlignment="Center"
 							Style="{StaticResource PageTitleLabel}"
 							Text="{Binding Title}" />
 
+						<Frame
+							WidthRequest="{Binding CameraIconBackgroundSize}"
+							HeightRequest="{Binding CameraIconBackgroundSize}"
+							CornerRadius="{Binding CameraIconBackgroundCornerRadius}"
+							BackgroundColor="{AppThemeBinding Light={StaticResource Accent20Light}, Dark={StaticResource EnabledTransparentButtonBackgroundDark}}">
+							<Path
+								VerticalOptions="Center"
+								HorizontalOptions="Center"
+								HeightRequest="{Binding CameraIconSize}"
+								WidthRequest="{Binding CameraIconSize}"
+								Aspect="Uniform"
+								Data="{x:Static ui:Geometries.CameraPhotoButtonPath}"
+								Fill="{AppThemeBinding Light={StaticResource AccentActiveLight}, Dark={StaticResource EnabledFilledButtonBackgroundDark}}" />
+						</Frame>
+
 						<Label
-							Text="{Binding Text}" />
+							HorizontalTextAlignment="Start"
+							Style="{StaticResource ItemDescriptionLabel}"
+							Text="{Binding Description}"
+							FontSize="15"
+							Margin="{StaticResource SmallLeftRightMargins}"/>
+
+						<Label
+							HorizontalTextAlignment="Start"
+							Style="{StaticResource ItemDescriptionLabel}"
+							Text="{Binding DescriptionSecondary}"
+							FontSize="15"
+							Margin="{StaticResource SmallLeftRightMargins}"/>
+							  
 					</VerticalStackLayout>
 
-					<controls:TextButton
-						Command="{Binding GoToSettingsCommand}"
-						LabelData="Go to App Settings"
-						Style="{StaticResource FilledTextButton}" />
-						
-					<controls:TextButton
-						Command="{Binding CloseCommand}"
-						LabelData="{l:Localize Close}"
-						Style="{StaticResource FilledTextButton}" />
+					<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
+						<controls:TextButton
+							Command="{Binding GoToSettingsCommand}"
+							LabelData="Go to Settings"
+							Style="{StaticResource PrimaryButton}" />
+
+						<controls:TextButton
+							Command="{Binding CloseCommand}"
+							LabelData="Skip for now"
+							Style="{StaticResource SecondaryButton}" />
+					</VerticalStackLayout>
 				</VerticalStackLayout>
 			</ScrollView>
 		</Border>

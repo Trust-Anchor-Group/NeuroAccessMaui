@@ -689,7 +689,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Scanning QR codes requires permission from your system to open the camera. Go to your device settings then &apos;Apps&apos; and enable camera permissions for Neuro Access..
+        ///   Looks up a localized string similar to To continue, please enable Camera Access in Settings..
         /// </summary>
         internal static string CameraPermissionDescription {
             get {
@@ -698,7 +698,16 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Camera Permission Required.
+        ///   Looks up a localized string similar to Go to settings - Open Permissions - Enable Camera Permissions.
+        /// </summary>
+        internal static string CameraPermissionDescriptionSecondary {
+            get {
+                return ResourceManager.GetString("CameraPermissionDescriptionSecondary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Camera.
         /// </summary>
         internal static string CameraPermissionTitle {
             get {

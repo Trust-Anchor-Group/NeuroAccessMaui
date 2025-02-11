@@ -10,7 +10,14 @@ namespace NeuroAccessMaui.UI.Popups.Permission
 {
 	public partial class BaseShowPermissionViewModel : BasePopupViewModel
 	{
+		#region Private Properties
+
 		private string title = "";
+		private string description = "";
+		private string descriptionSecondary = "";
+
+		#endregion
+		#region Public Properties
 
 		public string Title
 		{
@@ -23,26 +30,58 @@ namespace NeuroAccessMaui.UI.Popups.Permission
 			}
 		}
 
-		private string text = "";
-
-		public string Text
+		public string Description
 		{
-			get => this.text;
+			get => this.description;
 			set
 			{
-				if (value == this.text) return;
-				this.text = value;
+				if (value == this.description) return;
+				this.description = value;
 				this.OnPropertyChanged();
 			}
 		}
 
-		public BaseShowPermissionViewModel(string title, string text)
+		public string DescriptionSecondary
 		{
-			this.Title = title;
-			this.Text = text;
+			get => this.descriptionSecondary;
+			set
+			{
+				if (value == this.descriptionSecondary) return;
+				this.descriptionSecondary = value;
+				this.OnPropertyChanged();
+			}
 		}
 
-		public BaseShowPermissionViewModel() { }
+		/// <summary>
+		/// Gets the size of the background for Camera Icon 
+		/// </summary>
+		public double CameraIconBackgroundSize => 120.0;
+
+		/// <summary>
+		/// Gets the Readius of the background for Camera Icon
+		/// </summary>
+		public double CameraIconBackgroundCornerRadius => this.CameraIconBackgroundSize / 2;
+
+		/// <summary>
+		/// Gets the size of the Camera Icon
+		/// </summary>
+		public double CameraIconSize => 60.0;
+
+		#endregion
+
+		public BaseShowPermissionViewModel(string title, string description, string descriptionSecondary)
+		{
+			this.Title = title;
+			this.Description = description;
+			this.DescriptionSecondary = descriptionSecondary;
+		}
+
+		public BaseShowPermissionViewModel(string title, string description)
+		{
+			this.Title = title;
+			this.Description = description;
+			this.DescriptionSecondary = "";
+		}
 
 		[RelayCommand]
 		public void Close()

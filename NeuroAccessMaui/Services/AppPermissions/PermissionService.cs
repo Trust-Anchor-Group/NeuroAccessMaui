@@ -19,21 +19,22 @@ namespace NeuroAccessMaui.Services.AppPermissions
 
 		public async Task<bool> CheckCameraPermission()
 		{
-			PermissionStatus status = await Permissions.CheckStatusAsync<Permissions.Camera>();
-			if (status == PermissionStatus.Denied)
+			PermissionStatus Status = await Permissions.CheckStatusAsync<Permissions.Camera>();
+			if (Status == PermissionStatus.Denied)
 			{
 				if (DeviceInfo.Platform != DevicePlatform.iOS)
 				{
-					status = await Permissions.RequestAsync<Permissions.Camera>();
+					Status = await Permissions.RequestAsync<Permissions.Camera>();
 				}
 
-				if (status == PermissionStatus.Denied)
+				if (Status == PermissionStatus.Denied)
 				{
-					string title = ServiceRef.Localizer[nameof(AppResources.CameraPermissionTitle)];
-					string description = ServiceRef.Localizer[nameof(AppResources.CameraPermissionDescription)];
+					string Title = ServiceRef.Localizer[nameof(AppResources.CameraPermissionTitle)];
+					string Description = ServiceRef.Localizer[nameof(AppResources.CameraPermissionDescription)];
+					string DescriptionSecondary = ServiceRef.Localizer[nameof(AppResources.CameraPermissionDescriptionSecondary)];
 					
-					ShowPermissionPopup permissionPopUp = new(title, description);
-					await ServiceRef.UiService.PushAsync(permissionPopUp);
+					ShowPermissionPopup PermissionPopUp = new(Title, Description, DescriptionSecondary);
+					await ServiceRef.UiService.PushAsync(PermissionPopUp);
 
 					return false;
 				}

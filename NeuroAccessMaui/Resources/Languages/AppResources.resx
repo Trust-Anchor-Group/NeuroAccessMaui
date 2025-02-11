@@ -2491,9 +2491,12 @@
     <value>Transient</value>
   </data>
 	<data name="CameraPermissionTitle" xml:space="preserve">
-		<value>Camera Permission Required</value>
+		<value>Camera</value>
 	</data>
 	<data name="CameraPermissionDescription" xml:space="preserve">
-		<value>Scanning QR codes requires permission from your system to open the camera. Go to your device settings then 'Apps' and enable camera permissions for Neuro Access.</value>
+		<value>To continue, please enable Camera Access in Settings.</value>
+	</data>
+	<data name="CameraPermissionDescriptionSecondary" xml:space="preserve">
+		<value>Go to settings - Open Permissions - Enable Camera Permissions</value>
 	</data>
 </root>
