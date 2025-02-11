@@ -24,14 +24,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Translation", "Translation"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuroAccess.Nfc", "NeuroAccess.Nfc\NeuroAccess.Nfc.csproj", "{9FCF36B0-4059-4AC3-94AE-913BA0928680}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuroAccess.UiTests", "NeuroAccess.Tests\NeuroAccess.UiTests.csproj", "{7926DFFB-0FB0-4C6C-9F7B-3AD234650267}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuroAccess.UiTests.Android", "NeuroAccess.UiTests.Android\NeuroAccess.UiTests.Android.csproj", "{A2DC3E7D-7A9D-4FD6-B29D-E17C1A6470CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuroAccess.UiTests.Shared", "NeuroAccess.UiTests.Shared\NeuroAccess.UiTests.Shared.csproj", "{D3234A46-5DC9-497C-93E9-EA87C793E901}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-		Testing-Android|Any CPU = Testing-Android|Any CPU
-		Testing-iOS|Any CPU = Testing-iOS|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{B7E8FC5E-3AA0-489F-92DE-0D8FC8C66169}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -40,40 +40,30 @@ Global
 		{B7E8FC5E-3AA0-489F-92DE-0D8FC8C66169}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B7E8FC5E-3AA0-489F-92DE-0D8FC8C66169}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B7E8FC5E-3AA0-489F-92DE-0D8FC8C66169}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{B7E8FC5E-3AA0-489F-92DE-0D8FC8C66169}.Testing-Android|Any CPU.ActiveCfg = Release|Any CPU
-		{B7E8FC5E-3AA0-489F-92DE-0D8FC8C66169}.Testing-Android|Any CPU.Build.0 = Release|Any CPU
-		{B7E8FC5E-3AA0-489F-92DE-0D8FC8C66169}.Testing-Android|Any CPU.Deploy.0 = Release|Any CPU
-		{B7E8FC5E-3AA0-489F-92DE-0D8FC8C66169}.Testing-iOS|Any CPU.ActiveCfg = Debug|Any CPU
-		{B7E8FC5E-3AA0-489F-92DE-0D8FC8C66169}.Testing-iOS|Any CPU.Build.0 = Debug|Any CPU
-		{B7E8FC5E-3AA0-489F-92DE-0D8FC8C66169}.Testing-iOS|Any CPU.Deploy.0 = Debug|Any CPU
 		{CC5170E4-DF0B-4A2E-9976-79878DB18BD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CC5170E4-DF0B-4A2E-9976-79878DB18BD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CC5170E4-DF0B-4A2E-9976-79878DB18BD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CC5170E4-DF0B-4A2E-9976-79878DB18BD8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CC5170E4-DF0B-4A2E-9976-79878DB18BD8}.Testing-Android|Any CPU.ActiveCfg = Debug|Any CPU
-		{CC5170E4-DF0B-4A2E-9976-79878DB18BD8}.Testing-Android|Any CPU.Build.0 = Debug|Any CPU
-		{CC5170E4-DF0B-4A2E-9976-79878DB18BD8}.Testing-iOS|Any CPU.ActiveCfg = Debug|Any CPU
-		{CC5170E4-DF0B-4A2E-9976-79878DB18BD8}.Testing-iOS|Any CPU.Build.0 = Debug|Any CPU
 		{9FCF36B0-4059-4AC3-94AE-913BA0928680}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9FCF36B0-4059-4AC3-94AE-913BA0928680}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9FCF36B0-4059-4AC3-94AE-913BA0928680}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9FCF36B0-4059-4AC3-94AE-913BA0928680}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9FCF36B0-4059-4AC3-94AE-913BA0928680}.Testing-Android|Any CPU.ActiveCfg = Debug|Any CPU
-		{9FCF36B0-4059-4AC3-94AE-913BA0928680}.Testing-Android|Any CPU.Build.0 = Debug|Any CPU
-		{9FCF36B0-4059-4AC3-94AE-913BA0928680}.Testing-iOS|Any CPU.ActiveCfg = Debug|Any CPU
-		{9FCF36B0-4059-4AC3-94AE-913BA0928680}.Testing-iOS|Any CPU.Build.0 = Debug|Any CPU
-		{7926DFFB-0FB0-4C6C-9F7B-3AD234650267}.Debug|Any CPU.ActiveCfg = Testing-Android|Any CPU
-		{7926DFFB-0FB0-4C6C-9F7B-3AD234650267}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7926DFFB-0FB0-4C6C-9F7B-3AD234650267}.Testing-Android|Any CPU.ActiveCfg = Testing-Android|Any CPU
-		{7926DFFB-0FB0-4C6C-9F7B-3AD234650267}.Testing-Android|Any CPU.Build.0 = Testing-Android|Any CPU
-		{7926DFFB-0FB0-4C6C-9F7B-3AD234650267}.Testing-iOS|Any CPU.ActiveCfg = Testing-iOS|Any CPU
-		{7926DFFB-0FB0-4C6C-9F7B-3AD234650267}.Testing-iOS|Any CPU.Build.0 = Testing-iOS|Any CPU
+		{A2DC3E7D-7A9D-4FD6-B29D-E17C1A6470CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2DC3E7D-7A9D-4FD6-B29D-E17C1A6470CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2DC3E7D-7A9D-4FD6-B29D-E17C1A6470CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2DC3E7D-7A9D-4FD6-B29D-E17C1A6470CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3234A46-5DC9-497C-93E9-EA87C793E901}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3234A46-5DC9-497C-93E9-EA87C793E901}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3234A46-5DC9-497C-93E9-EA87C793E901}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3234A46-5DC9-497C-93E9-EA87C793E901}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{3F42E97E-89CE-4E13-8AED-CE22F0E58F7F} = {5DA6AEA9-D7C0-48B6-BB8E-A968392A4AB0}
+		{A2DC3E7D-7A9D-4FD6-B29D-E17C1A6470CD} = {5DA6AEA9-D7C0-48B6-BB8E-A968392A4AB0}
+		{D3234A46-5DC9-497C-93E9-EA87C793E901} = {5DA6AEA9-D7C0-48B6-BB8E-A968392A4AB0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CED2E309-3333-417B-92B8-7E7188269EC2}

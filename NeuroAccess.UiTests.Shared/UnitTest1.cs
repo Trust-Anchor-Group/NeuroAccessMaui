@@ -1,4 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using OpenQA.Selenium.Interactions;
 using System;
 
 namespace NeuroAccess.UiTests
@@ -10,15 +11,11 @@ namespace NeuroAccess.UiTests
 		[TestCategory("Android")]
 		public void Test1()
 		{
+			Task.Delay(10000).Wait();
 			App.GetScreenshot().SaveAsFile($"{nameof(Test1)}.png");
 
-#if ANDROID
-			Console.WriteLine("Running tests for Android.");
-#elif IOS
-            Console.WriteLine("Running tests for iOS.");
-#else
-			throw new PlatformNotSupportedException();
-#endif
+
+
 			Assert.IsTrue(true);
 		}
 	}

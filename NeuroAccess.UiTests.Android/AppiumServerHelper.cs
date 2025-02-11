@@ -29,7 +29,6 @@ namespace NeuroAccess.UiTests
 
 		public static void DisposeAppiumLocalServer()
 		{
-		
 			appiumLocalService?.Dispose();
 		}
 	}

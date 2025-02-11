@@ -7,24 +7,8 @@
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
     <RootNamespace>NeuroAccess.UiTests</RootNamespace>
-    <Configurations>Debug;Release;Testing-Android;Testing-iOS</Configurations>
+    <Configurations>Debug;Release</Configurations>
   </PropertyGroup>
-
-  <!-- Define platform-specific constants based on Configuration -->
-  <PropertyGroup Condition="'$(Configuration)' == 'Testing-Android'">
-    <DefineConstants>ANDROID</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'Testing-iOS'">
-    <DefineConstants>IOS</DefineConstants>
-  </PropertyGroup>
-
-  <!-- Platform-Specific Files -->
-  <ItemGroup Condition="'$(Configuration)' == 'Testing-Android'">
-	  <Compile Remove="iOS\**\*.cs" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)' == 'Testing-iOS'">
-	  <Compile Remove="Android\**\*.cs" />
-  </ItemGroup>
 
   <!-- NuGet Packages -->
   <ItemGroup>
@@ -36,5 +20,9 @@
     <PackageReference Include="Appium.WebDriver" Version="7.0.0" />
     <PackageReference Include="MSTest" Version="3.7.3" />
   </ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\NeuroAccess.UiTests.Shared\**\*.cs" LinkBase="Shared" Visible="false" />
+	</ItemGroup>
 
 </Project>

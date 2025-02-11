@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using OpenQA.Selenium;
 
-namespace NeuroAccess.UiTests.Shared
+namespace NeuroAccess.UiTests
 {
 	[TestClass]
 	public class GetStartedViewTest : BaseTest
@@ -15,9 +15,8 @@ namespace NeuroAccess.UiTests.Shared
 
 		[TestMethod]
 		[TestCategory("Android")]
-		 public void Test_NavigateTo_GetStartedButtons()
+		 public async Task Test_NavigateTo_GetStartedButtons()
 		{
-
 			var createAccountButton = App.FindElement(By.Id("GetStarted_CreateAccountButton"));
 			Assert.IsNotNull(createAccountButton, "Create Account-button not found!");
 			createAccountButton.Click();
