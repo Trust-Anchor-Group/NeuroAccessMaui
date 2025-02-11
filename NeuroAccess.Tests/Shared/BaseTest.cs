@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Appium.Android;
+using OpenQA.Selenium.Appium.Windows;
 
 namespace NeuroAccess.UiTests
 {
@@ -61,5 +62,16 @@ namespace NeuroAccess.UiTests
 			// If an Appium server was started locally above, make sure we clean it up here
 			AppiumServerHelper.DisposeAppiumLocalServer();
 		}
+
+		protected AppiumElement FindUIElement(string id)
+		{
+			if (App is WindowsDriver)
+			{
+				return App.FindElement(MobileBy.AccessibilityId(id));
+			}
+
+			return App.FindElement(MobileBy.Id(id));
+		}
+
 	}
 }
