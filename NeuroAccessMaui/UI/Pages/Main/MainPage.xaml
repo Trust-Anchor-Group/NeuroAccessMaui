@@ -12,7 +12,8 @@
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
 							 Shell.FlyoutBehavior="Flyout"
-							 Shell.NavBarIsVisible="True">
+							 Shell.NavBarIsVisible="True"
+							 AutomationId="MainPage">
 
 	<Grid x:Name="TheMainGrid"
 		  RowDefinitions="*, auto"
@@ -43,7 +44,8 @@
 				</Grid.ColumnDefinitions>
 
 				<!-- Scan QR Button -->
-				<controls:TemplatedButton Grid.Column="0" Command="{x:Binding ScanQrCodeCommand}">
+				<controls:TemplatedButton AutomationId="MainPage_ScanQRTemplatedButton"
+														Grid.Column="0" Command="{x:Binding ScanQrCodeCommand}">
 					<Border Style="{StaticResource TransparentTemplateButtonBorder}" InputTransparent="True" HorizontalOptions="Fill">
 						<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
 							<Path VerticalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
@@ -56,7 +58,8 @@
 				</controls:TemplatedButton>
 
 				<!-- Show ID Button -->
-				<controls:TemplatedButton Grid.Column="1" Command="{x:Binding ViewIdCommand}">
+				<controls:TemplatedButton AutomationId="MainPage_ShowIDTemplatedButton"
+						 Grid.Column="1" Command="{x:Binding ViewIdCommand}">
 					<Border Style="{StaticResource FilledTemplateButtonBorder}"  InputTransparent="True" HorizontalOptions="Fill">
 						<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
 							<Path VerticalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
