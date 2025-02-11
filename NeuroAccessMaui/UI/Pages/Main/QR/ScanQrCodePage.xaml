@@ -11,7 +11,8 @@
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.QR"
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
-							 Shell.FlyoutBehavior="Disabled">
+							 Shell.FlyoutBehavior="Disabled"
+							 AutomationId="ScanQrCodePage">
 	<Grid x:Name="GridWithAnimation">
 		<mct:StateContainer.StateViews>
 			<Grid mct:StateView.StateKey="AutomaticScan">
@@ -20,8 +21,9 @@
 
 				<Grid Padding="{StaticResource LargeMargins}">
 					<VerticalStackLayout VerticalOptions="Start" Spacing="{StaticResource LargeSpacing}">
-						<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{StaticResource FilledImageButton}"
-													 PathData="{x:Static ui:Geometries.BackButtonPath}" />
+						<controls:ImageButton AutomationId="ScanQrCodePage_GoBackImageButton"
+									HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{StaticResource FilledImageButton}"
+									PathData="{x:Static ui:Geometries.BackButtonPath}" />
 						<Label HorizontalOptions="Center" HorizontalTextAlignment="Center" Style="{StaticResource PageTitleLabel}"
 								 Text="{Binding LocalizedQrPageTitle}" TextColor="{StaticResource PrimaryBackgroundLight}" />
 					</VerticalStackLayout>
@@ -51,24 +53,25 @@
 						</VerticalStackLayout>
 
 						<HorizontalStackLayout HorizontalOptions="Center" Spacing="{StaticResource LargeSpacing}">
-							<controls:ImageButton
+							<controls:ImageButton AutomationId="ScanQrCodePage_PickPhotoImageButton"
 								Command="{Binding PickPhotoCommand, Source={x:Reference ThisPage}}"
 								Style="{StaticResource FilledImageButton}"
 								PathData="{x:Static ui:Geometries.CameraImageButtonPath}" />
 
-							<controls:ImageButton
+							<controls:ImageButton AutomationId="ScanQrCodePage_SwitchTorchImageButton"
 								Command="{Binding SwitchTorchCommand, Source={x:Reference ThisPage}}"
 								Style="{StaticResource FilledImageButton}"
 								PathData="{x:Static ui:Geometries.CameraTorchButtonPath}" />
 
-							<controls:ImageButton
+							<controls:ImageButton AutomationId="ScanQrCodePage_SwitchCameraImageButton"
 								Command="{Binding SwitchCameraCommand, Source={x:Reference ThisPage}}"
 								Style="{StaticResource FilledImageButton}"
 								PathData="{x:Static ui:Geometries.CameraSwitchButtonPath}" />
 						</HorizontalStackLayout>
 
-						<controls:TextButton Command="{Binding Path=SwitchModeCommand, Source={x:Reference ThisPage}}" Style="{StaticResource FilledTextButton}"
-													LabelData="{l:Localize QrEnterManually}" />
+						<controls:TextButton AutomationId="ScanQrCodePage_ManualQRTextButton"
+									Command="{Binding Path=SwitchModeCommand, Source={x:Reference ThisPage}}" Style="{StaticResource FilledTextButton}"
+									LabelData="{l:Localize QrEnterManually}" />
 					</VerticalStackLayout>
 				</Grid>
 			</Grid>
