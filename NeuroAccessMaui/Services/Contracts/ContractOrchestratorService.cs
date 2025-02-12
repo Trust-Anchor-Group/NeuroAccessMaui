@@ -140,6 +140,9 @@ namespace NeuroAccessMaui.Services.Contracts
 
 		private async Task Contracts_PetitionForIdentityReceived(object? Sender, LegalIdentityPetitionEventArgs e)
 		{
+			if(ServiceRef.UiService.CurrentPage is ViewContractPage)
+				return;
+
 			try
 			{
 				LegalIdentity Identity;
