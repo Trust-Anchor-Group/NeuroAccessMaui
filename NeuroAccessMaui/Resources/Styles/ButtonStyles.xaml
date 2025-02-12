@@ -65,12 +65,11 @@
 
 	<!-- Secondary -->
 	<Style x:Key="SecondaryButtonActiveBorder" TargetType="Border" BasedOn="{StaticResource ButtonBorderBase}">
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Accent20Light}, Dark={StaticResource Elevation2ForegroundDark}}" />
-		<Setter Property="Stroke" Value="{AppThemeBinding Light='Transparent', Dark={StaticResource OffWhiteDark}}"/>
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Accent20Light}, Dark={StaticResource Elevation1BackgroundDark}}" />
 	</Style>
 
 	<Style x:Key="SecondaryButtonActiveLabel" TargetType="Label" BasedOn="{StaticResource ButtonLabelBase}">
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource AccentActiveLight}, Dark={StaticResource OffWhiteDark}}" />
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource AccentActiveLight}, Dark={StaticResource AccentActiveDark}}" />
 	</Style>
 
 	<Style x:Key="SecondaryPath" TargetType="Path">
