@@ -17,6 +17,9 @@ namespace NeuroAccess.UiTests
 		[ClassInitialize(InheritanceBehavior.BeforeEachDerivedClass)]
 		public static void RunBeforeAnyTests(TestContext context)
 		{
+
+
+
 			try
 			{
 				Console.WriteLine("Starting Appium Server...");
@@ -31,7 +34,7 @@ namespace NeuroAccess.UiTests
 					PlatformName = "Android",
 					// This is the Android version, not API level
 					// This is ignored if you use the avd option below
-				//	PlatformVersion = "14",
+					PlatformVersion = "14",
 					// The full path to the .apk file to test or the package name if the app is already installed on the device
 					//App = "com.tag.NeuroAccess-Signed.apk",
 				};
@@ -63,3 +66,66 @@ namespace NeuroAccess.UiTests
 		}
 	}
 }
+
+/*
+THE CODE FOR GETTING VERIFICATION FOR TEST PHONE NUMBER
+
+			// Create a CookieContainer to manage cookies automatically
+			CookieContainer cookieContainer = new();
+
+			// Configure HttpClientHandler to use the CookieContainer and to follow redirects automatically
+			HttpClientHandler handler = new()
+			{
+				CookieContainer = cookieContainer,
+				AllowAutoRedirect = true // Automatically follows HTTP 3xx redirects
+			};
+
+			using (HttpClient client = new(handler))
+			{
+				// Set the base address (optional)
+				client.BaseAddress = new Uri("https://id.tagroot.io");
+
+				// Mimic some common headers that a browser might send
+				client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/html"));
+				client.DefaultRequestHeaders.UserAgent.ParseAdd("NeuroAccess/1.0 (.NET MAUI UITest)");
+
+				client.DefaultRequestHeaders.Referrer = new Uri("https://id.tagroot.io/TestOTP.md");
+				client.DefaultRequestHeaders.Add("Origin", "https://id.tagroot.io");
+
+				// Prepare the form data. Adjust the field name and value as required.
+				Dictionary<string, string> formData = new()
+				{
+					{ "PhoneNr", "+1555123123" }  
+            };
+				FormUrlEncodedContent content = new(formData);
+
+				try
+				{
+					// Send a POST request. Since AllowAutoRedirect is true, the client will follow the 303 redirect.
+					HttpResponseMessage response = await client.PostAsync("/TestOTP.md", content);
+					response.EnsureSuccessStatusCode();
+
+					// Read the final response content after redirects
+					string htmlContent = await response.Content.ReadAsStringAsync();
+
+					Console.WriteLine("Response content: " + htmlContent);
+
+					// For demonstration, suppose the verification code appears in the page like "Verification Code: 123456".
+					// You can use a regex (or an HTML parser like HtmlAgilityPack) to extract the code.
+					Match codeMatch = Regex.Match(htmlContent, @"\<strong\>(?'Code'\d{6})\<\/strong\>", RegexOptions.IgnoreCase);
+					if (codeMatch.Success)
+					{
+						string verificationCode = codeMatch.Groups[1].Value;
+						Console.WriteLine("Verification Code: " + verificationCode);
+					}
+					else
+					{
+						Console.WriteLine("Verification code not found in the response.");
+					}
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine("An error occurred: " + ex.Message);
+				}
+			}
+*/
