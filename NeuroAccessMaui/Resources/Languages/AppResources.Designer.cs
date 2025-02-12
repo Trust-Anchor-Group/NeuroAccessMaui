@@ -2129,6 +2129,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Go to settings.
+        /// </summary>
+        internal static string GoToSettings {
+            get {
+                return ResourceManager.GetString("GoToSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hardware.
         /// </summary>
         internal static string HardwareInfo {
@@ -5878,6 +5887,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         internal static string Signed {
             get {
                 return ResourceManager.GetString("Signed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skip for now.
+        /// </summary>
+        internal static string SkipForNow {
+            get {
+                return ResourceManager.GetString("SkipForNow", resourceCulture);
             }
         }
         

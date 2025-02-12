@@ -2499,4 +2499,10 @@
 	<data name="CameraPermissionDescriptionSecondary" xml:space="preserve">
 		<value>Go to settings - Open Permissions - Enable Camera Permissions</value>
 	</data>
+  <data name="GoToSettings" xml:space="preserve">
+    <value>Go to settings</value>
+  </data>
+  <data name="SkipForNow" xml:space="preserve">
+    <value>Skip for now</value>
+  </data>
 </root>

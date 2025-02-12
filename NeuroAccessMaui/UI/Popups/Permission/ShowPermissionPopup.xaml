@@ -71,12 +71,12 @@
 					<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
 						<controls:TextButton
 							Command="{Binding GoToSettingsCommand}"
-							LabelData="Go to Settings"
+							LabelData="{l:Localize GoToSettings}"
 							Style="{StaticResource PrimaryButton}" />
 
 						<controls:TextButton
 							Command="{Binding CloseCommand}"
-							LabelData="Skip for now"
+							LabelData="{l:Localize SkipForNow}"
 							Style="{StaticResource SecondaryButton}" />
 					</VerticalStackLayout>
 				</VerticalStackLayout>
