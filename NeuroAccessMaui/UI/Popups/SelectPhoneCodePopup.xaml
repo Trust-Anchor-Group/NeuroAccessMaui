@@ -19,7 +19,7 @@
 
 	<VisualElement.Resources>
 		<DataTemplate x:Key="SelectPhoneCodeTemplate" x:DataType="data:ISO_3166_Country">
-			<Grid BackgroundColor="{AppThemeBinding Light={StaticResource SecondaryBackgroundLight}, Dark={StaticResource SecondaryBackgroundDark}}"
+			<Grid BackgroundColor="{AppThemeBinding Light={StaticResource SecondaryBackgroundLight}, Dark={StaticResource SecondaryBackgroundDark}}" AutomationId="{Binding Alpha2}"
 					ColumnDefinitions="35,auto,*" ColumnSpacing="{StaticResource SmallSpacing}" RowDefinitions="auto"
 					Padding="{StaticResource SmallMargins}">
 					
