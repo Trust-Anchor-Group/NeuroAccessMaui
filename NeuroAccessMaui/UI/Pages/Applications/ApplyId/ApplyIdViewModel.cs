@@ -795,6 +795,11 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			if (!this.CanTakePhoto)
 				return;
 
+			bool Permitted = await ServiceRef.PermissionService.CheckCameraPermission();
+
+			if (!Permitted)
+				return;
+
 			try
 			{
 				FileResult? Result = await MediaPicker.Default.CapturePhotoAsync(new MediaPickerOptions()

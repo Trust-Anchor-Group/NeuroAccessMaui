@@ -160,9 +160,9 @@ namespace NeuroAccessMaui.Services.UI.QR
 		/// <returns>Decoded string</returns>
 		public static async Task<string?> ScanQrCode(string? QrTitle, string[] AllowedSchemas)
 		{
-			bool permitted = await ServiceRef.PermissionService.CheckCameraPermission();
+			bool Permitted = await ServiceRef.PermissionService.CheckCameraPermission();
 
-			if (!permitted)
+			if (!Permitted)
 				return null;
 
 			ScanQrCodeNavigationArgs NavigationArgs = new(QrTitle, AllowedSchemas);
