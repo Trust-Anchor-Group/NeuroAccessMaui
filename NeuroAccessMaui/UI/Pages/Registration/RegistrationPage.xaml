@@ -21,11 +21,13 @@
 				<Thickness Left="{StaticResource LargeSpacing}" Top="{StaticResource LargeSpacing}" Right="{StaticResource LargeSpacing}" />
 			</Grid.Padding>
 
-			<controls:ImageButton IsVisible="{Binding CanGoToPrev}" Command="{Binding GoToPrevCommand}" Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+			<controls:ImageButton AutomationId="RegistrationPage_GoToPrevImageButton"
+					IsVisible="{Binding CanGoToPrev}" Command="{Binding GoToPrevCommand}" Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
 			<Image HorizontalOptions="Center" VerticalOptions="Start" Source="{AppThemeBinding Light=neuro_assets_icon_dark, Dark=neuro_assets_icon_light}" WidthRequest="50" HeightRequest="50" />
 
-			<controls:TemplatedButton x:Name="LanguageButton" VerticalOptions="Start" HorizontalOptions="End" Command="{Binding ChangeLanguageCommand}">
+			<controls:TemplatedButton AutomationId="RegistrationPage_LanguageTemplatedButton"
+					x:Name="LanguageButton" VerticalOptions="Start" HorizontalOptions="End" Command="{Binding ChangeLanguageCommand}">
 				<VerticalStackLayout>
 					<Path x:Name="InnerPath" Grid.Row="0" HorizontalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
 							Fill="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" 
