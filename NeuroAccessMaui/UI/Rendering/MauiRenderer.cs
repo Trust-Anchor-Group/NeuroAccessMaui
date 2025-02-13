@@ -1934,18 +1934,20 @@ namespace NeuroAccessMaui.UI.Rendering
 			}
 		}
 
-		private Task OutputImage(Waher.Content.Emoji.IImageSource source)
+		private async Task OutputImage(Waher.Content.Emoji.IImageSource Source)
 		{
+			Source = await CheckDataUri(Source);
+
 			Image Image = new Image
 			{
-				Source = source.Url,
+				Source = Source.Url,
 			};
 
-			if (source.Width.HasValue)
-				Image.WidthRequest = source.Width.Value;
+			if (Source.Width.HasValue)
+				Image.WidthRequest = Source.Width.Value;
 
-			if (source.Height.HasValue)
-				Image.HeightRequest = source.Height.Value;
+			if (Source.Height.HasValue)
+				Image.HeightRequest = Source.Height.Value;
 
 			ScrollView scrollView = new ScrollView
 			{
@@ -1955,8 +1957,6 @@ namespace NeuroAccessMaui.UI.Rendering
 
 			ContentView Cv = (ContentView)this.currentElement;
 			Cv.Content = scrollView;
-
-			return Task.CompletedTask;
 		}
 
 		public Microsoft.Maui.TextAlignment LabelAlignment()
