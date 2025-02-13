@@ -17,6 +17,7 @@ using CommunityToolkit.Mvvm.Messaging;
 //using Firebase.Messaging;	// TODO: Firebase
 using Java.Util.Concurrent;
 using NeuroAccessMaui.Services.Push;
+using Plugin.Firebase.CloudMessaging;
 using Waher.Events;
 using Waher.Networking.XMPP.Push;
 using Rect = Android.Graphics.Rect;
@@ -592,13 +593,14 @@ namespace NeuroAccessMaui.Services
 		/// Gets a Push Notification token for the device.
 		/// </summary>
 		/// <returns>Token, Service used, and type of client.</returns>
-		public Task<TokenInformation> GetPushNotificationToken()
+		public async Task<TokenInformation> GetPushNotificationToken()
 		{
-			Java.Lang.Object? Token = string.Empty;
+			string Token = string.Empty;
 
 			try
 			{
-				Token = string.Empty;   // await FirebaseMessaging.Instance.GetToken().AsAsync<Java.Lang.Object>();		// TODO: Firebase
+				await CrossFirebaseCloudMessaging.Current.CheckIfValidAsync();
+				Token = await CrossFirebaseCloudMessaging.Current.GetTokenAsync();
 			}
 			catch (Exception ex)
 			{
@@ -607,12 +609,12 @@ namespace NeuroAccessMaui.Services
 
 			TokenInformation TokenInformation = new()
 			{
-				Token = Token?.ToString(),
+				Token = Token,
 				ClientType = ClientType.Android,
 				Service = PushMessagingService.Firebase
 			};
 
-			return Task.FromResult(TokenInformation);
+			return TokenInformation;
 		}
 
 		#region Keyboard
