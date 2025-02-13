@@ -1,3 +1,5 @@
+using System.Runtime.Versioning;
+using System.Text;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
@@ -8,11 +10,11 @@ using Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;
 using NeuroAccess.Nfc;
 using NeuroAccessMaui.AndroidPlatform.Nfc;
 using NeuroAccessMaui.Services.Nfc;
-using System.Text;
+using Plugin.Firebase.CloudMessaging;
 
 namespace NeuroAccessMaui
 {
-	[Activity(Theme = "@style/Maui.SplashTheme", MainLauncher = true,
+	[Activity(Theme = "@style/Maui.SplashTheme", MainLauncher = true, Name = "com.tag.NeuroAccess.MainActivity",
 		ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Density | ConfigChanges.Locale,
 		ScreenOrientation = ScreenOrientation.Portrait, LaunchMode = LaunchMode.SingleTop)]
 	[IntentFilter([NfcAdapter.ActionNdefDiscovered],
@@ -23,6 +25,63 @@ namespace NeuroAccessMaui
 	public class MainActivity : MauiAppCompatActivity
 	{
 		private static NfcAdapter? nfcAdapter = null;
+
+		protected override void OnCreate(Bundle? savedInstanceState)
+		{
+			base.OnCreate(savedInstanceState);
+
+			this.CreateNotificationChannelsIfNeeded();
+		}
+
+		private void CreateNotificationChannelsIfNeeded()
+		{
+			if (Build.VERSION.SdkInt >= BuildVersionCodes.O && OperatingSystem.IsAndroidVersionAtLeast(26))
+			{
+				this.CreateNotificationChannels();
+			}
+		}
+
+		[SupportedOSPlatform("android26.0")]
+		private void CreateNotificationChannels()
+		{
+			NotificationChannel MessagesChannel = new("Messages", "Instant Messages", NotificationImportance.High)
+			{
+				Description = "Channel for incoming Instant Message notifications"
+			};
+
+			NotificationChannel PetitionsChannel = new("Petitions", "Petitions sent by other users", NotificationImportance.High)
+			{
+				Description = "Channel for incoming Contract or Identity Peititions, such as Review or Signature Requests"
+			};
+
+			NotificationChannel IdentitiesChannel = new("Identities", "Identity events", NotificationImportance.High)
+			{
+				Description = "Channel for events relating to the digital identity"
+			};
+
+			NotificationChannel ContractsChannel = new("Contracts", "Contract events", NotificationImportance.High)
+			{
+				Description = "Channel for events relating to smart contracts"
+			};
+
+			NotificationChannel EDalerChannel = new("eDaler", "eDaler events", NotificationImportance.High)
+			{
+				Description = "Channel for events relating to the eDaler wallet balance"
+			};
+
+			NotificationChannel TokensChannel = new("Tokens", "Token events", NotificationImportance.High)
+			{
+				Description = "Channel for events relating to Neuro-Feature tokens"
+			};
+
+			NotificationManager? NotificationManager = this.GetSystemService(NotificationService) as NotificationManager;
+			NotificationManager?.CreateNotificationChannels(new List<NotificationChannel>()
+			{
+				MessagesChannel, PetitionsChannel, IdentitiesChannel, ContractsChannel, EDalerChannel, TokensChannel
+			});
+			FirebaseCloudMessagingImplementation.ChannelId = "Messages"; // Default channel if not specified.
+
+		}
 
 		protected override async void OnPostCreate(Bundle? savedInstanceState)
 		{
