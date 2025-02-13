@@ -14,6 +14,7 @@ using Microsoft.Maui.Platform;
 using DotNet.Meteor.HotReload.Plugin;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using SkiaSharp.Views.Maui.Controls;
+using NeuroAccessMaui.Services.Push;
 
 
 #endif
@@ -22,6 +23,8 @@ using SkiaSharp.Views.Maui.Controls;
 #if ANDROID
 using Microsoft.Maui.Controls.Compatibility.Platform.Android;
 #endif
+
+
 
 namespace NeuroAccessMaui
 {
@@ -37,6 +40,7 @@ namespace NeuroAccessMaui
 
 			Builder.UseMauiApp<App>();
 			Builder.UseSkiaSharp();
+			Builder.RegisterFirebaseServices();
 #if DEBUG
 			Builder.EnableHotReload();
 #endif
@@ -72,7 +76,6 @@ namespace NeuroAccessMaui
 #if DEBUG
 			Builder.Logging.AddDebug();
 #endif
-
 			instance = Builder.Build();
 
 			return instance;
