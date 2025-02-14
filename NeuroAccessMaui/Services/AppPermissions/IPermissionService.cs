@@ -10,11 +10,11 @@ using Waher.Runtime.Inventory;
 namespace NeuroAccessMaui.Services.AppPermissions
 {
 	/// <summary>
-	/// Handles common runtime settings that need to be persisted during sessions.
+	/// Handles checking and requesting permissions for the app.
 	/// </summary>
 	[DefaultImplementation(typeof(PermissionService))]
-	public interface IPermissionService : ILoadableService
+	public interface IPermissionService
 	{
-		Task<bool> CheckCameraPermission();
+		Task<bool> CheckCameraPermissionAsync();
 	}
 }

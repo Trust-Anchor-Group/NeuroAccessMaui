@@ -1,23 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NeuroAccessMaui.UI.Popups.Permission;
+﻿using NeuroAccessMaui.UI.Popups.Permission;
 using NeuroAccessMaui.Resources.Languages;
-using NeuroAccessMaui.Services.AppPermissions;
 using Waher.Runtime.Inventory;
 
 namespace NeuroAccessMaui.Services.AppPermissions
 {
 	[Singleton]
-	internal sealed class PermissionService : LoadableService, IPermissionService
+	internal sealed class PermissionService : IPermissionService
 	{
 		public PermissionService()
 		{
 		}
 
-		public async Task<bool> CheckCameraPermission()
+		public async Task<bool> CheckCameraPermissionAsync()
 		{
 			PermissionStatus Status = await Permissions.CheckStatusAsync<Permissions.Camera>();
 

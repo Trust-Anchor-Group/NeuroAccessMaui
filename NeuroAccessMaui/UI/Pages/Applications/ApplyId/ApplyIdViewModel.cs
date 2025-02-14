@@ -797,7 +797,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			if (!this.CanTakePhoto)
 				return;
 
-			bool Permitted = await ServiceRef.PermissionService.CheckCameraPermission();
+			bool Permitted = await ServiceRef.PermissionService.CheckCameraPermissionAsync();
 
 			if (!Permitted)
 				return;
