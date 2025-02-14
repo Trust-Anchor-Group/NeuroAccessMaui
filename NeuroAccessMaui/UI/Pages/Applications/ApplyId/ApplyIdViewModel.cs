@@ -11,9 +11,11 @@ using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.Photos;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Registration;
+using NeuroAccessMaui.UI.Pages.Utility.Images;
 using NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders;
 using SkiaSharp;
 using Waher.Content;
+using Waher.Content.Html.Elements;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.StanzaErrors;
@@ -811,12 +813,25 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 					return;
 
 				Stream stream = await Result.OpenReadAsync();
-				await this.AddPhoto(stream, Result.FullPath, true);
+
+				byte[] InputBin = stream.ToByteArray() ?? throw new Exception("Failed to read photo stream");
+
+				TaskCompletionSource<byte[]?> TCS = new();
+				await ServiceRef.UiService.GoToAsync(nameof(ImageCroppingPage), new ImageCroppingNavigationArgs(ImageSource.FromStream(() => new MemoryStream(InputBin)), TCS));
+
+				byte[] OutputBin = await TCS.Task ?? throw new Exception("Failed to crop photo");
+
+				MemoryStream MS = new(OutputBin);
+
+
+				await this.AddPhoto(MS, Result.FullPath, true);
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiService.DisplayException(ex);
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					ServiceRef.Localizer[nameof(AppResources.FailedToLoadPhoto)]);
 			}
 		}
 
@@ -1026,16 +1041,27 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		{
 			try
 			{
-				FileResult? Result = await MediaPicker.Default.PickPhotoAsync(new MediaPickerOptions()
+				FileResult? result = await MediaPicker.Default.PickPhotoAsync(new MediaPickerOptions()
 				{
 					Title = ServiceRef.Localizer[nameof(AppResources.PickPhotoOfYourself)]
 				});
 
-				if (Result is null)
+				if (result is null)
 					return;
 
-				Stream stream = await Result.OpenReadAsync();
-				await this.AddPhoto(stream, Result.FullPath, true);
+				Stream stream = await result.OpenReadAsync();
+				byte[] inputBin = stream.ToByteArray() ?? throw new Exception("Failed to read photo stream");
+
+				TaskCompletionSource<byte[]?> tcs = new();
+				await ServiceRef.UiService.GoToAsync(
+					nameof(ImageCroppingPage),
+					new ImageCroppingNavigationArgs(ImageSource.FromStream(() => new MemoryStream(inputBin)), tcs)
+				);
+
+				byte[] outputBin = await tcs.Task ?? throw new Exception("Failed to crop photo");
+				MemoryStream ms = new(outputBin);
+
+				await this.AddPhoto(ms, result.FullPath, true);
 			}
 			catch (Exception ex)
 			{
@@ -1043,6 +1069,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
+
 
 		/// <summary>
 		/// Removes the current photo.

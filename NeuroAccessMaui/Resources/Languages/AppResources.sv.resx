@@ -1647,6 +1647,9 @@
   <data name="RequestPaymentMessage" xml:space="preserve">
     <value>Begära betalning av {0} {1}.</value>
   </data>
+  <data name="RequestPaymentDescription" xml:space="preserve">
+    <value>För att efterfråga en betalning från någon, fyll i detaljerna om betalningen nedan, och klicka knappen för att en Generera QR-kod. Den genererade koden kan användas av den andra parten för att generera en betalning till ditt konto.</value>
+  </data>
   <data name="Room" xml:space="preserve">
     <value>Rum</value>
   </data>
@@ -2211,6 +2214,9 @@
   <data name="Amount" xml:space="preserve">
     <value>Belopp:</value>
   </data>
+  <data name="AmountExtra" xml:space="preserve">
+    <value>Belopp extra: (valfritt, förslag)</value>
+  </data>
   <data name="Wallet" xml:space="preserve">
     <value>Plånbok</value>
   </data>
@@ -2446,22 +2452,22 @@
     <value>Jag har läst och förstått villkoren i detta kontrakt</value>
   </data>
   <data name="Status" xml:space="preserve">
-    <value>Status</value>
+      <value>Status</value>
   </data>
   <data name="Encrypted" xml:space="preserve">
-    <value>Krypterad</value>
+      <value>Krypterad</value>
   </data>
   <data name="ViewParametersTitle" xml:space="preserve">
-    <value>Visa parametrar</value>
+      <value>Visa parametrar</value>
   </data>
   <data name="ViewParametersDescription" xml:space="preserve">
-    <value>Visa de variabler som styr kontraktet</value>
+      <value>Visa de variabler som styr kontraktet</value>
   </data>
   <data name="ViewRolesTitle" xml:space="preserve">
-    <value>Granska tilldelade roller</value>
+      <value>Granska tilldelade roller</value>
   </data>
   <data name="ViewRolesDescription" xml:space="preserve">
-    <value>Granska rollerna och se vem som har signerat varje roll</value>
+      <value>Granska rollerna och se vem som har signerat varje roll</value>
   </data>
   <data name="InvitationToSign" xml:space="preserve">
     <value>Du har blivit inbjuden att signera detta kontrakt. Se till att verifiera och granska kontraktet innan du fortsätter.</value>
@@ -2482,7 +2488,7 @@
     <value>Granska kontraktets villkor</value>
   </data>
   <data name="ServerSignatureButtonTitle" xml:space="preserve">
-    <value>Visa serversignatur</value>
+    <value>Visa serversignatur</value> 
   </data>
   <data name="ServerSignatureButtonDescription" xml:space="preserve">
     <value>Visa serversignaturen, som skyddar avtalets integritet</value>
@@ -2490,11 +2496,7 @@
   <data name="Transient" xml:space="preserve">
     <value>Transient</value>
   </data>
-  <data name="CameraPermissionTitle" xml:space="preserve">
-    <value>&#x8;</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="CameraPermissionDescription" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="GenerateQrCode" xml:space="preserve">
+    <value>Generera QR-kod</value>
   </data>
 </root>

@@ -12,6 +12,10 @@ using ZXing.Net.Maui.Controls;
 using Microsoft.Maui.Platform;
 #if DEBUG
 using DotNet.Meteor.HotReload.Plugin;
+using SkiaSharp.Views.Maui.Controls.Hosting;
+using SkiaSharp.Views.Maui.Controls;
+
+
 #endif
 
 
@@ -32,6 +36,7 @@ namespace NeuroAccessMaui
 			MauiAppBuilder Builder = MauiApp.CreateBuilder();
 
 			Builder.UseMauiApp<App>();
+			Builder.UseSkiaSharp();
 #if DEBUG
 			Builder.EnableHotReload();
 #endif

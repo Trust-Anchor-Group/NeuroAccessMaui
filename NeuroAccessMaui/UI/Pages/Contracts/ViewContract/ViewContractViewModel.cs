@@ -265,7 +265,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		public bool CanSign =>
 			this.IsBusy == false &&
 			this.SignableRoles.Count > 0 &&
-			(this.Contract?.ContractState == ContractState.Approved || this.Contract?.ContractState == ContractState.BeingSigned);
+			(this.Contract?.ContractState == ContractState.Approved || this.Contract?.ContractState == ContractState.BeingSigned) &&
+			this.Contract?.Roles.Any(r => r.Parts.Any(p => p.IsMe && p.HasSigned)) is false;
 
 		public bool ReadyToSign =>
 			this.SelectedRole is not null &&
@@ -310,15 +311,26 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			});
 
 			string Role = this.SelectedRole.Name;
-			await this.GoToState(ViewContractStep.Overview);
-			await ServiceRef.XmppService.SignContract(this.Contract.Contract, Role, false);
-			await this.RefreshContract(null);
 
-			await MainThread.InvokeOnMainThreadAsync(() =>
+			try
 			{
-				this.SetIsBusy(false);
-			});
-
+				await this.GoToState(ViewContractStep.Overview);
+				await ServiceRef.XmppService.SignContract(this.Contract.Contract, Role, false);
+				await this.RefreshContract(null);
+			}
+			catch (Exception)
+			{
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)]);
+			}
+			finally
+			{
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					this.SetIsBusy(false);
+				});
+			}
 		}
 
 		#endregion
