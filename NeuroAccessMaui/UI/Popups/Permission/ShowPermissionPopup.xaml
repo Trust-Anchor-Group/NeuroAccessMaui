@@ -76,7 +76,7 @@
 
 						<controls:TextButton
 							Command="{Binding CloseCommand}"
-							LabelData="{l:Localize SkipForNow}"
+							LabelData="{l:Localize Skip}"
 							Style="{StaticResource SecondaryButton}" />
 					</VerticalStackLayout>
 				</VerticalStackLayout>

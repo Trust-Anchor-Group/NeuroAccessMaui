@@ -2503,15 +2503,15 @@
 		<value>Camera</value>
 	</data>
 	<data name="CameraPermissionDescription" xml:space="preserve">
-		<value>To continue, please enable Camera Access in Settings.</value>
+		<value>To use this feature, please enable camera access in your settings.</value>
 	</data>
 	<data name="CameraPermissionDescriptionSecondary" xml:space="preserve">
-		<value>Go to settings - Open Permissions - Enable Camera Permissions</value>
+		<value>Open settings - Click on "Permissions" - Enable Camera Permissions</value>
 	</data>
   <data name="GoToSettings" xml:space="preserve">
-    <value>Go to settings</value>
+    <value>Open settings</value>
   </data>
-  <data name="SkipForNow" xml:space="preserve">
-    <value>Skip for now</value>
+  <data name="Skip" xml:space="preserve">
+    <value>Skip</value>
   </data>
 </root>

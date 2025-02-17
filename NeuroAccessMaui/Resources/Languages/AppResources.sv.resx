@@ -2499,4 +2499,19 @@
   <data name="GenerateQrCode" xml:space="preserve">
     <value>Generera QR-kod</value>
   </data>
+  <data name="CameraPermissionTitle" xml:space="preserve">
+    <value>Kamera</value>
+  </data>
+  <data name="CameraPermissionDescription" xml:space="preserve">
+    <value>För att använda denna funktion, vänligen aktivera kameratillgång i dina inställningar.</value>
+  </data>
+  <data name="CameraPermissionDescriptionSecondary" xml:space="preserve">
+    <value>Öppna inställningar - Klicka på "Behörigheter" - Aktivera kamerabehörigheter</value>
+  </data>
+  <data name="GoToSettings" xml:space="preserve">
+    <value>Öppna inställningar</value>
+  </data>
+  <data name="Skip" xml:space="preserve">
+    <value>Hoppa över</value>
+  </data>
 </root>
