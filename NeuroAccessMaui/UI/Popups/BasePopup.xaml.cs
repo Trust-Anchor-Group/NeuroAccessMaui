@@ -1,6 +1,5 @@
 ﻿using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Pages;
-using NeuroAccessMaui.UI.Pages.Wallet.MachineReport.Reports;
 using Waher.Events;
 
 namespace NeuroAccessMaui.UI.Popups
