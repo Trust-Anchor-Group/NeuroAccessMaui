@@ -16,6 +16,8 @@ namespace NeuroAccessMaui.UI.Popups.Permission
 		private string description = "";
 		private string descriptionSecondary = "";
 
+		private bool hasBeenToSettings = false;
+
 		#endregion
 		#region Public Properties
 
@@ -83,16 +85,46 @@ namespace NeuroAccessMaui.UI.Popups.Permission
 			this.DescriptionSecondary = "";
 		}
 
-		[RelayCommand]
-		public void Close()
+		protected override async Task OnInitialize()
 		{
-			ServiceRef.UiService.PopAsync();
+			await base.OnInitialize();
+
+			App.AppActivated += this.App_OnActivated;
+
+		}
+
+		protected override Task OnDispose()
+		{
+			App.AppActivated -= this.App_OnActivated;
+
+			return base.OnDispose();
+		}
+
+		protected async void App_OnActivated(object? sender, EventArgs e)
+		{
+			try
+			{
+				if (this.hasBeenToSettings)
+				{
+					await this.Close();
+				}
+			}
+			catch (Exception)
+			{
+				//Ignore no need to handle this exception, the user needs to close popup manually
+			}
 		}
 
 		[RelayCommand]
-		public void GoToSettings()
+		private async Task Close()
 		{
-			ServiceRef.UiService.PopAsync();
+			await ServiceRef.UiService.PopAsync();
+		}
+
+		[RelayCommand]
+		private void GoToSettings()
+		{
+			this.hasBeenToSettings = true;
 			AppInfo.Current.ShowSettingsUI();
 		}
 	}

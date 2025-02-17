@@ -1,5 +1,5 @@
-﻿using NeuroAccessMaui.UI.Popups.Permission;
-using NeuroAccessMaui.Resources.Languages;
+﻿using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.UI.Popups.Permission;
 using Waher.Runtime.Inventory;
 
 namespace NeuroAccessMaui.Services.AppPermissions
@@ -11,32 +11,51 @@ namespace NeuroAccessMaui.Services.AppPermissions
 		{
 		}
 
+		/// <summary>
+		/// Checks and requests a permission of type TPermission.
+		/// </summary>
+		/// <typeparam name="TPermission">The permission type to check.</typeparam>
+		/// <returns>The final status of the permission.</returns>
+		private static async Task<PermissionStatus> CheckAndRequestPermissionAsync<TPermission>()
+			 where TPermission : Permissions.BasePermission, new()
+		{
+			PermissionStatus Status = await Permissions.CheckStatusAsync<TPermission>();
+
+			// On platforms other than iOS, a Denied status might be temporary,
+			// so we try to request it.
+			if ((Status == PermissionStatus.Denied && DeviceInfo.Platform != DevicePlatform.iOS) ||
+				 Status == PermissionStatus.Unknown)
+			{
+				Status = await Permissions.RequestAsync<TPermission>();
+			}
+
+			return Status;
+		}
+
+		/// <summary>
+		/// Checks the camera permission, requests it if necessary, and shows a rationale popup if denied.
+		/// </summary>
+		/// <returns>True if permission is granted; otherwise, false.</returns>
 		public async Task<bool> CheckCameraPermissionAsync()
 		{
-			PermissionStatus Status = await Permissions.CheckStatusAsync<Permissions.Camera>();
+			PermissionStatus Status = await CheckAndRequestPermissionAsync<Permissions.Camera>();
 
-			if (Status == PermissionStatus.Denied && DeviceInfo.Platform != DevicePlatform.iOS)
-			{
-				Status = await Permissions.RequestAsync<Permissions.Camera>();
-			}
-			else if (Status == PermissionStatus.Unknown)
-			{
-				Status = await Permissions.RequestAsync<Permissions.Camera>();
-			}
+			if (Status == PermissionStatus.Granted)
+				return true;
 
-			if (Status == PermissionStatus.Denied)
-			{
-				string Title = ServiceRef.Localizer[nameof(AppResources.CameraPermissionTitle)];
-				string Description = ServiceRef.Localizer[nameof(AppResources.CameraPermissionDescription)];
-				string DescriptionSecondary = ServiceRef.Localizer[nameof(AppResources.CameraPermissionDescriptionSecondary)];
-					
-				ShowPermissionPopup PermissionPopUp = new(Title, Description, DescriptionSecondary);
-				await ServiceRef.UiService.PushAsync(PermissionPopUp);
+			// Prepare localized strings for the permission rationale
+			string title = ServiceRef.Localizer[nameof(AppResources.CameraPermissionTitle)];
+			string description = ServiceRef.Localizer[nameof(AppResources.CameraPermissionDescription)];
+			string descriptionSecondary = ServiceRef.Localizer[nameof(AppResources.CameraPermissionDescriptionSecondary)];
 
-				return false;
-			}
+			// Display the permission popup so the user can enable it from the settings.
+			ShowPermissionPopup permissionPopup = new(title, description, descriptionSecondary);
+			await ServiceRef.UiService.PushAsync(permissionPopup);
 
-			return true;
-		} 
+			Status = await CheckAndRequestPermissionAsync<Permissions.Camera>();
+
+			return Status == PermissionStatus.Granted;
+
+		}
 	}
 }
