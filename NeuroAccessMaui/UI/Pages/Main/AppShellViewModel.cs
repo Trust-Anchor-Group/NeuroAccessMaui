@@ -98,7 +98,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			try
 			{
 				AppShell.Current.FlyoutIsPresented = false;
-				await App.Stop();
+				await App.StopAsync();
 			}
 			catch (Exception ex)
 			{
@@ -114,7 +114,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		{
 			try
 			{
-				if (await App.AuthenticateUser(AuthenticationPurpose.ViewId))
+				if (await App.AuthenticateUserAsync(AuthenticationPurpose.ViewId))
 					await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage));
 			}
 			catch (Exception ex)

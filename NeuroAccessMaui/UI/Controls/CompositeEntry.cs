@@ -322,7 +322,7 @@ namespace NeuroAccessMaui.UI.Controls
 
 		/// <summary>
 		/// Handles the <see cref="VisualElement.Focused"/> event.
-		/// Executes the <see cref="FocusedCommand"/> if it can execute.
+		/// Executes the <see cref="Focused"/> if it can execute.
 		/// </summary>
 		private void OnEntryFocused(object? sender, FocusEventArgs e)
 		{
@@ -332,7 +332,7 @@ namespace NeuroAccessMaui.UI.Controls
 
 		/// <summary>
 		/// Handles the <see cref="VisualElement.Unfocused"/> event.
-		/// Executes the <see cref="UnfocusedCommand"/> if it can execute.
+		/// Executes the <see cref="Unfocused"/> if it can execute.
 		/// </summary>
 		private void OnEntryUnfocused(object? sender, FocusEventArgs e)
 		{
