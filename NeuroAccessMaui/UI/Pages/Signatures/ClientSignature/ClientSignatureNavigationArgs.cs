@@ -18,7 +18,7 @@ namespace NeuroAccessMaui.UI.Pages.Signatures.ClientSignature
 		/// </summary>
 		/// <param name="signature">The signature to display.</param>
 		/// <param name="identity">The legal identity to display.</param>
-		public ClientSignatureNavigationArgs(Waher.Networking.XMPP.Contracts.ClientSignature signature, LegalIdentity identity)
+		public ClientSignatureNavigationArgs(Waher.Networking.XMPP.Contracts.ClientSignature signature, LegalIdentity? identity)
 		{
 			this.Signature = signature;
 			this.Identity = identity;

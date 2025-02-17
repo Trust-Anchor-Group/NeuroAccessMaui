@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?xaml-comp compile="true" ?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                    xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
+	
+	<Style x:Key="RegularCompositeInputViewValidationLabel" TargetType="Label" BasedOn="{StaticResource BoldItemTitleLabel}">
+		<Setter Property="FontSize" Value="15" />
+		<Setter Property="FontFamily" Value="SpaceGroteskSemiBold"/>
+		<Setter Property="LineBreakMode" Value="WordWrap" />
+		<Setter Property="VerticalTextAlignment" Value="Center" />
+		<Setter Property="HorizontalTextAlignment" Value="Start" />
+	</Style>
+
+	<!-- Base style for all CompositeInputView-based controls -->
+	<Style x:Key="BaseCompositeInputView" TargetType="controls:CompositeInputView" ApplyToDerivedTypes="True">
+		<!-- Common defaults -->
+		<Setter Property="LabelStyle" Value="{StaticResource RegularCompositeInputViewValidationLabel}"/>
+		<Setter Property="ValidationColor" Value="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedWarningDark}}" />
+		<Setter Property="BorderPadding" Value="{StaticResource EditMediumMargins}" />
+		<Setter Property="BorderBackground" Value="{AppThemeBinding Light={StaticResource OffWhiteLight}, Dark={StaticResource PopUpElevation3Dark}}" />
+		<Setter Property="BorderStroke" Value="Transparent" />
+		<Setter Property="BorderStrokeShape">
+			<Setter.Value>
+				<RoundRectangle CornerRadius="8" />
+			</Setter.Value>
+		</Setter>
+		<Setter Property="BorderShadow">
+			<Setter.Value>
+				<Shadow Offset="0,2" Radius="0" Opacity="1" Brush="{AppThemeBinding Light={StaticResource OffBlack50Light}, Dark={StaticResource OffWhite30Dark}}"/>
+			</Setter.Value>
+		</Setter>
+
+		<!-- Common triggers for validation -->
+		<Style.Triggers>
+			<Trigger TargetType="controls:CompositeInputView"
+                     Property="IsValid"
+                     Value="False">
+				<Setter Property="BorderShadow">
+					<Setter.Value>
+						<Shadow Offset="0,2" Radius="0" Opacity="1" Brush="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedWarningDark}}"/>
+					</Setter.Value>
+				</Setter>
+			</Trigger>
+		</Style.Triggers>
+	</Style>
+
+</ResourceDictionary>

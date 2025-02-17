@@ -1647,6 +1647,9 @@
   <data name="RequestPaymentMessage" xml:space="preserve">
     <value>Solicitud de pago de {0} {1}.</value>
   </data>
+  <data name="RequestPaymentDescription" xml:space="preserve">
+    <value>Para solicitar el pago a alguien, complete los detalles sobre el pago a continuación y haga clic en el botón Generar código QR. El código generado puede ser utilizado por la otra parte, para generar un pago a su cuenta.</value>
+  </data>
   <data name="Room" xml:space="preserve">
     <value>Cuarto</value>
   </data>
@@ -2211,6 +2214,9 @@
   <data name="Amount" xml:space="preserve">
     <value>Importe:</value>
   </data>
+  <data name="AmountExtra" xml:space="preserve">
+    <value>Cantidad Extra: (opcional, sugerencia)</value>
+  </data>
   <data name="Wallet" xml:space="preserve">
     <value>Billetera</value>
   </data>
@@ -2393,56 +2399,104 @@
   </data>
   <data name="ARequestHasBeenSentToTheOwner" xml:space="preserve">
     <value>Se ha enviado una solicitud al propietario del dispositivo.</value>
-</data>
-<data name="ControlRequestText2" xml:space="preserve">
-  <value>Una persona que llama ha solicitado controlar una de sus cosas. Seleccione cómo desea que la cosa responda a este tipo de solicitud.</value>
-</data>
-<data name="PermitParametersText" xml:space="preserve">
-  <value>Elija los parámetros a los que desea permitir el acceso, si se acepta la solicitud.</value>
-</data>
-<data name="SomethingWentWrong" xml:space="preserve">
-  <value>Algo salió mal</value>
-</data>
-<data name="NotCompletedOnboardingError" xml:space="preserve">
-  <value>Parece que aún no has completado el proceso de inicio. Termínalo para acceder a esta función.</value>
-</data>
-<data name="PreviewContract" xml:space="preserve">
-  <value>Previsualizar contrato</value>
-</data>
-<data name="SetParametersTitle" xml:space="preserve">
-  <value>Establecer parámetros</value>
-</data>
-<data name="SetParametersDescription" xml:space="preserve">
-  <value>Especifique las variables que rigen el contrato</value>
-</data>
-<data name="SelectRolesTitle" xml:space="preserve">
-  <value>Seleccionar roles</value>
-</data>
-<data name="SelectRolesDescription" xml:space="preserve">
-  <value>Seleccione quién puede firmar en qué rol</value>
-</data>
-<data name="Back" xml:space="preserve">
-  <value>Volver</value>
-</data>
-<data name="SelectedRoleHasReachedMaximumNumberOfParts" xml:space="preserve">
-  <value>El rol seleccionado ha alcanzado el número máximo de partes</value>
-</data>
-<data name="PetitionIdentitySent" xml:space="preserve">
-  <value>Se ha enviado una solicitud para ver la identificación</value>
-</data>
-<data name="IDRequestSent" xml:space="preserve">
-  <value>Solicitud de ID enviada</value>
-</data>
-<data name="SelectYourRole" xml:space="preserve">
-  <value>Selecciona tu rol</value>
-</data>
-<data name="ReviewContractTitle" xml:space="preserve">
-  <value>Revisar contrato</value>
-</data>
-<data name="ReviewContractDescription" xml:space="preserve">
-  <value>Revise cuidadosamente los términos del contrato</value>
-</data>
-<data name="IHaveReadAndUnderstoodTheContract" xml:space="preserve">
-  <value>He leído y entendido los términos de este contrato</value>
-</data>
+  </data>
+  <data name="ControlRequestText2" xml:space="preserve">
+    <value>Una persona que llama ha solicitado controlar una de sus cosas. Seleccione cómo desea que la cosa responda a este tipo de solicitud.</value>
+  </data>
+  <data name="PermitParametersText" xml:space="preserve">
+    <value>Elija los parámetros a los que desea permitir el acceso, si se acepta la solicitud.</value>
+  </data>
+  <data name="SomethingWentWrong" xml:space="preserve">
+    <value>Algo salió mal</value>
+  </data>
+  <data name="NotCompletedOnboardingError" xml:space="preserve">
+    <value>Parece que aún no has completado el proceso de inicio. Termínalo para acceder a esta función.</value>
+  </data>
+  <data name="PreviewContract" xml:space="preserve">
+    <value>Previsualizar contrato</value>
+  </data>
+  <data name="SetParametersTitle" xml:space="preserve">
+    <value>Establecer parámetros</value>
+  </data>
+  <data name="SetParametersDescription" xml:space="preserve">
+    <value>Especifique las variables que rigen el contrato</value>
+  </data>
+  <data name="SelectRolesTitle" xml:space="preserve">
+    <value>Seleccionar roles</value>
+  </data>
+  <data name="SelectRolesDescription" xml:space="preserve">
+    <value>Seleccione quién puede firmar en qué rol</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Volver</value>
+  </data>
+  <data name="SelectedRoleHasReachedMaximumNumberOfParts" xml:space="preserve">
+    <value>El rol seleccionado ha alcanzado el número máximo de partes</value>
+  </data>
+  <data name="PetitionIdentitySent" xml:space="preserve">
+    <value>Se ha enviado una solicitud para ver la identificación</value>
+  </data>
+  <data name="IDRequestSent" xml:space="preserve">
+    <value>Solicitud de ID enviada</value>
+  </data>
+  <data name="SelectYourRole" xml:space="preserve">
+    <value>Selecciona tu rol</value>
+  </data>
+  <data name="ReviewContractTitle" xml:space="preserve">
+    <value>Revisar contrato</value>
+  </data>
+  <data name="ReviewContractDescription" xml:space="preserve">
+    <value>Revise cuidadosamente los términos del contrato</value>
+  </data>
+  <data name="IHaveReadAndUnderstoodTheContract" xml:space="preserve">
+    <value>He leído y entendido los términos de este contrato</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+      <value>Status</value>
+  </data>
+  <data name="Encrypted" xml:space="preserve">
+      <value>Cifrado</value>
+  </data>
+  <data name="ViewParametersTitle" xml:space="preserve">
+      <value>Ver parámetros</value>
+  </data>
+  <data name="ViewParametersDescription" xml:space="preserve">
+      <value>Consulta las variables que rigen el contrato</value>
+  </data>
+  <data name="ViewRolesTitle" xml:space="preserve">
+      <value>Revisar roles asignados</value>
+  </data>
+  <data name="ViewRolesDescription" xml:space="preserve">
+      <value>Revisa los roles y verifica quién ha firmado cada uno</value>
+  </data>
+  <data name="InvitationToSign" xml:space="preserve">
+    <value>Ha sido invitado(a) a firmar este contrato. Asegúrese de verificar y revisar el contrato antes de continuar.</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Título</value>
+  </data>
+  <data name="Sign" xml:space="preserve">
+    <value>Firmar</value>
+  </data>
+  <data name="PendingSignature" xml:space="preserve">
+    <value>Firma Pendiente</value>
+  </data>
+  <data name="ViewSignature" xml:space="preserve">
+    <value>Ver Firma</value>
+  </data>
+  <data name="ReviewContractDescription2" xml:space="preserve">
+    <value>Revise los términos del contrato</value>
+  </data>
+  <data name="ServerSignatureButtonTitle" xml:space="preserve">
+    <value>Ver firma del servidor</value>
+  </data>
+  <data name="ServerSignatureButtonDescription" xml:space="preserve">
+    <value>Ver la firma del servidor, que protege la integridad del contrato</value>
+  </data>
+  <data name="Transient" xml:space="preserve">
+    <value>Transitorio</value>
+  </data>
+  <data name="GenerateQrCode" xml:space="preserve">
+    <value>Generar código QR</value>
+  </data>
 </root>

@@ -4,6 +4,8 @@ using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Services;
 using Waher.Content;
 using Waher.Networking.XMPP.Contracts;
+using System.Globalization;
+using System.Text;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 {
@@ -49,6 +51,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			{
 				BooleanParameter booleanParameter => new ObservableBooleanParameter(booleanParameter),
 				DateParameter dateParameter => new ObservableDateParameter(dateParameter),
+				DateTimeParameter dateTimeParameter => new ObservableDateTimeParameter(dateTimeParameter),
 				NumericalParameter numericalParameter => new ObservableNumericalParameter(numericalParameter),
 				StringParameter stringParameter => new ObservableStringParameter(stringParameter),
 				TimeParameter timeParameter => new ObservableTimeParameter(timeParameter),
@@ -152,8 +155,30 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				}
 
 				this.SetProperty(ref this.@value, value);
+				this.OnPropertyChanged(nameof(this.CanReadValue));
 			}
 		}
+
+		/// <summary>
+		/// If the parameter is transient
+		/// </summary>
+		public bool IsTransient => this.Parameter.Protection == ProtectionLevel.Transient;
+
+		/// <summary>
+		/// If the parameter is encrypted
+		/// </summary>
+		public bool IsEncrypted => this.Parameter.Protection == ProtectionLevel.Encrypted;
+
+		/// <summary>
+		/// If the parameter is protected, either encrypted or transient
+		/// </summary>
+		public bool IsProtected => this.IsTransient || this.IsEncrypted;
+
+		/// <summary>
+		/// If the parameter can be read, for example encrypted parameters cannot be read if you don't have the key.
+		/// </summary>
+		/// 
+		public bool CanReadValue => this.IsProtected ? this.Parameter.ObjectValue is not null : this.Parameter.CanSerializeValue;
 		#endregion
 
 		#region Property Change Handling
@@ -242,10 +267,29 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			this.Value = parameter.ObjectValue is Duration duration ? duration : Duration.Zero;
 		}
 
+		public string StringValue
+		{
+			get => this.Value?.ToString() ?? string.Empty;
+			set
+			{
+				if (Duration.TryParse(value, out Duration duration))
+					this.Value = duration;
+				else
+					this.Value = null;
+			}
+		}
+
 		public Duration DurationValue
 		{
 			get => this.Value as Duration? ?? Duration.Zero;
-			set => this.Value = value;
+			set
+			{
+				if (Duration.TryParse(value.ToString(), out Duration duration))
+					this.Value = duration;
+				else
+					this.Value = null;
+
+			}
 		}
 	}
 
@@ -267,14 +311,92 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 	{
 		public ObservableCalcParameter(CalcParameter parameter) : base(parameter)
 		{
-			this.Value = parameter.ObjectValue as decimal? ?? null;
+			this.Value = parameter.ObjectValue;
 		}
 
-		public decimal? CalcValue
+		public object? CalcValue
 		{
-			get => this.Value as decimal?;
+			get => this.Value;
 			set => this.Value = value;
 		}
+
+		public string CalcString
+		{
+			get
+			{
+				if (this.Value is null)
+					this.Value = this.Parameter.StringValue;
+
+				CultureInfo culture = CultureInfo.CurrentCulture;
+
+				Console.WriteLine(this.Value.GetType().Name);
+
+				return this.Value switch
+				{
+					decimal decimalValue => decimalValue.ToString("N", culture), // Number format with localization
+					DateTime dateTimeValue => dateTimeValue.ToString("G", culture), // Localized date format
+					TimeSpan timeSpanValue => timeSpanValue.ToString(@"hh\:mm\:ss", culture), // Time format
+					string stringValue => string.IsNullOrEmpty(stringValue) ? "-" : stringValue,
+					_ => this.Value.ToString() ?? string.Empty // Fallback for unknown types
+				};
+			}
+		}
 	}
+
+	public class ObservableDateTimeParameter : ObservableParameter
+	{
+		public ObservableDateTimeParameter(DateTimeParameter parameter) : base(parameter)
+		{
+			// Extract initial value from parameter
+			if (parameter.ObjectValue is DateTime dt)
+				this.Value = dt;
+			else
+				this.Value = parameter.Min;  // or DateTime.MinValue as a fallback
+		}
+
+		/// <summary>
+		/// The DateTime value of the parameter.
+		/// When changed, updates the underlying parameter value.
+		/// </summary>
+		public DateTime? DateTimeValue
+		{
+			get => this.Value as DateTime?;
+			set => this.Value = value;
+		}
+
+		/// <summary>
+		/// Helper to get or set just the Date portion.
+		/// </summary>
+		public DateTime? SelectedDate
+		{
+			get => this.DateTimeValue?.Date;
+			set
+			{
+				if (value.HasValue)
+				{
+					DateTime current = this.DateTimeValue ?? DateTime.MinValue;
+					this.DateTimeValue = new DateTime(value.Value.Year, value.Value.Month, value.Value.Day, current.Hour, current.Minute, current.Second);
+				}
+				else
+				{
+					this.DateTimeValue = null;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Helper to get or set just the Time portion.
+		/// </summary>
+		public TimeSpan SelectedTime
+		{
+			get => this.DateTimeValue?.TimeOfDay ?? TimeSpan.Zero;
+			set
+			{
+				DateTime current = this.DateTimeValue ?? DateTime.MinValue;
+				this.DateTimeValue = current.Date + value;
+			}
+		}
+	}
+
 }
 #endregion

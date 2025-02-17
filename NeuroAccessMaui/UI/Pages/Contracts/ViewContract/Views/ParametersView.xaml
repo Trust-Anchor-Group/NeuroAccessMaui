@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<views:BaseViewContractView x:Name="ThisPage"
+									 x:Class="NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views.ParametersView"
+									 x:DataType="base:ViewContractViewModel"
+									 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+									 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+									 xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views"
+									 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract"
+									 xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ObjectModel"
+									 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+									 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+									 xmlns:ui="clr-namespace:NeuroAccessMaui.UI">
+	<ContentView.Resources>
+		<objectModel:ParameterTemplateSelector x:Key="ParameterTemplateSelector"
+															BooleanTemplate="{StaticResource BooleanParameterReadOnlyTemplate}"
+															DateTemplate="{StaticResource DateParameterReadOnlyTemplate}"
+															DateTimeTemplate="{StaticResource DateTimeParameterReadOnlyTemplate}"
+															NumericalTemplate="{StaticResource DefaultParameterReadOnlyTemplate}"
+															StringTemplate="{StaticResource DefaultParameterReadOnlyTemplate}"
+															TimeTemplate="{StaticResource TimeParameterReadOnlyTemplate}"
+															DurationTemplate="{StaticResource DurationParameterReadOnlyTemplate}"
+															ProtectedTemplate="{StaticResource ProtectedParameterTemplate}"
+															CalcTemplate="{StaticResource CalcParameterReadOnlyTemplate}"
+															DefaultTemplate="{StaticResource DefaultParameterReadOnlyTemplate}" />
+	</ContentView.Resources>
+
+
+	<!-- Parameters -->
+	<Grid RowDefinitions="*">
+		<Border Style="{StaticResource BorderSet}"
+				  Margin="{StaticResource MediumMargins}">
+			<CollectionView HorizontalOptions="Center"
+								 ItemsSource="{Binding DisplayableParameters}"
+								 ItemTemplate="{StaticResource ParameterTemplateSelector}"
+								 SelectionMode="None"
+								 ItemSizingStrategy="MeasureAllItems">
+				<CollectionView.ItemsLayout>
+					<LinearItemsLayout Orientation="Vertical"
+											 ItemSpacing="{StaticResource MediumSpacing}" />
+				</CollectionView.ItemsLayout>
+				<CollectionView.EmptyView>
+					<Label Text="{l:Localize SomethingWentWrong}" />
+				</CollectionView.EmptyView>
+			</CollectionView>
+		</Border>
+	</Grid>
+
+
+
+</views:BaseViewContractView>

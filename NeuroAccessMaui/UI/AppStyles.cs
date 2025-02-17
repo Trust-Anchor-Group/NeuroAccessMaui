@@ -38,6 +38,7 @@ namespace NeuroAccessMaui.UI
 		private static Style? receiveFrame;
 		private static Style? requiredFieldMarker;
 		private static Style? requiredFieldMarkerSpan;
+		private static Style? roundedBorder;
 
 
 		static AppStyles()
@@ -312,6 +313,18 @@ namespace NeuroAccessMaui.UI
 		}
 
 		/// <summary>
+		/// Style for CompositeDatePicker controls.
+		/// </summary>
+		public static Style RegularCompositeDatePicker
+		{
+			get
+			{
+				regularCompositeDatePicker ??= TryGetResource<Style>("RegularCompositeDatePicker");
+				return regularCompositeDatePicker!;
+			}
+		}
+
+		/// <summary>
 		/// Style for buttons containing a single Unicode character.
 		/// </summary>
 		public static Style UnicodeCharacterButton
@@ -392,6 +405,15 @@ namespace NeuroAccessMaui.UI
 			{
 				requiredFieldMarkerSpan ??= TryGetResource<Style>("RequiredFieldMarkerSpan");
 				return requiredFieldMarkerSpan!;
+			}
+		}
+
+		public static Style RoundedBorder
+		{
+			get
+			{
+				roundedBorder ??= TryGetResource<Style>("RoundedBorder");
+				return roundedBorder!;
 			}
 		}
 	}
