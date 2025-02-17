@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Permission.ShowPermissionPopup"
-							x:DataType="viewmodel:BaseShowPermissionViewModel"
+							x:DataType="viewmodel:ShowPermissionViewModel"
 							xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 							xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 							xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
@@ -48,7 +48,7 @@
 								HeightRequest="{Binding CameraIconSize}"
 								WidthRequest="{Binding CameraIconSize}"
 								Aspect="Uniform"
-								Data="{x:Static ui:Geometries.CameraPhotoButtonPath}"
+								Data="{Binding IconGeometry}"
 								Fill="{AppThemeBinding Light={StaticResource AccentActiveLight}, Dark={StaticResource EnabledFilledButtonBackgroundDark}}" />
 						</Frame>
 

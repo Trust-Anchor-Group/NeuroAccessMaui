@@ -1,58 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.Controls.Shapes;
 using NeuroAccessMaui.Services;
 
 namespace NeuroAccessMaui.UI.Popups.Permission
 {
-	public partial class BaseShowPermissionViewModel : BasePopupViewModel
+	public partial class ShowPermissionViewModel : ReturningPopupViewModel<bool>
 	{
 		#region Private Properties
-
-		private string title = "";
-		private string description = "";
-		private string descriptionSecondary = "";
-
 		private bool hasBeenToSettings = false;
 
 		#endregion
+
 		#region Public Properties
 
-		public string Title
-		{
-			get => this.title;
-			set
-			{
-				if (value == this.title) return;
-				this.title = value;
-				this.OnPropertyChanged();
-			}
-		}
+		/// <summary>
+		/// Gets or sets the title of the popup
+		/// </summary>
+		[ObservableProperty]
+		private string title = string.Empty;
 
-		public string Description
-		{
-			get => this.description;
-			set
-			{
-				if (value == this.description) return;
-				this.description = value;
-				this.OnPropertyChanged();
-			}
-		}
+		/// <summary>
+		/// Gets or sets the primary description of the popup
+		/// </summary>
+		[ObservableProperty]
+		private string description = string.Empty;
 
-		public string DescriptionSecondary
-		{
-			get => this.descriptionSecondary;
-			set
-			{
-				if (value == this.descriptionSecondary) return;
-				this.descriptionSecondary = value;
-				this.OnPropertyChanged();
-			}
-		}
+		/// <summary>
+		/// Gets or sets the secondary description of the popup
+		/// </summary>
+		[ObservableProperty]
+		private string descriptionSecondary = string.Empty;
+
+		[ObservableProperty]
+		private Geometry? iconGeometry = Geometries.InfoCirclePath;
 
 		/// <summary>
 		/// Gets the size of the background for Camera Icon 
@@ -71,19 +52,20 @@ namespace NeuroAccessMaui.UI.Popups.Permission
 
 		#endregion
 
-		public BaseShowPermissionViewModel(string title, string description, string descriptionSecondary)
+		#region Constructor
+
+		public ShowPermissionViewModel(string? title, string? description, string? descriptionSecondary, Geometry? iconGeometry = null)
 		{
-			this.Title = title;
-			this.Description = description;
-			this.DescriptionSecondary = descriptionSecondary;
+			this.Title = title ?? string.Empty;
+			this.Description = description ?? string.Empty;
+			this.DescriptionSecondary = descriptionSecondary ?? string.Empty;
+			this.IconGeometry = iconGeometry ?? Geometries.InfoCirclePath;
 		}
 
-		public BaseShowPermissionViewModel(string title, string description)
-		{
-			this.Title = title;
-			this.Description = description;
-			this.DescriptionSecondary = "";
-		}
+		#endregion
+
+
+		#region Overrides
 
 		protected override async Task OnInitialize()
 		{
@@ -115,6 +97,16 @@ namespace NeuroAccessMaui.UI.Popups.Permission
 			}
 		}
 
+		public override void OnPop() 
+		{
+			base.OnPop();
+			this.result.TrySetResult(false);
+		 }
+
+		 #endregion
+
+		#region Commands
+
 		[RelayCommand]
 		private async Task Close()
 		{
@@ -127,5 +119,6 @@ namespace NeuroAccessMaui.UI.Popups.Permission
 			this.hasBeenToSettings = true;
 			AppInfo.Current.ShowSettingsUI();
 		}
+		#endregion
 	}
 }
