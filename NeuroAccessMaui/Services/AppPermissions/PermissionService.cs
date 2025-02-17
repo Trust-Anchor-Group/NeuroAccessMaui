@@ -1,4 +1,6 @@
-﻿using NeuroAccessMaui.Resources.Languages;
+﻿using Microsoft.Maui.Controls.Shapes;
+using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.UI;
 using NeuroAccessMaui.UI.Popups.Permission;
 using Waher.Runtime.Inventory;
 
@@ -44,13 +46,16 @@ namespace NeuroAccessMaui.Services.AppPermissions
 				return true;
 
 			// Prepare localized strings for the permission rationale
-			string title = ServiceRef.Localizer[nameof(AppResources.CameraPermissionTitle)];
-			string description = ServiceRef.Localizer[nameof(AppResources.CameraPermissionDescription)];
-			string descriptionSecondary = ServiceRef.Localizer[nameof(AppResources.CameraPermissionDescriptionSecondary)];
-
+			string Title = ServiceRef.Localizer[nameof(AppResources.CameraPermissionTitle)];
+			string Description = ServiceRef.Localizer[nameof(AppResources.CameraPermissionDescription)];
+			string DescriptionSecondary = ServiceRef.Localizer[nameof(AppResources.CameraPermissionDescriptionSecondary)];
+			Geometry IconGeometry = Geometries.CameraPhotoButtonPath;
 			// Display the permission popup so the user can enable it from the settings.
-			ShowPermissionPopup permissionPopup = new(title, description, descriptionSecondary);
-			await ServiceRef.UiService.PushAsync(permissionPopup);
+			ShowPermissionViewModel ViewModel = new(Title,Description,DescriptionSecondary, IconGeometry);
+			ShowPermissionPopup PermissionPopup = new(ViewModel);
+			await ServiceRef.UiService.PushAsync(PermissionPopup);
+
+			await ViewModel.Result;
 
 			Status = await CheckAndRequestPermissionAsync<Permissions.Camera>();
 
