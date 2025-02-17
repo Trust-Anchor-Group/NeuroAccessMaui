@@ -2,7 +2,11 @@
 using OpenQA.Selenium;
 using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Appium.Android;
+using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Internal;
+using OpenCvSharp;
+using OpenQA.Selenium.Appium.Windows;
+
 
 namespace NeuroAccess.UiTests
 {
@@ -36,7 +40,7 @@ namespace NeuroAccess.UiTests
 					// This is ignored if you use the avd option below
 					PlatformVersion = "14",
 					// The full path to the .apk file to test or the package name if the app is already installed on the device
-					//App = "com.tag.NeuroAccess-Signed.apk",
+					App = "com.tag.NeuroAccess.apk",
 				};
 
 
@@ -64,6 +68,78 @@ namespace NeuroAccess.UiTests
 			// If an Appium server was started locally above, make sure we clean it up here
 			AppiumServerHelper.DisposeAppiumLocalServer();
 		}
+		public static AppiumElement FindUIElement(string id)
+		{
+			if (App is WindowsDriver)
+			{
+				return App.FindElement(MobileBy.AccessibilityId(id));
+			}
+
+			return App.FindElement(MobileBy.Id(id));
+		}
+
+		public static (int X, int Y) FindImagePosition(string mainImagePath, string templateImagePath)
+		{
+			using Mat mainImage = Cv2.ImRead(mainImagePath, ImreadModes.Grayscale);
+			using Mat template = Cv2.ImRead(templateImagePath, ImreadModes.Grayscale);
+			using Mat result = new Mat();
+			if (mainImage.Empty() || template.Empty())
+			{
+				throw new Exception("Error: One or both images could not be loaded. Check file paths.");
+			}
+
+			// See how much the template matches all the places in the main image
+			Cv2.MatchTemplate(mainImage, template, result, TemplateMatchModes.CCoeffNormed);//The comparing method ccoeffNormed is best overall, but bad if the thing one is trying to find changes scale every time.
+
+			// Find the best matching position, maxLoc is the location where it's most similar, maxValue is the max similarity value found by comparing the template(The thing one is searching for) to all places in the mainImage
+			Cv2.MinMaxLoc(result, out _, out double maxVal, out _, out OpenCvSharp.Point maxLoc);
+
+			// if max similarity is less that 0.8 it throws an exeption, since most likely it did not find it then.
+			if (maxVal < 0.8)
+			{
+				throw new Exception("Image not found with high confidence.");
+			}
+
+			// Return center of detected image
+			return (maxLoc.X + template.Width / 2, maxLoc.Y + template.Height / 2);
+		}
+		public void CaptureScreenshot(string savePath)
+		{
+			Screenshot screenshot = App.GetScreenshot();
+			screenshot.SaveAsFile(savePath);
+		}
+
+		public void TapAtPosition(int x, int y)
+		{
+			PointerInputDevice action = new PointerInputDevice(PointerKind.Touch);
+			ActionSequence actions = new ActionSequence(action);
+
+			actions.AddAction(action.CreatePointerMove(CoordinateOrigin.Viewport, x, y, TimeSpan.Zero));
+			actions.AddAction(action.CreatePointerDown(MouseButton.Left));
+			actions.AddAction(action.CreatePointerUp(MouseButton.Left));
+
+			App.PerformActions(new List<ActionSequence> { actions });
+
+		}
+
+		public static double CheckIfImageExistsInImage(string mainImagePath, string templateImagePath)
+		{
+			using Mat mainImage = Cv2.ImRead(mainImagePath, ImreadModes.Grayscale);
+			using Mat template = Cv2.ImRead(templateImagePath, ImreadModes.Grayscale);
+			using Mat result = new Mat();
+			if (mainImage.Empty() || template.Empty())
+			{
+				throw new Exception("Error: One or both images could not be loaded. Check file paths.");
+			}
+			// See how much the template matches all the places in the main image
+			Cv2.MatchTemplate(mainImage, template, result, TemplateMatchModes.CCoeffNormed);
+
+			// Find the best match position, maxLoc is the location where it's most similar, maxValue is the max similarity value found by comparing the template(The thing one is searching for) to all places in the mainImage
+			Cv2.MinMaxLoc(result, out _, out double maxSimilarityFound, out _, out _);
+
+			return maxSimilarityFound;
+		}
+
 	}
 }
 
