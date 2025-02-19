@@ -2499,4 +2499,7 @@
   <data name="GenerateQrCode" xml:space="preserve">
     <value>Generate QR Code</value>
   </data>
+  <data name="CopyLink" xml:space="preserve">
+    <value>Copy Link</value>
+  </data>
 </root>
