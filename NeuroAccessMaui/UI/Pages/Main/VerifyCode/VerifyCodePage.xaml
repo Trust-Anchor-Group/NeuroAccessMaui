@@ -10,7 +10,8 @@
 							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.VerifyCode"
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-							 xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls">
+							 xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
+							 AutomationId="VerifyCodePage">
 
 	<VisualElement.Resources>
 		<ResourceDictionary>
@@ -78,7 +79,8 @@
 			<Grid.Padding>
 				<Thickness Left="{StaticResource LargeSpacing}" Top="{StaticResource LargeSpacing}" Right="{StaticResource LargeSpacing}" />
 			</Grid.Padding>
-			<controls:ImageButton Command="{Binding GoBackCommand}" Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+			<controls:ImageButton AutomationId="VerifyCodePage_GoBackImageButton"
+					Command="{Binding GoBackCommand}" Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 			<Image HorizontalOptions="Center" Source="{AppThemeBinding Light=neuro_assets_icon_dark, Dark=neuro_assets_icon_light}" WidthRequest="50" HeightRequest="50" />
 
 		</Grid>
@@ -120,6 +122,7 @@
 								</VerticalStackLayout>
 
 								<Entry x:Name="InnerCodeEntry"
+										 AutomationId="VerifyCodePage_InnerCodeEntry"
 										 VerticalOptions="End"
 										 HeightRequest="{StaticResource SmallSpacing}"
 										 ClearButtonVisibility="Never"
@@ -134,10 +137,12 @@
 					</VerticalStackLayout>
 
 					<VerticalStackLayout Grid.Row="1" Spacing="{StaticResource MediumSpacing}">
-						<controls:TextButton HorizontalOptions="FillAndExpand" Command="{Binding VerifyCommand}"
+						<controls:TextButton AutomationId="VerifyCodePage_VerifyTextButton"
+									HorizontalOptions="FillAndExpand" Command="{Binding VerifyCommand}"
 													Style="{StaticResource FilledTextButton}" LabelData="{l:Localize Verify}" />
 
-						<controls:TextButton HorizontalOptions="FillAndExpand" Command="{Binding CodeVerification.ResendCodeCommand}"
+						<controls:TextButton AutomationId="VerifyCodePage_ResendCodeTextButton"
+									HorizontalOptions="FillAndExpand" Command="{Binding CodeVerification.ResendCodeCommand}"
 													Style="{StaticResource OutlinedTextButton}" LabelData="{Binding LocalizedResendCodeText}" />
 					</VerticalStackLayout>
 				</Grid>
