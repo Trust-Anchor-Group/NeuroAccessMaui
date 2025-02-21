@@ -1647,6 +1647,9 @@
   <data name="RequestPaymentMessage" xml:space="preserve">
     <value>Zahtevam isplatu {0} {1}.</value>
   </data>
+  <data name="RequestPaymentDescription" xml:space="preserve">
+    <value>Da biste zatražili uplatu od nekoga, popunite detalje o plaćanju ispod i kliknite na dugme Generiši KR kod. Generisani kod može da se koristi od strane druge strane, da generiše uplatu na vaš račun.</value>
+  </data>
   <data name="Room" xml:space="preserve">
     <value>Soba</value>
   </data>
@@ -1897,7 +1900,7 @@
     <value>Prikaži detalje</value>
   </data>
   <data name="ViewContract" xml:space="preserve">
-    <value>Prikaži ugovor</value>
+    <value>Pogledaj ugovor</value>
   </data>
   <data name="MachineReadableInfoText" xml:space="preserve">
     <value>Pregled podataka čitljivih na računaru ugrađenih u ugovor prikazan je ispod.</value>
@@ -2211,6 +2214,9 @@
   <data name="Amount" xml:space="preserve">
     <value>Iznos:</value>
   </data>
+  <data name="AmountExtra" xml:space="preserve">
+    <value>Dodatni iznos: (opciono, predlog)</value>
+  </data>
   <data name="Wallet" xml:space="preserve">
     <value>Novиanik</value>
   </data>
@@ -2399,5 +2405,98 @@
   </data>
   <data name="PermitParametersText" xml:space="preserve">
     <value>Izaberite parametre kojima želite dozvoliti pristup, ako je zahtev prihvaćen.</value>
+  </data>
+  <data name="SomethingWentWrong" xml:space="preserve">
+    <value>Nešto nije u redu</value>
+  </data>
+  <data name="NotCompletedOnboardingError" xml:space="preserve">
+    <value>Izgleda da još niste završili proces uključivanja. Molimo Vas da završite podešavanje naloga da biste pristupili ovoj funkciji.</value>
+  </data>
+  <data name="PreviewContract" xml:space="preserve">
+    <value>Pregled ugovora</value>
+  </data>
+  <data name="SetParametersTitle" xml:space="preserve">
+    <value>Podesite parametre</value>
+  </data>
+  <data name="SetParametersDescription" xml:space="preserve">
+    <value>Navedite varijable koje upravljaju ugovorom</value>
+  </data>
+  <data name="SelectRolesTitle" xml:space="preserve">
+    <value>Izaberite uloge</value>
+  </data>
+  <data name="SelectRolesDescription" xml:space="preserve">
+    <value>Izaberite ko može da potpiše kao koju ulogu</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Povratak</value>
+  </data>
+  <data name="SelectedRoleHasReachedMaximumNumberOfParts" xml:space="preserve">
+    <value>Izabrana uloga je dostigla maksimalan broj delova</value>
+  </data>
+  <data name="PetitionIdentitySent" xml:space="preserve">
+    <value>Zahtev za prikaz ID-a je poslat</value>
+  </data>
+  <data name="IDRequestSent" xml:space="preserve">
+    <value>Zahtev za ličnu kartu poslat</value>
+  </data>
+  <data name="SelectYourRole" xml:space="preserve">
+    <value>Izaberite svoju ulogu</value>
+  </data>
+  <data name="ReviewContractTitle" xml:space="preserve">
+    <value>Ugovor o pregledu</value>
+  </data>
+  <data name="ReviewContractDescription" xml:space="preserve">
+    <value>Pažljivo pregledajte uslove ugovora</value>
+  </data>
+  <data name="IHaveReadAndUnderstoodTheContract" xml:space="preserve">
+    <value>Pročitao sam i razumeo uslove ovog ugovora</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Encrypted" xml:space="preserve">
+    <value>Šifrovane</value>
+  </data>
+  <data name="ViewParametersTitle" xml:space="preserve">
+    <value>Pogledaj parametre</value>
+  </data>
+  <data name="ViewParametersDescription" xml:space="preserve">
+    <value>Pogledajte varijable koje upravljaju ugovorom</value>
+  </data>
+  <data name="ViewRolesTitle" xml:space="preserve">
+    <value>Pregledajte dodeljene uloge</value>
+  </data>
+  <data name="ViewRolesDescription" xml:space="preserve">
+    <value>Pregledajte uloge i pogledajte ko je potpisao svaku ulogu</value>
+  </data>
+  <data name="InvitationToSign" xml:space="preserve">
+    <value>Pozvani ste da potpišete ovaj ugovor, uverite se da verifikujete i pregledate ugovor pre nego što nastavite</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Naslov</value>
+  </data>
+  <data name="Sign" xml:space="preserve">
+    <value>Potpisati</value>
+  </data>
+  <data name="PendingSignature" xml:space="preserve">
+    <value>Potpis na čekanju</value>
+  </data>
+  <data name="ViewSignature" xml:space="preserve">
+    <value>Pogledaj potpis</value>
+  </data>
+  <data name="ReviewContractDescription2" xml:space="preserve">
+    <value>Pregledajte uslove ugovora</value>
+  </data>
+  <data name="ServerSignatureButtonTitle" xml:space="preserve">
+    <value>Pogledaj potpis servera</value>
+  </data>
+  <data name="ServerSignatureButtonDescription" xml:space="preserve">
+    <value>Pogledaj potpis servera, koji štiti integritet ugovora</value>
+  </data>
+  <data name="Transient" xml:space="preserve">
+    <value>Prolazne</value>
+  </data>
+  <data name="GenerateQrCode" xml:space="preserve">
+    <value>Generišite KR kod</value>
   </data>
 </root>

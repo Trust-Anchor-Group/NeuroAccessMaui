@@ -12,6 +12,7 @@ namespace NeuroAccessMaui.UI
 		private static readonly SortedDictionary<string, bool> missingStyles = [];
 		private static Timer? timer = null;
 
+		private static double? smallSpacing;
 		private static ControlTemplate? radioButtonTemplate;
 		private static Thickness? smallBottomMargins;
 		private static Thickness? smallTopMargins;
@@ -29,11 +30,16 @@ namespace NeuroAccessMaui.UI
 		private static Style? clickableFrameSubSet;
 		private static Style? regularCompositeEntry;
 		private static Style? regularCompositeEntryBorder;
+		private static Style? regularCompositeDatePicker;
 		private static Style? unicodeCharacterButton;
 		private static Style? imageOnlyButton;
 		private static Style? transparentImageButton;
 		private static Style? sendFrame;
 		private static Style? receiveFrame;
+		private static Style? requiredFieldMarker;
+		private static Style? requiredFieldMarkerSpan;
+		private static Style? roundedBorder;
+
 
 		static AppStyles()
 		{
@@ -91,6 +97,15 @@ namespace NeuroAccessMaui.UI
 			}
 
 			ServiceRef.LogService.LogAlert(sb.ToString());
+		}
+
+		public static double SmallSpacing
+		{
+			get
+			{
+				smallSpacing ??= TryGetResource<double?>("SmallSpacing");
+				return smallSpacing ?? 0;
+			}
 		}
 
 		/// <summary>
@@ -232,7 +247,7 @@ namespace NeuroAccessMaui.UI
 		{
 			get
 			{
-				filledTextButton ??= TryGetResource<Style>("FilledTextButtonNoRoundedCorners");	// TODO: Remove NoRoundedCorners
+				filledTextButton ??= TryGetResource<Style>("FilledTextButton");   // TODO: Remove NoRoundedCorners
 				return filledTextButton!;
 			}
 		}
@@ -280,11 +295,11 @@ namespace NeuroAccessMaui.UI
 		{
 			get
 			{
-				regularCompositeEntry ??= TryGetResource<Style>("RegularCompositeEntryNoRoundedCorners"); // TODO: Remove NoRoundedCorners
+				regularCompositeEntry ??= TryGetResource<Style>("RegularCompositeEntry"); // TODO: Remove NoRoundedCorners
 				return regularCompositeEntry!;
 			}
 		}
- 
+
 		/// <summary>
 		/// Style for borders in a regular composte entry control.
 		/// </summary>
@@ -292,8 +307,20 @@ namespace NeuroAccessMaui.UI
 		{
 			get
 			{
-				regularCompositeEntryBorder ??= TryGetResource<Style>("RegularCompositeEntryBorderNoRoundedCorners");	// TODO: Remove NoRoundedCorners
+				regularCompositeEntryBorder ??= TryGetResource<Style>("RegularCompositeEntryBorder");  // TODO: Remove NoRoundedCorners
 				return regularCompositeEntryBorder!;
+			}
+		}
+
+		/// <summary>
+		/// Style for CompositeDatePicker controls.
+		/// </summary>
+		public static Style RegularCompositeDatePicker
+		{
+			get
+			{
+				regularCompositeDatePicker ??= TryGetResource<Style>("RegularCompositeDatePicker");
+				return regularCompositeDatePicker!;
 			}
 		}
 
@@ -357,5 +384,37 @@ namespace NeuroAccessMaui.UI
 			}
 		}
 
+		/// <summary>
+		/// Style for required field marker labels
+		/// </summary>
+		public static Style RequiredFieldMarker
+		{
+			get
+			{
+				requiredFieldMarker ??= TryGetResource<Style>("RequiredFieldMarker");
+				return requiredFieldMarker!;
+			}
+		}
+
+		/// <summary>
+		/// Style for required field marker spans
+		/// </summary>
+		public static Style RequiredFieldMarkerSpan
+		{
+			get
+			{
+				requiredFieldMarkerSpan ??= TryGetResource<Style>("RequiredFieldMarkerSpan");
+				return requiredFieldMarkerSpan!;
+			}
+		}
+
+		public static Style RoundedBorder
+		{
+			get
+			{
+				roundedBorder ??= TryGetResource<Style>("RoundedBorder");
+				return roundedBorder!;
+			}
+		}
 	}
 }

@@ -124,25 +124,25 @@
 							<controls:TextButton LabelData="{l:Localize Present}" Margin="{StaticResource SmallBottomMargins}"
 														Command="{Binding Path=PresentReportCommand}" IsVisible="{Binding HasStateMachine}"
 														IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
-														Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
+														Style="{StaticResource FilledTextButton}"/>
 
 							<controls:TextButton LabelData="{l:Localize History}" Margin="{StaticResource SmallBottomMargins}"
 														Command="{Binding Path=HistoryReportCommand}"
 														IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
-														IsVisible="{Binding HasStateMachine}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"/>
+														IsVisible="{Binding HasStateMachine}" Style="{StaticResource FilledTextButton}"/>
 
 							<controls:TextButton LabelData="{l:Localize Variables}" Margin="{StaticResource SmallBottomMargins}"
-														Command="{Binding Path=VariablesReportCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+														Command="{Binding Path=VariablesReportCommand}" Style="{StaticResource FilledTextButton}"
 														IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
 														IsVisible="{Binding HasStateMachine}"/>
 
 							<controls:TextButton LabelData="{l:Localize States}" Margin="{StaticResource SmallBottomMargins}"
-														Command="{Binding Path=StatesReportCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+														Command="{Binding Path=StatesReportCommand}" Style="{StaticResource FilledTextButton}"
 														IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
 														IsVisible="{Binding HasStateMachine}"/>
 
 							<controls:TextButton LabelData="{l:Localize Profiling}" Margin="{StaticResource SmallBottomMargins}"
-														Command="{Binding Path=ProfilingReportCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+														Command="{Binding Path=ProfilingReportCommand}" Style="{StaticResource FilledTextButton}"
 														IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
 														IsVisible="{Binding HasStateMachine}"/>
 
@@ -295,18 +295,18 @@
 							</Grid>
 
 							<controls:TextButton LabelData="{l:Localize ShowM2MInfo}" Margin="{StaticResource SmallBottomMargins}"
-														Command="{Binding Path=ShowM2mInfoCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+														Command="{Binding Path=ShowM2mInfoCommand}" Style="{StaticResource FilledTextButton}"
 														IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
 
 							<Label Text="{l:Localize Actions}" Margin="{StaticResource SmallTopMargins}"
 									 VerticalOptions="Start"/>
 
 							<controls:TextButton LabelData="{l:Localize SendToContact}" Margin="{StaticResource SmallBottomMargins}"
-														Command="{Binding Path=SendToContactCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+														Command="{Binding Path=SendToContactCommand}" Style="{StaticResource FilledTextButton}"
 														IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
 
 							<controls:TextButton LabelData="{l:Localize Share}" Margin="{StaticResource SmallBottomMargins}"
-														Command="{Binding Path=ShareCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+														Command="{Binding Path=ShareCommand}" Style="{StaticResource FilledTextButton}"
 														IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
 
 							<controls:TextButton LabelData="{l:Localize PublishMarketplace}" Margin="{StaticResource SmallBottomMargins}"
@@ -315,17 +315,17 @@
 														IsVisible="{Binding IsMyToken}"/>
 
 							<controls:TextButton LabelData="{l:Localize OfferToSell}" Margin="{StaticResource SmallBottomMargins}"
-														Command="{Binding Path=OfferToSellCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+														Command="{Binding Path=OfferToSellCommand}" Style="{StaticResource FilledTextButton}"
 														IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
 														IsVisible="{Binding IsMyToken}"/>
 
 							<controls:TextButton LabelData="{l:Localize OfferToBuy}" Margin="{StaticResource SmallBottomMargins}"
-														Command="{Binding Path=OfferToBuyCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+														Command="{Binding Path=OfferToBuyCommand}" Style="{StaticResource FilledTextButton}"
 														IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
 														IsVisible="{Binding IsMyToken, Converter={StaticResource InvertedBoolConverter}}"/>
 
 							<controls:TextButton LabelData="{l:Localize ViewEvents}" Margin="{StaticResource SmallBottomMargins}"
-														Command="{Binding Path=ViewEventsCommand}" Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+														Command="{Binding Path=ViewEventsCommand}" Style="{StaticResource FilledTextButton}"
 														IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"/>
 						</VerticalStackLayout>
 					</VerticalStackLayout>

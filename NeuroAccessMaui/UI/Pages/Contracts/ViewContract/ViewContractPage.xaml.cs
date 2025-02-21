@@ -1,4 +1,6 @@
-﻿using NeuroAccessMaui.Services;
+﻿using CommunityToolkit.Maui.Layouts;
+using NeuroAccessMaui.Services;
+using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
 using NeuroAccessMaui.UI.Popups.Image;
 using Waher.Networking.XMPP.Contracts;
 
@@ -13,10 +15,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		/// <summary>
 		/// Creates a new instance of the <see cref="ViewContractPage"/> class.
 		/// </summary>
-		public ViewContractPage()
+		public ViewContractPage(ViewContractViewModel ViewModel)
 		{
-			this.ContentPageModel = new ViewContractViewModel(ServiceRef.UiService.PopLatestArgs<ViewContractNavigationArgs>());
 			this.InitializeComponent();
+
+			StateContainer.SetCurrentState(this.StateGrid, ViewContractStep.Loading.ToString());
+			ViewModel.StateObject = this.StateGrid;
+			this.BindingContext = ViewModel;
 		}
 
 		/// <inheritdoc/>
@@ -29,7 +34,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		{
 			ViewContractViewModel ViewModel = this.ViewModel<ViewContractViewModel>();
 
-			Attachment[]? Attachments = ViewModel.Contract?.Attachments;
+			Attachment[]? Attachments = ViewModel.Contract?.Contract.Attachments;
 			if (Attachments is null)
 				return;
 

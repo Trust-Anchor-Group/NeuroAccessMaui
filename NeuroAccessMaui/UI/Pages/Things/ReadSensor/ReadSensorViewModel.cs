@@ -70,7 +70,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor
 
 			if (!string.IsNullOrEmpty(FullJid))
 			{
-				if (this.thingRef is null)
+				if (this.thingRef is null || this.thingRef.IsEmpty)
 					this.request = ServiceRef.XmppService.RequestSensorReadout(FullJid, FieldType.All);
 				else
 					this.request = ServiceRef.XmppService.RequestSensorReadout(FullJid, [this.thingRef], FieldType.All);

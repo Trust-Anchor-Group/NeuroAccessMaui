@@ -9,9 +9,14 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
 using ZXing.Net.Maui.Controls;
-using DotNet.Meteor.HotReload.Plugin;
 using Microsoft.Maui.Platform;
+#if DEBUG
+using DotNet.Meteor.HotReload.Plugin;
+using SkiaSharp.Views.Maui.Controls.Hosting;
+using SkiaSharp.Views.Maui.Controls;
 
+
+#endif
 
 
 #if ANDROID
@@ -31,6 +36,7 @@ namespace NeuroAccessMaui
 			MauiAppBuilder Builder = MauiApp.CreateBuilder();
 
 			Builder.UseMauiApp<App>();
+			Builder.UseSkiaSharp();
 #if DEBUG
 			Builder.EnableHotReload();
 #endif
@@ -38,7 +44,7 @@ namespace NeuroAccessMaui
 			Builder.ConfigureFonts(fonts =>
 			{
 				fonts.AddFont("SpaceGrotesk-Bold.ttf", "SpaceGroteskBold");
-				//fonts.AddFont("SpaceGrotesk-SemiBold.ttf", "SpaceGroteskSemiBold");
+				fonts.AddFont("SpaceGrotesk-SemiBold.ttf", "SpaceGroteskSemiBold");
 				fonts.AddFont("SpaceGrotesk-Medium.ttf", "SpaceGroteskMedium");
 				fonts.AddFont("SpaceGrotesk-Regular.ttf", "SpaceGroteskRegular");
 				//fonts.AddFont("SpaceGrotesk-Light.ttf", "SpaceGroteskLight");
@@ -107,6 +113,14 @@ namespace NeuroAccessMaui
 			});
 
 			EntryHandler.Mapper.AppendToMapping("NoUnderlineEntryHandler", (handler, view) =>
+			{
+				handler.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Colors.Transparent.ToAndroid());
+			});
+			PickerHandler.Mapper.AppendToMapping("NoUnderlinePickerHandler", (handler, view) =>
+			{
+				handler.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Colors.Transparent.ToAndroid());
+			});
+			DatePickerHandler.Mapper.AppendToMapping("NoUnderlineDatePickerHandler", (handler, view) =>
 			{
 				handler.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Colors.Transparent.ToAndroid());
 			});

@@ -13,10 +13,13 @@
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Identity.ViewIdentity"
 							 xmlns:photos="clr-namespace:NeuroAccessMaui.Services.UI.Photos">
 	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
-
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
 		<controls:Background/>
 
-		<ScrollView>
+		<ScrollView Grid.Row="0">
 			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
 
 				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{StaticResource ImageOnlyButton}"
@@ -266,13 +269,13 @@
 				</Frame>
 				<Frame Style="{StaticResource FrameSet}" IsVisible="{Binding IsThirdPartyAndNotForReview}">
 					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-							<controls:TextButton
+						<controls:TextButton
 												Style="{StaticResource FilledTextButton}" 
 												LabelData="{l:Localize AddContact}" 
 												Command="{Binding AddContactCommand}" 
 												IsVisible="{Binding CanAddContact}" 
 												IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
-							<controls:TextButton
+						<controls:TextButton
 												Style="{StaticResource FilledTextButton}" 
 												LabelData="{l:Localize RemoveContact}" 
 												Command="{Binding RemoveContactCommand}" 
@@ -282,6 +285,16 @@
 				</Frame>
 			</VerticalStackLayout>
 		</ScrollView>
-	</Grid>
 
+		<!-- Bottom Bar -->
+		<Border Grid.Row="1" Style="{StaticResource BottomBarBorder}" >
+			<!-- Share QR Button -->
+			<controls:TemplatedButton Command="{x:Binding OpenQrPopupCommand}">
+				<Border Style="{StaticResource TransparentTemplateButtonBorder}">
+					<Label Style="{StaticResource TransparentTemplateButtonLabel}" Text="Share QR" HorizontalOptions="Center"/>
+				</Border>
+			</controls:TemplatedButton>
+		</Border>
+	</Grid>
+		 
 </base:BaseContentPage>

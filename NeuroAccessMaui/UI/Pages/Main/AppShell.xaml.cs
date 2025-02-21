@@ -27,6 +27,7 @@ using NeuroAccessMaui.UI.Pages.Things.MyThings;
 using NeuroAccessMaui.UI.Pages.Things.ReadSensor;
 using NeuroAccessMaui.UI.Pages.Things.ViewClaimThing;
 using NeuroAccessMaui.UI.Pages.Things.ViewThing;
+using NeuroAccessMaui.UI.Pages.Utility.Images;
 using NeuroAccessMaui.UI.Pages.Wallet.AccountEvent;
 using NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler;
 using NeuroAccessMaui.UI.Pages.Wallet.EDalerReceived;
@@ -135,6 +136,9 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			Routing.RegisterRoute(nameof(ServiceProvidersPage), typeof(ServiceProvidersPage));
 			Routing.RegisterRoute(nameof(TokenDetailsPage), typeof(TokenDetailsPage));
 			Routing.RegisterRoute(nameof(TokenEventsPage), typeof(TokenEventsPage));
+
+			// Utility
+			Routing.RegisterRoute(nameof(ImageCroppingPage), typeof(ImageCroppingPage));
 		}
 
 		/// <summary>

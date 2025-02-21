@@ -29,6 +29,7 @@ namespace NeuroAccessMaui.Services.Notification.Contracts
 		{
 			this.Role = e.Role;
 			this.Message = e.MessageText;
+			this.FromJID = e.FromBareJID;
 		}
 
 		/// <summary>
@@ -41,6 +42,12 @@ namespace NeuroAccessMaui.Services.Notification.Contracts
 		/// </summary>
 		public string? Message { get; set; }
 
+
+		/// <summary>
+		/// The JID of the sender of proposal.
+		/// </summary>
+		public string? FromJID { get; set; }
+
 		/// <summary>
 		/// Opens the event.
 		/// </summary>
@@ -50,7 +57,7 @@ namespace NeuroAccessMaui.Services.Notification.Contracts
 
 			if (Contract is not null)
 			{
-				ViewContractNavigationArgs Args = new(Contract, false, this.Role, this.Message);
+				ViewContractNavigationArgs Args = new(Contract, false, this.Role, this.Message, this.FromJID);
 
 				await ServiceRef.UiService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop);
 			}

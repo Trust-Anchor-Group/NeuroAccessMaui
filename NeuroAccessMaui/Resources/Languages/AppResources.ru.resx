@@ -1647,6 +1647,9 @@
   <data name="RequestPaymentMessage" xml:space="preserve">
     <value>Запрос на оплату {0} {1}.</value>
   </data>
+  <data name="RequestPaymentDescription" xml:space="preserve">
+    <value>Чтобы запросить платеж у кого-либо, заполните данные о платеже ниже и нажмите кнопку «Сгенерировать QR-код». Сгенерированный код может быть использован другой стороной для формирования платежа на ваш счет.</value>
+  </data>
   <data name="Room" xml:space="preserve">
     <value>Комната</value>
   </data>
@@ -1897,7 +1900,7 @@
     <value>Показать подробности</value>
   </data>
   <data name="ViewContract" xml:space="preserve">
-    <value>Посмотреть контракт</value>
+    <value>Посмотреть договор</value>
   </data>
   <data name="MachineReadableInfoText" xml:space="preserve">
     <value>Ниже приведен обзор машиночитаемых данных, встроенных в договор.</value>
@@ -2211,6 +2214,9 @@
   <data name="Amount" xml:space="preserve">
     <value>Количество:</value>
   </data>
+  <data name="AmountExtra" xml:space="preserve">
+    <value>Дополнительная сумма: (по желанию, предложение)</value>
+  </data>
   <data name="Wallet" xml:space="preserve">
     <value>Бумажник</value>
   </data>
@@ -2399,5 +2405,98 @@
   </data>
   <data name="PermitParametersText" xml:space="preserve">
     <value>Выберите параметры, к которым будет разрешен доступ, если запрос будет принят.</value>
+  </data>
+  <data name="SomethingWentWrong" xml:space="preserve">
+    <value>Что-то пошло не так</value>
+  </data>
+  <data name="NotCompletedOnboardingError" xml:space="preserve">
+    <value>Похоже, вы еще не завершили процесс онбординга. Завершите настройку учетной записи для доступа к этой функции.</value>
+  </data>
+  <data name="PreviewContract" xml:space="preserve">
+    <value>Предварительный просмотр контракта</value>
+  </data>
+  <data name="SetParametersTitle" xml:space="preserve">
+    <value>Настройка параметров</value>
+  </data>
+  <data name="SetParametersDescription" xml:space="preserve">
+    <value>Указание переменных, которые управляют контрактом</value>
+  </data>
+  <data name="SelectRolesTitle" xml:space="preserve">
+    <value>Выбор ролей</value>
+  </data>
+  <data name="SelectRolesDescription" xml:space="preserve">
+    <value>Выберите, кто может подписываться как та или иная роль</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Назад</value>
+  </data>
+  <data name="SelectedRoleHasReachedMaximumNumberOfParts" xml:space="preserve">
+    <value>Выбранная роль достигла максимального количества деталей</value>
+  </data>
+  <data name="PetitionIdentitySent" xml:space="preserve">
+    <value>Отправлен запрос на просмотр ID</value>
+  </data>
+  <data name="IDRequestSent" xml:space="preserve">
+    <value>Отправлен запрос на удостоверение личности</value>
+  </data>
+  <data name="SelectYourRole" xml:space="preserve">
+    <value>Выберите свою роль</value>
+  </data>
+  <data name="ReviewContractTitle" xml:space="preserve">
+    <value>Пересмотр контракта</value>
+  </data>
+  <data name="ReviewContractDescription" xml:space="preserve">
+    <value>Внимательно ознакомьтесь с условиями договора</value>
+  </data>
+  <data name="IHaveReadAndUnderstoodTheContract" xml:space="preserve">
+    <value>Я прочитал и понял условия настоящего договора</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Статус</value>
+  </data>
+  <data name="Encrypted" xml:space="preserve">
+    <value>Зашифрованные</value>
+  </data>
+  <data name="ViewParametersTitle" xml:space="preserve">
+    <value>Параметры просмотра</value>
+  </data>
+  <data name="ViewParametersDescription" xml:space="preserve">
+    <value>Просмотр переменных, управляющих контрактом</value>
+  </data>
+  <data name="ViewRolesTitle" xml:space="preserve">
+    <value>Просмотр назначенных ролей</value>
+  </data>
+  <data name="ViewRolesDescription" xml:space="preserve">
+    <value>Просмотрите роли и узнайте, кто подписал каждую роль</value>
+  </data>
+  <data name="InvitationToSign" xml:space="preserve">
+    <value>Вам было предложено подписать этот контракт, обязательно проверьте и просмотрите контракт, прежде чем продолжить.</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Титул</value>
+  </data>
+  <data name="Sign" xml:space="preserve">
+    <value>Знак</value>
+  </data>
+  <data name="PendingSignature" xml:space="preserve">
+    <value>Ожидающая подписи</value>
+  </data>
+  <data name="ViewSignature" xml:space="preserve">
+    <value>Посмотреть подпись</value>
+  </data>
+  <data name="ReviewContractDescription2" xml:space="preserve">
+    <value>Ознакомьтесь с условиями договора</value>
+  </data>
+  <data name="ServerSignatureButtonTitle" xml:space="preserve">
+    <value>Просмотр подписи сервера</value>
+  </data>
+  <data name="ServerSignatureButtonDescription" xml:space="preserve">
+    <value>Просмотр подписи сервера, которая защищает целостность контракта</value>
+  </data>
+  <data name="Transient" xml:space="preserve">
+    <value>Преходящий</value>
+  </data>
+  <data name="GenerateQrCode" xml:space="preserve">
+    <value>Сгенерировать QR-код</value>
   </data>
 </root>

@@ -348,9 +348,9 @@ namespace NeuroAccessMaui.Services.Contracts
 			try
 			{
 				Contract Contract = await ServiceRef.XmppService.GetContract(e.ContractId);
-
+			
 				await ServiceRef.UiService.GoToAsync(nameof(ViewContractPage), new ViewContractNavigationArgs(
-							Contract, false, e.Role, e.MessageText));
+							Contract, false, e.Role, e.MessageText, e.FromBareJID));
 			}
 			catch (Exception ex)
 			{
@@ -602,6 +602,7 @@ namespace NeuroAccessMaui.Services.Contracts
 						|| Contract.ForMachinesNamespace == Constants.ContractMachineNames.PaymentInstructionsNamespace)
 						{
 							CreationAttributesEventArgs creationAttr = await ServiceRef.XmppService.GetNeuroFeatureCreationAttributes();
+							ServiceRef.TagProfile.TrustProviderId = creationAttr.TrustProviderId;
 							ParameterValues ??= [];
 							ParameterValues.Add(new CaseInsensitiveString("TrustProvider"), creationAttr.TrustProviderId);
 						}

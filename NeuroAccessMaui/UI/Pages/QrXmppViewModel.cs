@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.UI.Popups.QR;
+using Waher.Content.Html.Elements;
 
 namespace NeuroAccessMaui.UI.Pages
 {
@@ -52,38 +54,17 @@ namespace NeuroAccessMaui.UI.Pages
 			this.HasQrCode = false;
 		}
 
-
+		/// <summary>
+		/// Open QR Popup
+		/// </summary>
+		/// <returns></returns>
 		[RelayCommand]
-		public async Task ShareQr()
+		public async Task OpenQrPopup()
 		{
+			if (this.QrCodeBin is null) return;
 
-			if (this.QrCodeBin is null)
-				return;
-
-			try
-			{
-				// Generate a random filename with a suitable extension (e.g., ".tmp", ".dat")
-				string fileName = $"{Guid.NewGuid()}.png";
-
-				// Define the path to save the file in the cache directory
-				string filePath = Path.Combine(FileSystem.CacheDirectory, fileName);
-
-				// Save the byte array as a file
-				await File.WriteAllBytesAsync(filePath, this.QrCodeBin);
-
-				// Share the file
-				await Share.Default.RequestAsync(new ShareFileRequest
-				{
-					Title = "QR Code",
-					File = new ShareFile(filePath, "image/png")
-				});
-
-			}
-			catch (Exception ex)
-			{
-				// Handle exceptions
-				ServiceRef.LogService.LogException(ex);
-			}
+			ShowQRPopup QrPopup = new(this.QrCodeBin);
+			await ServiceRef.UiService.PushAsync(QrPopup);
 		}
 
 		#region Properties

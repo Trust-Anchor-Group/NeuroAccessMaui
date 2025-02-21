@@ -2,6 +2,7 @@
 //#define DEBUG_LOG_REMOTE
 //#define DEBUG_DB_REMOTE
 
+using CommunityToolkit.Mvvm.Messaging;
 using EDaler;
 using EDaler.Uris;
 using Mopups.Services;
@@ -1348,9 +1349,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 			this.xmppConnected = false;
 
 			ServiceRef.TagProfile.ClearAll();
+			if (App.Current is not null)
+				await App.Current.ForceSave();
 			await RuntimeSettings.SetAsync(Constants.Settings.TransferIdCodeSent, string.Empty);
 			await Database.Provider.Flush();
-
+			WeakReferenceMessenger.Default.Send(new RegistrationPageMessage(ServiceRef.TagProfile.Step));
 			await App.SetRegistrationPageAsync();
 		}
 

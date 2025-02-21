@@ -1,103 +1,72 @@
-﻿<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <?xaml-comp compile="true" ?>
 <ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-						  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-						  xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-						  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                    xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
 
+	<!-- Base Entry styling -->
 	<Style ApplyToDerivedTypes="True" TargetType="Entry">
 		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource NormalEditForegroundLight}, Dark={StaticResource NormalEditForegroundDark}}" />
 		<Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource NormalEditPlaceholderLight}, Dark={StaticResource NormalEditPlaceholderDark}}" />
 		<Setter Property="FontFamily" Value="HaasGroteskRegular" />
 		<Setter Property="FontSize" Value="18" />
-		<!--
-		<Setter Property="VisualStateManager.VisualStateGroups">
-			<VisualStateGroupList>
-				<VisualStateGroup x:Name="CommonStates">
-					<VisualState x:Name="Normal" />
-					<VisualState x:Name="Disabled">
-						<VisualState.Setters>
-							<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}" />
-						</VisualState.Setters>
-					</VisualState>
-				</VisualStateGroup>
-			</VisualStateGroupList>
-		</Setter>
-		-->
 	</Style>
 
-	<!--
-	<Style
-		TargetType="Entry">
-		<Setter Property="FontSize" Value="18" />
-		<Setter Property="VisualStateManager.VisualStateGroups">
-			<VisualStateGroupList>
-				<VisualStateGroup x:Name="CommonStates">
-					<VisualState x:Name="Normal">
-						<VisualState.Setters>
-							<Setter Property="BackgroundColor" Value="Lime" />
-						</VisualState.Setters>
-					</VisualState>
-					<VisualState x:Name="Focused">
-						<VisualState.Setters>
-							<Setter Property="FontSize" Value="36" />
-							<Setter Property="BackgroundColor" Value="Lime" />
-						</VisualState.Setters>
-					</VisualState>
-					<VisualState x:Name="Disabled">
-						<VisualState.Setters>
-							<Setter Property="BackgroundColor" Value="Pink" />
-						</VisualState.Setters>
-					</VisualState>
-					<VisualState x:Name="PointerOver">
-						<VisualState.Setters>
-							<Setter Property="BackgroundColor" Value="LightBlue" />
-						</VisualState.Setters>
-					</VisualState>
-				</VisualStateGroup>
-			</VisualStateGroupList>
-		</Setter>
-	</Style>
-	-->
-
-	<Style x:Key="RegularCompositeEntryBorder" ApplyToDerivedTypes="False" TargetType="Border">
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource NormalEditBackgroundLight}, Dark={StaticResource NormalEditBackgroundDark}}" />
-		<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource NormalEditForegroundLight}, Dark={StaticResource NormalEditForegroundDark}}" />
-		<Setter Property="Padding" Value="{StaticResource EditMediumMargins}" />
-		<Setter Property="StrokeShape">
-			<RoundRectangle CornerRadius="{StaticResource SmallCornerRadius}" />
-		</Setter>
+	<!-- Styles for CompositeInputView label and validation when used with entries -->
+	<Style x:Key="RegularCompositeInputViewValidationLabel" TargetType="Label" BasedOn="{StaticResource BoldItemTitleLabel}">
+		<Setter Property="FontSize" Value="14" />
+		<Setter Property="FontFamily" Value="SpaceGroteskSemiBold"/>
+		<Setter Property="LineBreakMode" Value="WordWrap" />
+		<Setter Property="VerticalTextAlignment" Value="Center" />
+		<Setter Property="HorizontalTextAlignment" Value="Start" />
 	</Style>
 
-	<Style x:Key="RegularCompositeEntryBorderNoRoundedCorners" ApplyToDerivedTypes="False" TargetType="Border">
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource NormalEditBackgroundLight}, Dark={StaticResource NormalEditBackgroundDark}}" />
-		<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource NormalEditForegroundLight}, Dark={StaticResource NormalEditForegroundDark}}" />
-		<Setter Property="Padding" Value="{StaticResource EditMediumMargins}" />
+	<Style x:Key="RegularCompositeEntryLabel" TargetType="Label" BasedOn="{StaticResource BoldItemTitleLabel}">
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffWhiteDark}}" />
+		<Setter Property="FontSize" Value="15" />
+		<Setter Property="FontFamily" Value="SpaceGroteskSemiBold"/>
+		<Setter Property="LineBreakMode" Value="WordWrap" />
+		<Setter Property="VerticalTextAlignment" Value="Center" />
+		<Setter Property="HorizontalTextAlignment" Value="Start" />
 	</Style>
 
-	<Style x:Key="RegularCompositeEntryPath" ApplyToDerivedTypes="False" TargetType="Path">
-		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
-	</Style>
-
-	<Style x:Key="RegularCompositeEntryEntry" ApplyToDerivedTypes="False" TargetType="Entry">
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource NormalEditForegroundLight}, Dark={StaticResource NormalEditForegroundDark}}" />
+	<Style x:Key="RegularCompositeEntryEntry" TargetType="Entry">
 		<Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource NormalEditPlaceholderLight}, Dark={StaticResource NormalEditPlaceholderDark}}" />
 		<Setter Property="FontFamily" Value="HaasGroteskRegular" />
 		<Setter Property="FontSize" Value="18" />
-	 </Style>
-
-	<Style x:Key="RegularCompositeEntry" ApplyToDerivedTypes="False" TargetType="controls:CompositeEntry">
-		<Setter Property="StackSpacing" Value="{StaticResource SmallSpacing}" />
-		<Setter Property="BorderStyle" Value="{StaticResource RegularCompositeEntryBorder}" />
-		<Setter Property="PathStyle" Value="{StaticResource RegularCompositeEntryPath}" />
-		<Setter Property="EntryStyle" Value="{StaticResource RegularCompositeEntryEntry}" />
 	</Style>
 
-	<Style x:Key="RegularCompositeEntryNoRoundedCorners" ApplyToDerivedTypes="False" TargetType="controls:CompositeEntry">
-		<Setter Property="StackSpacing" Value="{StaticResource SmallSpacing}" />
-		<Setter Property="BorderStyle" Value="{StaticResource RegularCompositeEntryBorderNoRoundedCorners}" />
-		<Setter Property="PathStyle" Value="{StaticResource RegularCompositeEntryPath}" />
+	<!-- Regular CompositeEntry style, based on BaseCompositeInputView -->
+	<Style x:Key="RegularCompositeEntry" TargetType="controls:CompositeEntry" BasedOn="{StaticResource BaseCompositeInputView}">
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffWhiteDark}}" />
 		<Setter Property="EntryStyle" Value="{StaticResource RegularCompositeEntryEntry}" />
+		<Setter Property="LabelStyle" Value="{StaticResource RegularCompositeEntryLabel}" />
+		<Setter Property="ValidationLabelStyle" Value="{StaticResource RegularCompositeInputViewValidationLabel}"/>
+		<Setter Property="ValidationColor" Value="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedWarningDark}}" />
+		<!-- Border properties are inherited from BaseCompositeInputView -->
+
+		<Style.Triggers>
+			<Trigger TargetType="controls:CompositeEntry"
+                     Property="IsValid"
+                     Value="False">
+				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedWarningDark}}" />
+			</Trigger>
+		</Style.Triggers>
+	</Style>
+
+	<!-- Outlined variant of CompositeEntry -->
+	<Style x:Key="OutlinedCompositeEntry" TargetType="controls:CompositeEntry" BasedOn="{StaticResource RegularCompositeEntry}">
+		<Setter Property="BorderStroke" Value="{AppThemeBinding Light={StaticResource OffBlack50Light}, Dark={StaticResource OffWhite30Dark}}" />
+		<Setter Property="BorderShadow" Value="{x:Null}"/>
+
+		<Style.Triggers>
+			<Trigger TargetType="controls:CompositeEntry"
+                     Property="IsValid"
+                     Value="False">
+				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedWarningDark}}" />
+				<Setter Property="BorderStroke" Value="{AppThemeBinding Light={StaticResource Red20WarningLight}, Dark={StaticResource RedWarningDark}}" />
+			</Trigger>
+		</Style.Triggers>
 	</Style>
 
 </ResourceDictionary>

@@ -1647,6 +1647,9 @@
   <data name="RequestPaymentMessage" xml:space="preserve">
     <value>Requesting payment of {0} {1}.</value>
   </data>
+  <data name="RequestPaymentDescription" xml:space="preserve">
+    <value>To request payment from someone, fill in the details about the payment below, and click the Generate QR Code button. The generated code can be used by the other party, to generate a payment to your account.</value>
+  </data>
   <data name="Room" xml:space="preserve">
     <value>Room</value>
   </data>
@@ -1894,10 +1897,10 @@
     <value>The integrity of the contract is protected by the server signature shown below.</value>
   </data>
   <data name="ShowDetails" xml:space="preserve">
-    <value>Show Details</value>
+    <value>Show details</value>
   </data>
   <data name="ViewContract" xml:space="preserve">
-    <value>View Contract</value>
+    <value>View contract</value>
   </data>
   <data name="MachineReadableInfoText" xml:space="preserve">
     <value>An overview of the machine-readable data embedded in the contract is shown below.</value>
@@ -2211,6 +2214,9 @@
   <data name="Amount" xml:space="preserve">
     <value>Amount:</value>
   </data>
+  <data name="AmountExtra" xml:space="preserve">
+    <value>Amount Extra: (optional, suggestion)</value>
+  </data>
   <data name="Wallet" xml:space="preserve">
     <value>Wallet</value>
   </data>
@@ -2399,5 +2405,101 @@
   </data>
   <data name="PermitParametersText" xml:space="preserve">
     <value>Choose the parameters to permit access to, if request is accepted.</value>
+  </data>
+  <data name="SomethingWentWrong" xml:space="preserve">
+    <value>Something went wrong</value>
+  </data>
+  <data name="NotCompletedOnboardingError" xml:space="preserve">
+    <value>It looks like you haven’t completed the onboarding process yet. Please finish setting up your account to access this feature.</value>
+  </data>
+  <data name="PreviewContract" xml:space="preserve">
+    <value>Preview contract</value>
+  </data>
+  <data name="SetParametersTitle" xml:space="preserve">
+    <value>Set parameters</value>
+  </data>
+  <data name="SetParametersDescription" xml:space="preserve">
+    <value>Specify the variables that govern the contract</value>
+  </data>
+  <data name="SelectRolesTitle" xml:space="preserve">
+    <value>Select roles</value>
+  </data>
+  <data name="SelectRolesDescription" xml:space="preserve">
+    <value>Select who can sign as which role</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="SelectedRoleHasReachedMaximumNumberOfParts" xml:space="preserve">
+    <value>The selected role has reached the maximum number of parts</value>
+  </data>
+  <data name="PetitionIdentitySent" xml:space="preserve">
+    <value>A request to view ID has been sent</value>
+  </data>
+  <data name="IDRequestSent" xml:space="preserve">
+    <value>ID request sent</value>
+  </data>
+  <data name="SelectYourRole" xml:space="preserve">
+    <value>Select your role</value>
+  </data>
+  <data name="ReviewContractTitle" xml:space="preserve">
+    <value>Review contract</value>
+  </data>
+  <data name="ReviewContractDescription" xml:space="preserve">
+    <value>Carefully review the terms of the contract</value>
+  </data>
+  <data name="IHaveReadAndUnderstoodTheContract" xml:space="preserve">
+    <value>I have read and understood the terms of this contract</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Encrypted" xml:space="preserve">
+    <value>Encrypted</value>
+  </data>
+  <data name="ViewParametersTitle" xml:space="preserve">
+    <value>View parameters</value>
+  </data>
+  <data name="ViewParametersDescription" xml:space="preserve">
+    <value>View the variables that govern the contract</value>
+  </data>
+  <data name="ViewRolesTitle" xml:space="preserve">
+    <value>Review assigned roles</value>
+  </data>
+  <data name="ViewRolesDescription" xml:space="preserve">
+    <value>Review the roles and see who has signed each role</value>
+  </data>
+  <data name="InvitationToSign" xml:space="preserve">
+    <value>You have been invited to sign this contract, make sure to verify and review the contract before proceeding</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Title</value>
+  </data>
+  <data name="Sign" xml:space="preserve">
+    <value>Sign</value>
+  </data>
+  <data name="PendingSignature" xml:space="preserve">
+    <value>Pending signature</value>
+  </data>
+  <data name="ViewSignature" xml:space="preserve">
+    <value>View signature</value>
+  </data>
+  <data name="ReviewContractDescription2" xml:space="preserve">
+    <value>Review the terms of the contract</value>
+  </data>
+  <data name="ServerSignatureButtonTitle" xml:space="preserve">
+    <value>View server signature</value>
+  </data>
+  <data name="ServerSignatureButtonDescription" xml:space="preserve">
+    <value>View the server signature, which protects the integrity of the contract</value>
+  </data>
+  <data name="Transient" xml:space="preserve">
+    <value>Transient</value>
+  </data>
+  <data name="GenerateQrCode" xml:space="preserve">
+    <value>Generate QR Code</value>
+  </data>
+  <data name="CopyLink" xml:space="preserve">
+    <value>Copy Link</value>
   </data>
 </root>

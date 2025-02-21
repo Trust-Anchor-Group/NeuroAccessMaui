@@ -151,6 +151,11 @@ namespace NeuroAccessMaui.Services.Tag
 		string? NeuroFeaturesJid { get; set; }
 
 		/// <summary>
+		/// The XMPP server's Trust Provider ID, if any.
+		/// </summary>
+		string? TrustProviderId { get; set; }
+
+		/// <summary>
 		/// If Push Notification is supported by server.
 		/// </summary>
 		bool SupportsPushNotification { get; set; }
@@ -251,6 +256,11 @@ namespace NeuroAccessMaui.Services.Tag
 		bool HasThing { get; set; }
 
 		/// <summary>
+		/// The date and time of the last identity update.
+		/// </summary>
+		DateTime LastIdentityUpdate { get; set; }
+
+		/// <summary>
 		/// Returns <c>true</c> if the current <see cref="ITagProfile"/> has changed values and need saving, <c>false</c> otherwise.
 		/// </summary>
 		bool IsDirty { get; }
@@ -285,6 +295,13 @@ namespace NeuroAccessMaui.Services.Tag
 		/// </summary>
 		/// <returns>If legal identity need updating</returns>
 		bool LegalIdentityNeedsUpdating();
+
+		/// <summary>
+		/// If the current <see cref="ITagProfile"/> needs to have its legal identity refreshed, because it can have missed offline messages.
+		/// </summary>
+		/// <returns>Returns <c>true</c> if the current <see cref="ITagProfile"/> needs to have its legal identity refreshed, <c>false</c> otherwise.</returns>
+		bool LegalIdentityNeedsRefreshing();
+
 
 		/// <summary>
 		/// Returns <c>true</c> if the registration process for this <see cref="ITagProfile"/> has an account but not a legal id,
