@@ -587,29 +587,33 @@
 		}
 
 		/// <summary>
-<<<<<<< HEAD
 		/// Blue link color
 		/// </summary>
 		public static Color BlueLink
-=======
-		/// Purple color with 15% transparency.
-		/// </summary>
-		public static Color Purple15
->>>>>>> dev
 		{
 			get
 			{
 				if (Application.Current?.RequestedTheme == AppTheme.Dark)
 				{
-<<<<<<< HEAD
-					blueLink ??= AppStyles.TryGetResource<Color>("BlueLink");
+					blueLink ??= AppStyles.TryGetResource<Color>("BlueLinkDark");
 					return blueLink!;
 				}
 				else
 				{
-					blueLink ??= AppStyles.TryGetResource<Color>("BlueLinkDark");
+					blueLink ??= AppStyles.TryGetResource<Color>("BlueLink");
 					return blueLink!;
-=======
+				}
+			}
+		}
+
+		/// Purple color with 15% transparency.
+		/// </summary>
+		public static Color Purple15
+		{
+			get
+			{
+				if (Application.Current?.RequestedTheme == AppTheme.Dark)
+				{
 					purple15Dark ??= AppStyles.TryGetResource<Color>("Purple15Dark");
 					return purple15Dark!;
 				}
@@ -617,27 +621,19 @@
 				{
 					purple15Light ??= AppStyles.TryGetResource<Color>("Purple15Light");
 					return purple15Light!;
->>>>>>> dev
 				}
 			}
 		}
 
 		/// <summary>
-<<<<<<< HEAD
 		/// Inserted Border color
 		/// </summary>
 		public static Color InsertedBorder
-=======
-		/// Purple color
-		/// </summary>
-		public static Color Purple
->>>>>>> dev
 		{
 			get
 			{
-				if (Application.Current?.RequestedTheme == AppTheme.Dark)
+				if (Application.Current?.RequestedTheme == AppTheme.Light)
 				{
-<<<<<<< HEAD
 					insertedBorder ??= AppStyles.TryGetResource<Color>("InsertedBorderLight");
 					return insertedBorder!;
 				}
@@ -645,7 +641,19 @@
 				{
 					insertedBorder ??= AppStyles.TryGetResource<Color>("InsertedBorderDark");
 					return insertedBorder!;
-=======
+				}
+			}
+		}
+
+
+		/// Purple color
+		/// </summary>
+		public static Color Purple
+		{
+			get
+			{
+				if (Application.Current?.RequestedTheme == AppTheme.Dark)
+				{
 					purpleDark ??= AppStyles.TryGetResource<Color>("PurpleDark");
 					return purpleDark!;
 				}
@@ -653,27 +661,19 @@
 				{
 					purpleLight ??= AppStyles.TryGetResource<Color>("PurpleLight");
 					return purpleLight!;
->>>>>>> dev
 				}
 			}
 		}
 
 		/// <summary>
-<<<<<<< HEAD
 		/// Deleted Border color
 		/// </summary>
 		public static Color DeletedBorder
-=======
-		/// Blue affirm color with 20% transparency.
-		/// </summary>
-		public static Color Blue20Affirm
->>>>>>> dev
 		{
 			get
 			{
-				if (Application.Current?.RequestedTheme == AppTheme.Dark)
+				if (Application.Current?.RequestedTheme == AppTheme.Light)
 				{
-<<<<<<< HEAD
 					deletedBorder ??= AppStyles.TryGetResource<Color>("DeletedBorderLight");
 					return deletedBorder!;
 				}
@@ -681,7 +681,18 @@
 				{
 					deletedBorder ??= AppStyles.TryGetResource<Color>("DeletedBorderDark");
 					return deletedBorder!;
-=======
+				}
+			}
+
+
+		/// Blue affirm color with 20% transparency.
+		/// </summary>
+		public static Color Blue20Affirm
+		{
+			get
+			{
+				if (Application.Current?.RequestedTheme == AppTheme.Dark)
+				{
 					blue20AffirmDark ??= AppStyles.TryGetResource<Color>("Blue20AffirmDark");
 					return blue20AffirmDark!;
 				}
@@ -709,7 +720,6 @@
 				{
 					blueLight ??= AppStyles.TryGetResource<Color>("BlueLight");
 					return blueLight!;
->>>>>>> dev
 				}
 			}
 		}

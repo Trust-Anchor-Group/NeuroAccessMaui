@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 ﻿using NeuroAccessMaui.Resources.Languages;
-=======
-using NeuroAccessMaui.Resources.Languages;
->>>>>>> dev
 using NeuroAccessMaui.Services;
 using Waher.Runtime.Inventory;
 
