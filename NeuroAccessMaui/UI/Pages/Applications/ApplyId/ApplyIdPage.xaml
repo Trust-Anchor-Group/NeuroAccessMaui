@@ -328,8 +328,8 @@
 							<controls:CompositeDatePicker
 											HorizontalOptions="FillAndExpand"
 											IsValid="{Binding BirthDateOk}"
-											Date="{Binding BirthDate}"
-										   IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
+											NullableDate="{Binding BirthDate}"
+											IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
 											MinimumDate="{Binding MinBirthDate}"
 											MaximumDate="{Binding MaxBirthDate}"
 											Style="{StaticResource RegularCompositeDatePicker}" />

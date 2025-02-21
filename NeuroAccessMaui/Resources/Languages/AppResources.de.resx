@@ -1647,6 +1647,9 @@
   <data name="RequestPaymentMessage" xml:space="preserve">
     <value>Beantragung der Zahlung von {0} {1}.</value>
   </data>
+  <data name="RequestPaymentDescription" xml:space="preserve">
+    <value>Um eine Zahlung von jemandem anzufordern, geben Sie unten die Details zur Zahlung ein und klicken Sie auf die Schaltfläche QR-Code generieren. Der generierte Code kann von der anderen Partei verwendet werden, um eine Zahlung auf Ihr Konto zu generieren.</value>
+  </data>
   <data name="Room" xml:space="preserve">
     <value>Zimmer</value>
   </data>
@@ -2211,6 +2214,9 @@
   <data name="Amount" xml:space="preserve">
     <value>Menge:</value>
   </data>
+  <data name="AmountExtra" xml:space="preserve">
+    <value>Betrag Extra: (optional, Vorschlag)</value>
+  </data>
   <data name="Wallet" xml:space="preserve">
     <value>Brieftasche</value>
   </data>
@@ -2444,5 +2450,53 @@
   </data>
   <data name="IHaveReadAndUnderstoodTheContract" xml:space="preserve">
     <value>Ich habe die Bedingungen dieses Vertrages gelesen und verstanden</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Encrypted" xml:space="preserve">
+    <value>Verschlüsselt</value>
+  </data>
+  <data name="ViewParametersTitle" xml:space="preserve">
+    <value>Parameter anzeigen</value>
+  </data>
+  <data name="ViewParametersDescription" xml:space="preserve">
+    <value>Zeigen Sie die Variablen an, die den Vertrag steuern</value>
+  </data>
+  <data name="ViewRolesTitle" xml:space="preserve">
+    <value>Überprüfen der zugewiesenen Rollen</value>
+  </data>
+  <data name="ViewRolesDescription" xml:space="preserve">
+    <value>Überprüfen Sie die Rollen und sehen Sie, wer die einzelnen Rollen signiert hat</value>
+  </data>
+  <data name="InvitationToSign" xml:space="preserve">
+    <value>Sie wurden eingeladen, diesen Vertrag zu unterzeichnen, stellen Sie sicher, dass Sie den Vertrag überprüfen und überprüfen, bevor Sie fortfahren</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Titel</value>
+  </data>
+  <data name="Sign" xml:space="preserve">
+    <value>Zeichen</value>
+  </data>
+  <data name="PendingSignature" xml:space="preserve">
+    <value>Ausstehende Unterschrift</value>
+  </data>
+  <data name="ViewSignature" xml:space="preserve">
+    <value>Signatur anzeigen</value>
+  </data>
+  <data name="ReviewContractDescription2" xml:space="preserve">
+    <value>Überprüfen Sie die Vertragsbedingungen</value>
+  </data>
+  <data name="ServerSignatureButtonTitle" xml:space="preserve">
+    <value>Serversignatur anzeigen</value>
+  </data>
+  <data name="ServerSignatureButtonDescription" xml:space="preserve">
+    <value>Zeigen Sie die Serversignatur an, die die Integrität des Vertrags schützt</value>
+  </data>
+  <data name="Transient" xml:space="preserve">
+    <value>Flüchtig</value>
+  </data>
+  <data name="GenerateQrCode" xml:space="preserve">
+    <value>QR-Code generieren</value>
   </data>
 </root>

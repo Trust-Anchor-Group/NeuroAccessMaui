@@ -44,7 +44,7 @@ namespace NeuroAccessMaui.UI
 		private static Style? tableCellOdd;
 		private static Style? tableCell;
 		private static Style?[] headers;
-
+		private static Style? roundedBorder;
 
 		static AppStyles()
 		{
@@ -331,6 +331,18 @@ namespace NeuroAccessMaui.UI
 		}
 
 		/// <summary>
+		/// Style for CompositeDatePicker controls.
+		/// </summary>
+		public static Style RegularCompositeDatePicker
+		{
+			get
+			{
+				regularCompositeDatePicker ??= TryGetResource<Style>("RegularCompositeDatePicker");
+				return regularCompositeDatePicker!;
+			}
+		}
+
+		/// <summary>
 		/// Style for buttons containing a single Unicode character.
 		/// </summary>
 		public static Style UnicodeCharacterButton
@@ -460,5 +472,13 @@ namespace NeuroAccessMaui.UI
 			return headers[x - 1]!;
 		}
 
+		public static Style RoundedBorder
+		{
+			get
+			{
+				roundedBorder ??= TryGetResource<Style>("RoundedBorder");
+				return roundedBorder!;
+			}
+		}
 	}
 }

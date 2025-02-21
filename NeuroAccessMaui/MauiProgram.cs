@@ -12,6 +12,10 @@ using ZXing.Net.Maui.Controls;
 using Microsoft.Maui.Platform;
 #if DEBUG
 using DotNet.Meteor.HotReload.Plugin;
+using SkiaSharp.Views.Maui.Controls.Hosting;
+using SkiaSharp.Views.Maui.Controls;
+
+
 #endif
 
 
@@ -32,6 +36,7 @@ namespace NeuroAccessMaui
 			MauiAppBuilder Builder = MauiApp.CreateBuilder();
 
 			Builder.UseMauiApp<App>();
+			Builder.UseSkiaSharp();
 #if DEBUG
 			Builder.EnableHotReload();
 #endif
@@ -39,7 +44,7 @@ namespace NeuroAccessMaui
 			Builder.ConfigureFonts(fonts =>
 			{
 				fonts.AddFont("SpaceGrotesk-Bold.ttf", "SpaceGroteskBold");
-				//fonts.AddFont("SpaceGrotesk-SemiBold.ttf", "SpaceGroteskSemiBold");
+				fonts.AddFont("SpaceGrotesk-SemiBold.ttf", "SpaceGroteskSemiBold");
 				fonts.AddFont("SpaceGrotesk-Medium.ttf", "SpaceGroteskMedium");
 				fonts.AddFont("SpaceGrotesk-Regular.ttf", "SpaceGroteskRegular");
 				//fonts.AddFont("SpaceGrotesk-Light.ttf", "SpaceGroteskLight");

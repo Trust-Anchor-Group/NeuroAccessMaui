@@ -1647,6 +1647,9 @@
   <data name="RequestPaymentMessage" xml:space="preserve">
     <value>Begära betalning av {0} {1}.</value>
   </data>
+  <data name="RequestPaymentDescription" xml:space="preserve">
+    <value>För att efterfråga en betalning från någon, fyll i detaljerna om betalningen nedan, och klicka knappen för att en Generera QR-kod. Den genererade koden kan användas av den andra parten för att generera en betalning till ditt konto.</value>
+  </data>
   <data name="Room" xml:space="preserve">
     <value>Rum</value>
   </data>
@@ -2211,6 +2214,9 @@
   <data name="Amount" xml:space="preserve">
     <value>Belopp:</value>
   </data>
+  <data name="AmountExtra" xml:space="preserve">
+    <value>Belopp extra: (valfritt, förslag)</value>
+  </data>
   <data name="Wallet" xml:space="preserve">
     <value>Plånbok</value>
   </data>
@@ -2393,56 +2399,104 @@
   </data>
   <data name="ARequestHasBeenSentToTheOwner" xml:space="preserve">
     <value>En begäran har skickats till ägaren av enheten.</value>
-</data>
-<data name="ControlRequestText2" xml:space="preserve">
-  <value>En förfrågan om att styra en av dina saker har mottagits. Välj hur du vill att saken ska svara på denna typ av förfrågan.</value>
-</data>
-<data name="PermitParametersText" xml:space="preserve">
-  <value>Välj vilka parametrar som åtkomst ska beviljas till, om förfrågan accepteras.</value>
-</data>
-<data name="SomethingWentWrong" xml:space="preserve">
-  <value>Något gick fel</value>
-</data>
-<data name="NotCompletedOnboardingError" xml:space="preserve">
-  <value>Det verkar som att du inte har slutfört onboardingprocessen ännu. Slutför den för att få åtkomst till den här funktionen.</value>
-</data>
-<data name="PreviewContract" xml:space="preserve">
-  <value>Förhandsgranska kontrakt</value>
-</data>
-<data name="SetParametersTitle" xml:space="preserve">
-  <value>Ange parametrar</value>
-</data>
-<data name="SetParametersDescription" xml:space="preserve">
-  <value>Specificera de variabler som styr kontraktet</value>
-</data>
-<data name="SelectRolesTitle" xml:space="preserve">
-  <value>Välj roller</value>
-</data>
-<data name="SelectRolesDescription" xml:space="preserve">
-  <value>Välj vem som kan signera som vilken roll</value>
-</data>
-<data name="Back" xml:space="preserve">
-  <value>Tillbaka</value>
-</data>
-<data name="SelectedRoleHasReachedMaximumNumberOfParts" xml:space="preserve">
-  <value>Den valda rollen har nått det maximala antalet delar</value>
-</data>
-<data name="PetitionIdentitySent" xml:space="preserve">
-  <value>En begäran om att visa ID har skickats</value>
-</data>
-<data name="IDRequestSent" xml:space="preserve">
-  <value>ID-förfrågan skickad</value>
-</data>
-<data name="SelectYourRole" xml:space="preserve">
-  <value>Välj din roll</value>
-</data>
-<data name="ReviewContractTitle" xml:space="preserve">
-  <value>Granska avtalet</value>
-</data>
-<data name="ReviewContractDescription" xml:space="preserve">
-  <value>Granska noggrant kontraktsvillkoren</value>
-</data>
-<data name="IHaveReadAndUnderstoodTheContract" xml:space="preserve">
-  <value>Jag har läst och förstått villkoren i detta kontrakt</value>
-</data>
+  </data>
+  <data name="ControlRequestText2" xml:space="preserve">
+    <value>En förfrågan om att styra en av dina saker har mottagits. Välj hur du vill att saken ska svara på denna typ av förfrågan.</value>
+  </data>
+  <data name="PermitParametersText" xml:space="preserve">
+    <value>Välj vilka parametrar som åtkomst ska beviljas till, om förfrågan accepteras.</value>
+  </data>
+  <data name="SomethingWentWrong" xml:space="preserve">
+    <value>Något gick fel</value>
+  </data>
+  <data name="NotCompletedOnboardingError" xml:space="preserve">
+    <value>Det verkar som att du inte har slutfört onboardingprocessen ännu. Slutför den för att få åtkomst till den här funktionen.</value>
+  </data>
+  <data name="PreviewContract" xml:space="preserve">
+    <value>Förhandsgranska kontrakt</value>
+  </data>
+  <data name="SetParametersTitle" xml:space="preserve">
+    <value>Ange parametrar</value>
+  </data>
+  <data name="SetParametersDescription" xml:space="preserve">
+    <value>Specificera de variabler som styr kontraktet</value>
+  </data>
+  <data name="SelectRolesTitle" xml:space="preserve">
+    <value>Välj roller</value>
+  </data>
+  <data name="SelectRolesDescription" xml:space="preserve">
+    <value>Välj vem som kan signera som vilken roll</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Tillbaka</value>
+  </data>
+  <data name="SelectedRoleHasReachedMaximumNumberOfParts" xml:space="preserve">
+    <value>Den valda rollen har nått det maximala antalet delar</value>
+  </data>
+  <data name="PetitionIdentitySent" xml:space="preserve">
+    <value>En begäran om att visa ID har skickats</value>
+  </data>
+  <data name="IDRequestSent" xml:space="preserve">
+    <value>ID-förfrågan skickad</value>
+  </data>
+  <data name="SelectYourRole" xml:space="preserve">
+    <value>Välj din roll</value>
+  </data>
+  <data name="ReviewContractTitle" xml:space="preserve">
+    <value>Granska avtalet</value>
+  </data>
+  <data name="ReviewContractDescription" xml:space="preserve">
+    <value>Granska noggrant kontraktsvillkoren</value>
+  </data>
+  <data name="IHaveReadAndUnderstoodTheContract" xml:space="preserve">
+    <value>Jag har läst och förstått villkoren i detta kontrakt</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+      <value>Status</value>
+  </data>
+  <data name="Encrypted" xml:space="preserve">
+      <value>Krypterad</value>
+  </data>
+  <data name="ViewParametersTitle" xml:space="preserve">
+      <value>Visa parametrar</value>
+  </data>
+  <data name="ViewParametersDescription" xml:space="preserve">
+      <value>Visa de variabler som styr kontraktet</value>
+  </data>
+  <data name="ViewRolesTitle" xml:space="preserve">
+      <value>Granska tilldelade roller</value>
+  </data>
+  <data name="ViewRolesDescription" xml:space="preserve">
+      <value>Granska rollerna och se vem som har signerat varje roll</value>
+  </data>
+  <data name="InvitationToSign" xml:space="preserve">
+    <value>Du har blivit inbjuden att signera detta kontrakt. Se till att verifiera och granska kontraktet innan du fortsätter.</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Titel</value>
+  </data>
+  <data name="Sign" xml:space="preserve">
+    <value>Signera</value>
+  </data>
+  <data name="PendingSignature" xml:space="preserve">
+    <value>Inväntar signatur</value>
+  </data>
+  <data name="ViewSignature" xml:space="preserve">
+    <value>Visa signatur</value>
+  </data>
+  <data name="ReviewContractDescription2" xml:space="preserve">
+    <value>Granska kontraktets villkor</value>
+  </data>
+  <data name="ServerSignatureButtonTitle" xml:space="preserve">
+    <value>Visa serversignatur</value> 
+  </data>
+  <data name="ServerSignatureButtonDescription" xml:space="preserve">
+    <value>Visa serversignaturen, som skyddar avtalets integritet</value>
+  </data>
+  <data name="Transient" xml:space="preserve">
+    <value>Transient</value>
+  </data>
+  <data name="GenerateQrCode" xml:space="preserve">
+    <value>Generera QR-kod</value>
+  </data>
 </root>

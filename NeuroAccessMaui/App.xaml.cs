@@ -67,6 +67,7 @@ namespace NeuroAccessMaui
 	/// </summary>
 	public partial class App : Application, IDisposable
 	{
+		private readonly SemaphoreSlim autoSaveSemaphore = new SemaphoreSlim(1, 1);
 		private static readonly TaskCompletionSource<bool> servicesSetup = new();
 		private static readonly TaskCompletionSource<bool> defaultInstantiatedSource = new();
 		private static bool configLoaded = false;
@@ -595,31 +596,40 @@ namespace NeuroAccessMaui
 
 		private async Task AutoSave()
 		{
-			if (ServiceRef.TagProfile.IsDirty)
+			await this.autoSaveSemaphore.WaitAsync();
+			try
 			{
-				ServiceRef.TagProfile.ResetIsDirty();
-				try
+				if (ServiceRef.TagProfile.IsDirty)
 				{
-					TagConfiguration tc = ServiceRef.TagProfile.ToConfiguration();
-
+					ServiceRef.TagProfile.ResetIsDirty();
 					try
 					{
-						if (string.IsNullOrEmpty(tc.ObjectId))
+						TagConfiguration tc = ServiceRef.TagProfile.ToConfiguration();
+
+						try
+						{
+							if (string.IsNullOrEmpty(tc.ObjectId))
+								await ServiceRef.StorageService.Insert(tc);
+							else
+								await ServiceRef.StorageService.Update(tc);
+						}
+						catch (KeyNotFoundException)
+						{
 							await ServiceRef.StorageService.Insert(tc);
-						else
-							await ServiceRef.StorageService.Update(tc);
+						}
 					}
-					catch (KeyNotFoundException)
+					catch (Exception ex)
 					{
-						await ServiceRef.StorageService.Insert(tc);
+						ServiceRef.LogService.LogException(ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
 					}
-				}
-				catch (Exception ex)
-				{
-					ServiceRef.LogService.LogException(ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
 				}
 			}
+			finally
+			{
+				this.autoSaveSemaphore.Release();
+			}
 		}
+
 
 		private async Task CreateOrRestoreConfiguration()
 		{
@@ -650,6 +660,11 @@ namespace NeuroAccessMaui
 			}
 
 			ServiceRef.TagProfile.FromConfiguration(Configuration);
+		}
+
+		public async Task ForceSave()
+		{
+			await this.AutoSave();
 		}
 
 		/// <summary>
