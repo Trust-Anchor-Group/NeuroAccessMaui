@@ -683,7 +683,7 @@
 					return deletedBorder!;
 				}
 			}
-
+		}
 
 		/// Blue affirm color with 20% transparency.
 		/// </summary>
