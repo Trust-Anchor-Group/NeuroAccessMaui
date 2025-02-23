@@ -97,11 +97,11 @@ namespace NeuroAccessMaui.UI.Popups.Permission
 			}
 		}
 
-		public override void OnPop() 
+		public override Task OnPop() 
 		{
-			base.OnPop();
 			this.result.TrySetResult(false);
-		 }
+			return base.OnPop();
+		}
 
 		 #endregion
 
