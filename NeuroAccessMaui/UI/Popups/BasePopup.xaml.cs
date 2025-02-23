@@ -25,6 +25,7 @@ namespace NeuroAccessMaui.UI.Popups
 		/// </summary>
 		protected bool useDefaultBackground;
 
+
 		/// <summary>
 		/// Returns the current BindingContext as a BasePopupViewModel.
 		/// Returns null if failed.
@@ -41,24 +42,6 @@ namespace NeuroAccessMaui.UI.Popups
 			this.InitializeComponent();
 			this.BackgroundColor = AppColors.PrimaryBackground;
 
-			// When the popup is loaded, trigger view model initialization.
-			//this.Loaded += this.BasePopup_Loaded;
-		}
-
-		private async void BasePopup_Loaded(object? sender, EventArgs e)
-		{
-			try
-			{
-				// Call the view model's initialization routine if available.
-				if (this.BindingContext is BaseViewModel Vm)
-				{
-					await Vm.DoInitialize();
-				}
-			}
-			catch (Exception Ex)
-			{
-				ServiceRef.LogService.LogException(Ex);
-			}
 		}
 
 		/// <summary>
