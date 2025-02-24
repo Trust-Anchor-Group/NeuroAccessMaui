@@ -40,6 +40,9 @@
 		<Copyright>Copyright © Trust Anchor Group 2018-2024. All rights reserved.</Copyright>
 		<PackageProjectUrl></PackageProjectUrl>
 		<RepositoryUrl>https://github.com/Trust-Anchor-Group/NeuroAccessMaui</RepositoryUrl>
+
+		<!-- Required for intellisense to understand typed resources -->
+		<CoreCompileDependsOn>PrepareResources;$(CoreCompileDependsOn)</CoreCompileDependsOn>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios'">
@@ -114,6 +117,24 @@
 
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
 		<AndroidResource Include="Resources\xml\file_paths.xml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Remove="Services\NewFolder1\**" />
+	  <Compile Remove="Services\NewFolder2\**" />
+	  <Compile Remove="Services\Xmpp\NewFolder\**" />
+	  <EmbeddedResource Remove="Services\NewFolder1\**" />
+	  <EmbeddedResource Remove="Services\NewFolder2\**" />
+	  <EmbeddedResource Remove="Services\Xmpp\NewFolder\**" />
+	  <MauiCss Remove="Services\NewFolder1\**" />
+	  <MauiCss Remove="Services\NewFolder2\**" />
+	  <MauiCss Remove="Services\Xmpp\NewFolder\**" />
+	  <MauiXaml Remove="Services\NewFolder1\**" />
+	  <MauiXaml Remove="Services\NewFolder2\**" />
+	  <MauiXaml Remove="Services\Xmpp\NewFolder\**" />
+	  <None Remove="Services\NewFolder1\**" />
+	  <None Remove="Services\NewFolder2\**" />
+	  <None Remove="Services\Xmpp\NewFolder\**" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -419,6 +440,9 @@
 		<Compile Update="UI\Popups\Password\CheckPasswordPopup.xaml.cs">
 			<DependentUpon>CheckPasswordPopup.xaml</DependentUpon>
 		</Compile>
+		<Compile Update="UI\Popups\Permission\ShowPermissionPopup.xaml.cs">
+		  <DependentUpon>ShowPermissionPopup.xaml</DependentUpon>
+		</Compile>
 		<Compile Update="UI\Popups\SelectPhoneCodePopup.xaml.cs">
 			<DependentUpon>SelectPhoneCodePopup.xaml</DependentUpon>
 		</Compile>
@@ -428,13 +452,16 @@
 		<Compile Update="UI\Popups\Info\ShowInfoPopup.xaml.cs">
 			<DependentUpon>ShowInfoPopup.xaml</DependentUpon>
 		</Compile>
+		<Compile Update="UI\Popups\Permission\ShowPermissionPopup.xaml.cs">
+			<DependentUpon>ShowPermissionPopup.xaml</DependentUpon>
+		</Compile>
 	</ItemGroup>
 
 	<ItemGroup>
 		<EmbeddedResource Update="Resources\Languages\AppResources.resx">
 			<Generator>MSBuild:Compile</Generator>
 			<LastGenOutput>AppResources.Designer.cs</LastGenOutput>
-			<StronglyTypedFileName>Resources\Languages\AppResources.Designer.cs</StronglyTypedFileName>
+			<StronglyTypedFileName>$(IntermediateOutputPath)\AppResources.Designer.cs</StronglyTypedFileName>
 	      	<StronglyTypedLanguage>CSharp</StronglyTypedLanguage>
 			<StronglyTypedNamespace>NeuroAccessMaui.Resources.Languages</StronglyTypedNamespace>
 			<StronglyTypedClassName>AppResources</StronglyTypedClassName>
@@ -660,6 +687,9 @@
 		<MauiXaml Update="UI\Popups\Image\ImagesPopup.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
+		<MauiXaml Update="UI\Popups\Permission\ShowPermissionPopup.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="UI\Popups\Photos\Image\ImageView.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
@@ -691,5 +721,9 @@
 
 	<ItemGroup>
 		<PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="8.0.92" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="UI\Pages\Wallet\ServiceProviders\NewFolder\" />
 	</ItemGroup>
 </Project>
