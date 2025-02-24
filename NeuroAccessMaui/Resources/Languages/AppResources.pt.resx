@@ -2508,6 +2508,9 @@
   <data name="CameraPermissionDescriptionSecondary" xml:space="preserve">
     <value>Abra as configurações - Clique em "Permissões" - Habilite as permissões da câmera</value>
   </data>
+  <data name="iOS_CameraPermissionDescriptionSecondary" xml:space="preserve">
+    <value>Abra as configurações - Habilite as permissões da câmera</value>
+	</data>
   <data name="GoToSettings" xml:space="preserve">
     <value>Abrir configurações</value>
   </data>

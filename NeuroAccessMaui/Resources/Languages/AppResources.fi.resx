@@ -2508,6 +2508,9 @@
   <data name="CameraPermissionDescriptionSecondary" xml:space="preserve">
     <value>Avaa asetukset - Napsauta "Käyttöoikeudet" - Ota kameran käyttöoikeudet käyttöön</value>
   </data>
+  <data name="iOS_CameraPermissionDescriptionSecondary" xml:space="preserve">
+    <value>Avaa asetukset - Ota kameran käyttöoikeudet käyttöön</value>
+  </data>
   <data name="GoToSettings" xml:space="preserve">
     <value>Avaa asetukset</value>
   </data>

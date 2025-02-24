@@ -2508,6 +2508,9 @@
   <data name="CameraPermissionDescriptionSecondary" xml:space="preserve">
     <value>Otvori podešavanja - Kliknite na "Dozvole" - Omogući dozvole kamere</value>
   </data>
+  <data name="iOS_CameraPermissionDescriptionSecondary" xml:space="preserve">
+    <value>Otvori podešavanja - Omogući dozvole kamere</value>
+  </data>
   <data name="GoToSettings" xml:space="preserve">
     <value>Otvori podešavanja</value>
   </data>

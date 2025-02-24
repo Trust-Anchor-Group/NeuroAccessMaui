@@ -2508,6 +2508,9 @@
   <data name="CameraPermissionDescriptionSecondary" xml:space="preserve">
     <value>Deschideți setările - Faceți clic pe "Permisiuni" - Activați permisiunile camerei</value>
   </data>
+  <data name="iOS_CameraPermissionDescriptionSecondary" xml:space="preserve">
+    <value>Deschideți setările - Activați permisiunile camerei</value>
+  </data>
   <data name="GoToSettings" xml:space="preserve">
     <value>Deschideți setările</value>
   </data>

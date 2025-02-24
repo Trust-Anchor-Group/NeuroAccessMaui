@@ -2508,6 +2508,9 @@
   <data name="CameraPermissionDescriptionSecondary" xml:space="preserve">
     <value>Ouvrez les paramètres - Cliquez sur « Autorisations » - Activer les autorisations de l’appareil photo</value>
   </data>
+  <data name="iOS_CameraPermissionDescriptionSecondary" xml:space="preserve">
+    <value>Ouvrir les paramètres - Activer les autorisations de l’appareil photo</value>
+  </data>
   <data name="GoToSettings" xml:space="preserve">
     <value>Ouvrir les paramètres</value>
   </data>

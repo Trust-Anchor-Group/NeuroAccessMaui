@@ -2508,6 +2508,9 @@
   <data name="CameraPermissionDescriptionSecondary" xml:space="preserve">
     <value>Откройте настройки - Нажмите на "Разрешения" - Включите разрешения камеры</value>
   </data>
+  <data name="iOS_CameraPermissionDescriptionSecondary" xml:space="preserve">
+    <value>Откройте настройки - Включить разрешения камеры</value>
+  </data>
   <data name="GoToSettings" xml:space="preserve">
     <value>Откройте настройки</value>
   </data>

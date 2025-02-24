@@ -2508,6 +2508,9 @@
   <data name="CameraPermissionDescriptionSecondary" xml:space="preserve">
     <value>Öppna inställningar - Klicka på "Behörigheter" - Aktivera kamerabehörigheter</value>
   </data>
+  <data name="iOS_CameraPermissionDescriptionSecondary" xml:space="preserve">
+    <value>Öppna inställningar - Aktivera kamerabehörigheter</value>
+	</data>
   <data name="GoToSettings" xml:space="preserve">
     <value>Öppna inställningar</value>
   </data>
