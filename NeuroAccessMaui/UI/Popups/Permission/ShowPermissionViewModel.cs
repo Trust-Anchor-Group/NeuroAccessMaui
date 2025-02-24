@@ -5,7 +5,7 @@ using NeuroAccessMaui.Services;
 
 namespace NeuroAccessMaui.UI.Popups.Permission
 {
-	public partial class ShowPermissionViewModel : ReturningPopupViewModel<bool>
+	public partial class ShowPermissionViewModel : BasePopupViewModel
 	{
 		#region Private Properties
 		private bool hasBeenToSettings = false;
@@ -96,13 +96,6 @@ namespace NeuroAccessMaui.UI.Popups.Permission
 				//Ignore no need to handle this exception, the user needs to close popup manually
 			}
 		}
-
-		public override Task OnPop() 
-		{
-			this.result.TrySetResult(false);
-			return base.OnPop();
-		}
-
 		 #endregion
 
 		#region Commands
