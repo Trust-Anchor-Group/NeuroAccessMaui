@@ -109,7 +109,6 @@ namespace NeuroAccessMaui.Services.UI.Photos
 
 			Photo? First = null;
 
-			// ContentType in ImageCodec.ImageContentTypes
 			foreach (Attachment attachment in attachmentsList)
 			{
 				if (Array.IndexOf(ImageCodec.ImageContentTypes, attachment.ContentType) < 0)
