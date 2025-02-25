@@ -16,7 +16,7 @@ namespace NeuroAccessMaui.UI.Popups.Image
 
 		public ImagesViewModel()
 		{
-			this.Photos = [];
+			this.Photos = new ObservableCollection<Photo>();
 			this.photosLoader = new PhotosLoader(this.Photos);
 		}
 		/// <summary>
