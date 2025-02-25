@@ -1194,7 +1194,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		}
 
 		// Command to remove an additional photo (parameter is the photo to remove)
-		[RelayCommand]
+		[RelayCommand(AllowConcurrentExecutions = false)]
 		private void RemoveAdditionalPhoto(ObservableAttachmentCard photo)
 		{
 			if (photo is null)
