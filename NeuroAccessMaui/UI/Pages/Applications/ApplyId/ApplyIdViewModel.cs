@@ -1139,6 +1139,142 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			await this.ScanQrCode();
 		}
 
+		#region Additional Photos
+
+
+		// Command to take a new additional photo using the camera
+		[RelayCommand]
+		private async Task TakeAdditionalPhoto()
+		{
+			if (!MediaPicker.IsCaptureSupported)
+				return;
+
+			bool permitted = await ServiceRef.PermissionService.CheckCameraPermissionAsync();
+			if (!permitted)
+				return;
+
+			try
+			{
+				FileResult? result = await MediaPicker.Default.CapturePhotoAsync(new MediaPickerOptions
+				{
+					Title = ServiceRef.Localizer[nameof(AppResources.TakePhoto)]
+				});
+				if (result is null)
+					return;
+				await this.ProcessAdditionalPhoto(result);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					ServiceRef.Localizer[nameof(AppResources.FailedToLoadPhoto)]);
+			}
+		}
+
+		// Command to pick a new additional photo from the gallery
+		[RelayCommand]
+		private async Task PickAdditionalPhoto()
+		{
+			try
+			{
+				FileResult? result = await MediaPicker.Default.PickPhotoAsync(new MediaPickerOptions
+				{
+					Title = ServiceRef.Localizer[nameof(AppResources.PickPhoto)]
+				});
+				if (result is null)
+					return;
+				await this.ProcessAdditionalPhoto(result);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
+			}
+		}
+
+		// Command to remove an additional photo (parameter is the photo to remove)
+		[RelayCommand]
+		private void RemoveAdditionalPhoto(ObservableAttachmentCard photo)
+		{
+			if (photo is null)
+				return;
+			MainThread.BeginInvokeOnMainThread(() => this.AdditionalPhotos.Remove(photo));
+		}
+
+		// Common logic to process a FileResult into an AdditionalPhoto,
+		// including reading, cropping, and compressing the image.
+		private async Task ProcessAdditionalPhoto(FileResult result)
+		{
+			// Open the image stream and read the bytes
+			using Stream stream = await result.OpenReadAsync();
+			byte[] InputBin = stream.ToByteArray() ?? throw new Exception("Failed to read photo stream");
+
+			// Allow user to crop the image (uses your existing ImageCroppingPage)
+			TaskCompletionSource<byte[]?> tcs = new TaskCompletionSource<byte[]?>();
+			await ServiceRef.UiService.GoToAsync(nameof(ImageCroppingPage),
+				new ImageCroppingNavigationArgs(
+					ImageSource.FromStream(() => new MemoryStream(InputBin)), tcs));
+
+			byte[] OutputBin = await tcs.Task ?? throw new Exception("Failed to crop photo");
+			using MemoryStream ms = new MemoryStream(OutputBin);
+
+			ObservableAttachmentCard? AdditionalPhoto = await this.CreateObservableAttachmentCardFromStream(ms, result.FullPath, true);
+			if (AdditionalPhoto != null)
+			{
+				MainThread.BeginInvokeOnMainThread(() => this.AdditionalPhotos.Add(AdditionalPhoto));
+			}
+		}
+
+		// Helper method similar to your AddPhoto(Stream, ...) but returning an AdditionalPhoto instance.
+		private async Task<ObservableAttachmentCard?> CreateObservableAttachmentCardFromStream(Stream inputStream, string filePath, bool saveLocalCopy)
+		{
+			SKData? imageData = null;
+			try
+			{
+				bool fallbackOriginal = true;
+				if (saveLocalCopy)
+				{
+					imageData = CompressImage(inputStream);
+					if (imageData is not null)
+					{
+						fallbackOriginal = false;
+						byte[] bin = imageData.ToArray();
+						return new ObservableAttachmentCard
+						{
+							ImageBin = bin,
+							ImageRotation = 0, // You may adjust if needed
+							Image = ImageSource.FromStream(() => new MemoryStream(bin))
+						};
+					}
+				}
+				if (fallbackOriginal)
+				{
+					byte[] bin = File.ReadAllBytes(filePath);
+					int rotation = PhotosLoader.GetImageRotation(bin);
+					return new ObservableAttachmentCard
+					{
+						ImageBin = bin,
+						ImageRotation = rotation,
+						Image = ImageSource.FromStream(() => new MemoryStream(bin))
+					};
+				}
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					ServiceRef.Localizer[nameof(AppResources.FailedToLoadPhoto)]);
+			}
+			finally
+			{
+				imageData?.Dispose();
+			}
+			return null;
+		}
+		#endregion
+
 		#endregion
 	}
 }

@@ -1,584 +1,841 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<base:BaseContentPage x:Name="ThisPage"
-							 x:Class="NeuroAccessMaui.UI.Pages.Applications.ApplyId.ApplyIdPage"
-							 x:DataType="viewmodel:ApplyIdViewModel"
-							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
-							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
-							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Applications.ApplyId"
-							 xmlns:data="clr-namespace:NeuroAccessMaui.Services.Data"
-							 xmlns:behaviors="clr-namespace:NeuroAccessMaui.UI.Behaviors">
+<base:BaseContentPage
+    x:Class="NeuroAccessMaui.UI.Pages.Applications.ApplyId.ApplyIdPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+    xmlns:behaviors="clr-namespace:NeuroAccessMaui.UI.Behaviors"
+    xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+    xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+    xmlns:data="clr-namespace:NeuroAccessMaui.Services.Data"
+    xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+    xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+    xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Applications.ApplyId"
+    x:Name="ThisPage"
+    x:DataType="viewmodel:ApplyIdViewModel">
 
-	<VisualElement.Resources>
-		<converters:ConversionSequence x:Key="CountryCodeToFlagAndNameHyphenIfEmpty">
-			<converters:CountryCodeToFlagAndName/>
-			<converters:HyphenIfEmpty/>
-		</converters:ConversionSequence>
-		<converters:ConversionSequence x:Key="GenderCodeToSymbolAndLabelHyphenIfEmpty">
-			<converters:GenderCodeToSymbolAndLabel/>
-			<converters:HyphenIfEmpty/>
-		</converters:ConversionSequence>
-	</VisualElement.Resources>
+    <VisualElement.Resources>
+        <converters:ConversionSequence x:Key="CountryCodeToFlagAndNameHyphenIfEmpty">
+            <converters:CountryCodeToFlagAndName />
+            <converters:HyphenIfEmpty />
+        </converters:ConversionSequence>
+        <converters:ConversionSequence x:Key="GenderCodeToSymbolAndLabelHyphenIfEmpty">
+            <converters:GenderCodeToSymbolAndLabel />
+            <converters:HyphenIfEmpty />
+        </converters:ConversionSequence>
+    </VisualElement.Resources>
 
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+    <Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
 
-		<controls:Background/>
+        <controls:Background />
 
-		<ScrollView>
-			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+        <ScrollView>
+            <VerticalStackLayout Margin="{StaticResource MediumSpacing}" Spacing="{StaticResource SmallSpacing}">
 
-				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-											 Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+                <controls:ImageButton
+                    Command="{Binding GoBackCommand}"
+                    HorizontalOptions="Start"
+                    PathData="{x:Static ui:Geometries.BackButtonPath}"
+                    Style="{StaticResource ImageOnlyButton}" />
 
-				<Label Style="{StaticResource PageTitleLabel}" Text="{l:Localize PersonalId}" IsVisible="{Binding Organizational, Converter={StaticResource InvertedBoolConverter}}"/>
-				<Label Style="{StaticResource PageTitleLabel}" Text="{l:Localize OrganizationalId}" IsVisible="{Binding Organizational}"/>
-
-
-				<!-- Application Sent -->
-				<Frame Style="{StaticResource FrameSet}" IsVisible="{Binding ApplicationSent}">
-					<Grid>
-						<VerticalStackLayout>
-							<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize Application}"/>
-							<Label Style="{StaticResource InfoLabel}" Text="{l:Localize IdApplicationSentDescription}"/>
-							<Label Style="{StaticResource InfoLabel}" Text="{l:Localize PeerReviewDescription}" IsVisible="{Binding PeerReview}"/>
-							<Label Style="{StaticResource InfoLabel}" IsVisible="{Binding PeerReview}">
-								<Label.FormattedText>
-									<FormattedString>
-										<Span Text="{l:Localize NrPeerReviews}"/>
-										<Span Text=" "/>
-										<Span Text="{Binding NrReviews}" FontAttributes="Bold"/>
-										<Span Text=" / "/>
-										<Span Text="{Binding NrReviewers}"/>
-									</FormattedString>
-								</Label.FormattedText>
-							</Label>
-
-							<ActivityIndicator VerticalOptions="Center" HorizontalOptions="Center"
-													 IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" />
-
-							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
-								<controls:TextButton Command="{Binding ScanQrCodeCommand}" Style="{StaticResource FilledTextButton}"
-															LabelData="{l:Localize QrScanCode}" IsVisible="{Binding PeerReview}" />
-
-								<controls:TextButton Command="{Binding RequestReviewCommand}" Style="{StaticResource FilledTextButton}"
-															LabelData="{l:Localize FeaturedReviewers}" IsVisible="{Binding FeaturedPeerReviewers}" />
-
-								<controls:TextButton Command="{Binding RevokeApplicationCommand}" Style="{StaticResource FilledTextButton}"
-															LabelData="{l:Localize RevokeApplication}" />
-							</VerticalStackLayout>
-						</VerticalStackLayout>
-					</Grid>
-				</Frame>
-
-				<!-- Photos -->
-				<Frame Style="{StaticResource FrameSet}">
-					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
-						<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize Photo}"/>
-						<Label Style="{StaticResource InfoLabel}" Text="{l:Localize PhotosDescription}"
-								 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"/>
-						<Label Style="{StaticResource InfoLabel}" Text="{l:Localize PhotosSentDescription}"
-								 IsVisible="{Binding ApplicationSent}"/>
-						<Grid RowDefinitions="auto,auto,auto,*" ColumnDefinitions="*,auto,auto,*"
-								ColumnSpacing="{StaticResource SmallSpacing}" RowSpacing="{StaticResource SmallSpacing}">
-							<Border Grid.Column="1" Grid.Row="0" Grid.RowSpan="4" WidthRequest="200" HeightRequest="200" 
-									  Style="{StaticResource OutlinedImageButtonBorder}"
-									  Margin="0"
-									  Padding="0"
-									  VerticalOptions="Start"
-									  BackgroundColor="{Binding HasPhoto, Converter={converters:ControlBgColor}}">
-								<Image Aspect="AspectFill">
-									<Image.Triggers>
-										<DataTrigger TargetType="Image" Binding="{Binding HasPhoto}" Value="True">
-											<Setter Property="Source" Value="{Binding Image}" />
-											<Setter Property="Aspect" Value="AspectFill" />
-
-										</DataTrigger>
-										<DataTrigger TargetType="Image" Binding="{Binding HasPhoto}" Value="False">
-											<Setter Property="Source" Value="photo_placeholder" />
-											<Setter Property="Aspect" Value="Center" />
-										</DataTrigger>
-									</Image.Triggers>
-								</Image>
-							</Border>
-
-							<controls:ImageButton Grid.Column="2" Grid.Row="0" Command="{Binding TakePhotoCommand}"
-														 Style="{StaticResource OutlinedImageButton}" PathData="{x:Static ui:Geometries.CameraPhotoButtonPath}" />
-
-							<controls:ImageButton Grid.Column="2" Grid.Row="1" Command="{Binding PickPhotoCommand}"
-														 Style="{StaticResource OutlinedImageButton}" PathData="{x:Static ui:Geometries.CameraImageButtonPath}" />
-
-							<controls:ImageButton Grid.Column="2" Grid.Row="2" Command="{Binding RemovePhotoCommand}"
-														 Style="{StaticResource OutlinedImageButton}" IsVisible="{Binding Path=HasPhoto}"
-														 PathData="{x:Static ui:Geometries.TrashCanButtonPath}" />
-
-						</Grid>
-					</VerticalStackLayout>
-				</Frame>
-
-				<!-- Personal Information -->
-				<Frame Style="{StaticResource FrameSet}">
-					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
-						<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize PersonalInformation}"/>
-						<Label Style="{StaticResource InfoLabel}" Text="{l:Localize PersonalInformationDescription}"
-								 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"/>
-						<Label Style="{StaticResource InfoLabel}" Text="{l:Localize PersonalInformationSentDescription}"
-								 IsVisible="{Binding ApplicationSent}"/>
-
-						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-							<HorizontalStackLayout IsVisible="{Binding ApplicationSent}">
-								<Label Text="{l:Localize FirstName}" HorizontalOptions="FillAndExpand"/>
-								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresFirstName}"/>
-							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=FirstName}"
-															 IsValid="{Binding FirstNameOk}"
-															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
-															 LabelText="{l:Localize FirstName}"
-															 Required="{Binding RequiresFirstName}"/>
-							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=FirstName, Converter={converters:HyphenIfEmpty}}"
-									 IsVisible="{Binding ApplicationSent}"/>
-						</VerticalStackLayout>
-
-						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-							<HorizontalStackLayout IsVisible="{Binding ApplicationSent}">
-								<Label Text="{l:Localize MiddleNames}" HorizontalOptions="FillAndExpand"/>
-								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresMiddleNames}"/>
-							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=MiddleNames}" 
-															 IsValid="{Binding MiddleNamesOk}"
-															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
-															 LabelText="{l:Localize MiddleNames}"
-															 Required="{Binding RequiresMiddleNames}"/>
-							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=MiddleNames, Converter={converters:HyphenIfEmpty}}"
-									 IsVisible="{Binding ApplicationSent}"/>
-						</VerticalStackLayout>
-
-						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-							<HorizontalStackLayout IsVisible="{Binding ApplicationSent}">
-								<Label Text="{l:Localize LastNames}" HorizontalOptions="FillAndExpand"/>
-								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresLastNames}"/>
-							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=LastNames}" 
-															 IsValid="{Binding LastNamesOk}"
-															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
-															 LabelText="{l:Localize LastNames}"
-															 Required="{Binding RequiresLastNames}"/>
-							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=LastNames, Converter={converters:HyphenIfEmpty}}"
-									 IsVisible="{Binding ApplicationSent}"/>
-						</VerticalStackLayout>
-
-						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-							<HorizontalStackLayout IsVisible="{Binding ApplicationSent}">
-								<Label Text="{l:Localize PersonalNumber}" HorizontalOptions="FillAndExpand"/>
-								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresPersonalNumber}"/>
-							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=PersonalNumber}" 
-															 IsValid="{Binding PersonalNumberOk}"
-															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
-															 LabelText="{l:Localize PersonalNumber}"
-															 Required="{Binding RequiresPersonalNumber}"/>
-							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=PersonalNumber, Converter={converters:HyphenIfEmpty}}"
-									 IsVisible="{Binding ApplicationSent}"/>
-						</VerticalStackLayout>
-
-						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-							<HorizontalStackLayout IsVisible="{Binding ApplicationSent}">
-								<Label Text="{l:Localize Address}" HorizontalOptions="FillAndExpand"/>
-								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresAddress}"/>
-							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=Address}" 
-															 IsValid="{Binding AddressOk}"
-															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
-															 LabelText="{l:Localize Address}"
-															 Required="{Binding RequiresAddress}"/>
-							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=Address, Converter={converters:HyphenIfEmpty}}"
-									 IsVisible="{Binding ApplicationSent}"/>
-						</VerticalStackLayout>
-
-						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-							<HorizontalStackLayout IsVisible="{Binding ApplicationSent}">
-								<Label Text="{l:Localize Address2}" HorizontalOptions="FillAndExpand"/>
-								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresAddress2}"/>
-							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=Address2}" 
-															 IsValid="{Binding Address2Ok}"
-															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
-															 LabelText="{l:Localize Address2}"
-															 Required="{Binding RequiresAddress2}"/>
-							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=Address2, Converter={converters:HyphenIfEmpty}}"
-									 IsVisible="{Binding ApplicationSent}"/>
-						</VerticalStackLayout>
-
-						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-							<HorizontalStackLayout IsVisible="{Binding ApplicationSent}">
-								<Label Text="{l:Localize ZipCode}" HorizontalOptions="FillAndExpand"/>
-								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresZipCode}"/>
-							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=ZipCode}" 
-															 IsValid="{Binding ZipCodeOk}"
-															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
-															 LabelText="{l:Localize ZipCode}"
-															 Required="{Binding RequiresZipCode}"/>
-							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=ZipCode, Converter={converters:HyphenIfEmpty}}"
-									 IsVisible="{Binding ApplicationSent}"/>
-						</VerticalStackLayout>
-
-						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-							<HorizontalStackLayout IsVisible="{Binding ApplicationSent}">
-								<Label Text="{l:Localize Area}" HorizontalOptions="FillAndExpand"/>
-								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresArea}"/>
-							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=Area}" 
-															 IsValid="{Binding AreaOk}"
-															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
-															 LabelText="{l:Localize Area}"
-															 Required="{Binding RequiresArea}"/>
-							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=Area, Converter={converters:HyphenIfEmpty}}"
-									 IsVisible="{Binding ApplicationSent}"/>
-						</VerticalStackLayout>
-
-						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-							<HorizontalStackLayout IsVisible="{Binding ApplicationSent}">
-								<Label Text="{l:Localize City}" HorizontalOptions="FillAndExpand"/>
-								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresCity}"/>
-							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=City}" 
-															 IsValid="{Binding CityOk}"
-															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
-															 LabelText="{l:Localize City}"
-															 Required="{Binding RequiresCity}"/>
-							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=City, Converter={converters:HyphenIfEmpty}}"
-									 IsVisible="{Binding ApplicationSent}"/>
-						</VerticalStackLayout>
-
-						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-							<HorizontalStackLayout IsVisible="{Binding ApplicationSent}">
-								<Label Text="{l:Localize Region}" HorizontalOptions="FillAndExpand"/>
-								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresRegion}"/>
-							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=Region}" 
-															 IsValid="{Binding RegionOk}"
-															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
-															 LabelText="{l:Localize Region}"
-															 Required="{Binding RequiresRegion}"/>
-							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=Region, Converter={converters:HyphenIfEmpty}}"
-									 IsVisible="{Binding ApplicationSent}"/>
-						</VerticalStackLayout>
-
-						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-							<HorizontalStackLayout>
-								<Label Text="{l:Localize Country}" HorizontalOptions="FillAndExpand"/>
-								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresCountry}"/>
-							</HorizontalStackLayout>
-							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=CountryCode, Converter={StaticResource CountryCodeToFlagAndNameHyphenIfEmpty}}"/>
-						</VerticalStackLayout>
-
-						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-							<HorizontalStackLayout>
-								<Label Text="{l:Localize Nationality}" HorizontalOptions="FillAndExpand"/>
-								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresNationality}"/>
-							</HorizontalStackLayout>
-							<controls:CompositePicker
-										HorizontalOptions="FillAndExpand"
-										Style="{StaticResource RegularCompositePicker}"
-										Placeholder="{l:Localize SelectNationality}"
-									   IsValid="{Binding NationalityOk}"
-                              ItemsSource="{Binding Path=Countries}"
-										SelectedItem="{Binding Path=Nationality}"
-									   IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
-								<controls:CompositePicker.ItemDisplayBinding x:DataType="data:ISO_3166_Country">
-									<Binding Path="Alpha2" Converter="{converters:CountryCodeToFlagAndName}"/>
-								</controls:CompositePicker.ItemDisplayBinding>
-							</controls:CompositePicker>
-							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=NationalityCode, Converter={StaticResource CountryCodeToFlagAndNameHyphenIfEmpty}}"
-									 IsVisible="{Binding ApplicationSent}"/>
-						</VerticalStackLayout>
+                <Label
+                    IsVisible="{Binding Organizational, Converter={StaticResource InvertedBoolConverter}}"
+                    Style="{StaticResource PageTitleLabel}"
+                    Text="{l:Localize PersonalId}" />
+                <Label
+                    IsVisible="{Binding Organizational}"
+                    Style="{StaticResource PageTitleLabel}"
+                    Text="{l:Localize OrganizationalId}" />
 
 
-						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-							<HorizontalStackLayout>
-								<Label Text="{l:Localize Gender}" HorizontalOptions="FillAndExpand"/>
-								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresGender}"/>
-							</HorizontalStackLayout>
-							<controls:CompositePicker
-										  HorizontalOptions="FillAndExpand"
-										  Placeholder="{l:Localize SelectGender}"
-										  IsValid="{Binding GenderOk}"
-										  ItemsSource="{Binding Path=Genders}"
-										  SelectedItem="{Binding Path=Gender}"
-										  IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
-										  Style="{StaticResource RegularCompositePicker}">
-								<controls:CompositePicker.ItemDisplayBinding x:DataType="data:ISO_5218_Gender">
-									<Binding Path="Code" Converter="{converters:GenderCodeToSymbolAndLabel}" />
-								</controls:CompositePicker.ItemDisplayBinding>
-							</controls:CompositePicker>
-							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=GenderCode, Converter={StaticResource GenderCodeToSymbolAndLabelHyphenIfEmpty}}"
-									 IsVisible="{Binding ApplicationSent}"/>
-						</VerticalStackLayout>
+                <!--  Application Sent  -->
+                <Frame IsVisible="{Binding ApplicationSent}" Style="{StaticResource FrameSet}">
+                    <Grid>
+                        <VerticalStackLayout>
+                            <Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize Application}" />
+                            <Label Style="{StaticResource InfoLabel}" Text="{l:Localize IdApplicationSentDescription}" />
+                            <Label
+                                IsVisible="{Binding PeerReview}"
+                                Style="{StaticResource InfoLabel}"
+                                Text="{l:Localize PeerReviewDescription}" />
+                            <Label IsVisible="{Binding PeerReview}" Style="{StaticResource InfoLabel}">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="{l:Localize NrPeerReviews}" />
+                                        <Span Text=" " />
+                                        <Span FontAttributes="Bold" Text="{Binding NrReviews}" />
+                                        <Span Text=" / " />
+                                        <Span Text="{Binding NrReviewers}" />
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
 
-						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-							<HorizontalStackLayout>
-								<Label Text="{l:Localize BirthDate}" HorizontalOptions="FillAndExpand"/>
-								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresBirthDate}"/>
-							</HorizontalStackLayout>
-							<controls:CompositeDatePicker
-											HorizontalOptions="FillAndExpand"
-											IsValid="{Binding BirthDateOk}"
-											NullableDate="{Binding BirthDate}"
-											IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
-											MinimumDate="{Binding MinBirthDate}"
-											MaximumDate="{Binding MaxBirthDate}"
-											Style="{StaticResource RegularCompositeDatePicker}" />
-							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=BirthDate, Converter={converters:DateToString}}"
-									 IsVisible="{Binding ApplicationSent}"/>
-						</VerticalStackLayout>
-					</VerticalStackLayout>
-				</Frame>
+                            <ActivityIndicator
+                                HorizontalOptions="Center"
+                                IsRunning="{Binding IsBusy}"
+                                IsVisible="{Binding IsBusy}"
+                                VerticalOptions="Center" />
 
-				<!-- Organizational Information -->
-				<Frame Style="{StaticResource FrameSet}" IsVisible="{Binding Organizational}">
-					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
-						<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize OrganizationalInformation}"/>
-						<Label Style="{StaticResource InfoLabel}" Text="{l:Localize OrganizationalInformationDescription}"
-								 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"/>
-						<Label Style="{StaticResource InfoLabel}" Text="{l:Localize OrganizationalInformationSentDescription}"
-								 IsVisible="{Binding ApplicationSent}"/>
+                            <VerticalStackLayout Margin="{StaticResource MediumSpacing}" Spacing="{StaticResource SmallSpacing}">
+                                <controls:TextButton
+                                    Command="{Binding ScanQrCodeCommand}"
+                                    IsVisible="{Binding PeerReview}"
+                                    LabelData="{l:Localize QrScanCode}"
+                                    Style="{StaticResource FilledTextButton}" />
 
-						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-							<HorizontalStackLayout>
-								<Label Text="{l:Localize OrgName}" HorizontalOptions="FillAndExpand"/>
-								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresOrgName}"/>
-							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=OrgName}"
-															 IsValid="{Binding OrgNameOk}"
-															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"/>
-							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=OrgName, Converter={converters:HyphenIfEmpty}}"
-									 IsVisible="{Binding ApplicationSent}"/>
-						</VerticalStackLayout>
+                                <controls:TextButton
+                                    Command="{Binding RequestReviewCommand}"
+                                    IsVisible="{Binding FeaturedPeerReviewers}"
+                                    LabelData="{l:Localize FeaturedReviewers}"
+                                    Style="{StaticResource FilledTextButton}" />
 
-						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-							<HorizontalStackLayout>
-								<Label Text="{l:Localize OrgDepartment}" HorizontalOptions="FillAndExpand"/>
-								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresOrgDepartment}"/>
-							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=OrgDepartment}" 
-															 IsValid="{Binding OrgDepartmentOk}"
-															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"/>
-							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=OrgDepartment, Converter={converters:HyphenIfEmpty}}"
-									 IsVisible="{Binding ApplicationSent}"/>
-						</VerticalStackLayout>
+                                <controls:TextButton
+                                    Command="{Binding RevokeApplicationCommand}"
+                                    LabelData="{l:Localize RevokeApplication}"
+                                    Style="{StaticResource FilledTextButton}" />
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+                    </Grid>
+                </Frame>
 
-						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-							<HorizontalStackLayout>
-								<Label Text="{l:Localize OrgRole}" HorizontalOptions="FillAndExpand"/>
-								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresOrgRole}"/>
-							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=OrgRole}" 
-															 IsValid="{Binding OrgRoleOk}"
-															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"/>
-							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=OrgRole, Converter={converters:HyphenIfEmpty}}"
-									 IsVisible="{Binding ApplicationSent}"/>
-						</VerticalStackLayout>
+                <!--  Photos  -->
+                <Frame Style="{StaticResource FrameSet}">
+                    <VerticalStackLayout Margin="{StaticResource MediumSpacing}" Spacing="{StaticResource SmallSpacing}">
+                        <Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize Photo}" />
+                        <Label
+                            IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
+                            Style="{StaticResource InfoLabel}"
+                            Text="{l:Localize PhotosDescription}" />
+                        <Label
+                            IsVisible="{Binding ApplicationSent}"
+                            Style="{StaticResource InfoLabel}"
+                            Text="{l:Localize PhotosSentDescription}" />
+                        <Grid
+                            ColumnDefinitions="*,auto,auto,*"
+                            ColumnSpacing="{StaticResource SmallSpacing}"
+                            RowDefinitions="auto,auto,auto,*"
+                            RowSpacing="{StaticResource SmallSpacing}">
+                            <Border
+                                Grid.Row="0"
+                                Grid.RowSpan="4"
+                                Grid.Column="1"
+                                Margin="0"
+                                Padding="0"
+                                BackgroundColor="{Binding HasPhoto, Converter={converters:ControlBgColor}}"
+                                HeightRequest="200"
+                                Style="{StaticResource OutlinedImageButtonBorder}"
+                                VerticalOptions="Start"
+                                WidthRequest="200">
+                                <Image Aspect="AspectFill">
+                                    <Image.Triggers>
+                                        <DataTrigger
+                                            Binding="{Binding HasPhoto}"
+                                            TargetType="Image"
+                                            Value="True">
+                                            <Setter Property="Source" Value="{Binding Image}" />
+                                            <Setter Property="Aspect" Value="AspectFill" />
 
-						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-							<HorizontalStackLayout>
-								<Label Text="{l:Localize OrgNumber}" HorizontalOptions="FillAndExpand"/>
-								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresOrgNumber}"/>
-							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=OrgNumber}" 
-															 IsValid="{Binding OrgNumberOk}"
-															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"/>
-							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=OrgNumber, Converter={converters:HyphenIfEmpty}}"
-									 IsVisible="{Binding ApplicationSent}"/>
-						</VerticalStackLayout>
+                                        </DataTrigger>
+                                        <DataTrigger
+                                            Binding="{Binding HasPhoto}"
+                                            TargetType="Image"
+                                            Value="False">
+                                            <Setter Property="Source" Value="photo_placeholder" />
+                                            <Setter Property="Aspect" Value="Center" />
+                                        </DataTrigger>
+                                    </Image.Triggers>
+                                </Image>
+                            </Border>
 
-						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-							<HorizontalStackLayout>
-								<Label Text="{l:Localize OrgAddress}" HorizontalOptions="FillAndExpand"/>
-								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresOrgAddress}"/>
-							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=OrgAddress}" 
-															 IsValid="{Binding OrgAddressOk}"
-															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"/>
-							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=OrgAddress, Converter={converters:HyphenIfEmpty}}"
-									 IsVisible="{Binding ApplicationSent}"/>
-						</VerticalStackLayout>
+                            <controls:ImageButton
+                                Grid.Row="0"
+                                Grid.Column="2"
+                                Command="{Binding TakePhotoCommand}"
+                                PathData="{x:Static ui:Geometries.CameraPhotoButtonPath}"
+                                Style="{StaticResource OutlinedImageButton}" />
 
-						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-							<HorizontalStackLayout>
-								<Label Text="{l:Localize OrgAddress2}" HorizontalOptions="FillAndExpand"/>
-								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresOrgAddress2}"/>
-							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=OrgAddress2}" 
-															 IsValid="{Binding OrgAddress2Ok}"
-															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"/>
-							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=OrgAddress2, Converter={converters:HyphenIfEmpty}}"
-									 IsVisible="{Binding ApplicationSent}"/>
-						</VerticalStackLayout>
+                            <controls:ImageButton
+                                Grid.Row="1"
+                                Grid.Column="2"
+                                Command="{Binding PickPhotoCommand}"
+                                PathData="{x:Static ui:Geometries.CameraImageButtonPath}"
+                                Style="{StaticResource OutlinedImageButton}" />
 
-						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-							<HorizontalStackLayout>
-								<Label Text="{l:Localize OrgZipCode}" HorizontalOptions="FillAndExpand"/>
-								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresOrgZipCode}"/>
-							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=OrgZipCode}" 
-															 IsValid="{Binding OrgZipCodeOk}"
-															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"/>
-							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=OrgZipCode, Converter={converters:HyphenIfEmpty}}"
-									 IsVisible="{Binding ApplicationSent}"/>
-						</VerticalStackLayout>
+                            <controls:ImageButton
+                                Grid.Row="2"
+                                Grid.Column="2"
+                                Command="{Binding RemovePhotoCommand}"
+                                IsVisible="{Binding Path=HasPhoto}"
+                                PathData="{x:Static ui:Geometries.TrashCanButtonPath}"
+                                Style="{StaticResource OutlinedImageButton}" />
 
-						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-							<HorizontalStackLayout>
-								<Label Text="{l:Localize OrgArea}" HorizontalOptions="FillAndExpand"/>
-								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresOrgArea}"/>
-							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=OrgArea}" 
-															 IsValid="{Binding OrgAreaOk}"
-															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"/>
-							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=OrgArea, Converter={converters:HyphenIfEmpty}}"
-									 IsVisible="{Binding ApplicationSent}"/>
-						</VerticalStackLayout>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Frame>
 
-						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-							<HorizontalStackLayout>
-								<Label Text="{l:Localize OrgCity}" HorizontalOptions="FillAndExpand"/>
-								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresOrgCity}"/>
-							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=OrgCity}" 
-															 IsValid="{Binding OrgCityOk}"
-															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"/>
-							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=OrgCity, Converter={converters:HyphenIfEmpty}}"
-									 IsVisible="{Binding ApplicationSent}"/>
-						</VerticalStackLayout>
+                <Frame Margin="{StaticResource MediumSpacing}" Style="{StaticResource FrameSet}">
+                    <VerticalStackLayout Margin="{StaticResource MediumSpacing}" Spacing="{StaticResource SmallSpacing}">
+                        <Label Style="{StaticResource SectionTitleLabel}" Text="Additional Photos" />
 
-						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-							<HorizontalStackLayout>
-								<Label Text="{l:Localize OrgRegion}" HorizontalOptions="FillAndExpand"/>
-								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresOrgRegion}"/>
-							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=OrgRegion}" 
-															 IsValid="{Binding OrgRegionOk}"
-															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
-								<controls:CompositeEntry.Behaviors>
-									<behaviors:HideKeyboardOnCompletedBehavior/>
-								</controls:CompositeEntry.Behaviors>
-							</controls:CompositeEntry>
-							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=OrgRegion, Converter={converters:HyphenIfEmpty}}"
-									 IsVisible="{Binding ApplicationSent}"/>
-						</VerticalStackLayout>
+                        <!--  CarouselView displaying added attachments  -->
+                        <CarouselView ItemsSource="{Binding AdditionalPhotos}" PeekAreaInsets="25" IndicatorView="AdditionalPhotosIndicator" Loop="False">
+                            <CarouselView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <!--  Display the photo similar to the main photo display  -->
+                                        <Border
+                                            Padding="0"
+                                            HeightRequest="200"
+                                            Style="{StaticResource OutlinedImageButtonBorder}"
+                                            WidthRequest="200">
+											<Grid>
+                                            	<Image Aspect="AspectFill" Source="{Binding Image}" />
+												<!--  Remove button overlay  -->
+												<controls:ImageButton
+													Command="{Binding BindingContext.RemoveAdditionalPhotoCommand, Source={x:Reference ThisPage}}"
+													PathData="{x:Static ui:Geometries.TrashCanButtonPath}"
+													Style="{StaticResource FilledImageButton}"
+													HorizontalOptions="End"
+													VerticalOptions="Start" />
+											</Grid>
+                                        </Border>
+                                    </Grid>
+                                </DataTemplate>
+                            </CarouselView.ItemTemplate>
+							<CarouselView.EmptyView>
+									<Grid>
+										<Border
+											Padding="0"
+											HeightRequest="200"
+											Style="{StaticResource OutlinedImageButtonBorder}"
+											WidthRequest="200">
+											<Path Data="{x:Static ui:Geometries.CancelPath}"								
+												HeightRequest="48"
+												WidthRequest="48"
+												Aspect="Uniform" Fill="Black" VerticalOptions="Center" HorizontalOptions="Center"/>
+										</Border>
+									</Grid>
+							</CarouselView.EmptyView>
+                        </CarouselView>
 
-						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-							<HorizontalStackLayout>
-								<Label Text="{l:Localize OrgCountry}" HorizontalOptions="FillAndExpand"/>
-								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresOrgCountry}"/>
-							</HorizontalStackLayout>
-							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=OrgCountryCode, Converter={StaticResource CountryCodeToFlagAndNameHyphenIfEmpty}}"/>
-						</VerticalStackLayout>
-					</VerticalStackLayout>
-				</Frame>
+						<IndicatorView x:Name="AdditionalPhotosIndicator"
+							Count="{Binding AdditionalPhotos.Count}"
+							IndicatorColor="LightGrey"
+							SelectedIndicatorColor="Black"
+							HorizontalOptions="Center"
+							/>
 
-				<!-- Contact Information -->
-				<Frame Style="{StaticResource FrameSet}">
-					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
-						<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize ContactInformation}"/>
-						<Label Style="{StaticResource InfoLabel}" Text="{l:Localize ContactInformationDescription}"
-								 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"/>
-						<Label Style="{StaticResource InfoLabel}" Text="{l:Localize ContactInformationSentDescription}"
-								 IsVisible="{Binding ApplicationSent}"/>
+                        <!--  Horizontal stack with buttons for adding photos  -->
+                        <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
+							<controls:ImageButton
+                                Command="{Binding TakeAdditionalPhotoCommand}"
+                                PathData="{x:Static ui:Geometries.CameraPhotoButtonPath}"
+                                Style="{StaticResource OutlinedImageButton}" />
 
-						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-							<Label Text="{l:Localize EMail}" HorizontalOptions="FillAndExpand"/>
-							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=EMail, Converter={converters:HyphenIfEmpty}}"/>
-						</VerticalStackLayout>
+                            <controls:ImageButton
+                                Command="{Binding PickAdditionalPhotoCommand}"
+                                PathData="{x:Static ui:Geometries.CameraImageButtonPath}"
+                                Style="{StaticResource OutlinedImageButton}" />
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+                </Frame>
 
-						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-							<Label Text="{l:Localize PhoneNr}" HorizontalOptions="FillAndExpand"/>
-							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=PhoneNr, Converter={converters:HyphenIfEmpty}}"/>
-						</VerticalStackLayout>
+                <!--  Personal Information  -->
+                <Frame Style="{StaticResource FrameSet}">
+                    <VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+                        <Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize PersonalInformation}" />
+                        <Label
+                            IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
+                            Style="{StaticResource InfoLabel}"
+                            Text="{l:Localize PersonalInformationDescription}" />
+                        <Label
+                            IsVisible="{Binding ApplicationSent}"
+                            Style="{StaticResource InfoLabel}"
+                            Text="{l:Localize PersonalInformationSentDescription}" />
 
-						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-							<Label Text="{l:Localize NeuroAccessAccount}" HorizontalOptions="FillAndExpand"/>
-							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=Jid, Converter={converters:HyphenIfEmpty}}"/>
-						</VerticalStackLayout>
+                        <VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+                            <HorizontalStackLayout IsVisible="{Binding ApplicationSent}">
+                                <Label HorizontalOptions="FillAndExpand" Text="{l:Localize FirstName}" />
+                                <Label IsVisible="{Binding RequiresFirstName}" Style="{StaticResource RequiredFieldMarker}" />
+                            </HorizontalStackLayout>
+                            <controls:CompositeEntry
+                                EntryData="{Binding Path=FirstName}"
+                                IsValid="{Binding FirstNameOk}"
+                                IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
+                                LabelText="{l:Localize FirstName}"
+                                Required="{Binding RequiresFirstName}"
+                                Style="{StaticResource RegularCompositeEntry}" />
+                            <Label
+                                IsVisible="{Binding ApplicationSent}"
+                                Style="{StaticResource BoldItemTitleLabel}"
+                                Text="{Binding Path=FirstName, Converter={converters:HyphenIfEmpty}}" />
+                        </VerticalStackLayout>
 
-						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-							<Label Text="{l:Localize DeviceID}" HorizontalOptions="FillAndExpand"/>
-							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=DeviceId, Converter={converters:HyphenIfEmpty}}"/>
-						</VerticalStackLayout>
-					</VerticalStackLayout>
-				</Frame>
+                        <VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+                            <HorizontalStackLayout IsVisible="{Binding ApplicationSent}">
+                                <Label HorizontalOptions="FillAndExpand" Text="{l:Localize MiddleNames}" />
+                                <Label IsVisible="{Binding RequiresMiddleNames}" Style="{StaticResource RequiredFieldMarker}" />
+                            </HorizontalStackLayout>
+                            <controls:CompositeEntry
+                                EntryData="{Binding Path=MiddleNames}"
+                                IsValid="{Binding MiddleNamesOk}"
+                                IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
+                                LabelText="{l:Localize MiddleNames}"
+                                Required="{Binding RequiresMiddleNames}"
+                                Style="{StaticResource RegularCompositeEntry}" />
+                            <Label
+                                IsVisible="{Binding ApplicationSent}"
+                                Style="{StaticResource BoldItemTitleLabel}"
+                                Text="{Binding Path=MiddleNames, Converter={converters:HyphenIfEmpty}}" />
+                        </VerticalStackLayout>
 
-				<!-- Apply -->
-				<Frame Style="{StaticResource FrameSet}">
-					<Grid>
-						<VerticalStackLayout Spacing="{StaticResource LargeSpacing}" IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
-							<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize Application}"/>
-							<Label Style="{StaticResource InfoLabel}" Text="{l:Localize IdApplicationDescription}"/>
+                        <VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+                            <HorizontalStackLayout IsVisible="{Binding ApplicationSent}">
+                                <Label HorizontalOptions="FillAndExpand" Text="{l:Localize LastNames}" />
+                                <Label IsVisible="{Binding RequiresLastNames}" Style="{StaticResource RequiredFieldMarker}" />
+                            </HorizontalStackLayout>
+                            <controls:CompositeEntry
+                                EntryData="{Binding Path=LastNames}"
+                                IsValid="{Binding LastNamesOk}"
+                                IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
+                                LabelText="{l:Localize LastNames}"
+                                Required="{Binding RequiresLastNames}"
+                                Style="{StaticResource RegularCompositeEntry}" />
+                            <Label
+                                IsVisible="{Binding ApplicationSent}"
+                                Style="{StaticResource BoldItemTitleLabel}"
+                                Text="{Binding Path=LastNames, Converter={converters:HyphenIfEmpty}}" />
+                        </VerticalStackLayout>
 
-							<Grid ColumnDefinitions="auto,*" RowDefinitions="auto,auto" RowSpacing="{StaticResource SmallSpacing}">
-								<CheckBox Grid.Column="0" Grid.Row="0" IsChecked="{Binding Consent}" Margin="{StaticResource SmallMargins}"/>
-								<Label Grid.Column="1" Grid.Row="0" Text="{l:Localize ConsentDescription}" HorizontalOptions="FillAndExpand"
-										 Margin="{StaticResource SmallLeftMargins}">
-									<Label.GestureRecognizers>
-										<TapGestureRecognizer Command="{Binding ToggleConsentCommand}"/>
-									</Label.GestureRecognizers>
-								</Label>
+                        <VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+                            <HorizontalStackLayout IsVisible="{Binding ApplicationSent}">
+                                <Label HorizontalOptions="FillAndExpand" Text="{l:Localize PersonalNumber}" />
+                                <Label IsVisible="{Binding RequiresPersonalNumber}" Style="{StaticResource RequiredFieldMarker}" />
+                            </HorizontalStackLayout>
+                            <controls:CompositeEntry
+                                EntryData="{Binding Path=PersonalNumber}"
+                                IsValid="{Binding PersonalNumberOk}"
+                                IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
+                                LabelText="{l:Localize PersonalNumber}"
+                                Required="{Binding RequiresPersonalNumber}"
+                                Style="{StaticResource RegularCompositeEntry}" />
+                            <Label
+                                IsVisible="{Binding ApplicationSent}"
+                                Style="{StaticResource BoldItemTitleLabel}"
+                                Text="{Binding Path=PersonalNumber, Converter={converters:HyphenIfEmpty}}" />
+                        </VerticalStackLayout>
 
-								<CheckBox Grid.Column="0" Grid.Row="1" IsChecked="{Binding Correct}" Margin="{StaticResource SmallMargins}"/>
-								<Label Grid.Column="1" Grid.Row="1" Text="{l:Localize CorrectDescription}" HorizontalOptions="FillAndExpand"
-										 Margin="{StaticResource SmallLeftMargins}">
-									<Label.GestureRecognizers>
-										<TapGestureRecognizer Command="{Binding ToggleCorrectCommand}"/>
-									</Label.GestureRecognizers>
-								</Label>
-							</Grid>
+                        <VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+                            <HorizontalStackLayout IsVisible="{Binding ApplicationSent}">
+                                <Label HorizontalOptions="FillAndExpand" Text="{l:Localize Address}" />
+                                <Label IsVisible="{Binding RequiresAddress}" Style="{StaticResource RequiredFieldMarker}" />
+                            </HorizontalStackLayout>
+                            <controls:CompositeEntry
+                                EntryData="{Binding Path=Address}"
+                                IsValid="{Binding AddressOk}"
+                                IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
+                                LabelText="{l:Localize Address}"
+                                Required="{Binding RequiresAddress}"
+                                Style="{StaticResource RegularCompositeEntry}" />
+                            <Label
+                                IsVisible="{Binding ApplicationSent}"
+                                Style="{StaticResource BoldItemTitleLabel}"
+                                Text="{Binding Path=Address, Converter={converters:HyphenIfEmpty}}" />
+                        </VerticalStackLayout>
 
-							<ActivityIndicator VerticalOptions="Center" HorizontalOptions="Center"
-													 IsVisible="{Binding IsApplying}" IsRunning="{Binding IsApplying}" />
+                        <VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+                            <HorizontalStackLayout IsVisible="{Binding ApplicationSent}">
+                                <Label HorizontalOptions="FillAndExpand" Text="{l:Localize Address2}" />
+                                <Label IsVisible="{Binding RequiresAddress2}" Style="{StaticResource RequiredFieldMarker}" />
+                            </HorizontalStackLayout>
+                            <controls:CompositeEntry
+                                EntryData="{Binding Path=Address2}"
+                                IsValid="{Binding Address2Ok}"
+                                IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
+                                LabelText="{l:Localize Address2}"
+                                Required="{Binding RequiresAddress2}"
+                                Style="{StaticResource RegularCompositeEntry}" />
+                            <Label
+                                IsVisible="{Binding ApplicationSent}"
+                                Style="{StaticResource BoldItemTitleLabel}"
+                                Text="{Binding Path=Address2, Converter={converters:HyphenIfEmpty}}" />
+                        </VerticalStackLayout>
 
-							<controls:TextButton x:Name="ApplyButton" Command="{Binding ApplyCommand}"
-														Style="{StaticResource FilledTextButton}"
-														IsVisible="{Binding IsApplying, Converter={StaticResource InvertedBoolConverter}}"
-														LabelData="{l:Localize SendApplication}" />
-						</VerticalStackLayout>
-						<VerticalStackLayout IsVisible="{Binding ApplicationSent}">
-							<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize Application}"/>
-							<Label Style="{StaticResource InfoLabel}" Text="{l:Localize IdApplicationSentDescription}"/>
-							<Label Style="{StaticResource InfoLabel}" Text="{l:Localize PeerReviewDescription}" IsVisible="{Binding PeerReview}"/>
-							<Label Style="{StaticResource InfoLabel}" IsVisible="{Binding PeerReview}">
-								<Label.FormattedText>
-									<FormattedString>
-										<Span Text="{l:Localize NrPeerReviews}"/>
-										<Span Text=" "/>
-										<Span Text="{Binding NrReviews}" FontAttributes="Bold"/>
-										<Span Text=" / "/>
-										<Span Text="{Binding NrReviewers}"/>
-									</FormattedString>
-								</Label.FormattedText>
-							</Label>
+                        <VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+                            <HorizontalStackLayout IsVisible="{Binding ApplicationSent}">
+                                <Label HorizontalOptions="FillAndExpand" Text="{l:Localize ZipCode}" />
+                                <Label IsVisible="{Binding RequiresZipCode}" Style="{StaticResource RequiredFieldMarker}" />
+                            </HorizontalStackLayout>
+                            <controls:CompositeEntry
+                                EntryData="{Binding Path=ZipCode}"
+                                IsValid="{Binding ZipCodeOk}"
+                                IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
+                                LabelText="{l:Localize ZipCode}"
+                                Required="{Binding RequiresZipCode}"
+                                Style="{StaticResource RegularCompositeEntry}" />
+                            <Label
+                                IsVisible="{Binding ApplicationSent}"
+                                Style="{StaticResource BoldItemTitleLabel}"
+                                Text="{Binding Path=ZipCode, Converter={converters:HyphenIfEmpty}}" />
+                        </VerticalStackLayout>
 
-							<ActivityIndicator VerticalOptions="Center" HorizontalOptions="Center"
-													 IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" />
+                        <VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+                            <HorizontalStackLayout IsVisible="{Binding ApplicationSent}">
+                                <Label HorizontalOptions="FillAndExpand" Text="{l:Localize Area}" />
+                                <Label IsVisible="{Binding RequiresArea}" Style="{StaticResource RequiredFieldMarker}" />
+                            </HorizontalStackLayout>
+                            <controls:CompositeEntry
+                                EntryData="{Binding Path=Area}"
+                                IsValid="{Binding AreaOk}"
+                                IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
+                                LabelText="{l:Localize Area}"
+                                Required="{Binding RequiresArea}"
+                                Style="{StaticResource RegularCompositeEntry}" />
+                            <Label
+                                IsVisible="{Binding ApplicationSent}"
+                                Style="{StaticResource BoldItemTitleLabel}"
+                                Text="{Binding Path=Area, Converter={converters:HyphenIfEmpty}}" />
+                        </VerticalStackLayout>
 
-							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
-								<controls:TextButton Command="{Binding ScanQrCodeCommand}" Style="{StaticResource FilledTextButton}"
-															LabelData="{l:Localize QrScanCode}" IsVisible="{Binding PeerReview}" />
+                        <VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+                            <HorizontalStackLayout IsVisible="{Binding ApplicationSent}">
+                                <Label HorizontalOptions="FillAndExpand" Text="{l:Localize City}" />
+                                <Label IsVisible="{Binding RequiresCity}" Style="{StaticResource RequiredFieldMarker}" />
+                            </HorizontalStackLayout>
+                            <controls:CompositeEntry
+                                EntryData="{Binding Path=City}"
+                                IsValid="{Binding CityOk}"
+                                IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
+                                LabelText="{l:Localize City}"
+                                Required="{Binding RequiresCity}"
+                                Style="{StaticResource RegularCompositeEntry}" />
+                            <Label
+                                IsVisible="{Binding ApplicationSent}"
+                                Style="{StaticResource BoldItemTitleLabel}"
+                                Text="{Binding Path=City, Converter={converters:HyphenIfEmpty}}" />
+                        </VerticalStackLayout>
 
-								<controls:TextButton Command="{Binding RequestReviewCommand}" Style="{StaticResource FilledTextButton}"
-															LabelData="{l:Localize FeaturedReviewers}" IsVisible="{Binding FeaturedPeerReviewers}" />
+                        <VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+                            <HorizontalStackLayout IsVisible="{Binding ApplicationSent}">
+                                <Label HorizontalOptions="FillAndExpand" Text="{l:Localize Region}" />
+                                <Label IsVisible="{Binding RequiresRegion}" Style="{StaticResource RequiredFieldMarker}" />
+                            </HorizontalStackLayout>
+                            <controls:CompositeEntry
+                                EntryData="{Binding Path=Region}"
+                                IsValid="{Binding RegionOk}"
+                                IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
+                                LabelText="{l:Localize Region}"
+                                Required="{Binding RequiresRegion}"
+                                Style="{StaticResource RegularCompositeEntry}" />
+                            <Label
+                                IsVisible="{Binding ApplicationSent}"
+                                Style="{StaticResource BoldItemTitleLabel}"
+                                Text="{Binding Path=Region, Converter={converters:HyphenIfEmpty}}" />
+                        </VerticalStackLayout>
 
-								<controls:TextButton Command="{Binding RevokeApplicationCommand}" Style="{StaticResource FilledTextButton}"
-															LabelData="{l:Localize RevokeApplication}" />
-							</VerticalStackLayout>
-						</VerticalStackLayout>
-					</Grid>
-				</Frame>
-			</VerticalStackLayout>
-		</ScrollView>
-	</Grid>
+                        <VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+                            <HorizontalStackLayout>
+                                <Label HorizontalOptions="FillAndExpand" Text="{l:Localize Country}" />
+                                <Label IsVisible="{Binding RequiresCountry}" Style="{StaticResource RequiredFieldMarker}" />
+                            </HorizontalStackLayout>
+                            <Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=CountryCode, Converter={StaticResource CountryCodeToFlagAndNameHyphenIfEmpty}}" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+                            <HorizontalStackLayout>
+                                <Label HorizontalOptions="FillAndExpand" Text="{l:Localize Nationality}" />
+                                <Label IsVisible="{Binding RequiresNationality}" Style="{StaticResource RequiredFieldMarker}" />
+                            </HorizontalStackLayout>
+                            <controls:CompositePicker
+                                HorizontalOptions="FillAndExpand"
+                                IsValid="{Binding NationalityOk}"
+                                IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
+                                ItemsSource="{Binding Path=Countries}"
+                                Placeholder="{l:Localize SelectNationality}"
+                                SelectedItem="{Binding Path=Nationality}"
+                                Style="{StaticResource RegularCompositePicker}">
+                                <controls:CompositePicker.ItemDisplayBinding x:DataType="data:ISO_3166_Country">
+                                    <Binding Converter="{converters:CountryCodeToFlagAndName}" Path="Alpha2" />
+                                </controls:CompositePicker.ItemDisplayBinding>
+                            </controls:CompositePicker>
+                            <Label
+                                IsVisible="{Binding ApplicationSent}"
+                                Style="{StaticResource BoldItemTitleLabel}"
+                                Text="{Binding Path=NationalityCode, Converter={StaticResource CountryCodeToFlagAndNameHyphenIfEmpty}}" />
+                        </VerticalStackLayout>
+
+
+                        <VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+                            <HorizontalStackLayout>
+                                <Label HorizontalOptions="FillAndExpand" Text="{l:Localize Gender}" />
+                                <Label IsVisible="{Binding RequiresGender}" Style="{StaticResource RequiredFieldMarker}" />
+                            </HorizontalStackLayout>
+                            <controls:CompositePicker
+                                HorizontalOptions="FillAndExpand"
+                                IsValid="{Binding GenderOk}"
+                                IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
+                                ItemsSource="{Binding Path=Genders}"
+                                Placeholder="{l:Localize SelectGender}"
+                                SelectedItem="{Binding Path=Gender}"
+                                Style="{StaticResource RegularCompositePicker}">
+                                <controls:CompositePicker.ItemDisplayBinding x:DataType="data:ISO_5218_Gender">
+                                    <Binding Converter="{converters:GenderCodeToSymbolAndLabel}" Path="Code" />
+                                </controls:CompositePicker.ItemDisplayBinding>
+                            </controls:CompositePicker>
+                            <Label
+                                IsVisible="{Binding ApplicationSent}"
+                                Style="{StaticResource BoldItemTitleLabel}"
+                                Text="{Binding Path=GenderCode, Converter={StaticResource GenderCodeToSymbolAndLabelHyphenIfEmpty}}" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+                            <HorizontalStackLayout>
+                                <Label HorizontalOptions="FillAndExpand" Text="{l:Localize BirthDate}" />
+                                <Label IsVisible="{Binding RequiresBirthDate}" Style="{StaticResource RequiredFieldMarker}" />
+                            </HorizontalStackLayout>
+                            <controls:CompositeDatePicker
+                                HorizontalOptions="FillAndExpand"
+                                IsValid="{Binding BirthDateOk}"
+                                IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
+                                MaximumDate="{Binding MaxBirthDate}"
+                                MinimumDate="{Binding MinBirthDate}"
+                                NullableDate="{Binding BirthDate}"
+                                Style="{StaticResource RegularCompositeDatePicker}" />
+                            <Label
+                                IsVisible="{Binding ApplicationSent}"
+                                Style="{StaticResource BoldItemTitleLabel}"
+                                Text="{Binding Path=BirthDate, Converter={converters:DateToString}}" />
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!--  Organizational Information  -->
+                <Frame IsVisible="{Binding Organizational}" Style="{StaticResource FrameSet}">
+                    <VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+                        <Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize OrganizationalInformation}" />
+                        <Label
+                            IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
+                            Style="{StaticResource InfoLabel}"
+                            Text="{l:Localize OrganizationalInformationDescription}" />
+                        <Label
+                            IsVisible="{Binding ApplicationSent}"
+                            Style="{StaticResource InfoLabel}"
+                            Text="{l:Localize OrganizationalInformationSentDescription}" />
+
+                        <VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+                            <HorizontalStackLayout>
+                                <Label HorizontalOptions="FillAndExpand" Text="{l:Localize OrgName}" />
+                                <Label IsVisible="{Binding RequiresOrgName}" Style="{StaticResource RequiredFieldMarker}" />
+                            </HorizontalStackLayout>
+                            <controls:CompositeEntry
+                                EntryData="{Binding Path=OrgName}"
+                                IsValid="{Binding OrgNameOk}"
+                                IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
+                                Style="{StaticResource RegularCompositeEntry}" />
+                            <Label
+                                IsVisible="{Binding ApplicationSent}"
+                                Style="{StaticResource BoldItemTitleLabel}"
+                                Text="{Binding Path=OrgName, Converter={converters:HyphenIfEmpty}}" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+                            <HorizontalStackLayout>
+                                <Label HorizontalOptions="FillAndExpand" Text="{l:Localize OrgDepartment}" />
+                                <Label IsVisible="{Binding RequiresOrgDepartment}" Style="{StaticResource RequiredFieldMarker}" />
+                            </HorizontalStackLayout>
+                            <controls:CompositeEntry
+                                EntryData="{Binding Path=OrgDepartment}"
+                                IsValid="{Binding OrgDepartmentOk}"
+                                IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
+                                Style="{StaticResource RegularCompositeEntry}" />
+                            <Label
+                                IsVisible="{Binding ApplicationSent}"
+                                Style="{StaticResource BoldItemTitleLabel}"
+                                Text="{Binding Path=OrgDepartment, Converter={converters:HyphenIfEmpty}}" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+                            <HorizontalStackLayout>
+                                <Label HorizontalOptions="FillAndExpand" Text="{l:Localize OrgRole}" />
+                                <Label IsVisible="{Binding RequiresOrgRole}" Style="{StaticResource RequiredFieldMarker}" />
+                            </HorizontalStackLayout>
+                            <controls:CompositeEntry
+                                EntryData="{Binding Path=OrgRole}"
+                                IsValid="{Binding OrgRoleOk}"
+                                IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
+                                Style="{StaticResource RegularCompositeEntry}" />
+                            <Label
+                                IsVisible="{Binding ApplicationSent}"
+                                Style="{StaticResource BoldItemTitleLabel}"
+                                Text="{Binding Path=OrgRole, Converter={converters:HyphenIfEmpty}}" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+                            <HorizontalStackLayout>
+                                <Label HorizontalOptions="FillAndExpand" Text="{l:Localize OrgNumber}" />
+                                <Label IsVisible="{Binding RequiresOrgNumber}" Style="{StaticResource RequiredFieldMarker}" />
+                            </HorizontalStackLayout>
+                            <controls:CompositeEntry
+                                EntryData="{Binding Path=OrgNumber}"
+                                IsValid="{Binding OrgNumberOk}"
+                                IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
+                                Style="{StaticResource RegularCompositeEntry}" />
+                            <Label
+                                IsVisible="{Binding ApplicationSent}"
+                                Style="{StaticResource BoldItemTitleLabel}"
+                                Text="{Binding Path=OrgNumber, Converter={converters:HyphenIfEmpty}}" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+                            <HorizontalStackLayout>
+                                <Label HorizontalOptions="FillAndExpand" Text="{l:Localize OrgAddress}" />
+                                <Label IsVisible="{Binding RequiresOrgAddress}" Style="{StaticResource RequiredFieldMarker}" />
+                            </HorizontalStackLayout>
+                            <controls:CompositeEntry
+                                EntryData="{Binding Path=OrgAddress}"
+                                IsValid="{Binding OrgAddressOk}"
+                                IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
+                                Style="{StaticResource RegularCompositeEntry}" />
+                            <Label
+                                IsVisible="{Binding ApplicationSent}"
+                                Style="{StaticResource BoldItemTitleLabel}"
+                                Text="{Binding Path=OrgAddress, Converter={converters:HyphenIfEmpty}}" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+                            <HorizontalStackLayout>
+                                <Label HorizontalOptions="FillAndExpand" Text="{l:Localize OrgAddress2}" />
+                                <Label IsVisible="{Binding RequiresOrgAddress2}" Style="{StaticResource RequiredFieldMarker}" />
+                            </HorizontalStackLayout>
+                            <controls:CompositeEntry
+                                EntryData="{Binding Path=OrgAddress2}"
+                                IsValid="{Binding OrgAddress2Ok}"
+                                IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
+                                Style="{StaticResource RegularCompositeEntry}" />
+                            <Label
+                                IsVisible="{Binding ApplicationSent}"
+                                Style="{StaticResource BoldItemTitleLabel}"
+                                Text="{Binding Path=OrgAddress2, Converter={converters:HyphenIfEmpty}}" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+                            <HorizontalStackLayout>
+                                <Label HorizontalOptions="FillAndExpand" Text="{l:Localize OrgZipCode}" />
+                                <Label IsVisible="{Binding RequiresOrgZipCode}" Style="{StaticResource RequiredFieldMarker}" />
+                            </HorizontalStackLayout>
+                            <controls:CompositeEntry
+                                EntryData="{Binding Path=OrgZipCode}"
+                                IsValid="{Binding OrgZipCodeOk}"
+                                IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
+                                Style="{StaticResource RegularCompositeEntry}" />
+                            <Label
+                                IsVisible="{Binding ApplicationSent}"
+                                Style="{StaticResource BoldItemTitleLabel}"
+                                Text="{Binding Path=OrgZipCode, Converter={converters:HyphenIfEmpty}}" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+                            <HorizontalStackLayout>
+                                <Label HorizontalOptions="FillAndExpand" Text="{l:Localize OrgArea}" />
+                                <Label IsVisible="{Binding RequiresOrgArea}" Style="{StaticResource RequiredFieldMarker}" />
+                            </HorizontalStackLayout>
+                            <controls:CompositeEntry
+                                EntryData="{Binding Path=OrgArea}"
+                                IsValid="{Binding OrgAreaOk}"
+                                IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
+                                Style="{StaticResource RegularCompositeEntry}" />
+                            <Label
+                                IsVisible="{Binding ApplicationSent}"
+                                Style="{StaticResource BoldItemTitleLabel}"
+                                Text="{Binding Path=OrgArea, Converter={converters:HyphenIfEmpty}}" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+                            <HorizontalStackLayout>
+                                <Label HorizontalOptions="FillAndExpand" Text="{l:Localize OrgCity}" />
+                                <Label IsVisible="{Binding RequiresOrgCity}" Style="{StaticResource RequiredFieldMarker}" />
+                            </HorizontalStackLayout>
+                            <controls:CompositeEntry
+                                EntryData="{Binding Path=OrgCity}"
+                                IsValid="{Binding OrgCityOk}"
+                                IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
+                                Style="{StaticResource RegularCompositeEntry}" />
+                            <Label
+                                IsVisible="{Binding ApplicationSent}"
+                                Style="{StaticResource BoldItemTitleLabel}"
+                                Text="{Binding Path=OrgCity, Converter={converters:HyphenIfEmpty}}" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+                            <HorizontalStackLayout>
+                                <Label HorizontalOptions="FillAndExpand" Text="{l:Localize OrgRegion}" />
+                                <Label IsVisible="{Binding RequiresOrgRegion}" Style="{StaticResource RequiredFieldMarker}" />
+                            </HorizontalStackLayout>
+                            <controls:CompositeEntry
+                                EntryData="{Binding Path=OrgRegion}"
+                                IsValid="{Binding OrgRegionOk}"
+                                IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
+                                Style="{StaticResource RegularCompositeEntry}">
+                                <controls:CompositeEntry.Behaviors>
+                                    <behaviors:HideKeyboardOnCompletedBehavior />
+                                </controls:CompositeEntry.Behaviors>
+                            </controls:CompositeEntry>
+                            <Label
+                                IsVisible="{Binding ApplicationSent}"
+                                Style="{StaticResource BoldItemTitleLabel}"
+                                Text="{Binding Path=OrgRegion, Converter={converters:HyphenIfEmpty}}" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+                            <HorizontalStackLayout>
+                                <Label HorizontalOptions="FillAndExpand" Text="{l:Localize OrgCountry}" />
+                                <Label IsVisible="{Binding RequiresOrgCountry}" Style="{StaticResource RequiredFieldMarker}" />
+                            </HorizontalStackLayout>
+                            <Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=OrgCountryCode, Converter={StaticResource CountryCodeToFlagAndNameHyphenIfEmpty}}" />
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!--  Contact Information  -->
+                <Frame Style="{StaticResource FrameSet}">
+                    <VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+                        <Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize ContactInformation}" />
+                        <Label
+                            IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
+                            Style="{StaticResource InfoLabel}"
+                            Text="{l:Localize ContactInformationDescription}" />
+                        <Label
+                            IsVisible="{Binding ApplicationSent}"
+                            Style="{StaticResource InfoLabel}"
+                            Text="{l:Localize ContactInformationSentDescription}" />
+
+                        <VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+                            <Label HorizontalOptions="FillAndExpand" Text="{l:Localize EMail}" />
+                            <Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=EMail, Converter={converters:HyphenIfEmpty}}" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+                            <Label HorizontalOptions="FillAndExpand" Text="{l:Localize PhoneNr}" />
+                            <Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=PhoneNr, Converter={converters:HyphenIfEmpty}}" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+                            <Label HorizontalOptions="FillAndExpand" Text="{l:Localize NeuroAccessAccount}" />
+                            <Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=Jid, Converter={converters:HyphenIfEmpty}}" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+                            <Label HorizontalOptions="FillAndExpand" Text="{l:Localize DeviceID}" />
+                            <Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=DeviceId, Converter={converters:HyphenIfEmpty}}" />
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!--  Apply  -->
+                <Frame Style="{StaticResource FrameSet}">
+                    <Grid>
+                        <VerticalStackLayout IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}" Spacing="{StaticResource LargeSpacing}">
+                            <Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize Application}" />
+                            <Label Style="{StaticResource InfoLabel}" Text="{l:Localize IdApplicationDescription}" />
+
+                            <Grid
+                                ColumnDefinitions="auto,*"
+                                RowDefinitions="auto,auto"
+                                RowSpacing="{StaticResource SmallSpacing}">
+                                <CheckBox
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    Margin="{StaticResource SmallMargins}"
+                                    IsChecked="{Binding Consent}" />
+                                <Label
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Margin="{StaticResource SmallLeftMargins}"
+                                    HorizontalOptions="FillAndExpand"
+                                    Text="{l:Localize ConsentDescription}">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding ToggleConsentCommand}" />
+                                    </Label.GestureRecognizers>
+                                </Label>
+
+                                <CheckBox
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Margin="{StaticResource SmallMargins}"
+                                    IsChecked="{Binding Correct}" />
+                                <Label
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Margin="{StaticResource SmallLeftMargins}"
+                                    HorizontalOptions="FillAndExpand"
+                                    Text="{l:Localize CorrectDescription}">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding ToggleCorrectCommand}" />
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </Grid>
+
+                            <ActivityIndicator
+                                HorizontalOptions="Center"
+                                IsRunning="{Binding IsApplying}"
+                                IsVisible="{Binding IsApplying}"
+                                VerticalOptions="Center" />
+
+                            <controls:TextButton
+                                x:Name="ApplyButton"
+                                Command="{Binding ApplyCommand}"
+                                IsVisible="{Binding IsApplying, Converter={StaticResource InvertedBoolConverter}}"
+                                LabelData="{l:Localize SendApplication}"
+                                Style="{StaticResource FilledTextButton}" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout IsVisible="{Binding ApplicationSent}">
+                            <Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize Application}" />
+                            <Label Style="{StaticResource InfoLabel}" Text="{l:Localize IdApplicationSentDescription}" />
+                            <Label
+                                IsVisible="{Binding PeerReview}"
+                                Style="{StaticResource InfoLabel}"
+                                Text="{l:Localize PeerReviewDescription}" />
+                            <Label IsVisible="{Binding PeerReview}" Style="{StaticResource InfoLabel}">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="{l:Localize NrPeerReviews}" />
+                                        <Span Text=" " />
+                                        <Span FontAttributes="Bold" Text="{Binding NrReviews}" />
+                                        <Span Text=" / " />
+                                        <Span Text="{Binding NrReviewers}" />
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+
+                            <ActivityIndicator
+                                HorizontalOptions="Center"
+                                IsRunning="{Binding IsBusy}"
+                                IsVisible="{Binding IsBusy}"
+                                VerticalOptions="Center" />
+
+                            <VerticalStackLayout Margin="{StaticResource MediumSpacing}" Spacing="{StaticResource SmallSpacing}">
+                                <controls:TextButton
+                                    Command="{Binding ScanQrCodeCommand}"
+                                    IsVisible="{Binding PeerReview}"
+                                    LabelData="{l:Localize QrScanCode}"
+                                    Style="{StaticResource FilledTextButton}" />
+
+                                <controls:TextButton
+                                    Command="{Binding RequestReviewCommand}"
+                                    IsVisible="{Binding FeaturedPeerReviewers}"
+                                    LabelData="{l:Localize FeaturedReviewers}"
+                                    Style="{StaticResource FilledTextButton}" />
+
+                                <controls:TextButton
+                                    Command="{Binding RevokeApplicationCommand}"
+                                    LabelData="{l:Localize RevokeApplication}"
+                                    Style="{StaticResource FilledTextButton}" />
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+                    </Grid>
+                </Frame>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
 </base:BaseContentPage>
