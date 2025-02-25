@@ -1205,9 +1205,9 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 				return;
 
 			ImagesPopup ImagesPopup = new();
-			ImagesViewModel ImagesViewModel = new();
+			ImagesViewModel ImagesViewModel = new(Attachments);
 			await ServiceRef.UiService.PushAsync(ImagesPopup, ImagesViewModel);
-			ImagesViewModel.LoadPhotos(Attachments);
+			//ImagesViewModel.LoadPhotos(Attachments);
 		}
 
 		#endregion

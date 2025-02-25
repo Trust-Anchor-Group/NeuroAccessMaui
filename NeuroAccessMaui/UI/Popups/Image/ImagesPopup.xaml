@@ -19,28 +19,38 @@
 	<Grid Style="{StaticResource PopupGrid}">
 		<Border WidthRequest="{Binding ViewWidthRequest}" MaximumHeightRequest="{Binding MaximumViewHeightRequest}" Style="{StaticResource PopupBorder}">
 			<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
+				<Label
+						 Text="Identity Images"
+						 Style="{StaticResource PageTitleLabel}"
+						 HorizontalTextAlignment="Center"/>
+					
 				<CarouselView x:Name="CarouselView"
                                   IsSwipeEnabled="{Binding Path=IsSwipeEnabled}"
                                   HorizontalOptions="FillAndExpand"
                                   VerticalOptions="FillAndExpand"
-                                  ItemsSource="{Binding Path=Photos}"
-                                  IndicatorView="IndicatorView">
+                                  ItemsSource="{Binding Photos}"
+                                  IndicatorView="{x:Reference IndicatorView}">
 					<CarouselView.ItemTemplate>
 						<DataTemplate x:DataType="photos:Photo">
-							<Image Source="{Binding Path=Source}" Rotation="{Binding Path=Rotation}" Aspect="AspectFit"/>
+							<Border Style="{StaticResource OutlinedImageButtonBorder}" Padding="0" WidthRequest="250" HeightRequest="250" HorizontalOptions="Center">
+								<Image Source="{Binding Source}" Rotation="{Binding Path=Rotation}" Aspect="AspectFill"/>
+							</Border>
 						</DataTemplate>
 					</CarouselView.ItemTemplate>
 				</CarouselView>
+					
 				<IndicatorView x:Name="IndicatorView"
                                    HorizontalOptions="Fill"
                                    Padding="0,0,0,0"
-                                   >
+                                   HeightRequest="20"
+											  IsVisible="{Binding IsSwipeEnabled}">
 					<IndicatorView.Margin>
 						<OnPlatform x:TypeArguments="Thickness">
 							<On Platform="iOS" Value="0,-1,0,0"/>
 						</OnPlatform>
 					</IndicatorView.Margin>
 				</IndicatorView>
+					
 				<controls:TextButton Command="{Binding CancelCommand}"
 												Style="{StaticResource OutlinedTextButton}"
 												LabelData="{l:Localize Cancel}" />
