@@ -66,7 +66,9 @@ namespace NeuroAccessMaui.Services.Localization
 				}
 
 				CultureInfo.CurrentCulture = value;
-				CultureInfo.CurrentUICulture = CultureInfo.CurrentCulture = value;
+				CultureInfo.CurrentUICulture = value;
+				CultureInfo.DefaultThreadCurrentCulture = value;
+				CultureInfo.DefaultThreadCurrentUICulture = value;
 
 				CurrentCultureChanged?.Invoke(null, value);
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.CurrentCulture)));
