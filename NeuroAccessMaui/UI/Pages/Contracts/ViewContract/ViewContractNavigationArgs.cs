@@ -10,7 +10,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 	/// <param name="IsReadOnly"><c>true</c> if the contract is readonly, <c>false</c> otherwise.</param>
 	/// <param name="Role">Contains proposed role, if a proposal, null if not a proposal.</param>
 	/// <param name="Proposal">Proposal text.</param>
-	public class ViewContractNavigationArgs(Contract? Contract, bool IsReadOnly, string? Role, string? Proposal) : NavigationArgs
+	public class ViewContractNavigationArgs(Contract? Contract, bool IsReadOnly, string? Role, string? Proposal, string? FromJID = null) : NavigationArgs
 	{
 		/// <summary>
 		/// Creates an instance of the <see cref="ViewContractNavigationArgs"/> class.
@@ -49,5 +49,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		/// Proposal text.
 		/// </summary>
 		public string? Proposal { get; } = Proposal;
+
+		/// <summary>
+		/// The JID of the sender of proposal.
+		/// </summary>
+		public string? FromJID { get; } = FromJID;
 	}
 }

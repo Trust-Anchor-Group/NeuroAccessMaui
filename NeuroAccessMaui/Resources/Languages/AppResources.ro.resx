@@ -1647,6 +1647,9 @@
   <data name="RequestPaymentMessage" xml:space="preserve">
     <value>Solicitarea plății {0} {1}.</value>
   </data>
+  <data name="RequestPaymentDescription" xml:space="preserve">
+    <value>Pentru a solicita plata de la cineva, completați detaliile despre plată de mai jos și faceți clic pe butonul Generați cod QR. Codul generat poate fi folosit de cealaltă parte, pentru a genera o plată în contul dvs.</value>
+  </data>
   <data name="Room" xml:space="preserve">
     <value>Cameră</value>
   </data>
@@ -1894,7 +1897,7 @@
     <value>Integritatea contractului este protejată de semnătura serverului prezentată mai jos.</value>
   </data>
   <data name="ShowDetails" xml:space="preserve">
-    <value>Arată detalii</value>
+    <value>Afișează detalii</value>
   </data>
   <data name="ViewContract" xml:space="preserve">
     <value>Vezi contractul</value>
@@ -2211,6 +2214,9 @@
   <data name="Amount" xml:space="preserve">
     <value>Sumă:</value>
   </data>
+  <data name="AmountExtra" xml:space="preserve">
+    <value>Suma suplimentară: (opțional, sugestie)</value>
+  </data>
   <data name="Wallet" xml:space="preserve">
     <value>Portofel</value>
   </data>
@@ -2444,5 +2450,71 @@
   </data>
   <data name="IHaveReadAndUnderstoodTheContract" xml:space="preserve">
     <value>Am citit și am înțeles termenii acestui contract</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Stare</value>
+  </data>
+  <data name="Encrypted" xml:space="preserve">
+    <value>Criptate</value>
+  </data>
+  <data name="ViewParametersTitle" xml:space="preserve">
+    <value>Vizualizați parametrii</value>
+  </data>
+  <data name="ViewParametersDescription" xml:space="preserve">
+    <value>Vizualizați variabilele care guvernează contractul</value>
+  </data>
+  <data name="ViewRolesTitle" xml:space="preserve">
+    <value>Revizuirea rolurilor atribuite</value>
+  </data>
+  <data name="ViewRolesDescription" xml:space="preserve">
+    <value>Revizuiți rolurile și vedeți cine a semnat fiecare rol</value>
+  </data>
+  <data name="InvitationToSign" xml:space="preserve">
+    <value>Ați fost invitat să semnați acest contract, asigurați-vă că verificați și revizuiți contractul înainte de a continua</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Titlu</value>
+  </data>
+  <data name="Sign" xml:space="preserve">
+    <value>Semna</value>
+  </data>
+  <data name="PendingSignature" xml:space="preserve">
+    <value>Semnătură în așteptare</value>
+  </data>
+  <data name="ViewSignature" xml:space="preserve">
+    <value>Vezi semnătura</value>
+  </data>
+  <data name="ReviewContractDescription2" xml:space="preserve">
+    <value>Revizuiți termenii contractului</value>
+  </data>
+  <data name="ServerSignatureButtonTitle" xml:space="preserve">
+    <value>Vizualizați semnătura serverului</value>
+  </data>
+  <data name="ServerSignatureButtonDescription" xml:space="preserve">
+    <value>Vizualizați semnătura serverului, care protejează integritatea contractului</value>
+  </data>
+  <data name="Transient" xml:space="preserve">
+    <value>Trecător</value>
+  </data>
+  <data name="GenerateQrCode" xml:space="preserve">
+    <value>Generați cod QR</value>
+  </data>
+  <data name="CameraPermissionTitle" xml:space="preserve">
+    <value>Aparat foto</value>
+  </data>
+  <data name="CameraPermissionDescription" xml:space="preserve">
+    <value>Pentru a utiliza această funcție, vă rugăm să activați accesul la cameră în setările dvs.</value>
+  </data>
+  <data name="CameraPermissionDescriptionSecondary" xml:space="preserve">
+    <value>Deschideți setările - Faceți clic pe "Permisiuni" - Activați permisiunile camerei</value>
+  </data>
+  <data name="iOS_CameraPermissionDescriptionSecondary" xml:space="preserve">
+    <value>Deschideți setările - Activați permisiunile camerei</value>
+  </data>
+  <data name="GoToSettings" xml:space="preserve">
+    <value>Deschideți setările</value>
+  </data>
+  <data name="Skip" xml:space="preserve">
+    <value>Sări peste</value>
   </data>
 </root>

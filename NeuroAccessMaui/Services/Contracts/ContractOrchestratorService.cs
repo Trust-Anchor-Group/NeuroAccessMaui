@@ -231,7 +231,7 @@ namespace NeuroAccessMaui.Services.Contracts
 
 					if (Identity is not null)
 					{
-						if (!await App.AuthenticateUser(AuthenticationPurpose.PetitionForSignatureReceived))
+						if (!await App.AuthenticateUserAsync(AuthenticationPurpose.PetitionForSignatureReceived))
 							return;
 
 						await ServiceRef.UiService.GoToAsync(nameof(PetitionSignaturePage), new PetitionSignatureNavigationArgs(
@@ -351,9 +351,9 @@ namespace NeuroAccessMaui.Services.Contracts
 			try
 			{
 				Contract Contract = await ServiceRef.XmppService.GetContract(e.ContractId);
-
+			
 				await ServiceRef.UiService.GoToAsync(nameof(ViewContractPage), new ViewContractNavigationArgs(
-							Contract, false, e.Role, e.MessageText));
+							Contract, false, e.Role, e.MessageText, e.FromBareJID));
 			}
 			catch (Exception ex)
 			{
@@ -464,7 +464,7 @@ namespace NeuroAccessMaui.Services.Contracts
 								ServiceRef.LogService.LogException(ex);
 							}
 
-							await App.Stop();
+							await App.StopAsync();
 							return;
 						}
 					}
@@ -670,7 +670,7 @@ namespace NeuroAccessMaui.Services.Contracts
 
 			string IdRef = ServiceRef.TagProfile.LegalIdentity?.Id ?? string.Empty;
 
-			if (!await App.AuthenticateUser(AuthenticationPurpose.TagSignature))
+			if (!await App.AuthenticateUserAsync(AuthenticationPurpose.TagSignature))
 				return;
 
 			StringBuilder Xml = new();

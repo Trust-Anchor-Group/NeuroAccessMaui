@@ -150,7 +150,7 @@ namespace NeuroAccessMaui.Services
 			}
 			try
 			{
-				App.SendAlert("Unable to get AndroidID, ContentResolver was null", "text/plain").Wait();
+				App.SendAlertAsync("Unable to get AndroidID, ContentResolver was null", "text/plain").Wait();
 				this.CloseApplication().Wait();
 			}
 			catch (Exception)

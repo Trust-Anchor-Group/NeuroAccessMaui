@@ -17,6 +17,9 @@ using Waher.Content;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Script;
 using Waher.Persistence;
+using NeuroAccessMaui.Services.Contacts;
+using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
+using NeuroAccessMaui.Services.UI;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 {
@@ -159,17 +162,23 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			if (this.args is null || this.args?.Template is null)
 			{
-				// TODO: Handle error, perhaps change to an error state
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.Error)],
+					ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)],
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				await this.GoBack();
 				return;
 			}
 
 			try
 			{
 				this.Contract = await ObservableContract.CreateAsync(this.args.Template);
-
 				this.Contract.ParameterChanged += this.Parameter_PropertyChanged;
 
-				await MainThread.InvokeOnMainThreadAsync(async () =>
+
+				TaskCompletionSource<bool> HasInitializedParameters = new();
+
+				MainThread.BeginInvokeOnMainThread(async () =>
 				{
 					if (this.args.ParameterValues is not null)
 					{
@@ -179,15 +188,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 							if (this.args.ParameterValues.TryGetValue(p.Parameter.Name, out object? value))
 								p.Value = value;
 
-							if (p.Parameter is BooleanParameter
-								|| p.Parameter is StringParameter
-								|| p.Parameter is NumericalParameter
-								|| p.Parameter is DateParameter
-								|| p.Parameter is TimeParameter
-								|| p.Parameter is DurationParameter)
-							{
-								this.EditableParameters.Add(p);
-							}
+
 						}
 						// Set Role values
 						foreach (ObservableRole r in this.Contract.Roles)
@@ -199,11 +200,25 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 							}
 						}
 					}
-
+					foreach (ObservableParameter p in this.Contract.Parameters)
+					{
+						if (p.Parameter is BooleanParameter
+							|| p.Parameter is StringParameter
+							|| p.Parameter is NumericalParameter
+							|| p.Parameter is DateParameter
+							|| p.Parameter is DateTimeParameter
+							|| p.Parameter is TimeParameter
+							|| p.Parameter is DurationParameter)
+						{
+							this.EditableParameters.Add(p);
+						}
+					}
 					this.OnPropertyChanged(nameof(this.HasRoles));
 					this.OnPropertyChanged(nameof(this.HasParameters));
-				});
 
+					HasInitializedParameters.SetResult(true);
+				});
+				await HasInitializedParameters.Task;
 				await this.ValidateParametersAsync();
 				await this.GoToState(NewContractStep.Overview);
 			}
@@ -343,6 +358,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			await this.GoToState(NewContractStep.Loading);
 
+			if(!await App.AuthenticateUserAsync(AuthenticationPurpose.SignContract, true))
+			{
+				await this.GoToOverview();
+				return;
+			}
+
 			ContractsClient client = ServiceRef.XmppService.ContractsClient;
 
 			Contract? CreatedContract = null;
@@ -364,8 +385,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					this.SelectedContractVisibilityItem?.Visibility ?? this.Contract.Visibility,
 					ContractParts.ExplicitlyDefined,
 					this.Contract.Contract.Duration ?? Duration.FromYears(1),
-					this.Contract.Contract.ArchiveRequired ?? Duration.FromYears(1),
-					this.Contract.Contract.ArchiveOptional ?? Duration.FromYears(1),
+					this.Contract.Contract.ArchiveRequired ?? Duration.FromYears(5),
+					this.Contract.Contract.ArchiveOptional ?? Duration.FromYears(5),
 					null, null, false);
 				CreatedContract = await ServiceRef.XmppService.SignContract(CreatedContract, this.persistingSelectedRole!.Name, false);
 
@@ -403,7 +424,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				await this.GoToOverview();
 				return;
 			}
-
 
 			ViewContractNavigationArgs Args = new(CreatedContract, false);
 			await ServiceRef.UiService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop3);
@@ -506,9 +526,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			await this.GoToState(NewContractStep.Loading);
 
 			string hrt = await this.Contract.Contract.ToMauiXaml(this.Contract.Contract.DeviceLanguage());
+			VerticalStackLayout hrtLayout = new VerticalStackLayout().LoadFromXaml(hrt);
 			await MainThread.InvokeOnMainThreadAsync(() =>
 			{
-				this.HumanReadableText = new VerticalStackLayout().LoadFromXaml(hrt);
+				this.HumanReadableText = hrtLayout;
 			});
 
 			await this.GoToState(NewContractStep.Preview);

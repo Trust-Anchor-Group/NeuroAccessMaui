@@ -6,6 +6,7 @@ using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.UI.Photos;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 
@@ -30,7 +31,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature
 			: base()
 		{
 			this.photosLoader = new PhotosLoader(this.Photos);
-			
+
 			if (Args is null)
 				return;
 
@@ -74,7 +75,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature
 		[RelayCommand]
 		private async Task Accept()
 		{
-			if (!await App.AuthenticateUser(AuthenticationPurpose.AcceptPetitionRequest))
+			if (!await App.AuthenticateUserAsync(AuthenticationPurpose.AcceptPetitionRequest))
 				return;
 
 			bool Succeeded = await ServiceRef.NetworkService.TryRequest(async () =>
@@ -118,6 +119,14 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature
 
 		// The display name of the identity. If organization name is available, it is used, otherwise the full name.
 		public string? DisplayName => string.IsNullOrEmpty(this.Domain) ? (this.HasOrg ? this.OrgName : this.FullName) : this.Domain;
+
+
+		/// <summary>
+		/// If the identity has a domain property.
+		/// </summary>
+		[ObservableProperty]
+		[DefaultValue(false)]
+		private bool hasDomain;
 
 		#region Properties
 
@@ -415,6 +424,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature
 				this.NationalityCode = this.RequestorIdentity[Constants.XmppProperties.Nationality];
 				this.Gender = this.RequestorIdentity[Constants.XmppProperties.Gender];
 				this.Domain = this.RequestorIdentity[Constants.XmppProperties.Domain];
+				this.HasDomain = !string.IsNullOrEmpty(this.Domain);
 
 				string BirthDayStr = this.RequestorIdentity[Constants.XmppProperties.BirthDay];
 				string BirthMonthStr = this.RequestorIdentity[Constants.XmppProperties.BirthMonth];

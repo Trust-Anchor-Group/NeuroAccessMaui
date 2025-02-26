@@ -1144,7 +1144,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 					return;
 				}
 
-				if (!await App.AuthenticateUser(AuthenticationPurpose.SignPetition, true))
+				if (!await App.AuthenticateUserAsync(AuthenticationPurpose.SignPetition, true))
 					return;
 
 				(bool Succeeded1, byte[]? Signature) = await ServiceRef.NetworkService.TryRequest(

@@ -63,7 +63,7 @@ namespace NeuroAccessMaui.UI.Popups.Password
 			{
 				string Password = this.PasswordText;
 
-				if (await App.CheckPasswordAndUnblockUser(Password))
+				if (await App.CheckPasswordAndUnblockUserAsync(Password))
 				{
 					await ServiceRef.UiService.PopAsync();
 					this.result.TrySetResult(Password);
@@ -72,14 +72,14 @@ namespace NeuroAccessMaui.UI.Popups.Password
 				{
 					this.PasswordText = string.Empty;
 
-					long PasswordAttemptCounter = await App.GetCurrentPasswordCounter();
+					long PasswordAttemptCounter = await App.GetCurrentPasswordCounterAsync();
 					long RemainingAttempts = Math.Max(0, Constants.Password.FirstMaxPasswordAttempts - PasswordAttemptCounter);
 
 					await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						ServiceRef.Localizer[nameof(AppResources.PasswordIsInvalid), RemainingAttempts]);
 
-					await App.CheckUserBlocking();
+					await App.CheckUserBlockingAsync();
 				}
 			}
 		}

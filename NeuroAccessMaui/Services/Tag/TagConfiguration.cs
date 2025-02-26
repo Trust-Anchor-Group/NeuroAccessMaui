@@ -287,5 +287,8 @@ namespace NeuroAccessMaui.Services
 		/// </summary>
 		[DefaultValue(false)]
 		public bool HasThing { get; set; }
+
+		[DefaultValueNull]
+		public DateTime? LastIdentityUpdate { get; set; }
 	}
 }

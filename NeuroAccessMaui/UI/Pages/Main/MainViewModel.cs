@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
+using Waher.Networking.XMPP.Contracts;
 
 namespace NeuroAccessMaui.UI.Pages.Main
 {
@@ -15,15 +16,42 @@ namespace NeuroAccessMaui.UI.Pages.Main
 
 		public override Task<string> Title => Task.FromResult(ContactInfo.GetFriendlyName(ServiceRef.TagProfile.LegalIdentity));
 
-		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+		protected override async Task OnInitialize()
+		{
+			await base.OnInitialize();
+
+			await this.OnIsConnectedChanged(); // Call this method in case the connection state has already changed before the view model was initialized.
+		}
+
+		protected override async void OnPropertyChanged(PropertyChangedEventArgs e)
 		{
 			base.OnPropertyChanged(e);
 
 			switch (e.PropertyName)
 			{
 				case nameof(this.IsConnected):
-					this.ScanQrCodeCommand.NotifyCanExecuteChanged();
+					await this.OnIsConnectedChanged();
 					break;
+			}
+		}
+
+		private async Task OnIsConnectedChanged()
+		{
+			try
+			{
+				if (this.IsConnected && ServiceRef.TagProfile.LegalIdentityNeedsRefreshing())
+				{
+					LegalIdentity RefreshedIdentity = await ServiceRef.XmppService.GetLegalIdentity(ServiceRef.TagProfile.LegalIdentity?.Id);
+					await MainThread.InvokeOnMainThreadAsync(async () => await ServiceRef.TagProfile.SetLegalIdentity(RefreshedIdentity, false));
+				}
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
+			finally
+			{
+				this.ScanQrCodeCommand.NotifyCanExecuteChanged();
 			}
 		}
 
@@ -40,7 +68,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		{
 			try
 			{
-				if(await App.AuthenticateUser(AuthenticationPurpose.ViewId))
+				if(await App.AuthenticateUserAsync(AuthenticationPurpose.ViewId))
 					await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage));
 			}
 			catch (Exception ex)

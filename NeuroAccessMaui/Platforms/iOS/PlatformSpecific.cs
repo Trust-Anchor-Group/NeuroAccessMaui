@@ -138,7 +138,7 @@ namespace NeuroAccessMaui.Services
 					msg.AppendLine(ex.StackTrace);
 					msg.AppendLine("```");
 
-					App.SendAlert(msg.ToString(), "text/plain").Wait();
+					App.SendAlertAsync(msg.ToString(), "text/plain").Wait();
 					this.CloseApplication().Wait();
 				}
 				catch (Exception)
