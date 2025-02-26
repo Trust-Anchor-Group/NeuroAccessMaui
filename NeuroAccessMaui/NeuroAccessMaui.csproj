@@ -41,8 +41,8 @@
 		<PackageProjectUrl></PackageProjectUrl>
 		<RepositoryUrl>https://github.com/Trust-Anchor-Group/NeuroAccessMaui</RepositoryUrl>
 
-		<!-- Required for intellisense to understand typed resources -->
-		<CoreCompileDependsOn>PrepareResources;$(CoreCompileDependsOn)</CoreCompileDependsOn>
+		<!-- Required for vs code to understand typed resources  (Disabledin visual studio, because there it creates intellisense errors -_- )-->
+		<CoreCompileDependsOn Condition="'$(VisualStudioVersion)' == ''">PrepareResources;$(CoreCompileDependsOn)</CoreCompileDependsOn>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios'">
