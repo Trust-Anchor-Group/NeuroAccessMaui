@@ -10,7 +10,8 @@
                            xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Registration"
                            xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
                            xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-                           xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters">
+                           xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+									AutomationId="NameEntryView">
 
 	<base:BaseRegistrationView.Resources>
 		<mct:IsStringNotNullOrEmptyConverter x:Key="OnlyShowNonEmpty" />
@@ -25,7 +26,7 @@
 			<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
 				<!-- Input 
 				<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize Nickname}" />-->
-				<controls:CompositeEntry x:Name="NicknameEntry" Style="{StaticResource RegularCompositeEntry}"
+				<controls:CompositeEntry x:Name="NicknameEntry" Style="{StaticResource RegularCompositeEntry}" AutomationId="NameEntryView_NickNameEntry"
                                              EntryData="{Binding Username}" Placeholder="{l:Localize Username}" />
 				<!-- Validation -->
 				<Grid RowDefinitions="*,*" ColumnDefinitions="auto,*" HorizontalOptions="Center" 
@@ -72,7 +73,7 @@
 
 				</Grid>
 			</Border>
-			<controls:TextButton Command="{Binding CreateAccountCommand}" Style="{StaticResource FilledTextButton}"
+			<controls:TextButton AutomationId="NameEntryView_ContinueTextButton" Command="{Binding CreateAccountCommand}" Style="{StaticResource FilledTextButton}"
 			                     LabelData="{l:Localize Continue}" />
 		</VerticalStackLayout>
 	</Grid>

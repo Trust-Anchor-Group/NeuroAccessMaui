@@ -10,7 +10,8 @@
 							xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 							xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups"
 							xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
-							xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups">
+							xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups"
+							AutomationId="SelectPhoneCodePopup">
 
 	<mopups:PopupPage.Animation>
 		<animations:ScaleAnimation DurationIn="500" DurationOut="500" EasingIn="CubicIn" EasingOut="CubicOut" HasBackgroundAnimation="True"
@@ -51,7 +52,8 @@
 	<Grid Style="{StaticResource PopupGrid}">
 		<Border HeightRequest="{Binding MaximumViewHeightRequest}" WidthRequest="{Binding ViewWidthRequest}" Style="{StaticResource PopupBorder}">
 			<Grid VerticalOptions="Fill" RowDefinitions="auto,*" RowSpacing="{StaticResource SmallSpacing}">
-				<SearchBar x:Name="InnerSearchBar" Grid.Row="0" Placeholder="{l:Localize SearchByCountry}" TextChanged="SearchBar_TextChanged" />
+				<SearchBar AutomationId="SelectPhoneCodePopup_SearchBar"
+						 x:Name="InnerSearchBar" Grid.Row="0" Placeholder="{l:Localize SearchByCountry}" TextChanged="SearchBar_TextChanged" />
 				<CollectionView x:Name="InnerListView" Grid.Row="1" VerticalOptions="Fill" ItemSizingStrategy="MeasureFirstItem"
 									 ItemTemplate="{StaticResource SelectPhoneCodeTemplate}" SelectionChanged="InnerListView_SelectionChanged" />
 			</Grid>
