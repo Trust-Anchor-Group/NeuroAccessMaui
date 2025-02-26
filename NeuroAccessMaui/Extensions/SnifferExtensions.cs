@@ -23,9 +23,11 @@ namespace NeuroAccessMaui.Extensions
 			await using StringWriter writer = new(sb);
 			await using TextWriterSniffer output = new(writer, BinaryPresentationMethod.ByteCount);
 
+			await sniffer.FlushAsync();
+
 			sniffer.Replay(output);
 
-			await sniffer.FlushAsync();
+			await output.FlushAsync();
 
 			return sb.ToString();
 		}
