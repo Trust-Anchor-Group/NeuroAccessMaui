@@ -47,8 +47,8 @@
 
 
 				<!--  Application Sent  -->
-				<Frame IsVisible="{Binding ApplicationSent}"
-						 Style="{StaticResource FrameSet}">
+				<Border IsVisible="{Binding ApplicationSent}"
+						  Style="{StaticResource BorderSet}">
 					<Grid>
 						<VerticalStackLayout>
 							<Label Style="{StaticResource SectionTitleLabel}"
@@ -95,10 +95,10 @@
 							</VerticalStackLayout>
 						</VerticalStackLayout>
 					</Grid>
-				</Frame>
+				</Border>
 
 				<!--  Photos  -->
-				<Frame Style="{StaticResource FrameSet}">
+				<Border Style="{StaticResource BorderSet}">
 					<VerticalStackLayout Margin="{StaticResource MediumSpacing}"
 												Spacing="{StaticResource SmallSpacing}">
 						<Label Style="{StaticResource SectionTitleLabel}"
@@ -167,14 +167,17 @@
 
 						</Grid>
 					</VerticalStackLayout>
-				</Frame>
+				</Border>
 
-				<Frame Margin="{StaticResource MediumSpacing}"
-						 Style="{StaticResource FrameSet}">
+				<Border Style="{StaticResource BorderSet}">
 					<VerticalStackLayout Margin="{StaticResource MediumSpacing}"
 												Spacing="{StaticResource SmallSpacing}">
 						<Label Style="{StaticResource SectionTitleLabel}"
-								 Text="Additional Photos" />
+								 Text="Additional Photos (Missing localization)" />
+
+						<Label IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
+						       Style="{StaticResource InfoLabel}"
+						       Text="{l:Localize PhotosDescription}" />
 
 						<!--  CarouselView displaying added attachments  -->
 						<CarouselView ItemsSource="{Binding AdditionalPhotos}"
@@ -193,7 +196,7 @@
 												<Image Aspect="AspectFill"
 														 Source="{Binding Image}" />
 												<!--  Remove button overlay  -->
-												<controls:ImageButton Command="{Binding Path=BindingContext.RemoveAdditionalPhotoCommand, Source={x:Reference ThisPage}}"
+												<controls:ImageButton Command="{Binding Path=RemoveAdditionalPhotoCommand, Source={RelativeSource AncestorType={x:Type viewmodel:ApplyIdViewModel}}}"
 																			 CommandParameter="{Binding .}"
 																			 PathData="{x:Static ui:Geometries.TrashCanButtonPath}"
 																			 Style="{StaticResource FilledImageButton}"
@@ -240,7 +243,7 @@
 														 Style="{StaticResource OutlinedImageButton}" />
 						</HorizontalStackLayout>
 					</VerticalStackLayout>
-				</Frame>
+				</Border>
 
 				<!--  Personal Information  -->
 				<Frame Style="{StaticResource FrameSet}">
