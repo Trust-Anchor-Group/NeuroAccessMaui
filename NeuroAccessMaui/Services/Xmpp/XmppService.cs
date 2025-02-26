@@ -1132,7 +1132,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			if (!Succeeded && string.IsNullOrEmpty(ErrorMessage))
 			{
 				if (this.sniffer is not null)
-					System.Diagnostics.Debug.WriteLine("Sniffer: ", this.sniffer.SnifferToText());
+					System.Diagnostics.Debug.WriteLine(await this.sniffer.SnifferToTextAsync(), "Sniffer");
 
 				if (!StreamNegotiation || IsTimeout)
 					ErrorMessage = ServiceRef.Localizer[nameof(AppResources.CantConnectTo), Domain];
@@ -1243,8 +1243,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 			{
 				if (this.sniffer is not null)
 				{
-					string commsDump = this.sniffer.SnifferToText();
-					ServiceRef.LogService.LogException(ex, new KeyValuePair<string, object?>("Sniffer", commsDump));
+					string CommsDump = await this.sniffer.SnifferToTextAsync();
+					ServiceRef.LogService.LogException(ex, new KeyValuePair<string, object?>("Sniffer", CommsDump));
 				}
 
 				return false;

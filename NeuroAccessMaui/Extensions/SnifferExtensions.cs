@@ -13,17 +13,19 @@ namespace NeuroAccessMaui.Extensions
 		/// </summary>
 		/// <param name="sniffer">The sniffer whose contents to get.</param>
 		/// <returns>The xmpp communication in plain text.</returns>
-		public static string SnifferToText(this InMemorySniffer sniffer)
+		public static async Task<string> SnifferToTextAsync(this InMemorySniffer sniffer)
 		{
 			if (sniffer is null)
 				return string.Empty;
 
 			StringBuilder sb = new();
 
-			using StringWriter writer = new(sb);
-			using TextWriterSniffer output = new(writer, BinaryPresentationMethod.ByteCount);
+			await using StringWriter writer = new(sb);
+			await using TextWriterSniffer output = new(writer, BinaryPresentationMethod.ByteCount);
 
 			sniffer.Replay(output);
+
+			await sniffer.FlushAsync();
 
 			return sb.ToString();
 		}
