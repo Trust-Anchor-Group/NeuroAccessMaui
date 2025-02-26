@@ -356,7 +356,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			await this.GoToState(NewContractStep.Loading);
 
-			if(!await App.AuthenticateUser(AuthenticationPurpose.SignContract, true))
+			if(!await App.AuthenticateUserAsync(AuthenticationPurpose.SignContract, true))
 			{
 				await this.GoToOverview();
 				return;
