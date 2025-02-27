@@ -896,20 +896,20 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 				// 2. Proof of ID Front (if available)
 				// 3. Proof of ID Back (if available)
 				// 4. Additional Photos (if any)
-				List<LegalIdentityAttachment> Attachments = new List<LegalIdentityAttachment>();
+				List<LegalIdentityAttachment> Attachments = [];
 
 				if (this.photo is not null)
 					Attachments.Add(this.photo);
 
 				if (this.HasProofOfIdFront && this.ProofOfIdFrontImageBin is not null)
 				{
-					LegalIdentityAttachment FrontAttachment = new LegalIdentityAttachment("ProofIdFront.jpg", "image/jpeg", this.ProofOfIdFrontImageBin);
+					LegalIdentityAttachment FrontAttachment = new("ProofIdFront.jpg", "image/jpeg", this.ProofOfIdFrontImageBin);
 					Attachments.Add(FrontAttachment);
 				}
 
 				if (this.HasProofOfIdBack && this.ProofOfIdBackImageBin is not null)
 				{
-					LegalIdentityAttachment BackAttachment = new LegalIdentityAttachment("ProofIdBack.jpg", "image/jpeg", this.ProofOfIdBackImageBin);
+					LegalIdentityAttachment BackAttachment = new("ProofIdBack.jpg", "image/jpeg", this.ProofOfIdBackImageBin);
 					Attachments.Add(BackAttachment);
 				}
 
