@@ -41,8 +41,6 @@
 		<PackageProjectUrl></PackageProjectUrl>
 		<RepositoryUrl>https://github.com/Trust-Anchor-Group/NeuroAccessMaui</RepositoryUrl>
 
-		<!-- Required for vs code to understand typed resources  (Disabledin visual studio, because there it creates intellisense errors -_- )-->
-		<CoreCompileDependsOn Condition="'$(VisualStudioVersion)' == ''">PrepareResources;$(CoreCompileDependsOn)</CoreCompileDependsOn>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios'">
@@ -462,11 +460,16 @@
 			<Generator>MSBuild:Compile</Generator>
 			<LastGenOutput>AppResources.Designer.cs</LastGenOutput>
 			<StronglyTypedFileName>$(IntermediateOutputPath)\AppResources.Designer.cs</StronglyTypedFileName>
-	      	<StronglyTypedLanguage>CSharp</StronglyTypedLanguage>
+	      <StronglyTypedLanguage>CSharp</StronglyTypedLanguage>
 			<StronglyTypedNamespace>NeuroAccessMaui.Resources.Languages</StronglyTypedNamespace>
 			<StronglyTypedClassName>AppResources</StronglyTypedClassName>
 		</EmbeddedResource>
 	</ItemGroup>
+
+	<PropertyGroup>
+		<!-- Required for vs code to understand typed resources  (Disabledin visual studio, because there it creates intellisense errors -_- )-->
+		<CoreCompileDependsOn>PrepareResources;$(CoreCompileDependsOn)</CoreCompileDependsOn>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\IdApp.Cv\IdApp.Cv.csproj" />
