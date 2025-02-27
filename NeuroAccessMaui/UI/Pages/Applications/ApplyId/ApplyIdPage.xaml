@@ -169,6 +169,121 @@
 					</VerticalStackLayout>
 				</Border>
 
+				<!-- Proof of Identity Section -->
+				<Border Style="{StaticResource BorderSet}">
+					<VerticalStackLayout Margin="{StaticResource MediumSpacing}"
+												Spacing="{StaticResource SmallSpacing}">
+						<Label Style="{StaticResource SectionTitleLabel}"
+								 Text="Proof of Identity" />
+						<Label Style="{StaticResource InfoLabel}"
+								 Text="Add front and back images of your identity proof (e.g., passport, driver's license)." />
+
+						<Label Style="{StaticResource SectionTitleLabel}"
+								 Text="Front (Missing Localization)" />
+						<Grid ColumnDefinitions="200,Auto"
+								ColumnSpacing="{StaticResource SmallSpacing}"
+								RowSpacing="{StaticResource SmallSpacing}">
+							<!-- Front Image -->
+							<Border Grid.Column="0"
+									  Margin="0"
+									  Padding="0"
+									  BackgroundColor="{Binding HasProofOfIdFront, Converter={converters:ControlBgColor}}"
+									  HeightRequest="200"
+									  WidthRequest="200"
+									  Style="{StaticResource OutlinedImageButtonBorder}">
+								<Image Aspect="AspectFill">
+									<Image.Triggers>
+										<DataTrigger Binding="{Binding HasProofOfIdFront}"
+														 TargetType="Image"
+														 Value="True">
+											<Setter Property="Source"
+													  Value="{Binding ProofOfIdFrontImage}" />
+											<Setter Property="Aspect"
+													  Value="AspectFill" />
+										</DataTrigger>
+										<DataTrigger Binding="{Binding HasProofOfIdFront}"
+														 TargetType="Image"
+														 Value="False">
+											<Setter Property="Source"
+													  Value="proof_front_placeholder" />
+											<Setter Property="Aspect"
+													  Value="Center" />
+										</DataTrigger>
+									</Image.Triggers>
+								</Image>
+							</Border>
+							<VerticalStackLayout Grid.Column="1"
+														VerticalOptions="Start"
+														Spacing="{StaticResource SmallSpacing}">
+								<controls:ImageButton Command="{Binding TakeProofOfIdFrontCommand}"
+															 PathData="{x:Static ui:Geometries.CameraPhotoButtonPath}"
+															 Style="{StaticResource OutlinedImageButton}" />
+								<controls:ImageButton Command="{Binding PickProofOfIdFrontCommand}"
+															 PathData="{x:Static ui:Geometries.CameraImageButtonPath}"
+															 Style="{StaticResource OutlinedImageButton}" />
+								<controls:ImageButton Command="{Binding RemoveProofOfIdFrontCommand}"
+															 IsVisible="{Binding HasProofOfIdFront}"
+															 PathData="{x:Static ui:Geometries.TrashCanButtonPath}"
+															 Style="{StaticResource OutlinedImageButton}" />
+							</VerticalStackLayout>
+
+						</Grid>
+						<!-- back -->
+						<Label Style="{StaticResource SectionTitleLabel}"
+						       Text="Back (Missing Localization)" />
+						<Grid ColumnDefinitions="200,Auto"
+								ColumnSpacing="{StaticResource SmallSpacing}"
+								RowSpacing="{StaticResource SmallSpacing}">
+
+							<!-- Back Image -->
+							<Border Grid.Column="0"
+									  Margin="0"
+									  Padding="0"
+									  BackgroundColor="{Binding HasProofOfIdBack, Converter={converters:ControlBgColor}}"
+									  HeightRequest="200"
+									  WidthRequest="200"
+									  Style="{StaticResource OutlinedImageButtonBorder}">
+								<Image Aspect="AspectFill">
+									<Image.Triggers>
+										<DataTrigger Binding="{Binding HasProofOfIdBack}"
+														 TargetType="Image"
+														 Value="True">
+											<Setter Property="Source"
+													  Value="{Binding ProofOfIdBackImage}" />
+											<Setter Property="Aspect"
+													  Value="AspectFill" />
+										</DataTrigger>
+										<DataTrigger Binding="{Binding HasProofOfIdBack}"
+														 TargetType="Image"
+														 Value="False">
+											<Setter Property="Source"
+													  Value="proof_back_placeholder" />
+											<Setter Property="Aspect"
+													  Value="Center" />
+										</DataTrigger>
+									</Image.Triggers>
+								</Image>
+							</Border>
+							<VerticalStackLayout Grid.Column="1"
+														VerticalOptions="Start"
+														Spacing="10">
+								<controls:ImageButton Command="{Binding TakeProofOfIdBackCommand}"
+															 PathData="{x:Static ui:Geometries.CameraPhotoButtonPath}"
+															 Style="{StaticResource OutlinedImageButton}" />
+								<controls:ImageButton Command="{Binding PickProofOfIdBackCommand}"
+															 PathData="{x:Static ui:Geometries.CameraImageButtonPath}"
+															 Style="{StaticResource OutlinedImageButton}" />
+								<controls:ImageButton Command="{Binding RemoveProofOfIdBackCommand}"
+															 IsVisible="{Binding HasProofOfIdBack}"
+															 PathData="{x:Static ui:Geometries.TrashCanButtonPath}"
+															 Style="{StaticResource OutlinedImageButton}" />
+							</VerticalStackLayout>
+
+						</Grid>
+					</VerticalStackLayout>
+				</Border>
+
+
 				<Border Style="{StaticResource BorderSet}">
 					<VerticalStackLayout Margin="{StaticResource MediumSpacing}"
 												Spacing="{StaticResource SmallSpacing}">
