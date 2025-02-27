@@ -2166,26 +2166,26 @@ namespace NeuroAccessMaui.UI.Rendering
 		{
 			Source = await CheckDataUri(Source);
 
-			Image image = new Image
+			Image Image = new Image
 			{
 				Source = Source.Url,
 			};
 
-			ScrollView sv = new ScrollView
+			ScrollView Sv = new ScrollView
 			{
 				Orientation = ScrollOrientation.Horizontal,
-				Content = image
+				Content = Image
 			};
 
 			if (Source.Width.HasValue)
-				sv.WidthRequest = Source.Width.Value;
+				Sv.WidthRequest = Source.Width.Value;
 
 			if (Source.Height.HasValue)
-				sv.HeightRequest = Source.Height.Value;
+				Sv.HeightRequest = Source.Height.Value;
 
 			ContentView Cv = (ContentView)this.currentElement;
 
-			Cv.Content = sv;
+			Cv.Content = Sv;
 		}
 
 		private async Task RenderMaui(Waher.Content.Markdown.Model.SpanElements.Multimedia Element)
@@ -2193,15 +2193,15 @@ namespace NeuroAccessMaui.UI.Rendering
 			ContentView Bakup = (ContentView)this.currentElement;
 			VerticalStackLayout MauiStackLayout = new VerticalStackLayout();
 
-			foreach (MultimediaItem item in Element.Items)
+			foreach (MultimediaItem Item in Element.Items)
 			{
 				ContentView ElementContentView = new();
 				this.currentElement = ElementContentView;
 				await this.OutputMaui(new Waher.Content.Emoji.ImageSource()
 				{
-					Url = Element.Document.CheckURL(item.Url, null),
-					Width = item.Width,
-					Height = item.Height,
+					Url = Element.Document.CheckURL(Item.Url, null),
+					Width = Item.Width,
+					Height = Item.Height,
 				});
 				MauiStackLayout.Add(ElementContentView);
 			}
