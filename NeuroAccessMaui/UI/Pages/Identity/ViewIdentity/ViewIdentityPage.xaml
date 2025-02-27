@@ -32,7 +32,11 @@
 													IsVisible="{Binding FirstPhotoSource, Converter={converters:OnlyShowNonEmpty}}">
 							<Border Style="{StaticResource OutlinedImageButtonBorder}" Padding="0" WidthRequest="250" HeightRequest="250" HorizontalOptions="Center">
 								<Image Source="{Binding FirstPhotoSource}" Rotation="{Binding FirstPhotoRotation}"
-										  Aspect="AspectFit" Margin="0"/>
+										  Aspect="AspectFit" Margin="0">
+									<Image.GestureRecognizers>
+										<TapGestureRecognizer Command="{Binding ImageTappedCommand}"/>
+									</Image.GestureRecognizers>
+								</Image>
 							</Border>
 							<VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="0">
 								<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding FullName}" HorizontalOptions="Center" Margin="0" Padding="0" />
