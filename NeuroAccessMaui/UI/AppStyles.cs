@@ -52,10 +52,12 @@ namespace NeuroAccessMaui.UI
 			headers = new Style[9];
 		}
 
-		private static void Log_Terminating(object? sender, EventArgs e)
+		private static Task Log_Terminating(object? sender, EventArgs e)
 		{
 			timer?.Dispose();
 			timer = null;
+
+			return Task.CompletedTask;
 		}
 
 		/// <summary>

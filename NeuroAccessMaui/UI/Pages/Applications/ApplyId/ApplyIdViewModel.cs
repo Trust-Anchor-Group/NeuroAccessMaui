@@ -18,6 +18,7 @@ using Waher.Content;
 using Waher.Content.Html.Elements;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Networking.XMPP.Contracts.EventArguments;
 using Waher.Networking.XMPP.StanzaErrors;
 using IServiceProvider = Waher.Networking.XMPP.Contracts.IServiceProvider;
 
@@ -643,7 +644,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToSendThisIdApplication)]))
 				return;
 
-			if (!await App.AuthenticateUser(AuthenticationPurpose.SignApplication, true))
+			if (!await App.AuthenticateUserAsync(AuthenticationPurpose.SignApplication, true))
 				return;
 
 			try
@@ -709,7 +710,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToRevokeTheCurrentIdApplication)]))
 				return;
 
-			if (!await App.AuthenticateUser(AuthenticationPurpose.RevokeApplication, true))
+			if (!await App.AuthenticateUserAsync(AuthenticationPurpose.RevokeApplication, true))
 				return;
 
 			try
@@ -795,6 +796,11 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		private async Task TakePhoto()
 		{
 			if (!this.CanTakePhoto)
+				return;
+
+			bool Permitted = await ServiceRef.PermissionService.CheckCameraPermissionAsync();
+
+			if (!Permitted)
 				return;
 
 			try
