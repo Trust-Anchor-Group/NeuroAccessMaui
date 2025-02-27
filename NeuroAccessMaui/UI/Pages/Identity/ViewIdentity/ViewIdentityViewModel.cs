@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.UI.Popups.Image;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
@@ -958,6 +959,8 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 			this.NotifyCommandsCanExecuteChanged();
 		}
 
+		#region Commands
+
 		/// <summary>
 		/// Copies Item to clipboard
 		/// </summary>
@@ -1193,6 +1196,21 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
+
+		[RelayCommand]
+		private async Task ImageTapped()
+		{
+			Attachment[]? Attachments = this.LegalIdentity?.Attachments;
+			if (Attachments is null)
+				return;
+
+			ImagesPopup ImagesPopup = new();
+			ImagesViewModel ImagesViewModel = new(Attachments);
+			await ServiceRef.UiService.PushAsync(ImagesPopup, ImagesViewModel);
+			//ImagesViewModel.LoadPhotos(Attachments);
+		}
+
+		#endregion
 
 		#region ILinkableView
 
