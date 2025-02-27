@@ -525,11 +525,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			await this.GoToState(NewContractStep.Loading);
 
-			VerticalStackLayout? hrt = await this.Contract.Contract.ToMaui(this.Contract.Contract.DeviceLanguage());
+			VerticalStackLayout? HumanReadableText = await this.Contract.Contract.ToMaui(this.Contract.Contract.DeviceLanguage());
 
 			await MainThread.InvokeOnMainThreadAsync(() =>
 			{
-				this.HumanReadableText = hrt;
+				this.HumanReadableText = HumanReadableText;
 			});
 
 			await this.GoToState(NewContractStep.Preview);
