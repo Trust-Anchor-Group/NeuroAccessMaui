@@ -102,7 +102,7 @@ namespace NeuroAccessMaui.Services.Storage
 					e3 = Log.UnnestException(e3);
 					ServiceRef.LogService.LogException(e3);
 
-					await App.Stop();
+					await App.StopAsync();
 					/*
 					Thread?.NewState("UI");
 					await ServiceRef.UiSerializer.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.DatabaseIssue"], ServiceRef.Localizer[nameof(AppResources.DatabaseRepairFailedInfoText"], ServiceRef.Localizer[nameof(AppResources.Ok"]);

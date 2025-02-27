@@ -257,7 +257,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 				if (string.IsNullOrEmpty(this.Uri))
 					return;
 
-				if (!await App.AuthenticateUser(AuthenticationPurpose.ClaimThing, true))
+				if (!await App.AuthenticateUserAsync(AuthenticationPurpose.ClaimThing, true))
 					return;
 
 				(bool Succeeded, NodeResultEventArgs? e) = await ServiceRef.NetworkService.TryRequest(() =>

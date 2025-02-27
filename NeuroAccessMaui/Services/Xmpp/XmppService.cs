@@ -1350,7 +1350,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 			ServiceRef.TagProfile.ClearAll();
 			if (App.Current is not null)
-				await App.Current.ForceSave();
+				await App.Current.ForceSaveAsync();
 			await RuntimeSettings.SetAsync(Constants.Settings.TransferIdCodeSent, string.Empty);
 			await Database.Provider.Flush();
 			WeakReferenceMessenger.Default.Send(new RegistrationPageMessage(ServiceRef.TagProfile.Step));
@@ -2844,7 +2844,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 							catch (Exception ex)
 							{
 								ServiceRef.LogService.LogException(ex);
-								await App.Stop();
+								await App.StopAsync();
 							}
 						});
 					}
