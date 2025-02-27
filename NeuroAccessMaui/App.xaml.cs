@@ -760,7 +760,7 @@ namespace NeuroAccessMaui
 			}
 			catch (Exception Ex)
 			{
-				Log.Exception(ex);
+				Log.Exception(Ex);
 			}
 		}
 
