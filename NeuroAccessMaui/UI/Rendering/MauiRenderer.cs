@@ -33,6 +33,8 @@ namespace NeuroAccessMaui.UI.Rendering
 	/// </summary>
 	/// <remarks>
 	/// Modified from original in Waher.Content.Markdown.Xamarin library, with permission.
+	/// This class is a generic markdown renderer, modified to render MAUI objects instead
+	/// of XAML. Currently only tested to support a subset of the markdown language used in contracts.
 	/// </remarks>
 	public class MauiRenderer : IRenderer
 	{
@@ -132,7 +134,7 @@ namespace NeuroAccessMaui.UI.Rendering
 		#region Render Document
 
 		/// <summary>
-		/// Renders a document.
+		/// Sets up default state and calls main render function.
 		/// </summary>
 		/// <param name="Document">Document to render.</param>
 		/// <param name="Inclusion">If the rendered output is to be included in another document (true), or if it is a standalone document (false).</param>
@@ -570,6 +572,15 @@ namespace NeuroAccessMaui.UI.Rendering
 			this.currentElement = Bakup;
 		}
 
+		/// <summary>
+		/// Renders cell content for a table.
+		/// </summary>
+		/// <param name="CurrentRow"></param>
+		/// <param name="CellAlignments"></param>
+		/// <param name="RowNr"></param>
+		/// <param name="Bold"></param>
+		/// <param name="Element"></param>
+		/// <returns></returns>
 		private async Task Render(MarkdownElement[] CurrentRow, Waher.Content.Markdown.Model.TextAlignment?[] CellAlignments,
 			int RowNr, bool Bold, Table Element)
 		{
@@ -1039,7 +1050,6 @@ namespace NeuroAccessMaui.UI.Rendering
 			return Task.CompletedTask;
 		}
 
-
 		/// <summary>
 		/// Renders <paramref name="Element"/>.
 		/// </summary>
@@ -1060,7 +1070,7 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// <param name="Element">Element to render</param>
 		public Task Render(InvisibleBreak Element)
 		{
-			//TODO not?
+			//TODO
 			return Task.CompletedTask;
 		}
 
@@ -1111,7 +1121,6 @@ namespace NeuroAccessMaui.UI.Rendering
 			this.Underline = Bak; 
 		}
 
-
 		/// <summary>
 		/// Renders <paramref name="Element"/>.
 		/// </summary>
@@ -1123,7 +1132,6 @@ namespace NeuroAccessMaui.UI.Rendering
 			return Task.CompletedTask;
 		}
 
-
 		/// <summary>
 		/// Renders <paramref name="Element"/>.
 		/// </summary>
@@ -1133,7 +1141,6 @@ namespace NeuroAccessMaui.UI.Rendering
 			object Result = await Element.EvaluateExpression();
 			await this.RenderObject(Result, Element.AloneInParagraph, Element.Variables);
 		}
-
 
 		/// <summary>
 		/// Renders <paramref name="Element"/>.
@@ -1162,7 +1169,6 @@ namespace NeuroAccessMaui.UI.Rendering
 			return Task.CompletedTask;
 		}
 
-
 		/// <summary>
 		/// Renders <paramref name="Element"/>.
 		/// </summary>
@@ -1178,7 +1184,6 @@ namespace NeuroAccessMaui.UI.Rendering
 
 			return Task.CompletedTask;
 		}
-
 
 		/// <summary>
 		/// Renders <paramref name="Element"/>.
@@ -1581,7 +1586,7 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// <param name="Element">Element to render</param>
 		public Task Render(CommentBlock Element)
 		{
-			//TODO not?
+			//TODO
 			return Task.CompletedTask;
 		}
 
@@ -1904,7 +1909,7 @@ namespace NeuroAccessMaui.UI.Rendering
 
 		#region Logic Helpers
 		/// <summary>
-		/// If referenced footnotes need to be rendered.
+		/// Cheks if any footnotes are referenced in the document.
 		/// </summary>
 		private bool NeedsToDisplayFootnotes()
 		{
@@ -1924,6 +1929,11 @@ namespace NeuroAccessMaui.UI.Rendering
 			return false;
 		}
 
+		/// <summary>
+		/// Helper function that gets footnotes from the document.
+		/// </summary>
+		/// <param name="keys"></param>
+		/// <returns></returns>
 		private IEnumerable<Footnote> GetFootnotes(string[] keys)
 		{
 			foreach(string Key in keys)
@@ -1934,6 +1944,11 @@ namespace NeuroAccessMaui.UI.Rendering
 			}
 		}
 
+		/// <summary>
+		/// Checks if the image source is a data uri and if so, converts it to a local file.
+		/// </summary>
+		/// <param name="Source"></param>
+		/// <returns></returns>
 		private async Task OutputImage(Waher.Content.Emoji.IImageSource Source)
 		{
 			Source = await CheckDataUri(Source);
@@ -1959,6 +1974,12 @@ namespace NeuroAccessMaui.UI.Rendering
 			Cv.Content = ScrollView;
 		}
 
+		/// <summary>
+		/// Helper function to determine label text alignment
+		/// </summary>
+		/// <returns>
+		/// Text alignment
+		/// </returns>
 		public Microsoft.Maui.TextAlignment LabelAlignment()
 		{
 			switch (this.Alignment)
@@ -1977,6 +1998,12 @@ namespace NeuroAccessMaui.UI.Rendering
 			}
 		}
 
+		/// <summary>
+		/// Helper function to generate a new ContentView with the specified alignment, margins, and style.
+		/// </summary>
+		/// <param name="Alignment"></param>
+		/// <param name="Margins"></param>
+		/// <param name="BoxStyle"></param>
 		internal void RenderContentView(Waher.Content.Markdown.Model.TextAlignment Alignment, Thickness Margins, Style? BoxStyle)
 		{
 			ContentView ContentView = new ContentView();
@@ -2005,11 +2032,22 @@ namespace NeuroAccessMaui.UI.Rendering
 			this.currentElement = ContentView;
 		}
 
+		/// <summary>
+		/// Helper function to generate a new ContentView with the specified margins.
+		/// </summary>
+		/// <param name="Margins"></param>
 		internal void RenderContentView(Thickness Margins)
 		{
 			this.RenderContentView(this.Alignment, Margins, null);
 		}
 
+		/// <summary>
+		/// Renders an object such as images, graphs, exceptions, or other documents.
+		/// </summary>
+		/// <param name="Result"></param>
+		/// <param name="AloneInParagraph"></param>
+		/// <param name="Variables"></param>
+		/// <returns></returns>
 		public async Task RenderObject(object? Result, bool AloneInParagraph, Variables Variables)
 		{
 			ContentView Bakup = (ContentView)this.currentElement;
@@ -2188,6 +2226,11 @@ namespace NeuroAccessMaui.UI.Rendering
 			Cv.Content = Sv;
 		}
 
+		/// <summary>
+		/// Entry Render function for Multimedia Elements
+		/// </summary>
+		/// <param name="Element"></param>
+		/// <returns></returns>
 		private async Task RenderMaui(Waher.Content.Markdown.Model.SpanElements.Multimedia Element)
 		{
 			ContentView Bakup = (ContentView)this.currentElement;
