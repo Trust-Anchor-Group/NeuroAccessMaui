@@ -165,7 +165,7 @@ namespace NeuroAccessMaui.UI.Rendering
 
 			if (!Inclusion && this.Document.TryGetMetaData("BODYONLY", out KeyValuePair<string, bool>[] Values))
 			{
-				if (CommonTypes.TryParse(Values[0].Key, out bool b) && b)
+				if (CommonTypes.TryParse(Values[0].Key, out bool B) && B)
 					Inclusion = true;
 			}
 
@@ -793,14 +793,14 @@ namespace NeuroAccessMaui.UI.Rendering
 					InnerContentView.Column(0);
 					InnerContentView.Row(RowIndex);
 
-					Label label = new Label();
+					Label Label = new Label();
 
 					if (Item is NumberedItem NumberedItem)
-						label.Text = (Expected = NumberedItem.Number).ToString(CultureInfo.InvariantCulture) + ".";
+						Label.Text = (Expected = NumberedItem.Number).ToString(CultureInfo.InvariantCulture) + ".";
 					else
-						label.Text = Expected.ToString(CultureInfo.InvariantCulture) + ".";
+						Label.Text = Expected.ToString(CultureInfo.InvariantCulture) + ".";
 
-					InnerContentView.Content = label;
+					InnerContentView.Content = Label;
 					ListGrid.Add(InnerContentView);
 
 					ContentView ItemContentView = new ContentView();
@@ -1197,10 +1197,10 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// <param name="Element">Element to render</param>
 		public Task Render(HtmlEntity Element)
 		{
-			string s = Waher.Content.Html.HtmlEntity.EntityToCharacter(Element.Entity);
-			if (!string.IsNullOrEmpty(s))
+			string S = Waher.Content.Html.HtmlEntity.EntityToCharacter(Element.Entity);
+			if (!string.IsNullOrEmpty(S))
 			{
-				this.RenderSpan(s);
+				this.RenderSpan(S);
 			}
 
 			return Task.CompletedTask;
@@ -1214,8 +1214,8 @@ namespace NeuroAccessMaui.UI.Rendering
 		{
 			ContentView Bakup = (ContentView)this.currentElement;
 
-			Thickness margins = AppStyles.SmallTopMargins + AppStyles.SmallBottomMargins;
-			Bakup.Margin = margins;
+			Thickness Margins = AppStyles.SmallTopMargins + AppStyles.SmallBottomMargins;
+			Bakup.Margin = Margins;
 
 			Label HTMLTextLabel = new Label
 			{
@@ -1515,7 +1515,7 @@ namespace NeuroAccessMaui.UI.Rendering
 			VerticalStackLayout BlockStackLayout = new();
 
 			StringBuilder Output = new();
-			MauiXamlRenderer rend = new(Output, XML.WriterSettings(false, true));
+			MauiXamlRenderer Rend = new(Output, XML.WriterSettings(false, true));
 			ICodeContentMauiXamlRenderer Renderer = Element.CodeContentHandler<ICodeContentMauiXamlRenderer>();
 
 			if (Renderer is not null)
@@ -1523,22 +1523,22 @@ namespace NeuroAccessMaui.UI.Rendering
 				try
 				{
 					// TODO ?
-					if (await Renderer.RenderMauiXaml(rend, Element.Rows, Element.Language, Element.Indent, Element.Document))
+					if (await Renderer.RenderMauiXaml(Rend, Element.Rows, Element.Language, Element.Indent, Element.Document))
 						return;
 				}
-				catch (Exception ex)
+				catch (Exception Ex)
 				{
-					ex = Log.UnnestException(ex);
+					Ex = Log.UnnestException(Ex);
 
-					if (ex is AggregateException ex2)
+					if (Ex is AggregateException Ex2)
 					{
-						foreach (Exception ex3 in ex2.InnerExceptions)
+						foreach (Exception Ex3 in Ex2.InnerExceptions)
 						{
 							Label ExceptionLabel = new Label
 							{
 								LineBreakMode = LineBreakMode.WordWrap,
 								TextColor = AppColors.Alert,
-								Text = ex3.Message
+								Text = Ex3.Message
 							};
 
 							BlockStackLayout.Add(ExceptionLabel);
@@ -1550,7 +1550,7 @@ namespace NeuroAccessMaui.UI.Rendering
 						{
 							LineBreakMode = LineBreakMode.WordWrap,
 							TextColor = AppColors.Alert,
-							Text = ex.Message
+							Text = Ex.Message
 						};
 
 						BlockStackLayout.Add(ExceptionLabel);
@@ -1624,8 +1624,8 @@ namespace NeuroAccessMaui.UI.Rendering
 					StarContentView.Column(0);
 					StarContentView.Row(Row);
 
-					Label lbl = new Label { Text = "•" };
-					StarContentView.Content = lbl;
+					Label Lbl = new Label { Text = "•" };
+					StarContentView.Content = Lbl;
 					ListGrid.Add(StarContentView);
 
 					ContentView VslContainer = new ContentView();
@@ -1926,11 +1926,11 @@ namespace NeuroAccessMaui.UI.Rendering
 
 		private IEnumerable<Footnote> GetFootnotes(string[] keys)
 		{
-			foreach(string key in keys)
+			foreach(string Key in keys)
 			{
-				Footnote footnote;
-				this.Document.TryGetFootnote(key, out footnote);
-				yield return footnote;
+				Footnote Footnote;
+				this.Document.TryGetFootnote(Key, out Footnote);
+				yield return Footnote;
 			}
 		}
 
@@ -1949,14 +1949,14 @@ namespace NeuroAccessMaui.UI.Rendering
 			if (Source.Height.HasValue)
 				Image.HeightRequest = Source.Height.Value;
 
-			ScrollView scrollView = new ScrollView
+			ScrollView ScrollView = new ScrollView
 			{
 				Orientation = ScrollOrientation.Horizontal,
 				Content = Image
 			};
 
 			ContentView Cv = (ContentView)this.currentElement;
-			Cv.Content = scrollView;
+			Cv.Content = ScrollView;
 		}
 
 		public Microsoft.Maui.TextAlignment LabelAlignment()
@@ -2017,7 +2017,7 @@ namespace NeuroAccessMaui.UI.Rendering
 			if (Result is null)
 				return;
 
-			string? s;
+			string? S;
 
 			if (Result is XmlDocument Xml)
 				Result = await MarkdownDocument.TransformXml(Xml, Variables);
@@ -2026,8 +2026,8 @@ namespace NeuroAccessMaui.UI.Rendering
 
 			if (this.InLabel)
 			{
-				s = Result?.ToString();
-				if (!string.IsNullOrEmpty(s))
+				S = Result?.ToString();
+				if (!string.IsNullOrEmpty(S))
 					await this.RenderSpan(Result?.ToString() ?? string.Empty); //TODO
 
 				return;
@@ -2038,11 +2038,11 @@ namespace NeuroAccessMaui.UI.Rendering
 				PixelInformation Pixels = G.CreatePixels(Variables);
 				byte[] Bin = Pixels.EncodeAsPng();
 
-				s = "data:image/png;base64," + Convert.ToBase64String(Bin, 0, Bin.Length);
+				S = "data:image/png;base64," + Convert.ToBase64String(Bin, 0, Bin.Length);
 
 				await this.OutputMaui(new Waher.Content.Emoji.ImageSource()
 				{
-					Url = s,
+					Url = S,
 					Width = Pixels.Width,
 					Height = Pixels.Height
 				});
@@ -2052,11 +2052,11 @@ namespace NeuroAccessMaui.UI.Rendering
 				using SKData Data = Img.Encode(SKEncodedImageFormat.Png, 100);
 				byte[] Bin = Data.ToArray();
 
-				s = "data:image/png;base64," + Convert.ToBase64String(Bin, 0, Bin.Length);
+				S = "data:image/png;base64," + Convert.ToBase64String(Bin, 0, Bin.Length);
 
 				await this.OutputMaui(new Waher.Content.Emoji.ImageSource()
 				{
-					Url = s,
+					Url = S,
 					Width = Img.Width,
 					Height = Img.Height
 				});
@@ -2073,49 +2073,49 @@ namespace NeuroAccessMaui.UI.Rendering
 				await this.RenderDocument(Doc, true);   // Does not call ProcessAsyncTasks()
 				Doc.ProcessAsyncTasks();
 			}
-			else if (Result is Exception ex)
+			else if (Result is Exception Ex)
 			{
-				ex = Log.UnnestException(ex);
+				Ex = Log.UnnestException(Ex);
 
-				if (ex is AggregateException ex2)
+				if (Ex is AggregateException Ex2)
 				{
 					VerticalStackLayout Vsl = new();
 
-					foreach (Exception ex3 in ex2.InnerExceptions)
+					foreach (Exception Ex3 in Ex2.InnerExceptions)
 					{
-						Label label = new Label
+						Label Label = new Label
 						{
 							LineBreakMode = LineBreakMode.WordWrap,
 							TextColor = AppColors.Alert,
-							Text = ex3.Message
+							Text = Ex3.Message
 						};
 
-						Vsl.Add(label);
+						Vsl.Add(Label);
 					}
 					Bakup.Content = Vsl;
 				}
 				else
 				{
-					Label label = new Label
+					Label Label = new Label
 					{
 						LineBreakMode = LineBreakMode.WordWrap,
 						TextColor = AppColors.Alert,
-						Text = ex.Message
+						Text = Ex.Message
 					};
 
-					Bakup.Content = label;
+					Bakup.Content = Label;
 				}
 			}
 			else
 			{
-				Label label = new Label
+				Label Label = new Label
 				{
 					LineBreakMode = LineBreakMode.WordWrap,
 					HorizontalTextAlignment = this.LabelAlignment(),
 					Text = Result.ToString()
 				};
 
-				Bakup.Content = label;
+				Bakup.Content = Label;
 			}
 		}
 
