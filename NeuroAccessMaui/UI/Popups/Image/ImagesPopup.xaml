@@ -40,7 +40,7 @@
 				</CarouselView>
 					
 				<IndicatorView x:Name="IndicatorView"
-                                   HorizontalOptions="Fill"
+                                   HorizontalOptions="Center"
                                    Padding="0,0,0,0"
                                    HeightRequest="20"
 											  IsVisible="{Binding IsSwipeEnabled}">
