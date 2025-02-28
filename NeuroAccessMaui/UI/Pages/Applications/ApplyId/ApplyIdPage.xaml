@@ -174,15 +174,16 @@
 					<VerticalStackLayout Margin="{StaticResource MediumSpacing}"
 												Spacing="{StaticResource SmallSpacing}">
 						<Label Style="{StaticResource SectionTitleLabel}"
-								 Text="Proof of Identity" />
+								 Text="{l:Localize IdentityDocument}" />
 						<Label Style="{StaticResource InfoLabel}"
-								 Text="Add front and back images of your identity proof (e.g., passport, driver's license)." />
+								 Text="{l:Localize IdentityDocumentDescription}" />
 
 						<Label Style="{StaticResource SectionTitleLabel}"
-								 Text="Front (Missing Localization)" />
+								 Text="{l:Localize Front}" />
 						<Grid ColumnDefinitions="200,Auto"
 								ColumnSpacing="{StaticResource SmallSpacing}"
-								RowSpacing="{StaticResource SmallSpacing}">
+								RowSpacing="{StaticResource SmallSpacing}"
+								HorizontalOptions="Center">
 							<!-- Front Image -->
 							<Border Grid.Column="0"
 									  Margin="0"
@@ -230,10 +231,11 @@
 						</Grid>
 						<!-- back -->
 						<Label Style="{StaticResource SectionTitleLabel}"
-						       Text="Back (Missing Localization)" />
+						       Text="{l:Localize Back}" />
 						<Grid ColumnDefinitions="200,Auto"
 								ColumnSpacing="{StaticResource SmallSpacing}"
-								RowSpacing="{StaticResource SmallSpacing}">
+								RowSpacing="{StaticResource SmallSpacing}"
+								HorizontalOptions="Center">
 
 							<!-- Back Image -->
 							<Border Grid.Column="0"
@@ -283,16 +285,16 @@
 					</VerticalStackLayout>
 				</Border>
 
-
+				<!--  Additional Photos  -->
 				<Border Style="{StaticResource BorderSet}">
 					<VerticalStackLayout Margin="{StaticResource MediumSpacing}"
 												Spacing="{StaticResource SmallSpacing}">
 						<Label Style="{StaticResource SectionTitleLabel}"
-								 Text="Additional Photos (Missing localization)" />
+								 Text="{l:Localize AdditionalPhotosTitle}" />
 
 						<Label IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
 						       Style="{StaticResource InfoLabel}"
-						       Text="{l:Localize PhotosDescription}" />
+						       Text="{l:Localize AdditionalPhotosDescription}" />
 
 						<!--  CarouselView displaying added attachments  -->
 						<CarouselView ItemsSource="{Binding AdditionalPhotos}"
@@ -312,11 +314,11 @@
 														 Source="{Binding Image}" />
 												<!--  Remove button overlay  -->
 												<controls:ImageButton Command="{Binding Path=RemoveAdditionalPhotoCommand, Source={RelativeSource AncestorType={x:Type viewmodel:ApplyIdViewModel}}}"
-																			 CommandParameter="{Binding .}"
-																			 PathData="{x:Static ui:Geometries.TrashCanButtonPath}"
-																			 Style="{StaticResource FilledImageButton}"
-																			 HorizontalOptions="End"
-																			 VerticalOptions="Start" />
+												                      CommandParameter="{Binding .}"
+												                      PathData="{x:Static ui:Geometries.TrashCanButtonPath}"
+												                      Style="{StaticResource OutlinedImageButton}"
+												                      HorizontalOptions="End"
+												                      VerticalOptions="Start" />
 											</Grid>
 										</Border>
 									</Grid>
