@@ -98,7 +98,13 @@
 
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconcolor.svg" Color="LightGray" />
+		<MauiIcon Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'" 
+				Include="Resources\AppIcon\appicon.svg"
+				ForegroundFile="Resources\AppIcon\appiconfg.svg"
+				BaseSize="512,512" 
+				ForegroundScale="0.55"
+				Color="#F5F6F7"  />
+		<MauiIcon Include="Resources\AppIcon\appicon_ios.svg" Color="#F5F6F7" />
 
 		<!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#eeeeee" BaseSize="196,196" />
@@ -107,7 +113,12 @@
 		<MauiImage Include="Resources\Images\*" />
 
 		<!-- Custom Fonts -->
-		<MauiFont Include="Resources\Fonts\*" />
+		<MauiFont Include="Resources\Fonts\SpaceGrotesk-Bold.ttf"/>
+		<MauiFont Include="Resources\Fonts\SpaceGrotesk-SemiBold.ttf"/>
+		<MauiFont Include="Resources\Fonts\SpaceGrotesk-Medium.ttf"/>
+		<MauiFont Include="Resources\Fonts\SpaceGrotesk-Regular.ttf"/>
+		<MauiFont Include="Resources\Fonts\NHaasGroteskTXPro-75Bd.ttf"/>
+		<MauiFont Include="Resources\Fonts\NHaasGroteskTXPro-55Rg.ttf"/>
 
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
@@ -169,11 +180,6 @@
 		<Compile Remove="Platforms\iOS\Security\ScreenRecordingProtectionManager.cs" />
 		<Compile Remove="Platforms\iOS\Security\ScreenSecurity.ios.cs" />
 		<Compile Remove="Platforms\iOS\Security\ScreenshotProtectionManager.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<MauiFont Remove="Resources\Fonts\NHaasGroteskTXPro-65Md.ttf" />
-		<MauiFont Remove="Resources\Fonts\SpaceGrotesk-Light.ttf" />
 	</ItemGroup>
 
 	<ItemGroup>
