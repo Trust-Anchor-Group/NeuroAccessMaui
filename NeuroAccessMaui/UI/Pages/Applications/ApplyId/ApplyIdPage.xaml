@@ -23,6 +23,10 @@
 			<converters:GenderCodeToSymbolAndLabel />
 			<converters:HyphenIfEmpty />
 		</converters:ConversionSequence>
+
+		<viewmodel:IdentityDocumentTypeConverter x:Key="IdentityDocumentTypeConverter" />
+		<viewmodel:IdentityDocumentTypeToFrontVisibilityConverter x:Key="IdentityDocumentTypeToFrontVisibilityConverter" />
+		<viewmodel:IdentityDocumentTypeToBackVisibilityConverter x:Key="IdentityDocumentTypeToBackVisibilityConverter" />
 	</VisualElement.Resources>
 
 	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
@@ -98,9 +102,46 @@
 				</Border>
 
 				<!--  Photos  -->
-				<Border Style="{StaticResource BorderSet}">
+
+				<Border Style="{StaticResource BorderSet}" IsVisible="{Binding ApplicationSent}">
 					<VerticalStackLayout Margin="{StaticResource MediumSpacing}"
-												Spacing="{StaticResource SmallSpacing}">
+					                     Spacing="{StaticResource SmallSpacing}">
+						<Label Style="{StaticResource SectionTitleLabel}"
+								 Text="{l:Localize Photo}" />
+						<Label Style="{StaticResource InfoLabel}"
+						       Text="{l:Localize PhotosSentDescription}" />
+						<CarouselView ItemsSource="{Binding AllPhotos}"
+						              HeightRequest="200" Loop="False" PeekAreaInsets="40"
+										  IndicatorView="AllPhotosPhotosIndicator">
+							<CarouselView.ItemTemplate>
+								<DataTemplate>
+									<Grid>
+										<!--  Display the photo similar to the main photo display  -->
+										<Border Padding="0"
+										        HeightRequest="200"
+										        Style="{StaticResource OutlinedImageButtonBorder}"
+										        WidthRequest="200">
+											<Image Source="{Binding .}"
+													 Aspect="AspectFill"
+													 HeightRequest="200"
+													 WidthRequest="200" />
+										</Border>
+									</Grid>
+								</DataTemplate>
+							</CarouselView.ItemTemplate>
+						</CarouselView>
+						<IndicatorView x:Name="AllPhotosPhotosIndicator"
+						               Count="{Binding AdditionalPhotos.Count}"
+						               IndicatorColor="LightGrey"
+						               SelectedIndicatorColor="Black"
+						               HorizontalOptions="Center" />
+					</VerticalStackLayout>
+				</Border>
+
+				<Border Style="{StaticResource BorderSet}"
+				        IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
+					<VerticalStackLayout Margin="{StaticResource MediumSpacing}"
+					                     Spacing="{StaticResource SmallSpacing}">
 						<Label Style="{StaticResource SectionTitleLabel}"
 								 Text="{l:Localize Photo}" />
 						<Label IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
@@ -169,124 +210,173 @@
 					</VerticalStackLayout>
 				</Border>
 
-				<!-- Proof of Identity Section -->
-				<Border Style="{StaticResource BorderSet}">
+				<!-- Identity Document Section -->
+				<Border Style="{StaticResource BorderSet}"
+						  IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
 					<VerticalStackLayout Margin="{StaticResource MediumSpacing}"
 												Spacing="{StaticResource SmallSpacing}">
 						<Label Style="{StaticResource SectionTitleLabel}"
-								 Text="{l:Localize IdentityDocument}" />
+								 Text="{l:Localize IdentityDocumentTitle}" />
 						<Label Style="{StaticResource InfoLabel}"
 								 Text="{l:Localize IdentityDocumentDescription}" />
 
-						<Label Style="{StaticResource SectionTitleLabel}"
-								 Text="{l:Localize Front}" />
-						<Grid ColumnDefinitions="200,Auto"
-								ColumnSpacing="{StaticResource SmallSpacing}"
-								RowSpacing="{StaticResource SmallSpacing}"
-								HorizontalOptions="Center">
-							<!-- Front Image -->
-							<Border Grid.Column="0"
-									  Margin="0"
-									  Padding="0"
-									  BackgroundColor="{Binding HasProofOfIdFront, Converter={converters:ControlBgColor}}"
-									  HeightRequest="200"
-									  WidthRequest="200"
-									  Style="{StaticResource OutlinedImageButtonBorder}">
-								<Image Aspect="AspectFill">
-									<Image.Triggers>
-										<DataTrigger Binding="{Binding HasProofOfIdFront}"
-														 TargetType="Image"
-														 Value="True">
-											<Setter Property="Source"
-													  Value="{Binding ProofOfIdFrontImage}" />
-											<Setter Property="Aspect"
-													  Value="AspectFill" />
-										</DataTrigger>
-										<DataTrigger Binding="{Binding HasProofOfIdFront}"
-														 TargetType="Image"
-														 Value="False">
-											<Setter Property="Source"
-													  Value="proof_front_placeholder" />
-											<Setter Property="Aspect"
-													  Value="Center" />
-										</DataTrigger>
-									</Image.Triggers>
-								</Image>
-							</Border>
-							<VerticalStackLayout Grid.Column="1"
-														VerticalOptions="Start"
-														Spacing="{StaticResource SmallSpacing}">
-								<controls:ImageButton Command="{Binding TakeProofOfIdFrontCommand}"
-															 PathData="{x:Static ui:Geometries.CameraPhotoButtonPath}"
-															 Style="{StaticResource OutlinedImageButton}" />
-								<controls:ImageButton Command="{Binding PickProofOfIdFrontCommand}"
-															 PathData="{x:Static ui:Geometries.CameraImageButtonPath}"
-															 Style="{StaticResource OutlinedImageButton}" />
-								<controls:ImageButton Command="{Binding RemoveProofOfIdFrontCommand}"
-															 IsVisible="{Binding HasProofOfIdFront}"
-															 PathData="{x:Static ui:Geometries.TrashCanButtonPath}"
-															 Style="{StaticResource OutlinedImageButton}" />
-							</VerticalStackLayout>
+						<!-- Document Type Picker -->
+						<controls:CompositePicker Style="{StaticResource RegularCompositePicker}"
+														  LabelText="{l:Localize SelectTypeOfDocument}"
+														  ItemsSource="{Binding DocumentTypes}"
+														  SelectedItem="{Binding DocumentType}"
+														  ItemDisplayBinding="{Binding ., Converter={StaticResource IdentityDocumentTypeConverter}}" />
 
-						</Grid>
-						<!-- back -->
-						<Label Style="{StaticResource SectionTitleLabel}"
-						       Text="{l:Localize Back}" />
-						<Grid ColumnDefinitions="200,Auto"
-								ColumnSpacing="{StaticResource SmallSpacing}"
-								RowSpacing="{StaticResource SmallSpacing}"
-								HorizontalOptions="Center">
+						<!-- Front Image Section -->
+						<StackLayout IsVisible="{Binding DocumentType, Converter={StaticResource IdentityDocumentTypeToFrontVisibilityConverter}}">
+							<Label Style="{StaticResource SectionTitleLabel}"
+									 Text="{l:Localize FrontOfDocument}" >
+								<Label.Triggers>
+									<!-- When MyEnumProperty equals YourEnumValue, set IsVisible to True -->
+									<DataTrigger TargetType="Label"
+									             Binding="{Binding DocumentType}"
+									             Value="{x:Static viewmodel:IdentityDocumentType.Passport}">
+										<Setter Property="IsVisible"
+										        Value="False" />
+									</DataTrigger>
+								</Label.Triggers>
+							</Label>
+							<Label Style="{StaticResource SectionTitleLabel}"
+							       Text="{l:Localize FrontOfDocument_Passport}"
+							       IsVisible="False">
+								<Label.Triggers>
+									<!-- When MyEnumProperty equals YourEnumValue, set IsVisible to True -->
+									<DataTrigger TargetType="Label"
+													 Binding="{Binding DocumentType}"
+													 Value="{x:Static viewmodel:IdentityDocumentType.Passport}">
+										<Setter Property="IsVisible"
+										        Value="True" />
+									</DataTrigger>
+								</Label.Triggers>
+							</Label>
+							<Label Style="{StaticResource InfoLabel}"
+							       Text="{l:Localize IdentityDocumentDescription_Passport}"
+							       IsVisible="False">
+								<Label.Triggers>
+									<!-- When MyEnumProperty equals YourEnumValue, set IsVisible to True -->
+									<DataTrigger TargetType="Label"
+									             Binding="{Binding DocumentType}"
+									             Value="{x:Static viewmodel:IdentityDocumentType.Passport}">
+										<Setter Property="IsVisible"
+										        Value="True" />
+									</DataTrigger>
+								</Label.Triggers>
+							</Label>
+							<Grid ColumnDefinitions="200,Auto"
+									ColumnSpacing="{StaticResource SmallSpacing}"
+									RowSpacing="{StaticResource SmallSpacing}"
+									HorizontalOptions="Center">
+								<!-- Front Image -->
+								<Border Grid.Column="0"
+										  Margin="0"
+										  Padding="0"
+										  BackgroundColor="{AppThemeBinding Light={StaticResource SecondaryBackgroundLight},Dark={StaticResource SecondaryBackgroundDark}}"
+										  HeightRequest="200"
+										  WidthRequest="200"
+										  Style="{StaticResource OutlinedImageButtonBorder}">
+									<Image Aspect="AspectFill">
+										<Image.Triggers>
+											<DataTrigger Binding="{Binding HasProofOfIdFront}"
+															 TargetType="Image"
+															 Value="True">
+												<Setter Property="Source"
+														  Value="{Binding ProofOfIdFrontImage}" />
+												<Setter Property="Aspect"
+														  Value="AspectFill" />
+											</DataTrigger>
+											<DataTrigger Binding="{Binding HasProofOfIdFront}"
+															 TargetType="Image"
+															 Value="False">
+												<Setter Property="Source"
+														  Value="proof_front_placeholder" />
+												<Setter Property="Aspect"
+														  Value="Center" />
+											</DataTrigger>
+										</Image.Triggers>
+									</Image>
+								</Border>
+								<VerticalStackLayout Grid.Column="1"
+															VerticalOptions="Start"
+															Spacing="{StaticResource SmallSpacing}">
+									<controls:ImageButton Command="{Binding TakeProofOfIdFrontCommand}"
+																 PathData="{x:Static ui:Geometries.CameraPhotoButtonPath}"
+																 Style="{StaticResource OutlinedImageButton}" />
+									<controls:ImageButton Command="{Binding PickProofOfIdFrontCommand}"
+																 PathData="{x:Static ui:Geometries.CameraImageButtonPath}"
+																 Style="{StaticResource OutlinedImageButton}" />
+									<controls:ImageButton Command="{Binding RemoveProofOfIdFrontCommand}"
+																 IsVisible="{Binding HasProofOfIdFront}"
+																 PathData="{x:Static ui:Geometries.TrashCanButtonPath}"
+																 Style="{StaticResource OutlinedImageButton}" />
+								</VerticalStackLayout>
+							</Grid>
+						</StackLayout>
 
-							<!-- Back Image -->
-							<Border Grid.Column="0"
-									  Margin="0"
-									  Padding="0"
-									  BackgroundColor="{Binding HasProofOfIdBack, Converter={converters:ControlBgColor}}"
-									  HeightRequest="200"
-									  WidthRequest="200"
-									  Style="{StaticResource OutlinedImageButtonBorder}">
-								<Image Aspect="AspectFill">
-									<Image.Triggers>
-										<DataTrigger Binding="{Binding HasProofOfIdBack}"
-														 TargetType="Image"
-														 Value="True">
-											<Setter Property="Source"
-													  Value="{Binding ProofOfIdBackImage}" />
-											<Setter Property="Aspect"
-													  Value="AspectFill" />
-										</DataTrigger>
-										<DataTrigger Binding="{Binding HasProofOfIdBack}"
-														 TargetType="Image"
-														 Value="False">
-											<Setter Property="Source"
-													  Value="proof_back_placeholder" />
-											<Setter Property="Aspect"
-													  Value="Center" />
-										</DataTrigger>
-									</Image.Triggers>
-								</Image>
-							</Border>
-							<VerticalStackLayout Grid.Column="1"
-														VerticalOptions="Start"
-														Spacing="10">
-								<controls:ImageButton Command="{Binding TakeProofOfIdBackCommand}"
-															 PathData="{x:Static ui:Geometries.CameraPhotoButtonPath}"
-															 Style="{StaticResource OutlinedImageButton}" />
-								<controls:ImageButton Command="{Binding PickProofOfIdBackCommand}"
-															 PathData="{x:Static ui:Geometries.CameraImageButtonPath}"
-															 Style="{StaticResource OutlinedImageButton}" />
-								<controls:ImageButton Command="{Binding RemoveProofOfIdBackCommand}"
-															 IsVisible="{Binding HasProofOfIdBack}"
-															 PathData="{x:Static ui:Geometries.TrashCanButtonPath}"
-															 Style="{StaticResource OutlinedImageButton}" />
-							</VerticalStackLayout>
+						<!-- Back Image Section -->
+						<StackLayout IsVisible="{Binding DocumentType, Converter={StaticResource IdentityDocumentTypeToBackVisibilityConverter}}">
+							<Label Style="{StaticResource SectionTitleLabel}"
+									 Text="{l:Localize BackOfDocument}" />
+							<Grid ColumnDefinitions="200,Auto"
+									ColumnSpacing="{StaticResource SmallSpacing}"
+									RowSpacing="{StaticResource SmallSpacing}"
+									HorizontalOptions="Center">
+								<!-- Back Image -->
+								<Border Grid.Column="0"
+										  Margin="0"
+										  Padding="0"
+										  BackgroundColor="{AppThemeBinding Light={StaticResource SecondaryBackgroundLight},Dark={StaticResource SecondaryBackgroundDark}}"
+										  HeightRequest="200"
+										  WidthRequest="200"
+										  Style="{StaticResource OutlinedImageButtonBorder}">
+									<Image Aspect="AspectFill">
+										<Image.Triggers>
+											<DataTrigger Binding="{Binding HasProofOfIdBack}"
+															 TargetType="Image"
+															 Value="True">
+												<Setter Property="Source"
+														  Value="{Binding ProofOfIdBackImage}" />
+												<Setter Property="Aspect"
+														  Value="AspectFill" />
+											</DataTrigger>
+											<DataTrigger Binding="{Binding HasProofOfIdBack}"
+															 TargetType="Image"
+															 Value="False">
+												<Setter Property="Source"
+														  Value="proof_back_placeholder" />
+												<Setter Property="Aspect"
+														  Value="Center" />
+											</DataTrigger>
+										</Image.Triggers>
+									</Image>
+								</Border>
+								<VerticalStackLayout Grid.Column="1"
+															VerticalOptions="Start"
+															Spacing="10">
+									<controls:ImageButton Command="{Binding TakeProofOfIdBackCommand}"
+																 PathData="{x:Static ui:Geometries.CameraPhotoButtonPath}"
+																 Style="{StaticResource OutlinedImageButton}" />
+									<controls:ImageButton Command="{Binding PickProofOfIdBackCommand}"
+																 PathData="{x:Static ui:Geometries.CameraImageButtonPath}"
+																 Style="{StaticResource OutlinedImageButton}" />
+									<controls:ImageButton Command="{Binding RemoveProofOfIdBackCommand}"
+																 IsVisible="{Binding HasProofOfIdBack}"
+																 PathData="{x:Static ui:Geometries.TrashCanButtonPath}"
+																 Style="{StaticResource OutlinedImageButton}" />
+								</VerticalStackLayout>
+							</Grid>
+						</StackLayout>
 
-						</Grid>
 					</VerticalStackLayout>
 				</Border>
 
 				<!--  Additional Photos  -->
-				<Border Style="{StaticResource BorderSet}">
+				<Border Style="{StaticResource BorderSet}"
+				        IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
 					<VerticalStackLayout Margin="{StaticResource MediumSpacing}"
 												Spacing="{StaticResource SmallSpacing}">
 						<Label Style="{StaticResource SectionTitleLabel}"
