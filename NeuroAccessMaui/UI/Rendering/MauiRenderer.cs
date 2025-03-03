@@ -25,6 +25,7 @@ using ImageSource = Waher.Content.Emoji.ImageSource;
 using MarkdownContent = Waher.Content.Markdown.MarkdownContent;
 using Svg;
 using Microsoft.Maui.Controls.Shapes;
+using Waher.Script.Functions.Strings;
 
 namespace NeuroAccessMaui.UI.Rendering
 {
@@ -2078,12 +2079,15 @@ namespace NeuroAccessMaui.UI.Rendering
 
 				S = "data:image/png;base64," + Convert.ToBase64String(Bin, 0, Bin.Length);
 
+				Graph2D? Graph2D = G as Graph2D;
+				string Title = Graph2D?.Title ?? "Graph";
+
 				await this.OutputMaui(new Waher.Content.Emoji.ImageSource()
 				{
 					Url = S,
 					Width = Pixels.Width,
 					Height = Pixels.Height
-				});
+				}, Title);
 			}
 			else if (Result is SKImage Img)
 			{
@@ -2097,7 +2101,7 @@ namespace NeuroAccessMaui.UI.Rendering
 					Url = S,
 					Width = Img.Width,
 					Height = Img.Height
-				});
+				}, "Image");
 			}
 			else if (Result is MarkdownDocument Doc)
 			{
@@ -2199,8 +2203,18 @@ namespace NeuroAccessMaui.UI.Rendering
 		/// <summary>
 		/// Outputs an image to Maui object
 		/// </summary>
-		/// <param name="Source">Image source.</param>
+		/// <param name="Source"></param>
+		/// <returns></returns>
 		private async Task OutputMaui(Waher.Content.Emoji.IImageSource Source)
+		{
+			await this.OutputMaui(Source, null);
+		}
+
+		/// <summary>
+		/// Outputs an image to Maui object
+		/// </summary>
+		/// <param name="Source">Image source.</param>
+		private async Task OutputMaui(Waher.Content.Emoji.IImageSource Source, string? Title)
 		{
 			Source = await CheckDataUri(Source);
 
@@ -2215,6 +2229,24 @@ namespace NeuroAccessMaui.UI.Rendering
 				Content = Image
 			};
 
+			VerticalStackLayout Vsl = new VerticalStackLayout
+			{
+				Spacing = AppStyles.SmallSpacing
+			};
+
+			Vsl.Add(Sv);
+
+			if (Title is not null)
+			{
+				Label Label = new Label
+				{
+					LineBreakMode = LineBreakMode.WordWrap,
+					HorizontalTextAlignment = Microsoft.Maui.TextAlignment.Center,
+					Text = Title
+				};
+				Vsl.Add(Label);
+			}
+
 			if (Source.Width.HasValue)
 				Sv.WidthRequest = Source.Width.Value;
 
@@ -2223,7 +2255,7 @@ namespace NeuroAccessMaui.UI.Rendering
 
 			ContentView Cv = (ContentView)this.currentElement;
 
-			Cv.Content = Sv;
+			Cv.Content = Vsl;
 		}
 
 		/// <summary>
@@ -2240,12 +2272,19 @@ namespace NeuroAccessMaui.UI.Rendering
 			{
 				ContentView ElementContentView = new();
 				this.currentElement = ElementContentView;
+
+				string? Caption = null;
+				if (!Item.Title.Equals(String.Empty, StringComparison.Ordinal))
+				{
+					Caption = Item.Title;
+				}
+
 				await this.OutputMaui(new Waher.Content.Emoji.ImageSource()
 				{
 					Url = Element.Document.CheckURL(Item.Url, null),
 					Width = Item.Width,
 					Height = Item.Height,
-				});
+				}, Caption);
 				MauiStackLayout.Add(ElementContentView);
 			}
 			Bakup.Content = MauiStackLayout;
