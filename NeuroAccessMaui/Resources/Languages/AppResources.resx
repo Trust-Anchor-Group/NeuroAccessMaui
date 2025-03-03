@@ -2553,4 +2553,7 @@
   <data name="FrontOfDocument_Passport" xml:space="preserve">
     <value>Photo of your passport</value>
   </data>
+  <data name="PleaseTryAgain" xml:space="preserve">
+    <value>Please Try Again</value>
+  </data>
 </root>
