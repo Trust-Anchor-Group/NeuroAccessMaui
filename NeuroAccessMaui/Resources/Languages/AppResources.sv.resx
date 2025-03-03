@@ -2380,7 +2380,7 @@
     <value>Momentana värden</value>
   </data>
   <data name="None" xml:space="preserve">
-    <value>Inga</value>
+    <value>Ingen</value>
   </data>
   <data name="PeakValues" xml:space="preserve">
     <value>Extremvärden</value>
@@ -2534,9 +2534,6 @@
   </data>
   <data name="AdditionalPhotosDescription" xml:space="preserve">
     <value>Du kan inkludera ytterligare foton för att ytterligare stödja din identitetsverifiering.</value>
-  </data>
-  <data name="None" xml:space="preserve">
-    <value>Ingen</value>
   </data>
   <data name="Passport" xml:space="preserve">
     <value>Pass</value>

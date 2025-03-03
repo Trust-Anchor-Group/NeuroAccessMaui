@@ -2379,9 +2379,6 @@
   <data name="MomentaryValues" xml:space="preserve">
     <value>Momentary Values</value>
   </data>
-  <data name="None" xml:space="preserve">
-    <value>None</value>
-  </data>
   <data name="PeakValues" xml:space="preserve">
     <value>Peak Values</value>
   </data>

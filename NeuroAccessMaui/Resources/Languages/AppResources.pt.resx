@@ -2535,9 +2535,6 @@
   <data name="AdditionalPhotosDescription" xml:space="preserve">
     <value>Você pode incluir fotos adicionais para apoiar ainda mais a verificação de sua identidade.</value>
   </data>
-  <data name="None" xml:space="preserve">
-    <value>Nenhum</value>
-  </data>
   <data name="Passport" xml:space="preserve">
     <value>Passaporte</value>
   </data>
