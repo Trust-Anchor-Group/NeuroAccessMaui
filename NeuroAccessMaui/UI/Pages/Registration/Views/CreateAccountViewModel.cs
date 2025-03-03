@@ -12,190 +12,242 @@ using Waher.Networking.XMPP.Contracts;
 
 namespace NeuroAccessMaui.UI.Pages.Registration.Views
 {
-	public partial class CreateAccountViewModel : BaseRegistrationViewModel
-	{
-		public CreateAccountViewModel()
-			: base(RegistrationStep.CreateAccount)
-		{
-		}
+    public partial class CreateAccountViewModel : BaseRegistrationViewModel
+    {
+        // Flag to ensure we only apply for an identity once.
+        private bool hasAppliedForIdentity = false;
 
-		/// <inheritdoc />
-		protected override async Task OnInitialize()
-		{
-			await base.OnInitialize();
+        public CreateAccountViewModel()
+            : base(RegistrationStep.CreateAccount)
+        {
+        }
 
-			ServiceRef.XmppService.ConnectionStateChanged += this.XmppService_ConnectionStateChanged;
-			ServiceRef.XmppService.LegalIdentityChanged += this.XmppContracts_LegalIdentityChanged;
-		}
+        /// <inheritdoc />
+        protected override async Task OnInitialize()
+        {
+            await base.OnInitialize();
 
-		/// <inheritdoc />
-		protected override async Task OnDispose()
-		{
-			ServiceRef.XmppService.ConnectionStateChanged -= this.XmppService_ConnectionStateChanged;
-			ServiceRef.XmppService.LegalIdentityChanged -= this.XmppContracts_LegalIdentityChanged;
+            ServiceRef.XmppService.ConnectionStateChanged += this.XmppService_ConnectionStateChanged;
+            ServiceRef.XmppService.LegalIdentityChanged += this.XmppContracts_LegalIdentityChanged;
+        }
 
-			await base.OnDispose();
-		}
+        /// <inheritdoc />
+        protected override async Task OnDispose()
+        {
+            ServiceRef.XmppService.ConnectionStateChanged -= this.XmppService_ConnectionStateChanged;
+            ServiceRef.XmppService.LegalIdentityChanged -= this.XmppContracts_LegalIdentityChanged;
 
-		/// <inheritdoc />
-		public override async Task DoAssignProperties()
-		{
-			await base.DoAssignProperties();
+            await base.OnDispose();
+        }
 
-			if (this.CreateIdentityCommand.CanExecute(null))
-				await this.CreateIdentityCommand.ExecuteAsync(null);
-			if (ServiceRef.TagProfile.Step != RegistrationStep.Complete)
-				await this.CheckAndHandleIdentityApplicationAsync();
-		}
+        /// <inheritdoc />
+        public override async Task DoAssignProperties()
+        {
+            await base.DoAssignProperties();
 
-		private Task XmppService_ConnectionStateChanged(object _, XmppState NewState)
-		{
-			if (NewState == XmppState.Connected)
-			{
-				MainThread.BeginInvokeOnMainThread(async () =>
-				{
-					await this.DoAssignProperties();
-				});
-			}
+            // Only try to create the identity if we haven't already applied
+            if (!this.hasAppliedForIdentity && this.CreateIdentityCommand.CanExecute(null))
+                await this.CreateIdentityCommand.ExecuteAsync(null);
+            if (ServiceRef.TagProfile.Step != RegistrationStep.Complete)
+                await this.CheckAndHandleIdentityApplicationAsync();
+        }
 
-			return Task.CompletedTask;
-		}
+        private Task XmppService_ConnectionStateChanged(object _, XmppState NewState)
+        {
+            if (NewState == XmppState.Connected)
+            {
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    await this.DoAssignProperties();
+                });
+            }
 
-		private Task XmppContracts_LegalIdentityChanged(object _, LegalIdentityEventArgs e)
-		{
-			MainThread.BeginInvokeOnMainThread(async () =>
-			{
-				this.OnPropertyChanged(nameof(IsLegalIdentityCreated));
-				this.CreateIdentityCommand.NotifyCanExecuteChanged();
-				await this.DoAssignProperties();
-			});
+            return Task.CompletedTask;
+        }
 
-			return Task.CompletedTask;
-		}
+        private Task XmppContracts_LegalIdentityChanged(object _, LegalIdentityEventArgs e)
+        {
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                this.OnPropertyChanged(nameof(IsLegalIdentityCreated));
+                this.CreateIdentityCommand.NotifyCanExecuteChanged();
+                await this.DoAssignProperties();
+            });
 
-		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
+            return Task.CompletedTask;
+        }
 
-			switch (e.PropertyName)
-			{
-				case nameof(this.IsBusy):
-					this.CreateIdentityCommand.NotifyCanExecuteChanged();
-					break;
-			}
-		}
+        protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+        {
+            base.OnPropertyChanged(e);
 
-		/// <summary>
-		/// If App is connected to the XMPP network.
-		/// </summary>
-		public static bool IsXmppConnected => ServiceRef.XmppService.State == XmppState.Connected;
+            switch (e.PropertyName)
+            {
+                case nameof(this.IsBusy):
+                    this.CreateIdentityCommand.NotifyCanExecuteChanged();
+                    break;
+            }
+        }
 
-		/// <summary>
-		/// If App has an XMPP account defined.
-		/// </summary>
-		public static bool IsAccountCreated => !string.IsNullOrEmpty(ServiceRef.TagProfile.Account);
+        /// <summary>
+        /// If App is connected to the XMPP network.
+        /// </summary>
+        public static bool IsXmppConnected => ServiceRef.XmppService.State == XmppState.Connected;
 
-		/// <summary>
-		/// If Legal ID has been created.
-		/// </summary>
-		public static bool IsLegalIdentityCreated
-		{
-			get
-			{
-				return ServiceRef.TagProfile.LegalIdentity is not null &&
-					(ServiceRef.TagProfile.LegalIdentity.State == IdentityState.Approved ||
-					ServiceRef.TagProfile.LegalIdentity.State == IdentityState.Created);
-			}
-		}
+        /// <summary>
+        /// If App has an XMPP account defined.
+        /// </summary>
+        public static bool IsAccountCreated => !string.IsNullOrEmpty(ServiceRef.TagProfile.Account);
 
+        /// <summary>
+        /// If Legal ID has been created.
+        /// </summary>
+        public static bool IsLegalIdentityCreated
+        {
+            get
+            {
+                return ServiceRef.TagProfile.LegalIdentity is not null &&
+                    (ServiceRef.TagProfile.LegalIdentity.State == IdentityState.Approved ||
+                     ServiceRef.TagProfile.LegalIdentity.State == IdentityState.Created);
+            }
+        }
 
-		/// <summary>
-		/// If we can create an identity.
-		/// </summary>
-		public bool CanCreateIdentity => IsAccountCreated && !IsLegalIdentityCreated && IsXmppConnected;
+        /// <summary>
+        /// If we can create an identity.
+        /// </summary>
+        public bool CanCreateIdentity => IsAccountCreated && !IsLegalIdentityCreated && IsXmppConnected;
 
+        /// <summary>
+        /// Try to create an identity with a retry loop.
+        /// </summary>
+        [RelayCommand(CanExecute = nameof(CanCreateIdentity))]
+        private async Task CreateIdentity()
+        {
+            // Prevent applying more than once
+            if (this.hasAppliedForIdentity)
+                return;
 
-		/// <summary>
-		/// Try to create an identity.
-		/// </summary>
-		[RelayCommand(CanExecute = nameof(CanCreateIdentity))]
-		private async Task CreateIdentity()
-		{
-			try
-			{
-				RegisterIdentityModel IdentityModel = CreateRegisterModel();
-				LegalIdentityAttachment[] Photos = []; // Photos are left empty
+			this.hasAppliedForIdentity = true;
 
-				(bool Succeeded, LegalIdentity? AddedIdentity) = await ServiceRef.NetworkService.TryRequest(() =>
-					ServiceRef.XmppService.AddLegalIdentity(IdentityModel, true, Photos));
+            // Create a cancellation token that cancels after 60 seconds.
+            using CancellationTokenSource TimerCts = new CancellationTokenSource(TimeSpan.FromSeconds(Constants.Timeouts.GenericRequest.Seconds));
+            bool AppliedSuccessfully = false;
+            LegalIdentity? Identity = null;
 
-				if (Succeeded && AddedIdentity is not null)
-					await ServiceRef.TagProfile.SetLegalIdentity(AddedIdentity, true);
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiService.DisplayException(ex);
-			}
-		}
+            while (!TimerCts.Token.IsCancellationRequested)
+            {
+                try
+                {
+                    RegisterIdentityModel IdentityModel = CreateRegisterModel();
+                    LegalIdentityAttachment[] Photos = []; // Photos are left empty
 
-		[RelayCommand]
-		private static async Task ValidateIdentity()
-		{
-			await Task.CompletedTask;
-		}
+                    (bool Succeeded, LegalIdentity? AddedIdentity) = await ServiceRef.NetworkService.TryRequest(() =>
+                        ServiceRef.XmppService.AddLegalIdentity(IdentityModel, true, Photos));
 
+                    if (Succeeded && AddedIdentity is not null)
+                    {
+                        Identity = AddedIdentity;
+                        await ServiceRef.TagProfile.SetLegalIdentity(Identity, true);
+                        AppliedSuccessfully = true;
+                        break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ServiceRef.LogService.LogException(ex);
+                }
 
-		private async Task CheckAndHandleIdentityApplicationAsync()
-		{
-			this.IsBusy = true;
-			if (ServiceRef.TagProfile.LegalIdentity is LegalIdentity LegalIdentity)
-			{
-				if (LegalIdentity.State == IdentityState.Approved)
-				{
-					if (Shell.Current.CurrentState.Location.OriginalString == Constants.Pages.RegistrationPage)
-						GoToRegistrationStep(RegistrationStep.DefinePassword);
-				}
-				else if (LegalIdentity.IsDiscarded())
-				{
-					await ServiceRef.TagProfile.ClearLegalIdentity();
-					// TODO: Show error message
-					GoToRegistrationStep(RegistrationStep.ValidatePhone);
-				}
-			}
-			this.IsBusy = true;
-		}
+                try
+                {
+                    // Wait before retrying (if connection issues, etc.)
+                    await Task.Delay(TimeSpan.FromSeconds(5), TimerCts.Token);
+                }
+                catch (TaskCanceledException)
+                {
+                    // Timer expired while waiting.
+                    break;
+                }
+            }
 
-		private static RegisterIdentityModel CreateRegisterModel()
-		{
-			RegisterIdentityModel IdentityModel = new();
-			string s;
+            if (!AppliedSuccessfully)
+            {
+                // The 60-second timer expired without a successful application.
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)],
+					ServiceRef.Localizer[nameof(AppResources.PleaseTryAgain)]);
+                await ServiceRef.TagProfile.ClearLegalIdentity();
+                GoToRegistrationStep(RegistrationStep.ValidatePhone);
+            }
+        }
 
-			if (!string.IsNullOrWhiteSpace(s = ServiceRef.TagProfile?.PhoneNumber?.Trim() ?? string.Empty))
-			{
-				if (string.IsNullOrWhiteSpace(s) && (ServiceRef.TagProfile?.LegalIdentity is LegalIdentity LegalIdentity))
-					s = LegalIdentity[Constants.XmppProperties.Phone];
+        [RelayCommand]
+        private static async Task ValidateIdentity()
+        {
+            await Task.CompletedTask;
+        }
 
-				IdentityModel.PhoneNr = s;
-			}
+        /// <summary>
+        /// Checks the current state of the identity application.
+        /// If the identity is approved, continues to the next registration step.
+        /// If it is discarded, clears the application and navigates back to validate phone.
+        /// </summary>
+        private async Task CheckAndHandleIdentityApplicationAsync()
+        {
+            this.IsBusy = true;
 
-			if (!string.IsNullOrWhiteSpace(s = ServiceRef.TagProfile?.EMail?.Trim() ?? string.Empty))
-			{
-				if (string.IsNullOrWhiteSpace(s) && (ServiceRef.TagProfile?.LegalIdentity is LegalIdentity LegalIdentity))
-					s = LegalIdentity[Constants.XmppProperties.EMail];
+            if (ServiceRef.TagProfile.LegalIdentity is LegalIdentity LegalIdentity)
+            {
+                if (LegalIdentity.State == IdentityState.Approved)
+                {
+                    if (Shell.Current.CurrentState.Location.OriginalString == Constants.Pages.RegistrationPage)
+                        GoToRegistrationStep(RegistrationStep.DefinePassword);
+                }
+                else if (LegalIdentity.IsDiscarded())
+                {
+                    await ServiceRef.TagProfile.ClearLegalIdentity();
+					await ServiceRef.UiService.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)],
+						ServiceRef.Localizer[nameof(AppResources.YourApplicationWasRejected)]);
+                    GoToRegistrationStep(RegistrationStep.ValidatePhone);
+                }
+            }
 
-				IdentityModel.EMail = s;
-			}
+            this.IsBusy = false;
+        }
 
-			if (!string.IsNullOrWhiteSpace(s = ServiceRef.TagProfile?.SelectedCountry?.Trim() ?? string.Empty))
-			{
-				if (string.IsNullOrWhiteSpace(s) && (ServiceRef.TagProfile?.LegalIdentity is LegalIdentity LegalIdentity))
-					s = LegalIdentity[Constants.XmppProperties.Country];
+        /// <summary>
+        /// Creates the model for registering an identity.
+        /// </summary>
+        private static RegisterIdentityModel CreateRegisterModel()
+        {
+            RegisterIdentityModel IdentityModel = new();
+            string s;
 
-				IdentityModel.CountryCode = s;
-			}
+            if (!string.IsNullOrWhiteSpace(s = ServiceRef.TagProfile?.PhoneNumber?.Trim() ?? string.Empty))
+            {
+                if (string.IsNullOrWhiteSpace(s) && (ServiceRef.TagProfile?.LegalIdentity is LegalIdentity LegalIdentity))
+                    s = LegalIdentity[Constants.XmppProperties.Phone];
 
-			return IdentityModel;
-		}
-	}
+                IdentityModel.PhoneNr = s;
+            }
+
+            if (!string.IsNullOrWhiteSpace(s = ServiceRef.TagProfile?.EMail?.Trim() ?? string.Empty))
+            {
+                if (string.IsNullOrWhiteSpace(s) && (ServiceRef.TagProfile?.LegalIdentity is LegalIdentity LegalIdentity))
+                    s = LegalIdentity[Constants.XmppProperties.EMail];
+
+                IdentityModel.EMail = s;
+            }
+
+            if (!string.IsNullOrWhiteSpace(s = ServiceRef.TagProfile?.SelectedCountry?.Trim() ?? string.Empty))
+            {
+                if (string.IsNullOrWhiteSpace(s) && (ServiceRef.TagProfile?.LegalIdentity is LegalIdentity LegalIdentity))
+                    s = LegalIdentity[Constants.XmppProperties.Country];
+
+                IdentityModel.CountryCode = s;
+            }
+
+            return IdentityModel;
+        }
+    }
 }
