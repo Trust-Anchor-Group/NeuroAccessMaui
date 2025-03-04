@@ -279,26 +279,41 @@
 										  HeightRequest="200"
 										  WidthRequest="200"
 										  Style="{StaticResource OutlinedImageButtonBorder}">
-									<Image Aspect="AspectFill">
-										<Image.Triggers>
-											<DataTrigger Binding="{Binding HasProofOfIdFront}"
-															 TargetType="Image"
-															 Value="True">
-												<Setter Property="Source"
-														  Value="{Binding ProofOfIdFrontImage}" />
-												<Setter Property="Aspect"
-														  Value="AspectFill" />
-											</DataTrigger>
-											<DataTrigger Binding="{Binding HasProofOfIdFront}"
-															 TargetType="Image"
-															 Value="False">
-												<Setter Property="Source"
-														  Value="proof_front_placeholder" />
-												<Setter Property="Aspect"
-														  Value="Center" />
-											</DataTrigger>
-										</Image.Triggers>
-									</Image>
+									<Grid ColumnDefinitions="*" RowDefinitions="*">
+										<Image Aspect="AspectFill">
+											<Image.Triggers>
+												<DataTrigger Binding="{Binding HasProofOfIdFront}"
+												             TargetType="Image"
+												             Value="True">
+													<Setter Property="Source"
+													        Value="{Binding ProofOfIdFrontImage}" />
+													<Setter Property="Aspect"
+													        Value="AspectFill" />
+												</DataTrigger>
+											</Image.Triggers>
+										</Image>
+										<Path Data="{x:Static ui:Geometries.PassportPath}"
+										      VerticalOptions="Center" HorizontalOptions="Center"
+										      IsVisible="False" Aspect="Uniform"
+												HeightRequest="64" WidthRequest="64">
+											<Path.Fill>
+												<SolidColorBrush Color="LightGrey" />
+											</Path.Fill>
+											<Path.Triggers>
+												<MultiTrigger TargetType="Path">
+													<MultiTrigger.Conditions>
+														<BindingCondition Binding="{Binding HasProofOfIdFront}"
+														                  Value="False" />
+														<BindingCondition Binding="{Binding DocumentType}"
+														                  Value="{x:Static viewmodel:IdentityDocumentType.Passport}" />
+													</MultiTrigger.Conditions>
+													<Setter Property="IsVisible"
+													        Value="True" />
+												</MultiTrigger>
+											</Path.Triggers>
+										</Path>
+									</Grid>
+
 								</Border>
 								<VerticalStackLayout Grid.Column="1"
 															VerticalOptions="Start"
@@ -342,14 +357,6 @@
 														  Value="{Binding ProofOfIdBackImage}" />
 												<Setter Property="Aspect"
 														  Value="AspectFill" />
-											</DataTrigger>
-											<DataTrigger Binding="{Binding HasProofOfIdBack}"
-															 TargetType="Image"
-															 Value="False">
-												<Setter Property="Source"
-														  Value="proof_back_placeholder" />
-												<Setter Property="Aspect"
-														  Value="Center" />
 											</DataTrigger>
 										</Image.Triggers>
 									</Image>
