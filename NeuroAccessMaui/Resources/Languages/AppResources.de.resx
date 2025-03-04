@@ -2379,9 +2379,6 @@
   <data name="MomentaryValues" xml:space="preserve">
     <value>Momentane Werte</value>
   </data>
-  <data name="None" xml:space="preserve">
-    <value>Nichts</value>
-  </data>
   <data name="PeakValues" xml:space="preserve">
     <value>Spitzenwerte</value>
   </data>
@@ -2516,5 +2513,47 @@
   </data>
   <data name="Skip" xml:space="preserve">
     <value>Hüpfen</value>
+  </data>
+  <data name="IdentityDocumentTitle" xml:space="preserve">
+    <value>Ausweisdokument</value>
+  </data>
+  <data name="IdentityDocumentDescription" xml:space="preserve">
+    <value>Um den Verifizierungsprozess Ihrer Anwendung zu verbessern, können Sie Fotos eines Ausweisdokuments bereitstellen, um Ihre Identität zu überprüfen.</value>
+  </data>
+  <data name="FrontOfDocument" xml:space="preserve">
+    <value>Die Vorderseite des Dokuments</value>
+  </data>
+  <data name="BackOfDocument" xml:space="preserve">
+    <value>Die Rückseite des Dokuments</value>
+  </data>
+  <data name="AdditionalPhotosTitle" xml:space="preserve">
+    <value>Weitere Fotos</value>
+  </data>
+  <data name="AdditionalPhotosDescription" xml:space="preserve">
+    <value>Sie können zusätzliche Fotos hinzufügen, um Ihre Identitätsprüfung weiter zu unterstützen.</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>Nichts</value>
+  </data>
+  <data name="Passport" xml:space="preserve">
+    <value>Pass</value>
+  </data>
+  <data name="NationalId" xml:space="preserve">
+    <value>Personalausweis</value>
+  </data>
+  <data name="DriverLicense" xml:space="preserve">
+    <value>Führerschein</value>
+  </data>
+  <data name="SelectTypeOfDocument" xml:space="preserve">
+    <value>Wählen Sie den Typ des Dokuments</value>
+  </data>
+  <data name="IdentityDocumentDescription_Passport" xml:space="preserve">
+    <value>Bitte laden Sie ein Foto hoch, auf dem beide Seiten des Datenbereichs Ihres Reisepasses deutlich zu sehen sind, einschließlich der Seite mit Ihrem Foto</value>
+  </data>
+  <data name="FrontOfDocument_Passport" xml:space="preserve">
+    <value>Foto Ihres Reisepasses</value>
+  </data>
+  <data name="PleaseTryAgain" xml:space="preserve">
+    <value>Bitte versuchen Sie es erneut</value>
   </data>
 </root>

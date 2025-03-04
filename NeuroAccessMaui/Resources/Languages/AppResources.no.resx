@@ -2379,9 +2379,6 @@
   <data name="MomentaryValues" xml:space="preserve">
     <value>Øyeblikkelige verdier</value>
   </data>
-  <data name="None" xml:space="preserve">
-    <value>Ingen</value>
-  </data>
   <data name="PeakValues" xml:space="preserve">
     <value>Toppverdier</value>
   </data>
@@ -2516,5 +2513,47 @@
   </data>
   <data name="Skip" xml:space="preserve">
     <value>Hoppe over</value>
+  </data>
+  <data name="IdentityDocumentTitle" xml:space="preserve">
+    <value>Identitetsdokument</value>
+  </data>
+  <data name="IdentityDocumentDescription" xml:space="preserve">
+    <value>For å forbedre søknadens verifiseringsprosess kan du sende inn bilder av et identitetsdokument for å bekrefte identiteten din.</value>
+  </data>
+  <data name="FrontOfDocument" xml:space="preserve">
+    <value>Forsiden av dokumentet</value>
+  </data>
+  <data name="BackOfDocument" xml:space="preserve">
+    <value>Baksiden av dokumentet</value>
+  </data>
+  <data name="AdditionalPhotosTitle" xml:space="preserve">
+    <value>Ytterligere bilder</value>
+  </data>
+  <data name="AdditionalPhotosDescription" xml:space="preserve">
+    <value>Du kan inkludere flere bilder for ytterligere å støtte identitetsbekreftelsen din.</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>Ingen</value>
+  </data>
+  <data name="Passport" xml:space="preserve">
+    <value>Pass</value>
+  </data>
+  <data name="NationalId" xml:space="preserve">
+    <value>Nasjonalt ID-kort</value>
+  </data>
+  <data name="DriverLicense" xml:space="preserve">
+    <value>Førerkort</value>
+  </data>
+  <data name="SelectTypeOfDocument" xml:space="preserve">
+    <value>Velg dokumenttype</value>
+  </data>
+  <data name="IdentityDocumentDescription_Passport" xml:space="preserve">
+    <value>Last opp et bilde som tydelig viser begge sidene i passets dataseksjon, inkludert siden med bildet ditt</value>
+  </data>
+  <data name="FrontOfDocument_Passport" xml:space="preserve">
+    <value>Bilde av passet ditt</value>
+  </data>
+  <data name="PleaseTryAgain" xml:space="preserve">
+    <value>Vennligst prøv igjen</value>
   </data>
 </root>

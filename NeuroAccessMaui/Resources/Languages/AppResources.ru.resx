@@ -2379,9 +2379,6 @@
   <data name="MomentaryValues" xml:space="preserve">
     <value>Сиюминутные ценности</value>
   </data>
-  <data name="None" xml:space="preserve">
-    <value>Никакой</value>
-  </data>
   <data name="PeakValues" xml:space="preserve">
     <value>Пиковые значения</value>
   </data>
@@ -2516,5 +2513,47 @@
   </data>
   <data name="Skip" xml:space="preserve">
     <value>Скип</value>
+  </data>
+  <data name="IdentityDocumentTitle" xml:space="preserve">
+    <value>Документ, удостоверяющий личность</value>
+  </data>
+  <data name="IdentityDocumentDescription" xml:space="preserve">
+    <value>Чтобы улучшить процесс проверки вашего приложения, вы можете предоставить фотографии документа, удостоверяющего личность, для подтверждения вашей личности.</value>
+  </data>
+  <data name="FrontOfDocument" xml:space="preserve">
+    <value>Лицевая сторона документа</value>
+  </data>
+  <data name="BackOfDocument" xml:space="preserve">
+    <value>Оборотная сторона документа</value>
+  </data>
+  <data name="AdditionalPhotosTitle" xml:space="preserve">
+    <value>Дополнительные фотографии</value>
+  </data>
+  <data name="AdditionalPhotosDescription" xml:space="preserve">
+    <value>Вы можете добавить дополнительные фотографии, чтобы подтвердить свою личность.</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>Никакой</value>
+  </data>
+  <data name="Passport" xml:space="preserve">
+    <value>Паспорт</value>
+  </data>
+  <data name="NationalId" xml:space="preserve">
+    <value>Национальное удостоверение личности</value>
+  </data>
+  <data name="DriverLicense" xml:space="preserve">
+    <value>Водительское удостоверение</value>
+  </data>
+  <data name="SelectTypeOfDocument" xml:space="preserve">
+    <value>Выберите тип документа</value>
+  </data>
+  <data name="IdentityDocumentDescription_Passport" xml:space="preserve">
+    <value>Пожалуйста, загрузите фотографию, на которой четко видны обе страницы раздела с данными вашего паспорта, включая страницу с вашей фотографией</value>
+  </data>
+  <data name="FrontOfDocument_Passport" xml:space="preserve">
+    <value>Фотография паспорта</value>
+  </data>
+  <data name="PleaseTryAgain" xml:space="preserve">
+    <value>Пожалуйста, попробуйте еще раз</value>
   </data>
 </root>

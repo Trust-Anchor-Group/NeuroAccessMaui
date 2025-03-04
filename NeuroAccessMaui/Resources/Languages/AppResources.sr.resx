@@ -2379,9 +2379,6 @@
   <data name="MomentaryValues" xml:space="preserve">
     <value>Trenutne vrednosti</value>
   </data>
-  <data name="None" xml:space="preserve">
-    <value>Niko</value>
-  </data>
   <data name="PeakValues" xml:space="preserve">
     <value>Maksimalne vrednosti</value>
   </data>
@@ -2516,5 +2513,47 @@
   </data>
   <data name="Skip" xml:space="preserve">
     <value>Preskoči</value>
+  </data>
+  <data name="IdentityDocumentTitle" xml:space="preserve">
+    <value>Lični dokument</value>
+  </data>
+  <data name="IdentityDocumentDescription" xml:space="preserve">
+    <value>Da biste poboljšali proces verifikacije vaše aplikacije, možete da obezbedite fotografije ličnog dokumenta da biste potvrdili svoj identitet.</value>
+  </data>
+  <data name="FrontOfDocument" xml:space="preserve">
+    <value>Prednji deo dokumenta</value>
+  </data>
+  <data name="BackOfDocument" xml:space="preserve">
+    <value>Zadnja strana dokumenta</value>
+  </data>
+  <data name="AdditionalPhotosTitle" xml:space="preserve">
+    <value>Dodatne fotografije</value>
+  </data>
+  <data name="AdditionalPhotosDescription" xml:space="preserve">
+    <value>Možete uključiti dodatne fotografije kako biste dodatno podržali verifikaciju identiteta.</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>Niko</value>
+  </data>
+  <data name="Passport" xml:space="preserve">
+    <value>Pasoљ</value>
+  </data>
+  <data name="NationalId" xml:space="preserve">
+    <value>Nacionalna lična karta</value>
+  </data>
+  <data name="DriverLicense" xml:space="preserve">
+    <value>Vozačka dozvola</value>
+  </data>
+  <data name="SelectTypeOfDocument" xml:space="preserve">
+    <value>Izaberite vrstu dokumenta</value>
+  </data>
+  <data name="IdentityDocumentDescription_Passport" xml:space="preserve">
+    <value>Molimo vas da postavite fotografiju koja jasno prikazuje obe stranice odeljka sa podacima vašeg pasoša, uključujući i stranicu sa vašom fotografijom</value>
+  </data>
+  <data name="FrontOfDocument_Passport" xml:space="preserve">
+    <value>Fotografija vašeg pasoša</value>
+  </data>
+  <data name="PleaseTryAgain" xml:space="preserve">
+    <value>Molimo Vas da pokušate ponovo</value>
   </data>
 </root>
