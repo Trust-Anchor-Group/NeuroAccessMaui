@@ -43,6 +43,12 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		private LegalIdentityAttachment? photo;
 		private ServiceProviderWithLegalId[]? peerReviewServices = null;
 
+		private const string passportFileName = "Passport.jpeg";
+		private const string nationalIdFrontFileName = "IdCardFront.jpg";
+		private const string nationalIdBackFileName = "IdCardBack.jpg";
+		private const string driverLicenseFrontFileName = "DriverLicenseFront.jpeg";
+		private const string driverLicenseBackFileName = "DriverLicenseBack.jpeg";
+
 		/// <summary>
 		/// Creates an instance of the <see cref="ApplyIdViewModel"/> class.
 		/// </summary>
@@ -984,19 +990,27 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 					{
 						string FrontFileName = this.DocumentType switch
 						{
-							IdentityDocumentType.Passport => "Passport.jpeg",
-							IdentityDocumentType.NationalId or IdentityDocumentType.DriverLicense => "IdFront.jpg",
-							_ => "ProofIdFront.jpg"
+							IdentityDocumentType.Passport => passportFileName,
+							IdentityDocumentType.NationalId => nationalIdFrontFileName,
+							IdentityDocumentType.DriverLicense => driverLicenseFrontFileName,
+							_ => nationalIdFrontFileName
 						};
+
 						LegalIdentityAttachment FrontAttachment = new(FrontFileName, "image/jpeg", this.ProofOfIdFrontImageBin);
 						Attachments.Add(FrontAttachment);
 					}
 
-					// For NationalID and DriverLicense, include back image
 					if ((this.DocumentType == IdentityDocumentType.NationalId || this.DocumentType == IdentityDocumentType.DriverLicense) &&
 					    this.HasProofOfIdBack && this.ProofOfIdBackImageBin is not null)
 					{
-						LegalIdentityAttachment BackAttachment = new("IdBack.jpg", "image/jpeg", this.ProofOfIdBackImageBin);
+						string BackFileName = this.DocumentType switch
+						{
+							IdentityDocumentType.NationalId => nationalIdBackFileName,
+							IdentityDocumentType.DriverLicense => driverLicenseBackFileName,
+							_ => nationalIdBackFileName
+						};
+
+						LegalIdentityAttachment BackAttachment = new(BackFileName, "image/jpeg", this.ProofOfIdBackImageBin);
 						Attachments.Add(BackAttachment);
 					}
 				}
@@ -1096,6 +1110,8 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 				this.ApplicationSent = false;
 				this.peerReviewServices = null;
 				this.HasFeaturedPeerReviewers = false;
+
+				await this.GoBack();
 			}
 			catch (Exception ex)
 			{
@@ -1582,7 +1598,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			byte[] OutputBin = await Tcs.Task ?? throw new Exception("Failed to crop photo");
 			using MemoryStream Ms = new MemoryStream(OutputBin);
 
-			ObservableAttachmentCard? AdditionalPhoto = await this.CreateObservableAttachmentCardFromStream(Ms, result.FullPath, true);
+			ObservableAttachmentCard? AdditionalPhoto = await CreateObservableAttachmentCardFromStream(Ms, result.FullPath, true);
 			if (AdditionalPhoto != null)
 			{
 				MainThread.BeginInvokeOnMainThread(() => this.AdditionalPhotos.Add(AdditionalPhoto));
@@ -1590,7 +1606,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		}
 
 		// Helper method similar to your AddPhoto(Stream, ...) but returning an AdditionalPhoto instance.
-		private async Task<ObservableAttachmentCard?> CreateObservableAttachmentCardFromStream(Stream inputStream, string filePath, bool saveLocalCopy)
+		private static async Task<ObservableAttachmentCard?> CreateObservableAttachmentCardFromStream(Stream inputStream, string filePath, bool saveLocalCopy)
 		{
 			SKData? ImageData = null;
 			try
