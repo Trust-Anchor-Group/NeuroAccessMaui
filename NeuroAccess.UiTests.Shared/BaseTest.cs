@@ -77,7 +77,27 @@ namespace NeuroAccess.UiTests
 
 			return App.FindElement(MobileBy.Id(id));
 		}
-
+		public static AppiumElement AutoFindElement(string aViewID, int maxTryTimeInS = 10)
+		{
+			double timeTaken = 0;//In seconds not milli seconds
+			while (true)
+			{
+				try
+				{
+					Task.Delay(100).Wait();
+					timeTaken += 0.1;
+					AppiumElement viewToReturn = FindUIElement(aViewID);
+					return viewToReturn;
+				}
+				catch (Exception ex)
+				{
+					if (timeTaken > maxTryTimeInS)
+					{
+						throw new Exception($"{aViewID} wasn't found after {timeTaken}s\nex: {ex}");
+					}
+				}
+			}
+		}
 		public static (int X, int Y) FindImagePosition(string mainImagePath, string templateImagePath)
 		{
 			using Mat mainImage = Cv2.ImRead(mainImagePath, ImreadModes.Grayscale);
