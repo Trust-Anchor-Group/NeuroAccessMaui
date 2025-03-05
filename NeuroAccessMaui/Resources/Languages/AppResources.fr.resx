@@ -2514,6 +2514,9 @@
   <data name="Skip" xml:space="preserve">
     <value>Sautiller</value>
   </data>
+  <data name="CopyLink" xml:space="preserve">
+    <value>Copier le lien</value>
+  </data>
   <data name="IdentityDocumentTitle" xml:space="preserve">
     <value>Pièce d’identité</value>
   </data>

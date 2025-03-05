@@ -2514,6 +2514,9 @@
   <data name="Skip" xml:space="preserve">
     <value>Hyppiä</value>
   </data>
+  <data name="CopyLink" xml:space="preserve">
+    <value>Kopioi linkki</value>
+  </data>
   <data name="IdentityDocumentTitle" xml:space="preserve">
     <value>Henkilöllisyystodistus</value>
   </data>

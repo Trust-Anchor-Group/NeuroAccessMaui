@@ -2517,6 +2517,9 @@
   <data name="Skip" xml:space="preserve">
     <value>Pular</value>
   </data>
+  <data name="CopyLink" xml:space="preserve">
+    <value>Copiar link</value>
+  </data>
   <data name="IdentityDocumentTitle" xml:space="preserve">
     <value>Documento de Identidade</value>
   </data>

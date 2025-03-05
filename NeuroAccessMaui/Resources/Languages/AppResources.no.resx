@@ -2514,6 +2514,9 @@
   <data name="Skip" xml:space="preserve">
     <value>Hoppe over</value>
   </data>
+  <data name="CopyLink" xml:space="preserve">
+    <value>Kopier lenke</value>
+  </data>
   <data name="IdentityDocumentTitle" xml:space="preserve">
     <value>Identitetsdokument</value>
   </data>

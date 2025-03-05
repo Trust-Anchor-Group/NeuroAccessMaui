@@ -2514,6 +2514,9 @@
   <data name="Skip" xml:space="preserve">
     <value>Скип</value>
   </data>
+  <data name="CopyLink" xml:space="preserve">
+    <value>Скопировать ссылку</value>
+  </data>
   <data name="IdentityDocumentTitle" xml:space="preserve">
     <value>Документ, удостоверяющий личность</value>
   </data>

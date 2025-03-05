@@ -2514,6 +2514,9 @@
   <data name="Skip" xml:space="preserve">
     <value>Hüpfen</value>
   </data>
+  <data name="CopyLink" xml:space="preserve">
+    <value>Link kopieren</value>
+  </data>
   <data name="IdentityDocumentTitle" xml:space="preserve">
     <value>Ausweisdokument</value>
   </data>
