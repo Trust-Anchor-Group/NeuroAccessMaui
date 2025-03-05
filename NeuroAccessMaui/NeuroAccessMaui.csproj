@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFrameworks>net8.0-ios;net8.0-android</TargetFrameworks>
@@ -21,8 +21,8 @@
 		<ApplicationIdGuid>2a4dd0f3-35d6-48a3-a76d-1fa94e567eee</ApplicationIdGuid>
 
 		<!-- Versions -->
-		<ApplicationDisplayVersion>2.3.0</ApplicationDisplayVersion>
-		<ApplicationVersion>149</ApplicationVersion>
+		<ApplicationDisplayVersion>2.4.0</ApplicationDisplayVersion>
+		<ApplicationVersion>162</ApplicationVersion>
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">13.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">13.1</SupportedOSPlatformVersion>
@@ -281,6 +281,7 @@
 		<PackageReference Include="NeuroFeatures" Version="2.1.2" />
 		<PackageReference Include="Plugin.Fingerprint" Version="3.0.0-beta.1" />
 		<PackageReference Include="SkiaSharp" Version="2.88.9" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="2.88.9" />
 		<PackageReference Include="Svg.Skia" Version="2.0.0.1" />
 		<PackageReference Include="System.Net.Http" Version="4.3.4" />
 		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
