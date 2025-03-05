@@ -65,8 +65,8 @@ namespace NeuroAccessMaui.UI.Popups.Password
 
 				if (await App.CheckPasswordAndUnblockUserAsync(Password))
 				{
-					await ServiceRef.UiService.PopAsync();
 					this.result.TrySetResult(Password);
+					await ServiceRef.UiService.PopAsync();
 				}
 				else
 				{
@@ -91,13 +91,27 @@ namespace NeuroAccessMaui.UI.Popups.Password
 		private async Task Cancel()
 		{
 			await ServiceRef.UiService.PopAsync();
-			this.result.TrySetResult(null);
 		}
 
 		[RelayCommand]
 		private void TogglePasswordVisibility()
 		{
 			this.IsPasswordHidden = !this.IsPasswordHidden;
+		}
+
+		public override Task OnPop()
+		{
+			try
+			{
+				if (!this.result.Task.IsCompleted)
+					this.result.TrySetResult(null);
+			}
+			catch (Exception)
+			{
+				// ignored
+			}
+
+			return base.OnPop();
 		}
 	}
 
