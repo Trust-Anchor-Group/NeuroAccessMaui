@@ -19,6 +19,7 @@ using Waher.Content;
 using Waher.Content.Html.Elements;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Networking.XMPP.Contracts.EventArguments;
 using Waher.Networking.XMPP.StanzaErrors;
 using IServiceProvider = Waher.Networking.XMPP.Contracts.IServiceProvider;
 
