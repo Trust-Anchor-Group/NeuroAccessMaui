@@ -3,12 +3,20 @@
 						x:Class="NeuroAccessMaui.UI.Popups.BasePopup"
 						xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 						xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+						xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 						xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
-						xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups">
-
+						xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups"
+						xmlns:popups="clr-namespace:NeuroAccessMaui.UI.Popups"
+						CloseWhenBackgroundIsClicked="True" Padding="0">
 	<mopups:PopupPage.Animation>
 		<animations:ScaleAnimation DurationIn="500" DurationOut="500" EasingIn="CubicIn" EasingOut="CubicOut" HasBackgroundAnimation="True"
 											PositionIn="Center" PositionOut="Center" />
 	</mopups:PopupPage.Animation>
+	<Grid RowDefinitions="*" ColumnDefinitions="*" Margin="0" Padding="0">
+		<Image x:Name="CustomBackgroundImage" Aspect="AspectFit"/>
+		<ContentView x:Name="ContentSlot"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center" />
+	</Grid>
 
 </mopups:PopupPage>

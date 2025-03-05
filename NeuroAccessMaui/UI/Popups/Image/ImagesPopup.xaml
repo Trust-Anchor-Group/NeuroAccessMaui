@@ -20,7 +20,7 @@
 		<Border WidthRequest="{Binding ViewWidthRequest}" MaximumHeightRequest="{Binding MaximumViewHeightRequest}" Style="{StaticResource PopupBorder}">
 			<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
 				<Label
-						 Text="Identity Images"
+						 Text="{l:Localize Photos}"
 						 Style="{StaticResource PageTitleLabel}"
 						 HorizontalTextAlignment="Center"/>
 					
@@ -40,7 +40,7 @@
 				</CarouselView>
 					
 				<IndicatorView x:Name="IndicatorView"
-                                   HorizontalOptions="Fill"
+                                   HorizontalOptions="Center"
                                    Padding="0,0,0,0"
                                    HeightRequest="20"
 											  IsVisible="{Binding IsSwipeEnabled}">
