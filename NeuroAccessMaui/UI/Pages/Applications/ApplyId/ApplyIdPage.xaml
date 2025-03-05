@@ -381,83 +381,82 @@
 					</VerticalStackLayout>
 				</Border>
 
-				<!--  Additional Photos  -->
 				<Border Style="{StaticResource BorderSet}"
-				        IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
-					<VerticalStackLayout Margin="{StaticResource MediumSpacing}"
-												Spacing="{StaticResource SmallSpacing}">
-						<Label Style="{StaticResource SectionTitleLabel}"
-								 Text="{l:Localize AdditionalPhotosTitle}" />
+						IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
+					<Grid Margin="{StaticResource MediumSpacing}"
+						RowSpacing="{StaticResource SmallSpacing}">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
 
-						<Label IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
-						       Style="{StaticResource InfoLabel}"
-						       Text="{l:Localize AdditionalPhotosDescription}" />
+						<!-- Section Title -->
+						<Label Grid.Row="0"
+							Style="{StaticResource SectionTitleLabel}"
+							Text="{l:Localize AdditionalPhotosTitle}" />
 
-						<!--  CarouselView displaying added attachments  -->
-						<CarouselView ItemsSource="{Binding AdditionalPhotos}"
-										  PeekAreaInsets="25"
-										  IndicatorView="AdditionalPhotosIndicator"
-										  Loop="False">
+						<!-- Description Label -->
+						<Label Grid.Row="1"
+							IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
+							Style="{StaticResource InfoLabel}"
+							Text="{l:Localize AdditionalPhotosDescription}" />
+
+						<!-- CarouselView for Additional Photos -->
+						<CarouselView Grid.Row="2"
+									ItemsSource="{Binding AdditionalPhotos}"
+									PeekAreaInsets="25"
+									IndicatorView="AdditionalPhotosIndicator"
+									Loop="False" HeightRequest="200">
 							<CarouselView.ItemTemplate>
 								<DataTemplate x:DataType="viewmodel:ObservableAttachmentCard">
 									<Grid>
-										<!--  Display the photo similar to the main photo display  -->
 										<Border Padding="0"
-												  HeightRequest="200"
-												  Style="{StaticResource OutlinedImageButtonBorder}"
-												  WidthRequest="200">
+												HeightRequest="200"
+												WidthRequest="200"
+												Style="{StaticResource OutlinedImageButtonBorder}">
 											<Grid>
 												<Image Aspect="AspectFill"
-														 Source="{Binding Image}" />
-												<!--  Remove button overlay  -->
+													Source="{Binding Image}" />
+												<!-- Remove button overlay -->
 												<controls:ImageButton Command="{Binding Path=RemoveAdditionalPhotoCommand, Source={RelativeSource AncestorType={x:Type viewmodel:ApplyIdViewModel}}}"
-												                      CommandParameter="{Binding .}"
-												                      PathData="{x:Static ui:Geometries.TrashCanButtonPath}"
-												                      Style="{StaticResource OutlinedImageButton}"
-												                      HorizontalOptions="End"
-												                      VerticalOptions="Start" />
+																	CommandParameter="{Binding .}"
+																	PathData="{x:Static ui:Geometries.TrashCanButtonPath}"
+																	Style="{StaticResource OutlinedImageButton}"
+																	HorizontalOptions="End"
+																	VerticalOptions="Start" />
 											</Grid>
 										</Border>
 									</Grid>
 								</DataTemplate>
 							</CarouselView.ItemTemplate>
-							<CarouselView.EmptyView>
-								<Grid>
-									<Border Padding="0"
-											  HeightRequest="200"
-											  Style="{StaticResource OutlinedImageButtonBorder}"
-											  WidthRequest="200">
-										<Path Data="{x:Static ui:Geometries.CancelPath}"
-												HeightRequest="48"
-												WidthRequest="48"
-												Aspect="Uniform"
-												Fill="Black"
-												VerticalOptions="Center"
-												HorizontalOptions="Center" />
-									</Border>
-								</Grid>
-							</CarouselView.EmptyView>
 						</CarouselView>
 
-						<IndicatorView x:Name="AdditionalPhotosIndicator"
-											Count="{Binding AdditionalPhotos.Count}"
-											IndicatorColor="LightGrey"
-											SelectedIndicatorColor="Black"
-											HorizontalOptions="Center" />
+						<!-- IndicatorView for the Carousel -->
+						<IndicatorView Grid.Row="3"
+									x:Name="AdditionalPhotosIndicator"
+									Count="{Binding AdditionalPhotos.Count}"
+									IndicatorColor="LightGrey"
+									SelectedIndicatorColor="Black"
+									HorizontalOptions="Center" />
 
-						<!--  Horizontal stack with buttons for adding photos  -->
-						<HorizontalStackLayout HorizontalOptions="Center"
-													  Spacing="10">
+						<!-- Horizontal layout with buttons for adding photos -->
+						<HorizontalStackLayout Grid.Row="4"
+											HorizontalOptions="Center"
+											Spacing="10">
 							<controls:ImageButton Command="{Binding TakeAdditionalPhotoCommand}"
-														 PathData="{x:Static ui:Geometries.CameraPhotoButtonPath}"
-														 Style="{StaticResource OutlinedImageButton}" />
+												PathData="{x:Static ui:Geometries.CameraPhotoButtonPath}"
+												Style="{StaticResource OutlinedImageButton}" />
 
 							<controls:ImageButton Command="{Binding PickAdditionalPhotoCommand}"
-														 PathData="{x:Static ui:Geometries.CameraImageButtonPath}"
-														 Style="{StaticResource OutlinedImageButton}" />
+												PathData="{x:Static ui:Geometries.CameraImageButtonPath}"
+												Style="{StaticResource OutlinedImageButton}" />
 						</HorizontalStackLayout>
-					</VerticalStackLayout>
+					</Grid>
 				</Border>
+
 
 				<!--  Personal Information  -->
 				<Frame Style="{StaticResource FrameSet}">

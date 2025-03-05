@@ -133,7 +133,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				if (this.Signature is not null)
 					return this.Signature.BareJid;
 			}
-			catch (Exception)
+			catch (Exception e)
 			{
 				ServiceRef.LogService.LogException(e);
 				//log and use fallback
