@@ -64,7 +64,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		}
 
 		[RelayCommand]
-		public static async Task ViewId()
+		public async Task ViewId()
 		{
 			try
 			{

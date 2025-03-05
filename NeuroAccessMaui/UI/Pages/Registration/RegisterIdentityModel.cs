@@ -1,10 +1,12 @@
-﻿using System.Globalization;
+﻿using System.Collections.ObjectModel;
+using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Data;
 using NeuroAccessMaui.Services.Data.PersonalNumbers;
 using NeuroAccessMaui.Services.Xmpp;
+using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 
@@ -64,6 +66,8 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		{
 			this.ApplyCommand.NotifyCanExecuteChanged();
 		}
+
+		public ObservableCollection<ObservableAttachmentCard> AdditionalPhotos { get; } = [];
 
 		/// <summary>
 		/// First name

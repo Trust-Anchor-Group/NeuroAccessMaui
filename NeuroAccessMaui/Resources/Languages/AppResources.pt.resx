@@ -2517,4 +2517,46 @@
   <data name="Skip" xml:space="preserve">
     <value>Pular</value>
   </data>
+  <data name="CopyLink" xml:space="preserve">
+    <value>Copiar link</value>
+  </data>
+  <data name="IdentityDocumentTitle" xml:space="preserve">
+    <value>Documento de Identidade</value>
+  </data>
+  <data name="IdentityDocumentDescription" xml:space="preserve">
+    <value>Para melhorar o processo de verificação de sua inscrição, você pode fornecer fotos de um documento de identidade para verificar sua identidade.</value>
+  </data>
+  <data name="FrontOfDocument" xml:space="preserve">
+    <value>A frente do documento</value>
+  </data>
+  <data name="BackOfDocument" xml:space="preserve">
+    <value>O verso do documento</value>
+  </data>
+  <data name="AdditionalPhotosTitle" xml:space="preserve">
+    <value>Fotos Adicionais</value>
+  </data>
+  <data name="AdditionalPhotosDescription" xml:space="preserve">
+    <value>Você pode incluir fotos adicionais para apoiar ainda mais a verificação de sua identidade.</value>
+  </data>
+  <data name="Passport" xml:space="preserve">
+    <value>Passaporte</value>
+  </data>
+  <data name="NationalId" xml:space="preserve">
+    <value>Cartão de Identidade Nacional</value>
+  </data>
+  <data name="DriverLicense" xml:space="preserve">
+    <value>Carteira de Motorista</value>
+  </data>
+  <data name="SelectTypeOfDocument" xml:space="preserve">
+    <value>Selecione o tipo de documento</value>
+  </data>
+  <data name="IdentityDocumentDescription_Passport" xml:space="preserve">
+    <value>Por favor, faça upload de uma foto que mostre claramente ambas as páginas da seção de dados do seu passaporte, incluindo a página com sua foto</value>
+  </data>
+  <data name="FrontOfDocument_Passport" xml:space="preserve">
+    <value>Foto do seu passaporte</value>
+  </data>
+  <data name="PleaseTryAgain" xml:space="preserve">
+    <value>Por favor, tente novamente</value>
+  </data>
 </root>
