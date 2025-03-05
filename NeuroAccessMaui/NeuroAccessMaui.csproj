@@ -705,6 +705,9 @@
 		<MauiXaml Update="UI\Popups\Password\CheckPasswordPopup.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
+		<MauiXaml Update="UI\Popups\QR\ShowQRPopup.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="UI\Popups\Settings\SelectLanguagePopup.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
