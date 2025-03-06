@@ -2379,9 +2379,6 @@
   <data name="MomentaryValues" xml:space="preserve">
     <value>Valeurs momentanées</value>
   </data>
-  <data name="None" xml:space="preserve">
-    <value>Aucun</value>
-  </data>
   <data name="PeakValues" xml:space="preserve">
     <value>Valeurs maximales</value>
   </data>
@@ -2498,5 +2495,68 @@
   </data>
   <data name="GenerateQrCode" xml:space="preserve">
     <value>Générer un code QR</value>
+  </data>
+  <data name="CameraPermissionTitle" xml:space="preserve">
+    <value>Caméra</value>
+  </data>
+  <data name="CameraPermissionDescription" xml:space="preserve">
+    <value>Pour utiliser cette fonctionnalité, veuillez activer l’accès à l’appareil photo dans vos paramètres.</value>
+  </data>
+  <data name="CameraPermissionDescriptionSecondary" xml:space="preserve">
+    <value>Ouvrez les paramètres - Cliquez sur « Autorisations » - Activer les autorisations de l’appareil photo</value>
+  </data>
+  <data name="iOS_CameraPermissionDescriptionSecondary" xml:space="preserve">
+    <value>Ouvrir les paramètres - Activer les autorisations de l’appareil photo</value>
+  </data>
+  <data name="GoToSettings" xml:space="preserve">
+    <value>Ouvrir les paramètres</value>
+  </data>
+  <data name="Skip" xml:space="preserve">
+    <value>Sautiller</value>
+  </data>
+  <data name="CopyLink" xml:space="preserve">
+    <value>Copier le lien</value>
+  </data>
+  <data name="IdentityDocumentTitle" xml:space="preserve">
+    <value>Pièce d’identité</value>
+  </data>
+  <data name="IdentityDocumentDescription" xml:space="preserve">
+    <value>Pour améliorer le processus de vérification de votre application, vous pouvez fournir des photos d’une pièce d’identité pour vérifier votre identité.</value>
+  </data>
+  <data name="FrontOfDocument" xml:space="preserve">
+    <value>Le recto du document</value>
+  </data>
+  <data name="BackOfDocument" xml:space="preserve">
+    <value>Le verso du document</value>
+  </data>
+  <data name="AdditionalPhotosTitle" xml:space="preserve">
+    <value>Photos supplémentaires</value>
+  </data>
+  <data name="AdditionalPhotosDescription" xml:space="preserve">
+    <value>Vous pouvez inclure des photos supplémentaires pour étayer davantage votre vérification d’identité.</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>Aucun</value>
+  </data>
+  <data name="Passport" xml:space="preserve">
+    <value>Passeport</value>
+  </data>
+  <data name="NationalId" xml:space="preserve">
+    <value>Carte nationale d’identité</value>
+  </data>
+  <data name="DriverLicense" xml:space="preserve">
+    <value>Permis de conduire</value>
+  </data>
+  <data name="SelectTypeOfDocument" xml:space="preserve">
+    <value>Sélectionnez le type de document</value>
+  </data>
+  <data name="IdentityDocumentDescription_Passport" xml:space="preserve">
+    <value>Veuillez télécharger une photo qui montre clairement les deux pages de la section des données de votre passeport, y compris la page avec votre photo</value>
+  </data>
+  <data name="FrontOfDocument_Passport" xml:space="preserve">
+    <value>Photo de votre passeport</value>
+  </data>
+  <data name="PleaseTryAgain" xml:space="preserve">
+    <value>Veuillez réessayer</value>
   </data>
 </root>

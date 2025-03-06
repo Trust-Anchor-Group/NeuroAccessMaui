@@ -103,7 +103,7 @@
 	<Shell.FlyoutHeader>
 		<Frame Style="{StaticResource ShellFrame}" Padding="1" CornerRadius="0">
 			<Grid HeightRequest="200">
-				<Image Aspect="AspectFill" WidthRequest="144" HeightRequest="144" Source="flyout_header" />
+				<Image Aspect="AspectFill" WidthRequest="144" HeightRequest="144" Source="{AppThemeBinding Dark=flyout_header_dark,Light=flyout_header_light}" />
 			</Grid>
 		</Frame>
 	</Shell.FlyoutHeader>

@@ -2379,9 +2379,6 @@
   <data name="MomentaryValues" xml:space="preserve">
     <value>Valori de moment</value>
   </data>
-  <data name="None" xml:space="preserve">
-    <value>Niciunul</value>
-  </data>
   <data name="PeakValues" xml:space="preserve">
     <value>Valori de vârf</value>
   </data>
@@ -2498,5 +2495,68 @@
   </data>
   <data name="GenerateQrCode" xml:space="preserve">
     <value>Generați cod QR</value>
+  </data>
+  <data name="CameraPermissionTitle" xml:space="preserve">
+    <value>Aparat foto</value>
+  </data>
+  <data name="CameraPermissionDescription" xml:space="preserve">
+    <value>Pentru a utiliza această funcție, vă rugăm să activați accesul la cameră în setările dvs.</value>
+  </data>
+  <data name="CameraPermissionDescriptionSecondary" xml:space="preserve">
+    <value>Deschideți setările - Faceți clic pe "Permisiuni" - Activați permisiunile camerei</value>
+  </data>
+  <data name="iOS_CameraPermissionDescriptionSecondary" xml:space="preserve">
+    <value>Deschideți setările - Activați permisiunile camerei</value>
+  </data>
+  <data name="GoToSettings" xml:space="preserve">
+    <value>Deschideți setările</value>
+  </data>
+  <data name="Skip" xml:space="preserve">
+    <value>Sări peste</value>
+  </data>
+  <data name="CopyLink" xml:space="preserve">
+    <value>Copiază linkul</value>
+  </data>
+  <data name="IdentityDocumentTitle" xml:space="preserve">
+    <value>Document de identitate</value>
+  </data>
+  <data name="IdentityDocumentDescription" xml:space="preserve">
+    <value>Pentru a îmbunătăți procesul de verificare al aplicației, puteți furniza fotografii ale unui document de identitate pentru a vă verifica identitatea.</value>
+  </data>
+  <data name="FrontOfDocument" xml:space="preserve">
+    <value>Partea din față a documentului</value>
+  </data>
+  <data name="BackOfDocument" xml:space="preserve">
+    <value>Spatele documentului</value>
+  </data>
+  <data name="AdditionalPhotosTitle" xml:space="preserve">
+    <value>Fotografii suplimentare</value>
+  </data>
+  <data name="AdditionalPhotosDescription" xml:space="preserve">
+    <value>Puteți include fotografii suplimentare pentru a sprijini și mai mult verificarea identității.</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>Niciunul</value>
+  </data>
+  <data name="Passport" xml:space="preserve">
+    <value>Pașaport</value>
+  </data>
+  <data name="NationalId" xml:space="preserve">
+    <value>Carte de identitate națională</value>
+  </data>
+  <data name="DriverLicense" xml:space="preserve">
+    <value>Permis de conducere</value>
+  </data>
+  <data name="SelectTypeOfDocument" xml:space="preserve">
+    <value>Selectați tipul de document</value>
+  </data>
+  <data name="IdentityDocumentDescription_Passport" xml:space="preserve">
+    <value>Vă rugăm să încărcați o fotografie care să arate clar ambele pagini ale secțiunii de date a pașaportului, inclusiv pagina cu fotografia dvs.</value>
+  </data>
+  <data name="FrontOfDocument_Passport" xml:space="preserve">
+    <value>Fotografie a pașaportului</value>
+  </data>
+  <data name="PleaseTryAgain" xml:space="preserve">
+    <value>Vă rugăm să încercați din nou</value>
   </data>
 </root>

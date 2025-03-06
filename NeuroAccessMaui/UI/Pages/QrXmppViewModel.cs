@@ -1,4 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using NeuroAccessMaui.Services;
+using NeuroAccessMaui.UI.Popups.QR;
+using Waher.Content.Html.Elements;
 
 namespace NeuroAccessMaui.UI.Pages
 {
@@ -48,6 +52,19 @@ namespace NeuroAccessMaui.UI.Pages
 			this.QrCodeContentType = null;
 			this.QrCodeUri = null;
 			this.HasQrCode = false;
+		}
+
+		/// <summary>
+		/// Open QR Popup
+		/// </summary>
+		/// <returns></returns>
+		[RelayCommand]
+		public async Task OpenQrPopup()
+		{
+			if (this.QrCodeBin is null) return;
+
+			ShowQRPopup QrPopup = new(this.QrCodeBin);
+			await ServiceRef.UiService.PushAsync(QrPopup);
 		}
 
 		#region Properties

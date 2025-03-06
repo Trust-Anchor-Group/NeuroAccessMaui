@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFrameworks>net8.0-ios;net8.0-android</TargetFrameworks>
@@ -21,8 +21,8 @@
 		<ApplicationIdGuid>2a4dd0f3-35d6-48a3-a76d-1fa94e567eee</ApplicationIdGuid>
 
 		<!-- Versions -->
-		<ApplicationDisplayVersion>2.3.0</ApplicationDisplayVersion>
-		<ApplicationVersion>149</ApplicationVersion>
+		<ApplicationDisplayVersion>2.4.0</ApplicationDisplayVersion>
+		<ApplicationVersion>162</ApplicationVersion>
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">13.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">13.1</SupportedOSPlatformVersion>
@@ -40,6 +40,7 @@
 		<Copyright>Copyright © Trust Anchor Group 2018-2024. All rights reserved.</Copyright>
 		<PackageProjectUrl></PackageProjectUrl>
 		<RepositoryUrl>https://github.com/Trust-Anchor-Group/NeuroAccessMaui</RepositoryUrl>
+
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios'">
@@ -106,7 +107,13 @@
 
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconcolor.svg" Color="LightGray" />
+		<MauiIcon Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'" 
+				Include="Resources\AppIcon\appicon.svg"
+				ForegroundFile="Resources\AppIcon\appiconfg.svg"
+				BaseSize="512,512" 
+				ForegroundScale="0.55"
+				Color="#F5F6F7"  />
+		<MauiIcon Include="Resources\AppIcon\appicon_ios.svg" Color="#F5F6F7" />
 
 		<!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#eeeeee" BaseSize="196,196" />
@@ -115,7 +122,12 @@
 		<MauiImage Include="Resources\Images\*" />
 
 		<!-- Custom Fonts -->
-		<MauiFont Include="Resources\Fonts\*" />
+		<MauiFont Include="Resources\Fonts\SpaceGrotesk-Bold.ttf"/>
+		<MauiFont Include="Resources\Fonts\SpaceGrotesk-SemiBold.ttf"/>
+		<MauiFont Include="Resources\Fonts\SpaceGrotesk-Medium.ttf"/>
+		<MauiFont Include="Resources\Fonts\SpaceGrotesk-Regular.ttf"/>
+		<MauiFont Include="Resources\Fonts\NHaasGroteskTXPro-75Bd.ttf"/>
+		<MauiFont Include="Resources\Fonts\NHaasGroteskTXPro-55Rg.ttf"/>
 
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
@@ -123,6 +135,24 @@
 
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
 		<AndroidResource Include="Resources\xml\file_paths.xml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Remove="Services\NewFolder1\**" />
+	  <Compile Remove="Services\NewFolder2\**" />
+	  <Compile Remove="Services\Xmpp\NewFolder\**" />
+	  <EmbeddedResource Remove="Services\NewFolder1\**" />
+	  <EmbeddedResource Remove="Services\NewFolder2\**" />
+	  <EmbeddedResource Remove="Services\Xmpp\NewFolder\**" />
+	  <MauiCss Remove="Services\NewFolder1\**" />
+	  <MauiCss Remove="Services\NewFolder2\**" />
+	  <MauiCss Remove="Services\Xmpp\NewFolder\**" />
+	  <MauiXaml Remove="Services\NewFolder1\**" />
+	  <MauiXaml Remove="Services\NewFolder2\**" />
+	  <MauiXaml Remove="Services\Xmpp\NewFolder\**" />
+	  <None Remove="Services\NewFolder1\**" />
+	  <None Remove="Services\NewFolder2\**" />
+	  <None Remove="Services\Xmpp\NewFolder\**" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -159,11 +189,6 @@
 		<Compile Remove="Platforms\iOS\Security\ScreenRecordingProtectionManager.cs" />
 		<Compile Remove="Platforms\iOS\Security\ScreenSecurity.ios.cs" />
 		<Compile Remove="Platforms\iOS\Security\ScreenshotProtectionManager.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<MauiFont Remove="Resources\Fonts\NHaasGroteskTXPro-65Md.ttf" />
-		<MauiFont Remove="Resources\Fonts\SpaceGrotesk-Light.ttf" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -257,59 +282,60 @@
 		<PackageReference Include="CommunityToolkit.Maui.Markup" Version="4.2.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
 		<PackageReference Include="DotNetMeteor.HotReload.Plugin" Version="3.*" />
-		<PackageReference Include="EDaler" Version="2.5.3" />
+		<PackageReference Include="EDaler" Version="3.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.10" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.92" />
 		<PackageReference Include="Mopups" Version="1.3.2" />
-		<PackageReference Include="NeuroFeatures" Version="1.4.2" />
+		<PackageReference Include="NeuroFeatures" Version="2.1.2" />
 		<PackageReference Include="Plugin.Fingerprint" Version="3.0.0-beta.1" />
+		<PackageReference Include="SkiaSharp" Version="2.88.9" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="2.88.9" />
 		<PackageReference Include="Plugin.Firebase.Core" Version="3.1.1" />
 		<PackageReference Include="Plugin.Firebase.CloudMessaging" Version="3.1.2" />
-		<PackageReference Include="SkiaSharp" Version="2.88.8" />
-		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="2.88.8" />
 		<PackageReference Include="Svg.Skia" Version="2.0.0.1" />
 		<PackageReference Include="System.Net.Http" Version="4.3.4" />
 		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
-		<PackageReference Include="Waher.Content" Version="2.6.13" />
-		<PackageReference Include="Waher.Content.Images" Version="2.1.8" />
-		<PackageReference Include="Waher.Content.Markdown" Version="3.2.0" />
-		<PackageReference Include="Waher.Content.QR" Version="2.1.0" />
-		<PackageReference Include="Waher.Content.Xml" Version="2.3.2" />
-		<PackageReference Include="Waher.Events" Version="1.2.1" />
-		<PackageReference Include="Waher.Events.Filter" Version="1.0.2" />
-		<PackageReference Include="Waher.Events.Persistence" Version="1.1.2" />
-		<PackageReference Include="Waher.Events.XMPP" Version="1.2.6" />
-		<PackageReference Include="Waher.Networking" Version="2.3.0" />
-		<PackageReference Include="Waher.Networking.DNS" Version="2.0.5" />
-		<PackageReference Include="Waher.Networking.PeerToPeer" Version="2.1.0" />
-		<PackageReference Include="Waher.Networking.UPnP" Version="2.0.5" />
-		<PackageReference Include="Waher.Networking.XMPP" Version="3.2.1" />
-		<PackageReference Include="Waher.Networking.XMPP.Avatar" Version="2.2.3" />
-		<PackageReference Include="Waher.Networking.XMPP.Concentrator" Version="3.2.2" />
-		<PackageReference Include="Waher.Networking.XMPP.Contracts" Version="3.2.4" />
-		<PackageReference Include="Waher.Networking.XMPP.Control" Version="3.0.1" />
-		<PackageReference Include="Waher.Networking.XMPP.HTTPX" Version="3.1.1" />
-		<PackageReference Include="Waher.Networking.XMPP.Mail" Version="2.0.2" />
-		<PackageReference Include="Waher.Networking.XMPP.P2P" Version="3.1.2" />
-		<PackageReference Include="Waher.Networking.XMPP.PEP" Version="2.0.6" />
-		<PackageReference Include="Waher.Networking.XMPP.Provisioning" Version="3.0.1" />
-		<PackageReference Include="Waher.Networking.XMPP.PubSub" Version="2.0.8" />
-		<PackageReference Include="Waher.Networking.XMPP.Push" Version="2.0.0" />
-		<PackageReference Include="Waher.Networking.XMPP.Sensor" Version="3.0.2" />
-		<PackageReference Include="Waher.Persistence" Version="1.12.0" />
-		<PackageReference Include="Waher.Persistence.FilesLW" Version="1.12.0" />
-		<PackageReference Include="Waher.Persistence.XmlLedger" Version="1.1.0" />
-		<PackageReference Include="Waher.Runtime.Inventory" Version="1.1.7" />
-		<PackageReference Include="Waher.Runtime.Profiling" Version="1.0.9" />
-		<PackageReference Include="Waher.Runtime.Settings" Version="1.1.1" />
-		<PackageReference Include="Waher.Runtime.Temporary" Version="1.0.1" />
-		<PackageReference Include="Waher.Runtime.Text" Version="1.1.4" />
-		<PackageReference Include="Waher.Script" Version="2.7.0" />
-		<PackageReference Include="Waher.Script.Content" Version="2.1.7" />
-		<PackageReference Include="Waher.Security" Version="1.0.9" />
-		<PackageReference Include="Waher.Security.JWS" Version="1.1.2" />
-		<PackageReference Include="Waher.Security.JWT" Version="1.4.2" />
+		<PackageReference Include="Waher.Content" Version="3.2.0" />
+		<PackageReference Include="Waher.Content.Images" Version="3.0.0" />
+		<PackageReference Include="Waher.Content.Markdown" Version="5.2.0" />
+		<PackageReference Include="Waher.Content.QR" Version="2.1.1" />
+		<PackageReference Include="Waher.Content.Xml" Version="3.0.0" />
+		<PackageReference Include="Waher.Events" Version="1.4.1" />
+		<PackageReference Include="Waher.Events.Filter" Version="1.0.3" />
+		<PackageReference Include="Waher.Events.Persistence" Version="1.2.1" />
+		<PackageReference Include="Waher.Events.XMPP" Version="2.1.0" />
+		<PackageReference Include="Waher.Networking" Version="4.3.0" />
+		<PackageReference Include="Waher.Networking.DNS" Version="3.1.1" />
+		<PackageReference Include="Waher.Networking.PeerToPeer" Version="3.1.0" />
+		<PackageReference Include="Waher.Networking.UPnP" Version="3.1.0" />
+		<PackageReference Include="Waher.Networking.XMPP" Version="4.1.1" />
+		<PackageReference Include="Waher.Networking.XMPP.Avatar" Version="3.1.0" />
+		<PackageReference Include="Waher.Networking.XMPP.Concentrator" Version="4.2.0" />
+		<PackageReference Include="Waher.Networking.XMPP.Contracts" Version="4.1.4" />
+		<PackageReference Include="Waher.Networking.XMPP.Control" Version="4.1.0" />
+		<PackageReference Include="Waher.Networking.XMPP.HTTPX" Version="4.2.2" />
+		<PackageReference Include="Waher.Networking.XMPP.Mail" Version="3.1.0" />
+		<PackageReference Include="Waher.Networking.XMPP.P2P" Version="4.1.1" />
+		<PackageReference Include="Waher.Networking.XMPP.PEP" Version="3.1.0" />
+		<PackageReference Include="Waher.Networking.XMPP.Provisioning" Version="4.1.0" />
+		<PackageReference Include="Waher.Networking.XMPP.PubSub" Version="3.1.0" />
+		<PackageReference Include="Waher.Networking.XMPP.Push" Version="3.1.0" />
+		<PackageReference Include="Waher.Networking.XMPP.Sensor" Version="4.1.1" />
+		<PackageReference Include="Waher.Persistence" Version="1.14.0" />
+		<PackageReference Include="Waher.Persistence.FilesLW" Version="1.14.0" />
+		<PackageReference Include="Waher.Persistence.XmlLedger" Version="1.2.0" />
+		<PackageReference Include="Waher.Runtime.Inventory" Version="1.3.1" />
+		<PackageReference Include="Waher.Runtime.IO" Version="1.0.2" />
+		<PackageReference Include="Waher.Runtime.Profiling" Version="1.0.11" />
+		<PackageReference Include="Waher.Runtime.Settings" Version="1.2.0" />
+		<PackageReference Include="Waher.Runtime.Temporary" Version="1.1.0" />
+		<PackageReference Include="Waher.Runtime.Text" Version="1.1.6" />
+		<PackageReference Include="Waher.Script" Version="2.10.3" />
+		<PackageReference Include="Waher.Script.Content" Version="2.2.0" />
+		<PackageReference Include="Waher.Security" Version="1.0.13" />
+		<PackageReference Include="Waher.Security.JWS" Version="1.1.3" />
+		<PackageReference Include="Waher.Security.JWT" Version="1.5.0" />
 		<PackageReference Include="ZXing.Net.Maui.Controls" Version="0.4.0" />
 	</ItemGroup>
 
@@ -430,6 +456,9 @@
 		<Compile Update="UI\Popups\Password\CheckPasswordPopup.xaml.cs">
 			<DependentUpon>CheckPasswordPopup.xaml</DependentUpon>
 		</Compile>
+		<Compile Update="UI\Popups\Permission\ShowPermissionPopup.xaml.cs">
+		  <DependentUpon>ShowPermissionPopup.xaml</DependentUpon>
+		</Compile>
 		<Compile Update="UI\Popups\SelectPhoneCodePopup.xaml.cs">
 			<DependentUpon>SelectPhoneCodePopup.xaml</DependentUpon>
 		</Compile>
@@ -439,18 +468,26 @@
 		<Compile Update="UI\Popups\Info\ShowInfoPopup.xaml.cs">
 			<DependentUpon>ShowInfoPopup.xaml</DependentUpon>
 		</Compile>
+		<Compile Update="UI\Popups\Permission\ShowPermissionPopup.xaml.cs">
+			<DependentUpon>ShowPermissionPopup.xaml</DependentUpon>
+		</Compile>
 	</ItemGroup>
 
 	<ItemGroup>
 		<EmbeddedResource Update="Resources\Languages\AppResources.resx">
 			<Generator>MSBuild:Compile</Generator>
 			<LastGenOutput>AppResources.Designer.cs</LastGenOutput>
-			<StronglyTypedFileName>Resources\Languages\AppResources.Designer.cs</StronglyTypedFileName>
-	      	<StronglyTypedLanguage>CSharp</StronglyTypedLanguage>
+			<StronglyTypedFileName>$(IntermediateOutputPath)\AppResources.Designer.cs</StronglyTypedFileName>
+	      <StronglyTypedLanguage>CSharp</StronglyTypedLanguage>
 			<StronglyTypedNamespace>NeuroAccessMaui.Resources.Languages</StronglyTypedNamespace>
 			<StronglyTypedClassName>AppResources</StronglyTypedClassName>
 		</EmbeddedResource>
 	</ItemGroup>
+
+	<PropertyGroup>
+		<!-- Required for vs code to understand typed resources  (Disabledin visual studio, because there it creates intellisense errors -_- )-->
+		<CoreCompileDependsOn>PrepareResources;$(CoreCompileDependsOn)</CoreCompileDependsOn>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\IdApp.Cv\IdApp.Cv.csproj" />
@@ -671,11 +708,17 @@
 		<MauiXaml Update="UI\Popups\Image\ImagesPopup.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
+		<MauiXaml Update="UI\Popups\Permission\ShowPermissionPopup.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="UI\Popups\Photos\Image\ImageView.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Popups\Password\CheckPasswordPopup.xaml">
 			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Popups\QR\ShowQRPopup.xaml">
+		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Popups\Settings\SelectLanguagePopup.xaml">
 			<Generator>MSBuild:Compile</Generator>
@@ -702,5 +745,9 @@
 
 	<ItemGroup>
 		<PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="8.0.92" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="UI\Pages\Wallet\ServiceProviders\NewFolder\" />
 	</ItemGroup>
 </Project>

@@ -15,7 +15,7 @@
 		public static bool HasSameContentAs<T>(this List<T> list, List<T> other)
 		{
 			if (list.Count != other.Count)
-			return false;
+				return false;
 
 			List<T> firstNotSecond = list.Except(other).ToList();
 			List<T> secondNotFirst = other.Except(list).ToList();

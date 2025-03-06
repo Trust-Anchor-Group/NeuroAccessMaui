@@ -64,11 +64,11 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		}
 
 		[RelayCommand]
-		public static async Task ViewId()
+		public async Task ViewId()
 		{
 			try
 			{
-				if(await App.AuthenticateUser(AuthenticationPurpose.ViewId))
+				if(await App.AuthenticateUserAsync(AuthenticationPurpose.ViewId))
 					await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage));
 			}
 			catch (Exception ex)
