@@ -233,13 +233,8 @@
 	<DataTemplate x:Key="DurationParameterTemplate"
 					  x:DataType="objectModel:ObservableDurationParameter">
 		<VerticalStackLayout>
-			<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}"
-											 EntryData="{Binding StringValue, Mode=TwoWay}"
-											 Keyboard="Text"
-											 Placeholder="{Binding Guide}"
-											 VerticalOptions="Center"
-											 LabelText="{Binding Label}"
-											 IsValid="{Binding IsValid}" />
+			<controls:CompositeDurationPicker	TopLabelText="Duration"
+															TopLabelStyle="{StaticResource RegularCompositeEntryLabel}"/>
 			<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
 																IsEncrypted="{Binding IsEncrypted}"
 																IsVisible="{Binding IsProtected}" />
