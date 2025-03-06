@@ -19,6 +19,7 @@ using Waher.Content;
 using Waher.Content.Html.Elements;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Networking.XMPP.Contracts.EventArguments;
 using Waher.Networking.XMPP.StanzaErrors;
 using IServiceProvider = Waher.Networking.XMPP.Contracts.IServiceProvider;
 
@@ -663,7 +664,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		}
 
 
-		[RelayCommand(CanExecute = nameof(CanTakePhoto))]
+		[RelayCommand]
 		private async Task TakeProofOfIdFront()
 		{
 			bool Permitted = await ServiceRef.PermissionService.CheckCameraPermissionAsync();
@@ -694,7 +695,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			}
 		}
 
-		[RelayCommand(CanExecute = nameof(CanTakePhoto))]
+		[RelayCommand]
 		private async Task PickProofOfIdFront()
 		{
 			try
@@ -730,7 +731,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			this.HasProofOfIdFront = false;
 		}
 
-		[RelayCommand(CanExecute = nameof(CanTakePhoto))]
+		[RelayCommand]
 		private async Task TakeProofOfIdBack()
 		{
 			bool Permitted = await ServiceRef.PermissionService.CheckCameraPermissionAsync();
@@ -761,7 +762,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			}
 		}
 
-		[RelayCommand(CanExecute = nameof(CanTakePhoto))]
+		[RelayCommand]
 		private async Task PickProofOfIdBack()
 		{
 			try
