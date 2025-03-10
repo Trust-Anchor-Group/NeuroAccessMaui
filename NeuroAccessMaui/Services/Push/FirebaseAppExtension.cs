@@ -30,14 +30,14 @@ namespace NeuroAccessMaui.Services.Push
 			Builder.ConfigureLifecycleEvents(events =>
 			{
 #if IOS
-            events.AddiOS(iOS => iOS.WillFinishLaunching((_,__) => {
-               CrossFirebase.Initialize();
-					FirebaseCloudMessagingImplementation.Initialize();
-               return false;
+            events.AddiOS(iOS => iOS.WillFinishLaunching((_,_) => {
+               	CrossFirebase.Initialize();
+				FirebaseCloudMessagingImplementation.Initialize();
+               	return false;
             }));
 #elif ANDROID
 				events.AddAndroid(android => android.OnCreate((activity, _) =>
-					 CrossFirebase.Initialize(activity)));
+				CrossFirebase.Initialize(activity)));
 #endif
 			});
 
