@@ -9,6 +9,7 @@ using Waher.Networking.XMPP.Push;
 using Security;
 using System.Text;
 using CommunityToolkit.Mvvm.Messaging;
+using Plugin.Firebase.CloudMessaging;
 namespace NeuroAccessMaui.Services
 {
 	/// <summary>
@@ -380,7 +381,8 @@ namespace NeuroAccessMaui.Services
 
 			try
 			{
-				//Token = Firebase.CloudMessaging.Messaging.SharedInstance.FcmToken ?? string.Empty;
+				await CrossFirebaseCloudMessaging.Current.CheckIfValidAsync();
+				Token = await CrossFirebaseCloudMessaging.Current.GetTokenAsync();
 			}
 			catch (Exception ex)
 			{
@@ -394,7 +396,7 @@ namespace NeuroAccessMaui.Services
 				Service = PushMessagingService.Firebase
 			};
 
-			return await Task.FromResult(TokenInformation);
+			return TokenInformation;
 		}
 
 		#region Keyboard

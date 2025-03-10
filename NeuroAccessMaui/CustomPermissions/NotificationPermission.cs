@@ -17,7 +17,7 @@ namespace NeuroAccessMaui.CustomPermissions
 {
 	public class NotificationPermission : Permissions.BasePermission
 	{
-		public override Task<PermissionStatus> CheckStatusAsync()
+		public override async Task<PermissionStatus> CheckStatusAsync()
 		{
 #if IOS
             // Check the current notification settings on iOS
@@ -36,10 +36,10 @@ namespace NeuroAccessMaui.CustomPermissions
 				Android.Content.Context context = Android.App.Application.Context;
 				// Check the POST_NOTIFICATIONS permission
 				int result = ((int)ContextCompat.CheckSelfPermission(context, Manifest.Permission.PostNotifications));
-				return result == (int)Permission.Granted ? Task.FromResult(PermissionStatus.Granted) : Task.FromResult(PermissionStatus.Denied);
+				return result == (int)Permission.Granted ? PermissionStatus.Granted : PermissionStatus.Denied;
 			}
 			// For earlier versions, notifications are granted by default.
-			return Task.FromResult(PermissionStatus.Granted);
+			return PermissionStatus.Granted;
 #else
             return PermissionStatus.Unknown;
 #endif
