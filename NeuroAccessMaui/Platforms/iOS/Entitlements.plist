@@ -12,5 +12,7 @@
 	<array>
 		<string>$(AppIdentifierPrefix)com.trustanchorgroup.neuroid</string>
 	</array>
+	<key>aps-environment</key>
+	<string>development</string>
 </dict>
 </plist>
