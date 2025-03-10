@@ -8,15 +8,13 @@ using NeuroAccessMaui.UI;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
+using NeuroAccessMaui.Services.Push;
 using ZXing.Net.Maui.Controls;
 using Microsoft.Maui.Platform;
-#if DEBUG
-using DotNet.Meteor.HotReload.Plugin;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using SkiaSharp.Views.Maui.Controls;
-using NeuroAccessMaui.Services.Push;
-
-
+#if DEBUG
+using DotNet.Meteor.HotReload.Plugin;
 #endif
 
 
