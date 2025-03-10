@@ -28,6 +28,7 @@ namespace NeuroAccessMaui.UI
 		private static Style? frameSet;
 		private static Style? frameSubSet;
 		private static Style? clickableFrameSubSet;
+		private static Style? regularCompositePicker;
 		private static Style? regularCompositeEntry;
 		private static Style? regularCompositeEntryBorder;
 		private static Style? regularCompositeDatePicker;
@@ -414,6 +415,18 @@ namespace NeuroAccessMaui.UI
 			{
 				roundedBorder ??= TryGetResource<Style>("RoundedBorder");
 				return roundedBorder!;
+			}
+		}
+
+		/// <summary>
+		/// Style for regular composite pickers
+		/// </summary>
+		public static Style RegularCompositePicker
+		{
+			get
+			{
+				regularCompositePicker ??= TryGetResource<Style>("RegularCompositePicker");
+				return regularCompositePicker!;
 			}
 		}
 	}
