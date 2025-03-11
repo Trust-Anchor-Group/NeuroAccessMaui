@@ -70,19 +70,19 @@ namespace NeuroAccess.UiTests
 			AppiumElement passwordEntry = AutoFindElement("DefinePasswordView_PasswordCompositeEntry");
 			passwordEntry.Click();
 			Task.Delay(500).Wait();
-			foreach (char letter in testRoundUserName)
+			foreach (char letter in "TestUser1234")
 			{
 				action.SendKeys(letter.ToString()).Perform();
-				Task.Delay(100).Wait();
+				Task.Delay(50).Wait();
 			}//The username and password are the same because it's simpler this way, and if you try to log in later you will know the password by just knowing the user name
 			////// then confirm the password in the second entry
 			AppiumElement confirmPasswordEntry = AutoFindElement("DefinePasswordView_ConfirmPasswordCompositeEntry");
 			confirmPasswordEntry.Click();
 			Task.Delay(500).Wait();
-			foreach (char letter in testRoundUserName)
+			foreach (char letter in "TestUser1234")
 			{
 				action.SendKeys(letter.ToString()).Perform();
-				Task.Delay(100).Wait();
+				Task.Delay(50).Wait();
 			}
 			////// Then press the create password button
 			AppiumElement createPasswordButton = AutoFindElement("DefinePasswordView_CreatePasswordTextButton");
