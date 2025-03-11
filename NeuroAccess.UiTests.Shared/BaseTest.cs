@@ -6,6 +6,7 @@ using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Internal;
 using OpenCvSharp;
 using OpenQA.Selenium.Appium.Windows;
+using OpenQA.Selenium.Appium.Service;
 
 
 namespace NeuroAccess.UiTests
@@ -13,43 +14,67 @@ namespace NeuroAccess.UiTests
 	[TestClass]
 	public class BaseTest
 	{
+		public static bool Reset = true;//Must be true here so that the app resets before the first test. Can be manually made to false after a test so that the app will only close and reopen instead of completly resetting
 		private static AppiumDriver? driver;
 
 		public static AppiumDriver App => driver ?? throw new InvalidOperationException("AppiumDriver is not initialized.");
 
-		// This will run once before all tests in the derived classes
+		// This will run once before each test class
 		[ClassInitialize(InheritanceBehavior.BeforeEachDerivedClass)]
 		public static void RunBeforeAnyTests(TestContext context)
 		{
-
-
-
 			try
 			{
-				Console.WriteLine("Starting Appium Server...");
-				AppiumServerHelper.StartAppiumLocalServer();
-
-				Console.WriteLine("Configuring Appium Options...");
-				var AndroidOptions = new AppiumOptions
+				if (Reset)
 				{
-					// Specify UIAutomator2 as the driver, typically don't need to change this
-					AutomationName = "UIAutomator2",
-					// Always Android for Android
-					PlatformName = "Android",
-					// This is the Android version, not API level
-					// This is ignored if you use the avd option below
-					PlatformVersion = "14",
-					// The full path to the .apk file to test or the package name if the app is already installed on the device
-					App = "com.tag.NeuroAccess.apk",
-				};
+					Console.WriteLine("Starting Appium Server...");
+					AppiumServerHelper.StartAppiumLocalServer();
+
+					Console.WriteLine("Configuring Appium Options...");
+					var AndroidOptions = new AppiumOptions
+					{
+						// Specify UIAutomator2 as the driver, typically don't need to change this
+						AutomationName = "UIAutomator2",
+						// Always Android for Android
+						PlatformName = "Android",
+						// This is the Android version, not API level
+						// This is ignored if you use the avd option below
+						PlatformVersion = "14",
+						// The full path to the .apk file to test or the package name if the app is already installed on the device
+						App = "com.tag.NeuroAccess.apk",
+					};
 
 
-				AndroidOptions.AddAdditionalAppiumOption("forceReset", true);
-				//AndroidOptions.AddAdditionalAppiumOption("noReset", true);
-				Console.WriteLine("Initializing Android Driver...");
-				driver = new AndroidDriver(AndroidOptions);
+					AndroidOptions.AddAdditionalAppiumOption("forceReset", true);
+					//AndroidOptions.AddAdditionalAppiumOption("noReset", true);
+					Console.WriteLine("Initializing Android Driver...");
+					driver = new AndroidDriver(AndroidOptions);
+					Console.WriteLine("Android Driver initialized successfully.");
+				}
+				else {
+					var AndroidOptions = new AppiumOptions { AutomationName = "UIAutomator2", PlatformName = "Android", PlatformVersion = "14", App = "com.tag.NeuroAccess.apk" };
+					AndroidOptions.AddAdditionalAppiumOption("noReset", true);// The app doesnt reset because this is true
 
-				Console.WriteLine("Android Driver initialized successfully.");
+					driver.ExecuteScript("mobile:pressKey", new Dictionary<string, string> { { "keycode", "187" } });//187 is the code for recent apps/overview button
+					Task.Delay(500).Wait();
+					//Get the screen size to use it for getting the coordinates of the middle of the screen, so the swipe up happens from there.
+					var screenSize = driver.Manage().Window.Size;
+
+					int startX = (screenSize.Width / 10) * 6;  // Middle of the screen but slightly to the right
+					int startY = screenSize.Height / 2; // Middle vertically
+					int endY = screenSize.Height / 10;  // Near the top 
+
+					Actions action = new Actions(driver);
+
+					action.MoveToLocation(startX, startY) // Start point
+							.ClickAndHold()
+							.MoveByOffset(0, endY - startY) // Swipe up (fast swipe up to close the app)
+							.Release()
+							.Perform();
+
+					Task.Delay(3000).Wait();//Wait some time to make sure the app is closed before launching it again
+					driver = new AndroidDriver(AndroidOptions);
+				}
 			}
 			catch (Exception ex)
 			{
@@ -58,15 +83,26 @@ namespace NeuroAccess.UiTests
 			}
 		}
 
-		// This will run once after all tests in the derived classes
-		[ClassCleanup(InheritanceBehavior.BeforeEachDerivedClass)]
-		public static void RunAfterAnyTests()
+		// This will run after all the tests have happened
+		[AssemblyCleanup]
+		public static void RunAfterAllTests()
 		{
-			driver?.Quit();
-			driver?.Dispose();
+			driver.ExecuteScript("mobile:pressKey", new Dictionary<string, string> { { "keycode", "187" } });//187 is the code for recent apps/overview button
+			Task.Delay(500).Wait();
+			//Get the screen size to use it for getting the coordinates of the middle of the screen, so the swipe up happens from there.
+			var screenSize = driver.Manage().Window.Size;
 
-			// If an Appium server was started locally above, make sure we clean it up here
-			AppiumServerHelper.DisposeAppiumLocalServer();
+			int startX = (screenSize.Width / 10) * 6;  // Middle of the screen but slightly to the right
+			int startY = screenSize.Height / 2; // Middle vertically
+			int endY = screenSize.Height / 10;  // Near the top 
+
+			Actions action = new Actions(driver);
+
+			action.MoveToLocation(startX, startY) // Start point
+					.ClickAndHold()
+					.MoveByOffset(0, endY - startY) // Swipe up (fast swipe up to close the app)
+					.Release()
+					.Perform();
 		}
 		public static AppiumElement FindUIElement(string id)
 		{

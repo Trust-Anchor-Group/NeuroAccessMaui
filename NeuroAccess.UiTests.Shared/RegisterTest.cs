@@ -19,136 +19,79 @@ namespace NeuroAccess.UiTests
 		[TestCategory("Android")]
 		public async Task AllRegisteringProcess_Test()
 		{
-			string problemViewID = "";//Before every FindUIElement, this will become the id that will be tried to be located. This way in the fail message, it can be put there to know which view wasn't located, or after which view the eror happened, because other errors can happen. This is especially good since i don't have to code a try-catch for every find FindUIElement method call to know which view wasn't found.
-			try
-			{
-				////// First press create account button
-				string createAccountButtonID = "GetStarted_CreateAccountButton";
-				problemViewID = createAccountButtonID;
-
-				AppiumElement createAccountButton = FindUIElement(createAccountButtonID);
-				createAccountButton.Click();
-				Task.Delay(1000).Wait();//There are delays like this in the code so that there is enough time for the navigation to the other view. If you do it directly then it's likely an error will happen if you try to find something in the next page because we aren't there yet
-				////// Then press select phone code button
-				string phoneCodeButtonID = "ValidatePhoneView_SelectPhoneCodeHorizontalStackLayout";
-				problemViewID = phoneCodeButtonID;
-
-				AppiumElement phoneCodeButton = FindUIElement(phoneCodeButtonID);
-				phoneCodeButton.Click();
-				Task.Delay(2000).Wait();
-				////// Then search for USA country code 
-				string phoneCodeSearchBarID = "SelectPhoneCodePopup_SearchBar";
-				problemViewID = phoneCodeSearchBarID;
-
-				AppiumElement phoneCodeSearchBar = FindUIElement(phoneCodeSearchBarID);
-				phoneCodeSearchBar.Click();
-				Task.Delay(500).Wait();
-				phoneCodeSearchBar.SendKeys("United States");
-				Task.Delay(2000).Wait();
-				////// Then press code 1 USA country code button
-				string code1USAID = "US";//US stands for USA(Alpha 2 country code). This country's phone code is 1 which is what we need for the testing number. And only the USA country code works.
-				problemViewID = code1USAID;
-
-				AppiumElement code1USA = FindUIElement(code1USAID);
-				code1USA.Click();
-				Task.Delay(1000).Wait();
-				////// Then put in the test number in the number entry
-				string numberEntryID = "ValidatePhoneView_NumberEntry";
-				problemViewID = numberEntryID;
-
-				AppiumElement numberEntry = FindUIElement(numberEntryID);
-				numberEntry.Click();
-				string testNumber = "555123123";
-				Actions action = new Actions(App);//I'am using action.SendKeys because the usual numberEntry.sendKeys doesn't behave like a real user. And it looks like the send code button is pressable only when the input is like of that of a real user
-				foreach (char number in testNumber) {
-					action.SendKeys(number.ToString()).Perform();//this is in a for loop because, just like a real user would press one key at a time, the code needs to do the same or the send code button doesn't become pressable
-					Task.Delay(100).Wait();
-				}
-				Task.Delay(1000).Wait();
-				////// Then press the sendCodeButton
-				string sendCodeButtonID = "ValidatePhoneView_SendCodeTextButton";
-				problemViewID = sendCodeButtonID;
-
-				AppiumElement sendCodeButton = FindUIElement(sendCodeButtonID);
-				sendCodeButton.Click();
-				Task.Delay(4000).Wait();
-				////// Then put in the verification code
-				string verificationCode = await this.GetVerificationCodeAsync();
-				Task.Delay(1000).Wait();
-				action.SendKeys(verificationCode).Perform();
-				Task.Delay(500).Wait();
-				////// Then click the verify code button
-				string verifyButtonID = "VerifyCodePage_VerifyTextButton";
-				problemViewID = verifyButtonID;
-
-				AppiumElement verifyButton = FindUIElement(verifyButtonID);
-				verifyButton.Click();
-				Task.Delay(1000).Wait();
-				////// Then put in a name in the NameEntryView
-				string nickNameEntryID = "NameEntryView_NickNameEntry";
-				problemViewID = nickNameEntryID;
-
-				AppiumElement nickNameEntry = FindUIElement(nickNameEntryID);
-				nickNameEntry.Click();
-				Task.Delay(1000).Wait();
-				DateTime now = DateTime.Now;
-				string testRoundUserName = $"TestUser{verificationCode}y{now.Year}m{now.Month}d{now.Day}h{now.Hour}m{now.Minute}s{now.Second}";
-				action.SendKeys(testRoundUserName).Perform();// Maybe an error happens if I try to put the same username every time, so for a unique id I will use the verification code and date for now.
-				Task.Delay(1000).Wait();
-				////// Then press the continue button
-				string continueButtonID = "NameEntryView_ContinueTextButton";
-				problemViewID = continueButtonID;
-
-				AppiumElement continueButton = FindUIElement(continueButtonID);
-				continueButton.Click();
-				Task.Delay(20000).Wait();//The delay here is longer because after this step the "Creating account" loading screen appears
-				////// Then press the toggle password type button to write alphapetic password
-				string togglePasswordTypeButtonID = "DefinePasswordView_TogglePasswordTypeTemplatedButton";
-				problemViewID = togglePasswordTypeButtonID;
-
-				AppiumElement togglePasswordTypeButton = FindUIElement(togglePasswordTypeButtonID);
-				togglePasswordTypeButton.Click();
-				Task.Delay(2000).Wait();
-				////// then put the password in first entry
-				string passwordEntryID = "DefinePasswordView_PasswordCompositeEntry";
-				problemViewID = passwordEntryID;
-
-				AppiumElement passwordEntry = FindUIElement(passwordEntryID);
-				passwordEntry.Click();
-				Task.Delay(500).Wait();
-				foreach (char letter in testRoundUserName)
-				{
-					action.SendKeys(letter.ToString()).Perform();
-					Task.Delay(100).Wait();
-				}//The username and password are the same because it's simpler this way, and if you try to log in later you will know the password by just knowing the user name
-				Task.Delay(1000).Wait();
-				////// then confirm the password in the second entry
-				string confirmPasswordEntryID = "DefinePasswordView_ConfirmPasswordCompositeEntry";
-				problemViewID = confirmPasswordEntryID;
-
-				AppiumElement confirmPasswordEntry = FindUIElement(confirmPasswordEntryID);
-				confirmPasswordEntry.Click();
-				Task.Delay(500).Wait();
-				foreach (char letter in testRoundUserName)
-				{
-					action.SendKeys(letter.ToString()).Perform();
-					Task.Delay(100).Wait();
-				}
-				Task.Delay(3000).Wait();
-				////// Then press the create password button
-				string createPasswordButtonID = "DefinePasswordView_CreatePasswordTextButton";
-				problemViewID = createPasswordButtonID;
-
-				AppiumElement createPasswordButton = FindUIElement(createPasswordButtonID);
-				createPasswordButton.Click();
-				Task.Delay(200000).Wait();
-
+			////// First press create account button
+			AppiumElement createAccountButton = AutoFindElement("GetStarted_CreateAccountButton");
+			createAccountButton.Click();
+			////// Then press select phone code button
+			AppiumElement phoneCodeButton = AutoFindElement("ValidatePhoneView_SelectPhoneCodeHorizontalStackLayout");
+			phoneCodeButton.Click();
+			////// Then search for USA country code 
+			AppiumElement phoneCodeSearchBar = AutoFindElement("SelectPhoneCodePopup_SearchBar");
+			phoneCodeSearchBar.Click();
+			Task.Delay(500).Wait();
+			phoneCodeSearchBar.SendKeys("United States");
+			////// Then press code 1 USA country code button
+			AppiumElement code1USA = AutoFindElement("US");//US stands for USA(Alpha 2 country code). This country's phone code is 1 which is what we need for the testing number. And only the USA country code works.
+			code1USA.Click();
+			////// Then put in the test number in the number entry
+			AppiumElement numberEntry = AutoFindElement("ValidatePhoneView_NumberEntry");
+			numberEntry.Click();
+			string testNumber = "555123123";
+			Actions action = new Actions(App);//I'am using action.SendKeys because the usual numberEntry.sendKeys doesn't behave like a real user. And it looks like the send code button is pressable only when the input is like of that of a real user
+			foreach (char number in testNumber) {
+				action.SendKeys(number.ToString()).Perform();//this is in a for loop because, just like a real user would press one key at a time, the code needs to do the same or the send code button doesn't become pressable
+				Task.Delay(100).Wait();
 			}
-			catch (Exception ex)
+			Task.Delay(500).Wait();//A bit of delay to make sure the number is in the system correctly before the click of send code button
+			////// Then press the sendCodeButton
+			AppiumElement sendCodeButton = AutoFindElement("ValidatePhoneView_SendCodeTextButton");
+			sendCodeButton.Click();
+			////// Then put in the verification code
+			AutoFindElement("VerifyCodePage");//Make sure we navigated to VerifyCodePage
+			string verificationCode = await this.GetVerificationCodeAsync();
+			action.SendKeys(verificationCode).Perform();
+			Task.Delay(500).Wait();
+			////// Then click the verify code button
+			AppiumElement verifyButton = AutoFindElement("VerifyCodePage_VerifyTextButton");
+			verifyButton.Click();
+			////// Then put in a name in the NameEntryView
+			AppiumElement nickNameEntry = AutoFindElement("NameEntryView_NickNameEntry");
+			nickNameEntry.Click();
+			DateTime now = DateTime.Now;
+			string testRoundUserName = $"TestUser{verificationCode}y{now.Year}m{now.Month}d{now.Day}h{now.Hour}m{now.Minute}s{now.Second}";
+			action.SendKeys(testRoundUserName).Perform();// Maybe an error happens if I try to put the same username every time, so for a unique id I will use the verification code and date for now.
+			////// Then press the continue button
+			AppiumElement continueButton = AutoFindElement("NameEntryView_ContinueTextButton");
+			continueButton.Click();
+			////// Then press the toggle password type button to write alphapetic password
+			AppiumElement togglePasswordTypeButton = AutoFindElement("DefinePasswordView_TogglePasswordTypeTemplatedButton", 30);//The max time the view will be tried to be located is 30s here not the usual 10s because this step usually takes longer and it varies in time.
+			togglePasswordTypeButton.Click();
+			////// then put the password in first entry
+			AppiumElement passwordEntry = AutoFindElement("DefinePasswordView_PasswordCompositeEntry");
+			passwordEntry.Click();
+			Task.Delay(500).Wait();
+			foreach (char letter in testRoundUserName)
 			{
-				Assert.Fail($"Error happened after the view: [{problemViewID}],\n ex:{ex}");
+				action.SendKeys(letter.ToString()).Perform();
+				Task.Delay(100).Wait();
+			}//The username and password are the same because it's simpler this way, and if you try to log in later you will know the password by just knowing the user name
+			////// then confirm the password in the second entry
+			AppiumElement confirmPasswordEntry = AutoFindElement("DefinePasswordView_ConfirmPasswordCompositeEntry");
+			confirmPasswordEntry.Click();
+			Task.Delay(500).Wait();
+			foreach (char letter in testRoundUserName)
+			{
+				action.SendKeys(letter.ToString()).Perform();
+				Task.Delay(100).Wait();
 			}
+			////// Then press the create password button
+			AppiumElement createPasswordButton = AutoFindElement("DefinePasswordView_CreatePasswordTextButton");
+			createPasswordButton.Click();
+			Reset = false;// Make reset in BaseTest false because we don't want to register before every test
+			//AutoFindElement("MainPage");// Control we have navigated to main page
+			Task.Delay(1000).Wait();// Wait a second to make sure it registered.
 		}
+
 		public async Task<string> GetVerificationCodeAsync()
 		{
 			// Create a CookieContainer to manage cookies automatically
