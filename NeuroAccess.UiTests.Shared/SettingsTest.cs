@@ -33,11 +33,11 @@ namespace NeuroAccess.UiTests
 		lightModeButton.Click();
       await Task.Delay(500);
 
-		//// Click "ChangeLanguageButton" (Opens Language Settings)
-		//string changeLanguageButtonId = "ChangeLanguageButton";
-		//AppiumElement changeLanguageButton = this.AutoFindElement(changeLanguageButtonId);
-		//changeLanguageButton.Click();
-  //    await Task.Delay(1000);
+		// Click "ChangeLanguageButton" (Opens Language Settings)
+		string changeLanguageButtonId = "ChangeLanguageButton";
+		AppiumElement changeLanguageButton = this.AutoFindElement(changeLanguageButtonId);
+		changeLanguageButton.Click();
+      await Task.Delay(1000);
 
 		// Click "CompromizedButton" (Navigates to compromised identity report)
 		string compromisedButtonId = "CompromizedButton";

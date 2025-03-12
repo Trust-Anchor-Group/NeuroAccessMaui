@@ -44,7 +44,6 @@ namespace NeuroAccess.UiTests
 						App = "com.tag.NeuroAccess.apk",
 					};
 
-
 					AndroidOptions.AddAdditionalAppiumOption("forceReset", true);
 					//AndroidOptions.AddAdditionalAppiumOption("noReset", true);
 					Console.WriteLine("Initializing Android Driver...");
