@@ -40,6 +40,7 @@ namespace NeuroAccessMaui.UI
 		private static Style? requiredFieldMarker;
 		private static Style? requiredFieldMarkerSpan;
 		private static Style? roundedBorder;
+		private static Style? baseCompositeInputView;
 
 
 		static AppStyles()
@@ -427,6 +428,18 @@ namespace NeuroAccessMaui.UI
 			{
 				regularCompositePicker ??= TryGetResource<Style>("RegularCompositePicker");
 				return regularCompositePicker!;
+			}
+		}
+
+		/// <summary>
+		/// Style for base composite input view
+		/// </summary>
+		public static Style BaseCompositeInputView
+		{
+			get
+			{
+				baseCompositeInputView ??= TryGetResource<Style>("BaseCompositeInputView");
+				return baseCompositeInputView!;
 			}
 		}
 	}
