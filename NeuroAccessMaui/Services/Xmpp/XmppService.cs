@@ -1,4 +1,5 @@
 ﻿//#define DEBUG_XMPP_REMOTE
+#define DEBUG_XMPP_LOCAL
 //#define DEBUG_LOG_REMOTE
 //#define DEBUG_DB_REMOTE
 
@@ -179,6 +180,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 						this.xmppClient = new XmppClient(HostName, PortNumber, this.accountName, this.passwordHash, this.passwordHashMethod,
 							Constants.LanguageCodes.Default, AppAssembly, this.sniffer);
 					}
+#if DEBUG_XMPP_LOCAL
+					DebugSniffer LocalSniffer = new DebugSniffer(BinaryPresentationMethod.Hexadecimal);
+
+					this.xmppClient.Add(LocalSniffer);
+#endif
 
 #if DEBUG_XMPP_REMOTE || DEBUG_LOG_REMOTE || DEBUG_DB_REMOTE
 					if (!string.IsNullOrEmpty(debugRecipient))
