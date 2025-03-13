@@ -22,10 +22,7 @@ namespace NeuroAccessMaui.Platforms.Android
 
 
 	[Service(Exported = false)]
-	[IntentFilter([
-		"com.google.firebase.MESSAGING_EVENT",
-	"com.google.firebase.INSTANCE_ID_EVENT"
-	])]
+	[IntentFilter(["com.google.firebase.MESSAGING_EVENT", "com.google.firebase.INSTANCE_ID_EVENT"])]
 	public class MessagingService : FirebaseMessagingService
 	{
 		public override void OnMessageReceived(RemoteMessage Message)
@@ -37,51 +34,44 @@ namespace NeuroAccessMaui.Platforms.Android
 				Message.Data.TryGetValue("myBody", out string? Body);
 				Message.Data.TryGetValue("channelId", out string? ChannelId);
 
-				// Optional: Log the complete data payload for debugging.
-				foreach (var key in Message.Data.Keys)
-   			{
-   				Console.WriteLine($"[Push Received] {key}: {Message.Data[key]}");
-   			}
+				switch (ChannelId)
+				{
+					case Constants.PushChannels.Messages:
+						ServiceRef.PlatformSpecific.ShowMessageNotification(Title, Body, Message.Data);
+						break;
 
-   			switch (ChannelId)
-   			{
-   				case Constants.PushChannels.Messages:
-   					ServiceRef.PlatformSpecific.ShowMessageNotification(Title, Body, Message.Data);
-   					break;
+					case Constants.PushChannels.Petitions:
+						ServiceRef.PlatformSpecific.ShowPetitionNotification(Title, Body, Message.Data);
+						break;
 
-   				case Constants.PushChannels.Petitions:
-   					ServiceRef.PlatformSpecific.ShowPetitionNotification(Title, Body, Message.Data);
-   					break;
+					case Constants.PushChannels.Identities:
+						ServiceRef.PlatformSpecific.ShowIdentitiesNotification(Title, Body, Message.Data);
+						break;
 
-   				case Constants.PushChannels.Identities:
-   					ServiceRef.PlatformSpecific.ShowIdentitiesNotification(Title, Body, Message.Data);
-   					break;
+					case Constants.PushChannels.Contracts:
+						ServiceRef.PlatformSpecific.ShowContractsNotification(Title, Body, Message.Data);
+						break;
 
-   				case Constants.PushChannels.Contracts:
-   					ServiceRef.PlatformSpecific.ShowContractsNotification(Title, Body, Message.Data);
-   					break;
+					case Constants.PushChannels.EDaler:
+						ServiceRef.PlatformSpecific.ShowEDalerNotification(Title, Body, Message.Data);
+						break;
 
-   				case Constants.PushChannels.EDaler:
-   					ServiceRef.PlatformSpecific.ShowEDalerNotification(Title, Body, Message.Data);
-   					break;
+					case Constants.PushChannels.Tokens:
+						ServiceRef.PlatformSpecific.ShowTokenNotification(Title, Body, Message.Data);
+						break;
 
-   				case Constants.PushChannels.Tokens:
-   					ServiceRef.PlatformSpecific.ShowTokenNotification(Title, Body, Message.Data);
-   					break;
+					case Constants.PushChannels.Provisioning:
+						ServiceRef.PlatformSpecific.ShowProvisioningNotification(Title, Body, Message.Data);
+						break;
 
-   				case Constants.PushChannels.Provisioning:
-   					ServiceRef.PlatformSpecific.ShowProvisioningNotification(Title, Body, Message.Data);
-   					break;
-
-   				default:
-   					ServiceRef.PlatformSpecific.ShowIdentitiesNotification(Title, Body, Message.Data);
-   					break;
-   			}
-		   }
-		   catch (Exception ex)
-		   {
-   			//Log.Critical(ex);
-		   }
+					default:
+						break;
+				}
+			}
+			catch (Exception ex)
+			{
+				//Log.Critical(ex);
+			}
 		}
 
 
