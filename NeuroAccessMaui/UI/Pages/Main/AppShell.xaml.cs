@@ -55,6 +55,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			try
 			{
 				this.InitializeComponent();
+				this.FlyoutIcon.AutomationId = "FlyoutIcon";
 				this.BindingContext = new AppShellViewModel();
 
 				this.RegisterRoutes();
