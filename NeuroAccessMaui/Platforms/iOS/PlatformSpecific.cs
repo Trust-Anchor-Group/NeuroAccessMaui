@@ -10,6 +10,7 @@ using Security;
 using System.Text;
 using CommunityToolkit.Mvvm.Messaging;
 using Plugin.Firebase.CloudMessaging;
+
 namespace NeuroAccessMaui.Services
 {
 	/// <summary>
@@ -404,6 +405,7 @@ namespace NeuroAccessMaui.Services
 		public event EventHandler<KeyboardSizeMessage>? KeyboardHidden;
 		public event EventHandler<KeyboardSizeMessage>? KeyboardSizeChanged;
 
+
 		/// <summary>
 		/// Force hide the keyboard
 		/// </summary>
@@ -432,5 +434,41 @@ namespace NeuroAccessMaui.Services
 
 		#endregion
 
+		#region Notifications
+		public void ShowMessageNotification(string Title, string MessageBody, IDictionary<string, string> Data)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void ShowIdentitiesNotification(string Title, string MessageBody, IDictionary<string, string> Data)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void ShowPetitionNotification(string Title, string MessageBody, IDictionary<string, string> Data)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void ShowContractsNotification(string Title, string MessageBody, IDictionary<string, string> Data)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void ShowEDalerNotification(string Title, string MessageBody, IDictionary<string, string> Data)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void ShowTokenNotification(string Title, string MessageBody, IDictionary<string, string> Data)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void ShowProvisioningNotification(string Title, string MessageBody, IDictionary<string, string> Data)
+		{
+			throw new NotImplementedException();
+		}
+		#endregion
 	}
 }

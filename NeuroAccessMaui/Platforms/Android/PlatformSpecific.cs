@@ -1,3 +1,4 @@
+using System.Text;
 using Android;
 using Android.App;
 using Android.Content;
@@ -10,6 +11,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Views.InputMethods;
 using AndroidX.Biometric;
+using AndroidX.Core.App;
 using AndroidX.Fragment.App;
 using AndroidX.Lifecycle;
 using CommunityToolkit.Mvvm.Messaging;
@@ -21,6 +23,8 @@ using Plugin.Firebase.CloudMessaging;
 using Waher.Events;
 using Waher.Networking.XMPP.Push;
 using Rect = Android.Graphics.Rect;
+
+using Application = Android.App.Application;
 
 namespace NeuroAccessMaui.Services
 {
@@ -723,7 +727,226 @@ namespace NeuroAccessMaui.Services
 		}
 		#endregion
 
+		#region Notifications
+		public void ShowMessageNotification(string Title, string MessageBody, IDictionary<string, string> Data)
+		{
+			var context = Application.Context;
+			var intent = new Intent(context, typeof(MainActivity));
+			intent.AddFlags(ActivityFlags.ClearTop);
+			foreach (var key in Data.Keys)
+			{
+				intent.PutExtra(key, Data[key]);
+			}
+			var pendingIntent = PendingIntent.GetActivity(context, 100, intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
+			var largeIcon = BitmapFactory.DecodeResource(context.Resources, Resource.Drawable.notification_bg_normal);
+
+			var builder = new NotificationCompat.Builder(context, Constants.PushChannels.Messages)
+				 .SetSmallIcon(Resource.Drawable.abc_star_half_black_48dp)
+				 .SetLargeIcon(largeIcon)
+				 .SetContentTitle(Title)
+				 .SetContentText(MessageBody)
+				 .SetAutoCancel(true)
+				 .SetContentIntent(pendingIntent);
+
+			var notificationManager = NotificationManagerCompat.From(context);
+			notificationManager.Notify(100, builder.Build());
+		}
+
+		public void ShowIdentitiesNotification(string Title, string MessageBody, IDictionary<string, string> Data)
+		{
+			var context = Application.Context;
+			var intent = new Intent(context, typeof(MainActivity));
+			intent.AddFlags(ActivityFlags.ClearTop);
+			foreach (var key in Data.Keys)
+			{
+				intent.PutExtra(key, Data[key]);
+			}
+
+			// Optionally add additional details (for example, appending a legal id)
+			string contentText = MessageBody;
+			if (Data.TryGetValue("legalId", out string legalId) && !string.IsNullOrEmpty(legalId))
+			{
+				contentText += System.Environment.NewLine + $"({legalId})";
+			}
+
+			var pendingIntent = PendingIntent.GetActivity(context, 101, intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
+			var largeIcon = BitmapFactory.DecodeResource(context.Resources, Resource.Drawable.notification_bg_normal);
+
+			var builder = new NotificationCompat.Builder(context, Constants.PushChannels.Identities)
+				 .SetSmallIcon(Resource.Drawable.abc_star_half_black_48dp)
+				 .SetLargeIcon(largeIcon)
+				 .SetContentTitle(Title)
+				 .SetContentText(contentText)
+				 .SetAutoCancel(true)
+				 .SetContentIntent(pendingIntent);
+
+			var notificationManager = NotificationManagerCompat.From(context);
+			notificationManager.Notify(101, builder.Build());
+		}
+
+		public void ShowPetitionNotification(string Title, string MessageBody, IDictionary<string, string> Data)
+		{
+			var context = Application.Context;
+			var intent = new Intent(context, typeof(MainActivity));
+			intent.AddFlags(ActivityFlags.ClearTop);
+			foreach (var key in Data.Keys)
+			{
+				intent.PutExtra(key, Data[key]);
+			}
+
+			// Use fromJid and rosterName to compose the notification body
+			string fromJid = Data.ContainsKey("fromJid") ? Data["fromJid"] : "";
+			string rosterName = Data.ContainsKey("rosterName") ? Data["rosterName"] : "";
+			string contentText = $"{(string.IsNullOrEmpty(rosterName) ? fromJid : rosterName)}: {MessageBody}";
+
+			var pendingIntent = PendingIntent.GetActivity(context, 102, intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
+			var largeIcon = BitmapFactory.DecodeResource(context.Resources, Resource.Drawable.notification_bg_normal);
+
+			var builder = new NotificationCompat.Builder(context, Constants.PushChannels.Petitions)
+				 .SetSmallIcon(Resource.Drawable.abc_star_half_black_48dp)
+				 .SetLargeIcon(largeIcon)
+				 .SetContentTitle(Title)
+				 .SetContentText(contentText)
+				 .SetAutoCancel(true)
+				 .SetContentIntent(pendingIntent);
+
+			var notificationManager = NotificationManagerCompat.From(context);
+			notificationManager.Notify(102, builder.Build());
+		}
+
+		public void ShowContractsNotification(string Title, string MessageBody, IDictionary<string, string> Data)
+		{
+			var context = Application.Context;
+			var intent = new Intent(context, typeof(MainActivity));
+			intent.AddFlags(ActivityFlags.ClearTop);
+			foreach (var key in Data.Keys)
+			{
+				intent.PutExtra(key, Data[key]);
+			}
+
+			var contentBuilder = new StringBuilder();
+			contentBuilder.Append(MessageBody);
+			if (Data.TryGetValue("role", out string role) && !string.IsNullOrEmpty(role))
+			{
+				contentBuilder.AppendLine().Append(role);
+			}
+			if (Data.TryGetValue("contractId", out string contractId) && !string.IsNullOrEmpty(contractId))
+			{
+				contentBuilder.AppendLine().Append($"({contractId})");
+			}
+			if (Data.TryGetValue("legalId", out string legalId) && !string.IsNullOrEmpty(legalId))
+			{
+				contentBuilder.AppendLine().Append($"({legalId})");
+			}
+
+			var pendingIntent = PendingIntent.GetActivity(context, 103, intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
+			var largeIcon = BitmapFactory.DecodeResource(context.Resources, Resource.Drawable.notification_bg_normal);
+
+			var builder = new NotificationCompat.Builder(context, Constants.PushChannels.Contracts)
+				 .SetSmallIcon(Resource.Drawable.abc_star_half_black_48dp)
+				 .SetLargeIcon(largeIcon)
+				 .SetContentTitle(Title)
+				 .SetContentText(contentBuilder.ToString())
+				 .SetAutoCancel(true)
+				 .SetContentIntent(pendingIntent);
+
+			var notificationManager = NotificationManagerCompat.From(context);
+			notificationManager.Notify(103, builder.Build());
+		}
+
+		public void ShowEDalerNotification(string Title, string MessageBody, IDictionary<string, string> Data)
+		{
+			var context = Application.Context;
+			var intent = new Intent(context, typeof(MainActivity));
+			intent.AddFlags(ActivityFlags.ClearTop);
+			foreach (var key in Data.Keys)
+			{
+				intent.PutExtra(key, Data[key]);
+			}
+
+			var contentBuilder = new StringBuilder();
+			contentBuilder.Append(MessageBody);
+			if (Data.TryGetValue("amount", out string amount) && !string.IsNullOrEmpty(amount))
+			{
+				contentBuilder.AppendLine().Append(amount);
+				if (Data.TryGetValue("currency", out string currency) && !string.IsNullOrEmpty(currency))
+					contentBuilder.Append(" " + currency);
+				if (Data.TryGetValue("timestamp", out string timestamp) && !string.IsNullOrEmpty(timestamp))
+					contentBuilder.Append($" ({timestamp})");
+			}
+
+			var pendingIntent = PendingIntent.GetActivity(context, 104, intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
+			var largeIcon = BitmapFactory.DecodeResource(context.Resources, Resource.Drawable.notification_bg_normal);
+
+			var builder = new NotificationCompat.Builder(context, Constants.PushChannels.EDaler)
+				 .SetSmallIcon(Resource.Drawable.abc_star_half_black_48dp)
+				 .SetLargeIcon(largeIcon)
+				 .SetContentTitle(Title)
+				 .SetContentText(contentBuilder.ToString())
+				 .SetAutoCancel(true)
+				 .SetContentIntent(pendingIntent);
+
+			var notificationManager = NotificationManagerCompat.From(context);
+			notificationManager.Notify(104, builder.Build());
+		}
+
+		public void ShowTokenNotification(string Title, string MessageBody, IDictionary<string, string> Data)
+		{
+			var context = Application.Context;
+			var intent = new Intent(context, typeof(MainActivity));
+			intent.AddFlags(ActivityFlags.ClearTop);
+			foreach (var key in Data.Keys)
+			{
+				intent.PutExtra(key, Data[key]);
+			}
+
+			var contentBuilder = new StringBuilder();
+			contentBuilder.Append(MessageBody);
+			if (Data.TryGetValue("value", out string value) && !string.IsNullOrEmpty(value))
+			{
+				contentBuilder.AppendLine().Append(value);
+				if (Data.TryGetValue("currency", out string currency) && !string.IsNullOrEmpty(currency))
+					contentBuilder.Append(" " + currency);
+			}
+
+			var pendingIntent = PendingIntent.GetActivity(context, 105, intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
+			var largeIcon = BitmapFactory.DecodeResource(context.Resources, Resource.Drawable.notification_bg_normal);
+
+			var builder = new NotificationCompat.Builder(context, Constants.PushChannels.Tokens)
+				 .SetSmallIcon(Resource.Drawable.abc_star_half_black_48dp)
+				 .SetLargeIcon(largeIcon)
+				 .SetContentTitle(Title)
+				 .SetContentText(contentBuilder.ToString())
+				 .SetAutoCancel(true)
+				 .SetContentIntent(pendingIntent);
+
+			var notificationManager = NotificationManagerCompat.From(context);
+			notificationManager.Notify(105, builder.Build());
+		}
+
+		public void ShowProvisioningNotification(string Title, string MessageBody, IDictionary<string, string> Data)
+		{
+			var context = Application.Context;
+			var intent = new Intent(context, typeof(MainActivity));
+			intent.AddFlags(ActivityFlags.ClearTop);
+			foreach (var key in Data.Keys)
+			{
+				intent.PutExtra(key, Data[key]);
+			}
+			var pendingIntent = PendingIntent.GetActivity(context, 106, intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
+			var largeIcon = BitmapFactory.DecodeResource(context.Resources, Resource.Drawable.notification_bg_normal);
+
+			var builder = new NotificationCompat.Builder(context, Constants.PushChannels.Provisioning)
+				 .SetSmallIcon(Resource.Drawable.abc_star_half_black_48dp)
+				 .SetLargeIcon(largeIcon)
+				 .SetContentTitle(Title)
+				 .SetContentText(MessageBody)
+				 .SetAutoCancel(true)
+				 .SetContentIntent(pendingIntent);
+
+			var notificationManager = NotificationManagerCompat.From(context);
+			notificationManager.Notify(106, builder.Build());
+		}
+		#endregion
 	}
-
-
 }
