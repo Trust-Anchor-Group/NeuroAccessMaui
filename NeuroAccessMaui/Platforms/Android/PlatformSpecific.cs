@@ -1,4 +1,5 @@
 using System.Text;
+using _Microsoft.Android.Resource.Designer;
 using Android;
 using Android.App;
 using Android.Content;
@@ -25,6 +26,7 @@ using Waher.Networking.XMPP.Push;
 using Rect = Android.Graphics.Rect;
 
 using Application = Android.App.Application;
+using FileProvider = AndroidX.Core.Content.FileProvider;
 
 namespace NeuroAccessMaui.Services
 {
@@ -96,9 +98,9 @@ namespace NeuroAccessMaui.Services
 						screenProtected = value;
 					}
 				}
-				catch (Exception ex)
+				catch (Exception Ex)
 				{
-					Log.Exception(ex);
+					Log.Exception(Ex);
 				}
 			}
 		}
@@ -130,9 +132,9 @@ namespace NeuroAccessMaui.Services
 							Activity.Window?.ClearFlags(WindowManagerFlags.Secure);
 					}
 				}
-				catch (Exception ex)
+				catch (Exception Ex)
 				{
-					Log.Exception(ex);
+					Log.Exception(Ex);
 				}
 			});
 		}
@@ -198,9 +200,9 @@ namespace NeuroAccessMaui.Services
 			if (!Directory.Exists(ExternalFilesDir.Path))
 				Directory.CreateDirectory(ExternalFilesDir.Path);
 
-			Java.IO.File fileDir = new(ExternalFilesDir.AbsolutePath + (Java.IO.File.Separator + FileName));
+			Java.IO.File FileDir = new(ExternalFilesDir.AbsolutePath + (Java.IO.File.Separator + FileName));
 
-			File.WriteAllBytes(fileDir.Path, PngFile);
+			File.WriteAllBytes(FileDir.Path, PngFile);
 
 			Intent Intent = new(Intent.ActionSend);
 			Intent.PutExtra(Intent.ExtraText, Message);
@@ -208,7 +210,7 @@ namespace NeuroAccessMaui.Services
 
 			Intent.AddFlags(ActivityFlags.GrantReadUriPermission);
 			Intent.AddFlags(ActivityFlags.GrantWriteUriPermission);
-			Intent.PutExtra(Intent.ExtraStream, FileProvider.GetUriForFile(Context, "com.tag.IdApp.fileprovider", fileDir));
+			Intent.PutExtra(Intent.ExtraStream, FileProvider.GetUriForFile(Context, "com.tag.IdApp.fileprovider", FileDir));
 
 			Intent? MyIntent = Intent.CreateChooser(Intent, Title);
 
@@ -228,22 +230,22 @@ namespace NeuroAccessMaui.Services
 		{
 			blurRadius = Math.Min(25, Math.Max(blurRadius, 0));
 
-			Activity? activity = Platform.CurrentActivity;
-			Android.Views.View? rootView = activity?.Window?.DecorView.RootView;
+			Activity? Activity = Platform.CurrentActivity;
+			Android.Views.View? RootView = Activity?.Window?.DecorView.RootView;
 
-			if (rootView is null)
+			if (RootView is null)
 				return Task.FromResult<byte[]>([]);
 
-			using Bitmap screenshot = Bitmap.CreateBitmap(rootView.Width, rootView.Height, Bitmap.Config.Argb8888!);
-			Canvas canvas = new(screenshot);
-			rootView.Draw(canvas);
+			using Bitmap Screenshot = Bitmap.CreateBitmap(RootView.Width, RootView.Height, Bitmap.Config.Argb8888!);
+			Canvas Canvas = new(Screenshot);
+			RootView.Draw(Canvas);
 
 			Bitmap? Blurred = null;
 
-			if (activity != null && (int)Android.OS.Build.VERSION.SdkInt >= 17)
-				Blurred = ToBlurred(screenshot, activity, blurRadius);
+			if (Activity != null && (int)Android.OS.Build.VERSION.SdkInt >= 17)
+				Blurred = ToBlurred(Screenshot, Activity, blurRadius);
 			else
-				Blurred = ToLegacyBlurred(screenshot, blurRadius);
+				Blurred = ToLegacyBlurred(Screenshot, blurRadius);
 
 			MemoryStream Stream = new();
 			Blurred.Compress(Bitmap.CompressFormat.Jpeg!, 80, Stream);
@@ -255,102 +257,102 @@ namespace NeuroAccessMaui.Services
 		private static Bitmap ToBlurred(Bitmap originalBitmap, Activity? Activity, int radius)
 		{
 			// Create another bitmap that will hold the results of the filter.
-			Bitmap blurredBitmap = Bitmap.CreateBitmap(originalBitmap);
-			RenderScript? renderScript = RenderScript.Create(Activity);
+			Bitmap BlurredBitmap = Bitmap.CreateBitmap(originalBitmap);
+			RenderScript? RenderScript = RenderScript.Create(Activity);
 
 			// Load up an instance of the specific script that we want to use.
 			// An Element is similar to a C type. The second parameter, Element.U8_4,
 			// tells the Allocation is made up of 4 fields of 8 unsigned bits.
-			ScriptIntrinsicBlur? script = ScriptIntrinsicBlur.Create(renderScript, Android.Renderscripts.Element.U8_4(renderScript));
+			ScriptIntrinsicBlur? Script = ScriptIntrinsicBlur.Create(RenderScript, Android.Renderscripts.Element.U8_4(RenderScript));
 
 			// Create an Allocation for the kernel inputs.
-			Allocation? input = Allocation.CreateFromBitmap(renderScript, originalBitmap, Allocation.MipmapControl.MipmapFull,
+			Allocation? Input = Allocation.CreateFromBitmap(RenderScript, originalBitmap, Allocation.MipmapControl.MipmapFull,
 				AllocationUsage.Script);
 
 			// Assign the input Allocation to the script.
-			script?.SetInput(input);
+			Script?.SetInput(Input);
 
 			// Set the blur radius
-			script?.SetRadius(radius);
+			Script?.SetRadius(radius);
 
 			// Finally we need to create an output allocation to hold the output of the Renderscript.
-			Allocation? output = Allocation.CreateTyped(renderScript, input?.Type);
+			Allocation? Output = Allocation.CreateTyped(RenderScript, Input?.Type);
 
 			// Next, run the script. This will run the script over each Element in the Allocation, and copy it's
 			// output to the allocation we just created for this purpose.
-			script?.ForEach(output);
+			Script?.ForEach(Output);
 
 			// Copy the output to the blurred bitmap
-			output?.CopyTo(blurredBitmap);
+			Output?.CopyTo(BlurredBitmap);
 
 			// Cleanup.
-			output?.Destroy();
-			input?.Destroy();
-			script?.Destroy();
-			renderScript?.Destroy();
+			Output?.Destroy();
+			Input?.Destroy();
+			Script?.Destroy();
+			RenderScript?.Destroy();
 
-			return blurredBitmap;
+			return BlurredBitmap;
 		}
 
 		// Source: http://incubator.quasimondo.com/processing/superfast_blur.php
 		public static Bitmap ToLegacyBlurred(Bitmap source, int radius)
 		{
-			Bitmap.Config? config = source.GetConfig();
-			config ??= Bitmap.Config.Argb8888;    // This will support transparency
+			Bitmap.Config? Config = source.GetConfig();
+			Config ??= Bitmap.Config.Argb8888;    // This will support transparency
 
-			Bitmap? img = source.Copy(config!, true);
+			Bitmap? Img = source.Copy(Config!, true);
 
-			int w = img!.Width;
-			int h = img.Height;
+			int w = Img!.Width;
+			int h = Img.Height;
 			int wm = w - 1;
-			int hm = h - 1;
+			int Hm = h - 1;
 			int wh = w * h;
-			int div = radius + radius + 1;
+			int Div = radius + radius + 1;
 			int[] r = new int[wh];
 			int[] g = new int[wh];
 			int[] b = new int[wh];
-			int rsum, gsum, bsum, x, y, i, p, p1, p2, yp, yi, yw;
-			int[] vmin = new int[Math.Max(w, h)];
-			int[] vmax = new int[Math.Max(w, h)];
-			int[] pix = new int[w * h];
+			int Rsum, Gsum, Bsum, x, y, i, P, P1, P2, yp, yi, yw;
+			int[] Vmin = new int[Math.Max(w, h)];
+			int[] Vmax = new int[Math.Max(w, h)];
+			int[] Pix = new int[w * h];
 
-			img.GetPixels(pix, 0, w, 0, 0, w, h);
+			Img.GetPixels(Pix, 0, w, 0, 0, w, h);
 
-			int[] dv = new int[256 * div];
-			for (i = 0; i < 256 * div; i++)
-				dv[i] = (i / div);
+			int[] Dv = new int[256 * Div];
+			for (i = 0; i < 256 * Div; i++)
+				Dv[i] = (i / Div);
 
 			yw = yi = 0;
 
 			for (y = 0; y < h; y++)
 			{
-				rsum = gsum = bsum = 0;
+				Rsum = Gsum = Bsum = 0;
 				for (i = -radius; i <= radius; i++)
 				{
-					p = pix[yi + Math.Min(wm, Math.Max(i, 0))];
-					rsum += (p & 0xff0000) >> 16;
-					gsum += (p & 0x00ff00) >> 8;
-					bsum += p & 0x0000ff;
+					P = Pix[yi + Math.Min(wm, Math.Max(i, 0))];
+					Rsum += (P & 0xff0000) >> 16;
+					Gsum += (P & 0x00ff00) >> 8;
+					Bsum += P & 0x0000ff;
 				}
 				for (x = 0; x < w; x++)
 				{
 
-					r[yi] = dv[rsum];
-					g[yi] = dv[gsum];
-					b[yi] = dv[bsum];
+					r[yi] = Dv[Rsum];
+					g[yi] = Dv[Gsum];
+					b[yi] = Dv[Bsum];
 
 					if (y == 0)
 					{
-						vmin[x] = Math.Min(x + radius + 1, wm);
-						vmax[x] = Math.Max(x - radius, 0);
+						Vmin[x] = Math.Min(x + radius + 1, wm);
+						Vmax[x] = Math.Max(x - radius, 0);
 					}
 
-					p1 = pix[yw + vmin[x]];
-					p2 = pix[yw + vmax[x]];
+					P1 = Pix[yw + Vmin[x]];
+					P2 = Pix[yw + Vmax[x]];
 
-					rsum += ((p1 & 0xff0000) - (p2 & 0xff0000)) >> 16;
-					gsum += ((p1 & 0x00ff00) - (p2 & 0x00ff00)) >> 8;
-					bsum += (p1 & 0x0000ff) - (p2 & 0x0000ff);
+					Rsum += ((P1 & 0xff0000) - (P2 & 0xff0000)) >> 16;
+					Gsum += ((P1 & 0x00ff00) - (P2 & 0x00ff00)) >> 8;
+					Bsum += (P1 & 0x0000ff) - (P2 & 0x0000ff);
 					yi++;
 				}
 				yw += w;
@@ -358,40 +360,40 @@ namespace NeuroAccessMaui.Services
 
 			for (x = 0; x < w; x++)
 			{
-				rsum = gsum = bsum = 0;
+				Rsum = Gsum = Bsum = 0;
 				yp = -radius * w;
 				for (i = -radius; i <= radius; i++)
 				{
 					yi = Math.Max(0, yp) + x;
-					rsum += r[yi];
-					gsum += g[yi];
-					bsum += b[yi];
+					Rsum += r[yi];
+					Gsum += g[yi];
+					Bsum += b[yi];
 					yp += w;
 				}
 				yi = x;
 				for (y = 0; y < h; y++)
 				{
 					// Preserve alpha channel: ( 0xff000000 & pix[yi] )
-					int rgb = (dv[rsum] << 16) | (dv[gsum] << 8) | dv[bsum];
-					pix[yi] = ((int)(0xff000000 & pix[yi]) | rgb);
+					int rgb = (Dv[Rsum] << 16) | (Dv[Gsum] << 8) | Dv[Bsum];
+					Pix[yi] = ((int)(0xff000000 & Pix[yi]) | rgb);
 					if (x == 0)
 					{
-						vmin[y] = Math.Min(y + radius + 1, hm) * w;
-						vmax[y] = Math.Max(y - radius, 0) * w;
+						Vmin[y] = Math.Min(y + radius + 1, Hm) * w;
+						Vmax[y] = Math.Max(y - radius, 0) * w;
 					}
-					p1 = x + vmin[y];
-					p2 = x + vmax[y];
+					P1 = x + Vmin[y];
+					P2 = x + Vmax[y];
 
-					rsum += r[p1] - r[p2];
-					gsum += g[p1] - g[p2];
-					bsum += b[p1] - b[p2];
+					Rsum += r[P1] - r[P2];
+					Gsum += g[P1] - g[P2];
+					Bsum += b[P1] - b[P2];
 
 					yi += w;
 				}
 			}
 
-			img.SetPixels(pix, 0, w, 0, 0, w, h);
-			return img;
+			Img.SetPixels(Pix, 0, w, 0, 0, w, h);
+			return Img;
 		}
 
 		/// <summary>
@@ -645,8 +647,8 @@ namespace NeuroAccessMaui.Services
 		{
 			if (this.activity is null || this.rootView is null)
 				return;
-			InputMethodManager? inputMethodManager = this.activity.GetSystemService(Context.InputMethodService) as InputMethodManager;
-			inputMethodManager?.HideSoftInputFromWindow(this.rootView.WindowToken, HideSoftInputFlags.None);
+			InputMethodManager? InputMethodManager = this.activity.GetSystemService(Context.InputMethodService) as InputMethodManager;
+			InputMethodManager?.HideSoftInputFromWindow(this.rootView.WindowToken, HideSoftInputFlags.None);
 			this.activity.Window?.DecorView.ClearFocus();
 		}
 
@@ -685,34 +687,34 @@ namespace NeuroAccessMaui.Services
 			Rect r = new();
 			this.rootView!.GetWindowVisibleDisplayFrame(r);
 
-			int screenHeight = this.rootView.RootView!.Height;
-			int statusBarHeight = 0;
-			int actionBarHeight = 0;
+			int ScreenHeight = this.rootView.RootView!.Height;
+			int StatusBarHeight = 0;
+			int ActionBarHeight = 0;
 
 			// if this succeeds, we can calculate an exact keyboard height
-			Android.Views.View? contentView = this.rootView.FindViewById(Android.Views.Window.IdAndroidContent);
-			if (contentView is not null)
+			Android.Views.View? ContentView = this.rootView.FindViewById(Android.Views.Window.IdAndroidContent);
+			if (ContentView is not null)
 			{
-				statusBarHeight = r.Top - contentView.Top;
-				actionBarHeight = r.Bottom - contentView.Bottom;
+				StatusBarHeight = r.Top - ContentView.Top;
+				ActionBarHeight = r.Bottom - ContentView.Bottom;
 			}
 
 			// Calculate the height of the keyboard (if the above fails, the keyboardsize will include the size of the action and status bar)
-			int availableScreenHeight = screenHeight - statusBarHeight - actionBarHeight;
-			int visibleHeight = r.Height();
-			int keypadHeight = availableScreenHeight - visibleHeight; // height of the keyboard, but is not garanteed to be the actual keyboard height it might include other things such as the action bar.
+			int AvailableScreenHeight = ScreenHeight - StatusBarHeight - ActionBarHeight;
+			int VisibleHeight = r.Height();
+			int KeypadHeight = AvailableScreenHeight - VisibleHeight; // height of the keyboard, but is not garanteed to be the actual keyboard height it might include other things such as the action bar.
 
 			// Assume keyboard is shown if more than 15% of the available screen height is used.
 			// This is a heuristic, and may need to be adjusted.
 			// I really don't like this solution, but android doesn't provide a better way to detect the keyboard at the time of writing.
 			// Checking keyboardheight > 0 is not enough, because the keyboardheight is not garanteed to be accurate on all devices and circumstances
 
-			if (keypadHeight > availableScreenHeight * 0.15)
+			if (KeypadHeight > AvailableScreenHeight * 0.15)
 			{
-				this.lastKeyboardHeight = keypadHeight;
-				this.KeyboardSizeChanged.Raise(this, new KeyboardSizeMessage(keypadHeight));
-				WeakReferenceMessenger.Default.Send(new KeyboardSizeMessage(keypadHeight));
-				this.KeyboardShown.Raise(this, new KeyboardSizeMessage(keypadHeight));
+				this.lastKeyboardHeight = KeypadHeight;
+				this.KeyboardSizeChanged.Raise(this, new KeyboardSizeMessage(KeypadHeight));
+				WeakReferenceMessenger.Default.Send(new KeyboardSizeMessage(KeypadHeight));
+				this.KeyboardShown.Raise(this, new KeyboardSizeMessage(KeypadHeight));
 			}
 			else
 			{
@@ -730,222 +732,222 @@ namespace NeuroAccessMaui.Services
 		#region Notifications
 		public void ShowMessageNotification(string Title, string MessageBody, IDictionary<string, string> Data)
 		{
-			var context = Application.Context;
-			var intent = new Intent(context, typeof(MainActivity));
-			intent.AddFlags(ActivityFlags.ClearTop);
-			foreach (var key in Data.Keys)
+			Context Context = Application.Context;
+			Intent Intent = new Intent(Context, typeof(MainActivity));
+			Intent.AddFlags(ActivityFlags.ClearTop);
+			foreach (string Key in Data.Keys)
 			{
-				intent.PutExtra(key, Data[key]);
+				Intent.PutExtra(Key, Data[Key]);
 			}
-			var pendingIntent = PendingIntent.GetActivity(context, 100, intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
-			var largeIcon = BitmapFactory.DecodeResource(context.Resources, Resource.Drawable.notification_bg_normal);
+			PendingIntent? PendingIntent = Android.App.PendingIntent.GetActivity(Context, 100, Intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
+			Bitmap? LargeIcon = BitmapFactory.DecodeResource(Context.Resources, ResourceConstant.Drawable.notification_bg_normal);
 
-			var builder = new NotificationCompat.Builder(context, Constants.PushChannels.Messages)
-				 .SetSmallIcon(Resource.Drawable.abc_star_half_black_48dp)
-				 .SetLargeIcon(largeIcon)
+			NotificationCompat.Builder Builder = new NotificationCompat.Builder(Context, Constants.PushChannels.Messages)
+				 .SetSmallIcon(ResourceConstant.Drawable.abc_star_half_black_48dp)
+				 .SetLargeIcon(LargeIcon)
 				 .SetContentTitle(Title)
 				 .SetContentText(MessageBody)
 				 .SetAutoCancel(true)
-				 .SetContentIntent(pendingIntent);
+				 .SetContentIntent(PendingIntent);
 
-			var notificationManager = NotificationManagerCompat.From(context);
-			notificationManager.Notify(100, builder.Build());
+			NotificationManagerCompat NotificationManager = NotificationManagerCompat.From(Context);
+			NotificationManager.Notify(100, Builder.Build());
 		}
 
-		public void ShowIdentitiesNotification(string Title, string MessageBody, IDictionary<string, string> Data)
+		public void ShowIdentitiesNotification(string Title, string MessageBody, IDictionary<string, string?> Data)
 		{
-			var context = Application.Context;
-			var intent = new Intent(context, typeof(MainActivity));
-			intent.AddFlags(ActivityFlags.ClearTop);
-			foreach (var key in Data.Keys)
+			Context Context = Application.Context;
+			Intent Intent = new Intent(Context, typeof(MainActivity));
+			Intent.AddFlags(ActivityFlags.ClearTop);
+			foreach (string Key in Data.Keys)
 			{
-				intent.PutExtra(key, Data[key]);
+				Intent.PutExtra(Key, Data[Key]);
 			}
 
 			// Optionally add additional details (for example, appending a legal id)
-			string contentText = MessageBody;
-			if (Data.TryGetValue("legalId", out string legalId) && !string.IsNullOrEmpty(legalId))
+			string ContentText = MessageBody;
+			if (Data.TryGetValue("legalId", out string? LegalId) && !string.IsNullOrEmpty(LegalId))
 			{
-				contentText += System.Environment.NewLine + $"({legalId})";
+				ContentText += System.Environment.NewLine + $"({LegalId})";
 			}
 
-			var pendingIntent = PendingIntent.GetActivity(context, 101, intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
-			var largeIcon = BitmapFactory.DecodeResource(context.Resources, Resource.Drawable.notification_bg_normal);
+			PendingIntent? PendingIntent = Android.App.PendingIntent.GetActivity(Context, 101, Intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
+			Bitmap? LargeIcon = BitmapFactory.DecodeResource(Context.Resources, ResourceConstant.Drawable.notification_bg_normal);
 
-			var builder = new NotificationCompat.Builder(context, Constants.PushChannels.Identities)
-				 .SetSmallIcon(Resource.Drawable.abc_star_half_black_48dp)
-				 .SetLargeIcon(largeIcon)
+			NotificationCompat.Builder Builder = new NotificationCompat.Builder(Context, Constants.PushChannels.Identities)
+				 .SetSmallIcon(ResourceConstant.Drawable.abc_star_half_black_48dp)
+				 .SetLargeIcon(LargeIcon)
 				 .SetContentTitle(Title)
-				 .SetContentText(contentText)
+				 .SetContentText(ContentText)
 				 .SetAutoCancel(true)
-				 .SetContentIntent(pendingIntent);
+				 .SetContentIntent(PendingIntent);
 
-			var notificationManager = NotificationManagerCompat.From(context);
-			notificationManager.Notify(101, builder.Build());
+			NotificationManagerCompat NotificationManager = NotificationManagerCompat.From(Context);
+			NotificationManager.Notify(101, Builder.Build());
 		}
 
 		public void ShowPetitionNotification(string Title, string MessageBody, IDictionary<string, string> Data)
 		{
-			var context = Application.Context;
-			var intent = new Intent(context, typeof(MainActivity));
-			intent.AddFlags(ActivityFlags.ClearTop);
-			foreach (var key in Data.Keys)
+			Context Context = Application.Context;
+			Intent Intent = new Intent(Context, typeof(MainActivity));
+			Intent.AddFlags(ActivityFlags.ClearTop);
+			foreach (string Key in Data.Keys)
 			{
-				intent.PutExtra(key, Data[key]);
+				Intent.PutExtra(Key, Data[Key]);
 			}
 
 			// Use fromJid and rosterName to compose the notification body
-			string fromJid = Data.ContainsKey("fromJid") ? Data["fromJid"] : "";
-			string rosterName = Data.ContainsKey("rosterName") ? Data["rosterName"] : "";
-			string contentText = $"{(string.IsNullOrEmpty(rosterName) ? fromJid : rosterName)}: {MessageBody}";
+			string FromJid = Data.ContainsKey("fromJid") ? Data["fromJid"] : "";
+			string RosterName = Data.ContainsKey("rosterName") ? Data["rosterName"] : "";
+			string ContentText = $"{(string.IsNullOrEmpty(RosterName) ? FromJid : RosterName)}: {MessageBody}";
 
-			var pendingIntent = PendingIntent.GetActivity(context, 102, intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
-			var largeIcon = BitmapFactory.DecodeResource(context.Resources, Resource.Drawable.notification_bg_normal);
+			PendingIntent? PendingIntent = Android.App.PendingIntent.GetActivity(Context, 102, Intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
+			Bitmap? LargeIcon = BitmapFactory.DecodeResource(Context.Resources, ResourceConstant.Drawable.notification_bg_normal);
 
-			var builder = new NotificationCompat.Builder(context, Constants.PushChannels.Petitions)
-				 .SetSmallIcon(Resource.Drawable.abc_star_half_black_48dp)
-				 .SetLargeIcon(largeIcon)
+			NotificationCompat.Builder Builder = new NotificationCompat.Builder(Context, Constants.PushChannels.Petitions)
+				 .SetSmallIcon(ResourceConstant.Drawable.abc_star_half_black_48dp)
+				 .SetLargeIcon(LargeIcon)
 				 .SetContentTitle(Title)
-				 .SetContentText(contentText)
+				 .SetContentText(ContentText)
 				 .SetAutoCancel(true)
-				 .SetContentIntent(pendingIntent);
+				 .SetContentIntent(PendingIntent);
 
-			var notificationManager = NotificationManagerCompat.From(context);
-			notificationManager.Notify(102, builder.Build());
+			NotificationManagerCompat NotificationManager = NotificationManagerCompat.From(Context);
+			NotificationManager.Notify(102, Builder.Build());
 		}
 
 		public void ShowContractsNotification(string Title, string MessageBody, IDictionary<string, string> Data)
 		{
-			var context = Application.Context;
-			var intent = new Intent(context, typeof(MainActivity));
-			intent.AddFlags(ActivityFlags.ClearTop);
-			foreach (var key in Data.Keys)
+			Context Context = Application.Context;
+			Intent Intent = new Intent(Context, typeof(MainActivity));
+			Intent.AddFlags(ActivityFlags.ClearTop);
+			foreach (string Key in Data.Keys)
 			{
-				intent.PutExtra(key, Data[key]);
+				Intent.PutExtra(Key, Data[Key]);
 			}
 
-			var contentBuilder = new StringBuilder();
-			contentBuilder.Append(MessageBody);
-			if (Data.TryGetValue("role", out string role) && !string.IsNullOrEmpty(role))
+			StringBuilder ContentBuilder = new StringBuilder();
+			ContentBuilder.Append(MessageBody);
+			if (Data.TryGetValue("role", out string Role) && !string.IsNullOrEmpty(Role))
 			{
-				contentBuilder.AppendLine().Append(role);
+				ContentBuilder.AppendLine().Append(Role);
 			}
-			if (Data.TryGetValue("contractId", out string contractId) && !string.IsNullOrEmpty(contractId))
+			if (Data.TryGetValue("contractId", out string ContractId) && !string.IsNullOrEmpty(ContractId))
 			{
-				contentBuilder.AppendLine().Append($"({contractId})");
+				ContentBuilder.AppendLine().Append($"({ContractId})");
 			}
-			if (Data.TryGetValue("legalId", out string legalId) && !string.IsNullOrEmpty(legalId))
+			if (Data.TryGetValue("legalId", out string LegalId) && !string.IsNullOrEmpty(LegalId))
 			{
-				contentBuilder.AppendLine().Append($"({legalId})");
+				ContentBuilder.AppendLine().Append($"({LegalId})");
 			}
 
-			var pendingIntent = PendingIntent.GetActivity(context, 103, intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
-			var largeIcon = BitmapFactory.DecodeResource(context.Resources, Resource.Drawable.notification_bg_normal);
+			PendingIntent? PendingIntent = Android.App.PendingIntent.GetActivity(Context, 103, Intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
+			Bitmap? LargeIcon = BitmapFactory.DecodeResource(Context.Resources, ResourceConstant.Drawable.notification_bg_normal);
 
-			var builder = new NotificationCompat.Builder(context, Constants.PushChannels.Contracts)
-				 .SetSmallIcon(Resource.Drawable.abc_star_half_black_48dp)
-				 .SetLargeIcon(largeIcon)
+			NotificationCompat.Builder Builder = new NotificationCompat.Builder(Context, Constants.PushChannels.Contracts)
+				 .SetSmallIcon(ResourceConstant.Drawable.abc_star_half_black_48dp)
+				 .SetLargeIcon(LargeIcon)
 				 .SetContentTitle(Title)
-				 .SetContentText(contentBuilder.ToString())
+				 .SetContentText(ContentBuilder.ToString())
 				 .SetAutoCancel(true)
-				 .SetContentIntent(pendingIntent);
+				 .SetContentIntent(PendingIntent);
 
-			var notificationManager = NotificationManagerCompat.From(context);
-			notificationManager.Notify(103, builder.Build());
+			NotificationManagerCompat NotificationManager = NotificationManagerCompat.From(Context);
+			NotificationManager.Notify(103, Builder.Build());
 		}
 
 		public void ShowEDalerNotification(string Title, string MessageBody, IDictionary<string, string> Data)
 		{
-			var context = Application.Context;
-			var intent = new Intent(context, typeof(MainActivity));
-			intent.AddFlags(ActivityFlags.ClearTop);
-			foreach (var key in Data.Keys)
+			Context Context = Application.Context;
+			Intent Intent = new Intent(Context, typeof(MainActivity));
+			Intent.AddFlags(ActivityFlags.ClearTop);
+			foreach (string Key in Data.Keys)
 			{
-				intent.PutExtra(key, Data[key]);
+				Intent.PutExtra(Key, Data[Key]);
 			}
 
-			var contentBuilder = new StringBuilder();
-			contentBuilder.Append(MessageBody);
-			if (Data.TryGetValue("amount", out string amount) && !string.IsNullOrEmpty(amount))
+			StringBuilder ContentBuilder = new StringBuilder();
+			ContentBuilder.Append(MessageBody);
+			if (Data.TryGetValue("amount", out string Amount) && !string.IsNullOrEmpty(Amount))
 			{
-				contentBuilder.AppendLine().Append(amount);
-				if (Data.TryGetValue("currency", out string currency) && !string.IsNullOrEmpty(currency))
-					contentBuilder.Append(" " + currency);
-				if (Data.TryGetValue("timestamp", out string timestamp) && !string.IsNullOrEmpty(timestamp))
-					contentBuilder.Append($" ({timestamp})");
+				ContentBuilder.AppendLine().Append(Amount);
+				if (Data.TryGetValue("currency", out string Currency) && !string.IsNullOrEmpty(Currency))
+					ContentBuilder.Append(" " + Currency);
+				if (Data.TryGetValue("timestamp", out string Timestamp) && !string.IsNullOrEmpty(Timestamp))
+					ContentBuilder.Append($" ({Timestamp})");
 			}
 
-			var pendingIntent = PendingIntent.GetActivity(context, 104, intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
-			var largeIcon = BitmapFactory.DecodeResource(context.Resources, Resource.Drawable.notification_bg_normal);
+			PendingIntent? PendingIntent = Android.App.PendingIntent.GetActivity(Context, 104, Intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
+			Bitmap? LargeIcon = BitmapFactory.DecodeResource(Context.Resources, ResourceConstant.Drawable.notification_bg_normal);
 
-			var builder = new NotificationCompat.Builder(context, Constants.PushChannels.EDaler)
-				 .SetSmallIcon(Resource.Drawable.abc_star_half_black_48dp)
-				 .SetLargeIcon(largeIcon)
+			NotificationCompat.Builder Builder = new NotificationCompat.Builder(Context, Constants.PushChannels.EDaler)
+				 .SetSmallIcon(ResourceConstant.Drawable.abc_star_half_black_48dp)
+				 .SetLargeIcon(LargeIcon)
 				 .SetContentTitle(Title)
-				 .SetContentText(contentBuilder.ToString())
+				 .SetContentText(ContentBuilder.ToString())
 				 .SetAutoCancel(true)
-				 .SetContentIntent(pendingIntent);
+				 .SetContentIntent(PendingIntent);
 
-			var notificationManager = NotificationManagerCompat.From(context);
-			notificationManager.Notify(104, builder.Build());
+			NotificationManagerCompat NotificationManager = NotificationManagerCompat.From(Context);
+			NotificationManager.Notify(104, Builder.Build());
 		}
 
 		public void ShowTokenNotification(string Title, string MessageBody, IDictionary<string, string> Data)
 		{
-			var context = Application.Context;
-			var intent = new Intent(context, typeof(MainActivity));
-			intent.AddFlags(ActivityFlags.ClearTop);
-			foreach (var key in Data.Keys)
+			Context Context = Application.Context;
+			Intent Intent = new Intent(Context, typeof(MainActivity));
+			Intent.AddFlags(ActivityFlags.ClearTop);
+			foreach (string Key in Data.Keys)
 			{
-				intent.PutExtra(key, Data[key]);
+				Intent.PutExtra(Key, Data[Key]);
 			}
 
-			var contentBuilder = new StringBuilder();
-			contentBuilder.Append(MessageBody);
-			if (Data.TryGetValue("value", out string value) && !string.IsNullOrEmpty(value))
+			StringBuilder ContentBuilder = new StringBuilder();
+			ContentBuilder.Append(MessageBody);
+			if (Data.TryGetValue("value", out string Value) && !string.IsNullOrEmpty(Value))
 			{
-				contentBuilder.AppendLine().Append(value);
-				if (Data.TryGetValue("currency", out string currency) && !string.IsNullOrEmpty(currency))
-					contentBuilder.Append(" " + currency);
+				ContentBuilder.AppendLine().Append(Value);
+				if (Data.TryGetValue("currency", out string Currency) && !string.IsNullOrEmpty(Currency))
+					ContentBuilder.Append(" " + Currency);
 			}
 
-			var pendingIntent = PendingIntent.GetActivity(context, 105, intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
-			var largeIcon = BitmapFactory.DecodeResource(context.Resources, Resource.Drawable.notification_bg_normal);
+			PendingIntent? PendingIntent = Android.App.PendingIntent.GetActivity(Context, 105, Intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
+			Bitmap? LargeIcon = BitmapFactory.DecodeResource(Context.Resources, ResourceConstant.Drawable.notification_bg_normal);
 
-			var builder = new NotificationCompat.Builder(context, Constants.PushChannels.Tokens)
-				 .SetSmallIcon(Resource.Drawable.abc_star_half_black_48dp)
-				 .SetLargeIcon(largeIcon)
+			NotificationCompat.Builder Builder = new NotificationCompat.Builder(Context, Constants.PushChannels.Tokens)
+				 .SetSmallIcon(ResourceConstant.Drawable.abc_star_half_black_48dp)
+				 .SetLargeIcon(LargeIcon)
 				 .SetContentTitle(Title)
-				 .SetContentText(contentBuilder.ToString())
+				 .SetContentText(ContentBuilder.ToString())
 				 .SetAutoCancel(true)
-				 .SetContentIntent(pendingIntent);
+				 .SetContentIntent(PendingIntent);
 
-			var notificationManager = NotificationManagerCompat.From(context);
-			notificationManager.Notify(105, builder.Build());
+			NotificationManagerCompat NotificationManager = NotificationManagerCompat.From(Context);
+			NotificationManager.Notify(105, Builder.Build());
 		}
 
 		public void ShowProvisioningNotification(string Title, string MessageBody, IDictionary<string, string> Data)
 		{
-			var context = Application.Context;
-			var intent = new Intent(context, typeof(MainActivity));
-			intent.AddFlags(ActivityFlags.ClearTop);
-			foreach (var key in Data.Keys)
+			Context Context = Application.Context;
+			Intent Intent = new Intent(Context, typeof(MainActivity));
+			Intent.AddFlags(ActivityFlags.ClearTop);
+			foreach (string Key in Data.Keys)
 			{
-				intent.PutExtra(key, Data[key]);
+				Intent.PutExtra(Key, Data[Key]);
 			}
-			var pendingIntent = PendingIntent.GetActivity(context, 106, intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
-			var largeIcon = BitmapFactory.DecodeResource(context.Resources, Resource.Drawable.notification_bg_normal);
+			PendingIntent? PendingIntent = Android.App.PendingIntent.GetActivity(Context, 106, Intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
+			Bitmap? LargeIcon = BitmapFactory.DecodeResource(Context.Resources, ResourceConstant.Drawable.notification_bg_normal);
 
-			var builder = new NotificationCompat.Builder(context, Constants.PushChannels.Provisioning)
-				 .SetSmallIcon(Resource.Drawable.abc_star_half_black_48dp)
-				 .SetLargeIcon(largeIcon)
+			NotificationCompat.Builder Builder = new NotificationCompat.Builder(Context, Constants.PushChannels.Provisioning)
+				 .SetSmallIcon(ResourceConstant.Drawable.abc_star_half_black_48dp)
+				 .SetLargeIcon(LargeIcon)
 				 .SetContentTitle(Title)
 				 .SetContentText(MessageBody)
 				 .SetAutoCancel(true)
-				 .SetContentIntent(pendingIntent);
+				 .SetContentIntent(PendingIntent);
 
-			var notificationManager = NotificationManagerCompat.From(context);
-			notificationManager.Notify(106, builder.Build());
+			NotificationManagerCompat NotificationManager = NotificationManagerCompat.From(Context);
+			NotificationManager.Notify(106, Builder.Build());
 		}
 		#endregion
 	}
