@@ -10,6 +10,7 @@ using Security;
 using System.Text;
 using CommunityToolkit.Mvvm.Messaging;
 using Plugin.Firebase.CloudMessaging;
+using UserNotifications;
 
 namespace NeuroAccessMaui.Services
 {
@@ -435,40 +436,88 @@ namespace NeuroAccessMaui.Services
 		#endregion
 
 		#region Notifications
-		public void ShowMessageNotification(string Title, string MessageBody, IDictionary<string, string> Data)
-		{
-			throw new NotImplementedException();
-		}
+        /// <summary>
+        /// Helper method to schedule a local notification after checking the authorization status.
+        /// </summary>
+        /// <param name="title">Notification title.</param>
+        /// <param name="body">Notification body.</param>
+        /// <param name="data">Additional data as key-value pairs.</param>
+        private async void ShowLocalNotification(string title, string body, IDictionary<string, string> data)
+        {
+			// Check current notification settings without prompting the user
+			UNNotificationSettings Settings = await UNUserNotificationCenter.Current.GetNotificationSettingsAsync();
+            if (Settings.AuthorizationStatus != UNAuthorizationStatus.Authorized)
+            {
+                Console.WriteLine("Notifications are not authorized.");
+                return;
+            }
 
-		public void ShowIdentitiesNotification(string Title, string MessageBody, IDictionary<string, string> Data)
-		{
-			throw new NotImplementedException();
-		}
+			// Create the notification content
+			UNMutableNotificationContent Content = new UNMutableNotificationContent
+            {
+                Title = title,
+                Body = body,
+                Sound = UNNotificationSound.Default
+            };
 
-		public void ShowPetitionNotification(string Title, string MessageBody, IDictionary<string, string> Data)
-		{
-			throw new NotImplementedException();
-		}
+            // Add any additional data as UserInfo
+            if (data != null)
+            {
+				NSMutableDictionary UserInfo = new();
+                foreach (KeyValuePair<string, string> Pair in data)
+                {
+                    UserInfo.SetValueForKey(new NSString(Pair.Value), new NSString(Pair.Key));
+                }
+                Content.UserInfo = UserInfo;
+            }
 
-		public void ShowContractsNotification(string Title, string MessageBody, IDictionary<string, string> Data)
-		{
-			throw new NotImplementedException();
-		}
+			// Schedule the notification after a short delay
+			UNTimeIntervalNotificationTrigger Trigger = UNTimeIntervalNotificationTrigger.CreateTrigger(1, false);
+			UNNotificationRequest Request = UNNotificationRequest.FromIdentifier(Guid.NewGuid().ToString(), Content, Trigger);
+            UNUserNotificationCenter.Current.AddNotificationRequest(Request, error =>
+            {
+                if (error != null)
+                {
+                    Console.WriteLine($"Error scheduling notification: {error.LocalizedDescription}");
+                }
+            });
+        }
 
-		public void ShowEDalerNotification(string Title, string MessageBody, IDictionary<string, string> Data)
-		{
-			throw new NotImplementedException();
-		}
+        // The following methods use the helper above.
+        public void ShowMessageNotification(string Title, string MessageBody, IDictionary<string, string> Data)
+        {
+			this.ShowLocalNotification(Title, MessageBody, Data);
+        }
 
-		public void ShowTokenNotification(string Title, string MessageBody, IDictionary<string, string> Data)
-		{
-			throw new NotImplementedException();
-		}
+        public void ShowIdentitiesNotification(string Title, string MessageBody, IDictionary<string, string> Data)
+        {
+			this.ShowLocalNotification(Title, MessageBody, Data);
+        }
 
-		public void ShowProvisioningNotification(string Title, string MessageBody, IDictionary<string, string> Data)
-		{
-			throw new NotImplementedException();
-		}
+        public void ShowPetitionNotification(string Title, string MessageBody, IDictionary<string, string> Data)
+        {
+			this.ShowLocalNotification(Title, MessageBody, Data);
+        }
+
+        public void ShowContractsNotification(string Title, string MessageBody, IDictionary<string, string> Data)
+        {
+			this.ShowLocalNotification(Title, MessageBody, Data);
+        }
+
+        public void ShowEDalerNotification(string Title, string MessageBody, IDictionary<string, string> Data)
+        {
+			this.ShowLocalNotification(Title, MessageBody, Data);
+        }
+
+        public void ShowTokenNotification(string Title, string MessageBody, IDictionary<string, string> Data)
+        {
+			this.ShowLocalNotification(Title, MessageBody, Data);
+        }
+
+        public void ShowProvisioningNotification(string Title, string MessageBody, IDictionary<string, string> Data)
+        {
+			this.ShowLocalNotification(Title, MessageBody, Data);
+        }
 		#endregion
 	}
 }
