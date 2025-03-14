@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.Controls.Shapes;
 using Waher.Script.Functions.Runtime;
 
 namespace NeuroAccessMaui.UI.Controls
@@ -14,7 +15,8 @@ namespace NeuroAccessMaui.UI.Controls
 	{
 		#region Fields
 		private VerticalStackLayout durationsContainer;
-		private Label topLabel;
+		private Label titleLabel;
+		private Label descriptionLabel;
 		private ObservableCollection<DurationUnits> durationUnits = new(){
 			DurationUnits.Years,
 			DurationUnits.Months,
@@ -38,24 +40,36 @@ namespace NeuroAccessMaui.UI.Controls
 					new RowDefinition { Height = GridLength.Auto }, // Top Label
 					new RowDefinition { Height = GridLength.Auto }, // Date Pickers Vertical Stack Layout
 					new RowDefinition { Height = GridLength.Auto }, // Add new Duration Button
-				}
-			};
-
-			Border MainBorder = new()
-			{
-				Style = AppStyles.RoundedBorder,
-				BackgroundColor = Color.FromHex("#AAAAAA"),
-				Content = MainGrid
+				},
+				RowSpacing = AppStyles.SmallSpacing
 			};
 
 			// Top Label
-			this.topLabel = new();
-			this.topLabel.SetBinding(Label.StyleProperty, new Binding(nameof(this.TopLabelStyle), source: this));
-			this.topLabel.SetBinding(Label.TextProperty, new Binding(nameof(this.TopLabelText), source: this));
-			MainGrid.Add(this.topLabel, 0, 0);
+			Grid TopTextGrid = new()
+			{
+				RowDefinitions =
+				{
+					new RowDefinition { Height = GridLength.Auto },
+					new RowDefinition { Height = GridLength.Auto }
+				},
+				RowSpacing = AppStyles.SmallSpacing
+			};
+
+			this.titleLabel = new();
+			this.titleLabel.SetBinding(Label.StyleProperty, new Binding(nameof(this.TitleLabelStyle), source: this));
+			this.titleLabel.SetBinding(Label.TextProperty, new Binding(nameof(this.TitleLabelText), source: this));
+			TopTextGrid.Add(this.titleLabel, 0, 0);
+
+			this.descriptionLabel = new();
+			this.descriptionLabel.SetBinding(Label.StyleProperty, new Binding(nameof(this.DescriptionLabelStyle), source: this));
+			this.descriptionLabel.SetBinding(Label.TextProperty, new Binding(nameof(this.DescriptionLabelText), source: this));
+			TopTextGrid.Add(this.descriptionLabel, 0, 1);
+
+			MainGrid.Add(TopTextGrid, 0, 0);
 
 			// Date Pickers Vertical Stack Layout
 			this.durationsContainer = [];
+			this.durationsContainer.Spacing = AppStyles.SmallSpacing;
 			MainGrid.Add(this.durationsContainer, 0, 1);
 
 			// Button Grid
@@ -110,11 +124,11 @@ namespace NeuroAccessMaui.UI.Controls
 				HorizontalOptions = LayoutOptions.Center,
 				VerticalOptions = LayoutOptions.Center
 			};
-			ButtonGrid.Add(NegateCheckBox, 2, 0);
+			ButtonGrid.Add(NegateCheckBox, 3, 0);
 
 			MainGrid.Add(ButtonGrid, 0, 2);
 
-			this.Content = MainBorder;
+			this.Content = MainGrid;
 		}
 
 		#endregion
@@ -130,7 +144,8 @@ namespace NeuroAccessMaui.UI.Controls
 			CompositeInputView DurationView = new()
 			{
 				Style = AppStyles.BaseCompositeInputView,
-				Margin = AppStyles.SmallLeftMargins + AppStyles.SmallRightMargins
+				Margin = 0,
+				Padding = 0,
 			};
 
 			DurationUnits Unit = (DurationUnits)this.unitPicker.Picker.SelectedItem;
@@ -141,6 +156,7 @@ namespace NeuroAccessMaui.UI.Controls
 				Text = Unit.ToString(),
 				HorizontalOptions = LayoutOptions.Start,
 				VerticalOptions = LayoutOptions.Center,
+				Style = AppStyles.SectionTitleLabel
 			};
 
 			DurationView.LeftView = UnitLabel;
@@ -150,18 +166,24 @@ namespace NeuroAccessMaui.UI.Controls
 			// Add the time entry to the middle of the CompositeInputView
 			CompositeEntry DurationEntry = new()
 			{
-				Style = AppStyles.RegularCompositeEntry
+				Style = AppStyles.RegularCompositeEntry,
+				BorderStrokeShape = new Rectangle(),
+				BorderShadow = new Shadow
+				{
+					Opacity = 0,
+					Radius = 0,
+				}
 			};
 
 			DurationView.CenterView = DurationEntry;
 
 			// Add delete button to the right of the CompositeInputView
-			TextButton DeleteButton = new()
+			ImageButton DeleteButton = new()
 			{
-				LabelData = "X",
-				Style = AppStyles.FilledTextButton,
-				HorizontalOptions = LayoutOptions.End,
+				Style = AppStyles.ImageOnlyButton,
+				PathData = Geometries.CancelPath,
 				VerticalOptions = LayoutOptions.Center,
+				HorizontalOptions = LayoutOptions.End,
 				Command = new AsyncRelayCommand(async () => await this.DeleteUnitAsync(Unit, DurationView), new AsyncRelayCommandOptions { })
 			};
 
@@ -208,31 +230,61 @@ namespace NeuroAccessMaui.UI.Controls
 		/// <summary>
 		/// Bindable property for the style applied to the top label.
 		/// </summary>
-		public static readonly BindableProperty TopLabelStyleProperty =
-			BindableProperty.Create(nameof(TopLabelStyle), typeof(Style), typeof(CompositeInputView));
+		public static readonly BindableProperty TitleLabelStyleProperty =
+			BindableProperty.Create(nameof(TitleLabelStyle), typeof(Style), typeof(CompositeInputView));
 
 		/// <summary>
 		/// Gets or sets the style applied to the label above the entry.
 		/// </summary>
-		public Style TopLabelStyle
+		public Style TitleLabelStyle
 		{
-			get => (Style)this.GetValue(TopLabelStyleProperty);
-			set => this.SetValue(TopLabelStyleProperty, value);
+			get => (Style)this.GetValue(TitleLabelStyleProperty);
+			set => this.SetValue(TitleLabelStyleProperty, value);
 		}
 
 		/// <summary>
 		/// Bindable property for the text of the top label.
 		/// </summary>
-		public static readonly BindableProperty TopLabelTextProperty =
-			BindableProperty.Create(nameof(TopLabelText), typeof(string), typeof(CompositeInputView));
+		public static readonly BindableProperty TitleLabelTextProperty =
+			BindableProperty.Create(nameof(TitleLabelText), typeof(string), typeof(CompositeInputView));
 
 		/// <summary>
 		/// Gets or sets the text applied to the top label.
 		/// </summary>
-		public string TopLabelText
+		public string TitleLabelText
 		{
-			get => (string)this.GetValue(TopLabelTextProperty);
-			set => this.SetValue(TopLabelTextProperty, value);
+			get => (string)this.GetValue(TitleLabelTextProperty);
+			set => this.SetValue(TitleLabelTextProperty, value);
+		}
+
+		/// <summary>
+		/// Bindable property for the style applied to the description label.
+		/// </summary>
+		public static readonly BindableProperty DescriptionLabelStyleProperty =
+			BindableProperty.Create(nameof(DescriptionLabelStyle), typeof(Style), typeof(CompositeInputView));
+
+		/// <summary>
+		/// Gets or sets the style applied to the description label.
+		/// </summary>
+		public Style DescriptionLabelStyle
+		{
+			get => (Style)this.GetValue(DescriptionLabelStyleProperty);
+			set => this.SetValue(DescriptionLabelStyleProperty, value);
+		}
+
+		/// <summary>
+		/// Bindable Property for the text of the description label.
+		/// </summary>
+		public static readonly BindableProperty DescriptionLabelTextProperty =
+			BindableProperty.Create(nameof(DescriptionLabelText), typeof(string), typeof(CompositeInputView));
+
+		/// <summary>
+		/// Gets or sets the text applied to the description label.
+		/// </summary>
+		public string DescriptionLabelText
+		{
+			get => (string)this.GetValue(DescriptionLabelTextProperty);
+			set => this.SetValue(DescriptionLabelTextProperty, value);
 		}
 
 		#endregion

@@ -59,7 +59,7 @@
 		private static Color? blue20AffirmLight;
 		private static Color? blue20AffirmDark;
 		private static Color? blueLight;
-		private static Color? blueDark;
+		private static Color? blueDark;		
 
 		
 
