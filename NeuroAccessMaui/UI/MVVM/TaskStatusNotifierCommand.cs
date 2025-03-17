@@ -54,7 +54,7 @@ namespace NeuroAccessMaui.UI.MVVM
 
 			// Start the task via the notifier.
 			this.Notifier.Load(Context => this.taskFactory(Context), this);
-			Task<TResult>? Task = this.Notifier.Task;
+			Task<TResult>? Task = this.Notifier.CurrentTask;
 			if (Task != null)
 			{
 				// When the task completes, raise CanExecuteChanged (on the UI thread).
@@ -106,15 +106,15 @@ namespace NeuroAccessMaui.UI.MVVM
 		/// <summary>
 		/// Exposes the currently executing task.
 		/// </summary>
-		public Task? ExecutionTask => this.Notifier.Task;
+		public Task? ExecutionTask => this.Notifier.CurrentTask;
 
 		/// <summary>
 		/// Indicates whether the command can be canceled.
 		/// </summary>
 		public bool CanBeCanceled =>
 			 this.Notifier.CancellationTokenSource is not null &&
-			 this.Notifier.Task is not null &&
-			 !this.Notifier.Task.IsCompleted;
+			 this.Notifier.CurrentTask is not null &&
+			 !this.Notifier.CurrentTask.IsCompleted;
 
 		/// <summary>
 		/// Indicates whether cancellation has been requested.
@@ -124,6 +124,6 @@ namespace NeuroAccessMaui.UI.MVVM
 		/// <summary>
 		/// Indicates whether the command is currently running.
 		/// </summary>
-		public bool IsRunning => this.Notifier.Task is { IsCompleted: false };
+		public bool IsRunning => this.Notifier.CurrentTask is { IsCompleted: false };
 	}
 }

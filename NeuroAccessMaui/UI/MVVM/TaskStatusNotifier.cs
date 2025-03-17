@@ -48,31 +48,30 @@ namespace NeuroAccessMaui.UI.MVVM
 	///   </item>
 	///   <item>
 	///     <description>
-	///       Progress reporting – The <c>Progress</c> property reflects the latest progress value reported by the task.
+	///       <c>Progress reporting</c> – The <c>Progress</c> property reflects the latest progress value reported by the task.
 	///     </description>
 	///   </item>
 	///   <item>
 	///     <description>
-	///       Cancellation support – A cancellation token is managed internally to support task cancellation.
+	///       <c>Cancellation support</c> – A cancellation token is managed internally to support task cancellation.
 	///     </description>
 	///   </item>
 	///   <item>
 	///     <description>
-	///       Generation fallback – Implements a generation-based mechanism to ensure that if a new task is started (or refreshed),
+	///       <c>Generation fallback</c> – Implements a generation-based mechanism to ensure that if a new task is started (or refreshed),
 	///       any progress or completion from an old, cancelled task is ignored. This prevents stale operations from updating the UI.
 	///     </description>
 	///   </item>
 	/// </list>
-	/// 
 	/// <para>
 	/// <strong>Usage:</strong> Typically, you use an instance of this notifier as part of your MVVM command infrastructure.
 	/// The asynchronous operation’s status can be bound to UI elements (for example, to show loading indicators, display error messages, etc.).
 	/// </para>
-	/// 
 	/// <para>
-	/// <strong>Background:</strong> This implementation is inspired by asynchronous programming patterns described by Stephen Cleary and
-	/// design approaches used in projects like Sharpnado.TaskLoaderView. It avoids the pitfalls of using ad-hoc IsBusy flags,
-	/// instead providing a robust, state-driven mechanism for managing asynchronous operations.
+	/// <strong>Warning:</strong> If the asynchronous operation has side effects (such as network requests, file operations,
+	/// or interactions with external systems), reloading or refreshing may not immediately halt the previous operation. The stale operation
+	/// may still complete its execution and perform its side effects. It is therefore important to ensure that such operations are idempotent
+	/// or that any unintended effects are properly managed.
 	/// </para>
 	/// </remarks>
 	public partial class TaskStatusNotifier<TResult, TProgress> : ObservableObject, IDisposable
@@ -90,22 +89,30 @@ namespace NeuroAccessMaui.UI.MVVM
 		// The factory delegate to create tasks; stored so that a new load can be triggered.
 		private Func<TaskContext<TProgress>, Task<TResult>>? taskFactory;
 
-		/// <summary>
 		/// A generation counter to identify the currently active task.
-		/// 
-		/// </summary>
 		private int currentGeneration = 0;
 
 		/// <summary>
-		/// Gets the current task.
+		/// The current task being processed
 		/// </summary>
-		public Task<TResult>? Task { get; private set; }
+		/// <remarks>
+		/// <c>Warning: </c> Will propagate exception and return value
+		/// </remarks>
+		public Task<TResult>? CurrentTask { get; private set; }
+
+		/// <summary>
+		/// The current watcher monitoring the current Task
+		/// </summary>
+		/// <remarks>
+		/// <c>Note: </c> Will not throw exceptions. Completes when CurrentTask is done and UI has been notified
+		/// </remarks>
+		public Task? CurrentWatcher { get; private set; }
 
 		/// <summary>
 		/// Returns the result if the task has completed successfully.
 		/// </summary>
-		public TResult? Result => (this.Task is { Status: System.Threading.Tasks.TaskStatus.RanToCompletion })
-			 ? this.Task.Result
+		public TResult? Result => (this.CurrentTask is { Status: System.Threading.Tasks.TaskStatus.RanToCompletion })
+			 ? this.CurrentTask.Result
 			 : default;
 
 		/// <summary>
@@ -115,22 +122,20 @@ namespace NeuroAccessMaui.UI.MVVM
 		{
 			get
 			{
-				if (this.Task is null)
+				if (this.CurrentTask is null)
 					return TaskStatus.NotStarted;
-				if (!this.Task.IsCompleted)
+				if (!this.CurrentTask.IsCompleted)
 					return TaskStatus.Loading;
-				if (this.Task.IsCanceled)
+				if (this.CurrentTask.IsCanceled)
 					return TaskStatus.Canceled;
-				if (this.Task.IsFaulted)
+				if (this.CurrentTask.IsFaulted)
 					return TaskStatus.Faulted;
 				return TaskStatus.Succeeded;
 			}
 		}
 
-		[ObservableProperty]
-		private bool isRefreshing = false;
-
 		// Convenience properties for data binding.
+		public bool IsRefreshing { get; private set; }
 		public bool IsNotStarted => this.State == TaskStatus.NotStarted;
 		public bool IsStarted => this.State != TaskStatus.NotStarted;
 		public bool IsLoading => this.State == TaskStatus.Loading;
@@ -145,7 +150,7 @@ namespace NeuroAccessMaui.UI.MVVM
 		/// <summary>
 		/// If the task faulted, returns its AggregateException.
 		/// </summary>
-		public AggregateException? Exception => this.Task?.Exception;
+		public AggregateException? Exception => this.CurrentTask?.Exception;
 
 		/// <summary>
 		/// The inner exception, if available.
@@ -189,7 +194,7 @@ namespace NeuroAccessMaui.UI.MVVM
 				return;
 			try
 			{
-				if (this.Task is { IsCompleted: false })
+				if (this.CurrentTask is { IsCompleted: false })
 				{
 					this.CancellationTokenSource.Cancel();
 				}
@@ -216,18 +221,16 @@ namespace NeuroAccessMaui.UI.MVVM
 			try
 			{
 				if (this.taskFactory is null)
-				{
-					throw new InvalidOperationException("Task factory is not set.");
-				}
-
-				// Cancel any existing task.
-				this.CancelExistingTask();
+					return;
 
 				// Increment the generation token.
 				int ThisGeneration = ++this.currentGeneration;
 
-				// Create a new CancellationTokenSource.
+				// Cancel any existing task.
+				this.CancelExistingTask();
 				this.CancellationTokenSource = new CancellationTokenSource();
+				this.CurrentTask = null;
+				this.CurrentWatcher = null;
 
 				// Create a progress reporter that ensures UI updates.
 				Progress<TProgress> ProgressReporter = new Progress<TProgress>(value =>
@@ -240,9 +243,8 @@ namespace NeuroAccessMaui.UI.MVVM
 
 				TaskContext<TProgress> Context = new(isRefresh, this.CancellationTokenSource.Token, ProgressReporter);
 				// Start the new task.
-				this.Task = this.taskFactory.Invoke(Context);
-
-				_ = this.WatchTaskAsync(ThisGeneration);
+				this.CurrentTask = this.taskFactory.Invoke(Context);
+				this.CurrentWatcher = this.WatchTaskAsync(ThisGeneration);
 			}
 			finally
 			{
@@ -259,9 +261,9 @@ namespace NeuroAccessMaui.UI.MVVM
 		{
 			try
 			{
-				if (this.Task != null)
+				if (this.CurrentTask != null)
 				{
-					await this.Task;
+					await this.CurrentTask;
 				}
 			}
 			catch
@@ -272,6 +274,8 @@ namespace NeuroAccessMaui.UI.MVVM
 			{
 				if (Generation == this.currentGeneration)
 				{
+					if(this.IsRefreshing)
+						this.IsRefreshing = false;
 					this.NotifyAll();
 				}
 			}
@@ -323,7 +327,7 @@ namespace NeuroAccessMaui.UI.MVVM
 		/// The TaskContext parameter contains whether this is a refresh, a cancellation token, and a progress reporter.
 		/// </param>
 		/// <param name="NotifyCommands">
-		/// Optional commands that should be notified when the state changes.
+		/// Optional RelayCommands that should be notified when the state changes.
 		/// </param>
 		public void Load(Func<TaskContext<TProgress>, Task<TResult>> TaskFactory, params IRelayCommand[] NotifyCommands)
 		{
@@ -344,40 +348,77 @@ namespace NeuroAccessMaui.UI.MVVM
 		}
 
 		/// <summary>
+		/// Asynchronously waits for the current watcher task to complete.
+		/// </summary>
+		/// <remarks>
+		/// If a watcher is active, this method awaits its completion; if no watcher exists,
+		/// the method returns immediately. This ensures that any UI updates or notifications
+		/// associated with the current task have finished processing.
+		/// </remarks>
+		/// <returns>A task that represents the asynchronous wait operation.</returns>
+		public async Task WaitCurrentAsync()
+		{
+			Task? Watcher = this.CurrentWatcher;
+			if (Watcher is null)
+				return;
+			await Watcher;
+		}
+
+		/// <summary>
+		/// Asynchronously waits until all UI notifications and state updates for the current task have been processed.
+		/// </summary>
+		/// <remarks>
+		/// This method repeatedly awaits the current watcher until it remains unchanged,
+		/// meaning that no new task has been started in the interim. Use this method when you need
+		/// to ensure that all notifications (triggered by task completion, cancellation, or refresh)
+		/// have been fully handled before proceeding.
+		/// </remarks>
+		/// <returns>A task that completes once the latest watcher task has finished and no new watcher has replaced it.</returns>
+		public async Task WaitAllAsync()
+		{
+			while (true)
+			{
+				Task? Watcher = this.CurrentWatcher;
+				if (Watcher is null)
+					return;
+				await Watcher;
+
+				Task? NewWatcher = this.CurrentWatcher;
+				if (NewWatcher is not null && Watcher != NewWatcher)
+					continue;
+				break;
+			}
+		}
+
+		/// <summary>
+		/// Reload the current task
+		/// This cancels any running task and starts a new one using the stored factory.
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(IsStarted))]
+		public void Reload()
+		{
+			this.StartNewTask(isRefresh: false);
+		}
+
+		/// <summary>
 		/// Refreshes the current task.
 		/// This cancels any running task and starts a new one using the stored factory with the refresh flag.
 		/// </summary>
 		[RelayCommand(CanExecute = nameof(IsStarted))]
-		public async Task RefreshAsync()
+		public void Refresh()
 		{
-			// Ensure UI updates for the refreshing flag.
-			await MainThread.InvokeOnMainThreadAsync(() =>
-			{
-				this.IsRefreshing = true;
-			});
-
-			// For refresh, pass true.
-			this.StartNewTask(isRefresh: true);
-
+			this.semaphore.Wait();
 			try
 			{
-				if (this.Task != null)
-				{
-					await this.Task;
-				}
-			}
-			catch
-			{
-				// Exceptions are surfaced via Exception/InnerException/ErrorMessage.
+				this.IsRefreshing = true;
 			}
 			finally
 			{
-				await MainThread.InvokeOnMainThreadAsync(() =>
-				{
-					this.IsRefreshing = false;
-					this.NotifyAll();
-				});
+				this.semaphore.Release();
 			}
+
+			// For refresh, pass true.
+			this.StartNewTask(isRefresh: true);
 		}
 
 		/// <summary>
