@@ -174,6 +174,7 @@ namespace NeuroAccessMaui.UI.Controls
 					Radius = 0,
 				}
 			};
+			DurationEntry.Keyboard = Keyboard.Numeric;
 
 			DurationView.CenterView = DurationEntry;
 
