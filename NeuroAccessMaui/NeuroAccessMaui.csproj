@@ -107,12 +107,7 @@
 
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'" 
-				Include="Resources\AppIcon\appicon.svg"
-				ForegroundFile="Resources\AppIcon\appiconfg.svg"
-				BaseSize="512,512" 
-				ForegroundScale="0.55"
-				Color="#F5F6F7"  />
+		<MauiIcon Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'" Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" BaseSize="512,512" ForegroundScale="0.55" Color="#F5F6F7" />
 		<MauiIcon Include="Resources\AppIcon\appicon_ios.svg" Color="#F5F6F7" />
 
 		<!-- Splash Screen -->
@@ -122,13 +117,12 @@
 		<MauiImage Include="Resources\Images\*" />
 
 		<!-- Custom Fonts -->
-		<MauiFont Include="Resources\Fonts\SpaceGrotesk-Bold.ttf"/>
-		<MauiFont Include="Resources\Fonts\SpaceGrotesk-SemiBold.ttf"/>
-		<MauiFont Include="Resources\Fonts\SpaceGrotesk-Medium.ttf"/>
-		<MauiFont Include="Resources\Fonts\SpaceGrotesk-Regular.ttf"/>
-		<MauiFont Include="Resources\Fonts\NHaasGroteskTXPro-75Bd.ttf"/>
-		<MauiFont Include="Resources\Fonts\NHaasGroteskTXPro-55Rg.ttf"/>
-
+		<MauiFont Include="Resources\Fonts\SpaceGrotesk-Bold.ttf" />
+		<MauiFont Include="Resources\Fonts\SpaceGrotesk-SemiBold.ttf" />
+		<MauiFont Include="Resources\Fonts\SpaceGrotesk-Medium.ttf" />
+		<MauiFont Include="Resources\Fonts\SpaceGrotesk-Regular.ttf" />
+		<MauiFont Include="Resources\Fonts\NHaasGroteskTXPro-75Bd.ttf" />
+		<MauiFont Include="Resources\Fonts\NHaasGroteskTXPro-55Rg.ttf" />
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
@@ -189,6 +183,10 @@
 		<Compile Remove="Platforms\iOS\Security\ScreenRecordingProtectionManager.cs" />
 		<Compile Remove="Platforms\iOS\Security\ScreenSecurity.ios.cs" />
 		<Compile Remove="Platforms\iOS\Security\ScreenshotProtectionManager.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiImage Remove="Resources\Images\appiconfg.svg" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -492,6 +490,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\IdApp.Cv\IdApp.Cv.csproj" />
 		<ProjectReference Include="..\NeuroAccess.Nfc\NeuroAccess.Nfc.csproj" />
+		<ProjectReference Include="..\NeuroAccessMaui.Generator\NeuroAccessMaui.Generator.csproj" OutputItemType="Analyzer"/>
 	</ItemGroup>
 
 	<ItemGroup>
