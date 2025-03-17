@@ -82,6 +82,7 @@ namespace NeuroAccessMaui
 		private static bool configLoaded;
 		private static bool defaultInstantiated;
 		private static DateTime savedStartTime = DateTime.MinValue;
+		private static DateTime lastAuthenticationTime = DateTime.MinValue;
 		private static bool displayedPasswordPopup;
 		private static int startupCounter;
 
@@ -876,13 +877,13 @@ namespace NeuroAccessMaui
 
 		public static Task<bool> AuthenticateUserAsync(AuthenticationPurpose purpose, bool force = false)
 		{
-			if (MainThread.IsMainThread)
-				return AuthenticateUserOnMainThreadAsync(purpose, force);
-
 			TaskCompletionSource<bool> Tcs = new();
 			MainThread.BeginInvokeOnMainThread(async () =>
 			{
-				Tcs.TrySetResult(await AuthenticateUserOnMainThreadAsync(purpose, force));
+				bool Result = await AuthenticateUserOnMainThreadAsync(purpose, force);
+				if(Result)
+					lastAuthenticationTime = DateTime.Now;
+				Tcs.TrySetResult(Result);
 			});
 			return Tcs.Task;
 		}
@@ -993,7 +994,8 @@ namespace NeuroAccessMaui
 
 		private static void SetStartInactivityTime() => savedStartTime = DateTime.Now;
 
-		private static bool IsInactivitySafeIntervalPassed() => DateTime.Now.Subtract(savedStartTime).TotalMinutes > Constants.Password.PossibleInactivityInMinutes;
+		private static bool IsInactivitySafeIntervalPassed() => DateTime.Compare(DateTime.Now,
+			lastAuthenticationTime.AddMinutes(Constants.Password.PossibleInactivityInMinutes)) > 0; // T1 is Later than T2;
 
 		internal static async Task<long> GetCurrentPasswordCounterAsync() => await ServiceRef.SettingsService.RestoreLongState(Constants.Password.CurrentPasswordAttemptCounter);
 
