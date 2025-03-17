@@ -27,6 +27,7 @@ using Rect = Android.Graphics.Rect;
 
 using Application = Android.App.Application;
 using FileProvider = AndroidX.Core.Content.FileProvider;
+using Resource = Android.Resource;
 
 namespace NeuroAccessMaui.Services
 {
@@ -221,180 +222,181 @@ namespace NeuroAccessMaui.Services
 			}
 		}
 
-
-		/// <summary>
-		/// Make a blurred screenshot
-		/// TODO: Just make a screen shot. Use the portable CV library to blur it.
-		/// </summary>
-		public Task<byte[]> CaptureScreen(int blurRadius)
-		{
-			blurRadius = Math.Min(25, Math.Max(blurRadius, 0));
-
-			Activity? Activity = Platform.CurrentActivity;
-			Android.Views.View? RootView = Activity?.Window?.DecorView.RootView;
-
-			if (RootView is null)
-				return Task.FromResult<byte[]>([]);
-
-			using Bitmap Screenshot = Bitmap.CreateBitmap(RootView.Width, RootView.Height, Bitmap.Config.Argb8888!);
-			Canvas Canvas = new(Screenshot);
-			RootView.Draw(Canvas);
-
-			Bitmap? Blurred = null;
-
-			if (Activity != null && (int)Android.OS.Build.VERSION.SdkInt >= 17)
-				Blurred = ToBlurred(Screenshot, Activity, blurRadius);
-			else
-				Blurred = ToLegacyBlurred(Screenshot, blurRadius);
-
-			MemoryStream Stream = new();
-			Blurred.Compress(Bitmap.CompressFormat.Jpeg!, 80, Stream);
-			Stream.Seek(0, SeekOrigin.Begin);
-
-			return Task.FromResult(Stream.ToArray());
-		}
-
-		private static Bitmap ToBlurred(Bitmap originalBitmap, Activity? Activity, int radius)
-		{
-			// Create another bitmap that will hold the results of the filter.
-			Bitmap BlurredBitmap = Bitmap.CreateBitmap(originalBitmap);
-			RenderScript? RenderScript = RenderScript.Create(Activity);
-
-			// Load up an instance of the specific script that we want to use.
-			// An Element is similar to a C type. The second parameter, Element.U8_4,
-			// tells the Allocation is made up of 4 fields of 8 unsigned bits.
-			ScriptIntrinsicBlur? Script = ScriptIntrinsicBlur.Create(RenderScript, Android.Renderscripts.Element.U8_4(RenderScript));
-
-			// Create an Allocation for the kernel inputs.
-			Allocation? Input = Allocation.CreateFromBitmap(RenderScript, originalBitmap, Allocation.MipmapControl.MipmapFull,
-				AllocationUsage.Script);
-
-			// Assign the input Allocation to the script.
-			Script?.SetInput(Input);
-
-			// Set the blur radius
-			Script?.SetRadius(radius);
-
-			// Finally we need to create an output allocation to hold the output of the Renderscript.
-			Allocation? Output = Allocation.CreateTyped(RenderScript, Input?.Type);
-
-			// Next, run the script. This will run the script over each Element in the Allocation, and copy it's
-			// output to the allocation we just created for this purpose.
-			Script?.ForEach(Output);
-
-			// Copy the output to the blurred bitmap
-			Output?.CopyTo(BlurredBitmap);
-
-			// Cleanup.
-			Output?.Destroy();
-			Input?.Destroy();
-			Script?.Destroy();
-			RenderScript?.Destroy();
-
-			return BlurredBitmap;
-		}
-
-		// Source: http://incubator.quasimondo.com/processing/superfast_blur.php
-		public static Bitmap ToLegacyBlurred(Bitmap source, int radius)
-		{
-			Bitmap.Config? Config = source.GetConfig();
-			Config ??= Bitmap.Config.Argb8888;    // This will support transparency
-
-			Bitmap? Img = source.Copy(Config!, true);
-
-			int w = Img!.Width;
-			int h = Img.Height;
-			int wm = w - 1;
-			int Hm = h - 1;
-			int wh = w * h;
-			int Div = radius + radius + 1;
-			int[] r = new int[wh];
-			int[] g = new int[wh];
-			int[] b = new int[wh];
-			int Rsum, Gsum, Bsum, x, y, i, P, P1, P2, yp, yi, yw;
-			int[] Vmin = new int[Math.Max(w, h)];
-			int[] Vmax = new int[Math.Max(w, h)];
-			int[] Pix = new int[w * h];
-
-			Img.GetPixels(Pix, 0, w, 0, 0, w, h);
-
-			int[] Dv = new int[256 * Div];
-			for (i = 0; i < 256 * Div; i++)
-				Dv[i] = (i / Div);
-
-			yw = yi = 0;
-
-			for (y = 0; y < h; y++)
-			{
-				Rsum = Gsum = Bsum = 0;
-				for (i = -radius; i <= radius; i++)
+		/*
+				/// <summary>
+				/// Make a blurred screenshot
+				/// TODO: Just make a screen shot. Use the portable CV library to blur it.
+				/// </summary>
+				public Task<byte[]> CaptureScreen(int blurRadius)
 				{
-					P = Pix[yi + Math.Min(wm, Math.Max(i, 0))];
-					Rsum += (P & 0xff0000) >> 16;
-					Gsum += (P & 0x00ff00) >> 8;
-					Bsum += P & 0x0000ff;
+					blurRadius = Math.Min(25, Math.Max(blurRadius, 0));
+
+					Activity? Activity = Platform.CurrentActivity;
+					Android.Views.View? RootView = Activity?.Window?.DecorView.RootView;
+
+					if (RootView is null)
+						return Task.FromResult<byte[]>([]);
+
+					using Bitmap Screenshot = Bitmap.CreateBitmap(RootView.Width, RootView.Height, Bitmap.Config.Argb8888!);
+					Canvas Canvas = new(Screenshot);
+					RootView.Draw(Canvas);
+
+					Bitmap? Blurred = null;
+
+					if (Activity != null && (int)Android.OS.Build.VERSION.SdkInt >= 17)
+						Blurred = ToBlurred(Screenshot, Activity, blurRadius);
+					else
+						Blurred = ToLegacyBlurred(Screenshot, blurRadius);
+
+					MemoryStream Stream = new();
+					Blurred.Compress(Bitmap.CompressFormat.Jpeg!, 80, Stream);
+					Stream.Seek(0, SeekOrigin.Begin);
+
+					return Task.FromResult(Stream.ToArray());
 				}
-				for (x = 0; x < w; x++)
+
+				private static Bitmap ToBlurred(Bitmap originalBitmap, Activity? Activity, int radius)
 				{
+					// Create another bitmap that will hold the results of the filter.
+					Bitmap BlurredBitmap = Bitmap.CreateBitmap(originalBitmap);
+					RenderScript? RenderScript = RenderScript.Create(Activity);
 
-					r[yi] = Dv[Rsum];
-					g[yi] = Dv[Gsum];
-					b[yi] = Dv[Bsum];
+					// Load up an instance of the specific script that we want to use.
+					// An Element is similar to a C type. The second parameter, Element.U8_4,
+					// tells the Allocation is made up of 4 fields of 8 unsigned bits.
+					ScriptIntrinsicBlur? Script = ScriptIntrinsicBlur.Create(RenderScript, Android.Renderscripts.Element.U8_4(RenderScript));
 
-					if (y == 0)
+					// Create an Allocation for the kernel inputs.
+					Allocation? Input = Allocation.CreateFromBitmap(RenderScript, originalBitmap, Allocation.MipmapControl.MipmapFull,
+						AllocationUsage.Script);
+
+					// Assign the input Allocation to the script.
+					Script?.SetInput(Input);
+
+					// Set the blur radius
+					Script?.SetRadius(radius);
+
+					// Finally we need to create an output allocation to hold the output of the Renderscript.
+					Allocation? Output = Allocation.CreateTyped(RenderScript, Input?.Type);
+
+					// Next, run the script. This will run the script over each Element in the Allocation, and copy it's
+					// output to the allocation we just created for this purpose.
+					Script?.ForEach(Output);
+
+					// Copy the output to the blurred bitmap
+					Output?.CopyTo(BlurredBitmap);
+
+					// Cleanup.
+					Output?.Destroy();
+					Input?.Destroy();
+					Script?.Destroy();
+					RenderScript?.Destroy();
+
+					return BlurredBitmap;
+				}
+
+				// Source: http://incubator.quasimondo.com/processing/superfast_blur.php
+				public static Bitmap ToLegacyBlurred(Bitmap source, int radius)
+				{
+					Bitmap.Config? Config = source.GetConfig();
+					Config ??= Bitmap.Config.Argb8888;    // This will support transparency
+
+					Bitmap? Img = source.Copy(Config!, true);
+
+					int w = Img!.Width;
+					int h = Img.Height;
+					int wm = w - 1;
+					int Hm = h - 1;
+					int wh = w * h;
+					int Div = radius + radius + 1;
+					int[] r = new int[wh];
+					int[] g = new int[wh];
+					int[] b = new int[wh];
+					int Rsum, Gsum, Bsum, x, y, i, P, P1, P2, yp, yi, yw;
+					int[] Vmin = new int[Math.Max(w, h)];
+					int[] Vmax = new int[Math.Max(w, h)];
+					int[] Pix = new int[w * h];
+
+					Img.GetPixels(Pix, 0, w, 0, 0, w, h);
+
+					int[] Dv = new int[256 * Div];
+					for (i = 0; i < 256 * Div; i++)
+						Dv[i] = (i / Div);
+
+					yw = yi = 0;
+
+					for (y = 0; y < h; y++)
 					{
-						Vmin[x] = Math.Min(x + radius + 1, wm);
-						Vmax[x] = Math.Max(x - radius, 0);
+						Rsum = Gsum = Bsum = 0;
+						for (i = -radius; i <= radius; i++)
+						{
+							P = Pix[yi + Math.Min(wm, Math.Max(i, 0))];
+							Rsum += (P & 0xff0000) >> 16;
+							Gsum += (P & 0x00ff00) >> 8;
+							Bsum += P & 0x0000ff;
+						}
+						for (x = 0; x < w; x++)
+						{
+
+							r[yi] = Dv[Rsum];
+							g[yi] = Dv[Gsum];
+							b[yi] = Dv[Bsum];
+
+							if (y == 0)
+							{
+								Vmin[x] = Math.Min(x + radius + 1, wm);
+								Vmax[x] = Math.Max(x - radius, 0);
+							}
+
+							P1 = Pix[yw + Vmin[x]];
+							P2 = Pix[yw + Vmax[x]];
+
+							Rsum += ((P1 & 0xff0000) - (P2 & 0xff0000)) >> 16;
+							Gsum += ((P1 & 0x00ff00) - (P2 & 0x00ff00)) >> 8;
+							Bsum += (P1 & 0x0000ff) - (P2 & 0x0000ff);
+							yi++;
+						}
+						yw += w;
 					}
 
-					P1 = Pix[yw + Vmin[x]];
-					P2 = Pix[yw + Vmax[x]];
-
-					Rsum += ((P1 & 0xff0000) - (P2 & 0xff0000)) >> 16;
-					Gsum += ((P1 & 0x00ff00) - (P2 & 0x00ff00)) >> 8;
-					Bsum += (P1 & 0x0000ff) - (P2 & 0x0000ff);
-					yi++;
-				}
-				yw += w;
-			}
-
-			for (x = 0; x < w; x++)
-			{
-				Rsum = Gsum = Bsum = 0;
-				yp = -radius * w;
-				for (i = -radius; i <= radius; i++)
-				{
-					yi = Math.Max(0, yp) + x;
-					Rsum += r[yi];
-					Gsum += g[yi];
-					Bsum += b[yi];
-					yp += w;
-				}
-				yi = x;
-				for (y = 0; y < h; y++)
-				{
-					// Preserve alpha channel: ( 0xff000000 & pix[yi] )
-					int rgb = (Dv[Rsum] << 16) | (Dv[Gsum] << 8) | Dv[Bsum];
-					Pix[yi] = ((int)(0xff000000 & Pix[yi]) | rgb);
-					if (x == 0)
+					for (x = 0; x < w; x++)
 					{
-						Vmin[y] = Math.Min(y + radius + 1, Hm) * w;
-						Vmax[y] = Math.Max(y - radius, 0) * w;
+						Rsum = Gsum = Bsum = 0;
+						yp = -radius * w;
+						for (i = -radius; i <= radius; i++)
+						{
+							yi = Math.Max(0, yp) + x;
+							Rsum += r[yi];
+							Gsum += g[yi];
+							Bsum += b[yi];
+							yp += w;
+						}
+						yi = x;
+						for (y = 0; y < h; y++)
+						{
+							// Preserve alpha channel: ( 0xff000000 & pix[yi] )
+							int rgb = (Dv[Rsum] << 16) | (Dv[Gsum] << 8) | Dv[Bsum];
+							Pix[yi] = ((int)(0xff000000 & Pix[yi]) | rgb);
+							if (x == 0)
+							{
+								Vmin[y] = Math.Min(y + radius + 1, Hm) * w;
+								Vmax[y] = Math.Max(y - radius, 0) * w;
+							}
+							P1 = x + Vmin[y];
+							P2 = x + Vmax[y];
+
+							Rsum += r[P1] - r[P2];
+							Gsum += g[P1] - g[P2];
+							Bsum += b[P1] - b[P2];
+
+							yi += w;
+						}
 					}
-					P1 = x + Vmin[y];
-					P2 = x + Vmax[y];
 
-					Rsum += r[P1] - r[P2];
-					Gsum += g[P1] - g[P2];
-					Bsum += b[P1] - b[P2];
-
-					yi += w;
+					Img.SetPixels(Pix, 0, w, 0, 0, w, h);
+					return Img;
 				}
-			}
-
-			Img.SetPixels(Pix, 0, w, 0, 0, w, h);
-			return Img;
-		}
+		*/
 
 		/// <summary>
 		/// If the device supports authenticating the user using fingerprints.
@@ -459,7 +461,6 @@ namespace NeuroAccessMaui.Services
 				}
 			}
 		}
-
 		/// <summary>
 		/// Gets the biometric method supported by the device.
 		/// Currently on android, you cannot determine if the device will use fingerprint or face recognition.
@@ -740,11 +741,15 @@ namespace NeuroAccessMaui.Services
 				Intent.PutExtra(Key, Data[Key]);
 			}
 			PendingIntent? PendingIntent = Android.App.PendingIntent.GetActivity(Context, 100, Intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
-			Bitmap? LargeIcon = BitmapFactory.DecodeResource(Context.Resources, ResourceConstant.Drawable.notification_bg_normal);
+			int ResIdentifier = Context.Resources?.GetIdentifier("app_icon", "drawable", Context.PackageName) ?? 0;
+			if (ResIdentifier == 0)
+			{
+				ServiceRef.LogService.LogWarning("App icon not found. Aborting local notification");
+				return;
+			}
 
 			NotificationCompat.Builder Builder = new NotificationCompat.Builder(Context, Constants.PushChannels.Messages)
-				 .SetSmallIcon(ResourceConstant.Drawable.abc_star_half_black_48dp)
-				 .SetLargeIcon(LargeIcon)
+				 .SetSmallIcon(ResIdentifier)
 				 .SetContentTitle(Title)
 				 .SetContentText(MessageBody)
 				 .SetAutoCancel(true)
@@ -772,11 +777,17 @@ namespace NeuroAccessMaui.Services
 			}
 
 			PendingIntent? PendingIntent = Android.App.PendingIntent.GetActivity(Context, 101, Intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
-			Bitmap? LargeIcon = BitmapFactory.DecodeResource(Context.Resources, ResourceConstant.Drawable.notification_bg_normal);
+
+			int ResIdentifier = Context.Resources?.GetIdentifier("app_icon", "drawable", Context.PackageName) ?? 0;
+			if (ResIdentifier == 0)
+			{
+				ServiceRef.LogService.LogWarning("App icon not found. Aborting local notification");
+				return;
+			}
+
 
 			NotificationCompat.Builder Builder = new NotificationCompat.Builder(Context, Constants.PushChannels.Identities)
-				 .SetSmallIcon(ResourceConstant.Drawable.abc_star_half_black_48dp)
-				 .SetLargeIcon(LargeIcon)
+				 .SetSmallIcon(ResIdentifier)
 				 .SetContentTitle(Title)
 				 .SetContentText(ContentText)
 				 .SetAutoCancel(true)
@@ -802,11 +813,15 @@ namespace NeuroAccessMaui.Services
 			string ContentText = $"{(string.IsNullOrEmpty(RosterName) ? FromJid : RosterName)}: {MessageBody}";
 
 			PendingIntent? PendingIntent = Android.App.PendingIntent.GetActivity(Context, 102, Intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
-			Bitmap? LargeIcon = BitmapFactory.DecodeResource(Context.Resources, ResourceConstant.Drawable.notification_bg_normal);
 
+			int ResIdentifier = Context.Resources?.GetIdentifier("app_icon", "drawable", Context.PackageName) ?? 0;
+			if (ResIdentifier == 0)
+			{
+				ServiceRef.LogService.LogWarning("App icon not found. Aborting local notification");
+				return;
+			}
 			NotificationCompat.Builder Builder = new NotificationCompat.Builder(Context, Constants.PushChannels.Petitions)
-				 .SetSmallIcon(ResourceConstant.Drawable.abc_star_half_black_48dp)
-				 .SetLargeIcon(LargeIcon)
+				 .SetSmallIcon(ResIdentifier)
 				 .SetContentTitle(Title)
 				 .SetContentText(ContentText)
 				 .SetAutoCancel(true)
@@ -842,11 +857,14 @@ namespace NeuroAccessMaui.Services
 			}
 
 			PendingIntent? PendingIntent = Android.App.PendingIntent.GetActivity(Context, 103, Intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
-			Bitmap? LargeIcon = BitmapFactory.DecodeResource(Context.Resources, ResourceConstant.Drawable.notification_bg_normal);
-
+			int ResIdentifier = Context.Resources?.GetIdentifier("app_icon", "drawable", Context.PackageName) ?? 0;
+			if (ResIdentifier == 0)
+			{
+				ServiceRef.LogService.LogWarning("App icon not found. Aborting local notification");
+				return;
+			}
 			NotificationCompat.Builder Builder = new NotificationCompat.Builder(Context, Constants.PushChannels.Contracts)
-				 .SetSmallIcon(ResourceConstant.Drawable.abc_star_half_black_48dp)
-				 .SetLargeIcon(LargeIcon)
+				 .SetSmallIcon(ResIdentifier)
 				 .SetContentTitle(Title)
 				 .SetContentText(ContentBuilder.ToString())
 				 .SetAutoCancel(true)

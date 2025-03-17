@@ -200,7 +200,7 @@ namespace NeuroAccessMaui.Services
 			}
 		}
 
-
+		/*
 		/// <summary>
 		/// Make a blurred screenshot
 		/// TODO: Just make a screen shot. Use the portable CV library to blur it.
@@ -227,7 +227,7 @@ namespace NeuroAccessMaui.Services
 			//!!! capture.AsJPEG(.8f).AsStream();
 			return Task.FromResult(Array.Empty<byte>());
 		}
-
+		*/
 		/// <summary>
 		/// If the device supports authenticating the user using fingerprints.
 		/// </summary>

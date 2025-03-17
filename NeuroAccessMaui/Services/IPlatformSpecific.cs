@@ -37,13 +37,13 @@ namespace NeuroAccessMaui.Services
 		void ShareImage(byte[] PngFile, string Message, string Title, string FileName);
 
 
-
+		/*
 		/// <summary>
 		/// Make a blurred screenshot
 		/// TODO: Just make a screen shot. Use the portable CV library to blur it.
 		/// </summary>
 		Task<byte[]> CaptureScreen(int blurRadius);
-
+		*/
 		/// <summary>
 		/// If the device supports authenticating the user using fingerprints.
 		/// </summary>
@@ -96,7 +96,7 @@ namespace NeuroAccessMaui.Services
 		#region Notifications
 
 		public void ShowMessageNotification(string Title, string MessageBody, IDictionary<string, string> Data);
-		public void ShowIdentitiesNotification(string Title, string MessageBody, IDictionary<string, string> Data);
+		public void ShowIdentitiesNotification(string Title, string MessageBody, IDictionary<string, string?> Data);
 		public void ShowPetitionNotification(string Title, string MessageBody, IDictionary<string, string> Data);
 		public void ShowContractsNotification(string Title, string MessageBody, IDictionary<string, string> Data);
 		public void ShowEDalerNotification(string Title, string MessageBody, IDictionary<string, string> Data);
