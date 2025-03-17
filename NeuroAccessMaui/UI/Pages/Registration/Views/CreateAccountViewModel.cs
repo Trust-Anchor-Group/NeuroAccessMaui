@@ -93,17 +93,18 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
         /// <summary>
         /// If App is connected to the XMPP network.
         /// </summary>
-        public static bool IsXmppConnected => ServiceRef.XmppService.State == XmppState.Connected;
+#pragma warning disable CA1822
+        public bool IsXmppConnected => ServiceRef.XmppService.State == XmppState.Connected;
 
         /// <summary>
         /// If App has an XMPP account defined.
         /// </summary>
-        public static bool IsAccountCreated => !string.IsNullOrEmpty(ServiceRef.TagProfile.Account);
+        public bool IsAccountCreated => !string.IsNullOrEmpty(ServiceRef.TagProfile.Account);
 
         /// <summary>
         /// If Legal ID has been created.
         /// </summary>
-        public static bool IsLegalIdentityCreated
+        public bool IsLegalIdentityCreated
         {
             get
             {
@@ -112,11 +113,12 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
                      ServiceRef.TagProfile.LegalIdentity.State == IdentityState.Created);
             }
         }
+#pragma warning restore CA1822
 
-        /// <summary>
-        /// If we can create an identity.
-        /// </summary>
-        public bool CanCreateIdentity => IsAccountCreated && !IsLegalIdentityCreated && IsXmppConnected;
+		/// <summary>
+		/// If we can create an identity.
+		/// </summary>
+		public bool CanCreateIdentity => IsAccountCreated && !IsLegalIdentityCreated && IsXmppConnected;
 
         /// <summary>
         /// Try to create an identity with a retry loop.
@@ -128,7 +130,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
             if (this.hasAppliedForIdentity)
                 return;
 
-			this.hasAppliedForIdentity = true;
+				this.hasAppliedForIdentity = true;
 
             // Create a cancellation token that cancels after 60 seconds.
             using CancellationTokenSource TimerCts = new CancellationTokenSource(TimeSpan.FromSeconds(Constants.Timeouts.GenericRequest.Seconds));
@@ -182,7 +184,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
         }
 
         [RelayCommand]
-        private static async Task ValidateIdentity()
+        private async Task ValidateIdentity()
         {
             await Task.CompletedTask;
         }
@@ -219,7 +221,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
         /// <summary>
         /// Creates the model for registering an identity.
         /// </summary>
-        private static RegisterIdentityModel CreateRegisterModel()
+        private RegisterIdentityModel CreateRegisterModel()
         {
             RegisterIdentityModel IdentityModel = new();
             string s;
