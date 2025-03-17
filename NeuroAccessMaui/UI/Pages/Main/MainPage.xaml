@@ -29,6 +29,35 @@
 
 			<Image VerticalOptions="Center" HorizontalOptions="Center" Source="{AppThemeBinding Light=neuro_access_logo_light.png, Dark=neuro_access_logo_dark.png}" />
 
+			<StackLayout Padding="20"
+			             Spacing="15">
+				<Button Text="Load Data"
+				        Command="{Binding BarCommand}" />
+
+				<Label Text="Task State:"
+				       FontAttributes="Bold" />
+				<Label Text="{Binding BarCommand.Notifier.State}" />
+
+				<Label Text="Progress:"
+				       FontAttributes="Bold" />
+				<Label Text="{Binding BarCommand.Notifier.Progress}" />
+
+				<Label Text="Result:"
+				       FontAttributes="Bold" />
+				<Label Text="{Binding BarCommand.Notifier.Result}" />
+
+				<Label Text="Error Message:"
+				       FontAttributes="Bold" />
+				<Label Text="{Binding BarCommand.Notifier.ErrorMessage}"
+				       TextColor="Red" />
+
+				<!-- The TaskNotifier has commands for Refresh and Cancel -->
+				<Button Text="Refresh"
+						  Command="{Binding BarCommand.Notifier.RefreshCommand}" />
+				<Button Text="Cancel"
+						  Command="{Binding BarCommand.Notifier.CancelCommand}" />
+			</StackLayout>
+
 			<VerticalStackLayout.GestureRecognizers>
 				<SwipeGestureRecognizer Direction="Up" Swiped="SwipeGestureRecognizer_Swiped"/>
 			</VerticalStackLayout.GestureRecognizers>

@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics.Contracts;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
+using NeuroAccessMaui.UI.MVVM;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using Waher.Networking.XMPP.Contracts;
 
@@ -9,12 +11,68 @@ namespace NeuroAccessMaui.UI.Pages.Main
 {
 	public partial class MainViewModel : QrXmppViewModel
 	{
+		public TaskStatusNotifier<int, int> TaskStatusNotifier { get; } = new();
+
+
 		public MainViewModel()
 			: base()
 		{
+			this.TaskStatusNotifier.PropertyChanged += ((sender, args) =>
+			{
+				if (args.PropertyName == nameof(TaskStatusNotifier.State))
+				{
+					Console.WriteLine(TaskStatusNotifier.State);
+				}
+			});
+		}
+		public bool IsNotStarted => TaskStatusNotifier.IsNotStarted;
+
+		[RelayCommand]
+		private void Start()
+		{
+			// Use the Load method of TaskNotifier to start an asynchronous operation.
+			this.TaskStatusNotifier.Load(this.Foo, this.StartCommand);
+
 		}
 
+		private async Task<int> Foo(TaskContext<int> Context)
+		{
+			int Sum = 0;
+			// Simulate work by summing numbers 1 to 10 with a delay.
+			for (int i = 1; i <= 100; i++)
+			{
+				// Support cancellation.
+				Context.CancellationToken.ThrowIfCancellationRequested();
+				await Task.Delay(50, Context.CancellationToken);
+				Sum += i;
+				// Report progress (for example, as a percentage).
+				Context.Progress.Report(i * 1);
+			}
+			return Sum;
+		}
+
+		[TaskStatusNotifierCommand(TaskStatusNotifierCommandOptions.AllowConcurrentRestart)]
+		private async Task<int> Bar(TaskContext<int> Context)
+		{
+			int Sum = 0;
+			// Simulate work by summing numbers 1 to 10 with a delay.
+			for (int i = 1; i <= 100; i++)
+			{
+				// Support cancellation.
+				await Task.Delay(50);
+				Sum += i;
+				// Report progress (for example, as a percentage).
+				Context.Progress.Report(i * 1);
+				if (i == 50)
+					await ServiceRef.XmppService.GetContract("Test");
+			}
+			return Sum;
+		}
+
+
 		public override Task<string> Title => Task.FromResult(ContactInfo.GetFriendlyName(ServiceRef.TagProfile.LegalIdentity));
+
+
 
 		protected override async Task OnInitialize()
 		{
@@ -63,7 +121,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			await Services.UI.QR.QrCode.ScanQrCodeAndHandleResult();
 		}
 
-		[RelayCommand]
+		[RelayCommand(AllowConcurrentExecutions = false)]
 		public async Task ViewId()
 		{
 			try
