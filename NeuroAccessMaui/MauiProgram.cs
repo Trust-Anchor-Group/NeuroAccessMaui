@@ -76,7 +76,16 @@ namespace NeuroAccessMaui
 
 			// NuGets
 			Builder.ConfigureMopups();
+#if DEBUG
 			Builder.UseMauiCommunityToolkit();
+#else
+			Builder.UseMauiCommunityToolkit(Options =>
+			{
+				Options.SetShouldSuppressExceptionsInAnimations(true);
+				Options.SetShouldSuppressExceptionsInBehaviors(true);
+				Options.SetShouldSuppressExceptionsInConverters(true);
+			});
+#endif
 			Builder.UseMauiCommunityToolkitMarkup();
 			Builder.UseBarcodeReader();
 
