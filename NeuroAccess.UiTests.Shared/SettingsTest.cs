@@ -20,7 +20,14 @@ namespace NeuroAccess.UiTests
 		{ 
 
 		try
-            {
+
+			{
+
+		// Click "FlyoutIcon" (Shows Hamburger Menu)
+		string flyoutIconId = "FlyoutIcon";
+	   AppiumElement flyoutIcon = this.AutoFindElement(flyoutIconId);
+		flyoutIcon.Click();
+
 		// Click "DarkModeButton" (Selects Dark Mode)
 		string darkModeButtonId = "DarkModeButton";
 		AppiumElement darkModeButton = this.AutoFindElement(darkModeButtonId);
