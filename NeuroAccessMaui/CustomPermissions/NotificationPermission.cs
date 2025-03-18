@@ -21,22 +21,22 @@ namespace NeuroAccessMaui.CustomPermissions
 		{
 #if IOS
             // Check the current notification settings on iOS
-            UNNotificationSettings settings = await UNUserNotificationCenter.Current.GetNotificationSettingsAsync();
-            // Map the iOS authorization status to a MAUI PermissionStatus
-            if (settings.AuthorizationStatus == UNAuthorizationStatus.Authorized)
-                return PermissionStatus.Granted;
-            else if (settings.AuthorizationStatus == UNAuthorizationStatus.Denied)
-                return PermissionStatus.Denied;
-            else
-                return PermissionStatus.Unknown;
+            UNNotificationSettings Settings = await UNUserNotificationCenter.Current.GetNotificationSettingsAsync();
+            return Settings.AuthorizationStatus switch
+            {
+	            // Map the iOS authorization status to a MAUI PermissionStatus
+	            UNAuthorizationStatus.Authorized => PermissionStatus.Granted,
+	            UNAuthorizationStatus.Denied => PermissionStatus.Denied,
+	            _ => PermissionStatus.Unknown
+            };
 #elif ANDROID
 			// For Android 13+ (API level 33), notifications are a runtime permission.
 			if (Build.VERSION.SdkInt >= BuildVersionCodes.Tiramisu && OperatingSystem.IsAndroidVersionAtLeast(33))
 			{
-				Android.Content.Context context = Android.App.Application.Context;
+				Android.Content.Context Context = Android.App.Application.Context;
 				// Check the POST_NOTIFICATIONS permission
-				int result = ((int)ContextCompat.CheckSelfPermission(context, Manifest.Permission.PostNotifications));
-				return result == (int)Permission.Granted ? PermissionStatus.Granted : PermissionStatus.Denied;
+				int Result = ((int)ContextCompat.CheckSelfPermission(Context, Manifest.Permission.PostNotifications));
+				return Result == (int)Permission.Granted ? PermissionStatus.Granted : PermissionStatus.Denied;
 			}
 			// For earlier versions, notifications are granted by default.
 			return PermissionStatus.Granted;
@@ -54,13 +54,13 @@ namespace NeuroAccessMaui.CustomPermissions
 			try
 			{
 				// On Android, check that the POST_NOTIFICATIONS permission is declared in the manifest.
-				Android.Content.Context context = Android.App.Application.Context;
-				PackageManager packageManager = context.PackageManager ?? throw new Exception();
-				string? packageName = context.PackageName;
+				Android.Content.Context Context = Android.App.Application.Context;
+				PackageManager PackageManager = Context.PackageManager ?? throw new Exception();
+				string? PackageName = Context.PackageName;
 
-				PackageInfo packageInfo = packageManager.GetPackageInfo(packageName ?? string.Empty, PackageInfoFlags.Permissions) ?? throw new Exception() ;
-				IList<string>? declaredPermissions = packageInfo.RequestedPermissions;
-				if (declaredPermissions == null || !declaredPermissions.Contains(Manifest.Permission.PostNotifications))
+				PackageInfo PackageInfo = PackageManager.GetPackageInfo(PackageName ?? string.Empty, PackageInfoFlags.Permissions) ?? throw new Exception() ;
+				IList<string>? DeclaredPermissions = PackageInfo.RequestedPermissions;
+				if (DeclaredPermissions == null || !DeclaredPermissions.Contains(Manifest.Permission.PostNotifications))
 				{
 					throw new PermissionException($"The Android manifest does not declare the required permission: {Manifest.Permission.PostNotifications}");
 				}
@@ -82,24 +82,24 @@ namespace NeuroAccessMaui.CustomPermissions
 		{
 #if IOS
             // Request notification permission on iOS using UNUserNotificationCenter
-            (bool granted, NSError error) = await UNUserNotificationCenter.Current.RequestAuthorizationAsync(
+            (bool Granted, NSError Error) = await UNUserNotificationCenter.Current.RequestAuthorizationAsync(
                 UNAuthorizationOptions.Alert | UNAuthorizationOptions.Badge | UNAuthorizationOptions.Sound);
 
             // Optionally, register for remote notifications if needed
-            if (granted)
+            if (Granted)
             {
                 UIApplication.SharedApplication.InvokeOnMainThread(() =>
                 {
                     UIApplication.SharedApplication.RegisterForRemoteNotifications();
                 });
             }
-            return granted ? PermissionStatus.Granted : PermissionStatus.Denied;
+            return Granted ? PermissionStatus.Granted : PermissionStatus.Denied;
 #elif ANDROID
 			if (Build.VERSION.SdkInt >= BuildVersionCodes.Tiramisu && OperatingSystem.IsAndroidVersionAtLeast(33))
 			{
 				// For Android 13+, request the POST_NOTIFICATIONS permission.
-				PermissionStatus status = await Permissions.RequestAsync<Permissions.PostNotifications>();
-				return status;
+				PermissionStatus Status = await Permissions.RequestAsync<Permissions.PostNotifications>();
+				return Status;
 			}
 			// For earlier versions, notifications are automatically granted.
 			return PermissionStatus.Granted;
