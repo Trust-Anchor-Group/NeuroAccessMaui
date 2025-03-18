@@ -6,63 +6,58 @@ using System.Threading.Tasks;
 
 namespace NeuroAccessMaui.UI.Controls
 {
-    /// <summary>
-    /// A custom ContentView that displays one of two views based on a boolean condition.
-    /// </summary>
-    internal class ConditionView : ContentView
-    {
-        /// <summary>
-        /// Identifies the <see cref="False"/> bindable property.
-        /// </summary>
-        public static readonly BindableProperty FalseProperty = BindableProperty.Create(nameof(False), typeof(View), typeof(ConditionView), null);
+	internal class ConditionView : ContentView
+	{
+		public static readonly BindableProperty FalseProperty =
+			BindableProperty.Create(nameof(False), typeof(View), typeof(ConditionView), null, propertyChanged: OnViewChanged);
 
-        /// <summary>
-        /// Identifies the <see cref="True"/> bindable property.
-        /// </summary>
-        public static readonly BindableProperty TrueProperty = BindableProperty.Create(nameof(True), typeof(View), typeof(ConditionView), null);
+		public static readonly BindableProperty TrueProperty =
+			BindableProperty.Create(nameof(True), typeof(View), typeof(ConditionView), null, propertyChanged: OnViewChanged);
 
-        /// <summary>
-        /// Identifies the <see cref="Condition"/> bindable property.
-        /// </summary>
-        public static readonly BindableProperty ConditionProperty = BindableProperty.Create(nameof(Condition), typeof(bool), typeof(ConditionView), false, propertyChanged: ConditionChanged);
+		public static readonly BindableProperty ConditionProperty =
+			BindableProperty.Create(nameof(Condition), typeof(bool), typeof(ConditionView), false, propertyChanged: OnConditionChanged);
 
-        /// <summary>
-        /// Called when the <see cref="Condition"/> property changes.
-        /// </summary>
-        /// <param name="Bindable">The bindable object.</param>
-        /// <param name="OldValue">The old value of the property.</param>
-        /// <param name="NewValue">The new value of the property.</param>
-        private static void ConditionChanged(BindableObject Bindable, object OldValue, object NewValue)
-        {
-            ConditionView ConditionView = (ConditionView)Bindable;
-            ConditionView.Content = (bool)NewValue ? ConditionView.True : ConditionView.False;
-        }
+		private static void OnConditionChanged(BindableObject bindable, object oldValue, object newValue)
+		{
+			((ConditionView)bindable).UpdateContent();
+		}
 
-        /// <summary>
-        /// Gets or sets the condition that determines which view to display.
-        /// </summary>
-        public bool Condition
-        {
-            get => (bool)this.GetValue(ConditionProperty);
-            set => this.SetValue(ConditionProperty, value);
-        }
+		private static void OnViewChanged(BindableObject bindable, object oldValue, object newValue)
+		{
+			((ConditionView)bindable).UpdateContent();
+		}
 
-        /// <summary>
-        /// Gets or sets the view to display when <see cref="Condition"/> is true.
-        /// </summary>
-        public View True
-        {
-            get => (View)this.GetValue(TrueProperty);
-            set => this.SetValue(TrueProperty, value);
-        }
+		private void UpdateContent()
+		{
+			this.Content = this.Condition ? this.True : this.False;
+		}
 
-        /// <summary>
-        /// Gets or sets the view to display when <see cref="Condition"/> is false.
-        /// </summary>
-        public View False
-        {
-            get => (View)this.GetValue(FalseProperty);
-            set => this.SetValue(FalseProperty, value);
-        }
-    }
+		protected override void OnBindingContextChanged()
+		{
+			base.OnBindingContextChanged();
+			if (True != null)
+				True.BindingContext = BindingContext;
+			if (False != null)
+				False.BindingContext = BindingContext;
+		}
+
+		public bool Condition
+		{
+			get => (bool)this.GetValue(ConditionProperty);
+			set => this.SetValue(ConditionProperty, value);
+		}
+
+		public View True
+		{
+			get => (View)this.GetValue(TrueProperty);
+			set => this.SetValue(TrueProperty, value);
+		}
+
+		public View False
+		{
+			get => (View)this.GetValue(FalseProperty);
+			set => this.SetValue(FalseProperty, value);
+		}
+	}
+
 }
