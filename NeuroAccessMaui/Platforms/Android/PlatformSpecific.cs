@@ -808,8 +808,8 @@ namespace NeuroAccessMaui.Services
 			}
 
 			// Use fromJid and rosterName to compose the notification body
-			string FromJid = Data.ContainsKey("fromJid") ? Data["fromJid"] : "";
-			string RosterName = Data.ContainsKey("rosterName") ? Data["rosterName"] : "";
+			string FromJid = Data.TryGetValue("fromJid", out string? Value) ? Value : string.Empty;
+			string RosterName = Data.TryGetValue("rosterName", out string? Value1) ? Value1 : string.Empty;
 			string ContentText = $"{(string.IsNullOrEmpty(RosterName) ? FromJid : RosterName)}: {MessageBody}";
 
 			PendingIntent? PendingIntent = Android.App.PendingIntent.GetActivity(Context, 102, Intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
@@ -831,7 +831,7 @@ namespace NeuroAccessMaui.Services
 			NotificationManager.Notify(102, Builder.Build());
 		}
 
-		public void ShowContractsNotification(string Title, string MessageBody, IDictionary<string, string> Data)
+		public void ShowContractsNotification(string Title, string MessageBody, IDictionary<string, string?> Data)
 		{
 			Context Context = Application.Context;
 			Intent Intent = new Intent(Context, typeof(MainActivity));
@@ -843,11 +843,11 @@ namespace NeuroAccessMaui.Services
 
 			StringBuilder ContentBuilder = new StringBuilder();
 			ContentBuilder.Append(MessageBody);
-			if (Data.TryGetValue("role", out string Role) && !string.IsNullOrEmpty(Role))
+			if (Data.TryGetValue("role", out string? Role) && !string.IsNullOrEmpty(Role))
 			{
 				ContentBuilder.AppendLine().Append(Role);
 			}
-			if (Data.TryGetValue("contractId", out string ContractId) && !string.IsNullOrEmpty(ContractId))
+			if (Data.TryGetValue("contractId", out string? ContractId) && !string.IsNullOrEmpty(ContractId))
 			{
 				ContentBuilder.AppendLine().Append($"({ContractId})");
 			}
@@ -896,11 +896,14 @@ namespace NeuroAccessMaui.Services
 			}
 
 			PendingIntent? PendingIntent = Android.App.PendingIntent.GetActivity(Context, 104, Intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
-			Bitmap? LargeIcon = BitmapFactory.DecodeResource(Context.Resources, ResourceConstant.Drawable.notification_bg_normal);
-
+			int ResIdentifier = Context.Resources?.GetIdentifier("app_icon", "drawable", Context.PackageName) ?? 0;
+			if (ResIdentifier == 0)
+			{
+				ServiceRef.LogService.LogWarning("App icon not found. Aborting local notification");
+				return;
+			}
 			NotificationCompat.Builder Builder = new NotificationCompat.Builder(Context, Constants.PushChannels.EDaler)
-				 .SetSmallIcon(ResourceConstant.Drawable.abc_star_half_black_48dp)
-				 .SetLargeIcon(LargeIcon)
+				 .SetSmallIcon(ResIdentifier)
 				 .SetContentTitle(Title)
 				 .SetContentText(ContentBuilder.ToString())
 				 .SetAutoCancel(true)
@@ -930,11 +933,14 @@ namespace NeuroAccessMaui.Services
 			}
 
 			PendingIntent? PendingIntent = Android.App.PendingIntent.GetActivity(Context, 105, Intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
-			Bitmap? LargeIcon = BitmapFactory.DecodeResource(Context.Resources, ResourceConstant.Drawable.notification_bg_normal);
-
+			int ResIdentifier = Context.Resources?.GetIdentifier("app_icon", "drawable", Context.PackageName) ?? 0;
+			if (ResIdentifier == 0)
+			{
+				ServiceRef.LogService.LogWarning("App icon not found. Aborting local notification");
+				return;
+			}
 			NotificationCompat.Builder Builder = new NotificationCompat.Builder(Context, Constants.PushChannels.Tokens)
-				 .SetSmallIcon(ResourceConstant.Drawable.abc_star_half_black_48dp)
-				 .SetLargeIcon(LargeIcon)
+				 .SetSmallIcon(ResIdentifier)
 				 .SetContentTitle(Title)
 				 .SetContentText(ContentBuilder.ToString())
 				 .SetAutoCancel(true)
@@ -954,11 +960,14 @@ namespace NeuroAccessMaui.Services
 				Intent.PutExtra(Key, Data[Key]);
 			}
 			PendingIntent? PendingIntent = Android.App.PendingIntent.GetActivity(Context, 106, Intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
-			Bitmap? LargeIcon = BitmapFactory.DecodeResource(Context.Resources, ResourceConstant.Drawable.notification_bg_normal);
-
+			int ResIdentifier = Context.Resources?.GetIdentifier("app_icon", "drawable", Context.PackageName) ?? 0;
+			if (ResIdentifier == 0)
+			{
+				ServiceRef.LogService.LogWarning("App icon not found. Aborting local notification");
+				return;
+			}
 			NotificationCompat.Builder Builder = new NotificationCompat.Builder(Context, Constants.PushChannels.Provisioning)
-				 .SetSmallIcon(ResourceConstant.Drawable.abc_star_half_black_48dp)
-				 .SetLargeIcon(LargeIcon)
+				 .SetSmallIcon(ResIdentifier)
 				 .SetContentTitle(Title)
 				 .SetContentText(MessageBody)
 				 .SetAutoCancel(true)

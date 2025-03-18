@@ -98,7 +98,7 @@ namespace NeuroAccessMaui.Services
 		public void ShowMessageNotification(string Title, string MessageBody, IDictionary<string, string> Data);
 		public void ShowIdentitiesNotification(string Title, string MessageBody, IDictionary<string, string?> Data);
 		public void ShowPetitionNotification(string Title, string MessageBody, IDictionary<string, string> Data);
-		public void ShowContractsNotification(string Title, string MessageBody, IDictionary<string, string> Data);
+		public void ShowContractsNotification(string Title, string MessageBody, IDictionary<string, string?> Data);
 		public void ShowEDalerNotification(string Title, string MessageBody, IDictionary<string, string> Data);
 		public void ShowTokenNotification(string Title, string MessageBody, IDictionary<string, string> Data);
 		public void ShowProvisioningNotification(string Title, string MessageBody, IDictionary<string, string> Data);
