@@ -11,29 +11,28 @@ namespace NeuroAccessMaui.UI.Pages.Main
 {
 	public partial class MainViewModel : QrXmppViewModel
 	{
-		public TaskStatusNotifier<int, int> TaskStatusNotifier { get; } = new();
+		public ObservableTask<int, int> ObservableTask { get; } = new();
 
 
 		public MainViewModel()
 			: base()
 		{
-			this.TaskStatusNotifier.PropertyChanged += ((sender, args) =>
+			this.ObservableTask.PropertyChanged += ((sender, args) =>
 			{
-				if (args.PropertyName == nameof(TaskStatusNotifier.State))
+				if (args.PropertyName == nameof(this.ObservableTask.State))
 				{
-					Console.WriteLine(TaskStatusNotifier.State);
+					Console.WriteLine(this.ObservableTask.State);
 				}
 			});
 		}
-		public bool IsNotStarted => TaskStatusNotifier.IsNotStarted;
+		public bool IsNotStarted => this.ObservableTask.IsNotStarted;
 
 		[RelayCommand]
-		private void Start()
-		{
-			// Use the Load method of TaskNotifier to start an asynchronous operation.
-			this.TaskStatusNotifier.Load(this.Foo, this.StartCommand);
-
-		}
+        private async Task Start()
+        {
+            // Use the Load method of TaskNotifier to start an asynchronous operation.
+            this.ObservableTask.Load(this.Foo, this.StartCommand);
+        }
 
 		private async Task<int> Foo(TaskContext<int> Context)
 		{
@@ -42,16 +41,17 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			for (int i = 1; i <= 100; i++)
 			{
 				// Support cancellation.
-				Context.CancellationToken.ThrowIfCancellationRequested();
 				await Task.Delay(50, Context.CancellationToken);
 				Sum += i;
 				// Report progress (for example, as a percentage).
 				Context.Progress.Report(i * 1);
+				if (i == 50)
+					await ServiceRef.XmppService.GetContract("Test");
 			}
 			return Sum;
 		}
 
-		[TaskStatusNotifierCommand(TaskStatusNotifierCommandOptions.AllowConcurrentRestart)]
+		[ObservableTaskCommand(ObservableTaskCommandOptions.AllowConcurrentRestart)]
 		private async Task<int> Bar(TaskContext<int> Context)
 		{
 			int Sum = 0;
@@ -59,7 +59,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			for (int i = 1; i <= 100; i++)
 			{
 				// Support cancellation.
-				await Task.Delay(50);
+				await Task.Delay(50, Context.CancellationToken);
 				Sum += i;
 				// Report progress (for example, as a percentage).
 				Context.Progress.Report(i * 1);

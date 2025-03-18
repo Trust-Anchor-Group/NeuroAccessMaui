@@ -29,33 +29,57 @@
 
 			<Image VerticalOptions="Center" HorizontalOptions="Center" Source="{AppThemeBinding Light=neuro_access_logo_light.png, Dark=neuro_access_logo_dark.png}" />
 
-			<StackLayout Padding="20"
+			<StackLayout
 			             Spacing="15">
-				<Button Text="Load Data"
-				        Command="{Binding BarCommand}" />
-
 				<Label Text="Task State:"
 				       FontAttributes="Bold" />
 				<Label Text="{Binding BarCommand.Notifier.State}" />
+				<controls:ConditionView Condition="{Binding BarCommand.Notifier.IsLoading}">
+					<controls:ConditionView.True>
+						<VerticalStackLayout 
+						                     Spacing="15">
+							<Button Text="Refresh"
+							        Command="{Binding BarCommand.Notifier.RefreshCommand}" />
+							<Button Text="Cancel"
+							        Command="{Binding BarCommand.Notifier.CancelCommand}" />
+							<ActivityIndicator IsRunning="True"
+							                   Color="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}"
+							                   WidthRequest="64"
+							                   HeightRequest="64" />
+							<Label Text="Progress:"
+							       FontAttributes="Bold" />
+							<Label Text="{Binding BarCommand.Notifier.Progress}" />
 
-				<Label Text="Progress:"
-				       FontAttributes="Bold" />
-				<Label Text="{Binding BarCommand.Notifier.Progress}" />
+						</VerticalStackLayout>
+					</controls:ConditionView.True>
+					<controls:ConditionView.False>
+						<VerticalStackLayout 
+						                     Spacing="15">
 
-				<Label Text="Result:"
-				       FontAttributes="Bold" />
-				<Label Text="{Binding BarCommand.Notifier.Result}" />
+							<Button Text="Refresh"
+							        Command="{Binding BarCommand.Notifier.RefreshCommand}" />
+							<Button Text="Load Data"
+							        Command="{Binding BarCommand}" />
 
-				<Label Text="Error Message:"
-				       FontAttributes="Bold" />
-				<Label Text="{Binding BarCommand.Notifier.ErrorMessage}"
-				       TextColor="Red" />
+							<Label Text="Result:"
+							       FontAttributes="Bold"
+							       IsVisible="{Binding BarCommand.Notifier.IsSucceeded}"/>
+							<Label Text="{Binding BarCommand.Notifier.Result}"
+							       IsVisible="{Binding BarCommand.Notifier.IsSucceeded}" />
 
-				<!-- The TaskNotifier has commands for Refresh and Cancel -->
-				<Button Text="Refresh"
-						  Command="{Binding BarCommand.Notifier.RefreshCommand}" />
-				<Button Text="Cancel"
-						  Command="{Binding BarCommand.Notifier.CancelCommand}" />
+							<Label Text="Error Message:"
+							       FontAttributes="Bold" IsVisible="{Binding BarCommand.Notifier.IsFaulted}"/>
+							<Label Text="{Binding BarCommand.Notifier.ErrorMessage}"
+							       IsVisible="{Binding BarCommand.Notifier.IsFaulted}"
+									 TextColor="Red" />
+
+						</VerticalStackLayout>
+					</controls:ConditionView.False>
+
+
+
+				</controls:ConditionView>
+
 			</StackLayout>
 
 			<VerticalStackLayout.GestureRecognizers>
