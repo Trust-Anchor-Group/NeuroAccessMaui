@@ -7,37 +7,38 @@ using CommunityToolkit.Mvvm.Input;
 namespace NeuroAccessMaui.UI.MVVM
 {
 	[Flags]
-	public enum TaskStatusNotifierCommandOptions
+	public enum ObservableTaskCommandOptions
 	{
 		None = 0,
 		AllowConcurrentRestart = 1 << 0,
 	}
 
-	public class TaskStatusNotifierCommand<TResult, TProgress> : IAsyncRelayCommand
+	public class ObservableTaskCommand<TResult, TProgress> : IAsyncRelayCommand
 	{
 		private readonly Func<TaskContext<TProgress>, Task<TResult>> taskFactory;
 		private readonly Func<bool>? canExecute;
-		private readonly TaskStatusNotifierCommandOptions options;
+		private readonly ObservableTaskCommandOptions options;
 
-		public TaskStatusNotifier<TResult, TProgress> Notifier { get; }
+		public ObservableTask<TResult, TProgress> Notifier { get; }
 
 		// Constructor without canExecute (defaults to always executable and no options)
-		public TaskStatusNotifierCommand(
+		public ObservableTaskCommand(
 			Func<TaskContext<TProgress>, Task<TResult>> taskFactory)
-			 : this(taskFactory, null, TaskStatusNotifierCommandOptions.None)
+			 : this(taskFactory, null, ObservableTaskCommandOptions.None)
 		{
 		}
 
 		// Constructor with optional canExecute and options
-		public TaskStatusNotifierCommand(
+		public ObservableTaskCommand(
 			Func<TaskContext<TProgress>, Task<TResult>> taskFactory,
 			 Func<bool>? canExecute,
-			 TaskStatusNotifierCommandOptions options = TaskStatusNotifierCommandOptions.None)
+			 ObservableTaskCommandOptions options = ObservableTaskCommandOptions.None)
 		{
+
 			this.taskFactory = taskFactory ?? throw new ArgumentNullException(nameof(taskFactory));
 			this.canExecute = canExecute;
 			this.options = options;
-			this.Notifier = new TaskStatusNotifier<TResult, TProgress>();
+			this.Notifier = new ObservableTask<TResult, TProgress>();
 			// Forward property changes from the notifier to this command.
 			this.Notifier.PropertyChanged += (s, e) => this.PropertyChanged?.Invoke(this, e);
 		}
@@ -80,7 +81,7 @@ namespace NeuroAccessMaui.UI.MVVM
 				return false;
 
 			// If concurrent restarts are not allowed, return false if a task has run.
-			if ((this.options & TaskStatusNotifierCommandOptions.AllowConcurrentRestart) == 0)
+			if ((this.options & ObservableTaskCommandOptions.AllowConcurrentRestart) == 0)
 			{
 				if (this.Notifier.IsLoading)
 					return false;

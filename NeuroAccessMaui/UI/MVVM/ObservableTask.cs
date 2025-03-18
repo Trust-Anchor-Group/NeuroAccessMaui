@@ -74,7 +74,7 @@ namespace NeuroAccessMaui.UI.MVVM
 	/// or that any unintended effects are properly managed.
 	/// </para>
 	/// </remarks>
-	public partial class TaskStatusNotifier<TResult, TProgress> : ObservableObject, IDisposable
+	public partial class ObservableTask<TResult, TProgress> : ObservableObject, IDisposable
 	{
 		// SemaphoreSlim to protect shared mutable state
 		private readonly SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
@@ -160,7 +160,7 @@ namespace NeuroAccessMaui.UI.MVVM
 		/// <summary>
 		/// A friendly error message from the exception.
 		/// </summary>
-		public string? ErrorMessage => this.InnerException?.Message;
+		public string? ErrorMessage => this.InnerException?.Message ?? this.Exception?.Message ?? string.Empty;
 
 		/// <summary>
 		/// The latest progress value reported by the task.

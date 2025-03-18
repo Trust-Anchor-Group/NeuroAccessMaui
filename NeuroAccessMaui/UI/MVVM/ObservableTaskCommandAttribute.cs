@@ -3,13 +3,13 @@
 namespace NeuroAccessMaui.UI.MVVM
 {
 	[AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
-	public sealed class TaskStatusNotifierCommandAttribute(
-		TaskStatusNotifierCommandOptions options = TaskStatusNotifierCommandOptions.None)
+	public sealed class ObservableTaskCommandAttribute(
+		ObservableTaskCommandOptions options = ObservableTaskCommandOptions.None)
 		: Attribute
 	{
 		/// <summary>
 		/// Gets the options to configure command behavior.
 		/// </summary>
-		public TaskStatusNotifierCommandOptions Options { get; } = options;
+		public ObservableTaskCommandOptions Options { get; } = options;
 	}
 }

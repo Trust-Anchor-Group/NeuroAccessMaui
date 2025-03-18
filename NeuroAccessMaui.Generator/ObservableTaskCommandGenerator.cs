@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -7,14 +8,14 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace NeuroAccessMaui.Generator
 {
 	[Generator(LanguageNames.CSharp)]
-	public class TaskStatusNotifierCommandGenerator : IIncrementalGenerator
+	public class ObservableTaskCommandGenerator : IIncrementalGenerator
 	{
 		// Diagnostic for successfully generating a command.
 		private static readonly DiagnosticDescriptor debugGeneratedCommand = new DiagnosticDescriptor(
 			  id: "NTSCG001",
 			  title: "Command Generated",
 			  messageFormat: "Generated command property '{0}' for method '{1}' in class '{2}'",
-			  category: "TaskStatusNotifierCommandGenerator",
+			  category: "ObservableTaskCommandGenerator",
 			  defaultSeverity: DiagnosticSeverity.Info,
 			  isEnabledByDefault: true);
 
@@ -22,7 +23,7 @@ namespace NeuroAccessMaui.Generator
 			 id: "NTSCG002",
 			 title: "Unsupported Method Signature",
 			 messageFormat: "Method '{0}' in class '{1}' has an unsupported signature for command generation",
-			 category: "TaskStatusNotifierCommandGenerator",
+			 category: "ObservableTaskCommandGenerator",
 			 defaultSeverity: DiagnosticSeverity.Error,
 			 isEnabledByDefault: true);
 
@@ -45,7 +46,7 @@ namespace NeuroAccessMaui.Generator
 			{
 				(Compilation Compilation, ImmutableArray<MethodDeclarationSyntax> Methods) = source;
 				// Get the attribute symbol.
-				INamedTypeSymbol? AttributeSymbol = Compilation.GetTypeByMetadataName("NeuroAccessMaui.UI.MVVM.TaskStatusNotifierCommandAttribute");
+				INamedTypeSymbol? AttributeSymbol = Compilation.GetTypeByMetadataName("NeuroAccessMaui.UI.MVVM.ObservableTaskCommandAttribute");
 				if (AttributeSymbol == null)
 				{
 					// If the attribute isn’t found, report an informational diagnostic.
@@ -53,8 +54,8 @@ namespace NeuroAccessMaui.Generator
 						  new DiagnosticDescriptor(
 								 id: "NTSCG000",
 								 title: "Attribute Not Found",
-								 messageFormat: "The attribute 'TaskStatusNotifierCommandAttribute' was not found.",
-								 category: "TaskStatusNotifierCommandGenerator",
+								 messageFormat: "The attribute 'ObservableTaskCommandAttribute' was not found.",
+								 category: "ObservableTaskCommandGenerator",
 								 defaultSeverity: DiagnosticSeverity.Info,
 								 isEnabledByDefault: true),
 						  Location.None));
@@ -68,9 +69,9 @@ namespace NeuroAccessMaui.Generator
 						continue;
 
 					// Check if the method is decorated with our attribute.
-					var attrData = MethodSymbol.GetAttributes()
+					AttributeData? AttrData = MethodSymbol.GetAttributes()
 						  .FirstOrDefault(attr => SymbolEqualityComparer.Default.Equals(attr.AttributeClass, AttributeSymbol));
-					if (attrData == null)
+					if (AttrData == null)
 						continue;
 
 					// Get containing type info.
@@ -140,21 +141,21 @@ namespace NeuroAccessMaui.Generator
 					}
 
 					// Get the options value from the attribute.
-					// Default is "TaskStatusNotifierCommandOptions.None".
-					string OptionsValue = "TaskStatusNotifierCommandOptions.None";
-					if (attrData.ConstructorArguments.Length > 0 && attrData.ConstructorArguments[0].Value is int value)
+					// Default is "ObservableTaskCommandOptions.None".
+					string OptionsValue = "ObservableTaskCommandOptions.None";
+					if (AttrData.ConstructorArguments.Length > 0 && AttrData.ConstructorArguments[0].Value is int Value)
 					{
 						// We output the integer value as a cast to the enum.
-						OptionsValue = $"((TaskStatusNotifierCommandOptions){value})";
+						OptionsValue = $"((ObservableTaskCommandOptions){Value})";
 					}
 					else
 					{
 						// Also check for named arguments.
-						foreach (var namedArg in attrData.NamedArguments)
+						foreach (KeyValuePair<string, TypedConstant> NamedArg in AttrData.NamedArguments)
 						{
-							if (namedArg.Key == "Options" && namedArg.Value.Value is int n)
+							if (NamedArg.Key == "Options" && NamedArg.Value.Value is int N)
 							{
-								OptionsValue = $"((TaskStatusNotifierCommandOptions){n})";
+								OptionsValue = $"((ObservableTaskCommandOptions){N})";
 								break;
 							}
 						}
@@ -193,8 +194,8 @@ namespace {NamespaceName}
 {{
     public partial class {ClassName}
     {{
-        private TaskStatusNotifierCommand<{ResultType}, {ProgressType}>? _{CommandName};
-        public TaskStatusNotifierCommand<{ResultType}, {ProgressType}> {CommandName} => _{CommandName} ??= new TaskStatusNotifierCommand<{ResultType}, {ProgressType}>(
+        private ObservableTaskCommand<{ResultType}, {ProgressType}>? _{CommandName};
+        public ObservableTaskCommand<{ResultType}, {ProgressType}> {CommandName} => _{CommandName} ??= new ObservableTaskCommand<{ResultType}, {ProgressType}>(
             async (context) =>
             {{
                 {LambdaBody}
