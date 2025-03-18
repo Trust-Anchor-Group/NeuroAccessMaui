@@ -98,12 +98,7 @@
 
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'" 
-				Include="Resources\AppIcon\appicon.svg"
-				ForegroundFile="Resources\AppIcon\appiconfg.svg"
-				BaseSize="512,512" 
-				ForegroundScale="0.55"
-				Color="#F5F6F7"  />
+		<MauiIcon Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'" Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" BaseSize="512,512" ForegroundScale="0.55" Color="#F5F6F7" />
 		<MauiIcon Include="Resources\AppIcon\appicon_ios.svg" Color="#F5F6F7" />
 
 		<!-- Splash Screen -->
@@ -113,12 +108,12 @@
 		<MauiImage Include="Resources\Images\*" />
 
 		<!-- Custom Fonts -->
-		<MauiFont Include="Resources\Fonts\SpaceGrotesk-Bold.ttf"/>
-		<MauiFont Include="Resources\Fonts\SpaceGrotesk-SemiBold.ttf"/>
-		<MauiFont Include="Resources\Fonts\SpaceGrotesk-Medium.ttf"/>
-		<MauiFont Include="Resources\Fonts\SpaceGrotesk-Regular.ttf"/>
-		<MauiFont Include="Resources\Fonts\NHaasGroteskTXPro-75Bd.ttf"/>
-		<MauiFont Include="Resources\Fonts\NHaasGroteskTXPro-55Rg.ttf"/>
+		<MauiFont Include="Resources\Fonts\SpaceGrotesk-Bold.ttf" />
+		<MauiFont Include="Resources\Fonts\SpaceGrotesk-SemiBold.ttf" />
+		<MauiFont Include="Resources\Fonts\SpaceGrotesk-Medium.ttf" />
+		<MauiFont Include="Resources\Fonts\SpaceGrotesk-Regular.ttf" />
+		<MauiFont Include="Resources\Fonts\NHaasGroteskTXPro-75Bd.ttf" />
+		<MauiFont Include="Resources\Fonts\NHaasGroteskTXPro-55Rg.ttf" />
 
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
@@ -438,6 +433,9 @@
 		<Compile Update="UI\Pages\Wallet\MyWallet\MyTokenWalletPage.xaml.cs">
 			<DependentUpon>MyTokenWalletPage.xaml</DependentUpon>
 		</Compile>
+		<Compile Update="UI\Popups\Duration\DurationPopup.xaml.cs">
+		  <DependentUpon>DurationPopup.xaml</DependentUpon>
+		</Compile>
 		<Compile Update="UI\Popups\Image\ImagesPopup.xaml.cs">
 			<DependentUpon>ImagesPopup.xaml</DependentUpon>
 		</Compile>
@@ -692,6 +690,9 @@
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Wallet\TokenEvents\TokenEventsPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Popups\Duration\DurationPopup.xaml">
+		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Popups\Image\ImagesPopup.xaml">
 			<Generator>MSBuild:Compile</Generator>

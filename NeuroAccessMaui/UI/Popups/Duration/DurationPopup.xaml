@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Duration.DurationPopup"
+							x:DataType="viewmodel:DurationPopupViewModel"
+							xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+							xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+							xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+							xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
+							xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Duration"
+							xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
+							xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups">
+
+	<mopups:PopupPage.Animation>
+		<animations:ScaleAnimation DurationIn="500" DurationOut="500" EasingIn="CubicIn" EasingOut="CubicOut" HasBackgroundAnimation="True"
+											PositionIn="Center" PositionOut="Center" />
+	</mopups:PopupPage.Animation>
+
+	<Grid
+		Style="{StaticResource PopupGrid}">
+
+		<Border
+			WidthRequest="{Binding ViewWidthRequest}"
+			MaximumHeightRequest="{Binding MaximumViewHeightRequest}"
+			Style="{StaticResource PopupBorder}">
+
+			<ScrollView
+				VerticalOptions="Center">
+				<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
+					<Label
+							  HorizontalTextAlignment="Center"
+							  Style="{StaticResource PageTitleLabel}"
+							  Text="{l:Localize PersonalId}"/>
+
+					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+						<BindableLayout.ItemTemplate>
+							<DataTemplate x:DataType="controls:TextButton">
+								<controls:TextButton 
+                           Style="{StaticResource TertiaryButton}" 
+                           LabelData="{Binding LabelData}"
+									Command="{Binding Command}"/>
+							</DataTemplate>
+						</BindableLayout.ItemTemplate>
+
+						<BindableLayout.ItemsSource>
+							<Binding Path="Buttons" />
+						</BindableLayout.ItemsSource>
+					</VerticalStackLayout>
+				</VerticalStackLayout>
+			</ScrollView>
+		</Border>
+	</Grid>
+</base:BasePopup>

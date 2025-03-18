@@ -6,8 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.Input;
+using HarfBuzzSharp;
 using Microsoft.Maui.Controls.Shapes;
+using NeuroAccessMaui.Services;
+using NeuroAccessMaui.UI.Popups.Duration;
 using Waher.Script.Functions.Runtime;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace NeuroAccessMaui.UI.Controls
 {
@@ -135,10 +139,12 @@ namespace NeuroAccessMaui.UI.Controls
 
 		#region Methods
 
-		void AddDurationButton_Clicked()
+		async void AddDurationButton_Clicked()
 		{
 			if (this.unitPicker.Picker.SelectedIndex == -1)
 				return; // No unit selected
+
+			await this.OpenDurationPopup();
 
 			// Setup the inner CompositeInputView
 			CompositeInputView DurationView = new()
@@ -151,12 +157,14 @@ namespace NeuroAccessMaui.UI.Controls
 			DurationUnits Unit = (DurationUnits)this.unitPicker.Picker.SelectedItem;
 
 			// Add the Unit Label to the left of the CompositeInputView
-			Label UnitLabel = new()
+			DurationLabel UnitLabel = new()
 			{
 				Text = Unit.ToString(),
 				HorizontalOptions = LayoutOptions.Start,
 				VerticalOptions = LayoutOptions.Center,
-				Style = AppStyles.SectionTitleLabel
+				Style = AppStyles.SectionTitleLabel,
+				WidthRequest = 50,
+				Unit = Unit
 			};
 
 			DurationView.LeftView = UnitLabel;
@@ -174,6 +182,7 @@ namespace NeuroAccessMaui.UI.Controls
 					Radius = 0,
 				}
 			};
+
 			DurationEntry.Keyboard = Keyboard.Numeric;
 
 			DurationView.CenterView = DurationEntry;
@@ -196,19 +205,13 @@ namespace NeuroAccessMaui.UI.Controls
 				this.durationsContainer.Add(DurationView);
 				List<CompositeInputView> SortedDurationEntries = [.. this.durationsContainer.Children
 					.OfType<CompositeInputView>()
-					.OrderBy(x => LabelToUnit((Label)x.LeftView))];
+					.OrderBy(x => (x.LeftView as DurationLabel)?.Unit)];
 
 				this.durationsContainer.Clear();
 				foreach (CompositeInputView Entry in SortedDurationEntries)
 					this.durationsContainer.Add(Entry);
 			});
 		}
-
-		private static DurationUnits LabelToUnit(Label Label)
-		{
-			return (DurationUnits)Enum.Parse(typeof(DurationUnits), Label.Text);
-		}
-
 
 		private async Task DeleteUnitAsync(DurationUnits Unit, CompositeInputView DurationView)
 		{
@@ -222,6 +225,19 @@ namespace NeuroAccessMaui.UI.Controls
 				this.unitPicker.ItemsSource = this.durationUnits;
 				this.durationsContainer.Remove(DurationView);
 			});
+		}
+
+		/// <summary>
+		/// Open QR Popup
+		/// </summary>
+		/// <returns></returns>
+		[RelayCommand]
+		public async Task OpenDurationPopup()
+		{
+			if (this.durationUnits.Count == 0) return;
+
+			DurationPopup DurationPopup = new(this.durationUnits);
+			await ServiceRef.UiService.PushAsync(DurationPopup);
 		}
 
 		#endregion
@@ -287,11 +303,12 @@ namespace NeuroAccessMaui.UI.Controls
 			get => (string)this.GetValue(DescriptionLabelTextProperty);
 			set => this.SetValue(DescriptionLabelTextProperty, value);
 		}
-
 		#endregion
 	}
 
-	enum DurationUnits
+
+
+	public enum DurationUnits
 	{
 		Years,
 		Months,
@@ -300,6 +317,26 @@ namespace NeuroAccessMaui.UI.Controls
 		Hours,
 		Minutes,
 		Seconds,
+	}
+
+	class DurationLabel : Label, IComparable
+	{
+		private DurationUnits unit;
+
+		public DurationLabel() : base()
+		{
+		}
+
+		public DurationUnits Unit
+		{
+			get => this.unit;
+			set => this.unit = value;
+		}
+
+		public int CompareTo(object? other)
+		{
+			return this.unit.CompareTo((other as DurationLabel)?.Unit);
+		}
 	}
 
 }

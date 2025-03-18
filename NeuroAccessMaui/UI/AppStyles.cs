@@ -43,7 +43,7 @@ namespace NeuroAccessMaui.UI
 		private static Style? baseCompositeInputView;
 		private static Style? borderSet;
 		private static Style? durationCompositeEntry;
-
+		private static Style? tertiaryButton;
 
 		static AppStyles()
 		{
@@ -454,6 +454,18 @@ namespace NeuroAccessMaui.UI
 			{
 				borderSet ??= TryGetResource<Style>("BorderSet");
 				return borderSet!;
+			}
+		}
+
+		/// <summary>
+		/// Style for Tertiary Button
+		/// </summary>
+		public static Style TertiaryButton
+		{
+			get
+			{
+				tertiaryButton ??= TryGetResource<Style>("TertiaryButton");
+				return tertiaryButton!;
 			}
 		}
 	}
