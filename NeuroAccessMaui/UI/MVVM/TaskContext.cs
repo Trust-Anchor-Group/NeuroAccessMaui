@@ -22,6 +22,11 @@ namespace NeuroAccessMaui.UI.MVVM
 		public CancellationToken CancellationToken { get; } = CancellationToken;
 
 		/// <summary>
+		/// If cancellation has been requested
+		/// </summary>
+		public bool IsCanceled => this.CancellationToken.IsCancellationRequested;
+
+		/// <summary>
 		/// The progress reporter for the task.
 		/// </summary>
 		public IProgress<TProgress> Progress { get; } = Progress;
