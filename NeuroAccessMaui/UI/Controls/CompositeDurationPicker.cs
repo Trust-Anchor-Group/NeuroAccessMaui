@@ -30,8 +30,6 @@ namespace NeuroAccessMaui.UI.Controls
 			DurationUnits.Minutes,
 			DurationUnits.Seconds
 		};
-		private CompositePicker unitPicker;
-
 		#endregion
 
 		#region Constructors
@@ -81,45 +79,31 @@ namespace NeuroAccessMaui.UI.Controls
 			{
 				ColumnDefinitions =
 				{
-					new ColumnDefinition { Width = GridLength.Auto },
+					new ColumnDefinition { Width = GridLength.Star },
 					new ColumnDefinition { Width = GridLength.Auto },
 					new ColumnDefinition { Width = GridLength.Auto },
 				}
 			};
 
-			// Duration Unit Selection
-			this.unitPicker = new()
-			{
-				ItemsSource = this.durationUnits,
-				WidthRequest = 100,
-				HorizontalOptions = LayoutOptions.Start,
-				VerticalOptions = LayoutOptions.Center,
-				Style = AppStyles.RegularCompositePicker
-			};
-
-			this.unitPicker.Picker.SelectedIndex = 0;
-
-			ButtonGrid.Add(this.unitPicker, 0, 0);
-
 			// Add new Duration Button
 			TextButton AddDurationButton = new()
 			{
 				LabelData = "Add Duration",
-				Style = AppStyles.FilledTextButton,
+				Style = AppStyles.TertiaryButton,
 				HorizontalOptions = LayoutOptions.Center,
 				VerticalOptions = LayoutOptions.Center
 			};
 			AddDurationButton.Clicked += (sender, args) => this.AddDurationButton_Clicked();
-			ButtonGrid.Add(AddDurationButton, 1, 0);
+			ButtonGrid.Add(AddDurationButton, 0, 0);
 
 			// Negate Label
 			Label NegateLabel = new()
 			{
-				Text = "Negate",
+				Text = "Negate:", // TODO: Localize
 				HorizontalOptions = LayoutOptions.Center,
 				VerticalOptions = LayoutOptions.Center
 			};
-			ButtonGrid.Add(NegateLabel, 2, 0);
+			ButtonGrid.Add(NegateLabel, 1, 0);
 
 			// Negate CheckBox
 			CheckBox NegateCheckBox = new()
@@ -128,7 +112,7 @@ namespace NeuroAccessMaui.UI.Controls
 				HorizontalOptions = LayoutOptions.Center,
 				VerticalOptions = LayoutOptions.Center
 			};
-			ButtonGrid.Add(NegateCheckBox, 3, 0);
+			ButtonGrid.Add(NegateCheckBox, 2, 0);
 
 			MainGrid.Add(ButtonGrid, 0, 2);
 
@@ -141,10 +125,13 @@ namespace NeuroAccessMaui.UI.Controls
 
 		async void AddDurationButton_Clicked()
 		{
-			if (this.unitPicker.Picker.SelectedIndex == -1)
+			if (this.durationUnits.Count == 0)
 				return; // No unit selected
 
-			await this.OpenDurationPopup();
+			DurationUnits? DurationUnit = await this.OpenDurationPopup();
+
+			if (DurationUnit is not DurationUnits Unit)
+				return; // No unit selected or popup canceled
 
 			// Setup the inner CompositeInputView
 			CompositeInputView DurationView = new()
@@ -154,28 +141,28 @@ namespace NeuroAccessMaui.UI.Controls
 				Padding = 0,
 			};
 
-			DurationUnits Unit = (DurationUnits)this.unitPicker.Picker.SelectedItem;
-
 			// Add the Unit Label to the left of the CompositeInputView
 			DurationLabel UnitLabel = new()
 			{
-				Text = Unit.ToString(),
-				HorizontalOptions = LayoutOptions.Start,
-				VerticalOptions = LayoutOptions.Center,
+				Text = Unit.ToString() + ":", // TODO LOCALIZE
+				HorizontalTextAlignment = TextAlignment.Center,
+				VerticalTextAlignment = TextAlignment.Center,
 				Style = AppStyles.SectionTitleLabel,
-				WidthRequest = 50,
-				Unit = Unit
+				LineBreakMode = LineBreakMode.NoWrap,
+				WidthRequest = 60,
+				Unit = Unit,
 			};
 
 			DurationView.LeftView = UnitLabel;
 
-			MainThread.BeginInvokeOnMainThread(() => this.durationUnits.Remove(Unit)); // Remove used units
+			this.durationUnits.Remove(Unit); // Remove used units
 
 			// Add the time entry to the middle of the CompositeInputView
 			CompositeEntry DurationEntry = new()
 			{
 				Style = AppStyles.RegularCompositeEntry,
 				BorderStrokeShape = new Rectangle(),
+				Padding = 0,
 				BorderShadow = new Shadow
 				{
 					Opacity = 0,
@@ -194,37 +181,31 @@ namespace NeuroAccessMaui.UI.Controls
 				PathData = Geometries.CancelPath,
 				VerticalOptions = LayoutOptions.Center,
 				HorizontalOptions = LayoutOptions.End,
-				Command = new AsyncRelayCommand(async () => await this.DeleteUnitAsync(Unit, DurationView), new AsyncRelayCommandOptions { })
+				Command = new RelayCommand(() => this.DeleteUnit(Unit, DurationView))
 			};
 
 			DurationView.RightView = DeleteButton;
 
 			// Add the CompositeInputView to the Vertical Stack Layout
-			MainThread.BeginInvokeOnMainThread(() =>
-			{
-				this.durationsContainer.Add(DurationView);
-				List<CompositeInputView> SortedDurationEntries = [.. this.durationsContainer.Children
-					.OfType<CompositeInputView>()
-					.OrderBy(x => (x.LeftView as DurationLabel)?.Unit)];
+			this.durationsContainer.Add(DurationView);
 
-				this.durationsContainer.Clear();
-				foreach (CompositeInputView Entry in SortedDurationEntries)
-					this.durationsContainer.Add(Entry);
-			});
+			// Sort the entries by unit
+			List<CompositeInputView> SortedDurationEntries = [.. this.durationsContainer.Children
+				.OfType<CompositeInputView>()
+				.OrderBy(x => (x.LeftView as DurationLabel)?.Unit)];
+
+			this.durationsContainer.Clear();
+			foreach (CompositeInputView Entry in SortedDurationEntries)
+				this.durationsContainer.Add(Entry);
 		}
 
-		private async Task DeleteUnitAsync(DurationUnits Unit, CompositeInputView DurationView)
+		private void DeleteUnit(DurationUnits Unit, CompositeInputView DurationView)
 		{
-			await MainThread.InvokeOnMainThreadAsync(() =>
-			{
-				if (!this.durationUnits.Contains(Unit)) // Prevent duplicates from being added
-					this.durationUnits.Add(Unit); // Add back the removed unit
-				if (this.durationUnits.Count == 1) // If there were 0 available units, before adding a unit back
-					this.unitPicker.Picker.SelectedIndex = 0; // Make picker show the added Unit
-				this.durationUnits = this.durationUnits.OrderBy(x => x).ToObservableCollection<DurationUnits>(); // Sort the values
-				this.unitPicker.ItemsSource = this.durationUnits;
-				this.durationsContainer.Remove(DurationView);
-			});
+			if (!this.durationUnits.Contains(Unit)) // Prevent duplicates from being added
+				this.durationUnits.Add(Unit); // Add back the removed unit
+
+			this.durationUnits = this.durationUnits.OrderBy(x => x).ToObservableCollection<DurationUnits>();
+			this.durationsContainer.Remove(DurationView);
 		}
 
 		/// <summary>
@@ -232,17 +213,12 @@ namespace NeuroAccessMaui.UI.Controls
 		/// </summary>
 		/// <returns></returns>
 		[RelayCommand]
-		public async Task OpenDurationPopup()
+		public async Task<DurationUnits?> OpenDurationPopup()
 		{
-			if (this.durationUnits.Count == 0) return;
-
-			//DurationPopup DurationPopup = new(this.durationUnits);
 			DurationPopupViewModel ViewModel = new(this.durationUnits);
 			DurationUnits? Result = await ServiceRef.UiService.PushAsync<DurationPopup, DurationPopupViewModel, DurationUnits?>(ViewModel);
-			//string? Result = await ServiceRef.UiService.PushAsync<CheckPasswordPopup, CheckPasswordViewModel, string>(ViewModel);
-			//await ServiceRef.UiService.PushAsync(DurationPopup);
 
-			Console.WriteLine($"Result: {Result}");
+			return Result;
 		}
 
 		#endregion
@@ -311,8 +287,7 @@ namespace NeuroAccessMaui.UI.Controls
 		#endregion
 	}
 
-
-
+	#region Helper classes
 	public enum DurationUnits
 	{
 		Years,
@@ -343,5 +318,5 @@ namespace NeuroAccessMaui.UI.Controls
 			return this.unit.CompareTo((other as DurationLabel)?.Unit);
 		}
 	}
-
+	#endregion
 }
