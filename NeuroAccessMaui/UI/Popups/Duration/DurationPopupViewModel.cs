@@ -6,7 +6,7 @@ using NeuroAccessMaui.UI.Controls;
 
 namespace NeuroAccessMaui.UI.Popups.Duration
 {
-	public partial class DurationPopupViewModel : BasePopupViewModel
+	public partial class DurationPopupViewModel : ReturningPopupViewModel<DurationUnits?>
 	{
 		[ObservableProperty]
 		private ObservableCollection<TextButton> buttons;
@@ -21,7 +21,9 @@ namespace NeuroAccessMaui.UI.Popups.Duration
 				this.Buttons.Add(new TextButton
 				{
 					LabelData = Unit.ToString(),
-					Command = new RelayCommand(() => this.SelectUnit(Unit))
+					Command = new RelayCommand(() => {
+						this.SelectUnit(Unit);
+					})
 				});
 			}
 		}
@@ -34,10 +36,26 @@ namespace NeuroAccessMaui.UI.Popups.Duration
 		}
 
 		// Command that handles unit selection
-		public void SelectUnit(DurationUnits unit)
+		public void SelectUnit(DurationUnits Unit)
 		{
-			// Perform any logic when a button is clicked
-			Console.WriteLine($"Button clicked: {unit}");
+			this.result.TrySetResult(Unit);
+
+			this.CloseCommand.Execute(null);
+		}
+
+		public override Task OnPop()
+		{
+			try
+			{
+				if (!this.result.Task.IsCompleted)
+					this.result.TrySetResult(null);
+			}
+			catch (Exception)
+			{
+				// ignored
+			}
+
+			return base.OnPop();
 		}
 	}
 }

@@ -7,11 +7,9 @@ namespace NeuroAccessMaui.UI.Popups.Duration
 {
 	public partial class DurationPopup
 	{
-		public DurationPopup(ObservableCollection<DurationUnits> AvailableUnits)
+		public DurationPopup()
 		{
 			this.InitializeComponent();
-			DurationPopupViewModel ViewModel = new DurationPopupViewModel(AvailableUnits);
-			this.BindingContext = ViewModel;
 		}
 	}
 }

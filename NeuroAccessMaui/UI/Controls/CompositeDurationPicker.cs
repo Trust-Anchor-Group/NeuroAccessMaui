@@ -236,8 +236,13 @@ namespace NeuroAccessMaui.UI.Controls
 		{
 			if (this.durationUnits.Count == 0) return;
 
-			DurationPopup DurationPopup = new(this.durationUnits);
-			await ServiceRef.UiService.PushAsync(DurationPopup);
+			//DurationPopup DurationPopup = new(this.durationUnits);
+			DurationPopupViewModel ViewModel = new(this.durationUnits);
+			DurationUnits? Result = await ServiceRef.UiService.PushAsync<DurationPopup, DurationPopupViewModel, DurationUnits?>(ViewModel);
+			//string? Result = await ServiceRef.UiService.PushAsync<CheckPasswordPopup, CheckPasswordViewModel, string>(ViewModel);
+			//await ServiceRef.UiService.PushAsync(DurationPopup);
+
+			Console.WriteLine($"Result: {Result}");
 		}
 
 		#endregion
