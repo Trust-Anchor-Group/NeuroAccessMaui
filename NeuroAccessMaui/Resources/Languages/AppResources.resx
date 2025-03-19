@@ -2559,4 +2559,10 @@
   <data name="PleaseTryAgain" xml:space="preserve">
     <value>Please Try Again</value>
   </data>
+  <data name="DurationPickerTitle" xml:space="preserve">
+    <value>Validity Time</value> 
+  </data>
+  <data name="DurationPickerDescription" xml:space="preserve">
+    <value>Specify the lifetime of the contract</value> 
+  </data>
 </root>

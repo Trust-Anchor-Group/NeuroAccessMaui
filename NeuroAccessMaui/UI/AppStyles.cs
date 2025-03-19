@@ -44,6 +44,9 @@ namespace NeuroAccessMaui.UI
 		private static Style? borderSet;
 		private static Style? durationCompositeEntry;
 		private static Style? tertiaryButton;
+		private static Style? transparentTemplateButtonBorder;
+		private static Style? transparentTemplateButtonLabel;
+		private static Style? transparentTemplateButtonPath;
 
 		static AppStyles()
 		{
@@ -466,6 +469,42 @@ namespace NeuroAccessMaui.UI
 			{
 				tertiaryButton ??= TryGetResource<Style>("TertiaryButton");
 				return tertiaryButton!;
+			}
+		}
+
+		/// <summary>
+		/// Style for transparent template button border
+		/// </summary>
+		public static Style TransparentTemplateButtonBorder
+		{
+			get
+			{
+				transparentTemplateButtonBorder ??= TryGetResource<Style>("TransparentTemplateButtonBorder");
+				return transparentTemplateButtonBorder!;
+			}
+		}
+
+		/// <summary>
+		/// Style for transparent template button label
+		/// </summary>
+		public static Style TransparentTemplateButtonLabel
+		{
+			get
+			{
+				transparentTemplateButtonLabel ??= TryGetResource<Style>("TransparentTemplateButtonLabel");
+				return transparentTemplateButtonLabel!;
+			}
+		}
+
+		/// <summary>
+		/// Style for transparent template button path
+		/// </summary>
+		public static Style TransparentTemplateButtonPath
+		{
+			get
+			{
+				transparentTemplateButtonPath ??= TryGetResource<Style>("TransparentTemplateButtonPath");
+				return transparentTemplateButtonPath!;
 			}
 		}
 	}

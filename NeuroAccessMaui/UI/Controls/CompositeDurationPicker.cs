@@ -12,6 +12,7 @@ using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Popups.Duration;
 using Waher.Script.Functions.Runtime;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Path = Microsoft.Maui.Controls.Shapes.Path;
 
 namespace NeuroAccessMaui.UI.Controls
 {
@@ -40,8 +41,10 @@ namespace NeuroAccessMaui.UI.Controls
 				RowDefinitions =
 				{
 					new RowDefinition { Height = GridLength.Auto }, // Top Label
+					new RowDefinition { Height = GridLength.Auto }, // Description Label
 					new RowDefinition { Height = GridLength.Auto }, // Date Pickers Vertical Stack Layout
 					new RowDefinition { Height = GridLength.Auto }, // Add new Duration Button
+					new RowDefinition { Height = GridLength.Auto }  // Negate Field
 				},
 				RowSpacing = AppStyles.SmallSpacing
 			};
@@ -72,38 +75,73 @@ namespace NeuroAccessMaui.UI.Controls
 			// Date Pickers Vertical Stack Layout
 			this.durationsContainer = [];
 			this.durationsContainer.Spacing = AppStyles.SmallSpacing;
-			MainGrid.Add(this.durationsContainer, 0, 1);
+			MainGrid.Add(this.durationsContainer, 0, 2);
+
+			//// Add new Duration Button
+			//TextButton AddDurationButton = new()
+			//{
+			//	LabelData = "Add Duration",
+			//	Style = AppStyles.TertiaryButton,
+			//	HorizontalOptions = LayoutOptions.FillAndExpand,
+			//	VerticalOptions = LayoutOptions.Center
+			//};
+
+			TemplatedButton AddDurationButton = new()
+			{
+				Content = new Border
+				{
+					Style = AppStyles.TransparentTemplateButtonBorder,
+					HorizontalOptions = LayoutOptions.Fill,
+					VerticalOptions = LayoutOptions.Fill,
+					Padding = 0,
+					Margin = 0,
+					Content = new Grid
+					{
+						ColumnDefinitions =
+						{
+							new ColumnDefinition { Width = GridLength.Star },
+							new ColumnDefinition { Width = GridLength.Auto }
+						},
+						Children =
+						{
+							new Label
+							{
+								Text = "Add Duration",
+								Style = AppStyles.TransparentTemplateButtonLabel,
+								HorizontalOptions = LayoutOptions.Start
+							},
+							new Path
+							{
+								Data = Geometries.ArrowRightPath,
+								Style = AppStyles.TransparentTemplateButtonPath,
+								VerticalOptions = LayoutOptions.Center
+							}
+						}
+					}
+				}
+			};
+
+			AddDurationButton.Clicked += (sender, args) => this.AddDurationButton_Clicked();
+			MainGrid.Add(AddDurationButton, 0, 3);
 
 			// Button Grid
-			Grid ButtonGrid = new()
+			Grid NegateGrid = new()
 			{
 				ColumnDefinitions =
 				{
-					new ColumnDefinition { Width = GridLength.Star },
 					new ColumnDefinition { Width = GridLength.Auto },
 					new ColumnDefinition { Width = GridLength.Auto },
 				}
 			};
 
-			// Add new Duration Button
-			TextButton AddDurationButton = new()
-			{
-				LabelData = "Add Duration",
-				Style = AppStyles.TertiaryButton,
-				HorizontalOptions = LayoutOptions.Center,
-				VerticalOptions = LayoutOptions.Center
-			};
-			AddDurationButton.Clicked += (sender, args) => this.AddDurationButton_Clicked();
-			ButtonGrid.Add(AddDurationButton, 0, 0);
-
 			// Negate Label
 			Label NegateLabel = new()
 			{
-				Text = "Negate:", // TODO: Localize
+				Text = "Negate duration:", // TODO: Localize
 				HorizontalOptions = LayoutOptions.Center,
 				VerticalOptions = LayoutOptions.Center
 			};
-			ButtonGrid.Add(NegateLabel, 1, 0);
+			NegateGrid.Add(NegateLabel, 0, 0);
 
 			// Negate CheckBox
 			CheckBox NegateCheckBox = new()
@@ -112,9 +150,9 @@ namespace NeuroAccessMaui.UI.Controls
 				HorizontalOptions = LayoutOptions.Center,
 				VerticalOptions = LayoutOptions.Center
 			};
-			ButtonGrid.Add(NegateCheckBox, 2, 0);
+			NegateGrid.Add(NegateCheckBox, 1, 0);
 
-			MainGrid.Add(ButtonGrid, 0, 2);
+			MainGrid.Add(NegateGrid, 0, 4);
 
 			this.Content = MainGrid;
 		}
