@@ -34,7 +34,7 @@
 				<Label Text="Task State:"
 				       FontAttributes="Bold" />
 				<Label Text="{Binding BarCommand.Notifier.State}" />
-				<controls:ConditionView Condition="{Binding BarCommand.Notifier.IsLoading}">
+				<controls:ConditionView Condition="{Binding BarCommand.Notifier.IsRunning}">
 					<controls:ConditionView.True>
 						<VerticalStackLayout 
 						                     Spacing="15">
@@ -61,17 +61,15 @@
 							<Button Text="Load Data"
 							        Command="{Binding BarCommand}" />
 
-							<Label Text="Result:"
-							       FontAttributes="Bold"
-							       IsVisible="{Binding BarCommand.Notifier.IsSucceeded}"/>
-							<Label Text="{Binding BarCommand.Notifier.Result}"
+							<Label Text="SUCCESS"
 							       IsVisible="{Binding BarCommand.Notifier.IsSucceeded}" />
 
 							<Label Text="Error Message:"
-							       FontAttributes="Bold" IsVisible="{Binding BarCommand.Notifier.IsFaulted}"/>
-							<Label Text="{Binding BarCommand.Notifier.ErrorMessage}"
-							       IsVisible="{Binding BarCommand.Notifier.IsFaulted}"
-									 TextColor="Red" />
+							       FontAttributes="Bold" IsVisible="{Binding BarCommand.Notifier.IsFailed}"/>
+							<Label 
+							       Text="{Binding BarCommand.Notifier.ErrorMessage}"
+							       IsVisible="{Binding BarCommand.Notifier.IsFailed}"
+							       TextColor="Red" />
 
 						</VerticalStackLayout>
 					</controls:ConditionView.False>

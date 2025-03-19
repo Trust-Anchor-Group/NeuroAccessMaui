@@ -11,7 +11,6 @@ namespace NeuroAccessMaui.UI.Pages.Main
 {
 	public partial class MainViewModel : QrXmppViewModel
 	{
-		public ObservableTask<int, int> ObservableTask { get; } = new();
 
 
 		public MainViewModel()
@@ -24,18 +23,33 @@ namespace NeuroAccessMaui.UI.Pages.Main
 					Console.WriteLine(this.ObservableTask.State);
 				}
 			});
+
+			this.BarCommand.PropertyChanged += ((sender, args) =>
+			{
+				if (args.PropertyName == nameof(this.ObservableTask.State))
+				{
+					Console.WriteLine(this.ObservableTask.State);
+				}
+			});
 		}
-		public bool IsNotStarted => this.ObservableTask.IsNotStarted;
+
+		//Method 1
+
+		public ObservableTask<int> ObservableTask { get; } = new();
 
 		[RelayCommand]
         private async Task Start()
         {
             // Use the Load method of TaskNotifier to start an asynchronous operation.
             this.ObservableTask.Load(this.Foo, this.StartCommand);
+				this.ObservableTask.Refresh();
+
+				//this.ObservableTask.Load(async (TaskContext<int> Context)=> {...} );
         }
 
-		private async Task<int> Foo(TaskContext<int> Context)
+		private async Task Foo(TaskContext<int> Context)
 		{
+
 			int Sum = 0;
 			// Simulate work by summing numbers 1 to 10 with a delay.
 			for (int i = 1; i <= 100; i++)
@@ -46,14 +60,17 @@ namespace NeuroAccessMaui.UI.Pages.Main
 				// Report progress (for example, as a percentage).
 				Context.Progress.Report(i * 1);
 				if (i == 50)
-					await ServiceRef.XmppService.GetContract("Test");
+				 await ServiceRef.XmppService.GetContract("Test");
 			}
-			return Sum;
+
 		}
 
+		//Method 2 ---------------------------
+
 		[ObservableTaskCommand(ObservableTaskCommandOptions.AllowConcurrentRestart)]
-		private async Task<int> Bar(TaskContext<int> Context)
+		private async Task Bar(TaskContext<int> Context)
 		{
+			//TODO: 
 			int Sum = 0;
 			// Simulate work by summing numbers 1 to 10 with a delay.
 			for (int i = 1; i <= 100; i++)
@@ -66,7 +83,6 @@ namespace NeuroAccessMaui.UI.Pages.Main
 				if (i == 50)
 					await ServiceRef.XmppService.GetContract("Test");
 			}
-			return Sum;
 		}
 
 

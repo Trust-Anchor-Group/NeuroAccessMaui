@@ -167,15 +167,15 @@ namespace NeuroAccessMaui.Generator
 					{
 						// Parameterless method.
 						LambdaBody = ReturnsGenericTask
-							  ? $"return await {MethodName}();"
-							  : $"await {MethodName}(); return default!;";
+							  ? $"await {MethodName}();"
+							  : $"await {MethodName}();";
 					}
 					else if (MethodSymbol.Parameters.Length == 1)
 					{
 						// Method with TaskContext<TProgress> parameter.
 						LambdaBody = ReturnsGenericTask
-							  ? $"return await {MethodName}(context);"
-							  : $"await {MethodName}(context); return default!;";
+							  ? $"await {MethodName}(context);"
+							  : $"await {MethodName}(context);";
 					}
 					else
 					{
@@ -194,8 +194,8 @@ namespace {NamespaceName}
 {{
     public partial class {ClassName}
     {{
-        private ObservableTaskCommand<{ResultType}, {ProgressType}>? _{CommandName};
-        public ObservableTaskCommand<{ResultType}, {ProgressType}> {CommandName} => _{CommandName} ??= new ObservableTaskCommand<{ResultType}, {ProgressType}>(
+        private ObservableTaskCommand<{ProgressType}>? _{CommandName};
+        public ObservableTaskCommand<{ProgressType}> {CommandName} => _{CommandName} ??= new ObservableTaskCommand<{ProgressType}>(
             async (context) =>
             {{
                 {LambdaBody}

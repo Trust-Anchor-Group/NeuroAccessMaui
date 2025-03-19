@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
 
@@ -13,32 +12,31 @@ namespace NeuroAccessMaui.UI.MVVM
 		AllowConcurrentRestart = 1 << 0,
 	}
 
-	public class ObservableTaskCommand<TResult, TProgress> : IAsyncRelayCommand
+	public class ObservableTaskCommand<TProgress> : IAsyncRelayCommand
 	{
-		private readonly Func<TaskContext<TProgress>, Task<TResult>> taskFactory;
+		private readonly Func<TaskContext<TProgress>, Task> taskFactory;
 		private readonly Func<bool>? canExecute;
 		private readonly ObservableTaskCommandOptions options;
 
-		public ObservableTask<TResult, TProgress> Notifier { get; }
+		public ObservableTask<TProgress> Notifier { get; }
 
 		// Constructor without canExecute (defaults to always executable and no options)
 		public ObservableTaskCommand(
-			Func<TaskContext<TProgress>, Task<TResult>> taskFactory)
+			Func<TaskContext<TProgress>, Task> taskFactory)
 			 : this(taskFactory, null, ObservableTaskCommandOptions.None)
 		{
 		}
 
 		// Constructor with optional canExecute and options
 		public ObservableTaskCommand(
-			Func<TaskContext<TProgress>, Task<TResult>> taskFactory,
-			 Func<bool>? canExecute,
-			 ObservableTaskCommandOptions options = ObservableTaskCommandOptions.None)
+			Func<TaskContext<TProgress>, Task> taskFactory,
+			Func<bool>? canExecute,
+			ObservableTaskCommandOptions options = ObservableTaskCommandOptions.None)
 		{
-
 			this.taskFactory = taskFactory ?? throw new ArgumentNullException(nameof(taskFactory));
 			this.canExecute = canExecute;
 			this.options = options;
-			this.Notifier = new ObservableTask<TResult, TProgress>();
+			this.Notifier = new ObservableTask<TProgress>();
 			// Forward property changes from the notifier to this command.
 			this.Notifier.PropertyChanged += (s, e) => this.PropertyChanged?.Invoke(this, e);
 		}
@@ -54,8 +52,8 @@ namespace NeuroAccessMaui.UI.MVVM
 			this.NotifyCanExecuteChanged();
 
 			// Start the task via the notifier.
-			this.Notifier.Load(Context => this.taskFactory(Context), this);
-			Task<TResult>? Task = this.Notifier.CurrentTask;
+			this.Notifier.Load(ctx => this.taskFactory(ctx), this);
+			Task? Task = this.Notifier.CurrentTask;
 			if (Task != null)
 			{
 				// When the task completes, raise CanExecuteChanged (on the UI thread).
@@ -80,10 +78,10 @@ namespace NeuroAccessMaui.UI.MVVM
 			if (!BaseCanExecute)
 				return false;
 
-			// If concurrent restarts are not allowed, return false if a task has run.
+			// If concurrent restarts are not allowed, return false if a task is running.
 			if ((this.options & ObservableTaskCommandOptions.AllowConcurrentRestart) == 0)
 			{
-				if (this.Notifier.IsLoading)
+				if (this.Notifier.IsRunning)
 					return false;
 			}
 			return true;
