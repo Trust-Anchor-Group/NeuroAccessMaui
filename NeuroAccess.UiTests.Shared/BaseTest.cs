@@ -44,24 +44,25 @@ namespace NeuroAccess.UiTests
 						App = "com.tag.NeuroAccess.apk",
 					};
 
-					AndroidOptions.AddAdditionalAppiumOption("forceReset", false);
-					AndroidOptions.AddAdditionalAppiumOption("noReset", true);
+					AndroidOptions.AddAdditionalAppiumOption("forceReset", true);
+					//AndroidOptions.AddAdditionalAppiumOption("noReset", true);
 					Console.WriteLine("Initializing Android Driver...");
 					driver = new AndroidDriver(AndroidOptions);
 					Console.WriteLine("Android Driver initialized successfully.");
 				}
-				else {
+				else
+				{
 					var AndroidOptions = new AppiumOptions { AutomationName = "UIAutomator2", PlatformName = "Android", PlatformVersion = "14", App = "com.tag.NeuroAccess.apk" };
 					AndroidOptions.AddAdditionalAppiumOption("noReset", true);// The app doesnt reset because this is true
 
-					driver.ExecuteScript("mobile:pressKey", new Dictionary<string, string> { { "keycode", "187" } });//187 is the code for recent apps/overview button
+					driver.ExecuteScript("mobile: pressKey", new Dictionary<string, string> { { "keycode", "187" } });//187 is the code for recent apps/overview button
 					Task.Delay(500).Wait();
 					//Get the screen size to use it for getting the coordinates of the middle of the screen, so the swipe up happens from there.
 					var screenSize = driver.Manage().Window.Size;
 
-					int startX = (screenSize.Width / 10) * 6;  // Middle of the screen but slightly to the right
-					int startY = screenSize.Height / 2; // Middle vertically
-					int endY = screenSize.Height / 10;  // Near the top 
+					int startX = (screenSize.Width / 20) * 13;  // Middle of the screen but slightly to the right
+					int startY = (screenSize.Height / 4) * 3; // 3/4 screen size down
+					int endY = screenSize.Height / 20;  // Near the top 
 
 					Actions action = new Actions(driver);
 
@@ -86,22 +87,26 @@ namespace NeuroAccess.UiTests
 		[AssemblyCleanup]
 		public static void RunAfterAllTests()
 		{
-			driver.ExecuteScript("mobile:pressKey", new Dictionary<string, string> { { "keycode", "187" } });//187 is the code for recent apps/overview button
-			Task.Delay(500).Wait();
-			//Get the screen size to use it for getting the coordinates of the middle of the screen, so the swipe up happens from there.
-			var screenSize = driver.Manage().Window.Size;
+			if (driver != null)
+			{
+				driver.ExecuteScript("mobile: pressKey", new Dictionary<string, string> { { "keycode", "187" } });//187 is the code for recent apps/overview button
+				Task.Delay(500).Wait();
+				//Get the screen size to use it for getting the coordinates of the middle of the screen, so the swipe up happens from there.
+				var screenSize = driver.Manage().Window.Size;
 
-			int startX = (screenSize.Width / 10) * 6;  // Middle of the screen but slightly to the right
-			int startY = screenSize.Height / 2; // Middle vertically
-			int endY = screenSize.Height / 10;  // Near the top 
+				int startX = (screenSize.Width / 20) * 13;  // Middle of the screen but slightly to the right
+				int startY = (screenSize.Height / 4) * 3; // 3/4 screen size down
+				int endY = screenSize.Height / 20;  // Near the top 
 
-			Actions action = new Actions(driver);
+				Actions action = new Actions(driver);
 
-			action.MoveToLocation(startX, startY) // Start point
-					.ClickAndHold()
-					.MoveByOffset(0, endY - startY) // Swipe up (fast swipe up to close the app)
-					.Release()
-					.Perform();
+				action.MoveToLocation(startX, startY) // Start point
+						.ClickAndHold()
+						.MoveByOffset(0, endY - startY) // Swipe up (fast swipe up to close the app)
+						.Release()
+						.Perform();
+			}
+
 		}
 		public static AppiumElement FindUIElement(string id)
 		{
@@ -112,7 +117,7 @@ namespace NeuroAccess.UiTests
 
 			return App.FindElement(MobileBy.Id(id));
 		}
-		public static AppiumElement AutoFindElement(string aViewID, int maxTryTimeInS = 10)
+		public static AppiumElement AutoFindElement(string aViewID, int maxTryTimeInS = 20)//Default max trying to the find the element time is 20 seconds. Because slower computers take more time loading things. And the time is not infinite because if it takes inifnity to find an element it means something went wrong, so instead if something takes more time than usual to load the devoloper can by himself change the max trying time when calling the method.
 		{
 			double timeTaken = 0;//In seconds not milli seconds
 			while (true)
@@ -260,3 +265,5 @@ THE CODE FOR GETTING VERIFICATION FOR TEST PHONE NUMBER
 				}
 			}
 */
+
+
