@@ -1,7 +1,9 @@
+using Firebase.CloudMessaging;
 using Foundation;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI;
 using UIKit;
+using UserNotifications;
 
 
 namespace NeuroAccessMaui
@@ -119,35 +121,6 @@ namespace NeuroAccessMaui
 					radioButton.ControlTemplate = AppStyles.RadioButtonTemplate;
 				}
 			});
-		}
-		[Export("application:didReceiveRemoteNotification:")]
-		public void ReceivedRemoteNotification (UIApplication application, NSDictionary userInfo)
-		{
-			// If you are receiving a notification message while your app is in the background,
-			// this callback will not be fired till the user taps on the notification launching the application.
-			// TODO: Handle data of notification
-
-			// With swizzling disabled you must let Messaging know about the message, for Analytics
-			//Messaging.SharedInstance.AppDidReceiveMessage (userInfo);
-
-			// Print full message.
-			Console.WriteLine ("RECEIVED REMOTE NOTIFICATION");
-		}
-
-		[Export("application:didReceiveRemoteNotification:fetchCompletionHandler:")]
-		public  void DidReceiveRemoteNotification (UIApplication application, NSDictionary userInfo, Action<UIBackgroundFetchResult> completionHandler)
-		{
-			// If you are receiving a notification message while your app is in the background,
-			// this callback will not be fired till the user taps on the notification launching the application.
-			// TODO: Handle data of notification
-
-			// With swizzling disabled you must let Messaging know about the message, for Analytics
-			//Messaging.SharedInstance.AppDidReceiveMessage (userInfo);
-
-			// Print full message.
-			Console.WriteLine (userInfo);
-
-			completionHandler (UIBackgroundFetchResult.NewData);
 		}
 
 		/*
