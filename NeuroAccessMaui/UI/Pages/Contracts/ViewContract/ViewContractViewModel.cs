@@ -91,15 +91,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				});
 
 				// Prepare displayable parameters
-				await MainThread.InvokeOnMainThreadAsync(() =>
-				{
-					this.PrepareDisplayableParameters();
-				});
+				await MainThread.InvokeOnMainThreadAsync(this.PrepareDisplayableParameters);
 
 				// Prepare roles that can be signed
-				await MainThread.InvokeOnMainThreadAsync(() =>
+				await MainThread.InvokeOnMainThreadAsync(this.PrepareSignableRoles);
+
+				await MainThread.InvokeOnMainThreadAsync(async()=>
 				{
-					this.PrepareSignableRoles();
+					await this.PreparePropertiesAsync();
 				});
 
 				// Move to the initial "Overview" state
@@ -250,6 +249,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			ContractVisibility.PublicSearchable => ServiceRef.Localizer[nameof(AppResources.ContractVisibility_PublicSearchable)],
 			_ => string.Empty
 		};
+
+		[ObservableProperty]
+		private bool canDeleteContract;
+
+		[ObservableProperty]
+		private bool canObsoleteContract;
 
 		#endregion
 
@@ -492,6 +497,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 					return;
 
 				await ServiceRef.XmppService.DeleteContract(this.Contract.ContractId);
+				this.Contract.Contract.State = ContractState.Deleted;
+				await this.RefreshContract(this.Contract.Contract);
 
 				await ServiceRef.UiService.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
@@ -707,6 +714,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 			ObservableContract? NewContractWrapper = new(NewContract);
 
+			
 
 			ViewContractStep currentStep = (ViewContractStep)Enum.Parse(typeof(ViewContractStep), this.CurrentState);
 			await this.GoToState(ViewContractStep.Loading);
@@ -718,10 +726,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				await this.Contract.InitializeAsync();
 			});
 
-			await MainThread.InvokeOnMainThreadAsync(() =>
+			await MainThread.InvokeOnMainThreadAsync(async () =>
 			{
 				this.PrepareDisplayableParameters();
 				this.PrepareSignableRoles();
+				await this.PreparePropertiesAsync();
 			});
 
 			await this.GoToState(currentStep);
@@ -820,6 +829,46 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 						this.SignableRoles.Add(r);
 				}
 			}
+		}
+
+		private async Task PreparePropertiesAsync()
+		{
+			if (this.Contract is null)
+				return;
+
+			foreach (ObservableRole R in this.Contract.Roles)
+			{
+				if (R.Parts.Any(p => p.IsMe))
+				{
+					if (R.Role.CanRevoke)
+					{
+						this.CanObsoleteContract =
+							this.Contract.ContractState is ContractState.Approved or ContractState.BeingSigned or ContractState.Signed;
+					}
+
+				}
+			}
+
+			if (this.args is not null)
+			{
+				try
+				{
+					bool IsLegallyBinding =
+						await this.Contract.Contract.IsLegallyBinding(true, ServiceRef.XmppService.ContractsClient);
+
+					MainThread.BeginInvokeOnMainThread(() =>
+					{
+						this.CanDeleteContract = !this.args.IsReadOnly && !IsLegallyBinding;
+					});
+
+				}
+				catch (Exception e)
+				{
+					this.CanDeleteContract = false;
+					ServiceRef.LogService.LogException(e);
+				}
+			}
+			
 		}
 
 		#endregion
