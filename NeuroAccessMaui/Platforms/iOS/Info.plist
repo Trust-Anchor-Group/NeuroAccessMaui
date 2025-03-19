@@ -27,7 +27,7 @@
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
 	<key>XSAppIconAssets</key>
-	<string>Assets.xcassets/appicon.appiconset</string>
+	<string>Assets.xcassets/appicon_ios.appiconset</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Neuro-Access needs access to the camera to take photos for your digital ID, and when you want it to scan QR codes.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
@@ -56,7 +56,7 @@
 		<string>ru</string>
 	</array>
 	<key>CFBundleShortVersionString</key>
-	<string>2.2.7</string>
+	<string>2.4.0</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleURLTypes</key>

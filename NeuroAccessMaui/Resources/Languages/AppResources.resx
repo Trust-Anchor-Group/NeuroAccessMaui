@@ -2379,9 +2379,6 @@
   <data name="MomentaryValues" xml:space="preserve">
     <value>Momentary Values</value>
   </data>
-  <data name="None" xml:space="preserve">
-    <value>None</value>
-  </data>
   <data name="PeakValues" xml:space="preserve">
     <value>Peak Values</value>
   </data>
@@ -2498,5 +2495,68 @@
   </data>
   <data name="GenerateQrCode" xml:space="preserve">
     <value>Generate QR Code</value>
+  </data>
+	<data name="CameraPermissionTitle" xml:space="preserve">
+		<value>Camera</value>
+	</data>
+	<data name="CameraPermissionDescription" xml:space="preserve">
+		<value>To use this feature, please enable camera access in your settings.</value>
+	</data>
+	<data name="CameraPermissionDescriptionSecondary" xml:space="preserve">
+		<value>Open settings - Click on "Permissions" - Enable Camera Permissions</value>
+	</data>
+  <data name="iOS_CameraPermissionDescriptionSecondary" xml:space="preserve">
+		<value>Open settings - Enable Camera Permissions</value>
+	</data>
+  <data name="GoToSettings" xml:space="preserve">
+    <value>Open settings</value>
+  </data>
+  <data name="Skip" xml:space="preserve">
+    <value>Skip</value>
+  </data>
+  <data name="CopyLink" xml:space="preserve">
+    <value>Copy Link</value>
+  </data>
+  <data name="IdentityDocumentTitle" xml:space="preserve">
+    <value>Identity Document</value>
+  </data>
+  <data name="IdentityDocumentDescription" xml:space="preserve">
+    <value>To improve your application’s verification process, you can provide photos of an identity document to verify your identity.</value>
+  </data>
+  <data name="FrontOfDocument" xml:space="preserve">
+    <value>The front of the document</value>
+  </data>
+  <data name="BackOfDocument" xml:space="preserve">
+    <value>The back of the document</value>
+  </data>
+  <data name="AdditionalPhotosTitle" xml:space="preserve">
+    <value>Additional Photos</value>
+  </data>
+  <data name="AdditionalPhotosDescription" xml:space="preserve">
+    <value>You may include additional photos to further support your identity verification.</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="Passport" xml:space="preserve">
+    <value>Passport</value>
+  </data>
+  <data name="NationalId" xml:space="preserve">
+    <value>National ID Card</value>
+  </data>
+  <data name="DriverLicense" xml:space="preserve">
+    <value>Driver's License</value>
+  </data>
+  <data name="SelectTypeOfDocument" xml:space="preserve">
+    <value>Select type of document</value>
+  </data>
+    <data name="IdentityDocumentDescription_Passport" xml:space="preserve">
+    <value>Please upload a photo that clearly shows both pages of your passport's data section, including the page with your photo</value>
+  </data>
+  <data name="FrontOfDocument_Passport" xml:space="preserve">
+    <value>Photo of your passport</value>
+  </data>
+  <data name="PleaseTryAgain" xml:space="preserve">
+    <value>Please Try Again</value>
   </data>
 </root>

@@ -2499,4 +2499,64 @@
   <data name="GenerateQrCode" xml:space="preserve">
     <value>Generar código QR</value>
   </data>
+  <data name="CameraPermissionTitle" xml:space="preserve">
+    <value>Cámara</value>
+  </data>
+  <data name="CameraPermissionDescription" xml:space="preserve">
+    <value>Para usar esta función, por favor habilita el acceso a la cámara en tus configuraciones.</value>
+  </data>
+  <data name="CameraPermissionDescriptionSecondary" xml:space="preserve">
+    <value>Abre la configuración - Haz clic en "Permisos" - Habilita los permisos de la cámara</value>
+  </data>
+  <data name="iOS_CameraPermissionDescriptionSecondary" xml:space="preserve">
+    <value>Abre la configuración - Habilita los permisos de la cámara</value>
+	</data>
+  <data name="GoToSettings" xml:space="preserve">
+    <value>Abrir configuración</value>
+  </data>
+  <data name="Skip" xml:space="preserve">
+    <value>Omitir</value>
+  </data>
+  <data name="CopyLink" xml:space="preserve">
+    <value>Copiar enlace</value>
+  </data>
+  <data name="IdentityDocumentTitle" xml:space="preserve">
+    <value>Documento de Identidad</value>
+  </data>
+  <data name="IdentityDocumentDescription" xml:space="preserve">
+    <value>Para mejorar el proceso de verificación de su solicitud, puede proporcionar fotos de un documento de identidad para verificar su identidad.</value>
+  </data>
+  <data name="FrontOfDocument" xml:space="preserve">
+    <value>La parte frontal del documento</value>
+  </data>
+  <data name="BackOfDocument" xml:space="preserve">
+    <value>La parte trasera del documento</value>
+  </data>
+  <data name="AdditionalPhotosTitle" xml:space="preserve">
+    <value>Fotos adicionales</value>
+  </data>
+  <data name="AdditionalPhotosDescription" xml:space="preserve">
+    <value>Puede incluir fotos adicionales para respaldar aún más la verificación de su identidad.</value>
+  </data>
+  <data name="Passport" xml:space="preserve">
+    <value>Pasaporte</value>
+  </data>
+  <data name="NationalId" xml:space="preserve">
+    <value>Documento Nacional de Identidad</value>
+  </data>
+  <data name="DriverLicense" xml:space="preserve">
+    <value>Licencia de Conducir</value>
+  </data>
+  <data name="SelectTypeOfDocument" xml:space="preserve">
+    <value>Seleccione tipo de documento</value>
+  </data>
+  <data name="IdentityDocumentDescription_Passport" xml:space="preserve">
+    <value>Por favor, suba una foto que muestre claramente ambas páginas de la sección de datos de su pasaporte, incluida la página con su foto</value>
+  </data>
+  <data name="FrontOfDocument_Passport" xml:space="preserve">
+    <value>Foto de su pasaporte</value>
+  </data>
+  <data name="PleaseTryAgain" xml:space="preserve">
+    <value>Por favor, inténtelo de nuevo</value>
+  </data>
 </root>

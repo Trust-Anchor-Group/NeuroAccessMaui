@@ -1353,9 +1353,6 @@
   <data name="AccessRequest" xml:space="preserve">
     <value>Begäran om åtkomst</value>
   </data>
-  <data name="AccessRequestText2" xml:space="preserve">
-    <value>En förfrågan om att komma åt en av dina saker har mottagits. Välj hur du vill att saken ska svara på denna typ av förfrågan.</value>
-  </data>
   <data name="ContractCreated" xml:space="preserve">
     <value>Ett kontrakt har skapats.</value>
   </data>
@@ -1409,6 +1406,9 @@
   </data>
   <data name="AccessRequestText" xml:space="preserve">
     <value>{0} vill ansluta till din enhet {1}.</value>
+  </data>
+  <data name="AccessRequestText2" xml:space="preserve">
+    <value>En förfrågan om att komma åt en av dina saker har mottagits. Välj hur du vill att saken ska svara på denna typ av förfrågan.</value>
   </data>
   <data name="ConcentratorServiceNotFound" xml:space="preserve">
     <value>Ingen koncentratortjänst hittades.</value>
@@ -2150,19 +2150,19 @@
   </data>
   <data name="OnboardingGetStartedTitle" xml:space="preserve">
     <value>Välkommen till Neuro-Access</value>
-  </data> 
-  <data name="CreateNewAccount">
+  </data>
+  <data name="CreateNewAccount" xml:space="preserve">
     <value>Skapa nytt konto</value>
   </data>
-  <data name="IAlreadyHaveAnAccount">
+  <data name="IAlreadyHaveAnAccount" xml:space="preserve">
     <value>Jag har redan ett konto</value>
   </data>
-  <data name="OnboardingGetStartedQrInfo">
+  <data name="OnboardingGetStartedQrInfo" xml:space="preserve">
     <value>Har du fått en inbjudan, överförings- eller återställningskod? Skanna den nedan</value>
   </data>
   <data name="OnboardingNameEntryTitle" xml:space="preserve">
     <value>Välj ditt användarnamn</value>
-  </data> 
+  </data>
   <data name="OnboardingNameEntryDetails" xml:space="preserve">
     <value>Ditt användarnamn är permanent och kan inte ändras senare</value>
   </data>
@@ -2380,7 +2380,7 @@
     <value>Momentana värden</value>
   </data>
   <data name="None" xml:space="preserve">
-    <value>Inga</value>
+    <value>Ingen</value>
   </data>
   <data name="PeakValues" xml:space="preserve">
     <value>Extremvärden</value>
@@ -2498,5 +2498,65 @@
   </data>
   <data name="GenerateQrCode" xml:space="preserve">
     <value>Generera QR-kod</value>
+  </data>
+  <data name="CameraPermissionTitle" xml:space="preserve">
+    <value>Kamera</value>
+  </data>
+  <data name="CameraPermissionDescription" xml:space="preserve">
+    <value>För att använda denna funktion, vänligen aktivera kameratillgång i dina inställningar.</value>
+  </data>
+  <data name="CameraPermissionDescriptionSecondary" xml:space="preserve">
+    <value>Öppna inställningar - Klicka på "Behörigheter" - Aktivera kamerabehörigheter</value>
+  </data>
+  <data name="iOS_CameraPermissionDescriptionSecondary" xml:space="preserve">
+    <value>Öppna inställningar - Aktivera kamerabehörigheter</value>
+	</data>
+  <data name="GoToSettings" xml:space="preserve">
+    <value>Öppna inställningar</value>
+  </data>
+  <data name="Skip" xml:space="preserve">
+    <value>Hoppa över</value>
+  </data>
+  <data name="CopyLink" xml:space="preserve">
+    <value>Kopiera länk</value>
+  </data>
+  <data name="IdentityDocumentTitle" xml:space="preserve">
+    <value>Identitetsdokument</value>
+  </data>
+  <data name="IdentityDocumentDescription" xml:space="preserve">
+    <value>För att förbättra verifieringsprocessen för din ansökan kan du tillhandahålla bilder på ett identitetsdokument för att verifiera din identitet.</value>
+  </data>
+  <data name="FrontOfDocument" xml:space="preserve">
+    <value>Framsidan av dokumentet</value>
+  </data>
+  <data name="BackOfDocument" xml:space="preserve">
+    <value>Baksidan av dokumentet</value>
+  </data>
+  <data name="AdditionalPhotosTitle" xml:space="preserve">
+    <value>Ytterligare foton</value>
+  </data>
+  <data name="AdditionalPhotosDescription" xml:space="preserve">
+    <value>Du kan inkludera ytterligare foton för att ytterligare stödja din identitetsverifiering.</value>
+  </data>
+  <data name="Passport" xml:space="preserve">
+    <value>Pass</value>
+  </data>
+  <data name="NationalId" xml:space="preserve">
+    <value>Nationellt ID-kort</value>
+  </data>
+  <data name="DriverLicense" xml:space="preserve">
+    <value>Körkort</value>
+  </data>
+  <data name="SelectTypeOfDocument" xml:space="preserve">
+    <value>Välj typ av dokument</value>
+  </data>
+  <data name="IdentityDocumentDescription_Passport" xml:space="preserve">
+    <value>Ladda upp en bild som tydligt visar båda sidorna av passets informationssida, inklusive sidan med ditt foto</value>
+  </data>
+  <data name="FrontOfDocument_Passport" xml:space="preserve">
+    <value>Bild på ditt pass</value>
+  </data>
+  <data name="PleaseTryAgain" xml:space="preserve">
+    <value>Försök igen</value>
   </data>
 </root>

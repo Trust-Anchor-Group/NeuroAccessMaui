@@ -2379,9 +2379,6 @@
   <data name="MomentaryValues" xml:space="preserve">
     <value>Hetkelliset arvot</value>
   </data>
-  <data name="None" xml:space="preserve">
-    <value>Ei lainkaan</value>
-  </data>
   <data name="PeakValues" xml:space="preserve">
     <value>Huippuarvot</value>
   </data>
@@ -2498,5 +2495,68 @@
   </data>
   <data name="GenerateQrCode" xml:space="preserve">
     <value>Luo QR-koodi</value>
+  </data>
+  <data name="CameraPermissionTitle" xml:space="preserve">
+    <value>Kamera</value>
+  </data>
+  <data name="CameraPermissionDescription" xml:space="preserve">
+    <value>Jos haluat käyttää tätä ominaisuutta, ota kameran käyttö käyttöön asetuksissasi.</value>
+  </data>
+  <data name="CameraPermissionDescriptionSecondary" xml:space="preserve">
+    <value>Avaa asetukset - Napsauta "Käyttöoikeudet" - Ota kameran käyttöoikeudet käyttöön</value>
+  </data>
+  <data name="iOS_CameraPermissionDescriptionSecondary" xml:space="preserve">
+    <value>Avaa asetukset - Ota kameran käyttöoikeudet käyttöön</value>
+  </data>
+  <data name="GoToSettings" xml:space="preserve">
+    <value>Avaa asetukset</value>
+  </data>
+  <data name="Skip" xml:space="preserve">
+    <value>Hyppiä</value>
+  </data>
+  <data name="CopyLink" xml:space="preserve">
+    <value>Kopioi linkki</value>
+  </data>
+  <data name="IdentityDocumentTitle" xml:space="preserve">
+    <value>Henkilöllisyystodistus</value>
+  </data>
+  <data name="IdentityDocumentDescription" xml:space="preserve">
+    <value>Voit parantaa hakemuksesi vahvistusprosessia toimittamalla valokuvia henkilöllisyystodistuksesta henkilöllisyytesi vahvistamiseksi.</value>
+  </data>
+  <data name="FrontOfDocument" xml:space="preserve">
+    <value>Asiakirjan etupuoli</value>
+  </data>
+  <data name="BackOfDocument" xml:space="preserve">
+    <value>Asiakirjan kääntöpuoli</value>
+  </data>
+  <data name="AdditionalPhotosTitle" xml:space="preserve">
+    <value>Lisää kuvia</value>
+  </data>
+  <data name="AdditionalPhotosDescription" xml:space="preserve">
+    <value>Voit lisätä muita kuvia henkilöllisyytesi todentamisen tueksi.</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>Ei lainkaan</value>
+  </data>
+  <data name="Passport" xml:space="preserve">
+    <value>Passi</value>
+  </data>
+  <data name="NationalId" xml:space="preserve">
+    <value>Kansallinen henkilökortti</value>
+  </data>
+  <data name="DriverLicense" xml:space="preserve">
+    <value>Ajokortti</value>
+  </data>
+  <data name="SelectTypeOfDocument" xml:space="preserve">
+    <value>Valitse asiakirjatyyppi</value>
+  </data>
+  <data name="IdentityDocumentDescription_Passport" xml:space="preserve">
+    <value>Lataa valokuva, jossa näkyvät selvästi passin tieto-osion molemmat sivut, mukaan lukien kuvasi sivu</value>
+  </data>
+  <data name="FrontOfDocument_Passport" xml:space="preserve">
+    <value>Kuva passistasi</value>
+  </data>
+  <data name="PleaseTryAgain" xml:space="preserve">
+    <value>Yritä uudelleen</value>
   </data>
 </root>
