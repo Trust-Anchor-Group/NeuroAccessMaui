@@ -284,6 +284,10 @@
 		<PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.10" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.92" />
+		<PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="4.12.0">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
 		<PackageReference Include="Mopups" Version="1.3.2" />
 		<PackageReference Include="NeuroFeatures" Version="2.1.2" />
 		<PackageReference Include="Plugin.Fingerprint" Version="3.0.0-beta.1" />
@@ -490,7 +494,9 @@
 	<ItemGroup>
 		<ProjectReference Include="..\IdApp.Cv\IdApp.Cv.csproj" />
 		<ProjectReference Include="..\NeuroAccess.Nfc\NeuroAccess.Nfc.csproj" />
-		<ProjectReference Include="..\NeuroAccessMaui.Generator\NeuroAccessMaui.Generator.csproj" OutputItemType="Analyzer"/>
+		<ProjectReference Include="..\NeuroAccessMaui.Generator\NeuroAccessMaui.Generator.csproj"
+						ReferenceOutputAssembly="false"
+						OutputItemType="Analyzer"/>
 	</ItemGroup>
 
 	<ItemGroup>
