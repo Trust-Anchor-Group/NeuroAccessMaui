@@ -1431,8 +1431,8 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 				if (Result is null)
 					return;
 
-				Stream Stream = await Result.OpenReadAsync();
-				byte[] InputBin = Stream.ToByteArray() ?? throw new Exception("Failed to read photo stream");
+				Stream InputStream = await Result.OpenReadAsync();
+				byte[] InputBin = InputStream.ToByteArray() ?? throw new Exception("Failed to read photo stream");
 
 				TaskCompletionSource<byte[]?> Tcs = new();
 				await ServiceRef.UiService.GoToAsync(
@@ -1441,9 +1441,9 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 				);
 
 				byte[] OutputBin = await Tcs.Task ?? throw new Exception("Failed to crop photo");
-				MemoryStream Ms = new(OutputBin);
+				MemoryStream OutputStream = new(OutputBin);
 
-				await this.AddPhoto(Ms, Result.FullPath, true);
+				await this.AddPhoto(OutputStream, Result.FullPath, true);
 			}
 			catch (Exception ex)
 			{
