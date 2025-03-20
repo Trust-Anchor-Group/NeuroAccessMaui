@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using NeuroAccessMaui.Resources.Languages;
 using Waher.Events;
 using Waher.Events.Filter;
@@ -9,7 +10,7 @@ using Waher.Runtime.Inventory;
 namespace NeuroAccessMaui.Services.EventLog
 {
 	[Singleton]
-	internal sealed class LogService : ILogService
+	internal sealed class LogService : LoadableService, ILogService
 	{
 		private const string startupCrashFileName = "CrashDump.txt";
 		private string bareJid = string.Empty;
@@ -42,6 +43,39 @@ namespace NeuroAccessMaui.Services.EventLog
 		{
 			if (EventSink is not null)
 				Log.Unregister(EventSink);
+		}
+
+		/// <summary>
+		/// Invoke this method to add a debug statement to the log.
+		/// </summary>
+		/// <param name="Message">Debug message.</param>
+		/// <param name="LineNumber">The line of code of the caller</param>
+		/// <param name="Tags">Tags to log together with message.</param>
+		/// <param name="MemberName">The name of the caller method or property</param>
+		/// <param name="FilePath">THe file of the caller</param>
+		public void LogDebug(string Message,
+			params KeyValuePair<string, object?>[] Tags)
+		{
+			Log.Debug(Message,
+				string.Empty,
+				this.bareJid,
+				Tags);
+		}
+
+		/// <summary>
+		/// Invoke this method to add a debug statement to the log.
+		/// </summary>
+		/// <param name="Message">Debug message.</param>
+		/// <param name="LineNumber">The line of code of the caller</param>
+		/// <param name="FilePath">THe file of the caller</param>
+		public void LogDebug(string Message,
+			[CallerFilePath] string FilePath = "",
+			[CallerLineNumber] int LineNumber = 0)
+		{
+			Log.Debug($"{Message} (File: {FilePath}, Line: {LineNumber})",
+				string.Empty,
+				this.bareJid,
+				[]);
 		}
 
 		/// <summary>
@@ -183,5 +217,15 @@ namespace NeuroAccessMaui.Services.EventLog
 
 			return Result;
 		}
+
+		public override Task Load(bool isResuming, CancellationToken cancellationToken)
+		{
+#if DEBUG
+			this.AddListener(new DebugEventSink());
+#endif
+			return Task.CompletedTask;
+		}
+
+
 	}
 }

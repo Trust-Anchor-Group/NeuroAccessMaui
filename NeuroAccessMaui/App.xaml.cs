@@ -415,6 +415,8 @@ namespace NeuroAccessMaui
 					Token.ThrowIfCancellationRequested();
 				}
 
+				await ServiceRef.LogService.Load(isResuming, Token);
+
 				await ServiceRef.StorageService.Init(Token);
 				if (!configLoaded)
 				{
@@ -524,6 +526,9 @@ namespace NeuroAccessMaui
 
 					if (ServiceRef.AttachmentCacheService is not null)
 						UnloadTasks.Add(ServiceRef.AttachmentCacheService.Unload());
+
+					if(ServiceRef.LogService is not null)
+						UnloadTasks.Add(ServiceRef.LogService.Unload());
 
 					await Task.WhenAll(UnloadTasks);
 
