@@ -30,7 +30,7 @@
 					<Label
 							  HorizontalTextAlignment="Center"
 							  Style="{StaticResource PageTitleLabel}"
-							  Text="{l:Localize PersonalId}"/>
+							  Text="{l:Localize SelectUnit}"/>
 
 					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 						<BindableLayout.ItemTemplate>

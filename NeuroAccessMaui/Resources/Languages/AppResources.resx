@@ -2565,4 +2565,13 @@
   <data name="DurationPickerDescription" xml:space="preserve">
     <value>Specify the lifetime of the contract</value> 
   </data>
+  <data name="NegateDuration" xml:space="preserve">
+    <value>Negative duration:</value> 
+  </data>
+  <data name="AddDuration" xml:space="preserve">
+    <value>Add duration</value> 
+  </data>
+  <data name="SelectUnit" xml:space="preserve">
+    <value>Select unit</value>
+  </data>
 </root>

@@ -20,7 +20,7 @@ namespace NeuroAccessMaui.UI.Popups.Duration
 			{
 				this.Buttons.Add(new TextButton
 				{
-					LabelData = Unit.ToString(),
+					LabelData = ServiceRef.Localizer[Unit.ToString()],
 					Command = new RelayCommand(() => {
 						this.SelectUnit(Unit);
 					})
