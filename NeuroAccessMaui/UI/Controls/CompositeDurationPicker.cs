@@ -91,22 +91,21 @@ namespace NeuroAccessMaui.UI.Controls
 				Content = new Border
 				{
 					Style = AppStyles.TransparentTemplateButtonBorder,
-					HorizontalOptions = LayoutOptions.Fill,
-					VerticalOptions = LayoutOptions.Fill,
-					Padding = 0,
+					HorizontalOptions = LayoutOptions.FillAndExpand,
+					VerticalOptions = LayoutOptions.FillAndExpand,
 					Margin = 0,
 					Content = new Grid
 					{
 						ColumnDefinitions =
 						{
-							new ColumnDefinition { Width = GridLength.Star },
+							new ColumnDefinition { Width = GridLength.Auto },
 							new ColumnDefinition { Width = GridLength.Auto }
 						},
 						Children =
 						{
 							new Label
 							{
-								Text = "Add Duration",
+								Text = "Add Duration", //TODO LOCALIZE
 								Style = AppStyles.TransparentTemplateButtonLabel,
 								HorizontalOptions = LayoutOptions.Start
 							},
