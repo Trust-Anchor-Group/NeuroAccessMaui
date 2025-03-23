@@ -1,4 +1,4 @@
-﻿//#define DEBUG_XMPP_REMOTE
+//#define DEBUG_XMPP_REMOTE
 //#define DEBUG_LOG_REMOTE
 //#define DEBUG_DB_REMOTE
 
@@ -2662,11 +2662,15 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 				if (!e2.Ok)
 					throw e2.StanzaError ?? new Exception(e2.ErrorText);
-
+				
 				await e2.PUT(Attachment.Data, Attachment.ContentType, (int)Constants.Timeouts.UploadFile.TotalMilliseconds);
 				byte[] Signature = await this.ContractsClient.SignAsync(Attachment.Data, SignWith.CurrentKeys);
+#if DEBUG
+				//fix url mismatch if emulator is connected to local neuron
+				string Url = e2.GetUrl.Replace(Constants.Debug.LocalIpAddress, "localhost");
+#endif
 
-				Identity = await this.ContractsClient.AddLegalIdAttachmentAsync(Identity.Id, e2.GetUrl, Signature);
+				Identity = await this.ContractsClient.AddLegalIdAttachmentAsync(Identity.Id, Url, Signature);
 			}
 
 			await this.ContractsClient.ReadyForApprovalAsync(Identity.Id);
