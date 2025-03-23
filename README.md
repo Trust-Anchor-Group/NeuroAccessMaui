@@ -14,6 +14,7 @@ This documentation provides information you need to get started with the project
   - [Prerequisites](Content/getting_started.md#prerequisites)
   - [Setting Up the Development Environment](Content/getting_started.md#setting-up-the-development-environment)
   - [Running the Project](Content/getting_started.md#running-the-project)
+  - [Connecting to a Local Development Neuron](Content/getting_started.md#connecting-to-a-local-development-neuron)
 - [Project Architecture](Content/architecture.md)
   - [Project Structure](Content/architecture.md#project-structure)
   - [MVVM Pattern](Content/architecture.md#mvvm-pattern)

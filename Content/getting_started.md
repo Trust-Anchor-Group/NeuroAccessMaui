@@ -7,6 +7,7 @@ This guide will help you set up your development environment, run the project, a
 - [Prerequisites](#prerequisites)
 - [Setting Up the Development Environment](#setting-up-the-development-environment)
 - [Running the Project](#running-the-project)
+- [Connecting to a Local Development Neuron](#connecting-to-a-local-development-neuron)
 
 ## Prerequisites
 
@@ -103,6 +104,87 @@ Each platform have specific configuration files or settings:
 - **iOS**: `Info.plist`
 
 Refer to the specific platform documentation for more details on how to manage these files.
+
+## Connecting to a Local Development Neuron
+
+This section provides detailed instructions for connecting to a local development neuron. These steps assume you're using HTTPS with self-signed certificates.
+
+### Prerequisites
+
+- A running local neuron with HTTPS enabled using self-signed certificates
+- Debug build of the app
+- Android or iOS emulator running on your local machine
+
+### Step 1: Configure the Self-Signed Certificate
+
+1. For detailed instructions on working with self-signed certificates, refer to this guide: [Developing for HTTPS with self-signed certificates](https://lab.tagroot.io/Community/Post/Developing_for_HTTPS_with_self_signed_certificates)
+
+### Step 2: Update the Local IP Address
+
+1. Open the `Constants.cs` file located in the `NeuroAccessMaui` project
+2. Update the `Debug.LocalIpAdress` constant to point to your local machine:
+   - For localhost: `localhost`
+   - For Android emulator: `10.0.2.2` (10.0.2.2 is the loopback address that points to your host machine from the Android emulator)
+
+### Step 3: Configure Platform-Specific Settings
+
+#### For Android:
+
+1. Create a network security configuration file if it doesn't exist:
+   - Path: `NeuroAccessMaui/Platforms/Android/Resources/xml/network_security_config.xml`
+   - Content:
+     ```xml
+     <?xml version="1.0" encoding="utf-8"?>
+     <network-security-config>
+         <domain-config cleartextTrafficPermitted="true">
+             <domain includeSubdomains="true">10.0.2.2</domain>
+             <domain includeSubdomains="true">localhost</domain>
+             <trust-anchors>
+                 <!-- Trust user added CAs while debuggable only -->
+                 <certificates src="@raw/self_signed_cert"/>
+                 <certificates src="user" />
+                 <certificates src="system"/>
+             </trust-anchors>
+         </domain-config>
+     </network-security-config>
+     ```
+
+2. Add your self-signed certificate to the raw resources:
+   - Create a `raw` directory if it doesn't exist: `NeuroAccessMaui/Platforms/Android/Resources/raw/`
+   - Copy your certificate to this directory
+
+3. Update the AndroidManifest.xml to use the network security configuration:
+   - Path: `NeuroAccessMaui/Platforms/Android/AndroidManifest.xml`
+   - Add the following attribute to the `<application>` tag:
+     ```xml
+     android:networkSecurityConfig="@xml/network_security_config"
+     ```
+
+#### For iOS:
+
+1. Add your self-signed certificate to the project and ensure it's included in the app bundle
+2. Update Info.plist to allow arbitrary loads (for development only):
+   ```xml
+   <key>NSAppTransportSecurity</key>
+   <dict>
+       <key>NSAllowsLocalNetworking</key>
+       <true/>
+       <key>NSAllowsArbitraryLoads</key>
+       <true/>
+   </dict>
+   ```
+
+### Troubleshooting
+
+- If you encounter SSL/TLS certificate errors, ensure that:
+  - The certificate is correctly exported and added to the resources
+  - The network security configuration properly references the certificate
+
+- For Android emulators, make sure you're using 10.0.2.2 instead of localhost to access your host machine
+
+- If connections time out, check that:
+  - The neuron is running and accessible
+  - Any firewalls or proxies are properly configured to allow the connection
 
 ---
 
