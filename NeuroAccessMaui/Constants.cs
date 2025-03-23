@@ -901,5 +901,9 @@
 			public const string TransferIdCodeSent = "TransferId.CodesSent";
 		}
 
+		public static class Debug
+		{
+			public const string LocalIpAddress = "10.0.2.2";
+		}
 	}
 }
