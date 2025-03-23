@@ -306,6 +306,23 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 									ServiceRef.TagProfile.SetDomain(VerifyDomain, DefaultConnectivity, VerifyKey, VerifySecret);
 								}
+								else
+								{
+									bool DefaultConnectivity;
+									string Domain = ServiceRef.TagProfile.Domain;
+
+									try
+									{
+										(string HostName, int PortNumber, bool IsIpAddress) = await ServiceRef.NetworkService.LookupXmppHostnameAndPort(Domain);
+										DefaultConnectivity = HostName == Domain && PortNumber == Waher.Networking.XMPP.XmppCredentials.DefaultPort;
+									}
+									catch (Exception)
+									{
+										DefaultConnectivity = false;
+									}
+
+									ServiceRef.TagProfile.SetDomain(Domain, DefaultConnectivity, ServiceRef.TagProfile.ApiKey, ServiceRef.TagProfile.ApiSecret);
+								}
 
 								if (VerifyIsTemporary)
 									GoToRegistrationStep(RegistrationStep.NameEntry);
