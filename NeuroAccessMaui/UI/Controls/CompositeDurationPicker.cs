@@ -106,7 +106,7 @@ namespace NeuroAccessMaui.UI.Controls
 					{
 						ColumnDefinitions =
 						{
-							new ColumnDefinition { Width = GridLength.Auto },
+							new ColumnDefinition { Width = GridLength.Star },
 							new ColumnDefinition { Width = GridLength.Auto }
 						},
 						Children =
@@ -121,7 +121,11 @@ namespace NeuroAccessMaui.UI.Controls
 							{
 								Data = Geometries.ArrowRightPath,
 								Style = AppStyles.TransparentTemplateButtonPath,
-								VerticalOptions = LayoutOptions.Center
+								VerticalOptions = LayoutOptions.Center,
+								HorizontalOptions = LayoutOptions.End,
+								WidthRequest = 18,
+								HeightRequest = 18,
+								Aspect = Stretch.Uniform
 							}
 						}
 					}
@@ -247,18 +251,19 @@ namespace NeuroAccessMaui.UI.Controls
 		/// <param name="Unit"></param>
 		private void AddUnit(DurationUnits Unit, string Value)
       {
-         // Setup the inner CompositeInputView
-         CompositeInputView DurationView = new()
+         // Setup the Composite Entry
+         CompositeEntry DurationEntry = new()
          {
-               Style = AppStyles.BaseCompositeInputView,
+               Style = AppStyles.RegularCompositeEntry,
                Margin = 0,
                Padding = 0,
-         };
+				   EntryData = (Value == "0") ? "" : Value
+			};
 
-         // Add the Unit Label to the left of the CompositeInputView
+         // Add the Unit Label to the left of the CompositeEntry
          DurationLabel UnitLabel = new()
 			{
-				Text = ServiceRef.Localizer[Unit.ToString()],
+				Text = ServiceRef.Localizer[Unit.ToString() + "Capitalized"],
             HorizontalTextAlignment = TextAlignment.Start,
             VerticalTextAlignment = TextAlignment.Center,
             Style = AppStyles.SectionTitleLabel,
@@ -267,56 +272,43 @@ namespace NeuroAccessMaui.UI.Controls
             Unit = Unit,
          };
 
-         DurationView.LeftView = UnitLabel;
+         DurationEntry.LeftView = UnitLabel;
 
          this.durationUnits.Remove(Unit); // Remove used units
 
-         // Add the time entry to the middle of the CompositeInputView
-         CompositeEntry DurationEntry = new()
-         {
-               Style = AppStyles.RegularCompositeEntry,
-               BorderStrokeShape = new Rectangle(),
-               Padding = 0,
-               BorderShadow = new Shadow
-               {
-                  Opacity = 0,
-                  Radius = 0,
-               },
-               EntryData = (Value == "0") ? "" : Value,
-         };
+			DurationEntry.SetBinding(CompositeEntry.IsValidProperty, new Binding(nameof(this.IsValid), source: this));
 
          DurationEntry.TextChanged += (sender, args) => this.UpdateDuration();
 
          DurationEntry.Keyboard = Keyboard.Numeric;
 
-         DurationView.CenterView = DurationEntry;
 
-         // Add delete button to the right of the CompositeInputView
+         // Add delete button to the right of the CompositeEntry
          ImageButton DeleteButton = new()
          {
                Style = AppStyles.ImageOnlyButton,
                PathData = Geometries.CancelPath,
                VerticalOptions = LayoutOptions.Center,
                HorizontalOptions = LayoutOptions.End,
-               Command = new RelayCommand(() => this.DeleteUnit(Unit, DurationView))
+               Command = new RelayCommand(() => this.DeleteUnit(Unit, DurationEntry))
          };
 
-         DurationView.RightView = DeleteButton;
+         DurationEntry.RightView = DeleteButton;
 
-         // Add the CompositeInputView to the Vertical Stack Layout
-         this.durationsContainer.Add(DurationView);
+         // Add the CompositeEntry to the Vertical Stack Layout
+         this.durationsContainer.Add(DurationEntry);
 
          // Sort the entries by unit
-         List<CompositeInputView> SortedDurationEntries = [.. this.durationsContainer.Children
-                                       .OfType<CompositeInputView>()
+         List<CompositeEntry> SortedDurationEntries = [.. this.durationsContainer.Children
+                                       .OfType<CompositeEntry>()
                                        .OrderBy(x => (x.LeftView as DurationLabel)?.Unit)];
 
          this.durationsContainer.Clear();
-         foreach (CompositeInputView Entry in SortedDurationEntries)
+         foreach (CompositeEntry Entry in SortedDurationEntries)
                MainThread.BeginInvokeOnMainThread(() => this.durationsContainer.Add(Entry));
       }
 
-		private void DeleteUnit(DurationUnits Unit, CompositeInputView DurationView)
+		private void DeleteUnit(DurationUnits Unit, CompositeEntry DurationView)
 		{
 			if (!this.durationUnits.Contains(Unit)) // Prevent duplicates from being added
 				this.durationUnits.Add(Unit); // Add back the removed unit
@@ -345,10 +337,9 @@ namespace NeuroAccessMaui.UI.Controls
 			Duration NewDuration = new();
 			CultureInfo Culture = CultureInfo.InvariantCulture;
 
-			foreach (CompositeInputView DurationView in this.durationsContainer.Children.Cast<CompositeInputView>())
+			foreach (CompositeEntry DurationEntry in this.durationsContainer.Children.Cast<CompositeEntry>())
 			{
-				DurationLabel UnitLabel = (DurationLabel)DurationView.LeftView;
-				CompositeEntry DurationEntry = (CompositeEntry)DurationView.CenterView;
+				DurationLabel UnitLabel = (DurationLabel)DurationEntry.LeftView;
 
 				string Data = DurationEntry.EntryData;
 
@@ -482,13 +473,22 @@ namespace NeuroAccessMaui.UI.Controls
 			BindingMode.TwoWay,
 			propertyChanged: OnDurationChanged);
 
+		// IsValid Property
+		public static readonly BindableProperty IsValidProperty =
+			 BindableProperty.Create(nameof(IsValid), typeof(bool), typeof(CompositeDurationPicker), true);
+
+		public bool IsValid
+		{
+			get => (bool)this.GetValue(IsValidProperty);
+			set => this.SetValue(IsValidProperty, value);
+		}
 
 		static void OnDurationChanged(BindableObject bindable, object oldValue, object newValue)
 		{
 			if (bindable is CompositeDurationPicker Picker)
 			{
 				List<DurationUnits?> PreviousUnits = [.. Picker.durationsContainer.Children
-					.OfType<CompositeInputView>()
+					.OfType<CompositeEntry>()
 					.Select(x => (x.LeftView as DurationLabel)?.Unit)];
 
 				Picker.PopulateDurationsContainer(PreviousUnits);

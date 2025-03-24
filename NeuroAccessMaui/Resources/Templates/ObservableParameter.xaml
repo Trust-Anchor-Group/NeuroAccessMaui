@@ -238,7 +238,7 @@
 															DescriptionLabelText="{l:Localize DurationPickerDescription}"
 															DescriptionLabelStyle="{StaticResource ParameterItemValueLabel}"
 															DurationValue="{Binding DurationValue, Mode=TwoWay}"
-																/>
+															IsValid="{Binding IsValid}"/>
 			<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
 																IsEncrypted="{Binding IsEncrypted}"
 																IsVisible="{Binding IsProtected}" />

@@ -42,7 +42,6 @@ namespace NeuroAccessMaui.UI
 		private static Style? roundedBorder;
 		private static Style? baseCompositeInputView;
 		private static Style? borderSet;
-		private static Style? durationCompositeEntry;
 		private static Style? tertiaryButton;
 		private static Style? transparentTemplateButtonBorder;
 		private static Style? transparentTemplateButtonLabel;
