@@ -234,7 +234,7 @@
 					  x:DataType="objectModel:ObservableDurationParameter">
 		<VerticalStackLayout>
 			<controls:CompositeDurationPicker	TitleLabelText="{l:Localize DurationPickerTitle}"
-															TitleLabelStyle="{StaticResource SectionTitleLabel}"
+															TitleLabelStyle="{StaticResource DurationLabel}"
 															DescriptionLabelText="{l:Localize DurationPickerDescription}"
 															DescriptionLabelStyle="{StaticResource ParameterItemValueLabel}"
 															DurationValue="{Binding DurationValue, Mode=TwoWay}"

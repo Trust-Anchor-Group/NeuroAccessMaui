@@ -49,7 +49,6 @@ namespace NeuroAccessMaui.UI.Controls
 				RowDefinitions =
 				{
 					new RowDefinition { Height = GridLength.Auto }, // Top Label
-					new RowDefinition { Height = GridLength.Auto }, // Description Label
 					new RowDefinition { Height = GridLength.Auto }, // Date Pickers Vertical Stack Layout
 					new RowDefinition { Height = GridLength.Auto }, // Add new Duration Button
 					new RowDefinition { Height = GridLength.Auto }  // Negate Field
@@ -76,6 +75,7 @@ namespace NeuroAccessMaui.UI.Controls
 			this.descriptionLabel = new();
 			this.descriptionLabel.SetBinding(Label.StyleProperty, new Binding(nameof(this.DescriptionLabelStyle), source: this));
 			this.descriptionLabel.SetBinding(Label.TextProperty, new Binding(nameof(this.DescriptionLabelText), source: this));
+			this.descriptionLabel.Margin = 0;
 			TopTextGrid.Add(this.descriptionLabel, 0, 1);
 
 			MainGrid.Add(TopTextGrid, 0, 0);
@@ -83,7 +83,7 @@ namespace NeuroAccessMaui.UI.Controls
 			// Date Pickers Vertical Stack Layout
 			this.durationsContainer = [];
 			this.durationsContainer.Spacing = AppStyles.SmallSpacing;
-			MainGrid.Add(this.durationsContainer, 0, 2);
+			MainGrid.Add(this.durationsContainer, 0, 1);
 
 			//// Add new Duration Button
 			//TextButton AddDurationButton = new()
@@ -129,7 +129,7 @@ namespace NeuroAccessMaui.UI.Controls
 			};
 
 			AddDurationButton.Clicked += (sender, args) => this.AddDurationButton_Clicked();
-			MainGrid.Add(AddDurationButton, 0, 3);
+			MainGrid.Add(AddDurationButton, 0, 2);
 
 			// Button Grid
 			Grid NegateGrid = new()
@@ -147,7 +147,8 @@ namespace NeuroAccessMaui.UI.Controls
 			{
 				Text = ServiceRef.Localizer[nameof(AppResources.NegateDuration)],
 				HorizontalOptions = LayoutOptions.Center,
-				VerticalOptions = LayoutOptions.Center
+				VerticalOptions = LayoutOptions.Center,
+				Style = AppStyles.InfoLabel
 			};
 			NegateGrid.Add(NegateLabel, 0, 0);
 
@@ -156,14 +157,15 @@ namespace NeuroAccessMaui.UI.Controls
 			{
 				IsChecked = false,
 				HorizontalOptions = LayoutOptions.Center,
-				VerticalOptions = LayoutOptions.Center
+				VerticalOptions = LayoutOptions.Center,
+				Color = AppColors.EnabledFilledButtonBackground
 			};
 
 			this.negateCheckBox.CheckedChanged += (sender, args) => this.UpdateDuration();
 
 			NegateGrid.Add(this.negateCheckBox, 1, 0);
 
-			MainGrid.Add(NegateGrid, 0, 4);
+			MainGrid.Add(NegateGrid, 0, 3);
 
 			this.Content = MainGrid;
 		}
@@ -186,39 +188,51 @@ namespace NeuroAccessMaui.UI.Controls
 				DurationUnits.Seconds
 			];
 
-			if (this.DurationValue.Years != 0 || PreviousUnits.Contains(DurationUnits.Years))
+			if (this.DurationValue.Years != 0)
 			{
-				this.AddUnit(DurationUnits.Years, this.DurationValue.Years.ToString(CultureInfo.InvariantCulture));
+				if (!PreviousUnits.Contains(DurationUnits.Years))
+					this.AddUnit(DurationUnits.Years, this.DurationValue.Years.ToString(CultureInfo.InvariantCulture));
+
 				AvaliableUnits.Remove(DurationUnits.Years);
 			}
 
-			if (this.DurationValue.Months != 0 || PreviousUnits.Contains(DurationUnits.Months))
+			if (this.DurationValue.Months != 0)
 			{
-				this.AddUnit(DurationUnits.Months, this.DurationValue.Months.ToString(CultureInfo.InvariantCulture));
+				if (!PreviousUnits.Contains(DurationUnits.Months))
+					this.AddUnit(DurationUnits.Months, this.DurationValue.Months.ToString(CultureInfo.InvariantCulture));
+
 				AvaliableUnits.Remove(DurationUnits.Months);
 			}
 
-			if (this.DurationValue.Days != 0 || PreviousUnits.Contains(DurationUnits.Days))
+			if (this.DurationValue.Days != 0)
 			{
-				this.AddUnit(DurationUnits.Days, this.DurationValue.Days.ToString(CultureInfo.InvariantCulture));
+				if (!PreviousUnits.Contains(DurationUnits.Days))
+					this.AddUnit(DurationUnits.Days, this.DurationValue.Days.ToString(CultureInfo.InvariantCulture));
+
 				AvaliableUnits.Remove(DurationUnits.Days);
 			}
 
-			if (this.DurationValue.Hours != 0 || PreviousUnits.Contains(DurationUnits.Hours))
+			if (this.DurationValue.Hours != 0)
 			{
-				this.AddUnit(DurationUnits.Hours, this.DurationValue.Hours.ToString(CultureInfo.InvariantCulture));
+				if (!PreviousUnits.Contains(DurationUnits.Hours))
+					this.AddUnit(DurationUnits.Hours, this.DurationValue.Hours.ToString(CultureInfo.InvariantCulture));
+
 				AvaliableUnits.Remove(DurationUnits.Hours);
 			}
 
-			if (this.DurationValue.Minutes != 0 || PreviousUnits.Contains(DurationUnits.Minutes))
+			if (this.DurationValue.Minutes != 0)
 			{
-				this.AddUnit(DurationUnits.Minutes, this.DurationValue.Minutes.ToString(CultureInfo.InvariantCulture));
+				if (!PreviousUnits.Contains(DurationUnits.Minutes))
+					this.AddUnit(DurationUnits.Minutes, this.DurationValue.Minutes.ToString(CultureInfo.InvariantCulture));
+
 				AvaliableUnits.Remove(DurationUnits.Minutes);
 			}
 
-			if (this.DurationValue.Seconds != 0 || PreviousUnits.Contains(DurationUnits.Seconds))
+			if (this.DurationValue.Seconds != 0)
 			{
-				this.AddUnit(DurationUnits.Seconds, this.DurationValue.Seconds.ToString(CultureInfo.InvariantCulture));
+				if (!PreviousUnits.Contains(DurationUnits.Seconds))
+					this.AddUnit(DurationUnits.Seconds, this.DurationValue.Seconds.ToString(CultureInfo.InvariantCulture));
+
 				AvaliableUnits.Remove(DurationUnits.Seconds);
 			}
 
@@ -328,7 +342,7 @@ namespace NeuroAccessMaui.UI.Controls
 
 		void UpdateDuration()
 		{
-			Duration NewDuration = new Duration();
+			Duration NewDuration = new();
 			CultureInfo Culture = CultureInfo.InvariantCulture;
 
 			foreach (CompositeInputView DurationView in this.durationsContainer.Children.Cast<CompositeInputView>())
@@ -338,7 +352,7 @@ namespace NeuroAccessMaui.UI.Controls
 
 				string Data = DurationEntry.EntryData;
 
-				string FilteredText = new string(Data.Where(char.IsDigit).ToArray());
+				string FilteredText = new(Data.Where(char.IsDigit).ToArray());
 				if (Data != FilteredText)
 				{
 					DurationEntry.EntryData = FilteredText;
@@ -348,29 +362,26 @@ namespace NeuroAccessMaui.UI.Controls
 				if (string.IsNullOrEmpty(Data))
 					Data = "0";
 
-				if (UnitLabel.Unit == DurationUnits.Years)
+				switch (UnitLabel.Unit)
 				{
-					NewDuration.Years = int.Parse(Data, Culture);
-				}
-				else if (UnitLabel.Unit == DurationUnits.Months)
-				{
-					NewDuration.Months = int.Parse(Data, Culture);
-				}
-				else if (UnitLabel.Unit == DurationUnits.Days)
-				{
-					NewDuration.Days = int.Parse(Data, Culture);
-				}
-				else if (UnitLabel.Unit == DurationUnits.Hours)
-				{
-					NewDuration.Hours = int.Parse(Data, Culture);
-				}
-				else if (UnitLabel.Unit == DurationUnits.Minutes)
-				{
-					NewDuration.Minutes = int.Parse(Data, Culture);
-				}
-				else if (UnitLabel.Unit == DurationUnits.Seconds)
-				{
-					NewDuration.Seconds = int.Parse(Data, Culture);
+					case DurationUnits.Years:
+						NewDuration.Years = int.Parse(Data, Culture);
+						break;
+					case DurationUnits.Months:
+						NewDuration.Months = int.Parse(Data, Culture);
+						break;
+					case DurationUnits.Days:
+						NewDuration.Days = int.Parse(Data, Culture);
+						break;
+					case DurationUnits.Hours:
+						NewDuration.Hours = int.Parse(Data, Culture);
+						break;
+					case DurationUnits.Minutes:
+						NewDuration.Minutes = int.Parse(Data, Culture);
+						break;
+					case DurationUnits.Seconds:
+						NewDuration.Seconds = int.Parse(Data, Culture);
+						break;
 				}
 			}
 
@@ -386,7 +397,7 @@ namespace NeuroAccessMaui.UI.Controls
 		async void AddDurationButton_Clicked()
 		{
 			if (this.durationUnits.Count == 0)
-				return; // No unit selected
+				return; // No unit available
 
 			DurationUnits? DurationUnit = await this.OpenDurationPopup();
 
@@ -477,10 +488,8 @@ namespace NeuroAccessMaui.UI.Controls
 			if (bindable is CompositeDurationPicker Picker)
 			{
 				List<DurationUnits?> PreviousUnits = [.. Picker.durationsContainer.Children
-				.OfType<CompositeInputView>()
-				.Select(x => (x.LeftView as DurationLabel)?.Unit)];
-
-				Picker.durationsContainer.Clear();
+					.OfType<CompositeInputView>()
+					.Select(x => (x.LeftView as DurationLabel)?.Unit)];
 
 				Picker.PopulateDurationsContainer(PreviousUnits);
 			}

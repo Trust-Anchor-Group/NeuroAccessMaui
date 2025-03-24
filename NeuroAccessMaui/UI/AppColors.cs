@@ -61,6 +61,7 @@
 		private static Color? blueLight;
 		private static Color? blueDark;
 		private static Color? strokeGrey;
+		private static Color? offBlack;
 
 		/// <summary>
 		/// Primary foreground color.

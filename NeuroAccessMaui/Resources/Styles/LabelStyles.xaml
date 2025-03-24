@@ -121,7 +121,10 @@
 
 	<Style x:Key="BoldItemTitleLabel" ApplyToDerivedTypes="False" BasedOn="{StaticResource RegularItemTitleLabel}" TargetType="Label">
 		<Setter Property="FontFamily" Value="SpaceGroteskBold" />
+	</Style>
 
+	<Style x:Key="DurationLabel" ApplyToDerivedTypes="False" BasedOn="{StaticResource RegularItemTitleLabel}" TargetType="Label">
+		<Setter Property="FontFamily" Value="SpaceGroteskSemiBold"/>
 	</Style>
 
 	<Style x:Key="RequiredFieldMarker" ApplyToDerivedTypes="False" TargetType="Label">
