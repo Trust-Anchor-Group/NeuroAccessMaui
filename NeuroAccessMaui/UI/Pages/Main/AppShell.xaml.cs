@@ -118,6 +118,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			Routing.RegisterRoute(nameof(ViewThingPage), typeof(ViewThingPage));
 
 			// Wallet
+			Routing.RegisterRoute(nameof(WalletPage), typeof(WalletPage));
 			Routing.RegisterRoute(nameof(AccountEventPage), typeof(AccountEventPage));
 			Routing.RegisterRoute(nameof(BuyEDalerPage), typeof(BuyEDalerPage));
 			Routing.RegisterRoute(nameof(EDalerReceivedPage), typeof(EDalerReceivedPage));

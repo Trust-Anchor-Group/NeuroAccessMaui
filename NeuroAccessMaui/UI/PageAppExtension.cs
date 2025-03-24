@@ -152,6 +152,7 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<MachineVariablesPage, MachineVariablesViewModel>();
 			Builder.Services.AddTransient<MyTokensPage, MyTokensViewModel>();
 			Builder.Services.AddTransient<MyEDalerWalletPage, MyWalletViewModel>();
+			Builder.Services.AddTransient<WalletPage, WalletViewModel>();
 			Builder.Services.AddTransient<MyTokenWalletPage, MyWalletViewModel>();
 			Builder.Services.AddTransient<PaymentPage, EDalerUriViewModel>();
 			Builder.Services.AddTransient<PaymentAcceptancePage, EDalerUriViewModel>();

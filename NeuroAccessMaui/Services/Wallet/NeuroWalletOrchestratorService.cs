@@ -103,13 +103,7 @@ namespace NeuroAccessMaui.Services.Wallet
 		{
 			try
 			{
-				Balance Balance = await ServiceRef.XmppService.GetEDalerBalance();
-				(decimal PendingAmount, string PendingCurrency, PendingPayment[] PendingPayments) = await ServiceRef.XmppService.GetPendingEDalerPayments();
-				(AccountEvent[] Events, bool More) = await ServiceRef.XmppService.GetEDalerAccountEvents(Constants.BatchSizes.AccountEventBatchSize);
-
-				WalletNavigationArgs e = new(Balance, PendingAmount, PendingCurrency, PendingPayments, Events, More);
-
-				await ServiceRef.UiService.GoToAsync(nameof(MyEDalerWalletPage), e);
+				await ServiceRef.UiService.GoToAsync(nameof(WalletPage));
 			}
 			catch (Exception ex)
 			{
