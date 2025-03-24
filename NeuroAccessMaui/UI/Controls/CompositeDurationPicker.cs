@@ -1,24 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.Input;
-using HarfBuzzSharp;
-using Microsoft.Maui.Controls.Shapes;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Popups.Duration;
-using Waher.Content;
-using Waher.Script.Constants;
-using Waher.Script.Content.Functions;
-using Waher.Script.Functions.Runtime;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using Duration = Waher.Content.Duration;
 using Path = Microsoft.Maui.Controls.Shapes.Path;
 
@@ -42,6 +28,9 @@ namespace NeuroAccessMaui.UI.Controls
 		#endregion
 
 		#region Constructors
+		/// <summary>
+		/// Constructor for the CompositeDurationPicker. Initializes the layout and the components needed to add additional duration units.
+		/// </summary>
 		public CompositeDurationPicker()
 		{
 			Grid MainGrid = new()
@@ -308,6 +297,9 @@ namespace NeuroAccessMaui.UI.Controls
                MainThread.BeginInvokeOnMainThread(() => this.durationsContainer.Add(Entry));
       }
 
+		/// <summary>
+		/// Delete a duration entry from the durations container and add the unit back to the available units
+		/// </summary>
 		private void DeleteUnit(DurationUnits Unit, CompositeEntry DurationView)
 		{
 			if (!this.durationUnits.Contains(Unit)) // Prevent duplicates from being added
@@ -332,6 +324,9 @@ namespace NeuroAccessMaui.UI.Controls
 			return Result;
 		}
 
+		/// <summary>
+		/// Update the duration value based on the entries in the durations container
+		/// </summary>
 		void UpdateDuration()
 		{
 			Duration NewDuration = new();
@@ -385,6 +380,9 @@ namespace NeuroAccessMaui.UI.Controls
 
 		#region Events
 
+		/// <summary>
+		/// Event handler for the Add Duration Button.
+		/// </summary>
 		async void AddDurationButton_Clicked()
 		{
 			if (this.durationUnits.Count == 0)
@@ -477,12 +475,21 @@ namespace NeuroAccessMaui.UI.Controls
 		public static readonly BindableProperty IsValidProperty =
 			 BindableProperty.Create(nameof(IsValid), typeof(bool), typeof(CompositeDurationPicker), true);
 
+		/// <summary>
+		/// Gets or sets the validity of the DurationPicker
+		/// </summary>
 		public bool IsValid
 		{
 			get => (bool)this.GetValue(IsValidProperty);
 			set => this.SetValue(IsValidProperty, value);
 		}
 
+		/// <summary>
+		/// Event handler for the DurationValue property changed event.
+		/// </summary>
+		/// <param name="bindable"></param>
+		/// <param name="oldValue"></param>
+		/// <param name="newValue"></param>
 		static void OnDurationChanged(BindableObject bindable, object oldValue, object newValue)
 		{
 			if (bindable is CompositeDurationPicker Picker)
@@ -507,6 +514,10 @@ namespace NeuroAccessMaui.UI.Controls
 	}
 
 	#region Helper classes
+
+	/// <summary>
+	/// Duration units enumeration
+	/// </summary>
 	public enum DurationUnits
 	{
 		Years,
@@ -517,6 +528,9 @@ namespace NeuroAccessMaui.UI.Controls
 		Seconds,
 	}
 
+	/// <summary>
+	/// Custom class to be able to access the unit used in and entry
+	/// </summary>
 	class DurationLabel : Label, IComparable
 	{
 		private DurationUnits unit;
