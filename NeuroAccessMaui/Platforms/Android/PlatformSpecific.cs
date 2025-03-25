@@ -611,7 +611,7 @@ namespace NeuroAccessMaui.Services
 			}
 			catch (Exception ex)
 			{
-				Log.Exception(ex);
+				ServiceRef.LogService.LogException(ex);
 			}
 
 			TokenInformation TokenInformation = new()
@@ -748,6 +748,12 @@ namespace NeuroAccessMaui.Services
 				return;
 			}
 
+			if (Data.TryGetValue("fromJid", out string? FromJid) && !string.IsNullOrEmpty(FromJid))
+			{
+				Intent.SetData(Android.Net.Uri.Parse(Constants.UriSchemes.Xmpp + ":" + FromJid));
+				Intent.SetAction(Intent.ActionView);
+			}
+
 			NotificationCompat.Builder Builder = new NotificationCompat.Builder(Context, Constants.PushChannels.Messages)
 				 .SetSmallIcon(ResIdentifier)
 				 .SetContentTitle(Title)
@@ -763,6 +769,7 @@ namespace NeuroAccessMaui.Services
 		{
 			Context Context = Application.Context;
 			Intent Intent = new Intent(Context, typeof(MainActivity));
+
 			Intent.AddFlags(ActivityFlags.ClearTop);
 			foreach (string Key in Data.Keys)
 			{
@@ -773,6 +780,8 @@ namespace NeuroAccessMaui.Services
 			string ContentText = MessageBody;
 			if (Data.TryGetValue("legalId", out string? LegalId) && !string.IsNullOrEmpty(LegalId))
 			{
+				Intent.SetData(Android.Net.Uri.Parse(Constants.UriSchemes.IotId + ":" + LegalId));
+				Intent.SetAction(Intent.ActionView);
 				ContentText += System.Environment.NewLine + $"({LegalId})";
 			}
 
@@ -813,7 +822,6 @@ namespace NeuroAccessMaui.Services
 			string ContentText = $"{(string.IsNullOrEmpty(RosterName) ? FromJid : RosterName)}: {MessageBody}";
 
 			PendingIntent? PendingIntent = Android.App.PendingIntent.GetActivity(Context, 102, Intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
-
 			int ResIdentifier = Context.Resources?.GetIdentifier("app_icon", "drawable", Context.PackageName) ?? 0;
 			if (ResIdentifier == 0)
 			{
@@ -836,6 +844,7 @@ namespace NeuroAccessMaui.Services
 			Context Context = Application.Context;
 			Intent Intent = new Intent(Context, typeof(MainActivity));
 			Intent.AddFlags(ActivityFlags.ClearTop);
+
 			foreach (string Key in Data.Keys)
 			{
 				Intent.PutExtra(Key, Data[Key]);
