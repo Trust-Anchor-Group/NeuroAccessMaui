@@ -2566,7 +2566,7 @@
     <value>Specify the lifetime of the contract</value> 
   </data>
   <data name="NegateDuration" xml:space="preserve">
-    <value>Negative duration:</value> 
+    <value>Negative duration: </value> 
   </data>
   <data name="AddDuration" xml:space="preserve">
     <value>Add duration</value> 

@@ -249,17 +249,89 @@
 	<DataTemplate x:Key="DurationParameterReadOnlyTemplate"
 					  x:DataType="objectModel:ObservableDurationParameter">
 		<VerticalStackLayout>
-			<Grid RowDefinitions="*,*"
-					ColumnSpacing="{StaticResource SmallSpacing}">
-				<Label Grid.Row="0"
+
+				<Label
 						 Text="{Binding Label}"
 						 Style="{StaticResource ParameterItemTitleLabel}"
 						 HorizontalTextAlignment="Start" />
-				<Label Grid.Row="1"
-						 Text="{Binding DurationValue}"
-						 Style="{StaticResource ParameterItemValueLabel}" />
-			</Grid>
-			<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
+
+				<Label Style="{StaticResource ParameterItemValueLabel}"
+						IsVisible="{Binding DurationValue.Years, Converter={StaticResource IntToBoolConverter}}">
+					<Label.FormattedText>
+						<FormattedString>
+							<Span Text="{l:Localize YearsCapitalized}" />
+							<Span Text=": " />
+							<Span Text="{Binding DurationValue.Years}" />
+						</FormattedString>
+					</Label.FormattedText>
+				</Label>
+
+				<Label Style="{StaticResource ParameterItemValueLabel}"
+						IsVisible="{Binding DurationValue.Months, Converter={StaticResource IntToBoolConverter}}">
+					<Label.FormattedText>
+						<FormattedString>
+							<Span Text="{l:Localize MonthsCapitalized}" />
+							<Span Text=": " />
+							<Span Text="{Binding DurationValue.Months}" />
+						</FormattedString>
+					</Label.FormattedText>
+				</Label>
+
+				<Label Style="{StaticResource ParameterItemValueLabel}"
+						IsVisible="{Binding DurationValue.Days, Converter={StaticResource IntToBoolConverter}}">
+					<Label.FormattedText>
+						<FormattedString>
+							<Span Text="{l:Localize DaysCapitalized}" />
+							<Span Text=": " />
+							<Span Text="{Binding DurationValue.Days}" />
+						</FormattedString>
+					</Label.FormattedText>
+				</Label>
+
+				<Label Style="{StaticResource ParameterItemValueLabel}"
+						IsVisible="{Binding DurationValue.Hours, Converter={StaticResource IntToBoolConverter}}">
+					<Label.FormattedText>
+						<FormattedString>
+							<Span Text="{l:Localize HoursCapitalized}" />
+							<Span Text=": " />
+							<Span Text="{Binding DurationValue.Hours}" />
+						</FormattedString>
+					</Label.FormattedText>
+				</Label>
+
+				<Label Style="{StaticResource ParameterItemValueLabel}"
+						IsVisible="{Binding DurationValue.Minutes, Converter={StaticResource IntToBoolConverter}}">
+					<Label.FormattedText>
+						<FormattedString>
+							<Span Text="{l:Localize MinutesCapitalized}" />
+							<Span Text=": " />
+							<Span Text="{Binding DurationValue.Minutes}" />
+						</FormattedString>
+					</Label.FormattedText>
+				</Label>
+
+				<Label Style="{StaticResource ParameterItemValueLabel}"
+						 IsVisible="{Binding DurationValue.Seconds, Converter={StaticResource IntToBoolConverter}}">
+					<Label.FormattedText>
+						<FormattedString>
+							<Span Text="{l:Localize SecondsCapitalized}" />
+							<Span Text=": " />
+							<Span Text="{Binding DurationValue.Seconds}" />
+						</FormattedString>
+					</Label.FormattedText>
+				</Label>
+
+				<Label Style="{StaticResource ParameterItemValueLabel}"
+						IsVisible="{Binding DurationValue.Negation}">
+					<Label.FormattedText>
+						<FormattedString>
+							<Span Text="{l:Localize NegateDuration}" />
+							<Span Text="{l:Localize Yes}"/>
+						</FormattedString>
+					</Label.FormattedText>
+				</Label>
+
+				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
 																IsEncrypted="{Binding IsEncrypted}"
 																IsVisible="{Binding IsProtected}" />
 		</VerticalStackLayout>
