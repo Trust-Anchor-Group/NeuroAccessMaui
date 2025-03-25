@@ -501,10 +501,10 @@ namespace NeuroAccessMaui.Services.Contracts
 		{
 			try
 			{
-				LegalIdentity identity = await ServiceRef.XmppService.GetLegalIdentity(LegalId);
+				LegalIdentity Identity = await ServiceRef.XmppService.GetLegalIdentity(LegalId);
 				MainThread.BeginInvokeOnMainThread(async () =>
 				{
-					await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(identity));
+					await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Identity));
 				});
 			}
 			catch (ForbiddenException)
@@ -515,8 +515,8 @@ namespace NeuroAccessMaui.Services.Contracts
 
 				MainThread.BeginInvokeOnMainThread(async () =>
 				{
-					bool succeeded = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.PetitionIdentity(LegalId, Guid.NewGuid().ToString(), Purpose));
-					if (succeeded)
+					bool Succeeded = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.PetitionIdentity(LegalId, Guid.NewGuid().ToString(), Purpose));
+					if (Succeeded)
 					{
 						await ServiceRef.UiService.DisplayAlert(
 							ServiceRef.Localizer[nameof(AppResources.PetitionSent)],
@@ -527,7 +527,10 @@ namespace NeuroAccessMaui.Services.Contracts
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
-				await ServiceRef.UiService.DisplayException(ex);
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)],
+					ServiceRef.Localizer[nameof(AppResources.PleaseTryAgain)],
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
 			}
 		}
 
