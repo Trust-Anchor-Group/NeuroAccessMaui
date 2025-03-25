@@ -2819,7 +2819,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 					await ServiceRef.TagProfile.SetLegalIdentity(e.Identity, true);
 					await this.LegalIdentityChanged.Raise(this, e);
 
-					if (e.Identity.IsDiscarded() && Shell.Current.CurrentState.Location.OriginalString != Constants.Pages.RegistrationPage)
+					if (e.Identity.IsDiscarded() && !e.Identity.IsPersonal() && !e.Identity.IsOrganizational() && Shell.Current.CurrentState.Location.OriginalString != Constants.Pages.RegistrationPage)
 					{
 						MainThread.BeginInvokeOnMainThread(async () =>
 						{
