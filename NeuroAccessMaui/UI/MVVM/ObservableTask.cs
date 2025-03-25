@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -401,11 +401,11 @@ namespace NeuroAccessMaui.UI.MVVM
 		/// <param name="NotifyCommands">
 		/// Optional RelayCommands that should be notified when the state changes.
 		/// </param>
-		public void Load(Func<TaskContext<TProgress>, Task> TaskFactory, params IRelayCommand[] NotifyCommands)
+		public void Load(Func<TaskContext<TProgress>, Task> Task, params IRelayCommand[] NotifyCommands)
 		{
 			lock (this.syncObject)
 			{
-				this.taskFactory = TaskFactory;
+				this.taskFactory = Task;
 				this.notifyCommands.Clear();
 				if (NotifyCommands.Length > 0)
 					this.notifyCommands.AddRange(NotifyCommands);
@@ -414,6 +414,13 @@ namespace NeuroAccessMaui.UI.MVVM
 			// For initial load, pass false.
 			this.StartNewTask(IsRefresh: false);
 		}
+
+		public void Load(Func<Task> task, params IRelayCommand[] notifyCommands)
+		{
+			// Wrap the parameterless task factory in a lambda that ignores the TaskContext.
+			this.Load(_ => task(), notifyCommands);
+		}
+
 
 		/// <summary>
 		/// Reload the current task
