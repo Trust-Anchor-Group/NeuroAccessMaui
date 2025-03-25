@@ -12,7 +12,7 @@ namespace NeuroAccessMaui.UI.MVVM
 	public enum TaskStatus
 	{
 		Pending,
-		Running,		//Executing, Running
+		Running,    //Executing, Running
 		Succeeded,
 		Failed,
 		Canceled
@@ -75,10 +75,9 @@ namespace NeuroAccessMaui.UI.MVVM
 	/// or that any unintended effects are properly managed.
 	/// </para>
 	/// </remarks>
-	public partial class ObservableTask<TProgress> : ObservableObject, IDisposable
+	public partial class ObservableTask<TProgress> : ObservableObject
 	{
 		private readonly object syncObject = new();
-		private bool disposed = false;
 
 		// Backing field for the latest progress value.
 		private TProgress progress = default!;
@@ -126,7 +125,7 @@ namespace NeuroAccessMaui.UI.MVVM
 		public bool IsCanceled => this.State == TaskStatus.Canceled;
 		public bool IsNotCanceled => this.State != TaskStatus.Canceled;
 		public bool IsRefreshing { get; private set; }
-		
+
 
 
 		/// <summary>
@@ -172,8 +171,9 @@ namespace NeuroAccessMaui.UI.MVVM
 		private void CancelExistingTask()
 		{
 
-			if (this.CancellationTokenSource == null)
+			if (this.CancellationTokenSource is null)
 				return;
+
 			try
 			{
 				if (this.CurrentTask is { IsCompleted: false })
@@ -181,14 +181,9 @@ namespace NeuroAccessMaui.UI.MVVM
 					this.CancellationTokenSource.Cancel();
 				}
 			}
-			catch
+			catch (Exception Ex)
 			{
-				// Ignored.
-			}
-			finally
-			{
-				this.CancellationTokenSource.Dispose();
-				this.CancellationTokenSource = null;
+				ServiceRef.LogService.LogException(Ex);
 			}
 		}
 
@@ -232,10 +227,10 @@ namespace NeuroAccessMaui.UI.MVVM
 					});
 
 					TaskContext<TProgress> Context = new(IsRefresh, this.CancellationTokenSource.Token, ProgressReporter);
+
 					// Start the new task.
-					//TODO: Possibility for deadlock?
 					this.CurrentTask = this.taskFactory.Invoke(Context);
-					this.CurrentWatcher = this.WatchTaskAsync(ThisGeneration, this.CurrentTask);
+					this.CurrentWatcher = this.WatchTaskAsync(ThisGeneration, this.CurrentTask, this.CancellationTokenSource);
 				}
 			}
 			catch (Exception Ex)
@@ -252,7 +247,7 @@ namespace NeuroAccessMaui.UI.MVVM
 		/// <summary>
 		/// Monitors the current task and notifies property changes when it completes.
 		/// </summary>
-		private async Task WatchTaskAsync(int Generation, Task? Current)
+		private async Task WatchTaskAsync(int Generation, Task? Current, CancellationTokenSource Cts)
 		{
 			//TODO: Add logging for Tasks gone rouge
 
@@ -267,14 +262,19 @@ namespace NeuroAccessMaui.UI.MVVM
 					await Current;
 				}
 			}
-			catch(Exception Ex)
+			catch(TaskCanceledException Ex)
+			{
+				//Ignore, normal operation
+			}
+			catch (Exception Ex)
 			{
 				// Exceptions are surfaced via Exception/InnerException/ErrorMessage.
-
 				AggregateException = Ex as AggregateException;
 				InnerException = Ex.InnerException ?? Ex;
 				ErrorMessage = InnerException.Message;
 
+				//Log by default
+				//TODO: Should be using a handler
 				ServiceRef.LogService.LogException(Ex);
 			}
 			finally
@@ -283,6 +283,8 @@ namespace NeuroAccessMaui.UI.MVVM
 				{
 					lock (this.syncObject)
 					{
+						Cts.Dispose();
+
 						if (Generation != this.currentGeneration)
 							return;
 
@@ -302,6 +304,11 @@ namespace NeuroAccessMaui.UI.MVVM
 						this.ErrorMessage = ErrorMessage;
 
 						this.IsRefreshing = false;
+
+						if (this.CancellationTokenSource is not null)
+						{
+							this.CancellationTokenSource = null;
+						}
 					}
 
 					this.NotifyAll();
@@ -421,7 +428,6 @@ namespace NeuroAccessMaui.UI.MVVM
 			this.Load(_ => task(), notifyCommands);
 		}
 
-
 		/// <summary>
 		/// Reload the current task
 		/// This cancels any running task and starts a new one using the stored factory.
@@ -455,7 +461,7 @@ namespace NeuroAccessMaui.UI.MVVM
 		[RelayCommand(CanExecute = nameof(IsNotCanceled))]
 		public void Cancel()
 		{
-			if(this.IsCanceled)
+			if (this.IsCanceled)
 				return;
 			lock (this.syncObject)
 			{
@@ -470,44 +476,10 @@ namespace NeuroAccessMaui.UI.MVVM
 			}
 		}
 
-		/// <summary>
-		/// Disposes the notifier and its resources.
-		/// </summary>
-		public void Dispose()
-		{
-			this.Dispose(true);
-			GC.SuppressFinalize(this);
-		}
+	}
 
-		/// <summary>
-		/// Protected dispose pattern implementation.
-		/// </summary>
-		/// <param name="disposing">True if called from Dispose.</param>
-		protected virtual void Dispose(bool disposing)
-		{
-			if (this.disposed)
-				return;
-
-			if (disposing)
-			{
-				// Dispose managed resources.
-				if (this.CancellationTokenSource is not null)
-				{
-					try
-					{
-						this.CancellationTokenSource.Cancel();
-					}
-					catch
-					{
-						// ignored
-					}
-
-					this.CancellationTokenSource.Dispose();
-				}
-			}
-
-			this.disposed = true;
-		}
+	public partial class ObservableTask : ObservableTask<int>
+	{
 	}
 
 }
