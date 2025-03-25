@@ -54,7 +54,7 @@ namespace NeuroAccessMaui.UI.MVVM
 			// Start the task via the notifier.
 			this.Notifier.Load(ctx => this.taskFactory(ctx), this);
 			Task? Task = this.Notifier.CurrentTask;
-			if (Task != null)
+			if (Task is not null)
 			{
 				// When the task completes, raise CanExecuteChanged (on the UI thread).
 				await Task.ContinueWith(
