@@ -20,7 +20,8 @@
 			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
 
 				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{StaticResource ImageOnlyButton}"
-											 PathData="{x:Static ui:Geometries.BackButtonPath}" />
+											 PathData="{x:Static ui:Geometries.BackButtonPath}"
+											 AutomationId="ViewIdentyGoBackButton" />
 
 				<Label Style="{StaticResource PageTitleLabel}" Text="{l:Localize LegalId}"/>
 
