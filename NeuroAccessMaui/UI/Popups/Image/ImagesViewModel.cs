@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.UI.Photos;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using Waher.Networking.XMPP.Contracts;
 
 namespace NeuroAccessMaui.UI.Popups.Image
@@ -14,15 +15,17 @@ namespace NeuroAccessMaui.UI.Popups.Image
 		private readonly PhotosLoader photosLoader;
 
 
-		public ImagesViewModel()
+		public ImagesViewModel(Attachment[] Attachments)
 		{
-			this.Photos = [];
+			this.Photos = new ObservableCollection<Photo>();
 			this.photosLoader = new PhotosLoader(this.Photos);
+			this.LoadPhotos(Attachments);
 		}
+
 		/// <summary>
 		/// Holds the list of photos to display.
 		/// </summary>
-		public ObservableCollection<Photo> Photos { get; }
+		public ObservableCollection<Photo> Photos { get; set; }
 
 		/// <summary>
 		/// Gets or sets whether a user can swipe to see the photos.
@@ -45,9 +48,10 @@ namespace NeuroAccessMaui.UI.Popups.Image
 			});
 		}
 
-		public override void OnPop()
+		public override Task OnPop()
 		{
 			this.photosLoader.CancelLoadPhotos();
+			return base.OnPop();
 		}
 		/// <summary>
 		/// Cancels

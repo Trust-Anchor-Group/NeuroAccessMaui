@@ -26,7 +26,7 @@
 					</CarouselView.ItemTemplate>
 				</CarouselView>
 				<IndicatorView x:Name="IndicatorView"
-                                   HorizontalOptions="Fill"
+                                   HorizontalOptions="Center"
                                    IndicatorColor="{StaticResource HeadingForeground}"
                                    Padding="0,0,0,0"
                                    BackgroundColor="{StaticResource HeadingBackground}"

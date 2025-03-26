@@ -39,9 +39,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				return;
 
 			ImagesPopup ImagesPopup = new();
-			ImagesViewModel ImagesViewModel = new();
+			ImagesViewModel ImagesViewModel = new(Attachments);
 			ServiceRef.UiService.PushAsync(ImagesPopup, ImagesViewModel);
-			ImagesViewModel.LoadPhotos(Attachments);
+			//imagesViewModel.LoadPhotos(Attachments);
 		}
 	}
 }

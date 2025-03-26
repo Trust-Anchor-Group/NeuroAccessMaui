@@ -3,6 +3,7 @@ using CommunityToolkit.Maui.Markup;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui.Controls.Handlers.Items;
 using Microsoft.Maui.Handlers;
+using Microsoft.Maui.LifecycleEvents;
 using Mopups.Hosting;
 using NeuroAccessMaui.UI;
 using NeuroAccessMaui.Resources.Languages;
@@ -10,6 +11,8 @@ using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
 using ZXing.Net.Maui.Controls;
 using Microsoft.Maui.Platform;
+using SkiaSharp.Views.Maui.Controls.Hosting;
+using SkiaSharp.Views.Maui.Controls;
 #if DEBUG
 using DotNet.Meteor.HotReload.Plugin;
 #endif
@@ -32,6 +35,27 @@ namespace NeuroAccessMaui
 			MauiAppBuilder Builder = MauiApp.CreateBuilder();
 
 			Builder.UseMauiApp<App>();
+
+			Builder.ConfigureLifecycleEvents(lifecycle =>
+			{
+#if ANDROID
+				lifecycle.AddAndroid(android =>
+					android.OnResume(activity =>
+					{
+						// App has resumed on Android
+						App.RaiseAppActivated();
+					}));
+#elif IOS
+				lifecycle.AddiOS(ios =>
+                ios.OnActivated(app =>
+                {
+                    // App has resumed on iOS
+                    App.RaiseAppActivated();
+                }));
+#endif
+			});
+
+			Builder.UseSkiaSharp();
 #if DEBUG
 			Builder.EnableHotReload();
 #endif
@@ -42,9 +66,7 @@ namespace NeuroAccessMaui
 				fonts.AddFont("SpaceGrotesk-SemiBold.ttf", "SpaceGroteskSemiBold");
 				fonts.AddFont("SpaceGrotesk-Medium.ttf", "SpaceGroteskMedium");
 				fonts.AddFont("SpaceGrotesk-Regular.ttf", "SpaceGroteskRegular");
-				//fonts.AddFont("SpaceGrotesk-Light.ttf", "SpaceGroteskLight");
 				fonts.AddFont("NHaasGroteskTXPro-75Bd.ttf", "HaasGroteskBold");
-				//fonts.AddFont("NHaasGroteskTXPro-65Md.ttf", "HaasGroteskMedium");
 				fonts.AddFont("NHaasGroteskTXPro-55Rg.ttf", "HaasGroteskRegular");
 			});
 

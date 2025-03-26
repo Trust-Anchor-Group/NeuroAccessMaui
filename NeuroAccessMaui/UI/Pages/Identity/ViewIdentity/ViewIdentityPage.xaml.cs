@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Popups.Image;
 using Waher.Networking.XMPP.Contracts;
@@ -34,9 +35,9 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 				return;
 
 			ImagesPopup ImagesPopup = new();
-			ImagesViewModel ImagesViewModel = new();
+			ImagesViewModel ImagesViewModel = new(Attachments);
 			ServiceRef.UiService.PushAsync(ImagesPopup, ImagesViewModel);
-			ImagesViewModel.LoadPhotos(Attachments);
+			//imagesViewModel.LoadPhotos(Attachments);
 		}
 	}
 }

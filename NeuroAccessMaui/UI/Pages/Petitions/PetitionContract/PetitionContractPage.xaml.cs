@@ -33,10 +33,10 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 				if (Attachments is null)
 					return;
 
-				ImagesPopup imagesPopup = new();
-				ImagesViewModel imagesViewModel = new();
-				ServiceRef.UiService.PushAsync(imagesPopup, imagesViewModel);
-				imagesViewModel.LoadPhotos(Attachments);
+				ImagesPopup ImagesPopup = new();
+				ImagesViewModel ImagesViewModel = new(Attachments);
+				ServiceRef.UiService.PushAsync(ImagesPopup, ImagesViewModel);
+				//imagesViewModel.LoadPhotos(Attachments);
 			}
 		}
 	}
