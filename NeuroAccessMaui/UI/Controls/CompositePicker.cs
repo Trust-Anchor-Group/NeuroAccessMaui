@@ -2,6 +2,7 @@
 using System.Collections;
 using NeuroAccessMaui.Services.Data;
 using NeuroAccessMaui.UI.Converters;
+using System.ComponentModel;
 
 namespace NeuroAccessMaui.UI.Controls
 {
@@ -140,6 +141,11 @@ namespace NeuroAccessMaui.UI.Controls
 		#region Fields
 
 		private readonly Picker picker;
+
+		public Picker Picker
+		{
+			get => this.picker;
+		}
 
 		#endregion
 
