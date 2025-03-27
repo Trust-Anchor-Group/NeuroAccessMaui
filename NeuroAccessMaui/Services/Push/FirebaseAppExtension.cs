@@ -31,8 +31,6 @@ namespace NeuroAccessMaui.Services.Push
 			{
 #if IOS
             events.AddiOS(iOS => iOS.WillFinishLaunching((_,_) => {
-               	CrossFirebase.Initialize();
-				FirebaseCloudMessagingImplementation.Initialize();
                	return false;
             }));
 #elif ANDROID
