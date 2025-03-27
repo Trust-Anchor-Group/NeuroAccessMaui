@@ -40,17 +40,17 @@
 		<Copyright>Copyright © Trust Anchor Group 2018-2024. All rights reserved.</Copyright>
 		<PackageProjectUrl></PackageProjectUrl>
 		<RepositoryUrl>https://github.com/Trust-Anchor-Group/NeuroAccessMaui</RepositoryUrl>
-
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios'">
 		<ProvisioningType>manual</ProvisioningType>
-		<CodesignKey>Apple Development: Maximiliam Berggren (6C6VB862B9)</CodesignKey>
-		<CodesignProvision>Neuro-Access Development Profile</CodesignProvision>
+		<CodesignKey>iPhone Developer: Maximiliam Berggren (6C6VB862B9)</CodesignKey>
+		<CodesignProvision>Maximiliam Dev</CodesignProvision>
 		<PublishTrimmed>True</PublishTrimmed>
 		<UseInterpreter>True</UseInterpreter>
 		<MtouchLink>SdkOnly</MtouchLink>
 		<NoSymbolStrip>True</NoSymbolStrip>
+		<MtouchExtraArgs>--optimize:-static-block-to-delegate-lookup</MtouchExtraArgs>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
@@ -340,7 +340,6 @@
 		<PackageReference Include="Waher.Security.JWT" Version="1.5.0" />
 		<PackageReference Include="ZXing.Net.Maui.Controls" Version="0.4.0" />
 	</ItemGroup>
-
 	<ItemGroup>
 		<!-- <Compile Update="Resources\Languages\AppResources.Designer.cs">
 			<DesignTime>True</DesignTime>
