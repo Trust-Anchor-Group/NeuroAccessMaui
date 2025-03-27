@@ -28,13 +28,6 @@ namespace NeuroAccessMaui
 	{
 		private static NfcAdapter? nfcAdapter = null;
 
-		protected override void OnCreate(Bundle? savedInstanceState)
-		{
-			base.OnCreate(savedInstanceState);
-
-			this.CreateNotificationChannelsIfNeeded();
-		}
-
 		private void CreateNotificationChannelsIfNeeded()
 		{
 			if (Build.VERSION.SdkInt >= BuildVersionCodes.O && OperatingSystem.IsAndroidVersionAtLeast(26))
@@ -85,11 +78,13 @@ namespace NeuroAccessMaui
 
 		}
 
-		protected override async void OnPostCreate(Bundle? savedInstanceState)
+		protected override async void OnCreate(Bundle? savedInstanceState)
 		{
 			try
 			{
-				base.OnPostCreate(savedInstanceState);
+				base.OnCreate(savedInstanceState);
+
+				this.CreateNotificationChannelsIfNeeded();
 				nfcAdapter = NfcAdapter.GetDefaultAdapter(this);
 				await this.HandleIntent(this.Intent);
 			}
@@ -170,7 +165,7 @@ namespace NeuroAccessMaui
 				{
 					Tag? Tag = null;
 					if (OperatingSystem.IsAndroidVersionAtLeast(33))
-						Tag = intent.GetParcelableExtra(NfcAdapter.ExtraTag, Tag.Class) as Tag;
+						Tag = intent.GetParcelableExtra(NfcAdapter.ExtraTag, Java.Lang.Class.FromType(typeof(Tag))) as Tag;
 					else
 						Tag = intent.GetParcelableExtra(NfcAdapter.ExtraTag) as Tag;
 					if (Tag is null)
