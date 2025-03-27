@@ -11,6 +11,7 @@ using NeuroAccessMaui.Services.AttachmentCache;
 using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Crypto;
 using NeuroAccessMaui.Services.EventLog;
+using NeuroAccessMaui.Services.Intents;
 using NeuroAccessMaui.Services.Localization;
 using NeuroAccessMaui.Services.Network;
 using NeuroAccessMaui.Services.Nfc;
@@ -212,7 +213,7 @@ namespace NeuroAccessMaui
 				this.InitializeComponent();
 				AppTheme? CurrentTheme = ServiceRef.TagProfile.Theme;
 				ServiceRef.TagProfile.SetTheme(CurrentTheme ?? AppTheme.Light);
-
+/*
 				try
 				{
 					this.MainPage = ServiceHelper.GetService<AppShell>();
@@ -221,7 +222,14 @@ namespace NeuroAccessMaui
 				{
 					this.HandleStartupException(Ex);
 				}
+*/
 			}
+		}
+		protected override Window CreateWindow(IActivationState? activationState)
+		{
+			if(this.Windows.Any())
+				return this.Windows[0];
+			return new Window(ServiceHelper.GetService<AppShell>());
 		}
 
 		#endregion
