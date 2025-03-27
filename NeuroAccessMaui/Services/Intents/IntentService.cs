@@ -7,8 +7,24 @@ using Waher.Runtime.Inventory;
 namespace NeuroAccessMaui.Services.Intents
 {
 	/// <summary>
-	/// A service that handles application intents by queuing them and processing them when the application is ready.
-	/// This implementation is designed to work across both Android and iOS.
+	/// The <c>IntentService</c> class is responsible for handling and processing application intents in a cross‑platform manner.
+	/// <para>
+	/// An "intent" is a message or signal that informs the application that a certain event has occurred, and that specific action should be taken.
+	/// For example, an intent may indicate that the application should open a URL (for deep linking) or that an NFC tag has been detected.
+	/// In mobile development, intents are used to decouple platform‑specific event detection (e.g., Android's <c>MainActivity</c> or iOS's <c>AppDelegate</c>)
+	/// from the shared business logic that processes these events.
+	/// </para>
+	/// <para>
+	/// This service queues incoming intents until the application is fully initialized and ready to process them.
+	/// It supports asynchronous processing, allowing the application to handle events such as deep links, NFC tag detections,
+	/// or other custom actions in a unified and decoupled manner.
+	/// </para>
+	/// <para>
+	/// Platform‑specific code should create an <c>AppIntent</c> instance with an appropriate action, data, and/or payload,
+	/// and then call <see cref="QueueIntent(AppIntent)"/> to add the intent to the queue.
+	/// Once the application is ready (for example, during startup in the shared <c>App</c> class), 
+	/// <see cref="ProcessQueuedIntentsAsync"/> should be called to process all queued intents.
+	/// </para>
 	/// </summary>
 	[Singleton]
 	public class IntentService : IIntentService
