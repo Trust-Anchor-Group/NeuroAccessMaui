@@ -341,6 +341,7 @@ namespace NeuroAccessMaui
 			Types.InstantiateDefault<IContractOrchestratorService>(false);
 			Types.InstantiateDefault<INfcService>(false);
 			Types.InstantiateDefault<INotificationService>(false);
+			Types.InstantiateDefault<IIntentService>(false);
 
 			defaultInstantiatedSource.TrySetResult(true);
 
