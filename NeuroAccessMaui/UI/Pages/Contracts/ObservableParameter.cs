@@ -36,9 +36,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				string UntrimmedDescription = await contract.ToPlainText(this.Parameter.Descriptions, contract.DeviceLanguage());
 				this.Description = UntrimmedDescription.Trim();
 			}
-			catch (Exception e)
+			catch (Exception E)
 			{
-				ServiceRef.LogService.LogException(e);
+				ServiceRef.LogService.LogException(E);
 			}
 		}
 
@@ -50,23 +50,23 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// <returns></returns>
 		public static async Task<ObservableParameter> CreateAsync(Parameter parameter, Contract contract)
 		{
-			ObservableParameter parameterInfo = parameter switch
+			ObservableParameter ParameterInfo = parameter switch
 			{
-				BooleanParameter booleanParameter => new ObservableBooleanParameter(booleanParameter),
-				DateParameter dateParameter => new ObservableDateParameter(dateParameter),
-				DateTimeParameter dateTimeParameter => new ObservableDateTimeParameter(dateTimeParameter),
-				NumericalParameter numericalParameter => new ObservableNumericalParameter(numericalParameter),
-				StringParameter stringParameter => new ObservableStringParameter(stringParameter),
-				TimeParameter timeParameter => new ObservableTimeParameter(timeParameter),
-				DurationParameter durationParameter => new ObservableDurationParameter(durationParameter),
-				RoleParameter roleParameter => new ObservableRoleParameter(roleParameter),
-				CalcParameter calcParameter => new ObservableCalcParameter(calcParameter),
-				ContractReferenceParameter contractReferenceParameter => new ObservableContractReferenceParameter(contractReferenceParameter),
+				BooleanParameter BooleanParameter => new ObservableBooleanParameter(BooleanParameter),
+				DateParameter DateParameter => new ObservableDateParameter(DateParameter),
+				DateTimeParameter DateTimeParameter => new ObservableDateTimeParameter(DateTimeParameter),
+				NumericalParameter NumericalParameter => new ObservableNumericalParameter(NumericalParameter),
+				StringParameter StringParameter => new ObservableStringParameter(StringParameter),
+				TimeParameter TimeParameter => new ObservableTimeParameter(TimeParameter),
+				DurationParameter DurationParameter => new ObservableDurationParameter(DurationParameter),
+				RoleParameter RoleParameter => new ObservableRoleParameter(RoleParameter),
+				CalcParameter CalcParameter => new ObservableCalcParameter(CalcParameter),
+				ContractReferenceParameter ContractReferenceParameter => new ObservableContractReferenceParameter(ContractReferenceParameter),
 				_ => new ObservableParameter(parameter)
 			};
 
-			await parameterInfo.InitializeAsync(contract);
-			return parameterInfo;
+			await ParameterInfo.InitializeAsync(contract);
+			return ParameterInfo;
 		}
 		#endregion
 
@@ -153,9 +153,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 					if (value is not null)
 						this.Parameter.SetValue(value);
 				}
-				catch (Exception e)
+				catch (Exception E)
 				{
-					ServiceRef.LogService.LogException(e);
+					ServiceRef.LogService.LogException(E);
 				}
 
 				this.SetProperty(ref this.@value, value);
@@ -226,7 +226,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 	{
 		public ObservableNumericalParameter(NumericalParameter parameter) : base(parameter)
 		{
-			this.Value = parameter.ObjectValue is decimal decimalValue ? decimalValue : null;
+			this.Value = parameter.ObjectValue is decimal DecimalValue ? DecimalValue : null;
 		}
 
 		public decimal? DecimalValue
@@ -254,7 +254,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 	{
 		public ObservableTimeParameter(TimeParameter parameter) : base(parameter)
 		{
-			this.Value = parameter.ObjectValue is TimeSpan timeSpan ? timeSpan : TimeSpan.Zero;
+			this.Value = parameter.ObjectValue is TimeSpan TimeSpan ? TimeSpan : TimeSpan.Zero;
 		}
 
 		public TimeSpan TimeSpanValue
@@ -268,7 +268,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 	{
 		public ObservableDurationParameter(DurationParameter parameter) : base(parameter)
 		{
-			this.Value = parameter.ObjectValue is Duration duration ? duration : Duration.Zero;
+			this.Value = parameter.ObjectValue is Duration Duration ? Duration : Duration.Zero;
 		}
 
 		public string StringValue
@@ -276,8 +276,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			get => this.Value?.ToString() ?? string.Empty;
 			set
 			{
-				if (Duration.TryParse(value, out Duration duration))
-					this.Value = duration;
+				if (Duration.TryParse(value, out Duration DurationValue))
+					this.Value = DurationValue;
 				else
 					this.Value = null;
 			}
@@ -288,8 +288,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			get => this.Value as Duration? ?? Duration.Zero;
 			set
 			{
-				if (Duration.TryParse(value.ToString(), out Duration duration))
-					this.Value = duration;
+				if (Duration.TryParse(value.ToString(), out Duration DurationValue))
+					this.Value = DurationValue;
 				else
 					this.Value = null;
 
@@ -331,16 +331,16 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				if (this.Value is null)
 					this.Value = this.Parameter.StringValue;
 
-				CultureInfo culture = CultureInfo.CurrentCulture;
+				CultureInfo Culture = CultureInfo.CurrentCulture;
 
 				Console.WriteLine(this.Value.GetType().Name);
 
 				return this.Value switch
 				{
-					decimal decimalValue => decimalValue.ToString("N", culture), // Number format with localization
-					DateTime dateTimeValue => dateTimeValue.ToString("G", culture), // Localized date format
-					TimeSpan timeSpanValue => timeSpanValue.ToString(@"hh\:mm\:ss", culture), // Time format
-					string stringValue => string.IsNullOrEmpty(stringValue) ? "-" : stringValue,
+					decimal DecimalValue => DecimalValue.ToString("N", Culture), // Number format with localization
+					DateTime DateTimeValue => DateTimeValue.ToString("G", Culture), // Localized date format
+					TimeSpan TimeSpanValue => TimeSpanValue.ToString(@"hh\:mm\:ss", Culture), // Time format
+					string StringValue => string.IsNullOrEmpty(StringValue) ? "-" : StringValue,
 					_ => this.Value.ToString() ?? string.Empty // Fallback for unknown types
 				};
 			}
@@ -352,8 +352,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		public ObservableDateTimeParameter(DateTimeParameter parameter) : base(parameter)
 		{
 			// Extract initial value from parameter
-			if (parameter.ObjectValue is DateTime dt)
-				this.Value = dt;
+			if (parameter.ObjectValue is DateTime Dt)
+				this.Value = Dt;
 			else
 				this.Value = parameter.Min;  // or DateTime.MinValue as a fallback
 		}
@@ -378,8 +378,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			{
 				if (value.HasValue)
 				{
-					DateTime current = this.DateTimeValue ?? DateTime.MinValue;
-					this.DateTimeValue = new DateTime(value.Value.Year, value.Value.Month, value.Value.Day, current.Hour, current.Minute, current.Second);
+					DateTime Current = this.DateTimeValue ?? DateTime.MinValue;
+					this.DateTimeValue = new DateTime(value.Value.Year, value.Value.Month, value.Value.Day, Current.Hour, Current.Minute, Current.Second);
 				}
 				else
 				{
@@ -396,8 +396,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			get => this.DateTimeValue?.TimeOfDay ?? TimeSpan.Zero;
 			set
 			{
-				DateTime current = this.DateTimeValue ?? DateTime.MinValue;
-				this.DateTimeValue = current.Date + value;
+				DateTime Current = this.DateTimeValue ?? DateTime.MinValue;
+				this.DateTimeValue = Current.Date + value;
 			}
 		}
 	}
@@ -420,21 +420,21 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		{
 			try
 			{
-				TaskCompletionSource<Contract?> taskCompletionSource = new TaskCompletionSource<Contract?>();
-				MyContractsNavigationArgs args = new MyContractsNavigationArgs(ContractsListMode.Contracts, taskCompletionSource);
-				await ServiceRef.UiService.GoToAsync(nameof(MyContractsPage), args);
-				Contract? contract = await taskCompletionSource.Task;
-				Console.WriteLine("Contract selected: " + contract?.ContractId ?? String.Empty);
+				TaskCompletionSource<Contract?> TaskCompletionSource = new();
+				MyContractsNavigationArgs Args = new MyContractsNavigationArgs(ContractsListMode.Contracts, TaskCompletionSource);
+				await ServiceRef.UiService.GoToAsync(nameof(MyContractsPage), Args);
+				Contract? Contract = await TaskCompletionSource.Task;
+				Console.WriteLine("Contract selected: " + Contract?.ContractId ?? String.Empty);
 
-				this.ContractReferenceValue = contract?.ContractId;
+				MainThread.BeginInvokeOnMainThread(() => {
+					this.ContractReferenceValue = Contract?.ContractId;
+				   this.OnPropertyChanged(nameof(this.ContractReferenceValue));
+				});
 			}
-			catch (Exception e)
+			catch (Exception E)
 			{
-				ServiceRef.LogService.LogException(e);
+				ServiceRef.LogService.LogException(E);
 			}
-
-			// Open a dialog to pick a contract reference
-			// and set the value of the parameter
 		} 
 	}
 
