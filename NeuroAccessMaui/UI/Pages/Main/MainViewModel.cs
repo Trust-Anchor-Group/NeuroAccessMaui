@@ -88,7 +88,22 @@ namespace NeuroAccessMaui.UI.Pages.Main
 
 		public override Task<string> Title => Task.FromResult(ContactInfo.GetFriendlyName(ServiceRef.TagProfile.LegalIdentity));
 
-
+		protected override async Task OnAppearing()
+		{
+			await base.OnAppearing();
+			try
+			{
+				bool Connected = await ServiceRef.XmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect);
+				if (Connected)
+					await ServiceRef.IntentService.ProcessQueuedIntentsAsync();
+				else
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)], ServiceRef.Localizer[nameof(AppResources.NetworkSeemsToBeMissing)]);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
 
 		protected override async Task OnInitialize()
 		{
