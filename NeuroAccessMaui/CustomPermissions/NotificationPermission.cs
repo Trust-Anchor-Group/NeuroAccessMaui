@@ -10,6 +10,7 @@ using Android.App;
 using Android.Content.PM;
 using Android.OS;
 using AndroidX.Core.Content;
+using NeuroAccessMaui.Services;
 #endif
 
 
@@ -67,7 +68,8 @@ namespace NeuroAccessMaui.CustomPermissions
 			}
 			catch (PackageManager.NameNotFoundException)
 			{
-				throw new PermissionException("Unable to verify that the POST_NOTIFICATIONS permission is declared in the manifest.");
+				ServiceRef.LogService.LogWarning("Unable to verify that the POST_NOTIFICATIONS permission is declared in the manifest.");
+				throw new PermissionException("The Android manifest does not declare the required permission: " + Manifest.Permission.PostNotifications);
 			}
 			catch (Exception)
 			{
@@ -85,7 +87,7 @@ namespace NeuroAccessMaui.CustomPermissions
             (bool Granted, NSError Error) = await UNUserNotificationCenter.Current.RequestAuthorizationAsync(
                 UNAuthorizationOptions.Alert | UNAuthorizationOptions.Badge | UNAuthorizationOptions.Sound);
 
-            // Optionally, register for remote notifications if needed
+            /* Uncomment to register for remote notifications after requesting permission
             if (Granted)
             {
                 UIApplication.SharedApplication.InvokeOnMainThread(() =>
@@ -93,6 +95,7 @@ namespace NeuroAccessMaui.CustomPermissions
                     UIApplication.SharedApplication.RegisterForRemoteNotifications();
                 });
             }
+				*/
             return Granted ? PermissionStatus.Granted : PermissionStatus.Denied;
 #elif ANDROID
 			if (Build.VERSION.SdkInt >= BuildVersionCodes.Tiramisu && OperatingSystem.IsAndroidVersionAtLeast(33))
