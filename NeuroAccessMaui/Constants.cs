@@ -901,5 +901,27 @@
 			public const string TransferIdCodeSent = "TransferId.CodesSent";
 		}
 
+		/// <summary>
+		/// Contains intent action constants used for inter-component communication within the app.
+		/// </summary>
+		public static class IntentActions
+		{
+			/// <summary>
+			/// Action used to open a URL, typically triggered by deep linking.
+			/// </summary>
+			public const string OpenUrl = "OpenUrl";
+
+			/// <summary>
+			/// Action triggered when an NFC tag is discovered.
+			/// </summary>
+			public const string NfcTagDiscovered = "NfcTagDiscovered";
+
+			/// <summary>
+			/// Action triggered when the app needs to navigate to a specific page.
+			/// </summary>
+			public const string Navigate = "Navigate";
+
+			// Add additional intent actions as needed.
+		}
 	}
 }
