@@ -414,7 +414,6 @@
 		</VerticalStackLayout>
 	</DataTemplate>
 
-
 	<DataTemplate x:Key="ContractReferenceParameterTemplate"
 					  x:DataType="objectModel:ObservableContractReferenceParameter">
 		<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
@@ -424,7 +423,7 @@
 											 VerticalOptions="Center"
 											 LabelText="{Binding Label}"
 											 IsValid="{Binding IsValid}" />
-			<controls:TextButton LabelData="TEST" Command="{Binding PickContractReferenceCommand}" Style="{StaticResource FilledTextButton}" />
+			<controls:TextButton LabelData="{l:Localize SelectContract}" Command="{Binding PickContractReferenceCommand}" Style="{StaticResource FilledTextButton}" />
 			<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
 																IsEncrypted="{Binding IsEncrypted}"
 																IsVisible="{Binding IsProtected}" />

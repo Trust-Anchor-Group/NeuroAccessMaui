@@ -2559,4 +2559,7 @@
   <data name="PleaseTryAgain" xml:space="preserve">
     <value>Please Try Again</value>
   </data>
+  <data name="SelectContract" xml:space="preserve">
+    <value>Select a contract</value>
+  </data>
 </root>
