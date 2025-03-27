@@ -27,8 +27,8 @@ namespace NeuroAccessMaui
 			return app;
 		}
 
-        [Export("application:didReceiveRemoteNotification:fetchCompletionHandler:")]
-		public void DidReceiveRemoteNotification(UIApplication application, NSDictionary userInfo, Action<UIBackgroundFetchResult> completionHandler)
+      [Export("application:didReceiveRemoteNotification:fetchCompletionHandler:")]
+		public static void DidReceiveRemoteNotification(UIApplication application, NSDictionary userInfo, Action<UIBackgroundFetchResult> completionHandler)
 		{
 			Console.WriteLine("Silent data notification received: " + userInfo);
 			
@@ -38,32 +38,17 @@ namespace NeuroAccessMaui
 			completionHandler(UIBackgroundFetchResult.NewData);
 		}
 
-		        [Export("application:didRegisterForRemoteNotificationsWithDeviceToken:")]
-        public void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)
-        {
-			// Convert deviceToken to a clean string if needed
-			string Token = ExtractToken(deviceToken);
-            Console.WriteLine("APNs token: " + Token);
-				Messaging.SharedInstance.ApnsToken = deviceToken;
-            // You can now send the token to your server or process it as needed.
-        }
-
-        string ExtractToken(NSData deviceToken)
-        {
-            if (deviceToken == null || deviceToken.Length == 0)
-                return string.Empty;
-			byte[] Bytes = new byte[deviceToken.Length];
-            System.Runtime.InteropServices.Marshal.Copy(deviceToken.Bytes, Bytes, 0, (int)deviceToken.Length);
-            return BitConverter.ToString(Bytes).Replace("-", "");
-        }
+		[Export("application:didRegisterForRemoteNotificationsWithDeviceToken:")]
+      public static void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)
+      {
+			Messaging.SharedInstance.ApnsToken = deviceToken;
+      }
 
 		public override bool WillFinishLaunching(UIApplication app, NSDictionary options)
 		{
-            Firebase.Core.App.Configure();
+         Firebase.Core.App.Configure();
 			
-			// Assign your custom notification delegate.
 			UNUserNotificationCenter.Current.Delegate = this.notificationDelegate;
-			
 			UIApplication.SharedApplication.RegisterForRemoteNotifications();
 			
 			return base.WillFinishLaunching(app, options);
@@ -126,21 +111,21 @@ namespace NeuroAccessMaui
 			if (GetKeyWindow() is null)
 				return;
 
-			UIWindow? window = null;
+			UIWindow? Window = null;
 			if (UIDevice.CurrentDevice.CheckSystemVersion(13, 0))
 			{
-				window = UIApplication.SharedApplication.ConnectedScenes
+				Window = UIApplication.SharedApplication.ConnectedScenes
 					 .OfType<UIWindowScene>()
 					 .SelectMany(s => s.Windows)
 					 .FirstOrDefault();
 			}
 			else
-				window = UIApplication.SharedApplication.Windows.FirstOrDefault();
+				Window = UIApplication.SharedApplication.Windows.FirstOrDefault();
 
-			if (window is null)
+			if (Window is null)
 				return;
-			if (!window!.IsKeyWindow)
-				window!.MakeKeyWindow();
+			if (!Window!.IsKeyWindow)
+				Window!.MakeKeyWindow();
 
 		}
 
@@ -167,12 +152,12 @@ namespace NeuroAccessMaui
 		{
 			Microsoft.Maui.Handlers.RadioButtonHandler.Mapper.AppendToMapping("TemplateWorkaround", (h, v) =>
 			{
-				if (h.PlatformView.CrossPlatformLayout is RadioButton radioButton)
+				if (h.PlatformView.CrossPlatformLayout is RadioButton RadioButton)
 				{
-					radioButton.IsEnabled = false;
-					radioButton.ControlTemplate = RadioButton.DefaultTemplate;
-					radioButton.IsEnabled = true;
-					radioButton.ControlTemplate = AppStyles.RadioButtonTemplate;
+					RadioButton.IsEnabled = false;
+					RadioButton.ControlTemplate = RadioButton.DefaultTemplate;
+					RadioButton.IsEnabled = true;
+					RadioButton.ControlTemplate = AppStyles.RadioButtonTemplate;
 				}
 			});
 		}
