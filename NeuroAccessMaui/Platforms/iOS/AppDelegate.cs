@@ -1,8 +1,11 @@
+using Firebase.CloudMessaging;
 using Foundation;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Intents;
 using NeuroAccessMaui.UI;
+using Plugin.Firebase.Core.Platforms.iOS;
 using UIKit;
+using UserNotifications;
 
 
 namespace NeuroAccessMaui
@@ -10,6 +13,7 @@ namespace NeuroAccessMaui
 	[Register("AppDelegate")]
 	public class AppDelegate : MauiUIApplicationDelegate
 	{
+		private readonly NotificationDelegate notificationDelegate = new NotificationDelegate();
 
 		protected override MauiApp CreateMauiApp()
 		{
@@ -21,6 +25,48 @@ namespace NeuroAccessMaui
 			RadioButtonTemplateWorkaround();
 
 			return app;
+		}
+
+        [Export("application:didReceiveRemoteNotification:fetchCompletionHandler:")]
+		public void DidReceiveRemoteNotification(UIApplication application, NSDictionary userInfo, Action<UIBackgroundFetchResult> completionHandler)
+		{
+			Console.WriteLine("Silent data notification received: " + userInfo);
+			
+			// Forward the payload to a service or helper if you prefer to centralize handling.
+			NotificationDelegate.ProccessSilentNotification(userInfo);
+
+			completionHandler(UIBackgroundFetchResult.NewData);
+		}
+
+		        [Export("application:didRegisterForRemoteNotificationsWithDeviceToken:")]
+        public void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)
+        {
+			// Convert deviceToken to a clean string if needed
+			string Token = ExtractToken(deviceToken);
+            Console.WriteLine("APNs token: " + Token);
+				Messaging.SharedInstance.ApnsToken = deviceToken;
+            // You can now send the token to your server or process it as needed.
+        }
+
+        string ExtractToken(NSData deviceToken)
+        {
+            if (deviceToken == null || deviceToken.Length == 0)
+                return string.Empty;
+			byte[] Bytes = new byte[deviceToken.Length];
+            System.Runtime.InteropServices.Marshal.Copy(deviceToken.Bytes, Bytes, 0, (int)deviceToken.Length);
+            return BitConverter.ToString(Bytes).Replace("-", "");
+        }
+
+		public override bool WillFinishLaunching(UIApplication app, NSDictionary options)
+		{
+            Firebase.Core.App.Configure();
+			
+			// Assign your custom notification delegate.
+			UNUserNotificationCenter.Current.Delegate = this.notificationDelegate;
+			
+			UIApplication.SharedApplication.RegisterForRemoteNotifications();
+			
+			return base.WillFinishLaunching(app, options);
 		}
 
 		/// <summary>
@@ -130,6 +176,8 @@ namespace NeuroAccessMaui
 				}
 			});
 		}
+
+		
 
 		/*
 		Not needed anymore as we have a new way to handle keyboard events in PlatformSpecific.cs, keeping this until new implementation has been tested
