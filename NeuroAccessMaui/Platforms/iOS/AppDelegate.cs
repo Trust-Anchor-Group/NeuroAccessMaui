@@ -1,9 +1,8 @@
-using Firebase.CloudMessaging;
 using Foundation;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Intents;
 using NeuroAccessMaui.UI;
 using UIKit;
-using UserNotifications;
 
 
 namespace NeuroAccessMaui
@@ -38,11 +37,20 @@ namespace NeuroAccessMaui
 
 			try
 			{
-				App.OpenUrlSync(Url.AbsoluteString);
+				// Create a deep link intent.
+				AppIntent AppIntent = new()
+				{
+					Action = Constants.IntentActions.OpenUrl,
+					Data = Url.AbsoluteString
+				};
+
+				// Retrieve the shared intent service and queue the intent.
+				IIntentService IntentService = App.Instantiate<IIntentService>();
+				IntentService.QueueIntent(AppIntent);
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
+				ServiceRef.LogService.LogException(Ex);
 				return false;
 			}
 			return true;
