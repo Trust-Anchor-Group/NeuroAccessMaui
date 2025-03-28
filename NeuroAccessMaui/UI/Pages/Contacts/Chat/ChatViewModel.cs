@@ -885,6 +885,10 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 				return;
 			}
 
+			bool Permitted = await ServiceRef.PermissionService.CheckCameraPermissionAsync();
+			if (!Permitted)
+				return;
+
 			if (DeviceInfo.Platform == DevicePlatform.iOS)
 			{
 				FileResult? CapturedPhoto;
