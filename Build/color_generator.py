@@ -40,7 +40,7 @@ xaml_doc_start = """
 
 xaml_doc_end = "</ResourceDictionary>"
 
-def create_xaml_file() -> list[str]:
+def create_xaml_file() -> str:
     with open("colors.json") as f:
         data = json.load(f)[0]["values"]
         formatted_light_colors = list(json_color_list_xaml_list(data[0]["color"], False))
@@ -55,4 +55,19 @@ def create_xaml_file() -> list[str]:
 
 result = create_xaml_file()
 
-print(result)
+try:
+    with open("old_colors.xaml", "rt") as f:
+        f = f.read()
+        
+        print("Added lines in new file:")
+        for line in result.split("\n"):
+            if line not in f:
+                print(line)
+
+        print("Removed lines in new file:")
+        for line in f.split("\n"):
+            if line not in result:
+                print(f"{line}")
+
+except:
+    print("No old file to provide a diff of colors changed")
