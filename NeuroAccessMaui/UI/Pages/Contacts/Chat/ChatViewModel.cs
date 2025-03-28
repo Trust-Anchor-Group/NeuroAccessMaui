@@ -318,16 +318,14 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 
 			MainThread.BeginInvokeOnMainThread(async () =>
 			{
-
-
 				IView? View = await this.MessageAddedMainThread(Message, true);
 
 				if (View is Element)
 				{
-       				await Task.Delay(25);
-					double x = this.page.ScrollView.ScrollX;
-					double y = this.page.ScrollView.ContentSize.Height;
-					await this.page.ScrollView.ScrollToAsync(x, y, true);	
+       			await Task.Delay(25);
+					double Width = this.page.ScrollView.ScrollX;
+					double Height = this.page.ScrollView.ContentSize.Height;
+					await this.page.ScrollView.ScrollToAsync(Width, Height, true);	
 				}
 			});
 		}
@@ -446,9 +444,9 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 					this.messagesByObjectId[Message.ObjectId ?? string.Empty] = MessageNode;
 				}
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				Result.TrySetException(ex);
+				Result.TrySetException(Ex);
 			}
 
 			return await Result.Task;
@@ -464,9 +462,9 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			{
 				await Message.GenerateXaml(this);
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
+				ServiceRef.LogService.LogException(Ex);
 				return;
 			}
 
@@ -479,15 +477,15 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 				{
 					lock (this.synchObject)
 					{
-						int i;
+						int Index;
 
 						if (this.messagesByObjectId.TryGetValue(Message.ObjectId, out LinkedListNode<MessageRecord>? Node) &&
 							Node.Value.Message.ParsedXaml is IView PrevMessageXaml &&
 							PrevMessageXaml.Parent is VerticalStackLayout Parent &&
-							(i = Parent.IndexOf(PrevMessageXaml)) >= 0)
+							(Index = Parent.IndexOf(PrevMessageXaml)) >= 0)
 						{
-							Parent.RemoveAt(i);
-							Parent.Insert(i, MessageXaml);
+							Parent.RemoveAt(Index);
+							Parent.Insert(Index, MessageXaml);
 
 							Node.Value.Message = Message;
 
@@ -495,9 +493,9 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 						}
 					}
 				}
-				catch (Exception ex)
+				catch (Exception Ex)
 				{
-					ServiceRef.LogService.LogException(ex);
+					ServiceRef.LogService.LogException(Ex);
 				}
 			});
 		}
@@ -505,7 +503,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		private async Task<IView?> LoadMessagesAsync(bool LoadMore = true)
 		{
 			IEnumerable<ChatMessage>? Messages = null;
-			int c = Constants.BatchSizes.MessageBatchSize;
+			int C = Constants.BatchSizes.MessageBatchSize;
 			DateTime LastTime;
 			ChatMessage[] A;
 
@@ -523,14 +521,14 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 					new FilterFieldLesserThan("Created", LastTime)), "-Created");
 
 				A = [.. Messages];
-				c -= A.Length;
+				C -= A.Length;
 
 				if (!LoadMore)
 					Array.Reverse(A);
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
+				ServiceRef.LogService.LogException(Ex);
 				this.ExistsMoreMessages = false;
 				return null;
 			}
@@ -546,13 +544,13 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 					foreach (ChatMessage Message in A)
 						Last = await this.MessageAddedMainThread(Message, true);
 
-					this.ExistsMoreMessages = c <= 0;
+					this.ExistsMoreMessages = C <= 0;
 
 					Result.TrySetResult(Last);
 				}
-				catch (Exception ex)
+				catch (Exception Ex)
 				{
-					Result.TrySetException(ex);
+					Result.TrySetException(Ex);
 				}
 			});
 
@@ -742,9 +740,9 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 				ServiceRef.XmppService.SendMessage(QoSLevel.Unacknowledged, Waher.Networking.XMPP.MessageType.Chat, Message.ObjectId ?? string.Empty,
 					BareJid, Xml.ToString(), Message.PlainText, string.Empty, string.Empty, string.Empty, string.Empty, null, null);
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				await ServiceRef.UiService.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(Ex);
 			}
 		}
 
@@ -863,9 +861,9 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 					// this.IsRecordingAudio = true;
 				}
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
+				ServiceRef.LogService.LogException(Ex);
 			}
 		}
 
@@ -889,60 +887,60 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 
 			if (DeviceInfo.Platform == DevicePlatform.iOS)
 			{
-				FileResult? capturedPhoto;
+				FileResult? CapturedPhoto;
 
 				try
 				{
-					capturedPhoto = await MediaPicker.Default.CapturePhotoAsync(new MediaPickerOptions()
+					CapturedPhoto = await MediaPicker.Default.CapturePhotoAsync(new MediaPickerOptions()
 					{
 						Title = ServiceRef.Localizer[nameof(AppResources.TakePhotoToShare)]
 					});
 				}
-				catch (Exception ex)
+				catch (Exception Ex)
 				{
 					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.TakePhoto)],
-						ServiceRef.Localizer[nameof(AppResources.TakingAPhotoIsNotSupported)] + ": " + ex.Message);
+						ServiceRef.Localizer[nameof(AppResources.TakingAPhotoIsNotSupported)] + ": " + Ex.Message);
 					return;
 				}
 
-				if (capturedPhoto is not null)
+				if (CapturedPhoto is not null)
 				{
 					try
 					{
-						await this.EmbedMedia(capturedPhoto.FullPath, true);
+						await this.EmbedMedia(CapturedPhoto.FullPath, true);
 					}
-					catch (Exception ex)
+					catch (Exception Ex)
 					{
-						await ServiceRef.UiService.DisplayException(ex);
+						await ServiceRef.UiService.DisplayException(Ex);
 					}
 				}
 			}
 			else
 			{
-				FileResult? capturedPhoto;
+				FileResult? CapturedPhoto;
 
 				try
 				{
-					capturedPhoto = await MediaPicker.CapturePhotoAsync();
-					if (capturedPhoto is null)
+					CapturedPhoto = await MediaPicker.CapturePhotoAsync();
+					if (CapturedPhoto is null)
 						return;
 				}
-				catch (Exception ex)
+				catch (Exception Ex)
 				{
 					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.TakePhoto)],
-						ServiceRef.Localizer[nameof(AppResources.TakingAPhotoIsNotSupported)] + ": " + ex.Message);
+						ServiceRef.Localizer[nameof(AppResources.TakingAPhotoIsNotSupported)] + ": " + Ex.Message);
 					return;
 				}
 
-				if (capturedPhoto is not null)
+				if (CapturedPhoto is not null)
 				{
 					try
 					{
-						await this.EmbedMedia(capturedPhoto.FullPath, true);
+						await this.EmbedMedia(CapturedPhoto.FullPath, true);
 					}
-					catch (Exception ex)
+					catch (Exception Ex)
 					{
-						await ServiceRef.UiService.DisplayException(ex);
+						await ServiceRef.UiService.DisplayException(Ex);
 					}
 				}
 			}
@@ -1051,10 +1049,10 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 				if (DeleteFile)
 					File.Delete(FilePath);
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message);
-				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], Ex.Message);
+				ServiceRef.LogService.LogException(Ex);
 				return;
 			}
 		}
@@ -1076,10 +1074,10 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 				return;
 			}
 
-			FileResult? pickedPhoto = await MediaPicker.PickPhotoAsync();
+			FileResult? PickedPhoto = await MediaPicker.PickPhotoAsync();
 
-			if (pickedPhoto is not null)
-				await this.EmbedMedia(pickedPhoto.FullPath, false);
+			if (PickedPhoto is not null)
+				await this.EmbedMedia(PickedPhoto.FullPath, false);
 		}
 
 		private bool CanExecuteEmbedId()
@@ -1182,29 +1180,29 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		[RelayCommand(CanExecute = nameof(CanExecuteEmbedMoney))]
 		private async Task EmbedMoney()
 		{
-			StringBuilder sb = new();
+			StringBuilder Sb = new();
 
-			sb.Append("edaler:");
+			Sb.Append("edaler:");
 
 			if (!string.IsNullOrEmpty(this.LegalId))
 			{
-				sb.Append("ti=");
-				sb.Append(this.LegalId);
+				Sb.Append("ti=");
+				Sb.Append(this.LegalId);
 			}
 			else if (!string.IsNullOrEmpty(this.BareJid))
 			{
-				sb.Append("t=");
-				sb.Append(this.BareJid);
+				Sb.Append("t=");
+				Sb.Append(this.BareJid);
 			}
 			else
 				return;
 
 			Balance CurrentBalance = await ServiceRef.XmppService.GetEDalerBalance();
 
-			sb.Append(";cu=");
-			sb.Append(CurrentBalance.Currency);
+			Sb.Append(";cu=");
+			Sb.Append(CurrentBalance.Currency);
 
-			if (!EDalerUri.TryParse(sb.ToString(), out EDalerUri Parsed))
+			if (!EDalerUri.TryParse(Sb.ToString(), out EDalerUri Parsed))
 				return;
 
 			TaskCompletionSource<string?> UriToSend = new();
@@ -1218,20 +1216,20 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 
 			await this.waitUntilBound.Task;     // Wait until view is bound again.
 
-			sb.Clear();
-			sb.Append(MoneyToString.ToString(Parsed.Amount));
+			Sb.Clear();
+			Sb.Append(MoneyToString.ToString(Parsed.Amount));
 
 			if (Parsed.AmountExtra.HasValue)
 			{
-				sb.Append(" (+");
-				sb.Append(MoneyToString.ToString(Parsed.AmountExtra.Value));
-				sb.Append(')');
+				Sb.Append(" (+");
+				Sb.Append(MoneyToString.ToString(Parsed.AmountExtra.Value));
+				Sb.Append(')');
 			}
 
-			sb.Append(' ');
-			sb.Append(Parsed.Currency);
+			Sb.Append(' ');
+			Sb.Append(Parsed.Currency);
 
-			await this.ExecuteSendMessage(string.Empty, "![" + sb.ToString() + "](" + Uri + ")");
+			await this.ExecuteSendMessage(string.Empty, "![" + Sb.ToString() + "](" + Uri + ")");
 		}
 
 		private bool CanExecuteEmbedToken()
@@ -1288,34 +1286,34 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 
 			await this.waitUntilBound.Task;     // Wait until view is bound again.
 
-			StringBuilder sb = new();
+			StringBuilder Sb = new();
 
-			sb.Append("![");
-			sb.Append(MarkdownDocument.Encode(Thing.FriendlyName));
-			sb.Append("](iotdisco:JID=");
-			sb.Append(Thing.BareJid);
+			Sb.Append("![");
+			Sb.Append(MarkdownDocument.Encode(Thing.FriendlyName));
+			Sb.Append("](iotdisco:JID=");
+			Sb.Append(Thing.BareJid);
 
 			if (!string.IsNullOrEmpty(Thing.SourceId))
 			{
-				sb.Append(";SID=");
-				sb.Append(Thing.SourceId);
+				Sb.Append(";SID=");
+				Sb.Append(Thing.SourceId);
 			}
 
 			if (!string.IsNullOrEmpty(Thing.Partition))
 			{
-				sb.Append(";PT=");
-				sb.Append(Thing.Partition);
+				Sb.Append(";PT=");
+				Sb.Append(Thing.Partition);
 			}
 
 			if (!string.IsNullOrEmpty(Thing.NodeId))
 			{
-				sb.Append(";NID=");
-				sb.Append(Thing.NodeId);
+				Sb.Append(";NID=");
+				Sb.Append(Thing.NodeId);
 			}
 
-			sb.Append(')');
+			Sb.Append(')');
 
-			await this.ExecuteSendMessage(string.Empty, sb.ToString());
+			await this.ExecuteSendMessage(string.Empty, Sb.ToString());
 		}
 
 		/// <summary>
@@ -1347,11 +1345,11 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 
 
 					case MessageType.Received:
-						string s = Message.Markdown;
-						if (string.IsNullOrEmpty(s))
-							s = MarkdownDocument.Encode(Message.PlainText);
+						string S = Message.Markdown;
+						if (string.IsNullOrEmpty(S))
+							S = MarkdownDocument.Encode(Message.PlainText);
 
-						string[] Rows = s.Replace("\r\n", "\n").Replace("\r", "\n").Split('\n');
+						string[] Rows = S.Replace("\r\n", "\n").Replace("\r", "\n").Split('\n');
 
 						StringBuilder Quote = new();
 
@@ -1385,18 +1383,18 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 					await ProcessXmppUri(Uri);
 				else
 				{
-					int i = Uri.IndexOf(':');
-					if (i < 0)
+					int I = Uri.IndexOf(':');
+					if (I < 0)
 						return;
 
-					string s = Uri[(i + 1)..].Trim();
-					if (s.StartsWith('<') && s.EndsWith('>'))  // XML
+					string S = Uri[(I + 1)..].Trim();
+					if (S.StartsWith('<') && S.EndsWith('>'))  // XML
 					{
 						XmlDocument Doc = new()
 						{
 							PreserveWhitespace = true
 						};
-						Doc.LoadXml(s);
+						Doc.LoadXml(S);
 
 						switch (Scheme)
 						{
@@ -1434,9 +1432,9 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 						await QrCode.OpenUrl(Uri);
 				}
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				await ServiceRef.UiService.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(Ex);
 			}
 		}
 
@@ -1447,20 +1445,20 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		/// <returns>If URI could be processed.</returns>
 		public static async Task<bool> ProcessXmppUri(string Uri)
 		{
-			int i = Uri.IndexOf(':');
-			if (i < 0)
+			int I = Uri.IndexOf(':');
+			if (I < 0)
 				return false;
 
-			string Jid = Uri[(i + 1)..].TrimStart();
+			string Jid = Uri[(I + 1)..].TrimStart();
 			string Command;
 
-			i = Jid.IndexOf('?');
-			if (i < 0)
+			I = Jid.IndexOf('?');
+			if (I < 0)
 				Command = "subscribe";
 			else
 			{
-				Command = Jid[(i + 1)..].TrimStart();
-				Jid = Jid[..i].TrimEnd();
+				Command = Jid[(I + 1)..].TrimStart();
+				Jid = Jid[..I].TrimEnd();
 			}
 
 			Jid = System.Web.HttpUtility.UrlDecode(Jid);
