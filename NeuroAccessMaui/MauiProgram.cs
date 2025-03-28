@@ -11,12 +11,10 @@ using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
 using ZXing.Net.Maui.Controls;
 using Microsoft.Maui.Platform;
-#if DEBUG
-using DotNet.Meteor.HotReload.Plugin;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using SkiaSharp.Views.Maui.Controls;
-
-
+#if DEBUG
+using DotNet.Meteor.HotReload.Plugin;
 #endif
 
 
@@ -68,9 +66,7 @@ namespace NeuroAccessMaui
 				fonts.AddFont("SpaceGrotesk-SemiBold.ttf", "SpaceGroteskSemiBold");
 				fonts.AddFont("SpaceGrotesk-Medium.ttf", "SpaceGroteskMedium");
 				fonts.AddFont("SpaceGrotesk-Regular.ttf", "SpaceGroteskRegular");
-				//fonts.AddFont("SpaceGrotesk-Light.ttf", "SpaceGroteskLight");
 				fonts.AddFont("NHaasGroteskTXPro-75Bd.ttf", "HaasGroteskBold");
-				//fonts.AddFont("NHaasGroteskTXPro-65Md.ttf", "HaasGroteskMedium");
 				fonts.AddFont("NHaasGroteskTXPro-55Rg.ttf", "HaasGroteskRegular");
 			});
 

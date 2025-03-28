@@ -1,4 +1,5 @@
-﻿using NeuroAccessMaui.Services;
+﻿using System.Runtime.CompilerServices;
+using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Pages;
 using Waher.Events;
 
@@ -7,8 +8,38 @@ namespace NeuroAccessMaui.UI.Popups
 	/// <summary>
 	/// Creates a base popup with view model lifecycle support.
 	/// </summary>
-	public partial class BasePopup
+	public partial class BasePopup : Mopups.Pages.PopupPage
 	{
+		// Define the bindable property for custom content.
+		public static readonly BindableProperty CustomContentProperty =
+			BindableProperty.Create(
+				nameof(CustomContent),
+				typeof(View),
+				typeof(BasePopup),
+				default(View),
+				propertyChanged: OnCustomContentChanged);
+
+
+		/// <summary>
+		/// Gets or sets the custom content that will be injected into the base popup layout.
+		/// </summary>
+		public View CustomContent
+		{
+			get => (View)this.GetValue(CustomContentProperty);
+			set => this.SetValue(CustomContentProperty, value);
+		}
+
+
+		private static void OnCustomContentChanged(BindableObject bindable, object oldValue, object newValue)
+		{
+			if (bindable is BasePopup BasePopup)
+			{
+				// Update the ContentPresenter named ContentSlot with the new view.
+				BasePopup.ContentSlot.Content = newValue as View;
+			}
+		}
+
+
 		/// <summary>
 		/// The requested width of the popup view.
 		/// </summary>
@@ -24,7 +55,6 @@ namespace NeuroAccessMaui.UI.Popups
 		/// If false the background will be fully transparent and can be modified by derived classes.
 		/// </summary>
 		protected bool useDefaultBackground;
-
 
 		/// <summary>
 		/// Returns the current BindingContext as a BasePopupViewModel.
@@ -42,6 +72,10 @@ namespace NeuroAccessMaui.UI.Popups
 			this.InitializeComponent();
 			this.BackgroundColor = AppColors.PrimaryBackground;
 
+			// Create a tap gesture recognizer that calls OnBackgroundClicked when tapped.
+			TapGestureRecognizer TapBackground = new TapGestureRecognizer();
+			TapBackground.Tapped += (s, e) => this.OnBackgroundClicked();
+			this.CustomBackgroundImage.GestureRecognizers.Add(TapBackground);
 		}
 
 		/// <summary>
@@ -72,7 +106,6 @@ namespace NeuroAccessMaui.UI.Popups
 				Log.Exception(Ex);
 			}
 		}
-
 
 		/// <summary>
 		/// Called when the popup appears.
@@ -132,8 +165,6 @@ namespace NeuroAccessMaui.UI.Popups
 		/// <summary>
 		/// Called when the back button on the client is pressed.
 		/// </summary>
-		/// <remarks>All derived methods should call base.OnBackButtonPressed()</remarks>
-		/// <returns>True, indicating the back navigation was handled manually.</returns>
 		protected override bool OnBackButtonPressed()
 		{
 			ServiceRef.UiService.PopAsync();
@@ -143,11 +174,10 @@ namespace NeuroAccessMaui.UI.Popups
 		/// <summary>
 		/// Called when the background is pressed.
 		/// </summary>
-		/// <remarks>All derived methods should call base.OnBackgroundClicked()</remarks>
-		/// <returns>True, indicating the background click was handled manually.</returns>
 		protected override bool OnBackgroundClicked()
 		{
-			ServiceRef.UiService.PopAsync();
+			if(this.CloseWhenBackgroundIsClicked)
+				ServiceRef.UiService.PopAsync();
 			return true;
 		}
 
@@ -156,7 +186,8 @@ namespace NeuroAccessMaui.UI.Popups
 		/// </summary>
 		private async Task LoadScreenshotAsync()
 		{
-			this.BackgroundImageSource = await ServiceRef.UiService.TakeBlurredScreenshotAsync();
+			// Load the screenshot and assign it to the bindable property.
+			this.CustomBackgroundImage.Source = await ServiceRef.UiService.TakeBlurredScreenshotAsync();
 		}
 	}
 }

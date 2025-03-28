@@ -2380,7 +2380,7 @@
     <value>Momentana värden</value>
   </data>
   <data name="None" xml:space="preserve">
-    <value>Inga</value>
+    <value>Ingen</value>
   </data>
   <data name="PeakValues" xml:space="preserve">
     <value>Extremvärden</value>
@@ -2516,5 +2516,47 @@
   </data>
   <data name="Skip" xml:space="preserve">
     <value>Hoppa över</value>
+  </data>
+  <data name="CopyLink" xml:space="preserve">
+    <value>Kopiera länk</value>
+  </data>
+  <data name="IdentityDocumentTitle" xml:space="preserve">
+    <value>Identitetsdokument</value>
+  </data>
+  <data name="IdentityDocumentDescription" xml:space="preserve">
+    <value>För att förbättra verifieringsprocessen för din ansökan kan du tillhandahålla bilder på ett identitetsdokument för att verifiera din identitet.</value>
+  </data>
+  <data name="FrontOfDocument" xml:space="preserve">
+    <value>Framsidan av dokumentet</value>
+  </data>
+  <data name="BackOfDocument" xml:space="preserve">
+    <value>Baksidan av dokumentet</value>
+  </data>
+  <data name="AdditionalPhotosTitle" xml:space="preserve">
+    <value>Ytterligare foton</value>
+  </data>
+  <data name="AdditionalPhotosDescription" xml:space="preserve">
+    <value>Du kan inkludera ytterligare foton för att ytterligare stödja din identitetsverifiering.</value>
+  </data>
+  <data name="Passport" xml:space="preserve">
+    <value>Pass</value>
+  </data>
+  <data name="NationalId" xml:space="preserve">
+    <value>Nationellt ID-kort</value>
+  </data>
+  <data name="DriverLicense" xml:space="preserve">
+    <value>Körkort</value>
+  </data>
+  <data name="SelectTypeOfDocument" xml:space="preserve">
+    <value>Välj typ av dokument</value>
+  </data>
+  <data name="IdentityDocumentDescription_Passport" xml:space="preserve">
+    <value>Ladda upp en bild som tydligt visar båda sidorna av passets informationssida, inklusive sidan med ditt foto</value>
+  </data>
+  <data name="FrontOfDocument_Passport" xml:space="preserve">
+    <value>Bild på ditt pass</value>
+  </data>
+  <data name="PleaseTryAgain" xml:space="preserve">
+    <value>Försök igen</value>
   </data>
 </root>

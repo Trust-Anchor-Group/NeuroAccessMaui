@@ -2379,9 +2379,6 @@
   <data name="MomentaryValues" xml:space="preserve">
     <value>Øjeblikkelige værdier</value>
   </data>
-  <data name="None" xml:space="preserve">
-    <value>Ingen</value>
-  </data>
   <data name="PeakValues" xml:space="preserve">
     <value>Højeste værdier</value>
   </data>
@@ -2516,5 +2513,50 @@
   </data>
   <data name="Skip" xml:space="preserve">
     <value>Overspringe</value>
+  </data>
+  <data name="CopyLink" xml:space="preserve">
+    <value>Kopier link</value>
+  </data>
+  <data name="IdentityDocumentTitle" xml:space="preserve">
+    <value>Identitetsdokument</value>
+  </data>
+  <data name="IdentityDocumentDescription" xml:space="preserve">
+    <value>For at forbedre din ansøgnings bekræftelsesproces kan du indsende billeder af et identitetsdokument for at bekræfte din identitet.</value>
+  </data>
+  <data name="FrontOfDocument" xml:space="preserve">
+    <value>Forsiden af dokumentet</value>
+  </data>
+  <data name="BackOfDocument" xml:space="preserve">
+    <value>Bagsiden af dokumentet</value>
+  </data>
+  <data name="AdditionalPhotosTitle" xml:space="preserve">
+    <value>Yderligere billeder</value>
+  </data>
+  <data name="AdditionalPhotosDescription" xml:space="preserve">
+    <value>Du kan inkludere yderligere billeder for yderligere at understøtte din identitetsbekræftelse.</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>Ingen</value>
+  </data>
+  <data name="Passport" xml:space="preserve">
+    <value>Pas</value>
+  </data>
+  <data name="NationalId" xml:space="preserve">
+    <value>Nationalt ID-kort</value>
+  </data>
+  <data name="DriverLicense" xml:space="preserve">
+    <value>Kørekort</value>
+  </data>
+  <data name="SelectTypeOfDocument" xml:space="preserve">
+    <value>Vælg dokumenttype</value>
+  </data>
+  <data name="IdentityDocumentDescription_Passport" xml:space="preserve">
+    <value>Upload venligst et billede, der tydeligt viser begge sider i dit pas datasektion, inklusive siden med dit foto</value>
+  </data>
+  <data name="FrontOfDocument_Passport" xml:space="preserve">
+    <value>Foto af dit pas</value>
+  </data>
+  <data name="PleaseTryAgain" xml:space="preserve">
+    <value>Prøv igen</value>
   </data>
 </root>
