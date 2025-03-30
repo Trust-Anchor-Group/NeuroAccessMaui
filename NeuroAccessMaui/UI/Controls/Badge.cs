@@ -9,230 +9,295 @@ using Microsoft.Maui.Graphics;
 
 namespace NeuroAccessMaui.UI.Controls
 {
+	/// <summary>
+	/// Represents a badge control that displays a short text (e.g., a notification count) or a simple indicator dot.
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// The <c>Badge</c> control is designed to be used as a visual indicator for notifications, statuses, or updates.
+	/// It can display a textual value (such as a number) or function as a simple indicator when <see cref="IsIndicator"/> is set to <c>true</c>.
+	/// </para>
+	/// <para>
+	/// The control automatically adapts its layout and appearance based on its content:
+	/// <list type="bullet">
+	/// <item>
+	/// <description>
+	/// For single-character text, the badge enforces a circular shape by using an <see cref="Ellipse"/> shape.
+	/// </description>
+	/// </item>
+	/// <item>
+	/// <description>
+	/// For multi-character text, it auto-sizes to accommodate the content and uses a <see cref="RoundRectangle"/> with a dynamically adjusted corner radius.
+	/// </description>
+	/// </item>
+	/// <item>
+	/// <description>
+	/// In indicator mode, a fixed-size circular shape is applied based on the constant <c>IndicatorSize</c>.
+	/// </description>
+	/// </item>
+	/// </list>
+	/// </para>
+	/// <para>
+	/// The control exposes several bindable properties including <see cref="Text"/>, <see cref="FontSize"/>, <see cref="TextColor"/>, <see cref="FontFamily"/>,
+	/// <see cref="CornerRadius"/>, and <see cref="TextMargin"/>, allowing full customization of its appearance and behavior.
+	/// </para>
+	/// <para>
+	/// Additionally, the badge supports interactivity via the <see cref="Command"/> property, allowing a tap gesture to trigger an associated command.
+	/// </para>
+	/// <para>
+	/// <b>Example usage in XAML:</b>
+	/// <code language="xml">
+	/// <![CDATA[
+	/// <controls:Badge Text="99"
+	///                 FontSize="14"
+	///                 TextColor="White"
+	///                 BackgroundColor="Red"
+	///                 CornerRadius="12"
+	///                 TextMargin="4"
+	///                 Command="{Binding BadgeTappedCommand}" />
+	/// ]]>
+	/// </code>
+	/// </para>
+	/// </remarks>
 	public class Badge : Border
 	{
+		#region Fields
+
+		/// <summary>
+		/// The label that displays the badge text.
+		/// </summary>
 		private readonly Label badgeLabel;
 
-		// Bindable properties
+		/// <summary>
+		/// The fixed size for the indicator badge.
+		/// </summary>
+		private const double indicatorSize = 10;
+
+		#endregion
+
+		#region Bindable Properties
+
+		/// <summary>
+		/// Backing store for the <see cref="Text"/> property.
+		/// </summary>
 		public static readonly BindableProperty TextProperty =
-			  BindableProperty.Create(
-					 nameof(Text),
-					 typeof(string),
-					 typeof(Badge),
-					 default(string),
-					 propertyChanged: OnTextChanged);
+			 BindableProperty.Create(
+				  nameof(Text),
+				  typeof(string),
+				  typeof(Badge),
+				  default(string),
+				  propertyChanged: OnTextChanged);
 
+		/// <summary>
+		/// Backing store for the <see cref="FontSize"/> property.
+		/// </summary>
 		public static readonly BindableProperty FontSizeProperty =
-			  BindableProperty.Create(
-					 nameof(FontSize),
-					 typeof(double),
-					 typeof(Badge),
-					 12d,
-					 propertyChanged: OnFontSizeChanged);
+			 BindableProperty.Create(
+				  nameof(FontSize),
+				  typeof(double),
+				  typeof(Badge),
+				  12d,
+				  propertyChanged: OnFontSizeChanged);
 
+		/// <summary>
+		/// Backing store for the <see cref="TextColor"/> property.
+		/// </summary>
 		public static readonly BindableProperty TextColorProperty =
-			  BindableProperty.Create(
-					 nameof(TextColor),
-					 typeof(Color),
-					 typeof(Badge),
-					 Colors.White,
-					 propertyChanged: OnTextColorChanged);
+			 BindableProperty.Create(
+				  nameof(TextColor),
+				  typeof(Color),
+				  typeof(Badge),
+				  Colors.White,
+				  propertyChanged: OnTextColorChanged);
 
+		/// <summary>
+		/// Backing store for the <see cref="FontFamily"/> property.
+		/// </summary>
 		public static readonly BindableProperty FontFamilyProperty =
-			  BindableProperty.Create(
-					 nameof(FontFamily),
-					 typeof(string),
-					 typeof(Badge),
-					 default(string),
-					 propertyChanged: OnFontFamilyChanged);
+			 BindableProperty.Create(
+				  nameof(FontFamily),
+				  typeof(string),
+				  typeof(Badge),
+				  default(string),
+				  propertyChanged: OnFontFamilyChanged);
 
-		// New CornerRadius bindable property.
+		/// <summary>
+		/// Backing store for the <see cref="CornerRadius"/> property.
+		/// </summary>
 		public static readonly BindableProperty CornerRadiusProperty =
-			  BindableProperty.Create(
-					 nameof(CornerRadius),
-					 typeof(double),
-					 typeof(Badge),
-					 10d,
-					 propertyChanged: OnCornerRadiusChanged);
+			 BindableProperty.Create(
+				  nameof(CornerRadius),
+				  typeof(double),
+				  typeof(Badge),
+				  10d,
+				  propertyChanged: OnCornerRadiusChanged);
 
+		/// <summary>
+		/// Backing store for the <see cref="IsIndicator"/> property.
+		/// </summary>
 		public static readonly BindableProperty IsIndicatorProperty =
-			  BindableProperty.Create(
-					 nameof(IsIndicator),
-					 typeof(bool),
-					 typeof(Badge),
-					 false,
-					 propertyChanged: OnIsIndicatorChanged);
+			 BindableProperty.Create(
+				  nameof(IsIndicator),
+				  typeof(bool),
+				  typeof(Badge),
+				  false,
+				  propertyChanged: OnIsIndicatorChanged);
 
+		/// <summary>
+		/// Backing store for the <see cref="Command"/> property.
+		/// </summary>
 		public static readonly BindableProperty CommandProperty =
-			  BindableProperty.Create(
-					 nameof(Command),
-					 typeof(ICommand),
-					 typeof(Badge),
-					 null);
-
-
+			 BindableProperty.Create(
+				  nameof(Command),
+				  typeof(ICommand),
+				  typeof(Badge),
+				  null);
 
 		/// <summary>
-		/// If true, the badge will automatically translate itself.
+		/// Backing store for the <see cref="TextMargin"/> property.
 		/// </summary>
-		public static readonly BindableProperty AutoTranslateProperty =
-			  BindableProperty.Create(
-					 nameof(AutoTranslate),
-					 typeof(bool),
-					 typeof(Badge),
-					 false,
-					 propertyChanged: OnAutoTranslateChanged);
-
-
-
-
-		/// <summary>
-		/// The factor (0.0 to 1.0) of half the badge’s size to use for translation.
-		/// A value of 0.5 (the default) translates by half the badge’s width/height.
-		/// Lower values will shift it less.
-		/// </summary>
-		public static readonly BindableProperty BadgeTranslationFactorProperty =
-			  BindableProperty.Create(
-					 nameof(BadgeTranslationFactor),
-					 typeof(double),
-					 typeof(Badge),
-					 0.5,
-					 propertyChanged: OnBadgeTranslationFactorChanged);
-
-
-		// New TextMargin bindable property.
 		public static readonly BindableProperty TextMarginProperty =
 			 BindableProperty.Create(
 				  nameof(TextMargin),
 				  typeof(Thickness),
 				  typeof(Badge),
-				  new Thickness(0),
+				  new Thickness(4),
 				  propertyChanged: OnTextMarginChanged);
 
-		// CLR property for TextMargin.
-		public Thickness TextMargin
-		{
-			get => (Thickness)GetValue(TextMarginProperty);
-			set => SetValue(TextMarginProperty, value);
-		}
+		#endregion
 
-		// CLR properties for binding
+		#region Properties
+
+		/// <summary>
+		/// Gets or sets the text displayed on the badge.
+		/// </summary>
 		public string Text
 		{
-			get => (string)GetValue(TextProperty);
-			set => SetValue(TextProperty, value);
-		}
-
-		public double FontSize
-		{
-			get => (double)GetValue(FontSizeProperty);
-			set => SetValue(FontSizeProperty, value);
-		}
-
-		public Color TextColor
-		{
-			get => (Color)GetValue(TextColorProperty);
-			set => SetValue(TextColorProperty, value);
-		}
-
-		public string FontFamily
-		{
-			get => (string)GetValue(FontFamilyProperty);
-			set => SetValue(FontFamilyProperty, value);
-		}
-
-		// New CornerRadius CLR property.
-		public double CornerRadius
-		{
-			get => (double)GetValue(CornerRadiusProperty);
-			set => SetValue(CornerRadiusProperty, value);
+			get => (string)this.GetValue(TextProperty);
+			set => this.SetValue(TextProperty, value);
 		}
 
 		/// <summary>
-		/// When true, the badge displays a small dot instead of text.
+		/// Gets or sets the font size of the badge text.
+		/// </summary>
+		public double FontSize
+		{
+			get => (double)this.GetValue(FontSizeProperty);
+			set => this.SetValue(FontSizeProperty, value);
+		}
+
+		/// <summary>
+		/// Gets or sets the color of the badge text.
+		/// </summary>
+		public Color TextColor
+		{
+			get => (Color)this.GetValue(TextColorProperty);
+			set => this.SetValue(TextColorProperty, value);
+		}
+
+		/// <summary>
+		/// Gets or sets the font family of the badge text.
+		/// </summary>
+		public string FontFamily
+		{
+			get => (string)this.GetValue(FontFamilyProperty);
+			set => this.SetValue(FontFamilyProperty, value);
+		}
+
+		/// <summary>
+		/// Gets or sets the corner radius of the badge.
+		/// </summary>
+		public double CornerRadius
+		{
+			get => (double)this.GetValue(CornerRadiusProperty);
+			set => this.SetValue(CornerRadiusProperty, value);
+		}
+
+		/// <summary>
+		/// Gets or sets a value indicating whether the badge is displayed as an indicator.
 		/// </summary>
 		public bool IsIndicator
 		{
-			get => (bool)GetValue(IsIndicatorProperty);
-			set => SetValue(IsIndicatorProperty, value);
+			get => (bool)this.GetValue(IsIndicatorProperty);
+			set => this.SetValue(IsIndicatorProperty, value);
 		}
 
 		/// <summary>
-		/// Optional command to invoke when the badge is tapped.
+		/// Gets or sets the command to be executed when the badge is tapped.
 		/// </summary>
 		public ICommand Command
 		{
-			get => (ICommand)GetValue(CommandProperty);
-			set => SetValue(CommandProperty, value);
+			get => (ICommand)this.GetValue(CommandProperty);
+			set => this.SetValue(CommandProperty, value);
 		}
 
 		/// <summary>
-		/// If true, automatically translates the badge so it sits on the edge of its parent.
+		/// Gets or sets the margin for the badge text.
 		/// </summary>
-		public bool AutoTranslate
+		public Thickness TextMargin
 		{
-			get => (bool)GetValue(AutoTranslateProperty);
-			set => SetValue(AutoTranslateProperty, value);
+			get => (Thickness)this.GetValue(TextMarginProperty);
+			set => this.SetValue(TextMarginProperty, value);
 		}
+
+		#endregion
+
+		#region Constructors
 
 		/// <summary>
-		/// Determines the fraction (of half the badge’s size) used for translation.
+		/// Initializes a new instance of the <see cref="Badge"/> class.
 		/// </summary>
-		public double BadgeTranslationFactor
-		{
-			get => (double)GetValue(BadgeTranslationFactorProperty);
-			set => SetValue(BadgeTranslationFactorProperty, value);
-		}
-
-
-		// Hide StrokeShape from consumers.
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public new IShape StrokeShape
-		{
-			get => base.StrokeShape;
-			private set => base.StrokeShape = value;
-		}
-
 		public Badge()
 		{
-			// Default styling for the badge.
-			BackgroundColor = Colors.Red;
-			// Use the CornerRadius property value.
-			StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(CornerRadius) };
+			// Set default styling.
+			this.BackgroundColor = Colors.Red;
+			// Initially use the defined CornerRadius property.
+			this.StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(this.CornerRadius) };
 
-			// Create and configure the label that shows the text.
-			badgeLabel = new Label
+			this.badgeLabel = new Label
 			{
 				HorizontalOptions = LayoutOptions.Center,
 				VerticalOptions = LayoutOptions.Center,
-				Text = Text,
-				FontSize = FontSize,
-				TextColor = TextColor,
-				FontFamily = FontFamily
+				Text = this.Text,
+				FontSize = this.FontSize,
+				TextColor = this.TextColor,
+				FontFamily = this.FontFamily
 			};
 
-			// Set the label as the content of the Border.
-			Content = badgeLabel;
+			this.Content = this.badgeLabel;
 
-			// Add a tap gesture recognizer so the badge can be interactive.
 			var tapGesture = new TapGestureRecognizer();
-			tapGesture.Tapped += (s, e) =>
-			{
-				if (Command?.CanExecute(null) == true)
-				{
-					Command.Execute(null);
-				}
-			};
-			GestureRecognizers.Add(tapGesture);
-
-			// Listen for size changes so we can update translation if AutoTranslate is true.
-			SizeChanged += (s, e) =>
-			{
-				if (AutoTranslate)
-					UpdateTranslation();
-			};
+			tapGesture.Tapped += this.OnBadgeTapped;
+			this.GestureRecognizers.Add(tapGesture);
 		}
 
+		#endregion
+
+		#region Event Handlers
+
+		/// <summary>
+		/// Handles the badge tap gesture.
+		/// </summary>
+		/// <param name="sender">The source of the event.</param>
+		/// <param name="e">Event arguments.</param>
+		private void OnBadgeTapped(object sender, EventArgs e)
+		{
+			if (this.Command?.CanExecute(null) == true)
+			{
+				this.Command.Execute(null);
+			}
+		}
+
+		#endregion
+
+		#region Bindable Property Changed Callbacks
+
+		/// <summary>
+		/// Called when the <see cref="TextMargin"/> property changes.
+		/// </summary>
+		/// <param name="bindable">The bindable object.</param>
+		/// <param name="oldValue">The old value.</param>
+		/// <param name="newValue">The new value.</param>
 		private static void OnTextMarginChanged(BindableObject bindable, object oldValue, object newValue)
 		{
 			if (bindable is Badge badge && newValue is Thickness newMargin)
@@ -241,39 +306,51 @@ namespace NeuroAccessMaui.UI.Controls
 			}
 		}
 
-		// Called when Text property changes.
+		/// <summary>
+		/// Called when the <see cref="Text"/> property changes.
+		/// </summary>
+		/// <param name="bindable">The bindable object.</param>
+		/// <param name="oldValue">The old value.</param>
+		/// <param name="newValue">The new value.</param>
 		private static async void OnTextChanged(BindableObject bindable, object oldValue, object newValue)
 		{
 			if (bindable is Badge badge)
 			{
-				string textValue = newValue?.ToString() ?? string.Empty;
+				string TextValue = newValue?.ToString() ?? string.Empty;
+				// Update visibility based on the new text value.
+				badge.UpdateVisibility();
+
 				if (!badge.IsIndicator)
 				{
-					badge.badgeLabel.Text = textValue;
-					// Simple bounce animation to draw attention on change.
-					await badge.ScaleTo(1.2, 50);
-					await badge.ScaleTo(1.0, 50);
+					badge.badgeLabel.Text = TextValue;
+					await badge.AnimateBounceAsync();
 				}
 
-				// If the text is a single character, change to circular shape.
-				if (textValue.Length == 1)
+				// Enforce a circular shape if the text is a single character.
+				if (TextValue.Length == 1)
 				{
-					// Optionally enforce a square layout for a perfect circle.
-					double diameter = Math.Max(badge.Width, badge.Height);
-					badge.WidthRequest = diameter;
-					badge.HeightRequest = diameter;
-
-					// Use an Ellipse shape to make the border circular.
-					badge.StrokeShape = new Ellipse {};
+					double Diameter = Math.Max(badge.Width, badge.Height);
+					badge.WidthRequest = Diameter;
+					badge.HeightRequest = Diameter;
+					badge.StrokeShape = new Ellipse();
 				}
 				else
 				{
-					// Revert back to the default rounded rectangle shape using the CornerRadius property.
-					badge.StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(badge.CornerRadius)};
+					// For multi-character text, allow the badge to auto-size.
+					badge.WidthRequest = -1;
+					badge.HeightRequest = -1;
+					// For multi-character text, update the corner radius dynamically.
+					badge.UpdateCornerRadius();
 				}
 			}
 		}
 
+		/// <summary>
+		/// Called when the <see cref="FontSize"/> property changes.
+		/// </summary>
+		/// <param name="bindable">The bindable object.</param>
+		/// <param name="oldValue">The old value.</param>
+		/// <param name="newValue">The new value.</param>
 		private static void OnFontSizeChanged(BindableObject bindable, object oldValue, object newValue)
 		{
 			if (bindable is Badge badge)
@@ -282,6 +359,9 @@ namespace NeuroAccessMaui.UI.Controls
 			}
 		}
 
+		/// <summary>
+		/// Called when the <see cref="TextColor"/> property changes.
+		/// </summary>
 		private static void OnTextColorChanged(BindableObject bindable, object oldValue, object newValue)
 		{
 			if (bindable is Badge badge)
@@ -290,6 +370,9 @@ namespace NeuroAccessMaui.UI.Controls
 			}
 		}
 
+		/// <summary>
+		/// Called when the <see cref="FontFamily"/> property changes.
+		/// </summary>
 		private static void OnFontFamilyChanged(BindableObject bindable, object oldValue, object newValue)
 		{
 			if (bindable is Badge badge)
@@ -298,117 +381,133 @@ namespace NeuroAccessMaui.UI.Controls
 			}
 		}
 
-		// Called when CornerRadius property changes.
+		/// <summary>
+		/// Called when the <see cref="CornerRadius"/> property changes.
+		/// </summary>
 		private static void OnCornerRadiusChanged(BindableObject bindable, object oldValue, object newValue)
 		{
-			if (bindable is Badge badge && newValue is double newCornerRadius)
+			if (bindable is Badge badge && newValue is double)
 			{
-				// If the current shape is a RoundRectangle, update its CornerRadius.
-				if (badge.StrokeShape is RoundRectangle roundRectangle)
-				{
-					roundRectangle.CornerRadius = new CornerRadius(newCornerRadius);
-				}
-				// If not in indicator mode and not displaying a single character, reset the shape.
-				else if (!badge.IsIndicator && (badge.Text?.Length ?? 0) != 1)
-				{
-					badge.StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(newCornerRadius) };
-				}
-			}
-		}
-
-		private static void OnIsIndicatorChanged(BindableObject bindable, object oldValue, object newValue)
-		{
-			if (bindable is Badge badge)
-			{
-				bool isIndicator = (bool)newValue;
-				if (isIndicator)
-				{
-					// In indicator mode: hide text and force a small circular dot.
-					badge.badgeLabel.Text = string.Empty;
-					badge.HeightRequest = 10;
-					badge.WidthRequest = 10;
-				}
-				else
-				{
-					// Exit indicator mode: restore auto sizing and display text.
-					badge.HeightRequest = -1;
-					badge.WidthRequest = -1;
-					badge.badgeLabel.Text = badge.Text;
-				}
-			}
-		}
-
-		private static void OnAutoTranslateChanged(BindableObject bindable, object oldValue, object newValue)
-		{
-			if (bindable is Badge badge)
-			{
-				badge.UpdateTranslation();
-			}
-		}
-
-		private static void OnBadgeTranslationFactorChanged(BindableObject bindable, object oldValue, object newValue)
-		{
-			if (bindable is Badge badge)
-			{
-				badge.UpdateTranslation();
-			}
-		}
-
-		protected override void OnPropertyChanged(string propertyName = null)
-		{
-			base.OnPropertyChanged(propertyName);
-
-			// When HorizontalOptions or VerticalOptions change, update translation if needed.
-			if (AutoTranslate && (propertyName == nameof(HorizontalOptions) || propertyName == nameof(VerticalOptions)))
-			{
-				UpdateTranslation();
+				// When the user sets CornerRadius explicitly, update the shape.
+				badge.UpdateCornerRadius();
 			}
 		}
 
 		/// <summary>
-		/// Offsets the badge by a fraction of its half width/height based on its HorizontalOptions and VerticalOptions.
+		/// Called when the <see cref="IsIndicator"/> property changes.
 		/// </summary>
-		private void UpdateTranslation()
+		private static void OnIsIndicatorChanged(BindableObject bindable, object oldValue, object newValue)
 		{
-			if (!AutoTranslate || Width <= 0 || Height <= 0)
-				return;
-
-			// Calculate a scaled half-width/height using the translation factor.
-			double offsetX = (Width / 2) * BadgeTranslationFactor;
-			double offsetY = (Height / 2) * BadgeTranslationFactor;
-			double translateX = 0;
-			double translateY = 0;
-
-			// Adjust horizontal translation based on alignment.
-			switch (HorizontalOptions.Alignment)
+			if (bindable is Badge badge)
 			{
-				case LayoutAlignment.Start:
-					translateX = -offsetX;
-					break;
-				case LayoutAlignment.End:
-					translateX = offsetX;
-					break;
-				default:
-					translateX = 0;
-					break;
+				bool IsIndicatorValue = (bool)newValue;
+				if (IsIndicatorValue)
+				{
+					badge.badgeLabel.Text = string.Empty;
+					badge.HeightRequest = indicatorSize;
+					badge.WidthRequest = indicatorSize;
+					badge.StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(indicatorSize / 2) };
+				}
+				else
+				{
+					badge.HeightRequest = -1;
+					badge.WidthRequest = -1;
+					badge.badgeLabel.Text = badge.Text;
+					badge.UpdateCornerRadius();
+				}
+				badge.UpdateVisibility();
 			}
-
-			// Adjust vertical translation based on alignment.
-			switch (VerticalOptions.Alignment)
-			{
-				case LayoutAlignment.Start:
-					translateY = -offsetY;
-					break;
-				case LayoutAlignment.End:
-					translateY = offsetY;
-					break;
-				default:
-					translateY = 0;
-					break;
-			}
-
-			TranslationX = translateX;
-			TranslationY = translateY;
 		}
+
+		#endregion
+
+		#region Private Methods
+
+		/// <summary>
+		/// Performs a simple bounce animation to draw attention when the text changes.
+		/// </summary>
+		/// <returns>A task representing the asynchronous animation operation.</returns>
+		private async Task AnimateBounceAsync()
+		{
+			await this.ScaleTo(1.2, 50);
+			await this.ScaleTo(1.0, 50);
+		}
+
+		/// <summary>
+		/// Updates the visibility of the badge based on its content and mode.
+		/// </summary>
+		private void UpdateVisibility()
+		{
+			if (this.IsIndicator)
+			{
+				this.IsVisible = true;
+			}
+			else
+			{
+				if (string.IsNullOrEmpty(this.Text))
+				{
+					this.IsVisible = false;
+				}
+				else if (int.TryParse(this.Text, out int Count))
+				{
+					this.IsVisible = Count > 0;
+				}
+				else
+				{
+					this.IsVisible = true;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Dynamically updates the <see cref="StrokeShape"/> based on the control's current height.
+		/// For multi-character text, it uses a <see cref="RoundRectangle"/> with a corner radius that is the smaller of the defined <see cref="CornerRadius"/> or half the control height.
+		/// For single-character text, an <see cref="Ellipse"/> is used.
+		/// For indicator mode, a fixed circular shape is applied.
+		/// </summary>
+		private void UpdateCornerRadius()
+		{
+			if (this.IsIndicator)
+			{
+				this.StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(indicatorSize / 2) };
+			}
+			else if (this.Height > 0)
+			{
+				if (!string.IsNullOrEmpty(this.Text) && this.Text.Length == 1)
+				{
+					this.StrokeShape = new Ellipse();
+				}
+				else
+				{
+					// Use the smaller value between the user-set CornerRadius and half the control's height.
+					double EffectiveCornerRadius = Math.Min(this.CornerRadius, this.Height / 2);
+					this.StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(EffectiveCornerRadius) };
+				}
+			}
+		}
+
+		#endregion
+
+		#region Overrides
+
+		protected override void OnSizeAllocated(double width, double height)
+		{
+			base.OnSizeAllocated(width, height);
+			// Update the corner radius based on the new size.
+			this.UpdateCornerRadius();
+
+			// For multi-character text, ensure the width is at least equal to the height
+			// to maintain a pill shape that is visually comparable to a single-character circle.
+			if (!this.IsIndicator && !string.IsNullOrEmpty(this.Text) && this.Text.Length > 1)
+			{
+				if (width < height)
+				{
+					this.WidthRequest = height;
+				}
+			}
+		}
+
+
+		#endregion
 	}
 }
