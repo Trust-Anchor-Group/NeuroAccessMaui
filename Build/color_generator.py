@@ -6,6 +6,12 @@ Python file that reads a json file and converts the format to be approppriate fo
 
 To use this file, place the JSON file containing colors from Figma named "colors.json" next to this
 file (in the same directory) and run the script, it then outputs a "colors.xaml" file.
+
+You can also take your old <colors.xaml>, rename it to <old_colors.xaml> and the script will
+print to terminal, telling what files are added or missing from the new colors.
+
+> Note: The diff is generated on a per-line basis, meaning it will show a change even if it was just
+fixing a spelling error or one letter/digit in the hex-code changed.
 """
 
 # Converts hex color from figma to one supported by maui
@@ -55,6 +61,7 @@ def create_xaml_file() -> str:
 
 result = create_xaml_file()
 
+# Check if there is a file containing the old colors and print information of what colors have changed
 try:
     with open("old_colors.xaml", "rt") as f:
         f = f.read()
