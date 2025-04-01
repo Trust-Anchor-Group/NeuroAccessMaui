@@ -380,13 +380,22 @@ namespace NeuroAccessMaui.UI.MVVM
 		/// have been fully handled before proceeding.
 		/// </remarks>
 		/// <returns>A task that completes once the latest watcher task has finished and no new watcher has replaced it.</returns>
-		public async Task WaitAllAsync()
+		public async Task WaitAllAsync(bool WaitWhilePending = false)
 		{
 			while (true)
 			{
 				Task? Watcher = this.CurrentWatcher;
 				if (Watcher is null)
+				{
+					if( WaitWhilePending && this.State == TaskStatus.Pending)
+					{
+						await Task.Delay(Constants.Delays.Default);
+						continue;
+					}
+
 					return;
+
+				}
 				await Watcher;
 
 				Task? NewWatcher = this.CurrentWatcher;
