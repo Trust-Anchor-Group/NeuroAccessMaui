@@ -45,7 +45,7 @@ namespace NeuroAccess.UiTests
 					};
 
 					AndroidOptions.AddAdditionalAppiumOption("forceReset", true);
-					//AndroidOptions.AddAdditionalAppiumOption("noReset", true);
+					//AndroidOptions.AddAdditionalAppiumOption("noReset", true);//This is prioritized over forceReset. So if this is true, even if forceReset is true the app won't reset. If this is true and the app is open, it won't reopen.
 					Console.WriteLine("Initializing Android Driver...");
 					driver = new AndroidDriver(AndroidOptions);
 					Console.WriteLine("Android Driver initialized successfully.");
@@ -61,16 +61,17 @@ namespace NeuroAccess.UiTests
 					var screenSize = driver.Manage().Window.Size;
 
 					int startX = (screenSize.Width / 20) * 13;  // Middle of the screen but slightly to the right
-					int startY = (screenSize.Height / 4) * 3; // 3/4 screen size down
-					int endY = screenSize.Height / 20;  // Near the top 
+					int startY = screenSize.Height / 2; // Half screen size down
 
 					Actions action = new Actions(driver);
 
 					action.MoveToLocation(startX, startY) // Start point
 							.ClickAndHold()
-							.MoveByOffset(0, endY - startY) // Swipe up (fast swipe up to close the app)
+							.MoveByOffset(0, 0 - startY - 1000) // Swipe up (fast swipe up to close the app). 0 - startY makes it swipe to the top edge and -1000 is for good measure so that the app doesn't have a chance to come back without getting closed
+						   .Release()
 							.Release()
-							.Perform();
+							.Perform();				 
+					
 
 					Task.Delay(3000).Wait();//Wait some time to make sure the app is closed before launching it again
 					driver = new AndroidDriver(AndroidOptions);
@@ -95,18 +96,52 @@ namespace NeuroAccess.UiTests
 				var screenSize = driver.Manage().Window.Size;
 
 				int startX = (screenSize.Width / 20) * 13;  // Middle of the screen but slightly to the right
-				int startY = (screenSize.Height / 4) * 3; // 3/4 screen size down
-				int endY = screenSize.Height / 20;  // Near the top 
+				int startY = screenSize.Height / 2; // Half screen size down 
 
 				Actions action = new Actions(driver);
 
 				action.MoveToLocation(startX, startY) // Start point
 						.ClickAndHold()
-						.MoveByOffset(0, endY - startY) // Swipe up (fast swipe up to close the app)
+						.MoveByOffset(0, 0 - startY - 1000) // Swipe up (fast swipe up to close the app). 0 - startY makes it swipe to the top edge and -1000 is for good measure so that the app doesn't have a chance to come back without getting closed
 						.Release()
 						.Perform();
+
 			}
 
+		}
+		public static AppiumElement ScrollUpOrDownAndFindElement(string automationIDToFind,bool scrollUpNotDown,int howManyScreenSizesToScroll, int xPosistionToStartFrom = 10, int? yPositionToStartFrom = null) {
+			if (driver != null) {
+				if (howManyScreenSizesToScroll <= 0) {
+					throw new Exception("You have to scroll by at least one screenSize");
+				}
+				SpecialActions specialActions = new SpecialActions(driver);
+				int upOrDownMultiplier;
+				if (scrollUpNotDown) {
+					upOrDownMultiplier = 1;
+				} else {
+					upOrDownMultiplier = -1;
+				}
+				var screenSize = driver.Manage().Window.Size;
+				if (yPositionToStartFrom == null) {
+					yPositionToStartFrom = screenSize.Height / 2;// starts by default from half the screen down.
+				}
+				while (howManyScreenSizesToScroll != 0) {
+					specialActions.MoveByOffset(xPosistionToStartFrom, (int)yPositionToStartFrom, 0, CoordinateOrigin.Viewport)
+						.ClickAndHold().MoveByOffset(0, screenSize.Height * upOrDownMultiplier, 100).Release().Perform();
+					try {
+						AppiumElement element = AutoFindElement(automationIDToFind, 0.5);
+						return element;
+					} catch {
+						howManyScreenSizesToScroll --;
+						if(howManyScreenSizesToScroll == 0) {
+							throw new Exception("Appium element wasn't found after scrolling");
+						}
+					}
+				}
+			} else {
+				throw new Exception("Driver is null");
+			}
+			return null;
 		}
 		public static AppiumElement FindUIElement(string id)
 		{
@@ -117,15 +152,15 @@ namespace NeuroAccess.UiTests
 
 			return App.FindElement(MobileBy.Id(id));
 		}
-		public static AppiumElement AutoFindElement(string aViewID, int maxTryTimeInS = 20)//Default max trying to the find the element time is 20 seconds. Because slower computers take more time loading things. And the time is not infinite because if it takes inifnity to find an element it means something went wrong, so instead if something takes more time than usual to load the devoloper can by himself change the max trying time when calling the method.
+		public static AppiumElement AutoFindElement(string aViewID, double maxTryTimeInS = 20)//Default max trying to the find the element time is 20 seconds. Because slower computers take more time loading things. And the time is not infinite because if it takes inifnity to find an element it means something went wrong, so instead if something takes more time than usual to load the devoloper can by himself change the max trying time when calling the method.
 		{
 			double timeTaken = 0;//In seconds not milli seconds
 			while (true)
 			{
 				try
 				{
-					Task.Delay(100).Wait();
-					timeTaken += 0.1;
+					Task.Delay(50).Wait();
+					timeTaken += 0.05;
 					AppiumElement viewToReturn = FindUIElement(aViewID);
 					return viewToReturn;
 				}
@@ -134,6 +169,13 @@ namespace NeuroAccess.UiTests
 					if (timeTaken > maxTryTimeInS)
 					{
 						throw new Exception($"{aViewID} wasn't found after {timeTaken}s\nex: {ex}");
+					} else
+					{
+						if(driver != null) {
+							if (driver.IsKeyboardShown()) {
+								driver.HideKeyboard();
+							}
+						}
 					}
 				}
 			}
