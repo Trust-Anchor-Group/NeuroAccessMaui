@@ -2562,4 +2562,7 @@
   <data name="SelectContract" xml:space="preserve">
     <value>Select a contract</value>
   </data>
+  <data name="SelectContractEntryDescription" xml:space="preserve">
+    <value>Paste contract ID or choose from list</value>
+  </data>
 </root>

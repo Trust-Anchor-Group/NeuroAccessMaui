@@ -421,7 +421,7 @@
 										 ContractIdEntryData="{Binding ContractReferenceValue, Mode=TwoWay}"
 										 ContractIdEntryPlaceholderText="{Binding Guide}"
 										 ContractIdEntryStyle="{StaticResource RegularCompositeEntry}"
-										 ContractIdEntryTopText="Paste contract ID or choose from list"
+										 ContractIdEntryTopText="{l:Localize SelectContractEntryDescription}"
 										 ContractIdEntryTopTextStyle="{StaticResource ParameterItemTitleLabel}"
 										 VerticalOptions="Center"
 										 TitleLabelText="{Binding Label}"
