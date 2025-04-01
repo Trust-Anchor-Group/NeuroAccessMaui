@@ -15,33 +15,30 @@
 		<objectModel:ParameterTemplateSelector x:Key="ParameterTemplateSelector"
 		                                 BooleanTemplate="{StaticResource BooleanParameterTemplate}"
 		                                 DateTemplate="{StaticResource DateParameterTemplate}"
-										 DateTimeTemplate="{StaticResource DateTimeParameterTemplate}"
+										         DateTimeTemplate="{StaticResource DateTimeParameterTemplate}"
 		                                 NumericalTemplate="{StaticResource NumericalParameterTemplate}"
 		                                 StringTemplate="{StaticResource StringParameterTemplate}"
 		                                 TimeTemplate="{StaticResource TimeParameterTemplate}"
 		                                 DurationTemplate="{StaticResource DurationParameterTemplate}"
-										 ContractReferenceTemplate="{StaticResource ContractReferenceParameterTemplate}"
+										         ContractReferenceTemplate="{StaticResource ContractReferenceParameterTemplate}"
 		                                 DefaultTemplate="{StaticResource DefaultParameterTemplate}" />
 	</ContentView.Resources>
 
 
 	<!-- Parameters -->
 	<Grid>
-
-		<Border Style="{StaticResource BorderSet}" Margin="{StaticResource MediumMargins}" >
-			<CollectionView HorizontalOptions="Center"
+		<CollectionView HorizontalOptions="Center"
 								ItemsSource="{Binding EditableParameters}"
 								ItemTemplate="{StaticResource ParameterTemplateSelector}"
 								SelectionMode="None" ItemSizingStrategy="MeasureAllItems"
 								>
-				<CollectionView.ItemsLayout>
-					<LinearItemsLayout Orientation="Vertical" ItemSpacing="{StaticResource MediumSpacing}" />
-				</CollectionView.ItemsLayout>
-				<CollectionView.EmptyView>
-					<Label Text="{l:Localize SomethingWentWrong}" />
-				</CollectionView.EmptyView>
-			</CollectionView>
-		</Border>
+			<CollectionView.ItemsLayout>
+				<LinearItemsLayout Orientation="Vertical" ItemSpacing="{StaticResource SmallSpacing}" />
+			</CollectionView.ItemsLayout>
+			<CollectionView.EmptyView>
+				<Label Text="{l:Localize SomethingWentWrong}" />
+			</CollectionView.EmptyView>
+		</CollectionView>
 	</Grid>
 
 
