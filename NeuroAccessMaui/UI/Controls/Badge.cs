@@ -489,20 +489,43 @@ namespace NeuroAccessMaui.UI.Controls
 		#endregion
 
 		#region Overrides
+		protected override void OnBindingContextChanged()
+		{
+			base.OnBindingContextChanged();
+
+			// If the badge is in indicator mode, force the correct sizing and shape.
+			if (IsIndicator)
+			{
+				HeightRequest = indicatorSize;
+				WidthRequest = indicatorSize;
+				StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(indicatorSize / 2) };
+			}
+
+			// Reapply visibility and corner radius adjustments.
+			UpdateVisibility();
+			UpdateCornerRadius();
+
+		}
 
 		protected override void OnSizeAllocated(double width, double height)
 		{
 			base.OnSizeAllocated(width, height);
+
 			// Update the corner radius based on the new size.
 			this.UpdateCornerRadius();
 
-			// For multi-character text, ensure the width is at least equal to the height
-			// to maintain a pill shape that is visually comparable to a single-character circle.
+			// For multi-character text, ensure the width is at least the measured text width plus padding,
+			// and also at least equal to the height (to maintain a pill shape).
 			if (!this.IsIndicator && !string.IsNullOrEmpty(this.Text) && this.Text.Length > 1)
 			{
-				if (width < height)
+				// Measure the label's requested size.
+				Size Request = this.badgeLabel.Measure(width, height).Request;
+				double DesiredWidth = Math.Max(Request.Width + this.TextMargin.HorizontalThickness, height);
+
+				// Only override if the current width is smaller than desired.
+				if (width < DesiredWidth)
 				{
-					this.WidthRequest = height;
+					this.WidthRequest = DesiredWidth;
 				}
 			}
 		}
