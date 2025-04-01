@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using CommunityToolkit.Mvvm.Input;
+using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.UI.MVVM;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
+using NeuroAccessMaui.UI.Pages.Notifications;
 using Waher.Networking.XMPP.Contracts;
 
 namespace NeuroAccessMaui.UI.Pages.Main
@@ -16,75 +18,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		public MainViewModel()
 			: base()
 		{
-			this.ObservableTask.PropertyChanged += ((sender, args) =>
-			{
-				if (args.PropertyName == nameof(this.ObservableTask.State))
-				{
-					Console.WriteLine(this.ObservableTask.State);
-				}
-			});
-
-			this.BarCommand.PropertyChanged += ((sender, args) =>
-			{
-				if (args.PropertyName == nameof(this.ObservableTask.State))
-				{
-					Console.WriteLine(this.ObservableTask.State);
-				}
-			});
 		}
-
-		//Method 1
-
-		public ObservableTask<int> ObservableTask { get; } = new();
-
-		[RelayCommand]
-        private async Task Start()
-        {
-            // Use the Load method of TaskNotifier to start an asynchronous operation.
-            this.ObservableTask.Load(this.Foo, this.StartCommand);
-				this.ObservableTask.Refresh();
-
-				//this.ObservableTask.Load(async (TaskContext<int> Context)=> {...} );
-        }
-
-		private async Task Foo(TaskContext<int> Context)
-		{
-
-			int Sum = 0;
-			// Simulate work by summing numbers 1 to 10 with a delay.
-			for (int i = 1; i <= 100; i++)
-			{
-				// Support cancellation.
-				await Task.Delay(50, Context.CancellationToken);
-				Sum += i;
-				// Report progress (for example, as a percentage).
-				Context.Progress.Report(i * 1);
-				if (i == 50)
-				 await ServiceRef.XmppService.GetContract("Test");
-			}
-
-		}
-
-		//Method 2 ---------------------------
-
-		[ObservableTaskCommand(ObservableTaskCommandOptions.AllowConcurrentRestart)]
-		private async Task Bar(TaskContext<int> Context)
-		{
-			//TODO: 
-			int Sum = 0;
-			// Simulate work by summing numbers 1 to 10 with a delay.
-			for (int i = 1; i <= 100; i++)
-			{
-				// Support cancellation.
-				await Task.Delay(50, Context.CancellationToken);
-				Sum += i;
-				// Report progress (for example, as a percentage).
-				Context.Progress.Report(i * 1);
-				if (i == 50)
-					await ServiceRef.XmppService.GetContract("Test");
-			}
-		}
-
 
 		public override Task<string> Title => Task.FromResult(ContactInfo.GetFriendlyName(ServiceRef.TagProfile.LegalIdentity));
 
@@ -160,9 +94,23 @@ namespace NeuroAccessMaui.UI.Pages.Main
 				if(await App.AuthenticateUserAsync(AuthenticationPurpose.ViewId))
 					await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage));
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		public async Task OpenNotifications()
+		{
+			try
+			{
+				if (await App.AuthenticateUserAsync(AuthenticationPurpose.ViewId))
+					await ServiceRef.UiService.GoToAsync(nameof(NotificationsPage));
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
 			}
 		}
 	}

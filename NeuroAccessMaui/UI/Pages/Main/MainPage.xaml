@@ -14,12 +14,37 @@
 							 Shell.FlyoutBehavior="Flyout"
 							 Shell.NavBarIsVisible="True">
 
+	<Shell.TitleView>
+		<Grid Padding="10">
+			<controls:TemplatedButton Padding="{StaticResource SmallSpacing}" Margin="0" Command="{Binding OpenNotificationsCommand}"
+											  HorizontalOptions="End"
+											  VerticalOptions="Center">
+				<Border
+						Style="{StaticResource BorderSet}" Margin="0"
+						  WidthRequest="38" HeightRequest="38" Padding="4">
+					<Path Data="{x:Static ui:Geometries.ContractEditPath}" Fill="Black"
+							Style="{StaticResource FilledTemplateButtonPath}" Aspect="Uniform"/>
+				</Border>		
+			</controls:TemplatedButton>
+			<controls:Badge Text="1"
+									 InputTransparent="True"
+									 TextMargin="4,2"
+									 Stroke="White"
+								 FontFamily="SpaceGroteskBold"
+								 IsIndicator="False"
+								 HorizontalOptions="End"
+								 VerticalOptions="Start"
+								 TranslationY="-7" Scale=".9"/>
+		</Grid>
+	</Shell.TitleView>
 	<Grid x:Name="TheMainGrid"
 		  RowDefinitions="*, auto"
 		  ColumnDefinitions="*"
 		  BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
 
 		<controls:Background/>
+
+
 
 		<!-- Main Content -->
 		<VerticalStackLayout Grid.Row="0"
@@ -28,57 +53,6 @@
 			  VerticalOptions="Fill" >
 
 			<Image VerticalOptions="Center" HorizontalOptions="Center" Source="{AppThemeBinding Light=neuro_access_logo_light.png, Dark=neuro_access_logo_dark.png}" />
-
-			<StackLayout
-			             Spacing="15">
-				<Label Text="Task State:"
-				       FontAttributes="Bold" />
-				<Label Text="{Binding BarCommand.Notifier.State}" />
-				<controls:ConditionView Condition="{Binding BarCommand.Notifier.IsRunning}">
-					<controls:ConditionView.True>
-						<VerticalStackLayout 
-						                     Spacing="15">
-							<Button Text="Refresh"
-							        Command="{Binding BarCommand.Notifier.RefreshCommand}" />
-							<Button Text="Cancel"
-							        Command="{Binding BarCommand.Notifier.CancelCommand}" />
-							<ActivityIndicator IsRunning="True"
-							                   Color="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}"
-							                   WidthRequest="64"
-							                   HeightRequest="64" />
-							<Label Text="Progress:"
-							       FontAttributes="Bold" />
-							<Label Text="{Binding BarCommand.Notifier.Progress}" />
-
-						</VerticalStackLayout>
-					</controls:ConditionView.True>
-					<controls:ConditionView.False>
-						<VerticalStackLayout 
-						                     Spacing="15">
-
-							<Button Text="Refresh"
-							        Command="{Binding BarCommand.Notifier.RefreshCommand}" />
-							<Button Text="Load Data"
-							        Command="{Binding BarCommand}" />
-
-							<Label Text="SUCCESS"
-							       IsVisible="{Binding BarCommand.Notifier.IsSucceeded}" />
-
-							<Label Text="Error Message:"
-							       FontAttributes="Bold" IsVisible="{Binding BarCommand.Notifier.IsFailed}"/>
-							<Label 
-							       Text="{Binding BarCommand.Notifier.ErrorMessage}"
-							       IsVisible="{Binding BarCommand.Notifier.IsFailed}"
-							       TextColor="Red" />
-
-						</VerticalStackLayout>
-					</controls:ConditionView.False>
-
-
-
-				</controls:ConditionView>
-
-			</StackLayout>
 
 			<VerticalStackLayout.GestureRecognizers>
 				<SwipeGestureRecognizer Direction="Up" Swiped="SwipeGestureRecognizer_Swiped"/>
@@ -94,17 +68,32 @@
 				</Grid.ColumnDefinitions>
 
 				<!-- Scan QR Button -->
-				<controls:TemplatedButton Grid.Column="0" Command="{x:Binding ScanQrCodeCommand}">
-					<Border Style="{StaticResource TransparentTemplateButtonBorder}" InputTransparent="True" HorizontalOptions="Fill">
-						<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
-							<Path VerticalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
-								  Data="{x:Static ui:Geometries.ScanQrIconPath}"
-								  Style="{StaticResource TransparentTemplateButtonPath}"
-								  />
-							<Label Grid.Column="1" Style="{StaticResource TransparentTemplateButtonLabel}" Margin="{StaticResource SmallLeftMargins}"  Text="{l:Localize ScanQRShort}"/>
-						</Grid>
-					</Border>
-				</controls:TemplatedButton>
+				<Grid Grid.Column="0">
+					<!-- Main content -->
+					<controls:TemplatedButton Command="{x:Binding ScanQrCodeCommand}">
+						<Border Style="{StaticResource TransparentTemplateButtonBorder}"
+								  InputTransparent="True"
+								  HorizontalOptions="Fill">
+							<Grid ColumnDefinitions="Auto,*"
+									HorizontalOptions="Center"
+									VerticalOptions="Center">
+								<Path VerticalOptions="Center"
+										HeightRequest="24"
+										WidthRequest="24"
+										Aspect="Uniform"
+										Data="{x:Static ui:Geometries.ScanQrIconPath}"
+										Style="{StaticResource TransparentTemplateButtonPath}" />
+								<Label Grid.Column="1"
+										 Style="{StaticResource TransparentTemplateButtonLabel}"
+										 Margin="{StaticResource SmallLeftMargins}"
+										 Text="{l:Localize ScanQRShort}" />
+							</Grid>
+						</Border>
+					</controls:TemplatedButton>
+
+
+				</Grid>
+
 
 				<!-- Show ID Button -->
 				<controls:TemplatedButton Grid.Column="1" Command="{x:Binding ViewIdCommand}">
