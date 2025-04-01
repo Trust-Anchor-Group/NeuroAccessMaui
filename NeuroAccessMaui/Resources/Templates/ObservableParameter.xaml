@@ -418,18 +418,18 @@
 				  x:DataType="objectModel:ObservableContractReferenceParameter">
 		<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 			<controls:ContractSelector
-										 ContractIdEntryData="{Binding ContractReferenceValue, Mode=TwoWay}"
-										 ContractIdEntryPlaceholderText="{Binding Guide}"
-										 ContractIdEntryStyle="{StaticResource RegularCompositeEntry}"
-										 ContractIdEntryTopText="{l:Localize SelectContractEntryDescription}"
-										 ContractIdEntryTopTextStyle="{StaticResource ParameterItemTitleLabel}"
+										 EntryData="{Binding ContractReferenceValue, Mode=TwoWay}"
+										 EntryPlaceholderText="{Binding Guide}"
+										 EntryStyle="{StaticResource RegularCompositeEntry}"
+										 EntryTopText="{l:Localize SelectContractEntryDescription}"
+										 EntryTopTextStyle="{StaticResource ParameterItemTitleLabel}"
 										 VerticalOptions="Center"
 										 TitleLabelText="{Binding Label}"
 										 TitleLabelStyle="{StaticResource RegularCompositeEntryLabel}"
-										 ContractIdEntryIsValid="{Binding IsValid}"
-					                SelectContractButtonCommand="{Binding PickContractReferenceCommand}"
-					                SelectContractButtonText="{l:Localize SelectContract}"
-					                SelectContractButtonStyle="{StaticResource SecondaryButton}"/>
+										 IsValid="{Binding IsValid}"
+					                ButtonCommand="{Binding PickContractReferenceCommand}"
+					                ButtonText="{l:Localize SelectContract}"
+					                ButtonStyle="{StaticResource SecondaryButton}"/>
 			<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
 															IsEncrypted="{Binding IsEncrypted}"
 															IsVisible="{Binding IsProtected}" />
