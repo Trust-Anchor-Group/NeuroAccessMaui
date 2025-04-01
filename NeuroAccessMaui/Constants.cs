@@ -535,6 +535,17 @@
 		}
 
 		/// <summary>
+		/// Generic delay intervals
+		/// </summary>
+		public static class Delays
+		{
+			/// <summary>
+			/// Default delay interval if waiting for something
+			/// </summary>
+			public static readonly TimeSpan Default = TimeSpan.FromMilliseconds(50);
+		}
+
+		/// <summary>
 		/// Timer Intervals
 		/// </summary>
 		public static class Intervals
