@@ -16,8 +16,7 @@ namespace NeuroAccessMaui.Services.Notification
 		/// </summary>
 		/// <typeparam name="T">Type of event to expect.</typeparam>
 		/// <param name="Before">If event is received before this time, it is opened automatically.</param>
-		void ExpectEvent<T>(DateTime Before)
-			where T : NotificationEvent;
+		void ExpectEvent<T>(DateTime Before, Predicate<T> Predicate) where T : NotificationEvent;
 
 		/// <summary>
 		/// Registers a new event and notifies the user.
@@ -76,6 +75,12 @@ namespace NeuroAccessMaui.Services.Notification
 		/// <param name="Events">Notification events, if found.</param>
 		/// <returns>If notification events where found for the given category.</returns>
 		bool TryGetNotificationEvents(NotificationEventType Type, CaseInsensitiveString Category, [NotNullWhen(true)] out NotificationEvent[]? Events);
+
+		/// <summary>
+		/// Gets all notification events across all types and categories.
+		/// </summary>
+		/// <returns>All recorded notification events.</returns>
+		NotificationEvent[] GetAllEvents();
 
 		/// <summary>
 		/// Event raised when a new notification has been logged.
