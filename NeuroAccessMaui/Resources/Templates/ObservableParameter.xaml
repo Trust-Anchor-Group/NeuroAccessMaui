@@ -459,7 +459,7 @@
 				<controls:ContractSelector
 										 EntryData="{Binding ContractReferenceValue, Mode=TwoWay}"
 										 EntryPlaceholderText="{Binding Guide}"
-										 EntryStyle="{StaticResource RegularCompositeEntry}"
+										 EntryStyle="{StaticResource OutlinedCompositeEntry}"
 										 EntryTopText="{l:Localize SelectContractEntryDescription}"
 										 EntryTopTextStyle="{StaticResource ParameterItemTitleLabel}"
 										 VerticalOptions="Center"
