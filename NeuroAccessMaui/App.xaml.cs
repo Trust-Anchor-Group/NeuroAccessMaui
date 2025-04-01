@@ -166,6 +166,8 @@ namespace NeuroAccessMaui
 		/// </summary>
 		public static event EventHandler? AppActivated;
 
+		public Task<bool> InitCompleted => this.initCompleted;
+
 
 		#endregion
 
@@ -213,7 +215,6 @@ namespace NeuroAccessMaui
 				this.InitializeComponent();
 				AppTheme? CurrentTheme = ServiceRef.TagProfile.Theme;
 				ServiceRef.TagProfile.SetTheme(CurrentTheme ?? AppTheme.Light);
-/*
 				try
 				{
 					this.MainPage = ServiceHelper.GetService<AppShell>();
@@ -222,16 +223,16 @@ namespace NeuroAccessMaui
 				{
 					this.HandleStartupException(Ex);
 				}
-*/
 			}
 		}
+		/*
 		protected override Window CreateWindow(IActivationState? activationState)
 		{
 			if(this.Windows.Any())
 				return this.Windows[0];
 			return new Window(ServiceHelper.GetService<AppShell>());
 		}
-
+		*/
 		#endregion
 
 		#region Initialization
