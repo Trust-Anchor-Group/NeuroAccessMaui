@@ -19,7 +19,7 @@
 
 	<VisualElement.Resources>
 		<DataTemplate x:Key="SelectLanguageDataTemplate" x:DataType="l:LanguageInfo">
-			<Border
+			<Border AutomationId="{Binding MyNativeName}"
 				BackgroundColor="{AppThemeBinding Light={StaticResource NormalBackgroundLight},
 												  Dark={StaticResource NormalBackgroundDark}}"
 				Stroke="{AppThemeBinding Light={StaticResource NormalForegroundLight},
