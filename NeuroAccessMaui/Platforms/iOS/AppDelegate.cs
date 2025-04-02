@@ -33,7 +33,7 @@ namespace NeuroAccessMaui
 			Console.WriteLine("Silent data notification received: " + userInfo);
 			
 			// Forward the payload to a service or helper if you prefer to centralize handling.
-			NotificationDelegate.ProccessSilentNotification(userInfo);
+			NotificationDelegate.ProcessSilentNotification(userInfo);
 
 			completionHandler(UIBackgroundFetchResult.NewData);
 		}
@@ -46,10 +46,9 @@ namespace NeuroAccessMaui
 
 		public override bool WillFinishLaunching(UIApplication app, NSDictionary options)
 		{
-         Firebase.Core.App.Configure();
-			
+			CrossFirebase.Initialize();
+		
 			UNUserNotificationCenter.Current.Delegate = this.notificationDelegate;
-			UIApplication.SharedApplication.RegisterForRemoteNotifications();
 			
 			return base.WillFinishLaunching(app, options);
 		}

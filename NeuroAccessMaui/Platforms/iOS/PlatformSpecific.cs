@@ -444,43 +444,48 @@ namespace NeuroAccessMaui.Services
         /// <param name="data">Additional data as key-value pairs.</param>
         private async void ShowLocalNotification(string title, string body, IDictionary<string, string> data)
         {
-			// Check current notification settings without prompting the user
-			UNNotificationSettings Settings = await UNUserNotificationCenter.Current.GetNotificationSettingsAsync();
-            if (Settings.AuthorizationStatus != UNAuthorizationStatus.Authorized)
-            {
-                Console.WriteLine("Notifications are not authorized.");
-                return;
-            }
+			try
+			{
+				// Check current notification settings without prompting the user
+				UNNotificationSettings Settings = await UNUserNotificationCenter.Current.GetNotificationSettingsAsync();
+				if (Settings.AuthorizationStatus != UNAuthorizationStatus.Authorized)
+					return;
 
-			// Create the notification content
-			UNMutableNotificationContent Content = new UNMutableNotificationContent
-            {
-                Title = title,
-                Body = body,
-                Sound = UNNotificationSound.Default
-            };
+				// Create the notification content
+				UNMutableNotificationContent Content = new UNMutableNotificationContent
+				{
+					Title = title,
+					Body = body,
+					Sound = UNNotificationSound.Default
+				};
 
-            // Add any additional data as UserInfo
-            if (data != null)
-            {
-				NSMutableDictionary UserInfo = new();
-                foreach (KeyValuePair<string, string> Pair in data)
-                {
-                    UserInfo.SetValueForKey(new NSString(Pair.Value), new NSString(Pair.Key));
-                }
-                Content.UserInfo = UserInfo;
-            }
+				// Add any additional data as UserInfo
+				if (data != null)
+				{
+					NSMutableDictionary UserInfo = new();
+					foreach (KeyValuePair<string, string> Pair in data)
+					{
+						UserInfo.SetValueForKey(new NSString(Pair.Value), new NSString(Pair.Key));
+					}
+					Content.UserInfo = UserInfo;
+				}
 
-			// Schedule the notification after a short delay
-			UNTimeIntervalNotificationTrigger Trigger = UNTimeIntervalNotificationTrigger.CreateTrigger(1, false);
-			UNNotificationRequest Request = UNNotificationRequest.FromIdentifier(Guid.NewGuid().ToString(), Content, Trigger);
-            UNUserNotificationCenter.Current.AddNotificationRequest(Request, error =>
-            {
-                if (error != null)
-                {
-                    Console.WriteLine($"Error scheduling notification: {error.LocalizedDescription}");
-                }
-            });
+				// Schedule the notification after a short delay
+				UNTimeIntervalNotificationTrigger Trigger = UNTimeIntervalNotificationTrigger.CreateTrigger(1, false);
+				UNNotificationRequest Request = UNNotificationRequest.FromIdentifier(Guid.NewGuid().ToString(), Content, Trigger);
+				UNUserNotificationCenter.Current.AddNotificationRequest(Request, error =>
+				{
+					if (error is not null)
+					{
+						ServiceRef.LogService.LogWarning($"Error scheduling notification: {error.LocalizedDescription}");
+					}
+				});
+
+			}
+			catch (Exception ex)
+			{
+				return;
+			}
         }
 
         // The following methods use the helper above.

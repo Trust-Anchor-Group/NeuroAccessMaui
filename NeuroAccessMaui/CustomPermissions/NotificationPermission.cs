@@ -87,7 +87,6 @@ namespace NeuroAccessMaui.CustomPermissions
             (bool Granted, NSError Error) = await UNUserNotificationCenter.Current.RequestAuthorizationAsync(
                 UNAuthorizationOptions.Alert | UNAuthorizationOptions.Badge | UNAuthorizationOptions.Sound);
 
-            /* Uncomment to register for remote notifications after requesting permission
             if (Granted)
             {
                 UIApplication.SharedApplication.InvokeOnMainThread(() =>
@@ -95,7 +94,6 @@ namespace NeuroAccessMaui.CustomPermissions
                     UIApplication.SharedApplication.RegisterForRemoteNotifications();
                 });
             }
-				*/
             return Granted ? PermissionStatus.Granted : PermissionStatus.Denied;
 #elif ANDROID
 			if (Build.VERSION.SdkInt >= BuildVersionCodes.Tiramisu && OperatingSystem.IsAndroidVersionAtLeast(33))

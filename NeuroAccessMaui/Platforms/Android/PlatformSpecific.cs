@@ -765,7 +765,7 @@ namespace NeuroAccessMaui.Services
 			NotificationManager.Notify(100, Builder.Build());
 		}
 
-		public void ShowIdentitiesNotification(string Title, string MessageBody, IDictionary<string, string?> Data)
+		public void ShowIdentitiesNotification(string Title, string MessageBody, IDictionary<string, string> Data)
 		{
 			Context Context = Application.Context;
 			Intent Intent = new Intent(Context, typeof(MainActivity));
@@ -839,7 +839,7 @@ namespace NeuroAccessMaui.Services
 			NotificationManager.Notify(102, Builder.Build());
 		}
 
-		public void ShowContractsNotification(string Title, string MessageBody, IDictionary<string, string?> Data)
+		public void ShowContractsNotification(string Title, string MessageBody, IDictionary<string, string> Data)
 		{
 			Context Context = Application.Context;
 			Intent Intent = new Intent(Context, typeof(MainActivity));
