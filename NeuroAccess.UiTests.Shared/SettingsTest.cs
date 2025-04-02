@@ -100,7 +100,7 @@ namespace NeuroAccess.UiTests
 			transferButton.Click();
 
 			// Stäng popupen
-			AutoFindElement("PasswordPopup_CancelButton", 20).Click();
+			AutoFindElement("PasswordPopup_CancelTextButton", 20).Click();
 
 			// Klicka på tillbaka-knapp
 			AutoFindElement("BackButton", 20).Click();
@@ -115,7 +115,7 @@ namespace NeuroAccess.UiTests
 			AutoFindElement("ChangePasswordButton", 20).Click();
 
 			// Stäng popupen
-			AutoFindElement("PasswordPopup_CancelButton", 20).Click();
+			AutoFindElement("PasswordPopup_CancelTextButton", 20).Click();
 
 			// Klicka på tillbaka-knapp
 			AutoFindElement("BackButton", 20).Click();
