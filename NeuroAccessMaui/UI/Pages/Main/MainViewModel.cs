@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Resources.Languages;
@@ -32,6 +32,8 @@ namespace NeuroAccessMaui.UI.Pages.Main
 					await ServiceRef.IntentService.ProcessQueuedIntentsAsync();
 				else
 					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)], ServiceRef.Localizer[nameof(AppResources.NetworkSeemsToBeMissing)]);
+		
+				await Permissions.RequestAsync<NotificationPermission>();
 			}
 			catch (Exception Ex)
 			{
