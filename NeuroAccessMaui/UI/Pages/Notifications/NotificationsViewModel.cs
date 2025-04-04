@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.UI.MVVM;
+using NeuroAccessMaui.UI.Pages.Notifications.ObjectModel;
 
 namespace NeuroAccessMaui.UI.Pages.Notifications
 {
@@ -17,7 +18,7 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 		public ObservableTask NotificationsLoader = new();
 
 		[ObservableProperty]
-		private ObservableCollection<NotificationEvent> notifications = new();
+		private ObservableCollection<ObservableNotification> notifications = new();
 
 
 		protected override Task OnAppearing()
@@ -31,7 +32,7 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 				{
 					this.Notifications.Clear();
 					foreach (NotificationEvent Event in NotificationEvents)
-						this.Notifications.Add(Event);
+						this.Notifications.Add(new ObservableNotification(Event));
 				});
 			});
 			return base.OnAppearing();
@@ -52,11 +53,18 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 
 			//if notification is not already in the list, add it
 			///TODO: FIX this check
-			if (!this.Notifications.Any(n => n.ObjectId == e.Event.ObjectId))
+			if (!this.Notifications.Any(n => n.Notification == e.Event))
 			{
 				await MainThread.InvokeOnMainThreadAsync(() =>
 				{
-					this.Notifications.Add(e.Event);
+					try
+					{
+						this.Notifications.Add(new ObservableNotification(e.Event));
+					}
+					catch (Exception ex)
+					{
+						ServiceRef.LogService.LogException(ex);
+					}
 				});
 			}
 		}
