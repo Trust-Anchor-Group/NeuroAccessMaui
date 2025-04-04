@@ -8,30 +8,28 @@
                            xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views"
                            xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract"
                            xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ObjectModel"
-						   xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls" 
-						   xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+									xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls" 
+									xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
                            xmlns:ui="clr-namespace:NeuroAccessMaui.UI" >
 	<ContentView.Resources>
 		<objectModel:ParameterTemplateSelector x:Key="ParameterTemplateSelector"
-		                                 BooleanTemplate="{StaticResource BooleanParameterTemplate}"
-		                                 DateTemplate="{StaticResource DateParameterTemplate}"
-										         DateTimeTemplate="{StaticResource DateTimeParameterTemplate}"
-		                                 NumericalTemplate="{StaticResource NumericalParameterTemplate}"
-		                                 StringTemplate="{StaticResource StringParameterTemplate}"
-		                                 TimeTemplate="{StaticResource TimeParameterTemplate}"
-		                                 DurationTemplate="{StaticResource DurationParameterTemplate}"
-										         ContractReferenceTemplate="{StaticResource ContractReferenceParameterTemplate}"
-		                                 DefaultTemplate="{StaticResource DefaultParameterTemplate}" />
+			BooleanTemplate="{StaticResource BooleanParameterTemplate}"
+			DateTemplate="{StaticResource DateParameterTemplate}"
+			DateTimeTemplate="{StaticResource DateTimeParameterTemplate}"
+			NumericalTemplate="{StaticResource NumericalParameterTemplate}"
+			StringTemplate="{StaticResource StringParameterTemplate}"
+			TimeTemplate="{StaticResource TimeParameterTemplate}"
+			DurationTemplate="{StaticResource DurationParameterTemplate}"
+			ContractReferenceTemplate="{StaticResource ContractReferenceParameterTemplate}"
+			DefaultTemplate="{StaticResource DefaultParameterTemplate}" />
 	</ContentView.Resources>
-
 
 	<!-- Parameters -->
 	<Grid>
 		<CollectionView HorizontalOptions="Center"
 								ItemsSource="{Binding EditableParameters}"
 								ItemTemplate="{StaticResource ParameterTemplateSelector}"
-								SelectionMode="None" ItemSizingStrategy="MeasureAllItems"
-								>
+								SelectionMode="None" ItemSizingStrategy="MeasureAllItems">
 			<CollectionView.ItemsLayout>
 				<LinearItemsLayout Orientation="Vertical" ItemSpacing="{StaticResource SmallSpacing}" />
 			</CollectionView.ItemsLayout>
@@ -40,7 +38,5 @@
 			</CollectionView.EmptyView>
 		</CollectionView>
 	</Grid>
-
-
-
+	
 </views:BaseNewContractView>

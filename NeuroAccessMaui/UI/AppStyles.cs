@@ -39,7 +39,7 @@ namespace NeuroAccessMaui.UI
 		private static Style? requiredFieldMarker;
 		private static Style? requiredFieldMarkerSpan;
 		private static Style? roundedBorder;
-
+		private static Style? secondaryButton;
 
 		static AppStyles()
 		{
@@ -416,6 +416,18 @@ namespace NeuroAccessMaui.UI
 			{
 				roundedBorder ??= TryGetResource<Style>("RoundedBorder");
 				return roundedBorder!;
+			}
+		}
+
+		/// <summary>
+		/// Style for secondary button
+		/// </summary>
+		public static Style SecondaryButton
+		{
+			get
+			{
+				secondaryButton ??= TryGetResource<Style>("SecondaryButton");
+				return secondaryButton!;
 			}
 		}
 	}

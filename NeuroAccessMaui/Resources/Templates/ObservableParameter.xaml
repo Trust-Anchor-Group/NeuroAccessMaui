@@ -460,15 +460,14 @@
 										 EntryData="{Binding ContractReferenceValue, Mode=TwoWay}"
 										 EntryPlaceholderText="{Binding Guide}"
 										 EntryStyle="{StaticResource OutlinedCompositeEntry}"
-										 EntryTopText="{l:Localize SelectContractEntryDescription}"
-										 EntryTopTextStyle="{StaticResource ParameterItemTitleLabel}"
+										 TopText="{l:Localize SelectContractEntryDescription}"
+										 TopTextStyle="{StaticResource ParameterItemTitleLabel}"
 										 VerticalOptions="Center"
 										 TitleLabelText="{Binding Label}"
 										 TitleLabelStyle="{StaticResource RegularCompositeEntryLabel}"
 										 IsValid="{Binding IsValid}"
 					                ButtonCommand="{Binding PickContractReferenceCommand}"
-					                ButtonText="{l:Localize SelectContract}"
-					                ButtonStyle="{StaticResource SecondaryButton}"/>
+					                ButtonText="{l:Localize SelectContract}"/>
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
 															IsEncrypted="{Binding IsEncrypted}"
 															IsVisible="{Binding IsProtected}" />
