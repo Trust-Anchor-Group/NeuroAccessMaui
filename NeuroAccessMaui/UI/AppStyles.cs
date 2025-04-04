@@ -33,13 +33,13 @@ namespace NeuroAccessMaui.UI
 		private static Style? regularCompositeDatePicker;
 		private static Style? unicodeCharacterButton;
 		private static Style? imageOnlyButton;
-		private static Style? transparentImageButton;
 		private static Style? sendFrame;
 		private static Style? receiveFrame;
 		private static Style? requiredFieldMarker;
 		private static Style? requiredFieldMarkerSpan;
 		private static Style? roundedBorder;
 		private static Style? secondaryButton;
+		private static Style? secondaryImageButton;
 
 		static AppStyles()
 		{
@@ -351,14 +351,14 @@ namespace NeuroAccessMaui.UI
 		}
 
 		/// <summary>
-		/// Style for transparent image buttons.
+		/// Style for secondary image buttons.
 		/// </summary>
-		public static Style TransparentImageButton
+		public static Style SecondaryImageButton
 		{
 			get
 			{
-				transparentImageButton ??= TryGetResource<Style>("TransparentImageButton");
-				return transparentImageButton!;
+				secondaryImageButton ??= TryGetResource<Style>("SecondaryImageButton");
+				return secondaryImageButton!;
 			}
 		}
 
