@@ -732,16 +732,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 					ServiceRef.TagProfile.StepChanged += this.TagProfile_StepChanged;
 					ServiceRef.TagProfile.Changed += this.TagProfile_Changed;
 
-					if (ServiceRef.TagProfile.ShouldCreateClient() && !this.XmppParametersCurrent())
-						await this.CreateXmppClient();
-
-					if ((this.xmppClient is not null) &&
-						this.xmppClient.State == XmppState.Connected &&
-						ServiceRef.TagProfile.IsCompleteOrWaitingForValidation())
-					{
-						// Don't await this one, just fire and forget, to improve startup time.
-						_ = this.xmppClient.SetPresenceAsync(Availability.Online);
-					}
+					_ = this.CreateClientAsync();
 
 					this.EndLoad(true);
 				}
@@ -751,6 +742,28 @@ namespace NeuroAccessMaui.Services.Xmpp
 					ServiceRef.LogService.LogException(ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
 					this.EndLoad(false);
 				}
+			}
+		}
+
+		private async Task CreateClientAsync()
+		{
+			try
+			{
+				if (ServiceRef.TagProfile.ShouldCreateClient() && !this.XmppParametersCurrent())
+					await this.CreateXmppClient();
+
+				if ((this.xmppClient is not null) &&
+					this.xmppClient.State == XmppState.Connected &&
+					ServiceRef.TagProfile.IsCompleteOrWaitingForValidation())
+				{
+					// Don't await this one, just fire and forget, to improve startup time.
+					_ = this.xmppClient.SetPresenceAsync(Availability.Online);
+				}
+			}
+			catch (Exception ex)
+			{
+				ex = Log.UnnestException(ex);
+				ServiceRef.LogService.LogException(ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
 			}
 		}
 
