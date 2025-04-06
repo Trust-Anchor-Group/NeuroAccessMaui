@@ -10,6 +10,15 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace NeuroAccessMaui.UI.Pages.Notifications
 {
+	/// <summary>
+	/// Converts a <see cref="DateTime"/> value into a contextually formatted date string.
+	/// </summary>
+	/// <remarks>
+	/// This converter implements the <see cref="IValueConverter"/> interface to provide context-aware date formatting.
+	/// It returns localized strings for "Today" and "Yesterday" when appropriate. If the date is within the current year,
+	/// it formats the date as "MMMM dd" (e.g., "April 27"). Otherwise, it formats the date as "MM/dd/yyyy".
+	/// This behavior is useful for displaying notifications or other time-sensitive UI elements in a user-friendly manner.
+	/// </remarks>
 	public class ContextualDateConverter : IValueConverter
 	{
 		public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
