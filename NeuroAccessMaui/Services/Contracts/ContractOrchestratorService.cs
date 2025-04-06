@@ -504,6 +504,11 @@ namespace NeuroAccessMaui.Services.Contracts
 		{
 			try
 			{
+				bool Connected = await ServiceRef.XmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect);
+
+				if (!Connected)
+					throw new TimeoutException();
+
 				LegalIdentity Identity = await ServiceRef.XmppService.GetLegalIdentity(LegalId);
 				MainThread.BeginInvokeOnMainThread(async () =>
 				{
@@ -526,6 +531,13 @@ namespace NeuroAccessMaui.Services.Contracts
 							ServiceRef.Localizer[nameof(AppResources.APetitionHasBeenSentToTheOwner)]);
 					}
 				});
+			}
+			catch (TimeoutException)
+			{
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.AppNotConnected)],
+					ServiceRef.Localizer[nameof(AppResources.PleaseTryAgain)],
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
 			}
 			catch (Exception ex)
 			{
