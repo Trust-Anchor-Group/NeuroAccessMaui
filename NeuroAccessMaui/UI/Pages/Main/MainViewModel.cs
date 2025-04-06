@@ -28,13 +28,17 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			await base.OnAppearing();
 			try
 			{
-				bool Connected = await ServiceRef.XmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect);
-				if (Connected)
-					await ServiceRef.IntentService.ProcessQueuedIntentsAsync();
-				else
-					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)], ServiceRef.Localizer[nameof(AppResources.NetworkSeemsToBeMissing)]);
+				try
+				{
+					await Permissions.RequestAsync<NotificationPermission>();
+				}
+				catch
+				{
+					//Normal operation if Notification is not supported or denied
+				}
 		
-				await Permissions.RequestAsync<NotificationPermission>();
+				_ = await ServiceRef.XmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect);
+				await ServiceRef.IntentService.ProcessQueuedIntentsAsync();
 			}
 			catch (Exception Ex)
 			{
