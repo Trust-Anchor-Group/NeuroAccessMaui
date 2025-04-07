@@ -13,7 +13,6 @@ namespace NeuroAccessMaui
 	[Register("AppDelegate")]
 	public class AppDelegate : MauiUIApplicationDelegate
 	{
-		private readonly NotificationDelegate notificationDelegate = new NotificationDelegate();
 
 		protected override MauiApp CreateMauiApp()
 		{
@@ -31,9 +30,61 @@ namespace NeuroAccessMaui
 		public static void DidReceiveRemoteNotification(UIApplication application, NSDictionary userInfo, Action<UIBackgroundFetchResult> completionHandler)
 		{
 			Console.WriteLine("Silent data notification received: " + userInfo);
-			
-			// Forward the payload to a service or helper if you prefer to centralize handling.
-			NotificationDelegate.ProcessSilentNotification(userInfo);
+
+			// Extract values from the NSDictionary.
+			string? Title = userInfo["myTitle"]?.ToString();
+			string? Body = userInfo["myBody"]?.ToString();
+			string? ChannelId = userInfo["channelId"]?.ToString();
+
+			if (Title == null || Body == null)
+			{
+				ServiceRef.LogService.LogWarning("NotificationDelegate, Received notification with missing title or body.");
+				return;
+			}
+
+			// Convert the NSDictionary to an IDictionary<string, string>
+			Dictionary<string, string> Payload = new Dictionary<string, string>();
+			foreach (NSObject Key in userInfo.Keys)
+			{
+				Payload[Key.ToString()] = userInfo[Key]?.ToString() ?? string.Empty;
+			}
+
+
+			// Switch based on channelId to handle different types of notifications.
+			switch (ChannelId)
+			{
+				case Constants.PushChannels.Messages:
+					ServiceRef.PlatformSpecific.ShowMessageNotification(Title, Body, Payload);
+					break;
+
+				case Constants.PushChannels.Petitions:
+					ServiceRef.PlatformSpecific.ShowPetitionNotification(Title, Body, Payload);
+					break;
+
+				case Constants.PushChannels.Identities:
+					ServiceRef.PlatformSpecific.ShowIdentitiesNotification(Title, Body, Payload);
+					break;
+
+				case Constants.PushChannels.Contracts:
+					ServiceRef.PlatformSpecific.ShowContractsNotification(Title, Body, Payload);
+					break;
+
+				case Constants.PushChannels.EDaler:
+					ServiceRef.PlatformSpecific.ShowEDalerNotification(Title, Body, Payload);
+					break;
+
+				case Constants.PushChannels.Tokens:
+					ServiceRef.PlatformSpecific.ShowTokenNotification(Title, Body, Payload);
+					break;
+
+				case Constants.PushChannels.Provisioning:
+					ServiceRef.PlatformSpecific.ShowProvisioningNotification(Title, Body, Payload);
+					break;
+
+				default:
+					// ignore
+					break;
+			}
 
 			completionHandler(UIBackgroundFetchResult.NewData);
 		}
