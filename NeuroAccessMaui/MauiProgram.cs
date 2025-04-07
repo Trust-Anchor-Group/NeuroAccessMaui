@@ -59,7 +59,7 @@ namespace NeuroAccessMaui
 			});
 
 			Builder.UseSkiaSharp();
-			Builder.RegisterFirebaseServices();
+			//Builder.RegisterFirebaseServices();
 #if DEBUG
 			Builder.EnableHotReload();
 #endif
