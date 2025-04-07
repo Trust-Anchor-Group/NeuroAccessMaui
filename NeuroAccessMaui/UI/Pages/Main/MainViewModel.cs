@@ -76,9 +76,9 @@ namespace NeuroAccessMaui.UI.Pages.Main
 					await MainThread.InvokeOnMainThreadAsync(async () => await ServiceRef.TagProfile.SetLegalIdentity(RefreshedIdentity, false));
 				}
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
+				ServiceRef.LogService.LogException(Ex);
 			}
 			finally
 			{

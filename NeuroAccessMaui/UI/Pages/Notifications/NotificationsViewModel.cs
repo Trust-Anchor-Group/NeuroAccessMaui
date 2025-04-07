@@ -52,7 +52,7 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 			await this.NotificationsLoader.WaitAllAsync(true);
 
 			//if notification is not already in the list, add it
-			///TODO: FIX this check
+			//TODO: FIX this check
 			if (!this.Notifications.Any(n => n.Notification == e.Event))
 			{
 				await MainThread.InvokeOnMainThreadAsync(() =>

@@ -17,9 +17,6 @@ using Waher.Content;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Script;
 using Waher.Persistence;
-using NeuroAccessMaui.Services.Contacts;
-using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
-using NeuroAccessMaui.Services.UI;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 {

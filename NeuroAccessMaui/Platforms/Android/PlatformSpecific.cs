@@ -28,6 +28,7 @@ using Rect = Android.Graphics.Rect;
 using Application = Android.App.Application;
 using FileProvider = AndroidX.Core.Content.FileProvider;
 using Resource = Android.Resource;
+using System.Globalization;
 
 namespace NeuroAccessMaui.Services
 {
@@ -407,18 +408,25 @@ namespace NeuroAccessMaui.Services
 			{
 				try
 				{
-					if (Build.VERSION.SdkInt < BuildVersionCodes.M)
+					if (!OperatingSystem.IsAndroidVersionAtLeast(23))
 						return false;
+
 
 					Context Context = Android.App.Application.Context;
 
-					if (Context.CheckCallingOrSelfPermission(Manifest.Permission.UseBiometric) != Permission.Granted &&
-						Context.CheckCallingOrSelfPermission(Manifest.Permission.UseFingerprint) != Permission.Granted)
+					// For Android 28 and later, check for UseBiometric; for earlier versions, check for UseFingerprint.
+					if (OperatingSystem.IsAndroidVersionAtLeast(28)) // API 28+
 					{
-						return false;
+						if (Context.CheckCallingOrSelfPermission(Manifest.Permission.UseBiometric) != Permission.Granted)
+							return false;
+					}
+					else
+					{
+						if (Context.CheckCallingOrSelfPermission(Manifest.Permission.UseFingerprint) != Permission.Granted)
+							return false;
 					}
 
-					BiometricManager Manager = BiometricManager.From(Android.App.Application.Context);
+					BiometricManager Manager = BiometricManager.From(Context);
 					int Level = BiometricManager.Authenticators.BiometricWeak;
 
 					return Manager.CanAuthenticate(Level) == BiometricManager.BiometricSuccess;
@@ -469,20 +477,34 @@ namespace NeuroAccessMaui.Services
 		/// <returns>The BiometricMethod which is preferred/supported on this device</returns>
 		public BiometricMethod GetBiometricMethod()
 		{
-			if (Build.VERSION.SdkInt < BuildVersionCodes.M)
+			// Biometric authentication requires at least API level 23.
+			if (OperatingSystem.IsAndroidVersionAtLeast(23))
 				return BiometricMethod.None;
 
 			Context Context = Android.App.Application.Context;
 
-			if (Context.CheckCallingOrSelfPermission(Manifest.Permission.UseBiometric) != Permission.Granted &&
-				 Context.CheckCallingOrSelfPermission(Manifest.Permission.UseFingerprint) != Permission.Granted)
+			if (OperatingSystem.IsAndroidVersionAtLeast(28)) // API 28+
 			{
-				return BiometricMethod.None;
+				// Check for the UseBiometric permission (only available on API 28+)
+				if (Context.CheckCallingOrSelfPermission(Manifest.Permission.UseBiometric) != Permission.Granted)
+				{
+					return BiometricMethod.None;
+				}
+			}
+			else // For API levels 23 through 27
+			{
+				// Check for the UseFingerprint permission, which is available on earlier versions.
+				if (Context.CheckCallingOrSelfPermission(Manifest.Permission.UseFingerprint) != Permission.Granted)
+				{
+					return BiometricMethod.None;
+				}
 			}
 
 			BiometricManager Manager = BiometricManager.From(Context);
 			const int Level = BiometricManager.Authenticators.BiometricWeak;
-			return Manager.CanAuthenticate(Level) == BiometricManager.BiometricSuccess ? BiometricMethod.Unknown : BiometricMethod.None;
+			return Manager.CanAuthenticate(Level) == BiometricManager.BiometricSuccess
+					 ? BiometricMethod.Unknown
+					 : BiometricMethod.None;
 		}
 
 		/// <summary>
@@ -858,11 +880,11 @@ namespace NeuroAccessMaui.Services
 			}
 			if (Data.TryGetValue("contractId", out string? ContractId) && !string.IsNullOrEmpty(ContractId))
 			{
-				ContentBuilder.AppendLine().Append($"({ContractId})");
+				ContentBuilder.AppendLine().Append(CultureInfo.InvariantCulture, $"({ContractId})");
 			}
-			if (Data.TryGetValue("legalId", out string LegalId) && !string.IsNullOrEmpty(LegalId))
+			if (Data.TryGetValue("legalId", out string? LegalId) && !string.IsNullOrEmpty(LegalId))
 			{
-				ContentBuilder.AppendLine().Append($"({LegalId})");
+				ContentBuilder.AppendLine().Append(CultureInfo.InvariantCulture, $"({LegalId})");
 			}
 
 			PendingIntent? PendingIntent = Android.App.PendingIntent.GetActivity(Context, 103, Intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
@@ -895,13 +917,13 @@ namespace NeuroAccessMaui.Services
 
 			StringBuilder ContentBuilder = new StringBuilder();
 			ContentBuilder.Append(MessageBody);
-			if (Data.TryGetValue("amount", out string Amount) && !string.IsNullOrEmpty(Amount))
+			if (Data.TryGetValue("amount", out string? Amount) && !string.IsNullOrEmpty(Amount))
 			{
 				ContentBuilder.AppendLine().Append(Amount);
-				if (Data.TryGetValue("currency", out string Currency) && !string.IsNullOrEmpty(Currency))
+				if (Data.TryGetValue("currency", out string? Currency) && !string.IsNullOrEmpty(Currency))
 					ContentBuilder.Append(" " + Currency);
-				if (Data.TryGetValue("timestamp", out string Timestamp) && !string.IsNullOrEmpty(Timestamp))
-					ContentBuilder.Append($" ({Timestamp})");
+				if (Data.TryGetValue("timestamp", out string? Timestamp) && !string.IsNullOrEmpty(Timestamp))
+               ContentBuilder.Append(string.Format(CultureInfo.InvariantCulture, " ({0})", Timestamp));
 			}
 
 			PendingIntent? PendingIntent = Android.App.PendingIntent.GetActivity(Context, 104, Intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
@@ -934,10 +956,10 @@ namespace NeuroAccessMaui.Services
 
 			StringBuilder ContentBuilder = new StringBuilder();
 			ContentBuilder.Append(MessageBody);
-			if (Data.TryGetValue("value", out string Value) && !string.IsNullOrEmpty(Value))
+			if (Data.TryGetValue("value", out string? Value) && !string.IsNullOrEmpty(Value))
 			{
 				ContentBuilder.AppendLine().Append(Value);
-				if (Data.TryGetValue("currency", out string Currency) && !string.IsNullOrEmpty(Currency))
+				if (Data.TryGetValue("currency", out string? Currency) && !string.IsNullOrEmpty(Currency))
 					ContentBuilder.Append(" " + Currency);
 			}
 

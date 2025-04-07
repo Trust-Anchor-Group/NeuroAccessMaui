@@ -250,11 +250,6 @@ namespace NeuroAccessMaui.UI.Controls
         private float offsetY;
 
         /// <summary>
-        /// Starting scale for pinch gestures.
-        /// </summary>
-        private float startScale = 1f;
-
-        /// <summary>
         /// Starting horizontal offset for pinch gestures.
         /// </summary>
         private float startOffsetX;
@@ -335,7 +330,6 @@ namespace NeuroAccessMaui.UI.Controls
             this.scale = 1f;
             this.offsetX = 0f;
             this.offsetY = 0f;
-            this.startScale = 1f;
             this.startOffsetX = 0f;
             this.startOffsetY = 0f;
             this.canvasView.InvalidateSurface();

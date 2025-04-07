@@ -115,7 +115,13 @@ namespace NeuroAccessMaui
 			{
 				Intent Intent = new Intent(this, this.GetType()).AddFlags(ActivityFlags.SingleTop);
 
-				PendingIntent? PendingIntent = PendingIntent.GetActivity(this, 0, Intent, PendingIntentFlags.Mutable);
+				PendingIntentFlags Flags = PendingIntentFlags.UpdateCurrent;
+				if (OperatingSystem.IsAndroidVersionAtLeast(31))
+				{
+					Flags |= PendingIntentFlags.Mutable;
+				}
+
+				PendingIntent? PendingIntent = Android.App.PendingIntent.GetActivity(this, 0, Intent, Flags);
 				nfcAdapter.EnableForegroundDispatch(this, PendingIntent, null, null);
 			}
 

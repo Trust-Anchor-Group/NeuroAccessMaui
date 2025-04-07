@@ -266,9 +266,9 @@ namespace NeuroAccessMaui.UI.Controls
 
 			this.Content = this.badgeLabel;
 
-			var tapGesture = new TapGestureRecognizer();
-			tapGesture.Tapped += this.OnBadgeTapped;
-			this.GestureRecognizers.Add(tapGesture);
+			TapGestureRecognizer TapGesture = new TapGestureRecognizer();
+			TapGesture.Tapped += this.OnBadgeTapped;
+			this.GestureRecognizers.Add(TapGesture);
 		}
 
 		#endregion
@@ -280,7 +280,7 @@ namespace NeuroAccessMaui.UI.Controls
 		/// </summary>
 		/// <param name="sender">The source of the event.</param>
 		/// <param name="e">Event arguments.</param>
-		private void OnBadgeTapped(object sender, EventArgs e)
+		private void OnBadgeTapped(object? sender, EventArgs e)
 		{
 			if (this.Command?.CanExecute(null) == true)
 			{
@@ -460,7 +460,7 @@ namespace NeuroAccessMaui.UI.Controls
 		}
 
 		/// <summary>
-		/// Dynamically updates the <see cref="StrokeShape"/> based on the control's current height.
+		/// Dynamically updates the <see cref="Shape"/> based on the control's current height.
 		/// For multi-character text, it uses a <see cref="RoundRectangle"/> with a corner radius that is the smaller of the defined <see cref="CornerRadius"/> or half the control height.
 		/// For single-character text, an <see cref="Ellipse"/> is used.
 		/// For indicator mode, a fixed circular shape is applied.

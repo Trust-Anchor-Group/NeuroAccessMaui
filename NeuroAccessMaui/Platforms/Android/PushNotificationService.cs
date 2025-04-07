@@ -34,6 +34,12 @@ namespace NeuroAccessMaui.Platforms.Android
 				Message.Data.TryGetValue("myBody", out string? Body);
 				Message.Data.TryGetValue("channelId", out string? ChannelId);
 
+				if (string.IsNullOrEmpty(Title) || string.IsNullOrEmpty(Body))
+				{
+					// Handle the case where title or body is missing
+					return;
+				}
+
 				switch (ChannelId)
 				{
 					case Constants.PushChannels.Messages:
@@ -68,7 +74,7 @@ namespace NeuroAccessMaui.Platforms.Android
 						break;
 				}
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
 				//Log.Critical(ex);
 			}

@@ -723,7 +723,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			return i >= 0;
 		}
 
-		public override async Task Load(bool IsResuming, CancellationToken CancellationToken)
+		public override Task Load(bool IsResuming, CancellationToken CancellationToken)
 		{
 			if (this.BeginLoad(IsResuming, CancellationToken))
 			{
@@ -736,13 +736,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 					this.EndLoad(true);
 				}
-				catch (Exception ex)
+				catch (Exception Ex)
 				{
-					ex = Log.UnnestException(ex);
-					ServiceRef.LogService.LogException(ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
+					Ex = Log.UnnestException(Ex);
+					ServiceRef.LogService.LogException(Ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
 					this.EndLoad(false);
 				}
 			}
+			return Task.CompletedTask;
 		}
 
 		private async Task CreateClientAsync()
@@ -1904,7 +1905,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 					string Key = "ClientMessage" + Code;
 					string LocalizedMessage = ServiceRef.Localizer[Key];
 
-					if (!string.IsNullOrEmpty(LocalizedMessage) && !LocalizedMessage.Equals(Key))
+					if (!string.IsNullOrEmpty(LocalizedMessage) && !LocalizedMessage.Equals(Key, StringComparison.Ordinal))
 						Message = LocalizedMessage;
 				}
 				catch (Exception)

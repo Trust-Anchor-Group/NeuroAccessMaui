@@ -95,7 +95,7 @@ namespace NeuroAccessMaui.UI.Popups.QR
 		public ShowQRViewModel(byte[] QrCodeBin)
 		{
 			this.QrCodeBin = QrCodeBin;
-			this.LegalId = ServiceRef.TagProfile.LegalIdentity.Id;
+			this.LegalId = ServiceRef.TagProfile.LegalIdentity?.Id;
 
 			if (this.QrCodeWidth == 0 || this.QrCodeHeight == 0)
 			{

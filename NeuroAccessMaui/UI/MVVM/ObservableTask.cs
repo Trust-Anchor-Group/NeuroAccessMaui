@@ -21,10 +21,6 @@ namespace NeuroAccessMaui.UI.MVVM
 	/// <summary>
 	/// Provides a data-binding friendly mechanism to manage and report the status of asynchronous operations.
 	/// </summary>
-	/// <typeparam name="TResult">
-	/// The type of the result produced by the asynchronous operation. If the operation does not produce a result,
-	/// TResult will be <see cref="object"/>.
-	/// </typeparam>
 	/// <typeparam name="TProgress">
 	/// The type used for progress reporting. This allows you to provide progress updates in a strongly-typed manner,
 	/// for example, an integer percentage or a custom progress object.
@@ -262,7 +258,7 @@ namespace NeuroAccessMaui.UI.MVVM
 					await Current;
 				}
 			}
-			catch(TaskCanceledException Ex)
+			catch(TaskCanceledException)
 			{
 				//Ignore, normal operation
 			}
@@ -410,7 +406,7 @@ namespace NeuroAccessMaui.UI.MVVM
 		/// If a task is already in progress, it is canceled and replaced.
 		/// This method supports repeated loading.
 		/// </summary>
-		/// <param name="TaskFactory">
+		/// <param name="Task">
 		/// The factory delegate used to create the task.
 		/// The TaskContext parameter contains whether this is a refresh, a cancellation token, and a progress reporter.
 		/// </param>

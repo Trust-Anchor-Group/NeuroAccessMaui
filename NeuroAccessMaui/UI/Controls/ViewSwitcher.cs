@@ -89,13 +89,13 @@ namespace NeuroAccessMaui.UI.Controls
 		{
 			base.OnBindingContextChanged();
 			this.contentContainer.BindingContext = this.BindingContext;
-			foreach (View view in this.Views)
+			foreach (View View in this.Views)
 			{
-				view.BindingContext = this.BindingContext;
+				View.BindingContext = this.BindingContext;
 			}
 		}
 
-		protected override void OnPropertyChanged(string propertyName = null)
+		protected override void OnPropertyChanged(string? propertyName = null)
 		{
 			base.OnPropertyChanged(propertyName);
 			if (propertyName == ContentItemTemplateProperty.PropertyName ||
@@ -150,7 +150,7 @@ namespace NeuroAccessMaui.UI.Controls
 
 				try
 				{
-					object SelectedItem = null;
+					object? SelectedItem = null;
 					int Count = 0;
 					foreach (object? Item in Source)
 					{
