@@ -13,7 +13,7 @@
 							 xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
 							 Shell.FlyoutBehavior="Flyout"
 							 Shell.NavBarIsVisible="True">
-
+<!--
 	<Shell.TitleView>
 		<Grid Padding="10">
 			<controls:TemplatedButton Padding="{StaticResource SmallSpacing}" Margin="0" Command="{Binding OpenNotificationsCommand}"
@@ -36,7 +36,7 @@
 								 VerticalOptions="Start"
 								 TranslationY="-7" Scale=".9"/>
 		</Grid>
-	</Shell.TitleView>
+	</Shell.TitleView> -->
 	<Grid x:Name="TheMainGrid"
 		  RowDefinitions="*, auto"
 		  ColumnDefinitions="*"
