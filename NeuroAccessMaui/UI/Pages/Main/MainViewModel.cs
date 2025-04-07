@@ -28,6 +28,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			await base.OnAppearing();
 			try
 			{
+				/*
 				try
 				{
 					await Permissions.RequestAsync<NotificationPermission>();
@@ -36,7 +37,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 				{
 					//Normal operation if Notification is not supported or denied
 				}
-		
+				*/
 				_ = await ServiceRef.XmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect);
 				await ServiceRef.IntentService.ProcessQueuedIntentsAsync();
 			}
