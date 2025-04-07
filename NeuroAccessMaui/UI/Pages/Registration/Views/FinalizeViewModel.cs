@@ -152,10 +152,10 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		[RelayCommand]
 		private async Task ServiceProviderInfo()
 		{
-			string title = this.LocalizedDomainName;
-			string message = this.LocalizedDomainDescription;
-			ShowInfoPopup infoPage = new(title, message);
-			await ServiceRef.UiService.PushAsync(infoPage);
+			string Title = this.LocalizedDomainName;
+			string Message = this.LocalizedDomainDescription;
+			ShowInfoPopup InfoPage = new(Title, Message);
+			await ServiceRef.UiService.PushAsync(InfoPage);
 		}
     }
 }

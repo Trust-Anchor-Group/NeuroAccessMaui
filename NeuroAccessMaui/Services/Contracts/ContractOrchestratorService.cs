@@ -430,20 +430,20 @@ namespace NeuroAccessMaui.Services.Contracts
 			{
 				MainThread.BeginInvokeOnMainThread(async () =>
 				{
-					string? userMessage = null;
-					bool gotoRegistrationPage = false;
+					string? UserMessage = null;
+					bool GotoRegistrationPage = false;
 
 					if (Identity.State == IdentityState.Compromised)
 					{
-						userMessage = ServiceRef.Localizer[nameof(AppResources.YourLegalIdentityHasBeenCompromised)];
+						UserMessage = ServiceRef.Localizer[nameof(AppResources.YourLegalIdentityHasBeenCompromised)];
 						await ServiceRef.TagProfile.CompromiseLegalIdentity(Identity);
-						gotoRegistrationPage = true;
+						GotoRegistrationPage = true;
 					}
 					else if (Identity.State == IdentityState.Obsoleted)
 					{
-						userMessage = ServiceRef.Localizer[nameof(AppResources.YourLegalIdentityHasBeenObsoleted)];
+						UserMessage = ServiceRef.Localizer[nameof(AppResources.YourLegalIdentityHasBeenObsoleted)];
 						await ServiceRef.TagProfile.RevokeLegalIdentity(Identity);
-						gotoRegistrationPage = true;
+						GotoRegistrationPage = true;
 					}
 					else if (Identity.State == IdentityState.Approved && !await ServiceRef.XmppService!.HasPrivateKey(Identity.Id))
 					{
@@ -474,12 +474,12 @@ namespace NeuroAccessMaui.Services.Contracts
 					else
 						await ServiceRef.TagProfile.SetLegalIdentity(Identity, true);
 
-					if (gotoRegistrationPage)
+					if (GotoRegistrationPage)
 					{
 						await App.SetRegistrationPageAsync();
 
 						// After navigating to the registration page, show the user why this happened.
-						if (!string.IsNullOrWhiteSpace(userMessage))
+						if (!string.IsNullOrWhiteSpace(UserMessage))
 						{
 							// Do a begin invoke here so the page animation has time to finish,
 							// and the view model loads state et.c. before showing the alert.
@@ -487,7 +487,7 @@ namespace NeuroAccessMaui.Services.Contracts
 							MainThread.BeginInvokeOnMainThread(async () =>
 							{
 								await ServiceRef.UiService.DisplayAlert(
-									ServiceRef.Localizer[nameof(AppResources.YourLegalIdentity)], userMessage);
+									ServiceRef.Localizer[nameof(AppResources.YourLegalIdentity)], UserMessage);
 							});
 						}
 					}
@@ -623,10 +623,10 @@ namespace NeuroAccessMaui.Services.Contracts
 						if (Contract.ForMachinesNamespace == NeuroFeaturesClient.NamespaceNeuroFeatures
 						|| Contract.ForMachinesNamespace == Constants.ContractMachineNames.PaymentInstructionsNamespace)
 						{
-							CreationAttributesEventArgs creationAttr = await ServiceRef.XmppService.GetNeuroFeatureCreationAttributes();
-							ServiceRef.TagProfile.TrustProviderId = creationAttr.TrustProviderId;
+							CreationAttributesEventArgs CreationAttr = await ServiceRef.XmppService.GetNeuroFeatureCreationAttributes();
+							ServiceRef.TagProfile.TrustProviderId = CreationAttr.TrustProviderId;
 							ParameterValues ??= [];
-							ParameterValues.Add(new CaseInsensitiveString("TrustProvider"), creationAttr.TrustProviderId);
+							ParameterValues.Add(new CaseInsensitiveString("TrustProvider"), CreationAttr.TrustProviderId);
 						}
 
 						NewContractNavigationArgs e = new(Contract, ParameterValues);
@@ -649,10 +649,10 @@ namespace NeuroAccessMaui.Services.Contracts
 
 				MainThread.BeginInvokeOnMainThread(async () =>
 				{
-					bool succeeded = await ServiceRef.NetworkService.TryRequest(() =>
+					bool Succeeded = await ServiceRef.NetworkService.TryRequest(() =>
 						ServiceRef.XmppService.PetitionContract(ContractId, Guid.NewGuid().ToString(), Purpose));
 
-					if (succeeded)
+					if (Succeeded)
 					{
 						await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.PetitionSent)],
 							ServiceRef.Localizer[nameof(AppResources.APetitionHasBeenSentToTheContract)]);

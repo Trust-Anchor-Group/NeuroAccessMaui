@@ -167,16 +167,16 @@ namespace NeuroAccessMaui.Services.UI
 				int DesiredHeight = OriginalBitmap.Height / 4; //Reduce the height by a quarter
 
 				// Create an SKImageInfo with the desired width, height, and color type of the original
-				SKImageInfo resizedInfo = new(DesiredWidth, DesiredHeight, SKColorType.Gray8);
+				SKImageInfo ResizedInfo = new(DesiredWidth, DesiredHeight, SKColorType.Gray8);
 
 				// Create a new SKBitmap for the downscaled image
-				SKBitmap resizedBitmap = OriginalBitmap.Resize(resizedInfo, SKFilterQuality.Medium);
+				SKBitmap ResizedBitmap = OriginalBitmap.Resize(ResizedInfo, SKFilterQuality.Medium);
 
 #if PROFILING
 				Profiler.NewState("Prepare");
 #endif
 				//Blur image
-				IMatrix RezisedMatrix = Bitmaps.FromBitmap(resizedBitmap);
+				IMatrix RezisedMatrix = Bitmaps.FromBitmap(ResizedBitmap);
 				IMatrix GreyChannelMatrix = RezisedMatrix.GrayScale();
 
 #if PROFILING
@@ -704,27 +704,27 @@ namespace NeuroAccessMaui.Services.UI
 			try
 			{
 				//Fetch image
-				using HttpClient httpClient = new();
-				using HttpResponseMessage response = await httpClient.GetAsync(svgUri);
-				if (!response.IsSuccessStatusCode)
+				using HttpClient HttpClient = new();
+				using HttpResponseMessage Response = await HttpClient.GetAsync(svgUri);
+				if (!Response.IsSuccessStatusCode)
 					return null;
 
 				// Load SVG image
-				byte[] contentBytes = await response.Content.ReadAsByteArrayAsync();
-				SKSvg svg = new();
-				using (MemoryStream stream = new(contentBytes))
+				byte[] ContentBytes = await Response.Content.ReadAsByteArrayAsync();
+				SKSvg Svg = new();
+				using (MemoryStream Stream = new(ContentBytes))
 				{
-					svg.Load(stream);
+					Svg.Load(Stream);
 				}
 
 				//Check that the svg was parsed correct
-				if (svg.Picture is null)
+				if (Svg.Picture is null)
 					return null;
 
-				using (MemoryStream stream = new())
+				using (MemoryStream Stream = new())
 				{
-					if (svg.Picture.ToImage(stream, SKColor.Parse("#00FFFFFF"), SKEncodedImageFormat.Png, 100, 1, 1, SKColorType.Rgba8888, SKAlphaType.Premul, SKColorSpace.CreateSrgb()))
-						return ImageSource.FromStream(() => new MemoryStream(stream.ToArray()));
+					if (Svg.Picture.ToImage(Stream, SKColor.Parse("#00FFFFFF"), SKEncodedImageFormat.Png, 100, 1, 1, SKColorType.Rgba8888, SKAlphaType.Premul, SKColorSpace.CreateSrgb()))
+						return ImageSource.FromStream(() => new MemoryStream(Stream.ToArray()));
 					return null;
 				}
 			}

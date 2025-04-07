@@ -126,19 +126,19 @@ namespace NeuroAccessMaui.UI.Popups.QR
 			try
 			{
 				// Generate a random filename with a suitable extension (e.g., ".tmp", ".dat")
-				string fileName = $"{Guid.NewGuid()}.png";
+				string FileName = $"{Guid.NewGuid()}.png";
 
 				// Define the path to save the file in the cache directory
-				string filePath = Path.Combine(FileSystem.CacheDirectory, fileName);
+				string FilePath = Path.Combine(FileSystem.CacheDirectory, FileName);
 
 				// Save the byte array as a file
-				await File.WriteAllBytesAsync(filePath, this.QrCodeBin);
+				await File.WriteAllBytesAsync(FilePath, this.QrCodeBin);
 
 				// Share the file
 				await Share.Default.RequestAsync(new ShareFileRequest
 				{
 					Title = "QR Code",
-					File = new ShareFile(filePath, "image/png")
+					File = new ShareFile(FilePath, "image/png")
 				});
 
 			}

@@ -1254,11 +1254,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 			if (Client is null)
 				return false;
 
-			ServiceItemsDiscoveryEventArgs response;
+			ServiceItemsDiscoveryEventArgs Response;
 
 			try
 			{
-				response = await Client.ServiceItemsDiscoveryAsync(null, string.Empty, string.Empty);
+				Response = await Client.ServiceItemsDiscoveryAsync(null, string.Empty, string.Empty);
 			}
 			catch (Exception ex)
 			{
@@ -1276,7 +1276,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 			Tasks.Add(CheckFeatures(Client, SynchObject));
 
-			foreach (Item Item in response.Items)
+			foreach (Item Item in Response.Items)
 				Tasks.Add(CheckComponent(Client, Item, SynchObject));
 
 			await Task.WhenAll([.. Tasks]);
@@ -1314,39 +1314,39 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private static async Task CheckComponent(XmppClient Client, Item Item, object SynchObject)
 		{
-			ServiceDiscoveryEventArgs itemResponse = await Client.ServiceDiscoveryAsync(null, Item.JID, Item.Node);
+			ServiceDiscoveryEventArgs ItemResponse = await Client.ServiceDiscoveryAsync(null, Item.JID, Item.Node);
 
 			lock (SynchObject)
 			{
-				if (itemResponse.HasAnyFeature(ContractsClient.NamespacesLegalIdentities))
+				if (ItemResponse.HasAnyFeature(ContractsClient.NamespacesLegalIdentities))
 					ServiceRef.TagProfile.LegalJid = Item.JID;
 
-				if (itemResponse.HasAnyFeature(ThingRegistryClient.NamespacesDiscovery))
+				if (ItemResponse.HasAnyFeature(ThingRegistryClient.NamespacesDiscovery))
 					ServiceRef.TagProfile.RegistryJid = Item.JID;
 
-				if (itemResponse.HasAnyFeature(ProvisioningClient.NamespacesProvisioningDevice) &&
-					itemResponse.HasAnyFeature(ProvisioningClient.NamespacesProvisioningOwner) &&
-					itemResponse.HasAnyFeature(ProvisioningClient.NamespacesProvisioningToken))
+				if (ItemResponse.HasAnyFeature(ProvisioningClient.NamespacesProvisioningDevice) &&
+					ItemResponse.HasAnyFeature(ProvisioningClient.NamespacesProvisioningOwner) &&
+					ItemResponse.HasAnyFeature(ProvisioningClient.NamespacesProvisioningToken))
 				{
 					ServiceRef.TagProfile.ProvisioningJid = Item.JID;
 				}
 
-				if (itemResponse.HasFeature(HttpFileUploadClient.Namespace))
+				if (ItemResponse.HasFeature(HttpFileUploadClient.Namespace))
 				{
-					long maxSize = HttpFileUploadClient.FindMaxFileSize(Client, itemResponse) ?? 0;
-					ServiceRef.TagProfile.SetFileUploadParameters(Item.JID, maxSize);
+					long MaxSize = HttpFileUploadClient.FindMaxFileSize(Client, ItemResponse) ?? 0;
+					ServiceRef.TagProfile.SetFileUploadParameters(Item.JID, MaxSize);
 				}
 
-				if (itemResponse.HasFeature(XmppEventSink.NamespaceEventLogging))
+				if (ItemResponse.HasFeature(XmppEventSink.NamespaceEventLogging))
 					ServiceRef.TagProfile.LogJid = Item.JID;
 
-				if (itemResponse.HasFeature(XmppEventSink.NamespaceEventLogging))
+				if (ItemResponse.HasFeature(XmppEventSink.NamespaceEventLogging))
 					ServiceRef.TagProfile.LogJid = Item.JID;
 
-				if (itemResponse.HasFeature(EDalerClient.NamespaceEDaler))
+				if (ItemResponse.HasFeature(EDalerClient.NamespaceEDaler))
 					ServiceRef.TagProfile.EDalerJid = Item.JID;
 
-				if (itemResponse.HasFeature(NeuroFeaturesClient.NamespaceNeuroFeatures))
+				if (ItemResponse.HasFeature(NeuroFeaturesClient.NamespaceNeuroFeatures))
 					ServiceRef.TagProfile.NeuroFeaturesJid = Item.JID;
 			}
 		}

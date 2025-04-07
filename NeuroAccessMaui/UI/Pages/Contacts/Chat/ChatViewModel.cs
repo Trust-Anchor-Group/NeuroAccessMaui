@@ -1076,10 +1076,10 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 				return;
 			}
 
-			FileResult? pickedPhoto = await MediaPicker.PickPhotoAsync();
+			FileResult? PickedPhoto = await MediaPicker.PickPhotoAsync();
 
-			if (pickedPhoto is not null)
-				await this.EmbedMedia(pickedPhoto.FullPath, false);
+			if (PickedPhoto is not null)
+				await this.EmbedMedia(PickedPhoto.FullPath, false);
 		}
 
 		private bool CanExecuteEmbedId()

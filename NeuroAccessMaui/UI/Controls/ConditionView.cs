@@ -35,10 +35,10 @@ namespace NeuroAccessMaui.UI.Controls
 		protected override void OnBindingContextChanged()
 		{
 			base.OnBindingContextChanged();
-			if (True != null)
-				True.BindingContext = BindingContext;
-			if (False != null)
-				False.BindingContext = BindingContext;
+			if (this.True is not null)
+				this.True.BindingContext = this.BindingContext;
+			if (this.False is not null)
+				this.False.BindingContext = this.BindingContext;
 		}
 
 		public bool Condition

@@ -202,19 +202,19 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		[RelayCommand]
 		private static async Task ServiceProviderInfo()
 		{
-			string title = ServiceRef.Localizer[nameof(AppResources.WhatIsAServiceProvider)];
-			string message = ServiceRef.Localizer[nameof(AppResources.ServiceProviderInfo)];
-			ShowInfoPopup infoPage = new(title, message);
-			await ServiceRef.UiService.PushAsync(infoPage);
+			string Title = ServiceRef.Localizer[nameof(AppResources.WhatIsAServiceProvider)];
+			string Message = ServiceRef.Localizer[nameof(AppResources.ServiceProviderInfo)];
+			ShowInfoPopup InfoPage = new(Title, Message);
+			await ServiceRef.UiService.PushAsync(InfoPage);
 		}
 
 		[RelayCommand]
 		private async Task SelectedServiceProviderInfo()
 		{
-			string title = this.LocalizedName;
-			string message = this.LocalizedDescription;
-			ShowInfoPopup infoPage = new(title, message);
-			await ServiceRef.UiService.PushAsync(infoPage);
+			string Title = this.LocalizedName;
+			string Message = this.LocalizedDescription;
+			ShowInfoPopup InfoPage = new(Title, Message);
+			await ServiceRef.UiService.PushAsync(InfoPage);
 		}
 
 		[RelayCommand]
@@ -447,22 +447,22 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			{
 				async Task OnConnected(XmppClient client)
 				{
-					DateTime now = DateTime.Now;
-					LegalIdentity? createdIdentity = null;
-					LegalIdentity? approvedIdentity = null;
+					DateTime Now = DateTime.Now;
+					LegalIdentity? CreatedIdentity = null;
+					LegalIdentity? ApprovedIdentity = null;
 
-					bool serviceDiscoverySucceeded;
+					bool ServiceDiscoverySucceeded;
 
 					if (ServiceRef.TagProfile.NeedsUpdating())
 					{
-						serviceDiscoverySucceeded = await ServiceRef.XmppService.DiscoverServices(client);
+						ServiceDiscoverySucceeded = await ServiceRef.XmppService.DiscoverServices(client);
 					}
 					else
 					{
-						serviceDiscoverySucceeded = true;
+						ServiceDiscoverySucceeded = true;
 					}
 
-					if (serviceDiscoverySucceeded && !string.IsNullOrEmpty(ServiceRef.TagProfile.LegalJid))
+					if (ServiceDiscoverySucceeded && !string.IsNullOrEmpty(ServiceRef.TagProfile.LegalJid))
 					{
 						bool DestroyContractsClient = false;
 
@@ -487,19 +487,19 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 									if ((string.IsNullOrEmpty(LegalIdentityJid) || string.Compare(LegalIdentityJid, Identity.Id, StringComparison.OrdinalIgnoreCase) == 0) &&
 										Identity.HasClientSignature &&
 										Identity.HasClientPublicKey &&
-										Identity.From <= now &&
-										Identity.To >= now &&
+										Identity.From <= Now &&
+										Identity.To >= Now &&
 										(Identity.State == IdentityState.Approved || Identity.State == IdentityState.Created) &&
 										Identity.ValidateClientSignature() &&
 										await ContractsClient.HasPrivateKey(Identity))
 									{
 										if (Identity.State == IdentityState.Approved)
 										{
-											approvedIdentity = Identity;
+											ApprovedIdentity = Identity;
 											break;
 										}
 
-										createdIdentity ??= Identity;
+										CreatedIdentity ??= Identity;
 									}
 								}
 								catch (Exception)
@@ -517,14 +517,14 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 							{
 								this.LegalIdentity = createdIdentity;
 							}*/
-							LegalIdentity? selectedIdentity = approvedIdentity ?? createdIdentity;
+							LegalIdentity? SelectedIdentity = ApprovedIdentity ?? CreatedIdentity;
 
 							string SelectedId;
 
-							if (selectedIdentity is not null)
+							if (SelectedIdentity is not null)
 							{
-								await ServiceRef.TagProfile.SetAccountAndLegalIdentity(AccountName, client.PasswordHash, client.PasswordHashMethod, selectedIdentity);
-								SelectedId = selectedIdentity.Id;
+								await ServiceRef.TagProfile.SetAccountAndLegalIdentity(AccountName, client.PasswordHash, client.PasswordHashMethod, SelectedIdentity);
+								SelectedId = SelectedIdentity.Id;
 							}
 							else
 							{
@@ -563,23 +563,23 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 					}
 				}
 
-				(string hostName, int portNumber, bool isIpAddress) = await ServiceRef.NetworkService.LookupXmppHostnameAndPort(
+				(string HostName, int PortNumber, bool IsIpAddress) = await ServiceRef.NetworkService.LookupXmppHostnameAndPort(
 					ServiceRef.TagProfile?.Domain ?? string.Empty);
 
-				(bool succeeded, string? errorMessage, string[]? alternatives) = await ServiceRef.XmppService.TryConnectAndConnectToAccount(
+				(bool Succeeded, string? ErrorMessage, string[]? Alternatives) = await ServiceRef.XmppService.TryConnectAndConnectToAccount(
 					ServiceRef.TagProfile?.Domain ?? string.Empty,
-					isIpAddress, hostName, portNumber, AccountName, Password, PasswordMethod, Constants.LanguageCodes.Default,
+					IsIpAddress, HostName, PortNumber, AccountName, Password, PasswordMethod, Constants.LanguageCodes.Default,
 					typeof(App).Assembly, OnConnected);
 
-				if (!succeeded)
+				if (!Succeeded)
 				{
 					await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-						errorMessage ?? string.Empty,
+						ErrorMessage ?? string.Empty,
 						ServiceRef.Localizer[nameof(AppResources.Ok)]);
 				}
 
-				return succeeded;
+				return Succeeded;
 			}
 			catch (Exception ex)
 			{

@@ -14,7 +14,7 @@
 		public object? ConvertBack(object? value, Type targetType, object? parameter, System.Globalization.CultureInfo culture)
 		{
 			// If the value is a DateTime, return it; otherwise, return null
-			return value is DateTime dateTime ? dateTime : null;
+			return value is DateTime DateTime ? DateTime : null;
 		}
 	}
 }

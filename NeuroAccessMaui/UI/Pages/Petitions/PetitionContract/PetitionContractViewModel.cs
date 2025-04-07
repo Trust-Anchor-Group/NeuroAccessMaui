@@ -99,10 +99,10 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 			if (!await App.AuthenticateUserAsync(AuthenticationPurpose.AcceptPetitionRequest, true))
 				return;
 
-			bool succeeded = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.SendPetitionContractResponse(
+			bool Succeeded = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.SendPetitionContractResponse(
 				this.RequestedContract!.ContractId, this.petitionId!, this.requestorFullJid!, true));
 
-			if (succeeded)
+			if (Succeeded)
 				await this.GoBack();
 		}
 

@@ -109,9 +109,9 @@ namespace NeuroAccessMaui.UI.Controls
 
 		private static void OnSelectedIndexChanged(BindableObject bindable, object oldValue, object newValue)
 		{
-			if (bindable is ViewSwitcher viewSwitcher)
+			if (bindable is ViewSwitcher ViewSwitcher)
 			{
-				viewSwitcher.UpdateContent();
+				ViewSwitcher.UpdateContent();
 			}
 		}
 
@@ -167,8 +167,8 @@ namespace NeuroAccessMaui.UI.Controls
 					// For inline mode, check if the effective view is the same instance.
 					if (this.ItemsSource is null)
 					{
-						View effectiveView = this.GetEffectiveView(SelectedItem);
-						if (ReferenceEquals(this.contentContainer.Content, effectiveView))
+						View EffectiveView = this.GetEffectiveView(SelectedItem);
+						if (ReferenceEquals(this.contentContainer.Content, EffectiveView))
 						{
 							this.isTransitioning = false;
 							break;
@@ -244,11 +244,11 @@ namespace NeuroAccessMaui.UI.Controls
 			{
 				if (disposing)
 				{
-					if (this.contentContainer.Content is IDisposable disposableContent)
+					if (this.contentContainer.Content is IDisposable DisposableContent)
 					{
 						try
 						{
-							disposableContent.Dispose();
+							DisposableContent.Dispose();
 						}
 						catch (Exception ex)
 						{

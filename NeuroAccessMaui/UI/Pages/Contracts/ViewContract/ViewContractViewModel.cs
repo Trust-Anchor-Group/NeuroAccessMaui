@@ -75,17 +75,17 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			try
 			{
 				// Create an observable contract wrapper
-				ObservableContract contract = await ObservableContract.CreateAsync(this.args.Contract);
+				ObservableContract Contract = await ObservableContract.CreateAsync(this.args.Contract);
 
 				// If proposal info is available, try to find a friendly name
-				string proposalFriendlyName = await this.ResolveProposalFriendlyName();
+				string ProposalFriendlyName = await this.ResolveProposalFriendlyName();
 
 				// Update UI properties on the main threadRe
 				await MainThread.InvokeOnMainThreadAsync(() =>
 				{
-					this.Contract = contract;
+					this.Contract = Contract;
 					this.GenerateQrCode(Constants.UriSchemes.CreateSmartContractUri(this.Contract.ContractId));
-					this.ProposalFriendlyName = proposalFriendlyName;
+					this.ProposalFriendlyName = ProposalFriendlyName;
 					this.ProposalRole = this.args.Role ?? string.Empty;
 					this.ProposalMessage = this.args.Proposal ?? string.Empty;
 				});
@@ -351,9 +351,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		{
 			try
 			{
-				ViewContractStep currentStep = (ViewContractStep)Enum.Parse(typeof(ViewContractStep), this.CurrentState);
+				ViewContractStep CurrentStep = (ViewContractStep)Enum.Parse(typeof(ViewContractStep), this.CurrentState);
 
-				switch (currentStep)
+				switch (CurrentStep)
 				{
 					case ViewContractStep.Loading:
 					case ViewContractStep.Overview:
@@ -426,11 +426,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 			await this.GoToState(ViewContractStep.Loading);
 
-			string hrt = await this.Contract.Contract.ToMauiXaml(this.Contract.Contract.DeviceLanguage());
-			VerticalStackLayout hrtLayout = new VerticalStackLayout().LoadFromXaml(hrt);
+			string Hrt = await this.Contract.Contract.ToMauiXaml(this.Contract.Contract.DeviceLanguage());
+			VerticalStackLayout HrtLayout = new VerticalStackLayout().LoadFromXaml(Hrt);
 			await MainThread.InvokeOnMainThreadAsync(() =>
 			{
-				this.HumanReadableText = hrtLayout;
+				this.HumanReadableText = HrtLayout;
 			});
 
 			await this.GoToState(ViewContractStep.Review);
@@ -560,9 +560,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			{
 				this.SetIsBusy(true);
 
-				if (item is string label)
+				if (item is string Label)
 				{
-					if (label == this.Contract?.ContractId)
+					if (Label == this.Contract?.ContractId)
 					{
 						await Clipboard.SetTextAsync(Constants.UriSchemes.IotSc + ":" + this.Contract.ContractId);
 						await ServiceRef.UiService.DisplayAlert(
@@ -571,7 +571,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 					}
 					else
 					{
-						await Clipboard.SetTextAsync(label);
+						await Clipboard.SetTextAsync(Label);
 						await ServiceRef.UiService.DisplayAlert(
 							ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
 							ServiceRef.Localizer[nameof(AppResources.TagValueCopiedToClipboard)]);
@@ -602,8 +602,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		[RelayCommand]
 		private static async Task OpenContract(object item)
 		{
-			if (item is string contractId)
-				await App.OpenUrlAsync(Constants.UriSchemes.IotSc + ":" + contractId);
+			if (item is string ContractId)
+				await App.OpenUrlAsync(Constants.UriSchemes.IotSc + ":" + ContractId);
 		}
 
 		/// <summary>
@@ -634,9 +634,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			if (this.StateObject is null)
 				return;
 
-			string newState = newStep.ToString();
+			string NewState = newStep.ToString();
 
-			if (newState == this.CurrentState)
+			if (NewState == this.CurrentState)
 				return;
 
 			// Wait until the state can change
@@ -645,7 +645,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 			await MainThread.InvokeOnMainThreadAsync(async () =>
 			{
-				await StateContainer.ChangeStateWithAnimation(this.StateObject, newState);
+				await StateContainer.ChangeStateWithAnimation(this.StateObject, NewState);
 			});
 		}
 
@@ -716,7 +716,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 			
 
-			ViewContractStep currentStep = (ViewContractStep)Enum.Parse(typeof(ViewContractStep), this.CurrentState);
+			ViewContractStep CurrentStep = (ViewContractStep)Enum.Parse(typeof(ViewContractStep), this.CurrentState);
 			await this.GoToState(ViewContractStep.Loading);
 
 			await MainThread.InvokeOnMainThreadAsync(async () =>
@@ -733,7 +733,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				await this.PreparePropertiesAsync();
 			});
 
-			await this.GoToState(currentStep);
+			await this.GoToState(CurrentStep);
 		}
 
 		/// <summary>
@@ -807,9 +807,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			// If a proposal role is specified, only allow signing as that role (if available)
 			if (!string.IsNullOrEmpty(this.ProposalRole))
 			{
-				ObservableRole? role = this.Contract?.Roles.FirstOrDefault(r => r.Name == this.ProposalRole);
-				if (role is not null && !role.HasReachedMaxCount)
-					this.SignableRoles.Add(role);
+				ObservableRole? Role = this.Contract?.Roles.FirstOrDefault(r => r.Name == this.ProposalRole);
+				if (Role is not null && !Role.HasReachedMaxCount)
+					this.SignableRoles.Add(Role);
 			}
 			else if (this.Contract?.Contract.PartsMode == ContractParts.Open)
 			{

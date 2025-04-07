@@ -252,9 +252,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			if (this.StateObject is null)
 				return;
 
-			string newState = newStep.ToString();
+			string NewState = newStep.ToString();
 
-			if (newState == this.CurrentState)
+			if (NewState == this.CurrentState)
 				return;
 
 			while (!this.CanStateChange)
@@ -262,7 +262,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			await MainThread.InvokeOnMainThreadAsync(async () =>
 			{
-				await StateContainer.ChangeStateWithAnimation(this.StateObject, newState);
+				await StateContainer.ChangeStateWithAnimation(this.StateObject, NewState);
 			});
 		}
 

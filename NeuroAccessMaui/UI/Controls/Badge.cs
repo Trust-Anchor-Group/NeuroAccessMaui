@@ -300,9 +300,9 @@ namespace NeuroAccessMaui.UI.Controls
 		/// <param name="newValue">The new value.</param>
 		private static void OnTextMarginChanged(BindableObject bindable, object oldValue, object newValue)
 		{
-			if (bindable is Badge badge && newValue is Thickness newMargin)
+			if (bindable is Badge Badge && newValue is Thickness NewMargin)
 			{
-				badge.badgeLabel.Margin = newMargin;
+				Badge.badgeLabel.Margin = NewMargin;
 			}
 		}
 
@@ -314,33 +314,33 @@ namespace NeuroAccessMaui.UI.Controls
 		/// <param name="newValue">The new value.</param>
 		private static async void OnTextChanged(BindableObject bindable, object oldValue, object newValue)
 		{
-			if (bindable is Badge badge)
+			if (bindable is Badge Badge)
 			{
 				string TextValue = newValue?.ToString() ?? string.Empty;
 				// Update visibility based on the new text value.
-				badge.UpdateVisibility();
+				Badge.UpdateVisibility();
 
-				if (!badge.IsIndicator)
+				if (!Badge.IsIndicator)
 				{
-					badge.badgeLabel.Text = TextValue;
-					await badge.AnimateBounceAsync();
+					Badge.badgeLabel.Text = TextValue;
+					await Badge.AnimateBounceAsync();
 				}
 
 				// Enforce a circular shape if the text is a single character.
 				if (TextValue.Length == 1)
 				{
-					double Diameter = Math.Max(badge.Width, badge.Height);
-					badge.WidthRequest = Diameter;
-					badge.HeightRequest = Diameter;
-					badge.StrokeShape = new Ellipse();
+					double Diameter = Math.Max(Badge.Width, Badge.Height);
+					Badge.WidthRequest = Diameter;
+					Badge.HeightRequest = Diameter;
+					Badge.StrokeShape = new Ellipse();
 				}
 				else
 				{
 					// For multi-character text, allow the badge to auto-size.
-					badge.WidthRequest = -1;
-					badge.HeightRequest = -1;
+					Badge.WidthRequest = -1;
+					Badge.HeightRequest = -1;
 					// For multi-character text, update the corner radius dynamically.
-					badge.UpdateCornerRadius();
+					Badge.UpdateCornerRadius();
 				}
 			}
 		}
@@ -353,9 +353,9 @@ namespace NeuroAccessMaui.UI.Controls
 		/// <param name="newValue">The new value.</param>
 		private static void OnFontSizeChanged(BindableObject bindable, object oldValue, object newValue)
 		{
-			if (bindable is Badge badge)
+			if (bindable is Badge Badge)
 			{
-				badge.badgeLabel.FontSize = (double)newValue;
+				Badge.badgeLabel.FontSize = (double)newValue;
 			}
 		}
 
@@ -364,9 +364,9 @@ namespace NeuroAccessMaui.UI.Controls
 		/// </summary>
 		private static void OnTextColorChanged(BindableObject bindable, object oldValue, object newValue)
 		{
-			if (bindable is Badge badge)
+			if (bindable is Badge Badge)
 			{
-				badge.badgeLabel.TextColor = (Color)newValue;
+				Badge.badgeLabel.TextColor = (Color)newValue;
 			}
 		}
 
@@ -375,9 +375,9 @@ namespace NeuroAccessMaui.UI.Controls
 		/// </summary>
 		private static void OnFontFamilyChanged(BindableObject bindable, object oldValue, object newValue)
 		{
-			if (bindable is Badge badge)
+			if (bindable is Badge Badge)
 			{
-				badge.badgeLabel.FontFamily = newValue?.ToString();
+				Badge.badgeLabel.FontFamily = newValue?.ToString();
 			}
 		}
 
@@ -386,10 +386,10 @@ namespace NeuroAccessMaui.UI.Controls
 		/// </summary>
 		private static void OnCornerRadiusChanged(BindableObject bindable, object oldValue, object newValue)
 		{
-			if (bindable is Badge badge && newValue is double)
+			if (bindable is Badge Badge && newValue is double)
 			{
 				// When the user sets CornerRadius explicitly, update the shape.
-				badge.UpdateCornerRadius();
+				Badge.UpdateCornerRadius();
 			}
 		}
 
@@ -398,24 +398,24 @@ namespace NeuroAccessMaui.UI.Controls
 		/// </summary>
 		private static void OnIsIndicatorChanged(BindableObject bindable, object oldValue, object newValue)
 		{
-			if (bindable is Badge badge)
+			if (bindable is Badge Badge)
 			{
 				bool IsIndicatorValue = (bool)newValue;
 				if (IsIndicatorValue)
 				{
-					badge.badgeLabel.Text = string.Empty;
-					badge.HeightRequest = indicatorSize;
-					badge.WidthRequest = indicatorSize;
-					badge.StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(indicatorSize / 2) };
+					Badge.badgeLabel.Text = string.Empty;
+					Badge.HeightRequest = indicatorSize;
+					Badge.WidthRequest = indicatorSize;
+					Badge.StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(indicatorSize / 2) };
 				}
 				else
 				{
-					badge.HeightRequest = -1;
-					badge.WidthRequest = -1;
-					badge.badgeLabel.Text = badge.Text;
-					badge.UpdateCornerRadius();
+					Badge.HeightRequest = -1;
+					Badge.WidthRequest = -1;
+					Badge.badgeLabel.Text = Badge.Text;
+					Badge.UpdateCornerRadius();
 				}
-				badge.UpdateVisibility();
+				Badge.UpdateVisibility();
 			}
 		}
 
@@ -494,16 +494,16 @@ namespace NeuroAccessMaui.UI.Controls
 			base.OnBindingContextChanged();
 
 			// If the badge is in indicator mode, force the correct sizing and shape.
-			if (IsIndicator)
+			if (this.IsIndicator)
 			{
-				HeightRequest = indicatorSize;
-				WidthRequest = indicatorSize;
-				StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(indicatorSize / 2) };
+				this.HeightRequest = indicatorSize;
+				this.WidthRequest = indicatorSize;
+				this.StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(indicatorSize / 2) };
 			}
 
 			// Reapply visibility and corner radius adjustments.
-			UpdateVisibility();
-			UpdateCornerRadius();
+			this.UpdateVisibility();
+			this.UpdateCornerRadius();
 
 		}
 
