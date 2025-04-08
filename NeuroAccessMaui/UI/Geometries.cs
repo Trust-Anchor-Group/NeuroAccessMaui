@@ -480,6 +480,14 @@ namespace NeuroAccessMaui.UI
 			""");
 
 		/// <summary>
+		/// Arrow right
+		/// </summary>
+		public static readonly Geometry ArrowRightPath = GeometryConverter.ParseStringToPathGeometry(
+			"""
+			M-7.7051 10.59-3.1251 6-7.7051 1.41-6.2951 0-.2951 6-6.2951 12-7.7051 10.59Z
+			""");
+
+		/// <summary>
 		/// Calculator button glyph
 		/// </summary>
 		public static readonly Geometry CalculatorPath = GeometryConverter.ParseStringToPathGeometry(

@@ -4,6 +4,8 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
+	<Color x:Key="StrokeGrey">#B3B6B8</Color>
+
 	<!-- New Colors -->
 	<Color x:Key="ButtonContentGreyLight">#80181f25</Color>
 	<Color x:Key="ButtonContentWhitefLight">#f5f6f7</Color>

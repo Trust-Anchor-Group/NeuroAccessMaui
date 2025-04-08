@@ -26,7 +26,6 @@
 
 	<!-- Parameters -->
 	<Grid>
-
 		<Border Style="{StaticResource BorderSet}" Margin="{StaticResource MediumMargins}" >
 			<CollectionView HorizontalOptions="Center"
 								ItemsSource="{Binding EditableParameters}"
