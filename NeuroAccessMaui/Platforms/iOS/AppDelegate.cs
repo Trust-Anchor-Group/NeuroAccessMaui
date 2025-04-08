@@ -26,7 +26,7 @@ namespace NeuroAccessMaui
 			return app;
 		}
 
-      [Export("application:didReceiveRemoteNotification:fetchCompletionHandler:")]
+		[Export("application:didReceiveRemoteNotification:fetchCompletionHandler:")]
 		public static void DidReceiveRemoteNotification(UIApplication application, NSDictionary userInfo, Action<UIBackgroundFetchResult> completionHandler)
 		{
 			Console.WriteLine("Silent data notification received: " + userInfo);
@@ -90,18 +90,9 @@ namespace NeuroAccessMaui
 		}
 
 		[Export("application:didRegisterForRemoteNotificationsWithDeviceToken:")]
-      public static void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)
-      {
-			Messaging.SharedInstance.ApnsToken = deviceToken;
-      }
-
-		public override bool WillFinishLaunching(UIApplication app, NSDictionary options)
+		public static void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)
 		{
-			CrossFirebase.Initialize();
-		
-			UNUserNotificationCenter.Current.Delegate = this.notificationDelegate;
-			
-			return base.WillFinishLaunching(app, options);
+			Messaging.SharedInstance.ApnsToken = deviceToken;
 		}
 
 		/// <summary>
@@ -212,7 +203,7 @@ namespace NeuroAccessMaui
 			});
 		}
 
-		
+
 
 		/*
 		Not needed anymore as we have a new way to handle keyboard events in PlatformSpecific.cs, keeping this until new implementation has been tested

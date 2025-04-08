@@ -97,11 +97,11 @@
 	</PropertyGroup>
 
 	<!-- Firebase -->
-	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0-android'">
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0-android' and Exists('google-services.json')">
 		<GoogleServicesJson Include="google-services.json" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0-ios'">
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0-ios' and Exists('GoogleService-Info.plist')">
 		<BundleResource Include="GoogleService-Info.plist" />
 	</ItemGroup>
 
