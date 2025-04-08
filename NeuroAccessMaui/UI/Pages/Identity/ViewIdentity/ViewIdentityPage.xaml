@@ -32,15 +32,35 @@
 					<VerticalStackLayout>
 						<VerticalStackLayout Margin="{StaticResource LargeMargins}" Spacing="{StaticResource SmallSpacing}"
 													HorizontalOptions="Center" VerticalOptions="Center"
-													IsVisible="{Binding FirstPhotoSource, Converter={converters:OnlyShowNonEmpty}}">
-							<Border Style="{StaticResource OutlinedImageButtonBorder}" Padding="0" WidthRequest="250" HeightRequest="250" HorizontalOptions="Center">
-								<Image Source="{Binding FirstPhotoSource}" Rotation="{Binding FirstPhotoRotation}"
-										  Aspect="AspectFit" Margin="0">
-									<Image.GestureRecognizers>
-										<TapGestureRecognizer Command="{Binding ImageTappedCommand}"/>
-									</Image.GestureRecognizers>
-								</Image>
-							</Border>
+													IsVisible="{Binding HasPhotos}">
+							
+							<CarouselView x:Name="CarouselView"
+								 IsSwipeEnabled="{Binding Path=IsSwipeEnabled}"
+								 HorizontalOptions="FillAndExpand"
+								 VerticalOptions="FillAndExpand"
+								 ItemsSource="{Binding Photos}"
+								 IndicatorView="{x:Reference IndicatorView}">
+								<CarouselView.ItemTemplate>
+									<DataTemplate x:DataType="photos:Photo">
+										<Border Style="{StaticResource OutlinedImageButtonBorder}" Padding="0" WidthRequest="250" HeightRequest="250" HorizontalOptions="Center">
+											<Image Source="{Binding Source}" Rotation="{Binding Path=Rotation}" Aspect="AspectFill"/>
+										</Border>
+									</DataTemplate>
+								</CarouselView.ItemTemplate>
+							</CarouselView>
+
+							<IndicatorView x:Name="IndicatorView"
+								HorizontalOptions="Center"
+								Padding="0,0,0,0"
+								HeightRequest="20"
+								IsVisible="{Binding IsSwipeEnabled}">
+								<IndicatorView.Margin>
+									<OnPlatform x:TypeArguments="Thickness">
+										<On Platform="iOS" Value="0,-1,0,0"/>
+									</OnPlatform>
+								</IndicatorView.Margin>
+							</IndicatorView>
+
 							<VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="0">
 								<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding FullName}" HorizontalOptions="Center" Margin="0" Padding="0" />
 								<Label Style="{StaticResource InfoLabel}" Text="{Binding PersonalNumber}" HorizontalOptions="Center" Margin="0" Padding="0" />
