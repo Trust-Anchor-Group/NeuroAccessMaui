@@ -11,12 +11,10 @@ using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
 using ZXing.Net.Maui.Controls;
 using Microsoft.Maui.Platform;
-#if DEBUG
-using DotNet.Meteor.HotReload.Plugin;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using SkiaSharp.Views.Maui.Controls;
-
-
+#if DEBUG
+using DotNet.Meteor.HotReload.Plugin;
 #endif
 
 
