@@ -301,17 +301,20 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 				else
 					Attachments = this.LegalIdentity?.Attachments;
 
+				this.IsSwipeEnabled = false;
+
 				if (Attachments is not null)
 				{
-					Photo? First = await this.photosLoader.LoadPhotos(Attachments, SignWith.LatestApprovedIdOrCurrentKeys);
-
-					this.FirstPhotoSource = First?.Source;
-					this.FirstPhotoRotation = First?.Rotation ?? 0;
+					_ = await this.photosLoader.LoadPhotos(Attachments, SignWith.LatestApprovedIdOrCurrentKeys, () =>
+					{
+						MainThread.BeginInvokeOnMainThread(() => this.IsSwipeEnabled = this.Photos.Count > 1);
+						this.HasPhotos = this.Photos.Count > 0;
+					});
 				}
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
+				ServiceRef.LogService.LogException(Ex);
 			}
 		}
 
@@ -921,16 +924,10 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 		private bool isForReviewOrgCountry;
 
 		/// <summary>
-		/// Image source of the first photo in the identity.
+		/// Gets or sets whether a user can swipe to see the photos.
 		/// </summary>
 		[ObservableProperty]
-		private ImageSource? firstPhotoSource;
-
-		/// <summary>
-		/// Rotation of the first photo in the identity.
-		/// </summary>
-		[ObservableProperty]
-		private int firstPhotoRotation;
+		private bool isSwipeEnabled;
 
 		/// <summary>
 		/// Used to find out if a command can execute
@@ -958,6 +955,8 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 			base.SetIsBusy(IsBusy);
 			this.NotifyCommandsCanExecuteChanged();
 		}
+
+		#region Commands
 
 		/// <summary>
 		/// Copies Item to clipboard
@@ -1195,6 +1194,8 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 			}
 		}
 
+		#endregion
+
 		#region ILinkableView
 
 		/// <summary>
@@ -1203,7 +1204,6 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 		public override Task<string> Title => Task.FromResult<string>(ContactInfo.GetFriendlyName(this.LegalIdentity!));
 
 		#endregion
-
 
 	}
 }

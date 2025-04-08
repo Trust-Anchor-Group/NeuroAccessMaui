@@ -1882,9 +1882,10 @@ namespace NeuroAccessMaui.Services.Xmpp
 			{
 				try
 				{
-					string LocalizedMessage = ServiceRef.Localizer["ClientMessage" + Code];
+					string Key = "ClientMessage" + Code;
+					string LocalizedMessage = ServiceRef.Localizer[Key];
 
-					if (!string.IsNullOrEmpty(LocalizedMessage))
+					if (!string.IsNullOrEmpty(LocalizedMessage) && !LocalizedMessage.Equals(Key))
 						Message = LocalizedMessage;
 				}
 				catch (Exception)

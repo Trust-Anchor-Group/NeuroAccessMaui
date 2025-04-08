@@ -9,6 +9,7 @@ using NeuroAccessMaui.Services.Data;
 using NeuroAccessMaui.Services.Data.PersonalNumbers;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.Photos;
+using NeuroAccessMaui.UI.Controls;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Registration;
 using NeuroAccessMaui.UI.Pages.Utility.Images;
@@ -24,6 +25,14 @@ using IServiceProvider = Waher.Networking.XMPP.Contracts.IServiceProvider;
 
 namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 {
+	public enum IdentityDocumentType
+	{
+		None,
+		Passport,
+		NationalId,
+		DriverLicense
+	}
+
 	/// <summary>
 	/// The view model to bind to for when displaying the an application for a Personal ID.
 	/// </summary>
@@ -34,6 +43,12 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		private readonly PhotosLoader photosLoader;
 		private LegalIdentityAttachment? photo;
 		private ServiceProviderWithLegalId[]? peerReviewServices = null;
+
+		private const string passportFileName = "Passport.jpeg";
+		private const string nationalIdFrontFileName = "IdCardFront.jpg";
+		private const string nationalIdBackFileName = "IdCardBack.jpg";
+		private const string driverLicenseFrontFileName = "DriverLicenseFront.jpeg";
+		private const string driverLicenseBackFileName = "DriverLicenseBack.jpeg";
 
 		/// <summary>
 		/// Creates an instance of the <see cref="ApplyIdViewModel"/> class.
@@ -107,6 +122,11 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			this.RequiresOrgNumber = this.Organizational;
 
 			ServiceRef.XmppService.IdentityApplicationChanged += this.XmppService_IdentityApplicationChanged;
+
+			if (this.ApplicationSent && IdentityReference is not null)
+			{
+				await this.LoadAllAttachmentPhotos(IdentityReference);
+			}
 
 			await base.OnInitialize();
 
@@ -347,13 +367,69 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 					});
 				}
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
+				ServiceRef.LogService.LogException(Ex);
 			}
 		}
 
 		#region Properties
+
+		/// <summary>
+		/// The type of document the user provides
+		/// </summary>
+		[ObservableProperty]
+		private IdentityDocumentType documentType = IdentityDocumentType.None;
+
+		/// <summary>
+		/// Collection with all document types.
+		/// </summary>
+		[ObservableProperty]
+		private ObservableCollection<IdentityDocumentType> documentTypes =
+			new ObservableCollection<IdentityDocumentType>(
+				Enum.GetValues(typeof(IdentityDocumentType)).Cast<IdentityDocumentType>());
+
+		/// <summary>
+		/// Collection with all attached photos.
+		/// </summary>
+		[ObservableProperty]
+		private ObservableCollection<ImageSource> allPhotos = [];
+
+		/// <summary>
+		/// IF the user has a front proof of ID.
+		/// </summary>
+		[ObservableProperty]
+		private bool hasProofOfIdFront;
+
+		/// <summary>
+		/// The ImageSource of the front proof of ID.
+		/// </summary>
+		[ObservableProperty]
+		private ImageSource? proofOfIdFrontImage;
+
+		/// <summary>
+		/// The binary representation of the front proof of ID.
+		/// </summary>
+		[ObservableProperty]
+		private byte[]? proofOfIdFrontImageBin;
+
+		/// <summary>
+		/// if the user has a back proof of ID.
+		/// </summary>
+		[ObservableProperty]
+		private bool hasProofOfIdBack;
+
+		/// <summary>
+		/// The ImageSource of the back proof of ID.
+		/// </summary>
+		[ObservableProperty]
+		private ImageSource? proofOfIdBackImage;
+
+		/// <summary>
+		/// The binary representation of the back proof of ID.
+		/// </summary>
+		[ObservableProperty]
+		private byte[]? proofOfIdBackImageBin;
 
 		/// <summary>
 		/// If the user consents to the processing of the information.
@@ -559,6 +635,255 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 
 		#region Commands
 
+		private async Task LoadAllAttachmentPhotos(LegalIdentity identity)
+		{
+			if (identity?.Attachments is null)
+				return;
+			await MainThread.InvokeOnMainThreadAsync(() => this.AllPhotos.Clear());
+			try
+			{
+				// Get only attachments that are images.
+				IEnumerable<Attachment> ImageAttachments = identity.Attachments.GetImageAttachments();
+
+				foreach (Attachment Attachment in ImageAttachments)
+				{
+					// Use the static helper to load the photo.
+					(byte[]? Bin, string ContentType, int Rotation) = await PhotosLoader.LoadPhoto(Attachment);
+					if (Bin is not null)
+					{
+						ImageSource Source = ImageSource.FromStream(() => new MemoryStream(Bin));
+						MainThread.BeginInvokeOnMainThread(() => this.AllPhotos.Add(Source));
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e);
+				throw;
+			}
+		}
+
+
+		[RelayCommand]
+		private async Task TakeProofOfIdFront()
+		{
+			bool Permitted = await ServiceRef.PermissionService.CheckCameraPermissionAsync();
+			if (!Permitted)
+				return;
+			try
+			{
+				FileResult? Result = await MediaPicker.Default.CapturePhotoAsync(new MediaPickerOptions
+				{
+					Title = ServiceRef.Localizer[nameof(AppResources.TakePhoto)]
+				});
+				if (Result is null)
+					return;
+				await using Stream Stream = await Result.OpenReadAsync();
+				SKData? ImageData = CompressImage(Stream);
+				if (ImageData is null)
+					throw new Exception("Failed to compress photo");
+				byte[] CompressedBin = ImageData.ToArray();
+				using MemoryStream Ms = new MemoryStream(CompressedBin);
+				await this.AddProofOfIdFront(Ms, Result.FullPath, true);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					ServiceRef.Localizer[nameof(AppResources.FailedToLoadPhoto)]);
+			}
+		}
+
+		[RelayCommand]
+		private async Task PickProofOfIdFront()
+		{
+			try
+			{
+				FileResult? Result = await MediaPicker.Default.PickPhotoAsync(new MediaPickerOptions
+				{
+					Title = ServiceRef.Localizer[nameof(AppResources.PickPhoto)]
+				});
+				if (Result is null)
+					return;
+				await using Stream Stream = await Result.OpenReadAsync();
+				SKData? ImageData = CompressImage(Stream);
+				if (ImageData is null)
+					throw new Exception("Failed to compress photo");
+				byte[] CompressedBin = ImageData.ToArray();
+				using MemoryStream Ms = new MemoryStream(CompressedBin);
+				await this.AddProofOfIdFront(Ms, Result.FullPath, true);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					ServiceRef.Localizer[nameof(AppResources.FailedToLoadPhoto)]);
+			}
+		}
+
+		[RelayCommand]
+		private void RemoveProofOfIdFront()
+		{
+			this.ProofOfIdFrontImage = null;
+			this.ProofOfIdFrontImageBin = null;
+			this.HasProofOfIdFront = false;
+		}
+
+		[RelayCommand]
+		private async Task TakeProofOfIdBack()
+		{
+			bool Permitted = await ServiceRef.PermissionService.CheckCameraPermissionAsync();
+			if (!Permitted)
+				return;
+			try
+			{
+				FileResult? Result = await MediaPicker.Default.CapturePhotoAsync(new MediaPickerOptions
+				{
+					Title = ServiceRef.Localizer[nameof(AppResources.TakePhoto)]
+				});
+				if (Result is null)
+					return;
+				await using Stream Stream = await Result.OpenReadAsync();
+				SKData? ImageData = CompressImage(Stream);
+				if (ImageData is null)
+					throw new Exception("Failed to compress photo");
+				byte[] CompressedBin = ImageData.ToArray();
+				using MemoryStream Ms = new MemoryStream(CompressedBin);
+				await this.AddProofOfIdBack(Ms, Result.FullPath, true);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					ServiceRef.Localizer[nameof(AppResources.FailedToLoadPhoto)]);
+			}
+		}
+
+		[RelayCommand]
+		private async Task PickProofOfIdBack()
+		{
+			try
+			{
+				FileResult? Result = await MediaPicker.Default.PickPhotoAsync(new MediaPickerOptions
+				{
+					Title = ServiceRef.Localizer[nameof(AppResources.PickPhoto)]
+				});
+				if (Result is null)
+					return;
+				await using Stream Stream = await Result.OpenReadAsync();
+				SKData? ImageData = CompressImage(Stream);
+				if (ImageData is null)
+					throw new Exception("Failed to compress photo");
+				byte[] CompressedBin = ImageData.ToArray();
+				using MemoryStream Ms = new MemoryStream(CompressedBin);
+				await this.AddProofOfIdBack(Ms, Result.FullPath, true);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					ServiceRef.Localizer[nameof(AppResources.FailedToLoadPhoto)]);
+			}
+		}
+
+		[RelayCommand]
+		private void RemoveProofOfIdBack()
+		{
+			this.ProofOfIdBackImage = null;
+			this.ProofOfIdBackImageBin = null;
+			this.HasProofOfIdBack = false;
+		}
+
+		/// <summary>
+		/// Helper method to process and set the front proof-of-ID image.
+		/// </summary>
+		public async Task AddProofOfIdFront(Stream inputStream, string filePath, bool saveLocalCopy)
+		{
+			SKData? ImageData = null;
+			try
+			{
+				bool FallbackOriginal = true;
+				if (saveLocalCopy)
+				{
+					ImageData = CompressImage(inputStream);
+					if (ImageData is not null)
+					{
+						FallbackOriginal = false;
+						byte[] Bin = ImageData.ToArray();
+						this.ProofOfIdFrontImage = ImageSource.FromStream(() => new MemoryStream(Bin));
+						this.ProofOfIdFrontImageBin = Bin;
+						this.HasProofOfIdFront = true;
+						return;
+					}
+				}
+				if (FallbackOriginal)
+				{
+					byte[] Bin = await File.ReadAllBytesAsync(filePath);
+					this.ProofOfIdFrontImage = ImageSource.FromStream(() => new MemoryStream(Bin));
+					this.ProofOfIdFrontImageBin = Bin;
+					this.HasProofOfIdFront = true;
+				}
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiService.DisplayAlert(
+					 ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					 ServiceRef.Localizer[nameof(AppResources.FailedToLoadPhoto)]);
+			}
+			finally
+			{
+				ImageData?.Dispose();
+			}
+		}
+
+		/// <summary>
+		/// Helper method to process and set the back proof-of-ID image.
+		/// </summary>
+		public async Task AddProofOfIdBack(Stream inputStream, string filePath, bool saveLocalCopy)
+		{
+			SKData? ImageData = null;
+			try
+			{
+				bool FallbackOriginal = true;
+				if (saveLocalCopy)
+				{
+					ImageData = CompressImage(inputStream);
+					if (ImageData is not null)
+					{
+						FallbackOriginal = false;
+						byte[] Bin = ImageData.ToArray();
+						this.ProofOfIdBackImage = ImageSource.FromStream(() => new MemoryStream(Bin));
+						this.ProofOfIdBackImageBin = Bin;
+						this.HasProofOfIdBack = true;
+						return;
+					}
+				}
+				if (FallbackOriginal)
+				{
+					byte[] Bin = await File.ReadAllBytesAsync(filePath);
+					this.ProofOfIdBackImage = ImageSource.FromStream(() => new MemoryStream(Bin));
+					this.ProofOfIdBackImageBin = Bin;
+					this.HasProofOfIdBack = true;
+				}
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiService.DisplayAlert(
+					 ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					 ServiceRef.Localizer[nameof(AppResources.FailedToLoadPhoto)]);
+			}
+			finally
+			{
+				ImageData?.Dispose();
+			}
+		}
+
 		/// <summary>
 		/// Toggles <see cref="Consent"/>
 		/// </summary>
@@ -649,19 +974,71 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 
 			try
 			{
-				LegalIdentityAttachment[] Photos = this.photo is null ? [] : [this.photo];
+				// Build attachments in order:
+				// 1. Profile Photo (this.photo)
+				// 2. Proof of ID Front (if available)
+				// 3. Proof of ID Back (if available)
+				// 4. Additional Photos (if any)
+				List<LegalIdentityAttachment> Attachments = [];
+
+				if (this.photo is not null)
+					Attachments.Add(this.photo);
+
+				// Only add attachments if a document type other than None is selected.
+				if (this.DocumentType != IdentityDocumentType.None)
+				{
+					if (this.HasProofOfIdFront && this.ProofOfIdFrontImageBin is not null)
+					{
+						string FrontFileName = this.DocumentType switch
+						{
+							IdentityDocumentType.Passport => passportFileName,
+							IdentityDocumentType.NationalId => nationalIdFrontFileName,
+							IdentityDocumentType.DriverLicense => driverLicenseFrontFileName,
+							_ => nationalIdFrontFileName
+						};
+
+						LegalIdentityAttachment FrontAttachment = new(FrontFileName, "image/jpeg", this.ProofOfIdFrontImageBin);
+						Attachments.Add(FrontAttachment);
+					}
+
+					if ((this.DocumentType == IdentityDocumentType.NationalId || this.DocumentType == IdentityDocumentType.DriverLicense) &&
+					    this.HasProofOfIdBack && this.ProofOfIdBackImageBin is not null)
+					{
+						string BackFileName = this.DocumentType switch
+						{
+							IdentityDocumentType.NationalId => nationalIdBackFileName,
+							IdentityDocumentType.DriverLicense => driverLicenseBackFileName,
+							_ => nationalIdBackFileName
+						};
+
+						LegalIdentityAttachment BackAttachment = new(BackFileName, "image/jpeg", this.ProofOfIdBackImageBin);
+						Attachments.Add(BackAttachment);
+					}
+				}
+
+				if (this.AdditionalPhotos.Count > 0)
+				{
+					int Index = 1;
+					foreach (ObservableAttachmentCard Additional in this.AdditionalPhotos)
+					{
+						// Assuming each additional photo card has a valid ImageBin property.
+						if (Additional.ImageBin == null)
+							continue;
+						Attachments.Add(new LegalIdentityAttachment($"AdditionalPhoto{Index}.jpg", "image/jpeg", Additional.ImageBin));
+						Index++;
+					}
+				}
 
 				this.SetIsBusy(true);
 				this.IsApplying = true;
 				NumberInformation Info = await PersonalNumberSchemes.Validate(this.CountryCode!, this.PersonalNumber!);
 				this.PersonalNumber = Info.PersonalNumber;
 
-
 				bool HasIdWithPrivateKey = ServiceRef.TagProfile.LegalIdentity is not null &&
-					await ServiceRef.XmppService.HasPrivateKey(ServiceRef.TagProfile.LegalIdentity.Id);
+					 await ServiceRef.XmppService.HasPrivateKey(ServiceRef.TagProfile.LegalIdentity.Id);
 
 				(bool Succeeded, LegalIdentity? AddedIdentity) = await ServiceRef.NetworkService.TryRequest(() =>
-					ServiceRef.XmppService.AddLegalIdentity(this, !HasIdWithPrivateKey, Photos));
+					 ServiceRef.XmppService.AddLegalIdentity(this, !HasIdWithPrivateKey, Attachments.ToArray()));
 
 				if (Succeeded && AddedIdentity is not null)
 				{
@@ -674,10 +1051,12 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 					if (this.HasPhoto)
 					{
 						Attachment? FirstImage = AddedIdentity.Attachments.GetFirstImageAttachment();
-
 						if (FirstImage is not null && this.ImageBin is not null)
 							await ServiceRef.AttachmentCacheService.Add(FirstImage.Url, AddedIdentity.Id, true, this.ImageBin, FirstImage.ContentType);
 					}
+
+					// Load all attachment images immediately after applying.
+					await this.LoadAllAttachmentPhotos(AddedIdentity);
 				}
 			}
 			catch (Exception ex)
@@ -732,6 +1111,8 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 				this.ApplicationSent = false;
 				this.peerReviewServices = null;
 				this.HasFeaturedPeerReviewers = false;
+
+				await this.GoBack();
 			}
 			catch (Exception ex)
 			{
@@ -813,19 +1194,19 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 				if (Result is null)
 					return;
 
-				Stream stream = await Result.OpenReadAsync();
+				Stream Stream = await Result.OpenReadAsync();
 
-				byte[] InputBin = stream.ToByteArray() ?? throw new Exception("Failed to read photo stream");
+				byte[] InputBin = Stream.ToByteArray() ?? throw new Exception("Failed to read photo stream");
 
-				TaskCompletionSource<byte[]?> TCS = new();
-				await ServiceRef.UiService.GoToAsync(nameof(ImageCroppingPage), new ImageCroppingNavigationArgs(ImageSource.FromStream(() => new MemoryStream(InputBin)), TCS));
+				TaskCompletionSource<byte[]?> Tcs = new();
+				await ServiceRef.UiService.GoToAsync(nameof(ImageCroppingPage), new ImageCroppingNavigationArgs(ImageSource.FromStream(() => new MemoryStream(InputBin)), Tcs));
 
-				byte[] OutputBin = await TCS.Task ?? throw new Exception("Failed to crop photo");
+				byte[] OutputBin = await Tcs.Task ?? throw new Exception("Failed to crop photo");
 
-				MemoryStream MS = new(OutputBin);
+				MemoryStream Ms = new(OutputBin);
 
 
-				await this.AddPhoto(MS, Result.FullPath, true);
+				await this.AddPhoto(Ms, Result.FullPath, true);
 			}
 			catch (Exception ex)
 			{
@@ -964,9 +1345,9 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 
 				return SkBitmap.Encode(SKEncodedImageFormat.Jpeg, 80);
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
+				ServiceRef.LogService.LogException(Ex);
 				return null;
 			}
 		}
@@ -1042,27 +1423,27 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		{
 			try
 			{
-				FileResult? result = await MediaPicker.Default.PickPhotoAsync(new MediaPickerOptions()
+				FileResult? Result = await MediaPicker.Default.PickPhotoAsync(new MediaPickerOptions()
 				{
 					Title = ServiceRef.Localizer[nameof(AppResources.PickPhotoOfYourself)]
 				});
 
-				if (result is null)
+				if (Result is null)
 					return;
 
-				Stream stream = await result.OpenReadAsync();
-				byte[] inputBin = stream.ToByteArray() ?? throw new Exception("Failed to read photo stream");
+				Stream Stream = await Result.OpenReadAsync();
+				byte[] InputBin = Stream.ToByteArray() ?? throw new Exception("Failed to read photo stream");
 
-				TaskCompletionSource<byte[]?> tcs = new();
+				TaskCompletionSource<byte[]?> Tcs = new();
 				await ServiceRef.UiService.GoToAsync(
 					nameof(ImageCroppingPage),
-					new ImageCroppingNavigationArgs(ImageSource.FromStream(() => new MemoryStream(inputBin)), tcs)
+					new ImageCroppingNavigationArgs(ImageSource.FromStream(() => new MemoryStream(InputBin)), Tcs)
 				);
 
-				byte[] outputBin = await tcs.Task ?? throw new Exception("Failed to crop photo");
-				MemoryStream ms = new(outputBin);
+				byte[] OutputBin = await Tcs.Task ?? throw new Exception("Failed to crop photo");
+				MemoryStream Ms = new(OutputBin);
 
-				await this.AddPhoto(ms, result.FullPath, true);
+				await this.AddPhoto(Ms, Result.FullPath, true);
 			}
 			catch (Exception ex)
 			{
@@ -1139,6 +1520,140 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 
 			await this.ScanQrCode();
 		}
+
+		#region Additional Photos
+
+
+		// Command to take a new additional photo using the camera
+		[RelayCommand]
+		private async Task TakeAdditionalPhoto()
+		{
+			if (!MediaPicker.IsCaptureSupported)
+				return;
+
+			bool Permitted = await ServiceRef.PermissionService.CheckCameraPermissionAsync();
+			if (!Permitted)
+				return;
+
+			try
+			{
+				FileResult? Result = await MediaPicker.Default.CapturePhotoAsync(new MediaPickerOptions
+				{
+					Title = ServiceRef.Localizer[nameof(AppResources.TakePhoto)]
+				});
+				if (Result is null)
+					return;
+				await this.ProcessAdditionalPhoto(Result);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					ServiceRef.Localizer[nameof(AppResources.FailedToLoadPhoto)]);
+			}
+		}
+
+		// Command to pick a new additional photo from the gallery
+		[RelayCommand]
+		private async Task PickAdditionalPhoto()
+		{
+			try
+			{
+				FileResult? Result = await MediaPicker.Default.PickPhotoAsync(new MediaPickerOptions
+				{
+					Title = ServiceRef.Localizer[nameof(AppResources.PickPhoto)]
+				});
+				if (Result is null)
+					return;
+				await this.ProcessAdditionalPhoto(Result);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
+			}
+		}
+
+		// Command to remove an additional photo (parameter is the photo to remove)
+		[RelayCommand]
+		private void RemoveAdditionalPhoto(ObservableAttachmentCard photo)
+		{
+			MainThread.BeginInvokeOnMainThread(() => this.AdditionalPhotos.Remove(photo));
+		}
+
+		// Common logic to process a FileResult into an AdditionalPhoto,
+		// including reading, cropping, and compressing the image.
+		private async Task ProcessAdditionalPhoto(FileResult result)
+		{
+			// Open the image stream and read the bytes
+			using Stream Stream = await result.OpenReadAsync();
+			byte[] InputBin = Stream.ToByteArray() ?? throw new Exception("Failed to read photo stream");
+
+			// Allow user to crop the image (uses your existing ImageCroppingPage)
+			TaskCompletionSource<byte[]?> Tcs = new TaskCompletionSource<byte[]?>();
+			await ServiceRef.UiService.GoToAsync(nameof(ImageCroppingPage),
+				new ImageCroppingNavigationArgs(
+					ImageSource.FromStream(() => new MemoryStream(InputBin)), Tcs));
+
+			byte[] OutputBin = await Tcs.Task ?? throw new Exception("Failed to crop photo");
+			using MemoryStream Ms = new MemoryStream(OutputBin);
+
+			ObservableAttachmentCard? AdditionalPhoto = await CreateObservableAttachmentCardFromStream(Ms, result.FullPath, true);
+			if (AdditionalPhoto != null)
+			{
+				MainThread.BeginInvokeOnMainThread(() => this.AdditionalPhotos.Add(AdditionalPhoto));
+			}
+		}
+
+		// Helper method similar to your AddPhoto(Stream, ...) but returning an AdditionalPhoto instance.
+		private static async Task<ObservableAttachmentCard?> CreateObservableAttachmentCardFromStream(Stream inputStream, string filePath, bool saveLocalCopy)
+		{
+			SKData? ImageData = null;
+			try
+			{
+				bool FallbackOriginal = true;
+				if (saveLocalCopy)
+				{
+					ImageData = CompressImage(inputStream);
+					if (ImageData is not null)
+					{
+						FallbackOriginal = false;
+						byte[] Bin = ImageData.ToArray();
+						return new ObservableAttachmentCard
+						{
+							ImageBin = Bin,
+							ImageRotation = 0, // You may adjust if needed
+							Image = ImageSource.FromStream(() => new MemoryStream(Bin))
+						};
+					}
+				}
+				if (FallbackOriginal)
+				{
+					byte[] Bin = File.ReadAllBytes(filePath);
+					int Rotation = PhotosLoader.GetImageRotation(Bin);
+					return new ObservableAttachmentCard
+					{
+						ImageBin = Bin,
+						ImageRotation = Rotation,
+						Image = ImageSource.FromStream(() => new MemoryStream(Bin))
+					};
+				}
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					ServiceRef.Localizer[nameof(AppResources.FailedToLoadPhoto)]);
+			}
+			finally
+			{
+				ImageData?.Dispose();
+			}
+			return null;
+		}
+		#endregion
 
 		#endregion
 	}

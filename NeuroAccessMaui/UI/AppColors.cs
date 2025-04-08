@@ -1,4 +1,4 @@
-﻿namespace NeuroAccessMaui.UI
+namespace NeuroAccessMaui.UI
 {
 	/// <summary>
 	/// Static class that gives access to app-specific themed colors
@@ -65,6 +65,8 @@
 		private static Color? blue20AffirmDark;
 		private static Color? blueLight;
 		private static Color? blueDark;
+		private static Color? strokeGrey;
+		private static Color? offBlack;
 
 		/// <summary>
 		/// Primary foreground color.
@@ -721,6 +723,18 @@
 					blueLight ??= AppStyles.TryGetResource<Color>("BlueLight");
 					return blueLight!;
 				}
+			}
+		}
+
+		/// <summary>
+		/// Stroke grey color.
+		/// </summary>
+		public static Color StrokeGrey
+		{
+			get
+			{
+				strokeGrey ??= AppStyles.TryGetResource<Color>("StrokeGrey");
+				return strokeGrey!;
 			}
 		}
 	}

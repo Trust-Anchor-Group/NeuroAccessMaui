@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using NeuroAccessMaui.Services;
 using Waher.Events;
 using Waher.Script.Content.Functions.InputOutput;
@@ -30,6 +30,7 @@ namespace NeuroAccessMaui.UI
 		private static Style? frameSet;
 		private static Style? frameSubSet;
 		private static Style? clickableFrameSubSet;
+		private static Style? regularCompositePicker;
 		private static Style? regularCompositeEntry;
 		private static Style? regularCompositeEntryBorder;
 		private static Style? regularCompositeDatePicker;
@@ -45,6 +46,12 @@ namespace NeuroAccessMaui.UI
 		private static Style? tableCell;
 		private static Style?[] headers;
 		private static Style? roundedBorder;
+		private static Style? baseCompositeInputView;
+		private static Style? borderSet;
+		private static Style? tertiaryButton;
+		private static Style? transparentTemplateButtonBorder;
+		private static Style? transparentTemplateButtonLabel;
+		private static Style? transparentTemplateButtonPath;
 
 		static AppStyles()
 		{
@@ -480,6 +487,90 @@ namespace NeuroAccessMaui.UI
 			{
 				roundedBorder ??= TryGetResource<Style>("RoundedBorder");
 				return roundedBorder!;
+			}
+		}
+
+		/// <summary>
+		/// Style for regular composite pickers
+		/// </summary>
+		public static Style RegularCompositePicker
+		{
+			get
+			{
+				regularCompositePicker ??= TryGetResource<Style>("RegularCompositePicker");
+				return regularCompositePicker!;
+			}
+		}
+
+		/// <summary>
+		/// Style for base composite input view
+		/// </summary>
+		public static Style BaseCompositeInputView
+		{
+			get
+			{
+				baseCompositeInputView ??= TryGetResource<Style>("BaseCompositeInputView");
+				return baseCompositeInputView!;
+			}
+		}
+
+		/// <summary>
+		/// Style for border set
+		/// </summary>
+		public static Style BorderSet
+		{
+			get
+			{
+				borderSet ??= TryGetResource<Style>("BorderSet");
+				return borderSet!;
+			}
+		}
+
+		/// <summary>
+		/// Style for Tertiary Button
+		/// </summary>
+		public static Style TertiaryButton
+		{
+			get
+			{
+				tertiaryButton ??= TryGetResource<Style>("TertiaryButton");
+				return tertiaryButton!;
+			}
+		}
+
+		/// <summary>
+		/// Style for transparent template button border
+		/// </summary>
+		public static Style TransparentTemplateButtonBorder
+		{
+			get
+			{
+				transparentTemplateButtonBorder ??= TryGetResource<Style>("TransparentTemplateButtonBorder");
+				return transparentTemplateButtonBorder!;
+			}
+		}
+
+		/// <summary>
+		/// Style for transparent template button label
+		/// </summary>
+		public static Style TransparentTemplateButtonLabel
+		{
+			get
+			{
+				transparentTemplateButtonLabel ??= TryGetResource<Style>("TransparentTemplateButtonLabel");
+				return transparentTemplateButtonLabel!;
+			}
+		}
+
+		/// <summary>
+		/// Style for transparent template button path
+		/// </summary>
+		public static Style TransparentTemplateButtonPath
+		{
+			get
+			{
+				transparentTemplateButtonPath ??= TryGetResource<Style>("TransparentTemplateButtonPath");
+				return transparentTemplateButtonPath!;
 			}
 		}
 	}
