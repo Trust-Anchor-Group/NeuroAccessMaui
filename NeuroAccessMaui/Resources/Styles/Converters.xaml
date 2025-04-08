@@ -8,5 +8,6 @@
 	<mct:InvertedBoolConverter x:Key="InvertedBoolConverter" />
 	<converters:StringToDecimalConverter x:Key="StringToDecimalConverter" />
 	<converters:DateTimeToStringConverter x:Key="DateTimeToStringConverter" />
+	<mct:IntToBoolConverter x:Key="NumberToBoolConverter" />
 
 </ResourceDictionary>

@@ -769,9 +769,9 @@ namespace NeuroAccessMaui
 
 				await Client.PostAsync("https://lab.tagroot.io/Alert.ws", Content);
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				Log.Exception(ex);
+				Log.Exception(Ex);
 			}
 		}
 
