@@ -56,7 +56,7 @@
 
 	<!-- Outlined variant of CompositeEntry -->
 	<Style x:Key="OutlinedCompositeEntry" TargetType="controls:CompositeEntry" BasedOn="{StaticResource RegularCompositeEntry}">
-		<Setter Property="BorderStroke" Value="{AppThemeBinding Light={StaticResource OffBlack50Light}, Dark={StaticResource OffWhite30Dark}}" />
+		<Setter Property="BorderStroke" Value="{AppThemeBinding Light={StaticResource PopUpBackgroundLight}, Dark={StaticResource PopUpBackgroundDark}}" />
 		<Setter Property="BorderShadow" Value="{x:Null}"/>
 
 		<Style.Triggers>

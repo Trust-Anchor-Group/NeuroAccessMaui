@@ -186,11 +186,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 										await this.LoadContracts();
 									}
 								}
-								catch (Exception ex)
+								catch (Exception Ex)
 								{
-									ServiceRef.LogService.LogException(ex);
+									ServiceRef.LogService.LogException(Ex);
 									await ServiceRef.UiService.DisplayAlert(
-										ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message,
+										ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], Ex.Message,
 										ServiceRef.Localizer[nameof(AppResources.Ok)]);
 								}
 							}
@@ -306,9 +306,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 						if (Contract is null)
 							continue;
 					}
-					catch (Exception ex)
+					catch (Exception Ex)
 					{
-						ServiceRef.LogService.LogException(ex);
+						ServiceRef.LogService.LogException(Ex);
 						continue;
 					}
 

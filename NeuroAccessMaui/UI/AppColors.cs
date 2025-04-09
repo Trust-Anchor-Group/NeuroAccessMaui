@@ -457,12 +457,12 @@ namespace NeuroAccessMaui.UI
 			{
 				if (Application.Current?.RequestedTheme == AppTheme.Dark)
 				{
-					normalEditBackgroundDark ??= AppStyles.TryGetResource<Color>("NormalEditPlaceholderDark");
+					normalEditPlaceholderDark ??= AppStyles.TryGetResource<Color>("NormalEditPlaceholderDark");
 					return normalEditPlaceholderDark!;
 				}
 				else
 				{
-					normalEditBackgroundLight ??= AppStyles.TryGetResource<Color>("NormalEditPlaceholderLight");
+					normalEditPlaceholderLight ??= AppStyles.TryGetResource<Color>("NormalEditPlaceholderLight");
 					return normalEditPlaceholderLight!;
 				}
 			}
@@ -608,6 +608,7 @@ namespace NeuroAccessMaui.UI
 			}
 		}
 
+		/// <summary>
 		/// Purple color with 15% transparency.
 		/// </summary>
 		public static Color Purple15
@@ -647,7 +648,7 @@ namespace NeuroAccessMaui.UI
 			}
 		}
 
-
+		/// <summary>
 		/// Purple color
 		/// </summary>
 		public static Color Purple
@@ -687,6 +688,7 @@ namespace NeuroAccessMaui.UI
 			}
 		}
 
+		/// <summary>
 		/// Blue affirm color with 20% transparency.
 		/// </summary>
 		public static Color Blue20Affirm
@@ -735,6 +737,18 @@ namespace NeuroAccessMaui.UI
 			{
 				strokeGrey ??= AppStyles.TryGetResource<Color>("StrokeGrey");
 				return strokeGrey!;
+			}
+		}
+
+		/// <summary>
+		/// Off black color
+		/// </summary>
+		public static Color OffBlack
+		{
+			get
+			{
+				offBlack ??= AppStyles.TryGetResource<Color>("OffBlack");
+				return offBlack!;
 			}
 		}
 	}

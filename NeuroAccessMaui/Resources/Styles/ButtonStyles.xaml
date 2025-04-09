@@ -97,6 +97,27 @@
 		</Setter>
 	</Style>
 
+	<Style x:Key="SecondaryImageButton" TargetType="controls:ImageButton">
+		<Setter Property="VisualStateManager.VisualStateGroups">
+			<VisualStateGroupList>
+				<VisualStateGroup x:Name="CommonStates">
+					<VisualState x:Name="Normal">
+						<VisualState.Setters>
+							<Setter Property="BorderStyle" Value="{StaticResource SecondaryButtonActiveBorder}" />
+							<Setter Property="PathStyle" Value="{StaticResource SecondaryPath}" />
+						</VisualState.Setters>
+					</VisualState>
+					<VisualState x:Name="Disabled">
+						<VisualState.Setters>
+							<Setter Property="BorderStyle" Value="{StaticResource ButtonDisabledBorder}" />
+							<Setter Property="PathStyle" Value="{StaticResource SecondaryPath}" />
+						</VisualState.Setters>
+					</VisualState>
+				</VisualStateGroup>
+			</VisualStateGroupList>
+		</Setter>
+	</Style>
+
 	<!-- Tertiary -->
 	<Style x:Key="TertiaryButtonActiveBorder" TargetType="Border" BasedOn="{StaticResource ButtonBorderBase}">
 		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource WhiteLight}, Dark={StaticResource BackgroundOffBlackDark}}" />

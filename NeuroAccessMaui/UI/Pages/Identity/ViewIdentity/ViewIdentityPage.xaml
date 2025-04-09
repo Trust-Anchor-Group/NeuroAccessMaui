@@ -120,7 +120,6 @@
 								<RowDefinition Height="{Binding NationalityCode, Converter={converters:AutoIfNonEmpty}}" />
 								<RowDefinition Height="{Binding Gender, Converter={converters:AutoIfNonEmpty}}" />
 								<RowDefinition Height="{Binding BirthDate, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding HasPhotos, Converter={converters:AutoIfNonEmpty}}" />
 							</Grid.RowDefinitions>
 							<Label Grid.Row="0" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize FirstName}" />
 							<Label Grid.Row="0" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding FirstName}" />
@@ -163,26 +162,6 @@
 							<!--    -->
 							<Label Grid.Row="13" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize BirthDate}" />
 							<Label Grid.Row="13" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding BirthDate, Converter={converters:DateToString}}" />
-
-							<!--    -->
-							<Label Grid.Row="14" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" HorizontalOptions="StartAndExpand" Text="{l:Localize Photos}"
-								 Style="{StaticResource KeyLabel}" IsVisible="{Binding HasPhotos}"/>
-							<ScrollView Grid.Row="14" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" HeightRequest="68" Orientation="Horizontal"
-										IsVisible="{Binding HasPhotos}">
-								<FlexLayout x:Name="PhotosLayout" AlignContent="Center" AlignItems="Center" BindableLayout.ItemsSource="{Binding Photos}"
-											Direction="Row" JustifyContent="Start">
-									<BindableLayout.ItemTemplate>
-										<DataTemplate x:DataType="photos:Photo">
-											<Image Margin="2" Aspect="AspectFill" HeightRequest="64" Rotation="{Binding Rotation}"
-												 Source="{Binding Source}" WidthRequest="64">
-												<Image.GestureRecognizers>
-													<TapGestureRecognizer Tapped="Image_Tapped" />
-												</Image.GestureRecognizers>
-											</Image>
-										</DataTemplate>
-									</BindableLayout.ItemTemplate>
-								</FlexLayout>
-							</ScrollView>
 						</Grid>
 					</VerticalStackLayout>
 				</Frame>

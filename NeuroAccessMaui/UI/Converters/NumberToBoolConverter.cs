@@ -23,47 +23,22 @@ namespace NeuroAccessMaui.UI.Converters
 				// Convert the incoming value to a double. This handles common numeric types.
 				double NumericValue = 0;
 
-				switch (value)
+				NumericValue = value switch
 				{
-					case int i:
-						NumericValue = i;
-						break;
-					case long l:
-						NumericValue = l;
-						break;
-					case float f:
-						NumericValue = f;
-						break;
-					case double d:
-						NumericValue = d;
-						break;
-					case decimal dec:
-						NumericValue = (double)dec;
-						break;
-					case short s:
-						NumericValue = s;
-						break;
-					case byte b:
-						NumericValue = b;
-						break;
-					case sbyte sb:
-						NumericValue = sb;
-						break;
-					case uint ui:
-						NumericValue = ui;
-						break;
-					case ushort us:
-						NumericValue = us;
-						break;
-					case ulong ul:
-						NumericValue = ul;
-						break;
-					default:
-						// If the value is not a recognized numeric type,
-						// attempt a generic conversion.
-						NumericValue = System.Convert.ToDouble(value, culture);
-						break;
-				}
+					int Int => Int,
+					long Long => Long,
+					float Float => (double)Float,
+					double Double => Double,
+					decimal Dec => (double)Dec,
+					short Short => Short,
+					byte Byte => Byte,
+					sbyte Sbyte => Sbyte,
+					uint Uint => Uint,
+					ushort Ushort => Ushort,
+					ulong Ulong => Ulong,
+					_ => System.Convert.ToDouble(value, culture),// If the value is not a recognized numeric type,
+																 // attempt a generic conversion.
+				};
 
 				// If the numeric value is nonzero, return true; otherwise, false.
 				return NumericValue != 0.0;
