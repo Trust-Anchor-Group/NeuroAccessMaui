@@ -41,7 +41,7 @@ namespace NeuroAccessMaui.Extensions
 			return Contract.ToMauiXaml(Contract.ForHumans, Language);
 		}
 
-		/// <summary
+		/// <summary>
 		/// Creates a human-readable VerticalStackLayout for the Contract.
 		/// </summary>
 		/// <param name="Contract">Contract reference.</param>
