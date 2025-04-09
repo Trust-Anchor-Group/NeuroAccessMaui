@@ -52,7 +52,7 @@
 			  Spacing="{StaticResource LargeSpacing}"
 			  VerticalOptions="Fill" >
 
-			<Image VerticalOptions="Center" HorizontalOptions="Center" Source="{AppThemeBinding Light=neuro_access_logo_light.png, Dark=neuro_access_logo_dark.png}" />
+			<Image VerticalOptions="Center" HorizontalOptions="Center" Source="{AppThemeBinding Light=neuro_access_logo_light.png, Dark=neuro_access_logo_dark.png}" WidthRequest="240" />
 
 			<VerticalStackLayout.GestureRecognizers>
 				<SwipeGestureRecognizer Direction="Up" Swiped="SwipeGestureRecognizer_Swiped"/>
