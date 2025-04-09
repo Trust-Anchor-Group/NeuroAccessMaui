@@ -321,9 +321,9 @@ namespace NeuroAccessMaui.Services.Settings
 
 			try
 			{
-				object existingState = await RuntimeSettings.GetAsync(Key, (object?)null);
+				object ExistingState = await RuntimeSettings.GetAsync(Key, (object?)null);
 
-				if (existingState is T TypedValue)
+				if (ExistingState is T TypedValue)
 					return TypedValue;
 
 				return DefaultValueIfNotFound;

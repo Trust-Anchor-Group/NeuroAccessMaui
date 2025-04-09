@@ -34,9 +34,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// <param name="contract">The Contract object to wrap.</param>
 		public static async Task<ObservableContract> CreateAsync(Contract contract)
 		{
-			ObservableContract contractWrapper = new(contract);
-			await contractWrapper.InitializeAsync();
-			return contractWrapper;
+			ObservableContract ContractWrapper = new(contract);
+			await ContractWrapper.InitializeAsync();
+			return ContractWrapper;
 		}
 
 		/// <summary>
@@ -46,17 +46,17 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		{
 			this.Category = await ContractModel.GetCategory(this.Contract) ?? string.Empty;
 
-			foreach (Parameter param in this.Contract.Parameters ?? Enumerable.Empty<Parameter>())
+			foreach (Parameter Param in this.Contract.Parameters ?? Enumerable.Empty<Parameter>())
 			{
-				ObservableParameter observableParam = await ObservableParameter.CreateAsync(param, this.Contract);
-				this.Parameters.Add(observableParam);
+				ObservableParameter ObservableParam = await ObservableParameter.CreateAsync(Param, this.Contract);
+				this.Parameters.Add(ObservableParam);
 			}
 
-			foreach (Role role in this.Contract.Roles ?? Enumerable.Empty<Role>())
+			foreach (Role Role in this.Contract.Roles ?? Enumerable.Empty<Role>())
 			{
-				ObservableRole observableRole = new(role);
-				await observableRole.InitializeAsync(this.Contract);
-				this.Roles.Add(observableRole);
+				ObservableRole ObservableRole = new(Role);
+				await ObservableRole.InitializeAsync(this.Contract);
+				this.Roles.Add(ObservableRole);
 			}
 			if (this.IsTemplate)
 			{

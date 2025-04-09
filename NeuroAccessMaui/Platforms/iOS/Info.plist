@@ -5,6 +5,7 @@
     <key>UIBackgroundModes</key>
     <array>
         <string>fetch</string>
+		<string>remote-notification</string>
     </array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
@@ -83,5 +84,7 @@
 	<array>
 		<string>https</string>
 	</array>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<false/>
 </dict>
 </plist>

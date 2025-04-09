@@ -96,55 +96,54 @@ namespace NeuroAccessMaui.UI.Controls
 		/// </summary>
 		public ParameterProtectionIndicator()
 		{
-			Console.WriteLine("ParameterProtectionIndicator constructor");
 			// Define local styles for use within this control
-			Style transientBorderStyle = new Style(typeof(Border))
+			Style TransientBorderStyle = new Style(typeof(Border))
 			{
 				BasedOn = AppStyles.RoundedBorder,
 				Setters =
 					 {
-						  new Setter { Property = Border.BackgroundColorProperty, Value = AppColors.Purple15 },
+						  new Setter { Property = BackgroundColorProperty, Value = AppColors.Purple15 },
 						  new Setter { Property = Border.PaddingProperty, Value = new Thickness(AppStyles.SmallSpacing, AppStyles.SmallSpacing/2) }
 					 }
 			};
 
-			Style encryptedBorderStyle = new Style(typeof(Border))
+			Style EncryptedBorderStyle = new Style(typeof(Border))
 			{
 				BasedOn = AppStyles.RoundedBorder,
 				Setters =
 					 {
-						  new Setter { Property = Border.BackgroundColorProperty, Value = AppColors.Blue20Affirm },
+						  new Setter { Property = BackgroundColorProperty, Value = AppColors.Blue20Affirm },
 						  new Setter { Property = Border.PaddingProperty, Value = new Thickness(AppStyles.SmallSpacing, AppStyles.SmallSpacing/2) }
 					 }
 			};
 
-			Style transientPathStyle = new Style(typeof(Path))
+			Style TransientPathStyle = new Style(typeof(Path))
 			{
 				Setters =
 					 {
-						  new Setter { Property = Path.FillProperty, Value = AppColors.Purple },
-						  new Setter { Property = Path.VerticalOptionsProperty, Value = LayoutOptions.Fill },
-						  new Setter { Property = Path.HorizontalOptionsProperty, Value = LayoutOptions.Fill },
-					new Setter { Property = Path.AspectProperty, Value = Stretch.Uniform },
-					new Setter { Property = Path.WidthRequestProperty, Value = 18 },
-					new Setter { Property = Path.HeightRequestProperty, Value = 18 }
+						  new Setter { Property = Shape.FillProperty, Value = AppColors.Purple },
+						  new Setter { Property = VerticalOptionsProperty, Value = LayoutOptions.Fill },
+						  new Setter { Property = HorizontalOptionsProperty, Value = LayoutOptions.Fill },
+					new Setter { Property = Shape.AspectProperty, Value = Stretch.Uniform },
+					new Setter { Property = WidthRequestProperty, Value = 18 },
+					new Setter { Property = HeightRequestProperty, Value = 18 }
 					 }
 			};
 
-			Style encryptedPathStyle = new Style(typeof(Path))
+			Style EncryptedPathStyle = new Style(typeof(Path))
 			{
 				Setters =
 					 {
-						  new Setter { Property = Path.FillProperty, Value = AppColors.Blue }, // Example color
-                    new Setter { Property = Path.VerticalOptionsProperty, Value = LayoutOptions.Fill },
-						  new Setter { Property = Path.HorizontalOptionsProperty, Value = LayoutOptions.Fill },
-					new Setter { Property = Path.AspectProperty, Value = Stretch.Uniform },
-					new Setter { Property = Path.WidthRequestProperty, Value = 18 },
-					new Setter { Property = Path.HeightRequestProperty, Value = 18 }
+						  new Setter { Property = Shape.FillProperty, Value = AppColors.Blue }, // Example color
+                    new Setter { Property = VerticalOptionsProperty, Value = LayoutOptions.Fill },
+						  new Setter { Property = HorizontalOptionsProperty, Value = LayoutOptions.Fill },
+					new Setter { Property = Shape.AspectProperty, Value = Stretch.Uniform },
+					new Setter { Property = WidthRequestProperty, Value = 18 },
+					new Setter { Property = HeightRequestProperty, Value = 18 }
 					 }
 			};
 
-			Style transientLabelStyle = new Style(typeof(Label))
+			Style TransientLabelStyle = new Style(typeof(Label))
 			{
 				Setters =
 					 {
@@ -156,7 +155,7 @@ namespace NeuroAccessMaui.UI.Controls
 					 }
 			};
 
-			Style encryptedLabelStyle = new Style(typeof(Label))
+			Style EncryptedLabelStyle = new Style(typeof(Label))
 			{
 				Setters =
 					 {
@@ -169,7 +168,7 @@ namespace NeuroAccessMaui.UI.Controls
 			};
 
 			// Create a grid to hold the status indicators
-			Grid statusGrid = new Grid
+			Grid StatusGrid = new Grid
 			{
 				ColumnDefinitions =
 					 {
@@ -180,13 +179,13 @@ namespace NeuroAccessMaui.UI.Controls
 			};
 
 			// Transient Border
-			Border transientBorder = new Border
+			Border TransientBorder = new Border
 			{
-				Style = transientBorderStyle
+				Style = TransientBorderStyle
 			};
-			transientBorder.SetBinding(IsVisibleProperty, new Binding(nameof(this.IsTransient), source: this));
+			TransientBorder.SetBinding(IsVisibleProperty, new Binding(nameof(this.IsTransient), source: this));
 
-			Grid transientInnerGrid = new Grid
+			Grid TransientInnerGrid = new Grid
 			{
 				ColumnDefinitions =
 					 {
@@ -196,34 +195,34 @@ namespace NeuroAccessMaui.UI.Controls
 				ColumnSpacing = AppStyles.SmallSpacing
 			};
 
-			Path transientPath = new Path
+			Path TransientPath = new Path
 			{
-				Style = transientPathStyle
+				Style = TransientPathStyle,
+				// Assuming geometry data is defined here
+				Data = Geometries.VisibilityOffPath
 			};
-			// Assuming geometry data is defined here
-			transientPath.Data = Geometries.VisibilityOffPath;
 
-			Label transientLabel = new Label
+			Label TransientLabel = new Label
 			{
-				Style = transientLabelStyle,
+				Style = TransientLabelStyle,
 			};
-			transientLabel.SetBinding(Label.TextProperty, new Binding(nameof(this.TransientText), source: this));
+			TransientLabel.SetBinding(Label.TextProperty, new Binding(nameof(this.TransientText), source: this));
 
-			Grid.SetColumn(transientPath, 0);
-			Grid.SetColumn(transientLabel, 1);
+			Grid.SetColumn(TransientPath, 0);
+			Grid.SetColumn(TransientLabel, 1);
 
-			transientInnerGrid.Children.Add(transientPath);
-			transientInnerGrid.Children.Add(transientLabel);
-			transientBorder.Content = transientInnerGrid;
+			TransientInnerGrid.Children.Add(TransientPath);
+			TransientInnerGrid.Children.Add(TransientLabel);
+			TransientBorder.Content = TransientInnerGrid;
 
 			// Encrypted Border
-			Border encryptedBorder = new Border
+			Border EncryptedBorder = new Border
 			{
-				Style = encryptedBorderStyle
+				Style = EncryptedBorderStyle
 			};
-			encryptedBorder.SetBinding(IsVisibleProperty, new Binding(nameof(this.IsEncrypted), source: this));
+			EncryptedBorder.SetBinding(IsVisibleProperty, new Binding(nameof(this.IsEncrypted), source: this));
 
-			Grid encryptedInnerGrid = new Grid
+			Grid EncryptedInnerGrid = new Grid
 			{
 				ColumnDefinitions =
 					 {
@@ -233,32 +232,31 @@ namespace NeuroAccessMaui.UI.Controls
 				ColumnSpacing = AppStyles.SmallSpacing
 			};
 
-			Path encryptedPath = new Path
+			Path EncryptedPath = new Path
 			{
-				Style = encryptedPathStyle
+				Style = EncryptedPathStyle,
+				Data = Geometries.LockPath
 			};
-			encryptedPath.Data = Geometries.LockPath;
 
-			Label encryptedLabel = new Label
+			Label EncryptedLabel = new Label
 			{
-				Style = encryptedLabelStyle,
+				Style = EncryptedLabelStyle,
 			};
-			encryptedLabel.SetBinding(Label.TextProperty, new Binding(nameof(this.EncryptedText), source: this));
+			EncryptedLabel.SetBinding(Label.TextProperty, new Binding(nameof(this.EncryptedText), source: this));
 
-			Grid.SetColumn(encryptedPath, 0);
-			Grid.SetColumn(encryptedLabel, 1);
+			Grid.SetColumn(EncryptedPath, 0);
+			Grid.SetColumn(EncryptedLabel, 1);
 
-			encryptedInnerGrid.Children.Add(encryptedPath);
-			encryptedInnerGrid.Children.Add(encryptedLabel);
-			encryptedBorder.Content = encryptedInnerGrid;
+			EncryptedInnerGrid.Children.Add(EncryptedPath);
+			EncryptedInnerGrid.Children.Add(EncryptedLabel);
+			EncryptedBorder.Content = EncryptedInnerGrid;
 
 			// Add borders to the status grid
-			statusGrid.Children.Add(transientBorder);
-			statusGrid.Children.Add(encryptedBorder);
+			StatusGrid.Children.Add(TransientBorder);
+			StatusGrid.Children.Add(EncryptedBorder);
 
 			// Set the Content of the ContentView to the constructed grid
-			this.Content = statusGrid;
-			Console.WriteLine("ParameterProtectionIndicator constructor end");
+			this.Content = StatusGrid;
 		}
 	}
 }

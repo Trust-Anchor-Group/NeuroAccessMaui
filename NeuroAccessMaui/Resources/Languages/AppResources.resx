@@ -22,8 +22,10 @@
     <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
         <value>[base64 mime encoded serialized .NET Framework object]</value>
     </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing"
+  mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework
+  object]</value>
         <comment>This is a comment</comment>
     </data>
                 
@@ -59,7 +61,8 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -112,10 +115,12 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0,
+      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0,
+      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="STRINGNOTDEFINED" xml:space="preserve">
     <value>STRING NOT DEFINED</value>
@@ -2150,7 +2155,7 @@
   </data>
   <data name="OnboardingGetStartedTitle" xml:space="preserve">
     <value>Welcome to Neuro-Access</value>
-  </data> 
+  </data>
   <data name="CreateNewAccount">
     <value>Create new account</value>
   </data>
@@ -2162,7 +2167,7 @@
   </data>
   <data name="OnboardingNameEntryTitle" xml:space="preserve">
     <value>Choose Your Username</value>
-  </data> 
+  </data>
   <data name="OnboardingNameEntryDetails" xml:space="preserve">
     <value>Your username is permanent and cannot be changed later</value>
   </data>
@@ -2496,13 +2501,13 @@
   <data name="GenerateQrCode" xml:space="preserve">
     <value>Generate QR Code</value>
   </data>
-	<data name="CameraPermissionTitle" xml:space="preserve">
+  <data name="CameraPermissionTitle" xml:space="preserve">
 		<value>Camera</value>
 	</data>
-	<data name="CameraPermissionDescription" xml:space="preserve">
+  <data name="CameraPermissionDescription" xml:space="preserve">
 		<value>To use this feature, please enable camera access in your settings.</value>
 	</data>
-	<data name="CameraPermissionDescriptionSecondary" xml:space="preserve">
+  <data name="CameraPermissionDescriptionSecondary" xml:space="preserve">
 		<value>Open settings - Click on "Permissions" - Enable Camera Permissions</value>
 	</data>
   <data name="iOS_CameraPermissionDescriptionSecondary" xml:space="preserve">
@@ -2550,7 +2555,7 @@
   <data name="SelectTypeOfDocument" xml:space="preserve">
     <value>Select type of document</value>
   </data>
-    <data name="IdentityDocumentDescription_Passport" xml:space="preserve">
+  <data name="IdentityDocumentDescription_Passport" xml:space="preserve">
     <value>Please upload a photo that clearly shows both pages of your passport's data section, including the page with your photo</value>
   </data>
   <data name="FrontOfDocument_Passport" xml:space="preserve">
@@ -2558,6 +2563,9 @@
   </data>
   <data name="PleaseTryAgain" xml:space="preserve">
     <value>Please Try Again</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>Today</value>
   </data>
   <data name="DurationPickerTitle" xml:space="preserve">
     <value>Validity Time</value> 

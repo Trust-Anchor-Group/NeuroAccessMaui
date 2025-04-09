@@ -171,8 +171,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 							{
 								try
 								{
-									Contract updatedContract = await ServiceRef.XmppService.GetContract(ContractId);
-									ViewContractNavigationArgs Args = new(updatedContract, false);
+									Contract UpdatedContract = await ServiceRef.XmppService.GetContract(ContractId);
+									ViewContractNavigationArgs Args = new(UpdatedContract, false);
 									await ServiceRef.UiService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop);
 								}
 								catch (ItemNotFoundException)

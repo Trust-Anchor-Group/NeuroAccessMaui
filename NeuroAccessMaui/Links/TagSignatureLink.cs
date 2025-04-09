@@ -28,11 +28,11 @@ namespace NeuroAccessMaui.Links
 		/// <inheritdoc/>
 		public async Task<bool> TryOpenLink(Uri Link, bool ShowErrorIfUnable)
 		{
-			string? request = Constants.UriSchemes.RemoveScheme(Link.OriginalString);
-			if (request is null)
+			string? Request = Constants.UriSchemes.RemoveScheme(Link.OriginalString);
+			if (Request is null)
 				return false;
 
-			await ServiceRef.ContractOrchestratorService.TagSignature(request);
+			await ServiceRef.ContractOrchestratorService.TagSignature(Request);
 
 			return true;
 		}

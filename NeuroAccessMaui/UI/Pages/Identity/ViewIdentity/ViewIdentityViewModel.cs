@@ -44,6 +44,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 				this.petitionId = Args.PetitionId;
 				this.Purpose = Args.Purpose;
 				this.contentToSign = Args.ContentToSign;
+				this.IsPersonal = this.LegalIdentity?.Id == ServiceRef.TagProfile.LegalIdentity?.Id;
 			}
 		}
 
