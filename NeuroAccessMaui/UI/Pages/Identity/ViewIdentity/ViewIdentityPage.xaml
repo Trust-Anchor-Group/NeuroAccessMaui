@@ -1,335 +1,85 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <base:BaseContentPage x:Name="ThisPage"
-							 x:Class="NeuroAccessMaui.UI.Pages.Identity.ViewIdentity.ViewIdentityPage"
-							 x:DataType="viewmodel:ViewIdentityViewModel"
-							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
-							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
-							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Identity.ViewIdentity"
-							 xmlns:photos="clr-namespace:NeuroAccessMaui.Services.UI.Photos">
+					  x:Class="NeuroAccessMaui.UI.Pages.Identity.ViewIdentity.ViewIdentityPage"
+					  x:DataType="viewmodel:ViewIdentityViewModel"
+					  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+					  xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+					  xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+					  xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+					  xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+					  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+					  xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Identity.ViewIdentity"
+					  xmlns:photos="clr-namespace:NeuroAccessMaui.Services.UI.Photos">
 	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
 		<Grid.RowDefinitions>
+			<RowDefinition Height="auto" />
 			<RowDefinition Height="*" />
+			<RowDefinition Height="50" />
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
-		<controls:Background/>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*" />
+		</Grid.ColumnDefinitions>
+		<HorizontalStackLayout Spacing="{StaticResource SmallSpacing}"
+							   Margin="{StaticResource MediumSpacing}"
+							   Grid.Row="0">
 
-		<ScrollView Grid.Row="0">
-			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+			<controls:ImageButton HorizontalOptions="Start"
+								  Command="{Binding GoBackCommand}"
+								  Style="{StaticResource ImageOnlyButton}"
+								  PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{StaticResource ImageOnlyButton}"
-											 PathData="{x:Static ui:Geometries.BackButtonPath}" />
+			<Label Style="{StaticResource PageTitleLabel}"
+				   Text="{l:Localize LegalId}" />
+		</HorizontalStackLayout>
 
-				<Label Style="{StaticResource PageTitleLabel}" Text="{l:Localize LegalId}"/>
+		<Border Grid.Row="2"
+				BackgroundColor="AliceBlue"
+				Style="{StaticResource BorderSet}"
+				StrokeShape="RoundRectangle 16"
+				WidthRequest="175"
+				HeightRequest="175"
+				TranslationY="-85"
+				HorizontalOptions="Center" />
 
-				<!-- Photo and QR-code -->
-				<Frame Style="{StaticResource FrameSet}">
-					<VerticalStackLayout>
-						<VerticalStackLayout Margin="{StaticResource LargeMargins}" Spacing="{StaticResource SmallSpacing}"
-													HorizontalOptions="Center" VerticalOptions="Center"
-													IsVisible="{Binding HasPhotos}">
-							
-							<CarouselView x:Name="CarouselView"
-								 IsSwipeEnabled="{Binding Path=IsSwipeEnabled}"
-								 HorizontalOptions="FillAndExpand"
-								 VerticalOptions="FillAndExpand"
-								 ItemsSource="{Binding Photos}"
-								 IndicatorView="{x:Reference IndicatorView}">
-								<CarouselView.ItemTemplate>
-									<DataTemplate x:DataType="photos:Photo">
-										<Border Style="{StaticResource OutlinedImageButtonBorder}" Padding="0" WidthRequest="250" HeightRequest="250" HorizontalOptions="Center">
-											<Image Source="{Binding Source}" Rotation="{Binding Path=Rotation}" Aspect="AspectFill"/>
-										</Border>
-									</DataTemplate>
-								</CarouselView.ItemTemplate>
-							</CarouselView>
 
-							<IndicatorView x:Name="IndicatorView"
-								HorizontalOptions="Center"
-								Padding="0,0,0,0"
-								HeightRequest="20"
-								IsVisible="{Binding IsSwipeEnabled}">
-								<IndicatorView.Margin>
-									<OnPlatform x:TypeArguments="Thickness">
-										<On Platform="iOS" Value="0,-1,0,0"/>
-									</OnPlatform>
-								</IndicatorView.Margin>
-							</IndicatorView>
+		<Border Grid.Row="1"
+				Style="{StaticResource BorderSet}"
+				Margin="{StaticResource MediumMargins}">
+			<Grid>
+				<controls:Background />
+				<VerticalStackLayout  HorizontalOptions="Center">
+					<Label Style="{StaticResource PageTitleLabel}"
+						   Text="Test" />
+					<Label Text="TEST" />
+				</VerticalStackLayout>
+			</Grid>
+		</Border>
 
-							<VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="0">
-								<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding FullName}" HorizontalOptions="Center" Margin="0" Padding="0" />
-								<Label Style="{StaticResource InfoLabel}" Text="{Binding PersonalNumber}" HorizontalOptions="Center" Margin="0" Padding="0" />
-							</VerticalStackLayout>
-						</VerticalStackLayout>
 
-						<Border Style="{StaticResource RoundedBorder32}"
-								  Stroke="Black"
-								  StrokeThickness="0.15"
-								  WidthRequest="240"
-								  HeightRequest="240">
-						<Image x:Name="QrCode" Source="{Binding QrCode}"
-						       IsVisible="{Binding HasQrCode}"
-									 WidthRequest="240"
-									 HeightRequest="240"
-									 Aspect="Fill"
-						       HorizontalOptions="Center">
-							<Image.GestureRecognizers>
-								<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding LegalId}" />
-							</Image.GestureRecognizers>
-						</Image>
-						</Border>
-						<HorizontalStackLayout HorizontalOptions="Center" Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource SmallBottomMargins}">
-							<Path VerticalOptions="Center" HeightRequest="20" WidthRequest="20" Aspect="Uniform"
-									Data="{x:Static ui:Geometries.CirclePath}"
-									Fill="{Binding State, Converter={converters:IdentityStateToColor}}" />
+		<Border Grid.Row="2"
+				BackgroundColor="AliceBlue"
+				StrokeShape="RoundRectangle 16"
+				WidthRequest="175"
+				HeightRequest="175"
+				TranslationY="-85"
+				HorizontalOptions="Center" />
 
-							<Label Style="{StaticResource ValueLabel}"
-							       Text="{Binding State, Converter={converters:LocalizedState}}"
-							       FontSize="14"/>
-						</HorizontalStackLayout>
-					</VerticalStackLayout>
-				</Frame>
-
-				<!-- Personal Information -->
-				<Frame Style="{StaticResource FrameSet}">
-					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-						<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize PersonalInformation}"/>
-
-						<Grid VerticalOptions="StartAndExpand">
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="{Binding FirstName, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding MiddleNames, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding LastNames, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding PersonalNumber, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding Address, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding Address2, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding ZipCode, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding Area, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding City, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding Region, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding CountryCode, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding NationalityCode, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding Gender, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding BirthDate, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding HasPhotos, Converter={converters:AutoIfNonEmpty}}" />
-							</Grid.RowDefinitions>
-							<Label Grid.Row="0" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize FirstName}" />
-							<Label Grid.Row="0" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding FirstName}" />
-							<!--    -->
-							<Label Grid.Row="1" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize MiddleNames}" />
-							<Label Grid.Row="1" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding MiddleNames}" />
-							<!--    -->
-							<Label Grid.Row="2" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize LastNames}" />
-							<Label Grid.Row="2" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding LastNames}" />
-							<!--    -->
-							<Label Grid.Row="3" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize PersonalNumber}" />
-							<Label Grid.Row="3" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding PersonalNumber}" />
-							<!--    -->
-							<Label Grid.Row="4" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Address}" />
-							<Label Grid.Row="4" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding Address}" />
-							<!--    -->
-							<Label Grid.Row="5" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Address2}" />
-							<Label Grid.Row="5" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding Address2}" />
-							<!--    -->
-							<Label Grid.Row="6" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize ZipCode}" />
-							<Label Grid.Row="6" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding ZipCode}" />
-							<!--    -->
-							<Label Grid.Row="7" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Area}" />
-							<Label Grid.Row="7" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" FontAttributes="Bold" Text="{Binding Area}" />
-							<!--    -->
-							<Label Grid.Row="8" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize City}" />
-							<Label Grid.Row="8" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding City}" />
-							<!--    -->
-							<Label Grid.Row="9" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Region}" />
-							<Label Grid.Row="9" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding Region}" />
-							<!--    -->
-							<Label Grid.Row="10" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Country}" />
-							<Label Grid.Row="10" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding CountryCode, Converter={converters:CountryCodeToFlagAndName}}" />
-							<!--    -->
-							<Label Grid.Row="11" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Nationality}" />
-							<Label Grid.Row="11" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding NationalityCode, Converter={converters:CountryCodeToFlagAndName}}" />
-							<!--    -->
-							<Label Grid.Row="12" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Gender}" />
-							<Label Grid.Row="12" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding Gender, Converter={converters:GenderCodeToSymbolAndLabel}}" />
-							<!--    -->
-							<Label Grid.Row="13" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize BirthDate}" />
-							<Label Grid.Row="13" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding BirthDate, Converter={converters:DateToString}}" />
-
-							<!--    -->
-							<Label Grid.Row="14" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" HorizontalOptions="StartAndExpand" Text="{l:Localize Photos}"
-								 Style="{StaticResource KeyLabel}" IsVisible="{Binding HasPhotos}"/>
-							<ScrollView Grid.Row="14" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" HeightRequest="68" Orientation="Horizontal"
-										IsVisible="{Binding HasPhotos}">
-								<FlexLayout x:Name="PhotosLayout" AlignContent="Center" AlignItems="Center" BindableLayout.ItemsSource="{Binding Photos}"
-											Direction="Row" JustifyContent="Start">
-									<BindableLayout.ItemTemplate>
-										<DataTemplate x:DataType="photos:Photo">
-											<Image Margin="2" Aspect="AspectFill" HeightRequest="64" Rotation="{Binding Rotation}"
-												 Source="{Binding Source}" WidthRequest="64">
-												<Image.GestureRecognizers>
-													<TapGestureRecognizer Tapped="Image_Tapped" />
-												</Image.GestureRecognizers>
-											</Image>
-										</DataTemplate>
-									</BindableLayout.ItemTemplate>
-								</FlexLayout>
-							</ScrollView>
-						</Grid>
-					</VerticalStackLayout>
-				</Frame>
-
-				<!-- Organizational Information -->
-				<Frame Style="{StaticResource FrameSet}" IsVisible="{Binding HasOrg}">
-					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-						<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize OrganizationalInformation}"/>
-
-						<Grid VerticalOptions="StartAndExpand" RowSpacing="0">
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="{Binding OrgName, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding OrgNumber, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding OrgRole, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding OrgDepartment, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding OrgAddress, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding OrgAddress2, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding OrgZipCode, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding OrgArea, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding OrgCity, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding OrgRegion, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding OrgCountryCode, Converter={converters:AutoIfNonEmpty}}" />
-							</Grid.RowDefinitions>
-
-							<Label Grid.Row="0" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize OrgName}" />
-							<Label Grid.Row="0" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding OrgName}" />
-							<!--    -->
-							<Label Grid.Row="1" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize OrgNumber}" />
-							<Label Grid.Row="1" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding OrgNumber}" />
-							<!--    -->
-							<Label Grid.Row="2" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize OrgRole}" />
-							<Label Grid.Row="2" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding OrgRole}" />
-							<!--    -->
-							<Label Grid.Row="3" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize OrgDepartment}" />
-							<Label Grid.Row="3" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding OrgDepartment}" />
-							<!--    -->
-							<Label Grid.Row="4" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Address}" />
-							<Label Grid.Row="4" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding OrgAddress}" />
-							<!--    -->
-							<Label Grid.Row="5" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Address2}" />
-							<Label Grid.Row="5" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding OrgAddress2}" />
-							<!--    -->
-							<Label Grid.Row="6" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize ZipCode}" />
-							<Label Grid.Row="6" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding OrgZipCode}" />
-							<!--    -->
-							<Label Grid.Row="7" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Area}" />
-							<Label Grid.Row="7" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" FontAttributes="Bold" Text="{Binding OrgArea}" />
-							<!--    -->
-							<Label Grid.Row="8" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize City}" />
-							<Label Grid.Row="8" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding OrgCity}" />
-							<!--    -->
-							<Label Grid.Row="9" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Region}" />
-							<Label Grid.Row="9" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding OrgRegion}" />
-							<!--    -->
-							<Label Grid.Row="10" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Country}" />
-							<Label Grid.Row="10" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding OrgCountryCode, Converter={converters:CountryCodeToFlagAndName}}" />
-						</Grid>
-					</VerticalStackLayout>
-				</Frame>
-
-				<!-- Technical Information -->
-				<Frame Style="{StaticResource FrameSet}">
-					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-						<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize Technical}"/>
-
-						<Grid VerticalOptions="StartAndExpand" RowSpacing="0">
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="{Binding NetworkId, Converter={converters:AutoIfNonEmpty}}" />
-								<RowDefinition Height="{Binding DeviceId, Converter={converters:AutoIfNonEmpty}}" />
-							</Grid.RowDefinitions>
-
-							<Label Grid.Row="0" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Created}" />
-							<Label Grid.Row="0" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding Created, Converter={converters:DateToString}}" />
-							<!--    -->
-							<Label Grid.Row="1" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize Expires}" />
-							<Label Grid.Row="1" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ValueLabel}" Text="{Binding Expires, Converter={converters:DateToString}}" />
-							<!--    -->
-							<Label Grid.Row="2" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}" Text="{l:Localize NeuroID}" />
-							<Label Grid.Row="2" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ClickableValueLabel}" Text="{Binding LegalId}">
-								<Label.GestureRecognizers>
-									<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding LegalId}" />
-								</Label.GestureRecognizers>
-							</Label>
-
-							<!--    -->
-							<Label Grid.Row="3" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}"
-								 Text="{l:Localize NetworkID}" IsVisible="{Binding NetworkId, Converter={converters:OnlyShowNonEmpty}}"/>
-							<Label Grid.Row="3" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ClickableValueLabel}"
-								 Text="{Binding NetworkId}" IsVisible="{Binding NetworkId, Converter={converters:OnlyShowNonEmpty}}">
-								<Label.GestureRecognizers>
-									<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding NetworkId}" />
-								</Label.GestureRecognizers>
-							</Label>
-
-							<!--    -->
-							<Label Grid.Row="4" Grid.Column="0" Margin="{StaticResource SmallRightTopMargins}" Style="{StaticResource KeyLabel}"
-								 Text="{l:Localize DeviceID}" IsVisible="{Binding DeviceId, Converter={converters:OnlyShowNonEmpty}}"/>
-							<Label Grid.Row="4" Grid.Column="1" Margin="{StaticResource SmallTopMargins}" Style="{StaticResource ClickableValueLabel}"
-								 Text="{Binding DeviceId}" IsVisible="{Binding DeviceId, Converter={converters:OnlyShowNonEmpty}}">
-								<Label.GestureRecognizers>
-									<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding DeviceId}" />
-								</Label.GestureRecognizers>
-							</Label>
-
-						</Grid>
-					</VerticalStackLayout>
-				</Frame>
-				<Frame Style="{StaticResource FrameSet}" IsVisible="{Binding IsThirdPartyAndNotForReview}">
-					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-						<controls:TextButton
-												Style="{StaticResource FilledTextButton}" 
-												LabelData="{l:Localize AddContact}" 
-												Command="{Binding AddContactCommand}" 
-												IsVisible="{Binding CanAddContact}" 
-												IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
-						<controls:TextButton
-												Style="{StaticResource FilledTextButton}" 
-												LabelData="{l:Localize RemoveContact}" 
-												Command="{Binding RemoveContactCommand}" 
-												IsVisible="{Binding CanRemoveContact}" 
-												IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
-					</VerticalStackLayout>
-				</Frame>
-			</VerticalStackLayout>
-		</ScrollView>
 
 		<!-- Bottom Bar -->
-		<Border Grid.Row="1" Style="{StaticResource BottomBarBorder}" >
+		<Border Grid.Row="3"
+				Style="{StaticResource BottomBarBorder}">
 			<!-- Share QR Button -->
 			<controls:TemplatedButton Command="{x:Binding OpenQrPopupCommand}">
 				<Border Style="{StaticResource TransparentTemplateButtonBorder}">
-					<Label Style="{StaticResource TransparentTemplateButtonLabel}" Text="Share QR" HorizontalOptions="Center"/>
+					<Label Style="{StaticResource TransparentTemplateButtonLabel}"
+						   Text="Share QR"
+						   HorizontalOptions="Center" />
 				</Border>
 			</controls:TemplatedButton>
 		</Border>
 	</Grid>
-		 
+
 </base:BaseContentPage>
