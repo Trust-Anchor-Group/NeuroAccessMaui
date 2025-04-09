@@ -22,8 +22,10 @@
     <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
         <value>[base64 mime encoded serialized .NET Framework object]</value>
     </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing"
+  mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework
+  object]</value>
         <comment>This is a comment</comment>
     </data>
                 
@@ -2558,5 +2560,41 @@
   </data>
   <data name="PleaseTryAgain" xml:space="preserve">
     <value>Por favor, inténtelo de nuevo</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>Hoy</value>
+  </data>
+  <data name="DurationPickerTitle" xml:space="preserve">
+    <value>Tiempo de validez</value>
+  </data>
+  <data name="DurationPickerDescription" xml:space="preserve">
+    <value>Especifique la duración del contrato</value>
+  </data>
+  <data name="NegateDuration" xml:space="preserve">
+    <value>Duración negativa: </value>
+  </data>
+  <data name="AddDuration" xml:space="preserve">
+    <value>Agregar duración</value>
+  </data>
+  <data name="SelectUnit" xml:space="preserve">
+    <value>Seleccione la unidad</value>
+  </data>
+  <data name="YearsCapitalized" xml:space="preserve">
+    <value>Años</value>
+  </data>
+  <data name="MonthsCapitalized" xml:space="preserve">
+    <value>Meses</value>
+  </data>
+  <data name="DaysCapitalized" xml:space="preserve">
+    <value>Días</value>
+  </data>
+  <data name="HoursCapitalized" xml:space="preserve">
+    <value>Horas</value>
+  </data>
+  <data name="MinutesCapitalized" xml:space="preserve">
+    <value>Minutos</value>
+  </data>
+  <data name="SecondsCapitalized" xml:space="preserve">
+    <value>Segundos</value>
   </data>
 </root>

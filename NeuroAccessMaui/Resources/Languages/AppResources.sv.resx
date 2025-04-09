@@ -22,8 +22,10 @@
     <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
         <value>[base64 mime encoded serialized .NET Framework object]</value>
     </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing"
+  mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework
+  object]</value>
         <comment>This is a comment</comment>
     </data>
                 
@@ -2558,5 +2560,41 @@
   </data>
   <data name="PleaseTryAgain" xml:space="preserve">
     <value>Försök igen</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>Idag</value>
+  </data>
+  <data name="DurationPickerTitle" xml:space="preserve">
+    <value>Giltighetstid</value>
+  </data>
+  <data name="DurationPickerDescription" xml:space="preserve">
+    <value>Ange avtalets varaktighet</value>
+  </data>
+  <data name="NegateDuration" xml:space="preserve">
+    <value>Negativ varaktighet: </value>
+  </data>
+  <data name="AddDuration" xml:space="preserve">
+    <value>Lägg till varaktighet</value>
+  </data>
+  <data name="SelectUnit" xml:space="preserve">
+    <value>Välj enhet</value>
+  </data>
+  <data name="YearsCapitalized" xml:space="preserve">
+    <value>År</value>
+  </data>
+  <data name="MonthsCapitalized" xml:space="preserve">
+    <value>Månader</value>
+  </data>
+  <data name="DaysCapitalized" xml:space="preserve">
+    <value>Dagar</value>
+  </data>
+  <data name="HoursCapitalized" xml:space="preserve">
+    <value>Timmar</value>
+  </data>
+  <data name="MinutesCapitalized" xml:space="preserve">
+    <value>Minuter</value>
+  </data>
+  <data name="SecondsCapitalized" xml:space="preserve">
+    <value>Sekunder</value>
   </data>
 </root>
