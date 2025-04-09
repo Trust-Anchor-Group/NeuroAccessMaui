@@ -107,7 +107,7 @@ namespace NeuroAccessMaui.Services.Push
 
 					string Version = AppInfo.VersionString + "." + AppInfo.BuildString;
 					string PrevVersion = await RuntimeSettings.GetAsync(Constants.Settings.PushNotificationConfigurationVersion, string.Empty);
-					bool IsVersionChanged = true;//Version != PrevVersion;
+					bool IsVersionChanged = Version != PrevVersion;
 
 					if (IsVersionChanged || ForceReport)
 					{
