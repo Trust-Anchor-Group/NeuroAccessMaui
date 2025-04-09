@@ -115,10 +115,10 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
         }
 #pragma warning restore CA1822
 
-		/// <summary>
-		/// If we can create an identity.
-		/// </summary>
-		public bool CanCreateIdentity => IsAccountCreated && !IsLegalIdentityCreated && IsXmppConnected;
+        /// <summary>
+        /// If we can create an identity.
+        /// </summary>
+        public bool CanCreateIdentity => IsAccountCreated && !IsLegalIdentityCreated && IsXmppConnected;
 
         /// <summary>
         /// Try to create an identity with a retry loop.

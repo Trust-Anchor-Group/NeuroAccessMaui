@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Dynamic;
 using System.Globalization;
 using System.Reflection;

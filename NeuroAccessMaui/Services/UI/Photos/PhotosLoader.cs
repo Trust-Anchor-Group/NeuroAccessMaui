@@ -1,4 +1,4 @@
-﻿using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.Services.AttachmentCache;
 using SkiaSharp;

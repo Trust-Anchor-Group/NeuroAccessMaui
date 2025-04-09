@@ -1,4 +1,4 @@
-﻿//#define DEBUG_XMPP_REMOTE
+//#define DEBUG_XMPP_REMOTE
 #define DEBUG_XMPP_LOCAL
 //#define DEBUG_LOG_REMOTE
 //#define DEBUG_DB_REMOTE

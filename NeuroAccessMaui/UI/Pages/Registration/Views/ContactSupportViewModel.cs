@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml;

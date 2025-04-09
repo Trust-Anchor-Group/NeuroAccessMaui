@@ -40,6 +40,7 @@
 		<Copyright>Copyright © Trust Anchor Group 2018-2024. All rights reserved.</Copyright>
 		<PackageProjectUrl></PackageProjectUrl>
 		<RepositoryUrl>https://github.com/Trust-Anchor-Group/NeuroAccessMaui</RepositoryUrl>
+
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios'">
