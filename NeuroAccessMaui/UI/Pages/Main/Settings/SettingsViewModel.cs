@@ -299,21 +299,21 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		/// <returns> Build time excrated from assembly data </returns>
 		private static string GetBuildTime()
 		{
-			Assembly assembly = Assembly.GetExecutingAssembly();
+			Assembly Assembly = Assembly.GetExecutingAssembly();
 
 			const string BuildVersionMetadataPrefix = "+build";
 
-			AssemblyInformationalVersionAttribute? attribute = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
-			if (attribute?.InformationalVersion != null)
+			AssemblyInformationalVersionAttribute? Attribute = Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
+			if (Attribute?.InformationalVersion is not null)
 			{
-				string value = attribute.InformationalVersion;
+				string Value = Attribute.InformationalVersion;
 
-				int datePosition = value.IndexOf(BuildVersionMetadataPrefix, System.StringComparison.OrdinalIgnoreCase);
-				if (datePosition > 0)
+				int DatePosition = Value.IndexOf(BuildVersionMetadataPrefix, System.StringComparison.OrdinalIgnoreCase);
+				if (DatePosition > 0)
 				{
-					value = value.Substring(datePosition + BuildVersionMetadataPrefix.Length);
+					Value = Value[(DatePosition + BuildVersionMetadataPrefix.Length)..];
 
-					return value;
+					return Value;
 				}
 			}
 

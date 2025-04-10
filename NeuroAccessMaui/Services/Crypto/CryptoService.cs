@@ -114,14 +114,14 @@ namespace NeuroAccessMaui.Services.Crypto
 
 		private byte[] GetBytes(int nrBytes)
 		{
-			byte[] result = new byte[nrBytes];
+			byte[] Result = new byte[nrBytes];
 
 			lock (this.rnd)
 			{
-				this.rnd.GetBytes(result);
+				this.rnd.GetBytes(Result);
 			}
 
-			return result;
+			return Result;
 		}
 
 		/// <summary>

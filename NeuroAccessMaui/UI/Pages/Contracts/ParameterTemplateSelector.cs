@@ -23,10 +23,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 		protected override DataTemplate? OnSelectTemplate(object item, BindableObject container)
 		{
-			ObservableParameter? parameter = item as ObservableParameter;
-			if (parameter is not null && this.ProtectedTemplate is not null)
+			ObservableParameter? Parameter = item as ObservableParameter;
+			if (Parameter is not null && this.ProtectedTemplate is not null)
 			{
-				if (parameter.IsProtected && !parameter.CanReadValue)
+				if (Parameter.IsProtected && !Parameter.CanReadValue)
 				{
 					return this.ProtectedTemplate ?? this.DefaultTemplate;
 				}

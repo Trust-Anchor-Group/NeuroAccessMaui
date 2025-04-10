@@ -47,22 +47,22 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// <returns></returns>
 		public static async Task<ObservableParameter> CreateAsync(Parameter parameter, Contract contract)
 		{
-			ObservableParameter parameterInfo = parameter switch
+			ObservableParameter ParameterInfo = parameter switch
 			{
-				BooleanParameter booleanParameter => new ObservableBooleanParameter(booleanParameter),
-				DateParameter dateParameter => new ObservableDateParameter(dateParameter),
-				DateTimeParameter dateTimeParameter => new ObservableDateTimeParameter(dateTimeParameter),
-				NumericalParameter numericalParameter => new ObservableNumericalParameter(numericalParameter),
-				StringParameter stringParameter => new ObservableStringParameter(stringParameter),
-				TimeParameter timeParameter => new ObservableTimeParameter(timeParameter),
-				DurationParameter durationParameter => new ObservableDurationParameter(durationParameter),
-				RoleParameter roleParameter => new ObservableRoleParameter(roleParameter),
-				CalcParameter calcParameter => new ObservableCalcParameter(calcParameter),
+				BooleanParameter BooleanParameter => new ObservableBooleanParameter(BooleanParameter),
+				DateParameter DateParameter => new ObservableDateParameter(DateParameter),
+				DateTimeParameter DateTimeParameter => new ObservableDateTimeParameter(DateTimeParameter),
+				NumericalParameter NumericalParameter => new ObservableNumericalParameter(NumericalParameter),
+				StringParameter StringParameter => new ObservableStringParameter(StringParameter),
+				TimeParameter TimeParameter => new ObservableTimeParameter(TimeParameter),
+				DurationParameter DurationParameter => new ObservableDurationParameter(DurationParameter),
+				RoleParameter RoleParameter => new ObservableRoleParameter(RoleParameter),
+				CalcParameter CalcParameter => new ObservableCalcParameter(CalcParameter),
 				_ => new ObservableParameter(parameter)
 			};
 
-			await parameterInfo.InitializeAsync(contract);
-			return parameterInfo;
+			await ParameterInfo.InitializeAsync(contract);
+			return ParameterInfo;
 		}
 		#endregion
 

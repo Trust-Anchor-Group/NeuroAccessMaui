@@ -22,8 +22,10 @@
     <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
         <value>[base64 mime encoded serialized .NET Framework object]</value>
     </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing"
+  mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework
+  object]</value>
         <comment>This is a comment</comment>
     </data>
                 
@@ -2379,6 +2381,9 @@
   <data name="MomentaryValues" xml:space="preserve">
     <value>Valori de moment</value>
   </data>
+  <data name="None" xml:space="preserve">
+    <value>Niciunul</value>
+  </data>
   <data name="PeakValues" xml:space="preserve">
     <value>Valori de vârf</value>
   </data>
@@ -2535,9 +2540,6 @@
   <data name="AdditionalPhotosDescription" xml:space="preserve">
     <value>Puteți include fotografii suplimentare pentru a sprijini și mai mult verificarea identității.</value>
   </data>
-  <data name="None" xml:space="preserve">
-    <value>Niciunul</value>
-  </data>
   <data name="Passport" xml:space="preserve">
     <value>Pașaport</value>
   </data>
@@ -2558,5 +2560,41 @@
   </data>
   <data name="PleaseTryAgain" xml:space="preserve">
     <value>Vă rugăm să încercați din nou</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>Azi</value>
+  </data>
+  <data name="DurationPickerTitle" xml:space="preserve">
+    <value>Timp de valabilitate</value>
+  </data>
+  <data name="DurationPickerDescription" xml:space="preserve">
+    <value>Specificați durata de viață a contractului</value>
+  </data>
+  <data name="NegateDuration" xml:space="preserve">
+    <value>Durata negativă: </value>
+  </data>
+  <data name="AddDuration" xml:space="preserve">
+    <value>Adăugați durată</value>
+  </data>
+  <data name="SelectUnit" xml:space="preserve">
+    <value>Selectează unitatea</value>
+  </data>
+  <data name="YearsCapitalized" xml:space="preserve">
+    <value>Ani</value>
+  </data>
+  <data name="MonthsCapitalized" xml:space="preserve">
+    <value>Luni</value>
+  </data>
+  <data name="DaysCapitalized" xml:space="preserve">
+    <value>Zile</value>
+  </data>
+  <data name="HoursCapitalized" xml:space="preserve">
+    <value>Ore</value>
+  </data>
+  <data name="MinutesCapitalized" xml:space="preserve">
+    <value>Minute</value>
+  </data>
+  <data name="SecondsCapitalized" xml:space="preserve">
+    <value>Secunde</value>
   </data>
 </root>

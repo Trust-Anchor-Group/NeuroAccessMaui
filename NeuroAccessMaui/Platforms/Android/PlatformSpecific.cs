@@ -1,3 +1,5 @@
+using System.Text;
+using _Microsoft.Android.Resource.Designer;
 using Android;
 using Android.App;
 using Android.Content;
@@ -10,6 +12,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Views.InputMethods;
 using AndroidX.Biometric;
+using AndroidX.Core.App;
 using AndroidX.Fragment.App;
 using AndroidX.Lifecycle;
 using CommunityToolkit.Mvvm.Messaging;
@@ -17,9 +20,15 @@ using CommunityToolkit.Mvvm.Messaging;
 //using Firebase.Messaging;	// TODO: Firebase
 using Java.Util.Concurrent;
 using NeuroAccessMaui.Services.Push;
+using Plugin.Firebase.CloudMessaging;
 using Waher.Events;
 using Waher.Networking.XMPP.Push;
 using Rect = Android.Graphics.Rect;
+
+using Application = Android.App.Application;
+using FileProvider = AndroidX.Core.Content.FileProvider;
+using Resource = Android.Resource;
+using System.Globalization;
 
 namespace NeuroAccessMaui.Services
 {
@@ -91,9 +100,9 @@ namespace NeuroAccessMaui.Services
 						screenProtected = value;
 					}
 				}
-				catch (Exception ex)
+				catch (Exception Ex)
 				{
-					Log.Exception(ex);
+					Log.Exception(Ex);
 				}
 			}
 		}
@@ -125,9 +134,9 @@ namespace NeuroAccessMaui.Services
 							Activity.Window?.ClearFlags(WindowManagerFlags.Secure);
 					}
 				}
-				catch (Exception ex)
+				catch (Exception Ex)
 				{
-					Log.Exception(ex);
+					Log.Exception(Ex);
 				}
 			});
 		}
@@ -193,9 +202,9 @@ namespace NeuroAccessMaui.Services
 			if (!Directory.Exists(ExternalFilesDir.Path))
 				Directory.CreateDirectory(ExternalFilesDir.Path);
 
-			Java.IO.File fileDir = new(ExternalFilesDir.AbsolutePath + (Java.IO.File.Separator + FileName));
+			Java.IO.File FileDir = new(ExternalFilesDir.AbsolutePath + (Java.IO.File.Separator + FileName));
 
-			File.WriteAllBytes(fileDir.Path, PngFile);
+			File.WriteAllBytes(FileDir.Path, PngFile);
 
 			Intent Intent = new(Intent.ActionSend);
 			Intent.PutExtra(Intent.ExtraText, Message);
@@ -203,7 +212,7 @@ namespace NeuroAccessMaui.Services
 
 			Intent.AddFlags(ActivityFlags.GrantReadUriPermission);
 			Intent.AddFlags(ActivityFlags.GrantWriteUriPermission);
-			Intent.PutExtra(Intent.ExtraStream, FileProvider.GetUriForFile(Context, "com.tag.IdApp.fileprovider", fileDir));
+			Intent.PutExtra(Intent.ExtraStream, FileProvider.GetUriForFile(Context, "com.tag.IdApp.fileprovider", FileDir));
 
 			Intent? MyIntent = Intent.CreateChooser(Intent, Title);
 
@@ -214,180 +223,181 @@ namespace NeuroAccessMaui.Services
 			}
 		}
 
-
-		/// <summary>
-		/// Make a blurred screenshot
-		/// TODO: Just make a screen shot. Use the portable CV library to blur it.
-		/// </summary>
-		public Task<byte[]> CaptureScreen(int blurRadius)
-		{
-			blurRadius = Math.Min(25, Math.Max(blurRadius, 0));
-
-			Activity? activity = Platform.CurrentActivity;
-			Android.Views.View? rootView = activity?.Window?.DecorView.RootView;
-
-			if (rootView is null)
-				return Task.FromResult<byte[]>([]);
-
-			using Bitmap screenshot = Bitmap.CreateBitmap(rootView.Width, rootView.Height, Bitmap.Config.Argb8888!);
-			Canvas canvas = new(screenshot);
-			rootView.Draw(canvas);
-
-			Bitmap? Blurred = null;
-
-			if (activity != null && (int)Android.OS.Build.VERSION.SdkInt >= 17)
-				Blurred = ToBlurred(screenshot, activity, blurRadius);
-			else
-				Blurred = ToLegacyBlurred(screenshot, blurRadius);
-
-			MemoryStream Stream = new();
-			Blurred.Compress(Bitmap.CompressFormat.Jpeg!, 80, Stream);
-			Stream.Seek(0, SeekOrigin.Begin);
-
-			return Task.FromResult(Stream.ToArray());
-		}
-
-		private static Bitmap ToBlurred(Bitmap originalBitmap, Activity? Activity, int radius)
-		{
-			// Create another bitmap that will hold the results of the filter.
-			Bitmap blurredBitmap = Bitmap.CreateBitmap(originalBitmap);
-			RenderScript? renderScript = RenderScript.Create(Activity);
-
-			// Load up an instance of the specific script that we want to use.
-			// An Element is similar to a C type. The second parameter, Element.U8_4,
-			// tells the Allocation is made up of 4 fields of 8 unsigned bits.
-			ScriptIntrinsicBlur? script = ScriptIntrinsicBlur.Create(renderScript, Android.Renderscripts.Element.U8_4(renderScript));
-
-			// Create an Allocation for the kernel inputs.
-			Allocation? input = Allocation.CreateFromBitmap(renderScript, originalBitmap, Allocation.MipmapControl.MipmapFull,
-				AllocationUsage.Script);
-
-			// Assign the input Allocation to the script.
-			script?.SetInput(input);
-
-			// Set the blur radius
-			script?.SetRadius(radius);
-
-			// Finally we need to create an output allocation to hold the output of the Renderscript.
-			Allocation? output = Allocation.CreateTyped(renderScript, input?.Type);
-
-			// Next, run the script. This will run the script over each Element in the Allocation, and copy it's
-			// output to the allocation we just created for this purpose.
-			script?.ForEach(output);
-
-			// Copy the output to the blurred bitmap
-			output?.CopyTo(blurredBitmap);
-
-			// Cleanup.
-			output?.Destroy();
-			input?.Destroy();
-			script?.Destroy();
-			renderScript?.Destroy();
-
-			return blurredBitmap;
-		}
-
-		// Source: http://incubator.quasimondo.com/processing/superfast_blur.php
-		public static Bitmap ToLegacyBlurred(Bitmap source, int radius)
-		{
-			Bitmap.Config? config = source.GetConfig();
-			config ??= Bitmap.Config.Argb8888;    // This will support transparency
-
-			Bitmap? img = source.Copy(config!, true);
-
-			int w = img!.Width;
-			int h = img.Height;
-			int wm = w - 1;
-			int hm = h - 1;
-			int wh = w * h;
-			int div = radius + radius + 1;
-			int[] r = new int[wh];
-			int[] g = new int[wh];
-			int[] b = new int[wh];
-			int rsum, gsum, bsum, x, y, i, p, p1, p2, yp, yi, yw;
-			int[] vmin = new int[Math.Max(w, h)];
-			int[] vmax = new int[Math.Max(w, h)];
-			int[] pix = new int[w * h];
-
-			img.GetPixels(pix, 0, w, 0, 0, w, h);
-
-			int[] dv = new int[256 * div];
-			for (i = 0; i < 256 * div; i++)
-				dv[i] = (i / div);
-
-			yw = yi = 0;
-
-			for (y = 0; y < h; y++)
-			{
-				rsum = gsum = bsum = 0;
-				for (i = -radius; i <= radius; i++)
+		/*
+				/// <summary>
+				/// Make a blurred screenshot
+				/// TODO: Just make a screen shot. Use the portable CV library to blur it.
+				/// </summary>
+				public Task<byte[]> CaptureScreen(int blurRadius)
 				{
-					p = pix[yi + Math.Min(wm, Math.Max(i, 0))];
-					rsum += (p & 0xff0000) >> 16;
-					gsum += (p & 0x00ff00) >> 8;
-					bsum += p & 0x0000ff;
+					blurRadius = Math.Min(25, Math.Max(blurRadius, 0));
+
+					Activity? Activity = Platform.CurrentActivity;
+					Android.Views.View? RootView = Activity?.Window?.DecorView.RootView;
+
+					if (RootView is null)
+						return Task.FromResult<byte[]>([]);
+
+					using Bitmap Screenshot = Bitmap.CreateBitmap(RootView.Width, RootView.Height, Bitmap.Config.Argb8888!);
+					Canvas Canvas = new(Screenshot);
+					RootView.Draw(Canvas);
+
+					Bitmap? Blurred = null;
+
+					if (Activity != null && (int)Android.OS.Build.VERSION.SdkInt >= 17)
+						Blurred = ToBlurred(Screenshot, Activity, blurRadius);
+					else
+						Blurred = ToLegacyBlurred(Screenshot, blurRadius);
+
+					MemoryStream Stream = new();
+					Blurred.Compress(Bitmap.CompressFormat.Jpeg!, 80, Stream);
+					Stream.Seek(0, SeekOrigin.Begin);
+
+					return Task.FromResult(Stream.ToArray());
 				}
-				for (x = 0; x < w; x++)
+
+				private static Bitmap ToBlurred(Bitmap originalBitmap, Activity? Activity, int radius)
 				{
+					// Create another bitmap that will hold the results of the filter.
+					Bitmap BlurredBitmap = Bitmap.CreateBitmap(originalBitmap);
+					RenderScript? RenderScript = RenderScript.Create(Activity);
 
-					r[yi] = dv[rsum];
-					g[yi] = dv[gsum];
-					b[yi] = dv[bsum];
+					// Load up an instance of the specific script that we want to use.
+					// An Element is similar to a C type. The second parameter, Element.U8_4,
+					// tells the Allocation is made up of 4 fields of 8 unsigned bits.
+					ScriptIntrinsicBlur? Script = ScriptIntrinsicBlur.Create(RenderScript, Android.Renderscripts.Element.U8_4(RenderScript));
 
-					if (y == 0)
+					// Create an Allocation for the kernel inputs.
+					Allocation? Input = Allocation.CreateFromBitmap(RenderScript, originalBitmap, Allocation.MipmapControl.MipmapFull,
+						AllocationUsage.Script);
+
+					// Assign the input Allocation to the script.
+					Script?.SetInput(Input);
+
+					// Set the blur radius
+					Script?.SetRadius(radius);
+
+					// Finally we need to create an output allocation to hold the output of the Renderscript.
+					Allocation? Output = Allocation.CreateTyped(RenderScript, Input?.Type);
+
+					// Next, run the script. This will run the script over each Element in the Allocation, and copy it's
+					// output to the allocation we just created for this purpose.
+					Script?.ForEach(Output);
+
+					// Copy the output to the blurred bitmap
+					Output?.CopyTo(BlurredBitmap);
+
+					// Cleanup.
+					Output?.Destroy();
+					Input?.Destroy();
+					Script?.Destroy();
+					RenderScript?.Destroy();
+
+					return BlurredBitmap;
+				}
+
+				// Source: http://incubator.quasimondo.com/processing/superfast_blur.php
+				public static Bitmap ToLegacyBlurred(Bitmap source, int radius)
+				{
+					Bitmap.Config? Config = source.GetConfig();
+					Config ??= Bitmap.Config.Argb8888;    // This will support transparency
+
+					Bitmap? Img = source.Copy(Config!, true);
+
+					int w = Img!.Width;
+					int h = Img.Height;
+					int wm = w - 1;
+					int Hm = h - 1;
+					int wh = w * h;
+					int Div = radius + radius + 1;
+					int[] r = new int[wh];
+					int[] g = new int[wh];
+					int[] b = new int[wh];
+					int Rsum, Gsum, Bsum, x, y, i, P, P1, P2, yp, yi, yw;
+					int[] Vmin = new int[Math.Max(w, h)];
+					int[] Vmax = new int[Math.Max(w, h)];
+					int[] Pix = new int[w * h];
+
+					Img.GetPixels(Pix, 0, w, 0, 0, w, h);
+
+					int[] Dv = new int[256 * Div];
+					for (i = 0; i < 256 * Div; i++)
+						Dv[i] = (i / Div);
+
+					yw = yi = 0;
+
+					for (y = 0; y < h; y++)
 					{
-						vmin[x] = Math.Min(x + radius + 1, wm);
-						vmax[x] = Math.Max(x - radius, 0);
+						Rsum = Gsum = Bsum = 0;
+						for (i = -radius; i <= radius; i++)
+						{
+							P = Pix[yi + Math.Min(wm, Math.Max(i, 0))];
+							Rsum += (P & 0xff0000) >> 16;
+							Gsum += (P & 0x00ff00) >> 8;
+							Bsum += P & 0x0000ff;
+						}
+						for (x = 0; x < w; x++)
+						{
+
+							r[yi] = Dv[Rsum];
+							g[yi] = Dv[Gsum];
+							b[yi] = Dv[Bsum];
+
+							if (y == 0)
+							{
+								Vmin[x] = Math.Min(x + radius + 1, wm);
+								Vmax[x] = Math.Max(x - radius, 0);
+							}
+
+							P1 = Pix[yw + Vmin[x]];
+							P2 = Pix[yw + Vmax[x]];
+
+							Rsum += ((P1 & 0xff0000) - (P2 & 0xff0000)) >> 16;
+							Gsum += ((P1 & 0x00ff00) - (P2 & 0x00ff00)) >> 8;
+							Bsum += (P1 & 0x0000ff) - (P2 & 0x0000ff);
+							yi++;
+						}
+						yw += w;
 					}
 
-					p1 = pix[yw + vmin[x]];
-					p2 = pix[yw + vmax[x]];
-
-					rsum += ((p1 & 0xff0000) - (p2 & 0xff0000)) >> 16;
-					gsum += ((p1 & 0x00ff00) - (p2 & 0x00ff00)) >> 8;
-					bsum += (p1 & 0x0000ff) - (p2 & 0x0000ff);
-					yi++;
-				}
-				yw += w;
-			}
-
-			for (x = 0; x < w; x++)
-			{
-				rsum = gsum = bsum = 0;
-				yp = -radius * w;
-				for (i = -radius; i <= radius; i++)
-				{
-					yi = Math.Max(0, yp) + x;
-					rsum += r[yi];
-					gsum += g[yi];
-					bsum += b[yi];
-					yp += w;
-				}
-				yi = x;
-				for (y = 0; y < h; y++)
-				{
-					// Preserve alpha channel: ( 0xff000000 & pix[yi] )
-					int rgb = (dv[rsum] << 16) | (dv[gsum] << 8) | dv[bsum];
-					pix[yi] = ((int)(0xff000000 & pix[yi]) | rgb);
-					if (x == 0)
+					for (x = 0; x < w; x++)
 					{
-						vmin[y] = Math.Min(y + radius + 1, hm) * w;
-						vmax[y] = Math.Max(y - radius, 0) * w;
+						Rsum = Gsum = Bsum = 0;
+						yp = -radius * w;
+						for (i = -radius; i <= radius; i++)
+						{
+							yi = Math.Max(0, yp) + x;
+							Rsum += r[yi];
+							Gsum += g[yi];
+							Bsum += b[yi];
+							yp += w;
+						}
+						yi = x;
+						for (y = 0; y < h; y++)
+						{
+							// Preserve alpha channel: ( 0xff000000 & pix[yi] )
+							int rgb = (Dv[Rsum] << 16) | (Dv[Gsum] << 8) | Dv[Bsum];
+							Pix[yi] = ((int)(0xff000000 & Pix[yi]) | rgb);
+							if (x == 0)
+							{
+								Vmin[y] = Math.Min(y + radius + 1, Hm) * w;
+								Vmax[y] = Math.Max(y - radius, 0) * w;
+							}
+							P1 = x + Vmin[y];
+							P2 = x + Vmax[y];
+
+							Rsum += r[P1] - r[P2];
+							Gsum += g[P1] - g[P2];
+							Bsum += b[P1] - b[P2];
+
+							yi += w;
+						}
 					}
-					p1 = x + vmin[y];
-					p2 = x + vmax[y];
 
-					rsum += r[p1] - r[p2];
-					gsum += g[p1] - g[p2];
-					bsum += b[p1] - b[p2];
-
-					yi += w;
+					Img.SetPixels(Pix, 0, w, 0, 0, w, h);
+					return Img;
 				}
-			}
-
-			img.SetPixels(pix, 0, w, 0, 0, w, h);
-			return img;
-		}
+		*/
 
 		/// <summary>
 		/// If the device supports authenticating the user using fingerprints.
@@ -398,18 +408,25 @@ namespace NeuroAccessMaui.Services
 			{
 				try
 				{
-					if (Build.VERSION.SdkInt < BuildVersionCodes.M)
+					if (!OperatingSystem.IsAndroidVersionAtLeast(23))
 						return false;
+
 
 					Context Context = Android.App.Application.Context;
 
-					if (Context.CheckCallingOrSelfPermission(Manifest.Permission.UseBiometric) != Permission.Granted &&
-						Context.CheckCallingOrSelfPermission(Manifest.Permission.UseFingerprint) != Permission.Granted)
+					// For Android 28 and later, check for UseBiometric; for earlier versions, check for UseFingerprint.
+					if (OperatingSystem.IsAndroidVersionAtLeast(28)) // API 28+
 					{
-						return false;
+						if (Context.CheckCallingOrSelfPermission(Manifest.Permission.UseBiometric) != Permission.Granted)
+							return false;
+					}
+					else
+					{
+						if (Context.CheckCallingOrSelfPermission(Manifest.Permission.UseFingerprint) != Permission.Granted)
+							return false;
 					}
 
-					BiometricManager Manager = BiometricManager.From(Android.App.Application.Context);
+					BiometricManager Manager = BiometricManager.From(Context);
 					int Level = BiometricManager.Authenticators.BiometricWeak;
 
 					return Manager.CanAuthenticate(Level) == BiometricManager.BiometricSuccess;
@@ -452,7 +469,6 @@ namespace NeuroAccessMaui.Services
 				}
 			}
 		}
-
 		/// <summary>
 		/// Gets the biometric method supported by the device.
 		/// Currently on android, you cannot determine if the device will use fingerprint or face recognition.
@@ -461,20 +477,34 @@ namespace NeuroAccessMaui.Services
 		/// <returns>The BiometricMethod which is preferred/supported on this device</returns>
 		public BiometricMethod GetBiometricMethod()
 		{
-			if (Build.VERSION.SdkInt < BuildVersionCodes.M)
+			// Biometric authentication requires at least API level 23.
+			if (OperatingSystem.IsAndroidVersionAtLeast(23))
 				return BiometricMethod.None;
 
 			Context Context = Android.App.Application.Context;
 
-			if (Context.CheckCallingOrSelfPermission(Manifest.Permission.UseBiometric) != Permission.Granted &&
-				 Context.CheckCallingOrSelfPermission(Manifest.Permission.UseFingerprint) != Permission.Granted)
+			if (OperatingSystem.IsAndroidVersionAtLeast(28)) // API 28+
 			{
-				return BiometricMethod.None;
+				// Check for the UseBiometric permission (only available on API 28+)
+				if (Context.CheckCallingOrSelfPermission(Manifest.Permission.UseBiometric) != Permission.Granted)
+				{
+					return BiometricMethod.None;
+				}
+			}
+			else // For API levels 23 through 27
+			{
+				// Check for the UseFingerprint permission, which is available on earlier versions.
+				if (Context.CheckCallingOrSelfPermission(Manifest.Permission.UseFingerprint) != Permission.Granted)
+				{
+					return BiometricMethod.None;
+				}
 			}
 
 			BiometricManager Manager = BiometricManager.From(Context);
 			const int Level = BiometricManager.Authenticators.BiometricWeak;
-			return Manager.CanAuthenticate(Level) == BiometricManager.BiometricSuccess ? BiometricMethod.Unknown : BiometricMethod.None;
+			return Manager.CanAuthenticate(Level) == BiometricManager.BiometricSuccess
+					 ? BiometricMethod.Unknown
+					 : BiometricMethod.None;
 		}
 
 		/// <summary>
@@ -592,27 +622,28 @@ namespace NeuroAccessMaui.Services
 		/// Gets a Push Notification token for the device.
 		/// </summary>
 		/// <returns>Token, Service used, and type of client.</returns>
-		public Task<TokenInformation> GetPushNotificationToken()
+		public async Task<TokenInformation> GetPushNotificationToken()
 		{
-			Java.Lang.Object? Token = string.Empty;
+			string Token = string.Empty;
 
 			try
 			{
-				Token = string.Empty;   // await FirebaseMessaging.Instance.GetToken().AsAsync<Java.Lang.Object>();		// TODO: Firebase
+				await CrossFirebaseCloudMessaging.Current.CheckIfValidAsync();
+				Token = await CrossFirebaseCloudMessaging.Current.GetTokenAsync();
 			}
 			catch (Exception ex)
 			{
-				Log.Exception(ex);
+				ServiceRef.LogService.LogException(ex);
 			}
 
 			TokenInformation TokenInformation = new()
 			{
-				Token = Token?.ToString(),
+				Token = Token,
 				ClientType = ClientType.Android,
 				Service = PushMessagingService.Firebase
 			};
 
-			return Task.FromResult(TokenInformation);
+			return TokenInformation;
 		}
 
 		#region Keyboard
@@ -639,8 +670,8 @@ namespace NeuroAccessMaui.Services
 		{
 			if (this.activity is null || this.rootView is null)
 				return;
-			InputMethodManager? inputMethodManager = this.activity.GetSystemService(Context.InputMethodService) as InputMethodManager;
-			inputMethodManager?.HideSoftInputFromWindow(this.rootView.WindowToken, HideSoftInputFlags.None);
+			InputMethodManager? InputMethodManager = this.activity.GetSystemService(Context.InputMethodService) as InputMethodManager;
+			InputMethodManager?.HideSoftInputFromWindow(this.rootView.WindowToken, HideSoftInputFlags.None);
 			this.activity.Window?.DecorView.ClearFocus();
 		}
 
@@ -679,34 +710,34 @@ namespace NeuroAccessMaui.Services
 			Rect r = new();
 			this.rootView!.GetWindowVisibleDisplayFrame(r);
 
-			int screenHeight = this.rootView.RootView!.Height;
-			int statusBarHeight = 0;
-			int actionBarHeight = 0;
+			int ScreenHeight = this.rootView.RootView!.Height;
+			int StatusBarHeight = 0;
+			int ActionBarHeight = 0;
 
 			// if this succeeds, we can calculate an exact keyboard height
-			Android.Views.View? contentView = this.rootView.FindViewById(Android.Views.Window.IdAndroidContent);
-			if (contentView is not null)
+			Android.Views.View? ContentView = this.rootView.FindViewById(Android.Views.Window.IdAndroidContent);
+			if (ContentView is not null)
 			{
-				statusBarHeight = r.Top - contentView.Top;
-				actionBarHeight = r.Bottom - contentView.Bottom;
+				StatusBarHeight = r.Top - ContentView.Top;
+				ActionBarHeight = r.Bottom - ContentView.Bottom;
 			}
 
 			// Calculate the height of the keyboard (if the above fails, the keyboardsize will include the size of the action and status bar)
-			int availableScreenHeight = screenHeight - statusBarHeight - actionBarHeight;
-			int visibleHeight = r.Height();
-			int keypadHeight = availableScreenHeight - visibleHeight; // height of the keyboard, but is not garanteed to be the actual keyboard height it might include other things such as the action bar.
+			int AvailableScreenHeight = ScreenHeight - StatusBarHeight - ActionBarHeight;
+			int VisibleHeight = r.Height();
+			int KeypadHeight = AvailableScreenHeight - VisibleHeight; // height of the keyboard, but is not garanteed to be the actual keyboard height it might include other things such as the action bar.
 
 			// Assume keyboard is shown if more than 15% of the available screen height is used.
 			// This is a heuristic, and may need to be adjusted.
 			// I really don't like this solution, but android doesn't provide a better way to detect the keyboard at the time of writing.
 			// Checking keyboardheight > 0 is not enough, because the keyboardheight is not garanteed to be accurate on all devices and circumstances
 
-			if (keypadHeight > availableScreenHeight * 0.15)
+			if (KeypadHeight > AvailableScreenHeight * 0.15)
 			{
-				this.lastKeyboardHeight = keypadHeight;
-				this.KeyboardSizeChanged.Raise(this, new KeyboardSizeMessage(keypadHeight));
-				WeakReferenceMessenger.Default.Send(new KeyboardSizeMessage(keypadHeight));
-				this.KeyboardShown.Raise(this, new KeyboardSizeMessage(keypadHeight));
+				this.lastKeyboardHeight = KeypadHeight;
+				this.KeyboardSizeChanged.Raise(this, new KeyboardSizeMessage(KeypadHeight));
+				WeakReferenceMessenger.Default.Send(new KeyboardSizeMessage(KeypadHeight));
+				this.KeyboardShown.Raise(this, new KeyboardSizeMessage(KeypadHeight));
 			}
 			else
 			{
@@ -721,7 +752,261 @@ namespace NeuroAccessMaui.Services
 		}
 		#endregion
 
+		#region Notifications
+		public void ShowMessageNotification(string Title, string MessageBody, IDictionary<string, string> Data)
+		{
+			Context Context = Application.Context;
+			Intent Intent = new Intent(Context, typeof(MainActivity));
+			Intent.AddFlags(ActivityFlags.ClearTop);
+			foreach (string Key in Data.Keys)
+			{
+				Intent.PutExtra(Key, Data[Key]);
+			}
+			PendingIntent? PendingIntent = Android.App.PendingIntent.GetActivity(Context, 100, Intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
+			int ResIdentifier = Context.Resources?.GetIdentifier("app_icon", "drawable", Context.PackageName) ?? 0;
+			if (ResIdentifier == 0)
+			{
+				ServiceRef.LogService.LogWarning("App icon not found. Aborting local notification");
+				return;
+			}
+
+			if (Data.TryGetValue("fromJid", out string? FromJid) && !string.IsNullOrEmpty(FromJid))
+			{
+				Intent.SetData(Android.Net.Uri.Parse(Constants.UriSchemes.Xmpp + ":" + FromJid));
+				Intent.SetAction(Intent.ActionView);
+			}
+
+			NotificationCompat.Builder Builder = new NotificationCompat.Builder(Context, Constants.PushChannels.Messages)
+				 .SetSmallIcon(ResIdentifier)
+				 .SetContentTitle(Title)
+				 .SetContentText(MessageBody)
+				 .SetAutoCancel(true)
+				 .SetContentIntent(PendingIntent);
+
+			NotificationManagerCompat NotificationManager = NotificationManagerCompat.From(Context);
+			NotificationManager.Notify(100, Builder.Build());
+		}
+
+		public void ShowIdentitiesNotification(string Title, string MessageBody, IDictionary<string, string> Data)
+		{
+			Context Context = Application.Context;
+			Intent Intent = new Intent(Context, typeof(MainActivity));
+
+			Intent.AddFlags(ActivityFlags.ClearTop);
+			foreach (string Key in Data.Keys)
+			{
+				Intent.PutExtra(Key, Data[Key]);
+			}
+
+			// Optionally add additional details (for example, appending a legal id)
+			string ContentText = MessageBody;
+			if (Data.TryGetValue("legalId", out string? LegalId) && !string.IsNullOrEmpty(LegalId))
+			{
+				Intent.SetData(Android.Net.Uri.Parse(Constants.UriSchemes.IotId + ":" + LegalId));
+				Intent.SetAction(Intent.ActionView);
+				ContentText += System.Environment.NewLine + $"({LegalId})";
+			}
+
+			PendingIntent? PendingIntent = Android.App.PendingIntent.GetActivity(Context, 101, Intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
+
+			int ResIdentifier = Context.Resources?.GetIdentifier("app_icon", "drawable", Context.PackageName) ?? 0;
+			if (ResIdentifier == 0)
+			{
+				ServiceRef.LogService.LogWarning("App icon not found. Aborting local notification");
+				return;
+			}
+
+
+			NotificationCompat.Builder Builder = new NotificationCompat.Builder(Context, Constants.PushChannels.Identities)
+				 .SetSmallIcon(ResIdentifier)
+				 .SetContentTitle(Title)
+				 .SetContentText(ContentText)
+				 .SetAutoCancel(true)
+				 .SetContentIntent(PendingIntent);
+
+			NotificationManagerCompat NotificationManager = NotificationManagerCompat.From(Context);
+			NotificationManager.Notify(101, Builder.Build());
+		}
+
+		public void ShowPetitionNotification(string Title, string MessageBody, IDictionary<string, string> Data)
+		{
+			Context Context = Application.Context;
+			Intent Intent = new Intent(Context, typeof(MainActivity));
+			Intent.AddFlags(ActivityFlags.ClearTop);
+			foreach (string Key in Data.Keys)
+			{
+				Intent.PutExtra(Key, Data[Key]);
+			}
+
+			// Use fromJid and rosterName to compose the notification body
+			string FromJid = Data.TryGetValue("fromJid", out string? Value) ? Value : string.Empty;
+			string RosterName = Data.TryGetValue("rosterName", out string? Value1) ? Value1 : string.Empty;
+			string ContentText = $"{(string.IsNullOrEmpty(RosterName) ? FromJid : RosterName)}: {MessageBody}";
+
+			PendingIntent? PendingIntent = Android.App.PendingIntent.GetActivity(Context, 102, Intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
+			int ResIdentifier = Context.Resources?.GetIdentifier("app_icon", "drawable", Context.PackageName) ?? 0;
+			if (ResIdentifier == 0)
+			{
+				ServiceRef.LogService.LogWarning("App icon not found. Aborting local notification");
+				return;
+			}
+			NotificationCompat.Builder Builder = new NotificationCompat.Builder(Context, Constants.PushChannels.Petitions)
+				 .SetSmallIcon(ResIdentifier)
+				 .SetContentTitle(Title)
+				 .SetContentText(ContentText)
+				 .SetAutoCancel(true)
+				 .SetContentIntent(PendingIntent);
+
+			NotificationManagerCompat NotificationManager = NotificationManagerCompat.From(Context);
+			NotificationManager.Notify(102, Builder.Build());
+		}
+
+		public void ShowContractsNotification(string Title, string MessageBody, IDictionary<string, string> Data)
+		{
+			Context Context = Application.Context;
+			Intent Intent = new Intent(Context, typeof(MainActivity));
+			Intent.AddFlags(ActivityFlags.ClearTop);
+
+			foreach (string Key in Data.Keys)
+			{
+				Intent.PutExtra(Key, Data[Key]);
+			}
+
+			StringBuilder ContentBuilder = new StringBuilder();
+			ContentBuilder.Append(MessageBody);
+			if (Data.TryGetValue("role", out string? Role) && !string.IsNullOrEmpty(Role))
+			{
+				ContentBuilder.AppendLine().Append(Role);
+			}
+			if (Data.TryGetValue("contractId", out string? ContractId) && !string.IsNullOrEmpty(ContractId))
+			{
+				ContentBuilder.AppendLine().Append(CultureInfo.InvariantCulture, $"({ContractId})");
+			}
+			if (Data.TryGetValue("legalId", out string? LegalId) && !string.IsNullOrEmpty(LegalId))
+			{
+				ContentBuilder.AppendLine().Append(CultureInfo.InvariantCulture, $"({LegalId})");
+			}
+
+			PendingIntent? PendingIntent = Android.App.PendingIntent.GetActivity(Context, 103, Intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
+			int ResIdentifier = Context.Resources?.GetIdentifier("app_icon", "drawable", Context.PackageName) ?? 0;
+			if (ResIdentifier == 0)
+			{
+				ServiceRef.LogService.LogWarning("App icon not found. Aborting local notification");
+				return;
+			}
+			NotificationCompat.Builder Builder = new NotificationCompat.Builder(Context, Constants.PushChannels.Contracts)
+				 .SetSmallIcon(ResIdentifier)
+				 .SetContentTitle(Title)
+				 .SetContentText(ContentBuilder.ToString())
+				 .SetAutoCancel(true)
+				 .SetContentIntent(PendingIntent);
+
+			NotificationManagerCompat NotificationManager = NotificationManagerCompat.From(Context);
+			NotificationManager.Notify(103, Builder.Build());
+		}
+
+		public void ShowEDalerNotification(string Title, string MessageBody, IDictionary<string, string> Data)
+		{
+			Context Context = Application.Context;
+			Intent Intent = new Intent(Context, typeof(MainActivity));
+			Intent.AddFlags(ActivityFlags.ClearTop);
+			foreach (string Key in Data.Keys)
+			{
+				Intent.PutExtra(Key, Data[Key]);
+			}
+
+			StringBuilder ContentBuilder = new StringBuilder();
+			ContentBuilder.Append(MessageBody);
+			if (Data.TryGetValue("amount", out string? Amount) && !string.IsNullOrEmpty(Amount))
+			{
+				ContentBuilder.AppendLine().Append(Amount);
+				if (Data.TryGetValue("currency", out string? Currency) && !string.IsNullOrEmpty(Currency))
+					ContentBuilder.Append(" " + Currency);
+				if (Data.TryGetValue("timestamp", out string? Timestamp) && !string.IsNullOrEmpty(Timestamp))
+               ContentBuilder.Append(string.Format(CultureInfo.InvariantCulture, " ({0})", Timestamp));
+			}
+
+			PendingIntent? PendingIntent = Android.App.PendingIntent.GetActivity(Context, 104, Intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
+			int ResIdentifier = Context.Resources?.GetIdentifier("app_icon", "drawable", Context.PackageName) ?? 0;
+			if (ResIdentifier == 0)
+			{
+				ServiceRef.LogService.LogWarning("App icon not found. Aborting local notification");
+				return;
+			}
+			NotificationCompat.Builder Builder = new NotificationCompat.Builder(Context, Constants.PushChannels.EDaler)
+				 .SetSmallIcon(ResIdentifier)
+				 .SetContentTitle(Title)
+				 .SetContentText(ContentBuilder.ToString())
+				 .SetAutoCancel(true)
+				 .SetContentIntent(PendingIntent);
+
+			NotificationManagerCompat NotificationManager = NotificationManagerCompat.From(Context);
+			NotificationManager.Notify(104, Builder.Build());
+		}
+
+		public void ShowTokenNotification(string Title, string MessageBody, IDictionary<string, string> Data)
+		{
+			Context Context = Application.Context;
+			Intent Intent = new Intent(Context, typeof(MainActivity));
+			Intent.AddFlags(ActivityFlags.ClearTop);
+			foreach (string Key in Data.Keys)
+			{
+				Intent.PutExtra(Key, Data[Key]);
+			}
+
+			StringBuilder ContentBuilder = new StringBuilder();
+			ContentBuilder.Append(MessageBody);
+			if (Data.TryGetValue("value", out string? Value) && !string.IsNullOrEmpty(Value))
+			{
+				ContentBuilder.AppendLine().Append(Value);
+				if (Data.TryGetValue("currency", out string? Currency) && !string.IsNullOrEmpty(Currency))
+					ContentBuilder.Append(" " + Currency);
+			}
+
+			PendingIntent? PendingIntent = Android.App.PendingIntent.GetActivity(Context, 105, Intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
+			int ResIdentifier = Context.Resources?.GetIdentifier("app_icon", "drawable", Context.PackageName) ?? 0;
+			if (ResIdentifier == 0)
+			{
+				ServiceRef.LogService.LogWarning("App icon not found. Aborting local notification");
+				return;
+			}
+			NotificationCompat.Builder Builder = new NotificationCompat.Builder(Context, Constants.PushChannels.Tokens)
+				 .SetSmallIcon(ResIdentifier)
+				 .SetContentTitle(Title)
+				 .SetContentText(ContentBuilder.ToString())
+				 .SetAutoCancel(true)
+				 .SetContentIntent(PendingIntent);
+
+			NotificationManagerCompat NotificationManager = NotificationManagerCompat.From(Context);
+			NotificationManager.Notify(105, Builder.Build());
+		}
+
+		public void ShowProvisioningNotification(string Title, string MessageBody, IDictionary<string, string> Data)
+		{
+			Context Context = Application.Context;
+			Intent Intent = new Intent(Context, typeof(MainActivity));
+			Intent.AddFlags(ActivityFlags.ClearTop);
+			foreach (string Key in Data.Keys)
+			{
+				Intent.PutExtra(Key, Data[Key]);
+			}
+			PendingIntent? PendingIntent = Android.App.PendingIntent.GetActivity(Context, 106, Intent, PendingIntentFlags.OneShot | PendingIntentFlags.Immutable);
+			int ResIdentifier = Context.Resources?.GetIdentifier("app_icon", "drawable", Context.PackageName) ?? 0;
+			if (ResIdentifier == 0)
+			{
+				ServiceRef.LogService.LogWarning("App icon not found. Aborting local notification");
+				return;
+			}
+			NotificationCompat.Builder Builder = new NotificationCompat.Builder(Context, Constants.PushChannels.Provisioning)
+				 .SetSmallIcon(ResIdentifier)
+				 .SetContentTitle(Title)
+				 .SetContentText(MessageBody)
+				 .SetAutoCancel(true)
+				 .SetContentIntent(PendingIntent);
+
+			NotificationManagerCompat NotificationManager = NotificationManagerCompat.From(Context);
+			NotificationManager.Notify(106, Builder.Build());
+		}
+		#endregion
 	}
-
-
 }

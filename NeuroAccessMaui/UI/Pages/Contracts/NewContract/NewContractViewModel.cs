@@ -17,9 +17,6 @@ using Waher.Content;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Script;
 using Waher.Persistence;
-using NeuroAccessMaui.Services.Contacts;
-using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
-using NeuroAccessMaui.Services.UI;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 {
@@ -255,9 +252,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			if (this.StateObject is null)
 				return;
 
-			string newState = newStep.ToString();
+			string NewState = newStep.ToString();
 
-			if (newState == this.CurrentState)
+			if (NewState == this.CurrentState)
 				return;
 
 			while (!this.CanStateChange)
@@ -265,7 +262,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			await MainThread.InvokeOnMainThreadAsync(async () =>
 			{
-				await StateContainer.ChangeStateWithAnimation(this.StateObject, newState);
+				await StateContainer.ChangeStateWithAnimation(this.StateObject, NewState);
 			});
 		}
 
@@ -525,11 +522,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			await this.GoToState(NewContractStep.Loading);
 
-			string hrt = await this.Contract.Contract.ToMauiXaml(this.Contract.Contract.DeviceLanguage());
-			VerticalStackLayout hrtLayout = new VerticalStackLayout().LoadFromXaml(hrt);
+			VerticalStackLayout? HumanReadableText = await this.Contract.Contract.ToMaui(this.Contract.Contract.DeviceLanguage());
+
 			await MainThread.InvokeOnMainThreadAsync(() =>
 			{
-				this.HumanReadableText = hrtLayout;
+				this.HumanReadableText = HumanReadableText;
 			});
 
 			await this.GoToState(NewContractStep.Preview);

@@ -18,9 +18,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts
 
 		protected override DataTemplate OnSelectTemplate(object item, BindableObject container)
 		{
-			if (item is ObservableContract contract)
+			if (item is ObservableContract Contract)
 			{
-				return contract.ContractState switch
+				return Contract.ContractState switch
 				{
 					ContractState.Proposed => this.ProposedTemplate ?? this.SignedTemplate!,
 					ContractState.Rejected => this.RejectedTemplate ?? this.SignedTemplate!,

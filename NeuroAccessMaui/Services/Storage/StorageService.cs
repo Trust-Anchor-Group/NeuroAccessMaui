@@ -23,8 +23,8 @@ namespace NeuroAccessMaui.Services.Storage
 		/// </summary>
 		public StorageService()
 		{
-			string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-			this.dataFolder = Path.Combine(appDataFolder, "Data");
+			string AppDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+			this.dataFolder = Path.Combine(AppDataFolder, "Data");
 		}
 
 		/// <summary>

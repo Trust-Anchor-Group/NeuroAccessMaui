@@ -8,8 +8,8 @@ namespace NeuroAccessMaui.UI.Converters
 	{
 		public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
 		{
-			if (value is decimal decimalValue)
-				return decimalValue.ToString(culture);
+			if (value is decimal DecimalValue)
+				return DecimalValue.ToString(culture);
 
 			return string.Empty;
 		}
@@ -17,13 +17,13 @@ namespace NeuroAccessMaui.UI.Converters
 		public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
 		{
 			// First, check if the input is null or whitespace and handle it accordingly
-			if (value is string str)
+			if (value is string Str)
 			{
-				if (string.IsNullOrWhiteSpace(str))
+				if (string.IsNullOrWhiteSpace(Str))
 					return null;  // Return null if the string is empty or whitespace
 
-				if (decimal.TryParse(str, NumberStyles.Any, culture, out decimal decimalValue))
-					return decimalValue;
+				if (decimal.TryParse(Str, NumberStyles.Any, culture, out decimal DecimalValue))
+					return DecimalValue;
 			}
 
 			return null;  // Return null if the input is null or not a valid decimal

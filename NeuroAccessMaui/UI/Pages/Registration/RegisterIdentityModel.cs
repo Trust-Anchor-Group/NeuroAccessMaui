@@ -1003,7 +1003,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		/// <summary>
 		/// Used to find out if a command can execute
 		/// </summary>
-		public virtual bool CanExecuteCommands => !this.IsBusy && this.IsConnected;
+		public virtual bool CanExecuteCommands => !this.IsBusy;
 
 		/// <summary>
 		/// If user can apply for an identity.

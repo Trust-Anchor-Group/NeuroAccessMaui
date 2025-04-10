@@ -67,9 +67,9 @@ namespace NeuroAccessMaui.UI.Controls
 		/// <param name="newValue">The new value of the changed property.</param>
 		private static void OnItemChanged(BindableObject bindable, object oldValue, object newValue)
 		{
-			if (bindable is TemplateSelectorContentView view)
+			if (bindable is TemplateSelectorContentView View)
 			{
-				view.ApplyTemplate();
+				View.ApplyTemplate();
 			}
 		}
 
@@ -85,10 +85,10 @@ namespace NeuroAccessMaui.UI.Controls
 				return;
 			}
 
-			DataTemplate? template = this.TemplateSelector.SelectTemplate(this.Item, this);
-			if (template is not null)
+			DataTemplate? Template = this.TemplateSelector.SelectTemplate(this.Item, this);
+			if (Template is not null)
 			{
-				this.Content = (View)template.CreateContent();
+				this.Content = (View)Template.CreateContent();
 			}
 			else
 			{

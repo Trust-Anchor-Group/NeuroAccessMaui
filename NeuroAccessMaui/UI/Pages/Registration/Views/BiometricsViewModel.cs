@@ -72,14 +72,14 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			get
 			{
 
-				string methodName = this.biometricMethod switch
+				string MethodName = this.biometricMethod switch
 				{
 					BiometricMethod.TouchId => ServiceRef.Localizer[nameof(AppResources.TouchId)],
 					BiometricMethod.FaceId => ServiceRef.Localizer[nameof(AppResources.FaceId)],
 					_ => ServiceRef.Localizer[nameof(AppResources.BiometricAuthentication)].ToString().ToLower(CultureInfo.CurrentUICulture)
 				};
 
-				return ServiceRef.Localizer[nameof(AppResources.OnboardingBiometricsPageDetails), methodName];
+				return ServiceRef.Localizer[nameof(AppResources.OnboardingBiometricsPageDetails), MethodName];
 			}
 		}
 
@@ -91,29 +91,29 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		{
 			get
 			{
-				string subject = this.biometricMethod switch
+				string Subject = this.biometricMethod switch
 				{
 					BiometricMethod.TouchId => ServiceRef.Localizer[nameof(AppResources.TouchId)],
 					BiometricMethod.FaceId => ServiceRef.Localizer[nameof(AppResources.FaceId)],
 					_ => ServiceRef.Localizer[nameof(AppResources.BiometricAuthentication)].ToString().ToLower(CultureInfo.CurrentUICulture)
 				};
 
-				return ServiceRef.Localizer[nameof(AppResources.WhatIsX), subject];
+				return ServiceRef.Localizer[nameof(AppResources.WhatIsX), Subject];
 			}
 		}
 
 		[RelayCommand]
 		private async Task ShowBiometricsInfo()
 		{
-			string message = this.biometricMethod switch
+			string Message = this.biometricMethod switch
 			{
 				BiometricMethod.FaceId => ServiceRef.Localizer[nameof(AppResources.FaceIdInfo)],
 				BiometricMethod.TouchId => ServiceRef.Localizer[nameof(AppResources.TouchIdInfo)],
 				_ => ServiceRef.Localizer[nameof(AppResources.BiometricAuthenticationInfo)]
 			};
 
-			ShowInfoPopup infoPage = new(this.WhatIsX, message);
-			await ServiceRef.UiService.PushAsync(infoPage);
+			ShowInfoPopup InfoPage = new(this.WhatIsX, Message);
+			await ServiceRef.UiService.PushAsync(InfoPage);
 		}
 
 		[RelayCommand]

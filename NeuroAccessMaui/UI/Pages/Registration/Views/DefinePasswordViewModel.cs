@@ -96,20 +96,20 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		{
 			double Score = ServiceRef.TagProfile.CalculatePasswordScore(this.PasswordText1);
 
-			const double low = Constants.Security.MediumSecurityScoreThreshold;
-			const double medium = Constants.Security.HighSecurityPasswordScoreThreshold;
-			const double high = Constants.Security.MaxSecurityPasswordScoreThreshold;
+			const double Low = Constants.Security.MediumSecurityScoreThreshold;
+			const double Medium = Constants.Security.HighSecurityPasswordScoreThreshold;
+			const double High = Constants.Security.MaxSecurityPasswordScoreThreshold;
 
-			this.SecurityBar1Percentage = (Math.Min(Score, low) / low) * 100.0;
-			this.SecurityBar2Percentage = Math.Max((Math.Min(Score - low, medium - low) / (medium - low) * 100.0), 0);
-			this.SecurityBar3Percentage = Math.Max((Math.Min(Score - medium, high - medium) / (high - medium) * 100.0), 0);
+			this.SecurityBar1Percentage = (Math.Min(Score, Low) / Low) * 100.0;
+			this.SecurityBar2Percentage = Math.Max((Math.Min(Score - Low, Medium - Low) / (Medium - Low) * 100.0), 0);
+			this.SecurityBar3Percentage = Math.Max((Math.Min(Score - Medium, High - Medium) / (High - Medium) * 100.0), 0);
 
-			if (Score >= medium)
+			if (Score >= Medium)
 			{
 				this.SecurityTextColor = AppColors.StrongPasswordForeground;
 				this.SecurityText = ServiceRef.Localizer[nameof(AppResources.PasswordStrongSecurity)];
 			}
-			else if (Score >= low)
+			else if (Score >= Low)
 			{
 				this.SecurityTextColor = AppColors.MediumPasswordForeground;
 				this.SecurityText = ServiceRef.Localizer[nameof(AppResources.PasswordMediumSecurity)];
@@ -232,10 +232,10 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		{
 			ServiceRef.PlatformSpecific.HideKeyboard();
 
-			bool isFirstPassword = string.IsNullOrEmpty(ServiceRef.TagProfile.LocalPasswordHash); //Wheter or not to go to the Finalize view
+			bool IsFirstPassword = string.IsNullOrEmpty(ServiceRef.TagProfile.LocalPasswordHash); //Wheter or not to go to the Finalize view
 
 			ServiceRef.TagProfile.LocalPassword = this.PasswordText1!;
-			if(ServiceRef.PlatformSpecific.SupportsFingerprintAuthentication && isFirstPassword)
+			if(ServiceRef.PlatformSpecific.SupportsFingerprintAuthentication && IsFirstPassword)
 				GoToRegistrationStep(RegistrationStep.Biometrics);
 			else
 				GoToRegistrationStep(RegistrationStep.Complete);

@@ -417,10 +417,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				if (!await App.AuthenticateUserAsync(AuthenticationPurpose.AcceptEDalerUri, true))
 					return;
 
-				(bool succeeded, Transaction? Transaction) = await ServiceRef.NetworkService.TryRequest(
+				(bool Succeeded, Transaction? Transaction) = await ServiceRef.NetworkService.TryRequest(
 					() => ServiceRef.XmppService.SendEDalerUri(this.Uri));
 
-				if (succeeded)
+				if (Succeeded)
 				{
 					await this.GoBack();
 					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],

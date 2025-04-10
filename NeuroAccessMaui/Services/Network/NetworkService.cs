@@ -99,13 +99,13 @@ namespace NeuroAccessMaui.Services.Network
 
 		private async Task<(bool Succeeded, TReturn? ReturnValue)> PerformRequestInner<TReturn>(Func<Task<TReturn>> func, string memberName, bool rethrowException = false, bool displayAlert = true)
 		{
-			Exception thrownException;
+			Exception ThrownException;
 			try
 			{
 				if (!this.IsOnline)
 				{
-					thrownException = new MissingNetworkException(ServiceRef.Localizer[nameof(AppResources.ThereIsNoNetwork)]);
-					ServiceRef.LogService.LogException(thrownException, GetParameter(memberName));
+					ThrownException = new MissingNetworkException(ServiceRef.Localizer[nameof(AppResources.ThereIsNoNetwork)]);
+					ServiceRef.LogService.LogException(ThrownException, GetParameter(memberName));
 
 					if (displayAlert)
 					{
@@ -122,7 +122,7 @@ namespace NeuroAccessMaui.Services.Network
 			}
 			catch (AggregateException ae)
 			{
-				thrownException = ae;
+				ThrownException = ae;
 
 				if (ae.InnerException is TimeoutException te)
 				{
@@ -171,7 +171,7 @@ namespace NeuroAccessMaui.Services.Network
 			}
 			catch (TimeoutException te)
 			{
-				thrownException = te;
+				ThrownException = te;
 				ServiceRef.LogService.LogException(te, GetParameter(memberName));
 
 				if (displayAlert)
@@ -183,7 +183,7 @@ namespace NeuroAccessMaui.Services.Network
 			}
 			catch (TaskCanceledException tce)
 			{
-				thrownException = tce;
+				ThrownException = tce;
 				ServiceRef.LogService.LogException(tce, GetParameter(memberName));
 
 				if (displayAlert)
@@ -197,7 +197,7 @@ namespace NeuroAccessMaui.Services.Network
 			{
 				string message;
 
-				thrownException = ex;
+				ThrownException = ex;
 
 				if (ex is XmppException xe && xe.Stanza is not null)
 					message = xe.Stanza.InnerText;
@@ -215,7 +215,7 @@ namespace NeuroAccessMaui.Services.Network
 			}
 
 			if (rethrowException)
-				ExceptionDispatchInfo.Capture(thrownException).Throw();
+				ExceptionDispatchInfo.Capture(ThrownException).Throw();
 
 			return (false, default);
 		}

@@ -28,24 +28,24 @@ namespace NeuroAccessMaui.UI.Converters
 		/// <returns>A localized string representing the date and optionally time.</returns>
 		public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
 		{
-			if (value is not DateTime dateTime)
+			if (value is not DateTime DateTime)
 				return string.Empty;
 
 			bool DateOnly = false;
 
-			if (parameter is bool boolParam)
+			if (parameter is bool BoolParam)
 			{
-				DateOnly = boolParam;
+				DateOnly = BoolParam;
 			}
-			else if (parameter is string strParam && bool.TryParse(strParam, out bool parsed))
+			else if (parameter is string StrParam && bool.TryParse(StrParam, out bool Parsed))
 			{
-				DateOnly = parsed;
+				DateOnly = Parsed;
 			}
 
 			// If DateOnly is true, use short date format; otherwise, use date and time.
 			return DateOnly
-				 ? dateTime.ToString("d", culture)    // Short date pattern
-				 : dateTime.ToString("G", culture);   // short date + short time pattern
+				 ? DateTime.ToString("d", culture)    // Short date pattern
+				 : DateTime.ToString("G", culture);   // short date + short time pattern
 		}
 
 		/// <summary>

@@ -8,10 +8,10 @@ namespace NeuroAccessMaui.UI.Popups.Info
 	{
 		public ShowInfoPopup(string InfoTitle, string InfoText)
 		{
-			BasePopupViewModel viewModel = new BaseShowInfoViewModel(InfoTitle, InfoText);
+			BasePopupViewModel ViewModel = new BaseShowInfoViewModel(InfoTitle, InfoText);
 
 			this.InitializeComponent();
-			this.BindingContext = viewModel;
+			this.BindingContext = ViewModel;
 		}
 
 		public ShowInfoPopup()

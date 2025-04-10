@@ -18,16 +18,29 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		{
 			await base.OnInitialize();
 
-			this.IsBusy = true;
-			ServiceRef.XmppService.ConnectionStateChanged += this.XmppService_ConnectionStateChanged;
-			ServiceRef.XmppService.Loaded += this.XmppService_Loaded;
+			try
+			{
+				if(App.Current is not null)
+					await App.Current.InitCompleted;
+			}
+			catch (Exception)
+			{
+			}
+			finally
+			{
+				GoToRegistrationStep(ServiceRef.TagProfile.Step);
+			}
+
+			//	this.IsBusy = true;
+			//	ServiceRef.XmppService.ConnectionStateChanged += this.XmppService_ConnectionStateChanged;
+			//	ServiceRef.XmppService.Loaded += this.XmppService_Loaded;
 		}
 
 		/// <inheritdoc />
 		protected override async Task OnDispose()
 		{
-			ServiceRef.XmppService.Loaded -= this.XmppService_Loaded;
-			ServiceRef.XmppService.ConnectionStateChanged -= this.XmppService_ConnectionStateChanged;
+		//	ServiceRef.XmppService.Loaded -= this.XmppService_Loaded;
+		//	ServiceRef.XmppService.ConnectionStateChanged -= this.XmppService_ConnectionStateChanged;
 
 			await base.OnDispose();
 		}

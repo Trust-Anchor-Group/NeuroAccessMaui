@@ -14,6 +14,7 @@ using NeuroAccessMaui.UI.Pages.Main.QR;
 using NeuroAccessMaui.UI.Pages.Main.Settings;
 using NeuroAccessMaui.UI.Pages.Main.VerifyCode;
 using NeuroAccessMaui.UI.Pages.Main.XmppForm;
+using NeuroAccessMaui.UI.Pages.Notifications;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionContract;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview;
@@ -97,6 +98,9 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			Routing.RegisterRoute(nameof(SettingsPage), typeof(SettingsPage));
 			Routing.RegisterRoute(nameof(VerifyCodePage), typeof(VerifyCodePage));
 			Routing.RegisterRoute(nameof(XmppFormPage), typeof(XmppFormPage));
+
+			//Notifications
+			Routing.RegisterRoute(nameof(NotificationsPage), typeof(NotificationsPage));
 
 			// Petitions
 			Routing.RegisterRoute(nameof(PetitionContractPage), typeof(PetitionContractPage));

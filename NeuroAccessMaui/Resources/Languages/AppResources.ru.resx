@@ -22,8 +22,10 @@
     <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
         <value>[base64 mime encoded serialized .NET Framework object]</value>
     </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing"
+  mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework
+  object]</value>
         <comment>This is a comment</comment>
     </data>
                 
@@ -2379,6 +2381,9 @@
   <data name="MomentaryValues" xml:space="preserve">
     <value>Сиюминутные ценности</value>
   </data>
+  <data name="None" xml:space="preserve">
+    <value>Никакой</value>
+  </data>
   <data name="PeakValues" xml:space="preserve">
     <value>Пиковые значения</value>
   </data>
@@ -2535,9 +2540,6 @@
   <data name="AdditionalPhotosDescription" xml:space="preserve">
     <value>Вы можете добавить дополнительные фотографии, чтобы подтвердить свою личность.</value>
   </data>
-  <data name="None" xml:space="preserve">
-    <value>Никакой</value>
-  </data>
   <data name="Passport" xml:space="preserve">
     <value>Паспорт</value>
   </data>
@@ -2558,5 +2560,41 @@
   </data>
   <data name="PleaseTryAgain" xml:space="preserve">
     <value>Пожалуйста, попробуйте еще раз</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>Сегодня</value>
+  </data>
+  <data name="DurationPickerTitle" xml:space="preserve">
+    <value>Срок действия</value>
+  </data>
+  <data name="DurationPickerDescription" xml:space="preserve">
+    <value>Укажите срок действия контракта</value>
+  </data>
+  <data name="NegateDuration" xml:space="preserve">
+    <value>Отрицательная продолжительность: </value>
+  </data>
+  <data name="AddDuration" xml:space="preserve">
+    <value>Добавить продолжительность</value>
+  </data>
+  <data name="SelectUnit" xml:space="preserve">
+    <value>Выберите единицу измерения</value>
+  </data>
+  <data name="YearsCapitalized" xml:space="preserve">
+    <value>Годы</value>
+  </data>
+  <data name="MonthsCapitalized" xml:space="preserve">
+    <value>Месяцы</value>
+  </data>
+  <data name="DaysCapitalized" xml:space="preserve">
+    <value>Дни недели</value>
+  </data>
+  <data name="HoursCapitalized" xml:space="preserve">
+    <value>Часов</value>
+  </data>
+  <data name="MinutesCapitalized" xml:space="preserve">
+    <value>Протокол</value>
+  </data>
+  <data name="SecondsCapitalized" xml:space="preserve">
+    <value>Товары второго сорта</value>
   </data>
 </root>

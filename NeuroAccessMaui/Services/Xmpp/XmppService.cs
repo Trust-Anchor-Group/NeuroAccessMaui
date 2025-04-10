@@ -1,4 +1,5 @@
-﻿//#define DEBUG_XMPP_REMOTE
+//#define DEBUG_XMPP_REMOTE
+#define DEBUG_XMPP_LOCAL
 //#define DEBUG_LOG_REMOTE
 //#define DEBUG_DB_REMOTE
 
@@ -179,6 +180,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 						this.xmppClient = new XmppClient(HostName, PortNumber, this.accountName, this.passwordHash, this.passwordHashMethod,
 							Constants.LanguageCodes.Default, AppAssembly, this.sniffer);
 					}
+#if DEBUG_XMPP_LOCAL
+					DebugSniffer LocalSniffer = new DebugSniffer(BinaryPresentationMethod.Hexadecimal);
+
+					this.xmppClient.Add(LocalSniffer);
+#endif
 
 #if DEBUG_XMPP_REMOTE || DEBUG_LOG_REMOTE || DEBUG_DB_REMOTE
 					if (!string.IsNullOrEmpty(debugRecipient))
@@ -717,7 +723,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			return i >= 0;
 		}
 
-		public override async Task Load(bool IsResuming, CancellationToken CancellationToken)
+		public override Task Load(bool IsResuming, CancellationToken CancellationToken)
 		{
 			if (this.BeginLoad(IsResuming, CancellationToken))
 			{
@@ -726,25 +732,39 @@ namespace NeuroAccessMaui.Services.Xmpp
 					ServiceRef.TagProfile.StepChanged += this.TagProfile_StepChanged;
 					ServiceRef.TagProfile.Changed += this.TagProfile_Changed;
 
-					if (ServiceRef.TagProfile.ShouldCreateClient() && !this.XmppParametersCurrent())
-						await this.CreateXmppClient();
-
-					if ((this.xmppClient is not null) &&
-						this.xmppClient.State == XmppState.Connected &&
-						ServiceRef.TagProfile.IsCompleteOrWaitingForValidation())
-					{
-						// Don't await this one, just fire and forget, to improve startup time.
-						_ = this.xmppClient.SetPresenceAsync(Availability.Online);
-					}
+					_ = this.CreateClientAsync();
 
 					this.EndLoad(true);
 				}
-				catch (Exception ex)
+				catch (Exception Ex)
 				{
-					ex = Log.UnnestException(ex);
-					ServiceRef.LogService.LogException(ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
+					Ex = Log.UnnestException(Ex);
+					ServiceRef.LogService.LogException(Ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
 					this.EndLoad(false);
 				}
+			}
+			return Task.CompletedTask;
+		}
+
+		private async Task CreateClientAsync()
+		{
+			try
+			{
+				if (ServiceRef.TagProfile.ShouldCreateClient() && !this.XmppParametersCurrent())
+					await this.CreateXmppClient();
+
+				if ((this.xmppClient is not null) &&
+					this.xmppClient.State == XmppState.Connected &&
+					ServiceRef.TagProfile.IsCompleteOrWaitingForValidation())
+				{
+					// Don't await this one, just fire and forget, to improve startup time.
+					_ = this.xmppClient.SetPresenceAsync(Availability.Online);
+				}
+			}
+			catch (Exception ex)
+			{
+				ex = Log.UnnestException(ex);
+				ServiceRef.LogService.LogException(ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
 			}
 		}
 
@@ -1234,11 +1254,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 			if (Client is null)
 				return false;
 
-			ServiceItemsDiscoveryEventArgs response;
+			ServiceItemsDiscoveryEventArgs Response;
 
 			try
 			{
-				response = await Client.ServiceItemsDiscoveryAsync(null, string.Empty, string.Empty);
+				Response = await Client.ServiceItemsDiscoveryAsync(null, string.Empty, string.Empty);
 			}
 			catch (Exception ex)
 			{
@@ -1256,7 +1276,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 			Tasks.Add(CheckFeatures(Client, SynchObject));
 
-			foreach (Item Item in response.Items)
+			foreach (Item Item in Response.Items)
 				Tasks.Add(CheckComponent(Client, Item, SynchObject));
 
 			await Task.WhenAll([.. Tasks]);
@@ -1294,39 +1314,39 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private static async Task CheckComponent(XmppClient Client, Item Item, object SynchObject)
 		{
-			ServiceDiscoveryEventArgs itemResponse = await Client.ServiceDiscoveryAsync(null, Item.JID, Item.Node);
+			ServiceDiscoveryEventArgs ItemResponse = await Client.ServiceDiscoveryAsync(null, Item.JID, Item.Node);
 
 			lock (SynchObject)
 			{
-				if (itemResponse.HasAnyFeature(ContractsClient.NamespacesLegalIdentities))
+				if (ItemResponse.HasAnyFeature(ContractsClient.NamespacesLegalIdentities))
 					ServiceRef.TagProfile.LegalJid = Item.JID;
 
-				if (itemResponse.HasAnyFeature(ThingRegistryClient.NamespacesDiscovery))
+				if (ItemResponse.HasAnyFeature(ThingRegistryClient.NamespacesDiscovery))
 					ServiceRef.TagProfile.RegistryJid = Item.JID;
 
-				if (itemResponse.HasAnyFeature(ProvisioningClient.NamespacesProvisioningDevice) &&
-					itemResponse.HasAnyFeature(ProvisioningClient.NamespacesProvisioningOwner) &&
-					itemResponse.HasAnyFeature(ProvisioningClient.NamespacesProvisioningToken))
+				if (ItemResponse.HasAnyFeature(ProvisioningClient.NamespacesProvisioningDevice) &&
+					ItemResponse.HasAnyFeature(ProvisioningClient.NamespacesProvisioningOwner) &&
+					ItemResponse.HasAnyFeature(ProvisioningClient.NamespacesProvisioningToken))
 				{
 					ServiceRef.TagProfile.ProvisioningJid = Item.JID;
 				}
 
-				if (itemResponse.HasFeature(HttpFileUploadClient.Namespace))
+				if (ItemResponse.HasFeature(HttpFileUploadClient.Namespace))
 				{
-					long maxSize = HttpFileUploadClient.FindMaxFileSize(Client, itemResponse) ?? 0;
-					ServiceRef.TagProfile.SetFileUploadParameters(Item.JID, maxSize);
+					long MaxSize = HttpFileUploadClient.FindMaxFileSize(Client, ItemResponse) ?? 0;
+					ServiceRef.TagProfile.SetFileUploadParameters(Item.JID, MaxSize);
 				}
 
-				if (itemResponse.HasFeature(XmppEventSink.NamespaceEventLogging))
+				if (ItemResponse.HasFeature(XmppEventSink.NamespaceEventLogging))
 					ServiceRef.TagProfile.LogJid = Item.JID;
 
-				if (itemResponse.HasFeature(XmppEventSink.NamespaceEventLogging))
+				if (ItemResponse.HasFeature(XmppEventSink.NamespaceEventLogging))
 					ServiceRef.TagProfile.LogJid = Item.JID;
 
-				if (itemResponse.HasFeature(EDalerClient.NamespaceEDaler))
+				if (ItemResponse.HasFeature(EDalerClient.NamespaceEDaler))
 					ServiceRef.TagProfile.EDalerJid = Item.JID;
 
-				if (itemResponse.HasFeature(NeuroFeaturesClient.NamespaceNeuroFeatures))
+				if (ItemResponse.HasFeature(NeuroFeaturesClient.NamespaceNeuroFeatures))
 					ServiceRef.TagProfile.NeuroFeaturesJid = Item.JID;
 			}
 		}
@@ -1885,7 +1905,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 					string Key = "ClientMessage" + Code;
 					string LocalizedMessage = ServiceRef.Localizer[Key];
 
-					if (!string.IsNullOrEmpty(LocalizedMessage) && !LocalizedMessage.Equals(Key))
+					if (!string.IsNullOrEmpty(LocalizedMessage) && !LocalizedMessage.Equals(Key, StringComparison.Ordinal))
 						Message = LocalizedMessage;
 				}
 				catch (Exception)
@@ -2813,7 +2833,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 					await ServiceRef.TagProfile.SetLegalIdentity(e.Identity, true);
 					await this.LegalIdentityChanged.Raise(this, e);
 
-					if (e.Identity.IsDiscarded() && Shell.Current.CurrentState.Location.OriginalString != Constants.Pages.RegistrationPage)
+					if (e.Identity.IsDiscarded() && !e.Identity.IsPersonal() && !e.Identity.IsOrganizational() && Shell.Current.CurrentState.Location.OriginalString != Constants.Pages.RegistrationPage)
 					{
 						MainThread.BeginInvokeOnMainThread(async () =>
 						{
