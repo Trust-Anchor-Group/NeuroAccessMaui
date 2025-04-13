@@ -1922,7 +1922,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			//
 			// Body message only contains first message reported.
 			//
-			// Codes that need localized messages (defined in broker):
+			// Codes that need localized messages (defined in broker & services):
 			//
 			// InvalidType: "Expected value of type " + typeof(T).FullName + "."
 			// IdMismatch: Identifier does not correspond to created identifier.
@@ -1934,6 +1934,39 @@ namespace NeuroAccessMaui.Services.Xmpp
 			// FromMismatch: From does not match identity creation timestamp.
 			// ToMismatch: To does not match identity creation timestamp.
 			// NoClientURL: No Client URL provided.
+			// ReviewerExternal: Peer reviewer is external. Peer-review request should be sent directly to reviewer.
+			// ServiceNotConfigured: Service not configured correctly. Please contact operator.
+			// MissingCountry: Application does not contain country information.
+			// CountryNotSupported: Service not available in your country.
+			// MissingPNr: Application does not contain a personal number.
+			// NoCompanyId: Service cannot be used to review company IDs.
+			// ServiceClientTimeout: Service timed out waiting for user to approve request.
+			// ServiceFailed: Service failed to process request.
+			// PNrMismatch: Personal number mismatch.
+			// FirstNameMismatch: First name mismatch.
+			// LastNameMismatch: Last name mismatch.
+			// NameMismatch: Name mismatch.
+			// BankIdRFA1: Start your BankID app.
+			// BankIdRFA2: The BankID app is not installed. Please contact your internet bank.
+			// BankIdRFA3: Action cancelled. Please try again.
+			// BankIdRFA4: An identification or signing for this personal number is already started. Please try again.
+			// BankIdRFA5: Internal error. Please try again.
+			// BankIdRFA6: Action cancelled.
+			// BankIdRFA8: The BankID app is not responding. Please check that the program is started and that you have internet access. If you don’t have a valid BankID you can get one from your bank. Try again.
+			// BankIdRFA9: Enter your security code in the BankID app and select Identify or Sign.
+			// BankIdRFA13: Trying to start your BankID app.
+			// BankIdRFA14A: Searching for BankID:s, it may take a little while... If a few seconds have passed and still no BankID has been found, you probably don’t have a BankID which can be used for this identification/signing on this computer. If you have a BankID card, please insert it into your card reader. If you don’t have a BankID you can order one from your internet bank. If you have a BankID on another device you can start the BankID app on that device.
+			// BankIdRFA14B: Searching for BankID:s, it may take a little while... If a few seconds have passed and still no BankID has been found, you probably don’t have a BankID which can be used for this identification/signing on this device. If you don’t have a BankID you can order one from your internet bank. If you have a BankID on another device you can start the BankID app on that device.
+			// BankIdRFA15A: Searching for BankID:s, it may take a little while... If a few seconds have passed and still no BankID has been found, you probably don’t have a BankID which can be used for this identification/signing on this computer. If you have a BankID card, please insert it into your card reader. If you don’t have a BankID you can order one from your internet bank.
+			// BankIdRFA15B: Searching for BankID:s, it may take a little while... If a few seconds have passed and still no BankID has been found, you probably don’t have a BankID which can be used for this identification/signing on this device. If you don’t have a BankID you can order one from your internet bank
+			// BankIdRFA16: The BankID you are trying to use is revoked or too old. Please use another BankID or order a new one from your internet bank.
+			// BankIdRFA17A: The BankID app couldn’t be found on your computer or mobile device. Please install it and order a BankID from your internet bank. Install the app from your app store or https://install.bankid.com.
+			// BankIdRFA17B: Failed to scan the QR code. Start the BankID app and scan the QR code. Check that the BankID app is up to date. If you don't have the BankID app, you need to install it and order a BankID from your internet bank. Install the app from your app store or https://install.bankid.com.
+			// BankIdRFA18: Start the BankID app
+			// BankIdRFA19: Would you like to identify yourself or sign with a BankID on this computer or with a Mobile BankID?
+			// BankIdRFA20: Would you like to identify yourself or sign with a BankID on this device or with a BankID on another device?
+			// BankIdRFA21: Identification or signing in progress.
+			// BankIdRFA22: Unknown error. Please try again.
 
 			MainThread.BeginInvokeOnMainThread(async () =>
 			{
