@@ -256,7 +256,6 @@ namespace NeuroAccessMaui.Services.Xmpp
 					this.xmppClient.OnPresence += this.XmppClient_OnPresence;
 
 					this.xmppClient.RegisterMessageHandler("Delivered", ContractsClient.NamespaceOnboarding, this.TransferIdDelivered, true);
-					this.xmppClient.RegisterMessageHandler("clientMessage", ContractsClient.NamespaceLegalIdentitiesCurrent, this.ClientMessage, true);
 
 					this.xmppFilteredEventSink = new EventFilter("XMPP Event Filter",
 						new XmppEventSink("XMPP Event Sink", this.xmppClient, ServiceRef.TagProfile.LogJid, false),
@@ -1892,18 +1891,19 @@ namespace NeuroAccessMaui.Services.Xmpp
 			});
 		}
 
-		private Task ClientMessage(object? Sender, MessageEventArgs e)
+		private Task ContractsClient_ClientMessage(object? Sender, ClientMessageEventArgs e)
 		{
-			string Code = XML.Attribute(e.Content, "code");
-			string Type = XML.Attribute(e.Content, "type");
 			string Message = e.Body;
 
-			if (!string.IsNullOrEmpty(Code))
+			if (!string.IsNullOrEmpty(e.Code))
 			{
 				try
 				{
-					string Key = "ClientMessage" + Code;
+					string Key = "ClientMessage" + e.Code;
 					string LocalizedMessage = ServiceRef.Localizer[Key];
+
+					// TODO: Make sure this does not generate logs or errors, as the app
+					// does not control future error codes that can be returned.
 
 					if (!string.IsNullOrEmpty(LocalizedMessage) && !LocalizedMessage.Equals(Key, StringComparison.Ordinal))
 						Message = LocalizedMessage;
@@ -1914,26 +1914,32 @@ namespace NeuroAccessMaui.Services.Xmpp
 				}
 			}
 
+			// TODO: Event arguments contain more detailed information about:
+			//
+			//	Properties & attachments that have been validated: e.ValidClaims, e.ValidPhotos
+			//	Properties & attachments that have been invalidated: e.InvalidClaims, e.InvalidPhotos
+			//	Properties & attachments that are still unvalidated: e.UnvalidatedClaims, e.UnvalidatedPhotos
+			//
+			// Body message only contains first message reported.
+			//
+			// Codes that need localized messages (defined in broker):
+			//
+			// InvalidType: "Expected value of type " + typeof(T).FullName + "."
+			// IdMismatch: Identifier does not correspond to created identifier.
+			// AccountMismatch: Account name does not match account.
+			// ProviderMismatch: Provider does not match legal component address.
+			// StateMismatch: State does not match identity state.
+			// CreatedMismatch: Created does not match identity creation timestamp.
+			// UpdatedMismatch: Updated does not match identity update timestamp.
+			// FromMismatch: From does not match identity creation timestamp.
+			// ToMismatch: To does not match identity creation timestamp.
+			// NoClientURL: No Client URL provided.
+
 			MainThread.BeginInvokeOnMainThread(async () =>
 			{
-				switch (Type.ToUpperInvariant())
-				{
-					case "NONE":
-					default:
-						await ServiceRef.UiService.DisplayAlert(
-							ServiceRef.Localizer[nameof(AppResources.Information)], Message,
-							ServiceRef.Localizer[nameof(AppResources.Ok)]);
-						break;
-
-					case "CLIENT":
-					case "SERVER":
-					case "SERVICE":
-						await ServiceRef.UiService.DisplayAlert(
-							ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], Message,
-							ServiceRef.Localizer[nameof(AppResources.Ok)]);
-						break;
-
-				}
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], Message,
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
 			});
 
 			return Task.CompletedTask;
@@ -2992,6 +2998,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			this.ContractsClient.ContractProposalReceived += this.ContractsClient_ContractProposalReceived;
 			this.ContractsClient.ContractUpdated += this.ContractsClient_ContractUpdated;
 			this.ContractsClient.ContractSigned += this.ContractsClient_ContractSigned;
+			this.ContractsClient.ClientMessage += this.ContractsClient_ClientMessage;
 		}
 
 		/// <summary>
