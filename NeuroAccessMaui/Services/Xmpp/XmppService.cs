@@ -1926,6 +1926,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			//
 			// InvalidType: "Expected value of type " + typeof(T).FullName + "."
 			// IdMismatch: Identifier does not correspond to created identifier.
+			// JidMismatch: JID does not correspond to client JID.
 			// AccountMismatch: Account name does not match account.
 			// ProviderMismatch: Provider does not match legal component address.
 			// StateMismatch: State does not match identity state.
@@ -1946,6 +1947,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 			// FirstNameMismatch: First name mismatch.
 			// LastNameMismatch: Last name mismatch.
 			// NameMismatch: Name mismatch.
+			// InvalidJid: Invalid JID.
+			// NoLogin: No login registered on Neuron.
+			// UnexpectedOnboardingServer: Unexpected response received from onboarding server.
 			// BankIdRFA1: Start your BankID app.
 			// BankIdRFA2: The BankID app is not installed. Please contact your internet bank.
 			// BankIdRFA3: Action cancelled. Please try again.
