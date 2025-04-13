@@ -12,16 +12,20 @@
 					  xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Identity.ViewIdentity"
 					  xmlns:photos="clr-namespace:NeuroAccessMaui.Services.UI.Photos">
+	
 	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="auto" />
 			<RowDefinition Height="*" />
 			<RowDefinition Height="50" />
-			<RowDefinition Height="Auto" />
+			<RowDefinition Height="50" />
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
+		<controls:Background Grid.Row="1"
+							 Grid.RowSpan="3" />
+
 		<HorizontalStackLayout Spacing="{StaticResource SmallSpacing}"
 							   Margin="{StaticResource MediumSpacing}"
 							   Grid.Row="0">
@@ -35,8 +39,9 @@
 				   Text="{l:Localize LegalId}" />
 		</HorizontalStackLayout>
 
+
 		<Border Grid.Row="2"
-				BackgroundColor="AliceBlue"
+				BackgroundColor="{DynamicResource Accent20Dark}"
 				Style="{StaticResource BorderSet}"
 				StrokeShape="RoundRectangle 16"
 				WidthRequest="175"
@@ -44,20 +49,51 @@
 				TranslationY="-85"
 				HorizontalOptions="Center" />
 
+		<Grid Grid.Row="1">
+			<Border x:Name="TiltBorder"
+					Style="{StaticResource BorderSet}"
+					Margin="{StaticResource MediumMargins}"
+					Padding="0">
+				<ContentView>
+				<AbsoluteLayout>
+					<controls:SvgView Source="id_background.svg"/>
+				</AbsoluteLayout>
+				</ContentView>
 
-		<Border Grid.Row="1"
-				Style="{StaticResource BorderSet}"
-				Margin="{StaticResource MediumMargins}">
-			<Grid>
-				<controls:Background />
-				<VerticalStackLayout  HorizontalOptions="Center">
-					<Label Style="{StaticResource PageTitleLabel}"
-						   Text="Test" />
-					<Label Text="TEST" />
-				</VerticalStackLayout>
-			</Grid>
-		</Border>
+			</Border>
+			<!-- Transparent overlay to capture pointer events -->
+			<GraphicsView x:Name="GestureOverlay"
+						  BackgroundColor="Transparent"
+						  HorizontalOptions="Fill"
+						  VerticalOptions="Fill"
+						  StartInteraction="GestureOverlay_StartInteraction"
+						  DragInteraction="GestureOverlay_DragInteraction"
+						  EndInteraction="GestureOverlay_EndInteraction"
+						  CancelInteraction="GestureOverlay_CancelInteraction" />
+		</Grid>
+		
 
+		<Grid Grid.Row="1" Padding="{StaticResource MediumMargins}">
+			<VerticalStackLayout  HorizontalOptions="Center"
+								  Padding="16">
+				<controls:SvgView Source="Vector.svg" Grid.Row="2" TintColor="LightBlue" BackgroundColor="Transparent"
+								  Aspect="AspectFit"
+								  WidthRequest="230"
+								  HeightRequest="230" />
+				<!--<Border Grid.Row="2"
+						BackgroundColor="Grey"
+						StrokeShape="RoundRectangle 16"
+						WidthRequest="230"
+						HeightRequest="230"
+						HorizontalOptions="Center" /> -->
+				<Label Style="{StaticResource PageTitleLabel}"
+					   HorizontalOptions="Center"
+					   Text="Test" />
+				<Label Text="TEST"
+					   HorizontalOptions="Center" />
+
+			</VerticalStackLayout>
+		</Grid>
 
 		<Border Grid.Row="2"
 				BackgroundColor="AliceBlue"
@@ -66,20 +102,75 @@
 				HeightRequest="175"
 				TranslationY="-85"
 				HorizontalOptions="Center" />
+		<Grid Grid.Row="1"
+					 Grid.RowSpan="3" 
+					 VerticalOptions="Fill" >
+			<controls:BottomSheetView x:Name="BottomSheet" VerticalOptions="End"
+									  MaxExpandedHeight="-1">
+				<controls:BottomSheetView.HeaderContent>
+					<VerticalStackLayout BackgroundColor="#FFFCFCFC" Padding="2">
+						<controls:SvgView Source="swipe_up.svg"
+										  Aspect="Fill"
+										  HeightRequest="24"
+										  WidthRequest="24" />
+						<Label Text="Swipe for details" HorizontalOptions="Center" FontFamily="SpaceGroteskBold" HorizontalTextAlignment="Center"/>
+					</VerticalStackLayout>
+				</controls:BottomSheetView.HeaderContent>
+				<controls:BottomSheetView.MainContent>
+					<ScrollView VerticalOptions="Fill" HorizontalOptions="Fill">
+						<VerticalStackLayout HorizontalOptions="Fill"
+											 Spacing="60"
+											 BackgroundColor="#FFFCFCFC">
+							<Label Text="Bottom Sheet Main Content"
+								   FontSize="Medium"
+								   HorizontalOptions="Center" />
+							<Label Text="Bottom Sheet Main Content"
+								   FontSize="Medium"
+								   HorizontalOptions="Center" />
+							<Label Text="Bottom Sheet Main Content"
+								   FontSize="Medium"
+								   HorizontalOptions="Center" />
+							<Label Text="Bottom Sheet Main Content"
+								   FontSize="Medium"
+								   HorizontalOptions="Center" />
+							<Label Text="Bottom Sheet Main Content"
+								   FontSize="Medium"
+								   HorizontalOptions="Center" />
+							<Label Text="Bottom Sheet Main Content"
+								   FontSize="Medium"
+								   HorizontalOptions="Center" />
+								<Label Text="Bottom Sheet Main Content"
+									   FontSize="Medium"
+									   HorizontalOptions="Center" />
+								<Label Text="Bottom Sheet Main Content"
+									   FontSize="Medium"
+									   HorizontalOptions="Center" />
+								<Label Text="Bottom Sheet Main Content"
+									   FontSize="Medium"
+									   HorizontalOptions="Center" />
+								<Label Text="Bottom Sheet Main Content"
+									   FontSize="Medium"
+									   HorizontalOptions="Center" />
+								<Label Text="Bottom Sheet Main Content"
+									   FontSize="Medium"
+									   HorizontalOptions="Center" />
+								<Label Text="Bottom Sheet Main Content"
+									   FontSize="Medium"
+									   HorizontalOptions="Center" />
+								<Label Text="Bottom Sheet Main Content"
+									   FontSize="Medium"
+									   HorizontalOptions="Center" />
 
 
-		<!-- Bottom Bar -->
-		<Border Grid.Row="3"
-				Style="{StaticResource BottomBarBorder}">
-			<!-- Share QR Button -->
-			<controls:TemplatedButton Command="{x:Binding OpenQrPopupCommand}">
-				<Border Style="{StaticResource TransparentTemplateButtonBorder}">
-					<Label Style="{StaticResource TransparentTemplateButtonLabel}"
-						   Text="Share QR"
-						   HorizontalOptions="Center" />
-				</Border>
-			</controls:TemplatedButton>
-		</Border>
+								<Button Text="Action"
+									HorizontalOptions="Center" />
+						</VerticalStackLayout>
+					</ScrollView>
+				</controls:BottomSheetView.MainContent>
+			</controls:BottomSheetView>
+		</Grid>
+
+
 	</Grid>
 
 </base:BaseContentPage>
