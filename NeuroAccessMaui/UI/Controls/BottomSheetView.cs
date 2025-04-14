@@ -1,10 +1,5 @@
-﻿using CommunityToolkit.Maui.Markup;
-using Microsoft.Maui;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui.Controls.Shapes;
-using Microsoft.Maui.Layouts;
-using System;
-using System.Linq;
+﻿using Microsoft.Maui.Controls.Shapes;
+
 
 namespace NeuroAccessMaui.UI.Controls
 {
@@ -69,12 +64,14 @@ namespace NeuroAccessMaui.UI.Controls
 			// Transparent background so underlying content can be seen if needed.
 			this.BackgroundColor = Colors.Transparent;
 
-			// Initialize the frame that holds the entire bottom sheet content
+			// Initialize the Border that holds the entire bottom sheet content
 
 			this.cardBorder = new Border
 			{
+                Style = AppStyles.BorderSet,
+                Margin = new Thickness(0, 0, 0, 0),
+                Padding = new Thickness(0, 0, 0, 0),
 				StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(16,16,0,0) },
-				BackgroundColor = Colors.WhiteSmoke,
 				VerticalOptions = LayoutOptions.End
 			};
 
@@ -194,36 +191,48 @@ namespace NeuroAccessMaui.UI.Controls
             return AllowedHeight;
         }
 
-        private double accumulatedTranslation = 0;
-        private DateTime panStartTime;
+    private double previousPanY = 0;
+    private double accumulatedTranslation = 0;
+    private DateTime panStartTime;
 
-        /// <summary>
-        /// Handles pan gesture updates.
-        /// Records the starting content row height and adjusts the row’s height as the user drags.
-        /// </summary>
-        private void OnPanUpdated(object? sender, PanUpdatedEventArgs e)
+    private void OnPanUpdated(object? sender, PanUpdatedEventArgs e)
+    {
+        switch (e.StatusType)
         {
-            switch (e.StatusType)
-            {
-                case GestureStatus.Started:
-					this.panStartTime = DateTime.UtcNow;
-					this.accumulatedTranslation = 0;
-                    break;
+            case GestureStatus.Started:
+                this.panStartTime = DateTime.UtcNow;
+                this.accumulatedTranslation = 0;
+                // Store the initial value (works for both platforms)
+                this.previousPanY = e.TotalY;
+                break;
 
-                case GestureStatus.Running:
-					// e.TotalY is the incremental change.
-					this.accumulatedTranslation += e.TotalY;
-					this.UpdateSheetPosition(e.TotalY);
-                    break;
+            case GestureStatus.Running:
+                double DeltaY = 0;
+                if (DeviceInfo.Platform == DevicePlatform.iOS)
+                {
+                    // iOS: TotalY is cumulative so we compute the delta.
+                    DeltaY = e.TotalY - this.previousPanY;
+                    this.previousPanY = e.TotalY;
+                }
+                else
+                {
+                    // Android: TotalY is already incremental.
+                    DeltaY = e.TotalY;
+                }
 
-                case GestureStatus.Completed:
-                case GestureStatus.Canceled:
-					double ElapsedMs = (DateTime.UtcNow - this.panStartTime).TotalMilliseconds;
-                    double Velocity = ElapsedMs > 0 ? this.accumulatedTranslation / ElapsedMs : 0;
-					this.FinalizeSheetPosition(Velocity);
-                    break;
-            }
+                this.accumulatedTranslation += DeltaY;
+                this.UpdateSheetPosition(DeltaY);
+                break;
+
+            case GestureStatus.Completed:
+            case GestureStatus.Canceled:
+                double ElapsedMs = (DateTime.UtcNow - this.panStartTime).TotalMilliseconds;
+                double Velocity = ElapsedMs > 0 ? this.accumulatedTranslation / ElapsedMs : 0;
+                this.FinalizeSheetPosition(Velocity);
+                break;
         }
+    }
+
 
         /// <summary>
         /// Updates the main content row height based on the incremental pan gesture translation.
