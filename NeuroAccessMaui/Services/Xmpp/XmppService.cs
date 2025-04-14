@@ -1952,6 +1952,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			// InvalidJid: Invalid JID.
 			// NoLogin: No login registered on Neuron.
 			// UnexpectedOnboardingServer: Unexpected response received from onboarding server.
+			// PersonDead: Person is dead.
 			// BankIdRFA1: Start your BankID app.
 			// BankIdRFA2: The BankID app is not installed. Please contact your internet bank.
 			// BankIdRFA3: Action cancelled. Please try again.
