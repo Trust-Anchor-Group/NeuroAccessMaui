@@ -1924,6 +1924,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 			//
 			// Codes that need localized messages (defined in broker & services):
 			//
+			// ManualReview: Unable to validate application automatically. The application needs to be validated manually, or by peer review.
+			// UnableReview: Unable to validate the review.
 			// InvalidType: "Expected value of type " + typeof(T).FullName + "."
 			// IdMismatch: Identifier does not correspond to created identifier.
 			// JidMismatch: JID does not correspond to client JID.
