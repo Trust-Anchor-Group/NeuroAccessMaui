@@ -61,15 +61,6 @@
 				</ContentView>
 
 			</Border>
-			<!-- Transparent overlay to capture pointer events -->
-			<GraphicsView x:Name="GestureOverlay"
-						  BackgroundColor="Transparent"
-						  HorizontalOptions="Fill"
-						  VerticalOptions="Fill"
-						  StartInteraction="GestureOverlay_StartInteraction"
-						  DragInteraction="GestureOverlay_DragInteraction"
-						  EndInteraction="GestureOverlay_EndInteraction"
-						  CancelInteraction="GestureOverlay_CancelInteraction" />
 		</Grid>
 		
 
