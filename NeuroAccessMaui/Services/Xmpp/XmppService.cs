@@ -1958,6 +1958,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			// ZipMismatch: Postal Code mismatch.
 			// AreaMismatch: Area mismatch.
 			// CityMismatch: City mismatch.
+			// RegionMismatch: Region mismatch.
 			// LivenessFailed: Liveness check failed.
 			// PhotoFake: Photo is fake.
 			// PhotoPoor: Photo has poor quality.
