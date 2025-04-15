@@ -1955,6 +1955,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 			// PersonDead: Person is dead.
 			// BirthDateMismatch: Birth date mismatch.
 			// AddressMismatch: Address mismatch.
+			// LivenessFailed: Liveness check failed.
+			// PhotoFake: Photo is fake.
+			// PhotoPoor: Photo has poor quality.
 			// BankIdRFA1: Start your BankID app.
 			// BankIdRFA2: The BankID app is not installed. Please contact your internet bank.
 			// BankIdRFA3: Action cancelled. Please try again.
