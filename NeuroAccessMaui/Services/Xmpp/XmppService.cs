@@ -1955,6 +1955,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 			// PersonDead: Person is dead.
 			// BirthDateMismatch: Birth date mismatch.
 			// AddressMismatch: Address mismatch.
+			// ZipMismatch: Postal Code mismatch.
+			// AreaMismatch: Area mismatch.
+			// CityMismatch: City mismatch.
 			// LivenessFailed: Liveness check failed.
 			// PhotoFake: Photo is fake.
 			// PhotoPoor: Photo has poor quality.
