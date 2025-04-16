@@ -14,7 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Waher.Content" Version="3.2.0" />
+    <PackageReference Include="Waher.Content" Version="3.3.1" />
     <PackageReference Include="Waher.Security" Version="1.0.13" />
   </ItemGroup>
 
