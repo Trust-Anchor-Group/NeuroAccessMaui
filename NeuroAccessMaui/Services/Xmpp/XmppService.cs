@@ -3419,7 +3419,16 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <returns>Available service providers for peer review of identity applications.</returns>
 		public async Task<ServiceProviderWithLegalId[]> GetServiceProvidersForPeerReviewAsync()
 		{
-			return await this.ContractsClient.GetPeerReviewIdServiceProvidersAsync();
+			try
+			{
+				return await this.ContractsClient.GetPeerReviewIdServiceProvidersAsync();
+			}
+			catch(Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+
+			return [];
 		}
 
 		/// <summary>
