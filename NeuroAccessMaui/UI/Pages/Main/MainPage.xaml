@@ -13,13 +13,38 @@
 							 xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
 							 Shell.FlyoutBehavior="Flyout"
 							 Shell.NavBarIsVisible="True">
-
+<!--
+	<Shell.TitleView>
+		<Grid Padding="10">
+			<controls:TemplatedButton Padding="{StaticResource SmallSpacing}" Margin="0" Command="{Binding OpenNotificationsCommand}"
+											  HorizontalOptions="End"
+											  VerticalOptions="Center">
+				<Border
+						Style="{StaticResource BorderSet}" Margin="0"
+						  WidthRequest="38" HeightRequest="38" Padding="4">
+					<Path Data="{x:Static ui:Geometries.ContractEditPath}" Fill="Black"
+							Style="{StaticResource FilledTemplateButtonPath}" Aspect="Uniform"/>
+				</Border>		
+			</controls:TemplatedButton>
+			<controls:Badge Text="1"
+									 InputTransparent="True"
+									 TextMargin="4,2"
+									 Stroke="White"
+								 FontFamily="SpaceGroteskBold"
+								 IsIndicator="False"
+								 HorizontalOptions="End"
+								 VerticalOptions="Start"
+								 TranslationY="-7" Scale=".9"/>
+		</Grid>
+	</Shell.TitleView> -->
 	<Grid x:Name="TheMainGrid"
 		  RowDefinitions="*, auto"
 		  ColumnDefinitions="*"
-		  BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+		  BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundLight}, Dark={StaticResource SurfaceBackgroundDark}}">
 
 		<controls:Background/>
+
+
 
 		<!-- Main Content -->
 		<VerticalStackLayout Grid.Row="0"
@@ -27,7 +52,7 @@
 			  Spacing="{StaticResource LargeSpacing}"
 			  VerticalOptions="Fill" >
 
-			<Image VerticalOptions="Center" HorizontalOptions="Center" Source="{AppThemeBinding Light=neuro_access_logo_light.png, Dark=neuro_access_logo_dark.png}" />
+			<Image VerticalOptions="Center" HorizontalOptions="Center" Source="{AppThemeBinding Light=neuro_access_logo_light.png, Dark=neuro_access_logo_dark.png}" WidthRequest="240" />
 
 			<VerticalStackLayout.GestureRecognizers>
 				<SwipeGestureRecognizer Direction="Up" Swiped="SwipeGestureRecognizer_Swiped"/>
@@ -43,17 +68,32 @@
 				</Grid.ColumnDefinitions>
 
 				<!-- Scan QR Button -->
-				<controls:TemplatedButton Grid.Column="0" Command="{x:Binding ScanQrCodeCommand}">
-					<Border Style="{StaticResource TransparentTemplateButtonBorder}" InputTransparent="True" HorizontalOptions="Fill">
-						<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
-							<Path VerticalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
-								  Data="{x:Static ui:Geometries.ScanQrIconPath}"
-								  Style="{StaticResource TransparentTemplateButtonPath}"
-								  />
-							<Label Grid.Column="1" Style="{StaticResource TransparentTemplateButtonLabel}" Margin="{StaticResource SmallLeftMargins}"  Text="{l:Localize ScanQRShort}"/>
-						</Grid>
-					</Border>
-				</controls:TemplatedButton>
+				<Grid Grid.Column="0">
+					<!-- Main content -->
+					<controls:TemplatedButton Command="{x:Binding ScanQrCodeCommand}">
+						<Border Style="{StaticResource TransparentTemplateButtonBorder}"
+								  InputTransparent="True"
+								  HorizontalOptions="Fill">
+							<Grid ColumnDefinitions="Auto,*"
+									HorizontalOptions="Center"
+									VerticalOptions="Center">
+								<Path VerticalOptions="Center"
+										HeightRequest="24"
+										WidthRequest="24"
+										Aspect="Uniform"
+										Data="{x:Static ui:Geometries.ScanQrIconPath}"
+										Style="{StaticResource TransparentTemplateButtonPath}" />
+								<Label Grid.Column="1"
+										 Style="{StaticResource TransparentTemplateButtonLabel}"
+										 Margin="{StaticResource SmallLeftMargins}"
+										 Text="{l:Localize ScanQRShort}" />
+							</Grid>
+						</Border>
+					</controls:TemplatedButton>
+
+
+				</Grid>
+
 
 				<!-- Show ID Button -->
 				<controls:TemplatedButton Grid.Column="1" Command="{x:Binding ViewIdCommand}">

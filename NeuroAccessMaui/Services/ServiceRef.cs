@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Dynamic;
 using System.Globalization;
 using System.Reflection;
@@ -22,6 +22,7 @@ using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.Wallet;
 using NeuroAccessMaui.Services.Xmpp;
 using ZXing;
+using NeuroAccessMaui.Services.Intents;
 
 namespace NeuroAccessMaui.Services
 {
@@ -49,6 +50,7 @@ namespace NeuroAccessMaui.Services
 		private static IPlatformSpecific? platformSpecific;
 		private static IBarcodeReader? barcodeReader;
 		private static IPermissionService? permissionService;
+		private static IIntentService? intentService;
 
 		/// <summary>
 		/// Service serializing and managing UI-related tasks.
@@ -340,6 +342,15 @@ namespace NeuroAccessMaui.Services
 			{
 				barcodeReader ??= ServiceHelper.GetService<IBarcodeReader>();
 				return barcodeReader;
+			}
+		}
+
+		public static IIntentService IntentService
+		{
+			get
+			{
+				intentService ??= App.Instantiate<IIntentService>();
+				return intentService;
 			}
 		}
 	}

@@ -14,7 +14,7 @@
 	<s:Double x:Key="MediumStrokeThickness">2</s:Double>
 	<s:Double x:Key="BoldStrokeThickness">4</s:Double>
 	<Thickness x:Key="NoMargins">0</Thickness>
-	<Thickness x:Key="SmallMargins">8</Thickness>
+	<Thickness x:Key="SmallMargins">8,8,8,8</Thickness>
 	<Thickness x:Key="SmallLeftMargins">8,0,0,0</Thickness>
 	<Thickness x:Key="SmallLeftRightMargins">8,0,8,0</Thickness>
 	<Thickness x:Key="SmallLeftRightTopMargins">8,8,8,0</Thickness>
@@ -444,6 +444,24 @@
 	<Style ApplyToDerivedTypes="True" TargetType="Border" x:Key="RoundedBorder">
 		<Setter Property="StrokeShape" Value="RoundRectangle 8" />
 		<Setter Property="Stroke" Value="{AppThemeBinding Light=Transparent, Dark={StaticResource EnabledTransparentButtonForegroundDark}}"/>
+	</Style>
+
+	<Style ApplyToDerivedTypes="True"
+	       TargetType="Border"
+	       x:Key="RoundedBorder16">
+		<Setter Property="StrokeShape"
+		        Value="RoundRectangle 8" />
+		<Setter Property="Stroke"
+		        Value="{AppThemeBinding Light=Transparent, Dark={StaticResource EnabledTransparentButtonForegroundDark}}" />
+	</Style>
+
+	<Style ApplyToDerivedTypes="True"
+	       TargetType="Border"
+	       x:Key="RoundedBorder32">
+		<Setter Property="StrokeShape"
+		        Value="RoundRectangle 8" />
+		<Setter Property="Stroke"
+		        Value="{AppThemeBinding Light=Transparent, Dark={StaticResource EnabledTransparentButtonForegroundDark}}" />
 	</Style>
 
 	<Style x:Key="PopupGrid" ApplyToDerivedTypes="False" TargetType="Grid">

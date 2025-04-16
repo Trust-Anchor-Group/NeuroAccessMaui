@@ -11,6 +11,7 @@ using NeuroAccessMaui.Services.AttachmentCache;
 using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Crypto;
 using NeuroAccessMaui.Services.EventLog;
+using NeuroAccessMaui.Services.Intents;
 using NeuroAccessMaui.Services.Localization;
 using NeuroAccessMaui.Services.Network;
 using NeuroAccessMaui.Services.Nfc;
@@ -82,6 +83,7 @@ namespace NeuroAccessMaui
 		private static bool configLoaded;
 		private static bool defaultInstantiated;
 		private static DateTime savedStartTime = DateTime.MinValue;
+		private static DateTime lastAuthenticationTime = DateTime.MinValue;
 		private static bool displayedPasswordPopup;
 		private static int startupCounter;
 
@@ -164,6 +166,8 @@ namespace NeuroAccessMaui
 		/// </summary>
 		public static event EventHandler? AppActivated;
 
+		public Task<bool> InitCompleted => this.initCompleted;
+
 
 		#endregion
 
@@ -211,7 +215,6 @@ namespace NeuroAccessMaui
 				this.InitializeComponent();
 				AppTheme? CurrentTheme = ServiceRef.TagProfile.Theme;
 				ServiceRef.TagProfile.SetTheme(CurrentTheme ?? AppTheme.Light);
-
 				try
 				{
 					this.MainPage = ServiceHelper.GetService<AppShell>();
@@ -222,7 +225,14 @@ namespace NeuroAccessMaui
 				}
 			}
 		}
-
+		/*
+		protected override Window CreateWindow(IActivationState? activationState)
+		{
+			if(this.Windows.Any())
+				return this.Windows[0];
+			return new Window(ServiceHelper.GetService<AppShell>());
+		}
+		*/
 		#endregion
 
 		#region Initialization
@@ -332,6 +342,7 @@ namespace NeuroAccessMaui
 			Types.InstantiateDefault<IContractOrchestratorService>(false);
 			Types.InstantiateDefault<INfcService>(false);
 			Types.InstantiateDefault<INotificationService>(false);
+			Types.InstantiateDefault<IIntentService>(false);
 
 			defaultInstantiatedSource.TrySetResult(true);
 
@@ -758,9 +769,9 @@ namespace NeuroAccessMaui
 
 				await Client.PostAsync("https://lab.tagroot.io/Alert.ws", Content);
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				Log.Exception(ex);
+				Log.Exception(Ex);
 			}
 		}
 
@@ -876,13 +887,13 @@ namespace NeuroAccessMaui
 
 		public static Task<bool> AuthenticateUserAsync(AuthenticationPurpose purpose, bool force = false)
 		{
-			if (MainThread.IsMainThread)
-				return AuthenticateUserOnMainThreadAsync(purpose, force);
-
 			TaskCompletionSource<bool> Tcs = new();
 			MainThread.BeginInvokeOnMainThread(async () =>
 			{
-				Tcs.TrySetResult(await AuthenticateUserOnMainThreadAsync(purpose, force));
+				bool Result = await AuthenticateUserOnMainThreadAsync(purpose, force);
+				if(Result)
+					lastAuthenticationTime = DateTime.Now;
+				Tcs.TrySetResult(Result);
 			});
 			return Tcs.Task;
 		}
@@ -993,7 +1004,8 @@ namespace NeuroAccessMaui
 
 		private static void SetStartInactivityTime() => savedStartTime = DateTime.Now;
 
-		private static bool IsInactivitySafeIntervalPassed() => DateTime.Now.Subtract(savedStartTime).TotalMinutes > Constants.Password.PossibleInactivityInMinutes;
+		private static bool IsInactivitySafeIntervalPassed() => DateTime.Compare(DateTime.Now,
+			lastAuthenticationTime.AddMinutes(Constants.Password.PossibleInactivityInMinutes)) > 0; // T1 is Later than T2;
 
 		internal static async Task<long> GetCurrentPasswordCounterAsync() => await ServiceRef.SettingsService.RestoreLongState(Constants.Password.CurrentPasswordAttemptCounter);
 

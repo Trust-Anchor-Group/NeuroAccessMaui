@@ -93,9 +93,9 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			this.IsBusy = true;
 			try
 			{
-				string? account = this.Username;
+				string? Account = this.Username;
 
-				if (string.IsNullOrEmpty(account))
+				if (string.IsNullOrEmpty(Account))
 					return;
 				string PasswordToUse = ServiceRef.CryptoService.CreateRandomPassword();
 
@@ -106,13 +106,13 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 					if (ServiceRef.TagProfile.NeedsUpdating())
 						await ServiceRef.XmppService.DiscoverServices(Client);
 
-					ServiceRef.TagProfile.SetAccount(account, Client.PasswordHash, Client.PasswordHashMethod);
+					ServiceRef.TagProfile.SetAccount(Account, Client.PasswordHash, Client.PasswordHashMethod);
 
 					GoToRegistrationStep(RegistrationStep.CreateAccount);
 				}
 
 				(bool Succeeded, string? ErrorMessage, string[]? Alternatives) = await ServiceRef.XmppService.TryConnectAndCreateAccount(ServiceRef.TagProfile.Domain!,
-					IsIpAddress, HostName, PortNumber, account, PasswordToUse, Constants.LanguageCodes.Default,
+					IsIpAddress, HostName, PortNumber, Account, PasswordToUse, Constants.LanguageCodes.Default,
 					ServiceRef.TagProfile.ApiKey ?? string.Empty, ServiceRef.TagProfile.ApiSecret ?? string.Empty,
 					typeof(App).Assembly, OnConnected);
 

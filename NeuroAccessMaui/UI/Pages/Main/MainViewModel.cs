@@ -1,20 +1,51 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
+using System.Diagnostics.Contracts;
 using CommunityToolkit.Mvvm.Input;
+using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
+using NeuroAccessMaui.CustomPermissions;
+using NeuroAccessMaui.UI.MVVM;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
+using NeuroAccessMaui.UI.Pages.Notifications;
 using Waher.Networking.XMPP.Contracts;
 
 namespace NeuroAccessMaui.UI.Pages.Main
 {
 	public partial class MainViewModel : QrXmppViewModel
 	{
+
+
 		public MainViewModel()
 			: base()
 		{
 		}
 
 		public override Task<string> Title => Task.FromResult(ContactInfo.GetFriendlyName(ServiceRef.TagProfile.LegalIdentity));
+
+		protected override async Task OnAppearing()
+		{
+			await base.OnAppearing();
+			try
+			{
+				/*
+				try
+				{
+					await Permissions.RequestAsync<NotificationPermission>();
+				}
+				catch
+				{
+					//Normal operation if Notification is not supported or denied
+				}
+				*/
+				_ = await ServiceRef.XmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect);
+				await ServiceRef.IntentService.ProcessQueuedIntentsAsync();
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
 
 		protected override async Task OnInitialize()
 		{
@@ -45,9 +76,9 @@ namespace NeuroAccessMaui.UI.Pages.Main
 					await MainThread.InvokeOnMainThreadAsync(async () => await ServiceRef.TagProfile.SetLegalIdentity(RefreshedIdentity, false));
 				}
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
+				ServiceRef.LogService.LogException(Ex);
 			}
 			finally
 			{
@@ -63,7 +94,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			await Services.UI.QR.QrCode.ScanQrCodeAndHandleResult();
 		}
 
-		[RelayCommand]
+		[RelayCommand(AllowConcurrentExecutions = false)]
 		public async Task ViewId()
 		{
 			try
@@ -71,9 +102,23 @@ namespace NeuroAccessMaui.UI.Pages.Main
 				if(await App.AuthenticateUserAsync(AuthenticationPurpose.ViewId))
 					await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage));
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		public async Task OpenNotifications()
+		{
+			try
+			{
+				if (await App.AuthenticateUserAsync(AuthenticationPurpose.ViewId))
+					await ServiceRef.UiService.GoToAsync(nameof(NotificationsPage));
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
 			}
 		}
 	}

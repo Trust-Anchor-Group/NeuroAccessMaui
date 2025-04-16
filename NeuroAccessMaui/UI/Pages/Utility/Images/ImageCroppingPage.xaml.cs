@@ -13,13 +13,13 @@ namespace NeuroAccessMaui.UI.Pages.Utility.Images
 		{
 			this.InitializeComponent();
 			// 1. Retrieve the nav args
-			ImageCroppingNavigationArgs? navArgs = ServiceRef.UiService.PopLatestArgs<ImageCroppingNavigationArgs>();
+			ImageCroppingNavigationArgs? NavArgs = ServiceRef.UiService.PopLatestArgs<ImageCroppingNavigationArgs>();
 			// 2. Create the ViewModel
-			ImageCroppingViewModel viewModel = new ImageCroppingViewModel(navArgs);
+			ImageCroppingViewModel ViewModel = new ImageCroppingViewModel(NavArgs);
 			// 3. Assign the view model as the binding context
-			this.BindingContext = viewModel;
+			this.BindingContext = ViewModel;
 			// 4. Set the ViewModel's reference to the ImageCropperView
-			viewModel.ImageCropperView = this.ImageCropperView;
+			ViewModel.ImageCropperView = this.ImageCropperView;
 		}
 	}
 }

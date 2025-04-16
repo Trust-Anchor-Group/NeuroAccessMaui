@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.UI.Controls;
 using System.Threading.Tasks;
@@ -74,8 +74,8 @@ namespace NeuroAccessMaui.UI.Pages.Utility.Images
 			//Run the crop operation on a background thread.
 			await Task.Run(() => 
 			{
-				byte[]? croppedResult = this.ImageCropperView.PerformCrop();
-				this.args.CompletionSource?.TrySetResult(croppedResult);
+				byte[]? CroppedResult = this.ImageCropperView.PerformCrop();
+				this.args.CompletionSource?.TrySetResult(CroppedResult);
 			});
 			// Then pop navigation.
 			await this.GoBack();
@@ -102,9 +102,9 @@ namespace NeuroAccessMaui.UI.Pages.Utility.Images
 			if (this.ImageCropperView is not null)
 			{
 				// Increment the rotation angle by 90 degrees.
-				double newRotation = this.ImageCropperView.RotationAngle + 90;
+				double NewRotation = this.ImageCropperView.RotationAngle + 90;
 				// Normalize the rotation angle to stay within 0-359 degrees.
-				this.ImageCropperView.RotationAngle = newRotation % 360;
+				this.ImageCropperView.RotationAngle = NewRotation % 360;
 			}
 			return Task.CompletedTask;
 		}

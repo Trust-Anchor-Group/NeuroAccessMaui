@@ -22,8 +22,10 @@
     <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
         <value>[base64 mime encoded serialized .NET Framework object]</value>
     </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing"
+  mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework
+  object]</value>
         <comment>This is a comment</comment>
     </data>
                 
@@ -2150,7 +2152,7 @@
   </data>
   <data name="OnboardingGetStartedTitle" xml:space="preserve">
     <value>Welcome to Neuro-Access</value>
-  </data> 
+  </data>
   <data name="CreateNewAccount">
     <value>Create new account</value>
   </data>
@@ -2162,7 +2164,7 @@
   </data>
   <data name="OnboardingNameEntryTitle" xml:space="preserve">
     <value>Choose Your Username</value>
-  </data> 
+  </data>
   <data name="OnboardingNameEntryDetails" xml:space="preserve">
     <value>Your username is permanent and cannot be changed later</value>
   </data>
@@ -2379,6 +2381,9 @@
   <data name="MomentaryValues" xml:space="preserve">
     <value>Momentary Values</value>
   </data>
+    <data name="None" xml:space="preserve">
+    <value>None</value>
+  </data>
   <data name="PeakValues" xml:space="preserve">
     <value>Peak Values</value>
   </data>
@@ -2496,13 +2501,13 @@
   <data name="GenerateQrCode" xml:space="preserve">
     <value>Generate QR Code</value>
   </data>
-	<data name="CameraPermissionTitle" xml:space="preserve">
+  <data name="CameraPermissionTitle" xml:space="preserve">
 		<value>Camera</value>
 	</data>
-	<data name="CameraPermissionDescription" xml:space="preserve">
+  <data name="CameraPermissionDescription" xml:space="preserve">
 		<value>To use this feature, please enable camera access in your settings.</value>
 	</data>
-	<data name="CameraPermissionDescriptionSecondary" xml:space="preserve">
+  <data name="CameraPermissionDescriptionSecondary" xml:space="preserve">
 		<value>Open settings - Click on "Permissions" - Enable Camera Permissions</value>
 	</data>
   <data name="iOS_CameraPermissionDescriptionSecondary" xml:space="preserve">
@@ -2535,9 +2540,6 @@
   <data name="AdditionalPhotosDescription" xml:space="preserve">
     <value>You may include additional photos to further support your identity verification.</value>
   </data>
-  <data name="None" xml:space="preserve">
-    <value>None</value>
-  </data>
   <data name="Passport" xml:space="preserve">
     <value>Passport</value>
   </data>
@@ -2550,7 +2552,7 @@
   <data name="SelectTypeOfDocument" xml:space="preserve">
     <value>Select type of document</value>
   </data>
-    <data name="IdentityDocumentDescription_Passport" xml:space="preserve">
+  <data name="IdentityDocumentDescription_Passport" xml:space="preserve">
     <value>Please upload a photo that clearly shows both pages of your passport's data section, including the page with your photo</value>
   </data>
   <data name="FrontOfDocument_Passport" xml:space="preserve">
@@ -2558,5 +2560,41 @@
   </data>
   <data name="PleaseTryAgain" xml:space="preserve">
     <value>Please Try Again</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>Today</value>
+  </data>
+  <data name="DurationPickerTitle" xml:space="preserve">
+    <value>Validity Time</value> 
+  </data>
+  <data name="DurationPickerDescription" xml:space="preserve">
+    <value>Specify the lifetime of the contract</value> 
+  </data>
+  <data name="NegateDuration" xml:space="preserve">
+    <value>Negative duration: </value> 
+  </data>
+  <data name="AddDuration" xml:space="preserve">
+    <value>Add duration</value> 
+  </data>
+  <data name="SelectUnit" xml:space="preserve">
+    <value>Select unit</value>
+  </data>
+  <data name="YearsCapitalized" xml:space="preserve">
+    <value>Years</value>
+  </data>
+  <data name="MonthsCapitalized" xml:space="preserve">
+    <value>Months</value>
+  </data>
+  <data name="DaysCapitalized" xml:space="preserve">
+    <value>Days</value>
+  </data>
+  <data name="HoursCapitalized" xml:space="preserve">
+    <value>Hours</value>
+  </data>
+  <data name="MinutesCapitalized" xml:space="preserve">
+    <value>Minutes</value>
+  </data>
+  <data name="SecondsCapitalized" xml:space="preserve">
+    <value>Seconds</value>
   </data>
 </root>

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							 xmlns:notifications="clr-namespace:NeuroAccessMaui.Services.Notification"
+							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+							 xmlns:local="clr-namespace:NeuroAccessMaui.UI.Pages.Notifications"
+							 xmlns:model="clr-namespace:NeuroAccessMaui.UI.Pages.Notifications.ObjectModel"
+							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Notifications"
+							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+							 x:Class="NeuroAccessMaui.UI.Pages.Notifications.NotificationsPage"
+							 x:DataType="viewmodel:NotificationsViewModel"
+							 Title="NotificationsPage">
+
+	<ContentPage.Resources>
+		<ResourceDictionary>
+			<local:ContextualDateConverter x:Key="ContextualDateConverter" />
+		</ResourceDictionary>
+	</ContentPage.Resources>
+
+	<Grid x:Name="TheMainGrid"
+			RowDefinitions="auto, *"
+			ColumnDefinitions="*"
+			Margin="0"
+			Padding="0"
+			BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+
+		<controls:Background Grid.Row="1" />
+
+		<!-- Top Bar -->
+		<Grid Grid.Row="0"
+				RowDefinitions="*"
+				ColumnDefinitions="auto,*"
+				Margin="{StaticResource SmallBottomMargins}">
+			<Grid.Padding>
+				<Thickness Left="{StaticResource MediumSpacing}"
+							  Top="{StaticResource MediumSpacing}"
+							  Right="{StaticResource MediumSpacing}" />
+			</Grid.Padding>
+
+			<controls:ImageButton Grid.Row="0"
+										 Grid.Column="0"
+										 Command="{Binding GoBackCommand}"
+										 Style="{StaticResource ImageOnlyButton}"
+										 PathData="{x:Static ui:Geometries.BackButtonPath}" />
+
+			<!--	<Image HorizontalOptions="Center" VerticalOptions="Start" Source="{AppThemeBinding Light=neuro_assets_icon_dark, Dark=neuro_assets_icon_light}" WidthRequest="50" HeightRequest="50" />-->
+			<Label Grid.Row="0"
+					 Grid.Column="1"
+					 Style="{StaticResource PageTitleLabel}"
+					 Text="{l:Localize NotificationsTitle}"
+					 HorizontalTextAlignment="End" />
+		</Grid>
+
+		<!-- Main Content -->
+		<Grid ColumnDefinitions="*"
+				RowDefinitions="*"
+				Grid.Row="1">
+			<controls:DynamicCollectionView OriginalItemsSource="{Binding Notifications}"
+													  SelectionMode="None"
+													  ItemSizingStrategy="MeasureAllItems"
+													  SortPropertyName="Received"
+													  SortDirection="Descending">
+				<controls:DynamicCollectionView.ItemsLayout>
+					<LinearItemsLayout Orientation="Vertical"
+											 ItemSpacing="0" />
+				</controls:DynamicCollectionView.ItemsLayout>
+				<controls:DynamicCollectionView.ItemTemplate>
+					<DataTemplate x:DataType="model:ObservableNotification">
+						<SwipeView>
+							<SwipeView.LeftItems>
+								<SwipeItemView>
+									<Label Text=" Test" />
+
+								</SwipeItemView>
+							</SwipeView.LeftItems>
+
+							<Grid  RowDefinitions="auto"
+									 ColumnDefinitions="*">
+
+								<Border Style="{StaticResource BorderSet}">
+									<Border.Margin>
+										<Thickness Left="{StaticResource MediumSpacing}"
+													  Top="4"
+													  Right="{StaticResource MediumSpacing}"
+													  Bottom="4" />
+									</Border.Margin>
+
+									<Grid ColumnDefinitions="auto, *, auto"
+											RowDefinitions="*"
+											ColumnSpacing="{StaticResource MediumSpacing}">
+										<!-- Icon -->
+										<Border Grid.Column="0"
+												  WidthRequest="48"
+												  HeightRequest="48" Margin="0"
+												  Background="{StaticResource AccentBackgroundLight}"
+												  Style="{StaticResource RoundedBorder}">
+											<Path Data="{Binding Icon}"
+													Aspect="Uniform"
+													Fill="{StaticResource AccentForegroundLight}"
+													VerticalOptions="Center"
+													HorizontalOptions="Center"
+													WidthRequest="32"
+													HeightRequest="32" />
+										</Border>
+
+										<!-- Text -->
+										<VerticalStackLayout
+												Spacing="{StaticResource SmallSpacing}"
+												Grid.Column="1">
+											<Label Text="New message"
+													 Style="{StaticResource MenuItemLabel}"
+													 FontSize="14"
+													 HorizontalOptions="Start"
+													 VerticalOptions="Start"
+													 />
+											<Label Text="Maximiliam.berggren@tagroot.ioMaximiliam.berggren@tagroot.io "
+													 Style="{StaticResource ItemDescriptionLabel}"
+													 Margin="0" 
+													 HorizontalOptions="Start"
+													 VerticalOptions="Start"
+													 FontSize="12"
+													 />
+										</VerticalStackLayout>
+
+										<!-- Date -->
+										<Label Grid.Column="2"
+												 VerticalOptions="Center"
+												 HorizontalTextAlignment="End"
+												 HorizontalOptions="End"
+												 FontFamily="SpaceGroteskRegular"
+												 FontSize="12"
+												 Text="{Binding Received, Converter={StaticResource ContextualDateConverter}}" />
+									</Grid>
+
+								</Border>
+
+							</Grid>
+						</SwipeView>
+
+					</DataTemplate>
+				</controls:DynamicCollectionView.ItemTemplate>
+			</controls:DynamicCollectionView>
+
+		</Grid>
+	</Grid>
+</base:BaseContentPage>

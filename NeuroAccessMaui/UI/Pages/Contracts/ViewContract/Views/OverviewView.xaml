@@ -288,6 +288,17 @@
 												  BottomLabelText="{l:Localize ServerSignatureButtonDescription}"
 												  Command="{Binding OpenServerSignatureCommand}" />
 
+				<controls:TextButton LabelData="{l:Localize ObsoleteContract}"
+				                     Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+				                     Command="{Binding Path=ObsoleteContractCommand}"
+				                     IsVisible="{Binding Path=CanObsoleteContract}"
+				                     Margin="{StaticResource SmallTopBottomMargins}" />
+				<controls:TextButton LabelData="{l:Localize DeleteContract}"
+				                     Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+				                     Command="{Binding Path=DeleteContractCommand}"
+				                     IsVisible="{Binding Path=CanDeleteContract}"
+				                     Margin="{StaticResource SmallBottomMargins}" />
+
 			</VerticalStackLayout>
 		</ScrollView>
 
