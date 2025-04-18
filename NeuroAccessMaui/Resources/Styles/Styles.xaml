@@ -547,7 +547,7 @@
 		<Setter Property="Margin" Value="{StaticResource SmallMargins}" />
 		<Setter Property="Shadow">
 			<Setter.Value>
-				<Shadow Brush="{AppThemeBinding Light={StaticResource PrimaryBackgroundDark}, Dark={StaticResource PrimaryBackgroundLight}}" Offset="0,0" Radius="10" Opacity=".25" />
+				<Shadow Brush="{AppThemeBinding Light={StaticResource PrimaryBackgroundDark}, Dark={x:Null}}" Offset="0,0" Radius="10" Opacity=".25" />
 			</Setter.Value>
 		</Setter>
 	</Style>
