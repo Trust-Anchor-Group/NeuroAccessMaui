@@ -258,6 +258,14 @@
 			public const string OnboardingDomain = "onboarding.id.tagroot.io";
 		}
 
+		public static class CustomXmppProperties
+		{
+			/// <summary>
+			/// Full birthday  
+			/// </summary>
+			public const string BirthDay = "FULLBIRTHDAY";
+		}
+
 		/// <summary>
 		/// XMPP Protocol Properties.
 		/// </summary>
