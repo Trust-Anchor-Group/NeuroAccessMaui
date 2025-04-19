@@ -1,4 +1,5 @@
-﻿using Microsoft.Maui.Controls.Shapes;
+﻿using CommunityToolkit.Maui.Core;
+using Microsoft.Maui.Controls.Shapes;
 
 
 namespace NeuroAccessMaui.UI.Controls
@@ -18,6 +19,7 @@ namespace NeuroAccessMaui.UI.Controls
 
 		// Fields for layout calculations.
 		private double maxContentHeight;
+		private bool isExpanded = false;
 
 		// Bindable property for the header background color (still available if needed).
 		public static readonly BindableProperty HeaderBackgroundColorProperty =
@@ -95,6 +97,11 @@ namespace NeuroAccessMaui.UI.Controls
 			PanGesture.PanUpdated += this.OnPanUpdated;
 			this.headerContainer.GestureRecognizers.Add(PanGesture);
 
+			// Add tap gesture to toggle open/closed
+			TapGestureRecognizer TapGesture = new();
+			TapGesture.Tapped += this.OnHeaderTapped;
+			this.headerContainer.GestureRecognizers.Add(TapGesture);
+
 			// If no header is provided, use a default header with a grab handle.
 			this.HeaderContent ??= this.CreateDefaultHeaderContent();
 
@@ -171,9 +178,11 @@ namespace NeuroAccessMaui.UI.Controls
 			double AllowedHeight = 0;
 			VisualElement CurrentElement = this;
 
+			// Check if this controls height is constrained
 			if (this.lastHeightConstraint > 0)
 				return this.lastHeightConstraint;
 
+			// Adopt to parents height
 			while (CurrentElement.Parent is VisualElement Parent)
 			{
 				CurrentElement = Parent;
@@ -246,6 +255,12 @@ namespace NeuroAccessMaui.UI.Controls
 			}
 		}
 
+		private void OnHeaderTapped(object? sender, EventArgs e)
+		{
+			// If already expanded, collapse to zero; otherwise expand fully
+			this.FinalizeSheetPosition(this.isExpanded ? (flickVelocityThreshold + 1) : -(flickVelocityThreshold + 1));
+		}
+
 
 		/// <summary>
 		/// Updates the main content row height based on the incremental pan gesture translation.
@@ -270,12 +285,15 @@ namespace NeuroAccessMaui.UI.Controls
 					this.AnimateSheet(this.maxContentHeight);
 				else
 					this.AnimateSheet(0);
+				this.isExpanded = velocity < 0;
 			}
 			else
 			{
 				double CurrentHeight = this.contentRow.Height.Value;
 				double MidPoint = this.maxContentHeight / 2;
 				this.AnimateSheet(CurrentHeight >= MidPoint ? this.maxContentHeight : 0);
+				this.isExpanded = CurrentHeight >= MidPoint;
+
 			}
 		}
 
