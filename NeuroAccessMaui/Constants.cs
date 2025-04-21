@@ -612,6 +612,11 @@
 			public static readonly TimeSpan Reconnect = TimeSpan.FromSeconds(10);
 
 			/// <summary>
+			/// Qr interval
+			/// </summary>
+			public static readonly TimeSpan Qr = TimeSpan.FromSeconds(5);
+
+			/// <summary>
 			/// Refresh interval for potentially missed messages
 			/// </summary>
 			public static readonly TimeSpan ForceRefresh = TimeSpan.FromDays(7);
