@@ -29,6 +29,12 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ObjectModel
 		private bool isChecked;
 
 		/// <summary>
+		/// The key for the field. This is the name of the field in the <see cref="LegalIdentity"/> model.
+		/// </summary>
+		public string Key
+			=> this.key;
+
+		/// <summary>
 		/// The label for the field.
 		/// </summary>
 		public string Label { get; }
