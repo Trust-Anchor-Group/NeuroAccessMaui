@@ -2603,4 +2603,10 @@
   <data name="Issued" xml:space="preserve">
     <value>Utfärdad</value>
   </data>
+  <data name="OtherInformation" xml:space="preserve">
+    <value>Övrig information</value>
+  </data>
+  <data name="SwipeForDetails" xml:space="preserve">
+    <value>Svep för detaljer</value>
+  </data>
 </root>
