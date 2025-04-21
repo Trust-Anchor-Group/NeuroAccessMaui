@@ -2597,4 +2597,12 @@
   <data name="SecondsCapitalized" xml:space="preserve">
     <value>Seconds</value>
   </data>
+  <data name="ApplyIdInfoMainPage" xml:space="preserve">
+    <value>Apply for a personal ID to get everything out of Neuro Access</value>
+  </data>
+  <data name="CompleteIdButton" xml:space="preserve">
+    <value>Complete your personal ID</value>
+  </data>
 </root>
+
+
