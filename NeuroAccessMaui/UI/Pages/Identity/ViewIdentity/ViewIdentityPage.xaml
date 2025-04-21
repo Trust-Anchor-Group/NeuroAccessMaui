@@ -14,7 +14,8 @@
 					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Identity.ViewIdentity"
 					  xmlns:photos="clr-namespace:NeuroAccessMaui.Services.UI.Photos"
 					  xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Identity.ObjectModel"
-					  xmlns:skiaLottie="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI">
+					  xmlns:skiaLottie="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
+					  xmlns:res="clr-namespace:NeuroAccessMaui.Resources.Languages;assembly=NeuroAccessMaui">
 
 	<base:BaseContentPage.Resources>
 		<Style x:Key="CardBorder"
@@ -110,7 +111,7 @@
 						<VisualState Name="Created">
 							<VisualState.Setters>
 								<Setter Property="BackgroundColor"
-										Value="Orange" />
+										Value="{AppThemeBinding Light={StaticResource FiguresStrokesOrangea20Light}, Dark={StaticResource FiguresStrokesOrangea20Dark}}" />
 
 							</VisualState.Setters>
 						</VisualState>
@@ -118,14 +119,14 @@
 						<VisualState Name="Approved">
 							<VisualState.Setters>
 								<Setter Property="BackgroundColor"
-										Value="Green" />
+										Value="{AppThemeBinding Light={StaticResource FiguresStrokesGreena20Light}, Dark={StaticResource FiguresStrokesGreena20Dark}}" />
 							</VisualState.Setters>
 						</VisualState>
 
 						<VisualState Name="Rejected">
 							<VisualState.Setters>
 								<Setter Property="BackgroundColor"
-										Value="Red" />
+										Value="{AppThemeBinding Light={StaticResource FiguresStrokesReda20Light}, Dark={StaticResource FiguresStrokesReda20Dark}}" />
 							</VisualState.Setters>
 						</VisualState>
 
@@ -138,37 +139,66 @@
 			   TargetType="Label">
 			<Setter Property="FontSize"
 					Value="14" />
-			<Setter Property="VisualStateManager.VisualStateGroups">
-				<VisualStateGroupList>
-					<VisualStateGroup Name="StatusStates">
+			<Setter Property="FontFamily"
+					Value="SpaceGroteskBold" />
+			<Setter Property="Text"
+					Value="Test" />
+			<Style.Triggers>
+				<DataTrigger TargetType="Label"
+							 Binding="{Binding IdentityState}"
+							 Value="Created">
+					<Setter Property="Text"
+							Value="{l:Localize IdentityState_Created}" />
+					<Setter Property="TextColor"
+							Value="Black" />
+				</DataTrigger>
+				<DataTrigger TargetType="Label"
+							 Binding="{Binding IdentityState}"
+							 Value="Approved">
+					<Setter Property="Text"
+							Value="{l:Localize IdentityState_Approved}" />
+					<Setter Property="TextColor"
+							Value="{AppThemeBinding Light={StaticResource ContentGreenLight},
+                                       Dark={StaticResource ContentGreenDark}}" />
+				</DataTrigger>
+				<DataTrigger TargetType="Label"
+							 Binding="{Binding IdentityState}"
+							 Value="Rejected">
+					<Setter Property="Text"
+							Value="Rejected ID" />
+					<Setter Property="TextColor"
+							Value="White" />
+				</DataTrigger>
+			</Style.Triggers>
+		</Style>
 
-						<VisualState Name="Created">
-							<VisualState.Setters>
-								<Setter Property="TextColor"
-										Value="White" />
-							</VisualState.Setters>
-						</VisualState>
-
-						<VisualState Name="Approved">
-							<VisualState.Setters>
-								<Setter Property="TextColor"
-										Value="White" />
-								<Setter Property="Text"
-										Value="Approved ID" />
-							</VisualState.Setters>
-						</VisualState>
-
-						<VisualState Name="Rejected">
-							<VisualState.Setters>
-								<Setter Property="TextColor"
-										Value="White" />
-							</VisualState.Setters>
-						</VisualState>
-
-					</VisualStateGroup>
-				</VisualStateGroupList>
-
-			</Setter>
+		<!-- Field Styles -->
+		<Style x:Key="FieldKeyLabel"
+			   TargetType="Label">
+			<Setter Property="FontSize"
+					Value="14" />
+			<Setter Property="FontFamily"
+					Value="SpaceGroteskRegular" />
+			<Setter Property="TextColor"
+					Value="{AppThemeBinding Light={StaticResource ContentSecondaryLight}, Dark={StaticResource ContentSecondaryDark}}" />
+		</Style>
+		<Style x:Key="FieldValueLabel"
+			   TargetType="Label">
+			<Setter Property="FontSize"
+					Value="16" />
+			<Setter Property="FontFamily"
+					Value="SpaceGroteskRegular" />
+			<Setter Property="TextColor"
+					Value="{AppThemeBinding Light={StaticResource ContentPrimaryLight}, Dark={StaticResource ContentPrimaryDark}}" />
+		</Style>
+		<Style x:Key="FieldTitleLabel"
+			   TargetType="Label">
+			<Setter Property="FontSize"
+					Value="14" />
+			<Setter Property="FontFamily"
+					Value="SpaceGroteskBold" />
+			<Setter Property="TextColor"
+					Value="{AppThemeBinding Light={StaticResource ContentSecondaryLight}, Dark={StaticResource ContentSecondaryDark}}" />
 		</Style>
 	</base:BaseContentPage.Resources>
 
@@ -353,10 +383,7 @@
 						helpers:VisualStateProperties.State="{Binding IdentityState}"
 						HorizontalOptions="Center">
 
-					<Label Text="Missing ID"
-						   Style="{StaticResource StatusPillLabel}"
-						   helpers:VisualStateProperties.State="{Binding IdentityState}"
-						   FontSize="Small"
+					<Label Style="{StaticResource StatusPillLabel}"
 						   HorizontalOptions="Center"
 						   VerticalOptions="Center" />
 
@@ -365,10 +392,7 @@
 				<VerticalStackLayout Grid.Row="1">
 					<Label Style="{StaticResource SubTextLabel}"
 						   FontSize="14"
-						   Text="{Binding IssueDate, StringFormat='Issued: {0:D}'}" />
-					<Label Style="{StaticResource SubTextLabel}"
-						   FontSize="14"
-						   Text="{Binding ExpireDate, StringFormat='Expires: {0:d}'}" />
+						   Text="{l:Localize Path=ExpiresFormat, Arg={Binding ExpireDate}}" />
 				</VerticalStackLayout>
 			</Grid>
 		</Grid>
@@ -381,11 +405,17 @@
 				Style="{StaticResource QrBorder}">
 			<Image HorizontalOptions="Center"
 				   TranslationX="0"
-				   Source="{Binding QrCode}" />
+				   Source="{Binding QrCode}">
+				<Image.GestureRecognizers>
+					<TapGestureRecognizer Command="{Binding QrTappedCommand}"
+										  NumberOfTapsRequired="1" />
+				</Image.GestureRecognizers>
+			</Image>
 		</Border>
+
 		<skiaLottie:SKConfettiView x:Name="ConfettiView"
 								   Grid.RowSpan="5"
-								   IsAnimationEnabled="False"
+								   IsAnimationEnabled="{Binding ShouldCelebrate}"
 								   HorizontalOptions="Fill"
 								   VerticalOptions="Fill" />
 		<Grid Grid.Row="1"
@@ -414,9 +444,11 @@
 								<!-- Photos -->
 								<Border Style="{StaticResource FieldGroupBorder}"
 										IsVisible="{Binding HasPhotos}">
-									<Grid RowDefinitions="auto, auto">
-										<Label Grid.Row="0"
-											   Text="{l:Localize Photos}" />
+									<Grid RowDefinitions="auto, auto"
+										  RowSpacing="16">
+										<Label Text="{l:Localize Photos}"
+											   Grid.Row="0"
+											   Style="{StaticResource FieldTitleLabel}" />
 										<FlexLayout Grid.Row="1"
 													AlignContent="Center"
 													BindableLayout.ItemsSource="{Binding Photos}"
@@ -443,41 +475,117 @@
 								</Border>
 
 								<!-- FIELDS -->
+								<!-- Should probably be virtualized with collectionview -->
+								<Border Style="{StaticResource FieldGroupBorder}"
+										IsVisible="{Binding HasPersonalFields}">
+									<!-- Title + BindableLayout-->
+									<VerticalStackLayout Spacing="16">
+										<Label Text="{l:Localize PersonalInformation}"
+											   Style="{StaticResource FieldTitleLabel}" />
+										<VerticalStackLayout HorizontalOptions="Fill"
+															 Spacing="16"
+															 BindableLayout.ItemsSource="{Binding PersonalFields}">
+											<BindableLayout.ItemTemplate>
+												<DataTemplate x:DataType="objectModel:ObservableFieldItem">
+													<VerticalStackLayout>
+														<Label Text="{Binding  Label}"
+															   Style="{StaticResource FieldKeyLabel}" />
+														<Label Text="{Binding Value}"
+															   Style="{StaticResource FieldValueLabel}" />
+													</VerticalStackLayout>
 
-								<Border Style="{StaticResource FieldGroupBorder}">
-									<VerticalStackLayout HorizontalOptions="Fill"
-														 Spacing="60"
-														 BindableLayout.ItemsSource="{Binding PersonalFields}">
-										<BindableLayout.ItemTemplate>
-											<DataTemplate x:DataType="objectModel:ObservableFieldItem">
-												<VerticalStackLayout>
-													<Label Text="{Binding  Label}"
-														   Style="{StaticResource BoldItemTitleLabel}"
-														   HorizontalOptions="Start" />
-													<Label Text="{Binding Value}"
-														   Style="{StaticResource ItemDescriptionLabel}" />
-												</VerticalStackLayout>
-
-											</DataTemplate>
-										</BindableLayout.ItemTemplate>
+												</DataTemplate>
+											</BindableLayout.ItemTemplate>
+										</VerticalStackLayout>
 									</VerticalStackLayout>
 								</Border>
-								<Border Style="{StaticResource FieldGroupBorder}">
-									<VerticalStackLayout HorizontalOptions="Fill"
-														 Spacing="60"
-														 BindableLayout.ItemsSource="{Binding TechnicalFields}">
-										<BindableLayout.ItemTemplate>
-											<DataTemplate x:DataType="objectModel:ObservableFieldItem">
-												<VerticalStackLayout>
-													<Label Text="{Binding  Label}"
-														   Style="{StaticResource BoldItemTitleLabel}"
-														   HorizontalOptions="Start" />
-													<Label Text="{Binding Value}"
-														   Style="{StaticResource ItemDescriptionLabel}" />
-												</VerticalStackLayout>
+								
+								<Border Style="{StaticResource FieldGroupBorder}"
+										IsVisible="{Binding HasOrganizationFields}">
+									<!-- Title + BindableLayout-->
+									<VerticalStackLayout Spacing="16">
+										<Label Text="{l:Localize OrganizationalInformation}"
+											   Style="{StaticResource FieldTitleLabel}" />
+										<VerticalStackLayout HorizontalOptions="Fill"
+															 Spacing="16"
+															 BindableLayout.ItemsSource="{Binding OrganizationFields}">
+											<BindableLayout.ItemTemplate>
+												<DataTemplate x:DataType="objectModel:ObservableFieldItem">
+													<VerticalStackLayout>
+														<Label Text="{Binding  Label}"
+															   Style="{StaticResource FieldKeyLabel}" />
+														<Label Text="{Binding Value}"
+															   Style="{StaticResource FieldValueLabel}" />
+													</VerticalStackLayout>
 
-											</DataTemplate>
-										</BindableLayout.ItemTemplate>
+												</DataTemplate>
+											</BindableLayout.ItemTemplate>
+										</VerticalStackLayout>
+									</VerticalStackLayout>
+								</Border>
+
+								<Border Style="{StaticResource FieldGroupBorder}"
+										IsVisible="{Binding HasTechnicalFields}">
+									<!-- Title + BindableLayout-->
+									<VerticalStackLayout Spacing="16">
+										<Label Text="{l:Localize Technical}"
+											   Style="{StaticResource FieldTitleLabel}" />
+										<VerticalStackLayout HorizontalOptions="Fill"
+															 Spacing="16"
+															 BindableLayout.ItemsSource="{Binding TechnicalFields}">
+											<BindableLayout.ItemTemplate>
+												<DataTemplate x:DataType="objectModel:ObservableFieldItem">
+													<Grid RowDefinitions="auto, auto"
+														  ColumnDefinitions="*, auto">
+														<Grid.GestureRecognizers>
+															<TapGestureRecognizer Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.FieldTappedCommand}"
+																				  CommandParameter="{Binding Value}" />
+														</Grid.GestureRecognizers>
+
+														<Label Grid.Row="0"
+															   Grid.Column="0"
+															   Text="{Binding  Label}"
+															   Style="{StaticResource FieldKeyLabel}" />
+														<controls:SvgView Grid.Row="0"
+																		  Grid.Column="1"
+																		  Source="content_copy.svg"
+																		  WidthRequest="16"
+																		  HeightRequest="16"
+																		  Aspect="AspectFit" />
+														<Label Grid.Row="1"
+															   Grid.ColumnSpan="2"
+															   Text="{Binding Value}"
+															   Style="{StaticResource FieldValueLabel}"
+															   TextColor="{AppThemeBinding Light={StaticResource ContentBlueLight}, Dark={StaticResource ContentBlueDark}}"/>
+													</Grid>
+
+												</DataTemplate>
+											</BindableLayout.ItemTemplate>
+										</VerticalStackLayout>
+									</VerticalStackLayout>
+								</Border>
+
+								<Border Style="{StaticResource FieldGroupBorder}"
+										IsVisible="True">
+									<!-- Title + BindableLayout-->
+									<VerticalStackLayout Spacing="16">
+										<Label Text="{l:Localize OrganizationalInformation}"
+											   Style="{StaticResource FieldTitleLabel}" />
+										<VerticalStackLayout HorizontalOptions="Fill"
+															 Spacing="16"
+															 BindableLayout.ItemsSource="{Binding OtherFields}">
+											<BindableLayout.ItemTemplate>
+												<DataTemplate x:DataType="objectModel:ObservableFieldItem">
+													<VerticalStackLayout>
+														<Label Text="{Binding  Label}"
+															   Style="{StaticResource FieldKeyLabel}" />
+														<Label Text="{Binding Value}"
+															   Style="{StaticResource FieldValueLabel}" />
+													</VerticalStackLayout>
+
+												</DataTemplate>
+											</BindableLayout.ItemTemplate>
+										</VerticalStackLayout>
 									</VerticalStackLayout>
 								</Border>
 							</VerticalStackLayout>
