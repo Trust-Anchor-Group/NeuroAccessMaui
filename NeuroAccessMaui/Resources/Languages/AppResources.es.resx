@@ -2597,4 +2597,10 @@
   <data name="SecondsCapitalized" xml:space="preserve">
     <value>Segundos</value>
   </data>
+  <data name="ExpiresFormat" xml:space="preserve">
+    <value>Caduca: {0:d}</value>
+  </data>
+  <data name="Issued" xml:space="preserve">
+    <value>Emitido</value>
+  </data>
 </root>
