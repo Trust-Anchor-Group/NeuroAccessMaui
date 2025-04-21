@@ -258,13 +258,56 @@
 			public const string OnboardingDomain = "onboarding.id.tagroot.io";
 		}
 
+		/// <summary>
+		/// Custom XMPP Protocol Properties.
+		/// </summary>
+		/// <remarks>
+		/// These are not standardized, but can be used for fully custom or conjugated properties (BDAY + BMONTH + BYEAR => BDATE)
+		/// </remarks>
 		public static class CustomXmppProperties
 		{
 			/// <summary>
 			/// Full birthday  
 			/// </summary>
-			public const string BirthDay = "FULLBIRTHDAY";
+			public const string BirthDate = "BDATE";
+
+			/// <summary>
+			/// Identity ID
+			/// </summary>
+			public const string Neuro_Id = "IDENTITY_ID";
+
+			/// <summary>
+			/// Issuer / Provider
+			/// </summary>
+			public const string Provider = "IDENTITY_PROVIDER";
+
+			/// <summary>
+			/// Current state (Approved, Rejected, …)
+			/// </summary>
+			public const string State = "IDENTITY_STATE";
+
+			/// <summary>
+			/// When it was created
+			/// </summary>
+			public const string Created = "IDENTITY_CREATED";
+
+			/// <summary>
+			/// When it was last updated
+			/// </summary>
+			public const string Updated = "IDENTITY_UPDATED";
+
+			/// <summary>
+			/// “From” date
+			/// </summary>
+			public const string From = "IDENTITY_FROM";
+
+			/// <summary>
+			/// “To” / expiry date
+			/// </summary>
+			public const string To = "IDENTITY_TO";
+
 		}
+
 
 		/// <summary>
 		/// XMPP Protocol Properties.
@@ -608,6 +651,12 @@
 			/// Download file timeout
 			/// </summary>
 			public static readonly TimeSpan DownloadFile = TimeSpan.FromSeconds(10);
+
+			/// <summary>
+			/// Allowed time to watch an Identity
+			/// </summary>
+			public static readonly TimeSpan IdentityAllowedWatch = TimeSpan.FromSeconds(600);
+
 		}
 
 		/// <summary>
