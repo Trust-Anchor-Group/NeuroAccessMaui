@@ -26,6 +26,9 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 		private readonly PhotosLoader photosLoader;
 		private readonly ViewIdentityNavigationArgs? args;
 		private readonly IDispatcherTimer? timer;
+		private readonly IDispatcherTimer? qrTimer;
+
+		private LegalIdentity? identity = null;
 
 		private bool hasAppeared;
 
@@ -171,6 +174,12 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 				return;
 			this.timer.Interval = TimeSpan.FromSeconds(1);
 			this.timer.Tick += this.OnTimerTick;
+
+			this.qrTimer = Application.Current?.Dispatcher.CreateTimer();
+			if (this.qrTimer is null)
+				return;
+			this.qrTimer.Interval = Constants.Intervals.Qr;
+			this.qrTimer.Tick += this.OnQrTimerTick;
 		}
 
 
@@ -184,6 +193,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 
 			// Determine identity source
 			LegalIdentity Identity = this.args?.Identity ?? ServiceRef.TagProfile.LegalIdentity!;
+			this.identity = Identity;
 
 			if (IsRefresh)
 			{
@@ -219,9 +229,6 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 
 			this.IssueDate = Identity.From;
 			this.ExpireDate = Identity.To;
-
-			this.GenerateQrCode(Constants.UriSchemes.CreateIdUri(Identity.Id));
-
 
 			// Load fields
 			this.LoadIdentityTask.Load(async ctx =>
@@ -331,7 +338,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 				   {Constants.XmppProperties.Country,     ServiceRef.Localizer[nameof(AppResources.Country)]},
 				   {Constants.XmppProperties.Nationality,     ServiceRef.Localizer[nameof(AppResources.Nationality)]},
 				   {Constants.XmppProperties.PersonalNumber, ServiceRef.Localizer[nameof(AppResources.PersonalNumber)]},
-    			   {Constants.XmppProperties.Gender, ServiceRef.Localizer[nameof(AppResources.Gender)]},
+				   {Constants.XmppProperties.Gender, ServiceRef.Localizer[nameof(AppResources.Gender)]},
 				   {Constants.XmppProperties.Phone, ServiceRef.Localizer[nameof(AppResources.PhoneNr)]},
 				   {Constants.XmppProperties.EMail, ServiceRef.Localizer[nameof(AppResources.EMail)]},
 				   {Constants.XmppProperties.OrgName,    ServiceRef.Localizer[nameof(AppResources.OrgName)]},
@@ -447,6 +454,10 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 
 					this.timer?.Start();
 					this.OnPropertyChanged(nameof(this.HasTimer));
+
+					this.OnQrTimerTick(this, EventArgs.Empty); // Generate the QR code for the first time
+					//this.qrTimer?.Start(); //Currently the qr is not random, so no need to set time for refresh
+
 				});
 
 			});
@@ -525,6 +536,26 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 					{
 						ServiceRef.LogService.LogException(Ex);
 					}
+				}
+			});
+		}
+
+		private void OnQrTimerTick(object? sender, EventArgs e)
+		{
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+
+				try
+				{
+					if (this.identity is null)
+						return;
+					this.GenerateQrCode(Constants.UriSchemes.CreateIdUri(this.identity.Id));
+
+
+				}
+				catch (Exception Ex)
+				{
+					ServiceRef.LogService.LogException(Ex);
 				}
 			});
 		}
