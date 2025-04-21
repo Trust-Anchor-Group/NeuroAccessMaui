@@ -14,10 +14,12 @@
 					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Identity.ViewIdentity"
 					  xmlns:photos="clr-namespace:NeuroAccessMaui.Services.UI.Photos"
 					  xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Identity.ObjectModel"
+					  xmlns:root="clr-namespace:NeuroAccessMaui"
+					  xmlns:alias="clr-namespace:NeuroAccessMaui.MarkupExtensions"
 					  xmlns:skiaLottie="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
 					  xmlns:res="clr-namespace:NeuroAccessMaui.Resources.Languages;assembly=NeuroAccessMaui">
 
-	<base:BaseContentPage.Resources>
+	<VisualElement.Resources>
 		<Style x:Key="CardBorder"
 			   TargetType="Border"
 			   BasedOn="{StaticResource BorderSet}">
@@ -104,6 +106,8 @@
 
 		<Style x:Key="StatusPillBorder"
 			   TargetType="Border">
+			<Setter Property="BackgroundColor"
+					Value="{AppThemeBinding Light={StaticResource FiguresStrokesGreyScalesGreyv100Light}, Dark={StaticResource FiguresStrokesGreyScalesGreyv100Dark}}" />
 			<Setter Property="VisualStateManager.VisualStateGroups">
 				<VisualStateGroupList>
 					<VisualStateGroup Name="StatusStates">
@@ -115,7 +119,13 @@
 
 							</VisualState.Setters>
 						</VisualState>
+						<VisualState Name="Compromised">
+							<VisualState.Setters>
+								<Setter Property="BackgroundColor"
+										Value="{AppThemeBinding Light={StaticResource FiguresStrokesOrangea20Light}, Dark={StaticResource FiguresStrokesOrangea20Dark}}" />
 
+							</VisualState.Setters>
+						</VisualState>
 						<VisualState Name="Approved">
 							<VisualState.Setters>
 								<Setter Property="BackgroundColor"
@@ -129,7 +139,12 @@
 										Value="{AppThemeBinding Light={StaticResource FiguresStrokesReda20Light}, Dark={StaticResource FiguresStrokesReda20Dark}}" />
 							</VisualState.Setters>
 						</VisualState>
-
+						<VisualState Name="Obsoleted">
+							<VisualState.Setters>
+								<Setter Property="BackgroundColor"
+										Value="{AppThemeBinding Light={StaticResource FiguresStrokesReda20Light}, Dark={StaticResource FiguresStrokesReda20Dark}}" />
+							</VisualState.Setters>
+						</VisualState>
 					</VisualStateGroup>
 				</VisualStateGroupList>
 
@@ -141,8 +156,11 @@
 					Value="14" />
 			<Setter Property="FontFamily"
 					Value="SpaceGroteskBold" />
+			<Setter Property="TextColor"
+					Value="{AppThemeBinding Light={StaticResource ContentSecondaryLight},
+                                       Dark={StaticResource ContentSecondaryDark}}" />
 			<Setter Property="Text"
-					Value="Test" />
+					Value="{l:Localize NotAvailable}" />
 			<Style.Triggers>
 				<DataTrigger TargetType="Label"
 							 Binding="{Binding IdentityState}"
@@ -150,7 +168,17 @@
 					<Setter Property="Text"
 							Value="{l:Localize IdentityState_Created}" />
 					<Setter Property="TextColor"
-							Value="Black" />
+							Value="{AppThemeBinding Light={StaticResource ContentOrangeLight},
+                                       Dark={StaticResource ContentOrangeDark}}" />
+				</DataTrigger>
+				<DataTrigger TargetType="Label"
+							 Binding="{Binding IdentityState}"
+							 Value="Compromised">
+					<Setter Property="Text"
+							Value="{l:Localize IdentityState_Compromised}" />
+					<Setter Property="TextColor"
+							Value="{AppThemeBinding Light={StaticResource ContentOrangeLight},
+                                       Dark={StaticResource ContentOrangeDark}}" />
 				</DataTrigger>
 				<DataTrigger TargetType="Label"
 							 Binding="{Binding IdentityState}"
@@ -165,9 +193,19 @@
 							 Binding="{Binding IdentityState}"
 							 Value="Rejected">
 					<Setter Property="Text"
-							Value="Rejected ID" />
+							Value="{l:Localize IdentityState_Rejected}" />
 					<Setter Property="TextColor"
-							Value="White" />
+							Value="{AppThemeBinding Light={StaticResource ContentRedLight},
+                                       Dark={StaticResource ContentRedDark}}" />
+				</DataTrigger>
+				<DataTrigger TargetType="Label"
+							 Binding="{Binding IdentityState}"
+							 Value="Obsoleted">
+					<Setter Property="Text"
+							Value="{l:Localize IdentityState_Obsoleted}" />
+					<Setter Property="TextColor"
+							Value="{AppThemeBinding Light={StaticResource ContentRedLight},
+                                       Dark={StaticResource ContentRedDark}}" />
 				</DataTrigger>
 			</Style.Triggers>
 		</Style>
@@ -200,7 +238,84 @@
 			<Setter Property="TextColor"
 					Value="{AppThemeBinding Light={StaticResource ContentSecondaryLight}, Dark={StaticResource ContentSecondaryDark}}" />
 		</Style>
-	</base:BaseContentPage.Resources>
+
+		<DataTemplate x:Key="DefaultFieldTemplate"
+					  x:DataType="objectModel:ObservableFieldItem">
+			<VerticalStackLayout>
+				<Label Text="{Binding  Label}"
+					   Style="{StaticResource FieldKeyLabel}" />
+				<Label Text="{Binding Value}"
+					   Style="{StaticResource FieldValueLabel}" />
+			</VerticalStackLayout>
+		</DataTemplate>
+
+		<DataTemplate x:Key="ClickableFieldTemplate"
+					  x:DataType="objectModel:ObservableFieldItem">
+			<Grid RowDefinitions="auto, auto"
+				  ColumnDefinitions="*, auto">
+				<Grid.GestureRecognizers>
+					<TapGestureRecognizer Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.FieldTappedCommand}"
+										  CommandParameter="{Binding Value}" />
+				</Grid.GestureRecognizers>
+
+				<Label Grid.Row="0"
+					   Grid.Column="0"
+					   Text="{Binding  Label}"
+					   Style="{StaticResource FieldKeyLabel}" />
+				<controls:SvgView Grid.Row="0"
+								  Grid.Column="1"
+								  Source="content_copy.svg"
+								  TintColor="{AppThemeBinding Light={StaticResource ContentSecondaryLight}, Dark={StaticResource ContentSecondaryDark}}"
+								  WidthRequest="16"
+								  HeightRequest="16"
+								  Aspect="AspectFit" />
+				<Label Grid.Row="1"
+					   Grid.ColumnSpan="2"
+					   Text="{Binding Value}"
+					   Style="{StaticResource FieldValueLabel}"
+					   TextColor="{AppThemeBinding Light={StaticResource ContentBlueLight}, Dark={StaticResource ContentBlueDark}}" />
+			</Grid>
+		</DataTemplate>
+
+		<DataTemplate x:Key="CountryFieldTemplate"
+					  x:DataType="objectModel:ObservableFieldItem">
+			<VerticalStackLayout>
+				<Label Text="{Binding  Label}"
+					   Style="{StaticResource FieldKeyLabel}" />
+				<Label Text="{Binding Value, Converter={converters:CountryCodeToFlagAndName}}"
+					   Style="{StaticResource FieldValueLabel}" />
+			</VerticalStackLayout>
+		</DataTemplate>
+
+		<DataTemplate x:Key="GenderFieldTemplate"
+					  x:DataType="objectModel:ObservableFieldItem">
+			<VerticalStackLayout>
+				<Label Text="{Binding  Label}"
+					   Style="{StaticResource FieldKeyLabel}" />
+				<Label Text="{Binding Value, Converter={converters:GenderCodeToSymbolAndLabel}}"
+					   Style="{StaticResource FieldValueLabel}" />
+			</VerticalStackLayout>
+		</DataTemplate>
+
+		<viewmodel:ObservableFieldItemDictionarySelector x:Key="FieldSelector"
+														 DefaultTemplate="{StaticResource DefaultFieldTemplate}">
+			<viewmodel:ObservableFieldItemDictionarySelector.Templates>
+				<viewmodel:TemplateMapping Key="{x:Static root:Constants+CustomXmppProperties.Neuro_Id}"
+										   Template="{StaticResource ClickableFieldTemplate}" />
+				<viewmodel:TemplateMapping Key="{x:Static root:Constants+XmppProperties.Jid}"
+										   Template="{StaticResource ClickableFieldTemplate}" />
+				<viewmodel:TemplateMapping Key="{x:Static root:Constants+XmppProperties.DeviceId}"
+										   Template="{StaticResource ClickableFieldTemplate}" />
+				<viewmodel:TemplateMapping Key="{x:Static root:Constants+XmppProperties.Country}"
+										   Template="{StaticResource CountryFieldTemplate}" />
+				<viewmodel:TemplateMapping Key="{x:Static root:Constants+XmppProperties.Nationality}"
+										   Template="{StaticResource CountryFieldTemplate}" />
+				<viewmodel:TemplateMapping Key="{x:Static root:Constants+XmppProperties.Gender}"
+										   Template="{StaticResource GenderFieldTemplate}" />
+			</viewmodel:ObservableFieldItemDictionarySelector.Templates>
+
+		</viewmodel:ObservableFieldItemDictionarySelector>
+	</VisualElement.Resources>
 
 	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundLight}, Dark={StaticResource SurfaceBackgroundDark}}">
 		<Grid.RowDefinitions>
@@ -230,21 +345,25 @@
 								 Rotation="90"
 								 RepeatCount="-1"
 								 HorizontalOptions="Center" />
-
-
-
-		<HorizontalStackLayout Spacing="{StaticResource SmallSpacing}"
-							   Margin="{StaticResource MediumSpacing}"
-							   Grid.Row="0">
-
-			<controls:ImageButton HorizontalOptions="Start"
+		<!-- TOP BAR -->
+		<Grid Grid.Row="0"
+			  ColumnDefinitions="*,*,*"
+			  RowDefinitions="auto"
+			  Margin="8">
+			<controls:ImageButton Grid.Column="0"
+								  HorizontalOptions="Start"
 								  Command="{Binding GoBackCommand}"
 								  Style="{StaticResource ImageOnlyButton}"
 								  PathData="{x:Static ui:Geometries.BackButtonPath}" />
+			<Image Grid.Column="1"
+				   HorizontalOptions="Center"
+				   Source="neuro_b"
+				   MaximumHeightRequest="24"
+				   Aspect="AspectFit" />
+		</Grid>
 
-			<Label Style="{StaticResource PageTitleLabel}"
-				   Text="{l:Localize LegalId}" />
-		</HorizontalStackLayout>
+
+
 
 		<!-- QR Code Shadow-->
 		<Border Grid.Row="2"
@@ -261,7 +380,7 @@
 		<Grid Grid.Row="1"
 			  Grid.RowSpan="2">
 			<Border Style="{StaticResource CardBorder}"
-					Margin="{StaticResource MediumMargins}"
+					Margin="16,8,16,8"
 					Padding="0">
 				<Grid>
 					<!-- BG -->
@@ -378,9 +497,9 @@
 						StrokeShape="RoundRectangle 16"
 						VerticalOptions="End"
 						BackgroundColor="LightGrey"
+						helpers:VisualStateProperties.State="{Binding IdentityState}"
 						Style="{StaticResource StatusPillBorder}"
 						Padding="8,4"
-						helpers:VisualStateProperties.State="{Binding IdentityState}"
 						HorizontalOptions="Center">
 
 					<Label Style="{StaticResource StatusPillLabel}"
@@ -424,13 +543,16 @@
 									  VerticalOptions="End"
 									  MaxExpandedHeight="-1">
 				<controls:BottomSheetView.HeaderContent>
-					<VerticalStackLayout BackgroundColor="#FFFCFCFC"
+					<VerticalStackLayout Background="{AppThemeBinding Light={StaticResource SurfaceElevation1Light}, Dark={StaticResource SurfaceElevation1Dark}}"
 										 Padding="2">
 						<controls:SvgView Source="swipe_up.svg"
 										  Aspect="Fill"
 										  HeightRequest="24"
-										  WidthRequest="24" />
-						<Label Text="Swipe for details"
+										  WidthRequest="24"
+										  TintColor="{AppThemeBinding Light={StaticResource ContentGreenLight}, Dark={StaticResource ContentGreenDark}}" />
+						<Label Text="{l:Localize SwipeForDetails}"
+							   TextColor="{AppThemeBinding Light={StaticResource ContentGreenLight}, Dark={StaticResource ContentGreenDark}}"
+							   FontSize="16"
 							   HorizontalOptions="Center"
 							   FontFamily="SpaceGroteskBold"
 							   HorizontalTextAlignment="Center" />
@@ -484,22 +606,11 @@
 											   Style="{StaticResource FieldTitleLabel}" />
 										<VerticalStackLayout HorizontalOptions="Fill"
 															 Spacing="16"
-															 BindableLayout.ItemsSource="{Binding PersonalFields}">
-											<BindableLayout.ItemTemplate>
-												<DataTemplate x:DataType="objectModel:ObservableFieldItem">
-													<VerticalStackLayout>
-														<Label Text="{Binding  Label}"
-															   Style="{StaticResource FieldKeyLabel}" />
-														<Label Text="{Binding Value}"
-															   Style="{StaticResource FieldValueLabel}" />
-													</VerticalStackLayout>
-
-												</DataTemplate>
-											</BindableLayout.ItemTemplate>
-										</VerticalStackLayout>
+															 BindableLayout.ItemsSource="{Binding PersonalFields}"
+															 BindableLayout.ItemTemplateSelector="{StaticResource FieldSelector}" />
 									</VerticalStackLayout>
 								</Border>
-								
+
 								<Border Style="{StaticResource FieldGroupBorder}"
 										IsVisible="{Binding HasOrganizationFields}">
 									<!-- Title + BindableLayout-->
@@ -508,20 +619,10 @@
 											   Style="{StaticResource FieldTitleLabel}" />
 										<VerticalStackLayout HorizontalOptions="Fill"
 															 Spacing="16"
-															 BindableLayout.ItemsSource="{Binding OrganizationFields}">
-											<BindableLayout.ItemTemplate>
-												<DataTemplate x:DataType="objectModel:ObservableFieldItem">
-													<VerticalStackLayout>
-														<Label Text="{Binding  Label}"
-															   Style="{StaticResource FieldKeyLabel}" />
-														<Label Text="{Binding Value}"
-															   Style="{StaticResource FieldValueLabel}" />
-													</VerticalStackLayout>
-
-												</DataTemplate>
-											</BindableLayout.ItemTemplate>
-										</VerticalStackLayout>
+															 BindableLayout.ItemsSource="{Binding OrganizationFields}"
+															 BindableLayout.ItemTemplateSelector="{StaticResource FieldSelector}" />
 									</VerticalStackLayout>
+
 								</Border>
 
 								<Border Style="{StaticResource FieldGroupBorder}"
@@ -532,60 +633,23 @@
 											   Style="{StaticResource FieldTitleLabel}" />
 										<VerticalStackLayout HorizontalOptions="Fill"
 															 Spacing="16"
-															 BindableLayout.ItemsSource="{Binding TechnicalFields}">
-											<BindableLayout.ItemTemplate>
-												<DataTemplate x:DataType="objectModel:ObservableFieldItem">
-													<Grid RowDefinitions="auto, auto"
-														  ColumnDefinitions="*, auto">
-														<Grid.GestureRecognizers>
-															<TapGestureRecognizer Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.FieldTappedCommand}"
-																				  CommandParameter="{Binding Value}" />
-														</Grid.GestureRecognizers>
+															 BindableLayout.ItemsSource="{Binding TechnicalFields}"
+															 BindableLayout.ItemTemplateSelector="{StaticResource FieldSelector}" />
 
-														<Label Grid.Row="0"
-															   Grid.Column="0"
-															   Text="{Binding  Label}"
-															   Style="{StaticResource FieldKeyLabel}" />
-														<controls:SvgView Grid.Row="0"
-																		  Grid.Column="1"
-																		  Source="content_copy.svg"
-																		  WidthRequest="16"
-																		  HeightRequest="16"
-																		  Aspect="AspectFit" />
-														<Label Grid.Row="1"
-															   Grid.ColumnSpan="2"
-															   Text="{Binding Value}"
-															   Style="{StaticResource FieldValueLabel}"
-															   TextColor="{AppThemeBinding Light={StaticResource ContentBlueLight}, Dark={StaticResource ContentBlueDark}}"/>
-													</Grid>
 
-												</DataTemplate>
-											</BindableLayout.ItemTemplate>
-										</VerticalStackLayout>
 									</VerticalStackLayout>
 								</Border>
 
 								<Border Style="{StaticResource FieldGroupBorder}"
-										IsVisible="True">
+										IsVisible="{Binding HasOtherFields}">
 									<!-- Title + BindableLayout-->
 									<VerticalStackLayout Spacing="16">
-										<Label Text="{l:Localize OrganizationalInformation}"
+										<Label Text="{l:Localize OtherInformation}"
 											   Style="{StaticResource FieldTitleLabel}" />
 										<VerticalStackLayout HorizontalOptions="Fill"
 															 Spacing="16"
-															 BindableLayout.ItemsSource="{Binding OtherFields}">
-											<BindableLayout.ItemTemplate>
-												<DataTemplate x:DataType="objectModel:ObservableFieldItem">
-													<VerticalStackLayout>
-														<Label Text="{Binding  Label}"
-															   Style="{StaticResource FieldKeyLabel}" />
-														<Label Text="{Binding Value}"
-															   Style="{StaticResource FieldValueLabel}" />
-													</VerticalStackLayout>
-
-												</DataTemplate>
-											</BindableLayout.ItemTemplate>
-										</VerticalStackLayout>
+															 BindableLayout.ItemsSource="{Binding OtherFields}"
+															 BindableLayout.ItemTemplateSelector="{StaticResource FieldSelector}" />
 									</VerticalStackLayout>
 								</Border>
 							</VerticalStackLayout>
