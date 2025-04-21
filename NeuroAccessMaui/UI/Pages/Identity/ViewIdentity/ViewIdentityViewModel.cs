@@ -29,6 +29,12 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 
 		private bool hasAppeared;
 
+		/// <summary>
+		/// You'll find out on your birthday
+		/// </summary>
+		[ObservableProperty]
+		private bool shouldCelebrate = false;
+
 		[ObservableProperty]
 		private string friendlyName = string.Empty;
 		[ObservableProperty]
@@ -52,12 +58,17 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 		private DateTime issueDate;
 
 		[ObservableProperty]
-		private int timerSeconds = 50;
+		private int timerSeconds = Convert.ToInt32(Constants.Timeouts.IdentityAllowedWatch.TotalSeconds);
 
 		public ObservableCollection<ObservableFieldItem> PersonalFields { get; } = [];
 		public ObservableCollection<ObservableFieldItem> OrganizationFields { get; } = [];
 		public ObservableCollection<ObservableFieldItem> TechnicalFields { get; } = [];
 		public ObservableCollection<ObservableFieldItem> OtherFields { get; } = [];
+
+		public bool HasPersonalFields => this.PersonalFields.Count > 0;
+		public bool HasOrganizationFields => this.OrganizationFields.Count > 0;
+		public bool HasTechnicalFields => this.TechnicalFields.Count > 0;
+		public bool HasOtherFields => this.OtherFields.Count > 0;
 
 		public ObservableTask<bool> LoadIdentityTask { get; }
 		public ObservableTask<int> LoadPhotosTask { get; }
@@ -82,8 +93,8 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 			new CustomFieldDefinition
 			(
 				Keys: [Constants.XmppProperties.BirthDay, Constants.XmppProperties.BirthMonth, Constants.XmppProperties.BirthYear],
-				NewKey: Constants.CustomXmppProperties.BirthDay,
-				GetLabel: () => ServiceRef.Localizer[AppResources.BirthDate, false],
+				NewKey: Constants.CustomXmppProperties.BirthDate,
+				GetLabel: (_) => ServiceRef.Localizer[nameof(AppResources.BirthDate), false],
 				GetValue: static identity =>
 				{
 					string D = identity[Constants.XmppProperties.BirthDay];
@@ -104,51 +115,45 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 			}),
 			new CustomFieldDefinition(
 				Keys: Array.Empty<string>(),
-				NewKey: nameof(LegalIdentity.Id),
-				GetLabel: () => ServiceRef.Localizer[nameof(AppResources.LegalId)],
+				NewKey: Constants.CustomXmppProperties.Neuro_Id,
+				GetLabel: _ => ServiceRef.Localizer[nameof(AppResources.NeuroID)],
 				GetValue: identity => identity.Id),
 
 			new CustomFieldDefinition(
 				Keys: Array.Empty<string>(),
-				NewKey: nameof(LegalIdentity.Provider),
-				GetLabel: () => ServiceRef.Localizer[nameof(AppResources.Provider)],
+				NewKey: Constants.CustomXmppProperties.Provider,
+				GetLabel: _ => ServiceRef.Localizer[nameof(AppResources.Provider)],
 				GetValue: identity => identity.Provider),
 
 			new CustomFieldDefinition(
 				Keys: Array.Empty<string>(),
-				NewKey: nameof(LegalIdentity.State),
-				GetLabel: () => ServiceRef.Localizer[nameof(AppResources.State)],
-				GetValue: identity => identity.State.ToString()),
+				NewKey: Constants.CustomXmppProperties.State,
+				GetLabel: identity => ServiceRef.Localizer[nameof(AppResources.Status)],
+				GetValue: identity => ServiceRef.Localizer["IdentityState_" + identity.State.ToString()]),
 
 			new CustomFieldDefinition(
 				Keys: Array.Empty<string>(),
-				NewKey: nameof(LegalIdentity.Created),
-				GetLabel: () => ServiceRef.Localizer[nameof(AppResources.Created)],
+				NewKey: Constants.CustomXmppProperties.Created,
+				GetLabel: (_) => ServiceRef.Localizer[nameof(AppResources.Created)],
 				GetValue: identity => identity.Created.ToString("g", CultureInfo.CurrentCulture)),
 
 			new CustomFieldDefinition(
 				Keys: Array.Empty<string>(),
-				NewKey: nameof(LegalIdentity.Updated),
-				GetLabel: () => ServiceRef.Localizer[nameof(AppResources.Updated)],
+				NewKey: Constants.CustomXmppProperties.Updated,
+				GetLabel: (_) => ServiceRef.Localizer[nameof(AppResources.Updated)],
 				GetValue: identity => identity.Updated.ToString("g", CultureInfo.CurrentCulture)),
 
 			new CustomFieldDefinition(
 				Keys: Array.Empty<string>(),
-				NewKey: nameof(LegalIdentity.From),
-				GetLabel: () => ServiceRef.Localizer[nameof(AppResources.From)],
+				NewKey: Constants.CustomXmppProperties.From,
+				GetLabel: (_) => ServiceRef.Localizer[nameof(AppResources.Issued)],
 				GetValue: identity => identity.From.ToString("d", CultureInfo.CurrentCulture)),
 
 			new CustomFieldDefinition(
 				Keys: Array.Empty<string>(),
-				NewKey: nameof(LegalIdentity.To),
-				GetLabel: () => ServiceRef.Localizer[nameof(AppResources.To)],
+				NewKey: Constants.CustomXmppProperties.To,
+				GetLabel: (_) => ServiceRef.Localizer[nameof(AppResources.Expires)],
 				GetValue: identity => identity.To.ToString("d", CultureInfo.CurrentCulture)),
-
-			new CustomFieldDefinition(
-				Keys: Array.Empty<string>(),
-				NewKey: nameof(LegalIdentity.ClientKeyName),
-				GetLabel: () => ServiceRef.Localizer[nameof(AppResources.Encrypted)],
-				GetValue: identity => identity.ClientKeyName)
 		];
 
 
@@ -262,7 +267,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 					Constants.XmppProperties.FirstName,
 					Constants.XmppProperties.MiddleNames,
 					Constants.XmppProperties.LastNames,
-					Constants.CustomXmppProperties.BirthDay,
+					Constants.CustomXmppProperties.BirthDate,
 					Constants.XmppProperties.BirthDay,
 					Constants.XmppProperties.BirthMonth,
 					Constants.XmppProperties.BirthYear,
@@ -273,7 +278,12 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 					Constants.XmppProperties.City,
 					Constants.XmppProperties.Region,
 					Constants.XmppProperties.Country,
-					Constants.XmppProperties.PersonalNumber
+					Constants.XmppProperties.PersonalNumber,
+					Constants.XmppProperties.Nationality,
+					Constants.XmppProperties.Gender,
+					Constants.XmppProperties.Phone,
+					Constants.XmppProperties.EMail
+
 				};
 
 				HashSet<string> OrgKeys = new(StringComparer.OrdinalIgnoreCase)
@@ -291,13 +301,27 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 					Constants.XmppProperties.OrgNumber
 				};
 
-				// Label map for display names
+				HashSet<string> TechnicalKeys = new(StringComparer.OrdinalIgnoreCase)
+				{
+					Constants.XmppProperties.Jid,
+					Constants.CustomXmppProperties.Neuro_Id,
+					Constants.CustomXmppProperties.Provider,
+					Constants.CustomXmppProperties.State,
+					Constants.CustomXmppProperties.Created,
+					Constants.CustomXmppProperties.Updated,
+					Constants.CustomXmppProperties.From,
+					Constants.CustomXmppProperties.To,
+					Constants.XmppProperties.DeviceId
+				};
+
+				// Label map for display names (We should localize based on the key, but this is done so we don't need to refactor the localization fornow)
+				// TODO: Localize based on the key
 				Dictionary<string, LocalizedString> LabelMap = new(StringComparer.OrdinalIgnoreCase)
 				{
 				   {Constants.XmppProperties.FirstName,   ServiceRef.Localizer[nameof(AppResources.FirstName)]},
 				   {Constants.XmppProperties.MiddleNames, ServiceRef.Localizer[nameof(AppResources.MiddleNames)]},
 				   {Constants.XmppProperties.LastNames,   ServiceRef.Localizer[nameof(AppResources.LastNames)]},
-				   {Constants.CustomXmppProperties.BirthDay, ServiceRef.Localizer[nameof(AppResources.BirthDate)]},
+				   {Constants.CustomXmppProperties.BirthDate, ServiceRef.Localizer[nameof(AppResources.BirthDate)]},
 				   {Constants.XmppProperties.Address,     ServiceRef.Localizer[nameof(AppResources.Address)]},
 				   {Constants.XmppProperties.Address2,    ServiceRef.Localizer[nameof(AppResources.Address2)]},
 				   {Constants.XmppProperties.ZipCode,     ServiceRef.Localizer[nameof(AppResources.ZipCode)]},
@@ -305,7 +329,11 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 				   {Constants.XmppProperties.City,        ServiceRef.Localizer[nameof(AppResources.City)]},
 				   {Constants.XmppProperties.Region,      ServiceRef.Localizer[nameof(AppResources.Region)]},
 				   {Constants.XmppProperties.Country,     ServiceRef.Localizer[nameof(AppResources.Country)]},
+				   {Constants.XmppProperties.Nationality,     ServiceRef.Localizer[nameof(AppResources.Nationality)]},
 				   {Constants.XmppProperties.PersonalNumber, ServiceRef.Localizer[nameof(AppResources.PersonalNumber)]},
+    			   {Constants.XmppProperties.Gender, ServiceRef.Localizer[nameof(AppResources.Gender)]},
+				   {Constants.XmppProperties.Phone, ServiceRef.Localizer[nameof(AppResources.PhoneNr)]},
+				   {Constants.XmppProperties.EMail, ServiceRef.Localizer[nameof(AppResources.EMail)]},
 				   {Constants.XmppProperties.OrgName,    ServiceRef.Localizer[nameof(AppResources.OrgName)]},
 				   {Constants.XmppProperties.OrgDepartment, ServiceRef.Localizer[nameof(AppResources.OrgDepartment)]},
 				   {Constants.XmppProperties.OrgRole,     ServiceRef.Localizer[nameof(AppResources.OrgRole)]},
@@ -316,7 +344,9 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 				   {Constants.XmppProperties.OrgCity,     ServiceRef.Localizer[nameof(AppResources.OrgCity)]},
 				   {Constants.XmppProperties.OrgRegion,   ServiceRef.Localizer[nameof(AppResources.OrgRegion)]},
 				   {Constants.XmppProperties.OrgCountry,  ServiceRef.Localizer[nameof(AppResources.OrgCountry)]},
-				   {Constants.XmppProperties.OrgNumber,   ServiceRef.Localizer[nameof(AppResources.OrgNumber)]}
+				   {Constants.XmppProperties.OrgNumber,   ServiceRef.Localizer[nameof(AppResources.OrgNumber)]},
+				   {Constants.XmppProperties.Jid,   ServiceRef.Localizer[nameof(AppResources.NetworkID)]},
+				   {Constants.XmppProperties.DeviceId,   ServiceRef.Localizer[nameof(AppResources.DeviceID)]}
 				};
 
 
@@ -346,11 +376,12 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 							if (!string.IsNullOrEmpty(ValueOverride))
 							{
 								Key = CustomDef.NewKey;
-								Label = CustomDef.GetLabel();
+								Label = CustomDef.GetLabel(Identity);
 								foreach (string Keys in CustomDef.Keys)
 									UsedKeys.Add(Keys);
 							}
-							continue;
+							else
+								ValueOverride = null;
 						}
 					}
 
@@ -366,6 +397,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 
 					if (PersonalKeys.Contains(Prop.Name)) PersonalList.Add(Item);
 					else if (OrgKeys.Contains(Prop.Name)) OrganizationList.Add(Item);
+					else if (TechnicalKeys.Contains(Prop.Name)) TechnicalList.Add(Item);
 					else OtherList.Add(Item);
 
 					UsedKeys.Add(Key);
@@ -382,17 +414,36 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 						if (string.IsNullOrEmpty(ValueOverride))
 							return;
 						// Create a new field item
-						ObservableFieldItem Item = new(CustomFieldDefinition.NewKey, CustomFieldDefinition.GetLabel(), Identity, false, ValueOverride);
-						TechnicalList.Add(Item);
+						ObservableFieldItem Item = new(CustomFieldDefinition.NewKey, CustomFieldDefinition.GetLabel(Identity), Identity, false, ValueOverride);
+						if (PersonalKeys.Contains(CustomFieldDefinition.NewKey)) PersonalList.Add(Item);
+						else if (OrgKeys.Contains(CustomFieldDefinition.NewKey)) OrganizationList.Add(Item);
+						else if (TechnicalKeys.Contains(CustomFieldDefinition.NewKey)) TechnicalList.Add(Item);
+						else OtherList.Add(Item);
 					});
 
+
+				bool ShouldCelebrate = PersonalList.Any(Item => Item.Key == Constants.CustomXmppProperties.BirthDate &&
+																!string.IsNullOrEmpty(Item.Value) &&
+																DateTime.TryParse(Item.Value, out DateTime BirthDate) &&
+																BirthDate == new DateTime(2000, 8, 5));
+
 				// Apply to UI on main thread
-				await MainThread.InvokeOnMainThreadAsync(() =>
+				await MainThread.InvokeOnMainThreadAsync(async () =>
 				{
 					this.PersonalFields.Clear(); PersonalList.ForEach(this.PersonalFields.Add);
+					await Task.Yield(); // Sacrifice performance for UI responsiveness. In the future, we might encounter identities with a ridiculous amount of fields.
 					this.OrganizationFields.Clear(); OrganizationList.ForEach(this.OrganizationFields.Add);
+					await Task.Yield();
 					this.TechnicalFields.Clear(); TechnicalList.ForEach(this.TechnicalFields.Add);
+					await Task.Yield();
 					this.OtherFields.Clear(); OtherList.ForEach(this.OtherFields.Add);
+
+					this.ShouldCelebrate = ShouldCelebrate;
+
+					this.OnPropertyChanged(nameof(this.HasPersonalFields));
+					this.OnPropertyChanged(nameof(this.HasOrganizationFields));
+					this.OnPropertyChanged(nameof(this.HasTechnicalFields));
+					this.OnPropertyChanged(nameof(this.HasOtherFields));
 
 					this.timer?.Start();
 					this.OnPropertyChanged(nameof(this.HasTimer));
@@ -430,8 +481,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 				await MainThread.InvokeOnMainThreadAsync(() =>
 				{
 					this.Photos.Clear();
-					for (int i = 0; i < 25; ++i)
-						Buffer.ForEach(this.Photos.Add);
+					Buffer.ForEach(this.Photos.Add);
 
 					this.OnPropertyChanged(nameof(this.ProfilePhoto));
 					this.OnPropertyChanged(nameof(this.HasProfilePhoto));
@@ -449,7 +499,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 			{
 				this.timer?.Stop();
 			}
-			catch 
+			catch
 			{
 				//Ignore, timer might already been stopped (not sure if it throws when already stopped)
 			}
@@ -493,7 +543,65 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 				ImagesViewModel ImagesViewModel = new([ClickedAttachment]);
 				await ServiceRef.UiService.PushAsync(ImagesPopup, ImagesViewModel);
 			}
-			catch ( Exception Ex)
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				this.timer?.Start();
+			});
+		}
+
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task QrTappedAsync()
+		{
+			if (this.QrCodeBin is null || string.IsNullOrEmpty(this.QrCodeUri))
+				return;
+
+			await MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				this.timer?.Stop();
+			});
+
+			try
+			{
+				await Clipboard.SetTextAsync(this.QrCodeUri);
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+					ServiceRef.Localizer[nameof(AppResources.IdCopiedSuccessfully)]);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				this.timer?.Start();
+			});
+		}
+
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task FieldTappedAsync(string Value)
+		{
+			if (this.QrCodeBin is null || string.IsNullOrEmpty(this.QrCodeUri))
+				return;
+
+			await MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				this.timer?.Stop();
+			});
+
+			try
+			{
+				await Clipboard.SetTextAsync(Value);
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+					ServiceRef.Localizer[nameof(AppResources.TagValueCopiedToClipboard)]);
+			}
+			catch (Exception Ex)
 			{
 				ServiceRef.LogService.LogException(Ex);
 			}
@@ -517,7 +625,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 		// Simple holder for custom field metadata
 		private record CustomFieldDefinition(string[] Keys,
 											 string NewKey,
-											 Func<LocalizedString> GetLabel,
+											 Func<LegalIdentity, LocalizedString> GetLabel,
 											 Func<LegalIdentity, string?> GetValue);
 	}
 
