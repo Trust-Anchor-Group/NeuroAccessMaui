@@ -22,10 +22,5 @@ namespace NeuroAccessMaui.UI.Pages.Main
 				ServiceRef.LogService.LogException(ex);
 			}
 		}
-
-		private void OnFlyoutButtonClicked(object sender, EventArgs e)
-		{
-			Shell.Current.FlyoutIsPresented = true;
-		}
 	}
 }

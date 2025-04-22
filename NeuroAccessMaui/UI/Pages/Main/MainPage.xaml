@@ -51,14 +51,16 @@
 			  RowSpacing="{StaticResource MediumSpacing}"
 			  RowDefinitions="auto,auto"
 			  ColumnDefinitions="auto,auto">
-			<controls:ImageButton
+			<controls:SvgButton
 				Grid.Row="0" Grid.Column="0"
 				HorizontalOptions="Center"
-				Clicked="OnFlyoutButtonClicked"
-				PathData="{x:Static ui:Geometries.HamburgerIconPath}"
-				Style="{StaticResource IconButton}"/>
+				Command="{Binding OpenFlyoutCommand}"
+				SvgSource="hamburger.svg"
+				SvgAspect="AspectFill"
+				BorderStyle="{StaticResource IconButtonBorder}"
+				SvgTintColor="{AppThemeBinding Light={StaticResource ContentPrimaryLight}, Dark={StaticResource ContentPrimaryDark}}"/>
 
-			<!-- TODO: Enable when implemented
+			<!-- TODO: Enable when implemented. Change to SvgButton
 			<controls:ImageButton
 				Grid.Row="0"
 				Grid.Column="1"

@@ -381,7 +381,7 @@
 		<Setter Property="PathStyle" Value="{StaticResource FilledImageButtonPath}" />
 	</Style>
 
-	<!-- Back Button -->
+	<!-- Icon Button -->
 	<Style x:Key="IconButtonBorder" ApplyToDerivedTypes="False" TargetType="Border" BasedOn="{StaticResource BorderSet}">
 		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ButtonBWWhiteBlackbgWBOnBackgroundLight}, Dark={StaticResource ButtonBWWhiteBlackbgWBOnBackgroundDark}}"/>
 		<Setter Property="Padding" Value="{StaticResource MediumMargins}"/>
@@ -396,16 +396,9 @@
 
 	</Style>
 
-	<Style x:Key="IconButtonPath" ApplyToDerivedTypes="False" TargetType="Path">
-		<Setter Property="Fill"
-				Value="{AppThemeBinding Light={StaticResource ContentPrimaryLight}, Dark={StaticResource ContentPrimaryDark}}"/>
-		<Setter Property="WidthRequest" Value="24"/>
-		<Setter Property="HeightRequest" Value="24"/>
-	</Style>
-
-	<Style x:Key="IconButton" ApplyToDerivedTypes="False" TargetType="controls:ImageButton">
+	<Style x:Key="IconButton" ApplyToDerivedTypes="False" TargetType="controls:SvgButton">
 		<Setter Property="BorderStyle" Value="{StaticResource IconButtonBorder}" />
-		<Setter Property="PathStyle" Value="{StaticResource IconButtonPath}" />
+		<Setter Property="SvgTintColor" Value="{AppThemeBinding Light={StaticResource ContentPrimaryLight}, Dark={StaticResource ContentPrimaryDark}}" />
 	</Style>
 
 	<!-- Expander Button Styles -->
