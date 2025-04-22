@@ -660,7 +660,7 @@
 			/// <summary>
 			/// Allowed time to watch an Identity
 			/// </summary>
-			public static readonly TimeSpan IdentityAllowedWatch = TimeSpan.FromSeconds(600);
+			public static readonly TimeSpan IdentityAllowedWatch = TimeSpan.FromSeconds(60);
 
 		}
 

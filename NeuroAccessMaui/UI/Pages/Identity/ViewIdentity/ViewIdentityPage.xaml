@@ -15,7 +15,6 @@
 					  xmlns:photos="clr-namespace:NeuroAccessMaui.Services.UI.Photos"
 					  xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Identity.ObjectModel"
 					  xmlns:root="clr-namespace:NeuroAccessMaui"
-					  xmlns:alias="clr-namespace:NeuroAccessMaui.MarkupExtensions"
 					  xmlns:skiaLottie="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
 					  xmlns:res="clr-namespace:NeuroAccessMaui.Resources.Languages;assembly=NeuroAccessMaui">
 
@@ -315,6 +314,28 @@
 			</viewmodel:ObservableFieldItemDictionarySelector.Templates>
 
 		</viewmodel:ObservableFieldItemDictionarySelector>
+
+		<Style x:Key="IconBorder"
+			   ApplyToDerivedTypes="False"
+			   TargetType="Border"
+			   BasedOn="{StaticResource BorderSet}">
+			<Setter Property="BackgroundColor"
+					Value="{AppThemeBinding Light={StaticResource ButtonBWWhiteBlackbgWBOnBackgroundLight}, Dark={StaticResource ButtonBWWhiteBlackbgWBOnBackgroundDark}}" />
+			<Setter Property="Padding"
+					Value="{StaticResource MediumMargins}" />
+			<Setter Property="Margin"
+					Value="0" />
+			<Setter Property="WidthRequest"
+					Value="40" />
+			<Setter Property="HeightRequest"
+					Value="40" />
+			<Setter Property="HorizontalOptions"
+					Value="Start" />
+			<Setter Property="StrokeShape">
+				<RoundRectangle CornerRadius="8" />
+			</Setter>
+
+		</Style>
 	</VisualElement.Resources>
 
 	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundLight}, Dark={StaticResource SurfaceBackgroundDark}}">
@@ -349,17 +370,37 @@
 		<Grid Grid.Row="0"
 			  ColumnDefinitions="*,*,*"
 			  RowDefinitions="auto"
-			  Margin="8">
-			<controls:ImageButton Grid.Column="0"
-								  HorizontalOptions="Start"
-								  Command="{Binding GoBackCommand}"
-								  Style="{StaticResource ImageOnlyButton}"
-								  PathData="{x:Static ui:Geometries.BackButtonPath}" />
+			  Margin="16,16,16,8">
+			<controls:TemplatedButton Grid.Column="0"
+									  HorizontalOptions="Start"
+									  Command="{Binding GoBackCommand}">
+				<Border Style="{StaticResource IconBorder}">
+					<controls:SvgView WidthRequest="24"
+									  HeightRequest="24"
+									  Source="close.svg"
+									  Aspect="AspectFit"
+									  TintColor="{AppThemeBinding Light={StaticResource ContentPrimaryLight}, Dark={StaticResource ContentPrimaryDark}}" />
+				</Border>
+			</controls:TemplatedButton>
 			<Image Grid.Column="1"
 				   HorizontalOptions="Center"
 				   Source="neuro_b"
 				   MaximumHeightRequest="24"
 				   Aspect="AspectFit" />
+
+			<controls:TemplatedButton Grid.Column="2"
+									  Command="{Binding ShareCommand}"
+									  HorizontalOptions="End">
+				<Border Style="{StaticResource IconBorder}">
+					<controls:SvgView WidthRequest="24"
+									  HeightRequest="24"
+									  Source="share.svg"
+									  Aspect="AspectFit"
+									  TintColor="{AppThemeBinding Light={StaticResource ContentPrimaryLight}, Dark={StaticResource ContentPrimaryDark}}" />
+
+				</Border>
+			</controls:TemplatedButton>
+
 		</Grid>
 
 
@@ -563,6 +604,19 @@
 						<ScrollView VerticalOptions="Fill"
 									HorizontalOptions="Fill">
 							<VerticalStackLayout>
+
+								<controls:TextButton Style="{StaticResource FilledTextButton}"
+													 LabelData="{l:Localize AddContact}"
+													 Command="{Binding AddContactCommand}"
+													 IsVisible="{Binding CanAddContact}"
+													 HorizontalOptions="Fill" Margin="16" />
+								<controls:TextButton Style="{StaticResource FilledTextButton}"
+													 LabelData="{l:Localize RemoveContact}"
+													 Command="{Binding RemoveContactCommand}"
+													 IsVisible="{Binding CanRemoveContact}"
+													 HorizontalOptions="Fill"
+													 Margin="16" />
+
 								<!-- Photos -->
 								<Border Style="{StaticResource FieldGroupBorder}"
 										IsVisible="{Binding HasPhotos}">

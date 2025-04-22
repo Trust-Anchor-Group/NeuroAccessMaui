@@ -16,6 +16,10 @@ using NeuroAccessMaui.Resources.Languages;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.UI.Popups.Image;
 using Waher.Content.Markdown.Model;
+using NeuroAccessMaui.UI.Pages.Signatures.ServerSignature;
+using NeuroAccessMaui.Extensions;
+using Waher.Persistence;
+using Waher.Networking.XMPP;
 
 namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 {
@@ -37,6 +41,11 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 		/// </summary>
 		[ObservableProperty]
 		private bool shouldCelebrate = false;
+
+		[ObservableProperty]
+		private bool canAddContact = false;
+		[ObservableProperty]
+		private bool canRemoveContact = false;
 
 		[ObservableProperty]
 		private string friendlyName = string.Empty;
@@ -432,7 +441,42 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 				bool ShouldCelebrate = PersonalList.Any(Item => Item.Key == Constants.CustomXmppProperties.BirthDate &&
 																!string.IsNullOrEmpty(Item.Value) &&
 																DateTime.TryParse(Item.Value, out DateTime BirthDate) &&
-																BirthDate == new DateTime(2000, 8, 5));
+																BirthDate == DateTime.Today);
+
+				// Check if we can add or remove contact and update contact info
+
+				bool CanAddContact = false;
+				bool CanRemoveContact = false;
+
+				string Jid = ServiceRef.TagProfile.Account + "@" + ServiceRef.TagProfile.Domain;
+				if (!this.identity.GetJid().Equals(Jid, StringComparison.OrdinalIgnoreCase))
+				{
+					try
+					{
+						ContactInfo? Info = await ContactInfo.FindByBareJid(Jid);
+						if ((Info is not null) &&
+							(Info.LegalIdentity is null ||
+							(Info.LegalId != this.identity.Id &&
+							Info.LegalIdentity.Created < this.identity!.Created &&
+							this.identity.State == Waher.Networking.XMPP.Contracts.IdentityState.Approved)))
+						{
+							Info.LegalId = this.identity.Id;
+							Info.LegalIdentity = this.identity;
+							Info.FriendlyName = ContactInfo.GetFriendlyName(this.identity);
+
+							await Database.Update(Info);
+							await Database.Provider.Flush();
+						}
+
+						CanAddContact = Info is null;
+						CanRemoveContact = Info is not null;
+					}
+					catch (Exception Ex)
+					{
+						ServiceRef.LogService.LogException(Ex);
+					}
+
+				}
 
 				// Apply to UI on main thread
 				await MainThread.InvokeOnMainThreadAsync(async () =>
@@ -446,6 +490,8 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 					this.OtherFields.Clear(); OtherList.ForEach(this.OtherFields.Add);
 
 					this.ShouldCelebrate = ShouldCelebrate;
+					this.CanAddContact = CanAddContact;
+					this.CanRemoveContact = CanRemoveContact;
 
 					this.OnPropertyChanged(nameof(this.HasPersonalFields));
 					this.OnPropertyChanged(nameof(this.HasOrganizationFields));
@@ -641,6 +687,123 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 			{
 				this.timer?.Start();
 			});
+		}
+
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task ShareAsync()
+		{
+			if (this.identity is null && this.LoadIdentityTask.IsSucceeded)
+				return;
+
+			await MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				this.timer?.Stop();
+			});
+
+			try
+			{
+				await this.OpenQrPopup();
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				this.timer?.Start();
+			});
+
+		}
+
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task RemoveContact()
+		{
+			if (this.identity is null)
+				return;
+			try
+			{
+				if (!await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer["Confirm"], ServiceRef.Localizer["AreYouSureYouWantToRemoveContact"], ServiceRef.Localizer["Yes"], ServiceRef.Localizer["Cancel"]))
+					return;
+
+				string BareJid = this.identity.GetJid();
+
+				ContactInfo Info = await ContactInfo.FindByBareJid(BareJid);
+				if (Info is not null)
+				{
+					await Database.Delete(Info);
+					await ServiceRef.AttachmentCacheService.MakeTemporary(Info.LegalId);
+					await Database.Provider.Flush();
+				}
+
+				RosterItem? Item = ServiceRef.XmppService.GetRosterItem(BareJid);
+				if (Item is not null)
+					ServiceRef.XmppService.RemoveRosterItem(BareJid);
+
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					this.CanAddContact = true;
+					this.CanRemoveContact = false;
+				});
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task AddContact()
+		{
+			if (this.identity is null)
+				return;
+
+
+			try
+			{
+
+				string FriendlyName = ContactInfo.GetFriendlyName(this.identity);
+				string BareJid = this.identity.GetJid();
+
+				RosterItem? Item = ServiceRef.XmppService.GetRosterItem(BareJid);
+				if (Item is null)
+					ServiceRef.XmppService.AddRosterItem(new RosterItem(BareJid, FriendlyName));
+
+				ContactInfo Info = await ContactInfo.FindByBareJid(BareJid);
+				if (Info is null)
+				{
+					Info = new ContactInfo()
+					{
+						BareJid = BareJid,
+						LegalId = this.identity.Id,
+						LegalIdentity = this.identity,
+						FriendlyName = FriendlyName,
+						IsThing = false
+					};
+
+					await Database.Insert(Info);
+				}
+				else
+				{
+					Info.LegalId = this.identity.Id;
+					Info.LegalIdentity = this.identity;
+					Info.FriendlyName = FriendlyName;
+
+					await Database.Update(Info);
+				}
+				await ServiceRef.AttachmentCacheService.MakePermanent(this.identity.Id!);
+				await Database.Provider.Flush();
+
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					this.CanAddContact = false;
+					this.CanRemoveContact = true;
+				});
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
 		}
 
 		#region ILinkableView
