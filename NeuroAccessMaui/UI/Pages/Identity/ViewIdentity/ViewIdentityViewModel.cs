@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
-using Microsoft.Maui;
 using NeuroAccessMaui.Services.UI.Photos;
 using Waher.Networking.XMPP.Contracts;
 using NeuroAccessMaui.UI.Pages.Identity.ObjectModel;
@@ -15,8 +11,6 @@ using System.Globalization;
 using NeuroAccessMaui.Resources.Languages;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.UI.Popups.Image;
-using Waher.Content.Markdown.Model;
-using NeuroAccessMaui.UI.Pages.Signatures.ServerSignature;
 using NeuroAccessMaui.Extensions;
 using Waher.Persistence;
 using Waher.Networking.XMPP;
