@@ -25,34 +25,40 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 		protected override void OnSizeAllocated(double width, double height)
 		{
 			base.OnSizeAllocated(width, height);
+			try
+			{
+				// Set the size of the rainbow view
+				this.RainbowView.WidthRequest = height + 200;
+				this.RainbowView.HeightRequest = width + 200;
 
-			// Set the size of the rainbow view
-			this.RainbowView.WidthRequest = height;
-			this.RainbowView.HeightRequest = width + 100;
+				// Prepare the confetti system:
+				this.ConfettiView.Systems?.Clear();
 
-			// Prepare the confetti system:
-			this.ConfettiView.Systems?.Clear();
+				double BandHeight = 40;
+				double BandWidth = 40;
 
-			double BandHeight = 40;
-			double BandWidth = 40;
+				// Bottom‑left rectangle:
+				Rect BottomLeftRect = new Rect(
+					x: 0,
+					y: height - BandHeight,
+					width: BandWidth,
+					height: BandHeight);
 
-			// Bottom‑left rectangle:
-			Rect BottomLeftRect = new Rect(
-				x: 0,
-				y: height - BandHeight,
-				width: BandWidth,
-				height: BandHeight);
+				// Bottom‑right rectangle:
+				Rect BottomRightRect = new Rect(
+					x: width - BandWidth,
+					y: height - BandHeight,
+					width: BandWidth,
+					height: BandHeight);
 
-			// Bottom‑right rectangle:
-			Rect BottomRightRect = new Rect(
-				x: width - BandWidth,
-				y: height - BandHeight,
-				width: BandWidth,
-				height: BandHeight);
-
-			this.ConfettiView.Systems?.Add(this.CreateSideSystem(SKConfettiEmitterSide.Left, BottomLeftRect));
-			this.ConfettiView.Systems?.Add(this.CreateSideSystem(SKConfettiEmitterSide.Right, BottomRightRect));
-
+				this.ConfettiView.Systems?.Add(this.CreateSideSystem(SKConfettiEmitterSide.Left, BottomLeftRect));
+				this.ConfettiView.Systems?.Add(this.CreateSideSystem(SKConfettiEmitterSide.Right, BottomRightRect));
+			}
+			catch (Exception ex)
+			{
+				// Handle any exceptions that may occur during the update
+				Console.WriteLine($"Error updating rainbow view: {ex.Message}");
+			}
 		}
 
 		/// <inheritdoc/>

@@ -59,15 +59,15 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(IsApproved))]
-		private IdentityState? identityState = null;
+		private IdentityState? identityState = Waher.Networking.XMPP.Contracts.IdentityState.Created;
 
 		public bool IsApproved => this.IdentityState is not null && this.IdentityState == Waher.Networking.XMPP.Contracts.IdentityState.Approved;
 
 
 		[ObservableProperty]
-		private DateTime expireDate;
+		private DateTime? expireDate = null;
 		[ObservableProperty]
-		private DateTime issueDate;
+		private DateTime? issueDate = null;
 
 		[ObservableProperty]
 		private int timerSeconds = Convert.ToInt32(Constants.Timeouts.IdentityAllowedWatch.TotalSeconds);
@@ -213,27 +213,26 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 
 			this.IdentityState = Identity.State;
 
-			// Friendly name
-			PersonalInformation PInfo = Identity.GetPersonalInformation();
-			string[] Jid = PInfo.Jid.Split('@');
+			string FullJid = Identity.GetJid();
+			string[] Jid =  FullJid.Split('@');
 			Jid[1] = "@" + Jid[1];
-
-			if (string.IsNullOrEmpty(PInfo.FullName))
+			this.FriendlyName = Jid[0];
+			this.SubText = Jid[1];
+			// Friendly name
+			PersonalInformation? PInfo = Identity.GetPersonalInformation();
+			if(PInfo is not null)
 			{
-				this.FriendlyName = Jid[0];
-				this.SubText = Jid[1];
+				if (!string.IsNullOrEmpty(PInfo.FullName))
+				{
+					this.FriendlyName = PInfo.FullName;
+					if (PInfo.HasBirthDate)
+						this.SubText = PInfo.BirthDate!.Value.ToShortDateString();
+					else
+						this.SubText = Jid[1];
+				}
+				if (PInfo.HasBirthDate && PInfo.Age > 0)
+					this.AgeText = PInfo.Age.ToString(CultureInfo.InvariantCulture);
 			}
-			else
-			{
-				this.FriendlyName = PInfo.FullName;
-				if (PInfo.HasBirthDate)
-					this.SubText = PInfo.BirthDate!.Value.ToShortDateString();
-				else
-					this.SubText = Jid[1];
-			}
-
-			if (PInfo.Age > 0)
-				this.AgeText = PInfo.Age.ToString(CultureInfo.InvariantCulture);
 
 
 			this.IssueDate = Identity.From;
@@ -497,6 +496,8 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 					this.OnPropertyChanged(nameof(this.HasOrganizationFields));
 					this.OnPropertyChanged(nameof(this.HasTechnicalFields));
 					this.OnPropertyChanged(nameof(this.HasOtherFields));
+					this.OnPropertyChanged(nameof(this.HasAge));
+
 
 					this.timer?.Start();
 					this.OnPropertyChanged(nameof(this.HasTimer));

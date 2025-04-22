@@ -66,7 +66,7 @@
 			<Setter Property="FontFamily"
 					Value="SpaceGroteskBold" />
 			<Setter Property="FontSize"
-					Value="28" />
+					Value="26" />
 			<Setter Property="LineBreakMode"
 					Value="WordWrap" />
 			<Setter Property="HorizontalTextAlignment"
@@ -81,7 +81,7 @@
 			<Setter Property="FontFamily"
 					Value="SpaceGroteskMedium" />
 			<Setter Property="FontSize"
-					Value="20" />
+					Value="18" />
 			<Setter Property="LineBreakMode"
 					Value="WordWrap" />
 			<Setter Property="HorizontalTextAlignment"
@@ -152,7 +152,7 @@
 		<Style x:Key="StatusPillLabel"
 			   TargetType="Label">
 			<Setter Property="FontSize"
-					Value="14" />
+					Value="10" />
 			<Setter Property="FontFamily"
 					Value="SpaceGroteskBold" />
 			<Setter Property="TextColor"
@@ -344,7 +344,7 @@
 			<RowDefinition Height="auto" />
 			<!-- ID CARD -->
 			<RowDefinition Height="*" />
-			<RowDefinition Height="120" />
+			<RowDefinition Height="90" />
 			<!-- Padding between Card and bottom -->
 			<RowDefinition Height="50" />
 			<!-- Bottom sheet -->
@@ -408,8 +408,8 @@
 
 		<!-- QR Code Shadow-->
 		<Border Grid.Row="2"
-				WidthRequest="180"
-				HeightRequest="180"
+				WidthRequest="150"
+				HeightRequest="150"
 				TranslationY="0"
 				BackgroundColor="Transparent"
 				Style="{StaticResource BorderSet}"
@@ -448,6 +448,19 @@
 							   HorizontalTextAlignment="Center"
 							   FontFamily="SpaceGroteskBold" />
 					</Border>
+
+					<Border VerticalOptions="End"
+							HorizontalOptions="Start"
+							StrokeShape="RoundRectangle 16"
+							Margin="16"
+							helpers:VisualStateProperties.State="{Binding IdentityState}"
+							Style="{StaticResource StatusPillBorder}"
+							>
+
+						<Label Style="{StaticResource StatusPillLabel}" Margin="4,2"
+								HorizontalOptions="Center"
+								VerticalOptions="Center" />
+					</Border>
 				</Grid>
 			</Border>
 		</Grid>
@@ -455,7 +468,7 @@
 
 		<!-- CARD CONTENT -->
 		<Grid Grid.Row="1"
-			  Padding="0,32, 0, 8"
+			  Padding="0,16, 0, 8"
 			  Margin="{StaticResource MediumMargins}"
 			  WidthRequest="250"
 			  RowDefinitions="auto, *">
@@ -464,8 +477,8 @@
 								  Spacing="{StaticResource SmallSpacing}"
 								  Padding="0"
 								  Margin="0">
-				<Grid WidthRequest="250"
-					  HeightRequest="250">
+				<Grid WidthRequest="200"
+					  HeightRequest="200">
 
 					<controls:ConditionView Condition="{Binding LoadPhotosTask.IsRunning}">
 						<controls:ConditionView.True>
@@ -481,8 +494,8 @@
 								<controls:ConditionView Condition="{Binding HasProfilePhoto}">
 									<controls:ConditionView.True>
 										<Image Source="{Binding ProfilePhoto}"
-											   WidthRequest="250"
-											   HeightRequest="250"
+											   WidthRequest="200"
+											   HeightRequest="200"
 											   Aspect="AspectFit" />
 									</controls:ConditionView.True>
 									<controls:ConditionView.False>
@@ -496,7 +509,7 @@
 							</Border>
 						</controls:ConditionView.False>
 					</controls:ConditionView>
-
+					<!-- Water mark
 					<Grid VerticalOptions="End"
 						  HorizontalOptions="Start"
 						  WidthRequest="50"
@@ -506,12 +519,12 @@
 								StrokeShape="RoundRectangle 0 16 0 0">
 
 						</Border>
-					</Grid>
+					</Grid> -->
 					<Grid VerticalOptions="End"
 						  HorizontalOptions="End"
 						  WidthRequest="50"
 						  HeightRequest="50"
-						  IsVisible="true">
+						  IsVisible="{Binding HasAge}">
 						<Border Background="{AppThemeBinding Light={StaticResource SurfaceElevation1Light}, Dark={StaticResource SurfaceElevation1Dark}}"
 								StrokeShape="RoundRectangle 16 0 0 0">
 							<Label Style="{StaticResource AgeLabel}"
@@ -530,37 +543,18 @@
 
 			</VerticalStackLayout>
 
-			<Grid Grid.Row="1"
-				  ColumnDefinitions="*"
-				  RowDefinitions="*, auto"
-				  Margin="0, 0, 0, 8">
-				<Border Grid.Row="0"
-						StrokeShape="RoundRectangle 16"
-						VerticalOptions="End"
-						BackgroundColor="LightGrey"
-						helpers:VisualStateProperties.State="{Binding IdentityState}"
-						Style="{StaticResource StatusPillBorder}"
-						Padding="8,4"
-						HorizontalOptions="Center">
 
-					<Label Style="{StaticResource StatusPillLabel}"
-						   HorizontalOptions="Center"
-						   VerticalOptions="Center" />
-
-
-				</Border>
-				<VerticalStackLayout Grid.Row="1">
+				<VerticalStackLayout Grid.Row="1" Margin="0, 0, 0, 4" VerticalOptions="End">
 					<Label Style="{StaticResource SubTextLabel}"
 						   FontSize="14"
 						   Text="{l:Localize Path=ExpiresFormat, Arg={Binding ExpireDate}}" />
 				</VerticalStackLayout>
-			</Grid>
 		</Grid>
 
 		<!-- QR Code -->
 		<Border Grid.Row="2"
-				WidthRequest="180"
-				HeightRequest="180"
+				WidthRequest="150"
+				HeightRequest="150"
 				TranslationY="0"
 				Style="{StaticResource QrBorder}">
 			<Image HorizontalOptions="Center"
@@ -573,7 +567,7 @@
 			</Image>
 		</Border>
 
-		<skiaLottie:SKConfettiView x:Name="ConfettiView"
+		<skiaLottie:SKConfettiView x:Name="ConfettiView" InputTransparent="True"
 								   Grid.RowSpan="5"
 								   IsAnimationEnabled="{Binding ShouldCelebrate}"
 								   HorizontalOptions="Fill"
